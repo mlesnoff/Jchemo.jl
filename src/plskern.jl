@@ -1,9 +1,9 @@
 struct Plsr
-    T::Array{Float64}
-    P::Array{Float64}
-    R::Array{Float64}
-    W::Array{Float64}
-    C::Array{Float64}
+    T::Matrix{Float64}
+    P::Matrix{Float64}
+    R::Matrix{Float64}
+    W::Matrix{Float64}
+    C::Matrix{Float64}
     TT::Vector{Float64}
     xmeans::Vector{Float64}
     ymeans::Vector{Float64}
@@ -20,8 +20,9 @@ Dayal, B.S., MacGregor, J.F., 1997. Improved PLS algorithms. Journal of Chemomet
 - Y {Float64}: matrix (n, q) with q >= 1, or vector (n,)
 - weights: vector (n,)
 - nlv: Integer > 0
-For saving allocation memory, the centering of inputs X and Y is done "inplace".
-Therefore running the function modifies X and Y. 
+X and Y are internally centered.
+For saving allocation memory, the centering is done "inplace",
+which modifies externally X and Y. 
 """ 
 function plskern!(X, Y, weights = ones(size(X, 1)) ; nlv)
     X = ensure_mat(X)
@@ -102,7 +103,7 @@ end
 
 ####################################### AUXILIARY
 
-function summary(object::Plsr, X)
+function Base.summary(object::Plsr, X)
     n, nlv = size(object.T)
     X = center(X, object.xmeans)
     ## Could be center! but changes x
@@ -114,7 +115,7 @@ function summary(object::Plsr, X)
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvar = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar) 
-    (explvar = explvar, )
+    (explvar = explvar,)
 end
 
 function transform(object::Plsr, X ; nlv::Union{Int64, Nothing} = nothing)

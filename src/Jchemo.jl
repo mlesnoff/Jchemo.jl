@@ -1,15 +1,19 @@
 module Jchemo
 
-using LinearAlgebra
+using LinearAlgebra, DataFrames
 
-include("my_f.jl")
 include("auxiliary.jl")
+include("lmr.jl")
 include("plskern.jl")
+include("my_f.jl")
 
-export my_f
 export mweights, colmeans, center, center!
 export list, ensure_mat, row, col
-export plskern, plskern!
-export summary, transform, coef, predict 
+export lmrqr!, lmrqr, lmrchol!, lmrchol, lmrpinv!, lmrpinv, lmrpinv2!, lmrpinv2, lmrvec!, lmrvec
+export plskern!, plskern
+export transform, coef, predict, predict_beta
+export my_f
+#export summary
 
-end # module
+
+end # Module
