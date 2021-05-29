@@ -30,7 +30,8 @@ function plskern!(X, Y, weights = ones(size(X, 1)) ; nlv)
     n = size(X, 1)
     p = size(X, 2)
     q = size(Y, 2)
-    @assert size(Y, 1) == n "X and Y do not have the same nb. observations."
+    @assert size(Y, 1) == n "X and Y must have the same nb. of observations."
+    @assert nlv >= 1 "nlv must be >= 1."
     ## Initialization
     nlv = min(nlv, n, p)
     weights = mweights(weights)
@@ -45,8 +46,7 @@ function plskern!(X, Y, weights = ones(size(X, 1)) ; nlv)
     C = similar(X, q, nlv)
     TT = similar(X, nlv)
     D = LinearAlgebra.Diagonal(weights)
-    XtY = X' * (D * Y)  
-    ## XtY = Xd' * Y = X' * D * Y  (Xd = D * X   Very costly!!)
+    XtY = X' * (D * Y)                   # = Xd' * Y = X' * D * Y  (Xd = D * X   Very costly!!)
     ## Pre-allocation of the temporary results
     t   = similar(X, n)
     dt  = similar(X, n)   
@@ -61,17 +61,14 @@ function plskern!(X, Y, weights = ones(size(X, 1)) ; nlv)
             w .= col(XtY, 1)
         else
             tmp .= XtY
-            u = svd!(tmp).V   
-            ## = svd(XtY').U = eigen(XtY' * XtY).vectors[with ordering]
+            u = svd!(tmp).V               # = svd(XtY').U = eigen(XtY' * XtY).vectors[with ordering]
             mul!(w, XtY, col(u, 1))             
         end
-        w ./= sqrt(dot(w, w))
-        ## w .= w ./ ...                            
+        w ./= sqrt(dot(w, w))    # w .= w ./ ...                            
         r .= w
         if a > 1
             @inbounds for j = 1:(a - 1)
-                r .-= dot(w, col(P, j)) .* col(R, j)
-                ## r .= r .- ...
+                r .-= dot(w, col(P, j)) .* col(R, j)    # r .= r .- ...
             end
         end                   
         mul!(t, X, r)                 # t = X * r

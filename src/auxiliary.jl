@@ -50,7 +50,7 @@ ensure_mat(X::Number) = reshape([X], 1, 1)
 
 """
     list(n::Integer)
-Create a "list" of length n, i.e. a Vector{Any}(undef, n) 
+Creates a Vector{Any}(undef, n) 
 """  
 list(n::Integer) = Vector{Any}(undef, n) 
 

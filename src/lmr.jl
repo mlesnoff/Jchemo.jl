@@ -1,4 +1,4 @@
-struct Lmr2
+struct Lmr
     int::Matrix{Float64}
     B::Matrix{Float64}   
     weights::Vector{Float64}
@@ -26,7 +26,7 @@ function lmrqr!(X, Y, weights = ones(size(X, 1)))
     sqrtD = Diagonal(sqrt.(weights))
     B = (sqrtD * X) \ (sqrtD * Y)
     int = ymeans' .- xmeans' * B
-    Lmr2(int, B, weights)
+    Lmr(int, B, weights)
 end
 
 function lmrqr(X, Y, weights = ones(size(X, 1)))
@@ -52,7 +52,7 @@ function lmrchol!(X, Y, weights = ones(size(X, 1)))
     XtD = X' * Diagonal(weights)
     B = cholesky(Hermitian(XtD * X)) \ (XtD * Y)
     int = ymeans' .- xmeans' * B
-    Lmr2(int, B, weights)
+    Lmr(int, B, weights)
 end
 
 function lmrchol(X, Y, weights = ones(size(X, 1)))
@@ -78,7 +78,7 @@ function lmrpinv!(X, Y, weights = ones(size(X, 1)))
     tol = sqrt(eps(real(float(one(eltype(sqrtDX))))))      # see ?pinv
     B = pinv(sqrtDX, rtol = tol) * (sqrtD * Y)
     int = ymeans' .- xmeans' * B
-    Lmr2(int, B, weights)
+    Lmr(int, B, weights)
 end
 
 function lmrpinv(X, Y, weights = ones(size(X, 1)))
@@ -104,7 +104,7 @@ function lmrpinv2!(X, Y, weights = ones(size(X, 1)))
     tol = sqrt(eps(real(float(one(eltype(XtDX))))))
     B = pinv(XtD * X, rtol = tol) * (XtD * Y)
     int = ymeans' .- xmeans' * B
-    Lmr2(int, B, weights)
+    Lmr(int, B, weights)
 end
 
 function lmrpinv2(X, Y, weights = ones(size(X, 1)))
@@ -129,10 +129,20 @@ function lmrvec!(X, Y, weights = ones(size(X, 1)))
     XtD = X' * Diagonal(weights)
     B = (XtD * Y) ./ (XtD * X)
     int = ymeans' .- xmeans' * B
-    Lmr2(int, B, weights)
+    Lmr(int, B, weights)
 end
 
 function lmrvec(X, Y, weights = ones(size(X, 1)))
     res = lmrvec!(copy(X), copy(Y), weights)
     res
+end
+
+function coef(object::Lmr)
+    (int = object.int, B = object.B)
+end
+
+function predict(object::Lmr, X)
+    z = coef(object)
+    pred = z.int .+ X * z.B
+    (pred = pred,)
 end
