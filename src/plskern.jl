@@ -20,8 +20,7 @@ Dayal, B.S., MacGregor, J.F., 1997. Improved PLS algorithms. Journal of Chemomet
 - Y {Float64}: matrix (n, q) with q >= 1, or vector (n,)
 - weights: vector (n,)
 - nlv: Integer > 0
-X and Y are internally centered.
-For saving allocation memory, the centering is done "inplace",
+X and Y are internally centered "inplace" (for saving allocation memory),
 which modifies externally X and Y. 
 """ 
 function plskern!(X, Y, weights = ones(size(X, 1)) ; nlv)
@@ -147,9 +146,7 @@ function predict(object::Plsr, X ; nlv::Union{Int64, UnitRange{Int64}, Array{Int
         z = coef(object ; nlv = nlv[i])
         pred[i] = z.int .+ X * z.B
     end 
-    if le_nlv == 1
-        pred = pred[1]
-    end
+    le_nlv == 1 ? pred = pred[1] : nothing
     (pred = pred,)
 end
 

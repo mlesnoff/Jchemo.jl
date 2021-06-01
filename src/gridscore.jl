@@ -16,7 +16,8 @@ function gridscore(Xtrain, Ytrain, X, Y ; score, fun, pars, verbose = false)
     end
     verbose ? println("-- End.") : nothing
     ## Case nb. comb > 1 ==> vertical concatenation
-    if isa(res, Vector)
+    #if isa(res, Vector)
+    if nco > 1
         res = reduce(vcat, res) 
     end
     ## End
