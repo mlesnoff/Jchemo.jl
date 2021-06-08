@@ -39,7 +39,7 @@ function gridscorelv(Xtrain, Ytrain, X, Y ; score, fun, nlv, pars = nothing, ver
     nlv = max(minimum(nlv), 0):maximum(nlv)
     le_nlv = length(nlv)
     namy = map(string, repeat(["y"], q), 1:q)
-    if pars == nothing
+    if isnothing(pars)
         verbose ? println("-- Nb. combinations = 0.") : nothing
         fm = fun(Xtrain, Ytrain, nlv = maximum(nlv))
         pred = predict(fm, X, nlv = nlv).pred
@@ -67,7 +67,7 @@ function gridscorelv(Xtrain, Ytrain, X, Y ; score, fun, nlv, pars = nothing, ver
             res = reduce(vcat, res)
         end
         ## End
-        ## ==> To build: dat
+        ## ==> To build for cases where pars is not nothing: dat
     end
     verbose ? println("-- End.") : nothing
     res = DataFrame(res, Symbol.(namy))

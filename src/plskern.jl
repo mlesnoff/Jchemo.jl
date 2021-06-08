@@ -23,7 +23,7 @@ Dayal, B.S., MacGregor, J.F., 1997. Improved PLS algorithms. Journal of Chemomet
 X and Y are internally centered "inplace" (for saving allocation memory),
 which modifies externally X and Y. 
 """ 
-function plskern!(X, Y, weights = ones(size(X, 1)) ; nlv)
+function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = size(X, 1)
@@ -60,7 +60,7 @@ function plskern!(X, Y, weights = ones(size(X, 1)) ; nlv)
             w .= col(XtY, 1)
         else
             tmp .= XtY
-            u = svd!(tmp).V               # = svd(XtY').U = eigen(XtY' * XtY).vectors[with ordering]
+            u = svd!(tmp).V           # = svd(XtY').U = eigen(XtY' * XtY).vectors[with ordering]
             mul!(w, XtY, col(u, 1))             
         end
         w ./= sqrt(dot(w, w))    # w .= w ./ ...                            
@@ -92,12 +92,9 @@ end
 Makes a preliminary copy of X and Y and then runs plskern! on these copies.
 Inputs X and Y are not modified.
 """ 
-function plskern(X, Y, weights = ones(size(X, 1)) ; nlv)
-    res = plskern!(copy(X), copy(Y), weights ; nlv)
-    res
+function plskern(X, Y, weights = ones(size(X, 1)); nlv)
+    plskern!(copy(X), copy(Y), weights; nlv)
 end
-
-####################################### AUXILIARY
 
 function Base.summary(object::Plsr, X)
     n, nlv = size(object.T)
@@ -114,18 +111,18 @@ function Base.summary(object::Plsr, X)
     (explvar = explvar,)
 end
 
-function transform(object::Plsr, X ; nlv::Union{Int64, Nothing} = nothing)
+function transform(object::Plsr, X; nlv::Union{Int64, Nothing} = nothing)
     a = size(object.T, 2)
-    nlv == nothing ? nlv = a : nlv = min(nlv, a)
+    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     T = center(X, object.xmeans) * @view(object.R[:, 1:nlv])
     ## Could be center! but changes x
     ## If too heavy ==> Makes summary!
     T
 end
 
-function coef(object::Plsr ; nlv::Union{Int64, Nothing} = nothing)
+function coef(object::Plsr; nlv::Union{Int64, Nothing} = nothing)
     a = size(object.T, 2)
-    nlv == nothing ? nlv = a : nlv = min(nlv, a)
+    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     beta = @view(object.C[:, 1:nlv])'
     B = @view(object.R[:, 1:nlv]) * beta
     int = object.ymeans' .- object.xmeans' * B
@@ -137,9 +134,9 @@ predict(object::Plsr, X ; nlv::Union{Int64, Nothing} = nothing)
 Works also for nlv = 0, 
 since coef() returns a matrix of zeros for B
 """
-function predict(object::Plsr, X ; nlv::Union{Int64, UnitRange{Int64}, Array{Int64}, Nothing} = nothing)
+function predict(object::Plsr, X; nlv::Union{Int64, UnitRange{Int64}, Array{Int64}, Nothing} = nothing)
     a = size(object.T, 2)
-    nlv == nothing ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
+    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     pred = list(le_nlv)
     for i = 1:le_nlv
@@ -154,11 +151,11 @@ end
 predict_beta(object::Pls, X ; nlv::Union{Int64, Nothing} = nothing)
 Works also for nlv = 0
 """
-function predict_beta(object::Plsr, X ; nlv::Union{Int64, Nothing} = nothing)
+function predict_beta(object::Plsr, X; nlv::Union{Int64, Nothing} = nothing)
     a = size(object.T, 2)
-    nlv == nothing ? nlv = a : nlv = min(nlv, a)
+    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     beta = @view(object.C[:, 1:nlv])'
-    pred = object.ymeans' .+ transform(object, X ; nlv) * beta
+    pred = (object.ymeans)' .+ transform(object, X ; nlv) * beta
     (pred = pred,)
 end
     
