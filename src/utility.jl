@@ -1,6 +1,9 @@
 """
+    ```
     ensure_mat(X::AbstractMatrix)
     ensure_mat(X::AbstractVector)
+    ```
+
 Reshape X to a matrix if necessary.
 """
 ensure_mat(X::AbstractMatrix) = X
@@ -8,25 +11,38 @@ ensure_mat(X::AbstractVector) = reshape(X, :, 1)
 ensure_mat(X::Number) = reshape([X], 1, 1)
 
 """
+    ``` 
     list(n::Integer)
+    ```
+
 Create a Vector{Any}(undef, n).
 """  
 list(n::Integer) = Vector{Any}(undef, n) 
 
 """ 
+    ``` 
     mad(x)
+
+    MAD
+    ```
 """
 mad(x) = 1.4826 * median(abs.(x .- median(x)))
 
 """ 
+    ``` 
     mweights(w)
+    ```
+
 Return a vector of weights that sums to 1.
-w: a vector
+w : a vector (n,)
 """
 mweights(w) = w / sum(w)
 
 """
-   rmrow(X, s)
+    ```
+    rmrow(X, s)
+    ```
+
 Remove the rows of X having indexes s.
 Examples
 ≡≡≡≡≡≡≡≡≡≡
@@ -47,12 +63,15 @@ function rmcols(X, s)
 end
 
 """
-    row(X, j)
-    col(X, j)
-View on the i-th row or j-th column of a matrix
+    ```
+    vrow(X, j)
+    vcol(X, j)
+    ```
+
+View of the i-th row or j-th column of a matrix
 """ 
-row(X, i) = view(X, :, i)
-col(X, j) = view(X, :, j)
+vrow(X, i) = view(X, i, :)
+vcol(X, j) = view(X, :, j)
 
 
 

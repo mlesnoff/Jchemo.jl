@@ -2,10 +2,11 @@ module Jchemo  # Start-Module
 
 using LinearAlgebra, Statistics
 using DataFrames
+using ImageFiltering
 using Distances
 using NearestNeighbors
 
-include("auxiliary.jl")
+include("utility.jl")
 include("center_scale.jl")
 include("preprocessing.jl")
 include("lmr.jl")
@@ -19,23 +20,26 @@ include("distances.jl")
 include("getknn.jl")
 include("wdist.jl")
 
-export ensure_mat, list, row, col, rmrows, rmcols
-export mweights
-export colmeans, colvars, colvars!
-export center, center!, scale, scale!
-export snv, snv!, fdif, fdif!, fdif2
-export lmrqr, lmrqr!, lmrchol, lmrchol!, lmrpinv, lmrpinv!, lmrpinv2, lmrpinv2!
-export lmrvec!, lmrvec
-export plskern, plskern!
-export plsr_agg, plsr_agg! 
-export locw, locwlv
-export transform, coef, predict, predict_beta   
-## summary: not exported since this is a surchage of Base.summary
-export residreg, residcla, msep, rmsep, bias, sep, err, mse
-export mpars
-export gridscore, gridscorelv
-export getknn, wdist
-export euclsq, mahsq, mahsqchol
+export 
+    ensure_mat, list, vcol, vrow, rmcols, rmrows,
+    mweights,
+    colmeans, colvars, colvars!,
+    center, center!, scale, scale!,
+    snv, snv!, fdif, fdif!,
+    mavg, mavg!, mavg_runmean, mavg_runmean!,
+    savgk, savgol, savgol!,
+    lmrqr, lmrqr!, lmrchol, lmrchol!, lmrpinv, lmrpinv!, lmrpinv2, lmrpinv2!,
+    lmrvec!, lmrvec,
+    plskern, plskern!,
+    plsr_agg, plsr_agg!,
+    locw, locwlv,
+    transform, coef, predict, predict_beta,
+    ## summary: not exported since this is a surchage of Base.summary
+    residreg, residcla, msep, rmsep, bias, sep, err, mse,
+    mpars,
+    gridscore, gridscorelv,
+    getknn, wdist,
+    euclsq, mahsq, mahsqchol
 
 
 end # End-Module

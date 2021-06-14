@@ -57,17 +57,17 @@ function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
     ## Computations
     for a = 1:nlv
         if q == 1
-            w .= col(XtY, 1)
+            w .= vcol(XtY, 1)
         else
             tmp .= XtY
             u = svd!(tmp).V           # = svd(XtY').U = eigen(XtY' * XtY).vectors[with ordering]
-            mul!(w, XtY, col(u, 1))             
+            mul!(w, XtY, vcol(u, 1))             
         end
         w ./= sqrt(dot(w, w))    # w .= w ./ ...                            
         r .= w
         if a > 1
             @inbounds for j = 1:(a - 1)
-                r .-= dot(w, col(P, j)) .* col(R, j)    # r .= r .- ...
+                r .-= dot(w, vcol(P, j)) .* vcol(R, j)    # r .= r .- ...
             end
         end                   
         mul!(t, X, r)                 # t = X * r
