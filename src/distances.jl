@@ -1,8 +1,12 @@
 """
     euclsq(X, Y)
-Squared Euclidean distances between the rows
-of a matrix X (n, p) and the rows of a matrix Y (m, p).
-Return a n x m matrix: i, j = distance between row i of X and row j of Y.
+Compute the squared Euclidean distances 
+between the rows of a matrix X and the rows of a matrix Y.
+- X : matrix (n, p)
+- Y : matrix (m, p)
+
+Return a matrix (n, m): i, j = distance between row i of X and row j of Y.
+
 X and Y must have the same number of columns.
 X and Y can be vectors or scalars if dimensions are consistent.
 """
@@ -15,12 +19,16 @@ end
 """
     mahsq(X, Y)
     mahsq(X, Y, Sinv)
-Squared Mahalanobis distances between the rows
-of a matrix X (n, p) and the rows of a matrix Y (m, p).
-Return a n x m matrix: i, j = distance between row i of X and row j of Y.
+Compute the squared Mahalanobis distances 
+between the rows of a matrix X and the rows of a matrix Y.
+- X : matrix (n, p)
+- Y : matrix (m, p)
+- Sinv: Inverse of a covariance matrix S (p, p)
+
+Return a matrix (n, m): i, j = distance between row i of X and row j of Y.
+
 X and Y must have the same number of columns.
 X and Y can be vectors or scalars if dimensions are consistent.
-- Sinv: Inverse of a covariance matrix S (p, p)
 """
 function mahsq(X, Y)
     X = ensure_mat(X)
@@ -39,14 +47,18 @@ function mahsq(X, Y, Sinv)
 end
 
 """
-mahsqchol(X, Y)
-mahsqchol(X, Y, U)
-Squared Mahalanobis distances between the rows
-of a matrix X (n, p) and the rows of a matrix Y (m, p).
-Return a n x m matrix: i, j = distance between row i of X and row j of Y.
+    mahsqchol(X, Y)
+    mahsqchol(X, Y, U)
+Compute the squared Mahalanobis distances (Cholesky method)
+between the rows of a matrix X and the rows of a matrix Y.
+- X : matrix (n, p)
+- Y : matrix (m, p)
+- U : Cholesky decomposition of a covariance matrix S (p, p) 
+
+Return a matrix (n, m): i, j = distance between row i of X and row j of Y.
+
 X and Y must have the same number of columns.
 X and Y can be vectors or scalars if dimensions are consistent.
-- U: Cholesky decomposition of the covariance matrix S (p, p) 
 """
 function mahsqchol(X, Y)
     X = ensure_mat(X)

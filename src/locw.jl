@@ -1,7 +1,17 @@
 """
     locw(Xtrain, Ytrain, X ; listnn, listw = nothing, fun, verbose = false, kwargs...)
-Only 1 parameter combination in kwargs, 
-i.e. all arguments in kwargs must have length = 1.
+Compute a prediction score (error rate; e.g. RMSEP) for a given model over a grid of parameter values.
+- Xtrain : Training X-data, (n, p) or (n,).
+- Ytrain : Training Y-data, (n, q) or (n,).
+- X : Query X-data, (m, p) or (m,).
+- listnn : List (m,) of indexes of the nearest neighbors of X in Xtrain.
+- listw : List (m,) of the weights of the nearest neighbors of X in Xtrain
+- fun : Function computing the model on the m neighborhoods.
+- verbose : If true, fitting information are printed.
+- kwargs : Keywords arguments (parameters) to pass in function fun. 
+
+Set only 1 combination of parameters in kwargs,
+i.e. all arguments in kwargs must have length = 1 (not collections).
 """
 function locw(Xtrain, Ytrain, X ; 
     listnn, listw = nothing, fun, verbose = false, kwargs...)
@@ -32,6 +42,10 @@ end
 
 """
     locwlv(Xtrain, Ytrain, X ; listnn, listw = nothing, fun, nlv, verbose = false, kwargs...)
+Same as [`locw`](@ref) but specific (and much faster) to LV-based models (e.g. PLSR).
+- nlv : Nb. or collection of nb. of latent variables (LVs).
+
+Argument pars must not contain nlv.
 """
 function locwlv(Xtrain, Ytrain, X ; 
     listnn, listw = nothing, fun, nlv, verbose = true, kwargs...)

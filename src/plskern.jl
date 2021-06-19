@@ -13,24 +13,29 @@ struct Plsr
 end
 
 """
+    plskern(X, Y, weights = ones(size(X, 1)) ; nlv)
     plskern!(X, Y, weights = ones(size(X, 1)) ; nlv)
-PLSR "Improved kernel algorithm #1" 
+PLSR "Improved kernel algorithm #1" (Dayal & McGegor, 1997).
+- X : matrix (n, p), or vector (n,).
+- Y : matrix (n, q), or vector (n,).
+- weights : vector (n,).
+- nlv : Nb. latent variables (LVs).
+
+X and Y are internally centered. 
+The inplace version modifies externally X and Y. 
+
 Dayal, B.S., MacGregor, J.F., 1997. Improved PLS algorithms. Journal of Chemometrics 11, 73-85.
-- X {Float64}: matrix (n, p) with p >= 1, or vector (n,)
-- Y {Float64}: matrix (n, q) with q >= 1, or vector (n,)
-- weights: vector (n,)
-- nlv: Integer > 0
-X and Y are internally centered "inplace" (for saving allocation memory),
-which modifies externally X and Y. 
 """ 
-function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
+function plskern(X, Y, weights = ones(size(X, 1)) ; nlv)
+    plskern!(copy(X), copy(Y), weights; nlv = nlv)
+end
+
+function plskern!(X, Y, weights = ones(size(X, 1)) ; nlv)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = size(X, 1)
     p = size(X, 2)
     q = size(Y, 2)
-    @assert size(Y, 1) == n "X and Y must have the same nb. of observations."
-    @assert nlv >= 1 "nlv must be >= 1."
     ## Initialization
     nlv = min(nlv, n, p)
     weights = mweights(weights)
@@ -55,7 +60,7 @@ function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
     c   = similar(X, q)
     tmp = similar(XtY)
     ## Computations
-    for a = 1:nlv
+    @inbounds for a = 1:nlv
         if q == 1
             w .= vcol(XtY, 1)
         else
@@ -63,7 +68,7 @@ function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
             u = svd!(tmp).V           # = svd(XtY').U = eigen(XtY' * XtY).vectors[with ordering]
             mul!(w, XtY, vcol(u, 1))             
         end
-        w ./= sqrt(dot(w, w))    # w .= w ./ ...                            
+        w ./= sqrt(dot(w, w))    # w .= w ./ sqrt(dot(w, w))                            
         r .= w
         if a > 1
             @inbounds for j = 1:(a - 1)
@@ -88,14 +93,11 @@ function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
 end
 
 """
-    plskern(X, Y, weights = ones(size(X, 1)) ; nlv)
-Makes a preliminary copy of X and Y and then runs plskern! on these copies.
-Inputs X and Y are not modified.
+    summary(object::Plsr, X)
+Summarize the maximal (i.e. with maximal nb. LVs) fitted model.
+- object : The fitted model.
+- X : The X-data that was used to fit the model.
 """ 
-function plskern(X, Y, weights = ones(size(X, 1)); nlv)
-    plskern!(copy(X), copy(Y), weights; nlv)
-end
-
 function Base.summary(object::Plsr, X)
     n, nlv = size(object.T)
     X = center(X, object.xmeans)
@@ -111,7 +113,14 @@ function Base.summary(object::Plsr, X)
     (explvar = explvar,)
 end
 
-function transform(object::Plsr, X; nlv::Union{Int64, Nothing} = nothing)
+""" 
+    transform(object::Plsr, X; nlv = nothing)
+Compute LVs ("scores" T) from a fitted model and a matrix X.
+- object : The maximal fitted model.
+- X : Matrix (m, p) for which LVs are computed.
+- nlv: Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
+""" 
+function transform(object::Plsr, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     T = center(X, object.xmeans) * @view(object.R[:, 1:nlv])
@@ -120,21 +129,33 @@ function transform(object::Plsr, X; nlv::Union{Int64, Nothing} = nothing)
     T
 end
 
-function coef(object::Plsr; nlv::Union{Int64, Nothing} = nothing)
+"""
+    coef(object::Plsr; nlv = nothing)
+Compute the b-coefficients of a fitted model.
+- object : The maximal fitted model.
+- nlv: Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
+
+The returned object B is a matrix (p, q). If nlv = 0, B is a matrix of zeros.
+""" 
+function coef(object::Plsr; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    beta = @view(object.C[:, 1:nlv])'
+    beta = object.C[:, 1:nlv]'
     B = @view(object.R[:, 1:nlv]) * beta
     int = object.ymeans' .- object.xmeans' * B
     (int = int, B = B)
 end
 
+
 """
-predict(object::Plsr, X ; nlv::Union{Int64, Nothing} = nothing)
-Works also for nlv = 0, 
-since coef() returns a matrix of zeros for B
-"""
-function predict(object::Plsr, X; nlv::Union{Int64, UnitRange{Int64}, Array{Int64}, Nothing} = nothing)
+    predict(object::Plsr, X; nlv = nothing)
+Compute Y-predictions from a fitted model.
+- object : The maximal fitted model.
+- X : Matrix (m, p) for which predictions are computed.
+- nlv : Nb. LVs, or collection of nb. LVs, to consider. 
+If nothing, it is the maximum nb. LVs.
+""" 
+function predict(object::Plsr, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
@@ -146,17 +167,4 @@ function predict(object::Plsr, X; nlv::Union{Int64, UnitRange{Int64}, Array{Int6
     le_nlv == 1 ? pred = pred[1] : nothing
     (pred = pred,)
 end
-
-"""
-predict_beta(object::Pls, X ; nlv::Union{Int64, Nothing} = nothing)
-Works also for nlv = 0
-"""
-function predict_beta(object::Plsr, X; nlv::Union{Int64, Nothing} = nothing)
-    a = size(object.T, 2)
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    beta = @view(object.C[:, 1:nlv])'
-    pred = (object.ymeans)' .+ transform(object, X ; nlv) * beta
-    (pred = pred,)
-end
-    
 

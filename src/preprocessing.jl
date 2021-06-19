@@ -1,11 +1,10 @@
 
 """
-```
     snv(X)
     snv!(X)
-```
+Standard-normal-variate (SNV) transformation of each row of a matrix X.
 
-Standard-normal-variate transformation.
+Each row of X is centered and scaled.
 
 The inplace function stores the output in X.
 """ 
@@ -25,17 +24,49 @@ function snv!(X)
 end
 
 """
-```
+    detrend(X)
+    detrend!(X)
+Linear de-trend transformation of each row of a matrix X. 
+- X : Matrix (n, p).
+
+The function fits a univariate linear regression to each observation
+and returns the residuals.
+
+The inplace function stores the output in X.
+""" 
+function detrend(X)
+    M = copy(X)
+    detrend!(M)
+    M
+end
+
+function detrend!(X)
+    n, p = size(X)
+    xmean = mean(1:p)
+    x = collect(1:p) 
+    xc = x .- xmean
+    xtx = dot(xc, xc)
+    yc = similar(xc)
+    @inbounds for i = 1:n
+        vy = vrow(X, i)
+        ymean = mean(vy)  
+        yc .= vy .- ymean
+        b = dot(xc, yc) / xtx
+        int = ymean - xmean * b
+        X[i, :] .= vy .- (int .+ x * b)
+    end
+end
+
+"""
     fdif(X, f = 2)
     fdif!(M, X, f = 2)
-```   
-
-Compute dicrete derivation of each row of a matrix X by finite difference. 
+Finite differences of each row of a matrix X. 
 - X : Matrix (n, p).
 - M : Pre-allocated output matrix (n, p - f + 1).
 - f : Size of the window (nb. points involved) for the finite differences.
 The range of the window (= nb. intervals of two successive colums) is f - 1.
 
+The finite differences can be used for computing discrete derivates.
 The method reduces the column-dimension: (n, p) --> (n, p - f + 1). 
 The inplace function stores the output in M.
 """ 
@@ -55,18 +86,15 @@ function fdif!(M, X, f = 2)
 end
 
 """
-```
     mavg(X, f)
-    mavg!(X, f)
-```   
-
-Smooth each row of a matrix X by moving averages.
+    mavg!(X, f)   
+Moving averages smoothing of each row of a matrix X.
 - X : Matrix (n, p).
 - f : Size (nb. points involved) of the filter.
 
 The smoothing is computed by convolution (with padding), with function imfilter of package ImageFiltering.jl.
-    The centered kernel is ones(f) / f. Each returned point is located 
-    on the center of the kernel.
+The centered kernel is ones(f) / f. Each returned point is located 
+on the center of the kernel.
 
 The inplace function stores the output in X.
 """ 
@@ -88,25 +116,21 @@ end
 
 
 """
-```
     mavg_runmean(X, f)
     mavg_runmean!(M, X, f)
-```   
-
-Smooth each row of a matrix X by moving averages.
+Moving average smoothing of each row of a matrix X.
 - X : Matrix (n, p).
 - M : Pre-allocated output matrix (n, p - f + 1).
 - f : Size (nb. points involved) of the filter.
 
 The smoothing is computed by convolution, without padding (which reduces the column dimension). 
 The function is an adaptation/simplification of function runmean (V. G. Gumennyy)
-    of package Indicators.jl. See
-    https://github.com/dysonance/Indicators.jl/blob/a449c1d68487c3a8fea0008f7abb3e068552aa08/src/run.jl.
+of package Indicators.jl. See
+https://github.com/dysonance/Indicators.jl/blob/a449c1d68487c3a8fea0008f7abb3e068552aa08/src/run.jl.
 The kernel is ones(f) / f. Each returned point is located on the 1st unit of the kernel.
-In general, this function is faster than mavg (especialy for inplace versions).
+In general, this function can be faster than mavg, especialy for inplace versions.
 
 The inplace function stores the output in M.
-
 """ 
 function mavg_runmean(X, f)
     n, p = size(X)
@@ -144,13 +168,11 @@ function runmean!(out, x, f)
     end
 end
 
-"""
-``` 
-savgk(m, pol, d)
-``` 
-Compute the Savitzky-Golay filter.
-- m : Nb. points of the half window (m >= 1) --> the global window is odd (f = 2 * m + 1): 
-    x[-m], x[-m+1], ..., x[0], ...., x[m-1], x[m].
+""" 
+    savgk(m, pol, d)
+Compute the kernel of the Savitzky-Golay filter.
+- m : Nb. points of the half window (m >= 1) --> the size of the kernel is odd (f = 2 * m + 1): 
+x[-m], x[-m+1], ..., x[0], ...., x[m-1], x[m].
 - pol : Polynom order (1 <= pol <= 2 * m).
 The case "pol = 0" (simple moving average) is not allowed by the funtion.
 - d : Derivation order (0 <= d <= pol).
@@ -175,19 +197,17 @@ function savgk(m, pol, d)
 end
 
 """
-``` 
-savgol(X, f, pol, d)
-savgol!(X, m, pol, d)
-``` 
-
-Smooth each row of a matrix X by Savitsky-Golay filtering.
+    savgol(X, f, pol, d)
+    savgol!(X, f, pol, d)
+Savitzky-Golay smoothing of each row of a matrix X.
 - X : Matrix (n, p).
 - f : Size of the filter (nb. points involved in the kernel). Must be odd and >= 3.
-    The half-window size is m = (f - 1) / 2.
+The half-window size is m = (f - 1) / 2.
 - pol : Polynom order (1 <= pol <= f - 1).
 - d : Derivation order (0 <= d <= pol).
 The smoothing is computed by convolution (with padding), with function imfilter of package ImageFiltering.jl.
 Each returned point is located on the center of the kernel.
+The kernel is computed with savgk.
 
 The inplace function stores the output in X.
 """ 
@@ -211,6 +231,6 @@ function savgol!(X, f, pol, d)
     end
 end
 
-
+###### TO DO: detrend
 
 

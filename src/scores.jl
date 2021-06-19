@@ -21,6 +21,7 @@ function err(pred, y)
     sum(r) / size(y, 1)
 end
 
+## Temporary version to be modified
 function mse(pred, y)
     zmsep = msep(pred, y)
     zsep = sep(pred, y)

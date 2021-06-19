@@ -1,8 +1,10 @@
 """
     mpars(; kwargs...)
 Returns a tuple with all the combinations
-of the parameters defined in kwargs.
-kwargs: vectors of same size.
+of the parameter values defined in kwargs.
+- kwargs : vector(s) of the parameter(s) values.
+
+Vectors in kwargs must be of same length.
 """
 mpars = function(; kwargs...)
     nam = [a.first for a in kwargs]
