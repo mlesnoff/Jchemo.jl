@@ -10,24 +10,24 @@ struct Pca
 end
 
 """
-    pcasvd(X, weights = ones(size(X, 1)) ; nlv)
-    pcasvd!(X, weights = ones(size(X, 1)) ; nlv)
+    pcasvd(X, weights = ones(size(X, 1)); nlv)
 PCA by SVD decomposition.
-- X : matrix (n, p).
-- weights : vector (n,).
-- nlv : Nb. principal components (PCs).
+* `X` : matrix (n, p).
+* `weights` : vector (n,).
+* `nlv` : Nb. principal components (PCs).
 
 Noting D a (n, n) diagonal matrix of weights for the observations (rows of X),
 the function does a SVD factorization of D^(1/2) * X, using LinearAlgebra.svd.
 
-X is internally centered. 
-The inplace version modifies externally X. 
+`X` is internally centered. 
+
+The in-place version modifies externally `X`. 
 """ 
-function pcasvd(X, weights = ones(size(X, 1)) ; nlv)
+function pcasvd(X, weights = ones(size(X, 1)); nlv)
     pcasvd!(copy(X), weights; nlv = nlv)
 end
 
-function pcasvd!(X, weights = ones(size(X, 1)) ; nlv)
+function pcasvd!(X, weights = ones(size(X, 1)); nlv)
     X = ensure_mat(X)
     n, p = size(X)
     nlv = min(nlv, n, p)
@@ -61,8 +61,8 @@ end
 """
     summary(object::Pca, X)
 Summarize the maximal (i.e. with maximal nb. PCs) fitted model.
-- object : The fitted model.
-- X : The X-data that was used to fit the model.
+* `object` : The fitted model.
+* `X` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Pca, X)
     nlv = size(object.T, 2)
@@ -95,11 +95,11 @@ end
 """ 
     transform(object::Pca, X; nlv = nothing)
 Compute PCs ("scores" T) from a fitted model and a matrix X.
-- object : The maximal fitted model.
-- X : Matrix (m, p) for which PCs are computed.
-- nlv: Nb. PCs to consider. If nothing, it is the maximum nb. PCs.
+* `object` : The maximal fitted model.
+* `X` : Matrix (m, p) for which PCs are computed.
+* `nlv` : Nb. PCs to consider. If nothing, it is the maximum nb. PCs.
 """ 
-function transform(object::Pca, X ; nlv = nothing)
+function transform(object::Pca, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     center(X, object.xmeans) * @view(object.P[:, 1:nlv])

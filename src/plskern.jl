@@ -13,24 +13,26 @@ struct Plsr
 end
 
 """
-    plskern(X, Y, weights = ones(size(X, 1)) ; nlv)
-    plskern!(X, Y, weights = ones(size(X, 1)) ; nlv)
-PLSR "Improved kernel algorithm #1" (Dayal & McGegor, 1997).
-- X : matrix (n, p), or vector (n,).
-- Y : matrix (n, q), or vector (n,).
-- weights : vector (n,).
-- nlv : Nb. latent variables (LVs).
+    plskern(X, Y, weights = ones(size(X, 1)); nlv)
+Partial Least Squared Regression (PLSR) with the "Improved kernel algorithm #1" (Dayal & McGegor, 1997).
+* `X` : matrix (n, p), or vector (n,).
+* `Y` : matrix (n, q), or vector (n,).
+* `weights` : vector (n,).
+* `nlv` : Nb. latent variables (LVs).
 
-X and Y are internally centered. 
-The inplace version modifies externally X and Y. 
+`X` and `Y` are internally centered. 
+
+The in-place version modifies externally `X` and `Y`. 
+
+## References
 
 Dayal, B.S., MacGregor, J.F., 1997. Improved PLS algorithms. Journal of Chemometrics 11, 73-85.
 """ 
-function plskern(X, Y, weights = ones(size(X, 1)) ; nlv)
+function plskern(X, Y, weights = ones(size(X, 1)); nlv)
     plskern!(copy(X), copy(Y), weights; nlv = nlv)
 end
 
-function plskern!(X, Y, weights = ones(size(X, 1)) ; nlv)
+function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = size(X, 1)
@@ -95,8 +97,8 @@ end
 """
     summary(object::Plsr, X)
 Summarize the maximal (i.e. with maximal nb. LVs) fitted model.
-- object : The fitted model.
-- X : The X-data that was used to fit the model.
+* `object` : The fitted model.
+* `X` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Plsr, X)
     n, nlv = size(object.T)
@@ -116,9 +118,9 @@ end
 """ 
     transform(object::Plsr, X; nlv = nothing)
 Compute LVs ("scores" T) from a fitted model and a matrix X.
-- object : The maximal fitted model.
-- X : Matrix (m, p) for which LVs are computed.
-- nlv: Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
+* `object` : The maximal fitted model.
+* `X` : Matrix (m, p) for which LVs are computed.
+* `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
 """ 
 function transform(object::Plsr, X; nlv = nothing)
     a = size(object.T, 2)
@@ -132,8 +134,8 @@ end
 """
     coef(object::Plsr; nlv = nothing)
 Compute the b-coefficients of a fitted model.
-- object : The maximal fitted model.
-- nlv: Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
+* `object` : The maximal fitted model.
+* `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
 
 The returned object B is a matrix (p, q). If nlv = 0, B is a matrix of zeros.
 """ 
@@ -150,9 +152,9 @@ end
 """
     predict(object::Plsr, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
-- object : The maximal fitted model.
-- X : Matrix (m, p) for which predictions are computed.
-- nlv : Nb. LVs, or collection of nb. LVs, to consider. 
+* `object` : The maximal fitted model.
+* `X` : Matrix (m, p) for which predictions are computed.
+* `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 If nothing, it is the maximum nb. LVs.
 """ 
 function predict(object::Plsr, X; nlv = nothing)
@@ -160,8 +162,8 @@ function predict(object::Plsr, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     pred = list(le_nlv)
-    for i = 1:le_nlv
-        z = coef(object ; nlv = nlv[i])
+    @inbounds for i = 1:le_nlv
+        z = coef(object; nlv = nlv[i])
         pred[i] = z.int .+ X * z.B
     end 
     le_nlv == 1 ? pred = pred[1] : nothing

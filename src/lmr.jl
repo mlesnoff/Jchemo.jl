@@ -6,20 +6,21 @@ end
 
 """
     lmrqr(X, Y, weights = ones(size(X, 1)))
-    lmrqr!(X, Y, weights = ones(size(X, 1)))
-Fit the linear model Y = f(X) (with intercept) by using
+Compute the linear model `Y` = INT + `X` * B by using
 the QR algorithm.
-
-- X : matrix (n, p), or vector (n,).
-- Y : matrix (n, q), or vector (n,).
-- weights: vector (n,).
+* `X` : matrix (n, p), or vector (n,).
+* `Y` : matrix (n, q), or vector (n,).
+* `weights` : vector (n,).
 
 Safe but little slow.
 
-X and Y are internally centered. 
-The inplace version modifies X and Y. 
+`X` and `Y` are internally centered. 
+
+The in-place version modifies `X` and `Y`. 
 """ 
-lmrqr(X, Y, weights = ones(size(X, 1))) = lmrqr!(copy(X), copy(Y), weights)
+function lmrqr(X, Y, weights = ones(size(X, 1)))
+    lmrqr!(copy(X), copy(Y), weights)
+end
 
 function lmrqr!(X, Y, weights = ones(size(X, 1)))
     X = ensure_mat(X)
@@ -37,19 +38,21 @@ end
 
 """
     lmrchol(X, Y, weights = ones(size(X, 1)))
-    lmrchol!(X, Y, weights = ones(size(X, 1)))
-Fit the linear model Y = f(X) (with intercept) by using 
+Compute the linear model `Y` = INT + `X` * B by using
 the Normal equations and a Choleski factorization.
-- X : matrix (n, p) with p >= 2 (required by function cholesky).
-- Y : matrix (n, q), or vector (n,).
-- weights: vector (n,).
+* `X` : matrix (n, p) with p >= 2 (required by function cholesky).
+* `Y` : matrix (n, q), or vector (n,).
+* `weights` : vector (n,).
 
 Faster but can be less accurate (squared element X'X).
 
-X and Y are internally centered. 
-The inplace version modifies X and Y. 
+`X` and `Y` are internally centered. 
+
+The in-place version modifies `X` and `Y`. 
 """ 
-lmrchol(X, Y, weights = ones(size(X, 1))) = lmrchol!(copy(X), copy(Y), weights)
+function lmrchol(X, Y, weights = ones(size(X, 1)))
+    lmrchol!(copy(X), copy(Y), weights)
+end
 
 function lmrchol!(X, Y, weights = ones(size(X, 1)))
     @assert size(X, 2) > 1 "Method only working for X with > 1 column."
@@ -68,22 +71,21 @@ end
 
 """
     lmrpinv(X, Y, weights = ones(size(X, 1)))
-    lmrpinv!(X, Y, weights = ones(size(X, 1)))
-Fit the linear model Y = f(X) (with intercept) by using 
+Compute the linear model `Y` = INT + `X` * B by using
 a pseudo-inverse (B = X^+ * Y). 
 
-- X : matrix (n, p).
-- Y : matrix (n, q), or vector (n,).
-- weights: vector (n,).
+* `X` : matrix (n, p).
+* `Y` : matrix (n, q), or vector (n,).
+* `weights` : vector (n,).
 
 Safe but can be slower. 
 
-X and Y are internally centered. 
-The inplace version modifies X and Y (centering). 
+`X` and `Y` are internally centered. 
+
+The in-place version modifies `X` and `Y`. 
 """ 
 function lmrpinv(X, Y, weights = ones(size(X, 1)))
-    res = lmrpinv!(copy(X), copy(Y), weights)
-    res
+    lmrpinv!(copy(X), copy(Y), weights)
 end
 
 function lmrpinv!(X, Y, weights = ones(size(X, 1)))
@@ -103,27 +105,26 @@ function lmrpinv!(X, Y, weights = ones(size(X, 1)))
 end
 
 """
-    lmrpinvn(X, Y, weights = ones(size(X, 1)))
-    lmrpinvn!(X, Y, weights = ones(size(X, 1)))
-Fit the linear model Y = f(X) (with intercept) by using 
+    lmrpinv_n(X, Y, weights = ones(size(X, 1)))
+Compute the linear model `Y` = INT + `X` * B by using
 the Normal equations and a pseudo-inverse.
 
 Safe and fast for p not too large.
-- X : matrix (n, p).
-- Y : matrix (n, q), or vector (n,).
-- weights: vector (n,).
+* `X` : matrix (n, p).
+* `Y` : matrix (n, q), or vector (n,).
+* `weights` : vector (n,).
 
 Safe but can be slower. 
 
-X and Y are internally centered. 
-The inplace version modifies X and Y. 
+`X` and `Y` are internally centered. 
+
+The in-place version modifies `X` and `Y`. 
 """ 
-function lmrpinvn(X, Y, weights = ones(size(X, 1)))
-    res = lmrpinvn!(copy(X), copy(Y), weights)
-    res
+function lmrpinv_n(X, Y, weights = ones(size(X, 1)))
+    lmrpinv_n!(copy(X), copy(Y), weights)
 end
 
-function lmrpinvn!(X, Y, weights = ones(size(X, 1)))
+function lmrpinv_n!(X, Y, weights = ones(size(X, 1)))
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     weights = mweights(weights)
@@ -141,19 +142,18 @@ end
 
 """
     lmrvec(x, Y, weights = ones(length(x)))
-    lmrvec!(x, Y, weights = ones(length(x)))
-Fit the linear model Y = f(x) (with intercept)
+Compute the linear model `Y` = INT + `x` * B   
 specifically for univariate x.
-- x : matrix (n, p).
-- Y : matrix (n, q), or vector (n,).
-- weights: vector (n,).
+* `x` : Matrix (n, 1) or vector (n,).
+* `Y` : Matrix (n, q) or vector (n,).
+* `weights` : vector (n,).
 
-x and Y are internally centered. 
-The inplace version modifies x and Y. 
+`x` and `Y` are internally centered. 
+
+The in-place version modifies `x` and `Y`. 
 """ 
 function lmrvec(x, Y, weights = ones(length(x)))
-    res = lmrvec!(copy(x), copy(Y), weights)
-    res
+    lmrvec!(copy(x), copy(Y), weights)
 end
 
 function lmrvec!(x, Y, weights = ones(length(x)))
@@ -174,7 +174,7 @@ end
 """
     coef(object::Lmr)
 Compute the coefficients of the fitted model.
-- object : The fitted model.
+* `object` : The fitted model.
 """ 
 function coef(object::Lmr)
     (int = object.int, B = object.B)
@@ -183,8 +183,8 @@ end
 """
     predict(object::Lmr, X)
 Compute the Y-predictions from the fitted model.
-- object : The fitted model.
-- X : Matrix (m, p) for which predictions are computed.
+* `object` : The fitted model.
+* `X` : Matrix (m, p) for which predictions are computed.
 """ 
 function predict(object::Lmr, X)
     z = coef(object)

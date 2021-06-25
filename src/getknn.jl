@@ -1,16 +1,16 @@
 """ 
-    getknn(Xtrain, X ; k = 1, metric = "eucl")
-Return the k nearest neighbors in Xtrain of each row of X.
-- Xtrain : Training matrix (n, p)
-- X : Query matrix (m, p)
-- metric : "eucl", "mahal"
+    getknn(Xtrain, X; k = 1, metric = "eucl")
+Return the k nearest neighbors in Xtrain of each row of `X`.
+* `Xtrain` : Training matrix (n, p)
+* `X` : Query matrix (m, p)
+* `metric` : "eucl", "mahal"
 
-Rows of Xtrain and X (not the colums) are the observations.
+Rows of `Xtrain` and `X` (not the colums) are the observations.
 
 The function uses NearestNeighbors.jl.
 The distances are also returned.
 """ 
-function getknn(Xtrain, X ; k = 1, metric = "eucl")
+function getknn(Xtrain, X; k = 1, metric = "eucl")
     Xtrain = ensure_mat(Xtrain)
     Xt = ensure_mat(X')
     p = size(Xtrain, 2)

@@ -1,14 +1,14 @@
 """
     euclsq(X, Y)
 Compute the squared Euclidean distances 
-between the rows of a matrix X and the rows of a matrix Y.
-- X : matrix (n, p)
-- Y : matrix (m, p)
+between the rows of a matrix `X` and the rows of a matrix `Y`.
+* `X` : Matrix (n, p).
+* `Y` : Matrix (m, p).
 
-Return a matrix (n, m): i, j = distance between row i of X and row j of Y.
+Return a matrix (n, m): i, j = distance between row i of `X` and row j of `Y`.
 
-X and Y must have the same number of columns.
-X and Y can be vectors or scalars if dimensions are consistent.
+`X` and `Y` must have the same number of columns.
+`X` and `Y` can be vectors or scalars if dimensions are consistent.
 """
 function euclsq(X, Y)
     Xt = ensure_mat(X')
@@ -20,15 +20,15 @@ end
     mahsq(X, Y)
     mahsq(X, Y, Sinv)
 Compute the squared Mahalanobis distances 
-between the rows of a matrix X and the rows of a matrix Y.
-- X : matrix (n, p)
-- Y : matrix (m, p)
-- Sinv: Inverse of a covariance matrix S (p, p)
+between the rows of a matrix `X` and the rows of a matrix `Y`.
+* `X` : Matrix (n, p).
+* `Y` : Matrix (m, p).
+* `Sinv` : Inverse of a covariance matrix S (p, p)
 
-Return a matrix (n, m): i, j = distance between row i of X and row j of Y.
+Return a matrix (n, m): i, j = distance between row i of `X` and row j of `Y`.
 
-X and Y must have the same number of columns.
-X and Y can be vectors or scalars if dimensions are consistent.
+`X` and `Y` must have the same number of columns.
+`X` and `Y` can be vectors or scalars if dimensions are consistent.
 """
 function mahsq(X, Y)
     X = ensure_mat(X)
@@ -50,15 +50,15 @@ end
     mahsqchol(X, Y)
     mahsqchol(X, Y, U)
 Compute the squared Mahalanobis distances (Cholesky method)
-between the rows of a matrix X and the rows of a matrix Y.
-- X : matrix (n, p)
-- Y : matrix (m, p)
-- U : Cholesky decomposition of a covariance matrix S (p, p) 
+between the rows of a matrix `X` and the rows of a matrix `Y`.
+* `X` : Matrix (n, p).
+* `Y` : Matrix (m, p).
+* `U` : Cholesky decomposition of a covariance matrix S (p, p).
 
-Return a matrix (n, m): i, j = distance between row i of X and row j of Y.
+Return a matrix (n, m): i, j = distance between row i of `X` and row j of `Y`.
 
-X and Y must have the same number of columns.
-X and Y can be vectors or scalars if dimensions are consistent.
+`X` and `Y` must have the same number of columns.
+`X` and `Y` can be vectors or scalars if dimensions are consistent.
 """
 function mahsqchol(X, Y)
     X = ensure_mat(X)
