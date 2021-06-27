@@ -1,9 +1,13 @@
-struct KrrSvd1
+struct KrrSvd
     X::Array{Float64}
     K::Array{Float64}
     U::Array{Float64}
     UtDY::Array{Float64}
     sv::Vector{Float64}
+    D::Array{Float64}
+    sqrtD::Array{Float64}
+    DKt::Array{Float64}
+    vtot::Array{Float64}
     lb::Float64
     ymeans::Vector{Float64}
     weights::Vector{Float64}
@@ -18,12 +22,16 @@ Kernel ridge regression (KRR) implemented by SVD factorization.
 * `Y` : matrix (n, q), or vector (n,).
 * `weights` : vector (n,).
 * `lb` : A value of the regularization parameter "lambda".
+* 'kern' : Type of kernel function used to compute the Gram matrices.
+    Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`.
+* `kwargs` : Named arguments to pass in the kernel function.
 
 KRR is also referred to as least squared SVM regression (LS-SVMR).
+The method is close to a particular case of SVM regression setting the epsilon coefficient 
+to zero (no marges excluding observations). 
+The difference is that a L2-norm optimization is done, instead of L1 in SVM.
 
 The kernel Gram matrices are internally centered. 
-
-The in-place version modifies `X` and `Y`. 
 
 ## References 
 
@@ -49,68 +57,67 @@ University of Toronto, Toronto, Canada. https://www.ics.uci.edu/~welling/classno
 
 """ 
 function krrsvd(X, Y, weights = ones(size(X, 1)); lb = .01, kern = "krbf", kwargs...)
-    fkern = eval(Meta.parse(kern))
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     weights = mweights(weights)
     ymeans = colmeans(Y, weights)   
-    K = fkern(X, X, kwargs...)
+    fkern = eval(Meta.parse(kern))    
+    K = fkern(X, X; kwargs...)
     D = Diagonal(weights)    
     DKt = D * K'
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- vtot .+ sum(D * DKt')
-    ## Kd = D^(1/2) * Kc * D^(1/2) 
-    ##    = U * Delta^2 * U'    
+    # Kd = D^(1/2) * Kc * D^(1/2) 
+    #    = U * Delta^2 * U'    
     sqrtD = sqrt.(D)
     Kd = sqrtD * Kc * sqrtD
     res = LinearAlgebra.svd!(Kd)
     U = res.V
     sv = sqrt.(res.S)
-    ## UtDY = U' * D^(1/2) * Y
+    # UtDY = U' * D^(1/2) * Y
     UtDY = U' * sqrtD * Y
-    dots = nothing #kwargs...
-    KrrSvd1(X, K, U, UtDY, sv, lb, ymeans, weights, kern, dots)
+    dots = kwargs
+    KrrSvd(X, K, U, UtDY, sv, D, sqrtD, DKt, vtot, lb, ymeans, weights, kern, dots)
 end
 
 """
-    coef(object::KrrSvd1; lb = nothing)
+    coef(object::KrrSvd; lb = nothing)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `lb` : A value of the regularization parameter "lambda".
 If nothing, it is the parameter stored in the fitted model.
 """ 
-function coef(object::KrrSvd1; lb = nothing)
+function coef(object::KrrSvd; lb = nothing)
     isnothing(lb) ? lb = object.lb : nothing
     eig = object.sv.^2
     z = 1 ./ (eig .+ lb^2)
     A = object.U * (Diagonal(z) * object.UtDY)
-    int = Matrix(object.ymeans')
+    q = length(object.ymeans)
+    int = reshape(object.ymeans, 1, q)
     tr = sum(eig .* z)
     (int = int, A = A, df = 1 + tr)
 end
 
-
-
-
-
-
-
-
 """
-    predict(object::RrSvd, X; lb = nothing)
+    predict(object::KrrSvd, X; lb = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The maximal fitted model.
 * `X` : Matrix (m, p) for which predictions are computed.
 * `lb` : Regularization parameter, or collection of regularization parameters, "lambda" to consider. 
 If nothing, it is the parameter stored in the fitted model.
 """ 
-function predict(object::KrrSvd1, X; lb = nothing)
+function predict(object::KrrSvd, X; lb = nothing)
     isnothing(lb) ? lb = object.lb : nothing
+    fkern = eval(Meta.parse(object.kern))
+    K = fkern(X, object.X; object.dots...)
+    DKt = object.D * K'
+    vtot = sum(DKt, dims = 1)
+    Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')
     le_lb = length(lb)
     pred = list(le_lb)
     @inbounds for i = 1:le_lb
         z = coef(object; lb = lb[i])
-        pred[i] = z.int .+ X * z.B
+        pred[i] = z.int .+ Kc * (object.sqrtD * z.A)
     end 
     le_lb == 1 ? pred = pred[1] : nothing
     (pred = pred,)

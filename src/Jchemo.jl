@@ -6,8 +6,7 @@ using ImageFiltering
 using Distances
 using NearestNeighbors
 
-include("utility.jl")
-include("center_scale.jl")
+include("utility.jl") ; include("center_scale.jl")
 include("preprocessing.jl")
 include("pcasvd.jl")
 include("pcaeigen.jl")
@@ -15,12 +14,11 @@ include("lmr.jl")
 include("rr.jl")
 include("plskern.jl")
 include("plsr_agg.jl")
-include("krr.jl")
+include("krr.jl") ; include("kplsr.jl") ; include("dkplsr.jl")
 include("locw.jl")
 include("lwplsr.jl")
 include("mpars.jl")
-include("scores.jl")
-include("gridscore.jl")
+include("scores.jl") ; include("gridscore.jl")
 include("distances.jl")
 include("getknn.jl")
 include("wdist.jl")
@@ -40,7 +38,7 @@ export
     rrsvd, rrsvd!, rrchol, rrchol!,   
     plskern, plskern!,
     plsr_agg, plsr_agg!,
-    krrsvd,
+    krrsvd, kplsr, kplsr!, dkplsr, dkplsr!
     locw, locwlv,
     lwplsr,
     transform, coef, predict,

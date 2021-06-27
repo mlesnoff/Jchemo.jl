@@ -14,7 +14,7 @@ end
 
 """
     plskern(X, Y, weights = ones(size(X, 1)); nlv)
-Partial Least Squared Regression (PLSR) with the "Improved kernel algorithm #1" (Dayal & McGegor, 1997).
+Partial Least Squares Regression (PLSR) with the "Improved kernel algorithm #1" (Dayal & McGegor, 1997).
 * `X` : matrix (n, p), or vector (n,).
 * `Y` : matrix (n, q), or vector (n,).
 * `weights` : vector (n,).
@@ -45,15 +45,16 @@ function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
     ymeans = colmeans(Y, weights)   
     center!(X, xmeans)
     center!(Y, ymeans)
+    D = Diagonal(weights)
+    XtY = X' * (D * Y)                   # = Xd' * Y = X' * D * Y  (Xd = D * X   Very costly!!)
+    # Pre-allocation
     T = similar(X, n, nlv)
     P = similar(X, p, nlv)
     W = copy(P)
     R = copy(P)
     C = similar(X, q, nlv)
     TT = similar(X, nlv)
-    D = LinearAlgebra.Diagonal(weights)
-    XtY = X' * (D * Y)                   # = Xd' * Y = X' * D * Y  (Xd = D * X   Very costly!!)
-    ## Pre-allocation of the temporary results
+    # temporary results
     t   = similar(X, n)
     dt  = similar(X, n)   
     zp  = similar(X, p)
@@ -61,7 +62,7 @@ function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
     r   = similar(X, p)
     c   = similar(X, q)
     tmp = similar(XtY)
-    ## Computations
+    # End
     @inbounds for a = 1:nlv
         if q == 1
             w .= vcol(XtY, 1)
@@ -70,7 +71,7 @@ function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
             u = svd!(tmp).V           # = svd(XtY').U = eigen(XtY' * XtY).vectors[with ordering]
             mul!(w, XtY, vcol(u, 1))             
         end
-        w ./= sqrt(dot(w, w))    # w .= w ./ sqrt(dot(w, w))                            
+        w ./= sqrt(dot(w, w))         # w .= w ./ sqrt(dot(w, w))                            
         r .= w
         if a > 1
             @inbounds for j = 1:(a - 1)
@@ -82,7 +83,7 @@ function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
         tt = dot(t, dt)               # tt = t' * dt = t' * D * t 
         mul!(c, XtY', r)
         c ./= tt                      # c = XtY' * r / tt
-        mul!(zp, X', dt)              # zp = (D * X)' * t = X' * (D*t)
+        mul!(zp, X', dt)              # zp = (D * X)' * t = X' * (D * t)
         XtY .-= mul!(tmp, zp, c')     # XtY = XtY - zp * c'
         P[:, a] .= zp ./ tt    
         T[:, a] .= t
@@ -103,8 +104,8 @@ Summarize the maximal (i.e. with maximal nb. LVs) fitted model.
 function Base.summary(object::Plsr, X)
     n, nlv = size(object.T)
     X = center(X, object.xmeans)
-    ## Could be center! but changes x
-    ## If too heavy ==> Makes summary!
+    # Could be center! but changes x
+    # If too heavy ==> Makes summary!
     sstot = sum(object.weights' * (X.^2))
     tt = object.TT
     tt_adj = vec(sum(object.P.^2, dims = 1)) .* tt
@@ -126,8 +127,8 @@ function transform(object::Plsr, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     T = center(X, object.xmeans) * @view(object.R[:, 1:nlv])
-    ## Could be center! but changes x
-    ## If too heavy ==> Makes summary!
+    # Could be center! but changes x
+    # If too heavy ==> Makes summary!
     T
 end
 
