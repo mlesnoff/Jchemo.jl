@@ -1,4 +1,4 @@
-struct RrSvd
+struct Rr
     V::Array{Float64}
     TtDY::Array{Float64}
     sv::Vector{Float64}
@@ -9,7 +9,7 @@ struct RrSvd
 end
 
 """
-    rrsvd(X, Y, weights = ones(size(X, 1)); lb = .01)
+    rr(X, Y, weights = ones(size(X, 1)); lb = .01)
 Ridge regression (RR) implemented by SVD factorization.
 * `X` : matrix (n, p), or vector (n,).
 * `Y` : matrix (n, q), or vector (n,).
@@ -34,11 +34,11 @@ inference, and prediction, 2nd ed. Springer, New York.
 Hoerl, A.E., Kennard, R.W., 1970. Ridge Regression: Biased Estimation for Nonorthogonal Problems. 
 Technometrics 12, 55-67. https://doi.org/10.1080/00401706.1970.10488634
 """ 
-function rrsvd(X, Y, weights = ones(size(X, 1)); lb = .01)
-    rrsvd!(copy(X), copy(Y), weights; lb = lb)
+function rr(X, Y, weights = ones(size(X, 1)); lb = .01)
+    rr!(copy(X), copy(Y), weights; lb = lb)
 end
 
-function rrsvd!(X, Y, weights = ones(size(X, 1)); lb = .01)
+function rr!(X, Y, weights = ones(size(X, 1)); lb = .01)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     weights = mweights(weights)
@@ -50,7 +50,7 @@ function rrsvd!(X, Y, weights = ones(size(X, 1)); lb = .01)
     res = LinearAlgebra.svd!(sqrtD * X)
     sv = res.S
     TtDY = Diagonal(sv) * res.U' * (sqrtD * Y)
-    RrSvd(res.V, TtDY, sv, lb, xmeans, ymeans, weights)
+    Rr(res.V, TtDY, sv, lb, xmeans, ymeans, weights)
 end
 
 """
@@ -100,13 +100,13 @@ function rrchol!(X, Y, weights = ones(size(X, 1)); lb = .01)
 end
 
 """
-    coef(object::RrSvd; lb = nothing)
+    coef(object::Rr; lb = nothing)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `lb` : A value of the regularization parameter "lambda".
 If nothing, it is the parameter stored in the fitted model.
 """ 
-function coef(object::RrSvd; lb = nothing)
+function coef(object::Rr; lb = nothing)
     isnothing(lb) ? lb = object.lb : nothing
     eig = object.sv.^2
     z = 1 ./ (eig .+ lb^2)
@@ -118,14 +118,14 @@ function coef(object::RrSvd; lb = nothing)
 end
 
 """
-    predict(object::RrSvd, X; lb = nothing)
+    predict(object::Rr, X; lb = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which predictions are computed.
 * `lb` : Regularization parameter, or collection of regularization parameters, "lambda" to consider. 
 If nothing, it is the parameter stored in the fitted model.
 """ 
-function predict(object::RrSvd, X; lb = nothing)
+function predict(object::Rr, X; lb = nothing)
     isnothing(lb) ? lb = object.lb : nothing
     le_lb = length(lb)
     pred = list(le_lb)

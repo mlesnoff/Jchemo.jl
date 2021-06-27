@@ -66,10 +66,10 @@ Summarize the maximal (i.e. with maximal nb. PCs) fitted model.
 """ 
 function Base.summary(object::Pca, X)
     nlv = size(object.T, 2)
-    p = size(X, 2)
     X = center(X, object.xmeans)
     sstot = sum(object.weights' * (X.^2))
-    TT = Diagonal(object.weights) * object.T.^2
+    D = Diagonal(object.weights)
+    TT = D * object.T.^2
     tt = vec(sum(TT, dims = 1))
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
@@ -77,7 +77,7 @@ function Base.summary(object::Pca, X)
     contr_ind = DataFrame(scale(TT, tt), :auto)
     xvars = colvars(X, object.weights)
     zX = scale(X, sqrt.(xvars))
-    zT = Diagonal(object.weights) * scale(object.T, sqrt.(tt))
+    zT = D * scale(object.T, sqrt.(tt))
     cor_circle = DataFrame(zX' * zT, :auto)
     z = X' * zT
     coord_var = DataFrame(z, :auto)

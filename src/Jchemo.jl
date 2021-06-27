@@ -8,8 +8,8 @@ using NearestNeighbors
 
 include("utility.jl") ; include("center_scale.jl")
 include("preprocessing.jl")
-include("pcasvd.jl")
-include("pcaeigen.jl")
+include("pcasvd.jl") ; include("pcaeigen.jl")
+include("kpca.jl")
 include("lmr.jl")
 include("rr.jl")
 include("plskern.jl")
@@ -33,12 +33,13 @@ export
     mavg, mavg!, mavg_runmean, mavg_runmean!,
     savgk, savgol, savgol!,
     pcasvd, pcasvd!, pcaeigen, pcaeigen!, pcaeigenk, pcaeigenk!,
+    kpca,
     lmrqr, lmrqr!, lmrchol, lmrchol!, lmrpinv, lmrpinv!, lmrpinv_n, lmrpinv_n!,
     lmrvec!, lmrvec,
-    rrsvd, rrsvd!, rrchol, rrchol!,   
+    rr, rr!, rrchol, rrchol!,   
     plskern, plskern!,
     plsr_agg, plsr_agg!,
-    krrsvd, kplsr, kplsr!, dkplsr, dkplsr!
+    krr, kplsr, kplsr!, dkplsr, dkplsr!,
     locw, locwlv,
     lwplsr,
     transform, coef, predict,

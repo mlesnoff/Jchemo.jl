@@ -1,4 +1,4 @@
-struct KrrSvd
+struct Krr
     X::Array{Float64}
     K::Array{Float64}
     U::Array{Float64}
@@ -16,7 +16,7 @@ struct KrrSvd
 end
 
 """
-    krrsvd(X, Y, weights = ones(size(X, 1)); lb = .01 , kern = "krbf", kwargs...)
+    krr(X, Y, weights = ones(size(X, 1)); lb = .01 , kern = "krbf", kwargs...)
 Kernel ridge regression (KRR) implemented by SVD factorization.
 * `X` : matrix (n, p), or vector (n,).
 * `Y` : matrix (n, q), or vector (n,).
@@ -56,7 +56,7 @@ Welling, M., n.d. Kernel ridge regression. Department of Computer Science,
 University of Toronto, Toronto, Canada. https://www.ics.uci.edu/~welling/classnotes/papers_class/Kernel-Ridge.pdf
 
 """ 
-function krrsvd(X, Y, weights = ones(size(X, 1)); lb = .01, kern = "krbf", kwargs...)
+function krr(X, Y, weights = ones(size(X, 1)); lb = .01, kern = "krbf", kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     weights = mweights(weights)
@@ -76,18 +76,17 @@ function krrsvd(X, Y, weights = ones(size(X, 1)); lb = .01, kern = "krbf", kwarg
     sv = sqrt.(res.S)
     # UtDY = U' * D^(1/2) * Y
     UtDY = U' * sqrtD * Y
-    dots = kwargs
-    KrrSvd(X, K, U, UtDY, sv, D, sqrtD, DKt, vtot, lb, ymeans, weights, kern, dots)
+    Krr(X, K, U, UtDY, sv, D, sqrtD, DKt, vtot, lb, ymeans, weights, kern, kwargs)
 end
 
 """
-    coef(object::KrrSvd; lb = nothing)
+    coef(object::Krr; lb = nothing)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `lb` : A value of the regularization parameter "lambda".
 If nothing, it is the parameter stored in the fitted model.
 """ 
-function coef(object::KrrSvd; lb = nothing)
+function coef(object::Krr; lb = nothing)
     isnothing(lb) ? lb = object.lb : nothing
     eig = object.sv.^2
     z = 1 ./ (eig .+ lb^2)
@@ -99,14 +98,14 @@ function coef(object::KrrSvd; lb = nothing)
 end
 
 """
-    predict(object::KrrSvd, X; lb = nothing)
+    predict(object::Krr, X; lb = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The maximal fitted model.
 * `X` : Matrix (m, p) for which predictions are computed.
 * `lb` : Regularization parameter, or collection of regularization parameters, "lambda" to consider. 
 If nothing, it is the parameter stored in the fitted model.
 """ 
-function predict(object::KrrSvd, X; lb = nothing)
+function predict(object::Krr, X; lb = nothing)
     isnothing(lb) ? lb = object.lb : nothing
     fkern = eval(Meta.parse(object.kern))
     K = fkern(X, object.X; object.dots...)
