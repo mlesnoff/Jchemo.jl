@@ -16,7 +16,7 @@ include("plskern.jl")
 include("plsr_agg.jl")
 include("krr.jl") ; include("kplsr.jl") ; include("dkplsr.jl")
 include("locw.jl")
-include("lwplsr.jl")
+include("knnr.jl") ; include("lwplsr.jl")
 include("mpars.jl")
 include("scores.jl") ; include("gridscore.jl")
 include("distances.jl")
@@ -41,7 +41,7 @@ export
     plsr_agg, plsr_agg!,
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
     locw, locwlv,
-    lwplsr,
+    knnr, lwplsr,
     transform, coef, predict,
     residreg, residcla, msep, rmsep, bias, sep, err, mse,
     mpars,

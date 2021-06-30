@@ -29,8 +29,8 @@ function getknn(Xtrain, X; k = 1, metric = "eucl")
         zXtrain = Xtrain * Uinv
         zX = X * Uinv
         ztree = BruteTree(zXtrain', Euclidean())
-        ## ztree = BruteTree(Xtraint, Mahalanobis(Sinv))
-        ## is very slow
+        # ztree = BruteTree(Xtraint, Mahalanobis(Sinv))
+        # is very slow
         ind, d = knn(ztree, zX', k, true) 
     end
     #ind = reduce(hcat, ind)'

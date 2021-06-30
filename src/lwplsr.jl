@@ -1,6 +1,3 @@
-## lwplsr: Only 1 combination for arguments (including nlv)
-## i.e. all arguments other than nlv must have length = 1
-
 struct Lwplsr
     X::Array{Float64}
     Y::Array{Float64}
@@ -50,7 +47,7 @@ This strategy corresponds to **KNN-LWPLSR** such as implemented in function `lwp
 In `lwplsr`, the dissimilarities used for computing the weights can be 
 calculated from the original X-data or after a dimension reduction (argument `nlvdis`). 
 In the last case, global PLS scores (LVs) are computed from (X, Y) and the dissimilarities are 
-calculated on these scores. For high dimensional X-data, using the Mahalanobis distance often requires 
+calculated over these scores. For high dimensional X-data, using the Mahalanobis distance often requires 
 preliminary dimensionality reduction of the data.
 
 ## References
@@ -75,7 +72,7 @@ end
 function predict(object::Lwplsr, X; nlv = nothing) 
     a = object.nlv
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
-    ## Getknn
+    # Getknn
     if(object.nlvdis == 0)
         res = getknn(object.X, X; k = object.k, metric = object.metric)
     else
@@ -83,7 +80,7 @@ function predict(object::Lwplsr, X; nlv = nothing)
         res = getknn(fm.T, transform(fm, X); k = object.k, metric = object.metric)
     end
     listw = map(d -> wdist(d, object.h), res.d)
-    ## End
+    # End
     pred = locwlv(object.X, object.Y, X; 
         listnn = res.ind, listw = listw, fun = plskern, nlv = nlv, verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
