@@ -50,7 +50,7 @@ function predict(object::Knnr, X)
     @inbounds for i = 1:m
         s = res.ind[i]
         w = listw[i] / sum(listw[i])
-        pred[i, :] .= colmeans(object.Y[s, :], w)
+        pred[i, :] .= colmeans(@view(object.Y[s, :]), w)
     end
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end

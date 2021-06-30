@@ -11,7 +11,7 @@ Compute a prediction score (error rate; e.g. RMSEP) for a given model over a gri
 involved in the calculation of the score.
 * `verbose` : If true, fitting information are printed.
 
-The scores are computed on X and Y for each combination of the grid defined in pars. 
+The score is computed on X and Y for each combination of the grid defined in pars. 
     
 The output is a dataframe.
 """
@@ -39,7 +39,7 @@ end
 Same as [`gridscore`](@ref) but specific and much faster for LV-based models (e.g. PLSR).
 * `nlv` : Nb., or collection of nb., of latent variables (LVs).
 
-Argument pars must not contain nlv.
+Argument `pars` must not contain nlv.
 """
 function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv, pars = nothing, verbose = false)
     q = size(Ytrain, 2)
@@ -48,7 +48,7 @@ function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv, pars = nothing, verb
     if isnothing(pars)
         verbose ? println("-- Nb. combinations = 0.") : nothing
         fm = fun(Xtrain, Ytrain, nlv = maximum(nlv))
-        pred = predict(fm, X, nlv = nlv).pred
+        pred = predict(fm, X; nlv = nlv).pred
         le_nlv == 1 ? pred = [pred] : nothing
         res = zeros(le_nlv, q)
         @inbounds for i = 1:le_nlv
@@ -90,3 +90,63 @@ function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv, pars = nothing, verb
     res = hcat(dat, res)
     res
 end
+
+"""
+    gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb, pars, verbose = FALSE)
+Same as [`gridscore`](@ref) but specific and much faster for LV-based models (e.g. PLSR).
+* `lb` : Value, or collection of values, of the regularization parameter "lambda".
+
+Argument `pars` must not contain lb.
+"""
+function gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb, pars = nothing, verbose = false)
+    q = size(Ytrain, 2)
+    lb = sort(unique(lb))
+    le_lb = length(lb)
+    if isnothing(pars)
+        verbose ? println("-- Nb. combinations = 0.") : nothing
+        fm = fun(Xtrain, Ytrain, lb = maximum(lb))
+        pred = predict(fm, X; lb = lb).pred
+        le_lb == 1 ? pred = [pred] : nothing
+        res = zeros(le_lb, q)
+        @inbounds for i = 1:le_lb
+            res[i, :] = score(pred[i], Y)
+        end
+        dat = DataFrame(lb = lb)
+    else
+        nco = length(pars[1])  # nb. combinations in pars
+        verbose ? println("-- Nb. combinations = ", nco) : nothing
+        res = map(values(pars)...) do v...
+            fm = fun(Xtrain, Ytrain ; lb = maximum(lb), Pair.(keys(pars), v)...)
+            pred = predict(fm, X; lb = lb).pred
+            le_lb == 1 ? pred = [pred] : nothing
+            zres = zeros(le_lb, q)
+            for i = 1:le_lb
+                zres[i, :] = score(pred[i], Y)
+            end
+            zres
+        end 
+        nco == 1 ? res = res[1] : res = reduce(vcat, res) 
+        ## Make dat
+        if le_lb == 1
+            dat = DataFrame(pars)
+        else
+            zdat = DataFrame(pars)
+            dat = list(nco)
+            @inbounds for i = 1:nco
+                dat[i] = reduce(vcat, fill(zdat[i:i, :], le_lb))
+            end
+            dat = reduce(vcat, dat)
+        end
+        zlb = repeat(lb, nco)
+        dat = hcat(dat, DataFrame(lb = zlb))
+        ## End
+    end
+    verbose ? println("-- End.") : nothing
+    namy = map(string, repeat(["y"], q), 1:q)
+    res = DataFrame(res, Symbol.(namy))
+    res = hcat(dat, res)
+    res
+end
+
+
+

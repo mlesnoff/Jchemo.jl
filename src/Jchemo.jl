@@ -45,7 +45,7 @@ export
     transform, coef, predict,
     residreg, residcla, msep, rmsep, bias, sep, err, mse,
     mpars,
-    gridscore, gridscorelv,
+    gridscore, gridscorelv, gridscorelb,
     getknn, wdist, wdist!,
     euclsq, mahsq, mahsqchol,
     krbf, kpol

@@ -1,3 +1,6 @@
+## lwplsr: Only 1 combination for arguments (including nlv)
+## i.e. all arguments other than nlv must have length = 1
+
 struct Lwplsr
     X::Array{Float64}
     Y::Array{Float64}
