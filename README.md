@@ -1,7 +1,7 @@
 # Jchemo.jl
 
 ## Dimension reduction, Regression and Discrimination for Chemometrics
-## <span style="color:grey70"> **Version 0.0-1** </span> 
+## <span style="color:grey70"> Version 0.0-0 </span> 
 ## <span style="color:green"> **NOT WORKING - UNDER CONSTRUCTION** </span> 
 
 ![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)<!--
@@ -15,19 +15,48 @@
 
 **Jchemo** provides elementary functions (mainly focusing on methods of dimension reduction or regularization for high dimensional data) to build ad'hoc pipelines for predictions in chemometrics or other domains. 
 
-Only few examples of many possible pipelines useful in chemometrics and machine learning are provided in the package.  
+Huge variety of pipelines exist in chemometrics and machine learning. Only few examples are provided in the package. The user can build some of his own pipelines with the provided elementary functions. 
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. The tuning of the prediction models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation), with specific fast versions for models based on latent variables (LVs) and ridge regularization.
 
+An example of partial least squares model fitting is given below:
+
+```julia
+n = 6 ; p = 7 ; q = 2 ; m = 3 ;
+Xtrain = rand(n, p) ; Ytrain = rand(n, q) ;
+Xtest = rand(m, p) ; Ytest = rand(m, q) ;
+
+nlv = 5 ; 
+fm = plskern(Xtrain, Ytrain; nlv = nlv)
+
+summary(fm, Xtrain).explvar
+
+transform(fm, Xtrain)
+transform(fm, Xtrain; nlv = 1)
+
+coef(fm)
+coef(fm; nlv = 2)
+
+predict(fm, Xtest).pred
+predict(fm, Xtest; nlv = 0:3).pred 
+
+pred = predict(fm, Xtest).pred ;
+msep(pred, Ytest)
+
+gridscorelv(Xtrain, Ytrain, Xtest, Ytest;
+    score = msep, fun = plskern, nlv = 0:nlv)
+```
+
+
 ## <span style="color:green"> **Available functions** </span> 
 
-**Click** [**HERE**](https://github.com/mlesnoff/Jchemo/blob/master/doc/Jchemo_functions_github.md) **to see the list of the available functions** 
+Click [**HERE**](https://github.com/mlesnoff/Jchemo/blob/master/doc/Jchemo_functions_github.md) to see the **list of the available functions**, and [**HERE**](https://github.com/mlesnoff/Jchemo/blob/master/doc/Jchemo_functions_github.md) to see **examples**.
 
-After the package installation, all the functions have a help page with documented examples. 
+Main of the examples given in the the files **.jl** are fictive, built only for illustrating the syntax. The user can replace the simulated fictive data by its own datasets.
 
 ## <span style="color:green"> **News** </span> 
 
-Click [**HERE**](https://github.com/mlesnoff/Jchemo/blob/master/inst/NEWS.md) to see **what changed** in the last version 
+Click [**HERE**](https://github.com/mlesnoff/Jchemo/blob/master/inst/NEWS.md) to see **what changed** in the last version. 
 
 ## <span style="color:green"> **Dependent packages** </span> 
 
@@ -49,7 +78,7 @@ In order to install Jchemo, run
 pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ```
 
-## <span style="color:green"> Usage </span>
+## <span style="color:green"> **Usage** </span>
 
 Run
 ```julia

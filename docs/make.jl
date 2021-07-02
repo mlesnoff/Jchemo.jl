@@ -1,3 +1,5 @@
+## NOT USED AT PRESENT
+
 push!(LOAD_PATH, joinpath(@__DIR__, ".."))
 using Documenter, Jchemo
 
