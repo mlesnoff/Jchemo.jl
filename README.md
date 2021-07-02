@@ -56,7 +56,7 @@ Main of the examples given in the the files **.jl** are fictive, built only for 
 
 ## <span style="color:green"> **News** </span> 
 
-Click [**HERE**](https://github.com/mlesnoff/Jchemo/blob/master/inst/news.md) to see **what changed** in the last version. 
+Click [**HERE**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md) to see **what changed** in the last version. 
 
 ## <span style="color:green"> **Dependent packages** </span> 
 
