@@ -102,6 +102,7 @@ Summarize the maximal (i.e. with maximal nb. LVs) fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Plsr, X)
+    println(22)
     n, nlv = size(object.T)
     X = center(X, object.xmeans)
     # Could be center! but changes x
@@ -148,7 +149,6 @@ function coef(object::Plsr; nlv = nothing)
     int = object.ymeans' .- object.xmeans' * B
     (int = int, B = B)
 end
-
 
 """
     predict(object::Plsr, X; nlv = nothing)

@@ -6,7 +6,8 @@ makedocs(
     format = Documenter.HTML(; prettyurls = get(ENV, "CI", nothing) == "true"),
     authors = "Matthieu Lesnoff",
     sitename = "Jchemo.jl",
-    pages = Any["index.md"]
+    pages = Any["index.md",
+        "regression.md"]
     # strict = true,
     # clean = true,
     # checkdocs = :exports,

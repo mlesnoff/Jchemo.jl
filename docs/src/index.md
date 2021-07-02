@@ -62,3 +62,8 @@ julia> a + b + c
 Modules = [Jchemo]
 Order   = [:function, :type]
 ```
+Pages = ["weights.md"]
+Depth = 2
+
+
+
