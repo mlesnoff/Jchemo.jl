@@ -19,7 +19,7 @@ Huge variety of pipelines exist in chemometrics and machine learning. Only few e
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. The tuning of the prediction models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation), with specific fast versions for models based on latent variables (LVs) and ridge regularization.
 
-An example of partial least squares model fitting is given below:
+An example of partial least squares model fitting and description is given below:
 
 ```julia
 n = 6 ; p = 7 ; q = 2 ; m = 3 ;
@@ -31,8 +31,8 @@ fm = plskern(Xtrain, Ytrain; nlv = nlv)
 
 summary(fm, Xtrain).explvar
 
-transform(fm, Xtrain)
-transform(fm, Xtrain; nlv = 1)
+transform(fm, Xtest)
+transform(fm, Xtest; nlv = 1)
 
 coef(fm)
 coef(fm; nlv = 2)
@@ -56,7 +56,7 @@ Main of the examples given in the the files **.jl** are fictive, built only for 
 
 ## <span style="color:green"> **News** </span> 
 
-Click [**HERE**](https://github.com/mlesnoff/Jchemo/blob/master/inst/NEWS.md) to see **what changed** in the last version. 
+Click [**HERE**](https://github.com/mlesnoff/Jchemo/blob/master/inst/news.md) to see **what changed** in the last version. 
 
 ## <span style="color:green"> **Dependent packages** </span> 
 
@@ -95,7 +95,7 @@ using Jchemo
 
 **matthieu.lesnoff@cirad.fr**
 
-#### How to cite
+### How to cite
 
 Lesnoff, M. 2021. Julia package Jchemo: Dimension reduction, Regression and Discrimination for Chemometrics. https://github.com/mlesnoff/Jchemo. CIRAD, UMR SELMET, Montpellier, France
 
