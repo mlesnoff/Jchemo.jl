@@ -5,7 +5,7 @@ struct Lmr
 end
 
 """
-    lmrqr(X, Y, weights = ones(size(X, 1)))
+    lmr(X, Y, weights = ones(size(X, 1)))
 Compute the linear model `Y` = INT + `X` * B by using
 the QR algorithm.
 * `X` : matrix (n, p), or vector (n,).
@@ -18,11 +18,11 @@ Safe but little slow.
 
 The in-place version modifies `X` and `Y`. 
 """ 
-function lmrqr(X, Y, weights = ones(size(X, 1)))
-    lmrqr!(copy(X), copy(Y), weights)
+function lmr(X, Y, weights = ones(size(X, 1)))
+    lmr!(copy(X), copy(Y), weights)
 end
 
-function lmrqr!(X, Y, weights = ones(size(X, 1)))
+function lmr!(X, Y, weights = ones(size(X, 1)))
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     weights = mweights(weights)
