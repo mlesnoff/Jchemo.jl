@@ -54,7 +54,7 @@ Click [**HERE**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/func
 
 Main of the examples given in the the files **.jl** are fictive, built only for illustrating the syntax. The user can replace the simulated fictive data by its own datasets.
 
-All the functions have a help page, for instance:
+All the functions have a help page, e.g.
 
 ```julia
 ?savgol

@@ -1,4 +1,4 @@
-#### <span style="color:#1589F0"> PCA </span>
+#### <span style="color:#1589F0"> **PCA** </span>
 
 - ***pcaeigen*** Eigen decomposition
 - ***pcaeigenk*** Eigen for wide matrices (kernel form)
@@ -14,9 +14,9 @@
 - ***xfit*** Matrix fitting from score (T) and loadings (P) matrices 
 -->
 
-#### <span style="color:#1589F0;"> REGRESSION </span>
+#### <span style="color:#1589F0;"> **REGRESSION** </span>
 
-#### Linear (LMR)
+#### **Linear** (LMR)
 
 - ***lmr*** QR algorithm
 - ***lmrchol*** Normal equations and a Choleski factorization
@@ -24,7 +24,7 @@
 - ***lmrpinv_n*** Normal equations and pseudo-inverse
 - ***lmrvec*** Univariate X
 
-#### Partial least squares (PLSR)
+#### **Partial least squares (PLSR)**
 
 - ***plskernel*** "Improved kernel #1" (Dayal & McGregor 1997)
 <!---
@@ -34,7 +34,7 @@
 - ***kplsr*** Non linear kernel PLSR (KPLSR) (Rosipal & Trejo 2001)
 - ***dkplsr*** Direct KPLSR (Bennett & Embrechts 2003)
 
-#### Ridge (RR)
+#### **Ridge (RR)**
 
 - ***rr*** Pseudo-inverse
 - ***rrchol*** Choleski factorization
@@ -46,7 +46,7 @@
 - ***svmr*** SVM regression (SVMR)
 -->
 
-#### K-nearest-neighbors (kNN)
+#### **K-nearest-neighbors (kNN)**
 
 - ***knnr*** kNNR
 - ***lwplsr*** kNN Locally weighted PLSR (KNN-LWPLSR)
@@ -85,9 +85,9 @@
 - ***lwplslda*** KNN Locally weighted PLS-LDA/QDA (KNN-LWPLS-LDA/QDA)
 -->
 
-#### <span style="color:#1589F0"> ENSEMBLIST METHODS </span>
+#### <span style="color:#1589F0"> **ENSEMBLIST METHODS** </span>
 
-##### Averaging PLS models with different numbers of LVs
+##### **Averaging PLS models with different numbers of LVs**
 
 - ***plsr_agg*** PLSR-AGG
 - ***lwplsr_agg*** KNN-LWPLSR-AGG
@@ -100,13 +100,13 @@
 
 #### <span style="color:#1589F0"> TUNING MODELS </span>
 
-#### Validation dataset
+#### **Validation dataset**
 
 - ***gridscore*** Any model
 - ***gridscorelv*** Models with LVs (faster)
 - ***gridscorelb*** Models with ridge parameter (faster)
   
-#### Cross-validation (CV) 
+#### **Cross-validation (CV)**
 
 <!---
 - ***gridcv*** Any model
@@ -114,14 +114,14 @@
 - ***gridcvlb*** Models with ridge parameter (faster)  
 -->
 
-##### Auxiliary
+##### **Auxiliary**
 
 <!---
 - ***segmkf*** Building segments for K-fold CV
 - ***segmts*** Building segments for test-set CV
 -->
 
-#### Performance scores
+#### **Performance scores**
 
 - ***msep*** MSEP
 - ***rmsep*** RMSEP
@@ -134,21 +134,21 @@
 - ***mse*** Summary for regression
 - ***err*** Classification error rate
 
-#### Heuristic  
+#### **Heuristic**  
 
 <!---  
 - ***selwold*** Wold's criterion for models with LVs  
 -->
 
-#### <span style="color:#1589F0"> SELECTION OF VARIABLES </span>
+#### <span style="color:#1589F0"> **SELECTION OF VARIABLES** </span>
 
 <!---
 - ***covsel*** COVSEL algorithm (Roger et al. 2011)
 -->
 
-#### <span style="color:#1589F0"> DATA MANAGEMENT </span>
+#### <span style="color:#1589F0"> **DATA MANAGEMENT** </span>
 
-#### Pre-processing
+#### **Pre-processing**
 
 - ***snv*** Standard-normal-deviation transformation
 - ***detrend*** Polynomial detrend
@@ -161,7 +161,7 @@
 - **eposvd** Pre-processing data by external parameter orthogonalization (EPO; Roger et al 2003) 
 -->
 
-#### Sampling
+#### **Sampling**
 
 <!---
 - ***sampks*** Kennard-Stone sampling 
@@ -169,7 +169,7 @@
 - ***sampclas*** Within-class (stratified) sampling
 -->
 
-#### Checking
+#### **Checking**
 
 <!---
 - ***checkna*** Find and count NA values in a data set
@@ -178,7 +178,7 @@
 - ***rmdupl*** Remove duplicated row observations between two data sets
 -->
 
-#### Summary
+#### **Summary**
 
 <!---
 - ***aggmean*** Centers of classes
@@ -186,7 +186,7 @@
 - ***summ*** Summary of the quantitative variables of a data set
 -->
 
-#### Multi-block
+#### **Multi-block**
 
 <!---
 - ***mblocks*** Makes a list of blocks
@@ -194,7 +194,7 @@
 - ***blockscal*** Block autoscaling
 -->
 
-#### Datasets
+#### **Datasets**
 
 <!---
 - ***asdgap** ASD spectra with vertical gaps
@@ -204,7 +204,7 @@
 - ***ozone*** Los Angeles "ozone" pollution (1976) dataset
 -->
 
-#### <span style="color:#1589F0"> GRAPHICS </span>
+#### <span style="color:#1589F0"> **GRAPHICS** </span>
 
 <!---
 - ***plotsp*** Plotting spectra, loadings, or more generally row observations of a data set
@@ -214,7 +214,7 @@
 - ***plotscore*** Plotting error rates of prediction models
 -->
 
-#### <span style="color:#1589F0"> AUXILIARY </span>
+#### <span style="color:#1589F0"> **AUXILIARY** </span>
 
 <!---
 - ***dmnorm*** Multivariate normal probability density
