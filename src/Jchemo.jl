@@ -10,21 +10,24 @@ using NearestNeighbors
 include("utility.jl") ; include("center_scale.jl")
 include("preprocessing.jl")
 include("pcasvd.jl") ; include("pcaeigen.jl")
-include("xfit.jl") ; include("scordis.jl")
 include("kpca.jl")
 include("lmr.jl")
 include("rr.jl")
-include("plskern.jl") ; include("lwplsr_agg.jl")
+include("plskern.jl") ; include("cglsr.jl") 
 include("plsr_agg.jl")
 include("krr.jl") ; include("kplsr.jl") ; include("dkplsr.jl")
 include("locw.jl")
 include("knnr.jl") ; include("lwplsr.jl")
+include("lwplsr_agg.jl")
 include("mpars.jl")
 include("scores.jl") ; include("gridscore.jl")
 include("distances.jl")
 include("getknn.jl")
 include("wdist.jl")
 include("kernels.jl")
+
+include("xfit.jl") ; include("scordis.jl")
+
 
 export 
     # Utilities
@@ -45,7 +48,7 @@ export
     lmrqr, lmrqr!, lmrchol, lmrchol!, lmrpinv, lmrpinv!, lmrpinv_n, lmrpinv_n!,
     lmrvec!, lmrvec,
     rr, rr!, rrchol, rrchol!,   
-    plskern, plskern!,
+    plskern, plskern!, cglsr, cglsr!,
     plsr_agg, plsr_agg!,
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
     # Local

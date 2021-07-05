@@ -1,53 +1,64 @@
 #### <span style="color:#1589F0"> **PCA** </span>
 
 - ***pcaeigen*** Eigen decomposition
-- ***pcaeigenk*** Eigen for wide matrices (kernel form)
+- ***pcaeigenk*** Eigen decomposition for wide matrices (kernel form)
 - ***pcasvd*** SVD decomposition
 - ***kpca*** Non linear kernel PCA  (KPCA) (Scholkopf et al. 2002)
 
 #### Auxiliary (works also for PLS)
-- ***scordis*** Score distances (SDs) for a PCA/PLS score space
-- ***odis*** Orthogonal distances (ODs) for a PCA/PLS score space
+- ***scordis*** Score distances (SDs) for a PCA or PLS score space
+- ***odis*** Orthogonal distances (ODs) for a PCA or PLS score space
 - ***xfit*** Matrix fitting from a PCA or PLS model 
-- ***xresid*** Residual matrix after fitting by a PCA or PLS model 
+- ***xresid*** Residual matrix from a PCA or PLS model 
 
 #### <span style="color:#1589F0;"> **REGRESSION** </span>
 
 #### **Linear** (LMR)
 
 - ***lmr*** QR algorithm
-- ***lmrchol*** Normal equations and a Choleski factorization
+- ***lmrchol*** Normal equations and Choleski factorization
 - ***lmrpinv*** Pseudo-inverse
 - ***lmrpinv_n*** Normal equations and pseudo-inverse
 - ***lmrvec*** Univariate X
 
+#### Ill-conditionned 
+
+- ***cglsr*** Conjugate gradient algorithm for the Normal equations (CGLSR)
+
 #### **Partial least squares (PLSR)**
 
 - ***plskernel*** "Improved kernel #1" (Dayal & McGregor 1997)
+- ***kplsr*** Non linear kernel PLSR (KPLSR) (Rosipal & Trejo 2001)
+- ***dkplsr*** Direct KPLSR (Bennett & Embrechts 2003)
 <!---
 - ***plsnipals*** Nipals
 - ***plsrannar*** Kernel version for wide matrices (Rannar et al. 1994)
 -->
-- ***kplsr*** Non linear kernel PLSR (KPLSR) (Rosipal & Trejo 2001)
-- ***dkplsr*** Direct KPLSR (Bennett & Embrechts 2003)
 
 #### **Ridge (RR)**
 
 - ***rr*** Pseudo-inverse
 - ***rrchol*** Choleski factorization
-- ***krr*** Non linear kernel RR (KRR) = Least squares SVM (LS-SVMR)
+- ***krr*** Non linear kernel RR (KRR), i.e. Least squares SVM (LS-SVMR)
 
 <!---
 #### Support vector machine
-
 - ***svmr*** SVM regression (SVMR)
 -->
 
-#### **K-nearest-neighbors (kNN)**
+#### **k-nearest-neighbors (kNN)**
 
 - ***knnr*** kNNR
-- ***lwplsr*** kNN Locally weighted PLSR (KNN-LWPLSR)
-  
+- ***lwplsr*** kNN Locally weighted PLSR (kNN-LWPLSR)
+
+#### **Ensemblist methods**
+
+#### Averaging PLSR models with different numbers of LVs
+
+- ***plsr_agg*** PLSR-AGG
+- ***lwplsr_agg*** KNN-LWPLSR-AGG  
+
+
 #### <span style="color:#1589F0"> DISCRIMINATION ANALYSIS </span>
   
 <!---
@@ -82,13 +93,11 @@
 - ***lwplslda*** KNN Locally weighted PLS-LDA/QDA (KNN-LWPLS-LDA/QDA)
 -->
 
-#### <span style="color:#1589F0"> **ENSEMBLIST METHODS** </span>
 
-##### **Averaging PLS models with different numbers of LVs**
 
-- ***plsr_agg*** PLSR-AGG
-- ***lwplsr_agg*** KNN-LWPLSR-AGG
+
 <!---
+#### <span style="color:#1589F0"> **ENSEMBLIST METHODS** </span>
 - ***plsrda_agg*** PLSRDA-AGG
 - ***lwplsrda_agg*** KNN-LWPLSR-DA-AGG
 - ***lwplslda_agg*** KNN-LWPLS-LDA-AGG
@@ -97,7 +106,7 @@
 
 #### <span style="color:#1589F0"> TUNING MODELS </span>
 
-#### **Validation dataset**
+#### **Validation**
 
 - ***gridscore*** Any model
 - ***gridscorelv*** Models with LVs (faster)
@@ -113,6 +122,8 @@
 
 ##### **Auxiliary**
 
+- ***mpars*** Expand a grid of parameter values
+
 <!---
 - ***segmkf*** Building segments for K-fold CV
 - ***segmts*** Building segments for test-set CV
@@ -124,12 +135,13 @@
 - ***rmsep*** RMSEP
 - ***sep*** SEP
 - ***bias*** Bias
+- ***mse*** Summary for regression
+- ***err*** Classification error rate
+
 <!--- 
 - ***r2*** R2
 - ***cor2*** Squared correlation
 --> 
-- ***mse*** Summary for regression
-- ***err*** Classification error rate
 
 #### **Heuristic**  
 
