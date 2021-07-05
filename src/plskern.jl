@@ -20,6 +20,9 @@ Partial Least Squares Regression (PLSR) with the "Improved kernel algorithm #1" 
 * `weights` : vector (n,).
 * `nlv` : Nb. latent variables (LVs).
 
+For the weighted version, see for instance Schaal et al. 2002, Siccard & Sabatier 2006, 
+Kim et al. 2011 and Lesnoff et al. 2020.
+
 `X` and `Y` are internally centered. 
 
 The in-place version modifies externally `X` and `Y`. 
@@ -27,6 +30,20 @@ The in-place version modifies externally `X` and `Y`.
 ## References
 
 Dayal, B.S., MacGregor, J.F., 1997. Improved PLS algorithms. Journal of Chemometrics 11, 73-85.
+
+Kim, S., Kano, M., Nakagawa, H., Hasebe, S., 2011. Estimation of active pharmaceutical ingredients 
+content using locally weighted partial least squares and statistical wavelength 
+selection. Int. J. Pharm., 421, 269-274.
+
+Lesnoff, M., Metz, M., Roger, J.M., 2020. Comparison of locally weighted 
+PLS strategies for regression and discrimination on agronomic NIR Data. 
+Journal of Chemometrics. e3209. https://onlinelibrary.wiley.com/doi/abs/10.1002/cem.3209
+
+Schaal, S., Atkeson, C., Vijayamakumar, S. 2002. Scalable techniques from nonparametric 
+statistics for the real time robot learning. Applied Intell., 17, 49-60.
+
+Sicard, E. Sabatier, R., 2006. Theoretical framework for local PLS1 regression 
+and application to a rainfall data set. Comput. Stat. Data Anal., 51, 1393-1410.
 """ 
 function plskern(X, Y, weights = ones(size(X, 1)); nlv)
     plskern!(copy(X), copy(Y), weights; nlv = nlv)
@@ -38,7 +55,6 @@ function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
     n = size(X, 1)
     p = size(X, 2)
     q = size(Y, 2)
-    ## Initialization
     nlv = min(nlv, n, p)
     weights = mweights(weights)
     xmeans = colmeans(X, weights) 
@@ -54,7 +70,6 @@ function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
     R = copy(P)
     C = similar(X, q, nlv)
     TT = similar(X, nlv)
-    # temporary results
     t   = similar(X, n)
     dt  = similar(X, n)   
     zp  = similar(X, p)

@@ -82,7 +82,7 @@ function cglsr!(X, y; nlv, reorth = true, filt = false)
     end
     fudge_thr = 1e-4
     # End
-    for j in 1:nlv
+    @inbounds for j in 1:nlv
         mul!(q, X, zp)
         alpha = g / dot(q, q)
         b .+= alpha * zp 
@@ -90,7 +90,7 @@ function cglsr!(X, y; nlv, reorth = true, filt = false)
         mul!(s, X', r)
         # Reorthogonalize s to previous s-vectors
         if reorth
-            for i in 1:j
+            @inbounds for i in 1:j
                 v = vcol(A, i)
                 s .-= dot(v, s) * v
             end

@@ -13,7 +13,8 @@ include("pcasvd.jl") ; include("pcaeigen.jl")
 include("kpca.jl")
 include("lmr.jl")
 include("rr.jl")
-include("plskern.jl") ; include("cglsr.jl") 
+include("plskern.jl") ; include("plsnipals.jl") 
+include("cglsr.jl") 
 include("plsr_agg.jl")
 include("krr.jl") ; include("kplsr.jl") ; include("dkplsr.jl")
 include("locw.jl")
@@ -27,7 +28,6 @@ include("wdist.jl")
 include("kernels.jl")
 
 include("xfit.jl") ; include("scordis.jl")
-
 
 export 
     # Utilities
@@ -48,7 +48,8 @@ export
     lmrqr, lmrqr!, lmrchol, lmrchol!, lmrpinv, lmrpinv!, lmrpinv_n, lmrpinv_n!,
     lmrvec!, lmrvec,
     rr, rr!, rrchol, rrchol!,   
-    plskern, plskern!, cglsr, cglsr!,
+    plskern, plskern!, plsnipals, plsnipals!,
+    cglsr, cglsr!,
     plsr_agg, plsr_agg!,
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
     # Local
