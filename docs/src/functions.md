@@ -28,6 +28,7 @@
 #### **Partial least squares (PLSR)**
 
 - ***plskernel*** "Improved kernel #1" (Dayal & McGregor 1997)
+- ***plsnipals*** NIPALS
 - ***kplsr*** Non linear kernel PLSR (KPLSR) (Rosipal & Trejo 2001)
 - ***dkplsr*** Direct KPLSR (Bennett & Embrechts 2003)
 <!---
