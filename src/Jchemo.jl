@@ -56,7 +56,8 @@ export
     knnr, lwplsr, lwplsr_agg,
     transform, coef, predict,
     # Validation
-    residreg, residcla, ssr, msep, rmsep, bias, sep, err, mse,
+    residreg, residcla, 
+    ssr, msep, rmsep, bias, sep, cor2, r2, rdp, rpq, mse, err,
     mpars,
     gridscore, gridscorelv, gridscorelb,
     # Distances
@@ -64,7 +65,6 @@ export
     euclsq, mahsq, mahsqchol,
     krbf, kpol
     # Not exported since surchage: summary (Base.summary)
-
 end # End-Module
 
 

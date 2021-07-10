@@ -7,6 +7,13 @@ ensure_mat(X::AbstractVector) = reshape(X, :, 1)
 ensure_mat(X::Number) = reshape([X], 1, 1)
 
 """
+    iqr(x)
+IQR.
+"""
+iqr(x) = quantile(x, .75) - quantile(x, .25)
+
+
+"""
     list(n::Integer)
 Create a Vector{Any}(undef, n).
 """  
