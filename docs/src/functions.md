@@ -5,7 +5,7 @@
 - ***pcasvd*** SVD decomposition
 - ***kpca*** Non linear kernel PCA  (KPCA) (Scholkopf et al. 2002)
 
-*Auxiliary (works also for PLS)*
+*Utility (works also for PLS)*
 - ***scordis*** Score distances (SDs) for a PCA or PLS score space
 - ***odis*** Orthogonal distances (ODs) for a PCA or PLS score space
 - ***xfit*** Matrix fitting from a PCA or PLS model 
@@ -23,7 +23,7 @@
 
 *Ill-conditionned* 
 
-- ***cglsr*** Conjugate gradient algorithm for the Normal equations (CGLSR)
+- ***cglsr*** Conjugate gradient algorithm for the Normal equations (CGLS)
 
 #### **Partial least squares (PLSR)**
 
@@ -54,11 +54,10 @@
 
 #### **Ensemblist methods**
 
-#### Averaging PLSR models with different numbers of LVs
+*Averaging PLSR models with different numbers of LVs*
 
 - ***plsr_agg*** PLSR-AGG
 - ***lwplsr_agg*** KNN-LWPLSR-AGG  
-
 
 #### <span style="color:#1589F0"> DISCRIMINATION ANALYSIS </span>
   
@@ -104,6 +103,10 @@
 
 #### <span style="color:#1589F0"> TUNING MODELS </span>
 
+#### **Grid**
+
+- ***mpars*** Expand a grid of parameter values
+
 #### **Validation**
 
 - ***gridscore*** Any model
@@ -118,10 +121,6 @@
 - ***gridcvlb*** Models with ridge parameter (faster)  
 -->
 
-##### **Auxiliary**
-
-- ***mpars*** Expand a grid of parameter values
-
 <!---
 - ***segmkf*** Building segments for K-fold CV
 - ***segmts*** Building segments for test-set CV
@@ -129,10 +128,14 @@
 
 #### **Performance scores**
 
+- ***ssr*** SSR
 - ***msep*** MSEP
 - ***rmsep*** RMSEP
 - ***sep*** SEP
 - ***bias*** Bias
+- ***r2*** R2
+- ***cor2*** Squared correlation coefficient
+- ***rpd***, ***rpq*** Ratio of performance to deviation (RPD, RPIQ) (Bellon-Maurel et al. TrAC 2010)
 - ***mse*** Summary for regression
 - ***err*** Classification error rate
 
@@ -221,7 +224,7 @@
 - ***plotscore*** Plotting error rates of prediction models
 -->
 
-#### <span style="color:#1589F0"> **AUXILIARY** </span>
+#### <span style="color:#1589F0"> **UTILITY** </span>
 
 <!---
 - ***dmnorm*** Multivariate normal probability density
