@@ -14,20 +14,19 @@ include("kpca.jl")
 include("lmr.jl")
 include("rr.jl")
 include("plskern.jl") ; include("plsnipals.jl") 
-include("cglsr.jl") 
-include("plsr_agg.jl")
+include("cglsr.jl") ; include("aicplsr.jl") 
 include("krr.jl") ; include("kplsr.jl") ; include("dkplsr.jl")
+include("plsr_agg.jl")
 include("locw.jl")
 include("knnr.jl") ; include("lwplsr.jl")
 include("lwplsr_agg.jl")
+include("xfit.jl") ; include("scordis.jl")
 include("mpars.jl")
 include("scores.jl") ; include("gridscore.jl")
 include("distances.jl")
 include("getknn.jl")
 include("wdist.jl")
 include("kernels.jl")
-
-include("xfit.jl") ; include("scordis.jl")
 
 export 
     # Utilities
@@ -49,7 +48,7 @@ export
     lmrvec!, lmrvec,
     rr, rr!, rrchol, rrchol!,   
     plskern, plskern!, plsnipals, plsnipals!,
-    cglsr, cglsr!,
+    cglsr, cglsr!, dfplsr_cg, aicplsr,
     plsr_agg, plsr_agg!,
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
     # Local
@@ -57,7 +56,7 @@ export
     knnr, lwplsr, lwplsr_agg,
     transform, coef, predict,
     # Validation
-    residreg, residcla, msep, rmsep, bias, sep, err, mse,
+    residreg, residcla, ssr, msep, rmsep, bias, sep, err, mse,
     mpars,
     gridscore, gridscorelv, gridscorelb,
     # Distances

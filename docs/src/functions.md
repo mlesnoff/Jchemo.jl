@@ -5,7 +5,7 @@
 - ***pcasvd*** SVD decomposition
 - ***kpca*** Non linear kernel PCA  (KPCA) (Scholkopf et al. 2002)
 
-#### Auxiliary (works also for PLS)
+*Auxiliary (works also for PLS)*
 - ***scordis*** Score distances (SDs) for a PCA or PLS score space
 - ***odis*** Orthogonal distances (ODs) for a PCA or PLS score space
 - ***xfit*** Matrix fitting from a PCA or PLS model 
@@ -13,7 +13,7 @@
 
 #### <span style="color:#1589F0;"> **REGRESSION** </span>
 
-#### **Linear** (LMR)
+#### **Linear (LMR)**
 
 - ***lmr*** QR algorithm
 - ***lmrchol*** Normal equations and Choleski factorization
@@ -21,7 +21,7 @@
 - ***lmrpinv_n*** Normal equations and pseudo-inverse
 - ***lmrvec*** Univariate X
 
-#### Ill-conditionned 
+*Ill-conditionned* 
 
 - ***cglsr*** Conjugate gradient algorithm for the Normal equations (CGLSR)
 
@@ -93,9 +93,6 @@
 - ***lwplsrda*** KNN Locally weighted PLSR-DA (KNN-LWPLSR-DA)
 - ***lwplslda*** KNN Locally weighted PLS-LDA/QDA (KNN-LWPLS-LDA/QDA)
 -->
-
-
-
 
 <!---
 #### <span style="color:#1589F0"> **ENSEMBLIST METHODS** </span>

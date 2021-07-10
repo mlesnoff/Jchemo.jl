@@ -2,6 +2,11 @@ residreg(pred, Y) = Y - pred
 
 residcla(pred, y) = pred .!= y
 
+function ssr(pred, Y)
+    r = residreg(pred, Y)
+    sum(r.^2, dims = 1)
+end
+
 function msep(pred, Y)
     r = residreg(pred, Y)
     reshape(colmeans(r.^2), 1, :)

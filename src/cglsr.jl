@@ -9,20 +9,20 @@ end
 """
     cglsr(X, y; nlv, reorth = true, filt = false)
 Conjugate gradient algorithm for the normal equations (CGLS) (Björck 1996).
-* `X` : matrix (n, p), or vector (n,).
-* `y` : matrix (n, q), or vector (n,).
+* `X` : X-data (n, p).
+* `y` : Univariate y-data (n).
 * `nlv` : Nb. iterations.
 * `reorth` : If `true`, a Gram-Schmidt reorthogonalization of the normal equation 
     residual vectors is done.
 * `filt` : If `true`, the filter factors are computed (output `F`).
 
-CGLS algorithm 7.4.1 Bjorck 1996, p.289
+CGLS algorithm "7.4.1" Bjorck 1996, p.289
 
-The code for re-orthogonalization, and filter factors computations (Vogel 1987, Hansen 1998), 
-is a transcription (with few adaptations) of the matlab function `cgls` 
+The code for re-orthogonalization (Hansen 1998) and filter factors (Vogel 1987, Hansen 1998) computations 
+is a transcription (with few adaptations) of the Matlab function `cgls` 
 (Saunders et al. https://web.stanford.edu/group/SOL/software/cgls/; Hansen 2008).
 
-`X` and `y` are internally centered. 
+`X` and `y` are internally centered. The model is computed with an intercept.
 
 The in-place version modifies externally `X` and `y`. 
 
@@ -75,12 +75,12 @@ function cglsr!(X, y; nlv, reorth = true, filt = false)
     if(filt)
         eig = svd(X).S.^2
         if(n < p)
-            eig = [eig ; zeros(0, p - n)]
+            eig = [eig ; zeros(p - n)]
         end
         F = similar(X, p, nlv) 
         Fd = similar(X, p) 
     end
-    fudge_thr = 1e-4
+    fudge = 1e-4
     # End
     @inbounds for j in 1:nlv
         mul!(q, X, zp)
@@ -102,7 +102,8 @@ function cglsr!(X, y; nlv, reorth = true, filt = false)
         g = copy(gnew[j])
         zp .= s .+ beta * zp
         B[:, j] .= b
-        # Compute filter factors
+        # Filter factors
+        # fudge threshold is used to prevent filter factors from exploding
         if filt
             if j == 1
                 F[:, 1] .= alpha * eig
@@ -112,7 +113,7 @@ function cglsr!(X, y; nlv, reorth = true, filt = false)
                 Fd .= eig - eig .* F[:, j] .+ beta * Fd
             end
             if j > 2
-                u = (abs.(F[:, j - 1] .- 1) .< fudge_thr) .* (abs.(F[:, j - 2] .- 1) .< fudge_thr)
+                u = (abs.(F[:, j - 1] .- 1) .< fudge) .* (abs.(F[:, j - 2] .- 1) .< fudge)
                 u = findall(u)
                 if length(u) > 0
                     F[u, j] .= ones(length(u))
@@ -142,7 +143,7 @@ end
     predict(object::Cglsr, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The maximal fitted model.
-* `X` : Matrix (m, p) for which predictions are computed.
+* `X` : X-data (m, p) for which predictions are computed.
 * `nlv` : Nb. iterations, or collection of nb. iterations, to consider. 
 If nothing, it is the maximum nb. iterations.
 """ 

@@ -67,14 +67,14 @@ Click [**HERE**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news
 
 **Jchemo** is dependent to the following packages:
 
-| Package | Which use in Jchemo? |
-|---|---|
-| LinearAlgebra | ... |
-| Statistics | ... |
-| Distributions | ... |
-| ImageFiltering | ... |
-| Distances | ... |
-| NearestNeighbors | ... |
+| Package |
+|---|
+| LinearAlgebra |
+| Statistics |
+| Distributions |
+| ImageFiltering | 
+| Distances | 
+| NearestNeighbors | 
 
 ## <span style="color:green"> **Installation** </span> 
 
