@@ -1,17 +1,19 @@
 """
-    locw(Xtrain, Ytrain, X ; listnn, listw = nothing, fun, verbose = false, kwargs...)
-Compute a prediction score (error rate; e.g. RMSEP) for a given model over a grid of parameter values.
-* `Xtrain` : Training X-data, (n, p) or (n,).
-* `Ytrain` : Training Y-data, (n, q) or (n,).
-* `X` : Query X-data, (m, p) or (m,).
-* `listnn` : List (m,) of indexes of the nearest neighbors of X in Xtrain.
-* `listw` : List (m,) of the weights of the nearest neighbors of X in Xtrain
+    locw(Xtrain, Ytrain, X; listnn, listw = nothing, fun, verbose = false, kwargs...)
+Compute predictions for a given kNN model.
+* `Xtrain` : Training X-data.
+* `Ytrain` : Training Y-data.
+* `X` : X-data (m observations) to predict.
+* `listnn` : List of m vectors of indexes.
+* `listw` : List of m vectors of weights.
 * `fun` : Function computing the model on the m neighborhoods.
 * `verbose` : If true, fitting information are printed.
 * `kwargs` : Keywords arguments to pass in function fun. 
 
-Set only 1 combination of parameters in kwargs,
-i.e. all arguments in kwargs must have length = 1 (not collections).
+Each component i of `listnn` and `listw` contains the indexes and weights, respectively,
+of the nearest neighbors of x_i in Xtrain. The sizes of the neighborhood for i = 1,...,m can be different.
+
+All the arguments in kwargs must have length = 1 (not collections).
 """
 function locw(Xtrain, Ytrain, X ; 
     listnn, listw = nothing, fun, verbose = false, kwargs...)

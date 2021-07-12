@@ -1,13 +1,15 @@
 """
     dfplsr_cg(X, y; nlv, reorth = true)
-Compute PLSR model complexity (df) with the CGLS algorithm.
-* `X` : X-data (n, p).
-* `y` : Univariate y-data (n).
+Compute the model complexity (df) of PLSR models with the CGLS algorithm.
+* `X` : X-data.
+* `y` : Univariate Y-data.
 * `nlv` : Nb. latent variables (LVs).
 * `reorth` : If `true`, a Gram-Schmidt reorthogonalization of the normal equation 
     residual vectors is done.
 
 The number of degrees of freedom (df) of the model is returned for 0, 1, ..., nlv LVs.
+
+`X` and `y` are internally centered. The models are computed with an intercept. 
 
 ## References
 
@@ -29,14 +31,16 @@ end
 
 """
     aicplsr(X, y; nlv, reorth = true, filt = false)
-Akaike's (AIC) and Mallows's (Cp) criteria for univariate PLSR models.
-* `X` : X-data (n, p).
-* `y` : Univariate y-data (n).
+Compute the Akaike's (AIC) and Mallows's (Cp) criteria for univariate PLSR models.
+* `X` : X-data.
+* `y` : Univariate Y-data.
 * `nlv` : Nb. latent variables (LVs).
 * `reorth` : If `true`, a Gram-Schmidt reorthogonalization of the normal equation 
     residual vectors is done.
 
 For the methodolgy, see Hansen 1998, 2008 and Lesnoff et al. Submitted.
+
+`X` and `y` are internally centered. The models are computed with an intercept. 
 
 ## References
 

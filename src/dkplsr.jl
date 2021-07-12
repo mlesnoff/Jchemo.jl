@@ -8,20 +8,18 @@ end
 
 """
     dkplsr(X, Y, weights = ones(size(X, 1)); nlv , kern = "krbf", kwargs...)
-Direct Kernel Partial Least Squares regression (DKPLSR) (Bennett & Embrechts 2003).
+Direct kernel partial least squares regression (DKPLSR) (Bennett & Embrechts 2003).
 
-* `X` : matrix (n, p), or vector (n,).
-* `Y` : matrix (n, q), or vector (n,).
-* `weights` : vector (n,).
-* `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
-* 'kern' : Type of kernel function used to compute the Gram matrices.
+* `X` : X-data.
+* `Y` : Y-data.
+* `weights` : Weights of the observations.
+* `nlv` : Nb. latent variables (LVs) to consider. 
+* 'kern' : Type of kernel used to compute the Gram matrices.
     Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`).
 * `kwargs` : Named arguments to pass in the kernel function.
 
 The method builds kernel Gram matrices and then runs a usual PLSR algorithm on them. This is faster 
-(but not equivalent) to the "true" NIPALS KPLSR algorithm such as described in Rosipal & Trejo (2001).
-
-The in-place version modifies `Y`.
+(but not equivalent) to the "true" NIPALS KPLSR algorithm described in Rosipal & Trejo (2001).
 
 ## References 
 
@@ -46,9 +44,9 @@ end
 
 """ 
     transform(object::Dkplsr, X; nlv = nothing)
-Compute LVs ("scores" T) from a fitted model and a matrix X.
+Compute LVs (score matrix "T") from a fitted model and X-data.
 * `object` : The maximal fitted model.
-* `X` : Matrix (m, p) for which LVs are computed.
+* `X` : X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
 """ 
 function transform(object::Dkplsr, X; nlv = nothing)
@@ -62,7 +60,7 @@ end
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
-If nothing, it is the maximum nb. LVs.
+    If nothing, it is the maximum nb. LVs.
 """ 
 function coef(object::Dkplsr; nlv = nothing)
     coef(object.fm; nlv = nlv)
@@ -70,11 +68,11 @@ end
 
 """
     predict(object::Dkplsr, X; nlv = nothing)
-Compute Y-predictions from a fitted model.
+Compute Y-predictions from a fitted model and X-data.
 * `object` : The maximal fitted model.
-* `X` : Matrix (m, p) for which predictions are computed.
+* `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
-If nothing, it is the maximum nb. LVs.
+    If nothing, it is the maximum nb. LVs.
 """ 
 function predict(object::Dkplsr, X; nlv = nothing)
     fkern = eval(Meta.parse(object.kern))

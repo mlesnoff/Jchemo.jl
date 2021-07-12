@@ -1,14 +1,12 @@
 """
     euclsq(X, Y)
 Compute the squared Euclidean distances 
-between the rows of a matrix `X` and the rows of a matrix `Y`.
-* `X` : Matrix (n, p).
-* `Y` : Matrix (m, p).
+between the observations (rows) of `X` and `Y`.
+* `X` : Data.
+* `Y` : Data.
 
-Return a matrix (n, m): i, j = distance between row i of `X` and row j of `Y`.
-
-`X` and `Y` must have the same number of columns.
-`X` and `Y` can be vectors or scalars if dimensions are consistent.
+When `X` (n, p) and `Y` (m, p), it returns an object (n, m) with:
+* i, j = distance between row i of `X` and row j of `Y`.
 """
 function euclsq(X, Y)
     Xt = ensure_mat(X')
@@ -20,15 +18,14 @@ end
     mahsq(X, Y)
     mahsq(X, Y, Sinv)
 Compute the squared Mahalanobis distances 
-between the rows of a matrix `X` and the rows of a matrix `Y`.
-* `X` : Matrix (n, p).
-* `Y` : Matrix (m, p).
-* `Sinv` : Inverse of a covariance matrix S (p, p)
+between the observations (rows) of `X` and `Y`.
+* `X` : Data.
+* `Y` : Data.
+* `Sinv` : Inverse of a covariance matrix S.
+    If not given, this is the uncorrected covariance matrix of `X`.
 
-Return a matrix (n, m): i, j = distance between row i of `X` and row j of `Y`.
-
-`X` and `Y` must have the same number of columns.
-`X` and `Y` can be vectors or scalars if dimensions are consistent.
+When `X` (n, p) and `Y` (m, p), it returns an object (n, m) with:
+* i, j = distance between row i of `X` and row j of `Y`.
 """
 function mahsq(X, Y)
     X = ensure_mat(X)
@@ -49,16 +46,15 @@ end
 """
     mahsqchol(X, Y)
     mahsqchol(X, Y, U)
-Compute the squared Mahalanobis distances (Cholesky method)
-between the rows of a matrix `X` and the rows of a matrix `Y`.
-* `X` : Matrix (n, p).
-* `Y` : Matrix (m, p).
-* `U` : Cholesky decomposition of a covariance matrix S (p, p).
+Compute the squared Mahalanobis distances (with a Cholesky factorization)
+between the observations (rows) of `X` and `Y`.
+* `X` : Data.
+* `Y` : Data.
+* `U` : Cholesky factorization of a covariance matrix S.
+    If not given, the factorization is done on S, the uncorrected covariance matrix of `X`.
 
-Return a matrix (n, m): i, j = distance between row i of `X` and row j of `Y`.
-
-`X` and `Y` must have the same number of columns.
-`X` and `Y` can be vectors or scalars if dimensions are consistent.
+When `X` (n, p) and `Y` (m, p), it returns an object (n, m) with:
+* i, j = distance between row i of `X` and row j of `Y`.
 """
 function mahsqchol(X, Y)
     X = ensure_mat(X)

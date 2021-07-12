@@ -17,21 +17,19 @@ end
 
 """
     kplsr(X, Y, weights = ones(size(X, 1)); nlv , kern = "krbf", kwargs...)
-Kernel Partial Least Squares regression (KPLSR) implemented with a NIPALS algorithm (Rosipal & Trejo, 2001).
+Kernel partial least squares regression (KPLSR) implemented with a NIPALS algorithm (Rosipal & Trejo, 2001).
 
-* `X` : matrix (n, p), or vector (n,).
-* `Y` : matrix (n, q), or vector (n,).
-* `weights` : vector (n,).
-* `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
-* 'kern' : Type of kernel function used to compute the Gram matrices.
+* `X` : X-data.
+* `Y` : Y-data.
+* `weights` : Weights of the observations.
+* `nlv` : Nb. latent variables (LVs) to consider. 
+* 'kern' : Type of kernel used to compute the Gram matrices.
     Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`).
 * `kwargs` : Named arguments to pass in the kernel function.
 
-This algorithm becomes slow for *n* > 1000.
+This algorithm becomes slow for n > 1000.
 
 The kernel Gram matrices are internally centered. 
-
-The in-place version modifies `Y`.
 
 ## References 
 
@@ -111,9 +109,9 @@ end
 
 """ 
     transform(object::Kplsr, X; nlv = nothing)
-Compute LVs ("scores" T) from a fitted model and a matrix X.
+Compute LVs (score matrix "T") from a fitted model and X-data.
 * `object` : The maximal fitted model.
-* `X` : Matrix (m, p) for which LVs are computed.
+* `X` : X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
 """ 
 function transform(object::Kplsr, X; nlv = nothing)
@@ -133,7 +131,7 @@ end
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
-If nothing, it is the maximum nb. LVs.
+    If nothing, it is the maximum nb. LVs.
 """ 
 function coef(object::Kplsr; nlv = nothing)
     a = size(object.T, 2)
@@ -148,7 +146,7 @@ end
     predict(object::Kplsr, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The maximal fitted model.
-* `X` : Matrix (m, p) for which predictions are computed.
+* `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 If nothing, it is the maximum nb. LVs.
 """ 

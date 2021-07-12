@@ -9,22 +9,20 @@ end
 """
     cglsr(X, y; nlv, reorth = true, filt = false)
 Conjugate gradient algorithm for the normal equations (CGLS) (Björck 1996).
-* `X` : X-data (n, p).
-* `y` : Univariate y-data (n).
-* `nlv` : Nb. iterations.
+* `X` : X-data.
+* `y` : Univariate Y-data.
+* `nlv` : Nb. CG iterations.
 * `reorth` : If `true`, a Gram-Schmidt reorthogonalization of the normal equation 
     residual vectors is done.
-* `filt` : If `true`, the filter factors are computed (output `F`).
+* `filt` : If `true`, the CG filter factors are computed (output `F`).
 
 CGLS algorithm "7.4.1" Bjorck 1996, p.289
 
-The code for re-orthogonalization (Hansen 1998) and filter factors (Vogel 1987, Hansen 1998) computations 
+The code computing the re-orthogonalization (Hansen 1998) and filter factors (Vogel 1987, Hansen 1998) 
 is a transcription (with few adaptations) of the Matlab function `cgls` 
 (Saunders et al. https://web.stanford.edu/group/SOL/software/cgls/; Hansen 2008).
 
 `X` and `y` are internally centered. The model is computed with an intercept.
-
-The in-place version modifies externally `X` and `y`. 
 
 ## References
 
@@ -143,7 +141,7 @@ end
     predict(object::Cglsr, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The maximal fitted model.
-* `X` : X-data (m, p) for which predictions are computed.
+* `X` : X-data for which predictions are computed.
 * `nlv` : Nb. iterations, or collection of nb. iterations, to consider. 
 If nothing, it is the maximum nb. iterations.
 """ 

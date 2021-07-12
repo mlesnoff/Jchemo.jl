@@ -3,7 +3,7 @@
 Compute the score distances (SDs) from a PCA or PLS model
 
 * `object` : The fitted model.
-* `X` : Matrix (m, p) to be approximatred from the model.
+* `X` : X-data for which distances are computed. Distances are also computed for the training X-data.
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, it is the maximum nb. of components.
 * `rob` : If true, the moment estimation of the distance cutoff is robustified. 
     This may be relevant after robust PCA or PLS on small data sets containing extreme values.
@@ -13,7 +13,7 @@ Compute the score distances (SDs) from a PCA or PLS model
 SD is the Mahalanobis distance of the projection of a row observation on the 
 score plan to the center of the score space.
 
-A cutoff is computed using a moment estimation of the parameters of 
+A cutoff is computed from the training using a moment estimation of the parameters of 
 a Chi-squared distrbution for SD^2 (see e.g. Pomerantzev 2008). 
 In the output, column dstand is a standardized distance defined as SD / cutoff. 
 A value dstand > 1 can be considered as extreme.
@@ -64,8 +64,8 @@ end
 Compute the orthogonal distances (ODs) from a PCA or PLS model
 
 * `object` : The fitted model.
-* `Xtrain` : Matrix (n, p) that was used to fit the model.
-* `X` : Matrix (m, p) to be approximatred from the model.
+* `Xtrain` : Training X-data that was used to fit the model.
+* `X` : X-data for which distances are computed. Distances are also computed for the training X-data.
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, it is the maximum nb. of components.
 * `rob` : If true, the moment estimation of the distance cutoff is robustified. 
     This may be relevant after robust PCA or PLS on small data sets containing extreme values.
@@ -75,7 +75,7 @@ Compute the orthogonal distances (ODs) from a PCA or PLS model
 OD is the Euclidean distance of a row observation to its projection to the score plan 
 (see e.g. Hubert et al. 2005, Van Branden & Hubert 2005, p. 66; Varmuza & Filzmoser, 2009, p. 79).
 
-A cutoff is computed using a moment estimation of the parameters of a 
+A cutoff is computed from the training using a moment estimation of the parameters of a 
 Chi-squared distrbution for OD^2 (see Nomikos & MacGregor 1995, and Pomerantzev 2008). 
 In the output, column dstand is a standardized distance defined as OD / cutoff. 
 A value dstand > 1 can be considered as extreme.

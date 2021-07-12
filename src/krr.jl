@@ -18,18 +18,19 @@ end
 """
     krr(X, Y, weights = ones(size(X, 1)); lb = .01 , kern = "krbf", kwargs...)
 Kernel ridge regression (KRR) implemented by SVD factorization.
-* `X` : matrix (n, p), or vector (n,).
-* `Y` : matrix (n, q), or vector (n,).
-* `weights` : vector (n,).
+* `X` : X-data.
+* `Y` : Y-data.
+* `weights` : Weights of the observations.
 * `lb` : A value of the regularization parameter "lambda".
-* 'kern' : Type of kernel function used to compute the Gram matrices.
+* 'kern' : Type of kernel used to compute the Gram matrices.
     Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`.
 * `kwargs` : Named arguments to pass in the kernel function.
 
 KRR is also referred to as least squared SVM regression (LS-SVMR).
-The method is close to a particular case of SVM regression setting the epsilon coefficient 
-to zero (no marges excluding observations). 
-The difference is that a L2-norm optimization is done, instead of L1 in SVM.
+The method is close to the particular case of SVM regression 
+where there is novmarges excluding the observations (epsilon coefficient 
+set to zero). The difference is that a L2-norm optimization is done, 
+instead of L1 in SVM.
 
 The kernel Gram matrices are internally centered. 
 
@@ -84,7 +85,7 @@ end
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `lb` : A value of the regularization parameter "lambda".
-If nothing, it is the parameter stored in the fitted model.
+    If nothing, it is the parameter stored in the fitted model.
 """ 
 function coef(object::Krr; lb = nothing)
     isnothing(lb) ? lb = object.lb : nothing
@@ -101,9 +102,9 @@ end
     predict(object::Krr, X; lb = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The maximal fitted model.
-* `X` : Matrix (m, p) for which predictions are computed.
+* `X` : X-data for which predictions are computed.
 * `lb` : Regularization parameter, or collection of regularization parameters, "lambda" to consider. 
-If nothing, it is the parameter stored in the fitted model.
+    If nothing, it is the parameter stored in the fitted model.
 """ 
 function predict(object::Krr, X; lb = nothing)
     isnothing(lb) ? lb = object.lb : nothing

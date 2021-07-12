@@ -6,17 +6,14 @@ end
 
 """
     lmr(X, Y, weights = ones(size(X, 1)))
-Compute the linear model `Y` = INT + `X` * B by using
-the QR algorithm.
-* `X` : matrix (n, p), or vector (n,).
-* `Y` : matrix (n, q), or vector (n,).
-* `weights` : vector (n,).
+Compute a linear model by using the QR algorithm.
+* `X` : X-data.
+* `Y` : Y-data.
+* `weights` : Weights of the observations.
 
-Safe but little slow.
+Safe but little slower.
 
-`X` and `Y` are internally centered. 
-
-The in-place version modifies `X` and `Y`. 
+`X` and `Y` are internally centered. The model is computed with an intercept.
 """ 
 function lmr(X, Y, weights = ones(size(X, 1)))
     lmr!(copy(X), copy(Y), weights)
@@ -38,17 +35,14 @@ end
 
 """
     lmrchol(X, Y, weights = ones(size(X, 1)))
-Compute the linear model `Y` = INT + `X` * B by using
-the Normal equations and a Choleski factorization.
-* `X` : matrix (n, p) with p >= 2 (required by function cholesky).
-* `Y` : matrix (n, q), or vector (n,).
-* `weights` : vector (n,).
+Compute a linear model using the Normal equations and a Choleski factorization.
+* `X` : X-data, with nb. columns >= 2 (required by function cholesky).
+* `Y` : Y-data.
+* `weights` : Weights of the observations.
 
 Faster but can be less accurate (squared element X'X).
 
-`X` and `Y` are internally centered. 
-
-The in-place version modifies `X` and `Y`. 
+`X` and `Y` are internally centered. The model is computed with an intercept.
 """ 
 function lmrchol(X, Y, weights = ones(size(X, 1)))
     lmrchol!(copy(X), copy(Y), weights)
@@ -71,18 +65,14 @@ end
 
 """
     lmrpinv(X, Y, weights = ones(size(X, 1)))
-Compute the linear model `Y` = INT + `X` * B by using
-a pseudo-inverse (B = X^+ * Y). 
-
-* `X` : matrix (n, p).
-* `Y` : matrix (n, q), or vector (n,).
-* `weights` : vector (n,).
+Compute a linear model by using a pseudo-inverse. 
+* `X` : X-data.
+* `Y` : Y-data.
+* `weights` : Weights of the observations.
 
 Safe but can be slower. 
 
-`X` and `Y` are internally centered. 
-
-The in-place version modifies `X` and `Y`. 
+`X` and `Y` are internally centered. The model is computed with an intercept. 
 """ 
 function lmrpinv(X, Y, weights = ones(size(X, 1)))
     lmrpinv!(copy(X), copy(Y), weights)
@@ -106,19 +96,14 @@ end
 
 """
     lmrpinv_n(X, Y, weights = ones(size(X, 1)))
-Compute the linear model `Y` = INT + `X` * B by using
-the Normal equations and a pseudo-inverse.
+Compute a linear model by using the Normal equations and a pseudo-inverse.
+* `X` : X-data.
+* `Y` : Y-data.
+* `weights` : Weights of the observations.
 
 Safe and fast for p not too large.
-* `X` : matrix (n, p).
-* `Y` : matrix (n, q), or vector (n,).
-* `weights` : vector (n,).
 
-Safe but can be slower. 
-
-`X` and `Y` are internally centered. 
-
-The in-place version modifies `X` and `Y`. 
+`X` and `Y` are internally centered. The model is computed with an intercept. 
 """ 
 function lmrpinv_n(X, Y, weights = ones(size(X, 1)))
     lmrpinv_n!(copy(X), copy(Y), weights)
@@ -142,15 +127,12 @@ end
 
 """
     lmrvec(x, Y, weights = ones(length(x)))
-Compute the linear model `Y` = INT + `x` * B   
-specifically for univariate x.
-* `x` : Matrix (n, 1) or vector (n,).
-* `Y` : Matrix (n, q) or vector (n,).
-* `weights` : vector (n,).
+Compute a linear model specifically for univariate x.
+* `x` : Univariate X-data.
+* `Y` : Y-data.
+* `weights` : Weights of the observations.
 
-`x` and `Y` are internally centered. 
-
-The in-place version modifies `x` and `Y`. 
+`x` and `Y` are internally centered. The model is computed with an intercept. 
 """ 
 function lmrvec(x, Y, weights = ones(length(x)))
     lmrvec!(copy(x), copy(Y), weights)
@@ -184,7 +166,7 @@ end
     predict(object::Lmr, X)
 Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
-* `X` : Matrix (m, p) for which predictions are computed.
+* `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Lmr, X)
     z = coef(object)

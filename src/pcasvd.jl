@@ -11,17 +11,15 @@ end
 
 """
     pcasvd(X, weights = ones(size(X, 1)); nlv)
-PCA by SVD decomposition.
-* `X` : matrix (n, p).
-* `weights` : vector (n,).
+PCA by SVD factorization.
+* `X` : X-data.
+* `weights` : Weights of the observations.
 * `nlv` : Nb. principal components (PCs).
 
 Noting D a (n, n) diagonal matrix of weights for the observations (rows of X),
-the function does a SVD factorization of D^(1/2) * X, using LinearAlgebra.svd.
+the function makes a SVD factorization of D^(1/2) * X, using LinearAlgebra.svd.
 
-`X` is internally centered. 
-
-The in-place version modifies externally `X`. 
+`X` is internally centered.  
 """ 
 function pcasvd(X, weights = ones(size(X, 1)); nlv)
     pcasvd!(copy(X), weights; nlv = nlv)
@@ -94,9 +92,9 @@ end
 
 """ 
     transform(object::Pca, X; nlv = nothing)
-Compute PCs ("scores" T) from a fitted model and a matrix X.
+Compute PCs (scores matrix "T") from a fitted model and X-data.
 * `object` : The maximal fitted model.
-* `X` : Matrix (m, p) for which PCs are computed.
+* `X` : X-data for which PCs are computed.
 * `nlv` : Nb. PCs to consider. If nothing, it is the maximum nb. PCs.
 """ 
 function transform(object::Pca, X; nlv = nothing)

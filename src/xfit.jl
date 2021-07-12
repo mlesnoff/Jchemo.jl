@@ -1,14 +1,11 @@
 """
     xfit(object::Union{Pca, Plsr}, X; nlv = nothing)
 Matrix fitting from a PCA or PLS model
-
 * `object` : The fitted model.
-* `X` : Matrix (m, p) to be approximatred from the model.
+* `X` : X-data to be approximatred from the model.
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, it is the maximum nb. of components.
 
-Function `xfit` calculates an approximate of matrix `X` (X_fit) from a PCA or PLS fitted on `X`.
-
-The in-place version modifies externally `X`. 
+Function `xfit` computes an approximate of matrix `X` (X_fit) from a PCA or PLS fitted on `X`.
 """ 
 function xfit(object::Union{Pca, Plsr}, X; nlv = nothing)
     xfit!(object, copy(X); nlv = nlv)
@@ -33,14 +30,11 @@ end
 """
     xresid(object::Union{Pca, Plsr}, X; nlv = nothing)
 Residual matrix after fitting by a PCA or PLS model
-
 * `object` : The fitted model.
-* `X` : Matrix (m, p) for which the residuals have to be computed.
+* `X` : X-data for which the residuals have to be computed.
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, it is the maximum nb. of components.
 
 Function `xresid` computes the residual matrix E = X - X_fit.
-
-The in-place version modifies externally `X`. 
 """ 
 function xresid(object::Union{Pca, Plsr}, X; nlv = nothing)
     xresid!(object, copy(X); nlv = nlv)
@@ -56,10 +50,6 @@ function xresid!(object::Union{Pca, Plsr}, X; nlv = nothing)
     end
     X
 end
-
-
-
-
 
 
 

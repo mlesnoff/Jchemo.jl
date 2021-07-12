@@ -1,21 +1,19 @@
 """
     plskern(X, Y, weights = ones(size(X, 1)); nlv)
 Partial Least Squares Regression (PLSR) with the NIPALS algorithm.
-* `X` : matrix (n, p), or vector (n,).
-* `Y` : matrix (n, q), or vector (n,).
-* `weights` : vector (n,).
-* `nlv` : Nb. latent variables (LVs).
+* `X` : X-data.
+* `Y` : Y-data.
+* `weights` : Weights of the observations.
+* `nlv` : Nb. latent variables (LVs) to consider.
 
 NIPALS algorithm (e.g. Tenenhaus 1998, Wold 2002). In the function, the usual 
-PLS2 NIPALS iterative is replaced by a direct calculation of the weights 
-vector w by SVD decomposition of matrix X'Y (Hoskuldsson 1988 p.213).
+PLS2 NIPALS iterations are replaced by a direct computation of the PLS weights (`w`) 
+by SVD decomposition of matrix X'Y (Hoskuldsson 1988 p.213).
 
-For the weighted version, see for instance Schaal et al. 2002, Siccard & Sabatier 2006, 
+For the weighting (`weights`), see in particular Schaal et al. 2002, Siccard & Sabatier 2006, 
 Kim et al. 2011 and Lesnoff et al. 2020.
 
 `X` and `Y` are internally centered. 
-
-The in-place version modifies externally `X` and `Y`. 
 
 ## References
 

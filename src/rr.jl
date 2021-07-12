@@ -11,14 +11,12 @@ end
 """
     rr(X, Y, weights = ones(size(X, 1)); lb = .01)
 Ridge regression (RR) implemented by SVD factorization.
-* `X` : matrix (n, p), or vector (n,).
-* `Y` : matrix (n, q), or vector (n,).
-* `weights` : vector (n,).
+* `X` : X-data.
+* `Y` : Y-data.
+* `weights` : Weights of the observations.
 * `lb` : A value of the regularization parameter "lambda".
 
-`X` and `Y` are internally centered. 
-
-The in-place version modifies `X` and `Y`. 
+`X` and `Y` are internally centered. The model is computed with an intercept. 
 
 ## References 
 
@@ -55,15 +53,13 @@ end
 
 """
     rrchol(X, Y, weights = ones(size(X, 1)); lb = .01)
-Ridge regression (RR) using the Normal equations and implemented by Cholesky factorization.
-* `X` : matrix (n, p) with p >= 2  (required by function cholesky).
-* `Y` : matrix (n, q), or vector (n,).
-* `weights` : vector (n,).
+Ridge regression (RR) using the Normal equations and a Cholesky factorization.
+* `X` : X-data.
+* `Y` : Y-data.
+* `weights` : Weights of the observations.
 * `lb` : A value of the regularization parameter "lambda".
 
-`X` and `Y` are internally centered. 
-
-The in-place version modifies `X` and `Y`. 
+`X` and `Y` are internally centered. The model is computed with an intercept. 
 
 ## References 
 
@@ -104,7 +100,7 @@ end
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `lb` : A value of the regularization parameter "lambda".
-If nothing, it is the parameter stored in the fitted model.
+    If nothing, it is the parameter stored in the fitted model.
 """ 
 function coef(object::Rr; lb = nothing)
     isnothing(lb) ? lb = object.lb : nothing
@@ -121,9 +117,9 @@ end
     predict(object::Rr, X; lb = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
-* `X` : Matrix (m, p) for which predictions are computed.
+* `X` : X-data for which predictions are computed.
 * `lb` : Regularization parameter, or collection of regularization parameters, "lambda" to consider. 
-If nothing, it is the parameter stored in the fitted model.
+    If nothing, it is the parameter stored in the fitted model.
 """ 
 function predict(object::Rr, X; lb = nothing)
     isnothing(lb) ? lb = object.lb : nothing

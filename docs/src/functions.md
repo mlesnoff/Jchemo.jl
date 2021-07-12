@@ -135,7 +135,7 @@
 - ***bias*** Bias
 - ***r2*** R2
 - ***cor2*** Squared correlation coefficient
-- ***rpd***, ***rpq*** Ratio of performance to deviation (RPD, RPIQ) (Bellon-Maurel et al. TrAC 2010)
+- ***rpd***, ***rpdr*** Ratio of performance to deviation
 - ***mse*** Summary for regression
 - ***err*** Classification error rate
 

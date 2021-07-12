@@ -1,19 +1,17 @@
 """
     gridscore(Xtrain, Ytrain, X, Y; score, fun, pars, verbose = FALSE) 
-Compute a prediction score (error rate; e.g. RMSEP) for a given model over a grid of parameter values.
-* `Xtrain` : Training X-data (n, p) or (n,).
-* `Ytrain` : Training Y-data (n, q) or (n,).
-* `X` : Validation X-data (m, p) or (m,).
-* `Y` : Validation Y-data (m, q) or (m,).
+Compute a prediction score (error rate; e.g. MSEP) for a given model over a grid of parameter values.
+* `Xtrain` : Training X-data.
+* `Ytrain` : Training Y-data.
+* `X` : Validation X-data.
+* `Y` : Validation Y-data.
 * `score` : Function computing the prediction score.
 * `fun` : Function computing the prediction model.
-* `pars` : tuple of named vectors (arguments of fun) of same length,
-involved in the calculation of the score.
+* `pars` : tuple of named vectors (arguments of fun) of same length
+    involved in the calculation of the score.
 * `verbose` : If true, fitting information are printed.
 
-The score is computed on X and Y for each combination of the grid defined in pars. 
-    
-The output is a dataframe.
+The score is computed over X and Y for each combination of the grid defined in pars. 
 """
 function gridscore(Xtrain, Ytrain, X, Y; score, fun, pars, verbose = false)
     q = size(Ytrain, 2)

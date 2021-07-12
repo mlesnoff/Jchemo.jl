@@ -1,16 +1,14 @@
 """
     wdist(d, h; cri = 4, squared = false)
 Compute weights from distances, using a decreasing exponential function.
-* `d` : A vector (n,) of distances.
+* `d` : A vector of distances.
 * `h` : A scaling positive scalar defining the shape of the function. 
 * `cri` : A positive scalar defining outliers in the distances vector.
 * `squared`: If true, distances are replaced by the squared distances;
 the weight function is then a Gaussian (RBF) kernel function.
 
-Computed weights decrease with increasing distances. Lower is h, sharper is the decreasing function. 
-Weights are set to 0 for distance outliers.
-
-The in-place function stores the output in `d`.
+The weights decrease with increasing distances. Lower is h, sharper is the decreasing function. 
+Weights are set to 0 for outliers (extreme distances).
 """  
 function wdist(d, h; cri = 4, squared = false)
     w = copy(d)
@@ -19,7 +17,7 @@ function wdist(d, h; cri = 4, squared = false)
 end
 
 function wdist!(d, h; cri = 4, squared = false)
-    ## d, out : (n,)
+    # d, out : (n,)
     squared ? d = d.^2 : nothing
     zmed =  Statistics.median(d)
     zmad = Jchemo.mad(d)

@@ -17,15 +17,15 @@ end
     kpca(X, Y, weights = ones(size(X, 1)); nlv , kern = "krbf", kwargs...)
 Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
 
-* `X` : matrix (n, p).
+* `X` : X-data.
 * `weights` : vector (n,).
-* `nlv` : Nb. PCs, or collection of nb. PCs, to consider. 
-* 'kern' : Type of kernel function used to compute the Gram matrices.
+* `nlv` : Nb. principal components (PCs), or collection of nb. PCs, to consider. 
+* 'kern' : Type of kernel used to compute the Gram matrices.
     Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`).
 * `kwargs` : Named arguments to pass in the kernel function.
 
 The method is implemented by SVD factorization of the weighted Gram matrix 
-*D*^(1/2) * *Phi*(`X`) * *Phi*(`X`)' * *D*^(1/2), where *D* is a (n, n) diagonal matrix of weights for 
+D^(1/2) * Phi(`X`) * Phi(`X`)' * D^(1/2), where D is a diagonal matrix of weights for 
 the observations (rows of X).
 
 The kernel Gram matrices are internally centered. 
@@ -87,10 +87,10 @@ end
 
 """ 
     transform(object::Kpca, X; nlv = nothing)
-Compute PCs ("scores" T) from a fitted model and a matrix X.
+Compute PCs (scores matrix "T") from a fitted model and X-data.
 * `object` : The maximal fitted model.
-* `X` : Matrix (m, p) for which LVs are computed.
-* `nlv` : Nb. PCs to consider. If nothing, it is the maximum nb. LVs.
+* `X` : X-data for which PCs are computed.
+* `nlv` : Nb. PCs to consider. If nothing, it is the maximum nb. PCs.
 """ 
 function transform(object::Kpca, X; nlv = nothing)
     a = size(object.T, 2)

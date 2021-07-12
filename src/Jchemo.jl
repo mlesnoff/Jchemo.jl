@@ -57,7 +57,7 @@ export
     transform, coef, predict,
     # Validation
     residreg, residcla, 
-    ssr, msep, rmsep, bias, sep, cor2, r2, rdp, rpq, mse, err,
+    ssr, msep, rmsep, bias, sep, cor2, r2, rpd, rpdr, mse, err,
     mpars,
     gridscore, gridscorelv, gridscorelb,
     # Distances

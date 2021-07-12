@@ -15,17 +15,15 @@ end
 """
     plskern(X, Y, weights = ones(size(X, 1)); nlv)
 Partial Least Squares Regression (PLSR) with the "Improved kernel algorithm #1" (Dayal & McGegor, 1997).
-* `X` : matrix (n, p), or vector (n,).
-* `Y` : matrix (n, q), or vector (n,).
-* `weights` : vector (n,).
-* `nlv` : Nb. latent variables (LVs).
+* `X` : X-data.
+* `Y` : Y-data.
+* `weights` : Weights of the observations.
+* `nlv` : Nb. latent variables (LVs) to consider.
 
-For the weighted version, see for instance Schaal et al. 2002, Siccard & Sabatier 2006, 
+For the weighting (`weights`), see in particular Schaal et al. 2002, Siccard & Sabatier 2006, 
 Kim et al. 2011 and Lesnoff et al. 2020.
 
-`X` and `Y` are internally centered. 
-
-The in-place version modifies externally `X` and `Y`. 
+`X` and `Y` are internally centered. The model is computed with an intercept.
 
 ## References
 
@@ -167,10 +165,10 @@ end
 """
     predict(object::Plsr, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
-* `object` : The maximal fitted model.
-* `X` : Matrix (m, p) for which predictions are computed.
+* `object` : The fitted model.
+* `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
-If nothing, it is the maximum nb. LVs.
+    If nothing, it is the maximum nb. LVs.
 """ 
 function predict(object::Plsr, X; nlv = nothing)
     a = size(object.T, 2)

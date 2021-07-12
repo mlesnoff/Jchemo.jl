@@ -8,7 +8,7 @@ ensure_mat(X::Number) = reshape([X], 1, 1)
 
 """
     iqr(x)
-IQR.
+Compute the interquartile interval (IQR).
 """
 iqr(x) = quantile(x, .75) - quantile(x, .25)
 
@@ -21,14 +21,14 @@ list(n::Integer) = Vector{Any}(undef, n)
 
 """ 
     mad(x)
-Compute the MAD.
+Compute the median absolute deviation (MAD),
+adjusted by a factor (1.4826) for asymptotically normal consistency. 
 """
 mad(x) = 1.4826 * median(abs.(x .- median(x)))
 
 """ 
     mweights(w)
 Return a vector of weights that sums to 1.
-* `w` : A vector (n,).
 """
 mweights(w) = w / sum(w)
 
@@ -36,18 +36,18 @@ mweights(w) = w / sum(w)
     rmrow(X, s)
 Remove the rows of `X` having indexes `s`.
 ## === Examples
-```
+```julia
 X = rand(20, 4) ; 
 rmrows(X, collect(1:18))
 rmrows(X, 1:18)
 ```
-
 """
 function rmrows(X::AbstractMatrix, s)
     n = size(X, 1)
     minus_s = setdiff(collect(1:n), s)
     X[minus_s, :]
 end
+
 function rmrows(X::AbstractVector, s)
     n = length(X)
     minus_s = setdiff(collect(1:n), s)
@@ -70,6 +70,7 @@ end
 View of the i-th row or j-th column of a matrix `X`.
 """ 
 vrow(X, i) = view(X, i, :)
+
 vcol(X, j) = view(X, :, j)
 
 
