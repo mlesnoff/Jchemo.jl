@@ -6,10 +6,10 @@
 - ***kpca*** Non linear kernel PCA  (KPCA) (Scholkopf et al. 2002)
 
 *Utility (works also for PLS)*
-- ***scordis*** Score distances (SDs) for a PCA or PLS score space
-- ***odis*** Orthogonal distances (ODs) for a PCA or PLS score space
-- ***xfit*** Matrix fitting from a PCA or PLS model 
-- ***xresid*** Residual matrix from a PCA or PLS model 
+- ***scordis*** Score distances (SDs) for a score space
+- ***odis*** Orthogonal distances (ODs) for a score space
+- ***xfit*** Matrix fitting 
+- ***xresid*** Residual matrix  
 
 #### <span style="color:#1589F0;"> **REGRESSION** </span>
 
