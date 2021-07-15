@@ -65,6 +65,19 @@ function rmcols(X, s)
 end
 
 """
+    sourcedir(path)
+Include all the files contained in a directory.
+"""
+function sourcedir(path)
+    z = readdir(path)  ## List of files in path
+    n = length(z)
+    #sample(1:2, 1)
+    for i in 1:n
+        include(string(path, "/", z[i]))
+    end
+end
+
+"""
     vrow(X, j)
     vcol(X, j)
 View of the i-th row or j-th column of a matrix `X`.

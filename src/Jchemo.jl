@@ -1,6 +1,8 @@
 module Jchemo  # Start-Module
 
+using Distributions: maximum
 using LinearAlgebra, Statistics
+using StatsBase    # Will be used for sampling
 using Distributions
 using DataFrames
 using ImageFiltering

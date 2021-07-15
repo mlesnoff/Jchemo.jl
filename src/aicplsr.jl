@@ -95,13 +95,19 @@ function aicplsr(X, y; nlv, correct = true)
     cp1 = cp1 / n
     cp2 = cp2 / n
     res = (aic = aic, cp1 = cp1, cp2 = cp2)
-    tab = DataFrame(nlv = 0:nlv, n = fill(n, nlv + 1), df = df, ct = ct, ssr = zssr)
+    znlv = 0:nlv
+    tab = DataFrame(nlv = znlv, n = fill(n, nlv + 1), df = df, ct = ct, ssr = zssr)
     crit = hcat(tab, DataFrame(res))
     opt = map(x -> findmin(x[isnan.(x) .== 0])[2] - 1, res)
-    delta = map(x -> x .- findmin(x[isnan.(x) .== 0])[1], res)    # Differences "Delta"
-    w = map(x -> exp.(-x / 2) / sum(exp.(-x / 2)), delta)         # Model weights
+    delta = map(x -> x .- findmin(x[isnan.(x) .== 0])[1], res)                  # Differences "Delta"
+    w = map(x -> exp.(-x / 2) / sum(exp.(-x[isnan.(x) .== 0] / 2)), delta)      # AIC odel weights
     delta = reduce(hcat, delta)
     w = reduce(hcat, w)
-    (crit = crit, delta = delta, opt = opt, w = w)
+    nam = [:aic, :cp1, :cp2]
+    delta = DataFrame(delta, nam)
+    insertcols!(delta, 1, :nlv => znlv)
+    w = DataFrame(w, nam)
+    insertcols!(w, 1, :nlv => znlv)
+    (crit = crit, opt = opt, delta = delta, w = w)
 end
 

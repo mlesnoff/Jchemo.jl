@@ -139,11 +139,6 @@
 - ***mse*** Summary for regression
 - ***err*** Classification error rate
 
-<!--- 
-- ***r2*** R2
-- ***cor2*** Squared correlation
---> 
-
 #### **Heuristic**  
 
 <!---  
