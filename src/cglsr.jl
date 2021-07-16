@@ -50,6 +50,7 @@ function cglsr(X, y; nlv, reorth = true, filt = false)
 end
 function cglsr!(X, y; nlv, reorth = true, filt = false)
     X = ensure_mat(X)
+    y = vec(y)
     n = size(X, 1)
     p = size(X, 2)
     xmeans = colmeans(X) 

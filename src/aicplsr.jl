@@ -100,7 +100,7 @@ function aicplsr(X, y; nlv, correct = true)
     crit = hcat(tab, DataFrame(res))
     opt = map(x -> findmin(x[isnan.(x) .== 0])[2] - 1, res)
     delta = map(x -> x .- findmin(x[isnan.(x) .== 0])[1], res)                  # Differences "Delta"
-    w = map(x -> exp.(-x / 2) / sum(exp.(-x[isnan.(x) .== 0] / 2)), delta)      # AIC odel weights
+    w = map(x -> exp.(-x / 2) / sum(exp.(-x[isnan.(x) .== 0] / 2)), delta)      # AIC odel weights   
     delta = reduce(hcat, delta)
     w = reduce(hcat, w)
     nam = [:aic, :cp1, :cp2]

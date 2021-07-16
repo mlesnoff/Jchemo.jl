@@ -57,7 +57,11 @@
 *Averaging PLSR models with different numbers of LVs*
 
 - ***plsr_agg*** PLSR-AGG
-- ***lwplsr_agg*** KNN-LWPLSR-AGG  
+- ***lwplsr_agg*** KNN-LWPLSR-AGG 
+
+*Bagging*
+
+- ***baggr*** Bagging
 
 #### <span style="color:#1589F0"> DISCRIMINATION ANALYSIS </span>
   

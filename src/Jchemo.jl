@@ -1,9 +1,8 @@
 module Jchemo  # Start-Module
 
-using Distributions: maximum
 using LinearAlgebra, Statistics
-using StatsBase    # Will be used for sampling
 using Distributions
+using StatsBase    # sample
 using DataFrames
 using ImageFiltering
 using Distances
@@ -11,18 +10,23 @@ using NearestNeighbors
 
 include("utility.jl") ; include("center_scale.jl")
 include("preprocessing.jl")
+
 include("pcasvd.jl") ; include("pcaeigen.jl")
 include("kpca.jl")
+include("xfit.jl") ; include("scordis.jl")
+
 include("lmr.jl")
 include("rr.jl")
 include("plskern.jl") ; include("plsnipals.jl") 
 include("cglsr.jl") ; include("aicplsr.jl") 
 include("krr.jl") ; include("kplsr.jl") ; include("dkplsr.jl")
 include("plsr_agg.jl")
+include("baggr.jl")
+
 include("locw.jl")
 include("knnr.jl") ; include("lwplsr.jl")
 include("lwplsr_agg.jl")
-include("xfit.jl") ; include("scordis.jl")
+
 include("mpars.jl")
 include("scores.jl") ; include("gridscore.jl")
 include("distances.jl")
@@ -51,8 +55,9 @@ export
     rr, rr!, rrchol, rrchol!,   
     plskern, plskern!, plsnipals, plsnipals!,
     cglsr, cglsr!, dfplsr_cg, aicplsr,
-    plsr_agg, plsr_agg!,
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
+    plsr_agg, plsr_agg!,
+    baggr,
     # Local
     locw, locwlv,
     knnr, lwplsr, lwplsr_agg,
