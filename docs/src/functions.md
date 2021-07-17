@@ -59,9 +59,11 @@
 - ***plsr_agg*** PLSR-AGG
 - ***lwplsr_agg*** KNN-LWPLSR-AGG 
 
-*Bagging*
+*Bagging, Boosting*
 
 - ***baggr*** Bagging
+
+- ***gboostr*** Gradient boosting
 
 #### <span style="color:#1589F0"> DISCRIMINATION ANALYSIS </span>
   

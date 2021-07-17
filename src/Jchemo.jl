@@ -13,7 +13,6 @@ include("preprocessing.jl")
 
 include("pcasvd.jl") ; include("pcaeigen.jl")
 include("kpca.jl")
-include("xfit.jl") ; include("scordis.jl")
 
 include("lmr.jl")
 include("rr.jl")
@@ -21,7 +20,9 @@ include("plskern.jl") ; include("plsnipals.jl")
 include("cglsr.jl") ; include("aicplsr.jl") 
 include("krr.jl") ; include("kplsr.jl") ; include("dkplsr.jl")
 include("plsr_agg.jl")
-include("baggr.jl")
+include("baggr.jl") ; include("gboostr.jl") ;
+
+include("xfit.jl") ; include("scordis.jl")
 
 include("locw.jl")
 include("knnr.jl") ; include("lwplsr.jl")
@@ -47,7 +48,6 @@ export
     # Pca
     pcasvd, pcasvd!, pcaeigen, pcaeigen!, pcaeigenk, pcaeigenk!,
     kpca,
-    xfit, xfit!, xresid, xresid!,
     scordis, odis,
     # Regression
     lmrqr, lmrqr!, lmrchol, lmrchol!, lmrpinv, lmrpinv!, lmrpinv_n, lmrpinv_n!,
@@ -57,10 +57,13 @@ export
     cglsr, cglsr!, dfplsr_cg, aicplsr,
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
     plsr_agg, plsr_agg!,
-    baggr,
+    baggr, gboostr,
+    #
+    xfit, xfit!, xresid, xresid!,
     # Local
     locw, locwlv,
     knnr, lwplsr, lwplsr_agg,
+    #
     transform, coef, predict,
     # Validation
     residreg, residcla, 
@@ -72,6 +75,7 @@ export
     euclsq, mahsq, mahsqchol,
     krbf, kpol
     # Not exported since surchage: summary (Base.summary)
+
 end # End-Module
 
 
