@@ -1,11 +1,11 @@
-struct Baggr
+struct Boostr1
     fm
     s_obs
     s_var
 end
 
 """ 
-    baggr(X, Y, weights = nothing ; fun, B, 
+    boostr(X, Y, weights = nothing ; fun, B, 
         k = size(X, 1), nvar = size(X, 2), kwargs...)
 Bagging for regression models.
 * `X` : X-data.
@@ -35,7 +35,7 @@ Gey, S., 2002. Bornes de risque, détection de ruptures, boosting :
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function baggr(X, Y, weights = nothing; fun, B, 
+function boostr(X, Y, weights = nothing; fun, B, 
     k = size(X, 1), nvar = size(X, 2), kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -70,10 +70,10 @@ function baggr(X, Y, weights = nothing; fun, B,
         s_obs[:, i] .= sobs
         s_var[:, i] .= svar
     end
-    Baggr(fm, s_obs, s_var)
+    Boostr1(fm, s_obs, s_var)
 end
 
-function predict(object::Baggr, X)
+function predict(object::Boostr1, X)
     B = length(object.fm)
     svar = vcol(object.s_var, 1)
     acc = predict(object.fm[1], @view(X[:, svar])).pred

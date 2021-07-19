@@ -50,7 +50,7 @@ export
     kpca,
     scordis, odis,
     # Regression
-    lmrqr, lmrqr!, lmrchol, lmrchol!, lmrpinv, lmrpinv!, lmrpinv_n, lmrpinv_n!,
+    lmr, lmrqr!, lmrchol, lmrchol!, lmrpinv, lmrpinv!, lmrpinv_n, lmrpinv_n!,
     lmrvec!, lmrvec,
     rr, rr!, rrchol, rrchol!,   
     plskern, plskern!, plsnipals, plsnipals!,
