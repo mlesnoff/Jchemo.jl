@@ -6,25 +6,29 @@ end
 
 """ 
     baggr(X, Y, weights = nothing ; fun, B, 
-        k = size(X, 1), nvar = size(X, 2), kwargs...)
+        k = size(X, 1), withr = false, nvar = size(X, 2), kwargs...)
 Bagging for regression models.
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
 * `fun` : Name (string) of the function computing the model to bagg.
-* `B` : Nb. of sampling repetitions.
-* `k` : Nb. observations (rows) sub-sampled in `X`.
-* `nvar` : Nb. variables (columns) sub-sampled in `X`.
+* `B` : Nb. of bagging repetitions.
+* `k` : Nb. observations (rows) sub-sampled in `X` at each repetition.
+* `withr`: Boolean defining the type of sampling of the observations when `k` < n 
+    (`withr = false` => sampling without replacement).
+* `nvar` : Nb. variables (columns) sub-sampled in `X` at each repetition.
 * `kwargs` : Named arguments to pass in 'fun`.
 
 Assume that `X` is (n, p).
 
-If `k` = n, each repetition consists in a sampling of the observations 
-with replacement (this is the usual bagging).
-If `k` < n, a sampling of k observations is done without replacement.
+If `k` = n, each repetition consists in a sampling with replacement 
+of the n observations, which is the usual bagging.
+
+If `k` < n, each repetition is done on k sub-sampled observations.
+The sampling can be without (default) or with replacement, depending on argument `withr`.
 
 If `nvar` < p , `nvar` variables are sampled without replacement at each
-boosting iteration, and taken as predictors for the given iteration.
+repetition, and taken as predictors for the given repetition.
 
 ## References
 
@@ -36,7 +40,7 @@ trois thèmes statistiques autour de CART en régression (These de doctorat).
 Paris 11. http://www.theses.fr/2002PA112245
 """ 
 function baggr(X, Y, weights = nothing; fun, B, 
-    k = size(X, 1), nvar = size(X, 2), kwargs...)
+    k = size(X, 1), withr = false, nvar = size(X, 2), kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = size(X, 1)
@@ -55,8 +59,8 @@ function baggr(X, Y, weights = nothing; fun, B,
     w = similar(X, k)
     znvar = collect(1:nvar) 
     @inbounds for i = 1:B
-        k == n ? repl = true : repl = false
-        sobs .= sample(1:n, k; replace = repl)
+        k == n ? withr = true : nothing
+        sobs .= sample(1:n, k; replace = withr)
         nvar == p ? svar .= znvar : svar .= sample(1:p, nvar; replace = false)
         zX .= X[sobs, svar]
         zY .= Y[sobs, :]

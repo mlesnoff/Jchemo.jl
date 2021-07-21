@@ -8,29 +8,28 @@ end
 
 """ 
     gboostr(X, Y, weights = nothing; fun, nboost = 1, nu = 1, 
-        k = size(X, 1), nvar = size(X, 2), kwargs...)
+        k = size(X, 1), withr = false, nvar = size(X, 2), kwargs...)
 Gradient boosting for regression models.
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
 * `fun` : Name (string) of the function computing the model to boost.
-* `nboost` : Nb. of boosting.
-* `nu` : Learning rate (must be between 0 and 1).
-* `k` : Nb. observations (rows) sub-sampled in `X`.
-* `withr`: If `true', the sampling of observations is done with replacement.
-* `nvar` : Nb. variables (columns) sub-sampled in `X`.
+* `nboost` : Nb. of boosting iterations.
+* `nu` : Learning rate (must be between 0 and 1) applied to each iteration.
+* `k` : Nb. observations (rows) sub-sampled in `X` at each iteration.
+* `withr`: Boolean defining the type of sampling of the observations when `k` < n 
+    (`withr = false` => sampling without replacement).
+* `nvar` : Nb. variables (columns) sub-sampled in `X` at each iteration.
 * `kwargs` : Named arguments to pass in 'fun`.
 
 Assume that `X` is (n, p).
 
-The function allows to sub-sample observations and variables 
-(rows and columns of `X`, respectively)
+If `k` = n, each boosting iteration takes all the observations (no sub-sampling),
+which is the usual gradient boosting.
 
-If `k` = n, each boosting iteration considers all the observations
-(this is the usual gradient boosting).
-If `k` < n, a sampling of k observations is done at each iteration, which corresponds
-to the stochastic gradient boosting. The sampling can be with without replacement,
-depending on argument `withr`.
+If `k` < n, each boosting iteration is done on k sub-sampled observations, 
+which corresponds to the stochastic gradient boosting. 
+The sampling can be without (default) or with replacement, depending on argument `withr`.
 
 If `nvar` < p , `nvar` variables are sampled without replacement at each
 boosting iteration, and taken as predictors for the given iteration.
@@ -67,9 +66,10 @@ function gboostr(X, Y, weights = nothing; fun, nboost = 1, nu = 1,
     sobs = similar(s_obs, k)
     svar = similar(s_obs, nvar)
     w = similar(X, k)
+    zn = collect(1:n)    
     znvar = collect(1:nvar)
     @inbounds for i in 1:nboost
-        sobs .= sample(1:n, k; replace = withr)
+        k == n ? sobs .= zn : sobs .= sample(1:n, k; replace = withr)
         nvar == p ? svar .= znvar : svar .= sample(1:p, nvar; replace = false)
         if i == 1
             r_array[:, :, 1] .= Y

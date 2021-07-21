@@ -20,7 +20,7 @@ include("plskern.jl") ; include("plsnipals.jl")
 include("cglsr.jl") ; include("aicplsr.jl") 
 include("krr.jl") ; include("kplsr.jl") ; include("dkplsr.jl")
 include("plsr_agg.jl")
-include("baggr.jl") ; include("gboostr.jl") ;
+include("baggr.jl") ; include("gboostr.jl") ; include("boostr.jl")
 
 include("xfit.jl") ; include("scordis.jl")
 
@@ -57,7 +57,7 @@ export
     cglsr, cglsr!, dfplsr_cg, aicplsr,
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
     plsr_agg, plsr_agg!,
-    baggr, gboostr,
+    baggr, gboostr, boostr,
     #
     xfit, xfit!, xresid, xresid!,
     # Local

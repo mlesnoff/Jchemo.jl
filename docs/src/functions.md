@@ -63,6 +63,8 @@
 
 - ***baggr*** Bagging
 
+- ***boostr*** Adaptative boosting
+
 - ***gboostr*** Gradient boosting
 
 #### <span style="color:#1589F0"> DISCRIMINATION ANALYSIS </span>
