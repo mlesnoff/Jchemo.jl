@@ -57,7 +57,7 @@ export
     cglsr, cglsr!, dfplsr_cg, aicplsr,
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
     plsr_agg, plsr_agg!,
-    baggr, gboostr, boostr,
+    baggr, gboostr, boostr, boostrw
     #
     xfit, xfit!, xresid, xresid!,
     # Local

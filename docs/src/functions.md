@@ -63,7 +63,7 @@
 
 - ***baggr*** Bagging
 
-- ***boostr*** Adaptative boosting
+- ***boostr***, ***boostrw*** Adaptative boosting
 
 - ***gboostr*** Gradient boosting
 

@@ -7,14 +7,14 @@ struct Boostr
 end
 
 """ 
-    boostr(X, Y, weights = nothing; fun, nboost, 
+    boostr(X, Y, weights = nothing; fun, B, 
         k = size(X, 1), withr = false, nvar = size(X, 2), meth = "dru", kwargs...)
 Adaptative boosting (by sampling) for regression models.
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
 * `fun` : Name (string) of the function computing the model to boost.
-* `nboost` : Nb. of boosting iterations.
+* `B` : Nb. of boosting iterations.
 * `k` : Nb. observations (rows) sub-sampled in `X` at each iteration.
 * `withr`: Boolean defining the type of sampling of the observations when `k` < n 
     (`withr = false` => sampling without replacement).
@@ -24,20 +24,19 @@ Adaptative boosting (by sampling) for regression models.
 
 Assume that `X` is (n, p).
 
-If `k` = n, a sampling of n observations is done with replacement.
+**At each iteration**
+* If `k` = n : The model is calibrated after a sampling with 
+    replacement of n observations.
+* If `k` < n : The model is calibrated after a sub-sampling of k observations
+    without (default) or with replacement, depending o argument `withr`.
+* If `nvar` < p , `nvar` variables are sampled without replacement, 
+    and taken as predictors for the given iteration.
+* A boosting weight is then computed from the calibrated model for each 
+    of the n observations and for the model.
 
-If `k` < n, a sampling of k observations is done without (default) 
-or with replacement, depending o argument `withr`.
-
-If `nvar` < p , `nvar` variables are sampled without replacement at each
-iteration, and taken as predictors for the given iteration.
-
-Methods
-* `meth` = "dru" : This is the AdaBoost algorithm of Drucker 1997,
-    which is an adaptation of the AdaBoost.M1 classificatuon algorithm 
-    of Freund & Schapire 1997.
-* `meth` = "rt" : This is the AdaBoost.RT algorithm of Shrestha & Solomatine 2006,
-slightly modified (parameter phi is computed automatically frop a quantile).
+This is the AdaBoost algorithm of Drucker 1997,
+which is an adaptation of the AdaBoost.M1 classificatuon algorithm 
+of Freund & Schapire 1997.
 
 ## References
 
@@ -62,7 +61,7 @@ Presented at the IEEE International Conference on Neural Networks
 - Conference Proceedings, pp. 1163–1168 vol.2. https://doi.org/10.1109/IJCNN.2004.1380102
 
 """ 
-function boostr(X, Y, weights = nothing; fun, nboost, 
+function boostr(X, Y, weights = nothing; fun, B, 
     k = size(X, 1), withr = false, nvar = size(X, 2), meth = "dru", kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -70,23 +69,23 @@ function boostr(X, Y, weights = nothing; fun, nboost,
     p = size(X, 2)
     q = size(Y, 2)
     learn = eval(Meta.parse(fun))    
-    fm = list(nboost)
+    fm = list(B)
     k = min(k, n)
     nvar = min(nvar, p)
-    s_obs = fill(1, (k, nboost))
-    s_var = similar(s_obs, nvar, nboost) 
+    s_obs = fill(1, (k, B))
+    s_var = similar(s_obs, nvar, B) 
     sobs = similar(s_obs, k)
     svar = similar(s_obs, nvar)
     w = similar(X, k)
-    probs = similar(X, n, nboost)
+    probs = similar(X, n, B)
     zprobs = ones(n) / n
     r2 = similar(X, n)
     d = similar(X, n)
-    beta = similar(X, nboost)
+    beta = similar(X, B)
     znvar = collect(1:nvar) 
     zX = similar(X, k, nvar)
     zY = similar(Y, k, q)
-    @inbounds for i = 1:nboost
+    @inbounds for i = 1:B
         k == n ? withr = true : nothing
         sobs .= sample(1:n, Weights(zprobs), k; replace = withr)
         nvar == p ? svar .= znvar : svar .= sample(1:p, nvar; replace = false)
@@ -99,25 +98,14 @@ function boostr(X, Y, weights = nothing; fun, nboost,
             fm[i] = learn(zX, zY, w; kwargs...)
         end
         pred = predict(fm[i], @view(X[:, svar])).pred
-        if isequal(meth, "dru")
-            r2 .= vec(sum(residreg(pred, Y).^2, dims = 2))
-            d .= r2 / maximum(r2)[1]               
-            L = dot(zprobs, d)
-            beta[i] = L / (1 - L)
-            if L <= .5  # or beta[i] >= 1
-                zprobs .= mweights(beta[i].^(1 .- d))
-            else
-                zprobs .= ones(n) / n
-            end
-        elseif isequal(meth, "rt")
-            r2 .= vec(mean(abs.(residreg(pred, Y)) ./ Y, dims = 2))
-            phi = quantile(r2, .25)        # r2 > phi ==> "non correct" prediction
-            eps = sum(zprobs[r2 .> phi])   # binary error rate (prop. non correct pred.)
-            alpha = 2
-            beta[i] = eps^alpha
-            zprobs[r2 .<= phi] .= beta[i]
-            zprobs[r2 .> phi] .= 1
-            zprobs .= mweights(zprobs)        
+        r2 .= vec(sum(residreg(pred, Y).^2, dims = 2))
+        d .= r2 / maximum(r2)[1]               
+        L = dot(zprobs, d)
+        beta[i] = L / (1 - L)
+        if L <= .5  # or beta[i] >= 1
+            zprobs .= mweights(beta[i].^(1 .- d))
+        else
+            zprobs .= ones(n) / n
         end
         s_obs[:, i] .= sobs
         s_var[:, i] .= svar
@@ -127,18 +115,85 @@ function boostr(X, Y, weights = nothing; fun, nboost,
 end
 
 function predict(object::Boostr, X)
-    nboost = length(object.fm)
+    B = length(object.fm)
     svar = vcol(object.s_var, 1)
     w = log.(1 ./ object.beta)
     w .= mweights(w)
     acc = w[1] * predict(object.fm[1], @view(X[:, svar])).pred
-    @inbounds for i = 2:nboost
+    @inbounds for i = 2:B
         svar = vcol(object.s_var, i)
         acc .+= w[i] * predict(object.fm[i], @view(X[:, svar])).pred
     end
     (pred = acc,)
 end
 
+################ Direct weighting
 
+""" 
+    boostrw(X, Y, weights = nothing; fun, B, 
+        k = size(X, 1), withr = false, nvar = size(X, 2), meth = "dru", kwargs...)
+Adaptative boosting (by sampling) for regression models.
+* `X` : X-data.
+* `Y` : Y-data.
+* `fun` : Name (string) of the function computing the model to boost.
+    Must have a weight argument.
+* `B` : Nb. of boosting iterations.
+* `k` : Nb. observations (rows) sub-sampled in `X` at each iteration.
+* `withr`: Boolean defining the type of sampling of the observations when `k` < n 
+    (`withr = false` => sampling without replacement).
+* `nvar` : Nb. variables (columns) sub-sampled in `X` at each iteration.
+* `meth` : Method of adaptative boosting ("dru" or "rt").
+* `kwargs` : Named arguments to pass in 'fun`.
+
+Same as `boostr` except that the boosting weights computed for the n observations
+are directly taken into account into the boosted model.
+""" 
+function boostrw(X, Y; fun, B, 
+    k = size(X, 1), withr = false, nvar = size(X, 2), kwargs...)
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    n = size(X, 1)
+    p = size(X, 2)
+    q = size(Y, 2)
+    learn = eval(Meta.parse(fun))    
+    fm = list(B)
+    k = min(k, n)
+    nvar = min(nvar, p)
+    s_obs = fill(1, (k, B))
+    s_var = similar(s_obs, nvar, B) 
+    sobs = similar(s_obs, k)
+    svar = similar(s_obs, nvar)
+    w = similar(X, k)
+    probs = similar(X, n, B)
+    zprobs = ones(n) / n
+    r2 = similar(X, n)
+    d = similar(X, n)
+    beta = similar(X, B)
+    zX = similar(X, k, nvar)
+    zY = similar(Y, k, q)
+    zn = collect(1:n)
+    znvar = collect(1:nvar) 
+    @inbounds for i = 1:B
+        k == n ? sobs .= zn : sobs .= sample(1:n, k; replace = withr)
+        nvar == p ? svar .= znvar : svar .= sample(1:p, nvar; replace = false)
+        zX .= X[sobs, svar]
+        zY .= Y[sobs, :]       
+        fm[i] = learn(zX, zY, zprobs[sobs]; kwargs...)
+        pred = predict(fm[i], @view(X[:, svar])).pred
+        r2 .= vec(sum(residreg(pred, Y).^2, dims = 2))
+        d .= r2 / maximum(r2)[1]               
+        L = dot(zprobs, d)
+        beta[i] = L / (1 - L)
+        if L <= .5  # or beta[i] >= 1
+            zprobs .= mweights(beta[i].^(1 .- d))
+        else
+            zprobs .= ones(n) / n
+        end    
+        s_obs[:, i] .= sobs
+        s_var[:, i] .= svar
+        probs[:, i] .= zprobs
+    end
+    Boostr(fm, s_obs, s_var, beta, probs)
+end
 
 

@@ -7,14 +7,14 @@ struct Gboostr
 end
 
 """ 
-    gboostr(X, Y, weights = nothing; fun, nboost = 1, nu = 1, 
+    gboostr(X, Y, weights = nothing; fun, B = 1, nu = 1, 
         k = size(X, 1), withr = false, nvar = size(X, 2), kwargs...)
 Gradient boosting for regression models.
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
 * `fun` : Name (string) of the function computing the model to boost.
-* `nboost` : Nb. of boosting iterations.
+* `B` : Nb. of boosting iterations.
 * `nu` : Learning rate (must be between 0 and 1) applied to each iteration.
 * `k` : Nb. observations (rows) sub-sampled in `X` at each iteration.
 * `withr`: Boolean defining the type of sampling of the observations when `k` < n 
@@ -47,7 +47,7 @@ Computational Statistics & Data Analysis, Nonlinear Methods and Data Mining 38, 
 https://doi.org/10.1016/S0167-9473(01)00065-2
 
 """ 
-function gboostr(X, Y, weights = nothing; fun, nboost = 1, nu = 1, 
+function gboostr(X, Y, weights = nothing; fun, B = 1, nu = 1, 
     k = size(X, 1), withr = false, nvar = size(X, 2), kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -55,20 +55,20 @@ function gboostr(X, Y, weights = nothing; fun, nboost = 1, nu = 1,
     p = size(X, 2)
     q = size(Y, 2)
     learn = eval(Meta.parse(fun))    
-    fm = list(nboost)
+    fm = list(B)
     k = min(k, n)
     nvar = min(nvar, p)
     zX = similar(X, k, nvar)
     zY = similar(X, k, q)
-    r_array = similar(X, n, q, nboost + 1) # residuals    
-    s_obs = fill(1, (k, nboost))
-    s_var = similar(s_obs, nvar, nboost)
+    r_array = similar(X, n, q, B + 1) # residuals    
+    s_obs = fill(1, (k, B))
+    s_var = similar(s_obs, nvar, B)
     sobs = similar(s_obs, k)
     svar = similar(s_obs, nvar)
     w = similar(X, k)
     zn = collect(1:n)    
     znvar = collect(1:nvar)
-    @inbounds for i in 1:nboost
+    @inbounds for i in 1:B
         k == n ? sobs .= zn : sobs .= sample(1:n, k; replace = withr)
         nvar == p ? svar .= znvar : svar .= sample(1:p, nvar; replace = false)
         if i == 1
@@ -92,12 +92,12 @@ function gboostr(X, Y, weights = nothing; fun, nboost = 1, nu = 1,
 end
 
 function predict(object::Gboostr, X)
-    nboost = size(object.r_array, 3) - 1
+    B = size(object.r_array, 3) - 1
     svar = vcol(object.s_var, 1)
     nu = object.nu
     acc = predict(object.fm[1], @view(X[:, svar])).pred
-    if nboost > 1
-        @inbounds for i = 2:nboost
+    if B > 1
+        @inbounds for i = 2:B
             svar = vcol(object.s_var, i)
             acc .+= nu * predict(object.fm[i], @view(X[:, svar])).pred
         end
