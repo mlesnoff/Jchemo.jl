@@ -29,6 +29,7 @@ a weighted mean using AIC weights computed from the models (see function `aicpls
 * "sqrt" : Sqrt(delta) is used in place of delta.
 * "fair" : A decreasing "fair" function is applied to delta.
 * "inv" : Weights are computed by 1 / AIC.
+* "shenk" : Shenk et al. (1997) weights. See function `wshenk'.
 """ 
 function plsr_agg(X, Y, weights = ones(size(X, 1)); nlv, wagg = "unif")
     plsr_agg!(copy(X), copy(Y), weights; nlv = nlv, wagg = wagg)
@@ -38,26 +39,31 @@ function plsr_agg!(X, Y, weights = ones(size(X, 1)); nlv, wagg = "unif")
     n = size(X, 1)
     p = size(X, 2)
     nlv = eval(Meta.parse(nlv))
-    nlv = (max(minimum(nlv), 0):min(maximum(nlv), n, p))
+    nlv_max = maximum(nlv)
+    nlv = (max(minimum(nlv), 0):min(nlv_max, n, p))
     if isequal(wagg, "unif")
-        w = ones(maximum(nlv) + 1)
+        w = ones(nlv_max + 1)
     elseif isequal(wagg, "aic")
-        w = aicplsr(X, Y; nlv = maximum(nlv)).w.aic
+        w = aicplsr(X, Y; nlv = nlv_max).w.aic
     elseif isequal(wagg, "sqrt")
-        d = aicplsr(X, Y; nlv = maximum(nlv)).delta.aic
+        d = aicplsr(X, Y; nlv = nlv_max).delta.aic
         w = exp.(-sqrt.(d) / 2)
     elseif isequal(wagg, "fair")
-        d = aicplsr(X, Y; nlv = maximum(nlv)).delta.aic
+        d = aicplsr(X, Y; nlv = nlv_max).delta.aic
         d = d / maximum(d[isnan.(d) .== 0])
         w = 1 ./ (1 .+ d).^2
     elseif isequal(wagg, "inv")
-        w = 1 ./ aicplsr(X, Y; nlv = maximum(nlv)).crit.aic
+        w = 1 ./ aicplsr(X, Y; nlv = nlv_max).crit.aic
+    elseif isequal(wagg, "shenk")
+        fm = plskern(X, Y, weights; nlv = (nlv_max))
+        w = vec(sum(Jchemo.wshenk(fm, X).W, dims = 1))
+        w = [0 ; w]
     end
     w[isnan.(w)] .= 0
     #w = vec(mavg(w', 3))
     w = w[collect(nlv) .+ 1]
-    w = w / sum(w)
-    fm = plskern!(X, Y, weights; nlv = maximum(nlv))
+    w ./= sum(w)
+    fm = plskern!(X, Y, weights; nlv = nlv_max)
     PlsrAgg(fm, nlv, wagg, w)
 end
 

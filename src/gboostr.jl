@@ -79,8 +79,7 @@ function gboostr(X, Y, weights = nothing; fun, B = 1, nu = 1,
         if(isnothing(weights))
             fm[i] = learn(zX, zY; kwargs...)
         else
-            w .= weights[sobs]
-            w .= w / sum(w)
+            w .= mweights(weights[sobs])
             fm[i] = learn(zX, zY, w; kwargs...)
         end
         pred = predict(fm[i], @view(X[:, svar])).pred

@@ -23,7 +23,7 @@
 
 *Ill-conditionned* 
 
-- ***cglsr*** Conjugate gradient algorithm for the Normal equations (CGLS)
+- ***cglsr*** Conjugate gradient for the Normal equations (CGLS)
 
 #### **Partial least squares (PLSR)**
 
@@ -236,10 +236,8 @@
 - ***mahsq***, ***mahsq_mu** Mahalanobis distance matrices
 - ***getknn*** KNN selection
 - ***krbf***, ***kpol***, ***ktanh*** Gram matrices for different kernels
-- ***headm*** Print the first part of a matrix or data frame
 - ***locw*** Working function for locally weighted models
 - ***matB***, ***matW*** Between and within covariance matrices
-- ***pinv*** Moore-Penrose pseudo-inverse
 - ***sourcedir*** Source every R functions in a directory
 - ***wdist*** Weights for distances
 - Additional working functions in file **zfunctions.R**

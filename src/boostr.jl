@@ -76,7 +76,6 @@ function boostr(X, Y, weights = nothing; fun, B,
     s_var = similar(s_obs, nvar, B) 
     sobs = similar(s_obs, k)
     svar = similar(s_obs, nvar)
-    w = similar(X, k)
     probs = similar(X, n, B)
     zprobs = ones(n) / n
     r2 = similar(X, n)
@@ -85,6 +84,7 @@ function boostr(X, Y, weights = nothing; fun, B,
     znvar = collect(1:nvar) 
     zX = similar(X, k, nvar)
     zY = similar(Y, k, q)
+    w = similar(X, k)
     @inbounds for i = 1:B
         k == n ? withr = true : nothing
         sobs .= sample(1:n, Weights(zprobs), k; replace = withr)
@@ -102,7 +102,7 @@ function boostr(X, Y, weights = nothing; fun, B,
         d .= r2 / maximum(r2)[1]               
         L = dot(zprobs, d)
         beta[i] = L / (1 - L)
-        if L <= .5  # or beta[i] >= 1
+        if L <= .5                                  # or beta[i] >= 1
             zprobs .= mweights(beta[i].^(1 .- d))
         else
             zprobs .= ones(n) / n
@@ -163,7 +163,6 @@ function boostrw(X, Y; fun, B,
     s_var = similar(s_obs, nvar, B) 
     sobs = similar(s_obs, k)
     svar = similar(s_obs, nvar)
-    w = similar(X, k)
     probs = similar(X, n, B)
     zprobs = ones(n) / n
     r2 = similar(X, n)
@@ -184,7 +183,7 @@ function boostrw(X, Y; fun, B,
         d .= r2 / maximum(r2)[1]               
         L = dot(zprobs, d)
         beta[i] = L / (1 - L)
-        if L <= .5  # or beta[i] >= 1
+        if L <= .5                                    
             zprobs .= mweights(beta[i].^(1 .- d))
         else
             zprobs .= ones(n) / n

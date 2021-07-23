@@ -3,9 +3,11 @@
 Matrix fitting from a PCA or PLS model
 * `object` : The fitted model.
 * `X` : X-data to be approximatred from the model.
-* `nlv` : Nb. components (PCs or LVs) to consider. If nothing, it is the maximum nb. of components.
+* `nlv` : Nb. components (PCs or LVs) to consider. If nothing, 
+    it is the maximum nb. of components.
 
-Function `xfit` computes an approximate of matrix `X` (X_fit) from a PCA or PLS fitted on `X`.
+Compute an approximate of matrix `X` (X_fit) from a PCA 
+or PLS fitted on `X`.
 """ 
 function xfit(object::Union{Pca, Plsr}, X; nlv = nothing)
     xfit!(object, copy(X); nlv = nlv)
@@ -20,8 +22,8 @@ function xfit!(object::Union{Pca, Plsr}, X; nlv = nothing)
             X[i, :] .= object.xmeans
         end
     else
-        isa(object, Jchemo.Pca) ? R = @view(object.P[:, 1:nlv]) : R = @view(object.R[:, 1:nlv])
-        X .= transform(object, X; nlv = nlv) * R'
+        P = @view(object.P[:, 1:nlv])
+        mul!(X, transform(object, X; nlv = nlv), P')
         center!(X, -object.xmeans)
     end
     X
@@ -32,9 +34,10 @@ end
 Residual matrix after fitting by a PCA or PLS model
 * `object` : The fitted model.
 * `X` : X-data for which the residuals have to be computed.
-* `nlv` : Nb. components (PCs or LVs) to consider. If nothing, it is the maximum nb. of components.
+* `nlv` : Nb. components (PCs or LVs) to consider. If nothing, 
+    it is the maximum nb. of components.
 
-Function `xresid` computes the residual matrix E = X - X_fit.
+Compute the residual matrix E = X - X_fit.
 """ 
 function xresid(object::Union{Pca, Plsr}, X; nlv = nothing)
     xresid!(object, copy(X); nlv = nlv)
