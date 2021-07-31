@@ -2,7 +2,7 @@
 
 ## Dimension reduction, Regression and Discrimination for Chemometrics
 ## <span style="color:grey70"> Version 0.0-0 </span> 
-## <span style="color:green"> **NOT WORKING - UNDER CONSTRUCTION** </span> 
+## <span style="color:green"> **NOT STABLE AND INCOMPLETE - UNDER CONSTRUCTION** </span> 
 
 ![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)<!--
 ![Lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
@@ -51,7 +51,7 @@ gridscorelv(Xtrain, Ytrain, Xtest, Ytest;
 
 Click [**HERE**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/functions.md) to see the **list of the available functions**, and [**HERE**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/demos/ex/) to see **examples**.
 
-Main of the examples given in the the files **.jl** are fictive, built only for illustrating the syntax. The user can replace the simulated fictive data by its own datasets.
+Main of the examples given in the the files **.jl** are fictive and built only for illustrating the syntax. The user can replace the simulated fictive data by its own datasets.
 
 Most of the functions have a help page, e.g.
 

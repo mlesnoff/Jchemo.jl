@@ -28,8 +28,7 @@ function gridscore(Xtrain, Ytrain, X, Y; score, fun, pars, verbose = false)
     dat = DataFrame(pars)
     namy = map(string, repeat(["y"], q), 1:q)
     res = DataFrame(res, Symbol.(namy))
-    res = hcat(dat, res)
-    res
+    hcat(dat, res)
 end
 
 """
@@ -85,8 +84,7 @@ function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv, pars = nothing, verb
     verbose ? println("-- End.") : nothing
     namy = map(string, repeat(["y"], q), 1:q)
     res = DataFrame(res, Symbol.(namy))
-    res = hcat(dat, res)
-    res
+    hcat(dat, res)
 end
 
 """
@@ -142,8 +140,7 @@ function gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb, pars = nothing, verbo
     verbose ? println("-- End.") : nothing
     namy = map(string, repeat(["y"], q), 1:q)
     res = DataFrame(res, Symbol.(namy))
-    res = hcat(dat, res)
-    res
+    hcat(dat, res)
 end
 
 

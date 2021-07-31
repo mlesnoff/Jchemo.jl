@@ -1,13 +1,14 @@
 struct Baggr
     fm
-    s_obs
+    s_inb
+    s_oob
     s_var
 end
 
 """ 
     baggr(X, Y, weights = nothing ; fun, B, 
         k = size(X, 1), withr = false, nvar = size(X, 2), kwargs...)
-Bagging for regression models.
+Bagging of regression models.
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
@@ -35,6 +36,12 @@ repetition, and taken as predictors for the given repetition.
 Breiman, L., 1996. Bagging predictors. Mach Learn 24, 123–140. 
 https://doi.org/10.1007/BF00058655
 
+Breiman, L., 2001. Random Forests. Machine Learning 45, 5–32. 
+https://doi.org/10.1023/A:1010933404324
+
+Genuer, R., 2010. Forêts aléatoires : aspects théoriques, 
+sélection de variables et applications. PhD Thesis. Université Paris Sud - Paris XI.
+
 Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
@@ -52,29 +59,31 @@ function baggr(X, Y, weights = nothing; fun, B,
     nvar = min(nvar, p)
     zX = similar(X, k, nvar)
     zY = similar(Y, k, q)
-    s_obs = fill(1, (k, B))
-    s_var = similar(s_obs, nvar, B) 
-    sobs = similar(s_obs, k)
-    svar = similar(s_obs, nvar)
+    s_inb = fill(1, (k, B))
+    sinb = similar(s_inb, k)    
+    s_oob = list(B)
+    s_var = similar(s_inb, nvar, B) 
+    svar = similar(s_inb, nvar)
     w = similar(X, k)
     znvar = collect(1:nvar) 
     @inbounds for i = 1:B
         k == n ? withr = true : nothing
-        sobs .= sample(1:n, k; replace = withr)
+        sinb .= sample(1:n, k; replace = withr)
+        s_oob[i] = findall(in(sinb).(1:n) .== 0)
         nvar == p ? svar .= znvar : svar .= sample(1:p, nvar; replace = false)
-        zX .= X[sobs, svar]
-        zY .= Y[sobs, :]
+        zX .= X[sinb, svar]
+        zY .= Y[sinb, :]
         if(isnothing(weights))
             fm[i] = learn(zX, zY; kwargs...)
         else
-            w .= weights[sobs]
+            w .= weights[sinb]
             w .= w / sum(w)
             fm[i] = learn(zX, zY, w; kwargs...)
         end
-        s_obs[:, i] .= sobs
+        s_inb[:, i] .= sinb    
         s_var[:, i] .= svar
     end
-    Baggr(fm, s_obs, s_var)
+    Baggr(fm, s_inb, s_oob, s_var)
 end
 
 function predict(object::Baggr, X)

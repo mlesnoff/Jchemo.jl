@@ -59,9 +59,13 @@
 - ***plsr_agg*** PLSR-AGG
 - ***lwplsr_agg*** KNN-LWPLSR-AGG 
 
-*Bagging, Boosting*
+*Bagging*
 
-- ***baggr*** Bagging
+- ***baggr*** Bagging 
+- ***baggr_oob*** OOB error rate
+- ***bagg_vi*** Variance importance (permutation)
+
+*Boosting*
 
 - ***boostr***, ***boostrw*** Adaptative boosting
 
@@ -168,6 +172,8 @@
 - ***fdif*** Finite differences
 - ***mavg***, ***mavg_runmean*** Smoothing by moving average
 - ***savgk***, ***savgol*** Savitsky-Golay filtering
+- ***rmgap** Remove vertical gaps in spectra, e.g. for ASD.
+
 <!--- 
 - ***xinterp*** Resampling of spectra by interpolation methods
 - ***gaprm** Remove vertical gaps in spectra (e.g. for ASD)
@@ -229,16 +235,24 @@
 
 #### <span style="color:#1589F0"> **UTILITY** </span>
 
+- ***colmeans***, ***colvars** Weighted column means and variances
+- ***center***, ***scale*** Column-wise matrix centering and scaling
+- ***euclsq***, ***mahsq***, ***mahsqchol*** Euclidean and Mahalanobis distances between rows of matrices
+- ***getknn*** Find nearest neighbours between rows of matrices
+- ***wdist*** Compute weights from distances
+- ***krbf***, ***kpol*** Build kernel Gram matrices
+- ***locw*** Working function for local (kNN) models
+- ***iqr*** Interval inter-quartiles
+- ***mad*** Median absolute deviation
+- ***sourcedir*** Include all the files contained in a directory
+- See other functions in file `utility.jl`
+
+
+
+
+
 <!---
 - ***dmnorm*** Multivariate normal probability density
 - ***dummy*** Dummy table
-- ***euclsq***, ***euclsq_mu** Euclidean distance matrices
-- ***mahsq***, ***mahsq_mu** Mahalanobis distance matrices
-- ***getknn*** KNN selection
-- ***krbf***, ***kpol***, ***ktanh*** Gram matrices for different kernels
-- ***locw*** Working function for locally weighted models
 - ***matB***, ***matW*** Between and within covariance matrices
-- ***sourcedir*** Source every R functions in a directory
-- ***wdist*** Weights for distances
-- Additional working functions in file **zfunctions.R**
 -->

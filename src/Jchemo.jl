@@ -7,9 +7,11 @@ using DataFrames
 using ImageFiltering
 using Distances
 using NearestNeighbors
+using DecisionTree
 
 include("utility.jl") ; include("center_scale.jl")
 include("preprocessing.jl")
+include("rmgap.jl")
 
 include("pcasvd.jl") ; include("pcaeigen.jl")
 include("kpca.jl")
@@ -20,7 +22,10 @@ include("plskern.jl") ; include("plsnipals.jl")
 include("cglsr.jl") ; include("aicplsr.jl") ; include("wshenk.jl")  
 include("krr.jl") ; include("kplsr.jl") ; include("dkplsr.jl")
 include("plsr_agg.jl")
-include("baggr.jl") ; include("gboostr.jl") ; include("boostr.jl")
+
+include("treer.jl")
+include("baggr.jl") ; include("baggr_vi.jl")
+include("gboostr.jl") ; include("boostr.jl")
 
 include("xfit.jl") ; include("scordis.jl")
 
@@ -45,6 +50,7 @@ export
     snv, snv!, detrend, detrend!, fdif, fdif!,
     mavg, mavg!, mavg_runmean, mavg_runmean!,
     savgk, savgol, savgol!,
+    rmgap, rmgap!,
     # Pca
     pcasvd, pcasvd!, pcaeigen, pcaeigen!, pcaeigenk, pcaeigenk!,
     kpca,
@@ -57,7 +63,10 @@ export
     cglsr, cglsr!, dfplsr_cg, aicplsr,
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
     plsr_agg, plsr_agg!,
-    baggr, gboostr, boostr, boostrw
+    #
+    treer,
+    baggr, baggr_oob, baggr_vi,
+    gboostr, boostr, boostrw,
     #
     xfit, xfit!, xresid, xresid!,
     # Local
@@ -74,7 +83,8 @@ export
     getknn, wdist, wdist!,
     euclsq, mahsq, mahsqchol,
     krbf, kpol
-    # Not exported since surchage: summary (Base.summary)
+    # Not exported since surchage
+    # summary => Base.summary
 
 end # End-Module
 

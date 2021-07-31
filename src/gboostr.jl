@@ -16,20 +16,21 @@ Gradient boosting for regression models.
 * `fun` : Name (string) of the function computing the model to boost.
 * `B` : Nb. of boosting iterations.
 * `nu` : Learning rate (must be between 0 and 1) applied to each iteration.
-* `k` : Nb. observations (rows) sub-sampled in `X` at each iteration.
+* `k` : Nb. observations (rows) sampled in `X` at each iteration.
 * `withr`: Boolean defining the type of sampling of the observations when `k` < n 
     (`withr = false` => sampling without replacement).
-* `nvar` : Nb. variables (columns) sub-sampled in `X` at each iteration.
+* `nvar` : Nb. variables (columns) sampled in `X` at each iteration.
 * `kwargs` : Named arguments to pass in 'fun`.
 
 Assume that `X` is (n, p).
 
-If `k` = n, each boosting iteration takes all the observations (no sub-sampling),
+If `k` = n, each boosting iteration takes all the observations (no sampling),
 which is the usual gradient boosting.
 
-If `k` < n, each boosting iteration is done on k sub-sampled observations, 
+If `k` < n, each boosting iteration is done on k sampled observations, 
 which corresponds to the stochastic gradient boosting. 
-The sampling can be without (default) or with replacement, depending on argument `withr`.
+The sampling can be without (default) or with replacement, 
+depending on argument `withr`.
 
 If `nvar` < p , `nvar` variables are sampled without replacement at each
 boosting iteration, and taken as predictors for the given iteration.

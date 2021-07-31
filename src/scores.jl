@@ -22,7 +22,7 @@ Compute the sum of squared prediction errors (SSR).
 """
 function ssr(pred, Y)
     r = residreg(pred, Y)
-    sum(r.^2, dims = 1)
+    reshape(sum(r.^2, dims = 1), 1, :)
 end
 
 """

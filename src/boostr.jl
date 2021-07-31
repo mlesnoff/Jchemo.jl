@@ -9,7 +9,7 @@ end
 """ 
     boostr(X, Y, weights = nothing; fun, B, 
         k = size(X, 1), withr = false, nvar = size(X, 2), meth = "dru", kwargs...)
-Adaptative boosting (by sampling) for regression models.
+Adaptative boosting (sampling) for regression models.
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
@@ -18,7 +18,7 @@ Adaptative boosting (by sampling) for regression models.
 * `k` : Nb. observations (rows) sub-sampled in `X` at each iteration.
 * `withr`: Boolean defining the type of sampling of the observations when `k` < n 
     (`withr = false` => sampling without replacement).
-* `nvar` : Nb. variables (columns) sub-sampled in `X` at each iteration.
+* `nvar` : Nb. variables (columns) sampled in `X` at each iteration.
 * `meth` : Method of adaptative boosting ("dru" or "rt").
 * `kwargs` : Named arguments to pass in 'fun`.
 
@@ -27,12 +27,12 @@ Assume that `X` is (n, p).
 **At each iteration**
 * If `k` = n : The model is calibrated after a sampling with 
     replacement of n observations.
-* If `k` < n : The model is calibrated after a sub-sampling of k observations
+* If `k` < n : The model is calibrated after a sampling of k observations
     without (default) or with replacement, depending o argument `withr`.
 * If `nvar` < p , `nvar` variables are sampled without replacement, 
     and taken as predictors for the given iteration.
-* A boosting weight is then computed from the calibrated model for each 
-    of the n observations and for the model.
+* Then, boosting weights are computed from the calibrated model 
+    for the n observations and for the model.
 
 This is the AdaBoost algorithm of Drucker 1997,
 which is an adaptation of the AdaBoost.M1 classificatuon algorithm 
@@ -132,21 +132,22 @@ end
 """ 
     boostrw(X, Y, weights = nothing; fun, B, 
         k = size(X, 1), withr = false, nvar = size(X, 2), meth = "dru", kwargs...)
-Adaptative boosting (by sampling) for regression models.
+Adaptative boosting (direct) for regression models.
 * `X` : X-data.
 * `Y` : Y-data.
 * `fun` : Name (string) of the function computing the model to boost.
     Must have a weight argument.
 * `B` : Nb. of boosting iterations.
-* `k` : Nb. observations (rows) sub-sampled in `X` at each iteration.
+* `k` : Nb. observations (rows) sampled in `X` at each iteration.
 * `withr`: Boolean defining the type of sampling of the observations when `k` < n 
     (`withr = false` => sampling without replacement).
 * `nvar` : Nb. variables (columns) sub-sampled in `X` at each iteration.
 * `meth` : Method of adaptative boosting ("dru" or "rt").
 * `kwargs` : Named arguments to pass in 'fun`.
 
-Same as `boostr` except that the boosting weights computed for the n observations
-are directly taken into account into the boosted model.
+Same as `boostr` except that the boosting weights computed for the 
+n observations are directly taken into account into the boosted model 
+(there is no sampling of observations).
 """ 
 function boostrw(X, Y; fun, B, 
     k = size(X, 1), withr = false, nvar = size(X, 2), kwargs...)
