@@ -1,8 +1,8 @@
 """
-    rmgap(X, indexcol, k = 5)
+    rmgap(X; indexcol, k = 5)
 Remove vertical gaps in spectra (rows of matrix `X`), e.g. for ASD.  
     * `X` : X-data.
-    * `indexcol` : The column indexes where are located the gaps. 
+    * `indexcol` : The indexes of the columns where are located the gaps. 
     * `k` : The number of columns used on the left side 
         of the gaps for fitting the linear regressions.
 
@@ -12,11 +12,11 @@ computed on the left side of the gaps.
 If two gaps are observed between indexes 651-652 and 
 between indexes 1451-1452, respectively, then indexcol = c(651, 1451).
 """ 
-function rmgap(X, indexcol, k)
-    rmgap!(copy(X), indexcol, k)
+function rmgap(X; indexcol, k)
+    rmgap!(copy(X); indexcol, k)
 end
 
-function rmgap!(X, indexcol, k = 5)
+function rmgap!(X; indexcol, k = 5)
     X = ensure_mat(X)
     size(X, 2) == 1 ? X = reshape(X, 1, :) : nothing
     p = size(X, 2)

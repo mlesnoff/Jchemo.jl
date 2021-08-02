@@ -127,16 +127,16 @@
   
 #### **Cross-validation (CV)**
 
+- ***segmts*** Building segments for test-set validation
+- ***segmkf*** Building segments for K-fold CV
+
 <!---
 - ***gridcv*** Any model
 - ***gridcvlv*** Models with LVs (faster)
 - ***gridcvlb*** Models with ridge parameter (faster)  
 -->
 
-<!---
-- ***segmkf*** Building segments for K-fold CV
-- ***segmts*** Building segments for test-set CV
--->
+
 
 #### **Performance scores**
 

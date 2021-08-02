@@ -1,6 +1,6 @@
 module Jchemo  # Start-Module
 
-using LinearAlgebra, Statistics
+using LinearAlgebra, Statistics, Random
 using Distributions
 using StatsBase    # sample
 using DataFrames
@@ -33,8 +33,12 @@ include("locw.jl")
 include("knnr.jl") ; include("lwplsr.jl")
 include("lwplsr_agg.jl")
 
+# Validation
 include("mpars.jl")
-include("scores.jl") ; include("gridscore.jl")
+include("scores.jl")
+include("gridscore.jl")
+include("segm.jl") ; include("gridcv.jl")
+
 include("distances.jl")
 include("getknn.jl")
 include("wdist.jl")
@@ -79,6 +83,8 @@ export
     ssr, msep, rmsep, bias, sep, cor2, r2, rpd, rpdr, mse, err,
     mpars,
     gridscore, gridscorelv, gridscorelb,
+    segmts, segmkf,
+    gridcv,
     # Distances
     getknn, wdist, wdist!,
     euclsq, mahsq, mahsqchol,

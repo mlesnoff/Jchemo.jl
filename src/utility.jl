@@ -35,34 +35,27 @@ mweights(w) = w / sum(w)
 """
     rmrow(X, s)
 Remove the rows of `X` having indexes `s`.
-## === Examples
+## Examples
 ```julia
-X = rand(20, 4) ; 
-rmrows(X, collect(1:18))
-rmrows(X, 1:18)
+X = rand(5, 2) ; 
+rmrows(X, 2:3)
+rmrows(X, [1, 4])
 ```
 """
-function rmrows(X::AbstractMatrix, s)
-    n = size(X, 1)
-    minus_s = setdiff(collect(1:n), s)
-    X[minus_s, :]
-end
-
-function rmrows(X::AbstractVector, s)
-    n = length(X)
-    minus_s = setdiff(collect(1:n), s)
-    X[minus_s]
-end
+rmrows(X::AbstractMatrix, s) = X[setdiff(1:end, s), :]
+rmrows(X::AbstractVector, s) = X[setdiff(1:end, s)]
 
 """
     rmcols(X, s)
 Remove the columns of `X` having indexes `s`.
+## Examples
+```julia
+X = rand(5, 3) ; 
+rmcols(X, 1:2)
+rmcols(X, [1, 3])
+```
 """
-function rmcols(X, s)
-    p = size(X, 2)
-    minus_s = setdiff(collect(1:p), s)
-    X[:, minus_s]
-end
+rmcols(X::AbstractMatrix, s) = X[:, setdiff(1:end, s)]
 
 """
     sourcedir(path)
