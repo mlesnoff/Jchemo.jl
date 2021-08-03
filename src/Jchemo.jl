@@ -84,7 +84,7 @@ export
     mpars,
     gridscore, gridscorelv, gridscorelb,
     segmts, segmkf,
-    gridcv,
+    gridcv, gridcvlv, gridcvlb,
     # Distances
     getknn, wdist, wdist!,
     euclsq, mahsq, mahsqchol,

@@ -1,17 +1,22 @@
 """
     gridscore(Xtrain, Ytrain, X, Y; score, fun, pars, verbose = FALSE) 
-Compute a prediction score (error rate; e.g. MSEP) for a given model over a grid of parameter values.
+Model validation over a grid of parameters.
 * `Xtrain` : Training X-data.
 * `Ytrain` : Training Y-data.
 * `X` : Validation X-data.
 * `Y` : Validation Y-data.
-* `score` : Function computing the prediction score.
+* `score` : Function computing the prediction score (= error rate; e.g. MSEP).
 * `fun` : Function computing the prediction model.
 * `pars` : tuple of named vectors (arguments of fun) of same length
     involved in the calculation of the score.
 * `verbose` : If true, fitting information are printed.
 
-The score is computed over X and Y for each combination of the grid defined in pars. 
+Compute a prediction score for a given model over a grid of parameters.
+
+The score is computed over X and Y for each combination of the 
+grid defined in `pars`. 
+    
+The vectors in `pars` must have same length.
 """
 function gridscore(Xtrain, Ytrain, X, Y; score, fun, pars, verbose = false)
     q = size(Ytrain, 2)
@@ -33,10 +38,12 @@ end
 
 """
     gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv, pars, verbose = FALSE)
-Same as [`gridscore`](@ref) but specific and much faster for LV-based models (e.g. PLSR).
 * `nlv` : Nb., or collection of nb., of latent variables (LVs).
 
-Argument `pars` must not contain nlv.
+Same as [`gridscore`](@ref) but specific to (and much faster for) models 
+using latent variables (e.g. PLSR).
+
+Argument `pars` must not contain `nlv`.
 """
 function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv, pars = nothing, verbose = false)
     q = size(Ytrain, 2)
@@ -89,10 +96,12 @@ end
 
 """
     gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb, pars, verbose = FALSE)
-Same as [`gridscore`](@ref) but specific and much faster for LV-based models (e.g. PLSR).
 * `lb` : Value, or collection of values, of the regularization parameter "lambda".
 
-Argument `pars` must not contain lb.
+Same as [`gridscore`](@ref) but specific to (and much faster for) models 
+using ridge regularization (e.g. RR).
+
+Argument `pars` must not contain `lb`.
 """
 function gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb, pars = nothing, verbose = false)
     q = size(Ytrain, 2)
