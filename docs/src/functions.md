@@ -129,14 +129,9 @@
 
 - ***segmts*** Building segments for test-set validation
 - ***segmkf*** Building segments for K-fold CV
-
-<!---
 - ***gridcv*** Any model
 - ***gridcvlv*** Models with LVs (faster)
 - ***gridcvlb*** Models with ridge parameter (faster)  
--->
-
-
 
 #### **Performance scores**
 
@@ -176,7 +171,6 @@
 
 <!--- 
 - ***xinterp*** Resampling of spectra by interpolation methods
-- ***gaprm** Remove vertical gaps in spectra (e.g. for ASD)
 - **eposvd** Pre-processing data by external parameter orthogonalization (EPO; Roger et al 2003) 
 -->
 
