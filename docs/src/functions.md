@@ -27,13 +27,13 @@
 
 #### **Partial least squares (PLSR)**
 
-- ***plskernel*** "Improved kernel #1" (Dayal & McGregor 1997)
+- ***plskern*** "Improved kernel #1" (Dayal & McGregor 1997)
 - ***plsnipals*** NIPALS
 - ***kplsr*** Non linear kernel PLSR (KPLSR) (Rosipal & Trejo 2001)
 - ***dkplsr*** Direct KPLSR (Bennett & Embrechts 2003)
 <!---
-- ***plsnipals*** Nipals
 - ***plsrannar*** Kernel version for wide matrices (Rannar et al. 1994)
+- ***simpls***
 -->
 
 #### **Ridge (RR)**
@@ -57,18 +57,17 @@
 *Averaging PLSR models with different numbers of LVs*
 
 - ***plsr_agg*** PLSR-AGG
-- ***lwplsr_agg*** KNN-LWPLSR-AGG 
+- ***lwplsr_agg*** kNN-LWPLSR-AGG 
 
 *Bagging*
 
 - ***baggr*** Bagging 
-- ***baggr_oob*** OOB error rate
+- ***baggr_oob*** Out-of-bag error rate
 - ***bagg_vi*** Variance importance (permutation)
 
 *Boosting*
 
 - ***boostr***, ***boostrw*** Adaptative boosting
-
 - ***gboostr*** Gradient boosting
 
 #### <span style="color:#1589F0"> DISCRIMINATION ANALYSIS </span>
@@ -152,9 +151,8 @@
 - ***selwold*** Wold's criterion for models with LVs  
 -->
 
-#### <span style="color:#1589F0"> **SELECTION OF VARIABLES** </span>
-
 <!---
+#### <span style="color:#1589F0"> **SELECTION OF VARIABLES** </span>
 - ***covsel*** COVSEL algorithm (Roger et al. 2011)
 -->
 
@@ -176,11 +174,10 @@
 
 #### **Sampling**
 
-<!---
 - ***sampks*** Kennard-Stone sampling 
 - ***sampdp*** Duplex sampling 
+- ***sampsys*** Systematic sampling
 - ***sampclas*** Within-class (stratified) sampling
--->
 
 #### **Checking**
 
@@ -238,15 +235,12 @@
 - ***locw*** Working function for local (kNN) models
 - ***iqr*** Interval inter-quartiles
 - ***mad*** Median absolute deviation
+- ***tab***, ***tabn*** Tabulation (univariate)
+- ***dummy*** Build dummy table
 - ***sourcedir*** Include all the files contained in a directory
 - See other functions in file `utility.jl`
 
-
-
-
-
 <!---
 - ***dmnorm*** Multivariate normal probability density
-- ***dummy*** Dummy table
 - ***matB***, ***matW*** Between and within covariance matrices
 -->

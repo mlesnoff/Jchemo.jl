@@ -39,6 +39,9 @@ include("scores.jl")
 include("gridscore.jl")
 include("segm.jl") ; include("gridcv.jl")
 
+# Sampling
+include("sampling.jl")
+
 include("distances.jl")
 include("getknn.jl")
 include("wdist.jl")
@@ -50,6 +53,8 @@ export
     mweights,
     colmeans, colvars, colvars!,
     center, center!, scale, scale!,
+    tab, tabnum,
+    dummy,
     # Pre-processing
     snv, snv!, detrend, detrend!, fdif, fdif!,
     mavg, mavg!, mavg_runmean, mavg_runmean!,
@@ -85,6 +90,8 @@ export
     gridscore, gridscorelv, gridscorelb,
     segmts, segmkf,
     gridcv, gridcvlv, gridcvlb,
+    # Sampling
+    sampks, sampdp, sampsys, sampclas,
     # Distances
     getknn, wdist, wdist!,
     euclsq, mahsq, mahsqchol,

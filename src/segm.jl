@@ -1,12 +1,12 @@
 """
     segmts(n; m, nrep = 1)
-Build segments for "test-set" validation.  
-    * `n` : Total nb. observations in the dataset. The sampling 
-        is implemented within 1:n.
-    * `m` : Nb. observations in each segment. 
-    * `nrep` : Nb. replications of the sampling.
+Build segments for "test-set" validation.
+* `n` : Total nb. observations in the dataset. The sampling 
+    is implemented within 1:n.
+* `m` : Nb. observations in each segment.
+* `nrep` : Nb. replications of the sampling.
     
-This builds a test set (eventually with replications) that can be used to validate a model.
+This builds a test set (eventually replicated) that can be used to validate a model.
 
 The function returns a list (Vector::Any) of nrep elements. 
 Each element of the list contains a vector (= segment) 
@@ -32,14 +32,14 @@ end
 
 """
     segmts(n, y; m, nrep = 1)
-Build segments (with block-sampling) for "test-set" validation.  
-    * `n` : Total nb. observations in the dataset. The sampling 
-        is implemented with 1:n.
-    * `y` : A vector (n,) defining the blocks.
-    * `m` : Nb. blocks in the segment. 
-    * `nrep` : Nb. replications of the sampling.
+Build segments with block-sampling for "test-set" validation.  
+* `n` : Total nb. observations in the dataset. The sampling 
+    is implemented with 1:n.
+* `y` : A vector (n,) defining the blocks.
+* `m` : Nb. blocks in the segment. 
+* `nrep` : Nb. replications of the sampling.
 
-Build a test set (eventually with replications) that can be used to validate a model.
+Build a test set (eventually replicated) that can be used to validate a model.
 
 The function samples entire blocks of observations instead of observations. 
 Vector `y` (defining the blocks) must be of length n.     
@@ -88,10 +88,10 @@ end
 """
     segmkf(n; K, nrep = 1)
 Build segments for K-fold cross-validation.  
-    * `n` : Total nb. observations in the dataset. The sampling 
-        is implemented with 1:n.
-    * `K` : Nb. folds (segments) splitting the data. 
-    * `nrep` : Nb. replications of the sampling.
+* `n` : Total nb. observations in the dataset. The sampling 
+    is implemented with 1:n.
+* `K` : Nb. folds (segments) splitting the data. 
+* `nrep` : Nb. replications of the sampling.
 
 Build K segments splitting the data (eventually with replications) that can 
 be used to validate a model.
@@ -126,11 +126,11 @@ end
 """
     segmkf(n, y; K, nrep = 1)
 Build segments (with block-sampling) for K-fold cross-validation.  
-    * `n` : Total nb. observations in the dataset. The sampling 
-        is implemented with 1:n.
-    * `y` : A vector (n,) defining the blocks.
-    * `K` : Nb. folds (segments) splitting the data. 
-    * `nrep` : Nb. replications of the sampling.
+* `n` : Total nb. observations in the dataset. The sampling 
+    is implemented with 1:n.
+* `y` : A vector (n,) defining the blocks.
+* `K` : Nb. folds (segments) splitting the data. 
+* `nrep` : Nb. replications of the sampling.
 
 Build K segments splitting the data (eventually with replications) that can 
 be used to validate a model.

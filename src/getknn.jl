@@ -15,8 +15,7 @@ function getknn(Xtrain, X; k = 1, metric = "eucl")
     if metric == "eucl"
         ztree = BruteTree(Xtrain', Euclidean())
         ind, d = knn(ztree, Xt, k, true) 
-    end
-    if metric == "mahal"
+    elseif metric == "mahal"
         S = Statistics.cov(Xtrain, corrected = false)
         if p == 1
             U = sqrt(S) 

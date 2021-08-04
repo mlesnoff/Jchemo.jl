@@ -1,4 +1,37 @@
 """
+    dummy(y)
+Examples
+≡≡≡≡≡≡≡≡≡≡
+y = ["d", "a", "b", "c", "b", "c"]
+#y =  rand(1:3, 7)
+dummy(y)
+"""
+function dummy(y)
+    z = tab(y)
+    lev = z.keys
+    nlev = length(lev)
+    ni = collect(values(tab(y)))
+    Y = BitArray(undef, length(y), nlev)
+    for i = 1:nlev
+        Y[:, i] = y .== lev[i]
+    end
+    (Y = Y, lev = lev, ni = ni)
+end
+
+function dummy2(y)
+    z = tab(y)
+    lev = z.keys
+    nlev = length(lev)
+    ni = collect(values(tab(y)))
+    res = list(nlev)
+    for i = 1:nlev
+        res[i] = y .== lev[i]
+    end
+    Y = reduce(hcat, res)
+    (Y = Y, lev = lev, ni = ni)
+end
+
+"""
     ensure_mat(X)
 Reshape `X` to a matrix if necessary.
 """
@@ -68,6 +101,18 @@ function sourcedir(path)
     for i in 1:n
         include(string(path, "/", z[i]))
     end
+end
+
+function tab(x)
+    sort(StatsBase.countmap(x))
+end
+
+## tabnum(x) only works for numeric x
+function tabnum(x)
+    lev = sort(unique(x))
+    cnt = StatsBase.counts(x)
+    cnt = cnt[cnt .> 0]
+    (cnt = cnt, lev = lev)
 end
 
 """
