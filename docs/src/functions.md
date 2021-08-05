@@ -47,7 +47,7 @@
 - ***svmr*** SVM regression (SVMR)
 -->
 
-#### **k-nearest-neighbors (kNN)**
+#### **k-nearest-neighbors (kNN) methods**
 
 - ***knnr*** kNNR
 - ***lwplsr*** kNN Locally weighted PLSR (kNN-LWPLSR)

@@ -8,9 +8,10 @@ using ImageFiltering
 using Distances
 using NearestNeighbors
 using DecisionTree
+using LIBSVM
 
 include("utility.jl") ; include("center_scale.jl")
-include("preprocessing.jl")
+include("preprocessing.jl") ; include("eposvd.jl")
 include("rmgap.jl")
 
 include("pcasvd.jl") ; include("pcaeigen.jl")
@@ -60,6 +61,7 @@ export
     mavg, mavg!, mavg_runmean, mavg_runmean!,
     savgk, savgol, savgol!,
     rmgap, rmgap!,
+    eposvd,
     # Pca
     pcasvd, pcasvd!, pcaeigen, pcaeigen!, pcaeigenk, pcaeigenk!,
     kpca,
