@@ -1,5 +1,5 @@
 """
-    gridcv(X, Y; segm, score, fun, pars, verbose = FALSE) 
+    gridcv(X, Y; segm, score, fun, pars, verbose = false) 
 Cross-validation (CV) over a grid of parameters.
 * `X` : X-data.
 * `Y` : Y-data.
@@ -16,7 +16,7 @@ grid defined in `pars`.
 
 The vectors in `pars` must have same length.
 """
-function gridcv(X, Y; segm, score, fun, pars, verbose = true)
+function gridcv(X, Y; segm, score, fun, pars, verbose = false)
     q = size(Y, 2)
     nrep = length(segm)
     res_rep = list(nrep)
@@ -28,11 +28,12 @@ function gridcv(X, Y; segm, score, fun, pars, verbose = true)
         zres = list(nsegm)       # results for the repetition
         @inbounds for j = 1:nsegm
             verbose ? print("segm=", j, " ") : nothing
-            s = sort(listsegm[j])
+            s = listsegm[j]
             zres[j] = gridscore(
                 rmrows(X, s), rmrows(Y, s),
                 X[s, :], Y[s, :];
                 score = score, fun = fun, pars = pars)
+                println(size(X[s, :]))
         end
         zres = reduce(vcat, zres)
         dat = DataFrame(rep = fill(i, nsegm * nco),
@@ -49,7 +50,7 @@ function gridcv(X, Y; segm, score, fun, pars, verbose = true)
 end
     
 """
-    gridcvlv(X, Y; segm, score, fun, nlv, pars, verbose = FALSE)
+    gridcvlv(X, Y; segm, score, fun, nlv, pars, verbose = false)
 * `nlv` : Nb., or collection of nb., of latent variables (LVs).
 
 Same as [`gridcv`](@ref) but specific to (and much faster for) models 
@@ -57,7 +58,7 @@ using latent variables (e.g. PLSR).
 
 Argument `pars` must not contain `nlv`.
 """
-function gridcvlv(X, Y; segm, score, fun, nlv, pars = nothing, verbose = true)
+function gridcvlv(X, Y; segm, score, fun, nlv, pars = nothing, verbose = false)
     q = size(Y, 2)
     nrep = length(segm)
     res_rep = list(nrep)
@@ -70,7 +71,7 @@ function gridcvlv(X, Y; segm, score, fun, nlv, pars = nothing, verbose = true)
         zres = list(nsegm)       # results for the repetition
         @inbounds for j = 1:nsegm
             verbose ? print("segm=", j, " ") : nothing
-            s = sort(listsegm[j])
+            s = listsegm[j]
             zres[j] = gridscorelv(
                 rmrows(X, s), rmrows(Y, s),
                 X[s, :], Y[s, :];
@@ -99,7 +100,7 @@ function gridcvlv(X, Y; segm, score, fun, nlv, pars = nothing, verbose = true)
 end
 
 """
-    gridcvlb(X, Y; segm, score, fun, lb, pars, verbose = FALSE)
+    gridcvlb(X, Y; segm, score, fun, lb, pars, verbose = false)
 * `nlv` : Nb., or collection of nb., of latent variables (LVs).
 
 Same as [`gridcv`](@ref) but specific to (and much faster for) models 
@@ -107,7 +108,7 @@ using ridge regularization (e.g. RR).
 
 Argument `pars` must not contain `lb`.
 """
-function gridcvlb(X, Y; segm, score, fun, lb, pars = nothing, verbose = true)
+function gridcvlb(X, Y; segm, score, fun, lb, pars = nothing, verbose = false)
     q = size(Y, 2)
     nrep = length(segm)
     res_rep = list(nrep)
@@ -120,7 +121,7 @@ function gridcvlb(X, Y; segm, score, fun, lb, pars = nothing, verbose = true)
         zres = list(nsegm)       # results for the repetition
         @inbounds for j = 1:nsegm
             verbose ? print("segm=", j, " ") : nothing
-            s = sort(listsegm[j])
+            s = listsegm[j]
             zres[j] = gridscorelb(
                 rmrows(X, s), rmrows(Y, s),
                 X[s, :], Y[s, :];

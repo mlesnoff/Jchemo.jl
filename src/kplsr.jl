@@ -37,11 +37,14 @@ Rosipal, R., Trejo, L.J., 2001. Kernel Partial Least Squares Regression in Repro
 Journal of Machine Learning Research 2, 97-123.
 
 """ 
-function kplsr(X, Y, weights = ones(size(X, 1)); nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, kwargs...)
-    kplsr!(copy(X), copy(Y), weights; nlv = nlv, kern = kern, tol = tol, maxit = maxit, kwargs...)
+function kplsr(X, Y, weights = ones(size(X, 1)); 
+    nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, kwargs...)
+    kplsr!(copy(X), copy(Y), weights; 
+        nlv = nlv, kern = kern, tol = tol, maxit = maxit, kwargs...)
 end
 
-function kplsr!(X, Y, weights = ones(size(X, 1)); nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, kwargs...)
+function kplsr!(X, Y, weights = ones(size(X, 1)); 
+    nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = size(X, 1)

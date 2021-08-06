@@ -77,7 +77,8 @@ function krr(X, Y, weights = ones(size(X, 1)); lb = .01, kern = "krbf", kwargs..
     sv = sqrt.(res.S)
     # UtDY = U' * D^(1/2) * Y
     UtDY = U' * sqrtD * Y
-    Krr(X, K, U, UtDY, sv, D, sqrtD, DKt, vtot, lb, ymeans, weights, kern, kwargs)
+    Krr(X, K, U, UtDY, sv, D, sqrtD, DKt, 
+        vtot, lb, ymeans, weights, kern, kwargs)
 end
 
 """

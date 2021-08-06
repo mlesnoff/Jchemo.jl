@@ -36,16 +36,14 @@
 - ***simpls***
 -->
 
-#### **Ridge (RR)**
+#### **Ridge (RR, KRR)**
 
 - ***rr*** Pseudo-inverse
 - ***rrchol*** Choleski factorization
-- ***krr*** Non linear kernel RR (KRR), i.e. Least squares SVM (LS-SVMR)
+- ***krr*** Non linear kernel RR (KRR) = Least squares SVM (LS-SVMR)
 
-<!---
-#### Support vector machine
-- ***svmr*** SVM regression (SVMR)
--->
+#### Support vector machine (SVMR)
+- ***svmr*** SVM regression (Epsilon-SVR)
 
 #### **k-nearest-neighbors (kNN) methods**
 
@@ -63,7 +61,7 @@
 
 - ***baggr*** Bagging 
 - ***baggr_oob*** Out-of-bag error rate
-- ***bagg_vi*** Variance importance (permutation)
+- ***baggr_vi*** Variance importance (permutation)
 
 *Boosting*
 
@@ -71,6 +69,8 @@
 - ***gboostr*** Gradient boosting
 
 #### <span style="color:#1589F0"> DISCRIMINATION ANALYSIS </span>
+
+- **In preparation**
   
 <!---
 #### Factorial discrimination analysis (FDA)
@@ -145,9 +145,9 @@
 - ***mse*** Summary for regression
 - ***err*** Classification error rate
 
-#### **Heuristic**  
 
 <!---  
+#### **Heuristic**  
 - ***selwold*** Wold's criterion for models with LVs  
 -->
 
@@ -165,7 +165,7 @@
 - ***fdif*** Finite differences
 - ***mavg***, ***mavg_runmean*** Smoothing by moving average
 - ***savgk***, ***savgol*** Savitsky-Golay filtering
-- ***rmgap** Remove vertical gaps in spectra, e.g. for ASD.
+- ***rmgap*** Remove vertical gaps in spectra, e.g. for ASD NIR data
 
 <!--- 
 - ***xinterp*** Resampling of spectra by interpolation methods
@@ -177,36 +177,36 @@
 - ***sampks*** Kennard-Stone sampling 
 - ***sampdp*** Duplex sampling 
 - ***sampsys*** Systematic sampling
-- ***sampclas*** Within-class (stratified) sampling
+- ***sampclas*** Stratified sampling
 
-#### **Checking**
 
 <!---
+#### **Checking**
 - ***checkna*** Find and count NA values in a data set
 - ***plotxna*** Plotting missing data in a matrix
 - ***checkdupl*** Find duplicated row observations between two data sets 
 - ***rmdupl*** Remove duplicated row observations between two data sets
 -->
 
-#### **Summary**
 
 <!---
+#### **Summary**
 - ***aggmean*** Centers of classes
 - ***dtagg*** Summary statistics with data subsets
 - ***summ*** Summary of the quantitative variables of a data set
 -->
 
-#### **Multi-block**
 
 <!---
+#### **Multi-block**
 - ***mblocks*** Makes a list of blocks
 - ***hconcat*** Horizontal block concatenation 
 - ***blockscal*** Block autoscaling
 -->
 
-#### **Datasets**
 
 <!---
+#### **Datasets**
 - ***asdgap** ASD spectra with vertical gaps
 - ***cassav*** Tropical shrubs
 - ***forages*** Tropical forages
@@ -214,9 +214,9 @@
 - ***ozone*** Los Angeles "ozone" pollution (1976) dataset
 -->
 
-#### <span style="color:#1589F0"> **GRAPHICS** </span>
 
 <!---
+#### <span style="color:#1589F0"> **GRAPHICS** </span>
 - ***plotsp*** Plotting spectra, loadings, or more generally row observations of a data set
 - ***plostsp1*** Same as  ***plotsp*** but one-by-one row
 - ***plotxy*** 2-d scatter plot
@@ -226,16 +226,16 @@
 
 #### <span style="color:#1589F0"> **UTILITY** </span>
 
-- ***colmeans***, ***colvars** Weighted column means and variances
-- ***center***, ***scale*** Column-wise matrix centering and scaling
-- ***euclsq***, ***mahsq***, ***mahsqchol*** Euclidean and Mahalanobis distances between rows of matrices
+- ***colmeans, colvars*** Weighted column means and variances
+- ***center, scale*** Column-wise matrix centering and scaling
+- ***euclsq, mahsq, mahsqchol*** Euclidean and Mahalanobis distances between rows of matrices
 - ***getknn*** Find nearest neighbours between rows of matrices
 - ***wdist*** Compute weights from distances
-- ***krbf***, ***kpol*** Build kernel Gram matrices
+- ***krbf, kpol*** Build kernel Gram matrices
 - ***locw*** Working function for local (kNN) models
 - ***iqr*** Interval inter-quartiles
 - ***mad*** Median absolute deviation
-- ***tab***, ***tabn*** Tabulation (univariate)
+- ***tab, tabn*** Tabulation (univariate)
 - ***dummy*** Build dummy table
 - ***sourcedir*** Include all the files contained in a directory
 - See other functions in file `utility.jl`

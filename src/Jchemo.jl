@@ -24,6 +24,8 @@ include("cglsr.jl") ; include("aicplsr.jl") ; include("wshenk.jl")
 include("krr.jl") ; include("kplsr.jl") ; include("dkplsr.jl")
 include("plsr_agg.jl")
 
+include("svmr.jl")
+
 include("treer.jl")
 include("baggr.jl") ; include("baggr_vi.jl")
 include("gboostr.jl") ; include("boostr.jl")
@@ -74,6 +76,8 @@ export
     cglsr, cglsr!, dfplsr_cg, aicplsr,
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
     plsr_agg, plsr_agg!,
+    #
+    svmr,
     #
     treer,
     baggr, baggr_oob, baggr_vi,
