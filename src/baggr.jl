@@ -1,35 +1,36 @@
 struct Baggr
     fm
-    s_inb
+    s_row  # in-bag
     s_oob
-    s_var
+    s_col
 end
 
 """ 
     baggr(X, Y, weights = nothing ; fun, B, 
-        k = size(X, 1), withr = false, nvar = size(X, 2), kwargs...)
+        samp_row = size(X, 1), withr = false, samp_col = size(X, 2), kwargs...)
 Bagging of regression models.
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
-* `fun` : Name (string) of the function computing the model to bagg.
 * `B` : Nb. of bagging repetitions.
-* `k` : Nb. observations (rows) sub-sampled in `X` at each repetition.
-* `withr`: Boolean defining the type of sampling of the observations when `k` < n 
+* `fun` : Name (string) of the function computing the model to bagg.
+* `samp_row` : Proportion of rows (observations) sampled in `X` at each repetition.
+* `withr`: Boolean defining the type of sampling of the observations when `samp_row` < 1 
     (`withr = false` => sampling without replacement).
-* `nvar` : Nb. variables (columns) sub-sampled in `X` at each repetition.
-* `kwargs` : Named arguments to pass in 'fun`.
+* `samp_col` : Proportion of columns (variables) sampled in `X` at each repetition.
+* `kwargs` : Optional named arguments to pass in 'fun`.
 
 Assume that `X` is (n, p).
 
-If `k` = n, each repetition consists in a sampling with replacement 
-of the n observations, which is the usual bagging.
+If `samp_row` = 1, each repetition consists in a sampling with replacement over 
+the n observations.
 
-If `k` < n, each repetition is done on k sub-sampled observations.
-The sampling can be without (default) or with replacement, depending on argument `withr`.
+If `samp_row` < 1, each repetition consist in a sampling of `samp_row` * n observations.
+The sampling can be without (default) or with replacement, depending on 
+argument `withr`.
 
-If `nvar` < p , `nvar` variables are sampled without replacement at each
-repetition, and taken as predictors for the given repetition.
+If `samp_col` < 1 , a proportion of `samp_col` * p variables are sampled without replacement 
+at each repetition, and taken as predictors for the given repetition.
 
 ## References
 
@@ -46,53 +47,54 @@ Gey, S., 2002. Bornes de risque, détection de ruptures, boosting :
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function baggr(X, Y, weights = nothing; fun, B, 
-    k = size(X, 1), withr = false, nvar = size(X, 2), kwargs...)
+function baggr(X, Y, weights = nothing; B, fun, 
+    samp_row = 1, withr = false, samp_col = 1, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    n = size(X, 1)
-    p = size(X, 2)
+    n, p = size(X)
     q = size(Y, 2)
-    learn = eval(Meta.parse(fun))    
+    flearn = eval(Meta.parse(fun))    
     fm = list(B)
-    k = min(k, n)
-    nvar = min(nvar, p)
-    zX = similar(X, k, nvar)
-    zY = similar(Y, k, q)
-    s_inb = fill(1, (k, B))
-    sinb = similar(s_inb, k)    
+    n_row = Int64(round(samp_row * n))
+    n_col = max(Int64(round(samp_col * p)), 1)
+    s_row = fill(1, (n_row, B)) 
+    srow = similar(s_row, n_row)    
     s_oob = list(B)
-    s_var = similar(s_inb, nvar, B) 
-    svar = similar(s_inb, nvar)
-    w = similar(X, k)
-    znvar = collect(1:nvar) 
+    s_col = similar(s_row, n_col, B) 
+    scol = similar(s_row, n_col)
+    w = similar(X, n_row)
+    zncol = collect(1:n_col) 
+    zX = similar(X, n_row, n_col)
+    zY = similar(Y, n_row, q)
     @inbounds for i = 1:B
-        k == n ? withr = true : nothing
-        sinb .= sample(1:n, k; replace = withr)
-        s_oob[i] = findall(in(sinb).(1:n) .== 0)
-        nvar == p ? svar .= znvar : svar .= sample(1:p, nvar; replace = false)
-        zX .= X[sinb, svar]
-        zY .= Y[sinb, :]
+        samp_row == 1 ? withr = true : nothing
+        srow .= sample(1:n, n_row; replace = withr)
+        s_oob[i] = findall(in(srow).(1:n) .== 0)
+        samp_col == 1 ? scol .= zncol : scol .= sample(1:p, n_col; replace = false)
+        zX .= X[srow, scol]
+        zY .= Y[srow, :]
         if(isnothing(weights))
-            fm[i] = learn(zX, zY; kwargs...)
+            fm[i] = flearn(zX, zY; kwargs...)
         else
-            w .= weights[sinb]
+            w .= weights[srow]
             w .= w / sum(w)
-            fm[i] = learn(zX, zY, w; kwargs...)
+            fm[i] = flearn(zX, zY, w; kwargs...)
         end
-        s_inb[:, i] .= sinb    
-        s_var[:, i] .= svar
+        s_row[:, i] .= srow    
+        s_col[:, i] .= scol
     end
-    Baggr(fm, s_inb, s_oob, s_var)
+    Baggr(fm, s_row, s_oob, s_col)
 end
 
 function predict(object::Baggr, X)
     B = length(object.fm)
-    svar = vcol(object.s_var, 1)
-    acc = predict(object.fm[1], @view(X[:, svar])).pred
+    scol = vcol(object.s_col, 1)
+    # @view is not accepted by XGBoost.predict
+    # @view(X[:, scol])
+    acc = predict(object.fm[1], X[:, scol]).pred
     @inbounds for i = 2:B
-        svar = vcol(object.s_var, i)
-        acc .+= predict(object.fm[i], @view(X[:, svar])).pred
+        scol = vcol(object.s_col, i)
+        acc .+= predict(object.fm[i], X[:, scol]).pred
     end
     pred = acc ./ B
     (pred = pred,)

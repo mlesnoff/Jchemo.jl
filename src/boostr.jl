@@ -1,42 +1,41 @@
 struct Boostr
     fm
-    s_obs
-    s_var
+    s_row
+    s_col
     beta
     probs
 end
 
 """ 
-    boostr(X, Y, weights = nothing; fun, B, 
-        k = size(X, 1), withr = false, nvar = size(X, 2), meth = "dru", kwargs...)
+    boostr(X, Y, weights = nothing; B, fun, 
+        samp_row = 1, withr = false, samp_col = 1, meth = "dru", kwargs...)
 Adaptative boosting (sampling) for regression models.
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
-* `fun` : Name (string) of the function computing the model to boost.
 * `B` : Nb. of boosting iterations.
-* `k` : Nb. observations (rows) sub-sampled in `X` at each iteration.
-* `withr`: Boolean defining the type of sampling of the observations when `k` < n 
+* `fun` : Name (string) of the function computing the model to boost.
+* `samp_row` : Proportion of rows (observations) sampled in `X` at each iteration.
+* `withr`: Boolean defining the type of sampling of the observations when `samp_row` < 1 
     (`withr = false` => sampling without replacement).
-* `nvar` : Nb. variables (columns) sampled in `X` at each iteration.
-* `meth` : Method of adaptative boosting ("dru" or "rt").
-* `kwargs` : Named arguments to pass in 'fun`.
-
-Assume that `X` is (n, p).
-
-**At each iteration**
-* If `k` = n : The model is calibrated after a sampling with 
-    replacement of n observations.
-* If `k` < n : The model is calibrated after a sampling of k observations
-    without (default) or with replacement, depending o argument `withr`.
-* If `nvar` < p , `nvar` variables are sampled without replacement, 
-    and taken as predictors for the given iteration.
-* Then, boosting weights are computed from the calibrated model 
-    for the n observations and for the model.
+* `samp_col` : Proportion of columns (variables) sampled in `X` at each iteration.
+* `kwargs` : Optional named arguments to pass in 'fun`.
 
 This is the AdaBoost algorithm of Drucker 1997,
 which is an adaptation of the AdaBoost.M1 classificatuon algorithm 
 of Freund & Schapire 1997.
+
+Assume that `X` is (n, p).
+
+If `samp_row` = 1, each boosting iteration is run on all the n observations 
+(no preliminary sampling).
+
+If `samp_row` < 1, each boosting iteration is done on `samp_row` * n sampled 
+observations. The sampling can be without (default) or with replacement, 
+depending on argument `withr`.
+
+If `samp_col` < 1 , a proportion of `samp_col` * p variables are sampled without replacement 
+at each boosting iteration, and taken as predictors for the given iteration.
 
 ## References
 
@@ -61,43 +60,43 @@ Presented at the IEEE International Conference on Neural Networks
 - Conference Proceedings, pp. 1163–1168 vol.2. https://doi.org/10.1109/IJCNN.2004.1380102
 
 """ 
-function boostr(X, Y, weights = nothing; fun, B, 
-    k = size(X, 1), withr = false, nvar = size(X, 2), meth = "dru", kwargs...)
+function boostr(X, Y, weights = nothing; B, fun, 
+    samp_row = 1, withr = false, samp_col = 1, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    n = size(X, 1)
-    p = size(X, 2)
+    n, p = size(X)
     q = size(Y, 2)
-    learn = eval(Meta.parse(fun))    
+    flearn = eval(Meta.parse(fun))    
     fm = list(B)
-    k = min(k, n)
-    nvar = min(nvar, p)
-    s_obs = fill(1, (k, B))
-    s_var = similar(s_obs, nvar, B) 
-    sobs = similar(s_obs, k)
-    svar = similar(s_obs, nvar)
-    probs = similar(X, n, B)
+    n_row = Int64(round(samp_row * n))
+    n_col = max(Int64(round(samp_col * p)), 1)
+    s_row = fill(1, (n_row, B))
+    s_col = similar(s_row, n_col, B) 
+    srow = similar(s_row, n_row)
+    scol = similar(s_row, n_col)
+    probs = similar(X, n, B) # weights of the observations in the sampling
     zprobs = ones(n) / n
     r2 = similar(X, n)
     d = similar(X, n)
     beta = similar(X, B)
-    znvar = collect(1:nvar) 
-    zX = similar(X, k, nvar)
-    zY = similar(Y, k, q)
-    w = similar(X, k)
+    w = similar(X, n_row)
+    zncol = collect(1:n_col) 
+    zX = similar(X, n_row, n_col)
+    zY = similar(Y, n_row, q)
     @inbounds for i = 1:B
-        k == n ? withr = true : nothing
-        sobs .= sample(1:n, Weights(zprobs), k; replace = withr)
-        nvar == p ? svar .= znvar : svar .= sample(1:p, nvar; replace = false)
-        zX .= X[sobs, svar]
-        zY .= Y[sobs, :]       
+        n_row == n ? withr = true : nothing
+        srow .= sample(1:n, Weights(zprobs), n_row; replace = withr)
+        n_col == p ? scol .= zncol : scol .= sample(1:p, n_col; replace = false)
+        zX .= X[srow, scol]
+        zY .= Y[srow, :]       
         if(isnothing(weights))
-            fm[i] = learn(zX, zY; kwargs...)
+            fm[i] = flearn(zX, zY; kwargs...)
         else
-            w .= mweights(weights[sobs])
-            fm[i] = learn(zX, zY, w; kwargs...)
+            w .= mweights(weights[srow])
+            fm[i] = flearn(zX, zY, w; kwargs...)
         end
-        pred = predict(fm[i], @view(X[:, svar])).pred
+        # @view is not accepted by XGBoost.predict
+        pred = predict(fm[i], X[:, scol]).pred
         r2 .= vec(sum(residreg(pred, Y).^2, dims = 2))
         d .= r2 / maximum(r2)[1]               
         L = dot(zprobs, d)
@@ -107,22 +106,23 @@ function boostr(X, Y, weights = nothing; fun, B,
         else
             zprobs .= ones(n) / n
         end
-        s_obs[:, i] .= sobs
-        s_var[:, i] .= svar
+        s_row[:, i] .= srow
+        s_col[:, i] .= scol
         probs[:, i] .= zprobs
     end
-    Boostr(fm, s_obs, s_var, beta, probs)
+    Boostr(fm, s_row, s_col, beta, probs)
 end
 
 function predict(object::Boostr, X)
     B = length(object.fm)
-    svar = vcol(object.s_var, 1)
+    scol = vcol(object.s_col, 1)
     w = log.(1 ./ object.beta)
     w .= mweights(w)
-    acc = w[1] * predict(object.fm[1], @view(X[:, svar])).pred
+    # @view is not accepted by XGBoost.predict  
+    acc = w[1] * predict(object.fm[1], X[:, scol]).pred
     @inbounds for i = 2:B
-        svar = vcol(object.s_var, i)
-        acc .+= w[i] * predict(object.fm[i], @view(X[:, svar])).pred
+        scol = vcol(object.s_col, i)
+        acc .+= w[i] * predict(object.fm[i], X[:, scol]).pred
     end
     (pred = acc,)
 end
@@ -130,56 +130,46 @@ end
 ################ Direct weighting
 
 """ 
-    boostrw(X, Y, weights = nothing; fun, B, 
-        k = size(X, 1), withr = false, nvar = size(X, 2), meth = "dru", kwargs...)
+    boostrw(X, Y, weights = nothing; B, fun, 
+        samp_row = 1, withr = false, samp_col = 1, kwargs...)
 Adaptative boosting (direct) for regression models.
-* `X` : X-data.
-* `Y` : Y-data.
-* `fun` : Name (string) of the function computing the model to boost.
-    Must have a weight argument.
-* `B` : Nb. of boosting iterations.
-* `k` : Nb. observations (rows) sampled in `X` at each iteration.
-* `withr`: Boolean defining the type of sampling of the observations when `k` < n 
-    (`withr = false` => sampling without replacement).
-* `nvar` : Nb. variables (columns) sub-sampled in `X` at each iteration.
-* `meth` : Method of adaptative boosting ("dru" or "rt").
-* `kwargs` : Named arguments to pass in 'fun`.
 
 Same as `boostr` except that the boosting weights computed for the 
-n observations are directly taken into account into the boosted model 
+n observations are directly accounted for in the fitting process 
 (there is no sampling of observations).
 """ 
-function boostrw(X, Y; fun, B, 
-    k = size(X, 1), withr = false, nvar = size(X, 2), kwargs...)
+function boostrw(X, Y; B, fun, 
+    samp_row = 1, withr = false, samp_col = 1, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    n = size(X, 1)
-    p = size(X, 2)
+    n, p = size(X)
     q = size(Y, 2)
-    learn = eval(Meta.parse(fun))    
+    flearn = eval(Meta.parse(fun))    
     fm = list(B)
-    k = min(k, n)
-    nvar = min(nvar, p)
-    s_obs = fill(1, (k, B))
-    s_var = similar(s_obs, nvar, B) 
-    sobs = similar(s_obs, k)
-    svar = similar(s_obs, nvar)
-    probs = similar(X, n, B)
+    n_row = Int64(round(samp_row * n))
+    n_col = max(Int64(round(samp_col * p)), 1)
+    s_row = fill(1, (n_row, B))
+    s_col = similar(s_row, n_col, B) 
+    srow = similar(s_row, n_row)
+    scol = similar(s_row, n_col)
+    probs = similar(X, n, B)  # weights of the observations in the fitting
     zprobs = ones(n) / n
     r2 = similar(X, n)
     d = similar(X, n)
     beta = similar(X, B)
-    zX = similar(X, k, nvar)
-    zY = similar(Y, k, q)
     zn = collect(1:n)
-    znvar = collect(1:nvar) 
+    zncol = collect(1:n_col) 
+    zX = similar(X, n_row, n_col)
+    zY = similar(Y, n_row, q)
     @inbounds for i = 1:B
-        k == n ? sobs .= zn : sobs .= sample(1:n, k; replace = withr)
-        nvar == p ? svar .= znvar : svar .= sample(1:p, nvar; replace = false)
-        zX .= X[sobs, svar]
-        zY .= Y[sobs, :]       
-        fm[i] = learn(zX, zY, zprobs[sobs]; kwargs...)
-        pred = predict(fm[i], @view(X[:, svar])).pred
+        n_row == n ? srow .= zn : srow .= sample(1:n, n_row; replace = withr)
+        n_col == p ? scol .= zncol : scol .= sample(1:p, n_col; replace = false)
+        zX .= @view(X[srow, scol])
+        zY .= @view(Y[srow, :])       
+        fm[i] = flearn(zX, zY, zprobs[srow]; kwargs...)
+        # @view is not accepted by XGBoost.predict
+        # @view(X[:, scol])
+        pred = predict(fm[i], X[:, scol]).pred
         r2 .= vec(sum(residreg(pred, Y).^2, dims = 2))
         d .= r2 / maximum(r2)[1]               
         L = dot(zprobs, d)
@@ -189,11 +179,11 @@ function boostrw(X, Y; fun, B,
         else
             zprobs .= ones(n) / n
         end    
-        s_obs[:, i] .= sobs
-        s_var[:, i] .= svar
+        s_row[:, i] .= srow
+        s_col[:, i] .= scol
         probs[:, i] .= zprobs
     end
-    Boostr(fm, s_obs, s_var, beta, probs)
+    Boostr(fm, s_row, s_col, beta, probs)
 end
 
 

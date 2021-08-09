@@ -27,14 +27,17 @@ function baggr_oob(object::Baggr, X, Y; score)
     Y = ensure_mat(Y)
     q = size(Y, 2)
     B = length(object.fm)
-    nvar = size(object.s_var, 1)
-    svar = fill(1, nvar)
+    ncol = size(object.s_col, 1)
+    scol = fill(1, ncol)
     res = similar(X, B, q)
     @inbounds for i = 1:B
         soob = object.s_oob[i]
-        svar .= vcol(object.s_var, i)
-        zX = @view(X[soob, svar])
-        zY = @view(Y[soob, :])
+        scol .= vcol(object.s_col, i)
+        # @view is not accepted by XGBoost.predict
+        # @view(X[soob, scol])
+        # @view(Y[soob, :])
+        zX = X[soob, scol]
+        zY = Y[soob, :]
         zpred = predict(object.fm[i], zX).pred
         res[i, :] = score(zpred, zY)
     end
@@ -69,21 +72,21 @@ function baggr_vi(object::Baggr, X, Y)
     p = size(X, 2)
     s_oob = object.s_oob
     B = length(s_oob)
-    nvar = size(object.s_var, 1)
-    svar = similar(object.s_var, nvar)
+    ncol = size(object.s_col, 1)
+    scol = similar(object.s_col, ncol)
     res = similar(X, B, p)
     @inbounds for i = 1:B
         soob = s_oob[i]
         m = length(soob)
-        svar .= vcol(object.s_var, i)
-        zpred = predict(object.fm[i], X[soob, svar]).pred
+        scol .= vcol(object.s_col, i)
+        zpred = predict(object.fm[i], X[soob, scol]).pred
         zY = @view(Y[soob, :]) ;
         zscore = msep(zpred, zY)
         @inbounds for j = 1:p
             zX = copy(X[soob, :])
             s = sample(1:m, m, replace = false)
             zX[:, j] .= zX[s, j]
-            zpred .= predict(object.fm[i], zX[:, svar]).pred
+            zpred .= predict(object.fm[i], zX[:, scol]).pred
             zscore_perm = msep(zpred, zY)
             res[i, j] = mean(zscore_perm .- zscore, dims = 2)[1]
         end
@@ -92,52 +95,6 @@ function baggr_vi(object::Baggr, X, Y)
     (imp = imp, res = res)
 end
 
-
-
-
-
-
-
-
-function baggr_vi2(X, Y, weights = nothing; fun, B, 
-    k = size(X, 1), withr = false, nvar = size(X, 2), kwargs...)
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
-    n = size(X, 1)
-    p = size(X, 2)
-    #fm = baggr(X, Y, weights; fun = fun, B = B, k = k, withr = true,
-    #    nvar = nvar, kwargs...)
-
-    fm = baggr(X, Y, weights; fun = "treer", B = B, k = n, withr = true,
-        nvar = p, kwargs...)
-
-    s_oob = fm.s_oob
-    svar = fill(1, nvar)
-    res = similar(X, B, p)
-    @inbounds for i = 1:B
-        soob = s_oob[i]
-        m = length(soob)
-        svar .= vcol(fm.s_var, i)
-        zpred = predict(fm.fm[i], X[soob, svar]).pred
-        zY = Y[soob, :] ;
-        zscore = msep(zpred, zY)
-        #println(typeof(fm.fm[i]))
-        #println(svar)
-        @inbounds for j = 1:p
-            #zX = @view(X[soob, svar])
-            zX = copy(X[soob, svar])
-            zX_perm = copy(X[soob, svar])            
-            s = sample(1:m, m, replace = false)
-            zX_perm[:, j] .= zX[s, j]
-
-            zpred_perm = predict(fm.fm[i], zX_perm).pred
-            zscore_perm = msep(zpred_perm, zY)
-            res[i, j] = mean(zscore_perm .- zscore, dims = 2)[1]
-        end
-    end
-    imp = vec(mean(res, dims = 1))
-    (imp = imp, res = res)
-end
 
 
 

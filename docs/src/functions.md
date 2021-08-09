@@ -43,7 +43,11 @@
 - ***krr*** Non linear kernel RR (KRR) = Least squares SVM (LS-SVMR)
 
 #### Support vector machine (SVMR)
-- ***svmr*** SVM regression (Epsilon-SVR)
+- ***svmr*** SVM regression (Epsilon-SVR with LIBSVM.jl/LIBSVM)
+
+#### Trees (CART)
+
+- ***treer*** Tree models for regression (with DecisionTree.jl)
 
 #### **k-nearest-neighbors (kNN) methods**
 
@@ -65,8 +69,9 @@
 
 *Boosting*
 
-- ***boostr***, ***boostrw*** Adaptative boosting
 - ***gboostr*** Gradient boosting
+- ***xgboostr*** XGBoost
+- ***boostr***, ***boostrw*** Adaptative boosting
 
 #### <span style="color:#1589F0"> DISCRIMINATION ANALYSIS </span>
 
