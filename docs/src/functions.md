@@ -67,11 +67,13 @@
 - ***baggr_oob*** Out-of-bag error rate
 - ***baggr_vi*** Variance importance (permutation)
 
+<!---
 *Boosting*
 
 - ***gboostr*** Gradient boosting
 - ***xgboostr*** XGBoost
 - ***boostr***, ***boostrw*** Adaptative boosting
+-->
 
 #### <span style="color:#1589F0"> DISCRIMINATION ANALYSIS </span>
 

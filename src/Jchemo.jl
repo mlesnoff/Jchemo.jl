@@ -12,7 +12,7 @@ using XGBoost
 using EvoTrees
 using NearestNeighbors
 
-include("utility.jl") ; include("center_scale.jl")
+include("utility.jl") 
 include("preprocessing.jl") ; include("eposvd.jl")
 include("rmgap.jl")
 
@@ -28,11 +28,11 @@ include("plsr_agg.jl")
 
 include("svmr.jl")
 
-include("treer.jl")
-include("xgboostr.jl")
-
 include("baggr.jl") ; include("baggr_util.jl")
 include("gboostr.jl") ; include("boostr.jl")
+
+include("treer.jl")
+include("xgboostr.jl")
 
 include("xfit.jl") ; include("scordis.jl")
 
@@ -82,12 +82,12 @@ export
     plsr_agg, plsr_agg!,
     #
     svmr,
-    #
-    treer_dt, treer_xgb, treer_evt,
-    xgboostr,
     # 
     baggr, baggr_oob, baggr_vi,
-    gboostr, boostr, boostrw,
+    #gboostr, boostr, boostrw,
+    #
+    #treer_dt, treer_xgb, treer_evt,
+    #xgboostr,
     #
     xfit, xfit!, xresid, xresid!,
     # Local

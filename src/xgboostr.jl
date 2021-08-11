@@ -46,7 +46,7 @@ function xgboostr(X, y; booster = "gbtree", obj = "reg:squarederror",
     samp_row = 1, samp_col = 1, samp_col_node = 1, 
     max_depth = 6, min_leaf = 5, kwargs...) 
     X = ensure_mat(X)
-    y = vec(y)
+    y = Float64.(vec(y))
     fm = xgboost(X, B; label = y, 
         booster = Symbol(booster), objective = obj,
         eta = eta, lambda = lambda, alpha = alpha, 

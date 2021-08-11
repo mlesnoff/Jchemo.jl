@@ -87,9 +87,9 @@ Moving averages smoothing of each row of X-data.
 * `X` : X-data.
 * `f` : Size (nb. points involved) of the filter.
 
-The smoothing is computed by convolution (with padding), with function imfilter of package ImageFiltering.jl.
-The centered kernel is ones(`f`) / `f`. Each returned point is located 
-on the center of the kernel.
+The smoothing is computed by convolution (with padding), with function 
+imfilter of package ImageFiltering.jl. The centered kernel is ones(`f`) / `f`.
+Each returned point is located on the center of the kernel.
 """ 
 function mavg(X, f)
     M = copy(X)
@@ -115,9 +115,9 @@ Moving average smoothing of each row of a matrix X.
 * `M` : Pre-allocated output matrix (n, p - f + 1).
 * `f` : Size (nb. points involved) of the filter.
 
-The smoothing is computed by convolution, without padding (which reduces the column dimension). 
-The function is an adaptation/simplification of function runmean (V. G. Gumennyy)
-of package Indicators.jl. See
+The smoothing is computed by convolution, without padding (which reduces 
+the column dimension). The function is an adaptation/simplification of function 
+runmean (V. G. Gumennyy) of package Indicators.jl. See
 https://github.com/dysonance/Indicators.jl/blob/a449c1d68487c3a8fea0008f7abb3e068552aa08/src/run.jl.
 The kernel is ones(`f`) / `f`. Each returned point is located on the 1st unit of the kernel.
 In general, this function can be faster than mavg, especialy for in-place versions.
@@ -163,7 +163,8 @@ end
 """ 
     savgk(m, pol, d)
 Compute the kernel of the Savitzky-Golay filter.
-* `m` : Nb. points of the half window (m >= 1) --> the size of the kernel is odd (f = 2 * m + 1): 
+* `m` : Nb. points of the half window (m >= 1) 
+    --> the size of the kernel is odd (f = 2 * m + 1): 
     x[-m], x[-m+1], ..., x[0], ...., x[m-1], x[m].
 * `pol` : Polynom order (1 <= pol <= 2 * m).
     The case "pol = 0" (simple moving average) is not allowed by the funtion.
@@ -172,8 +173,9 @@ Compute the kernel of the Savitzky-Golay filter.
 
 ## References
 
-Luo, J., Ying, K., Bai, J., 2005. Savitzky–Golay smoothing and differentiation filter for even number data. 
-Signal Processing 85, 1429–1434. https://doi.org/10.1016/j.sigpro.2005.02.002
+Luo, J., Ying, K., Bai, J., 2005. Savitzky–Golay smoothing and differentiation 
+filter for even number data. Signal Processing 85, 1429–1434.
+https://doi.org/10.1016/j.sigpro.2005.02.002
 """ 
 function savgk(m, pol, d)
     @assert m >= 1 "m must be >= 1"
@@ -199,8 +201,9 @@ Savitzky-Golay smoothing of each row of a matrix `X`.
 * `pol` : Polynom order (1 <= pol <= f - 1).
 * `d` : Derivation order (0 <= d <= pol).
 
-The smoothing is computed by convolution (with padding), with function imfilter of package ImageFiltering.jl.
-Each returned point is located on the center of the kernel. The kernel is computed with function `savgk`.
+The smoothing is computed by convolution (with padding), with function 
+imfilter of package ImageFiltering.jl. Each returned point is located on the center 
+of the kernel. The kernel is computed with function `savgk`.
 """ 
 function savgol(X, f, pol, d)
     M = copy(X)

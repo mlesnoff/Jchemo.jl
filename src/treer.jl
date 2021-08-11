@@ -76,10 +76,11 @@ Paris 11. http://www.theses.fr/2002PA112245
 function treer_xgb(X, y; samp_col_node = 1, max_depth = 6, 
     min_leaf = 5, kwargs...) 
     X = ensure_mat(X)
-    y = vec(y)
+    y = Float64.(vec(y))
     isequal(max_depth, -1) ? max_depth = length(y) : nothing
     num_round = 1
     fm = xgboost(X, num_round; label = y,
+        #seed = sample(1:10000, 1)[1], 
         eta = 1,  
         colsample_bynode = samp_col_node, 
         max_depth = max_depth,
@@ -137,11 +138,11 @@ end
 function predict(object::Treer, X)
     X = ensure_mat(X)
     m = size(X, 1)
-    if isa(object.fm, Node{Float64, Float64})
+    if in(propertynames(object.fm)).(:featid)   # DecisionTree
         pred = apply_tree(object.fm, X)
-    elseif isa(object.fm, Booster)
+    elseif isa(object.fm, Booster)   # XGBoost
         pred = XGBoost.predict(object.fm, X)
-    elseif isa(object.fm, EvoTrees.GBTree{Float64})
+    elseif isa(object.fm, EvoTrees.GBTree{Float64})  # EvoTrees
         pred = EvoTrees.predict(object.fm, X)
     end
     pred = reshape(pred, m, 1) ;
