@@ -25,10 +25,11 @@ function locw(Xtrain, Ytrain, X ;
         s = listnn[i]
         length(s) == 1 ? s = (s:s) : nothing
         zYtrain = Ytrain[s, :]
-        if q == 1 & length(unique(zYtrain)) == 1
-            ## For discrimination, 
-            ## case where all the neighbors are of same class
+        # For discrimination, 
+        # case where all the neighbors are of same class
+        if q == 1 && length(unique(zYtrain)) == 1
             pred[i, :] .= zYtrain[1]
+        # End
         else
             if isnothing(listw)
                 fm = fun(Xtrain[s, :],  zYtrain; kwargs...)
@@ -62,13 +63,13 @@ function locwlv(Xtrain, Ytrain, X ;
         s = listnn[i]
         length(s) == 1 ? s = (s:s) : nothing
         zYtrain = Ytrain[s, :]
-        ## For discrimination,
-        ## case where all the neighbors are of same class
-        if q == 1 & length(unique(zYtrain)) == 1
+        # For discrimination,
+        # case where all the neighbors are of same class
+        if q == 1 && length(unique(zYtrain)) == 1
             for a = 1:le_nlv
                 zpred[i, :, a] .= zYtrain[1]
             end
-        ## End 
+        # End 
         else
             if isnothing(listw)
                 fm = fun(Xtrain[s, :],  zYtrain ; nlv = maximum(nlv), kwargs...)

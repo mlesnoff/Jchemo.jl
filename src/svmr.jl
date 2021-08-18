@@ -8,10 +8,9 @@ end
         cost = 1.0, epsilon = .1)
 Support vector machine (SVM) for regression.
 * `X` : X-data.
-* `y : y-data.
-* `kern' : Nb. latent variables (LVs) to consider. 
+* `y : y-data (univariate).
 * 'kern' : Type of kernel used to compute the Gram matrices.
-    Possible values are "rbf", "pol", "lin" or "tanh". 
+    Possible values are "krbf", "kpol", "klin" or "ktanh". 
 * 'gamma' : See below.
 * 'degree' : See below.
 * 'coef0' : See below.
@@ -19,23 +18,23 @@ Support vector machine (SVM) for regression.
 * 'epsilon' : Epsilon parameter in the loss function .
 
 Kernel types : 
-* "krbf" -- radial basis function: exp(-gamma * |u - v|^2)
-* "kpol" -- polynomial: (gamma * u' * v + coef0)^degree
-* "klin* -- linear: u' * v
-* "ktan" -- sigmoid: tanh(gamma * u' * v + coef0)
+* "krbf" -- radial basis function: exp(-gamma * |x - y|^2)
+* "kpol" -- polynomial: (gamma * x' * y + coef0)^degree
+* "klin* -- linear: x' * y
+* "ktan" -- sigmoid: tanh(gamma * x' * y + coef0)
 
 The function uses LIBSVM.jl (https://github.com/JuliaML/LIBSVM.jl) 
 that is an interface to library LIBSVM (Chang & Li 2001).
 
 ## References 
 
+Library LIBSVM.jl
+https://github.com/JuliaML/LIBSVM.jl
+
 Chang, C.-C. & Lin, C.-J. (2001). LIBSVM: a library for support vector machines. 
 Software available at http://www.csie.ntu.edu.tw/~cjlin/libsvm. 
 Detailed documentation (algorithms, formulae, . . . ) can be found in
 http://www.csie.ntu.edu.tw/~cjlin/papers/libsvm.ps.gz
-
-Package LIBSVM.jl
-https://github.com/JuliaML/LIBSVM.jl
 
 Schölkopf, B., Smola, A.J., 2002. Learning with kernels: 
 support vector machines, regularization, optimization, and beyond.

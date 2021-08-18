@@ -24,7 +24,7 @@ Kernel partial least squares regression (KPLSR) implemented with a NIPALS algori
 * `weights` : Weights of the observations.
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * 'kern' : Type of kernel used to compute the Gram matrices.
-    Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`).
+    Possible values are "krbf" or "kpol" (see respective functions `krbf` and `kpol`).
 * `kwargs` : Named arguments to pass in the kernel function.
 
 This algorithm becomes slow for n > 1000.
@@ -38,13 +38,13 @@ Journal of Machine Learning Research 2, 97-123.
 
 """ 
 function kplsr(X, Y, weights = ones(size(X, 1)); 
-    nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, kwargs...)
+        nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, kwargs...)
     kplsr!(copy(X), copy(Y), weights; 
         nlv = nlv, kern = kern, tol = tol, maxit = maxit, kwargs...)
 end
 
 function kplsr!(X, Y, weights = ones(size(X, 1)); 
-    nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, kwargs...)
+        nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = size(X, 1)

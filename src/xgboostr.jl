@@ -42,17 +42,24 @@ https://github.com/dmlc/XGBoost.jl
 
 """ 
 function xgboostr(X, y; booster = "gbtree", obj = "reg:squarederror",
-    B, eta = 1, lambda = 0, alpha = 0, 
-    samp_row = 1, samp_col = 1, samp_col_node = 1, 
-    max_depth = 6, min_leaf = 5, kwargs...) 
+    B,  
+    samp_row = 1, 
+    samp_col = 1, samp_col_node = 1, 
+    max_depth = 6, min_leaf = 5, 
+    eta = 1, 
+    lambda = 1, alpha = 0, kwargs...) 
     X = ensure_mat(X)
     y = Float64.(vec(y))
     fm = xgboost(X, B; label = y, 
-        booster = Symbol(booster), objective = obj,
-        eta = eta, lambda = lambda, alpha = alpha, 
+        booster = Symbol(booster), 
+        objective = obj,
         subsample = samp_row,
-        colsample_bytree = samp_col, colsample_bynode = samp_col_node,
-        min_child_weight = min_leaf, max_depth = max_depth, 
+        colsample_bytree = samp_col, 
+        colsample_bynode = samp_col_node,        
+        max_depth = max_depth, 
+        min_child_weight = min_leaf, 
+        eta = eta, 
+        lambda = lambda, alpha = alpha, 
         verbosity = 0, kwargs...) ;
     Xgboost(fm)
 end

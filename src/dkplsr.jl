@@ -35,7 +35,8 @@ function dkplsr(X, Y, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
     dkplsr!(copy(X), copy(Y), weights; nlv = nlv, kern = kern, kwargs...)
 end
 
-function dkplsr!(X, Y, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
+function dkplsr!(X, Y, weights = ones(size(X, 1)); 
+        nlv, kern = "krbf", kwargs...)
     fkern = eval(Meta.parse(kern))    
     K = fkern(X, X; kwargs...)     # In the future: fkern!(K, X, X; kwargs...)
     fm = plskern!(K, Y; nlv = nlv)

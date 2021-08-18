@@ -18,7 +18,8 @@ grid defined in `pars`.
     
 The vectors in `pars` must have same length.
 """
-function gridscore(Xtrain, Ytrain, X, Y; score, fun, pars, verbose = false)
+function gridscore(Xtrain, Ytrain, X, Y; score, fun, 
+        pars, verbose = false)
     q = size(Ytrain, 2)
     nco = length(pars[1]) # nb. combinations in pars
     verbose ? println("-- Nb. combinations = ", nco) : nothing
@@ -45,7 +46,8 @@ using latent variables (e.g. PLSR).
 
 Argument `pars` must not contain `nlv`.
 """
-function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv, pars = nothing, verbose = false)
+function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv, 
+        pars = nothing, verbose = false)
     q = size(Ytrain, 2)
     nlv = max(minimum(nlv), 0):maximum(nlv)
     le_nlv = length(nlv)
@@ -63,6 +65,7 @@ function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv, pars = nothing, verb
         nco = length(pars[1])  # nb. combinations in pars
         verbose ? println("-- Nb. combinations = ", nco) : nothing
         res = map(values(pars)...) do v...
+            verbose ? println(Pair.(keys(pars), v)...) : nothing
             fm = fun(Xtrain, Ytrain ; nlv = maximum(nlv), Pair.(keys(pars), v)...)
             pred = predict(fm, X; nlv = nlv).pred
             le_nlv == 1 ? pred = [pred] : nothing
@@ -103,7 +106,8 @@ using ridge regularization (e.g. RR).
 
 Argument `pars` must not contain `lb`.
 """
-function gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb, pars = nothing, verbose = false)
+function gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb, 
+        pars = nothing, verbose = false)
     q = size(Ytrain, 2)
     lb = sort(unique(lb))
     le_lb = length(lb)
@@ -121,6 +125,7 @@ function gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb, pars = nothing, verbo
         nco = length(pars[1])  # nb. combinations in pars
         verbose ? println("-- Nb. combinations = ", nco) : nothing
         res = map(values(pars)...) do v...
+            verbose ? println(Pair.(keys(pars), v)...) : nothing
             fm = fun(Xtrain, Ytrain ; lb = maximum(lb), Pair.(keys(pars), v)...)
             pred = predict(fm, X; lb = lb).pred
             le_lb == 1 ? pred = [pred] : nothing

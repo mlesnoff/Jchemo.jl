@@ -1,14 +1,15 @@
 """
-    krbf(X, Y, sigma = 1)
+    krbf(X, Y; gamma = 1)
 Compute a Radial-Basis-Function (RBF) kernel Gram matrix. 
 * `X` : Data.
 * `Y` : Data.
-* `sigma` : scale parameter.
+* `gamma` : Scale parameter.
 
-When `X` (n, p) and `Y` (m, p), it returns
+Given matrices `X` (n, p) and `Y` (m, p), the function returns
 the (n, m) Gram matrix K(X, Y) = Phi(X) * Phi(Y)'.
 
-The RBF kernel between two vectors x and y is defined by exp(-.5 * (x - y)^2 / sigma^2).
+The RBF kernel between two vectors x and y is computed by 
+exp(-gamma * ||x - y||^2).
 
 ## References 
 
@@ -17,23 +18,24 @@ regularization, optimization, and beyond, Adaptive computation and machine learn
 MIT Press, Cambridge, Mass.
 
 """ 
-function krbf(X, Y; sigma = 1)
-    exp.(-.5 * euclsq(X, Y) / sigma^2)
+function krbf(X, Y; gamma = 1)
+    exp.(-gamma * euclsq(X, Y))
 end
 
 """
-    kpol(X, Y; degree = 1, scale = 1, offset = 0)
+    kpol(X, Y; degree = 1, gamma = 1, coef0 = 0)
 Compute a polynomial kernel Gram matrix. 
 * `X` : Data.
 * `Y` : Data.
-* `degree` : degree of the polynom.
-* `scale` : Scale of the polynom.
-* `offset` : Offset of the polynom.
+* `degree` : Degree of the polynom.
+* `gamma` : Scale of the polynom.
+* `coef0` : Offset of the polynom.
 
-When `X` (n, p) and `Y` (m, p), it returns
+Given matrices `X` (n, p) and `Y` (m, p), the function returns
 the (n, m) Gram matrix K(X, Y) = Phi(X) * Phi(Y)'.
 
-The polynomial kernel between two vectors x and y is defined by (scale * (x'y) + offset)^degree.
+The polynomial kernel between two vectors x and y is computed by 
+(gamma * (x' * y) + coef0)^degree.
 
 ## References 
 
@@ -42,8 +44,8 @@ regularization, optimization, and beyond, Adaptive computation and machine learn
 MIT Press, Cambridge, Mass.
 
 """ 
-function kpol(X, Y; degree = 1, scale = 1, offset = 0)
-    K = scale * X * Y' .+ offset
+function kpol(X, Y; degree = 1, gamma = 1, coef0 = 0)
+    K = gamma * X * Y' .+ coef0
     if degree > 1
         zK = copy(K)
         @inbounds for i = 1:(degree - 1)

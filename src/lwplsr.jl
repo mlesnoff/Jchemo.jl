@@ -75,20 +75,23 @@ Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Lwplsr, X; nlv = nothing) 
+function predict(object::Lwplsr, X; nlv = nothing)
     a = object.nlv
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     # Getknn
-    if(object.nlvdis == 0)
+    if object.nlvdis == 0
+        println(object.k)
+        println(object.metric)
         res = getknn(object.X, X; k = object.k, metric = object.metric)
     else
         fm = plskern(object.X, object.Y; nlv = object.nlvdis)
         res = getknn(fm.T, transform(fm, X); k = object.k, metric = object.metric)
     end
-    listw = map(d -> wdist(d, object.h), res.d)
+    listw = map(d -> wdist(d; h = object.h), res.d)
     # End
     pred = locwlv(object.X, object.Y, X; 
-        listnn = res.ind, listw = listw, fun = plskern, nlv = nlv, verbose = object.verbose).pred
+        listnn = res.ind, listw = listw, fun = plskern, nlv = nlv, 
+        verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 

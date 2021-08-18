@@ -80,7 +80,7 @@ function treer_xgb(X, y; samp_col_node = 1, max_depth = 6,
     isequal(max_depth, -1) ? max_depth = length(y) : nothing
     num_round = 1
     fm = xgboost(X, num_round; label = y,
-        #seed = sample(1:10000, 1)[1], 
+        seed = sample(1:10000, 1)[1], 
         eta = 1,  
         colsample_bynode = samp_col_node, 
         max_depth = max_depth,

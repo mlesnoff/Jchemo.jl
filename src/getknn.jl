@@ -11,7 +11,8 @@ The distances are also returned.
 function getknn(Xtrain, X; k = 1, metric = "eucl")
     Xtrain = ensure_mat(Xtrain)
     Xt = ensure_mat(X')
-    p = size(Xtrain, 2)
+    n, p = size(Xtrain)
+    k > n ? k = n : nothing
     if metric == "eucl"
         ztree = BruteTree(Xtrain', Euclidean())
         ind, d = knn(ztree, Xt, k, true) 
