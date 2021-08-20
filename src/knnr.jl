@@ -52,7 +52,7 @@ function predict(object::Knnr, X)
         fm = plskern(object.X, object.Y; nlv = object.nlvdis)
         res = getknn(fm.T, transform(fm, X); k = object.k, metric = object.metric)
     end
-    listw = map(d -> wdist(d, object.h), res.d)
+    listw = map(d -> wdist(d; h = object.h), res.d)
     pred = zeros(m, q)
     @inbounds for i = 1:m
         s = res.ind[i]

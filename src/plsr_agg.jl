@@ -12,16 +12,18 @@ Aggregation of PLSR models with different numbers of LVs.
 * `Y` : Y-data. Must be univariate if `wagg` != "unif".
 * weights : Weights of the observations.
 * `nlv` : A character string such as "5:20" defining the range of the numbers of LVs 
-    to consider ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 are averaged). 
-    Syntax such as "10" is also allowed ("10": correponds to the single model with 10 LVs).
+    to consider ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
+    are averaged). Syntax such as "10" is also allowed ("10": correponds to
+    the single model with 10 LVs).
 * `wagg` : Type of averaging. 
 
 Ensemblist method where the predictions are calculated by averaging the predictions 
-of a set of PLSR models (`plskern`) built with different numbers of latent variables (LVs).
+of a set of PLSR models (`plskern`) built with different numbers of 
+latent variables (LVs).
 
-For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for a new observation 
-is the average (eventually weighted) of the predictions returned by the models 
-with 5 LVS, 6 LVs, ... 10 LVs, respectively.
+For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for 
+a new observation is the average (eventually weighted) of the predictions 
+returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 
 Dependending argument `wagg`, the average is the simple mean (`wagg` = "unif") or 
 a weighted mean using AIC weights computed from the models (see function `aicplsr`):
