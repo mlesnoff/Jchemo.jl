@@ -94,6 +94,7 @@ Reshape `X` to a matrix if necessary.
 ensure_mat(X::AbstractMatrix) = X
 ensure_mat(X::AbstractVector) = reshape(X, :, 1)
 ensure_mat(X::Number) = reshape([X], 1, 1)
+ensure_mat(X::LinearAlgebra.Adjoint) = Matrix(X)
 
 """
     iqr(x)

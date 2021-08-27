@@ -73,19 +73,25 @@ Gey, S., 2002. Bornes de risque, détection de ruptures, boosting :
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function treer_xgb(X, y; samp_col_node = 1, max_depth = 6, 
-    min_leaf = 5, kwargs...) 
+function treer_xgb(X, y; 
+        max_depth = nothing, colsample_bynode = 1, 
+        min_child_weight = 5, 
+        tree_method = :auto, kwargs...) 
     X = ensure_mat(X)
     y = Float64.(vec(y))
-    isequal(max_depth, -1) ? max_depth = length(y) : nothing
+    isnothing(max_depth) ? max_depth = length(y) : nothing
     num_round = 1
     fm = xgboost(X, num_round; label = y,
-        seed = sample(1:10000, 1)[1], 
-        eta = 1,  
-        colsample_bynode = samp_col_node, 
+        #seed = Int64(round(rand(1)[1] * 10000)), 
+        eta = 1,
+        lambda = 0,
+        subsample = 1,
+        colsample_bytree = 1,
+        colsample_bylevel = 1,
+        colsample_bynode = colsample_bynode, 
         max_depth = max_depth,
-        min_child_weight = min_leaf,
-        tree_method = :auto,
+        min_child_weight = min_child_weight,
+        tree_method = tree_method,
         verbosity = 0, kwargs...)
     Treer(fm)
 end
@@ -117,8 +123,8 @@ Gey, S., 2002. Bornes de risque, détection de ruptures, boosting :
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function treer_evt(X, y; samp_col_node = 1, max_depth = 6, 
-    min_leaf = 5, nbins = 64) 
+function treer_evt(X, y; 
+        max_depth = 6, min_weight = 5, nbins = 64) 
     X = ensure_mat(X)
     y = vec(y)
     isequal(max_depth, -1) ? max_depth = Int64(1e6) : nothing
@@ -126,11 +132,13 @@ function treer_evt(X, y; samp_col_node = 1, max_depth = 6,
     params1 = EvoTreeRegressor(
         loss = :linear,
         nrounds = 1,
+        η = 1,
         rowsample = 1.0, 
-        colsample = Float64(samp_col_node), 
-        max_depth = max_depth, min_weight = Float64(min_leaf),
-        nbins = nbins,
-        η = 1)
+        colsample = 1.0, 
+        max_depth = max_depth, 
+        min_weight = Float64(min_weight),
+        λ = 0, γ = 0,
+        nbins = nbins)
     fm = fit_evotree(params1, X, y)
     Treer(fm)
 end

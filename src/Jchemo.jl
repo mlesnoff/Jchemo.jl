@@ -5,6 +5,7 @@ using Distributions
 using StatsBase    # sample
 using DataFrames
 using ImageFiltering
+using Interpolations
 using Distances
 using LIBSVM
 using DecisionTree
@@ -13,7 +14,7 @@ using EvoTrees
 using NearestNeighbors
 
 include("utility.jl") 
-include("preprocessing.jl") ; include("eposvd.jl")
+include("preprocessing.jl") 
 include("rmgap.jl")
 
 include("pcasvd.jl") ; include("pcaeigen.jl")
@@ -67,6 +68,7 @@ export
     mavg, mavg!, mavg_runmean, mavg_runmean!,
     savgk, savgol, savgol!,
     rmgap, rmgap!,
+    interpl,
     eposvd,
     # Pca
     pcasvd, pcasvd!, pcaeigen, pcaeigen!, pcaeigenk, pcaeigenk!,

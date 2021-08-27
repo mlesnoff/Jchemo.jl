@@ -173,19 +173,20 @@
 - ***mavg***, ***mavg_runmean*** Smoothing by moving average
 - ***savgk***, ***savgol*** Savitsky-Golay filtering
 - ***rmgap*** Remove vertical gaps in spectra, e.g. for ASD NIR data
+- ***interpl*** Sampling of signals by spline interpolation.
+- ***eposvd*** External parameter orthogonalization (EPO)
 
 <!--- 
 - ***xinterp*** Resampling of spectra by interpolation methods
 - **eposvd** Pre-processing data by external parameter orthogonalization (EPO; Roger et al 2003) 
 -->
 
-#### **Sampling**
+#### **Sampling observations**
 
 - ***sampks*** Kennard-Stone sampling 
 - ***sampdp*** Duplex sampling 
 - ***sampsys*** Systematic sampling
 - ***sampclas*** Stratified sampling
-
 
 <!---
 #### **Checking**

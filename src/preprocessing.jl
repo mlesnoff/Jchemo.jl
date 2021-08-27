@@ -1,24 +1,73 @@
 
 """
-    snv(X)
-Standard-normal-variate (SNV) transformation of each row of X-data.
-* `X` : X-data.
+    eposvd(D; nlv)
+Pre-processing X-data by external parameter orthogonalization (EPO).
+* `D` : Data (m, p) containing detrimental information.
+* `nlv` : Nb. of first loadings vectors of D considered for the orthogonalization.
 
-Each row of `X` is centered and scaled.
+The objective is to remove from a dataset X (n, p) some "detrimental" 
+information (e.g. humidity patterns in signals) represented by a dataset D (m, p).
+
+EPO (Roger et al 2003) consists in orthogonalizing the row observations 
+of X to the detrimental sub-space defined by the first nlv non-centered 
+PCA loadings vectors of D.
+
+Function eposvd makes a SVD factorization of D and returns 
+tow matrices:
+* M (p, p) : The orthogonalization matrix that can be used to correct the X-data.
+* P (p, nlv) : The matrix of the considered loading vectors of D. 
+
+The X-data corrected from the detrimental information D 
+can be computed by X_corrected = X * M.
+
+# References
+
+Roger, J.-M., Chauchard, F., Bellon-Maurel, V., 2003. EPO-PLS external parameter 
+orthogonalisation of PLS application to temperature-independent measurement 
+of sugar content of intact fruits. 
+Chemometrics and Intelligent Laboratory Systems 66, 191-204. 
+https://doi.org/10.1016/S0169-7439(03)00051-0
+
+Roger, J.-M., Boulet, J.-C., 2018. A review of orthogonal projections for calibration. 
+Journal of Chemometrics 32, e3045. https://doi.org/10.1002/cem.3045
+
+# Example
+
+```julia
+n = 4 ; p = 8 ; 
+X = rand(n, p)
+m = 3 ;
+D = rand(m, p)    # Detrimental information
+
+nlv = 2
+res = eposvd(D; nlv = nlv)
+res.M      # orthogonalization matrix
+res.P      # detrimental directions (columns of P = loadings of D)
+```
+
+The matrix corrected from D can be computed by:
+```julia
+X_corr = X * res.M    
+```
+Rows of the corrected matrix X_corr
+are orthogonal to the loadings vectors (columns of P):
+```julia
+X_corr * res.P 
+```
 """ 
-function snv(X)
-    M = copy(X)
-    snv!(M)
-    M
-end
-
-function snv!(X) 
-    n, p = size(X)
-    mu = vec(Statistics.mean(X; dims = 2))
-    s = vec(Statistics.std(X; corrected = false, dims = 2))
-    @inbounds for j = 1:p
-        X[:, j] .= (vcol(X, j) .- mu) ./ s
+function eposvd(D; nlv)
+    D = ensure_mat(D)
+    m, p = size(D)
+    nlv = min(nlv, m, p)
+    I = Diagonal(ones(p))
+    if nlv == 0 
+        M = I
+        P = nothing
+    else 
+        P = svd!(D).V[:, 1:nlv]
+        M = I - P * P'
     end
+    (M = M, P = P)
 end
 
 """
@@ -80,6 +129,36 @@ function fdif!(M, X, f = 2)
         M[:, j] .= vcol(X, j + f - 1) .- vcol(X, j)
     end
 end
+
+""" 
+    interpl(X; w0 = 1:size(X, 2), w, meth = nothing, kwargs...)
+    Sampling signals by interpolation methods.
+* `X` : Matrix (n, p) of signals (rows).
+* `w0` : The column names of `X` (must be numeric and of length p).
+* `w` : A vector of the values where to interpolate 
+    within the range of `w0`.
+* `meth` : Method of interpolation ("cubic", "quad" or "linear").
+
+For signal (row of `X`), the interpolations are computed by splines 
+using package Interpolations.jl. 
+""" 
+function interpl(X; w0 = 1:size(X, 2), w, meth = "cubic")
+    X = ensure_mat(X)
+    n, p = size(X)
+    q = length(w)
+    zX = similar(X, n, q)
+    meth == "cubic" ? fun = Cubic(Natural(OnGrid())) : nothing
+    meth == "quad" ? fun = Quadratic(Natural(OnGrid())) : nothing
+    meth == "linear" ? fun = Linear() : nothing 
+    @inbounds for i = 1:n
+        x = X[i, :]
+        itp = interpolate(x, BSpline(fun))
+        sitp = Interpolations.scale(itp, w0)
+        zX[i, :] .= sitp(w)
+    end
+    zX
+end
+
 
 """
     mavg(X, f)
@@ -225,5 +304,26 @@ function savgol!(X, f, pol, d)
     end
 end
 
+"""
+    snv(X)
+Standard-normal-variate (SNV) transformation of each row of X-data.
+* `X` : X-data.
+
+Each row of `X` is centered and scaled.
+""" 
+function snv(X)
+    M = copy(X)
+    snv!(M)
+    M
+end
+
+function snv!(X) 
+    n, p = size(X)
+    mu = vec(Statistics.mean(X; dims = 2))
+    s = vec(Statistics.std(X; corrected = false, dims = 2))
+    @inbounds for j = 1:p
+        X[:, j] .= (vcol(X, j) .- mu) ./ s
+    end
+end
 
 
