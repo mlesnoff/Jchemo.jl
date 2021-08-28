@@ -8,17 +8,17 @@ end
 
 """ 
     boostr(X, Y, weights = nothing; B, fun, 
-        samp_row = 1, withr = false, samp_col = 1, meth = "dru", kwargs...)
+        rowsamp = 1, withr = false, colsamp = 1, meth = "dru", kwargs...)
 Adaptative boosting (sampling) for regression models.
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
 * `B` : Nb. of boosting iterations.
 * `fun` : Name (string) of the function computing the model to boost.
-* `samp_row` : Proportion of rows (observations) sampled in `X` at each iteration.
-* `withr`: Boolean defining the type of sampling of the observations when `samp_row` < 1 
+* `rowsamp` : Proportion of rows (observations) sampled in `X` at each iteration.
+* `withr`: Boolean defining the type of sampling of the observations when `rowsamp` < 1 
     (`withr = false` => sampling without replacement).
-* `samp_col` : Proportion of columns (variables) sampled in `X` at each iteration.
+* `colsamp` : Proportion of columns (variables) sampled in `X` at each iteration.
 * `kwargs` : Optional named arguments to pass in 'fun`.
 
 This is the AdaBoost algorithm of Drucker 1997,
@@ -27,14 +27,14 @@ of Freund & Schapire 1997.
 
 Assume that `X` is (n, p).
 
-If `samp_row` = 1, each boosting iteration is run on all the n observations 
+If `rowsamp` = 1, each boosting iteration is run on all the n observations 
 (no preliminary sampling).
 
-If `samp_row` < 1, each boosting iteration is done on `samp_row` * n sampled 
+If `rowsamp` < 1, each boosting iteration is done on `rowsamp` * n sampled 
 observations. The sampling can be without (default) or with replacement, 
 depending on argument `withr`.
 
-If `samp_col` < 1 , a proportion of `samp_col` * p variables are sampled without replacement 
+If `colsamp` < 1 , a proportion of `colsamp` * p variables are sampled without replacement 
 at each boosting iteration, and taken as predictors for the given iteration.
 
 ## References
@@ -60,16 +60,16 @@ Presented at the IEEE International Conference on Neural Networks
 - Conference Proceedings, pp. 1163–1168 vol.2. https://doi.org/10.1109/IJCNN.2004.1380102
 
 """ 
-function boostr(X, Y, weights = nothing; B, fun, 
-    samp_row = 1, withr = false, samp_col = 1, kwargs...)
+function boostr(X, Y, weights = nothing; fun, B, 
+    withr = false, rowsamp = 1, colsamp = 1, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
     q = size(Y, 2)
     flearn = eval(Meta.parse(fun))    
     fm = list(B)
-    n_row = Int64(round(samp_row * n))
-    n_col = max(Int64(round(samp_col * p)), 1)
+    n_row = Int64(round(rowsamp * n))
+    n_col = max(Int64(round(colsamp * p)), 1)
     s_row = fill(1, (n_row, B))
     s_col = similar(s_row, n_col, B) 
     srow = similar(s_row, n_row)
@@ -84,9 +84,12 @@ function boostr(X, Y, weights = nothing; B, fun,
     zX = similar(X, n_row, n_col)
     zY = similar(Y, n_row, q)
     @inbounds for i = 1:B
-        n_row == n ? withr = true : nothing
         srow .= sample(1:n, Weights(zprobs), n_row; replace = withr)
-        n_col == p ? scol .= zncol : scol .= sample(1:p, n_col; replace = false)
+        if colsamp == 1
+            scol .= zncol
+        else
+            scol .= sample(1:p, n_col; replace = false) 
+        end
         zX .= X[srow, scol]
         zY .= Y[srow, :]       
         if(isnothing(weights))
@@ -131,23 +134,23 @@ end
 
 """ 
     boostrw(X, Y, weights = nothing; B, fun, 
-        samp_row = 1, withr = false, samp_col = 1, kwargs...)
+        rowsamp = 1, withr = false, colsamp = 1, kwargs...)
 Adaptative boosting (direct) for regression models.
 
 Same as `boostr` except that the boosting weights computed for the 
 n observations are directly accounted for in the fitting process 
 (there is no sampling of observations).
 """ 
-function boostrw(X, Y; B, fun, 
-    samp_row = 1, withr = false, samp_col = 1, kwargs...)
+function boostrw(X, Y; fun, B, 
+    withr = false, rowsamp = 1, colsamp = 1, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
     q = size(Y, 2)
     flearn = eval(Meta.parse(fun))    
     fm = list(B)
-    n_row = Int64(round(samp_row * n))
-    n_col = max(Int64(round(samp_col * p)), 1)
+    n_row = Int64(round(rowsamp * n))
+    n_col = max(Int64(round(colsamp * p)), 1)
     s_row = fill(1, (n_row, B))
     s_col = similar(s_row, n_col, B) 
     srow = similar(s_row, n_row)
@@ -162,8 +165,16 @@ function boostrw(X, Y; B, fun,
     zX = similar(X, n_row, n_col)
     zY = similar(Y, n_row, q)
     @inbounds for i = 1:B
-        n_row == n ? srow .= zn : srow .= sample(1:n, n_row; replace = withr)
-        n_col == p ? scol .= zncol : scol .= sample(1:p, n_col; replace = false)
+        if rowsamp == 1
+            srow .= zn
+        else
+            srow .= sample(1:n, n_row; replace = withr)
+        end
+        if colsamp == 1
+            scol .= zncol
+        else
+            scol .= sample(1:p, n_col; replace = false) 
+        end
         zX .= @view(X[srow, scol])
         zY .= @view(Y[srow, :])       
         fm[i] = flearn(zX, zY, zprobs[srow]; kwargs...)

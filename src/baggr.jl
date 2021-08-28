@@ -7,30 +7,21 @@ end
 
 """ 
     baggr(X, Y, weights = nothing ; fun, B, 
-        samp_row = size(X, 1), withr = false, samp_col = size(X, 2), kwargs...)
+        rowsamp = size(X, 1), withr = false, 
+        colsamp = size(X, 2), kwargs...)
 Bagging of regression models.
-* `X` : X-data.
-* `Y` : Y-data.
+* `X` : X-data (n obs., p variables).
+* `Y` : Y-data (n obs., q variables).
 * `weights` : Weights of the observations.
 * `B` : Nb. of bagging repetitions.
 * `fun` : Name (string) of the function computing the model to bagg.
-* `samp_row` : Proportion of rows (observations) sampled in `X` at each repetition.
-* `withr`: Boolean defining the type of sampling of the observations when `samp_row` < 1 
-    (`withr = false` => sampling without replacement).
-* `samp_col` : Proportion of columns (variables) sampled in `X` at each repetition.
+* `withr`: Type of sampling of the observations
+    (`true` => with replacement).
+* `rowsamp` : Proportion of rows sampled in `X` 
+    at each repetition.
+* `colsamp` : Proportion of columns sampled (without replacement) in `X` 
+    at each repetition.
 * `kwargs` : Optional named arguments to pass in 'fun`.
-
-Assume that `X` is (n, p).
-
-If `samp_row` = 1, each repetition consists in a sampling with replacement over 
-the n observations.
-
-If `samp_row` < 1, each repetition consist in a sampling of `samp_row` * n observations.
-The sampling can be without (default) or with replacement, depending on 
-argument `withr`.
-
-If `samp_col` < 1 , a proportion of `samp_col` * p variables are sampled without replacement 
-at each repetition, and taken as predictors for the given repetition.
 
 ## References
 
@@ -47,16 +38,16 @@ Gey, S., 2002. Bornes de risque, détection de ruptures, boosting :
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function baggr(X, Y, weights = nothing; B, fun, 
-    samp_row = 1, withr = false, samp_col = 1, kwargs...)
+function baggr(X, Y, weights = nothing; fun, B, 
+        withr = false, rowsamp = 1, colsamp = 1, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
     q = size(Y, 2)
     flearn = eval(Meta.parse(fun))    
     fm = list(B)
-    n_row = Int64(round(samp_row * n))
-    n_col = max(Int64(round(samp_col * p)), 1)
+    n_row = Int64(round(rowsamp * n))
+    n_col = max(Int64(round(colsamp * p)), 1)
     s_row = fill(1, (n_row, B)) 
     srow = similar(s_row, n_row)    
     s_oob = list(B)
@@ -67,10 +58,13 @@ function baggr(X, Y, weights = nothing; B, fun,
     zX = similar(X, n_row, n_col)
     zY = similar(Y, n_row, q)
     @inbounds for i = 1:B
-        samp_row == 1 ? withr = true : nothing
         srow .= sample(1:n, n_row; replace = withr)
         s_oob[i] = findall(in(srow).(1:n) .== 0)
-        samp_col == 1 ? scol .= zncol : scol .= sample(1:p, n_col; replace = false)
+        if colsamp == 1
+            scol .= zncol
+        else
+            scol .= sample(1:p, n_col; replace = false) 
+        end
         zX .= X[srow, scol]
         zY .= Y[srow, :]
         if(isnothing(weights))

@@ -3,7 +3,7 @@
 - ***pcaeigen*** Eigen decomposition
 - ***pcaeigenk*** Eigen decomposition for wide matrices (kernel form)
 - ***pcasvd*** SVD decomposition
-- ***kpca*** Non linear kernel PCA  (KPCA) (Scholkopf et al. 2002)
+- ***kpca*** Non linear kernel PCA  (KPCA) *Scholkopf et al. 2002*
 
 *Utility (works also for PLS)*
 - ***scordis*** Score distances (SDs) for a score space
@@ -27,10 +27,10 @@
 
 #### **Partial least squares (PLSR)**
 
-- ***plskern*** "Improved kernel #1" (Dayal & McGregor 1997)
+- ***plskern*** "Improved kernel #1" *Dayal & McGregor 1997*
 - ***plsnipals*** NIPALS
-- ***kplsr*** Non linear kernel PLSR (KPLSR) (Rosipal & Trejo 2001)
-- ***dkplsr*** Direct KPLSR (Bennett & Embrechts 2003)
+- ***kplsr*** Non linear kernel PLSR (KPLSR) *Rosipal & Trejo 2001*
+- ***dkplsr*** Direct KPLSR *Bennett & Embrechts 2003*
 <!---
 - ***plsrannar*** Kernel version for wide matrices (Rannar et al. 1994)
 - ***simpls***
@@ -42,19 +42,19 @@
 - ***rrchol*** Choleski factorization
 - ***krr*** Non linear kernel RR (KRR) = Least squares SVM (LS-SVMR)
 
-#### Support vector machine (SVMR)
-- ***svmr*** SVM regression (Epsilon-SVR with LIBSVM.jl/LIBSVM)
+#### **Support vector machine (SVMR)**
+- ***svmr*** SVM regression (Epsilon-SVR)
 
-#### Trees (CART)
+#### **Trees**
 
-- ***treer*** Tree models for regression (with DecisionTree.jl)
+- ***treer_xgb*** Single tree
 
-#### **k-nearest-neighbors (kNN) methods**
+#### **k-nearest-neighbors (kNN)**
 
 - ***knnr*** kNNR
 - ***lwplsr*** kNN Locally weighted PLSR (kNN-LWPLSR)
 
-#### **Ensemblist methods**
+#### **Ensemblism**
 
 *Averaging PLSR models with different numbers of LVs*
 
@@ -66,18 +66,15 @@
 - ***baggr*** Bagging 
 - ***baggr_oob*** Out-of-bag error rate
 - ***baggr_vi*** Variance importance (permutation)
+- ***rf_xgb*** Random forest
 
-<!---
 *Boosting*
 
-- ***gboostr*** Gradient boosting
-- ***xgboostr*** XGBoost
-- ***boostr***, ***boostrw*** Adaptative boosting
--->
+- ***xgboostr*** XGBoost 
 
 #### <span style="color:#1589F0"> DISCRIMINATION ANALYSIS </span>
 
-- **In preparation**
+- **Not yet available**
   
 <!---
 #### Factorial discrimination analysis (FDA)

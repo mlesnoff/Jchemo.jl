@@ -8,10 +8,8 @@ using ImageFiltering
 using Interpolations
 using Distances
 using LIBSVM
-using DecisionTree
-using XGBoost
-using EvoTrees
 using NearestNeighbors
+using XGBoost
 
 include("utility.jl") 
 include("preprocessing.jl") 
@@ -32,7 +30,7 @@ include("svmr.jl")
 include("baggr.jl") ; include("baggr_util.jl")
 include("gboostr.jl") ; include("boostr.jl")
 
-include("treer.jl")
+include("treer_xgb.jl")
 include("xgboostr.jl")
 
 include("xfit.jl") ; include("scordis.jl")
@@ -86,10 +84,8 @@ export
     svmr,
     # 
     baggr, baggr_oob, baggr_vi,
-    #gboostr, boostr, boostrw,
     #
-    #treer_dt, treer_xgb, treer_evt,
-    #xgboostr,
+    treer_xgb, rfr_xgb, xgboostr,
     #
     xfit, xfit!, xresid, xresid!,
     # Local
