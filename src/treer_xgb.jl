@@ -95,11 +95,18 @@ See https://xgboost.readthedocs.io/en/latest/tutorials/rf.html.
 XGBoost.jl
 https://github.com/dmlc/XGBoost.jl
 
-Breiman, L. (2001). Random forests. Mach Learn, 45:5-32. 
-doi: 10.1023/A:1010933404324.
+Breiman, L., 1996. Bagging predictors. Mach Learn 24, 123–140. 
+https://doi.org/10.1007/BF00058655
 
-Genuer, R., 2010. Forêts aléatoires : aspects théoriques, sélection de variables 
-et applications (PhD thesis). Université Paris Sud - Paris XI.
+Breiman, L., 2001. Random Forests. Machine Learning 45, 5–32. 
+https://doi.org/10.1023/A:1010933404324
+
+Genuer, R., 2010. Forêts aléatoires : aspects théoriques, 
+sélection de variables et applications. PhD Thesis. Université Paris Sud - Paris XI.
+
+Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
+trois thèmes statistiques autour de CART en régression (These de doctorat). 
+Paris 11. http://www.theses.fr/2002PA112245
 """ 
 function rfr_xgb(X, y;
         B,

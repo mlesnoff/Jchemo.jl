@@ -1,8 +1,8 @@
 struct Baggr
     fm
     s_row  # in-bag
-    s_oob
     s_col
+    s_oob  # out-of-bag
 end
 
 """ 
@@ -43,41 +43,42 @@ function baggr(X, Y, weights = nothing; fun, B,
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
-    q = size(Y, 2)
-    flearn = eval(Meta.parse(fun))    
+    q = size(Y, 2)   
     fm = list(B)
-    n_row = Int64(round(rowsamp * n))
-    n_col = max(Int64(round(colsamp * p)), 1)
-    s_row = fill(1, (n_row, B)) 
-    srow = similar(s_row, n_row)    
+    nrow = Int64(round(rowsamp * n))
+    ncol = max(Int64(round(colsamp * p)), 1)
+    s_row = fill(1, (nrow, B))        # (nrow, B)
+    s_col = similar(s_row, ncol, B)   # (ncol, B) 
     s_oob = list(B)
-    s_col = similar(s_row, n_col, B) 
-    scol = similar(s_row, n_col)
-    w = similar(X, n_row)
-    zncol = collect(1:n_col) 
-    zX = similar(X, n_row, n_col)
-    zY = similar(Y, n_row, q)
+    srow = similar(s_row, nrow)    
+    scol = similar(s_row, ncol)
+    w = similar(X, nrow)
+    zncol = collect(1:ncol) 
+    zX = similar(X, nrow, ncol)
+    zY = similar(Y, nrow, q)
+    #Threads.@threads for i = 1:B
+    #@sync @distributed for i = 1:B
+    #@distributed for i = 1:B
     @inbounds for i = 1:B
-        srow .= sample(1:n, n_row; replace = withr)
+        srow .= sample(1:n, nrow; replace = withr)
         s_oob[i] = findall(in(srow).(1:n) .== 0)
         if colsamp == 1
             scol .= zncol
         else
-            scol .= sample(1:p, n_col; replace = false) 
+            scol .= sample(1:p, ncol; replace = false) 
         end
         zX .= X[srow, scol]
         zY .= Y[srow, :]
         if(isnothing(weights))
-            fm[i] = flearn(zX, zY; kwargs...)
+            fm[i] = fun(zX, zY; kwargs...)
         else
-            w .= weights[srow]
-            w .= w / sum(w)
-            fm[i] = flearn(zX, zY, w; kwargs...)
+            w .= mweights(weights[srow])
+            fm[i] = fun(zX, zY, w; kwargs...)
         end
         s_row[:, i] .= srow    
         s_col[:, i] .= scol
     end
-    Baggr(fm, s_row, s_oob, s_col)
+    Baggr(fm, s_row, s_col, s_oob)
 end
 
 function predict(object::Baggr, X)

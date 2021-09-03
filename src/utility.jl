@@ -123,6 +123,32 @@ Return a vector of weights that sums to 1.
 mweights(w) = w / sum(w)
 
 """
+    recod_cont2cla(x, q)
+Recode a continuous variable to classes
+* `x` : Variable to recode.
+* `q` : Values separating the classes. 
+## Examples
+```julia
+x = [collect(1:10); 8.1 ; 3.1] 
+q = [3; 8] ;
+zx = recod_cont2cla(x, q) 
+[x zx]
+```
+"""
+function recod_cont2cla(x, q)
+    zx = similar(x)
+    q = sort(q)
+    for i = 1:length(x)
+        k = 1
+        for j = 1:length(q)
+            x[i] > q[j] ? k = k + 1 : nothing
+        end
+        zx[i] = k
+    end
+    zx
+end
+
+"""
     rmrow(X, s)
 Remove the rows of `X` having indexes `s`.
 ## Examples
@@ -183,7 +209,7 @@ function tab(x)
     sort(StatsBase.countmap(x))
 end
 
-## tabnum(x) only works for numeric x
+## tabnum(x) only works for the x classes represent integers
 function tabnum(x)
     lev = sort(unique(x))
     cnt = StatsBase.counts(x)

@@ -3,6 +3,7 @@ module Jchemo  # Start-Module
 using LinearAlgebra, Statistics, Random
 using Distributions
 using StatsBase    # sample
+using HypothesisTests
 using DataFrames
 using ImageFiltering
 using Interpolations
@@ -10,6 +11,7 @@ using Distances
 using LIBSVM
 using NearestNeighbors
 using XGBoost
+using Distributed
 
 include("utility.jl") 
 include("preprocessing.jl") 
@@ -31,13 +33,15 @@ include("baggr.jl") ; include("baggr_util.jl")
 include("gboostr.jl") ; include("boostr.jl")
 
 include("treer_xgb.jl")
-include("xgboostr.jl")
 
 include("xfit.jl") ; include("scordis.jl")
 
 include("locw.jl")
 include("knnr.jl") ; include("lwplsr.jl")
 include("lwplsr_agg.jl")
+
+# Var imp 
+include("var_imp.jl")
 
 # Validation
 include("mpars.jl")
@@ -55,12 +59,14 @@ include("kernels.jl")
 
 export 
     # Utilities
+    sourcedir,
     ensure_mat, list, vcol, vrow, rmcols, rmrows,
     mweights,
     colmeans, colvars, colvars!,
     center, center!, scale, scale!,
     tab, tabnum,
     dummy,
+    recod_cont2cla,
     # Pre-processing
     snv, snv!, detrend, detrend!, fdif, fdif!,
     mavg, mavg!, mavg_runmean, mavg_runmean!,
@@ -83,7 +89,7 @@ export
     #
     svmr,
     # 
-    baggr, baggr_oob, baggr_vi,
+    baggr, baggr_vi, baggr_oob,
     #
     treer_xgb, rfr_xgb, xgboostr,
     #
