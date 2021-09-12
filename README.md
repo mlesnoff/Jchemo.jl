@@ -65,17 +65,6 @@ Click [**HERE**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news
 
 ## <span style="color:green"> **Dependent packages** </span> 
 
-**Jchemo** is dependent to the following packages:
-
-| Package | Use in Jchemo |
-|---|---|
-| LinearAlgebra | ... |
-| Statistics | ... |
-| Distributions | ... |
-| ImageFiltering | Data pre-processing | 
-| Distances | Distance computation | 
-| NearestNeighbors | k-NN search |
-
 ## <span style="color:green"> **Installation** </span> 
 
 In order to install Jchemo, run
