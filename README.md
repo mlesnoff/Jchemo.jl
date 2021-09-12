@@ -2,7 +2,7 @@
 
 ## Dimension reduction, Regression and Discrimination for Chemometrics
 ## <span style="color:grey70"> Version 0.0-0 </span> 
-## <span style="color:green"> **NOT STABLE AND INCOMPLETE - UNDER CONSTRUCTION** </span> 
+## <span style="color:green"> **NOT STABLE AND INCOMPLETE (UNDER CONSTRUCTION)** </span> 
 
 ![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)<!--
 ![Lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
