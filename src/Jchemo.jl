@@ -16,6 +16,7 @@ using Distributed
 include("utility.jl") 
 include("preprocessing.jl") 
 include("rmgap.jl")
+include("aov1.jl")
 
 include("pcasvd.jl") ; include("pcaeigen.jl")
 include("kpca.jl")
@@ -66,7 +67,9 @@ export
     center, center!, scale, scale!,
     tab, tabnum,
     dummy,
-    recod_cont2cla,
+    recod2cla,
+    aov1,
+    varimp_chisq, varimp_aov, 
     # Pre-processing
     snv, snv!, detrend, detrend!, fdif, fdif!,
     mavg, mavg!, mavg_runmean, mavg_runmean!,

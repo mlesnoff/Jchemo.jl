@@ -65,7 +65,7 @@
 
 - ***baggr*** Bagging 
 - ***baggr_oob*** Out-of-bag error rate
-- ***baggr_vi*** Variance importance (permutation)
+- ***baggr_vi*** Variance importance (permutation method)
 - ***rf_xgb*** Random forest
 
 *Boosting*
@@ -149,6 +149,11 @@
 - ***mse*** Summary for regression
 - ***err*** Classification error rate
 
+#### **Variable importance**
+
+- ***varimp_perm*** 
+- ***varimp_chisq*** 
+- ***varimp_aov*** 
 
 <!---  
 #### **Heuristic**  

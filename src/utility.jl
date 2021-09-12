@@ -71,6 +71,7 @@ function dummy(y)
     for i = 1:nlev
         Y[:, i] = y .== lev[i]
     end
+    Y = Float64.(Y)
     (Y = Y, lev = lev, ni = ni)
 end
 
@@ -135,7 +136,7 @@ zx = recod_cont2cla(x, q)
 [x zx]
 ```
 """
-function recod_cont2cla(x, q)
+function recod2cla(x, q)
     zx = similar(x)
     q = sort(q)
     for i = 1:length(x)

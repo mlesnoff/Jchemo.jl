@@ -29,7 +29,7 @@ function baggr_vi(object::Baggr, X, Y; score = msep)
     B = length(object.s_oob)
     ncol = size(object.s_col, 1)
     scol = similar(object.s_col, ncol)
-    res = similar(X, p, B)
+    res = similar(X, p, B, q)
     @inbounds for i = 1:B
         soob = object.s_oob[i]  # soob has a variable length
         m = length(soob)
@@ -44,14 +44,10 @@ function baggr_vi(object::Baggr, X, Y; score = msep)
             zX[:, j] .= zX[s, j]
             zpred .= predict(object.fm[i], zX[:, scol]).pred
             zscore_perm = score(zpred, zY)
-            if q == 1
-                res[j, i] = (zscore_perm - zscore)[1]
-            else
-                res[j, i] = mean(zscore_perm .- zscore, dims = 2)[1]  
-            end
+            res[j, i, :] = zscore_perm .- zscore
         end
     end
-    imp = vec(mean(res, dims = 2))
+    imp = reshape(mean(res, dims = 2), p, q)
     (imp = imp, res = res)
 end
 
