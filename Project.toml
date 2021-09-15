@@ -4,11 +4,13 @@ authors = ["Matthieu Lesnoff <matthieu.lesnoff@gmail.com>"]
 version = "0.0.0"
 
 [deps]
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
 Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 Entropies = "ed8fcbec-b94c-44b6-89df-898894ad9591"
+FreqTables = "da1fdf0e-e0ff-5433-a45f-9bb5ff651cb1"
 Hwloc = "0e44f5e4-bd66-52a0-8798-143a42290a1d"
 HypothesisTests = "09f84164-cd44-5f33-b23f-e6b0d136a0d5"
 ImageFiltering = "6a3955dd-da59-5b1f-98d4-e7296123deb5"

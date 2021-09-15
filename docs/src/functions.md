@@ -43,7 +43,7 @@
 - ***krr*** Non linear kernel RR (KRR) = Least squares SVM (LS-SVMR)
 
 #### **Support vector machine (SVMR)**
-- ***svmr*** SVM regression (Epsilon-SVR)
+- ***svmr*** Epsilon SVM regression (form LIBSVM)
 
 #### **Trees**
 
@@ -66,11 +66,11 @@
 - ***baggr*** Bagging 
 - ***baggr_oob*** Out-of-bag error rate
 - ***baggr_vi*** Variance importance (permutation method)
-- ***rf_xgb*** Random forest
+- ***rf_xgb*** Random forest (from XGBoost)
 
 *Boosting*
 
-- ***xgboostr*** XGBoost 
+- ***xgboostr*** XGBoost (from XGBoost)
 
 #### <span style="color:#1589F0"> DISCRIMINATION ANALYSIS </span>
 
@@ -236,16 +236,20 @@
 
 #### <span style="color:#1589F0"> **UTILITY** </span>
 
-- ***colmeans, colvars*** Weighted column means and variances
-- ***center, scale*** Column-wise matrix centering and scaling
-- ***euclsq, mahsq, mahsqchol*** Euclidean and Mahalanobis distances between rows of matrices
-- ***getknn*** Find nearest neighbours between rows of matrices
-- ***wdist*** Compute weights from distances
-- ***krbf, kpol*** Build kernel Gram matrices
-- ***locw*** Working function for local (kNN) models
+- ***colmeans***, ***colvars*** Weighted column means and variances
+- ***center***, ***scale*** Column-wise matrix centering and scaling
+- ***tab***, ***tabn*** Tabulation (univariate)
 - ***iqr*** Interval inter-quartiles
 - ***mad*** Median absolute deviation
-- ***tab, tabn*** Tabulation (univariate)
+- ***summ*** Summary of datasets
+
+- ***euclsq***, ***mahsq***, ***mahsqchol*** Euclidean and Mahalanobis distances between rows of matrices
+- ***getknn*** Find nearest neighbours between rows of matrices
+- ***wdist*** Compute weights from distances
+- ***locw*** Working function for local (kNN) models
+
+- ***krbf, kpol*** Build kernel Gram matrices
+
 - ***dummy*** Build dummy table
 - ***sourcedir*** Include all the files contained in a directory
 - See other functions in file `utility.jl`

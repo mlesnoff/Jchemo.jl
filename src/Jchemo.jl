@@ -11,7 +11,7 @@ using Distances
 using LIBSVM
 using NearestNeighbors
 using XGBoost
-using Distributed
+
 
 include("utility.jl") 
 include("preprocessing.jl") 
@@ -65,6 +65,7 @@ export
     mweights,
     colmeans, colvars, colvars!,
     center, center!, scale, scale!,
+    summ,
     tab, tabnum,
     dummy,
     recod2cla,

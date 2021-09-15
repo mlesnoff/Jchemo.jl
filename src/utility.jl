@@ -150,6 +150,18 @@ function recod2cla(x, q)
 end
 
 """
+    rmcols(X, s)
+Remove the columns of `X` having indexes `s`.
+## Examples
+```julia
+X = rand(5, 3) ; 
+rmcols(X, 1:2)
+rmcols(X, [1, 3])
+```
+"""
+rmcols(X::AbstractMatrix, s) = X[:, setdiff(1:end, s)]
+
+"""
     rmrow(X, s)
 Remove the rows of `X` having indexes `s`.
 ## Examples
@@ -162,17 +174,6 @@ rmrows(X, [1, 4])
 rmrows(X::AbstractMatrix, s) = X[setdiff(1:end, s), :]
 rmrows(X::AbstractVector, s) = X[setdiff(1:end, s)]
 
-"""
-    rmcols(X, s)
-Remove the columns of `X` having indexes `s`.
-## Examples
-```julia
-X = rand(5, 3) ; 
-rmcols(X, 1:2)
-rmcols(X, [1, 3])
-```
-"""
-rmcols(X::AbstractMatrix, s) = X[:, setdiff(1:end, s)]
 
 """
     scale(X, v)
@@ -206,11 +207,50 @@ function sourcedir(path)
     end
 end
 
+"""
+    summ(X; digits = 1)
+Summarize a variable or dataset (continuous variables).
+"""
+function summ(X; digits = 1)
+    res = DataFrames.describe(X, :mean, :min, :max, :nmissing) ;
+    insertcols!(res, 5, :n => size(X, 1) .- res.nmissing)
+    res[:, 2:4] .= round.(res[:, 2:4], digits = digits) ;
+    (res = res, ntot = size(X, 1))
+end
+
+"""
+    summ(X, group; digits = 1)
+Summarize a dataframe (continuous variables) for each category 
+of a group variable.
+* `X` : Dataframe (n, p).
+* `group` : Group variable (n).
+"""
+function summ(X, group; digits = 1)
+    zgroup = sort(unique(group))
+    for i = 1:length(zgroup)
+        u = findall(group .== zgroup[i])
+        z = X[u, :]
+        res = summ(z).res
+        println("Group: ", zgroup[i])
+        println(res)
+        println("") ; println(repeat("-", 70))
+    end
+end
+
+
+
+"""
+    tab(x)
+Univariate tabulation.
+"""
 function tab(x)
     sort(StatsBase.countmap(x))
 end
 
-## tabnum(x) only works for the x classes represent integers
+"""
+    tabnum(x)
+Univariate tabulation (only integer classes).
+"""
 function tabnum(x)
     lev = sort(unique(x))
     cnt = StatsBase.counts(x)
