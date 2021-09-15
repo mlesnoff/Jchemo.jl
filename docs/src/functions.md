@@ -238,10 +238,10 @@
 
 - ***colmeans***, ***colvars*** Weighted column means and variances
 - ***center***, ***scale*** Column-wise matrix centering and scaling
-- ***tab***, ***tabn*** Tabulation (univariate)
+- ***tab***, ***tabn*** Univariate tabulation 
 - ***iqr*** Interval inter-quartiles
 - ***mad*** Median absolute deviation
-- ***summ*** Summary of datasets
+- ***summ*** Summarize of datasets
 
 - ***euclsq***, ***mahsq***, ***mahsqchol*** Euclidean and Mahalanobis distances between rows of matrices
 - ***getknn*** Find nearest neighbours between rows of matrices
