@@ -3,20 +3,22 @@
 Compute the score distances (SDs) from a PCA or PLS model
 
 * `object` : The fitted model.
-* `X` : X-data for which distances are computed. Distances are also computed for the training X-data.
+* `Xtrain` : X-data that were used to compute the model (training).
+* `X` : X-data for which new distances are computed.
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, it is the maximum nb. of components.
 * `rob` : If true, the moment estimation of the distance cutoff is robustified. 
     This may be relevant after robust PCA or PLS on small data sets containing extreme values.
 * `alpha` : Risk-I level used for computing the cutoff detecting extreme values.
 
-`scordis` computes the score distances (SDs) for a PCA or PLS model. 
-SD is the Mahalanobis distance of the projection of a row observation on the 
+SDs are the Mahalanobis distances of the projections of row observations on the 
 score plan to the center of the score space.
 
-A cutoff is computed from the training using a moment estimation of the parameters of 
+They are computed for the training `Xtrain` and the eventual `X`.
+
+A cutoff is computed from the training, using a moment estimation of the parameters of 
 a Chi-squared distrbution for SD^2 (see e.g. Pomerantzev 2008). 
-In the output, column dstand is a standardized distance defined as SD / cutoff. 
-A value dstand > 1 can be considered as extreme.
+In the output, column dstand is a standardized distance, defined as SD / cutoff. 
+A value dstand > 1 may be considered as extreme.
 
 The Winisi "GH" is also provided (usually considered as extreme if GH > 3).
 
@@ -28,7 +30,8 @@ principal components analysis. Technometrics, 47, 64-79.
 Pomerantsev, A.L., 2008. Acceptance areas for multivariate classification derived by 
 projection methods. Journal of Chemometrics 22, 601-609. https://doi.org/10.1002/cem.1147
 """ 
-function scordis(object::Union{Pca, Plsr}, X = nothing; nlv = nothing, rob = false, alpha = .01)
+function scordis(object::Union{Pca, Plsr}, X = nothing; nlv = nothing, 
+    rob = false, alpha = .01)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     T = @view(object.T[:, 1:nlv])
@@ -64,21 +67,24 @@ end
 Compute the orthogonal distances (ODs) from a PCA or PLS model
 
 * `object` : The fitted model.
-* `Xtrain` : Training X-data that was used to fit the model.
-* `X` : X-data for which distances are computed. Distances are also computed for the training X-data.
-* `nlv` : Nb. components (PCs or LVs) to consider. If nothing, it is the maximum nb. of components.
+* `Xtrain` : X-data that were used to compute the model (training).
+* `X` : X-data for which new distances are computed.
+* `nlv` : Nb. components (PCs or LVs) to consider. If nothing, it is the maximum 
+    nb. of components.
 * `rob` : If true, the moment estimation of the distance cutoff is robustified. 
     This may be relevant after robust PCA or PLS on small data sets containing extreme values.
 * `alpha` : Risk-I level used for computing the cutoff detecting extreme values.
 
-`odis` computes the orthogonal distances (ODs = "X-residuals") for a PCA or PLS model. 
-OD is the Euclidean distance of a row observation to its projection to the score plan 
-(see e.g. Hubert et al. 2005, Van Branden & Hubert 2005, p. 66; Varmuza & Filzmoser, 2009, p. 79).
+ODs ("X-residuals") are the Euclidean distances of row observations to their projections 
+to the score plan (see e.g. Hubert et al. 2005, Van Branden & Hubert 2005, p. 66; 
+Varmuza & Filzmoser, 2009, p. 79).
 
-A cutoff is computed from the training using a moment estimation of the parameters of a 
+They are computed for the training `Xtrain` and the eventual `X`.
+
+A cutoff is computed from the training, using a moment estimation of the parameters of a 
 Chi-squared distrbution for OD^2 (see Nomikos & MacGregor 1995, and Pomerantzev 2008). 
-In the output, column dstand is a standardized distance defined as OD / cutoff. 
-A value dstand > 1 can be considered as extreme.
+In the output, column dstand is a standardized distance, defined as OD / cutoff. 
+A value dstand > 1 may be considered as extreme.
 
 The cutoff for detecting extreme OD values is computed using a moment estimation of 
 a Chi-squared distrbution for the squared distance.
@@ -100,10 +106,10 @@ Chem. Lab. Int. Syst, 79, 10-21.
 K. Varmuza, P. Filzmoser (2009). Introduction to multivariate statistical analysis in chemometrics. 
 CRC Press, Boca Raton.
 """ 
-function odis(object::Union{Pca, Plsr}, Xtrain, X = nothing; nlv = nothing, rob = false, alpha = .01)
+function odis(object::Union{Pca, Plsr}, Xtrain, X = nothing; nlv = nothing, 
+        rob = false, alpha = .01)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-
     E = xresid(object, Xtrain; nlv = nlv)
     d = sqrt.(sum(E .* E, dims = 2))
     d2 = d.^2
@@ -126,7 +132,6 @@ function odis(object::Union{Pca, Plsr}, Xtrain, X = nothing; nlv = nothing, rob 
         dstand = d / cutoff 
         res = DataFrame((d = d, dstand = dstand))
     end
-
     (res_train = res_train, res = res, cutoff = cutoff)
 end
 

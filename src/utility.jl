@@ -233,7 +233,8 @@ function summ(X, group; digits = 1)
         res = summ(z).res
         println("Group: ", zgroup[i])
         println(res)
-        println("") ; println(repeat("-", 70))
+        println("") ; println("") 
+        #println(repeat("-", 70))
     end
 end
 
