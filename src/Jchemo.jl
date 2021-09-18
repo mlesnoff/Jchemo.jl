@@ -1,6 +1,7 @@
 module Jchemo  # Start-Module
 
 using LinearAlgebra, Statistics, Random
+using CairoMakie
 using Distributions
 using StatsBase    # sample
 using HypothesisTests
@@ -17,6 +18,7 @@ include("utility.jl")
 include("preprocessing.jl") 
 include("rmgap.jl")
 include("aov1.jl")
+include("plots.jl")
 
 include("pcasvd.jl") ; include("pcaeigen.jl")
 include("kpca.jl")
@@ -41,8 +43,8 @@ include("locw.jl")
 include("knnr.jl") ; include("lwplsr.jl")
 include("lwplsr_agg.jl")
 
-# Var imp 
-include("var_imp.jl")
+# Variable importance 
+include("imp_r.jl")
 
 # Validation
 include("mpars.jl")
@@ -68,15 +70,15 @@ export
     summ,
     tab, tabnum,
     dummy,
-    recod2cla,
+    recodnum2cla,
     aov1,
-    varimp_chisq, varimp_aov, 
-    # Pre-processing
+    plotsp,
+   # Pre-processing
     snv, snv!, detrend, detrend!, fdif, fdif!,
     mavg, mavg!, mavg_runmean, mavg_runmean!,
     savgk, savgol, savgol!,
-    rmgap, rmgap!,
     interpl,
+    rmgap, rmgap!,
     eposvd,
     # Pca
     pcasvd, pcasvd!, pcaeigen, pcaeigen!, pcaeigenk, pcaeigenk!,
@@ -94,6 +96,7 @@ export
     svmr,
     # 
     baggr, baggr_vi, baggr_oob,
+    imp_perm_r, imp_chisq_r, imp_aov_r, 
     #
     treer_xgb, rfr_xgb, xgboostr,
     #

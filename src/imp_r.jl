@@ -1,4 +1,4 @@
-function varimp_perm(Xtrain, Ytrain, X, Y; score = msep, fun, B, kwargs...)
+function imp_perm_r(Xtrain, Ytrain, X, Y; score = msep, fun, B, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     m, p = size(X)
@@ -22,7 +22,7 @@ function varimp_perm(Xtrain, Ytrain, X, Y; score = msep, fun, B, kwargs...)
     (imp = imp,)
 end 
 
-function varimp_chisq(X, Y; probs = [.25; .75])
+function imp_chisq_r(X, Y; probs = [.25; .75])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = size(X, 2)
@@ -33,12 +33,12 @@ function varimp_chisq(X, Y; probs = [.25; .75])
     @inbounds for j = 1:p
         z = vcol(X, j)
         quants = Statistics.quantile(z, probs)
-        zX[:, j] .= recod2cla(z, quants)
+        zX[:, j] .= recodnum2cla(z, quants)
     end
     @inbounds for j = 1:q
         z = vcol(Y, j)
         quants = Statistics.quantile(z, probs)
-        zY[:, j] .= recod2cla(z, quants)
+        zY[:, j] .= recodnum2cla(z, quants)
     end
     zX = Int64.(zX)
     zY = Int64.(zY)
@@ -55,7 +55,7 @@ function varimp_chisq(X, Y; probs = [.25; .75])
     (imp = imp,)
 end 
 
-function varimp_aov(X, Y; probs = [.25; .75])
+function imp_aov_r(X, Y; probs = [.25; .75])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
@@ -65,7 +65,7 @@ function varimp_aov(X, Y; probs = [.25; .75])
     @inbounds for j = 1:q
         z = vcol(Y, j)
         quants = Statistics.quantile(z, probs)        
-        zy .= recod2cla(z, quants)
+        zy .= recodnum2cla(z, quants)
         imp[:, j] .= vec(aov1(zy, X).F)
     end
     (imp = imp,)

@@ -124,7 +124,7 @@ Return a vector of weights that sums to 1.
 mweights(w) = w / sum(w)
 
 """
-    recod_cont2cla(x, q)
+    recodnum2cla(x, q)
 Recode a continuous variable to classes
 * `x` : Variable to recode.
 * `q` : Values separating the classes. 
@@ -132,11 +132,11 @@ Recode a continuous variable to classes
 ```julia
 x = [collect(1:10); 8.1 ; 3.1] 
 q = [3; 8] ;
-zx = recod_cont2cla(x, q) 
+zx = recodnum2cla(x, q) 
 [x zx]
 ```
 """
-function recod2cla(x, q)
+function recodnum2cla(x, q)
     zx = similar(x)
     q = sort(q)
     for i = 1:length(x)
@@ -237,8 +237,6 @@ function summ(X, group; digits = 1)
         #println(repeat("-", 70))
     end
 end
-
-
 
 """
     tab(x)
