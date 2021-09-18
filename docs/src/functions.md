@@ -20,6 +20,7 @@
 - ***lmrpinv*** Pseudo-inverse
 - ***lmrpinv_n*** Normal equations and pseudo-inverse
 - ***lmrvec*** Univariate X
+- ***aov1*** One factor ANOVA
 
 *Ill-conditionned* 
 
@@ -71,6 +72,12 @@
 *Boosting*
 
 - ***xgboostr*** XGBoost (from XGBoost)
+
+#### **Variable importance**
+
+- ***imp_perm_r*** 
+- ***imp_chisq_r*** 
+- ***imp_aov_r*** 
 
 #### <span style="color:#1589F0"> DISCRIMINATION ANALYSIS </span>
 
@@ -149,11 +156,6 @@
 - ***mse*** Summary for regression
 - ***err*** Classification error rate
 
-#### **Variable importance**
-
-- ***varimp_perm*** 
-- ***varimp_chisq*** 
-- ***varimp_aov*** 
 
 <!---  
 #### **Heuristic**  
@@ -174,14 +176,9 @@
 - ***fdif*** Finite differences
 - ***mavg***, ***mavg_runmean*** Smoothing by moving average
 - ***savgk***, ***savgol*** Savitsky-Golay filtering
-- ***rmgap*** Remove vertical gaps in spectra, e.g. for ASD NIR data
-- ***interpl*** Sampling of signals by spline interpolation.
 - ***eposvd*** External parameter orthogonalization (EPO)
-
-<!--- 
-- ***xinterp*** Resampling of spectra by interpolation methods
-- **eposvd** Pre-processing data by external parameter orthogonalization (EPO; Roger et al 2003) 
--->
+- ***rmgap*** Remove vertical gaps in spectra, e.g. for ASD NIR data
+- ***interpl*** Resampling of signals by spline interpolation.
 
 #### **Sampling observations**
 
@@ -198,14 +195,11 @@
 - ***rmdupl*** Remove duplicated row observations between two data sets
 -->
 
-
 <!---
 #### **Summary**
 - ***aggmean*** Centers of classes
 - ***dtagg*** Summary statistics with data subsets
-- ***summ*** Summary of the quantitative variables of a data set
 -->
-
 
 <!---
 #### **Multi-block**
@@ -214,7 +208,6 @@
 - ***blockscal*** Block autoscaling
 -->
 
-
 <!---
 #### **Datasets**
 - ***asdgap** ASD spectra with vertical gaps
@@ -222,16 +215,6 @@
 - ***forages*** Tropical forages
 - ***octane*** Gazoline "octane" dataset
 - ***ozone*** Los Angeles "ozone" pollution (1976) dataset
--->
-
-
-<!---
-#### <span style="color:#1589F0"> **GRAPHICS** </span>
-- ***plotsp*** Plotting spectra, loadings, or more generally row observations of a data set
-- ***plostsp1*** Same as  ***plotsp*** but one-by-one row
-- ***plotxy*** 2-d scatter plot
-- ***plotjit*** Jittered plot
-- ***plotscore*** Plotting error rates of prediction models
 -->
 
 #### <span style="color:#1589F0"> **UTILITY** </span>
@@ -251,10 +234,24 @@
 - ***krbf, kpol*** Build kernel Gram matrices
 
 - ***dummy*** Build dummy table
+- ***recodnum2cla*** Recode a continuous variable to classes
 - ***sourcedir*** Include all the files contained in a directory
 - See other functions in file `utility.jl`
 
 <!---
 - ***dmnorm*** Multivariate normal probability density
 - ***matB***, ***matW*** Between and within covariance matrices
+-->
+
+#### **Plotting**
+
+- ***plotsp*** Plotting spectra
+
+<!---
+#### <span style="color:#1589F0"> **GRAPHICS** </span>
+- ***plotsp*** Plotting spectra, loadings, or more generally row observations of a data set
+- ***plostsp1*** Same as  ***plotsp*** but one-by-one row
+- ***plotxy*** 2-d scatter plot
+- ***plotjit*** Jittered plot
+- ***plotscore*** Plotting error rates of prediction models
 -->
