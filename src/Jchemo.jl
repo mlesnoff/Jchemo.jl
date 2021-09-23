@@ -63,7 +63,7 @@ include("kernels.jl")
 export 
     # Utilities
     sourcedir,
-    ensure_mat, list, vcol, vrow, rmcols, rmrows,
+    ensure_df, ensure_mat, list, vcol, vrow, rmcols, rmrows,
     mweights,
     colmeans, colvars, colvars!,
     center, center!, scale, scale!,

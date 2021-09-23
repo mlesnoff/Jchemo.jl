@@ -124,7 +124,6 @@ function odis(object::Union{Pca, Plsr}, Xtrain, X = nothing; nlv = nothing,
     cutoff = sqrt(mu / nu * quantile.(Chisq(nu), 1 - alpha))
     dstand = d / cutoff 
     res_train = DataFrame((d = d, dstand = dstand))
-
     res = nothing
     if !isnothing(X)
         E = xresid(object, X; nlv = nlv)

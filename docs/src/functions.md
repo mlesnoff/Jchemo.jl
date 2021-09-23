@@ -1,4 +1,4 @@
-#### <span style="color:#1589F0"> **PCA** </span>
+#### <span style="color:#1589F0"> **1. PCA** </span>
 
 - ***pcaeigen*** Eigen decomposition
 - ***pcaeigenk*** Eigen decomposition for wide matrices (kernel form)
@@ -9,9 +9,9 @@
 - ***scordis*** Score distances (SDs) for a score space
 - ***odis*** Orthogonal distances (ODs) for a score space
 - ***xfit*** Matrix fitting 
-- ***xresid*** Residual matrix  
+- ***xresid*** Residual matrix 
 
-#### <span style="color:#1589F0;"> **REGRESSION** </span>
+#### <span style="color:#1589F0;"> **2. REGRESSION** </span>
 
 #### **Linear (LMR)**
 
@@ -32,6 +32,7 @@
 - ***plsnipals*** NIPALS
 - ***kplsr*** Non linear kernel PLSR (KPLSR) *Rosipal & Trejo 2001*
 - ***dkplsr*** Direct KPLSR *Bennett & Embrechts 2003*
+- ***aicplsr*** AIC and Cp for PLSR
 <!---
 - ***plsrannar*** Kernel version for wide matrices (Rannar et al. 1994)
 - ***simpls***
@@ -43,17 +44,17 @@
 - ***rrchol*** Choleski factorization
 - ***krr*** Non linear kernel RR (KRR) = Least squares SVM (LS-SVMR)
 
+#### **k-nearest-neighbors (kNN)**
+
+- ***knnr*** kNNR
+- ***lwplsr*** kNN Locally weighted PLSR (kNN-LWPLSR)
+
 #### **Support vector machine (SVMR)**
 - ***svmr*** Epsilon SVM regression (form LIBSVM)
 
 #### **Trees**
 
 - ***treer_xgb*** Single tree
-
-#### **k-nearest-neighbors (kNN)**
-
-- ***knnr*** kNNR
-- ***lwplsr*** kNN Locally weighted PLSR (kNN-LWPLSR)
 
 #### **Ensemblism**
 
@@ -79,7 +80,7 @@
 - ***imp_chisq_r*** 
 - ***imp_aov_r*** 
 
-#### <span style="color:#1589F0"> DISCRIMINATION ANALYSIS </span>
+#### <span style="color:#1589F0"> **3. DISCRIMINATION ANALYSIS** </span>
 
 - **Not yet available**
   
@@ -123,7 +124,7 @@
 - ***lwplslda_agg*** KNN-LWPLS-QDA-AGG
 -->
 
-#### <span style="color:#1589F0"> TUNING MODELS </span>
+#### <span style="color:#1589F0"> **4. TUNING MODELS** </span>
 
 #### **Grid**
 
@@ -156,7 +157,6 @@
 - ***mse*** Summary for regression
 - ***err*** Classification error rate
 
-
 <!---  
 #### **Heuristic**  
 - ***selwold*** Wold's criterion for models with LVs  
@@ -167,7 +167,7 @@
 - ***covsel*** COVSEL algorithm (Roger et al. 2011)
 -->
 
-#### <span style="color:#1589F0"> **DATA MANAGEMENT** </span>
+#### <span style="color:#1589F0"> **5. DATA MANAGEMENT** </span>
 
 #### **Pre-processing**
 
@@ -217,7 +217,7 @@
 - ***ozone*** Los Angeles "ozone" pollution (1976) dataset
 -->
 
-#### <span style="color:#1589F0"> **UTILITY** </span>
+#### <span style="color:#1589F0"> **6. UTILITY** </span>
 
 - ***colmeans***, ***colvars*** Weighted column means and variances
 - ***center***, ***scale*** Column-wise matrix centering and scaling

@@ -89,6 +89,14 @@ function dummy2(y)
 end
 
 """
+    ensure_df(X)
+Reshape `X` to a dataframe if necessary.
+"""
+ensure_df(X::DataFrame) = X
+ensure_df(X::AbstractVector) = DataFrame([X], :auto)
+ensure_df(X::AbstractMatrix) = DataFrame(X, :auto)
+
+"""
     ensure_mat(X)
 Reshape `X` to a matrix if necessary.
 """
@@ -174,7 +182,6 @@ rmrows(X, [1, 4])
 rmrows(X::AbstractMatrix, s) = X[setdiff(1:end, s), :]
 rmrows(X::AbstractVector, s) = X[setdiff(1:end, s)]
 
-
 """
     scale(X, v)
 Scale each column of `X`.
@@ -201,17 +208,17 @@ Include all the files contained in a directory.
 function sourcedir(path)
     z = readdir(path)  ## List of files in path
     n = length(z)
-    #sample(1:2, 1)
     for i in 1:n
         include(string(path, "/", z[i]))
     end
 end
 
 """
-    summ(X; digits = 1)
+    summ(X; digits = 3)
 Summarize a variable or dataset (continuous variables).
 """
-function summ(X; digits = 1)
+function summ(X; digits = 3)
+    X = ensure_df(X)
     res = DataFrames.describe(X, :mean, :min, :max, :nmissing) ;
     insertcols!(res, 5, :n => size(X, 1) .- res.nmissing)
     res[:, 2:4] .= round.(res[:, 2:4], digits = digits) ;

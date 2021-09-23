@@ -22,7 +22,7 @@ function imp_perm_r(Xtrain, Ytrain, X, Y; score = msep, fun, B, kwargs...)
     (imp = imp,)
 end 
 
-function imp_chisq_r(X, Y; probs = [.25; .75])
+function imp_chisq_r(X, Y; probs = [.25 ; .75])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = size(X, 2)
@@ -55,7 +55,7 @@ function imp_chisq_r(X, Y; probs = [.25; .75])
     (imp = imp,)
 end 
 
-function imp_aov_r(X, Y; probs = [.25; .75])
+function imp_aov_r(X, Y; probs = [.25 ; .75])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
@@ -71,7 +71,21 @@ function imp_aov_r(X, Y; probs = [.25; .75])
     (imp = imp,)
 end 
 
-
+function imp_aov_r2(X, Y; probs = [.25 ; .75])
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    n, p = size(X)
+    q = size(Y, 2)
+    imp = similar(X, p, q)
+    zX = similar(X)
+    @inbounds for j = 1:p
+        z = vcol(X, j)
+        quants = Statistics.quantile(z, probs)        
+        zX[:, j] .= recodnum2cla(z, quants)
+        imp[j, :] .= vec(aov1(vcol(zX, j), Y).F)
+    end
+    (imp = imp,)
+end 
 
 
 
