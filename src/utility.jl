@@ -1,38 +1,40 @@
 """
-    colmeans(X)
-    colmeans(X, w)
-Compute the mean of each column of `X`.
-* `X` : Data.
-* `w` : Weights of the observations.
+    aggstat(X::DataFrame; var_nam, group_nam, fun = mean)
+Compute the mean (or other statistic) of columns of `X`, by group.
+* `X` : a dataframe.
+* `var_nam` : Names of the variables to summarize.
+* `group_nam` : Names of the groups to consider.
+* `fun` : Function to compute.
 
-Return a vector.
-
-For a true mean, `w` must preliminary be normalized to sum to 1.
+Variables defined in `var_nam` and `group_nam` must be columns of `X`.
 """ 
-colmeans(X) = vec(Statistics.mean(X; dims = 1))
-
-colmeans(X, w) = vec(w' * ensure_mat(X))
+function aggstat(X::DataFrame; var_nam, group_nam, fun = mean)
+    gdf = groupby(X, group_nam) 
+    z = combine(gdf, var_nam .=> fun, renamecols = false)
+    z
+end
 
 """
-    colvars(X)
-    colvars(X, w)
-Compute the (uncorrected) variance of each column of `X`.
-* `X` : Data.
-* `w` : Weights of the observations.
-
-Return a vector.
-
-**Note:** For a true variance, `w` must preliminary be normalized to sum to 1.
+    aggstat(X::AbstractMatrix, group; fun = mean)
+Compute the mean (or other statistic) of all the columns of `X`, by group.
+* `X` : A matrix (n, p).
+* `group` : A vector (n,) defing the groups.
+* `fun` : Function to compute.
 """ 
-colvars(X) = vec(Statistics.var(X; corrected = false, dims = 1))
-
-function colvars(X, w)
-    p = size(X, 2)
-    z = colmeans(X, w)
-    @inbounds for j = 1:p
-        z[j] = dot(view(w, :), (vcol(X, j) .- z[j]).^2)        
+function aggstat(X::Union{AbstractMatrix, AbstractVector}, group; fun = mean)
+    X = ensure_mat(X)
+    q = size(X, 2)
+    ztab = tab(group)
+    lev = ztab.keys
+    nlev = length(lev)
+    ni = collect(values(ztab))
+    res = similar(X, nlev, q)
+    for i in 1:nlev
+        s = findall(group .== lev[i])
+        z = vrow(X, s)
+        res[i, :] .= vec(fun(z, dims = 1)) 
     end
-    z 
+    (res = res, lev = lev, ni = ni)
 end
 
 """
@@ -55,6 +57,43 @@ function center!(X, v)
 end
 
 """
+    colmeans(X)
+    colmeans(X, w)
+Compute the mean of each column of `X`.
+* `X` : Data.
+* `w` : Weights of the observations.
+
+Return a vector.
+
+For a true weighted mean, `w` must preliminary be normalized to sum to 1.
+""" 
+colmeans(X) = vec(Statistics.mean(X; dims = 1))
+
+colmeans(X, w) = vec(w' * ensure_mat(X))
+
+"""
+    colvars(X)
+    colvars(X, w)
+Compute the (uncorrected) variance of each column of `X`.
+* `X` : Data.
+* `w` : Weights of the observations.
+
+Return a vector.
+
+**Note:** For a true weighted variance, `w` must preliminary be normalized to sum to 1.
+""" 
+colvars(X) = vec(Statistics.var(X; corrected = false, dims = 1))
+
+function colvars(X, w)
+    p = size(X, 2)
+    z = colmeans(X, w)
+    @inbounds for j = 1:p
+        z[j] = dot(view(w, :), (vcol(X, j) .- z[j]).^2)        
+    end
+    z 
+end
+
+"""
     dummy(y)
 Examples
 ≡≡≡≡≡≡≡≡≡≡
@@ -63,10 +102,10 @@ y = ["d", "a", "b", "c", "b", "c"]
 dummy(y)
 """
 function dummy(y)
-    z = tab(y)
-    lev = z.keys
+    ztab = tab(y)
+    lev = ztab.keys
     nlev = length(lev)
-    ni = collect(values(tab(y)))
+    ni = collect(values(ztab))
     Y = BitArray(undef, length(y), nlev)
     for i = 1:nlev
         Y[:, i] = y .== lev[i]
@@ -104,6 +143,7 @@ ensure_mat(X::AbstractMatrix) = X
 ensure_mat(X::AbstractVector) = reshape(X, :, 1)
 ensure_mat(X::Number) = reshape([X], 1, 1)
 ensure_mat(X::LinearAlgebra.Adjoint) = Matrix(X)
+ensure_mat(X::DataFrame) = Matrix(X)
 
 """
     iqr(x)
@@ -125,11 +165,59 @@ adjusted by a factor (1.4826) for asymptotically normal consistency.
 """
 mad(x) = 1.4826 * median(abs.(x .- median(x)))
 
+"""
+    matcov(X)
+    matcov(X, w)
+Compute the (uncorrected) covariance matrix of `X`.
+* `X` : Data.
+* `w` : Weights of the observations.
+
+Uncorrected covariance matrix of the columns of `X`.
+
+**Note:** For true weighted covariances, `w` must preliminary be normalized to sum to 1.
+"""
+matcov(X) = Statistics.cov(ensure_mat(X); corrected = false)
+
+function matcov(X, w)
+    X = ensure_mat(X)
+    xmeans = colmeans(X, w)
+    X = center(X, xmeans)
+    z = Diagonal(sqrt.(w)) * X
+    z' * z
+end
+
 """ 
     mweights(w)
 Return a vector of weights that sums to 1.
 """
 mweights(w) = w / sum(w)
+
+
+"""
+    recodcat2num(x; start = 1)
+Recode a categorical variable to a numeric variable
+* `x` : Variable to recode.
+* `start` : Numeric value that will be set to the first category.
+
+The codes correspond to the sorted categories.
+
+## Examples
+```julia
+x = ["b", "a", "b"] 
+zx = recodcat2num(x)  
+[x zx]
+recodcat2num(x; start = 0)
+recodcat2num([25, 1, 25])
+```
+"""
+function recodcat2num(x; start = 1)
+    z = dummy(x).Y
+    ncla = size(z, 2)
+    u = z .* collect(start:(start + ncla - 1))'
+    u = sum(u; dims = 2)  ;
+    u = vec(u)
+end
+
 
 """
     recodnum2cla(x, q)
@@ -215,22 +303,25 @@ end
 
 """
     summ(X; digits = 3)
-Summarize a variable or dataset (continuous variables).
+Summarize a dataset (or a variable).
 """
 function summ(X; digits = 3)
     X = ensure_df(X)
     res = DataFrames.describe(X, :mean, :min, :max, :nmissing) ;
     insertcols!(res, 5, :n => size(X, 1) .- res.nmissing)
-    res[:, 2:4] .= round.(res[:, 2:4], digits = digits) ;
+    for j = 2:4
+        z = vcol(res, j)
+        s = findall(isa.(z, Float64))
+        res[s, j] .= round.(res[s, j], digits = digits)
+        end
     (res = res, ntot = size(X, 1))
 end
 
 """
     summ(X, group; digits = 1)
-Summarize a dataframe (continuous variables) for each category 
-of a group variable.
-* `X` : Dataframe (n, p).
-* `group` : Group variable (n).
+Summarize a dataset (or a variable), by group.
+* `X` : Dataset (n, p) or (n,).
+* `group` : A vector (n,) defing the groups.
 """
 function summ(X, group; digits = 1)
     zgroup = sort(unique(group))

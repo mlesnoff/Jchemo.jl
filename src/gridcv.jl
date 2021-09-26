@@ -33,7 +33,6 @@ function gridcv(X, Y; segm, score, fun, pars, verbose = false)
                 rmrows(X, s), rmrows(Y, s),
                 X[s, :], Y[s, :];
                 score = score, fun = fun, pars = pars)
-                println(size(X[s, :]))
         end
         zres = reduce(vcat, zres)
         dat = DataFrame(rep = fill(i, nsegm * nco),

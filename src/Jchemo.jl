@@ -19,6 +19,7 @@ include("preprocessing.jl")
 include("rmgap.jl")
 include("aov1.jl")
 include("plots.jl")
+include("matW.jl")
 
 include("pcasvd.jl") ; include("pcaeigen.jl")
 include("kpca.jl")
@@ -65,14 +66,14 @@ export
     sourcedir,
     ensure_df, ensure_mat, list, vcol, vrow, rmcols, rmrows,
     mweights,
-    colmeans, colvars, colvars!,
+    colmeans, colvars, colvars!, 
     center, center!, scale, scale!,
-    summ,
+    matcov, matB, matW, 
+    summ, aggstat, 
     tab, tabnum,
     dummy,
-    recodnum2cla,
+    recodcat2num, recodnum2cla,
     aov1,
-    plotsp,
    # Pre-processing
     snv, snv!, detrend, detrend!, fdif, fdif!,
     mavg, mavg!, mavg_runmean, mavg_runmean!,
@@ -118,7 +119,9 @@ export
     # Distances
     getknn, wdist, wdist!,
     euclsq, mahsq, mahsqchol,
-    krbf, kpol
+    krbf, kpol,
+    # Graphics
+    plotsp
     # Not exported since surchage
     # summary => Base.summary
 

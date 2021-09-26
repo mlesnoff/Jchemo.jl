@@ -220,11 +220,13 @@
 #### <span style="color:#1589F0"> **6. UTILITY** </span>
 
 - ***colmeans***, ***colvars*** Weighted column means and variances
-- ***center***, ***scale*** Column-wise matrix centering and scaling
+- ***center***, ***scale*** Column-wise centering and scaling of a matrix
 - ***tab***, ***tabn*** Univariate tabulation 
 - ***iqr*** Interval inter-quartiles
 - ***mad*** Median absolute deviation
-- ***summ*** Summarize of datasets
+- ***summ*** Summarize the columns of a dataset
+- ***aggstat*** Compute column means (or other statistic) of a dataset, by group
+- ***matcov***, ***matB***, ***matW*** Covariances matrices
 
 - ***euclsq***, ***mahsq***, ***mahsqchol*** Euclidean and Mahalanobis distances between rows of matrices
 - ***getknn*** Find nearest neighbours between rows of matrices
