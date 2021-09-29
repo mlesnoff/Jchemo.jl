@@ -192,6 +192,11 @@ Return a vector of weights that sums to 1.
 """
 mweights(w) = w / sum(w)
 
+""" 
+    pnames(x)
+Return the names of the elements of `x`.
+"""
+pnames(x) = propertynames(x)
 
 """
     recodcat2num(x; start = 1)

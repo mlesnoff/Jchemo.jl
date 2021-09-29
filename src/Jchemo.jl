@@ -44,6 +44,10 @@ include("locw.jl")
 include("knnr.jl") ; include("lwplsr.jl")
 include("lwplsr_agg.jl")
 
+# DISCRIMINATION
+
+include("fda.jl")
+
 # Variable importance 
 include("imp_r.jl")
 
@@ -65,6 +69,7 @@ export
     # Utilities
     sourcedir,
     ensure_df, ensure_mat, list, vcol, vrow, rmcols, rmrows,
+    pnames,
     mweights,
     colmeans, colvars, colvars!, 
     center, center!, scale, scale!,
@@ -105,6 +110,8 @@ export
     # Local
     locw, locwlv,
     knnr, lwplsr, lwplsr_agg,
+    # Discrimination 
+    fda,
     #
     transform, coef, predict,
     # Validation

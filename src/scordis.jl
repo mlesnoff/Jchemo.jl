@@ -5,9 +5,11 @@ Compute the score distances (SDs) from a PCA or PLS model
 * `object` : The fitted model.
 * `Xtrain` : X-data that were used to compute the model (training).
 * `X` : X-data for which new distances are computed.
-* `nlv` : Nb. components (PCs or LVs) to consider. If nothing, it is the maximum nb. of components.
+* `nlv` : Nb. components (PCs or LVs) to consider. If nothing, 
+    it is the maximum nb. of components.
 * `rob` : If true, the moment estimation of the distance cutoff is robustified. 
-    This may be relevant after robust PCA or PLS on small data sets containing extreme values.
+    This may be relevant after robust PCA or PLS on small data sets 
+        containing extreme values.
 * `alpha` : Risk-I level used for computing the cutoff detecting extreme values.
 
 SDs are the Mahalanobis distances of the projections of row observations on the 
@@ -31,7 +33,7 @@ Pomerantsev, A.L., 2008. Acceptance areas for multivariate classification derive
 projection methods. Journal of Chemometrics 22, 601-609. https://doi.org/10.1002/cem.1147
 """ 
 function scordis(object::Union{Pca, Plsr}, X = nothing; nlv = nothing, 
-    rob = false, alpha = .01)
+    rob = true, alpha = .01)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     T = @view(object.T[:, 1:nlv])
@@ -39,7 +41,7 @@ function scordis(object::Union{Pca, Plsr}, X = nothing; nlv = nothing,
     Sinv = inv(S) 
     d2 = mahsq(T, zeros(nlv)', Sinv)
     d = sqrt.(d2)
-    if(!rob) 
+    if !rob 
         mu = mean(d2)   
         s2 = var(d2)
     else
@@ -47,7 +49,7 @@ function scordis(object::Union{Pca, Plsr}, X = nothing; nlv = nothing,
         s2 = mad(d2)^2
     end
     nu = 2 * mu^2 / s2
-    cutoff = sqrt(mu / nu * quantile.(Chisq(nu), 1 - alpha))
+    cutoff = sqrt(mu / nu * quantile.(Distributions.Chisq(nu), 1 - alpha))
     dstand = d / cutoff 
     res_train = DataFrame((d = d, dstand = dstand, gh = d2 / nlv))
     res = nothing
@@ -72,7 +74,8 @@ Compute the orthogonal distances (ODs) from a PCA or PLS model
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, it is the maximum 
     nb. of components.
 * `rob` : If true, the moment estimation of the distance cutoff is robustified. 
-    This may be relevant after robust PCA or PLS on small data sets containing extreme values.
+    This may be relevant after robust PCA or PLS on small data sets 
+        containing extreme values.
 * `alpha` : Risk-I level used for computing the cutoff detecting extreme values.
 
 ODs ("X-residuals") are the Euclidean distances of row observations to their projections 
@@ -107,7 +110,7 @@ K. Varmuza, P. Filzmoser (2009). Introduction to multivariate statistical analys
 CRC Press, Boca Raton.
 """ 
 function odis(object::Union{Pca, Plsr}, Xtrain, X = nothing; nlv = nothing, 
-        rob = false, alpha = .01)
+        rob = true, alpha = .01)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     E = xresid(object, Xtrain; nlv = nlv)
@@ -121,7 +124,7 @@ function odis(object::Union{Pca, Plsr}, Xtrain, X = nothing; nlv = nothing,
         s2 = mad(d2)^2
     end
     nu = 2 * mu^2 / s2
-    cutoff = sqrt(mu / nu * quantile.(Chisq(nu), 1 - alpha))
+    cutoff = sqrt(mu / nu * quantile.(Distributions.Chisq(nu), 1 - alpha))
     dstand = d / cutoff 
     res_train = DataFrame((d = d, dstand = dstand))
     res = nothing

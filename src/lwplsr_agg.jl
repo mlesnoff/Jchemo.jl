@@ -7,6 +7,8 @@ struct LwplsrAgg
     k::Int
     nlv::String
     wagg::String
+    steps::Union{Nothing, Int}
+    tol::Real
     verbose::Bool
 end
 
@@ -34,8 +36,10 @@ latent variables (LVs).
 For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for a new observation 
 is the simple average of the predictions returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 """ 
-function lwplsr_agg(X, Y; nlvdis, metric, h, k, nlv, wagg = "unif", verbose = false)
-    return LwplsrAgg(X, Y, nlvdis, metric, h, k, nlv, wagg, verbose)
+function lwplsr_agg(X, Y; nlvdis, metric, h, k, nlv, wagg = "unif", 
+    steps = nothing, tol = 1e-4, verbose = false)
+    return LwplsrAgg(X, Y, nlvdis, metric, h, k, nlv, wagg, 
+        steps, tol, verbose)
 end
 
 """
@@ -45,7 +49,9 @@ Compute the Y-predictions from the fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::LwplsrAgg, X) 
-    # Getknn
+    X = ensure_mat(X)
+    m = size(X, 1)
+    ### Getknn
     if(object.nlvdis == 0)
         res = getknn(object.X, X; k = object.k, metric = object.metric)
     else
@@ -54,8 +60,25 @@ function predict(object::LwplsrAgg, X)
         #fm = dkplsr(object.X, object.Y; nlv = object.nlvdis, gamma = 100)
         #res = getknn(fm.fm.T, transform(fm, X); k = object.k, metric = object.metric)
     end
-    listw = map(d -> wdist(d; h = object.h), res.d)
-    # End
+    #listw = map(d -> wdist(d; h = object.h), res.d)
+    listw = copy(res.d)
+    steps = object.steps
+    tol = object.tol
+    for i = 1:m
+        w = wdist(res.d[i]; h = object.h)
+        #if 1 / sum(w) >= .99
+        #    println(i)
+            #w = wdist(res.d[i]; h = max(object.h, 20))
+        #end
+        #tol = 1 / object.k
+        if isnothing(steps)
+            w[w .< tol] .= tol
+        else 
+            w[1:steps] .= 1 ; w[(steps + 1):end] .= tol
+        end
+        listw[i] = w
+    end
+    ### End
     pred = locw(object.X, object.Y, X; 
         listnn = res.ind, listw = listw, fun = plsr_agg, nlv = object.nlv, 
         wagg = object.wagg, verbose = object.verbose).pred

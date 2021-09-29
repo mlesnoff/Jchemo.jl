@@ -102,8 +102,8 @@ function detrend!(X)
 end
 
 """
-    fdif(X, f = 2)
-    fdif!(M, X, f = 2)
+    fdif(X; f = 2)
+    fdif!(M, X; f = 2)
 Finite differences of each row of a matrix X. 
 * `X` : X-data (n, p).
 * `M` : Pre-allocated output matrix (n, p - f + 1).
@@ -115,14 +115,14 @@ The method reduces the column-dimension: (n, p) --> (n, p - f + 1).
 
 The in-place function stores the output in `M`.
 """ 
-function fdif(X, f = 2)
+function fdif(X; f = 2)
     n, p = size(X)
     M = similar(X, n, p - f + 1)
-    fdif!(M, X, f)
+    fdif!(M, X; f)
     M
 end
 
-function fdif!(M, X, f = 2)
+function fdif!(M, X; f = 2)
     p = size(X, 2)
     zp = p - f + 1
     @inbounds for j = 1:zp
@@ -161,7 +161,7 @@ end
 
 
 """
-    mavg(X, f)
+    mavg(X; f)
 Moving averages smoothing of each row of X-data.
 * `X` : X-data.
 * `f` : Size (nb. points involved) of the filter.
@@ -170,13 +170,13 @@ The smoothing is computed by convolution (with padding), with function
 imfilter of package ImageFiltering.jl. The centered kernel is ones(`f`) / `f`.
 Each returned point is located on the center of the kernel.
 """ 
-function mavg(X, f)
+function mavg(X; f)
     M = copy(X)
-    mavg!(M, f)
+    mavg!(M; f)
     M
 end
 
-function mavg!(X, f)
+function mavg!(X; f)
     n, p = size(X)
     kern = ImageFiltering.centered(ones(f) / f) ;
     out = similar(X, p)
@@ -203,25 +203,25 @@ In general, this function can be faster than mavg, especialy for in-place versio
 
 The in-place function stores the output in `M`.
 """ 
-function mavg_runmean(X, f)
+function mavg_runmean(X; f)
     n, p = size(X)
     M = similar(X, n, p - f + 1)
-    mavg_runmean!(M, X, f)
+    mavg_runmean!(M, X; f)
     M
 end
 
-function mavg_runmean!(M, X, f)
+function mavg_runmean!(M, X; f)
     n, zp = size(M)
     out = similar(M, zp)
     @inbounds for i = 1:n
-        Jchemo.runmean!(out, vrow(X, i), f)
+        Jchemo.runmean!(out, vrow(X, i); f)
         M[i, :] .= out    
     end
 end
 
 ## adaptation from function runmean  (V. G. Gumennyy)
 ## of package Indicators.jl
-function runmean!(out, x, f)
+function runmean!(out, x; f)
     ## x : (n,)
     ## out : (n - f + 1,)
     ## f : integer
@@ -272,7 +272,7 @@ function savgk(m, pol, d)
 end
 
 """
-    savgol(X, f, pol, d)
+    savgol(X; f, pol, d)
 Savitzky-Golay smoothing of each row of a matrix `X`.
 * `X` : X-data (n, p).
 * `f` : Size of the filter (nb. points involved in the kernel). Must be odd and >= 3.
@@ -284,13 +284,13 @@ The smoothing is computed by convolution (with padding), with function
 imfilter of package ImageFiltering.jl. Each returned point is located on the center 
 of the kernel. The kernel is computed with function `savgk`.
 """ 
-function savgol(X, f, pol, d)
+function savgol(X; f, pol, d)
     M = copy(X)
-    savgol!(M, f, pol, d)
+    savgol!(M; f, pol, d)
     M
 end
 
-function savgol!(X, f, pol, d)
+function savgol!(X; f, pol, d)
     @assert isodd(f) && f >= 3 "f must be odd and >= 3"
     n, p = size(X)
     m = (f - 1) / 2
