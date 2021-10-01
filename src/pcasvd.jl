@@ -58,7 +58,7 @@ end
 
 """
     summary(object::Pca, X)
-Summarize the maximal (i.e. with maximal nb. PCs) fitted model.
+Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
@@ -92,12 +92,12 @@ end
 
 """ 
     transform(object::Pca, X; nlv = nothing)
-Compute PCs (scores matrix "T") from a fitted model and X-data.
+Compute components (scores matrix "T") from a fitted model and X-data.
 * `object` : The maximal fitted model.
 * `X` : X-data for which PCs are computed.
-* `nlv` : Nb. PCs to consider. If nothing, it is the maximum nb. PCs.
+* `nlv` : Nb. components to compute. If nothing, it is the maximum nb. PCs.
 """ 
-function transform(object::Pca, X; nlv = nothing)
+function transform(object::Union{Pca, Fda}, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     center(X, object.xmeans) * @view(object.P[:, 1:nlv])

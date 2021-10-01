@@ -1,3 +1,15 @@
+struct Fda
+    T::Array{Float64}
+    P::Array{Float64}
+    Tcenters::Array{Float64}
+    eig::Vector{Float64}
+    sstot::Number
+    W::Matrix{Float64}
+    xmeans::Vector{Float64}
+    lev::AbstractVector
+    ni::AbstractVector
+end
+
 """
     fda(X, y; nlv, pseudo = false)
 Factorial discriminant analysis (FDA).
@@ -46,8 +58,7 @@ function fda!(X, y; nlv, pseudo = false)
     scale!(P, norm_P)
     T = X * P
     Tcenters = ct * P
-    (T = T, P = P, Tcenters = Tcenters, eig = eig, sstot = sstot,
-        W = W, xmeans = xmeans, lev = lev, ni = ni)
+    Fda(T, P, Tcenters, eig, sstot, W, xmeans, lev, ni)
 end
 
 function fdasvd(X, y; nlv, pseudo = false)
@@ -55,7 +66,7 @@ function fdasvd(X, y; nlv, pseudo = false)
 end
 
 """
-    fda(X, y; nlv, pseudo = false)
+    fdasvd(X, y; nlv, pseudo = false)
 Factorial discriminant analysis (FDA).
 * `X` : X-data.
 * `y` : Univariate class membership.
@@ -83,19 +94,33 @@ function fdasvd!(X, y; nlv, pseudo = false)
     ct = z.ct
     nlv = min(nlv, p, nlev - 1)
     pseudo ? Winv = pinv(W) : Winv = inv(W)
-    U = cholesky!(Hermitian(Winv))
-    Ut = U'
+    Ut = cholesky!(Hermitian(Winv)).U'
     Zct = ct * Ut
     zfm = pcasvd(Zct, ni; nlv = nlev - 1)
     Pz = zfm.P
     Tcenters = Zct * Pz        
-    eig = sqrt.(zfm.sv)
+    eig = (zfm.sv).^2 
     sstot = sum(eig)
     P = Ut * Pz[:, 1:nlv]
     T = X * P
     Tcenters = ct * P
-    (T = T, P = P, Tcenters = Tcenters, eig = eig, sstot = sstot,
-        W = W, xmeans = xmeans, lev = lev, ni = ni)
+    Fda(T, P, Tcenters, eig, sstot, W, xmeans, lev, ni)
+end
+
+"""
+    summary(object::Fda, X)
+Summarize the fitted model.
+* `object` : The fitted model.
+* `X` : The X-data that was used to fit the model.
+""" 
+function Base.summary(object::Fda)
+    nlv = size(object.T, 2)
+    eig = object.eig[1:nlv]
+    pvar =  eig ./ sum(object.eig)
+    cumpvar = cumsum(pvar)
+    explvar = DataFrame(lv = 1:nlv, var = eig, pvar = pvar, 
+        cumpvar = cumpvar)
+    (explvar = explvar,)    
 end
 
 

@@ -8,7 +8,7 @@ struct Knnr
 end
 
 """
-    knnr(X, Y; nlvdis, metric, h, k, nlv, verbose = false)
+    knnr(X, Y; nlvdis, metric, h, k)
 k-Nearest-Neighbours regression (KNNR).
 * `X` : X-data.
 * `Y` : Y-data.
@@ -18,7 +18,6 @@ k-Nearest-Neighbours regression (KNNR).
     and "mahal" (Mahalanobis distance).
 * `h` : A scalar defining the shape of the weight function. Lower is h, sharper is the function. See function `wdist`.
 * `k` : The number of nearest neighbors to select for each observation to predict.
-* `verbose` : If true, fitting information are printed.
 
 For each new observation to predict, the prediction is the weighted mean
 over the selected (training) neighborhood. The weights are defined from 

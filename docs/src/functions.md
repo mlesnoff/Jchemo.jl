@@ -82,14 +82,12 @@
 
 #### <span style="color:#1589F0"> **3. DISCRIMINATION ANALYSIS** </span>
 
-- **Not yet available**
-  
-<!---
 #### Factorial discrimination analysis (FDA)
 
 - ***fda*** Eigen decomposition of the compromise "inter/intra"
 - ***fdasvd*** Weighted SVD decomposition of the class centers
 
+<!---
 #### On predicted Y-dummy table
 
 - ***lmrda*** DA on LMR prediction (LMR-DA)

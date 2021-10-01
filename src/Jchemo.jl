@@ -111,7 +111,7 @@ export
     locw, locwlv,
     knnr, lwplsr, lwplsr_agg,
     # Discrimination 
-    fda,
+    fda, fdasvd,
     #
     transform, coef, predict,
     # Validation
