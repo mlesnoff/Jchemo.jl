@@ -18,7 +18,7 @@ Partial Least Squares Regression (PLSR) with the "Improved kernel algorithm #1" 
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
-* `nlv` : Nb. latent variables (LVs) to consider.
+* `nlv` : Nb. latent variables (LVs) to compute.
 
 For the weighting (`weights`), see in particular Schaal et al. 2002, Siccard & Sabatier 2006, 
 Kim et al. 2011 and Lesnoff et al. 2020.

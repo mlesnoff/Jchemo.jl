@@ -251,6 +251,39 @@ function recodnum2cla(x, q)
 end
 
 """
+    replacebylev(x, lev)
+Replaces the elements of x
+by the levels of corresponding order.
+
+* `x` : Vector of integers between 1 and nlev.
+* `lev` : Vector (nlev,) containing the levels.
+
+Before replacement, `lev` is internally sorted.
+
+## Examples
+```julia
+y = ["d", "a", "b", "c", "b", "c"]
+#y = [10, 4, 3, 3, 4, 4]
+lev = sort(unique(y)) 
+nlev = length(lev)
+z =  rand(1:nlev, 10)
+[z replacebylev(z, lev)]
+```
+"""
+function replacebylev(x, lev)
+    m = length(x)
+    lev = sort(lev)
+    nlev = length(lev)
+    #res = Vector{Any}(nothing, size(x, 1)) ;
+    res = similar(lev, m)
+    for i = 1:nlev
+        u = findall(x .== i)
+        res[u] .= lev[i] 
+    end
+    res
+end
+
+"""
     rmcols(X, s)
 Remove the columns of `X` having indexes `s`.
 ## Examples
@@ -293,6 +326,9 @@ function scale!(X, v)
         X[:, j] .= vcol(X, j) ./ v[j]
     end
 end
+
+# Below: Much slower and requires more memories
+scale2(X, v) = mapslices(function f(x) ; x ./ v ; end, X, dims = 2)
 
 """
     sourcedir(path)
@@ -344,6 +380,9 @@ end
 """
     tab(x)
 Univariate tabulation.
+* `x` : Univariate class membership.
+
+In the output, the levels in `x` are sorted.
 """
 function tab(x)
     sort(StatsBase.countmap(x))
@@ -352,6 +391,9 @@ end
 """
     tabnum(x)
 Univariate tabulation (only integer classes).
+* `x` : Univariate class membership.
+
+In the output, the levels in `x` are sorted.
 """
 function tabnum(x)
     lev = sort(unique(x))

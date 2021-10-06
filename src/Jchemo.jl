@@ -13,7 +13,6 @@ using LIBSVM
 using NearestNeighbors
 using XGBoost
 
-
 include("utility.jl") 
 include("preprocessing.jl") 
 include("rmgap.jl")
@@ -21,10 +20,11 @@ include("aov1.jl")
 include("plots.jl")
 include("matW.jl")
 
+include("fda.jl")
 include("pcasvd.jl") ; include("pcaeigen.jl")
 include("kpca.jl")
 
-include("lmr.jl")
+include("mlr.jl")
 include("rr.jl")
 include("plskern.jl") ; include("plsnipals.jl") 
 include("cglsr.jl") ; include("aicplsr.jl") ; include("wshenk.jl")  
@@ -34,6 +34,7 @@ include("plsr_agg.jl")
 include("svmr.jl")
 
 include("baggr.jl") ; include("baggr_util.jl")
+include("baggmlr.jl")
 include("gboostr.jl") ; include("boostr.jl")
 
 include("treer_xgb.jl")
@@ -44,9 +45,8 @@ include("locw.jl")
 include("knnr.jl") ; include("lwplsr.jl")
 include("lwplsr_agg.jl")
 
-# DISCRIMINATION
-
-include("fda.jl")
+include("mlrda.jl")
+include("plsrda.jl")
 
 # Variable importance 
 include("imp_r.jl")
@@ -78,6 +78,7 @@ export
     tab, tabnum,
     dummy,
     recodcat2num, recodnum2cla,
+    replacebylev,
     aov1,
    # Pre-processing
     snv, snv!, detrend, detrend!, fdif, fdif!,
@@ -91,16 +92,16 @@ export
     kpca,
     scordis, odis,
     # Regression
-    lmr, lmrqr!, lmrchol, lmrchol!, lmrpinv, lmrpinv!, lmrpinv_n, lmrpinv_n!,
-    lmrvec!, lmrvec,
-    rr, rr!, rrchol, rrchol!,   
+    mlr, mlr!, mlrchol, mlrchol!, mlrpinv, mlrpinv!, mlrpinv_n, mlrpinv_n!,
+    mlrvec!, mlrvec,
     plskern, plskern!, plsnipals, plsnipals!,
-    cglsr, cglsr!, dfplsr_cg, aicplsr,
+    cglsr, cglsr!, 
+    rr, rr!, rrchol, rrchol!,   
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
     plsr_agg, plsr_agg!,
+    svmr,   
+    dfplsr_cg, aicplsr,
     #
-    svmr,
-    # 
     baggr, baggr_vi, baggr_oob,
     imp_perm_r, imp_chisq_r, imp_aov_r, 
     #
@@ -112,6 +113,7 @@ export
     knnr, lwplsr, lwplsr_agg,
     # Discrimination 
     fda, fdasvd,
+    mlrda, plsrda,
     #
     transform, coef, predict,
     # Validation

@@ -86,12 +86,14 @@
 
 - ***fda*** Eigen decomposition of the compromise "inter/intra"
 - ***fdasvd*** Weighted SVD decomposition of the class centers
+- ***lmda*** DA based on LMR prediction (LMR-DA)
+- ***plsda*** DA based on PLSR prediction (PLSR-DA = common "PLSDA")
 
 <!---
 #### On predicted Y-dummy table
 
-- ***lmrda*** DA on LMR prediction (LMR-DA)
-- ***plsrda*** DA on PLSR prediction (PLSR-DA = common "PLSDA")
+
+
 - ***kplsrda*** DA on KPLSR prediction (KPLSR-DA)
 - ***rrda*** DA on RR prediction (RR-DA)
 - ***krrda*** DA on KRR prediction (KRR-DA)

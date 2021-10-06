@@ -19,7 +19,7 @@ Factorial discriminant analysis (FDA).
 * `pseudo` : If true, a MP pseudo-inverse is used (instead
     of a usual inverse) for inverting W.
 
-Eigen factorization of Inverse(W)*B. 
+Eigen factorization of Inverse(W) * B. 
 
 The functions maximize the compromise p'Bp / p'Wp, i.e. max p'Bp with 
 constraint p'Wp = 1. Vectors p (columns of P) are the linear discrimant 
@@ -34,31 +34,28 @@ end
 function fda!(X, y; nlv, pseudo = false)
     X = ensure_mat(X)
     n, p = size(X)
-    nlv = min(nlv, n, p)
     xmeans = colmeans(X) 
     center!(X, xmeans)
-    z = matW(X, y)
-    lev = z.lev
+    res = matW(X, y)
+    lev = res.lev
     nlev = length(lev)
-    W = z.W * n / (n - nlev)
-    ni = z.ni
-    z = matB(X, y)
-    B = z.B
-    ct = z.ct
-    nlv = min(nlv, p, nlev - 1)
-    pseudo ? Winv = pinv(W) : Winv = inv(W)
+    ni = res.ni
+    res.W .= res.W * n / (n - nlev)
+    zres = matB(X, y)
+    !pseudo ? Winv = inv(res.W) : Winv = pinv(res.W)
     # Winv * B is not symmetric
-    res = eigen!(Winv * B; sortby = x -> -abs(x))
-    P = res.vectors[:, 1:nlv]
-    eig = res.values
+    fm = eigen!(Winv * zres.B; sortby = x -> -abs(x))
+    nlv = min(nlv, n, p, nlev - 1)
+    P = fm.vectors[:, 1:nlv]
+    eig = fm.values
     P = real.(P)
     eig = real.(eig)
     sstot = sum(eig)
-    norm_P = sqrt.(diag(P' * W * P))
+    norm_P = sqrt.(diag(P' * res.W * P))
     scale!(P, norm_P)
     T = X * P
-    Tcenters = ct * P
-    Fda(T, P, Tcenters, eig, sstot, W, xmeans, lev, ni)
+    Tcenters = zres.ct * P
+    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, lev, ni)
 end
 
 function fdasvd(X, y; nlv, pseudo = false)
@@ -81,30 +78,27 @@ Weighted SVD factorization of the matrix of the class centers.
 function fdasvd!(X, y; nlv, pseudo = false)
     X = ensure_mat(X)
     n, p = size(X)
-    nlv = min(nlv, n, p)
     xmeans = colmeans(X) 
     center!(X, xmeans)
-    z = matW(X, y)
-    lev = z.lev
+    res = matW(X, y)
+    lev = res.lev
     nlev = length(lev)
-    W = z.W * n / (n - nlev)
-    ni = z.ni
-    z = matB(X, y)
-    B = z.B
-    ct = z.ct
-    nlv = min(nlv, p, nlev - 1)
-    pseudo ? Winv = pinv(W) : Winv = inv(W)
+    ni = res.ni
+    res.W .= res.W * n / (n - nlev)
+    !pseudo ? Winv = inv(res.W) : Winv = pinv(res.W)
+    ct = aggstat(X, y; fun = mean).res
     Ut = cholesky!(Hermitian(Winv)).U'
     Zct = ct * Ut
-    zfm = pcasvd(Zct, ni; nlv = nlev - 1)
-    Pz = zfm.P
+    nlv = min(nlv, n, p, nlev - 1)
+    fm = pcasvd(Zct, ni; nlv = nlv)
+    Pz = fm.P
     Tcenters = Zct * Pz        
-    eig = (zfm.sv).^2 
+    eig = (fm.sv).^2 
     sstot = sum(eig)
     P = Ut * Pz[:, 1:nlv]
     T = X * P
     Tcenters = ct * P
-    Fda(T, P, Tcenters, eig, sstot, W, xmeans, lev, ni)
+    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, lev, ni)
 end
 
 """
@@ -122,11 +116,6 @@ function Base.summary(object::Fda)
         cumpvar = cumpvar)
     (explvar = explvar,)    
 end
-
-
-
-
-
 
 
 

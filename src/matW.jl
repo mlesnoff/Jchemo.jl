@@ -1,30 +1,30 @@
 """
-    matB(X, group; fun = mean)
+    matB(X, y; fun = mean)
 Compute the between covariance matrix ("B") of `X`.
 * `X` : X-data (n, p).
-* `group` : A vector (n,) defing the groups.
+* `y` : A vector (n,) defing the class memberships.
 """ 
-matB = function(X, group)
+matB = function(X, y)
     X = ensure_mat(X)
-    z = aggstat(X, group; fun = mean)
+    z = aggstat(X, y; fun = mean)
     B = matcov(z.res, mweights(z.ni))
     (B = B, ct = z.res, lev = z.lev, ni = z.ni)
 end
 
 
 """
-    matW(X, group; fun = mean)
+    matW(X, y; fun = mean)
 Compute the within covariance matrix ("W") of `X`.
 * `X` : X-data (n, p).
-* `group` : A vector (n,) defing the groups.
+* `y` : A vector (n,) defing the class memberships.
 """ 
-matW = function(X, group)
+matW = function(X, y)
     X = ensure_mat(X)
-    ztab = tab(group)
+    ztab = tab(y)
     lev = ztab.keys
     nlev = length(lev)
     ni = collect(values(ztab))
-    # Case with group(s) with only 1 obs
+    # Case with y(s) with only 1 obs
     sum(ni .== 1) > 0 ? sigma_1obs = matcov(X) : nothing
     # End
     w = mweights(ni)
@@ -34,7 +34,7 @@ matW = function(X, group)
         if ni[i] == 1
             Wi[i] = sigma_1obs
         else
-            s = findall(group .== lev[i])
+            s = findall(y .== lev[i])
             Wi[i] = matcov(X[s, :])
         end
         if(i == 1) 

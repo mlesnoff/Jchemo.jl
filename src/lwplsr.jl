@@ -6,6 +6,7 @@ struct Lwplsr
     h::Real
     k::Int
     nlv::Int
+    tol::Real
     verbose::Bool
 end
 
@@ -65,8 +66,8 @@ Sicard, E. Sabatier, R., 2006. Theoretical framework for local PLS1 regression
 and application to a rainfall data set. Comput. Stat. Data Anal., 51, 1393-1410.
 
 """ 
-function lwplsr(X, Y; nlvdis, metric, h, k, nlv, verbose = false)
-    return Lwplsr(X, Y, nlvdis, metric, h, k, nlv, verbose)
+function lwplsr(X, Y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
+    return Lwplsr(X, Y, nlvdis, metric, h, k, nlv, tol, verbose)
 end
 
 """
@@ -76,18 +77,23 @@ Compute the Y-predictions from the fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Lwplsr, X; nlv = nothing)
+    X = ensure_mat(X)
+    m = size(X, 1)
     a = object.nlv
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     # Getknn
     if object.nlvdis == 0
-        println(object.k)
-        println(object.metric)
         res = getknn(object.X, X; k = object.k, metric = object.metric)
     else
         fm = plskern(object.X, object.Y; nlv = object.nlvdis)
         res = getknn(fm.T, transform(fm, X); k = object.k, metric = object.metric)
     end
-    listw = map(d -> wdist(d; h = object.h), res.d)
+    listw = copy(res.d)
+    for i = 1:m
+        w = wdist(res.d[i]; h = object.h)
+        w[w .< object.tol] .= object.tol
+        listw[i] = w
+    end
     # End
     pred = locwlv(object.X, object.Y, X; 
         listnn = res.ind, listw = listw, fun = plskern, nlv = nlv, 

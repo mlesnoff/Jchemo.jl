@@ -14,7 +14,7 @@ Bagging of regression models.
 * `Y` : Y-data (n obs., q variables).
 * `weights` : Weights of the observations.
 * `B` : Nb. of bagging repetitions.
-* `fun` : Name (string) of the function computing the model to bagg.
+* `fun` : Name of the function computing the model to bagg.
 * `withr`: Type of sampling of the observations
     (`true` => with replacement).
 * `rowsamp` : Proportion of rows sampled in `X` 
