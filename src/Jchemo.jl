@@ -24,6 +24,7 @@ include("fda.jl")
 include("pcasvd.jl") ; include("pcaeigen.jl")
 include("kpca.jl")
 
+include("baggmlr.jl")
 include("mlr.jl")
 include("rr.jl")
 include("plskern.jl") ; include("plsnipals.jl") 
@@ -34,7 +35,6 @@ include("plsr_agg.jl")
 include("svmr.jl")
 
 include("baggr.jl") ; include("baggr_util.jl")
-include("baggmlr.jl")
 include("gboostr.jl") ; include("boostr.jl")
 
 include("treer_xgb.jl")
@@ -92,6 +92,7 @@ export
     kpca,
     scordis, odis,
     # Regression
+    baggmlr,    
     mlr, mlr!, mlrchol, mlrchol!, mlrpinv, mlrpinv!, mlrpinv_n, mlrpinv_n!,
     mlrvec!, mlrvec,
     plskern, plskern!, plsnipals, plsnipals!,
@@ -103,6 +104,7 @@ export
     dfplsr_cg, aicplsr,
     #
     baggr, baggr_vi, baggr_oob,
+
     imp_perm_r, imp_chisq_r, imp_aov_r, 
     #
     treer_xgb, rfr_xgb, xgboostr,

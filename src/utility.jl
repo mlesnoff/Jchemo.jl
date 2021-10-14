@@ -235,6 +235,10 @@ x = [collect(1:10); 8.1 ; 3.1]
 q = [3; 8] ;
 zx = recodnum2cla(x, q) 
 [x zx]
+probs = [.33; .66] 
+q = Statistics.quantile(x, probs) 
+zx = recodnum2cla(x, q) ;
+[x zx]
 ```
 """
 function recodnum2cla(x, q)

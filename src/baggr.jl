@@ -6,15 +6,14 @@ struct Baggr
 end
 
 """ 
-    baggr(X, Y, weights = nothing ; fun, B, 
-        rowsamp = size(X, 1), withr = false, 
-        colsamp = size(X, 2), kwargs...)
+    baggr(X, Y, weights = nothing; fun, rep, 
+        withr = false, rowsamp = 1, colsamp = 1, kwargs...)
 Bagging of regression models.
 * `X` : X-data (n obs., p variables).
 * `Y` : Y-data (n obs., q variables).
 * `weights` : Weights of the observations.
-* `B` : Nb. of bagging repetitions.
 * `fun` : Name of the function computing the model to bagg.
+* `rep` : Nb. of bagging repetitions.
 * `withr`: Type of sampling of the observations
     (`true` => with replacement).
 * `rowsamp` : Proportion of rows sampled in `X` 
@@ -38,28 +37,28 @@ Gey, S., 2002. Bornes de risque, détection de ruptures, boosting :
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function baggr(X, Y, weights = nothing; fun, B, 
+function baggr(X, Y, weights = nothing; fun, rep, 
         withr = false, rowsamp = 1, colsamp = 1, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
     q = size(Y, 2)   
-    fm = list(B)
+    fm = list(rep)
     nrow = Int64(round(rowsamp * n))
     ncol = max(Int64(round(colsamp * p)), 1)
-    s_row = fill(1, (nrow, B))        # (nrow, B)
-    s_col = similar(s_row, ncol, B)   # (ncol, B) 
-    s_oob = list(B)
+    s_row = fill(1, (nrow, rep))        # (nrow, rep)
+    s_col = similar(s_row, ncol, rep)   # (ncol, rep) 
+    s_oob = list(rep)
     srow = similar(s_row, nrow)    
     scol = similar(s_row, ncol)
     w = similar(X, nrow)
     zncol = collect(1:ncol) 
     zX = similar(X, nrow, ncol)
     zY = similar(Y, nrow, q)
-    #Threads.@threads for i = 1:B
-    #@sync @distributed for i = 1:B
-    #@distributed for i = 1:B
-    @inbounds for i = 1:B
+    #Threads.@threads for i = 1:rep
+    #@sync @distributed for i = 1:rep
+    #@distributed for i = 1:rep
+    @inbounds for i = 1:rep
         srow .= sample(1:n, nrow; replace = withr)
         s_oob[i] = findall(in(srow).(1:n) .== 0)
         if colsamp == 1
@@ -82,16 +81,16 @@ function baggr(X, Y, weights = nothing; fun, B,
 end
 
 function predict(object::Baggr, X)
-    B = length(object.fm)
+    rep = length(object.fm)
     scol = vcol(object.s_col, 1)
     # @view is not accepted by XGBoost.predict
     # @view(X[:, scol])
     acc = predict(object.fm[1], X[:, scol]).pred
-    @inbounds for i = 2:B
+    @inbounds for i = 2:rep
         scol = vcol(object.s_col, i)
         acc .+= predict(object.fm[i], X[:, scol]).pred
     end
-    pred = acc ./ B
+    pred = acc ./ rep
     (pred = pred,)
 end
 

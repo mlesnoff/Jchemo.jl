@@ -54,11 +54,12 @@ function predict(object::LwplsrAgg, X)
     if(object.nlvdis == 0)
         res = getknn(object.X, X; k = object.k, metric = object.metric)
     else
-        fm = plskern(object.X, object.Y; nlv = object.nlvdis)
+        fm = plskern(object.X, object.Y; nlv = object.nlvdis)   
         res = getknn(fm.T, transform(fm, X); k = object.k, metric = object.metric)
         #fm = dkplsr(object.X, object.Y; nlv = object.nlvdis, gamma = 100)
         #res = getknn(fm.fm.T, transform(fm, X); k = object.k, metric = object.metric)
     end
+
     #listw = map(d -> wdist(d; h = object.h), res.d)
     listw = copy(res.d)
     for i = 1:m

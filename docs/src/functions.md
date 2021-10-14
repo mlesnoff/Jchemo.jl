@@ -13,18 +13,23 @@
 
 #### <span style="color:#1589F0;"> **2. REGRESSION** </span>
 
-#### **Linear (LMR)**
+#### **Linear models**
 
-- ***lmr*** QR algorithm
-- ***lmrchol*** Normal equations and Choleski factorization
-- ***lmrpinv*** Pseudo-inverse
-- ***lmrpinv_n*** Normal equations and pseudo-inverse
-- ***lmrvec*** Univariate X
+*Multiple linear regression (MLR)
+
+- ***mlr*** QR algorithm
+- ***mlrchol*** Normal equations and Choleski factorization
+- ***mlrpinv*** Pseudo-inverse
+- ***mlrpinv_n*** Normal equations and pseudo-inverse
+- ***mlrvec*** Simple linear regression (Univariate x)
+
+*ANOVA*
+
 - ***aov1*** One factor ANOVA
 
 *Ill-conditionned* 
 
-- ***cglsr*** Conjugate gradient for the Normal equations (CGLS)
+- ***cglsr*** Conjugate gradient for the least squares Normal equations (CGLS)
 
 #### **Partial least squares (PLSR)**
 
@@ -80,19 +85,19 @@
 - ***imp_chisq_r*** 
 - ***imp_aov_r*** 
 
-#### <span style="color:#1589F0"> **3. DISCRIMINATION ANALYSIS** </span>
+#### <span style="color:#1589F0"> **3. DISCRIMINATION ANALYSIS (DA)** </span>
 
 #### Factorial discrimination analysis (FDA)
 
 - ***fda*** Eigen decomposition of the compromise "inter/intra"
 - ***fdasvd*** Weighted SVD decomposition of the class centers
-- ***lmda*** DA based on LMR prediction (LMR-DA)
-- ***plsda*** DA based on PLSR prediction (PLSR-DA = common "PLSDA")
+
+### DA based on predicted Y-dummy table
+
+- ***mlrda*** Based on LMR predictions (LMR-DA)
+- ***plsrda*** Based on PLSR predictions (PLSR-DA = common "PLSDA")
 
 <!---
-#### On predicted Y-dummy table
-
-
 
 - ***kplsrda*** DA on KPLSR prediction (KPLSR-DA)
 - ***rrda*** DA on RR prediction (RR-DA)

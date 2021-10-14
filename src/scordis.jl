@@ -1,10 +1,16 @@
+struct Scordis
+    dis
+    fm
+    Sinv::Matrix{Float64}
+    cutoff::Real   
+    nlv::Int64
+end
+
 """
-    scordis(object::Union{Pca, Plsr}, Xtrain, X = nothing; nlv = nothing)
+    scordis(object::Union{Pca, Plsr}; nlv = nothing, rob = true, alpha = .01)
 Compute the score distances (SDs) from a PCA or PLS model
 
 * `object` : The fitted model.
-* `Xtrain` : X-data that were used to compute the model (training).
-* `X` : X-data for which new distances are computed.
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, 
     it is the maximum nb. of components.
 * `rob` : If true, the moment estimation of the distance cutoff is robustified. 
@@ -32,14 +38,14 @@ principal components analysis. Technometrics, 47, 64-79.
 Pomerantsev, A.L., 2008. Acceptance areas for multivariate classification derived by 
 projection methods. Journal of Chemometrics 22, 601-609. https://doi.org/10.1002/cem.1147
 """ 
-function scordis(object::Union{Pca, Plsr}, X = nothing; nlv = nothing, 
+function scordis(object::Union{Pca, Plsr}; nlv = nothing, 
     rob = true, alpha = .01)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     T = @view(object.T[:, 1:nlv])
     S = Statistics.cov(T, corrected = false)
-    Sinv = inv(S) 
-    d2 = mahsq(T, zeros(nlv)', Sinv)
+    LinearAlgebra.inv!(cholesky!(S))   # ==> S := Sinv
+    d2 = mahsq(T, zeros(nlv)', S)
     d = sqrt.(d2)
     if !rob 
         mu = mean(d2)   
@@ -51,26 +57,33 @@ function scordis(object::Union{Pca, Plsr}, X = nothing; nlv = nothing,
     nu = 2 * mu^2 / s2
     cutoff = sqrt(mu / nu * quantile.(Distributions.Chisq(nu), 1 - alpha))
     dstand = d / cutoff 
-    res_train = DataFrame((d = d, dstand = dstand, gh = d2 / nlv))
-    res = nothing
-    if !isnothing(X)
-        T = transform(object, X; nlv = nlv)
-        d2 = mahsq(T, zeros(nlv)', Sinv)
-        d = sqrt.(d2)
-        dstand = d / cutoff 
-        res = DataFrame((d = d, dstand = dstand, gh = d2 / nlv))
-    end
-    (res_train = res_train, res = res, cutoff = cutoff)
+    dis = DataFrame((d = d, dstand = dstand, gh = d2 / nlv))
+    Scordis(dis, object, S, cutoff, nlv)
 end
 
+function predict(object::Scordis, X)
+    nlv = object.nlv
+    T = transform(object.fm, X; nlv = nlv)
+    d2 = mahsq(T, zeros(nlv)', object.Sinv)
+    d = sqrt.(d2)
+    dstand = d / object.cutoff 
+    dis = DataFrame((d = d, dstand = dstand, gh = d2 / nlv))
+    (dis = dis,)
+end
+
+struct Odis1
+    dis
+    fm
+    cutoff::Real   
+    nlv::Int64
+end
 
 """
-    odis(object::Union{Pca, Plsr}, Xtrain, X = nothing; nlv = nothing)
+    odis(object::Union{Pca, Plsr}, X; nlv = nothing, rob = true, alpha = .01)
 Compute the orthogonal distances (ODs) from a PCA or PLS model
 
 * `object` : The fitted model.
-* `Xtrain` : X-data that were used to compute the model (training).
-* `X` : X-data for which new distances are computed.
+* `X` : X-data that were used to compute the model (training).
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, it is the maximum 
     nb. of components.
 * `rob` : If true, the moment estimation of the distance cutoff is robustified. 
@@ -109,11 +122,11 @@ Chem. Lab. Int. Syst, 79, 10-21.
 K. Varmuza, P. Filzmoser (2009). Introduction to multivariate statistical analysis in chemometrics. 
 CRC Press, Boca Raton.
 """ 
-function odis(object::Union{Pca, Plsr}, Xtrain, X = nothing; nlv = nothing, 
+function odis(object::Union{Pca, Plsr}, X; nlv = nothing, 
         rob = true, alpha = .01)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    E = xresid(object, Xtrain; nlv = nlv)
+    E = xresid(object, X; nlv = nlv)
     d = sqrt.(sum(E .* E, dims = 2))
     d2 = d.^2
     if(!rob) 
@@ -126,14 +139,17 @@ function odis(object::Union{Pca, Plsr}, Xtrain, X = nothing; nlv = nothing,
     nu = 2 * mu^2 / s2
     cutoff = sqrt(mu / nu * quantile.(Distributions.Chisq(nu), 1 - alpha))
     dstand = d / cutoff 
-    res_train = DataFrame((d = d, dstand = dstand))
-    res = nothing
-    if !isnothing(X)
-        E = xresid(object, X; nlv = nlv)
-        d = sqrt.(sum(E .* E, dims = 2))
-        dstand = d / cutoff 
-        res = DataFrame((d = d, dstand = dstand))
-    end
-    (res_train = res_train, res = res, cutoff = cutoff)
+    dis = DataFrame((d = d, dstand = dstand))
+    Odis1(dis, object, cutoff, nlv)
 end
+
+function predict(object::Odis1, X)
+    nlv = object.nlv
+    E = xresid(object.fm, X; nlv = nlv)
+    d = sqrt.(sum(E .* E, dims = 2))
+    dstand = d / object.cutoff 
+    dis = DataFrame((d = d, dstand = dstand))
+    (dis = dis,)
+end
+
 
