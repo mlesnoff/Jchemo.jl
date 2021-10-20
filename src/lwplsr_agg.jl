@@ -56,7 +56,7 @@ function predict(object::LwplsrAgg, X)
     else
         fm = plskern(object.X, object.Y; nlv = object.nlvdis)   
         res = getknn(fm.T, transform(fm, X); k = object.k, metric = object.metric)
-        #fm = dkplsr(object.X, object.Y; nlv = object.nlvdis, gamma = 100)
+        #fm = dkplsr(object.X, object.Y; nlv = object.nlvdis, gamma = 1e2)
         #res = getknn(fm.fm.T, transform(fm, X); k = object.k, metric = object.metric)
     end
 

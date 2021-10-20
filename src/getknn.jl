@@ -19,11 +19,11 @@ function getknn(Xtrain, X; k = 1, metric = "eucl")
     elseif metric == "mahal"
         S = Statistics.cov(Xtrain, corrected = false)
         if p == 1
-            U = sqrt(S) 
+            Uinv = inv(sqrt(S)) 
         else
-            U = cholesky(Hermitian(S)).U
+            #S = S + Diagonal(1e-10 * ones(p))
+            Uinv = LinearAlgebra.inv!(cholesky!(Hermitian(S)).U)
         end
-        Uinv = inv(U)
         zXtrain = Xtrain * Uinv
         zX = X * Uinv
         ztree = BruteTree(zXtrain', Euclidean())

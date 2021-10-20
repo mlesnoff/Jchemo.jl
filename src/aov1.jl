@@ -11,7 +11,7 @@ function aov1(x, Y)
     A = length(unique(x))
     Xdummy = dummy(x).Y
     zY = center(Y, colmeans(Y))
-    fm = lmr(Xdummy, zY) ;
+    fm = mlr(Xdummy, zY) ;
     pred = predict(fm, Xdummy).pred
     SSF = sum((pred.^2), dims = 1)   # = colvars(pred) * n
     SSR = ssr(pred, zY)

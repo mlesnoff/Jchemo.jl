@@ -71,7 +71,7 @@ function predict(object::Scordis, X)
     (dis = dis,)
 end
 
-struct Odis1
+struct Odis
     dis
     fm
     cutoff::Real   
@@ -140,10 +140,10 @@ function odis(object::Union{Pca, Plsr}, X; nlv = nothing,
     cutoff = sqrt(mu / nu * quantile.(Distributions.Chisq(nu), 1 - alpha))
     dstand = d / cutoff 
     dis = DataFrame((d = d, dstand = dstand))
-    Odis1(dis, object, cutoff, nlv)
+    Odis(dis, object, cutoff, nlv)
 end
 
-function predict(object::Odis1, X)
+function predict(object::Odis, X)
     nlv = object.nlv
     E = xresid(object.fm, X; nlv = nlv)
     d = sqrt.(sum(E .* E, dims = 2))

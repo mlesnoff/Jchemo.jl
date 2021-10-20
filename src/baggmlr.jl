@@ -5,7 +5,7 @@ struct Baggmlr
 end
 
 """ 
-    baggmlr(X, Y, weights = nothing ; fun = mlrchol, rep, 
+    baggmlr(X, Y, weights = nothing ; mlrfun = mlrchol, rep, 
         rowsamp = .7, withr = false, 
         colsamp = .3)
 Bagging of linear model (LMs) regressions.
@@ -13,7 +13,7 @@ Bagging of linear model (LMs) regressions.
 * `Y` : Y-data (n obs., q variables).
 * `weights` : Weights of the observations.
 * `rep` : Nb. of bagging repetitions.
-* `fun` : Function computing the LRM model.
+* `mlrfun` : Function computing the MLR model.
 * `withr`: Type of sampling of the observations
     (`true` => with replacement).
 * `rowsamp` : Proportion of rows sampled in `X` 
@@ -22,11 +22,11 @@ Bagging of linear model (LMs) regressions.
     at each repetition.
 
 """ 
-function baggmlr(X, Y, weights = nothing ; fun = mlrchol, rep, 
+function baggmlr(X, Y, weights = nothing; mlrfun = mlrchol, rep, 
     rowsamp = .7, withr = false, colsamp = .3)
     p = size(X, 2)
     q = size(Y, 2)  
-    fm = baggr(X, Y, weights; fun = fun, rep = rep, 
+    fm = baggr(X, Y, weights; fun = mlrfun, rep = rep, 
         rowsamp = rowsamp, withr = withr, colsamp = colsamp) ;
     z = zeros(p, q, rep)
     for i = 1:rep
