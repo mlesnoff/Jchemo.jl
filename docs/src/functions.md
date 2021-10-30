@@ -15,11 +15,11 @@
 
 #### **Linear models**
 
-*ANOVA*
+*Anova*
 
 - ***aov1*** One factor ANOVA
 
-*Multiple linear regression (MLR)
+*Multiple linear regression (MLR)*
 
 - ***mlr*** QR algorithm
 - ***mlrchol*** Normal equations and Choleski factorization
