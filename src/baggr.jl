@@ -6,7 +6,7 @@ struct Baggr
 end
 
 """ 
-    baggr(X, Y, weights = nothing; fun, rep, 
+    baggr(X, Y, weights = nothing; fun, rep = 50, 
         withr = false, rowsamp = 1, colsamp = 1, kwargs...)
 Bagging of regression models.
 * `X` : X-data (n obs., p variables).
@@ -37,7 +37,7 @@ Gey, S., 2002. Bornes de risque, détection de ruptures, boosting :
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function baggr(X, Y, weights = nothing; fun, rep, 
+function baggr(X, Y, weights = nothing; fun, rep = 50, 
         withr = false, rowsamp = 1, colsamp = 1, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)

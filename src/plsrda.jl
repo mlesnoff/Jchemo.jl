@@ -1,11 +1,11 @@
-struct Plsrda
+struct PlsrDa
     fm  
     lev::AbstractVector
     ni::AbstractVector
 end
 
 """
-    Plsda(X, y, weights = ones(size(X, 1)); nlv)
+    plsrda(X, y, weights = ones(size(X, 1)); nlv)
 Discrimination (DA) based on partial least squares regression (PLSR).
 * `X` : X-data.
 * `y` : Univariate class membership.
@@ -31,10 +31,10 @@ predicted Ydummy. This can be modified by argument `softmax`:
 function plsrda(X, y, weights = ones(size(X, 1)); nlv)
     z = dummy(y)
     fm = plskern(X, z.Y, weights; nlv = nlv)
-    Plsrda(fm, z.lev, z.ni)
+    PlsrDa(fm, z.lev, z.ni)
 end
 
-function predict(object::Plsrda, X; nlv = nothing, softmax = true)
+function predict(object::PlsrDa, X; nlv = nothing)
     X = ensure_mat(X)
     m = size(X, 1)
     a = size(object.fm.T, 2)
@@ -43,15 +43,15 @@ function predict(object::Plsrda, X; nlv = nothing, softmax = true)
     pred = list(le_nlv)
     posterior = list(le_nlv)
     @inbounds for i = 1:le_nlv
-        zpost = predict(object.fm, X; nlv = nlv[i]).pred
-        if softmax
-            @inbounds for j = 1:m
-                zpost[j, :] .= mweights(exp.(zpost[j, :]))
-            end
-        end
-        z =  mapslices(argmax, zpost; dims = 2) 
+        zp = predict(object.fm, X; nlv = nlv[i]).pred
+        #if softmax
+        #    @inbounds for j = 1:m
+        #        zp[j, :] .= mweights(exp.(zp[j, :]))
+        #   end
+        #end
+        z =  mapslices(argmax, zp; dims = 2) 
         pred[i] = reshape(replacebylev(z, object.lev), m, 1)
-        posterior[i] = zpost
+        posterior[i] = zp
     end 
     if le_nlv == 1
         pred = pred[1]

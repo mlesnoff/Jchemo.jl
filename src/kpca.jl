@@ -20,7 +20,7 @@ Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
 * `X` : X-data.
 * `weights` : vector (n,).
 * `nlv` : Nb. principal components (PCs), or collection of nb. PCs, to consider. 
-* 'kern' : Type of kernel used to compute the Gram matrices.
+* `kern` : Type of kernel used to compute the Gram matrices.
     Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`).
 * `kwargs` : Named arguments to pass in the kernel function.
 

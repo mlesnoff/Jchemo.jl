@@ -42,7 +42,7 @@ function fda!(X, y; nlv, pseudo = false)
     ni = res.ni
     res.W .= res.W * n / (n - nlev)
     zres = matB(X, y)
-    !pseudo ? Winv = inv(res.W) : Winv = pinv(res.W)
+    !pseudo ? Winv = LinearAlgebra.inv!(cholesky!(Hermitian(res.W))) : Winv = pinv(res.W)
     # Winv * B is not symmetric
     fm = eigen!(Winv * zres.B; sortby = x -> -abs(x))
     nlv = min(nlv, n, p, nlev - 1)

@@ -1,7 +1,7 @@
 struct Lwplsr
     X::Array{Float64}
     Y::Array{Float64}
-    nlvdis::Int
+    fm
     metric::String
     h::Real
     k::Int
@@ -67,7 +67,14 @@ and application to a rainfall data set. Comput. Stat. Data Anal., 51, 1393-1410.
 
 """ 
 function lwplsr(X, Y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
-    return Lwplsr(X, Y, nlvdis, metric, h, k, nlv, tol, verbose)
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    if nlvdis == 0
+        fm = nothing
+    else
+        fm = plskern(X, Y; nlv = nlvdis)
+    end
+    return Lwplsr(X, Y, fm, metric, h, k, nlv, tol, verbose)
 end
 
 """
@@ -82,11 +89,10 @@ function predict(object::Lwplsr, X; nlv = nothing)
     a = object.nlv
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     # Getknn
-    if object.nlvdis == 0
+    if isnothing(object.fm)
         res = getknn(object.X, X; k = object.k, metric = object.metric)
     else
-        fm = plskern(object.X, object.Y; nlv = object.nlvdis)
-        res = getknn(fm.T, transform(fm, X); k = object.k, metric = object.metric)
+        res = getknn(object.fm.T, transform(object.fm, X); k = object.k, metric = object.metric) 
     end
     listw = copy(res.d)
     for i = 1:m

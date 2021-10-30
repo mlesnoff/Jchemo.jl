@@ -1,7 +1,7 @@
 struct LwplsrAgg
     X::Array{Float64}
     Y::Array{Float64}
-    nlvdis::Int
+    fm
     metric::String
     h::Real
     k::Int
@@ -37,7 +37,15 @@ is the simple average of the predictions returned by the models with 5 LVS, 6 LV
 """ 
 function lwplsr_agg(X, Y; nlvdis, metric, h, k, nlv, wagg = "unif", 
     tol = 1e-4, verbose = false)
-    LwplsrAgg(X, Y, nlvdis, metric, h, k, nlv, wagg, 
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    if nlvdis == 0
+        fm = nothing
+    else
+        fm = plskern(X, Y; nlv = nlvdis)
+        #fm = dkplsr(X, Y; nlv = nlvdis, kern = "krbf", gamma = 1000) ; 
+    end
+    LwplsrAgg(X, Y, fm, metric, h, k, nlv, wagg, 
         tol, verbose)
 end
 
@@ -51,15 +59,13 @@ function predict(object::LwplsrAgg, X)
     X = ensure_mat(X)
     m = size(X, 1)
     ### Getknn
-    if(object.nlvdis == 0)
+    if isnothing(object.fm)
         res = getknn(object.X, X; k = object.k, metric = object.metric)
     else
-        fm = plskern(object.X, object.Y; nlv = object.nlvdis)   
-        res = getknn(fm.T, transform(fm, X); k = object.k, metric = object.metric)
-        #fm = dkplsr(object.X, object.Y; nlv = object.nlvdis, gamma = 1e2)
-        #res = getknn(fm.fm.T, transform(fm, X); k = object.k, metric = object.metric)
+        Tnew = transform(object.fm, X)
+        res = getknn(object.fm.T, Tnew; k = object.k, metric = object.metric) 
+        #res = getknn(object.fm.fm.T, Tnew; k = object.k, metric = object.metric) 
     end
-
     #listw = map(d -> wdist(d; h = object.h), res.d)
     listw = copy(res.d)
     for i = 1:m
@@ -78,11 +84,10 @@ function predict_steps(object::LwplsrAgg, X; steps = nothing)
     X = ensure_mat(X)
     m = size(X, 1)
     ### Getknn
-    if(object.nlvdis == 0)
+    if isnothing(object.fm)
         res = getknn(object.X, X; k = object.k, metric = object.metric)
     else
-        fm = plskern(object.X, object.Y; nlv = object.nlvdis)
-        res = getknn(fm.T, transform(fm, X); k = object.k, metric = object.metric)
+        res = getknn(object.fm.T, transform(object.fm, X); k = object.k, metric = object.metric) 
     end
     listw = copy(res.d)
     for i = 1:m

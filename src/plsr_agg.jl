@@ -28,9 +28,9 @@ returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 Dependending argument `wagg`, the average is the simple mean (`wagg` = "unif") or 
 a weighted mean using AIC weights computed from the models (see function `aicplsr`):
 * "aic" : Usual AIC weights (exp(-delta/2)).
-* "sqrt" : Sqrt(delta) is used in place of delta.
-* "fair" : A decreasing "fair" function is applied to delta.
+* "sqrt" : Sqrt(delta) is used in place of delta in AIC weights.
 * "inv" : Weights are computed by 1 / AIC.
+* "fair" : A decreasing "fair" function is applied to delta.
 * "shenk" : Shenk et al. (1997) weights. See function `wshenk'.
 """ 
 function plsr_agg(X, Y, weights = ones(size(X, 1)); nlv, wagg = "unif")
@@ -49,13 +49,13 @@ function plsr_agg!(X, Y, weights = ones(size(X, 1)); nlv, wagg = "unif")
         w = aicplsr(X, Y; nlv = nlvmax).w.aic
     elseif isequal(wagg, "sqrt")
         d = aicplsr(X, Y; nlv = nlvmax).delta.aic
-        w = exp.(-sqrt.(d) / 2)
+        w = exp.(-sqrt.(d) / 2)    
+    elseif isequal(wagg, "inv")
+        w = 1 ./ aicplsr(X, Y; nlv = nlvmax).crit.aic
     elseif isequal(wagg, "fair")
         d = aicplsr(X, Y; nlv = nlvmax).delta.aic
         d = d / maximum(d[isnan.(d) .== 0])
         w = 1 ./ (1 .+ d).^2
-    elseif isequal(wagg, "inv")
-        w = 1 ./ aicplsr(X, Y; nlv = nlvmax).crit.aic
     elseif isequal(wagg, "shenk")
         fm = plskern(X, Y, weights; nlv = (nlvmax))
         w = vec(sum(Jchemo.wshenk(fm, X).W, dims = 1))

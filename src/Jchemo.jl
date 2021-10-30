@@ -1,7 +1,7 @@
 module Jchemo  # Start-Module
 
 using LinearAlgebra, Statistics, Random
-using CairoMakie
+using GLMakie
 using Distributions
 using StatsBase    # sample
 using HypothesisTests
@@ -12,6 +12,7 @@ using Distances
 using LIBSVM
 using NearestNeighbors
 using XGBoost
+using Clustering
 
 include("utility.jl") 
 include("preprocessing.jl") 
@@ -24,7 +25,7 @@ include("fda.jl")
 include("pcasvd.jl") ; include("pcaeigen.jl")
 include("kpca.jl")
 
-include("baggmlr.jl")
+# Regression by regularization
 include("mlr.jl")
 include("rr.jl")
 include("plskern.jl") ; include("plsnipals.jl") 
@@ -32,24 +33,29 @@ include("cglsr.jl") ; include("aicplsr.jl") ; include("wshenk.jl")
 include("krr.jl") ; include("kplsr.jl") ; include("dkplsr.jl")
 include("plsr_agg.jl")
 
+# SVM
 include("svmr.jl")
 
+# Bagging
 include("baggr.jl") ; include("baggr_util.jl")
-include("gboostr.jl") ; include("boostr.jl")
 
+# Trees
 include("treer_xgb.jl")
 
 include("xfit.jl") ; include("scordis.jl")
 
-include("locw.jl")
-include("knnr.jl") ; include("lwplsr.jl")
-include("lwplsr_agg.jl")
-
+# Discrimination by regularization
 include("mlrda.jl")
 include("plsrda.jl")
 
-# Variable importance 
-include("imp_r.jl")
+# Local
+include("locw.jl")
+include("knnr.jl") ; include("lwplsr.jl")
+include("lwplsr_agg.jl")
+include("cplsr_agg.jl")
+
+# Variable importance (direct methods) 
+include("vimp_r.jl")
 
 # Validation
 include("mpars.jl")
@@ -92,7 +98,6 @@ export
     kpca,
     scordis, odis,
     # Regression
-    baggmlr,    
     mlr, mlr!, mlrchol, mlrchol!, mlrpinv, mlrpinv!, mlrpinv_n, mlrpinv_n!,
     mlrvec!, mlrvec,
     plskern, plskern!, plsnipals, plsnipals!,
@@ -104,15 +109,15 @@ export
     dfplsr_cg, aicplsr,
     #
     baggr, baggr_vi, baggr_oob,
-
-    imp_perm_r, imp_chisq_r, imp_aov_r, 
+    vimp_perm_r, vimp_chisq_r, vimp_aov_r, 
     #
-    treer_xgb, rfr_xgb, xgboostr,
+    treer_xgb, rfr_xgb, xgboostr, vimp_xgb,
     #
     xfit, xfit!, xresid, xresid!,
     # Local
     locw, locwlv,
     knnr, lwplsr, lwplsr_agg,
+    cplsr_agg,
     # Discrimination 
     fda, fdasvd,
     mlrda, plsrda,

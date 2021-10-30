@@ -1,4 +1,5 @@
-function imp_perm_r(Xtrain, Ytrain, X, Y; score = msep, fun, B, kwargs...)
+function vimp_perm_r(Xtrain, Ytrain, X, Y; score = msep, fun, 
+        perm = 50, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     m, p = size(X)
@@ -7,10 +8,10 @@ function imp_perm_r(Xtrain, Ytrain, X, Y; score = msep, fun, B, kwargs...)
     pred = predict(fm, X).pred
     zscore = score(pred, Y)
     zX = similar(X)     
-    res = similar(X, p, B, q)
+    res = similar(X, p, perm, q)
     @inbounds for j = 1:p
         zX .= X
-        @inbounds for i = 1:B
+        @inbounds for i = 1:perm
             s = StatsBase.sample(1:m, m, replace = false)
             zX[:, j] .= zX[s, j]
             pred .= predict(fm, zX).pred
@@ -22,7 +23,7 @@ function imp_perm_r(Xtrain, Ytrain, X, Y; score = msep, fun, B, kwargs...)
     (imp = imp,)
 end 
 
-function imp_chisq_r(X, Y; probs = [.25 ; .75])
+function vimp_chisq_r(X, Y; probs = [.25 ; .75])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = size(X, 2)
@@ -55,7 +56,7 @@ function imp_chisq_r(X, Y; probs = [.25 ; .75])
     (imp = imp,)
 end 
 
-function imp_aov_r(X, Y; probs = [.25 ; .75])
+function vimp_aov_r(X, Y; probs = [.25 ; .75])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
@@ -71,7 +72,7 @@ function imp_aov_r(X, Y; probs = [.25 ; .75])
     (imp = imp,)
 end 
 
-function imp_aov_r2(X, Y; probs = [.25 ; .75])
+function vimp_aov_r2(X, Y; probs = [.25 ; .75])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)

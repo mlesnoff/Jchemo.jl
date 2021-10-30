@@ -61,10 +61,10 @@ function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv,
             res[i, :] = score(pred[i], Y)
         end
         dat = DataFrame(nlv = nlv)
-    else
+    else       
         nco = length(pars[1])  # nb. combinations in pars
         verbose ? println("-- Nb. combinations = ", nco) : nothing
-        res = map(values(pars)...) do v...
+        res = map(values(pars)...) do v...    
             verbose ? println(Pair.(keys(pars), v)...) : nothing
             fm = fun(Xtrain, Ytrain ; nlv = maximum(nlv), Pair.(keys(pars), v)...)
             pred = predict(fm, X; nlv = nlv).pred
@@ -75,6 +75,7 @@ function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv,
             end
             zres
         end 
+       
         nco == 1 ? res = res[1] : res = reduce(vcat, res) 
         ## Make dat
         if le_nlv == 1

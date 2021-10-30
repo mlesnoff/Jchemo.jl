@@ -6,19 +6,19 @@
 * `kwargs` : Optional arguments to pass in `Axis`.
 Plots lines corresponding to the rows of `x`.
 """ 
-function plotsp(X, wl = 1:size(X, 2); color = nothing, kwargs...)
+function plotsp(X, wl = 1:size(X, 2); color = nothing, kwargs...) 
     n = size(X, 1)
-    fig = Figure()
-    ax = Axis(fig; kwargs...)
-    for i = 1:n
+    f = Figure()
+    ax = Axis(f; kwargs...)
+    @inbounds for i = 1:n
         if isnothing(color)
             lines!(ax, wl, X[i, :])
         else
             lines!(ax, wl, X[i, :]; color = color)
         end
     end
-    fig[1, 1] = ax
-    fig
+    f[1, 1] = ax
+    f
 end
 
 

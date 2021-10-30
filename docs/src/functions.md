@@ -15,6 +15,10 @@
 
 #### **Linear models**
 
+*ANOVA*
+
+- ***aov1*** One factor ANOVA
+
 *Multiple linear regression (MLR)
 
 - ***mlr*** QR algorithm
@@ -23,13 +27,9 @@
 - ***mlrpinv_n*** Normal equations and pseudo-inverse
 - ***mlrvec*** Simple linear regression (Univariate x)
 
-*ANOVA*
-
-- ***aov1*** One factor ANOVA
-
 *Ill-conditionned* 
 
-- ***cglsr*** Conjugate gradient for the least squares Normal equations (CGLS)
+- ***cglsr*** Conjugate gradient for the least squares normal equations (CGLS)
 
 #### **Partial least squares (PLSR)**
 
@@ -38,6 +38,8 @@
 - ***kplsr*** Non linear kernel PLSR (KPLSR) *Rosipal & Trejo 2001*
 - ***dkplsr*** Direct KPLSR *Bennett & Embrechts 2003*
 - ***aicplsr*** AIC and Cp for PLSR
+- ***plsr_agg*** Averaging PLSR models with different numbers of LVs (PLSR-AGG)
+
 <!---
 - ***plsrannar*** Kernel version for wide matrices (Rannar et al. 1994)
 - ***simpls***
@@ -49,10 +51,12 @@
 - ***rrchol*** Choleski factorization
 - ***krr*** Non linear kernel RR (KRR) = Least squares SVM (LS-SVMR)
 
-#### **k-nearest-neighbors (kNN)**
+#### **Local models**
 
 - ***knnr*** kNNR
 - ***lwplsr*** kNN Locally weighted PLSR (kNN-LWPLSR)
+- ***lwplsr_agg*** kNN-LWPLSR-AGG 
+- ***cplsr_agg*** Clustered PLSR-AGG
 
 #### **Support vector machine (SVMR)**
 - ***svmr*** Epsilon SVM regression (form LIBSVM)
@@ -60,24 +64,14 @@
 #### **Trees**
 
 - ***treer_xgb*** Single tree
+- ***rf_xgb*** Random forest (from XGBoost)
+- ***xgboostr*** XGBoost (from XGBoost)
 
-#### **Ensemblism**
-
-*Averaging PLSR models with different numbers of LVs*
-
-- ***plsr_agg*** PLSR-AGG
-- ***lwplsr_agg*** kNN-LWPLSR-AGG 
-
-*Bagging*
+#### **Bagging**
 
 - ***baggr*** Bagging 
 - ***baggr_oob*** Out-of-bag error rate
 - ***baggr_vi*** Variance importance (permutation method)
-- ***rf_xgb*** Random forest (from XGBoost)
-
-*Boosting*
-
-- ***xgboostr*** XGBoost (from XGBoost)
 
 #### **Variable importance**
 

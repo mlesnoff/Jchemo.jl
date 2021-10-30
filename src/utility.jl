@@ -154,9 +154,9 @@ iqr(x) = quantile(x, .75) - quantile(x, .25)
 
 """
     list(n::Integer)
-Create a Vector{Any}(undef, n).
+Create a Vector{Any}(nothing, n).
 """  
-list(n::Integer) = Vector{Any}(undef, n) 
+list(n::Integer) = Vector{Any}(nothing, n) 
 
 """ 
     mad(x)

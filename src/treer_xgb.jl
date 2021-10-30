@@ -1,10 +1,11 @@
 struct TreerXgb
     fm
+    feat::AbstractVector
 end
 
 """ 
-    treer_xgb(X, y; subsample = 1,
-        colsample_bytree = 1, colsample_bynode = 1,
+    treer_xgb(X, y;
+        subsample = 1, colsample_bytree = 1, colsample_bynode = 1,
         max_depth = 6, min_child_weight = 5,
         lambda = 0, kwargs...)
 Regression tree with XGBoost.
@@ -41,39 +42,36 @@ trois thèmes statistiques autour de CART en régression (These de doctorat).
 Paris 11. http://www.theses.fr/2002PA112245
 """ 
 function treer_xgb(X, y;
-        subsample = 1,
-        colsample_bytree = 1, 
-        colsample_bynode = 1,
-        max_depth = 6, 
-        min_child_weight = 5,
-        lambda = 0, 
-        kwargs...) 
+        subsample = 1, colsample_bytree = 1, colsample_bynode = 1,
+        max_depth = 6, min_child_weight = 5,
+        lambda = 0, kwargs...) 
     X = ensure_mat(X)
     y = Float64.(vec(y))
+    p = size(X, 2)
     num_round = 1
     fm = xgboost(X, num_round; label = y,
         seed = Int64(round(rand(1)[1] * 1e5)), 
         eta = 1,
         subsample = subsample,
-        colsample_bytree = colsample_bytree,
-        colsample_bylevel = 1,
+        colsample_bytree = colsample_bytree, colsample_bylevel = 1,
         colsample_bynode = colsample_bynode, 
-        max_depth = max_depth,
-        min_child_weight = min_child_weight,
+        max_depth = max_depth, min_child_weight = min_child_weight,
         lambda = lambda,
         verbosity = 0, kwargs...)
-    TreerXgb(fm)
+    feat = collect(1:p)
+    TreerXgb(fm, feat)
 end
 
 """ 
-    rfr_xgb(X, y; B, subsample = .7,
-        colsample_bytree = 1, colsample_bynode = 1/3, 
-        max_depth = 6, min_child_weight = 5, 
+    rfr_xgb(X, y; rep = 50,
+        subsample = .7,
+        colsample_bytree = 1, colsample_bynode = 1/3,
+        max_depth = 6, min_child_weight = 5,
         lambda = 0, kwargs...)
 Random forest regression with XGBoost.
 * `X` : X-data (n obs., p variables).
 * `y` : Univariate Y-data (n obs.).
-* `B` : Nb. trees to build in the forest.
+* `rep` : Nb. trees to build in the forest.
 * `subsample` : Proportion of rows sampled in `X` 
     for building each tree.
 * `colsample_bytree` : Proportion of columns sampled in `X` at each tree.
@@ -108,43 +106,40 @@ Gey, S., 2002. Bornes de risque, détection de ruptures, boosting :
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function rfr_xgb(X, y;
-        B,
+function rfr_xgb(X, y; rep = 50,
         subsample = .7,
-        colsample_bytree = 1,
-        colsample_bynode = 1/3,
-        max_depth = 6, 
-        min_child_weight = 5,
-        lambda = 0, 
-        kwargs...)
+        colsample_bytree = 1, colsample_bynode = 1/3,
+        max_depth = 6, min_child_weight = 5,
+        lambda = 0, kwargs...)
     X = ensure_mat(X)
     y = Float64.(vec(y))
+    p = size(X, 2)
     num_round = 1
     fm = xgboost(X, num_round; label = Float64.(vec(y)),
         seed = Int64(round(rand(1)[1] * 1e5)), 
         booster = :gbtree,
         tree_method = :auto,
-        num_parallel_tree = B,
-        subsample = subsample,
-        colsample_bytree = colsample_bytree,
-        colsample_bylevel = 1,
-        colsample_bynode = colsample_bynode,
-        max_depth = max_depth,
-        min_child_weight = min_child_weight,
-        lambda = lambda,
+        num_parallel_tree = rep,
         eta = 1,
-        verbosity = 0)
-    TreerXgb(fm)
+        subsample = subsample,
+        colsample_bytree = colsample_bytree, colsample_bylevel = 1,
+        colsample_bynode = colsample_bynode,
+        max_depth = max_depth, min_child_weight = min_child_weight,
+        lambda = lambda, verbosity = 0)
+    feat = collect(1:p)
+    TreerXgb(fm, feat)
 end
 
 """ 
-    xgboostr(X, y; B, subsample = .7,
-        colsample_bytree = 1, colsample_bynode = 1/3, 
-        max_depth = 6, min_child_weight = 5, lambda = .3, kwargs...)
+    xgboostr(X, y; rep = 50, eta = .3,
+        subsample = .7, colsample_bytree = 1, colsample_bynode = 1/3,
+        max_depth = 6, min_child_weight = 5,
+        lambda = 1, kwargs...)
 XGBoost regression.
 * `X` : X-data (n obs., p variables).
 * `y` : Univariate Y-data (n obs.).
-* `B` : Nb. trees to build.
+* `rep` : Nb. trees to build.
+* `eta` : Learning rate ([0, 1]).
 * `subsample` : Proportion of rows sampled in `X` 
     for building each tree.
 * `colsample_bytree` : Proportion of columns sampled in `X` at each tree.
@@ -168,21 +163,15 @@ https://xgboost.readthedocs.io/en/latest/index.html
 
 XGBoost.jl
 https://github.com/dmlc/XGBoost.jl
-
 """ 
-function xgboostr(X, y;
-        B,
-        eta = .3,
-        subsample = .7,
-        colsample_bytree = 1,
-        colsample_bynode = 1/3,
-        max_depth = 6, 
-        min_child_weight = 5,
-        lambda = 1, 
-        kwargs...)
+function xgboostr(X, y; rep = 50, eta = .3,
+        subsample = .7, colsample_bytree = 1, colsample_bynode = 1/3,
+        max_depth = 6, min_child_weight = 5,
+        lambda = 1, kwargs...)
     X = ensure_mat(X)
     y = Float64.(vec(y))
-    num_round = B
+    p = size(X, 2)
+    num_round = rep
     fm = xgboost(X, num_round; label = Float64.(vec(y)),
         seed = Int64(round(rand(1)[1] * 1e5)), 
         booster = :gbtree,
@@ -191,13 +180,11 @@ function xgboostr(X, y;
         eta = eta,
         subsample = subsample,
         colsample_bytree = colsample_bytree,
-        colsample_bylevel = 1,
-        colsample_bynode = colsample_bynode,
-        max_depth = max_depth,
-        min_child_weight = min_child_weight,
-        lambda = lambda,
-        verbosity = 0, kwargs...)
-    TreerXgb(fm)
+        colsample_bylevel = 1, colsample_bynode = colsample_bynode,
+        max_depth = max_depth, min_child_weight = min_child_weight,
+        lambda = lambda, verbosity = 0, kwargs...)
+    feat = collect(1:p)
+    TreerXgb(fm, feat)
 end
 
 function predict(object::TreerXgb, X)
@@ -207,4 +194,24 @@ function predict(object::TreerXgb, X)
     pred = reshape(pred, m, 1) ;
     (pred = pred,)
 end
+
+# Variable (feature) importances
+# Features with imp = 0 are not returned
+# To do: check and add these features in the  result
+function vimp_xgb(object::TreerXgb)
+    res = XGBoost.importance(object.fm, string.(object.feat))
+    gain = [] ; cover = [] ; freq = [] ; fname = []
+    for i in res
+        push!(gain, i.gain)
+        push!(cover, i.cover)
+        push!(freq, i.freq)
+        push!(fname, i.fname)
+    end
+    z = DataFrame(hcat(gain, cover, freq), [:gain, :cover, :freq]) 
+    z.feat = eval(Meta.parse.(fname))
+    z
+end
+
+
+
 
