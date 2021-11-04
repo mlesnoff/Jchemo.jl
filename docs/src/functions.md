@@ -59,13 +59,13 @@
 - ***cplsr_agg*** Clustered PLSR-AGG
 
 #### **Support vector machine (SVMR)**
-- ***svmr*** Epsilon SVM regression (form LIBSVM)
+- ***svmr*** Epsilon SVM regression (from LIBSVM.jl)
 
 #### **Trees**
 
 - ***treer_xgb*** Single tree
-- ***rf_xgb*** Random forest (from XGBoost)
-- ***xgboostr*** XGBoost (from XGBoost)
+- ***rf_xgb*** Random forest (from XGBoost.jl)
+- ***xgboostr*** XGBoost (from XGBoost.jl)
 
 #### **Bagging**
 
@@ -75,9 +75,9 @@
 
 #### **Variable importance**
 
-- ***imp_perm_r*** 
-- ***imp_chisq_r*** 
-- ***imp_aov_r*** 
+- ***vimp_perm_r*** 
+- ***vimp_chisq_r*** 
+- ***vimp_aov_r*** 
 
 #### <span style="color:#1589F0"> **3. DISCRIMINATION ANALYSIS (DA)** </span>
 
@@ -96,7 +96,7 @@
 ### DA based on predicted Y-dummy table
 
 - ***mlrda*** Based on MLR predictions (MLR-DA)
-- ***plsrda*** Based on PLSR predictions (PLSR-DA = common "PLSDA")
+- ***plsrda*** Based on PLSR predictions (PLSR-DA; = common "PLSDA")
 
 
 
