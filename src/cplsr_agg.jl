@@ -20,9 +20,13 @@ function cplsr_agg(X, Y, cla = nothing; ncla = nothing, nlv_da, nlv)
     fm = list(nlev)
     @inbounds for i = 1:nlev
         s = findall(cla .== lev[i])
-        if ni[i] >= 30
-            fm[i] = plsr_agg(X[s, :], Y[s, :]; nlv = nlv)
-        end
+        z = eval(Meta.parse(nlv))
+        zmin = minimum(z)
+        zmax = maximum(z)
+        ni[i] <= zmin ? zmin = ni[i] - 1 : nothing
+        ni[i] <= zmax ? zmax = ni[i] - 1 : nothing
+        znlv = string(zmin:zmax)
+        fm[i] = plsr_agg(X[s, :], Y[s, :]; nlv = znlv)
     end
     CplsrAgg1(fm, fm_da, lev, ni)
 end

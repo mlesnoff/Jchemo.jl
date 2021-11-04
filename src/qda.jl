@@ -1,5 +1,5 @@
-struct Lda
-    W::Array{Float64}  
+struct Qda
+    Wi::AbstractVector  
     ct::Array{Float64}
     wprior::AbstractVector
     lev::AbstractVector
@@ -7,14 +7,14 @@ struct Lda
 end
 
 """
-    lda(X, y; prior = "unif")
-Linear discriminant analysis  (LDA).
+    qda(X, y; prior = "unif")
+Quadratic discriminant analysis  (QDA).
 * `X` : X-data.
 * `y` : Univariate class membership.
 * `prior` : Type of prior probabilities for class membership
     (`unif`: uniform; `prop`: proportional).
 """ 
-function lda(X, y; prior = "unif")
+function qda(X, y; prior = "unif")
     X = ensure_mat(X)
     n = size(X, 1)
     z = aggstat(X, y; fun = mean)
@@ -28,18 +28,18 @@ function lda(X, y; prior = "unif")
         wprior = mweights(ni)
     end
     res = matW(X, y)
-    res.W .= res.W * n / (n - nlev) # Unbiased estimate
-    Lda(res.W, ct, wprior, lev, ni)
+    Qda(res.Wi, ct, wprior, lev, ni)
 end
 
-function predict(object::Lda, X)
+function predict(object::Qda, X)
     X = ensure_mat(X)
     m = size(X, 1)
     lev = object.lev
     nlev = length(lev) 
     ds = similar(X, m, nlev)
+    ni = object.ni
     for i = 1:nlev
-        fm = dmnorm(; mu = object.ct[i, :], S = object.W) 
+        fm = dmnorm(; mu = object.ct[i, :], S = object.Wi[i] * ni[i] / (ni[i] - 1)) 
         ds[:, i] .= vec(predict(fm, X).pred)
     end
     A = object.wprior' .* ds

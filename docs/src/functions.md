@@ -86,10 +86,19 @@
 - ***fda*** Eigen decomposition of the compromise "inter/intra"
 - ***fdasvd*** Weighted SVD decomposition of the class centers
 
+### Linear and quadratic DA (LDA and QDA)
+
+- ***dmnorm** Normal probability density of multivariate data.
+- ***lda*** Linear discriminant analysis (LDA).
+- ***qda*** Quadratic discriminant analysis (QDA).
+
+
 ### DA based on predicted Y-dummy table
 
-- ***mlrda*** Based on LMR predictions (LMR-DA)
+- ***mlrda*** Based on MLR predictions (MLR-DA)
 - ***plsrda*** Based on PLSR predictions (PLSR-DA = common "PLSDA")
+
+
 
 <!---
 

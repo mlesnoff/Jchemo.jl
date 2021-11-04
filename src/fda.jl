@@ -58,10 +58,6 @@ function fda!(X, y; nlv, pseudo = false)
     Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, lev, ni)
 end
 
-function fdasvd(X, y; nlv, pseudo = false)
-    fdasvd!(copy(X), y; nlv = nlv, pseudo = pseudo)
-end
-
 """
     fdasvd(X, y; nlv, pseudo = false)
 Factorial discriminant analysis (FDA).
@@ -75,6 +71,10 @@ Weighted SVD factorization of the matrix of the class centers.
 
 `X` is internally centered.  
 """ 
+function fdasvd(X, y; nlv, pseudo = false)
+    fdasvd!(copy(X), y; nlv = nlv, pseudo = pseudo)
+end
+
 function fdasvd!(X, y; nlv, pseudo = false)
     X = ensure_mat(X)
     n, p = size(X)

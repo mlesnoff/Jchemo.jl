@@ -1,6 +1,6 @@
 """
     aggstat(X::DataFrame; var_nam, group_nam, fun = mean)
-Compute the mean (or other statistic) of columns of `X`, by group.
+Compute the mean (or other statistic) of each column of `X`, by group.
 * `X` : a dataframe.
 * `var_nam` : Names of the variables to summarize.
 * `group_nam` : Names of the groups to consider.
@@ -10,13 +10,12 @@ Variables defined in `var_nam` and `group_nam` must be columns of `X`.
 """ 
 function aggstat(X::DataFrame; var_nam, group_nam, fun = mean)
     gdf = groupby(X, group_nam) 
-    z = combine(gdf, var_nam .=> fun, renamecols = false)
-    z
+    combine(gdf, var_nam .=> fun, renamecols = false)
 end
 
 """
     aggstat(X::AbstractMatrix, group; fun = mean)
-Compute the mean (or other statistic) of all the columns of `X`, by group.
+Compute the mean (or other statistic) of each column of `X`, by group.
 * `X` : A matrix (n, p).
 * `group` : A vector (n,) defing the groups.
 * `fun` : Function to compute.

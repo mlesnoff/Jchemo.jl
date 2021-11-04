@@ -45,6 +45,8 @@ include("treer_xgb.jl")
 include("xfit.jl") ; include("scordis.jl")
 
 # Discrimination by regularization
+include("dmnorm.jl")
+include("lda.jl") ; include("qda.jl")
 include("mlrda.jl")
 include("plsrda.jl")
 
@@ -118,9 +120,12 @@ export
     locw, locwlv,
     knnr, lwplsr, lwplsr_agg,
     cplsr_agg,
-    # Discrimination 
-    fda, fdasvd,
-    mlrda, plsrda,
+    # Discrimination
+    dmnorm, dmnorm!,
+    fda, fda!, fdasvd, fdasvd!,
+    mlrda,
+    lda, qda, 
+    plsrda,
     #
     transform, coef, predict,
     # Validation

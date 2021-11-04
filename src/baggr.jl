@@ -37,7 +37,7 @@ Gey, S., 2002. Bornes de risque, détection de ruptures, boosting :
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function baggr(X, Y, weights = nothing; fun, rep = 50, 
+function baggr(X, Y, weights = nothing, wcol = nothing; fun, rep = 50, 
         withr = false, rowsamp = 1, colsamp = 1, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -64,7 +64,11 @@ function baggr(X, Y, weights = nothing; fun, rep = 50,
         if colsamp == 1
             scol .= zncol
         else
-            scol .= sample(1:p, ncol; replace = false) 
+            if isnothing(wcol)
+                scol .= sample(1:p, ncol; replace = false)
+            else
+                scol .= sample(1:p, StatsBase.weights(wcol), ncol; replace = false)
+            end
         end
         zX .= X[srow, scol]
         zY .= Y[srow, :]

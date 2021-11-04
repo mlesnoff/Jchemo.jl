@@ -88,7 +88,17 @@ function vimp_aov_r2(X, Y; probs = [.25 ; .75])
     (imp = imp,)
 end 
 
-
+function vimp_cov_r(X, Y)
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    n, p = size(X)
+    q = size(Y, 2)
+    imp = similar(X, p, q)
+    @inbounds for j = 1:q
+        imp[:, j] .= vec(cov(vcol(Y, q), X).^2)
+    end
+    (imp = imp,)
+end 
 
 
 
