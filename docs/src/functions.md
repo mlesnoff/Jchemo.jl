@@ -89,14 +89,14 @@
 #### DA based on predicted Y-dummy table
 
 - ***mlrda*** Based on MLR predictions (MLR-DA)
-- ***plsrda*** Based on PLSR predictions (PLSR-DA; = common "PLSDA")
+- ***plsrda*** Based on PLSR predictions (PLSR-DA ; = common "PLSDA")
 - ***kplsrda*** DA on KPLSR predictions (KPLSR-DA)
 - ***rrda*** DA on RR predictions (RR-DA)
 - ***krrda*** DA on KRR predictions (KRR-DA)
 
 #### Probabilistic
 
-- ***dmnorm*** Normal probability density of multivariate data.
+- ***dmnorm*** Normal probability density of multivariate data
 - ***lda*** Linear discriminant analysis (LDA)
 - ***qda*** Quadratic discriminant analysis (QDA)
 
