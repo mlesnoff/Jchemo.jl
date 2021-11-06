@@ -226,18 +226,15 @@
 - ***summ*** Summarize the columns of a dataset
 - ***aggstat*** Compute column means (or other statistic) of a dataset, by group
 - ***matcov***, ***matB***, ***matW*** Covariances matrices
-
 - ***euclsq***, ***mahsq***, ***mahsqchol*** Euclidean and Mahalanobis distances between rows of matrices
 - ***getknn*** Find nearest neighbours between rows of matrices
 - ***wdist*** Compute weights from distances
 - ***locw*** Working function for local (kNN) models
-
 - ***krbf, kpol*** Build kernel Gram matrices
-
 - ***dummy*** Build dummy table
 - ***recodnum2cla*** Recode a continuous variable to classes
 - ***sourcedir*** Include all the files contained in a directory
-- See other functions in file `utility.jl`
+- Other functions in file `utility.jl`
 
 <!---
 - ***dmnorm*** Multivariate normal probability density
