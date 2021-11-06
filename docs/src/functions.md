@@ -79,7 +79,7 @@
 - ***vimp_chisq_r*** 
 - ***vimp_aov_r*** 
 
-#### <span style="color:#1589F0"> **3. DISCRIMINATION ANALYSIS (DA)** </span>
+### <span style="color:#1589F0"> **3. DISCRIMINATION ANALYSIS (DA)** </span>
 
 #### Factorial discrimination analysis (FDA)
 
@@ -116,14 +116,14 @@
 -->
 
 <!---
-#### <span style="color:#1589F0"> **ENSEMBLIST METHODS** </span>
+### <span style="color:#1589F0"> **ENSEMBLIST METHODS** </span>
 - ***plsrda_agg*** PLSRDA-AGG
 - ***lwplsrda_agg*** KNN-LWPLSR-DA-AGG
 - ***lwplslda_agg*** KNN-LWPLS-LDA-AGG
 - ***lwplslda_agg*** KNN-LWPLS-QDA-AGG
 -->
 
-#### <span style="color:#1589F0"> **4. TUNING MODELS** </span>
+### <span style="color:#1589F0"> **4. TUNING MODELS** </span>
 
 #### **Grid**
 
@@ -162,11 +162,11 @@
 -->
 
 <!---
-#### <span style="color:#1589F0"> **SELECTION OF VARIABLES** </span>
+### <span style="color:#1589F0"> **SELECTION OF VARIABLES** </span>
 - ***covsel*** COVSEL algorithm (Roger et al. 2011)
 -->
 
-#### <span style="color:#1589F0"> **5. DATA MANAGEMENT** </span>
+### <span style="color:#1589F0"> **5. DATA MANAGEMENT** </span>
 
 #### **Pre-processing**
 
@@ -216,7 +216,7 @@
 - ***ozone*** Los Angeles "ozone" pollution (1976) dataset
 -->
 
-#### <span style="color:#1589F0"> **6. UTILITY** </span>
+### <span style="color:#1589F0"> **6. UTILITY** </span>
 
 - ***colmeans***, ***colvars*** Weighted column means and variances
 - ***center***, ***scale*** Column-wise centering and scaling of a matrix
@@ -249,7 +249,7 @@
 - ***plotsp*** Plotting spectra
 
 <!---
-#### <span style="color:#1589F0"> **GRAPHICS** </span>
+### <span style="color:#1589F0"> **GRAPHICS** </span>
 - ***plotsp*** Plotting spectra, loadings, or more generally row observations of a data set
 - ***plostsp1*** Same as  ***plotsp*** but one-by-one row
 - ***plotxy*** 2-d scatter plot
