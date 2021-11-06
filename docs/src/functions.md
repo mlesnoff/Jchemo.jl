@@ -1,4 +1,4 @@
-#### <span style="color:#1589F0"> **1. PCA** </span>
+### <span style="color:#1589F0"> **1. PCA** </span>
 
 - ***pcaeigen*** Eigen decomposition
 - ***pcaeigenk*** Eigen decomposition for wide matrices (kernel form)
@@ -11,7 +11,7 @@
 - ***xfit*** Matrix fitting 
 - ***xresid*** Residual matrix 
 
-#### <span style="color:#1589F0;"> **2. REGRESSION** </span>
+### <span style="color:#1589F0;"> **2. REGRESSION** </span>
 
 #### **Linear models**
 
