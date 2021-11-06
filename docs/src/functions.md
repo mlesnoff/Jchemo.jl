@@ -99,12 +99,10 @@
 - ***dmnorm*** Normal probability density of multivariate data
 - ***lda*** Linear discriminant analysis (LDA)
 - ***qda*** Quadratic discriminant analysis (QDA)
+- ***plslda*** LDA on PLS latent variables (PLS-LDA)
+- ***plsqda*** QDA on PLS latent variables (PLS-QDA)
 
 <!---
-
-- ***plslda*** LDA on PLS latent variables (LVs) (PLS-LDA)
-- ***plsqda*** QDA on PLS LVs (PLS-QDA)
-
 
 #### Support vector machine
 

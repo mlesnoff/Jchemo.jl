@@ -50,6 +50,7 @@ include("lda.jl") ; include("qda.jl")
 include("mlrda.jl")
 include("plsrda.jl")
 include("rrda.jl")
+include("plslda.jl")
 
 # Local
 include("locw.jl")
@@ -129,6 +130,7 @@ export
     lda, qda, 
     plsrda, kplsrda,
     rrda, krrda,
+    plslda, plsqda,
     #
     transform, coef, predict,
     # Validation
