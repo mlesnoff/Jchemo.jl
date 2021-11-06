@@ -49,10 +49,12 @@ include("dmnorm.jl")
 include("lda.jl") ; include("qda.jl")
 include("mlrda.jl")
 include("plsrda.jl")
+include("rrda.jl")
 
 # Local
 include("locw.jl")
-include("knnr.jl") ; include("lwplsr.jl")
+include("knnr.jl")
+include("lwplsr.jl")
 include("lwplsr_agg.jl")
 include("cplsr_agg.jl")
 
@@ -116,7 +118,7 @@ export
     treer_xgb, rfr_xgb, xgboostr, vimp_xgb,
     #
     xfit, xfit!, xresid, xresid!,
-    # Local
+    # Local regression
     locw, locwlv,
     knnr, lwplsr, lwplsr_agg,
     cplsr_agg,
@@ -125,7 +127,8 @@ export
     fda, fda!, fdasvd, fdasvd!,
     mlrda,
     lda, qda, 
-    plsrda,
+    plsrda, kplsrda,
+    rrda, krrda,
     #
     transform, coef, predict,
     # Validation

@@ -28,9 +28,11 @@ function mlrda(X, y, weights = ones(size(X, 1)))
     Mlrda(fm, z.lev, z.ni)
 end
 
-function predict(object::Mlrda, X; softmax = true)
+function predict(object::Mlrda, X)
+    X = ensure_mat(X)
+    m = size(X, 1)
     zp = predict(object.fm, X).pred
-    z =  mapslices(argmax, posterior; dims = 2) 
+    z =  mapslices(argmax, zp; dims = 2) 
     pred = reshape(replacebylev(z, object.lev), m, 1)
     (pred = pred, posterior = zp)
 end

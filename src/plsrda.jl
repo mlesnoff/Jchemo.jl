@@ -4,6 +4,12 @@ struct PlsrDa
     ni::AbstractVector
 end
 
+struct KplsrDa
+    fm  
+    lev::AbstractVector
+    ni::AbstractVector
+end
+
 """
     plsrda(X, y, weights = ones(size(X, 1)); nlv)
 Discrimination (DA) based on partial least squares regression (PLSR).
@@ -18,12 +24,12 @@ to a dummy table (Ydummy) containing nlev columns, where nlev is the number
 of classes present in `y`. Each column of Ydummy is a dummy variable (0/1). 
 Then, a PLS2 is implemented on the X-data and Ydummy, 
 returning `nlv` latent variables (LVs).
-Finally, a multiple linear regression (MLR) is run between the LVs abd each column of Ydummy, 
-returning predictions of the dummy variables (object `posterior` retunerd by 
-fuction `predict`). 
+Finally, a multiple linear regression (MLR) is run between the LVs and each 
+column of Ydummy, returning predictions of the dummy variables 
+(= object `posterior` returned by function `predict`). 
 These predictions can be considered as unbounded (i.e. eventuall outside of [0, 1]) 
-estimates of the class memberships.
-For a given observation, the final class prediction is the class corresponding 
+estimates of the class membership probabilities.
+For a given observation, the final prediction is the class corresponding 
 to the dummy variable for which the prediction is the highest.
 """ 
 function plsrda(X, y, weights = ones(size(X, 1)); nlv)
@@ -32,7 +38,7 @@ function plsrda(X, y, weights = ones(size(X, 1)); nlv)
     PlsrDa(fm, z.lev, z.ni)
 end
 
-function predict(object::PlsrDa, X; nlv = nothing)
+function predict(object::Union{PlsrDa, KplsrDa}, X; nlv = nothing)
     X = ensure_mat(X)
     m = size(X, 1)
     a = size(object.fm.T, 2)
@@ -57,6 +63,32 @@ function predict(object::PlsrDa, X; nlv = nothing)
     end
     (pred = pred, posterior = posterior)
 end
-    
 
+"""
+    kplsrda(X, y, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
+Discrimination (DA) based on kernel partial least squares regression (KPLSR).
+* `X` : X-data.
+* `y` : Univariate class membership.
+* `weights` : Weights of the observations.
+* `nlv` : Nb. latent variables (LVs) to compute.
+
+This is the common "PLSDA". 
+The training variable y (univariate class membership) is transformed
+to a dummy table (Ydummy) containing nlev columns, where nlev is the number 
+of classes present in `y`. Each column of Ydummy is a dummy variable (0/1). 
+Then, a kernel PLS2 is implemented on the X-data and Ydummy, 
+returning `nlv` latent variables (LVs).
+Finally, a multiple linear regression (MLR) is run between the LVs and each 
+column of Ydummy, returning predictions of the dummy variables 
+(= object `posterior` returned by function `predict`). 
+These predictions can be considered as unbounded (i.e. eventuall outside of [0, 1]) 
+estimates of the class membership probabilities.
+For a given observation, the final prediction is the class corresponding 
+to the dummy variable for which the prediction is the highest.
+""" 
+function kplsrda(X, y, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
+    z = dummy(y)
+    fm = kplsr(X, z.Y, weights; nlv = nlv, kern = kern, kwargs...)
+    KplsrDa(fm, z.lev, z.ni)
+end
 
