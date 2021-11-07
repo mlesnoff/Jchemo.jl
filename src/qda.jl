@@ -16,7 +16,6 @@ Quadratic discriminant analysis  (QDA).
 """ 
 function qda(X, y; prior = "unif")
     X = ensure_mat(X)
-    n = size(X, 1)
     z = aggstat(X, y; fun = mean)
     ct = z.res
     lev = z.lev
@@ -39,7 +38,12 @@ function predict(object::Qda, X)
     ds = similar(X, m, nlev)
     ni = object.ni
     for i = 1:nlev
-        fm = dmnorm(; mu = object.ct[i, :], S = object.Wi[i] * ni[i] / (ni[i] - 1)) 
+        if ni[i] == 1
+            S = object.Wi[i] 
+        else
+            S = object.Wi[i] * ni[i] / (ni[i] - 1)
+        end
+        fm = dmnorm(; mu = object.ct[i, :], S = S) 
         ds[:, i] .= vec(predict(fm, X).pred)
     end
     A = object.wprior' .* ds

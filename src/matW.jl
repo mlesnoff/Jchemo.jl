@@ -6,6 +6,7 @@ Compute the between covariance matrix ("B") of `X`.
 """ 
 matB = function(X, y)
     X = ensure_mat(X)
+    y = vec(y) 
     z = aggstat(X, y; fun = mean)
     B = matcov(z.res, mweights(z.ni))
     (B = B, ct = z.res, lev = z.lev, ni = z.ni)
@@ -20,6 +21,7 @@ Compute the within covariance matrix ("W") of `X`.
 """ 
 matW = function(X, y)
     X = ensure_mat(X)
+    y = vec(y)  
     ztab = tab(y)
     lev = ztab.keys
     nlev = length(lev)
@@ -30,14 +32,14 @@ matW = function(X, y)
     w = mweights(ni)
     Wi = list(nlev)
     W = zeros(1, 1)
-    for i in 1:nlev 
+    @inbounds for i in 1:nlev 
         if ni[i] == 1
             Wi[i] = sigma_1obs
         else
             s = findall(y .== lev[i])
             Wi[i] = matcov(X[s, :])
         end
-        if(i == 1) 
+        if i == 1  
             W = w[i] * Wi[i] 
         else 
             W = W + w[i] * Wi[i]

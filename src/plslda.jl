@@ -1,4 +1,4 @@
-struct PlsProbDa
+struct PlsLda
     fm  
     lev::AbstractVector
     ni::AbstractVector
@@ -23,14 +23,14 @@ function plslda(X, y, weights = ones(size(X, 1)); nlv, prior = "unif")
     z = dummy(y)
     fm_pls = plskern(X, z.Y, weights; nlv = nlv)
     fm_da = list(nlv)
-    for i = 1:nlv
+    @inbounds for i = 1:nlv
         fm_da[i] = lda(fm_pls.T[:, 1:i], y; prior = prior)
     end
     fm = (fm_pls = fm_pls, fm_da = fm_da)
-    PlsProbDa(fm, z.lev, z.ni)
+    PlsLda(fm, z.lev, z.ni)
 end
 
-function predict(object::PlsProbDa, X; nlv = nothing)
+function predict(object::PlsLda, X; nlv = nothing)
     X = ensure_mat(X)
     m = size(X, 1)
     a = size(object.fm.fm_pls.T, 2)
@@ -46,6 +46,7 @@ function predict(object::PlsProbDa, X; nlv = nothing)
         pred[i] = reshape(replacebylev(z, object.lev), m, 1)
         posterior[i] = zres.posterior
     end 
+    
     if le_nlv == 1
         pred = pred[1]
         posterior = posterior[1]
@@ -76,7 +77,7 @@ function plsqda(X, y, weights = ones(size(X, 1)); nlv, prior = "unif")
         fm_da[i] = qda(fm_pls.T[:, 1:i], y; prior = prior)
     end
     fm = (fm_pls = fm_pls, fm_da = fm_da)
-    PlsProbDa(fm, z.lev, z.ni)
+    PlsLda(fm, z.lev, z.ni)
 end
 
 

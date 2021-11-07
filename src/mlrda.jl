@@ -1,4 +1,4 @@
-struct Mlrda
+struct MlrDa
     fm  
     lev::AbstractVector
     ni::AbstractVector
@@ -25,10 +25,10 @@ to the dummy variable for which the prediction is the highest.
 function mlrda(X, y, weights = ones(size(X, 1)))
     z = dummy(y)
     fm = mlr(X, z.Y, weights)
-    Mlrda(fm, z.lev, z.ni)
+    MlrDa(fm, z.lev, z.ni)
 end
 
-function predict(object::Mlrda, X)
+function predict(object::MlrDa, X)
     X = ensure_mat(X)
     m = size(X, 1)
     zp = predict(object.fm, X).pred

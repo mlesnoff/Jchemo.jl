@@ -25,7 +25,7 @@ include("fda.jl")
 include("pcasvd.jl") ; include("pcaeigen.jl")
 include("kpca.jl")
 
-# Regression by regularization
+# Regression 
 include("mlr.jl")
 include("rr.jl")
 include("plskern.jl") ; include("plsnipals.jl") 
@@ -42,9 +42,10 @@ include("baggr.jl") ; include("baggr_util.jl")
 # Trees
 include("treer_xgb.jl")
 
-include("xfit.jl") ; include("scordis.jl")
+include("xfit.jl")
+include("scordis.jl")
 
-# Discrimination by regularization
+# Discrimination 
 include("dmnorm.jl")
 include("lda.jl") ; include("qda.jl")
 include("mlrda.jl")
@@ -52,12 +53,17 @@ include("plsrda.jl")
 include("rrda.jl")
 include("plslda.jl")
 
-# Local
+# Local regression
 include("locw.jl")
 include("knnr.jl")
 include("lwplsr.jl")
 include("lwplsr_agg.jl")
-include("cplsr_agg.jl")
+include("cplsr_agg.jl")  # Use structure PlsrDa
+
+# Local discrimination
+include("lwplsrda.jl")
+include("lwplslda.jl")
+include("lwplsqda.jl")
 
 # Variable importance (direct methods) 
 include("vimp_r.jl")
@@ -80,7 +86,7 @@ export
     # Utilities
     sourcedir,
     ensure_df, ensure_mat, list, vcol, vrow, rmcols, rmrows,
-    pnames,
+    pnames, psize,
     mweights,
     colmeans, colvars, colvars!, 
     center, center!, scale, scale!,
@@ -131,6 +137,9 @@ export
     plsrda, kplsrda,
     rrda, krrda,
     plslda, plsqda,
+    # Local Discrimination
+    lwplsrda,
+    lwplslda, lwplsqda,
     #
     transform, coef, predict,
     # Validation

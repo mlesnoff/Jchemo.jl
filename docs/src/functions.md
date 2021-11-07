@@ -102,6 +102,12 @@
 - ***plslda*** LDA on PLS latent variables (PLS-LDA)
 - ***plsqda*** QDA on PLS latent variables (PLS-QDA)
 
+#### **Local models**
+
+- ***lwplsrda*** kNN Locally weighted PLSRDA (kNN-LWPLSR-DA)
+- ***lwplslda*** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
+- ***lwplsqda*** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA)
+
 <!---
 
 #### Support vector machine
@@ -111,8 +117,6 @@
 #### K-nearest-neighbors
 
 - ***knnda*** KNN-DA
-- ***lwplsrda*** KNN Locally weighted PLSR-DA (KNN-LWPLSR-DA)
-- ***lwplslda*** KNN Locally weighted PLS-LDA/QDA (KNN-LWPLS-LDA/QDA)
 -->
 
 <!---

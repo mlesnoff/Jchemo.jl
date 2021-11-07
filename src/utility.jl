@@ -14,14 +14,16 @@ function aggstat(X::DataFrame; var_nam, group_nam, fun = mean)
 end
 
 """
-    aggstat(X::AbstractMatrix, group; fun = mean)
+    aggstat(X::AbstractMatrix, group::AbstractVector; fun = mean)
 Compute the mean (or other statistic) of each column of `X`, by group.
 * `X` : A matrix (n, p).
 * `group` : A vector (n,) defing the groups.
 * `fun` : Function to compute.
 """ 
-function aggstat(X::Union{AbstractMatrix, AbstractVector}, group; fun = mean)
+function aggstat(X::Union{AbstractMatrix, AbstractVector}, group; 
+    fun = mean)
     X = ensure_mat(X)
+    group = vec(group)
     q = size(X, 2)
     ztab = tab(group)
     lev = ztab.keys
@@ -196,6 +198,15 @@ mweights(w) = w / sum(w)
 Return the names of the elements of `x`.
 """
 pnames(x) = propertynames(x)
+
+""" 
+    psize(x)
+Return the type and size of `x`.
+"""
+function  psize(x)
+    println(typeof(x))
+    println(size(x))
+end
 
 """
     recodcat2num(x; start = 1)

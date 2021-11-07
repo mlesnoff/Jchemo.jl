@@ -26,7 +26,7 @@ function wdist!(d; h = 2, cri = 4, squared = false)
     zmad = Jchemo.mad(d)
     cutoff = zmed + cri * zmad
     d .= map(x -> ifelse(x <= cutoff, exp(-x / (h * zmad)), zero(eltype(d))), d)
-    d .= d ./ maximum(d)
+    d .= d / maximum(d)
     d[isnan.(d)] .= 1
     return
 end

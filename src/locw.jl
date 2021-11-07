@@ -19,7 +19,8 @@ function locw(Xtrain, Ytrain, X ;
     listnn, listw = nothing, fun, verbose = false, kwargs...)
     m = size(X, 1)
     q = size(Ytrain, 2)
-    pred = zeros(m, q)
+    #pred = zeros(m, q)
+    pred = similar(Ytrain, m, q)
     @inbounds for i = 1:m
         verbose ? print(i, " ") : nothing
         s = listnn[i]
@@ -50,14 +51,15 @@ Same as [`locw`](@ref) but specific (and much faster) to LV-based models (e.g. P
 
 Argument pars must not contain nlv.
 """
-function locwlv(Xtrain, Ytrain, X ; 
+function locwlv(Xtrain, Ytrain, X; 
     listnn, listw = nothing, fun, nlv, verbose = true, kwargs...)
     m = size(X, 1)
     q = size(Ytrain, 2)
     nlv = max(minimum(nlv), 0):maximum(nlv)
     le_nlv = length(nlv)
-    zpred = zeros(m, q, le_nlv)
+    #zpred = zeros(m, q, le_nlv)
     #zpred = Array{Float64}(undef, m, q, le_nlv)
+    zpred = similar(Ytrain, m, q, le_nlv)
     @inbounds for i = 1:m
         verbose ? print(i, " ") : nothing
         s = listnn[i]
