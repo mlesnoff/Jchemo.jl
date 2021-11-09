@@ -1,14 +1,16 @@
 struct Knnr
     X::Array{Float64}
     Y::Array{Float64}
+    fm
     nlvdis::Int
     metric::String
     h::Real
     k::Int
+    tol::Real
 end
 
 """
-    knnr(X, Y; nlvdis, metric, h, k)
+    knnr(X, Y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, tol = 1e-4)
 k-Nearest-Neighbours regression (KNNR).
 * `X` : X-data.
 * `Y` : Y-data.
@@ -18,6 +20,7 @@ k-Nearest-Neighbours regression (KNNR).
     and "mahal" (Mahalanobis distance).
 * `h` : A scalar defining the shape of the weight function. Lower is h, sharper is the function. See function `wdist`.
 * `k` : The number of nearest neighbors to select for each observation to predict.
+* `tol` : For stabilization when very close neighbors.
 
 For each new observation to predict, the prediction is the weighted mean
 over the selected (training) neighborhood. The weights are defined from 
@@ -31,8 +34,15 @@ and the dissimilarities are computed over these scores.
 In general, for high dimensional X-data, using the Mahalanobis distance requires 
 psuch a reliminary dimensionality reduction.
 """ 
-function knnr(X, Y; nlvdis = 0, metric = "eucl", h = Inf, k = 1)
-    return Knnr(X, Y, nlvdis, metric, h, k)
+function knnr(X, Y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, tol = 1e-4)
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    if nlvdis == 0
+        fm = nothing
+    else
+        fm = plskern(X, Y; nlv = nlvdis)
+    end
+    return Knnr(X, Y, fm, nlvdis, metric, h, k, tol)
 end
 
 """
@@ -45,18 +55,24 @@ function predict(object::Knnr, X)
     X = ensure_mat(X)
     m = size(X, 1)
     q = size(object.Y, 2)
-    if(object.nlvdis == 0)
+    # Getknn
+    if isnothing(object.fm)
         res = getknn(object.X, X; k = object.k, metric = object.metric)
     else
-        fm = plskern(object.X, object.Y; nlv = object.nlvdis)
-        res = getknn(fm.T, transform(fm, X); k = object.k, metric = object.metric)
+        res = getknn(object.fm.T, transform(object.fm, X); k = object.k, metric = object.metric) 
     end
-    listw = map(d -> wdist(d; h = object.h), res.d)
+    listw = copy(res.d)
+    for i = 1:m
+        w = wdist(res.d[i]; h = object.h)
+        w[w .< object.tol] .= object.tol
+        listw[i] = w
+    end
+    # End
     pred = zeros(m, q)
     @inbounds for i = 1:m
         s = res.ind[i]
-        w = listw[i] / sum(listw[i])
-        pred[i, :] .= colmeans(@view(object.Y[s, :]), w)
+        w = mweights(listw[i])
+        pred[i, :] .= colmeans(vrow(object.Y, s), w)
     end
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end

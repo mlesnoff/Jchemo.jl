@@ -1,4 +1,4 @@
-struct LwplsrDa
+struct Lwplsrda
     X::Array{Float64}
     y::AbstractMatrix
     fm
@@ -14,7 +14,7 @@ end
     lwplsrda(X, y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
 kNN-LWPLSRDA models.
 * `X` : X-data.
-* `y` : y-data.
+* `y` : y-data (class membership).
 * `nlvdis` : Number of latent variables (LVs) to consider in the 
     global PLS used for the dimension reduction before 
     calculating the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.
@@ -28,7 +28,7 @@ kNN-LWPLSRDA models.
 * `tol` : For stabilization when very close neighbors.
 * `verbose` : If true, fitting information are printed.
 
- This is the same methodology as for `lwplsr` except that 
+This is the same methodology as for `lwplsr` except that 
 PLSR is replaced by PLSRDA.
 """ 
 function lwplsrda(X, y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
@@ -39,16 +39,16 @@ function lwplsrda(X, y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
     else
         fm = plskern(X, dummy(y).Y; nlv = nlvdis)
     end
-    return LwplsrDa(X, y, fm, metric, h, k, nlv, tol, verbose)
+    return Lwplsrda(X, y, fm, metric, h, k, nlv, tol, verbose)
 end
 
 """
-    predict(object::LwplsrDa, X)
+    predict(object::Lwplsrda, X)
 Compute the y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::LwplsrDa, X; nlv = nothing)
+function predict(object::Lwplsrda, X; nlv = nothing)
     X = ensure_mat(X)
     m = size(X, 1)
     a = object.nlv

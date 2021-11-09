@@ -89,7 +89,7 @@
 #### DA based on predicted Y-dummy table
 
 - ***mlrda*** Based on MLR predictions (MLR-DA)
-- ***plsrda*** Based on PLSR predictions (PLSR-DA ; = common "PLSDA")
+- ***plsrda*** Based on PLSR predictions (PLSR-DA; = common "PLSDA")
 - ***kplsrda*** DA on KPLSR predictions (KPLSR-DA)
 - ***rrda*** DA on RR predictions (RR-DA)
 - ***krrda*** DA on KRR predictions (KRR-DA)
@@ -104,19 +104,14 @@
 
 #### **Local models**
 
-- ***lwplsrda*** kNN Locally weighted PLSRDA (kNN-LWPLSR-DA)
+- ***knnda*** kNN-DA (Vote within neighbors)
+- ***lwplsrda*** kNN Locally weighted PLSR-DA (kNN-LWPLSR-DA)
 - ***lwplslda*** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
 - ***lwplsqda*** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA)
 
 <!---
-
 #### Support vector machine
-
 - ***svmda*** SVMDA (= SVMC)
-
-#### K-nearest-neighbors
-
-- ***knnda*** KNN-DA
 -->
 
 <!---
@@ -199,12 +194,6 @@
 -->
 
 <!---
-#### **Summary**
-- ***aggmean*** Centers of classes
-- ***dtagg*** Summary statistics with data subsets
--->
-
-<!---
 #### **Multi-block**
 - ***mblocks*** Makes a list of blocks
 - ***hconcat*** Horizontal block concatenation 
@@ -222,22 +211,22 @@
 
 ### <span style="color:#1589F0"> **6. UTILITY** </span>
 
-- ***colmeans***, ***colvars*** Weighted column means and variances
+- ***aggstat*** Compute column-wise statistics (e.g. mean), by group
 - ***center***, ***scale*** Column-wise centering and scaling of a matrix
-- ***tab***, ***tabn*** Univariate tabulation 
-- ***iqr*** Interval inter-quartiles
-- ***mad*** Median absolute deviation
-- ***summ*** Summarize the columns of a dataset
-- ***aggstat*** Compute column means (or other statistic) of a dataset, by group
-- ***matcov***, ***matB***, ***matW*** Covariances matrices
+- ***colmeans***, ***colvars*** Weighted column means and variances
+- ***dummy*** Build dummy table
 - ***euclsq***, ***mahsq***, ***mahsqchol*** Euclidean and Mahalanobis distances between rows of matrices
 - ***getknn*** Find nearest neighbours between rows of matrices
-- ***wdist*** Compute weights from distances
-- ***locw*** Working function for local (kNN) models
+- ***iqr*** Interval inter-quartiles
 - ***krbf, kpol*** Build kernel Gram matrices
-- ***dummy*** Build dummy table
+- ***locw*** Working function for local (kNN) models
+- ***mad*** Median absolute deviation
+- ***matcov***, ***matB***, ***matW*** Covariances matrices
 - ***recodnum2cla*** Recode a continuous variable to classes
 - ***sourcedir*** Include all the files contained in a directory
+- ***summ*** Summarize the columns of a dataset
+- ***tab***, ***tabn*** Univariate tabulation 
+- ***wdist*** Compute weights from distances
 - Other functions in file `utility.jl`
 
 <!---

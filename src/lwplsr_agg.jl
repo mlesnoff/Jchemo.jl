@@ -14,7 +14,7 @@ end
 """
     lwplsr_agg(X, Y; nlvdis, metric, h, k, nlv, wagg = "unif", 
         tol = 1e-4, verbose = false)
-Aggregation of KNN-LWPLSR models with different numbers of LVs.
+Aggregation of kNN-LWPLSR models with different numbers of LVs.
 * `X` : X-data.
 * `Y` : Y-data.
 * `nlvdis` : Number of latent variables (LVs) to consider in the global PLS 
@@ -35,7 +35,7 @@ Aggregation of KNN-LWPLSR models with different numbers of LVs.
 * `verbose` : If true, fitting information are printed.
 
 Ensemblist method where the predictions are calculated by averaging the predictions 
-of a set of KNN-LWPLSR models (`lwplsr`) built with different numbers of 
+of a set of kNN-LWPLSR models (`lwplsr`) built with different numbers of 
 latent variables (LVs).
 
 For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for 

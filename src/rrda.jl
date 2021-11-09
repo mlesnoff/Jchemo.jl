@@ -1,4 +1,4 @@
-struct RrDa
+struct Rrda
     fm  
     lev::AbstractVector
     ni::AbstractVector
@@ -14,7 +14,7 @@ end
     rrda(X, y, weights = ones(size(X, 1)); lb)
 Discrimination (DA) based on ridge regression (RR).
 * `X` : X-data.
-* `y` : Univariate class membership.
+* `y` : y-data (class membership).
 * `weights` : Weights of the observations.
 * `lb` : A value of the regularization parameter "lambda".
 
@@ -32,10 +32,10 @@ to the dummy variable for which the prediction is the highest.
 function rrda(X, y, weights = ones(size(X, 1)); lb)
     z = dummy(y)
     fm = rr(X, z.Y, weights; lb = lb)
-    RrDa(fm, z.lev, z.ni)
+    Rrda(fm, z.lev, z.ni)
 end
 
-function predict(object::Union{RrDa, KrrDa}, X; lb = nothing)
+function predict(object::Union{Rrda, KrrDa}, X; lb = nothing)
     X = ensure_mat(X)
     m = size(X, 1)
     isnothing(lb) ? lb = object.fm.lb : nothing
@@ -44,7 +44,7 @@ function predict(object::Union{RrDa, KrrDa}, X; lb = nothing)
     posterior = list(le_lb)
     @inbounds for i = 1:le_lb
         zp = predict(object.fm, X; lb = lb[i]).pred
-        z =  mapslices(argmax, zp; dims = 2) 
+        z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
         pred[i] = reshape(replacebylev(z, object.lev), m, 1)
         posterior[i] = zp
     end 

@@ -16,7 +16,7 @@ end
         tol = 1e-4, verbose = false)
 kNN-LWPLS-QDA models.
 * `X` : X-data.
-* `y` : y-data.
+* `y` : y-data (class membership).
 * `nlvdis` : Number of latent variables (LVs) to consider in the 
     global PLS used for the dimension reduction before 
     calculating the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.

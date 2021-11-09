@@ -16,7 +16,7 @@ k-Nearest-Neighbours locally weighted partial least squares regression (KNN-LWPL
 * `X` : X-data.
 * `Y` : Y-data.
 * `nlvdis` : Number of latent variables (LVs) to consider in the global PLS 
-    used for the dimension reduction before calculating the dissimilarities. 
+    used for the dimension reduction before computing the dissimilarities. 
     If `nlvdis = 0`, there is no dimension reduction.
 * `metric` : Type of dissimilarity used to select the neighbors. 
     Possible values are "eucl" (default; Euclidean distance) 
@@ -28,36 +28,37 @@ k-Nearest-Neighbours locally weighted partial least squares regression (KNN-LWPL
 * `tol` : For stabilization when very close neighbors.
 * `verbose` : If true, fitting information are printed.
 
-Function `lwplsr` fits KNN-LWPLSR models (Lesnoff et al., 2020). 
+Function `lwplsr` fits kNN-LWPLSR models (Lesnoff et al., 2020). 
 The function uses functions `getknn`, `locw` and a PLSR function; 
-see the code for details. Many other variants of KNN-LWPLSR pipelines can be build.
+see the code for details. Many other variants of kNN-LWPLSR pipelines can be built.
 
 The general principles of the method are as follows.
 
-LWPLSR is a particular case of weighted PLSR (WPLSR; e.g. Schaal et al. 2002). 
+LWPLSR is a particular case of weighted PLSR (WPLSR) (e.g. Schaal et al. 2002). 
 In WPLSR, a priori weights, different from the usual 1/n (standard PLSR), 
 are given to the n training observations. These weights are used for calculating 
-(i) the PLS scores and loadings and (ii) the regression model of the response(s) 
-over the scores (by weighted least squares). 
-The specificity of LWPLSR is that the weights are computed from dissimilarities 
-(e.g. distances) between the new observation to predict and the training 
-observations ("L" comes from "localized"). 
-A characteristic of LWPLSR is that the weights, and therefore the fitted WPLSR model, 
+(i) the scores and loadings of the WPLS and (ii) the regression model that fits 
+(by weighted least squares) the Y-response(s) to the WPLS scores. 
+The specificity of LWPLSR (compared to WPLSR) is that the weights are computed 
+from dissimilarities (e.g. distances) between the new observation to predict 
+and the training observations ("L" in LWPLSR comes from "localized"). 
+Note that in LWPLSR the weights and therefore the fitted WPLSR model 
 change for each new observation to predict.
 
-Basic versions of LWPLSR use, for each observation to predict, all 
-the n training observation (e.g. Sicard & Sabatier 2006, Kim et al 2011). 
-This can be very time consuming, in particular for large n. A faster and often more 
-efficient strategy is to preliminary select, 
-in the training set, a number of k nearest neighbors to the observation to predict 
-("weighting 1") and then to apply LWPLSR only to this pre-selected 
-neighborhood ("weighting 2"). This strategy corresponds to a kNN-LWPLSR 
+In the original LWPLSR, all the n training observations are used for each 
+observation to predict (e.g. Sicard & Sabatier 2006, Kim et al 2011). 
+This can be very time consuming, in particular for large n. 
+A faster and often more efficient strategy is to preliminary select, 
+in the training set, a number of `k` nearest neighbors to the observation to predict 
+(= "weighting 1") and then to apply LWPLSR only to this pre-selected 
+neighborhood (= "weighting 2"). This strategy corresponds to a kNN-LWPLSR 
 and is the one implemented in function `lwplsr`.
 
-In `lwplsr`, the dissimilarities used for computing the weights can be 
-calculated from the original X-data or after a dimension reduction 
-(depending on argument `nlvdis`). In the last case, global PLS scores (LVs) are 
-computed from (`X`, `Y`) and the dissimilarities are calculated over these scores. 
+In `lwplsr`, the dissimilarities used for weightings 1 and 2 are 
+computed from the raw X-data or after a dimension reduction,
+depending on argument `nlvdis`. In the last case, global PLS2 scores (LVs) are 
+computed from {`X`, `Y`} and the dissimilarities are computed over these scores. 
+
 In general, for high dimensional X-data, using the Mahalanobis distance requires 
 preliminary dimensionality reduction of the data.
 

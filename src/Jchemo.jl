@@ -64,6 +64,7 @@ include("cplsr_agg.jl")  # Use structure PlsrDa
 include("lwplsrda.jl")
 include("lwplslda.jl")
 include("lwplsqda.jl")
+include("knnda.jl")
 
 # Variable importance (direct methods) 
 include("vimp_r.jl")
@@ -140,6 +141,7 @@ export
     # Local Discrimination
     lwplsrda,
     lwplslda, lwplsqda,
+    knnda,
     #
     transform, coef, predict,
     # Validation

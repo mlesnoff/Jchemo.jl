@@ -1,4 +1,4 @@
-struct PlsrDa
+struct Plsrda
     fm  
     lev::AbstractVector
     ni::AbstractVector
@@ -14,7 +14,7 @@ end
     plsrda(X, y, weights = ones(size(X, 1)); nlv)
 Discrimination (DA) based on partial least squares regression (PLSR).
 * `X` : X-data.
-* `y` : Univariate class membership.
+* `y` : y-data (class membership).
 * `weights` : Weights of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
 
@@ -35,10 +35,10 @@ to the dummy variable for which the prediction is the highest.
 function plsrda(X, y, weights = ones(size(X, 1)); nlv)
     z = dummy(y)
     fm = plskern(X, z.Y, weights; nlv = nlv)
-    PlsrDa(fm, z.lev, z.ni)
+    Plsrda(fm, z.lev, z.ni)
 end
 
-function predict(object::Union{PlsrDa, KplsrDa}, X; nlv = nothing)
+function predict(object::Union{Plsrda, KplsrDa}, X; nlv = nothing)
     X = ensure_mat(X)
     m = size(X, 1)
     a = size(object.fm.T, 2)
@@ -53,7 +53,7 @@ function predict(object::Union{PlsrDa, KplsrDa}, X; nlv = nothing)
         #        zp[j, :] .= mweights(exp.(zp[j, :]))
         #   end
         #end
-        z =  mapslices(argmax, zp; dims = 2) 
+        z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
         pred[i] = reshape(replacebylev(z, object.lev), m, 1)
         posterior[i] = zp
     end 

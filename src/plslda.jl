@@ -8,7 +8,7 @@ end
     plslda(X, y, weights = ones(size(X, 1)); nlv)
 LDA on PLS latent variables.
 * `X` : X-data.
-* `y` : Univariate class membership.
+* `y` : y-data (class membership).
 * `weights` : Weights of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
 
@@ -58,7 +58,7 @@ end
     plsqda(X, y, weights = ones(size(X, 1)); nlv)
 QDA on PLS latent variables.
 * `X` : X-data.
-* `y` : Univariate class membership.
+* `y` : y-data (class membership).
 * `weights` : Weights of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
 
@@ -74,7 +74,7 @@ function plsqda(X, y, weights = ones(size(X, 1)); nlv, prior = "unif")
     fm_pls = plskern(X, z.Y, weights; nlv = nlv)
     fm_da = list(nlv)
     for i = 1:nlv
-        fm_da[i] = qda(fm_pls.T[:, 1:i], y; prior = prior)
+        fm_da[i] = qda(vcol(fm_pls.T, 1:i), y; prior = prior)
     end
     fm = (fm_pls = fm_pls, fm_da = fm_da)
     PlsLda(fm, z.lev, z.ni)

@@ -98,8 +98,8 @@ Compute the squared linear correlation between data and predictions.
 function cor2(pred, Y)
     q = size(Y, 2)
     res = cor(pred, Y).^2
-    q == 1 ? nothing : res = diag(res)
-    res = reshape(res, 1, :)
+    q == 1 ? res = [res; ] : res = diag(res)
+    reshape(res, 1, :)
 end
 
 """
@@ -127,7 +127,8 @@ function rpdr(pred, Y)
     u = mapslices(Jchemo.mad, Y; dims = 1) / 1.4826
     r = residreg(pred, Y)
     v = mapslices(median, abs.(r); dims = 1)
-    u ./ v
+    res = u ./ v
+    reshape(res, 1, :)
 end
 
 

@@ -1,6 +1,6 @@
-struct CplsrAgg1
+struct CplsrAgg
     fm
-    fm_da::PlsrDa
+    fm_da::Plsrda
     lev
     ni
 end
@@ -28,10 +28,10 @@ function cplsr_agg(X, Y, cla = nothing; ncla = nothing, nlv_da, nlv)
         znlv = string(zmin:zmax)
         fm[i] = plsr_agg(X[s, :], Y[s, :]; nlv = znlv)
     end
-    CplsrAgg1(fm, fm_da, lev, ni)
+    CplsrAgg(fm, fm_da, lev, ni)
 end
 
-function predict(object::CplsrAgg1, X)
+function predict(object::CplsrAgg, X)
     X = ensure_mat(X)
     m = size(X, 1)
     nlev = length(object.lev)

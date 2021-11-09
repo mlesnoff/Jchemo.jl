@@ -14,7 +14,7 @@ end
     fda(X, y; nlv, pseudo = false)
 Factorial discriminant analysis (FDA).
 * `X` : X-data.
-* `y` : Univariate class membership.
+* `y` : y-data (class membership).
 * `nlv` : Nb. discriminant components.
 * `pseudo` : If true, a MP pseudo-inverse is used (instead
     of a usual inverse) for inverting W.
