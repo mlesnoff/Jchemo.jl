@@ -147,6 +147,17 @@ ensure_mat(X::LinearAlgebra.Adjoint) = Matrix(X)
 ensure_mat(X::DataFrame) = Matrix(X)
 
 """
+    findmax_cla(x, weights = nothing)
+Find the most occurent level in `x`.
+"""
+function findmax_cla(x, weights = nothing)
+    isnothing(weights) ? weights = ones(length(x)) : nothing
+    res = aggstat(weights, x; fun = sum)
+    res.lev[argmax(res.res)]   # if equal, argmax takes the first
+end
+
+
+"""
     iqr(x)
 Compute the interquartile interval (IQR).
 """

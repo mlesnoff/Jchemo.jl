@@ -93,6 +93,7 @@
 - ***kplsrda*** DA on KPLSR predictions (KPLSR-DA)
 - ***rrda*** DA on RR predictions (RR-DA)
 - ***krrda*** DA on KRR predictions (KRR-DA)
+- ***plsrda_agg*** Averaging PLSR-DA models with different numbers of LVs (PLSR-DA-AGG)
 
 #### Probabilistic
 
@@ -101,6 +102,8 @@
 - ***qda*** Quadratic discriminant analysis (QDA)
 - ***plslda*** LDA on PLS latent variables (PLS-LDA)
 - ***plsqda*** QDA on PLS latent variables (PLS-QDA)
+- ***plslda_agg*** Averaging PLS-LDA models with different numbers of LVs (PLS-LDA-AGG)
+- ***plsqda_agg*** Averaging PLS-QDA models with different numbers of LVs (PLS-QDA-AGG)
 
 #### **Local models**
 

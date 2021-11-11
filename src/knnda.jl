@@ -59,7 +59,6 @@ Compute the y-predictions from the fitted model.
 function predict(object::Knnda2, X)
     X = ensure_mat(X)
     m = size(X, 1)
-    q = size(object.y, 2)
     # Getknn
     if isnothing(object.fm)
         res = getknn(object.X, X; k = object.k, metric = object.metric)
@@ -76,10 +75,7 @@ function predict(object::Knnda2, X)
     pred = similar(object.y, m, 1)
     @inbounds for i = 1:m
         s = res.ind[i]
-        zy = object.y[s]
-        w = mweights(listw[i])
-        zres = aggstat(w, zy; fun = sum)
-        pred[i, :] .= zres.lev[argmax(zres.res)]  # if equal, argmax takes the first
+        pred[i, :] .= findmax_cla(object.y[s], listw[i])
     end
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end

@@ -47,11 +47,12 @@ include("scordis.jl")
 
 # Discrimination 
 include("dmnorm.jl")
+include("rrda.jl")
 include("lda.jl") ; include("qda.jl")
 include("mlrda.jl")
 include("plsrda.jl")
-include("rrda.jl")
 include("plslda.jl")
+include("plsrda_agg.jl")
 
 # Local regression
 include("locw.jl")
@@ -85,19 +86,26 @@ include("kernels.jl")
 
 export 
     # Utilities
-    sourcedir,
-    ensure_df, ensure_mat, list, vcol, vrow, rmcols, rmrows,
-    pnames, psize,
-    mweights,
+    aggstat,
+    aov1,    
+    center, center!, 
     colmeans, colvars, colvars!, 
-    center, center!, scale, scale!,
-    matcov, matB, matW, 
-    summ, aggstat, 
-    tab, tabnum,
     dummy,
+    ensure_df, ensure_mat,
+    findmax_cla, 
+    list, 
+    mweights,
+    matB, matcov, matW, 
+    pnames, psize,
     recodcat2num, recodnum2cla,
     replacebylev,
-    aov1,
+    rmcols, rmrows,    
+    scale, scale!,
+    sourcedir,
+    summ,  
+    tab, tabnum,
+    vcol, vrow, 
+
    # Pre-processing
     snv, snv!, detrend, detrend!, fdif, fdif!,
     mavg, mavg!, mavg_runmean, mavg_runmean!,
@@ -134,10 +142,11 @@ export
     dmnorm, dmnorm!,
     fda, fda!, fdasvd, fdasvd!,
     mlrda,
+    rrda, krrda,
     lda, qda, 
     plsrda, kplsrda,
-    rrda, krrda,
     plslda, plsqda,
+    plsrda_agg, plslda_agg, plsqda_agg,
     # Local Discrimination
     lwplsrda,
     lwplslda, lwplsqda,
