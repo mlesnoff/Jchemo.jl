@@ -54,13 +54,13 @@
 - ***cplsr_agg*** Clustered PLSR-AGG
 
 #### **Support vector machine (SVMR)**
-- ***svmr*** Epsilon SVM regression (from LIBSVM.jl)
+- ***svmr*** Epsilon SVM regression -- from LIBSVM.jl
 
 #### **Trees**
 
-- ***treer_xgb*** Single tree
-- ***rf_xgb*** Random forest (from XGBoost.jl)
-- ***xgboostr*** XGBoost (from XGBoost.jl)
+- ***treer_xgb*** Single tree -- from XGBoost.jl
+- ***rf_xgb*** Random forest -- from XGBoost.jl
+- ***xgboostr*** XGBoost -- from XGBoost.jl
 
 #### **Bagging**
 
