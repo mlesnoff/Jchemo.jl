@@ -47,7 +47,7 @@ gridscorelv(Xtrain, Ytrain, Xtest, Ytest;
     score = msep, fun = plskern, nlv = 0:nlv)
 ```
 
-# <span style="color:green"> **Available functions** </span> 
+## <span style="color:green"> **Available functions** </span> 
 
 - [**List of functions**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/functions.md) 
 - [**Examples**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/demos/ex/)
@@ -60,13 +60,13 @@ Most of the functions have a help page, e.g.
 ?savgol
 ```
 
-# <span style="color:green"> **News** </span> 
+## <span style="color:green"> **News** </span> 
 
 [**What changed**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md) 
 
-# <span style="color:green"> **Dependent packages** </span> 
+## <span style="color:green"> **Dependent packages** </span> 
 
-# <span style="color:green"> **Installation** </span> 
+## <span style="color:green"> **Installation** </span> 
 
 In order to install Jchemo, run
 
@@ -74,14 +74,14 @@ In order to install Jchemo, run
 pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ```
 
-# <span style="color:green"> **Usage** </span>
+## <span style="color:green"> **Usage** </span>
 
 Run
 ```julia
 using Jchemo
 ```
 
-# <span style="color:green"> **Author** </span> 
+## <span style="color:green"> **Author** </span> 
 
 **Matthieu Lesnoff**
 
