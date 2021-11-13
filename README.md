@@ -62,7 +62,7 @@ Most of the functions have a help page, e.g.
 
 ## <span style="color:green"> **News** </span> 
 
-Click [**HERE**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md) to see **what changed** in the last version. 
+[**What changed**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md) 
 
 ## <span style="color:green"> **Dependent packages** </span> 
 
@@ -93,7 +93,7 @@ using Jchemo
 
 ### How to cite
 
-Lesnoff, M. 2021. Julia package Jchemo: Dimension reduction, Regression and Discrimination for Chemometrics. https://github.com/mlesnoff/Jchemo. CIRAD, UMR SELMET, Montpellier, France
+Lesnoff, M. 2021. Julia package Jchemo: Dimension reduction, regression and discrimination for chemometrics. https://github.com/mlesnoff/Jchemo. CIRAD, UMR SELMET, Montpellier, France
 
 
 
