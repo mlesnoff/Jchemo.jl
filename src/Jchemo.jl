@@ -1,18 +1,18 @@
 module Jchemo  # Start-Module
 
 using LinearAlgebra, Statistics, Random
-using GLMakie
+using Clustering
 using Distributions
-using StatsBase    # sample
-using HypothesisTests
 using DataFrames
+using Distances
+using GLMakie
+using HypothesisTests
 using ImageFiltering
 using Interpolations
-using Distances
 using LIBSVM
 using NearestNeighbors
+using StatsBase    # sample
 using XGBoost
-using Clustering
 
 include("utility.jl") 
 include("preprocessing.jl") 
