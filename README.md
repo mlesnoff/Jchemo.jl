@@ -19,7 +19,7 @@ Huge variety of pipelines exist in chemometrics and machine learning. Only few e
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. Tuning the models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation), with specific fast versions for models based on latent variables (LVs) and ridge regularization.
 
-## <span style="color:green"> **An example of fitting a PLSR model** </span> 
+## <span style="color:green"> **An example: fitting a PLSR model** </span> 
 
 ```julia
 n = 6 ; p = 7 ; q = 2 ; m = 3 ;
