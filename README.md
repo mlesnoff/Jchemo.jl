@@ -19,7 +19,7 @@ Huge variety of pipelines exist in chemometrics and machine learning. Only few e
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. Tuning the models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation), with specific fast versions for models based on latent variables (LVs) and ridge regularization.
 
-## <span style="color:green"> **An example of fitting and description of a partial least squares regression model** </span> 
+## <span style="color:green"> **An example of fitting a PLSR model** </span> 
 
 ```julia
 n = 6 ; p = 7 ; q = 2 ; m = 3 ;
@@ -49,7 +49,7 @@ gridscorelv(Xtrain, Ytrain, Xtest, Ytest;
 
 ## <span style="color:green"> **Available functions** </span> 
 
-- [**Available functions**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/functions.md) 
+- [**List of functions**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/functions.md) 
 - [**Examples**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/demos/ex/)
 
 Main of the examples given in the the files **.jl** are fictive and built only for illustrating the syntax. The user can replace the simulated fictive data by its own datasets.
