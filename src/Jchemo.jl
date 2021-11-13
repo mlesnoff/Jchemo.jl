@@ -62,9 +62,8 @@ include("lwplsr_agg.jl")
 include("cplsr_agg.jl")  # Use structure PlsrDa
 
 # Local discrimination
-include("lwplsrda.jl")
-include("lwplslda.jl")
-include("lwplsqda.jl")
+include("lwplsrda.jl") ; include("lwplslda.jl") ; include("lwplsqda.jl")
+include("lwplsrda_agg.jl") ; include("lwplslda_agg.jl") ; include("lwplsqda_agg.jl")
 include("knnda.jl")
 
 # Variable importance (direct methods) 
@@ -148,8 +147,8 @@ export
     plslda, plsqda,
     plsrda_agg, plslda_agg, plsqda_agg,
     # Local Discrimination
-    lwplsrda,
-    lwplslda, lwplsqda,
+    lwplsrda, lwplslda, lwplsqda,
+    lwplsrda_agg, lwplslda_agg, lwplsqda_agg,
     knnda,
     #
     transform, coef, predict,

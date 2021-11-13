@@ -17,8 +17,8 @@ Aggregation of PLSR models with different numbers of LVs.
     the single model with 10 LVs).
 * `wagg` : Type of averaging. 
 
-Ensemblist method where the predictions are calculated by averaging the predictions 
-of a set of PLSR models (`plskern`) built with different numbers of 
+Ensemblist method where the predictions are calculated by "averaging" 
+the predictions of a set of models built with different numbers of 
 latent variables (LVs).
 
 For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for 

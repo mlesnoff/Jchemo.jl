@@ -40,11 +40,6 @@
 - ***aicplsr*** AIC and Cp for PLSR
 - ***plsr_agg*** Averaging PLSR models with different numbers of LVs (PLSR-AGG)
 
-<!---
-- ***plsrannar*** Kernel version for wide matrices (Rannar et al. 1994)
-- ***simpls***
--->
-
 #### **Ridge (RR, KRR)**
 
 - ***rr*** Pseudo-inverse
@@ -109,21 +104,8 @@
 
 - ***knnda*** kNN-DA (Vote within neighbors)
 - ***lwplsrda*** kNN Locally weighted PLSR-DA (kNN-LWPLSR-DA)
-- ***lwplslda*** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
-- ***lwplsqda*** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA)
-
-<!---
-#### Support vector machine
-- ***svmda*** SVMDA (= SVMC)
--->
-
-<!---
-### <span style="color:#1589F0"> **ENSEMBLIST METHODS** </span>
-- ***plsrda_agg*** PLSRDA-AGG
-- ***lwplsrda_agg*** KNN-LWPLSR-DA-AGG
-- ***lwplslda_agg*** KNN-LWPLS-LDA-AGG
-- ***lwplslda_agg*** KNN-LWPLS-QDA-AGG
--->
+- ***lwplslda***, ***lwplsqda*** kNN Locally weighted PLS-LDA/QDA (kNN-LWPLS-LDA/QDA)
+- ***lwplslda_agg***, ***lwplsqda_agg*** Averaging kNN-LWPLS-LDA/QDA models with different numbers of LVs (kNN-LWPLS-LDA/QDA-AGG)
 
 ### <span style="color:#1589F0"> **4. TUNING MODELS** </span>
 
@@ -158,16 +140,6 @@
 - ***mse*** Summary for regression
 - ***err*** Classification error rate
 
-<!---  
-#### **Heuristic**  
-- ***selwold*** Wold's criterion for models with LVs  
--->
-
-<!---
-### <span style="color:#1589F0"> **SELECTION OF VARIABLES** </span>
-- ***covsel*** COVSEL algorithm (Roger et al. 2011)
--->
-
 ### <span style="color:#1589F0"> **5. DATA MANAGEMENT** </span>
 
 #### **Pre-processing**
@@ -187,6 +159,52 @@
 - ***sampdp*** Duplex sampling 
 - ***sampsys*** Systematic sampling
 - ***sampclas*** Stratified sampling
+
+### <span style="color:#1589F0"> **6. UTILITY** </span>
+
+- ***aggstat*** Compute column-wise statistics (e.g. mean), by group
+- ***center***, ***scale*** Column-wise centering and scaling of a matrix
+- ***colmeans***, ***colvars*** Weighted column means and variances
+- ***dummy*** Build dummy table
+- ***euclsq***, ***mahsq***, ***mahsqchol*** Euclidean and Mahalanobis distances between rows of matrices
+- ***getknn*** Find nearest neighbours between rows of matrices
+- ***iqr*** Interval inter-quartiles
+- ***krbf, kpol*** Build kernel Gram matrices
+- ***locw*** Working function for local (kNN) models
+- ***mad*** Median absolute deviation
+- ***matcov***, ***matB***, ***matW*** Covariances matrices
+- ***recodnum2cla*** Recode a continuous variable to classes
+- ***sourcedir*** Include all the files contained in a directory
+- ***summ*** Summarize the columns of a dataset
+- ***tab***, ***tabn*** Univariate tabulation 
+- ***wdist*** Compute weights from distances
+- Other functions in file `utility.jl`
+
+#### **Plotting**
+
+- ***plotsp*** Plotting spectra
+
+
+
+<!---
+#### Support vector machine
+- ***svmda*** SVMDA (= SVMC)
+-->
+
+<!---
+- ***plsrannar*** Kernel version for wide matrices (Rannar et al. 1994)
+- ***simpls***
+-->
+
+<!---  
+#### **Heuristic**  
+- ***selwold*** Wold's criterion for models with LVs  
+-->
+
+<!---
+### <span style="color:#1589F0"> **SELECTION OF VARIABLES** </span>
+- ***covsel*** COVSEL algorithm (Roger et al. 2011)
+-->
 
 <!---
 #### **Checking**
@@ -211,35 +229,6 @@
 - ***octane*** Gazoline "octane" dataset
 - ***ozone*** Los Angeles "ozone" pollution (1976) dataset
 -->
-
-### <span style="color:#1589F0"> **6. UTILITY** </span>
-
-- ***aggstat*** Compute column-wise statistics (e.g. mean), by group
-- ***center***, ***scale*** Column-wise centering and scaling of a matrix
-- ***colmeans***, ***colvars*** Weighted column means and variances
-- ***dummy*** Build dummy table
-- ***euclsq***, ***mahsq***, ***mahsqchol*** Euclidean and Mahalanobis distances between rows of matrices
-- ***getknn*** Find nearest neighbours between rows of matrices
-- ***iqr*** Interval inter-quartiles
-- ***krbf, kpol*** Build kernel Gram matrices
-- ***locw*** Working function for local (kNN) models
-- ***mad*** Median absolute deviation
-- ***matcov***, ***matB***, ***matW*** Covariances matrices
-- ***recodnum2cla*** Recode a continuous variable to classes
-- ***sourcedir*** Include all the files contained in a directory
-- ***summ*** Summarize the columns of a dataset
-- ***tab***, ***tabn*** Univariate tabulation 
-- ***wdist*** Compute weights from distances
-- Other functions in file `utility.jl`
-
-<!---
-- ***dmnorm*** Multivariate normal probability density
-- ***matB***, ***matW*** Between and within covariance matrices
--->
-
-#### **Plotting**
-
-- ***plotsp*** Plotting spectra
 
 <!---
 ### <span style="color:#1589F0"> **GRAPHICS** </span>
