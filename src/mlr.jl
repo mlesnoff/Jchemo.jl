@@ -1,6 +1,6 @@
 struct Mlr
-    int::Matrix{Float64}
     B::Matrix{Float64}   
+    int::Matrix{Float64}
     weights::Vector{Float64}
 end
 
@@ -30,7 +30,7 @@ function mlr!(X, Y, weights = ones(size(X, 1)))
     sqrtD = Diagonal(sqrt.(weights))
     B = (sqrtD * X) \ (sqrtD * Y)
     int = ymeans' .- xmeans' * B
-    Mlr(int, B, weights)
+    Mlr(B, int, weights)
 end
 
 """
@@ -61,7 +61,7 @@ function mlrchol!(X, Y, weights = ones(size(X, 1)))
     XtD = X' * Diagonal(weights)
     B = cholesky!(Hermitian(XtD * X)) \ (XtD * Y)
     int = ymeans' .- xmeans' * B
-    Mlr(int, B, weights)
+    Mlr(B, int, weights)
 end
 
 """
@@ -92,7 +92,7 @@ function mlrpinv!(X, Y, weights = ones(size(X, 1)))
     tol = sqrt(eps(real(float(one(eltype(sqrtDX))))))      # see ?pinv
     B = pinv(sqrtDX, rtol = tol) * (sqrtD * Y)
     int = ymeans' .- xmeans' * B
-    Mlr(int, B, weights)
+    Mlr(B, int, weights)
 end
 
 """
@@ -124,7 +124,7 @@ function mlrpinv_n!(X, Y, weights = ones(size(X, 1)))
     tol = sqrt(eps(real(float(one(eltype(XtDX))))))
     B = pinv(XtD * X, rtol = tol) * (XtD * Y)
     int = ymeans' .- xmeans' * B
-    Mlr(int, B, weights)
+    Mlr(B, int, weights)
 end
 
 """
@@ -152,7 +152,7 @@ function mlrvec!(x, Y, weights = ones(length(x)))
     xtD = x' * Diagonal(weights)
     B = (xtD * Y) ./ (xtD * x)
     int = ymeans' .- xmeans' * B
-    Mlr(int, B, weights)
+    Mlr(B, int, weights)
 end
 
 """
@@ -161,7 +161,7 @@ Compute the coefficients of the fitted model.
 * `object` : The fitted model.
 """ 
 function coef(object::Mlr)
-    (int = object.int, B = object.B)
+    (B = object.B, int = object.int)
 end
 
 """

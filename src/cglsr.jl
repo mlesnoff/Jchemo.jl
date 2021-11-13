@@ -135,7 +135,7 @@ function coef(object::Cglsr; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     B = object.B[:, nlv:nlv]
     int = object.ymeans' .- object.xmeans' * B
-    (int = int, B = B)
+    (B = B, int = int)
 end
 
 """

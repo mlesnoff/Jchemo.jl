@@ -110,7 +110,7 @@ function coef(object::Rr; lb = nothing)
     B = object.V * beta
     int = object.ymeans' .- object.xmeans' * B
     tr = sum(eig .* z)
-    (int = int, B = B, df = 1 + tr)
+    (B = B, int = int, df = 1 + tr)
 end
 
 """

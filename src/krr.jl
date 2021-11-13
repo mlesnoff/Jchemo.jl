@@ -96,7 +96,7 @@ function coef(object::Krr; lb = nothing)
     q = length(object.ymeans)
     int = reshape(object.ymeans, 1, q)
     tr = sum(eig .* z)
-    (int = int, A = A, df = 1 + tr)
+    (A = A, int = int, df = 1 + tr)
 end
 
 """

@@ -40,9 +40,10 @@ coef(fm; nlv = 2)
 predict(fm, Xtest).pred
 predict(fm, Xtest; nlv = 0:3).pred 
 
-pred = predict(fm, Xtest).pred ;
-msep(pred, Ytest)
+res = predict(fm, Xtest) ;
+msep(res.pred, Ytest)
 
+# Tuning on the test set
 gridscorelv(Xtrain, Ytrain, Xtest, Ytest;
     score = msep, fun = plskern, nlv = 0:nlv)
 ```

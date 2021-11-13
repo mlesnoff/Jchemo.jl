@@ -159,7 +159,7 @@ function coef(object::Plsr; nlv = nothing)
     beta = object.C[:, 1:nlv]'
     B = @view(object.R[:, 1:nlv]) * beta
     int = object.ymeans' .- object.xmeans' * B
-    (int = int, B = B)
+    (B = B, int = int)
 end
 
 """
