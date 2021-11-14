@@ -15,11 +15,11 @@ Each segment contains the indexes (position within 1:n) of the sampled observati
 
 ## Examples
 ```julia
-n = 10 ; m = 3 ; rep = 4 ;
-z = segmts(n, m; rep) 
-i = 1 ;
-z[i]
-z[i][1]
+n = 10 ; m = 3 ; rep = 4 
+segm = segmts(n, m; rep) 
+i = 1 
+segm[i]
+segm[i][1]
 ```
 """ 
 function segmkf(n, K; rep = 1)
@@ -61,17 +61,17 @@ Each segment contains the indexes (position within 1:n) of the sampled observati
 
 ## Examples
 ```julia
-n = 10 ;
+n = 10 
 group = ["A", "B", "C", "D", "E", "A", "B", "C", "D", "E"]    # The blocks of the observations
 unique(group)    # Print of the blocks
-K = 3 ; rep = 4 ;
-z = segmkf(n, K, group; rep)
-i = 1 ;
-z[i]
-z[i][1]
-group[z[i][1]]
-group[z[i][2]]
-group[z[i][3]]
+K = 3 ; rep = 4 
+segm = segmkf(n, K, group; rep)
+i = 1 
+segm[i]
+segm[i][1]
+group[segm[i][1]]
+group[segm[i][2]]
+group[segm[i][3]]
 ```
 """ 
 function segmkf(n, K, group; rep = 1)
@@ -117,11 +117,11 @@ of the indexes (position within 1:n) of the m sampled observations.
 
 ## Examples
 ```julia
-n = 10 ; m = 3 ; rep = 4 ;
-z = segmts(n, m; rep) 
-i = 1 ;
-z[i]
-z[i][1]
+n = 10 ; m = 3 ; rep = 4 
+segm = segmts(n, m; rep) 
+i = 1 
+segm[i]
+segm[i][1]
 ```
 """ 
 function segmts(n, m; rep = 1)
@@ -158,15 +158,15 @@ Each segment contains m blocks.
 
 ## Examples
 ```julia
-n = 10 ;
+n = 10 
 group = ["A", "B", "C", "D", "E", "A", "B", "C", "D", "E"]    # The blocks of the observations
 unique(group)    # Print of the blocks
-m = 2 ; rep = 4 ;
-z = segmts(n, m, group; rep)
-i = 1 ;
-z[i]
-z[i][1]
-group[z[i][1]]
+m = 2 ; rep = 4 
+segm = segmts(n, m, group; rep)
+i = 1 
+segm[i]
+segm[i][1]
+group[segm[i][1]]
 ```
 """ 
 function segmts(n, m, group; rep = 1)

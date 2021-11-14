@@ -19,9 +19,11 @@ Huge variety of pipelines exist in chemometrics and machine learning. Only few e
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. Tuning the models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation), with specific fast versions for models based on latent variables (LVs) and ridge regularization.
 
-## <span style="color:green"> **An example: fitting a PLSR model** </span> 
+## <span style="color:green"> **Example: fitting a model** </span> 
 
 ```julia
+using Jchemo
+
 n = 6 ; p = 7 ; q = 2 ; m = 3 ;
 Xtrain = rand(n, p) ; Ytrain = rand(n, q) ;
 Xtest = rand(m, p) ; Ytest = rand(m, q) ;
@@ -42,10 +44,39 @@ predict(fm, Xtest; nlv = 0:3).pred
 
 res = predict(fm, Xtest) ;
 msep(res.pred, Ytest)
+```
 
-# Tuning on the test set
-gridscorelv(Xtrain, Ytrain, Xtest, Ytest;
-    score = msep, fun = plskern, nlv = 0:nlv)
+## <span style="color:green"> **Example: Tuning a model by grid search** </span> 
+
+### With gridscore
+
+```julia
+using Jchemo, CairoMakie
+
+n = 50 ; p = 200 ; m = 50 
+Xtrain = rand(n, p) ; ytrain = rand(n) 
+Xval = rand(m, p) ; yval = rand(m) 
+
+nlv = 0:10 
+pars = mpars(nlv = nlv)
+res = gridscore(
+    Xtrain, ytrain, Xval, yval;
+    score = rmsep, fun = plskern, pars = pars) 
+
+lines(res.nlv, res.y1,
+    axis = (xlabel = "Nb. LVs", ylabel = "RMSEP"))
+
+u = findall(isapprox.(res.y1, minimum(res.y1)))[1] ;
+res[u, :]
+fm = plskern(Xval, yval; nlv = res.nlv[u]) ;
+res = Jchemo.predict(fm, Xval) ;
+rmsep(res.pred, yval)
+
+# Using gridscorelv is faster
+res = gridscorelv(
+    Xtrain, ytrain, Xval, yval;
+    score = rmsep, fun = plskern, nlv = nlv) 
+
 ```
 
 ## <span style="color:green"> **Available functions** </span> 
