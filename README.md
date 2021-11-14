@@ -82,7 +82,7 @@ res = gridscorelv(
 ### **With gridcv**
 
 ```julia
-using Jchemo, CairoMakie
+using Jchemo
 
 n = 150 ; p = 200 ; m = 50 
 Xtrain = rand(n, p) ; ytrain = rand(n) 
