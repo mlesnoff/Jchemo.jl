@@ -9,7 +9,7 @@ end
 
 ## Linear models
 
-- [lmr.jl](@ref), lmrchol, etc.
+- [mlr.jl](@ref), lmrchol, etc.
 
 ## Partial least squares 
 

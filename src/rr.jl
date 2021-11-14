@@ -92,7 +92,7 @@ function rrchol!(X, Y, weights = ones(size(X, 1)); lb = .01)
     XtD = X' * Diagonal(weights)
     B = cholesky!(Hermitian(XtD * X + lb^2 * Diagonal(ones(p)))) \ (XtD * Y)
     int = ymeans' .- xmeans' * B
-    Lmr(int, B, weights)
+    Mlr(B, int, weights)
 end
 
 """

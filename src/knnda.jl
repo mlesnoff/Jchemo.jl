@@ -1,4 +1,4 @@
-struct Knnda2
+struct Knnda
     X::Array{Float64}
     y::AbstractMatrix
     fm
@@ -47,7 +47,7 @@ function knnda(X, y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, tol = 1e-4)
     else
         fm = plskern(X, dummy(y).Y; nlv = nlvdis)
     end
-    return Knnda2(X, y, fm, nlvdis, metric, h, k, tol)
+    return Knnda(X, y, fm, nlvdis, metric, h, k, tol)
 end
 
 """
@@ -56,7 +56,7 @@ Compute the y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Knnda2, X)
+function predict(object::Knnda, X)
     X = ensure_mat(X)
     m = size(X, 1)
     # Getknn

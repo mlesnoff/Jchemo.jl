@@ -410,6 +410,7 @@ Univariate tabulation.
 In the output, the levels in `x` are sorted.
 """
 function tab(x)
+    x = vec(x)
     sort(StatsBase.countmap(x))
 end
 
@@ -421,6 +422,7 @@ Univariate tabulation (only integer classes).
 In the output, the levels in `x` are sorted.
 """
 function tabnum(x)
+    x = vec(x)
     lev = sort(unique(x))
     cnt = StatsBase.counts(x)
     cnt = cnt[cnt .> 0]

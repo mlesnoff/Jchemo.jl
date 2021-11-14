@@ -207,18 +207,26 @@
 -->
 
 <!---
+#### **Multi-block**
+- ***mblocks*** Makes a list of blocks
+- ***hconcat*** Horizontal block concatenation 
+- ***blockscal*** Block autoscaling
+-->
+
+<!---
+### <span style="color:#1589F0"> **GRAPHICS** </span>
+- ***plostsp1*** Same as  ***plotsp*** but one-by-one row
+- ***plotxy*** 2-d scatter plot
+- ***plotjit*** Jittered plot
+- ***plotscore*** Plotting error rates of prediction models
+-->
+
+<!---
 #### **Checking**
 - ***checkna*** Find and count NA values in a data set
 - ***plotxna*** Plotting missing data in a matrix
 - ***checkdupl*** Find duplicated row observations between two data sets 
 - ***rmdupl*** Remove duplicated row observations between two data sets
--->
-
-<!---
-#### **Multi-block**
-- ***mblocks*** Makes a list of blocks
-- ***hconcat*** Horizontal block concatenation 
-- ***blockscal*** Block autoscaling
 -->
 
 <!---
@@ -228,13 +236,4 @@
 - ***forages*** Tropical forages
 - ***octane*** Gazoline "octane" dataset
 - ***ozone*** Los Angeles "ozone" pollution (1976) dataset
--->
-
-<!---
-### <span style="color:#1589F0"> **GRAPHICS** </span>
-- ***plotsp*** Plotting spectra, loadings, or more generally row observations of a data set
-- ***plostsp1*** Same as  ***plotsp*** but one-by-one row
-- ***plotxy*** 2-d scatter plot
-- ***plotjit*** Jittered plot
-- ***plotscore*** Plotting error rates of prediction models
 -->

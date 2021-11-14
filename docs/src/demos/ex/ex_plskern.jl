@@ -13,28 +13,25 @@ fm.P
 summary(fm, Xtrain).explvar
 
 fm.T
-transform(fm, Xtrain)
-transform(fm, Xtrain; nlv = 1)
-transform(fm, Xtest)
+Jchemo.transform(fm, Xtrain)
+Jchemo.transform(fm, Xtrain; nlv = 1)
+Jchemo.transform(fm, Xtest)
 
-coef(fm).B
-coef(fm).int
-coef(fm; nlv = 2).B
-coef(fm; nlv = 2).int
-coef(fm; nlv = 0).B
-coef(fm; nlv = 0).int
+Jchemo.coef(fm).B
+Jchemo.coef(fm).int
+Jchemo.coef(fm; nlv = 2).B
+Jchemo.coef(fm; nlv = 2).int
+Jchemo.coef(fm; nlv = 0).B
+Jchemo.coef(fm; nlv = 0).int
 
-predict(fm, Xtest).pred
-predict(fm, Xtest; nlv = nlv).pred
+Jchemo.predict(fm, Xtest).pred
+Jchemo.predict(fm, Xtest; nlv = nlv).pred
 
-predict(fm, Xtest; nlv = 0:3).pred 
-predict(fm, Xtest; nlv = 0).pred
+Jchemo.predict(fm, Xtest; nlv = 0:3).pred 
+Jchemo.predict(fm, Xtest; nlv = 0).pred
 
-pred = predict(fm, Xtest).pred ;
+pred = Jchemo.predict(fm, Xtest).pred ;
 msep(pred, Ytest)
-
-gridscorelv(Xtrain, Ytrain, Xtest, Ytest;
-    score = msep, fun = plskern, nlv = 0:nlv)
 
 ### Weighted PLS
 

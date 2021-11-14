@@ -12,7 +12,7 @@ Compute classification prediction error (0 = no error, 1 = error).
 * `pred` : Predictions.
 * `Y` : Observed data.
 """
-residcla(pred, y) = pred .!= y
+residcla(pred, Y) = pred .!= Y
 
 """
     ssr(pred, Y)
@@ -174,9 +174,12 @@ Compute the classification error rate (ERR).
 """
 function err(pred, y)
     r = residcla(pred, y)
-    sum(r) / size(y, 1)
+    res = [sum(r)] / size(y, 1)
+    reshape(res, 1, :)
 end
 
-
+# scores:
+# - Must return a matrix
+# - In particular for err, create multiple dispatches Y::AbstractVector, Y::AbstractMatrix
 
 
