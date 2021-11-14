@@ -24,7 +24,7 @@ Generic functions such as **transform**, **predict**, **coef** and **summary** a
 ```julia
 using Jchemo
 
-n = 6 ; p = 7 ; q = 2 ; m = 3 ;
+n = 150 ; p = 200 ; q = 2 ; m = 50 
 Xtrain = rand(n, p) ; Ytrain = rand(n, q) ;
 Xtest = rand(m, p) ; Ytest = rand(m, q) ;
 
@@ -39,21 +39,22 @@ transform(fm, Xtest; nlv = 1)
 coef(fm)
 coef(fm; nlv = 2)
 
+res = predict(fm, Xtest) ;
+res.pred
+msep(res.pred, Ytest)
+
 predict(fm, Xtest).pred
 predict(fm, Xtest; nlv = 0:3).pred 
-
-res = predict(fm, Xtest) ;
-msep(res.pred, Ytest)
 ```
 
-## <span style="color:green"> **Example: Tuning a model by grid search** </span> 
+## <span style="color:green"> **Example: Tuning a model by grid-search** </span> 
 
-### With gridscore
+### **With gridscore**
 
 ```julia
 using Jchemo, CairoMakie
 
-n = 50 ; p = 200 ; m = 50 
+n = 150 ; p = 200 ; m = 50 
 Xtrain = rand(n, p) ; ytrain = rand(n) 
 Xval = rand(m, p) ; yval = rand(m) 
 
@@ -72,11 +73,37 @@ fm = plskern(Xval, yval; nlv = res.nlv[u]) ;
 res = Jchemo.predict(fm, Xval) ;
 rmsep(res.pred, yval)
 
-# Using gridscorelv is faster
+# For PLSR models, using gridscorelv is much faster!!!
 res = gridscorelv(
     Xtrain, ytrain, Xval, yval;
     score = rmsep, fun = plskern, nlv = nlv) 
+```
 
+### **With gridcv**
+
+```julia
+using Jchemo, CairoMakie
+
+n = 150 ; p = 200 ; m = 50 
+Xtrain = rand(n, p) ; ytrain = rand(n) 
+Xval = rand(m, p) ; yval = rand(m) 
+
+segm = segmkf(n, 5; rep = 5)   # Replicated K-fold cross-validation
+#segm = segmts(n, 30; rep = 5)   # Replicated test-set validation
+
+nlv = 0:10 
+pars = mpars(nlv = nlv)
+res = gridcv(
+    Xtrain, ytrain; segm,
+    score = rmsep, fun = plskern, pars = pars) ;
+pnames(res)
+res.res
+
+# For PLSR models, using gridcvlv is much faster!!!
+res = gridcvlv(
+    Xtrain, ytrain; segm,
+    score = rmsep, fun = plskern, nlv = nlv) ;
+res.res
 ```
 
 ## <span style="color:green"> **Available functions** </span> 
