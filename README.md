@@ -19,6 +19,27 @@ Huge variety of pipelines exist in chemometrics and machine learning. Only few e
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. Tuning the models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation), with specific fast versions for models based on latent variables (LVs) and ridge regularization.
 
+## <span style="color:green"> **Available functions** </span> 
+
+- [**List of functions**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/functions.md) 
+- [**Examples**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/demos/ex/)
+
+Main of the examples given in the the files **.jl** are built on fictive data for illustrating the syntax. The user can replace these fictive data by its own datasets.
+
+Most of the functions have a help page, e.g.
+
+```julia
+?savgol
+```
+
+## <span style="color:green"> **News** </span> 
+
+- [**What changed**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md) 
+
+## <span style="color:green"> **Dependent packages** </span> 
+
+- [**List of packages**](https://github.com/mlesnoff/Jchemo.jl/blob/master/Project.toml) 
+
 ## <span style="color:green"> **Example: fitting a model** </span> 
 
 ```julia
@@ -105,25 +126,6 @@ res = gridcvlv(
     score = rmsep, fun = plskern, nlv = nlv) ;
 res.res
 ```
-
-## <span style="color:green"> **Available functions** </span> 
-
-- [**List of functions**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/functions.md) 
-- [**Examples**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/demos/ex/)
-
-Main of the examples given in the the files **.jl** are fictive and built only for illustrating the syntax. The user can replace the simulated fictive data by its own datasets.
-
-Most of the functions have a help page, e.g.
-
-```julia
-?savgol
-```
-
-## <span style="color:green"> **News** </span> 
-
-[**What changed**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md) 
-
-## <span style="color:green"> **Dependent packages** </span> 
 
 ## <span style="color:green"> **Installation** </span> 
 
