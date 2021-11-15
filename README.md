@@ -40,7 +40,9 @@ Most of the functions have a help page, e.g.
 
 - [**List of packages**](https://github.com/mlesnoff/Jchemo.jl/blob/master/Project.toml) 
 
-## <span style="color:green"> **Example: fitting a model** </span> 
+## <span style="color:green"> **Examples of syntax** </span> 
+
+### **Fitting a model**
 
 ```julia
 using Jchemo
@@ -68,9 +70,9 @@ predict(fm, Xtest).pred
 predict(fm, Xtest; nlv = 0:3).pred 
 ```
 
-## <span style="color:green"> **Example: Tuning a model by grid-search** </span> 
+### **Tuning a model by grid-search** 
 
-### **With gridscore**
+- ### With gridscore
 
 ```julia
 using Jchemo, CairoMakie
@@ -100,7 +102,7 @@ res = gridscorelv(
     score = rmsep, fun = plskern, nlv = nlv) 
 ```
 
-### **With gridcv**
+- ### With gridcv
 
 ```julia
 using Jchemo
