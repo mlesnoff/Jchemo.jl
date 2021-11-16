@@ -1,12 +1,11 @@
-struct Svmr
+struct Svmda
     fm
 end
 
 """
-    svmr(X, y; kern = "rbf", 
-        gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1., 
-        epsilon = .1)
-Support vector machine for regression (Epsilon-SVR).
+    svmda(X, y; kern = "rbf", 
+        gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1.)
+Support vector machine for discrimination (C-SVC).
 * `X` : X-data.
 * `y : y-data (univariate).
 * 'kern' : Type of kernel used to compute the Gram matrices.
@@ -15,7 +14,6 @@ Support vector machine for regression (Epsilon-SVR).
 * 'degree' : See below.
 * 'coef0' : See below.
 * 'cost' : Cost of constraints violation C parameter.
-* 'epsilon' : Epsilon parameter in the loss function .
 
 Kernel types : 
 * "krbf" -- radial basis function: exp(-gamma * |x - y|^2)
@@ -44,11 +42,10 @@ support vector machines, regularization, optimization, and beyond.
 Adaptive computation and machine learning. MIT Press, Cambridge, Mass.
 
 """ 
-function svmr(X, y; kern = "krbf", 
-    gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1., 
-    epsilon = .1)
+function svmda(X, y; kern = "krbf", 
+    gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1.)
     gamma = Float64(gamma) ; degree = Int64(degree) ; coef0  = Float64(coef0) ; 
-    cost  = Float64(cost) ; epsilon = Float64(epsilon) ; 
+    cost  = Float64(cost) 
     X = ensure_mat(X)
     y = vec(y)
     if kern == "krbf"
@@ -62,24 +59,24 @@ function svmr(X, y; kern = "krbf",
     end
     nt = 0 
     fm = svmtrain(X', y;
-        svmtype = EpsilonSVR, 
+        svmtype = SVC, 
         kernel = fkern,
         gamma =  gamma,
         coef0 = coef0,
         degree = degree,
-        cost = cost, epsilon = epsilon,
+        cost = cost,
         nt = nt) 
-    Svmr(fm)
+    Svmda(fm)
 end
 
 
 """
-    predict(object::Svmr, X)
+    predict(object::Svmda, X)
 Compute y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Svmr, X)
+function predict(object::Svmda, X)
     pred = svmpredict(object.fm, X')[1]
     n = length(pred)
     pred = reshape(pred, n, 1)

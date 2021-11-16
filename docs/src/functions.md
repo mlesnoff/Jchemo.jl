@@ -54,7 +54,7 @@
 - ***cplsr_agg*** Clustered PLSR-AGG
 
 #### **Support vector machine (SVMR)**
-- ***svmr*** Epsilon SVM regression -- from LIBSVM.jl
+- ***svmr*** Epsilon-SVM regression -- from LIBSVM.jl
 
 #### **Trees**
 
@@ -106,6 +106,9 @@
 - ***lwplsrda*** kNN Locally weighted PLSR-DA (kNN-LWPLSR-DA)
 - ***lwplslda***, ***lwplsqda*** kNN Locally weighted PLS-LDA/QDA (kNN-LWPLS-LDA/QDA)
 - ***lwplslda_agg***, ***lwplsqda_agg*** Averaging kNN-LWPLS-LDA/QDA models with different numbers of LVs (kNN-LWPLS-LDA/QDA-AGG)
+
+#### **Support vector machine (SVMDA)**
+- ***svmda*** C-SVM discrimination -- from LIBSVM.jl
 
 ### <span style="color:#1589F0"> **4. TUNING MODELS** </span>
 

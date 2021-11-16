@@ -96,7 +96,8 @@ fm = plskern(Xval, yval; nlv = res.nlv[u]) ;
 res = Jchemo.predict(fm, Xval) ;
 rmsep(res.pred, yval)
 
-# For PLSR models, using gridscorelv is much faster!!!
+## For PLSR models, using gridscorelv is much faster!!!
+
 res = gridscorelv(
     Xtrain, ytrain, Xval, yval;
     score = rmsep, fun = plskern, nlv = nlv) 
@@ -122,7 +123,8 @@ res = gridcv(
 pnames(res)
 res.res
 
-# For PLSR models, using gridcvlv is much faster!!!
+## For PLSR models, using gridcvlv is much faster!!!
+
 res = gridcvlv(
     Xtrain, ytrain; segm,
     score = rmsep, fun = plskern, nlv = nlv) ;
@@ -156,7 +158,7 @@ using Jchemo
 
 ### How to cite
 
-Lesnoff, M. 2021. Julia package Jchemo: Dimension reduction, regression and discrimination for chemometrics. https://github.com/mlesnoff/Jchemo. CIRAD, UMR SELMET, Montpellier, France
+Lesnoff, M. 2021. Jchemo: a Julia package for dimension reduction, regression and discrimination for chemometrics. https://github.com/mlesnoff/Jchemo. CIRAD, UMR SELMET, Montpellier, France
 
 
 

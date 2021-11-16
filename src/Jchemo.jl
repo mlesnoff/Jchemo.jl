@@ -54,6 +54,9 @@ include("plsrda.jl")
 include("plslda.jl")
 include("plsrda_agg.jl")
 
+# SVM
+include("svmda.jl")
+
 # Local regression
 include("locw.jl")
 include("knnr.jl")
@@ -146,6 +149,7 @@ export
     plsrda, kplsrda,
     plslda, plsqda,
     plsrda_agg, plslda_agg, plsqda_agg,
+    svmda,
     # Local Discrimination
     lwplsrda, lwplslda, lwplsqda,
     lwplsrda_agg, lwplslda_agg, lwplsqda_agg,
