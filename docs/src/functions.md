@@ -53,14 +53,15 @@
 - ***lwplsr_agg*** kNN-LWPLSR-AGG 
 - ***cplsr_agg*** Clustered PLSR-AGG
 
-#### **Support vector machine (SVMR)**
-- ***svmr*** Epsilon-SVM regression -- from LIBSVM.jl
+#### **Support vector machine (SVMR)** -- from LIBSVM.jl
+- ***svmr*** Epsilon-SVM regression
 
-#### **Trees**
+#### **Trees** -- from XGBoost.jl
 
-- ***treer_xgb*** Single tree -- from XGBoost.jl
-- ***rf_xgb*** Random forest -- from XGBoost.jl
-- ***xgboostr*** XGBoost -- from XGBoost.jl
+- ***treer_xgb*** Single tree
+- ***rfr_xgb*** Random forest
+- ***xgboostr*** XGBoost
+- ***vimp_xgb*** Variable importance (Works also for discrimination models)
 
 #### **Bagging**
 
@@ -68,7 +69,7 @@
 - ***baggr_oob*** Out-of-bag error rate
 - ***baggr_vi*** Variance importance (permutation method)
 
-#### **Variable importance**
+#### **Other variable importance methods**
 
 - ***vimp_perm_r*** 
 - ***vimp_chisq_r*** 
@@ -107,8 +108,14 @@
 - ***lwplslda***, ***lwplsqda*** kNN Locally weighted PLS-LDA/QDA (kNN-LWPLS-LDA/QDA)
 - ***lwplslda_agg***, ***lwplsqda_agg*** Averaging kNN-LWPLS-LDA/QDA models with different numbers of LVs (kNN-LWPLS-LDA/QDA-AGG)
 
-#### **Support vector machine (SVMDA)**
-- ***svmda*** C-SVM discrimination -- from LIBSVM.jl
+#### **Support vector machine (SVM-DA)** -- from LIBSVM.jl
+- ***svmda*** C-SVM discrimination
+
+#### **Trees** -- from XGBoost.jl
+
+- ***treeda_xgb*** Single tree
+- ***rfda_xgb*** Random forest
+- ***xgboostda*** XGBoost
 
 ### <span style="color:#1589F0"> **4. TUNING MODELS** </span>
 

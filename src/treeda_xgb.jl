@@ -1,21 +1,9 @@
-struct TreerXgb
-    fm
-    featur::AbstractVector
-end
-
-struct TreedaXgb
-    fm
-    featur::AbstractVector
-    lev::AbstractVector
-    ni::AbstractVector
-end
-
 """ 
-    treer_xgb(X, y;
+    treeda_xgb(X, y;
         subsample = 1, colsample_bytree = 1, colsample_bynode = 1,
         max_depth = 6, min_child_weight = 5,
         lambda = 0, verbose = false, kwargs...)
-Regression tree with XGBoost.
+Discrimination tree with XGBoost.
 * `X` : X-data (n obs., p variables).
 * `y` : Univariate Y-data (n obs.).
 * `subsample` : Proportion of rows sampled in `X` 
@@ -49,14 +37,18 @@ Gey, S., 2002. Bornes de risque, détection de ruptures, boosting :
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function treer_xgb(X, y;
+function treeda_xgb(X, y;
         subsample = 1, colsample_bytree = 1, colsample_bynode = 1,
         max_depth = 6, min_child_weight = 5,
         lambda = 0, verbose = false, kwargs...) 
     X = ensure_mat(X)
+    y = vec(y)
     p = size(X, 2)
+    ztab = tab(y)
+    y_num = recodcat2num(y; start = 0)
+    num_class = length(ztab.keys)
     num_round = 1
-    fm = xgboost(X, num_round; label = Float64.(vec(y)),
+    fm = xgboost(X, num_round; label = y_num,
         seed = Int64(round(rand(1)[1] * 1e5)),
         booster = :gbtree,
         tree_method = :auto, 
@@ -66,18 +58,20 @@ function treer_xgb(X, y;
         colsample_bynode = colsample_bynode, 
         max_depth = max_depth, min_child_weight = min_child_weight,
         lambda = lambda,
+        objective = "multi:softmax",
+        num_class = num_class,
         silent = !verbose, kwargs...)
     featur = collect(1:p)
-    TreerXgb(fm, featur)
+    TreedaXgb(fm, featur, ztab.keys, ztab.vals)
 end
 
 """ 
-    rfr_xgb(X, y; rep = 50,
+    rfda_xgb(X, y; rep = 50,
         subsample = .7,
         colsample_bytree = 1, colsample_bynode = 1/3,
         max_depth = 6, min_child_weight = 5,
         lambda = 0, verbose = false, kwargs...)
-Random forest regression with XGBoost.
+Random forest discrimination with XGBoost.
 * `X` : X-data (n obs., p variables).
 * `y` : Univariate Y-data (n obs.).
 * `rep` : Nb. trees to build in the forest.
@@ -116,15 +110,19 @@ Gey, S., 2002. Bornes de risque, détection de ruptures, boosting :
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function rfr_xgb(X, y; rep = 50,
+function rfda_xgb(X, y; rep = 50,
         subsample = .7,
         colsample_bytree = 1, colsample_bynode = 1/3,
         max_depth = 6, min_child_weight = 5,
         lambda = 0, verbose = false, kwargs...)
     X = ensure_mat(X)
+    y = vec(y)
     p = size(X, 2)
+    ztab = tab(y)
+    y_num = recodcat2num(y; start = 0)
+    num_class = length(ztab.keys)
     num_round = 1
-    fm = xgboost(X, num_round; label = Float64.(vec(y)),
+    fm = xgboost(X, num_round; label = y_num,
         seed = Int64(round(rand(1)[1] * 1e5)), 
         booster = :gbtree,
         tree_method = :auto,
@@ -135,17 +133,19 @@ function rfr_xgb(X, y; rep = 50,
         colsample_bynode = colsample_bynode,
         max_depth = max_depth, min_child_weight = min_child_weight,
         lambda = lambda,
+        objective = "multi:softmax",
+        num_class = num_class,
         silent = !verbose, kwargs...)
     featur = collect(1:p)
-    TreerXgb(fm, featur)
+    TreedaXgb(fm, featur, ztab.keys, ztab.vals)
 end
 
 """ 
-    xgboostr(X, y; rep = 50, eta = .3,
+    xgboostda(X, y; rep = 50, eta = .3,
         subsample = .7, colsample_bytree = 1, colsample_bynode = 1/3,
         max_depth = 6, min_child_weight = 5,
         lambda = 1, verbose = false, kwargs...)
-XGBoost regression.
+XGBoost discrimination.
 * `X` : X-data (n obs., p variables).
 * `y` : Univariate Y-data (n obs.).
 * `rep` : Nb. trees to build.
@@ -175,14 +175,18 @@ https://xgboost.readthedocs.io/en/latest/index.html
 XGBoost.jl
 https://github.com/dmlc/XGBoost.jl
 """ 
-function xgboostr(X, y; rep = 50, eta = .3,
+function xgboostda(X, y; rep = 50, eta = .3,
         subsample = .7, colsample_bytree = 1, colsample_bynode = 1/3,
         max_depth = 6, min_child_weight = 5,
         lambda = 1, verbose = false, kwargs...)
     X = ensure_mat(X)
+    y = vec(y)
     p = size(X, 2)
+    ztab = tab(y)
+    y_num = recodcat2num(y; start = 0)
+    num_class = length(ztab.keys)
     num_round = rep
-    fm = xgboost(X, num_round; label = Float64.(vec(y)),
+    fm = xgboost(X, num_round; label = y_num,
         seed = Int64(round(rand(1)[1] * 1e5)), 
         booster = :gbtree,
         tree_method = :auto,
@@ -192,47 +196,29 @@ function xgboostr(X, y; rep = 50, eta = .3,
         colsample_bytree = colsample_bytree,
         colsample_bylevel = 1, colsample_bynode = colsample_bynode,
         max_depth = max_depth, min_child_weight = min_child_weight,
+        objective = "multi:softmax",
+        num_class = num_class,
         lambda = lambda, 
         silent = !verbose, kwargs...)
     featur = collect(1:p)
-    TreerXgb(fm, featur)
+    TreedaXgb(fm, featur, ztab.keys, ztab.vals)
 end
 
 """
-    predict(object::TreerXgb, X)
+    predict(object::TreedaXgb, X)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::TreerXgb, X)
+function predict(object::TreedaXgb, X)
     X = ensure_mat(X)
     m = size(X, 1)
     pred = XGBoost.predict(object.fm, X)
+    pred = replacebylev(pred, object.lev)
     pred = reshape(pred, m, 1) ;
     (pred = pred,)
 end
 
-"""
-    vimp_xgb(object::TreerXgb)
-Compute variable (feature) importances from an XGBoost model.
-* `object` : The fitted model.
-
-Features with imp = 0 are not returned.
-"""
-# To do: check and add these features in the  result
-function vimp_xgb(object::Union{TreerXgb, TreedaXgb})
-    res = XGBoost.importance(object.fm, string.(object.featur))
-    gain = [] ; cover = [] ; freq = [] ; fname = []
-    for i in res
-        push!(gain, i.gain)
-        push!(cover, i.cover)
-        push!(freq, i.freq)
-        push!(fname, i.fname)
-    end
-    z = DataFrame(hcat(gain, cover, freq), [:gain, :cover, :freq]) 
-    z.featur = eval(Meta.parse.(fname))
-    z
-end
 
 
 

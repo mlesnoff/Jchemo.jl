@@ -278,34 +278,37 @@ end
 """
     replacebylev(x, lev)
 Replaces the elements of x
-by the levels of corresponding order.
+by levels of corresponding order.
 
-* `x` : Vector of integers between 1 and nlev.
-* `lev` : Vector (nlev,) containing the levels.
+* `x` : Vector of values to replace.
+* `lev` : Vector containing the levels.
 
-Before replacement, `lev` is internally sorted.
+The number of levels in `x` and `lev` must be the same.
+Before replacement, the levels in `x` and `lev` are sorted.
 
 ## Examples
 ```julia
-y = ["d", "a", "b", "c", "b", "c"]
-#y = [10, 4, 3, 3, 4, 4]
-lev = sort(unique(y)) 
-nlev = length(lev)
-z =  rand(1:nlev, 10)
-[z replacebylev(z, lev)]
+x = [10, 4, 3, 3, 4, 4]
+lev = ["B"; "C"; "AA"]
+[x replacebylev(x, lev)]
+[string.(x) replacebylev(string.(x), lev)]
+
+x = [10, 4, 3, 3, 4, 4]
+lev = [3; 0; -1]
+[x replacebylev(x, lev)]
 ```
 """
 function replacebylev(x, lev)
     m = length(x)
     lev = sort(lev)
     nlev = length(lev)
-    #res = Vector{Any}(nothing, size(x, 1)) ;
-    res = similar(lev, m)
-    for i = 1:nlev
-        u = findall(x .== i)
-        res[u] .= lev[i] 
+    x_lev = tab(x).keys
+    v = similar(lev, m)
+    @inbounds for i = 1:nlev
+        u = findall(x .== x_lev[i])
+        v[u] .= lev[i] 
     end
-    res
+    v
 end
 
 """
@@ -408,6 +411,7 @@ Univariate tabulation.
 * `x` : Univariate class membership.
 
 In the output, the levels in `x` are sorted.
+Levels and values can be get by `tab(x).keys` and `tab(x).vals`.
 """
 function tab(x)
     x = vec(x)

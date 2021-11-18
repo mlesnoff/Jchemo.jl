@@ -41,6 +41,7 @@ include("baggr.jl") ; include("baggr_util.jl")
 
 # Trees
 include("treer_xgb.jl")
+include("treeda_xgb.jl")
 
 include("xfit.jl")
 include("scordis.jl")
@@ -127,13 +128,12 @@ export
     rr, rr!, rrchol, rrchol!,   
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
     plsr_agg, plsr_agg!,
-    svmr,   
     dfplsr_cg, aicplsr,
+    svmr,   
+    treer_xgb, rfr_xgb, xgboostr, vimp_xgb,
     #
     baggr, baggr_vi, baggr_oob,
     vimp_perm_r, vimp_chisq_r, vimp_aov_r, 
-    #
-    treer_xgb, rfr_xgb, xgboostr, vimp_xgb,
     #
     xfit, xfit!, xresid, xresid!,
     # Local regression
@@ -150,6 +150,7 @@ export
     plslda, plsqda,
     plsrda_agg, plslda_agg, plsqda_agg,
     svmda,
+    treeda_xgb, rfda_xgb, xgboostda,
     # Local Discrimination
     lwplsrda, lwplslda, lwplsqda,
     lwplsrda_agg, lwplslda_agg, lwplsqda_agg,
