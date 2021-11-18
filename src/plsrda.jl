@@ -38,32 +38,6 @@ function plsrda(X, y, weights = ones(size(X, 1)); nlv)
     Plsrda(fm, z.lev, z.ni)
 end
 
-function predict(object::Union{Plsrda, KplsrDa}, X; nlv = nothing)
-    X = ensure_mat(X)
-    m = size(X, 1)
-    a = size(object.fm.T, 2)
-    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
-    le_nlv = length(nlv)
-    pred = list(le_nlv)
-    posterior = list(le_nlv)
-    @inbounds for i = 1:le_nlv
-        zp = predict(object.fm, X; nlv = nlv[i]).pred
-        #if softmax
-        #    @inbounds for j = 1:m
-        #        zp[j, :] .= mweights(exp.(zp[j, :]))
-        #   end
-        #end
-        z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
-        pred[i] = reshape(replacebylev(z, object.lev), m, 1)
-        posterior[i] = zp
-    end 
-    if le_nlv == 1
-        pred = pred[1]
-        posterior = posterior[1]
-    end
-    (pred = pred, posterior = posterior)
-end
-
 """
     kplsrda(X, y, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
 Discrimination (DA) based on kernel partial least squares regression (KPLSR).
@@ -90,5 +64,39 @@ function kplsrda(X, y, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...
     z = dummy(y)
     fm = kplsr(X, z.Y, weights; nlv = nlv, kern = kern, kwargs...)
     KplsrDa(fm, z.lev, z.ni)
+end
+
+"""
+    predict(object::Union{Plsrda, KplsrDa}, X; nlv = nothing)
+Compute Y-predictions from a fitted model.
+* `object` : The fitted model.
+* `X` : X-data for which predictions are computed.
+* `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
+    If nothing, it is the maximum nb. LVs.
+""" 
+function predict(object::Union{Plsrda, KplsrDa}, X; nlv = nothing)
+    X = ensure_mat(X)
+    m = size(X, 1)
+    a = size(object.fm.T, 2)
+    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
+    le_nlv = length(nlv)
+    pred = list(le_nlv)
+    posterior = list(le_nlv)
+    @inbounds for i = 1:le_nlv
+        zp = predict(object.fm, X; nlv = nlv[i]).pred
+        #if softmax
+        #    @inbounds for j = 1:m
+        #        zp[j, :] .= mweights(exp.(zp[j, :]))
+        #   end
+        #end
+        z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
+        pred[i] = reshape(replacebylev(z, object.lev), m, 1)
+        posterior[i] = zp
+    end 
+    if le_nlv == 1
+        pred = pred[1]
+        posterior = posterior[1]
+    end
+    (pred = pred, posterior = posterior)
 end
 

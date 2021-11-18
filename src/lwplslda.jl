@@ -9,6 +9,8 @@ struct LwplsLda
     prior::String
     tol::Real
     verbose::Bool
+    lev::AbstractVector
+    ni::AbstractVector
 end
 
 """
@@ -39,12 +41,14 @@ function lwplslda(X, y; nlvdis, metric, h, k, nlv,
     prior = "unif", tol = 1e-4, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
+    ztab = tab(y)
     if nlvdis == 0
         fm = nothing
     else
         fm = plskern(X, dummy(y).Y; nlv = nlvdis)
     end
-    return LwplsLda(X, y, fm, metric, h, k, nlv, prior, tol, verbose)
+    return LwplsLda(X, y, fm, metric, h, k, nlv, prior, tol, verbose, 
+        ztab.keys, ztab.vals)
 end
 
 """

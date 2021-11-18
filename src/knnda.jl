@@ -7,6 +7,8 @@ struct Knnda
     h::Real
     k::Int
     tol::Real
+    lev::AbstractVector
+    ni::AbstractVector
 end
 
 """
@@ -42,12 +44,14 @@ preliminary dimensionality reduction of the data.
 function knnda(X, y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, tol = 1e-4)
     X = ensure_mat(X)
     y = ensure_mat(y)
+    ztab = tab(y)
     if nlvdis == 0
         fm = nothing
     else
         fm = plskern(X, dummy(y).Y; nlv = nlvdis)
     end
-    return Knnda(X, y, fm, nlvdis, metric, h, k, tol)
+    return Knnda(X, y, fm, nlvdis, metric, h, k, tol, 
+        ztab.keys, ztab.vals)
 end
 
 """

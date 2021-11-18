@@ -8,6 +8,8 @@ struct LwplsldaAgg
     nlv::String
     tol::Real
     verbose::Bool
+    lev::AbstractVector
+    ni::AbstractVector
 end
 
 """
@@ -44,12 +46,14 @@ function lwplslda_agg(X, y; nlvdis, metric, h, k, nlv,
     tol = 1e-4, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
+    ztab = tab(y)
     if nlvdis == 0
         fm = nothing
     else
         fm = plskern(X, dummy(y).Y; nlv = nlvdis)
     end
-    LwplsldaAgg(X, y, fm, metric, h, k, nlv, tol, verbose)
+    LwplsldaAgg(X, y, fm, metric, h, k, nlv, tol, verbose,
+        ztab.keys, ztab.vals)
 end
 
 """

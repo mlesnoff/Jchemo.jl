@@ -35,26 +35,6 @@ function rrda(X, y, weights = ones(size(X, 1)); lb)
     Rrda(fm, z.lev, z.ni)
 end
 
-function predict(object::Union{Rrda, KrrDa}, X; lb = nothing)
-    X = ensure_mat(X)
-    m = size(X, 1)
-    isnothing(lb) ? lb = object.fm.lb : nothing
-    le_lb = length(lb)
-    pred = list(le_lb)
-    posterior = list(le_lb)
-    @inbounds for i = 1:le_lb
-        zp = predict(object.fm, X; lb = lb[i]).pred
-        z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
-        pred[i] = reshape(replacebylev(z, object.lev), m, 1)
-        posterior[i] = zp
-    end 
-    if le_lb == 1
-        pred = pred[1]
-        posterior = posterior[1]
-    end
-    (pred = pred, posterior = posterior)
-end
-    
 """
     krrda(X, y, weights = ones(size(X, 1)); lb)
 Discrimination (DA) based on kernel ridge regression (KRR).
@@ -82,5 +62,35 @@ function krrda(X, y, weights = ones(size(X, 1)); lb, kern = "krbf", kwargs...)
     fm = krr(X, z.Y, weights; lb = lb, kern = kern, kwargs...)
     KrrDa(fm, z.lev, z.ni)
 end
+
+"""
+    predict(object::Union{Rrda, KrrDa}, X; lb = nothing)
+Compute Y-predictions from a fitted model.
+* `object` : The fitted model.
+* `X` : X-data for which predictions are computed.
+* `lb` : Regularization parameter, or collection of regularization parameters, 
+    "lambda" to consider. If nothing, it is the parameter stored in the 
+    fitted model.
+""" 
+function predict(object::Union{Rrda, KrrDa}, X; lb = nothing)
+    X = ensure_mat(X)
+    m = size(X, 1)
+    isnothing(lb) ? lb = object.fm.lb : nothing
+    le_lb = length(lb)
+    pred = list(le_lb)
+    posterior = list(le_lb)
+    @inbounds for i = 1:le_lb
+        zp = predict(object.fm, X; lb = lb[i]).pred
+        z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
+        pred[i] = reshape(replacebylev(z, object.lev), m, 1)
+        posterior[i] = zp
+    end 
+    if le_lb == 1
+        pred = pred[1]
+        posterior = posterior[1]
+    end
+    (pred = pred, posterior = posterior)
+end
+
 
 

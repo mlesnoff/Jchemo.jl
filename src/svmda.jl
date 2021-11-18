@@ -1,5 +1,7 @@
 struct Svmda
     fm
+    lev::AbstractVector
+    ni::AbstractVector
 end
 
 """
@@ -48,6 +50,7 @@ function svmda(X, y; kern = "krbf",
     cost  = Float64(cost) 
     X = ensure_mat(X)
     y = vec(y)
+    ztab = tab(y)
     if kern == "krbf"
         fkern = LIBSVM.Kernel.RadialBasis
     elseif kern == "kpol"
@@ -66,7 +69,7 @@ function svmda(X, y; kern = "krbf",
         degree = degree,
         cost = cost,
         nt = nt) 
-    Svmda(fm)
+    Svmda(fm, ztab.keys, ztab.vals)
 end
 
 
