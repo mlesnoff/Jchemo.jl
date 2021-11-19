@@ -6,13 +6,12 @@ struct Baggr
 end
 
 """ 
-    baggr(X, Y, weights = nothing; fun, rep = 50, 
-        withr = false, rowsamp = 1, colsamp = 1, kwargs...)
+    baggr(X, Y, weights = nothing; rep = 50, 
+        withr = false, rowsamp = .7, colsamp = 1, fun, kwargs...)
 Bagging of regression models.
 * `X` : X-data (n obs., p variables).
 * `Y` : Y-data (n obs., q variables).
 * `weights` : Weights of the observations.
-* `fun` : Name of the function computing the model to bagg.
 * `rep` : Nb. of bagging repetitions.
 * `withr`: Type of sampling of the observations
     (`true` => with replacement).
@@ -20,6 +19,7 @@ Bagging of regression models.
     at each repetition.
 * `colsamp` : Proportion of columns sampled (without replacement) in `X` 
     at each repetition.
+* `fun` : Name of the function computing the model to bagg.
 * `kwargs` : Optional named arguments to pass in 'fun`.
 
 ## References
@@ -37,8 +37,8 @@ Gey, S., 2002. Bornes de risque, détection de ruptures, boosting :
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function baggr(X, Y, weights = nothing, wcol = nothing; fun, rep = 50, 
-        withr = false, rowsamp = 1, colsamp = 1, kwargs...)
+function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50, 
+        withr = false, rowsamp = .7, colsamp = 1, fun, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)

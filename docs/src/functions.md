@@ -61,19 +61,13 @@
 - ***treer_xgb*** Single tree
 - ***rfr_xgb*** Random forest
 - ***xgboostr*** XGBoost
-- ***vimp_xgb*** Variable importance (Works also for discrimination models)
+- ***vimp_xgb*** Variable importance (Works also for DA models)
 
 #### **Bagging**
 
 - ***baggr*** Bagging 
 - ***baggr_oob*** Out-of-bag error rate
 - ***baggr_vi*** Variance importance (permutation method)
-
-#### **Other variable importance methods**
-
-- ***vimp_perm_r*** 
-- ***vimp_chisq_r*** 
-- ***vimp_aov_r*** 
 
 ### <span style="color:#1589F0"> **3. DISCRIMINATION ANALYSIS (DA)** </span>
 
@@ -195,6 +189,14 @@
 - ***plotsp*** Plotting spectra
 
 
+
+<!---
+#### **Other variable importance methods**
+
+- ***vimp_perm*** 
+- ***vimp_chisq_r*** 
+- ***vimp_aov_r*** 
+-->
 
 <!---
 #### Support vector machine

@@ -71,7 +71,6 @@ include("lwplsrda_agg.jl") ; include("lwplslda_agg.jl") ; include("lwplsqda_agg.
 include("knnda.jl")
 
 # Variable importance (direct methods) 
-include("vimp_r.jl")
 
 # Validation
 include("mpars.jl")
@@ -131,9 +130,7 @@ export
     dfplsr_cg, aicplsr,
     svmr,   
     treer_xgb, rfr_xgb, xgboostr, vimp_xgb,
-    #
     baggr, baggr_vi, baggr_oob,
-    vimp_perm_r, vimp_chisq_r, vimp_aov_r, 
     #
     xfit, xfit!, xresid, xresid!,
     # Local regression

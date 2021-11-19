@@ -5,7 +5,7 @@ Model validation over a grid of parameters.
 * `Ytrain` : Training Y-data.
 * `X` : Validation X-data.
 * `Y` : Validation Y-data.
-* `score` : Function computing the prediction score (= error rate; e.g. MSEP).
+* `score` : Function computing the prediction score (= error rate; e.g. msep).
 * `fun` : Function computing the prediction model.
 * `pars` : tuple of named vectors (arguments of fun) of same length
     involved in the calculation of the score.
