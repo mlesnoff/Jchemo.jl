@@ -4,7 +4,7 @@
 - New functions
     - **covsel**
     - **interpl** has been replaced by **interpl_mon**
-- Change in output of vimp_xgb
+- Change in output of **vimp_xgb**
 
 ### *Version 0.0-1*
 
