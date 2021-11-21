@@ -131,30 +131,52 @@ function fdif!(M, X; f = 2)
 end
 
 """ 
-    interpl(X; w0 = 1:size(X, 2), w, meth = nothing, kwargs...)
-    Sampling signals by interpolation methods.
+    interpl_moninterpl_mon(X; w0, w, 
+        fun = FritschCarlsonMonotonicInterpolation)
+Sampling signals by monotonic interpolation.
 * `X` : Matrix (n, p) of signals (rows).
-* `w0` : The column names of `X` (must be numeric and of length p).
-* `w` : A vector of the values where to interpolate 
-    within the range of `w0`.
-* `meth` : Method of interpolation ("cubic", "quad" or "linear").
+* `w0` : Values representing the column "names" of `X`. 
+    Must be a numeric vector of length p, or an AbstractRange.
+* `w` : Values where to interpolate within the range of `w0`.
+    Must be a numeric vector, or an AbstractRange.
+* `fun` : Function defining the interpolation method.
 
-For signal (row of `X`), the interpolations are computed by splines 
-using package Interpolations.jl. 
+See e.g. https://en.wikipedia.org/wiki/Monotone_cubic_interpolation.
+
+The function uses package Interpolations.jl.
+
+Possible values of `fun` (methods) are:
+- `LinearMonotonicInterpolation`
+- `FiniteDifferenceMonotonicInterpolation` : Classic cubic
+- `CardinalMonotonicInterpolation`
+- `FritschCarlsonMonotonicInterpolation`
+- `FritschButlandMonotonicInterpolation`
+- `SteffenMonotonicInterpolation`
+See https://github.com/JuliaMath/Interpolations.jl/pull/243/files#diff-92e3f2a374c9a54769084bad1bbfb4ff20ee50716accf008074cda7af1cd6149
+
+## References
+
+Package Interpolations.jl
+https://github.com/JuliaMath/Interpolations.jl
+
+Fritsch & Carlson (1980), "Monotone Piecewise Cubic Interpolation", 
+doi:10.1137/0717021.
+
+Fritsch & Butland (1984), "A Method for Constructing Local Monotone Piecewise 
+Cubic Interpolants", doi:10.1137/0905021.
+
+Steffen (1990), "A Simple Method for Monotonic Interpolation 
+in One Dimension", http://adsabs.harvard.edu/abs/1990A%26A...239..443S
 """ 
-function interpl(X; w0 = 1:size(X, 2), w, meth = "cubic")
+function interpl_mon(X; w0, w, 
+        fun = FritschCarlsonMonotonicInterpolation)
     X = ensure_mat(X)
-    n, p = size(X)
+    n = size(X, 1)
     q = length(w)
     zX = similar(X, n, q)
-    meth == "cubic" ? fun = Cubic(Natural(OnGrid())) : nothing
-    meth == "quad" ? fun = Quadratic(Natural(OnGrid())) : nothing
-    meth == "linear" ? fun = Linear() : nothing 
     @inbounds for i = 1:n
-        x = X[i, :]
-        itp = interpolate(x, BSpline(fun))
-        sitp = Interpolations.scale(itp, w0)
-        zX[i, :] .= sitp(w)
+        itp = interpolate(w0, vrow(X, i), fun())
+        zX[i, :] .= itp.(w)
     end
     zX
 end

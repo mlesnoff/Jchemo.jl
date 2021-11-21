@@ -1,7 +1,8 @@
 """
-    plotsp(X; color, kwargs...)
+    plotsp(X, wl = 1:size(X, 2); color = nothing, kwargs...) 
     Plotting spectra.
 * `x` : X-data.
+* `wl` : Column names of `x`. Must be numeric.
 * `colors` : Set a unique color to the spectra.
 * `kwargs` : Optional arguments to pass in `Axis`.
 Plots lines corresponding to the rows of `x`.

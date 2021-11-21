@@ -14,7 +14,8 @@ end
 
 """
     plskern(X, Y, weights = ones(size(X, 1)); nlv)
-Partial Least Squares Regression (PLSR) with the "Improved kernel algorithm #1" (Dayal & McGegor, 1997).
+Partial Least Squares Regression (PLSR) with the 
+"Improved kernel algorithm #1" (Dayal & McGegor, 1997).
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
@@ -27,18 +28,21 @@ Kim et al. 2011 and Lesnoff et al. 2020.
 
 ## References
 
-Dayal, B.S., MacGregor, J.F., 1997. Improved PLS algorithms. Journal of Chemometrics 11, 73-85.
+Dayal, B.S., MacGregor, J.F., 1997. Improved PLS algorithms. 
+Journal of Chemometrics 11, 73-85.
 
-Kim, S., Kano, M., Nakagawa, H., Hasebe, S., 2011. Estimation of active pharmaceutical ingredients 
-content using locally weighted partial least squares and statistical wavelength 
-selection. Int. J. Pharm., 421, 269-274.
+Kim, S., Kano, M., Nakagawa, H., Hasebe, S., 2011. Estimation of active 
+pharmaceutical ingredients content using locally weighted partial 
+least squares and statistical wavelength selection. Int. J. Pharm., 421, 269-274.
 
 Lesnoff, M., Metz, M., Roger, J.M., 2020. Comparison of locally weighted 
 PLS strategies for regression and discrimination on agronomic NIR Data. 
-Journal of Chemometrics. e3209. https://onlinelibrary.wiley.com/doi/abs/10.1002/cem.3209
+Journal of Chemometrics. e3209. 
+https://onlinelibrary.wiley.com/doi/abs/10.1002/cem.3209
 
-Schaal, S., Atkeson, C., Vijayamakumar, S. 2002. Scalable techniques from nonparametric 
-statistics for the real time robot learning. Applied Intell., 17, 49-60.
+Schaal, S., Atkeson, C., Vijayamakumar, S. 2002. Scalable techniques 
+from nonparametric statistics for the real time robot learning. 
+Applied Intell., 17, 49-60.
 
 Sicard, E. Sabatier, R., 2006. Theoretical framework for local PLS1 regression 
 and application to a rainfall data set. Comput. Stat. Data Anal., 51, 1393-1410.

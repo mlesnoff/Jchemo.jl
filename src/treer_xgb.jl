@@ -219,19 +219,29 @@ Compute variable (feature) importances from an XGBoost model.
 
 Features with imp = 0 are not returned.
 """
-# To do: check and add these features in the  result
 function vimp_xgb(object::Union{TreerXgb, TreedaXgb})
+    p = length(object.featur)
     res = XGBoost.importance(object.fm, string.(object.featur))
-    gain = [] ; cover = [] ; freq = [] ; fname = []
+    fname = [] ; gain = [] ; cover = [] ; freq = [] 
     for i in res
+        push!(fname, i.fname)
         push!(gain, i.gain)
         push!(cover, i.cover)
         push!(freq, i.freq)
-        push!(fname, i.fname)
     end
-    z = DataFrame(hcat(gain, cover, freq), [:gain, :cover, :freq]) 
-    z.featur = eval(Meta.parse.(fname))
-    z
+    fname = eval(Meta.parse.(fname))
+    zgain = zeros(p)
+    zcover = copy(zgain)
+    zfreq = copy(zgain)
+    for i = 1:length(fname)
+        s = fname[i]
+        zgain[s] = gain[i]
+        zcover[s] = cover[i]
+        zfreq[s] = freq[i]
+    end
+    res = DataFrame(hcat(zgain, zcover, zfreq), [:gain, :cover, :freq]) 
+    res.featur = object.featur
+    res
 end
 
 

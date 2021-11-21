@@ -69,6 +69,10 @@
 - ***baggr_oob*** Out-of-bag error rate
 - ***baggr_vi*** Variance importance (permutation method)
 
+#### Variable selection
+
+- ***covsel*** CovSel (Roger et al. 2011)
+
 ### <span style="color:#1589F0"> **3. DISCRIMINATION ANALYSIS (DA)** </span>
 
 #### Factorial discrimination analysis (FDA)
@@ -148,14 +152,14 @@
 
 #### **Pre-processing**
 
-- ***snv*** Standard-normal-deviation transformation
 - ***detrend*** Polynomial detrend
-- ***fdif*** Finite differences
-- ***mavg***, ***mavg_runmean*** Smoothing by moving average
-- ***savgk***, ***savgol*** Savitsky-Golay filtering
 - ***eposvd*** External parameter orthogonalization (EPO)
+- ***fdif*** Finite differences
+- ***interpl_mon*** Sampling signals by monotonic intrerpolation -- From Interpolations.jl
+- ***mavg***, ***mavg_runmean*** Smoothing by moving average
 - ***rmgap*** Remove vertical gaps in spectra, e.g. for ASD NIR data
-- ***interpl*** Resampling of signals by spline interpolation.
+- ***savgk***, ***savgol*** Savitsky-Golay filtering
+- ***snv*** Standard-normal-deviation transformation
 
 #### **Sampling observations**
 

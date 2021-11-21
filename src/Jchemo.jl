@@ -71,6 +71,7 @@ include("lwplsrda_agg.jl") ; include("lwplslda_agg.jl") ; include("lwplsqda_agg.
 include("knnda.jl")
 
 # Variable importance (direct methods) 
+include("covsel.jl")
 
 # Validation
 include("mpars.jl")
@@ -112,7 +113,7 @@ export
     snv, snv!, detrend, detrend!, fdif, fdif!,
     mavg, mavg!, mavg_runmean, mavg_runmean!,
     savgk, savgol, savgol!,
-    interpl,
+    interpl_mon,
     rmgap, rmgap!,
     eposvd,
     # Pca
@@ -131,6 +132,8 @@ export
     svmr,   
     treer_xgb, rfr_xgb, xgboostr, vimp_xgb,
     baggr, baggr_vi, baggr_oob,
+    #
+    covsel,
     #
     xfit, xfit!, xresid, xresid!,
     # Local regression
@@ -169,8 +172,8 @@ export
     krbf, kpol,
     # Graphics
     plotsp
-    # Not exported since surchage
-    # summary => Base.summary
+    # Not exported since surchage:
+    # - summary => Base.summary
 
 end # End-Module
 
