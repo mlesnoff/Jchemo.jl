@@ -1,5 +1,10 @@
 ## NEWS for package **Jchemo**
 
+### *Version 0.0-3*
+- New functions
+    - **interpl**
+    - **checkdupl**, **checkmiss**
+
 ### *Version 0.0-2*
 - New functions
     - **covsel**

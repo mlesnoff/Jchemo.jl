@@ -155,6 +155,7 @@
 - ***detrend*** Polynomial detrend
 - ***eposvd*** External parameter orthogonalization (EPO)
 - ***fdif*** Finite differences
+- ***interpl*** Sampling signals by intrerpolation -- From DataInterpolations.jl
 - ***interpl_mon*** Sampling signals by monotonic intrerpolation -- From Interpolations.jl
 - ***mavg***, ***mavg_runmean*** Smoothing by moving average
 - ***rmgap*** Remove vertical gaps in spectra, e.g. for ASD NIR data
@@ -168,9 +169,11 @@
 - ***sampsys*** Systematic sampling
 - ***sampclas*** Stratified sampling
 
-### <span style="color:#1589F0"> **6. UTILITY** </span>
+### <span style="color:#1589F0"> **6. UTILITIES** </span>
 
 - ***aggstat*** Compute column-wise statistics (e.g. mean), by group
+- ***checkdupl*** Finding replicated rows in a dataset
+- ***checkmiss*** Finding rows with missing data in a dataset
 - ***center***, ***scale*** Column-wise centering and scaling of a matrix
 - ***colmeans***, ***colvars*** Weighted column means and variances
 - ***dummy*** Build dummy table

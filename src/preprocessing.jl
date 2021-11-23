@@ -131,7 +131,50 @@ function fdif!(M, X; f = 2)
 end
 
 """ 
-    interpl_moninterpl_mon(X; w0, w, 
+    interpl(X; w0, w, 
+        fun = CubicSpline)
+Sampling signals by interpolation.
+* `X` : Matrix (n, p) of signals (rows).
+* `w0` : Values representing the column "names" of `X`. 
+    Must be a numeric vector of length p, or an AbstractRange.
+* `w` : Values where to interpolate within the range of `w0`.
+    Must be a numeric vector, or an AbstractRange.
+* `fun` : Function defining the interpolation method.
+
+The function uses package DataInterpolations.jl.
+
+Possible values of `fun` (methods) are:
+- `linear_int`: A linear interpolation (LinearInterpolation).
+- `quadratic_int`: A quadratic interpolation (QuadraticInterpolation).
+- `quadratic_spline`: A quadratic spline interpolation(QuadraticSpline).
+- `cubic_spline`: A cubic spline interpolation (CubicSpline)
+
+## References
+
+Package Interpolations.jl
+https://github.com/PumasAI/DataInterpolations.jl
+https://htmlpreview.github.io/?https://github.com/PumasAI/DataInterpolations.jl/blob/v2.0.0/example/DataInterpolations.html
+""" 
+function interpl(X; w0, w, 
+        fun = cubic_spline)
+    X = ensure_mat(X)
+    n = size(X, 1)
+    q = length(w)
+    zX = similar(X, n, q)
+    @inbounds for i = 1:n
+        itp = fun(vrow(X, i), w0)
+        zX[i, :] .= itp.(w)
+    end
+    zX
+end
+# Due to conflicts with Interpolations.jl
+linear_int(y, x) = DataInterpolations.LinearInterpolation(y, x)
+quadratic_int(y, x) = DataInterpolations.QuadraticInterpolation(y, x)
+quadratic_spline(y, x) = DataInterpolations.QuadraticSpline(y, x)
+cubic_spline(y, x) = DataInterpolations.CubicSpline(y, x)
+
+""" 
+    interpl_mon(X; w0, w, 
         fun = FritschCarlsonMonotonicInterpolation)
 Sampling signals by monotonic interpolation.
 * `X` : Matrix (n, p) of signals (rows).
@@ -180,7 +223,6 @@ function interpl_mon(X; w0, w,
     end
     zX
 end
-
 
 """
     mavg(X; f)

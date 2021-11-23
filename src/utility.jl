@@ -58,6 +58,69 @@ function center!(X, v)
 end
 
 """
+    checkdupl(X; digits = 3)
+Finding replicated rows in a dataset.
+* `X` : A dataset.
+* `digits` : Nb. digits used to round `X`.
+
+## Examples
+```julia
+X = rand(5, 3)
+Z = vcat(X, X[1:3, :])
+checkdupl(X)
+checkdupl(Z)
+
+M = hcat(X, fill(missing, 5))
+Z = vcat(M, M[1:3, :])
+checkdupl(M)
+checkdupl(Z)
+```
+"""
+function checkdupl(X; digits = 3)
+    X = round.(ensure_mat(X), digits = digits)
+    n = size(X, 1)
+    rownum1 = []
+    rownum2 = []
+    @inbounds for i = 1:n
+        @inbounds for j = 1:n
+            res = isequal(vrow(X, i), vrow(X, j))
+            if res
+                push!(rownum1, i)
+                push!(rownum2, j)
+            end
+        end
+    end
+    u = findall(rownum1 .!= rownum2)
+    res = DataFrame((rownum1 = rownum1[u], rownum2 = rownum2[u]))
+    k = length(u)
+    if k > 0
+        res = res[1:Int64(k / 2), :]
+    end
+    res
+end
+
+"""
+    checkmiss(X)
+Finding rows with missing data in a dataset.
+* `X` : A dataset.
+
+## Examples
+```julia
+X = rand(5, 4)
+zX = hcat(rand(2, 3), fill(missing, 2))
+Z = vcat(X, zX)
+checkmiss(X)
+checkmiss(Z)
+```
+"""
+function checkmiss(X)
+    X = ensure_mat(X)
+    z = vec(sum(ismissing.(X); dims = 2))
+    u = findall(z .> 0) 
+    DataFrame((rownum = u, nmissing = z[u]))
+end
+
+"""
     colmeans(X)
     colmeans(X, w)
 Compute the mean of each column of `X`.
@@ -441,6 +504,9 @@ View of the i-th row or j-th column of a matrix `X`.
 vrow(X, i) = view(X, i, :)
 
 vcol(X, j) = view(X, :, j)
+
+
+
 
 
 

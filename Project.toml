@@ -1,12 +1,13 @@
 name = "Jchemo"
 uuid = "fbca9394-dd0a-4d1c-b066-ae75f6ef1ad5"
 authors = ["Matthieu Lesnoff <matthieu.lesnoff@gmail.com>"]
-version = "0.0.2"
+version = "0.0.3"
 
 [deps]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 Clustering = "aaaa29a8-35af-508c-8bc3-b662a17a0fe5"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+DataInterpolations = "82cc6244-b520-54b8-b5a6-8a565e85f1d0"
 Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"

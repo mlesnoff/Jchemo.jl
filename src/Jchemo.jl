@@ -2,6 +2,7 @@ module Jchemo  # Start-Module
 
 using LinearAlgebra, Statistics, Random
 using Clustering
+using DataInterpolations
 using Distributions
 using DataFrames
 using Distances
@@ -90,7 +91,8 @@ include("kernels.jl")
 export 
     # Utilities
     aggstat,
-    aov1,    
+    aov1,
+    checkdupl, checkmiss,
     center, center!, 
     colmeans, colvars, colvars!, 
     dummy,
@@ -108,12 +110,12 @@ export
     summ,  
     tab, tabnum,
     vcol, vrow, 
-
    # Pre-processing
     snv, snv!, detrend, detrend!, fdif, fdif!,
     mavg, mavg!, mavg_runmean, mavg_runmean!,
     savgk, savgol, savgol!,
-    interpl_mon,
+    interpl, interpl_mon, 
+    linear_int, quadratic_int, quadratic_spline, cubic_spline,
     rmgap, rmgap!,
     eposvd,
     # Pca
