@@ -1,13 +1,13 @@
 struct TreerXgb
     fm
-    featur::AbstractVector
+    featur::Vector{Int64}
 end
 
 struct TreedaXgb
     fm
-    featur::AbstractVector
-    lev::AbstractVector
-    ni::AbstractVector
+    featur::Vector{Int64}
+    lev::Vector{Int64}
+    ni::Vector{Int64}
 end
 
 """ 

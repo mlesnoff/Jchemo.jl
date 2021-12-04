@@ -6,6 +6,13 @@ struct Scordis
     nlv::Int64
 end
 
+struct Odis
+    dis
+    fm
+    cutoff::Real   
+    nlv::Int64
+end
+
 """
     scordis(object::Union{Pca, Plsr}; nlv = nothing, rob = true, alpha = .01)
 Compute the score distances (SDs) from a PCA or PLS model
@@ -38,8 +45,8 @@ principal components analysis. Technometrics, 47, 64-79.
 Pomerantsev, A.L., 2008. Acceptance areas for multivariate classification derived by 
 projection methods. Journal of Chemometrics 22, 601-609. https://doi.org/10.1002/cem.1147
 """ 
-function scordis(object::Union{Pca, Plsr}; nlv = nothing, 
-    rob = true, alpha = .01)
+function scordis(object::Union{Pca, Plsr}; 
+    nlv = nothing, rob = true, alpha = .01)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     T = @view(object.T[:, 1:nlv])
@@ -69,13 +76,6 @@ function predict(object::Scordis, X)
     dstand = d / object.cutoff 
     dis = DataFrame((d = d, dstand = dstand, gh = d2 / nlv))
     (dis = dis,)
-end
-
-struct Odis
-    dis
-    fm
-    cutoff::Real   
-    nlv::Int64
 end
 
 """
@@ -122,8 +122,8 @@ Chem. Lab. Int. Syst, 79, 10-21.
 K. Varmuza, P. Filzmoser (2009). Introduction to multivariate statistical analysis in chemometrics. 
 CRC Press, Boca Raton.
 """ 
-function odis(object::Union{Pca, Plsr}, X; nlv = nothing, 
-        rob = true, alpha = .01)
+function odis(object::Union{Pca, Plsr}, X; 
+        nlv = nothing, rob = true, alpha = .01)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     E = xresid(object, X; nlv = nlv)

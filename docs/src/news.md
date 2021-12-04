@@ -1,5 +1,11 @@
 ## NEWS for package **Jchemo**
 
+### *Version 0.0-4*
+- New functions
+    - **iplsr**
+
+- Modification of **covsel**
+
 ### *Version 0.0-3*
 - New functions
     - **interpl**

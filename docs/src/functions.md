@@ -72,6 +72,7 @@
 #### Variable selection
 
 - ***covsel*** CovSel (Roger et al. 2011)
+- ***iplsr*** Interval PLSR (iPLS) (Nørgaard et al. 2000)
 
 ### <span style="color:#1589F0"> **3. DISCRIMINATION ANALYSIS (DA)** </span>
 
@@ -150,6 +151,11 @@
 
 ### <span style="color:#1589F0"> **5. DATA MANAGEMENT** </span>
 
+### **Checking**
+
+- ***checkdupl*** Finding replicated rows in a dataset
+- ***checkmiss*** Finding rows with missing data in a dataset
+
 #### **Pre-processing**
 
 - ***detrend*** Polynomial detrend
@@ -172,8 +178,6 @@
 ### <span style="color:#1589F0"> **6. UTILITIES** </span>
 
 - ***aggstat*** Compute column-wise statistics (e.g. mean), by group
-- ***checkdupl*** Finding replicated rows in a dataset
-- ***checkmiss*** Finding rows with missing data in a dataset
 - ***center***, ***scale*** Column-wise centering and scaling of a matrix
 - ***colmeans***, ***colvars*** Weighted column means and variances
 - ***dummy*** Build dummy table
@@ -206,11 +210,6 @@
 -->
 
 <!---
-#### Support vector machine
-- ***svmda*** SVMDA (= SVMC)
--->
-
-<!---
 - ***plsrannar*** Kernel version for wide matrices (Rannar et al. 1994)
 - ***simpls***
 -->
@@ -218,11 +217,6 @@
 <!---  
 #### **Heuristic**  
 - ***selwold*** Wold's criterion for models with LVs  
--->
-
-<!---
-### <span style="color:#1589F0"> **SELECTION OF VARIABLES** </span>
-- ***covsel*** COVSEL algorithm (Roger et al. 2011)
 -->
 
 <!---
@@ -242,10 +236,7 @@
 
 <!---
 #### **Checking**
-- ***checkna*** Find and count NA values in a data set
 - ***plotxna*** Plotting missing data in a matrix
-- ***checkdupl*** Find duplicated row observations between two data sets 
-- ***rmdupl*** Remove duplicated row observations between two data sets
 -->
 
 <!---

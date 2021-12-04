@@ -1,19 +1,4 @@
 """
-    aggstat(X::DataFrame; var_nam, group_nam, fun = mean)
-Compute the mean (or other statistic) of each column of `X`, by group.
-* `X` : a dataframe.
-* `var_nam` : Names of the variables to summarize.
-* `group_nam` : Names of the groups to consider.
-* `fun` : Function to compute.
-
-Variables defined in `var_nam` and `group_nam` must be columns of `X`.
-""" 
-function aggstat(X::DataFrame; var_nam, group_nam, fun = mean)
-    gdf = groupby(X, group_nam) 
-    combine(gdf, var_nam .=> fun, renamecols = false)
-end
-
-"""
     aggstat(X::AbstractMatrix, group::AbstractVector; fun = mean)
 Compute the mean (or other statistic) of each column of `X`, by group.
 * `X` : A matrix (n, p).
@@ -36,6 +21,21 @@ function aggstat(X::Union{AbstractMatrix, AbstractVector}, group;
         res[i, :] .= vec(fun(z, dims = 1)) 
     end
     (res = res, lev = lev, ni = ni)
+end
+
+"""
+    aggstat(X::DataFrame; var_nam, group_nam, fun = mean)
+Compute the mean (or other statistic) of each column of `X`, by group.
+* `X` : a dataframe.
+* `var_nam` : Names of the variables to summarize.
+* `group_nam` : Names of the groups to consider.
+* `fun` : Function to compute.
+
+Variables defined in `var_nam` and `group_nam` must be columns of `X`.
+""" 
+function aggstat(X::DataFrame; var_nam, group_nam, fun = mean)
+    gdf = groupby(X, group_nam) 
+    combine(gdf, var_nam .=> fun, renamecols = false)
 end
 
 """
@@ -132,7 +132,6 @@ Return a vector.
 For a true weighted mean, `w` must preliminary be normalized to sum to 1.
 """ 
 colmeans(X) = vec(Statistics.mean(X; dims = 1))
-
 colmeans(X, w) = vec(w' * ensure_mat(X))
 
 """
@@ -147,7 +146,6 @@ Return a vector.
 **Note:** For a true weighted variance, `w` must preliminary be normalized to sum to 1.
 """ 
 colvars(X) = vec(Statistics.var(X; corrected = false, dims = 1))
-
 function colvars(X, w)
     p = size(X, 2)
     z = colmeans(X, w)
@@ -384,7 +382,7 @@ rmcols(X, 1:2)
 rmcols(X, [1, 3])
 ```
 """
-rmcols(X::AbstractMatrix, s) = X[:, setdiff(1:end, s)]
+rmcols(X::AbstractMatrix, s::Int64) = X[:, setdiff(1:end, s)]
 
 """
     rmrow(X, s)
@@ -396,8 +394,8 @@ rmrows(X, 2:3)
 rmrows(X, [1, 4])
 ```
 """
-rmrows(X::AbstractMatrix, s) = X[setdiff(1:end, s), :]
-rmrows(X::AbstractVector, s) = X[setdiff(1:end, s)]
+rmrows(X::AbstractMatrix, s::Vector{Int64}) = X[setdiff(1:end, s), :]
+rmrows(X::AbstractVector, s::Vector{Int64}) = X[setdiff(1:end, s)]
 
 """
     scale(X, v)

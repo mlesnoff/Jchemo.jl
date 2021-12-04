@@ -71,8 +71,9 @@ include("lwplsrda.jl") ; include("lwplslda.jl") ; include("lwplsqda.jl")
 include("lwplsrda_agg.jl") ; include("lwplslda_agg.jl") ; include("lwplsqda_agg.jl")
 include("knnda.jl")
 
-# Variable importance (direct methods) 
+# Variable selection/importance (direct methods) 
 include("covsel.jl")
+include("iplsr.jl")
 
 # Validation
 include("mpars.jl")
@@ -134,8 +135,9 @@ export
     svmr,   
     treer_xgb, rfr_xgb, xgboostr, vimp_xgb,
     baggr, baggr_vi, baggr_oob,
-    #
+    # Variable selection/importance (direct methods) 
     covsel,
+    iplsr,
     #
     xfit, xfit!, xresid, xresid!,
     # Local regression
