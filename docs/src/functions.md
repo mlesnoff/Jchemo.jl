@@ -50,7 +50,7 @@
 
 #### **Principal component (PCR)**
 
-- ***pcr*** PCR by SVD factorization
+- ***pcr*** Principal component regression by SVD factorization
 
 #### **Ridge (RR, KRR)**
 
