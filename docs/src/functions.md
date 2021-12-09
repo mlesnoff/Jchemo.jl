@@ -1,4 +1,4 @@
-### <span style="color:#1589F0"> ** PCA** </span>
+### <span style="color:#1589F0"> **PCA** </span>
 
 - ***pcaeigen*** Eigen decomposition
 - ***pcaeigenk*** Eigen decomposition for wide matrices (kernel form)
@@ -43,8 +43,10 @@
 - ***plsnipals*** NIPALS
 - ***kplsr*** Non linear kernel PLSR (KPLSR) *Rosipal & Trejo 2001*
 - ***dkplsr*** Direct KPLSR *Bennett & Embrechts 2003*
-- ***aicplsr*** AIC and Cp for PLSR
 - ***plsr_agg*** Averaging PLSR models with different numbers of LVs (PLSR-AGG)
+
+*Utility*
+- ***aicplsr*** AIC and Cp for PLSR
 
 #### **Principal component (PCR)**
 
