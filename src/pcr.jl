@@ -48,7 +48,9 @@ function pcr!(X, Y, weights = ones(size(X, 1)); nlv)
     center!(Y, ymeans)
     fm = pcasvd!(X, weights; nlv = nlv)
     D = Diagonal(fm.weights)
-    beta = inv(fm.T' * D * fm.T) * fm.T' * sqrt.(D) * Y
+    beta = inv(fm.T' * D * fm.T) * fm.T' * D * Y
+    # first term = Diagonal(1 ./ fm.sv[1:nlv].^2) if T is D-orthogonal
+    # This is the case for the actual version (pcasvd)
     Pcr(fm, fm.T, fm.P, beta', fm.xmeans, ymeans, weights)
 end
 
