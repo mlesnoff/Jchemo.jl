@@ -12,6 +12,16 @@ struct Plsr
     U::Union{Array{Float64}, Nothing}
 end
 
+struct Pcr
+    fm_pca
+    T::Matrix{Float64}
+    R::Matrix{Float64}
+    C::Matrix{Float64}
+    xmeans::Vector{Float64}
+    ymeans::Vector{Float64}
+    weights::Vector{Float64}
+end
+
 """
     plskern(X, Y, weights = ones(size(X, 1)); nlv)
 Partial Least Squares Regression (PLSR) with the 
@@ -143,38 +153,40 @@ Compute LVs ("scores" T) from a fitted model and a matrix X.
 function transform(object::Plsr, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    T = center(X, object.xmeans) * @view(object.R[:, 1:nlv])
+    T = center(X, object.xmeans) * vcol(object.R, 1:nlv)
     # Could be center! but changes x
     # If too heavy ==> Makes summary!
     T
 end
 
 """
-    coef(object::Plsr; nlv = nothing)
-Compute the b-coefficients of a fitted model.
+    coef(object::Union{Plsr, Pcr}; nlv = nothing)
+Compute the X b-coefficients of a model fitted with `nlv` LVs.
 * `object` : The maximal fitted model.
 * `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
 
-The returned object B is a matrix (p, q). If nlv = 0, B is a matrix of zeros.
+If X is (n, p) and Y is (n, q), the returned object `B` is a matrix (p, q). 
+If `nlv` = 0, `B` is a matrix of zeros.
+The returned object `int` is the intercept.
 """ 
-function coef(object::Plsr; nlv = nothing)
+function coef(object::Union{Plsr, Pcr}; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     beta = object.C[:, 1:nlv]'
-    B = @view(object.R[:, 1:nlv]) * beta
+    B = vcol(object.R, 1:nlv) * beta
     int = object.ymeans' .- object.xmeans' * B
     (B = B, int = int)
 end
 
 """
-    predict(object::Plsr, X; nlv = nothing)
+    predict(object::Union{Plsr, Pcr}, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
     If nothing, it is the maximum nb. LVs.
 """ 
-function predict(object::Plsr, X; nlv = nothing)
+function predict(object::Union{Plsr, Pcr}, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)

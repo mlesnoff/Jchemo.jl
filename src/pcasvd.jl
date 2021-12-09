@@ -52,7 +52,7 @@ function pcasvd!(X, weights = ones(size(X, 1)); nlv)
     ## T = D^(-1/2) * U * S
     ## Faster but requires weights > 0 (or mananage NA vales for weights = 0)
     ## Alternative: T = X * P  
-    T = Diagonal(1 ./ sqrtw) * @view(res.U[:, 1:nlv]) * (Diagonal(@view(sv[1:nlv])))
+    T = Diagonal(1 ./ sqrtw) * vcol(res.U, 1:nlv) * (Diagonal(vrow(sv, 1:nlv)))
     Pca(T, P, sv, xmeans, weights, nothing, nothing)
 end
 
@@ -100,7 +100,7 @@ Compute components (scores matrix "T") from a fitted model and X-data.
 function transform(object::Union{Pca, Fda}, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    center(X, object.xmeans) * @view(object.P[:, 1:nlv])
+    center(X, object.xmeans) * vcol(object.P, 1:nlv)
 end
 
 

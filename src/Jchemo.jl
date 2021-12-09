@@ -1,6 +1,7 @@
 module Jchemo  # Start-Module
 
-using LinearAlgebra, Statistics, Random
+using LinearAlgebra, SparseArrays 
+using Statistics, Random
 using Clustering
 using DataInterpolations
 using Distributions
@@ -25,14 +26,18 @@ include("matW.jl")
 include("fda.jl")
 include("pcasvd.jl") ; include("pcaeigen.jl")
 include("kpca.jl")
+include("rp.jl")
 
 # Regression 
 include("mlr.jl")
 include("rr.jl")
 include("plskern.jl") ; include("plsnipals.jl") 
-include("cglsr.jl") ; include("aicplsr.jl") ; include("wshenk.jl")  
-include("krr.jl") ; include("kplsr.jl") ; include("dkplsr.jl")
 include("plsr_agg.jl")
+include("cglsr.jl")
+include("pcr.jl")
+include("krr.jl") ; include("kplsr.jl") ; include("dkplsr.jl")
+include("aicplsr.jl")
+include("wshenk.jl")  
 
 # SVM
 include("svmr.jl")
@@ -70,6 +75,9 @@ include("cplsr_agg.jl")  # Use structure PlsrDa
 include("lwplsrda.jl") ; include("lwplslda.jl") ; include("lwplsqda.jl")
 include("lwplsrda_agg.jl") ; include("lwplslda_agg.jl") ; include("lwplsqda_agg.jl")
 include("knnda.jl")
+
+# Multi-block 
+include("blockscal.jl")
 
 # Variable selection/importance (direct methods) 
 include("covsel.jl")
@@ -123,11 +131,13 @@ export
     pcasvd, pcasvd!, pcaeigen, pcaeigen!, pcaeigenk, pcaeigenk!,
     kpca,
     scordis, odis,
+    rpmat_gauss, rpmat_li, rp,
     # Regression
     mlr, mlr!, mlrchol, mlrchol!, mlrpinv, mlrpinv!, mlrpinv_n, mlrpinv_n!,
     mlrvec!, mlrvec,
     plskern, plskern!, plsnipals, plsnipals!,
-    cglsr, cglsr!, 
+    cglsr, cglsr!,
+    pcr, 
     rr, rr!, rrchol, rrchol!,   
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
     plsr_agg, plsr_agg!,
@@ -135,6 +145,8 @@ export
     svmr,   
     treer_xgb, rfr_xgb, xgboostr, vimp_xgb,
     baggr, baggr_vi, baggr_oob,
+    # Multi-block
+    blockscal,
     # Variable selection/importance (direct methods) 
     covsel,
     iplsr,

@@ -77,7 +77,6 @@ statistics for the real time robot learning. Applied Intell., 17, 49-60.
 
 Sicard, E. Sabatier, R., 2006. Theoretical framework for local PLS1 regression 
 and application to a rainfall data set. Comput. Stat. Data Anal., 51, 1393-1410.
-
 """ 
 function lwplsr(X, Y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
     X = ensure_mat(X)

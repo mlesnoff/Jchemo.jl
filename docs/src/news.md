@@ -1,5 +1,13 @@
 ## NEWS for package **Jchemo**
 
+### *Version 0.0-5*
+- New functions
+    - **blockscal**
+    - **pcr**
+    - **rp**
+    - **rpmat_gauss**
+    - **rpmat_li**
+   
 ### *Version 0.0-4*
 - New functions
     - **iplsr**

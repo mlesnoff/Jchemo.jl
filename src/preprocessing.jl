@@ -382,7 +382,7 @@ function snv(X)
 end
 
 function snv!(X) 
-    n, p = size(X)
+    p = size(X, 2)
     mu = vec(Statistics.mean(X; dims = 2))
     s = vec(Statistics.std(X; corrected = false, dims = 2))
     @inbounds for j = 1:p

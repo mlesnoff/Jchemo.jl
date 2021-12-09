@@ -495,15 +495,16 @@ function tabnum(x)
 end
 
 """
-    vrow(X, j)
-    vcol(X, j)
-View of the i-th row or j-th column of a matrix `X`.
+    vrow(X::Matrix, j)
+    vrow(x::Vector, i)
+    vcol(X::Matrix, j)
+View of the i-th row(s) or j-th column(s) of a matrix `X`,
+or of the i-th element(s) of vector `x`.
 """ 
 vrow(X, i) = view(X, i, :)
-
+vrow(x::Vector, i) = view(x, i)
 vcol(X, j) = view(X, :, j)
-
-
+vcol(x::Vector, i) = view(x, i)
 
 
 

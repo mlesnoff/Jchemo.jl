@@ -1,4 +1,4 @@
-### <span style="color:#1589F0"> **1. PCA** </span>
+### <span style="color:#1589F0"> ** PCA** </span>
 
 - ***pcaeigen*** Eigen decomposition
 - ***pcaeigenk*** Eigen decomposition for wide matrices (kernel form)
@@ -11,7 +11,13 @@
 - ***xfit*** Matrix fitting 
 - ***xresid*** Residual matrix 
 
-### <span style="color:#1589F0;"> **2. REGRESSION** </span>
+### <span style="color:#1589F0"> **RANDOM PROJECTIONS** </span>
+
+- ***rpmat_gauss*** Gaussian random projection matrix 
+- ***rpmat_li*** Sparse random projection matrix 
+- ***rp*** Random projection
+
+### <span style="color:#1589F0;"> **REGRESSION** </span>
 
 #### **Linear models**
 
@@ -39,6 +45,10 @@
 - ***dkplsr*** Direct KPLSR *Bennett & Embrechts 2003*
 - ***aicplsr*** AIC and Cp for PLSR
 - ***plsr_agg*** Averaging PLSR models with different numbers of LVs (PLSR-AGG)
+
+#### **Principal component (PCR)**
+
+- ***pcr*** PCR by SVD factorization
 
 #### **Ridge (RR, KRR)**
 
@@ -74,7 +84,7 @@
 - ***covsel*** CovSel (Roger et al. 2011)
 - ***iplsr*** Interval PLSR (iPLS) (Nørgaard et al. 2000)
 
-### <span style="color:#1589F0"> **3. DISCRIMINATION ANALYSIS (DA)** </span>
+### <span style="color:#1589F0"> **DISCRIMINATION ANALYSIS (DA)** </span>
 
 #### Factorial discrimination analysis (FDA)
 
@@ -116,7 +126,11 @@
 - ***rfda_xgb*** Random forest
 - ***xgboostda*** XGBoost
 
-### <span style="color:#1589F0"> **4. TUNING MODELS** </span>
+### <span style="color:#1589F0;"> **MULTI-BLOCK** </span>
+
+- ***blockscal*** Autoscale blocks of a matrix (e.g. for MB-PLS)
+
+### <span style="color:#1589F0"> **TUNING MODELS** </span>
 
 #### **Grid**
 
@@ -149,7 +163,7 @@
 - ***mse*** Summary for regression
 - ***err*** Classification error rate
 
-### <span style="color:#1589F0"> **5. DATA MANAGEMENT** </span>
+### <span style="color:#1589F0"> **DATA MANAGEMENT** </span>
 
 ### **Checking**
 
@@ -175,7 +189,7 @@
 - ***sampsys*** Systematic sampling
 - ***sampclas*** Stratified sampling
 
-### <span style="color:#1589F0"> **6. UTILITIES** </span>
+### <span style="color:#1589F0"> **UTILITIES** </span>
 
 - ***aggstat*** Compute column-wise statistics (e.g. mean), by group
 - ***center***, ***scale*** Column-wise centering and scaling of a matrix
