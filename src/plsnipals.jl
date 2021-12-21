@@ -1,17 +1,20 @@
 """
     plsnipals(X, Y, weights = ones(size(X, 1)); nlv)
-Partial Least Squares Regression (PLSR) with the NIPALS algorithm.
+Partial Least Squares Regression (PLSR) with the NIPALS algorithm 
+(e.g. Tenenhaus 1998, Wold 2002).
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
 * `nlv` : Nb. latent variables (LVs) to consider.
 
-NIPALS algorithm (e.g. Tenenhaus 1998, Wold 2002). In the function, the usual 
-PLS2 NIPALS iterations are replaced by a direct computation of the PLS weights (`w`) 
-by SVD decomposition of matrix X'Y (Hoskuldsson 1988 p.213).
+In the function, the usual PLS2 NIPALS iterations are replaced by a 
+direct computation of the PLS weights (`w`) by SVD decomposition of matrix X'Y 
+(Hoskuldsson 1988 p.213).
 
-For the weighting (`weights`), see in particular Schaal et al. 2002, Siccard & Sabatier 2006, 
-Kim et al. 2011 and Lesnoff et al. 2020.
+For the weighting in PLS algorithms (`weights`), see in particular Schaal et al. 2002, 
+Siccard & Sabatier 2006, Kim et al. 2011 and Lesnoff et al. 2020. See help of `plskern`. 
+
+Vector `weights` is internally normalized to sum to 1.
 
 `X` and `Y` are internally centered. 
 
@@ -19,20 +22,6 @@ Kim et al. 2011 and Lesnoff et al. 2020.
 
 Hoskuldsson, A., 1988. PLS regression methods. Journal of Chemometrics 2, 211-228.
 https://doi.org/10.1002/cem.1180020306
-
-Kim, S., Kano, M., Nakagawa, H., Hasebe, S., 2011. Estimation of active pharmaceutical ingredients 
-content using locally weighted partial least squares and statistical wavelength 
-selection. Int. J. Pharm., 421, 269-274.
-
-Lesnoff, M., Metz, M., Roger, J.M., 2020. Comparison of locally weighted 
-PLS strategies for regression and discrimination on agronomic NIR Data. 
-Journal of Chemometrics. e3209. https://onlinelibrary.wiley.com/doi/abs/10.1002/cem.3209
-
-Schaal, S., Atkeson, C., Vijayamakumar, S. 2002. Scalable techniques from nonparametric 
-statistics for the real time robot learning. Applied Intell., 17, 49-60.
-
-Sicard, E. Sabatier, R., 2006. Theoretical framework for local PLS1 regression 
-and application to a rainfall data set. Comput. Stat. Data Anal., 51, 1393-1410.
 
 Tenenhaus, M., 1998. La régression PLS: thÃ©orie et pratique. Editions Technip, 
 Paris, France.

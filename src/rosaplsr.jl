@@ -43,7 +43,7 @@ squares regression for multiblock data analysis. Journal of Chemometrics 30,
 function rosaplsr(X, Y, weights = ones(size(X[1], 1)); nlv)
     nbl = length(X)
     zX = list(nbl, Matrix{Float64})
-    for i = 1:nbl
+    @inbounds for i = 1:nbl
         zX[i] = copy(ensure_mat(X[i]))
     end
     Jchemo.rosaplsr!(zX, copy(Y), weights; nlv = nlv)
@@ -58,7 +58,7 @@ function rosaplsr!(X, Y, weights = ones(size(X[1], 1)); nlv)
     D = Diagonal(weights)
     xmeans = list(nbl, Vector{Float64})
     p = fill(0, nbl)
-    for i = 1:nbl
+    @inbounds for i = 1:nbl
         p[i] = size(X[i], 2)
         xmeans[i] = colmeans(X[i], weights)   
         center!(X[i], xmeans[i])
@@ -82,9 +82,9 @@ function rosaplsr!(X, Y, weights = ones(size(X[1], 1)); nlv)
     bl = fill(0, nlv)
     Res = zeros(n, q, nbl)
     ### Start 
-    for a = 1:nlv
+    @inbounds for a = 1:nlv
         DY .= D * Y
-        for i = 1:nbl
+        @inbounds for i = 1:nbl
             XtY = X[i]' * DY
             if q == 1
                 w_bl[i] = vec(XtY)
@@ -100,7 +100,7 @@ function rosaplsr!(X, Y, weights = ones(size(X[1], 1)); nlv)
             zT .= zT .- z * inv(z' * (D * z)) * z' * (D * zT)
         end
         # Selection of the winner block
-        for i = 1:nbl
+        @inbounds for i = 1:nbl
             t = vcol(zT, i)
             dt .= weights .* t
             tt = dot(t, dt)

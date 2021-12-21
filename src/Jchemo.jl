@@ -31,7 +31,8 @@ include("rp.jl")
 # Regression 
 include("mlr.jl")
 include("rr.jl")
-include("plskern.jl") ; include("plsnipals.jl") ; include("plsrosa.jl") 
+include("plskern.jl") ; include("plsnipals.jl") 
+include("plsrosa.jl") ; include("plssimp.jl") 
 include("plsr_agg.jl")
 include("cglsr.jl")
 include("pcr.jl")
@@ -137,7 +138,8 @@ export
     # Regression
     mlr, mlr!, mlrchol, mlrchol!, mlrpinv, mlrpinv!, mlrpinv_n, mlrpinv_n!,
     mlrvec!, mlrvec,
-    plskern, plskern!, plsnipals, plsnipals!, plsrosa, plsrosa!,
+    plskern, plskern!, plsnipals, plsnipals!, 
+    plsrosa, plsrosa!, plssimp, plssimp!,
     cglsr, cglsr!,
     pcr, 
     rr, rr!, rrchol, rrchol!,   

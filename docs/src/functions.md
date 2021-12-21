@@ -42,6 +42,7 @@
 - ***plskern*** "Improved kernel #1" *Dayal & McGregor 1997*
 - ***plsnipals*** NIPALS
 - ***plsrosa*** ROSA *Liland et al. 2016*
+- ***plssimp*** SIMPLS *de Jong 1993*
 - ***kplsr*** Non linear kernel PLSR (KPLSR) *Rosipal & Trejo 2001*
 - ***dkplsr*** Direct KPLSR *Bennett & Embrechts 2003*
 - ***plsr_agg*** Averaging PLSR models with different numbers of LVs (PLSR-AGG)

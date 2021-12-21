@@ -33,6 +33,7 @@ Partial Least Squares Regression (PLSR) with the
 
 For the weighting in PLS algorithms (`weights`), see in particular Schaal et al. 2002, 
 Siccard & Sabatier 2006, Kim et al. 2011 and Lesnoff et al. 2020. 
+
 Vector `weights` is internally normalized to sum to 1.
 
 `X` and `Y` are internally centered. The model is computed with an intercept.

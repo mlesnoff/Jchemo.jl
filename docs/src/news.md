@@ -4,6 +4,7 @@
 - New functions
     - **colstds**
     - **plsrosa**
+    - **plssimp**
     - **rosaplsr**
     - **rv**
     - **rmrows**, **rmcols**: renamed to **rmrow**, **rmcol**
