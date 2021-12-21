@@ -158,7 +158,7 @@ function predict(object::Kplsr, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     T = transform(object, X)
-    pred = list(le_nlv)
+    pred = list(le_nlv, Matrix{Float64})
     @inbounds for i = 1:le_nlv
         z = coef(object; nlv = nlv[i])
         pred[i] = z.int .+ @view(T[:, 1:nlv[i]]) * z.beta

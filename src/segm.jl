@@ -9,7 +9,7 @@ Build segments for K-fold cross-validation.
 Build K segments splitting the data (eventually with replications) that can 
 be used to validate a model.
 
-The function returns a list (Vector::Any) of rep elements. 
+The function returns a list (vector) of rep elements. 
 Each element of the list contains K vectors (= K segments).
 Each segment contains the indexes (position within 1:n) of the sampled observations.    
 
@@ -26,7 +26,7 @@ function segmkf(n, K; rep = 1)
     m = K - n % K ;
     s = list(rep)
     @inbounds for i = 1:rep
-        s[i] = list(K)
+        s[i] = list(K, Vector{Int64})
         v = [randperm(n) ; repeat([0], outer = m)] 
         v = reshape(v, K, :)
         @inbounds for j = 1:K 
@@ -55,7 +55,7 @@ Such a block-sampling is required when data is structured by blocks and
 when the response to predict is correlated within blocks.   
 It prevents high underestimation of the generalization error.
 
-The function returns a list (Vector::Any) of rep elements. 
+The function returns a list (vector) of rep elements. 
 Each element of the list contains K vectors (= K segments).
 Each segment contains the indexes (position within 1:n) of the sampled observations.    
 
@@ -75,7 +75,8 @@ group[segm[i][3]]
 ```
 """ 
 function segmkf(n, K, group; rep = 1)
-    group = vec(group) # must be size (n,)
+    # n is not used but is kept for multiple dispatch
+    group = vec(group) # must be of size (n,)
     s = list(rep)
     yagg = unique(group)
     zn = length(yagg)
@@ -83,7 +84,7 @@ function segmkf(n, K, group; rep = 1)
     m = K - zn % K ;
     s = list(rep)
     @inbounds for i = 1:rep
-        s[i] = list(K)
+        s[i] = list(K, Vector{Int64})
         v = [randperm(zn) ; repeat([0], outer = m)] 
         v = reshape(v, K, :)
         @inbounds for j = 1:K 
@@ -111,7 +112,7 @@ Build segments for "test-set" validation.
     
 This builds a test set (eventually replicated) that can be used to validate a model.
 
-The function returns a list (Vector::Any) of rep elements. 
+The function returns a list (vector) of rep elements. 
 Each element of the list contains a vector (= segment) 
 of the indexes (position within 1:n) of the m sampled observations.
 
@@ -127,7 +128,7 @@ segm[i][1]
 function segmts(n, m; rep = 1)
     s = list(rep)
     for i = 1:rep
-        s[i] = list(1)
+        s[i] = list(1, Vector{Int64})
         s[i][1] = sample(1:n, m, replace = false, ordered = true)
     end
     s
@@ -170,13 +171,14 @@ group[segm[i][1]]
 ```
 """ 
 function segmts(n, m, group; rep = 1)
-    group = vec(group) # must be size (n,)
+    # n is not used but is kept for multiple dispatch
+    group = vec(group) # must be of size (n,)
     s = list(rep)
     yagg = unique(group)
     zn = length(yagg)
     m = min(m, zn)
     @inbounds for i = 1:rep
-        s[i] = list(1)
+        s[i] = list(1, Vector{Int64})
         s[i][1] = sample(1:zn, m, replace = false, ordered = true)
     end
     zs = copy(s)

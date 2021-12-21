@@ -77,8 +77,8 @@ function predict(object::Union{Rrda, KrrDa}, X; lb = nothing)
     m = size(X, 1)
     isnothing(lb) ? lb = object.fm.lb : nothing
     le_lb = length(lb)
-    pred = list(le_lb)
-    posterior = list(le_lb)
+    pred = list(le_lb, Matrix{Float64})
+    posterior = list(le_lb, Matrix{Float64})
     @inbounds for i = 1:le_lb
         zp = predict(object.fm, X; lb = lb[i]).pred
         z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first

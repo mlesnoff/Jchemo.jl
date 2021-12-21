@@ -48,7 +48,7 @@ function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50,
     ncol = max(Int64(round(colsamp * p)), 1)
     s_row = fill(1, (nrow, rep))        # (nrow, rep)
     s_col = similar(s_row, ncol, rep)   # (ncol, rep) 
-    s_oob = list(rep)
+    s_oob = list(rep, Vector{Int64})
     srow = similar(s_row, nrow)    
     scol = similar(s_row, ncol)
     w = similar(X, nrow)

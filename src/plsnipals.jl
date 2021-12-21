@@ -1,5 +1,5 @@
 """
-    plskern(X, Y, weights = ones(size(X, 1)); nlv)
+    plsnipals(X, Y, weights = ones(size(X, 1)); nlv)
 Partial Least Squares Regression (PLSR) with the NIPALS algorithm.
 * `X` : X-data.
 * `Y` : Y-data.
@@ -52,11 +52,11 @@ function plsnipals!(X, Y, weights = ones(size(X, 1)); nlv)
     q = size(Y, 2)
     nlv = min(nlv, n, p)
     weights = mweights(weights)
+    D = Diagonal(weights)
     xmeans = colmeans(X, weights) 
     ymeans = colmeans(Y, weights)   
     center!(X, xmeans)
     center!(Y, ymeans)
-    D = Diagonal(weights)
     # Pre-allocation
     XtY = similar(X, p, q)
     T = similar(X, n, nlv)
@@ -76,7 +76,7 @@ function plsnipals!(X, Y, weights = ones(size(X, 1)); nlv)
             w .= vec(XtY)
             w ./= sqrt(dot(w, w))
         else
-            w = svd!(XtY).U[:, 1]
+            w .= svd!(XtY).U[:, 1]
         end
         mul!(t, X, w)
         dt .= weights .* t

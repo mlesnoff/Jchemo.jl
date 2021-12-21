@@ -1,7 +1,7 @@
 # Jchemo.jl
 
 ## Dimension reduction, Regression and Discrimination for Chemometrics
-## <span style="color:grey70"> Version 0.0-5  </span> 
+## <span style="color:grey70"> Version 0.0-6  </span> 
 
 ![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)<!--
 ![Lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
@@ -38,6 +38,21 @@ Most of the functions have a help page, e.g.
 ## <span style="color:green"> **Dependent packages** </span> 
 
 - [**List of packages**](https://github.com/mlesnoff/Jchemo.jl/blob/master/Project.toml) 
+
+## <span style="color:green"> **Installation** </span> 
+
+In order to install Jchemo, run
+
+```julia
+pkg> add https://github.com/mlesnoff/Jchemo.jl.git
+```
+
+## <span style="color:green"> **Usage** </span>
+
+Run
+```julia
+using Jchemo
+```
 
 ## <span style="color:green"> **Examples of syntax** </span> 
 
@@ -128,21 +143,6 @@ res = gridcvlv(
     Xtrain, ytrain; segm,
     score = rmsep, fun = plskern, nlv = nlv) ;
 res.res
-```
-
-## <span style="color:green"> **Installation** </span> 
-
-In order to install Jchemo, run
-
-```julia
-pkg> add https://github.com/mlesnoff/Jchemo.jl.git
-```
-
-## <span style="color:green"> **Usage** </span>
-
-Run
-```julia
-using Jchemo
 ```
 
 ## <span style="color:green"> **Author** </span> 

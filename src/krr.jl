@@ -72,7 +72,7 @@ function krr(X, Y, weights = ones(size(X, 1)); lb = .01, kern = "krbf", kwargs..
     #    = U * Delta^2 * U'    
     sqrtD = sqrt.(D)
     Kd = sqrtD * Kc * sqrtD
-    res = LinearAlgebra.svd!(Kd)
+    res = LinearAlgebra.svd(Kd)
     U = res.V
     sv = sqrt.(res.S)
     # UtDY = U' * D^(1/2) * Y
@@ -115,7 +115,7 @@ function predict(object::Krr, X; lb = nothing)
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')
     le_lb = length(lb)
-    pred = list(le_lb)
+    pred = list(le_lb, Matrix{Float64})
     @inbounds for i = 1:le_lb
         z = coef(object; lb = lb[i])
         pred[i] = z.int .+ Kc * (object.sqrtD * z.A)

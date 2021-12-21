@@ -145,7 +145,7 @@ function sampclas(x, y = nothing; k)
     nlev = length(lev)
     ni = collect(values(res))
     isequal(length(k), 1) ? k = fill(k[1], nlev) : nothing
-    s = list(nlev)
+    s = list(nlev, Vector{Int64})
     @inbounds for i in 1:nlev
         k[i] = min(k[i], ni[i])
         zs = findall(x .== lev[i])

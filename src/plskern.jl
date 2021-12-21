@@ -31,8 +31,9 @@ Partial Least Squares Regression (PLSR) with the
 * `weights` : Weights of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
 
-For the weighting (`weights`), see in particular Schaal et al. 2002, Siccard & Sabatier 2006, 
-Kim et al. 2011 and Lesnoff et al. 2020.
+For the weighting in PLS algorithms (`weights`), see in particular Schaal et al. 2002, 
+Siccard & Sabatier 2006, Kim et al. 2011 and Lesnoff et al. 2020. 
+Vector `weights` is internally normalized to sum to 1.
 
 `X` and `Y` are internally centered. The model is computed with an intercept.
 
@@ -190,7 +191,7 @@ function predict(object::Union{Plsr, Pcr}, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
-    pred = list(le_nlv)
+    pred = list(le_nlv, Matrix{Float64})
     @inbounds for i = 1:le_nlv
         z = coef(object; nlv = nlv[i])
         pred[i] = z.int .+ X * z.B

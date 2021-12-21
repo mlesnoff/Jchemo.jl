@@ -30,7 +30,7 @@ function gridcv(X, Y; segm, score, fun, pars, verbose = false)
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
             zres[j] = gridscore(
-                rmrows(X, s), rmrows(Y, s),
+                rmrow(X, s), rmrow(Y, s),
                 X[s, :], Y[s, :];
                 score = score, fun = fun, pars = pars)
         end
@@ -72,7 +72,7 @@ function gridcvlv(X, Y; segm, score, fun, nlv, pars = nothing, verbose = false)
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
             zres[j] = gridscorelv(
-                rmrows(X, s), rmrows(Y, s),
+                rmrow(X, s), rmrow(Y, s),
                 X[s, :], Y[s, :];
                 score = score, fun = fun, nlv = nlv, pars = pars)
         end
@@ -122,7 +122,7 @@ function gridcvlb(X, Y; segm, score, fun, lb, pars = nothing, verbose = false)
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
             zres[j] = gridscorelb(
-                rmrows(X, s), rmrows(Y, s),
+                rmrow(X, s), rmrow(Y, s),
                 X[s, :], Y[s, :];
                 score = score, fun = fun, lb = lb, pars = pars)
         end

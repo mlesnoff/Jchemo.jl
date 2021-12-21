@@ -4,7 +4,7 @@ struct Rp
 end
 
 """
-    rpmat_gauss(p; nlv)
+    rpmat_gauss(p, nlv)
 Build a gaussian random projection matrix.
 * `p` : Nb. variables (attributes) to project.
 * `nlv` : Nb. final dimensions, i.e. after projection.
@@ -25,20 +25,18 @@ end
 
 
 """
-    rpmat_li(p; nlv, s = sqrt(p), float = true)
+    rpmat_li(p, nlv; s = sqrt(p))
 Build a sparse random projection matrix (Achlioptas 2001, Li et al. 2006).
 * `p` : Nb. variables (attributes) to project.
 * `nlv` : Nb. final dimensions, i.e. after projection.
 * `s` : Coefficient defining the sparsity of the returned matrix 
     (higher is `s`, higher is the sparsity).
-* `float` : Logical. If `true`, a Float64 matrix is returned,
-    else a Int32 matrix is returned.
 
 The function returns a random projection matrix P of dimension 
 `p` x `nlv` simulated from i.i.d. p_ij = 
 * 1 with prob. 1/(2 * `s`)
-* 0 with prob. 1 − 1 / `s`
-* −1 with prob. 1/(2 * `s`)
+* 0 with prob. 1 - 1 / `s`
+* -1 with prob. 1/(2 * `s`)
 
 Usual values for `s` are:
 * sqrt(`p`)       (Li et al. 2006)

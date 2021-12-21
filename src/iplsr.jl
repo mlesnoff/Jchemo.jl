@@ -31,7 +31,7 @@ function iplsr(Xtrain, Ytrain, X, Y;
     z = collect(round.(range(1, p + 1, length = nint + 1)))
     int = Int64.([z[1:nint] z[2:(nint + 1)] .- 1])
     pred = similar(Y)
-    res = list(nint)
+    res = list(nint, Matrix{Float64})
     @inbounds for i = 1:nint
         u = int[i, 1]:int[i, 2]
         fm = plskern(vcol(Xtrain, u), Ytrain; nlv = nlv)

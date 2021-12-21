@@ -1,5 +1,17 @@
 ## NEWS for package **Jchemo**
 
+### *Version 0.0-6*
+- New functions
+    - **colstds**
+    - **plsrosa**
+    - **rosaplsr**
+    - **rv**
+    - **rmrows**, **rmcols**: renamed to **rmrow**, **rmcol**
+- Modifications 
+    - **interpl**, **interpl_mon**: changes in arguments
+    - **plotsp**: changes in outputs
+    - **aggstat** (::AbstractMatrix): changes in arguments and outputs
+ 
 ### *Version 0.0-5*
 - New functions
     - **blockscal**

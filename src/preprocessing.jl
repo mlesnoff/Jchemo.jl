@@ -1,23 +1,22 @@
 
 """
     eposvd(D; nlv)
-Pre-processing X-data by external parameter orthogonalization (EPO).
+Pre-processing X-data by external parameter orthogonalization (EPO) (Roger et al 2003).
 * `D` : Data (m, p) containing detrimental information.
 * `nlv` : Nb. of first loadings vectors of D considered for the orthogonalization.
 
 The objective is to remove from a dataset X (n, p) some "detrimental" 
-information (e.g. humidity patterns in signals) represented by a dataset D (m, p).
+information (e.g. humidity patterns in signals) defined by a dataset `D` (m, p).
+The method orthogonalizes the observations (rows of X) to the 
+detrimental sub-space defined by the first `nlv` loadings vectors 
+computed from a (non-centered) PCA of D.
 
-EPO (Roger et al 2003) consists in orthogonalizing the row observations 
-of X to the detrimental sub-space defined by the first nlv non-centered 
-PCA loadings vectors of D.
-
-Function eposvd makes a SVD factorization of D and returns 
-tow matrices:
+Function `eposvd` makes a SVD factorization of D and returns 
+two matrices:
 * M (p, p) : The orthogonalization matrix that can be used to correct the X-data.
-* P (p, nlv) : The matrix of the considered loading vectors of D. 
+* P (p, `nlv`) : The matrix of the loading vectors of D. 
 
-The X-data corrected from the detrimental information D 
+The data corrected from the detrimental information D 
 can be computed by X_corrected = X * M.
 
 # References
@@ -59,13 +58,13 @@ function eposvd(D; nlv)
     D = ensure_mat(D)
     m, p = size(D)
     nlv = min(nlv, m, p)
-    I = Diagonal(ones(p))
+    Id = Diagonal(I, p)
     if nlv == 0 
-        M = I
+        M = Id
         P = nothing
     else 
-        P = svd!(D).V[:, 1:nlv]
-        M = I - P * P'
+        P = svd(D).V[:, 1:nlv]
+        M = Id - P * P'
     end
     (M = M, P = P)
 end
@@ -131,13 +130,13 @@ function fdif!(M, X; f = 2)
 end
 
 """ 
-    interpl(X; w0, w, 
+    interpl(X, wl; wlfin, 
         fun = CubicSpline)
 Sampling signals by interpolation.
 * `X` : Matrix (n, p) of signals (rows).
-* `w0` : Values representing the column "names" of `X`. 
+* `wl` : Values representing the column "names" of `X`. 
     Must be a numeric vector of length p, or an AbstractRange.
-* `w` : Values where to interpolate within the range of `w0`.
+* `wlfin` : Final values where to interpolate within the range of `wl`.
     Must be a numeric vector, or an AbstractRange.
 * `fun` : Function defining the interpolation method.
 
@@ -155,15 +154,15 @@ Package Interpolations.jl
 https://github.com/PumasAI/DataInterpolations.jl
 https://htmlpreview.github.io/?https://github.com/PumasAI/DataInterpolations.jl/blob/v2.0.0/example/DataInterpolations.html
 """ 
-function interpl(X; w0, w, 
+function interpl(X, wl; wlfin, 
         fun = cubic_spline)
     X = ensure_mat(X)
     n = size(X, 1)
-    q = length(w)
+    q = length(wlfin)
     zX = similar(X, n, q)
     @inbounds for i = 1:n
-        itp = fun(vrow(X, i), w0)
-        zX[i, :] .= itp.(w)
+        itp = fun(vrow(X, i), wl)
+        zX[i, :] .= itp.(wlfin)
     end
     zX
 end
@@ -174,13 +173,13 @@ quadratic_spline(y, x) = DataInterpolations.QuadraticSpline(y, x)
 cubic_spline(y, x) = DataInterpolations.CubicSpline(y, x)
 
 """ 
-    interpl_mon(X; w0, w, 
+    interpl_mon(X, wl; wlfin, 
         fun = FritschCarlsonMonotonicInterpolation)
 Sampling signals by monotonic interpolation.
 * `X` : Matrix (n, p) of signals (rows).
-* `w0` : Values representing the column "names" of `X`. 
+* `wl` : Values representing the column "names" of `X`. 
     Must be a numeric vector of length p, or an AbstractRange.
-* `w` : Values where to interpolate within the range of `w0`.
+* `wlfin` : Values where to interpolate within the range of `wl`.
     Must be a numeric vector, or an AbstractRange.
 * `fun` : Function defining the interpolation method.
 
@@ -211,15 +210,15 @@ Cubic Interpolants", doi:10.1137/0905021.
 Steffen (1990), "A Simple Method for Monotonic Interpolation 
 in One Dimension", http://adsabs.harvard.edu/abs/1990A%26A...239..443S
 """ 
-function interpl_mon(X; w0, w, 
+function interpl_mon(X, wl; wlfin, 
         fun = FritschCarlsonMonotonicInterpolation)
     X = ensure_mat(X)
     n = size(X, 1)
-    q = length(w)
+    q = length(wlfin)
     zX = similar(X, n, q)
     @inbounds for i = 1:n
-        itp = interpolate(w0, vrow(X, i), fun())
-        zX[i, :] .= itp.(w)
+        itp = interpolate(wl, vrow(X, i), fun())
+        zX[i, :] .= itp.(wlfin)
     end
     zX
 end

@@ -19,7 +19,7 @@ function plotsp(X, wl = 1:size(X, 2); color = nothing, kwargs...)
         end
     end
     f[1, 1] = ax
-    f
+    (f = f, ax = ax)
 end
 
 

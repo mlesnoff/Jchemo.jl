@@ -41,6 +41,7 @@
 
 - ***plskern*** "Improved kernel #1" *Dayal & McGregor 1997*
 - ***plsnipals*** NIPALS
+- ***plsrosa*** ROSA *Liland et al. 2016*
 - ***kplsr*** Non linear kernel PLSR (KPLSR) *Rosipal & Trejo 2001*
 - ***dkplsr*** Direct KPLSR *Bennett & Embrechts 2003*
 - ***plsr_agg*** Averaging PLSR models with different numbers of LVs (PLSR-AGG)
@@ -128,9 +129,17 @@
 - ***rfda_xgb*** Random forest
 - ***xgboostda*** XGBoost
 
-### <span style="color:#1589F0;"> **MULTI-BLOCK** </span>
+### <span style="color:#1589F0;"> **MULTIBLOCK** </span>
 
-- ***blockscal*** Autoscale blocks of a matrix (e.g. for MB-PLS)
+*Regression*
+
+- ***rosaplsr*** Multiblock PLSR with the ROSA algorithm
+
+*Utility*
+
+- ***blockscal*** Autoscale a list of blocks (e.g. for MB-PLS)
+- ***mblocks*** Make blocks from a matrix
+- ***rv*** RV correlation coefficient
 
 ### <span style="color:#1589F0"> **TUNING MODELS** </span>
 
@@ -233,13 +242,6 @@
 <!---  
 #### **Heuristic**  
 - ***selwold*** Wold's criterion for models with LVs  
--->
-
-<!---
-#### **Multi-block**
-- ***mblocks*** Makes a list of blocks
-- ***hconcat*** Horizontal block concatenation 
-- ***blockscal*** Block autoscaling
 -->
 
 <!---

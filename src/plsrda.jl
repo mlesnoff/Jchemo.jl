@@ -80,8 +80,8 @@ function predict(object::Union{Plsrda, KplsrDa}, X; nlv = nothing)
     a = size(object.fm.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
-    pred = list(le_nlv)
-    posterior = list(le_nlv)
+    pred = list(le_nlv, Matrix{Float64})
+    posterior = list(le_nlv, Matrix{Float64})
     @inbounds for i = 1:le_nlv
         zp = predict(object.fm, X; nlv = nlv[i]).pred
         #if softmax

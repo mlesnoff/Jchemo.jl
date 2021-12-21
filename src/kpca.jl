@@ -58,7 +58,7 @@ function kpca(X, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
     Kc = K .- vtot' .- vtot .+ sum(D * DKt')
     sqrtD = sqrt.(D)
     Kd = sqrtD * Kc * sqrtD
-    res = LinearAlgebra.svd!(Kd)
+    res = LinearAlgebra.svd(Kd)
     U = res.V[:, 1:nlv]
     eig = res.S
     eig[eig .< 0] .= 0

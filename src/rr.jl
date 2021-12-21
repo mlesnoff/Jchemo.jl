@@ -125,7 +125,7 @@ Compute Y-predictions from a fitted model.
 function predict(object::Rr, X; lb = nothing)
     isnothing(lb) ? lb = object.lb : nothing
     le_lb = length(lb)
-    pred = list(le_lb)
+    pred = list(le_lb, Matrix{Float64})
     @inbounds for i = 1:le_lb
         z = coef(object; lb = lb[i])
         pred[i] = z.int .+ X * z.B

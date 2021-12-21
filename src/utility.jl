@@ -1,12 +1,12 @@
 """
-    aggstat(X::AbstractMatrix, group::AbstractVector; fun = mean)
+    aggstat(X::Union{AbstractMatrix, AbstractVector}; group, fun = mean)
 Compute the mean (or other statistic) of each column of `X`, by group.
 * `X` : A matrix (n, p).
-* `group` : A vector (n,) defing the groups.
+* `group` : A vector (n,) defining the groups.
 * `fun` : Function to compute.
 """ 
-function aggstat(X::Union{AbstractMatrix, AbstractVector}, group; 
-    fun = mean)
+function aggstat(X::Union{AbstractMatrix, AbstractVector}; group, 
+        fun = mean)
     X = ensure_mat(X)
     group = vec(group)
     q = size(X, 2)
@@ -14,22 +14,21 @@ function aggstat(X::Union{AbstractMatrix, AbstractVector}, group;
     lev = ztab.keys
     nlev = length(lev)
     ni = collect(values(ztab))
-    res = similar(X, nlev, q)
+    zX = similar(X, nlev, q)
     for i in 1:nlev
-        s = findall(group .== lev[i])
-        z = vrow(X, s)
-        res[i, :] .= vec(fun(z, dims = 1)) 
+        s = group .== lev[i]
+        zX[i, :] .= vec(fun(vrow(X, s), dims = 1)) 
     end
-    (res = res, lev = lev, ni = ni)
+    (X = zX, lev = lev, ni = ni)
 end
 
 """
     aggstat(X::DataFrame; var_nam, group_nam, fun = mean)
-Compute the mean (or other statistic) of each column of `X`, by group.
-* `X` : a dataframe.
-* `var_nam` : Names of the variables to summarize.
-* `group_nam` : Names of the groups to consider.
-* `fun` : Function to compute.
+Compute the mean (or other statistic) of selected columns of `X`, by group.
+* `X` : A dataframe.
+* `var_nam` : Names (vector) of the variables to summarize.
+* `group_nam` : Names (vector) of the group variables to consider.
+* `fun` : Function given the statistic to compute.
 
 Variables defined in `var_nam` and `group_nam` must be columns of `X`.
 """ 
@@ -154,6 +153,9 @@ function colvars(X, w)
     end
     z 
 end
+colstds(X) = sqrt.(colvars(X))
+colstds(X, w) = sqrt.(colvars(X, w))
+
 
 """
     dummy(y)
@@ -181,7 +183,7 @@ function dummy2(y)
     lev = z.keys
     nlev = length(lev)
     ni = collect(values(tab(y)))
-    res = list(nlev)
+    res = list(nlev, BitVector)
     for i = 1:nlev
         res[i] = y .== lev[i]
     end
@@ -213,7 +215,7 @@ Find the most occurent level in `x`.
 """
 function findmax_cla(x, weights = nothing)
     isnothing(weights) ? weights = ones(length(x)) : nothing
-    res = aggstat(weights, x; fun = sum)
+    res = aggstat(weights; group = x, fun = sum)
     res.lev[argmax(res.res)]   # if equal, argmax takes the first
 end
 
@@ -228,8 +230,30 @@ iqr(x) = quantile(x, .75) - quantile(x, .25)
 """
     list(n::Integer)
 Create a Vector{Any}(nothing, n).
+
+`isnothing(object, i)` can be used to check if cell i is empty.
+
+## Examples
+```julia
+list(5)
+```
 """  
 list(n::Integer) = Vector{Any}(nothing, n) 
+
+"""
+    list(n::Integer, type)
+Create a Vector{type}(undef, n).
+
+`isassigned(object, i)` can be used to check if cell i is empty.
+
+## Examples
+```julia
+list(5, Float64)
+list(5, Array{Float64})
+list(5, Matrix{Float64})
+```
+"""  
+list(n::Integer, type) = Vector{type}(undef, n)
 
 """ 
     mad(x)
@@ -373,16 +397,17 @@ function replacebylev(x, lev)
 end
 
 """
-    rmcols(X, s)
+    rmcol(X, s)
 Remove the columns of `X` having indexes `s`.
 ## Examples
 ```julia
 X = rand(5, 3) ; 
-rmcols(X, 1:2)
-rmcols(X, [1, 3])
+rmcol(X, 1:2)
+rmcol(X, [1, 3])
 ```
 """
-rmcols(X::AbstractMatrix, s::Int64) = X[:, setdiff(1:end, s)]
+rmcol(X::AbstractMatrix, s::Union{Vector, Number}) = X[:, setdiff(1:end, Int64.(s))]
+rmcol(x::Vector, s::Union{Vector, Number}) = x[setdiff(1:end, Int64.(s))]
 
 """
     rmrow(X, s)
@@ -390,12 +415,12 @@ Remove the rows of `X` having indexes `s`.
 ## Examples
 ```julia
 X = rand(5, 2) ; 
-rmrows(X, 2:3)
-rmrows(X, [1, 4])
+rmrow(X, 2:3)
+rmrow(X, [1, 4])
 ```
 """
-rmrows(X::AbstractMatrix, s::Vector{Int64}) = X[setdiff(1:end, s), :]
-rmrows(X::AbstractVector, s::Vector{Int64}) = X[setdiff(1:end, s)]
+rmrow(X::AbstractMatrix, s::Union{Vector, Number}) = X[setdiff(1:end, Int64.(s)), :]
+rmrow(x::Vector, s::Union{Vector, Number}) = x[setdiff(1:end, Int64.(s))]
 
 """
     scale(X, v)

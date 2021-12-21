@@ -31,7 +31,7 @@ include("rp.jl")
 # Regression 
 include("mlr.jl")
 include("rr.jl")
-include("plskern.jl") ; include("plsnipals.jl") 
+include("plskern.jl") ; include("plsnipals.jl") ; include("plsrosa.jl") 
 include("plsr_agg.jl")
 include("cglsr.jl")
 include("pcr.jl")
@@ -71,13 +71,15 @@ include("lwplsr.jl")
 include("lwplsr_agg.jl")
 include("cplsr_agg.jl")  # Use structure PlsrDa
 
+# Multi-block regresssion
+include("blockscal.jl")
+include("angles.jl")
+include("rosaplsr.jl") 
+
 # Local discrimination
 include("lwplsrda.jl") ; include("lwplslda.jl") ; include("lwplsqda.jl")
 include("lwplsrda_agg.jl") ; include("lwplslda_agg.jl") ; include("lwplsqda_agg.jl")
 include("knnda.jl")
-
-# Multi-block 
-include("blockscal.jl")
 
 # Variable selection/importance (direct methods) 
 include("covsel.jl")
@@ -103,7 +105,7 @@ export
     aov1,
     checkdupl, checkmiss,
     center, center!, 
-    colmeans, colvars, colvars!, 
+    colmeans, colvars, colstds, 
     dummy,
     ensure_df, ensure_mat,
     findmax_cla, 
@@ -113,7 +115,7 @@ export
     pnames, psize,
     recodcat2num, recodnum2cla,
     replacebylev,
-    rmcols, rmrows,    
+    rmcol, rmrow,    
     scale, scale!,
     sourcedir,
     summ,  
@@ -135,7 +137,7 @@ export
     # Regression
     mlr, mlr!, mlrchol, mlrchol!, mlrpinv, mlrpinv!, mlrpinv_n, mlrpinv_n!,
     mlrvec!, mlrvec,
-    plskern, plskern!, plsnipals, plsnipals!,
+    plskern, plskern!, plsnipals, plsnipals!, plsrosa, plsrosa!,
     cglsr, cglsr!,
     pcr, 
     rr, rr!, rrchol, rrchol!,   
@@ -146,7 +148,8 @@ export
     treer_xgb, rfr_xgb, xgboostr, vimp_xgb,
     baggr, baggr_vi, baggr_oob,
     # Multi-block
-    blockscal,
+    mblocks, blockscal, rv,
+    rosaplsr, rosaplsr!,
     # Variable selection/importance (direct methods) 
     covsel,
     iplsr,

@@ -45,7 +45,7 @@ function covsel!(X, Y; nlv = nothing, scaly = true)
     selvar = Int64.(zeros(nlv))
     selcov = zeros(nlv)
     covs = zeros(p)
-    P = similar(X, n, n)
+    H = similar(X, n, n)
     for i = 1:nlv
         z = vec(sum(abs.(X' * Y); dims = 2))
         zsel = argmax(z)
@@ -53,9 +53,9 @@ function covsel!(X, Y; nlv = nothing, scaly = true)
         selcov[i] = z[zsel]
         covs[zsel] = z[zsel]
         x = vcol(X, zsel)
-        P .= x * x' / sum(x.^2)
-        X .= X .- P * X 
-        Y .= Y .- P * Y
+        H .= x * x' / sum(x.^2)
+        X .= X .- H * X 
+        Y .= Y .- H * Y
         xss[i] = sum(X.^2)
         yss[i] = sum(Y.^2)
     end

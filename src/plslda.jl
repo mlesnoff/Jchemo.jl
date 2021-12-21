@@ -36,8 +36,8 @@ function predict(object::PlsLda, X; nlv = nothing)
     a = size(object.fm.fm_pls.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
-    pred = list(le_nlv)
-    posterior = list(le_nlv)
+    pred = list(le_nlv, Matrix{Float64})
+    posterior = list(le_nlv, Matrix{Float64})
     @inbounds for i = 1:le_nlv
         znlv = nlv[i]
         T = transform(object.fm.fm_pls, X, nlv = znlv)
