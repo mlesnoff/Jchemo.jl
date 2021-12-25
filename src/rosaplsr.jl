@@ -23,14 +23,12 @@ Multi-bloc PLSR with the ROSA algorithm (Liland et al. 2016).
 The function has the following differences with the original 
 algorithm of Liland et al. (2016):
 * Scores T are not normed to 1.
-* Multivariate `Y` is allowed. In such a case, the entered
-    Y-columns should have the same scale (since for finding the winning blocks, 
-    the squared residuals are summed over the columns).
+* Multivariate `Y` is allowed. In such a case, , the squared residuals are summed 
+    over the columns for finding the winning blocks the entered (therefore Y-columns 
+    should have the same scale).
 
-For the weighting in PLS algorithms (`weights`), see in particular Schaal et al. 2002, 
-Siccard & Sabatier 2006, Kim et al. 2011 and Lesnoff et al. 2020. See help of `plskern`.
-
-Vector `weights` is internally normalized to sum to 1.
+Vector `weights` is internally normalized to sum to 1. 
+See the help of `plskern` for details.
 
 `X` and `Y` are internally centered. 
 
@@ -75,6 +73,8 @@ function rosaplsr!(X, Y, weights = ones(size(X[1], 1)); nlv)
     t   = similar(X[1], n)
     dt  = similar(X[1], n)   
     c   = similar(X[1], q)
+    zp_bl = list(nbl, Vector{Float64})
+    zp = similar(X[1], sum(p))
     ssr = similar(X[1], nbl)
     W_bl = list(nbl, Array{Float64})
     w_bl = list(nbl, Vector{Float64})  # List of the weights "w" by block for a given "a"
@@ -117,10 +117,11 @@ function rosaplsr!(X, Y, weights = ones(size(X[1], 1)); nlv)
         c ./= tt     
         T[:, a] .= t
         TT[a] = tt
-        C[:, a] = c
-        Y = Res[:, :, opt]
-        zp = [0.] ; for i = 1:nbl ; append!(zp, X[i]' * dt) ; end
-        P[:, a] .= zp[2:end] / tt
+        C[:, a] .= c
+        Y .= Res[:, :, opt]
+        for i = 1:nbl ; zp_bl[i] = X[i]' * dt ; end
+        zp .= reduce(vcat, zp_bl)
+        P[:, a] .= zp / tt
         # Orthogonalization of the weights "w" by block
         zw = w_bl[opt]
         if (a > 1) && isassigned(W_bl, opt)       
@@ -150,14 +151,10 @@ Compute the X b-coefficients of a model fitted with `nlv` LVs.
 function coef(object::RosaPlsr; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    nbl = length(object.xmeans)
-    zxmeans = [0.]
-    for i = 1:nbl
-        append!(zxmeans, object.xmeans[i])
-    end
+    zxmeans = reduce(vcat, object.xmeans)
     beta = object.C[:, 1:nlv]'
     B = vcol(object.R, 1:nlv) * beta
-    int = object.ymeans' .- zxmeans[2:end]' * B
+    int = object.ymeans' .- zxmeans' * B
     (B = B, int = int)
 end
 
@@ -173,13 +170,7 @@ function predict(object::RosaPlsr, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
-    nbl = length(object.xmeans)
-    zX = X[1]
-    if nbl > 1
-        @inbounds for i = 2:nbl
-            zX = hcat(zX, X[i])
-        end
-    end
+    zX = reduce(hcat, X)
     pred = list(le_nlv, Matrix{Float64})
     @inbounds for i = 1:le_nlv
         z = coef(object; nlv = nlv[i])
@@ -200,12 +191,12 @@ function transform(object::RosaPlsr, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(object.xmeans)
-    zX = center(X[1], object.xmeans[1])
-    if nbl > 1
-        @inbounds for i = 2:nbl
-            zX = hcat(zX, center(X[i], object.xmeans[i]))
-        end
+    zX = list(nbl, Matrix{Float64})
+    @inbounds for i = 1:nbl
+        zX[i] = center(X[i], object.xmeans[i])
     end
-    zX * vcol(object.R, 1:nlv)
+    reduce(hcat, zX) * vcol(object.R, 1:nlv)
 end
+
+
 

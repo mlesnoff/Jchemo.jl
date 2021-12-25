@@ -13,11 +13,9 @@ algorithm of Liland et al. (2016):
     Y-columns should have the same scale (for finding the winning blocks, 
     the squared residuals are summed over the columns)
 
-For the weighting in PLS algorithms (`weights`), see in particular Schaal et al. 2002, 
-Siccard & Sabatier 2006, Kim et al. 2011 and Lesnoff et al. 2020. See help of `plskern`. 
-
-Vector `weights` is internally normalized to sum to 1.
-
+Vector `weights` is internally normalized to sum to 1. 
+See the help of `plskern` for details.
+    
 `X` and `Y` are internally centered. 
 
 ## References

@@ -73,9 +73,11 @@ include("lwplsr_agg.jl")
 include("cplsr_agg.jl")  # Use structure PlsrDa
 
 # Multi-block regresssion
-include("blockscal.jl")
 include("angles.jl")
+include("blockscal.jl")
+include("mbplsr.jl") 
 include("rosaplsr.jl") 
+include("soplsr.jl") 
 
 # Local discrimination
 include("lwplsrda.jl") ; include("lwplslda.jl") ; include("lwplsqda.jl")
@@ -151,7 +153,9 @@ export
     baggr, baggr_vi, baggr_oob,
     # Multi-block
     mblocks, blockscal, rv,
+    mbplsr,
     rosaplsr, rosaplsr!,
+    soplsr,
     # Variable selection/importance (direct methods) 
     covsel,
     iplsr,

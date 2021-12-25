@@ -10,12 +10,10 @@ The function has the following difference with the original
 algorithm of de Jong (2013):
 * Scores T are not normed to 1.
 
-For the weighting in PLS algorithms (`weights`), see in particular Schaal et al. 2002, 
-Siccard & Sabatier 2006, Kim et al. 2011 and Lesnoff et al. 2020. See help of `plskern`. 
+Vector `weights` is internally normalized to sum to 1. 
+See the help of `plskern` for details.
 
-Vector `weights` is internally normalized to sum to 1.
-
-`X` and `Y` are internally centered. The model is computed with an intercept.
+`X` and `Y` are internally centered.
 
 ## References
 
@@ -38,10 +36,10 @@ function plssimp!(X, Y, weights = ones(size(X, 1)); nlv)
     weights = mweights(weights)
     xmeans = colmeans(X, weights) 
     ymeans = colmeans(Y, weights)   
-    X = center(X, xmeans)
-    Y = center(Y, ymeans)
+    center!(X, xmeans)
+    center!(Y, ymeans)
     D = Diagonal(weights)
-    XtY = X' * (D * Y)                   # = Xd' * Y = X' * D * Y  (Xd = D * X   Very costly!!)
+    XtY = X' * (D * Y)                   
     # Pre-allocation
     T = similar(X, n, nlv)
     P = similar(X, p, nlv)
@@ -56,6 +54,7 @@ function plssimp!(X, Y, weights = ones(size(X, 1)); nlv)
     c   = similar(X, q)
     tmp = similar(XtY)
     # End
+    # This is Table 1 (as fast as Appendix) in de Jong 1993
     @inbounds for a = 1:nlv
         if a == 1
             tmp .= XtY
@@ -63,7 +62,7 @@ function plssimp!(X, Y, weights = ones(size(X, 1)); nlv)
             z = vcol(P, 1:(a - 1))
             tmp .= XtY .- z * inv(z' * z) * z' * XtY
         end
-        u = svd!(tmp).U # = svd(tmp').U
+        u = svd!(tmp).U 
         r .= u[:, 1]
         mul!(t, X, r)                 
         dt .= weights .* t            
@@ -80,3 +79,6 @@ function plssimp!(X, Y, weights = ones(size(X, 1)); nlv)
      #B = R * inv(T' * D * T) * T' * D * Y
      Plsr(T, P, R, W, C, TT, xmeans, ymeans, weights, nothing)
 end
+
+
+

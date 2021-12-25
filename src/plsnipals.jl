@@ -11,10 +11,8 @@ In the function, the usual PLS2 NIPALS iterations are replaced by a
 direct computation of the PLS weights (`w`) by SVD decomposition of matrix X'Y 
 (Hoskuldsson 1988 p.213).
 
-For the weighting in PLS algorithms (`weights`), see in particular Schaal et al. 2002, 
-Siccard & Sabatier 2006, Kim et al. 2011 and Lesnoff et al. 2020. See help of `plskern`. 
-
-Vector `weights` is internally normalized to sum to 1.
+Vector `weights` is internally normalized to sum to 1. 
+See the help of `plskern` for details.
 
 `X` and `Y` are internally centered. 
 

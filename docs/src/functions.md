@@ -134,7 +134,9 @@
 
 *Regression*
 
-- ***rosaplsr*** Multiblock PLSR with the ROSA algorithm
+- ***mbplsr*** Multiblock PLSR (MBPLSR)
+- ***rosaplsr*** Multiblock ROSA PLSR *Liland et al. 2016*
+- ***soplsr*** Sequentially orthogonalized PLSR (SO-PLSR) 
 
 *Utility*
 

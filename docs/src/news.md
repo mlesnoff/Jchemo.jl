@@ -1,5 +1,10 @@
 ## NEWS for package **Jchemo**
 
+### *Version 0.0-7*
+- New functions
+    - **mbplsr**
+    - **soplsr**
+
 ### *Version 0.0-6*
 - New functions
     - **colstds**

@@ -65,9 +65,8 @@ QDA on PLS latent variables.
 The training variable y (univariate class membership) is transformed
 to a dummy table (Ydummy) containing nlev columns, where nlev is the number 
 of classes present in `y`. Each column of Ydummy is a dummy variable (0/1). 
-Then, a PLS2 is implemented on the X-data and Ydummy, 
-returning `nlv` latent variables (LVs).
-Finally, a QDA is run on these LVs and `y`. 
+Then, a PLS2 is implemented on the X-data and Ydummy, returning `nlv` latent 
+variables (LVs). Finally, a QDA is run on these LVs and `y`. 
 """ 
 function plsqda(X, y, weights = ones(size(X, 1)); nlv, prior = "unif")
     z = dummy(y)

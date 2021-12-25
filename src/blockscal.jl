@@ -60,14 +60,16 @@ X_concat = reduce(hcat, res.X)
 function blockscal(X, weights = ones(size(X[1], 1)); scal = nothing)
     weights = mweights(weights)
     nbl = length(X)
-    isnothing(scal) ? zscal = similar(X[1], nbl) : zscal = copy(scal)
-    X_sc = list(nbl, Matrix{Float64})
-    @inbounds for i = 1:nbl
-        if isnothing(scal)
-            zscal[i] = sqrt(sum(colvars(X[i], weights)))
+    if isnothing(scal)
+        scal = list(nbl, Float64)
+        @inbounds for i = 1:nbl
+            scal[i] = sqrt(sum(colvars(X[i], weights)))
         end
-        X_sc[i] = X[i] / zscal[i]
     end
-    (X = X_sc, scal = zscal)
+    Xs = list(nbl, Matrix{Float64})
+    @inbounds for i = 1:nbl
+        Xs[i] = X[i] / scal[i]
+    end
+    (X = Xs, scal = scal)
 end 
 
