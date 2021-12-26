@@ -1,4 +1,4 @@
-struct RosaPlsr
+struct Rosaplsr
     T::Matrix{Float64}
     P::Matrix{Float64}
     R::Matrix{Float64}
@@ -44,7 +44,7 @@ function rosaplsr(X, Y, weights = ones(size(X[1], 1)); nlv)
     @inbounds for i = 1:nbl
         zX[i] = copy(ensure_mat(X[i]))
     end
-    Jchemo.rosaplsr!(zX, copy(Y), weights; nlv = nlv)
+    rosaplsr!(zX, copy(Y), weights; nlv = nlv)
 end
 
 function rosaplsr!(X, Y, weights = ones(size(X[1], 1)); nlv)
@@ -83,7 +83,7 @@ function rosaplsr!(X, Y, weights = ones(size(X[1], 1)); nlv)
     Res = zeros(n, q, nbl)
     ### Start 
     @inbounds for a = 1:nlv
-        DY .= D * Y
+        DY .= D * Y  # apply the metric on covariance
         @inbounds for i = 1:nbl
             XtY = X[i]' * DY
             if q == 1
@@ -139,16 +139,16 @@ function rosaplsr!(X, Y, weights = ones(size(X[1], 1)); nlv)
         W[:, a] .= reduce(vcat, z .* w_bl)
     end
     R = W * inv(P' * W)
-    RosaPlsr(T, P, R, W, C, TT, xmeans, ymeans, weights, bl)
+    Rosaplsr(T, P, R, W, C, TT, xmeans, ymeans, weights, bl)
 end
 
 """
-    coef(object::RosaPlsr; nlv = nothing)
+    coef(object::Rosaplsr; nlv = nothing)
 Compute the X b-coefficients of a model fitted with `nlv` LVs.
 * `object` : The maximal fitted model.
 * `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
 """ 
-function coef(object::RosaPlsr; nlv = nothing)
+function coef(object::Rosaplsr; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     zxmeans = reduce(vcat, object.xmeans)
@@ -159,14 +159,14 @@ function coef(object::RosaPlsr; nlv = nothing)
 end
 
 """
-    predict(object::RosaPlsr, X; nlv = nothing)
+    predict(object::Rosaplsr, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : A list (vector) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
     If nothing, it is the maximum nb. LVs.
 """ 
-function predict(object::RosaPlsr, X; nlv = nothing)
+function predict(object::Rosaplsr, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
@@ -181,13 +181,13 @@ function predict(object::RosaPlsr, X; nlv = nothing)
 end
 
 """ 
-    transform(object::RosaPlsr, X; nlv = nothing)
+    transform(object::Rosaplsr, X; nlv = nothing)
 Compute LVs ("scores" T) from a fitted model.
 * `object` : The maximal fitted model.
 * `X` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
 """ 
-function transform(object::RosaPlsr, X; nlv = nothing)
+function transform(object::Rosaplsr, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(object.xmeans)

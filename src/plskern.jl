@@ -113,9 +113,9 @@ function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
         mul!(c, XtY', r)
         c ./= tt                      # c = XtY' * r / tt
         mul!(zp, X', dt)              # zp = (D * X)' * t = X' * (D * t)
-        XtY .-= mul!(tmp, zp, c')     # XtY = XtY - zp * c'
-        P[:, a] .= zp ./ tt    
-        T[:, a] .= t
+        XtY .-= mul!(tmp, zp, c')     # XtY = XtY - zp * c' ; deflation of the kernel matrix 
+        P[:, a] .= zp ./ tt           # (cont') ==> the metric applied to covariance is applied outside the loop,
+        T[:, a] .= t                  # (cont') conversely to other algorithms such as nipals
         W[:, a] .= w
         R[:, a] .= r
         C[:, a] .= c

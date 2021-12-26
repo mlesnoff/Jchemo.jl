@@ -16,7 +16,7 @@
 
 Huge variety of pipelines exist in chemometrics and machine learning. Only few examples are provided in the package. The user can build some of his own pipelines with the provided elementary functions. 
 
-Generic functions such as **transform**, **predict**, **coef** and **summary** are available. Tuning the models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation), with specific faster versions for models based on latent variables (LVs) and ridge regularization.
+Generic functions such as **transform**, **predict**, **coef** and **summary** are available. Tuning the models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation), with faster versions for models based on latent variables (LVs) and ridge regularization (**gridscorelv** and **gridcvlv**).
 
 ## <span style="color:green"> **Available functions** </span> 
 
