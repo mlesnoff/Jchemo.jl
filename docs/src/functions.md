@@ -134,9 +134,12 @@
 
 *Regression*
 
-- ***mbplsr*** Multiblock PLSR (MBPLSR)
-- ***rosaplsr*** Multiblock ROSA PLSR *Liland et al. 2016*
-- ***soplsr*** Sequentially orthogonalized PLSR (SO-PLSR) 
+- ***mbplsr*** Multiblock PLSR (PLSR on autoscaled blocks)
+- ***mbplsr_avg*** High-level multiblock PLSR (Average of block PLSR predictions)
+- ***mbplsr_mid*** Mid-level multiblock PLSR (PLSR on block PLS scores)
+- ***mbplsr_mid_seq*** Sequential mid-level multiblock PLSR
+- ***mbplsr_rosa*** Multiblock ROSA PLSR *Liland et al. 2016*
+- ***mbplsr_so*** Sequentially orthogonalized PLSR (SO-PLSR) 
 
 *Utility*
 
@@ -162,6 +165,8 @@
 - ***segmkf*** Building segments for K-fold CV
 - ***gridcv*** Any model
 - ***gridcvlv*** Models with LVs (faster)
+- ***gridcv_mb*** Multiblock models 
+- ***gridcvlv_mb*** Multiblock models with LVs 
 - ***gridcvlb*** Models with ridge parameter (faster)  
 
 #### **Performance scores**

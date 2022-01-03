@@ -1,8 +1,8 @@
 """
     aggstat(X::Union{AbstractMatrix, AbstractVector}; group, fun = mean)
 Compute the mean (or other statistic) of each column of `X`, by group.
-* `X` : A matrix (n, p).
-* `group` : A vector (n,) defining the groups.
+* `X` : A matrix (n, p) or vector (n).
+* `group` : A vector (n) defining the groups.
 * `fun` : Function to compute.
 """ 
 function aggstat(X::Union{AbstractMatrix, AbstractVector}; group, 

@@ -34,11 +34,11 @@ Autoscale blocks of a matrix.
 * `weights` : Weights of the observations (rows). Only used if `scal = nothing`.
 * `scal` : If `nothing`, each block is autoscaled (i.e. divided) by the 
     the square root of the sum of the variances of each column of the block.
-    Else, `scal` must be a vector of the scaling values dividing the blocks.
+    Else, `scal` must be a vector defining the scaling values dividing the blocks.
 
 The function returns the scaled blocks, and the scaling values.
 
-Vector `weights` is internally normalized to sum to 1.
+Vector `weights` (row-weighting) is internally normalized to sum to 1.
 
 ## Examples
 ```julia

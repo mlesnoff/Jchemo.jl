@@ -1,5 +1,16 @@
 ## NEWS for package **Jchemo**
 
+### *Version 0.0-8*
+- New functions
+    - **gridcv_mb**
+    - **gridcvlv_mb**
+    - **mbplsr_avg**
+    - **mbplsr_mid**
+    - **mbplsr_mid_seq**
+- Modifications 
+    - **rosaplsr** renamed to **mbplsr_rosa**
+    - **soplsr** renamed to **mbplsr_so**
+
 ### *Version 0.0-7*
 - New functions
     - **mbplsr**

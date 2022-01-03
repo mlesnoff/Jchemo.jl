@@ -65,7 +65,7 @@ n = 10
 group = ["A", "B", "C", "D", "E", "A", "B", "C", "D", "E"]    # The blocks of the observations
 unique(group)    # Print of the blocks
 K = 3 ; rep = 4 
-segm = segmkf(n, K, group; rep)
+segm = segmkf(n, K, group; rep = rep)
 i = 1 
 segm[i]
 segm[i][1]

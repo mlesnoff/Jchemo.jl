@@ -1,13 +1,12 @@
-struct Soplsr
+struct MbplsrSo
     fm
     T::Matrix{Float64}
     fit::Matrix{Float64}
     b
-    weights::Vector{Float64}
 end
 
 """
-    soplsr(X, Y, weights = ones(size(X, 1)); nlv)
+    mbplsr_so(X, Y, weights = ones(size(X, 1)); nlv)
 Multiblock sequentially orthogonalized PLSR (SO-PLSR).
 * `X` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
@@ -16,9 +15,8 @@ Multiblock sequentially orthogonalized PLSR (SO-PLSR).
 * `nlv` : Nb. latent variables (LVs) to consider
     for each block. Vector that must have a length equal to the nb. blocks.
 
-For the weighting in PLS algorithms (`weights`), see the help of `plskern`.
-
-Vector `weights` is internally normalized to sum to 1.
+Vector `weights` (row-weighting) is internally normalized to sum to 1. 
+See the help of `plskern` for details.
 
 ## References
 
@@ -32,7 +30,7 @@ Vector `weights` is internally normalized to sum to 1.
 - Menichelli et al., 2014. SO-PLS as an exploratory tool for path modelling. 
     Food Quality and Preference, 36, 122-134.
 """
-function soplsr(X, Y, weights = ones(size(X[1], 1)); nlv)
+function mbplsr_so(X, Y, weights = ones(size(X[1], 1)); nlv)
     Y = ensure_mat(Y)
     n = size(X[1], 1)
     q = size(Y, 2)   
@@ -58,16 +56,16 @@ function soplsr(X, Y, weights = ones(size(X[1], 1)); nlv)
             pred .+= predict(fm[i], zX).pred 
         end
     end
-    Soplsr(fm, T, pred, b, weights)
+    MbplsrSo(fm, T, pred, b)
 end
 
 """ 
-    transform(object::Soplsr)
+    transform(object::MbplsrSo)
 Compute LVs ("scores" T) from a fitted model.
 * `object` : The maximal fitted model.
 * `X` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
 """ 
-function transform(object::Soplsr, X)
+function transform(object::MbplsrSo, X)
     nbl = length(object.fm)
     T = transform(object.fm[1], X[1])
     if nbl > 1
@@ -80,12 +78,12 @@ function transform(object::Soplsr, X)
 end
 
 """
-    predict(object::Soplsr, X)
+    predict(object::MbplsrSo, X)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : A list (vector) of X-data for which predictions are computed.
 """ 
-function predict(object::Soplsr, X)
+function predict(object::MbplsrSo, X)
     nbl = length(object.fm)
     T = transform(object.fm[1], X[1])
     pred =  object.fm[1].ymeans' .+ T * object.fm[1].C'

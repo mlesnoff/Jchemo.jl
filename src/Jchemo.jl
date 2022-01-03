@@ -31,8 +31,8 @@ include("rp.jl")
 # Regression 
 include("mlr.jl")
 include("rr.jl")
-include("plskern.jl") ; include("plsnipals.jl") 
-include("plsrosa.jl") ; include("plssimp.jl") 
+include("plskern.jl") ; include("plsrosa.jl")
+include("plsnipals.jl") ; include("plssimp.jl") 
 include("plsr_agg.jl")
 include("cglsr.jl")
 include("pcr.jl")
@@ -76,8 +76,10 @@ include("cplsr_agg.jl")  # Use structure PlsrDa
 include("angles.jl")
 include("blockscal.jl")
 include("mbplsr.jl") 
-include("rosaplsr.jl") 
-include("soplsr.jl") 
+include("mbplsr_avg.jl") 
+include("mbplsr_mid.jl") 
+include("mbplsr_rosa.jl") 
+include("mbplsr_so.jl") 
 
 # Local discrimination
 include("lwplsrda.jl") ; include("lwplslda.jl") ; include("lwplsqda.jl")
@@ -154,8 +156,11 @@ export
     # Multi-block
     mblocks, blockscal, rv,
     mbplsr,
-    rosaplsr, rosaplsr!,
-    soplsr,
+    mbplsr_avg, 
+    mbplsr_mid,
+    mbplsr_mid_seq, mbplsr_mid_seq!,
+    mbplsr_rosa, mbplsr_rosa!,
+    mbplsr_so,
     # Variable selection/importance (direct methods) 
     covsel,
     iplsr,
@@ -188,7 +193,8 @@ export
     mpars,
     gridscore, gridscorelv, gridscorelb,
     segmts, segmkf,
-    gridcv, gridcvlv, gridcvlb,
+    gridcv, gridcvlv, gridcvlb, 
+    gridcv_mb, gridcvlv_mb,
     # Sampling
     sampks, sampdp, sampsys, sampclas,
     # Distances

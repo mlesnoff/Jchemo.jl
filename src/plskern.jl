@@ -31,7 +31,7 @@ Partial Least Squares Regression (PLSR) with the
 * `weights` : Weights of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
 
-For the weighting in PLS algorithms (`weights`), see in particular Schaal et al. 2002, 
+For the row-weighting in PLS algorithms (`weights`), see in particular Schaal et al. 2002, 
 Siccard & Sabatier 2006, Kim et al. 2011 and Lesnoff et al. 2020. 
 
 Vector `weights` is internally normalized to sum to 1.

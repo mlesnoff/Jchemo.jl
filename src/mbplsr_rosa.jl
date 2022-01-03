@@ -1,4 +1,4 @@
-struct Rosaplsr
+struct MbplsrRosa
     T::Matrix{Float64}
     P::Matrix{Float64}
     R::Matrix{Float64}
@@ -13,7 +13,7 @@ end
 
 """
     rosaplsr(X, Y, weights = ones(size(X, 1)); nlv)
-Multi-bloc PLSR with the ROSA algorithm (Liland et al. 2016).
+Multi-block PLSR with the ROSA algorithm (Liland et al. 2016).
 * `X` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
 * `Y` : Y-data.
@@ -27,7 +27,7 @@ algorithm of Liland et al. (2016):
     over the columns for finding the winning blocks the entered (therefore Y-columns 
     should have the same scale).
 
-Vector `weights` is internally normalized to sum to 1. 
+Vector `weights` (row-weighting) is internally normalized to sum to 1. 
 See the help of `plskern` for details.
 
 `X` and `Y` are internally centered. 
@@ -38,16 +38,16 @@ Liland, K.H., Næs, T., Indahl, U.G., 2016. ROSA—a fast extension of partial l
 squares regression for multiblock data analysis. Journal of Chemometrics 30, 
 651–662. https://doi.org/10.1002/cem.2824
 """ 
-function rosaplsr(X, Y, weights = ones(size(X[1], 1)); nlv)
+function mbplsr_rosa(X, Y, weights = ones(size(X[1], 1)); nlv)
     nbl = length(X)
     zX = list(nbl, Matrix{Float64})
     @inbounds for i = 1:nbl
         zX[i] = copy(ensure_mat(X[i]))
     end
-    rosaplsr!(zX, copy(Y), weights; nlv = nlv)
+    mbplsr_rosa!(zX, copy(Y), weights; nlv = nlv)
 end
 
-function rosaplsr!(X, Y, weights = ones(size(X[1], 1)); nlv)
+function mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv)
     Y = ensure_mat(Y)
     n = size(X[1], 1)
     q = size(Y, 2)   
@@ -139,16 +139,34 @@ function rosaplsr!(X, Y, weights = ones(size(X[1], 1)); nlv)
         W[:, a] .= reduce(vcat, z .* w_bl)
     end
     R = W * inv(P' * W)
-    Rosaplsr(T, P, R, W, C, TT, xmeans, ymeans, weights, bl)
+    MbplsrRosa(T, P, R, W, C, TT, xmeans, ymeans, weights, bl)
+end
+
+""" 
+    transform(object::MbplsrRosa, X; nlv = nothing)
+Compute LVs ("scores" T) from a fitted model.
+* `object` : The maximal fitted model.
+* `X` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
+* `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
+""" 
+function transform(object::MbplsrRosa, X; nlv = nothing)
+    a = size(object.T, 2)
+    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nbl = length(object.xmeans)
+    zX = list(nbl, Matrix{Float64})
+    @inbounds for i = 1:nbl
+        zX[i] = center(X[i], object.xmeans[i])
+    end
+    reduce(hcat, zX) * vcol(object.R, 1:nlv)
 end
 
 """
-    coef(object::Rosaplsr; nlv = nothing)
+    coef(object::MbplsrRosa; nlv = nothing)
 Compute the X b-coefficients of a model fitted with `nlv` LVs.
 * `object` : The maximal fitted model.
 * `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
 """ 
-function coef(object::Rosaplsr; nlv = nothing)
+function coef(object::MbplsrRosa; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     zxmeans = reduce(vcat, object.xmeans)
@@ -159,14 +177,14 @@ function coef(object::Rosaplsr; nlv = nothing)
 end
 
 """
-    predict(object::Rosaplsr, X; nlv = nothing)
+    predict(object::MbplsrRosa, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : A list (vector) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
     If nothing, it is the maximum nb. LVs.
 """ 
-function predict(object::Rosaplsr, X; nlv = nothing)
+function predict(object::MbplsrRosa, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
@@ -180,23 +198,6 @@ function predict(object::Rosaplsr, X; nlv = nothing)
     (pred = pred,)
 end
 
-""" 
-    transform(object::Rosaplsr, X; nlv = nothing)
-Compute LVs ("scores" T) from a fitted model.
-* `object` : The maximal fitted model.
-* `X` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
-* `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
-""" 
-function transform(object::Rosaplsr, X; nlv = nothing)
-    a = size(object.T, 2)
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    nbl = length(object.xmeans)
-    zX = list(nbl, Matrix{Float64})
-    @inbounds for i = 1:nbl
-        zX[i] = center(X[i], object.xmeans[i])
-    end
-    reduce(hcat, zX) * vcol(object.R, 1:nlv)
-end
 
 
 

@@ -13,7 +13,7 @@ algorithm of Liland et al. (2016):
     Y-columns should have the same scale (for finding the winning blocks, 
     the squared residuals are summed over the columns)
 
-Vector `weights` is internally normalized to sum to 1. 
+Vector `weights` (row-weighting) is internally normalized to sum to 1. 
 See the help of `plskern` for details.
     
 `X` and `Y` are internally centered. 
@@ -49,11 +49,11 @@ function plsrosa!(X, Y, weights = ones(size(X, 1)); nlv)
     W = copy(P)
     C = similar(X, q, nlv)
     TT = similar(X, nlv)
-    t   = similar(X, n)
-    dt  = similar(X, n)   
-    zp  = similar(X, p)
-    w   = similar(X, p)
-    c   = similar(X, q)
+    t = similar(X, n)
+    dt = similar(X, n)   
+    zp = similar(X, p)
+    w = similar(X, p)
+    c = similar(X, q)
     # End
     @inbounds for a = 1:nlv
         XtY .= X' * (D * Y)
