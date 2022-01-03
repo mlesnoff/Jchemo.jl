@@ -85,7 +85,6 @@ function predict(object::MbplsrMidseq, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
-    zX = reduce(hcat, X)
     pred = list(le_nlv, Matrix{Float64})
     @inbounds for i = 1:le_nlv
         T = transform(object, X; nlv = nlv[i])
