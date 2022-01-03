@@ -134,7 +134,7 @@
 
 *Regression*
 
-- ***mbplsr*** Multiblock PLSR (PLSR on autoscaled blocks)
+- ***mbplsr*** Multiblock PLSR (PLSR on concatenated autoscaled blocks)
 - ***mbplsr_avg*** High-level multiblock PLSR (Average of block PLSR predictions)
 - ***mbplsr_mid*** Mid-level multiblock PLSR (PLSR on block PLS scores)
 - ***mbplsr_mid_seq*** Sequential mid-level multiblock PLSR
