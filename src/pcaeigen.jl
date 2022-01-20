@@ -5,10 +5,10 @@ PCA by Eigen factorization.
 * `weights` : Weights of the observations.
 * `nlv` : Nb. principal components (PCs).
     
-Noting D a (n, n) diagonal matrix of weights for the observations (rows of `X`),
-the function makes an Eigen factorization of X' * D * X.
-    
-`X` is internally centered.  
+Let us note D the (n, n) diagonal matrix of `weights` (internally normalized to sum to 1)
+and X the centered matrix in metric D (`X` is internally centered). 
+The function minimizes ||X - T * P'||^2  in metric D, by 
+computing an Eigen factorization of X' * D * X. 
 """ 
 function pcaeigen(X, weights = ones(size(X, 1)); nlv)
     pcaeigen!(copy(X), weights; nlv = nlv)
@@ -39,16 +39,16 @@ PCA by Eigen factorization of the kernel form (XX') for wide matrices.
 * `weights` : Weights of the observations.
 * `nlv` : Nb. principal components (PCs).
 
-Noting D a (n, n) diagonal matrix of weights for the observations (rows of X),
-the function makes an Eigen factorization of D^(1/2) * X * X' D^(1/2).
-This is the "kernel cross-product trick" version of the PCA algorithm (Wu et al. 1997). 
+Let us note D the (n, n) diagonal matrix of `weights` (internally normalized to sum to 1)
+and X the centered matrix in metric D (`X` is internally centered). 
+The function minimizes ||X - T * P'||^2  in metric D, by 
+computing an Eigen factorization of D^(1/2) * X * X' D^(1/2).
+
+This is the "kernel cross-product" version of the PCA algorithm (e.g. Wu et al. 1997). 
 For wide matrices (n << p, where p is the nb. columns) and n not too large, 
 this algorithm can be much faster than the others.
 
-`X` is internally centered. 
-
 ## References
-
 Wu, W., Massart, D.L., de Jong, S., 1997. The kernel PCA algorithms for wide data. Part I: Theory and algorithms. 
 Chemometrics and Intelligent Laboratory Systems 36, 165-172. https://doi.org/10.1016/S0169-7439(97)00010-5
 """ 

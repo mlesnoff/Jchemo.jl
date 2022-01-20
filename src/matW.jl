@@ -2,13 +2,13 @@
     matB(X, y; fun = mean)
 Compute the between covariance matrix ("B") of `X`.
 * `X` : X-data (n, p).
-* `y` : A vector (n,) defing the class memberships.
+* `y` : A vector (n) defing the class memberships.
 """ 
 matB = function(X, y)
     X = ensure_mat(X)
     y = vec(y) 
     z = aggstat(X; group = y, fun = mean)
-    B = matcov(z.res, mweights(z.ni))
+    B = covm(z.res, mweights(z.ni))
     (B = B, ct = z.res, lev = z.lev, ni = z.ni)
 end
 
@@ -17,7 +17,7 @@ end
     matW(X, y; fun = mean)
 Compute the within covariance matrix ("W") of `X`.
 * `X` : X-data (n, p).
-* `y` : A vector (n,) defing the class memberships.
+* `y` : A vector (n) defing the class memberships.
 """ 
 matW = function(X, y)
     X = ensure_mat(X)
@@ -27,7 +27,7 @@ matW = function(X, y)
     nlev = length(lev)
     ni = collect(values(ztab))
     # Case with y(s) with only 1 obs
-    sum(ni .== 1) > 0 ? sigma_1obs = matcov(X) : nothing
+    sum(ni .== 1) > 0 ? sigma_1obs = covm(X) : nothing
     # End
     w = mweights(ni)
     Wi = list(nlev, Matrix{Float64})
@@ -37,7 +37,7 @@ matW = function(X, y)
             Wi[i] = sigma_1obs
         else
             s = findall(y .== lev[i])
-            Wi[i] = matcov(X[s, :])
+            Wi[i] = covm(X[s, :])
         end
         if i == 1  
             W = w[i] * Wi[i] 

@@ -2,29 +2,32 @@ module Jchemo  # Start-Module
 
 using LinearAlgebra, SparseArrays 
 using Statistics, Random
+using CairoMakie
 using Clustering
 using DataInterpolations
 using Distributions
 using DataFrames
 using Distances
-using GLMakie
 using HypothesisTests
 using ImageFiltering
 using Interpolations
+using IterativeSolvers
 using LIBSVM
 using NearestNeighbors
 using StatsBase    # sample
 using XGBoost
 
 include("utility.jl") 
+include("aov1.jl")
+include("matW.jl")
+include("nipals.jl")
+include("plots.jl")
 include("preprocessing.jl") 
 include("rmgap.jl")
-include("aov1.jl")
-include("plots.jl")
-include("matW.jl")
 
 include("fda.jl")
-include("pcasvd.jl") ; include("pcaeigen.jl")
+include("pcasvd.jl")
+include("pcaeigen.jl")
 include("kpca.jl")
 include("rp.jl")
 
@@ -76,8 +79,6 @@ include("cplsr_agg.jl")  # Use structure PlsrDa
 include("angles.jl")
 include("blockscal.jl")
 include("mbplsr.jl") 
-include("mbplsr_avg.jl") 
-include("mbplsr_mid.jl") 
 include("mbplsr_rosa.jl") 
 include("mbplsr_so.jl") 
 
@@ -108,22 +109,29 @@ export
     # Utilities
     aggstat,
     aov1,
+    blockscal, blockscal_frob, 
+    blockscal_ncol, blockscal_sd,
     checkdupl, checkmiss,
     center, center!, 
-    colmeans, colvars, colstds, 
+    colmeans, colvars, colstds, colnorms2,
+    corm, covm, 
     dummy,
     ensure_df, ensure_mat,
     findmax_cla, 
     list, 
+    matB, matW, 
+    mblocks,
     mweights,
-    matB, matcov, matW, 
+    nipals,
+    norm2,
     pnames, psize,
     recodcat2num, recodnum2cla,
     replacebylev,
     rmcol, rmrow,    
+    rv, 
     scale, scale!,
     sourcedir,
-    summ,  
+    summ,
     tab, tabnum,
     vcol, vrow, 
    # Pre-processing
@@ -154,11 +162,7 @@ export
     treer_xgb, rfr_xgb, xgboostr, vimp_xgb,
     baggr, baggr_vi, baggr_oob,
     # Multi-block
-    mblocks, blockscal, rv,
     mbplsr,
-    mbplsr_avg, 
-    mbplsr_mid,
-    mbplsr_mid_seq, mbplsr_mid_seq!,
     mbplsr_rosa, mbplsr_rosa!,
     mbplsr_so,
     # Variable selection/importance (direct methods) 
@@ -203,7 +207,7 @@ export
     krbf, kpol,
     # Graphics
     plotsp
-    # Not exported since surchage:
+    # Not exported since surcharge:
     # - summary => Base.summary
 
 end # End-Module

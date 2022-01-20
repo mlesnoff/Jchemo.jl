@@ -44,12 +44,13 @@ Center each column of `X`.
 * `v` : Centering factors.
 """ 
 function center(X, v)
-    M = copy(X)
-    center!(M, v)
-    M
+    zX = copy(X)
+    center!(zX, v)
+    zX
 end
 
 function center!(X, v)
+    X = ensure_mat(X)
     p = size(X, 2)
     @inbounds for j = 1:p
         X[:, j] .= vcol(X, j) .- v[j]
@@ -123,39 +124,162 @@ end
     colmeans(X)
     colmeans(X, w)
 Compute the mean of each column of `X`.
-* `X` : Data.
-* `w` : Weights of the observations.
+* `X` : Data (n, p).
+* `w` : Weights (n) of the observations.
 
 Return a vector.
 
-For a true weighted mean, `w` must preliminary be normalized to sum to 1.
+**Note:** For the true weighted mean, vector `w` must be preliminary 
+normalized to sum to 1 (`w` is not internally normalized).
 """ 
 colmeans(X) = vec(Statistics.mean(X; dims = 1))
+
 colmeans(X, w) = vec(w' * ensure_mat(X))
+
+"""
+    colnorms(X)
+    colnorms2(X)
+    colnorms(X, w)
+    colnorms2(X, w)
+Compute the squared norm  of each column of a matrix X.
+* `X` : Data (n, p).
+* `w` : Weights (n) of the observations.
+
+The squared weighted norm of a column x is:
+* norm(x)^2 = x' * D * x, where D is the diagonal matrix of vector `w`.
+
+**Note:** Vector `w` is not internally normalized to sum to 1.
+""" 
+function colnorms2(X)
+    X = ensure_mat(X)
+    p = size(X, 2)
+    z = similar(X, p)
+    @inbounds for j = 1:p
+        z[j] = LinearAlgebra.norm(vcol(X, j))^2       
+    end
+    z 
+end
+
+function colnorms2(X, w)
+    X = ensure_mat(X)
+    p = size(X, 2)
+    z = similar(X, p)
+    @inbounds for j = 1:p
+        z[j] = dot(vcol(X, j), w .* vcol(X, j))        
+    end
+    z 
+end
+
+"""
+    colstds(X)
+    colstds(X, w)
+Compute the uncorrected standard deviation of each column of `X`.
+* `X` : Data (n, p).
+* `w` : Weights (n) of the observations.
+
+Return a vector.
+
+**Note:** For the true weighted standard variation, vector `w` must be preliminary 
+normalized to sum to 1 (`w` is not internally normalized).
+""" 
+colstds(X) = sqrt.(colvars(X))
+
+colstds(X, w) = sqrt.(colvars(X, w))
 
 """
     colvars(X)
     colvars(X, w)
-Compute the (uncorrected) variance of each column of `X`.
-* `X` : Data.
-* `w` : Weights of the observations.
+Compute the uncorrected variance of each column of `X`.
+* `X` : Data (n, p).
+* `w` : Weights (n) of the observations.
 
 Return a vector.
 
-**Note:** For a true weighted variance, `w` must preliminary be normalized to sum to 1.
+**Note:** For the true weighted variance, vector `w` must be preliminary 
+normalized to sum to 1 (`w` is not internally normalized).
 """ 
 colvars(X) = vec(Statistics.var(X; corrected = false, dims = 1))
+
 function colvars(X, w)
+    X = ensure_mat(X)
     p = size(X, 2)
     z = colmeans(X, w)
     @inbounds for j = 1:p
-        z[j] = dot(view(w, :), (vcol(X, j) .- z[j]).^2)        
+        z[j] = dot(w, (vcol(X, j) .- z[j]).^2)        
     end
     z 
 end
-colstds(X) = sqrt.(colvars(X))
-colstds(X, w) = sqrt.(colvars(X, w))
 
+"""
+    covm(X, Y)
+    covm(X, w)
+    covm(X, Y, w)
+Compute covariance matrices.
+* `X` : Data (n, p).
+* `Y` : Data (n, q).
+* `w` : Weights (n) of the observations.
+
+Uncorrected covariance matrix of the columns of `X`(==> (p, p) matrix), 
+or between columns of `X` and `Y` (==> (p, q) matrix).
+
+**Note:** For the true weighted covariance, vector `w` must be preliminary 
+normalized to sum to 1 (`w` is not internally normalized).
+"""
+function covm(X, w)
+    zX = copy(ensure_mat(X))
+    xmeans = colmeans(zX, w)
+    center!(zX, xmeans)
+    z = Diagonal(sqrt.(w)) * zX
+    z' * z
+end
+
+function covm(X, Y, w)
+    zX = copy(ensure_mat(X))
+    zY = copy(ensure_mat(Y))
+    xmeans = colmeans(X, w)
+    ymeans = colmeans(Y, w)
+    center!(zX, xmeans)
+    center!(zY, ymeans)
+    zX' * Diagonal(w) * zY
+end
+
+"""
+    corm(X, w)
+    corm(X, Y, w)
+Compute correlation matrices.
+* `X` : Data (n, p).
+* `Y` : Data (n, q).
+* `w` : Weights (n) of the observations.
+
+Uncorrected correlation matrix of the columns of `X`(==> (p, p) matrix), 
+or between columns of `X` and `Y` (==> (p, q) matrix).
+
+**Note:** For the true weighted correlation, vector `w` must be preliminary 
+normalized to sum to 1 (`w` is not internally normalized).
+"""
+function corm(X, w)
+    zX = copy(ensure_mat(X))
+    xmeans = colmeans(zX, w)
+    xstds = colstds(zX, w)
+    center!(zX, xmeans)
+    scale!(zX, xstds)
+    z = Diagonal(sqrt.(w)) * zX
+    z' * z
+end
+
+function corm(X, Y, w)
+    zX = copy(ensure_mat(X))
+    zY = copy(ensure_mat(Y))
+    xmeans = colmeans(zX, w)
+    ymeans = colmeans(zY, w)
+    xstds = colstds(zX, w)
+    ystds = colstds(zY, w)
+    center!(zX, xmeans)
+    center!(zY, ymeans)
+    scale!(zX, xstds)
+    scale!(zY, ystds)
+    zX' * Diagonal(w) * zY
+end
 
 """
     dummy(y)
@@ -262,32 +386,32 @@ adjusted by a factor (1.4826) for asymptotically normal consistency.
 """
 mad(x) = 1.4826 * median(abs.(x .- median(x)))
 
-"""
-    matcov(X)
-    matcov(X, w)
-Compute the (uncorrected) covariance matrix of `X`.
-* `X` : Data.
-* `w` : Weights of the observations.
-
-Uncorrected covariance matrix of the columns of `X`.
-
-**Note:** For true weighted covariances, `w` must preliminary be normalized to sum to 1.
-"""
-matcov(X) = Statistics.cov(ensure_mat(X); corrected = false)
-
-function matcov(X, w)
-    X = ensure_mat(X)
-    xmeans = colmeans(X, w)
-    X = center(X, xmeans)
-    z = Diagonal(sqrt.(w)) * X
-    z' * z
-end
-
 """ 
     mweights(w)
 Return a vector of weights that sums to 1.
 """
 mweights(w) = w / sum(w)
+
+""" 
+    norm2(x)
+    norm2(x, w)
+Return the squared norm of a vector.
+
+* `x` : A vector (n).
+* `w` : Weights (n) of the observations.
+
+The squared weighted norm of vector x is:
+* norm(x)^2 = x' * D * x, where D is the diagonal matrix of vector `w`.
+
+**Note:** Vector `w`is not internally normalized to sum to 1.
+"""
+function norm2(x)
+    LinearAlgebra.norm(x)^2
+end
+
+function norm2(x, w)
+    dot(x, w .* x)
+end
 
 """ 
     pnames(x)
@@ -326,9 +450,8 @@ function recodcat2num(x; start = 1)
     ncla = size(z, 2)
     u = z .* collect(start:(start + ncla - 1))'
     u = sum(u; dims = 2)  ;
-    u = vec(u)
+    Int64.(vec(u))
 end
-
 
 """
     recodnum2cla(x, q)
@@ -424,6 +547,7 @@ rmrow(x::Vector, s::Union{Vector, Number}) = x[setdiff(1:end, Int64.(s))]
 
 """
     scale(X, v)
+    scale!(X, v)
 Scale each column of `X`.
 * `X` : Data.
 * `v` : Scaling factors.
@@ -435,6 +559,7 @@ function scale(X, v)
 end
 
 function scale!(X, v)
+    X = ensure_mat(X)
     p = size(X, 2)
     @inbounds for j = 1:p
         X[:, j] .= vcol(X, j) ./ v[j]
@@ -527,8 +652,11 @@ View of the i-th row(s) or j-th column(s) of a matrix `X`,
 or of the i-th element(s) of vector `x`.
 """ 
 vrow(X, i) = view(X, i, :)
+
 vrow(x::Vector, i) = view(x, i)
+
 vcol(X, j) = view(X, :, j)
+
 vcol(x::Vector, i) = view(x, i)
 
 

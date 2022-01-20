@@ -6,52 +6,62 @@ struct Mbplsr
 end
 
 """
-    mbplsr(X, Y, weights = ones(size(X[1], 1)); nlv, scal = nothing)
-Multiblock PLSR (scaling and concatenation of blocks).
-* `X` : List (vector) of blocks (matrices) of X-data. 
+    mbplsr(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, scal = nothing)
+Multiblock PLSR.
+* `X_bl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
 * `Y` : Y-data.
 * `weights` : Weights of the observations (rows). 
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : If `nothing`, each block is "autoscaled" (i.e. divided) by the 
-    the square root of the sum of the variances of each column of the block.
-    Else, `scal` must be a vector defining the scaling values dividing the blocks.
+* `bscaling` : Type of block scaling (`"none"`, `"frob"`, `"sd"`, `"ncol"`). 
+    See functions `blockscal`.
 
-Vector `weights` (row-weighting) is internally normalized to sum to 1. 
+PLSR on scaled and concatened blocks.
+
+Vector `weights` is internally normalized to sum to 1. 
 See the help of `plskern` for details.
 """
-function mbplsr(X, Y, weights = ones(size(X[1], 1)); nlv, scal = nothing)
+function mbplsr(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, bscaling = "frob")
     Y = ensure_mat(Y)
     weights = mweights(weights)
-    res = blockscal(X, weights; scal = scal)
-    zX = reduce(hcat, res.X)
-    fm = plskern(zX, Y, weights; nlv = nlv)
-    Mbplsr(fm, fm.T, res.scal, weights)
+    nbl = length(X_bl)
+    if bscaling == "none"
+        scal = ones(nbl)
+        X = reduce(hcat, X_bl)
+    else
+        bscaling == "frob" ? res = blockscal_frob(X_bl, weights) : nothing
+        bscaling == "sd" ? res = blockscal_sd(X_bl, weights) : nothing
+        bscaling == "ncol" ? res = blockscal_ncol(X_bl) : nothing
+        scal = res.scal
+        X = reduce(hcat, res.X)    
+    end
+    fm = plskern(X, Y, weights; nlv = nlv)
+    Mbplsr(fm, fm.T, scal, weights)
 end
 
 """ 
-    transform(object::Mbplsr, X; nlv = nothing)
+    transform(object::Mbplsr, X_bl; nlv = nothing)
 Compute LVs ("scores" T) from a fitted model.
 * `object` : The maximal fitted model.
-* `X` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
+* `X_bl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
 """ 
-function transform(object::Mbplsr, X; nlv = nothing)
-    res = blockscal(X; scal = object.scal)
+function transform(object::Mbplsr, X_bl; nlv = nothing)
+    res = blockscal(X_bl; scal = object.scal)
     zX = reduce(hcat, res.X)
     transform(object.fm, zX; nlv = nlv)
 end
 
 """
-    predict(object::Mbplsr, X; nlv = nothing)
+    predict(object::Mbplsr, X_bl; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
-* `X` : A list (vector) of X-data for which predictions are computed.
+* `X_bl` : A list (vector) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
     If nothing, it is the maximum nb. LVs.
 """ 
-function predict(object::Mbplsr, X; nlv = nothing)
-    res = blockscal(X; scal = object.scal)
+function predict(object::Mbplsr, X_bl; nlv = nothing)
+    res = blockscal(X_bl; scal = object.scal)
     zX = reduce(hcat, res.X)
     pred = predict(object.fm, zX; nlv = nlv).pred
     (pred = pred,)

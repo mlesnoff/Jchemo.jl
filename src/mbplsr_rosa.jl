@@ -88,7 +88,7 @@ function mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv)
             XtY = X[i]' * DY
             if q == 1
                 w_bl[i] = vec(XtY)
-                w_bl[i] ./= sqrt(dot(w_bl[i], w_bl[i]))
+                w_bl[i] ./= norm(w_bl[i])
             else
                 w_bl[i] = svd!(XtY).U[:, 1]
             end
@@ -125,10 +125,10 @@ function mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv)
         # Orthogonalization of the weights "w" by block
         zw = w_bl[opt]
         if (a > 1) && isassigned(W_bl, opt)       
-            z = W_bl[opt]
-            zw .= zw .- z * (z' * zw)
+            zW = W_bl[opt]
+            zw .= zw .- zW * (zW' * zw)
         end
-        zw ./= sqrt(dot(zw, zw))
+        zw ./= norm(zw)
         if !isassigned(W_bl, opt) 
             W_bl[opt] = reshape(zw, :, 1)
         else

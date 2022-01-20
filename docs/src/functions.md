@@ -135,17 +135,8 @@
 *Regression*
 
 - ***mbplsr*** Multiblock PLSR (PLSR on concatenated autoscaled blocks)
-- ***mbplsr_avg*** High-level multiblock PLSR (Average of block PLSR predictions)
-- ***mbplsr_mid*** Mid-level multiblock PLSR (PLSR on block PLS scores)
-- ***mbplsr_mid_seq*** Sequential mid-level multiblock PLSR
 - ***mbplsr_rosa*** Multiblock ROSA PLSR *Liland et al. 2016*
 - ***mbplsr_so*** Sequentially orthogonalized PLSR (SO-PLSR) 
-
-*Utility*
-
-- ***blockscal*** Autoscale a list of blocks (e.g. for MB-PLS)
-- ***mblocks*** Make blocks from a matrix
-- ***rv*** RV correlation coefficient
 
 ### <span style="color:#1589F0"> **TUNING MODELS** </span>
 
@@ -211,8 +202,11 @@
 ### <span style="color:#1589F0"> **UTILITIES** </span>
 
 - ***aggstat*** Compute column-wise statistics (e.g. mean), by group
+- ***blockscal*** Scaling blocks (for multi-block analyses)
 - ***center***, ***scale*** Column-wise centering and scaling of a matrix
-- ***colmeans***, ***colvars*** Weighted column means and variances
+- ***colmeans***, ***colvars***, ***colstsds*** Column means, variances, standard deviations
+- ***colnorms2*** Column squared norms
+- ***covm***, ***corm*** Covariance and correlation matrices
 - ***dummy*** Build dummy table
 - ***euclsq***, ***mahsq***, ***mahsqchol*** Euclidean and Mahalanobis distances between rows of matrices
 - ***getknn*** Find nearest neighbours between rows of matrices
@@ -220,8 +214,11 @@
 - ***krbf, kpol*** Build kernel Gram matrices
 - ***locw*** Working function for local (kNN) models
 - ***mad*** Median absolute deviation
-- ***matcov***, ***matB***, ***matW*** Covariances matrices
+- ***matB***, ***matW*** Between- and within-covariance matrices
+- ***mblocks*** Make blocks from a matrix
+- ***norm2*** Squared norm of a vector
 - ***recodnum2cla*** Recode a continuous variable to classes
+- ***rv*** RV correlation coefficient
 - ***sourcedir*** Include all the files contained in a directory
 - ***summ*** Summarize the columns of a dataset
 - ***tab***, ***tabn*** Univariate tabulation 
@@ -231,8 +228,6 @@
 #### **Plotting**
 
 - ***plotsp*** Plotting spectra
-
-
 
 <!---
 #### **Other variable importance methods**

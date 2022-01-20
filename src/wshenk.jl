@@ -16,7 +16,7 @@ procedure for near infrared instruments.
 Journal of Near Infrared Spectroscopy 5, 223. https://doi.org/10.1255/jnirs.115
 
 """ 
-function wshenk(object::Union{Plsr}, X; nlv = nothing, norm = false)
+function wshenk(object::Union{Plsr}, X; nlv = nothing)
     X = ensure_mat(X)
     m = size(X, 1)
     p = size(X, 2)

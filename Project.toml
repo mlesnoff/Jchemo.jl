@@ -1,7 +1,7 @@
 name = "Jchemo"
 uuid = "fbca9394-dd0a-4d1c-b066-ae75f6ef1ad5"
 authors = ["Matthieu Lesnoff <matthieu.lesnoff@gmail.com>"]
-version = "0.0.8"
+version = "0.0.9"
 
 [deps]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
@@ -10,10 +10,10 @@ DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 DataInterpolations = "82cc6244-b520-54b8-b5a6-8a565e85f1d0"
 Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
-GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
 HypothesisTests = "09f84164-cd44-5f33-b23f-e6b0d136a0d5"
 ImageFiltering = "6a3955dd-da59-5b1f-98d4-e7296123deb5"
 Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
+IterativeSolvers = "42fd0dbc-a981-5370-80f2-aaf504508153"
 LIBSVM = "b1bec4e5-fd48-53fe-b0cb-9723c09d164b"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 NearestNeighbors = "b8a86587-4115-5ab1-83bc-aa920d37bbce"

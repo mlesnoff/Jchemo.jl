@@ -1,5 +1,22 @@
 ## NEWS for package **Jchemo**
 
+### *Version 0.0-9*
+- New 
+    - **blockscal_frob**, **blockscal_ncol**, **blockscal_sd**
+    - **colnorms2**
+    - **corm**, **covm**
+    - **nipals**
+    - **norm2**
+
+- Modified
+    - **blockscal** 
+    - **matcov** renamed to **covm** and extended
+
+- Removed
+    - **mbplsr_mid_avg**
+    - **mbplsr_mid**
+    - **mbplsr_mid_seq**
+
 ### *Version 0.0-8*
 - New functions
     - **gridcv_mb**
