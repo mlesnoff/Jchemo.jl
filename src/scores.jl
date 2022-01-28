@@ -142,13 +142,12 @@ end
 #}
 
 """
-    mse(pred, Y)
+    mse(pred, Y; digits = 3)
 Summary of model performance for regression.
 * `pred` : Predictions.
 * `Y` : Observed data.
 """
-# Summary for regression
-function mse(pred, Y)
+function mse(pred, Y; digits = 3)
     q = size(Y, 2)
     zmsep = msep(pred, Y)
     zrmsep = sqrt.(zmsep)
@@ -163,7 +162,9 @@ function mse(pred, Y)
     nam = reshape(nam, 1, :)
     res = (nam = nam, msep = zmsep, rmsep = zrmsep, sep = zsep, bias = zbias, 
         cor2 = zcor2, r2 = zr2, rpd = zrpd, rpdr = zrpdr, mean = zmean)
-    DataFrame(res)
+    res = DataFrame(res)  
+    res[:, 2:end] = round.(res[:, 2:end], digits = digits)
+    res
 end
 
 """

@@ -1,5 +1,16 @@
 ## NEWS for package **Jchemo**
 
+### *Version 0.0-10*
+- New 
+    - **colsums**
+    - **mbpca_comdim_s**
+    - **rowsums**
+
+- Modified
+    - **nipals**
+    - **mse**
+    - **mbpls**
+
 ### *Version 0.0-9*
 - New 
     - **blockscal_frob**, **blockscal_ncol**, **blockscal_sd**

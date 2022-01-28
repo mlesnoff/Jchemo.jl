@@ -1,7 +1,8 @@
-struct Mbplsr
+struct Mbplsr1
     fm
     T::Matrix{Float64}
     scal
+    xmeans
     weights::Vector{Float64}
 end
 
@@ -21,47 +22,63 @@ PLSR on scaled and concatened blocks.
 Vector `weights` is internally normalized to sum to 1. 
 See the help of `plskern` for details.
 """
-function mbplsr(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, bscaling = "frob")
+function mbplsr(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, bscaling = "none")
+    nbl = length(X_bl)
+    X = copy(X_bl)
     Y = ensure_mat(Y)
     weights = mweights(weights)
-    nbl = length(X_bl)
-    if bscaling == "none"
-        scal = ones(nbl)
-        X = reduce(hcat, X_bl)
-    else
-        bscaling == "frob" ? res = blockscal_frob(X_bl, weights) : nothing
-        bscaling == "sd" ? res = blockscal_sd(X_bl, weights) : nothing
-        bscaling == "ncol" ? res = blockscal_ncol(X_bl) : nothing
-        scal = res.scal
-        X = reduce(hcat, res.X)    
+    xmeans = list(nbl, Vector{Float64})
+    @inbounds for k = 1:nbl
+        xmeans[k] = colmeans(X[k], weights)   
+        X[k] = center(X[k], xmeans[k])
     end
-    fm = plskern(X, Y, weights; nlv = nlv)
-    Mbplsr(fm, fm.T, scal, weights)
+    if bscaling == "none" 
+        scal = ones(nbl)
+    else
+        bscaling == "frob" ? res = blockscal_frob(X, weights) : nothing
+        bscaling == "sd" ? res = blockscal_sd(X, weights) : nothing
+        bscaling == "ncol" ? res = blockscal_sd(X, weights) : nothing
+        X = res.X
+        scal = res.scal
+    end
+    zX = reduce(hcat, X)
+    fm = plskern(zX, Y, weights; nlv = nlv)
+    Mbplsr1(fm, fm.T, scal, xmeans, weights)
 end
 
 """ 
-    transform(object::Mbplsr, X_bl; nlv = nothing)
+    transform(object::Mbplsr1, X_bl; nlv = nothing)
 Compute LVs ("scores" T) from a fitted model.
 * `object` : The maximal fitted model.
 * `X_bl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
 """ 
-function transform(object::Mbplsr, X_bl; nlv = nothing)
-    res = blockscal(X_bl; scal = object.scal)
+function transform(object::Mbplsr1, X_bl; nlv = nothing)
+    nbl = length(X_bl)
+    X = copy(X_bl)
+    @inbounds for k = 1:nbl
+        X[k] = center(X[k], object.xmeans[k])
+    end
+    res = blockscal(X; scal = object.scal)
     zX = reduce(hcat, res.X)
     transform(object.fm, zX; nlv = nlv)
 end
 
 """
-    predict(object::Mbplsr, X_bl; nlv = nothing)
+    predict(object::Mbplsr1, X_bl; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X_bl` : A list (vector) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
     If nothing, it is the maximum nb. LVs.
 """ 
-function predict(object::Mbplsr, X_bl; nlv = nothing)
-    res = blockscal(X_bl; scal = object.scal)
+function predict(object::Mbplsr1, X_bl; nlv = nothing)
+    nbl = length(X_bl)
+    X = copy(X_bl)
+    @inbounds for k = 1:nbl
+        X[k] = center(X[k], object.xmeans[k])
+    end
+    res = blockscal(X; scal = object.scal)
     zX = reduce(hcat, res.X)
     pred = predict(object.fm, zX; nlv = nlv).pred
     (pred = pred,)

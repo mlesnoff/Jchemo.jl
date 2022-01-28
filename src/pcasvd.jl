@@ -1,5 +1,5 @@
 struct Pca
-    T::Array{Float64}
+    T::Array{Float64} 
     P::Array{Float64}
     sv::Vector{Float64}
     xmeans::Vector{Float64}
@@ -27,7 +27,7 @@ Outputs are:
 
 * T = D^(-1/2) * U * S
 * P = V
-* Diagonal of S   
+* The diagonal of S   
 """ 
 function pcasvd(X, weights = ones(size(X, 1)); nlv)
     pcasvd!(copy(X), weights; nlv = nlv)
@@ -61,10 +61,9 @@ function Base.summary(object::Pca, X)
     nlv = size(object.T, 2)
     D = Diagonal(object.weights)
     X = center(X, object.xmeans)
-    sstot = sum(colnorms2(X, object.weights))   
-    # = tr(X' * D * X)
+    sstot = sum(colnorms2(X, object.weights))   # = tr(X' * D * X)
     TT = D * object.T.^2
-    tt = vec(sum(TT, dims = 1)) 
+    tt = colsums(TT) 
     # = diag(T' * D * T) 
     # = colnorms2(object.T, object.weights) 
     # = object.sv[1:nlv].^2

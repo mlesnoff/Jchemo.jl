@@ -187,6 +187,21 @@ colstds(X) = sqrt.(colvars(X))
 colstds(X, w) = sqrt.(colvars(X, w))
 
 """
+    colsums(X)
+    colsums(X, w)
+Compute the sum of each column of `X`.
+* `X` : Data (n, p).
+* `w` : Weights (n) of the observations.
+
+Return a vector.
+
+**Note:** Vector`w` is not internally normalized to sum to 1.
+""" 
+colsums(X) = vec(sum(X; dims = 1))
+
+colsums(X, w) = vec(w' * ensure_mat(X))
+
+"""
     colvars(X)
     colvars(X, w)
 Compute the uncorrected variance of each column of `X`.
@@ -544,6 +559,15 @@ rmrow(X, [1, 4])
 """
 rmrow(X::AbstractMatrix, s::Union{Vector, Number}) = X[setdiff(1:end, Int64.(s)), :]
 rmrow(x::Vector, s::Union{Vector, Number}) = x[setdiff(1:end, Int64.(s))]
+
+"""
+    rowsums(X)
+Compute the sum of each row of `X`.
+* `X` : Data (n, p).
+
+Return a vector.
+""" 
+rowsums(X) = vec(sum(X; dims = 2))
 
 """
     scale(X, v)

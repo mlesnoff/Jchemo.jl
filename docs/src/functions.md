@@ -11,6 +11,9 @@
 - ***xfit*** Matrix fitting 
 - ***xresid*** Residual matrix 
 
+*Multiblock*
+- ***mbpca_comdim_s*** CCSWA (ComDim)
+
 ### <span style="color:#1589F0"> **RANDOM PROJECTIONS** </span>
 
 - ***rpmat_gauss*** Gaussian random projection matrix 
@@ -50,6 +53,15 @@
 *Utility*
 - ***aicplsr*** AIC and Cp for PLSR
 
+*Variable selection*
+- ***covsel*** CovSel (Roger et al. 2011)
+- ***iplsr*** Interval PLSR (iPLS) (Nørgaard et al. 2000)
+
+*Multiblock*
+- ***mbplsr*** Multiblock PLSR (PLSR on concatenated autoscaled blocks)
+- ***mbplsr_rosa*** Multiblock ROSA PLSR *Liland et al. 2016*
+- ***mbplsr_so*** Sequentially orthogonalized PLSR (SO-PLSR) 
+
 #### **Principal component (PCR)**
 
 - ***pcr*** PCR by SVD factorization
@@ -82,11 +94,6 @@
 - ***baggr*** Bagging 
 - ***baggr_oob*** Out-of-bag error rate
 - ***baggr_vi*** Variance importance (permutation method)
-
-#### Variable selection
-
-- ***covsel*** CovSel (Roger et al. 2011)
-- ***iplsr*** Interval PLSR (iPLS) (Nørgaard et al. 2000)
 
 ### <span style="color:#1589F0"> **DISCRIMINATION ANALYSIS (DA)** </span>
 
@@ -129,14 +136,6 @@
 - ***treeda_xgb*** Single tree
 - ***rfda_xgb*** Random forest
 - ***xgboostda*** XGBoost
-
-### <span style="color:#1589F0;"> **MULTIBLOCK** </span>
-
-*Regression*
-
-- ***mbplsr*** Multiblock PLSR (PLSR on concatenated autoscaled blocks)
-- ***mbplsr_rosa*** Multiblock ROSA PLSR *Liland et al. 2016*
-- ***mbplsr_so*** Sequentially orthogonalized PLSR (SO-PLSR) 
 
 ### <span style="color:#1589F0"> **TUNING MODELS** </span>
 
@@ -204,8 +203,7 @@
 - ***aggstat*** Compute column-wise statistics (e.g. mean), by group
 - ***blockscal*** Scaling blocks (for multi-block analyses)
 - ***center***, ***scale*** Column-wise centering and scaling of a matrix
-- ***colmeans***, ***colvars***, ***colstsds*** Column means, variances, standard deviations
-- ***colnorms2*** Column squared norms
+- ***colmeans***, ***colnorms2***, ***colstsds***, ***colsums***, ***colvars***  Column-wise operations
 - ***covm***, ***corm*** Covariance and correlation matrices
 - ***dummy*** Build dummy table
 - ***euclsq***, ***mahsq***, ***mahsqchol*** Euclidean and Mahalanobis distances between rows of matrices

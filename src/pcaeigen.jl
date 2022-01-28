@@ -22,14 +22,14 @@ function pcaeigen!(X, weights = ones(size(X, 1)); nlv)
     sqrtw = sqrt.(weights)
     xmeans = colmeans(X, weights) 
     center!(X, xmeans)
-    zX = Diagonal(sqrtw) * X
-    res = eigen!(Symmetric(zX' * zX); sortby = x -> -abs(x)) 
+    X .= Diagonal(sqrtw) * X
+    res = eigen!(Symmetric(X' * X); sortby = x -> -abs(x)) 
     P = res.vectors[:, 1:nlv]
     eig = res.values[1:min(n, p)]
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
-    T = X * P
-    Pca(T, P, sv, xmeans, weights, nothing, nothing)
+    T = Diagonal(1 ./ sqrtw) * X * P
+    Pca(T, P, sv, xmeans, weights, nothing, nothing) 
 end
 
 """
@@ -69,10 +69,9 @@ function pcaeigenk!(X, weights = ones(size(X, 1)); nlv)
     eig = res.values[1:min(n, p)]
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
-    zV = scale(res.vectors[:, 1:nlv], sv[1:nlv])
-    P = zX' * zV
+    P = zX' * scale(res.vectors[:, 1:nlv], sv[1:nlv])
     T = X * P
-    Pca(T, P, sv, xmeans, weights, nothing, nothing)
+    Pca(T, P, sv, xmeans, weights, nothing, nothing) 
 end
 
 

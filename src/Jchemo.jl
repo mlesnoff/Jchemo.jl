@@ -11,7 +11,6 @@ using Distances
 using HypothesisTests
 using ImageFiltering
 using Interpolations
-using IterativeSolvers
 using LIBSVM
 using NearestNeighbors
 using StatsBase    # sample
@@ -30,6 +29,9 @@ include("pcasvd.jl")
 include("pcaeigen.jl")
 include("kpca.jl")
 include("rp.jl")
+
+# Multiblock PCA
+include("mbpca_comdim_s.jl")
 
 # Regression 
 include("mlr.jl")
@@ -75,7 +77,7 @@ include("lwplsr.jl")
 include("lwplsr_agg.jl")
 include("cplsr_agg.jl")  # Use structure PlsrDa
 
-# Multi-block regresssion
+# Multiblock regresssion
 include("angles.jl")
 include("blockscal.jl")
 include("mbplsr.jl") 
@@ -113,7 +115,7 @@ export
     blockscal_ncol, blockscal_sd,
     checkdupl, checkmiss,
     center, center!, 
-    colmeans, colvars, colstds, colnorms2,
+    colmeans, colnorms2, colstds, colsums, colvars,
     corm, covm, 
     dummy,
     ensure_df, ensure_mat,
@@ -127,7 +129,8 @@ export
     pnames, psize,
     recodcat2num, recodnum2cla,
     replacebylev,
-    rmcol, rmrow,    
+    rmcol, rmrow, 
+    rowsums,   
     rv, 
     scale, scale!,
     sourcedir,
@@ -147,6 +150,8 @@ export
     kpca,
     scordis, odis,
     rpmat_gauss, rpmat_li, rp,
+    # Multiblock PCA
+    mbpca_comdim_s,
     # Regression
     mlr, mlr!, mlrchol, mlrchol!, mlrpinv, mlrpinv!, mlrpinv_n, mlrpinv_n!,
     mlrvec!, mlrvec,
