@@ -26,7 +26,7 @@ res.cor_circle
 w = collect(1:n) 
 nlv = 5
 fm = pcasvd(Xtrain, w; nlv = nlv) ;
-D = Diagonal(mweights(w)) ;
+D = Diagonal(mweight(w)) ;
 fm.T' * D * fm.T
 fm.P' * fm.P
 

@@ -1,12 +1,15 @@
 """
     pcaeigen(X, weights = ones(size(X, 1)); nlv)
 PCA by Eigen factorization.
-* `X` : X-data.
-* `weights` : Weights of the observations.
+* `X` : X-data (n, p).
+* `weights` : Weights (n) of the observations.
 * `nlv` : Nb. principal components (PCs).
     
-Let us note D the (n, n) diagonal matrix of `weights` (internally normalized to sum to 1)
-and X the centered matrix in metric D (`X` is internally centered). 
+`weights` is internally normalized to sum to 1.
+
+Let us note D the (n, n) diagonal matrix of `weights`
+and X the centered matrix in metric D.
+
 The function minimizes ||X - T * P'||^2  in metric D, by 
 computing an Eigen factorization of X' * D * X. 
 """ 
@@ -18,10 +21,10 @@ function pcaeigen!(X, weights = ones(size(X, 1)); nlv)
     X = ensure_mat(X)
     n, p = size(X)
     nlv = min(nlv, n, p)
-    weights = mweights(weights)
-    sqrtw = sqrt.(weights)
-    xmeans = colmeans(X, weights) 
+    weights = mweight(weights)
+    xmeans = colmean(X, weights) 
     center!(X, xmeans)
+    sqrtw = sqrt.(weights)
     X .= Diagonal(sqrtw) * X
     res = eigen!(Symmetric(X' * X); sortby = x -> -abs(x)) 
     P = res.vectors[:, 1:nlv]
@@ -35,12 +38,14 @@ end
 """
     pcaeigenk(X, weights = ones(size(X, 1)); nlv)
 PCA by Eigen factorization of the kernel form (XX') for wide matrices.
-* `X` : X-data.
-* `weights` : Weights of the observations.
+* `X` : X-data (n, p).
+* `weights` : Weights (n) of the observations.
 * `nlv` : Nb. principal components (PCs).
 
-Let us note D the (n, n) diagonal matrix of `weights` (internally normalized to sum to 1)
-and X the centered matrix in metric D (`X` is internally centered). 
+`weights` is internally normalized to sum to 1.
+
+Let us note D the (n, n) diagonal matrix of `weights`
+and X the centered matrix in metric D. 
 The function minimizes ||X - T * P'||^2  in metric D, by 
 computing an Eigen factorization of D^(1/2) * X * X' D^(1/2).
 
@@ -60,10 +65,10 @@ function pcaeigenk!(X, weights = ones(size(X, 1)); nlv)
     X = ensure_mat(X)
     n, p = size(X)
     nlv = min(nlv, n, p)
-    weights = mweights(weights)
-    sqrtw = sqrt.(weights)
-    xmeans = colmeans(X, weights) 
+    weights = mweight(weights)
+    xmeans = colmean(X, weights) 
     center!(X, xmeans)
+    sqrtw = sqrt.(weights)
     zX = Diagonal(sqrtw) * X
     res = eigen!(Symmetric(zX * zX'); sortby = x -> -abs(x))
     eig = res.values[1:min(n, p)]

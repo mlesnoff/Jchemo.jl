@@ -33,7 +33,7 @@ Compute the mean of the squared prediction errors (MSEP).
 """
 function msep(pred, Y)
     r = residreg(pred, Y)
-    reshape(colmeans(r.^2), 1, :)
+    reshape(colmean(r.^2), 1, :)
 end
 
 """
@@ -52,7 +52,7 @@ Compute the prediction bias, i.e. the opposite of the mean prediction error.
 """
 function bias(pred, Y)
     r = residreg(pred, Y)
-    reshape(-colmeans(r), 1, :)
+    reshape(-colmean(r), 1, :)
 end
 
 """
@@ -84,7 +84,7 @@ between the true data and the predictions.
 """
 function r2(pred, Y)
     m = size(Y, 1)
-    mu = colmeans(Y)
+    mu = colmean(Y)
     zmu = reduce(hcat, fill(mu, m, 1))'
     1 .- msep(pred, Y) ./ msep(zmu, Y)
 end
@@ -157,7 +157,7 @@ function mse(pred, Y; digits = 3)
     zr2 = r2(pred, Y)
     zrpd = rpd(pred, Y)
     zrpdr = rpdr(pred, Y)
-    zmean = reshape(colmeans(Y), 1, :)
+    zmean = reshape(colmean(Y), 1, :)
     nam = map(string, repeat(["y"], q), 1:q)
     nam = reshape(nam, 1, :)
     res = (nam = nam, msep = zmsep, rmsep = zrmsep, sep = zsep, bias = zbias, 

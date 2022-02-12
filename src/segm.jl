@@ -41,7 +41,7 @@ end
 Build segments (with block-sampling) for K-fold cross-validation.  
 * `n` : Total nb. observations in the dataset. The sampling 
     is implemented with 1:n.
-* `group` : A vector (n,) defining the blocks.
+* `group` : A vector (n) defining the blocks.
 * `K` : Nb. folds (segments) splitting the data. 
 * `rep` : Nb. replications of the sampling.
 
@@ -53,9 +53,9 @@ Vector `group` (defining the blocks) must be of length n.
     
 Such a block-sampling is required when data is structured by blocks and 
 when the response to predict is correlated within blocks.   
-It prevents high underestimation of the generalization error.
+It prevents underestimation of the generalization error.
 
-The function returns a list (vector) of rep elements. 
+The function returns a list (vector) of `rep` elements. 
 Each element of the list contains K vectors (= K segments).
 Each segment contains the indexes (position within 1:n) of the sampled observations.    
 
@@ -63,7 +63,7 @@ Each segment contains the indexes (position within 1:n) of the sampled observati
 ```julia
 n = 10 
 group = ["A", "B", "C", "D", "E", "A", "B", "C", "D", "E"]    # The blocks of the observations
-unique(group)    # Print of the blocks
+unique(group)    # Print the blocks
 K = 3 ; rep = 4 
 segm = segmkf(n, K, group; rep = rep)
 i = 1 
@@ -76,7 +76,7 @@ group[segm[i][3]]
 """ 
 function segmkf(n, K, group; rep = 1)
     # n is not used but is kept for multiple dispatch
-    group = vec(group) # must be of size (n,)
+    group = vec(group) # must be of length n
     s = list(rep)
     yagg = unique(group)
     zn = length(yagg)
@@ -139,7 +139,7 @@ end
 Build segments with block-sampling for "test-set" validation.  
 * `n` : Total nb. observations in the dataset. The sampling 
     is implemented with 1:n.
-* `group` : A vector (n,) defining the blocks.
+* `group` : A vector (n) defining the blocks.
 * `m` : Nb. blocks in the segment. 
 * `rep` : Nb. replications of the sampling.
 
@@ -150,7 +150,7 @@ Vector `group` (defining the blocks) must be of length n.
 
 Such a block-sampling is required when data is structured by blocks and 
 when the response to predict is correlated within blocks.   
-It prevents high underestimation of the generalization error.
+It prevents underestimation of the generalization error.
 
 The function returns a list (Vector::Any) of rep elements. 
 Each element of the list contains a vector (= segment) 
@@ -161,7 +161,7 @@ Each segment contains m blocks.
 ```julia
 n = 10 
 group = ["A", "B", "C", "D", "E", "A", "B", "C", "D", "E"]    # The blocks of the observations
-unique(group)    # Print of the blocks
+unique(group)    # Print the blocks
 m = 2 ; rep = 4 
 segm = segmts(n, m, group; rep)
 i = 1 
@@ -172,7 +172,7 @@ group[segm[i][1]]
 """ 
 function segmts(n, m, group; rep = 1)
     # n is not used but is kept for multiple dispatch
-    group = vec(group) # must be of size (n,)
+    group = vec(group) # must be of length n
     s = list(rep)
     yagg = unique(group)
     zn = length(yagg)

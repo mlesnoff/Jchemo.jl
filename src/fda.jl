@@ -34,7 +34,7 @@ end
 function fda!(X, y; nlv, pseudo = false)
     X = ensure_mat(X)
     n, p = size(X)
-    xmeans = colmeans(X) 
+    xmeans = colmean(X) 
     center!(X, xmeans)
     res = matW(X, y)
     lev = res.lev
@@ -78,7 +78,7 @@ end
 function fdasvd!(X, y; nlv, pseudo = false)
     X = ensure_mat(X)
     n, p = size(X)
-    xmeans = colmeans(X) 
+    xmeans = colmean(X) 
     center!(X, xmeans)
     res = matW(X, y)
     lev = res.lev

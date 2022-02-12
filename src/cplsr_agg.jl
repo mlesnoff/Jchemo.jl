@@ -37,7 +37,7 @@ function predict(object::CplsrAgg, X)
     nlev = length(object.lev)
     zp = predict(object.fm_da, X).posterior
     zp .= (mapreduce(i -> Float64.(zp[i, :] .== maximum(zp[i, :])), hcat, 1:m)')
-    #zp = (mapreduce(i -> Jchemo.mweights(exp.(zp[i, :])), hcat, 1:m))'
+    #zp = (mapreduce(i -> Jchemo.mweight(exp.(zp[i, :])), hcat, 1:m))'
     #zp .= (mapreduce(i -> 1 ./ (1 .+ exp.(-zp[i, :])), hcat, 1:m)')
     #zp .= (mapreduce(i -> zp[i, :] / sum(zp[i, :]), hcat, 1:m))'
     acc = zp[:, 1] .* predict(object.fm[1], X).pred

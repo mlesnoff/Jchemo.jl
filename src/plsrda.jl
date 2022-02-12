@@ -86,7 +86,7 @@ function predict(object::Union{Plsrda, KplsrDa}, X; nlv = nothing)
         zp = predict(object.fm, X; nlv = nlv[i]).pred
         #if softmax
         #    @inbounds for j = 1:m
-        #        zp[j, :] .= mweights(exp.(zp[j, :]))
+        #        zp[j, :] .= mweight(exp.(zp[j, :]))
         #   end
         #end
         z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first

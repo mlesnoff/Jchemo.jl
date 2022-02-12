@@ -32,7 +32,7 @@ function plsrda_agg(X, y, weights = ones(size(X, 1)); nlv)
     nlvmax = maximum(nlv)
     nlv = (max(minimum(nlv), 0):min(nlvmax, n, p))
     w = ones(nlvmax + 1)
-    w_mod = mweights(w[collect(nlv) .+ 1])   # uniform weights
+    w_mod = mweight(w[collect(nlv) .+ 1])   # uniform weights
     fm = plsrda(X, y, weights; nlv = nlvmax)
     PlsdaAgg(fm, nlv, w_mod, fm.lev, fm.ni)
 end
@@ -63,7 +63,7 @@ function plslda_agg(X, y, weights = ones(size(X, 1)); nlv)
     nlvmax = maximum(nlv)
     nlv = (max(minimum(nlv), 0):min(nlvmax, n, p))
     w = ones(nlvmax + 1)
-    w_mod = mweights(w[collect(nlv) .+ 1])   # uniform weights
+    w_mod = mweight(w[collect(nlv) .+ 1])   # uniform weights
     fm = plslda(X, y, weights; nlv = nlvmax)
     PlsdaAgg(fm, nlv, w_mod, fm.lev, fm.ni)
 end
@@ -94,7 +94,7 @@ function plsqda_agg(X, y, weights = ones(size(X, 1)); nlv)
     nlvmax = maximum(nlv)
     nlv = (max(minimum(nlv), 0):min(nlvmax, n, p))
     w = ones(nlvmax + 1)
-    w_mod = mweights(w[collect(nlv) .+ 1])   # uniform weights
+    w_mod = mweight(w[collect(nlv) .+ 1])   # uniform weights
     fm = plsqda(X, y, weights; nlv = nlvmax)
     PlsdaAgg(fm, nlv, w_mod, fm.lev, fm.ni)
 end

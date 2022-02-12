@@ -26,10 +26,10 @@ function mbplsr(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, bscaling = "none
     nbl = length(X_bl)
     X = copy(X_bl)
     Y = ensure_mat(Y)
-    weights = mweights(weights)
+    weights = mweight(weights)
     xmeans = list(nbl, Vector{Float64})
     @inbounds for k = 1:nbl
-        xmeans[k] = colmeans(X[k], weights)   
+        xmeans[k] = colmean(X[k], weights)   
         X[k] = center(X[k], xmeans[k])
     end
     if bscaling == "none" 

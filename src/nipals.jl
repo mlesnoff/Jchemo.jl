@@ -20,7 +20,7 @@ Paris, France.
 function nipals(X; tol = sqrt(eps(1.)), maxit = 200)
     X = ensure_mat(X)
     p = size(X, 2)
-    u = X[:, findmax(colnorms2(X))[2]]
+    u = X[:, findmax(colnorm2(X))[2]]
     v = similar(X, p)   
     cont = true
     iter = 1
@@ -38,6 +38,7 @@ function nipals(X; tol = sqrt(eps(1.)), maxit = 200)
     sv = sqrt(norm2(u))
     u .= u / sv
     niter = iter - 1
+    n = size(X, 1)
     (u = u, v, sv, niter)
 end
 

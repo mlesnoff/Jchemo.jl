@@ -1,5 +1,5 @@
 """
-    mblocks(X, listbl)
+    mblock(X, listbl)
 Make blocks from a matrix.
 * `X` : X-data.
 * `listbl` : A vector whose each component defines the colum numbers
@@ -14,10 +14,10 @@ n = 5 ; p = 10
 X = rand(n, p) 
 listbl = [3:4, 1, [6; 8:10]]
 
-X_bl = mblocks(X, listbl)
+X_bl = mblock(X, listbl)
 ```
 """
-function mblocks(X, listbl)
+function mblock(X, listbl)
     nbl = length(listbl)
     zX = list(nbl, Matrix{Float64})
     @inbounds for i = 1:nbl
@@ -28,7 +28,9 @@ end
 
 """
     blockscal(X_bl; scal)
+    blockscal_frob(X_bl)
     blockscal_frob(X_bl, weights = ones(size(X[1], 1)))
+    blockscal_mfa(X_bl, weights = ones(size(X[1], 1)))
     blockscal_ncol(X_bl)
     blockscal_sd(X_bl, weights = ones(size(X[1], 1)))
 Scale a list of blocks (matrices).
@@ -41,41 +43,57 @@ Specificities:
 * `blockscal_frob`: Let us note D the diagonal matrix of vector `weights`.
 Each block X is divided by its Frobenius norm = sqrt(trace(X' * D * X)).
 After scaling, trace(X' * D * X) = 1.
+* `blockscal_mfa`: Each block X is tranformed to X / sqrt(lamda),
+    where lambda is the dominant eigenvalue of X (MFA approach).
 * `blockscal_ncol`: Each block X is tranformed to X / nb. columns of the block.
 * `blockscal_sd`: Each block X is transformed to X / sqrt(sum(weighted variances of the block-columns)).
 After scaling, sum(weighted variances of the block-columns) = 1.
 
 The functions return the scaled blocks and the scaling values.
 
-**Note:** In `blockscal_sd`, for the true weighted variances, vector `weights` must be preliminary 
-normalized to sum to 1 (`weights` is not internally normalized).
-
 ## Examples
 ```julia
 n = 5 ; p = 10 
 X = rand(n, p) 
-listbl = [3:4, 1, [6; 8:10]]
-X_bl = mblocks(X, listbl)
-i = 3
-X_bl[i]
+Xnew = X[1:3, :]
 
-scal = [3.1 ; 2 ; .7]
+listbl = [3:4, 1, [6; 8:10]]
+X_bl = mblock(X, listbl) ;
+
+X_bl[1]
+X_bl[2]
+X_bl[3]
+
+scal = ones(3)
 res = blockscal(X_bl; scal = scal) ;
 res.scal
-
-w = mweights(ones(n))
-#w = mweights(collect(1:n))
-res = blockscal_sd(X_bl, w) ;
-res.scal
-i = 3 ; sum(colvars(res.X[i], w))
+res.X[3]
+X_bl[3]
 
 w = ones(n)
 #w = collect(1:n)
-D = Diagonal(w)
+D = Diagonal(mweight(w))
 res = blockscal_frob(X_bl, w) ;
 res.scal
 i = 3 ; tr(X_bl[i]' * D * X_bl[3])^.5
 tr(res.X[i]' * D * res.X[i])^.5
+
+w = ones(n)
+#w = collect(1:n)
+res = blockscal_mfa(X_bl, w) ;
+res.scal
+i = 3 ; pcasvd(X_bl[i], w; nlv = 1).sv[1]
+
+res = blockscal_ncol(X_bl) ;
+res.scal
+res.X[3]
+X_bl[3] / size(X_bl[3], 2)
+
+w = ones(n)
+#w = collect(1:n)
+res = blockscal_sd(X_bl, w) ;
+res.scal
+sum(colvar(res.X[3], w))
 
 # To concatenate the returned blocks
 
@@ -94,8 +112,23 @@ end
 function blockscal_frob(X_bl, weights = ones(size(X[1], 1)))
     nbl = length(X_bl)
     scal = list(nbl, Float64)
+    sqrtw = sqrt.(mweight(weights))
+    sqrtD = Diagonal(sqrtw)
     @inbounds for i = 1:nbl
-        scal[i] =  sqrt(sum(colnorms2(X_bl[i], weights)))
+        scal[i] =  sqrt(ssq(sqrtD * X_bl[i]))
+    end
+    blockscal(X_bl; scal = scal)
+end 
+
+function blockscal_mfa(X_bl, weights = ones(size(X[1], 1)))
+    nbl = length(X_bl)
+    sqrtw = sqrt.(mweight(weights))
+    sqrtD = Diagonal(sqrtw)
+    scal = list(nbl, Float64)
+    @inbounds for k = 1:nbl
+        xmeans = colmean(X_bl[k], weights)
+        zX = center(X_bl[k], xmeans)
+        scal[k] = nipals(sqrtD * zX).sv
     end
     blockscal(X_bl; scal = scal)
 end 
@@ -113,7 +146,7 @@ function blockscal_sd(X_bl, weights = ones(size(X[1], 1)))
     nbl = length(X_bl)
     scal = list(nbl, Float64)
     @inbounds for i = 1:nbl
-        scal[i] = sqrt(sum(colvars(X_bl[i], weights)))
+        scal[i] = sqrt(sum(colvar(X_bl[i], weights)))
     end
     blockscal(X_bl; scal = scal)
 end 

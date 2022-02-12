@@ -8,7 +8,7 @@ matB = function(X, y)
     X = ensure_mat(X)
     y = vec(y) 
     z = aggstat(X; group = y, fun = mean)
-    B = covm(z.res, mweights(z.ni))
+    B = covm(z.res, mweight(z.ni))
     (B = B, ct = z.res, lev = z.lev, ni = z.ni)
 end
 
@@ -29,7 +29,7 @@ matW = function(X, y)
     # Case with y(s) with only 1 obs
     sum(ni .== 1) > 0 ? sigma_1obs = covm(X) : nothing
     # End
-    w = mweights(ni)
+    w = mweight(ni)
     Wi = list(nlev, Matrix{Float64})
     W = zeros(1, 1)
     @inbounds for i in 1:nlev 

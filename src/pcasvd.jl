@@ -12,16 +12,19 @@ end
 """
     pcasvd(X, weights = ones(size(X, 1)); nlv)
 PCA by SVD factorization.
-* `X` : X-data.
-* `weights` : Weights of the observations.
+* `X` : X-data (n, p). 
+* `weights` : Weights (n) of the observations.
 * `nlv` : Nb. principal components (PCs).
 
-Let us note D the (n, n) diagonal matrix of `weights` (internally normalized to sum to 1)
-and X the centered matrix in metric D (`X` is internally centered). 
-The function minimizes ||X - T * P'||^2  in metric D, by 
-computing a SVD factorization of D^(1/2) * X:
+`weights` is internally normalized to sum to 1.
 
-* D^(1/2) * X ~ U * S * V'
+Let us note D the (n, n) diagonal matrix of `weights`
+and X the centered matrix in metric D.
+
+The function minimizes ||X - T * P'||^2  in metric D, by 
+computing a SVD factorization of sqrt(D) * X:
+
+* sqrt(D) * X ~ U * S * V'
 
 Outputs are:
 
@@ -37,12 +40,12 @@ function pcasvd!(X, weights = ones(size(X, 1)); nlv)
     X = ensure_mat(X)
     n, p = size(X)
     nlv = min(nlv, n, p)
-    weights = mweights(weights)
-    sqrtw = sqrt.(weights)
-    xmeans = colmeans(X, weights) 
+    weights = mweight(weights)
+    xmeans = colmean(X, weights) 
     center!(X, xmeans)
     ## by default in LinearAlgebra.svd
     ## "full = false" ==> [1:min(n, p)]
+    sqrtw = sqrt.(weights)
     res = LinearAlgebra.svd!(Diagonal(sqrtw) * X)
     P = res.V[:, 1:nlv]
     sv = res.S   
@@ -61,11 +64,11 @@ function Base.summary(object::Pca, X)
     nlv = size(object.T, 2)
     D = Diagonal(object.weights)
     X = center(X, object.xmeans)
-    sstot = sum(colnorms2(X, object.weights))   # = tr(X' * D * X)
+    sstot = sum(colnorm2(X, object.weights))   # = tr(X' * D * X)
     TT = D * object.T.^2
-    tt = colsums(TT) 
+    tt = colsum(TT) 
     # = diag(T' * D * T) 
-    # = colnorms2(object.T, object.weights) 
+    # = colnorm2(object.T, object.weights) 
     # = object.sv[1:nlv].^2
     pvar = tt / sstot
     cumpvar = cumsum(pvar)

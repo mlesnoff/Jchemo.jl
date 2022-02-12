@@ -75,7 +75,7 @@ function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50,
         if(isnothing(weights))
             fm[i] = fun(zX, zY; kwargs...)
         else
-            w .= mweights(weights[srow])
+            w .= mweight(weights[srow])
             fm[i] = fun(zX, zY, w; kwargs...)
         end
         s_row[:, i] .= srow    

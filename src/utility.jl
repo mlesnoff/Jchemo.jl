@@ -4,6 +4,16 @@ Compute the mean (or other statistic) of each column of `X`, by group.
 * `X` : A matrix (n, p) or vector (n).
 * `group` : A vector (n) defining the groups.
 * `fun` : Function to compute.
+
+## Examples
+```julia
+n, p = 20, 5
+X = rand(n, p)
+group = rand(1:3, n)
+res = aggstat(X; group = group, fun = sum)
+pnames(res)
+res.X
+```
 """ 
 function aggstat(X::Union{AbstractMatrix, AbstractVector}; group, 
         fun = mean)
@@ -31,6 +41,14 @@ Compute the mean (or other statistic) of selected columns of `X`, by group.
 * `fun` : Function given the statistic to compute.
 
 Variables defined in `var_nam` and `group_nam` must be columns of `X`.
+## Examples
+```julia
+n, p = 20, 6
+X = DataFrame(rand(n, p), :auto)
+X.group1 = rand(1:2, n)
+X.group2 = rand(1:3, n)
+aggstat(X; var_nam = [:x1, :x2], group_nam = [:group1, :group2], fun = mean)
+```
 """ 
 function aggstat(X::DataFrame; var_nam, group_nam, fun = mean)
     gdf = groupby(X, group_nam) 
@@ -38,10 +56,19 @@ function aggstat(X::DataFrame; var_nam, group_nam, fun = mean)
 end
 
 """
-    center(X, v) 
+    center(X, v)
+    center!(X, v)
 Center each column of `X`.
 * `X` : Data.
 * `v` : Centering factors.
+
+## examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+xmeans = colmean(X)
+center(X, xmeans)
+```
 """ 
 function center(X, v)
     zX = copy(X)
@@ -59,9 +86,9 @@ end
 
 """
     checkdupl(X; digits = 3)
-Finding replicated rows in a dataset.
+Find replicated rows in a dataset.
 * `X` : A dataset.
-* `digits` : Nb. digits used to round `X`.
+* `digits` : Nb. digits used to round `X` before checking.
 
 ## Examples
 ```julia
@@ -101,7 +128,7 @@ end
 
 """
     checkmiss(X)
-Finding rows with missing data in a dataset.
+Find rows with missing data in a dataset.
 * `X` : A dataset.
 
 ## Examples
@@ -121,36 +148,51 @@ function checkmiss(X)
 end
 
 """
-    colmeans(X)
-    colmeans(X, w)
+    colmean(X)
+    colmean(X, w)
 Compute the mean of each column of `X`.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
 
+`w` is internally normalized to sum to 1.
+
 Return a vector.
 
-**Note:** For the true weighted mean, vector `w` must be preliminary 
-normalized to sum to 1 (`w` is not internally normalized).
+## Examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+colmean(X)
+w = mweight(collect(1:n))
+colmean(X, w)
+```
 """ 
-colmeans(X) = vec(Statistics.mean(X; dims = 1))
+colmean(X) = vec(Statistics.mean(X; dims = 1))
 
-colmeans(X, w) = vec(w' * ensure_mat(X))
+colmean(X, w) = vec(mweight(w)' * ensure_mat(X))
 
 """
-    colnorms(X)
-    colnorms2(X)
-    colnorms(X, w)
-    colnorms2(X, w)
-Compute the squared norm  of each column of a matrix X.
+    colnorm2(X)
+    colnorm2(X, w)
+Compute the squared norm of each column of a matrix X.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
 
-The squared weighted norm of a column x is:
-* norm(x)^2 = x' * D * x, where D is the diagonal matrix of vector `w`.
+`w` is internally normalized to sum to 1.
 
-**Note:** Vector `w` is not internally normalized to sum to 1.
+The squared weighted norm of a column x is:
+* norm(x)^2 = x' * D * x, where D is the diagonal matrix of `w`.
+
+## Examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+colnorm2(X)
+w = collect(1:n)
+colnorm2(X, w)
+```
 """ 
-function colnorms2(X)
+function colnorm2(X)
     X = ensure_mat(X)
     p = size(X, 2)
     z = similar(X, p)
@@ -160,65 +202,93 @@ function colnorms2(X)
     z 
 end
 
-function colnorms2(X, w)
+function colnorm2(X, w)
     X = ensure_mat(X)
     p = size(X, 2)
+    w = mweight(w)
     z = similar(X, p)
     @inbounds for j = 1:p
-        z[j] = dot(vcol(X, j), w .* vcol(X, j))        
+        x = vcol(X, j)
+        z[j] = dot(x, w .* x)        
     end
     z 
 end
 
 """
-    colstds(X)
-    colstds(X, w)
-Compute the uncorrected standard deviation of each column of `X`.
+    colstd(X)
+    colstd(X, w)
+Compute the (uncorrected) standard deviation of each column of `X`.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
 
+`w` is internally normalized to sum to 1.
+
 Return a vector.
 
-**Note:** For the true weighted standard variation, vector `w` must be preliminary 
-normalized to sum to 1 (`w` is not internally normalized).
+## Examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+colstd(X)
+w = collect(1:n)
+colstd(X, w)
+```
 """ 
-colstds(X) = sqrt.(colvars(X))
+colstd(X) = sqrt.(colvar(X))
 
-colstds(X, w) = sqrt.(colvars(X, w))
+colstd(X, w) = sqrt.(colvar(X, mweight(w)))
 
 """
-    colsums(X)
-    colsums(X, w)
+    colsum(X)
+    colsum(X, w)
 Compute the sum of each column of `X`.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
 
+`w` is internally normalized to sum to 1.
+
 Return a vector.
 
-**Note:** Vector`w` is not internally normalized to sum to 1.
+## Examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+colsum(X)
+w = collect(1:n)
+colsum(X, w)
+```
 """ 
-colsums(X) = vec(sum(X; dims = 1))
+colsum(X) = vec(sum(X; dims = 1))
 
-colsums(X, w) = vec(w' * ensure_mat(X))
+colsum(X, w) = vec(mweight(w)' * ensure_mat(X))
 
 """
-    colvars(X)
-    colvars(X, w)
-Compute the uncorrected variance of each column of `X`.
+    colvar(X)
+    colvar(X, w)
+Compute the (uncorrected) variance of each column of `X`.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
 
+`w` is internally normalized to sum to 1.
+
 Return a vector.
 
-**Note:** For the true weighted variance, vector `w` must be preliminary 
-normalized to sum to 1 (`w` is not internally normalized).
+## Examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+colvar(X)
+w = collect(1:n)
+colvar(X, w)
+```
 """ 
-colvars(X) = vec(Statistics.var(X; corrected = false, dims = 1))
+colvar(X) = vec(Statistics.var(X; corrected = false, dims = 1))
 
-function colvars(X, w)
+function colvar(X, w)
     X = ensure_mat(X)
     p = size(X, 2)
-    z = colmeans(X, w)
+    w = mweight(w)
+    z = colmean(X, w)
     @inbounds for j = 1:p
         z[j] = dot(w, (vcol(X, j) .- z[j]).^2)        
     end
@@ -226,7 +296,6 @@ function colvars(X, w)
 end
 
 """
-    covm(X, Y)
     covm(X, w)
     covm(X, Y, w)
 Compute covariance matrices.
@@ -234,15 +303,26 @@ Compute covariance matrices.
 * `Y` : Data (n, q).
 * `w` : Weights (n) of the observations.
 
-Uncorrected covariance matrix of the columns of `X`(==> (p, p) matrix), 
-or between columns of `X` and `Y` (==> (p, q) matrix).
+`w` is internally normalized to sum to 1.
 
-**Note:** For the true weighted covariance, vector `w` must be preliminary 
-normalized to sum to 1 (`w` is not internally normalized).
+Uncorrected covariance matrix 
+* of the columns of `X`: ==> (p, p) matrix 
+* or between columns of `X` and `Y` : ==> (p, q) matrix.
+
+## Examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+Y = rand(n, 3)
+w = collect(1:n)
+covm(X, w)
+covm(X, Y, w)
+```
 """
 function covm(X, w)
     zX = copy(ensure_mat(X))
-    xmeans = colmeans(zX, w)
+    w = mweight(w)
+    xmeans = colmean(zX, w)
     center!(zX, xmeans)
     z = Diagonal(sqrt.(w)) * zX
     z' * z
@@ -251,8 +331,9 @@ end
 function covm(X, Y, w)
     zX = copy(ensure_mat(X))
     zY = copy(ensure_mat(Y))
-    xmeans = colmeans(X, w)
-    ymeans = colmeans(Y, w)
+    w = mweight(w)
+    xmeans = colmean(X, w)
+    ymeans = colmean(Y, w)
     center!(zX, xmeans)
     center!(zY, ymeans)
     zX' * Diagonal(w) * zY
@@ -266,16 +347,27 @@ Compute correlation matrices.
 * `Y` : Data (n, q).
 * `w` : Weights (n) of the observations.
 
-Uncorrected correlation matrix of the columns of `X`(==> (p, p) matrix), 
-or between columns of `X` and `Y` (==> (p, q) matrix).
+`w` is internally normalized to sum to 1.
 
-**Note:** For the true weighted correlation, vector `w` must be preliminary 
-normalized to sum to 1 (`w` is not internally normalized).
+Uncorrected correlation matrix 
+* of the columns of `X`: ==> (p, p) matrix 
+* or between columns of `X` and `Y` : ==> (p, q) matrix.
+
+## Examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+Y = rand(n, 3)
+w = collect(1:n)
+corm(X, w)
+corm(X, Y, w)
+```
 """
 function corm(X, w)
     zX = copy(ensure_mat(X))
-    xmeans = colmeans(zX, w)
-    xstds = colstds(zX, w)
+    w = mweight(w)
+    xmeans = colmean(zX, w)
+    xstds = colstd(zX, w)
     center!(zX, xmeans)
     scale!(zX, xstds)
     z = Diagonal(sqrt.(w)) * zX
@@ -285,10 +377,11 @@ end
 function corm(X, Y, w)
     zX = copy(ensure_mat(X))
     zY = copy(ensure_mat(Y))
-    xmeans = colmeans(zX, w)
-    ymeans = colmeans(zY, w)
-    xstds = colstds(zX, w)
-    ystds = colstds(zY, w)
+    w = mweight(w)
+    xmeans = colmean(zX, w)
+    ymeans = colmean(zY, w)
+    xstds = colstd(zX, w)
+    ystds = colstd(zY, w)
     center!(zX, xmeans)
     center!(zY, ymeans)
     scale!(zX, xstds)
@@ -296,13 +389,34 @@ function corm(X, Y, w)
     zX' * Diagonal(w) * zY
 end
 
+
+"""
+    datasets()
+Print the names of the datasets available in the package.
+
+## Example
+```julia
+datasets()
+```
+"""
+function datasets()
+    path = joinpath(@__DIR__, "..", "data")
+    readdir(path)
+end
+
 """
     dummy(y)
-Examples
-≡≡≡≡≡≡≡≡≡≡
+Build a table of dummy variables from a categorical variable.
+* `y` : A categorical variable.
+
+## Examples
+```julia
 y = ["d", "a", "b", "c", "b", "c"]
 #y =  rand(1:3, 7)
-dummy(y)
+res = dummy(y)
+pnames(res)
+res.Y
+```
 """
 function dummy(y)
     ztab = tab(y)
@@ -351,11 +465,21 @@ ensure_mat(X::DataFrame) = Matrix(X)
 """
     findmax_cla(x, weights = nothing)
 Find the most occurent level in `x`.
+* `x` : A categorical variable.
+
+If ex-aequos, the function returns the first.
+
+## Examples
+```julia
+x = rand(1:3, 10)
+tab(x)
+findmax_cla(x)
+```
 """
 function findmax_cla(x, weights = nothing)
     isnothing(weights) ? weights = ones(length(x)) : nothing
     res = aggstat(weights; group = x, fun = sum)
-    res.lev[argmax(res.res)]   # if equal, argmax takes the first
+    res.lev[argmax(res.X)]   # if equal, argmax takes the first
 end
 
 
@@ -402,30 +526,29 @@ adjusted by a factor (1.4826) for asymptotically normal consistency.
 mad(x) = 1.4826 * median(abs.(x .- median(x)))
 
 """ 
-    mweights(w)
+    mweight(w)
 Return a vector of weights that sums to 1.
 """
-mweights(w) = w / sum(w)
+mweight(w) = w / sum(w)
 
 """ 
     norm2(x)
     norm2(x, w)
 Return the squared norm of a vector.
-
 * `x` : A vector (n).
 * `w` : Weights (n) of the observations.
 
+`w` is internally normalized to sum to 1.
+
 The squared weighted norm of vector x is:
 * norm(x)^2 = x' * D * x, where D is the diagonal matrix of vector `w`.
-
-**Note:** Vector `w`is not internally normalized to sum to 1.
 """
 function norm2(x)
     LinearAlgebra.norm(x)^2
 end
 
 function norm2(x, w)
-    dot(x, w .* x)
+    dot(x, mweight(w) .* x)
 end
 
 """ 
@@ -473,10 +596,11 @@ end
 Recode a continuous variable to classes
 * `x` : Variable to recode.
 * `q` : Values separating the classes. 
+
 ## Examples
 ```julia
 x = [collect(1:10); 8.1 ; 3.1] 
-q = [3; 8] ;
+q = [3; 8] 
 zx = recodnum2cla(x, q) 
 [x zx]
 probs = [.33; .66] 
@@ -500,9 +624,7 @@ end
 
 """
     replacebylev(x, lev)
-Replaces the elements of x
-by levels of corresponding order.
-
+Replaces the elements of x by levels of corresponding order.
 * `x` : Vector of values to replace.
 * `lev` : Vector containing the levels.
 
@@ -536,38 +658,64 @@ end
 
 """
     rmcol(X, s)
-Remove the columns of `X` having indexes `s`.
+Remove the columns of a matrix or the components of a vector 
+having indexes `s`.
+* `X` : Matrix or vector.
+* `s` : Vector of the indexes.
+
 ## Examples
 ```julia
-X = rand(5, 3) ; 
-rmcol(X, 1:2)
+X = rand(5, 3) 
 rmcol(X, [1, 3])
 ```
 """
-rmcol(X::AbstractMatrix, s::Union{Vector, Number}) = X[:, setdiff(1:end, Int64.(s))]
-rmcol(x::Vector, s::Union{Vector, Number}) = x[setdiff(1:end, Int64.(s))]
+function rmcol(X::AbstractMatrix, s::Union{Vector, BitVector, Number})
+    isa(s, BitVector) ? s = findall(s .== 1) : nothing
+    X[:, setdiff(1:end, Int64.(s))]
+end
+
+function rmcol(X::Vector, s::Union{Vector, BitVector, Number})
+    isa(s, BitVector) ? s = findall(s .== 1) : nothing
+    X[setdiff(1:end, Int64.(s))]
+end
 
 """
     rmrow(X, s)
-Remove the rows of `X` having indexes `s`.
+Remove the rows of a matrix or the components of a vector 
+having indexes `s`.
+* `X` : Matrix or vector.
+* `s` : Vector of the indexes.
+
 ## Examples
 ```julia
-X = rand(5, 2) ; 
-rmrow(X, 2:3)
+X = rand(5, 2) 
 rmrow(X, [1, 4])
 ```
 """
-rmrow(X::AbstractMatrix, s::Union{Vector, Number}) = X[setdiff(1:end, Int64.(s)), :]
-rmrow(x::Vector, s::Union{Vector, Number}) = x[setdiff(1:end, Int64.(s))]
+function rmrow(X::AbstractMatrix, s::Union{Vector, BitVector, Number})
+    isa(s, BitVector) ? s = findall(s .== 1) : nothing
+    X[setdiff(1:end, Int64.(s)), :]
+end
+
+function rmrow(X::Vector, s::Union{Vector, BitVector, Number})
+    isa(s, BitVector) ? s = findall(s .== 1) : nothing
+    X[setdiff(1:end, Int64.(s))]
+end
 
 """
-    rowsums(X)
+    rowsum(X)
 Compute the sum of each row of `X`.
 * `X` : Data (n, p).
 
 Return a vector.
+
+## Examples
+```julia
+X = rand(5, 2) 
+rowsum(X)
+```
 """ 
-rowsums(X) = vec(sum(X; dims = 2))
+rowsum(X) = vec(sum(X; dims = 2))
 
 """
     scale(X, v)
@@ -575,6 +723,12 @@ rowsums(X) = vec(sum(X; dims = 2))
 Scale each column of `X`.
 * `X` : Data.
 * `v` : Scaling factors.
+
+## Examples
+```julia
+X = rand(5, 2) 
+scale(X, colstd(X))
+```
 """ 
 function scale(X, v)
     M = copy(X)
@@ -606,12 +760,38 @@ function sourcedir(path)
 end
 
 """
+    ssq(X)
+Compute the total inertia of a matrix.
+* `X` : Matrix.
+
+Sum of all the squared components of `X` (= `norm(X)^2`; Squared Frobenius norm). 
+
+## Examples
+```julia
+X = rand(5, 2) 
+ssq(X)
+```
+""" 
+function ssq(X)
+    v = vec(X)
+    dot(v, v)
+end
+
+"""
     summ(X; digits = 3)
 Summarize a dataset (or a variable).
+
+## Examples
+```julia
+X = rand(10, 3) 
+res = summ(X)
+pnames(res)
+summ(X[:, 2]).res
+```
 """
 function summ(X; digits = 3)
     X = ensure_df(X)
-    res = DataFrames.describe(X, :mean, :min, :max, :nmissing) ;
+    res = describe(X, :mean, :min, :max, :nmissing) ;
     insertcols!(res, 5, :n => size(X, 1) .- res.nmissing)
     for j = 2:4
         z = vcol(res, j)
@@ -626,13 +806,20 @@ end
 Summarize a dataset (or a variable), by group.
 * `X` : Dataset (n, p) or (n,).
 * `group` : A vector (n,) defing the groups.
+
+## Examples
+```julia
+X = rand(10, 3)
+group = rand(1:2, 10) 
+summ(X, group)
+```
 """
 function summ(X, group; digits = 1)
     zgroup = sort(unique(group))
     for i = 1:length(zgroup)
         u = findall(group .== zgroup[i])
         z = X[u, :]
-        res = summ(z).res
+        res = summ(z; digits = digits).res
         println("Group: ", zgroup[i])
         println(res)
         println("") ; println("") 
@@ -643,10 +830,16 @@ end
 """
     tab(x)
 Univariate tabulation.
-* `x` : Univariate class membership.
+* `x` : Categorical variable.
 
 In the output, the levels in `x` are sorted.
 Levels and values can be get by `tab(x).keys` and `tab(x).vals`.
+
+## Examples
+```julia
+x = rand(1:3, 10) 
+tab(x)
+```
 """
 function tab(x)
     x = vec(x)
@@ -656,9 +849,15 @@ end
 """
     tabnum(x)
 Univariate tabulation (only integer classes).
-* `x` : Univariate class membership.
+* `x` : Categorical variable.
 
 In the output, the levels in `x` are sorted.
+
+## Examples
+```julia
+x = rand(1:3, 10) 
+tabnum(x)
+```
 """
 function tabnum(x)
     x = vec(x)

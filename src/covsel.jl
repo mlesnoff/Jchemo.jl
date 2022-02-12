@@ -30,8 +30,8 @@ function covsel!(X, Y; nlv = nothing, scaly = true)
     Y = ensure_mat(Y)
     n, p = size(X)
     isnothing(nlv) ? nlv = p : nothing 
-    xmeans = colmeans(X) 
-    ymeans = colmeans(Y)   
+    xmeans = colmean(X) 
+    ymeans = colmean(Y)   
     center!(X, xmeans)
     center!(Y, ymeans)
     if scaly

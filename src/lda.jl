@@ -25,7 +25,7 @@ function lda(X, y; prior = "unif")
     if isequal(prior, "unif")
         wprior = ones(nlev) / nlev
     elseif isequal(prior, "prop")
-        wprior = mweights(ni)
+        wprior = mweight(ni)
     end
     res = matW(X, y)
     res.W .= res.W * n / (n - nlev) # Unbiased estimate

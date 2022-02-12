@@ -24,7 +24,7 @@ function qda(X, y; prior = "unif")
     if isequal(prior, "unif")
         wprior = ones(nlev) / nlev
     elseif isequal(prior, "prop")
-        wprior = mweights(ni)
+        wprior = mweight(ni)
     end
     res = matW(X, y)
     Qda(res.Wi, ct, wprior, lev, ni)

@@ -1,7 +1,5 @@
 module Jchemo  # Start-Module
 
-using LinearAlgebra, SparseArrays 
-using Statistics, Random
 using CairoMakie
 using Clustering
 using DataInterpolations
@@ -12,7 +10,11 @@ using HypothesisTests
 using ImageFiltering
 using Interpolations
 using LIBSVM
+using LinearAlgebra
 using NearestNeighbors
+using Random
+using SparseArrays 
+using Statistics
 using StatsBase    # sample
 using XGBoost
 
@@ -31,6 +33,7 @@ include("kpca.jl")
 include("rp.jl")
 
 # Multiblock PCA
+include("mbpca_cons.jl")
 include("mbpca_comdim_s.jl")
 
 # Regression 
@@ -110,30 +113,28 @@ include("kernels.jl")
 export 
     # Utilities
     aggstat,
-    aov1,
-    blockscal, blockscal_frob, 
-    blockscal_ncol, blockscal_sd,
     checkdupl, checkmiss,
     center, center!, 
-    colmeans, colnorms2, colstds, colsums, colvars,
+    colmean, colnorm2, colstd, colsum, colvar,
     corm, covm, 
+    datasets,
     dummy,
     ensure_df, ensure_mat,
     findmax_cla, 
     list, 
     matB, matW, 
-    mblocks,
-    mweights,
+    mblock,
+    mweight,
     nipals,
     norm2,
     pnames, psize,
     recodcat2num, recodnum2cla,
     replacebylev,
     rmcol, rmrow, 
-    rowsums,   
-    rv, 
+    rowsum,   
     scale, scale!,
     sourcedir,
+    ssq,
     summ,
     tab, tabnum,
     vcol, vrow, 
@@ -150,9 +151,14 @@ export
     kpca,
     scordis, odis,
     rpmat_gauss, rpmat_li, rp,
-    # Multiblock PCA
-    mbpca_comdim_s,
+    # Multiblock Pca
+    blockscal, blockscal_frob, blockscal_mfa,
+    blockscal_ncol, blockscal_sd,
+    lg,
+    mbpca_comdim_s, mbpca_cons,
+    rv,
     # Regression
+    aov1,
     mlr, mlr!, mlrchol, mlrchol!, mlrpinv, mlrpinv!, mlrpinv_n, mlrpinv_n!,
     mlrvec!, mlrvec,
     plskern, plskern!, plsnipals, plsnipals!, 

@@ -1,10 +1,22 @@
 ## NEWS for package **Jchemo**
 
+### *Version 0.0-11*
+- New 
+    - **blockscal_mfa**
+    - **datasets**
+    - **mbpca_cons**
+    - **lg**
+    - **ssq**
+
+- Modified
+    - All the functions terminating with a "s" have been renamed without "s"
+    (e.g. **colmeans** was renamed to **colmean**)
+
 ### *Version 0.0-10*
 - New 
-    - **colsums**
+    - **colsum**
     - **mbpca_comdim_s**
-    - **rowsums**
+    - **rowsum**
 
 - Modified
     - **nipals**
@@ -14,7 +26,7 @@
 ### *Version 0.0-9*
 - New 
     - **blockscal_frob**, **blockscal_ncol**, **blockscal_sd**
-    - **colnorms2**
+    - **colnorm2**
     - **corm**, **covm**
     - **nipals**
     - **norm2**
@@ -46,7 +58,7 @@
 
 ### *Version 0.0-6*
 - New functions
-    - **colstds**
+    - **colstd**
     - **plsrosa**
     - **plssimp**
     - **rosaplsr**

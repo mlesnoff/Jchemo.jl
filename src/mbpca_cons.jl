@@ -1,4 +1,4 @@
-struct MbpcaComdim
+struct MbpcaCons
     T::Array{Float64} 
     U::Array{Float64}
     W::Array{Float64}
@@ -13,19 +13,17 @@ struct MbpcaComdim
 end
 
 """
-    mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
+    mbpca_cons(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
         bscaling = "none", tol = sqrt(eps(1.)), maxit = 200)
-Common components and specific weights analysis (CCSWA, ComDim).
+Consensus principal components analysis (CPCA, MBPCA).
 * `X_bl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
 * `weights` : Weights of the observations (rows). 
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `bscaling` : Type of block scaling (`"none"`, `"frob"`). 
+* `bscaling` : Type of block scaling (`"none"`, `"frob"`, `"mfa"`). 
     See functions `blockscal`.
 * `tol` : Tolerance value for convergence.
 * `niter` : Maximum number of iterations.
-
-This version corresponds to the "SVD" algorithm of Hannafi & Qannari 2008 p.84.
 
 Vector `weights` is internally normalized to sum to 1.
 
@@ -35,19 +33,13 @@ The function returns several objects, in particular:
 * `W` : The global loadings.
 * `Tb` : The block scores.
 * `W_bl` : The block loadings.
-* `lb` : The specific weights (saliences) "lambda".
-* `mu` : The sum of the squared saliences.
+* `lb` : The specific weights "lambda".
+* `mu` : The sum of the specific weights (= eigen value of the global PCA).
 
 Function `summary` returns: 
-* `explvarx` : Proportion of the X total inertia (sum of the squared norms of the 
+* `explvarx` : Proportion of the total inertia of X (sum of the squared norms of the 
     blocks) explained by each global score.
-* `explvarxx` : Proportion of the XX' total inertia (sum of the squared norms of the
-    products X_k * X_k') explained by each global score 
-    (= indicator "V" in Qannari et al. 2000, Hanafi et al. 2008).
-* `sal2` : Proportion of the squared saliences (specific weights)
-    of each block within each global score. 
 * `contr_block` : Contribution of each block to the global scores 
-    (= proportions of the saliences "lambda" within each score)
 * `explX` : Proportion of the inertia of the blocks explained by each global score.
 * `cort2x` : Correlation between the global scores and the original variables.  
 * `cort2tb` : Correlation between the global scores and the block scores.
@@ -55,26 +47,13 @@ Function `summary` returns:
 * `lg` : Lg coefficient. 
 
 ## References
-Cariou, V., Qannari, E.M., Rutledge, D.N., Vigneau, E., 2018. ComDim: From multiblock data 
-analysis to path modeling. Food Quality and Preference, Sensometrics 2016: 
-Sensometrics-by-the-Sea 67, 27–34. https://doi.org/10.1016/j.foodqual.2017.02.012
+Tchandao Mangamana, E., Cariou, V., Vigneau, E., Glèlè Kakaï, R.L., Qannari, E.M., 2019. 
+Unsupervised multiblock data analysis: A unified approach and extensions. Chemometrics and 
+Intelligent Laboratory Systems 194, 103856. https://doi.org/10.1016/j.chemolab.2019.103856
 
-Cariou, V., Jouan-Rimbaud Bouveresse, D., Qannari, E.M., Rutledge, D.N., 2019. 
-Chapter 7 - ComDim Methods for the Analysis of Multiblock Data in a Data Fusion 
-Perspective, in: Cocchi, M. (Ed.), Data Handling in Science and Technology, 
-Data Fusion Methodology and Applications. Elsevier, pp. 179–204. 
-https://doi.org/10.1016/B978-0-444-63984-4.00007-7
-
-Ghaziri, A.E., Cariou, V., Rutledge, D.N., Qannari, E.M., 2016. Analysis of multiblock 
-datasets using ComDim: Overview and extension to the analysis of (K + 1) datasets. 
-Journal of Chemometrics 30, 420–429. https://doi.org/10.1002/cem.2810
-
-Hanafi, M., 2008. Nouvelles propriétés de l’analyse en composantes communes et 
-poids spécifiques. Journal de la société française de statistique 149, 75–97.
-
-Qannari, E.M., Wakeling, I., Courcoux, P., MacFie, H.J.H., 2000. Defining the underlying 
-sensory dimensions. Food Quality and Preference 11, 151–154. 
-https://doi.org/10.1016/S0950-3293(99)00069-5
+Westerhuis, J.A., Kourti, T., MacGregor, J.F., 1998. Analysis of multiblock and hierarchical 
+PCA and PLS models. Journal of Chemometrics 12, 301–321. 
+https://doi.org/10.1002/(SICI)1099-128X(199809/10)12:5<301::AID-CEM515>3.0.CO;2-S
 
 ## Examples
 ```julia
@@ -92,7 +71,7 @@ zX_bl = mblock(X[1:2, :], listbl)
 
 bscaling = "none"
 #bscaling = "frob"
-fm = mbpca_comdim_s(X_bl; nlv = 4, bscaling = bscaling) ;
+fm = mbpca_cons(X_bl; nlv = 4, bscaling = bscaling) ;
 fm.U
 fm.T
 Jchemo.transform(fm, X_bl)
@@ -103,18 +82,15 @@ fm.lb
 rowsum(fm.lb)
 fm.mu
 res.explvarx
-res.explvarxx
 res.explX # = fm.lb if bscaling = "frob"
 rowsum(Matrix(res.explX))
 res.contr_block
-res.sal2
-colsum(Matrix(res.sal2))
 res.cort2x 
 res.cort2tb
 res.rv
 ```
 """
-function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
+function mbpca_cons(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
         bscaling = "none", tol = sqrt(eps(1.)), maxit = 200)
     nbl = length(X_bl)
     X = copy(X_bl)
@@ -135,6 +111,11 @@ function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
         scal = res.scal
         X = res.X
     end
+    if bscaling == "mfa"
+        res = blockscal_mfa(X, weights) 
+        scal = res.scal
+        X = res.X
+    end
     @inbounds for k = 1:nbl
         X[k] .= sqrtD * X[k]
     end
@@ -147,12 +128,12 @@ function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
     W_bl = list(nbl, Matrix{Float64})
     for k = 1:nbl ; W_bl[k] = similar(X[1], p[k], nlv) ; end
     lb = similar(X[1], nbl, nlv)
-    mu = similar(X[1], nlv)
-    TB = similar(X[1], n, nbl)
     W = similar(X[1], nbl, nlv)
+    w = similar(X[1], nbl)
+    mu = similar(X[1], nlv)
     niter = zeros(nlv)
     # End
-    @inbounds for a = 1:nlv
+    for a = 1:nlv
         zX = reduce(hcat, X)
         u .= nipals(zX).u
         iter = 1
@@ -160,18 +141,17 @@ function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
         while cont
             u0 = copy(u)
             for k = 1:nbl
-                wb = X[k]' * u 
+                wb = X[k]' * u
                 wb ./= norm(wb)
-                mul!(tb, X[k], wb) 
-                alpha = abs.(dot(tb, u))
-                TB[:, k] = alpha * tb
-                lb[k, a] = alpha^2
+                tb .= X[k] * wb 
                 Tb[a][:, k] .= tb
+                lb[k, a] = dot(tb, u)^2    
                 W_bl[k][:, a] .= wb
             end
-            res = nipals(TB)
-            u .= res.u
-            dif = sum((u - u0).^2)
+            res = nipals(Tb[a])
+            u .= res.u 
+            w .= res.v
+            dif = sum((u .- u0).^2)
             iter = iter + 1
             if (dif < tol) || (iter > maxit)
                 cont = false
@@ -179,21 +159,18 @@ function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
         end
         niter[a] = iter - 1
         U[:, a] .= u
-        W[:, a] .= res.v
-        mu[a] = res.sv^2   # = sum(lb.^2)   
-        @inbounds for k = 1:nbl
+        W[:, a] .= w
+        mu[a] = res.sv^2  # = sum(lb)
+        for k = 1:nbl
             X[k] .-= u * (u' * X[k])
-            # Same as:
-            #Px = sqrt(lb[k, a]) * W_bl[k][:, a]'
-            #X[k] .-= u * Px
         end
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
-    MbpcaComdim(T, U, W, Tb, W_bl, lb, mu, 
+    MbpcaCons(T, U, W, Tb, W_bl, lb, mu,
         xmeans, scal, weights, niter)
 end
 
-function transform(object::MbpcaComdim, X_bl; nlv = nothing)
+function transform(object::MbpcaCons, X_bl; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(X_bl)
@@ -210,7 +187,6 @@ function transform(object::MbpcaComdim, X_bl; nlv = nothing)
         for k = 1:nbl
             TB[:, k] .= X[k] * object.W_bl[k][:, a]
         end
-        TB .= sqrt.(object.lb[:, a])' .* TB
         u .= 1 / sqrt(object.mu[a]) * TB * object.W[:, a]
         U[:, a] .= u
         @inbounds for k = 1:nbl
@@ -221,7 +197,7 @@ function transform(object::MbpcaComdim, X_bl; nlv = nothing)
     sqrt.(object.mu)' .* U # = T
 end
 
-function summary(object::MbpcaComdim, X_bl)
+function summary(object::MbpcaCons, X_bl)
     nbl = length(X_bl)
     nlv = size(object.T, 2)
     X = copy(X_bl)
@@ -243,23 +219,6 @@ function summary(object::MbpcaComdim, X_bl)
     pvar = tt / sum(sstot)
     cumpvar = cumsum(pvar)
     explvarx = DataFrame(pc = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
-    # Explained_XXt (indicator "V")
-    S = list(nbl, Matrix{Float64})
-    sstot_xx = 0 
-    @inbounds for k = 1:nbl
-        S[k] = X[k] * X[k]'
-        sstot_xx += ssq(S[k])
-    end
-    tt = object.mu
-    pvar = tt / sstot_xx
-    cumpvar = cumsum(pvar)
-    explvarxx = DataFrame(pc = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
-    # Prop saliences^2
-    sal2 = copy(object.lb)
-    for a = 1:nlv
-        sal2[:, a] .= object.lb[:, a].^2 / object.mu[a]
-    end
-    sal2 = DataFrame(sal2, string.("pc", 1:nlv))
     # Contribution of the blocks to global scores = lb proportions (contrib)
     z = scale(object.lb, colsum(object.lb))
     contr_block = DataFrame(z, string.("pc", 1:nlv))
@@ -285,8 +244,13 @@ function summary(object::MbpcaComdim, X_bl)
     # Lg
     res = lg(zX)
     zlg = DataFrame(res, nam)
-    (explvarx = explvarx, explvarxx, sal2, contr_block, explX, 
+    (explvarx = explvarx, contr_block, explX, 
         cort2x, cort2tb, rv = zrv, lg = zlg)
 end
+
+
+
+
+
 
 

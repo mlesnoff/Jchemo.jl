@@ -71,8 +71,8 @@ function predict(object::Knnr, X)
     pred = zeros(m, q)
     @inbounds for i = 1:m
         s = res.ind[i]
-        w = mweights(listw[i])
-        pred[i, :] .= colmeans(vrow(object.Y, s), w)
+        w = mweight(listw[i])
+        pred[i, :] .= colmean(vrow(object.Y, s), w)
     end
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end

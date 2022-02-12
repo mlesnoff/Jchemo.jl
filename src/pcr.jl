@@ -43,8 +43,8 @@ end
 
 function pcr!(X, Y, weights = ones(size(X, 1)); nlv)
     Y = ensure_mat(Y)
-    weights = mweights(weights)
-    ymeans = colmeans(Y, weights)  
+    weights = mweight(weights)
+    ymeans = colmean(Y, weights)  
     center!(Y, ymeans)
     fm = pcasvd!(X, weights; nlv = nlv)
     D = Diagonal(fm.weights)
