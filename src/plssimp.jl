@@ -6,14 +6,12 @@ Partial Least Squares Regression (PLSR) with the SIMPLS algorithm (de Jong 1993)
 * `weights` : Weights of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
 
-The function has the following difference with the original 
-algorithm of de Jong (2013):
-* Scores T are not normed to 1.
-
-Vector `weights` is internally normalized to sum to 1. 
-See the help of `plskern` for details.
+`weights` is internally normalized to sum to 1. 
 
 `X` and `Y` are internally centered.
+
+**Note:** In this function, scores T are not normed, conversely the original 
+algorithm of de Jong (2013)
 
 ## References
 

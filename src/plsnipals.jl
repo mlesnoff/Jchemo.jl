@@ -7,14 +7,13 @@ Partial Least Squares Regression (PLSR) with the NIPALS algorithm
 * `weights` : Weights of the observations.
 * `nlv` : Nb. latent variables (LVs) to consider.
 
-In the function, the usual PLS2 NIPALS iterations are replaced by a 
-direct computation of the PLS weights (`w`) by SVD decomposition of matrix X'Y 
-(Hoskuldsson 1988 p.213).
-
-Vector `weights` (row-weighting) is internally normalized to sum to 1. 
-See the help of `plskern` for details.
+`weights` is internally normalized to sum to 1. 
 
 `X` and `Y` are internally centered. 
+
+**Note:** In this function, for PLS2, the NIPALS iterations are replaced by a 
+direct computation of the PLS weights (w) by SVD decomposition of matrix X'Y 
+(Hoskuldsson 1988 p.213).
 
 ## References
 

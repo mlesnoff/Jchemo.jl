@@ -6,7 +6,10 @@ Principal component regression (PCR) with a SVD factorization.
 * `weights` : Weights of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
 
+`weights` is internally normalized to sum to 1. 
+
 `X` and `Y` are internally centered. 
+
 The model is computed with an intercept.
 
 ## Examples

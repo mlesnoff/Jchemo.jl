@@ -31,12 +31,12 @@ Partial Least Squares Regression (PLSR) with the
 * `weights` : Weights of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
 
-For the row-weighting in PLS algorithms (`weights`), see in particular Schaal et al. 2002, 
-Siccard & Sabatier 2006, Kim et al. 2011 and Lesnoff et al. 2020. 
-
-Vector `weights` is internally normalized to sum to 1.
+`weights` is internally normalized to sum to 1.
 
 `X` and `Y` are internally centered. The model is computed with an intercept.
+
+For the row-weighting in PLS algorithms (`weights`), see in particular Schaal et al. 2002, 
+Siccard & Sabatier 2006, Kim et al. 2011 and Lesnoff et al. 2020. 
 
 ## References
 
@@ -98,13 +98,13 @@ function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
         else
             tmp .= XtY
             u = svd!(tmp).V           # = svd(XtY').U = eigen(XtY' * XtY).vectors[with ordering]
-            mul!(w, XtY, vcol(u, 1))             
+            mul!(w, XtY, vcol(u, 1))           
         end
-        w ./= sqrt(dot(w, w))         # w .= w ./ sqrt(dot(w, w))                            
+        w ./= sqrt(dot(w, w))                                  
         r .= w
         if a > 1
             @inbounds for j = 1:(a - 1)
-                r .-= dot(w, vcol(P, j)) .* vcol(R, j)    # r .= r .- ...
+                r .-= dot(w, vcol(P, j)) .* vcol(R, j)    
             end
         end                   
         mul!(t, X, r)                 # t = X * r
@@ -114,8 +114,8 @@ function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
         c ./= tt                      # c = XtY' * r / tt
         mul!(zp, X', dt)              # zp = (D * X)' * t = X' * (D * t)
         XtY .-= mul!(tmp, zp, c')     # XtY = XtY - zp * c' ; deflation of the kernel matrix 
-        P[:, a] .= zp ./ tt           # (cont') ==> the metric applied to covariance is applied outside the loop,
-        T[:, a] .= t                  # (cont') conversely to other algorithms such as nipals
+        P[:, a] .= zp ./ tt           # ==> the metric applied to covariance is applied outside the loop,
+        T[:, a] .= t                  # conversely to other algorithms such as nipals
         W[:, a] .= w
         R[:, a] .= r
         C[:, a] .= c
