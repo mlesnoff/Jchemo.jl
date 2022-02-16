@@ -532,10 +532,10 @@ Return a vector of weights that sums to 1.
 mweight(w) = w / sum(w)
 
 """ 
-    nrow(X)
-Return the nb. rows of `X`.
+    nco(X)
+Return the nb. columns of `X`.
 """
-nrow(X) = size(X, 1)
+nco(X) = size(X, 2)
 
 """ 
     norm2(x)
@@ -558,10 +558,10 @@ function norm2(x, w)
 end
 
 """ 
-    nrow(X)
+    nro(X)
 Return the nb. rows of `X`.
 """
-ncol(X) = size(X, 2)
+nro(X) = size(X, 1)
 
 """ 
     pnames(x)
