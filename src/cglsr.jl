@@ -8,24 +8,24 @@ end
 
 """
     cglsr(X, y; nlv, reorth = true, filt = false)
-Conjugate gradient algorithm for the normal equations (CGLS) (Björck 1996).
+Conjugate gradient algorithm for the normal equations (CGLS; Björck 1996).
 * `X` : X-data.
 * `y` : Univariate Y-data.
 * `nlv` : Nb. CG iterations.
 * `reorth` : If `true`, a Gram-Schmidt reorthogonalization of the normal equation 
     residual vectors is done.
-* `filt` : If `true`, the CG filter factors are computed (output `F`).
+* `filt` : Logical indicating if the CG filter factors are computed (output `F`).
 
-CGLS algorithm "7.4.1" Bjorck 1996, p.289
+`X` and `y` are internally centered. 
 
-The code computing the re-orthogonalization (Hansen 1998) and filter factors (Vogel 1987, Hansen 1998) 
+The model is computed with an intercept.
+
+CGLS algorithm "7.4.1" Bjorck 1996, p.289. The part of the code computing the 
+re-orthogonalization (Hansen 1998) and filter factors (Vogel 1987, Hansen 1998) 
 is a transcription (with few adaptations) of the Matlab function `cgls` 
 (Saunders et al. https://web.stanford.edu/group/SOL/software/cgls/; Hansen 2008).
 
-`X` and `y` are internally centered. The model is computed with an intercept.
-
 ## References
-
 Björck, A., 1996. Numerical Methods for Least Squares Problems, Other Titles in Applied Mathematics. 
 Society for Industrial and Applied Mathematics. https://doi.org/10.1137/1.9781611971484
 
@@ -44,10 +44,38 @@ PLS, Lanczos methods and conjugate gradients: alternative proofs of some propert
 
 Vogel, C. R.,  "Solving ill-conditioned linear systems using the conjugate gradient method", 
 Report, Dept. of Mathematical Sciences, Montana State University, 1987.
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y 
+year = dat.Y.year
+
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+nlv = 12 ;
+fm = cglsr(Xtrain, ytrain; nlv = nlv) ;
+coef(fm).B
+coef(fm).int
+
+res = predict(fm, Xtest) ;
+res.pred
+```
 """ 
 function cglsr(X, y; nlv, reorth = true, filt = false)
     cglsr!(copy(X), copy(y); nlv = nlv, reorth = reorth, filt = filt)
 end
+
 function cglsr!(X, y; nlv, reorth = true, filt = false)
     X = ensure_mat(X)
     y = vec(y)
@@ -128,7 +156,6 @@ end
     coef(object::Cglsr)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
-* `nlv` : Nb. iterations to consider. If nothing, it is the maximum nb. iterations.
 """ 
 function coef(object::Cglsr; nlv = nothing)
     a = size(object.B, 2)
@@ -147,6 +174,7 @@ Compute Y-predictions from a fitted model.
 If nothing, it is the maximum nb. iterations.
 """ 
 function predict(object::Cglsr, X; nlv = nothing)
+    X = ensure_mat(X)
     a = size(object.B, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)

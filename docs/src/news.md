@@ -1,5 +1,14 @@
 ## NEWS for package **Jchemo**
 
+### *Version 0.0-12*
+- New 
+    - **nco**, **nro**
+
+- Modified
+    - **mpars** renamed to **mpar**
+    - All functions terminating with "..._agg" renamed to "..._avg".
+
+
 ### *Version 0.0-11*
 - New 
     - **blockscal_mfa**

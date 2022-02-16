@@ -1,10 +1,10 @@
 """
-    mpars(; kwargs...)
+    mpar(; kwargs...)
 Return a tuple with all the combinations
 of the parameter values defined in kwargs.
 * `kwargs` : vector(s) of the parameter(s) values.
 """
-mpars = function(; kwargs...)
+mpar = function(; kwargs...)
     nam = [a.first for a in kwargs]
     iter = Base.product(values(kwargs)...)
     z = collect(iter) # matrix (n, 1)

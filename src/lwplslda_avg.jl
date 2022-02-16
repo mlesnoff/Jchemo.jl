@@ -1,4 +1,4 @@
-struct LwplsldaAgg
+struct LwplsldaAvg
     X::Array{Float64}
     y::AbstractMatrix
     fm
@@ -13,9 +13,9 @@ struct LwplsldaAgg
 end
 
 """
-    lwplslda_agg(X, y; nlvdis, metric, h, k, nlv, 
+    lwplslda_avg(X, y; nlvdis, metric, h, k, nlv, 
         tol = 1e-4, verbose = false)
-Aggregation of kNN-LWPLSR-DA models with different numbers of LVs.
+Averaging of kNN-LWPLSR-DA models with different numbers of LVs.
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `nlvdis` : Number of latent variables (LVs) to consider in the global PLS 
@@ -42,7 +42,7 @@ For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for
 a new observation is the most occurent class within the predictions 
 returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 """ 
-function lwplslda_agg(X, y; nlvdis, metric, h, k, nlv, 
+function lwplslda_avg(X, y; nlvdis, metric, h, k, nlv, 
     tol = 1e-4, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
@@ -52,17 +52,17 @@ function lwplslda_agg(X, y; nlvdis, metric, h, k, nlv,
     else
         fm = plskern(X, dummy(y).Y; nlv = nlvdis)
     end
-    LwplsldaAgg(X, y, fm, metric, h, k, nlv, tol, verbose,
+    LwplsldaAvg(X, y, fm, metric, h, k, nlv, tol, verbose,
         ztab.keys, ztab.vals)
 end
 
 """
-    predict(object::LwplsldaAgg, X)
+    predict(object::LwplsldaAvg, X)
 Compute the y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::LwplsldaAgg, X) 
+function predict(object::LwplsldaAvg, X) 
     X = ensure_mat(X)
     m = size(X, 1)
     ### Getknn
@@ -80,7 +80,7 @@ function predict(object::LwplsldaAgg, X)
     end
     ### End
     pred = locw(object.X, object.y, X; 
-        listnn = res.ind, listw = listw, fun = plslda_agg, nlv = object.nlv, 
+        listnn = res.ind, listw = listw, fun = plslda_avg, nlv = object.nlv, 
         verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end

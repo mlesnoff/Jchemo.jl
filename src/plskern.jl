@@ -189,6 +189,7 @@ Compute Y-predictions from a fitted model.
     If nothing, it is the maximum nb. LVs.
 """ 
 function predict(object::Union{Plsr, Pcr}, X; nlv = nothing)
+    X = ensure_mat(X)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)

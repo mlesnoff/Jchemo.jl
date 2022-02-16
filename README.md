@@ -1,7 +1,7 @@
 # Jchemo.jl
 
 ## Dimension reduction, Regression and Discrimination for Chemometrics
-## <span style="color:grey70"> Version 0.0-11  </span> 
+## <span style="color:grey70"> Version 0.0-12  </span> 
 
 ![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)<!--
 ![Lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
@@ -96,7 +96,7 @@ Xtrain = rand(n, p) ; ytrain = rand(n)
 Xval = rand(m, p) ; yval = rand(m) 
 
 nlv = 0:10 
-pars = mpars(nlv = nlv)
+pars = mpar(nlv = nlv)
 res = gridscore(
     Xtrain, ytrain, Xval, yval;
     score = rmsep, fun = plskern, pars = pars) 
@@ -130,7 +130,7 @@ segm = segmkf(n, 5; rep = 5)   # Replicated K-fold cross-validation
 #segm = segmts(n, 30; rep = 5)   # Replicated test-set validation
 
 nlv = 0:10 
-pars = mpars(nlv = nlv)
+pars = mpar(nlv = nlv)
 res = gridcv(
     Xtrain, ytrain; segm,
     score = rmsep, fun = plskern, pars = pars) ;

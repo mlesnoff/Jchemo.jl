@@ -52,7 +52,7 @@
 - ***plssimp*** SIMPLS *de Jong 1993*
 - ***kplsr*** Non linear kernel PLSR (KPLSR) *Rosipal & Trejo 2001*
 - ***dkplsr*** Direct KPLSR *Bennett & Embrechts 2003*
-- ***plsr_agg*** Averaging PLSR models with different numbers of LVs (PLSR-AGG)
+- ***plsr_avg*** Averaging PLSR models with different numbers of LVs (PLSR-AGG)
 
 *Utility*
 - ***aicplsr*** AIC and Cp for PLSR
@@ -80,8 +80,8 @@
 
 - ***knnr*** kNNR
 - ***lwplsr*** kNN Locally weighted PLSR (kNN-LWPLSR)
-- ***lwplsr_agg*** kNN-LWPLSR-AGG 
-- ***cplsr_agg*** Clustered PLSR-AGG
+- ***lwplsr_avg*** kNN-LWPLSR-AGG 
+- ***cplsr_avg*** Clustered PLSR-AGG
 
 #### **Support vector machine (SVMR)** -- from LIBSVM.jl
 - ***svmr*** Epsilon-SVM regression
@@ -113,7 +113,7 @@
 - ***kplsrda*** DA on KPLSR predictions (KPLSR-DA)
 - ***rrda*** DA on RR predictions (RR-DA)
 - ***krrda*** DA on KRR predictions (KRR-DA)
-- ***plsrda_agg*** Averaging PLSR-DA models with different numbers of LVs (PLSR-DA-AGG)
+- ***plsrda_avg*** Averaging PLSR-DA models with different numbers of LVs (PLSR-DA-AGG)
 
 #### Probabilistic
 
@@ -122,15 +122,15 @@
 - ***qda*** Quadratic discriminant analysis (QDA)
 - ***plslda*** LDA on PLS latent variables (PLS-LDA)
 - ***plsqda*** QDA on PLS latent variables (PLS-QDA)
-- ***plslda_agg*** Averaging PLS-LDA models with different numbers of LVs (PLS-LDA-AGG)
-- ***plsqda_agg*** Averaging PLS-QDA models with different numbers of LVs (PLS-QDA-AGG)
+- ***plslda_avg*** Averaging PLS-LDA models with different numbers of LVs (PLS-LDA-AGG)
+- ***plsqda_avg*** Averaging PLS-QDA models with different numbers of LVs (PLS-QDA-AGG)
 
 #### **Local models**
 
 - ***knnda*** kNN-DA (Vote within neighbors)
 - ***lwplsrda*** kNN Locally weighted PLSR-DA (kNN-LWPLSR-DA)
 - ***lwplslda***, ***lwplsqda*** kNN Locally weighted PLS-LDA/QDA (kNN-LWPLS-LDA/QDA)
-- ***lwplslda_agg***, ***lwplsqda_agg*** Averaging kNN-LWPLS-LDA/QDA models with different numbers of LVs (kNN-LWPLS-LDA/QDA-AGG)
+- ***lwplslda_avg***, ***lwplsqda_avg*** Averaging kNN-LWPLS-LDA/QDA models with different numbers of LVs (kNN-LWPLS-LDA/QDA-AGG)
 
 #### **Support vector machine (SVM-DA)** -- from LIBSVM.jl
 - ***svmda*** C-SVM discrimination
@@ -145,7 +145,7 @@
 
 #### **Grid**
 
-- ***mpars*** Expand a grid of parameter values
+- ***mpar*** Expand a grid of parameter values
 
 #### **Validation**
 
@@ -219,6 +219,7 @@
 - ***matB***, ***matW*** Between- and within-covariance matrices
 - ***mblock*** Make blocks from a matrix
 - ***mweight*** Normalize a vector to sum to 1.
+- ***ncol***, ***nrow***, Nb. rows and colmuns of an object.
 - ***norm2*** Squared norm of a vector
 - ***recodnum2cla*** Recode a continuous variable to classes
 - ***sourcedir*** Include all the files contained in a directory

@@ -41,7 +41,7 @@ include("mlr.jl")
 include("rr.jl")
 include("plskern.jl") ; include("plsrosa.jl")
 include("plsnipals.jl") ; include("plssimp.jl") 
-include("plsr_agg.jl")
+include("plsr_avg.jl")
 include("cglsr.jl")
 include("pcr.jl")
 include("krr.jl") ; include("kplsr.jl") ; include("dkplsr.jl")
@@ -68,7 +68,7 @@ include("lda.jl") ; include("qda.jl")
 include("mlrda.jl")
 include("plsrda.jl")
 include("plslda.jl")
-include("plsrda_agg.jl")
+include("plsrda_avg.jl") 
 
 # SVM
 include("svmda.jl")
@@ -77,8 +77,8 @@ include("svmda.jl")
 include("locw.jl")
 include("knnr.jl")
 include("lwplsr.jl")
-include("lwplsr_agg.jl")
-include("cplsr_agg.jl")  # Use structure PlsrDa
+include("lwplsr_avg.jl")
+include("cplsr_avg.jl")  # Use structure PlsrDa
 
 # Multiblock regresssion
 include("angles.jl")
@@ -89,7 +89,7 @@ include("mbplsr_so.jl")
 
 # Local discrimination
 include("lwplsrda.jl") ; include("lwplslda.jl") ; include("lwplsqda.jl")
-include("lwplsrda_agg.jl") ; include("lwplslda_agg.jl") ; include("lwplsqda_agg.jl")
+include("lwplsrda_avg.jl") ; include("lwplslda_avg.jl") ; include("lwplsqda_avg.jl")
 include("knnda.jl")
 
 # Variable selection/importance (direct methods) 
@@ -97,7 +97,7 @@ include("covsel.jl")
 include("iplsr.jl")
 
 # Validation
-include("mpars.jl")
+include("mpar.jl")
 include("scores.jl")
 include("gridscore.jl")
 include("segm.jl") ; include("gridcv.jl")
@@ -125,8 +125,9 @@ export
     matB, matW, 
     mblock,
     mweight,
-    nipals,
+    ncol,
     norm2,
+    nrow,
     pnames, psize,
     recodcat2num, recodnum2cla,
     replacebylev,
@@ -139,18 +140,19 @@ export
     tab, tabnum,
     vcol, vrow, 
    # Pre-processing
-    snv, snv!, detrend, detrend!, fdif, fdif!,
-    mavg, mavg!, mavg_runmean, mavg_runmean!,
-    savgk, savgol, savgol!,
+    eposvd,
     interpl, interpl_mon, 
     linear_int, quadratic_int, quadratic_spline, cubic_spline,
+    mavg, mavg!, mavg_runmean, mavg_runmean!,
     rmgap, rmgap!,
-    eposvd,
+    savgk, savgol, savgol!,
+    snv, snv!, detrend, detrend!, fdif, fdif!,
     # Pca
-    pcasvd, pcasvd!, pcaeigen, pcaeigen!, pcaeigenk, pcaeigenk!,
     kpca,
-    scordis, odis,
+    nipals,
+    pcasvd, pcasvd!, pcaeigen, pcaeigen!, pcaeigenk, pcaeigenk!,
     rpmat_gauss, rpmat_li, rp,
+    scordis, odis,
     # Multiblock Pca
     blockscal, blockscal_frob, blockscal_mfa,
     blockscal_ncol, blockscal_sd,
@@ -167,7 +169,7 @@ export
     pcr, 
     rr, rr!, rrchol, rrchol!,   
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
-    plsr_agg, plsr_agg!,
+    plsr_avg, plsr_avg!,
     dfplsr_cg, aicplsr,
     svmr,   
     treer_xgb, rfr_xgb, xgboostr, vimp_xgb,
@@ -183,8 +185,8 @@ export
     xfit, xfit!, xresid, xresid!,
     # Local regression
     locw, locwlv,
-    knnr, lwplsr, lwplsr_agg,
-    cplsr_agg,
+    knnr, lwplsr, lwplsr_avg,
+    cplsr_avg,
     # Discrimination
     dmnorm, dmnorm!,
     fda, fda!, fdasvd, fdasvd!,
@@ -193,19 +195,19 @@ export
     lda, qda, 
     plsrda, kplsrda,
     plslda, plsqda,
-    plsrda_agg, plslda_agg, plsqda_agg,
+    plsrda_avg, plslda_avg, plsqda_avg,
     svmda,
     treeda_xgb, rfda_xgb, xgboostda,
     # Local Discrimination
     lwplsrda, lwplslda, lwplsqda,
-    lwplsrda_agg, lwplslda_agg, lwplsqda_agg,
+    lwplsrda_avg, lwplslda_avg, lwplsqda_avg,
     knnda,
     #
     transform, coef, predict,
     # Validation
     residreg, residcla, 
     ssr, msep, rmsep, bias, sep, cor2, r2, rpd, rpdr, mse, err,
-    mpars,
+    mpar,
     gridscore, gridscorelv, gridscorelb,
     segmts, segmkf,
     gridcv, gridcvlv, gridcvlb, 

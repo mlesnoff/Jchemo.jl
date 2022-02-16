@@ -1,4 +1,4 @@
-struct PlsdaAgg
+struct PlsdaAvg
     fm
     nlv
     w_mod
@@ -7,8 +7,8 @@ struct PlsdaAgg
 end
 
 """ 
-    plsrda_agg(X, y, weights = ones(size(X, 1)); nlv)
-Aggregation of PLSR-DA models with different numbers of LVs.
+    plsrda_avg(X, y, weights = ones(size(X, 1)); nlv)
+Averaging of PLSR-DA models with different numbers of LVs.
 * `X` : X-data.
 * `y` : y-data (class membership).
 * weights : Weights of the observations.
@@ -25,7 +25,7 @@ For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for
 a new observation is the most occurent class within the predictions 
 returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 """ 
-function plsrda_agg(X, y, weights = ones(size(X, 1)); nlv)
+function plsrda_avg(X, y, weights = ones(size(X, 1)); nlv)
     n = size(X, 1)
     p = size(X, 2)
     nlv = eval(Meta.parse(nlv))
@@ -34,12 +34,12 @@ function plsrda_agg(X, y, weights = ones(size(X, 1)); nlv)
     w = ones(nlvmax + 1)
     w_mod = mweight(w[collect(nlv) .+ 1])   # uniform weights
     fm = plsrda(X, y, weights; nlv = nlvmax)
-    PlsdaAgg(fm, nlv, w_mod, fm.lev, fm.ni)
+    PlsdaAvg(fm, nlv, w_mod, fm.lev, fm.ni)
 end
 
 """ 
-    plslda_agg(X, y, weights = ones(size(X, 1)); nlv)
-Aggregation of PLSR models with different numbers of LVs.
+    plslda_avg(X, y, weights = ones(size(X, 1)); nlv)
+Averaging of PLSR models with different numbers of LVs.
 * `X` : X-data.
 * `y` : y-data (class membership).
 * weights : Weights of the observations.
@@ -56,7 +56,7 @@ For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for
 a new observation is the most occurent class within the predictions 
 returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 """ 
-function plslda_agg(X, y, weights = ones(size(X, 1)); nlv)
+function plslda_avg(X, y, weights = ones(size(X, 1)); nlv)
     n = size(X, 1)
     p = size(X, 2)
     nlv = eval(Meta.parse(nlv))
@@ -65,12 +65,12 @@ function plslda_agg(X, y, weights = ones(size(X, 1)); nlv)
     w = ones(nlvmax + 1)
     w_mod = mweight(w[collect(nlv) .+ 1])   # uniform weights
     fm = plslda(X, y, weights; nlv = nlvmax)
-    PlsdaAgg(fm, nlv, w_mod, fm.lev, fm.ni)
+    PlsdaAvg(fm, nlv, w_mod, fm.lev, fm.ni)
 end
 
 """ 
-    plsqda_agg(X, y, weights = ones(size(X, 1)); nlv)
-Aggregation of PLSR models with different numbers of LVs.
+    plsqda_avg(X, y, weights = ones(size(X, 1)); nlv)
+Averaging of PLSR models with different numbers of LVs.
 * `X` : X-data.
 * `y` : y-data (class membership).
 * weights : Weights of the observations.
@@ -87,7 +87,7 @@ For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for
 a new observation is the most occurent class within the predictions 
 returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 """ 
-function plsqda_agg(X, y, weights = ones(size(X, 1)); nlv)
+function plsqda_avg(X, y, weights = ones(size(X, 1)); nlv)
     n = size(X, 1)
     p = size(X, 2)
     nlv = eval(Meta.parse(nlv))
@@ -96,16 +96,16 @@ function plsqda_agg(X, y, weights = ones(size(X, 1)); nlv)
     w = ones(nlvmax + 1)
     w_mod = mweight(w[collect(nlv) .+ 1])   # uniform weights
     fm = plsqda(X, y, weights; nlv = nlvmax)
-    PlsdaAgg(fm, nlv, w_mod, fm.lev, fm.ni)
+    PlsdaAvg(fm, nlv, w_mod, fm.lev, fm.ni)
 end
 
 """
-    predict(object::PlsrAgg, X)
+    predict(object::PlsrAvg, X)
 Compute y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::PlsdaAgg, X)
+function predict(object::PlsdaAvg, X)
     X = ensure_mat(X)
     m = size(X, 1)
     nlv = object.nlv

@@ -1,4 +1,4 @@
-struct LwplsrAgg
+struct LwplsrAvg
     X::Array{Float64}
     Y::Array{Float64}
     fm
@@ -12,9 +12,9 @@ struct LwplsrAgg
 end
 
 """
-    lwplsr_agg(X, Y; nlvdis, metric, h, k, nlv, wagg = "unif", 
+    lwplsr_avg(X, Y; nlvdis, metric, h, k, nlv, wagg = "unif", 
         tol = 1e-4, verbose = false)
-Aggregation of kNN-LWPLSR models with different numbers of LVs.
+Averaging of kNN-LWPLSR models with different numbers of LVs.
 * `X` : X-data.
 * `Y` : Y-data.
 * `nlvdis` : Number of latent variables (LVs) to consider in the global PLS 
@@ -30,7 +30,7 @@ Aggregation of kNN-LWPLSR models with different numbers of LVs.
     to consider ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
     are averaged). Syntax such as "10" is also allowed ("10": correponds to 
     the single model with 10 LVs).
-* `wagg` : Type of averaging. See function `plsr_agg`.
+* `wagg` : Type of averaging. See function `plsr_avg`.
 * `tol` : For stabilization when very close neighbors.
 * `verbose` : If true, fitting information are printed.
 
@@ -42,7 +42,7 @@ For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for
 a new observation is the simple average of the predictions returned by the 
 models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 """ 
-function lwplsr_agg(X, Y; nlvdis, metric, h, k, nlv, wagg = "unif", 
+function lwplsr_avg(X, Y; nlvdis, metric, h, k, nlv, wagg = "unif", 
     tol = 1e-4, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -52,17 +52,17 @@ function lwplsr_agg(X, Y; nlvdis, metric, h, k, nlv, wagg = "unif",
         fm = plskern(X, Y; nlv = nlvdis)
         #fm = dkplsr(X, Y; nlv = nlvdis, kern = "krbf", gamma = 1000) ; 
     end
-    LwplsrAgg(X, Y, fm, metric, h, k, nlv, wagg, 
+    LwplsrAvg(X, Y, fm, metric, h, k, nlv, wagg, 
         tol, verbose)
 end
 
 """
-    predict(object::LwplsrAgg, X)
+    predict(object::LwplsrAvg, X)
 Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::LwplsrAgg, X) 
+function predict(object::LwplsrAvg, X) 
     X = ensure_mat(X)
     m = size(X, 1)
     ### Getknn
@@ -82,12 +82,12 @@ function predict(object::LwplsrAgg, X)
     end
     ### End
     pred = locw(object.X, object.Y, X; 
-        listnn = res.ind, listw = listw, fun = plsr_agg, nlv = object.nlv, 
+        listnn = res.ind, listw = listw, fun = plsr_avg, nlv = object.nlv, 
         wagg = object.wagg, verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 
-function predict_steps(object::LwplsrAgg, X; steps = nothing) 
+function predict_steps(object::LwplsrAvg, X; steps = nothing) 
     X = ensure_mat(X)
     m = size(X, 1)
     ### Getknn
@@ -108,7 +108,7 @@ function predict_steps(object::LwplsrAgg, X; steps = nothing)
     end
     ### End
     pred = locw(object.X, object.Y, X; 
-        listnn = res.ind, listw = listw, fun = plsr_agg, nlv = object.nlv, 
+        listnn = res.ind, listw = listw, fun = plsr_avg, nlv = object.nlv, 
         wagg = object.wagg, verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end

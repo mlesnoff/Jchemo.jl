@@ -1,11 +1,11 @@
-struct CplsrAgg
+struct CplsrAvg
     fm
     fm_da::Plsrda
     lev
     ni
 end
 
-function cplsr_agg(X, Y, cla = nothing; ncla = nothing, nlv_da, nlv)
+function cplsr_avg(X, Y, cla = nothing; ncla = nothing, nlv_da, nlv)
     X = ensure_mat(X) 
     Y = ensure_mat(Y)
     if isnothing(cla)
@@ -26,12 +26,12 @@ function cplsr_agg(X, Y, cla = nothing; ncla = nothing, nlv_da, nlv)
         ni[i] <= zmin ? zmin = ni[i] - 1 : nothing
         ni[i] <= zmax ? zmax = ni[i] - 1 : nothing
         znlv = string(zmin:zmax)
-        fm[i] = plsr_agg(X[s, :], Y[s, :]; nlv = znlv)
+        fm[i] = plsr_avg(X[s, :], Y[s, :]; nlv = znlv)
     end
-    CplsrAgg(fm, fm_da, lev, ni)
+    CplsrAvg(fm, fm_da, lev, ni)
 end
 
-function predict(object::CplsrAgg, X)
+function predict(object::CplsrAvg, X)
     X = ensure_mat(X)
     m = size(X, 1)
     nlev = length(object.lev)

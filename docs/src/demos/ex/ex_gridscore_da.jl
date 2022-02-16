@@ -13,7 +13,7 @@ tab(ytest)
 ############ PLSR-DA
 
 nlv = 0:3 
-pars = mpars(nlv = nlv)
+pars = mpar(nlv = nlv)
 gridscore(Xtrain, ytrain, Xtest, ytest; 
     score = err, fun = plsrda, pars = pars)
 
@@ -24,7 +24,7 @@ gridscorelv(Xtrain, ytrain, Xtest, ytest;
 ############ PLS-LDA/QDA
 
 nlv = 1:3 
-pars = mpars(nlv = nlv)
+pars = mpar(nlv = nlv)
 gridscore(Xtrain, ytrain, Xtest, ytest; 
     score = err, fun = plslda, pars = pars)
 
@@ -38,7 +38,7 @@ gridscorelv(Xtrain, ytrain, Xtest, ytest;
 ############ RR-DA
 
 lb = [.001; .01; .1] 
-pars = mpars(lb = lb)
+pars = mpar(lb = lb)
 gridscore(Xtrain, ytrain, Xtest, ytest; 
     score = err, fun = rrda, pars = pars)
 
@@ -49,13 +49,13 @@ gridscorelb(Xtrain, ytrain, Xtest, ytest;
 ############ KRR-DA
 
 lb = [.001; .01; .1] 
-pars = mpars(lb = lb, gamma = [1; 10])
-#pars = mpars(lb = lb, kern = ["kpol";], degree = 1:2)
+pars = mpar(lb = lb, gamma = [1; 10])
+#pars = mpar(lb = lb, kern = ["kpol";], degree = 1:2)
 gridscore(Xtrain, ytrain, Xtest, ytest; 
     score = err, fun = krrda, pars = pars)
 
 # Faster
-pars = mpars(gamma = [1; 10])
+pars = mpar(gamma = [1; 10])
 gridscorelb(Xtrain, ytrain, Xtest, ytest; 
     score = err, fun = krrda, lb = lb, pars = pars)
 
@@ -63,7 +63,7 @@ gridscorelb(Xtrain, ytrain, Xtest, ytest;
 
 nlvdis = 5 ; metric = ["mahal";] 
 h = [1; 3] ; k = [20; 10] 
-pars = mpars(nlvdis = nlvdis, metric = metric, h = h, k = k) 
+pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k) 
 gridscore(Xtrain, ytrain, Xtest, ytest;
     score = msep, fun = knnda, pars = pars, verbose = true)
     
@@ -72,12 +72,12 @@ gridscore(Xtrain, ytrain, Xtest, ytest;
 nlvdis = 5 ; metric = ["mahal";] 
 h = [1; 3] ; k = [20; 10]
 nlv = 1:2 
-pars = mpars(nlv = nlv, nlvdis = nlvdis, metric = metric, h = h, k = k) 
+pars = mpar(nlv = nlv, nlvdis = nlvdis, metric = metric, h = h, k = k) 
 gridscore(Xtrain, ytrain, Xtest, ytest;
     score = msep, fun = lwplsrda, pars = pars, verbose = true)
 
 # Faster
-pars = mpars(nlvdis = nlvdis, metric = metric, h = h, k = k) 
+pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k) 
 gridscorelv(Xtrain, ytrain, Xtest, ytest;
     score = msep, fun = lwplsrda, nlv = nlv, pars = pars, verbose = false)
 
@@ -86,12 +86,12 @@ gridscorelv(Xtrain, ytrain, Xtest, ytest;
 nlvdis = 5 ; metric = ["mahal";] 
 h = [1; 3] ; k = [20; 10]
 nlv = 1:2 
-pars = mpars(nlv = nlv, nlvdis = nlvdis, metric = metric, h = h, k = k) 
+pars = mpar(nlv = nlv, nlvdis = nlvdis, metric = metric, h = h, k = k) 
 gridscore(Xtrain, ytrain, Xtest, ytest;
     score = msep, fun = lwplslda, pars = pars, verbose = true)
 
 # Faster
-pars = mpars(nlvdis = nlvdis, metric = metric, h = h, k = k) 
+pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k) 
 gridscorelv(Xtrain, ytrain, Xtest, ytest;
     score = msep, fun = lwplslda, nlv = nlv, pars = pars, verbose = false)
 
@@ -99,9 +99,9 @@ gridscorelv(Xtrain, ytrain, Xtest, ytest;
 
 # Here there is no sense to use gridscorelv
 
-pars = mpars(nlv = ["1:2"; "1:3"])
+pars = mpar(nlv = ["1:2"; "1:3"])
 gridscore(Xtrain, ytrain, Xtest, ytest;
-    score = msep, fun = plsrda_agg, pars = pars)
+    score = msep, fun = plsrda_avg, pars = pars)
 
 ############ kNN-LWPLSR-DA-AGG
 
@@ -110,9 +110,9 @@ gridscore(Xtrain, ytrain, Xtest, ytest;
 nlvdis = 5 ; metric = ["mahal";] ;
 h = [1.; 3.] ; k = [20; 10]
 nlv = ["1:2"; "2:5"] ;
-pars = mpars(nlv = nlv, nlvdis = nlvdis, metric = metric, h = h, k = k) ;
+pars = mpar(nlv = nlv, nlvdis = nlvdis, metric = metric, h = h, k = k) ;
 gridscore(Xtrain, ytrain, Xtest, ytest;
-    score = msep, fun = lwplsrda_agg, pars = pars, verbose = true)
+    score = msep, fun = lwplsrda_avg, pars = pars, verbose = true)
 
 
 

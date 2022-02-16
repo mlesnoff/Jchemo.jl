@@ -532,6 +532,12 @@ Return a vector of weights that sums to 1.
 mweight(w) = w / sum(w)
 
 """ 
+    nrow(X)
+Return the nb. rows of `X`.
+"""
+nrow(X) = size(X, 1)
+
+""" 
     norm2(x)
     norm2(x, w)
 Return the squared norm of a vector.
@@ -550,6 +556,12 @@ end
 function norm2(x, w)
     dot(x, mweight(w) .* x)
 end
+
+""" 
+    nrow(X)
+Return the nb. rows of `X`.
+"""
+ncol(X) = size(X, 2)
 
 """ 
     pnames(x)
@@ -669,7 +681,7 @@ X = rand(5, 3)
 rmcol(X, [1, 3])
 ```
 """
-function rmcol(X::AbstractMatrix, s::Union{Vector, BitVector, Number})
+function rmcol(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
     X[:, setdiff(1:end, Int64.(s))]
 end
@@ -692,7 +704,7 @@ X = rand(5, 2)
 rmrow(X, [1, 4])
 ```
 """
-function rmrow(X::AbstractMatrix, s::Union{Vector, BitVector, Number})
+function rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
     X[setdiff(1:end, Int64.(s)), :]
 end

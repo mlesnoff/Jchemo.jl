@@ -1,4 +1,4 @@
-struct PlsrAgg
+struct PlsrAvg
     fm::Plsr
     nlv
     wagg
@@ -6,8 +6,8 @@ struct PlsrAgg
 end
 
 """ 
-    plsr_agg(X, Y, weights = ones(size(X, 1)); nlv, wagg = "unif")
-Aggregation of PLSR models with different numbers of LVs.
+    plsr_avg(X, Y, weights = ones(size(X, 1)); nlv, wagg = "unif")
+Averaging of PLSR models with different numbers of LVs.
 * `X` : X-data.
 * `Y` : Y-data. Must be univariate if `wagg` != "unif".
 * weights : Weights of the observations.
@@ -33,11 +33,11 @@ a weighted mean using AIC weights computed from the models (see function `aicpls
 * "fair" : A decreasing "fair" function is applied to delta.
 * "shenk" : Shenk et al. (1997) weights. See function `wshenk'.
 """ 
-function plsr_agg(X, Y, weights = ones(size(X, 1)); nlv, wagg = "unif")
-    plsr_agg!(copy(X), copy(Y), weights; nlv = nlv, wagg = wagg)
+function plsr_avg(X, Y, weights = ones(size(X, 1)); nlv, wagg = "unif")
+    plsr_avg!(copy(X), copy(Y), weights; nlv = nlv, wagg = wagg)
 end
 
-function plsr_agg!(X, Y, weights = ones(size(X, 1)); nlv, wagg = "unif")
+function plsr_avg!(X, Y, weights = ones(size(X, 1)); nlv, wagg = "unif")
     n = size(X, 1)
     p = size(X, 2)
     nlv = eval(Meta.parse(nlv))
@@ -66,16 +66,16 @@ function plsr_agg!(X, Y, weights = ones(size(X, 1)); nlv, wagg = "unif")
     w = w[collect(nlv) .+ 1]
     w ./= sum(w)
     fm = plskern!(X, Y, weights; nlv = nlvmax)
-    PlsrAgg(fm, nlv, wagg, w)
+    PlsrAvg(fm, nlv, wagg, w)
 end
 
 """
-    predict(object::PlsrAgg, X)
+    predict(object::PlsrAvg, X)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::PlsrAgg, X)
+function predict(object::PlsrAvg, X)
     nlv = object.nlv
     le_nlv = length(nlv)
     zpred = predict(object.fm, X; nlv = nlv).pred
