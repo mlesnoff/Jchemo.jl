@@ -219,7 +219,7 @@
 - ***matB***, ***matW*** Between- and within-covariance matrices
 - ***mblock*** Make blocks from a matrix
 - ***mweight*** Normalize a vector to sum to 1.
-- ***ncol***, ***nrow***, Nb. rows and colmuns of an object.
+- ***nco***, ***nro***, Nb. rows and colmuns of an object.
 - ***norm2*** Squared norm of a vector
 - ***recodnum2cla*** Recode a continuous variable to classes
 - ***sourcedir*** Include all the files contained in a directory
