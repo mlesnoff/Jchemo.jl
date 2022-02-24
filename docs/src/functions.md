@@ -210,7 +210,8 @@
 - ***covm***, ***corm*** Covariance and correlation matrices
 - ***datasets*** Datasets available in the package
 - ***dummy*** Build dummy table
-- ***euclsq***, ***mahsq***, ***mahsqchol*** Euclidean and Mahalanobis distances between rows of matrices
+- ***euclsq***, ***mahsq***, ***mahsqchol*** Distances (Euclidean, Mahalanobis) between rows of matrices
+- ***fweight*** Compute weights from distances
 - ***getknn*** Find nearest neighbours between rows of matrices
 - ***iqr*** Interval inter-quartiles
 - ***krbf, kpol*** Build kernel Gram matrices
@@ -222,6 +223,7 @@
 - ***nco***, ***nro***, Nb. rows and colmuns of an object.
 - ***norm2*** Squared norm of a vector
 - ***recodnum2cla*** Recode a continuous variable to classes
+- ***rowmean***, ***rowstd***, ***rowsum*** Row-wise operations
 - ***sourcedir*** Include all the files contained in a directory
 - ***ssq*** Total inertia of a matrix
 - ***summ*** Summarize the columns of a dataset

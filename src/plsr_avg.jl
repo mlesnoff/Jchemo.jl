@@ -1,23 +1,23 @@
 struct PlsrAvg
-    fm::Plsr
-    nlv
-    wagg
-    w
+    fm
 end
 
 """ 
-    plsr_avg(X, Y, weights = ones(size(X, 1)); nlv, wagg = "unif")
-Averaging of PLSR models with different numbers of LVs.
+    plsr_avg(X, Y, weights = ones(size(X, 1)); nlv, 
+        typf = "unif", typw = "bisquare", alpha = 0)
+Averaging PLSR models with different numbers of LVs.
 * `X` : X-data.
-* `Y` : Y-data. Must be univariate if `wagg` != "unif".
+* `Y` : Y-data. Must be univariate if `typw` != "unif".
 * weights : Weights of the observations.
 * `nlv` : A character string such as "5:20" defining the range of the numbers of LVs 
     to consider ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
     are averaged). Syntax such as "10" is also allowed ("10": correponds to
     the single model with 10 LVs).
-* `wagg` : Type of averaging. 
+* `typf` : Type of averaging (weighting functions). 
+* `typw` : Type of weight function. 
+* `alpha` : Parameter of the weight function.
 
-Ensemblist method where the predictions are calculated by "averaging" 
+Ensemblist method where the predictions are calculated by averaging 
 the predictions of a set of models built with different numbers of 
 latent variables (LVs).
 
@@ -25,48 +25,48 @@ For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for
 a new observation is the average (eventually weighted) of the predictions 
 returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 
-Dependending argument `wagg`, the average is the simple mean (`wagg` = "unif") or 
-a weighted mean using AIC weights computed from the models (see function `aicplsr`):
-* "aic" : Usual AIC weights (exp(-delta/2)).
-* "sqrt" : Sqrt(delta) is used in place of delta in AIC weights.
-* "inv" : Weights are computed by 1 / AIC.
-* "fair" : A decreasing "fair" function is applied to delta.
-* "shenk" : Shenk et al. (1997) weights. See function `wshenk'.
+Possible values of `typf` are: 
+* "unif" : Simple average.
+* "aic" : Weighted average based on AIC computed for each model.
+* "cv" : Weighted average based on RMSEP_CV computed for each model.
+* "shenk" : Weighted average using "Shenk et al." weights computed for each model.
+
+For arguments `typw` and `alpha` (weight function): see the help of function `fweight`.
+
+## References
+Lesnoff, M., Roger, J.-M., Rutledge, D.N., 2021. Monte Carlo methods for estimating 
+Mallows’s Cp and AIC criteria for PLSR models. Illustration on agronomic spectroscopic NIR data. 
+Journal of Chemometrics n/a, e3369. https://doi.org/10.1002/cem.3369
+
+Shenk, J., Westerhaus, M., Berzaghi, P., 1997. Investigation of a LOCAL calibration 
+procedure for near infrared instruments. 
+Journal of Near Infrared Spectroscopy 5, 223. https://doi.org/10.1255/jnirs.115
+
+Shenk et al. 1998 United States Patent (19). Patent Number: 5,798.526.
+
+Zhang, M.H., Xu, Q.S., Massart, D.L., 2004. Averaged and weighted average partial 
+least squares. Analytica Chimica Acta 504, 279–289. https://doi.org/10.1016/j.aca.2003.10.056
 """ 
-function plsr_avg(X, Y, weights = ones(size(X, 1)); nlv, wagg = "unif")
-    plsr_avg!(copy(X), copy(Y), weights; nlv = nlv, wagg = wagg)
+function plsr_avg(X, Y, weights = ones(size(X, 1)); nlv, 
+        typf = "unif", typw = "bisquare", alpha = 0)
+    plsr_avg!(copy(X), copy(Y), weights; nlv = nlv, 
+        typf = typf, typw = typw, alpha = alpha)
 end
 
-function plsr_avg!(X, Y, weights = ones(size(X, 1)); nlv, wagg = "unif")
-    n = size(X, 1)
-    p = size(X, 2)
-    nlv = eval(Meta.parse(nlv))
-    nlvmax = maximum(nlv)
-    nlv = (max(minimum(nlv), 0):min(nlvmax, n, p))
-    if isequal(wagg, "unif")
-        w = ones(nlvmax + 1)
-    elseif isequal(wagg, "aic")
-        w = aicplsr(X, Y; nlv = nlvmax).w.aic
-    elseif isequal(wagg, "sqrt")
-        d = aicplsr(X, Y; nlv = nlvmax).delta.aic
-        w = exp.(-sqrt.(d) / 2)    
-    elseif isequal(wagg, "inv")
-        w = 1 ./ aicplsr(X, Y; nlv = nlvmax).crit.aic
-    elseif isequal(wagg, "fair")
-        d = aicplsr(X, Y; nlv = nlvmax).delta.aic
-        d = d / maximum(d[isnan.(d) .== 0])
-        w = 1 ./ (1 .+ d).^2
-    elseif isequal(wagg, "shenk")
-        fm = plskern(X, Y, weights; nlv = (nlvmax))
-        w = vec(sum(Jchemo.wshenk(fm, X).W, dims = 1))
-        w = [0 ; w]
+function plsr_avg!(X, Y, weights = ones(size(X, 1)); nlv, 
+        typf = "unif", typw = "bisquare", alpha = 0)
+    if typf == "unif"
+        fm = plsr_avg_unif!(X, Y, weights; nlv = nlv)
+    elseif typf == "aic"
+        fm = plsr_avg_aic!(X, Y, weights; nlv = nlv,
+            typw = typw, alpha = alpha)
+    elseif typf == "cv"
+        fm = plsr_avg_cv!(X, Y, weights; nlv = nlv,
+            typw = typw, alpha = alpha)
+    elseif typf == "shenk"
+        fm = plsr_avg_shenk!(X, Y, weights; nlv = nlv)
     end
-    w[isnan.(w)] .= 0
-    #w = vec(mavg(w', 3))
-    w = w[collect(nlv) .+ 1]
-    w ./= sum(w)
-    fm = plskern!(X, Y, weights; nlv = nlvmax)
-    PlsrAvg(fm, nlv, wagg, w)
+    PlsrAvg(fm)
 end
 
 """
@@ -76,19 +76,8 @@ Compute Y-predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::PlsrAvg, X)
-    nlv = object.nlv
-    le_nlv = length(nlv)
-    zpred = predict(object.fm, X; nlv = nlv).pred
-    if(le_nlv == 1)
-        pred = zpred
-    else
-        acc = object.w[1] * copy(zpred[1])
-        @inbounds for i = 2:le_nlv
-            acc .+= object.w[i] * zpred[i]
-        end
-        pred = acc
-    end
-    (pred = pred, predlv = zpred)
+    res = predict(object.fm, X)
+    (pred = res.pred, predlv = res.predlv)
 end
 
 

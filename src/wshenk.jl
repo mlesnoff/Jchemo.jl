@@ -1,6 +1,6 @@
 """
-    wshenk(object::Union{Pca, Plsr}, X; nlv = nothing)
-Compute the Shenk et al. (1997) PLSR weights
+    wshenk(object::Union{Pcr, Plsr}, X; nlv = nothing)
+Compute the Shenk et al. (1997) "LOCAL" PLSR weights
 * `object` : The fitted model.
 * `X` : X-data on which the weights are computed.
 * `nlv` : Nb. latent variables (LVs) to consider. If nothing, 
@@ -10,36 +10,65 @@ For each observation (row) of `X`, the weights are returned
 for the models with 1, ..., nlv LVs. 
 
 ## References
-
 Shenk, J., Westerhaus, M., Berzaghi, P., 1997. Investigation of a LOCAL calibration 
 procedure for near infrared instruments. 
 Journal of Near Infrared Spectroscopy 5, 223. https://doi.org/10.1255/jnirs.115
 
+Shenk et al. 1998 United States Patent (19). Patent Number: 5,798.526.
+
+Zhang, M.H., Xu, Q.S., Massart, D.L., 2004. Averaged and weighted average partial 
+least squares. Analytica Chimica Acta 504, 279–289. https://doi.org/10.1016/j.aca.2003.10.056
+
+## Examples 
+```julia 
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y 
+year = dat.Y.year
+
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+nlv = 30
+fm = plskern(Xtrain, ytrain; nlv = nlv) ;
+res = Jchemo.wshenk(fm, Xtest) ;
+plotsp(res.w, 0:nlv).f
+```
 """ 
-function wshenk(object::Union{Plsr}, X; nlv = nothing)
+function wshenk(object::Union{Pcr, Plsr}, X; nlv = nothing)
     X = ensure_mat(X)
-    m = size(X, 1)
-    p = size(X, 2)
+    m, p = size(X)
     q = size(object.C, 1)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     E = similar(X)
-    rms_r = similar(X, m, a)
-    zB = similar(X, p + 1, q)
-    rms_b = similar(X, a)
-    W = similar(X, m, a)
-    for j = 1:a
+    rss_r = similar(X, m, nlv)
+    rss_b = similar(X, nlv)
+    B = similar(X, p + 1, q)
+    w = similar(X, m, nlv)
+    wr = copy(w)
+    for j = 1:nlv
         E .= xresid(object, X, nlv = j)
-        rms_r[:, j] .= vec(sqrt.(sum(E.^2, dims = 2)))
-        z = coef(object; nlv = j)
-        zB[1, :] .= vec(z.int)
-        zB[2:end, :] .= z.B
-        rms_b[j] = sqrt(mean(mean(zB.^2, dims = 2))) 
-        W[:, j] .= 1 ./ (vcol(rms_r, j) * rms_b[j])
+        rss_r[:, j] .= sqrt.(rowsum(E.^2))
+        res = coef(object; nlv = j)
+        B[1, :] .= vec(res.int)
+        B[2:end, :] .= res.B
+        #B = copy(res.B)
+        rss_b[j] = sqrt.(ssq(B) / q)
     end 
+    wb = mweight(1 ./ rss_b)
     for i = 1:m
-        W[i, :] ./= sum(vrow(W, i)) 
+        wr[i, :] .= mweight(1 ./ vrow(rss_r, i))
+        w[i, :] = mweight(vrow(wr, i) .* wb) 
     end
-    (W = W, rms_r = rms_r, rms_b = rms_b)
+    (w = w, wr = wr, wb = wb)
 end
 

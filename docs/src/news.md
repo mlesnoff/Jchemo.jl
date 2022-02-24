@@ -1,5 +1,15 @@
 ## NEWS for package **Jchemo**
 
+### *Version 0.0-13*
+- New 
+    - **fweight** 
+    - **rowmean**, **rowstd**
+
+- Modified
+    - **plsr_avg**
+    - **snv**
+    - **wshenk**
+
 ### *Version 0.0-12*
 - New 
     - **nco**, **nro**

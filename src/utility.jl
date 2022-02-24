@@ -531,6 +531,10 @@ Return a vector of weights that sums to 1.
 """
 mweight(w) = w / sum(w)
 
+function mweight!(w::Vector{Float64})
+    w ./= sum(w)
+end
+
 """ 
     nco(X)
 Return the nb. columns of `X`.
@@ -713,6 +717,38 @@ function rmrow(X::Vector, s::Union{Vector, BitVector, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
     X[setdiff(1:end, Int64.(s))]
 end
+
+"""
+    rowmean(X)
+Compute the mean of each row of `X`.
+* `X` : Data (n, p).
+
+Return a vector.
+
+## Examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+rowmean(X)
+```
+""" 
+rowmean(X) = vec(Statistics.mean(X; dims = 2))
+
+"""
+    rowstd(X)
+Compute the (uncorrected) standard deviation of each row of `X`.
+* `X` : Data (n, p).
+
+Return a vector.
+
+## Examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+rowstd(X)
+```
+""" 
+rowstd(X) = vec(Statistics.std(X; dims = 2, corrected = false))
 
 """
     rowsum(X)

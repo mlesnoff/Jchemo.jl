@@ -20,6 +20,7 @@ using XGBoost
 
 include("utility.jl") 
 include("aov1.jl")
+include("fweight.jl") 
 include("matW.jl")
 include("nipals.jl")
 include("plots.jl")
@@ -42,6 +43,10 @@ include("rr.jl")
 include("plskern.jl") ; include("plsrosa.jl")
 include("plsnipals.jl") ; include("plssimp.jl") 
 include("plsr_avg.jl")
+include("plsr_avg_aic.jl")
+include("plsr_avg_cv.jl")
+include("plsr_avg_unif.jl")
+include("plsr_avg_shenk.jl")
 include("cglsr.jl")
 include("pcr.jl")
 include("krr.jl") ; include("kplsr.jl") ; include("dkplsr.jl")
@@ -121,10 +126,11 @@ export
     dummy,
     ensure_df, ensure_mat,
     findmax_cla, 
+    fweight,
     list, 
     matB, matW, 
     mblock,
-    mweight,
+    mweight, mweight!,
     nco,
     norm2,
     nro,
@@ -132,7 +138,7 @@ export
     recodcat2num, recodnum2cla,
     replacebylev,
     rmcol, rmrow, 
-    rowsum,   
+    rowmean, rowstd, rowsum,   
     scale, scale!,
     sourcedir,
     ssq,
@@ -171,6 +177,7 @@ export
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
     plsr_avg, plsr_avg!,
     dfplsr_cg, aicplsr,
+    wshenk,
     svmr,   
     treer_xgb, rfr_xgb, xgboostr, vimp_xgb,
     baggr, baggr_vi, baggr_oob,

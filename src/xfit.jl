@@ -1,22 +1,41 @@
 """
-    xfit(object::Union{Pca, Plsr}, X; nlv = nothing)
-Matrix fitting from a PCA or PLS model
+    xfit(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
+Matrix fitting from a PCA, PCR or PLS model
 * `object` : The fitted model.
 * `X` : X-data to be approximatred from the model.
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, 
     it is the maximum nb. of components.
 
-Compute an approximate of matrix `X` (X_fit) from a PCA 
+Compute an approximate of matrix `X` (X_fit) from a PCA, PCR 
 or PLS fitted on `X`.
+
+## Examples 
+```julia 
+n, p = 5, 3
+X = rand(n, p)
+y = rand(n)
+
+nlv = 2 ;
+fm = pcasvd(X; nlv = nlv) ;
+#fm = plskern(X, y; nlv = nlv) ;
+xfit(fm, X)
+xfit(fm, X, nlv = 0)
+xfit(fm, X, nlv = 1)
+
+fm = pcasvd(X; nlv = min(n, p)) ;
+xfit(fm, X)
+xresid(fm, X)
+```
 """ 
-function xfit(object::Union{Pca, Plsr}, X; nlv = nothing)
+function xfit(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
     xfit!(object, copy(X); nlv = nlv)
 end
 
-function xfit!(object::Union{Pca, Plsr}, X; nlv = nothing)
+function xfit!(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    if(nlv == 0)
+    isa(object, Jchemo.Pcr) ? object = object.fm_pca : nothing
+    if nlv == 0
         m = size(X, 1)
         @inbounds for i = 1:m
             X[i, :] .= object.xmeans
@@ -30,20 +49,38 @@ function xfit!(object::Union{Pca, Plsr}, X; nlv = nothing)
 end
 
 """
-    xresid(object::Union{Pca, Plsr}, X; nlv = nothing)
-Residual matrix after fitting by a PCA or PLS model
+    xresid(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
+Residual matrix after fitting by a PCA, PCR or PLS model
 * `object` : The fitted model.
 * `X` : X-data for which the residuals have to be computed.
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, 
     it is the maximum nb. of components.
 
 Compute the residual matrix E = X - X_fit.
+
+## Examples 
+```julia 
+n, p = 5, 3
+X = rand(n, p)
+y = rand(n)
+
+nlv = 2 ;
+fm = pcasvd(X; nlv = nlv) ;
+#fm = plskern(X, y; nlv = nlv) ;
+xresid(fm, X)
+xresid(fm, X, nlv = 0)
+xresid(fm, X, nlv = 1)
+
+fm = pcasvd(X; nlv = min(n, p)) ;
+xfit(fm, X)
+xresid(fm, X)
+```
 """ 
-function xresid(object::Union{Pca, Plsr}, X; nlv = nothing)
+function xresid(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
     xresid!(object, copy(X); nlv = nlv)
 end
 
-function xresid!(object::Union{Pca, Plsr}, X; nlv = nothing)
+function xresid!(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     if(nlv == 0)

@@ -79,7 +79,6 @@ Compute Akaike's (AIC) and Mallows's (Cp) criteria for univariate PLSR models.
 The function uses function `cglsr`. 
 
 ## References
-
 Hansen, P.C., 1998. Rank-Deficient and Discrete Ill-Posed Problems, Mathematical Modeling and Computation. 
 Society for Industrial and Applied Mathematics. https://doi.org/10.1137/1.9780898719697
 
@@ -153,6 +152,7 @@ function aicplsr(X, y; nlv, correct = true)
     aic = n * log.(zssr) + 2 * (df .+ 1) .* ct
     cp1 = zssr .+ 2 * s2_1 * df .* ct
     cp2 = zssr .+ 2 * s2_2 .* df .* ct
+    aic = aic / n
     cp1 = cp1 / n
     cp2 = cp2 / n
     res = (aic = aic, cp1 = cp1, cp2 = cp2)
@@ -161,14 +161,14 @@ function aicplsr(X, y; nlv, correct = true)
     crit = hcat(tab, DataFrame(res))
     opt = map(x -> findmin(x[isnan.(x) .== 0])[2] - 1, res)
     delta = map(x -> x .- findmin(x[isnan.(x) .== 0])[1], res)                  # Differences "Delta"
-    w = map(x -> exp.(-x / 2) / sum(exp.(-x[isnan.(x) .== 0] / 2)), delta)      # AIC model weights   
     delta = reduce(hcat, delta)
-    w = reduce(hcat, w)
     nam = [:aic, :cp1, :cp2]
     delta = DataFrame(delta, nam)
     insertcols!(delta, 1, :nlv => znlv)
-    w = DataFrame(w, nam)
-    insertcols!(w, 1, :nlv => znlv)
-    (crit = crit, opt = opt, delta = delta, w = w)
+    #w = map(x -> exp.(-x / 2) / sum(exp.(-x[isnan.(x) .== 0] / 2)), delta)      # AIC model weights   
+    #w = reduce(hcat, w)
+    #w = DataFrame(w, nam)
+    #insertcols!(w, 1, :nlv => znlv)
+    (crit = crit, opt = opt, delta = delta)
 end
 

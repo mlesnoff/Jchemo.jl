@@ -348,7 +348,7 @@ imfilter of package ImageFiltering.jl. Each returned point is located on the cen
 of the kernel. The kernel is computed with function `savgk`.
 """ 
 function savgol(X; f, pol, d)
-    M = copy(X)
+    M = ensure_mat(copy(X))
     savgol!(M; f, pol, d)
     M
 end
@@ -368,25 +368,26 @@ function savgol!(X; f, pol, d)
 end
 
 """
-    snv(X)
+   snv(X; cent = true, scal = true)
 Standard-normal-variate (SNV) transformation of each row of X-data.
 * `X` : X-data.
-
-Each row of `X` is centered and scaled.
+* `cent` : Logical indicating if the centering in done.
+* `scal` : Logical indicating if the scaling in done.
 """ 
-function snv(X)
-    M = copy(X)
-    snv!(M)
+function snv(X; cent = true, scal = true)
+    M = ensure_mat(copy(X))
+    snv!(M; cent = cent, scal = scal)
     M
 end
 
-function snv!(X) 
-    p = size(X, 2)
-    mu = vec(Statistics.mean(X; dims = 2))
-    s = vec(Statistics.std(X; corrected = false, dims = 2))
+function snv!(X; cent = true, scal = true) 
+    n, p = size(X)
+    cent ? mu = rowmean(X) : mu = zeros(n)
+    scal ? s = rowstd(X) : s = ones(n)
     @inbounds for j = 1:p
         X[:, j] .= (vcol(X, j) .- mu) ./ s
     end
+    X
 end
 
 

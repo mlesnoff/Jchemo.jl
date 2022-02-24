@@ -6,15 +6,18 @@ struct LwplsrAvg
     h::Real
     k::Int
     nlv::String
-    wagg::String
+    typf::String
+    typw::String
+    alpha::Real
     tol::Real
     verbose::Bool
 end
 
 """
-    lwplsr_avg(X, Y; nlvdis, metric, h, k, nlv, wagg = "unif", 
+    lwplsr_avg(X, Y; nlvdis, metric, h, k, nlv, 
+        typf = "unif", typw = "bisquare", alpha = 0, 
         tol = 1e-4, verbose = false)
-Averaging of kNN-LWPLSR models with different numbers of LVs.
+Averaging kNN-LWPLSR models with different numbers of LVs.
 * `X` : X-data.
 * `Y` : Y-data.
 * `nlvdis` : Number of latent variables (LVs) to consider in the global PLS 
@@ -30,7 +33,9 @@ Averaging of kNN-LWPLSR models with different numbers of LVs.
     to consider ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
     are averaged). Syntax such as "10" is also allowed ("10": correponds to 
     the single model with 10 LVs).
-* `wagg` : Type of averaging. See function `plsr_avg`.
+* `typf` : Type of averaging. 
+* `typw` : Type of weight function. 
+* `alpha` : Parameter of the weight function.    
 * `tol` : For stabilization when very close neighbors.
 * `verbose` : If true, fitting information are printed.
 
@@ -41,8 +46,12 @@ latent variables (LVs).
 For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for 
 a new observation is the simple average of the predictions returned by the 
 models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
+
+* For arguments `typf`: see the help of function `plsr_avg`.
+* For arguments `typw` and `alpha` (weight function): see the help of function `fweight`.
 """ 
-function lwplsr_avg(X, Y; nlvdis, metric, h, k, nlv, wagg = "unif", 
+function lwplsr_avg(X, Y; nlvdis, metric, h, k, nlv, 
+        typf = "unif", typw = "bisquare", alpha = 0, 
     tol = 1e-4, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -52,8 +61,8 @@ function lwplsr_avg(X, Y; nlvdis, metric, h, k, nlv, wagg = "unif",
         fm = plskern(X, Y; nlv = nlvdis)
         #fm = dkplsr(X, Y; nlv = nlvdis, kern = "krbf", gamma = 1000) ; 
     end
-    LwplsrAvg(X, Y, fm, metric, h, k, nlv, wagg, 
-        tol, verbose)
+    LwplsrAvg(X, Y, fm, metric, h, k, nlv, 
+        typf, typw, alpha, tol, verbose)
 end
 
 """
@@ -82,8 +91,8 @@ function predict(object::LwplsrAvg, X)
     end
     ### End
     pred = locw(object.X, object.Y, X; 
-        listnn = res.ind, listw = listw, fun = plsr_avg, nlv = object.nlv, 
-        wagg = object.wagg, verbose = object.verbose).pred
+        listnn = res.ind, listw = listw, nlv = object.nlv, fun = plsr_avg, 
+        typf = object.typf, typw = object.typw, alpha = object.alpha, verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 
@@ -109,7 +118,8 @@ function predict_steps(object::LwplsrAvg, X; steps = nothing)
     ### End
     pred = locw(object.X, object.Y, X; 
         listnn = res.ind, listw = listw, fun = plsr_avg, nlv = object.nlv, 
-        wagg = object.wagg, verbose = object.verbose).pred
+        typf = object.typf, typw = object.typw, alpha = object.alpha, 
+        verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 
