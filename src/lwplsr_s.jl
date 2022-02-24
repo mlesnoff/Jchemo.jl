@@ -59,6 +59,12 @@ function lwplsr_s(X, Y; nlv0,
         tol, verbose)
 end
 
+"""
+    predict(object::Lwplsr, X)
+Compute the Y-predictions from the fitted model.
+* `object` : The fitted model.
+* `X` : X-data for which predictions are computed.
+""" 
 function predict(object::LwplsrS1, X; nlv = nothing)
     X = ensure_mat(X)
     m = size(X, 1)
@@ -84,18 +90,3 @@ function predict(object::LwplsrS1, X; nlv = nothing)
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 
-
-
-
-
-
-
-function predict2(object::LwplsrS, X)
-    T = transform(object.fm, X)
-    fm = lwplsr(object.fm.T, object.Y; 
-        nlvdis = object.nlvdis, metric = object.metric, 
-        h = object.h, k = object.k, nlv = object.nlv, 
-        object.tol, verbose = object.verbose)
-    res = Jchemo.predict(fm, T)
-    (pred = res.pred, listnn = res.listnn, listd = res.listd, listw = res.listw)
-end
