@@ -83,6 +83,7 @@ include("locw.jl")
 include("knnr.jl")
 include("lwplsr.jl")
 include("lwplsr_avg.jl")
+include("lwplsr_s.jl")
 include("cplsr_avg.jl")  # Use structure PlsrDa
 
 # Multiblock regresssion
@@ -192,7 +193,8 @@ export
     xfit, xfit!, xresid, xresid!,
     # Local regression
     locw, locwlv,
-    knnr, lwplsr, lwplsr_avg,
+    knnr,
+    lwplsr, lwplsr_avg, lwplsr_s,  
     cplsr_avg,
     # Discrimination
     dmnorm, dmnorm!,

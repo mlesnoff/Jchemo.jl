@@ -81,6 +81,7 @@
 - ***knnr*** kNNR
 - ***lwplsr*** kNN Locally weighted PLSR (kNN-LWPLSR)
 - ***lwplsr_avg*** kNN-LWPLSR-AVG 
+- ***lwplsr_s*** kNN-LWPLSR with preliminary dimension reduction
 - ***cplsr_avg*** Clustered PLSR-AVG
 
 #### **Support vector machine (SVMR)** -- from LIBSVM.jl

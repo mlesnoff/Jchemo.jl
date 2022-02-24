@@ -12,7 +12,7 @@ end
 
 """
     lwplsr(X, Y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
-k-Nearest-Neighbours locally weighted partial least squares regression (KNN-LWPLSR).
+k-Nearest-Neighbours locally weighted partial least squares regression (kNN-LWPLSR).
 * `X` : X-data.
 * `Y` : Y-data.
 * `nlvdis` : Number of latent variables (LVs) to consider in the global PLS 
@@ -86,7 +86,7 @@ function lwplsr(X, Y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
     else
         fm = plskern(X, Y; nlv = nlvdis)
     end
-    return Lwplsr(X, Y, fm, metric, h, k, nlv, tol, verbose)
+    Lwplsr(X, Y, fm, metric, h, k, nlv, tol, verbose)
 end
 
 """

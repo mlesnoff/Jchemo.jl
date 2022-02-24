@@ -1,5 +1,11 @@
 ## NEWS for package **Jchemo**
 
+### *Version 0.0-14*
+- New 
+    - **lwplsr_s** 
+
+- Modified
+
 ### *Version 0.0-13*
 - New 
     - **fweight** 
