@@ -6,6 +6,8 @@
     - **rowmean**, **rowstd**
 
 - Modified
+    - **aicplsr**
+    - **lwplsr_avg**
     - **plsr_avg**
     - **snv**
     - **wshenk**
