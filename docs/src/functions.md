@@ -120,11 +120,11 @@
 
 - ***dmnorm*** Normal probability density of multivariate data
 - ***lda*** Linear discriminant analysis (LDA)
-- ***qda*** Quadratic discriminant analysis (QDA)
 - ***plslda*** LDA on PLS latent variables (PLS-LDA)
 - ***plslda_avg*** Averaging PLS-LDA models with different numbers of LVs (PLS-LDA-AVG)
 - ***plsqda*** QDA on PLS latent variables (PLS-QDA)
 - ***plsqda_avg*** Averaging PLS-QDA models with different numbers of LVs (PLS-QDA-AVG)
+- ***qda*** Quadratic discriminant analysis (QDA)
 
 #### **Local models**
 
