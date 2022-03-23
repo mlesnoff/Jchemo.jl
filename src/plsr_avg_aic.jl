@@ -1,33 +1,41 @@
-struct PlsrAvgAic
+struct PlsrAvgCri
     fm::Plsr
     nlv
-    w
+    w::Vector
+end
+
+struct PlsrStack
+    fm::Plsr
+    nlv
+    w::Vector
+    Xstack::Matrix
+    ystack::Vector
+    weights_stack::Vector
 end
 
 function plsr_avg_aic(X, y, weights = ones(size(X, 1)); nlv, 
-        typw = "bisquare", alpha = 0)
-    plsr_avg_aic!(copy(X), copy(y), weights; nlv = nlv, 
+        bic = false, typw = "bisquare", alpha = 0)
+    plsr_avg_aic!(copy(X), copy(y), weights; nlv = nlv, bic = bic, 
         typw = typw, alpha = alpha)
 end
 
-function plsr_avg_aic!(X, y, weights = ones(size(X, 1)); nlv, 
-        typw = "bisquare", alpha = 0)
+function plsr_avg_aic!(X, y, weights = ones(size(X, 1)); nlv,
+        bic = false, typw = "bisquare", alpha = 0)
     X = ensure_mat(X)
     n, p = size(X)
     nlv = eval(Meta.parse(nlv))
     nlv = (min(minimum(nlv), n, p):min(maximum(nlv), n, p))
     nlvmax = maximum(nlv)    
-    w = similar(X, nlvmax + 1)
-    res = aicplsr(X, y; nlv = nlvmax)
+    res = aicplsr(X, y; nlv = nlvmax, bic = bic)
     d = res.delta.aic[nlv .+ 1]
     #d = res.crit.aic[nlv .+ 1]
     w = fweight(d, typw = typw, alpha = alpha)
-    w = mweight(w)
+    w .= mweight(w)
     fm = plskern!(X, y, weights; nlv = nlvmax)
-    PlsrAvgAic(fm, nlv, w)
+    PlsrAvgCri(fm, nlv, w)
 end
 
-function predict(object::PlsrAvgAic, X)
+function predict(object::Union{PlsrAvgCri, PlsrStack}, X)
     nlv = object.nlv
     le_nlv = length(nlv)
     zpred = predict(object.fm, X; nlv = nlv).pred

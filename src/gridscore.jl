@@ -20,9 +20,9 @@ The vectors in `pars` must have same length.
 """
 function gridscore(Xtrain, Ytrain, X, Y; score, fun, 
         pars, verbose = false)
-    q = size(Ytrain, 2)
-    nco = length(pars[1]) # nb. combinations in pars
-    verbose ? println("-- Nb. combinations = ", nco) : nothing
+    q = nco(Ytrain)
+    ncomb = length(pars[1]) # nb. combinations in pars
+    verbose ? println("-- Nb. combinations = ", ncomb) : nothing
     res = map(values(pars)...) do v...
         verbose ? println(Pair.(keys(pars), v)...) : nothing
         fm = fun(Xtrain, Ytrain ; Pair.(keys(pars), v)...)
@@ -30,7 +30,7 @@ function gridscore(Xtrain, Ytrain, X, Y; score, fun,
         score(pred, Y)
     end
     verbose ? println("-- End.") : nothing
-    nco == 1 ? res = res[1] : res = reduce(vcat, res) 
+    ncomb == 1 ? res = res[1] : res = reduce(vcat, res) 
     dat = DataFrame(pars)
     namy = map(string, repeat(["y"], q), 1:q)
     res = DataFrame(res, Symbol.(namy))
@@ -48,8 +48,9 @@ Argument `pars` must not contain `nlv`.
 """
 function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv, 
         pars = nothing, verbose = false)
-    q = size(Ytrain, 2)
-    nlv = max(minimum(nlv), 0):maximum(nlv)
+    p = nco(Xtrain)
+    q = nco(Ytrain)
+    nlv = max(0, minimum(nlv)):min(p, maximum(nlv))
     le_nlv = length(nlv)
     if isnothing(pars)
         verbose ? println("-- Nb. combinations = 0.") : nothing
@@ -62,8 +63,8 @@ function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv,
         end
         dat = DataFrame(nlv = nlv)
     else       
-        nco = length(pars[1])  # nb. combinations in pars
-        verbose ? println("-- Nb. combinations = ", nco) : nothing
+        ncomb = length(pars[1])  # nb. combinations in pars
+        verbose ? println("-- Nb. combinations = ", ncomb) : nothing
         res = map(values(pars)...) do v...    
             verbose ? println(Pair.(keys(pars), v)...) : nothing
             fm = fun(Xtrain, Ytrain ; nlv = maximum(nlv), Pair.(keys(pars), v)...)
@@ -76,19 +77,19 @@ function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv,
             zres
         end 
        
-        nco == 1 ? res = res[1] : res = reduce(vcat, res) 
+        ncomb == 1 ? res = res[1] : res = reduce(vcat, res) 
         ## Make dat
         if le_nlv == 1
             dat = DataFrame(pars)
         else
             zdat = DataFrame(pars)
-            dat = list(nco)
-            @inbounds for i = 1:nco
+            dat = list(ncomb)
+            @inbounds for i = 1:ncomb
                 dat[i] = reduce(vcat, fill(zdat[i:i, :], le_nlv))
             end
             dat = reduce(vcat, dat)
         end
-        znlv = repeat(nlv, nco)
+        znlv = repeat(nlv, ncomb)
         dat = hcat(dat, DataFrame(nlv = znlv))
         ## End
     end
@@ -109,7 +110,7 @@ Argument `pars` must not contain `lb`.
 """
 function gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb, 
         pars = nothing, verbose = false)
-    q = size(Ytrain, 2)
+    q = nco(Ytrain)
     lb = sort(unique(lb))
     le_lb = length(lb)
     if isnothing(pars)
@@ -123,8 +124,8 @@ function gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb,
         end
         dat = DataFrame(lb = lb)
     else
-        nco = length(pars[1])  # nb. combinations in pars
-        verbose ? println("-- Nb. combinations = ", nco) : nothing
+        ncomb = length(pars[1])  # nb. combinations in pars
+        verbose ? println("-- Nb. combinations = ", ncomb) : nothing
         res = map(values(pars)...) do v...
             verbose ? println(Pair.(keys(pars), v)...) : nothing
             fm = fun(Xtrain, Ytrain ; lb = maximum(lb), Pair.(keys(pars), v)...)
@@ -136,19 +137,19 @@ function gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb,
             end
             zres
         end 
-        nco == 1 ? res = res[1] : res = reduce(vcat, res) 
+        ncomb == 1 ? res = res[1] : res = reduce(vcat, res) 
         ## Make dat
         if le_lb == 1
             dat = DataFrame(pars)
         else
             zdat = DataFrame(pars)
-            dat = list(nco)
-            @inbounds for i = 1:nco
+            dat = list(ncomb)
+            @inbounds for i = 1:ncomb
                 dat[i] = reduce(vcat, fill(zdat[i:i, :], le_lb))
             end
             dat = reduce(vcat, dat)
         end
-        zlb = repeat(lb, nco)
+        zlb = repeat(lb, ncomb)
         dat = hcat(dat, DataFrame(lb = zlb))
         ## End
     end

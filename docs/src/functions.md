@@ -52,7 +52,7 @@
 - ***plsnipals*** NIPALS
 - ***plsrosa*** ROSA *Liland et al. 2016*
 - ***plssimp*** SIMPLS *de Jong 1993*
-- ***plsr_avg*** Averaging PLSR models with different numbers of LVs (PLSR-AVG)
+- ***plsr_avg*** Averaging and stacking PLSR models with different numbers of LVs (PLSR-AVG)
 
 *Utility*
 - ***aicplsr*** AIC and Cp for PLSR

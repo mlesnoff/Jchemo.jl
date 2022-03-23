@@ -17,10 +17,10 @@ grid defined in `pars`.
 The vectors in `pars` must have same length.
 """
 function gridcv(X, Y; segm, score, fun, pars, verbose = false)
-    q = size(Y, 2)
+    q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
-    nco = length(pars[1]) # nb. combinations in pars
+    ncomb = length(pars[1]) # nb. combinations in pars
     @inbounds for i in 1:nrep
         verbose ? print("/ rept=", i, " ") : nothing
         listsegm = segm[i]       # segments in the repetition
@@ -35,8 +35,8 @@ function gridcv(X, Y; segm, score, fun, pars, verbose = false)
                 score = score, fun = fun, pars = pars)
         end
         zres = reduce(vcat, zres)
-        dat = DataFrame(rept = fill(i, nsegm * nco),
-            segm = repeat(1:nsegm, inner = nco))
+        dat = DataFrame(rept = fill(i, nsegm * ncomb),
+            segm = repeat(1:nsegm, inner = ncomb))
         zres = hcat(dat, zres)
         res_rep[i] = zres
     end
@@ -59,7 +59,7 @@ Argument `pars` must not contain `nlv`.
 """
 function gridcvlv(X, Y; segm, score, fun, nlv, pars = nothing, 
         verbose = false)
-    q = size(Y, 2)
+    q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
     nlv = max(minimum(nlv), 0):maximum(nlv)
@@ -83,9 +83,9 @@ function gridcvlv(X, Y; segm, score, fun, nlv, pars = nothing,
             dat = DataFrame(rept = fill(i, nsegm * le_nlv),
                 segm = repeat(1:nsegm, inner = le_nlv))
         else
-            nco = length(pars[1]) # nb. combinations in pars
-            dat = DataFrame(rept = fill(i, nsegm * le_nlv * nco),
-                segm = repeat(1:nsegm, inner = le_nlv * nco))
+            ncomb = length(pars[1]) # nb. combinations in pars
+            dat = DataFrame(rept = fill(i, nsegm * le_nlv * ncomb),
+                segm = repeat(1:nsegm, inner = le_nlv * ncomb))
         end
         zres = hcat(dat, zres)
         res_rep[i] = zres
@@ -110,7 +110,7 @@ Argument `pars` must not contain `lb`.
 """
 function gridcvlb(X, Y; segm, score, fun, lb, pars = nothing, 
         verbose = false)
-    q = size(Y, 2)
+    q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
     lb = sort(unique(lb))
@@ -134,9 +134,9 @@ function gridcvlb(X, Y; segm, score, fun, lb, pars = nothing,
             dat = DataFrame(rept = fill(i, nsegm * le_lb),
                 segm = repeat(1:nsegm, inner = le_lb))
         else
-            nco = length(pars[1]) # nb. combinations in pars
-            dat = DataFrame(rept = fill(i, nsegm * le_lb * nco),
-                segm = repeat(1:nsegm, inner = le_lb * nco))
+            ncomb = length(pars[1]) # nb. combinations in pars
+            dat = DataFrame(rept = fill(i, nsegm * le_lb * ncomb),
+                segm = repeat(1:nsegm, inner = le_lb * ncomb))
         end
         zres = hcat(dat, zres)
         res_rep[i] = zres
@@ -153,10 +153,10 @@ end
 ####################### Multiblock
 
 function gridcv_mb(X, Y; segm, score, fun, pars, verbose = false)
-    q = size(Y, 2)
+    q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
-    nco = length(pars[1]) # nb. combinations in pars
+    ncomb = length(pars[1]) # nb. combinations in pars
     nbl = length(X)
     @inbounds for i in 1:nrep
         verbose ? print("/ rept=", i, " ") : nothing
@@ -176,8 +176,8 @@ function gridcv_mb(X, Y; segm, score, fun, pars, verbose = false)
                 score = score, fun = fun, pars = pars)
         end
         zres = reduce(vcat, zres)
-        dat = DataFrame(rept = fill(i, nsegm * nco),
-            segm = repeat(1:nsegm, inner = nco))
+        dat = DataFrame(rept = fill(i, nsegm * ncomb),
+            segm = repeat(1:nsegm, inner = ncomb))
         zres = hcat(dat, zres)
         res_rep[i] = zres
     end
@@ -191,7 +191,7 @@ end
 
 function gridcvlv_mb(X, Y; segm, score, fun, nlv, pars = nothing, 
         verbose = false)
-    q = size(Y, 2)
+    q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
     nlv = max(minimum(nlv), 0):maximum(nlv)
@@ -220,9 +220,9 @@ function gridcvlv_mb(X, Y; segm, score, fun, nlv, pars = nothing,
             dat = DataFrame(rept = fill(i, nsegm * le_nlv),
                 segm = repeat(1:nsegm, inner = le_nlv))
         else
-            nco = length(pars[1]) # nb. combinations in pars
-            dat = DataFrame(rept = fill(i, nsegm * le_nlv * nco),
-                segm = repeat(1:nsegm, inner = le_nlv * nco))
+            ncomb = length(pars[1]) # nb. combinations in pars
+            dat = DataFrame(rept = fill(i, nsegm * le_nlv * ncomb),
+                segm = repeat(1:nsegm, inner = le_nlv * ncomb))
         end
         zres = hcat(dat, zres)
         res_rep[i] = zres

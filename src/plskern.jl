@@ -66,10 +66,9 @@ end
 function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    n = size(X, 1)
-    p = size(X, 2)
-    q = size(Y, 2)
-    nlv = min(nlv, n, p)
+    n, p = size(X)
+    q = nco(Y)
+    nlv = min(n, p, nlv)
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
@@ -190,8 +189,8 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Union{Plsr, Pcr}, X; nlv = nothing)
     X = ensure_mat(X)
-    a = size(object.T, 2)
-    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
+    a = nco(object.T)
+    isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     pred = list(le_nlv, Matrix{Float64})
     @inbounds for i = 1:le_nlv
@@ -201,4 +200,6 @@ function predict(object::Union{Plsr, Pcr}, X; nlv = nothing)
     le_nlv == 1 ? pred = pred[1] : nothing
     (pred = pred,)
 end
+
+
 

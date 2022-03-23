@@ -53,9 +53,10 @@ Argument pars must not contain nlv.
 """
 function locwlv(Xtrain, Ytrain, X; 
     listnn, listw = nothing, fun, nlv, verbose = true, kwargs...)
-    m = size(X, 1)
-    q = size(Ytrain, 2)
-    nlv = max(minimum(nlv), 0):maximum(nlv)
+    p = nco(Xtrain)
+    m = nro(X)
+    q = nco(Ytrain)
+    nlv = max(0, minimum(nlv)):min(p, maximum(nlv))
     le_nlv = length(nlv)
     #zpred = zeros(m, q, le_nlv)
     #zpred = Array{Float64}(undef, m, q, le_nlv)

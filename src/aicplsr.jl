@@ -65,18 +65,17 @@ function dfplsr_cg(X, y; nlv, reorth = true)
 end
 
 """
-    aicplsr(X, y; nlv, reorth = true, filt = false)
+    aicplsr(X, y; nlv, correct = true, bic = false)
 Compute Akaike's (AIC) and Mallows's (Cp) criteria for univariate PLSR models.
 * `X` : X-data.
 * `y` : Univariate Y-data.
 * `nlv` : Nb. latent variables (LVs).
-* `reorth` : If `true`, a Gram-Schmidt reorthogonalization of the normal equation 
-    residual vectors is done.
-* `filt` : Logical indicating if the conjugate gradient filter factors are computed.
+* `correct` : Define if the bias correction is applied.
+* `bic` : Define is BIC is computed instead of AIC.
 
 `X` and `y` are internally centered. 
 
-The function uses function `cglsr`. 
+The function uses function `dfplsr_cg`. 
 
 ## References
 Hansen, P.C., 1998. Rank-Deficient and Discrete Ill-Posed Problems, Mathematical Modeling and Computation. 
@@ -114,7 +113,7 @@ scatter!(ax, 0:nlv, zaic)
 f
 ```
 """ 
-function aicplsr(X, y; nlv, correct = true)
+function aicplsr(X, y; nlv, correct = true, bic = false)
     X = ensure_mat(X)
     n = size(X, 1)
     p = size(X, 2)
@@ -149,12 +148,13 @@ function aicplsr(X, y; nlv, correct = true)
     if length(u) > 0
         ct[minimum(u):(nlv + 1)] .= NaN
     end
-    aic = n * log.(zssr) + 2 * (df .+ 1) .* ct
+    bic ? alpha = log(n) : alpha = 2
+    aic = n * log.(zssr) + alpha * (df .+ 1) .* ct
     cp1 = zssr .+ 2 * s2_1 * df .* ct
     cp2 = zssr .+ 2 * s2_2 .* df .* ct
-    aic = aic / n
-    cp1 = cp1 / n
-    cp2 = cp2 / n
+    aic ./= n
+    cp1 ./= n
+    cp2 ./= n
     res = (aic = aic, cp1 = cp1, cp2 = cp2)
     znlv = 0:nlv
     tab = DataFrame(nlv = znlv, n = fill(n, nlv + 1), df = df, ct = ct, ssr = zssr)

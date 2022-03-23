@@ -14,7 +14,8 @@ struct LwplsrS1
 end
 
 """
-    lwplsr_s(X, Y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
+    lwplsr_s(X, Y; nlv0,
+        nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
 kNN-LWPLSR after preliminary dimension reduction.
 * `X` : X-data.
 * `Y` : Y-data.
@@ -55,6 +56,7 @@ function lwplsr_s(X, Y; nlv0,
     else
         fm = plskern(fm0.T, Y; nlv = nlvdis)
     end
+    nlv = min(nlv, nco(fm0.T))
     LwplsrS1(X, Y, fm0, fm, nlv0, nlvdis, metric, h, k, nlv, 
         tol, verbose)
 end
@@ -67,9 +69,9 @@ Compute the Y-predictions from the fitted model.
 """ 
 function predict(object::LwplsrS1, X; nlv = nothing)
     X = ensure_mat(X)
-    m = size(X, 1)
+    m = nro(X)
     a = object.nlv
-    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
+    isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     T = transform(object.fm0, X)
     # Getknn
     if isnothing(object.fm)

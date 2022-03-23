@@ -1,10 +1,21 @@
 ## NEWS for package **Jchemo**
 
+### *Version 0.0-15*
+
+- New 
+    - **plsr_stack** 
+
+- Modified
+
+    - **aicplsr** : BIC criterion added
+    - **fweight**
+    - **plsr_avg** 
+    - **plsr_avg_aic**
+    - **plsr_avg_cv**
+
 ### *Version 0.0-14*
 - New 
     - **lwplsr_s** 
-
-- Modified
 
 ### *Version 0.0-13*
 - New 

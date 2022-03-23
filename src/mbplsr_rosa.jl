@@ -41,8 +41,8 @@ squares regression for multiblock data analysis. Journal of Chemometrics 30,
 function mbplsr_rosa(X, Y, weights = ones(size(X[1], 1)); nlv)
     nbl = length(X)
     zX = list(nbl, Matrix{Float64})
-    @inbounds for i = 1:nbl
-        zX[i] = copy(ensure_mat(X[i]))
+    @inbounds for k = 1:nbl
+        zX[k] = copy(ensure_mat(X[k]))
     end
     mbplsr_rosa!(zX, copy(Y), weights; nlv = nlv)
 end
@@ -56,10 +56,10 @@ function mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv)
     D = Diagonal(weights)
     xmeans = list(nbl, Vector{Float64})
     p = fill(0, nbl)
-    @inbounds for i = 1:nbl
-        p[i] = size(X[i], 2)
-        xmeans[i] = colmean(X[i], weights)   
-        center!(X[i], xmeans[i])
+    @inbounds for k = 1:nbl
+        p[k] = size(X[k], 2)
+        xmeans[k] = colmean(X[k], weights)   
+        center!(X[k], xmeans[k])
     end
     ymeans = colmean(Y, weights)   
     center!(Y, ymeans)
@@ -84,15 +84,15 @@ function mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv)
     ### Start 
     @inbounds for a = 1:nlv
         DY .= D * Y  # apply the metric on covariance
-        @inbounds for i = 1:nbl
-            XtY = X[i]' * DY
+        @inbounds for k = 1:nbl
+            XtY = X[k]' * DY
             if q == 1
-                w_bl[i] = vec(XtY)
-                w_bl[i] ./= norm(w_bl[i])
+                w_bl[k] = vec(XtY)
+                w_bl[k] ./= norm(w_bl[k])
             else
-                w_bl[i] = svd!(XtY).U[:, 1]
+                w_bl[k] = svd!(XtY).U[:, 1]
             end
-            zT[:, i] .= X[i] * w_bl[i]
+            zT[:, k] .= X[k] * w_bl[k]
         end
         # GS Orthogonalization of the scores
         if a > 1
@@ -100,11 +100,11 @@ function mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv)
             zT .= zT .- z * inv(z' * (D * z)) * z' * (D * zT)
         end
         # Selection of the winner block
-        @inbounds for i = 1:nbl
-            t = vcol(zT, i)
+        @inbounds for k = 1:nbl
+            t = vcol(zT, k)
             dt .= weights .* t
             tt = dot(t, dt)
-            Res[:, :, i] .= Y .- (t * t') * DY / tt
+            Res[:, :, k] .= Y .- (t * t') * DY / tt
         end
         ssr = vec(sum(Res.^2, dims = (1, 2)))
         opt = findmin(ssr)[2][1]
@@ -119,7 +119,7 @@ function mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv)
         TT[a] = tt
         C[:, a] .= c
         Y .= Res[:, :, opt]
-        for i = 1:nbl ; zp_bl[i] = X[i]' * dt ; end
+        for k = 1:nbl ; zp_bl[k] = X[k]' * dt ; end
         zp .= reduce(vcat, zp_bl)
         P[:, a] .= zp / tt
         # Orthogonalization of the weights "w" by block
@@ -154,8 +154,8 @@ function transform(object::MbplsrRosa, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(object.xmeans)
     zX = list(nbl, Matrix{Float64})
-    @inbounds for i = 1:nbl
-        zX[i] = center(X[i], object.xmeans[i])
+    @inbounds for k = 1:nbl
+        zX[k] = center(X[k], object.xmeans[k])
     end
     reduce(hcat, zX) * vcol(object.R, 1:nlv)
 end
@@ -190,9 +190,9 @@ function predict(object::MbplsrRosa, X; nlv = nothing)
     le_nlv = length(nlv)
     zX = reduce(hcat, X)
     pred = list(le_nlv, Matrix{Float64})
-    @inbounds for i = 1:le_nlv
-        z = coef(object; nlv = nlv[i])
-        pred[i] = z.int .+ zX * z.B
+    @inbounds for k = 1:le_nlv
+        z = coef(object; nlv = nlv[k])
+        pred[k] = z.int .+ zX * z.B
     end 
     le_nlv == 1 ? pred = pred[1] : nothing
     (pred = pred,)
