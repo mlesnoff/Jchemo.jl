@@ -3,15 +3,16 @@
 ### *Version 0.0-15*
 
 - New 
-    - **plsr_stack** 
+    - **plsr_stack** : Stacking PLSR models
 
 - Modified
 
     - **aicplsr** : BIC criterion added
     - **fweight**
-    - **plsr_avg** 
+    - **plsr_avg** : Stacking was added
     - **plsr_avg_aic**
     - **plsr_avg_cv**
+    - **lwplsr_avg**
 
 ### *Version 0.0-14*
 - New 

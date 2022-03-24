@@ -21,7 +21,7 @@ For `typf` = "stack":
 *`K` : Nb. of CV folds.
 *`rep` : Nb. of repetitions of the K-fold CV. 
 
-Ensemblist method where the predictions are calculated by averaging 
+Ensemblist method where the predictions are computed by averaging 
 or stacking the predictions of a set of models built with different numbers of 
 latent variables (LVs).
 
@@ -77,7 +77,7 @@ function plsr_avg!(X, Y, weights = ones(size(X, 1)); nlv,
     elseif typf == "shenk"
         fm = plsr_avg_shenk!(X, Y, weights; nlv = nlv)
     elseif typf == "stack"
-        fm = plsr_stack!(X, Y, weights; nlv = nlv, K = K, rep = rep)
+        fm = plsr_stack!(X, Y, weights; nlv = nlv, K = K, rep = rep) 
     end
     PlsrAvg(fm)
 end

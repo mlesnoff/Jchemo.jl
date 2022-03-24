@@ -40,7 +40,7 @@ function plsr_stack!(X, y, weights = ones(size(X, 1)); nlv, K = 5, rep = 10)
     weights_stack = mweight(weights_stack)
     Xstack = vcol(Xstack, nlv .+ 1)
     XtD = Xstack' * Diagonal(weights_stack)
-    w = cholesky!(Hermitian(XtD * Xstack)) \ (XtD * ystack)
+    w = vec(cholesky!(Hermitian(XtD * Xstack)) \ (XtD * ystack))
     fm = plskern!(X, y, weights; nlv = nlvmax)
     PlsrStack(fm, nlv, w, Xstack, ystack, weights_stack)
 end

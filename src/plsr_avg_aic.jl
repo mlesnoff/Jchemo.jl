@@ -8,9 +8,9 @@ struct PlsrStack
     fm::Plsr
     nlv
     w::Vector
-    Xstack::Matrix
-    ystack::Vector
-    weights_stack::Vector
+    Xstack  # = View
+    ystack::Array
+    weights_stack::Array
 end
 
 function plsr_avg_aic(X, y, weights = ones(size(X, 1)); nlv, 
