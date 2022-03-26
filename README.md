@@ -1,7 +1,7 @@
 # Jchemo.jl
 
 ## Dimension reduction, Regression and Discrimination for Chemometrics
-## <span style="color:grey70"> Version 0.0-15  </span> 
+## <span style="color:grey70"> Version 0.0-16  </span> 
 
 ![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)<!--
 ![Lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)

@@ -5,45 +5,49 @@ struct Mlr
 end
 
 """
-    mlr(X, Y, weights = ones(size(X, 1)))
+    mlr(X, Y, weights = ones(size(X, 1)); noint = false)
 Compute a mutiple linear regression model (MLR) by using the QR algorithm.
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
+* `noint` : Define if the model is computed with an intercept or not.
 
 Safe but little slower.
-
-`X` and `Y` are internally centered. The model is computed with an intercept.
 """ 
-function mlr(X, Y, weights = ones(size(X, 1)))
-    mlr!(copy(X), copy(Y), weights)
+function mlr(X, Y, weights = ones(size(X, 1)); noint = false)
+    mlr!(copy(X), copy(Y), weights; noint = noint)
 end
 
-function mlr!(X, Y, weights = ones(size(X, 1)))
+function mlr!(X, Y, weights = ones(size(X, 1)); noint = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     weights = mweight(weights)
-    xmeans = colmean(X, weights) 
-    ymeans = colmean(Y, weights)   
-    center!(X, xmeans)
-    center!(Y, ymeans)
     sqrtD = Diagonal(sqrt.(weights))
-    B = (sqrtD * X) \ (sqrtD * Y)
-    int = ymeans' .- xmeans' * B
+    if noint
+        q = nco(Y)
+        B = (sqrtD * X) \ (sqrtD * Y)
+        int = zeros(q)'
+    else
+        xmeans = colmean(X, weights) 
+        ymeans = colmean(Y, weights)   
+        center!(X, xmeans)
+        center!(Y, ymeans)
+        B = (sqrtD * X) \ (sqrtD * Y)
+        int = ymeans' .- xmeans' * B
+    end
     Mlr(B, int, weights)
 end
 
 """
-    mlrchol(X, Y, weights = ones(size(X, 1)))
+    mlrchol(X, Y, weights = ones(size(X, 1)); noint = false)
 Compute a mutiple linear regression model (MLR) 
 using the Normal equations and a Choleski factorization.
 * `X` : X-data, with nb. columns >= 2 (required by function cholesky).
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
+* `noint` : Define if the model is computed with an intercept or not.
 
 Faster but can be less accurate (squared element X'X).
-
-`X` and `Y` are internally centered. The model is computed with an intercept.
 """ 
 function mlrchol(X, Y, weights = ones(size(X, 1)))
     mlrchol!(copy(X), copy(Y), weights)
@@ -65,47 +69,53 @@ function mlrchol!(X, Y, weights = ones(size(X, 1)))
 end
 
 """
-    mlrpinv(X, Y, weights = ones(size(X, 1)))
+    mlrpinv(X, Y, weights = ones(size(X, 1)); noint = false)
 Compute a mutiple linear regression model (MLR)  by using a pseudo-inverse. 
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
+* `noint` : Define if the model is computed with an intercept or not.
 
-Safe but can be slower. 
-
-`X` and `Y` are internally centered. The model is computed with an intercept. 
+Safe but can be slower.  
 """ 
-function mlrpinv(X, Y, weights = ones(size(X, 1)))
-    mlrpinv!(copy(X), copy(Y), weights)
+function mlrpinv(X, Y, weights = ones(size(X, 1)); noint = false)
+    mlrpinv!(copy(X), copy(Y), weights; noint = noint)
 end
 
-function mlrpinv!(X, Y, weights = ones(size(X, 1)))
+function mlrpinv!(X, Y, weights = ones(size(X, 1)); noint = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     weights = mweight(weights)
-    xmeans = colmean(X, weights) 
-    ymeans = colmean(Y, weights)   
-    center!(X, xmeans)
-    center!(Y, ymeans)
     sqrtD = Diagonal(sqrt.(weights))
-    sqrtDX = sqrtD * X
-    tol = sqrt(eps(real(float(one(eltype(sqrtDX))))))      # see ?pinv
-    B = pinv(sqrtDX, rtol = tol) * (sqrtD * Y)
-    int = ymeans' .- xmeans' * B
+    if noint
+        q = nco(Y)
+        sqrtDX = sqrtD * X
+        tol = sqrt(eps(real(float(one(eltype(sqrtDX))))))      # see ?pinv
+        B = pinv(sqrtDX, rtol = tol) * (sqrtD * Y)
+        int = zeros(q)'
+    else
+        xmeans = colmean(X, weights) 
+        ymeans = colmean(Y, weights)   
+        center!(X, xmeans)
+        center!(Y, ymeans)
+        sqrtDX = sqrtD * X
+        tol = sqrt(eps(real(float(one(eltype(sqrtDX))))))      # see ?pinv
+        B = pinv(sqrtDX, rtol = tol) * (sqrtD * Y)
+        int = ymeans' .- xmeans' * B
+    end
     Mlr(B, int, weights)
 end
 
 """
-    mlrpinv_n(X, Y, weights = ones(size(X, 1)))
+    mlrpinv_n(X, Y, weights = ones(size(X, 1)); noint = false)
 Compute a mutiple linear regression model (MLR) 
 by using the Normal equations and a pseudo-inverse.
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
+* `noint` : Define if the model is computed with an intercept or not.
 
 Safe and fast for p not too large.
-
-`X` and `Y` are internally centered. The model is computed with an intercept. 
 """ 
 function mlrpinv_n(X, Y, weights = ones(size(X, 1)))
     mlrpinv_n!(copy(X), copy(Y), weights)
@@ -128,13 +138,12 @@ function mlrpinv_n!(X, Y, weights = ones(size(X, 1)))
 end
 
 """
-    mlrvec(x, Y, weights = ones(length(x)))
+    mlrvec(x, Y, weights = ones(length(x)); noint = false)
 Compute a simple linear regression model (univariate x).
 * `x` : Univariate X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
-
-`x` and `Y` are internally centered. The model is computed with an intercept. 
+* `noint` : Define if the model is computed with an intercept or not.
 """ 
 function mlrvec(x, Y, weights = ones(length(x)))
     mlrvec!(copy(x), copy(Y), weights)
@@ -171,6 +180,7 @@ Compute the Y-predictions from the fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Mlr, X)
+    X = ensure_mat(X)
     z = coef(object)
     pred = z.int .+ X * z.B
     (pred = pred,)

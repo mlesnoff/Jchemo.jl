@@ -109,6 +109,10 @@ include("scores.jl")
 include("gridscore.jl")
 include("segm.jl") ; include("gridcv.jl")
 
+# Transfer
+include("transfer_ds.jl")
+include("transfer_pds.jl")
+
 # Sampling
 include("sampling.jl")
 

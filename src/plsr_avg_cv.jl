@@ -15,7 +15,7 @@ function plsr_avg_cv!(X, Y, weights = ones(size(X, 1)); nlv,
     res = gridcvlv(X, Y; segm = segm, score = rmsep, 
         fun = plskern, nlv = 0:nlvmax, verbose = false).res
     z = rowmean(rmcol(Matrix(res), 1))
-    d = z .- findmin(z)[1]
+    d = (z .- findmin(z)[1])[nlv .+ 1]
     w = fweight(d, typw = typw, alpha = alpha)
     w .= mweight(w)
     fm = plskern!(X, Y, weights; nlv = nlvmax)

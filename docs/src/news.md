@@ -1,5 +1,17 @@
 ## NEWS for package **Jchemo**
 
+### *Version 0.0-16*
+
+- New 
+
+   - **transfer_ds** : Calibration transfert with direct standardization methods.
+
+- Modified
+
+    - **mlr** functions : Argument 'noint' added.
+    - **plsr_avg_cv** : Bug corrected.
+
+
 ### *Version 0.0-15*
 
 - New 

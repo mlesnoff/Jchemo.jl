@@ -28,7 +28,6 @@ function plsr_avg_aic!(X, y, weights = ones(size(X, 1)); nlv,
     nlvmax = maximum(nlv)    
     res = aicplsr(X, y; nlv = nlvmax, bic = bic)
     d = res.delta.aic[nlv .+ 1]
-    #d = res.crit.aic[nlv .+ 1]
     w = fweight(d, typw = typw, alpha = alpha)
     w .= mweight(w)
     fm = plskern!(X, y, weights; nlv = nlvmax)

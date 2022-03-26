@@ -196,6 +196,10 @@
 - ***savgk***, ***savgol*** Savitsky-Golay filtering
 - ***snv*** Standard-normal-deviation transformation
 
+#### **Calibration transfert**
+
+- ***transfer_ds*** : Direct standardization methods.
+
 #### **Sampling observations**
 
 - ***sampclas*** Stratified sampling
