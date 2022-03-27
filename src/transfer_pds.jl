@@ -1,24 +1,35 @@
-struct TransferPds2
+struct TransferPds
     fm
     s
 end
 
-
 """
     transfer_pds(X1, X2; fun = mlrpinv, m = 5, kwargs...)
-Calibration transfer of spectral data with direct standardization methods.
+Calibration transfer of spectral data with piecewise direct standardization (PDS).
 * `X1` : Target (standart) X-data (n, p).
 * `X2` : X-data (n, p) to transfer to the standart.
 * `fun` : Function used for fitting the transfer model.  
+* `m` : Half-window size (nb. points left/right to the target wavelength) 
 * `kwargs` : Optional arguments for `fun`.
+
+To predict wavelength i in `X1`, the window in `X2` is :
+
+i - m, i - m + 1, ..., i, ..., i + m - 1, i + m
 
 `X1` and `X2` are assumed to represent the same n samples. 
 
 ## References
 
+Bouveresse, E., Massart, D.L., 1996. Improvement of the piecewise direct standardisation procedure 
+for the transfer of NIR spectra for multivariate calibration. Chemometrics and Intelligent Laboratory 
+Systems 32, 201–213. https://doi.org/10.1016/0169-7439(95)00074-7
+
 Y. Wang, D. J. Veltkamp, and B. R. Kowalski, “Multivariate Instrument Standardization,” 
 Anal. Chem., vol. 63, no. 23, pp. 2750–2756, 1991, doi: 10.1021/ac00023a016.
-    
+
+Wülfert, F., Kok, W.Th., Noord, O.E. de, Smilde, A.K., 2000. Correction of Temperature-Induced 
+Spectral Variation by Continuous Piecewise Direct Standardization. Anal. Chem. 72, 1639–1644.
+https://doi.org/10.1021/ac9906835
 """ 
 function transfer_pds(X1, X2; fun = mlrpinv, m = 5, kwargs...)
     p = nco(X1)
@@ -31,7 +42,7 @@ function transfer_pds(X1, X2; fun = mlrpinv, m = 5, kwargs...)
         s[i] = collect((i - zm[i]):(i + zm[i]))
         fm[i] = fun(X2[:, s[i]], X1[:, i]; kwargs...)
     end
-    TransferPds2(fm, s)
+    TransferPds(fm, s)
 end
 
 """
@@ -41,7 +52,7 @@ Compute predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 * `kwargs` : Optional arguments.
 """ 
-function predict(object::TransferPds2, X; kwargs...)
+function predict(object::TransferPds, X; kwargs...)
     m, p = size(X)
     pred = similar(X, m, p)
     for i = 1:p 
