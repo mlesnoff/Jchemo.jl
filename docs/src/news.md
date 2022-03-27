@@ -4,7 +4,8 @@
 
 - New 
 
-   - **transfer_ds** : Calibration transfert with direct standardization methods.
+   - **transfer_ds** : Calibration transfert with direct standardization (DS).
+   - **transfer_pds** : Calibration transfert with piecewise direct standardization (PDS).
 
 - Modified
 

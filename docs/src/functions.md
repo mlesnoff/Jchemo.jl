@@ -1,6 +1,6 @@
 ### <span style="color:#1589F0"> **PCA** </span>
 
-- ***kpca*** Non linear kernel PCA  (KPCA) *Scholkopf et al. 2002*
+- ***kpca*** Non linear kernel  (KPCA) *Scholkopf et al. 2002*
 - ***pcaeigen*** Eigen decomposition
 - ***pcaeigenk*** Eigen decomposition for wide matrices (kernel form)
 - ***pcasvd*** SVD decomposition
@@ -12,10 +12,10 @@
 - ***xresid*** Residual matrix 
 
 *Multiblock*
-- ***blockscal[_col, _frob, _mfa, _sd]*** Scaling blocks (for multi-block analyses)
+- ***blockscal[_col, _frob, _mfa, _sd]*** Scaling blocks
 - ***lg*** Lg coefficient
-- ***mbpca_cons*** Consensus PCA (CPCA, MBPCA)
-- ***mbpca_comdim_s*** Common components and specific weights analysis (CCSWA, ComDim)
+- ***mbpca_cons*** Consensus (CPCA, MBPCA)
+- ***mbpca_comdim_s*** Common components and specific weights (CCSWA, ComDim)
 - ***rv*** RV correlation coefficient
 
 ### <span style="color:#1589F0"> **RANDOM PROJECTIONS** </span>
@@ -46,8 +46,8 @@
 
 #### **Partial least squares (PLSR)**
 
-- ***dkplsr*** Direct KPLSR *Bennett & Embrechts 2003*
-- ***kplsr*** Non linear kernel PLSR (KPLSR) *Rosipal & Trejo 2001*
+- ***dkplsr*** Direct non linear kernel (DKPLSR) *Bennett & Embrechts 2003*
+- ***kplsr*** Non linear kernel (KPLSR) *Rosipal & Trejo 2001*
 - ***plskern*** "Improved kernel #1" *Dayal & McGregor 1997*
 - ***plsnipals*** NIPALS
 - ***plsrosa*** ROSA *Liland et al. 2016*
@@ -62,19 +62,19 @@
 - ***iplsr*** Interval PLSR (iPLS) (Nørgaard et al. 2000)
 
 *Multiblock*
-- ***mbplsr*** Multiblock PLSR (PLSR on concatenated autoscaled blocks)
-- ***mbplsr_rosa*** Multiblock ROSA PLSR *Liland et al. 2016*
-- ***mbplsr_so*** Sequentially orthogonalized PLSR (SO-PLSR) 
+- ***mbplsr*** Multiblock (MBPLSR; concatenated autoscaled blocks)
+- ***mbplsr_rosa*** ROSA *Liland et al. 2016*
+- ***mbplsr_so*** Sequentially orthogonalized (SO-PLSR) 
 
 #### **Principal component (PCR)**
 
-- ***pcr*** PCR by SVD factorization
+- ***pcr*** SVD factorization
 
 #### **Ridge (RR, KRR)**
 
-- ***krr*** Non linear kernel RR (KRR) = Least squares SVM (LS-SVMR)
-- ***rr*** Pseudo-inverse
-- ***rrchol*** Choleski factorization
+- ***krr*** Non linear kernel (KRR) = Least squares SVM (LS-SVMR)
+- ***rr*** Pseudo-inverse (RR)
+- ***rrchol*** Choleski factorization (RR)
 
 #### **Local models**
 
@@ -179,6 +179,11 @@
 
 ### <span style="color:#1589F0"> **DATA MANAGEMENT** </span>
 
+#### **Calibration transfert**
+
+- ***transfer_ds*** : Direct standardization (DS).
+- ***transfer_pds*** : Piecewise direct standardization (PDS).
+
 ### **Checking**
 
 - ***checkdupl*** Finding replicated rows in a dataset
@@ -195,10 +200,6 @@
 - ***rmgap*** Remove vertical gaps in spectra, e.g. for ASD NIR data
 - ***savgk***, ***savgol*** Savitsky-Golay filtering
 - ***snv*** Standard-normal-deviation transformation
-
-#### **Calibration transfert**
-
-- ***transfer_ds*** : Direct standardization methods.
 
 #### **Sampling observations**
 
@@ -250,7 +251,6 @@
 
 <!---
 - ***plsrannar*** Kernel version for wide matrices (Rannar et al. 1994)
-- ***simpls***
 -->
 
 <!---  
