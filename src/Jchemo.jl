@@ -110,8 +110,8 @@ include("gridscore.jl")
 include("segm.jl") ; include("gridcv.jl")
 
 # Transfer
-include("transfer_ds.jl")
-include("transfer_pds.jl")
+include("caltransf_ds.jl")
+include("caltransf_pds.jl")
 
 # Sampling
 include("sampling.jl")
@@ -152,6 +152,7 @@ export
     tab, tabnum,
     vcol, vrow, 
    # Pre-processing
+    caltransf_ds, caltransf_pds,
     eposvd,
     interpl, interpl_mon, 
     linear_int, quadratic_int, quadratic_spline, cubic_spline,

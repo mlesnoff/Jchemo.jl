@@ -5,8 +5,21 @@ between the rows of `X` and `Y`.
 * `X` : Data.
 * `Y` : Data.
 
-When `X` (n, p) and `Y` (m, p), it returns an object (n, m) with:
+When `X` and `Y`are (n, p) and (m, p), repectively, it returns an object (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
+
+## Examples
+```julia
+X = rand(5, 3)
+Y = rand(2, 3)
+
+euclsq(X, Y)
+
+euclsq(X[1:1, :], Y[1:1, :])
+
+euclsq(X[:, 1], 4)
+euclsq(1, 4)
+```
 """
 function euclsq(X, Y)
     X = ensure_mat(X)
@@ -24,8 +37,23 @@ between the rows of `X` and `Y`.
 * `Sinv` : Inverse of a covariance matrix S.
     If not given, this is the uncorrected covariance matrix of `X`.
 
-For `X` (n, p) and `Y` (m, p), it returns an object (n, m) with:
+When `X` and `Y`are (n, p) and (m, p), repectively, it returns an object (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
+
+## Examples
+```julia
+X = rand(5, 3)
+Y = rand(2, 3)
+
+mahsq(X, Y)
+
+S = cov(X, corrected = false)
+Sinv = inv(S)
+mahsq(X, Y, Sinv)
+mahsq(X[1:1, :], Y[1:1, :], Sinv)
+
+mahsq(X[:, 1], 4)
+mahsq(1, 4, 2.1)
 """
 function mahsq(X, Y)
     X = ensure_mat(X)
@@ -53,8 +81,23 @@ between the observations (rows) of `X` and `Y`.
     of a covariance matrix S.
     If not given, the factorization is done on S, the uncorrected covariance matrix of `X`.
 
-When `X` (n, p) and `Y` (m, p), it returns an object (n, m) with:
+When `X` and `Y`are (n, p) and (m, p), repectively, it returns an object (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
+
+## Examples
+```julia
+X = rand(5, 3)
+Y = rand(2, 3)
+
+mahsqchol(X, Y)
+
+U = cholesky(Hermitian(S)).U 
+Uinv = inv(U)
+mahsqchol(X, Y, Uinv)
+mahsq(X[1:1, :], Y[1:1, :], Sinv)
+
+mahsqchol(X[:, 1], 4)
+mahsqchol(1, 4, sqrt(2.1))
 """
 function mahsqchol(X, Y)
     X = ensure_mat(X)

@@ -25,7 +25,62 @@ The functions maximize the compromise p'Bp / p'Wp, i.e. max p'Bp with
 constraint p'Wp = 1. Vectors p (columns of P) are the linear discrimant 
 coefficients "LD".
 
-`X` is internally centered.  
+## Examples
+```julia
+using JLD2, CairoMakie, StatsBase
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "iris.jld2") 
+@load db dat
+pnames(dat)
+X = dat.X 
+n = nro(X)
+summ(X)
+
+s = sample(1:n, 120; replace = false) 
+Xtrain = Matrix(X[s, 1:4])
+ytrain = X[s, 5]
+Xtest = rmrow(Matrix(X[:, 1:4]), s)
+ytest = rmrow(X[:, 5], s)
+
+tab(ytrain)
+
+fm = fda(Xtrain, ytrain; nlv = 2) ;
+#fm = fdasvd(Xtrain, ytrain; nlv = 2) ;
+pnames(fm)
+lev = fm.lev
+nlev = length(lev)
+
+fm.T
+# Projections of the class centers to the score space
+ct = fm.Tcenters 
+
+f = Figure()
+ax = Axis(f, title = "FDA") ;
+for i = 1:nlev
+    u = in([lev[i]]).(ytrain)
+    scatter!(ax, fm.T[u, 1], fm.T[u, 2],
+        label = lev[i])
+end
+scatter!(ax, ct[:, 1], ct[:, 2], 
+    markersize = 15, color = :red)
+f[1, 1] = ax
+axislegend(position = :lt)
+f
+
+# Projection of Xtest to the score space
+transform(fm, Xtest)
+
+# X-loadings matrix
+# = coefficients of the linear discriminant function
+# = "LD" of function lda of package MASS
+fm.P
+
+fm.eig
+fm.sstot
+# Explained variance by PCA of the class centers 
+# in transformed scale
+Base.summary(fm)
+```
 """ 
 function fda(X, y; nlv, pseudo = false)
     fda!(copy(X), y; nlv = nlv, pseudo = pseudo)
@@ -69,7 +124,8 @@ Factorial discriminant analysis (FDA).
 
 Weighted SVD factorization of the matrix of the class centers.
 
-`X` is internally centered.  
+See `?fda` for examples.
+
 """ 
 function fdasvd(X, y; nlv, pseudo = false)
     fdasvd!(copy(X), y; nlv = nlv, pseudo = pseudo)
@@ -86,7 +142,7 @@ function fdasvd!(X, y; nlv, pseudo = false)
     ni = res.ni
     res.W .= res.W * n / (n - nlev)
     !pseudo ? Winv = inv(res.W) : Winv = pinv(res.W)
-    ct = aggstat(X, y; fun = mean).res
+    ct = aggstat(X; group = y, fun = mean).X
     Ut = cholesky!(Hermitian(Winv)).U'
     Zct = ct * Ut
     nlv = min(nlv, n, p, nlev - 1)
@@ -116,7 +172,4 @@ function Base.summary(object::Fda)
         cumpvar = cumpvar)
     (explvar = explvar,)    
 end
-
-
-
 

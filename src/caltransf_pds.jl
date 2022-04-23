@@ -1,10 +1,10 @@
-struct TransferPds
+struct CalTransfPds
     fm
     s
 end
 
 """
-    transfer_pds(X1, X2; fun = mlrpinv, m = 5, kwargs...)
+    caltransf_pds(X1, X2; fun = mlrpinv, m = 5, kwargs...)
 Calibration transfer of spectral data with piecewise direct standardization (PDS).
 * `X1` : Target (standart) X-data (n, p).
 * `X2` : X-data (n, p) to transfer to the standart.
@@ -30,8 +30,32 @@ Anal. Chem., vol. 63, no. 23, pp. 2750–2756, 1991, doi: 10.1021/ac00023a016.
 Wülfert, F., Kok, W.Th., Noord, O.E. de, Smilde, A.K., 2000. Correction of Temperature-Induced 
 Spectral Variation by Continuous Piecewise Direct Standardization. Anal. Chem. 72, 1639–1644.
 https://doi.org/10.1021/ac9906835
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "caltransfer.jld2") 
+@load db dat
+pnames(dat)
+
+X1cal = dat.X1cal
+X2cal = dat.X2cal
+X1val = dat.X1val
+X2val = dat.X2val
+n = nro(X1cal)
+m = nro(X1val)
+
+fm = caltransf_pds(X1cal, X2cal; fun = plskern, nlv = 1, m = 2) ;
+pred = Jchemo.predict(fm, X2val).pred
+i = 1
+f, ax = lines(X1val[i, :])
+lines!(X2val[i, :])
+lines!(pred[i, :], linestyle = "--")
+f
+```
 """ 
-function transfer_pds(X1, X2; fun = mlrpinv, m = 5, kwargs...)
+function caltransf_pds(X1, X2; fun = mlrpinv, m = 5, kwargs...)
     p = nco(X1)
     fm = list(p)
     s = list(p)
@@ -42,17 +66,18 @@ function transfer_pds(X1, X2; fun = mlrpinv, m = 5, kwargs...)
         s[i] = collect((i - zm[i]):(i + zm[i]))
         fm[i] = fun(X2[:, s[i]], X1[:, i]; kwargs...)
     end
-    TransferPds(fm, s)
+    CalTransfPds(fm, s)
 end
 
 """
-    predict(object::TransferDs1, X; kwargs...)
+    predict(object::CalTransfPds, X; kwargs...)
 Compute predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `kwargs` : Optional arguments.
 """ 
-function predict(object::TransferPds, X; kwargs...)
+function predict(object::CalTransfPds, X; kwargs...)
+    X = ensure_mat(X)
     m, p = size(X)
     pred = similar(X, m, p)
     for i = 1:p 

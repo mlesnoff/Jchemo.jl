@@ -15,6 +15,7 @@ X = rand(n, p)
 listbl = [3:4, 1, [6; 8:10]]
 
 X_bl = mblock(X, listbl)
+X_bl[1]
 ```
 """
 function mblock(X, listbl)
@@ -58,7 +59,7 @@ X = rand(n, p)
 Xnew = X[1:3, :]
 
 listbl = [3:4, 1, [6; 8:10]]
-X_bl = mblock(X, listbl) ;
+X_bl = mblock(X, listbl) 
 
 X_bl[1]
 X_bl[2]

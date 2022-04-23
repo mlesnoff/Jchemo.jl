@@ -35,7 +35,6 @@ instead of L1 in SVM.
 The kernel Gram matrices are internally centered. 
 
 ## References 
-
 Bennett, K.P., Embrechts, M.J., 2003. An optimization perspective on kernel partial least squares regression, 
 in: Advances in Learning Theory: Methods, Models and Applications, 
 NATO Science Series III: Computer & Systems Sciences. IOS Press Amsterdam, pp. 227-250.
@@ -56,6 +55,60 @@ Emerging Technologies for the 21st Century. Proceedings (IEEE Cat No.00CH36353).
 Welling, M., n.d. Kernel ridge regression. Department of Computer Science, 
 University of Toronto, Toronto, Canada. https://www.ics.uci.edu/~welling/classnotes/papers_class/Kernel-Ridge.pdf
 
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+lb = 1e-3 ; gamma = 1e-1
+fm = krr(Xtrain, ytrain; lb = lb, gamma = gamma) ;
+
+zcoef = coef(fm)
+zcoef.int
+zcoef.A 
+zcoef.df
+coef(fm; lb = 1e-6).df
+
+res = predict(fm, Xtest)
+res.pred
+rmsep(res.pred, ytest)
+
+res = predict(fm, Xtest; lb = [.01 ; .001])
+res.pred[1]
+res.pred[2]
+
+fm = krr(Xtrain, ytrain; lb = lb, kern = "kpol", degree = 2, gamma = 1e-1, coef0 = 10) ;
+res = predict(fm, Xtest)
+rmsep(res.pred, ytest)
+
+# Example of fitting the function sinc(x)
+# described in Rosipal & Trejo 2001 p. 105-106 
+x = collect(-10:.2:10) 
+x[x .== 0] .= 1e-5
+n = length(x)
+zy = sin.(abs.(x)) ./ abs.(x) 
+y = zy + .2 * randn(n) 
+fm = krr(x, y; lb = 1e-1, gamma = 1 / 3) ;
+pred = predict(fm, x).pred 
+f, ax = scatter(x, y) 
+lines!(ax, x, zy, label = "True model")
+lines!(ax, x, vec(pred), label = "Fitted model")
+axislegend("Method")
+f
+```
 """ 
 function krr(X, Y, weights = ones(size(X, 1)); lb = .01, kern = "krbf", kwargs...)
     X = ensure_mat(X)

@@ -23,7 +23,6 @@ Bagging of regression models.
 * `kwargs` : Optional named arguments to pass in 'fun`.
 
 ## References
-
 Breiman, L., 1996. Bagging predictors. Mach Learn 24, 123–140. 
 https://doi.org/10.1007/BF00058655
 
@@ -36,6 +35,39 @@ sélection de variables et applications. PhD Thesis. Université Paris Sud - Par
 Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+fm = baggr(Xtrain, ytrain; rep = 20, 
+    rowsamp = .7, colsamp = .3, fun = mlr) ;
+res = predict(fm, Xtest) ;
+res.pred
+rmsep(ytest, res.pred)
+
+res = baggr_oob(fm, Xtrain, ytrain; score = rmsep)
+res.scor
+
+res = baggr_vi(fm, Xtrain, ytrain; score = rmsep)
+res.imp
+lines(vec(res.imp), 
+    axis = (xlabel = "Variable", ylabel = "Importance"))
+```
 """ 
 function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50, 
         withr = false, rowsamp = .7, colsamp = 1, fun, kwargs...)

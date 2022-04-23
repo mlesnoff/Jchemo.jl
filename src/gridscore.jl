@@ -5,18 +5,135 @@ Model validation over a grid of parameters.
 * `Ytrain` : Training Y-data.
 * `X` : Validation X-data.
 * `Y` : Validation Y-data.
-* `score` : Function computing the prediction score (= error rate; e.g. msep).
+* `score` : Function (e.g. `msep`) computing the prediction score.
 * `fun` : Function computing the prediction model.
-* `pars` : tuple of named vectors (arguments of fun) of same length
-    involved in the calculation of the score.
+* `pars` : tuple of named vectors (= arguments of fun) of same length
+    involved in the calculation of the score (e.g. output of function `mpar`).
 * `verbose` : If true, fitting information are printed.
 
-Compute a prediction score for a given model over a grid of parameters.
+Compute a prediction score (= error rate) for a given model over a grid of parameters.
 
-The score is computed over X and Y for each combination of the 
-grid defined in `pars`. 
+The score is computed over the validation sets `X` and `Y` for each combination 
+of the grid defined in `pars`. 
     
 The vectors in `pars` must have same length.
+
+## Examples
+```julia
+using JLD2, CairoMakie, StatsBase
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+# Building Train and Test
+
+X = dat.X 
+y = dat.Y.y
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+ntrain = nro(Xtrain)
+
+# Building Cal and Val within Train
+
+nval = 80
+s = sample(1:ntrain, nval; replace = false)
+Xcal = rmrow(Xtrain, s)
+ycal = rmrow(ytrain, s)
+Xval = Xtrain[s, :]
+yval = ytrain[s]
+
+# KNNR models
+
+nlvdis = 15 ; metric = ["mahal" ;]
+h = [1 ; 2.5] ; k = [5 ; 10 ; 20 ; 50] 
+pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k) 
+length(pars[1]) 
+res = gridscore(Xcal, ycal, Xval, yval;
+    score = rmsep, fun = knnr, pars = pars, verbose = true)
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+
+fm = knnr(Xtrain, ytrain;
+    nlvdis = res.nlvdis[u], metric = res.metric[u],
+    h = res.h[u], k = res.k[u]) ;
+pred = Jchemo.predict(fm, Xtest).pred 
+rmsep(pred, ytest)
+
+################# PLSR models
+
+nlv = 0:20
+res = gridscorelv(Xcal, ycal, Xval, yval;
+    score = rmsep, fun = plskern, nlv = nlv)
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+
+lines(res.nlv, res.y1,
+    axis = (xlabel = "Nb. LVs", ylabel = "RMSEP"))
+
+fm = plskern(Xtrain, ytrain; nlv = res.nlv[u]) ;
+pred = Jchemo.predict(fm, Xtest).pred 
+rmsep(pred, ytest)
+
+# LWPLSR models
+
+nlvdis = 15 ; metric = ["mahal" ;]
+h = [1 ; 2.5 ; 5] ; k = [50 ; 100] 
+pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
+length(pars[1]) 
+nlv = 0:20
+res = gridscorelv(Xcal, ycal, Xval, yval;
+    score = rmsep, fun = lwplsr, pars = pars, nlv = nlv, verbose = true)
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+
+lines(res.nlv, res.y1,
+    axis = (xlabel = "Nb. LVs", ylabel = "RMSEP"))
+
+fm = lwplsr(Xtrain, ytrain;
+    nlvdis = res.nlvdis[u], metric = res.metric[u],
+    h = res.h[u], k = res.k[u], nlv = res.nlv[u]) ;
+pred = Jchemo.predict(fm, Xtest).pred 
+rmsep(pred, ytest)
+
+################# RR models
+
+lb = (10.).^collect(-5:1:-1)
+res = gridscorelb(Xcal, ycal, Xval, yval;
+    score = rmsep, fun = rr, lb = lb)
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+
+lines(log.(res.lb), res.y1,
+    axis = (xlabel = "Nb. LVs", ylabel = "RMSEP"))
+
+fm = rr(Xtrain, ytrain; lb = res.lb[u]) ;
+pred = Jchemo.predict(fm, Xtest).pred 
+rmsep(pred, ytest)
+
+################# KRR models
+
+gamma = (10.).^collect(-4:1:4)
+pars = mpar(gamma = gamma)
+length(pars[1]) 
+lb = (10.).^collect(-5:1:-1)
+res = gridscorelb(Xcal, ycal, Xval, yval;
+    score = rmsep, fun = krr, pars = pars, lb = lb)
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+
+lines(log.(res.lb), res.y1,
+    axis = (xlabel = "Nb. LVs", ylabel = "RMSEP"))
+
+fm = krr(Xtrain, ytrain; gamma = res.gamma[u], lb = res.lb[u]) ;
+pred = Jchemo.predict(fm, Xtest).pred 
+rmsep(pred, ytest)
+```
 """
 function gridscore(Xtrain, Ytrain, X, Y; score, fun, 
         pars, verbose = false)
@@ -39,12 +156,15 @@ end
 
 """
     gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv, pars, verbose = FALSE)
+* See `gridscore`.
 * `nlv` : Nb., or collection of nb., of latent variables (LVs).
 
 Same as [`gridscore`](@ref) but specific to (and much faster for) models 
 using latent variables (e.g. PLSR).
 
 Argument `pars` must not contain `nlv`.
+
+See `?gridscore` for examples.
 """
 function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv, 
         pars = nothing, verbose = false)
@@ -101,12 +221,15 @@ end
 
 """
     gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb, pars, verbose = FALSE)
-* `lb` : Value, or collection of values, of the regularization parameter "lambda".
+* See `gridscore`.
+* `lb` : Value, or collection of values, of the ridge regularization parameter "lambda".
 
 Same as [`gridscore`](@ref) but specific to (and much faster for) models 
 using ridge regularization (e.g. RR).
 
 Argument `pars` must not contain `lb`.
+
+See `?gridscore` for examples.
 """
 function gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb, 
         pars = nothing, verbose = false)
@@ -158,6 +281,4 @@ function gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb,
     res = DataFrame(res, Symbol.(namy))
     hcat(dat, res)
 end
-
-
 

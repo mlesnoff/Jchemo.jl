@@ -12,13 +12,13 @@ Linear discriminant analysis  (LDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `prior` : Type of prior probabilities for class membership
-    (`unif`: uniform; `prop`: proportional).
+    ("unif": uniform; "prop": proportional).
 """ 
 function lda(X, y; prior = "unif")
     X = ensure_mat(X)
     n = size(X, 1)
-    z = aggstat(X, y; fun = mean)
-    ct = z.res
+    z = aggstat(X; group = y, fun = mean)
+    ct = z.X
     lev = z.lev
     nlev = length(lev)
     ni = z.ni

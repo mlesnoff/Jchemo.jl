@@ -76,6 +76,8 @@ function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
     center!(Y, ymeans)
     D = Diagonal(weights)
     XtY = X' * (D * Y)                   # = Xd' * Y = X' * D * Y  (Xd = D * X   Very costly!!)
+    #XtY = X' * (weights .* Y)           # Can create OutOfMemory errors for very large matrices
+
     # Pre-allocation
     T = similar(X, n, nlv)
     P = similar(X, p, nlv)

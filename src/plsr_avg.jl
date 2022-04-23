@@ -5,21 +5,23 @@ end
 """ 
     plsr_avg(X, Y, weights = ones(size(X, 1)); nlv, 
         typf = "unif", typw = "bisquare", alpha = 0)
-Averaging PLSR models with different numbers of LVs.
+Averaging and stacking PLSR models with different numbers of LVs.
 * `X` : X-data.
 * `Y` : Y-data. Must be univariate if `typw` != "unif".
-* weights : Weights of the observations.
+* `weights` : Weights of the observations.
 * `nlv` : A character string such as "5:20" defining the range of the numbers of LVs 
     to consider ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
     are averaged). Syntax such as "10" is also allowed ("10": correponds to
     the single model with 10 LVs).
 * `typf` : Type of averaging. 
-For `typf` in {"aic", "bic", "cv"}:
+
+For `typf` in {"aic", "bic", "cv"}
 * `typw` : Type of weight function. 
 * `alpha` : Parameter of the weight function.
-For `typf` = "stack":
-*`K` : Nb. of CV folds.
-*`rep` : Nb. of repetitions of the K-fold CV. 
+
+For `typf` = "stack"
+* `K` : Nb. of folds segmenting the data in the (K-fold) CV.
+* `rep` : Nb. of repetitions of the K-fold CV. 
 
 Ensemblist method where the predictions are computed by averaging 
 or stacking the predictions of a set of models built with different numbers of 

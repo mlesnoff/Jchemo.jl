@@ -6,6 +6,8 @@ Compute the out-of-bag (OOB) error after bagging a regression model.
 * `Y` : Y-data used in the bagging.
 * `score` : Function computing the prediction error (default: msep).
 
+See `?baggr` for examples.
+
 ## References
 
 Breiman, L., 1996. Bagging predictors. Mach Learn 24, 123–140. 
@@ -55,7 +57,9 @@ Compute variance importances (with permutation method) after bagging a regressio
 
 Variances importances are computed 
 by permuting sucessively each column of the out-of-bag (X_OOB),
-and by looking at the effect on the MSEP.   
+and by looking at the effect on the MSEP.  
+
+See `?baggr` for examples.
 
 ## References
 

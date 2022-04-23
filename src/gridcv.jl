@@ -5,16 +5,143 @@ Cross-validation (CV) over a grid of parameters.
 * `Y` : Y-data.
 * `segm` : Segments of the CV (output of functions
      [`segmts`](@ref), [`segmkf`](@ref) etc.).
-* `score` : Function computing the prediction score (= error rate; e.g. MSEP).
+* `score` : Function (e.g. `msep`) computing a prediction score.
 * `fun` : Function computing the prediction model.
 * `pars` : tuple of named vectors (arguments of `fun`) 
-    defining the grid of parameters.
+    defining the grid of parameters (e.g. output of function `mpar`).
 * `verbose` : If true, fitting information are printed.
 
-The score is computed over X and Y for each combination of the 
-grid defined in `pars`. 
+Compute a prediction score (= error rate) for a given model over a grid of parameters.
+
+The score is computed over the training sets `X` and `Y` for each combination 
+of the grid defined in `pars`. 
 
 The vectors in `pars` must have same length.
+
+The function returns two outputs: `res` (mean results) and `res_p` (results per replication).
+
+## Examples
+```julia
+using JLD2, CairoMakie, StatsBase
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+# Building Train and Test
+
+X = dat.X 
+y = dat.Y.y
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+ntrain = nro(Xtrain)
+
+# KNNR models
+
+K = 5 ; rep = 1
+segm = segmkf(ntrain, K; rep = rep)
+
+nlvdis = 15 ; metric = ["mahal" ;]
+h = [1 ; 2.5] ; k = [5 ; 10 ; 20 ; 50] 
+pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k) 
+length(pars[1]) 
+res = gridcv(Xtrain, ytrain; segm = segm, 
+    score = rmsep, fun = knnr, pars = pars, verbose = true).res ;
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+
+fm = knnr(Xtrain, ytrain;
+    nlvdis = res.nlvdis[u], metric = res.metric[u],
+    h = res.h[u], k = res.k[u]) ;
+pred = Jchemo.predict(fm, Xtest).pred 
+rmsep(pred, ytest)
+
+################# PLSR models
+
+K = 5 ; rep = 1
+segm = segmkf(ntrain, K; rep = rep)
+
+nlv = 0:20
+res = gridcvlv(Xtrain, ytrain; segm = segm, 
+    score = rmsep, fun = plskern, nlv = nlv).res
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+
+lines(res.nlv, res.y1,
+    axis = (xlabel = "Nb. LVs", ylabel = "RMSEP"))
+
+fm = plskern(Xtrain, ytrain; nlv = res.nlv[u]) ;
+pred = Jchemo.predict(fm, Xtest).pred 
+rmsep(pred, ytest)
+
+# LWPLSR models
+
+K = 5 ; rep = 1
+segm = segmkf(ntrain, K; rep = rep)
+
+nlvdis = 15 ; metric = ["mahal" ;]
+h = [1 ; 2.5 ; 5] ; k = [50 ; 100] 
+pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
+length(pars[1]) 
+nlv = 0:20
+res = gridcvlv(Xtrain, ytrain; segm = segm, 
+    score = rmsep, fun = lwplsr, pars = pars, nlv = nlv, verbose = true).res
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+
+lines(res.nlv, res.y1,
+    axis = (xlabel = "Nb. LVs", ylabel = "RMSEP"))
+
+fm = lwplsr(Xtrain, ytrain;
+    nlvdis = res.nlvdis[u], metric = res.metric[u],
+    h = res.h[u], k = res.k[u], nlv = res.nlv[u]) ;
+pred = Jchemo.predict(fm, Xtest).pred 
+rmsep(pred, ytest)
+
+################# RR models
+
+K = 5 ; rep = 1
+segm = segmkf(ntrain, K; rep = rep)
+
+lb = (10.).^collect(-5:1:-1)
+res = gridcvlb(Xtrain, ytrain; segm = segm, 
+    score = rmsep, fun = rr, lb = lb).res
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+
+lines(log.(res.lb), res.y1,
+    axis = (xlabel = "Nb. LVs", ylabel = "RMSEP"))
+
+fm = rr(Xtrain, ytrain; lb = res.lb[u]) ;
+pred = Jchemo.predict(fm, Xtest).pred 
+rmsep(pred, ytest)
+
+################# KRR models
+
+K = 5 ; rep = 1
+segm = segmkf(ntrain, K; rep = rep)
+
+gamma = (10.).^collect(-4:1:4)
+pars = mpar(gamma = gamma)
+length(pars[1]) 
+lb = (10.).^collect(-5:1:-1)
+res = gridcvlb(Xtrain, ytrain; segm = segm, 
+    score = rmsep, fun = krr, pars = pars, lb = lb).res
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+
+lines(log.(res.lb), res.y1,
+    axis = (xlabel = "Nb. LVs", ylabel = "RMSEP"))
+
+fm = krr(Xtrain, ytrain; gamma = res.gamma[u], lb = res.lb[u]) ;
+pred = Jchemo.predict(fm, Xtest).pred 
+rmsep(pred, ytest)
+```
 """
 function gridcv(X, Y; segm, score, fun, pars, verbose = false)
     q = nco(Y)
@@ -50,12 +177,15 @@ end
     
 """
     gridcvlv(X, Y; segm, score, fun, nlv, pars, verbose = false)
+* See `gridcv`.
 * `nlv` : Nb., or collection of nb., of latent variables (LVs).
 
 Same as [`gridcv`](@ref) but specific to (and much faster for) models 
 using latent variables (e.g. PLSR).
 
 Argument `pars` must not contain `nlv`.
+
+See `?gridcv` for examples.
 """
 function gridcvlv(X, Y; segm, score, fun, nlv, pars = nothing, 
         verbose = false)
@@ -101,12 +231,15 @@ end
 
 """
     gridcvlb(X, Y; segm, score, fun, lb, pars, verbose = false)
-* `nlv` : Nb., or collection of nb., of latent variables (LVs).
+* See `gridcv`.
+* `lb` : Value, or collection of values, of the ridge regularization parameter "lambda".
 
 Same as [`gridcv`](@ref) but specific to (and much faster for) models 
 using ridge regularization (e.g. RR).
 
 Argument `pars` must not contain `lb`.
+
+See `?gridcv` for examples.
 """
 function gridcvlb(X, Y; segm, score, fun, lb, pars = nothing, 
         verbose = false)
@@ -152,6 +285,14 @@ end
 
 ####################### Multiblock
 
+"""
+    gridcv_mb(X, Y; segm, score, fun, pars, verbose = false)
+* See `gridcv`.
+
+Same as [`gridcv`](@ref) but specific to multiblock regression.
+
+See `?gridcv` for examples.
+"""
 function gridcv_mb(X, Y; segm, score, fun, pars, verbose = false)
     q = nco(Y)
     nrep = length(segm)
@@ -189,6 +330,14 @@ function gridcv_mb(X, Y; segm, score, fun, pars, verbose = false)
     (res = res, res_rep = res_rep, )
 end
 
+"""
+    gridcvlv_mb(X, Y; segm, score, fun, nlv, pars, verbose = false)
+* See `gridcv`.
+
+Same as [`gridcv`](@ref) but specific to multiblock regression.
+
+See `?gridcv` for examples.
+"""
 function gridcvlv_mb(X, Y; segm, score, fun, nlv, pars = nothing, 
         verbose = false)
     q = nco(Y)
@@ -235,7 +384,5 @@ function gridcvlv_mb(X, Y; segm, score, fun, nlv, pars = nothing,
     res = combine(gdf, namy .=> mean, renamecols = false)
     (res = res, res_rep = res_rep, )
 end
-
-
 
 

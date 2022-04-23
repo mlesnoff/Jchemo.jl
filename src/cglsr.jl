@@ -54,9 +54,9 @@ db = string(mypath, "\\", "cassav.jld2")
 pnames(dat)
 
 X = dat.X 
-y = dat.Y.y 
+y = dat.Y.y
 year = dat.Y.year
-
+tab(year)
 s = year .<= 2012
 Xtrain = X[s, :]
 ytrain = y[s]
@@ -65,11 +65,15 @@ ytest = rmrow(y, s)
 
 nlv = 12 ;
 fm = cglsr(Xtrain, ytrain; nlv = nlv) ;
-coef(fm).B
-coef(fm).int
+
+zcoef = coef(fm)
+zcoef.int
+zcoef.B
+coef(fm; nlv = 7).B
 
 res = predict(fm, Xtest) ;
 res.pred
+rmsep(ytest, res.pred)
 ```
 """ 
 function cglsr(X, y; nlv, reorth = true, filt = false)

@@ -1,7 +1,7 @@
 # Jchemo.jl
 
 ## Dimension reduction, Regression and Discrimination for Chemometrics
-## <span style="color:grey70"> Version 0.0-16  </span> 
+## <span style="color:grey70"> Version 0.0-17  </span> 
 
 ![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)<!--
 ![Lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
@@ -12,9 +12,9 @@
 [![Build Status](https://travis-ci.com/mlesnoff/Jchemo.jl.svg?branch=master)](https://travis-ci.com/mlesnoff/Jchemo.jl)
 [![codecov.io](http://codecov.io/github/mlesnoff/Jchemo.jl/coverage.svg?branch=master)](http://codecov.io/github/mlesnoff/Jchemo.jl?branch=master)
 
-**Jchemo** provides elementary functions to build ad'hoc pipelines for predictions in chemometrics or other domains. It mainly focuses on methods of dimension reduction or regularization for high dimensional data. 
+**Jchemo** provides elementary functions to build pipelines for predictions in chemometrics or other domains. It mainly focuses on methods for high dimensional data. 
 
-Huge variety of pipelines exist in chemometrics and machine learning. Only few examples are provided in the package. The user can build some of his own pipelines with the provided elementary functions. 
+Only few examples of pipelines are provided in the package. The user can build some of his own pipelines with the provided elementary functions. 
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. Tuning the models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation), with faster versions for models based on latent variables (LVs) (**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
 

@@ -11,10 +11,10 @@ Interval PLSR (iPLS) (Nørgaard et al. 2000)
 * `score` : Function computing the prediction score (= error rate; e.g. msep).
 * `nlv` : Nb. latent variables (LVs) in the PLSR models.
 
-The range `1:p` (where `p` is the nb. of columns of `Xtrain`) is segmented
-to `nint` column-intervals of (when possible) equal size. Then, the validation 
-score is computed for each of the `nint` PLSR models and compared to the 
-one of the overal `Xtrain`.
+Let p be the nb. of columns of `Xtrain`. The range 1:p is segmented
+to `nint` column-intervals of equal (when possible) size. 
+Then, the validation score is computed for each of the `nint` 
+PLSR models and compared to the one of the overal `Xtrain`.
 
 ## References
 

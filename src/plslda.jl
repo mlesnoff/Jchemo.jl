@@ -46,7 +46,6 @@ function predict(object::PlsLda, X; nlv = nothing)
         pred[i] = reshape(replacebylev(z, object.lev), m, 1)
         posterior[i] = zres.posterior
     end 
-    
     if le_nlv == 1
         pred = pred[1]
         posterior = posterior[1]

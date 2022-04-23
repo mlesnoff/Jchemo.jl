@@ -158,9 +158,9 @@
 
 - ***gridcv*** Any model
 - ***gridcvlv*** Models with LVs (faster)
+- ***gridcvlb*** Models with ridge parameter (faster)  
 - ***gridcv_mb*** Multiblock models 
 - ***gridcvlv_mb*** Multiblock models with LVs 
-- ***gridcvlb*** Models with ridge parameter (faster)  
 - ***segmkf*** Building segments for K-fold CV
 - ***segmts*** Building segments for test-set validation
 
@@ -181,8 +181,8 @@
 
 #### **Calibration transfert**
 
-- ***transfer_ds*** : Direct standardization (DS).
-- ***transfer_pds*** : Piecewise direct standardization (PDS).
+- ***caltransf_ds*** : Direct standardization (DS).
+- ***caltransf_pds*** : Piecewise direct standardization (PDS).
 
 ### **Checking**
 

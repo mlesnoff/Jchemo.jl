@@ -3,7 +3,7 @@
 NIPALS to compute the first score and loading vectors of a matrix.
 * `X` : X-data (n, p).
 * `tol` : Tolerance value for stopping the iterations.
-* `maxit` : Maximum nb. iterations?
+* `maxit` : Maximum nb. iterations.
 
 The function finds {u, v, s} = argmin(||X - u * s * v'||), with the constraints 
 ||u|| = ||v|| = 1.

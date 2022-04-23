@@ -30,6 +30,63 @@ NATO Science Series III: Computer & Systems Sciences. IOS Press Amsterdam, pp. 2
 Rosipal, R., Trejo, L.J., 2001. Kernel Partial Least Squares Regression in Reproducing Kernel Hilbert Space. 
 Journal of Machine Learning Research 2, 97-123.
 
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+nlv = 20 ; gamma = 1e-1
+fm = dkplsr(Xtrain, ytrain; nlv = nlv, gamma = gamma) ;
+fm.fm.T
+
+zcoef = coef(fm)
+zcoef.int
+zcoef.B
+coef(fm; nlv = 7).B
+
+transform(fm, Xtest)
+transform(fm, Xtest; nlv = 7)
+
+res = predict(fm, Xtest)
+res.pred
+rmsep(res.pred, ytest)
+
+res = predict(fm, Xtest; nlv = 1:2)
+res.pred[1]
+res.pred[2]
+
+fm = dkplsr(Xtrain, ytrain; nlv = nlv, kern = "kpol", degree = 2, gamma = 1e-1, coef0 = 10) ;
+res = predict(fm, Xtest)
+rmsep(res.pred, ytest)
+
+# Example of fitting the function sinc(x)
+# described in Rosipal & Trejo 2001 p. 105-106 
+x = collect(-10:.2:10) 
+x[x .== 0] .= 1e-5
+n = length(x)
+zy = sin.(abs.(x)) ./ abs.(x) 
+y = zy + .2 * randn(n) 
+fm = dkplsr(x, y; nlv = 2) ;
+pred = predict(fm, x).pred 
+f, ax = scatter(x, y) 
+lines!(ax, x, zy, label = "True model")
+lines!(ax, x, vec(pred), label = "Fitted model")
+axislegend("Method")
+f
+```
 """ 
 function dkplsr(X, Y, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
     dkplsr!(copy(X), copy(Y), weights; nlv = nlv, kern = kern, kwargs...)
@@ -37,7 +94,9 @@ end
 
 function dkplsr!(X, Y, weights = ones(size(X, 1)); 
         nlv, kern = "krbf", kwargs...)
-    fkern = eval(Meta.parse(kern))    
+    fkern = eval(Meta.parse(kern))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
     K = fkern(X, X; kwargs...)     # In the future: fkern!(K, X, X; kwargs...)
     fm = plskern!(K, Y; nlv = nlv)
     Dkplsr(X, fm, K, kern, kwargs)

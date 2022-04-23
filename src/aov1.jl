@@ -3,6 +3,20 @@
     Univariate anova test.
 * `x` : Univariate categorical X-data.
 * `Y` : Y-data.
+
+## Examples
+```julia
+n = 100 ; p = 5
+x = rand(1:3, n)
+Y = randn(n, p) 
+
+res = aov1(x, Y)
+pnames(res)
+res.SSF
+res.SSR 
+res.F 
+res.pval
+```
 """ 
 function aov1(x, Y)
     Y = ensure_mat(Y)

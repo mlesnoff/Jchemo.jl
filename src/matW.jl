@@ -3,13 +3,33 @@
 Compute the between covariance matrix ("B") of `X`.
 * `X` : X-data (n, p).
 * `y` : A vector (n) defing the class memberships.
+
+## Examples
+```julia
+n = 10 ; p = 3
+X = rand(n, p)
+X
+y = sample(1:3, n; replace = true)
+#y = [3 ; ones(n - 2) ; 10]
+res = matB(X, y)
+res.B
+res.lev
+res.ni
+
+res = matW(X, y)
+res.W 
+res.Wi
+
+matW(X, y).W + matB(X, y).B 
+cov(X; corrected = false)
+```
 """ 
 matB = function(X, y)
     X = ensure_mat(X)
     y = vec(y) 
     z = aggstat(X; group = y, fun = mean)
-    B = covm(z.res, mweight(z.ni))
-    (B = B, ct = z.res, lev = z.lev, ni = z.ni)
+    B = covm(z.X, mweight(z.ni))
+    (B = B, ct = z.X, lev = z.lev, ni = z.ni)
 end
 
 
@@ -18,6 +38,11 @@ end
 Compute the within covariance matrix ("W") of `X`.
 * `X` : X-data (n, p).
 * `y` : A vector (n) defing the class memberships.
+
+If class "i" contains only one observation, 
+W_i is computed as `cov(X; corrected = false)`.
+
+For examples, see `?matB`. 
 """ 
 matW = function(X, y)
     X = ensure_mat(X)
@@ -27,7 +52,7 @@ matW = function(X, y)
     nlev = length(lev)
     ni = collect(values(ztab))
     # Case with y(s) with only 1 obs
-    sum(ni .== 1) > 0 ? sigma_1obs = covm(X) : nothing
+    sum(ni .== 1) > 0 ? sigma_1obs = cov(X; corrected = false) : nothing
     # End
     w = mweight(ni)
     Wi = list(nlev, Matrix{Float64})
@@ -37,7 +62,7 @@ matW = function(X, y)
             Wi[i] = sigma_1obs
         else
             s = findall(y .== lev[i])
-            Wi[i] = covm(X[s, :])
+            Wi[i] = cov(X[s, :]; corrected = false)
         end
         if i == 1  
             W = w[i] * Wi[i] 

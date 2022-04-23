@@ -123,6 +123,7 @@ Compute Y-predictions from a fitted model.
     fitted model.
 """ 
 function predict(object::Rr, X; lb = nothing)
+    X = ensure_mat(X)
     isnothing(lb) ? lb = object.lb : nothing
     le_lb = length(lb)
     pred = list(le_lb, Matrix{Float64})

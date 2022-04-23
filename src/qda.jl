@@ -16,8 +16,8 @@ Quadratic discriminant analysis  (QDA).
 """ 
 function qda(X, y; prior = "unif")
     X = ensure_mat(X)
-    z = aggstat(X, y; fun = mean)
-    ct = z.res
+    z = aggstat(X; group = y, fun = mean)
+    ct = z.X
     lev = z.lev
     nlev = length(lev)
     ni = z.ni

@@ -58,7 +58,6 @@ function lwplsr_avg(X, Y; nlvdis, metric, h, k, nlv,
         fm = nothing
     else
         fm = plskern(X, Y; nlv = nlvdis)
-        #fm = dkplsr(X, Y; nlv = nlvdis, kern = "krbf", gamma = 1000) ; 
     end
     LwplsrAvg(X, Y, fm, metric, h, k, nlv, 
         typf, typw, alpha, K, rep, tol, verbose)
@@ -79,9 +78,7 @@ function predict(object::LwplsrAvg, X)
     else
         Tnew = transform(object.fm, X)
         res = getknn(object.fm.T, Tnew; k = object.k, metric = object.metric) 
-        #res = getknn(object.fm.fm.T, Tnew; k = object.k, metric = object.metric) 
     end
-    #listw = map(d -> wdist(d; h = object.h), res.d)
     listw = copy(res.d)
     for i = 1:m
         w = wdist(res.d[i]; h = object.h)

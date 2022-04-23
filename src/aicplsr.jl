@@ -101,10 +101,10 @@ y = dat.Y.y
 
 nlv = 25
 res = aicplsr(X, y; nlv = nlv) 
+pnames(res)
 res.crit
 res.opt
 res.delta
-res.w
 
 zaic = aicplsr(X, y; nlv = nlv).crit.aic
 f, ax = lines(0:nlv, zaic; color = :grey, linestyle = :dot,

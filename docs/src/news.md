@@ -1,11 +1,24 @@
 ## NEWS for package **Jchemo**
 
+### *Version 0.0-17*
+
+- New 
+
+- Modified
+
+    - **checkdupl** : bug corrected.
+    - **matB**, **matW** : when requested, update of covm to cov, and aggstat output.
+    - **plotsp** : faster.
+    - **transfer_ds** : renamed to **caltransf_ds**.
+    - **transfer_pds** : renamed to **caltransf_pds**.
+
+
 ### *Version 0.0-16*
 
 - New 
 
-   - **transfer_ds** : Calibration transfert with direct standardization (DS).
-   - **transfer_pds** : Calibration transfert with piecewise direct standardization (PDS).
+    - **transfer_ds** : Calibration transfert with direct standardization (DS).
+    - **transfer_pds** : Calibration transfert with piecewise direct standardization (PDS).
 
 - Modified
 

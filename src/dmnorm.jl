@@ -15,6 +15,51 @@ multivariate observations.
     If `nothing`, `mu` is computed by the column-means of `X`.
 * `S` : Covariance matrix of the normal distribution.
     If `nothing`, `S` is computed by cov(`X`).
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "iris.jld2") 
+@load db dat
+pnames(dat)
+X = dat.X 
+summ(X)
+
+# Studying a two-dimensionnal distribution
+# of the class "Setosa"
+
+Xtrain = Matrix(X[1:40, 1:2])
+Xtest = (X[40:50, 1:2])
+
+fm = dmnorm(Xtrain) ;
+fm.mu
+fm.Uinv
+fm.det
+predict(fm, Xtest).pred
+
+mu = colmean(Xtrain)
+S = cov(Xtrain)
+fm = dmnorm(; mu = mu, S = S)
+fm.Uinv
+fm.det
+
+k = 50
+x1 = range(.9 * minimum(Xtrain[:, 1]), 1.1 * maximum(Xtrain[:, 1]), length = k) 
+x2 = range(.9 * minimum(Xtrain[:, 2]), 1.1 * maximum(Xtrain[:, 2]), length = k) 
+z = reduce(hcat, mpar(x1 = x1, x2 = x2))
+pred_train = predict(fm, z).pred
+f = Figure()
+ax = Axis(f[1, 1], title = "Dmnorm - Setosa",
+    xlabel = "Sepal length", ylabel = "Sepal width") ;
+co = contour!(ax, z[:, 1], z[:, 2], vec(pred_train))
+#co = contourf!(ax, z[:, 1], z[:, 2], vec(zpred), levels = 10)
+pred = Jchemo.predict(fm, Xtest).pred
+scatter!(ax, Xtest[:, 1], Xtest[:, 2], vec(pred), color = :red)
+#xlims!(ax, 3.5, 7) ; ylims!(ax, 2, 5)
+Colorbar(f[1, 2], co)
+f
+```
 """ 
 function dmnorm(X = nothing; mu = nothing, S = nothing)
     isnothing(S) ? zS = nothing : zS = copy(S)

@@ -1,25 +1,44 @@
 """
     segmkf(n, K; rep = 1)
+    segmkf(n, K, group; rep = 1)
 Build segments for K-fold cross-validation.  
 * `n` : Total nb. observations in the dataset. The sampling 
     is implemented with 1:n.
 * `K` : Nb. folds (segments) splitting the data. 
+* `group` : A vector (n) defining blocks.
 * `rep` : Nb. replications of the sampling.
 
-Build K segments splitting the data (eventually with replications) that can 
-be used to validate a model.
+Build K segments splitting the data that can be used to validate a model. 
+The sampling can be replicated (`rep`).
 
-The function returns a list (vector) of rep elements. 
-Each element of the list contains K vectors (= K segments).
-Each segment contains the indexes (position within 1:n) of the sampled observations.    
+If `group` is used (must be a vector of length n), the function samples entire 
+blocks of observations instead of observations. Such a block-sampling is required 
+when data is structured by blocks and when the response to predict is 
+correlated within blocks. It prevents underestimation of the generalization error.
+
+The function returns a list (vector) of `rep` elements. 
+Each element of the list contains `K` segments (= `K` vectors).
+Each segment contains the indexes (position within 1:`n`) of the sampled observations.    
 
 ## Examples
 ```julia
-n = 10 ; m = 3 ; rep = 4 
-segm = segmts(n, m; rep) 
+n = 10 ; K = 3 ; rep = 4 
+segm = segmkf(n, K; rep) 
+i = 1 
+segm[i] # = replication "i"
+
+# Block-sampling
+
+n = 11 
+group = ["A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A"]    # = blocks of the observations
+unique(group)   
+K = 3 ; rep = 4 
+segm = segmkf(n, K, group; rep = rep)
 i = 1 
 segm[i]
-segm[i][1]
+group[segm[i][1]]
+group[segm[i][2]]
+group[segm[i][3]]
 ```
 """ 
 function segmkf(n, K; rep = 1)
@@ -36,44 +55,6 @@ function segmkf(n, K; rep = 1)
     s
 end
 
-"""
-    segmkf(n, K, group; rep = 1)
-Build segments (with block-sampling) for K-fold cross-validation.  
-* `n` : Total nb. observations in the dataset. The sampling 
-    is implemented with 1:n.
-* `group` : A vector (n) defining the blocks.
-* `K` : Nb. folds (segments) splitting the data. 
-* `rep` : Nb. replications of the sampling.
-
-Build K segments splitting the data (eventually with replications) that can 
-be used to validate a model.
-
-The function samples entire blocks of observations instead of observations. 
-Vector `group` (defining the blocks) must be of length n.     
-    
-Such a block-sampling is required when data is structured by blocks and 
-when the response to predict is correlated within blocks.   
-It prevents underestimation of the generalization error.
-
-The function returns a list (vector) of `rep` elements. 
-Each element of the list contains K vectors (= K segments).
-Each segment contains the indexes (position within 1:n) of the sampled observations.    
-
-## Examples
-```julia
-n = 10 
-group = ["A", "B", "C", "D", "E", "A", "B", "C", "D", "E"]    # The blocks of the observations
-unique(group)    # Print the blocks
-K = 3 ; rep = 4 
-segm = segmkf(n, K, group; rep = rep)
-i = 1 
-segm[i]
-segm[i][1]
-group[segm[i][1]]
-group[segm[i][2]]
-group[segm[i][3]]
-```
-""" 
 function segmkf(n, K, group; rep = 1)
     # n is not used but is kept for multiple dispatch
     group = vec(group) # must be of length n
@@ -104,17 +85,26 @@ end
 
 """
     segmts(n, m; rep = 1)
+    segmts(n, m_group, group; rep = 1)
 Build segments for "test-set" validation.
 * `n` : Total nb. observations in the dataset. The sampling 
     is implemented within 1:n.
 * `m` : Nb. observations in each segment.
+* `m_group` : Nb. groups in each segment.
+* `group` : A vector (n) defining blocks.
 * `rep` : Nb. replications of the sampling.
     
-This builds a test set (eventually replicated) that can be used to validate a model.
+Build a test set that can be used to validate a model.
+The sampling can be replicated (`rep`).
 
-The function returns a list (vector) of rep elements. 
-Each element of the list contains a vector (= segment) 
-of the indexes (position within 1:n) of the m sampled observations.
+If `group` is used (must be a vector of length n), the function samples entire 
+blocks of observations instead of observations. Such a block-sampling is required 
+when data is structured by blocks and when the response to predict is 
+correlated within blocks. It prevents underestimation of the generalization error.
+
+The function returns a list (vector) of `rep` elements. 
+Each element of the list contains `K` segments (= `K` vectors).
+Each segment contains the indexes (position within 1:`n`) of the sampled observations.  
 
 ## Examples
 ```julia
@@ -122,7 +112,18 @@ n = 10 ; m = 3 ; rep = 4
 segm = segmts(n, m; rep) 
 i = 1 
 segm[i]
+
+# Block-sampling
+
+n = 11
+group = ["A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A"]    # = blocks of the observations
+unique(group)
+m = 2 ; rep = 4 
+segm = segmts(n, m, group; rep)
+i = 1 
+segm[i]
 segm[i][1]
+group[segm[i][1]]
 ```
 """ 
 function segmts(n, m; rep = 1)
@@ -134,42 +135,6 @@ function segmts(n, m; rep = 1)
     s
 end
 
-"""
-    segmts(n, m, group; rep = 1)
-Build segments with block-sampling for "test-set" validation.  
-* `n` : Total nb. observations in the dataset. The sampling 
-    is implemented with 1:n.
-* `group` : A vector (n) defining the blocks.
-* `m` : Nb. blocks in the segment. 
-* `rep` : Nb. replications of the sampling.
-
-Build a test set (eventually replicated) that can be used to validate a model.
-
-The function samples entire blocks of observations instead of observations. 
-Vector `group` (defining the blocks) must be of length n.     
-
-Such a block-sampling is required when data is structured by blocks and 
-when the response to predict is correlated within blocks.   
-It prevents underestimation of the generalization error.
-
-The function returns a list (Vector::Any) of rep elements. 
-Each element of the list contains a vector (= segment) 
-of the indexes (position within 1:n) of the sampled observations.
-Each segment contains m blocks.
-
-## Examples
-```julia
-n = 10 
-group = ["A", "B", "C", "D", "E", "A", "B", "C", "D", "E"]    # The blocks of the observations
-unique(group)    # Print the blocks
-m = 2 ; rep = 4 
-segm = segmts(n, m, group; rep)
-i = 1 
-segm[i]
-segm[i][1]
-group[segm[i][1]]
-```
-""" 
 function segmts(n, m, group; rep = 1)
     # n is not used but is kept for multiple dispatch
     group = vec(group) # must be of length n
@@ -189,9 +154,4 @@ function segmts(n, m, group; rep = 1)
     end
     zs    
 end
-
-
-
-
-
 

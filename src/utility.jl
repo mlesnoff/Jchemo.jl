@@ -1,9 +1,14 @@
 """
     aggstat(X::Union{AbstractMatrix, AbstractVector}; group, fun = mean)
+    aggstat(X::DataFrame; group_nam, var_nam, fun = mean)
 Compute the mean (or other statistic) of each column of `X`, by group.
-* `X` : A matrix (n, p) or vector (n).
+* `X` : A matrix or dataframe (n, p) or vector (n).
 * `group` : A vector (n) defining the groups.
+* `group_nam` : Names (vector) of the group variables to consider.
+* `var_nam` : Names (vector) of the variables to summarize.
 * `fun` : Function to compute.
+
+Variables defined in `var_nam` and `group_nam` must be columns of `X`.
 
 ## Examples
 ```julia
@@ -13,6 +18,12 @@ group = rand(1:3, n)
 res = aggstat(X; group = group, fun = sum)
 pnames(res)
 res.X
+
+n, p = 20, 6
+X = DataFrame(rand(n, p), :auto)
+X.group1 = rand(1:2, n)
+X.group2 = rand(1:3, n)
+aggstat(X; var_nam = [:x1, :x2], group_nam = [:group1, :group2], fun = mean)
 ```
 """ 
 function aggstat(X::Union{AbstractMatrix, AbstractVector}; group, 
@@ -31,26 +42,7 @@ function aggstat(X::Union{AbstractMatrix, AbstractVector}; group,
     end
     (X = zX, lev = lev, ni = ni)
 end
-
-"""
-    aggstat(X::DataFrame; var_nam, group_nam, fun = mean)
-Compute the mean (or other statistic) of selected columns of `X`, by group.
-* `X` : A dataframe.
-* `var_nam` : Names (vector) of the variables to summarize.
-* `group_nam` : Names (vector) of the group variables to consider.
-* `fun` : Function given the statistic to compute.
-
-Variables defined in `var_nam` and `group_nam` must be columns of `X`.
-## Examples
-```julia
-n, p = 20, 6
-X = DataFrame(rand(n, p), :auto)
-X.group1 = rand(1:2, n)
-X.group2 = rand(1:3, n)
-aggstat(X; var_nam = [:x1, :x2], group_nam = [:group1, :group2], fun = mean)
-```
-""" 
-function aggstat(X::DataFrame; var_nam, group_nam, fun = mean)
+function aggstat(X::DataFrame; group_nam, var_nam, fun = mean)
     gdf = groupby(X, group_nam) 
     combine(gdf, var_nam .=> fun, renamecols = false)
 end
@@ -93,7 +85,7 @@ Find replicated rows in a dataset.
 ## Examples
 ```julia
 X = rand(5, 3)
-Z = vcat(X, X[1:3, :])
+Z = vcat(X, X[1:3, :], X[1:1, :])
 checkdupl(X)
 checkdupl(Z)
 
@@ -105,11 +97,11 @@ checkdupl(Z)
 """
 function checkdupl(X; digits = 3)
     X = round.(ensure_mat(X), digits = digits)
-    n = size(X, 1)
+    n = nro(X)
     rownum1 = []
     rownum2 = []
     @inbounds for i = 1:n
-        @inbounds for j = 1:n
+        @inbounds for j = (i + 1):n
             res = isequal(vrow(X, i), vrow(X, j))
             if res
                 push!(rownum1, i)
@@ -119,10 +111,6 @@ function checkdupl(X; digits = 3)
     end
     u = findall(rownum1 .!= rownum2)
     res = DataFrame((rownum1 = rownum1[u], rownum2 = rownum2[u]))
-    k = length(u)
-    if k > 0
-        res = res[1:Int64(k / 2), :]
-    end
     res
 end
 
@@ -486,6 +474,12 @@ end
 """
     iqr(x)
 Compute the interquartile interval (IQR).
+
+## Examples
+```julia
+x = rand(100)
+iqr(x)
+```
 """
 iqr(x) = quantile(x, .75) - quantile(x, .25)
 
@@ -522,12 +516,25 @@ list(n::Integer, type) = Vector{type}(undef, n)
     mad(x)
 Compute the median absolute deviation (MAD),
 adjusted by a factor (1.4826) for asymptotically normal consistency. 
+
+## Examples
+```julia
+x = rand(100)
+mad(x)
+```
 """
 mad(x) = 1.4826 * median(abs.(x .- median(x)))
 
 """ 
     mweight(w)
 Return a vector of weights that sums to 1.
+
+## Examples
+```julia
+x = rand(10)
+w = mweight(x)
+sum(w)
+```
 """
 mweight(w) = w / sum(w)
 
@@ -827,7 +834,10 @@ end
 
 """
     summ(X; digits = 3)
+    summ(X, group; digits = 1)
 Summarize a dataset (or a variable).
+* `group` : A vector (n,) defing the groups.
+* `digits` : Nb. digits in the outputs.
 
 ## Examples
 ```julia
@@ -849,19 +859,6 @@ function summ(X; digits = 3)
     (res = res, ntot = size(X, 1))
 end
 
-"""
-    summ(X, group; digits = 1)
-Summarize a dataset (or a variable), by group.
-* `X` : Dataset (n, p) or (n,).
-* `group` : A vector (n,) defing the groups.
-
-## Examples
-```julia
-X = rand(10, 3)
-group = rand(1:2, 10) 
-summ(X, group)
-```
-"""
 function summ(X, group; digits = 1)
     zgroup = sort(unique(group))
     for i = 1:length(zgroup)
