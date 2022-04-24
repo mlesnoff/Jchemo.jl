@@ -17,13 +17,13 @@ end
     lwplsr_s(X, Y; nlv0,
         nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
 kNN-LWPLSR after preliminary dimension reduction.
-* `X` : X-data.
-* `Y` : Y-data.
-* `nlv0` : Nb. latent variables (LVs) for preliminary data reduction. 
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
+* `nlv0` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `nlvdis` : Nb. LVs to consider in the global PLS 
     used for the dimension reduction before computing the dissimilarities. 
     If `nlvdis = 0`, there is no dimension reduction.
-* `metric` : Type of dissimilarity used to select the neighbors. 
+* `metric` : Type of dissimilarity used to select the neighbors and computed the weights. 
     Possible values are "eucl" (default; Euclidean distance) 
     and "mahal" (Mahalanobis distance).
 * `h` : A scalar defining the shape of the weight function. Lower is h, 
@@ -45,6 +45,36 @@ Journal of Chemometrics, e3209. https://doi.org/10.1002/cem.3209
 Shen, G., Lesnoff, M., Baeten, V., Dardenne, P., Davrieux, F., Ceballos, H., Belalcazar, J., 
 Dufour, D., Yang, Z., Han, L., Pierna, J.A.F., 2019. Local partial least squares based on global PLS scores. 
 Journal of Chemometrics 0, e3117. https://doi.org/10.1002/cem.3117
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+nlv0 = 30
+nlvdis = 20 ; metric = "mahal" 
+h = 2 ; k = 100 ; nlv = 10
+fm = lwplsr_s(Xtrain, ytrain; nlv0 = nlv0, nlvdis = nlvdis,
+    metric = metric, h = h, k = k, nlv = nlv) ;
+res = predict(fm, Xtest)
+rmsep(res.pred, ytest)
+f, ax = scatter(vec(res.pred), ytest)
+abline!(ax, 0, 1)
+f
+```
 """ 
 function lwplsr_s(X, Y; nlv0,
         nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)

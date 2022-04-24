@@ -8,11 +8,12 @@ end
 
 """
     dkplsr(X, Y, weights = ones(size(X, 1)); nlv , kern = "krbf", kwargs...)
+    dkplsr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
 Direct kernel partial least squares regression (DKPLSR) (Bennett & Embrechts 2003).
 
-* `X` : X-data.
-* `Y` : Y-data.
-* `weights` : Weights of the observations.
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
+* `weights` : Weights (n) of the observations.
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * 'kern' : Type of kernel used to compute the Gram matrices.
     Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`).
@@ -71,9 +72,13 @@ res.pred[2]
 fm = dkplsr(Xtrain, ytrain; nlv = nlv, kern = "kpol", degree = 2, gamma = 1e-1, coef0 = 10) ;
 res = predict(fm, Xtest)
 rmsep(res.pred, ytest)
+f, ax = scatter(vec(res.pred), ytest)
+abline!(ax, 0, 1)
+f
 
 # Example of fitting the function sinc(x)
 # described in Rosipal & Trejo 2001 p. 105-106 
+
 x = collect(-10:.2:10) 
 x[x .== 0] .= 1e-5
 n = length(x)
@@ -89,14 +94,13 @@ f
 ```
 """ 
 function dkplsr(X, Y, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
-    dkplsr!(copy(X), copy(Y), weights; nlv = nlv, kern = kern, kwargs...)
+    dkplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
+        nlv = nlv, kern = kern, kwargs...)
 end
 
-function dkplsr!(X, Y, weights = ones(size(X, 1)); 
+function dkplsr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); 
         nlv, kern = "krbf", kwargs...)
     fkern = eval(Meta.parse(kern))
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
     K = fkern(X, X; kwargs...)     # In the future: fkern!(K, X, X; kwargs...)
     fm = plskern!(K, Y; nlv = nlv)
     Dkplsr(X, fm, K, kern, kwargs)

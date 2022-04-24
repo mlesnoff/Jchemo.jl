@@ -13,13 +13,13 @@ end
 """
     lwplsr(X, Y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
 k-Nearest-Neighbours locally weighted partial least squares regression (kNN-LWPLSR).
-* `X` : X-data.
-* `Y` : Y-data.
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
 * `nlvdis` : Number of latent variables (LVs) to consider in the global PLS 
     used for the dimension reduction before computing the dissimilarities. 
     If `nlvdis = 0`, there is no dimension reduction.
-* `metric` : Type of dissimilarity used to select the neighbors. 
-    Possible values are "eucl" (default; Euclidean distance) 
+* `metric` : Type of dissimilarity used to select the neighbors and compute
+    the weights. Possible values are "eucl" (default; Euclidean distance) 
     and "mahal" (Mahalanobis distance).
 * `h` : A scalar defining the shape of the weight function. Lower is h, 
     sharper is the function. See function `wdist`.
@@ -77,6 +77,35 @@ statistics for the real time robot learning. Applied Intell., 17, 49-60.
 
 Sicard, E. Sabatier, R., 2006. Theoretical framework for local PLS1 regression 
 and application to a rainfall data set. Comput. Stat. Data Anal., 51, 1393-1410.
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+nlvdis = 20 ; metric = "mahal" 
+h = 1 ; k = 100 ; nlv = 15
+fm = lwplsr(Xtrain, ytrain; nlvdis = nlvdis,
+    metric = metric, h = h, k = k, nlv = nlv) ;
+res = predict(fm, Xtest)
+rmsep(res.pred, ytest)
+f, ax = scatter(vec(res.pred), ytest)
+abline!(ax, 0, 1)
+f
+```
 """ 
 function lwplsr(X, Y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
     X = ensure_mat(X)

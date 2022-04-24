@@ -8,9 +8,10 @@ end
 
 """
     cglsr(X, y; nlv, reorth = true, filt = false)
+    cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false)
 Conjugate gradient algorithm for the normal equations (CGLS; Björck 1996).
-* `X` : X-data.
-* `y` : Univariate Y-data.
+* `X` : X-data  (n, p).
+* `y` : Univariate Y-data (n).
 * `nlv` : Nb. CG iterations.
 * `reorth` : If `true`, a Gram-Schmidt reorthogonalization of the normal equation 
     residual vectors is done.
@@ -74,15 +75,17 @@ coef(fm; nlv = 7).B
 res = predict(fm, Xtest) ;
 res.pred
 rmsep(ytest, res.pred)
+f, ax = scatter(vec(res.pred), ytest)
+abline!(ax, 0, 1)
+f
 ```
 """ 
 function cglsr(X, y; nlv, reorth = true, filt = false)
-    cglsr!(copy(X), copy(y); nlv = nlv, reorth = reorth, filt = filt)
+    cglsr!(copy(ensure_mat(X)), copy(ensure_mat(y)); 
+        nlv = nlv, reorth = reorth, filt = filt)
 end
 
-function cglsr!(X, y; nlv, reorth = true, filt = false)
-    X = ensure_mat(X)
-    y = vec(y)
+function cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false)
     n = size(X, 1)
     p = size(X, 2)
     xmeans = colmean(X) 
@@ -92,7 +95,7 @@ function cglsr!(X, y; nlv, reorth = true, filt = false)
     # Pre-allocation and initialization
     B = similar(X, p, nlv)
     b = zeros(p) 
-    r = y       # r = y - X * b, with b = 0
+    r = vec(y)       # r = y - X * b, with b = 0
     s = X' * r
     zp = copy(s)
     q = similar(X, n)

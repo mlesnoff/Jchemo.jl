@@ -118,13 +118,16 @@
 
 #### Probabilistic
 
-- ***dmnorm*** Normal probability density of multivariate data
 - ***lda*** Linear discriminant analysis (LDA)
 - ***plslda*** LDA on PLS latent variables (PLS-LDA)
 - ***plslda_avg*** Averaging PLS-LDA models with different numbers of LVs (PLS-LDA-AVG)
 - ***plsqda*** QDA on PLS latent variables (PLS-QDA)
 - ***plsqda_avg*** Averaging PLS-QDA models with different numbers of LVs (PLS-QDA-AVG)
 - ***qda*** Quadratic discriminant analysis (QDA)
+
+*Utility*
+
+- ***dmnorm*** Normal probability density of multivariate data
 
 #### **Local models**
 
@@ -179,15 +182,15 @@
 
 ### <span style="color:#1589F0"> **DATA MANAGEMENT** </span>
 
+#### **Checking**
+
+- ***checkdupl*** Finding replicated rows in a dataset
+- ***checkmiss*** Finding rows with missing data in a dataset
+
 #### **Calibration transfert**
 
 - ***caltransf_ds*** : Direct standardization (DS).
 - ***caltransf_pds*** : Piecewise direct standardization (PDS).
-
-### **Checking**
-
-- ***checkdupl*** Finding replicated rows in a dataset
-- ***checkmiss*** Finding rows with missing data in a dataset
 
 #### **Pre-processing**
 

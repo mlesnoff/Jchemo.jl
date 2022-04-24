@@ -18,11 +18,13 @@ end
 """
     kplsr(X, Y, weights = ones(size(X, 1)); 
         nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, kwargs...)
+    kplsr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); 
+        nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, kwargs...)
 Kernel partial least squares regression (KPLSR) implemented with a NIPALS algorithm (Rosipal & Trejo, 2001).
 
-* `X` : X-data.
-* `Y` : Y-data.
-* `weights` : Weights of the observations.
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
+* `weights` : Weights (n) of the observations.
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * 'kern' : Type of kernel used to compute the Gram matrices.
     Possible values are "krbf" or "kpol" (see respective functions `krbf` and `kpol`).
@@ -71,12 +73,16 @@ transform(fm, Xtest; nlv = 7)
 res = predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
+f, ax = scatter(vec(res.pred), ytest)
+abline!(ax, 0, 1)
+f
 
 res = predict(fm, Xtest; nlv = 1:2)
 res.pred[1]
 res.pred[2]
 
-fm = kplsr(Xtrain, ytrain; nlv = nlv, kern = "kpol", degree = 2, gamma = 1e-1, coef0 = 10) ;
+fm = kplsr(Xtrain, ytrain; nlv = nlv, kern = "kpol", degree = 2, 
+    gamma = 1e-1, coef0 = 10) ;
 res = predict(fm, Xtest)
 rmsep(res.pred, ytest)
 
@@ -98,16 +104,14 @@ f
 """ 
 function kplsr(X, Y, weights = ones(size(X, 1)); 
         nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, kwargs...)
-    kplsr!(copy(X), copy(Y), weights; 
+    kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
         nlv = nlv, kern = kern, tol = tol, maxit = maxit, kwargs...)
 end
 
-function kplsr!(X, Y, weights = ones(size(X, 1)); 
+function kplsr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); 
         nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, kwargs...)
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
-    n = size(X, 1)
-    q = size(Y, 2)
+    n = nro(X)
+    q = nco(Y)
     weights = mweight(weights)
     ymeans = colmean(Y, weights)   
     center!(Y, ymeans)  

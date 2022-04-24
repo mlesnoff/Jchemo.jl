@@ -20,8 +20,8 @@ end
         typf = "unif", typw = "bisquare", alpha = 0, K = 5, rep = 10,
         tol = 1e-4, verbose = false)
 Averaging kNN-LWPLSR models with different numbers of LVs.
-* `X` : X-data.
-* `Y` : Y-data.
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
 * `nlvdis` : Number of latent variables (LVs) to consider in the global PLS 
     used for the dimension reduction before calculating the dissimilarities. 
         If `nlvdis = 0`, there is no dimension reduction.
@@ -37,7 +37,7 @@ Averaging kNN-LWPLSR models with different numbers of LVs.
     the single model with 10 LVs).   
 * `tol` : For stabilization when very close neighbors.
 * `verbose` : If true, fitting information are printed.
-* See ?plsr_avg for the other arguments.
+*  Other arguments: see ?plsr_avg.
 
 Ensemblist method where the predictions of each local model are computed 
 are computed by averaging or stacking the predictions of a set of models 
@@ -48,6 +48,41 @@ a new observation is the average (eventually weighted) or stacking of the predic
 returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 
 See ?plsr_avg.
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+nlvdis = 20 ; metric = "mahal" 
+h = 1 ; k = 100 ; nlv = "5:15"
+fm = lwplsr_avg(Xtrain, ytrain; nlvdis = nlvdis,
+    metric = metric, h = h, k = k, nlv = nlv) ;
+res = predict(fm, Xtest)
+rmsep(res.pred, ytest)
+f, ax = scatter(vec(res.pred), ytest)
+abline!(ax, 0, 1)
+f
+
+fm = lwplsr_avg(Xtrain, ytrain; nlvdis = nlvdis,
+    metric = metric, h = h, k = k, nlv = nlv,
+    typf = "cv") ;
+res = predict(fm, Xtest)
+rmsep(res.pred, ytest)
+```
 """ 
 function lwplsr_avg(X, Y; nlvdis, metric, h, k, nlv, 
     typf = "unif", typw = "bisquare", alpha = 0, K = 5, rep = 10,

@@ -4,10 +4,10 @@ struct PlsrAvgUnif
 end
 
 function plsr_avg_unif(X, Y, weights = ones(size(X, 1)); nlv)
-    plsr_avg_unif!(copy(X), copy(Y), weights; nlv = nlv)
+    plsr_avg_unif!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv)
 end
 
-function plsr_avg_unif!(X, Y, weights = ones(size(X, 1)); nlv)
+function plsr_avg_unif!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
     X = ensure_mat(X)
     n, p = size(X)
     nlv = eval(Meta.parse(nlv))

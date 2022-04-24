@@ -1,10 +1,11 @@
 """
     plsnipals(X, Y, weights = ones(size(X, 1)); nlv)
+    plsnipals!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
 Partial Least Squares Regression (PLSR) with the NIPALS algorithm 
 (e.g. Tenenhaus 1998, Wold 2002).
-* `X` : X-data.
-* `Y` : Y-data.
-* `weights` : Weights of the observations.
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
+* `weights` : Weights (n) of the observations.
 * `nlv` : Nb. latent variables (LVs) to consider.
 
 `weights` is internally normalized to sum to 1. 
@@ -14,6 +15,8 @@ Partial Least Squares Regression (PLSR) with the NIPALS algorithm
 **Note:** In this function, for PLS2, the NIPALS iterations are replaced by a 
 direct computation of the PLS weights (w) by SVD decomposition of matrix X'Y 
 (Hoskuldsson 1988 p.213).
+
+See `?plskern` for examples.
 
 ## References
 
@@ -27,12 +30,10 @@ Wold, S., Sjostrom, M., Eriksson, l., 2001. PLS-regression: a basic tool
 for chemometrics. Chem. Int. Lab. Syst., 58, 109-130.
 """ 
 function plsnipals(X, Y, weights = ones(size(X, 1)); nlv)
-    plsnipals!(copy(X), copy(Y), weights; nlv = nlv)
+    plsnipals!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv)
 end
 
-function plsnipals!(X, Y, weights = ones(size(X, 1)); nlv)
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
+function plsnipals!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
     n, p = size(X)
     q = nco(Y)
     nlv = min(nlv, n, p)

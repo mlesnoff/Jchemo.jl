@@ -14,7 +14,7 @@ struct Kpca
 end
 
 """
-    kpca(X, Y, weights = ones(size(X, 1)); nlv , kern = "krbf", kwargs...)
+    kpca(X, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
 Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
 
 * `X` : X-data.
@@ -22,7 +22,7 @@ Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
 * `nlv` : Nb. principal components (PCs), or collection of nb. PCs, to consider. 
 * `kern` : Type of kernel used to compute the Gram matrices.
     Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`).
-* `kwargs` : Named arguments to pass in the kernel function.
+* `kwargs` : Named arguments to pass in the kernel function. See `?krbf`, `?kpol`.
 
 The method is implemented by SVD factorization of the weighted Gram matrix 
 D^(1/2) * Phi(`X`) * Phi(`X`)' * D^(1/2), where D is a diagonal matrix of weights for 
@@ -31,7 +31,6 @@ the observations (rows of X).
 The kernel Gram matrices are internally centered. 
 
 ## References 
-
 Scholkopf, B., Smola, A., MÃ¼ller, K.-R., 1997. Kernel principal component analysis, 
 in: Gerstner, W., Germond, A., Hasler, M., Nicoud, J.-D. (Eds.), Artificial Neural Networks, 
 ICANN 97, Lecture Notes in Computer Science. Springer, Berlin, Heidelberg, 
@@ -43,6 +42,36 @@ optimization, and beyond, Adaptive computation and machine learning. MIT Press, 
 Tipping, M.E., 2001. Sparse kernel principal component analysis. Advances in neural information 
 processing systems, MIT Press. http://papers.nips.cc/paper/1791-sparse-kernel-principal-component-analysis.pdf
 
+## Examples
+```julia
+using JLD2, CairoMakie, StatsBase
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "iris.jld2") 
+@load db dat
+pnames(dat)
+summ(dat.X)
+
+X = dat.X[:, 1:4]
+n = nro(X)
+
+ntrain = 120
+s = sample(1:n, ntrain; replace = false) 
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
+
+nlv = 3 ; gamma = 1e-4
+fm = kpca(Xtrain; nlv = nlv, gamma = gamma) ;
+pnames(fm)
+fm.T
+fm.T' * fm.T
+fm.P' * fm.P
+
+transform(fm, Xtest)
+
+res = Base.summary(fm) ;
+pnames(res)
+res.explvar
+```
 """ 
 function kpca(X, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
     X = ensure_mat(X)

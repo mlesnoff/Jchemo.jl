@@ -12,9 +12,10 @@ end
 
 """
     fda(X, y; nlv, pseudo = false)
+    fda!(X::Matrix, y; nlv, pseudo = false)
 Factorial discriminant analysis (FDA).
-* `X` : X-data.
-* `y` : y-data (class membership).
+* `X` : X-data (n, p).
+* `y` : y-data (n) (class membership).
 * `nlv` : Nb. discriminant components.
 * `pseudo` : If true, a MP pseudo-inverse is used (instead
     of a usual inverse) for inverting W.
@@ -32,15 +33,18 @@ mypath = joinpath(@__DIR__, "..", "data")
 db = string(mypath, "\\", "iris.jld2") 
 @load db dat
 pnames(dat)
-X = dat.X 
-n = nro(X)
-summ(X)
+summ(dat.X)
 
-s = sample(1:n, 120; replace = false) 
-Xtrain = Matrix(X[s, 1:4])
-ytrain = X[s, 5]
-Xtest = rmrow(Matrix(X[:, 1:4]), s)
-ytest = rmrow(X[:, 5], s)
+X = Matrix(dat.X[:, 1:4]) 
+y = dat.X[:, 5]
+n = nro(X)
+
+ntrain = 120
+s = sample(1:n, ntrain; replace = false) 
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
 
 tab(ytrain)
 
@@ -83,11 +87,10 @@ Base.summary(fm)
 ```
 """ 
 function fda(X, y; nlv, pseudo = false)
-    fda!(copy(X), y; nlv = nlv, pseudo = pseudo)
+    fda!(copy(ensure_mat(X)), y; nlv = nlv, pseudo = pseudo)
 end
 
-function fda!(X, y; nlv, pseudo = false)
-    X = ensure_mat(X)
+function fda!(X::Matrix, y; nlv, pseudo = false)
     n, p = size(X)
     xmeans = colmean(X) 
     center!(X, xmeans)
@@ -128,11 +131,10 @@ See `?fda` for examples.
 
 """ 
 function fdasvd(X, y; nlv, pseudo = false)
-    fdasvd!(copy(X), y; nlv = nlv, pseudo = pseudo)
+    fdasvd!(copy(ensure_mat(X)), y; nlv = nlv, pseudo = pseudo)
 end
 
-function fdasvd!(X, y; nlv, pseudo = false)
-    X = ensure_mat(X)
+function fdasvd!(X::Matrix, y; nlv, pseudo = false)
     n, p = size(X)
     xmeans = colmean(X) 
     center!(X, xmeans)

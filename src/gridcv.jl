@@ -1,8 +1,8 @@
 """
     gridcv(X, Y; segm, score, fun, pars, verbose = false) 
 Cross-validation (CV) over a grid of parameters.
-* `X` : X-data.
-* `Y` : Y-data.
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
 * `segm` : Segments of the CV (output of functions
      [`segmts`](@ref), [`segmkf`](@ref) etc.).
 * `score` : Function (e.g. `msep`) computing a prediction score.
@@ -28,7 +28,7 @@ db = string(mypath, "\\", "cassav.jld2")
 @load db dat
 pnames(dat)
 
-# Building Train and Test
+# Building Train (years <= 2012) and Test  (year = 2012)
 
 X = dat.X 
 y = dat.Y.y

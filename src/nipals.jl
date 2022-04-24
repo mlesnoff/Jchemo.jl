@@ -16,6 +16,20 @@ X ~ u * s * v', where:
 ## References
 Tenenhaus, M., 1998. La régression PLS: théorie et pratique. Editions Technip, 
 Paris, France.
+
+## Examples
+```julia
+X = rand(5, 3)
+
+res = nipals(X)
+res.u
+svd(X).U[:, 1] 
+res.v
+svd(X).V[:, 1] 
+res.sv
+svd(X).S[1] 
+res.niter
+```
 """ 
 function nipals(X; tol = sqrt(eps(1.)), maxit = 200)
     X = ensure_mat(X)

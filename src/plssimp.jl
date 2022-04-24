@@ -1,9 +1,10 @@
 """
     plssimp(X, Y, weights = ones(size(X, 1)); nlv)
+    plssimp!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
 Partial Least Squares Regression (PLSR) with the SIMPLS algorithm (de Jong 1993).
-* `X` : X-data.
-* `Y` : Y-data.
-* `weights` : Weights of the observations.
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
+* `weights` : Weights (n) of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
 
 `weights` is internally normalized to sum to 1. 
@@ -21,10 +22,10 @@ https://doi.org/10.1016/0169-7439(93)85002-X
 
 """ 
 function plssimp(X, Y, weights = ones(size(X, 1)); nlv)
-    plssimp!(copy(X), copy(Y), weights; nlv = nlv)
+    plssimp!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv)
 end
 
-function plssimp!(X, Y, weights = ones(size(X, 1)); nlv)
+function plssimp!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)

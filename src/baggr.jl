@@ -9,9 +9,9 @@ end
     baggr(X, Y, weights = nothing; rep = 50, 
         withr = false, rowsamp = .7, colsamp = 1, fun, kwargs...)
 Bagging of regression models.
-* `X` : X-data (n obs., p variables).
-* `Y` : Y-data (n obs., q variables).
-* `weights` : Weights of the observations.
+* `X` : X-data  (n, p).
+* `Y` : Y-data  (n, q).
+* `weights` : Weights (n) of the observations.
 * `rep` : Nb. of bagging repetitions.
 * `withr`: Type of sampling of the observations
     (`true` => with replacement).
@@ -59,6 +59,9 @@ fm = baggr(Xtrain, ytrain; rep = 20,
 res = predict(fm, Xtest) ;
 res.pred
 rmsep(ytest, res.pred)
+f, ax = scatter(vec(res.pred), ytest)
+abline!(ax, 0, 1)
+f
 
 res = baggr_oob(fm, Xtrain, ytrain; score = rmsep)
 res.scor

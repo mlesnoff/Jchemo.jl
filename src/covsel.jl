@@ -1,8 +1,9 @@
 """
     covsel(X, Y; nlv = nothing, scaly = true)
+    covsel!(X::Matrix, Y::Matrix; nlv = nothing, scaly = true)
 Variable (feature) selection with the covsel method
-* `X` : X-data.
-* `Y` : Y-data.
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
 * `nlv` : Nb. variables to select.
 * `scaly` : If `true`, columns of `Y` are scaled.
 
@@ -40,12 +41,11 @@ scatter(res.covs,
 ```
 """ 
 function covsel(X, Y; nlv = nothing, scaly = true)
-    covsel!(copy(X), copy(Y); nlv = nlv, scaly = scaly)
+    covsel!(copy(ensure_mat(X)), copy(ensure_mat(Y)); 
+        nlv = nlv, scaly = scaly)
 end
 
-function covsel!(X, Y; nlv = nothing, scaly = true) 
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
+function covsel!(X::Matrix, Y::Matrix; nlv = nothing, scaly = true) 
     n, p = size(X)
     isnothing(nlv) ? nlv = p : nothing 
     xmeans = colmean(X) 

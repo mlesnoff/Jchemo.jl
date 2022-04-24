@@ -16,11 +16,12 @@ struct Krr
 end
 
 """
-    krr(X, Y, weights = ones(size(X, 1)); lb = .01, kern = "krbf", kwargs...)
+    krr(X, Y, weights = ones(size(X, 1)); 
+        lb = .01, kern = "krbf", kwargs...)
 Kernel ridge regression (KRR) implemented by SVD factorization.
-* `X` : X-data.
-* `Y` : Y-data.
-* `weights` : Weights of the observations.
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
+* `weights` : Weights (n) of the observations.
 * `lb` : A value of the regularization parameter "lambda".
 * 'kern' : Type of kernel used to compute the Gram matrices.
     Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`.
@@ -85,12 +86,16 @@ coef(fm; lb = 1e-6).df
 res = predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
+f, ax = scatter(vec(res.pred), ytest)
+abline!(ax, 0, 1)
+f
 
 res = predict(fm, Xtest; lb = [.01 ; .001])
 res.pred[1]
 res.pred[2]
 
-fm = krr(Xtrain, ytrain; lb = lb, kern = "kpol", degree = 2, gamma = 1e-1, coef0 = 10) ;
+fm = krr(Xtrain, ytrain; lb = lb, kern = "kpol", 
+    degree = 2, gamma = 1e-1, coef0 = 10) ;
 res = predict(fm, Xtest)
 rmsep(res.pred, ytest)
 
@@ -110,7 +115,8 @@ axislegend("Method")
 f
 ```
 """ 
-function krr(X, Y, weights = ones(size(X, 1)); lb = .01, kern = "krbf", kwargs...)
+function krr(X, Y, weights = ones(size(X, 1)); 
+        lb = .01, kern = "krbf", kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     weights = mweight(weights)

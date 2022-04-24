@@ -1,10 +1,10 @@
 """
     gridscore(Xtrain, Ytrain, X, Y; score, fun, pars, verbose = FALSE) 
 Model validation over a grid of parameters.
-* `Xtrain` : Training X-data.
-* `Ytrain` : Training Y-data.
-* `X` : Validation X-data.
-* `Y` : Validation Y-data.
+* `Xtrain` : Training X-data (n, p).
+* `Ytrain` : Training Y-data (n, q).
+* `X` : Validation X-data (m, p).
+* `Y` : Validation Y-data (m, q).
 * `score` : Function (e.g. `msep`) computing the prediction score.
 * `fun` : Function computing the prediction model.
 * `pars` : tuple of named vectors (= arguments of fun) of same length
@@ -26,7 +26,7 @@ db = string(mypath, "\\", "cassav.jld2")
 @load db dat
 pnames(dat)
 
-# Building Train and Test
+# Building Train (years <= 2012) and Test  (year == 2012)
 
 X = dat.X 
 y = dat.Y.y

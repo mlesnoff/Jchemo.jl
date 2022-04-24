@@ -56,6 +56,9 @@ fm.ni
 res = predict(fm, Xtest)
 res.posterior
 rmsep(res.pred, ytest)
+f, ax = scatter(vec(res.pred), ytest)
+abline!(ax, 0, 1)
+f
 ```
 """
 function cplsr_avg(X, Y, cla = nothing; ncla = nothing, nlv_da, nlv)

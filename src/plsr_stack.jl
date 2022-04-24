@@ -1,9 +1,8 @@
 function plsr_stack(X, y, weights = ones(size(X, 1)); nlv, K = 5, rep = 10)
-    plsr_stack!(copy(X), copy(y), weights; nlv = nlv, K = K, rep = rep)
+    plsr_stack!(copy(ensure_mat(X)), copy(ensure_mat(y)), weights; nlv = nlv, K = K, rep = rep)
 end
 
-function plsr_stack!(X, y, weights = ones(size(X, 1)); nlv, K = 5, rep = 10)
-    X = ensure_mat(X)
+function plsr_stack!(X::Matrix, y::Matrix, weights = ones(size(X, 1)); nlv, K = 5, rep = 10)
     n, p = size(X)
     weights = mweight(weights)
     nlv = eval(Meta.parse(nlv))

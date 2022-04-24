@@ -63,13 +63,12 @@ center(X, xmeans)
 ```
 """ 
 function center(X, v)
-    zX = copy(X)
+    zX = copy(ensure_mat(X))
     center!(zX, v)
     zX
 end
 
-function center!(X, v)
-    X = ensure_mat(X)
+function center!(X::Matrix, v)
     p = size(X, 2)
     @inbounds for j = 1:p
         X[:, j] .= vcol(X, j) .- v[j]
@@ -150,8 +149,9 @@ Return a vector.
 ```julia
 n, p = 5, 6
 X = rand(n, p)
+w = collect(1:n)
+
 colmean(X)
-w = mweight(collect(1:n))
 colmean(X, w)
 ```
 """ 
@@ -175,8 +175,9 @@ The squared weighted norm of a column x is:
 ```julia
 n, p = 5, 6
 X = rand(n, p)
-colnorm2(X)
 w = collect(1:n)
+
+colnorm2(X)
 colnorm2(X, w)
 ```
 """ 
@@ -217,8 +218,9 @@ Return a vector.
 ```julia
 n, p = 5, 6
 X = rand(n, p)
-colstd(X)
 w = collect(1:n)
+
+colstd(X)
 colstd(X, w)
 ```
 """ 
@@ -241,8 +243,9 @@ Return a vector.
 ```julia
 n, p = 5, 6
 X = rand(n, p)
-colsum(X)
 w = collect(1:n)
+
+colsum(X)
 colsum(X, w)
 ```
 """ 
@@ -265,8 +268,9 @@ Return a vector.
 ```julia
 n, p = 5, 6
 X = rand(n, p)
-colvar(X)
 w = collect(1:n)
+
+colvar(X)
 colvar(X, w)
 ```
 """ 
@@ -303,6 +307,7 @@ n, p = 5, 6
 X = rand(n, p)
 Y = rand(n, 3)
 w = collect(1:n)
+
 covm(X, w)
 covm(X, Y, w)
 ```
@@ -347,6 +352,7 @@ n, p = 5, 6
 X = rand(n, p)
 Y = rand(n, 3)
 w = collect(1:n)
+
 corm(X, w)
 corm(X, Y, w)
 ```
@@ -536,7 +542,11 @@ w = mweight(x)
 sum(w)
 ```
 """
-mweight(w) = w / sum(w)
+function mweight(w)
+    zw = copy(vec(Float64.(w))) 
+    mweight!(zw)
+    zw
+end
 
 function mweight!(w::Vector{Float64})
     w ./= sum(w)
@@ -786,13 +796,12 @@ scale(X, colstd(X))
 ```
 """ 
 function scale(X, v)
-    M = copy(X)
+    M = copy(ensure_mat(X))
     scale!(M, v)
     M
 end
 
-function scale!(X, v)
-    X = ensure_mat(X)
+function scale!(X::Matrix, v)
     p = size(X, 2)
     @inbounds for j = 1:p
         X[:, j] .= vcol(X, j) ./ v[j]
@@ -800,7 +809,7 @@ function scale!(X, v)
 end
 
 # Below: Much slower and requires more memories
-scale2(X, v) = mapslices(function f(x) ; x ./ v ; end, X, dims = 2)
+scale2(X, v) = mapslices(function f(x) ; x ./ v ; end, ensure_mat(X), dims = 2)
 
 """
     sourcedir(path)
@@ -926,7 +935,5 @@ vrow(x::Vector, i) = view(x, i)
 vcol(X, j) = view(X, :, j)
 
 vcol(x::Vector, i) = view(x, i)
-
-
 
 

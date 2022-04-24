@@ -1,51 +1,70 @@
 """
     pcr(X, Y, weights = ones(size(X, 1)); nlv)
+    pcr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
 Principal component regression (PCR) with a SVD factorization.
-* `X` : X-data.
-* `Y` : Y-data.
-* `weights` : Weights of the observations.
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
+* `weights` : Weights (n) of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
 
 `weights` is internally normalized to sum to 1. 
 
 `X` and `Y` are internally centered. 
 
-The model is computed with an intercept.
-
 ## Examples
 
 ```julia
-n = 10 ; p = 5 ; q = 2
-X = rand(n, p)
-Y = rand(n, q)
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
 
-nlv = 3
-fm = pcr(X, Y, w; nlv = nlv) ;
-Jchemo.coef(fm).B
-Jchemo.coef(fm).int
-Jchemo.coef(pcr(X, Y[:, 2], w; nlv = nlv)).B
-Jchemo.coef(fm; nlv = 1).B
+X = dat.X 
+y = dat.Y.y
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
 
-nlv = 3
-fm = pcr(X, Y, w; nlv = nlv) ;
-Jchemo.predict(fm, X[1:3, :]).pred
-Jchemo.predict(plskern(X, Y, w; nlv = nlv), X[1:3, :]).pred
-
-zfm = fm.fm_pca ;
-res = summary(zfm, X) ;
-pnames(res)
-res.explvar
-
+nlv = 15
+fm = pcr(Xtrain, ytrain; nlv = nlv) ;
+pnames(fm)
 fm.T
-Jchemo.transform(zfm, X[1:3, :])
+
+zcoef = coef(fm)
+zcoef.int
+zcoef.B
+coef(fm; nlv = 7).B
+
+fm_pca = fm.fm_pca ;
+transform(fm_pca, Xtest)
+transform(fm_pca, Xtest; nlv = 7)
+
+res = predict(fm, Xtest)
+res.pred
+rmsep(res.pred, ytest)
+f, ax = scatter(vec(res.pred), ytest)
+abline!(ax, 0, 1)
+f
+
+res = predict(fm, Xtest; nlv = 1:2)
+res.pred[1]
+res.pred[2]
+
+# See ?pcasvd
+res = Base.summary(fm_pca, Xtrain)
+res.explvar
 ```
 """ 
 function pcr(X, Y, weights = ones(size(X, 1)); nlv)
-    pcr!(copy(X), copy(Y), weights; nlv = nlv)
+    pcr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv)
 end
 
-function pcr!(X, Y, weights = ones(size(X, 1)); nlv)
-    Y = ensure_mat(Y)
+function pcr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
     weights = mweight(weights)
     ymeans = colmean(Y, weights)  
     center!(Y, ymeans)

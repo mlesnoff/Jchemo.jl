@@ -31,7 +31,6 @@ Roger, J.-M., Boulet, J.-C., 2018. A review of orthogonal projections for calibr
 Journal of Chemometrics 32, e3045. https://doi.org/10.1002/cem.3045
 
 # Example
-
 ```julia
 n = 4 ; p = 8 ; 
 X = rand(n, p)
@@ -76,6 +75,18 @@ Linear de-trend transformation of each row of X-data.
 
 The function fits a univariate linear regression to each observation
 and returns the residuals.
+
+## Example
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+
+```
 """ 
 function detrend(X)
     M = copy(X)
@@ -84,6 +95,7 @@ function detrend(X)
 end
 
 function detrend!(X)
+    X = ensure_mat(X)
     n, p = size(X)
     xmean = mean(1:p)
     x = collect(1:p) 
@@ -115,6 +127,7 @@ The method reduces the column-dimension: (n, p) --> (n, p - f + 1).
 The in-place function stores the output in `M`.
 """ 
 function fdif(X; f = 2)
+    X = ensure_mat(X)
     n, p = size(X)
     M = similar(X, n, p - f + 1)
     fdif!(M, X; f)
@@ -122,6 +135,7 @@ function fdif(X; f = 2)
 end
 
 function fdif!(M, X; f = 2)
+    X = ensure_mat(X)
     p = size(X, 2)
     zp = p - f + 1
     @inbounds for j = 1:zp
@@ -240,6 +254,7 @@ function mavg(X; f)
 end
 
 function mavg!(X; f)
+    X = ensure_mat(X)
     n, p = size(X)
     kern = ImageFiltering.centered(ones(f) / f) ;
     out = similar(X, p)
@@ -267,6 +282,7 @@ In general, this function can be faster than mavg, especialy for in-place versio
 The in-place function stores the output in `M`.
 """ 
 function mavg_runmean(X; f)
+    X = ensure_mat(X)
     n, p = size(X)
     M = similar(X, n, p - f + 1)
     mavg_runmean!(M, X; f)
@@ -274,6 +290,8 @@ function mavg_runmean(X; f)
 end
 
 function mavg_runmean!(M, X; f)
+    M = ensure_mat(M)
+    X = ensure_mat(X)
     n, zp = size(M)
     out = similar(M, zp)
     @inbounds for i = 1:n
@@ -354,6 +372,7 @@ function savgol(X; f, pol, d)
 end
 
 function savgol!(X; f, pol, d)
+    X = ensure_mat(X)
     @assert isodd(f) && f >= 3 "f must be odd and >= 3"
     n, p = size(X)
     m = (f - 1) / 2
@@ -381,6 +400,7 @@ function snv(X; cent = true, scal = true)
 end
 
 function snv!(X; cent = true, scal = true) 
+    X = ensure_mat(X)
     n, p = size(X)
     cent ? mu = rowmean(X) : mu = zeros(n)
     scal ? s = rowstd(X) : s = ones(n)

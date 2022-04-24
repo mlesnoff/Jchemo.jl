@@ -11,6 +11,7 @@ end
 
 """
     pcasvd(X, weights = ones(size(X, 1)); nlv)
+    pcasvd!(X::Matrix, weights = ones(size(X, 1)); nlv)
 PCA by SVD factorization.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations.
@@ -20,7 +21,6 @@ PCA by SVD factorization.
 
 Let us note D the (n, n) diagonal matrix of `weights`
 and X the centered matrix in metric D.
-
 The function minimizes ||X - T * P'||^2  in metric D, by 
 computing a SVD factorization of sqrt(D) * X:
 
@@ -31,13 +31,48 @@ Outputs are:
 * T = D^(-1/2) * U * S
 * P = V
 * The diagonal of S   
+
+## Examples
+```julia
+using JLD2, CairoMakie, StatsBase
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "iris.jld2") 
+@load db dat
+pnames(dat)
+summ(dat.X)
+
+X = dat.X[:, 1:4]
+n = nro(X)
+
+ntrain = 120
+s = sample(1:n, ntrain; replace = false) 
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
+
+nlv = 3
+fm = pcasvd(Xtrain; nlv = nlv) ;
+#fm = pcaeigen(Xtrain; nlv = nlv) ;
+#fm = pcaeigenk(Xtrain; nlv = nlv) ;
+pnames(fm)
+fm.T
+fm.T' * fm.T
+fm.P' * fm.P
+
+transform(fm, Xtest)
+
+res = Base.summary(fm, Xtrain) ;
+pnames(res)
+res.explvar
+res.contr_var
+res.coord_var
+res.cor_circle
+```
 """ 
 function pcasvd(X, weights = ones(size(X, 1)); nlv)
-    pcasvd!(copy(X), weights; nlv = nlv)
+    pcasvd!(copy(ensure_mat(X)), weights; nlv = nlv)
 end
 
-function pcasvd!(X, weights = ones(size(X, 1)); nlv)
-    X = ensure_mat(X)
+function pcasvd!(X::Matrix, weights = ones(size(X, 1)); nlv)
     n, p = size(X)
     nlv = min(nlv, n, p)
     weights = mweight(weights)
@@ -60,7 +95,8 @@ Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
-function Base.summary(object::Pca, X)
+function Base.summary(object::Pca, X::Union{Matrix, DataFrame})
+    X = ensure_mat(X)
     nlv = size(object.T, 2)
     D = Diagonal(object.weights)
     X = center(X, object.xmeans)
@@ -92,6 +128,7 @@ Compute components (scores matrix "T") from a fitted model and X-data.
 * `nlv` : Nb. components to compute. If nothing, it is the maximum nb. PCs.
 """ 
 function transform(object::Union{Pca, Fda}, X; nlv = nothing)
+    X = ensure_mat(X)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     center(X, object.xmeans) * vcol(object.P, 1:nlv)

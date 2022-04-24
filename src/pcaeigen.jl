@@ -1,5 +1,6 @@
 """
     pcaeigen(X, weights = ones(size(X, 1)); nlv)
+    pcaeigen!(X::Matrix, weights = ones(size(X, 1)); nlv)
 PCA by Eigen factorization.
 * `X` : X-data (n, p).
 * `weights` : Weights (n) of the observations.
@@ -8,17 +9,17 @@ PCA by Eigen factorization.
 `weights` is internally normalized to sum to 1.
 
 Let us note D the (n, n) diagonal matrix of `weights`
-and X the centered matrix in metric D.
-
+and X the centered matrix in metric D. 
 The function minimizes ||X - T * P'||^2  in metric D, by 
 computing an Eigen factorization of X' * D * X. 
+
+See `?pcasvd` for examples.
 """ 
 function pcaeigen(X, weights = ones(size(X, 1)); nlv)
-    pcaeigen!(copy(X), weights; nlv = nlv)
+    pcaeigen!(copy(ensure_mat(X)), weights; nlv = nlv)
 end
 
-function pcaeigen!(X, weights = ones(size(X, 1)); nlv)
-    X = ensure_mat(X)
+function pcaeigen!(X::Matrix, weights = ones(size(X, 1)); nlv)
     n, p = size(X)
     nlv = min(nlv, n, p)
     weights = mweight(weights)
@@ -37,32 +38,34 @@ end
 
 """
     pcaeigenk(X, weights = ones(size(X, 1)); nlv)
-PCA by Eigen factorization of the kernel form (XX') for wide matrices.
+    pcaeigenk!(X::Matrix, weights = ones(size(X, 1)); nlv)
+PCA by Eigen factorization of the kernel form (XX').
 * `X` : X-data (n, p).
 * `weights` : Weights (n) of the observations.
 * `nlv` : Nb. principal components (PCs).
 
 `weights` is internally normalized to sum to 1.
 
+This is the "kernel cross-product" version of the PCA algorithm (e.g. Wu et al. 1997). 
+For wide matrices (n << p, where p is the nb. columns) and n not too large, 
+this algorithm can be much faster than the others.
+
 Let us note D the (n, n) diagonal matrix of `weights`
 and X the centered matrix in metric D. 
 The function minimizes ||X - T * P'||^2  in metric D, by 
 computing an Eigen factorization of D^(1/2) * X * X' D^(1/2).
 
-This is the "kernel cross-product" version of the PCA algorithm (e.g. Wu et al. 1997). 
-For wide matrices (n << p, where p is the nb. columns) and n not too large, 
-this algorithm can be much faster than the others.
+See `?pcasvd` for examples.
 
 ## References
 Wu, W., Massart, D.L., de Jong, S., 1997. The kernel PCA algorithms for wide data. Part I: Theory and algorithms. 
 Chemometrics and Intelligent Laboratory Systems 36, 165-172. https://doi.org/10.1016/S0169-7439(97)00010-5
 """ 
 function pcaeigenk(X, weights = ones(size(X, 1)); nlv)
-    pcaeigenk!(copy(X), weights; nlv = nlv)
+    pcaeigenk!(copy(ensure_mat(X)), weights; nlv = nlv)
 end
 
-function pcaeigenk!(X, weights = ones(size(X, 1)); nlv)
-    X = ensure_mat(X)
+function pcaeigenk!(X::Matrix, weights = ones(size(X, 1)); nlv)
     n, p = size(X)
     nlv = min(nlv, n, p)
     weights = mweight(weights)
@@ -78,5 +81,4 @@ function pcaeigenk!(X, weights = ones(size(X, 1)); nlv)
     T = X * P
     Pca(T, P, sv, xmeans, weights, nothing, nothing) 
 end
-
 

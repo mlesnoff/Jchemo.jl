@@ -15,13 +15,12 @@ end
 
 function plsr_avg_aic(X, y, weights = ones(size(X, 1)); nlv, 
         bic = false, typw = "bisquare", alpha = 0)
-    plsr_avg_aic!(copy(X), copy(y), weights; nlv = nlv, bic = bic, 
+    plsr_avg_aic!(copy(ensure_mat(X)), copy(ensure_mat(y)), weights; nlv = nlv, bic = bic, 
         typw = typw, alpha = alpha)
 end
 
-function plsr_avg_aic!(X, y, weights = ones(size(X, 1)); nlv,
+function plsr_avg_aic!(X::Matrix, y::Matrix, weights = ones(size(X, 1)); nlv,
         bic = false, typw = "bisquare", alpha = 0)
-    X = ensure_mat(X)
     n, p = size(X)
     nlv = eval(Meta.parse(nlv))
     nlv = (min(minimum(nlv), n, p):min(maximum(nlv), n, p))

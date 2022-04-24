@@ -5,10 +5,12 @@ end
 """ 
     plsr_avg(X, Y, weights = ones(size(X, 1)); nlv, 
         typf = "unif", typw = "bisquare", alpha = 0)
+    plsr_avg!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv, 
+        typf = "unif", typw = "bisquare", alpha = 0, K = 5, rep = 10)
 Averaging and stacking PLSR models with different numbers of LVs.
-* `X` : X-data.
-* `Y` : Y-data. Must be univariate if `typw` != "unif".
-* `weights` : Weights of the observations.
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q). Must be univariate (q = 1) if `typw` != "unif".
+* `weights` : Weights (n) of the observations.
 * `nlv` : A character string such as "5:20" defining the range of the numbers of LVs 
     to consider ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
     are averaged). Syntax such as "10" is also allowed ("10": correponds to
@@ -41,7 +43,7 @@ Possible values of `typf` are:
 the CV predictions are regressed (multiple linear model without intercept)
 on the observed response data.
 
-For arguments `typw` and `alpha` (weight function): see the help of function `fweight`.
+For arguments `typw` and `alpha` (weight function): see `?fweight`.
 
 ## References
 Lesnoff, M., Roger, J.-M., Rutledge, D.N., 2021. Monte Carlo methods for estimating 
@@ -56,14 +58,48 @@ Shenk et al. 1998 United States Patent (19). Patent Number: 5,798.526.
 
 Zhang, M.H., Xu, Q.S., Massart, D.L., 2004. Averaged and weighted average partial 
 least squares. Analytica Chimica Acta 504, 279–289. https://doi.org/10.1016/j.aca.2003.10.056
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+nlv = "5:15"
+fm = plsr_avg(Xtrain, ytrain; nlv = nlv) ;
+res = predict(fm, Xtest)
+res.pred
+rmsep(res.pred, ytest)
+f, ax = scatter(vec(res.pred), ytest)
+abline!(ax, 0, 1)
+f
+
+fm = plsr_avg(Xtrain, ytrain; nlv = nlv,
+    typf = "cv") ;
+res = predict(fm, Xtest)
+res.pred
+rmsep(res.pred, ytest)
+```
 """ 
 function plsr_avg(X, Y, weights = ones(size(X, 1)); nlv, 
         typf = "unif", typw = "bisquare", alpha = 0, K = 5, rep = 10)
-    plsr_avg!(copy(X), copy(Y), weights; nlv = nlv, 
+    plsr_avg!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
         typf = typf, typw = typw, alpha = alpha, K = K, rep = rep)
 end
 
-function plsr_avg!(X, Y, weights = ones(size(X, 1)); nlv, 
+function plsr_avg!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv, 
         typf = "unif", typw = "bisquare", alpha = 0, K = 5, rep = 10)
     if typf == "unif"
         fm = plsr_avg_unif!(X, Y, weights; nlv = nlv)

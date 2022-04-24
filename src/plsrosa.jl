@@ -1,21 +1,22 @@
 """
     plsrosa(X, Y, weights = ones(size(X, 1)); nlv)
+    plsrosa!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
 Partial Least Squares Regression (PLSR) with the ROSA algorithm (Liland et al. 2016).
-* `X` : X-data.
-* `Y` : Y-data.
-* `weights` : Weights of the observations.
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
+* `weights` : Weights (n) of the observations.
 * `nlv` : Nb. latent variables (LVs) to consider.
 
 `weights` is internally normalized to sum to 1. 
     
 `X` and `Y` are internally centered. 
 
-The function has the following differences with the original 
+**Note:** The function has the following differences with the original 
 algorithm of Liland et al. (2016):
 * Scores T are not normed.
-* Multivariate Y is allowed. In such a case, the entered
-    Y-columns should have the same scale (for finding the winning blocks, 
-    the squared residuals are summed over the columns)
+* Multivariate Y is allowed.
+
+See `?plskern` for examples.
     
 ## References
 
@@ -25,12 +26,10 @@ squares regression for multiblock data analysis. Journal of Chemometrics 30,
 
 """ 
 function plsrosa(X, Y, weights = ones(size(X, 1)); nlv)
-    plsrosa!(copy(X), copy(Y), weights; nlv = nlv)
+    plsrosa!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv)
 end
 
-function plsrosa!(X, Y, weights = ones(size(X, 1)); nlv)
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
+function plsrosa!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
     n, p = size(X)
     q = nco(Y)
     nlv = min(nlv, n, p)

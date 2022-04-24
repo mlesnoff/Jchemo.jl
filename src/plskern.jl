@@ -24,22 +24,22 @@ end
 
 """
     plskern(X, Y, weights = ones(size(X, 1)); nlv)
+    plskern!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
 Partial Least Squares Regression (PLSR) with the 
 "Improved kernel algorithm #1" (Dayal & McGegor, 1997).
-* `X` : X-data.
-* `Y` : Y-data.
-* `weights` : Weights of the observations.
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
+* `weights` : Weights (n) of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
 
 `weights` is internally normalized to sum to 1.
 
-`X` and `Y` are internally centered. The model is computed with an intercept.
+`X` and `Y` are internally centered.
 
 For the row-weighting in PLS algorithms (`weights`), see in particular Schaal et al. 2002, 
-Siccard & Sabatier 2006, Kim et al. 2011 and Lesnoff et al. 2020. 
+Siccard & Sabatier 2006, Kim et al. 2011, and Lesnoff et al. 2020. 
 
 ## References
-
 Dayal, B.S., MacGregor, J.F., 1997. Improved PLS algorithms. 
 Journal of Chemometrics 11, 73-85.
 
@@ -58,14 +58,64 @@ Applied Intell., 17, 49-60.
 
 Sicard, E. Sabatier, R., 2006. Theoretical framework for local PLS1 regression 
 and application to a rainfall data set. Comput. Stat. Data Anal., 51, 1393-1410.
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+nlv = 15
+fm = plskern(Xtrain, ytrain; nlv = nlv) ;
+#fm = plsnipals(Xtrain, ytrain; nlv = nlv) ;
+#fm = plsrosa(Xtrain, ytrain; nlv = nlv) ;
+#fm = plssimp(Xtrain, ytrain; nlv = nlv) ;
+pnames(fm)
+fm.T
+
+zcoef = coef(fm)
+zcoef.int
+zcoef.B
+coef(fm; nlv = 7).B
+
+transform(fm, Xtest)
+transform(fm, Xtest; nlv = 7)
+
+res = predict(fm, Xtest)
+res.pred
+rmsep(res.pred, ytest)
+f, ax = scatter(vec(res.pred), ytest)
+abline!(ax, 0, 1)
+f
+
+res = predict(fm, Xtest; nlv = 1:2)
+res.pred[1]
+res.pred[2]
+
+res = Base.summary(fm, Xtrain) ;
+pnames(res)
+z = res.explvar
+lines(z.nlv, z.cumpvar,
+    axis = (xlabel = "Nb. LVs", ylabel = "Prop. Explained Variance"))
+```
 """ 
 function plskern(X, Y, weights = ones(size(X, 1)); nlv)
-    plskern!(copy(X), copy(Y), weights; nlv = nlv)
+    plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv)
 end
 
-function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
+function plskern!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, nlv)
@@ -77,7 +127,6 @@ function plskern!(X, Y, weights = ones(size(X, 1)); nlv)
     D = Diagonal(weights)
     XtY = X' * (D * Y)                   # = Xd' * Y = X' * D * Y  (Xd = D * X   Very costly!!)
     #XtY = X' * (weights .* Y)           # Can create OutOfMemory errors for very large matrices
-
     # Pre-allocation
     T = similar(X, n, nlv)
     P = similar(X, p, nlv)
@@ -131,7 +180,8 @@ Summarize the maximal (i.e. with maximal nb. LVs) fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
-function Base.summary(object::Plsr, X)
+function Base.summary(object::Plsr, X::Union{Matrix, DataFrame})
+    X = ensure_mat(X)
     n, nlv = size(object.T)
     X = center(X, object.xmeans)
     # Could be center! but changes x
@@ -154,6 +204,7 @@ Compute LVs ("scores" T) from a fitted model and a matrix X.
 * `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
 """ 
 function transform(object::Plsr, X; nlv = nothing)
+    X = ensure_mat(X)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     T = center(X, object.xmeans) * vcol(object.R, 1:nlv)
