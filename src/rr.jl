@@ -10,6 +10,7 @@ end
 
 """
     rr(X, Y, weights = ones(size(X, 1)); lb = .01)
+    rr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); lb = .01)
 Ridge regression (RR) implemented by SVD factorization.
 * `X` : X-data.
 * `Y` : Y-data.
@@ -19,7 +20,6 @@ Ridge regression (RR) implemented by SVD factorization.
 `X` and `Y` are internally centered. The model is computed with an intercept. 
 
 ## References 
-
 Cule, E., De Iorio, M., 2012. A semi-automatic method to guide the choice 
 of ridge parameter in ridge regression. arXiv:1205.0686.
 
@@ -31,14 +31,54 @@ inference, and prediction, 2nd ed. Springer, New York.
 
 Hoerl, A.E., Kennard, R.W., 1970. Ridge Regression: Biased Estimation for Nonorthogonal Problems. 
 Technometrics 12, 55-67. https://doi.org/10.1080/00401706.1970.10488634
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+lb = 10^(-2)
+fm = rr(Xtrain, ytrain; lb = lb) ;
+#fm = rrchol(Xtrain, ytrain; lb = lb) ;
+pnames(fm)
+
+zcoef = coef(fm)
+zcoef.int
+zcoef.B
+# Only for rr
+coef(fm; lb = .1).B
+
+res = predict(fm, Xtest)
+res.pred
+rmsep(res.pred, ytest)
+f, ax = scatter(vec(res.pred), ytest)
+abline!(ax, 0, 1)
+f
+
+# Only for rr
+res = predict(fm, Xtest; lb = [.1 ; .01])
+res.pred[1]
+res.pred[2]
+```
 """ 
 function rr(X, Y, weights = ones(size(X, 1)); lb = .01)
-    rr!(copy(X), copy(Y), weights; lb = lb)
+    rr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; lb = lb)
 end
 
-function rr!(X, Y, weights = ones(size(X, 1)); lb = .01)
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
+function rr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); lb = .01)
     weights = mweight(weights)
     sqrtw = sqrt.(weights)
     xmeans = colmean(X, weights) 
@@ -53,6 +93,7 @@ end
 
 """
     rrchol(X, Y, weights = ones(size(X, 1)); lb = .01)
+    rrchol!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); lb = .01)
 Ridge regression (RR) using the Normal equations and a Cholesky factorization.
 * `X` : X-data.
 * `Y` : Y-data.
@@ -61,8 +102,9 @@ Ridge regression (RR) using the Normal equations and a Cholesky factorization.
 
 `X` and `Y` are internally centered. The model is computed with an intercept. 
 
-## References 
+See `?rr` for eaxamples.
 
+## References 
 Cule, E., De Iorio, M., 2012. A semi-automatic method to guide the choice 
 of ridge parameter in ridge regression. arXiv:1205.0686.
 
@@ -76,13 +118,11 @@ Hoerl, A.E., Kennard, R.W., 1970. Ridge Regression: Biased Estimation for Nonort
 Technometrics 12, 55-67. https://doi.org/10.1080/00401706.1970.10488634
 """ 
 function rrchol(X, Y, weights = ones(size(X, 1)); lb = .01)
-    rrchol!(copy(X), copy(Y), weights; lb = lb)
+    rrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; lb = lb)
 end
 
-function rrchol!(X, Y, weights = ones(size(X, 1)); lb = .01)
+function rrchol!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); lb = .01)
     @assert size(X, 2) > 1 "Method only working for X with > 1 column."
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
     p = size(X, 2)
     weights = mweight(weights)
     xmeans = colmean(X, weights) 

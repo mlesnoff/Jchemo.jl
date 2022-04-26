@@ -2,7 +2,7 @@
     sampks(X; k, metric = "eucl")
 Kennard-Stone sampling.  
 * `X` : X-data.
-* `k` : Nb. observations to sample (=> output `train`). 
+* `k` : Nb. observations to sample ==> output `train`. 
 * `metric` : Metric used for the distance computation.
     Possible values: "eucl", "mahal".
 
@@ -12,10 +12,30 @@ The two sets have different underlying probability distributions:
 `train` has higher dispersion than `test`.
 
 ## References
-
 Kennard, R.W., Stone, L.A., 1969. Computer aided design of experiments. 
 Technometrics, 11(1), 137-148.
 
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y
+
+k = 200
+res = sampks(X; k = k)
+pnames(res)
+res.train 
+res.test
+
+fm = pcasvd(X; nlv = 15)
+T = fm.T
+res = sampks(T; k = k, metric = "mahal")
+```
 """ 
 function sampks(X; k, metric = "eucl")
     if metric == "eucl"
@@ -41,28 +61,58 @@ end
 """
     sampdp(X; k, metric = "eucl")
 DUPLEX sampling.  
-* `X` : X-data.
-* `k` : Nb. pairs of observations to sample. Must be <= n/2. 
+* `X` : X-data (n, p).
+* `k` : Nb. pairs of observations to sample. Must be <= n / 2. 
 * `metric` : Metric used for the distance computation.
-    Possible values: "eucl", "mahal".
+    Possible values are: "eucl", "mahal".
 
-The function divides the data `X` in two sets of equal size, `train` vs `test`,
-using the DUPLEX algorithm (Snee, 1977 p.421).
-The objective is to divide the data into two
-sets which cover approximately the same region and
+The function divides the data `X` in two sets of equal size, 
+`train` vs `test`, using the DUPLEX algorithm (Snee, 1977 p.421).
+The two sets are expected to cover approximately the same region and
 have similar statistical properties. 
 
-The user may add (a posteriori) the eventual remaining observations (`remain`) 
-to `train`.
+The user may add (a posteriori) the eventual remaining observations 
+(output `remain`) to `train`.
 
 ## References
-
 Kennard, R.W., Stone, L.A., 1969. Computer aided design of experiments. 
 Technometrics, 11(1), 137-148.
 
 Snee, R.D., 1977. Validation of Regression Models: Methods and Examples. 
 Technometrics 19, 415-428. https://doi.org/10.1080/00401706.1977.10489581
 
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y
+n = nro(X)
+
+k = 140
+res = sampdp(X; k = k)
+pnames(res)
+res.train 
+res.test
+res.remain
+
+fm = pcasvd(X; nlv = 15)
+T = fm.T
+res = sampdp(T; k = k, metric = "mahal")
+
+n = 10 ; k = 25 
+X = [repeat(1:n, inner = n) repeat(1:n, outer = n)] 
+X = Float64.(X) 
+X .= X + .1 * randn(nro(X), nco(X))
+s = sampks(X; k = k).train 
+f, ax = scatter(X[:, 1], X[:, 2])
+scatter!(X[s, 1], X[s, 2], color = "red") 
+f
+```
 """ 
 function sampdp(X; k, metric = "eucl")
     if(metric == "eucl")
@@ -97,13 +147,21 @@ end
     
 """
     sampsys(y; k)
-Systematic sampling.  
-* `y` : Quantitative variable.
-* `k` : Nb. observations to sample (=> output `train`). Must be >= 2.
+Systematic sampling over a quantitative variable.  
+* `y` : Quantitative variable to sample.
+* `k` : Nb. observations to sample ==> output `train`. Must be >= 2.
 
-Systematic sampling (regular grid) over the quantitative variable y.
+Systematic sampling (regular grid) over `y`.
 
-The minimum and maximum of y are always sampled.
+The minimum and maximum of `y` are always sampled.
+
+## Examples
+```julia
+y = rand(7)
+[y sort(y)]
+res = sampsys(y; k = 3)
+y[res.train]
+```
 """ 
 function sampsys(y; k)
     y = vec(y)
@@ -121,21 +179,38 @@ function sampsys(y; k)
 end
 
 """
-    sampclas(x; k)
+    sampclas(x, y = nothing; k)
 Stratified sampling.  
 * `x` : Classes of the observations.
-* `y` : Quantitative variable for systematic sampling.
-* `k` : Nb. observations to sample in each class (=> output `train`). 
+* `y` : Quantitative variable used if systematic sampling.
+* `k` : Nb. observations to sample in each class ==> output `train`. 
 
-The length of `k` must be either 1 (equal number of training observations to select per class)
-or the number of classes in `x`.
+The length of `k` must be either 1 (`k` = equal number of training observations 
+to select per class) or the number of classes in `x`.
 
-If `y = nothing` (default), the sampling is random, else it is systematic (grid over `y`).
+If `y = nothing` (default), the sampling is random, else it is 
+systematic (grid over `y`).
 
 ## References
-
 Naes, T., 1987. The design of calibration in near infra-red reflectance analysis by clustering. 
 Journal of Chemometrics 1, 121-134.
+
+## Examples
+```julia
+x = string.(repeat(1:5, 3))
+tab(x)
+res = sampclas(x; k = 2)
+res.train
+x[res.train]
+tab(x[res.train])
+
+x = string.(repeat(1:5, 3))
+n = length(x) ; y = rand(n) 
+res = sampclas(x, y; k = 2)
+res.train
+x[res.train]
+tab(x[res.train])
+```
 """ 
 function sampclas(x, y = nothing; k)
     x = vec(x)

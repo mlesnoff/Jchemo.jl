@@ -18,6 +18,12 @@ Li, P., Hastie, T.J., Church, K.W., 2006. Very sparse random projections,
 in: Proceedings of the 12th ACM SIGKDD International Conference on Knowledge 
 Discovery and Data Mining, KDD ’06. Association for Computing Machinery,
 New York, NY, USA, pp. 287–296. https://doi.org/10.1145/1150402.1150436
+
+## Examples
+```julia
+p = 10 ; nlv = 3
+rpmat_gauss(p, nlv)
+```
 """ 
 function rpmat_gauss(p, nlv)
     randn(p, nlv) / sqrt(nlv)
@@ -33,7 +39,7 @@ Build a sparse random projection matrix (Achlioptas 2001, Li et al. 2006).
     (higher is `s`, higher is the sparsity).
 
 The function returns a random projection matrix P of dimension 
-`p` x `nlv` simulated from i.i.d. p_ij = 
+(`p`, `nlv`) simulated from i.i.d. p_ij = 
 * 1 with prob. 1/(2 * `s`)
 * 0 with prob. 1 - 1 / `s`
 * -1 with prob. 1/(2 * `s`)
@@ -55,6 +61,12 @@ Li, P., Hastie, T.J., Church, K.W., 2006. Very sparse random projections,
 in: Proceedings of the 12th ACM SIGKDD International Conference on Knowledge 
 Discovery and Data Mining, KDD ’06. Association for Computing Machinery,
 New York, NY, USA, pp. 287–296. https://doi.org/10.1145/1150402.1150436
+
+## Examples
+```julia
+p = 10 ; nlv = 3
+rpmat_li(p, nlv)
+```
 """ 
 function rpmat_li(p, nlv; s = sqrt(p))
     le = p * nlv
@@ -71,6 +83,16 @@ Make a random projection of matrix X.
 * `nlv` : Nb. dimensions on which `X` is projected.
 * `fun` : A function of random projection.
 * `kwargs` : Optional arguments of function `fun`.
+
+## Examples
+```julia
+X = rand(5, 10)
+nlv = 3
+res = rp(X; nlv = nlv)
+size(res.P) 
+res.P
+res.T # = X * res.P 
+```
 """ 
 function rp(X; nlv, fun = rpmat_li, kwargs ...)
     X = ensure_mat(X)

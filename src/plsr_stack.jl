@@ -11,6 +11,9 @@ function plsr_stack!(X::Matrix, y::Matrix, weights = ones(size(X, 1)); nlv, K = 
     segm = segmkf(n, K; rep = rep)
     ystack = []
     Xstack = []
+    ## Replications and segments are concatenated vertically
+    ## ==> Xstack (y predictions), ystack (y observed values)
+    ## Corresponding observation weights also ==> weights_stack 
     k = 1
     for i = 1:nro(segm)
         for j = 1:nro(segm[1])
@@ -36,10 +39,13 @@ function plsr_stack!(X::Matrix, y::Matrix, weights = ones(size(X, 1)); nlv, K = 
             k = k + 1
         end
     end
+    ## Computation of the stacking weights (w)
+    ## Linear model without intercept
     weights_stack = mweight(weights_stack)
     Xstack = vcol(Xstack, nlv .+ 1)
     XtD = Xstack' * Diagonal(weights_stack)
     w = vec(cholesky!(Hermitian(XtD * Xstack)) \ (XtD * ystack))
+    ## Model that will be "averaged" (w)
     fm = plskern!(X, y, weights; nlv = nlvmax)
     PlsrStack(fm, nlv, w, Xstack, ystack, weights_stack)
 end
