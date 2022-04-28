@@ -19,23 +19,21 @@ Compute the score distances (SDs) from a PCA or PLS model
 
 * `object` : The fitted model.
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, 
-    it is the maximum nb. of components.
+    it is the maximum nb. of components of the fitted model.
 * `rob` : If true, the moment estimation of the distance cutoff is robustified. 
     This may be relevant after robust PCA or PLS on small data sets 
         containing extreme values.
 * `alpha` : Risk-I level used for computing the cutoff detecting extreme values.
 
-SDs are the Mahalanobis distances of the projections of row observations on the 
-score plan to the center of the score space.
+SDs are the Mahalanobis distances of the projected row observations on the 
+score plan to the center of the score plan.
 
-They are computed for the training `Xtrain` and the eventual `X`.
-
-A cutoff is computed from the training, using a moment estimation of the parameters of 
-a Chi-squared distrbution for SD^2 (see e.g. Pomerantzev 2008). 
-In the output, column dstand is a standardized distance, defined as SD / cutoff. 
+A cutoff is computed from the training, using a moment estimation of 
+the Chi-squared distrbution assumed for SD^2 (see e.g. Pomerantzev 2008). 
+In the output, column `dstand` is a standardized distance defined as SD / cutoff. 
 A value dstand > 1 may be considered as extreme.
 
-The Winisi "GH" is also provided (usually considered as extreme if GH > 3).
+The Winisi "GH" is also provided (usually, GH > 3 is considered as extreme).
 
 ## References
 
@@ -44,9 +42,49 @@ principal components analysis. Technometrics, 47, 64-79.
 
 Pomerantsev, A.L., 2008. Acceptance areas for multivariate classification derived by 
 projection methods. Journal of Chemometrics 22, 601-609. https://doi.org/10.1002/cem.1147
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+nlv = 15 
+fm = plskern(Xtrain, ytrain; nlv = nlv) ;
+
+res = scordis(fm; nlv = nlv) 
+pnames(res)
+sdtrain = res.dis
+sdtest = predict(res, Xtest).dis
+
+res = odis(fm, Xtrain; nlv = nlv)
+pnames(res)
+odtrain = res.dis
+odtest = predict(res, Xtest).dis
+
+f, ax = scatter(sdtrain.dstand, odtrain.dstand,
+    axis = (xlabel = "SD", ylabel = "OD"), label = "Train")
+scatter!(ax, sdtest.dstand, odtest.dstand, color = (:red, .5), label = "Test")
+hlines!(ax, 1; color = :grey, linestyle = "-")
+vlines!(ax, 1; color = :grey, linestyle = "-")
+axislegend(position = :rt)
+f
+```
 """ 
 function scordis(object::Union{Pca, Plsr}; 
-    nlv = nothing, rob = true, alpha = .01)
+        nlv = nothing, rob = true, alpha = .01)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     T = @view(object.T[:, 1:nlv])
@@ -105,6 +143,8 @@ A value dstand > 1 may be considered as extreme.
 The cutoff for detecting extreme OD values is computed using a moment estimation of 
 a Chi-squared distrbution for the squared distance.
 
+See `?scordis` for examples.
+
 ## References
 
 M. Hubert, P. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal 
@@ -124,6 +164,7 @@ CRC Press, Boca Raton.
 """ 
 function odis(object::Union{Pca, Plsr}, X; 
         nlv = nothing, rob = true, alpha = .01)
+    X = ensure_mat(X)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     E = xresid(object, X; nlv = nlv)

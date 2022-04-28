@@ -42,9 +42,11 @@ function aggstat(X::Union{AbstractMatrix, AbstractVector}; group,
     end
     (X = zX, lev = lev, ni = ni)
 end
+
 function aggstat(X::DataFrame; group_nam, var_nam, fun = mean)
     gdf = groupby(X, group_nam) 
-    combine(gdf, var_nam .=> fun, renamecols = false)
+    res = combine(gdf, var_nam .=> fun, renamecols = false)
+    sort!(res, group_nam)
 end
 
 """
@@ -155,7 +157,7 @@ colmean(X)
 colmean(X, w)
 ```
 """ 
-colmean(X) = vec(Statistics.mean(X; dims = 1))
+colmean(X) = vec(Statistics.mean(ensure_mat(X); dims = 1))
 
 colmean(X, w) = vec(mweight(w)' * ensure_mat(X))
 
@@ -274,7 +276,7 @@ colvar(X)
 colvar(X, w)
 ```
 """ 
-colvar(X) = vec(Statistics.var(X; corrected = false, dims = 1))
+colvar(X) = vec(Statistics.var(ensure_mat(X); corrected = false, dims = 1))
 
 function colvar(X, w)
     X = ensure_mat(X)
@@ -749,7 +751,7 @@ X = rand(n, p)
 rowmean(X)
 ```
 """ 
-rowmean(X) = vec(Statistics.mean(X; dims = 2))
+rowmean(X) = vec(Statistics.mean(ensure_mat(X); dims = 2))
 
 """
     rowstd(X)
@@ -765,7 +767,7 @@ X = rand(n, p)
 rowstd(X)
 ```
 """ 
-rowstd(X) = vec(Statistics.std(X; dims = 2, corrected = false))
+rowstd(X) = vec(Statistics.std(ensure_mat(X); dims = 2, corrected = false))
 
 """
     rowsum(X)
@@ -780,7 +782,7 @@ X = rand(5, 2)
 rowsum(X)
 ```
 """ 
-rowsum(X) = vec(sum(X; dims = 2))
+rowsum(X) = vec(sum(ensure_mat(X); dims = 2))
 
 """
     scale(X, v)
@@ -796,9 +798,9 @@ scale(X, colstd(X))
 ```
 """ 
 function scale(X, v)
-    M = copy(ensure_mat(X))
-    scale!(M, v)
-    M
+    zX = copy(ensure_mat(X))
+    scale!(zX, v)
+    zX
 end
 
 function scale!(X::Matrix, v)
@@ -837,7 +839,7 @@ ssq(X)
 ```
 """ 
 function ssq(X)
-    v = vec(X)
+    v = vec(ensure_mat(X))
     dot(v, v)
 end
 

@@ -6,11 +6,13 @@
 
 - Modified
 
+    - **aggstat** : Sorting order for dataframes.
     - **checkdupl** : bug corrected.
     - **matB**, **matW** : when requested, update of covm to cov, and aggstat output.
     - **plotsp** : faster.
     - **transfer_ds** : renamed to **caltransf_ds**.
     - **transfer_pds** : renamed to **caltransf_pds**.
+    - **segmts** : A seed (MersenneTwister) can be set for the random samplings.
 
 
 ### *Version 0.0-16*

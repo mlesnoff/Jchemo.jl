@@ -28,7 +28,7 @@ xresid(fm, X)
 ```
 """ 
 function xfit(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
-    xfit!(object, copy(X); nlv = nlv)
+    xfit!(object, copy(ensure_mat(X)); nlv = nlv)
 end
 
 function xfit!(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
@@ -77,7 +77,7 @@ xresid(fm, X)
 ```
 """ 
 function xresid(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
-    xresid!(object, copy(X); nlv = nlv)
+    xresid!(object, copy(ensure_mat(X)); nlv = nlv)
 end
 
 function xresid!(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
