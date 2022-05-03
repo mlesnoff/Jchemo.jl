@@ -28,14 +28,14 @@ coefficients "LD".
 
 ## Examples
 ```julia
-using JLD2, CairoMakie, StatsBase
+using Jchemo, JLD2, StatsBase, CairoMakie
 mypath = joinpath(@__DIR__, "..", "data")
 db = string(mypath, "\\", "iris.jld2") 
 @load db dat
 pnames(dat)
 summ(dat.X)
 
-X = Matrix(dat.X[:, 1:4]) 
+X = dat.X[:, 1:4] 
 y = dat.X[:, 5]
 n = nro(X)
 
@@ -47,6 +47,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 tab(ytrain)
+tab(ytest)
 
 fm = fda(Xtrain, ytrain; nlv = 2) ;
 #fm = fdasvd(Xtrain, ytrain; nlv = 2) ;

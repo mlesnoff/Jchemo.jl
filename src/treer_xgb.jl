@@ -6,8 +6,8 @@ end
 struct TreedaXgb
     fm
     featur::Vector{Int64}
-    lev::Vector{Int64}
-    ni::Vector{Int64}
+    lev::AbstractVector
+    ni::AbstractVector
 end
 
 """ 
@@ -38,8 +38,7 @@ The function builds a single tree using package `XGboost.jl'.
 The sampling of the observations and variables are without replacement.
 
 ## References
-
-XGBoost.jl
+Package XGBoost.jl
 https://github.com/dmlc/XGBoost.jl
 
 Breiman, L., Friedman, J. H., Olshen, R. A., and Stone, C. J. Classification
@@ -48,6 +47,36 @@ And Regression Trees. Chapman & Hall, 1984.
 Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+fm = treer_xgb(Xtrain, ytrain;
+    subsample = .7, colsample_bytree = .7, max_depth = 20) ;
+pnames(fm)
+
+res = predict(fm, Xtest)
+res.pred
+rmsep(res.pred, ytest)
+f, ax = scatter(vec(res.pred), ytest)
+abline!(ax, 0, 1)
+f
+```
 """ 
 function treer_xgb(X, y;
         subsample = 1, colsample_bytree = 1, colsample_bynode = 1,
@@ -74,7 +103,7 @@ end
 """ 
     rfr_xgb(X, y; rep = 50,
         subsample = .7,
-        colsample_bytree = 1, colsample_bynode = 1/3,
+        colsample_bytree = 1, colsample_bynode = .33,
         max_depth = 6, min_child_weight = 5,
         lambda = 0, verbose = false, kwargs...)
 Random forest regression with XGBoost.
@@ -99,8 +128,7 @@ The function uses package `XGboost.jl' to build the forest.
 See https://xgboost.readthedocs.io/en/latest/tutorials/rf.html.
 
 ## References
-
-XGBoost.jl
+Package XGBoost.jl
 https://github.com/dmlc/XGBoost.jl
 
 Breiman, L., 1996. Bagging predictors. Mach Learn 24, 123–140. 
@@ -115,10 +143,40 @@ sélection de variables et applications. PhD Thesis. Université Paris Sud - Par
 Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+fm = rfr_xgb(Xtrain, ytrain; rep = 100,
+    subsample = .7, colsample_bytree = .7)
+pnames(fm)
+
+res = predict(fm, Xtest)
+res.pred
+rmsep(res.pred, ytest)
+f, ax = scatter(vec(res.pred), ytest)
+abline!(ax, 0, 1)
+f
+```
 """ 
 function rfr_xgb(X, y; rep = 50,
         subsample = .7,
-        colsample_bytree = 1, colsample_bynode = 1/3,
+        colsample_bytree = 1, colsample_bynode = .33,
         max_depth = 6, min_child_weight = 5,
         lambda = 0, verbose = false, kwargs...)
     X = ensure_mat(X)
@@ -168,12 +226,41 @@ The function uses package `XGboost.jl' to build the forest.
 See https://xgboost.readthedocs.io/en/latest/tutorials/rf.html.
 
 ## References
-
 XGBoost 
 https://xgboost.readthedocs.io/en/latest/index.html
 
-XGBoost.jl
+Package XGBoost.jl
 https://github.com/dmlc/XGBoost.jl
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+fm = xgboostr(Xtrain, ytrain; eta = .1,
+    subsample = .7, colsample_bytree = .7)
+pnames(fm)
+
+res = predict(fm, Xtest)
+res.pred
+rmsep(res.pred, ytest)
+f, ax = scatter(vec(res.pred), ytest)
+abline!(ax, 0, 1)
+f
+```
 """ 
 function xgboostr(X, y; rep = 50, eta = .3,
         subsample = .7, colsample_bytree = 1, colsample_bynode = 1/3,
@@ -218,6 +305,34 @@ Compute variable (feature) importances from an XGBoost model.
 * `object` : The fitted model.
 
 Features with imp = 0 are not returned.
+
+## Examples
+```julia
+using JLD2, CairoMakie, StatsBase
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "challenge2021_cal.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y
+n = nro(X)
+wl = names(X)
+wl_num = parse.(Float64, wl)
+
+zX = -log.(10, Matrix(X)) 
+f = 21 ; pol = 3 ; d = 2 ;
+Xp = savgol(snv(X); f, pol, d) ;
+
+fm = xgboostr(Xp, y; rep = 100, 
+    subsample = .7, col_sample_bynode = .3,
+    max_depth = 6, min_child_weight = 5,
+    eta = .1, lambda = 1) ;
+
+res = vimp_xgb(fm)
+f, ax = scatter(res.featur, res.gain)
+f
+```
 """
 function vimp_xgb(object::Union{TreerXgb, TreedaXgb})
     p = length(object.featur)

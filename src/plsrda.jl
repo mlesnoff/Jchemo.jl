@@ -12,25 +12,58 @@ end
 
 """
     plsrda(X, y, weights = ones(size(X, 1)); nlv)
-Discrimination (DA) based on partial least squares regression (PLSR).
+Discrimination based on partial least squares regression (PLSR-DA).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
 
-This is the common "PLSDA". 
-The training variable y (univariate class membership) is transformed
+This is the usual "PLSDA". 
+The training variable `y` (univariate class membership) is transformed
 to a dummy table (Ydummy) containing nlev columns, where nlev is the number 
-of classes present in `y`. Each column of Ydummy is a dummy variable (0/1). 
-Then, a PLS2 is implemented on the X-data and Ydummy, 
-returning `nlv` latent variables (LVs).
+of classes present in `y`. Each column of Ydummy is a dummy (0/1) variable. 
+Then, a PLS2 is implemented on `X` and Ydummy, returning `nlv` latent variables (LVs).
 Finally, a multiple linear regression (MLR) is run between the LVs and each 
 column of Ydummy, returning predictions of the dummy variables 
 (= object `posterior` returned by function `predict`). 
-These predictions can be considered as unbounded (i.e. eventuall outside of [0, 1]) 
-estimates of the class membership probabilities.
+These predictions can be considered as unbounded 
+estimates (i.e. eventually outside of [0, 1]) of the class membership probabilities.
 For a given observation, the final prediction is the class corresponding 
-to the dummy variable for which the prediction is the highest.
+to the dummy variable for which the probability estimate is the highest.
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "forages.jld2") 
+@load db dat
+pnames(dat)
+
+Xtrain = dat.Xtrain
+ytrain = dat.Ytrain.y
+Xtest = dat.Xtest
+ytest = dat.Ytest.y
+
+tab(ytrain)
+tab(ytest)
+
+nlv = 15
+fm = plsrda(Xtrain, ytrain; nlv = nlv) ;
+pnames(fm)
+typeof(fm.fm) # = PLS2 model
+
+res = Jchemo.predict(fm, Xtest) ;
+pnames(res)
+res.posterior
+res.pred
+err(res.pred, ytest)
+
+coef(fm.fm)
+Base.summary(fm.fm, Xtrain)
+transform(fm.fm, Xtest)
+
+Jchemo.predict(fm, Xtest; nlv = 1:2).pred
+```
 """ 
 function plsrda(X, y, weights = ones(size(X, 1)); nlv)
     z = dummy(y)
@@ -45,26 +78,49 @@ Discrimination (DA) based on kernel partial least squares regression (KPLSR).
 * `y` : Univariate class membership.
 * `weights` : Weights of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
+* Other arguments: See `?kplsr`.
 
-This is the common "PLSDA". 
-The training variable y (univariate class membership) is transformed
-to a dummy table (Ydummy) containing nlev columns, where nlev is the number 
-of classes present in `y`. Each column of Ydummy is a dummy variable (0/1). 
-Then, a kernel PLS2 is implemented on the X-data and Ydummy, 
-returning `nlv` latent variables (LVs).
-Finally, a multiple linear regression (MLR) is run between the LVs and each 
-column of Ydummy, returning predictions of the dummy variables 
-(= object `posterior` returned by function `predict`). 
-These predictions can be considered as unbounded (i.e. eventuall outside of [0, 1]) 
-estimates of the class membership probabilities.
-For a given observation, the final prediction is the class corresponding 
-to the dummy variable for which the prediction is the highest.
+This is the same approach as for `plsrda` except that the PLS2 step 
+is replaced by a non linear kernel PLS2 (KPLS).
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "forages.jld2") 
+@load db dat
+pnames(dat)
+
+Xtrain = dat.Xtrain
+ytrain = dat.Ytrain.y
+Xtest = dat.Xtest
+ytest = dat.Ytest.y
+
+tab(ytrain)
+tab(ytest)
+
+gamma = .001 
+nlv = 15
+fm = kplsrda(Xtrain, ytrain; nlv = nlv, gamma = gamma) ;
+pnames(fm)
+typeof(fm.fm) # = KPLS2 model
+
+res = Jchemo.predict(fm, Xtest) ;
+pnames(res)
+res.posterior
+res.pred
+err(res.pred, ytest)
+
+coef(fm.fm)
+transform(fm.fm, Xtest)
+```
 """ 
 function kplsrda(X, y, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
     z = dummy(y)
     fm = kplsr(X, z.Y, weights; nlv = nlv, kern = kern, kwargs...)
     KplsrDa(fm, z.lev, z.ni)
 end
+
 
 """
     predict(object::Union{Plsrda, KplsrDa}, X; nlv = nothing)

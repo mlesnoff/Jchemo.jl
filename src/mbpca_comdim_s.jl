@@ -14,20 +14,20 @@ end
 
 """
     mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
-        bscaling = "none", tol = sqrt(eps(1.)), maxit = 200)
+        bscal = "none", tol = sqrt(eps(1.)), maxit = 200)
 Common components and specific weights analysis (CCSWA, ComDim).
 * `X_bl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
 * `weights` : Weights of the observations (rows). 
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `bscaling` : Type of block scaling (`"none"`, `"frob"`). 
+* `bscal` : Type of block scaling (`"none"`, `"frob"`). 
     See functions `blockscal`.
 * `tol` : Tolerance value for convergence.
 * `niter` : Maximum number of iterations.
 
 This version corresponds to the "SVD" algorithm of Hannafi & Qannari 2008 p.84.
 
-Vector `weights` is internally normalized to sum to 1.
+`weights` is internally normalized to sum to 1.
 
 The function returns several objects, in particular:
 * `T` : The non normed global scores.
@@ -84,19 +84,20 @@ db = string(mypath, "\\", "ham.jld2")
 @load db dat
 pnames(dat) 
 
-X = Matrix(dat.X)
+X = dat.X
 group = dat.group
 listbl = [1:11, 12:19, 20:25]
 X_bl = mblock(X, listbl)
-zX_bl = mblock(X[1:2, :], listbl)
+# "New" = first two rows of X_bl 
+X_bl_new = mblock(X[1:2, :], listbl)
 
-bscaling = "none"
-#bscaling = "frob"
-fm = mbpca_comdim_s(X_bl; nlv = 4, bscaling = bscaling) ;
+bscal = "none"
+#bscal = "frob"
+fm = mbpca_comdim_s(X_bl; nlv = 4, bscal = bscal) ;
 fm.U
 fm.T
 Jchemo.transform(fm, X_bl)
-Jchemo.transform(fm, zX_bl) 
+Jchemo.transform(fm, X_bl_new) 
 
 res = Jchemo.summary(fm, X_bl) ;
 fm.lb
@@ -104,7 +105,7 @@ rowsum(fm.lb)
 fm.mu
 res.explvarx
 res.explvarxx
-res.explX # = fm.lb if bscaling = "frob"
+res.explX # = fm.lb if bscal = "frob"
 rowsum(Matrix(res.explX))
 res.contr_block
 res.sal2
@@ -115,7 +116,7 @@ res.rv
 ```
 """
 function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
-        bscaling = "none", tol = sqrt(eps(1.)), maxit = 200)
+        bscal = "none", tol = sqrt(eps(1.)), maxit = 200)
     nbl = length(X_bl)
     X = copy(X_bl)
     n = size(X[1], 1)
@@ -129,8 +130,8 @@ function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
         xmeans[k] = colmean(X[k], weights)   
         X[k] = center(X[k], xmeans[k])
     end
-    bscaling == "none" ? scal = ones(nbl) : nothing
-    if bscaling == "frob"
+    bscal == "none" ? scal = ones(nbl) : nothing
+    if bscal == "frob"
         res = blockscal_frob(X, weights) 
         scal = res.scal
         X = res.X
@@ -193,6 +194,13 @@ function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
         xmeans, scal, weights, niter)
 end
 
+""" 
+    transform(object::MbpcaComdim, X_bl; nlv = nothing)
+Compute components (scores matrix "T") from a fitted model and X-data.
+* `object` : The maximal fitted model.
+* `X_bl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
+* `nlv` : Nb. components to compute. If nothing, it is the maximum nb. PCs.
+""" 
 function transform(object::MbpcaComdim, X_bl; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
@@ -221,6 +229,12 @@ function transform(object::MbpcaComdim, X_bl; nlv = nothing)
     sqrt.(object.mu)' .* U # = T
 end
 
+"""
+    summary(object::MbpcaComdim, X_bl)
+Summarize the fitted model.
+* `object` : The fitted model.
+* `X_bl` : The X-data that was used to fit the model.
+""" 
 function summary(object::MbpcaComdim, X_bl)
     nbl = length(X_bl)
     nlv = size(object.T, 2)
@@ -264,7 +278,7 @@ function summary(object::MbpcaComdim, X_bl)
     z = scale(object.lb, colsum(object.lb))
     contr_block = DataFrame(z, string.("pc", 1:nlv))
     # Proportion of inertia explained for each block (explained.X)
-    # = object.lb if bscaling = "frob" 
+    # = object.lb if bscal = "frob" 
     z = scale((object.lb)', sstot)'
     explX = DataFrame(z, string.("pc", 1:nlv))
     # Correlation between the global scores and the original variables (globalcor)

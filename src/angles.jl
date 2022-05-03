@@ -14,7 +14,6 @@ A dissimilarty measure between `X` and `Y` can be computed
 by d = sqrt(2 * (1 - RV)).
 
 ## References
-
 Escoufier, Y., 1973. Le Traitement des Variables Vectorielles. Biometrics 29, 751–760. 
 https://doi.org/10.2307/2529140
 
@@ -39,6 +38,18 @@ Bioinformatics 25, 401–405. https://doi.org/10.1093/bioinformatics/btn634
 Robert, P., Escoufier, Y., 1976. A Unifying Tool for Linear Multivariate Statistical Methods: 
 The RV-Coefficient. Journal of the Royal Statistical Society: Series C (Applied Statistics) 
 25, 257–265. https://doi.org/10.2307/2347233
+
+## Examples 
+```julia 
+X = rand(5, 10)
+Y = rand(5, 3)
+rv(X, Y)
+
+X = rand(5, 15) 
+listbl = [3:4, 1, [6; 8:10]]
+X_bl = mblock(X, listbl)
+rv(X_bl)
+```
 """ 
 function rv(X, Y; centr = true)
     X = ensure_mat(X)
@@ -101,6 +112,18 @@ universitaire de recherche opérationnelle. Série Recherche, tome 42, p. 3-68
 
 Escofier, B. & Pagès, J. (2008). Analyses Factorielles Simples et Multiples :
 Objectifs, Méthodes et Interprétation. Dunod, 4e édition
+
+## Examples 
+```julia 
+X = rand(5, 10)
+Y = rand(5, 3)
+lg(X, Y)
+
+X = rand(5, 15) 
+listbl = [3:4, 1, [6; 8:10]]
+X_bl = mblock(X, listbl)
+lg(X_bl)
+```
 """ 
 function lg(X, Y; centr = true)
     X = ensure_mat(X)

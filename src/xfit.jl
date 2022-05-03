@@ -1,5 +1,6 @@
 """
     xfit(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
+    xfit!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
 Matrix fitting from a PCA, PCR or PLS model
 * `object` : The fitted model.
 * `X` : X-data to be approximatred from the model.
@@ -31,7 +32,7 @@ function xfit(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
     xfit!(object, copy(ensure_mat(X)); nlv = nlv)
 end
 
-function xfit!(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
+function xfit!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     isa(object, Jchemo.Pcr) ? object = object.fm_pca : nothing
@@ -50,6 +51,7 @@ end
 
 """
     xresid(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
+    xresid!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
 Residual matrix after fitting by a PCA, PCR or PLS model
 * `object` : The fitted model.
 * `X` : X-data for which the residuals have to be computed.
@@ -80,7 +82,7 @@ function xresid(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
     xresid!(object, copy(ensure_mat(X)); nlv = nlv)
 end
 
-function xresid!(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
+function xresid!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     if(nlv == 0)
@@ -90,6 +92,4 @@ function xresid!(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
     end
     X
 end
-
-
 

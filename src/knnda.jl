@@ -27,9 +27,10 @@ k-Nearest-Neighbours weighted discrimination (kNN-DA).
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tol` : For stabilization when very close neighbors.
 
-For each new observation to predict, i) a number of 
-`k` nearest neighbors is selected (= "weighting 1") and ii) a weigthed vote (= "weighting 2") 
-is then computed to select the most frequent class in this neighborhood. 
+For each new observation to predict:
+* i) a number of `k` nearest neighbors (= "weighting 1") is selected
+* ii) a weigthed (= "weighting 2") vote is then computed in this neighborhood 
+    to select the most frequent class. 
 
 Weightings 1 and 2 are computed from the dissimilarities between the observation 
 to predict and the training observations. Depending on argument `nlvdis`, 
@@ -40,6 +41,39 @@ and the dissimilarities are computed over these scores.
 
 In general, for high dimensional X-data, using the Mahalanobis distance requires 
 preliminary dimensionality reduction of the data.
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "forages.jld2") 
+@load db dat
+pnames(dat)
+
+Xtrain = dat.Xtrain
+ytrain = dat.Ytrain.y
+Xtest = dat.Xtest
+ytest = dat.Ytest.y
+
+tab(ytrain)
+tab(ytest)
+
+nlvdis = 25 ; metric = "mahal"
+h = 2 ; k = 10
+fm = knnda(Xtrain, ytrain;
+    nlvdis = nlvdis, metric = metric,
+    h = h, k = k) ;
+pnames(fm)
+
+res = Jchemo.predict(fm, Xtest) ;
+pnames(res)
+res.pred
+err(res.pred, ytest)
+
+res.listnn
+res.listd
+res.listw
+```
 """ 
 function knnda(X, y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, tol = 1e-4)
     X = ensure_mat(X)

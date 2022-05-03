@@ -12,14 +12,12 @@ Multiblock sequentially orthogonalized PLSR (SO-PLSR).
     Each component of the list is a block.
 * `Y` : Y-data.
 * `weights` : Weights of the observations (rows). 
-* `nlv` : Nb. latent variables (LVs) to consider
-    for each block. Vector that must have a length equal to the nb. blocks.
+* `nlv` : Nb. latent variables (LVs) to consider for each block. 
+    Vector that must have a length equal to the nb. blocks.
 
-Vector `weights` (row-weighting) is internally normalized to sum to 1. 
-See the help of `plskern` for details.
+`weights` is internally normalized to sum to 1. 
 
 ## References
-
 - Biancolillo et al. , 2015. Combining SO-PLS and linear discriminant analysis 
     for multi-block classification. Chemometrics and Intelligent Laboratory Systems, 
     141, 58-67.
@@ -29,6 +27,31 @@ See the help of `plskern` for details.
 
 - Menichelli et al., 2014. SO-PLS as an exploratory tool for path modelling. 
     Food Quality and Preference, 36, 122-134.
+
+    ## Examples
+```julia
+using JLD2
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "ham.jld2") 
+@load db dat
+pnames(dat) 
+
+X = dat.X
+y = dat.Y.c1
+group = dat.group
+listbl = [1:11, 12:19, 20:25]
+X_bl = mblock(X, listbl)
+# "New" = first two rows of X_bl 
+X_bl_new = mblock(X[1:2, :], listbl)
+
+nlv = [2; 1; 2]
+fm = mbplsr_so(X_bl, y; nlv = nlv) ;
+pnames(fm)
+fm.T
+transform(fm, X_bl_new)
+[y predict(fm, X_bl).pred]
+predict(fm, X_bl_new).pred
+```
 """
 function mbplsr_so(X, Y, weights = ones(size(X[1], 1)); nlv)
     Y = ensure_mat(Y)

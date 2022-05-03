@@ -21,13 +21,15 @@ Discrimination tree with XGBoost.
 * `kwargs` : Optional named arguments to pass in function `xgboost` 
     of `XGBoost.jl` (https://xgboost.readthedocs.io/en/latest/parameter.html).
 
-The function builds a single tree using package `XGboost.jl'.
+The function builds a single tree using package XGboost.jl  (https://github.com/JuliaML/XGboost.jl).
 
 The sampling of the observations and variables are without replacement.
 
 ## References
+XGBoost 
+https://xgboost.readthedocs.io/en/latest/index.html
 
-XGBoost.jl
+Package XGBoost.jl
 https://github.com/dmlc/XGBoost.jl
 
 Breiman, L., Friedman, J. H., Olshen, R. A., and Stone, C. J. Classification
@@ -36,6 +38,33 @@ And Regression Trees. Chapman & Hall, 1984.
 Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "forages.jld2") 
+@load db dat
+pnames(dat)
+
+Xtrain = dat.Xtrain
+ytrain = dat.Ytrain.y
+Xtest = dat.Xtest
+ytest = dat.Ytest.y
+
+tab(ytrain)
+tab(ytest)
+
+fm = treeda_xgb(Xtrain, ytrain; 
+    subsample = .7, 
+    col_sample_bynode = 2/3,
+    max_depth = 200, min_child_weight = 5) ;
+pnames(fm)
+
+res = Jchemo.predict(fm, Xtest) ;
+res.pred
+err(res.pred, ytest)
+```
 """ 
 function treeda_xgb(X, y;
         subsample = 1, colsample_bytree = 1, colsample_bynode = 1,
@@ -71,7 +100,7 @@ end
         colsample_bytree = 1, colsample_bynode = 1/3,
         max_depth = 6, min_child_weight = 5,
         lambda = 0, verbose = false, kwargs...)
-Random forest discrimination with XGBoost.
+Random forest discrimination.
 * `X` : X-data (n obs., p variables).
 * `y` : Univariate Y-data (n obs.).
 * `rep` : Nb. trees to build in the forest.
@@ -93,8 +122,10 @@ The function uses package `XGboost.jl' to build the forest.
 See https://xgboost.readthedocs.io/en/latest/tutorials/rf.html.
 
 ## References
+XGBoost 
+https://xgboost.readthedocs.io/en/latest/index.html
 
-XGBoost.jl
+Package XGBoost.jl
 https://github.com/dmlc/XGBoost.jl
 
 Breiman, L., 1996. Bagging predictors. Mach Learn 24, 123–140. 
@@ -109,6 +140,33 @@ sélection de variables et applications. PhD Thesis. Université Paris Sud - Par
 Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "forages.jld2") 
+@load db dat
+pnames(dat)
+
+Xtrain = dat.Xtrain
+ytrain = dat.Ytrain.y
+Xtest = dat.Xtest
+ytest = dat.Ytest.y
+
+tab(ytrain)
+tab(ytest)
+
+fm = rfda_xgb(Xtrain, ytrain; rep = 100, 
+    subsample = .7, 
+    colsample_bytree = 2 / 3, colsample_bynode = 2 / 3,
+    max_depth = 6, min_child_weight = 5) ;
+pnames(fm)
+
+res = Jchemo.predict(fm, Xtest) ;
+res.pred
+err(res.pred, ytest)
+```
 """ 
 function rfda_xgb(X, y; rep = 50,
         subsample = .7,
@@ -164,16 +222,42 @@ XGBoost discrimination.
 * `kwargs` : Optional named arguments to pass in function `xgboost` 
     of `XGBoost.jl` (https://xgboost.readthedocs.io/en/latest/parameter.html).
 
-The function uses package `XGboost.jl' to build the forest.
-See https://xgboost.readthedocs.io/en/latest/tutorials/rf.html.
+The function uses package `XGboost.jl' (https://github.com/dmlc/XGBoost.jl).
 
 ## References
-
 XGBoost 
 https://xgboost.readthedocs.io/en/latest/index.html
 
-XGBoost.jl
+Package XGBoost.jl
 https://github.com/dmlc/XGBoost.jl
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "forages.jld2") 
+@load db dat
+pnames(dat)
+
+Xtrain = dat.Xtrain
+ytrain = dat.Ytrain.y
+Xtest = dat.Xtest
+ytest = dat.Ytest.y
+
+tab(ytrain)
+tab(ytest)
+
+fm = xgboostda(Xtrain, ytrain; rep = 100, 
+    subsample = .7, 
+    colsample_bytree = 1 / 3, colsample_bynode = 1 / 3,
+    max_depth = 6, min_child_weight = 5,
+    lambda = .1) ;
+pnames(fm)
+
+res = Jchemo.predict(fm, Xtest) ;
+res.pred
+err(res.pred, ytest)
+```
 """ 
 function xgboostda(X, y; rep = 50, eta = .3,
         subsample = .7, colsample_bytree = 1, colsample_bynode = 1/3,

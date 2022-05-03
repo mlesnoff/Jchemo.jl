@@ -27,16 +27,39 @@ algorithm of Liland et al. (2016):
     over the columns for finding the winning blocks the entered (therefore Y-columns 
     should have the same scale).
 
-Vector `weights` (row-weighting) is internally normalized to sum to 1. 
-See the help of `plskern` for details.
+`weights` is internally normalized to sum to 1. 
 
 `X` and `Y` are internally centered. 
 
 ## References
-
 Liland, K.H., Næs, T., Indahl, U.G., 2016. ROSA—a fast extension of partial least 
 squares regression for multiblock data analysis. Journal of Chemometrics 30, 
 651–662. https://doi.org/10.1002/cem.2824
+
+## Examples
+```julia
+using JLD2
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "ham.jld2") 
+@load db dat
+pnames(dat) 
+
+X = dat.X
+y = dat.Y.c1
+group = dat.group
+listbl = [1:11, 12:19, 20:25]
+X_bl = mblock(X, listbl)
+# "New" = first two rows of X_bl 
+X_bl_new = mblock(X[1:2, :], listbl)
+
+nlv = 5
+fm = mbplsr_rosa(X_bl, y; nlv = nlv) ;
+pnames(fm)
+fm.T
+transform(fm, X_bl_new)
+[y predict(fm, X_bl).pred]
+predict(fm, X_bl_new).pred
+```
 """ 
 function mbplsr_rosa(X, Y, weights = ones(size(X[1], 1)); nlv)
     nbl = length(X)

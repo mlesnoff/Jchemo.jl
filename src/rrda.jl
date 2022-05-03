@@ -12,22 +12,51 @@ end
 
 """
     rrda(X, y, weights = ones(size(X, 1)); lb)
-Discrimination (DA) based on ridge regression (RR).
+Discrimination based on ridge regression (RR-DA).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights of the observations.
 * `lb` : A value of the regularization parameter "lambda".
 
-The training variable y (univariate class membership) is transformed
+The training variable `y` (univariate class membership) is transformed
 to a dummy table (Ydummy) containing nlev columns, where nlev is the number 
-of classes present in `y`. Each column of Ydummy is a dummy variable (0/1). 
-Then, a RR is implemented on the X-data and each column of Ydummy,
+of classes present in `y`. Each column of Ydummy is a dummy (0/1) variable. 
+Then, a RR is implemented on the `y` and each column of Ydummy,
 returning predictions of the dummy variables (= object `posterior` returned by 
 function `predict`). 
-These predictions can be considered as unbounded (i.e. eventuall outside of [0, 1]) 
-estimates of the class membership probabilities.
+These predictions can be considered as unbounded 
+estimates (i.e. eventually outside of [0, 1]) of the class membership probabilities.
 For a given observation, the final prediction is the class corresponding 
-to the dummy variable for which the prediction is the highest.
+to the dummy variable for which the probability estimate is the highest.
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "forages.jld2") 
+@load db dat
+pnames(dat)
+
+Xtrain = dat.Xtrain
+ytrain = dat.Ytrain.y
+Xtest = dat.Xtest
+ytest = dat.Ytest.y
+
+tab(ytrain)
+tab(ytest)
+
+lb = .001
+fm = rrda(Xtrain, ytrain; lb = lb) ;    
+pnames(fm)
+pnames(fm.fm)
+
+res = Jchemo.predict(fm, Xtest) ;
+pnames(res)
+res.pred
+err(res.pred, ytest)
+
+Jchemo.predict(fm, Xtest; lb = [.1; .01]).pred
+```
 """ 
 function rrda(X, y, weights = ones(size(X, 1)); lb)
     z = dummy(y)
@@ -36,26 +65,54 @@ function rrda(X, y, weights = ones(size(X, 1)); lb)
 end
 
 """
-    krrda(X, y, weights = ones(size(X, 1)); lb)
-Discrimination (DA) based on kernel ridge regression (KRR).
+    krrda(X, y, weights = ones(size(X, 1)); lb, kern = "krbf", kwargs...)
+Discrimination based on kernel ridge regression (KRR-DA).
 * `X` : X-data.
 * `y` : Univariate class membership.
 * `weights` : Weights of the observations.
 * `lb` : A value of the regularization parameter "lambda".
-* 'kern' : Type of kernel used to compute the Gram matrices.
-    Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`.
-* `kwargs` : Named arguments to pass in the kernel function.
+* Other arguments: see '?kplsr'.
 
-The training variable y (univariate class membership) is transformed
+The training variable `y` (univariate class membership) is transformed
 to a dummy table (Ydummy) containing nlev columns, where nlev is the number 
-of classes present in `y`. Each column of Ydummy is a dummy variable (0/1). 
-Then, a KRR is implemented on the X-data and each column of Ydummy,
+of classes present in `y`. Each column of Ydummy is a dummy (0/1) variable. 
+Then, a RR is implemented on the `y` and each column of Ydummy,
 returning predictions of the dummy variables (= object `posterior` returned by 
 function `predict`). 
-These predictions can be considered as unbounded (i.e. eventuall outside of [0, 1]) 
-estimates of the class membership probabilities.
+These predictions can be considered as unbounded 
+estimates (i.e. eventually outside of [0, 1]) of the class membership probabilities.
 For a given observation, the final prediction is the class corresponding 
-to the dummy variable for which the prediction is the highest.
+to the dummy variable for which the probability estimate is the highest.
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "forages.jld2") 
+@load db dat
+pnames(dat)
+
+Xtrain = dat.Xtrain
+ytrain = dat.Ytrain.y
+Xtest = dat.Xtest
+ytest = dat.Ytest.y
+
+tab(ytrain)
+tab(ytest)
+
+gamma = .01
+lb = .001
+fm = krrda(Xtrain, ytrain; lb = lb, gamma = gamma) ;    
+pnames(fm)
+pnames(fm.fm)
+
+res = Jchemo.predict(fm, Xtest) ;
+pnames(res)
+res.pred
+err(res.pred, ytest)
+
+Jchemo.predict(fm, Xtest; lb = [.1; .01]).pred
+```
 """ 
 function krrda(X, y, weights = ones(size(X, 1)); lb, kern = "krbf", kwargs...)
     z = dummy(y)
@@ -77,7 +134,7 @@ function predict(object::Union{Rrda, KrrDa}, X; lb = nothing)
     m = size(X, 1)
     isnothing(lb) ? lb = object.fm.lb : nothing
     le_lb = length(lb)
-    pred = list(le_lb, Matrix{Float64})
+    pred = list(le_lb)
     posterior = list(le_lb, Matrix{Float64})
     @inbounds for i = 1:le_lb
         zp = predict(object.fm, X; lb = lb[i]).pred

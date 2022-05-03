@@ -35,11 +35,15 @@ n = nro(X)
 wl = names(X)
 wl_num = parse.(Float64, wl)
 
+zX = -log.(10, Matrix(X)) 
+f = 21 ; pol = 3 ; d = 2 ;
+Xp = savgol(snv(X); f, pol, d) ;
+
 nval = 200
 s = sample(1:n, nval; replace = false)
-Xcal = rmrow(X, s)
+Xcal = rmrow(Xp, s)
 ycal = rmrow(y, s)
-Xval = X[s, :]
+Xval = Xp[s, :]
 yval = y[s]
 
 res = iplsr(Xcal, ycal, Xval, yval; 

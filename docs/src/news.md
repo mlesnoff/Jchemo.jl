@@ -2,12 +2,12 @@
 
 ### *Version 0.0-17*
 
-- New 
-
 - Modified
 
+    - Examples added in the helps of every functions.
     - **aggstat** : Sorting order for dataframes.
     - **checkdupl** : bug corrected.
+    - Discrimination functions: updates.
     - **matB**, **matW** : when requested, update of covm to cov, and aggstat output.
     - **plotsp** : faster.
     - **transfer_ds** : renamed to **caltransf_ds**.

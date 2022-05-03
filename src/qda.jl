@@ -13,6 +13,42 @@ Quadratic discriminant analysis  (QDA).
 * `y` : y-data (class membership).
 * `prior` : Type of prior probabilities for class membership
     (`unif`: uniform; `prop`: proportional).
+
+## Examples
+```julia
+using JLD2, CairoMakie, StatsBase
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "iris.jld2") 
+@load db dat
+pnames(dat)
+summ(dat.X)
+
+X = dat.X[:, 1:4] 
+y = dat.X[:, 5]
+n = nro(X)
+
+ntrain = 120
+s = sample(1:n, ntrain; replace = false) 
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+tab(ytrain)
+tab(ytest)
+
+prior = "unif"
+#prior = "prop"
+fm = qda(Xtrain, ytrain; prior = prior) ;
+pnames(fm)
+
+res = Jchemo.predict(fm, Xtest) ;
+pnames(res)
+res.ds
+res.posterior
+res.pred
+err(res.pred, ytest)
+```
 """ 
 function qda(X, y; prior = "unif")
     X = ensure_mat(X)
@@ -30,6 +66,12 @@ function qda(X, y; prior = "unif")
     Qda(res.Wi, ct, wprior, lev, ni)
 end
 
+"""
+    predict(object::Qda, X)
+Compute y-predictions from a fitted model.
+* `object` : The fitted model.
+* `X` : X-data for which predictions are computed.
+""" 
 function predict(object::Qda, X)
     X = ensure_mat(X)
     m = size(X, 1)

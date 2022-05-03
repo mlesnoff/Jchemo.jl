@@ -24,14 +24,14 @@ Journal of Chemometrics n/a, e3369. https://doi.org/10.1002/cem.3369
 
 ## Examples
 ```julia
-## The example below reproduces the numerical illustration
-## given by Kramer & Sugiyama 2011 on the Ozone data (Fig. 1, center).
-## Function "pls.model" used for df calculations
-## in the R package "plsdof" v0.2-9 (Kramer & Braun 2019)
-## automatically scales the X matrix before PLS.
-## The example scales X for consistency with plsdof.
+# The example below reproduces the numerical illustration
+# given by Kramer & Sugiyama 2011 on the Ozone data (Fig. 1, center).
+# Function "pls.model" used for df calculations
+# in the R package "plsdof" v0.2-9 (Kramer & Braun 2019)
+# automatically scales the X matrix before PLS.
+# The example scales X for consistency with plsdof.
 
-using JLD2, CairoMakie, DataFrames
+using JLD2, DataFrames, CairoMakie 
 mypath = joinpath(@__DIR__, "..", "data")
 db = string(mypath, "\\", "ozone.jld2") 
 @load db dat

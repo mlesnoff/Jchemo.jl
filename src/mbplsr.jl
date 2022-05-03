@@ -7,37 +7,63 @@ struct Mbplsr
 end
 
 """
-    mbplsr(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, scal = nothing)
+    mbplsr(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, bscal = "none")
 Multiblock PLSR (MBPLSR).
 * `X_bl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
 * `Y` : Y-data.
 * `weights` : Weights of the observations (rows). 
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `bscaling` : Type of block scaling (`"none"`, `"frob"`, `"mfa"`, `"ncol"`, `"sd"`). 
+* `bscal` : Type of block scaling (`"none"`, `"frob"`, `"mfa"`, `"ncol"`, `"sd"`). 
     See functions `blockscal`.
 
 PLSR on scaled and concatened blocks.
 
 `weights` is internally normalized to sum to 1. 
+
+## Examples
+```julia
+using JLD2
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "ham.jld2") 
+@load db dat
+pnames(dat) 
+
+X = dat.X
+y = dat.Y.c1
+group = dat.group
+listbl = [1:11, 12:19, 20:25]
+X_bl = mblock(X, listbl)
+# "New" = first two rows of X_bl 
+X_bl_new = mblock(X[1:2, :], listbl)
+
+bscal = "frob"
+nlv = 5
+fm = mbplsr(X_bl, y; nlv = nlv, bscal = bscal) ;
+pnames(fm)
+fm.T
+transform(fm, X_bl_new)
+[y predict(fm, X_bl).pred]
+predict(fm, X_bl_new).pred
+```
 """
-function mbplsr(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, bscaling = "none")
+function mbplsr(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, bscal = "none")
     nbl = length(X_bl)
     X = copy(X_bl)
     Y = ensure_mat(Y)
-    weights = mweights(weights)
+    weights = mweight(weights)
     xmeans = list(nbl, Vector{Float64})
     @inbounds for k = 1:nbl
         xmeans[k] = colmean(X[k], weights)   
         X[k] = center(X[k], xmeans[k])
     end
-    if bscaling == "none" 
+    if bscal == "none" 
         scal = ones(nbl)
     else
-        bscaling == "frob" ? res = blockscal_frob(X, weights) : nothing
-        bscaling == "mfa" ? res = blockscal_frob(X, weights) : nothing
-        bscaling == "ncol" ? res = blockscal_sd(X, weights) : nothing
-        bscaling == "sd" ? res = blockscal_sd(X, weights) : nothing
+        bscal == "frob" ? res = blockscal_frob(X, weights) : nothing
+        bscal == "mfa" ? res = blockscal_mfa(X, weights) : nothing
+        bscal == "ncol" ? res = blockscal_ncol(X) : nothing
+        bscal == "sd" ? res = blockscal_sd(X, weights) : nothing
         X = res.X
         scal = res.scal
     end

@@ -11,7 +11,7 @@ Partial Least Squares Regression (PLSR) with the SIMPLS algorithm (de Jong 1993)
 
 `X` and `Y` are internally centered.
 
-**Note:** In this function, scores T are not normed, conversely the original 
+**Note:** In this function, scores T are not normed, conversely to the original 
 algorithm of de Jong (2013)
 
 ## References
@@ -26,8 +26,6 @@ function plssimp(X, Y, weights = ones(size(X, 1)); nlv)
 end
 
 function plssimp!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
     n, p = size(X)
     q = nco(Y)
     nlv = min(nlv, n, p)

@@ -6,8 +6,9 @@ end
 
 """
     svmda(X, y; kern = "rbf", 
-        gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1.)
-Support vector machine for discrimination (C-SVC).
+        gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1.
+        epsilon = .1)
+Support vector machine for discrimination "C-SVC" (SVM-DA).
 * `X` : X-data.
 * `y : y-data (univariate).
 * 'kern' : Type of kernel used to compute the Gram matrices.
@@ -16,6 +17,7 @@ Support vector machine for discrimination (C-SVC).
 * 'degree' : See below.
 * 'coef0' : See below.
 * 'cost' : Cost of constraints violation C parameter.
+* 'epsilon' : Epsilon parameter in the loss function. 
 
 Kernel types : 
 * "krbf" -- radial basis function: exp(-gamma * |x - y|^2)
@@ -23,12 +25,12 @@ Kernel types :
 * "klin* -- linear: x' * y
 * "ktan" -- sigmoid: tanh(gamma * x' * y + coef0)
 
-The function uses LIBSVM.jl (https://github.com/JuliaML/LIBSVM.jl) 
+The function uses package LIBSVM.jl (https://github.com/JuliaML/LIBSVM.jl) 
 that is an interface to library LIBSVM (Chang & Li 2001).
 
 ## References 
 
-Julia package LIBSVM.jl: https://github.com/JuliaML/LIBSVM.jl
+Package LIBSVM.jl: https://github.com/JuliaML/LIBSVM.jl
 
 Chang, C.-C. & Lin, C.-J. (2001). LIBSVM: a library for support vector machines. 
 Software available at http://www.csie.ntu.edu.tw/~cjlin/libsvm. 
@@ -43,11 +45,39 @@ Schölkopf, B., Smola, A.J., 2002. Learning with kernels:
 support vector machines, regularization, optimization, and beyond.
 Adaptive computation and machine learning. MIT Press, Cambridge, Mass.
 
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "forages.jld2") 
+@load db dat
+pnames(dat)
+
+Xtrain = dat.Xtrain
+ytrain = dat.Ytrain.y
+Xtest = dat.Xtest
+ytest = dat.Ytest.y
+
+tab(ytrain)
+tab(ytest)
+
+gamma = .01 ; cost = 1000 ; epsilon = 1
+fm = svmda(Xtrain, ytrain; 
+    gamma = gamma, cost = cost, epsilon = epsilon) ;
+pnames(fm)
+
+res = Jchemo.predict(fm, Xtest) ;
+pnames(res)
+res.pred
+err(res.pred, ytest)
+```
 """ 
 function svmda(X, y; kern = "krbf", 
-    gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1.)
+        gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1.,
+        epsilon = .1)
     gamma = Float64(gamma) ; degree = Int64(degree) ; coef0  = Float64(coef0) ; 
-    cost  = Float64(cost) 
+    cost  = Float64(cost)
+    epsilon = Float64(epsilon)
     X = ensure_mat(X)
     y = vec(y)
     ztab = tab(y)
@@ -67,7 +97,7 @@ function svmda(X, y; kern = "krbf",
         gamma =  gamma,
         coef0 = coef0,
         degree = degree,
-        cost = cost,
+        cost = cost, epsilon = epsilon,
         nt = nt) 
     Svmda(fm, ztab.keys, ztab.vals)
 end
@@ -80,6 +110,7 @@ Compute y-predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Svmda, X)
+    X = ensure_mat(X)
     pred = svmpredict(object.fm, X')[1]
     n = length(pred)
     pred = reshape(pred, n, 1)

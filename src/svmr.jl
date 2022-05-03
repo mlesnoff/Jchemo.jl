@@ -43,6 +43,51 @@ Schölkopf, B., Smola, A.J., 2002. Learning with kernels:
 support vector machines, regularization, optimization, and beyond.
 Adaptive computation and machine learning. MIT Press, Cambridge, Mass.
 
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.y
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+gamma = .1 ; cost = 1000 ; epsilon = 1
+fm = svmr(Xtrain, ytrain; kern = "krbf", 
+        gamma = gamma, cost = cost, epsilon = epsilon) ;
+pnames(fm)
+
+res = predict(fm, Xtest)
+res.pred
+rmsep(res.pred, ytest)
+f, ax = scatter(vec(res.pred), ytest)
+abline!(ax, 0, 1)
+f
+
+# Example of fitting the function sinc(x)
+# described in Rosipal & Trejo 2001 p. 105-106 
+x = collect(-10:.2:10) 
+x[x .== 0] .= 1e-5
+n = length(x)
+zy = sin.(abs.(x)) ./ abs.(x) 
+y = zy + .2 * randn(n) 
+fm = svmr(x, y; gamma = .1) ;
+pred = predict(fm, x).pred 
+f, ax = scatter(x, y) 
+lines!(ax, x, zy, label = "True model")
+lines!(ax, x, vec(pred), label = "Fitted model")
+axislegend("Method")
+f
+```
 """ 
 function svmr(X, y; kern = "krbf", 
     gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1., 
@@ -80,6 +125,7 @@ Compute y-predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Svmr, X)
+    X = ensure_mat(X)
     pred = svmpredict(object.fm, X')[1]
     n = length(pred)
     pred = reshape(pred, n, 1)

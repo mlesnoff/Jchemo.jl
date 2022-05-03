@@ -12,6 +12,33 @@ distances > Median(d) + cri * MAD(d).
 
 The weights decrease with increasing distances. Lower is h, sharper is the decreasing function. 
 Weights are set to 0 for outliers (extreme distances).
+
+    ## Examples
+```julia
+using CairoMakie, Distributions
+
+x1 = rand(Chisq(10), 100) ;
+x2 = rand(Chisq(40), 10) ;
+d = [sqrt.(x1) ; sqrt.(x2)]
+hist(d, nbins = 30)
+
+h = 2 ; cri = 3
+w = wdist(d; h = h, cri = cri) ;
+hist(w, nbins = 30)
+scatter(d, w)
+
+d = collect(0:.5:15) ;
+h = [.5, 1, 1.5, 2.5, 5, 10, Inf] ;
+#h = [1, 2, 5, Inf] ;
+w = wdist(d; h = h[1]) ;
+f, ax = lines(d, w, label = string("h = ", h[1]))
+for i = 2:length(h)
+    w = wdist(d; h = h[i])
+    lines!(ax, d, w, label = string("h = ", h[i]))
+end
+axislegend("Values of h")
+f
+```
 """  
 function wdist(d; h = 2, cri = 4, squared = false)
     w = copy(d)

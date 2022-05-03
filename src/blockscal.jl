@@ -16,6 +16,8 @@ listbl = [3:4, 1, [6; 8:10]]
 
 X_bl = mblock(X, listbl)
 X_bl[1]
+X_bl[2]
+X_bl[3]
 ```
 """
 function mblock(X, listbl)
@@ -39,16 +41,16 @@ Scale a list of blocks (matrices).
 * `weights` : Weights of the observations (rows of the blocks). 
 * `scal` : A vector (of length equal to the nb. blocks) of the scalars diving the blocks.
 
-Specificities:
-* `blockscal`: Each block X is tranformed to X / scalar.
-* `blockscal_frob`: Let us note D the diagonal matrix of vector `weights`.
-Each block X is divided by its Frobenius norm = sqrt(trace(X' * D * X)).
-After scaling, trace(X' * D * X) = 1.
+Specificities of each function:
+* `blockscal`: Each block X is tranformed to X / `scal'.
+* `blockscal_frob`: Let D be the diagonal matrix of vector `weights`.
+    Each block X is divided by its Frobenius norm = sqrt(trace(X' * D * X)).
+    After scaling, trace(X' * D * X) = 1.
 * `blockscal_mfa`: Each block X is tranformed to X / sqrt(lamda),
-    where lambda is the dominant eigenvalue of X (MFA approach).
+    where lambda is the dominant eigenvalue of X (this is the "MFA" approach).
 * `blockscal_ncol`: Each block X is tranformed to X / nb. columns of the block.
 * `blockscal_sd`: Each block X is transformed to X / sqrt(sum(weighted variances of the block-columns)).
-After scaling, sum(weighted variances of the block-columns) = 1.
+    After scaling, sum(weighted variances of the block-columns) = 1.
 
 The functions return the scaled blocks and the scaling values.
 

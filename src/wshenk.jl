@@ -40,7 +40,8 @@ ytest = rmrow(y, s)
 nlv = 30
 fm = plskern(Xtrain, ytrain; nlv = nlv) ;
 res = Jchemo.wshenk(fm, Xtest) ;
-plotsp(res.w, 0:nlv).f
+pnames(res) 
+plotsp(res.w, 1:nlv).f
 ```
 """ 
 function wshenk(object::Union{Pcr, Plsr}, X; nlv = nothing)

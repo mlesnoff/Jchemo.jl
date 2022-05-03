@@ -1,22 +1,22 @@
 ### <span style="color:#1589F0"> **PCA** </span>
 
-- ***kpca*** Non linear kernel  (KPCA) *Scholkopf et al. 2002*
 - ***pcaeigen*** Eigen decomposition
 - ***pcaeigenk*** Eigen decomposition for wide matrices (kernel form)
 - ***pcasvd*** SVD decomposition
+- ***kpca*** Non linear kernel  (KPCA) *Scholkopf et al. 2002*
 
 *Utility (works also for PLS)*
-- ***odis*** Orthogonal distances (ODs) for a score space
 - ***scordis*** Score distances (SDs) for a score space
+- ***odis*** Orthogonal distances (ODs) for a score space
 - ***xfit*** Matrix fitting 
 - ***xresid*** Residual matrix 
 
 *Multiblock*
 - ***blockscal[_col, _frob, _mfa, _sd]*** Scaling blocks
-- ***lg*** Lg coefficient
 - ***mbpca_cons*** Consensus (CPCA, MBPCA)
 - ***mbpca_comdim_s*** Common components and specific weights (CCSWA, ComDim)
 - ***rv*** RV correlation coefficient
+- ***lg*** Lg coefficient
 
 ### <span style="color:#1589F0"> **RANDOM PROJECTIONS** </span>
 
@@ -46,13 +46,13 @@
 
 #### **Partial least squares (PLSR)**
 
-- ***dkplsr*** Direct non linear kernel (DKPLSR) *Bennett & Embrechts 2003*
-- ***kplsr*** Non linear kernel (KPLSR) *Rosipal & Trejo 2001*
 - ***plskern*** "Improved kernel #1" *Dayal & McGregor 1997*
 - ***plsnipals*** NIPALS
 - ***plsrosa*** ROSA *Liland et al. 2016*
 - ***plssimp*** SIMPLS *de Jong 1993*
 - ***plsr_avg*** Averaging and stacking PLSR models with different numbers of LVs (PLSR-AVG)
+- ***kplsr*** Non linear kernel (KPLSR) *Rosipal & Trejo 2001*
+- ***dkplsr*** Direct non linear kernel (DKPLSR) *Bennett & Embrechts 2003*
 
 *Utility*
 - ***aicplsr*** AIC and Cp for PLSR
@@ -72,27 +72,27 @@
 
 #### **Ridge (RR, KRR)**
 
-- ***krr*** Non linear kernel (KRR) = Least squares SVM (LS-SVMR)
 - ***rr*** Pseudo-inverse (RR)
 - ***rrchol*** Choleski factorization (RR)
+- ***krr*** Non linear kernel (KRR) = Least squares SVM (LS-SVMR)
 
 #### **Local models**
 
-- ***cplsr_avg*** Clustered PLSR-AVG
 - ***knnr*** kNNR
 - ***lwplsr*** kNN Locally weighted PLSR (kNN-LWPLSR)
-- ***lwplsr_avg*** kNN-LWPLSR-AVG 
 - ***lwplsr_s*** kNN-LWPLSR with preliminary dimension reduction
+- ***lwplsr_avg*** kNN-LWPLSR-AVG 
+- ***cplsr_avg*** Clustered PLSR-AVG
 
 #### **Support vector machine (SVMR)** -- from LIBSVM.jl
 - ***svmr*** Epsilon-SVM regression
 
 #### **Trees** -- from XGBoost.jl
 
-- ***rfr_xgb*** Random forest
 - ***treer_xgb*** Single tree
-- ***vimp_xgb*** Variable importance (Works also for DA models)
+- ***rfr_xgb*** Random forest
 - ***xgboostr*** XGBoost
+- ***vimp_xgb*** Variable importance (Works also for DA models)
 
 #### **Bagging**
 
@@ -109,21 +109,21 @@
 
 #### DA based on predicted Y-dummy table
 
-- ***kplsrda*** On KPLSR predictions (KPLSR-DA)
-- ***krrda*** On KRR predictions (KRR-DA)
 - ***mlrda*** On MLR predictions (MLR-DA)
 - ***plsrda*** On PLSR predictions (PLSR-DA; = common "PLSDA")
 - ***plsrda_avg*** Averaging PLSR-DA models with different numbers of LVs (PLSR-DA-AVG)
+- ***kplsrda*** On KPLSR predictions (KPLSR-DA)
 - ***rrda*** On RR predictions (RR-DA)
+- ***krrda*** On KRR predictions (KRR-DA)
 
 #### Probabilistic
 
 - ***lda*** Linear discriminant analysis (LDA)
+- ***qda*** Quadratic discriminant analysis (QDA)
 - ***plslda*** LDA on PLS latent variables (PLS-LDA)
 - ***plslda_avg*** Averaging PLS-LDA models with different numbers of LVs (PLS-LDA-AVG)
 - ***plsqda*** QDA on PLS latent variables (PLS-QDA)
 - ***plsqda_avg*** Averaging PLS-QDA models with different numbers of LVs (PLS-QDA-AVG)
-- ***qda*** Quadratic discriminant analysis (QDA)
 
 *Utility*
 
@@ -133,8 +133,14 @@
 
 - ***knnda*** kNN-DA (Vote within neighbors)
 - ***lwplsrda*** kNN Locally weighted PLSR-DA (kNN-LWPLSR-DA)
-- ***lwplslda***, ***lwplsqda*** kNN Locally weighted PLS-LDA/QDA (kNN-LWPLS-LDA/QDA)
-- ***lwplslda_avg***, ***lwplsqda_avg*** Averaging kNN-LWPLS-LDA/QDA models with different numbers of LVs (kNN-LWPLS-LDA/QDA-AVG)
+- ***lwplslda*** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
+- ***lwplsqda*** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA)
+
+*Averaging models with different numbers of LVs*
+
+- ***lwplsrda_avg*** kNN-LWPLSR-DA-AVG
+- ***lwplslda_avg*** kNN-LWPLS-LDA-AVG
+- ***lwplsqda_avg*** kNN-LWPLS-QDA-AVG
 
 #### **Support vector machine (SVM-DA)** -- from LIBSVM.jl
 - ***svmda*** C-SVM discrimination
@@ -169,16 +175,21 @@
 
 #### **Performance scores**
 
-- ***bias*** Bias
-- ***cor2*** Squared correlation coefficient
-- ***err*** Classification error rate
-- ***mse*** Summary for regression
+*Regression*
+
+- ***ssr*** SSR
 - ***msep*** MSEP
 - ***rmsep*** RMSEP
 - ***sep*** SEP
+- ***bias*** Bias
+- ***cor2*** Squared correlation coefficient
 - ***r2*** R2
 - ***rpd***, ***rpdr*** Ratio of performance to deviation
-- ***ssr*** SSR
+- ***mse*** Summary for regression
+
+*Discrimination*
+
+- ***err*** Classification error rate
 
 ### <span style="color:#1589F0"> **DATA MANAGEMENT** </span>
 
@@ -206,10 +217,10 @@
 
 #### **Sampling observations**
 
-- ***sampclas*** Stratified sampling
 - ***sampdp*** Duplex sampling 
 - ***sampks*** Kennard-Stone sampling 
 - ***sampsys*** Systematic sampling
+- ***sampclas*** Stratified sampling
 
 ### <span style="color:#1589F0"> **UTILITIES** </span>
 
