@@ -74,7 +74,7 @@ function treeda_xgb(X, y;
     y = vec(y)
     p = size(X, 2)
     ztab = tab(y)
-    y_num = recodcat2num(y; start = 0)
+    y_num = recodcat2int(y; start = 0)
     num_class = length(ztab.keys)
     num_round = 1
     fm = xgboost(X, num_round; label = y_num,
@@ -177,7 +177,7 @@ function rfda_xgb(X, y; rep = 50,
     y = vec(y)
     p = size(X, 2)
     ztab = tab(y)
-    y_num = recodcat2num(y; start = 0)
+    y_num = recodcat2int(y; start = 0)
     num_class = length(ztab.keys)
     num_round = 1
     fm = xgboost(X, num_round; label = y_num,
@@ -267,7 +267,7 @@ function xgboostda(X, y; rep = 50, eta = .3,
     y = vec(y)
     p = size(X, 2)
     ztab = tab(y)
-    y_num = recodcat2num(y; start = 0)
+    y_num = recodcat2int(y; start = 0)
     num_class = length(ztab.keys)
     num_round = rep
     fm = xgboost(X, num_round; label = y_num,
@@ -297,8 +297,8 @@ Compute Y-predictions from a fitted model.
 function predict(object::TreedaXgb, X)
     X = ensure_mat(X)
     m = size(X, 1)
-    pred = XGBoost.predict(object.fm, X)
-    pred = replacebylev(pred, object.lev)
+    pred = XGBoost.predict(object.fm, X) .+ 1
+    pred = replacebylev2(Int64.(pred), object.lev)
     pred = reshape(pred, m, 1) ;
     (pred = pred,)
 end

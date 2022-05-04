@@ -104,14 +104,14 @@ function predict(object::PlsLda, X; nlv = nothing)
     a = size(object.fm.fm_pls.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
-    pred = list(le_nlv)
+    pred = list(le_nlv, Union{Matrix{Int64}, Matrix{Float64}, Matrix{String}})
     posterior = list(le_nlv, Matrix{Float64})
     @inbounds for i = 1:le_nlv
         znlv = nlv[i]
         T = transform(object.fm.fm_pls, X, nlv = znlv)
         zres = predict(object.fm.fm_da[znlv], T)
         z =  mapslices(argmax, zres.posterior; dims = 2) 
-        pred[i] = reshape(replacebylev(z, object.lev), m, 1)
+        pred[i] = reshape(replacebylev2(z, object.lev), m, 1)
         posterior[i] = zres.posterior
     end 
     if le_nlv == 1

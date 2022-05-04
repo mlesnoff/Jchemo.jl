@@ -34,13 +34,46 @@ Averaging of kNN-LWPLSR-DA models with different numbers of LVs.
 * `tol` : For stabilization when very close neighbors.
 * `verbose` : If true, fitting information are printed.
 
-Ensemblist method where the predictions are calculated by "averaging" 
-the predictions of a set of models built with different numbers of 
-latent variables (LVs).
+This is the same methodology as for `lwplsr_avg` except that 
+PLSR is replaced by PLS-LDA, and the mean is replaced by votes.
 
 For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for 
 a new observation is the most occurent class within the predictions 
 returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "forages.jld2") 
+@load db dat
+pnames(dat)
+
+Xtrain = dat.Xtrain
+ytrain = dat.Ytrain.y
+Xtest = dat.Xtest
+ytest = dat.Ytest.y
+
+tab(ytrain)
+tab(ytest)
+
+nlvdis = 25 ; metric = "mahal"
+h = 2 ; k = 100
+nlv = "1:15"       # mininum nlv must be >= 1, conversely to lwplsrda_avg (>= 0)
+fm = lwplslda_avg(Xtrain, ytrain;
+    nlvdis = nlvdis, metric = metric,
+    h = h, k = k, nlv = nlv) ;
+pnames(fm)
+
+res = Jchemo.predict(fm, Xtest) ;
+pnames(res)
+res.pred
+err(res.pred, ytest)
+
+res.listnn
+res.listd
+res.listw
+```
 """ 
 function lwplslda_avg(X, y; nlvdis, metric, h, k, nlv, 
     tol = 1e-4, verbose = false)
@@ -84,10 +117,4 @@ function predict(object::LwplsldaAvg, X)
         verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
-
-
-
-
-
-
 

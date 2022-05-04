@@ -2,17 +2,22 @@
 
 ### *Version 0.0-17*
 
+- New :
+
+    - **replacebylev2** : Replace the elements of an index-vector by levels.
+
 - Modified
 
-    - Examples added in the helps of every functions.
     - **aggstat** : Sorting order for dataframes.
     - **checkdupl** : bug corrected.
-    - Discrimination functions: updates.
     - **matB**, **matW** : when requested, update of covm to cov, and aggstat output.
     - **plotsp** : faster.
     - **transfer_ds** : renamed to **caltransf_ds**.
     - **transfer_pds** : renamed to **caltransf_pds**.
+    - **recodcat2num** : renamed to **recodcat2int**
     - **segmts** : A seed (MersenneTwister) can be set for the random samplings.
+    - Examples added in the helps of every functions.
+    - Discrimination functions: updates.
 
 
 ### *Version 0.0-16*

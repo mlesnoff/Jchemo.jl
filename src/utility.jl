@@ -602,23 +602,23 @@ function  psize(x)
 end
 
 """
-    recodcat2num(x; start = 1)
+    recodcat2int(x; start = 1)
 Recode a categorical variable to a numeric variable
 * `x` : Variable to recode.
-* `start` : Numeric value that will be set to the first category.
+* `start` : Integer value that will be set to the first category.
 
-The codes correspond to the sorted categories.
+The numeric codes returned by the function are `Int64` and 
+correspond to the sorted categories of `x`.
 
 ## Examples
 ```julia
-x = ["b", "a", "b"] 
-zx = recodcat2num(x)  
-[x zx]
-recodcat2num(x; start = 0)
-recodcat2num([25, 1, 25])
+x = ["b", "a", "b"]   
+[x recodcat2int(x)]
+recodcat2int(x; start = 0)
+recodcat2int([25, 1, 25])
 ```
 """
-function recodcat2num(x; start = 1)
+function recodcat2int(x; start::Int64 = 1)
     z = dummy(x).Y
     ncla = size(z, 2)
     u = z .* collect(start:(start + ncla - 1))'
@@ -628,19 +628,20 @@ end
 
 """
     recodnum2cla(x, q)
-Recode a continuous variable to classes
+Recode a continuous variable to classes.
 * `x` : Variable to recode.
 * `q` : Values separating the classes. 
 
 ## Examples
 ```julia
+using Statistics
 x = [collect(1:10); 8.1 ; 3.1] 
-q = [3; 8] 
-zx = recodnum2cla(x, q) 
+q = [3; 8]
+zx = recodnum2cla(x, q)  
 [x zx]
-probs = [.33; .66] 
-q = Statistics.quantile(x, probs) 
-zx = recodnum2cla(x, q) ;
+probs = [.33; .66]
+q = quantile(x, probs) 
+zx = recodnum2cla(x, q)  
 [x zx]
 ```
 """
@@ -654,39 +655,76 @@ function recodnum2cla(x, q)
         end
         zx[i] = k
     end
-    zx
+    Int64.(zx)
 end
 
 """
     replacebylev(x, lev)
-Replaces the elements of x by levels of corresponding order.
-* `x` : Vector of values to replace.
-* `lev` : Vector containing the levels.
+Replace the elements of a vector by levels of corresponding order.
+* `x` : Vector (n) of values to replace.
+* `lev` : Vector (nlev) containing the levels.
 
-The number of levels in `x` and `lev` must be the same.
-Before replacement, the levels in `x` and `lev` are sorted.
+`x` and `lev` must contain the same number of levels.
+The ith sorted level in `x` is replaced by the ith sorted level of `lev`.
 
 ## Examples
 ```julia
-x = [10, 4, 3, 3, 4, 4]
+x = [10; 4; 3; 3; 4; 4]
 lev = ["B"; "C"; "AA"]
+sort(lev)
 [x replacebylev(x, lev)]
-[string.(x) replacebylev(string.(x), lev)]
+zx = string.(x)
+[zx replacebylev(zx, lev)]
 
-x = [10, 4, 3, 3, 4, 4]
+x = [10; 4; 3; 3; 4; 4]
 lev = [3; 0; -1]
 [x replacebylev(x, lev)]
 ```
 """
 function replacebylev(x, lev)
-    m = length(x)
+    n = length(x)
     lev = sort(lev)
     nlev = length(lev)
     x_lev = tab(x).keys
-    v = similar(lev, m)
+    v = similar(lev, n)
     @inbounds for i = 1:nlev
-        u = findall(x .== x_lev[i])
-        v[u] .= lev[i] 
+        s = findall(x .== x_lev[i])
+        v[s] .= lev[i] 
+    end
+    v
+end
+
+"""
+    replacebylev2(x::Union{Int64, Array{Int64}}, lev::Array)
+Replace the elements of an index-vector by levels.
+* `x` : Vector (n) of values to replace.
+* `lev` : Vector (nlev) containing the levels.
+
+Let us note nlev the number of levels in `lev`. 
+Vector `x`must contain integer values between 1 and nlev. 
+Each element `x[i]` (i = 1:n) is replaced by `lev[x[i]]`.
+
+## Examples
+```julia
+x = [2; 1; 2]
+lev = ["B"; "C"; "AA"]
+sort(lev)
+[x replacebylev2(x, lev)]
+replacebylev2([2;], lev)
+replacebylev2(2, lev)
+
+x = [2; 1; 2]
+lev = [3; 0; -1]
+replacebylev2(x, lev)
+```
+"""
+function replacebylev2(x::Union{Int64, Array{Int64}}, lev::Array)
+    isa(x, Int64) ? x = [x;] : x = vec(x)
+    lev = vec(sort(lev))
+    n = length(x)
+    v = similar(lev, n)
+    for i = 1:n
+        v[i] = lev[x[i]]
     end
     v
 end

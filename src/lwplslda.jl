@@ -36,6 +36,40 @@ kNN-LWPLS-LDA models.
 
 This is the same methodology as for `lwplsr` except that 
 PLSR is replaced by PLS-LDA.
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "forages.jld2") 
+@load db dat
+pnames(dat)
+
+Xtrain = dat.Xtrain
+ytrain = dat.Ytrain.y
+Xtest = dat.Xtest
+ytest = dat.Ytest.y
+
+tab(ytrain)
+tab(ytest)
+
+nlvdis = 25 ; metric = "mahal"
+h = 2 ; k = 100
+nlv = 15
+fm = lwplslda(Xtrain, ytrain;
+    nlvdis = nlvdis, metric = metric,
+    h = h, k = k, nlv = nlv) ;
+pnames(fm)
+
+res = Jchemo.predict(fm, Xtest) ;
+pnames(res)
+res.pred
+err(res.pred, ytest)
+
+res.listnn
+res.listd
+res.listw
+```
 """ 
 function lwplslda(X, y; nlvdis, metric, h, k, nlv, 
     prior = "unif", tol = 1e-4, verbose = false)

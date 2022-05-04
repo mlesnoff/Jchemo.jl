@@ -1,5 +1,6 @@
 """
-    locw(Xtrain, Ytrain, X; listnn, listw = nothing, fun, verbose = false, kwargs...)
+    locw(Xtrain, Ytrain, X ; 
+        listnn, listw = nothing, fun, verbose = false, kwargs...)
 Compute predictions for a given kNN model.
 * `Xtrain` : Training X-data.
 * `Ytrain` : Training Y-data.
@@ -11,7 +12,8 @@ Compute predictions for a given kNN model.
 * `kwargs` : Keywords arguments to pass in function fun. 
 
 Each component i of `listnn` and `listw` contains the indexes and weights, respectively,
-of the nearest neighbors of x_i in Xtrain. The sizes of the neighborhood for i = 1,...,m can be different.
+of the nearest neighbors of x_i in Xtrain. The sizes of the neighborhood 
+for i = 1,...,m can be different.
 
 All the arguments in kwargs must have length = 1 (not collections).
 """
@@ -45,11 +47,12 @@ function locw(Xtrain, Ytrain, X ;
 end
 
 """
-    locwlv(Xtrain, Ytrain, X ; listnn, listw = nothing, fun, nlv, verbose = false, kwargs...)
-Same as [`locw`](@ref) but specific (and much faster) to LV-based models (e.g. PLSR).
+    locwlv(Xtrain, Ytrain, X; 
+        listnn, listw = nothing, fun, nlv, verbose = true, kwargs...)
+Compute predictions for a given kNN model.
 * `nlv` : Nb. or collection of nb. of latent variables (LVs).
 
-Argument pars must not contain nlv.
+Same as [`locw`](@ref) but specific (and much faster) for LV-based (e.g. PLSR) models.
 """
 function locwlv(Xtrain, Ytrain, X; 
     listnn, listw = nothing, fun, nlv, verbose = true, kwargs...)
@@ -83,7 +86,7 @@ function locwlv(Xtrain, Ytrain, X;
         end
     end 
     verbose ? println() : nothing    
-    pred = list(le_nlv, Matrix{Float64})
+    pred = list(le_nlv, Union{Matrix{Int64}, Matrix{Float64}, Matrix{String}})
     for a = 1:le_nlv
         pred[a] = zpred[:, :, a]
     end

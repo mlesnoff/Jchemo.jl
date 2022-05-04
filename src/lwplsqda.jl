@@ -36,6 +36,10 @@ kNN-LWPLS-QDA models.
 
 This is the same methodology as for `lwplsr` except that 
 PLSR is replaced by PLS-QDA.
+
+The present version of the function suffers from frequent stops
+due to non positive definite matrices when doing local QDA. This
+will be fixed in the future.  
 """ 
 function lwplsqda(X, y; nlvdis, metric, h, k, nlv, 
     prior = "unif", tol = 1e-4, verbose = false)

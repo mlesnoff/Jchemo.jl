@@ -14,7 +14,7 @@ end
 
 """
     lwplsrda(X, y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
-kNN-LWPLSRDA models.
+kNN-LWPLSR-DA models.
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `nlvdis` : Number of latent variables (LVs) to consider in the 
@@ -31,7 +31,41 @@ kNN-LWPLSRDA models.
 * `verbose` : If true, fitting information are printed.
 
 This is the same methodology as for `lwplsr` except that 
-PLSR is replaced by PLSRDA.
+PLSR is replaced by PLSR-DA.
+
+## Examples
+```julia
+using JLD2, CairoMakie
+mypath = joinpath(@__DIR__, "..", "data")
+db = string(mypath, "\\", "forages.jld2") 
+@load db dat
+pnames(dat)
+
+Xtrain = dat.Xtrain
+ytrain = dat.Ytrain.y
+Xtest = dat.Xtest
+ytest = dat.Ytest.y
+
+tab(ytrain)
+tab(ytest)
+
+nlvdis = 25 ; metric = "mahal"
+h = 2 ; k = 100
+nlv = 10
+fm = lwplsrda(Xtrain, ytrain;
+    nlvdis = nlvdis, metric = metric,
+    h = h, k = k, nlv = nlv) ;
+pnames(fm)
+
+res = Jchemo.predict(fm, Xtest) ;
+pnames(res)
+res.pred
+err(res.pred, ytest)
+
+res.listnn
+res.listd
+res.listw
+```
 """ 
 function lwplsrda(X, y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
     X = ensure_mat(X)

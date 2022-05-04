@@ -164,7 +164,6 @@ function predict(object::PlsdaAvg, X)
     m = size(X, 1)
     nlv = object.nlv
     le_nlv = length(nlv)
-    println(nlv)
     zpred = predict(object.fm, X; nlv = nlv).pred
     if(le_nlv == 1)
         pred = zpred

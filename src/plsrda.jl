@@ -73,7 +73,7 @@ end
 
 """
     kplsrda(X, y, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
-Discrimination (DA) based on kernel partial least squares regression (KPLSR).
+Discrimination based on kernel partial least squares regression (KPLSR-DA).
 * `X` : X-data.
 * `y` : Univariate class membership.
 * `weights` : Weights of the observations.
@@ -136,7 +136,7 @@ function predict(object::Union{Plsrda, KplsrDa}, X; nlv = nothing)
     a = size(object.fm.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
-    pred = list(le_nlv)
+    pred = list(le_nlv, Union{Matrix{Int64}, Matrix{Float64}, Matrix{String}})
     posterior = list(le_nlv, Matrix{Float64})
     @inbounds for i = 1:le_nlv
         zp = predict(object.fm, X; nlv = nlv[i]).pred
@@ -146,7 +146,7 @@ function predict(object::Union{Plsrda, KplsrDa}, X; nlv = nothing)
         #   end
         #end
         z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
-        pred[i] = reshape(replacebylev(z, object.lev), m, 1)     
+        pred[i] = reshape(replacebylev2(z, object.lev), m, 1)     
         posterior[i] = zp
     end 
     if le_nlv == 1

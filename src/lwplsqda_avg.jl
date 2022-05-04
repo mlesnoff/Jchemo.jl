@@ -34,13 +34,16 @@ Averaging of kNN-LWPLSR-DA models with different numbers of LVs.
 * `tol` : For stabilization when very close neighbors.
 * `verbose` : If true, fitting information are printed.
 
-Ensemblist method where the predictions are calculated by "averaging" 
-the predictions of a set of models built with different numbers of 
-latent variables (LVs).
+This is the same methodology as for `lwplsr_avg` except that 
+PLSR is replaced by PLS-QDA, and the mean is replaced by votes.
 
 For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for 
 a new observation is the most occurent class within the predictions 
 returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
+
+The present version of the function suffers from frequent stops
+due to non positive definite matrices when doing local QDA. This
+will be fixed in the future.  
 """ 
 function lwplsqda_avg(X, y; nlvdis, metric, h, k, nlv, 
     tol = 1e-4, verbose = false)

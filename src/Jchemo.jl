@@ -141,7 +141,7 @@ export
     norm2,
     nro,
     pnames, psize,
-    recodcat2num, recodnum2cla,
+    recodcat2int, replacebylev2, recodnum2cla,
     replacebylev,
     rmcol, rmrow, 
     rowmean, rowstd, rowsum,   

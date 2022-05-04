@@ -134,12 +134,12 @@ function predict(object::Union{Rrda, KrrDa}, X; lb = nothing)
     m = size(X, 1)
     isnothing(lb) ? lb = object.fm.lb : nothing
     le_lb = length(lb)
-    pred = list(le_lb)
+    pred = list(le_lb, Union{Matrix{Int64}, Matrix{Float64}, Matrix{String}})
     posterior = list(le_lb, Matrix{Float64})
     @inbounds for i = 1:le_lb
         zp = predict(object.fm, X; lb = lb[i]).pred
         z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
-        pred[i] = reshape(replacebylev(z, object.lev), m, 1)
+        pred[i] = reshape(replacebylev2(z, object.lev), m, 1)
         posterior[i] = zp
     end 
     if le_lb == 1
