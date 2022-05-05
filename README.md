@@ -12,20 +12,16 @@
 [![Build Status](https://travis-ci.com/mlesnoff/Jchemo.jl.svg?branch=master)](https://travis-ci.com/mlesnoff/Jchemo.jl)
 [![codecov.io](http://codecov.io/github/mlesnoff/Jchemo.jl/coverage.svg?branch=master)](http://codecov.io/github/mlesnoff/Jchemo.jl?branch=master)
 
-**Jchemo** provides elementary functions to build pipelines for predictions in chemometrics or other domains. It mainly focuses on methods for high dimensional data. 
+**Jchemo** provides elementary functions and pipelines for predictions in chemometrics or other domains. It mainly focuses on methods for high dimensional data. 
 
-Only few examples of pipelines are provided in the package. The user can build some of his own pipelines with the provided elementary functions. 
+Generic functions such as **transform**, **predict**, **coef** and **summary** are available. Tuning the models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation), in addition to faster versions for models based on latent variables (LVs) (**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
 
-Generic functions such as **transform**, **predict**, **coef** and **summary** are available. Tuning the models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation), with faster versions for models based on latent variables (LVs) (**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
-
-The package is under construction.
+The package is under construction. Functions may change in the future.
 
 ## <span style="color:green"> **Available functions** </span> 
 
 - [**List of functions**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/functions.md) 
 - [**Examples**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/demos/ex/)
-
-Main of the examples given in the the files **.jl** are built on fictive data for illustrating the syntax. The user can replace these fictive data by its own datasets.
 
 Most of the functions have a help page, e.g.
 
