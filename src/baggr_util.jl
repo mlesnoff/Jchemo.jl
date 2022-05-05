@@ -9,7 +9,6 @@ Compute the out-of-bag (OOB) error after bagging a regression model.
 See `?baggr` for examples.
 
 ## References
-
 Breiman, L., 1996. Bagging predictors. Mach Learn 24, 123–140. 
 https://doi.org/10.1007/BF00058655
 

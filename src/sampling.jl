@@ -18,8 +18,8 @@ Technometrics, 11(1), 137-148.
 ## Examples
 ```julia
 using JLD2, CairoMakie
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "cassav.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
 
@@ -84,8 +84,8 @@ Technometrics 19, 415-428. https://doi.org/10.1080/00401706.1977.10489581
 ## Examples
 ```julia
 using JLD2, CairoMakie
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "cassav.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
 

@@ -21,8 +21,8 @@ Anal. Chem., vol. 63, no. 23, pp. 2750–2756, 1991, doi: 10.1021/ac00023a016.
 ## Examples
 ```julia
 using JLD2, CairoMakie
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "caltransfer.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "caltransfer.jld2") 
 @load db dat
 pnames(dat)
 

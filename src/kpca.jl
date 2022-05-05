@@ -45,8 +45,8 @@ processing systems, MIT Press. http://papers.nips.cc/paper/1791-sparse-kernel-pr
 ## Examples
 ```julia
 using JLD2, CairoMakie, StatsBase
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "iris.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "iris.jld2") 
 @load db dat
 pnames(dat)
 summ(dat.X)

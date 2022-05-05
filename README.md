@@ -153,11 +153,15 @@ res.res
 
 **matthieu.lesnoff@cirad.fr**
 
+***Acknowledgments***
+
+- L. Plagne, F. Févotte (Triscale.innov) https://www.triscale-innov.com 
+- R. Vezy (Cirad) https://www.youtube.com/channel/UCxArXLI-gxlTmWGGgec5D7w 
+
 ### How to cite
 
-Lesnoff, M. 2021. Jchemo: a Julia package for dimension reduction, regression and discrimination for chemometrics. https://github.com/mlesnoff/Jchemo. CIRAD, UMR SELMET, Montpellier, France
-
-
+Lesnoff, M. 2021. Jchemo: a Julia package for dimension reduction, regression and discrimination for 
+chemometrics. https://github.com/mlesnoff/Jchemo. CIRAD, UMR SELMET, Montpellier, France
 
 
 

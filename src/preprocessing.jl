@@ -32,8 +32,8 @@ Journal of Chemometrics 32, e3045. https://doi.org/10.1002/cem.3045
 ## Examples
 ```julia
 using JLD2, CairoMakie
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "caltransfer.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "caltransfer.jld2") 
 @load db dat
 pnames(dat)
 X1cal = dat.X1cal
@@ -85,8 +85,8 @@ and returns the residuals.
 ## Examples
 ```julia
 using JLD2
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "cassav.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
 
@@ -138,8 +138,8 @@ The in-place function stores the output in `M`.
 ## Examples
 ```julia
 using JLD2
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "cassav.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
 
@@ -193,8 +193,8 @@ https://htmlpreview.github.io/?https://github.com/PumasAI/DataInterpolations.jl/
 ## Examples
 ```julia
 using JLD2
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "cassav.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
 
@@ -298,8 +298,8 @@ https://github.com/JuliaImages/ImageFiltering.jl
 ## Examples
 ```julia
 using JLD2
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "cassav.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
 
@@ -351,8 +351,8 @@ https://github.com/dysonance/Indicators.jl
 ## Examples
 ```julia
 using JLD2
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "cassav.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
 
@@ -468,8 +468,8 @@ IEEE Signal Processing Magazine 28, 111–117. https://doi.org/10.1109/MSP.2011.
 ## Examples
 ```julia
 using JLD2
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "cassav.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
 
@@ -514,8 +514,8 @@ Standard-normal-variate (SNV) transformation of each row of X-data.
 ## Examples
 ```julia
 using JLD2
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "cassav.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
 

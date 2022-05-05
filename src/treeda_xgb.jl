@@ -42,8 +42,8 @@ Paris 11. http://www.theses.fr/2002PA112245
 ## Examples
 ```julia
 using JLD2
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "forages.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
 pnames(dat)
 
@@ -144,8 +144,8 @@ Paris 11. http://www.theses.fr/2002PA112245
 ## Examples
 ```julia
 using JLD2
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "forages.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
 pnames(dat)
 
@@ -234,8 +234,8 @@ https://github.com/dmlc/XGBoost.jl
 ## Examples
 ```julia
 using JLD2
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "forages.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
 pnames(dat)
 

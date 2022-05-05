@@ -32,8 +32,8 @@ Journal of Chemometrics n/a, e3369. https://doi.org/10.1002/cem.3369
 # The example scales X for consistency with plsdof.
 
 using JLD2, DataFrames, CairoMakie 
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "ozone.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "ozone.jld2") 
 @load db dat
 pnames(dat)
 
@@ -91,8 +91,8 @@ Journal of Chemometrics n/a, e3369. https://doi.org/10.1002/cem.3369
 ## Examples
 ```julia
 using JLD2, CairoMakie
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "cassav.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
 

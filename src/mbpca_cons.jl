@@ -58,8 +58,8 @@ https://doi.org/10.1002/(SICI)1099-128X(199809/10)12:5<301::AID-CEM515>3.0.CO;2-
 ## Examples
 ```julia
 using JLD2
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "ham.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "ham.jld2") 
 @load db dat
 pnames(dat) 
 

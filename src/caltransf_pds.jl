@@ -33,8 +33,8 @@ https://doi.org/10.1021/ac9906835
 ## Examples
 ```julia
 using JLD2, CairoMakie
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "caltransfer.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "caltransfer.jld2") 
 @load db dat
 pnames(dat)
 

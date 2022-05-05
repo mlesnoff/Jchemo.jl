@@ -34,8 +34,8 @@ to the dummy variable for which the probability estimate is the highest.
 ## Examples
 ```julia
 using JLD2, CairoMakie
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "forages.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
 pnames(dat)
 
@@ -86,8 +86,8 @@ is replaced by a non linear kernel PLS2 (KPLS).
 ## Examples
 ```julia
 using JLD2
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "forages.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
 pnames(dat)
 

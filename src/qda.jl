@@ -17,8 +17,8 @@ Quadratic discriminant analysis  (QDA).
 ## Examples
 ```julia
 using JLD2, StatsBase
-mypath = joinpath(@__DIR__, "..", "data")
-db = string(mypath, "\\", "iris.jld2") 
+mypath = dirname(dirname(pathof(Jchemo)))
+db = joinpath(mypath, "data", "iris.jld2") 
 @load db dat
 pnames(dat)
 summ(dat.X)
