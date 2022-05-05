@@ -84,7 +84,7 @@ returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
+using JLD2
 mypath = joinpath(@__DIR__, "..", "data")
 db = string(mypath, "\\", "forages.jld2") 
 @load db dat

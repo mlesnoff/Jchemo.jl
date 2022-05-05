@@ -85,7 +85,7 @@ is replaced by a non linear kernel PLS2 (KPLS).
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
+using JLD2
 mypath = joinpath(@__DIR__, "..", "data")
 db = string(mypath, "\\", "forages.jld2") 
 @load db dat

@@ -15,11 +15,9 @@ Partial Least Squares Regression (PLSR) with the SIMPLS algorithm (de Jong 1993)
 algorithm of de Jong (2013)
 
 ## References
-
 de Jong, S., 1993. SIMPLS: An alternative approach to partial least squares 
 regression. Chemometrics and Intelligent Laboratory Systems 18, 251–263. 
 https://doi.org/10.1016/0169-7439(93)85002-X
-
 """ 
 function plssimp(X, Y, weights = ones(size(X, 1)); nlv)
     plssimp!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv)

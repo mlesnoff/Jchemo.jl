@@ -19,7 +19,6 @@ direct computation of the PLS weights (w) by SVD decomposition of matrix X'Y
 See `?plskern` for examples.
 
 ## References
-
 Hoskuldsson, A., 1988. PLS regression methods. Journal of Chemometrics 2, 211-228.
 https://doi.org/10.1002/cem.1180020306
 

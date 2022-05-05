@@ -35,7 +35,7 @@ PLSR is replaced by PLSR-DA.
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
+using JLD2
 mypath = joinpath(@__DIR__, "..", "data")
 db = string(mypath, "\\", "forages.jld2") 
 @load db dat

@@ -13,7 +13,6 @@ The function returns a random projection matrix P of dimension
 `p` x `nlv` simulated from i.i.d. N(0, 1)/sqrt(`a`).
 
 ## References 
-
 Li, P., Hastie, T.J., Church, K.W., 2006. Very sparse random projections, 
 in: Proceedings of the 12th ACM SIGKDD International Conference on Knowledge 
 Discovery and Data Mining, KDD ’06. Association for Computing Machinery,
@@ -51,7 +50,6 @@ Usual values for `s` are:
 * 3               (Achlioptas 2001) 
 
 ## References 
-
 Achlioptas, D., 2001. Database-friendly random projections, 
 in: Proceedings of the Twentieth ACM SIGMOD-SIGACT-SIGART Symposium on 
 Principles of Database Systems, PODS ’01. Association for Computing Machinery, 
@@ -88,10 +86,12 @@ Make a random projection of matrix X.
 ```julia
 X = rand(5, 10)
 nlv = 3
-res = rp(X; nlv = nlv)
-size(res.P) 
-res.P
-res.T # = X * res.P 
+fm = rp(X; nlv = nlv)
+pnames(fm)
+size(fm.P) 
+fm.P
+fm.T # = X * fm.P 
+transform(fm, X[1:2, :])
 ```
 """ 
 function rp(X; nlv, fun = rpmat_li, kwargs ...)

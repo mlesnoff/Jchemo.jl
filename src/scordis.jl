@@ -36,7 +36,6 @@ A value dstand > 1 may be considered as extreme.
 The Winisi "GH" is also provided (usually, GH > 3 is considered as extreme).
 
 ## References
-
 M. Hubert, P. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust 
 principal components analysis. Technometrics, 47, 64-79.
 
@@ -146,7 +145,6 @@ a Chi-squared distrbution for the squared distance.
 See `?scordis` for examples.
 
 ## References
-
 M. Hubert, P. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal 
 components analysis. Technometrics, 47, 64-79.
 

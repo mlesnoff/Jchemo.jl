@@ -19,11 +19,9 @@ algorithm of Liland et al. (2016):
 See `?plskern` for examples.
     
 ## References
-
 Liland, K.H., Næs, T., Indahl, U.G., 2016. ROSA—a fast extension of partial least 
 squares regression for multiblock data analysis. Journal of Chemometrics 30, 
 651–662. https://doi.org/10.1002/cem.2824
-
 """ 
 function plsrosa(X, Y, weights = ones(size(X, 1)); nlv)
     plsrosa!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv)

@@ -53,7 +53,7 @@ pnames(fm)
 fm.lev
 fm.ni
 
-res = predict(fm, Xtest)
+res = predict(fm, Xtest) 
 res.posterior
 rmsep(res.pred, ytest)
 f, ax = scatter(vec(res.pred), ytest)
@@ -98,7 +98,6 @@ function predict(object::CplsrAvg, X)
     #post = (mapreduce(i -> mweight(exp.(post[i, :])), hcat, 1:m))'
     #post .= (mapreduce(i -> 1 ./ (1 .+ exp.(-post[i, :])), hcat, 1:m)')
     #post .= (mapreduce(i -> post[i, :] / sum(post[i, :]), hcat, 1:m))'
-    println(rowsum(post))
     acc = post[:, 1] .* predict(object.fm[1], X).pred
     @inbounds for i = 2:nlev
         if object.ni[i] >= 30

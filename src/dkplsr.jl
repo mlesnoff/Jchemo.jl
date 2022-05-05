@@ -23,7 +23,6 @@ The method builds kernel Gram matrices and then runs a usual PLSR algorithm on t
 (but not equivalent) to the "true" NIPALS KPLSR algorithm described in Rosipal & Trejo (2001).
 
 ## References 
-
 Bennett, K.P., Embrechts, M.J., 2003. An optimization perspective on kernel partial least squares regression, 
 in: Advances in Learning Theory: Methods, Models and Applications, 
 NATO Science Series III: Computer & Systems Sciences. IOS Press Amsterdam, pp. 227-250.

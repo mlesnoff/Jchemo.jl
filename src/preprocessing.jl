@@ -20,7 +20,6 @@ Any dataset Z can be corrected from the detrimental information `D`
 by computing Z_corrected = Z * `M`.
 
 # References
-
 Roger, J.-M., Chauchard, F., Bellon-Maurel, V., 2003. EPO-PLS external parameter 
 orthogonalisation of PLS application to temperature-independent measurement 
 of sugar content of intact fruits. 
@@ -85,7 +84,7 @@ and returns the residuals.
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
+using JLD2
 mypath = joinpath(@__DIR__, "..", "data")
 db = string(mypath, "\\", "cassav.jld2") 
 @load db dat
@@ -138,7 +137,7 @@ The in-place function stores the output in `M`.
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
+using JLD2
 mypath = joinpath(@__DIR__, "..", "data")
 db = string(mypath, "\\", "cassav.jld2") 
 @load db dat
@@ -193,7 +192,7 @@ https://htmlpreview.github.io/?https://github.com/PumasAI/DataInterpolations.jl/
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
+using JLD2
 mypath = joinpath(@__DIR__, "..", "data")
 db = string(mypath, "\\", "cassav.jld2") 
 @load db dat
@@ -257,7 +256,6 @@ See https://github.com/JuliaMath/Interpolations.jl/pull/243/files#diff-92e3f2a37
 See '?interpl' for examples. 
 
 ## References
-
 Package Interpolations.jl
 https://github.com/JuliaMath/Interpolations.jl
 
@@ -299,7 +297,7 @@ https://github.com/JuliaImages/ImageFiltering.jl
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
+using JLD2
 mypath = joinpath(@__DIR__, "..", "data")
 db = string(mypath, "\\", "cassav.jld2") 
 @load db dat
@@ -352,7 +350,7 @@ https://github.com/dysonance/Indicators.jl
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
+using JLD2
 mypath = joinpath(@__DIR__, "..", "data")
 db = string(mypath, "\\", "cassav.jld2") 
 @load db dat
@@ -458,7 +456,6 @@ imfilter of package ImageFiltering.jl. Each returned point is located on the cen
 of the kernel. The kernel is computed with function `savgk`.
 
 ## References 
-
 Luo, J., Ying, K., Bai, J., 2005. Savitzky–Golay smoothing and differentiation filter for 
 even number data. Signal Processing 85, 1429–1434. https://doi.org/10.1016/j.sigpro.2005.02.002
 
@@ -470,7 +467,7 @@ IEEE Signal Processing Magazine 28, 111–117. https://doi.org/10.1109/MSP.2011.
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
+using JLD2
 mypath = joinpath(@__DIR__, "..", "data")
 db = string(mypath, "\\", "cassav.jld2") 
 @load db dat
@@ -516,7 +513,7 @@ Standard-normal-variate (SNV) transformation of each row of X-data.
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
+using JLD2
 mypath = joinpath(@__DIR__, "..", "data")
 db = string(mypath, "\\", "cassav.jld2") 
 @load db dat

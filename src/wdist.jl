@@ -1,5 +1,6 @@
 """
     wdist(d; h = 2, cri = 4, squared = false)
+    wdist!(d; h = 2, cri = 4, squared = false)
 Compute weights from distances, using a decreasing exponential function.
 * `d` : A vector of distances.
 * `h` : A scaling positive scalar defining the shape of the function. 

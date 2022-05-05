@@ -17,7 +17,7 @@
     - **recodcat2num** : renamed to **recodcat2int**
     - **segmts** : A seed (MersenneTwister) can be set for the random samplings.
     - Examples added in the helps of every functions.
-    - Discrimination functions: updates.
+    - Discrimination functions: major updates.
 
 
 ### *Version 0.0-16*

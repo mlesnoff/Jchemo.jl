@@ -20,7 +20,7 @@ returning `nlv` latent variables (LVs). Finally, a LDA is run on these LVs and `
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
+using JLD2
 mypath = joinpath(@__DIR__, "..", "data")
 db = string(mypath, "\\", "forages.jld2") 
 @load db dat

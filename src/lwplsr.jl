@@ -63,7 +63,6 @@ In general, for high dimensional X-data, using the Mahalanobis distance requires
 preliminary dimensionality reduction of the data.
 
 ## References
-
 Kim, S., Kano, M., Nakagawa, H., Hasebe, S., 2011. Estimation of active 
 pharmaceutical ingredients content using locally weighted partial least squares 
 and statistical wavelength selection. Int. J. Pharm., 421, 269-274.

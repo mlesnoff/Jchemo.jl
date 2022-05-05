@@ -19,7 +19,6 @@ i - m, i - m + 1, ..., i, ..., i + m - 1, i + m
 `X1` and `X2` are assumed to represent the same n samples. 
 
 ## References
-
 Bouveresse, E., Massart, D.L., 1996. Improvement of the piecewise direct standardisation procedure 
 for the transfer of NIR spectra for multivariate calibration. Chemometrics and Intelligent Laboratory 
 Systems 32, 201–213. https://doi.org/10.1016/0169-7439(95)00074-7

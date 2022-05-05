@@ -16,7 +16,7 @@ Linear discriminant analysis  (LDA).
 
 ## Examples
 ```julia
-using JLD2, CairoMakie, StatsBase
+using JLD2, StatsBase
 mypath = joinpath(@__DIR__, "..", "data")
 db = string(mypath, "\\", "iris.jld2") 
 @load db dat

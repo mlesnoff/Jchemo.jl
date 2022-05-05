@@ -19,8 +19,6 @@ Conjugate gradient algorithm for the normal equations (CGLS; Björck 1996).
 
 `X` and `y` are internally centered. 
 
-The model is computed with an intercept.
-
 CGLS algorithm "7.4.1" Bjorck 1996, p.289. The part of the code computing the 
 re-orthogonalization (Hansen 1998) and filter factors (Vogel 1987, Hansen 1998) 
 is a transcription (with few adaptations) of the Matlab function `cgls` 

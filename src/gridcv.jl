@@ -22,7 +22,7 @@ The function returns two outputs: `res` (mean results) and `res_p` (results per 
 
 ## Examples
 ```julia
-using JLD2, CairoMakie, StatsBase
+using JLD2, CairoMakie
 mypath = joinpath(@__DIR__, "..", "data")
 db = string(mypath, "\\", "cassav.jld2") 
 @load db dat

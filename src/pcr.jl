@@ -12,7 +12,6 @@ Principal component regression (PCR) with a SVD factorization.
 `X` and `Y` are internally centered. 
 
 ## Examples
-
 ```julia
 using JLD2, CairoMakie
 mypath = joinpath(@__DIR__, "..", "data")
