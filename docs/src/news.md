@@ -1,4 +1,4 @@
-## NEWS for package **Jchemo**
+### NEWS for package **Jchemo**
 
 ### *Version 0.0-17*
 - New 

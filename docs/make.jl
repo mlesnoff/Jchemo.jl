@@ -1,4 +1,4 @@
-push!(LOAD_PATH, joinpath(@__DIR__, ".."))
+#push!(LOAD_PATH, joinpath(@__DIR__, ".."))
 #push!(LOAD_PATH,"../src/")
 using Documenter
 using Jchemo
@@ -15,8 +15,8 @@ makedocs(
     #    assets = String[]),
     format = Documenter.HTML(; prettyurls = get(ENV, "CI", nothing) == "true"),
     sitename = "Jchemo.jl",
-    pages = ["Index" => "api.md",
-        "Domains" => "functions.md",
+    pages = ["Domains" => "functions.md",
+        "Index" => "api.md",
         "News" => "news.md"]
     )
 
