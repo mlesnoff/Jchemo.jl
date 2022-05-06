@@ -33,3 +33,4 @@ git:
 after_success:
   - julia --project=test/coverage -e 'using Pkg; Pkg.instantiate()'
   - julia --project=test/coverage test/coverage/coverage.jl
+  - julia -e 'cd(Pkg.dir("Jchemo")); include(joinpath("docs", "make.jl"))'
