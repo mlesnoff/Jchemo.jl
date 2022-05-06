@@ -16,6 +16,8 @@
 [![codecov.io](http://codecov.io/github/mlesnoff/Jchemo.jl/coverage.svg?branch=master)](http://codecov.io/github/mlesnoff/Jchemo.jl?branch=master)
 
 
+Blal
+
 **Jchemo** provides elementary functions and pipelines for predictions in chemometrics or other domains. It mainly focuses on methods for high dimensional data. 
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. Tuning the models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation), in addition to faster versions for models based on latent variables (LVs) (**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
