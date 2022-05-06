@@ -21,32 +21,32 @@ git:
 #  - julia: nightly
 
 ## uncomment following lines to deploy documentation
-jobs:
-   include:
-     - stage: Documentation
-       julia: 1.0
-       os: linux
-       script:
-         - julia --project=docs -e 'using Pkg; Pkg.instantiate(); Pkg.develop(PackageSpec(path=pwd()))'
-         - julia --project=docs --color=yes docs/make.jl
+#jobs:
+#   include:
+#     - stage: Documentation
+#       julia: 1.0
+#       os: linux
+#       script:
+#         - julia --project=docs -e 'using Pkg; Pkg.instantiate(); Pkg.develop(PackageSpec(path=pwd()))'
+#         - julia --project=docs --color=yes docs/make.jl
 #       after_success: skip
-after_success:
-  - julia --project=test/coverage -e 'using Pkg; Pkg.instantiate()'
-  - julia --project=test/coverage test/coverage/coverage.jl
-  - julia -e 'Pkg.add("Documenter")'
-  - julia -e 'cd(Pkg.dir("Jchemo")); include(joinpath("docs", "make.jl"))'
+#after_success:
+#  - julia --project=test/coverage -e 'using Pkg; Pkg.instantiate()'
+#  - julia --project=test/coverage test/coverage/coverage.jl
+#  - julia -e 'Pkg.add("Documenter")'
+#  - julia -e 'cd(Pkg.dir("Jchemo")); include(joinpath("docs", "make.jl"))'
 
 
 ## BanditOpt.jl
 ## uncomment the following lines to override the default test script
 #script:
 #  - julia -e 'Pkg.clone(pwd()); Pkg.build("BanditOpt"); Pkg.test("BanditOpt"; coverage=true)'
-#after_success:
+after_success:
   # push coverage results to Coveralls
-#  - julia -e 'cd(Pkg.dir("BanditOpt")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
+  - julia -e 'cd(Pkg.dir("Jchemo")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
   # push coverage results to Codecov
-#  - julia -e 'cd(Pkg.dir("BanditOpt")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+  - julia -e 'cd(Pkg.dir("Jchemo")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
   # Deploy Docs
-#  - julia -e 'Pkg.add("Documenter")'
-#  - julia -e 'cd(Pkg.dir("BanditOpt")); include(joinpath("docs", "make.jl"))'
+  - julia -e 'Pkg.add("Documenter")'
+  - julia -e 'cd(Pkg.dir("Jchemo")); include(joinpath("docs", "make.jl"))'
 
