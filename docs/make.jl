@@ -1,20 +1,20 @@
-## NOT USED AT PRESENT
-
-push!(LOAD_PATH, joinpath(@__DIR__, ".."))
-using Documenter, Jchemo
+#push!(LOAD_PATH, joinpath(@__DIR__, ".."))
+using Documenter
+using Jchemo
 
 makedocs(
     modules = [Jchemo],
-    format = Documenter.HTML(; prettyurls = get(ENV, "CI", nothing) == "true"),
-    authors = "Matthieu Lesnoff",
+    authors = "Matthieu Lesnoff (Cirad, Montpellier, France)",
+    repo = "https://github.com/mlesnoff/Jchemo.jl/blob/{commit}{path}#{line}",
+    format = Documenter.HTML(;
+        prettyurls = get(ENV, "CI", "false") == "true",
+        canonical = "https://mlesnoff.github.io/Jchemo.jl",
+        assets = String[])
+    #format = Documenter.HTML(; prettyurls = get(ENV, "CI", nothing) == "true"),
     sitename = "Jchemo.jl",
-    pages = Any["index.md",
-        "regression.md"]
-    # strict = true,
-    # clean = true,
-    # checkdocs = :exports,
-)
+    pages = ["News" => "news.md",
+        "Functions" => "functions.md",
+        "API" => "api.md"]
+    )
 
-deploydocs(
-    repo = "github.com/mlesnoff/Jchemo.jl.git",
-)
+deploydocs(; repo = "github.com/mlesnoff/Jchemo.jl.git")
