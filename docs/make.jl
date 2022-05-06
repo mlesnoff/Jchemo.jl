@@ -21,5 +21,9 @@ makedocs(
     )
 
 deploydocs( 
-    repo = "github.com/mlesnoff/Jchemo.jl.git"
+    repo = "github.com/mlesnoff/Jchemo.jl.git",
+    # BanditOpt.jl
+    target  = "build",
+    deps    = nothing,
+    make    = nothing
     )
