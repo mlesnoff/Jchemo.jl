@@ -3,7 +3,7 @@
 ## Dimension reduction, Regression and Discrimination for Chemometrics
 ## <span style="color:grey70"> Version 0.0-17  </span> 
 
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://mlesnoff.github.com/Jchemo.jl/docs)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/stable)
 [![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
 ![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)<!--
 ![Lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
