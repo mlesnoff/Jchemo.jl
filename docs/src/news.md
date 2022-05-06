@@ -1,13 +1,10 @@
 ## NEWS for package **Jchemo**
 
 ### *Version 0.0-17*
-
-- New :
-
+- New 
     - **replacebylev2** : Replace the elements of an index-vector by levels.
 
 - Modified
-
     - **aggstat** : Sorting order for dataframes.
     - **checkdupl** : bug corrected.
     - **matB**, **matW** : when requested, update of covm to cov, and aggstat output.
@@ -19,27 +16,20 @@
     - Examples added in the helps of every functions.
     - Discrimination functions: major updates.
 
-
 ### *Version 0.0-16*
-
 - New 
-
     - **transfer_ds** : Calibration transfert with direct standardization (DS).
     - **transfer_pds** : Calibration transfert with piecewise direct standardization (PDS).
 
 - Modified
-
     - **mlr** functions : Argument 'noint' added.
     - **plsr_avg_cv** : Bug corrected.
 
-
 ### *Version 0.0-15*
-
 - New 
     - **plsr_stack** : Stacking PLSR models
 
 - Modified
-
     - **aicplsr** : BIC criterion added
     - **fweight**
     - **plsr_avg** : Stacking was added

@@ -1,71 +1,23 @@
-## NOT USED AT PRESENT
-
 ```@meta
-DocTestSetup  = quote
-    using Jchemo
-end
-```
-# Jchemo
-
-*Documentation goes here.*
-
-
-## Example blocks
-
-### Script: @example
-
-```@example
-import Random   # hide
-Random.seed!(1) # hide
-A = rand(3, 3)
-b = [1, 2, 3]
-A \ b
+CurrentModule = Jchemo
 ```
 
-### REPL: @repl
+# Jchemo.jl
 
-```@repl
-1 + 1
-```
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/stable)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/dev)
+[![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
 
-## Documentation tests
+Documentation for [Jchemo.jl](https://github.com/mlesnoff/Jchemo.jl).
 
-### Script
+## Overview
 
-```jldoctest
-a = 1
-b = 2
-a + b
+**Jchemo** provides elementary functions and pipelines for predictions in chemometrics or other domains. It mainly focuses on methods for high dimensional data. 
 
-# output
+Generic functions such as **transform**, **predict**, **coef** and **summary** are available. Tuning the models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation), in addition to faster versions for models based on latent variables (LVs) (**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
 
-3
-```
+The package is under construction. Functions may change in the future.
 
-### REPL
-
-```jldoctest
-julia> a = 1
-1
-
-julia> b = 2;
-
-julia> c = 3;  # comment
-
-julia> a + b + c
-6
-```
-
-## Reference
-
-### @autodocs
-
-```@autodocs
-Modules = [Jchemo]
-Order   = [:function, :type]
-```
-Pages = ["weights.md"]
-Depth = 2
 
 
 
