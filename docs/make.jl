@@ -15,11 +15,11 @@ makedocs(
     #    assets = String[]),
     format = Documenter.HTML(; prettyurls = get(ENV, "CI", nothing) == "true"),
     sitename = "Jchemo.jl",
-    pages = [
-        "Index" => "api.md",
+    pages = ["Index" => "api.md",
         "Domains" => "functions.md",
-        "News" => "news.md"
-        ]
+        "News" => "news.md"]
     )
 
-deploydocs(; repo = "github.com/mlesnoff/Jchemo.jl.git")
+deploydocs(; 
+    repo = "github.com/mlesnoff/Jchemo.jl.git",
+    devbranch = "main")
