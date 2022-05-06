@@ -8,12 +8,12 @@ DocMeta.setdocmeta!(Jchemo, :DocTestSetup, :(using Jchemo); recursive = true)
 makedocs(
     modules = [Jchemo],
     authors = "Matthieu Lesnoff (Cirad, Montpellier, France)",
-    repo = "https://github.io/mlesnoff/Jchemo.jl/blob/{commit}{path}#{line}",
-    #format = Documenter.HTML(;
-    #    prettyurls = get(ENV, "CI", "false") == "true",
-    #    canonical = "https://mlesnoff.github.io/Jchemo.jl",
-    #    assets = String[]),
-    format = Documenter.HTML(; prettyurls = get(ENV, "CI", nothing) == "true"),
+    #repo = "https://mlesnoff.github.io/Jchemo.jl/blob/{commit}{path}#{line}",
+    format = Documenter.HTML(;
+        prettyurls = get(ENV, "CI", "false") == "true",
+        canonical = "https://mlesnoff.github.io/Jchemo.jl",
+        assets = String[]),
+    #format = Documenter.HTML(; prettyurls = get(ENV, "CI", nothing) == "true"),
     sitename = "Jchemo.jl",
     pages = ["Domains" => "functions.md",
         "Index" => "api.md",
