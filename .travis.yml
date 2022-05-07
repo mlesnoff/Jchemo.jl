@@ -31,10 +31,10 @@ jobs:
             Pkg.instantiate()'
         - julia --project=docs/ docs/make.jl
       after_success: skip
-#after_success:
-#  - julia --project=test/coverage -e 'using Pkg; Pkg.instantiate()'
-#  - julia --project=test/coverage test/coverage/coverage.jl
-#  - julia -e 'Pkg.add("Documenter")'
+after_success:
+  - julia --project=test/coverage -e 'using Pkg; Pkg.instantiate()'
+  - julia --project=test/coverage test/coverage/coverage.jl
+  - julia -e 'Pkg.add("Documenter")'
 
 ## Same as BanditOpt.jl
 ## uncomment the following lines to override the default test script
