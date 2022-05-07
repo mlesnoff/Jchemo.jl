@@ -10,7 +10,7 @@
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. Tuning the models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation), in addition to faster versions for models based on latent variables (LVs) (**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
 
-Most of the functions have a help page, e.g.
+Most of the functions have a **help page**, e.g.
 
 ```julia
 ?savgol
