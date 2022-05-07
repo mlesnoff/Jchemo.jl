@@ -35,6 +35,8 @@ jobs:
 #  - julia --project=test/coverage -e 'using Pkg; Pkg.instantiate()'
 #  - julia --project=test/coverage test/coverage/coverage.jl
 #  - julia -e 'Pkg.add("Documenter")'
+#  - julia -e 'cd(Pkg.dir("Jchemo")); include(joinpath("docs", "make.jl"))'
+
 
 ## Same as BanditOpt.jl
 ## uncomment the following lines to override the default test script
