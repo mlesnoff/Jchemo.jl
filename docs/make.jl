@@ -10,7 +10,7 @@ makedocs(
 
 # Build documentation
 makedocs(;
-    modules = [DataFrames],
+    modules = [Jchemo],
     doctest = true,
     clean = false,
     sitename = "Jchemo.jl",
