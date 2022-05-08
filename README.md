@@ -4,7 +4,7 @@
 ## <span style="color:grey70"> Version 0.0-17  </span> 
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/stable)
-[![Dev](https://img.shields.io/badge/docs-stable-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/dev)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/dev)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
 **Jchemo** provides elementary functions and pipelines for predictions in chemometrics or other domains. It mainly focuses on methods for high dimensional data. 
