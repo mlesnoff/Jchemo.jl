@@ -10,7 +10,7 @@ makedocs(;
     modules = [Jchemo],
     sitename = "Jchemo.jl",
     authors = "Matthieu Lesnoff (Cirad, Montpellier, France)",
-    repo = "https://github.com/VEZY/Jchemo.jl/blob/{commit}{path}#{line}",
+    repo = "https://github.com/mlesnoff/Jchemo.jl/blob/{commit}{path}#{line}",
     format = Documenter.HTML(;
         prettyurls = get(ENV, "CI", "false") == "true",
         canonical = "https://mlesnoff.github.io/Jchemo.jl",
