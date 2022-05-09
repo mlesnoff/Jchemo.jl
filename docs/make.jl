@@ -24,6 +24,6 @@ makedocs(;
 
 deploydocs(;
     repo = "github.com/mlesnoff/Jchemo.jl.git",
-    devbranch = "main"
+    devbranch = "master"
     )
 
