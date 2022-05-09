@@ -9,6 +9,6 @@ For more details, click on the link and you'll be directed to the function help.
 
 ```@autodocs
 Modules = [Jchemo]
+Order   = [:function, :type]
 ```
-
 
