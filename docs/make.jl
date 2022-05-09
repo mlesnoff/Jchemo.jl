@@ -22,9 +22,8 @@ makedocs(;
     )
 
 deploydocs(;
-    repo = "github.com/mlesnoff/Jchemo.jl.git",
-    branch = "gh-pages",
-    latest = "master"
+    repo = "github.com/mlesnoff/Jchemo.jl.git"
+
 
     )
 
