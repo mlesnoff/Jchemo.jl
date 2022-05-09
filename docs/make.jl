@@ -8,10 +8,9 @@ DocMeta.setdocmeta!(Jchemo, :DocTestSetup, :(using Jchemo); recursive = true)
 
 makedocs(;
     modules = [Jchemo],
-    doctest = true,
-    clean = false,
     sitename = "Jchemo.jl",
     authors = "Matthieu Lesnoff (Cirad, Montpellier, France)",
+    repo = "https://github.com/VEZY/Jchemo.jl/blob/{commit}{path}#{line}",
     format = Documenter.HTML(;
         prettyurls = get(ENV, "CI", "false") == "true",
         canonical = "https://mlesnoff.github.io/Jchemo.jl",
@@ -23,6 +22,9 @@ makedocs(;
     )
 
 deploydocs(;
-    repo = "github.com/mlesnoff/Jchemo.jl.git"
+    repo = "github.com/mlesnoff/Jchemo.jl.git",
+    branch = "gh-pages",
+    latest = "master"
+
     )
 
