@@ -4,7 +4,7 @@
 - **pcasvd** SVD decomposition
 - **kpca** Non linear kernel  (KPCA) *Scholkopf et al. 2002*
 
-*Utility (works also for PLS)*
+*Utility (works also for PLS)* 
 - **scordis** Score distances (SDs) for a score space
 - **odis** Orthogonal distances (ODs) for a score space
 - **xfit** Matrix fitting 
