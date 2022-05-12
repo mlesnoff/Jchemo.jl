@@ -16,8 +16,7 @@ makedocs(;
         ),
     #format = Documenter.HTML(; prettyurls = get(ENV, "CI", nothing) == "true"),
     pages = ["Home" => "index.md",
-        "Domains" => "functions.md",
-        "Index" => "api.md",
+        "Index of functions" => "api.md",
         "News" => "news.md"]
     )
 

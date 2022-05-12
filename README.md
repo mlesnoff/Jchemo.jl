@@ -18,7 +18,7 @@ Most of the functions have a **help page**, e.g.
 ?savgol
 ```
 
-The package is under construction. Functions may change in the future. The Html documentation is in preparation.
+The package is under construction. Functions may change in the future. 
 
 ## <span style="color:green"> **Available functions** </span> 
 
