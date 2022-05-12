@@ -1416,9 +1416,9 @@ version = "0.19.7"
 
 [[deps.Symbolics]]
 deps = ["ArrayInterface", "ConstructionBase", "DataStructures", "DiffRules", "Distributions", "DocStringExtensions", "DomainSets", "Groebner", "IfElse", "Latexify", "Libdl", "LinearAlgebra", "MacroTools", "Metatheory", "NaNMath", "RecipesBase", "Reexport", "Requires", "RuntimeGeneratedFunctions", "SciMLBase", "Setfield", "SparseArrays", "SpecialFunctions", "StaticArrays", "SymbolicUtils", "TermInterface", "TreeViews"]
-git-tree-sha1 = "aab7c217abd7427e91004a2486bef9af42a1047a"
+git-tree-sha1 = "399f3c667a909209be46327a5c79ff427269ac35"
 uuid = "0c5d862f-8b57-4792-8d23-62f2024744c7"
-version = "4.4.3"
+version = "4.5.0"
 
 [[deps.TOML]]
 deps = ["Dates"]
