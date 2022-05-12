@@ -4,7 +4,7 @@
 - New 
     - **replacebylev2** : Replace the elements of an index-vector by levels.
 
-- Modified
+- Modified 
     - **aggstat** : Sorting order for dataframes.
     - **checkdupl** : bug corrected.
     - **matB**, **matW** : when requested, update of covm to cov, and aggstat output.
