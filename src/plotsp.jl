@@ -1,16 +1,41 @@
 """
-    plotsp(X, wl = 1:size(X, 2); color = (:blue, .5), kwargs...) 
-Plotting spectra (faster than `plotsp`).
+    plotsp(X, wl = 1:size(X, 2); resolution = (500, 350),
+        color = nothing, kwargs...) 
+Plotting spectra.
 * `X` : X-data.
 * `wl` : Column names of `X`. Must be numeric.
 * `color` : Set a unique color (and eventually transparency) to the spectra.
+* 'resolution' : Resolution (horizontal, vertical) of the figure.
 * `kwargs` : Optional arguments to pass in `Axis`.
-Plots lines corresponding to the rows of `X`.
+The function plots the rows of `X`.
+
+## Examples
+```julia
+    using JLD2, CairoMakie
+    mypath = dirname(dirname(pathof(Jchemo)))
+    db = joinpath(mypath, "data", "cassav.jld2") 
+    @load db dat
+    pnames(dat)
+    
+    X = dat.X
+    wl = names(X)
+    wl_num = parse.(Float64, wl) 
+    plotsp(X).f
+    plotsp(X; color = (:red, .2)).f
+    plotsp(X, wl_num; xlabel = "Wavelength (nm)",
+        ylabel = "Absorbance").f
+
+    f, ax = plotsp(X)
+    vlines!(ax, 200)
+    f
+```
+
 """ 
-function plotsp(X, wl = 1:size(X, 2); color = nothing, kwargs...) 
+function plotsp(X, wl = 1:size(X, 2); resolution = (500, 350),
+        color = nothing, kwargs...) 
     X = ensure_mat(X)
     n, p = size(X)
-    f = Figure()
+    f = Figure(resolution = resolution)
     ax = Axis(f; kwargs...)
     res = Vector{Matrix}(undef, n)
     if isnothing(color)

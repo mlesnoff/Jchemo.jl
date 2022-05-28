@@ -19,7 +19,7 @@ Most of the functions have a **help page**, e.g.
 ?savgol
 ```
 
-The package is under construction. Functions may change in the future. 
+The package is under construction. Some functions may change in the future. 
 
 ## <span style="color:green"> **Available functions** </span> 
 

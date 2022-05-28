@@ -962,6 +962,44 @@ function tabnum(x)
 end
 
 """
+    vcatdf(dat; cols = :intersect) 
+    Vertical concatenation of a list of dataframes.
+* `dat` : List of dataframes.
+* `cols` : Determines the columns of the returned data frame.
+    See ?vcat of DataFrames.
+
+## Examples
+```julia
+using DataFrames
+dat1 = DataFrame(rand(5, 2), [:v3, :v1]) 
+dat2 = DataFrame(100 * rand(2, 2), [:v3, :v1])
+z = (dat1, dat2)
+Jchemo.vcatdf(z)
+
+dat2 = DataFrame(100 * rand(2, 2), [:v1, :v3])
+z = (dat1, dat2)
+Jchemo.vcatdf(z)
+
+dat2 = DataFrame(100 * rand(2, 3), [:v3, :v1, :a])
+z = (dat1, dat2)
+Jchemo.vcatdf(z)
+Jchemo.vcatdf(z; cols = :union)
+```
+""" 
+function vcatdf(dat; cols = :intersect) 
+    n = length(dat) 
+    X = copy(dat[1])
+    group = repeat([1], nro(X))
+    if n > 1
+        for i = 2:n
+            X = DataFrames.vcat(X, dat[i]; cols = cols)
+            group = vcat(group, repeat([i], nro(dat[i])))
+        end
+    end
+    (X = X, group)
+end
+
+"""
     vrow(X::Matrix, j)
     vrow(x::Vector, i)
     vcol(X::Matrix, j)

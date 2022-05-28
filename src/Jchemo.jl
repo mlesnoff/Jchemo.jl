@@ -23,7 +23,8 @@ include("aov1.jl")
 include("fweight.jl") 
 include("matW.jl")
 include("nipals.jl")
-include("plots.jl")
+include("plotscore.jl")
+include("plotsp.jl")
 include("preprocessing.jl") 
 include("rmgap.jl")
 
@@ -234,6 +235,7 @@ export
     euclsq, mahsq, mahsqchol,
     krbf, kpol,
     # Graphics
+    plotscore,
     plotsp
     # Not exported since surcharge:
     # - summary => Base.summary

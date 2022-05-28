@@ -1,5 +1,12 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.0.18* 
+- New 
+    - **plotscore** : Plot "scores" of model prediction performances (error rates).
+
+- Modified 
+    - **plotsp**: argument 'resolution' was added.
+
 ### *Version 0.0.17* 
 - New 
     - **replacebylev2** : Replace the elements of an index-vector by levels.

@@ -26,13 +26,16 @@ Stat Comput 1, 47–62. https://doi.org/10.1007/BF01890836
 
 ## Examples
 ```julia
+using CairoMakie, Distributions
+
 cols = cgrad(:tab10, collect(1:9)) ;
 d = sort(sqrt.(rand(Chi(1), 1000)))
 alpha = 0
 typw = "bisquare"
 w = fweight(d; typw = typw, alpha = alpha)
-f, ax = lines(d, w, label = typw, color = cols[1],
-    axis = (xlabel = "d", ylabel = "weight"))
+f = Figure(resolution = (600, 500))
+ax = Axis(f, xlabel = "Distance", ylabel = "Weight")
+lines!(ax, d, w, label = typw, color = cols[1])
 typw = "cauchy"
 w = fweight(d; typw = typw, alpha = alpha)
 lines!(ax, d, w, label = typw, color = cols[2])
@@ -58,6 +61,7 @@ typw = "tricube"
 w = fweight(d; typw = typw, alpha = alpha)
 lines!(ax, d, w, label = typw, color = cols[9])
 axislegend("Function")
+f[1, 1] = ax
 f
 ```
 """ 
