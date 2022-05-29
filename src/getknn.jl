@@ -50,7 +50,7 @@ function getknn(Xtrain, X; k = 1, metric = "eucl")
         ind, d = knn(ztree, Matrix(zX'), k, true)    # ind and d = lists
     end
     #ind = reduce(hcat, ind)'
-    (ind = ind, d = d)
+    (ind = ind, d)
 end
 
 
