@@ -14,7 +14,7 @@
 - **xresid** Residual matrix 
 
 *Multiblock*
-- **blockscal[_col, _frob, _mfa, _sd]** Scaling blocks
+- **blockscal_col, _frob, _mfa, _sd** Scaling blocks
 - **mbpca_cons** Consensus (CPCA, MBPCA)
 - **mbpca_comdim _s** Common components and specific weights (CCSWA, ComDim)
 - **rv** RV correlation coefficient
@@ -52,12 +52,11 @@
 - **plsnipals** NIPALS
 - **plsrosa** ROSA *Liland et al. 2016*
 - **plssimp** SIMPLS *de Jong 1993*
-- **plsr_avg** Averaging and stacking PLSR models with different numbers of LVs (PLSR-AVG)
 - **kplsr** Non linear kernel (KPLSR) *Rosipal & Trejo 2001*
 - **dkplsr** Direct non linear kernel (DKPLSR) *Bennett & Embrechts 2003*
 
-*Utility*
-- **aicplsr** AIC and Cp for PLSR
+*Averaging and stacking*
+- **plsr_avg** Averaging and stacking PLSR models with different numbers of LVs (PLSR-AVG)
 
 *Variable selection*
 - **covsel** CovSel (Roger et al. 2011)
@@ -83,6 +82,8 @@
 - **knnr** kNNR
 - **lwplsr** kNN Locally weighted PLSR (kNN-LWPLSR)
 - **lwplsr_s** kNN-LWPLSR with preliminary dimension reduction
+
+*Averaging and stacking*
 - **lwplsr_avg** kNN-LWPLSR-AVG 
 - **cplsr_avg** Clustered PLSR-AVG
 
@@ -123,9 +124,11 @@
 - **lda** Linear discriminant analysis (LDA)
 - **qda** Quadratic discriminant analysis (QDA)
 - **plslda** LDA on PLS latent variables (PLS-LDA)
-- **plslda_avg** Averaging PLS-LDA models with different numbers of LVs (PLS-LDA-AVG)
 - **plsqda** QDA on PLS latent variables (PLS-QDA)
 - **plsqda_avg** Averaging PLS-QDA models with different numbers of LVs (PLS-QDA-AVG)
+
+*Averaging*
+- **plslda_avg** Averaging PLS-LDA models with different numbers of LVs (PLS-LDA-AVG)
 
 *Utility*
 
@@ -138,7 +141,7 @@
 - **lwplslda** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
 - **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA)
 
-*Averaging models with different numbers of LVs*
+*Averaging*
 
 - **lwplsrda_avg** kNN-LWPLSR-DA-AVG
 - **lwplslda_avg** kNN-LWPLS-LDA-AVG
@@ -193,6 +196,13 @@
 
 - **err** Classification error rate
 
+*Plotting error rates* 
+- **plotgrid** Plot error or performance rates of model predictions.
+
+*Model dimensionality*
+- **aicplsr** AIC and Cp for PLSR
+- **selwold** Wold's criterion to select dimensionality in LV (e.g. PLSR) models
+
 ## DATA MANAGEMENT
 
 ### **Checking**
@@ -226,7 +236,8 @@
 
 ## PLOTTING
 
-- **plotsp** Plotting spectra
+- **plotsp** Ploting spectra
+- **plotxy** Scatter plot of (x, y) data
 
 ## UTILITIES
 

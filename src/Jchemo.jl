@@ -19,12 +19,13 @@ using StatsBase    # sample
 using XGBoost
 
 include("utility.jl") 
-include("aov1.jl")
 include("fweight.jl") 
 include("matW.jl")
 include("nipals.jl")
-include("plotscore.jl")
+include("plotgrid.jl")
 include("plotsp.jl")
+include("plotxy.jl")
+include("ellipse.jl")
 include("preprocessing.jl") 
 include("rmgap.jl")
 
@@ -39,6 +40,7 @@ include("mbpca_cons.jl")
 include("mbpca_comdim_s.jl")
 
 # Regression 
+include("aov1.jl")
 include("mlr.jl")
 include("rr.jl")
 include("plskern.jl") ; include("plsrosa.jl")
@@ -108,7 +110,9 @@ include("iplsr.jl")
 include("mpar.jl")
 include("scores.jl")
 include("gridscore.jl")
-include("segm.jl") ; include("gridcv.jl")
+include("segm.jl")
+include("gridcv.jl")
+include("selwold.jl")
 
 # Transfer
 include("caltransf_ds.jl")
@@ -228,6 +232,7 @@ export
     segmts, segmkf,
     gridcv, gridcvlv, gridcvlb, 
     gridcv_mb, gridcvlv_mb,
+    selwold,
     # Sampling
     sampks, sampdp, sampsys, sampclas,
     # Distances
@@ -235,8 +240,9 @@ export
     euclsq, mahsq, mahsqchol,
     krbf, kpol,
     # Graphics
-    plotscore,
-    plotsp
+    plotgrid,
+    plotsp,
+    plotxy
     # Not exported since surcharge:
     # - summary => Base.summary
 

@@ -603,7 +603,7 @@ end
 
 """
     recodcat2int(x; start = 1)
-Recode a categorical variable to a numeric variable
+Recode a categorical variable to a integer variable
 * `x` : Variable to recode.
 * `start` : Integer value that will be set to the first category.
 
@@ -664,7 +664,8 @@ Replace the elements of a vector by levels of corresponding order.
 * `x` : Vector (n) of values to replace.
 * `lev` : Vector (nlev) containing the levels.
 
-`x` and `lev` must contain the same number of levels.
+*Warning*: `x` and `lev` must contain the same number (nlev) of levels.
+
 The ith sorted level in `x` is replaced by the ith sorted level of `lev`.
 
 ## Examples
@@ -676,7 +677,6 @@ sort(lev)
 zx = string.(x)
 [zx replacebylev(zx, lev)]
 
-x = [10; 4; 3; 3; 4; 4]
 lev = [3; 0; -1]
 [x replacebylev(x, lev)]
 ```
@@ -685,6 +685,7 @@ function replacebylev(x, lev)
     n = length(x)
     lev = sort(lev)
     nlev = length(lev)
+    @assert nlev == length(lev) "x and lev must contain the same number of levels."
     x_lev = tab(x).keys
     v = similar(lev, n)
     @inbounds for i = 1:nlev
@@ -700,9 +701,10 @@ Replace the elements of an index-vector by levels.
 * `x` : Vector (n) of values to replace.
 * `lev` : Vector (nlev) containing the levels.
 
-Let us note nlev the number of levels in `lev`. 
-Vector `x`must contain integer values between 1 and nlev. 
-Each element `x[i]` (i = 1:n) is replaced by `lev[x[i]]`.
+*Warning*: Let us note "nlev" the number of levels in `lev`. 
+Vector `x` must contain integer values between 1 and nlev. 
+
+Each element `x[i]` (i = 1,...,n) is replaced by `lev[x[i]]`.
 
 ## Examples
 ```julia

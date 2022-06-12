@@ -19,8 +19,8 @@ All the arguments in kwargs must have length = 1 (not collections).
 """
 function locw(Xtrain, Ytrain, X ; 
     listnn, listw = nothing, fun, verbose = false, kwargs...)
-    m = size(X, 1)
-    q = size(Ytrain, 2)
+    m = nro(X)
+    q = nco(Ytrain)
     #pred = zeros(m, q)
     pred = similar(Ytrain, m, q)
     @inbounds for i = 1:m

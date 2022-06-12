@@ -71,7 +71,7 @@ res = gridcvlv(Xtrain, ytrain; segm = segm,
     score = rmsep, fun = plskern, nlv = nlv).res
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-plotscore(res.nlv, res.y1;
+plotgrid(res.nlv, res.y1;
     xlabel = "Nb. LVs", ylabel = "RMSEP").f
 
 fm = plskern(Xtrain, ytrain; nlv = res.nlv[u]) ;
@@ -93,7 +93,7 @@ res = gridcvlv(Xtrain, ytrain; segm = segm,
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
 group = string.("h=", res.h, " k=", res.k)
-plotscore(res.nlv, res.y1, group;
+plotgrid(res.nlv, res.y1, group;
     xlabel = "Nb. LVs", ylabel = "RMSECV").f
 
 fm = lwplsr(Xtrain, ytrain;
@@ -112,7 +112,7 @@ res = gridcvlb(Xtrain, ytrain; segm = segm,
     score = rmsep, fun = rr, lb = lb).res
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-plotscore(log.(res.lb), res.y1;
+plotgrid(log.(res.lb), res.y1;
     xlabel = "Lambda", ylabel = "RMSECV").f
 
 fm = rr(Xtrain, ytrain; lb = res.lb[u]) ;
@@ -133,7 +133,7 @@ res = gridcvlb(Xtrain, ytrain; segm = segm,
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
 group = string.("gamma=", res.gamma)
-plotscore(log.(res.lb), res.y1, group;
+plotgrid(log.(res.lb), res.y1, group;
     xlabel = "Lambda", ylabel = "RMSECV").f
 
 fm = krr(Xtrain, ytrain; gamma = res.gamma[u], lb = res.lb[u]) ;

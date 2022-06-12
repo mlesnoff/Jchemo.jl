@@ -1,9 +1,17 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.0.19* 
+- New 
+    - **selwold** : Wold's criterion to select dimensionality in LV (e.g. PLSR) models.
+    - **plotxy** : Scatter plot (x, y) data.
+
+- Modified 
+    - **plotscore**: Renamed to **plotgrid**.    
+
 ### *Version 0.0.18* 
 - New 
-    - **plotscore** : Plot "scores" of model prediction performances (error rates).
-
+    - **plotgrid** : Plot error or performance rates of model predictions.
+ 
 - Modified 
     - **plotsp**: argument 'resolution' was added.
 

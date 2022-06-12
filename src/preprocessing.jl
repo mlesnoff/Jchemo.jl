@@ -319,6 +319,7 @@ end
 
 function mavg!(X::Matrix; f)
     n, p = size(X)
+    f = Int64(f)
     kern = ImageFiltering.centered(ones(f) / f) ;
     out = similar(X, p)
     @inbounds for i = 1:n

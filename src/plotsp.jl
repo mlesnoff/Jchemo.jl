@@ -6,7 +6,7 @@ Plotting spectra.
 * `wl` : Column names of `X`. Must be numeric.
 * `color` : Set a unique color (and eventually transparency) to the spectra.
 * 'resolution' : Resolution (horizontal, vertical) of the figure.
-* `kwargs` : Optional arguments to pass in `Axis`.
+* `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.
 The function plots the rows of `X`.
 
 ## Examples

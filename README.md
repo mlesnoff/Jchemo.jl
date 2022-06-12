@@ -1,7 +1,7 @@
 # Jchemo.jl
 
 ## Dimension reduction, Regression and Discrimination for Chemometrics
-## <span style="color:grey70"> Version 0.0.18  </span> 
+## <span style="color:grey70"> Version 0.0.19  </span> 
 
 <!-- [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/stable) -->
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/dev)
@@ -19,7 +19,7 @@ Most of the functions have a **help page**, e.g.
 ?savgol
 ```
 
-The package is under construction. Some functions may change in the future. 
+The package is under still construction. Some functions may change in the future. 
 
 ## <span style="color:green"> **Available functions** </span> 
 
