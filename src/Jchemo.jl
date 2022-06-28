@@ -226,7 +226,7 @@ export
     transform, coef, predict,
     # Validation
     residreg, residcla, 
-    ssr, msep, rmsep, bias, sep, cor2, r2, rpd, rpdr, mse, err,
+    ssr, msep, rmsep, rmsep_stand, bias, sep, cor2, r2, rpd, rpdr, mse, err,
     mpar,
     gridscore, gridscorelv, gridscorelb,
     segmts, segmkf,

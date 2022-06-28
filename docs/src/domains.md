@@ -1,4 +1,4 @@
-# Domains
+# Available methods
 
 ## PCA
 

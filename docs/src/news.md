@@ -1,5 +1,10 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.0.20* 
+- Modified 
+    - Code cleaning 
+
+
 ### *Version 0.0.19* 
 - New 
     - **selwold** : Wold's criterion to select dimensionality in LV (e.g. PLSR) models.

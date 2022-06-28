@@ -73,7 +73,6 @@ function plotgrid(indx, r, group; resolution = (700, 350), step = 5,
     xticks = collect(minimum(indx):step:maximum(indx))
     lev = sort(unique(group))
     nlev = length(lev)
-    println(nlev)
     f = Figure(resolution = resolution)
     ax = Axis(f; xticks = (xticks, string.(xticks)), kwargs...)
     for i = 1:nlev

@@ -1,134 +1,4 @@
 """
-    residreg(pred, Y) 
-Compute regression prediction errors.
-* `pred` : Predictions.
-* `Y` : Observed data.
-
-## Examples
-```julia
-Xtrain = rand(10, 5) 
-Ytrain = rand(10, 2)
-ytrain = Ytrain[:, 1]
-Xtest = rand(4, 5) 
-Ytest = rand(4, 2)
-ytest = Ytest[:, 1]
-
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
-residreg(pred, Ytest)
-
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
-residreg(pred, ytest)
-```
-"""
-residreg(pred, Y) = ensure_mat(Y) - pred
-
-"""
-    residcla(pred, y) 
-Compute classification prediction error (0 = no error, 1 = error).
-* `pred` : Predictions.
-* `y` : Observed data.
-
-## Examples
-```julia
-Xtrain = rand(10, 5) 
-ytrain = rand(["a" ; "b"], 10)
-Xtest = rand(4, 5) 
-ytest = rand(["a" ; "b"], 4)
-
-fm = plsrda(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
-residcla(pred, ytest)
-```
-"""
-residcla(pred, Y) = pred .!= ensure_mat(Y)
-
-"""
-    ssr(pred, Y)
-Compute the sum of squared prediction errors (SSR).
-* `pred` : Predictions.
-* `Y` : Observed data.
-
-## Examples
-```julia
-Xtrain = rand(10, 5) 
-Ytrain = rand(10, 2)
-ytrain = Ytrain[:, 1]
-Xtest = rand(4, 5) 
-Ytest = rand(4, 2)
-ytest = Ytest[:, 1]
-
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
-ssr(pred, Ytest)
-
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
-ssr(pred, ytest)
-```
-"""
-function ssr(pred, Y)
-    r = residreg(pred, Y)
-    reshape(sum(r.^2, dims = 1), 1, :)
-end
-
-"""
-    msep(pred, Y)
-Compute the mean of the squared prediction errors (MSEP).
-* `pred` : Predictions.
-* `Y` : Observed data.
-
-## Examples
-```julia
-Xtrain = rand(10, 5) 
-Ytrain = rand(10, 2)
-ytrain = Ytrain[:, 1]
-Xtest = rand(4, 5) 
-Ytest = rand(4, 2)
-ytest = Ytest[:, 1]
-
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
-msep(pred, Ytest)
-
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
-msep(pred, ytest)
-```
-"""
-function msep(pred, Y)
-    r = residreg(pred, Y)
-    reshape(colmean(r.^2), 1, :)
-end
-
-"""
-    rmsep(pred, Y)
-Compute the square root of the mean of the squared prediction errors (RMSEP).
-* `pred` : Predictions.
-* `Y` : Observed data.
-
-## Examples
-```julia
-Xtrain = rand(10, 5) 
-Ytrain = rand(10, 2)
-ytrain = Ytrain[:, 1]
-Xtest = rand(4, 5) 
-Ytest = rand(4, 2)
-ytest = Ytest[:, 1]
-
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
-rmsep(pred, Ytest)
-
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
-rmsep(pred, ytest)
-```
-"""
-rmsep(pred, Y) = sqrt.(msep(pred, Y))
-
-"""
     bias(pred, Y)
 Compute the prediction bias, i.e. the opposite of the mean prediction error.
 * `pred` : Predictions.
@@ -155,76 +25,6 @@ bias(pred, ytest)
 function bias(pred, Y)
     r = residreg(pred, Y)
     reshape(-colmean(r), 1, :)
-end
-
-"""
-    sep(pred, Y)
-Compute the corrected SEP ("SEP_c"), i.e. the standard deviation of the prediction errors.
-* `pred` : Predictions.
-* `Y` : Observed data.
-
-## References
-Bellon-Maurel, V., Fernandez-Ahumada, E., Palagos, B., Roger, J.-M., McBratney, A., 2010.
-Critical review of chemometric indicators commonly used for assessing the quality of 
-the prediction of soil attributes by NIR spectroscopy. 
-TrAC Trends in Analytical Chemistry 29, 1073–1081. https://doi.org/10.1016/j.trac.2010.05.006
-
-## Examples
-```julia
-Xtrain = rand(10, 5) 
-Ytrain = rand(10, 2)
-ytrain = Ytrain[:, 1]
-Xtest = rand(4, 5) 
-Ytest = rand(4, 2)
-ytest = Ytest[:, 1]
-
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
-sep(pred, Ytest)
-
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
-sep(pred, ytest)
-```
-"""
-sep(pred, Y) = sqrt.(msep(pred, Y) .- bias(pred, Y).^2)
-
-"""
-    r2(pred, Y)
-Compute the R2 coefficient.
-* `pred` : Predictions.
-* `Y` : Observed data.
-
-The rate R2 is calculated by R2 = 1 - MSEP(current model) / MSEP(null model), 
-where the "null model" is the overall mean. 
-For predictions over CV or test sets, and/or for non linear models, 
-it can be different from the square of the correlation coefficient (`cor2`) 
-between the true data and the predictions. 
-
-
-## Examples
-```julia
-Xtrain = rand(10, 5) 
-Ytrain = rand(10, 2)
-ytrain = Ytrain[:, 1]
-Xtest = rand(4, 5) 
-Ytest = rand(4, 2)
-ytest = Ytest[:, 1]
-
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
-r2(pred, Ytest)
-
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
-r2(pred, ytest)
-```
-"""
-function r2(pred, Y)
-    m = size(Y, 1)
-    mu = colmean(Y)
-    zmu = reduce(hcat, fill(mu, m, 1))'
-    1 .- msep(pred, Y) ./ msep(zmu, Y)
 end
 
 """
@@ -258,6 +58,240 @@ function cor2(pred, Y)
     q == 1 ? res = [res; ] : res = diag(res)
     reshape(res, 1, :)
 end
+
+"""
+    err(pred, y)
+Compute the classification error rate (ERR).
+* `pred` : Predictions.
+* `y` : Observed data.
+
+## Examples
+```julia
+Xtrain = rand(10, 5) 
+ytrain = rand(["a" ; "b"], 10)
+Xtest = rand(4, 5) 
+ytest = rand(["a" ; "b"], 4)
+
+fm = plsrda(Xtrain, ytrain; nlv = 2)
+pred = predict(fm, Xtest).pred
+err(pred, ytest)
+```
+"""
+function err(pred, y)
+    r = residcla(pred, y)
+    res = [sum(r)] / size(y, 1)
+    reshape(res, 1, :)
+end
+
+"""
+    mse(pred, Y; digits = 3)
+Summary of model performance for regression.
+* `pred` : Predictions.
+* `Y` : Observed data.
+
+## Examples
+```julia
+Xtrain = rand(10, 5) 
+Ytrain = rand(10, 2)
+ytrain = Ytrain[:, 1]
+Xtest = rand(4, 5) 
+Ytest = rand(4, 2)
+ytest = Ytest[:, 1]
+
+fm = plskern(Xtrain, Ytrain; nlv = 2)
+pred = predict(fm, Xtest).pred
+mse(pred, Ytest)
+
+fm = plskern(Xtrain, ytrain; nlv = 2)
+pred = predict(fm, Xtest).pred
+mse(pred, ytest)
+```
+"""
+function mse(pred, Y; digits = 3)
+    q = size(Y, 2)
+    zmsep = msep(pred, Y)
+    zrmsep = sqrt.(zmsep)
+    zsep = sep(pred, Y)
+    zbias = bias(pred, Y)
+    zcor2 = cor2(pred, Y)    
+    zr2 = r2(pred, Y)
+    zrpd = rpd(pred, Y)
+    zrpdr = rpdr(pred, Y)
+    zmean = reshape(colmean(Y), 1, :)
+    nam = map(string, repeat(["y"], q), 1:q)
+    nam = reshape(nam, 1, :)
+    res = (nam = nam, msep = zmsep, rmsep = zrmsep, sep = zsep, bias = zbias, 
+        cor2 = zcor2, r2 = zr2, rpd = zrpd, rpdr = zrpdr, mean = zmean)
+    res = DataFrame(res)  
+    res[:, 2:end] = round.(res[:, 2:end], digits = digits)
+    res
+end
+
+"""
+    msep(pred, Y)
+Compute the mean of the squared prediction errors (MSEP).
+* `pred` : Predictions.
+* `Y` : Observed data.
+
+## Examples
+```julia
+Xtrain = rand(10, 5) 
+Ytrain = rand(10, 2)
+ytrain = Ytrain[:, 1]
+Xtest = rand(4, 5) 
+Ytest = rand(4, 2)
+ytest = Ytest[:, 1]
+
+fm = plskern(Xtrain, Ytrain; nlv = 2)
+pred = predict(fm, Xtest).pred
+msep(pred, Ytest)
+
+fm = plskern(Xtrain, ytrain; nlv = 2)
+pred = predict(fm, Xtest).pred
+msep(pred, ytest)
+```
+"""
+function msep(pred, Y)
+    r = residreg(pred, Y)
+    reshape(colmean(r.^2), 1, :)
+end
+
+"""
+    r2(pred, Y)
+Compute the R2 coefficient.
+* `pred` : Predictions.
+* `Y` : Observed data.
+
+The rate R2 is calculated by R2 = 1 - MSEP(current model) / MSEP(null model), 
+where the "null model" is the overall mean. 
+For predictions over CV or test sets, and/or for non linear models, 
+it can be different from the square of the correlation coefficient (`cor2`) 
+between the true data and the predictions. 
+
+## Examples
+```julia
+Xtrain = rand(10, 5) 
+Ytrain = rand(10, 2)
+ytrain = Ytrain[:, 1]
+Xtest = rand(4, 5) 
+Ytest = rand(4, 2)
+ytest = Ytest[:, 1]
+
+fm = plskern(Xtrain, Ytrain; nlv = 2)
+pred = predict(fm, Xtest).pred
+r2(pred, Ytest)
+
+fm = plskern(Xtrain, ytrain; nlv = 2)
+pred = predict(fm, Xtest).pred
+r2(pred, ytest)
+```
+"""
+function r2(pred, Y)
+    m = size(Y, 1)
+    mu = colmean(Y)
+    zmu = reduce(hcat, fill(mu, m, 1))'
+    1 .- msep(pred, Y) ./ msep(zmu, Y)
+end
+
+"""
+    residcla(pred, y) 
+Compute classification prediction error (0 = no error, 1 = error).
+* `pred` : Predictions.
+* `y` : Observed data.
+
+## Examples
+```julia
+Xtrain = rand(10, 5) 
+ytrain = rand(["a" ; "b"], 10)
+Xtest = rand(4, 5) 
+ytest = rand(["a" ; "b"], 4)
+
+fm = plsrda(Xtrain, ytrain; nlv = 2)
+pred = predict(fm, Xtest).pred
+residcla(pred, ytest)
+```
+"""
+residcla(pred, Y) = pred .!= ensure_mat(Y)
+
+"""
+    residreg(pred, Y) 
+Compute regression prediction errors.
+* `pred` : Predictions.
+* `Y` : Observed data.
+
+## Examples
+```julia
+Xtrain = rand(10, 5) 
+Ytrain = rand(10, 2)
+ytrain = Ytrain[:, 1]
+Xtest = rand(4, 5) 
+Ytest = rand(4, 2)
+ytest = Ytest[:, 1]
+
+fm = plskern(Xtrain, Ytrain; nlv = 2)
+pred = predict(fm, Xtest).pred
+residreg(pred, Ytest)
+
+fm = plskern(Xtrain, ytrain; nlv = 2)
+pred = predict(fm, Xtest).pred
+residreg(pred, ytest)
+```
+"""
+residreg(pred, Y) = ensure_mat(Y) - pred
+
+"""
+    rmsep(pred, Y)
+Compute the square root of the mean of the squared prediction errors (RMSEP).
+* `pred` : Predictions.
+* `Y` : Observed data.
+
+## Examples
+```julia
+Xtrain = rand(10, 5) 
+Ytrain = rand(10, 2)
+ytrain = Ytrain[:, 1]
+Xtest = rand(4, 5) 
+Ytest = rand(4, 2)
+ytest = Ytest[:, 1]
+
+fm = plskern(Xtrain, Ytrain; nlv = 2)
+pred = predict(fm, Xtest).pred
+rmsep(pred, Ytest)
+
+fm = plskern(Xtrain, ytrain; nlv = 2)
+pred = predict(fm, Xtest).pred
+rmsep(pred, ytest)
+```
+"""
+rmsep(pred, Y) = sqrt.(msep(pred, Y))
+
+"""
+    rmsep_stand(pred, Y)
+Compute the standardized square root of the mean of the squared prediction errors (RMSEP_stand).
+* `pred` : Predictions.
+* `Y` : Observed data.
+
+RMSEP is standardized to `Y`: RMSEP_stand = RMSEP ./ `Y`.
+
+## Examples
+```julia
+Xtrain = rand(10, 5) 
+Ytrain = rand(10, 2)
+ytrain = Ytrain[:, 1]
+Xtest = rand(4, 5) 
+Ytest = rand(4, 2)
+ytest = Ytest[:, 1]
+
+fm = plskern(Xtrain, Ytrain; nlv = 2)
+pred = predict(fm, Xtest).pred
+rmsep_stand(pred, Ytest)
+
+fm = plskern(Xtrain, ytrain; nlv = 2)
+pred = predict(fm, Xtest).pred
+rmsep_stand(pred, ytest)
+```
+"""
+rmsep_stand(pred, Y) = sqrt.(msep(pred, Y)) ./ Y
 
 """
     rpd(pred, Y)
@@ -324,19 +358,41 @@ function rpdr(pred, Y)
     reshape(res, 1, :)
 end
 
+"""
+    sep(pred, Y)
+Compute the corrected SEP ("SEP_c"), i.e. the standard deviation of the prediction errors.
+* `pred` : Predictions.
+* `Y` : Observed data.
 
-# Robust RPD = MAD(Y) / Median(Abs(prediction errors))
-# MAD = Median(Abs(prediction errors)) where the median is the null model
-#rpdr <- function(pred, Y) {
-#    u <- apply(.mat(Y), FUN = mad, MARGIN = 2) / 1.4826
-#    r <- residreg(pred, Y)
-#    v <- apply(.mat(abs(r)), FUN = median, MARGIN = 2)
-#    u / v
-#}
+## References
+Bellon-Maurel, V., Fernandez-Ahumada, E., Palagos, B., Roger, J.-M., McBratney, A., 2010.
+Critical review of chemometric indicators commonly used for assessing the quality of 
+the prediction of soil attributes by NIR spectroscopy. 
+TrAC Trends in Analytical Chemistry 29, 1073–1081. https://doi.org/10.1016/j.trac.2010.05.006
+
+## Examples
+```julia
+Xtrain = rand(10, 5) 
+Ytrain = rand(10, 2)
+ytrain = Ytrain[:, 1]
+Xtest = rand(4, 5) 
+Ytest = rand(4, 2)
+ytest = Ytest[:, 1]
+
+fm = plskern(Xtrain, Ytrain; nlv = 2)
+pred = predict(fm, Xtest).pred
+sep(pred, Ytest)
+
+fm = plskern(Xtrain, ytrain; nlv = 2)
+pred = predict(fm, Xtest).pred
+sep(pred, ytest)
+```
+"""
+sep(pred, Y) = sqrt.(msep(pred, Y) .- bias(pred, Y).^2)
 
 """
-    mse(pred, Y; digits = 3)
-Summary of model performance for regression.
+    ssr(pred, Y)
+Compute the sum of squared prediction errors (SSR).
 * `pred` : Predictions.
 * `Y` : Observed data.
 
@@ -351,55 +407,16 @@ ytest = Ytest[:, 1]
 
 fm = plskern(Xtrain, Ytrain; nlv = 2)
 pred = predict(fm, Xtest).pred
-mse(pred, Ytest)
+ssr(pred, Ytest)
 
 fm = plskern(Xtrain, ytrain; nlv = 2)
 pred = predict(fm, Xtest).pred
-mse(pred, ytest)
+ssr(pred, ytest)
 ```
 """
-function mse(pred, Y; digits = 3)
-    q = size(Y, 2)
-    zmsep = msep(pred, Y)
-    zrmsep = sqrt.(zmsep)
-    zsep = sep(pred, Y)
-    zbias = bias(pred, Y)
-    zcor2 = cor2(pred, Y)    
-    zr2 = r2(pred, Y)
-    zrpd = rpd(pred, Y)
-    zrpdr = rpdr(pred, Y)
-    zmean = reshape(colmean(Y), 1, :)
-    nam = map(string, repeat(["y"], q), 1:q)
-    nam = reshape(nam, 1, :)
-    res = (nam = nam, msep = zmsep, rmsep = zrmsep, sep = zsep, bias = zbias, 
-        cor2 = zcor2, r2 = zr2, rpd = zrpd, rpdr = zrpdr, mean = zmean)
-    res = DataFrame(res)  
-    res[:, 2:end] = round.(res[:, 2:end], digits = digits)
-    res
-end
-
-"""
-    err(pred, y)
-Compute the classification error rate (ERR).
-* `pred` : Predictions.
-* `y` : Observed data.
-
-## Examples
-```julia
-Xtrain = rand(10, 5) 
-ytrain = rand(["a" ; "b"], 10)
-Xtest = rand(4, 5) 
-ytest = rand(["a" ; "b"], 4)
-
-fm = plsrda(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
-err(pred, ytest)
-```
-"""
-function err(pred, y)
-    r = residcla(pred, y)
-    res = [sum(r)] / size(y, 1)
-    reshape(res, 1, :)
+function ssr(pred, Y)
+    r = residreg(pred, Y)
+    reshape(sum(r.^2, dims = 1), 1, :)
 end
 
 # scores:
