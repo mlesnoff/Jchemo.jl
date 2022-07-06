@@ -53,6 +53,7 @@ include("plsr_avg_shenk.jl")
 include("plsr_stack.jl")
 include("cglsr.jl")
 include("pcr.jl")
+include("covselr.jl")  
 include("krr.jl") ; include("kplsr.jl") ; include("dkplsr.jl")
 include("aicplsr.jl")
 include("wshenk.jl")  
@@ -184,7 +185,8 @@ export
     plskern, plskern!, plsnipals, plsnipals!, 
     plsrosa, plsrosa!, plssimp, plssimp!,
     cglsr, cglsr!,
-    pcr, 
+    pcr,
+    covselr,
     rr, rr!, rrchol, rrchol!,   
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
     plsr_avg, plsr_avg!,

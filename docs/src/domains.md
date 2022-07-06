@@ -42,10 +42,6 @@
 - **mlrpinv_n** Normal equations and pseudo-inverse
 - **mlrvec** Simple linear regression (Univariate x)
 
-*Ill-conditionned* 
-
-- **cglsr** Conjugate gradient for the least squares normal equations (CGLS)
-
 ### **Partial least squares (PLSR)**
 
 - **plskern** "Improved kernel #1" *Dayal & McGregor 1997*
@@ -55,21 +51,22 @@
 - **kplsr** Non linear kernel (KPLSR) *Rosipal & Trejo 2001*
 - **dkplsr** Direct non linear kernel (DKPLSR) *Bennett & Embrechts 2003*
 
+*Variants* 
+- **cglsr** Conjugate gradient for the least squares normal equations (CGLS)
+- **covselr** MLR on variables selected from partial correlation or covariance (Covsel)
+- **pcr** SVD factorization
+
 *Averaging and stacking*
 - **plsr_avg** Averaging and stacking PLSR models with different numbers of LVs (PLSR-AVG)
 
 *Variable selection*
-- **covsel** CovSel (Roger et al. 2011)
+- **covsel** Variable selection from partial correlation or covariance (Covsel)
 - **iplsr** Interval PLSR (iPLS) (Nørgaard et al. 2000)
 
 *Multiblock*
 - **mbplsr** Multiblock (MBPLSR; concatenated autoscaled blocks)
 - **mbplsr_rosa** ROSA *Liland et al. 2016*
 - **mbplsr_so** Sequentially orthogonalized (SO-PLSR) 
-
-### **Principal component (PCR)**
-
-- **pcr** SVD factorization
 
 ### **Ridge (RR, KRR)**
 
@@ -97,7 +94,7 @@
 - **xgboostr** XGBoost
 - **vimp_xgb** Variable importance (Works also for DA models)
 
-### **Bagging**
+### **Generic bagging**
 
 - **baggr** Bagging 
 - **baggr_oob** Out-of-bag error rate

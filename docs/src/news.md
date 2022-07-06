@@ -1,8 +1,11 @@
 ### NEWS for package **Jchemo**
 
 ### *Version 0.0.20* 
+- New 
+    - **covselr**: Covsel regression (Covsel+Mlr).
+
 - Modified 
-    - Code cleaning 
+    - **covsel**, **mlrvec**: Arguments changed.
 
 
 ### *Version 0.0.19* 

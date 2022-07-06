@@ -5,7 +5,7 @@ struct Mlr
 end
 
 """
-    mlr(X, Y, weights = ones(size(X, 1)); noint::Bool = false)
+    mlr(X, Y, weights = ones(size(X, 1)); noint = false)
     mlr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); noint::Bool = false)
 Compute a mutiple linear regression model (MLR) by using the QR algorithm.
 * `X` : X-data (n, p).
@@ -61,11 +61,14 @@ zcoef.int
 zcoef.B
 ```
 """ 
-function mlr(X, Y, weights = ones(size(X, 1)); noint::Bool = false)
-    mlr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; noint = noint)
+function mlr(X, Y, weights = ones(size(X, 1)); 
+        noint = false)
+    mlr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights;
+        noint = noint)
 end
 
-function mlr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); noint::Bool = false)
+function mlr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); 
+        noint::Bool = false)
     weights = mweight(weights)
     sqrtD = Diagonal(sqrt.(weights))
     if noint
@@ -116,7 +119,7 @@ function mlrchol!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)))
 end
 
 """
-    mlrpinv(X, Y, weights = ones(size(X, 1)); noint::Bool = false)
+    mlrpinv(X, Y, weights = ones(size(X, 1)); noint = false)
     mlrpinv!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); noint::Bool = false)
 Compute a mutiple linear regression model (MLR)  by using a pseudo-inverse. 
 * `X` : X-data.
@@ -128,11 +131,14 @@ Safe but can be slower.
 
 See `?mlr` for examples.
 """ 
-function mlrpinv(X, Y, weights = ones(size(X, 1)); noint::Bool = false)
-    mlrpinv!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; noint = noint)
+function mlrpinv(X, Y, weights = ones(size(X, 1)); 
+        noint = false)
+    mlrpinv!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
+        noint = noint)
 end
 
-function mlrpinv!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); noint::Bool = false)
+function mlrpinv!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); 
+        noint::Bool = false)
     weights = mweight(weights)
     sqrtD = Diagonal(sqrt.(weights))
     if noint
@@ -188,8 +194,10 @@ function mlrpinv_n!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)))
 end
 
 """
-    mlrvec(x, Y, weights = ones(length(x)))
-    mlrvec!(x::Matrix, Y::Matrix, weights = ones(length(x)))
+    mlrvec(x, Y, weights = ones(length(x));
+        noint = false)
+    mlrvec!(x::Matrix, Y::Matrix, weights = ones(length(x));
+        noint::Bool = false)
 Compute a simple linear regression model (univariate x).
 * `x` : Univariate X-data.
 * `Y` : Y-data.
@@ -200,20 +208,30 @@ Compute a model with intercept.
 See `?mlr` for examples.
 """ 
      
-function mlrvec(x, Y, weights = ones(length(x)))
-    mlrvec!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights)
+function mlrvec(x, Y, weights = ones(length(x));
+        noint = false)
+    mlrvec!(copy(ensure_mat(x)), copy(ensure_mat(Y)), weights;
+        noint = noint)
 end
 
-function mlrvec!(x::Matrix, Y::Matrix, weights = ones(length(x)))
+function mlrvec!(x::Matrix, Y::Matrix, weights = ones(length(x));
+        noint::Bool = false)
     @assert nco(x) == 1 "Method only working for univariate x."
     weights = mweight(weights)
-    xmeans = colmean(x, weights) 
-    ymeans = colmean(Y, weights)   
-    center!(x, xmeans)
-    center!(Y, ymeans)
-    xtD = x' * Diagonal(weights)
-    B = (xtD * Y) ./ (xtD * x)
-    int = ymeans' .- xmeans' * B
+    if noint
+        q = nco(Y)
+        xtD = x' * Diagonal(weights)
+        B = (xtD * Y) ./ (xtD * x)
+        int = zeros(q)'
+    else
+        xmeans = colmean(x, weights) 
+        ymeans = colmean(Y, weights)   
+        center!(x, xmeans)
+        center!(Y, ymeans)
+        xtD = x' * Diagonal(weights)
+        B = (xtD * Y) ./ (xtD * x)
+        int = ymeans' .- xmeans' * B
+    end
     Mlr(B, int, weights)
 end
 
