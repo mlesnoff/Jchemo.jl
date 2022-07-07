@@ -1008,7 +1008,7 @@ end
 View of the i-th row(s) or j-th column(s) of a matrix `X`,
 or of the i-th element(s) of vector `x`.
 """ 
-vrow(X, i) = view(X, i, :)
+vrow(X, i) = view(X, i, :) 
 vrow(X::DataFrame, i) = view(Matrix(X), i, :)
 
 vrow(x::Vector, i) = view(x, i)
