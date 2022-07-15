@@ -34,7 +34,7 @@ fm = pcasvd(X, nlv = 3) ;
 T = fm.T
 
 plotxy(T[:, 1], T[:, 2]; color = (:red, .5)).f
-plotxy(T[:, 1], T[:, 2], year; ellispe = true).f
+plotxy(T[:, 1], T[:, 2], year; ellipse = true).f
 ```
 """ 
 function plotxy(x, y; resolution = (500, 400), 

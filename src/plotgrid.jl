@@ -9,7 +9,8 @@ Plot error or performance rates of model predictions.
 * `r` : The error/performance rates for the values of `x`. 
 * `group` : Categorical variable defining groups. 
     A separate line is plotted for each level of `group`.
-* 'resolution' : Resolution (horizontal, vertical) of the figure.
+* `resolution` : Resolution (horizontal, vertical) of the figure.
+* `step` : Step used for defining the xticks.
 * `color` : Set color. If `group` if used, must be a vector of same length
     as the number of levels in `group`.
 * `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.
