@@ -243,6 +243,7 @@
 - **colmean**, **colnorm2**, **colstd**, **colsum**, **colvar**  Column-wise operations
 - **covm**, **corm** Covariance and correlation matrices
 - **datasets** Datasets available in the package
+- **dens** Univariate kernel density estimation
 - **dummy** Build dummy table
 - **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
 - **fweight** Compute weights from distances

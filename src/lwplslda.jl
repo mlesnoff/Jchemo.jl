@@ -40,7 +40,7 @@ PLSR is replaced by PLS-LDA.
 ## Examples
 ```julia
 using JLD2
-mypath = dirname(dirname(pathof(Jchemo)))
+mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
 pnames(dat)

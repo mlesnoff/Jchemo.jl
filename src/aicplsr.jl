@@ -31,8 +31,8 @@ Journal of Chemometrics n/a, e3369. https://doi.org/10.1002/cem.3369
 # automatically scales the X matrix before PLS.
 # The example scales X for consistency with plsdof.
 
-using JLD2, DataFrames, CairoMakie 
-mypath = dirname(dirname(pathof(Jchemo)))
+using JchemoData, JLD2, DataFrames, CairoMakie 
+mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "ozone.jld2") 
 @load db dat
 pnames(dat)
@@ -90,8 +90,8 @@ Journal of Chemometrics n/a, e3369. https://doi.org/10.1002/cem.3369
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
-mypath = dirname(dirname(pathof(Jchemo)))
+using JchemoData, JLD2, CairoMakie
+mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)

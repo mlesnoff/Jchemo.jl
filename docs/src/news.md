@@ -1,5 +1,15 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.0.21* 
+- New 
+    - **dens**: Univariate kernel density estimation.
+
+- Modified 
+    - All the datasets (examples) have been moved to package JchemoData
+         (https://github.com/mlesnoff/JchemoData.jl)
+    - **plotsp**: Argument 'nsamp' added.
+
+
 ### *Version 0.0.20* 
 - New 
     - **covselr**: Covsel regression (Covsel+Mlr).

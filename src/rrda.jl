@@ -31,8 +31,8 @@ to the dummy variable for which the probability estimate is the highest.
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
-mypath = dirname(dirname(pathof(Jchemo)))
+using JchemoData, JLD2, CairoMakie
+mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
 pnames(dat)
@@ -90,7 +90,7 @@ to the dummy variable for which the probability estimate is the highest.
 ## Examples
 ```julia
 using JLD2
-mypath = dirname(dirname(pathof(Jchemo)))
+mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
 pnames(dat)

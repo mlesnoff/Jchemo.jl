@@ -17,8 +17,8 @@ function `covsel`), and then a MLR is implemened on these variables.
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
-mypath = dirname(dirname(pathof(Jchemo)))
+using JchemoData, JLD2, CairoMakie
+mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
@@ -53,6 +53,12 @@ function covselr(X, Y; nlv, typ = "corr")
     Covselr(fm, res.sel, res.cov2)
 end 
 
+"""
+    predict(object::Covselr, X)
+Compute Y-predictions from a fitted model.
+* `object` : The fitted model.
+* `X` : X-data for which predictions are computed.
+""" 
 function predict(object::Covselr, X)
     pred = predict(object.fm, X[:, object.sel.sel]).pred
     (pred = pred,)

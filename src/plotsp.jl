@@ -1,18 +1,19 @@
 """
     plotsp(X, wl = 1:size(X, 2); resolution = (500, 350),
-        color = nothing, kwargs...) 
+        color = nothing, nsamp, kwargs...) 
 Plotting spectra.
 * `X` : X-data.
 * `wl` : Column names of `X`. Must be numeric.
 * `color` : Set a unique color (and eventually transparency) to the spectra.
 * 'resolution' : Resolution (horizontal, vertical) of the figure.
+* `nsamp` : Nb. spectra to plot. If `nothing` (default), all spectra are plotted.
 * `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.
 The function plots the rows of `X`.
 
 ## Examples
 ```julia
-    using JLD2, CairoMakie
-    mypath = dirname(dirname(pathof(Jchemo)))
+    using JchemoData, JLD2, CairoMakie
+    mypath = dirname(dirname(pathof(JchemoData)))
     db = joinpath(mypath, "data", "cassav.jld2") 
     @load db dat
     pnames(dat)
@@ -32,8 +33,11 @@ The function plots the rows of `X`.
 
 """ 
 function plotsp(X, wl = 1:size(X, 2); resolution = (500, 350),
-        color = nothing, kwargs...) 
+        color = nothing, nsamp = nothing, kwargs...) 
     X = ensure_mat(X)
+    if !isnothing(nsamp)
+        X = X[sample(1:nro(X),nsamp; replace = false), :]
+    end
     n, p = size(X)
     f = Figure(resolution = resolution)
     ax = Axis(f; kwargs...)

@@ -30,8 +30,8 @@ Computational Statistics & Data Analysis 49, 99–108. https://doi.org/10.1016/j
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
-mypath = dirname(dirname(pathof(Jchemo)))
+using JchemoData, JLD2, CairoMakie
+mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)

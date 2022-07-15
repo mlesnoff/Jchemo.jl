@@ -29,7 +29,7 @@ coefficients "LD".
 ## Examples
 ```julia
 using Jchemo, JLD2, StatsBase, CairoMakie
-mypath = dirname(dirname(pathof(Jchemo)))
+mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "iris.jld2") 
 @load db dat
 pnames(dat)

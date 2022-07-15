@@ -42,8 +42,8 @@ Journal of Machine Learning Research 2, 97-123.
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
-mypath = dirname(dirname(pathof(Jchemo)))
+using JchemoData, JLD2, CairoMakie
+mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)

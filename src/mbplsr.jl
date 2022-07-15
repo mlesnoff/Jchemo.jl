@@ -24,7 +24,7 @@ PLSR on scaled and concatened blocks.
 ## Examples
 ```julia
 using JLD2
-mypath = dirname(dirname(pathof(Jchemo)))
+mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "ham.jld2") 
 @load db dat
 pnames(dat) 

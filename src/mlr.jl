@@ -17,8 +17,8 @@ Safe but can be little slower than other methods.
 
 ## Examples
 ```julia
-using JLD2, CairoMakie, StatsBase
-mypath = dirname(dirname(pathof(Jchemo)))
+using JchemoData, JLD2, CairoMakie, StatsBase
+mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "iris.jld2") 
 @load db dat
 pnames(dat)

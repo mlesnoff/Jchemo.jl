@@ -23,8 +23,8 @@ Spectroscopy. Appl Spectrosc 54, 413–419. https://doi.org/10.1366/000370200194
 
 ## Examples
 ```julia
-using JLD2, CairoMakie, StatsBase
-mypath = dirname(dirname(pathof(Jchemo)))
+using JchemoData, JLD2, CairoMakie, StatsBase
+mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "challenge2021_cal.jld2") 
 @load db dat
 pnames(dat)

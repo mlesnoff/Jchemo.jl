@@ -28,6 +28,7 @@ include("plotxy.jl")
 include("ellipse.jl")
 include("preprocessing.jl") 
 include("rmgap.jl")
+include("dens.jl")
 
 include("fda.jl")
 include("pcasvd.jl")
@@ -135,6 +136,7 @@ export
     colmean, colnorm2, colstd, colsum, colvar,
     corm, covm, 
     datasets,
+    dens,
     dummy,
     ensure_df, ensure_mat,
     findmax_cla, 

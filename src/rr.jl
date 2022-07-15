@@ -34,8 +34,8 @@ Technometrics 12, 55-67. https://doi.org/10.1080/00401706.1970.10488634
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
-mypath = dirname(dirname(pathof(Jchemo)))
+using JchemoData, JLD2, CairoMakie
+mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
