@@ -385,21 +385,6 @@ function corm(X, Y, w)
     zX' * Diagonal(w) * zY
 end
 
-
-"""
-    datasets()
-Print the names of the datasets available in the package.
-
-## Example
-```julia
-datasets()
-```
-"""
-function datasets()
-    path = joinpath(@__DIR__, "..", "data")
-    readdir(path)
-end
-
 """
     dummy(y)
 Build a table of dummy variables from a categorical variable.

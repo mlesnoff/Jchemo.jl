@@ -135,7 +135,6 @@ export
     center, center!, 
     colmean, colnorm2, colstd, colsum, colvar,
     corm, covm, 
-    datasets,
     dens,
     dummy,
     ensure_df, ensure_mat,

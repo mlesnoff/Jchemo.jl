@@ -8,6 +8,7 @@
     - All the datasets (examples) have been moved to package JchemoData
          (https://github.com/mlesnoff/JchemoData.jl)
     - **plotsp**: Argument 'nsamp' added.
+    - **datasets**: removed and transferred to JchemoData.jl
 
 
 ### *Version 0.0.20* 
