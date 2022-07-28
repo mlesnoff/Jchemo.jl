@@ -19,7 +19,7 @@ Most of the functions have a **help page**, e.g.
 ?savgol
 ```
 
-See the **News** section for eventual changes.
+See the **News** section for changes between versions.
 
 ## <span style="color:green"> **Available functions** </span> 
 
