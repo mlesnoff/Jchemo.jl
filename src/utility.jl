@@ -717,6 +717,28 @@ function replacebylev2(x::Union{Int64, Array{Int64}}, lev::Array)
 end
 
 """
+    replacedict(x, dict)
+Replace the elements of a vector by levels defined in a dictionary.
+* `x` : Vector (n) of values to replace.
+* `dict` : A dictionary of the correpondances betwwen the old and new values.
+
+## Examples
+```julia
+dict = Dict("a" => 1000, "b" => 1, "c" => 2)
+
+x = ["c"; "c"; "a"; "a"; "a"]
+replacedict(x, dict)
+
+x = ["c"; "c"; "a"; "a"; "a"; "e"]
+replacedict(x, dict)
+```
+"""
+function replacedict(x, dict)
+    replace(x, dict...)
+end
+
+
+"""
     rmcol(X, s)
 Remove the columns of a matrix or the components of a vector 
 having indexes `s`.

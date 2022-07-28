@@ -54,6 +54,7 @@ mahsq(X[1:1, :], Y[1:1, :], Sinv)
 
 mahsq(X[:, 1], 4)
 mahsq(1, 4, 2.1)
+```
 """
 function mahsq(X, Y)
     X = ensure_mat(X)
@@ -98,6 +99,7 @@ mahsq(X[1:1, :], Y[1:1, :], Sinv)
 
 mahsqchol(X[:, 1], 4)
 mahsqchol(1, 4, sqrt(2.1))
+```
 """
 function mahsqchol(X, Y)
     X = ensure_mat(X)

@@ -261,6 +261,7 @@
 - **recodnum2cla** Recode a continuous variable to classes
 - **replacebylev** Replace the elements of a vector by levels of corresponding order
 - **replacebylev2** : Replace the elements of an index-vector by levels
+- **replacedict** : Replace the elements of a vector by levels defined in a dictionary
 - **rowmean**, **rowstd**, **rowsum** Row-wise operations
 - **sourcedir** Include all the files contained in a directory
 - **ssq** Total inertia of a matrix

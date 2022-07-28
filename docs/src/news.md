@@ -1,5 +1,12 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.0.22*
+- New 
+    - **replacedict**: Replace the elements of a vector by levels defined in a dictionary
+
+- Modified
+    - Improvment of **scordis** and **odis**
+
 ### *Version 0.0.21* 
 - New 
     - **dens**: Univariate kernel density estimation.

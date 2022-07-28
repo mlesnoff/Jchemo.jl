@@ -2,6 +2,8 @@ struct Scordis
     dis
     fm
     Sinv::Matrix{Float64}
+    dist
+    g::Real
     cutoff::Real   
     nlv::Int64
 end
@@ -9,6 +11,8 @@ end
 struct Odis
     dis
     fm
+    dist
+    g::Real
     cutoff::Real   
     nlv::Int64
 end
@@ -25,19 +29,30 @@ Compute the score distances (SDs) from a PCA or PLS model
         containing extreme values.
 * `alpha` : Risk-I level used for computing the cutoff detecting extreme values.
 
-SDs are the Mahalanobis distances of the projected row observations on the 
-score plan to the center of the score plan.
+Mahalanobis distances between the projected row observations on the 
+score plan and the center of the score plan (= "score distances" = SDs).
 
-A cutoff is computed from the training, using a moment estimation of 
-the Chi-squared distrbution assumed for SD^2 (see e.g. Pomerantzev 2008). 
+In this function, the scaled training SD^2 (= SD^2 / g) is assumed to follow a  
+Chi2 distribution: SD^2 ~ g * Chi(nu), where nu is a number of degrees of 
+freedom and g a scaling parameters. Parameters nu and g are estimated 
+from the training by the moment method (Nomikos & MacGregor, 1995; Pomerantzev 2008).
+
+A heuristic cutoff for detecting "extreme" SDs is computed from this 
+estimated distribution. The same cutoff value is used for observations coming 
+from the training (that were used to estimate nu and g) and for eventual new observations.
+
 In the output, column `dstand` is a standardized distance defined as SD / cutoff. 
 A value dstand > 1 may be considered as extreme.
+Column `pval` report the p-values based on the estimated distribution.
 
-The Winisi "GH" is also provided (usually, GH > 3 is considered as extreme).
+The Winisi "GH" is also provided (usually, GH > 3 is considered as "extreme").
 
 ## References
 M. Hubert, P. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust 
 principal components analysis. Technometrics, 47, 64-79.
+
+Nomikos, P., MacGregor, J.F., 1995. Multivariate SPC Charts for Monitoring Batch Processes. 
+null 37, 41-59. https://doi.org/10.1080/00401706.1995.10485888
 
 Pomerantsev, A.L., 2008. Acceptance areas for multivariate classification derived by 
 projection methods. Journal of Chemometrics 22, 601-609. https://doi.org/10.1002/cem.1147
@@ -99,10 +114,13 @@ function scordis(object::Union{Pca, Plsr};
         s2 = mad(d2)^2
     end
     nu = 2 * mu^2 / s2
-    cutoff = sqrt(mu / nu * quantile.(Distributions.Chisq(nu), 1 - alpha))
+    g = mu / nu
+    dist = Distributions.Chisq(nu)
+    pval = Distributions.ccdf.(dist, d2 / g)
+    cutoff = sqrt(g * quantile(dist, 1 - alpha))
     dstand = d / cutoff 
-    dis = DataFrame((d = d, dstand = dstand, gh = d2 / nlv))
-    Scordis(dis, object, S, cutoff, nlv)
+    dis = DataFrame((d = d, dstand = dstand, pval = pval, gh = d2 / nlv))
+    Scordis(dis, object, S, dist, g, cutoff, nlv)
 end
 
 function predict(object::Scordis, X)
@@ -110,8 +128,9 @@ function predict(object::Scordis, X)
     T = transform(object.fm, X; nlv = nlv)
     d2 = mahsq(T, zeros(nlv)', object.Sinv)
     d = sqrt.(d2)
+    pval = Distributions.ccdf.(object.dist, d2 / object.g)
     dstand = d / object.cutoff 
-    dis = DataFrame((d = d, dstand = dstand, gh = d2 / nlv))
+    dis = DataFrame((d = d, dstand = dstand, pval = pval, gh = d2 / nlv))
     (dis = dis,)
 end
 
@@ -166,8 +185,8 @@ function odis(object::Union{Pca, Plsr}, X;
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     E = xresid(object, X; nlv = nlv)
-    d = sqrt.(sum(E .* E, dims = 2))
-    d2 = d.^2
+    d2 = sum(E .* E, dims = 2)
+    d = sqrt.(d2)
     if(!rob) 
         mu = mean(d2)   
         s2 = var(d2)
@@ -176,18 +195,23 @@ function odis(object::Union{Pca, Plsr}, X;
         s2 = mad(d2)^2
     end
     nu = 2 * mu^2 / s2
-    cutoff = sqrt(mu / nu * quantile.(Distributions.Chisq(nu), 1 - alpha))
+    g = mu / nu
+    dist = Distributions.Chisq(nu)
+    pval = Distributions.ccdf.(dist, d2 / g)
+    cutoff = sqrt(g * quantile(dist, 1 - alpha))
     dstand = d / cutoff 
-    dis = DataFrame((d = d, dstand = dstand))
-    Odis(dis, object, cutoff, nlv)
+    dis = DataFrame((d = d, dstand = dstand, pval = pval))
+    Odis(dis, object, dist, g, cutoff, nlv)
 end
 
 function predict(object::Odis, X)
     nlv = object.nlv
     E = xresid(object.fm, X; nlv = nlv)
-    d = sqrt.(sum(E .* E, dims = 2))
+    d2 = sum(E .* E, dims = 2)
+    d = sqrt.(d2)
     dstand = d / object.cutoff 
-    dis = DataFrame((d = d, dstand = dstand))
+    pval = Distributions.ccdf.(object.dist, d2 / object.g)
+    dis = DataFrame((d = d, dstand = dstand, pval = pval))
     (dis = dis,)
 end
 

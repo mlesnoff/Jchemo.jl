@@ -149,7 +149,7 @@ export
     nro,
     pnames, psize,
     recodcat2int, replacebylev2, recodnum2cla,
-    replacebylev,
+    replacebylev, replacedict, 
     rmcol, rmrow, 
     rowmean, rowstd, rowsum,   
     scale, scale!,
