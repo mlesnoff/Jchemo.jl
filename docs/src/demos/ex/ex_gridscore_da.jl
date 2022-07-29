@@ -3,6 +3,7 @@ using Jchemo
 n = 100 ; p = 10 
 X = rand(n, p) 
 y = rand([3, 4, 10], n) 
+#y = Float64.(rand([3, 4, 10], n)) 
 #y = rand(["a", "b", "c"], n) ;
 Xtrain = X[1:70, :] ; ytrain = y[1:70] 
 Xtest = X[71:n, :] ; ytest = y[71:n]
@@ -65,7 +66,7 @@ nlvdis = 5 ; metric = ["mahal";]
 h = [1; 3] ; k = [20; 10] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k) 
 gridscore(Xtrain, ytrain, Xtest, ytest;
-    score = msep, fun = knnda, pars = pars, verbose = true)
+    score = err, fun = knnda, pars = pars, verbose = true)
     
 ############ kNN-LWPLSR-DA
 
@@ -74,12 +75,12 @@ h = [1; 3] ; k = [20; 10]
 nlv = 1:2 
 pars = mpar(nlv = nlv, nlvdis = nlvdis, metric = metric, h = h, k = k) 
 gridscore(Xtrain, ytrain, Xtest, ytest;
-    score = msep, fun = lwplsrda, pars = pars, verbose = true)
+    score = err, fun = lwplsrda, pars = pars, verbose = true)
 
 # Faster
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k) 
 gridscorelv(Xtrain, ytrain, Xtest, ytest;
-    score = msep, fun = lwplsrda, nlv = nlv, pars = pars, verbose = false)
+    score = err, fun = lwplsrda, nlv = nlv, pars = pars, verbose = false)
 
 ############ kNN-LWPLS-LDA
 
@@ -88,22 +89,22 @@ h = [1; 3] ; k = [20; 10]
 nlv = 1:2 
 pars = mpar(nlv = nlv, nlvdis = nlvdis, metric = metric, h = h, k = k) 
 gridscore(Xtrain, ytrain, Xtest, ytest;
-    score = msep, fun = lwplslda, pars = pars, verbose = true)
+    score = err, fun = lwplslda, pars = pars, verbose = true)
 
 # Faster
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k) 
 gridscorelv(Xtrain, ytrain, Xtest, ytest;
-    score = msep, fun = lwplslda, nlv = nlv, pars = pars, verbose = false)
+    score = err, fun = lwplslda, nlv = nlv, pars = pars, verbose = false)
 
-########### PLSR-DA-AGG
+########### PLSR-DA-AVG
 
 # Here there is no sense to use gridscorelv
 
 pars = mpar(nlv = ["1:2"; "1:3"])
 gridscore(Xtrain, ytrain, Xtest, ytest;
-    score = msep, fun = plsrda_avg, pars = pars)
+    score = err, fun = plsrda_avg, pars = pars)
 
-############ kNN-LWPLSR-DA-AGG
+############ kNN-LWPLSR-DA-AVG
 
 # Here there is no sense to use gridscorelv
 
@@ -112,7 +113,6 @@ h = [1.; 3.] ; k = [20; 10]
 nlv = ["1:2"; "2:5"] ;
 pars = mpar(nlv = nlv, nlvdis = nlvdis, metric = metric, h = h, k = k) ;
 gridscore(Xtrain, ytrain, Xtest, ytest;
-    score = msep, fun = lwplsrda_avg, pars = pars, verbose = true)
-
+    score = err, fun = lwplsrda_avg, pars = pars, verbose = true)
 
 

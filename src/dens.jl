@@ -13,7 +13,7 @@ Univariate kernel density estimation.
 * `lims` : If `nothing`, this is (minimum(`x`), maximum(`x`)).
 
 The function uses function `Makie.KernelDensity.kde`.
-The estimated densities are normalized to sum to 1. 
+After estimation, the estimated are normalized to sum to 1. 
 
 ## Examples
 ```julia
@@ -23,7 +23,7 @@ x = randn(n)
 res = dens(x)
 pnames(res)
 res.lims  # Range of x
-res.mu    # Average expected density value for a uniform distribution
+res.mu    # Mean expected density value for a uniform distribution
 f, ax = lines(res.x, res.d;
     axis = (xlabel = "x", ylabel = "Density"))
 hlines!(ax, res.mu; color = :grey, linestyle = "-")
