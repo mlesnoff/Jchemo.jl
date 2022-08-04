@@ -13,22 +13,21 @@ on high dimensional data.
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. Tuning the models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation), in addition to faster versions for models based on latent variables (LVs) (**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
 
-Most of the functions have a **help page**, e.g.
+Examples of Jchemo scripts are available at [**JchemoTraining**](https://github.com/mlesnoff/JchemoTraining) and [**here**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/demos/ex/). Datasets used in the examples are stored in package [**JchemoData**](https://github.com/mlesnoff/JchemoData.jl) (to be preliminary installed).
+
+Most of the functions have a **help page** (each given an example), e.g.
 
 ```julia
 ?savgol
 ```
 
-See the **News** section for changes between versions.
-
 ## <span style="color:green"> **Available functions** </span> 
 
 - [**Documentation**](https://mlesnoff.github.io/Jchemo.jl/dev/) 
-- [**Examples**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/demos/ex/)
 
 ## <span style="color:green"> **News** </span> 
 
-- [**What changed**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md) 
+- [**What changed**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md) between versions 
 
 ## <span style="color:green"> **Dependent packages** </span> 
 
