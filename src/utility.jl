@@ -137,6 +137,31 @@ function checkmiss(X)
 end
 
 """
+    colmad(X)
+Compute the median absolute deviation (MAD) of each column of `X`.
+* `X` : Data (n, p).
+
+Return a vector.
+
+## Examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+
+colmad(X)
+```
+""" 
+function colmad(X)
+    X = ensure_mat(X)
+    p = nco(X)
+    z = zeros(p)
+    @inbounds for j = 1:p
+        z[j] = mad(vcol(X, j))        
+    end
+    z 
+end
+
+"""
     colmean(X)
     colmean(X, w)
 Compute the mean of each column of `X`.
@@ -697,7 +722,7 @@ x = [2; 1; 2]
 lev = ["B"; "C"; "AA"]
 sort(lev)
 [x replacebylev2(x, lev)]
-replacebylev2([2;], lev)
+replacebylev2([2], lev)
 replacebylev2(2, lev)
 
 x = [2; 1; 2]
@@ -706,7 +731,7 @@ replacebylev2(x, lev)
 ```
 """
 function replacebylev2(x::Union{Int64, Array{Int64}}, lev::Array)
-    isa(x, Int64) ? x = [x;] : x = vec(x)
+    isa(x, Int64) ? x = [x] : x = vec(x)
     lev = vec(sort(lev))
     n = length(x)
     v = similar(lev, n)

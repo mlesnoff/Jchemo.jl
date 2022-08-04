@@ -4,13 +4,16 @@ struct Rp
 end
 
 """
-    rpmat_gauss(p, nlv)
+    rpmat_gauss(p, a)
 Build a gaussian random projection matrix.
 * `p` : Nb. variables (attributes) to project.
-* `nlv` : Nb. final dimensions, i.e. after projection.
+* `a` : Nb. of simulated projection dimensions.
 
 The function returns a random projection matrix P of dimension 
-`p` x `nlv` simulated from i.i.d. N(0, 1)/sqrt(`a`).
+`p` x `a`. The projection of a given matrix X of size n x `p` is given
+by X * P.
+
+P is simulated from i.i.d. N(0, 1)/sqrt(`a`).
 
 ## References 
 Li, P., Hastie, T.J., Church, K.W., 2006. Very sparse random projections, 
@@ -20,25 +23,29 @@ New York, NY, USA, pp. 287–296. https://doi.org/10.1145/1150402.1150436
 
 ## Examples
 ```julia
-p = 10 ; nlv = 3
-rpmat_gauss(p, nlv)
+p = 10 ; a = 3
+rpmat_gauss(p, a)
 ```
 """ 
-function rpmat_gauss(p, nlv)
-    randn(p, nlv) / sqrt(nlv)
+function rpmat_gauss(p, a)
+    randn(p, a) / sqrt(a)
 end
 
 
 """
-    rpmat_li(p, nlv; s = sqrt(p))
+    rpmat_li(p, a; s = sqrt(p))
 Build a sparse random projection matrix (Achlioptas 2001, Li et al. 2006).
 * `p` : Nb. variables (attributes) to project.
-* `nlv` : Nb. final dimensions, i.e. after projection.
+* `a` : Nb. final dimensions, i.e. after projection.
 * `s` : Coefficient defining the sparsity of the returned matrix 
     (higher is `s`, higher is the sparsity).
 
+
 The function returns a random projection matrix P of dimension 
-(`p`, `nlv`) simulated from i.i.d. p_ij = 
+`p` x `a`. The projection of a given matrix X of size n x `p` is given
+by X * P.
+
+P is simulated from i.i.d. "p_ij" = 
 * 1 with prob. 1/(2 * `s`)
 * 0 with prob. 1 - 1 / `s`
 * -1 with prob. 1/(2 * `s`)
@@ -62,31 +69,31 @@ New York, NY, USA, pp. 287–296. https://doi.org/10.1145/1150402.1150436
 
 ## Examples
 ```julia
-p = 10 ; nlv = 3
-rpmat_li(p, nlv)
+p = 10 ; a = 3
+rpmat_li(p, a)
 ```
 """ 
-function rpmat_li(p, nlv; s = sqrt(p))
-    le = p * nlv
+function rpmat_li(p, a; s = sqrt(p))
+    le = p * a
     k = Int64(round(le / s))
     z = zeros(le)
     z[rand(1:le, k)] .= rand([-1. ; 1], k) 
-    sparse(reshape(z, p, nlv))
+    sparse(reshape(z, p, a))
 end
 
 """
-    rp(X; nlv, fun = rpmat_li, kwargs ...)
+    rp(X; a, fun = rpmat_li, kwargs ...)
 Make a random projection of matrix X.
 * `X` : X-data to project.
-* `nlv` : Nb. dimensions on which `X` is projected.
+* `a` : Nb. dimensions on which `X` is projected.
 * `fun` : A function of random projection.
 * `kwargs` : Optional arguments of function `fun`.
 
 ## Examples
 ```julia
 X = rand(5, 10)
-nlv = 3
-fm = rp(X; nlv = nlv)
+a = 3
+fm = rp(X; a = a)
 pnames(fm)
 size(fm.P) 
 fm.P
@@ -94,23 +101,23 @@ fm.T # = X * fm.P
 transform(fm, X[1:2, :])
 ```
 """ 
-function rp(X; nlv, fun = rpmat_li, kwargs ...)
+function rp(X; a, fun = rpmat_li, kwargs ...)
     X = ensure_mat(X)
-    P = fun(size(X, 2), nlv; kwargs...)
+    P = fun(size(X, 2), a; kwargs...)
     T = X * P
     Rp(T, P)
 end
 
 """ 
-    transform(object::Rp, X; nlv = nothing)
+    transform(object::Rp, X; a = nothing)
 Compute "scores" T from a random projection model and a matrix X.
 * `object` : The random projection model.
 * `X` : Matrix (m, p) for which LVs are computed.
-* `nlv` : Nb. dimensions to consider. If nothing, it is the maximum nb. dimensions.
+* `a` : Nb. dimensions to consider. If nothing, it is the maximum nb. dimensions.
 """ 
-function transform(object::Rp, X; nlv = nothing)
+function transform(object::Rp, X; a = nothing)
     a = size(object.T, 2)
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    X * vcol(object.P, 1:nlv)
+    isnothing(a) ? a = a : a = min(a, a)
+    X * vcol(object.P, 1:a)
 end
 

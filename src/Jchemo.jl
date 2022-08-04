@@ -70,13 +70,14 @@ include("treer_xgb.jl")
 include("treeda_xgb.jl")
 
 include("xfit.jl")
-include("scordis.jl")
 
 # Discrimination 
 include("dmnorm.jl")
 include("rrda.jl")
 include("lda.jl") ; include("qda.jl")
 include("mlrda.jl")
+include("occsd.jl") ; include("occsdod.jl")
+include("occstah.jl") ; include("stah.jl")
 include("plsrda.jl")
 include("plslda.jl")
 include("plsrda_avg.jl") 
@@ -133,7 +134,7 @@ export
     aggstat,
     checkdupl, checkmiss,
     center, center!, 
-    colmean, colnorm2, colstd, colsum, colvar,
+    colmad, colmean, colnorm2, colstd, colsum, colvar,
     corm, covm, 
     dens,
     dummy,
@@ -172,7 +173,6 @@ export
     nipals,
     pcasvd, pcasvd!, pcaeigen, pcaeigen!, pcaeigenk, pcaeigenk!,
     rpmat_gauss, rpmat_li, rp,
-    scordis, odis,
     # Multiblock Pca
     blockscal, blockscal_frob, blockscal_mfa,
     blockscal_ncol, blockscal_sd,
@@ -216,6 +216,8 @@ export
     mlrda,
     rrda, krrda,
     lda, qda, 
+    occsd, occod, occsdod,
+    occstah, stah,
     plsrda, kplsrda,
     plslda, plsqda,
     plsrda_avg, plslda_avg, plsqda_avg,

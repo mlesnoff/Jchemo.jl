@@ -50,7 +50,7 @@ yval = ytrain[s]
 
 # KNNR models
 
-nlvdis = 15 ; metric = ["mahal" ;]
+nlvdis = 15 ; metric = ["mahal" ]
 h = [1 ; 2.5] ; k = [5 ; 10 ; 20 ; 50] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k) 
 length(pars[1]) 
@@ -81,7 +81,7 @@ rmsep(pred, ytest)
 
 # LWPLSR models
 
-nlvdis = 15 ; metric = ["mahal" ;]
+nlvdis = 15 ; metric = ["mahal" ]
 h = [1 ; 2.5 ; 5] ; k = [50 ; 100] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
 length(pars[1]) 

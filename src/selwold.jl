@@ -129,8 +129,8 @@ function selwold(indx, r; smooth = true,
             xticks = xticks)
         lines!(ax[1], indx, r)
         scatter!(ax[1], indx, r)
-        scatter!(ax[1], [opt;], [minimum(r);]; color = :red)
-        scatter!(ax[1], [sel;], [r[indx .== sel];]) #; color = :green2
+        scatter!(ax[1], [opt], [minimum(r)]; color = :red)
+        scatter!(ax[1], [sel], [r[indx .== sel]]) #; color = :green2
         zindx = rmrow(indx, n)
         lines!(ax[2], zindx, R)
         scatter!(ax[2], zindx, R)

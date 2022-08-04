@@ -51,7 +51,7 @@ gridscorelb(Xtrain, ytrain, Xtest, ytest;
 
 lb = [.001; .01; .1] 
 pars = mpar(lb = lb, gamma = [1; 10])
-#pars = mpar(lb = lb, kern = ["kpol";], degree = 1:2)
+#pars = mpar(lb = lb, kern = ["kpol"], degree = 1:2)
 gridscore(Xtrain, ytrain, Xtest, ytest; 
     score = err, fun = krrda, pars = pars)
 
@@ -62,7 +62,7 @@ gridscorelb(Xtrain, ytrain, Xtest, ytest;
 
 ############ kNN-DA
 
-nlvdis = 5 ; metric = ["mahal";] 
+nlvdis = 5 ; metric = ["mahal"] 
 h = [1; 3] ; k = [20; 10] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k) 
 gridscore(Xtrain, ytrain, Xtest, ytest;
@@ -70,7 +70,7 @@ gridscore(Xtrain, ytrain, Xtest, ytest;
     
 ############ kNN-LWPLSR-DA
 
-nlvdis = 5 ; metric = ["mahal";] 
+nlvdis = 5 ; metric = ["mahal"] 
 h = [1; 3] ; k = [20; 10]
 nlv = 1:2 
 pars = mpar(nlv = nlv, nlvdis = nlvdis, metric = metric, h = h, k = k) 
@@ -84,7 +84,7 @@ gridscorelv(Xtrain, ytrain, Xtest, ytest;
 
 ############ kNN-LWPLS-LDA
 
-nlvdis = 5 ; metric = ["mahal";] 
+nlvdis = 5 ; metric = ["mahal"] 
 h = [1; 3] ; k = [20; 10]
 nlv = 1:2 
 pars = mpar(nlv = nlv, nlvdis = nlvdis, metric = metric, h = h, k = k) 
@@ -108,7 +108,7 @@ gridscore(Xtrain, ytrain, Xtest, ytest;
 
 # Here there is no sense to use gridscorelv
 
-nlvdis = 5 ; metric = ["mahal";] ;
+nlvdis = 5 ; metric = ["mahal"] ;
 h = [1.; 3.] ; k = [20; 10]
 nlv = ["1:2"; "2:5"] ;
 pars = mpar(nlv = nlv, nlvdis = nlvdis, metric = metric, h = h, k = k) ;

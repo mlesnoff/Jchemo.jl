@@ -39,7 +39,7 @@ res = gridscorelv(Xtrain, ytrain, Xtest, ytest;
 plotgrid(res.nlv, res.y1;
     xlabel = "Nb. LVs", ylabel = "RMSEP").f
 
-nlvdis = 15 ; metric = ["mahal" ;]
+nlvdis = 15 ; metric = ["mahal" ]
 h = [1 ; 2.5 ; 5] ; k = [50 ; 100] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
 nlv = 0:20

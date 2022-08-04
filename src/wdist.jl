@@ -32,7 +32,7 @@ h = 2 ; cri = 3
 w = wdist(d; h = h, cri = cri) ;
 f = Figure(resolution = (600, 400))
 ax1 = Axis(f, xlabel = "Distance", ylabel = "Nb. observations")
-hist!(ax1, d, nbins = 30)
+hist!(ax1, d, bins = 30)
 ax2 = Axis(f, xlabel = "Distance", ylabel = "Weight")
 scatter!(ax2, d, w)
 f[1, 1] = ax1 

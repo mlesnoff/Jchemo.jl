@@ -1,8 +1,10 @@
 """
-    function plotxy(x, y; resolution = (500, 400), 
-        color = nothing, ellipse = false, prob = .95, kwargs...)
+    plotxy(x, y; resolution = (500, 400), 
+        color = nothing, ellipse = false, prob = .95, 
+        bisect::Bool = false, kwargs...)
     plotxy(x, y, group; resolution = (600, 400), 
-        color = nothing, ellipse = false, prob = .95, kwargs...)
+        color = nothing, ellipse = false, prob = .95, 
+        bisect::Bool = false, kwargs...)
 
 Scatter plot of (x, y) data
 * `x` : A x-variable (n).
@@ -14,7 +16,8 @@ Scatter plot of (x, y) data
     as the number of levels in `group`.
 * `ellipse` : Boolean. Draw an ellipse of confidence, assuming a Ch-square distribution
     with df = 2. If `group` is used, one ellipse per group is drawn.
-* `prob` : Probability for the ellipse of confidence (default = .95). 
+* `prob` : Probability for the ellipse of confidence (default = .95).
+*  `bisect` : Boolean. Draw a bisector.
 * `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.
 
 ## Examples
@@ -38,7 +41,8 @@ plotxy(T[:, 1], T[:, 2], year; ellipse = true).f
 ```
 """ 
 function plotxy(x, y; resolution = (500, 400), 
-        color = nothing, ellipse = false, prob = .95, kwargs...)
+        color = nothing, ellipse = false, prob = .95, 
+        bisect::Bool = false, kwargs...)
     f = Figure(resolution = resolution)
     ax = Axis(f; kwargs...)
     if isnothing(color)
@@ -57,12 +61,16 @@ function plotxy(x, y; resolution = (500, 400),
             lines!(ax, res.X; color = color)
         end 
     end
+    if bisect
+        ablines!(ax, 0, 1)
+    end
     f[1, 1] = ax
     (f = f, ax = ax)
 end
 
 function plotxy(x, y, group; resolution = (600, 400), 
-        color = nothing, ellipse = false, prob = .95, kwargs...)
+        color = nothing, ellipse = false, prob = .95, 
+        bisect::Bool = false, kwargs...)
     group = vec(group)
     lev = sort(unique(group))
     nlev = length(lev)
@@ -89,6 +97,9 @@ function plotxy(x, y, group; resolution = (600, 400),
                 lines!(ax, res.X; color = color)
             end 
         end
+    end
+    if bisect
+        ablines!(ax, 0, 1)
     end
     f[1, 1] = ax
     f[1, 2] = Legend(f, ax, "Group", framevisible = false)

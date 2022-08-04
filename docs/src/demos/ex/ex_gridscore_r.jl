@@ -22,7 +22,7 @@ res = gridscorelv(Xtrain, Ytrain, Xtest, Ytest;
 
 nlv = 0:2 
 pars = mpar(nlv = nlv, gamma = [1; 10])
-#pars = mpar(nlv = 0:nlv, kern = ["kpol";], degree = 1:2)
+#pars = mpar(nlv = 0:nlv, kern = ["kpol"], degree = 1:2)
 res = gridscore(Xtrain, Ytrain, Xtest, Ytest;
     score = rmsep, fun = kplsr, pars = pars)
 
@@ -79,7 +79,7 @@ res = gridscore(Xtrain, Ytrain, Xtest, Ytest;
     
 ############ kNN-LWPLSR
 
-nlvdis = 5 ; metric = ["mahal";] 
+nlvdis = 5 ; metric = ["mahal"] 
 h = [1.; 3.] ; k = [100; 20]
 nlv = 1:2 
 pars = mpar(nlv = nlv, nlvdis = nlvdis, metric = metric, h = h, k = k) 
@@ -103,7 +103,7 @@ res = gridscore(Xtrain, Ytrain, Xtest, Ytest;
 
 # Here there is no sense to use gridscorelv
 
-nlvdis = 5 ; metric = ["mahal";] ;
+nlvdis = 5 ; metric = ["mahal"] ;
 h = [1.; 3.] ; k = [20; 10]
 nlv = ["1:2"; "2:5"] ;
 pars = mpar(nlv = nlv, nlvdis = nlvdis, metric = metric, h = h, k = k) ;

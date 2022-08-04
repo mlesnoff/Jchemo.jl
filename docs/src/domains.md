@@ -8,8 +8,6 @@
 - **kpca** Non linear kernel  (KPCA) *Scholkopf et al. 2002*
 
 *Utility (works also for PLS)* 
-- **scordis** Score distances (SDs) for a score space
-- **odis** Orthogonal distances (ODs) for a score space
 - **xfit** Matrix fitting 
 - **xresid** Residual matrix 
 
@@ -101,6 +99,19 @@
 - **baggr_vi** Variance importance (permutation method)
 
 ## DISCRIMINATION ANALYSIS (DA)
+
+### One-Class Classification (OCC)
+
+*From a PCA or PLS score space*
+
+- **occsd** Using score distance (SD)
+- **occod** Using orthogonal distance (OD) 
+- **occsdod** Using a compromise between SD and OD 
+
+*Other methods*
+
+- **occstah** Using Stahel-Donoho outlierness measure.
+- **stah** Compute Stahel-Donoho outlierness measure.
 
 ### Factorial discrimination analysis (FDA)
 
@@ -240,7 +251,7 @@
 
 - **aggstat** Compute column-wise statistics (e.g. mean), by group
 - **center**, **scale** Column-wise centering and scaling of a matrix
-- **colmean**, **colnorm2**, **colstd**, **colsum**, **colvar**  Column-wise operations
+- **colmad**, **colmean**, **colnorm2**, **colstd**, **colsum**, **colvar**  Column-wise operations
 - **covm**, **corm** Covariance and correlation matrices
 - **datasets** Datasets available in the package
 - **dens** Univariate kernel density estimation

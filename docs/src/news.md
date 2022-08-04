@@ -2,10 +2,15 @@
 
 ### *Version 0.0.22*
 - New 
-    - **replacedict**: Replace the elements of a vector by levels defined in a dictionary
+    - **colmad**: Median absolute deviation (MAD) of each column of a matrix.
+    - **occsdod**: One-class classification using a compromise between PCA/PLS score (SD) and orthogonal (OD) distances.
+    - **replacedict**: Replace the elements of a vector by levels defined in a dictionary.
+    - **stah**: Stahel-Donoho outlierness measure.
 
 - Modified
-    - Improvment of **scordis** and **odis**
+    - **dens**: outputs have been modified
+    - **odis** and **scordis** have been rename to **occsd** and **occod**, and modified.
+    - **plotxy**: new argument "bisect".
 
 ### *Version 0.0.21* 
 - New 
