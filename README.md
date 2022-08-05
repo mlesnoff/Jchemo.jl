@@ -23,6 +23,7 @@ Most of the functions have a **help page** (each given an example), e.g.
 
 ## <span style="color:green"> **Available functions** </span> 
 
+- [**List of functions by domain**](https://github.com/mlesnoff/Jchemo.jl/blob/master/docs/src/domains.md)
 - [**Documentation**](https://mlesnoff.github.io/Jchemo.jl/dev/) 
 
 ## <span style="color:green"> **News** </span> 
