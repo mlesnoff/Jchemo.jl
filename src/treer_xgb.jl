@@ -74,7 +74,7 @@ res = predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
 f, ax = scatter(vec(res.pred), ytest)
-abline!(ax, 0, 1)
+ablines!(ax, 0, 1)
 f
 ```
 """ 
@@ -170,7 +170,7 @@ res = predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
 f, ax = scatter(vec(res.pred), ytest)
-abline!(ax, 0, 1)
+ablines!(ax, 0, 1)
 f
 ```
 """ 
@@ -258,7 +258,7 @@ res = predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
 f, ax = scatter(vec(res.pred), ytest)
-abline!(ax, 0, 1)
+ablines!(ax, 0, 1)
 f
 ```
 """ 

@@ -1,32 +1,28 @@
 struct Occstah
     d
     res_stah
-    dist
-    g::Real
+    e_cdf
     cutoff::Real
 end
 
 """
     occstah(X; a = 2000, scaling = true, 
-        typc = "par", alpha = .01, cri = 3)
+        typc = "mad", cri = 3, alpha = .05)
 One-class classifiaction using the Stahel-Donoho outlierness measure.
 
-* `X` : The PCA/PLS fitted model.
+* `X` : X-data.
 * `a` : Nb. dimensions simulated for the projection-pursuit method.
 * `scaling` : Boolean. If `true`, matrix `X` is centred (by median) 
     and scaled (by MAD) before computing the outlierness.
-* `typc` : Type of cutoff: parametric ("par") or nonparametric ("npar"). See `?occsd`.
-* `alpha` : Risk-I level used for computing the parametric cutoff 
-    detecting extreme values.
-* `cri` : Constant used for computing the non parametric cutoff 
+* `typc` : Type of cutoff ("mad" or "q"). See below.
+* `cri` : When `typc = "mad"`, constant used for computing the 
+    cutoff detecting extreme values.
+* `alpha` : When `typc = "q"`, risk-I level used for computing the cutoff 
     detecting extreme values.
 
-See `?stah` (Stahel-Donoho outlierness measure) and `?occsd` (overall principle of the function)
-for details. 
 
-## References
-Maronna, R.A., Yohai, V.J., 1995. The Behavior of the Stahel-Donoho Robust Multivariate Estimator. 
-Journal of the American Statistical Association 90, 330–341. https://doi.org/10.1080/01621459.1995.10476517
+See `?stah` for the Stahel-Donoho outlierness measure, and `?occsd` for 
+the cutoff computation. 
 
 ## Examples
 ```julia
@@ -84,20 +80,24 @@ f
 ```
 """ 
 function occstah(X; a = 2000, scaling = true, 
-        typc = "par", alpha = .01, cri = 3) 
+        typc = "mad", cri = 3, alpha = .05) 
     res = Jchemo.stah(X, a; scaling = scaling)
     d = res.d
-    d2 = d.^2 
-    mu = median(d2)
-    s2 = mad(d2)^2
-    nu = 2 * mu^2 / s2
-    g = mu / nu
-    dist = Distributions.Chisq(nu)
-    pval = Distributions.ccdf.(dist, d2 / g)
-    typc == "par" ? cutoff = sqrt(g * quantile(dist, 1 - alpha)) : nothing
-    typc == "npar" ? cutoff = median(d) + cri * mad(d) : nothing  
+    #d2 = d.^2 
+    #mu = median(d2)
+    #s2 = mad(d2)^2
+    #nu = 2 * mu^2 / s2
+    #g = mu / nu
+    #dist = Distributions.Chisq(nu)
+    #pval = Distributions.ccdf.(dist, d2 / g)
+    #typc == "par" ? cutoff = sqrt(g * quantile(dist, 1 - alpha)) : nothing
+    #typc == "npar" ? cutoff = median(d) + cri * mad(d) : nothing  
+    typc == "mad" ? cutoff = median(d) + cri * mad(d) : nothing
+    typc == "q" ? cutoff = quantile(d, 1 - alpha) : nothing
+    e_cdf = StatsBase.ecdf(d)
+    pval = 1 .- e_cdf(d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = pval)
-    Occstah(d, res, dist, g, cutoff)
+    Occstah(d, res, e_cdf, cutoff)
 end
 
 """
@@ -120,7 +120,8 @@ function predict(object::Occstah, X)
     @inbounds for i = 1:m
         d[i] = maximum(vrow(T, i))
     end
-    pval = Distributions.ccdf.(object.dist, d.^2 / object.g)
+    #pval = Distributions.ccdf.(object.dist, d.^2 / object.g)
+    pval = 1 .- object.e_cdf(d)
     d = DataFrame(d = d, dstand = d / object.cutoff, pval = pval)
     pred = reshape(Int64.(d.dstand .> 1), m, 1)
     (pred = pred, d)

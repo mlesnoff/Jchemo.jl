@@ -78,6 +78,7 @@ include("lda.jl") ; include("qda.jl")
 include("mlrda.jl")
 include("occsd.jl") ; include("occsdod.jl")
 include("occstah.jl") ; include("stah.jl")
+include("occknndis.jl") ; include("occlknndis.jl")
 include("plsrda.jl")
 include("plslda.jl")
 include("plsrda_avg.jl") 
@@ -218,6 +219,7 @@ export
     lda, qda, 
     occsd, occod, occsdod,
     occstah, stah,
+    occknndis, occlknndis,
     plsrda, kplsrda,
     plslda, plsqda,
     plsrda_avg, plslda_avg, plsqda_avg,

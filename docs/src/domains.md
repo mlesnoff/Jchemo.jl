@@ -110,6 +110,8 @@
 
 *Other methods*
 
+- **occknndis**: Using "global" k-nearest neighbors distances.
+- **occlknndis**: Using "local" k-nearest neighbors distances.
 - **occstah** Using Stahel-Donoho outlierness measure.
 - **stah** Compute Stahel-Donoho outlierness measure.
 

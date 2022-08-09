@@ -42,7 +42,7 @@ pnames(fm)
 res = predict(fm, Xtest)
 rmsep(res.pred, ytest)
 f, ax = scatter(vec(res.pred), ytest)
-abline!(ax, 0, 1)
+ablines!(ax, 0, 1)
 f
 
 zcoef = coef(fm) 

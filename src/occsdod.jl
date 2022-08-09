@@ -6,8 +6,8 @@ end
 
 """
     occsdod(object::Union{Pca, Plsr}, X; 
-        nlv_sd = nothing, nlv_od = nothing, rob = true, typc = "par", 
-        alpha = .01, cri = 3)
+        nlv_sd = nothing, nlv_od = nothing, 
+        typc = "mad", cri = 3, alpha = .05)
 One-class classification using a compromise between PCA/PLS score (SD) and orthogonal (OD) distances.
 
 * `object` : The fitted PCA/PLS model.
@@ -15,27 +15,24 @@ One-class classification using a compromise between PCA/PLS score (SD) and ortho
     it is the maximum nb. of components of the fitted model.
 * `nlv_od` : Nb. components (PCs or LVs) to consider for OD. If nothing, 
     it is the maximum nb. of components of the fitted model.
-* `rob` : If `true`, the moment estimation of the SD distribution is robustified. 
-    This may be relevant after robust PCA or PLS on small data sets 
-        containing extreme values.
-* `typc` : Type of cutoff: parametric ("par") or nonparametric ("npar").See below.
-* `alpha` : Risk-I level used for computing the parametric cutoff 
-    detecting extreme values.
-* `cri` : Constant used for computing the non parametric cutoff 
+* `typc` : Type of cutoff ("mad" or "q"). See below.
+* `cri` : When `typc = "mad"`, constant used for computing the 
+    cutoff detecting extreme values.
+* `alpha` : When `typc = "q"`, risk-I level used for computing the cutoff 
     detecting extreme values.
 
 The function computes a compromise between the score distance (SD) and the
-orthogonal distance (OD). The compromise is: dstand = sqrt(SDstand * ODstand).
+orthogonal distance (OD). The compromise is: dstand = sqrt(sd_stand * od_stand).
 
 See `?occsd` and `?occod` for details.
 """ 
 function occsdod(object::Union{Pca, Plsr}, X; 
-        nlv_sd = nothing, nlv_od = nothing, rob = true, typc = "par", 
-        alpha = .01, cri = 3)
-    fm_sd = occsd(object; nlv = nlv_sd, rob = rob, typc = typc,
-        alpha = alpha, cri = cri)
-    fm_od = occod(object, X; nlv = nlv_od, rob = rob, typc = typc,
-        alpha = alpha, cri = cri)
+        nlv_sd = nothing, nlv_od = nothing, 
+        typc = "mad", cri = 3, alpha = .05)
+    fm_sd = occsd(object; nlv = nlv_sd,
+        typc = typc, cri = cri, alpha = alpha)
+    fm_od = occod(object, X; nlv = nlv_sd,
+        typc = typc, cri = cri, alpha = alpha)
     sd = fm_sd.d
     od = fm_od.d
     z = sqrt.(sd.dstand .* od.dstand)

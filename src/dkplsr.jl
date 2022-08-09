@@ -72,7 +72,7 @@ fm = dkplsr(Xtrain, ytrain; nlv = nlv, kern = "kpol", degree = 2, gamma = 1e-1, 
 res = predict(fm, Xtest)
 rmsep(res.pred, ytest)
 f, ax = scatter(vec(res.pred), ytest)
-abline!(ax, 0, 1)
+ablines!(ax, 0, 1)
 f
 
 # Example of fitting the function sinc(x)

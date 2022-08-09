@@ -54,7 +54,7 @@ df_kramer = [1.000000, 3.712373, 6.456417, 11.633565, 12.156760, 11.715101, 12.3
 f, ax = lines(0:nlv, df_kramer,
     axis = (xlabel = "Nb. LVs", ylabel = "df"))
 scatter!(ax, 0:nlv, df.df; color = "red")
-abline!(ax, 1, 1; color = :grey, linestyle = :dot)
+ablines!(ax, 1, 1; color = :grey, linestyle = :dot)
 f
 ```
 """ 

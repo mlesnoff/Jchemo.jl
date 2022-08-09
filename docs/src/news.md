@@ -1,5 +1,13 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.0.23*
+- New 
+    - **occknndis**: One-class classification using "global" k-nearest neighbors distances.
+    - **occlknndis**: One-class classification using "local" k-nearest neighbors distances.
+
+- Modified
+    - **occsd**, **occod**, **occsdod**, **occstah**: The methods to compute the cutoff have changed.
+
 ### *Version 0.0.22*
 - New 
     - **colmad**: Median absolute deviation (MAD) of each column of a matrix.
@@ -8,7 +16,7 @@
     - **stah**: Stahel-Donoho outlierness measure.
 
 - Modified
-    - **dens**: outputs have been modified
+    - **dens**: outputs have been modified.
     - **odis** and **scordis** have been rename to **occsd** and **occod**, and modified.
     - **plotxy**: new argument "bisect".
 
