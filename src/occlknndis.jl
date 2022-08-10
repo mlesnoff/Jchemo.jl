@@ -25,19 +25,20 @@ One-class classification using "local" k-nearest neighbors distances.
 * `alpha` : When `typc = "q"`, risk-I level used for computing the cutoff 
     detecting extreme values.
 
-The outlierness `d` of a given observation "q" (training or test) is defined 
-as follows: 
+In this method, the "outlierness measure" `d` of a given observatio "q"  
+is defined as follows: 
 * The median of the distances between "q" and its `k` nearest neighbors
-in the training is computed, said d_q. 
-* Then, the same median distance is computed for each of the `k` nearest
-neighbors of "q" (each of the `k` nearest neighbors of "q" becomes successively 
-an observation "q"), giving `k` median distances. The median of these
-`k` median distances is then computed, and said d_q_nn.
-* The outlierness of "q" is given by d_q / d_q_nn.  
-All the distances are computed as Mahalanobis distances in a 
-PCA score space.
+in the training is computed, say d_q. 
+* Then, this same median distance is computed for each of the `k` nearest
+neighbors of "q" (i.e. each of the `k` nearest neighbors of "q" becomes 
+successively an observation "q" from which is computed the median distance to its
+`k` neighbors). This returns `k` median distances. Finally, the median of these
+`k` median distances is computed, and say d_q_nn.
+* The outlierness of "q" is defined by d_q / d_q_nn.  
+The distances are computed as Mahalanobis distances in a PCA score space 
+(internally computed; argument `nlv`).
 
-See `?occknndis` for the cutoff computation (the principle is the same). 
+See `?occknndis` for the cutoff computation (the same principle is applied). 
 
 ## Examples
 ```julia

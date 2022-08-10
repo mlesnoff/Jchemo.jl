@@ -8,7 +8,7 @@ end
 """
     occstah(X; a = 2000, scaling = true, 
         typc = "mad", cri = 3, alpha = .05)
-One-class classifiaction using the Stahel-Donoho outlierness measure.
+One-class classification using the Stahel-Donoho outlierness measure.
 
 * `X` : X-data.
 * `a` : Nb. dimensions simulated for the projection-pursuit method.
@@ -20,9 +20,10 @@ One-class classifiaction using the Stahel-Donoho outlierness measure.
 * `alpha` : When `typc = "q"`, risk-I level used for computing the cutoff 
     detecting extreme values.
 
+In this method, the "outlierness measure" `d` of a given observation
+is the Stahel-Donoho outlierness (see `?stah`).
 
-See `?stah` for the Stahel-Donoho outlierness measure, and `?occsd` for 
-the cutoff computation. 
+See `?occsd` for the cutoff computation (the same principle is applied). 
 
 ## Examples
 ```julia

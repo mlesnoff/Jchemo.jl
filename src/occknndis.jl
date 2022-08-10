@@ -25,25 +25,18 @@ One-class classification using "global" k-nearest neighbors distances.
 * `alpha` : When `typc = "q"`, risk-I level used for computing the cutoff 
     detecting extreme values.
 
-The outlierness `d` of a given observation (training or test) is defined 
-as the median of the distances of this observation to its `k` nearest neighbors
-in the training. These distances are computed as Mahalanobis distances in a 
-PCA score space.
+In this method, the "outlierness measure" `d` of a given observation
+of a given observation is the median of the distances of this observation to its 
+`k` nearest neighbors in the training. These distances are computed as 
+Mahalanobis distances in a PCA score space (internally computed; argument `nlv`).
 
-A heuristic cutoff for detecting "extreme" `d` is computed 
-from the empirical distribution of `d`. This distribution is computed from 
+A heuristic cutoff for detecting an "extreme" outlierness is computed on the training data `X.
+The empirical (training) distribution of `d` is computed from 
 a number of `nsamp` observations randomly (and globally) sampled in the training.
 * If `typc = "mad"`: The cutoff is computed by median(`d`) + `cri` * mad(`d`). 
 * If `typc = "q"`: The cutoff is estimated from the empirical cdf of `d`. 
 
-Column `dstand` is a standardized distance defined as `d / cutoff`. 
-A value `dstand` > 1 may be considered as extreme compared to the distribution
-of the training data. Column `pval` reports the p-values based on the 
-empirical cdf. 
-
-In the output `pred` of fonction `predict`, an observation is classified 
-as 0 (i.e. belonging to the training class) when `dstand` <= 1 and 
-1 (extreme) when `dstand` > 1. 
+Other details are the same as in `?occsd`. 
 
 ## Examples
 ```julia

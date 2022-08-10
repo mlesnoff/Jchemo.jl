@@ -29,24 +29,26 @@ One-class classification using PCA/PLS score distance (SD).
 * `alpha` : When `typc = "q"`, risk-I level used for computing the cutoff 
     detecting extreme values.
 
-The score distance (SD) is the Mahalanobis distances between the projection 
-of an observation on the PCA or PLS score plan and the center of the score plan.
+In this method, the "outlierness measure" `d` of a given observation
+is the score distance (SD) of this observation, ie. the Mahalanobis distance
+between the projection of the observation on the PCA or PLS score plan and the 
+center of the score plan.
 
-A heuristic cutoff for detecting "extreme" SDs is computed on the training data `X`:
-* If `typc = "mad"`: The cutoff is computed by median(SD) + `cri` * mad(SD). 
-* If `typc = "q"`: The cutoff is estimated from the empirical cdf of SD. 
+A heuristic cutoff for detecting an "extreme" outlierness is computed on the training data `X.
+* If `typc = "mad"`: The cutoff is computed by median(`d`) + `cri` * mad(`d`). 
+* If `typc = "q"`: The cutoff is estimated from the empirical cdf of `d`. 
 
-See for instance Nomikos & MacGregor (1995), Hubert et al. (2005) and 
-Pomerantsev (2008) for other methods of cutoff computation.
+Alternative methods of cutoff computation can be found in the literature 
+(e.g.: Nomikos & MacGregor 1995, Hubert et al. 2005, Pomerantsev 2008).
 
-Column `dstand` is a standardized distance defined as SD / `cutoff`. 
-A value dstand > 1 may be considered as extreme compared to the distribution
-of the training data. Column `pval` reports the p-values based on the 
-empirical cdf. Column `gh` is the Winisi "GH" (usually, GH > 3 is considered as "extreme").
+`dstand` is the standardized distance defined as `d / cutoff`. 
+A value `dstand` > 1 may be considered as extreme compared to the distribution
+of the training data. `pval` is the p-value computed from 
+empirical (training) cdf. `gh` is the Winisi "GH" (usually, GH > 3 is considered as "extreme").
 
 In the output `pred` of fonction `predict`, an observation is classified 
 as 0 (i.e. belonging to the training class) when `dstand` <= 1 and 
-1 (extreme) when `dstand` > 1. 
+1 (i.e. extreme) when `dstand` > 1. 
 
 ## References
 M. Hubert, P. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust 
@@ -168,12 +170,13 @@ One-class classification using PCA/PLS orthognal distance (OD).
 * `alpha` : When `typc = "q"`, risk-I level used for computing the cutoff 
     detecting extreme values.
 
-The orthogonal distance (OD =  "X-residuals") is the Euclidean distance between
-an observation and its projection to the PCA or PLS score plan 
-(e.g. Hubert et al. 2005, Van Branden & Hubert 2005, p. 66; 
+In this method, the "outlierness measure" `d` of a given observation
+is the orthogonal distance (OD =  "X-residuals") of this observation, ie.
+the Euclidean distance between the observation and its projection to the PCA or 
+PLS score plan (e.g. Hubert et al. 2005, Van Branden & Hubert 2005, p. 66; 
 Varmuza & Filzmoser, 2009, p. 79).
 
-See `?occsd` for the cutoff computation, and for examples.
+See `?occsd` for the cutoff computation, and for numerical examples.
 
 ## References
 M. Hubert, P. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal 

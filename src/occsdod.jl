@@ -21,10 +21,12 @@ One-class classification using a compromise between PCA/PLS score (SD) and ortho
 * `alpha` : When `typc = "q"`, risk-I level used for computing the cutoff 
     detecting extreme values.
 
-The function computes a compromise between the score distance (SD) and the
-orthogonal distance (OD). The compromise is: dstand = sqrt(sd_stand * od_stand).
+In this method, the "outlierness measure" `d` of a given observation
+is a compromise between the score distance (SD) and the
+orthogonal distance (OD). 
+The compromise computed from the standardized distances is: `dstand` = sqrt(sd_stand * od_stand).
 
-See `?occsd` and `?occod` for details.
+See `?occsd` and `?occod` for details and numerical examples.
 """ 
 function occsdod(object::Union{Pca, Plsr}, X; 
         nlv_sd = nothing, nlv_od = nothing, 
