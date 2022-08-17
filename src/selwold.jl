@@ -1,7 +1,7 @@
 """
     selwold(indx, r; smooth = true, 
         f = 5, alpha = .05, digits = 3,
-        plot = true, xlabel = "Index", ylabel = "Value", title = "Score")
+        graph = true, xlabel = "Index", ylabel = "Value", title = "Score")
 
 Wold's criterion to select dimensionality in LV (e.g. PLSR) models.
 * `indx` : A variable representing the model parameter(s), e.g. nb. LVs if PLSR models.
@@ -10,7 +10,7 @@ Wold's criterion to select dimensionality in LV (e.g. PLSR) models.
 * 'f' : Window of the savitzky-Golay filter use for the smoothing (function `savgol`).
 * `alpha` : Proportion alpha used as threshold for R.
 * `digits` : Number of digits in the outputs.
-* `plot` : Boolean. If `true`, outputs are plotted.
+* `graph` : Boolean. If `true`, outputs are plotted.
 * `xlabel` : Horizontal label for the plots.
 * `ylabel` : Vertical label for the plots.
 * `title` : Title of the left plot.
@@ -38,7 +38,7 @@ model), making difficult the dimensionnaly selection.
 In such a situation, function `selwold` proposes to calculate a smoothing of R 
 (argument `smooth`).
 
-The function returns two outputs (in addition to evnetual plots):
+The function returns two outputs (in addition to eventual plots):
 - `opt` : The index corresponding to the minimum value of `r`.
 - `sel` : The index of the selection from the R (or smoothed R) threshold.
 
@@ -64,7 +64,7 @@ Components Models. Technometrics. 1978;20(4):397-405
 
 ## Examples
 ```julia
-using JLD2
+using JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
@@ -88,15 +88,15 @@ res = gridcvlv(Xtrain, ytrain; segm = segm, nlv = nlv,
     score = rmsep, fun = plskern, verbose = false).res
 
 zres = selwold(res.nlv, res.y1; smooth = true, 
-    plot = true) ;
+    graph = true) ;
 zres.opt     # Nb. LVs correponding to the minimal error rate
 zres.sel     # Nb LVs selected with the Wold's criterion
-zres.f       # Plots
+zres.f       # plots
 ```
 """ 
 function selwold(indx, r; smooth = true, 
         f = 5, alpha = .05, digits = 3,
-        plot = true, xlabel = "Index", ylabel = "Value", title = "Score")
+        graph = true, xlabel = "Index", ylabel = "Value", title = "Score")
     n = length(r)
     f = round(f)
     ## below, length = n - 1
@@ -119,7 +119,7 @@ function selwold(indx, r; smooth = true,
     res.R = [round.(R, digits = digits); missing]
     res.Rs = [round.(Rs, digits = digits); missing]
     f = nothing
-    if plot
+    if graph
         f = Figure(resolution = (1000, 450))
         ax = list(2)
         xticks = collect(minimum(indx):2:maximum(indx))
@@ -130,7 +130,7 @@ function selwold(indx, r; smooth = true,
         lines!(ax[1], indx, r)
         scatter!(ax[1], indx, r)
         scatter!(ax[1], [opt], [minimum(r)]; color = :red)
-        scatter!(ax[1], [sel], [r[indx .== sel]]) #; color = :green2
+        scatter!(ax[1], [sel], r[indx .== sel]) #; color = :green2
         zindx = rmrow(indx, n)
         lines!(ax[2], zindx, R)
         scatter!(ax[2], zindx, R)

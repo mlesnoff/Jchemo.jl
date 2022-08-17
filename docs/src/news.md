@@ -1,5 +1,9 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.0.24*
+- Modified
+    - **selwold**: Argument "plot" renamed "graph" and bug fixed in plotting.
+
 ### *Version 0.0.23*
 - New 
     - **occknndis**: One-class classification using "global" k-nearest neighbors distances.
