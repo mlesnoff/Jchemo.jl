@@ -50,6 +50,11 @@ Lesnoff, M., Roger, J.-M., Rutledge, D.N., 2021. Monte Carlo methods for estimat
 Mallows’s Cp and AIC criteria for PLSR models. Illustration on agronomic spectroscopic NIR data. 
 Journal of Chemometrics n/a, e3369. https://doi.org/10.1002/cem.3369
 
+Lesnoff, M., Andueza, D., Barotin, C., Barre, P., Bonnal, L., Fernández Pierna, J.A., Picard, 
+F., Vermeulen, P., Roger, J.-M., 2022. Averaging and Stacking Partial Least Squares Regression Models 
+to Predict the Chemical Compositions and the Nutritive Values of Forages from Spectral Near 
+Infrared Data. Applied Sciences 12, 7850. https://doi.org/10.3390/app12157850
+
 Shenk, J., Westerhaus, M., Berzaghi, P., 1997. Investigation of a LOCAL calibration 
 procedure for near infrared instruments. 
 Journal of Near Infrared Spectroscopy 5, 223. https://doi.org/10.1255/jnirs.115
