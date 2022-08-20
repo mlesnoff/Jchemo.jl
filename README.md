@@ -60,8 +60,9 @@ n = 150 ; p = 200 ; q = 2 ; m = 50
 Xtrain = rand(n, p) ; Ytrain = rand(n, q) ;
 Xtest = rand(m, p) ; Ytest = rand(m, q) ;
 
-nlv = 5 ; 
-fm = plskern(Xtrain, Ytrain; nlv = nlv)
+nlv = 5 
+fm = plskern(Xtrain, Ytrain; nlv = nlv) ;
+pnames(fm)
 
 summary(fm, Xtrain).explvar
 
@@ -73,7 +74,8 @@ coef(fm; nlv = 2)
 
 res = predict(fm, Xtest) ;
 res.pred
-msep(res.pred, Ytest)
+rmsep(res.pred, Ytest)
+mse(res.pred, Ytest)
 
 predict(fm, Xtest).pred
 predict(fm, Xtest; nlv = 0:3).pred 
@@ -96,16 +98,16 @@ res = gridscore(
     Xtrain, ytrain, Xval, yval;
     score = rmsep, fun = plskern, pars = pars) 
 
-lines(res.nlv, res.y1,
-    axis = (xlabel = "Nb. LVs", ylabel = "RMSEP"))
+plotgrid(res.nlv, res.y1,
+    xlabel = "Nb. LVs", ylabel = "RMSEP").f
 
-u = findall(isapprox.(res.y1, minimum(res.y1)))[1] ;
+u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
 fm = plskern(Xval, yval; nlv = res.nlv[u]) ;
 res = Jchemo.predict(fm, Xval) ;
 rmsep(res.pred, yval)
 
-## For PLSR models, using gridscorelv is much faster!!!
+## For PLSR models, using gridscorelv is much faster than gridscore!!!
 
 res = gridscorelv(
     Xtrain, ytrain, Xval, yval;
@@ -121,23 +123,32 @@ n = 150 ; p = 200 ; m = 50
 Xtrain = rand(n, p) ; ytrain = rand(n) 
 Xval = rand(m, p) ; yval = rand(m) 
 
-segm = segmkf(n, 5; rep = 5)   # Replicated K-fold cross-validation
+segm = segmkf(n, 5; rep = 5)     # Replicated K-fold cross-validation
 #segm = segmts(n, 30; rep = 5)   # Replicated test-set validation
 
 nlv = 0:10 
 pars = mpar(nlv = nlv)
-res = gridcv(
+zres = gridcv(
     Xtrain, ytrain; segm,
     score = rmsep, fun = plskern, pars = pars) ;
-pnames(res)
-res.res
+pnames(zres)
+res = zres.res
 
-## For PLSR models, using gridcvlv is much faster!!!
+plotgrid(res.nlv, res.y1,
+    xlabel = "Nb. LVs", ylabel = "RMSEP").f
 
-res = gridcvlv(
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+fm = plskern(Xval, yval; nlv = res.nlv[u]) ;
+res = Jchemo.predict(fm, Xval) ;
+rmsep(res.pred, yval)
+
+## For PLSR models, using gridcvlv is much faster than gridcv!!!
+
+zres = gridcvlv(
     Xtrain, ytrain; segm,
     score = rmsep, fun = plskern, nlv = nlv) ;
-res.res
+zres.res
 ```
 
 ## <span style="color:green"> **Author** </span> 
