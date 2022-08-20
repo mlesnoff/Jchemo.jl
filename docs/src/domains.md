@@ -5,18 +5,20 @@
 - **pcaeigen** Eigen decomposition
 - **pcaeigenk** Eigen decomposition for wide matrices (kernel form)
 - **pcasvd** SVD decomposition
-- **kpca** Non linear kernel  (KPCA) *Scholkopf et al. 2002*
+
+*Non linear*
+- **kpca** Kernel  (KPCA) *Scholkopf et al. 2002*
+
+*Multiblock*
+- **mbpca_cons** Consensus (CPCA, MBPCA)
+- **mbpca_comdim _s** Common components and specific weights (CCSWA, ComDim)
+- **blockscal_col, _frob, _mfa, _sd** Scaling blocks
+- **rv** RV correlation coefficient
+- **lg** Lg coefficient
 
 *Utility (works also for PLS)* 
 - **xfit** Matrix fitting 
 - **xresid** Residual matrix 
-
-*Multiblock*
-- **blockscal_col, _frob, _mfa, _sd** Scaling blocks
-- **mbpca_cons** Consensus (CPCA, MBPCA)
-- **mbpca_comdim _s** Common components and specific weights (CCSWA, ComDim)
-- **rv** RV correlation coefficient
-- **lg** Lg coefficient
 
 ## RANDOM PROJECTIONS
 
@@ -28,10 +30,6 @@
 
 ### **Linear models**
 
-*Anova*
-
-- **aov1** One factor ANOVA
-
 *Multiple linear regression (MLR)*
 
 - **mlr** QR algorithm
@@ -40,19 +38,25 @@
 - **mlrpinv_n** Normal equations and pseudo-inverse
 - **mlrvec** Simple linear regression (Univariate x)
 
+*Anova*
+
+- **aov1** One factor ANOVA
+
 ### **Partial least squares (PLSR)**
 
 - **plskern** "Improved kernel #1" *Dayal & McGregor 1997*
 - **plsnipals** NIPALS
 - **plsrosa** ROSA *Liland et al. 2016*
 - **plssimp** SIMPLS *de Jong 1993*
-- **kplsr** Non linear kernel (KPLSR) *Rosipal & Trejo 2001*
-- **dkplsr** Direct non linear kernel (DKPLSR) *Bennett & Embrechts 2003*
 
 *Variants* 
 - **cglsr** Conjugate gradient for the least squares normal equations (CGLS)
 - **covselr** MLR on variables selected from partial correlation or covariance (Covsel)
 - **pcr** SVD factorization
+
+*Non linear*
+- **kplsr** Non linear kernel (KPLSR) *Rosipal & Trejo 2001*
+- **dkplsr** Direct non linear kernel (DKPLSR) *Bennett & Embrechts 2003*
 
 *Averaging and stacking*
 - **plsr_avg** Averaging and stacking PLSR models with different numbers of LVs (PLSR-AVG)
@@ -70,6 +74,8 @@
 
 - **rr** Pseudo-inverse (RR)
 - **rrchol** Choleski factorization (RR)
+
+*Non linear*
 - **krr** Non linear kernel (KRR) = Least squares SVM (LS-SVMR)
 
 ### **Local models**
@@ -125,8 +131,10 @@
 - **mlrda** On MLR predictions (MLR-DA)
 - **plsrda** On PLSR predictions (PLSR-DA; = common "PLSDA")
 - **plsrda_avg** Averaging PLSR-DA models with different numbers of LVs (PLSR-DA-AVG)
-- **kplsrda** On KPLSR predictions (KPLSR-DA)
 - **rrda** On RR predictions (RR-DA)
+
+*Non linear*
+- **kplsrda** On KPLSR predictions (KPLSR-DA)
 - **krrda** On KRR predictions (KRR-DA)
 
 ### Probabilistic
@@ -206,9 +214,6 @@
 
 - **err** Classification error rate
 
-*Plotting error rates* 
-- **plotgrid** Plot error or performance rates of model predictions.
-
 *Model dimensionality*
 - **aicplsr** AIC and Cp for PLSR
 - **selwold** Wold's criterion to select dimensionality in LV (e.g. PLSR) models
@@ -230,12 +235,14 @@
 - **detrend** Polynomial detrend
 - **eposvd** External parameter orthogonalization (EPO)
 - **fdif** Finite differences
-- **interpl** Sampling signals by intrerpolation -- From DataInterpolations.jl
-- **interpl_mon** Sampling signals by monotonic intrerpolation -- From Interpolations.jl
 - **mavg**, **mavg_runmean** Smoothing by moving average
 - **rmgap** Remove vertical gaps in spectra, e.g. for ASD NIR data
 - **savgk**, **savgol** Savitsky-Golay filtering
 - **snv** Standard-normal-deviation transformation
+
+*Interpolation*
+- **interpl** Sampling signals by interpolation -- From DataInterpolations.jl
+- **interpl_mon** Sampling signals by monotonic interpolation -- From Interpolations.jl
 
 ### **Sampling observations**
 
@@ -246,6 +253,7 @@
 
 ## PLOTTING
 
+- **plotgrid** Ploting error or performance rates of model predictions
 - **plotsp** Ploting spectra
 - **plotxy** Scatter plot of (x, y) data
 
