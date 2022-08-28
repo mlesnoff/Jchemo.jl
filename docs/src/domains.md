@@ -13,8 +13,9 @@
 - **mbpca_cons** Consensus (CPCA, MBPCA)
 - **mbpca_comdim _s** Common components and specific weights (CCSWA, ComDim)
 - **blockscal_col, _frob, _mfa, _sd** Scaling blocks
-- **rv** RV correlation coefficient
+- **rd** Redundancy coefficients between two matrices
 - **lg** Lg coefficient
+- **rv** RV correlation coefficient
 
 *Utility (works also for PLS)* 
 - **xfit** Matrix fitting 

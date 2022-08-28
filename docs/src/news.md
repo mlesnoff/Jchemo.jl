@@ -1,5 +1,12 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.0.25*
+- New 
+    - **rd**: Redundancy coefficients between two matrices.
+
+- Modified
+    - **summary** for Plsr objects. See the example in ?plskern.
+
 ### *Version 0.0.24*
 - Modified
     - **selwold**: Argument "plot" renamed "graph" and bug fixed in plotting.

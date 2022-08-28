@@ -1,7 +1,7 @@
 # Jchemo.jl
 
 ## Dimension reduction, Regression and Discrimination for Chemometrics
-## <span style="color:grey70"> Version 0.0.24  </span> 
+## <span style="color:grey70"> Version 0.0.25  </span> 
 
 <!-- [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/stable) -->
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/dev)
@@ -13,13 +13,13 @@ on high dimensional data.
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. Tuning the models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation). There are also faster versions for models based on latent variables (LVs) (**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
 
-Examples of Jchemo scripts are available at [**JchemoTraining**](https://github.com/mlesnoff/JchemoTraining) and [**here**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/demos/ex/). Datasets used in the examples are stored in package [**JchemoData**](https://github.com/mlesnoff/JchemoData.jl).
-
-Most of the functions have a **help page** (each given an example), e.g.
+Most of the functions have a **help page** (each given an example), e.g.:
 
 ```julia
 ?savgol
 ```
+
+In addition, examples of Jchemo scripts are available at [**JchemoTraining**](https://github.com/mlesnoff/JchemoTraining) and [**here**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/demos/ex/). Datasets used in the examples are stored in package [**JchemoData**](https://github.com/mlesnoff/JchemoData.jl).
 
 ## <span style="color:green"> **Available functions** </span> 
 
@@ -64,7 +64,7 @@ nlv = 5
 fm = plskern(Xtrain, Ytrain; nlv = nlv) ;
 pnames(fm)
 
-summary(fm, Xtrain).explvar
+summary(fm, Xtrain, Ytrain)
 
 transform(fm, Xtest)
 transform(fm, Xtest; nlv = 1)

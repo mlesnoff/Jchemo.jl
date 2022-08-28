@@ -104,9 +104,10 @@ res = predict(fm, Xtest; nlv = 1:2)
 res.pred[1]
 res.pred[2]
 
-res = Base.summary(fm, Xtrain) ;
+res = Base.summary(fm, Xtrain, ytrain) ;
 pnames(res)
-z = res.explvar
+z = res.explvarx
+#z = res.explvary
 lines(z.nlv, z.cumpvar,
     axis = (xlabel = "Nb. LVs", ylabel = "Prop. Explained Variance"))
 ```
@@ -176,11 +177,13 @@ end
 
 """
     summary(object::Plsr, X)
+    summary(object::Plsr, X, Y)
 Summarize the maximal (i.e. with maximal nb. LVs) fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
+* `Y` : The Y-data that was used to fit the model.
 """ 
-function Base.summary(object::Plsr, X::Union{Matrix, DataFrame})
+function Base.summary(object::Plsr, X::Union{Vector, Matrix, DataFrame})
     X = ensure_mat(X)
     n, nlv = size(object.T)
     X = center(X, object.xmeans)
@@ -192,9 +195,38 @@ function Base.summary(object::Plsr, X::Union{Matrix, DataFrame})
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvar = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar) 
-    (explvar = explvar,)
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)     
+    (explvarx = explvarx,)
 end
+
+function Base.summary(object::Plsr, X::Union{Vector, Matrix, DataFrame},
+        Y::Union{Vector, Matrix, DataFrame})
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    n, nlv = size(object.T)
+    X = center(X, object.xmeans)
+    Y = center(Y, object.ymeans)
+    # Could be center! but changes x
+    # If too heavy ==> Makes summary!
+    tt = object.TT
+    ## X
+    sstot = sum(object.weights' * (X.^2))
+    tt_adj = vec(sum(object.P.^2, dims = 1)) .* tt
+    pvar = tt_adj / sstot
+    cumpvar = cumsum(pvar)
+    xvar = tt_adj / n    
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    ## y
+    sstot = sum(object.weights' * (Y.^2))
+    tt_adj = vec(sum(object.C.^2, dims = 1)) .* tt
+    pvar = tt_adj / sstot
+    cumpvar = cumsum(pvar)
+    xvar = tt_adj / n    
+    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    ## End
+    (explvarx = explvarx, explvary)
+end
+
 
 """ 
     transform(object::Plsr, X; nlv = nothing)

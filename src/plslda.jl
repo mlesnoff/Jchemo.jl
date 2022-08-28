@@ -51,7 +51,7 @@ err(res.pred, ytest)
 fm_pls = fm.fm.fm_pls ;
 Jchemo.transform(fm_pls, Xtest)
 Jchemo.transform(fm_pls, Xtest; nlv = 2)
-Base.summary(fm_pls, Xtrain)
+Base.summary(fm_pls, Xtrain, ytrain)
 coef(fm_pls).B
 coef(fm_pls, nlv = 1).B
 coef(fm_pls, nlv = 2).B

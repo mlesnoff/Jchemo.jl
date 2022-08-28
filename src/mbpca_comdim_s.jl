@@ -136,6 +136,7 @@ function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
         scal = res.scal
         X = res.X
     end
+    # Row metric
     @inbounds for k = 1:nbl
         X[k] .= sqrtD * X[k]
     end

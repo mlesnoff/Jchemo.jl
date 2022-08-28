@@ -93,8 +93,8 @@ function rv(X_bl::Vector; centr = true)
 end
 
 """
-    lg(X, Y)
-    lg(X_bl)
+    lg(X, Y; centr = true)
+    lg(X_bl; centr = true)
 Compute the Lg coefficient between matrices.
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
@@ -102,7 +102,7 @@ Compute the Lg coefficient between matrices.
 * `centr` : Logical indicating if the matrices are internally 
     centered or not.
 
-Lg(X, Y) = Sum_j(=1..p) Sum_k(= 1..q) (cov(xj, yk)^2)
+Lg(X, Y) = Sum_j(=1..p) Sum_k(= 1..q) cov(xj, yk)^2
 
 RV(X, Y) = Lg(X, Y) / sqrt(Lg(X, X), Lg(Y, Y))
 
@@ -149,6 +149,46 @@ function lg(X_bl::Vector; centr = true)
     mat
 end
 
+"""
+    rd(X, Y)
+    lg(X, Y, weights)
+Compute redundancy coefficients between two matrices.
+* `X` : Matrix (n, p).
+* `Y` : Matrix (n, q).
+* `weights` : Weights (n) of the observations..
 
+rd(X, Y) returns the redundancy coefficient between X and each column
+of Y, i.e.: 
 
+[Sum_j(=1..p) cov(xj, y1)^2; ...; Sum_j(=1..p) cov(xj, yq)^2]
+
+See Tenenhaus 1998 section 2.2.1 p.10-11.
+
+## References
+Tenenhaus, M., 1998. La régression PLS: théorie et pratique. 
+Editions Technip, Paris.
+
+## Examples 
+```julia 
+X = rand(5, 10)
+Y = rand(5, 3)
+rd(X, Y)
+```
+""" 
+function rd(X, Y)
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    p = nco(X)
+    z = cor(X, Y).^2
+    sum(z; dims = 1) / p
+end
+
+function rd(X, Y, weights)
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    p = nco(X)
+    weights = mweigth(weights)
+    z = corm(X, Y, weights).^2
+    sum(z; dims = 1) / p
+end
 

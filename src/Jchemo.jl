@@ -177,9 +177,8 @@ export
     # Multiblock Pca
     blockscal, blockscal_frob, blockscal_mfa,
     blockscal_ncol, blockscal_sd,
-    lg,
     mbpca_comdim_s, mbpca_cons,
-    rv,
+    rv, lg, rd, 
     # Regression
     aov1,
     mlr, mlr!, mlrchol, mlrchol!, mlrpinv, mlrpinv!, mlrpinv_n, mlrpinv_n!,

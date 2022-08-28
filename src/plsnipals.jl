@@ -70,8 +70,10 @@ function plsnipals!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
         c ./= tt                      
         mul!(zp, X', dt)
         zp ./= tt
+        # deflation with respect to t (asymetric PLS)
         X .-= t * zp'
         Y .-= t * c'
+        # end
         P[:, a] .= zp  
         T[:, a] .= t
         W[:, a] .= w
