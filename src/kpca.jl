@@ -70,7 +70,7 @@ transform(fm, Xtest)
 
 res = Base.summary(fm) ;
 pnames(res)
-res.explvar
+res.explvarx
 ```
 """ 
 function kpca(X, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
@@ -97,23 +97,6 @@ function kpca(X, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
     Kpca(X, Kt, T, P, sv, eig, D, DKt, vtot, weights, kern, kwargs)
 end
 
-"""
-    summary(object::Kpca, X)
-Summarize the maximal (i.e. with maximal nb. PCs) fitted model.
-* `object` : The fitted model.
-* `X` : The X-data that was used to fit the model.
-""" 
-function Base.summary(object::Kpca)
-    nlv = size(object.T, 2)
-    TT = object.D * (object.T).^2
-    tt = vec(sum(TT, dims = 1))
-    sstot = sum(object.eig)
-    pvar = tt / sstot
-    cumpvar = cumsum(pvar)
-    explvar = DataFrame(pc = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
-    (explvar = explvar,)
-end
-
 """ 
     transform(object::Kpca, X; nlv = nothing)
 Compute PCs (scores matrix "T") from a fitted model and X-data.
@@ -132,6 +115,24 @@ function transform(object::Kpca, X; nlv = nothing)
     T = Kc * @view(object.P[:, 1:nlv])
     T
 end
+
+"""
+    summary(object::Kpca, X)
+Summarize the maximal (i.e. with maximal nb. PCs) fitted model.
+* `object` : The fitted model.
+* `X` : The X-data that was used to fit the model.
+""" 
+function Base.summary(object::Kpca)
+    nlv = size(object.T, 2)
+    TT = object.D * (object.T).^2
+    tt = vec(sum(TT, dims = 1))
+    sstot = sum(object.eig)
+    pvar = tt / sstot
+    cumpvar = cumsum(pvar)
+    explvarx = DataFrame(pc = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
+    (explvarx = explvarx,)
+end
+
 
 
 

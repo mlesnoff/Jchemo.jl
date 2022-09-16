@@ -41,9 +41,8 @@ fm = mlr(Xtrain, ytrain) ;
 pnames(fm)
 res = predict(fm, Xtest)
 rmsep(res.pred, ytest)
-f, ax = scatter(vec(res.pred), ytest)
-ablines!(ax, 0, 1)
-f
+plotxy(vec(pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 
 zcoef = coef(fm) 
 zcoef.int 

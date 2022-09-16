@@ -14,22 +14,25 @@ struct PlsrStack
 end
 
 function plsr_avg_aic(X, y, weights = ones(size(X, 1)); nlv, 
-        bic = false, typw = "bisquare", alpha = 0)
-    plsr_avg_aic!(copy(ensure_mat(X)), copy(ensure_mat(y)), weights; nlv = nlv, bic = bic, 
-        typw = typw, alpha = alpha)
+        bic = false, typw = "bisquare",
+        alpha = 0, scal = false)
+    plsr_avg_aic!(copy(ensure_mat(X)), copy(ensure_mat(y)), weights; nlv = nlv,
+        bic = bic, typw = typw, 
+        alpha = alpha, scal = scal)
 end
 
 function plsr_avg_aic!(X::Matrix, y::Matrix, weights = ones(size(X, 1)); nlv,
-        bic = false, typw = "bisquare", alpha = 0)
+        bic = false, typw = "bisquare", 
+        alpha = 0, scal = false)
     n, p = size(X)
     nlv = eval(Meta.parse(nlv))
     nlv = (min(minimum(nlv), n, p):min(maximum(nlv), n, p))
     nlvmax = maximum(nlv)    
-    res = aicplsr(X, y; nlv = nlvmax, bic = bic)
+    res = aicplsr(X, y; nlv = nlvmax, bic = bic, scal = scal)
     d = res.delta.aic[nlv .+ 1]
     w = fweight(d, typw = typw, alpha = alpha)
     w .= mweight(w)
-    fm = plskern!(X, y, weights; nlv = nlvmax)
+    fm = plskern!(X, y, weights; nlv = nlvmax, scal = scal)
     PlsrAvgCri(fm, nlv, w)
 end
 

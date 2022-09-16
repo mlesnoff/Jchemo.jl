@@ -1,11 +1,15 @@
 """
-    plsrosa(X, Y, weights = ones(size(X, 1)); nlv)
-    plsrosa!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
+    plsrosa(X, Y, weights = ones(size(X, 1)); nlv,
+        scal = false)
+    plsrosa!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
+        scal = false)
 Partial Least Squares Regression (PLSR) with the ROSA algorithm (Liland et al. 2016).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations.
 * `nlv` : Nb. latent variables (LVs) to consider.
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation.
 
 `weights` is internally normalized to sum to 1. 
     
@@ -23,11 +27,14 @@ Liland, K.H., Næs, T., Indahl, U.G., 2016. ROSA—a fast extension of partial l
 squares regression for multiblock data analysis. Journal of Chemometrics 30, 
 651–662. https://doi.org/10.1002/cem.2824
 """ 
-function plsrosa(X, Y, weights = ones(size(X, 1)); nlv)
-    plsrosa!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv)
+function plsrosa(X, Y, weights = ones(size(X, 1)); nlv,
+        scal = false)
+    plsrosa!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
+        scal = scal)
 end
 
-function plsrosa!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
+function plsrosa!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
+        scal = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(nlv, n, p)
@@ -35,8 +42,17 @@ function plsrosa!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
     D = Diagonal(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
-    center!(X, xmeans)
-    center!(Y, ymeans)
+    xscales = ones(p)
+    yscales = ones(q)
+    if scal 
+        xscales .= colstd(X, weights)
+        yscales .= colstd(Y, weights)
+        cscale!(X, xmeans, xscales)
+        cscale!(Y, ymeans, yscales)
+    else
+        center!(X, xmeans)
+        center!(Y, ymeans)
+    end
     # Pre-allocation
     XtY = similar(X, p, q)
     T = similar(X, n, nlv)
@@ -80,6 +96,6 @@ function plsrosa!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
         TT[a] = tt
      end
      R = W * inv(P' * W)
-     Plsr(T, P, R, W, C, TT, xmeans, ymeans, weights, nothing)
+     Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing)
 end
 

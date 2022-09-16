@@ -261,7 +261,7 @@
 ## UTILITIES
 
 - **aggstat** Compute column-wise statistics (e.g. mean), by group
-- **center**, **scale** Column-wise centering and scaling of a matrix
+- **center**, **scale**, **cscale** Column-wise centering and scaling of a matrix
 - **colmad**, **colmean**, **colnorm2**, **colstd**, **colsum**, **colvar**  Column-wise operations
 - **covm**, **corm** Covariance and correlation matrices
 - **datasets** Datasets available in the package

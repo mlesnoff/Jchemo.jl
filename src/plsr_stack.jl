@@ -1,8 +1,11 @@
-function plsr_stack(X, y, weights = ones(size(X, 1)); nlv, K = 5, rep = 10)
-    plsr_stack!(copy(ensure_mat(X)), copy(ensure_mat(y)), weights; nlv = nlv, K = K, rep = rep)
+function plsr_stack(X, y, weights = ones(size(X, 1)); nlv,
+        K = 5, rep = 10, scal = false)
+    plsr_stack!(copy(ensure_mat(X)), copy(ensure_mat(y)), weights; nlv = nlv, 
+        K = K, rep = rep, scal = scal)
 end
 
-function plsr_stack!(X::Matrix, y::Matrix, weights = ones(size(X, 1)); nlv, K = 5, rep = 10)
+function plsr_stack!(X::Matrix, y::Matrix, weights = ones(size(X, 1)); nlv, 
+        K = 5, rep = 10, scal = false)
     n, p = size(X)
     weights = mweight(weights)
     nlv = eval(Meta.parse(nlv))
@@ -24,7 +27,7 @@ function plsr_stack!(X::Matrix, y::Matrix, weights = ones(size(X, 1)); nlv, K = 
             Xval = vrow(X, s)
             yval = vrow(y, s)
             wval = vrow(weights, s)
-            zfm = plskern(Xcal, ycal, wcal; nlv =  nlvmax) ;
+            zfm = plskern(Xcal, ycal, wcal; nlv =  nlvmax, scal = scal) ;
             pred = Jchemo.predict(zfm, Xval; nlv = 0:nlvmax).pred
             pred = reduce(hcat, pred)
             if k == 1
@@ -46,7 +49,7 @@ function plsr_stack!(X::Matrix, y::Matrix, weights = ones(size(X, 1)); nlv, K = 
     XtD = Xstack' * Diagonal(weights_stack)
     w = vec(cholesky!(Hermitian(XtD * Xstack)) \ (XtD * ystack))
     ## Model that will be "averaged" (w)
-    fm = plskern!(X, y, weights; nlv = nlvmax)
+    fm = plskern!(X, y, weights; nlv = nlvmax, scal = scal)
     PlsrStack(fm, nlv, w, Xstack, ystack, weights_stack)
 end
 

@@ -3,17 +3,20 @@ struct PlsrAvgShenk
     nlv
 end
 
-function plsr_avg_shenk(X, Y, weights = ones(size(X, 1)); nlv)
-    plsr_avg_shenk!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv)
+function plsr_avg_shenk(X, Y, weights = ones(size(X, 1)); nlv, 
+        scal = false)
+    plsr_avg_shenk!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
+        scal = scal)
 end
 
-function plsr_avg_shenk!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
+function plsr_avg_shenk!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv, 
+        scal = false)
     n, p = size(X)
     nlv = eval(Meta.parse(nlv))
     nlv = (min(minimum(nlv), n, p):min(maximum(nlv), n, p))
     nlvmax = maximum(nlv)
     nlv = max(minimum(nlv), 1):nlvmax       
-    fm = plskern!(X, Y, weights; nlv = nlvmax)
+    fm = plskern!(X, Y, weights; nlv = nlvmax, scal = scal)
     PlsrAvgShenk(fm, nlv)
 end
 

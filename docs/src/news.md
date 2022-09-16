@@ -1,5 +1,15 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.0.26*
+- New
+    - **cscale**: Center and scale each column of a matrix.
+    
+- Modified
+    - Argument 'scal' (X and Y column-scaling) added to various functions.
+        Work in progress (the argument will be available for all the concerned fonctions).
+    - Output 'explvar' replaced by 'explvarx' in all the concerned functions.
+    - **rd**: New argument 'corr'.
+
 ### *Version 0.0.25*
 - New 
     - **rd**: Redundancy coefficients between two matrices.

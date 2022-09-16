@@ -17,7 +17,7 @@ Jchemo.transform(fm, Xtest)
 
 res = Jchemo.summary(fm, Xtrain) ;
 pnames(res)
-res.explvar
+res.explvarx
 res.contr_var
 res.coord_var
 res.cor_circle

@@ -1,11 +1,27 @@
+struct Pcr
+    fm_pca
+    T::Matrix{Float64}
+    R::Matrix{Float64}
+    C::Matrix{Float64}
+    xmeans::Vector{Float64}
+    xscales::Vector{Float64}
+    ymeans::Vector{Float64}
+    yscales::Vector{Float64}
+    weights::Vector{Float64}
+end
+
 """
-    pcr(X, Y, weights = ones(size(X, 1)); nlv)
-    pcr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
+    pcr(X, Y, weights = ones(size(X, 1)); nlv,
+        scal = false)
+    pcr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
+        scal = false)
 Principal component regression (PCR) with a SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation.
 
 `weights` is internally normalized to sum to 1. 
 
@@ -46,9 +62,8 @@ transform(fm_pca, Xtest; nlv = 7)
 res = predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
-f, ax = scatter(vec(res.pred), ytest)
-ablines!(ax, 0, 1)
-f
+plotxy(vec(res.pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", ylabel = "Observed").f   
 
 res = predict(fm, Xtest; nlv = 1:2)
 res.pred[1]
@@ -56,23 +71,33 @@ res.pred[2]
 
 # See ?pcasvd
 res = Base.summary(fm_pca, Xtrain)
-res.explvar
+res.explvarx
 ```
 """ 
-function pcr(X, Y, weights = ones(size(X, 1)); nlv)
-    pcr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv)
+function pcr(X, Y, weights = ones(size(X, 1)); nlv, 
+        scal = false)
+    pcr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
+        scal = scal)
 end
 
-function pcr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
+function pcr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv, 
+        scal = false)
+    q = nco(Y)
     weights = mweight(weights)
     ymeans = colmean(Y, weights)  
-    center!(Y, ymeans)
-    fm = pcasvd!(X, weights; nlv = nlv)
+    yscales = ones(q)
+    if scal 
+        yscales .= colstd(Y, weights)
+        cscale!(Y, ymeans, yscales)
+    else
+        center!(Y, ymeans)
+    end
+    fm = pcasvd!(X, weights; nlv = nlv, scal = scal)
     D = Diagonal(fm.weights)
     beta = inv(fm.T' * D * fm.T) * fm.T' * D * Y
-    # first term = Diagonal(1 ./ fm.sv[1:nlv].^2) if T is D-orthogonal
+    # first term of the product = Diagonal(1 ./ fm.sv[1:nlv].^2) if T is D-orthogonal
     # This is the case for the actual version (pcasvd)
-    Pcr(fm, fm.T, fm.P, beta', fm.xmeans, ymeans, weights)
+    Pcr(fm, fm.T, fm.P, beta', fm.xmeans, fm.xscales, ymeans, yscales, weights)
 end
 
 

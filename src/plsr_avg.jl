@@ -4,9 +4,11 @@ end
 
 """ 
     plsr_avg(X, Y, weights = ones(size(X, 1)); nlv, 
-        typf = "unif", typw = "bisquare", alpha = 0)
+        typf = "unif", typw = "bisquare",
+        alpha = 0, K = 5, rep = 10, scal = false)
     plsr_avg!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv, 
-        typf = "unif", typw = "bisquare", alpha = 0, K = 5, rep = 10)
+        typf = "unif", typw = "bisquare", 
+        alpha = 0, K = 5, rep = 10, scal = false)
 Averaging and stacking PLSR models with different numbers of LVs.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q). Must be univariate (q = 1) if `typw` != "unif".
@@ -16,6 +18,8 @@ Averaging and stacking PLSR models with different numbers of LVs.
     are averaged). Syntax such as "10" is also allowed ("10": correponds to
     the single model with 10 LVs).
 * `typf` : Type of averaging. 
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation.
 
 For `typf` in {"aic", "bic", "cv"}
 * `typw` : Type of weight function. 
@@ -99,28 +103,38 @@ rmsep(res.pred, ytest)
 ```
 """ 
 function plsr_avg(X, Y, weights = ones(size(X, 1)); nlv, 
-        typf = "unif", typw = "bisquare", alpha = 0, K = 5, rep = 10)
+        typf = "unif", typw = "bisquare", 
+        alpha = 0, K = 5, rep = 10, scal = false)
     plsr_avg!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
-        typf = typf, typw = typw, alpha = alpha, K = K, rep = rep)
+        typf = typf, typw = typw, 
+        alpha = alpha, K = K, rep = rep, scal = scal)
 end
 
 function plsr_avg!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv, 
-        typf = "unif", typw = "bisquare", alpha = 0, K = 5, rep = 10)
+        typf = "unif", typw = "bisquare", 
+        alpha = 0, K = 5, rep = 10, scal = false)
     if typf == "unif"
-        fm = plsr_avg_unif!(X, Y, weights; nlv = nlv)
+        fm = plsr_avg_unif!(X, Y, weights; nlv = nlv,
+            scal = scal)
     elseif typf == "aic"
-        fm = plsr_avg_aic!(X, Y, weights; nlv = nlv, bic = false,
-            typw = typw, alpha = alpha)
+        fm = plsr_avg_aic!(X, Y, weights; nlv = nlv,
+            bic = false, typw = typw, alpha = alpha,
+            scal = scal)
     elseif typf == "bic"
-        fm = plsr_avg_aic!(X, Y, weights; nlv = nlv, bic = true,
-            typw = typw, alpha = alpha)
+        fm = plsr_avg_aic!(X, Y, weights; nlv = nlv,
+            bic = true, typw = typw, alpha = alpha,
+            scal = scal)
     elseif typf == "cv"
         fm = plsr_avg_cv!(X, Y, weights; nlv = nlv,
-            typw = typw, alpha = alpha)
+            typw = typw, alpha = alpha, 
+            scal = scal)
     elseif typf == "shenk"
-        fm = plsr_avg_shenk!(X, Y, weights; nlv = nlv)
+        fm = plsr_avg_shenk!(X, Y, weights; nlv = nlv,
+            scal = scal)
     elseif typf == "stack"
-        fm = plsr_stack!(X, Y, weights; nlv = nlv, K = K, rep = rep) 
+        fm = plsr_stack!(X, Y, weights; nlv = nlv, 
+            K = K, rep = rep, 
+            scal = scal) 
     end
     PlsrAvg(fm)
 end

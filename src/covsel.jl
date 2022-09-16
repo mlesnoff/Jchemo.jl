@@ -57,7 +57,7 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing,
     n, p = size(X)
     q = nco(Y)
     isnothing(nlv) ? nlv = p : nothing 
-    xmeans = colmean(X) 
+    xmeans = colmean(X)
     ymeans = colmean(Y)   
     center!(X, xmeans)
     center!(Y, ymeans)
@@ -83,13 +83,12 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing,
         if typ == "aic"
             zscor = zeros(p)
             for j = 1:p
-                zX = vcol(X, j)
-                fm = mlr(zX, Y; noint = true) #
-                pred = predict(fm, zX).pred
+                x = vcol(X, j)
+                fm = mlr(x, Y; noint = true) 
+                pred = predict(fm, x).pred
                 resid = residreg(pred, Y)
-                zssr = log.(resid.^2)
                 df = 2
-                zscor[j] = sum(zssr) + q * 2 * df
+                zscor[j] = log.(sum(resid.^2)) + q * 2 * df / n
             end
             z = -zscor
         end
@@ -99,7 +98,7 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing,
         selcov[i] = z[zsel]
         cov2[zsel] = z[zsel]
         x = vcol(X, zsel)
-        H .= x * x' / sum(x.^2)
+        H .= x * x' / dot(x, x)
         X .-= H * X 
         Y .-= H * Y
         xss[i] = sum(X.^2)

@@ -71,9 +71,8 @@ res.pred[2]
 fm = dkplsr(Xtrain, ytrain; nlv = nlv, kern = "kpol", degree = 2, gamma = 1e-1, coef0 = 10) ;
 res = predict(fm, Xtest)
 rmsep(res.pred, ytest)
-f, ax = scatter(vec(res.pred), ytest)
-ablines!(ax, 0, 1)
-f
+plotxy(vec(pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 
 # Example of fitting the function sinc(x)
 # described in Rosipal & Trejo 2001 p. 105-106 

@@ -1,10 +1,12 @@
 """
-    pcaeigen(X, weights = ones(size(X, 1)); nlv)
-    pcaeigen!(X::Matrix, weights = ones(size(X, 1)); nlv)
+    pcaeigen(X, weights = ones(size(X, 1)); nlv, scal = false)
+    pcaeigen!(X::Matrix, weights = ones(size(X, 1)); nlv, scal = false)
 PCA by Eigen factorization.
 * `X` : X-data (n, p).
 * `weights` : Weights (n) of the observations.
 * `nlv` : Nb. principal components (PCs).
+* `scal` : Boolean. If `true`, each column of `X` is scaled
+    by its uncorrected standard deviation.
     
 `weights` is internally normalized to sum to 1.
 
@@ -15,16 +17,22 @@ computing an Eigen factorization of X' * D * X.
 
 See `?pcasvd` for examples.
 """ 
-function pcaeigen(X, weights = ones(size(X, 1)); nlv)
-    pcaeigen!(copy(ensure_mat(X)), weights; nlv = nlv)
+function pcaeigen(X, weights = ones(size(X, 1)); nlv, scal = false)
+    pcaeigen!(copy(ensure_mat(X)), weights; nlv = nlv, scal = scal)
 end
 
-function pcaeigen!(X::Matrix, weights = ones(size(X, 1)); nlv)
+function pcaeigen!(X::Matrix, weights = ones(size(X, 1)); nlv, scal = false)
     n, p = size(X)
     nlv = min(nlv, n, p)
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
-    center!(X, xmeans)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X, weights)
+        cscale!(X, xmeans, xscales)
+    else
+        center!(X, xmeans)
+    end
     sqrtw = sqrt.(weights)
     X .= Diagonal(sqrtw) * X
     res = eigen!(Symmetric(X' * X); sortby = x -> -abs(x)) 
@@ -33,16 +41,18 @@ function pcaeigen!(X::Matrix, weights = ones(size(X, 1)); nlv)
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
     T = Diagonal(1 ./ sqrtw) * X * P
-    Pca(T, P, sv, xmeans, weights, nothing, nothing) 
+    Pca(T, P, sv, xmeans, xscales, weights, nothing, nothing) 
 end
 
 """
-    pcaeigenk(X, weights = ones(size(X, 1)); nlv)
-    pcaeigenk!(X::Matrix, weights = ones(size(X, 1)); nlv)
+    pcaeigenk(X, weights = ones(size(X, 1)); nlv, scal = false)
+    pcaeigenk!(X::Matrix, weights = ones(size(X, 1)); nlv, scal = false)
 PCA by Eigen factorization of the kernel form (XX').
 * `X` : X-data (n, p).
 * `weights` : Weights (n) of the observations.
 * `nlv` : Nb. principal components (PCs).
+* `scal` : Boolean. If `true`, each column of `X` is scaled
+    by its uncorrected standard deviation.
 
 `weights` is internally normalized to sum to 1.
 
@@ -61,16 +71,22 @@ See `?pcasvd` for examples.
 Wu, W., Massart, D.L., de Jong, S., 1997. The kernel PCA algorithms for wide data. Part I: Theory and algorithms. 
 Chemometrics and Intelligent Laboratory Systems 36, 165-172. https://doi.org/10.1016/S0169-7439(97)00010-5
 """ 
-function pcaeigenk(X, weights = ones(size(X, 1)); nlv)
-    pcaeigenk!(copy(ensure_mat(X)), weights; nlv = nlv)
+function pcaeigenk(X, weights = ones(size(X, 1)); nlv, scal = false)
+    pcaeigenk!(copy(ensure_mat(X)), weights; nlv = nlv, scal = scal)
 end
 
-function pcaeigenk!(X::Matrix, weights = ones(size(X, 1)); nlv)
+function pcaeigenk!(X::Matrix, weights = ones(size(X, 1)); nlv, scal = false)
     n, p = size(X)
     nlv = min(nlv, n, p)
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
-    center!(X, xmeans)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X, weights)
+        cscale!(X, xmeans, xscales)
+    else
+        center!(X, xmeans)
+    end
     sqrtw = sqrt.(weights)
     zX = Diagonal(sqrtw) * X
     res = eigen!(Symmetric(zX * zX'); sortby = x -> -abs(x))
@@ -79,6 +95,6 @@ function pcaeigenk!(X::Matrix, weights = ones(size(X, 1)); nlv)
     sv = sqrt.(eig)
     P = zX' * scale(res.vectors[:, 1:nlv], sv[1:nlv])
     T = X * P
-    Pca(T, P, sv, xmeans, weights, nothing, nothing) 
+    Pca(T, P, sv, xmeans, xscales, weights, nothing, nothing) 
 end
 

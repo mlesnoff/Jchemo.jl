@@ -86,9 +86,8 @@ coef(fm; lb = 1e-6).df
 res = predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
-f, ax = scatter(vec(res.pred), ytest)
-ablines!(ax, 0, 1)
-f
+plotxy(vec(pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 
 res = predict(fm, Xtest; lb = [.01 ; .001])
 res.pred[1]

@@ -6,19 +6,22 @@ struct Fda
     sstot::Number
     W::Matrix{Float64}
     xmeans::Vector{Float64}
+    xscales::Vector{Float64}
     lev::AbstractVector
     ni::AbstractVector
 end
 
 """
-    fda(X, y; nlv, pseudo = false)
-    fda!(X::Matrix, y; nlv, pseudo = false)
+    fda(X, y; nlv, pseudo = false, scal = false)
+    fda!(X::Matrix, y; nlv, pseudo = false, scal = false)
 Factorial discriminant analysis (FDA).
 * `X` : X-data (n, p).
 * `y` : y-data (n) (class membership).
 * `nlv` : Nb. discriminant components.
 * `pseudo` : If true, a MP pseudo-inverse is used (instead
     of a usual inverse) for inverting W.
+* `scal` : Boolean. If `true`, each column of `X` is scaled
+    by its uncorrected standard deviation.
 
 Eigen factorization of Inverse(W) * B. 
 
@@ -59,17 +62,11 @@ fm.T
 # Projections of the class centers to the score space
 ct = fm.Tcenters 
 
-f = Figure()
-ax = Axis(f, title = "FDA") ;
-for i = 1:nlev
-    u = in([lev[i]]).(ytrain)
-    scatter!(ax, fm.T[u, 1], fm.T[u, 2],
-        label = lev[i])
-end
+group = copy(ytrain)
+f, ax = plotxy(fm.T[:, 1], fm.T[:, 2], group;
+    title = "FDA")
 scatter!(ax, ct[:, 1], ct[:, 2], 
-    markersize = 15, color = :red)
-f[1, 1] = ax
-axislegend(position = :lt)
+    markersize = 10, color = :red)
 f
 
 # Projection of Xtest to the score space
@@ -87,14 +84,20 @@ fm.sstot
 Base.summary(fm)
 ```
 """ 
-function fda(X, y; nlv, pseudo = false)
-    fda!(copy(ensure_mat(X)), y; nlv = nlv, pseudo = pseudo)
+function fda(X, y; nlv, pseudo = false, scal = false)
+    fda!(copy(ensure_mat(X)), y; nlv = nlv, pseudo = pseudo, scal = scal)
 end
 
-function fda!(X::Matrix, y; nlv, pseudo = false)
+function fda!(X::Matrix, y; nlv, pseudo = false, scal = false)
     n, p = size(X)
-    xmeans = colmean(X) 
-    center!(X, xmeans)
+    xmeans = colmean(X)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X)
+        cscale!(X, xmeans, xscales)
+    else
+        center!(X, xmeans)
+    end    
     res = matW(X, y)
     lev = res.lev
     nlev = length(lev)
@@ -114,31 +117,40 @@ function fda!(X::Matrix, y; nlv, pseudo = false)
     scale!(P, norm_P)
     T = X * P
     Tcenters = zres.ct * P
-    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, lev, ni)
+    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, lev, ni)
 end
 
 """
-    fdasvd(X, y; nlv, pseudo = false)
+    fdasvd(X, y; nlv, pseudo = false, scal = false)
+    fdasvd!(X, y; nlv, pseudo = false, scal = false)
 Factorial discriminant analysis (FDA).
 * `X` : X-data.
 * `y` : Univariate class membership.
 * `nlv` : Nb. discriminant components.
 * `pseudo` : If true, a MP pseudo-inverse is used (instead
     of a usual inverse) for inverting W.
+* `scal` : Boolean. If `true`, each column of `X` is scaled
+    by its uncorrected standard deviation.
 
 Weighted SVD factorization of the matrix of the class centers.
 
 See `?fda` for examples.
 
 """ 
-function fdasvd(X, y; nlv, pseudo = false)
-    fdasvd!(copy(ensure_mat(X)), y; nlv = nlv, pseudo = pseudo)
+function fdasvd(X, y; nlv, pseudo = false, scal = false)
+    fdasvd!(copy(ensure_mat(X)), y; nlv = nlv, pseudo = pseudo, scal = scal)
 end
 
-function fdasvd!(X::Matrix, y; nlv, pseudo = false)
+function fdasvd!(X::Matrix, y; nlv, pseudo = false, scal = false)
     n, p = size(X)
     xmeans = colmean(X) 
-    center!(X, xmeans)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X)
+        cscale!(X, xmeans, xscales)
+    else
+        center!(X, xmeans)
+    end
     res = matW(X, y)
     lev = res.lev
     nlev = length(lev)
@@ -157,7 +169,7 @@ function fdasvd!(X::Matrix, y; nlv, pseudo = false)
     P = Ut * Pz[:, 1:nlv]
     T = X * P
     Tcenters = ct * P
-    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, lev, ni)
+    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, lev, ni)
 end
 
 """
@@ -171,8 +183,8 @@ function Base.summary(object::Fda)
     eig = object.eig[1:nlv]
     pvar =  eig ./ sum(object.eig)
     cumpvar = cumsum(pvar)
-    explvar = DataFrame(lv = 1:nlv, var = eig, pvar = pvar, 
+    explvarx = DataFrame(lv = 1:nlv, var = eig, pvar = pvar, 
         cumpvar = cumpvar)
-    (explvar = explvar,)    
+    (explvarx = explvarx,)    
 end
 

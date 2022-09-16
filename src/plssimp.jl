@@ -1,11 +1,15 @@
 """
-    plssimp(X, Y, weights = ones(size(X, 1)); nlv)
-    plssimp!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
+    plssimp(X, Y, weights = ones(size(X, 1)); nlv,
+        scal = false)
+    plssimp!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
+        scal = false)
 Partial Least Squares Regression (PLSR) with the SIMPLS algorithm (de Jong 1993).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation.
 
 `weights` is internally normalized to sum to 1. 
 
@@ -19,19 +23,31 @@ de Jong, S., 1993. SIMPLS: An alternative approach to partial least squares
 regression. Chemometrics and Intelligent Laboratory Systems 18, 251–263. 
 https://doi.org/10.1016/0169-7439(93)85002-X
 """ 
-function plssimp(X, Y, weights = ones(size(X, 1)); nlv)
-    plssimp!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv)
+function plssimp(X, Y, weights = ones(size(X, 1)); nlv,
+        scal = false)
+    plssimp!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
+        scal = scal)
 end
 
-function plssimp!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
+function plssimp!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
+        scal = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(nlv, n, p)
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
-    center!(X, xmeans)
-    center!(Y, ymeans)
+    xscales = ones(p)
+    yscales = ones(q)
+    if scal 
+        xscales .= colstd(X, weights)
+        yscales .= colstd(Y, weights)
+        cscale!(X, xmeans, xscales)
+        cscale!(Y, ymeans, yscales)
+    else
+        center!(X, xmeans)
+        center!(Y, ymeans)
+    end
     D = Diagonal(weights)
     XtY = X' * (D * Y)                   
     # Pre-allocation
@@ -71,7 +87,7 @@ function plssimp!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
         TT[a] = tt
      end
      #B = R * inv(T' * D * T) * T' * D * Y
-     Plsr(T, P, R, W, C, TT, xmeans, ymeans, weights, nothing)
+     Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing)
 end
 
 

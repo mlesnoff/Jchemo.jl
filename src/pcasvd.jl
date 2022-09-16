@@ -3,6 +3,7 @@ struct Pca
     P::Array{Float64}
     sv::Vector{Float64}
     xmeans::Vector{Float64}
+    xscales::Vector{Float64}
     weights::Vector{Float64}
     ## For consistency with PCA Nipals
     niter::Union{Int64, Nothing}
@@ -10,12 +11,14 @@ struct Pca
 end
 
 """
-    pcasvd(X, weights = ones(size(X, 1)); nlv)
-    pcasvd!(X::Matrix, weights = ones(size(X, 1)); nlv)
+    pcasvd(X, weights = ones(size(X, 1)); nlv, scal = false)
+    pcasvd!(X::Matrix, weights = ones(size(X, 1)); nlv, scal = false)
 PCA by SVD factorization.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations.
 * `nlv` : Nb. principal components (PCs).
+* `scal` : Boolean. If `true`, each column of `X` is scaled
+    by its uncorrected standard deviation.
 
 `weights` is internally normalized to sum to 1.
 
@@ -62,22 +65,31 @@ transform(fm, Xtest)
 
 res = Base.summary(fm, Xtrain) ;
 pnames(res)
-res.explvar
+res.explvarx
 res.contr_var
 res.coord_var
 res.cor_circle
 ```
 """ 
-function pcasvd(X, weights = ones(size(X, 1)); nlv)
-    pcasvd!(copy(ensure_mat(X)), weights; nlv = nlv)
+function pcasvd(X, weights = ones(size(X, 1)); nlv, 
+        scal = false)
+    pcasvd!(copy(ensure_mat(X)), weights; nlv = nlv, 
+        scal = scal)
 end
 
-function pcasvd!(X::Matrix, weights = ones(size(X, 1)); nlv)
+function pcasvd!(X::Matrix, weights = ones(size(X, 1)); nlv, 
+        scal = false)
     n, p = size(X)
     nlv = min(nlv, n, p)
     weights = mweight(weights)
-    xmeans = colmean(X, weights) 
-    center!(X, xmeans)
+    xmeans = colmean(X, weights)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X, weights)
+        cscale!(X, xmeans, xscales)
+    else
+        center!(X, xmeans)
+    end
     ## by default in LinearAlgebra.svd
     ## "full = false" ==> [1:min(n, p)]
     sqrtw = sqrt.(weights)
@@ -86,38 +98,7 @@ function pcasvd!(X::Matrix, weights = ones(size(X, 1)); nlv)
     sv = res.S   
     sv[sv .< 0] .= 0
     T = Diagonal(1 ./ sqrtw) * vcol(res.U, 1:nlv) * (Diagonal(sv[1:nlv]))
-    Pca(T, P, sv, xmeans, weights, nothing, nothing)
-end
-
-"""
-    summary(object::Pca, X)
-Summarize the fitted model.
-* `object` : The fitted model.
-* `X` : The X-data that was used to fit the model.
-""" 
-function Base.summary(object::Pca, X::Union{Matrix, DataFrame})
-    X = ensure_mat(X)
-    nlv = size(object.T, 2)
-    D = Diagonal(object.weights)
-    X = center(X, object.xmeans)
-    sstot = sum(colnorm2(X, object.weights))   # = tr(X' * D * X)
-    TT = D * object.T.^2
-    tt = colsum(TT) 
-    # = diag(T' * D * T) 
-    # = colnorm2(object.T, object.weights) 
-    # = object.sv[1:nlv].^2
-    pvar = tt / sstot
-    cumpvar = cumsum(pvar)
-    explvar = DataFrame(pc = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
-    nam = string.("pc", 1:nlv)
-    contr_ind = DataFrame(scale(TT, tt), nam)
-    cor_circle = DataFrame(corm(X, object.T, object.weights), nam)
-    C = X' * D * scale(object.T, sqrt.(tt))
-    coord_var = DataFrame(C, nam)
-    CC = C .* C
-    cc = sum(CC, dims = 1)
-    contr_var = DataFrame(scale(CC, cc), nam)
-    (explvar = explvar, contr_ind, contr_var, coord_var, cor_circle)
+    Pca(T, P, sv, xmeans, xscales, weights, nothing, nothing)
 end
 
 """ 
@@ -131,8 +112,40 @@ function transform(object::Union{Pca, Fda}, X; nlv = nothing)
     X = ensure_mat(X)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    center(X, object.xmeans) * vcol(object.P, 1:nlv)
+    cscale(X, object.xmeans, object.xscales) * vcol(object.P, 1:nlv)
 end
+
+"""
+    summary(object::Pca, X)
+Summarize the fitted model.
+* `object` : The fitted model.
+* `X` : The X-data that was used to fit the model.
+""" 
+function Base.summary(object::Pca, X::Union{Matrix, DataFrame})
+    X = ensure_mat(X)
+    nlv = size(object.T, 2)
+    D = Diagonal(object.weights)
+    X = cscale(X, object.xmeans, object.xscales)
+    sstot = sum(colnorm2(X, object.weights))   # = tr(X' * D * X)
+    TT = D * object.T.^2
+    tt = colsum(TT) 
+    # = diag(T' * D * T) 
+    # = colnorm2(object.T, object.weights) 
+    # = object.sv[1:nlv].^2
+    pvar = tt / sstot
+    cumpvar = cumsum(pvar)
+    explvarx = DataFrame(pc = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
+    nam = string.("pc", 1:nlv)
+    contr_ind = DataFrame(scale(TT, tt), nam)
+    cor_circle = DataFrame(corm(X, object.T, object.weights), nam)
+    C = X' * D * scale(object.T, sqrt.(tt))
+    coord_var = DataFrame(C, nam)
+    CC = C .* C
+    cc = sum(CC, dims = 1)
+    contr_var = DataFrame(scale(CC, cc), nam)
+    (explvarx = explvarx, contr_ind, contr_var, coord_var, cor_circle)
+end
+
 
 
 

@@ -15,7 +15,7 @@ end
 """
     mbpca_cons(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200)
-Consensus principal components analysis (CPCA, MBPCA).
+Consensus principal components analysis (= CPCA, MBPCA).
 * `X_bl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
 * `weights` : Weights of the observations (rows). 

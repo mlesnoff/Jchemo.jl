@@ -44,6 +44,7 @@ include("mbpca_comdim_s.jl")
 include("aov1.jl")
 include("mlr.jl")
 include("rr.jl")
+include("pcr.jl")
 include("plskern.jl") ; include("plsrosa.jl")
 include("plsnipals.jl") ; include("plssimp.jl") 
 include("plsr_avg.jl")
@@ -53,7 +54,6 @@ include("plsr_avg_unif.jl")
 include("plsr_avg_shenk.jl")
 include("plsr_stack.jl")
 include("cglsr.jl")
-include("pcr.jl")
 include("covselr.jl")  
 include("krr.jl") ; include("kplsr.jl") ; include("dkplsr.jl")
 include("aicplsr.jl")
@@ -136,7 +136,8 @@ export
     checkdupl, checkmiss,
     center, center!, 
     colmad, colmean, colnorm2, colstd, colsum, colvar,
-    corm, covm, 
+    corm, covm,
+    cscale, cscale!, 
     dens,
     dummy,
     ensure_df, ensure_mat,

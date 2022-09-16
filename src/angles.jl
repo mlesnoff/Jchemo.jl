@@ -155,12 +155,13 @@ end
 Compute redundancy coefficients between two matrices.
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
-* `weights` : Weights (n) of the observations..
+* `weights` : Weights (n) of the observations.
+* `corr` : If `true`, correlation is used, else covariance is used. 
 
 rd(X, Y) returns the redundancy coefficient between X and each column
 of Y, i.e.: 
 
-[Sum_j(=1..p) cov(xj, y1)^2; ...; Sum_j(=1..p) cov(xj, yq)^2]
+[Sum_j(=1,..,p) cor(xj, y1)^2; ...; Sum_j(=1,..,p) cor(xj, yq)^2] / p
 
 See Tenenhaus 1998 section 2.2.1 p.10-11.
 
@@ -175,20 +176,25 @@ Y = rand(5, 3)
 rd(X, Y)
 ```
 """ 
-function rd(X, Y)
+function rd(X, Y; corr = true)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)
-    z = cor(X, Y).^2
+    if corr
+        z = cor(X, Y).^2
+    else
+        z = cov(X, Y; corrected = false).^2
+    end    
     sum(z; dims = 1) / p
 end
 
-function rd(X, Y, weights)
+function rd(X, Y, weights; corr = true)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)
     weights = mweigth(weights)
-    z = corm(X, Y, weights).^2
+    corr ? fun = corm : fun = covm
+    z = fun(X, Y, weights).^2
     sum(z; dims = 1) / p
 end
 

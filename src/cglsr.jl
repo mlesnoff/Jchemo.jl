@@ -2,13 +2,15 @@ struct Cglsr
     B::Matrix{Float64}
     g::Vector{Float64}
     xmeans::Vector{Float64}
+    xscales::Vector{Float64}
     ymeans::Vector{Float64}
+    yscales::Vector{Float64}
     F::Union{Array{Float64}, Nothing}
 end
 
 """
-    cglsr(X, y; nlv, reorth = true, filt = false)
-    cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false)
+    cglsr(X, y; nlv, reorth = true, filt = false, scal = false)
+    cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false, scal = false)
 Conjugate gradient algorithm for the normal equations (CGLS; Björck 1996).
 * `X` : X-data  (n, p).
 * `y` : Univariate Y-data (n).
@@ -16,6 +18,8 @@ Conjugate gradient algorithm for the normal equations (CGLS; Björck 1996).
 * `reorth` : If `true`, a Gram-Schmidt reorthogonalization of the normal equation 
     residual vectors is done.
 * `filt` : Logical indicating if the CG filter factors are computed (output `F`).
+* `scal` : Boolean. If `true`, each column of `X` and `y` 
+    is scaled by its uncorrected standard deviation.
 
 `X` and `y` are internally centered. 
 
@@ -73,23 +77,31 @@ coef(fm; nlv = 7).B
 res = predict(fm, Xtest) ;
 res.pred
 rmsep(ytest, res.pred)
-f, ax = scatter(vec(res.pred), ytest)
-ablines!(ax, 0, 1)
-f
+plotxy(vec(pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 ```
 """ 
-function cglsr(X, y; nlv, reorth = true, filt = false)
+function cglsr(X, y; nlv, reorth = true, filt = false, scal = false)
     cglsr!(copy(ensure_mat(X)), copy(ensure_mat(y)); 
-        nlv = nlv, reorth = reorth, filt = filt)
+        nlv = nlv, reorth = reorth, filt = filt, scal = scal)
 end
 
-function cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false)
-    n = size(X, 1)
-    p = size(X, 2)
+function cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false, scal = false)
+    n, p = size(X)
+    q = nco(y)
     xmeans = colmean(X) 
     ymeans = colmean(y)   
-    center!(X, xmeans)
-    center!(y, ymeans)
+    xscales = ones(p)
+    yscales = ones(q)
+    if scal 
+        xscales .= colstd(X)
+        yscales .= colstd(y)
+        cscale!(X, xmeans, xscales)
+        cscale!(y, ymeans, yscales)
+    else
+        center!(X, xmeans)
+        center!(y, ymeans)
+    end
     # Pre-allocation and initialization
     B = similar(X, p, nlv)
     b = zeros(p) 
@@ -154,7 +166,7 @@ function cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false)
         end 
         # End
     end
-    Cglsr(B, gnew, xmeans, ymeans, F)
+    Cglsr(B, gnew, xmeans, xscales, ymeans, yscales, F)
 end
 
 """
@@ -165,7 +177,8 @@ Compute the b-coefficients of a fitted model.
 function coef(object::Cglsr; nlv = nothing)
     a = size(object.B, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    B = object.B[:, nlv:nlv]
+    W = Diagonal(object.yscales)
+    B = Diagonal(1 ./ object.xscales) * object.B[:, nlv:nlv] *  W
     int = object.ymeans' .- object.xmeans' * B
     (B = B, int = int)
 end

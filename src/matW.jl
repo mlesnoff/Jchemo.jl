@@ -75,7 +75,3 @@ matW = function(X, y)
 end
 
 
-
-
-
-

@@ -10,6 +10,8 @@ Matrix fitting from a PCA, PCR or PLS model
 Compute an approximate of matrix `X` (X_fit) from a PCA, PCR 
 or PLS fitted on `X`.
 
+`X` and X_fit are in the original scale, i.e. before centering and eventual scaling.
+
 ## Examples 
 ```julia 
 n, p = 5, 3
@@ -44,7 +46,11 @@ function xfit!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
     else
         P = @view(object.P[:, 1:nlv])
         mul!(X, transform(object, X; nlv = nlv), P')
+        # Coming back to the originalm scale
+        scale!(X, 1 ./ object.xscales)
+        # same as: X .=  X * Diagonal(object.xscales)
         center!(X, -object.xmeans)
+        # End
     end
     X
 end
@@ -59,6 +65,8 @@ Residual matrix after fitting by a PCA, PCR or PLS model
     it is the maximum nb. of components.
 
 Compute the residual matrix E = X - X_fit.
+
+`X` and X_fit are in the original scale, i.e. before centering and eventual scaling.
 
 ## Examples 
 ```julia 
@@ -85,11 +93,7 @@ end
 function xresid!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    if(nlv == 0)
-        center!(X, object.xmeans)
-    else
-        X .= X .- xfit(object, X; nlv = nlv)
-    end
+    X .= X .- xfit(object, X; nlv = nlv)
     X
 end
 

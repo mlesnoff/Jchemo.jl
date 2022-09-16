@@ -6,32 +6,28 @@ struct Plsr
     C::Matrix{Float64}
     TT::Vector{Float64}
     xmeans::Vector{Float64}
+    xscales::Vector{Float64}
     ymeans::Vector{Float64}
+    yscales::Vector{Float64}
     weights::Vector{Float64}
     ## For consistency with plsrannar
     U::Union{Array{Float64}, Nothing}
 end
 
-struct Pcr
-    fm_pca
-    T::Matrix{Float64}
-    R::Matrix{Float64}
-    C::Matrix{Float64}
-    xmeans::Vector{Float64}
-    ymeans::Vector{Float64}
-    weights::Vector{Float64}
-end
-
 """
-    plskern(X, Y, weights = ones(size(X, 1)); nlv)
-    plskern!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
+    plskern(X, Y, weights = ones(size(X, 1)); nlv,
+        scal = false)
+    plskern!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
+        scal = false)
 Partial Least Squares Regression (PLSR) with the 
 "Improved kernel algorithm #1" (Dayal & McGegor, 1997).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
-
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation.
+    
 `weights` is internally normalized to sum to 1.
 
 `X` and `Y` are internally centered.
@@ -96,9 +92,8 @@ transform(fm, Xtest; nlv = 7)
 res = predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
-f, ax = scatter(vec(res.pred), ytest)
-ablines!(ax, 0, 1)
-f
+plotxy(vec(pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 
 res = predict(fm, Xtest; nlv = 1:2)
 res.pred[1]
@@ -112,19 +107,31 @@ lines(z.nlv, z.cumpvar,
     axis = (xlabel = "Nb. LVs", ylabel = "Prop. Explained Variance"))
 ```
 """ 
-function plskern(X, Y, weights = ones(size(X, 1)); nlv)
-    plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv)
+function plskern(X, Y, weights = ones(size(X, 1)); nlv, 
+        scal = false)
+    plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
+        scal = scal)
 end
 
-function plskern!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
+function plskern!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv, 
+        scal = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, nlv)
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
-    center!(X, xmeans)
-    center!(Y, ymeans)
+    xscales = ones(p)
+    yscales = ones(q)
+    if scal 
+        xscales .= colstd(X, weights)
+        yscales .= colstd(Y, weights)
+        cscale!(X, xmeans, xscales)
+        cscale!(Y, ymeans, yscales)
+    else
+        center!(X, xmeans)
+        center!(Y, ymeans)
+    end
     D = Diagonal(weights)
     XtY = X' * (D * Y)                   # = Xd' * Y = X' * D * Y  (Xd = D * X   Very costly!!)
     #XtY = X' * (weights .* Y)           # Can create OutOfMemory errors for very large matrices
@@ -172,61 +179,8 @@ function plskern!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
         C[:, a] .= c
         TT[a] = tt
      end
-     Plsr(T, P, R, W, C, TT, xmeans, ymeans, weights, nothing)
+     Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing)
 end
-
-"""
-    summary(object::Plsr, X)
-    summary(object::Plsr, X, Y)
-Summarize the maximal (i.e. with maximal nb. LVs) fitted model.
-* `object` : The fitted model.
-* `X` : The X-data that was used to fit the model.
-* `Y` : The Y-data that was used to fit the model.
-""" 
-function Base.summary(object::Plsr, X::Union{Vector, Matrix, DataFrame})
-    X = ensure_mat(X)
-    n, nlv = size(object.T)
-    X = center(X, object.xmeans)
-    # Could be center! but changes x
-    # If too heavy ==> Makes summary!
-    sstot = sum(object.weights' * (X.^2))
-    tt = object.TT
-    tt_adj = vec(sum(object.P.^2, dims = 1)) .* tt
-    pvar = tt_adj / sstot
-    cumpvar = cumsum(pvar)
-    xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)     
-    (explvarx = explvarx,)
-end
-
-function Base.summary(object::Plsr, X::Union{Vector, Matrix, DataFrame},
-        Y::Union{Vector, Matrix, DataFrame})
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
-    n, nlv = size(object.T)
-    X = center(X, object.xmeans)
-    Y = center(Y, object.ymeans)
-    # Could be center! but changes x
-    # If too heavy ==> Makes summary!
-    tt = object.TT
-    ## X
-    sstot = sum(object.weights' * (X.^2))
-    tt_adj = vec(sum(object.P.^2, dims = 1)) .* tt
-    pvar = tt_adj / sstot
-    cumpvar = cumsum(pvar)
-    xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
-    ## y
-    sstot = sum(object.weights' * (Y.^2))
-    tt_adj = vec(sum(object.C.^2, dims = 1)) .* tt
-    pvar = tt_adj / sstot
-    cumpvar = cumsum(pvar)
-    xvar = tt_adj / n    
-    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
-    ## End
-    (explvarx = explvarx, explvary)
-end
-
 
 """ 
     transform(object::Plsr, X; nlv = nothing)
@@ -239,8 +193,8 @@ function transform(object::Plsr, X; nlv = nothing)
     X = ensure_mat(X)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    T = center(X, object.xmeans) * vcol(object.R, 1:nlv)
-    # Could be center! but changes x
+    T = cscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
+    # Could be cscale! but changes X
     # If too heavy ==> Makes summary!
     T
 end
@@ -258,8 +212,11 @@ The returned object `int` is the intercept.
 function coef(object::Union{Plsr, Pcr}; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    W = Diagonal(object.yscales)
     beta = object.C[:, 1:nlv]'
-    B = vcol(object.R, 1:nlv) * beta
+    B = Diagonal(1 ./ object.xscales) * vcol(object.R, 1:nlv) * beta * W
+    # No correction is needed for 'int'
+    # since ymeans, xmeans and B are in the original scale 
     int = object.ymeans' .- object.xmeans' * B
     (B = B, int = int)
 end
@@ -286,5 +243,53 @@ function predict(object::Union{Plsr, Pcr}, X; nlv = nothing)
     (pred = pred,)
 end
 
+"""
+    summary(object::Plsr, X)
+    summary(object::Plsr, X, Y)
+Summarize the maximal (i.e. with maximal nb. LVs) fitted model.
+* `object` : The fitted model.
+* `X` : The X-data that was used to fit the model.
+* `Y` : The Y-data that was used to fit the model.
+""" 
+function Base.summary(object::Plsr, X::Union{Vector, Matrix, DataFrame})
+    X = ensure_mat(X)
+    n, nlv = size(object.T)
+    X = cscale(X, object.xmeans, object.xscales)
+    # Could be cscale! but changes X
+    # If too heavy ==> Makes summary!
+    sstot = sum(object.weights' * (X.^2))
+    tt = object.TT
+    tt_adj = vec(sum(object.P.^2, dims = 1)) .* tt
+    pvar = tt_adj / sstot
+    cumpvar = cumsum(pvar)
+    xvar = tt_adj / n    
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)     
+    (explvarx = explvarx,)
+end
 
+function Base.summary(object::Plsr, X::Union{Vector, Matrix, DataFrame},
+        Y::Union{Vector, Matrix, DataFrame})
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    n, nlv = size(object.T)
+    X = cscale(X, object.xmeans, object.xscales)
+    Y = cscale(Y, object.ymeans, object.yscales)
+    tt = object.TT
+    ## X
+    sstot = sum(object.weights' * (X.^2))
+    tt_adj = vec(sum(object.P.^2, dims = 1)) .* tt
+    pvar = tt_adj / sstot
+    cumpvar = cumsum(pvar)
+    xvar = tt_adj / n    
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    ## y
+    sstot = sum(object.weights' * (Y.^2))
+    tt_adj = vec(sum(object.C.^2, dims = 1)) .* tt
+    pvar = tt_adj / sstot
+    cumpvar = cumsum(pvar)
+    xvar = tt_adj / n    
+    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    ## End
+    (explvarx = explvarx, explvary)
+end
 

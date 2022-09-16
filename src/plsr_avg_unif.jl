@@ -3,17 +3,20 @@ struct PlsrAvgUnif
     nlv
 end
 
-function plsr_avg_unif(X, Y, weights = ones(size(X, 1)); nlv)
-    plsr_avg_unif!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv)
+function plsr_avg_unif(X, Y, weights = ones(size(X, 1)); nlv,
+        scal = false)
+    plsr_avg_unif!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
+        scal = scal)
 end
 
-function plsr_avg_unif!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv)
+function plsr_avg_unif!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
+        scal = false)
     X = ensure_mat(X)
     n, p = size(X)
     nlv = eval(Meta.parse(nlv))
     nlv = (min(minimum(nlv), n, p):min(maximum(nlv), n, p))
     nlvmax = maximum(nlv)     
-    fm = plskern!(X, Y, weights; nlv = nlvmax)
+    fm = plskern!(X, Y, weights; nlv = nlvmax, scal = scal)
     PlsrAvgUnif(fm, nlv)
 end
 
