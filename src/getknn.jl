@@ -39,8 +39,11 @@ function getknn(Xtrain, X; k = 1, metric = "eucl")
         if p == 1
             Uinv = inv(sqrt(S)) 
         else
-            #S = S + Diagonal(1e-10 * ones(p))
+            if isposdef(S) == false
+                Uinv = Diagonal(1 ./ diag(S))
+            else
             Uinv = LinearAlgebra.inv!(cholesky!(Hermitian(S)).U)
+            end
         end
         zXtrain = Xtrain * Uinv
         zX = X * Uinv

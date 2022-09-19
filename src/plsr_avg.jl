@@ -72,28 +72,32 @@ least squares. Analytica Chimica Acta 504, 279–289. https://doi.org/10.1016/j.
 ```julia
 using JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "cassav.jld2") 
+db = joinpath(mypath, "data", "forages2.jld2") 
 @load db dat
 pnames(dat)
-
+  
 X = dat.X 
-y = dat.Y.y
-year = dat.Y.year
-tab(year)
-s = year .<= 2012
-Xtrain = X[s, :]
-ytrain = y[s]
-Xtest = rmrow(X, s)
-ytest = rmrow(y, s)
+Y = dat.Y
+summ(Y)
+y = Y.ndf
+#y = Y.dm
 
-nlv = "5:15"
+s = Bool.(Y.test)
+Xtrain = rmrow(X, s)
+ytrain = rmrow(y, s)
+Xtest = X[s, :]
+ytest = y[s]
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+(ntot = ntot, ntrain, ntest)
+
+nlv = "0:50"
 fm = plsr_avg(Xtrain, ytrain; nlv = nlv) ;
 res = predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
-f, ax = scatter(vec(res.pred), ytest)
-ablines!(ax, 0, 1)
-f
+plotxy(vec(res.pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", ylabel = "Observed").f   
 
 fm = plsr_avg(Xtrain, ytrain; nlv = nlv,
     typf = "cv") ;

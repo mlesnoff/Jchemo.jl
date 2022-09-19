@@ -12,13 +12,14 @@ struct LwplsrAvg
     K::Real
     rep::Real
     tol::Real
+    scal::Bool
     verbose::Bool
 end
 
 """
     lwplsr_avg(X, Y; nlvdis, metric, h, k, nlv, 
         typf = "unif", typw = "bisquare", alpha = 0, K = 5, rep = 10,
-        tol = 1e-4, verbose = false)
+        tol = 1e-4, scal = false, verbose = false)
 Averaging kNN-LWPLSR models with different numbers of LVs.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -36,6 +37,10 @@ Averaging kNN-LWPLSR models with different numbers of LVs.
     are averaged). Syntax such as "10" is also allowed ("10": correponds to 
     the single model with 10 LVs).   
 * `tol` : For stabilization when very close neighbors.
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation.
+    The scaling is implemented for the global (distances) and local (i.e. inside
+    each neighborhood) computations.
 * `verbose` : If true, fitting information are printed.
 *  Other arguments: see ?plsr_avg.
 
@@ -86,16 +91,16 @@ rmsep(res.pred, ytest)
 """ 
 function lwplsr_avg(X, Y; nlvdis, metric, h, k, nlv, 
     typf = "unif", typw = "bisquare", alpha = 0, K = 5, rep = 10,
-    tol = 1e-4, verbose = false)
+    tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     if nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, Y; nlv = nlvdis)
+        fm = plskern(X, Y; nlv = nlvdis, scal = scal)
     end
     LwplsrAvg(X, Y, fm, metric, h, k, nlv, 
-        typf, typw, alpha, K, rep, tol, verbose)
+        typf, typw, alpha, K, rep, tol, scal, verbose)
 end
 
 """
@@ -109,10 +114,17 @@ function predict(object::LwplsrAvg, X)
     m = size(X, 1)
     ### Getknn
     if isnothing(object.fm)
-        res = getknn(object.X, X; k = object.k, metric = object.metric)
+        if object.scal
+            xscales = colstd(object.X)
+            zX1 = scale(object.X, xscales)
+            zX2 = scale(X, xscales)
+            res = getknn(zX1, zX2; k = object.k, metric = object.metric)
+        else
+            res = getknn(object.X, X; k = object.k, metric = object.metric)
+        end
     else
-        Tnew = transform(object.fm, X)
-        res = getknn(object.fm.T, Tnew; k = object.k, metric = object.metric) 
+        res = getknn(object.fm.T, transform(object.fm, X); k = object.k, 
+            metric = object.metric) 
     end
     listw = copy(res.d)
     for i = 1:m
@@ -121,9 +133,11 @@ function predict(object::LwplsrAvg, X)
         listw[i] = w
     end
     ### End
-    pred = locw(object.X, object.Y, X; listnn = res.ind, listw = listw, 
-        nlv = object.nlv, fun = plsr_avg, 
-        typf = object.typf, typw = object.typw, alpha = object.alpha, K = object.K, rep = object.rep,
+    pred = locw(object.X, object.Y, X; 
+        listnn = res.ind, listw = listw, fun = plsr_avg, nlv = object.nlv, 
+        typf = object.typf, typw = object.typw,
+        alpha = object.alpha, K = object.K, rep = object.rep,
+        scal = object.scal,
         verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end

@@ -27,9 +27,16 @@ function plsr_avg_aic!(X::Matrix, y::Matrix, weights = ones(size(X, 1)); nlv,
     n, p = size(X)
     nlv = eval(Meta.parse(nlv))
     nlv = (min(minimum(nlv), n, p):min(maximum(nlv), n, p))
-    nlvmax = maximum(nlv)    
+    nlvmax = maximum(nlv)
     res = aicplsr(X, y; nlv = nlvmax, bic = bic, scal = scal)
-    d = res.delta.aic[nlv .+ 1]
+    # To not break lwplsr_avg_aic when there are NaN in delta.Aic
+    z = res.delta.aic
+    l = length(z[isnan.(z)])
+    if l > 0
+        z[isnan.(z)] .= mean(z[isnan.(z) .== 0]) .+ 1e-8 * sort(abs.(rand(l)))
+    end  
+    # End
+    d = z[nlv .+ 1]
     w = fweight(d, typw = typw, alpha = alpha)
     w .= mweight(w)
     fm = plskern!(X, y, weights; nlv = nlvmax, scal = scal)

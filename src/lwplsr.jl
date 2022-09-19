@@ -7,6 +7,7 @@ struct Lwplsr
     k::Int
     nlv::Int
     tol::Real
+    scal::Bool
     verbose::Bool
 end
 
@@ -26,6 +27,10 @@ k-Nearest-Neighbours locally weighted partial least squares regression (kNN-LWPL
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `nlv` : Nb. latent variables (LVs).
 * `tol` : For stabilization when very close neighbors.
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation.
+    The scaling is implemented for the global (distances) and local (i.e. inside
+    each neighborhood) computations.
 * `verbose` : If true, fitting information are printed.
 
 Function `lwplsr` fits kNN-LWPLSR models (Lesnoff et al., 2020). 
@@ -106,15 +111,16 @@ ablines!(ax, 0, 1)
 f
 ```
 """ 
-function lwplsr(X, Y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
+function lwplsr(X, Y; nlvdis, metric, h, k, nlv, tol = 1e-4, 
+        scal = false, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     if nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, Y; nlv = nlvdis)
+        fm = plskern(X, Y; nlv = nlvdis, scal = scal)
     end
-    Lwplsr(X, Y, fm, metric, h, k, nlv, tol, verbose)
+    Lwplsr(X, Y, fm, metric, h, k, nlv, tol, scal, verbose)
 end
 
 """
@@ -130,9 +136,17 @@ function predict(object::Lwplsr, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     # Getknn
     if isnothing(object.fm)
-        res = getknn(object.X, X; k = object.k, metric = object.metric)
+        if object.scal
+            xscales = colstd(object.X)
+            zX1 = scale(object.X, xscales)
+            zX2 = scale(X, xscales)
+            res = getknn(zX1, zX2; k = object.k, metric = object.metric)
+        else
+            res = getknn(object.X, X; k = object.k, metric = object.metric)
+        end
     else
-        res = getknn(object.fm.T, transform(object.fm, X); k = object.k, metric = object.metric) 
+        res = getknn(object.fm.T, transform(object.fm, X); k = object.k, 
+            metric = object.metric) 
     end
     listw = copy(res.d)
     for i = 1:m
@@ -143,6 +157,7 @@ function predict(object::Lwplsr, X; nlv = nothing)
     # End
     pred = locwlv(object.X, object.Y, X; 
         listnn = res.ind, listw = listw, fun = plskern, nlv = nlv, 
+        scal = object.scal,
         verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end

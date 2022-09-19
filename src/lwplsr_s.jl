@@ -1,4 +1,4 @@
-struct LwplsrS1
+struct LwplsrS
     X::Array{Float64}
     Y::Array{Float64}
     fm0
@@ -10,12 +10,14 @@ struct LwplsrS1
     k::Int
     nlv::Int
     tol::Real
+    scal::Bool
     verbose::Bool
 end
 
 """
     lwplsr_s(X, Y; nlv0,
-        nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
+        nlvdis, metric, h, k, nlv, tol = 1e-4, 
+        scal = false, verbose = false)
 kNN-LWPLSR after preliminary dimension reduction.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -31,6 +33,10 @@ kNN-LWPLSR after preliminary dimension reduction.
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `nlv` : Nb. latent variables (LVs).
 * `tol` : For stabilization when very close neighbors.
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation.
+    The scaling is implemented for the global (distances) and local (i.e. inside
+    each neighborhood) computations.
 * `verbose` : If true, fitting information are printed.
 
 This is a fast version of kNN-LWPLSR (Lesnoff et al. 2020) using the same principle as 
@@ -77,18 +83,19 @@ f
 ```
 """ 
 function lwplsr_s(X, Y; nlv0,
-        nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
+        nlvdis, metric, h, k, nlv, tol = 1e-4, scal = false, 
+        verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    fm0 = plskern(X, Y; nlv = nlv0)
+    fm0 = plskern(X, Y; nlv = nlv0, scal = scal)
     if nlvdis == 0
         fm = nothing
     else
-        fm = plskern(fm0.T, Y; nlv = nlvdis)
+        fm = plskern(fm0.T, Y; nlv = nlvdis, scal = scal)
     end
     nlv = min(nlv, nco(fm0.T))
-    LwplsrS1(X, Y, fm0, fm, nlv0, nlvdis, metric, h, k, nlv, 
-        tol, verbose)
+    LwplsrS(X, Y, fm0, fm, nlv0, nlvdis, metric, h, k, nlv, 
+        tol, scal, verbose)
 end
 
 """
@@ -97,7 +104,7 @@ Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::LwplsrS1, X; nlv = nothing)
+function predict(object::LwplsrS, X; nlv = nothing)
     X = ensure_mat(X)
     m = nro(X)
     a = object.nlv
@@ -105,9 +112,17 @@ function predict(object::LwplsrS1, X; nlv = nothing)
     T = transform(object.fm0, X)
     # Getknn
     if isnothing(object.fm)
-        res = getknn(object.fm0.T, T; k = object.k, metric = object.metric)
+        if object.scal
+            tscales = colstd(object.fm0.T)
+            zT1 = scale(object.fm0.T, tscales)
+            zT2 = scale(T, tscales)
+            res = getknn(zT1, zT2; k = object.k, metric = object.metric)
+        else
+            res = getknn(object.fm0.T, T; k = object.k, metric = object.metric)
+        end
     else
-        res = getknn(object.fm.T, transform(object.fm, T); k = object.k, metric = object.metric) 
+        res = getknn(object.fm.T, transform(object.fm, T); k = object.k, 
+            metric = object.metric) 
     end
     listw = copy(res.d)
     for i = 1:m
@@ -117,7 +132,8 @@ function predict(object::LwplsrS1, X; nlv = nothing)
     end
     # End
     pred = locwlv(object.fm0.T, object.Y, T; 
-        listnn = res.ind, listw = listw, fun = plskern, nlv = nlv, 
+        listnn = res.ind, listw = listw, fun = plskern, nlv = nlv,
+        scal = object.scal, 
         verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
