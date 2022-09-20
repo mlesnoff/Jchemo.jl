@@ -215,7 +215,7 @@ function coef(object::Union{Plsr, Pcr}; nlv = nothing)
     W = Diagonal(object.yscales)
     beta = object.C[:, 1:nlv]'
     B = Diagonal(1 ./ object.xscales) * vcol(object.R, 1:nlv) * beta * W
-    # No correction is needed for 'int'
+    # 'int': No correction is needed 
     # since ymeans, xmeans and B are in the original scale 
     int = object.ymeans' .- object.xmeans' * B
     (B = B, int = int)

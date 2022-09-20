@@ -4,18 +4,23 @@ struct Rr
     sv::Vector{Float64}
     lb::Float64
     xmeans::Vector{Float64}
+    xscales::Vector{Float64}
     ymeans::Vector{Float64}
     weights::Vector{Float64}
 end
 
 """
-    rr(X, Y, weights = ones(size(X, 1)); lb = .01)
-    rr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); lb = .01)
+    rr(X, Y, weights = ones(size(X, 1)); lb = .01,
+        scal = false)
+    rr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); lb = .01,
+        scal = false)
 Ridge regression (RR) implemented by SVD factorization.
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
 * `lb` : A value of the regularization parameter "lambda".
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 
 `X` and `Y` are internally centered. The model is computed with an intercept. 
 
@@ -73,31 +78,46 @@ res.pred[1]
 res.pred[2]
 ```
 """ 
-function rr(X, Y, weights = ones(size(X, 1)); lb = .01)
-    rr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; lb = lb)
+function rr(X, Y, weights = ones(size(X, 1)); lb = .01,
+    scal = false)
+    rr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; lb = lb, 
+        scal = scal)
 end
 
-function rr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); lb = .01)
+function rr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); lb = .01,
+        scal = false)
+    p = nco(X)
     weights = mweight(weights)
     sqrtw = sqrt.(weights)
     xmeans = colmean(X, weights) 
-    ymeans = colmean(Y, weights)   
-    center!(X, xmeans)
+    ymeans = colmean(Y, weights)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X, weights)
+        cscale!(X, xmeans, xscales)
+    else
+        center!(X, xmeans)
+    end
+    center!(Y, ymeans)  
     sqrtD = Diagonal(sqrtw)
     res = LinearAlgebra.svd!(sqrtD * X)
     sv = res.S
     TtDY = Diagonal(sv) * res.U' * (sqrtD * Y)
-    Rr(res.V, TtDY, sv, lb, xmeans, ymeans, weights)
+    Rr(res.V, TtDY, sv, lb, xmeans, xscales, ymeans, weights)
 end
 
 """
-    rrchol(X, Y, weights = ones(size(X, 1)); lb = .01)
-    rrchol!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); lb = .01)
+    rrchol(X, Y, weights = ones(size(X, 1)); lb = .01, 
+        scal = false)
+    rrchol!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); lb = .01,
+        scal = false)
 Ridge regression (RR) using the Normal equations and a Cholesky factorization.
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations.
 * `lb` : A value of the regularization parameter "lambda".
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 
 `X` and `Y` are internally centered. The model is computed with an intercept. 
 
@@ -116,20 +136,30 @@ inference, and prediction, 2nd ed. Springer, New York.
 Hoerl, A.E., Kennard, R.W., 1970. Ridge Regression: Biased Estimation for Nonorthogonal Problems. 
 Technometrics 12, 55-67. https://doi.org/10.1080/00401706.1970.10488634
 """ 
-function rrchol(X, Y, weights = ones(size(X, 1)); lb = .01)
-    rrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; lb = lb)
+function rrchol(X, Y, weights = ones(size(X, 1)); lb = .01,
+        scal = false)
+    rrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; lb = lb,
+        scal = scal)
 end
 
-function rrchol!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); lb = .01)
+function rrchol!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); lb = .01,
+        scal = false)
     @assert size(X, 2) > 1 "Method only working for X with > 1 column."
     p = size(X, 2)
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
-    ymeans = colmean(Y, weights)   
-    center!(X, xmeans)
-    center!(Y, ymeans)
+    ymeans = colmean(Y, weights)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X, weights)
+        cscale!(X, xmeans, xscales)
+    else
+        center!(X, xmeans)
+    end
+    center!(Y, ymeans)  
     XtD = X' * Diagonal(weights)
     B = cholesky!(Hermitian(XtD * X + lb^2 * Diagonal(ones(p)))) \ (XtD * Y)
+    B .= Diagonal(1 ./ xscales) * B 
     int = ymeans' .- xmeans' * B
     Mlr(B, int, weights)
 end
@@ -146,7 +176,7 @@ function coef(object::Rr; lb = nothing)
     eig = object.sv.^2
     z = 1 ./ (eig .+ lb^2)
     beta = Diagonal(z) * object.TtDY
-    B = object.V * beta
+    B = Diagonal(1 ./ object.xscales) * object.V * beta
     int = object.ymeans' .- object.xmeans' * B
     tr = sum(eig .* z)
     (B = B, int = int, df = 1 + tr)

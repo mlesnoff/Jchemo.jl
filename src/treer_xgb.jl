@@ -1,5 +1,6 @@
 struct TreerXgb
     fm
+    xscales
     featur::Vector{Int64}
 end
 
@@ -14,7 +15,8 @@ end
     treer_xgb(X, y;
         subsample = 1, colsample_bytree = 1, colsample_bynode = 1,
         max_depth = 6, min_child_weight = 5,
-        lambda = 0, verbose = false, kwargs...)
+        lambda = 0, scal = false, verbose = false, 
+        kwargs...)
 Regression tree with XGBoost.
 * `X` : X-data (n obs., p variables).
 * `y` : Univariate Y-data (n obs.).
@@ -29,6 +31,8 @@ Regression tree with XGBoost.
     needs to have.
 * `lambda` : L2 regularization term on weights. 
     Increasing this value will make model more conservative.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 * `verbose` : If true, fitting information are printed.
 * `kwargs` : Optional named arguments to pass in function `xgboost` 
     of `XGBoost.jl` (https://xgboost.readthedocs.io/en/latest/parameter.html).
@@ -73,17 +77,21 @@ pnames(fm)
 res = predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
-f, ax = scatter(vec(res.pred), ytest)
-ablines!(ax, 0, 1)
-f
+plotxy(vec(res.pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", ylabel = "Observed").f   
 ```
 """ 
 function treer_xgb(X, y;
         subsample = 1, colsample_bytree = 1, colsample_bynode = 1,
         max_depth = 6, min_child_weight = 5,
-        lambda = 0, verbose = false, kwargs...) 
+        lambda = 0, scal = false, verbose = false, kwargs...) 
     X = ensure_mat(X)
-    p = size(X, 2)
+    p = nco(X)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X)
+        X = scale(X, xscales)
+    end
     num_round = 1
     fm = xgboost(X, num_round; label = Float64.(vec(y)),
         seed = Int64(round(rand(1)[1] * 1e5)),
@@ -97,7 +105,7 @@ function treer_xgb(X, y;
         lambda = lambda,
         silent = !verbose, kwargs...)
     featur = collect(1:p)
-    TreerXgb(fm, featur)
+    TreerXgb(fm, xscales, featur)
 end
 
 """ 
@@ -105,7 +113,7 @@ end
         subsample = .7,
         colsample_bytree = 1, colsample_bynode = .33,
         max_depth = 6, min_child_weight = 5,
-        lambda = 0, verbose = false, kwargs...)
+        lambda = 0, scal = false, verbose = false, kwargs...)
 Random forest regression with XGBoost.
 * `X` : X-data (n obs., p variables).
 * `y` : Univariate Y-data (n obs.).
@@ -120,6 +128,8 @@ Random forest regression with XGBoost.
     needs to have.
 * `lambda` : L2 regularization term on weights. 
     Increasing this value will make model more conservative.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 * `verbose` : If true, fitting information are printed.
 * `kwargs` : Optional named arguments to pass in function `xgboost` 
     of `XGBoost.jl` (https://xgboost.readthedocs.io/en/latest/parameter.html).
@@ -169,18 +179,22 @@ pnames(fm)
 res = predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
-f, ax = scatter(vec(res.pred), ytest)
-ablines!(ax, 0, 1)
-f
+plotxy(vec(res.pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", ylabel = "Observed").f   
 ```
 """ 
 function rfr_xgb(X, y; rep = 50,
         subsample = .7,
         colsample_bytree = 1, colsample_bynode = .33,
         max_depth = 6, min_child_weight = 5,
-        lambda = 0, verbose = false, kwargs...)
+        lambda = 0, scal = false, verbose = false, kwargs...)
     X = ensure_mat(X)
-    p = size(X, 2)
+    p = nco(X)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X)
+        X = scale(X, xscales)
+    end
     num_round = 1
     fm = xgboost(X, num_round; label = Float64.(vec(y)),
         seed = Int64(round(rand(1)[1] * 1e5)), 
@@ -195,14 +209,14 @@ function rfr_xgb(X, y; rep = 50,
         lambda = lambda,
         silent = !verbose, kwargs...)
     featur = collect(1:p)
-    TreerXgb(fm, featur)
+    TreerXgb(fm, xscales, featur)
 end
 
 """ 
     xgboostr(X, y; rep = 50, eta = .3,
         subsample = .7, colsample_bytree = 1, colsample_bynode = 1/3,
         max_depth = 6, min_child_weight = 5,
-        lambda = 1, verbose = false, kwargs...)
+        lambda = 1, scal = false, verbose = false, kwargs...)
 XGBoost regression.
 * `X` : X-data (n obs., p variables).
 * `y` : Univariate Y-data (n obs.).
@@ -218,6 +232,8 @@ XGBoost regression.
     needs to have.
 * `lambda` : L2 regularization term on weights. 
     Increasing this value will make model more conservative.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 * `verbose` : If true, fitting information are printed.
 * `kwargs` : Optional named arguments to pass in function `xgboost` 
     of `XGBoost.jl` (https://xgboost.readthedocs.io/en/latest/parameter.html).
@@ -257,17 +273,21 @@ pnames(fm)
 res = predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
-f, ax = scatter(vec(res.pred), ytest)
-ablines!(ax, 0, 1)
-f
+plotxy(vec(res.pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", ylabel = "Observed").f   
 ```
 """ 
 function xgboostr(X, y; rep = 50, eta = .3,
         subsample = .7, colsample_bytree = 1, colsample_bynode = 1/3,
         max_depth = 6, min_child_weight = 5,
-        lambda = 1, verbose = false, kwargs...)
+        lambda = 1, scal = false, verbose = false, kwargs...)
     X = ensure_mat(X)
-    p = size(X, 2)
+    p = nco(X)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X)
+        X = scale(X, xscales)
+    end
     num_round = rep
     fm = xgboost(X, num_round; label = Float64.(vec(y)),
         seed = Int64(round(rand(1)[1] * 1e5)), 
@@ -282,7 +302,7 @@ function xgboostr(X, y; rep = 50, eta = .3,
         lambda = lambda, 
         silent = !verbose, kwargs...)
     featur = collect(1:p)
-    TreerXgb(fm, featur)
+    TreerXgb(fm, xscales, featur)
 end
 
 """
@@ -294,7 +314,7 @@ Compute Y-predictions from a fitted model.
 function predict(object::TreerXgb, X)
     X = ensure_mat(X)
     m = size(X, 1)
-    pred = XGBoost.predict(object.fm, X)
+    pred = XGBoost.predict(object.fm, scale(X, object.xscales))
     pred = reshape(pred, m, 1) ;
     (pred = pred,)
 end

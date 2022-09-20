@@ -7,10 +7,12 @@ struct Knnr
     h::Real
     k::Int
     tol::Real
+    scal::Bool
 end
 
 """
-    knnr(X, Y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, tol = 1e-4)
+    knnr(X, Y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, 
+        tol = 1e-4, scal = false)
 k-Nearest-Neighbours regression (KNNR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -24,6 +26,9 @@ k-Nearest-Neighbours regression (KNNR).
     sharper is the function. See function `wdist`.
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tol` : For stabilization when very close neighbors.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
+    The scaling is implemented for the global (distances) computations.
 
 The function uses functions `getknn` and `locw`; 
 see the code for details. Many other variants of kNNR pipelines can be built.
@@ -67,15 +72,16 @@ ablines!(ax, 0, 1)
 f
 ```
 """ 
-function knnr(X, Y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, tol = 1e-4)
+function knnr(X, Y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, 
+        scal = false, tol = 1e-4)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     if nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, Y; nlv = nlvdis)
+        fm = plskern(X, Y; nlv = nlvdis, scal = scal)
     end
-    return Knnr(X, Y, fm, nlvdis, metric, h, k, tol)
+    return Knnr(X, Y, fm, nlvdis, metric, h, k, tol, scal)
 end
 
 """
@@ -90,9 +96,17 @@ function predict(object::Knnr, X)
     q = size(object.Y, 2)
     # Getknn
     if isnothing(object.fm)
-        res = getknn(object.X, X; k = object.k, metric = object.metric)
+        if object.scal
+            xscales = colstd(object.X)
+            zX1 = scale(object.X, xscales)
+            zX2 = scale(X, xscales)
+            res = getknn(zX1, zX2; k = object.k, metric = object.metric)
+        else
+            res = getknn(object.X, X; k = object.k, metric = object.metric)
+        end
     else
-        res = getknn(object.fm.T, transform(object.fm, X); k = object.k, metric = object.metric) 
+        res = getknn(object.fm.T, transform(object.fm, X); k = object.k, 
+            metric = object.metric) 
     end
     listw = copy(res.d)
     for i = 1:m

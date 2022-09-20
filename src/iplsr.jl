@@ -1,7 +1,8 @@
 # To do: Add a structure a make a surchage of 'plot' of Makie 
 
 """
-    iplsr(Xtrain, Ytrain, X, Y; nint = 5, score = rmsep, nlv)
+    iplsr(Xtrain, Ytrain, X, Y; nint = 5, score = rmsep, nlv,
+        kwargs...)
 Interval PLSR (iPLS) (Nørgaard et al. 2000)
 * `Xtrain` : Training X-data (n, p).
 * `Ytrain` : Training Y-data (n, q).
@@ -10,6 +11,7 @@ Interval PLSR (iPLS) (Nørgaard et al. 2000)
 * `nint` : Nb. intervals. 
 * `score` : Function computing the prediction score (= error rate; e.g. msep).
 * `nlv` : Nb. latent variables (LVs) in the PLSR models.
+- `kwarg` : Optional other arguments` to pass from funtion `plskern.
 
 The range 1:p is segmented to `nint` column-intervals of equal (when possible) size. 
 Then, the validation score is computed for each of the `nint` 
@@ -58,7 +60,7 @@ f
 ```
 """
 function iplsr(Xtrain, Ytrain, X, Y; 
-        nint = 5, score = rmsep, nlv)
+        nint = 5, score = rmsep, nlv, kwargs...)
     Xtrain = ensure_mat(Xtrain)
     Ytrain = ensure_mat(Ytrain)
     X = ensure_mat(X)
@@ -73,7 +75,7 @@ function iplsr(Xtrain, Ytrain, X, Y;
     res = list(nint, Matrix{Float64})
     @inbounds for i = 1:nint
         u = int[i, 1]:int[i, 2]
-        fm = plskern(vcol(Xtrain, u), Ytrain; nlv = nlv)
+        fm = plskern(vcol(Xtrain, u), Ytrain; nlv = nlv, kwargs...)
         pred .= predict(fm, vcol(X, u)).pred
         res[i] = score(pred, Y)
     end

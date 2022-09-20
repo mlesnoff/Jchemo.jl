@@ -1,11 +1,12 @@
 struct Svmr
     fm
+    xscales::Vector{Float64}
 end
 
 """
     svmr(X, y; kern = "rbf", 
         gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1., 
-        epsilon = .1)
+        epsilon = .1, scal = false)
 Support vector machine for regression (Epsilon-SVR).
 * `X` : X-data.
 * `y : y-data (univariate).
@@ -15,7 +16,9 @@ Support vector machine for regression (Epsilon-SVR).
 * 'degree' : See below.
 * 'coef0' : See below.
 * 'cost' : Cost of constraints violation C parameter.
-* 'epsilon' : Epsilon parameter in the loss function .
+* 'epsilon' : Epsilon parameter in the loss function.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 
 Kernel types : 
 * "krbf" -- radial basis function: exp(-gamma * |x - y|^2)
@@ -69,9 +72,8 @@ pnames(fm)
 res = predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
-f, ax = scatter(vec(res.pred), ytest)
-ablines!(ax, 0, 1)
-f
+plotxy(vec(res.pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", ylabel = "Observed").f   
 
 # Example of fitting the function sinc(x)
 # described in Rosipal & Trejo 2001 p. 105-106 
@@ -91,7 +93,14 @@ f
 """ 
 function svmr(X, y; kern = "krbf", 
     gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1., 
-    epsilon = .1)
+    epsilon = .1, scal = false)
+    X = ensure_mat(X)
+    p = nco(X)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X)
+        X = scale(X, xscales)
+    end
     gamma = Float64(gamma) ; degree = Int64(degree) ; coef0  = Float64(coef0) ; 
     cost  = Float64(cost) ; epsilon = Float64(epsilon) ; 
     X = ensure_mat(X)
@@ -114,7 +123,7 @@ function svmr(X, y; kern = "krbf",
         degree = degree,
         cost = cost, epsilon = epsilon,
         nt = nt) 
-    Svmr(fm)
+    Svmr(fm, xscales)
 end
 
 
@@ -126,7 +135,7 @@ Compute y-predictions from a fitted model.
 """ 
 function predict(object::Svmr, X)
     X = ensure_mat(X)
-    pred = svmpredict(object.fm, X')[1]
+    pred = svmpredict(object.fm, scale(X, object.xscales)')[1]
     n = length(pred)
     pred = reshape(pred, n, 1)
     (pred = pred,)
