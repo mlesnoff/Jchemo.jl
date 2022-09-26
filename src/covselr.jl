@@ -5,7 +5,7 @@ struct Covselr
 end
 
 """
-    covselr(X, Y; nlv = nothing, , typ = "corr")
+    covselr(X, Y; nlv = nothing, typ = "corr")
 MLR on variables selected from partial correlation or covariance (Covsel).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -62,7 +62,5 @@ function predict(object::Covselr, X)
     pred = predict(object.fm, X[:, object.sel.sel]).pred
     (pred = pred,)
 end
-
-
 
 

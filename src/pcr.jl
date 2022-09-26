@@ -20,7 +20,7 @@ Principal component regression (PCR) with a SVD factorization.
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+* `scal` : Boolean. If `true`, each column of `X`
     is scaled by its uncorrected standard deviation.
 
 `weights` is internally normalized to sum to 1. 
@@ -84,14 +84,11 @@ function pcr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
         scal = false)
     q = nco(Y)
     weights = mweight(weights)
-    ymeans = colmean(Y, weights)  
+    ymeans = colmean(Y, weights)
+    # No need to scale Y
+    # Only for consistency with coef::Plsr  
     yscales = ones(q)
-    if scal 
-        yscales .= colstd(Y, weights)
-        cscale!(Y, ymeans, yscales)
-    else
-        center!(Y, ymeans)
-    end
+    # End 
     fm = pcasvd!(X, weights; nlv = nlv, scal = scal)
     D = Diagonal(fm.weights)
     beta = inv(fm.T' * D * fm.T) * fm.T' * D * Y

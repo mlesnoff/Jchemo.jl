@@ -1,12 +1,18 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.0.27*
+    
+- Modified
+    - Argument 'scal' (X and/or Y column-scaling) added to various functions.
+        Work in progress. The argument will be available for all the concerned fonctions.
+
 ### *Version 0.0.26*
 - New
     - **cscale**: Center and scale each column of a matrix.
     
 - Modified
-    - Argument 'scal' (X and Y column-scaling) added to various functions.
-        Work in progress (the argument will be available for all the concerned fonctions).
+    - Argument 'scal' (X and/or Y column-scaling) added to various functions.
+        Work in progress. The argument will be available for all the concerned fonctions.
     - Output 'explvar' replaced by 'explvarx' in all the concerned functions.
     - **rd**: New argument 'corr'.
 

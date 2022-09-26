@@ -52,8 +52,8 @@ plotgrid(res.nlv, res.y1, group;
 """ 
 function plotgrid(indx, r; resolution = (500, 350), step = 5, 
         color = nothing, kwargs...)
-    indx = collect(vec(indx))
-    r = vec(r)
+    indx = Float64.(collect(vec(indx)))
+    r = Float64.(vec(r))
     xticks = collect(minimum(indx):step:maximum(indx))
     f = Figure(resolution = resolution)
     ax = Axis(f; xticks = (xticks, string.(xticks)), kwargs...)
@@ -68,8 +68,8 @@ end
 
 function plotgrid(indx, r, group; resolution = (700, 350), step = 5, 
         color = nothing, kwargs...)
-    indx = collect(vec(indx))
-    r = vec(r)
+    indx = Float64.(collect(vec(indx)))
+    r = Float64.(vec(r))
     group = vec(group)
     xticks = collect(minimum(indx):step:maximum(indx))
     lev = sort(unique(group))

@@ -3,12 +3,16 @@ struct Dkplsr
     fm
     K::Array{Float64}
     kern
+    xscales::Vector{Float64}
+    yscales::Vector{Float64}
     dots
 end
 
 """
-    dkplsr(X, Y, weights = ones(size(X, 1)); nlv , kern = "krbf", kwargs...)
-    dkplsr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
+    dkplsr(X, Y, weights = ones(size(X, 1)); nlv, 
+        kern = "krbf", scal = false, kwargs...)
+    dkplsr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv, 
+        kern = "krbf", scal = scal, kwargs...)
 Direct kernel partial least squares regression (DKPLSR) (Bennett & Embrechts 2003).
 
 * `X` : X-data (n, p).
@@ -17,18 +21,21 @@ Direct kernel partial least squares regression (DKPLSR) (Bennett & Embrechts 200
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * 'kern' : Type of kernel used to compute the Gram matrices.
     Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`).
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation.
 * `kwargs` : Named arguments to pass in the kernel function.
 
-The method builds kernel Gram matrices and then runs a usual PLSR algorithm on them. This is faster 
-(but not equivalent) to the "true" NIPALS KPLSR algorithm described in Rosipal & Trejo (2001).
+The method builds kernel Gram matrices and then runs a usual PLSR algorithm on them. 
+This is faster (but not equivalent) to the "true" NIPALS KPLSR algorithm described 
+in Rosipal & Trejo (2001).
 
 ## References 
-Bennett, K.P., Embrechts, M.J., 2003. An optimization perspective on kernel partial least squares regression, 
-in: Advances in Learning Theory: Methods, Models and Applications, 
+Bennett, K.P., Embrechts, M.J., 2003. An optimization perspective on kernel partial 
+least squares regression, in: Advances in Learning Theory: Methods, Models and Applications, 
 NATO Science Series III: Computer & Systems Sciences. IOS Press Amsterdam, pp. 227-250.
 
-Rosipal, R., Trejo, L.J., 2001. Kernel Partial Least Squares Regression in Reproducing Kernel Hilbert Space. 
-Journal of Machine Learning Research 2, 97-123.
+Rosipal, R., Trejo, L.J., 2001. Kernel Partial Least Squares Regression in 
+Reproducing Kernel Hilbert Space. Journal of Machine Learning Research 2, 97-123.
 
 ## Examples
 ```julia
@@ -91,17 +98,28 @@ axislegend("Method")
 f
 ```
 """ 
-function dkplsr(X, Y, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
+function dkplsr(X, Y, weights = ones(size(X, 1)); nlv, 
+        kern = "krbf", scal = false, kwargs...)
     dkplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        nlv = nlv, kern = kern, kwargs...)
+        nlv = nlv, kern = kern, scal = scal, kwargs...)
 end
 
 function dkplsr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); 
-        nlv, kern = "krbf", kwargs...)
+        nlv, kern = "krbf", scal = false, kwargs...)    
+    p = nco(X)
+    q = nco(Y)
+    xscales = ones(p)
+    yscales = ones(q)
+    if scal 
+        xscales .= colstd(X, weights)
+        yscales .= colstd(Y, weights)
+        scale!(X, xscales)
+        scale!(Y, yscales)
+    end
     fkern = eval(Meta.parse(kern))
     K = fkern(X, X; kwargs...)     # In the future: fkern!(K, X, X; kwargs...)
     fm = plskern!(K, Y; nlv = nlv)
-    Dkplsr(X, fm, K, kern, kwargs)
+    Dkplsr(X, fm, K, kern, xscales, yscales, kwargs)
 end
 
 """ 
@@ -113,7 +131,7 @@ Compute LVs (score matrix "T") from a fitted model and X-data.
 """ 
 function transform(object::Dkplsr, X; nlv = nothing)
     fkern = eval(Meta.parse(object.kern))
-    K = fkern(X, object.X; object.dots...)
+    K = fkern(scale(X, object.xscales), object.X; object.dots...)
     transform(object.fm, K; nlv = nlv)
 end
 
@@ -138,7 +156,7 @@ Compute Y-predictions from a fitted model and X-data.
 """ 
 function predict(object::Dkplsr, X; nlv = nothing)
     fkern = eval(Meta.parse(object.kern))
-    K = fkern(X, object.X; object.dots...)
-    pred = predict(object.fm, K; nlv = nlv).pred
+    K = fkern(scale(X, object.xscales), object.X; object.dots...)
+    pred = predict(object.fm, K; nlv = nlv).pred * Diagonal(object.yscales)
     (pred = pred,)
 end

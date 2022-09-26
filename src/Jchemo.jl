@@ -174,7 +174,7 @@ export
     kpca,
     nipals,
     pcasvd, pcasvd!, pcaeigen, pcaeigen!, pcaeigenk, pcaeigenk!,
-    rpmat_gauss, rpmat_li, rp,
+    rpmat_gauss, rpmat_li, rp, rp!,
     # Multiblock Pca
     blockscal, blockscal_frob, blockscal_mfa,
     blockscal_ncol, blockscal_sd,

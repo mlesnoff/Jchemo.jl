@@ -9,6 +9,7 @@ struct Krr
     DKt::Array{Float64}
     vtot::Array{Float64}
     lb::Float64
+    xscales::Vector{Float64}
     ymeans::Vector{Float64}
     weights::Vector{Float64}
     kern

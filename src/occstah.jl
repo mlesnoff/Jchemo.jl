@@ -6,13 +6,13 @@ struct Occstah
 end
 
 """
-    occstah(X; a = 2000, scaling = true, 
+    occstah(X; a = 2000, scal = true, 
         typc = "mad", cri = 3, alpha = .05)
 One-class classification using the Stahel-Donoho outlierness measure.
 
 * `X` : X-data.
 * `a` : Nb. dimensions simulated for the projection-pursuit method.
-* `scaling` : Boolean. If `true`, matrix `X` is centred (by median) 
+* `scal` : Boolean. If `true`, matrix `X` is centred (by median) 
     and scaled (by MAD) before computing the outlierness.
 * `typc` : Type of cutoff ("mad" or "q"). See below.
 * `cri` : When `typc = "mad"`, constant used for computing the 
@@ -80,9 +80,9 @@ hlines!(ax, 1)
 f
 ```
 """ 
-function occstah(X; a = 2000, scaling = true, 
+function occstah(X; a = 2000, scal = true, 
         typc = "mad", cri = 3, alpha = .05) 
-    res = Jchemo.stah(X, a; scaling = scaling)
+    res = Jchemo.stah(X, a; scal = scal)
     d = res.d
     #d2 = d.^2 
     #mu = median(d2)

@@ -212,8 +212,8 @@ The returned object `int` is the intercept.
 function coef(object::Union{Plsr, Pcr}; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    W = Diagonal(object.yscales)
     beta = object.C[:, 1:nlv]'
+    W = Diagonal(object.yscales)
     B = Diagonal(1 ./ object.xscales) * vcol(object.R, 1:nlv) * beta * W
     # 'int': No correction is needed 
     # since ymeans, xmeans and B are in the original scale 

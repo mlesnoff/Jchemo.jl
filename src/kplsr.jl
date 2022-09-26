@@ -8,7 +8,9 @@ struct Kplsr
     D::Array{Float64} 
     DKt::Array{Float64}
     vtot::Array{Float64}   
+    xscales::Vector{Float64}
     ymeans::Vector{Float64}
+    yscales::Vector{Float64}
     weights::Vector{Float64}
     kern
     dots
@@ -17,10 +19,13 @@ end
 
 """
     kplsr(X, Y, weights = ones(size(X, 1)); 
-        nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, kwargs...)
+        nlv, kern = "krbf", scal = false, tol = 1.5e-8, 
+        maxit = 100, kwargs...)
     kplsr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); 
-        nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, kwargs...)
-Kernel partial least squares regression (KPLSR) implemented with a NIPALS algorithm (Rosipal & Trejo, 2001).
+        nlv, kern = "krbf", scal = false, tol = 1.5e-8, 
+        maxit = 100, kwargs...)
+Kernel partial least squares regression (KPLSR) implemented with a NIPALS 
+algorithm (Rosipal & Trejo, 2001).
 
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -28,6 +33,8 @@ Kernel partial least squares regression (KPLSR) implemented with a NIPALS algori
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * 'kern' : Type of kernel used to compute the Gram matrices.
     Possible values are "krbf" or "kpol" (see respective functions `krbf` and `kpol`).
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation.
 * `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. iterations.
 * `kwargs` : Named arguments to pass in the kernel function.
@@ -37,8 +44,8 @@ This algorithm becomes slow for n > 1000.
 The kernel Gram matrices are internally centered. 
 
 ## References 
-Rosipal, R., Trejo, L.J., 2001. Kernel Partial Least Squares Regression in Reproducing Kernel Hilbert Space. 
-Journal of Machine Learning Research 2, 97-123.
+Rosipal, R., Trejo, L.J., 2001. Kernel Partial Least Squares Regression in 
+Reproducing Kernel Hilbert Space. Journal of Machine Learning Research 2, 97-123.
 
 ## Examples
 ```julia
@@ -102,18 +109,30 @@ f
 ```
 """ 
 function kplsr(X, Y, weights = ones(size(X, 1)); 
-        nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, kwargs...)
+        nlv, kern = "krbf", scal = false, tol = 1.5e-8, 
+        maxit = 100, kwargs...)
     kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        nlv = nlv, kern = kern, tol = tol, maxit = maxit, kwargs...)
+        nlv = nlv, kern = kern, scal = scal, 
+        tol = tol, maxit = maxit, kwargs...)
 end
 
 function kplsr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); 
-        nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, kwargs...)
-    n = nro(X)
+        nlv, kern = "krbf", scal = false, 
+        tol = 1.5e-8, maxit = 100, kwargs...)
+    n, p = size(X)
     q = nco(Y)
     weights = mweight(weights)
     ymeans = colmean(Y, weights)   
-    center!(Y, ymeans)  
+    xscales = ones(p)
+    yscales = ones(q)
+    if scal 
+        xscales .= colstd(X, weights)
+        yscales .= colstd(Y, weights)
+        scale!(X, xscales)
+        cscale!(Y, ymeans, yscales)
+    else
+        center!(Y, ymeans)
+    end
     fkern = eval(Meta.parse(kern))  
     K = fkern(X, X; kwargs...)     # In the future: fkern!(K, X, X; kwargs...)
     D = Diagonal(weights)
@@ -169,7 +188,8 @@ function kplsr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1));
     end
     DU = D * U
     zR = DU * inv(T' * D * Kc * DU)
-    Kplsr(X, Kt, T, C, U, zR, D, DKt, vtot, ymeans, weights, kern, kwargs, iter)
+    Kplsr(X, Kt, T, C, U, zR, D, DKt, vtot, xscales, ymeans, yscales, 
+        weights, kern, kwargs, iter)
 end
 
 """ 
@@ -183,7 +203,7 @@ function transform(object::Kplsr, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(object.kern))
-    K = fkern(X, object.X; object.dots...)
+    K = fkern(scale(X, object.xscales), object.X; object.dots...)
     DKt = object.D * K'
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')
@@ -223,7 +243,7 @@ function predict(object::Kplsr, X; nlv = nothing)
     pred = list(le_nlv, Matrix{Float64})
     @inbounds for i = 1:le_nlv
         z = coef(object; nlv = nlv[i])
-        pred[i] = z.int .+ @view(T[:, 1:nlv[i]]) * z.beta
+        pred[i] = z.int .+ @view(T[:, 1:nlv[i]]) * z.beta * Diagonal(object.yscales)
     end 
     le_nlv == 1 ? pred = pred[1] : nothing
     (pred = pred,)

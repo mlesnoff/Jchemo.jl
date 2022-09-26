@@ -1,10 +1,10 @@
 """
-    stah(X, a; scaling = true)
+    stah(X, a; scal = true)
 Stahel-Donoho outlierness measure.
 
-* `X` : The PCA/PLS fitted model.
+* `X` : X-data.
 * `a` : Nb. dimensions simulated for the projection pursuit method.
-* `scaling` : Boolean. If `true`, matrix `X` is centred (by median) 
+* `scal` : Boolean. If `true`, matrix `X` is centred (by median) 
     and scaled (by MAD) before computing the outlierness.
 
 The outlierness measure is computed from a projection-pursuit approach:
@@ -27,30 +27,27 @@ X2 = randn(m, p) .+ sample(1:3, p)'
 X = vcat(X1, X2)
 
 a = 100
-res = stah(X, a; scaling = true) ;
+res = stah(X, a; scal = true) ;
 res.d # outlierness
 
 plotxy(1:nro(X), res.d).f
 ```
 """ 
-function stah(X, a; scaling = true) 
+function stah(X, a; scal = true) 
     zX = copy(ensure_mat(X))
     n, p = size(zX)
     P = reshape(sample(0:1, p * a), p, a)
-    if scaling
-        mu_scal = vec(median(zX, dims = 1))
-        s_scal = colmad(zX)
-        center!(zX, mu_scal)
-        scale!(zX, s_scal)
-    else
-        mu_scal = zeros(p)
-        s_scal = ones(p) 
+    mu_scal = zeros(p)
+    s_scal = ones(p) 
+    if scal
+        mu_scal .= vec(median(zX, dims = 1))
+        s_scal .= colmad(zX)
+        cscale!(zX, mu_scal, s_scal)
     end
     T = zX * P
     mu = vec(median(T, dims = 1))
     s = colmad(T)
-    center!(T, mu)
-    scale!(T, s)
+    cscale!(T, mu, s)
     T .= abs.(T)
     d = similar(T, n)
     @inbounds for i = 1:n

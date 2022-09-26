@@ -1,19 +1,21 @@
 struct Rp
     T::Matrix{Float64}
     P
+    xmeans
+    xscales
 end
 
 """
-    rpmat_gauss(p, a)
+    rpmat_gauss(p, nlv)
 Build a gaussian random projection matrix.
 * `p` : Nb. variables (attributes) to project.
-* `a` : Nb. of simulated projection dimensions.
+* `nlv` : Nb. of simulated projection dimensions.
 
 The function returns a random projection matrix P of dimension 
-`p` x `a`. The projection of a given matrix X of size n x `p` is given
+`p` x `nlv`. The projection of a given matrix X of size n x `p` is given
 by X * P.
 
-P is simulated from i.i.d. N(0, 1)/sqrt(`a`).
+P is simulated from i.i.d. N(0, 1)/sqrt(`nlv`).
 
 ## References 
 Li, P., Hastie, T.J., Church, K.W., 2006. Very sparse random projections, 
@@ -23,26 +25,26 @@ New York, NY, USA, pp. 287–296. https://doi.org/10.1145/1150402.1150436
 
 ## Examples
 ```julia
-p = 10 ; a = 3
-rpmat_gauss(p, a)
+p = 10 ; nlv = 3
+rpmat_gauss(p, nlv)
 ```
 """ 
-function rpmat_gauss(p, a)
-    randn(p, a) / sqrt(a)
+function rpmat_gauss(p, nlv)
+    randn(p, nlv) / sqrt(nlv)
 end
 
 
 """
-    rpmat_li(p, a; s = sqrt(p))
+    rpmat_li(p, nlv; s = sqrt(p))
 Build a sparse random projection matrix (Achlioptas 2001, Li et al. 2006).
 * `p` : Nb. variables (attributes) to project.
-* `a` : Nb. final dimensions, i.e. after projection.
+* `nlv` : Nb. final dimensions, i.e. after projection.
 * `s` : Coefficient defining the sparsity of the returned matrix 
     (higher is `s`, higher is the sparsity).
 
 
 The function returns a random projection matrix P of dimension 
-`p` x `a`. The projection of a given matrix X of size n x `p` is given
+`p` x `nlv`. The projection of a given matrix X of size n x `p` is given
 by X * P.
 
 P is simulated from i.i.d. "p_ij" = 
@@ -69,55 +71,77 @@ New York, NY, USA, pp. 287–296. https://doi.org/10.1145/1150402.1150436
 
 ## Examples
 ```julia
-p = 10 ; a = 3
-rpmat_li(p, a)
+p = 10 ; nlv = 3
+rpmat_li(p, nlv)
 ```
 """ 
-function rpmat_li(p, a; s = sqrt(p))
-    le = p * a
+function rpmat_li(p, nlv; s = sqrt(p))
+    le = p * nlv
     k = Int64(round(le / s))
     z = zeros(le)
     z[rand(1:le, k)] .= rand([-1. ; 1], k) 
-    sparse(reshape(z, p, a))
+    sparse(reshape(z, p, nlv))
 end
 
 """
-    rp(X; a, fun = rpmat_li, kwargs ...)
+    rp(X, weights = ones(size(X, 1)); nlv, fun = rpmat_li, scal = false, kwargs ...)
+    rp!(X::Matrix, weights = ones(size(X, 1)); nlv, fun = rpmat_li, scal = false, kwargs ...)
 Make a random projection of matrix X.
-* `X` : X-data to project.
-* `a` : Nb. dimensions on which `X` is projected.
+* `X` : X-data (n, p).
+* `weights` : Weights (n) of the observations.
+* `nlv` : Nb. dimensions on which `X` is projected.
 * `fun` : A function of random projection.
 * `kwargs` : Optional arguments of function `fun`.
+* `scal` : Boolean. If `true`, each column of `X` is scaled
+    by its uncorrected standard deviation.
 
 ## Examples
 ```julia
 X = rand(5, 10)
-a = 3
-fm = rp(X; a = a)
+nlv = 3
+fm = rp(X; nlv = nlv)
 pnames(fm)
 size(fm.P) 
 fm.P
 fm.T # = X * fm.P 
 transform(fm, X[1:2, :])
 ```
-""" 
-function rp(X; a, fun = rpmat_li, kwargs ...)
+"""
+function rp(X, weights = ones(size(X, 1)); nlv, fun = rpmat_li, 
+    scal = false, kwargs...)
+    rp!(copy(ensure_mat(X)), weights; nlv, 
+        fun = fun, scal = scal, kwargs...)
+end
+
+function rp!(X::Matrix, weights = ones(size(X, 1)); nlv, fun = rpmat_li, 
+        scal = false, kwargs...)
     X = ensure_mat(X)
-    P = fun(size(X, 2), a; kwargs...)
+    p = nco(X)
+    weights = mweight(weights)
+    xmeans = colmean(X, weights)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X, weights)
+        cscale!(X, xmeans, xscales)
+    else
+        center!(X, xmeans)
+    end
+    P = fun(p, nlv; kwargs...)
     T = X * P
-    Rp(T, P)
+    Rp(T, P, xmeans, xscales)
 end
 
 """ 
-    transform(object::Rp, X; a = nothing)
+    transform(object::Rp, X; nlv = nothing)
 Compute "scores" T from a random projection model and a matrix X.
 * `object` : The random projection model.
 * `X` : Matrix (m, p) for which LVs are computed.
-* `a` : Nb. dimensions to consider. If nothing, it is the maximum nb. dimensions.
+* `nlv` : Nb. dimensions to consider. If nothing, it is the maximum nb. dimensions.
 """ 
-function transform(object::Rp, X; a = nothing)
+function transform(object::Rp, X; nlv = nothing)
+    X = ensure_mat(X)
     a = size(object.T, 2)
-    isnothing(a) ? a = a : a = min(a, a)
-    X * vcol(object.P, 1:a)
+    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    cscale(X, object.xmeans, object.xscales) * vcol(object.P, 1:nlv)
 end
 

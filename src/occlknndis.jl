@@ -2,7 +2,7 @@ struct Occlknndis
     d::DataFrame
     fm
     T::Array{Float64}
-    scal::Vector{Float64}
+    tscales::Vector{Float64}
     k::Int
     e_cdf
     cutoff::Real    
@@ -11,7 +11,8 @@ end
 """
     occlknndis(X; 
         nsamp, nlv, k, 
-        typc = "mad", cri = 3, alpha = .05)
+        typc = "mad", cri = 3, alpha = .05
+        scal = false)
 One-class classification using "local" k-nearest neighbors distances.
 
 * `X` : X-data.
@@ -24,6 +25,8 @@ One-class classification using "local" k-nearest neighbors distances.
     cutoff detecting extreme values.
 * `alpha` : When `typc = "q"`, risk-I level used for computing the cutoff 
     detecting extreme values.
+* `scal` : Boolean. If `true`, each column of `X` is scaled
+    by its uncorrected standard deviation.
 
 In this method, the "outlierness measure" `d` of a given observatio "q"  
 is defined as follows: 
@@ -35,8 +38,9 @@ successively an observation "q" from which is computed the median distance to it
 `k` neighbors). This returns `k` median distances. Finally, the median of these
 `k` median distances is computed, and say d_q_nn.
 * The outlierness of "q" is defined by d_q / d_q_nn.  
+
 The distances are computed as Mahalanobis distances in a PCA score space 
-(internally computed; argument `nlv`).
+(internally computed; see argument `nlv`).
 
 See `?occknndis` for the cutoff computation (the same principle is applied). 
 
@@ -100,13 +104,14 @@ f
 """ 
 function occlknndis(X; 
         nsamp, nlv, k, 
-        typc = "mad", cri = 3, alpha = .05)
+        typc = "mad", cri = 3, alpha = .05,
+        scal = false)
     X = ensure_mat(X)
     n = nro(X)
-    fm = pcasvd(X; nlv = nlv)
+    fm = pcasvd(X; nlv = nlv, scal = scal)
     T = fm.T
-    scal = colstd(T)
-    scale!(T, scal)
+    tscales = colstd(T)
+    scale!(T, tscales)
     zn = collect(1:n)
     samp = sample(zn, nsamp; replace = false)
     ind = Int64.(zeros(k))
@@ -131,14 +136,14 @@ function occlknndis(X;
     e_cdf = StatsBase.ecdf(d)
     pval = 1 .- e_cdf(d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = pval)
-    Occlknndis(d, fm, T, scal, k, e_cdf, cutoff)
+    Occlknndis(d, fm, T, tscales, k, e_cdf, cutoff)
 end
 
 function predict(object::Occlknndis, X)
     X = ensure_mat(X)
     m = size(X, 1)
     T = transform(object.fm, X)
-    scale!(T, object.scal)
+    scale!(T, object.tscales)
     res = getknn(object.T, T; k = object.k, metric = "eucl")
     ind = Int64.(zeros(object.k))
     d = zeros(m)

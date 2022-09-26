@@ -1,11 +1,11 @@
 """
-    covsel(X, Y; nlv = nothing, , typ = "corr")
+    covsel(X, Y; nlv = nothing, typ = "corr")
     covsel!(X::Matrix, Y::Matrix; nlv = nothing, typ = "corr")
 Variable (feature) selection from partial correlation or covariance (Covsel).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `nlv` : Nb. variables to select.
-* `typ` : Criterion used at each selection . 
+* `typ` : Criterion used at each variable selection. 
     Possible values are: "corr" (squared correlation with `Y`), 
     and "cov" (squared covariance with `Y`, such as in Roger et al. 2011).
 
@@ -13,6 +13,10 @@ The selection is sequential. Once a variable is selected,
 `X` and `Y` are orthogonolized to this variable, 
 and a new variable (the one showing the maximum value for the criterion)
 is selected.
+
+if `Y` is multivariate (q > 1), each column of `Y` is scaled by its 
+uncorrected stnandard deviation. This gives the same scales to the columns
+when computing the selection criterion.
 
 ## References
 Höskuldsson, A., 1992. The H-principle in modelling with applications 
@@ -61,6 +65,9 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing,
     ymeans = colmean(Y)   
     center!(X, xmeans)
     center!(Y, ymeans)
+    if q > 1
+        scale!(Y, colstd(Y))
+    end
     xsstot = sum(X.^2)
     ysstot = sum(Y.^2)
     xss = zeros(nlv)
@@ -79,7 +86,6 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing,
             zcov .= cov(X, Y; corrected = false)
             z = rowsum(zcov.^2)
         end
-        # Does not give efficient predictions
         if typ == "aic"
             zscor = zeros(p)
             for j = 1:p
