@@ -17,6 +17,8 @@ Discrimination based on ridge regression (RR-DA).
 * `y` : y-data (class membership).
 * `weights` : Weights of the observations.
 * `lb` : A value of the regularization parameter "lambda".
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 
 The training variable `y` (univariate class membership) is transformed
 to a dummy table (Ydummy) containing nlev columns, where nlev is the number 
@@ -61,19 +63,24 @@ err(res.pred, ytest)
 Jchemo.predict(fm, Xtest; lb = [.1; .01]).pred
 ```
 """ 
-function rrda(X, y, weights = ones(size(X, 1)); lb)
+function rrda(X, y, weights = ones(size(X, 1)); lb,
+        scal = false)
     z = dummy(y)
-    fm = rr(X, z.Y, weights; lb = lb)
+    fm = rr(X, z.Y, weights; lb = lb, 
+        scal = scal)
     Rrda(fm, z.lev, z.ni)
 end
 
 """
-    krrda(X, y, weights = ones(size(X, 1)); lb, kern = "krbf", kwargs...)
+    krrda(X, y, weights = ones(size(X, 1)); lb, 
+        scal = scal, kern = "krbf", kwargs...)
 Discrimination based on kernel ridge regression (KRR-DA).
 * `X` : X-data.
 * `y` : Univariate class membership.
 * `weights` : Weights of the observations.
 * `lb` : A value of the regularization parameter "lambda".
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 * Other arguments: see '?kplsr'.
 
 The training variable `y` (univariate class membership) is transformed
@@ -117,9 +124,11 @@ err(res.pred, ytest)
 Jchemo.predict(fm, Xtest; lb = [.1; .01]).pred
 ```
 """ 
-function krrda(X, y, weights = ones(size(X, 1)); lb, kern = "krbf", kwargs...)
+function krrda(X, y, weights = ones(size(X, 1)); lb, 
+        kern = "krbf", scal = false, kwargs...)
     z = dummy(y)
-    fm = krr(X, z.Y, weights; lb = lb, kern = kern, kwargs...)
+    fm = krr(X, z.Y, weights; lb = lb, 
+        kern = kern, scal = scal, kwargs...)
     KrrDa(fm, z.lev, z.ni)
 end
 
@@ -151,6 +160,4 @@ function predict(object::Union{Rrda, KrrDa}, X; lb = nothing)
     end
     (pred = pred, posterior = posterior)
 end
-
-
 

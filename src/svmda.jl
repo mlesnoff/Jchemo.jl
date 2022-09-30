@@ -1,13 +1,15 @@
 struct Svmda
     fm
+    xscales::Vector{Float64}
     lev::AbstractVector
     ni::AbstractVector
 end
 
 """
     svmda(X, y; kern = "rbf", 
-        gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1.
-        epsilon = .1)
+        gamma = 1. / size(X, 2), degree = 3, coef0 = 0., 
+        cost = 1., epsilon = .1,
+        scal = false)
 Support vector machine for discrimination "C-SVC" (SVM-DA).
 * `X` : X-data.
 * `y : y-data (univariate).
@@ -17,7 +19,9 @@ Support vector machine for discrimination "C-SVC" (SVM-DA).
 * 'degree' : See below.
 * 'coef0' : See below.
 * 'cost' : Cost of constraints violation C parameter.
-* 'epsilon' : Epsilon parameter in the loss function. 
+* 'epsilon' : Epsilon parameter in the loss function.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 
 Kernel types : 
 * "krbf" -- radial basis function: exp(-gamma * |x - y|^2)
@@ -76,14 +80,21 @@ err(res.pred, ytest)
 ```
 """ 
 function svmda(X, y; kern = "krbf", 
-        gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1.,
-        epsilon = .1)
+        gamma = 1. / size(X, 2), degree = 3, coef0 = 0., 
+        cost = 1., epsilon = .1,
+        scal = false)
+    X = ensure_mat(X)
+    y = vec(y)
+    p = nco(X)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X)
+        X = scale(X, xscales)
+    end
+    ztab = tab(y)
     gamma = Float64(gamma) ; degree = Int64(degree) ; coef0  = Float64(coef0) ; 
     cost  = Float64(cost)
     epsilon = Float64(epsilon)
-    X = ensure_mat(X)
-    y = vec(y)
-    ztab = tab(y)
     if kern == "krbf"
         fkern = LIBSVM.Kernel.RadialBasis
     elseif kern == "kpol"
@@ -102,7 +113,7 @@ function svmda(X, y; kern = "krbf",
         degree = degree,
         cost = cost, epsilon = epsilon,
         nt = nt) 
-    Svmda(fm, ztab.keys, ztab.vals)
+    Svmda(fm, xscales, ztab.keys, ztab.vals)
 end
 
 
@@ -114,7 +125,7 @@ Compute y-predictions from a fitted model.
 """ 
 function predict(object::Svmda, X)
     X = ensure_mat(X)
-    pred = svmpredict(object.fm, X')[1]
+    pred = svmpredict(object.fm, scale(X, object.xscales)')[1]
     n = length(pred)
     pred = reshape(pred, n, 1)
     (pred = pred,)

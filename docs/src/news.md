@@ -1,10 +1,11 @@
 ### NEWS for package **Jchemo**
 
-### *Version 0.0.27*
+### *Version 0.1.0*
     
 - Modified
     - Argument 'scal' (X and/or Y column-scaling) added to various functions.
-        Work in progress. The argument will be available for all the concerned fonctions.
+    - **blockscal**: names of arguments have changed.
+    - **plotgrid**: argument 'indx' modified.
 
 ### *Version 0.0.26*
 - New

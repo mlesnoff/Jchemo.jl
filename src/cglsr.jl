@@ -69,12 +69,12 @@ ytest = rmrow(y, s)
 nlv = 12 ;
 fm = cglsr(Xtrain, ytrain; nlv = nlv) ;
 
-zcoef = coef(fm)
+zcoef = Jchemo.coef(fm)
 zcoef.int
 zcoef.B
-coef(fm; nlv = 7).B
+Jchemo.coef(fm; nlv = 7).B
 
-res = predict(fm, Xtest) ;
+res = Jchemo.predict(fm, Xtest) ;
 res.pred
 rmsep(ytest, res.pred)
 plotxy(vec(pred), ytest; color = (:red, .5),

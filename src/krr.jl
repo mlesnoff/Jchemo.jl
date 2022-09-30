@@ -18,7 +18,7 @@ end
 
 """
     krr(X, Y, weights = ones(size(X, 1)); 
-        lb = .01, kern = "krbf", kwargs...)
+        lb = .01, kern = "krbf", scal = false, kwargs...)
 Kernel ridge regression (KRR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -26,6 +26,8 @@ Kernel ridge regression (KRR) implemented by SVD factorization.
 * `lb` : A value of the regularization parameter "lambda".
 * 'kern' : Type of kernel used to compute the Gram matrices.
     Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 * `kwargs` : Named arguments to pass in the kernel function.
 
 KRR is also referred to as least squared SVM regression (LS-SVMR).
@@ -78,25 +80,25 @@ ytest = rmrow(y, s)
 lb = 1e-3 ; gamma = 1e-1
 fm = krr(Xtrain, ytrain; lb = lb, gamma = gamma) ;
 
-zcoef = coef(fm)
+zcoef = Jchemo.coef(fm)
 zcoef.int
 zcoef.A 
 zcoef.df
-coef(fm; lb = 1e-6).df
+Jchemo.coef(fm; lb = 1e-6).df
 
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 
-res = predict(fm, Xtest; lb = [.01 ; .001])
+res = Jchemo.predict(fm, Xtest; lb = [.01 ; .001])
 res.pred[1]
 res.pred[2]
 
 fm = krr(Xtrain, ytrain; lb = lb, kern = "kpol", 
     degree = 2, gamma = 1e-1, coef0 = 10) ;
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 
 # Example of fitting the function sinc(x)
@@ -107,7 +109,7 @@ n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
 fm = krr(x, y; lb = 1e-1, gamma = 1 / 3) ;
-pred = predict(fm, x).pred 
+pred = Jchemo.predict(fm, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
 lines!(ax, x, vec(pred), label = "Fitted model")
@@ -116,11 +118,17 @@ f
 ```
 """ 
 function krr(X, Y, weights = ones(size(X, 1)); 
-        lb = .01, kern = "krbf", kwargs...)
+        lb = .01, kern = "krbf", scal = false, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    weights = mweight(weights)
-    ymeans = colmean(Y, weights)   
+    p = nco(X)
+    weights = mweight(weights)    
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X, weights)
+        X = scale(X, xscales)
+    end
+    ymeans = colmean(Y, weights)
     fkern = eval(Meta.parse(kern))    
     K = fkern(X, X; kwargs...)
     D = Diagonal(weights)    
@@ -137,7 +145,7 @@ function krr(X, Y, weights = ones(size(X, 1));
     # UtDY = U' * D^(1/2) * Y
     UtDY = U' * sqrtD * Y
     Krr(X, K, U, UtDY, sv, D, sqrtD, DKt, 
-        vtot, lb, ymeans, weights, kern, kwargs)
+        vtot, lb, xscales, ymeans, weights, kern, kwargs)
 end
 
 """
@@ -169,7 +177,7 @@ Compute Y-predictions from a fitted model.
 function predict(object::Krr, X; lb = nothing)
     isnothing(lb) ? lb = object.lb : nothing
     fkern = eval(Meta.parse(object.kern))
-    K = fkern(X, object.X; object.dots...)
+    K = fkern(scale(X, object.xscales), object.X; object.dots...)
     DKt = object.D * K'
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')

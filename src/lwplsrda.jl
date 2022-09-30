@@ -7,13 +7,15 @@ struct Lwplsrda
     k::Int
     nlv::Int
     tol::Real
+    scal::Bool
     verbose::Bool
     lev::AbstractVector
     ni::AbstractVector
 end
 
 """
-    lwplsrda(X, y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
+    lwplsrda(X, y; nlvdis, metric, h, k, nlv, tol = 1e-4,
+        scal = false, verbose = false)
 kNN-LWPLSR-DA models.
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -28,6 +30,10 @@ kNN-LWPLSR-DA models.
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `nlv` : Nb. latent variables (LVs).
 * `tol` : For stabilization when very close neighbors.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
+    The scaling is implemented for the global (distances) and local (i.e. inside
+    each neighborhood) computations.
 * `verbose` : If true, fitting information are printed.
 
 This is the same methodology as for `lwplsr` except that 
@@ -54,7 +60,7 @@ tab(ytest)
 
 nlvdis = 25 ; metric = "mahal"
 h = 2 ; k = 100
-nlv = 10
+nlv = 15
 fm = lwplsrda(Xtrain, ytrain;
     nlvdis = nlvdis, metric = metric,
     h = h, k = k, nlv = nlv) ;
@@ -70,17 +76,19 @@ res.listd
 res.listw
 ```
 """ 
-function lwplsrda(X, y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
+function lwplsrda(X, y; nlvdis, metric, h, k, nlv, tol = 1e-4, 
+        scal = false, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
     ztab = tab(y)
     if nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, dummy(y).Y; nlv = nlvdis)
+        fm = plskern(X, dummy(y).Y; nlv = nlvdis, 
+            scal = scal)
     end
-    return Lwplsrda(X, y, fm, metric, h, k, nlv, tol, verbose,
-        ztab.keys, ztab.vals)
+    return Lwplsrda(X, y, fm, metric, h, k, nlv, tol, 
+        scal, verbose, ztab.keys, ztab.vals)
 end
 
 """
@@ -96,7 +104,14 @@ function predict(object::Lwplsrda, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     # Getknn
     if isnothing(object.fm)
-        res = getknn(object.X, X; k = object.k, metric = object.metric)
+        if object.scal
+            xscales = colstd(object.X)
+            zX1 = scale(object.X, xscales)
+            zX2 = scale(X, xscales)
+            res = getknn(zX1, zX2; k = object.k, metric = object.metric)
+        else
+            res = getknn(object.X, X; k = object.k, metric = object.metric)
+        end
     else
         res = getknn(object.fm.T, transform(object.fm, X); 
             k = object.k, metric = object.metric) 
@@ -110,6 +125,7 @@ function predict(object::Lwplsrda, X; nlv = nothing)
     # End
     pred = locwlv(object.X, object.y, X; 
         listnn = res.ind, listw = listw, fun = plsrda, nlv = nlv, 
+        scal = object.scal,
         verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end

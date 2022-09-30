@@ -60,20 +60,20 @@ fm = rr(Xtrain, ytrain; lb = lb) ;
 #fm = rrchol(Xtrain, ytrain; lb = lb) ;
 pnames(fm)
 
-zcoef = coef(fm)
+zcoef = Jchemo.coef(fm)
 zcoef.int
 zcoef.B
 # Only for rr
-coef(fm; lb = .1).B
+Jchemo.coef(fm; lb = .1).B
 
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 
 # Only for rr
-res = predict(fm, Xtest; lb = [.1 ; .01])
+res = Jchemo.predict(fm, Xtest; lb = [.1 ; .01])
 res.pred[1]
 res.pred[2]
 ```

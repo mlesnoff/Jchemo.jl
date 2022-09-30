@@ -36,9 +36,9 @@ ytest = rmrow(y, s)
 nlv = 15
 fm = covselr(Xtrain, ytrain; nlv = nlv) ;
 pnames(fm)
-coef(fm.fm)
+Jchemo.coef(fm.fm)
 
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),

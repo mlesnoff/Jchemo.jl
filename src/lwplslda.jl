@@ -8,6 +8,7 @@ struct LwplsLda
     nlv::Int
     prior::String
     tol::Real
+    scal::Bool
     verbose::Bool
     lev::AbstractVector
     ni::AbstractVector
@@ -15,7 +16,7 @@ end
 
 """
     lwplslda(X, y; nlvdis, metric, h, k, nlv, prior = "unif", 
-        tol = 1e-4, verbose = false)
+        tol = 1e-4, scal = false, verbose = false)
 kNN-LWPLS-LDA models.
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -32,6 +33,10 @@ kNN-LWPLS-LDA models.
 * `prior` : Type of prior probabilities for class membership
     (`unif`: uniform; `prop`: proportional).
 * `tol` : For stabilization when very close neighbors.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
+    The scaling is implemented for the global (distances) and local (i.e. inside
+    each neighborhood) computations.
 * `verbose` : If true, fitting information are printed.
 
 This is the same methodology as for `lwplsr` except that 
@@ -74,18 +79,19 @@ res.listd
 res.listw
 ```
 """ 
-function lwplslda(X, y; nlvdis, metric, h, k, nlv, 
-    prior = "unif", tol = 1e-4, verbose = false)
+function lwplslda(X, y; nlvdis, metric, h, k, nlv, prior = "unif", 
+        tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
     ztab = tab(y)
     if nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, dummy(y).Y; nlv = nlvdis)
+        fm = plskern(X, dummy(y).Y; nlv = nlvdis, 
+            scal = scal)
     end
-    return LwplsLda(X, y, fm, metric, h, k, nlv, prior, tol, verbose, 
-        ztab.keys, ztab.vals)
+    return LwplsLda(X, y, fm, metric, h, k, nlv, prior, tol, 
+        scal, verbose, ztab.keys, ztab.vals)
 end
 
 """
@@ -101,7 +107,14 @@ function predict(object::LwplsLda, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     # Getknn
     if isnothing(object.fm)
-        res = getknn(object.X, X; k = object.k, metric = object.metric)
+        if object.scal
+            xscales = colstd(object.X)
+            zX1 = scale(object.X, xscales)
+            zX2 = scale(X, xscales)
+            res = getknn(zX1, zX2; k = object.k, metric = object.metric)
+        else
+            res = getknn(object.X, X; k = object.k, metric = object.metric)
+        end
     else
         res = getknn(object.fm.T, transform(object.fm, X); 
             k = object.k, metric = object.metric) 
@@ -115,7 +128,8 @@ function predict(object::LwplsLda, X; nlv = nothing)
     # End
     pred = locwlv(object.X, object.y, X; 
         listnn = res.ind, listw = listw, fun = plslda, nlv = nlv, 
-        prior = object.prior, verbose = object.verbose).pred
+        prior = object.prior, scal = object.scal,
+        verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 

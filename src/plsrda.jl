@@ -11,12 +11,15 @@ struct KplsrDa
 end
 
 """
-    plsrda(X, y, weights = ones(size(X, 1)); nlv)
+    plsrda(X, y, weights = ones(size(X, 1)); nlv,
+        scal = false)
 Discrimination based on partial least squares regression (PLSR-DA).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 
 This is the usual "PLSDA". 
 The training variable `y` (univariate class membership) is transformed
@@ -61,26 +64,30 @@ res.posterior
 res.pred
 err(res.pred, ytest)
 
-coef(fm.fm)
+Jchemo.coef(fm.fm)
 Base.summary(fm.fm, Xtrain, ytrain)
-transform(fm.fm, Xtest)
+Jchemo.transform(fm.fm, Xtest)
 
 Jchemo.predict(fm, Xtest; nlv = 1:2).pred
 ```
 """ 
-function plsrda(X, y, weights = ones(size(X, 1)); nlv)
+function plsrda(X, y, weights = ones(size(X, 1)); nlv,
+        scal = false)
     z = dummy(y)
-    fm = plskern(X, z.Y, weights; nlv = nlv)
+    fm = plskern(X, z.Y, weights; nlv = nlv, scal = scal)
     Plsrda(fm, z.lev, z.ni)
 end
 
 """
-    kplsrda(X, y, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
+    kplsrda(X, y, weights = ones(size(X, 1)); nlv, kern = "krbf", 
+        scal = false, kwargs...)
 Discrimination based on kernel partial least squares regression (KPLSR-DA).
 * `X` : X-data.
 * `y` : Univariate class membership.
 * `weights` : Weights of the observations.
 * `nlv` : Nb. latent variables (LVs) to compute.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 * Other arguments: See `?kplsr`.
 
 This is the same approach as for `plsrda` except that the PLS2 step 
@@ -114,13 +121,15 @@ res.posterior
 res.pred
 err(res.pred, ytest)
 
-coef(fm.fm)
-transform(fm.fm, Xtest)
+Jchemo.coef(fm.fm)
+Jchemo.transform(fm.fm, Xtest)
 ```
 """ 
-function kplsrda(X, y, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
+function kplsrda(X, y, weights = ones(size(X, 1)); nlv, kern = "krbf", 
+        scal = false, kwargs...)
     z = dummy(y)
-    fm = kplsr(X, z.Y, weights; nlv = nlv, kern = kern, kwargs...)
+    fm = kplsr(X, z.Y, weights; nlv = nlv, kern = kern, 
+        scal = scal, kwargs...)
     KplsrDa(fm, z.lev, z.ni)
 end
 

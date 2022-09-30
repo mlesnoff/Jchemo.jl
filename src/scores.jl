@@ -14,11 +14,11 @@ Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
 fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 bias(pred, Ytest)
 
 fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 bias(pred, ytest)
 ```
 """
@@ -43,11 +43,11 @@ Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
 fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 cor2(pred, Ytest)
 
 fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 cor2(pred, ytest)
 ```
 """
@@ -73,7 +73,7 @@ Xtest = rand(4, 5)
 ytest = rand(["a" ; "b"], 4)
 
 fm = plsrda(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 err(pred, ytest)
 ```
 """
@@ -99,11 +99,11 @@ Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
 fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 mse(pred, Ytest)
 
 fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 mse(pred, ytest)
 ```
 """
@@ -143,11 +143,11 @@ Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
 fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 msep(pred, Ytest)
 
 fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 msep(pred, ytest)
 ```
 """
@@ -178,11 +178,11 @@ Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
 fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 r2(pred, Ytest)
 
 fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 r2(pred, ytest)
 ```
 """
@@ -207,7 +207,7 @@ Xtest = rand(4, 5)
 ytest = rand(["a" ; "b"], 4)
 
 fm = plsrda(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 residcla(pred, ytest)
 ```
 """
@@ -229,11 +229,11 @@ Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
 fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 residreg(pred, Ytest)
 
 fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 residreg(pred, ytest)
 ```
 """
@@ -255,11 +255,11 @@ Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
 fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 rmsep(pred, Ytest)
 
 fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 rmsep(pred, ytest)
 ```
 """
@@ -283,11 +283,11 @@ Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
 fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 rmsep_stand(pred, Ytest)
 
 fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 rmsep_stand(pred, ytest)
 ```
 """
@@ -315,11 +315,11 @@ Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
 fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 rpd(pred, Ytest)
 
 fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 rpd(pred, ytest)
 ```
 """
@@ -341,11 +341,11 @@ Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
 fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 rpdr(pred, Ytest)
 
 fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 rpdr(pred, ytest)
 ```
 """
@@ -380,11 +380,11 @@ Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
 fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 sep(pred, Ytest)
 
 fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 sep(pred, ytest)
 ```
 """
@@ -406,11 +406,11 @@ Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
 fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 ssr(pred, Ytest)
 
 fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = predict(fm, Xtest).pred
+pred = Jchemo.predict(fm, Xtest).pred
 ssr(pred, ytest)
 ```
 """

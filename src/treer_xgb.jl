@@ -1,11 +1,12 @@
 struct TreerXgb
     fm
-    xscales
+    xscales::Vector{Float64}
     featur::Vector{Int64}
 end
 
 struct TreedaXgb
     fm
+    xscales::Vector{Float64}
     featur::Vector{Int64}
     lev::AbstractVector
     ni::AbstractVector
@@ -74,7 +75,7 @@ fm = treer_xgb(Xtrain, ytrain;
     subsample = .7, colsample_bytree = .7, max_depth = 20) ;
 pnames(fm)
 
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
 plotxy(vec(res.pred), ytest; color = (:red, .5),
@@ -176,7 +177,7 @@ fm = rfr_xgb(Xtrain, ytrain; rep = 100,
     subsample = .7, colsample_bytree = .7)
 pnames(fm)
 
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
 plotxy(vec(res.pred), ytest; color = (:red, .5),
@@ -270,7 +271,7 @@ fm = xgboostr(Xtrain, ytrain; eta = .1,
     subsample = .7, colsample_bytree = .7)
 pnames(fm)
 
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
 plotxy(vec(res.pred), ytest; color = (:red, .5),
@@ -320,7 +321,7 @@ function predict(object::TreerXgb, X)
 end
 
 """
-    vimp_xgb(object::TreerXgb)
+    vimp_xgb(object::Union{TreerXgb, TreedaXgb})
 Compute variable (feature) importances from an XGBoost model.
 * `object` : The fitted model.
 

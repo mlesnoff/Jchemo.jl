@@ -7,6 +7,7 @@ struct LwplsqdaAvg
     k::Int
     nlv::String
     tol::Real
+    scal::Bool
     verbose::Bool
     lev::AbstractVector
     ni::AbstractVector
@@ -14,7 +15,7 @@ end
 
 """
     lwplsqda_avg(X, y; nlvdis, metric, h, k, nlv, 
-        tol = 1e-4, verbose = false)
+        tol = 1e-4, scal = false, verbose = false)
 Averaging of kNN-LWPLSR-DA models with different numbers of LVs.
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -32,6 +33,10 @@ Averaging of kNN-LWPLSR-DA models with different numbers of LVs.
     are averaged). Syntax such as "10" is also allowed ("10": correponds to 
     the single model with 10 LVs).
 * `tol` : For stabilization when very close neighbors.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
+    The scaling is implemented for the global (distances) and local (i.e. inside
+    each neighborhood) computations.
 * `verbose` : If true, fitting information are printed.
 
 This is the same methodology as for `lwplsr_avg` except that 
@@ -42,21 +47,62 @@ a new observation is the most occurent class within the predictions
 returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 
 The present version of the function suffers from frequent stops
-due to non positive definite matrices when doing local QDA. This
-will be fixed in the future.  
+due to non positive definite matrices when doing local QDA. 
+The present recommandation is to select a sufficiant large number of neighbors.
+This will be fixed in the future.
+
+## Examples
+```julia
+using JLD2
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "forages.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+Y = dat.Y 
+s = Bool.(Y.test)
+Xtrain = rmrow(X, s)
+ytrain = rmrow(Y.typ, s)
+Xtest = X[s, :]
+ytest = Y.typ[s]
+
+tab(ytrain)
+tab(ytest)
+
+nlvdis = 25 ; metric = "mahal"
+h = 2 ; k = 1000
+# mininum nlv must be >= 1, 
+# conversely to lwplsrda_avg (nlv >= 0)
+nlv = "1:20"       
+fm = lwplsqda_avg(Xtrain, ytrain;
+    nlvdis = nlvdis, metric = metric,
+    h = h, k = k, nlv = nlv) ;
+pnames(fm)
+
+res = Jchemo.predict(fm, Xtest) ;
+pnames(res)
+res.pred
+err(res.pred, ytest)
+
+res.listnn
+res.listd
+res.listw
+```
 """ 
 function lwplsqda_avg(X, y; nlvdis, metric, h, k, nlv, 
-    tol = 1e-4, verbose = false)
+    tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
     ztab = tab(y)
     if nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, dummy(y).Y; nlv = nlvdis)
+        fm = plskern(X, dummy(y).Y; nlv = nlvdis,
+            scal = scal)
     end
-    LwplsqdaAvg(X, y, fm, metric, h, k, nlv, tol, verbose,
-        ztab.keys, ztab.vals)
+    LwplsqdaAvg(X, y, fm, metric, h, k, nlv, tol, 
+        scal, verbose, ztab.keys, ztab.vals)
 end
 
 """
@@ -70,10 +116,17 @@ function predict(object::LwplsqdaAvg, X)
     m = size(X, 1)
     ### Getknn
     if isnothing(object.fm)
-        res = getknn(object.X, X; k = object.k, metric = object.metric)
+        if object.scal
+            xscales = colstd(object.X)
+            zX1 = scale(object.X, xscales)
+            zX2 = scale(X, xscales)
+            res = getknn(zX1, zX2; k = object.k, metric = object.metric)
+        else
+            res = getknn(object.X, X; k = object.k, metric = object.metric)
+        end
     else
-        Tnew = transform(object.fm, X)
-        res = getknn(object.fm.T, Tnew; k = object.k, metric = object.metric) 
+        res = getknn(object.fm.T, transform(object.fm, X); 
+            k = object.k, metric = object.metric) 
     end
     listw = copy(res.d)
     for i = 1:m
@@ -84,7 +137,7 @@ function predict(object::LwplsqdaAvg, X)
     ### End
     pred = locw(object.X, object.y, X; 
         listnn = res.ind, listw = listw, fun = plsqda_avg, nlv = object.nlv, 
-        verbose = object.verbose).pred
+        scal = object.scal, verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 

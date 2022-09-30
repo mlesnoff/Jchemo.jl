@@ -141,7 +141,7 @@ function gridscore(Xtrain, Ytrain, X, Y; score, fun,
     res = map(values(pars)...) do v...
         verbose ? println(Pair.(keys(pars), v)...) : nothing
         fm = fun(Xtrain, Ytrain ; Pair.(keys(pars), v)...)
-        pred = predict(fm, X).pred
+        pred = Jchemo.predict(fm, X).pred
         score(pred, Y)
     end
     verbose ? println("-- End.") : nothing
@@ -173,7 +173,7 @@ function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv,
     if isnothing(pars)
         verbose ? println("-- Nb. combinations = 0.") : nothing
         fm = fun(Xtrain, Ytrain, nlv = maximum(nlv))
-        pred = predict(fm, X; nlv = nlv).pred
+        pred = Jchemo.predict(fm, X; nlv = nlv).pred
         le_nlv == 1 ? pred = [pred] : nothing
         res = zeros(le_nlv, q)
         @inbounds for i = 1:le_nlv
@@ -186,7 +186,7 @@ function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv,
         res = map(values(pars)...) do v...    
             verbose ? println(Pair.(keys(pars), v)...) : nothing
             fm = fun(Xtrain, Ytrain ; nlv = maximum(nlv), Pair.(keys(pars), v)...)
-            pred = predict(fm, X; nlv = nlv).pred
+            pred = Jchemo.predict(fm, X; nlv = nlv).pred
             le_nlv == 1 ? pred = [pred] : nothing
             zres = zeros(le_nlv, q)
             for i = 1:le_nlv
@@ -237,7 +237,7 @@ function gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb,
     if isnothing(pars)
         verbose ? println("-- Nb. combinations = 0.") : nothing
         fm = fun(Xtrain, Ytrain, lb = maximum(lb))
-        pred = predict(fm, X; lb = lb).pred
+        pred = Jchemo.predict(fm, X; lb = lb).pred
         le_lb == 1 ? pred = [pred] : nothing
         res = zeros(le_lb, q)
         @inbounds for i = 1:le_lb
@@ -250,7 +250,7 @@ function gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb,
         res = map(values(pars)...) do v...
             verbose ? println(Pair.(keys(pars), v)...) : nothing
             fm = fun(Xtrain, Ytrain ; lb = maximum(lb), Pair.(keys(pars), v)...)
-            pred = predict(fm, X; lb = lb).pred
+            pred = Jchemo.predict(fm, X; lb = lb).pred
             le_lb == 1 ? pred = [pred] : nothing
             zres = zeros(le_lb, q)
             for i = 1:le_lb

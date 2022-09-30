@@ -6,7 +6,8 @@ struct CplsrAvg
 end
 
 """
-    cplsr_avg(X, Y, cla = nothing; ncla = nothing, nlv_da, nlv)
+    cplsr_avg(X, Y, cla = nothing; ncla = nothing, 
+        nlv_da, nlv, scal = false)
 Clusterwise PLSR.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -18,6 +19,10 @@ Clusterwise PLSR.
     to consider in the pLSR-AVG models ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
     are averaged). Syntax such as "10" is also allowed ("10": correponds to
     the single model with 10 LVs).
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation.
+    The scaling is implemented for the global (distances) and local (i.e. inside
+    each neighborhood) computations.
 
 A PLSR-AVG model (see `?plsr_avg`) is fitted to predict Y for each of the clusters, 
 and a PLS-LDA is fitted to predict, for each cluster, the probability to belong to this cluster.
@@ -53,19 +58,25 @@ pnames(fm)
 fm.lev
 fm.ni
 
-res = predict(fm, Xtest) 
+res = Jchemo.predict(fm, Xtest) 
 res.posterior
 rmsep(res.pred, ytest)
-f, ax = scatter(vec(res.pred), ytest)
-ablines!(ax, 0, 1)
-f
+plotxy(vec(res.pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f  
 ```
 """
-function cplsr_avg(X, Y, cla = nothing; ncla = nothing, nlv_da, nlv)
+function cplsr_avg(X, Y, cla = nothing; ncla = nothing, 
+        nlv_da, nlv, scal = false)
     X = ensure_mat(X) 
     Y = ensure_mat(Y)
     if isnothing(cla)
-        zfm = Clustering.kmeans(X', ncla; maxiter = 500, display = :none)
+        zX = copy(X)
+        if scal 
+            scale!(zX, colstd(zX))
+        end
+        zfm = Clustering.kmeans(zX', ncla; maxiter = 1000, 
+            display = :none)
         cla = zfm.assignments
     end
     z = tab(cla)
@@ -73,7 +84,8 @@ function cplsr_avg(X, Y, cla = nothing; ncla = nothing, nlv_da, nlv)
     nlev = length(lev)
     ni = collect(values(z))
     #fm_da = plsrda(X, cla; nlv = nlv_da)
-    fm_da = plslda(X, cla; nlv = nlv_da, prior = "prop")
+    fm_da = plslda(X, cla; nlv = nlv_da, prior = "prop",
+        scal = scal)
     #fm_da = plsqda(X, cla; nlv = nlv_da, prior = "prop")
     fm = list(nlev)
     @inbounds for i = 1:nlev
@@ -84,7 +96,8 @@ function cplsr_avg(X, Y, cla = nothing; ncla = nothing, nlv_da, nlv)
         ni[i] <= zmax ? zmax = ni[i] - 1 : nothing
         znlv = string(zmin:zmax)
         s = cla .== lev[i]
-        fm[i] = plsr_avg(X[s, :], Y[s, :]; nlv = znlv)
+        fm[i] = plsr_avg(X[s, :], Y[s, :]; nlv = znlv,
+            scal = scal)
     end
     CplsrAvg(fm, fm_da, lev, ni)
 end

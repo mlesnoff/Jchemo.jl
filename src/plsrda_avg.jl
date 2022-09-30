@@ -16,6 +16,8 @@ Averaging of PLSR-DA models with different numbers of LVs.
     to consider ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
     are averaged). Syntax such as "10" is also allowed ("10": correponds to
     the single model with 10 LVs).
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 
 Ensemblist method where the predictions are calculated by "averaging" 
 the predictions of a set of models built with different numbers of 
@@ -54,20 +56,24 @@ res.pred
 err(res.pred, ytest)
 ```
 """ 
-function plsrda_avg(X, y, weights = ones(size(X, 1)); nlv)
-    n = size(X, 1)
-    p = size(X, 2)
+function plsrda_avg(X, y, weights = ones(size(X, 1)); nlv,
+    scal = false)
+    n, p = size(X)
     nlv = eval(Meta.parse(nlv))
     nlvmax = maximum(nlv)
     nlv = (max(minimum(nlv), 0):min(nlvmax, n, p))
     w = ones(nlvmax + 1)
-    w_mod = mweight(w[collect(nlv) .+ 1])   # uniform weights for the models
-    fm = plsrda(X, y, weights; nlv = nlvmax)
+    # Uniform weights for the models
+    w_mod = mweight(w[collect(nlv) .+ 1])
+    # End
+    fm = plsrda(X, y, weights; nlv = nlvmax,
+        scal = scal)
     PlsdaAvg(fm, nlv, w_mod, fm.lev, fm.ni)
 end
 
 """ 
-    plslda_avg(X, y, weights = ones(size(X, 1)); nlv)
+    plslda_avg(X, y, weights = ones(size(X, 1)); nlv,
+        scal = false)
 Averaging of PLS-LDA models with different numbers of LVs.
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -76,6 +82,8 @@ Averaging of PLS-LDA models with different numbers of LVs.
     to consider ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
     are averaged). Syntax such as "10" is also allowed ("10": correponds to
     the single model with 10 LVs).
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 
 Ensemblist method where the predictions are calculated by "averaging" 
 the predictions of a set of models built with different numbers of 
@@ -101,7 +109,8 @@ ytest = dat.Ytest.y
 tab(ytrain)
 tab(ytest)
 
-fm = plslda_avg(Xtrain, ytrain; nlv = "1:40") ;    # minimum of nlv must be >=1 (conversely to plsrda_avg)
+# minimum of nlv must be >=1 (conversely to plsrda_avg)
+fm = plslda_avg(Xtrain, ytrain; nlv = "1:40") ;    
 #fm = plslda_avg(Xtrain, ytrain; nlv = "1:20") ;
 pnames(fm)
 
@@ -111,20 +120,25 @@ res.pred
 err(res.pred, ytest)
 ```
 """ 
-function plslda_avg(X, y, weights = ones(size(X, 1)); nlv)
+function plslda_avg(X, y, weights = ones(size(X, 1)); nlv,
+        scal = false)
     n = size(X, 1)
     p = size(X, 2)
     nlv = eval(Meta.parse(nlv))
     nlvmax = maximum(nlv)
     nlv = (max(minimum(nlv), 0):min(nlvmax, n, p))
     w = ones(nlvmax + 1)
-    w_mod = mweight(w[collect(nlv) .+ 1])   # uniform weights for the models
-    fm = plslda(X, y, weights; nlv = nlvmax)
+    # Uniform weights for the models
+    w_mod = mweight(w[collect(nlv) .+ 1])
+    # End
+    fm = plslda(X, y, weights; nlv = nlvmax,
+        scal = scal)
     PlsdaAvg(fm, nlv, w_mod, fm.lev, fm.ni)
 end
 
 """ 
-    plsqda_avg(X, y, weights = ones(size(X, 1)); nlv)
+    plsqda_avg(X, y, weights = ones(size(X, 1)); nlv,
+        scal = false)
 Averaging of PLS-QDA models with different numbers of LVs.
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -133,6 +147,8 @@ Averaging of PLS-QDA models with different numbers of LVs.
     to consider ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
     are averaged). Syntax such as "10" is also allowed ("10": correponds to
     the single model with 10 LVs).
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 
 Ensemblist method where the predictions are calculated by "averaging" 
 the predictions of a set of models built with different numbers of 
@@ -144,15 +160,19 @@ returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 
 See `?plslda_avg` for examples.
 """ 
-function plsqda_avg(X, y, weights = ones(size(X, 1)); nlv)
+function plsqda_avg(X, y, weights = ones(size(X, 1)); nlv,
+        scal = false)
     n = size(X, 1)
     p = size(X, 2)
     nlv = eval(Meta.parse(nlv))
     nlvmax = maximum(nlv)
     nlv = (max(minimum(nlv), 0):min(nlvmax, n, p))
     w = ones(nlvmax + 1)
-    w_mod = mweight(w[collect(nlv) .+ 1])   # uniform weights for the models
-    fm = plsqda(X, y, weights; nlv = nlvmax)
+    # Uniform weights for the models
+    w_mod = mweight(w[collect(nlv) .+ 1])
+    # End   
+    fm = plsqda(X, y, weights; nlv = nlvmax,
+        scal = scal)
     PlsdaAvg(fm, nlv, w_mod, fm.lev, fm.ni)
 end
 

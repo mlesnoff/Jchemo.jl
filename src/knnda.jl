@@ -9,6 +9,7 @@ struct Knnda
     tol::Real
     lev::AbstractVector
     ni::AbstractVector
+    scal::Bool
 end
 
 """
@@ -26,6 +27,9 @@ k-Nearest-Neighbours weighted discrimination (kNN-DA).
     sharper is the function. See function `wdist`.
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tol` : For stabilization when very close neighbors.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
+    The scaling is implemented for the global (distances) computations.
 
 For each new observation to predict:
 * i) a number of `k` nearest neighbors (= "weighting 1") is selected
@@ -78,17 +82,19 @@ res.listd
 res.listw
 ```
 """ 
-function knnda(X, y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, tol = 1e-4)
+function knnda(X, y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, 
+        tol = 1e-4, scal = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
     ztab = tab(y)
     if nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, dummy(y).Y; nlv = nlvdis)
+        fm = plskern(X, dummy(y).Y; nlv = nlvdis, 
+            scal = scal)
     end
     return Knnda(X, y, fm, nlvdis, metric, h, k, tol, 
-        ztab.keys, ztab.vals)
+        ztab.keys, ztab.vals, scal)
 end
 
 """
@@ -102,9 +108,17 @@ function predict(object::Knnda, X)
     m = size(X, 1)
     # Getknn
     if isnothing(object.fm)
-        res = getknn(object.X, X; k = object.k, metric = object.metric)
+        if object.scal
+            xscales = colstd(object.X)
+            zX1 = scale(object.X, xscales)
+            zX2 = scale(X, xscales)
+            res = getknn(zX1, zX2; k = object.k, metric = object.metric)
+        else
+            res = getknn(object.X, X; k = object.k, metric = object.metric)
+        end
     else
-        res = getknn(object.fm.T, transform(object.fm, X); k = object.k, metric = object.metric) 
+        res = getknn(object.fm.T, transform(object.fm, X); k = object.k, 
+            metric = object.metric) 
     end
     listw = copy(res.d)
     for i = 1:m

@@ -7,14 +7,16 @@ struct MbpcaComdim
     lb::Array{Float64}
     mu::Vector{Float64}
     xmeans::Vector{Vector{Float64}}
-    scal::Vector{Float64}
+    xscales::Vector{Vector{Float64}}
+    bscales::Vector{Float64}
     weights::Vector{Float64}
     niter::Vector{Float64}
 end
 
 """
     mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
-        bscal = "none", tol = sqrt(eps(1.)), maxit = 200)
+        bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
+        scal = false)
 Common components and specific weights analysis (CCSWA, ComDim).
 * `X_bl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
@@ -24,6 +26,9 @@ Common components and specific weights analysis (CCSWA, ComDim).
     See functions `blockscal`.
 * `tol` : Tolerance value for convergence.
 * `niter` : Maximum number of iterations.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation 
+    (before the block scaling).
 
 This version corresponds to the "SVD" algorithm of Hannafi & Qannari 2008 p.84.
 
@@ -116,7 +121,8 @@ res.rv
 ```
 """
 function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
-        bscal = "none", tol = sqrt(eps(1.)), maxit = 200)
+        bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
+        scal = false)
     nbl = length(X_bl)
     X = copy(X_bl)
     n = size(X[1], 1)
@@ -124,16 +130,23 @@ function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
     sqrtw = sqrt.(weights)
     sqrtD = Diagonal(sqrtw)
     xmeans = list(nbl, Vector{Float64})
+    xscales = list(nbl, Vector{Float64})
     p = fill(0, nbl)
     @inbounds for k = 1:nbl
-        p[k] = size(X[k], 2)
-        xmeans[k] = colmean(X[k], weights)   
-        X[k] = center(X[k], xmeans[k])
+        p[k] = nco(X[k])
+        xmeans[k] = colmean(X[k], weights) 
+        xscales[k] = ones(nco(X[k]))
+        if scal 
+            xscales[k] = colstd(X[k], weights)
+            X[k] = cscale(X[k], xmeans[k], xscales[k])
+        else
+            X[k] = center(X[k], xmeans[k])
+        end
     end
-    bscal == "none" ? scal = ones(nbl) : nothing
+    bscal == "none" ? bscales = ones(nbl) : nothing
     if bscal == "frob"
         res = blockscal_frob(X, weights) 
-        scal = res.scal
+        bscales = res.bscales
         X = res.X
     end
     # Row metric
@@ -192,7 +205,7 @@ function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
     MbpcaComdim(T, U, W, Tb, W_bl, lb, mu, 
-        xmeans, scal, weights, niter)
+        xmeans, xscales, bscales, weights, niter)
 end
 
 """ 
@@ -209,9 +222,9 @@ function transform(object::MbpcaComdim, X_bl; nlv = nothing)
     X = copy(X_bl)
     m = size(X[1], 1)
     @inbounds for k = 1:nbl
-        X[k] = center(X[k], object.xmeans[k])
+        X[k] = cscale(X[k], object.xmeans[k], object.xscales[k])
     end
-    X = blockscal(X; scal = object.scal).X
+    X = blockscal(X, object.bscales).X
     U = similar(X[1], m, nlv)
     TB = similar(X[1], m, nbl)
     u = similar(X[1], m)
@@ -243,9 +256,9 @@ function summary(object::MbpcaComdim, X_bl)
     sqrtw = sqrt.(object.weights)
     sqrtD = Diagonal(sqrtw)
     @inbounds for k = 1:nbl
-        X[k] = center(X[k], object.xmeans[k])
+        X[k] = cscale(X[k], object.xmeans[k], object.xscales[k])
     end
-    X = blockscal(X; scal = object.scal).X
+    X = blockscal(X, object.bscales).X
     @inbounds for k = 1:nbl
         X[k] .= sqrtD * X[k]
     end
@@ -257,7 +270,8 @@ function summary(object::MbpcaComdim, X_bl)
     tt = colsum(object.lb)    
     pvar = tt / sum(sstot)
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(pc = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(pc = 1:nlv, var = tt, pvar = pvar, 
+        cumpvar = cumpvar)
     # Explained_XXt (indicator "V")
     S = list(nbl, Matrix{Float64})
     sstot_xx = 0 
@@ -268,7 +282,8 @@ function summary(object::MbpcaComdim, X_bl)
     tt = object.mu
     pvar = tt / sstot_xx
     cumpvar = cumsum(pvar)
-    explvarxx = DataFrame(pc = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
+    explvarxx = DataFrame(pc = 1:nlv, var = tt, pvar = pvar, 
+        cumpvar = cumpvar)
     # Prop saliences^2
     sal2 = copy(object.lb)
     for a = 1:nlv

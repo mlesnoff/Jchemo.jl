@@ -7,6 +7,7 @@ struct LwplsrdaAvg
     k::Int
     nlv::String
     tol::Real
+    scal::Bool
     verbose::Bool
     lev::AbstractVector
     ni::AbstractVector
@@ -14,7 +15,7 @@ end
 
 """
     lwplsrda_avg(X, y; nlvdis, metric, h, k, nlv, 
-        tol = 1e-4, verbose = false)
+        tol = 1e-4, scal = false, verbose = false)
 Averaging of kNN-LWPLSR-DA models with different numbers of LVs.
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -32,6 +33,10 @@ Averaging of kNN-LWPLSR-DA models with different numbers of LVs.
     are averaged). Syntax such as "10" is also allowed ("10": correponds to 
     the single model with 10 LVs).
 * `tol` : For stabilization when very close neighbors.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
+    The scaling is implemented for the global (distances) and local (i.e. inside
+    each neighborhood) computations.
 * `verbose` : If true, fitting information are printed.
 
 This is the same methodology as for `lwplsr_avg` except that 
@@ -62,7 +67,7 @@ tab(ytest)
 
 nlvdis = 25 ; metric = "mahal"
 h = 2 ; k = 100
-nlv = "0:15"
+nlv = "0:20"
 fm = lwplsrda_avg(Xtrain, ytrain;
     nlvdis = nlvdis, metric = metric,
     h = h, k = k, nlv = nlv) ;
@@ -79,17 +84,18 @@ res.listw
 ```
 """ 
 function lwplsrda_avg(X, y; nlvdis, metric, h, k, nlv, 
-    tol = 1e-4, verbose = false)
+    tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
     ztab = tab(y)
     if nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, dummy(y).Y; nlv = nlvdis)
+        fm = plskern(X, dummy(y).Y; nlv = nlvdis,
+            scal = scal)
     end
-    LwplsrdaAvg(X, y, fm, metric, h, k, nlv, tol, verbose,
-        ztab.keys, ztab.vals)
+    LwplsrdaAvg(X, y, fm, metric, h, k, nlv, tol, 
+        scal, verbose, ztab.keys, ztab.vals)
 end
 
 """
@@ -103,10 +109,17 @@ function predict(object::LwplsrdaAvg, X)
     m = size(X, 1)
     ### Getknn
     if isnothing(object.fm)
-        res = getknn(object.X, X; k = object.k, metric = object.metric)
+        if object.scal
+            xscales = colstd(object.X)
+            zX1 = scale(object.X, xscales)
+            zX2 = scale(X, xscales)
+            res = getknn(zX1, zX2; k = object.k, metric = object.metric)
+        else
+            res = getknn(object.X, X; k = object.k, metric = object.metric)
+        end
     else
-        Tnew = transform(object.fm, X)
-        res = getknn(object.fm.T, Tnew; k = object.k, metric = object.metric) 
+        res = getknn(object.fm.T, transform(object.fm, X); 
+            k = object.k, metric = object.metric) 
     end
     listw = copy(res.d)
     for i = 1:m
@@ -117,7 +130,7 @@ function predict(object::LwplsrdaAvg, X)
     ### End
     pred = locw(object.X, object.y, X; 
         listnn = res.ind, listw = listw, fun = plsrda_avg, nlv = object.nlv, 
-        verbose = object.verbose).pred
+        scal = object.scal, verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 

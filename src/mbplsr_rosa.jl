@@ -5,27 +5,33 @@ struct MbplsrRosa
     W::Matrix{Float64}
     C::Matrix{Float64}
     TT::Vector{Float64}
-    xmeans::Vector
+    xmeans::Vector{Vector{Float64}}
+    xscales::Vector{Vector{Float64}}
     ymeans::Vector{Float64}
+    yscales::Vector{Float64}
     weights::Vector{Float64}
     bl::Vector
 end
 
 """
-    rosaplsr(X, Y, weights = ones(size(X, 1)); nlv)
+    mbplsr_rosa(X, Y, weights = ones(size(X[1], 1)); nlv)
+    mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv)
 Multi-block PLSR with the ROSA algorithm (Liland et al. 2016).
 * `X` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
 * `Y` : Y-data.
 * `weights` : Weights of the observations (rows).
 * `nlv` : Nb. latent variables (LVs) to consider.
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation 
+    (before the block scaling).
 
 The function has the following differences with the original 
 algorithm of Liland et al. (2016):
 * Scores T are not normed to 1.
-* Multivariate `Y` is allowed. In such a case, , the squared residuals are summed 
-    over the columns for finding the winning blocks the entered (therefore Y-columns 
-    should have the same scale).
+* Multivariate `Y` is allowed. In such a case, the squared residuals are summed 
+    over the columns for finding the winning block for each global LV 
+    (therefore Y-columns should have the same scale).
 
 `weights` is internally normalized to sum to 1. 
 
@@ -56,21 +62,23 @@ nlv = 5
 fm = mbplsr_rosa(X_bl, y; nlv = nlv) ;
 pnames(fm)
 fm.T
-transform(fm, X_bl_new)
-[y predict(fm, X_bl).pred]
-predict(fm, X_bl_new).pred
+Jchemo.transform(fm, X_bl_new)
+[y Jchemo.predict(fm, X_bl).pred]
+Jchemo.predict(fm, X_bl_new).pred
 ```
 """ 
-function mbplsr_rosa(X, Y, weights = ones(size(X[1], 1)); nlv)
+function mbplsr_rosa(X, Y, weights = ones(size(X[1], 1)); nlv,
+        scal = false)
     nbl = length(X)
     zX = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
         zX[k] = copy(ensure_mat(X[k]))
     end
-    mbplsr_rosa!(zX, copy(Y), weights; nlv = nlv)
+    mbplsr_rosa!(zX, copy(Y), weights; nlv = nlv, scal = scal)
 end
 
-function mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv)
+function mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv,
+        scal = false)
     Y = ensure_mat(Y)
     n = size(X[1], 1)
     q = size(Y, 2)   
@@ -78,14 +86,27 @@ function mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv)
     weights = mweight(weights)
     D = Diagonal(weights)
     xmeans = list(nbl, Vector{Float64})
+    xscales = list(nbl, Vector{Float64})
     p = fill(0, nbl)
     @inbounds for k = 1:nbl
-        p[k] = size(X[k], 2)
-        xmeans[k] = colmean(X[k], weights)   
-        center!(X[k], xmeans[k])
+        p[k] = nco(X[k])
+        xmeans[k] = colmean(X[k], weights) 
+        xscales[k] = ones(nco(X[k]))
+        if scal 
+            xscales[k] = colstd(X[k], weights)
+            X[k] = cscale(X[k], xmeans[k], xscales[k])
+        else
+            X[k] = center(X[k], xmeans[k])
+        end
     end
-    ymeans = colmean(Y, weights)   
-    center!(Y, ymeans)
+    ymeans = colmean(Y, weights)
+    yscales = ones(q)
+    if scal 
+        yscales .= colstd(Y, weights)
+        cscale!(Y, ymeans, yscales)
+    else
+        center!(Y, ymeans)
+    end
     # Pre-allocation
     W = similar(X[1], sum(p), nlv)
     P = copy(W)
@@ -162,7 +183,7 @@ function mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv)
         W[:, a] .= reduce(vcat, z .* w_bl)
     end
     R = W * inv(P' * W)
-    MbplsrRosa(T, P, R, W, C, TT, xmeans, ymeans, weights, bl)
+    MbplsrRosa(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, bl)
 end
 
 """ 
@@ -178,7 +199,7 @@ function transform(object::MbplsrRosa, X; nlv = nothing)
     nbl = length(object.xmeans)
     zX = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
-        zX[k] = center(X[k], object.xmeans[k])
+        zX[k] = cscale(X[k], object.xmeans[k], object.xscales[k])
     end
     reduce(hcat, zX) * vcol(object.R, 1:nlv)
 end
@@ -194,7 +215,9 @@ function coef(object::MbplsrRosa; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     zxmeans = reduce(vcat, object.xmeans)
     beta = object.C[:, 1:nlv]'
-    B = vcol(object.R, 1:nlv) * beta
+    xscales = reduce(vcat, object.xscales)
+    W = Diagonal(object.yscales)
+    B = Diagonal(1 ./ xscales) * vcol(object.R, 1:nlv) * beta * W
     int = object.ymeans' .- zxmeans' * B
     (B = B, int = int)
 end

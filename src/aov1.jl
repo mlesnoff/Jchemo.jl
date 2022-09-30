@@ -26,7 +26,7 @@ function aov1(x, Y)
     Xdummy = dummy(x).Y
     zY = center(Y, colmean(Y))
     fm = mlr(Xdummy, zY) ;
-    pred = predict(fm, Xdummy).pred
+    pred = Jchemo.predict(fm, Xdummy).pred
     SSF = sum((pred.^2), dims = 1)   # = colvar(pred) * n
     SSR = ssr(pred, zY)
     df_fact = A - 1 

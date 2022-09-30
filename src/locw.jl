@@ -39,7 +39,7 @@ function locw(Xtrain, Ytrain, X ;
             else
                 fm = fun(Xtrain[s, :], zYtrain, listw[i] ; kwargs...)
             end
-            pred[i, :] = predict(fm, X[i:i, :]).pred
+            pred[i, :] = Jchemo.predict(fm, X[i:i, :]).pred
         end
     end
     verbose ? println() : nothing    
@@ -81,7 +81,7 @@ function locwlv(Xtrain, Ytrain, X;
                 fm = fun(Xtrain[s, :], zYtrain, listw[i] ; nlv = maximum(nlv), kwargs...)
             end
             @inbounds for a = 1:le_nlv
-                zpred[i, :, a] = predict(fm, X[i:i, :] ; nlv = nlv[a]).pred
+                zpred[i, :, a] = Jchemo.predict(fm, X[i:i, :] ; nlv = nlv[a]).pred
             end
         end
     end 

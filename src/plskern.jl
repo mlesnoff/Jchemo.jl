@@ -81,21 +81,22 @@ fm = plskern(Xtrain, ytrain; nlv = nlv) ;
 pnames(fm)
 fm.T
 
-zcoef = coef(fm)
+zcoef = Jchemo.coef(fm)
 zcoef.int
 zcoef.B
-coef(fm; nlv = 7).B
+Jchemo.coef(fm; nlv = 7).B
 
-transform(fm, Xtest)
-transform(fm, Xtest; nlv = 7)
+Jchemo.transform(fm, Xtest)
+Jchemo.transform(fm, Xtest; nlv = 7)
 
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
-plotxy(vec(pred), ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
+plotxy(vec(res.pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
 
-res = predict(fm, Xtest; nlv = 1:2)
+res = Jchemo.predict(fm, Xtest; nlv = 1:2)
 res.pred[1]
 res.pred[2]
 

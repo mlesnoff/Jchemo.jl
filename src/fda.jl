@@ -70,7 +70,7 @@ scatter!(ax, ct[:, 1], ct[:, 2],
 f
 
 # Projection of Xtest to the score space
-transform(fm, Xtest)
+Jchemo.transform(fm, Xtest)
 
 # X-loadings matrix
 # = coefficients of the linear discriminant function
@@ -85,7 +85,8 @@ Base.summary(fm)
 ```
 """ 
 function fda(X, y; nlv, pseudo = false, scal = false)
-    fda!(copy(ensure_mat(X)), y; nlv = nlv, pseudo = pseudo, scal = scal)
+    fda!(copy(ensure_mat(X)), y; nlv = nlv, pseudo = pseudo, 
+        scal = scal)
 end
 
 function fda!(X::Matrix, y; nlv, pseudo = false, scal = false)
@@ -138,7 +139,8 @@ See `?fda` for examples.
 
 """ 
 function fdasvd(X, y; nlv, pseudo = false, scal = false)
-    fdasvd!(copy(ensure_mat(X)), y; nlv = nlv, pseudo = pseudo, scal = scal)
+    fdasvd!(copy(ensure_mat(X)), y; nlv = nlv, pseudo = pseudo, 
+        scal = scal)
 end
 
 function fdasvd!(X::Matrix, y; nlv, pseudo = false, scal = false)

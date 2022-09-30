@@ -69,7 +69,7 @@ fm = svmr(Xtrain, ytrain; kern = "krbf",
         gamma = gamma, cost = cost, epsilon = epsilon) ;
 pnames(fm)
 
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
 plotxy(vec(res.pred), ytest; color = (:red, .5),
@@ -83,7 +83,7 @@ n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
 fm = svmr(x, y; gamma = .1) ;
-pred = predict(fm, x).pred 
+pred = Jchemo.predict(fm, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
 lines!(ax, x, vec(pred), label = "Fitted model")
@@ -95,6 +95,7 @@ function svmr(X, y; kern = "krbf",
     gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1., 
     epsilon = .1, scal = false)
     X = ensure_mat(X)
+    y = vec(y)
     p = nco(X)
     xscales = ones(p)
     if scal 
@@ -103,8 +104,6 @@ function svmr(X, y; kern = "krbf",
     end
     gamma = Float64(gamma) ; degree = Int64(degree) ; coef0  = Float64(coef0) ; 
     cost  = Float64(cost) ; epsilon = Float64(epsilon) ; 
-    X = ensure_mat(X)
-    y = vec(y)
     if kern == "krbf"
         fkern = LIBSVM.Kernel.RadialBasis
     elseif kern == "kpol"

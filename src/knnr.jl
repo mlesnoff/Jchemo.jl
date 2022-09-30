@@ -65,7 +65,7 @@ nlvdis = 20 ; metric = "mahal"
 h = 2 ; k = 100 ; nlv = 15
 fm = knnr(Xtrain, ytrain; nlvdis = nlvdis,
     metric = metric, h = h, k = k) ;
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 f, ax = scatter(vec(pred), ytest)
 ablines!(ax, 0, 1)
@@ -79,7 +79,8 @@ function knnr(X, Y; nlvdis = 0, metric = "eucl", h = Inf, k = 1,
     if nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, Y; nlv = nlvdis, scal = scal)
+        fm = plskern(X, Y; nlv = nlvdis, 
+            scal = scal)
     end
     return Knnr(X, Y, fm, nlvdis, metric, h, k, tol, scal)
 end

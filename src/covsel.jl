@@ -91,7 +91,7 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing,
             for j = 1:p
                 x = vcol(X, j)
                 fm = mlr(x, Y; noint = true) 
-                pred = predict(fm, x).pred
+                pred = Jchemo.predict(fm, x).pred
                 resid = residreg(pred, Y)
                 df = 2
                 zscor[j] = log.(sum(resid.^2)) + q * 2 * df / n

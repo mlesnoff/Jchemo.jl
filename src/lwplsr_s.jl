@@ -75,11 +75,11 @@ nlvdis = 20 ; metric = "mahal"
 h = 2 ; k = 100 ; nlv = 10
 fm = lwplsr_s(Xtrain, ytrain; nlv0 = nlv0, nlvdis = nlvdis,
     metric = metric, h = h, k = k, nlv = nlv) ;
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
-f, ax = scatter(vec(res.pred), ytest)
-ablines!(ax, 0, 1)
-f
+plotxy(vec(res.pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f  
 ```
 """ 
 function lwplsr_s(X, Y; nlv0,

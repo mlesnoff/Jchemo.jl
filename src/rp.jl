@@ -104,7 +104,7 @@ pnames(fm)
 size(fm.P) 
 fm.P
 fm.T # = X * fm.P 
-transform(fm, X[1:2, :])
+Jchemo.transform(fm, X[1:2, :])
 ```
 """
 function rp(X, weights = ones(size(X, 1)); nlv, fun = rpmat_li, 

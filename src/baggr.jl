@@ -56,7 +56,7 @@ ytest = rmrow(y, s)
 
 fm = baggr(Xtrain, ytrain; rep = 20, 
     rowsamp = .7, colsamp = .3, fun = mlr) ;
-res = predict(fm, Xtest) ;
+res = Jchemo.predict(fm, Xtest) ;
 res.pred
 rmsep(ytest, res.pred)
 f, ax = scatter(vec(res.pred), ytest)

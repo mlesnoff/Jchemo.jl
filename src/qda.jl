@@ -7,12 +7,12 @@ struct Qda
 end
 
 """
-    qda(X, y; prior = "unif")
+    qda(X, y; prior = "unif", scal = false)
 Quadratic discriminant analysis  (QDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
-* `prior` : Type of prior probabilities for class membership
-    (`unif`: uniform; `prop`: proportional).
+* `prior` : Type of prior probabilities for class membership.
+    Posible values are: "unif" (uniform), "prop" (proportional).
 
 ## Examples
 ```julia
@@ -51,6 +51,7 @@ err(res.pred, ytest)
 ```
 """ 
 function qda(X, y; prior = "unif")
+    # Scaling X has no effect
     X = ensure_mat(X)
     z = aggstat(X; group = y, fun = mean)
     ct = z.X
@@ -74,7 +75,7 @@ Compute y-predictions from a fitted model.
 """ 
 function predict(object::Qda, X)
     X = ensure_mat(X)
-    m = size(X, 1)
+    m = nro(X)
     lev = object.lev
     nlev = length(lev) 
     ds = similar(X, m, nlev)
@@ -86,7 +87,7 @@ function predict(object::Qda, X)
             S = object.Wi[i] * ni[i] / (ni[i] - 1)
         end
         fm = dmnorm(; mu = object.ct[i, :], S = S) 
-        ds[:, i] .= vec(predict(fm, X).pred)
+        ds[:, i] .= vec(Jchemo.predict(fm, X).pred)
     end
     A = object.wprior' .* ds
     v = sum(A, dims = 2)
@@ -96,5 +97,3 @@ function predict(object::Qda, X)
     (pred = pred, ds = ds, posterior = posterior)
 end
     
-
-

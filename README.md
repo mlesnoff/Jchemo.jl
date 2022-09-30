@@ -1,7 +1,7 @@
 # Jchemo.jl
 
 ## Dimension reduction, Regression and Discrimination for Chemometrics
-## <span style="color:grey70"> Version 0.0.27 </span> 
+## <span style="color:grey70"> Version 0.1.0 </span> 
 
 <!-- [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/stable) -->
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/dev)
@@ -13,9 +13,9 @@ on high dimensional data.
 
 The package was initially designed for **k-nearest neighbors locally weighted partial least quare regression 
 and discrimination** (kNN-LWPLSR an kNN-LWPLSDA) (e.g. Lesnoff et al 2021 https://doi.org/10.1002/cem.3209).
-It has then been expanded to other methods. 
+Then, it has been expanded to other methods. 
 
-Generic functions such as **transform**, **predict**, **coef** and **summary** are available. Tuning the models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation). There are also faster versions for models based on latent variables (LVs) (**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
+Generic functions such as **transform**, **predict**, **coef** and **summary** are available. Tuning the prediction models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation). Faster versions are also available for models based on latent variables (LVs) (**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
 
 Most of the functions have a **help page** (each given an example), e.g.:
 
@@ -23,7 +23,7 @@ Most of the functions have a **help page** (each given an example), e.g.:
 ?savgol
 ```
 
-In addition, examples of Jchemo scripts are available at [**JchemoTraining**](https://github.com/mlesnoff/JchemoTraining) and [**here**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/demos/ex/). Datasets used in the examples are stored in package [**JchemoData**](https://github.com/mlesnoff/JchemoData.jl).
+Additional examples of Jchemo scripts are available at [**JchemoTraining**](https://github.com/mlesnoff/JchemoTraining) (and some [**here**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/demos/ex/)). Datasets used in the examples are stored in package [**JchemoData**](https://github.com/mlesnoff/JchemoData.jl).
 
 ## <span style="color:green"> **Available functions** </span> 
 
@@ -70,19 +70,19 @@ pnames(fm)
 
 summary(fm, Xtrain, Ytrain)
 
-transform(fm, Xtest)
-transform(fm, Xtest; nlv = 1)
+Jchemo.transform(fm, Xtest)
+Jchemo.transform(fm, Xtest; nlv = 1)
 
-coef(fm)
-coef(fm; nlv = 2)
+Jchemo.coef(fm)
+Jchemo.coef(fm; nlv = 2)
 
-res = predict(fm, Xtest) ;
+res = Jchemo.predict(fm, Xtest) ;
 res.pred
 rmsep(res.pred, Ytest)
 mse(res.pred, Ytest)
 
-predict(fm, Xtest).pred
-predict(fm, Xtest; nlv = 0:3).pred 
+Jchemo.predict(fm, Xtest).pred
+Jchemo.predict(fm, Xtest; nlv = 0:3).pred 
 ```
 
 ### **Tuning a model by grid-search** 

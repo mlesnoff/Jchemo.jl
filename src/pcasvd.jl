@@ -61,7 +61,7 @@ fm.T
 fm.T' * fm.T
 fm.P' * fm.P
 
-transform(fm, Xtest)
+Jchemo.transform(fm, Xtest)
 
 res = Base.summary(fm, Xtrain) ;
 pnames(res)

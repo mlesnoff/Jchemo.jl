@@ -55,7 +55,7 @@ function rmgap!(X; indexcol, k = 5)
         ind = indexcol[i]
         wl = max(ind - k + 1, 1):ind
         fm = mlr(Float64.(wl), X[:, wl]')
-        pred = predict(fm, ind + 1).pred
+        pred = Jchemo.predict(fm, ind + 1).pred
         bias = X[:, ind + 1] .- pred'
         X[:, (ind + 1):p] .= X[:, (ind + 1):p] .- bias
     end

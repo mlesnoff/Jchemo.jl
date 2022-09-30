@@ -7,12 +7,12 @@ struct Lda
 end
 
 """
-    lda(X, y; prior = "unif")
+    lda(X, y; prior = "unif", scal = false)
 Linear discriminant analysis  (LDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
-* `prior` : Type of prior probabilities for class membership
-    ("unif": uniform; "prop": proportional).
+* `prior` : Type of prior probabilities for class membership.
+    Posible values are: "unif" (uniform), "prop" (proportional).
 
 ## Examples
 ```julia
@@ -52,8 +52,9 @@ err(res.pred, ytest)
 ```
 """ 
 function lda(X, y; prior = "unif")
+    # Scaling X has no effect
     X = ensure_mat(X)
-    n = size(X, 1)
+    n = nro(X)
     z = aggstat(X; group = y, fun = mean)
     ct = z.X
     lev = z.lev
@@ -77,13 +78,13 @@ Compute y-predictions from a fitted model.
 """ 
 function predict(object::Lda, X)
     X = ensure_mat(X)
-    m = size(X, 1)
+    m = nro(X)
     lev = object.lev
     nlev = length(lev) 
     ds = similar(X, m, nlev)
     for i = 1:nlev
         fm = dmnorm(; mu = object.ct[i, :], S = object.W) 
-        ds[:, i] .= vec(predict(fm, X).pred)
+        ds[:, i] .= vec(Jchemo.predict(fm, X).pred)
     end
     A = object.wprior' .* ds
     v = sum(A, dims = 2)
@@ -93,5 +94,3 @@ function predict(object::Lda, X)
     (pred = pred, ds = ds, posterior = posterior)
 end
     
-
-

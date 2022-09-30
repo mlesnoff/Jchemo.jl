@@ -7,22 +7,28 @@ struct Kpca
     eig::Vector{Float64}    
     D::Array{Float64} 
     DKt::Array{Float64}
-    vtot::Array{Float64} 
+    vtot::Array{Float64}
+    xscales::Vector{Float64} 
     weights::Vector{Float64}
     kern
     dots
 end
 
 """
-    kpca(X, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
+    kpca(X, weights = ones(size(X, 1)); nlv, 
+        kern = "krbf", scal = false, kwargs...)
 Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
 
 * `X` : X-data.
 * `weights` : vector (n,).
 * `nlv` : Nb. principal components (PCs), or collection of nb. PCs, to consider. 
 * `kern` : Type of kernel used to compute the Gram matrices.
-    Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`).
-* `kwargs` : Named arguments to pass in the kernel function. See `?krbf`, `?kpol`.
+    Possible values are "krbf" of "kpol" (see respective 
+    functions `krbf` and `kpol`).
+* `scal` : Boolean. If `true`, each column of `X` is scaled
+    by its uncorrected standard deviation.
+* `kwargs` : Named arguments to pass in the kernel function. 
+    See `?krbf`, `?kpol`.
 
 The method is implemented by SVD factorization of the weighted Gram matrix 
 D^(1/2) * Phi(`X`) * Phi(`X`)' * D^(1/2), where D is a diagonal matrix of weights for 
@@ -66,18 +72,24 @@ fm.T
 fm.T' * fm.T
 fm.P' * fm.P
 
-transform(fm, Xtest)
+Jchemo.transform(fm, Xtest)
 
 res = Base.summary(fm) ;
 pnames(res)
 res.explvarx
 ```
 """ 
-function kpca(X, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
+function kpca(X, weights = ones(size(X, 1)); nlv, 
+        kern = "krbf", scal = false, kwargs...)
     X = ensure_mat(X)
-    n = size(X, 1)
+    n, p = size(X)
     nlv = min(nlv, n)
     weights = mweight(weights) 
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X, weights)
+        X = scale(X, xscales)
+    end
     fkern = eval(Meta.parse(kern))  
     K = fkern(X, X; kwargs...)     # In the future: fkern!(K, X, X; kwargs...)
     D = Diagonal(weights)
@@ -94,7 +106,7 @@ function kpca(X, weights = ones(size(X, 1)); nlv, kern = "krbf", kwargs...)
     sv = sqrt.(eig)
     P = sqrtD * scale(U, sv[1:nlv])     # In the future: scale!
     T = Kc * P       # T = Kc * P = D^(-1/2) * U * Delta
-    Kpca(X, Kt, T, P, sv, eig, D, DKt, vtot, weights, kern, kwargs)
+    Kpca(X, Kt, T, P, sv, eig, D, DKt, vtot, xscales, weights, kern, kwargs)
 end
 
 """ 
@@ -108,7 +120,7 @@ function transform(object::Kpca, X; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(object.kern))
-    K = fkern(X, object.X; object.dots...)
+    K = fkern(scale(X, object.xscales), object.X; object.dots...)
     DKt = object.D * K'
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')
@@ -129,13 +141,9 @@ function Base.summary(object::Kpca)
     sstot = sum(object.eig)
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(pc = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(pc = 1:nlv, var = tt, 
+        pvar = pvar, cumpvar = cumpvar)
     (explvarx = explvarx,)
 end
-
-
-
-
-
 
 

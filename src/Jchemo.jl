@@ -37,6 +37,9 @@ include("kpca.jl")
 include("rp.jl")
 
 # Multiblock PCA
+include("angles.jl")
+include("mblock.jl")
+include("blockscal.jl")
 include("mbpca_cons.jl")
 include("mbpca_comdim_s.jl")
 
@@ -95,8 +98,6 @@ include("lwplsr_s.jl")
 include("cplsr_avg.jl")  # Use structure PlsrDa
 
 # Multiblock regresssion
-include("angles.jl")
-include("blockscal.jl")
 include("mbplsr.jl") 
 include("mbplsr_rosa.jl") 
 include("mbplsr_so.jl") 

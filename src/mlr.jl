@@ -39,23 +39,23 @@ fm = mlr(Xtrain, ytrain) ;
 #fm = mlrpinv(Xtrain, ytrain) ;
 #fm = mlrpinv_n(Xtrain, ytrain) ;
 pnames(fm)
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 
-zcoef = coef(fm) 
+zcoef = Jchemo.coef(fm) 
 zcoef.int 
 zcoef.B 
 
 fm = mlr(Xtrain, ytrain; noint = true) ;
-zcoef = coef(fm) 
+zcoef = Jchemo.coef(fm) 
 zcoef.int 
 zcoef.B
 
 fm = mlr(Xtrain[:, 1], ytrain) ;
 #fm = mlrvec(Xtrain[:, 1], ytrain) ;
-zcoef = coef(fm) 
+zcoef = Jchemo.coef(fm) 
 zcoef.int 
 zcoef.B
 ```

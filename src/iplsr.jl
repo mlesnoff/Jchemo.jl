@@ -76,12 +76,12 @@ function iplsr(Xtrain, Ytrain, X, Y;
     @inbounds for i = 1:nint
         u = int[i, 1]:int[i, 2]
         fm = plskern(vcol(Xtrain, u), Ytrain; nlv = nlv, kwargs...)
-        pred .= predict(fm, vcol(X, u)).pred
+        pred .= Jchemo.predict(fm, vcol(X, u)).pred
         res[i] = score(pred, Y)
     end
     res = reduce(vcat, res)
     fm = plskern(Xtrain, Ytrain; nlv = nlv)
-    pred = predict(fm, X).pred
+    pred = Jchemo.predict(fm, X).pred
     res0 = score(pred, Y)
     dat = DataFrame(int, [:lo, :up, :mid])
     namy = map(string, repeat(["y"], q), 1:q)

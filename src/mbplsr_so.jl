@@ -6,7 +6,8 @@ struct MbplsrSo
 end
 
 """
-    mbplsr_so(X, Y, weights = ones(size(X, 1)); nlv)
+    mbplsr_so(X, Y, weights = ones(size(X, 1)); nlv,
+        scal = false)
 Multiblock sequentially orthogonalized PLSR (SO-PLSR).
 * `X` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
@@ -14,6 +15,9 @@ Multiblock sequentially orthogonalized PLSR (SO-PLSR).
 * `weights` : Weights of the observations (rows). 
 * `nlv` : Nb. latent variables (LVs) to consider for each block. 
     Vector that must have a length equal to the nb. blocks.
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation 
+    (before the block scaling).
 
 `weights` is internally normalized to sum to 1. 
 
@@ -48,12 +52,13 @@ nlv = [2; 1; 2]
 fm = mbplsr_so(X_bl, y; nlv = nlv) ;
 pnames(fm)
 fm.T
-transform(fm, X_bl_new)
-[y predict(fm, X_bl).pred]
-predict(fm, X_bl_new).pred
+Jchemo.transform(fm, X_bl_new)
+[y Jchemo.predict(fm, X_bl).pred]
+Jchemo.predict(fm, X_bl_new).pred
 ```
 """
-function mbplsr_so(X, Y, weights = ones(size(X[1], 1)); nlv)
+function mbplsr_so(X, Y, weights = ones(size(X[1], 1)); nlv,
+        scal = false)
     Y = ensure_mat(Y)
     n = size(X[1], 1)
     q = size(Y, 2)   
@@ -65,9 +70,9 @@ function mbplsr_so(X, Y, weights = ones(size(X[1], 1)); nlv)
     zX = copy(X)
     b = list(nbl)
     # First block
-    fm[1] = plskern(zX[1], Y, weights; nlv = nlv[1])
+    fm[1] = plskern(zX[1], Y, weights; nlv = nlv[1], scal = scal)
     T = fm[1].T
-    pred .= predict(fm[1], zX[1]).pred
+    pred .= Jchemo.predict(fm[1], zX[1]).pred
     b[1] = nothing
     # Other blocks
     if nbl > 1
@@ -76,7 +81,7 @@ function mbplsr_so(X, Y, weights = ones(size(X[1], 1)); nlv)
             zX = X[i] - T * b[i]
             fm[i] = plskern(zX, Y - pred, weights; nlv = nlv[i])
             T = hcat(T, fm[i].T)
-            pred .+= predict(fm[i], zX).pred 
+            pred .+= Jchemo.predict(fm[i], zX).pred 
         end
     end
     MbplsrSo(fm, T, pred, b)

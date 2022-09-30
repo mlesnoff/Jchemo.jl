@@ -71,7 +71,7 @@ ntot = ntrain + ntest
 
 fm = pcasvd(zXtrain, nlv = 5) ; 
 Ttrain = fm.T
-Ttest = transform(fm, zXtest)
+Ttest = Jchemo.transform(fm, zXtest)
 T = vcat(Ttrain, Ttest)
 group = vcat(repeat(["0-Train"], ntrain), repeat(["1-Test"], ntest))
 i = 1

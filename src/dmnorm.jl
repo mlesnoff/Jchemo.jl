@@ -36,7 +36,7 @@ fm = dmnorm(Xtrain) ;
 fm.mu
 fm.Uinv
 fm.det
-predict(fm, Xtest).pred
+Jchemo.predict(fm, Xtest).pred
 
 mu = colmean(Xtrain)
 S = cov(Xtrain)
@@ -48,7 +48,7 @@ k = 50
 x1 = range(.9 * minimum(Xtrain[:, 1]), 1.1 * maximum(Xtrain[:, 1]), length = k) 
 x2 = range(.9 * minimum(Xtrain[:, 2]), 1.1 * maximum(Xtrain[:, 2]), length = k) 
 z = reduce(hcat, mpar(x1 = x1, x2 = x2))
-pred_train = predict(fm, z).pred
+pred_train = Jchemo.predict(fm, z).pred
 f = Figure()
 ax = Axis(f[1, 1], title = "Dmnorm - Setosa",
     xlabel = "Sepal length", ylabel = "Sepal width") ;

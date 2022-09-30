@@ -76,7 +76,7 @@ nlvdis = 20 ; metric = "mahal"
 h = 1 ; k = 100 ; nlv = "5:15"
 fm = lwplsr_avg(Xtrain, ytrain; nlvdis = nlvdis,
     metric = metric, h = h, k = k, nlv = nlv) ;
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 f, ax = scatter(vec(res.pred), ytest)
 ablines!(ax, 0, 1)
@@ -85,7 +85,7 @@ f
 fm = lwplsr_avg(Xtrain, ytrain; nlvdis = nlvdis,
     metric = metric, h = h, k = k, nlv = nlv,
     typf = "cv") ;
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 ```
 """ 
@@ -142,6 +142,7 @@ function predict(object::LwplsrAvg, X)
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 
+# Not used
 function predict_steps(object::LwplsrAvg, X; steps = nothing) 
     X = ensure_mat(X)
     m = size(X, 1)

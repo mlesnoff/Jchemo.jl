@@ -19,11 +19,11 @@ end
 
 """
     kplsr(X, Y, weights = ones(size(X, 1)); 
-        nlv, kern = "krbf", scal = false, tol = 1.5e-8, 
-        maxit = 100, kwargs...)
+        nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 
+        scal = false, kwargs...)
     kplsr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); 
-        nlv, kern = "krbf", scal = false, tol = 1.5e-8, 
-        maxit = 100, kwargs...)
+        nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 
+        scal = false, kwargs...)
 Kernel partial least squares regression (KPLSR) implemented with a NIPALS 
 algorithm (Rosipal & Trejo, 2001).
 
@@ -69,27 +69,27 @@ nlv = 20 ; gamma = 1e-1
 fm = kplsr(Xtrain, ytrain; nlv = nlv, gamma = gamma) ;
 fm.T
 
-zcoef = coef(fm)
+zcoef = Jchemo.coef(fm)
 zcoef.int
 zcoef.beta
-coef(fm; nlv = 7).beta
+Jchemo.coef(fm; nlv = 7).beta
 
-transform(fm, Xtest)
-transform(fm, Xtest; nlv = 7)
+Jchemo.transform(fm, Xtest)
+Jchemo.transform(fm, Xtest; nlv = 7)
 
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 
-res = predict(fm, Xtest; nlv = 1:2)
+res = Jchemo.predict(fm, Xtest; nlv = 1:2)
 res.pred[1]
 res.pred[2]
 
 fm = kplsr(Xtrain, ytrain; nlv = nlv, kern = "kpol", degree = 2, 
     gamma = 1e-1, coef0 = 10) ;
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 
 # Example of fitting the function sinc(x)
@@ -100,7 +100,7 @@ n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
 fm = kplsr(x, y; nlv = 2) ;
-pred = predict(fm, x).pred 
+pred = Jchemo.predict(fm, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
 lines!(ax, x, vec(pred), label = "Fitted model")
@@ -109,16 +109,16 @@ f
 ```
 """ 
 function kplsr(X, Y, weights = ones(size(X, 1)); 
-        nlv, kern = "krbf", scal = false, tol = 1.5e-8, 
-        maxit = 100, kwargs...)
+        nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 
+        scal = false, kwargs...)
     kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        nlv = nlv, kern = kern, scal = scal, 
-        tol = tol, maxit = maxit, kwargs...)
+        nlv = nlv, kern = kern, tol = tol, maxit = maxit, 
+        scal = scal, kwargs...)
 end
 
 function kplsr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); 
-        nlv, kern = "krbf", scal = false, 
-        tol = 1.5e-8, maxit = 100, kwargs...)
+        nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 
+        scal = false, kwargs...)
     n, p = size(X)
     q = nco(Y)
     weights = mweight(weights)

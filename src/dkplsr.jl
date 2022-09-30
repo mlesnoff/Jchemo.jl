@@ -59,24 +59,24 @@ nlv = 20 ; gamma = 1e-1
 fm = dkplsr(Xtrain, ytrain; nlv = nlv, gamma = gamma) ;
 fm.fm.T
 
-zcoef = coef(fm)
+zcoef = Jchemo.coef(fm)
 zcoef.int
 zcoef.B
-coef(fm; nlv = 7).B
+Jchemo.coef(fm; nlv = 7).B
 
-transform(fm, Xtest)
-transform(fm, Xtest; nlv = 7)
+Jchemo.transform(fm, Xtest)
+Jchemo.transform(fm, Xtest; nlv = 7)
 
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
 
-res = predict(fm, Xtest; nlv = 1:2)
+res = Jchemo.predict(fm, Xtest; nlv = 1:2)
 res.pred[1]
 res.pred[2]
 
 fm = dkplsr(Xtrain, ytrain; nlv = nlv, kern = "kpol", degree = 2, gamma = 1e-1, coef0 = 10) ;
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
@@ -90,7 +90,7 @@ n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
 fm = dkplsr(x, y; nlv = 2) ;
-pred = predict(fm, x).pred 
+pred = Jchemo.predict(fm, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
 lines!(ax, x, vec(pred), label = "Fitted model")

@@ -2,7 +2,7 @@
     treeda_xgb(X, y;
         subsample = 1, colsample_bytree = 1, colsample_bynode = 1,
         max_depth = 6, min_child_weight = 5,
-        lambda = 0, verbose = false, kwargs...)
+        lambda = 0, scal = false, verbose = false, kwargs...)
 Discrimination tree with XGBoost.
 * `X` : X-data (n obs., p variables).
 * `y` : Univariate Y-data (n obs.).
@@ -17,6 +17,8 @@ Discrimination tree with XGBoost.
     needs to have.
 * `lambda` : L2 regularization term on weights. 
     Increasing this value will make model more conservative.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 * `verbose` : If true, fitting information are printed.
 * `kwargs` : Optional named arguments to pass in function `xgboost` 
     of `XGBoost.jl` (https://xgboost.readthedocs.io/en/latest/parameter.html).
@@ -72,10 +74,15 @@ err(res.pred, ytest)
 function treeda_xgb(X, y;
         subsample = 1, colsample_bytree = 1, colsample_bynode = 1,
         max_depth = 6, min_child_weight = 5,
-        lambda = 0, verbose = false, kwargs...) 
+        lambda = 0, scal = false, verbose = false, kwargs...) 
     X = ensure_mat(X)
     y = vec(y)
-    p = size(X, 2)
+    p = nco(X)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X)
+        X = scale(X, xscales)
+    end
     ztab = tab(y)
     y_num = recodcat2int(y; start = 0)
     num_class = length(ztab.keys)
@@ -94,7 +101,7 @@ function treeda_xgb(X, y;
         num_class = num_class,
         silent = !verbose, kwargs...)
     featur = collect(1:p)
-    TreedaXgb(fm, featur, ztab.keys, ztab.vals)
+    TreedaXgb(fm, xscales, featur, ztab.keys, ztab.vals)
 end
 
 """ 
@@ -102,7 +109,7 @@ end
         subsample = .7,
         colsample_bytree = 1, colsample_bynode = 1/3,
         max_depth = 6, min_child_weight = 5,
-        lambda = 0, verbose = false, kwargs...)
+        lambda = 0, scal = false, verbose = false, kwargs...)
 Random forest discrimination.
 * `X` : X-data (n obs., p variables).
 * `y` : Univariate Y-data (n obs.).
@@ -117,6 +124,8 @@ Random forest discrimination.
     needs to have.
 * `lambda` : L2 regularization term on weights. 
     Increasing this value will make model more conservative.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 * `verbose` : If true, fitting information are printed.
 * `kwargs` : Optional named arguments to pass in function `xgboost` 
     of `XGBoost.jl` (https://xgboost.readthedocs.io/en/latest/parameter.html).
@@ -175,10 +184,15 @@ function rfda_xgb(X, y; rep = 50,
         subsample = .7,
         colsample_bytree = 1, colsample_bynode = 1/3,
         max_depth = 6, min_child_weight = 5,
-        lambda = 0, verbose = false, kwargs...)
+        lambda = 0, scal = false, verbose = false, kwargs...)
     X = ensure_mat(X)
     y = vec(y)
-    p = size(X, 2)
+    p = nco(X)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X)
+        X = scale(X, xscales)
+    end
     ztab = tab(y)
     y_num = recodcat2int(y; start = 0)
     num_class = length(ztab.keys)
@@ -198,14 +212,14 @@ function rfda_xgb(X, y; rep = 50,
         num_class = num_class,
         silent = !verbose, kwargs...)
     featur = collect(1:p)
-    TreedaXgb(fm, featur, ztab.keys, ztab.vals)
+    TreedaXgb(fm, xscales, featur, ztab.keys, ztab.vals)
 end
 
 """ 
     xgboostda(X, y; rep = 50, eta = .3,
         subsample = .7, colsample_bytree = 1, colsample_bynode = 1/3,
         max_depth = 6, min_child_weight = 5,
-        lambda = 1, verbose = false, kwargs...)
+        lambda = 1, scal = false, verbose = false, kwargs...)
 XGBoost discrimination.
 * `X` : X-data (n obs., p variables).
 * `y` : Univariate Y-data (n obs.).
@@ -221,6 +235,8 @@ XGBoost discrimination.
     needs to have.
 * `lambda` : L2 regularization term on weights. 
     Increasing this value will make model more conservative.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 * `verbose` : If true, fitting information are printed.
 * `kwargs` : Optional named arguments to pass in function `xgboost` 
     of `XGBoost.jl` (https://xgboost.readthedocs.io/en/latest/parameter.html).
@@ -265,10 +281,15 @@ err(res.pred, ytest)
 function xgboostda(X, y; rep = 50, eta = .3,
         subsample = .7, colsample_bytree = 1, colsample_bynode = 1/3,
         max_depth = 6, min_child_weight = 5,
-        lambda = 1, verbose = false, kwargs...)
+        lambda = 1, scal = false, verbose = false, kwargs...)
     X = ensure_mat(X)
     y = vec(y)
-    p = size(X, 2)
+    p = nco(X)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X)
+        X = scale(X, xscales)
+    end
     ztab = tab(y)
     y_num = recodcat2int(y; start = 0)
     num_class = length(ztab.keys)
@@ -288,7 +309,7 @@ function xgboostda(X, y; rep = 50, eta = .3,
         lambda = lambda, 
         silent = !verbose, kwargs...)
     featur = collect(1:p)
-    TreedaXgb(fm, featur, ztab.keys, ztab.vals)
+    TreedaXgb(fm, xscales, featur, ztab.keys, ztab.vals)
 end
 
 """
@@ -299,14 +320,10 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::TreedaXgb, X)
     X = ensure_mat(X)
-    m = size(X, 1)
-    pred = XGBoost.predict(object.fm, X) .+ 1
+    m = nro(X)
+    pred = XGBoost.predict(object.fm, scale(X, object.xscales)) .+ 1
     pred = replacebylev2(Int64.(pred), object.lev)
     pred = reshape(pred, m, 1) ;
     (pred = pred,)
 end
-
-
-
-
 

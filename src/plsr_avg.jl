@@ -93,7 +93,7 @@ ntest = nro(Xtest)
 
 nlv = "0:50"
 fm = plsr_avg(Xtrain, ytrain; nlv = nlv) ;
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
 plotxy(vec(res.pred), ytest; color = (:red, .5),
@@ -101,7 +101,7 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
 
 fm = plsr_avg(Xtrain, ytrain; nlv = nlv,
     typf = "cv") ;
-res = predict(fm, Xtest)
+res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
 ```
