@@ -11,9 +11,9 @@
 **Jchemo** provides elementary functions and pipelines for predictions in chemometrics or other domains, with focus
 on high dimensional data. 
 
-The package was initially designed for **k-nearest neighbors locally weighted partial least quare regression 
-and discrimination** (kNN-LWPLSR an kNN-LWPLSDA) (e.g. Lesnoff et al 2021 https://doi.org/10.1002/cem.3209).
-Then, it has been expanded to other methods. 
+The package was initially designed for **k-nearest neighbors locally weighted partial least squares regression 
+and discrimination** models (kNN-LWPLSR an kNN-LWPLSDA; e.g. Lesnoff et al 2021 https://doi.org/10.1002/cem.3209).
+The package is now expanding to other methods. 
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. Tuning the prediction models is facilitated by functions **gridscore** (validation dataset) and **gridcv** (cross-validation). Faster versions are also available for models based on latent variables (LVs) (**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
 
