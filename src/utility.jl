@@ -502,7 +502,7 @@ ensure_mat(X::AbstractMatrix) = X
 ensure_mat(X::AbstractVector) = reshape(X, :, 1)
 ensure_mat(X::Number) = reshape([X], 1, 1)
 ensure_mat(X::LinearAlgebra.Adjoint) = Matrix(X)
-ensure_mat(X::DataFrame) = Matrix(X)
+ensure_mat(X::DataFrame) = Float64.(Matrix(X))
 
 """
     findmax_cla(x, weights = nothing)

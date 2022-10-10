@@ -1,8 +1,9 @@
 """
-    plotgrid(indx::Union{Vector{Int64}, Vector{Float64}}, r; 
+    plotgrid(indx::Union{Vector{Integer}, Vector{Int64}, Vector{Real}, Vector{Float64}}, r; 
         resolution = (500, 350), step = 5, 
         color = nothing, kwargs...)
-    plotgrid(indx::Union{Vector{Int64}, Vector{Float64}}, r, group; 
+    plotgrid(indx::Union{Vector{Integer}, Vector{Int64}, Vector{Real}, Vector{Float64}}, r, 
+        group; 
         resolution = (500, 350), step = 5, 
         color = nothing, kwargs...)
 
@@ -69,7 +70,8 @@ function plotgrid(indx::Union{Vector{Integer}, Vector{Int64}, Vector{Real}, Vect
     (f = f, ax = ax)
 end
 
-function plotgrid(indx::Union{Vector{Integer}, Vector{Int64}, Vector{Real}, Vector{Float64}}, r, group; 
+function plotgrid(indx::Union{Vector{Integer}, Vector{Int64}, Vector{Real}, Vector{Float64}}, r, 
+        group; 
         resolution = (700, 350), step = 5, 
         color = nothing, kwargs...)
     r = Float64.(vec(r))

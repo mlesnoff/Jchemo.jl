@@ -90,9 +90,6 @@ function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50,
     zncol = collect(1:ncol) 
     zX = similar(X, nrow, ncol)
     zY = similar(Y, nrow, q)
-    #Threads.@threads for i = 1:rep
-    #@sync @distributed for i = 1:rep
-    #@distributed for i = 1:rep
     @inbounds for i = 1:rep
         srow .= sample(1:n, nrow; replace = withr)
         s_oob[i] = findall(in(srow).(1:n) .== 0)

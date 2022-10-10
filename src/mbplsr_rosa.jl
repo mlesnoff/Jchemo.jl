@@ -14,15 +14,15 @@ struct MbplsrRosa
 end
 
 """
-    mbplsr_rosa(X, Y, weights = ones(size(X[1], 1)); nlv)
-    mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv)
+    mbplsr_rosa(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv)
+    mbplsr_rosa!(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv)
 Multi-block PLSR with the ROSA algorithm (Liland et al. 2016).
-* `X` : List (vector) of blocks (matrices) of X-data. 
+* `X_bl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
 * `Y` : Y-data.
 * `weights` : Weights of the observations (rows).
 * `nlv` : Nb. latent variables (LVs) to consider.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+* `scal` : Boolean. If `true`, each column of `X_bl` and `Y` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
@@ -67,36 +67,36 @@ Jchemo.transform(fm, X_bl_new)
 Jchemo.predict(fm, X_bl_new).pred
 ```
 """ 
-function mbplsr_rosa(X, Y, weights = ones(size(X[1], 1)); nlv,
+function mbplsr_rosa(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
         scal = false)
-    nbl = length(X)
-    zX = list(nbl, Matrix{Float64})
+    nbl = length(X_bl)  
+    X = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
-        zX[k] = copy(ensure_mat(X[k]))
+        X[k] = copy(ensure_mat(X_bl[k]))
     end
-    mbplsr_rosa!(zX, copy(Y), weights; nlv = nlv, scal = scal)
+    mbplsr_rosa!(X, copy(ensure_mat(Y)), weights; nlv = nlv, 
+        scal = scal)
 end
 
-function mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv,
+function mbplsr_rosa!(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
         scal = false)
-    Y = ensure_mat(Y)
-    n = size(X[1], 1)
+    n = size(X_bl[1], 1)
     q = size(Y, 2)   
-    nbl = length(X)
+    nbl = length(X_bl)
     weights = mweight(weights)
     D = Diagonal(weights)
     xmeans = list(nbl, Vector{Float64})
     xscales = list(nbl, Vector{Float64})
     p = fill(0, nbl)
     @inbounds for k = 1:nbl
-        p[k] = nco(X[k])
-        xmeans[k] = colmean(X[k], weights) 
-        xscales[k] = ones(nco(X[k]))
+        p[k] = nco(X_bl[k])
+        xmeans[k] = colmean(X_bl[k], weights) 
+        xscales[k] = ones(nco(X_bl[k]))
         if scal 
-            xscales[k] = colstd(X[k], weights)
-            X[k] = cscale(X[k], xmeans[k], xscales[k])
+            xscales[k] = colstd(X_bl[k], weights)
+            X_bl[k] = cscale(X_bl[k], xmeans[k], xscales[k])
         else
-            X[k] = center(X[k], xmeans[k])
+            X_bl[k] = center(X_bl[k], xmeans[k])
         end
     end
     ymeans = colmean(Y, weights)
@@ -108,35 +108,35 @@ function mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv,
         center!(Y, ymeans)
     end
     # Pre-allocation
-    W = similar(X[1], sum(p), nlv)
+    W = similar(X_bl[1], sum(p), nlv)
     P = copy(W)
-    T = similar(X[1], n, nlv)
-    TT = similar(X[1], nlv)    
-    C = similar(X[1], q, nlv)
-    DY = similar(X[1], n, q)
-    t   = similar(X[1], n)
-    dt  = similar(X[1], n)   
-    c   = similar(X[1], q)
+    T = similar(X_bl[1], n, nlv)
+    TT = similar(X_bl[1], nlv)    
+    C = similar(X_bl[1], q, nlv)
+    DY = similar(X_bl[1], n, q)
+    t   = similar(X_bl[1], n)
+    dt  = similar(X_bl[1], n)   
+    c   = similar(X_bl[1], q)
     zp_bl = list(nbl, Vector{Float64})
-    zp = similar(X[1], sum(p))
-    ssr = similar(X[1], nbl)
+    zp = similar(X_bl[1], sum(p))
+    ssr = similar(X_bl[1], nbl)
     W_bl = list(nbl, Array{Float64})
     w_bl = list(nbl, Vector{Float64})  # List of the weights "w" by block for a given "a"
-    zT = similar(X[1], n, nbl)         # Matrix gathering the nbl scores for a given "a"
+    zT = similar(X_bl[1], n, nbl)         # Matrix gathering the nbl scores for a given "a"
     bl = fill(0, nlv)
     Res = zeros(n, q, nbl)
     ### Start 
     @inbounds for a = 1:nlv
         DY .= D * Y  # apply the metric on covariance
         @inbounds for k = 1:nbl
-            XtY = X[k]' * DY
+            XtY = X_bl[k]' * DY
             if q == 1
                 w_bl[k] = vec(XtY)
                 w_bl[k] ./= norm(w_bl[k])
             else
                 w_bl[k] = svd!(XtY).U[:, 1]
             end
-            zT[:, k] .= X[k] * w_bl[k]
+            zT[:, k] .= X_bl[k] * w_bl[k]
         end
         # GS Orthogonalization of the scores
         if a > 1
@@ -144,6 +144,8 @@ function mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv,
             zT .= zT .- z * inv(z' * (D * z)) * z' * (D * zT)
         end
         # Selection of the winner block
+        # To check (probably faster): 
+        # Could be replaced by cos^2(Y, t), 
         @inbounds for k = 1:nbl
             t = vcol(zT, k)
             dt .= weights .* t
@@ -163,7 +165,9 @@ function mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv,
         TT[a] = tt
         C[:, a] .= c
         Y .= Res[:, :, opt]
-        for k = 1:nbl ; zp_bl[k] = X[k]' * dt ; end
+        for k = 1:nbl
+            zp_bl[k] = X_bl[k]' * dt
+        end
         zp .= reduce(vcat, zp_bl)
         P[:, a] .= zp / tt
         # Orthogonalization of the weights "w" by block
@@ -187,21 +191,21 @@ function mbplsr_rosa!(X, Y, weights = ones(size(X[1], 1)); nlv,
 end
 
 """ 
-    transform(object::MbplsrRosa, X; nlv = nothing)
+    transform(object::MbplsrRosa, X_bl; nlv = nothing)
 Compute LVs ("scores" T) from a fitted model.
 * `object` : The maximal fitted model.
-* `X` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
+* `X_bl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
 """ 
-function transform(object::MbplsrRosa, X; nlv = nothing)
+function transform(object::MbplsrRosa, X_bl; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(object.xmeans)
-    zX = list(nbl, Matrix{Float64})
+    X = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
-        zX[k] = cscale(X[k], object.xmeans[k], object.xscales[k])
+        X[k] = cscale(X_bl[k], object.xmeans[k], object.xscales[k])
     end
-    reduce(hcat, zX) * vcol(object.R, 1:nlv)
+    reduce(hcat, X) * vcol(object.R, 1:nlv)
 end
 
 """
@@ -223,22 +227,22 @@ function coef(object::MbplsrRosa; nlv = nothing)
 end
 
 """
-    predict(object::MbplsrRosa, X; nlv = nothing)
+    predict(object::MbplsrRosa, X_bl; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
-* `X` : A list (vector) of X-data for which predictions are computed.
+* `X_bl` : A list (vector) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
     If nothing, it is the maximum nb. LVs.
 """ 
-function predict(object::MbplsrRosa, X; nlv = nothing)
+function predict(object::MbplsrRosa, X_bl; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
-    zX = reduce(hcat, X)
+    X = reduce(hcat, X_bl)
     pred = list(le_nlv, Matrix{Float64})
     @inbounds for k = 1:le_nlv
         z = coef(object; nlv = nlv[k])
-        pred[k] = z.int .+ zX * z.B
+        pred[k] = z.int .+ X * z.B
     end 
     le_nlv == 1 ? pred = pred[1] : nothing
     (pred = pred,)

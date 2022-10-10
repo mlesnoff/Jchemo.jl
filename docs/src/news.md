@@ -1,7 +1,12 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.1.1*
+- Modified
+    - **blockscal**: bug corrected in arguments.
+    - Use of multi-threading (package Threads)
+        in knn functions: **locw**, **locwlv**
+
 ### *Version 0.1.0*
-    
 - Modified
     - Argument 'scal' (X and/or Y column-scaling) added to various functions.
     - **blockscal**: names of arguments have changed.

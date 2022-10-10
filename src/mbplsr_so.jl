@@ -6,16 +6,16 @@ struct MbplsrSo
 end
 
 """
-    mbplsr_so(X, Y, weights = ones(size(X, 1)); nlv,
+    mbplsr_so(X_bl, Y, weights = ones(size(X_bl, 1)); nlv,
         scal = false)
 Multiblock sequentially orthogonalized PLSR (SO-PLSR).
-* `X` : List (vector) of blocks (matrices) of X-data. 
+* `X_bl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
 * `Y` : Y-data.
 * `weights` : Weights of the observations (rows). 
 * `nlv` : Nb. latent variables (LVs) to consider for each block. 
     Vector that must have a length equal to the nb. blocks.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+* `scal` : Boolean. If `true`, each column of `X_bl` and `Y` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
@@ -57,70 +57,70 @@ Jchemo.transform(fm, X_bl_new)
 Jchemo.predict(fm, X_bl_new).pred
 ```
 """
-function mbplsr_so(X, Y, weights = ones(size(X[1], 1)); nlv,
+function mbplsr_so(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
         scal = false)
     Y = ensure_mat(Y)
-    n = size(X[1], 1)
+    n = size(X_bl[1], 1)
     q = size(Y, 2)   
-    nbl = length(X)
+    nbl = length(X_bl)
     weights = mweight(weights)
     D = Diagonal(weights)
     fm = list(nbl)
-    pred = similar(X[1], n, q)
-    zX = copy(X)
+    pred = similar(X_bl[1], n, q)
+    X = copy(X_bl)
     b = list(nbl)
     # First block
-    fm[1] = plskern(zX[1], Y, weights; nlv = nlv[1], scal = scal)
+    fm[1] = plskern(X[1], Y, weights; nlv = nlv[1], scal = scal)
     T = fm[1].T
-    pred .= Jchemo.predict(fm[1], zX[1]).pred
+    pred .= Jchemo.predict(fm[1], X[1]).pred
     b[1] = nothing
     # Other blocks
     if nbl > 1
         for i = 2:nbl
-            b[i] = inv(T' * (D * T)) * T' * (D * X[i])
-            zX = X[i] - T * b[i]
-            fm[i] = plskern(zX, Y - pred, weights; nlv = nlv[i])
+            b[i] = inv(T' * (D * T)) * T' * (D * X_bl[i])
+            X = X_bl[i] - T * b[i]
+            fm[i] = plskern(X, Y - pred, weights; nlv = nlv[i])
             T = hcat(T, fm[i].T)
-            pred .+= Jchemo.predict(fm[i], zX).pred 
+            pred .+= Jchemo.predict(fm[i], X).pred 
         end
     end
     MbplsrSo(fm, T, pred, b)
 end
 
 """ 
-    transform(object::MbplsrSo)
+    transform(object::MbplsrSo, X_bl)
 Compute LVs ("scores" T) from a fitted model.
 * `object` : The maximal fitted model.
-* `X` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
+* `X_bl` : A list (vector) of blocks (matrices) of X_bl-data for which LVs are computed.
 """ 
-function transform(object::MbplsrSo, X)
+function transform(object::MbplsrSo, X_bl)
     nbl = length(object.fm)
-    T = transform(object.fm[1], X[1])
+    T = transform(object.fm[1], X_bl[1])
     if nbl > 1
         @inbounds for i = 2:nbl
-            zX = X[i] - T * object.b[i]
-            T = hcat(T, transform(object.fm[i], zX))
+            X = X_bl[i] - T * object.b[i]
+            T = hcat(T, transform(object.fm[i], X))
         end
     end
     T
 end
 
 """
-    predict(object::MbplsrSo, X)
+    predict(object::MbplsrSo, X_bl)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
-* `X` : A list (vector) of X-data for which predictions are computed.
+* `X_bl` : A list (vector) of X-data for which predictions are computed.
 """ 
-function predict(object::MbplsrSo, X)
+function predict(object::MbplsrSo, X_bl)
     nbl = length(object.fm)
-    T = transform(object.fm[1], X[1])
+    T = transform(object.fm[1], X_bl[1])
     pred =  object.fm[1].ymeans' .+ T * object.fm[1].C'
     if nbl > 1
         @inbounds for i = 2:nbl
-            zX = X[i] - T * object.b[i]
-            zT = transform(object.fm[i], zX)
+            X = X_bl[i] - T * object.b[i]
+            zT = transform(object.fm[i], X)
             pred .+= object.fm[i].ymeans' .+ zT * object.fm[i].C'
-            T = hcat(T, transform(object.fm[i], zX))
+            T = hcat(T, transform(object.fm[i], X))
         end
     end
     (pred = pred,)

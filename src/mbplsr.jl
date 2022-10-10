@@ -21,7 +21,7 @@ Multiblock PLSR (MBPLSR).
 * `bscal` : Type of block scaling. 
     Possible values are: "none", "frob", "mfa", "ncol", "sd". 
     See functions `blockscal`.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+* `scal` : Boolean. If `true`, each column of `X_bl` and `Y` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
@@ -58,20 +58,19 @@ Jchemo.predict(fm, X_bl_new).pred
 function mbplsr(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, 
         bscal = "none", scal = false)
     nbl = length(X_bl)
-    X = copy(X_bl)
     Y = ensure_mat(Y)
     q = nco(Y)
     weights = mweight(weights)
     xmeans = list(nbl, Vector{Float64})
     xscales = list(nbl, Vector{Float64})
     @inbounds for k = 1:nbl
-        xmeans[k] = colmean(X[k], weights) 
-        xscales[k] = ones(nco(X[k]))
+        xmeans[k] = colmean(X_bl[k], weights) 
+        xscales[k] = ones(nco(X_bl[k]))
         if scal 
-            xscales[k] = colstd(X[k], weights)
-            X[k] = cscale(X[k], xmeans[k], xscales[k])
+            xscales[k] = colstd(X_bl[k], weights)
+            X_bl[k] = cscale(X_bl[k], xmeans[k], xscales[k])
         else
-            X[k] = center(X[k], xmeans[k])
+            X_bl[k] = center(X_bl[k], xmeans[k])
         end
     end
     ymeans = colmean(Y, weights)
@@ -85,15 +84,15 @@ function mbplsr(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
     if bscal == "none" 
         bscales = ones(nbl)
     else
-        bscal == "frob" ? res = blockscal_frob(X, weights) : nothing
-        bscal == "mfa" ? res = blockscal_mfa(X, weights) : nothing
-        bscal == "ncol" ? res = blockscal_ncol(X) : nothing
-        bscal == "sd" ? res = blockscal_sd(X, weights) : nothing
-        X = res.X
+        bscal == "frob" ? res = blockscal_frob(X_bl, weights) : nothing
+        bscal == "mfa" ? res = blockscal_mfa(X_bl, weights) : nothing
+        bscal == "ncol" ? res = blockscal_ncol(X_bl) : nothing
+        bscal == "sd" ? res = blockscal_sd(X_bl, weights) : nothing
+        X_bl = res.X
         bscales = res.bscales
     end
-    zX = reduce(hcat, X)
-    fm = plskern(zX, Y, weights; nlv = nlv, scal = false)
+    X = reduce(hcat, X_bl)
+    fm = plskern(X, Y, weights; nlv = nlv, scal = false)
     Mbplsr(fm, fm.T, xmeans, xscales, ymeans, yscales, bscales, weights)
 end
 
@@ -101,18 +100,17 @@ end
     transform(object::Mbplsr, X_bl; nlv = nothing)
 Compute LVs ("scores" T) from a fitted model.
 * `object` : The maximal fitted model.
-* `X_bl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
+* `X_bl` : A list (vector) of blocks (matrices) of X_bl-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
 """ 
 function transform(object::Mbplsr, X_bl; nlv = nothing)
     nbl = length(X_bl)
-    X = copy(X_bl)
     @inbounds for k = 1:nbl
-        X[k] = cscale(X[k], object.xmeans[k], object.xscales[k])
+        X_bl[k] = cscale(X_bl[k], object.xmeans[k], object.xscales[k])
     end
-    res = blockscal(X, object.bscales)
-    zX = reduce(hcat, res.X)
-    transform(object.fm, zX; nlv = nlv)
+    res = blockscal(X_bl, object.bscales)
+    X = reduce(hcat, res.X)
+    transform(object.fm, X; nlv = nlv)
 end
 
 """
@@ -125,14 +123,22 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Mbplsr, X_bl; nlv = nothing)
     nbl = length(X_bl)
-    X = copy(X_bl)
     @inbounds for k = 1:nbl
-        X[k] = cscale(X[k], object.xmeans[k], object.xscales[k])
+        X_bl[k] = cscale(X_bl[k], object.xmeans[k], object.xscales[k])
     end
-    res = blockscal(X, object.bscales)
-    zX = reduce(hcat, res.X)
+    res = blockscal(X_bl, object.bscales)
+    X = reduce(hcat, res.X)
     W = Diagonal(object.yscales)
-    pred = object.ymeans' .+ predict(object.fm, zX; nlv = nlv).pred * W
+    isnothing(nlv) ? le_nlv = 1 : le_nlv = length(nlv) 
+    pred = predict(object.fm, X; nlv = nlv).pred
+    if le_nlv == 1
+        pred = object.ymeans' .+ pred * W 
+    else
+        for i = 1:le_nlv
+            pred[i] = object.ymeans' .+ pred[i] * W
+        end
+    end
+    #pred = object.ymeans' .+ predict(object.fm, X; nlv = nlv).pred * W
     (pred = pred,)
 end
 

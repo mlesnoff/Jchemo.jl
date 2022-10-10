@@ -117,6 +117,7 @@ include("scores.jl")
 include("gridscore.jl")
 include("segm.jl")
 include("gridcv.jl")
+include("gridcv_mb.jl")
 include("selwold.jl")
 
 # Transfer

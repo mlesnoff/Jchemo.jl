@@ -150,7 +150,7 @@ function predict(object::Lwplsr, X; nlv = nothing)
             metric = object.metric) 
     end
     listw = copy(res.d)
-    for i = 1:m
+    Threads.@threads for i = 1:m
         w = wdist(res.d[i]; h = object.h)
         w[w .< object.tol] .= object.tol
         listw[i] = w
@@ -162,6 +162,4 @@ function predict(object::Lwplsr, X; nlv = nothing)
         verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
-
-
 

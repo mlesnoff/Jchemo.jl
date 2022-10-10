@@ -26,7 +26,7 @@ Common components and specific weights analysis (CCSWA, ComDim).
     See functions `blockscal`.
 * `tol` : Tolerance value for convergence.
 * `niter` : Maximum number of iterations.
-* `scal` : Boolean. If `true`, each column of `X` 
+* `scal` : Boolean. If `true`, each column of `X_bl` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
@@ -124,8 +124,7 @@ function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
     nbl = length(X_bl)
-    X = copy(X_bl)
-    n = size(X[1], 1)
+    n = size(X_bl[1], 1)
     weights = mweight(weights)
     sqrtw = sqrt.(weights)
     sqrtD = Diagonal(sqrtw)
@@ -133,51 +132,51 @@ function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
     xscales = list(nbl, Vector{Float64})
     p = fill(0, nbl)
     @inbounds for k = 1:nbl
-        p[k] = nco(X[k])
-        xmeans[k] = colmean(X[k], weights) 
-        xscales[k] = ones(nco(X[k]))
+        p[k] = nco(X_bl[k])
+        xmeans[k] = colmean(X_bl[k], weights) 
+        xscales[k] = ones(nco(X_bl[k]))
         if scal 
-            xscales[k] = colstd(X[k], weights)
-            X[k] = cscale(X[k], xmeans[k], xscales[k])
+            xscales[k] = colstd(X_bl[k], weights)
+            X_bl[k] = cscale(X_bl[k], xmeans[k], xscales[k])
         else
-            X[k] = center(X[k], xmeans[k])
+            X_bl[k] = center(X_bl[k], xmeans[k])
         end
     end
     bscal == "none" ? bscales = ones(nbl) : nothing
     if bscal == "frob"
-        res = blockscal_frob(X, weights) 
+        res = blockscal_frob(X_bl, weights) 
         bscales = res.bscales
-        X = res.X
+        X_bl = res.X
     end
     # Row metric
     @inbounds for k = 1:nbl
-        X[k] .= sqrtD * X[k]
+        X_bl[k] .= sqrtD * X_bl[k]
     end
     # Pre-allocation
-    u = similar(X[1], n)
-    U = similar(X[1], n, nlv)
+    u = similar(X_bl[1], n)
+    U = similar(X_bl[1], n, nlv)
     tb = copy(u)
     Tb = list(nlv, Matrix{Float64})
-    for a = 1:nlv ; Tb[a] = similar(X[1], n, nbl) ; end
+    for a = 1:nlv ; Tb[a] = similar(X_bl[1], n, nbl) ; end
     W_bl = list(nbl, Matrix{Float64})
-    for k = 1:nbl ; W_bl[k] = similar(X[1], p[k], nlv) ; end
-    lb = similar(X[1], nbl, nlv)
-    mu = similar(X[1], nlv)
-    TB = similar(X[1], n, nbl)
-    W = similar(X[1], nbl, nlv)
+    for k = 1:nbl ; W_bl[k] = similar(X_bl[1], p[k], nlv) ; end
+    lb = similar(X_bl[1], nbl, nlv)
+    mu = similar(X_bl[1], nlv)
+    TB = similar(X_bl[1], n, nbl)
+    W = similar(X_bl[1], nbl, nlv)
     niter = zeros(nlv)
     # End
     @inbounds for a = 1:nlv
-        zX = reduce(hcat, X)
-        u .= nipals(zX).u
+        X = reduce(hcat, X_bl)
+        u .= nipals(X).u
         iter = 1
         cont = true
         while cont
             u0 = copy(u)
             for k = 1:nbl
-                wb = X[k]' * u 
+                wb = X_bl[k]' * u 
                 wb ./= norm(wb)
-                mul!(tb, X[k], wb) 
+                mul!(tb, X_bl[k], wb) 
                 alpha = abs.(dot(tb, u))
                 TB[:, k] = alpha * tb
                 lb[k, a] = alpha^2
@@ -197,10 +196,10 @@ function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
         W[:, a] .= res.v
         mu[a] = res.sv^2   # = sum(lb.^2)   
         @inbounds for k = 1:nbl
-            X[k] .-= u * (u' * X[k])
+            X_bl[k] .-= u * (u' * X_bl[k])
             # Same as:
             #Px = sqrt(lb[k, a]) * W_bl[k][:, a]'
-            #X[k] .-= u * Px
+            #X_bl[k] .-= u * Px
         end
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
@@ -219,25 +218,24 @@ function transform(object::MbpcaComdim, X_bl; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(X_bl)
-    X = copy(X_bl)
-    m = size(X[1], 1)
+    m = size(X_bl[1], 1)
     @inbounds for k = 1:nbl
-        X[k] = cscale(X[k], object.xmeans[k], object.xscales[k])
+        X_bl[k] = cscale(X_bl[k], object.xmeans[k], object.xscales[k])
     end
-    X = blockscal(X, object.bscales).X
-    U = similar(X[1], m, nlv)
-    TB = similar(X[1], m, nbl)
-    u = similar(X[1], m)
+    X_bl = blockscal(X_bl, object.bscales).X
+    U = similar(X_bl[1], m, nlv)
+    TB = similar(X_bl[1], m, nbl)
+    u = similar(X_bl[1], m)
     for a = 1:nlv
         for k = 1:nbl
-            TB[:, k] .= X[k] * object.W_bl[k][:, a]
+            TB[:, k] .= X_bl[k] * object.W_bl[k][:, a]
         end
         TB .= sqrt.(object.lb[:, a])' .* TB
         u .= 1 / sqrt(object.mu[a]) * TB * object.W[:, a]
         U[:, a] .= u
         @inbounds for k = 1:nbl
             Px = sqrt(object.lb[k, a]) * object.W_bl[k][:, a]'
-            X[k] .-= u * Px
+            X_bl[k] .-= u * Px
         end
     end
     sqrt.(object.mu)' .* U # = T
@@ -252,20 +250,19 @@ Summarize the fitted model.
 function summary(object::MbpcaComdim, X_bl)
     nbl = length(X_bl)
     nlv = size(object.T, 2)
-    X = copy(X_bl)
     sqrtw = sqrt.(object.weights)
     sqrtD = Diagonal(sqrtw)
     @inbounds for k = 1:nbl
-        X[k] = cscale(X[k], object.xmeans[k], object.xscales[k])
+        X_bl[k] = cscale(X_bl[k], object.xmeans[k], object.xscales[k])
     end
-    X = blockscal(X, object.bscales).X
+    X_bl = blockscal(X_bl, object.bscales).X
     @inbounds for k = 1:nbl
-        X[k] .= sqrtD * X[k]
+        X_bl[k] .= sqrtD * X_bl[k]
     end
     # Explained_X
     sstot = zeros(nbl)
     @inbounds for k = 1:nbl
-        sstot[k] = ssq(X[k])
+        sstot[k] = ssq(X_bl[k])
     end
     tt = colsum(object.lb)    
     pvar = tt / sum(sstot)
@@ -276,7 +273,7 @@ function summary(object::MbpcaComdim, X_bl)
     S = list(nbl, Matrix{Float64})
     sstot_xx = 0 
     @inbounds for k = 1:nbl
-        S[k] = X[k] * X[k]'
+        S[k] = X_bl[k] * X_bl[k]'
         sstot_xx += ssq(S[k])
     end
     tt = object.mu
@@ -298,8 +295,8 @@ function summary(object::MbpcaComdim, X_bl)
     z = scale((object.lb)', sstot)'
     explX = DataFrame(z, string.("pc", 1:nlv))
     # Correlation between the global scores and the original variables (globalcor)
-    zX = reduce(hcat, X)
-    z = cor(zX, object.U)  
+    X = reduce(hcat, X_bl)
+    z = cor(X, object.U)  
     cort2x = DataFrame(z, string.("pc", 1:nlv))  
     # Correlation between the global scores and the block_scores (cor.g.b)
     z = list(nlv, Matrix{Float64})
@@ -308,12 +305,12 @@ function summary(object::MbpcaComdim, X_bl)
     end
     cort2tb = DataFrame(reduce(hcat, z), string.("pc", 1:nlv))
     # RV 
-    zX = vcat(X, [object.T])
+    X = vcat(X_bl, [object.T])
     nam = [string.("block", 1:nbl) ; "T"]
-    res = rv(zX)
+    res = rv(X)
     zrv = DataFrame(res, nam)
     # Lg
-    res = lg(zX)
+    res = lg(X)
     zlg = DataFrame(res, nam)
     (explvarx = explvarx, explvarxx, sal2, contr_block, explX, 
         cort2x, cort2tb, rv = zrv, lg = zlg)

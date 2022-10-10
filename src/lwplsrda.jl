@@ -117,7 +117,7 @@ function predict(object::Lwplsrda, X; nlv = nothing)
             k = object.k, metric = object.metric) 
     end
     listw = copy(res.d)
-    for i = 1:m
+    Threads.@threads for i = 1:m
         w = wdist(res.d[i]; h = object.h)
         w[w .< object.tol] .= object.tol
         listw[i] = w

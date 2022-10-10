@@ -166,9 +166,13 @@ See `?gridscore` for examples.
 """
 function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv, 
         pars = nothing, verbose = false)
-    p = nco(Xtrain)
+    # If not multiblock
+    if isa(Xtrain, Matrix)
+        p = nco(Xtrain)
+        nlv = max(0, minimum(nlv)):min(p, maximum(nlv))
+    end
+    # End
     q = nco(Ytrain)
-    nlv = max(0, minimum(nlv)):min(p, maximum(nlv))
     le_nlv = length(nlv)
     if isnothing(pars)
         verbose ? println("-- Nb. combinations = 0.") : nothing
@@ -194,7 +198,6 @@ function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv,
             end
             zres
         end 
-       
         ncomb == 1 ? res = res[1] : res = reduce(vcat, res) 
         ## Make dat
         if le_nlv == 1

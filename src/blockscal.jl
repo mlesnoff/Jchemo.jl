@@ -13,8 +13,8 @@ Scale a list of blocks (matrices).
 Specificities of each function:
 * `blockscal`: Each block X is tranformed to X / `bscales'.
 * `blockscal_frob`: Let D be the diagonal matrix of vector `weights`.
-    Each block X is divided by its Frobenius norm = sqrt(trace(X' * D * X)).
-    After this scaling, trace(X' * D * X) = 1.
+    Each block X is divided by its Frobenius norm = sqrt(tr(X' * D * X)).
+    After this scaling, tr(X' * D * X) = 1.
 * `blockscal_mfa`: Each block X is divided by sqrt(lamda),
     where lambda is the dominant eigenvalue of X (this is the "MFA" approach).
 * `blockscal_ncol`: Each block X is divided by the nb. columns of the block.
@@ -83,7 +83,7 @@ function blockscal(X_bl,
 end 
 
 function blockscal_frob(X_bl, 
-        weights = ones(size(X[1], 1)))
+        weights = ones(size(X_bl[1], 1)))
     nbl = length(X_bl)
     bscales = list(nbl, Float64)
     sqrtw = sqrt.(mweight(weights))
@@ -95,7 +95,7 @@ function blockscal_frob(X_bl,
 end 
 
 function blockscal_mfa(X_bl, 
-        weights = ones(size(X[1], 1)))
+        weights = ones(size(X_bl[1], 1)))
     nbl = length(X_bl)
     sqrtw = sqrt.(mweight(weights))
     sqrtD = Diagonal(sqrtw)
@@ -118,7 +118,7 @@ function blockscal_ncol(X_bl)
 end 
 
 function blockscal_sd(X_bl,
-        weights = ones(size(X[1], 1)))
+        weights = ones(size(X_bl[1], 1)))
     nbl = length(X_bl)
     bscales = list(nbl, Float64)
     @inbounds for i = 1:nbl
