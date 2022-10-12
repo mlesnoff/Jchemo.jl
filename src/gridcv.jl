@@ -187,6 +187,7 @@ See `?gridcv` for examples.
 """
 function gridcvlv(X, Y; segm, score, fun, nlv, 
         pars = nothing, verbose = false)
+    p = nco(X)
     q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)

@@ -74,12 +74,13 @@ function eposvd(D; nlv)
 end
 
 """
-    detrend(X)
-    detrend!(X::Matrix)
-Linear de-trend transformation of each row of a matrix X. 
+    detrend(X; degree = 1)
+    detrend!(X::Matrix; degree = 1)
+De-trend transformation of each row of a matrix X. 
 * `X` : X-data.
+* `degree` : Degree of the polynom.
 
-The function fits a univariate linear regression to each observation
+The function fits a polynomial regression to each observation
 and returns the residuals.
 
 ## Examples
@@ -98,26 +99,25 @@ Xp = detrend(X)
 plotsp(Xp[1:30, :], wl_num).f
 ```
 """ 
-function detrend(X)
+function detrend(X; degree = 1)
     zX = copy(ensure_mat(X))
-    detrend!(zX)
+    Jchemo.detrend!(zX; degree = degree)
     zX
 end
-
-function detrend!(X::Matrix)
+function detrend!(X::Matrix; degree = 1)
     n, p = size(X)
-    xmean = mean(1:p)
-    x = collect(1:p) 
-    xc = x .- xmean
-    xtx = dot(xc, xc)
-    yc = similar(xc)
+    vX = similar(X, p, degree + 1)
+    for j = 0:degree
+        vX[:, j + 1] .= collect(1:p).^j
+    end
+    vXt = vX'
+    vXtvX = vXt * vX
+    tol = sqrt(eps(real(float(one(eltype(vXtvX))))))
+    A = pinv(vXtvX, rtol = tol) * vXt
+    # Not faster: @Threads.threads
     @inbounds for i = 1:n
-        vy = vrow(X, i)
-        ymean = mean(vy)  
-        yc .= vy .- ymean
-        b = dot(xc, yc) / xtx
-        int = ymean - xmean * b
-        X[i, :] .= vy .- (int .+ x * b)
+        y = vrow(X, i)
+        X[i, :] .= y - vX * A * y
     end
 end
 
@@ -162,7 +162,7 @@ end
 function fdif!(M::Matrix, X::Matrix; f = 2)
     p = size(X, 2)
     zp = p - f + 1
-    @inbounds for j = 1:zp
+    @Threads.threads for j = 1:zp
         M[:, j] .= vcol(X, j + f - 1) .- vcol(X, j)
     end
 end
@@ -206,11 +206,11 @@ plotsp(X[1:10,:], wl_num).f
 
 wlfin = collect(range(500, 2400, length = 10))
 #wlfin = range(500, 2400, length = 10)
-zX = interpl(X[1:10, :], wl_num; wlfin = wlfin) 
-plotsp(zX, wlfin).f
+Xp = interpl(X[1:10, :], wl_num; wlfin = wlfin) 
+plotsp(Xp, wlfin).f
 
-zX = interpl_mon(X[1:10, :], wl_num; wlfin = wlfin) ;
-plotsp(zX, wlfin).f
+Xp = interpl_mon(X[1:10, :], wl_num; wlfin = wlfin) ;
+plotsp(Xp, wlfin).f
 ```
 """ 
 function interpl(X, wl; wlfin, fun = cubic_spline)
@@ -218,6 +218,7 @@ function interpl(X, wl; wlfin, fun = cubic_spline)
     n = size(X, 1)
     q = length(wlfin)
     zX = similar(X, n, q)
+    # Not faster: @Threads.threads
     @inbounds for i = 1:n
         itp = fun(vrow(X, i), wl)
         zX[i, :] .= itp.(wlfin)
@@ -273,6 +274,7 @@ function interpl_mon(X, wl; wlfin, fun = FritschCarlsonMonotonicInterpolation)
     n = size(X, 1)
     q = length(wlfin)
     zX = similar(X, n, q)
+    # Not faster: @Threads.threads
     @inbounds for i = 1:n
         itp = interpolate(wl, vrow(X, i), fun())
         zX[i, :] .= itp.(wlfin)
@@ -321,11 +323,15 @@ function mavg!(X::Matrix; f)
     n, p = size(X)
     f = Int64(f)
     kern = ImageFiltering.centered(ones(f) / f) ;
-    out = similar(X, p)
+    out = similar(X, p) 
     @inbounds for i = 1:n
         imfilter!(out, vrow(X, i), kern)
         X[i, :] .= out
     end
+    # Not faster
+    #@Threads.threads for i = 1:n
+    #    X[i, :] .= imfilter(vrow(X, i), kern)
+    #end
 end
 
 """
@@ -376,6 +382,7 @@ end
 function mavg_runmean!(M::Matrix, X::Matrix; f)
     n, zp = size(M)
     out = similar(M, zp)
+    # Not faster: @Threads.threads 
     @inbounds for i = 1:n
         Jchemo.runmean!(out, vrow(X, i); f)
         M[i, :] .= out    
@@ -497,11 +504,15 @@ function savgol!(X::Matrix; f, pol, d)
     kern = savgk(m, pol, d).kern
     zkern = ImageFiltering.centered(kern)
     out = similar(X, p)
-    @inbounds for i = 1:n
+    @inline for i = 1:n
         ## convolution with "replicate" padding
         imfilter!(out, vrow(X, i), reflect(zkern))
         X[i, :] .= out
     end
+    # Not faster
+    #@Threads.threads for i = 1:n
+    #    X[i, :] .= imfilter(vrow(X, i), reflect(zkern))
+    #end
 end
 
 """
@@ -538,10 +549,10 @@ function snv!(X::Matrix; cent = true, scal = true)
     n, p = size(X)
     cent ? mu = rowmean(X) : mu = zeros(n)
     scal ? s = rowstd(X) : s = ones(n)
+    # Not faster: @Threads.threads
     @inbounds for j = 1:p
         X[:, j] .= (vcol(X, j) .- mu) ./ s
     end
-    X
 end
 
 

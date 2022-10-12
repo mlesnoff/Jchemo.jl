@@ -1,10 +1,16 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.1.2*
+- Modified
+    - **detrend**: new argument 'degree'
+    - **gridcvlv**: correction of a bug (typing error) inserted 
+        in the last version.
+
 ### *Version 0.1.1*
 - Modified
     - **blockscal**: bug corrected in arguments.
-    - Use of multi-threading (package Threads)
-        in knn functions: **locw**, **locwlv**
+    - Use of *multi-threading* (package Threads)
+        in functions **locw** and **locwlv**, used in local models.
 
 ### *Version 0.1.0*
 - Modified
