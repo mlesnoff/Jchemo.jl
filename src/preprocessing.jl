@@ -504,7 +504,7 @@ function savgol!(X::Matrix; f, pol, d)
     kern = savgk(m, pol, d).kern
     zkern = ImageFiltering.centered(kern)
     out = similar(X, p)
-    @inline for i = 1:n
+    @inbounds for i = 1:n
         ## convolution with "replicate" padding
         imfilter!(out, vrow(X, i), reflect(zkern))
         X[i, :] .= out
