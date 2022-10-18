@@ -62,7 +62,7 @@ db = joinpath(mypath, "data", "cassav.jld2")
 pnames(dat)
 
 X = dat.X 
-y = dat.Y.y
+y = dat.Y.tbc
 year = dat.Y.year
 tab(year)
 s = year .<= 2012
@@ -164,7 +164,7 @@ db = joinpath(mypath, "data", "cassav.jld2")
 pnames(dat)
 
 X = dat.X 
-y = dat.Y.y
+y = dat.Y.tbc
 year = dat.Y.year
 tab(year)
 s = year .<= 2012
@@ -258,7 +258,7 @@ db = joinpath(mypath, "data", "cassav.jld2")
 pnames(dat)
 
 X = dat.X 
-y = dat.Y.y
+y = dat.Y.tbc
 year = dat.Y.year
 tab(year)
 s = year .<= 2012
@@ -336,7 +336,7 @@ db = joinpath(mypath, "data", "challenge2021_cal.jld2")
 pnames(dat)
 
 X = dat.X 
-y = dat.Y.y
+y = dat.Y.tbc
 n = nro(X)
 wl = names(X)
 wl_num = parse.(Float64, wl)

@@ -28,7 +28,7 @@ db = joinpath(mypath, "data", "cassav.jld2")
 pnames(dat)
 
 X = dat.X 
-y = dat.Y.y 
+y = dat.Y.tbc 
 year = dat.Y.year
 
 s = year .<= 2012

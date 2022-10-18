@@ -6,12 +6,13 @@ struct Baggr
 end
 
 """ 
-    baggr(X, Y, weights = nothing; rep = 50, 
+    baggr(X, Y, weights = nothing, wcol = nothing; rep = 50, 
         withr = false, rowsamp = .7, colsamp = 1, fun, kwargs...)
 Bagging of regression models.
 * `X` : X-data  (n, p).
 * `Y` : Y-data  (n, q).
 * `weights` : Weights (n) of the observations.
+* `wcol` : Weights (p) of the sampling of the variables.
 * `rep` : Nb. of bagging repetitions.
 * `withr`: Type of sampling of the observations
     (`true` => with replacement).
@@ -45,7 +46,7 @@ db = joinpath(mypath, "data", "cassav.jld2")
 pnames(dat)
 
 X = dat.X 
-y = dat.Y.y
+y = dat.Y.tbc
 year = dat.Y.year
 tab(year)
 s = year .<= 2012
@@ -80,7 +81,7 @@ function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50,
     q = size(Y, 2)   
     fm = list(rep)
     nrow = Int64(round(rowsamp * n))
-    ncol = max(Int64(round(colsamp * p)), 1)
+    ncol = max(1, Int64(round(colsamp * p)))
     s_row = fill(1, (nrow, rep))        # (nrow, rep)
     s_col = similar(s_row, ncol, rep)   # (ncol, rep) 
     s_oob = list(rep, Vector{Int64})
@@ -99,7 +100,8 @@ function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50,
             if isnothing(wcol)
                 scol .= sample(1:p, ncol; replace = false)
             else
-                scol .= sample(1:p, StatsBase.weights(wcol), ncol; replace = false)
+                scol .= sample(1:p, StatsBase.weights(wcol), ncol; 
+                    replace = false)
             end
         end
         zX .= X[srow, scol]

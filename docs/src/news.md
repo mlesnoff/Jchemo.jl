@@ -1,5 +1,10 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.1.3*
+- Modified
+    - **detrend**: argument 'degree' renamed to 'pol'.
+    - Code cleaning.
+
 ### *Version 0.1.2*
 - Modified
     - **detrend**: new argument 'degree'

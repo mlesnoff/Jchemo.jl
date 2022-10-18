@@ -133,7 +133,12 @@ checkdupl(Z)
 ```
 """
 function checkdupl(X; digits = 3)
-    X = round.(ensure_mat(X), digits = digits)
+    X = ensure_mat(X)
+    # round, etc. does not
+    # accept missing values
+    X[ismissing.(X)] .= -1e5
+    # End
+    X = round.(X, digits = digits)
     n = nro(X)
     rownum1 = []
     rownum2 = []
@@ -351,51 +356,6 @@ function colvar(X, w)
 end
 
 """
-    covm(X, w)
-    covm(X, Y, w)
-Compute covariance matrices.
-* `X` : Data (n, p).
-* `Y` : Data (n, q).
-* `w` : Weights (n) of the observations.
-
-`w` is internally normalized to sum to 1.
-
-Uncorrected covariance matrix 
-* of the columns of `X`: ==> (p, p) matrix 
-* or between columns of `X` and `Y` : ==> (p, q) matrix.
-
-## Examples
-```julia
-n, p = 5, 6
-X = rand(n, p)
-Y = rand(n, 3)
-w = collect(1:n)
-
-covm(X, w)
-covm(X, Y, w)
-```
-"""
-function covm(X, w)
-    zX = copy(ensure_mat(X))
-    w = mweight(w)
-    xmeans = colmean(zX, w)
-    center!(zX, xmeans)
-    z = Diagonal(sqrt.(w)) * zX
-    z' * z
-end
-
-function covm(X, Y, w)
-    zX = copy(ensure_mat(X))
-    zY = copy(ensure_mat(Y))
-    w = mweight(w)
-    xmeans = colmean(X, w)
-    ymeans = colmean(Y, w)
-    center!(zX, xmeans)
-    center!(zY, ymeans)
-    zX' * Diagonal(w) * zY
-end
-
-"""
     corm(X, w)
     corm(X, Y, w)
 Compute correlation matrices.
@@ -443,6 +403,51 @@ function corm(X, Y, w)
     center!(zY, ymeans)
     scale!(zX, xstds)
     scale!(zY, ystds)
+    zX' * Diagonal(w) * zY
+end
+
+"""
+    covm(X, w)
+    covm(X, Y, w)
+Compute covariance matrices.
+* `X` : Data (n, p).
+* `Y` : Data (n, q).
+* `w` : Weights (n) of the observations.
+
+`w` is internally normalized to sum to 1.
+
+Uncorrected covariance matrix 
+* of the columns of `X`: ==> (p, p) matrix 
+* or between columns of `X` and `Y` : ==> (p, q) matrix.
+
+## Examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+Y = rand(n, 3)
+w = collect(1:n)
+
+covm(X, w)
+covm(X, Y, w)
+```
+"""
+function covm(X, w)
+    zX = copy(ensure_mat(X))
+    w = mweight(w)
+    xmeans = colmean(zX, w)
+    center!(zX, xmeans)
+    z = Diagonal(sqrt.(w)) * zX
+    z' * z
+end
+
+function covm(X, Y, w)
+    zX = copy(ensure_mat(X))
+    zY = copy(ensure_mat(Y))
+    w = mweight(w)
+    xmeans = colmean(X, w)
+    ymeans = colmean(Y, w)
+    center!(zX, xmeans)
+    center!(zY, ymeans)
     zX' * Diagonal(w) * zY
 end
 
@@ -499,10 +504,10 @@ ensure_df(X::AbstractMatrix) = DataFrame(X, :auto)
 Reshape `X` to a matrix if necessary.
 """
 ensure_mat(X::AbstractMatrix) = X
-ensure_mat(X::AbstractVector) = reshape(X, :, 1)
+ensure_mat(X::AbstractVector) = Matrix(reshape(X, :, 1))
 ensure_mat(X::Number) = reshape([X], 1, 1)
 ensure_mat(X::LinearAlgebra.Adjoint) = Matrix(X)
-ensure_mat(X::DataFrame) = Float64.(Matrix(X))
+ensure_mat(X::DataFrame) = Matrix(X)
 
 """
     findmax_cla(x, weights = nothing)
@@ -1036,7 +1041,7 @@ end
     Vertical concatenation of a list of dataframes.
 * `dat` : List of dataframes.
 * `cols` : Determines the columns of the returned data frame.
-    See ?vcat of DataFrames.
+    See ?DataFrames.vcat.
 
 ## Examples
 ```julia
@@ -1070,20 +1075,21 @@ function vcatdf(dat; cols = :intersect)
 end
 
 """
-    vrow(X::Matrix, j)
+    vrow(X::Matrix, i)
+    vrow(X::DataFrame, i)
     vrow(x::Vector, i)
-    vcol(X::Matrix, j)
+    vcat(X::Matrix, j)
+    vcat(X::DataFrame, j)
+    vcat(x::Vector, j)
 View of the i-th row(s) or j-th column(s) of a matrix `X`,
 or of the i-th element(s) of vector `x`.
 """ 
 vrow(X, i) = view(X, i, :) 
 vrow(X::DataFrame, i) = view(Matrix(X), i, :)
-
 vrow(x::Vector, i) = view(x, i)
 
 vcol(X, j) = view(X, :, j)
-vcol(X::DataFrame, j) = view(Matrix(X), :, j)
-
 vcol(x::Vector, i) = view(x, i)
+vcol(X::DataFrame, j) = view(Matrix(X), :, j)
 
 

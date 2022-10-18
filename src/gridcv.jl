@@ -31,7 +31,7 @@ pnames(dat)
 # Building Train (years <= 2012) and Test  (year = 2012)
 
 X = dat.X 
-y = dat.Y.y
+y = dat.Y.tbc
 year = dat.Y.year
 tab(year)
 s = year .<= 2012

@@ -47,14 +47,14 @@ w = ones(n)
 D = Diagonal(mweight(w))
 res = blockscal_frob(X_bl, w) ;
 res.bscales
-i = 3 ; tr(X_bl[i]' * D * X_bl[3])^.5
-tr(res.X[i]' * D * res.X[i])^.5
+k = 3 ; tr(X_bl[k]' * D * X_bl[3])^.5
+tr(res.X[k]' * D * res.X[k])^.5
 
 w = ones(n)
 #w = collect(1:n)
 res = blockscal_mfa(X_bl, w) ;
 res.bscales
-i = 3 ; pcasvd(X_bl[i], w; nlv = 1).sv[1]
+k = 3 ; pcasvd(X_bl[k], w; nlv = 1).sv[1]
 
 res = blockscal_ncol(X_bl) ;
 res.bscales
@@ -76,8 +76,9 @@ function blockscal(X_bl,
         bscales)
     X = copy(X_bl)
     nbl = length(X)
-    @inbounds for i = 1:nbl
-        X[i] = X[i] / bscales[i]
+    #Threads not faster
+    @inbounds for k = 1:nbl
+        X[k] = X[k] / bscales[k]
     end
     (X = X, bscales)
 end 
@@ -88,8 +89,8 @@ function blockscal_frob(X_bl,
     bscales = list(nbl, Float64)
     sqrtw = sqrt.(mweight(weights))
     sqrtD = Diagonal(sqrtw)
-    @inbounds for i = 1:nbl
-        bscales[i] =  sqrt(ssq(sqrtD * X_bl[i]))
+    @inbounds for k = 1:nbl
+        bscales[k] =  sqrt(ssq(sqrtD * X_bl[k]))
     end
     blockscal(X_bl, bscales)
 end 
@@ -111,8 +112,8 @@ end
 function blockscal_ncol(X_bl)
     nbl = length(X_bl)
     bscales = list(nbl, Float64)
-    @inbounds for i = 1:nbl
-        bscales[i] =  size(X_bl[i], 2) 
+    @inbounds for k = 1:nbl
+        bscales[k] =  size(X_bl[k], 2) 
     end
     blockscal(X_bl, bscales)
 end 
@@ -121,8 +122,8 @@ function blockscal_sd(X_bl,
         weights = ones(size(X_bl[1], 1)))
     nbl = length(X_bl)
     bscales = list(nbl, Float64)
-    @inbounds for i = 1:nbl
-        bscales[i] = sqrt(sum(colvar(X_bl[i], weights)))
+    @inbounds for k = 1:nbl
+        bscales[k] = sqrt(sum(colvar(X_bl[k], weights)))
     end
     blockscal(X_bl, bscales)
 end 

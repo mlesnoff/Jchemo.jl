@@ -80,15 +80,15 @@ end
 
 function mbplsr_rosa!(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
         scal = false)
-    n = size(X_bl[1], 1)
-    q = size(Y, 2)   
+    n = nro(X_bl[1])
+    q = nco(Y)   
     nbl = length(X_bl)
     weights = mweight(weights)
     D = Diagonal(weights)
     xmeans = list(nbl, Vector{Float64})
     xscales = list(nbl, Vector{Float64})
     p = fill(0, nbl)
-    @inbounds for k = 1:nbl
+    Threads.@threads for k = 1:nbl
         p[k] = nco(X_bl[k])
         xmeans[k] = colmean(X_bl[k], weights) 
         xscales[k] = ones(nco(X_bl[k]))
@@ -119,12 +119,13 @@ function mbplsr_rosa!(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
     c   = similar(X_bl[1], q)
     zp_bl = list(nbl, Vector{Float64})
     zp = similar(X_bl[1], sum(p))
-    ssr = similar(X_bl[1], nbl)
+    #ssr = similar(X_bl[1], nbl)
+    corr = similar(X_bl[1], nbl)
     W_bl = list(nbl, Array{Float64})
     w_bl = list(nbl, Vector{Float64})  # List of the weights "w" by block for a given "a"
-    zT = similar(X_bl[1], n, nbl)         # Matrix gathering the nbl scores for a given "a"
+    zT = similar(X_bl[1], n, nbl)      # Matrix gathering the nbl scores for a given "a"
     bl = fill(0, nlv)
-    Res = zeros(n, q, nbl)
+    #Res = zeros(n, q, nbl)
     ### Start 
     @inbounds for a = 1:nlv
         DY .= D * Y  # apply the metric on covariance
@@ -132,6 +133,7 @@ function mbplsr_rosa!(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
             XtY = X_bl[k]' * DY
             if q == 1
                 w_bl[k] = vec(XtY)
+                #w_bl[k] = vec(cor(X_bl[k], Y))
                 w_bl[k] ./= norm(w_bl[k])
             else
                 w_bl[k] = svd!(XtY).U[:, 1]
@@ -144,16 +146,23 @@ function mbplsr_rosa!(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
             zT .= zT .- z * inv(z' * (D * z)) * z' * (D * zT)
         end
         # Selection of the winner block
-        # To check (probably faster): 
-        # Could be replaced by cos^2(Y, t), 
+        ### Old
+        #@inbounds for k = 1:nbl
+        #    t = vcol(zT, k)
+        #    dt .= weights .* t
+        #    tt = dot(t, dt)
+        #    Res[:, :, k] .= Y .- (t * t') * DY / tt
+        #end
+        #ssr = vec(sum(Res.^2, dims = (1, 2)))
+        #opt = findmin(ssr)[2][1]
+        ### End
+        # Much faster:
         @inbounds for k = 1:nbl
             t = vcol(zT, k)
-            dt .= weights .* t
-            tt = dot(t, dt)
-            Res[:, :, k] .= Y .- (t * t') * DY / tt
+            corr[k] = sum(corm(Y, t, weights).^2)
         end
-        ssr = vec(sum(Res.^2, dims = (1, 2)))
-        opt = findmin(ssr)[2][1]
+        opt = findmax(corr)[2][1]
+        # End
         bl[a] = opt
         # Outputs for winner
         t .= zT[:, opt]
@@ -164,7 +173,10 @@ function mbplsr_rosa!(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
         T[:, a] .= t
         TT[a] = tt
         C[:, a] .= c
-        Y .= Res[:, :, opt]
+        # Old
+        #Y .= Res[:, :, opt]
+        # End
+        Y .= Y .- (t * t') * DY / tt
         for k = 1:nbl
             zp_bl[k] = X_bl[k]' * dt
         end
@@ -202,7 +214,7 @@ function transform(object::MbplsrRosa, X_bl; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(object.xmeans)
     X = list(nbl, Matrix{Float64})
-    @inbounds for k = 1:nbl
+    Threads.@threads for k = 1:nbl
         X[k] = cscale(X_bl[k], object.xmeans[k], object.xscales[k])
     end
     reduce(hcat, X) * vcol(object.R, 1:nlv)
@@ -240,9 +252,9 @@ function predict(object::MbplsrRosa, X_bl; nlv = nothing)
     le_nlv = length(nlv)
     X = reduce(hcat, X_bl)
     pred = list(le_nlv, Matrix{Float64})
-    @inbounds for k = 1:le_nlv
-        z = coef(object; nlv = nlv[k])
-        pred[k] = z.int .+ X * z.B
+    @inbounds for i = 1:le_nlv
+        z = coef(object; nlv = nlv[i])
+        pred[i] = z.int .+ X * z.B
     end 
     le_nlv == 1 ? pred = pred[1] : nothing
     (pred = pred,)

@@ -1,4 +1,110 @@
 """
+    lg(X, Y; centr = true)
+    lg(X_bl; centr = true)
+Compute the Lg coefficient between matrices.
+* `X` : Matrix (n, p).
+* `Y` : Matrix (n, q).
+* `X_bl` : A list (vector) of matrices.
+* `centr` : Logical indicating if the matrices are internally 
+    centered or not.
+
+Lg(X, Y) = Sum_j(=1..p) Sum_k(= 1..q) cov(xj, yk)^2
+
+RV(X, Y) = Lg(X, Y) / sqrt(Lg(X, X), Lg(Y, Y))
+
+## References
+Escofier, B. & Pagès, J. 1984. L’analyse factorielle multiple. Cahiers du Bureau 
+universitaire de recherche opérationnelle. Série Recherche, tome 42, p. 3-68
+
+Escofier, B. & Pagès, J. (2008). Analyses Factorielles Simples et Multiples :
+Objectifs, Méthodes et Interprétation. Dunod, 4e édition
+
+## Examples 
+```julia 
+X = rand(5, 10)
+Y = rand(5, 3)
+lg(X, Y)
+
+X = rand(5, 15) 
+listbl = [3:4, 1, [6; 8:10]]
+X_bl = mblock(X, listbl)
+lg(X_bl)
+```
+""" 
+function lg(X, Y; centr = true)
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    n = size(X, 1)
+    if centr
+        xmeans = colmean(X)
+        ymeans = colmean(Y)
+        X = center(X, xmeans)
+        Y = center(Y, ymeans)
+    end
+    ssq(X' * Y) / n^2 # = sum(cov(X, Y; corrected = false).^2)
+end
+
+function lg(X_bl::Vector; centr = true)
+    nbl = length(X_bl)
+    mat = zeros(nbl, nbl)
+    for i = 1:(nbl)
+        for j = 1:(nbl)
+            mat[i, j] = lg(X_bl[i], X_bl[j]; centr = centr)
+        end
+    end
+    mat
+end
+
+"""
+    rd(X, Y; corr = true)
+    rd(X, Y, weights; corr = true)
+Compute redundancy coefficients between two matrices.
+* `X` : Matrix (n, p).
+* `Y` : Matrix (n, q).
+* `weights` : Weights (n) of the observations.
+* `corr` : If `true`, correlation is used, else covariance is used. 
+
+rd(X, Y) returns the redundancy coefficient between X and each column
+of Y, i.e.: 
+
+[Sum_j(=1,..,p) cor(xj, y1)^2; ...; Sum_j(=1,..,p) cor(xj, yq)^2] / p
+
+See Tenenhaus 1998 section 2.2.1 p.10-11.
+
+## References
+Tenenhaus, M., 1998. La régression PLS: théorie et pratique. 
+Editions Technip, Paris.
+
+## Examples 
+```julia 
+X = rand(5, 10)
+Y = rand(5, 3)
+rd(X, Y)
+```
+""" 
+function rd(X, Y; corr = true)
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    p = nco(X)
+    if corr
+        z = cor(X, Y).^2
+    else
+        z = cov(X, Y; corrected = false).^2
+    end    
+    sum(z; dims = 1) / p
+end
+
+function rd(X, Y, weights; corr = true)
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    p = nco(X)
+    weights = mweigth(weights)
+    corr ? fun = corm : fun = covm
+    z = fun(X, Y, weights).^2
+    sum(z; dims = 1) / p
+end
+
+"""
     rv(X, Y)
     rv(X_bl)
 Compute the RV coefficient between matrices.
@@ -90,111 +196,5 @@ function rv(X_bl::Vector; centr = true)
         end
     end
     mat
-end
-
-"""
-    lg(X, Y; centr = true)
-    lg(X_bl; centr = true)
-Compute the Lg coefficient between matrices.
-* `X` : Matrix (n, p).
-* `Y` : Matrix (n, q).
-* `X_bl` : A list (vector) of matrices.
-* `centr` : Logical indicating if the matrices are internally 
-    centered or not.
-
-Lg(X, Y) = Sum_j(=1..p) Sum_k(= 1..q) cov(xj, yk)^2
-
-RV(X, Y) = Lg(X, Y) / sqrt(Lg(X, X), Lg(Y, Y))
-
-## References
-Escofier, B. & Pagès, J. 1984. L’analyse factorielle multiple. Cahiers du Bureau 
-universitaire de recherche opérationnelle. Série Recherche, tome 42, p. 3-68
-
-Escofier, B. & Pagès, J. (2008). Analyses Factorielles Simples et Multiples :
-Objectifs, Méthodes et Interprétation. Dunod, 4e édition
-
-## Examples 
-```julia 
-X = rand(5, 10)
-Y = rand(5, 3)
-lg(X, Y)
-
-X = rand(5, 15) 
-listbl = [3:4, 1, [6; 8:10]]
-X_bl = mblock(X, listbl)
-lg(X_bl)
-```
-""" 
-function lg(X, Y; centr = true)
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
-    n = size(X, 1)
-    if centr
-        xmeans = colmean(X)
-        ymeans = colmean(Y)
-        X = center(X, xmeans)
-        Y = center(Y, ymeans)
-    end
-    ssq(X' * Y) / n^2 # = sum(cov(X, Y; corrected = false).^2)
-end
-
-function lg(X_bl::Vector; centr = true)
-    nbl = length(X_bl)
-    mat = zeros(nbl, nbl)
-    for i = 1:(nbl)
-        for j = 1:(nbl)
-            mat[i, j] = lg(X_bl[i], X_bl[j]; centr = centr)
-        end
-    end
-    mat
-end
-
-"""
-    rd(X, Y)
-    lg(X, Y, weights)
-Compute redundancy coefficients between two matrices.
-* `X` : Matrix (n, p).
-* `Y` : Matrix (n, q).
-* `weights` : Weights (n) of the observations.
-* `corr` : If `true`, correlation is used, else covariance is used. 
-
-rd(X, Y) returns the redundancy coefficient between X and each column
-of Y, i.e.: 
-
-[Sum_j(=1,..,p) cor(xj, y1)^2; ...; Sum_j(=1,..,p) cor(xj, yq)^2] / p
-
-See Tenenhaus 1998 section 2.2.1 p.10-11.
-
-## References
-Tenenhaus, M., 1998. La régression PLS: théorie et pratique. 
-Editions Technip, Paris.
-
-## Examples 
-```julia 
-X = rand(5, 10)
-Y = rand(5, 3)
-rd(X, Y)
-```
-""" 
-function rd(X, Y; corr = true)
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
-    p = nco(X)
-    if corr
-        z = cor(X, Y).^2
-    else
-        z = cov(X, Y; corrected = false).^2
-    end    
-    sum(z; dims = 1) / p
-end
-
-function rd(X, Y, weights; corr = true)
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
-    p = nco(X)
-    weights = mweigth(weights)
-    corr ? fun = corm : fun = covm
-    z = fun(X, Y, weights).^2
-    sum(z; dims = 1) / p
 end
 

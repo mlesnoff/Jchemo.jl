@@ -101,7 +101,7 @@ db = joinpath(mypath, "data", "cassav.jld2")
 pnames(dat)
 
 X = dat.X 
-y = dat.Y.y 
+y = dat.Y.tbc 
 
 nlv = 25
 res = aicplsr(X, y; nlv = nlv) 

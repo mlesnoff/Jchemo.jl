@@ -74,11 +74,11 @@ function eposvd(D; nlv)
 end
 
 """
-    detrend(X; degree = 1)
-    detrend!(X::Matrix; degree = 1)
+    detrend(X; pol = 1)
+    detrend!(X::Matrix; pol = 1)
 De-trend transformation of each row of a matrix X. 
 * `X` : X-data.
-* `degree` : Degree of the polynom.
+* `pol` : Polynom order.
 
 The function fits a polynomial regression to each observation
 and returns the residuals.
@@ -99,15 +99,15 @@ Xp = detrend(X)
 plotsp(Xp[1:30, :], wl_num).f
 ```
 """ 
-function detrend(X; degree = 1)
+function detrend(X; pol = 1)
     zX = copy(ensure_mat(X))
-    Jchemo.detrend!(zX; degree = degree)
+    Jchemo.detrend!(zX; pol = pol)
     zX
 end
-function detrend!(X::Matrix; degree = 1)
+function detrend!(X::Matrix; pol = 1)
     n, p = size(X)
-    vX = similar(X, p, degree + 1)
-    for j = 0:degree
+    vX = similar(X, p, pol + 1)
+    for j = 0:pol
         vX[:, j + 1] .= collect(1:p).^j
     end
     vXt = vX'
@@ -516,8 +516,8 @@ function savgol!(X::Matrix; f, pol, d)
 end
 
 """
-   snv(X; cent = true, scal = true)
-   snv!(X::Matrix; cent = true, scal = true)
+    snv(X; cent = true, scal = true)
+    snv!(X::Matrix; cent = true, scal = true)
 Standard-normal-variate (SNV) transformation of each row of X-data.
 * `X` : X-data.
 * `cent` : Logical indicating if the centering in done.

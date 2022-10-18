@@ -32,7 +32,7 @@ db = joinpath(mypath, "data", "challenge2021_cal.jld2")
 pnames(dat)
 
 X = dat.X 
-y = dat.Y.y
+y = dat.Y.tbc
 n = nro(X)
 wl = names(X)
 wl_num = parse.(Float64, wl)
