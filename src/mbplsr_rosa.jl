@@ -70,11 +70,11 @@ Jchemo.predict(fm, X_bl_new).pred
 function mbplsr_rosa(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
         scal = false)
     nbl = length(X_bl)  
-    X = list(nbl, Matrix{Float64})
+    zX_bl = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
-        X[k] = copy(ensure_mat(X_bl[k]))
+        zX_bl[k] = copy(ensure_mat(X_bl[k]))
     end
-    mbplsr_rosa!(X, copy(ensure_mat(Y)), weights; nlv = nlv, 
+    mbplsr_rosa!(zX_bl, copy(ensure_mat(Y)), weights; nlv = nlv, 
         scal = scal)
 end
 
@@ -94,9 +94,9 @@ function mbplsr_rosa!(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
         xscales[k] = ones(nco(X_bl[k]))
         if scal 
             xscales[k] = colstd(X_bl[k], weights)
-            X_bl[k] = cscale(X_bl[k], xmeans[k], xscales[k])
+            X_bl[k] .= cscale(X_bl[k], xmeans[k], xscales[k])
         else
-            X_bl[k] = center(X_bl[k], xmeans[k])
+            X_bl[k] .= center(X_bl[k], xmeans[k])
         end
     end
     ymeans = colmean(Y, weights)
@@ -176,7 +176,7 @@ function mbplsr_rosa!(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
         # Old
         #Y .= Res[:, :, opt]
         # End
-        Y .= Y .- (t * t') * DY / tt
+        Y .-= (t * t') * DY / tt
         for k = 1:nbl
             zp_bl[k] = X_bl[k]' * dt
         end
@@ -213,11 +213,11 @@ function transform(object::MbplsrRosa, X_bl; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(object.xmeans)
-    X = list(nbl, Matrix{Float64})
+    zX_bl = list(nbl, Matrix{Float64})
     Threads.@threads for k = 1:nbl
-        X[k] = cscale(X_bl[k], object.xmeans[k], object.xscales[k])
+        zX_bl[k] = cscale(X_bl[k], object.xmeans[k], object.xscales[k])
     end
-    reduce(hcat, X) * vcol(object.R, 1:nlv)
+    reduce(hcat, zX_bl) * vcol(object.R, 1:nlv)
 end
 
 """

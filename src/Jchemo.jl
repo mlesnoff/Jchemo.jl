@@ -145,6 +145,7 @@ export
     ensure_df, ensure_mat,
     findmax_cla, 
     fweight,
+    head,
     list, 
     matB, matW, 
     mblock,
@@ -180,7 +181,7 @@ export
     # Multiblock Pca
     blockscal, blockscal_frob, blockscal_mfa,
     blockscal_ncol, blockscal_sd,
-    mbpca_comdim_s, mbpca_cons,
+    mbpca_comdim_s, mbpca_comdim_s!, mbpca_cons, mbpca_cons!,
     rv, lg, rd, 
     # Regression
     aov1,
@@ -200,7 +201,7 @@ export
     treer_xgb, rfr_xgb, xgboostr, vimp_xgb,
     baggr, baggr_vi, baggr_oob,
     # Multi-block
-    mbplsr,
+    mbplsr, mbplsr!,
     mbplsr_rosa, mbplsr_rosa!,
     mbplsr_so,
     # Variable selection/importance (direct methods) 

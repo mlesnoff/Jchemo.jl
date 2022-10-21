@@ -529,6 +529,25 @@ function findmax_cla(x, weights = nothing)
     res.lev[argmax(res.X)]   # if equal, argmax takes the first
 end
 
+"""
+    head(X)
+Display the first rows of a dataset.
+
+## Examples
+```julia
+X = rand(100, 5)
+head(X)
+```
+"""
+function head(X)
+    display(X[1:3, :])
+    if nro(X) > 3
+        println("...")
+    end
+    psize(X)
+end
+
+
 
 """
     iqr(x)

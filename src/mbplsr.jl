@@ -12,6 +12,8 @@ end
 """
     mbplsr(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, 
         bscal = "frob", scal = false)
+    mbplsr!(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, 
+        bscal = "frob", scal = false)
 Multiblock PLSR (MBPLSR).
 * `X_bl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
@@ -55,7 +57,19 @@ Jchemo.transform(fm, X_bl_new)
 Jchemo.predict(fm, X_bl_new).pred
 ```
 """
+
 function mbplsr(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, 
+        bscal = "frob", scal = false)
+    nbl = length(X_bl)  
+    zX_bl = list(nbl, Matrix{Float64})
+    @inbounds for k = 1:nbl
+        zX_bl[k] = copy(ensure_mat(X_bl[k]))
+    end
+    mbplsr!(zX_bl, copy(ensure_mat(Y)), weights; nlv = nlv, 
+        bscal = bscal, scal = scal)
+end
+
+function mbplsr!(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, 
         bscal = "frob", scal = false)
     nbl = length(X_bl)
     Y = ensure_mat(Y)
@@ -68,18 +82,18 @@ function mbplsr(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
         xscales[k] = ones(nco(X_bl[k]))
         if scal 
             xscales[k] = colstd(X_bl[k], weights)
-            X_bl[k] = cscale(X_bl[k], xmeans[k], xscales[k])
+            X_bl[k] .= cscale(X_bl[k], xmeans[k], xscales[k])
         else
-            X_bl[k] = center(X_bl[k], xmeans[k])
+            X_bl[k] .= center(X_bl[k], xmeans[k])
         end
     end
     ymeans = colmean(Y, weights)
     yscales = ones(q)
     if scal 
         yscales .= colstd(Y, weights)
-        Y = cscale(Y, ymeans, yscales)
+        cscale!(Y, ymeans, yscales)
     else
-        Y = center(Y, ymeans)
+        center!(Y, ymeans)
     end
     if bscal == "none" 
         bscales = ones(nbl)
@@ -105,10 +119,11 @@ Compute LVs ("scores" T) from a fitted model.
 """ 
 function transform(object::Mbplsr, X_bl; nlv = nothing)
     nbl = length(X_bl)
+    zX_bl = list(nbl, Matrix{Float64})
     Threads.@threads for k = 1:nbl
-        X_bl[k] = cscale(X_bl[k], object.xmeans[k], object.xscales[k])
+        zX_bl[k] = cscale(X_bl[k], object.xmeans[k], object.xscales[k])
     end
-    res = blockscal(X_bl, object.bscales)
+    res = blockscal(zX_bl, object.bscales)
     X = reduce(hcat, res.X)
     transform(object.fm, X; nlv = nlv)
 end
@@ -123,10 +138,11 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Mbplsr, X_bl; nlv = nothing)
     nbl = length(X_bl)
+    zX_bl = list(nbl, Matrix{Float64})
     Threads.@threads for k = 1:nbl
-        X_bl[k] = cscale(X_bl[k], object.xmeans[k], object.xscales[k])
+        zX_bl[k] = cscale(X_bl[k], object.xmeans[k], object.xscales[k])
     end
-    res = blockscal(X_bl, object.bscales)
+    res = blockscal(zX_bl, object.bscales)
     X = reduce(hcat, res.X)
     W = Diagonal(object.yscales)
     isnothing(nlv) ? le_nlv = 1 : le_nlv = length(nlv) 
@@ -139,7 +155,6 @@ function predict(object::Mbplsr, X_bl; nlv = nothing)
             pred[i] = object.ymeans' .+ pred[i] * W
         end
     end
-    #pred = object.ymeans' .+ predict(object.fm, X; nlv = nlv).pred * W
     (pred = pred,)
 end
 

@@ -67,12 +67,12 @@ function mbplsr_so(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
     D = Diagonal(weights)
     fm = list(nbl)
     pred = similar(X_bl[1], n, q)
-    X = copy(X_bl)
     b = list(nbl)
     # First block
-    fm[1] = plskern(X[1], Y, weights; nlv = nlv[1], scal = scal)
+    fm[1] = plskern(X_bl[1], Y, weights; nlv = nlv[1], 
+        scal = scal)
     T = fm[1].T
-    pred .= Jchemo.predict(fm[1], X[1]).pred
+    pred .= Jchemo.predict(fm[1], X_bl[1]).pred
     b[1] = nothing
     # Other blocks
     if nbl > 1

@@ -17,6 +17,9 @@ end
     mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
+    mbpca_comdim_s!(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
+        bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
+        scal = false)
 Common components and specific weights analysis (CCSWA, ComDim).
 * `X_bl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
@@ -120,7 +123,22 @@ res.cort2tb
 res.rv
 ```
 """
-function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
+function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv, 
+        bscal = "frob", tol = sqrt(eps(1.)), maxit = 200,
+        scal = false)
+    nbl = length(X_bl)  
+    zX_bl = list(nbl, Matrix{Float64})
+    @inbounds for k = 1:nbl
+        zX_bl[k] = copy(ensure_mat(X_bl[k]))
+    end
+    mbpca_comdim_s!(zX_bl, weights; nlv = nlv, 
+        bscal = bscal, tol = tol, maxit = maxit, scal = scal)
+end
+
+## Approach Hannafi & Qannari 2008 p.84: "SVD" algorithm
+## Normed global score u = 1st left singular vector of SVD of TB,
+## where TB concatenates the weighted (alpha) block-scores 
+function mbpca_comdim_s!(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
     nbl = length(X_bl)
@@ -219,23 +237,24 @@ function transform(object::MbpcaComdim, X_bl; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(X_bl)
     m = size(X_bl[1], 1)
-    @inbounds for k = 1:nbl
-        X_bl[k] = cscale(X_bl[k], object.xmeans[k], object.xscales[k])
+    zX_bl = list(nbl, Matrix{Float64})
+    Threads.@threads for k = 1:nbl
+        zX_bl[k] = cscale(X_bl[k], object.xmeans[k], object.xscales[k])
     end
-    X_bl = blockscal(X_bl, object.bscales).X
-    U = similar(X_bl[1], m, nlv)
-    TB = similar(X_bl[1], m, nbl)
-    u = similar(X_bl[1], m)
+    zX_bl = blockscal(zX_bl, object.bscales).X
+    U = similar(zX_bl[1], m, nlv)
+    TB = similar(zX_bl[1], m, nbl)
+    u = similar(zX_bl[1], m)
     for a = 1:nlv
         for k = 1:nbl
-            TB[:, k] .= X_bl[k] * object.W_bl[k][:, a]
+            TB[:, k] .= zX_bl[k] * object.W_bl[k][:, a]
         end
         TB .= sqrt.(object.lb[:, a])' .* TB
         u .= 1 / sqrt(object.mu[a]) * TB * object.W[:, a]
         U[:, a] .= u
         @inbounds for k = 1:nbl
             Px = sqrt(object.lb[k, a]) * object.W_bl[k][:, a]'
-            X_bl[k] .-= u * Px
+            zX_bl[k] .-= u * Px
         end
     end
     sqrt.(object.mu)' .* U # = T
@@ -252,17 +271,18 @@ function summary(object::MbpcaComdim, X_bl)
     nlv = size(object.T, 2)
     sqrtw = sqrt.(object.weights)
     sqrtD = Diagonal(sqrtw)
-    @inbounds for k = 1:nbl
-        X_bl[k] = cscale(X_bl[k], object.xmeans[k], object.xscales[k])
+    zX_bl = list(nbl, Matrix{Float64})
+    Threads.@threads for k = 1:nbl
+        zX_bl[k] = cscale(X_bl[k], object.xmeans[k], object.xscales[k])
     end
-    X_bl = blockscal(X_bl, object.bscales).X
+    zX_bl = blockscal(zX_bl, object.bscales).X
     @inbounds for k = 1:nbl
-        X_bl[k] .= sqrtD * X_bl[k]
+        zX_bl[k] .= sqrtD * zX_bl[k]
     end
     # Explained_X
     sstot = zeros(nbl)
     @inbounds for k = 1:nbl
-        sstot[k] = ssq(X_bl[k])
+        sstot[k] = ssq(zX_bl[k])
     end
     tt = colsum(object.lb)    
     pvar = tt / sum(sstot)
@@ -273,7 +293,7 @@ function summary(object::MbpcaComdim, X_bl)
     S = list(nbl, Matrix{Float64})
     sstot_xx = 0 
     @inbounds for k = 1:nbl
-        S[k] = X_bl[k] * X_bl[k]'
+        S[k] = zX_bl[k] * zX_bl[k]'
         sstot_xx += ssq(S[k])
     end
     tt = object.mu
@@ -295,7 +315,7 @@ function summary(object::MbpcaComdim, X_bl)
     z = scale((object.lb)', sstot)'
     explX = DataFrame(z, string.("pc", 1:nlv))
     # Correlation between the global scores and the original variables (globalcor)
-    X = reduce(hcat, X_bl)
+    X = reduce(hcat, zX_bl)
     z = cor(X, object.U)  
     cort2x = DataFrame(z, string.("pc", 1:nlv))  
     # Correlation between the global scores and the block_scores (cor.g.b)
@@ -305,7 +325,7 @@ function summary(object::MbpcaComdim, X_bl)
     end
     cort2tb = DataFrame(reduce(hcat, z), string.("pc", 1:nlv))
     # RV 
-    X = vcat(X_bl, [object.T])
+    X = vcat(zX_bl, [object.T])
     nam = [string.("block", 1:nbl) ; "T"]
     res = rv(X)
     zrv = DataFrame(res, nam)

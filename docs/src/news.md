@@ -1,6 +1,13 @@
 ### NEWS for package **Jchemo**
 
 ### *Version 0.1.3*
+- New
+    - **head**: Display the first rows of a dataset.
+
+- Modified
+    - Remove of side-effects in some functions of multi-bloc analyses.
+
+### *Version 0.1.3*
 - Modified
     - **detrend**: argument 'degree' renamed to 'pol'.
     - Code cleaning.
