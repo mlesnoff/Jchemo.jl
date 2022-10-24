@@ -1,6 +1,10 @@
 ### NEWS for package **Jchemo**
 
-### *Version 0.1.3*
+### *Version 0.1.5*
+- Modified
+    - Code cleaning.
+
+### *Version 0.1.4*
 - New
     - **head**: Display the first rows of a dataset.
 

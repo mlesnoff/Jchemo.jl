@@ -79,7 +79,7 @@ err(pred, ytest)
 """
 function err(pred, y)
     r = residcla(pred, y)
-    res = [sum(r)] / size(y, 1)
+    res = [sum(r)] / nro(y)
     reshape(res, 1, :)
 end
 
