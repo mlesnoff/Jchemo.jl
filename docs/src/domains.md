@@ -10,8 +10,8 @@
 - **kpca** Kernel  (KPCA) *Scholkopf et al. 2002*
 
 *Multiblock*
-- **mbpca_cons** Consensus (CPCA, MBPCA)
-- **mbpca_comdim _s** Common components and specific weights (CCSWA, ComDim)
+- **mbpca_cons** Consensus (CPCA = MBPCA)
+- **mbpca_comdim _s** Common components and specific weights (CCSWA = ComDim)
 - **blockscal_col, _frob, _mfa, _sd** Scaling blocks
 - **rd** Redundancy coefficients between two matrices
 - **lg** Lg coefficient
