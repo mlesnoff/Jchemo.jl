@@ -24,6 +24,9 @@ XGBoost = "009559a3-9522-5dbb-924b-0b6ed2b22bb9"
 
 [compat]
 ImageFiltering = "0.7"
+StatsBase = "0.33"
+CairoMakie = "0.9"
+NearestNeighbors = "0.4"
 julia = "^1"
 
 [extras]
