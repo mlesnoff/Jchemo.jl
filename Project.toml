@@ -23,6 +23,7 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 XGBoost = "009559a3-9522-5dbb-924b-0b6ed2b22bb9"
 
 [compat]
+DataInterpolations = "3"
 ImageFiltering = "0.7"
 StatsBase = "0.33"
 CairoMakie = "0.9"
