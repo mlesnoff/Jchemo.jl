@@ -10,9 +10,9 @@ struct Mbplsr
 end
 
 """
-    mbplsr(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, 
+    mbplsr(X_bl, Y, weights = ones(nro(X_bl[1])); nlv, 
         bscal = "frob", scal = false)
-    mbplsr!(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, 
+    mbplsr!(X_bl, Y, weights = ones(nro(X_bl[1])); nlv, 
         bscal = "frob", scal = false)
 Multiblock PLSR (MBPLSR).
 * `X_bl` : List (vector) of blocks (matrices) of X-data. 
@@ -58,7 +58,7 @@ Jchemo.predict(fm, X_bl_new).pred
 ```
 """
 
-function mbplsr(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, 
+function mbplsr(X_bl, Y, weights = ones(nro(X_bl[1])); nlv, 
         bscal = "frob", scal = false)
     nbl = length(X_bl)  
     zX_bl = list(nbl, Matrix{Float64})
@@ -69,7 +69,7 @@ function mbplsr(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
         bscal = bscal, scal = scal)
 end
 
-function mbplsr!(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv, 
+function mbplsr!(X_bl, Y, weights = ones(nro(X_bl[1])); nlv, 
         bscal = "frob", scal = false)
     nbl = length(X_bl)
     Y = ensure_mat(Y)

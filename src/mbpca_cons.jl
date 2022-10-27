@@ -14,10 +14,10 @@ struct MbpcaCons
 end
 
 """
-    mbpca_cons(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
+    mbpca_cons(X_bl, weights = ones(nro(X_bl[1])); nlv,
         bscal = "frob", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
-    mbpca_cons!(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
+    mbpca_cons!(X_bl, weights = ones(nro(X_bl[1])); nlv,
         bscal = "frob", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
 Consensus principal components analysis (CPCA = MBPCA).
@@ -101,7 +101,7 @@ res.cort2tb
 res.rv
 ```
 """
-function mbpca_cons(X_bl, weights = ones(size(X_bl[1], 1)); nlv, 
+function mbpca_cons(X_bl, weights = ones(nro(X_bl[1])); nlv, 
         bscal = "frob", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
     nbl = length(X_bl)  
@@ -118,11 +118,11 @@ end
 ## Approach Hanafi & Quanari 2008
 ## Normed global score u = 1st left singular vector of SVD of Tb,
 ## where Tb concatenates the block-scores 
-function mbpca_cons!(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
+function mbpca_cons!(X_bl, weights = ones(nro(X_bl[1])); nlv,
         bscal = "frob", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
     nbl = length(X_bl)
-    n = size(X_bl[1], 1)
+    n = nro(X_bl[1])
     weights = mweight(weights)
     sqrtw = sqrt.(weights)
     sqrtD = Diagonal(sqrtw)

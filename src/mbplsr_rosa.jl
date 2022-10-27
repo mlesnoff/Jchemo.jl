@@ -14,8 +14,8 @@ struct MbplsrRosa
 end
 
 """
-    mbplsr_rosa(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv)
-    mbplsr_rosa!(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv)
+    mbplsr_rosa(X_bl, Y, weights = ones(nro(X_bl[1])); nlv)
+    mbplsr_rosa!(X_bl, Y, weights = ones(nro(X_bl[1])); nlv)
 Multi-block PLSR with the ROSA algorithm (Liland et al. 2016).
 * `X_bl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
@@ -67,7 +67,7 @@ Jchemo.transform(fm, X_bl_new)
 Jchemo.predict(fm, X_bl_new).pred
 ```
 """ 
-function mbplsr_rosa(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
+function mbplsr_rosa(X_bl, Y, weights = ones(nro(X_bl[1])); nlv,
         scal = false)
     nbl = length(X_bl)  
     zX_bl = list(nbl, Matrix{Float64})
@@ -78,7 +78,7 @@ function mbplsr_rosa(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
         scal = scal)
 end
 
-function mbplsr_rosa!(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
+function mbplsr_rosa!(X_bl, Y, weights = ones(nro(X_bl[1])); nlv,
         scal = false)
     n = nro(X_bl[1])
     q = nco(Y)   

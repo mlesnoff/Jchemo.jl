@@ -14,10 +14,10 @@ struct MbpcaComdim
 end
 
 """
-    mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
+    mbpca_comdim_s(X_bl, weights = ones(nro(X_bl[1])); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
-    mbpca_comdim_s!(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
+    mbpca_comdim_s!(X_bl, weights = ones(nro(X_bl[1])); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
 Common components and specific weights analysis (CCSWA = ComDim).
@@ -123,7 +123,7 @@ res.cort2tb
 res.rv
 ```
 """
-function mbpca_comdim_s(X_bl, weights = ones(size(X_bl[1], 1)); nlv, 
+function mbpca_comdim_s(X_bl, weights = ones(nro(X_bl[1])); nlv, 
         bscal = "frob", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
     nbl = length(X_bl)  
@@ -138,11 +138,11 @@ end
 ## Approach Hannafi & Qannari 2008 p.84: "SVD" algorithm
 ## Normed global score u = 1st left singular vector of SVD of TB,
 ## where TB concatenates the weighted (alpha) block-scores 
-function mbpca_comdim_s!(X_bl, weights = ones(size(X_bl[1], 1)); nlv,
+function mbpca_comdim_s!(X_bl, weights = ones(nro(X_bl[1])); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
     nbl = length(X_bl)
-    n = size(X_bl[1], 1)
+    n = nro(X_bl[1])
     weights = mweight(weights)
     sqrtw = sqrt.(weights)
     sqrtD = Diagonal(sqrtw)

@@ -84,7 +84,7 @@ function blockscal(X_bl,
 end 
 
 function blockscal_frob(X_bl, 
-        weights = ones(size(X_bl[1], 1)))
+        weights = ones(nro(X_bl[1])))
     nbl = length(X_bl)
     bscales = list(nbl, Float64)
     sqrtw = sqrt.(mweight(weights))
@@ -96,7 +96,7 @@ function blockscal_frob(X_bl,
 end 
 
 function blockscal_mfa(X_bl, 
-        weights = ones(size(X_bl[1], 1)))
+        weights = ones(nro(X_bl[1])))
     nbl = length(X_bl)
     sqrtw = sqrt.(mweight(weights))
     sqrtD = Diagonal(sqrtw)
@@ -119,7 +119,7 @@ function blockscal_ncol(X_bl)
 end 
 
 function blockscal_sd(X_bl,
-        weights = ones(size(X_bl[1], 1)))
+        weights = ones(nro(X_bl[1])))
     nbl = length(X_bl)
     bscales = list(nbl, Float64)
     @inbounds for k = 1:nbl

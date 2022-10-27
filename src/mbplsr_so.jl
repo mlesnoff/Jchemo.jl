@@ -57,7 +57,7 @@ Jchemo.transform(fm, X_bl_new)
 Jchemo.predict(fm, X_bl_new).pred
 ```
 """
-function mbplsr_so(X_bl, Y, weights = ones(size(X_bl[1], 1)); nlv,
+function mbplsr_so(X_bl, Y, weights = ones(nro(X_bl[1])); nlv,
         scal = false)
     Y = ensure_mat(Y)
     n = size(X_bl[1], 1)
