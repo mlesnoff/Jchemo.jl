@@ -24,6 +24,17 @@ XGBoost = "009559a3-9522-5dbb-924b-0b6ed2b22bb9"
 
 [compat]
 Interpolations = "0.14"
+XGBoost = "1"
+Distances = "0.10"
+Clustering = "0.14"
+DataFrames = "1"
+LIBSVM = "0.8"
+HypothesisTests = "0.10"
+DataInterpolations = "3"
+ImageFiltering = "0.7"
+StatsBase = "0.33"
+CairoMakie = "0.9"
+NearestNeighbors = "0.4"
 julia = "^1"
 
 [extras]
