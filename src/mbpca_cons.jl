@@ -158,7 +158,7 @@ function mbpca_cons!(X_bl, weights = ones(nro(X_bl[1])); nlv,
     # Pre-allocation
     u = similar(X_bl[1], n)
     U = similar(X_bl[1], n, nlv)
-    tb = copy(u)
+    tk = copy(u)
     Tb = list(nlv, Matrix{Float64})
     for a = 1:nlv ; Tb[a] = similar(X_bl[1], n, nbl) ; end
     W_bl = list(nbl, Matrix{Float64})
@@ -179,12 +179,13 @@ function mbpca_cons!(X_bl, weights = ones(nro(X_bl[1])); nlv,
         while cont
             u0 = copy(u)
             for k = 1:nbl
-                wb = X_bl[k]' * u
-                wb ./= norm(wb)
-                tb .= X_bl[k] * wb 
-                Tb[a][:, k] .= tb
-                lb[k, a] = dot(tb, u)^2    
-                W_bl[k][:, a] .= wb
+                wk = X_bl[k]' * u
+                dk = norm(wk)
+                wk ./= dk
+                tk .= X_bl[k] * wk 
+                Tb[a][:, k] .= tk
+                W_bl[k][:, a] .= wk
+                lb[k, a] = dk^2
             end
             res = nipals(Tb[a])
             u .= res.u 

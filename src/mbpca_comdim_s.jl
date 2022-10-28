@@ -137,7 +137,7 @@ end
 
 ## Approach Hannafi & Qannari 2008 p.84: "SVD" algorithm
 ## Normed global score u = 1st left singular vector of SVD of TB,
-## where TB concatenates the weighted (alpha) block-scores 
+## where TB concatenates the weighted block-scores 
 function mbpca_comdim_s!(X_bl, weights = ones(nro(X_bl[1])); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
@@ -173,7 +173,7 @@ function mbpca_comdim_s!(X_bl, weights = ones(nro(X_bl[1])); nlv,
     # Pre-allocation
     u = similar(X_bl[1], n)
     U = similar(X_bl[1], n, nlv)
-    tb = copy(u)
+    tk = copy(u)
     Tb = list(nlv, Matrix{Float64})
     for a = 1:nlv ; Tb[a] = similar(X_bl[1], n, nbl) ; end
     W_bl = list(nbl, Matrix{Float64})
@@ -192,14 +192,14 @@ function mbpca_comdim_s!(X_bl, weights = ones(nro(X_bl[1])); nlv,
         while cont
             u0 = copy(u)
             for k = 1:nbl
-                wb = X_bl[k]' * u 
-                wb ./= norm(wb)
-                mul!(tb, X_bl[k], wb) 
-                alpha = abs.(dot(tb, u))
-                TB[:, k] = alpha * tb
+                wk = X_bl[k]' * u 
+                wk ./= norm(wk)
+                mul!(tk, X_bl[k], wk) 
+                alpha = abs.(dot(tk, u))
+                TB[:, k] = alpha * tk
                 lb[k, a] = alpha^2
-                Tb[a][:, k] .= tb
-                W_bl[k][:, a] .= wb
+                Tb[a][:, k] .= tk
+                W_bl[k][:, a] .= wk
             end
             res = nipals(TB)
             u .= res.u
