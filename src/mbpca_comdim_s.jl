@@ -192,14 +192,14 @@ function mbpca_comdim_s!(X_bl, weights = ones(nro(X_bl[1])); nlv,
         while cont
             u0 = copy(u)
             for k = 1:nbl
-                wk = X_bl[k]' * u 
-                wk ./= norm(wk)
+                wk = X_bl[k]' * u
+                dk = norm(wk) # = alphak = abs.(dot(tk, u))
+                wk ./= dk
                 mul!(tk, X_bl[k], wk) 
-                alpha = abs.(dot(tk, u))
-                TB[:, k] = alpha * tk
-                lb[k, a] = alpha^2
                 Tb[a][:, k] .= tk
+                TB[:, k] = dk * tk
                 W_bl[k][:, a] .= wk
+                lb[k, a] = dk^2
             end
             res = nipals(TB)
             u .= res.u
@@ -301,7 +301,7 @@ function summary(object::MbpcaComdim, X_bl)
     cumpvar = cumsum(pvar)
     explvarxx = DataFrame(pc = 1:nlv, var = tt, pvar = pvar, 
         cumpvar = cumpvar)
-    # Prop saliences^2
+    # Proportions of squared saliences
     sal2 = copy(object.lb)
     for a = 1:nlv
         sal2[:, a] .= object.lb[:, a].^2 / object.mu[a]

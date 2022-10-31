@@ -1,6 +1,5 @@
 module Jchemo  # Start-Module
 
-using CairoMakie
 using Clustering
 using DataInterpolations
 using Distributions
@@ -11,6 +10,7 @@ using ImageFiltering
 using Interpolations
 using LIBSVM
 using LinearAlgebra
+using Makie
 using NearestNeighbors
 using Random
 using SparseArrays 

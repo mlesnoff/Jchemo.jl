@@ -20,6 +20,8 @@ Scatter plot of (x, y) data
 *  `bisect` : Boolean. Draw a bisector.
 * `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.
 
+The user has to specify a backend (e.g. CairoMakie).
+
 ## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie

@@ -1,5 +1,16 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.1.7*
+- Modified
+    - CairoMakie.jl has been replaced by Makie.jl in the dependances.
+    To display tehe plots, the user has to install and load one of
+    the Makie's backend (e.g. CairoMakie).
+    - Code cleaning.
+
+### *Version 0.1.6*
+- Modified
+    - Code cleaning.
+
 ### *Version 0.1.5*
 - Modified
     - Code cleaning.

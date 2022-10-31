@@ -10,6 +10,8 @@ Plotting spectra.
 * `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.
 The function plots the rows of `X`.
 
+The user has to specify a backend (e.g. CairoMakie).
+
 ## Examples
 ```julia
     using JchemoData, JLD2, CairoMakie

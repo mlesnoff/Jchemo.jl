@@ -7,12 +7,13 @@
 [![Build Status](https://github.com/mlesnoff/Jchemo.jl/workflows/CI/badge.svg)](https://github.com/mlesnoff/Jchemo.jl/actions)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
-**Jchemo** provides functions and pipelines for predictions in chemometrics or other domains, with focus
-on high dimensional data. 
+**Jchemo** provides functions and pipelines for predictions in chemometrics or other domains, with focus on high dimensional data. 
 
 The package was initially about **k-nearest neighbors locally weighted partial least squares regression 
 and discrimination** models (kNN-LWPLSR an kNN-LWPLSDA; e.g. Lesnoff et al 2021 https://doi.org/10.1002/cem.3209).
 It has now been expanded to other methods. 
+
+**Jchemo** uses **Makie** for plotting. To display the plots, the user has to preliminary install and load one of the Makie's backends (e.g. **CairoMakie**). 
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. 
 Tuning the models for prediction is facilitated by functions **gridscore** (validation dataset) and 
@@ -44,7 +45,12 @@ Datasets used in the examples are stored in package [**JchemoData**](https://git
 
 ## <span style="color:green"> **Installation** </span> 
 
-In order to install Jchemo, run
+In order to install Jchemo, run:
+
+```julia
+pkg> add Jchemo
+```
+or for the current developing version:
 
 ```julia
 pkg> add https://github.com/mlesnoff/Jchemo.jl.git

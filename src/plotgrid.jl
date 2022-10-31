@@ -19,6 +19,8 @@ Plot error or performance rates of model predictions.
     as the number of levels in `group`.
 * `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.
 
+The user has to specify a backend (e.g. CairoMakie).
+
 ## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie
