@@ -201,7 +201,7 @@ function mbpca_cons!(X_bl, weights = ones(nro(X_bl[1])); nlv,
         W[:, a] .= w
         mu[a] = res.sv^2  # = sum(lb)
         for k = 1:nbl
-            X_bl[k] -= u * (u' * X_bl[k])
+            X_bl[k] .-= u * (u' * X_bl[k])
         end
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
