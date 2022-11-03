@@ -35,7 +35,7 @@ LIBSVM = "0.8"
 Makie = "0.18"
 NearestNeighbors = "0.4"
 StatsBase = "0.33"
-XGBoost = "1"
+XGBoost = "1, 2"
 julia = "^1.8"
 
 [extras]
