@@ -1,10 +1,10 @@
 """
     lg(X, Y; centr = true)
-    lg(X_bl; centr = true)
+    lg(Xbl; centr = true)
 Compute the Lg coefficient between matrices.
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
-* `X_bl` : A list (vector) of matrices.
+* `Xbl` : A list (vector) of matrices.
 * `centr` : Logical indicating if the matrices are internally 
     centered or not.
 
@@ -27,8 +27,8 @@ lg(X, Y)
 
 X = rand(5, 15) 
 listbl = [3:4, 1, [6; 8:10]]
-X_bl = mblock(X, listbl)
-lg(X_bl)
+Xbl = mblock(X, listbl)
+lg(Xbl)
 ```
 """ 
 function lg(X, Y; centr = true)
@@ -44,12 +44,12 @@ function lg(X, Y; centr = true)
     ssq(X' * Y) / n^2 # = sum(cov(X, Y; corrected = false).^2)
 end
 
-function lg(X_bl::Vector; centr = true)
-    nbl = length(X_bl)
+function lg(Xbl::Vector; centr = true)
+    nbl = length(Xbl)
     mat = zeros(nbl, nbl)
     for i = 1:(nbl)
         for j = 1:(nbl)
-            mat[i, j] = lg(X_bl[i], X_bl[j]; centr = centr)
+            mat[i, j] = lg(Xbl[i], Xbl[j]; centr = centr)
         end
     end
     mat
@@ -106,11 +106,11 @@ end
 
 """
     rv(X, Y)
-    rv(X_bl)
+    rv(Xbl)
 Compute the RV coefficient between matrices.
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
-* `X_bl` : A list (vector) of matrices.
+* `Xbl` : A list (vector) of matrices.
 * `centr` : Logical indicating if the matrices are internally 
     centered or not.
 
@@ -153,8 +153,8 @@ rv(X, Y)
 
 X = rand(5, 15) 
 listbl = [3:4, 1, [6; 8:10]]
-X_bl = mblock(X, listbl)
-rv(X_bl)
+Xbl = mblock(X, listbl)
+rv(Xbl)
 ```
 """ 
 function rv(X, Y; centr = true)
@@ -187,12 +187,12 @@ function rv(X, Y; centr = true)
     rv
 end
 
-function rv(X_bl::Vector; centr = true)
-    nbl = length(X_bl)
+function rv(Xbl::Vector; centr = true)
+    nbl = length(Xbl)
     mat = zeros(nbl, nbl)
     for i = 1:(nbl)
         for j = 1:(nbl)
-            mat[i, j] = rv(X_bl[i], X_bl[j]; centr = centr)
+            mat[i, j] = rv(Xbl[i], Xbl[j]; centr = centr)
         end
     end
     mat

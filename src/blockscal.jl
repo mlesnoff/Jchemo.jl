@@ -1,12 +1,12 @@
 """
-    blockscal(X_bl; bscales)
-    blockscal_frob(X_bl)
-    blockscal_frob(X_bl, weights = ones(size(X[1], 1)))
-    blockscal_mfa(X_bl, weights = ones(size(X[1], 1)))
-    blockscal_ncol(X_bl)
-    blockscal_sd(X_bl, weights = ones(size(X[1], 1)))
+    blockscal(Xbl; bscales)
+    blockscal_frob(Xbl)
+    blockscal_frob(Xbl, weights = ones(size(X[1], 1)))
+    blockscal_mfa(Xbl, weights = ones(size(X[1], 1)))
+    blockscal_ncol(Xbl)
+    blockscal_sd(Xbl, weights = ones(size(X[1], 1)))
 Scale a list of blocks (matrices).
-* `X_bl` : List (vector) of blocks (matrices) of X-data. 
+* `Xbl` : List (vector) of blocks (matrices) of X-data. 
 * `weights` : Weights of the observations (rows of the blocks). 
 * `bscales` : A vector (of length equal to the nb. blocks) of the scalars diving the blocks.
 
@@ -30,40 +30,40 @@ X = rand(n, p)
 Xnew = X[1:3, :]
 
 listbl = [3:4, 1, [6; 8:10]]
-X_bl = mblock(X, listbl) 
+Xbl = mblock(X, listbl) 
 
-X_bl[1]
-X_bl[2]
-X_bl[3]
+Xbl[1]
+Xbl[2]
+Xbl[3]
 
 bscales = ones(3)
-res = blockscal(X_bl, bscales) ;
+res = blockscal(Xbl, bscales) ;
 res.bscales
 res.X[3]
-X_bl[3]
+Xbl[3]
 
 w = ones(n)
 #w = collect(1:n)
 D = Diagonal(mweight(w))
-res = blockscal_frob(X_bl, w) ;
+res = blockscal_frob(Xbl, w) ;
 res.bscales
-k = 3 ; tr(X_bl[k]' * D * X_bl[3])^.5
+k = 3 ; tr(Xbl[k]' * D * Xbl[3])^.5
 tr(res.X[k]' * D * res.X[k])^.5
 
 w = ones(n)
 #w = collect(1:n)
-res = blockscal_mfa(X_bl, w) ;
+res = blockscal_mfa(Xbl, w) ;
 res.bscales
-k = 3 ; pcasvd(X_bl[k], w; nlv = 1).sv[1]
+k = 3 ; pcasvd(Xbl[k], w; nlv = 1).sv[1]
 
-res = blockscal_ncol(X_bl) ;
+res = blockscal_ncol(Xbl) ;
 res.bscales
 res.X[3]
-X_bl[3] / size(X_bl[3], 2)
+Xbl[3] / size(Xbl[3], 2)
 
 w = ones(n)
 #w = collect(1:n)
-res = blockscal_sd(X_bl, w) ;
+res = blockscal_sd(Xbl, w) ;
 res.bscales
 sum(colvar(res.X[3], w))
 
@@ -72,9 +72,9 @@ sum(colvar(res.X[3], w))
 X_concat = reduce(hcat, res.X)
 ```
 """
-function blockscal(X_bl, 
+function blockscal(Xbl, 
         bscales)
-    X = copy(X_bl)
+    X = copy(Xbl)
     nbl = length(X)
     #Threads not faster
     @inbounds for k = 1:nbl
@@ -83,49 +83,49 @@ function blockscal(X_bl,
     (X = X, bscales)
 end 
 
-function blockscal_frob(X_bl, 
-        weights = ones(nro(X_bl[1])))
-    nbl = length(X_bl)
+function blockscal_frob(Xbl, 
+        weights = ones(nro(Xbl[1])))
+    nbl = length(Xbl)
     bscales = list(nbl, Float64)
     sqrtw = sqrt.(mweight(weights))
     sqrtD = Diagonal(sqrtw)
     @inbounds for k = 1:nbl
-        bscales[k] =  sqrt(ssq(sqrtD * X_bl[k]))
+        bscales[k] =  sqrt(ssq(sqrtD * Xbl[k]))
     end
-    blockscal(X_bl, bscales)
+    blockscal(Xbl, bscales)
 end 
 
-function blockscal_mfa(X_bl, 
-        weights = ones(nro(X_bl[1])))
-    nbl = length(X_bl)
+function blockscal_mfa(Xbl, 
+        weights = ones(nro(Xbl[1])))
+    nbl = length(Xbl)
     sqrtw = sqrt.(mweight(weights))
     sqrtD = Diagonal(sqrtw)
     bscales = list(nbl, Float64)
     @inbounds for k = 1:nbl
-        xmeans = colmean(X_bl[k], weights)
-        zX = center(X_bl[k], xmeans)
+        xmeans = colmean(Xbl[k], weights)
+        zX = center(Xbl[k], xmeans)
         bscales[k] = nipals(sqrtD * zX).sv
     end
-    blockscal(X_bl, bscales)
+    blockscal(Xbl, bscales)
 end 
 
-function blockscal_ncol(X_bl)
-    nbl = length(X_bl)
+function blockscal_ncol(Xbl)
+    nbl = length(Xbl)
     bscales = list(nbl, Float64)
     @inbounds for k = 1:nbl
-        bscales[k] =  size(X_bl[k], 2) 
+        bscales[k] =  size(Xbl[k], 2) 
     end
-    blockscal(X_bl, bscales)
+    blockscal(Xbl, bscales)
 end 
 
-function blockscal_sd(X_bl,
-        weights = ones(nro(X_bl[1])))
-    nbl = length(X_bl)
+function blockscal_sd(Xbl,
+        weights = ones(nro(Xbl[1])))
+    nbl = length(Xbl)
     bscales = list(nbl, Float64)
     @inbounds for k = 1:nbl
-        bscales[k] = sqrt(sum(colvar(X_bl[k], weights)))
+        bscales[k] = sqrt(sum(colvar(Xbl[k], weights)))
     end
-    blockscal(X_bl, bscales)
+    blockscal(Xbl, bscales)
 end 
 
 

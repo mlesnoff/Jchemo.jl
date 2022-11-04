@@ -14,10 +14,10 @@ n = 5 ; p = 10
 X = rand(n, p) 
 listbl = [3:4, 1, [6; 8:10]]
 
-X_bl = mblock(X, listbl)
-X_bl[1]
-X_bl[2]
-X_bl[3]
+Xbl = mblock(X, listbl)
+Xbl[1]
+Xbl[2]
+Xbl[3]
 ```
 """
 function mblock(X, listbl)

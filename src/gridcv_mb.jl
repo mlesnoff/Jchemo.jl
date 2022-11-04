@@ -1,17 +1,17 @@
 """
-    gridcv_mb(X_bl, Y; segm, score, fun, pars, verbose = false)
+    gridcv_mb(Xbl, Y; segm, score, fun, pars, verbose = false)
 * See `gridcv`.
 
 Same as [`gridcv`](@ref) but specific to multiblock regression.
 
 See `?gridcv` for examples.
 """
-function gridcv_mb(X_bl, Y; segm, score, fun, pars, verbose = false)
+function gridcv_mb(Xbl, Y; segm, score, fun, pars, verbose = false)
     q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
     ncomb = length(pars[1]) # nb. combinations in pars
-    nbl = length(X_bl)
+    nbl = length(Xbl)
     @inbounds for i in 1:nrep
         verbose ? print("/ rept=", i, " ") : nothing
         listsegm = segm[i]       # segments in the repetition
@@ -23,8 +23,8 @@ function gridcv_mb(X_bl, Y; segm, score, fun, pars, verbose = false)
             zX1 = list(nbl, Matrix{Float64})
             zX2 = list(nbl, Matrix{Float64})
             for k = 1:nbl
-                zX1[k] = rmrow(X_bl[k], s)
-                zX2[k] = X_bl[k][s, :]
+                zX1[k] = rmrow(Xbl[k], s)
+                zX2[k] = Xbl[k][s, :]
             end
             zres[j] = gridscore(zX1, rmrow(Y, s), zX2, Y[s, :];
                 score = score, fun = fun, pars = pars)
@@ -44,21 +44,21 @@ function gridcv_mb(X_bl, Y; segm, score, fun, pars, verbose = false)
 end
 
 """
-    gridcvlv_mb(X_bl, Y; segm, score, fun, nlv, pars, verbose = false)
+    gridcvlv_mb(Xbl, Y; segm, score, fun, nlv, pars, verbose = false)
 * See `gridcv`.
 
 Same as [`gridcvlv`](@ref) but specific to multiblock regression.
 
 See `?gridcv` for examples.
 """
-function gridcvlv_mb(X_bl, Y; segm, score, fun, nlv, 
+function gridcvlv_mb(Xbl, Y; segm, score, fun, nlv, 
         pars = nothing, verbose = false)
     q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
     nlv = max(minimum(nlv), 0):maximum(nlv)
     le_nlv = length(nlv)
-    nbl = length(X_bl)
+    nbl = length(Xbl)
     @inbounds for i in 1:nrep
         verbose ? print("/ rept=", i, " ") : nothing
         listsegm = segm[i]       # segments in the repetition
@@ -70,8 +70,8 @@ function gridcvlv_mb(X_bl, Y; segm, score, fun, nlv,
             zX1 = list(nbl, Matrix{Float64})
             zX2 = list(nbl, Matrix{Float64})
             for k = 1:nbl
-                zX1[k] = rmrow(X_bl[k], s)
-                zX2[k] = X_bl[k][s, :]
+                zX1[k] = rmrow(Xbl[k], s)
+                zX2[k] = Xbl[k][s, :]
             end
             zres[j] = gridscorelv(zX1, rmrow(Y, s), zX2, Y[s, :];
                 score = score, fun = fun, nlv = nlv, pars = pars)

@@ -1,4 +1,4 @@
-struct MbplsrSo
+struct MbSoplsr
     fm
     T::Matrix{Float64}
     fit::Matrix{Float64}
@@ -6,16 +6,16 @@ struct MbplsrSo
 end
 
 """
-    mbplsr_so(X_bl, Y, weights = ones(size(X_bl, 1)); nlv,
+    mbsoplsr(Xbl, Y, weights = ones(size(Xbl, 1)); nlv,
         scal = false)
 Multiblock sequentially orthogonalized PLSR (SO-PLSR).
-* `X_bl` : List (vector) of blocks (matrices) of X-data. 
+* `Xbl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
 * `Y` : Y-data.
 * `weights` : Weights of the observations (rows). 
 * `nlv` : Nb. latent variables (LVs) to consider for each block. 
     Vector that must have a length equal to the nb. blocks.
-* `scal` : Boolean. If `true`, each column of `X_bl` and `Y` 
+* `scal` : Boolean. If `true`, each column of `Xbl` and `Y` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
@@ -44,61 +44,61 @@ X = dat.X
 y = dat.Y.c1
 group = dat.group
 listbl = [1:11, 12:19, 20:25]
-X_bl = mblock(X, listbl)
-# "New" = first two rows of X_bl 
-X_bl_new = mblock(X[1:2, :], listbl)
+Xbl = mblock(X, listbl)
+# "New" = first two rows of Xbl 
+Xbl_new = mblock(X[1:2, :], listbl)
 
 nlv = [2; 1; 2]
-fm = mbplsr_so(X_bl, y; nlv = nlv) ;
+fm = mbsoplsr(Xbl, y; nlv = nlv) ;
 pnames(fm)
 fm.T
-Jchemo.transform(fm, X_bl_new)
-[y Jchemo.predict(fm, X_bl).pred]
-Jchemo.predict(fm, X_bl_new).pred
+Jchemo.transform(fm, Xbl_new)
+[y Jchemo.predict(fm, Xbl).pred]
+Jchemo.predict(fm, Xbl_new).pred
 ```
 """
-function mbplsr_so(X_bl, Y, weights = ones(nro(X_bl[1])); nlv,
+function mbsoplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
         scal = false)
     Y = ensure_mat(Y)
-    n = size(X_bl[1], 1)
+    n = size(Xbl[1], 1)
     q = size(Y, 2)   
-    nbl = length(X_bl)
+    nbl = length(Xbl)
     weights = mweight(weights)
     D = Diagonal(weights)
     fm = list(nbl)
-    pred = similar(X_bl[1], n, q)
+    pred = similar(Xbl[1], n, q)
     b = list(nbl)
     # First block
-    fm[1] = plskern(X_bl[1], Y, weights; nlv = nlv[1], 
+    fm[1] = plskern(Xbl[1], Y, weights; nlv = nlv[1], 
         scal = scal)
     T = fm[1].T
-    pred .= Jchemo.predict(fm[1], X_bl[1]).pred
+    pred .= Jchemo.predict(fm[1], Xbl[1]).pred
     b[1] = nothing
     # Other blocks
     if nbl > 1
         for i = 2:nbl
-            b[i] = inv(T' * (D * T)) * T' * (D * X_bl[i])
-            X = X_bl[i] - T * b[i]
+            b[i] = inv(T' * (D * T)) * T' * (D * Xbl[i])
+            X = Xbl[i] - T * b[i]
             fm[i] = plskern(X, Y - pred, weights; nlv = nlv[i])
             T = hcat(T, fm[i].T)
             pred .+= Jchemo.predict(fm[i], X).pred 
         end
     end
-    MbplsrSo(fm, T, pred, b)
+    MbSoplsr(fm, T, pred, b)
 end
 
 """ 
-    transform(object::MbplsrSo, X_bl)
+    transform(object::MbSoplsr, Xbl)
 Compute LVs ("scores" T) from a fitted model.
 * `object` : The maximal fitted model.
-* `X_bl` : A list (vector) of blocks (matrices) of X_bl-data for which LVs are computed.
+* `Xbl` : A list (vector) of blocks (matrices) of Xbl-data for which LVs are computed.
 """ 
-function transform(object::MbplsrSo, X_bl)
+function transform(object::MbSoplsr, Xbl)
     nbl = length(object.fm)
-    T = transform(object.fm[1], X_bl[1])
+    T = transform(object.fm[1], Xbl[1])
     if nbl > 1
         @inbounds for i = 2:nbl
-            X = X_bl[i] - T * object.b[i]
+            X = Xbl[i] - T * object.b[i]
             T = hcat(T, transform(object.fm[i], X))
         end
     end
@@ -106,18 +106,18 @@ function transform(object::MbplsrSo, X_bl)
 end
 
 """
-    predict(object::MbplsrSo, X_bl)
+    predict(object::MbSoplsr, Xbl)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
-* `X_bl` : A list (vector) of X-data for which predictions are computed.
+* `Xbl` : A list (vector) of X-data for which predictions are computed.
 """ 
-function predict(object::MbplsrSo, X_bl)
+function predict(object::MbSoplsr, Xbl)
     nbl = length(object.fm)
-    T = transform(object.fm[1], X_bl[1])
+    T = transform(object.fm[1], Xbl[1])
     pred =  object.fm[1].ymeans' .+ T * object.fm[1].C'
     if nbl > 1
         @inbounds for i = 2:nbl
-            X = X_bl[i] - T * object.b[i]
+            X = Xbl[i] - T * object.b[i]
             zT = transform(object.fm[i], X)
             pred .+= object.fm[i].ymeans' .+ zT * object.fm[i].C'
             T = hcat(T, transform(object.fm[i], X))

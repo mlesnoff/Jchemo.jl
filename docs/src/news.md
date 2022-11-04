@@ -1,13 +1,23 @@
 ### NEWS for package **Jchemo**
 
 ### *Version 0.1.7* (In construction)
+- Makie.jl has replaced CairoMakie.jl in the dependances.
+To display the plots, the user has to install and load one of
+the Makie's backend (e.g. CairoMakie).
+
 - Modified
-    - CairoMakie.jl has been replaced by Makie.jl in the dependances.
-    To display tehe plots, the user has to install and load one of
-    the Makie's backend (e.g. CairoMakie).
+    - Major changes in multiblock functions:
+        - Renamed functions:
+            - **mbpca_cons** ==> **mbpca**
+            - **mbpca_comdim_s** ==> **mbcomdim_s**
+            - **mbplsr_rosa** ==> **mbrosaplsr**
+            - **mbplsr_so** ==> **mbsoplsr**
+        - Argument 'X_bl' renamed to 'Xbl'
     - Code cleaning.
 
 ### *Version 0.1.6*
+- Package Jchemo.jl has been registered.
+
 - Modified
     - Code cleaning.
 

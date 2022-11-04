@@ -10,8 +10,9 @@
 - **kpca** Kernel  (KPCA) *Scholkopf et al. 2002*
 
 *Multiblock*
-- **mbpca_cons** Consensus (CPCA = MBPCA)
-- **mbpca_comdim _s** Common components and specific weights (CCSWA = ComDim)
+- **mbpca** Consensus (MBPCA = CPCA)
+- **mbcomdim_s** Common components and specific weights (ComDim = CCSWA = HPCA)
+- **mblock** Make blocks from a matrix
 - **blockscal_col, _frob, _mfa, _sd** Scaling blocks
 - **rd** Redundancy coefficients between two matrices
 - **lg** Lg coefficient
@@ -67,9 +68,9 @@
 - **iplsr** Interval PLSR (iPLS) (Nørgaard et al. 2000)
 
 *Multiblock*
-- **mbplsr** Multiblock (MBPLSR; concatenated autoscaled blocks)
-- **mbplsr_rosa** ROSA *Liland et al. 2016*
-- **mbplsr_so** Sequentially orthogonalized (SO-PLSR) 
+- **mbplsr** Multiblock (MBPLSR; concatenated blocks)
+- **mbrosaplsr** ROSA *Liland et al. 2016*
+- **mbsoplsr** Sequentially orthogonalized (SO-PLSR) 
 
 ### **Ridge (RR, KRR)**
 
@@ -275,7 +276,6 @@
 - **locw** Working function for local (kNN) models
 - **mad** Median absolute deviation
 - **matB**, **matW** Between- and within-covariance matrices
-- **mblock** Make blocks from a matrix
 - **mweight** Normalize a vector to sum to 1.
 - **nco**, **nro**, Nb. rows and colmuns of an object.
 - **norm2** Squared norm of a vector
