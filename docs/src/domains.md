@@ -11,7 +11,7 @@
 
 *Multiblock*
 - **mbpca** Consensus (MBPCA = CPCA)
-- **mbcomdim_s** Common components and specific weights (ComDim = CCSWA = HPCA)
+- **comdim** Common components and specific weights (ComDim = CCSWA = HPCA)
 - **mblock** Make blocks from a matrix
 - **blockscal_col, _frob, _mfa, _sd** Scaling blocks
 - **rd** Redundancy coefficients between two matrices
@@ -69,8 +69,8 @@
 
 *Multiblock*
 - **mbplsr** Multiblock (MBPLSR; concatenated blocks)
-- **mbrosaplsr** ROSA *Liland et al. 2016*
-- **mbsoplsr** Sequentially orthogonalized (SO-PLSR) 
+- **rosaplsr** ROSA *Liland et al. 2016*
+- **soplsr** Sequentially orthogonalized (SO-PLSR) 
 
 ### **Ridge (RR, KRR)**
 

@@ -41,7 +41,7 @@ include("angles.jl")
 include("mblock.jl")
 include("blockscal.jl")
 include("mbpca.jl")
-include("mbcomdim_s.jl")
+include("comdim.jl")
 
 # Regression 
 include("aov1.jl")
@@ -102,8 +102,8 @@ include("cplsr_avg.jl")  # Use structure PlsrDa
 
 # Multiblock regresssion
 include("mbplsr.jl") 
-include("mbrosaplsr.jl") 
-include("mbsoplsr.jl") 
+include("rosaplsr.jl") 
+include("soplsr.jl") 
 
 # Local discrimination
 include("lwplsrda.jl") ; include("lwplslda.jl") ; include("lwplsqda.jl")
@@ -184,7 +184,7 @@ export
     # Multiblock Pca
     blockscal, blockscal_frob, blockscal_mfa,
     blockscal_ncol, blockscal_sd,
-    mbcomdim_s, mbcomdim_s!, mbpca, mbpca!,
+    comdim, comdim!, mbpca, mbpca!,
     rv, lg, rd, 
     # Regression
     aov1,
@@ -205,8 +205,8 @@ export
     baggr, baggr_vi, baggr_oob,
     # Multi-block
     mbplsr, mbplsr!,
-    mbrosaplsr, mbrosaplsr!,
-    mbsoplsr,
+    rosaplsr, rosaplsr!,
+    soplsr,
     # Variable selection/importance (direct methods) 
     covsel,
     iplsr,

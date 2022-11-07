@@ -1,4 +1,4 @@
-struct MbRosaplsr
+struct Rosaplsr
     T::Matrix{Float64}
     P::Matrix{Float64}
     R::Matrix{Float64}
@@ -14,8 +14,8 @@ struct MbRosaplsr
 end
 
 """
-    mbrosaplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv)
-    mbrosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv)
+    rosaplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv)
+    rosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv)
 Multi-block PLSR with the ROSA algorithm (Liland et al. 2016).
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
@@ -59,7 +59,7 @@ Xbl = mblock(X, listbl)
 Xbl_new = mblock(X[1:2, :], listbl)
 
 nlv = 5
-fm = mbrosaplsr(Xbl, y; nlv = nlv) ;
+fm = rosaplsr(Xbl, y; nlv = nlv) ;
 pnames(fm)
 fm.T
 Jchemo.transform(fm, Xbl_new)
@@ -67,18 +67,18 @@ Jchemo.transform(fm, Xbl_new)
 Jchemo.predict(fm, Xbl_new).pred
 ```
 """ 
-function mbrosaplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
+function rosaplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
         scal = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    mbrosaplsr!(zXbl, copy(ensure_mat(Y)), weights; nlv = nlv, 
+    rosaplsr!(zXbl, copy(ensure_mat(Y)), weights; nlv = nlv, 
         scal = scal)
 end
 
-function mbrosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
+function rosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
         scal = false)
     n = nro(Xbl[1])
     q = nco(Y)   
@@ -199,17 +199,17 @@ function mbrosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
         W[:, a] .= reduce(vcat, z .* wbl)
     end
     R = W * inv(P' * W)
-    MbRosaplsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, bl)
+    Rosaplsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, bl)
 end
 
 """ 
-    transform(object::MbRosaplsr, Xbl; nlv = nothing)
+    transform(object::Rosaplsr, Xbl; nlv = nothing)
 Compute LVs ("scores" T) from a fitted model.
 * `object` : The maximal fitted model.
 * `Xbl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
 """ 
-function transform(object::MbRosaplsr, Xbl; nlv = nothing)
+function transform(object::Rosaplsr, Xbl; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(object.xmeans)
@@ -221,12 +221,12 @@ function transform(object::MbRosaplsr, Xbl; nlv = nothing)
 end
 
 """
-    coef(object::MbRosaplsr; nlv = nothing)
+    coef(object::Rosaplsr; nlv = nothing)
 Compute the X b-coefficients of a model fitted with `nlv` LVs.
 * `object` : The maximal fitted model.
 * `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
 """ 
-function coef(object::MbRosaplsr; nlv = nothing)
+function coef(object::Rosaplsr; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     zxmeans = reduce(vcat, object.xmeans)
@@ -239,14 +239,14 @@ function coef(object::MbRosaplsr; nlv = nothing)
 end
 
 """
-    predict(object::MbRosaplsr, Xbl; nlv = nothing)
+    predict(object::Rosaplsr, Xbl; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list (vector) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
     If nothing, it is the maximum nb. LVs.
 """ 
-function predict(object::MbRosaplsr, Xbl; nlv = nothing)
+function predict(object::Rosaplsr, Xbl; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)

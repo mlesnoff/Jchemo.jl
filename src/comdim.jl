@@ -1,4 +1,4 @@
-struct MbComdim
+struct Comdim
     T::Array{Float64} 
     U::Array{Float64}
     W::Array{Float64}
@@ -14,13 +14,13 @@ struct MbComdim
 end
 
 """
-    mbcomdim_s(Xbl, weights = ones(nro(Xbl[1])); nlv,
+    comdim(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
-    mbcomdim_s!(Xbl, weights = ones(nro(Xbl[1])); nlv,
+    comdim!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
-Common components and specific weights analysis (CCSWA = ComDim).
+Common components and specific weights analysis (ComDim = CCSWA).
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
 * `weights` : Weights of the observations (rows). 
@@ -101,7 +101,7 @@ Xbl_new = mblock(X[1:2, :], listbl)
 
 bscal = "none"
 #bscal = "frob"
-fm = mbcomdim_s(Xbl; nlv = 4, bscal = bscal) ;
+fm = comdim(Xbl; nlv = 4, bscal = bscal) ;
 fm.U
 fm.T
 Jchemo.transform(fm, Xbl)
@@ -123,7 +123,7 @@ res.cort2tb
 res.rv
 ```
 """
-function mbcomdim_s(Xbl, weights = ones(nro(Xbl[1])); nlv, 
+function comdim(Xbl, weights = ones(nro(Xbl[1])); nlv, 
         bscal = "frob", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
     nbl = length(Xbl)  
@@ -131,14 +131,14 @@ function mbcomdim_s(Xbl, weights = ones(nro(Xbl[1])); nlv,
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    mbcomdim_s!(zXbl, weights; nlv = nlv, 
+    comdim!(zXbl, weights; nlv = nlv, 
         bscal = bscal, tol = tol, maxit = maxit, scal = scal)
 end
 
 ## Approach Hannafi & Qannari 2008 p.84: "SVD" algorithm
 ## Normed global score u = 1st left singular vector of SVD of TB,
 ## where TB concatenates the weighted block-scores 
-function mbcomdim_s!(Xbl, weights = ones(nro(Xbl[1])); nlv,
+function comdim!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
     nbl = length(Xbl)
@@ -221,18 +221,18 @@ function mbcomdim_s!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         end
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
-    MbComdim(T, U, W, Tb, Wbl, lb, mu, 
+    Comdim(T, U, W, Tb, Wbl, lb, mu, 
         xmeans, xscales, bscales, weights, niter)
 end
 
 """ 
-    transform(object::MbComdim, Xbl; nlv = nothing)
+    transform(object::Comdim, Xbl; nlv = nothing)
 Compute components (scores matrix "T") from a fitted model and X-data.
 * `object` : The maximal fitted model.
 * `Xbl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. components to compute. If nothing, it is the maximum nb. PCs.
 """ 
-function transform(object::MbComdim, Xbl; nlv = nothing)
+function transform(object::Comdim, Xbl; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
@@ -261,12 +261,12 @@ function transform(object::MbComdim, Xbl; nlv = nothing)
 end
 
 """
-    summary(object::MbComdim, Xbl)
+    summary(object::Comdim, Xbl)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `Xbl` : The X-data that was used to fit the model.
 """ 
-function summary(object::MbComdim, Xbl)
+function summary(object::Comdim, Xbl)
     nbl = length(Xbl)
     nlv = size(object.T, 2)
     sqrtw = sqrt.(object.weights)

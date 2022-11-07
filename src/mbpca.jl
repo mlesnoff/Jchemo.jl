@@ -1,4 +1,4 @@
-struct MbPca
+struct Mbpca
     T::Array{Float64} 
     U::Array{Float64}
     W::Array{Float64}
@@ -205,18 +205,18 @@ function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         end
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
-    MbPca(T, U, W, Tb, Wbl, lb, mu,
+    Mbpca(T, U, W, Tb, Wbl, lb, mu,
         xmeans, xscales, bscales, weights, niter)
 end
 
 """ 
-    transform(object::MbPca, Xbl; nlv = nothing)
+    transform(object::Mbpca, Xbl; nlv = nothing)
 Compute components (scores matrix "T") from a fitted model and X-data.
 * `object` : The maximal fitted model.
 * `Xbl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. components to compute. If nothing, it is the maximum nb. PCs.
 """ 
-function transform(object::MbPca, Xbl; nlv = nothing)
+function transform(object::Mbpca, Xbl; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
@@ -244,12 +244,12 @@ function transform(object::MbPca, Xbl; nlv = nothing)
 end
 
 """
-    summary(object::MbPca, Xbl)
+    summary(object::Mbpca, Xbl)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `Xbl` : The X-data that was used to fit the model.
 """ 
-function summary(object::MbPca, Xbl)
+function summary(object::Mbpca, Xbl)
     nbl = length(Xbl)
     nlv = size(object.T, 2)
     sqrtw = sqrt.(object.weights)
