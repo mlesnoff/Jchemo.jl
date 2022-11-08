@@ -1,6 +1,6 @@
 """
-    pcaeigen(X, weights = ones(size(X, 1)); nlv, scal = false)
-    pcaeigen!(X::Matrix, weights = ones(size(X, 1)); nlv, scal = false)
+    pcaeigen(X, weights = ones(nro(X)); nlv, scal = false)
+    pcaeigen!(X::Matrix, weights = ones(nro(X)); nlv, scal = false)
 PCA by Eigen factorization.
 * `X` : X-data (n, p).
 * `weights` : Weights (n) of the observations.
@@ -17,11 +17,11 @@ computing an Eigen factorization of X' * D * X.
 
 See `?pcasvd` for examples.
 """ 
-function pcaeigen(X, weights = ones(size(X, 1)); nlv, scal = false)
+function pcaeigen(X, weights = ones(nro(X)); nlv, scal = false)
     pcaeigen!(copy(ensure_mat(X)), weights; nlv = nlv, scal = scal)
 end
 
-function pcaeigen!(X::Matrix, weights = ones(size(X, 1)); nlv, scal = false)
+function pcaeigen!(X::Matrix, weights = ones(nro(X)); nlv, scal = false)
     n, p = size(X)
     nlv = min(nlv, n, p)
     weights = mweight(weights)
@@ -45,8 +45,8 @@ function pcaeigen!(X::Matrix, weights = ones(size(X, 1)); nlv, scal = false)
 end
 
 """
-    pcaeigenk(X, weights = ones(size(X, 1)); nlv, scal = false)
-    pcaeigenk!(X::Matrix, weights = ones(size(X, 1)); nlv, scal = false)
+    pcaeigenk(X, weights = ones(nro(X)); nlv, scal = false)
+    pcaeigenk!(X::Matrix, weights = ones(nro(X)); nlv, scal = false)
 PCA by Eigen factorization of the kernel form (XX').
 * `X` : X-data (n, p).
 * `weights` : Weights (n) of the observations.
@@ -71,11 +71,11 @@ See `?pcasvd` for examples.
 Wu, W., Massart, D.L., de Jong, S., 1997. The kernel PCA algorithms for wide data. Part I: Theory and algorithms. 
 Chemometrics and Intelligent Laboratory Systems 36, 165-172. https://doi.org/10.1016/S0169-7439(97)00010-5
 """ 
-function pcaeigenk(X, weights = ones(size(X, 1)); nlv, scal = false)
+function pcaeigenk(X, weights = ones(nro(X)); nlv, scal = false)
     pcaeigenk!(copy(ensure_mat(X)), weights; nlv = nlv, scal = scal)
 end
 
-function pcaeigenk!(X::Matrix, weights = ones(size(X, 1)); nlv, scal = false)
+function pcaeigenk!(X::Matrix, weights = ones(nro(X)); nlv, scal = false)
     n, p = size(X)
     nlv = min(nlv, n, p)
     weights = mweight(weights)

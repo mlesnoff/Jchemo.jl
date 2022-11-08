@@ -1,5 +1,5 @@
 """
-    kplsrda(X, y, weights = ones(size(X, 1)); nlv, kern = "krbf", 
+    kplsrda(X, y, weights = ones(nro(X)); nlv, kern = "krbf", 
         scal = false, kwargs...)
 Discrimination based on kernel partial least squares regression (KPLSR-DA).
 * `X` : X-data.
@@ -45,7 +45,7 @@ Jchemo.coef(fm.fm)
 Jchemo.transform(fm.fm, Xtest)
 ```
 """ 
-function kplsrda(X, y, weights = ones(size(X, 1)); nlv, kern = "krbf", 
+function kplsrda(X, y, weights = ones(nro(X)); nlv, kern = "krbf", 
         scal = false, kwargs...)
     z = dummy(y)
     fm = kplsr(X, z.Y, weights; nlv = nlv, kern = kern, 

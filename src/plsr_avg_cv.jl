@@ -1,4 +1,4 @@
-function plsr_avg_cv(X, Y, weights = ones(size(X, 1)); nlv, 
+function plsr_avg_cv(X, Y, weights = ones(nro(X)); nlv, 
         K = 2, typw = "bisquare", 
         alpha = 0, scal = false)
     plsr_avg_cv!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
@@ -6,7 +6,7 @@ function plsr_avg_cv(X, Y, weights = ones(size(X, 1)); nlv,
         alpha = alpha, scal = scal)
 end
 
-function plsr_avg_cv!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
+function plsr_avg_cv!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         K = 2, typw = "bisquare",
         alpha = 0, scal = false)
     n, p = size(X)

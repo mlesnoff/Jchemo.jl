@@ -10,9 +10,9 @@ struct Rr
 end
 
 """
-    rr(X, Y, weights = ones(size(X, 1)); lb = .01,
+    rr(X, Y, weights = ones(nro(X)); lb = .01,
         scal = false)
-    rr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); lb = .01,
+    rr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
         scal = false)
 Ridge regression (RR) implemented by SVD factorization.
 * `X` : X-data.
@@ -78,13 +78,13 @@ res.pred[1]
 res.pred[2]
 ```
 """ 
-function rr(X, Y, weights = ones(size(X, 1)); lb = .01,
+function rr(X, Y, weights = ones(nro(X)); lb = .01,
     scal = false)
     rr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; lb = lb, 
         scal = scal)
 end
 
-function rr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); lb = .01,
+function rr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
         scal = false)
     p = nco(X)
     weights = mweight(weights)
@@ -107,9 +107,9 @@ function rr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); lb = .01,
 end
 
 """
-    rrchol(X, Y, weights = ones(size(X, 1)); lb = .01, 
+    rrchol(X, Y, weights = ones(nro(X)); lb = .01, 
         scal = false)
-    rrchol!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); lb = .01,
+    rrchol!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
         scal = false)
 Ridge regression (RR) using the Normal equations and a Cholesky factorization.
 * `X` : X-data.
@@ -136,13 +136,13 @@ inference, and prediction, 2nd ed. Springer, New York.
 Hoerl, A.E., Kennard, R.W., 1970. Ridge Regression: Biased Estimation for Nonorthogonal Problems. 
 Technometrics 12, 55-67. https://doi.org/10.1080/00401706.1970.10488634
 """ 
-function rrchol(X, Y, weights = ones(size(X, 1)); lb = .01,
+function rrchol(X, Y, weights = ones(nro(X)); lb = .01,
         scal = false)
     rrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; lb = lb,
         scal = scal)
 end
 
-function rrchol!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); lb = .01,
+function rrchol!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
         scal = false)
     @assert size(X, 2) > 1 "Method only working for X with > 1 column."
     p = size(X, 2)

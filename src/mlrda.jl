@@ -5,7 +5,7 @@ struct Mlrda
 end
 
 """
-    mlrda(X, y, weights = ones(size(X, 1)))
+    mlrda(X, y, weights = ones(nro(X)))
 Discrimination based on multple linear regression (MLR-DA).
 * `X` : X-data.
 * `y` : Univariate class membership.
@@ -55,7 +55,7 @@ res.pred
 err(res.pred, ytest)
 ```
 """ 
-function mlrda(X, y, weights = ones(size(X, 1)))
+function mlrda(X, y, weights = ones(nro(X)))
     z = dummy(y)
     fm = mlr(X, z.Y, weights)
     Mlrda(fm, z.lev, z.ni)

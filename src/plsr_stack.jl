@@ -1,10 +1,10 @@
-function plsr_stack(X, y, weights = ones(size(X, 1)); nlv,
+function plsr_stack(X, y, weights = ones(nro(X)); nlv,
         K = 5, rep = 10, scal = false)
     plsr_stack!(copy(ensure_mat(X)), copy(ensure_mat(y)), weights; nlv = nlv, 
         K = K, rep = rep, scal = scal)
 end
 
-function plsr_stack!(X::Matrix, y::Matrix, weights = ones(size(X, 1)); nlv, 
+function plsr_stack!(X::Matrix, y::Matrix, weights = ones(nro(X)); nlv, 
         K = 5, rep = 10, scal = false)
     n, p = size(X)
     weights = mweight(weights)

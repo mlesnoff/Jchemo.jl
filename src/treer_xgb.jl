@@ -369,7 +369,7 @@ function vimp_xgb(object::Union{TreerXgb, TreedaXgb})
     zgain = zeros(p)
     zcover = copy(zgain)
     zfreq = copy(zgain)
-    for i = 1:length(fname)
+    for i in eachindex(fname)
         s = fname[i]
         zgain[s] = gain[i]
         zcover[s] = cover[i]

@@ -1,5 +1,5 @@
 """ 
-    plslda_avg(X, y, weights = ones(size(X, 1)); nlv,
+    plslda_avg(X, y, weights = ones(nro(X)); nlv,
         scal = false)
 Averaging of PLS-LDA models with different numbers of LVs.
 * `X` : X-data.
@@ -47,7 +47,7 @@ res.pred
 err(res.pred, ytest)
 ```
 """ 
-function plslda_avg(X, y, weights = ones(size(X, 1)); nlv,
+function plslda_avg(X, y, weights = ones(nro(X)); nlv,
         scal = false)
     n = size(X, 1)
     p = size(X, 2)

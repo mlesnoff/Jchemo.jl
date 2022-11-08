@@ -11,8 +11,8 @@ struct Pca
 end
 
 """
-    pcasvd(X, weights = ones(size(X, 1)); nlv, scal = false)
-    pcasvd!(X::Matrix, weights = ones(size(X, 1)); nlv, scal = false)
+    pcasvd(X, weights = ones(nro(X)); nlv, scal = false)
+    pcasvd!(X::Matrix, weights = ones(nro(X)); nlv, scal = false)
 PCA by SVD factorization.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations.
@@ -71,13 +71,13 @@ res.coord_var
 res.cor_circle
 ```
 """ 
-function pcasvd(X, weights = ones(size(X, 1)); nlv, 
+function pcasvd(X, weights = ones(nro(X)); nlv, 
         scal = false)
     pcasvd!(copy(ensure_mat(X)), weights; nlv = nlv, 
         scal = scal)
 end
 
-function pcasvd!(X::Matrix, weights = ones(size(X, 1)); nlv, 
+function pcasvd!(X::Matrix, weights = ones(nro(X)); nlv, 
         scal = false)
     n, p = size(X)
     nlv = min(nlv, n, p)
@@ -126,11 +126,11 @@ function Base.summary(object::Pca, X::Union{Matrix, DataFrame})
     nlv = size(object.T, 2)
     D = Diagonal(object.weights)
     X = cscale(X, object.xmeans, object.xscales)
-    sstot = sum(colnorm2(X, object.weights))   # = tr(X' * D * X)
+    sstot = sum(colnorm(X, object.weights).^2)   # = tr(X' * D * X)
     TT = D * object.T.^2
     tt = colsum(TT) 
     # = diag(T' * D * T) 
-    # = colnorm2(object.T, object.weights) 
+    # = colnorm(object.T, object.weights).^2 
     # = object.sv[1:nlv].^2
     pvar = tt / sstot
     cumpvar = cumsum(pvar)

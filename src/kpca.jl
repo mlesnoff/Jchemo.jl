@@ -15,7 +15,7 @@ struct Kpca
 end
 
 """
-    kpca(X, weights = ones(size(X, 1)); nlv, 
+    kpca(X, weights = ones(nro(X)); nlv, 
         kern = "krbf", scal = false, kwargs...)
 Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
 
@@ -79,7 +79,7 @@ pnames(res)
 res.explvarx
 ```
 """ 
-function kpca(X, weights = ones(size(X, 1)); nlv, 
+function kpca(X, weights = ones(nro(X)); nlv, 
         kern = "krbf", scal = false, kwargs...)
     X = ensure_mat(X)
     n, p = size(X)

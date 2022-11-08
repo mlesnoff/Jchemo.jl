@@ -5,7 +5,7 @@ struct Plsrda
 end
 
 """
-    plsrda(X, y, weights = ones(size(X, 1)); nlv,
+    plsrda(X, y, weights = ones(nro(X)); nlv,
         scal = false)
 Discrimination based on partial least squares regression (PLSR-DA).
 * `X` : X-data.
@@ -65,7 +65,7 @@ Jchemo.transform(fm.fm, Xtest)
 Jchemo.predict(fm, Xtest; nlv = 1:2).pred
 ```
 """ 
-function plsrda(X, y, weights = ones(size(X, 1)); nlv,
+function plsrda(X, y, weights = ones(nro(X)); nlv,
         scal = false)
     z = dummy(y)
     fm = plskern(X, z.Y, weights; nlv = nlv, scal = scal)

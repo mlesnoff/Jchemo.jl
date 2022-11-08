@@ -18,10 +18,10 @@ struct Kplsr
 end
 
 """
-    kplsr(X, Y, weights = ones(size(X, 1)); 
+    kplsr(X, Y, weights = ones(nro(X)); 
         nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 
         scal = false, kwargs...)
-    kplsr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); 
+    kplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
         nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 
         scal = false, kwargs...)
 Kernel partial least squares regression (KPLSR) implemented with a NIPALS 
@@ -108,7 +108,7 @@ axislegend("Method")
 f
 ```
 """ 
-function kplsr(X, Y, weights = ones(size(X, 1)); 
+function kplsr(X, Y, weights = ones(nro(X)); 
         nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 
         scal = false, kwargs...)
     kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
@@ -116,7 +116,7 @@ function kplsr(X, Y, weights = ones(size(X, 1));
         scal = scal, kwargs...)
 end
 
-function kplsr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); 
+function kplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
         nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 
         scal = false, kwargs...)
     n, p = size(X)

@@ -5,6 +5,13 @@
 To display the plots, the user has to install and load one of
 the Makie's backend (e.g. CairoMakie).
 
+- New
+    - **colnorm2** was removed, replaced by **colnorm**: 
+    Norm of each column of a dataset.
+    - **fnorm**: Frobenius norm of a matrix.
+    - **norm2** was removed, replaced by **normw**: 
+    Weighted norm of a vector.
+
 - Modified
     - Major changes in multiblock functions:
         - Renamed functions:

@@ -7,7 +7,7 @@ struct PlsdaAvg  # for plsrda_avg, plsrla_avg and plsqda_avg
 end
 
 """ 
-    plsrda_avg(X, y, weights = ones(size(X, 1)); nlv)
+    plsrda_avg(X, y, weights = ones(nro(X)); nlv)
 Averaging of PLSR-DA models with different numbers of LVs.
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -56,7 +56,7 @@ res.pred
 err(res.pred, ytest)
 ```
 """ 
-function plsrda_avg(X, y, weights = ones(size(X, 1)); nlv,
+function plsrda_avg(X, y, weights = ones(nro(X)); nlv,
     scal = false)
     n, p = size(X)
     nlv = eval(Meta.parse(nlv))

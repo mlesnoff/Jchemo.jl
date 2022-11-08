@@ -11,9 +11,9 @@ struct Pcr
 end
 
 """
-    pcr(X, Y, weights = ones(size(X, 1)); nlv,
+    pcr(X, Y, weights = ones(nro(X)); nlv,
         scal = false)
-    pcr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
+    pcr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         scal = false)
 Principal component regression (PCR) with a SVD factorization.
 * `X` : X-data (n, p).
@@ -74,13 +74,13 @@ res = Base.summary(fm_pca, Xtrain)
 res.explvarx
 ```
 """ 
-function pcr(X, Y, weights = ones(size(X, 1)); nlv, 
+function pcr(X, Y, weights = ones(nro(X)); nlv, 
         scal = false)
     pcr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
         scal = scal)
 end
 
-function pcr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv, 
+function pcr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
         scal = false)
     q = nco(Y)
     weights = mweight(weights)

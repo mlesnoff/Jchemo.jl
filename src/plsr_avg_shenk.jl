@@ -3,13 +3,13 @@ struct PlsrAvgShenk
     nlv
 end
 
-function plsr_avg_shenk(X, Y, weights = ones(size(X, 1)); nlv, 
+function plsr_avg_shenk(X, Y, weights = ones(nro(X)); nlv, 
         scal = false)
     plsr_avg_shenk!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
         scal = scal)
 end
 
-function plsr_avg_shenk!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv, 
+function plsr_avg_shenk!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
         scal = false)
     n, p = size(X)
     nlv = eval(Meta.parse(nlv))

@@ -15,9 +15,9 @@ struct Plsr
 end
 
 """
-    plskern(X, Y, weights = ones(size(X, 1)); nlv,
+    plskern(X, Y, weights = ones(nro(X)); nlv,
         scal = false)
-    plskern!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
+    plskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         scal = false)
 Partial Least Squares Regression (PLSR) with the 
 "Improved kernel algorithm #1" (Dayal & McGegor, 1997).
@@ -108,13 +108,13 @@ lines(z.nlv, z.cumpvar,
     axis = (xlabel = "Nb. LVs", ylabel = "Prop. Explained Variance"))
 ```
 """ 
-function plskern(X, Y, weights = ones(size(X, 1)); nlv, 
+function plskern(X, Y, weights = ones(nro(X)); nlv, 
         scal = false)
     plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
         scal = scal)
 end
 
-function plskern!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv, 
+function plskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
         scal = false)
     n, p = size(X)
     q = nco(Y)

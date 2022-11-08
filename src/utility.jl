@@ -30,7 +30,7 @@ function aggstat(X::Union{AbstractMatrix, AbstractVector}; group,
         fun = mean)
     X = ensure_mat(X)
     group = vec(group)
-    q = size(X, 2)
+    q = nco(X)
     ztab = tab(group)
     lev = ztab.keys
     nlev = length(lev)
@@ -228,16 +228,19 @@ colmean(X) = vec(Statistics.mean(ensure_mat(X); dims = 1))
 colmean(X, w) = vec(mweight(w)' * ensure_mat(X))
 
 """
-    colnorm2(X)
-    colnorm2(X, w)
-Compute the squared norm of each column of a matrix X.
+    colnorm(X)
+    colnorm(X, w)
+Compute the norm of each column of a dataset X.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
 
 `w` is internally normalized to sum to 1.
 
-The squared weighted norm of a column x is:
-* norm(x)^2 = x' * D * x, where D is the diagonal matrix of `w`.
+The norm of a column x of `X` is:
+* sqrt(x' * x), where D is the diagonal matrix of `w`.
+
+The weighted norm is:
+* sqrt(x' * D * x), where D is the diagonal matrix of `w`.
 
 ## Examples
 ```julia
@@ -245,28 +248,23 @@ n, p = 5, 6
 X = rand(n, p)
 w = collect(1:n)
 
-colnorm2(X)
-colnorm2(X, w)
+colnorm(X)
+colnorm(X, w)
 ```
 """ 
-function colnorm2(X)
+function colnorm(X)
     X = ensure_mat(X)
-    p = size(X, 2)
-    z = similar(X, p)
-    @inbounds for j = 1:p
-        z[j] = LinearAlgebra.norm(vcol(X, j))^2       
-    end
-    z 
+    map(norm, eachcol(X))
 end
 
-function colnorm2(X, w)
+function colnorm(X, w)
     X = ensure_mat(X)
-    p = size(X, 2)
+    p = nco(X)
     w = mweight(w)
     z = similar(X, p)
     @inbounds for j = 1:p
         x = vcol(X, j)
-        z[j] = dot(x, w .* x)        
+        z[j] = sqrt(dot(x, w .* x))
     end
     z 
 end
@@ -346,7 +344,7 @@ colvar(X) = vec(Statistics.var(ensure_mat(X); corrected = false, dims = 1))
 
 function colvar(X, w)
     X = ensure_mat(X)
-    p = size(X, 2)
+    p = nco(X)
     w = mweight(w)
     z = colmean(X, w)
     @inbounds for j = 1:p
@@ -529,6 +527,30 @@ function findmax_cla(x, weights = nothing)
     res.lev[argmax(res.X)]   # if equal, argmax takes the first
 end
 
+""" 
+    fnorm(X)
+    fnorm(X, w)
+Frobenius norm of a matrix.
+* `X` : A matrix (n, p).
+* `w` : Weights (n) of the observations.
+
+`w` is internally normalized to sum to 1.
+
+The Frobenius norm of `X` is:
+* sqrt(tr(X' * X)).
+
+The weighted norm is:
+* sqrt(tr(X' * D * X)), where D is the diagonal matrix of vector `w`.
+"""
+function fnorm(X)
+    LinearAlgebra.norm(X)
+end
+
+function fnorm(X, w)
+    sqrtD = Diagonal(sqrt.(mweight(w)))
+    sqrt(ssq(sqrtD * X))
+end
+
 """
     head(X)
 Display the first rows of a dataset.
@@ -546,8 +568,6 @@ function head(X)
     end
     psize(X)
 end
-
-
 
 """
     iqr(x)
@@ -631,23 +651,18 @@ Return the nb. columns of `X`.
 nco(X) = size(X, 2)
 
 """ 
-    norm2(x)
-    norm2(x, w)
-Return the squared norm of a vector.
+    normw(x, w)
+Return the squared weighted norm of a vector.
 * `x` : A vector (n).
 * `w` : Weights (n) of the observations.
 
 `w` is internally normalized to sum to 1.
 
-The squared weighted norm of vector x is:
-* norm(x)^2 = x' * D * x, where D is the diagonal matrix of vector `w`.
+The squared weighted norm of vector `x` is:
+* x' * D * x, where D is the diagonal matrix of vector `w`.
 """
-function norm2(x)
-    LinearAlgebra.norm(x)^2
-end
-
-function norm2(x, w)
-    dot(x, mweight(w) .* x)
+function normw(x, w::Vector)
+    sqrt(dot(x, mweight(w) .* x))
 end
 
 """ 
@@ -690,7 +705,7 @@ recodcat2int([25, 1, 25])
 """
 function recodcat2int(x; start::Int64 = 1)
     z = dummy(x).Y
-    ncla = size(z, 2)
+    ncla = nco(z)
     u = z .* collect(start:(start + ncla - 1))'
     u = sum(u; dims = 2)  ;
     Int64.(vec(u))
@@ -718,9 +733,9 @@ zx = recodnum2cla(x, q)
 function recodnum2cla(x, q)
     zx = similar(x)
     q = sort(q)
-    for i = 1:length(x)
+    for i in eachindex(x)
         k = 1
-        for j = 1:length(q)
+        for j in eachindex(q)
             x[i] > q[j] ? k = k + 1 : nothing
         end
         zx[i] = k
@@ -936,7 +951,7 @@ function scale(X, v)
 end
 
 function scale!(X::Matrix, v)
-    p = size(X, 2)
+    p = nco(X)
     @inbounds for j = 1:p
         X[:, j] .= vcol(X, j) ./ v[j]
     end
@@ -951,8 +966,7 @@ Include all the files contained in a directory.
 """
 function sourcedir(path)
     z = readdir(path)  ## List of files in path
-    n = length(z)
-    for i in 1:n
+    for i in eachindex(z)
         include(string(path, "/", z[i]))
     end
 end
@@ -993,18 +1007,18 @@ summ(X[:, 2]).res
 function summ(X; digits = 3)
     X = ensure_df(X)
     res = describe(X, :mean, :min, :max, :nmissing) ;
-    insertcols!(res, 5, :n => size(X, 1) .- res.nmissing)
+    insertcols!(res, 5, :n => nro(X) .- res.nmissing)
     for j = 2:4
         z = vcol(res, j)
         s = findall(isa.(z, Float64))
         res[s, j] .= round.(res[s, j], digits = digits)
         end
-    (res = res, ntot = size(X, 1))
+    (res = res, ntot = nro(X))
 end
 
 function summ(X, group; digits = 1)
     zgroup = sort(unique(group))
-    for i = 1:length(zgroup)
+    for i in eachindex(zgroup)
         u = findall(group .== zgroup[i])
         z = X[u, :]
         res = summ(z; digits = digits).res
@@ -1067,17 +1081,17 @@ end
 using DataFrames
 dat1 = DataFrame(rand(5, 2), [:v3, :v1]) 
 dat2 = DataFrame(100 * rand(2, 2), [:v3, :v1])
-z = (dat1, dat2)
-Jchemo.vcatdf(z)
+dat = (dat1, dat2)
+Jchemo.vcatdf(dat)
 
 dat2 = DataFrame(100 * rand(2, 2), [:v1, :v3])
-z = (dat1, dat2)
-Jchemo.vcatdf(z)
+dat = (dat1, dat2)
+Jchemo.vcatdf(dat)
 
 dat2 = DataFrame(100 * rand(2, 3), [:v3, :v1, :a])
-z = (dat1, dat2)
-Jchemo.vcatdf(z)
-Jchemo.vcatdf(z; cols = :union)
+dat = (dat1, dat2)
+Jchemo.vcatdf(dat)
+Jchemo.vcatdf(dat; cols = :union)
 ```
 """ 
 function vcatdf(dat; cols = :intersect) 

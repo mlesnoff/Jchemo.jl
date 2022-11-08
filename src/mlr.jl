@@ -5,8 +5,8 @@ struct Mlr
 end
 
 """
-    mlr(X, Y, weights = ones(size(X, 1)); noint = false)
-    mlr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); noint::Bool = false)
+    mlr(X, Y, weights = ones(nro(X)); noint = false)
+    mlr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); noint::Bool = false)
 Compute a mutiple linear regression model (MLR) by using the QR algorithm.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -60,13 +60,13 @@ zcoef.int
 zcoef.B
 ```
 """ 
-function mlr(X, Y, weights = ones(size(X, 1)); 
+function mlr(X, Y, weights = ones(nro(X)); 
         noint = false)
     mlr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights;
         noint = noint)
 end
 
-function mlr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); 
+function mlr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
         noint::Bool = false)
     weights = mweight(weights)
     sqrtD = Diagonal(sqrt.(weights))
@@ -86,8 +86,8 @@ function mlr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1));
 end
 
 """
-    mlrchol(X, Y, weights = ones(size(X, 1)))
-    mlrchol!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)))
+    mlrchol(X, Y, weights = ones(nro(X)))
+    mlrchol!(X::Matrix, Y::Matrix, weights = ones(nro(X)))
 Compute a mutiple linear regression model (MLR) 
 using the Normal equations and a Choleski factorization.
 * `X` : X-data, with nb. columns >= 2 (required by function cholesky).
@@ -100,11 +100,11 @@ Faster but can be less accurate (squared element X'X).
 
 See `?mlr` for examples.
 """ 
-function mlrchol(X, Y, weights = ones(size(X, 1)))
+function mlrchol(X, Y, weights = ones(nro(X)))
     mlrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights)
 end
 
-function mlrchol!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)))
+function mlrchol!(X::Matrix, Y::Matrix, weights = ones(nro(X)))
     @assert size(X, 2) > 1 "Method only working for X with > 1 column."
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
@@ -118,8 +118,8 @@ function mlrchol!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)))
 end
 
 """
-    mlrpinv(X, Y, weights = ones(size(X, 1)); noint = false)
-    mlrpinv!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); noint::Bool = false)
+    mlrpinv(X, Y, weights = ones(nro(X)); noint = false)
+    mlrpinv!(X::Matrix, Y::Matrix, weights = ones(nro(X)); noint::Bool = false)
 Compute a mutiple linear regression model (MLR)  by using a pseudo-inverse. 
 * `X` : X-data.
 * `Y` : Y-data.
@@ -130,13 +130,13 @@ Safe but can be slower.
 
 See `?mlr` for examples.
 """ 
-function mlrpinv(X, Y, weights = ones(size(X, 1)); 
+function mlrpinv(X, Y, weights = ones(nro(X)); 
         noint = false)
     mlrpinv!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
         noint = noint)
 end
 
-function mlrpinv!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); 
+function mlrpinv!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
         noint::Bool = false)
     weights = mweight(weights)
     sqrtD = Diagonal(sqrt.(weights))
@@ -160,8 +160,8 @@ function mlrpinv!(X::Matrix, Y::Matrix, weights = ones(size(X, 1));
 end
 
 """
-    mlrpinv_n(X, Y, weights = ones(size(X, 1)))
-    mlrpinv_n!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)))
+    mlrpinv_n(X, Y, weights = ones(nro(X)))
+    mlrpinv_n!(X::Matrix, Y::Matrix, weights = ones(nro(X)))
 Compute a mutiple linear regression model (MLR) 
 by using the Normal equations and a pseudo-inverse.
 * `X` : X-data.
@@ -174,11 +174,11 @@ Compute a model with intercept.
 
 See `?mlr` for examples.
 """ 
-function mlrpinv_n(X, Y, weights = ones(size(X, 1)))
+function mlrpinv_n(X, Y, weights = ones(nro(X)))
     mlrpinv_n!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights)
 end
 
-function mlrpinv_n!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)))
+function mlrpinv_n!(X::Matrix, Y::Matrix, weights = ones(nro(X)))
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   

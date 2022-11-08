@@ -17,7 +17,7 @@ struct Krr
 end
 
 """
-    krr(X, Y, weights = ones(size(X, 1)); 
+    krr(X, Y, weights = ones(nro(X)); 
         lb = .01, kern = "krbf", scal = false, kwargs...)
 Kernel ridge regression (KRR) implemented by SVD factorization.
 * `X` : X-data (n, p).
@@ -117,7 +117,7 @@ axislegend("Method")
 f
 ```
 """ 
-function krr(X, Y, weights = ones(size(X, 1)); 
+function krr(X, Y, weights = ones(nro(X)); 
         lb = .01, kern = "krbf", scal = false, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)

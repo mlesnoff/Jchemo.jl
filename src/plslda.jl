@@ -5,7 +5,7 @@ struct PlsLda    # for plslda and plsqda
 end
 
 """
-    plslda(X, y, weights = ones(size(X, 1)); nlv, 
+    plslda(X, y, weights = ones(nro(X)); nlv, 
         prior = "unif", scal = false)
 LDA on PLS latent variables (PLS-LDA).
 * `X` : X-data.
@@ -68,7 +68,7 @@ Jchemo.predict(fm_da[nlv], T).pred
 Jchemo.predict(fm, Xtest; nlv = 1:2).pred
 ```
 """ 
-function plslda(X, y, weights = ones(size(X, 1)); nlv, 
+function plslda(X, y, weights = ones(nro(X)); nlv, 
         prior = "unif", scal = false)
     z = dummy(y)
     fm_pls = plskern(X, z.Y, weights; nlv = nlv, scal = scal)

@@ -1,7 +1,7 @@
 """
-    plssimp(X, Y, weights = ones(size(X, 1)); nlv,
+    plssimp(X, Y, weights = ones(nro(X)); nlv,
         scal = false)
-    plssimp!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
+    plssimp!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         scal = false)
 Partial Least Squares Regression (PLSR) with the SIMPLS algorithm (de Jong 1993).
 * `X` : X-data (n, p).
@@ -23,13 +23,13 @@ de Jong, S., 1993. SIMPLS: An alternative approach to partial least squares
 regression. Chemometrics and Intelligent Laboratory Systems 18, 251–263. 
 https://doi.org/10.1016/0169-7439(93)85002-X
 """ 
-function plssimp(X, Y, weights = ones(size(X, 1)); nlv,
+function plssimp(X, Y, weights = ones(nro(X)); nlv,
         scal = false)
     plssimp!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         scal = scal)
 end
 
-function plssimp!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
+function plssimp!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         scal = false)
     n, p = size(X)
     q = nco(Y)

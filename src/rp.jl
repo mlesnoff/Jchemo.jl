@@ -84,8 +84,8 @@ function rpmat_li(p, nlv; s = sqrt(p))
 end
 
 """
-    rp(X, weights = ones(size(X, 1)); nlv, fun = rpmat_li, scal = false, kwargs ...)
-    rp!(X::Matrix, weights = ones(size(X, 1)); nlv, fun = rpmat_li, scal = false, kwargs ...)
+    rp(X, weights = ones(nro(X)); nlv, fun = rpmat_li, scal = false, kwargs ...)
+    rp!(X::Matrix, weights = ones(nro(X)); nlv, fun = rpmat_li, scal = false, kwargs ...)
 Make a random projection of matrix X.
 * `X` : X-data (n, p).
 * `weights` : Weights (n) of the observations.
@@ -107,13 +107,13 @@ fm.T # = X * fm.P
 Jchemo.transform(fm, X[1:2, :])
 ```
 """
-function rp(X, weights = ones(size(X, 1)); nlv, fun = rpmat_li, 
+function rp(X, weights = ones(nro(X)); nlv, fun = rpmat_li, 
     scal = false, kwargs...)
     rp!(copy(ensure_mat(X)), weights; nlv, 
         fun = fun, scal = scal, kwargs...)
 end
 
-function rp!(X::Matrix, weights = ones(size(X, 1)); nlv, fun = rpmat_li, 
+function rp!(X::Matrix, weights = ones(nro(X)); nlv, fun = rpmat_li, 
         scal = false, kwargs...)
     X = ensure_mat(X)
     p = nco(X)

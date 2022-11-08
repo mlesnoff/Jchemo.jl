@@ -3,13 +3,13 @@ struct PlsrAvgUnif
     nlv
 end
 
-function plsr_avg_unif(X, Y, weights = ones(size(X, 1)); nlv,
+function plsr_avg_unif(X, Y, weights = ones(nro(X)); nlv,
         scal = false)
     plsr_avg_unif!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         scal = scal)
 end
 
-function plsr_avg_unif!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
+function plsr_avg_unif!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         scal = false)
     X = ensure_mat(X)
     n, p = size(X)

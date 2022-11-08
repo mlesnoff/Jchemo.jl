@@ -1,5 +1,5 @@
 """ 
-    plsqda_avg(X, y, weights = ones(size(X, 1)); nlv,
+    plsqda_avg(X, y, weights = ones(nro(X)); nlv,
         scal = false)
 Averaging of PLS-QDA models with different numbers of LVs.
 * `X` : X-data.
@@ -22,7 +22,7 @@ returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 
 See `?plslda_avg` for examples.
 """ 
-function plsqda_avg(X, y, weights = ones(size(X, 1)); nlv,
+function plsqda_avg(X, y, weights = ones(nro(X)); nlv,
         scal = false)
     n = size(X, 1)
     p = size(X, 2)

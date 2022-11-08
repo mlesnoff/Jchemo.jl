@@ -3,10 +3,10 @@ struct PlsrAvg
 end
 
 """ 
-    plsr_avg(X, Y, weights = ones(size(X, 1)); nlv, 
+    plsr_avg(X, Y, weights = ones(nro(X)); nlv, 
         typf = "unif", typw = "bisquare",
         alpha = 0, K = 5, rep = 10, scal = false)
-    plsr_avg!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv, 
+    plsr_avg!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
         typf = "unif", typw = "bisquare", 
         alpha = 0, K = 5, rep = 10, scal = false)
 Averaging and stacking PLSR models with different numbers of LVs.
@@ -106,7 +106,7 @@ res.pred
 rmsep(res.pred, ytest)
 ```
 """ 
-function plsr_avg(X, Y, weights = ones(size(X, 1)); nlv, 
+function plsr_avg(X, Y, weights = ones(nro(X)); nlv, 
         typf = "unif", typw = "bisquare", 
         alpha = 0, K = 5, rep = 10, scal = false)
     plsr_avg!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
@@ -114,7 +114,7 @@ function plsr_avg(X, Y, weights = ones(size(X, 1)); nlv,
         alpha = alpha, K = K, rep = rep, scal = scal)
 end
 
-function plsr_avg!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv, 
+function plsr_avg!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
         typf = "unif", typw = "bisquare", 
         alpha = 0, K = 5, rep = 10, scal = false)
     if typf == "unif"

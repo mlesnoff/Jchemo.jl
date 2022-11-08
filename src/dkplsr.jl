@@ -9,9 +9,9 @@ struct Dkplsr
 end
 
 """
-    dkplsr(X, Y, weights = ones(size(X, 1)); nlv, 
+    dkplsr(X, Y, weights = ones(nro(X)); nlv, 
         kern = "krbf", scal = false, kwargs...)
-    dkplsr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv, 
+    dkplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
         kern = "krbf", scal = scal, kwargs...)
 Direct kernel partial least squares regression (DKPLSR) (Bennett & Embrechts 2003).
 
@@ -98,13 +98,13 @@ axislegend("Method")
 f
 ```
 """ 
-function dkplsr(X, Y, weights = ones(size(X, 1)); nlv, 
+function dkplsr(X, Y, weights = ones(nro(X)); nlv, 
         kern = "krbf", scal = false, kwargs...)
     dkplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
         nlv = nlv, kern = kern, scal = scal, kwargs...)
 end
 
-function dkplsr!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); 
+function dkplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
         nlv, kern = "krbf", scal = false, kwargs...)    
     p = nco(X)
     q = nco(Y)

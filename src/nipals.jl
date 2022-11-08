@@ -34,7 +34,7 @@ res.niter
 function nipals(X; tol = sqrt(eps(1.)), maxit = 200)
     X = ensure_mat(X)
     p = size(X, 2)
-    u = X[:, findmax(colnorm2(X))[2]]
+    u = X[:, findmax(colnorm(X))[2]]
     v = similar(X, p)   
     cont = true
     iter = 1
@@ -49,7 +49,7 @@ function nipals(X; tol = sqrt(eps(1.)), maxit = 200)
             cont = false
         end
     end
-    sv = sqrt(norm2(u))
+    sv = norm(u)
     u .= u / sv
     niter = iter - 1
     n = size(X, 1)

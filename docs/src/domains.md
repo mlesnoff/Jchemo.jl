@@ -263,12 +263,13 @@
 
 - **aggstat** Compute column-wise statistics (e.g. mean), by group
 - **center**, **scale**, **cscale** Column-wise centering and scaling of a matrix
-- **colmad**, **colmean**, **colnorm2**, **colstd**, **colsum**, **colvar**  Column-wise operations
+- **colmad**, **colmean**, **colnorm**, **colstd**, **colsum**, **colvar**  Column-wise operations
 - **covm**, **corm** Covariance and correlation matrices
 - **datasets** Datasets available in the package
 - **dens** Univariate kernel density estimation
 - **dummy** Build dummy table
 - **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
+- **fnorm** Frobenius norm of a matrix
 - **fweight** Compute weights from distances
 - **getknn** Find nearest neighbours between rows of matrices
 - **iqr** Interval inter-quartiles
@@ -278,7 +279,7 @@
 - **matB**, **matW** Between- and within-covariance matrices
 - **mweight** Normalize a vector to sum to 1.
 - **nco**, **nro**, Nb. rows and colmuns of an object.
-- **norm2** Squared norm of a vector
+- **normw** Weighted norm of a vector
 - **recodcat2int** Recode a categorical variable to a numeric variable
 - **recodnum2cla** Recode a continuous variable to classes
 - **replacebylev** Replace the elements of a vector by levels of corresponding order

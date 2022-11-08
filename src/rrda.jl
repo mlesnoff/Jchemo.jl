@@ -5,7 +5,7 @@ struct Rrda
 end
 
 """
-    rrda(X, y, weights = ones(size(X, 1)); lb)
+    rrda(X, y, weights = ones(nro(X)); lb)
 Discrimination based on ridge regression (RR-DA).
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -57,7 +57,7 @@ err(res.pred, ytest)
 Jchemo.predict(fm, Xtest; lb = [.1; .01]).pred
 ```
 """ 
-function rrda(X, y, weights = ones(size(X, 1)); lb,
+function rrda(X, y, weights = ones(nro(X)); lb,
         scal = false)
     z = dummy(y)
     fm = rr(X, z.Y, weights; lb = lb, 

@@ -13,7 +13,7 @@ struct PlsrStack
     weights_stack::Array
 end
 
-function plsr_avg_aic(X, y, weights = ones(size(X, 1)); nlv, 
+function plsr_avg_aic(X, y, weights = ones(nro(X)); nlv, 
         bic = false, typw = "bisquare",
         alpha = 0, scal = false)
     plsr_avg_aic!(copy(ensure_mat(X)), copy(ensure_mat(y)), weights; nlv = nlv,
@@ -21,7 +21,7 @@ function plsr_avg_aic(X, y, weights = ones(size(X, 1)); nlv,
         alpha = alpha, scal = scal)
 end
 
-function plsr_avg_aic!(X::Matrix, y::Matrix, weights = ones(size(X, 1)); nlv,
+function plsr_avg_aic!(X::Matrix, y::Matrix, weights = ones(nro(X)); nlv,
         bic = false, typw = "bisquare", 
         alpha = 0, scal = false)
     n, p = size(X)
