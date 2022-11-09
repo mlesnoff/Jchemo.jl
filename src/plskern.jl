@@ -149,17 +149,15 @@ function plskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     w   = similar(X, p)
     r   = similar(X, p)
     c   = similar(X, q)
-    tmp = similar(XtY)
+    tmp = similar(XtY) # = XtY_approx
     # End
     @inbounds for a = 1:nlv
         if q == 1
             w .= vcol(XtY, 1)
+            w ./= norm(w)
         else
-            tmp .= XtY
-            u = svd!(tmp).V           # = svd(XtY').U = eigen(XtY' * XtY).vectors[with ordering]
-            mul!(w, XtY, vcol(u, 1))           
-        end
-        w ./= sqrt(dot(w, w))                                  
+            w .= svd(XtY).U[:, 1]
+        end                                  
         r .= w
         if a > 1
             @inbounds for j = 1:(a - 1)

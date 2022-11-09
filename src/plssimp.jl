@@ -64,16 +64,15 @@ function plssimp!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     c   = similar(X, q)
     tmp = similar(XtY)
     # End
-    # This is Table 1 (as fast as Appendix) in de Jong 1993
+    # de Jong Chemolab 1993 Table 1 (as fast as Appendix) 
     @inbounds for a = 1:nlv
         if a == 1
             tmp .= XtY
         else
-            z = vcol(P, 1:(a - 1))
-            tmp .= XtY .- z * inv(z' * z) * z' * XtY
+            zP = vcol(P, 1:(a - 1))
+            tmp .= XtY .- zP * inv(zP' * zP) * zP' * XtY
         end
-        u = svd!(tmp).U 
-        r .= u[:, 1]
+        r .= svd!(tmp).U[:, 1] 
         mul!(t, X, r)                 
         dt .= weights .* t            
         tt = dot(t, dt)               
