@@ -6,9 +6,9 @@ struct Comdim
     Wbl::Vector{Array{Float64}}
     lb::Array{Float64}
     mu::Vector{Float64}
+    bscales::Vector{Float64}
     xmeans::Vector{Vector{Float64}}
     xscales::Vector{Vector{Float64}}
-    bscales::Vector{Float64}
     weights::Vector{Float64}
     niter::Vector{Float64}
 end
@@ -124,7 +124,7 @@ res.rv
 ```
 """
 function comdim(Xbl, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "frob", tol = sqrt(eps(1.)), maxit = 200,
+        bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
@@ -222,7 +222,7 @@ function comdim!(Xbl, weights = ones(nro(Xbl[1])); nlv,
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
     Comdim(T, U, W, Tb, Wbl, lb, mu, 
-        xmeans, xscales, bscales, weights, niter)
+        bscales, xmeans, xscales, weights, niter)
 end
 
 """ 

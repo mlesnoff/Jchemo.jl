@@ -67,7 +67,7 @@ Compute redundancy coefficients between two matrices.
 rd(X, Y) returns the redundancy coefficient between X and each column
 of Y, i.e.: 
 
-[Sum_j(=1,..,p) cor(xj, y1)^2; ...; Sum_j(=1,..,p) cor(xj, yq)^2] / p
+[Sum_j(=1, .., p) cor(xj, y1)^2 / p ; ...; Sum_j(=1, .., p) cor(xj, yq)^2 / p] 
 
 See Tenenhaus 1998 section 2.2.1 p.10-11.
 
@@ -98,7 +98,7 @@ function rd(X, Y, weights; corr = true)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)
-    weights = mweigth(weights)
+    weights = mweight(weights)
     corr ? fun = corm : fun = covm
     z = fun(X, Y, weights).^2
     sum(z; dims = 1) / p

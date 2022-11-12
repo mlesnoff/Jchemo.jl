@@ -6,16 +6,16 @@ struct Mbpca
     Wbl::Vector{Array{Float64}}
     lb::Array{Float64}
     mu::Vector{Float64}
+    bscales::Vector{Float64}
     xmeans::Vector{Vector{Float64}}
     xscales::Vector{Vector{Float64}}
-    bscales::Vector{Float64}
     weights::Vector{Float64}
     niter::Vector{Float64}
 end
 
 """
     mbpca(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = "frob", tol = sqrt(eps(1.)), maxit = 200,
+        bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
     mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "frob", tol = sqrt(eps(1.)), maxit = 200,
@@ -102,7 +102,7 @@ res.rv
 ```
 """
 function mbpca(Xbl, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "frob", tol = sqrt(eps(1.)), maxit = 200,
+        bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
@@ -119,7 +119,7 @@ end
 ## Normed global score u = 1st left singular vector of SVD of Tb,
 ## where Tb concatenates the block-scores 
 function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = "frob", tol = sqrt(eps(1.)), maxit = 200,
+        bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
     nbl = length(Xbl)
     n = nro(Xbl[1])
@@ -206,7 +206,7 @@ function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
     Mbpca(T, U, W, Tb, Wbl, lb, mu,
-        xmeans, xscales, bscales, weights, niter)
+        bscales, xmeans, xscales, weights, niter)
 end
 
 """ 

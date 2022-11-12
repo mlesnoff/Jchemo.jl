@@ -1,11 +1,11 @@
 struct MbPlsr
     fm
     T::Matrix{Float64}
+    bscales::Vector{Float64}
     xmeans::Vector{Vector{Float64}}
     xscales::Vector{Vector{Float64}}
     ymeans::Vector{Float64}
     yscales::Vector{Float64}
-    bscales
     weights::Vector{Float64}
 end
 
@@ -107,7 +107,7 @@ function mbplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
     end
     X = reduce(hcat, Xbl)
     fm = plskern(X, Y, weights; nlv = nlv, scal = false)
-    MbPlsr(fm, fm.T, xmeans, xscales, ymeans, yscales, bscales, weights)
+    MbPlsr(fm, fm.T, bscales, xmeans, xscales, ymeans, yscales, weights)
 end
 
 """ 
