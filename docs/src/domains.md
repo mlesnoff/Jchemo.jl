@@ -10,13 +10,18 @@
 - **kpca** Kernel  (KPCA) *Scholkopf et al. 2002*
 
 *Multiblock*
-- **mbpca** Consensus (MBPCA = CPCA)
-- **comdim** Common components and specific weights (ComDim = CCSWA = HPCA)
-- **mblock** Make blocks from a matrix
-- **blockscal_col, _frob, _mfa, _sd** Scaling blocks
-- **rd** Redundancy coefficients between two matrices
-- **lg** Lg coefficient
-- **rv** RV correlation coefficient
+
+- 2 blocks
+    - **rcca**: Regularized canonical correlation analysis (RCCA) 
+- 2 blocks or more
+    - **mbpca** Consensus (MBPCA = CPCA)
+    - **comdim** Common components and specific weights (ComDim = CCSWA = HPCA)
+- Utilities
+    - **mblock** Make blocks from a matrix
+    - **blockscal_col, _frob, _mfa, _sd** Scaling blocks
+    - **rd** Redundancy coefficients between two matrices
+    - **lg** Lg coefficient
+    - **rv** RV correlation coefficient
 
 *Utility (works also for PLS)* 
 - **xfit** Matrix fitting 

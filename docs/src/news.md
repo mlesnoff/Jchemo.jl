@@ -6,6 +6,7 @@ To display the plots, the user has to install and load one of
 the Makie's backend (e.g. CairoMakie).
 
 - New
+    - **rcca**: Regularized canonical correlation analysis. (RCCA).
     - **colnorm2** was removed, replaced by **colnorm**: 
     Norm of each column of a dataset.
     - **fnorm**: Frobenius norm of a matrix.

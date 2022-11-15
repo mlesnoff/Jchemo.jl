@@ -12,7 +12,6 @@ struct Rcca
     weights::Vector{Float64}
 end
 
-
 """
     rcca(X, Y, weights = ones(nro(X)); nlv, 
         bscal = "none", alpha = 0, scal = false)
@@ -21,104 +20,51 @@ end
 Regularized canonical correlation Analysis (RCCA)
 * `X` : First block (matrix) of data.
 * `Y` : Second block (matrix) of data.
-* `weights` : Weights of the observations (rows). Internally normalized to sum to 1. 
-* `nlv` : Nb. latent variables (LVs) to compute.
+* `weights` : Weights of the observations (rows). 
+    Internally normalized to sum to 1. 
+* `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling (`"none"`, `"frob"`). 
     See functions `blockscal`.
-* `tol` : Tolerance value for convergence.
-* `niter` : Maximum number of iterations.
-* `scal` : Boolean. If `true`, each column of `Xbl` 
+* `alpha` : Regularization parameter (∊ [0, 1]).
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-This version corresponds to the "SVD" algorithm of Hannafi & Qannari 2008 p.84.
-
-
-
-The function returns several objects, in particular:
-* `T` : The non normed global scores.
-* `U` : The normed global scores.
-* `W` : The global loadings.
-* `Tb` : The block scores.
-* `Wbl` : The block loadings.
-* `lb` : The specific weights (saliences) "lambda".
-* `mu` : The sum of the squared saliences.
-
-Function `summary` returns: 
-* `explvarx` : Proportion of the X total inertia (sum of the squared norms of the 
-    blocks) explained by each global score.
-* `explvarxx` : Proportion of the XX' total inertia (sum of the squared norms of the
-    products X_k * X_k') explained by each global score 
-    (= indicator "V" in Qannari et al. 2000, Hanafi et al. 2008).
-* `sal2` : Proportion of the squared saliences (specific weights)
-    of each block within each global score. 
-* `contr_block` : Contribution of each block to the global scores 
-    (= proportions of the saliences "lambda" within each score)
-* `explX` : Proportion of the inertia of the blocks explained by each global score.
-* `cort2x` : Correlation between the global scores and the original variables.  
-* `cort2tb` : Correlation between the global scores and the block scores.
-* `rv` : RV coefficient. 
-* `lg` : Lg coefficient. 
+The regularization uses the continuum formulation presented by Qannari & Hanafi 2005 
+and Mangamana et al. 2019. When regularization: 
+* X'X is replaced by (1 - alpha) * X' * X + alpha * Ix
+* Y'Y is replaced by (1 - alpha) * Y' * Y + alpha * Iy
 
 ## References
-Cariou, V., Qannari, E.M., Rutledge, D.N., Vigneau, E., 2018. ComDim: From multiblock data 
-analysis to path modeling. Food Quality and Preference, Sensometrics 2016: 
-Sensometrics-by-the-Sea 67, 27–34. https://doi.org/10.1016/j.foodqual.2017.02.012
 
-Cariou, V., Jouan-Rimbaud Bouveresse, D., Qannari, E.M., Rutledge, D.N., 2019. 
-Chapter 7 - ComDim Methods for the Analysis of Multiblock Data in a Data Fusion 
-Perspective, in: Cocchi, M. (Ed.), Data Handling in Science and Technology, 
-Data Fusion Methodology and Applications. Elsevier, pp. 179–204. 
-https://doi.org/10.1016/B978-0-444-63984-4.00007-7
+Hotelling, H. (1936): “Relations between two sets of variates”, Biometrika 28: pp. 321–377.
 
-Ghaziri, A.E., Cariou, V., Rutledge, D.N., Qannari, E.M., 2016. Analysis of multiblock 
-datasets using ComDim: Overview and extension to the analysis of (K + 1) datasets. 
-Journal of Chemometrics 30, 420–429. https://doi.org/10.1002/cem.2810
+Qannari, E.M., Hanafi, M., 2005. A simple continuum regression approach. 
+Journal of Chemometrics 19, 387–392. https://doi.org/10.1002/cem.942
 
-Hanafi, M., 2008. Nouvelles propriétés de l’analyse en composantes communes et 
-poids spécifiques. Journal de la société française de statistique 149, 75–97.
+Tchandao Mangamana, E., Cariou, V., Vigneau, E., Glèlè Kakaï, R.L., Qannari, E.M., 2019. 
+Unsupervised multiblock data analysis: A unified approach and extensions. 
+Chemometrics and Intelligent Laboratory Systems 194, 103856. 
+https://doi.org/10.1016/j.chemolab.2019.103856
 
-Qannari, E.M., Wakeling, I., Courcoux, P., MacFie, H.J.H., 2000. Defining the underlying 
-sensory dimensions. Food Quality and Preference 11, 151–154. 
-https://doi.org/10.1016/S0950-3293(99)00069-5
+Weenink, D. 2003. Canonical Correlation Analysis, Institute of Phonetic Sciences, 
+Univ. of Amsterdam, Proceedings 25, 81-99.
 
 ## Examples
 ```julia
-using JLD2
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "ham.jld2") 
-@load db dat
-pnames(dat) 
+zX = [1. 2 3 4 5 7 100; 4 1 6 7 12 13 28; 12 5 6 13 3 1 5; 27 18 7 6 2 0 12 ; 
+    12 11 28 7 1 25 2 ; 2 3 7 1 0 7 26 ; 14 12 101 4 3 7 10 ; 8 7 6 5 4 3 -100] 
+n = nro(zX) 
+X = zX[:, 1:4]
+Y = zX[:, 5:7]
 
-X = dat.X
-group = dat.group
-listbl = [1:11, 12:19, 20:25]
-Xbl = mblock(X, listbl)
-# "New" = first two rows of Xbl 
-Xbl_new = mblock(X[1:2, :], listbl)
+alpha = 0
+#alpha = .10
+fm = rcca(X, Y; nlv = 3, alpha = alpha)
+pnames(fm)
 
-bscal = "none"
-#bscal = "frob"
-fm = comdim(Xbl; nlv = 4, bscal = bscal) ;
-fm.U
-fm.T
-Jchemo.transform(fm, Xbl)
-Jchemo.transform(fm, Xbl_new) 
-
-res = Jchemo.summary(fm, Xbl) ;
-fm.lb
-rowsum(fm.lb)
-fm.mu
-res.explvarx
-res.explvarxx
-res.explX # = fm.lb if bscal = "frob"
-rowsum(Matrix(res.explX))
-res.contr_block
-res.sal2
-colsum(Matrix(res.sal2))
-res.cort2x 
-res.cort2tb
-res.rv
+res = summary(fm, X, Y)
+pnames(res)
 ```
 """
 function rcca(X, Y, weights = ones(nro(X)); nlv, 

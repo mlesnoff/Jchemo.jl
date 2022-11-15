@@ -42,6 +42,7 @@ include("mblock.jl")
 include("blockscal.jl")
 include("mbpca.jl")
 include("comdim.jl")
+include("rcca.jl")
 
 # Regression 
 include("aov1.jl")
@@ -186,6 +187,7 @@ export
     blockscal, blockscal_frob, blockscal_mfa,
     blockscal_ncol, blockscal_sd,
     comdim, comdim!, mbpca, mbpca!,
+    rcca!, rcca,
     rv, lg, rd, 
     # Regression
     aov1,
