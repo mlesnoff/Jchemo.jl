@@ -20,7 +20,8 @@ end
     lwplsr_avg(X, Y; nlvdis, metric, h, k, nlv, 
         typf = "unif", typw = "bisquare", alpha = 0, K = 5, rep = 10,
         tol = 1e-4, scal = false, verbose = false)
-Averaging kNN-LWPLSR models with different numbers of LVs.
+Averaging kNN-LWPLSR models with different numbers of 
+    latent variables (LVs).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `nlvdis` : Number of latent variables (LVs) to consider in the global PLS 

@@ -22,7 +22,7 @@ end
 Kernel ridge regression (KRR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations.
+* `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
 * `lb` : A value of the regularization parameter "lambda".
 * 'kern' : Type of kernel used to compute the Gram matrices.
     Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`.
@@ -169,7 +169,7 @@ end
 """
     predict(object::Krr, X; lb = nothing)
 Compute Y-predictions from a fitted model.
-* `object` : The maximal fitted model.
+* `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `lb` : Regularization parameter, or collection of regularization parameters, "lambda" to consider. 
     If nothing, it is the parameter stored in the fitted model.

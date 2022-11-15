@@ -11,8 +11,6 @@ Compute the model complexity (df) of PLSR models with the CGLS algorithm.
 
 The number of degrees of freedom (df) of the model is returned for 0, 1, ..., nlv LVs.
 
-`X` and `y` are internally centered. The models are computed with an intercept. 
-
 ## References
 Hansen, P.C., 1998. Rank-Deficient and Discrete Ill-Posed Problems, Mathematical Modeling and Computation. 
 Society for Industrial and Applied Mathematics. https://doi.org/10.1137/1.9780898719697

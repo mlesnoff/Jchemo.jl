@@ -88,7 +88,7 @@ end
     rp!(X::Matrix, weights = ones(nro(X)); nlv, fun = rpmat_li, scal = false, kwargs ...)
 Make a random projection of matrix X.
 * `X` : X-data (n, p).
-* `weights` : Weights (n) of the observations.
+* `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
 * `nlv` : Nb. dimensions on which `X` is projected.
 * `fun` : A function of random projection.
 * `kwargs` : Optional arguments of function `fun`.

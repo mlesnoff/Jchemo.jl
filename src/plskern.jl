@@ -23,16 +23,13 @@ Partial Least Squares Regression (PLSR) with the
 "Improved kernel algorithm #1" (Dayal & McGegor, 1997).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations.
+* `weights` : Weights (n) of the observations. 
+    Internally normalized to sum to 1.
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
     
-`weights` is internally normalized to sum to 1.
-
-`X` and `Y` are internally centered.
-
-For the row-weighting in PLS algorithms (`weights`), see in particular Schaal et al. 2002, 
+About the row-weighting in PLS algorithms (`weights`), see in particular Schaal et al. 2002, 
 Siccard & Sabatier 2006, Kim et al. 2011, and Lesnoff et al. 2020. 
 
 ## References
@@ -183,10 +180,10 @@ end
 
 """ 
     transform(object::Plsr, X; nlv = nothing)
-Compute LVs ("scores" T) from a fitted model and a matrix X.
-* `object` : The maximal fitted model.
+Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
+* `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
-* `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
+* `nlv` : Nb. LVs to consider.
 """ 
 function transform(object::Plsr, X; nlv = nothing)
     X = ensure_mat(X)
@@ -201,8 +198,8 @@ end
 """
     coef(object::Union{Plsr, Pcr}; nlv = nothing)
 Compute the X b-coefficients of a model fitted with `nlv` LVs.
-* `object` : The maximal fitted model.
-* `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
+* `object` : The fitted model.
+* `nlv` : Nb. LVs to consider.
 
 If X is (n, p) and Y is (n, q), the returned object `B` is a matrix (p, q). 
 If `nlv` = 0, `B` is a matrix of zeros.
@@ -226,7 +223,6 @@ Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
-    If nothing, it is the maximum nb. LVs.
 """ 
 function predict(object::Union{Plsr, Pcr}, X; nlv = nothing)
     X = ensure_mat(X)
@@ -245,7 +241,7 @@ end
 """
     summary(object::Plsr, X)
     summary(object::Plsr, X, Y)
-Summarize the maximal (i.e. with maximal nb. LVs) fitted model.
+Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 * `Y` : The Y-data that was used to fit the model.
@@ -256,7 +252,7 @@ function Base.summary(object::Plsr, X::Union{Vector, Matrix, DataFrame})
     X = cscale(X, object.xmeans, object.xscales)
     # Could be cscale! but changes X
     # If too heavy ==> Makes summary!
-    sstot = sum(object.weights' * (X.^2))
+    sstot = sum(object.weights' * (X.^2)) # = fnorm(X, object.weights)^2 ==> to replace
     tt = object.TT
     tt_adj = vec(sum(object.P.^2, dims = 1)) .* tt
     pvar = tt_adj / sstot

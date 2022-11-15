@@ -61,7 +61,8 @@
 - **dkplsr** Direct non linear kernel (DKPLSR) *Bennett & Embrechts 2003*
 
 *Averaging and stacking*
-- **plsr_avg** Averaging and stacking PLSR models with different numbers of LVs (PLSR-AVG)
+- **plsr_avg** Averaging and stacking PLSR models with different numbers of 
+    latent variables (LVs) (PLSR-AVG)
 
 *Variable selection*
 - **covsel** Variable selection from partial correlation or covariance (Covsel)
@@ -132,7 +133,8 @@
 
 - **mlrda** On MLR predictions (MLR-DA)
 - **plsrda** On PLSR predictions (PLSR-DA; = common "PLSDA")
-- **plsrda_avg** Averaging PLSR-DA models with different numbers of LVs (PLSR-DA-AVG)
+- **plsrda_avg** Averaging PLSR-DA models with different numbers of 
+    latent variables (LVs) (PLSR-DA-AVG)
 - **rrda** On RR predictions (RR-DA)
 
 *Non linear*
@@ -145,10 +147,12 @@
 - **qda** Quadratic discriminant analysis (QDA)
 - **plslda** LDA on PLS latent variables (PLS-LDA)
 - **plsqda** QDA on PLS latent variables (PLS-QDA)
-- **plsqda_avg** Averaging PLS-QDA models with different numbers of LVs (PLS-QDA-AVG)
+- **plsqda_avg** Averaging PLS-QDA models with different numbers of 
+    latent variables (LVs) (PLS-QDA-AVG)
 
 *Averaging*
-- **plslda_avg** Averaging PLS-LDA models with different numbers of LVs (PLS-LDA-AVG)
+- **plslda_avg** Averaging PLS-LDA models with different numbers of 
+    latent variables (LVs) (PLS-LDA-AVG)
 
 *Utility*
 

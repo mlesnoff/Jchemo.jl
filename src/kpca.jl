@@ -111,10 +111,10 @@ end
 
 """ 
     transform(object::Kpca, X; nlv = nothing)
-Compute PCs (scores matrix "T") from a fitted model and X-data.
-* `object` : The maximal fitted model.
+Compute PCs (scores T) from a fitted model and X-data.
+* `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
-* `nlv` : Nb. PCs to consider. If nothing, it is the maximum nb. PCs.
+* `nlv` : Nb. PCs to consider.
 """ 
 function transform(object::Kpca, X; nlv = nothing)
     a = size(object.T, 2)
@@ -141,7 +141,7 @@ function Base.summary(object::Kpca)
     sstot = sum(object.eig)
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(pc = 1:nlv, var = tt, 
+    explvarx = DataFrame(lv = 1:nlv, var = tt, 
         pvar = pvar, cumpvar = cumpvar)
     (explvarx = explvarx,)
 end

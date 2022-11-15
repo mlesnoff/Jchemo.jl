@@ -19,17 +19,16 @@ Multiblock PLSR (MBPLSR).
     Each component of the list is a block.
 * `Y` : Y-data.
 * `weights` : Weights of the observations (rows). 
+    Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `bscal` : Type of block scaling. 
     Possible values are: "none", "frob", "mfa", "ncol", "sd". 
     See functions `blockscal`.
-* `scal` : Boolean. If `true`, each column of `Xbl` and `Y` 
-    is scaled by its uncorrected standard deviation 
+* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and 
+    of `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-Usual PLSR on concatened X-blocks, after block scaling.
-
-`weights` is internally normalized to sum to 1. 
+PLSR (X, Y) where X is the horizontal concatenation of the blocks in `Xbl`.
 
 ## Examples
 ```julia
@@ -112,10 +111,10 @@ end
 
 """ 
     transform(object::MbPlsr, Xbl; nlv = nothing)
-Compute LVs ("scores" T) from a fitted model.
-* `object` : The maximal fitted model.
-* `Xbl` : A list (vector) of blocks (matrices) of Xbl-data for which LVs are computed.
-* `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
+Compute latent variables (LVs = scores T) from a fitted model.
+* `object` : The fitted model.
+* `Xbl` : A list (vector) of blocks (matrices) for which LVs are computed.
+* `nlv` : Nb. LVs to consider.
 """ 
 function transform(object::MbPlsr, Xbl; nlv = nothing)
     nbl = length(Xbl)
@@ -134,7 +133,6 @@ Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list (vector) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
-    If nothing, it is the maximum nb. LVs.
 """ 
 function predict(object::MbPlsr, Xbl; nlv = nothing)
     nbl = length(Xbl)

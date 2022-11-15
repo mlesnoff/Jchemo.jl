@@ -29,7 +29,7 @@ algorithm (Rosipal & Trejo, 2001).
 
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations.
+* `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * 'kern' : Type of kernel used to compute the Gram matrices.
     Possible values are "krbf" or "kpol" (see respective functions `krbf` and `kpol`).
@@ -194,10 +194,10 @@ end
 
 """ 
     transform(object::Kplsr, X; nlv = nothing)
-Compute LVs (score matrix "T") from a fitted model and X-data.
-* `object` : The maximal fitted model.
+Compute latent variables (LVs = scores T) from a fitted model and X-data.
+* `object` : The fitted model.
 * `X` : X-data for which LVs are computed.
-* `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
+* `nlv` : Nb. LVs to consider.
 """ 
 function transform(object::Kplsr, X; nlv = nothing)
     a = size(object.T, 2)
@@ -216,7 +216,7 @@ end
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
-    If nothing, it is the maximum nb. LVs.
+   
 """ 
 function coef(object::Kplsr; nlv = nothing)
     a = size(object.T, 2)
@@ -230,7 +230,7 @@ end
 """
     predict(object::Kplsr, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
-* `object` : The maximal fitted model.
+* `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 If nothing, it is the maximum nb. LVs.

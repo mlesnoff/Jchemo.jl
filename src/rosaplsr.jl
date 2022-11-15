@@ -16,14 +16,15 @@ end
 """
     rosaplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv)
     rosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv)
-Multi-block PLSR with the ROSA algorithm (Liland et al. 2016).
+Multiblock PLSR with the ROSA algorithm (Liland et al. 2016).
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
 * `Y` : Y-data.
-* `weights` : Weights of the observations (rows).
+* `weights` : Weights of the observations (rows). 
+    Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to consider.
-* `scal` : Boolean. If `true`, each column of `Xbl` and `Y` 
-    is scaled by its uncorrected standard deviation 
+* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and 
+    of `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
 The function has the following differences with the original 
@@ -32,10 +33,6 @@ algorithm of Liland et al. (2016):
 * Multivariate `Y` is allowed. In such a case, the squared residuals are summed 
     over the columns for finding the winning block for each global LV 
     (therefore Y-columns should have the same scale).
-
-`weights` is internally normalized to sum to 1. 
-
-`X` and `Y` are internally centered. 
 
 ## References
 Liland, K.H., Næs, T., Indahl, U.G., 2016. ROSA—a fast extension of partial least 
@@ -204,10 +201,10 @@ end
 
 """ 
     transform(object::Rosaplsr, Xbl; nlv = nothing)
-Compute LVs ("scores" T) from a fitted model.
-* `object` : The maximal fitted model.
+Compute latent variables (LVs = scores T) from a fitted model.
+* `object` : The fitted model.
 * `Xbl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
-* `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
+* `nlv` : Nb. LVs to consider.
 """ 
 function transform(object::Rosaplsr, Xbl; nlv = nothing)
     a = size(object.T, 2)
@@ -223,8 +220,8 @@ end
 """
     coef(object::Rosaplsr; nlv = nothing)
 Compute the X b-coefficients of a model fitted with `nlv` LVs.
-* `object` : The maximal fitted model.
-* `nlv` : Nb. LVs to consider. If nothing, it is the maximum nb. LVs.
+* `object` : The fitted model.
+* `nlv` : Nb. LVs to consider.
 """ 
 function coef(object::Rosaplsr; nlv = nothing)
     a = size(object.T, 2)
@@ -244,7 +241,6 @@ Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list (vector) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
-    If nothing, it is the maximum nb. LVs.
 """ 
 function predict(object::Rosaplsr, Xbl; nlv = nothing)
     a = size(object.T, 2)

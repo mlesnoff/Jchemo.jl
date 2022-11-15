@@ -18,25 +18,24 @@ end
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
     mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = "frob", tol = sqrt(eps(1.)), maxit = 200,
+        bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
 Consensus principal components analysis (CPCA = MBPCA).
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
 * `weights` : Weights of the observations (rows). 
-* `nlv` : Nb. latent variables (LVs) to compute.
-* `bscal` : Type of block scaling (`"frob"`, `"mfa"`, `"none"`). 
+    Internally normalized to sum to 1. 
+* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `bscal` : Type of block scaling (`"none"`, `"frob"`, `"mfa"`). 
     See functions `blockscal`.
 * `tol` : Tolerance value for convergence.
 * `niter` : Maximum number of iterations.
-* `scal` : Boolean. If `true`, each column of `Xbl` 
+* `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-`weights` is internally normalized to sum to 1.
-
 The global scores are equal to the scores of the PCA of 
-the concatenation X = [X1 X2 ... Xk].
+the horizontal concatenation X = [X1 X2 ... Xk].
 
 The function returns several objects, in particular:
 * `T` : The non normed global scores.
@@ -211,10 +210,10 @@ end
 
 """ 
     transform(object::Mbpca, Xbl; nlv = nothing)
-Compute components (scores matrix "T") from a fitted model and X-data.
-* `object` : The maximal fitted model.
+Compute latent variables (LVs = scores T) from a fitted model and X-data.
+* `object` : The fitted model.
 * `Xbl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
-* `nlv` : Nb. components to compute. If nothing, it is the maximum nb. PCs.
+* `nlv` : Nb. LVs to compute.
 """ 
 function transform(object::Mbpca, Xbl; nlv = nothing)
     a = size(object.T, 2)
@@ -270,7 +269,7 @@ function summary(object::Mbpca, Xbl)
     tt = colsum(object.lb)    
     pvar = tt / sum(sstot)
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(pc = 1:nlv, var = tt, pvar = pvar, 
+    explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, 
         cumpvar = cumpvar)
     # Contribution of the blocks to global scores = lb proportions (contrib)
     z = scale(object.lb, colsum(object.lb))

@@ -11,7 +11,7 @@ end
 Bagging of regression models.
 * `X` : X-data  (n, p).
 * `Y` : Y-data  (n, q).
-* `weights` : Weights (n) of the observations.
+* `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
 * `wcol` : Weights (p) of the sampling of the variables.
 * `rep` : Nb. of bagging repetitions.
 * `withr`: Type of sampling of the observations

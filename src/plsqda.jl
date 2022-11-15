@@ -4,7 +4,8 @@
 QDA on PLS latent variables.
 * `X` : X-data.
 * `y` : y-data (class membership).
-* `weights` : Weights of the observations.
+* `weights` : Weights of the observations. 
+    Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `prior` : Type of prior probabilities for class membership.
     Posible values are: "unif" (uniform), "prop" (proportional).

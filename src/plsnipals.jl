@@ -7,14 +7,11 @@ Partial Least Squares Regression (PLSR) with the NIPALS algorithm
 (e.g. Tenenhaus 1998, Wold 2002).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations.
+* `weights` : Weights (n) of the observations. 
+    Internally normalized to sum to 1.
 * `nlv` : Nb. latent variables (LVs) to consider.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
-
-`weights` is internally normalized to sum to 1. 
-
-`X` and `Y` are internally centered. 
 
 **Note:** In this function, for PLS2, the NIPALS iterations are replaced by a 
 direct computation of the PLS weights (w) by SVD decomposition of matrix X'Y 

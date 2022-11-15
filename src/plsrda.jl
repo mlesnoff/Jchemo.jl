@@ -10,7 +10,7 @@ end
 Discrimination based on partial least squares regression (PLSR-DA).
 * `X` : X-data.
 * `y` : y-data (class membership).
-* `weights` : Weights of the observations.
+* `weights` : Weights of the observations. Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
@@ -19,7 +19,7 @@ This is the usual "PLSDA".
 The training variable `y` (univariate class membership) is transformed
 to a dummy table (Ydummy) containing nlev columns, where nlev is the number 
 of classes present in `y`. Each column of Ydummy is a dummy (0/1) variable. 
-Then, a PLS2 is implemented on `X` and Ydummy, returning `nlv` latent variables (LVs).
+Then, a PLS2 is implemented on `X` and Ydummy, returning `nlv` LVs.
 Finally, a multiple linear regression (MLR) is run between the LVs and each 
 column of Ydummy, returning predictions of the dummy variables 
 (= object `posterior` returned by function `predict`). 
@@ -79,7 +79,7 @@ Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
-    If nothing, it is the maximum nb. LVs.
+   
 """ 
 function predict(object::Plsrda, X; nlv = nothing)
     X = ensure_mat(X)

@@ -15,12 +15,11 @@ end
     pcasvd!(X::Matrix, weights = ones(nro(X)); nlv, scal = false)
 PCA by SVD factorization.
 * `X` : X-data (n, p). 
-* `weights` : Weights (n) of the observations.
+* `weights` : Weights (n) of the observations. 
+    Internally normalized to sum to 1.
 * `nlv` : Nb. principal components (PCs).
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
-
-`weights` is internally normalized to sum to 1.
 
 Let us note D the (n, n) diagonal matrix of `weights`
 and X the centered matrix in metric D.
@@ -103,10 +102,10 @@ end
 
 """ 
     transform(object::Pca, X; nlv = nothing)
-Compute components (scores matrix "T") from a fitted model and X-data.
-* `object` : The maximal fitted model.
+Compute latent variables (LVs = scores T) from a fitted model and X-data.
+* `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
-* `nlv` : Nb. components to compute. If nothing, it is the maximum nb. PCs.
+* `nlv` : Nb. LVs to compute.
 """ 
 function transform(object::Union{Pca, Fda}, X; nlv = nothing)
     X = ensure_mat(X)
@@ -134,7 +133,7 @@ function Base.summary(object::Pca, X::Union{Matrix, DataFrame})
     # = object.sv[1:nlv].^2
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(pc = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
     nam = string.("pc", 1:nlv)
     contr_ind = DataFrame(scale(TT, tt), nam)
     cor_circle = DataFrame(corm(X, object.T, object.weights), nam)

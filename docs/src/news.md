@@ -20,6 +20,7 @@ the Makie's backend (e.g. CairoMakie).
             - **mbplsr_rosa** ==> **rosaplsr**
             - **mbplsr_so** ==> **soplsr**
         - Argument 'X_bl' renamed to 'Xbl'
+    - Variable 'pc' in summary outputs of PCA and KPCA functions was renamed to 'lv'. 
     - Code cleaning.
 
 ### *Version 0.1.6*

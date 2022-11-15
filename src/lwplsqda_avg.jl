@@ -16,7 +16,8 @@ end
 """
     lwplsqda_avg(X, y; nlvdis, metric, h, k, nlv, 
         tol = 1e-4, scal = false, verbose = false)
-Averaging of kNN-LWPLSR-DA models with different numbers of LVs.
+Averaging of kNN-LWPLSR-DA models with different numbers of 
+    latent variables (LVs).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `nlvdis` : Number of latent variables (LVs) to consider in the global PLS 

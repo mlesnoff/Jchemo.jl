@@ -61,7 +61,7 @@ end
 Compute redundancy coefficients between two matrices.
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
-* `weights` : Weights (n) of the observations.
+* `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
 * `corr` : If `true`, correlation is used, else covariance is used. 
 
 rd(X, Y) returns the redundancy coefficient between X and each column

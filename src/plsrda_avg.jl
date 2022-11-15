@@ -8,7 +8,8 @@ end
 
 """ 
     plsrda_avg(X, y, weights = ones(nro(X)); nlv)
-Averaging of PLSR-DA models with different numbers of LVs.
+Averaging of PLSR-DA models with different numbers of 
+    latent variables (LVs).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * weights : Weights of the observations.
@@ -20,8 +21,7 @@ Averaging of PLSR-DA models with different numbers of LVs.
     is scaled by its uncorrected standard deviation.
 
 Ensemblist method where the predictions are calculated by "averaging" 
-the predictions of a set of models built with different numbers of 
-latent variables (LVs).
+the predictions of a set of models built with different numbers of LVs.
 
 For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for 
 a new observation is the most occurent class within the predictions 

@@ -15,8 +15,8 @@ Clusterwise PLSR.
     a k-means clustering is done internally and returns `ncla` clusters.
 * `ncla` : Only used if `cla = nothing`. 
     Number of clusters that has to be returned by the k-means clustering.
-* `nlv` : A character string such as "5:20" defining the range of the numbers of LVs 
-    to consider in the pLSR-AVG models ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
+* `nlv` : A character string such as "5:20" defining the range of the numbers of latent variables (LVs) 
+    to consider in the PLSR-AVG models ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
     are averaged). Syntax such as "10" is also allowed ("10": correponds to
     the single model with 10 LVs).
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
@@ -102,6 +102,12 @@ function cplsr_avg(X, Y, cla = nothing; ncla = nothing,
     CplsrAvg(fm, fm_da, lev, ni)
 end
 
+"""
+    predict(object::CplrAvg, X)
+Compute Y-predictions from a fitted model.
+* `object` : The fitted model.
+* `X` : X-data for which predictions are computed.
+""" 
 function predict(object::CplsrAvg, X)
     X = ensure_mat(X)
     m = size(X, 1)

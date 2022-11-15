@@ -24,18 +24,17 @@ Common components and specific weights analysis (ComDim = CCSWA).
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
 * `weights` : Weights of the observations (rows). 
-* `nlv` : Nb. latent variables (LVs) to compute.
+    Internally normalized to sum to 1. 
+* `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling (`"none"`, `"frob"`). 
     See functions `blockscal`.
 * `tol` : Tolerance value for convergence.
 * `niter` : Maximum number of iterations.
-* `scal` : Boolean. If `true`, each column of `Xbl` 
+* `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
 This version corresponds to the "SVD" algorithm of Hannafi & Qannari 2008 p.84.
-
-`weights` is internally normalized to sum to 1.
 
 The function returns several objects, in particular:
 * `T` : The non normed global scores.
@@ -227,10 +226,10 @@ end
 
 """ 
     transform(object::Comdim, Xbl; nlv = nothing)
-Compute components (scores matrix "T") from a fitted model and X-data.
-* `object` : The maximal fitted model.
+Compute latent variables (LVs = scores T) from a fitted model and X-data.
+* `object` : The fitted model.
 * `Xbl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
-* `nlv` : Nb. components to compute. If nothing, it is the maximum nb. PCs.
+* `nlv` : Nb. LVs to compute.
 """ 
 function transform(object::Comdim, Xbl; nlv = nothing)
     a = size(object.T, 2)
@@ -287,7 +286,7 @@ function summary(object::Comdim, Xbl)
     tt = colsum(object.lb)    
     pvar = tt / sum(sstot)
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(pc = 1:nlv, var = tt, pvar = pvar, 
+    explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, 
         cumpvar = cumpvar)
     # Explained_XXt (indicator "V")
     S = list(nbl, Matrix{Float64})
@@ -299,7 +298,7 @@ function summary(object::Comdim, Xbl)
     tt = object.mu
     pvar = tt / sstot_xx
     cumpvar = cumsum(pvar)
-    explvarxx = DataFrame(pc = 1:nlv, var = tt, pvar = pvar, 
+    explvarxx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, 
         cumpvar = cumpvar)
     # Proportions of squared saliences
     sal2 = copy(object.lb)

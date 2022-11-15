@@ -10,7 +10,7 @@ end
 Compute a mutiple linear regression model (MLR) by using the QR algorithm.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations.
+* `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
 * `noint` : Define if the model is computed with an intercept or not.
 
 Safe but can be little slower than other methods.
@@ -92,7 +92,7 @@ Compute a mutiple linear regression model (MLR)
 using the Normal equations and a Choleski factorization.
 * `X` : X-data, with nb. columns >= 2 (required by function cholesky).
 * `Y` : Y-data.
-* `weights` : Weights of the observations.
+* `weights` : Weights of the observations. Internally normalized to sum to 1. 
 
 Compute a model with intercept.
 
@@ -123,7 +123,7 @@ end
 Compute a mutiple linear regression model (MLR)  by using a pseudo-inverse. 
 * `X` : X-data.
 * `Y` : Y-data.
-* `weights` : Weights of the observations.
+* `weights` : Weights of the observations. Internally normalized to sum to 1. 
 * `noint` : Define if the model is computed with an intercept or not.
 
 Safe but can be slower.  
@@ -166,7 +166,7 @@ Compute a mutiple linear regression model (MLR)
 by using the Normal equations and a pseudo-inverse.
 * `X` : X-data.
 * `Y` : Y-data.
-* `weights` : Weights of the observations.
+* `weights` : Weights of the observations. Internally normalized to sum to 1. 
 
 Safe and fast for p not too large.
 
@@ -200,7 +200,7 @@ end
 Compute a simple linear regression model (univariate x).
 * `x` : Univariate X-data.
 * `Y` : Y-data.
-* `weights` : Weights of the observations.
+* `weights` : Weights of the observations. Internally normalized to sum to 1. 
 
 Compute a model with intercept.
 

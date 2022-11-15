@@ -17,7 +17,7 @@ end
 Ridge regression (RR) implemented by SVD factorization.
 * `X` : X-data.
 * `Y` : Y-data.
-* `weights` : Weights of the observations.
+* `weights` : Weights of the observations. Internally normalized to sum to 1. 
 * `lb` : A value of the regularization parameter "lambda".
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
@@ -114,7 +114,7 @@ end
 Ridge regression (RR) using the Normal equations and a Cholesky factorization.
 * `X` : X-data.
 * `Y` : Y-data.
-* `weights` : Weights of the observations.
+* `weights` : Weights of the observations. Internally normalized to sum to 1. 
 * `lb` : A value of the regularization parameter "lambda".
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.

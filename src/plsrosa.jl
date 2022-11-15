@@ -6,18 +6,14 @@
 Partial Least Squares Regression (PLSR) with the ROSA algorithm (Liland et al. 2016).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations.
+* `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
 * `nlv` : Nb. latent variables (LVs) to consider.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
 
-`weights` is internally normalized to sum to 1. 
-    
-`X` and `Y` are internally centered. 
-
 **Note:** The function has the following differences with the original 
 algorithm of Liland et al. (2016):
-* Scores T are not normed.
+* Scores T (LVs) are not normed.
 * Multivariate Y is allowed.
 
 See `?plskern` for examples.

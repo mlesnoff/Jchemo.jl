@@ -10,7 +10,8 @@ end
 LDA on PLS latent variables (PLS-LDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
-* `weights` : Weights of the observations.
+* `weights` : Weights of the observations. 
+    Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `prior` : Type of prior probabilities for class membership.
     Posible values are: "unif" (uniform), "prop" (proportional).
@@ -86,7 +87,7 @@ Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
-    If nothing, it is the maximum nb. LVs.
+   
 """ 
 function predict(object::PlsLda, X; nlv = nothing)
     X = ensure_mat(X)

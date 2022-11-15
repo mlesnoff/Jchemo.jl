@@ -259,14 +259,16 @@ end
 
 function colnorm(X, w)
     X = ensure_mat(X)
-    p = nco(X)
-    w = mweight(w)
-    z = similar(X, p)
-    @inbounds for j = 1:p
-        x = vcol(X, j)
-        z[j] = sqrt(dot(x, w .* x))
-    end
-    z 
+    #p = nco(X)
+    #w = mweight(w)
+    #z = similar(X, p)
+    #@inbounds for j = 1:p
+    #    x = vcol(X, j)
+    #    z[j] = sqrt(dot(x, w .* x))
+    #end
+    #z 
+    # Faster:
+    sqrt.(mweight(w)' * X.^2)
 end
 
 """
@@ -547,9 +549,16 @@ function fnorm(X)
 end
 
 function fnorm(X, w)
-    sqrtD = Diagonal(sqrt.(mweight(w)))
-    sqrt(ssq(sqrtD * X))
+    # 1
+    #sqrtD = Diagonal(sqrt.(mweight(w)))
+    #sqrt(ssq(sqrtD * X))
+    # 2
+    # sqrt(sum(colnorm(X, mweight(w)).^2))
+    # Faster:
+    sqrt(sum(mweigth(w)' * (X.^2)))
 end
+
+# Test: fnorm_2(X, w) = 
 
 """
     head(X)

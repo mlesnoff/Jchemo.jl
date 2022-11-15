@@ -13,13 +13,12 @@ Multiblock sequentially orthogonalized PLSR (SO-PLSR).
     Each component of the list is a block.
 * `Y` : Y-data.
 * `weights` : Weights of the observations (rows). 
+    Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to consider for each block. 
-    Vector that must have a length equal to the nb. blocks.
-* `scal` : Boolean. If `true`, each column of `Xbl` and `Y` 
-    is scaled by its uncorrected standard deviation 
+    A vector having a length equal to the nb. blocks.
+* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and 
+    of `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
-
-`weights` is internally normalized to sum to 1. 
 
 ## References
 - Biancolillo et al. , 2015. Combining SO-PLS and linear discriminant analysis 
@@ -89,9 +88,9 @@ end
 
 """ 
     transform(object::Soplsr, Xbl)
-Compute LVs ("scores" T) from a fitted model.
-* `object` : The maximal fitted model.
-* `Xbl` : A list (vector) of blocks (matrices) of Xbl-data for which LVs are computed.
+Compute latent variables (LVs = scores T) from a fitted model.
+* `object` : The fitted model.
+* `Xbl` : A list (vector) of blocks (matrices) for which LVs are computed.
 """ 
 function transform(object::Soplsr, Xbl)
     nbl = length(object.fm)
