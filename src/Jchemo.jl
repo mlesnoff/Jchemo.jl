@@ -31,6 +31,7 @@ include("rmgap.jl")
 include("dens.jl")
 
 # Exploratory
+include("fda.jl")     # Here since struct in pcasvd
 include("pcasvd.jl")
 include("pcaeigen.jl")
 include("kpca.jl")
@@ -79,7 +80,6 @@ include("treeda_xgb.jl")
 include("xfit.jl")
 
 # Discrimination 
-include("fda.jl")
 include("dmnorm.jl")
 include("rrda.jl")
 include("lda.jl") ; include("qda.jl")
