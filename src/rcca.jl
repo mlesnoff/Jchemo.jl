@@ -32,8 +32,8 @@ Regularized canonical correlation Analysis (RCCA)
 
 The regularization uses the continuum formulation presented by Qannari & Hanafi 2005 
 and Mangamana et al. 2019. When regularization: 
-* X'X is replaced by (1 - alpha) * X' * X + alpha * Ix
-* Y'Y is replaced by (1 - alpha) * Y' * Y + alpha * Iy
+* X'X is replaced by (1 - alpha) * X'X + alpha * Ix
+* Y'Y is replaced by (1 - alpha) * Y'Y + alpha * Iy
 
 ## References
 

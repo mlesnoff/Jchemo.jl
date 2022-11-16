@@ -1,21 +1,24 @@
 # Available methods
 
-## PCA
+## MULTIVARIATE EXPLORATORY ANALYSES
 
+*PCA* 
 - **pcaeigen** Eigen decomposition
 - **pcaeigenk** Eigen decomposition for wide matrices (kernel form)
 - **pcasvd** SVD decomposition
 
-*Non linear*
+*Non linear PCA*
 - **kpca** Kernel  (KPCA) *Scholkopf et al. 2002*
 
 *Multiblock*
 
 - 2 blocks
     - **rcca**: Regularized canonical correlation analysis (RCCA) 
+    - **pls**: Canonical partial least squares regression (Symmetric PLS).
+    - **pls_svd**: Tucker's inter-battery method of factor analysis (PLS-SVD).
 - 2 blocks or more
-    - **mbpca** Consensus (MBPCA = CPCA)
-    - **comdim** Common components and specific weights (ComDim = CCSWA = HPCA)
+    - **mbpca** Consensus PCA (MBPCA = CPCA)
+    - **comdim** Common components and specific weights analysis (ComDim = CCSWA = HPCA)
 - Utilities
     - **mblock** Make blocks from a matrix
     - **blockscal_col, _frob, _mfa, _sd** Scaling blocks
@@ -23,7 +26,7 @@
     - **lg** Lg coefficient
     - **rv** RV correlation coefficient
 
-*Utility (works also for PLS)* 
+*Utilities for PCA and PLS* 
 - **xfit** Matrix fitting 
 - **xresid** Residual matrix 
 

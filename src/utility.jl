@@ -555,7 +555,7 @@ function fnorm(X, w)
     # 2
     # sqrt(sum(colnorm(X, mweight(w)).^2))
     # Faster:
-    sqrt(sum(mweigth(w)' * (X.^2)))
+    sqrt(sum(mweight(w)' * (X.^2)))
 end
 
 # Test: fnorm_2(X, w) = 

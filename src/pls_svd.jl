@@ -1,14 +1,4 @@
-# Tucker inter-battery
-# Robust canonical analysis, Canonical covariances
-# Tenenhaus, M., 1998. La régression PLS: théorie et pratique. 
-# Editions Technip, Paris.
-# Tishler, A., Lipovetsky, S., 2000. Modelling and forecasting with robust 
-# canonical analysis: method and application. Computers & Operations Research 27, 
-# 217–232. https://doi.org/10.1016/S0305-0548(99)00014-3
-# Wegelin, J.A., 2000. A Survey of Partial Least Squares (PLS) Methods, 
-# with Emphasis on the Two-Block Case. Technical report, University of Washington.
-
-struct PlsSvd4
+struct PlsSvd
     Tx::Matrix{Float64}
     Ty::Matrix{Float64}
     Wx::Matrix{Float64}
@@ -24,6 +14,57 @@ struct PlsSvd4
     weights::Vector{Float64}
 end
 
+"""
+    pls_svd(X, Y, weights = ones(nro(X)); nlv,
+        bscal = "none", scal = false)
+    pls_svd!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
+        bscal = "none", scal = false)
+Tucker's inter-battery method of factor analysis
+* `X` : First block (matrix) of data.
+* `Y` : Second block (matrix) of data.
+* `weights` : Weights of the observations (rows). 
+    Internally normalized to sum to 1. 
+* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `bscal` : Type of block scaling (`"none"`, `"frob"`). 
+    See functions `blockscal`.
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation 
+    (before the block scaling).
+
+Inter-battery method of factor analysis (Tucker 1958, Tenenhaus 1998 chap.3), 
+The two blocks `X` and `X` play a symmetric role.  This method is referred to 
+as PLS-SVD in Wegelin 2000. The basis of the method is to factorize the covariance 
+matrix X'Y by SVD. 
+
+## References
+
+Tenenhaus, M., 1998. La régression PLS: théorie et pratique. Editions Technip, Paris.
+
+Tishler, A., Lipovetsky, S., 2000. Modelling and forecasting with robust 
+canonical analysis: method and application. Computers & Operations Research 27, 
+217–232. https://doi.org/10.1016/S0305-0548(99)00014-3
+
+Tucker, L.R., 1958. An inter-battery method of factor analysis. Psychometrika 23, 111–136.
+https://doi.org/10.1007/BF02289009
+
+Wegelin, J.A., 2000. A Survey of Partial Least Squares (PLS) Methods, with Emphasis 
+on the Two-Block Case (No. 371). University of Washington, Seattle, Washington, USA.
+
+## Examples
+```julia
+zX = [1. 2 3 4 5 7 100; 4 1 6 7 12 13 28; 12 5 6 13 3 1 5; 27 18 7 6 2 0 12 ; 
+    12 11 28 7 1 25 2 ; 2 3 7 1 0 7 26 ; 14 12 101 4 3 7 10 ; 8 7 6 5 4 3 -100] 
+n = nro(zX) 
+X = zX[:, 1:4]
+Y = zX[:, 5:7]
+
+fm = pls_svd(X, Y; nlv = 3)
+pnames(fm)
+
+res = summary(fm, X, Y)
+pnames(res)
+```
+"""
 function pls_svd(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", scal = false)
     pls_svd!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
@@ -67,11 +108,20 @@ function pls_svd!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     Ty = Y * Wy
     TTx = colsum(D * Tx .* Tx)
     TTy = colsum(D * Ty .* Ty)
-    PlsSvd4(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
+    PlsSvd(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
         ymeans, yscales, weights)
 end
 
-function transform(object::PlsSvd4, X, Y; nlv = nothing)
+""" 
+    transform(object::PlsSVd, X, Y; nlv = nothing)
+Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
+* `object` : The fitted model.
+* `X` : X-data for which components (LVs) are computed.
+* `Y` : Y-data for which components (LVs) are computed.
+* `nlv` : Nb. LVs to compute. If nothing, it is the maximum number
+    from the fitted model.
+""" 
+function transform(object::PlsSvd, X, Y; nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
@@ -81,7 +131,14 @@ function transform(object::PlsSvd4, X, Y; nlv = nothing)
     (Tx = Tx, Ty)
 end
 
-function Base.summary(object::PlsSvd4, X::Union{Vector, Matrix, DataFrame},
+"""
+    summary(object::PlsSvd, X, Y)
+Summarize the fitted model.
+* `object` : The fitted model.
+* `X` : The X-data that was used to fit the model.
+* `Y` : The Y-data that was used to fit the model.
+""" 
+function Base.summary(object::PlsSvd, X::Union{Vector, Matrix, DataFrame},
         Y::Union{Vector, Matrix, DataFrame})
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -103,5 +160,20 @@ function Base.summary(object::PlsSvd4, X::Union{Vector, Matrix, DataFrame},
     xvar = tty / n    
     explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## End
-    (explvarx = explvarx, explvary)
+    ## Correlation between block scores
+    z = diag(corm(object.Tx, object.Ty, object.weights))
+    cort2t = DataFrame(lv = 1:nlv, cor = z)
+    ## Redundancies (Average correlations)
+    z = rd(X, object.Tx, object.weights)
+    rdx = DataFrame(lv = 1:nlv, rd = vec(z))
+    z = rd(Y, object.Ty, object.weights)
+    rdy = DataFrame(lv = 1:nlv, rd = vec(z))
+    ## Correlation between block variables and block scores
+    z = corm(X, object.Tx, object.weights)
+    corx2t = DataFrame(z, string.("lv", 1:nlv))
+    z = corm(Y, object.Ty, object.weights)
+    cory2t = DataFrame(z, string.("lv", 1:nlv))
+    ## End
+    (explvarx = explvarx, explvary, cort2t, rdx, rdy, 
+        corx2t, cory2t)
 end

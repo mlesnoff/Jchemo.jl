@@ -30,19 +30,21 @@ include("preprocessing.jl")
 include("rmgap.jl")
 include("dens.jl")
 
-include("fda.jl")
+# Exploratory
 include("pcasvd.jl")
 include("pcaeigen.jl")
 include("kpca.jl")
 include("rp.jl")
 
-# Multiblock PCA
+# Exploratory Multiblock 
 include("angles.jl")
 include("mblock.jl")
 include("blockscal.jl")
 include("mbpca.jl")
 include("comdim.jl")
 include("rcca.jl")
+include("pls.jl")
+include("pls_svd.jl")
 
 # Regression 
 include("aov1.jl")
@@ -77,6 +79,7 @@ include("treeda_xgb.jl")
 include("xfit.jl")
 
 # Discrimination 
+include("fda.jl")
 include("dmnorm.jl")
 include("rrda.jl")
 include("lda.jl") ; include("qda.jl")
@@ -178,23 +181,28 @@ export
     rmgap, rmgap!,
     savgk, savgol, savgol!,
     snv, snv!, detrend, detrend!, fdif, fdif!,
-    # Pca
+    # Exploratory
     kpca,
     nipals,
     pcasvd, pcasvd!, pcaeigen, pcaeigen!, pcaeigenk, pcaeigenk!,
     rpmat_gauss, rpmat_li, rp, rp!,
-    # Multiblock Pca
+    # Exploratory Multiblock
     blockscal, blockscal_frob, blockscal_mfa,
     blockscal_ncol, blockscal_sd,
-    comdim, comdim!, mbpca, mbpca!,
+    comdim, comdim!, 
+    mbpca, mbpca!,
     rcca!, rcca,
+    pls!, pls,
+    pls_svd!, pls_svd,
     rv, lg, rd, 
     # Regression
     aov1,
     mlr, mlr!, mlrchol, mlrchol!, mlrpinv, mlrpinv!, mlrpinv_n, mlrpinv_n!,
     mlrvec!, mlrvec,
-    plskern, plskern!, plsnipals, plsnipals!, 
-    plsrosa, plsrosa!, plssimp, plssimp!,
+    plskern, plskern!, 
+    plsnipals, plsnipals!, 
+    plsrosa, plsrosa!, 
+    plssimp, plssimp!,
     cglsr, cglsr!,
     pcr,
     covselr,
@@ -206,7 +214,7 @@ export
     svmr,   
     treer_xgb, rfr_xgb, xgboostr, vimp_xgb,
     baggr, baggr_vi, baggr_oob,
-    # Multi-block
+    # Rgression Multi-block
     mbplsr, mbplsr!,
     rosaplsr, rosaplsr!,
     soplsr,

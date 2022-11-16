@@ -7,6 +7,8 @@ the Makie's backend (e.g. CairoMakie).
 
 - New
     - **rcca**: Regularized canonical correlation analysis. (RCCA).
+    - **pls**: Canonical partial least squares regression (Symmetric PLS).
+    - **pls_svd**: Tucker's inter-battery method of factor analysis (PLS-SVD).
     - **colnorm2** was removed, replaced by **colnorm**: 
     Norm of each column of a dataset.
     - **fnorm**: Frobenius norm of a matrix.
