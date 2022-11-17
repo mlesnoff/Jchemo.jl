@@ -25,6 +25,8 @@ the Makie's backend (e.g. CairoMakie).
         - Argument 'X_bl' renamed to 'Xbl'
     - Variable 'pc' in summary outputs of PCA and KPCA functions was renamed to 'lv'. 
     - Code cleaning.
+    - Examples of JchemoTraining have been moved in Jchemo. 
+    The repository JchemoTraing was removed.
 
 ### *Version 0.1.6*
 - Package Jchemo.jl has been registered.

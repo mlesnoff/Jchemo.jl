@@ -11,7 +11,7 @@
 other domains, with focus on high dimensional data. 
 
 The package was initially about **k-nearest neighbors locally weighted partial least squares regression 
-and discrimination** models (kNN-LWPLSR an kNN-LWPLSDA; e.g. Lesnoff et al 2021 https://doi.org/10.1002/cem.3209).
+and discrimination models** (kNN-LWPLSR an kNN-LWPLSDA; e.g. Lesnoff et al 2021 https://doi.org/10.1002/cem.3209).
 It has now been expanded to various other methods. 
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. 
@@ -28,14 +28,14 @@ Most of the functions have a **help page** (each given an example), e.g.:
 ?savgol
 ```
 
-Additional examples of Jchemo scripts are available at [**JchemoTraining**](https://github.com/mlesnoff/JchemoTraining) 
-(and some [**here**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/demos/ex/)). 
-Datasets used in the examples are stored in package [**JchemoData**](https://github.com/mlesnoff/JchemoData.jl).
-
 ## <span style="color:green"> **Available functions** </span> 
 
 - [**List of functions by domain**](https://github.com/mlesnoff/Jchemo.jl/blob/master/docs/src/domains.md)
 - [**Documentation**](https://mlesnoff.github.io/Jchemo.jl/dev/) 
+- [**Examples**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/demos/) Scripts of examples. 
+The packages that are required to run the examples are listed in file [**_loading_packages.jl**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/demos/). 
+This file can be sourced in the REPL (after the packages installation) to load the packages used in the examples.
+The datasets used in the examples are stored in package [**JchemoData**](https://github.com/mlesnoff/JchemoData.jl).
 
 ## <span style="color:green"> **News** </span> 
 
@@ -65,7 +65,7 @@ Run
 using Jchemo
 ```
 
-## <span style="color:green"> **Examples of syntax** </span> 
+## <span style="color:green"> **Examples of syntax for predictive models** </span> 
 
 ### **Fitting a model**
 
