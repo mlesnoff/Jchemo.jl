@@ -23,10 +23,11 @@ the Makie's backend (e.g. CairoMakie).
             - **mbplsr_rosa** ==> **rosaplsr**
             - **mbplsr_so** ==> **soplsr**
         - Argument 'X_bl' renamed to 'Xbl'
-    - Variable 'pc' in summary outputs of PCA and KPCA functions was renamed to 'lv'. 
+    - Variable 'pc' in summary outputs of PCA and KPCA functions renamed to 'lv'. 
+    - Modification of all the tree functions to adapt to the new version of
+    XGBoost.jl (>= 2.02) (https://juliahub.com/ui/Packages/XGBoost/rSeEh/2.0.2). 
+    The new Jchemo functions does not work anymore with XGBoost.jl 1.5.2.    
     - Code cleaning.
-    - Examples of JchemoTraining have been moved in Jchemo. 
-    The repository JchemoTraing was removed.
 
 ### *Version 0.1.6*
 - Package Jchemo.jl has been registered.

@@ -38,13 +38,11 @@ Regression tree with XGBoost.
 * `kwargs` : Optional named arguments to pass in function `xgboost` 
     of `XGBoost.jl` (https://xgboost.readthedocs.io/en/latest/parameter.html).
 
-The function builds a single tree using package `XGboost.jl'.
+The function builds a single tree using package `XGboost.jl' and library XGBoost.
 
-The sampling of the observations and variables are without replacement.
+The sampling of the observations and variables is without replacement.
 
 ## References
-Package XGBoost.jl
-https://github.com/dmlc/XGBoost.jl
 
 Breiman, L., Friedman, J. H., Olshen, R. A., and Stone, C. J. Classification
 And Regression Trees. Chapman & Hall, 1984.
@@ -52,6 +50,15 @@ And Regression Trees. Chapman & Hall, 1984.
 Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
+
+XGBoost
+Tianqi Chen and Carlos Guestrin. XGBoost: A Scalable Tree Boosting System. 
+In 22nd SIGKDD Conference on Knowledge Discovery and Data Mining, 2016
+& XGBoost originates from research project at University of Washington.
+https://github.com/dmlc/xgboost
+
+XGBoost.jl
+https://github.com/dmlc/XGBoost.jl
 
 ## Examples
 ```julia
@@ -87,6 +94,7 @@ function treer_xgb(X, y;
         max_depth = 6, min_child_weight = 5,
         lambda = 0, scal = false, verbose = false, kwargs...) 
     X = ensure_mat(X)
+    y = Float64.(vec(y))
     p = nco(X)
     xscales = ones(p)
     if scal 
@@ -94,7 +102,7 @@ function treer_xgb(X, y;
         X = scale(X, xscales)
     end
     num_round = 1
-    fm = xgboost(X, num_round; label = Float64.(vec(y)),
+    fm = xgboost((X, y); num_round = num_round,
         seed = Int64(round(rand(1)[1] * 1e5)),
         booster = :gbtree,
         tree_method = :auto, 
@@ -104,7 +112,9 @@ function treer_xgb(X, y;
         colsample_bynode = colsample_bynode, 
         max_depth = max_depth, min_child_weight = min_child_weight,
         lambda = lambda,
-        silent = !verbose, kwargs...)
+        silent = !verbose, 
+        objective = "reg:squarederror", 
+        kwargs...)
     featur = collect(1:p)
     TreerXgb(fm, xscales, featur)
 end
@@ -135,13 +145,11 @@ Random forest regression with XGBoost.
 * `kwargs` : Optional named arguments to pass in function `xgboost` 
     of `XGBoost.jl` (https://xgboost.readthedocs.io/en/latest/parameter.html).
 
-The function uses package `XGboost.jl' to build the forest.
-See https://xgboost.readthedocs.io/en/latest/tutorials/rf.html.
+The function uses package `XGboost.jl' and library XGBoost.
+
+The sampling of the observations and variables is without replacement.
 
 ## References
-Package XGBoost.jl
-https://github.com/dmlc/XGBoost.jl
-
 Breiman, L., 1996. Bagging predictors. Mach Learn 24, 123–140. 
 https://doi.org/10.1007/BF00058655
 
@@ -154,6 +162,15 @@ sélection de variables et applications. PhD Thesis. Université Paris Sud - Par
 Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
+
+XGBoost
+Tianqi Chen and Carlos Guestrin. XGBoost: A Scalable Tree Boosting System. 
+In 22nd SIGKDD Conference on Knowledge Discovery and Data Mining, 2016
+& XGBoost originates from research project at University of Washington.
+https://github.com/dmlc/xgboost
+
+XGBoost.jl
+https://github.com/dmlc/XGBoost.jl
 
 ## Examples
 ```julia
@@ -190,14 +207,14 @@ function rfr_xgb(X, y; rep = 50,
         max_depth = 6, min_child_weight = 5,
         lambda = 0, scal = false, verbose = false, kwargs...)
     X = ensure_mat(X)
+    y = Float64.(vec(y))
     p = nco(X)
     xscales = ones(p)
     if scal 
         xscales .= colstd(X)
         X = scale(X, xscales)
     end
-    num_round = 1
-    fm = xgboost(X, num_round; label = Float64.(vec(y)),
+    fm = xgboost((X, y); num_round = 1,
         seed = Int64(round(rand(1)[1] * 1e5)), 
         booster = :gbtree,
         tree_method = :auto,
@@ -208,7 +225,9 @@ function rfr_xgb(X, y; rep = 50,
         colsample_bynode = colsample_bynode,
         max_depth = max_depth, min_child_weight = min_child_weight,
         lambda = lambda,
-        silent = !verbose, kwargs...)
+        silent = !verbose, 
+        objective = "reg:squarederror", 
+        kwargs...)
     featur = collect(1:p)
     TreerXgb(fm, xscales, featur)
 end
@@ -239,14 +258,18 @@ XGBoost regression.
 * `kwargs` : Optional named arguments to pass in function `xgboost` 
     of `XGBoost.jl` (https://xgboost.readthedocs.io/en/latest/parameter.html).
 
-The function uses package `XGboost.jl' to build the forest.
-See https://xgboost.readthedocs.io/en/latest/tutorials/rf.html.
+The function uses package `XGboost.jl' and library XGBoost.
+
+The sampling of the observations and variables is without replacement.
 
 ## References
-XGBoost 
-https://xgboost.readthedocs.io/en/latest/index.html
+XGBoost
+Tianqi Chen and Carlos Guestrin. XGBoost: A Scalable Tree Boosting System. 
+In 22nd SIGKDD Conference on Knowledge Discovery and Data Mining, 2016
+& XGBoost originates from research project at University of Washington.
+https://github.com/dmlc/xgboost
 
-Package XGBoost.jl
+XGBoost.jl
 https://github.com/dmlc/XGBoost.jl
 
 ## Examples
@@ -283,6 +306,7 @@ function xgboostr(X, y; rep = 50, eta = .3,
         max_depth = 6, min_child_weight = 5,
         lambda = 1, scal = false, verbose = false, kwargs...)
     X = ensure_mat(X)
+    y = Float64.(vec(y))
     p = nco(X)
     xscales = ones(p)
     if scal 
@@ -290,7 +314,7 @@ function xgboostr(X, y; rep = 50, eta = .3,
         X = scale(X, xscales)
     end
     num_round = rep
-    fm = xgboost(X, num_round; label = Float64.(vec(y)),
+    fm = xgboost((X, y); num_round = num_round,
         seed = Int64(round(rand(1)[1] * 1e5)), 
         booster = :gbtree,
         tree_method = :auto,
@@ -301,7 +325,9 @@ function xgboostr(X, y; rep = 50, eta = .3,
         colsample_bylevel = 1, colsample_bynode = colsample_bynode,
         max_depth = max_depth, min_child_weight = min_child_weight,
         lambda = lambda, 
-        silent = !verbose, kwargs...)
+        silent = !verbose, 
+        objective = "reg:squarederror", 
+        kwargs...)
     featur = collect(1:p)
     TreerXgb(fm, xscales, featur)
 end
@@ -325,7 +351,17 @@ end
 Compute variable (feature) importances from an XGBoost model.
 * `object` : The fitted model.
 
-Features with imp = 0 are not returned.
+The function uses package `XGboost.jl' and library XGBoost.
+
+## References
+XGBoost
+Tianqi Chen and Carlos Guestrin. XGBoost: A Scalable Tree Boosting System. 
+In 22nd SIGKDD Conference on Knowledge Discovery and Data Mining, 2016
+& XGBoost originates from research project at University of Washington.
+https://github.com/dmlc/xgboost
+
+XGBoost.jl
+https://github.com/dmlc/XGBoost.jl
 
 ## Examples
 ```julia
@@ -357,27 +393,20 @@ f
 """
 function vimp_xgb(object::Union{TreerXgb, TreedaXgb})
     p = length(object.featur)
-    res = XGBoost.importance(object.fm, string.(object.featur))
-    fname = [] ; gain = [] ; cover = [] ; freq = [] 
-    for i in res
-        push!(fname, i.fname)
-        push!(gain, i.gain)
-        push!(cover, i.cover)
-        push!(freq, i.freq)
+    zimp = XGBoost.importancetable(object.fm)
+    res = zeros(p, 5)
+    feat = zimp.feature
+    for i in eachindex(feat) 
+        k = feat[i]
+        res[k, 1] = zimp.gain[i]
+        res[k, 2] = zimp.weight[i]
+        res[k, 3] = zimp.cover[i]
+        res[k, 4] = zimp.total_gain[i]
+        res[k, 5] = zimp.total_cover[i]
     end
-    fname = eval(Meta.parse.(fname))
-    zgain = zeros(p)
-    zcover = copy(zgain)
-    zfreq = copy(zgain)
-    for i in eachindex(fname)
-        s = fname[i]
-        zgain[s] = gain[i]
-        zcover[s] = cover[i]
-        zfreq[s] = freq[i]
-    end
-    res = DataFrame(hcat(zgain, zcover, zfreq), [:gain, :cover, :freq]) 
-    res.featur = object.featur
-    res
+    res = hcat(1:p, res) 
+    nam = [:featur, :gain, :weight, :cover, :total_gain, :total_cover]
+    DataFrame(res, nam)
 end
 
 

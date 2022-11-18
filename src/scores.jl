@@ -53,7 +53,7 @@ cor2(pred, ytest)
 """
 function cor2(pred, Y)
     Y = ensure_mat(Y)
-    q = size(Y, 2)
+    q = nco(Y)
     res = cor(pred, Y).^2
     q == 1 ? res = [res; ] : res = diag(res)
     reshape(res, 1, :)
@@ -108,7 +108,7 @@ mse(pred, ytest)
 ```
 """
 function mse(pred, Y; digits = 3)
-    q = size(Y, 2)
+    q = nco(Y)
     zmsep = msep(pred, Y)
     zrmsep = sqrt.(zmsep)
     zsep = sep(pred, Y)
@@ -120,8 +120,10 @@ function mse(pred, Y; digits = 3)
     zmean = reshape(colmean(Y), 1, :)
     nam = map(string, repeat(["y"], q), 1:q)
     nam = reshape(nam, 1, :)
+    println(22)
     res = (nam = nam, msep = zmsep, rmsep = zrmsep, sep = zsep, bias = zbias, 
         cor2 = zcor2, r2 = zr2, rpd = zrpd, rpdr = zrpdr, mean = zmean)
+    res = map(vec, res)
     res = DataFrame(res)  
     res[:, 2:end] = round.(res[:, 2:end], digits = digits)
     res
@@ -187,10 +189,10 @@ r2(pred, ytest)
 ```
 """
 function r2(pred, Y)
-    m = size(Y, 1)
-    mu = colmean(Y)
-    zmu = reduce(hcat, fill(mu, m, 1))'
-    1 .- msep(pred, Y) ./ msep(zmu, Y)
+    m = nro(Y)
+    ymeans = colmean(Y)
+    M = reduce(hcat, fill(ymeans, m, 1))'
+    1 .- msep(pred, Y) ./ msep(M, Y)
 end
 
 """
@@ -241,7 +243,8 @@ residreg(pred, Y) = ensure_mat(Y) - pred
 
 """
     rmsep(pred, Y)
-Compute the square root of the mean of the squared prediction errors (RMSEP).
+Compute the square root of the mean of the squared prediction 
+errors (RMSEP).
 * `pred` : Predictions.
 * `Y` : Observed data.
 
@@ -267,7 +270,8 @@ rmsep(pred, Y) = sqrt.(msep(pred, Y))
 
 """
     rmsep_stand(pred, Y)
-Compute the standardized square root of the mean of the squared prediction errors (RMSEP_stand).
+Compute the standardized square root of the mean of the squared 
+prediction errors (RMSEP_stand).
 * `pred` : Predictions.
 * `Y` : Observed data.
 
@@ -291,7 +295,10 @@ pred = Jchemo.predict(fm, Xtest).pred
 rmsep_stand(pred, ytest)
 ```
 """
-rmsep_stand(pred, Y) = sqrt.(msep(pred, Y)) ./ Y
+function rmsep_stand(pred, Y)
+    Y = ensure_mat(Y)
+    rmsep(pred ./ Y, ones(size(Y)))
+end
 
 """
     rpd(pred, Y)
@@ -323,7 +330,10 @@ pred = Jchemo.predict(fm, Xtest).pred
 rpd(pred, ytest)
 ```
 """
-rpd(pred, Y) = std(Y, dims = 1, corrected = false) ./ rmsep(pred, Y) 
+function rpd(pred, Y)
+    Y = ensure_mat(Y)
+    std(Y, dims = 1, corrected = false) ./ rmsep(pred, Y)
+end 
 
 """
     rpdr(pred, Y)
@@ -350,7 +360,7 @@ rpdr(pred, ytest)
 ```
 """
 function rpdr(pred, Y)
-    #Y = ensure_mat(Y)
+    Y = ensure_mat(Y)
     u = mapslices(Jchemo.mad, Y; dims = 1) / 1.4826
     r = residreg(pred, Y)
     v = mapslices(median, abs.(r); dims = 1)

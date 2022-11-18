@@ -78,7 +78,7 @@ function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50,
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
-    q = size(Y, 2)   
+    q = nco(Y)   
     fm = list(rep)
     nrow = Int64(round(rowsamp * n))
     ncol = max(1, Int64(round(colsamp * p)))

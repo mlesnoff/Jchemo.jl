@@ -66,7 +66,7 @@ function iplsr(Xtrain, Ytrain, X, Y;
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     p = size(Xtrain, 2)
-    q = size(Y, 2)
+    q = nco(Y)
     z = collect(round.(range(1, p + 1, length = nint + 1)))
     int = [z[1:nint] z[2:(nint + 1)] .- 1]
     int = hcat(int, round.(rowmean(int)))

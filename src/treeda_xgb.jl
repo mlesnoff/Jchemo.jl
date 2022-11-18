@@ -23,23 +23,26 @@ Discrimination tree with XGBoost.
 * `kwargs` : Optional named arguments to pass in function `xgboost` 
     of `XGBoost.jl` (https://xgboost.readthedocs.io/en/latest/parameter.html).
 
-The function builds a single tree using package XGboost.jl  (https://github.com/JuliaML/XGboost.jl).
+The function builds a single tree using package `XGboost.jl' and library XGBoost.
 
-The sampling of the observations and variables are without replacement.
+The sampling of the observations and variables is without replacement.
 
 ## References
-XGBoost 
-https://xgboost.readthedocs.io/en/latest/index.html
-
-Package XGBoost.jl
-https://github.com/dmlc/XGBoost.jl
-
 Breiman, L., Friedman, J. H., Olshen, R. A., and Stone, C. J. Classification
 And Regression Trees. Chapman & Hall, 1984.
 
 Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
+
+XGBoost
+Tianqi Chen and Carlos Guestrin. XGBoost: A Scalable Tree Boosting System. 
+In 22nd SIGKDD Conference on Knowledge Discovery and Data Mining, 2016
+& XGBoost originates from research project at University of Washington.
+https://github.com/dmlc/xgboost
+
+XGBoost.jl
+https://github.com/dmlc/XGBoost.jl
 
 ## Examples
 ```julia
@@ -87,7 +90,7 @@ function treeda_xgb(X, y;
     y_num = recodcat2int(y; start = 0)
     num_class = length(ztab.keys)
     num_round = 1
-    fm = xgboost(X, num_round; label = y_num,
+    fm = xgboost((X, y_num); num_round = num_round,
         seed = Int64(round(rand(1)[1] * 1e5)),
         booster = :gbtree,
         tree_method = :auto, 
@@ -130,16 +133,11 @@ Random forest discrimination.
 * `kwargs` : Optional named arguments to pass in function `xgboost` 
     of `XGBoost.jl` (https://xgboost.readthedocs.io/en/latest/parameter.html).
 
-The function uses package `XGboost.jl' to build the forest.
-See https://xgboost.readthedocs.io/en/latest/tutorials/rf.html.
+The function uses package `XGboost.jl' and library XGBoost.
+
+The sampling of the observations and variables is without replacement.
 
 ## References
-XGBoost 
-https://xgboost.readthedocs.io/en/latest/index.html
-
-Package XGBoost.jl
-https://github.com/dmlc/XGBoost.jl
-
 Breiman, L., 1996. Bagging predictors. Mach Learn 24, 123–140. 
 https://doi.org/10.1007/BF00058655
 
@@ -152,6 +150,15 @@ sélection de variables et applications. PhD Thesis. Université Paris Sud - Par
 Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
+
+XGBoost
+Tianqi Chen and Carlos Guestrin. XGBoost: A Scalable Tree Boosting System. 
+In 22nd SIGKDD Conference on Knowledge Discovery and Data Mining, 2016
+& XGBoost originates from research project at University of Washington.
+https://github.com/dmlc/xgboost
+
+XGBoost.jl
+https://github.com/dmlc/XGBoost.jl
 
 ## Examples
 ```julia
@@ -197,7 +204,7 @@ function rfda_xgb(X, y; rep = 50,
     y_num = recodcat2int(y; start = 0)
     num_class = length(ztab.keys)
     num_round = 1
-    fm = xgboost(X, num_round; label = y_num,
+    fm = xgboost((X, y_num); num_round = num_round,
         seed = Int64(round(rand(1)[1] * 1e5)), 
         booster = :gbtree,
         tree_method = :auto,
@@ -241,13 +248,18 @@ XGBoost discrimination.
 * `kwargs` : Optional named arguments to pass in function `xgboost` 
     of `XGBoost.jl` (https://xgboost.readthedocs.io/en/latest/parameter.html).
 
-The function uses package `XGboost.jl' (https://github.com/dmlc/XGBoost.jl).
+The function uses package `XGboost.jl' and library XGBoost.
+
+The sampling of the observations and variables is without replacement.
 
 ## References
-XGBoost 
-https://xgboost.readthedocs.io/en/latest/index.html
+XGBoost
+Tianqi Chen and Carlos Guestrin. XGBoost: A Scalable Tree Boosting System. 
+In 22nd SIGKDD Conference on Knowledge Discovery and Data Mining, 2016
+& XGBoost originates from research project at University of Washington.
+https://github.com/dmlc/xgboost
 
-Package XGBoost.jl
+XGBoost.jl
 https://github.com/dmlc/XGBoost.jl
 
 ## Examples
@@ -294,7 +306,7 @@ function xgboostda(X, y; rep = 50, eta = .3,
     y_num = recodcat2int(y; start = 0)
     num_class = length(ztab.keys)
     num_round = rep
-    fm = xgboost(X, num_round; label = y_num,
+    fm = xgboost((X, y_num); num_round = num_round,
         seed = Int64(round(rand(1)[1] * 1e5)), 
         booster = :gbtree,
         tree_method = :auto,
