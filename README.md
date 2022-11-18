@@ -49,7 +49,7 @@ In order to install Jchemo, run:
 ```julia
 pkg> add Jchemo
 ```
-or for the current developing version (not stable):
+or for the current developing version (not 100% stable):
 
 ```julia
 pkg> add https://github.com/mlesnoff/Jchemo.jl.git
