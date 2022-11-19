@@ -31,16 +31,39 @@ Regularized canonical correlation Analysis (RCCA)
     (before the block scaling).
 
 The regularization uses the continuum formulation presented by Qannari & Hanafi 2005 
-and Mangamana et al. 2019. When regularization: 
-* X'X is replaced by (1 - alpha) * X'X + alpha * Ix
-* Y'Y is replaced by (1 - alpha) * Y'Y + alpha * Iy
+and Mangamana et al. 2019. 
+
+After block centering and scaling, the block scores returned by the 
+present algorithm are proportionnal to the eigenvectors of 
+Projx * Projy and Projy * Projx, defined as follows: 
+* Cx = (1 - `alpha`) * X'DX + `alpha` * Ix
+* Cy = (1 - `alpha`) * Y'DY + `alpha` * Iy
+* Cxy = X'DY
+* Projx = sqrt(D) * X * invCx * X' * sqrt(D)
+* Projy = sqrt(D) * Y * invCx * Y' * sqrt(D)
+where D is the observation (row) metric. 
+The final scores are returned in the original scale 
+by multiplying by D^(-1/2).
+
+When weights are uniform, and setting lambda = `alpha` / (1 - `alpha`) * n / (n - 1), 
+the normed scores are the same as those returned 
+by functions `rcc` of the R packages `CCA` (González et al.) and 
+`mixOmics` (Le Cao et al.).
 
 ## References
+
+González, I., Déjean, S., Martin, P.G.P., Baccini, A., 2008. CCA: 
+An R Package to Extend Canonical Correlation Analysis. Journal of Statistical 
+Software 23, 1–14. https://doi.org/10.18637/jss.v023.i12
 
 Hotelling, H. (1936): “Relations between two sets of variates”, Biometrika 28: pp. 321–377.
 
 Qannari, E.M., Hanafi, M., 2005. A simple continuum regression approach. 
 Journal of Chemometrics 19, 387–392. https://doi.org/10.1002/cem.942
+
+Le Cao, K.-A., Rohart, F., Gonzalez, I., Dejean, S., Abadi, A.J., Gautier, B., Bartolo, F., 
+Monget, P., Coquery, J., Yao, F., Liquet, B., 2022. mixOmics: Omics Data Integration Project. 
+https://doi.org/10.18129/B9.bioc.mixOmics
 
 Tchandao Mangamana, E., Cariou, V., Vigneau, E., Glèlè Kakaï, R.L., Qannari, E.M., 2019. 
 Unsupervised multiblock data analysis: A unified approach and extensions. 
@@ -109,8 +132,8 @@ function rcca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         Cx = Symmetric(X' * X)
         Cy = Symmetric(Y' * Y)
     else
-        Ix = Diagonal(ones(p))
-        Iy = Diagonal(ones(q))
+        Ix = Diagonal(ones(p)) 
+        Iy = Diagonal(ones(q)) 
         if alpha == 1
             Cx = Ix
             Cy = Iy
@@ -119,7 +142,7 @@ function rcca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
             Cy = Symmetric((1 - alpha) * Y' * Y + alpha * Iy)
         end
     end
-    Cxy = X'Y        
+    Cxy = X' * Y    
     Ux = cholesky(Hermitian(Cx)).U
     Uy = cholesky(Hermitian(Cy)).U
     invUx = inv(Ux)
