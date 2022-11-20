@@ -115,7 +115,6 @@ function mbpca(Xbl, weights = ones(nro(Xbl[1])); nlv,
         scal = scal)
 end
 
-
 ## Approach Hanafi & Quanari 2008
 ## Normed global score u = 1st left singular vector of SVD of Tb,
 ## where Tb concatenates the block-scores 
@@ -160,14 +159,12 @@ function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
     u = similar(Xbl[1], n)
     U = similar(Xbl[1], n, nlv)
     tk = copy(u)
-    Tbl = list(nlv, Matrix{Float64})
-    for a = 1:nlv ; Tbl[a] = similar(Xbl[1], n, nlv) ; end
+    Tbl = list(nbl, Matrix{Float64})
+    for k = 1:nbl ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
     Tb = list(nlv, Matrix{Float64})
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
     Wbl = list(nbl, Matrix{Float64})
-    for k = 1:nbl
-        Wbl[k] = similar(Xbl[1], p[k], nlv)
-    end
+    for k = 1:nbl ; Wbl[k] = similar(Xbl[1], p[k], nlv) ; end
     lb = similar(Xbl[1], nbl, nlv)
     W = similar(Xbl[1], nbl, nlv)
     w = similar(Xbl[1], nbl)

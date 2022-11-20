@@ -175,8 +175,8 @@ function comdim!(Xbl, weights = ones(nro(Xbl[1])); nlv,
     u = similar(Xbl[1], n)
     U = similar(Xbl[1], n, nlv)
     tk = copy(u)
-    Tbl = list(nlv, Matrix{Float64})
-    for a = 1:nlv ; Tbl[a] = similar(Xbl[1], n, nlv) ; end
+    Tbl = list(nbl, Matrix{Float64})
+    for k = 1:nbl ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
     Tb = list(nlv, Matrix{Float64})
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
     Wbl = list(nbl, Matrix{Float64})
