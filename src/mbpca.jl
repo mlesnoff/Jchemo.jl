@@ -2,6 +2,7 @@ struct Mbpca
     T::Array{Float64} 
     U::Array{Float64}
     W::Array{Float64}
+    Tbl::Vector{Array{Float64}}
     Tb::Vector{Array{Float64}}
     Wbl::Vector{Array{Float64}}
     lb::Array{Float64}
@@ -41,7 +42,8 @@ The function returns several objects, in particular:
 * `T` : The non normed global scores.
 * `U` : The normed global scores.
 * `W` : The global loadings.
-* `Tb` : The block scores.
+* `Tbl` : The block scores (grouped by blocks, in the original scale).
+* `Tb` : The block scores (grouped by LV, in the metric scale).
 * `Wbl` : The block loadings.
 * `lb` : The specific weights "lambda".
 * `mu` : The sum of the specific weights (= eigen value of the global PCA).
@@ -158,6 +160,8 @@ function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
     u = similar(Xbl[1], n)
     U = similar(Xbl[1], n, nlv)
     tk = copy(u)
+    Tbl = list(nlv, Matrix{Float64})
+    for a = 1:nlv ; Tbl[a] = similar(Xbl[1], n, nlv) ; end
     Tb = list(nlv, Matrix{Float64})
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
     Wbl = list(nbl, Matrix{Float64})
@@ -183,6 +187,7 @@ function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
                 wk ./= dk
                 tk .= Xbl[k] * wk 
                 Tb[a][:, k] .= tk
+                Tbl[k][:, a] .= (1 ./ sqrtw) .* Tb[a][:, k]
                 Wbl[k][:, a] .= wk
                 lb[k, a] = dk^2
             end
@@ -204,7 +209,7 @@ function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         end
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
-    Mbpca(T, U, W, Tb, Wbl, lb, mu,
+    Mbpca(T, U, W, Tbl, Tb, Wbl, lb, mu,
         bscales, xmeans, xscales, weights, niter)
 end
 

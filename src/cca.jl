@@ -1,4 +1,4 @@
-struct Rcca
+struct Cca
     Tx::Matrix{Float64}
     Ty::Matrix{Float64}
     Wx::Matrix{Float64}
@@ -13,9 +13,9 @@ struct Rcca
 end
 
 """
-    rcca(X, Y, weights = ones(nro(X)); nlv, 
+    cca(X, Y, weights = ones(nro(X)); nlv, 
         bscal = "none", alpha = 0, scal = false)
-    rcca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
+    cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = "none", alpha = 0, scal = false)
 Regularized canonical correlation Analysis (RCCA)
 * `X` : First block (matrix) of data.
@@ -30,11 +30,12 @@ Regularized canonical correlation Analysis (RCCA)
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
+The CCA approach used in this function is presented in Weenink 2003. 
 The regularization uses the continuum formulation presented by Qannari & Hanafi 2005 
 and Mangamana et al. 2019. 
 
-After block centering and scaling, the block scores returned by the 
-present algorithm are proportionnal to the eigenvectors of 
+After block centering and scaling, the block scores (Tx and Ty) 
+returned by the present algorithm are proportionnal to the eigenvectors of 
 Projx * Projy and Projy * Projx, defined as follows: 
 * Cx = (1 - `alpha`) * X'DX + `alpha` * Ix
 * Cy = (1 - `alpha`) * Y'DY + `alpha` * Iy
@@ -46,7 +47,7 @@ The final scores are returned in the original scale
 by multiplying by D^(-1/2).
 
 When weights are uniform, and setting lambda = `alpha` / (1 - `alpha`) * n / (n - 1), 
-the normed scores are the same as those returned 
+the normed scores returned by the function are the same as those returned 
 by functions `rcc` of the R packages `CCA` (González et al.) and 
 `mixOmics` (Le Cao et al.).
 
@@ -83,20 +84,20 @@ Y = zX[:, 5:7]
 
 alpha = 0
 #alpha = .10
-fm = rcca(X, Y; nlv = 3, alpha = alpha)
+fm = cca(X, Y; nlv = 3, alpha = alpha)
 pnames(fm)
 
 res = summary(fm, X, Y)
 pnames(res)
 ```
 """
-function rcca(X, Y, weights = ones(nro(X)); nlv, 
+function cca(X, Y, weights = ones(nro(X)); nlv, 
         bscal = "none", alpha = 0, scal = false)
-    rcca!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
+    cca!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
         bscal = bscal, alpha = alpha, scal = scal)
 end
 
-function rcca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
+function cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = "none", alpha = 0, scal = false)
     n, p = size(X)
     q = nco(Y)
@@ -154,12 +155,12 @@ function rcca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     d = d[1:nlv]
     Tx = (1 ./ sqrtw) .* X * Wx
     Ty = (1 ./ sqrtw) .* Y * Wy
-    Rcca(Tx, Ty, Wx, Wy, d, 
+    Cca(Tx, Ty, Wx, Wy, d, 
         bscales, xmeans, xscales, ymeans, yscales, weights)
 end
 
 """ 
-    transform(object::Rcca, X, Y; nlv = nothing)
+    transform(object::Cca, X, Y; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
@@ -167,7 +168,7 @@ Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
 * `nlv` : Nb. LVs to compute. If nothing, it is the maximum number
     from the fitted model.
 """ 
-function transform(object::Rcca, X, Y; nlv = nothing)
+function transform(object::Cca, X, Y; nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
@@ -178,13 +179,13 @@ function transform(object::Rcca, X, Y; nlv = nothing)
 end
 
 """
-    summary(object::Rcca, X, Y)
+    summary(object::Cca, X, Y)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
-function Base.summary(object::Rcca, X::Union{Vector, Matrix, DataFrame},
+function Base.summary(object::Cca, X::Union{Vector, Matrix, DataFrame},
         Y::Union{Vector, Matrix, DataFrame})
     X = ensure_mat(X)
     Y = ensure_mat(Y)

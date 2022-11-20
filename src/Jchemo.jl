@@ -43,7 +43,7 @@ include("mblock.jl")
 include("blockscal.jl")
 include("mbpca.jl")
 include("comdim.jl")
-include("rcca.jl")
+include("cca.jl")
 include("pls.jl")
 include("pls_svd.jl")
 
@@ -191,7 +191,7 @@ export
     blockscal_ncol, blockscal_sd,
     comdim, comdim!, 
     mbpca, mbpca!,
-    rcca!, rcca,
+    cca!, cca,
     pls!, pls,
     pls_svd!, pls_svd,
     rv, lg, rd, 

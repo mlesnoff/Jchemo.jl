@@ -145,12 +145,9 @@ function pls!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         tty = dot(ty, dty)
         mul!(py, Y', dty)
         py ./= tty
-        # deflation
+        # Deflation
         X .-= tx * px'
         Y .-= ty * py'
-        # If regression mode
-        #ctild = Y' * dty / tty
-        #Y .-= tx * ctild'
         # End
         Px[:, a] .= px
         Py[:, a] .= py

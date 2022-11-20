@@ -2,6 +2,8 @@
 
 ### *Version 0.1.8* 
 - Modified
+    - **rcca** renamed to **cca**
+    - Output 'Tbl' added in **comdim** and **mbpca**
     - Code cleaning.
 
 ### *Version 0.1.7* 

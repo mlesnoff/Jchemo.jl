@@ -13,7 +13,7 @@
 *Multiblock*
 
 - 2 blocks
-    - **rcca**: Regularized canonical correlation analysis (RCCA) 
+    - **cca**: Regularized canonical correlation analysis (RCCA) 
     - **pls**: Canonical partial least squares regression (Symmetric PLS).
     - **pls_svd**: Tucker's inter-battery method of factor analysis (PLS-SVD).
 - 2 blocks or more
