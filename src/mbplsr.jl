@@ -1,4 +1,4 @@
-struct MbPlsr
+struct Mbplsr
     fm
     T::Matrix{Float64}
     bscales::Vector{Float64}
@@ -106,17 +106,17 @@ function mbplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
     end
     X = reduce(hcat, Xbl)
     fm = plskern(X, Y, weights; nlv = nlv, scal = false)
-    MbPlsr(fm, fm.T, bscales, xmeans, xscales, ymeans, yscales, weights)
+    Mbplsr(fm, fm.T, bscales, xmeans, xscales, ymeans, yscales, weights)
 end
 
 """ 
-    transform(object::MbPlsr, Xbl; nlv = nothing)
+    transform(object::Mbplsr, Xbl; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list (vector) of blocks (matrices) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transform(object::MbPlsr, Xbl; nlv = nothing)
+function transform(object::Mbplsr, Xbl; nlv = nothing)
     nbl = length(Xbl)
     zXbl = list(nbl, Matrix{Float64})
     Threads.@threads for k = 1:nbl
@@ -128,13 +128,13 @@ function transform(object::MbPlsr, Xbl; nlv = nothing)
 end
 
 """
-    predict(object::MbPlsr, Xbl; nlv = nothing)
+    predict(object::Mbplsr, Xbl; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list (vector) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::MbPlsr, Xbl; nlv = nothing)
+function predict(object::Mbplsr, Xbl; nlv = nothing)
     nbl = length(Xbl)
     zXbl = list(nbl, Matrix{Float64})
     Threads.@threads for k = 1:nbl
