@@ -4,7 +4,6 @@
     plsnipals!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         scal = false)
 Partial Least Squares Regression (PLSR) with the NIPALS algorithm 
-(e.g. Tenenhaus 1998, Wold 2002).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
@@ -13,7 +12,7 @@ Partial Least Squares Regression (PLSR) with the NIPALS algorithm
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
 
-**Note:** In this function, for PLS2, the NIPALS iterations are replaced by a 
+In this function, for PLS2 (multivariate Y), the NIPALS iterations are replaced by a 
 direct computation of the PLS weights (w) by SVD decomposition of matrix X'Y 
 (Hoskuldsson 1988 p.213).
 
@@ -58,8 +57,8 @@ function plsnipals!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     # Pre-allocation
     XtY = similar(X, p, q)
     T = similar(X, n, nlv)
-    W  = similar(X, p, nlv)
-    P  = copy(W)
+    W = similar(X, p, nlv)
+    P = copy(W)
     C = similar(X, q, nlv)
     TT = similar(X, nlv)
     t   = similar(X, n)

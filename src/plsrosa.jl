@@ -52,8 +52,8 @@ function plsrosa!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     # Pre-allocation
     XtY = similar(X, p, q)
     T = similar(X, n, nlv)
-    P = similar(X, p, nlv)
-    W = copy(P)
+    W = similar(X, p, nlv)
+    P = copy(W)
     C = similar(X, q, nlv)
     TT = similar(X, nlv)
     t = similar(X, n)

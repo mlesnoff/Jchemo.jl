@@ -14,8 +14,8 @@
 
 - 2 blocks
     - **cca**: Regularized canonical correlation analysis (RCCA) 
-    - **pls**: Canonical partial least squares regression (Symmetric PLS).
-    - **pls_svd**: Tucker's inter-battery method of factor analysis (PLS-SVD).
+    - **pls_can**: Canonical partial least squares regression (Symmetric PLS).
+    - **pls_tuck**: Tucker's inter-battery method of factor analysis (PLS-SVD).
 - 2 blocks or more
     - **mbpca** Consensus PCA (MBPCA = CPCA)
     - **comdim** Common components and specific weights analysis (ComDim = CCSWA = HPCA)
@@ -58,6 +58,7 @@
 - **plsnipals** NIPALS
 - **plsrosa** ROSA *Liland et al. 2016*
 - **plssimp** SIMPLS *de Jong 1993*
+- **plswold** NIPALS Wold
 
 *Variants* 
 - **cglsr** Conjugate gradient for the least squares normal equations (CGLS)

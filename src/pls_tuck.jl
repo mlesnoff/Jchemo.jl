@@ -1,4 +1,4 @@
-struct PlsSvd
+struct PlsTuck
     Tx::Matrix{Float64}
     Ty::Matrix{Float64}
     Wx::Matrix{Float64}
@@ -15,9 +15,9 @@ struct PlsSvd
 end
 
 """
-    pls_svd(X, Y, weights = ones(nro(X)); nlv,
+    pls_tuck(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", scal = false)
-    pls_svd!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
+    pls_tuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = "none", scal = false)
 Tucker's inter-battery method of factor analysis
 * `X` : First block (matrix) of data.
@@ -58,20 +58,20 @@ n = nro(zX)
 X = zX[:, 1:4]
 Y = zX[:, 5:7]
 
-fm = pls_svd(X, Y; nlv = 3)
+fm = pls_tuck(X, Y; nlv = 3)
 pnames(fm)
 
 res = summary(fm, X, Y)
 pnames(res)
 ```
 """
-function pls_svd(X, Y, weights = ones(nro(X)); nlv,
+function pls_tuck(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", scal = false)
-    pls_svd!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
+    pls_tuck!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         bscal = bscal, scal = scal)
 end
 
-function pls_svd!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
+function pls_tuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = "none", scal = false)
     n, p = size(X)
     q = nco(Y)
@@ -108,7 +108,7 @@ function pls_svd!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     Ty = Y * Wy
     TTx = colsum(D * Tx .* Tx)
     TTy = colsum(D * Ty .* Ty)
-    PlsSvd(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
+    PlsTuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
         ymeans, yscales, weights)
 end
 
@@ -121,7 +121,7 @@ Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
 * `nlv` : Nb. LVs to compute. If nothing, it is the maximum number
     from the fitted model.
 """ 
-function transform(object::PlsSvd, X, Y; nlv = nothing)
+function transform(object::PlsTuck, X, Y; nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
@@ -132,13 +132,13 @@ function transform(object::PlsSvd, X, Y; nlv = nothing)
 end
 
 """
-    summary(object::PlsSvd, X, Y)
+    summary(object::PlsTuck, X, Y)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
-function Base.summary(object::PlsSvd, X::Union{Vector, Matrix, DataFrame},
+function Base.summary(object::PlsTuck, X::Union{Vector, Matrix, DataFrame},
         Y::Union{Vector, Matrix, DataFrame})
     X = ensure_mat(X)
     Y = ensure_mat(Y)

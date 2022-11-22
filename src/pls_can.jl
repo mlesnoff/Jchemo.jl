@@ -1,4 +1,4 @@
-struct Pls
+struct PlsCan
     Tx::Matrix{Float64}
     Ty::Matrix{Float64}
     Px::Matrix{Float64}
@@ -20,9 +20,9 @@ end
 
 
 """
-    pls(X, Y, weights = ones(nro(X)); nlv,
+    pls_can(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", scal = false)
-    pls!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
+    pls_can!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = "none", scal = false)
 Canonical partial least squares regression (Canonical PLS)
 * `X` : First block (matrix) of data.
@@ -62,20 +62,20 @@ n = nro(zX)
 X = zX[:, 1:4]
 Y = zX[:, 5:7]
 
-fm = pls(X, Y; nlv = 3)
+fm = pls_can(X, Y; nlv = 3)
 pnames(fm)
 
 res = summary(fm, X, Y)
 pnames(res)
 ```
 """
-function pls(X, Y, weights = ones(nro(X)); nlv,
+function pls_can(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", scal = false)
-    pls!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
+    pls_can!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         bscal = bscal, scal = scal)
 end
 
-function pls!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
+function pls_can!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = "none", scal = false)
     n, p = size(X)
     q = nco(Y)
@@ -160,12 +160,12 @@ function pls!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
      end
      Rx = Wx * inv(Px' * Wx)
      Ry = Wy * inv(Py' * Wy)
-     Pls(Tx, Ty, Px, Py, Rx, Ry, Wx, Wy, TTx, TTy, delta, 
+     PlsCan(Tx, Ty, Px, Py, Rx, Ry, Wx, Wy, TTx, TTy, delta, 
          bscales, xmeans, xscales, ymeans, yscales, weights)
 end
 
 """ 
-    transform(object::Pls, X, Y; nlv = nothing)
+    transform(object::PlsCan, X, Y; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
@@ -173,7 +173,7 @@ Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
 * `nlv` : Nb. LVs to compute. If nothing, it is the maximum number
     from the fitted model.
 """ 
-function transform(object::Pls, X, Y; nlv = nothing)
+function transform(object::PlsCan, X, Y; nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
@@ -184,13 +184,13 @@ function transform(object::Pls, X, Y; nlv = nothing)
 end
 
 """
-    summary(object::Pls, X, Y)
+    summary(object::PlsCan, X, Y)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
-function Base.summary(object::Pls, X::Union{Vector, Matrix, DataFrame},
+function Base.summary(object::PlsCan, X::Union{Vector, Matrix, DataFrame},
         Y::Union{Vector, Matrix, DataFrame})
     X = ensure_mat(X)
     Y = ensure_mat(Y)

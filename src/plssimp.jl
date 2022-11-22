@@ -48,8 +48,8 @@ function plssimp!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     XtY = X' * (D * Y)                   
     # Pre-allocation
     T = similar(X, n, nlv)
-    P = similar(X, p, nlv)
-    W = copy(P)
+    W = similar(X, p, nlv)
+    P = copy(W)
     R = copy(P)
     C = similar(X, q, nlv)
     TT = similar(X, nlv)

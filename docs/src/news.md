@@ -1,7 +1,12 @@
 ### NEWS for package **Jchemo**
 
 ### *Version 0.1.8* 
+- New
+    - **plswold**: Wold Nipals PLSR algorithm
+
 - Modified
+    - **pls** renamed to **pls_can**
+    - **pls_svd** renamed to **pls_tuck**
     - **rcca** renamed to **cca**
     - Output 'Tbl' added in **comdim** and **mbpca**
     - Code cleaning.

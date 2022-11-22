@@ -44,8 +44,8 @@ include("blockscal.jl")
 include("mbpca.jl")
 include("comdim.jl")
 include("cca.jl")
-include("pls.jl")
-include("pls_svd.jl")
+include("pls_can.jl")
+include("pls_tuck.jl")
 
 # Regression 
 include("aov1.jl")
@@ -53,7 +53,8 @@ include("mlr.jl")
 include("rr.jl")
 include("pcr.jl")
 include("plskern.jl") ; include("plsrosa.jl")
-include("plsnipals.jl") ; include("plssimp.jl") 
+include("plsnipals.jl") ; include("plssimp.jl")
+include("plswold.jl") 
 include("plsr_avg.jl")
 include("plsr_avg_aic.jl")
 include("plsr_avg_cv.jl")
@@ -192,17 +193,18 @@ export
     comdim, comdim!, 
     mbpca, mbpca!,
     cca!, cca,
-    pls!, pls,
-    pls_svd!, pls_svd,
+    pls_can, pls_can!,
+    pls_tuck, pls_tuck!,
     rv, lg, rd, 
     # Regression
     aov1,
     mlr, mlr!, mlrchol, mlrchol!, mlrpinv, mlrpinv!, mlrpinv_n, mlrpinv_n!,
-    mlrvec!, mlrvec,
+    mlrvec, mlrvec!,
     plskern, plskern!, 
     plsnipals, plsnipals!, 
     plsrosa, plsrosa!, 
     plssimp, plssimp!,
+    plswold, plswold!,
     cglsr, cglsr!,
     pcr,
     covselr,

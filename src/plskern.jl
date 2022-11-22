@@ -10,8 +10,7 @@ struct Plsr
     ymeans::Vector{Float64}
     yscales::Vector{Float64}
     weights::Vector{Float64}
-    ## For consistency with plsrannar
-    U::Union{Array{Float64}, Nothing}
+    niter::Union{Array{Float64}, Nothing}
 end
 
 """
@@ -135,8 +134,8 @@ function plskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     #XtY = X' * (weights .* Y)           # Can create OutOfMemory errors for very large matrices
     # Pre-allocation
     T = similar(X, n, nlv)
-    P = similar(X, p, nlv)
-    W = copy(P)
+    W = similar(X, p, nlv)
+    P = copy(W)
     R = copy(P)
     C = similar(X, q, nlv)
     TT = similar(X, nlv)
