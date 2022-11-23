@@ -14,9 +14,9 @@ end
 
 """
     cca(X, Y, weights = ones(nro(X)); nlv, 
-        bscal = "none", alpha = 0, scal = false)
+        bscal = "none", tau = 0, scal = false)
     cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = "none", alpha = 0, scal = false)
+        bscal = "none", tau = 0, scal = false)
 Regularized canonical correlation Analysis (RCCA)
 * `X` : First block (matrix) of data.
 * `Y` : Second block (matrix) of data.
@@ -25,20 +25,20 @@ Regularized canonical correlation Analysis (RCCA)
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling (`"none"`, `"frob"`). 
     See functions `blockscal`.
-* `alpha` : Regularization parameter (∊ [0, 1]).
+* `tau` : Regularization parameter (∊ [0, 1]).
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
 The CCA approach used in this function is presented in Weenink 2003. 
-The regularization uses the continuum formulation presented by Qannari & Hanafi 2005 
-and Mangamana et al. 2019. 
+The regularization uses the continuum formulation presented by 
+Qannari & Hanafi 2005 and Mangamana et al. 2019. 
 
-After block centering and scaling, the block scores (Tx and Ty) 
-returned by the present algorithm are proportionnal to the eigenvectors of 
-Projx * Projy and Projy * Projx, defined as follows: 
-* Cx = (1 - `alpha`) * X'DX + `alpha` * Ix
-* Cy = (1 - `alpha`) * Y'DY + `alpha` * Iy
+After block centering and scaling, the block scores returned by 
+the present algorithm (Tx and Ty) are proportionnal to the eigenvectors of 
+Projx * Projy and Projy * Projx, respectively, defined as follows: 
+* Cx = (1 - `tau`) * X'DX + `tau` * Ix
+* Cy = (1 - `tau`) * Y'DY + `tau` * Iy
 * Cxy = X'DY
 * Projx = sqrt(D) * X * invCx * X' * sqrt(D)
 * Projy = sqrt(D) * Y * invCx * Y' * sqrt(D)
@@ -46,10 +46,11 @@ where D is the observation (row) metric.
 The final scores are returned in the original scale 
 by multiplying by D^(-1/2).
 
-When weights are uniform, and setting lambda = `alpha` / (1 - `alpha`) * n / (n - 1), 
-the normed scores returned by the function are the same as those returned 
-by functions `rcc` of the R packages `CCA` (González et al.) and 
-`mixOmics` (Le Cao et al.).
+When the observation weights are uniform, the normed scores returned 
+by the function are the same as those returned by functions `rcc` of 
+the R packages `CCA` (González et al.) and `mixOmics` (Le Cao et al.) where the 
+parameters lambda1 and lambda2 are set to:
+* lambda = `tau` / (1 - `tau`) * n / (n - 1) 
 
 ## References
 
@@ -82,9 +83,9 @@ n = nro(zX)
 X = zX[:, 1:4]
 Y = zX[:, 5:7]
 
-alpha = 0
-#alpha = .10
-fm = cca(X, Y; nlv = 3, alpha = alpha)
+tau = 0
+#tau = .10
+fm = cca(X, Y; nlv = 3, tau = tau)
 pnames(fm)
 
 res = summary(fm, X, Y)
@@ -92,13 +93,13 @@ pnames(res)
 ```
 """
 function cca(X, Y, weights = ones(nro(X)); nlv, 
-        bscal = "none", alpha = 0, scal = false)
+        bscal = "none", tau = 0, scal = false)
     cca!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
-        bscal = bscal, alpha = alpha, scal = scal)
+        bscal = bscal, tau = tau, scal = scal)
 end
 
 function cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = "none", alpha = 0, scal = false)
+        bscal = "none", tau = 0, scal = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, nlv)
@@ -129,18 +130,18 @@ function cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     X .= sqrtw .* X
     Y .= sqrtw .* Y 
     # End
-    if alpha == 0
+    if tau == 0
         Cx = Symmetric(X' * X)
         Cy = Symmetric(Y' * Y)
     else
         Ix = Diagonal(ones(p)) 
         Iy = Diagonal(ones(q)) 
-        if alpha == 1
+        if tau == 1
             Cx = Ix
             Cy = Iy
         else
-            Cx = Symmetric((1 - alpha) * X' * X + alpha * Ix)
-            Cy = Symmetric((1 - alpha) * Y' * Y + alpha * Iy)
+            Cx = Symmetric((1 - tau) * X' * X + tau * Ix)
+            Cy = Symmetric((1 - tau) * Y' * Y + tau * Iy)
         end
     end
     Cxy = X' * Y    

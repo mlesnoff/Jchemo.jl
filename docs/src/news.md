@@ -7,7 +7,7 @@
 - Modified
     - **pls** renamed to **pls_can**
     - **pls_svd** renamed to **pls_tuck**
-    - **rcca** renamed to **cca**
+    - **rcca** renamed to **cca** (and argument 'alpha" to 'tau')
     - Output 'Tbl' added in **comdim** and **mbpca**
     - Code cleaning.
 
