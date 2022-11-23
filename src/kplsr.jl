@@ -24,7 +24,7 @@ end
     kplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
         nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 
         scal = false, kwargs...)
-Kernel partial least squares regression (KPLSR) implemented with a NIPALS 
+Kernel partial least squares regression (KPLSR) implemented with a Nipals 
 algorithm (Rosipal & Trejo, 2001).
 
 * `X` : X-data (n, p).

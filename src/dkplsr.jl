@@ -27,7 +27,7 @@ Direct kernel partial least squares regression (DKPLSR) (Bennett & Embrechts 200
 * `kwargs` : Named arguments to pass in the kernel function.
 
 The method builds kernel Gram matrices and then runs a usual PLSR algorithm on them. 
-This is faster (but not equivalent) to the "true" NIPALS KPLSR algorithm described 
+This is faster (but not equivalent) to the "true" Nipals KPLSR algorithm described 
 in Rosipal & Trejo (2001).
 
 ## References 

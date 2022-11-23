@@ -17,7 +17,7 @@ end
         bscal = "none", tau = 0, scal = false)
     cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = "none", tau = 0, scal = false)
-Regularized canonical correlation Analysis (RCCA)
+Regularized canonical correlation Analysis (RCCA).
 * `X` : First block (matrix) of data.
 * `Y` : Second block (matrix) of data.
 * `weights` : Weights of the observations (rows). 
@@ -31,9 +31,14 @@ Regularized canonical correlation Analysis (RCCA)
     (before the block scaling).
 
 The CCA approach used in this function is presented in Weenink 2003. 
+When the observation weights are uniform, the normed scores returned 
+by the function are the same as those returned by functions `rcc` of 
+the R packages `CCA` (González et al.) and `mixOmics` (Le Cao et al.) 
+whith the parameters lambda1 and lambda2 set to:
+* lambda = `tau` / (1 - `tau`) * n / (n - 1) 
+
 The regularization uses the continuum formulation presented by 
 Qannari & Hanafi 2005 and Mangamana et al. 2019. 
-
 After block centering and scaling, the block scores returned by 
 the present algorithm (Tx and Ty) are proportionnal to the eigenvectors of 
 Projx * Projy and Projy * Projx, respectively, defined as follows: 
@@ -43,17 +48,10 @@ Projx * Projy and Projy * Projx, respectively, defined as follows:
 * Projx = sqrt(D) * X * invCx * X' * sqrt(D)
 * Projy = sqrt(D) * Y * invCx * Y' * sqrt(D)
 where D is the observation (row) metric. 
-The final scores are returned in the original scale 
+The final scores are returned in the original scale, 
 by multiplying by D^(-1/2).
 
-When the observation weights are uniform, the normed scores returned 
-by the function are the same as those returned by functions `rcc` of 
-the R packages `CCA` (González et al.) and `mixOmics` (Le Cao et al.) where the 
-parameters lambda1 and lambda2 are set to:
-* lambda = `tau` / (1 - `tau`) * n / (n - 1) 
-
 ## References
-
 González, I., Déjean, S., Martin, P.G.P., Baccini, A., 2008. CCA: 
 An R Package to Extend Canonical Correlation Analysis. Journal of Statistical 
 Software 23, 1–14. https://doi.org/10.18637/jss.v023.i12
@@ -77,16 +75,21 @@ Univ. of Amsterdam, Proceedings 25, 81-99.
 
 ## Examples
 ```julia
-zX = [1. 2 3 4 5 7 100; 4 1 6 7 12 13 28; 12 5 6 13 3 1 5; 27 18 7 6 2 0 12 ; 
-    12 11 28 7 1 25 2 ; 2 3 7 1 0 7 26 ; 14 12 101 4 3 7 10 ; 8 7 6 5 4 3 -100] 
-n = nro(zX) 
-X = zX[:, 1:4]
-Y = zX[:, 5:7]
+using JchemoData, JLD2
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "linnerud.jld2") 
+@load db dat
+pnames(dat)
+X = dat.X 
+Y = dat.Y
 
 tau = 0
-#tau = .10
 fm = cca(X, Y; nlv = 3, tau = tau)
 pnames(fm)
+
+fm.Tx
+transform(fm, X, Y).Tx
+scale(fm.Tx, colnorm(fm.Tx))
 
 res = summary(fm, X, Y)
 pnames(res)

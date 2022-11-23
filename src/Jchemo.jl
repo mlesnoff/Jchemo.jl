@@ -44,6 +44,7 @@ include("blockscal.jl")
 include("mbpca.jl")
 include("comdim.jl")
 include("cca.jl")
+include("cca_wold.jl")
 include("pls_can.jl")
 include("pls_tuck.jl")
 
@@ -192,7 +193,8 @@ export
     blockscal_ncol, blockscal_sd,
     comdim, comdim!, 
     mbpca, mbpca!,
-    cca!, cca,
+    cca, cca!,
+    cca_wold, cca_wold!,
     pls_can, pls_can!,
     pls_tuck, pls_tuck!,
     rv, lg, rd, 

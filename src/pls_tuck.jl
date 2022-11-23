@@ -52,14 +52,20 @@ on the Two-Block Case (No. 371). University of Washington, Seattle, Washington, 
 
 ## Examples
 ```julia
-zX = [1. 2 3 4 5 7 100; 4 1 6 7 12 13 28; 12 5 6 13 3 1 5; 27 18 7 6 2 0 12 ; 
-    12 11 28 7 1 25 2 ; 2 3 7 1 0 7 26 ; 14 12 101 4 3 7 10 ; 8 7 6 5 4 3 -100] 
-n = nro(zX) 
-X = zX[:, 1:4]
-Y = zX[:, 5:7]
+using JchemoData, JLD2
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "linnerud.jld2") 
+@load db dat
+pnames(dat)
+X = dat.X 
+Y = dat.Y
 
 fm = pls_tuck(X, Y; nlv = 3)
 pnames(fm)
+
+fm.Tx
+transform(fm, X, Y).Tx
+scale(fm.Tx, colnorm(fm.Tx))
 
 res = summary(fm, X, Y)
 pnames(res)

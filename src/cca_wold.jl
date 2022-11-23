@@ -1,4 +1,4 @@
-struct PlsCan
+struct CcaWold
     Tx::Matrix{Float64}
     Ty::Matrix{Float64}
     Px::Matrix{Float64}
@@ -8,22 +8,24 @@ struct PlsCan
     Wx::Matrix{Float64}
     Wy::Matrix{Float64}
     TTx::Vector{Float64}
-    TTy::Vector{Float64}
-    delta::Vector{Float64}    
+    TTy::Vector{Float64}  
     bscales::Vector{Float64}    
     xmeans::Vector{Float64}
     xscales::Vector{Float64}
     ymeans::Vector{Float64}
     yscales::Vector{Float64}
     weights::Vector{Float64}
+    niter::Vector{Float64}
 end
 
 """
-    pls_can(X, Y, weights = ones(nro(X)); nlv,
-        bscal = "none", scal = false)
-    pls_can!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = "none", scal = false)
-Canonical partial least squares regression (Canonical PLS)
+    cca_wold(X, Y, weights = ones(nro(X)); nlv,
+        bscal = "none", tau = 0, 
+        tol = sqrt(eps(1.)), maxit = 200, scal = false)
+    cca_wold!(X, Y, weights = ones(nro(X)); nlv,
+        bscal = "none", tau = 0, 
+        tol = sqrt(eps(1.)), maxit = 200, scal = false)
+Regularized canonical correlation Analysis (RCCA) - Wold Nipals algorithm.
 * `X` : First block (matrix) of data.
 * `Y` : Second block (matrix) of data.
 * `weights` : Weights of the observations (rows). 
@@ -31,21 +33,40 @@ Canonical partial least squares regression (Canonical PLS)
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling (`"none"`, `"frob"`). 
     See functions `blockscal`.
+* `tol` : Tolerance for the Nipals algorithm.
+* `maxit` : Maximum number of iterations for the Nipals algorithm.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-Canonical PLS with the Nipals algorithm (Wold 1984, Tenenhaus 1998 chap.11),
-referred to as PLS-W2A (i.e. Wold PLS mode A) in Wegelin 2000.
-The two blocks `X` and `X` play a symmetric role.  
-After each step of scores computation, X and Y are deflated by the x- and y-scores, 
-respectively. 
+The CCA approach used in this function is presented by Tenenhaus 1998 p.204
+(Wold et al. 1984). 
+When the observation weights are uniform, the normed scores returned 
+by the function are the same as those returned by functions `rgcca` of 
+the R package `RGCCA` (Tenenhaus & Guillemot 2017, Tenenhaus et al. 2017). 
+
+The regularization uses the continuum formulation presented by 
+Qannari & Hanafi 2005 and Mangamana et al. 2019. 
+After block centering and scaling, the covariances matrices are computed 
+as follows: 
+* Cx = (1 - `tau`) * X'DX + `tau` * Ix
+* Cy = (1 - `tau`) * Y'DY + `tau` * Iy
+* Cxy = X'DY
+where D is the observation (row) metric. 
+The final scores are returned in the original scale, 
+by multiplying by D^(-1/2).
 
 ## References
+Tenenhaus, A., Guillemot, V. 2017. RGCCA: Regularized and Sparse Generalized Canonical 
+Correlation Analysis for Multiblock Data Multiblock data analysis.
+https://cran.r-project.org/web/packages/RGCCA/index.html 
+
 Tenenhaus, M., 1998. La régression PLS: théorie et pratique. Editions Technip, Paris.
 
-Wegelin, J.A., 2000. A Survey of Partial Least Squares (PLS) Methods, with Emphasis 
-on the Two-Block Case (No. 371). University of Washington, Seattle, Washington, USA.
+Tenenhaus, M., Tenenhaus, A., Groenen, P.J.F., 2017. 
+Regularized Generalized Canonical Correlation Analysis: A Framework for Sequential 
+Multiblock Component Methods. Psychometrika 82, 737–777. 
+https://doi.org/10.1007/s11336-017-9573-x
 
 Wold, S., Ruhe, A., Wold, H., Dunn, III, W.J., 1984. The Collinearity Problem in Linear 
 Regression. The Partial Least Squares (PLS) Approach to Generalized Inverses. 
@@ -62,7 +83,8 @@ pnames(dat)
 X = dat.X 
 Y = dat.Y
 
-fm = pls_can(X, Y; nlv = 3)
+tau = 1e-8
+fm = cca_wold(X, Y; nlv = 3, tau = tau)
 pnames(fm)
 
 fm.Tx
@@ -73,19 +95,22 @@ res = summary(fm, X, Y)
 pnames(res)
 ```
 """
-function pls_can(X, Y, weights = ones(nro(X)); nlv,
-        bscal = "none", scal = false)
-    pls_can!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
-        bscal = bscal, scal = scal)
+function cca_wold(X, Y, weights = ones(nro(X)); nlv,
+        bscal = "none", tau = 0, 
+        tol = sqrt(eps(1.)), maxit = 200, scal = false)
+    cca_wold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
+        bscal = bscal, tau = tau, 
+        tol = tol, maxit = maxit, scal = scal)
 end
 
-function pls_can!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = "none", scal = false)
+function cca_wold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
+        bscal = "none", tau = 0, 
+        tol = sqrt(eps(1.)), maxit = 200, scal = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(nlv, n, p)
     weights = mweight(weights)
-    D = Diagonal(weights)
+    sqrtw = sqrt.(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     xscales = ones(p)
@@ -107,8 +132,10 @@ function pls_can!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         Y ./= normy
         bscales = [normx; normy]
     end
+    # Row metric
+    X .= sqrtw .* X
+    Y .= sqrtw .* Y
     # Pre-allocation
-    XtY = similar(X, p, q)
     Tx = similar(X, n, nlv)
     Ty = copy(Tx)
     Wx = similar(X, p, nlv)
@@ -118,58 +145,86 @@ function pls_can!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     TTx = similar(X, nlv)
     TTy = copy(TTx)
     tx   = similar(X, n)
-    ty = copy(tx)
-    dtx  = copy(tx)
-    dty = copy(tx)   
+    ty = copy(tx) 
     wx  = similar(X, p)
+    wxtild = copy(wx)    
     wy  = similar(X, q)
+    wytild = copy(wy)
     px   = copy(wx)
     py   = copy(wy)
-    delta = copy(TTx)
+    niter = zeros(nlv)
     # End
     @inbounds for a = 1:nlv
-        XtY .= X' * (D * Y)
-        U, d, V = svd!(XtY) 
-        delta[a] = d[1]
-        # X
-        wx .= U[:, 1]
-        mul!(tx, X, wx)
-        dtx .= weights .* tx
-        ttx = dot(tx, dtx)
-        mul!(px, X', dtx)
+        tx .= X[:, 1]
+        ty .= Y[:, 1]
+        cont = true
+        iter = 1
+        wx .= rand(p)
+        if tau == 0       
+            invCx = inv(X' * X)
+            invCy = inv(Y' * Y)
+            #invCx = pinv(X' * X)
+            #invCy = pinv(Y' * Y)
+        else
+            Ix = Diagonal(ones(p)) 
+            Iy = Diagonal(ones(q)) 
+            if tau == 1   
+                invCx = Ix
+                invCy = Iy
+            else
+                invCx = inv((1 - tau) * X' * X + tau * Ix)
+                invCy = inv((1 - tau) * Y' * Y + tau * Iy)
+            end
+        end 
+        while cont
+            w0 = copy(wx)
+            wxtild .= invCx * X' * ty / dot(ty, ty)
+            wx .= wxtild / norm(wxtild)
+            mul!(tx, X, wx)
+            wytild .= invCy * Y' * tx / dot(tx, tx)
+            wy .= wytild / norm(wytild)
+            mul!(ty, Y, wy)
+            dif = sum((wx .- w0).^2)
+            iter = iter + 1
+            if (dif < tol) || (iter > maxit)
+                cont = false
+            end
+        end
+        niter[a] = iter - 1
+        ttx = dot(tx, tx)
+        mul!(px, X', tx)
         px ./= ttx
-        # Y
-        wy .= V[:, 1]
-        # Same as:                        
-        # mul!(wy, Y', dtx)
-        # wy ./= norm(wy)
-        # End
-        mul!(ty, Y, wy)
-        dty .= weights .* ty
-        tty = dot(ty, dty)
-        mul!(py, Y', dty)
+        tty = dot(ty, ty)
+        mul!(py, Y', ty)
         py ./= tty
         # Deflation
         X .-= tx * px'
         Y .-= ty * py'
-        # End
-        Px[:, a] .= px
-        Py[:, a] .= py
+        # Same as:
+        #b = tx' * X / dot(tx, tx)
+        #X .-= tx * b
+        #b = ty' * Y / dot(ty, ty)
+        #Y .-= ty * b
+        # End         
         Tx[:, a] .= tx
         Ty[:, a] .= ty
         Wx[:, a] .= wx
         Wy[:, a] .= wy
+        Px[:, a] .= px
+        Py[:, a] .= py
         TTx[a] = ttx
         TTy[a] = tty
-     end
-     Rx = Wx * inv(Px' * Wx)
-     Ry = Wy * inv(Py' * Wy)
-     PlsCan(Tx, Ty, Px, Py, Rx, Ry, Wx, Wy, TTx, TTy, delta, 
-         bscales, xmeans, xscales, ymeans, yscales, weights)
+    end
+    Tx .= (1 ./ sqrtw) .* Tx
+    Ty .= (1 ./ sqrtw) .* Ty
+    Rx = Wx * inv(Px' * Wx)
+    Ry = Wy * inv(Py' * Wy)
+    CcaWold(Tx, Ty, Px, Py, Rx, Ry, Wx, Wy, TTx, TTy, 
+        bscales, xmeans, xscales, ymeans, yscales, weights, niter)
 end
 
 """ 
-    transform(object::PlsCan, X, Y; nlv = nothing)
+    transform(object::CcaWold, X, Y; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
@@ -177,7 +232,7 @@ Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
 * `nlv` : Nb. LVs to compute. If nothing, it is the maximum number
     from the fitted model.
 """ 
-function transform(object::PlsCan, X, Y; nlv = nothing)
+function transform(object::CcaWold, X, Y; nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
@@ -188,13 +243,13 @@ function transform(object::PlsCan, X, Y; nlv = nothing)
 end
 
 """
-    summary(object::PlsCan, X, Y)
+    summary(object::CcaWold, X, Y)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
-function Base.summary(object::PlsCan, X::Union{Vector, Matrix, DataFrame},
+function Base.summary(object::CcaWold, X::Union{Vector, Matrix, DataFrame},
         Y::Union{Vector, Matrix, DataFrame})
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -235,4 +290,5 @@ function Base.summary(object::PlsCan, X::Union{Vector, Matrix, DataFrame},
     (explvarx = explvarx, explvary, cort2t, rdx, rdy, 
         corx2t, cory2t)
 end
+
 

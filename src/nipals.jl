@@ -1,6 +1,6 @@
 """
     nipals(X; tol = sqrt(eps(1.)), maxit = 200)
-NIPALS to compute the first score and loading vectors of a matrix.
+Nipals to compute the first score and loading vectors of a matrix.
 * `X` : X-data (n, p).
 * `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. iterations.
