@@ -20,10 +20,10 @@ end
 
 """
     cca_wold(X, Y, weights = ones(nro(X)); nlv,
-        bscal = "none", tau = 0, 
+        bscal = "none", tau = 1e-10, 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
     cca_wold!(X, Y, weights = ones(nro(X)); nlv,
-        bscal = "none", tau = 0, 
+        bscal = "none", tau = 1e-10, 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
 Regularized canonical correlation Analysis (RCCA) - Wold Nipals algorithm.
 * `X` : First block (matrix) of data.
@@ -33,6 +33,7 @@ Regularized canonical correlation Analysis (RCCA) - Wold Nipals algorithm.
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling (`"none"`, `"frob"`). 
     See functions `blockscal`.
+* `tau` : Regularization parameter (∊ [0, 1]).
 * `tol` : Tolerance for the Nipals algorithm.
 * `maxit` : Maximum number of iterations for the Nipals algorithm.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
@@ -41,20 +42,22 @@ Regularized canonical correlation Analysis (RCCA) - Wold Nipals algorithm.
 
 The CCA approach used in this function is presented by Tenenhaus 1998 p.204
 (Wold et al. 1984). 
-When the observation weights are uniform, the normed scores returned 
-by the function are the same as those returned by functions `rgcca` of 
-the R package `RGCCA` (Tenenhaus & Guillemot 2017, Tenenhaus et al. 2017). 
 
 The regularization uses the continuum formulation presented by 
-Qannari & Hanafi 2005 and Mangamana et al. 2019. 
-After block centering and scaling, the covariances matrices are computed 
-as follows: 
+Qannari & Hanafi 2005 and Mangamana et al. 2019. After block centering and scaling, 
+the covariances matrices are computed as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
 * Cy = (1 - `tau`) * Y'DY + `tau` * Iy
-* Cxy = X'DY
 where D is the observation (row) metric. 
 The final scores are returned in the original scale, 
 by multiplying by D^(-1/2).
+
+When the observation weights are uniform, the normed scores returned 
+by the function are expected to be the same as those returned by functions `rgcca` of 
+the R package `RGCCA` (Tenenhaus & Guillemot 2017, Tenenhaus et al. 2017). 
+Nevertheless, the present Wold Nipals algorithm can show some unstability 
+for values `tau` = 0. For more stability, it is recommended to replace 0 by 
+an epsilon value (e.g. 1e-10) to get the same as with a pseudo-inverse.  
 
 ## References
 Tenenhaus, A., Guillemot, V. 2017. RGCCA: Regularized and Sparse Generalized Canonical 
@@ -96,7 +99,7 @@ pnames(res)
 ```
 """
 function cca_wold(X, Y, weights = ones(nro(X)); nlv,
-        bscal = "none", tau = 0, 
+        bscal = "none", tau = 1e-10, 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
     cca_wold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         bscal = bscal, tau = tau, 
@@ -104,7 +107,7 @@ function cca_wold(X, Y, weights = ones(nro(X)); nlv,
 end
 
 function cca_wold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = "none", tau = 0, 
+        bscal = "none", tau = 1e-10, 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
     n, p = size(X)
     q = nco(Y)

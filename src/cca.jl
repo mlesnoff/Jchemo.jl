@@ -31,17 +31,12 @@ Regularized canonical correlation Analysis (RCCA).
     (before the block scaling).
 
 The CCA approach used in this function is presented in Weenink 2003. 
-When the observation weights are uniform, the normed scores returned 
-by the function are the same as those returned by functions `rcc` of 
-the R packages `CCA` (González et al.) and `mixOmics` (Le Cao et al.) 
-whith the parameters lambda1 and lambda2 set to:
-* lambda = `tau` / (1 - `tau`) * n / (n - 1) 
 
 The regularization uses the continuum formulation presented by 
-Qannari & Hanafi 2005 and Mangamana et al. 2019. 
-After block centering and scaling, the block scores returned by 
-the present algorithm (Tx and Ty) are proportionnal to the eigenvectors of 
-Projx * Projy and Projy * Projx, respectively, defined as follows: 
+Qannari & Hanafi 2005 and Mangamana et al. 2019. After block centering and scaling, 
+the block scores returned by the present algorithm (Tx and Ty) are 
+proportionnal to the eigenvectors of Projx * Projy and Projy * Projx, 
+respectively, defined as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
 * Cy = (1 - `tau`) * Y'DY + `tau` * Iy
 * Cxy = X'DY
@@ -50,6 +45,12 @@ Projx * Projy and Projy * Projx, respectively, defined as follows:
 where D is the observation (row) metric. 
 The final scores are returned in the original scale, 
 by multiplying by D^(-1/2).
+
+When the observation weights are uniform, the normed scores returned 
+by the function are the same as those returned by functions `rcc` of 
+the R packages `CCA` (González et al.) and `mixOmics` (Le Cao et al.) 
+whith the parameters lambda1 and lambda2 set to:
+* lambda = `tau` / (1 - `tau`) * n / (n - 1) 
 
 ## References
 González, I., Déjean, S., Martin, P.G.P., Baccini, A., 2008. CCA: 

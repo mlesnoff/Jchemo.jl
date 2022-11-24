@@ -8,7 +8,7 @@
 - **pcasvd** SVD decomposition
 
 *Non linear PCA*
-- **kpca** Kernel  (KPCA) *Scholkopf et al. 2002*
+- **kpca** Kernel (KPCA) *Scholkopf et al. 2002*
 
 *Multiblock*
 
