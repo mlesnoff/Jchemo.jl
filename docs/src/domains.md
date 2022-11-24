@@ -17,7 +17,7 @@
     - **cca_wold**: RCCA Wold Nipals algorithm  
     - **pls_can**: Canonical partial least squares regression (Symmetric PLS)
     - **pls_tuck**: Tucker's inter-battery method of factor analysis (PLS-SVD)
-- 2 blocks or more
+- >= 2 blocks
     - **mbpca** Consensus PCA (MBPCA = CPCA)
     - **comdim** Common components and specific weights analysis (ComDim = CCSWA = HPCA)
 - Utilities
