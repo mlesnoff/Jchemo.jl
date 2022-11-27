@@ -269,7 +269,7 @@ rmsep(pred, ytest)
 rmsep(pred, Y) = sqrt.(msep(pred, Y))
 
 """
-    rmsep_stand(pred, Y)
+    rmsepstand(pred, Y)
 Compute the standardized square root of the mean of the squared 
 prediction errors (RMSEP_stand).
 * `pred` : Predictions.
@@ -288,14 +288,14 @@ ytest = Ytest[:, 1]
 
 fm = plskern(Xtrain, Ytrain; nlv = 2)
 pred = Jchemo.predict(fm, Xtest).pred
-rmsep_stand(pred, Ytest)
+rmsepstand(pred, Ytest)
 
 fm = plskern(Xtrain, ytrain; nlv = 2)
 pred = Jchemo.predict(fm, Xtest).pred
-rmsep_stand(pred, ytest)
+rmsepstand(pred, ytest)
 ```
 """
-function rmsep_stand(pred, Y)
+function rmsepstand(pred, Y)
     Y = ensure_mat(Y)
     rmsep(pred ./ Y, ones(size(Y)))
 end

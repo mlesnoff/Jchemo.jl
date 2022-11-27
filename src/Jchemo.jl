@@ -43,10 +43,11 @@ include("mblock.jl")
 include("blockscal.jl")
 include("mbpca.jl")
 include("comdim.jl")
+include("mbmang.jl")
 include("cca.jl")
-include("cca_wold.jl")
-include("pls_can.jl")
-include("pls_tuck.jl")
+include("ccawold.jl")
+include("plscan.jl")
+include("plstuck.jl")
 
 # Regression 
 include("aov1.jl")
@@ -176,31 +177,34 @@ export
     vcol, vrow, 
    # Pre-processing
     caltransf_ds, caltransf_pds,
+    detrend, detrend!, 
     eposvd,
+    fdif, fdif!,
     interpl, interpl_mon, 
     linear_int, quadratic_int, quadratic_spline, cubic_spline,
     mavg, mavg!, mavg_runmean, mavg_runmean!,
     rmgap, rmgap!,
     savgk, savgol, savgol!,
-    snv, snv!, detrend, detrend!, fdif, fdif!,
+    snv, snv!, 
     # Exploratory
     kpca,
     nipals,
     pcasvd, pcasvd!, pcaeigen, pcaeigen!, pcaeigenk, pcaeigenk!,
-    rpmat_gauss, rpmat_li, rp, rp!,
+    rpmatgauss, rpmatli, rp, rp!,
     # Exploratory Multiblock
     blockscal, blockscal_frob, blockscal_mfa,
     blockscal_ncol, blockscal_sd,
-    comdim, comdim!, 
-    mbpca, mbpca!,
-    cca, cca!,
-    cca_wold, cca_wold!,
-    pls_can, pls_can!,
-    pls_tuck, pls_tuck!,
     rv, lg, rd, 
+    mbpca, mbpca!,
+    comdim, comdim!,
+    mbmang, mbmang!,  
+    cca, cca!,
+    ccawold, ccawold!,
+    plscan, plscan!,
+    plstuck, plstuck!,
     # Regression
     aov1,
-    mlr, mlr!, mlrchol, mlrchol!, mlrpinv, mlrpinv!, mlrpinv_n, mlrpinv_n!,
+    mlr, mlr!, mlrchol, mlrchol!, mlrpinv, mlrpinv!, mlrpinvn, mlrpinvn!,
     mlrvec, mlrvec!,
     plskern, plskern!, 
     plsnipals, plsnipals!, 
@@ -254,7 +258,7 @@ export
     transform, coef, predict,
     # Validation
     residreg, residcla, 
-    ssr, msep, rmsep, rmsep_stand, bias, sep, cor2, r2, rpd, rpdr, mse, err,
+    ssr, msep, rmsep, rmsepstand, bias, sep, cor2, r2, rpd, rpdr, mse, err,
     mpar,
     gridscore, gridscorelv, gridscorelb,
     segmts, segmkf,

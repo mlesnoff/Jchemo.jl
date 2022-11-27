@@ -3,12 +3,15 @@
 ### *Version 0.1.8* 
 - New
     - **plswold**: PLSR Wold Nipals algorithm.
-    - **cca_wold**: Regularized CCA Wold Nipals algorithm.
+    - **ccawold**: Regularized CCA Wold Nipals algorithm.
+    - **mbmang**: Unified multiblock data analysis of Mangana et al. 2019.
 
 - Modified
-    - **pls** renamed to **pls_can**.
-    - **pls_svd** renamed to **pls_tuck**.
+    - **mlrpinv_n** renamed to **mlrpinvn**
+    - **pls** renamed to **plscan**.
+    - **pls_svd** renamed to **plstuck**.
     - **rcca** renamed to **cca** (and argument 'alpha" to 'tau').
+    - **rpmat_gauss** and **rpmat_li** renamed to **rpmatgauss** and **rpmatli** 
     - Output 'Tbl' added in **comdim** and **mbpca**.
     - Code cleaning.
 
@@ -292,7 +295,7 @@ the Makie's backend (e.g. CairoMakie).
     - **blockscal**
     - **pcr**
     - **rp**
-    - **rpmat_gauss**
+    - **rpmatgauss**
     - **rpmat_li**
    
 ### *Version 0.0.4*

@@ -15,9 +15,9 @@ struct PlsTuck
 end
 
 """
-    pls_tuck(X, Y, weights = ones(nro(X)); nlv,
+    plstuck(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", scal = false)
-    pls_tuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
+    plstuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = "none", scal = false)
 Tucker's inter-battery method of factor analysis
 * `X` : First block (matrix) of data.
@@ -60,7 +60,7 @@ pnames(dat)
 X = dat.X 
 Y = dat.Y
 
-fm = pls_tuck(X, Y; nlv = 3)
+fm = plstuck(X, Y; nlv = 3)
 pnames(fm)
 
 fm.Tx
@@ -71,13 +71,13 @@ res = summary(fm, X, Y)
 pnames(res)
 ```
 """
-function pls_tuck(X, Y, weights = ones(nro(X)); nlv,
+function plstuck(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", scal = false)
-    pls_tuck!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
+    plstuck!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         bscal = bscal, scal = scal)
 end
 
-function pls_tuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
+function plstuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = "none", scal = false)
     n, p = size(X)
     q = nco(Y)

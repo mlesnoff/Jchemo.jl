@@ -11,15 +11,15 @@
 - **kpca** Kernel (KPCA) *Scholkopf et al. 2002*
 
 *Multiblock*
-
 - 2 blocks
     - **cca**: Regularized canonical correlation analysis (RCCA)
-    - **cca_wold**: RCCA Wold Nipals algorithm  
-    - **pls_can**: Canonical partial least squares regression (Symmetric PLS)
-    - **pls_tuck**: Tucker's inter-battery method of factor analysis (PLS-SVD)
+    - **ccawold**: RCCA Wold (1984) Nipals algorithm  
+    - **plscan**: Canonical partial least squares regression (Symmetric PLS)
+    - **plstuck**: Tucker's inter-battery method of factor analysis (PLS-SVD)
 - 2 or more blocks 
     - **mbpca** Consensus PCA (MBPCA = CPCA)
     - **comdim** Common components and specific weights analysis (ComDim = CCSWA = HPCA)
+    - **mbmang**: Unified multiblock data analysis of Mangana et al. 2019
 - Utilities
     - **mblock** Make blocks from a matrix
     - **blockscal_col, _frob, _mfa, _sd** Scaling blocks
@@ -34,37 +34,36 @@
 ## RANDOM PROJECTIONS
 
 - **rp** Random projection
-- **rpmat_gauss** Gaussian random projection matrix 
-- **rpmat_li** Sparse random projection matrix 
+- **rpmatgauss** Gaussian random projection matrix 
+- **rpmatli** Sparse random projection matrix 
 
 ## REGRESSION
 
 ### **Linear models**
 
 *Multiple linear regression (MLR)*
-
 - **mlr** QR algorithm
 - **mlrchol** Normal equations and Choleski factorization
 - **mlrpinv** Pseudo-inverse
-- **mlrpinv_n** Normal equations and pseudo-inverse
+- **mlrpinvn** Normal equations and pseudo-inverse
 - **mlrvec** Simple linear regression (Univariate x)
 
 *Anova*
-
 - **aov1** One factor ANOVA
 
 ### **Partial least squares (PLSR)**
 
-- **plskern** "Improved kernel #1" *Dayal & McGregor 1997*
+*PLSR*
+- **plskern** "Improved kernel #1" *Dayal & McGregor 1997* (Fast)
 - **plsnipals** Nipals
+- **plswold** Nipals *Wold 1984*
 - **plsrosa** ROSA *Liland et al. 2016*
 - **plssimp** SIMPLS *de Jong 1993*
-- **plswold** Nipals Wold
 
 *Variants* 
 - **cglsr** Conjugate gradient for the least squares normal equations (CGLS)
-- **covselr** MLR on variables selected from partial correlation or covariance (Covsel)
-- **pcr** SVD factorization
+- **pcr** Principal components regression (SVD factorization)
+- **covselr** MLR on variables selected from Covsel
 
 *Non linear*
 - **kplsr** Non linear kernel (KPLSR) *Rosipal & Trejo 2001*
@@ -75,8 +74,8 @@
     latent variables (LVs) (PLSR-AVG)
 
 *Variable selection*
-- **covsel** Variable selection from partial correlation or covariance (Covsel)
 - **iplsr** Interval PLSR (iPLS) (Nørgaard et al. 2000)
+- **covsel** Variable selection from partial correlation or covariance (Covsel)
 
 *Multiblock*
 - **mbplsr** Multiblock (MBPLSR; concatenated blocks)
@@ -85,6 +84,7 @@
 
 ### **Ridge (RR, KRR)**
 
+*RR*
 - **rr** Pseudo-inverse (RR)
 - **rrchol** Choleski factorization (RR)
 
@@ -102,6 +102,7 @@
 - **cplsr_avg** Clustered PLSR-AVG
 
 ### **Support vector machine (SVMR)** -- from LIBSVM.jl
+
 - **svmr** Epsilon-SVM regression
 
 ### **Trees** -- from XGBoost.jl
@@ -122,13 +123,11 @@
 ### One-Class Classification (OCC)
 
 *From a PCA or PLS score space*
-
 - **occsd** Using score distance (SD)
 - **occod** Using orthogonal distance (OD) 
 - **occsdod** Using a compromise between SD and OD 
 
 *Other methods*
-
 - **occknndis**: Using "global" k-nearest neighbors distances.
 - **occlknndis**: Using "local" k-nearest neighbors distances.
 - **occstah** Using Stahel-Donoho outlierness measure.
@@ -165,7 +164,6 @@
     latent variables (LVs) (PLS-LDA-AVG)
 
 *Utility*
-
 - **dmnorm** Normal probability density of multivariate data
 
 ### **Local models**
@@ -176,7 +174,6 @@
 - **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA)
 
 *Averaging*
-
 - **lwplsrda_avg** kNN-LWPLSR-DA-AVG
 - **lwplslda_avg** kNN-LWPLS-LDA-AVG
 - **lwplsqda_avg** kNN-LWPLS-QDA-AVG
@@ -215,7 +212,6 @@
 ### **Performance scores**
 
 *Regression*
-
 - **ssr** SSR
 - **msep** MSEP
 - **rmsep** RMSEP
@@ -227,7 +223,6 @@
 - **mse** Summary for regression
 
 *Discrimination*
-
 - **err** Classification error rate
 
 *Model dimensionality*

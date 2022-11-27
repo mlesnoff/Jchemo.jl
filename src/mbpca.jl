@@ -59,7 +59,7 @@ Function `summary` returns:
 * `lg` : Lg coefficient. 
 
 ## References
-Tchandao Mangamana, E., Cariou, V., Vigneau, E., Glèlè Kakaï, R.L., Qannari, E.M., 2019. 
+Mangamana, E.T., Cariou, V., Vigneau, E., Glèlè Kakaï, R.L., Qannari, E.M., 2019. 
 Unsupervised multiblock data analysis: A unified approach and extensions. Chemometrics and 
 Intelligent Laboratory Systems 194, 103856. https://doi.org/10.1016/j.chemolab.2019.103856
 
@@ -86,10 +86,10 @@ bscal = "frob"
 fm = mbpca(Xbl; nlv = 4, bscal = bscal) ;
 fm.U
 fm.T
-Jchemo.transform(fm, Xbl)
-Jchemo.transform(fm, Xbl_new) 
+Jchemo.transform(fm, Xbl).T
+Jchemo.transform(fm, Xbl_new).T 
 
-res = Jchemo.summary(fm, Xbl) ;
+res = summary(fm, Xbl) ;
 fm.lb
 rowsum(fm.lb)
 fm.mu
@@ -179,9 +179,9 @@ function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         while cont
             u0 = copy(u)
             for k = 1:nbl
-                wk = Xbl[k]' * u
+                wk = Xbl[k]' * u    # = wktild
                 dk = norm(wk)
-                wk ./= dk
+                wk ./= dk           # = wk (= normed)
                 tk .= Xbl[k] * wk 
                 Tb[a][:, k] .= tk
                 Tbl[k][:, a] .= (1 ./ sqrtw) .* Tb[a][:, k]
@@ -229,10 +229,15 @@ function transform(object::Mbpca, Xbl; nlv = nothing)
     zXbl = blockscal(zXbl, object.bscales).X
     U = similar(zXbl[1], m, nlv)
     TB = similar(zXbl[1], m, nbl)
+    Tbl = list(nbl, Matrix{Float64})
+    for k = 1:nbl ; Tbl[k] = similar(zXbl[1], m, nlv) ; end
     u = similar(zXbl[1], m)
+    tk = copy(u)
     for a = 1:nlv
         for k = 1:nbl
-            TB[:, k] .= zXbl[k] * object.Wbl[k][:, a]
+            tk .= zXbl[k] * object.Wbl[k][:, a]
+            TB[:, k] .= tk
+            Tbl[k][:, a] .= tk
         end
         u .= 1 / sqrt(object.mu[a]) * TB * object.W[:, a]
         U[:, a] .= u
@@ -241,7 +246,8 @@ function transform(object::Mbpca, Xbl; nlv = nothing)
             zXbl[k] -= u * Px
         end
     end
-    sqrt.(object.mu)' .* U # = T
+    T = sqrt.(object.mu)' .* U
+    (T = T, Tbl)
 end
 
 """
@@ -250,13 +256,13 @@ Summarize the fitted model.
 * `object` : The fitted model.
 * `Xbl` : The X-data that was used to fit the model.
 """ 
-function summary(object::Mbpca, Xbl)
+function Base.summary(object::Mbpca, Xbl)
     nbl = length(Xbl)
     nlv = size(object.T, 2)
     sqrtw = sqrt.(object.weights)
     sqrtD = Diagonal(sqrtw)
     zXbl = list(nbl, Matrix{Float64})
-    @inbounds for k = 1:nbl
+    Threads.@threads for k = 1:nbl
         zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
     zXbl = blockscal(zXbl, object.bscales).X

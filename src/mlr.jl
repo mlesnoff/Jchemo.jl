@@ -37,7 +37,7 @@ ytest = rmrow(y, s)
 fm = mlr(Xtrain, ytrain) ;
 #fm = mlrchol(Xtrain, ytrain) ;
 #fm = mlrpinv(Xtrain, ytrain) ;
-#fm = mlrpinv_n(Xtrain, ytrain) ;
+#fm = mlrpinvn(Xtrain, ytrain) ;
 pnames(fm)
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
@@ -160,8 +160,8 @@ function mlrpinv!(X::Matrix, Y::Matrix, weights = ones(nro(X));
 end
 
 """
-    mlrpinv_n(X, Y, weights = ones(nro(X)))
-    mlrpinv_n!(X::Matrix, Y::Matrix, weights = ones(nro(X)))
+    mlrpinvn(X, Y, weights = ones(nro(X)))
+    mlrpinvn!(X::Matrix, Y::Matrix, weights = ones(nro(X)))
 Compute a mutiple linear regression model (MLR) 
 by using the Normal equations and a pseudo-inverse.
 * `X` : X-data.
@@ -174,11 +174,11 @@ Compute a model with intercept.
 
 See `?mlr` for examples.
 """ 
-function mlrpinv_n(X, Y, weights = ones(nro(X)))
-    mlrpinv_n!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights)
+function mlrpinvn(X, Y, weights = ones(nro(X)))
+    mlrpinvn!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights)
 end
 
-function mlrpinv_n!(X::Matrix, Y::Matrix, weights = ones(nro(X)))
+function mlrpinvn!(X::Matrix, Y::Matrix, weights = ones(nro(X)))
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   

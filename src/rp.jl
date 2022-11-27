@@ -6,7 +6,7 @@ struct Rp
 end
 
 """
-    rpmat_gauss(p, nlv)
+    rpmatgauss(p, nlv)
 Build a gaussian random projection matrix.
 * `p` : Nb. variables (attributes) to project.
 * `nlv` : Nb. of simulated projection dimensions.
@@ -26,16 +26,16 @@ New York, NY, USA, pp. 287–296. https://doi.org/10.1145/1150402.1150436
 ## Examples
 ```julia
 p = 10 ; nlv = 3
-rpmat_gauss(p, nlv)
+rpmatgauss(p, nlv)
 ```
 """ 
-function rpmat_gauss(p, nlv)
+function rpmatgauss(p, nlv)
     randn(p, nlv) / sqrt(nlv)
 end
 
 
 """
-    rpmat_li(p, nlv; s = sqrt(p))
+    rpmatli(p, nlv; s = sqrt(p))
 Build a sparse random projection matrix (Achlioptas 2001, Li et al. 2006).
 * `p` : Nb. variables (attributes) to project.
 * `nlv` : Nb. final dimensions, i.e. after projection.
@@ -72,10 +72,10 @@ New York, NY, USA, pp. 287–296. https://doi.org/10.1145/1150402.1150436
 ## Examples
 ```julia
 p = 10 ; nlv = 3
-rpmat_li(p, nlv)
+rpmatli(p, nlv)
 ```
 """ 
-function rpmat_li(p, nlv; s = sqrt(p))
+function rpmatli(p, nlv; s = sqrt(p))
     le = p * nlv
     k = Int64(round(le / s))
     z = zeros(le)
@@ -84,8 +84,8 @@ function rpmat_li(p, nlv; s = sqrt(p))
 end
 
 """
-    rp(X, weights = ones(nro(X)); nlv, fun = rpmat_li, scal = false, kwargs ...)
-    rp!(X::Matrix, weights = ones(nro(X)); nlv, fun = rpmat_li, scal = false, kwargs ...)
+    rp(X, weights = ones(nro(X)); nlv, fun = rpmatli, scal = false, kwargs ...)
+    rp!(X::Matrix, weights = ones(nro(X)); nlv, fun = rpmatli, scal = false, kwargs ...)
 Make a random projection of matrix X.
 * `X` : X-data (n, p).
 * `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
@@ -107,13 +107,13 @@ fm.T # = X * fm.P
 Jchemo.transform(fm, X[1:2, :])
 ```
 """
-function rp(X, weights = ones(nro(X)); nlv, fun = rpmat_li, 
+function rp(X, weights = ones(nro(X)); nlv, fun = rpmatli, 
     scal = false, kwargs...)
     rp!(copy(ensure_mat(X)), weights; nlv, 
         fun = fun, scal = scal, kwargs...)
 end
 
-function rp!(X::Matrix, weights = ones(nro(X)); nlv, fun = rpmat_li, 
+function rp!(X::Matrix, weights = ones(nro(X)); nlv, fun = rpmatli, 
         scal = false, kwargs...)
     X = ensure_mat(X)
     p = nco(X)

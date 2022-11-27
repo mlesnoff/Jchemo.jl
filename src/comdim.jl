@@ -108,7 +108,7 @@ fm.T
 Jchemo.transform(fm, Xbl)
 Jchemo.transform(fm, Xbl_new) 
 
-res = Jchemo.summary(fm, Xbl) ;
+res = summary(fm, Xbl) ;
 fm.lb
 rowsum(fm.lb)
 fm.mu
@@ -195,13 +195,13 @@ function comdim!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         while cont
             u0 = copy(u)
             for k = 1:nbl
-                wk = Xbl[k]' * u
-                dk = norm(wk) # = alphak = abs.(dot(tk, u))
-                wk ./= dk
+                wk = Xbl[k]' * u      # = wktild
+                dk = norm(wk)         # = alphak = abs.(dot(tk, u))
+                wk ./= dk             # = wk (= normed)
                 mul!(tk, Xbl[k], wk) 
                 Tb[a][:, k] .= tk
                 Tbl[k][:, a] .= (1 ./ sqrtw) .* Tb[a][:, k]
-                TB[:, k] = dk * tk
+                TB[:, k] = dk * tk    # = Qb (qk = dk * tk)
                 Wbl[k][:, a] .= wk
                 lb[k, a] = dk^2
             end
@@ -248,10 +248,15 @@ function transform(object::Comdim, Xbl; nlv = nothing)
     zXbl = blockscal(zXbl, object.bscales).X
     U = similar(zXbl[1], m, nlv)
     TB = similar(zXbl[1], m, nbl)
+    Tbl = list(nbl, Matrix{Float64})
+    for k = 1:nbl ; Tbl[k] = similar(zXbl[1], m, nlv) ; end
     u = similar(zXbl[1], m)
+    tk = copy(u)
     for a = 1:nlv
         for k = 1:nbl
-            TB[:, k] .= zXbl[k] * object.Wbl[k][:, a]
+            tk .= zXbl[k] * object.Wbl[k][:, a]
+            TB[:, k] .= tk
+            Tbl[k][:, a] .= tk
         end
         TB .= sqrt.(object.lb[:, a])' .* TB
         u .= 1 / sqrt(object.mu[a]) * TB * object.W[:, a]
@@ -261,7 +266,8 @@ function transform(object::Comdim, Xbl; nlv = nothing)
             zXbl[k] .-= u * Px
         end
     end
-    sqrt.(object.mu)' .* U # = T
+    T = sqrt.(object.mu)' .* U
+    (T = T, Tbl)
 end
 
 """
@@ -270,7 +276,7 @@ Summarize the fitted model.
 * `object` : The fitted model.
 * `Xbl` : The X-data that was used to fit the model.
 """ 
-function summary(object::Comdim, Xbl)
+function Base.summary(object::Comdim, Xbl)
     nbl = length(Xbl)
     nlv = size(object.T, 2)
     sqrtw = sqrt.(object.weights)

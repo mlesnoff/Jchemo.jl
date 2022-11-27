@@ -7,8 +7,8 @@
 [![Build Status](https://github.com/mlesnoff/Jchemo.jl/workflows/CI/badge.svg)](https://github.com/mlesnoff/Jchemo.jl/actions)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
-**Jchemo** provides functions and pipelines for data exploration and predictions in chemometrics or 
-other domains, with focus on high dimensional data. 
+**Jchemo** provides [**functions**](https://github.com/mlesnoff/Jchemo.jl/blob/master/docs/src/domains.md) 
+for data exploration and predictions in chemometrics or other domains, with focus on high dimensional data. 
 
 The package was initially about **k-nearest neighbors locally weighted partial least squares regression 
 and discrimination models** (kNN-LWPLSR and kNN-LWPLSDA; e.g. Lesnoff et al 2021 https://doi.org/10.1002/cem.3209).
