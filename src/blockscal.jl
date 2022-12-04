@@ -88,7 +88,7 @@ function blockscal_frob(Xbl,
     nbl = length(Xbl)
     bscales = list(nbl, Float64)
     @inbounds for k = 1:nbl
-        bscales[k] =  fnorm(Xbl[k], mweight(weights))
+        bscales[k] =  frob(Xbl[k], mweight(weights))
     end
     blockscal(Xbl, bscales)
 end 

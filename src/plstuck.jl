@@ -98,8 +98,8 @@ function plstuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     end
     bscal == "none" ? bscales = ones(2) : nothing
     if bscal == "frob"
-        normx = fnorm(X, weights)
-        normy = fnorm(Y, weights)
+        normx = frob(X, weights)
+        normy = frob(Y, weights)
         X ./= normx
         Y ./= normy
         bscales = [normx; normy]
@@ -154,13 +154,13 @@ function Base.summary(object::PlsTuck, X::Union{Vector, Matrix, DataFrame},
     ttx = object.TTx
     tty = object.TTy
     ## X
-    sstot = fnorm(X, object.weights)^2
+    sstot = frob(X, object.weights)^2
     pvar = ttx / sstot
     cumpvar = cumsum(pvar)
     xvar = ttx / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## y
-    sstot = fnorm(Y, object.weights)^2
+    sstot = frob(Y, object.weights)^2
     pvar = tty / sstot
     cumpvar = cumsum(pvar)
     xvar = tty / n    

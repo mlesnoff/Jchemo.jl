@@ -1,5 +1,12 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.1.9* 
+- New
+    - **rasvd**: Redundancy analysis (SVD algorithm).
+
+- Modified
+    - **fnorm** renamed to **frob**.
+
 ### *Version 0.1.8* 
 - New
     - **plswold**: PLSR Wold Nipals algorithm.

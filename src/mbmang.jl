@@ -57,6 +57,14 @@ transform(fm, Xbl).T
 
 res = summary(fm, Xbl)
 pnames(res)
+
+## MBPCA
+fm = mbmang(Xbl; nlv = 3,
+    tau = 1, wcov = false, deflat = "global") ;
+
+## ComDim
+fm = mbmang(Xbl; nlv = 3,
+    tau = 1, wcov = true, deflat = "global") ;
 ```
 """
 function mbmang(Xbl, weights = ones(nro(Xbl[1])); nlv, 

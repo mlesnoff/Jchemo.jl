@@ -278,7 +278,7 @@
 - **dens** Univariate kernel density estimation
 - **dummy** Build dummy table
 - **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
-- **fnorm** Frobenius norm of a matrix
+- **frob** Frobenius norm of a matrix
 - **fweight** Compute weights from distances
 - **getknn** Find nearest neighbours between rows of matrices
 - **iqr** Interval inter-quartiles

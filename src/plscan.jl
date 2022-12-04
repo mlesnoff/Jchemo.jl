@@ -101,8 +101,8 @@ function plscan!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     end
     bscal == "none" ? bscales = ones(2) : nothing
     if bscal == "frob"
-        normx = fnorm(X, weights)
-        normy = fnorm(Y, weights)
+        normx = frob(X, weights)
+        normy = frob(Y, weights)
         X ./= normx
         Y ./= normy
         bscales = [normx; normy]
@@ -205,14 +205,14 @@ function Base.summary(object::PlsCan, X::Union{Vector, Matrix, DataFrame},
     tty = object.TTy 
     ## Explained variances
     # X
-    sstot = fnorm(X, object.weights)^2
+    sstot = frob(X, object.weights)^2
     tt_adj = vec(sum(object.Px.^2, dims = 1)) .* ttx
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     # Y
-    sstot = fnorm(Y, object.weights)^2
+    sstot = frob(Y, object.weights)^2
     tt_adj = vec(sum(object.Py.^2, dims = 1)) .* tty
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)

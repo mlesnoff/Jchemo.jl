@@ -251,7 +251,7 @@ function Base.summary(object::Plsr, X::Union{Vector, Matrix, DataFrame})
     X = cscale(X, object.xmeans, object.xscales)
     # Could be cscale! but changes X
     # If too heavy ==> Makes summary!
-    sstot = sum(object.weights' * (X.^2)) # = fnorm(X, object.weights)^2 ==> to replace
+    sstot = sum(object.weights' * (X.^2)) # = frob(X, object.weights)^2 ==> to replace
     tt = object.TT
     tt_adj = vec(sum(object.P.^2, dims = 1)) .* tt
     pvar = tt_adj / sstot

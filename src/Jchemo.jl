@@ -48,6 +48,7 @@ include("cca.jl")
 include("ccawold.jl")
 include("plscan.jl")
 include("plstuck.jl")
+include("rasvd.jl")
 
 # Regression 
 include("aov1.jl")
@@ -154,7 +155,7 @@ export
     dummy,
     ensure_df, ensure_mat,
     findmax_cla, 
-    fnorm,
+    frob,
     fweight,
     head,
     list, 
@@ -202,6 +203,7 @@ export
     ccawold, ccawold!,
     plscan, plscan!,
     plstuck, plstuck!,
+    rasvd, rasvd!,
     # Regression
     aov1,
     mlr, mlr!, mlrchol, mlrchol!, mlrpinv, mlrpinv!, mlrpinvn, mlrpinvn!,

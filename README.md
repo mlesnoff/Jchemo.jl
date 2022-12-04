@@ -15,7 +15,7 @@ and discrimination models** (kNN-LWPLSR and kNN-LWPLSDA; e.g. Lesnoff et al 2021
 It has now been expanded to various other methods. 
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. 
-Tuning the predicive models is facilitated by functions **gridscore** (validation dataset) and 
+**Tuning the predicive models** is facilitated by functions **gridscore** (validation dataset) and 
 **gridcv** (cross-validation). Faster versions are also available for models based on latent variables (LVs) 
 (**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
 

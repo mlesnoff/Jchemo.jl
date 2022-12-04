@@ -123,8 +123,8 @@ function cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     end
     bscal == "none" ? bscales = ones(2) : nothing
     if bscal == "frob"
-        normx = fnorm(X, weights)
-        normy = fnorm(Y, weights)
+        normx = frob(X, weights)
+        normy = frob(Y, weights)
         X ./= normx
         Y ./= normy
         bscales = [normx; normy]
@@ -201,12 +201,12 @@ function Base.summary(object::Cca, X::Union{Vector, Matrix, DataFrame},
     ## Explained variances
     T = object.Tx
     xvar = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
-    pvar =  xvar / fnorm(X, object.weights)^2
+    pvar =  xvar / frob(X, object.weights)^2
     cumpvar = cumsum(pvar)
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     T = object.Ty
     xvar = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)
-    pvar =  xvar / fnorm(Y, object.weights)^2
+    pvar =  xvar / frob(Y, object.weights)^2
     cumpvar = cumsum(pvar)
     explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Correlation between block scores

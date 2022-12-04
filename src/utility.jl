@@ -530,8 +530,8 @@ function findmax_cla(x, weights = nothing)
 end
 
 """ 
-    fnorm(X)
-    fnorm(X, w)
+    frob(X)
+    frob(X, w)
 Frobenius norm of a matrix.
 * `X` : A matrix (n, p).
 * `w` : Weights (n) of the observations.
@@ -544,11 +544,11 @@ The Frobenius norm of `X` is:
 The weighted norm is:
 * sqrt(tr(X' * D * X)), where D is the diagonal matrix of vector `w`.
 """
-function fnorm(X)
+function frob(X)
     LinearAlgebra.norm(X)
 end
 
-function fnorm(X, w)
+function frob(X, w)
     # 1
     #sqrtD = Diagonal(sqrt.(mweight(w)))
     #sqrt(ssq(sqrtD * X))
