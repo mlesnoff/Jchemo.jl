@@ -25,7 +25,7 @@ end
     ccawold!(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", tau = 1e-10, 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
-Regularized canonical correlation Analysis (RCCA) - Wold Nipals algorithm.
+Regularized canonical correlation analysis (RCCA) - Wold Nipals algorithm.
 * `X` : First block (matrix) of data.
 * `Y` : Second block (matrix) of data.
 * `weights` : Weights of the observations (rows). 

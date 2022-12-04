@@ -1,4 +1,4 @@
-struct Rasvd
+struct RaSvd
     Tx::Matrix{Float64}
     Ty::Matrix{Float64}
     Bx::Matrix{Float64}
@@ -12,6 +12,65 @@ struct Rasvd
     weights::Vector{Float64}
 end
 
+"""
+    rasvd(X, Y, weights = ones(nro(X)); nlv,
+        bscal = "none", tau = 1e-10, scal = false)
+    rasvd!(X, Y, weights = ones(nro(X)); nlv,
+        bscal = "none", tau = 1e-10, scal = false)
+Regularized redundancy anlaysis (RRA) - SVD aglorithm.
+* `X` : First block (matrix) of data.
+* `Y` : Second block (matrix) of data.
+* `weights` : Weights of the observations (rows). 
+    Internally normalized to sum to 1. 
+* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `bscal` : Type of block scaling (`"none"`, `"frob"`). 
+    See functions `blockscal`.
+* `tau` : Regularization parameter (∊ [0, 1]).
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation 
+    (before the block scaling).
+
+The regularization uses the continuum formulation presented by 
+Qannari & Hanafi 2005 and Mangamana et al. 2019. After block centering and scaling, 
+the covariances matrices are computed as follows: 
+* Cx = (1 - `tau`) * X'DX + `tau` * Ix
+* Cy = (1 - `tau`) * Y'DY + `tau` * Iy
+where D is the observation (row) metric. 
+The final scores are returned in the original scale, 
+by multiplying by D^(-1/2).
+
+## References
+Bougeard, S., Qannari, E.M., Lupo, C., Chauvin, C., 2011a. Multiblock redundancy 
+analysis from a user’s perspective. Application in veterinary epidemiology. 
+Electronic Journal of Applied Statistical Analysis 4, 203-214–214. 
+https://doi.org/10.1285/i20705948v4n2p203
+
+Bougeard, S., Qannari, E.M., Rose, N., 2011b. Multiblock redundancy analysis: 
+interpretation tools and application in epidemiology. Journal of Chemometrics 25, 
+467–475. https://doi.org/10.1002/cem.1392
+
+## Examples
+```julia
+using JchemoData, JLD2
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "linnerud.jld2") 
+@load db dat
+pnames(dat)
+X = dat.X 
+Y = dat.Y
+
+tau = 1e-8
+fm = rasvd(X, Y; nlv = 3, tau = tau)
+pnames(fm)
+
+fm.Tx
+transform(fm, X, Y).Tx
+scale(fm.Tx, colnorm(fm.Tx))
+
+res = summary(fm, X, Y)
+pnames(res)
+```
+"""
 function rasvd(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", tau = 1e-10, scal = false)
     rasvd!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
@@ -71,11 +130,20 @@ function rasvd!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     Tx = Yfit * Wy    # = Projx * Ty
     Tx .= (1 ./ sqrtw) .* Tx
     Ty .= (1 ./ sqrtw) .* Ty   
-    Rasvd(Tx, Ty, Bx, Wy, lambda, 
+    RaSvd(Tx, Ty, Bx, Wy, lambda, 
         bscales, xmeans, xscales, ymeans, yscales, weights)
 end
 
-function transform(object::Rasvd, X, Y; nlv = nothing)
+""" 
+    transform(object::RaSvd, X, Y; nlv = nothing)
+Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
+* `object` : The fitted model.
+* `X` : X-data for which components (LVs) are computed.
+* `Y` : Y-data for which components (LVs) are computed.
+* `nlv` : Nb. LVs to compute. If nothing, it is the maximum number
+    from the fitted model.
+""" 
+function transform(object::RaSvd, X, Y; nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
@@ -90,8 +158,15 @@ function transform(object::Rasvd, X, Y; nlv = nothing)
 end
 
 ## Same as ::Cca
-## But explvary has to be computed
-function Base.summary(object::Rasvd, X::Union{Vector, Matrix, DataFrame},
+## But explvary has to be computed (To Do)
+"""
+    summary(object::RaSvd, X, Y)
+Summarize the fitted model.
+* `object` : The fitted model.
+* `X` : The X-data that was used to fit the model.
+* `Y` : The Y-data that was used to fit the model.
+""" 
+function Base.summary(object::RaSvd, X::Union{Vector, Matrix, DataFrame},
         Y::Union{Vector, Matrix, DataFrame})
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -105,7 +180,7 @@ function Base.summary(object::Rasvd, X::Union{Vector, Matrix, DataFrame},
     pvar =  xvar / frob(X, object.weights)^2
     cumpvar = cumsum(pvar)
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
-    T = object.Ty
+    T .= object.Ty
     xvar = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)
     pvar =  xvar / frob(Y, object.weights)^2
     cumpvar = cumsum(pvar)
