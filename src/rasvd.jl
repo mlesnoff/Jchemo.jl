@@ -30,18 +30,17 @@ Redundancy analysis - PCAIV (SVD algorithm)
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-This is the (regularized) algorithm of PCA on instrumental 
-variables (PCAIV). Let Y_hat be the fitted values of the regression 
-of `Y` on `X`. The scores `Ty` are the PCA scores of Y_hat. 
-The scores `Tx` are the fitted values of the regression of 
-`Ty` on `X`.
+Algorithm of PCA on instrumental variables (PCAIV). 
+Let Y_hat be the fitted values of the regression of `Y` on `X`. 
+The scores `Ty` are the PCA scores of Y_hat. The scores `Tx` are 
+the fitted values of the regression of `Ty` on `X`.
 
 The regularization uses the continuum formulation presented by 
 Qannari & Hanafi 2005 and Mangamana et al. 2019. After block centering and scaling, 
 the covariances matrices are computed as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
-* Cy = (1 - `tau`) * Y'DY + `tau` * Iy
 where D is the observation (row) metric. 
+
 The final scores are returned in the original scale, 
 by multiplying by D^(-1/2).
 

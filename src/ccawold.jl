@@ -49,6 +49,7 @@ the covariances matrices are computed as follows:
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
 * Cy = (1 - `tau`) * Y'DY + `tau` * Iy
 where D is the observation (row) metric. 
+
 The final scores are returned in the original scale, 
 by multiplying by D^(-1/2).
 

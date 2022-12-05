@@ -43,6 +43,7 @@ respectively, defined as follows:
 * Projx = sqrt(D) * X * invCx * X' * sqrt(D)
 * Projy = sqrt(D) * Y * invCx * Y' * sqrt(D)
 where D is the observation (row) metric. 
+
 The final scores are returned in the original scale, 
 by multiplying by D^(-1/2).
 
