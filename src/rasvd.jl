@@ -17,7 +17,7 @@ end
         bscal = "none", tau = 1e-10, scal = false)
     rasvd!(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", tau = 1e-10, scal = false)
-Redundancy analysis - SVD algorithm (PCAIV)
+Redundancy analysis - PCAIV (SVD algorithm)
 * `X` : First block (matrix) of data.
 * `Y` : Second block (matrix) of data.
 * `weights` : Weights of the observations (rows). 
@@ -30,9 +30,11 @@ Redundancy analysis - SVD algorithm (PCAIV)
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-This is the algorithm of PCA on instrumental variables (PCAIV).
-The scores `Tx` are the scores of the PCA of the (regularized) regression
-prediction of `Y` on `X`.
+This is the (regularized) algorithm of PCA on instrumental 
+variables (PCAIV). Let Y_hat be the fitted values of the regression 
+of `Y` on `X`. The scores `Ty` are the PCA scores of Y_hat. 
+The scores `Tx` are the fitted values of the regression of 
+`Ty` on `X`.
 
 The regularization uses the continuum formulation presented by 
 Qannari & Hanafi 2005 and Mangamana et al. 2019. After block centering and scaling, 
@@ -44,14 +46,17 @@ The final scores are returned in the original scale,
 by multiplying by D^(-1/2).
 
 ## References
-Bougeard, S., Qannari, E.M., Lupo, C., Chauvin, C., 2011a. Multiblock redundancy 
+Bougeard, S., Qannari, E.M., Lupo, C., Chauvin, C., 2011. Multiblock redundancy 
 analysis from a user’s perspective. Application in veterinary epidemiology. 
 Electronic Journal of Applied Statistical Analysis 4, 203-214–214. 
 https://doi.org/10.1285/i20705948v4n2p203
 
-Bougeard, S., Qannari, E.M., Rose, N., 2011b. Multiblock redundancy analysis: 
+Bougeard, S., Qannari, E.M., Rose, N., 2011. Multiblock redundancy analysis: 
 interpretation tools and application in epidemiology. Journal of Chemometrics 25, 
 467–475. https://doi.org/10.1002/cem.1392
+
+Legendre, P., Legendre, L., 2012. Numerical Ecology. Elsevier, 
+Amsterdam, The Netherlands.
 
 ## Examples
 ```julia
@@ -125,14 +130,17 @@ function rasvd!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     end
     Bx = invCx * X' * Y 
     Yfit = X * Bx
-    #Projx = X * invCx * X'
-    #Yfit = Projx * Y
     res = LinearAlgebra.svd(Yfit)
     Wy = res.V[:, 1:nlv]    # = C
     lambda = res.S[1:nlv].^2
     Ty = Y * Wy
-    Tx = Yfit * Wy    # = Projx * Ty
-    #Tx = Projx * Ty
+    Tx = Yfit * Wy    
+    # Same as:
+    # Projx = X * invCx * X'
+    # Yfit = Projx * Y
+    # PCA(Yfit) ==> Wy, Ty
+    # Tx = Projx * Ty
+    # End
     Tx .= (1 ./ sqrtw) .* Tx
     Ty .= (1 ./ sqrtw) .* Ty   
     RaSvd(Tx, Ty, Bx, Wy, lambda, 

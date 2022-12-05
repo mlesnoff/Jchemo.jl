@@ -2,7 +2,7 @@
 
 ### *Version 0.1.9* 
 - New
-    - **rasvd**: Redundancy analysis (SVD algorithm).
+    - **rasvd**: Redundancy analysis - PCAIV (SVD algorithm).
 
 - Modified
     - **caltransf_ds** and **caltransf_pds** remaned

@@ -16,7 +16,7 @@
     - **ccawold**: CCA - Wold (1984) Nipals algorithm  
     - **plscan**: Canonical partial least squares regression (Symmetric PLS)
     - **plstuck**: Tucker's inter-battery method of factor analysis (PLS-SVD)
-    - **rasvd**: Redundancy analysis - SVD algorithm (PCAIV)
+    - **rasvd**: Redundancy analysis - PCAIV (SVD algorithm)
 - 2 or more blocks 
     - **mbpca** Consensus PCA (MBPCA = CPCA)
     - **comdim** Common components and specific weights analysis (ComDim = CCSWA = HPCA)
