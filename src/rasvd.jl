@@ -17,7 +17,7 @@ end
         bscal = "none", tau = 1e-10, scal = false)
     rasvd!(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", tau = 1e-10, scal = false)
-Redundancy analysis - PCAIV (SVD algorithm)
+Redundancy analysis - PCA on instrumental variables (PCAIV)
 * `X` : First block (matrix) of data.
 * `Y` : Second block (matrix) of data.
 * `weights` : Weights of the observations (rows). 
@@ -29,20 +29,17 @@ Redundancy analysis - PCAIV (SVD algorithm)
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
-
-Algorithm of PCA on instrumental variables (PCAIV). 
+ 
+See e.g. Bougeard et al. 2011a,b and Legendre & Legendre 2012. 
 Let Y_hat be the fitted values of the regression of `Y` on `X`. 
 The scores `Ty` are the PCA scores of Y_hat. The scores `Tx` are 
 the fitted values of the regression of `Ty` on `X`.
 
 The regularization uses the continuum formulation presented by 
-Qannari & Hanafi 2005 and Mangamana et al. 2019. After block centering and scaling, 
-the covariances matrices are computed as follows: 
+Qannari & Hanafi 2005, Tenenhaus & Guillemot 2017 and Mangamana et al. 2019. 
+After block centering and scaling, the covariances matrices are computed as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
 where D is the observation (row) metric. 
-
-The final scores are returned in the original scale, 
-by multiplying by D^(-1/2).
 
 ## References
 Bougeard, S., Qannari, E.M., Lupo, C., Chauvin, C., 2011. Multiblock redundancy 
@@ -56,6 +53,10 @@ interpretation tools and application in epidemiology. Journal of Chemometrics 25
 
 Legendre, P., Legendre, L., 2012. Numerical Ecology. Elsevier, 
 Amsterdam, The Netherlands.
+
+Tenenhaus, A., Guillemot, V. 2017. RGCCA: Regularized and Sparse Generalized Canonical 
+Correlation Analysis for Multiblock Data Multiblock data analysis.
+https://cran.r-project.org/web/packages/RGCCA/index.html 
 
 ## Examples
 ```julia
@@ -87,6 +88,7 @@ end
 
 function rasvd!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = "none", tau = 1e-10, scal = scal)
+    @assert tau >= 0 && tau <= 1 "tau must be in [0, 1]"
     n, p = size(X)
     q = nco(Y)
     nlv = min(nlv, n, p)

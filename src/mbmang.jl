@@ -26,13 +26,13 @@ Unified multiblock data analysis of Mangana et al. 2019.
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-See Mangana et al. 2019 for the description of the method.
-
-The regularization parameter `tau` is equal to "1 - gamma" in 
+See Mangana et al. 2019.
+The regularization parameter `tau` = "1 - gamma" in 
 Managana et al. 2019 section 2.1.3.
-The algorithm can show some unstability for value `tau` = 0. 
-For more stability, it is recommended to replace 0 by 
-an epsilon value (e.g. `tau` = 1e-10) to get similar results as with a pseudo-inverse.
+
+Value `tau` = 0 can generate unstability when inverting the covariance matrices. 
+It can be better to use an epsilon value (e.g. `tau` = 1e-10) 
+to get similar results as with pseudo-inverses.  
 
 ## References
 Mangamana, E.T., Cariou, V., Vigneau, E., Glèlè Kakaï, R.L., Qannari, E.M., 2019. 

@@ -40,25 +40,23 @@ Canonical correlation analysis (RCCA) - Wold Nipals algorithm.
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-The CCA approach used in this function is presented by Tenenhaus 1998 p.204
-(Wold et al. 1984). 
+The CCA approach used in this function is presented 
+by Tenenhaus 1998 p.204 (==> Wold et al. 1984). 
 
 The regularization uses the continuum formulation presented by 
-Qannari & Hanafi 2005 and Mangamana et al. 2019. After block centering and scaling, 
-the covariances matrices are computed as follows: 
+Qannari & Hanafi 2005, Tenenhaus & Guillemot 2017 and Mangamana et al. 2019. 
+After block centering and scaling, the covariances matrices are computed as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
 * Cy = (1 - `tau`) * Y'DY + `tau` * Iy
 where D is the observation (row) metric. 
+Value `tau` = 0 can generate unstability when inverting the covariance matrices. 
+It can be better to use an epsilon value (e.g. `tau` = 1e-10) 
+to get similar results as with pseudo-inverses.    
 
-The final scores are returned in the original scale, 
-by multiplying by D^(-1/2).
-
-When the observation weights are uniform, the normed scores returned 
-by the function are expected to be the same as those returned by functions `rgcca` of 
-the R package `RGCCA` (Tenenhaus & Guillemot 2017, Tenenhaus et al. 2017). 
-Nevertheless, the present Wold Nipals algorithm can show some unstability 
-for value `tau` = 0. For more stability, it is recommended to replace 0 by 
-an epsilon value (e.g. `tau` = 1e-10) to get to get similar results as with a pseudo-inverse.  
+With uniform `weights`, the normed scores returned 
+by the function are expected to be the same as those returned 
+by functions `rgcca` of the R package `RGCCA` (Tenenhaus & Guillemot 2017, 
+Tenenhaus et al. 2017). 
 
 ## References
 Tenenhaus, A., Guillemot, V. 2017. RGCCA: Regularized and Sparse Generalized Canonical 
@@ -110,6 +108,7 @@ end
 function ccawold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = "none", tau = 1e-10, 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
+    @assert tau >= 0 && tau <= 1 "tau must be in [0, 1]"
     n, p = size(X)
     q = nco(Y)
     nlv = min(nlv, n, p)

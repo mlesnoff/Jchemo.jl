@@ -33,25 +33,25 @@ Canonical correlation Analysis (CCA).
 The CCA approach used in this function is presented in Weenink 2003. 
 
 The regularization uses the continuum formulation presented by 
-Qannari & Hanafi 2005 and Mangamana et al. 2019. After block centering and scaling, 
-the block scores returned by the present algorithm (Tx and Ty) are 
-proportionnal to the eigenvectors of Projx * Projy and Projy * Projx, 
-respectively, defined as follows: 
+Qannari & Hanafi 2005, Tenenhaus & Guillemot 2017 and Mangamana et al. 2019. 
+After block centering and scaling, the block scores returned by the present 
+algorithm (Tx and Ty) are proportionnal to the eigenvectors of Projx * Projy 
+and Projy * Projx, respectively, defined as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
 * Cy = (1 - `tau`) * Y'DY + `tau` * Iy
 * Cxy = X'DY
 * Projx = sqrt(D) * X * invCx * X' * sqrt(D)
 * Projy = sqrt(D) * Y * invCx * Y' * sqrt(D)
 where D is the observation (row) metric. 
+Value `tau` = 0 can generate unstability when inverting the covariance matrices. 
+It can be better to use an epsilon value (e.g. `tau` = 1e-10) 
+to get similar results as with pseudo-inverses.  
 
-The final scores are returned in the original scale, 
-by multiplying by D^(-1/2).
-
-When the observation weights are uniform, the normed scores returned 
-by the function are the same as those returned by functions `rcc` of 
-the R packages `CCA` (González et al.) and `mixOmics` (Le Cao et al.) 
-whith the parameters lambda1 and lambda2 set to:
-* lambda = `tau` / (1 - `tau`) * n / (n - 1) 
+With uniform `weights`, the normed scores returned 
+by the function are expected to be the same as those returned 
+by functionss `rcc` of the R packages `CCA` (González et al.) and `mixOmics` 
+(Le Cao et al.) whith the parameters lambda1 and lambda2 set to:
+* lambda1 = lambda2 = `tau` / (1 - `tau`) * n / (n - 1) 
 
 ## References
 González, I., Déjean, S., Martin, P.G.P., Baccini, A., 2008. CCA: 
@@ -71,6 +71,10 @@ Tchandao Mangamana, E., Cariou, V., Vigneau, E., Glèlè Kakaï, R.L., Qannari, 
 Unsupervised multiblock data analysis: A unified approach and extensions. 
 Chemometrics and Intelligent Laboratory Systems 194, 103856. 
 https://doi.org/10.1016/j.chemolab.2019.103856
+
+Tenenhaus, A., Guillemot, V. 2017. RGCCA: Regularized and Sparse Generalized Canonical 
+Correlation Analysis for Multiblock Data Multiblock data analysis.
+https://cran.r-project.org/web/packages/RGCCA/index.html 
 
 Weenink, D. 2003. Canonical Correlation Analysis, Institute of Phonetic Sciences, 
 Univ. of Amsterdam, Proceedings 25, 81-99.
@@ -105,6 +109,7 @@ end
 
 function cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = "none", tau = 0, scal = false)
+    @assert tau >= 0 && tau <= 1 "tau must be in [0, 1]"
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, nlv)
