@@ -5,7 +5,7 @@
     - **rasvd**: Redundancy analysis (SVD algorithm).
 
 - Modified
-    - **clatransf-ds** and **caltransf_pds** remaned
+    - **caltransf_ds** and **caltransf_pds** remaned
         to **calds** and **calpds**.
     - **fnorm** renamed to **frob**.
 

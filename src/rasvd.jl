@@ -17,7 +17,7 @@ end
         bscal = "none", tau = 1e-10, scal = false)
     rasvd!(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", tau = 1e-10, scal = false)
-Redundancy analysis (RRA) - SVD aglorithm (PCA-IV).
+Redundancy analysis - SVD algorithm (PCAIV)
 * `X` : First block (matrix) of data.
 * `Y` : Second block (matrix) of data.
 * `weights` : Weights of the observations (rows). 
@@ -29,6 +29,10 @@ Redundancy analysis (RRA) - SVD aglorithm (PCA-IV).
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
+
+This is the algorithm of PCA on instrumental variables (PCAIV).
+The scores `Tx` are the scores of the PCA of the (regularized) regression
+prediction of `Y` on `X`.
 
 The regularization uses the continuum formulation presented by 
 Qannari & Hanafi 2005 and Mangamana et al. 2019. After block centering and scaling, 
