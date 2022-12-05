@@ -571,11 +571,17 @@ head(X)
 ```
 """
 function head(X)
-    display(X[1:3, :])
-    if nro(X) > 3
-        println("...")
+    n = nro(X) 
+    m = min(3, n)
+    if isa(X, Vector)
+        display(X[1:m])
+    else
+        display(X[1:m, :])
     end
-    psize(X)
+    if n > 3
+        println("... ", size(X))
+    end
+    println(" ")
 end
 
 """

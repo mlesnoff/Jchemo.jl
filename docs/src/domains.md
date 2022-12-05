@@ -12,11 +12,11 @@
 
 *Multiblock*
 - 2 blocks
-    - **cca**: Regularized canonical correlation analysis (RCCA)
-    - **ccawold**: RCCA - Wold (1984) Nipals algorithm  
+    - **cca**: Canonical correlation analysis (CCA)
+    - **ccawold**: CCA - Wold (1984) Nipals algorithm  
     - **plscan**: Canonical partial least squares regression (Symmetric PLS)
     - **plstuck**: Tucker's inter-battery method of factor analysis (PLS-SVD)
-    - **rasvd**: Regularized redundancy anlaysis (RRA) - SVD aglorithm
+    - **rasvd**: Redundancy anlaysis (RRA) - SVD aglorithm
 - 2 or more blocks 
     - **mbpca** Consensus PCA (MBPCA = CPCA)
     - **comdim** Common components and specific weights analysis (ComDim = CCSWA = HPCA)
@@ -215,7 +215,7 @@
 *Regression*
 - **ssr** SSR
 - **msep** MSEP
-- **rmsep** RMSEP
+- **rmsep**, **rmsepstand** RMSEP
 - **sep** SEP
 - **bias** Bias
 - **cor2** Squared correlation coefficient
@@ -239,8 +239,8 @@
 
 ### **Calibration transfert**
 
-- **caltransf_ds** : Direct standardization (DS).
-- **caltransf_pds** : Piecewise direct standardization (PDS).
+- **calds** : Direct standardization (DS).
+- **calpds** : Piecewise direct standardization (PDS).
 
 ### **Pre-processing**
 

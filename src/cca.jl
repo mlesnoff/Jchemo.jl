@@ -17,7 +17,7 @@ end
         bscal = "none", tau = 0, scal = false)
     cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = "none", tau = 0, scal = false)
-Regularized canonical correlation Analysis (RCCA).
+Canonical correlation Analysis (CCA).
 * `X` : First block (matrix) of data.
 * `Y` : Second block (matrix) of data.
 * `weights` : Weights of the observations (rows). 

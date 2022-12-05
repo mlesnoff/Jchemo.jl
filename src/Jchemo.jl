@@ -132,8 +132,8 @@ include("gridcv_mb.jl")
 include("selwold.jl")
 
 # Transfer
-include("caltransf_ds.jl")
-include("caltransf_pds.jl")
+include("calds.jl")
+include("calpds.jl")
 
 # Sampling
 include("sampling.jl")
@@ -177,7 +177,7 @@ export
     tab, tabnum,
     vcol, vrow, 
    # Pre-processing
-    caltransf_ds, caltransf_pds,
+    calds, calpds,
     detrend, detrend!, 
     eposvd,
     fdif, fdif!,

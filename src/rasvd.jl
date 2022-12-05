@@ -17,7 +17,7 @@ end
         bscal = "none", tau = 1e-10, scal = false)
     rasvd!(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", tau = 1e-10, scal = false)
-Regularized redundancy anlaysis (RRA) - SVD aglorithm.
+Redundancy analysis (RRA) - SVD aglorithm (PCA-IV).
 * `X` : First block (matrix) of data.
 * `Y` : Second block (matrix) of data.
 * `weights` : Weights of the observations (rows). 
@@ -128,6 +128,7 @@ function rasvd!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     lambda = res.S[1:nlv].^2
     Ty = Y * Wy
     Tx = Yfit * Wy    # = Projx * Ty
+    #Tx = Projx * Ty
     Tx .= (1 ./ sqrtw) .* Tx
     Ty .= (1 ./ sqrtw) .* Ty   
     RaSvd(Tx, Ty, Bx, Wy, lambda, 

@@ -4,7 +4,7 @@ struct CalTransfPds
 end
 
 """
-    caltransf_pds(X1, X2; fun = mlrpinv, m = 5, kwargs...)
+    calpds(X1, X2; fun = mlrpinv, m = 5, kwargs...)
 Calibration transfer of spectral data with piecewise direct standardization (PDS).
 * `X1` : Target (standart) X-data (n, p).
 * `X2` : X-data (n, p) to transfer to the standart.
@@ -45,7 +45,7 @@ X2val = dat.X2val
 n = nro(X1cal)
 m = nro(X1val)
 
-fm = caltransf_pds(X1cal, X2cal; fun = plskern, nlv = 1, m = 2) ;
+fm = calpds(X1cal, X2cal; fun = plskern, nlv = 1, m = 2) ;
 pred = Jchemo.predict(fm, X2val).pred
 i = 1
 f, ax = lines(X1val[i, :])
@@ -54,7 +54,7 @@ lines!(pred[i, :], linestyle = "--")
 f
 ```
 """ 
-function caltransf_pds(X1, X2; fun = mlrpinv, m = 5, kwargs...)
+function calpds(X1, X2; fun = mlrpinv, m = 5, kwargs...)
     p = nco(X1)
     fm = list(p)
     s = list(p)

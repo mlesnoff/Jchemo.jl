@@ -25,7 +25,7 @@ end
     ccawold!(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", tau = 1e-10, 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
-Regularized canonical correlation analysis (RCCA) - Wold Nipals algorithm.
+Canonical correlation analysis (RCCA) - Wold Nipals algorithm.
 * `X` : First block (matrix) of data.
 * `Y` : Second block (matrix) of data.
 * `weights` : Weights of the observations (rows). 
@@ -166,8 +166,6 @@ function ccawold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         if tau == 0       
             invCx = inv(X' * X)
             invCy = inv(Y' * Y)
-            #invCx = pinv(X' * X)
-            #invCy = pinv(Y' * Y)
         else
             Ix = Diagonal(ones(p)) 
             Iy = Diagonal(ones(q)) 
@@ -268,14 +266,16 @@ function Base.summary(object::CcaWold, X::Union{Vector, Matrix, DataFrame},
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
+        cumpvar = cumpvar)
     # Y
     sstot = frob(Y, object.weights)^2
     tt_adj = vec(sum(object.Py.^2, dims = 1)) .* tty
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
+        cumpvar = cumpvar)
     ## Correlation between block scores
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)

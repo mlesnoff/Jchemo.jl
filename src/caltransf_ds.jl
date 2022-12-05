@@ -4,7 +4,7 @@ end
 
 
 """
-    caltransf_ds(X1, X2; fun = mlrpinv, kwargs...)
+    calds(X1, X2; fun = mlrpinv, kwargs...)
 Calibration transfer of spectral data with direct standardization (DS).
 * `X1` : Target (standart) X-data (n, p).
 * `X2` : X-data (n, p) to transfer to the standart.
@@ -33,8 +33,8 @@ X2val = dat.X2val
 n = nro(X1cal)
 m = nro(X1val)
 
-fm = caltransf_ds(X1cal, X2cal ; fun = mlrpinv) ;
-#fm = caltransf_ds(X1cal, X2cal ; fun = plskern, nlv = 15) ;
+fm = calds(X1cal, X2cal ; fun = mlrpinv) ;
+#fm = calds(X1cal, X2cal ; fun = plskern, nlv = 15) ;
 pred = Jchemo.predict(fm, X2val).pred
 i = 1
 f, ax = lines(X1val[i, :])
@@ -43,7 +43,7 @@ lines!(pred[i, :], linestyle = "--")
 f
 ```
 """ 
-function caltransf_ds(X1, X2; fun = mlrpinv, kwargs...)
+function calds(X1, X2; fun = mlrpinv, kwargs...)
     fm = fun(X2, X1; kwargs...)
     CalTransfDs(fm)
 end

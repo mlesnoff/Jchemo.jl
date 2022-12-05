@@ -5,12 +5,14 @@
     - **rasvd**: Redundancy analysis (SVD algorithm).
 
 - Modified
+    - **clatransf-ds** and **caltransf_pds** remaned
+        to **calds** and **calpds**.
     - **fnorm** renamed to **frob**.
 
 ### *Version 0.1.8* 
 - New
     - **plswold**: PLSR Wold Nipals algorithm.
-    - **ccawold**: Regularized CCA Wold Nipals algorithm.
+    - **ccawold**: CCA Wold Nipals algorithm.
     - **mbmang**: Unified multiblock data analysis of Mangana et al. 2019.
 
 - Modified
@@ -28,7 +30,7 @@ To display the plots, the user has to install and load one of
 the Makie's backend (e.g. CairoMakie).
 
 - New
-    - **rcca**: Regularized canonical correlation analysis. (RCCA).
+    - **rcca**: Canonical correlation analysis. (RCCA).
     - **pls**: Canonical partial least squares regression (Symmetric PLS).
     - **pls_svd**: Tucker's inter-battery method of factor analysis (PLS-SVD).
     - **colnorm2** was removed, replaced by **colnorm**: 
