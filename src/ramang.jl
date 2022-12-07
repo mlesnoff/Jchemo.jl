@@ -17,7 +17,7 @@ Redundancy analysis regression (RRR)
     (before the block scaling).
  
 RA regression is also referred to Reduced rank regression (RRR).
-In this function, the RA uses the algorithm presented in Mangamana
+In this function, the RA uses the Nipals algorithm presented in Mangamana
 et al 2021 section 2.1.1.
 
 The regularization uses the continuum formulation presented by 
