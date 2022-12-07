@@ -184,8 +184,10 @@ function transform(object::Cca, X, Y; nlv = nothing)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    Tx = cscale(X, object.xmeans, object.xscales) * vcol(object.Wx, 1:nlv)
-    Ty = cscale(Y, object.ymeans, object.yscales) * vcol(object.Wy, 1:nlv)
+    X = cscale(X, object.xmeans, object.xscales) / object.bscales[1]
+    Y = cscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    Tx = X * vcol(object.Wx, 1:nlv)
+    Ty = Y * vcol(object.Wy, 1:nlv)
     (Tx = Tx, Ty)
 end
 

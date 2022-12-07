@@ -40,7 +40,6 @@ function plswold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     nlv = min(nlv, n, p)
     weights = mweight(weights)
     sqrtw = sqrt.(weights)
-    D = Diagonal(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     xscales = ones(p)
@@ -68,9 +67,8 @@ function plswold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     wx  = similar(X, p)
     wxtild = copy(wx)    
     wy  = similar(X, q)
-    wytild = copy(wy)    # = ctild 
+    wytild = copy(wy)     
     px   = copy(wx)
-    py   = copy(wy)
     niter = zeros(nlv)
     # End
     @inbounds for a = 1:nlv
@@ -81,7 +79,7 @@ function plswold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         wx .= rand(p)
         while cont
             w0 = copy(wx)
-            wxtild .= X' * ty / dot(ty, ty) 
+            wxtild .= X' * ty / dot(ty, ty)    # = ctild ==> output "C"
             wx .= wxtild / norm(wxtild)
             tx .= X * wx
             wytild = Y' * tx / dot(tx, tx)
@@ -97,9 +95,6 @@ function plswold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         ttx = dot(tx, tx)
         mul!(px, X', tx)
         px ./= ttx
-        tty = dot(ty, ty)
-        mul!(py, Y', ty)
-        py ./= tty
         # Deflation
         X .-= tx * px'
         Y .-= tx * wytild'
@@ -112,7 +107,6 @@ function plswold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
      end
      Tx .= (1 ./ sqrtw) .* Tx
      Rx = Wx * inv(Px' * Wx)
-     #Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing)
      Plsr(Tx, Px, Rx, Wx, Wytild, TTx, 
         xmeans, xscales, ymeans, yscales, weights, niter)
 end

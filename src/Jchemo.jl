@@ -55,6 +55,7 @@ include("aov1.jl")
 include("mlr.jl")
 include("rr.jl")
 include("pcr.jl")
+include("ramang.jl") 
 include("plskern.jl") ; include("plsrosa.jl")
 include("plsnipals.jl") ; include("plssimp.jl")
 include("plswold.jl") 
@@ -206,7 +207,8 @@ export
     rasvd, rasvd!,
     # Regression
     aov1,
-    mlr, mlr!, mlrchol, mlrchol!, mlrpinv, mlrpinv!, mlrpinvn, mlrpinvn!,
+    mlr, mlr!, mlrchol, mlrchol!, 
+    mlrpinv, mlrpinv!, mlrpinvn, mlrpinvn!,
     mlrvec, mlrvec!,
     plskern, plskern!, 
     plsnipals, plsnipals!, 
@@ -216,7 +218,8 @@ export
     cglsr, cglsr!,
     pcr,
     covselr,
-    rr, rr!, rrchol, rrchol!,   
+    rr, rr!, rrchol, rrchol!,
+    ramang, ramang!,   
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
     plsr_avg, plsr_avg!,
     dfplsr_cg, aicplsr,

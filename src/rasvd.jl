@@ -18,8 +18,8 @@ end
     rasvd!(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", tau = 1e-10, scal = false)
 Redundancy analysis - PCA on instrumental variables (PCAIV)
-* `X` : First block (matrix) of data.
-* `Y` : Second block (matrix) of data.
+* `X` : First block of data (explicative variables).
+* `Y` : Second block of data (dependent variables).
 * `weights` : Weights of the observations (rows). 
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
@@ -162,8 +162,8 @@ function transform(object::RaSvd, X, Y; nlv = nothing)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    X = cscale(X, object.xmeans, object.xscales)
-    Y = cscale(Y, object.ymeans, object.yscales)
+    X = cscale(X, object.xmeans, object.xscales) / object.bscales[1]
+    Y = cscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     Yfit = X * object.Bx
     Wy = vcol(object.Wy, 1:nlv)
     Tx = Yfit * Wy

@@ -38,8 +38,8 @@ Canonical partial least squares regression (Canonical PLS)
 Canonical PLS with the Nipals algorithm (Wold 1984, Tenenhaus 1998 chap.11),
 referred to as PLS-W2A (i.e. Wold PLS mode A) in Wegelin 2000.
 The two blocks `X` and `X` play a symmetric role.  
-After each step of scores computation, X and Y are deflated by the x- and y-scores, 
-respectively. 
+After each step of scores computation, X and Y are deflated by the x- and 
+y-scores, respectively. 
 
 ## References
 Tenenhaus, M., 1998. La régression PLS: théorie et pratique. Editions Technip, Paris.

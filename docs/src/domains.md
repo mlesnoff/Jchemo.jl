@@ -63,6 +63,7 @@
 
 *Variants* 
 - **cglsr** Conjugate gradient for the least squares normal equations (CGLS)
+- **ramang** Redundancy analysis regression = Reduced rank regression (RRR)
 - **pcr** Principal components regression (SVD factorization)
 - **covselr** MLR on variables selected from Covsel
 

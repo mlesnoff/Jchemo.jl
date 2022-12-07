@@ -3,6 +3,7 @@
 ### *Version 0.1.9* 
 - New
     - **rasvd**: Redundancy analysis - PCA on instrumental variables (PCAIV).
+    - **ramang** Redundancy analysis regression = Reduced rank regression (RRR)
 
 - Modified
     - **caltransf_ds** and **caltransf_pds** remaned

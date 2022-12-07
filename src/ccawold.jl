@@ -177,12 +177,15 @@ function ccawold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
                 invCy = inv((1 - tau) * Y' * Y + tau * Iy)
             end
         end 
+        ttx = 0 ; tty = 0
         while cont
             w0 = copy(wx)
-            wxtild .= invCx * X' * ty / dot(ty, ty)
+            tty = dot(ty, ty)
+            wxtild .= invCx * X' * ty / tty
             wx .= wxtild / norm(wxtild)
             mul!(tx, X, wx)
-            wytild .= invCy * Y' * tx / dot(tx, tx)
+            ttx = dot(tx, tx)
+            wytild .= invCy * Y' * tx / ttx
             wy .= wytild / norm(wytild)
             mul!(ty, Y, wy)
             dif = sum((wx .- w0).^2)
@@ -192,19 +195,17 @@ function ccawold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
             end
         end
         niter[a] = iter - 1
-        ttx = dot(tx, tx)
         mul!(px, X', tx)
         px ./= ttx
-        tty = dot(ty, ty)
         mul!(py, Y', ty)
         py ./= tty
         # Deflation
         X .-= tx * px'
         Y .-= ty * py'
         # Same as:
-        #b = tx' * X / dot(tx, tx)
+        #b = tx' * X / ttx
         #X .-= tx * b
-        #b = ty' * Y / dot(ty, ty)
+        #b = ty' * Y / tty
         #Y .-= ty * b
         # End         
         Tx[:, a] .= tx
@@ -238,8 +239,10 @@ function transform(object::CcaWold, X, Y; nlv = nothing)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    Tx = cscale(X, object.xmeans, object.xscales) * vcol(object.Rx, 1:nlv)
-    Ty = cscale(Y, object.ymeans, object.yscales) * vcol(object.Ry, 1:nlv)
+    X = cscale(X, object.xmeans, object.xscales) / object.bscales[1]
+    Y = cscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    Tx = X * vcol(object.Rx, 1:nlv)
+    Ty = Y * vcol(object.Ry, 1:nlv)
     (Tx = Tx, Ty)
 end
 
@@ -255,8 +258,8 @@ function Base.summary(object::CcaWold, X::Union{Vector, Matrix, DataFrame},
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, nlv = size(object.Tx)
-    X = cscale(X, object.xmeans, object.xscales)
-    Y = cscale(Y, object.ymeans, object.yscales)
+    X = cscale(X, object.xmeans, object.xscales) / object.bscales[1]
+    Y = cscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     ttx = object.TTx 
     tty = object.TTy 
     ## Explained variances

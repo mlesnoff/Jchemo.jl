@@ -92,11 +92,11 @@ function pcasvd!(X::Matrix, weights = ones(nro(X)); nlv,
     ## by default in LinearAlgebra.svd
     ## "full = false" ==> [1:min(n, p)]
     sqrtw = sqrt.(weights)
-    res = LinearAlgebra.svd!(Diagonal(sqrtw) * X)
+    res = LinearAlgebra.svd!(sqrtw .* X)
     P = res.V[:, 1:nlv]
     sv = res.S   
     sv[sv .< 0] .= 0
-    T = Diagonal(1 ./ sqrtw) * vcol(res.U, 1:nlv) * (Diagonal(sv[1:nlv]))
+    T = (1 ./ sqrtw) .* vcol(res.U, 1:nlv) * (Diagonal(sv[1:nlv]))
     Pca(T, P, sv, xmeans, xscales, weights, nothing, nothing)
 end
 
