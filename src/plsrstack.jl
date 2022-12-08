@@ -1,10 +1,10 @@
-function plsr_stack(X, y, weights = ones(nro(X)); nlv,
+function plsrstack(X, y, weights = ones(nro(X)); nlv,
         K = 5, rep = 10, scal = false)
-    plsr_stack!(copy(ensure_mat(X)), copy(ensure_mat(y)), weights; nlv = nlv, 
+    plsrstack!(copy(ensure_mat(X)), copy(ensure_mat(y)), weights; nlv = nlv, 
         K = K, rep = rep, scal = scal)
 end
 
-function plsr_stack!(X::Matrix, y::Matrix, weights = ones(nro(X)); nlv, 
+function plsrstack!(X::Matrix, y::Matrix, weights = ones(nro(X)); nlv, 
         K = 5, rep = 10, scal = false)
     n, p = size(X)
     weights = mweight(weights)
@@ -16,7 +16,7 @@ function plsr_stack!(X::Matrix, y::Matrix, weights = ones(nro(X)); nlv,
     Xstack = []
     ## Replications and segments are concatenated vertically
     ## ==> Xstack (y predictions), ystack (y observed values)
-    ## Corresponding observation weights also ==> weights_stack 
+    ## Corresponding observation weights also ==> weightsstack 
     k = 1
     for i = 1:nro(segm)
         for j = 1:nro(segm[1])
@@ -33,23 +33,23 @@ function plsr_stack!(X::Matrix, y::Matrix, weights = ones(nro(X)); nlv,
             if k == 1
                 Xstack = copy(pred) 
                 ystack = copy(yval)
-                weights_stack = copy(wval)
+                weightsstack = copy(wval)
             else
                 Xstack = vcat(Xstack, pred) 
                 ystack = vcat(ystack, yval)
-                weights_stack = vcat(weights_stack, wval)
+                weightsstack = vcat(weightsstack, wval)
             end
             k = k + 1
         end
     end
     ## Computation of the stacking weights (w)
     ## Linear model without intercept
-    weights_stack = mweight(weights_stack)
+    weightsstack = mweight(weightsstack)
     Xstack = vcol(Xstack, nlv .+ 1)
-    XtD = Xstack' * Diagonal(weights_stack)
+    XtD = Xstack' * Diagonal(weightsstack)
     w = vec(cholesky!(Hermitian(XtD * Xstack)) \ (XtD * ystack))
     ## Model that will be "averaged" (w)
     fm = plskern!(X, y, weights; nlv = nlvmax, scal = scal)
-    PlsrStack(fm, nlv, w, Xstack, ystack, weights_stack)
+    Plsrstack(fm, nlv, w, Xstack, ystack, weightsstack)
 end
 

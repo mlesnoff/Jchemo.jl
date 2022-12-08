@@ -6,6 +6,9 @@
     - **ramang** Redundancy analysis regression = Reduced rank regression (RRR)
 
 - Modified
+    - All the functions **..._avg** and **..._stack** renamed 
+        tp **...avg** and **...stack** (e.g. **plsr_avg** to 
+        **plsravg**).
     - **caltransf_ds** and **caltransf_pds** remaned
         to **calds** and **calpds**.
     - **fnorm** renamed to **frob**.

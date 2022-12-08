@@ -1,27 +1,27 @@
-struct PlsrAvgCri
+struct PlsravgCri
     fm::Plsr
     nlv
     w::Vector
 end
 
-struct PlsrStack
+struct Plsrstack
     fm::Plsr
     nlv
     w::Vector
     Xstack  # = View
     ystack::Array
-    weights_stack::Array
+    weightsstack::Array
 end
 
-function plsr_avg_aic(X, y, weights = ones(nro(X)); nlv, 
+function plsravg_aic(X, y, weights = ones(nro(X)); nlv, 
         bic = false, typw = "bisquare",
         alpha = 0, scal = false)
-    plsr_avg_aic!(copy(ensure_mat(X)), copy(ensure_mat(y)), weights; nlv = nlv,
+    plsravg_aic!(copy(ensure_mat(X)), copy(ensure_mat(y)), weights; nlv = nlv,
         bic = bic, typw = typw, 
         alpha = alpha, scal = scal)
 end
 
-function plsr_avg_aic!(X::Matrix, y::Matrix, weights = ones(nro(X)); nlv,
+function plsravg_aic!(X::Matrix, y::Matrix, weights = ones(nro(X)); nlv,
         bic = false, typw = "bisquare", 
         alpha = 0, scal = false)
     n, p = size(X)
@@ -29,7 +29,7 @@ function plsr_avg_aic!(X::Matrix, y::Matrix, weights = ones(nro(X)); nlv,
     nlv = (min(minimum(nlv), n, p):min(maximum(nlv), n, p))
     nlvmax = maximum(nlv)
     res = aicplsr(X, y; nlv = nlvmax, bic = bic, scal = scal)
-    # To not break lwplsr_avg_aic when there are NaN in delta.Aic
+    # To not break lwplsravg_aic when there are NaN in delta.Aic
     z = res.delta.aic
     l = length(z[isnan.(z)])
     if l > 0
@@ -40,10 +40,10 @@ function plsr_avg_aic!(X::Matrix, y::Matrix, weights = ones(nro(X)); nlv,
     w = fweight(d, typw = typw, alpha = alpha)
     w .= mweight(w)
     fm = plskern!(X, y, weights; nlv = nlvmax, scal = scal)
-    PlsrAvgCri(fm, nlv, w)
+    PlsravgCri(fm, nlv, w)
 end
 
-function predict(object::Union{PlsrAvgCri, PlsrStack}, X)
+function predict(object::Union{PlsravgCri, Plsrstack}, X)
     nlv = object.nlv
     le_nlv = length(nlv)
     zpred = predict(object.fm, X; nlv = nlv).pred

@@ -1,12 +1,12 @@
-struct PlsrAvg
+struct Plsravg
     fm
 end
 
 """ 
-    plsr_avg(X, Y, weights = ones(nro(X)); nlv, 
+    plsravg(X, Y, weights = ones(nro(X)); nlv, 
         typf = "unif", typw = "bisquare",
         alpha = 0, K = 5, rep = 10, scal = false)
-    plsr_avg!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
+    plsravg!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
         typf = "unif", typw = "bisquare", 
         alpha = 0, K = 5, rep = 10, scal = false)
 Averaging and stacking PLSR models with different numbers of 
@@ -93,64 +93,64 @@ ntest = nro(Xtest)
 (ntot = ntot, ntrain, ntest)
 
 nlv = "0:50"
-fm = plsr_avg(Xtrain, ytrain; nlv = nlv) ;
+fm = plsravg(Xtrain, ytrain; nlv = nlv) ;
 res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
 plotxy(vec(res.pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f   
 
-fm = plsr_avg(Xtrain, ytrain; nlv = nlv,
+fm = plsravg(Xtrain, ytrain; nlv = nlv,
     typf = "cv") ;
 res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
 ```
 """ 
-function plsr_avg(X, Y, weights = ones(nro(X)); nlv, 
+function plsravg(X, Y, weights = ones(nro(X)); nlv, 
         typf = "unif", typw = "bisquare", 
         alpha = 0, K = 5, rep = 10, scal = false)
-    plsr_avg!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
+    plsravg!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
         typf = typf, typw = typw, 
         alpha = alpha, K = K, rep = rep, scal = scal)
 end
 
-function plsr_avg!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
+function plsravg!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
         typf = "unif", typw = "bisquare", 
         alpha = 0, K = 5, rep = 10, scal = false)
     if typf == "unif"
-        fm = plsr_avg_unif!(X, Y, weights; nlv = nlv,
+        fm = plsravg_unif!(X, Y, weights; nlv = nlv,
             scal = scal)
     elseif typf == "aic"
-        fm = plsr_avg_aic!(X, Y, weights; nlv = nlv,
+        fm = plsravg_aic!(X, Y, weights; nlv = nlv,
             bic = false, typw = typw, alpha = alpha,
             scal = scal)
     elseif typf == "bic"
-        fm = plsr_avg_aic!(X, Y, weights; nlv = nlv,
+        fm = plsravg_aic!(X, Y, weights; nlv = nlv,
             bic = true, typw = typw, alpha = alpha,
             scal = scal)
     elseif typf == "cv"
-        fm = plsr_avg_cv!(X, Y, weights; nlv = nlv,
+        fm = plsravg_cv!(X, Y, weights; nlv = nlv,
             typw = typw, alpha = alpha, 
             scal = scal)
     elseif typf == "shenk"
-        fm = plsr_avg_shenk!(X, Y, weights; nlv = nlv,
+        fm = plsravg_shenk!(X, Y, weights; nlv = nlv,
             scal = scal)
     elseif typf == "stack"
-        fm = plsr_stack!(X, Y, weights; nlv = nlv, 
+        fm = plsrstack!(X, Y, weights; nlv = nlv, 
             K = K, rep = rep, 
             scal = scal) 
     end
-    PlsrAvg(fm)
+    Plsravg(fm)
 end
 
 """
-    predict(object::PlsrAvg, X)
+    predict(object::Plsravg, X)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::PlsrAvg, X)
+function predict(object::Plsravg, X)
     res = predict(object.fm, X)
     (pred = res.pred, predlv = res.predlv)
 end

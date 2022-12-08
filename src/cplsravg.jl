@@ -6,7 +6,7 @@ struct CplsrAvg
 end
 
 """
-    cplsr_avg(X, Y, cla = nothing; ncla = nothing, 
+    cplsravg(X, Y, cla = nothing; ncla = nothing, 
         nlv_da, nlv, scal = false)
 Clusterwise PLSR.
 * `X` : X-data (n, p).
@@ -24,7 +24,7 @@ Clusterwise PLSR.
     The scaling is implemented for the global (distances) and local (i.e. inside
     each neighborhood) computations.
 
-A PLSR-AVG model (see `?plsr_avg`) is fitted to predict Y for each of the clusters, 
+A PLSR-AVG model (see `?plsravg`) is fitted to predict Y for each of the clusters, 
 and a PLS-LDA is fitted to predict, for each cluster, the probability to belong to this cluster.
 The final prediction is the weighted average of the PLSR-AVG predictions, where the 
 weights are the probabilities predicted by the PLS-LDA model. 
@@ -52,7 +52,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 ncla = 5 ; nlv_da = 15 ; nlv = "10:12"
-fm = cplsr_avg(Xtrain, ytrain; 
+fm = cplsravg(Xtrain, ytrain; 
     ncla = ncla, nlv_da = nlv_da, nlv = nlv) ;
 pnames(fm)
 fm.lev
@@ -66,7 +66,7 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
     ylabel = "Observed").f  
 ```
 """
-function cplsr_avg(X, Y, cla = nothing; ncla = nothing, 
+function cplsravg(X, Y, cla = nothing; ncla = nothing, 
         nlv_da, nlv, scal = false)
     X = ensure_mat(X) 
     Y = ensure_mat(Y)
@@ -96,7 +96,7 @@ function cplsr_avg(X, Y, cla = nothing; ncla = nothing,
         ni[i] <= zmax ? zmax = ni[i] - 1 : nothing
         znlv = string(zmin:zmax)
         s = cla .== lev[i]
-        fm[i] = plsr_avg(X[s, :], Y[s, :]; nlv = znlv,
+        fm[i] = plsravg(X[s, :], Y[s, :]; nlv = znlv,
             scal = scal)
     end
     CplsrAvg(fm, fm_da, lev, ni)

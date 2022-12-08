@@ -14,7 +14,7 @@ struct LwplsldaAvg
 end
 
 """
-    lwplslda_avg(X, y; nlvdis, metric, h, k, nlv, 
+    lwplsldaavg(X, y; nlvdis, metric, h, k, nlv, 
         tol = 1e-4, scal = false, verbose = false)
 Averaging of kNN-LWPLSR-DA models with different numbers of 
     latent variables (LVs).
@@ -40,7 +40,7 @@ Averaging of kNN-LWPLSR-DA models with different numbers of
     each neighborhood) computations.
 * `verbose` : If true, fitting information are printed.
 
-This is the same methodology as for `lwplsr_avg` except that 
+This is the same methodology as for `lwplsravg` except that 
 PLSR is replaced by PLS-LDA, and the mean is replaced by votes.
 
 For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for 
@@ -69,9 +69,9 @@ tab(ytest)
 nlvdis = 25 ; metric = "mahal"
 h = 2 ; k = 100
 # mininum nlv must be >= 1, 
-# conversely to lwplsrda_avg (nlv >= 0)
+# conversely to lwplsrdaavg (nlv >= 0)
 nlv = "1:20"       
-fm = lwplslda_avg(Xtrain, ytrain;
+fm = lwplsldaavg(Xtrain, ytrain;
     nlvdis = nlvdis, metric = metric,
     h = h, k = k, nlv = nlv) ;
 pnames(fm)
@@ -86,7 +86,7 @@ res.listd
 res.listw
 ```
 """ 
-function lwplslda_avg(X, y; nlvdis, metric, h, k, nlv, 
+function lwplsldaavg(X, y; nlvdis, metric, h, k, nlv, 
     tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
@@ -132,7 +132,7 @@ function predict(object::LwplsldaAvg, X)
     end
     ### End
     pred = locw(object.X, object.y, X; 
-        listnn = res.ind, listw = listw, fun = plslda_avg, nlv = object.nlv, 
+        listnn = res.ind, listw = listw, fun = plsldaavg, nlv = object.nlv, 
         scal = object.scal, verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end

@@ -17,7 +17,7 @@ struct LwplsrAvg
 end
 
 """
-    lwplsr_avg(X, Y; nlvdis, metric, h, k, nlv, 
+    lwplsravg(X, Y; nlvdis, metric, h, k, nlv, 
         typf = "unif", typw = "bisquare", alpha = 0, K = 5, rep = 10,
         tol = 1e-4, scal = false, verbose = false)
 Averaging kNN-LWPLSR models with different numbers of 
@@ -43,7 +43,7 @@ Averaging kNN-LWPLSR models with different numbers of
     The scaling is implemented for the global (distances) and local (i.e. inside
     each neighborhood) computations.
 * `verbose` : If true, fitting information are printed.
-*  Other arguments: see ?plsr_avg.
+*  Other arguments: see ?plsravg.
 
 Ensemblist method where the predictions of each local model are computed 
 are computed by averaging or stacking the predictions of a set of models 
@@ -53,7 +53,7 @@ For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for
 a new observation is the average (eventually weighted) or stacking of the predictions 
 returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 
-See ?plsr_avg.
+See ?plsravg.
 
 ## Examples
 ```julia
@@ -75,7 +75,7 @@ ytest = rmrow(y, s)
 
 nlvdis = 20 ; metric = "mahal" 
 h = 1 ; k = 100 ; nlv = "5:15"
-fm = lwplsr_avg(Xtrain, ytrain; nlvdis = nlvdis,
+fm = lwplsravg(Xtrain, ytrain; nlvdis = nlvdis,
     metric = metric, h = h, k = k, nlv = nlv) ;
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
@@ -83,14 +83,14 @@ f, ax = scatter(vec(res.pred), ytest)
 ablines!(ax, 0, 1)
 f
 
-fm = lwplsr_avg(Xtrain, ytrain; nlvdis = nlvdis,
+fm = lwplsravg(Xtrain, ytrain; nlvdis = nlvdis,
     metric = metric, h = h, k = k, nlv = nlv,
     typf = "cv") ;
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 ```
 """ 
-function lwplsr_avg(X, Y; nlvdis, metric, h, k, nlv, 
+function lwplsravg(X, Y; nlvdis, metric, h, k, nlv, 
     typf = "unif", typw = "bisquare", alpha = 0, K = 5, rep = 10,
     tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
@@ -135,7 +135,7 @@ function predict(object::LwplsrAvg, X)
     end
     ### End
     pred = locw(object.X, object.Y, X; 
-        listnn = res.ind, listw = listw, fun = plsr_avg, nlv = object.nlv, 
+        listnn = res.ind, listw = listw, fun = plsravg, nlv = object.nlv, 
         typf = object.typf, typw = object.typw,
         alpha = object.alpha, K = object.K, rep = object.rep,
         scal = object.scal,
@@ -165,7 +165,7 @@ function predict_steps(object::LwplsrAvg, X; steps = nothing)
     end
     ### End
     pred = locw(object.X, object.Y, X; 
-        listnn = res.ind, listw = listw, nlv = object.nlv, fun = plsr_avg, 
+        listnn = res.ind, listw = listw, nlv = object.nlv, fun = plsravg, 
         typf = object.typf, typw = object.typw, alpha = object.alpha, K = object.K, rep = object.rep,
         verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)

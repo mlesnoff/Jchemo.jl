@@ -1,15 +1,15 @@
-struct PlsrAvgShenk
+struct PlsravgShenk
     fm::Plsr
     nlv
 end
 
-function plsr_avg_shenk(X, Y, weights = ones(nro(X)); nlv, 
+function plsravg_shenk(X, Y, weights = ones(nro(X)); nlv, 
         scal = false)
-    plsr_avg_shenk!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
+    plsravg_shenk!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
         scal = scal)
 end
 
-function plsr_avg_shenk!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
+function plsravg_shenk!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
         scal = false)
     n, p = size(X)
     nlv = eval(Meta.parse(nlv))
@@ -17,10 +17,10 @@ function plsr_avg_shenk!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     nlvmax = maximum(nlv)
     nlv = max(minimum(nlv), 1):nlvmax       
     fm = plskern!(X, Y, weights; nlv = nlvmax, scal = scal)
-    PlsrAvgShenk(fm, nlv)
+    PlsravgShenk(fm, nlv)
 end
 
-function predict(object::PlsrAvgShenk, X)
+function predict(object::PlsravgShenk, X)
     X = ensure_mat(X)
     m = nro(X)
     q = nro(object.fm.C)

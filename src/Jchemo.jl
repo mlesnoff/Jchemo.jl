@@ -59,12 +59,12 @@ include("ramang.jl")
 include("plskern.jl") ; include("plsrosa.jl")
 include("plsnipals.jl") ; include("plssimp.jl")
 include("plswold.jl") 
-include("plsr_avg.jl")
-include("plsr_avg_aic.jl")
-include("plsr_avg_cv.jl")
-include("plsr_avg_unif.jl")
-include("plsr_avg_shenk.jl")
-include("plsr_stack.jl")
+include("plsravg.jl")
+include("plsravg_aic.jl")
+include("plsravg_cv.jl")
+include("plsravg_unif.jl")
+include("plsravg_shenk.jl")
+include("plsrstack.jl")
 include("cglsr.jl")
 include("covselr.jl")  
 include("krr.jl")
@@ -94,7 +94,7 @@ include("occstah.jl") ; include("stah.jl")
 include("occknndis.jl") ; include("occlknndis.jl")
 include("plsrda.jl") 
 include("plslda.jl") ; include("plsqda.jl")
-include("plsrda_avg.jl") ; include("plslda_avg.jl") ; include("plsqda_avg.jl") 
+include("plsrdaavg.jl") ; include("plsldaavg.jl") ; include("plsqdaavg.jl") 
 include("krrda.jl")
 include("kplsrda.jl")
 
@@ -105,9 +105,9 @@ include("svmda.jl")
 include("locw.jl")
 include("knnr.jl")
 include("lwplsr.jl")
-include("lwplsr_avg.jl")
+include("lwplsravg.jl")
 include("lwplsr_s.jl")
-include("cplsr_avg.jl")  # Use structure PlsrDa
+include("cplsravg.jl")  # Use structure PlsrDa
 
 # Multiblock regresssion
 include("mbplsr.jl") 
@@ -116,7 +116,7 @@ include("soplsr.jl")
 
 # Local discrimination
 include("lwplsrda.jl") ; include("lwplslda.jl") ; include("lwplsqda.jl")
-include("lwplsrda_avg.jl") ; include("lwplslda_avg.jl") ; include("lwplsqda_avg.jl")
+include("lwplsrdaavg.jl") ; include("lwplsldaavg.jl") ; include("lwplsqdaavg.jl")
 include("knnda.jl")
 
 # Variable selection/importance (direct methods) 
@@ -221,7 +221,7 @@ export
     rr, rr!, rrchol, rrchol!,
     ramang, ramang!,   
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
-    plsr_avg, plsr_avg!,
+    plsravg, plsravg!,
     dfplsr_cg, aicplsr,
     wshenk,
     svmr,   
@@ -239,8 +239,8 @@ export
     # Local regression
     locw, locwlv,
     knnr,
-    lwplsr, lwplsr_avg, lwplsr_s,  
-    cplsr_avg,
+    lwplsr, lwplsravg, lwplsr_s,  
+    cplsravg,
     # Discrimination
     dmnorm, dmnorm!,
     fda, fda!, fdasvd, fdasvd!,
@@ -252,12 +252,12 @@ export
     occknndis, occlknndis,
     plsrda, kplsrda,
     plslda, plsqda,
-    plsrda_avg, plslda_avg, plsqda_avg,
+    plsrdaavg, plsldaavg, plsqdaavg,
     svmda,
     treeda_xgb, rfda_xgb, xgboostda,
     # Local Discrimination
     lwplsrda, lwplslda, lwplsqda,
-    lwplsrda_avg, lwplslda_avg, lwplsqda_avg,
+    lwplsrdaavg, lwplsldaavg, lwplsqdaavg,
     knnda,
     #
     transform, coef, predict,

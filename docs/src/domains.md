@@ -6,7 +6,7 @@
 - **pcaeigen** Eigen decomposition
 - **pcaeigenk** Eigen decomposition for wide matrices (kernel form)
 - **pcasvd** SVD decomposition
-- Variants:
+- Variants for dimension reduction
     - **rp** Random projection
     - **rpmatgauss** Gaussian random projection matrix 
     - **rpmatli** Sparse random projection matrix 
@@ -70,7 +70,7 @@
 - **dkplsr** Direct non linear kernel (DKPLSR) *Bennett & Embrechts 2003*
 
 *Averaging and stacking*
-- **plsr_avg** Averaging and stacking PLSR models with different numbers of 
+- **plsravg** Averaging and stacking PLSR models with different numbers of 
     latent variables (LVs) (PLSR-AVG)
 
 *Variable selection*
@@ -98,8 +98,8 @@
 - **lwplsr_s** kNN-LWPLSR with preliminary dimension reduction
 
 *Averaging and stacking*
-- **lwplsr_avg** kNN-LWPLSR-AVG 
-- **cplsr_avg** Clustered PLSR-AVG
+- **lwplsravg** kNN-LWPLSR-AVG 
+- **cplsravg** Clustered PLSR-AVG
 
 ### **Support vector machine (SVMR)** -- from LIBSVM.jl
 
@@ -142,7 +142,7 @@
 
 - **mlrda** On MLR predictions (MLR-DA)
 - **plsrda** On PLSR predictions (PLSR-DA; = common "PLSDA")
-- **plsrda_avg** Averaging PLSR-DA models with different numbers of 
+- **plsrdaavg** Averaging PLSR-DA models with different numbers of 
     latent variables (LVs) (PLSR-DA-AVG)
 - **rrda** On RR predictions (RR-DA)
 
@@ -156,11 +156,11 @@
 - **qda** Quadratic discriminant analysis (QDA)
 - **plslda** LDA on PLS latent variables (PLS-LDA)
 - **plsqda** QDA on PLS latent variables (PLS-QDA)
-- **plsqda_avg** Averaging PLS-QDA models with different numbers of 
+- **plsqdaavg** Averaging PLS-QDA models with different numbers of 
     latent variables (LVs) (PLS-QDA-AVG)
 
 *Averaging*
-- **plslda_avg** Averaging PLS-LDA models with different numbers of 
+- **plsldaavg** Averaging PLS-LDA models with different numbers of 
     latent variables (LVs) (PLS-LDA-AVG)
 
 *Utility*
@@ -174,9 +174,9 @@
 - **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA)
 
 *Averaging*
-- **lwplsrda_avg** kNN-LWPLSR-DA-AVG
-- **lwplslda_avg** kNN-LWPLS-LDA-AVG
-- **lwplsqda_avg** kNN-LWPLS-QDA-AVG
+- **lwplsrdaavg** kNN-LWPLSR-DA-AVG
+- **lwplsldaavg** kNN-LWPLS-LDA-AVG
+- **lwplsqdaavg** kNN-LWPLS-QDA-AVG
 
 ### **Support vector machine (SVM-DA)** -- from LIBSVM.jl
 - **svmda** C-SVM discrimination

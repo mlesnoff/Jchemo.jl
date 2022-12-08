@@ -1,4 +1,4 @@
-struct PlsdaAvg  # for plsrda_avg, plsrla_avg and plsqda_avg 
+struct Plsdaavg  # for plsrdaavg, plsrlaavg and plsqdaavg 
     fm
     nlv
     w_mod
@@ -7,7 +7,7 @@ struct PlsdaAvg  # for plsrda_avg, plsrla_avg and plsqda_avg
 end
 
 """ 
-    plsrda_avg(X, y, weights = ones(nro(X)); nlv)
+    plsrdaavg(X, y, weights = ones(nro(X)); nlv)
 Averaging of PLSR-DA models with different numbers of 
     latent variables (LVs).
 * `X` : X-data.
@@ -47,7 +47,7 @@ tab(ytrain)
 tab(ytest)
 
 nlv = "0:40"
-fm = plsrda_avg(Xtrain, ytrain; nlv = nlv) ;
+fm = plsrdaavg(Xtrain, ytrain; nlv = nlv) ;
 pnames(fm)
 
 res = Jchemo.predict(fm, Xtest) ;
@@ -56,7 +56,7 @@ res.pred
 err(res.pred, ytest)
 ```
 """ 
-function plsrda_avg(X, y, weights = ones(nro(X)); nlv,
+function plsrdaavg(X, y, weights = ones(nro(X)); nlv,
     scal = false)
     n, p = size(X)
     nlv = eval(Meta.parse(nlv))
@@ -68,16 +68,16 @@ function plsrda_avg(X, y, weights = ones(nro(X)); nlv,
     # End
     fm = plsrda(X, y, weights; nlv = nlvmax,
         scal = scal)
-    PlsdaAvg(fm, nlv, w_mod, fm.lev, fm.ni)
+    Plsdaavg(fm, nlv, w_mod, fm.lev, fm.ni)
 end
 
 """
-    predict(object::PlsdaAvg, X)
+    predict(object::Plsdaavg, X)
 Compute y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::PlsdaAvg, X)
+function predict(object::Plsdaavg, X)
     X = ensure_mat(X)
     m = size(X, 1)
     nlv = object.nlv
