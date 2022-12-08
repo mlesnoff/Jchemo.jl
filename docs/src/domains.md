@@ -204,8 +204,8 @@
 - **gridcv** Any model
 - **gridcvlv** Models with LVs (faster)
 - **gridcvlb** Models with ridge parameter (faster)  
-- **gridcv_mb** Multiblock models 
-- **gridcvlv_mb** Multiblock models with LVs 
+- **gridcvmb** Multiblock models 
+- **gridcvlvmb** Multiblock models with LVs 
 - **segmkf** Building segments for K-fold CV
 - **segmts** Building segments for test-set validation
 

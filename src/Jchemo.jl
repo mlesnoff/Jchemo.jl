@@ -129,7 +129,7 @@ include("scores.jl")
 include("gridscore.jl")
 include("segm.jl")
 include("gridcv.jl")
-include("gridcv_mb.jl")
+include("gridcvmb.jl")
 include("selwold.jl")
 
 # Transfer
@@ -268,7 +268,7 @@ export
     gridscore, gridscorelv, gridscorelb,
     segmts, segmkf,
     gridcv, gridcvlv, gridcvlb, 
-    gridcv_mb, gridcvlv_mb,
+    gridcvmb, gridcvlvmb,
     selwold,
     # Sampling
     sampks, sampdp, sampsys, sampclas,
