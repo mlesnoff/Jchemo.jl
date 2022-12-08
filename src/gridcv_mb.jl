@@ -1,12 +1,12 @@
 """
-    gridcvmb(Xbl, Y; segm, score, fun, pars, verbose = false)
+    gridcv_mb(Xbl, Y; segm, score, fun, pars, verbose = false)
 * See `gridcv`.
 
 Same as [`gridcv`](@ref) but specific to multiblock regression.
 
 See `?gridcv` for examples.
 """
-function gridcvmb(Xbl, Y; segm, score, fun, pars, verbose = false)
+function gridcv_mb(Xbl, Y; segm, score, fun, pars, verbose = false)
     q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
@@ -44,14 +44,14 @@ function gridcvmb(Xbl, Y; segm, score, fun, pars, verbose = false)
 end
 
 """
-    gridcvlvmb(Xbl, Y; segm, score, fun, nlv, pars, verbose = false)
+    gridcvlv_mb(Xbl, Y; segm, score, fun, nlv, pars, verbose = false)
 * See `gridcv`.
 
 Same as [`gridcvlv`](@ref) but specific to multiblock regression.
 
 See `?gridcv` for examples.
 """
-function gridcvlvmb(Xbl, Y; segm, score, fun, nlv, 
+function gridcvlv_mb(Xbl, Y; segm, score, fun, nlv, 
         pars = nothing, verbose = false)
     q = nco(Y)
     nrep = length(segm)

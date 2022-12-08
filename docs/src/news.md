@@ -9,8 +9,6 @@
     - All the functions **..._avg** and **..._stack** renamed 
         tp **...avg** and **...stack** (e.g. **plsr_avg** to 
         **plsravg**).
-    - Functions **gridcv_mb** and **gridcvlv_mb** rename to
-          **gridcvmb** and **gridcvlvmb**.
     - **caltransf_ds** and **caltransf_pds** remaned
         to **calds** and **calpds**.
     - **fnorm** renamed to **frob**.
@@ -278,8 +276,8 @@ the Makie's backend (e.g. CairoMakie).
 
 ### *Version 0.0.8*
 - New functions
-    - **gridcvmb**
-    - **gridcvlvmb**
+    - **gridcv_mb**
+    - **gridcvlv_mb**
     - **mbplsr_avg**
     - **mbplsr_mid**
     - **mbplsr_mid_seq**

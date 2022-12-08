@@ -1,9 +1,9 @@
-struct MbensPlsravg
+struct PlsravgEns
     fm
     w::Vector{Float64}
 end
 
-function mbens_plsravg(Xbl, Y, weights = ones(size(Xbl[1], 1)); 
+function plsravg_ens(Xbl, Y, weights = ones(size(Xbl[1], 1)); 
         nlv, typw = "unif")
     nbl = length(Xbl)
     fm = list(nbl)
@@ -19,16 +19,16 @@ function mbens_plsravg(Xbl, Y, weights = ones(size(Xbl[1], 1));
         w .= fweight(w; typw = typw)
     end
     w .= mweight(w)
-    MbensPlsravg(fm, w)
+    PlsravgEns(fm, w)
 end
 
 #"""
-#    predict(object::MbensPlsravg, Xbl)
+#    predict(object::PlsravgEns, Xbl)
 #Compute Y-predictions from a fitted model.
 #* `object` : The fitted model.
 #* `Xbl` : A list (vector) of X-data for which predictions are computed.
 #""" 
-function predict(object::MbensPlsravg, Xbl)
+function predict(object::PlsravgEns, Xbl)
     nbl = length(object.fm)
     pred = object.w[1] * predict(object.fm[1], Xbl[1]).pred
     if nbl > 1

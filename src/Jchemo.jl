@@ -113,6 +113,7 @@ include("cplsravg.jl")  # Use structure PlsrDa
 include("mbplsr.jl") 
 include("rosaplsr.jl") 
 include("soplsr.jl") 
+include("plsravg_ens.jl")
 
 # Local discrimination
 include("lwplsrda.jl") ; include("lwplslda.jl") ; include("lwplsqda.jl")
@@ -129,7 +130,7 @@ include("scores.jl")
 include("gridscore.jl")
 include("segm.jl")
 include("gridcv.jl")
-include("gridcvmb.jl")
+include("gridcv_mb.jl")
 include("selwold.jl")
 
 # Transfer
@@ -268,7 +269,7 @@ export
     gridscore, gridscorelv, gridscorelb,
     segmts, segmkf,
     gridcv, gridcvlv, gridcvlb, 
-    gridcvmb, gridcvlvmb,
+    gridcv_mb, gridcvlv_mb,
     selwold,
     # Sampling
     sampks, sampdp, sampsys, sampclas,
