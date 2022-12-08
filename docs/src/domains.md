@@ -2,10 +2,14 @@
 
 ## MULTIVARIATE EXPLORATORY ANALYSES
 
-*PCA* 
+*Principal component analysis (PCA)* 
 - **pcaeigen** Eigen decomposition
 - **pcaeigenk** Eigen decomposition for wide matrices (kernel form)
 - **pcasvd** SVD decomposition
+- Variants:
+    - **rp** Random projection
+    - **rpmatgauss** Gaussian random projection matrix 
+    - **rpmatli** Sparse random projection matrix 
 
 *Non linear PCA*
 - **kpca** Kernel (KPCA) *Scholkopf et al. 2002*
@@ -31,12 +35,6 @@
 *Utilities for PCA and PLS* 
 - **xfit** Matrix fitting 
 - **xresid** Residual matrix 
-
-## RANDOM PROJECTIONS
-
-- **rp** Random projection
-- **rpmatgauss** Gaussian random projection matrix 
-- **rpmatli** Sparse random projection matrix 
 
 ## REGRESSION
 
