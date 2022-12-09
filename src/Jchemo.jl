@@ -113,7 +113,6 @@ include("cplsravg.jl")  # Use structure PlsrDa
 include("mbplsr.jl") 
 include("rosaplsr.jl") 
 include("soplsr.jl") 
-include("plsravg_ens.jl")
 
 # Local discrimination
 include("lwplsrda.jl") ; include("lwplslda.jl") ; include("lwplsqda.jl")
