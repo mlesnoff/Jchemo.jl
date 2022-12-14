@@ -78,7 +78,8 @@
 - **covsel** Variable selection from partial correlation or covariance (Covsel)
 
 *Multiblock*
-- **mbplsr** Multiblock (MBPLSR; concatenated blocks)
+- **mbplsr** MBPLSR - fast version (PLSR on concatenated blocks)
+- **mbplswest** MBPLSR - Nipals algorithm (Westerhuis et al. 1998) 
 - **rosaplsr** ROSA *Liland et al. 2016*
 - **soplsr** Sequentially orthogonalized (SO-PLSR) 
 

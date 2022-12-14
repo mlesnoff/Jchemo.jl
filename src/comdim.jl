@@ -169,7 +169,7 @@ function comdim!(Xbl, weights = ones(nro(Xbl[1])); nlv,
     end
     # Row metric
     @inbounds for k = 1:nbl
-        Xbl[k] .= sqrtD * Xbl[k]
+        Xbl[k] .= sqrtw .* Xbl[k]
     end
     # Pre-allocation
     u = similar(Xbl[1], n)
@@ -200,7 +200,7 @@ function comdim!(Xbl, weights = ones(nro(Xbl[1])); nlv,
                 wk ./= dk             # = wk (= normed)
                 mul!(tk, Xbl[k], wk) 
                 Tb[a][:, k] .= tk
-                Tbl[k][:, a] .= (1 ./ sqrtw) .* Tb[a][:, k]
+                Tbl[k][:, a] .= (1 ./ sqrtw) .* tk
                 TB[:, k] = dk * tk    # = Qb (qk = dk * tk)
                 Wbl[k][:, a] .= wk
                 lb[k, a] = dk^2
@@ -280,14 +280,13 @@ function Base.summary(object::Comdim, Xbl)
     nbl = length(Xbl)
     nlv = size(object.T, 2)
     sqrtw = sqrt.(object.weights)
-    sqrtD = Diagonal(sqrtw)
     zXbl = list(nbl, Matrix{Float64})
     Threads.@threads for k = 1:nbl
         zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
     zXbl = blockscal(zXbl, object.bscales).X
     @inbounds for k = 1:nbl
-        zXbl[k] .= sqrtD * zXbl[k]
+        zXbl[k] .= sqrtw .* zXbl[k]
     end
     # Explained_X
     sstot = zeros(nbl)

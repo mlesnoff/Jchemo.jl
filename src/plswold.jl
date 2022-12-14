@@ -65,7 +65,6 @@ function plswold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     tx   = similar(X, n)
     ty = copy(tx)
     wx  = similar(X, p)
-    wxtild = copy(wx)    
     wy  = similar(X, q)
     wytild = copy(wy)     
     px   = copy(wx)
@@ -79,10 +78,10 @@ function plswold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         wx .= rand(p)
         while cont
             w0 = copy(wx)
-            wxtild .= X' * ty / dot(ty, ty)    # = ctild ==> output "C"
-            wx .= wxtild / norm(wxtild)
+            wx .= X' * ty / dot(ty, ty)    
+            wx ./= norm(wx)
             tx .= X * wx
-            wytild = Y' * tx / dot(tx, tx)
+            wytild = Y' * tx / dot(tx, tx)    # = ctild ==> output "C"
             wy .= wytild / norm(wytild)
             ty .= Y * wy
             dif = sum((wx .- w0).^2)

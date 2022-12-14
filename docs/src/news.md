@@ -4,10 +4,11 @@
 - News
     - **rasvd**: Redundancy analysis - PCA on instrumental variables (PCAIV).
     - **ramang** Redundancy analysis regression = Reduced rank regression (RRR)
+    - **mbplswest** MBPLSR - Nipals algorithm (Westerhuis et al. 1998) 
 
 - Breaking changes
     - All the functions **..._avg** and **..._stack** renamed 
-        tp **...avg** and **...stack** (e.g. **plsr_avg** to 
+        to **...avg** and **...stack** (e.g. **plsr_avg** to 
         **plsravg**).
     - **caltransf_ds** and **caltransf_pds** remaned
         to **calds** and **calpds**.

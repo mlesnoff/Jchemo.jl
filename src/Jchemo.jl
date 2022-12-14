@@ -72,6 +72,12 @@ include("kplsr.jl") ; include("dkplsr.jl")
 include("aicplsr.jl")
 include("wshenk.jl")  
 
+# Multiblock regresssion
+include("mbplsr.jl") 
+include("mbplswest.jl") 
+include("rosaplsr.jl") 
+include("soplsr.jl") 
+
 # SVM
 include("svmr.jl")
 
@@ -108,11 +114,6 @@ include("lwplsr.jl")
 include("lwplsravg.jl")
 include("lwplsr_s.jl")
 include("cplsravg.jl")  # Use structure PlsrDa
-
-# Multiblock regresssion
-include("mbplsr.jl") 
-include("rosaplsr.jl") 
-include("soplsr.jl") 
 
 # Local discrimination
 include("lwplsrda.jl") ; include("lwplslda.jl") ; include("lwplsqda.jl")
@@ -229,6 +230,7 @@ export
     baggr, baggr_vi, baggr_oob,
     # Rgression Multi-block
     mbplsr, mbplsr!,
+    mbplswest, mbplswest!,
     rosaplsr, rosaplsr!,
     soplsr,
     # Variable selection/importance (direct methods) 
