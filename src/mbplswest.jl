@@ -36,7 +36,7 @@ Multiblock PLSR - Nipals algorithm (Westerhuis et al. 1998).
     of `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-This is equivalent to the the PLSR (X, `Y`) where X is the horizontal 
+MBPLSR is equivalent to the the PLSR (X, `Y`) where X is the horizontal 
 concatenation of the blocks in `Xbl`.
 The function gives the same results as function `mbplsr`.
 
@@ -266,6 +266,7 @@ function Base.summary(object::MbplsWest, Xbl)
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end
+    X = reduce(hcat, zXbl)
     # Explained_X
     ssk = zeros(nbl)
     @inbounds for k = 1:nbl
@@ -278,5 +279,21 @@ function Base.summary(object::MbplsWest, Xbl)
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)     
-    (explvarx = explvarx,)
+    # Correlation between the global scores and the original variables 
+    z = cor(X, object.T)  
+    cort2x = DataFrame(z, string.("lv", 1:nlv))  
+    # Correlation between the global scores and the block_scores
+    z = list(nlv, Matrix{Float64})
+    @inbounds for a = 1:nlv
+        z[a] = cor(object.Tb[a], object.T[:, a])
+    end
+    cort2tb = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
+    ## Redundancies (Average correlations) between each block and each global score
+    z = list(nbl, Matrix{Float64})
+    @inbounds for k = 1:nbl
+        z[k] = rd(zXbl[k], object.T)
+    end
+    rdx = DataFrame(reduce(vcat, z), string.("lv", 1:nlv))
+    # Output
+    (explvarx = explvarx, cort2x, cort2tb, rdx)
 end

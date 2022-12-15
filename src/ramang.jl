@@ -106,7 +106,7 @@ function ramang(X, Y, weights = ones(nro(X)); nlv,
 end
 
 function ramang!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        tau = 1e-10, tol = sqrt(eps(1.)), maxit = 200, 
+        tau = 1e-8, tol = sqrt(eps(1.)), maxit = 200, 
         scal = false)
     n, p = size(X)
     q = nco(Y)

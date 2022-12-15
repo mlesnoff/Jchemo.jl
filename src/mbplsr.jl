@@ -133,6 +133,7 @@ function Base.summary(object::Mbplsr, Xbl)
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end
+    X = reduce(hcat, zXbl)
     # Explained_X
     ssk = zeros(nbl)
     @inbounds for k = 1:nbl
@@ -144,6 +145,16 @@ function Base.summary(object::Mbplsr, Xbl)
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)     
-    (explvarx = explvarx,)
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    # Correlation between the global scores and the original variables 
+    z = cor(X, object.T)  
+    cort2x = DataFrame(z, string.("lv", 1:nlv))
+    ## Redundancies (Average correlations) between each block and each global score
+    z = list(nbl, Matrix{Float64})
+    @inbounds for k = 1:nbl
+        z[k] = rd(zXbl[k], object.T)
+    end
+    rdx = DataFrame(reduce(vcat, z), string.("lv", 1:nlv))       
+    # Outputs
+    (explvarx = explvarx, cort2x, rdx)
 end

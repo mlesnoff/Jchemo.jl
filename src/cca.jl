@@ -49,7 +49,7 @@ to get similar results as with pseudo-inverses.
 
 With uniform `weights`, the normed scores returned 
 by the function are expected to be the same as those returned 
-by functionss `rcc` of the R packages `CCA` (González et al.) and `mixOmics` 
+by functions `rcc` of the R packages `CCA` (González et al.) and `mixOmics` 
 (Le Cao et al.) whith the parameters lambda1 and lambda2 set to:
 * lambda1 = lambda2 = `tau` / (1 - `tau`) * n / (n - 1) 
 

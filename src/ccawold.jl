@@ -20,10 +20,10 @@ end
 
 """
     ccawold(X, Y, weights = ones(nro(X)); nlv,
-        bscal = "none", tau = 1e-10, 
+        bscal = "none", tau = 1e-8, 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
     ccawold!(X, Y, weights = ones(nro(X)); nlv,
-        bscal = "none", tau = 1e-10, 
+        bscal = "none", tau = 1e-8, 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
 Canonical correlation analysis (RCCA) - Wold Nipals algorithm.
 * `X` : First block (matrix) of data.
@@ -98,7 +98,7 @@ pnames(res)
 ```
 """
 function ccawold(X, Y, weights = ones(nro(X)); nlv,
-        bscal = "none", tau = 1e-10, 
+        bscal = "none", tau = 1e-8, 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
     ccawold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         bscal = bscal, tau = tau, 
@@ -106,7 +106,7 @@ function ccawold(X, Y, weights = ones(nro(X)); nlv,
 end
 
 function ccawold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = "none", tau = 1e-10, 
+        bscal = "none", tau = 1e-8, 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
     @assert tau >= 0 && tau <= 1 "tau must be in [0, 1]"
     n, p = size(X)

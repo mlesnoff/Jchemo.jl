@@ -1,9 +1,9 @@
 """
     mbmang(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = "none", tau = 1e-10, wcov = false, deflat = "global", 
+        bscal = "none", tau = 1e-8, wcov = false, deflat = "global", 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
     mbmang!(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = "none", tau = 1e-10, wcov = false, deflat = "global", 
+        bscal = "none", tau = 1e-8, wcov = false, deflat = "global", 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
 Unified multiblock data analysis of Mangana et al. 2019.
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
@@ -68,7 +68,7 @@ fm = mbmang(Xbl; nlv = 3,
 ```
 """
 function mbmang(Xbl, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", tau = 1e-10, wcov = false, deflat = "global",
+        bscal = "none", tau = 1e-8, wcov = false, deflat = "global",
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
@@ -81,7 +81,7 @@ function mbmang(Xbl, weights = ones(nro(Xbl[1])); nlv,
 end
 
 function mbmang!(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = "none", tau = 1e-10, wcov = false, deflat = "global", 
+        bscal = "none", tau = 1e-8, wcov = false, deflat = "global", 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
     @assert tau >= 0 && tau <= 1 "tau must be in [0, 1]"
     nbl = length(Xbl)

@@ -315,24 +315,24 @@ function Base.summary(object::Comdim, Xbl)
     for a = 1:nlv
         sal2[:, a] .= object.lb[:, a].^2 / object.mu[a]
     end
-    sal2 = DataFrame(sal2, string.("pc", 1:nlv))
+    sal2 = DataFrame(sal2, string.("lv", 1:nlv))
     # Contribution of the blocks to global scores = lb proportions (contrib)
     z = scale(object.lb, colsum(object.lb))
-    contr_block = DataFrame(z, string.("pc", 1:nlv))
+    contr_block = DataFrame(z, string.("lv", 1:nlv))
     # Proportion of inertia explained for each block (explained.X)
     # = object.lb if bscal = "frob" 
     z = scale((object.lb)', sstot)'
-    explX = DataFrame(z, string.("pc", 1:nlv))
+    explX = DataFrame(z, string.("lv", 1:nlv))
     # Correlation between the global scores and the original variables (globalcor)
     X = reduce(hcat, zXbl)
     z = cor(X, object.U)  
-    cort2x = DataFrame(z, string.("pc", 1:nlv))  
+    cort2x = DataFrame(z, string.("lv", 1:nlv))  
     # Correlation between the global scores and the block_scores (cor.g.b)
     z = list(nlv, Matrix{Float64})
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], object.U[:, a])
     end
-    cort2tb = DataFrame(reduce(hcat, z), string.("pc", 1:nlv))
+    cort2tb = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
     # RV 
     X = vcat(zXbl, [object.T])
     nam = [string.("block", 1:nbl) ; "T"]
