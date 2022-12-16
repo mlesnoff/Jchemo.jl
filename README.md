@@ -32,6 +32,9 @@ Most of the functions have a **help page** (providing an example), e.g.:
 ?savgol
 ```
 
+The datasets used in the examples are [**here**](https://github.com/mlesnoff/JchemoData.jl) and 
+some demonstrations of the package [**here**](https://github.com/mlesnoff/JchemoDemo). 
+
 ## <span style="color:green"> **Available functions** </span> 
 
 - [**List of functions by domain**](https://github.com/mlesnoff/Jchemo.jl/blob/master/docs/src/domains.md)
