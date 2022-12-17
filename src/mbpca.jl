@@ -260,15 +260,15 @@ function Base.summary(object::Mbpca, Xbl)
     nbl = length(Xbl)
     nlv = size(object.T, 2)
     sqrtw = sqrt.(object.weights)
-    sqrtD = Diagonal(sqrtw)
     zXbl = list(nbl, Matrix{Float64})
     Threads.@threads for k = 1:nbl
         zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
     zXbl = blockscal(zXbl, object.bscales).X
     @inbounds for k = 1:nbl
-        zXbl[k] .= sqrtD * zXbl[k]
+        zXbl[k] .= sqrtw .* zXbl[k]
     end
+    X = reduce(hcat, zXbl)
     # Explained_X
     sstot = zeros(nbl)
     @inbounds for k = 1:nbl
@@ -287,7 +287,6 @@ function Base.summary(object::Mbpca, Xbl)
     z = scale((object.lb)', sstot)'
     explX = DataFrame(z, string.("lv", 1:nlv))
     # Correlation between the global scores and the original variables (globalcor)
-    X = reduce(hcat, zXbl)
     z = cor(X, object.U)  
     cort2x = DataFrame(z, string.("lv", 1:nlv))  
     # Correlation between the global scores and the block_scores (cor.g.b)

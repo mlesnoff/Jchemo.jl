@@ -31,7 +31,7 @@ The regularization parameter `tau` = "1 - gamma" in
 Managana et al. 2019 section 2.1.3.
 
 Value `tau` = 0 can generate unstability when inverting the covariance matrices. 
-It can be better to use an epsilon value (e.g. `tau` = 1e-10) 
+It can be better to use an epsilon value (e.g. `tau` = 1e-8) 
 to get similar results as with pseudo-inverses.  
 
 ## References

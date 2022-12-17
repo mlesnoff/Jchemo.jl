@@ -1,5 +1,14 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.1.10* 
+
+- Modifications
+    - Code cleaning
+
+- Breaking changes
+    - **ramang** renamed tp **rrr** (Reduced rank regression).
+
+
 ### *Version 0.1.9* 
 - News
     - **rasvd**: Redundancy analysis - PCA on instrumental variables (PCAIV).

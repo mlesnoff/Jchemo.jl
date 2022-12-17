@@ -128,6 +128,7 @@ function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
     end
     Y .= sqrtw .* Y
     # Pre-allocation
+    X = similar(Xbl[1], n, sum(p))
     Tbl = list(nbl, Matrix{Float64})
     for k = 1:nbl ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
     Tb = list(nlv, Matrix{Float64})
@@ -150,7 +151,6 @@ function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
     # End
     @inbounds for a = 1:nlv
         ty = Y[:, 1]
-        ttx = 0
         cont = true
         iter = 1
         while cont
@@ -164,31 +164,29 @@ function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
                 pk ./= dot(tk, tk)
                 Pbl[k][:, a] .= pk
                 Tb[a][:, k] .= tk
-                Tbl[k][:, a] .= (1 ./ sqrtw) .* tk
-                # Comdim TB[:, k] = dk * tk    # = Qb (qk = dk * tk) , dk = 
-                #Wbl[k][:, a] .= wk / dk   # = normed_wk
-                #lb[k, a] = dk^2       
+                Tbl[k][:, a] .= (1 ./ sqrtw) .* tk  
             end
             w = Tb[a]' * ty / dot(ty, ty) 
             w ./= norm(w)
-            tx = Tb[a] * w / dot(w, w)
-            wytild .= Y' * tx / dot(tx, tx)
-            wy = wytild / norm(wytild)
-            ty = Y * wy
-            # For global
-            ttx = dot(tx, tx)
-            X = reduce(hcat, Xbl)
-            wx .= X' * ty / dot(ty, ty)    
-            wx ./= norm(wx)
-            mul!(px, X', tx)
-            px ./= ttx
-            # End
+            tx .= Tb[a] * w
+            wy .= Y' * tx
+            wy ./= norm(wy)
+            ty .= Y * wy
             dif = sum((ty .- t0).^2)
             iter = iter + 1
             if (dif < tol) || (iter > maxit)
                 cont = false
             end
         end
+        # For global
+        ttx = dot(tx, tx)
+        X .= reduce(hcat, Xbl)
+        wx .= X' * ty / dot(ty, ty)    
+        wx ./= norm(wx)
+        mul!(px, X', tx)
+        px ./= ttx
+        wytild .= Y' * tx / ttx
+        # End           
         niter[a] = iter - 1
         Tx[:, a] .= tx   
         Wx[:, a] .= wx
@@ -196,7 +194,7 @@ function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
         Wytild[:, a] .= wytild
         TTx[a] = ttx
         @inbounds for k = 1:nbl
-            Xbl[k] .-= tx * tx' * Xbl[k] / dot(tx, tx)
+            Xbl[k] .-= tx * tx' * Xbl[k] / ttx
         end
         Y .-= tx * wytild'
     end

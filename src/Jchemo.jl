@@ -55,7 +55,7 @@ include("aov1.jl")
 include("mlr.jl")
 include("rr.jl")
 include("pcr.jl")
-include("ramang.jl") 
+include("rrr.jl") 
 include("plskern.jl") ; include("plsrosa.jl")
 include("plsnipals.jl") ; include("plssimp.jl")
 include("plswold.jl") 
@@ -220,7 +220,7 @@ export
     pcr,
     covselr,
     rr, rr!, rrchol, rrchol!,
-    ramang, ramang!,   
+    rrr, rrr!,   
     krr, kplsr, kplsr!, dkplsr, dkplsr!,
     plsravg, plsravg!,
     dfplsr_cg, aicplsr,

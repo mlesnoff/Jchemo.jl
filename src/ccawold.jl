@@ -50,7 +50,7 @@ After block centering and scaling, the covariances matrices are computed as foll
 * Cy = (1 - `tau`) * Y'DY + `tau` * Iy
 where D is the observation (row) metric. 
 Value `tau` = 0 can generate unstability when inverting the covariance matrices. 
-It can be better to use an epsilon value (e.g. `tau` = 1e-10) 
+It can be better to use an epsilon value (e.g. `tau` = 1e-8) 
 to get similar results as with pseudo-inverses.    
 
 With uniform `weights`, the normed scores returned 

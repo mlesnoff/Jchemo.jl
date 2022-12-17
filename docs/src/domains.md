@@ -20,7 +20,7 @@
     - **ccawold**: CCA - Wold (1984) Nipals algorithm  
     - **plscan**: Canonical partial least squares regression (Symmetric PLS)
     - **plstuck**: Tucker's inter-battery method of factor analysis (PLS-SVD)
-    - **rasvd**: Redundancy analysis - PCA on instrumental variables (PCAIV)
+    - **rasvd**: Redundancy analysis (RA) - PCA on instrumental variables (PCAIV)
 - 2 or more blocks 
     - **mbpca** Consensus PCA (MBPCA = CPCA)
     - **comdim** Common components and specific weights analysis (ComDim = CCSWA = HPCA)
@@ -61,7 +61,7 @@
 
 *Variants* 
 - **cglsr** Conjugate gradient for the least squares normal equations (CGLS)
-- **ramang** Redundancy analysis regression = Reduced rank regression (RRR)
+- **rrr** Reduced rank regression (RRR)  (= redundancy analysis regression) 
 - **pcr** Principal components regression (SVD factorization)
 - **covselr** MLR on variables selected from Covsel
 

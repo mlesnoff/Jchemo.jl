@@ -1,11 +1,11 @@
 """
-    ramang(X, Y, weights = ones(nro(X)); nlv,
+    rrr(X, Y, weights = ones(nro(X)); nlv,
         tau = 1e-5, tol = sqrt(eps(1.)), maxit = 200, 
         scal = false)
-    ramang(X, Y, weights = ones(nro(X)); nlv,
+    rrr(X, Y, weights = ones(nro(X)); nlv,
         tau = 1e-5, tol = sqrt(eps(1.)), maxit = 200, 
         scal = false)
-Redundancy analysis regression (RRR)
+Reduced rank regression (RRR).
 * `X` : First block of data.
 * `Y` : Second block of data.
 * `weights` : Weights of the observations (rows). 
@@ -16,7 +16,7 @@ Redundancy analysis regression (RRR)
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
  
-RA regression is also referred to Reduced rank regression (RRR).
+Reduced rank regression is also referred to as redundancy analysis (RA) regression.
 In this function, the RA uses the Nipals algorithm presented in Mangamana
 et al 2021 section 2.1.1.
 
@@ -74,7 +74,7 @@ yval = ytrain[s]
 pars = mpar(tau = 1e-4)
 nlv = 0:20
 res = gridscorelv(Xcal, ycal, Xval, yval;
-    score = rmsep, fun = ramang, nlv = nlv, pars = pars)
+    score = rmsep, fun = rrr, nlv = nlv, pars = pars)
 u = findall(res.y1 .== minimum(res.y1))[1]
 res[u, :]
 plotgrid(res.nlv, res.y1;
@@ -82,7 +82,7 @@ plotgrid(res.nlv, res.y1;
 
 tau = 1e-4
 nlv = 1
-fm = ramang(Xtrain, ytrain; nlv = nlv, tau = tau) ;
+fm = rrr(Xtrain, ytrain; nlv = nlv, tau = tau) ;
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 plotxy(vec(res.pred), ytest; color = (:red, .5),
@@ -91,21 +91,21 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
     
 ## PLSR 
 tau = 1
-fm = ramang(Xtrain, ytrain; nlv = 3, tau = tau) ;
+fm = rrr(Xtrain, ytrain; nlv = 3, tau = tau) ;
 head(Jchemo.predict(fm, Xtest).pred)
 fm = plskern(Xtrain, ytrain; nlv = 3) ;
 head(Jchemo.predict(fm, Xtest).pred)
 ```
 """
-function ramang(X, Y, weights = ones(nro(X)); nlv,
+function rrr(X, Y, weights = ones(nro(X)); nlv,
         tau = 1e-5, tol = sqrt(eps(1.)), maxit = 200, 
         scal = false)
-    ramang!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
+    rrr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         tau = tau, tol = tol, maxit = maxit, 
         scal = scal)
 end
 
-function ramang!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
+function rrr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         tau = 1e-8, tol = sqrt(eps(1.)), maxit = 200, 
         scal = false)
     n, p = size(X)
@@ -137,7 +137,6 @@ function ramang!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     Px  = similar(X, p, nlv)
     Cx = similar(X, p, p)
     invCx = copy(Cx)
-    Projx = similar(X, n, n)
     Ix = Diagonal(ones(p))
     TTx = similar(X, nlv)
     tx  = similar(X, n)
@@ -164,11 +163,10 @@ function ramang!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
                 invCx = inv((1 - tau) * X' * X + tau * Ix)
             end
         end 
-        Projx .= X * invCx * X'
         while cont
             w0 = copy(wy)
             ty .= Y * wy
-            tx .= Projx * ty
+            tx .= X * invCx * X' * ty
             wy .= Y' * tx
             wy ./= norm(wy)
             dif = sum((wy .- w0).^2)
@@ -178,8 +176,8 @@ function ramang!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
             end
         end
         niter[a] = iter - 1
-        lambda[a] = ty' * Projx * ty
-        covtot[a] = tr(Y' * Projx * Y)
+        lambda[a] = ty' * X * invCx * X' * ty
+        covtot[a] = tr(Y' * X * invCx * X' * Y)
         ttx = dot(tx, tx)
         mul!(px, X', tx)
         px ./= ttx

@@ -14,9 +14,9 @@ end
 
 """
     cca(X, Y, weights = ones(nro(X)); nlv, 
-        bscal = "none", tau = 0, scal = false)
+        bscal = "none", tau = 1e-8, scal = false)
     cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = "none", tau = 0, scal = false)
+        bscal = "none", tau = 1e-8, scal = false)
 Canonical correlation Analysis (CCA).
 * `X` : First block (matrix) of data.
 * `Y` : Second block (matrix) of data.
@@ -44,7 +44,7 @@ and Projy * Projx, respectively, defined as follows:
 * Projy = sqrt(D) * Y * invCx * Y' * sqrt(D)
 where D is the observation (row) metric. 
 Value `tau` = 0 can generate unstability when inverting the covariance matrices. 
-It can be better to use an epsilon value (e.g. `tau` = 1e-10) 
+It can be better to use an epsilon value (e.g. `tau` = 1e-8) 
 to get similar results as with pseudo-inverses.  
 
 With uniform `weights`, the normed scores returned 
@@ -89,7 +89,7 @@ pnames(dat)
 X = dat.X 
 Y = dat.Y
 
-tau = 0
+tau = 1e-8
 fm = cca(X, Y; nlv = 3, tau = tau)
 pnames(fm)
 
@@ -102,13 +102,13 @@ pnames(res)
 ```
 """
 function cca(X, Y, weights = ones(nro(X)); nlv, 
-        bscal = "none", tau = 0, scal = false)
+        bscal = "none", tau = 1e-8, scal = false)
     cca!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
         bscal = bscal, tau = tau, scal = scal)
 end
 
 function cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = "none", tau = 0, scal = false)
+        bscal = "none", tau = 1e-8, scal = false)
     @assert tau >= 0 && tau <= 1 "tau must be in [0, 1]"
     n, p = size(X)
     q = nco(Y)

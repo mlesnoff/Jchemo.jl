@@ -11,7 +11,7 @@
 for **data exploration and predictions** in chemometrics or other domains, with focus on **high dimensional data**. 
 
 The package was initially designed about **k-nearest neighbors locally weighted partial least squares regression 
-and discrimination models** (kNN-LWPLSR and kNN-LWPLSDA; e.g. Lesnoff et al 2021 https://doi.org/10.1002/cem.3209).
+and discrimination models** (kNN-LWPLSR and kNN-LWPLSDA; e.g. https://doi.org/10.1002/cem.3209).
 It has now been expanded to many other methods for analyzing high dimensional data. 
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. 

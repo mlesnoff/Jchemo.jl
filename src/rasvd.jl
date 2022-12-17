@@ -17,7 +17,7 @@ end
         bscal = "none", tau = 1e-8, scal = false)
     rasvd!(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", tau = 1e-8, scal = false)
-Redundancy analysis - PCA on instrumental variables (PCAIV)
+Redundancy analysis (RA) - PCA on instrumental variables (PCAIV)
 * `X` : First block of data (explicative variables).
 * `Y` : Second block of data (dependent variables).
 * `weights` : Weights of the observations (rows). 
