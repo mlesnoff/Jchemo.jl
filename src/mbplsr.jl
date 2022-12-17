@@ -42,6 +42,7 @@ db = joinpath(mypath, "data", "ham.jld2")
 pnames(dat) 
 
 X = dat.X
+Y = dat.Y
 y = dat.Y.c1
 group = dat.group
 listbl = [1:11, 12:19, 20:25]

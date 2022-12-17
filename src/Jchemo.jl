@@ -43,7 +43,7 @@ include("mblock.jl")
 include("blockscal.jl")
 include("mbpca.jl")
 include("comdim.jl")
-include("mbmang.jl")
+include("mbunif.jl")
 include("cca.jl")
 include("ccawold.jl")
 include("plscan.jl")
@@ -72,9 +72,10 @@ include("kplsr.jl") ; include("dkplsr.jl")
 include("aicplsr.jl")
 include("wshenk.jl")  
 
-# Multiblock regresssion
+# Regression Multiblock
 include("mbplsr.jl") 
-include("mbplswest.jl") 
+include("mbplswest.jl")
+include("mbwcov.jl")
 include("rosaplsr.jl") 
 include("soplsr.jl") 
 
@@ -200,7 +201,7 @@ export
     rv, lg, rd, 
     mbpca, mbpca!,
     comdim, comdim!,
-    mbmang, mbmang!,  
+    mbunif, mbunif!,  
     cca, cca!,
     ccawold, ccawold!,
     plscan, plscan!,
@@ -231,6 +232,7 @@ export
     # Rgression Multi-block
     mbplsr, mbplsr!,
     mbplswest, mbplswest!,
+    mbwcov!, mbwcov,
     rosaplsr, rosaplsr!,
     soplsr,
     # Variable selection/importance (direct methods) 

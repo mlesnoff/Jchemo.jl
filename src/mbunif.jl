@@ -1,11 +1,11 @@
 """
-    mbmang(Xbl, weights = ones(nro(Xbl[1])); nlv,
+    mbunif(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tau = 1e-8, wcov = false, deflat = "global", 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
-    mbmang!(Xbl, weights = ones(nro(Xbl[1])); nlv,
+    mbunif!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tau = 1e-8, wcov = false, deflat = "global", 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
-Unified multiblock data analysis of Mangana et al. 2019.
+Unified multiblock analysis of Mangana et al. 2019.
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
 * `weights` : Weights of the observations (rows). 
@@ -21,7 +21,7 @@ Unified multiblock data analysis of Mangana et al. 2019.
 * `deflat` : Possible values are "global (deflation to the global scores)
     or "can" (deflation to the block scores).
 * `tol` : Tolerance value for convergence.
-* `niter` : Maximum number of iterations.
+* `maxit` : Maximum number of iterations.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
@@ -49,7 +49,7 @@ pnames(dat)
 Xbl = [dat.X, dat.Y]
 
 tau = 1e-8
-fm = mbmang(Xbl; nlv = 3, tau = tau)
+fm = mbunif(Xbl; nlv = 3, tau = tau)
 pnames(fm)
 
 fm.T
@@ -59,15 +59,15 @@ res = summary(fm, Xbl)
 pnames(res)
 
 ## MBPCA
-fm = mbmang(Xbl; nlv = 3,
+fm = mbunif(Xbl; nlv = 3,
     tau = 1, wcov = false, deflat = "global") ;
 
 ## ComDim
-fm = mbmang(Xbl; nlv = 3,
+fm = mbunif(Xbl; nlv = 3,
     tau = 1, wcov = true, deflat = "global") ;
 ```
 """
-function mbmang(Xbl, weights = ones(nro(Xbl[1])); nlv, 
+function mbunif(Xbl, weights = ones(nro(Xbl[1])); nlv, 
         bscal = "none", tau = 1e-8, wcov = false, deflat = "global",
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
     nbl = length(Xbl)  
@@ -75,12 +75,12 @@ function mbmang(Xbl, weights = ones(nro(Xbl[1])); nlv,
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    mbmang!(zXbl, weights; nlv = nlv, 
+    mbunif!(zXbl, weights; nlv = nlv, 
         bscal = bscal, tau = tau, wcov = wcov, deflat = deflat, 
         tol = tol, maxit = maxit, scal = scal)
 end
 
-function mbmang!(Xbl, weights = ones(nro(Xbl[1])); nlv,
+function mbunif!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tau = 1e-8, wcov = false, deflat = "global", 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
     @assert tau >= 0 && tau <= 1 "tau must be in [0, 1]"
@@ -179,14 +179,14 @@ function mbmang!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         niter[a] = iter - 1
         U[:, a] .= u
         @inbounds for k = 1:nbl
+            if deflat == "global"
+                Xbl[k] .-= u * u' * Xbl[k]
+            end
             if deflat == "can"
                 #z = Qb[a][:, k]
                 z = Tb[a][:, k]
                 b = z' * Xbl[k] / dot(z, z)
                 Xbl[k] .-= z * b
-            end
-            if deflat == "global"
-                Xbl[k] .-= u * u' * Xbl[k]
             end
         end
     end

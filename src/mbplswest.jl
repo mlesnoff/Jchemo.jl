@@ -14,14 +14,17 @@ struct MbplsWest
     ymeans::Vector{Float64}
     yscales::Vector{Float64}
     weights::Vector{Float64}
+    lb::Union{Array{Float64}, Nothing}
     niter::Union{Array{Float64}, Nothing}
 end
 
 """
     mbplswest(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", scal = false)
+        bscal = "none", tol = sqrt(eps(1.)), maxit = 200, 
+        scal = false)
     mbplswest!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", scal = false)
+        bscal = "none", tol = sqrt(eps(1.)), maxit = 200, 
+        scal = false)
 Multiblock PLSR - Nipals algorithm (Westerhuis et al. 1998).
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
@@ -32,6 +35,8 @@ Multiblock PLSR - Nipals algorithm (Westerhuis et al. 1998).
 * `bscal` : Type of block scaling. 
     Possible values are: "none", "frob", "mfa", "ncol", "sd". 
     See functions `blockscal`.
+* `tol` : Tolerance value for convergence.
+* `maxit` : Maximum number of iterations.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` and 
     of `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
@@ -54,6 +59,7 @@ db = joinpath(mypath, "data", "ham.jld2")
 pnames(dat) 
 
 X = dat.X
+Y = dat.Y
 y = dat.Y.c1
 group = dat.group
 listbl = [1:11, 12:19, 20:25]
@@ -74,21 +80,21 @@ summary(fm, Xbl)
 ```
 """
 function mbplswest(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", deflat = "block",
-        tol = sqrt(eps(1.)), maxit = 200, scal = false)
+        bscal = "none", tol = sqrt(eps(1.)), maxit = 200, 
+        scal = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     mbplswest!(zXbl, copy(ensure_mat(Y)), weights; nlv = nlv, 
-        bscal = bscal, deflat = deflat, 
-        tol = tol, maxit = maxit, scal = scal)
+        bscal = bscal, tol = tol, maxit = maxit, 
+        scal = scal)
 end
 
 function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
-        bscal = "none", deflat = "block", 
-        tol = sqrt(eps(1.)), maxit = 200, scal = false)
+        bscal = "none", tol = sqrt(eps(1.)), maxit = 200, 
+        scal = false)
     nbl = length(Xbl)
     n = nro(Xbl[1])
     q = nco(Y)
@@ -178,6 +184,7 @@ function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
                 cont = false
             end
         end
+        niter[a] = iter - 1
         # For global
         ttx = dot(tx, tx)
         X .= reduce(hcat, Xbl)
@@ -187,7 +194,6 @@ function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
         px ./= ttx
         wytild .= Y' * tx / ttx
         # End           
-        niter[a] = iter - 1
         Tx[:, a] .= tx   
         Wx[:, a] .= wx
         Px[:, a] .= px
@@ -200,8 +206,9 @@ function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
     end
     Tx .= (1 ./ sqrtw) .* Tx
     Rx = Wx * inv(Px' * Wx)
+    lb = nothing
     MbplsWest(Tx, Px, Rx, Wx, Wytild, Tbl, Tb, Pbl, TTx,    
-        bscales, xmeans, xscales, ymeans, yscales, weights, niter)
+        bscales, xmeans, xscales, ymeans, yscales, weights, lb, niter)
 end
 
 """ 
@@ -286,12 +293,19 @@ function Base.summary(object::MbplsWest, Xbl)
         z[a] = cor(object.Tb[a], object.T[:, a])
     end
     cort2tb = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
-    ## Redundancies (Average correlations) between each block and each global score
+    # Redundancies (Average correlations) between each X-block and each X-global score
     z = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
         z[k] = rd(zXbl[k], object.T)
     end
     rdx = DataFrame(reduce(vcat, z), string.("lv", 1:nlv))
+    # Specific weights of each bloc on each X-global score
+    sal2 = nothing
+    if !isnothing(object.lb)
+        lb2 = colsum(object.lb.^2)
+        sal2 = scale(object.lb.^2, lb2)
+        sal2 = DataFrame(sal2, string.("lv", 1:nlv))
+    end
     # Output
-    (explvarx = explvarx, cort2x, cort2tb, rdx)
+    (explvarx = explvarx, cort2x, cort2tb, rdx, sal2)
 end

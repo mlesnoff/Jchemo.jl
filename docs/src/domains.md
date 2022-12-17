@@ -24,7 +24,7 @@
 - 2 or more blocks 
     - **mbpca** Multiblock PCA (MBPCA = CPCA Consensus principal component analysis)
     - **comdim** Common components and specific weights analysis (ComDim = CCSWA = HPCA)
-    - **mbmang**: Unified multiblock data analysis of Mangana et al. 2019
+    - **mbunif**: Unified multiblock data analysis of Mangana et al. 2019
 - Utilities
     - **mblock** Make blocks from a matrix
     - **blockscal_col, _frob, _mfa, _sd** Scaling blocks
@@ -80,6 +80,7 @@
 *Multiblock*
 - **mbplsr** Multiblock PLSR (MBPLSR) - Fast version (PLSR on concatenated blocks)
 - **mbplswest** MBPLSR - Nipals algorithm (Westerhuis et al. 1998) 
+- **mbwcov** Multiblock weighted covariate analysis regression (MBWCov) (Mangana et al. 2021) 
 - **rosaplsr** ROSA *Liland et al. 2016*
 - **soplsr** Sequentially orthogonalized (SO-PLSR) 
 

@@ -2,11 +2,15 @@
 
 ### *Version 0.1.10* 
 
+- News
+    - **mbwcov**: Multiblock weighted covariate analysis regression (MBWCov) (Mangana et al. 2021).
+
 - Modifications
     - Code cleaning
 
 - Breaking changes
-    - **ramang** renamed tp **rrr** (Reduced rank regression).
+    - **mbmang** renamed to **mbunif** (Unified multiblock analysis).
+    - **ramang** renamed to **rrr** (Reduced rank regression).
 
 
 ### *Version 0.1.9* 

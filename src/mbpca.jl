@@ -30,7 +30,7 @@ Consensus principal components analysis (CPCA = MBPCA).
 * `bscal` : Type of block scaling (`"none"`, `"frob"`, `"mfa"`). 
     See functions `blockscal`.
 * `tol` : Tolerance value for convergence.
-* `niter` : Maximum number of iterations.
+* `maxit` : Maximum number of iterations.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
