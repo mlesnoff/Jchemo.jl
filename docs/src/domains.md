@@ -22,7 +22,7 @@
     - **plstuck**: Tucker's inter-battery method of factor analysis (PLS-SVD)
     - **rasvd**: Redundancy analysis (RA) - PCA on instrumental variables (PCAIV)
 - 2 or more blocks 
-    - **mbpca** Consensus PCA (MBPCA = CPCA)
+    - **mbpca** Multiblock PCA (MBPCA = CPCA Consensus principal component analysis)
     - **comdim** Common components and specific weights analysis (ComDim = CCSWA = HPCA)
     - **mbmang**: Unified multiblock data analysis of Mangana et al. 2019
 - Utilities
@@ -53,7 +53,7 @@
 ### **Partial least squares (PLSR)**
 
 *PLSR*
-- **plskern** "Improved kernel #1" *Dayal & McGregor 1997* (Fast)
+- **plskern** Fast "improved kernel #1" algorithm of *Dayal & McGregor 1997*
 - **plsnipals** Nipals
 - **plswold** Nipals *Wold 1984*
 - **plsrosa** ROSA *Liland et al. 2016*
@@ -78,7 +78,7 @@
 - **covsel** Variable selection from partial correlation or covariance (Covsel)
 
 *Multiblock*
-- **mbplsr** MBPLSR - fast version (PLSR on concatenated blocks)
+- **mbplsr** Multiblock PLSR (MBPLSR) - Fast version (PLSR on concatenated blocks)
 - **mbplswest** MBPLSR - Nipals algorithm (Westerhuis et al. 1998) 
 - **rosaplsr** ROSA *Liland et al. 2016*
 - **soplsr** Sequentially orthogonalized (SO-PLSR) 

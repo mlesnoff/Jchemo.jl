@@ -19,7 +19,7 @@ end
     plskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         scal = false)
 Partial Least Squares Regression (PLSR) with the 
-"Improved kernel algorithm #1" (Dayal & McGegor, 1997).
+"improved kernel algorithm #1" (Dayal & McGegor, 1997).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
