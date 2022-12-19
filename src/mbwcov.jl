@@ -1,10 +1,10 @@
 
 """
     mbwcov(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", wcov = true,
+        bscal = "none", wcov = true, tau = 1,
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
     mbwcov!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", wcov = true,
+        bscal = "none", wcov = true, tau = 1,
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
 Multiblock weighted covariate analysis regression (MBWCov) (Mangana et al. 2021)
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
@@ -17,14 +17,27 @@ Multiblock weighted covariate analysis regression (MBWCov) (Mangana et al. 2021)
     Possible values are: "none", "frob", "mfa", "ncol", "sd". 
     See functions `blockscal`.
 * `wcov` : Logical. If `true` (default), a MBWCov is done, else
-    a MBPLSR is done.     
+    a MBPLSR is done.
+* `tau` : Regularization parameter (∊ [0, 1]).     
 * `tol` : Tolerance value for convergence.
 * `maxit` : Maximum number of iterations.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` and 
     of `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-See Mangamana et al. 2021 Section 2.2.4.
+See Mangamana et al. 2021.
+
+The regularization uses a continuum formulation. After block centering 
+and scaling, the block covariances matrices (k = 1,...,K blocks) 
+are computed as follows: 
+* Ck = (1 - `tau`) * Xk' D Xk + `tau` * Ik
+where D is the observation (row) metric. 
+Value `tau` = 0 can generate unstability when inverting the covariance matrices. 
+It can be better to use an epsilon value (e.g. `tau` = 1e-8) 
+to get similar results as with pseudo-inverses.   
+
+* When `tau` = 1, this is the PLS framework.
+* When `tau` ~ 0, this is the redundancy analysis (RA) framework.
 
 ## References 
 Tchandao Mangamana, E., Glèlè Kakaï, R., Qannari, E.M., 2021. A general strategy for setting 
@@ -61,7 +74,7 @@ summary(fm, Xbl)
 ```
 """
 function mbwcov(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", wcov = true,
+        bscal = "none", wcov = true, tau = 1,
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
@@ -69,12 +82,12 @@ function mbwcov(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     mbwcov!(zXbl, copy(ensure_mat(Y)), weights; nlv = nlv, 
-        bscal = bscal, wcov = wcov, 
+        bscal = bscal, wcov = wcov, tau = tau, 
         tol = tol, maxit = maxit, scal = scal)
 end
 
 function mbwcov!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
-        bscal = "none", wcov = true, 
+        bscal = "none", wcov = true, tau = tau, 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
     nbl = length(Xbl)
     n = nro(Xbl[1])
@@ -136,6 +149,12 @@ function mbwcov!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
     TTx = similar(Xbl[1], nlv)
     lb = ones(nbl, nlv)
     niter = zeros(nlv)
+    if tau > 0 && tau < 1
+        Ik = list(nbl, Array{Float64})
+        @inbounds for k = 1:nbl
+            Ik[k] = Diagonal(ones(p[k])) 
+        end
+    end
     # End
     @inbounds for a = 1:nlv
         ty = Y[:, 1]
@@ -143,8 +162,16 @@ function mbwcov!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
         iter = 1
         while cont
             t0 = copy(ty)
-            for k = 1:nbl
-                tk = Xbl[k] * Xbl[k]' * ty
+            @inbounds for k = 1:nbl
+                if tau == 0
+                    tk .= Xbl[k] * inv(Xbl[k]' * Xbl[k]) *  Xbl[k]' * ty
+                else
+                    if tau == 1
+                        tk .= Xbl[k] * Xbl[k]' * ty
+                    else
+                        tk .= Xbl[k] * inv((1 - tau) * Xbl[k]' * Xbl[k] + tau * Ik[k]) *  Xbl[k]' * ty
+                    end
+                end 
                 Tb[a][:, k] .= tk
                 Tbl[k][:, a] .= (1 ./ sqrtw) .* tk
                 if wcov 
@@ -188,6 +215,8 @@ function mbwcov!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
     MbplsWest(Tx, Px, Rx, Wx, Wytild, Tbl, Tb, Pbl, TTx,    
         bscales, xmeans, xscales, ymeans, yscales, weights, lb, niter)
 end
+
+
 
 
 
