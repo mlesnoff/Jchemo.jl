@@ -12,7 +12,6 @@
     - **mbmang** renamed to **mbunif** (Unified multiblock analysis).
     - **ramang** renamed to **rrr** (Reduced rank regression).
 
-
 ### *Version 0.1.9* 
 - News
     - **rasvd**: Redundancy analysis - PCA on instrumental variables (PCAIV).

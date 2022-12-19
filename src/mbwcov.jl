@@ -87,7 +87,7 @@ function mbwcov(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
 end
 
 function mbwcov!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
-        bscal = "none", wcov = true, tau = tau, 
+        bscal = "none", wcov = true, tau = 1, 
         tol = sqrt(eps(1.)), maxit = 200, scal = false)
     nbl = length(Xbl)
     n = nro(Xbl[1])
