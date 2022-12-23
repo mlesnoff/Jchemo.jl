@@ -1,4 +1,4 @@
-struct RaSvd
+struct Rasvd
     Tx::Matrix{Float64}
     Ty::Matrix{Float64}
     Bx::Matrix{Float64}
@@ -35,21 +35,24 @@ Let Y_hat be the fitted values of the regression of `Y` on `X`.
 The scores `Ty` are the PCA scores of Y_hat. The scores `Tx` are 
 the fitted values of the regression of `Ty` on `X`.
 
-The regularization uses the continuum formulation presented by 
-Qannari & Hanafi 2005, Tenenhaus & Guillemot 2017 and Mangamana et al. 2019. 
-After block centering and scaling, the covariances matrices are computed as follows: 
+A continuum regularization is available.  
+After block centering and scaling, the covariances matrices are 
+computed as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
 where D is the observation (row) metric. 
+Value `tau` = 0 can generate unstability when inverting the covariance matrices. 
+A better alternative is generally to use an epsilon value (e.g. `tau` = 1e-8) 
+to get similar results as with pseudo-inverses.    
 
 ## References
 Bougeard, S., Qannari, E.M., Lupo, C., Chauvin, C., 2011. Multiblock redundancy 
-analysis from a user’s perspective. Application in veterinary epidemiology. 
-Electronic Journal of Applied Statistical Analysis 4, 203-214–214. 
+analysis from a user's perspective. Application in veterinary epidemiology. 
+Electronic Journal of Applied Statistical Analysis 4, 203-214. 
 https://doi.org/10.1285/i20705948v4n2p203
 
 Bougeard, S., Qannari, E.M., Rose, N., 2011. Multiblock redundancy analysis: 
 interpretation tools and application in epidemiology. Journal of Chemometrics 25, 
-467–475. https://doi.org/10.1002/cem.1392
+467-475. https://doi.org/10.1002/cem.1392
 
 Legendre, P., Legendre, L., 2012. Numerical Ecology. Elsevier, 
 Amsterdam, The Netherlands.
@@ -144,12 +147,12 @@ function rasvd!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     # End
     Tx .= (1 ./ sqrtw) .* Tx
     Ty .= (1 ./ sqrtw) .* Ty   
-    RaSvd(Tx, Ty, Bx, Wy, lambda, 
+    Rasvd(Tx, Ty, Bx, Wy, lambda, 
         bscales, xmeans, xscales, ymeans, yscales, weights)
 end
 
 """ 
-    transform(object::RaSvd, X, Y; nlv = nothing)
+    transform(object::Rasvd, X, Y; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
@@ -157,7 +160,7 @@ Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
 * `nlv` : Nb. LVs to compute. If nothing, it is the maximum number
     from the fitted model.
 """ 
-function transform(object::RaSvd, X, Y; nlv = nothing)
+function transform(object::Rasvd, X, Y; nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
@@ -174,13 +177,13 @@ end
 ## Same as ::Cca
 ## But explvary has to be computed (To Do)
 """
-    summary(object::RaSvd, X, Y)
+    summary(object::Rasvd, X, Y)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
-function Base.summary(object::RaSvd, X::Union{Vector, Matrix, DataFrame},
+function Base.summary(object::Rasvd, X::Union{Vector, Matrix, DataFrame},
         Y::Union{Vector, Matrix, DataFrame})
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -188,22 +191,27 @@ function Base.summary(object::RaSvd, X::Union{Vector, Matrix, DataFrame},
     X = cscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = cscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     D = Diagonal(object.weights)
-    ## Explained variances
+    ## X
     T = object.Tx
-    xvar = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
-    pvar =  xvar / frob(X, object.weights)^2
+    sstot = frob(X, object.weights)^2
+    sst = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
+    pvar =  sst / sstot
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    xvar = sst / n
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
+        cumpvar = cumpvar)
+    ## Y
     T .= object.Ty
-    xvar = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)
-    pvar =  xvar / frob(Y, object.weights)^2
+    frob(Y, object.weights)^2
+    sst = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)
+    pvar =  sst / sstot
     cumpvar = cumsum(pvar)
     explvary = nothing # TO DO
-    #explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
-    ## Correlation between block scores
+    #explvary = DataFrame(nlv = 1:nlv, var = sst, pvar = pvar, cumpvar = cumpvar)
+    ## Correlation between X- and Y-block scores
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)
-    ## Redundancies (Average correlations)
+    ## Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
     z = rd(X, object.Tx, object.weights)
     rdx = DataFrame(lv = 1:nlv, rd = vec(z))
     z = rd(Y, object.Ty, object.weights)

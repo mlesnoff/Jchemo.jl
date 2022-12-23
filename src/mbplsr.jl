@@ -150,7 +150,7 @@ function Base.summary(object::Mbplsr, Xbl)
     # Correlation between the global scores and the original variables 
     z = cor(X, object.T)  
     cort2x = DataFrame(z, string.("lv", 1:nlv))
-    ## Redundancies (Average correlations) between each block and each global score
+    ## Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty) between each block and each global score
     z = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
         z[k] = rd(zXbl[k], object.T)

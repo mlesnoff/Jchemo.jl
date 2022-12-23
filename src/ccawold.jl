@@ -43,8 +43,8 @@ Canonical correlation analysis (RCCA) - Wold Nipals algorithm.
 This function implements the Nipals CCA algorithm presented 
 by Tenenhaus 1998 p.204 (related to Wold et al. 1984). 
 
-In this implementation, after each step of LVs computation, X and Y are deflated relatively to 
-their respective scores (tx and ty). 
+In this implementation, after each step of LVs computation, X and Y are deflated 
+relatively to their respective scores (tx and ty). 
 
 A continuum regularization is available. 
 After block centering and scaling, the covariances matrices are computed as follows: 
@@ -262,29 +262,28 @@ function Base.summary(object::CcaWold, X::Union{Vector, Matrix, DataFrame},
     n, nlv = size(object.Tx)
     X = cscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = cscale(Y, object.ymeans, object.yscales) / object.bscales[2]
-    ttx = object.TTx 
-    tty = object.TTy 
-    ## Explained variances
-    # X
+    ## X
+    tt = object.TTx 
     sstot = frob(X, object.weights)^2
-    tt_adj = colsum(object.Px.^2) .* ttx
+    tt_adj = colsum(object.Px.^2) .* tt
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
         cumpvar = cumpvar)
-    # Y
+    ## Y
+    tt = object.TTy 
     sstot = frob(Y, object.weights)^2
-    tt_adj = colsum(object.Py.^2) .* tty
+    tt_adj = colsum(object.Py.^2) .* tt
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
         cumpvar = cumpvar)
-    ## Correlation between block scores
+    ## Correlation between X- and Y-block scores
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)
-    ## Redundancies (Average correlations)
+    ## Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
     z = rd(X, object.Tx, object.weights)
     rdx = DataFrame(lv = 1:nlv, rd = vec(z))
     z = rd(Y, object.Ty, object.weights)

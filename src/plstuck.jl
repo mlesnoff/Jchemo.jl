@@ -151,27 +151,26 @@ function Base.summary(object::PlsTuck, X::Union{Vector, Matrix, DataFrame},
     n, nlv = size(object.Tx)
     X = cscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = cscale(Y, object.ymeans, object.yscales) / object.bscales[2]
-    ttx = object.TTx
-    tty = object.TTy
     ## X
+    tt = object.TTx
     sstot = frob(X, object.weights)^2
-    pvar = ttx / sstot
+    pvar = tt / sstot
     cumpvar = cumsum(pvar)
-    xvar = ttx / n    
+    xvar = tt / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
         cumpvar = cumpvar)
-    ## y
+    ## Y
+    tt = object.TTy
     sstot = frob(Y, object.weights)^2
-    pvar = tty / sstot
+    pvar = tt / sstot
     cumpvar = cumsum(pvar)
-    xvar = tty / n    
+    xvar = tt / n    
     explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
         cumpvar = cumpvar)
-    ## End
-    ## Correlation between block scores
+    ## Correlation between X- and Y-block scores
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)
-    ## Redundancies (Average correlations)
+    ## Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
     z = rd(X, object.Tx, object.weights)
     rdx = DataFrame(lv = 1:nlv, rd = vec(z))
     z = rd(Y, object.Ty, object.weights)

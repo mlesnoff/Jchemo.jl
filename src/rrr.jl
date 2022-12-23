@@ -16,15 +16,18 @@ Reduced rank regression (RRR).
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
  
-Reduced rank regression is also referred to as redundancy analysis (RA) regression.
-In this function, the RA uses the Nipals algorithm presented in Mangamana
-et al 2021 section 2.1.1.
+Reduced rank regression, also referred to as redundancy analysis 
+(RA) regression. In this function, the RA uses the Nipals algorithm 
+presented in Mangamana et al 2021, section 2.1.1.
 
-The regularization uses the continuum formulation presented by 
-Qannari & Hanafi 2005, Tenenhaus & Guillemot 2017 and Mangamana et al. 2019. 
-After block centering and scaling, the covariances matrices are computed as follows: 
+A continuum regularization is available. 
+After block centering and scaling, the covariances matrices are 
+computed as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
 where D is the observation (row) metric. 
+Value `tau` = 0 can generate unstability when inverting the covariance matrices. 
+A better alternative is generally to use an epsilon value (e.g. `tau` = 1e-8) 
+to get similar results as with pseudo-inverses.  
 
 ## References
 Bougeard, S., Qannari, E.M., Lupo, C., Chauvin, C., 2011. Multiblock redundancy 
@@ -40,10 +43,6 @@ Tchandao Mangamana, E., Glèlè Kakaï, R., Qannari, E.M., 2021. A general
 strategy for setting up supervised methods of multiblock data analysis. 
 Chemometrics and Intelligent Laboratory Systems 217, 104388. 
 https://doi.org/10.1016/j.chemolab.2021.104388
-
-Tenenhaus, A., Guillemot, V. 2017. RGCCA: Regularized and Sparse Generalized Canonical 
-Correlation Analysis for Multiblock Data Multiblock data analysis.
-https://cran.r-project.org/web/packages/RGCCA/index.html 
 
 ## Examples
 ```julia

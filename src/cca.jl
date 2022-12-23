@@ -152,7 +152,7 @@ function cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     Wx = invUx * U[:, 1:nlv]
     Wy = invUy * V[:, 1:nlv]
     d = d[1:nlv]
-    Tx = (1 ./ sqrtw) .*X * Wx 
+    Tx = (1 ./ sqrtw) .* X * Wx 
     Ty = (1 ./ sqrtw) .* Y * Wy
     Cca(Tx, Ty, Wx, Wy, d, 
         bscales, xmeans, xscales, ymeans, yscales, weights)
@@ -195,7 +195,7 @@ function Base.summary(object::Cca, X::Union{Vector, Matrix, DataFrame},
     X = cscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = cscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     D = Diagonal(object.weights)
-    ## Explained variances
+    ## X
     sstot = frob(X, object.weights)^2
     T = object.Tx
     tt = colsum(D * T .* T)
@@ -205,6 +205,7 @@ function Base.summary(object::Cca, X::Union{Vector, Matrix, DataFrame},
     xvar = tt / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
         cumpvar = cumpvar)
+    ## Y
     sstot = frob(Y, object.weights)^2
     T = object.Ty
     tt = colsum(D * T .* T)
@@ -214,10 +215,10 @@ function Base.summary(object::Cca, X::Union{Vector, Matrix, DataFrame},
     xvar = tt / n    
     explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
         cumpvar = cumpvar)
-    ## Correlation between block scores
+    ## Correlation between X- and Y-block scores
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)
-    ## Redundancies (Average correlations)
+    ## Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
     z = rd(X, object.Tx, object.weights)
     rdx = DataFrame(lv = 1:nlv, rd = vec(z))
     z = rd(Y, object.Ty, object.weights)
