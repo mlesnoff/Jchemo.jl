@@ -30,12 +30,12 @@ Canonical correlation Analysis (CCA).
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-The CCA approach used in this function is presented in Weenink 2003. 
+This function implements a CCA algorithm using SVD decompositions and 
+presented in Weenink 2003 section 2. 
 
-The regularization uses the continuum formulation presented by 
-Qannari & Hanafi 2005, Tenenhaus & Guillemot 2017 and Mangamana et al. 2019. 
-After block centering and scaling, the block scores returned by the present 
-algorithm (Tx and Ty) are proportionnal to the eigenvectors of Projx * Projy 
+A continuum regularization is available. 
+After block centering and scaling, the returned block scores (Tx and Ty) 
+are proportionnal to the eigenvectors of Projx * Projy 
 and Projy * Projx, respectively, defined as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
 * Cy = (1 - `tau`) * Y'DY + `tau` * Iy
@@ -44,7 +44,7 @@ and Projy * Projx, respectively, defined as follows:
 * Projy = sqrt(D) * Y * invCx * Y' * sqrt(D)
 where D is the observation (row) metric. 
 Value `tau` = 0 can generate unstability when inverting the covariance matrices. 
-It can be better to use an epsilon value (e.g. `tau` = 1e-8) 
+A better alternative is generally to use an epsilon value (e.g. `tau` = 1e-8) 
 to get similar results as with pseudo-inverses.  
 
 With uniform `weights`, the normed scores returned 
@@ -56,25 +56,13 @@ by functions `rcc` of the R packages `CCA` (González et al.) and `mixOmics`
 ## References
 González, I., Déjean, S., Martin, P.G.P., Baccini, A., 2008. CCA: 
 An R Package to Extend Canonical Correlation Analysis. Journal of Statistical 
-Software 23, 1–14. https://doi.org/10.18637/jss.v023.i12
+Software 23, 1-14. https://doi.org/10.18637/jss.v023.i12
 
 Hotelling, H. (1936): “Relations between two sets of variates”, Biometrika 28: pp. 321–377.
-
-Qannari, E.M., Hanafi, M., 2005. A simple continuum regression approach. 
-Journal of Chemometrics 19, 387–392. https://doi.org/10.1002/cem.942
 
 Le Cao, K.-A., Rohart, F., Gonzalez, I., Dejean, S., Abadi, A.J., Gautier, B., Bartolo, F., 
 Monget, P., Coquery, J., Yao, F., Liquet, B., 2022. mixOmics: Omics Data Integration Project. 
 https://doi.org/10.18129/B9.bioc.mixOmics
-
-Tchandao Mangamana, E., Cariou, V., Vigneau, E., Glèlè Kakaï, R.L., Qannari, E.M., 2019. 
-Unsupervised multiblock data analysis: A unified approach and extensions. 
-Chemometrics and Intelligent Laboratory Systems 194, 103856. 
-https://doi.org/10.1016/j.chemolab.2019.103856
-
-Tenenhaus, A., Guillemot, V. 2017. RGCCA: Regularized and Sparse Generalized Canonical 
-Correlation Analysis for Multiblock Data Multiblock data analysis.
-https://cran.r-project.org/web/packages/RGCCA/index.html 
 
 Weenink, D. 2003. Canonical Correlation Analysis, Institute of Phonetic Sciences, 
 Univ. of Amsterdam, Proceedings 25, 81-99.
@@ -110,10 +98,11 @@ end
 function cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = "none", tau = 1e-8, scal = false)
     @assert tau >= 0 && tau <= 1 "tau must be in [0, 1]"
-    n, p = size(X)
+    p = nco(X)
     q = nco(Y)
-    nlv = min(n, p, nlv)
+    nlv = min(nlv, p, q)
     weights = mweight(weights)
+    sqrtw = sqrt.(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     xscales = ones(p)
@@ -136,7 +125,6 @@ function cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscales = [normx; normy]
     end
     # Row metric
-    sqrtw = sqrt.(weights)
     X .= sqrtw .* X
     Y .= sqrtw .* Y 
     # End
@@ -164,7 +152,7 @@ function cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     Wx = invUx * U[:, 1:nlv]
     Wy = invUy * V[:, 1:nlv]
     d = d[1:nlv]
-    Tx = (1 ./ sqrtw) .* X * Wx
+    Tx = (1 ./ sqrtw) .*X * Wx 
     Ty = (1 ./ sqrtw) .* Y * Wy
     Cca(Tx, Ty, Wx, Wy, d, 
         bscales, xmeans, xscales, ymeans, yscales, weights)
@@ -202,21 +190,30 @@ function Base.summary(object::Cca, X::Union{Vector, Matrix, DataFrame},
         Y::Union{Vector, Matrix, DataFrame})
     X = ensure_mat(X)
     Y = ensure_mat(Y)
+    n = nro(X)
     nlv = nco(object.Tx)
     X = cscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = cscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     D = Diagonal(object.weights)
     ## Explained variances
+    sstot = frob(X, object.weights)^2
     T = object.Tx
-    xvar = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
-    pvar =  xvar / frob(X, object.weights)^2
+    tt = colsum(D * T .* T)
+    #tt = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
+    pvar =  tt / sstot
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    xvar = tt / n    
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
+        cumpvar = cumpvar)
+    sstot = frob(Y, object.weights)^2
     T = object.Ty
-    xvar = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)
-    pvar =  xvar / frob(Y, object.weights)^2
+    tt = colsum(D * T .* T)
+    #tt = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)
+    pvar =  tt / sstot
     cumpvar = cumsum(pvar)
-    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    xvar = tt / n    
+    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
+        cumpvar = cumpvar)
     ## Correlation between block scores
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)
@@ -225,7 +222,7 @@ function Base.summary(object::Cca, X::Union{Vector, Matrix, DataFrame},
     rdx = DataFrame(lv = 1:nlv, rd = vec(z))
     z = rd(Y, object.Ty, object.weights)
     rdy = DataFrame(lv = 1:nlv, rd = vec(z))
-    ## Correlation between block variables and block scores
+    ## Correlation between block variables and their block scores
     z = corm(X, object.Tx, object.weights)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)

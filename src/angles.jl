@@ -64,10 +64,10 @@ Compute redundancy coefficients between two matrices.
 * `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
 * `corr` : If `true`, correlation is used, else covariance is used. 
 
-rd(X, Y) returns the redundancy coefficient between X and each column
-of Y, i.e.: 
+Returns the redundancy coefficient between `X` and each column
+of `Y`, i.e.: 
 
-[Sum_j(=1, .., p) cor(xj, y1)^2 / p ; ...; Sum_j(=1, .., p) cor(xj, yq)^2 / p] 
+(1 / p) * [Sum(j=1, .., p) cor(xj, y1)^2 ; ... ; Sum(j=1, .., p) cor(xj, yq)^2] 
 
 See Tenenhaus 1998 section 2.2.1 p.10-11.
 

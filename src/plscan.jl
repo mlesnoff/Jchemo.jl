@@ -83,7 +83,7 @@ function plscan!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = "none", scal = false)
     n, p = size(X)
     q = nco(Y)
-    nlv = min(nlv, n, p)
+    nlv = min(nlv, p, q)
     weights = mweight(weights)
     D = Diagonal(weights)
     xmeans = colmean(X, weights) 
@@ -128,7 +128,7 @@ function plscan!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     delta = copy(TTx)
     # End
     @inbounds for a = 1:nlv
-        XtY .= X' * (D * Y)
+        XtY .= X' * D * Y
         U, d, V = svd!(XtY) 
         delta[a] = d[1]
         # X
@@ -206,14 +206,14 @@ function Base.summary(object::PlsCan, X::Union{Vector, Matrix, DataFrame},
     ## Explained variances
     # X
     sstot = frob(X, object.weights)^2
-    tt_adj = vec(sum(object.Px.^2, dims = 1)) .* ttx
+    tt_adj = colsum(object.Px.^2) .* ttx
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     # Y
     sstot = frob(Y, object.weights)^2
-    tt_adj = vec(sum(object.Py.^2, dims = 1)) .* tty
+    tt_adj = colsum(object.Py.^2) .* tty
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
@@ -226,7 +226,7 @@ function Base.summary(object::PlsCan, X::Union{Vector, Matrix, DataFrame},
     rdx = DataFrame(lv = 1:nlv, rd = vec(z))
     z = rd(Y, object.Ty, object.weights)
     rdy = DataFrame(lv = 1:nlv, rd = vec(z))
-    ## Correlation between block variables and block scores
+    ## Correlation between block variables and their block scores
     z = corm(X, object.Tx, object.weights)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)

@@ -40,17 +40,19 @@ Canonical correlation analysis (RCCA) - Wold Nipals algorithm.
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-The CCA approach used in this function is presented 
-by Tenenhaus 1998 p.204 (==> Wold et al. 1984). 
+This function implements the Nipals CCA algorithm presented 
+by Tenenhaus 1998 p.204 (related to Wold et al. 1984). 
 
-The regularization uses the continuum formulation presented by 
-Qannari & Hanafi 2005, Tenenhaus & Guillemot 2017 and Mangamana et al. 2019. 
+In this implementation, after each step of LVs computation, X and Y are deflated relatively to 
+their respective scores (tx and ty). 
+
+A continuum regularization is available. 
 After block centering and scaling, the covariances matrices are computed as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
 * Cy = (1 - `tau`) * Y'DY + `tau` * Iy
 where D is the observation (row) metric. 
 Value `tau` = 0 can generate unstability when inverting the covariance matrices. 
-It can be better to use an epsilon value (e.g. `tau` = 1e-8) 
+A better alternative is generally to use an epsilon value (e.g. `tau` = 1e-8) 
 to get similar results as with pseudo-inverses.    
 
 With uniform `weights`, the normed scores returned 
@@ -111,7 +113,7 @@ function ccawold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     @assert tau >= 0 && tau <= 1 "tau must be in [0, 1]"
     n, p = size(X)
     q = nco(Y)
-    nlv = min(nlv, n, p)
+    nlv = min(nlv, p, q)
     weights = mweight(weights)
     sqrtw = sqrt.(weights)
     xmeans = colmean(X, weights) 
@@ -265,7 +267,7 @@ function Base.summary(object::CcaWold, X::Union{Vector, Matrix, DataFrame},
     ## Explained variances
     # X
     sstot = frob(X, object.weights)^2
-    tt_adj = vec(sum(object.Px.^2, dims = 1)) .* ttx
+    tt_adj = colsum(object.Px.^2) .* ttx
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
@@ -273,7 +275,7 @@ function Base.summary(object::CcaWold, X::Union{Vector, Matrix, DataFrame},
         cumpvar = cumpvar)
     # Y
     sstot = frob(Y, object.weights)^2
-    tt_adj = vec(sum(object.Py.^2, dims = 1)) .* tty
+    tt_adj = colsum(object.Py.^2) .* tty
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
@@ -287,7 +289,7 @@ function Base.summary(object::CcaWold, X::Union{Vector, Matrix, DataFrame},
     rdx = DataFrame(lv = 1:nlv, rd = vec(z))
     z = rd(Y, object.Ty, object.weights)
     rdy = DataFrame(lv = 1:nlv, rd = vec(z))
-    ## Correlation between block variables and block scores
+    ## Correlation between block variables and their block scores
     z = corm(X, object.Tx, object.weights)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)

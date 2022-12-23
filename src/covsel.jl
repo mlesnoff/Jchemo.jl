@@ -1,13 +1,13 @@
 """
-    covsel(X, Y; nlv = nothing, typ = "corr")
-    covsel!(X::Matrix, Y::Matrix; nlv = nothing, typ = "corr")
+    covsel(X, Y; nlv = nothing, typ = "cov")
+    covsel!(X::Matrix, Y::Matrix; nlv = nothing, typ = "cov")
 Variable (feature) selection from partial correlation or covariance (Covsel).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `nlv` : Nb. variables to select.
 * `typ` : Criterion used at each variable selection. 
-    Possible values are: "corr" (squared correlation with `Y`), 
-    and "cov" (squared covariance with `Y`, such as in Roger et al. 2011).
+    Possible values are: "cov" (squared covariance with `Y`, such as in Roger 
+    et al. 2011) and "corr" (squared correlation with `Y`).
 
 The selection is sequential. Once a variable is selected, 
 `X` and `Y` are orthogonolized to this variable, 
@@ -51,13 +51,13 @@ scatter(sqrt.(res.cov2),
     axis = (xlabel = "Variable", ylabel = "Importance"))
 ```
 """ 
-function covsel(X, Y; nlv = nothing, typ = "corr")
+function covsel(X, Y; nlv = nothing, typ = "cov")
     covsel!(copy(ensure_mat(X)), copy(ensure_mat(Y)); 
         nlv = nlv, typ = typ)
 end
 
 function covsel!(X::Matrix, Y::Matrix; nlv = nothing, 
-        typ = "corr") 
+        typ = "cov") 
     n, p = size(X)
     q = nco(Y)
     isnothing(nlv) ? nlv = p : nothing 
@@ -86,7 +86,7 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing,
             zcov .= cov(X, Y; corrected = false)
             z = rowsum(zcov.^2)
         end
-        if typ == "aic"
+        if typ == "aic"           # <== Same result as "corr"
             zscor = zeros(p)
             for j = 1:p
                 x = vcol(X, j)

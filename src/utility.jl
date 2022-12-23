@@ -78,42 +78,6 @@ function center!(X::Matrix, v)
 end
 
 """
-    cscale(X, u, v)
-    cscale!(X, u, v)
-Center and scale each column of `X`.
-* `X` : Data.
-* `u` : Centering factors.
-* `v` : Scaling factors.
-
-## examples
-```julia
-n, p = 5, 6
-X = rand(n, p)
-xmeans = colmean(X)
-xstds = colstd(X)
-cscale(X, xmeans, xstds)
-```
-""" 
-function cscale(X, u, v)
-    zX = copy(ensure_mat(X))
-    cscale!(zX, u, v)
-    zX
-end
-
-function cscale!(X::Matrix, u, v)
-    p = nco(X)
-    @inbounds for j = 1:p
-        X[:, j] .= (vcol(X, j) .- u[j]) ./ v[j]
-    end
-end
-
-# Slower:
-function cscale2!(X::Matrix, u, v)
-    center!(X, u)
-    scale!(X, v)
-end
-
-"""
     checkdupl(X; digits = 3)
 Find replicated rows in a dataset.
 * `X` : A dataset.
@@ -268,7 +232,7 @@ function colnorm(X, w)
     #end
     #z 
     # Faster:
-    sqrt.(mweight(w)' * X.^2)
+    vec(sqrt.(mweight(w)' * X.^2))
 end
 
 """
@@ -449,6 +413,42 @@ function covm(X, Y, w)
     center!(zX, xmeans)
     center!(zY, ymeans)
     zX' * Diagonal(w) * zY
+end
+
+"""
+    cscale(X, u, v)
+    cscale!(X, u, v)
+Center and scale each column of `X`.
+* `X` : Data.
+* `u` : Centering factors.
+* `v` : Scaling factors.
+
+## examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+xmeans = colmean(X)
+xstds = colstd(X)
+cscale(X, xmeans, xstds)
+```
+""" 
+function cscale(X, u, v)
+    zX = copy(ensure_mat(X))
+    cscale!(zX, u, v)
+    zX
+end
+
+function cscale!(X::Matrix, u, v)
+    p = nco(X)
+    @inbounds for j = 1:p
+        X[:, j] .= (vcol(X, j) .- u[j]) ./ v[j]
+    end
+end
+
+# Slower:
+function cscale2!(X::Matrix, u, v)
+    center!(X, u)
+    scale!(X, v)
 end
 
 """

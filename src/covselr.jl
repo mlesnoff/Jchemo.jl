@@ -5,7 +5,7 @@ struct Covselr
 end
 
 """
-    covselr(X, Y; nlv = nothing, typ = "corr")
+    covselr(X, Y; nlv = nothing, typ = "cov")
 MLR on variables selected from partial correlation or covariance (Covsel).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -45,7 +45,7 @@ plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 ```
 """ 
-function covselr(X, Y; nlv, typ = "corr")
+function covselr(X, Y; nlv, typ = "cov")
     res = covsel(X, Y; nlv = nlv, typ = typ)
     zX = vcol(X, res.sel.sel)
     fm = mlr(zX, Y)

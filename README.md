@@ -128,6 +128,8 @@ res = Jchemo.predict(fm, Xval) ;
 rmsep(res.pred, yval)
 
 ## For PLSR models, using gridscorelv is much faster than gridscore!!!
+## In the same manner, using gridscorelb for ridge regression models
+## is much faster than using the generic function gridcv.
 
 res = gridscorelv(
     Xtrain, ytrain, Xval, yval;
@@ -164,6 +166,8 @@ res = Jchemo.predict(fm, Xval) ;
 rmsep(res.pred, yval)
 
 ## For PLSR models, using gridcvlv is much faster than gridcv!!!
+## In the same manner, using gridcvlb for ridge regression models
+## is much faster than using the generic function gridcv.
 
 zres = gridcvlv(
     Xtrain, ytrain; segm,

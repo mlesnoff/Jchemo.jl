@@ -27,13 +27,13 @@ Multiblock weighted covariate analysis regression (MBWCov) (Mangana et al. 2021)
 
 See Mangamana et al. 2021.
 
-The regularization uses a continuum formulation. After block centering 
+The regularization is implemented as a continuum. After block centering 
 and scaling, the block covariances matrices (k = 1,...,K blocks) 
 are computed as follows: 
 * Ck = (1 - `tau`) * Xk' D Xk + `tau` * Ik
 where D is the observation (row) metric. 
 Value `tau` = 0 can generate unstability when inverting the covariance matrices. 
-It can be better to use an epsilon value (e.g. `tau` = 1e-8) 
+A better alternative is generally to use an epsilon value (e.g. `tau` = 1e-8) 
 to get similar results as with pseudo-inverses.   
 
 * When `tau` = 1, this is the PLS framework.

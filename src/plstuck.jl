@@ -79,9 +79,9 @@ end
 
 function plstuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = "none", scal = false)
-    n, p = size(X)
+    p = nco(X)
     q = nco(Y)
-    nlv = min(nlv, n, p, q)
+    nlv = min(nlv, p, q)
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
@@ -105,7 +105,7 @@ function plstuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscales = [normx; normy]
     end
     D = Diagonal(weights)
-    XtY = X' * (D * Y)
+    XtY = X' * D * Y
     U, delta, V = svd(XtY)
     delta = delta[1:nlv]
     Wx = U[:, 1:nlv]
@@ -158,13 +158,15 @@ function Base.summary(object::PlsTuck, X::Union{Vector, Matrix, DataFrame},
     pvar = ttx / sstot
     cumpvar = cumsum(pvar)
     xvar = ttx / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
+        cumpvar = cumpvar)
     ## y
     sstot = frob(Y, object.weights)^2
     pvar = tty / sstot
     cumpvar = cumsum(pvar)
     xvar = tty / n    
-    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
+        cumpvar = cumpvar)
     ## End
     ## Correlation between block scores
     z = diag(corm(object.Tx, object.Ty, object.weights))
@@ -174,7 +176,7 @@ function Base.summary(object::PlsTuck, X::Union{Vector, Matrix, DataFrame},
     rdx = DataFrame(lv = 1:nlv, rd = vec(z))
     z = rd(Y, object.Ty, object.weights)
     rdy = DataFrame(lv = 1:nlv, rd = vec(z))
-    ## Correlation between block variables and block scores
+    ## Correlation between block variables and their block scores
     z = corm(X, object.Tx, object.weights)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)

@@ -279,7 +279,7 @@ function Base.summary(object::MbplsWest, Xbl)
     end
     sstot = sum(ssk)
     tt = object.TT
-    tt_adj = vec(sum(object.P.^2, dims = 1)) .* tt
+    tt_adj = colsum(object.P.^2) .* tt
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    

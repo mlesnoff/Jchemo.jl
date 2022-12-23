@@ -89,9 +89,9 @@ end
 function rasvd!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = "none", tau = 1e-8, scal = scal)
     @assert tau >= 0 && tau <= 1 "tau must be in [0, 1]"
-    n, p = size(X)
+    p = nco(X)
     q = nco(Y)
-    nlv = min(nlv, n, p)
+    nlv = min(nlv, p, q)
     weights = mweight(weights)
     sqrtw = sqrt.(weights)
     xmeans = colmean(X, weights) 
@@ -208,7 +208,7 @@ function Base.summary(object::RaSvd, X::Union{Vector, Matrix, DataFrame},
     rdx = DataFrame(lv = 1:nlv, rd = vec(z))
     z = rd(Y, object.Ty, object.weights)
     rdy = DataFrame(lv = 1:nlv, rd = vec(z))
-    ## Correlation between block variables and block scores
+    ## Correlation between block variables and their block scores
     z = corm(X, object.Tx, object.weights)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)

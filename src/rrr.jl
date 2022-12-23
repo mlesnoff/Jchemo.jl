@@ -108,9 +108,9 @@ end
 function rrr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         tau = 1e-8, tol = sqrt(eps(1.)), maxit = 200, 
         scal = false)
-    n, p = size(X)
+    p = nco(X)
     q = nco(Y)
-    nlv = min(nlv, n, p)
+    nlv = min(nlv, p, q)
     weights = mweight(weights)
     sqrtw = sqrt.(weights)
     xmeans = colmean(X, weights) 

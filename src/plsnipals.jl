@@ -68,7 +68,7 @@ function plsnipals!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     c   = similar(X, q)
     # End
     @inbounds for a = 1:nlv
-        XtY .= X' * (D * Y)
+        XtY .= X' * D * Y
         if q == 1
             w .= vec(XtY)
             w ./= norm(w)
