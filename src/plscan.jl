@@ -203,7 +203,7 @@ function Base.summary(object::PlsCan, X::Union{Vector, Matrix, DataFrame},
     Y = cscale(Y, object.ymeans, object.yscales)
     ttx = object.TTx 
     tty = object.TTy 
-    ## X
+    # X
     sstot = frob(X, object.weights)^2
     tt_adj = colsum(object.Px.^2) .* ttx
     pvar = tt_adj / sstot
@@ -211,7 +211,7 @@ function Base.summary(object::PlsCan, X::Union{Vector, Matrix, DataFrame},
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
         cumpvar = cumpvar)
-    ## Y
+    # Y
     sstot = frob(Y, object.weights)^2
     tt_adj = colsum(object.Py.^2) .* tty
     pvar = tt_adj / sstot
@@ -219,20 +219,20 @@ function Base.summary(object::PlsCan, X::Union{Vector, Matrix, DataFrame},
     xvar = tt_adj / n    
     explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
         cumpvar = cumpvar)
-    ## Correlation between X- and Y-block scores
+    # Correlation between X- and Y-block scores
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)
-    ## Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
+    # Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
     z = rd(X, object.Tx, object.weights)
     rdx = DataFrame(lv = 1:nlv, rd = vec(z))
     z = rd(Y, object.Ty, object.weights)
     rdy = DataFrame(lv = 1:nlv, rd = vec(z))
-    ## Correlation between block variables and their block scores
+    # Correlation between block variables and their block scores
     z = corm(X, object.Tx, object.weights)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)
     cory2t = DataFrame(z, string.("lv", 1:nlv))
-    ## End
+    # End
     (explvarx = explvarx, explvary, cort2t, rdx, rdy, 
         corx2t, cory2t)
 end

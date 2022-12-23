@@ -27,8 +27,8 @@ Unified multiblock analysis of Mangana et al. 2019.
     (before the block scaling).
 
 See Mangana et al. 2019.
-The regularization parameter `tau` = "1 - gamma" in 
-Managana et al. 2019 section 2.1.3.
+The regularization parameter `tau` is defined as "1 - gamma" in 
+Managana et al. 2019, section 2.1.3.
 
 Value `tau` = 0 can generate unstability when inverting the covariance matrices. 
 A better alternative is generally to use an epsilon value (e.g. `tau` = 1e-8) 
@@ -114,10 +114,8 @@ function mbunif!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         Xbl[k] .= sqrtw .* Xbl[k]
     end
     # Pre-allocation
-    u = similar(Xbl[1], n)
-    q = copy(u)
-    qk = copy(u)
     U = similar(Xbl[1], n, nlv)
+    W = similar(Xbl[1], nbl, nlv)
     Tbl = list(nbl, Matrix{Float64})
     for k = 1:nbl ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
     Qbl = list(nbl, Matrix{Float64})
@@ -126,10 +124,12 @@ function mbunif!(Xbl, weights = ones(nro(Xbl[1])); nlv,
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
     Qb = list(nlv, Matrix{Float64})
     for a = 1:nlv ; Qb[a] = similar(Xbl[1], n, nbl) ; end
-    lb = similar(Xbl[1], nbl, nlv)
     Wbl = list(nbl, Matrix{Float64})
     for k = 1:nbl ; Wbl[k] = similar(Xbl[1], p[k], nlv) ; end
-    W = similar(Xbl[1], nbl, nlv)
+    u = similar(Xbl[1], n)
+    q = copy(u)
+    qk = copy(u)
+    lb = similar(Xbl[1], nbl, nlv)
     mu = similar(Xbl[1], nlv)
     niter = zeros(nlv)
     # End
@@ -167,7 +167,6 @@ function mbunif!(Xbl, weights = ones(nro(Xbl[1])); nlv,
                 q .= rowsum(lb[:, a]' .* Qb[a])
                 W[:, a] .= nipals(Qb[a]).v
             end
-            
             mu[a] = norm(q)   
             u .= q / mu[a]
             dif = sum((u .- u0).^2)

@@ -187,11 +187,11 @@ function Base.summary(object::Rasvd, X::Union{Vector, Matrix, DataFrame},
         Y::Union{Vector, Matrix, DataFrame})
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    nlv = nco(object.Tx)
+    n, nlv = size(object.Tx)
     X = cscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = cscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     D = Diagonal(object.weights)
-    ## X
+    # X
     T = object.Tx
     sstot = frob(X, object.weights)^2
     sst = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
@@ -200,7 +200,7 @@ function Base.summary(object::Rasvd, X::Union{Vector, Matrix, DataFrame},
     xvar = sst / n
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
         cumpvar = cumpvar)
-    ## Y
+    # Y
     T .= object.Ty
     frob(Y, object.weights)^2
     sst = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)
@@ -208,20 +208,20 @@ function Base.summary(object::Rasvd, X::Union{Vector, Matrix, DataFrame},
     cumpvar = cumsum(pvar)
     explvary = nothing # TO DO
     #explvary = DataFrame(nlv = 1:nlv, var = sst, pvar = pvar, cumpvar = cumpvar)
-    ## Correlation between X- and Y-block scores
+    # Correlation between X- and Y-block scores
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)
-    ## Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
+    # Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
     z = rd(X, object.Tx, object.weights)
     rdx = DataFrame(lv = 1:nlv, rd = vec(z))
     z = rd(Y, object.Ty, object.weights)
     rdy = DataFrame(lv = 1:nlv, rd = vec(z))
-    ## Correlation between block variables and their block scores
+    # Correlation between block variables and their block scores
     z = corm(X, object.Tx, object.weights)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)
     cory2t = DataFrame(z, string.("lv", 1:nlv))
-    ## End 
+    # End 
     (explvarx = explvarx, explvary, cort2t, rdx, rdy, 
         corx2t, cory2t)
 end

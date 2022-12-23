@@ -23,15 +23,15 @@ Multiblock PLSR (MBPLSR) - Fast version.
 * `weights` : Weights of the observations (rows). 
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `bscal` : Type of block scaling. 
-    Possible values are: "none", "frob", "mfa", "ncol", "sd". 
+* `bscal` : Type of `Xbl` block scaling (`"none"`, `"frob"`).
     See functions `blockscal`.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` and 
     of `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-This is the PLSR (X, `Y`) where X is the horizontal concatenation of the blocks in `Xbl`.
-The function gives the same results as function `mbplswest`.
+PLSR (X, `Y`) where X is the horizontal concatenation of the blocks in `Xbl`.
+The function gives the same results as function `mbplswest`, 
+but is much faster.
 
 ## Examples
 ```julia
@@ -100,15 +100,11 @@ function mbplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
     else
         center!(Y, ymeans)
     end
-    if bscal == "none" 
-        bscales = ones(nbl)
-    else
-        bscal == "frob" ? res = blockscal_frob(Xbl, weights) : nothing
-        bscal == "mfa" ? res = blockscal_mfa(Xbl, weights) : nothing
-        bscal == "ncol" ? res = blockscal_ncol(Xbl) : nothing
-        bscal == "sd" ? res = blockscal_sd(Xbl, weights) : nothing
-        Xbl = res.X
+    bscal == "none" ? bscales = ones(nbl) : nothing
+    if bscal == "frob"
+        res = blockscal_frob(Xbl, weights) 
         bscales = res.bscales
+        Xbl = res.X
     end
     X = reduce(hcat, Xbl)
     fm = plskern(X, Y, weights; nlv = nlv, scal = false)
@@ -146,16 +142,19 @@ function Base.summary(object::Mbplsr, Xbl)
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
-    # Correlation between the global scores and the original variables 
-    z = cor(X, object.T)  
-    cort2x = DataFrame(z, string.("lv", 1:nlv))
-    ## Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty) between each block and each global score
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
+        cumpvar = cumpvar)
+    # Correlation between the original X-variables
+    # and the global scores 
+    z = cor(X, sqrtw .* object.T)  
+    corx2t = DataFrame(z, string.("lv", 1:nlv))
+    # Redundancies (Average correlations) Rd(X, t) 
+    # between each X-block and each global score
     z = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
-        z[k] = rd(zXbl[k], object.T)
+        z[k] = rd(zXbl[k], sqrtw .* object.T)
     end
     rdx = DataFrame(reduce(vcat, z), string.("lv", 1:nlv))       
     # Outputs
-    (explvarx = explvarx, cort2x, rdx)
+    (explvarx = explvarx, corx2t, rdx)
 end

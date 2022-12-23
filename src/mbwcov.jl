@@ -13,8 +13,7 @@ Multiblock weighted covariate analysis regression (MBWCov) (Mangana et al. 2021)
 * `weights` : Weights of the observations (rows). 
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `bscal` : Type of block scaling. 
-    Possible values are: "none", "frob", "mfa", "ncol", "sd". 
+* `bscal` : Type of block scaling (`"none"`, `"frob"`). 
     See functions `blockscal`.
 * `wcov` : Logical. If `true` (default), a MBWCov is done, else
     a MBPLSR is done.

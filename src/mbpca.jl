@@ -53,8 +53,8 @@ Function `summary` returns:
     blocks) explained by each global score.
 * `contr_block` : Contribution of each block to the global scores 
 * `explX` : Proportion of the inertia of the blocks explained by each global score.
-* `cort2x` : Correlation between the global scores and the original variables.  
-* `cort2tb` : Correlation between the global scores and the block scores.
+* `corx2t` : Correlation between the global scores and the original variables.  
+* `cortb2t` : Correlation between the global scores and the block scores.
 * `rv` : RV coefficient. 
 * `lg` : Lg coefficient. 
 
@@ -97,8 +97,8 @@ res.explvarx
 res.explX # = fm.lb if bscal = "frob"
 rowsum(Matrix(res.explX))
 res.contr_block
-res.cort2x 
-res.cort2tb
+res.corx2t 
+res.cortb2t
 res.rv
 ```
 """
@@ -115,9 +115,6 @@ function mbpca(Xbl, weights = ones(nro(Xbl[1])); nlv,
         scal = scal)
 end
 
-## Approach Hanafi & Quanari 2008
-## Normed global score u = 1st left singular vector of SVD of Tb,
-## where Tb concatenates the block-scores 
 function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
         scal = false)
@@ -125,7 +122,6 @@ function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
     n = nro(Xbl[1])
     weights = mweight(weights)
     sqrtw = sqrt.(weights)
-    sqrtD = Diagonal(sqrtw)
     xmeans = list(nbl, Vector{Float64})
     xscales = list(nbl, Vector{Float64})
     p = fill(0, nbl)
@@ -153,21 +149,21 @@ function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
     end
     # Row metric
     @inbounds for k = 1:nbl
-        Xbl[k] = sqrtD * Xbl[k]
+        Xbl[k] = sqrtw .* Xbl[k]
     end
     # Pre-allocation
-    u = similar(Xbl[1], n)
     U = similar(Xbl[1], n, nlv)
-    tk = copy(u)
+    W = similar(Xbl[1], nbl, nlv)
     Tbl = list(nbl, Matrix{Float64})
     for k = 1:nbl ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
     Tb = list(nlv, Matrix{Float64})
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
     Wbl = list(nbl, Matrix{Float64})
     for k = 1:nbl ; Wbl[k] = similar(Xbl[1], p[k], nlv) ; end
-    lb = similar(Xbl[1], nbl, nlv)
-    W = similar(Xbl[1], nbl, nlv)
+    u = similar(Xbl[1], n)
+    tk = copy(u)
     w = similar(Xbl[1], nbl)
+    lb = similar(Xbl[1], nbl, nlv)
     mu = similar(Xbl[1], nlv)
     niter = zeros(nlv)
     # End
@@ -286,17 +282,17 @@ function Base.summary(object::Mbpca, Xbl)
     # = object.lb if bscal = "frob" 
     z = scale((object.lb)', sstot)'
     explX = DataFrame(z, string.("lv", 1:nlv))
-    # Correlation between the global scores and the original variables (globalcor)
+    # Correlation between the original variables and the global scores (globalcor)
     z = cor(X, object.U)  
-    cort2x = DataFrame(z, string.("lv", 1:nlv))  
-    # Correlation between the global scores and the block_scores (cor.g.b)
+    corx2t = DataFrame(z, string.("lv", 1:nlv))  
+    # Correlation between the block scores and the global scores (cor.g.b)
     z = list(nlv, Matrix{Float64})
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], object.U[:, a])
     end
-    cort2tb = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
+    cortb2t = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
     # RV 
-    X = vcat(zXbl, [object.T])
+    X = vcat(zXbl, [sqrtw .* object.T])
     nam = [string.("block", 1:nbl) ; "T"]
     res = rv(X)
     zrv = DataFrame(res, nam)
@@ -304,7 +300,7 @@ function Base.summary(object::Mbpca, Xbl)
     res = lg(X)
     zlg = DataFrame(res, nam)
     (explvarx = explvarx, contr_block, explX, 
-        cort2x, cort2tb, rv = zrv, lg = zlg)
+        corx2t, cortb2t, rv = zrv, lg = zlg)
 end
 
 

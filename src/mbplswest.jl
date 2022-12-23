@@ -1,4 +1,4 @@
-struct MbplsWest
+struct MbplsWest            # Used for mbplswest, mbwcov 
     T::Matrix{Float64}
     P::Matrix{Float64}
     R::Matrix{Float64}
@@ -32,8 +32,7 @@ Multiblock PLSR - Nipals algorithm (Westerhuis et al. 1998).
 * `weights` : Weights of the observations (rows). 
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `bscal` : Type of block scaling. 
-    Possible values are: "none", "frob", "mfa", "ncol", "sd". 
+* `bscal` : Type of `Xbl` block scaling (`"none"`, `"frob"`). 
     See functions `blockscal`.
 * `tol` : Tolerance value for convergence.
 * `maxit` : Maximum number of iterations.
@@ -284,22 +283,24 @@ function Base.summary(object::MbplsWest, Xbl)
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)     
-    # Correlation between the global scores and the original variables 
-    z = cor(X, object.T)  
-    cort2x = DataFrame(z, string.("lv", 1:nlv))  
-    # Correlation between the global scores and the block_scores
+    # Correlation between the original X-variables
+    # and the global scores
+    z = cor(X, sqrtw .* object.T)  
+    corx2t = DataFrame(z, string.("lv", 1:nlv))
+    # Correlation between the X-block scores and the global scores 
     z = list(nlv, Matrix{Float64})
     @inbounds for a = 1:nlv
-        z[a] = cor(object.Tb[a], object.T[:, a])
+        z[a] = cor(object.Tb[a], sqrtw .* object.T[:, a])
     end
-    cort2tb = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
-    # Redundancies (Average correlations) between each X-block and each X-global score
+    cortb2t = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
+    # Redundancies (Average correlations) Rd(X, t) 
+    # between each X-block and each global score
     z = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
-        z[k] = rd(zXbl[k], object.T)
+        z[k] = rd(zXbl[k], sqrtw .* object.T)
     end
-    rdx = DataFrame(reduce(vcat, z), string.("lv", 1:nlv))
-    # Specific weights of each bloc on each X-global score
+    rdx = DataFrame(reduce(vcat, z), string.("lv", 1:nlv))         
+    # Specific weights of each block on each X-global score
     sal2 = nothing
     if !isnothing(object.lb)
         lb2 = colsum(object.lb.^2)
@@ -307,5 +308,5 @@ function Base.summary(object::MbplsWest, Xbl)
         sal2 = DataFrame(sal2, string.("lv", 1:nlv))
     end
     # Output
-    (explvarx = explvarx, cort2x, cort2tb, rdx, sal2)
+    (explvarx = explvarx, corx2t, cortb2t, rdx, sal2)
 end

@@ -107,7 +107,7 @@ end
 function rrr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         tau = 1e-8, tol = sqrt(eps(1.)), maxit = 200, 
         scal = false)
-    p = nco(X)
+    n, p = size(X)
     q = nco(Y)
     nlv = min(nlv, p, q)
     weights = mweight(weights)

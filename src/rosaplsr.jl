@@ -35,7 +35,7 @@ algorithm of Liland et al. (2016):
     (therefore Y-columns should have the same scale).
 
 ## References
-Liland, K.H., Næs, T., Indahl, U.G., 2016. ROSA—a fast extension of partial least 
+Liland, K.H., Næs, T., Indahl, U.G., 2016. ROSA — a fast extension of partial least 
 squares regression for multiblock data analysis. Journal of Chemometrics 30, 
 651–662. https://doi.org/10.1002/cem.2824
 

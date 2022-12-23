@@ -35,7 +35,7 @@ Common components and specific weights analysis (ComDim = CCSWA).
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-This version corresponds to the "SVD" algorithm of Hannafi & Qannari 2008 p.84.
+"SVD" algorithm of Hannafi & Qannari 2008 p.84.
 
 The function returns several objects, in particular:
 * `T` : The non normed global scores.
@@ -58,8 +58,8 @@ Function `summary` returns:
 * `contr_block` : Contribution of each block to the global scores 
     (= proportions of the saliences "lambda" within each score)
 * `explX` : Proportion of the inertia of the blocks explained by each global score.
-* `cort2x` : Correlation between the global scores and the original variables.  
-* `cort2tb` : Correlation between the global scores and the block scores.
+* `corx2t` : Correlation between the global scores and the original variables.  
+* `cortb2t` : Correlation between the global scores and the block scores.
 * `rv` : RV coefficient. 
 * `lg` : Lg coefficient. 
 
@@ -119,8 +119,8 @@ rowsum(Matrix(res.explX))
 res.contr_block
 res.sal2
 colsum(Matrix(res.sal2))
-res.cort2x 
-res.cort2tb
+res.corx2t 
+res.cortb2t
 res.rv
 ```
 """
@@ -146,7 +146,6 @@ function comdim!(Xbl, weights = ones(nro(Xbl[1])); nlv,
     n = nro(Xbl[1])
     weights = mweight(weights)
     sqrtw = sqrt.(weights)
-    sqrtD = Diagonal(sqrtw)
     xmeans = list(nbl, Vector{Float64})
     xscales = list(nbl, Vector{Float64})
     p = fill(0, nbl)
@@ -288,7 +287,7 @@ function Base.summary(object::Comdim, Xbl)
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end
-    # Explained_X
+    # Explained_X by global scores
     sstot = zeros(nbl)
     @inbounds for k = 1:nbl
         sstot[k] = ssq(zXbl[k])
@@ -323,18 +322,18 @@ function Base.summary(object::Comdim, Xbl)
     # = object.lb if bscal = "frob" 
     z = scale((object.lb)', sstot)'
     explX = DataFrame(z, string.("lv", 1:nlv))
-    # Correlation between the global scores and the original variables (globalcor)
+    # Correlation between the original variables and the global scores (globalcor)
     X = reduce(hcat, zXbl)
     z = cor(X, object.U)  
-    cort2x = DataFrame(z, string.("lv", 1:nlv))  
-    # Correlation between the global scores and the block_scores (cor.g.b)
+    corx2t = DataFrame(z, string.("lv", 1:nlv))  
+    # Correlation between the block scores and the global scores (cor.g.b)
     z = list(nlv, Matrix{Float64})
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], object.U[:, a])
     end
-    cort2tb = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
+    cortb2t = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
     # RV 
-    X = vcat(zXbl, [object.T])
+    X = vcat(zXbl, [sqrtw .* object.T])
     nam = [string.("block", 1:nbl) ; "T"]
     res = rv(X)
     zrv = DataFrame(res, nam)
@@ -342,7 +341,7 @@ function Base.summary(object::Comdim, Xbl)
     res = lg(X)
     zlg = DataFrame(res, nam)
     (explvarx = explvarx, explvarxx, sal2, contr_block, explX, 
-        cort2x, cort2tb, rv = zrv, lg = zlg)
+        corx2t, cortb2t, rv = zrv, lg = zlg)
 end
 
 
