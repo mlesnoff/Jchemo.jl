@@ -155,7 +155,7 @@ function Base.summary(object::PlsTuck, X::Union{Vector, Matrix, DataFrame},
     tt = object.TTx
     sstot = frob(X, object.weights)^2
     pvar = tt / sstot
-    cumpvar = cumsum(pvar)
+    cumpvar = cumsum(pvar) 
     xvar = tt / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
         cumpvar = cumpvar)

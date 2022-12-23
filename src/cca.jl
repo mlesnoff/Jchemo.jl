@@ -39,7 +39,7 @@ are proportionnal to the eigenvectors of Projx * Projy
 and Projy * Projx, respectively, defined as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
 * Cy = (1 - `tau`) * Y'DY + `tau` * Iy
-* Cxy = X'DY
+* Cxy = X'DY 
 * Projx = sqrt(D) * X * invCx * X' * sqrt(D)
 * Projy = sqrt(D) * Y * invCx * Y' * sqrt(D)
 where D is the observation (row) metric. 

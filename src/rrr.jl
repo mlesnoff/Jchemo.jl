@@ -37,7 +37,7 @@ https://doi.org/10.1285/i20705948v4n2p203
 
 Bougeard, S., Qannari, E.M., Rose, N., 2011. Multiblock redundancy analysis: 
 interpretation tools and application in epidemiology. Journal of Chemometrics 25, 
-467–475. https://doi.org/10.1002/cem.1392
+467–475. https://doi.org/10.1002/cem.1392 
 
 Tchandao Mangamana, E., Glèlè Kakaï, R., Qannari, E.M., 2021. A general 
 strategy for setting up supervised methods of multiblock data analysis. 

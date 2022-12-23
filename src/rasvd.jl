@@ -221,7 +221,7 @@ function Base.summary(object::Rasvd, X::Union{Vector, Matrix, DataFrame},
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)
     cory2t = DataFrame(z, string.("lv", 1:nlv))
-    ## End
+    ## End 
     (explvarx = explvarx, explvary, cort2t, rdx, rdy, 
         corx2t, cory2t)
 end

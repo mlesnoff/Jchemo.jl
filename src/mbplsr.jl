@@ -59,7 +59,7 @@ Jchemo.transform(fm, Xbl_new)
 [y Jchemo.predict(fm, Xbl).pred]
 Jchemo.predict(fm, Xbl_new).pred
 
-summary(fm, Xbl)
+summary(fm, Xbl) 
 ```
 """
 
