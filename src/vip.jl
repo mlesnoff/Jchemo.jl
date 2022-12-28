@@ -32,8 +32,30 @@ Editions Technip, Paris.
 
 ## Examples
 ```julia
+X = [1. 2 3 4; 4 1 6 7; 12 5 6 13; 27 18 7 6; 12 11 28 7] 
+Y = [10. 11 13; 120 131 27; 8 12 4; 1 200 8; 100 10 89] 
+y = Y[:, 1] 
+ycla = [1; 1; 1; 2; 2]
 
+nlv = 3
+fm = plskern(X, Y; nlv = nlv) ;
+res = vip(fm)
+mean(res.^2)
+vip(fm; nlv = 1)
 
+nlv = 2
+fm = plsrda(X, ycla; nlv = nlv) ;
+fmpls = fm.fm
+vip(fmpls)
+Ydummy = dummy(ycla).Y
+vip(fmpls, Ydummy)
+
+nlv = 2
+fm = plslda(X, ycla; nlv = nlv) ;
+fmpls = fm.fm.fm_pls
+vip(fmpls)
+Ydummy = dummy(ycla).Y
+vip(fmpls, Ydummy)
 ```
 """ 
 function vip(object::Plsr; nlv = nothing)
