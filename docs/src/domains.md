@@ -76,6 +76,7 @@
 *Variable selection*
 - **iplsr** Interval PLSR (iPLS) (Nørgaard et al. 2000)
 - **covsel** Variable selection from partial correlation or covariance (Covsel)
+- **vip** Variable importance on PLS projections (VIP)
 
 *Multiblock*
 - **mbplsr** Multiblock PLSR (MBPLSR) - Fast version (PLSR on concatenated blocks)

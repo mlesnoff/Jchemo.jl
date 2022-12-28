@@ -82,7 +82,9 @@ function plssimp!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         TT[a] = tt
      end
      #B = R * inv(T' * D * T) * T' * D * Y
-     Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing)
+     # W does not exist in SIMPLS
+     # Below it is filled by R (for vip)
+     Plsr(T, P, R, R, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing)
 end
 
 

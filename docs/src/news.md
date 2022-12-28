@@ -1,7 +1,10 @@
 ### NEWS for package **Jchemo**
 
-### *Version 0.1.10* 
+### *Version 0.1.11* 
+- News
+    - **vip** Variable importance on PLS projections (VIP).
 
+### *Version 0.1.10* 
 - News
     - **mbwcov**: Multiblock weighted covariate analysis regression (MBWCov) (Mangana et al. 2021).
 

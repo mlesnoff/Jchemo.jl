@@ -70,7 +70,8 @@ include("covselr.jl")
 include("krr.jl")
 include("kplsr.jl") ; include("dkplsr.jl")
 include("aicplsr.jl")
-include("wshenk.jl")  
+include("wshenk.jl") 
+include("vip.jl") 
 
 # Regression Multiblock
 include("mbplsr.jl") 
@@ -238,6 +239,7 @@ export
     # Variable selection/importance (direct methods) 
     covsel,
     iplsr,
+    vip,
     #
     xfit, xfit!, xresid, xresid!,
     # Local regression
