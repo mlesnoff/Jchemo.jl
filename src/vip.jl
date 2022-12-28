@@ -5,9 +5,18 @@ Variable importance on PLS projections (VIP).
 * `object` : The fitted model (object of structure `Plsr`).
 * `Y` : The Y-data that was used to fit the model.
 * `nlv` : Nb. latent variables (LVs) to consider.
-    
 
+For a PLS model (X, Y) with a number of A latent variables, 
+and variable xj (column j of X): 
+* VIP(xj) = Sum(a=1,...,A) R2(Yc, ta) waj^2 / Sum(a=1,...,A) R2(Yc, ta) (1 / p) 
+where:
+* Yc is the centered Y, 
+* ta is the ath X-score, 
+* and R2(Yc, ta) the proportion of Yc-variance explained by ta, 
+    i.e. ||Yc.hat||^2 / ||Yc||^2 (where Yc.hat is the LS estimate of Yc by ta).  
 
+When `Y` is used as argument, R2(Yc, ta) is replaced by the redundancy
+Rd(Yc, ta) (see function `rd`), such as in Tenenhaus 1998 p.139. 
 
 ## References
 Chong, I.-G., Jun, C.-H., 2005. Performance of some variable selection methods when 
@@ -27,10 +36,6 @@ Editions Technip, Paris.
 
 ```
 """ 
-
-
-
-
 function vip(object::Plsr; nlv = nothing)
     a = nco(object.T)
     p = nro(object.W)
