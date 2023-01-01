@@ -1,5 +1,9 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.1.12* 
+- Modifications
+    - All tree functions: Internal changes to adapt to modifications in XGBoost libray.
+
 ### *Version 0.1.11* 
 - News
     - **vip** Variable importance on PLS projections (VIP).
