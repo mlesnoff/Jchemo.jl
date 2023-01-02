@@ -1,5 +1,9 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.1.13* 
+- Modifications
+    - Code cleaning
+
 ### *Version 0.1.12* 
 - Modifications
     - All tree functions: Internal changes to adapt to modifications in XGBoost libray.

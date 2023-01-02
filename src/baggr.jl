@@ -1,26 +1,27 @@
-struct Baggr
+struct Baggr3
     fm
-    s_row  # in-bag
-    s_col
-    s_oob  # out-of-bag
+    srow::Vector{Vector{Int64}}  # in-bag
+    scol::Vector{Vector{Int64}}
+    soob::Vector{Vector{Int64}}  # out-of-bag
 end
 
 """ 
     baggr(X, Y, weights = nothing, wcol = nothing; rep = 50, 
-        withr = false, rowsamp = .7, colsamp = 1, fun, kwargs...)
+        fun, rowsamp = .7, withr = false, colsamp = 1, 
+        kwargs...)
 Bagging of regression models.
 * `X` : X-data  (n, p).
 * `Y` : Y-data  (n, q).
 * `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
-* `wcol` : Weights (p) of the sampling of the variables.
+* `wcol` : Weights (p) for the sampling of the variables.
 * `rep` : Nb. of bagging repetitions.
-* `withr`: Type of sampling of the observations
-    (`true` => with replacement).
+* `fun` : Name of the function computing the model to bagg.
 * `rowsamp` : Proportion of rows sampled in `X` 
     at each repetition.
+* `withr`: Type of sampling of the observations
+    (`true` => with replacement).
 * `colsamp` : Proportion of columns sampled (without replacement) in `X` 
     at each repetition.
-* `fun` : Name of the function computing the model to bagg.
 * `kwargs` : Optional named arguments to pass in 'fun`.
 
 ## References
@@ -74,64 +75,59 @@ lines(vec(res.imp),
 ```
 """ 
 function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50, 
-        withr = false, rowsamp = .7, colsamp = 1, fun, kwargs...)
+        fun, rowsamp = .7, withr = false, colsamp = 1, 
+        kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
     q = nco(Y)   
     fm = list(rep)
-    nrow = Int64(round(rowsamp * n))
-    ncol = max(1, Int64(round(colsamp * p)))
-    s_row = fill(1, (nrow, rep))        # (nrow, rep)
-    s_col = similar(s_row, ncol, rep)   # (ncol, rep) 
-    s_oob = list(rep, Vector{Int64})
-    srow = similar(s_row, nrow)    
-    scol = similar(s_row, ncol)
-    w = similar(X, nrow)
-    zncol = collect(1:ncol) 
-    zX = similar(X, nrow, ncol)
-    zY = similar(Y, nrow, q)
+    srow = list(rep, Vector{Int64})
+    scol = list(rep, Vector{Int64})
+    soob = list(rep, Vector{Int64})
+    nsrow = Int64(round(rowsamp * n))
+    nscol = max(1, Int64(round(colsamp * p)))
+    w = similar(X, nsrow)
+    zcol = collect(1:nscol) 
+    zX = similar(X, nsrow, nscol)
+    zY = similar(Y, nsrow, q)
     @inbounds for i = 1:rep
-        srow .= sample(1:n, nrow; replace = withr)
-        s_oob[i] = findall(in(srow).(1:n) .== 0)
+        # Rows
+        srow[i] = sample(1:n, nsrow; replace = withr)
+        soob[i] = findall(in(srow[i]).(1:n) .== 0)
+        # Columns
         if colsamp == 1
-            scol .= zncol
+            scol[i] = zcol
         else
             if isnothing(wcol)
-                scol .= sample(1:p, ncol; replace = false)
+                scol[i] = sample(1:p, nscol; replace = false)
             else
-                scol .= sample(1:p, StatsBase.weights(wcol), ncol; 
+                scol[i] = sample(1:p, StatsBase.weights(wcol), nscol; 
                     replace = false)
             end
         end
-        zX .= X[srow, scol]
-        zY .= Y[srow, :]
+        # End
+        zX .= X[srow[i], scol[i]]
+        zY .= Y[srow[i], :]
         if(isnothing(weights))
             fm[i] = fun(zX, zY; kwargs...)
         else
-            w .= mweight(weights[srow])
+            w .= mweight(weights[srow[i]])
             fm[i] = fun(zX, zY, w; kwargs...)
         end
-        s_row[:, i] .= srow    
-        s_col[:, i] .= scol
     end
-    Baggr(fm, s_row, s_col, s_oob)
+    Baggr3(fm, srow, scol, soob)
 end
 
-function predict(object::Baggr, X)
+function predict(object::Baggr3, X)
     rep = length(object.fm)
-    scol = vcol(object.s_col, 1)
     # @view is not accepted by XGBoost.predict
-    # @view(X[:, scol])
-    acc = predict(object.fm[1], X[:, scol]).pred
+    # @view(X[:, object.scol[i]])
+    acc = predict(object.fm[1], X[:, object.scol[1]]).pred
     @inbounds for i = 2:rep
-        scol = vcol(object.s_col, i)
-        acc .+= predict(object.fm[i], X[:, scol]).pred
+        acc .+= predict(object.fm[i], X[:, object.scol[i]]).pred
     end
     pred = acc ./ rep
     (pred = pred,)
 end
-
-
-
 

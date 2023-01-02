@@ -110,7 +110,7 @@ function predict(object::Knnr, X)
             metric = object.metric) 
     end
     listw = copy(res.d)
-    for i = 1:m
+    @inbounds for i = 1:m
         w = wdist(res.d[i]; h = object.h)
         w[w .< object.tol] .= object.tol
         listw[i] = w

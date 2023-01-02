@@ -5,45 +5,41 @@ Compute the out-of-bag (OOB) error after bagging a regression model.
 * `X` : X-data used in the bagging.
 * `Y` : Y-data used in the bagging.
 * `score` : Function computing the prediction error (default: msep).
-
 See `?baggr` for examples.
-
 ## References
 Breiman, L., 1996. Bagging predictors. Mach Learn 24, 123–140. 
 https://doi.org/10.1007/BF00058655
-
 Breiman, L., 2001. Random Forests. Machine Learning 45, 5–32. 
 https://doi.org/10.1023/A:1010933404324
-
 Genuer, R., 2010. Forêts aléatoires : aspects théoriques, 
 sélection de variables et applications. PhD Thesis. Université Paris Sud - Paris XI.
-
 Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function baggr_oob(object::Baggr, X, Y; score = rmsep)
+function baggr_oob(object::Baggr3, X, Y; score = rmsep)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    n = size(X, 1)
+    n = nro(X)
     q = nco(Y)
     rep = length(object.fm)
     pred_oob = similar(X, n, q)
     k = zeros(n)
     @inbounds for i = 1:n
-        zpred = fill(0., 1, q)
+        zpred = zeros(1, q)
         zk = 0        
         @inbounds for j = 1:rep
-            soob = object.s_oob[j]
+            soob = object.soob[j]
             if in(i, soob)
-                zpred .+= predict(object.fm[j], X[i:i, vcol(object.s_col, j)]).pred
+                zpred .+= predict(object.fm[j], X[i:i, object.scol[j]]).pred
                 zk += 1
             end
         end
         pred_oob[i, :] = zpred / zk
         k[i] = zk
     end
-    scor = score(pred_oob, Y)
+    s = findall(k .== 0)
+    scor = score(rmrow(pred_oob, s), rmrow(Y, s))
     (scor = scor, pred_oob, k)
 end
 
@@ -53,42 +49,36 @@ Compute variance importances (with permutation method) after bagging a regressio
 * `object` : Output of a bagging.
 * `X` : X-data that was used in the model bagging.
 * `Y` : Y-data that was used in the model bagging.
-
 Variances importances are computed 
 by permuting sucessively each column of the out-of-bag (X_OOB),
 and by looking at the effect on the MSEP.  
-
 See `?baggr` for examples.
-
 ## References
-
 Breiman, L., 2001. Random Forests. Machine Learning 45, 5–32. 
 https://doi.org/10.1023/A:1010933404324
-
 Genuer, R., 2010. Forêts aléatoires : aspects théoriques, 
 sélection de variables et applications. PhD Thesis. Université Paris Sud - Paris XI.
-
 Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
 trois thèmes statistiques autour de CART en régression. PhD Thesis. 
 Univ. Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function baggr_vi(object::Baggr, X, Y; score = rmsep)
+function baggr_vi(object::Baggr3, X, Y; score = rmsep)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    p = size(X, 2)
+    p = nco(X)
     q = nco(Y)
-    rep = length(object.s_oob)
-    ncol = size(object.s_col, 1)
-    scol = similar(object.s_col, ncol)
+    rep = length(object.soob)
+    nscol = length(object.scol[1])
+    scol = similar(object.scol[1], nscol)
     res = similar(X, p, rep, q)
     @inbounds for i = 1:rep
-        soob = object.s_oob[i]  # soob has a variable length
+        soob = object.soob[i]  # soob has a variable length
         m = length(soob)
-        scol .= vcol(object.s_col, i)
+        scol .= object.scol[i]
         zpred = predict(object.fm[i], X[soob, scol]).pred
-        zY = @view(Y[soob, :]) ;
+        zY = vrow(Y, soob)
         zscore = score(zpred, zY)
-        zX = similar(X[soob, :])
+        zX = similar(X, m, p)
         @inbounds for j = 1:p
             zX .= X[soob, :]
             s = sample(1:m, m, replace = false)
