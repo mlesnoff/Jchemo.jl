@@ -15,9 +15,8 @@ end
 """ 
     treer_xgb(X, y;
         subsample = 1, colsample_bytree = 1, colsample_bynode = 1,
-        max_depth = 6, min_child_weight = 5,
-        lambda = 0, scal = false, verbose = false, 
-        kwargs...)
+        max_depth = 6, min_child_weight = 5, lambda = 0, 
+        scal = false, kwargs...)
 Regression tree with XGBoost.
 * `X` : X-data (n obs., p variables).
 * `y` : Univariate Y-data (n obs.).
@@ -34,7 +33,6 @@ Regression tree with XGBoost.
     Increasing this value will make model more conservative.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
-* `verbose` : If true, fitting information are printed.
 * `kwargs` : Optional named arguments to pass in function `xgboost` 
     of `XGBoost.jl` (https://xgboost.readthedocs.io/en/latest/parameter.html).
 
@@ -91,8 +89,8 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
 """ 
 function treer_xgb(X, y;
         subsample = 1, colsample_bytree = 1, colsample_bynode = 1,
-        max_depth = 6, min_child_weight = 5,
-        lambda = 0, scal = false, verbose = false, kwargs...) 
+        max_depth = 6, min_child_weight = 5, lambda = 0, 
+        scal = false, kwargs...) 
     X = ensure_mat(X)
     y = Float64.(vec(y))
     p = nco(X)
@@ -112,8 +110,8 @@ function treer_xgb(X, y;
         colsample_bynode = colsample_bynode, 
         max_depth = max_depth, min_child_weight = min_child_weight,
         lambda = lambda,
-        silent = !verbose,
         objective = "reg:squarederror", 
+        watchlist = (),
         kwargs...)
     featur = collect(1:p)
     TreerXgb(fm, xscales, featur)
@@ -123,8 +121,8 @@ end
     rfr_xgb(X, y; rep = 50,
         subsample = .7,
         colsample_bytree = 1, colsample_bynode = .33,
-        max_depth = 6, min_child_weight = 5,
-        lambda = 0, scal = false, verbose = false, kwargs...)
+        max_depth = 6, min_child_weight = 5, lambda = 0, 
+        scal = false, kwargs...)
 Random forest regression with XGBoost.
 * `X` : X-data (n obs., p variables).
 * `y` : Univariate Y-data (n obs.).
@@ -141,7 +139,6 @@ Random forest regression with XGBoost.
     Increasing this value will make model more conservative.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
-* `verbose` : If true, fitting information are printed.
 * `kwargs` : Optional named arguments to pass in function `xgboost` 
     of `XGBoost.jl` (https://xgboost.readthedocs.io/en/latest/parameter.html).
 
@@ -204,8 +201,8 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
 function rfr_xgb(X, y; rep = 50,
         subsample = .7,
         colsample_bytree = 1, colsample_bynode = .33,
-        max_depth = 6, min_child_weight = 5,
-        lambda = 0, scal = false, verbose = false, kwargs...)
+        max_depth = 6, min_child_weight = 5, lambda = 0, 
+        scal = false, kwargs...)
     X = ensure_mat(X)
     y = Float64.(vec(y))
     p = nco(X)
@@ -225,8 +222,8 @@ function rfr_xgb(X, y; rep = 50,
         colsample_bynode = colsample_bynode,
         max_depth = max_depth, min_child_weight = min_child_weight,
         lambda = lambda,
-        silent = !verbose, 
         objective = "reg:squarederror", 
+        watchlist = (),
         kwargs...)
     featur = collect(1:p)
     TreerXgb(fm, xscales, featur)
@@ -235,8 +232,8 @@ end
 """ 
     xgboostr(X, y; rep = 50, eta = .3,
         subsample = .7, colsample_bytree = 1, colsample_bynode = 1/3,
-        max_depth = 6, min_child_weight = 5,
-        lambda = 1, scal = false, verbose = false, kwargs...)
+        max_depth = 6, min_child_weight = 5, lambda = 1, 
+        scal = false, kwargs...)
 XGBoost regression.
 * `X` : X-data (n obs., p variables).
 * `y` : Univariate Y-data (n obs.).
@@ -254,7 +251,6 @@ XGBoost regression.
     Increasing this value will make model more conservative.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
-* `verbose` : If true, fitting information are printed.
 * `kwargs` : Optional named arguments to pass in function `xgboost` 
     of `XGBoost.jl` (https://xgboost.readthedocs.io/en/latest/parameter.html).
 
@@ -303,8 +299,8 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
 """ 
 function xgboostr(X, y; rep = 50, eta = .3,
         subsample = .7, colsample_bytree = 1, colsample_bynode = 1/3,
-        max_depth = 6, min_child_weight = 5,
-        lambda = 1, scal = false, verbose = false, kwargs...)
+        max_depth = 6, min_child_weight = 5, lambda = 1, 
+        scal = false, kwargs...)
     X = ensure_mat(X)
     y = Float64.(vec(y))
     p = nco(X)
@@ -325,8 +321,8 @@ function xgboostr(X, y; rep = 50, eta = .3,
         colsample_bylevel = 1, colsample_bynode = colsample_bynode,
         max_depth = max_depth, min_child_weight = min_child_weight,
         lambda = lambda, 
-        silent = !verbose, 
-        objective = "reg:squarederror", 
+        objective = "reg:squarederror",
+        watchlist = (), 
         kwargs...)
     featur = collect(1:p)
     TreerXgb(fm, xscales, featur)

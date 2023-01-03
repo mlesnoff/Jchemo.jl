@@ -1,4 +1,4 @@
-struct Baggr3
+struct Baggr
     fm
     srow::Vector{Vector{Int64}}  # in-bag
     scol::Vector{Vector{Int64}}
@@ -116,10 +116,10 @@ function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50,
             fm[i] = fun(zX, zY, w; kwargs...)
         end
     end
-    Baggr3(fm, srow, scol, soob)
+    Baggr(fm, srow, scol, soob)
 end
 
-function predict(object::Baggr3, X)
+function predict(object::Baggr, X)
     rep = length(object.fm)
     # @view is not accepted by XGBoost.predict
     # @view(X[:, object.scol[i]])

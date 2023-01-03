@@ -17,7 +17,7 @@ Gey, S., 2002. Bornes de risque, détection de ruptures, boosting :
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function baggr_oob(object::Baggr3, X, Y; score = rmsep)
+function baggr_oob(object::Baggr, X, Y; score = rmsep)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = nro(X)
@@ -62,7 +62,7 @@ Gey, S., 2002. Bornes de risque, détection de ruptures, boosting :
 trois thèmes statistiques autour de CART en régression. PhD Thesis. 
 Univ. Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function baggr_vi(object::Baggr3, X, Y; score = rmsep)
+function baggr_vi(object::Baggr, X, Y; score = rmsep)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)
