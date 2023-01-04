@@ -140,6 +140,7 @@ include("calds.jl")
 include("calpds.jl")
 
 # Sampling
+include("mtest.jl")
 include("sampling.jl")
 
 include("distances.jl")
@@ -277,6 +278,7 @@ export
     gridcv_mb, gridcvlv_mb,
     selwold,
     # Sampling
+    mtest,
     sampks, sampdp, sampsys, sampclas,
     # Distances
     getknn, wdist, wdist!,

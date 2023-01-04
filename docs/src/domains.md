@@ -260,6 +260,8 @@
 
 ### **Sampling observations**
 
+- **mtest** Select indexes defining training and test sets for each column 
+    of a dataframe
 - **sampdp** Duplex sampling 
 - **sampks** Kennard-Stone sampling 
 - **sampsys** Systematic sampling
