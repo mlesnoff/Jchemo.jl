@@ -138,6 +138,7 @@ include("selwold.jl")
 # Transfer
 include("calds.jl")
 include("calpds.jl")
+include("eposvd.jl")
 
 # Sampling
 include("mtest.jl")
@@ -182,9 +183,7 @@ export
     tab, tabnum,
     vcol, vrow, 
    # Pre-processing
-    calds, calpds,
     detrend, detrend!, 
-    eposvd,
     fdif, fdif!,
     interpl, interpl_mon, 
     linear_int, quadratic_int, quadratic_spline, cubic_spline,
@@ -192,6 +191,9 @@ export
     rmgap, rmgap!,
     savgk, savgol, savgol!,
     snv, snv!, 
+    # Transfer
+    calds, calpds,
+    eposvd,
     # Exploratory
     kpca,
     nipals,

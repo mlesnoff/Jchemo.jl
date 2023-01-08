@@ -1021,7 +1021,7 @@ summ(X[:, 2]).res
 """
 function summ(X; digits = 3)
     X = ensure_df(X)
-    res = describe(X, :mean, :min, :max, :nmissing) ;
+    res = StatsBase.describe(X, :mean, :min, :max, :nmissing) 
     insertcols!(res, 5, :n => nro(X) .- res.nmissing)
     for j = 2:4
         z = vcol(res, j)

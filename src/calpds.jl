@@ -1,4 +1,4 @@
-struct CalTransfPds
+struct CalPds
     fm
     s
 end
@@ -12,11 +12,12 @@ Calibration transfer of spectral data with piecewise direct standardization (PDS
 * `m` : Half-window size (nb. points left/right to the target wavelength) 
 * `kwargs` : Optional arguments for `fun`.
 
-To predict wavelength i in `X1`, the window in `X2` is :
+`X1` and `X2` represent the same n samples.
+The method fits models expected to predict `X1` from `X2`.
 
-i - m, i - m + 1, ..., i, ..., i + m - 1, i + m
+To predict wavelength i in `X1`, the window used in `X2` is :
 
-`X1` and `X2` are assumed to represent the same n samples. 
+* i - m, i - m + 1, ..., i, ..., i + m - 1, i + m
 
 ## References
 Bouveresse, E., Massart, D.L., 1996. Improvement of the piecewise direct standardisation procedure 
@@ -65,17 +66,17 @@ function calpds(X1, X2; fun = mlrpinv, m = 5, kwargs...)
         s[i] = collect((i - zm[i]):(i + zm[i]))
         fm[i] = fun(X2[:, s[i]], X1[:, i]; kwargs...)
     end
-    CalTransfPds(fm, s)
+    CalPds(fm, s)
 end
 
 """
-    predict(object::CalTransfPds, X; kwargs...)
+    predict(object::CalPds, X; kwargs...)
 Compute predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `kwargs` : Optional arguments.
 """ 
-function predict(object::CalTransfPds, X; kwargs...)
+function predict(object::CalPds, X; kwargs...)
     X = ensure_mat(X)
     m, p = size(X)
     pred = similar(X, m, p)

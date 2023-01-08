@@ -1,4 +1,4 @@
-struct CalTransfDs
+struct CalDs
     fm
 end
 
@@ -11,7 +11,8 @@ Calibration transfer of spectral data with direct standardization (DS).
 * `fun` : Function used for fitting the transfer model.  
 * `kwargs` : Optional arguments for `fun`.
 
-`X1` and `X2` are assumed to represent the same n samples. 
+`X1` and `X2` represent the same n samples.
+The method fits a model expected to predict `X1` from `X2`.
 
 ## References
 
@@ -33,8 +34,9 @@ X2val = dat.X2val
 n = nro(X1cal)
 m = nro(X1val)
 
-fm = calds(X1cal, X2cal ; fun = mlrpinv) ;
-#fm = calds(X1cal, X2cal ; fun = plskern, nlv = 15) ;
+fm = calds(X1cal, X2cal; fun = mlrpinv) ;
+#fm = calds(X1cal, X2cal; fun = pcr, nlv = 15) ;
+#fm = calds(X1cal, X2cal; fun = plskern, nlv = 15) ;
 pred = Jchemo.predict(fm, X2val).pred
 i = 1
 f, ax = lines(X1val[i, :])
@@ -45,17 +47,17 @@ f
 """ 
 function calds(X1, X2; fun = mlrpinv, kwargs...)
     fm = fun(X2, X1; kwargs...)
-    CalTransfDs(fm)
+    CalDs(fm)
 end
 
 """
-    predict(object::CalTransfDs, X; kwargs...)
+    predict(object::CalDs, X; kwargs...)
 Compute predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `kwargs` : Optional arguments.
 """ 
-function predict(object::CalTransfDs, X; kwargs...)
+function predict(object::CalDs, X; kwargs...)
     predict(object.fm, X; kwargs...)
 end
 
