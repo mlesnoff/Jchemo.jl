@@ -120,7 +120,6 @@ function mse(pred, Y; digits = 3)
     zmean = reshape(colmean(Y), 1, :)
     nam = map(string, repeat(["y"], q), 1:q)
     nam = reshape(nam, 1, :)
-    println(22)
     res = (nam = nam, msep = zmsep, rmsep = zrmsep, sep = zsep, bias = zbias, 
         cor2 = zcor2, r2 = zr2, rpd = zrpd, rpdr = zrpdr, mean = zmean)
     res = map(vec, res)
@@ -332,7 +331,7 @@ rpd(pred, ytest)
 """
 function rpd(pred, Y)
     Y = ensure_mat(Y)
-    std(Y, dims = 1, corrected = false) ./ rmsep(pred, Y)
+    std(Y; dims = 1, corrected = false) ./ rmsep(pred, Y)
 end 
 
 """

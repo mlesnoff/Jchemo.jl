@@ -10,7 +10,7 @@
 
 ### *Version 0.1.12* 
 - Modifications
-    - All tree functions: Internal changes to adapt to modifications in XGBoost libray.
+    - All tree functions: Internal changes to adapt to modifications in XGBoost.jl library.
 
 ### *Version 0.1.11* 
 - News
