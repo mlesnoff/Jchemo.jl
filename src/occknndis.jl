@@ -9,8 +9,8 @@ struct Occknndis
 end
 
 """
-    occknndis(X; 
-        nsamp, nlv, k, 
+    occknndis(X; nlv,
+        nsamp, k, 
         typc = "mad", cri = 3, alpha = .05,
         scal = false)
 One-class classification using "global" k-nearest neighbors distances.
@@ -106,10 +106,10 @@ plotxy(T[:, i], T[:, i + 1], group;
 #### End data
 
 nlv = 30
-k = Int64(round(.7 * ntrain))
 nsamp = 300
-fm = occknndis(zXtrain; nsamp = nsamp,
-    nlv = nlv, k = k, typc = "mad") ;
+k = Int64(round(.7 * ntrain))
+fm = occknndis(zXtrain; nlv = nlv, 
+    nsamp = nsamp, k = k, typc = "mad") ;
 fm.d
 hist(fm.d.dstand; bins = 50)
 
@@ -126,8 +126,8 @@ hlines!(ax, 1)
 f
 ```
 """ 
-function occknndis(X; 
-        nsamp, nlv, k, 
+function occknndis(X; nlv,
+        nsamp, k, 
         typc = "mad", cri = 3, alpha = .05,
         scal = false)
     X = ensure_mat(X)

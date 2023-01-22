@@ -9,8 +9,8 @@ struct Occlknndis
 end
 
 """
-    occlknndis(X; 
-        nsamp, nlv, k, 
+    occlknndis(X; nlv, 
+        nsamp, k, 
         typc = "mad", cri = 3, alpha = .05
         scal = false)
 One-class classification using "local" k-nearest neighbors distances.
@@ -116,9 +116,9 @@ plotxy(T[:, i], T[:, i + 1], group;
 #### End data
 
 nlv = 30
-k = 5 ; nsamp = 50
-fm = Jchemo.occlknndis(zXtrain; nsamp = nsamp,
-    nlv = nlv, k = k, typc = "mad") ;
+nsamp = 50 ; k = 5
+fm = Jchemo.occlknndis(zXtrain; nlv = nlv, 
+    nsamp = nsamp, k = k, typc = "mad") ;
 fm.d
 hist(fm.d.dstand; bins = 50)
 
@@ -136,7 +136,7 @@ f
 ```
 """ 
 function occlknndis(X; 
-        nsamp, nlv, k, 
+        nlv, nsamp, k, 
         typc = "mad", cri = 3, alpha = .05,
         scal = false)
     X = ensure_mat(X)
