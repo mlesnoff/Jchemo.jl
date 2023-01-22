@@ -11,7 +11,7 @@ end
 """
     occlknndis(X; nlv, 
         nsamp, k, 
-        typc = "mad", cri = 3, alpha = .05
+        typc = "mad", cri = 3, alpha = .05,
         scal = false)
 One-class classification using "local" k-nearest neighbors distances.
 
@@ -135,8 +135,8 @@ hlines!(ax, 1)
 f
 ```
 """ 
-function occlknndis(X; 
-        nlv, nsamp, k, 
+function occlknndis(X; nlv, 
+        nsamp, k, 
         typc = "mad", cri = 3, alpha = .05,
         scal = false)
     X = ensure_mat(X)
