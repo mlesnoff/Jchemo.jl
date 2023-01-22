@@ -33,7 +33,7 @@ function occsdod(object::Union{Pca, Plsr}, X;
         typc = "mad", cri = 3, alpha = .05)
     fm_sd = occsd(object; nlv = nlv_sd,
         typc = typc, cri = cri, alpha = alpha)
-    fm_od = occod(object, X; nlv = nlv_sd,
+    fm_od = occod(object, X; nlv = nlv_od,
         typc = typc, cri = cri, alpha = alpha)
     sd = fm_sd.d
     od = fm_od.d

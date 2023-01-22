@@ -15,30 +15,55 @@ end
         scal = false)
 One-class classification using "global" k-nearest neighbors distances.
 
-* `X` : X-data.
-* `nlv` : Nb. components for PCA.
-* `nsamp` : Nb. of training observations (rows of `X`) used to compute the 
-    empirical distribution of outlierness.
+* `X` : X-data (training).
+* `nlv` : Nb. PCA components for the distances computations.
+* `nsamp` : Nb. of observations (rows) sampled in the training `X`
+    used to compute the "H0" empirical distribution of outlierness.
 * `k` : Nb. of neighbors used to compute the outlierness.
-* `typc` : Type of cutoff ("mad" or "q"). See below.
-* `cri` : When `typc = "mad"`, constant used for computing the 
+* `typc` : Type of cutoff ("mad" or "q"), see below.
+* `cri` : When `typc = "mad"`, constant used to compute the 
     cutoff detecting extreme values.
-* `alpha` : When `typc = "q"`, risk-I level used for computing the cutoff 
-    detecting extreme values.
+* `alpha` : When `typc = "q"`, risk-I probability level to compute 
+    the cutoff detecting extreme values.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
-In this method, the "outlierness measure" `d` of a given observation
-is the median of the distances of this observation to its 
-`k` nearest neighbors in the training. 
-These distances are computed as Mahalanobis distances in a 
-PCA score space (internally computed; see argument `nlv`).
+Let us note q a given observation, and o[q] a neighbor of q 
+within the training data `X`. The `k` nearest neighbors of q
+define the neighborhood NNk(q) = {o.1[q], ...., o.k[q]} 
+(if q belongs to the training `X`, q is removed from NNk(q)). 
 
-A heuristic cutoff for detecting an "extreme" outlierness is computed on the training data `X.
-The empirical (training) distribution of `d` is computed from 
-a number of `nsamp` observations randomly (and globally) sampled in the training.
-* If `typc = "mad"`: The cutoff is computed by median(`d`) + `cri` * mad(`d`). 
-* If `typc = "q"`: The cutoff is estimated from the empirical cdf of `d`. 
+The global outlierness of any observation q relatively to `X`, say dk(q),
+is computed as the median distance to NNk(q):
+* dk(q) = median{d(q, o.j[q]), j = 1,...,k}.
+
+Outlierness dk(q) is then compared to the outlierness distribution
+estimated for the training data `X`, say distribution H0.   
+If dk(q) is extreme compared to H0, observation q may come from a 
+different distribution than the training data `X`.
+
+H0 is estimated by Monte Carlo, as follows:
+* A number of `nsamp` observations (rows) are sampled without replacement 
+    within the training data `X`.
+* For each of these `nsamp` training observations, say q.j {j = 1, ..., nsamp},
+    outlierness dk(q.j) is computed. This returns a vector of `nsamp` 
+    outlierness values {dk(q.j), j = 1,...,nsamp}. 
+* This vector defines the empirical outlierness distribution of 
+    observations assumed to come from the same distribution as 
+    the training data `X` ("hypothesis H0"). 
+
+Then, function `predict` computes outlierness dk(q) for each 
+new observation q.       
+
+In the function, distances are computed as Mahalanobis distances in a 
+PCA score space (internally computed), cf. argument `nlv`.
+
+The heuristic cutoff for detecting an extreme outlierness is computed
+as follows:
+* If `typc = "mad"`: cutoff = median(`d`) + `cri` * mad(`d`). 
+* If `typc = "q"`: the cutoff is estimated from the empirical cdf 
+    of `d`, depending on p-value `alpha`. 
+Output `dstand' is the outlierness standardized to the cutoff.
 
 Other details are the same as in `?occsd`. 
 
@@ -80,8 +105,8 @@ plotxy(T[:, i], T[:, i + 1], group;
 
 #### End data
 
-pct = .7
-nlv = 30 ; k = Int64(round(pct * ntrain))
+nlv = 30
+k = Int64(round(.7 * ntrain))
 nsamp = 300
 fm = occknndis(zXtrain; nsamp = nsamp,
     nlv = nlv, k = k, typc = "mad") ;
@@ -108,14 +133,12 @@ function occknndis(X;
     X = ensure_mat(X)
     n = nro(X)
     fm = pcasvd(X; nlv = nlv, scal = scal)
-    T = fm.T
     # For the Mahalanobis distance
-    tscales = colstd(T)
-    scale!(T, tscales)
+    tscales = colstd(fm.T)
+    scale!(fm.T, tscales)
     # End
-    zn = collect(1:n)
-    samp = sample(zn, nsamp; replace = false)
-    res = getknn(T, T[samp, :]; 
+    samp = sample(1:n, nsamp; replace = false)
+    res = getknn(fm.T, fm.T[samp, :]; 
             k = k + 1, metric = "eucl")
     d = zeros(nsamp)
     @inbounds for i = 1:nsamp
@@ -126,7 +149,7 @@ function occknndis(X;
     e_cdf = StatsBase.ecdf(d)
     pval = 1 .- e_cdf(d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = pval)
-    Occknndis(d, fm, T, tscales, k, e_cdf, cutoff)
+    Occknndis(d, fm, fm.T, tscales, k, e_cdf, cutoff)
 end
 
 function predict(object::Occknndis, X)

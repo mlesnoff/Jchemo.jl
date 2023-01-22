@@ -1,5 +1,12 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.1.14* 
+- News
+    - 
+
+- Modifications
+    - Code cleaning
+
 ### *Version 0.1.13* 
 - News
     - **mtest** Select indexes defining training and test sets for each column 

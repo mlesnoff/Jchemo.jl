@@ -1021,8 +1021,8 @@ summ(X[:, 2]).res
 """
 function summ(X; digits = 3)
     X = ensure_df(X)
-    res = StatsBase.describe(X, :mean, :min, :max, :nmissing) 
-    insertcols!(res, 5, :n => nro(X) .- res.nmissing)
+    res = StatsBase.describe(X, :mean, :std, :min, :max, :nmissing) 
+    insertcols!(res, 6, :n => nro(X) .- res.nmissing)
     for j = 2:4
         z = vcol(res, j)
         s = findall(isa.(z, Float64))
