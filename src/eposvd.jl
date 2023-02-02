@@ -1,29 +1,31 @@
 
 """
     eposvd(D; nlv)
-Calibration transfer of spectral data by orthogonalization
+Orthogonalization for calibration transfer of spectral data.
 * `D` : Data (m, p) containing the "detrimental" information on which the spectra
     have to be orthogonalized.
 * `nlv` : Nb. of first loadings vectors of D considered for the orthogonalization.
 
-The objective is to remove from a dataset X (n, p) some "detrimental" 
+The general objective is to remove from a dataset X (n, p) some detrimental 
 information (e.g. humidity patterns in signals, multiple spectrometers, etc.) 
-defined by a dataset `D` (m, p). The method orthogonalizes the observations 
-(rows of X) to the detrimental sub-space defined by the first `nlv` 
+defined by main directions contained in a dataset `D` (m, p). 
+The principle of the method is to orthogonalize the rows of X (observations) 
+to the detrimental sub-space defined by the first `nlv` 
 loadings vectors computed from a (non-centered) PCA of `D`.
-
-Function `eposvd` makes a SVD factorization of `D` and returns 
-two matrices:
-* `M` (p, p) : The orthogonalization matrix that can be used to correct the X-data.
-* `P` (p, `nlv`) : The matrix of the loading vectors of D. 
-
-Any dataset X can be corrected from the detrimental information `D` 
-by computing X_corrected = X * `M`.
 
 Matrix `D` can be built from different choices. Two common methods are:
 * EPO (Roger et al. 2003, 2018): `D` is built from differences between spectra
     collected from the different conditions. 
 * TOP (Andrew & Fearn 2004): Each row of `D` is the mean spectrum for an instrument.
+
+Function `eposvd` makes a SVD factorization of `D` and returns 
+two matrices:
+* `M` (p, p) : The orthogonalization matrix that can be used to correct any X-data.
+* `P` (p, `nlv`) : The matrix of the loading vectors of D. 
+
+The X-data corrected from the detrimental information `D` 
+is given by:
+* X_corrected = X * `M`.
 
 # References
 Andrew, A., Fearn, T., 2004. Transfer by orthogonal projection: making near-infrared 
@@ -60,10 +62,9 @@ D = X1cal - X2cal
 nlv = 2
 res = eposvd(D; nlv = nlv)
 res.M      # orthogonalization matrix
-res.P      # detrimental directions (columns of P = loadings of D)
+res.P      # detrimental directions (columns of matrix P = loadings of D)
 
-# Corrected matrices
-
+## Corrected matrices
 zX1 = X1val * res.M    
 zX2 = X2val * res.M    
 

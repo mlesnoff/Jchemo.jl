@@ -4,18 +4,21 @@ struct CalPds
 end
 
 """
-    calpds(X1, X2; fun = mlrpinv, m = 5, kwargs...)
-Calibration transfer of spectral data with piecewise direct standardization (PDS).
-* `X1` : Target (standart) X-data (n, p).
-* `X2` : X-data (n, p) to transfer to the standart.
+    calpds(Xst, X; fun = mlrpinv, m = 5, kwargs...)
+Piecewise direct standardization (PDS) for calibration transfer of spectral data.
+* `Xst` : Standart spectra, (n, p).
+* `X` : Spectra to transfer to the standart, (n, p).
 * `fun` : Function used for fitting the transfer model.  
 * `m` : Half-window size (nb. points left/right to the target wavelength) 
 * `kwargs` : Optional arguments for `fun`.
 
-`X1` and `X2` represent the same n samples.
-The method fits models expected to predict `X1` from `X2`.
+`Xst` and `X` must represent the same n samples.
 
-To predict wavelength i in `X1`, the window used in `X2` is :
+The objective is to transform spectra `X` to spectra as close 
+as possible as the standard `Xst`. The principle of the method is to fit models 
+predicting `Xst` from `X.
+
+To predict wavelength i in `Xst`, the window used in `X` is :
 
 * i - m, i - m + 1, ..., i, ..., i + m - 1, i + m
 
@@ -39,24 +42,30 @@ db = joinpath(mypath, "data", "caltransfer.jld2")
 @load db dat
 pnames(dat)
 
-X1cal = dat.X1cal
-X2cal = dat.X2cal
-X1val = dat.X1val
-X2val = dat.X2val
-n = nro(X1cal)
-m = nro(X1val)
+## Standart
+Xstcal = dat.X1cal
+Xstval = dat.X1val
+## To be transfered
+Xcal = dat.X2cal
+Xval = dat.X2val
 
-fm = calpds(X1cal, X2cal; fun = plskern, nlv = 1, m = 2) ;
-pred = Jchemo.predict(fm, X2val).pred
+n = nro(Xstcal)
+m = nro(Xstval)
+
+fm = calpds(Xstcal, Xcal; fun = plskern, nlv = 1, m = 2) ;
+pred = Jchemo.predict(fm, Xval).pred
 i = 1
-f, ax = lines(X1val[i, :])
-lines!(X2val[i, :])
-lines!(pred[i, :], linestyle = "--")
+f = Figure(resolution = (500, 300))
+ax = Axis(f[1, 1])
+lines!(Xstval[i, :]; label = "xst")
+lines!(ax, Xval[i, :]; label = "x")
+lines!(pred[i, :]; linestyle = "--", label = "x_transfered")
+axislegend(position = :rb)
 f
 ```
 """ 
-function calpds(X1, X2; fun = mlrpinv, m = 5, kwargs...)
-    p = nco(X1)
+function calpds(Xst, X; fun = mlrpinv, m = 5, kwargs...)
+    p = nco(Xst)
     fm = list(p)
     s = list(p)
     zm = repeat([m], p)
@@ -64,7 +73,7 @@ function calpds(X1, X2; fun = mlrpinv, m = 5, kwargs...)
     zm[(p - m + 1):p] .= collect(m:-1:1) .- 1
     @inbounds for i = 1:p
         s[i] = collect((i - zm[i]):(i + zm[i]))
-        fm[i] = fun(X2[:, s[i]], X1[:, i]; kwargs...)
+        fm[i] = fun(X[:, s[i]], Xst[:, i]; kwargs...)
     end
     CalPds(fm, s)
 end
@@ -73,7 +82,7 @@ end
     predict(object::CalPds, X; kwargs...)
 Compute predictions from a fitted model.
 * `object` : The fitted model.
-* `X` : X-data for which predictions are computed.
+* `X` : Spectra to transfer to standart form.
 * `kwargs` : Optional arguments.
 """ 
 function predict(object::CalPds, X; kwargs...)

@@ -1,8 +1,6 @@
 ### NEWS for package **Jchemo**
 
 ### *Version 0.1.14* 
-- News
-    - 
 
 - Modifications
     - Code cleaning
