@@ -3,8 +3,6 @@ struct LwplsrS
     Y::Array{Float64}
     fm0
     fm
-    nlv0::Int
-    nlvdis::Int
     metric::String
     h::Real
     k::Int
@@ -88,13 +86,14 @@ function lwplsr_s(X, Y; nlv0,
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     fm0 = plskern(X, Y; nlv = nlv0, scal = scal)
+    ## The new data replacing {X, Y} are {fm0.T, Y}
     if nlvdis == 0
         fm = nothing
     else
         fm = plskern(fm0.T, Y; nlv = nlvdis, scal = scal)
     end
     nlv = min(nlv, nco(fm0.T))
-    LwplsrS(X, Y, fm0, fm, nlv0, nlvdis, metric, h, k, nlv, 
+    LwplsrS(X, Y, fm0, fm, metric, h, k, nlv, 
         tol, scal, verbose)
 end
 
