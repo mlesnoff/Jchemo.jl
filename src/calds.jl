@@ -4,18 +4,18 @@ end
 
 
 """
-    calds(Xst, X; fun = mlrpinv, kwargs...)
-Direct standardization (PDS) for calibration transfer of spectral data.
-* `Xst` : Standart spectra, (n, p).
-* `X` : Spectra to transfer to the standart, (n, p).
+    calds(Xt, X; fun = mlrpinv, kwargs...)
+Direct targetization (PDS) for calibration transfer of spectral data.
+* `Xt` : Target spectra, (n, p).
+* `X` : Spectra to transfer to the target, (n, p).
 * `fun` : Function used for fitting the transfer model.  
 * `kwargs` : Optional arguments for `fun`.
 
-`Xst` and `X` must represent the same n samples.
+`Xt` and `X` must represent the same n samples.
 
 The objective is to transform spectra `X` to spectra as close 
-as possible as the standard `Xst`. The principle of the method is to fit models 
-predicting `Xst` from `X.
+as possible as the target `Xt`. The principle of the method is to fit models 
+predicting `Xt` from `X.
 
 ## References
 
@@ -30,32 +30,34 @@ db = joinpath(mypath, "data", "caltransfer.jld2")
 @load db dat
 pnames(dat)
 
-## Standart
-Xstcal = dat.X1cal
-Xstval = dat.X1val
+## Target
+Xtcal = dat.X1cal
+Xtval = dat.X1val
 ## To be transfered
 Xcal = dat.X2cal
 Xval = dat.X2val
 
-n = nro(Xstcal)
-m = nro(Xstval)
+n = nro(Xtcal)
+m = nro(Xtval)
 
-fm = calds(Xstcal, Xcal; fun = mlrpinv) ;
-#fm = calds(Xstcal, Xcal; fun = pcr, nlv = 15) ;
-#fm = calds(Xstcal, Xcal; fun = plskern, nlv = 15) ;
+fm = calds(Xtcal, Xcal; fun = mlrpinv) ;
+#fm = calds(Xtcal, Xcal; fun = pcr, nlv = 15) ;
+#fm = calds(Xtcal, Xcal; fun = plskern, nlv = 15) ;
+## Transferred data
 pred = Jchemo.predict(fm, Xval).pred
+
 i = 1
 f = Figure(resolution = (500, 300))
 ax = Axis(f[1, 1])
-lines!(Xstval[i, :]; label = "xst")
+lines!(Xtval[i, :]; label = "xt")
 lines!(ax, Xval[i, :]; label = "x")
-lines!(pred[i, :]; linestyle = "--", label = "x_transfered")
-axislegend(position = :rb)
+lines!(pred[i, :]; linestyle = "--", label = "x_transf")
+axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-function calds(Xst, X; fun = mlrpinv, kwargs...)
-    fm = fun(X, Xst; kwargs...)
+function calds(Xt, X; fun = mlrpinv, kwargs...)
+    fm = fun(X, Xt; kwargs...)
     CalDs(fm)
 end
 

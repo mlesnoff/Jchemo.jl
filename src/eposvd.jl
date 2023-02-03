@@ -23,9 +23,13 @@ two matrices:
 * `M` (p, p) : The orthogonalization matrix that can be used to correct any X-data.
 * `P` (p, `nlv`) : The matrix of the loading vectors of D. 
 
-The X-data corrected from the detrimental information `D` 
-is given by:
+Any X-data can be corrected from the detrimental information `D` by:
 * X_corrected = X * `M`.
+
+A particular situation is the following.
+Assume that D was built from differences between X1 and X2,
+and that a bilinear model (e.g. PLSR) has been fitted on X1_corrected.
+For future predictions X2_new, there is no need to correct X2_new.
 
 # References
 Andrew, A., Fearn, T., 2004. Transfer by orthogonal projection: making near-infrared 
@@ -69,9 +73,13 @@ zX1 = X1val * res.M
 zX2 = X2val * res.M    
 
 i = 1
-f, ax = lines(zX1[i, :])
-lines!(ax, zX2[i, :])
+f = Figure(resolution = (500, 300))
+ax = Axis(f[1, 1])
+lines!(zX1[i, :]; label = "x1_correct")
+lines!(ax, zX2[i, :]; label = "x2_correct")
+axislegend(position = :cb, framevisible = false)
 f
+
 ```
 """ 
 function eposvd(D; nlv)

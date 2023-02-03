@@ -4,26 +4,26 @@ struct CalPds
 end
 
 """
-    calpds(Xst, X; fun = mlrpinv, m = 5, kwargs...)
-Piecewise direct standardization (PDS) for calibration transfer of spectral data.
-* `Xst` : Standart spectra, (n, p).
-* `X` : Spectra to transfer to the standart, (n, p).
+    calpds(Xt, X; fun = mlrpinv, m = 5, kwargs...)
+Piecewise direct targetization (PDS) for calibration transfer of spectral data.
+* `Xt` : Target spectra, (n, p).
+* `X` : Spectra to transfer to the target, (n, p).
 * `fun` : Function used for fitting the transfer model.  
 * `m` : Half-window size (nb. points left/right to the target wavelength) 
 * `kwargs` : Optional arguments for `fun`.
 
-`Xst` and `X` must represent the same n samples.
+`Xt` and `X` must represent the same n samples.
 
 The objective is to transform spectra `X` to spectra as close 
-as possible as the standard `Xst`. The principle of the method is to fit models 
-predicting `Xst` from `X.
+as possible as the target `Xt`. The principle of the method is to fit models 
+predicting `Xt` from `X.
 
-To predict wavelength i in `Xst`, the window used in `X` is :
+To predict wavelength i in `Xt`, the window used in `X` is :
 
 * i - m, i - m + 1, ..., i, ..., i + m - 1, i + m
 
 ## References
-Bouveresse, E., Massart, D.L., 1996. Improvement of the piecewise direct standardisation procedure 
+Bouveresse, E., Massart, D.L., 1996. Improvement of the piecewise direct targetisation procedure 
 for the transfer of NIR spectra for multivariate calibration. Chemometrics and Intelligent Laboratory 
 Systems 32, 201–213. https://doi.org/10.1016/0169-7439(95)00074-7
 
@@ -42,30 +42,32 @@ db = joinpath(mypath, "data", "caltransfer.jld2")
 @load db dat
 pnames(dat)
 
-## Standart
-Xstcal = dat.X1cal
-Xstval = dat.X1val
+## Target
+Xtcal = dat.X1cal
+Xtval = dat.X1val
 ## To be transfered
 Xcal = dat.X2cal
 Xval = dat.X2val
 
-n = nro(Xstcal)
-m = nro(Xstval)
+n = nro(Xtcal)
+m = nro(Xtval)
 
-fm = calpds(Xstcal, Xcal; fun = plskern, nlv = 1, m = 2) ;
+fm = calpds(Xtcal, Xcal; fun = plskern, nlv = 1, m = 2) ;
+## Transferred data
 pred = Jchemo.predict(fm, Xval).pred
+
 i = 1
 f = Figure(resolution = (500, 300))
 ax = Axis(f[1, 1])
-lines!(Xstval[i, :]; label = "xst")
+lines!(Xtval[i, :]; label = "xt")
 lines!(ax, Xval[i, :]; label = "x")
-lines!(pred[i, :]; linestyle = "--", label = "x_transfered")
-axislegend(position = :rb)
+lines!(pred[i, :]; linestyle = "--", label = "x_transf")
+axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-function calpds(Xst, X; fun = mlrpinv, m = 5, kwargs...)
-    p = nco(Xst)
+function calpds(Xt, X; fun = mlrpinv, m = 5, kwargs...)
+    p = nco(Xt)
     fm = list(p)
     s = list(p)
     zm = repeat([m], p)
@@ -73,7 +75,7 @@ function calpds(Xst, X; fun = mlrpinv, m = 5, kwargs...)
     zm[(p - m + 1):p] .= collect(m:-1:1) .- 1
     @inbounds for i = 1:p
         s[i] = collect((i - zm[i]):(i + zm[i]))
-        fm[i] = fun(X[:, s[i]], Xst[:, i]; kwargs...)
+        fm[i] = fun(X[:, s[i]], Xt[:, i]; kwargs...)
     end
     CalPds(fm, s)
 end
@@ -82,7 +84,7 @@ end
     predict(object::CalPds, X; kwargs...)
 Compute predictions from a fitted model.
 * `object` : The fitted model.
-* `X` : Spectra to transfer to standart form.
+* `X` : Spectra to transfer to target form.
 * `kwargs` : Optional arguments.
 """ 
 function predict(object::CalPds, X; kwargs...)
