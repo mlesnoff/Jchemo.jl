@@ -11,7 +11,7 @@ Direct targetization (PDS) for calibration transfer of spectral data.
 * `fun` : Function used for fitting the transfer model.  
 * `kwargs` : Optional arguments for `fun`.
 
-`Xt` and `X` must represent the same n samples.
+`Xt` and `X` must represent the same n samples ("standarts").
 
 The objective is to transform spectra `X` to spectra as close 
 as possible as the target `Xt`. The principle of the method is to fit models 
@@ -33,7 +33,7 @@ pnames(dat)
 ## Target
 Xtcal = dat.X1cal
 Xtval = dat.X1val
-## To be transfered
+## To predict
 Xcal = dat.X2cal
 Xval = dat.X2val
 
@@ -43,8 +43,7 @@ m = nro(Xtval)
 fm = calds(Xtcal, Xcal; fun = mlrpinv) ;
 #fm = calds(Xtcal, Xcal; fun = pcr, nlv = 15) ;
 #fm = calds(Xtcal, Xcal; fun = plskern, nlv = 15) ;
-## Transferred data
-pred = Jchemo.predict(fm, Xval).pred
+pred = Jchemo.predict(fm, Xval).pred     # Transfered spectra
 
 i = 1
 f = Figure(resolution = (500, 300))

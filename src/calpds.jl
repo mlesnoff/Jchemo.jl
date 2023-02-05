@@ -12,7 +12,7 @@ Piecewise direct targetization (PDS) for calibration transfer of spectral data.
 * `m` : Half-window size (nb. points left/right to the target wavelength) 
 * `kwargs` : Optional arguments for `fun`.
 
-`Xt` and `X` must represent the same n samples.
+`Xt` and `X` must represent the same n samples ("standarts").
 
 The objective is to transform spectra `X` to spectra as close 
 as possible as the target `Xt`. The principle of the method is to fit models 
@@ -45,7 +45,7 @@ pnames(dat)
 ## Target
 Xtcal = dat.X1cal
 Xtval = dat.X1val
-## To be transfered
+## To predict
 Xcal = dat.X2cal
 Xval = dat.X2val
 
@@ -53,8 +53,7 @@ n = nro(Xtcal)
 m = nro(Xtval)
 
 fm = calpds(Xtcal, Xcal; fun = plskern, nlv = 1, m = 2) ;
-## Transferred data
-pred = Jchemo.predict(fm, Xval).pred
+pred = Jchemo.predict(fm, Xval).pred     # Transfered spectra
 
 i = 1
 f = Figure(resolution = (500, 300))
@@ -84,7 +83,7 @@ end
     predict(object::CalPds, X; kwargs...)
 Compute predictions from a fitted model.
 * `object` : The fitted model.
-* `X` : Spectra to transfer to target form.
+* `X` : X-data for which predictions are computed.
 * `kwargs` : Optional arguments.
 """ 
 function predict(object::CalPds, X; kwargs...)
@@ -92,7 +91,8 @@ function predict(object::CalPds, X; kwargs...)
     m, p = size(X)
     pred = similar(X, m, p)
     for i = 1:p 
-        pred[:, i] .= predict(object.fm[i], X[:, object.s[i]]; kwargs...).pred
+        pred[:, i] .= predict(object.fm[i], X[:, object.s[i]]; 
+            kwargs...).pred
     end
     (pred = pred,)
 end

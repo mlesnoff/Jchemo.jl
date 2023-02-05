@@ -26,10 +26,10 @@ two matrices:
 Any X-data can be corrected from the detrimental information `D` by:
 * X_corrected = X * `M`.
 
-A particular situation is the following.
-Assume that D was built from differences between X1 and X2,
-and that a bilinear model (e.g. PLSR) has been fitted on X1_corrected.
-For future predictions X2_new, there is no need to correct X2_new.
+A particular situation is the following. Assume that D was built from 
+differences between X1 and X2, and that a bilinear model (e.g. PLSR) has 
+been fitted on X1_corrected. For future predictions X2new, there is no need 
+to correct X2new.
 
 # References
 Andrew, A., Fearn, T., 2004. Transfer by orthogonal projection: making near-infrared 
