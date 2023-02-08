@@ -239,15 +239,15 @@
 - **checkdupl** Finding replicated rows in a dataset
 - **checkmiss** Finding rows with missing data in a dataset
 
-### **Calibration transfert**
+### **Calibration transfer**
 
 - **calds** : Direct standardization (DS).
 - **calpds** : Piecewise direct standardization (PDS).
+- **eposvd** External parameter orthogonalization (EPO)
 
 ### **Pre-processing**
 
 - **detrend** Polynomial detrend
-- **eposvd** External parameter orthogonalization (EPO)
 - **fdif** Finite differences
 - **mavg**, **mavg_runmean** Smoothing by moving average
 - **rmgap** Remove vertical gaps in spectra, e.g. for ASD NIR data

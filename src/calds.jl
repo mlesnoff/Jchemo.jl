@@ -5,7 +5,7 @@ end
 
 """
     calds(Xt, X; fun = mlrpinv, kwargs...)
-Direct targetization (PDS) for calibration transfer of spectral data.
+Direct standardization (DS) for calibration transfer of spectral data.
 * `Xt` : Target spectra, (n, p).
 * `X` : Spectra to transfer to the target, (n, p).
 * `fun` : Function used for fitting the transfer model.  

@@ -5,7 +5,7 @@ end
 
 """
     calpds(Xt, X; fun = mlrpinv, m = 5, kwargs...)
-Piecewise direct targetization (PDS) for calibration transfer of spectral data.
+Piecewise direct standardization (PDS) for calibration transfer of spectral data.
 * `Xt` : Target spectra, (n, p).
 * `X` : Spectra to transfer to the target, (n, p).
 * `fun` : Function used for fitting the transfer model.  
