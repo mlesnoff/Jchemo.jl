@@ -1,11 +1,13 @@
 """
     plotxy(x, y; resolution = (500, 400), 
-        color = nothing, ellipse = false, prob = .95, 
-        bisect::Bool = false, kwargs...)
+        color = nothing, ellipse::Bool = false, prob = .95, 
+        circle::Bool = false, bisect::Bool = false, zeros::Bool = false, 
+        kwargs...)
     plotxy(x, y, group; resolution = (600, 400), 
-        color = nothing, ellipse = false, prob = .95, 
-        bisect::Bool = false, kwargs...)
-
+        color = nothing, ellipse::Bool = false, prob = .95, 
+        circle::Bool = false, bisect::Bool = false, zeros::Bool = false, 
+        kwargs...)
+        
 Scatter plot of (x, y) data
 * `x` : A x-variable (n).
 * `y` : A y-variable (n). 
@@ -18,6 +20,7 @@ Scatter plot of (x, y) data
     with df = 2. If `group` is used, one ellipse per group is drawn.
 * `prob` : Probability for the ellipse of confidence (default = .95).
 *  `bisect` : Boolean. Draw a bisector.
+*  `zeros` : Boolean. Draw horizontal and vertical axes passing through origin (0, 0).
 * `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.
 
 The user has to specify a backend (e.g. CairoMakie).
@@ -43,8 +46,9 @@ plotxy(T[:, 1], T[:, 2], year; ellipse = true).f
 ```
 """ 
 function plotxy(x, y; resolution = (500, 400), 
-        color = nothing, ellipse = false, prob = .95, 
-        bisect::Bool = false, kwargs...)
+        color = nothing, ellipse::Bool = false, prob = .95, 
+        circle::Bool = false, bisect::Bool = false, zeros::Bool = false, 
+        kwargs...)
     f = Figure(resolution = resolution)
     ax = Axis(f; kwargs...)
     if isnothing(color)
@@ -63,16 +67,25 @@ function plotxy(x, y; resolution = (500, 400),
             lines!(ax, res.X; color = color)
         end 
     end
+    if circle
+        z = Jchemo.ellipse(diagm(ones(2))).X
+        lines!(ax, z; color = :grey50)
+    end
     if bisect
         ablines!(ax, 0, 1)
+    end
+    if zeros
+        hlines!(0; color = :grey60)
+        vlines!(0; color = :grey60)
     end
     f[1, 1] = ax
     (f = f, ax = ax)
 end
 
 function plotxy(x, y, group; resolution = (600, 400), 
-        color = nothing, ellipse = false, prob = .95, 
-        bisect::Bool = false, kwargs...)
+        color = nothing, ellipse::Bool = false, prob = .95, 
+        circle::Bool = false, bisect::Bool = false, zeros::Bool = false, 
+        kwargs...)
     group = vec(group)
     lev = sort(unique(group))
     nlev = length(lev)
@@ -98,6 +111,17 @@ function plotxy(x, y, group; resolution = (600, 400),
             else
                 lines!(ax, res.X; color = color)
             end 
+        end
+        if circle
+            z = Jchemo.ellipse(diagm(ones(2))).X
+            lines!(ax, z; color = :grey50)
+        end
+        if bisect
+            ablines!(ax, 0, 1)
+        end
+        if zeros
+            hlines!(0; color = :grey60)
+            vlines!(0; color = :grey60)
         end
     end
     if bisect

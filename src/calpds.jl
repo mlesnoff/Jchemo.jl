@@ -12,7 +12,7 @@ Piecewise direct targetization (PDS) for calibration transfer of spectral data.
 * `m` : Half-window size (nb. points left/right to the target wavelength) 
 * `kwargs` : Optional arguments for `fun`.
 
-`Xt` and `X` must represent the same n samples ("standarts").
+`Xt` and `X` must represent the same n standard samples.
 
 The objective is to transform spectra `X` to spectra as close 
 as possible as the target `Xt`. The principle of the method is to fit models 

@@ -3,6 +3,7 @@
 ### *Version 0.1.14* 
 
 - Modifications
+    - **plotxy**: arguments 'circle' and 'zeros' were added. 
     - Code cleaning
 
 ### *Version 0.1.13* 
