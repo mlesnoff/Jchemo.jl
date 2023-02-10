@@ -19,16 +19,17 @@ using StatsBase    # sample
 using XGBoost
 
 include("utility.jl") 
+include("colmedspa.jl")
+include("dens.jl")
 include("fweight.jl") 
+include("ellipse.jl")
 include("matW.jl")
 include("nipals.jl")
 include("plotgrid.jl")
 include("plotsp.jl")
 include("plotxy.jl")
-include("ellipse.jl")
 include("preprocessing.jl") 
 include("rmgap.jl")
-include("dens.jl")
 
 # Exploratory
 include("fda.jl")     # Here since struct in pcasvd

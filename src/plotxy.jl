@@ -62,14 +62,14 @@ function plotxy(x, y; resolution = (500, 400),
         radius = sqrt(quantile(Chi(2), prob))
         res = Jchemo.ellipse(cov(X); center = xmeans, radius = radius)
         if isnothing(color)
-            lines!(ax, res.X)
+            lines!(ax, res.X; color = :grey40)
         else
             lines!(ax, res.X; color = color)
         end 
     end
     if circle
         z = Jchemo.ellipse(diagm(ones(2))).X
-        lines!(ax, z; color = :grey50)
+        lines!(ax, z; color = :grey60)
     end
     if bisect
         ablines!(ax, 0, 1)
@@ -89,17 +89,17 @@ function plotxy(x, y, group; resolution = (600, 400),
     group = vec(group)
     lev = sort(unique(group))
     nlev = length(lev)
+    lab = string.(lev)
     f = Figure(resolution = resolution)
     ax = Axis(f; kwargs...)
     for i = 1:nlev
         s = group .== lev[i]
         zx = x[s]
         zy = y[s]
-        lab = string(lev[i])
         if isnothing(color)
-            scatter!(ax, zx, zy; label = lab)
+            scatter!(ax, zx, zy; label = lab[i])
         else
-            scatter!(ax, zx, zy; label = lab, color = color[i])
+            scatter!(ax, zx, zy; label = lab[i], color = color[i])
         end
         if ellipse
             X = hcat(zx, zy)
@@ -107,25 +107,22 @@ function plotxy(x, y, group; resolution = (600, 400),
             radius = sqrt(quantile(Chi(2), prob))
             res = Jchemo.ellipse(cov(X); center = xmeans, radius = radius)
             if isnothing(color)
-                lines!(ax, res.X)
+                lines!(ax, res.X; color = :grey40)
             else
-                lines!(ax, res.X; color = color)
+                lines!(ax, res.X; color = color[i])
             end 
         end
-        if circle
-            z = Jchemo.ellipse(diagm(ones(2))).X
-            lines!(ax, z; color = :grey50)
-        end
-        if bisect
-            ablines!(ax, 0, 1)
-        end
-        if zeros
-            hlines!(0; color = :grey60)
-            vlines!(0; color = :grey60)
-        end
+    end
+    if circle
+        res = Jchemo.ellipse(diagm(ones(2))).X
+        lines!(ax, res; color = :grey60)
     end
     if bisect
         ablines!(ax, 0, 1)
+    end
+    if zeros
+        hlines!(0; color = :grey60)
+        vlines!(0; color = :grey60)
     end
     f[1, 1] = ax
     f[1, 2] = Legend(f, ax, "Group", framevisible = false)

@@ -1140,4 +1140,25 @@ vcol(X, j) = view(X, :, j)
 vcol(x::Vector, i) = view(x, i)
 vcol(X::DataFrame, j) = view(Matrix(X), :, j)
 
+##################### MACROS 
 
+"""
+    @namvar(x)
+Return the name of a variable.
+* `x` : A variable or function.
+
+Thanks to: 
+https://stackoverflow.com/questions/38986764/save-variable-name-as-string-in-julia
+
+## Examples
+```julia
+z = 1:5
+Jchemo.@namvar(z)
+```
+"""
+macro namvar(arg)
+    x = string(arg)
+    quote
+        $x
+    end
+end
