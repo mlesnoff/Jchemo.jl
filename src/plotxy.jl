@@ -1,5 +1,5 @@
 """
-    plotxy(x, y; resolution = (500, 400), 
+    plotxy(x, y; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false, 
         kwargs...)
@@ -14,10 +14,10 @@ Scatter plot of (x, y) data
 * `group` : Categorical variable defining groups. 
     A separate line is plotted for each level of `group`.
 * 'resolution' : Resolution (horizontal, vertical) of the figure.
-* `color` : Set color. If `group` if used, must be a vector of same length
-    as the number of levels in `group`.
+* `color` : Set color(s). If `group` if used, `color` must be a vector of 
+    same length as the number of levels in `group`.
 * `ellipse` : Boolean. Draw an ellipse of confidence, assuming a Ch-square distribution
-    with df = 2. If `group` is used, one ellipse per group is drawn.
+    with df = 2. If `group` is used, one ellipse is drawn per group.
 * `prob` : Probability for the ellipse of confidence (default = .95).
 *  `bisect` : Boolean. Draw a bisector.
 *  `zeros` : Boolean. Draw horizontal and vertical axes passing through origin (0, 0).
@@ -37,15 +37,27 @@ X = dat.X
 y = dat.Y.tbc
 year = dat.Y.year
 tab(year)
+lev = sort(unique(year))
+nlev = length(lev)
 
 fm = pcasvd(X, nlv = 3) ; 
 T = fm.T
 
 plotxy(T[:, 1], T[:, 2]; color = (:red, .5)).f
+
 plotxy(T[:, 1], T[:, 2], year; ellipse = true).f
+
+i = 1
+colm = cgrad(:Dark2_5, nlev; categorical = true)
+plotxy(T[:, i], T[:, i + 1], year; 
+    color = colm,
+    xlabel = string("PC", i), ylabel = string("PC", i + 1),
+    zeros = true, ellipse = true).f
+
+plotxy(T[:, 1], T[:, 2], year).lev
 ```
 """ 
-function plotxy(x, y; resolution = (500, 400), 
+function plotxy(x, y; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false, 
         kwargs...)
@@ -126,6 +138,6 @@ function plotxy(x, y, group; resolution = (600, 400),
     end
     f[1, 1] = ax
     f[1, 2] = Legend(f, ax, "Group", framevisible = false)
-    (f = f, ax = ax)
+    (f = f, ax = ax, lev = lev)
 end
 
