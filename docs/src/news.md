@@ -2,6 +2,9 @@
 
 ### *Version 0.1.14* 
 
+- News
+    - **pcasph**: Spherical PCA.
+
 - Modifications
     - **plotxy**: arguments 'circle' and 'zeros' were added. 
     - Code cleaning

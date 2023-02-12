@@ -6,6 +6,8 @@
 - **pcaeigen** Eigen decomposition
 - **pcaeigenk** Eigen decomposition for wide matrices (kernel form)
 - **pcasvd** SVD decomposition
+- Robust PCA
+    - **pcasph** Spherical (with spatial median)
 - Variants for dimension reduction
     - **rp** Random projection
     - **rpmatgauss** Gaussian random projection matrix 

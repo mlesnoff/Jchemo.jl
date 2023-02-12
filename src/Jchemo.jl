@@ -37,8 +37,9 @@ include("pcasvd.jl")
 include("pcaeigen.jl")
 include("kpca.jl")
 include("rp.jl")
+include("pcasph.jl") 
 
-# Exploratory Multiblock 
+# Exploratory - Multiblock 
 include("angles.jl")
 include("mblock.jl")
 include("blockscal.jl")
@@ -200,6 +201,7 @@ export
     nipals,
     pcasvd, pcasvd!, pcaeigen, pcaeigen!, pcaeigenk, pcaeigenk!,
     rpmatgauss, rpmatli, rp, rp!,
+    pcasph, pcasph!,
     # Exploratory Multiblock
     blockscal, blockscal_frob, blockscal_mfa,
     blockscal_ncol, blockscal_sd,
