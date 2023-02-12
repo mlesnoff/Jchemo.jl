@@ -1,11 +1,13 @@
 """
     plotxy(x, y; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
-        circle::Bool = false, bisect::Bool = false, zeros::Bool = false, 
+        circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
+        xlabel = "", ylabel = "", 
         kwargs...)
     plotxy(x, y, group; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
-        circle::Bool = false, bisect::Bool = false, zeros::Bool = false, 
+        circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
+        xlabel = "", ylabel = "", 
         kwargs...)
         
 Scatter plot of (x, y) data
@@ -21,7 +23,9 @@ Scatter plot of (x, y) data
 * `prob` : Probability for the ellipse of confidence (default = .95).
 *  `bisect` : Boolean. Draw a bisector.
 *  `zeros` : Boolean. Draw horizontal and vertical axes passing through origin (0, 0).
-* `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.
+*  `xlabel` : Label for the x-axis.
+*  `ylabel` : Label for the y-axis.
+* `kwargs` : Optional arguments to pass in function `scatter` of Makie.
 
 The user has to specify a backend (e.g. CairoMakie).
 
@@ -59,14 +63,15 @@ plotxy(T[:, 1], T[:, 2], year).lev
 """ 
 function plotxy(x, y; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
-        circle::Bool = false, bisect::Bool = false, zeros::Bool = false, 
+        circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
+        xlabel = "", ylabel = "", 
         kwargs...)
     f = Figure(resolution = resolution)
-    ax = Axis(f; kwargs...)
+    ax = Axis(f; xlabel = xlabel, ylabel = ylabel)
     if isnothing(color)
-        scatter!(ax, x, y)
+        scatter!(ax, x, y; kwargs...)
     else
-        scatter!(ax, x, y; color = color)
+        scatter!(ax, x, y; color = color, kwargs...)
     end
     if ellipse
         X = hcat(x, y)
@@ -96,22 +101,23 @@ end
 
 function plotxy(x, y, group; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
-        circle::Bool = false, bisect::Bool = false, zeros::Bool = false, 
+        circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
+        xlabel = "", ylabel = "", 
         kwargs...)
     group = vec(group)
     lev = sort(unique(group))
     nlev = length(lev)
     lab = string.(lev)
     f = Figure(resolution = resolution)
-    ax = Axis(f; kwargs...)
+    ax = Axis(f; xlabel = xlabel, ylabel = ylabel)
     for i = 1:nlev
         s = group .== lev[i]
         zx = x[s]
         zy = y[s]
         if isnothing(color)
-            scatter!(ax, zx, zy; label = lab[i])
+            scatter!(ax, zx, zy; label = lab[i], kwargs...)
         else
-            scatter!(ax, zx, zy; label = lab[i], color = color[i])
+            scatter!(ax, zx, zy; label = lab[i], color = color[i], kwargs...)
         end
         if ellipse
             X = hcat(zx, zy)
