@@ -7,15 +7,15 @@
 
 - Modifications
     - **plotxy**: arguments 'circle' and 'zeros' were added. 
-    - Code cleaning
+    - Code cleaning.
 
 ### *Version 0.1.13* 
 - News
     - **mtest** Select indexes defining training and test sets for each column 
-        of a dataframe
+        of a dataframe.
 
 - Modifications
-    - Code cleaning
+    - Code cleaning.
 
 ### *Version 0.1.12* 
 - Modifications
@@ -30,7 +30,7 @@
     - **mbwcov**: Multiblock weighted covariate analysis regression (MBWCov) (Mangana et al. 2021).
 
 - Modifications
-    - Code cleaning
+    - Code cleaning.
 
 - Breaking changes
     - **mbmang** renamed to **mbunif** (Unified multiblock analysis).
