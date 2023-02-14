@@ -34,35 +34,39 @@ The user has to specify a backend (e.g. CairoMakie).
 ```
 
 """ 
-function plotsp(X, wl = 1:size(X, 2); resolution = (500, 350),
+function plotsp(X, wl = 1:nco(X); resolution = (500, 350),
         color = nothing, nsamp = nothing, kwargs...) 
     X = ensure_mat(X)
     if !isnothing(nsamp)
-        X = X[sample(1:nro(X),nsamp; replace = false), :]
+        X = X[sample(1:nro(X), nsamp; replace = false), :]
     end
     n, p = size(X)
     f = Figure(resolution = resolution)
     ax = Axis(f; kwargs...)
-    res = Vector{Matrix}(undef, n)
+    res = list(n, Matrix{Float64})
     if isnothing(color)
-        k = randperm(n)
+        s = randperm(n)
         for i = 1:n
-            res[i] = hcat([wl ; NaN], [X[i, :] ; NaN], k[i] * ones(p + 1))
+            res[i] = hcat([wl ; NaN], [X[i, :] ; NaN], s[i] * ones(p + 1))
         end
         res = reduce(vcat, res)
         tp = .9
         if n == 1
             lines!(ax, res[:, 1], res[:, 2]; color = "red3")
         else
-            #cm = (:Paired_12, tp)
-            #cm = (:seaborn_bright, tp)
-            cm = (:Set1_9, tp)
-            lines!(ax, res[:, 1], res[:, 2]; colormap = cm, color = res[:, 3])
+            #colm = (:Paired_12, tp)
+            #colm = (:seaborn_bright, tp)
+            colm = (:Set1_9, tp)
+            lines!(ax, res[:, 1], res[:, 2]; colormap = colm, 
+                color = res[:, 3])
         end
     else
         for i = 1:n
             res[i] = hcat([wl ; NaN], [X[i, :] ; NaN])
         end
+        # Same as:
+        # res = [hcat([wl ; NaN], [X[i, :] ; NaN]) for i = 1:n]
+        # End
         res = reduce(vcat, res)
         lines!(ax, res[:, 1], res[:, 2]; color = color)
     end

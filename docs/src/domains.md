@@ -281,7 +281,6 @@
 - **center**, **scale**, **cscale** Column-wise centering and scaling of a matrix
 - **colmad**, **colmean**, **colnorm**, **colstd**, **colsum**, **colvar**  Column-wise operations
 - **covm**, **corm** Covariance and correlation matrices
-- **datasets** Datasets available in the package
 - **dens** Univariate kernel density estimation
 - **dummy** Build dummy table
 - **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
