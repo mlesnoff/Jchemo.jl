@@ -132,6 +132,8 @@ group[segm[i][1]]
 ```
 """ 
 function segmts(n, m; rep = 1, seed = nothing)
+    n = Int64(n)
+    m = Int64(m)
     s = list(rep)
     for i = 1:rep
         s[i] = list(1, Vector{Int64})
@@ -147,6 +149,7 @@ end
 
 function segmts(n, m, group; rep = 1, seed = nothing)
     # n is not used but is kept for multiple dispatch
+    m = Int64(m)
     group = vec(group) # must be of length n
     s = list(rep)
     yagg = unique(group)

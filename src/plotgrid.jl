@@ -5,7 +5,7 @@
     plotgrid(indx::Union{Vector{Integer}, Vector{Int64}, Vector{Real}, Vector{Float64}}, r, 
         group; 
         resolution = (500, 350), step = 5, 
-        color = nothing, kwargs...)
+        color = nothing, leg = true, kwargs...)
 
 Plot error or performance rates of model predictions.
 * `indx` : A numeric variable representing the grid of model parameters, 
@@ -17,6 +17,7 @@ Plot error or performance rates of model predictions.
 * `step` : Step used for defining the xticks.
 * `color` : Set color. If `group` if used, must be a vector of same length
     as the number of levels in `group`.
+* `leg` : Boolean. If `group` is used, display a legend or not.
 * `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.
 
 The user has to specify a backend (e.g. CairoMakie).
@@ -75,7 +76,7 @@ end
 function plotgrid(indx::Union{Vector{Integer}, Vector{Int64}, Vector{Real}, Vector{Float64}}, r, 
         group; 
         resolution = (700, 350), step = 5, 
-        color = nothing, kwargs...)
+        color = nothing, leg = true, kwargs...)
     r = Float64.(vec(r))
     group = vec(group)
     xticks = collect(minimum(indx):step:maximum(indx))
@@ -95,7 +96,9 @@ function plotgrid(indx::Union{Vector{Integer}, Vector{Int64}, Vector{Real}, Vect
         end
     end
     f[1, 1] = ax
-    f[1, 2] = Legend(f, ax, "Group", framevisible = false)
+    if leg
+        f[1, 2] = Legend(f, ax, "Group", framevisible = false)
+    end
     (f = f, ax = ax)
 end
 

@@ -1,13 +1,17 @@
 ### NEWS for package **Jchemo**
 
 ### *Version 0.1.14* 
-
 - News
     - **pcasph**: Spherical PCA.
 
 - Modifications
-    - **plotxy**: arguments 'circle' and 'zeros' were added. 
+    - **plotgrid**: add of argument 'leg'. 
+    - **plotxy**: add of arguments 'circle' and 'zeros'. 
     - Code cleaning.
+
+- Breaking changes
+    - **gridcv** and **gridcv_mb**: in output 'res_rep', colum 'rept' replaced
+         by column 'repl'.
 
 ### *Version 0.1.13* 
 - News

@@ -13,7 +13,7 @@ function gridcv_mb(Xbl, Y; segm, score, fun, pars, verbose = false)
     ncomb = length(pars[1]) # nb. combinations in pars
     nbl = length(Xbl)
     @inbounds for i in 1:nrep
-        verbose ? print("/ rept=", i, " ") : nothing
+        verbose ? print("/ repl=", i, " ") : nothing
         listsegm = segm[i]       # segments in the repetition
         nsegm = length(listsegm) # segmts: 1; segmkf: K
         zres = list(nsegm)       # results for the repetition
@@ -30,7 +30,7 @@ function gridcv_mb(Xbl, Y; segm, score, fun, pars, verbose = false)
                 score = score, fun = fun, pars = pars)
         end
         zres = reduce(vcat, zres)
-        dat = DataFrame(rept = fill(i, nsegm * ncomb),
+        dat = DataFrame(repl = fill(i, nsegm * ncomb),
             segm = repeat(1:nsegm, inner = ncomb))
         zres = hcat(dat, zres)
         res_rep[i] = zres
@@ -60,7 +60,7 @@ function gridcvlv_mb(Xbl, Y; segm, score, fun, nlv,
     le_nlv = length(nlv)
     nbl = length(Xbl)
     @inbounds for i in 1:nrep
-        verbose ? print("/ rept=", i, " ") : nothing
+        verbose ? print("/ repl=", i, " ") : nothing
         listsegm = segm[i]       # segments in the repetition
         nsegm = length(listsegm) # segmts: 1; segmkf: K
         zres = list(nsegm)       # results for the repetition
@@ -79,11 +79,11 @@ function gridcvlv_mb(Xbl, Y; segm, score, fun, nlv,
         zres = reduce(vcat, zres)
         ## Case where pars is empty
         if isnothing(pars) 
-            dat = DataFrame(rept = fill(i, nsegm * le_nlv),
+            dat = DataFrame(repl = fill(i, nsegm * le_nlv),
                 segm = repeat(1:nsegm, inner = le_nlv))
         else
             ncomb = length(pars[1]) # nb. combinations in pars
-            dat = DataFrame(rept = fill(i, nsegm * le_nlv * ncomb),
+            dat = DataFrame(repl = fill(i, nsegm * le_nlv * ncomb),
                 segm = repeat(1:nsegm, inner = le_nlv * ncomb))
         end
         zres = hcat(dat, zres)
