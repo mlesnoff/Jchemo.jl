@@ -62,19 +62,29 @@ https://github.com/dmlc/XGBoost.jl
 ```julia
 using JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "cassav.jld2") 
+
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "challenge2021.jld2")
 @load db dat
 pnames(dat)
 
-X = dat.X 
-y = dat.Y.tbc
-year = dat.Y.year
-tab(year)
-s = year .<= 2012
-Xtrain = X[s, :]
-ytrain = y[s]
-Xtest = rmrow(X, s)
-ytest = rmrow(y, s)
+Xtrain = dat.Xtrain
+Ytrain = dat.Ytrain
+ytrain = Ytrain.y
+s = dat.Ytest.inst .== 1 
+Xtest = dat.Xtest[s, :]
+Ytest = dat.Ytest[s, :]
+ytest = Ytest.y
+wl = names(Xtrain) 
+wl_num = parse.(Float64, wl) 
+ntrain, p = size(Xtrain)
+ntest = nro(Xtest)
+ntot = ntrain + ntest
+(ntot = ntot, ntrain, ntest)
+
+f = 21 ; pol = 3 ; d = 2 
+Xptrain = savgol(snv(Xtrain); f, pol, d) 
+Xptest = savgol(snv(Xtest); f, pol, d) 
 
 fm = treer_xgb(Xtrain, ytrain;
     subsample = .7, colsample_bytree = .7, max_depth = 20) ;
@@ -172,20 +182,25 @@ https://github.com/dmlc/XGBoost.jl
 ## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie
+
 mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "cassav.jld2") 
+db = joinpath(mypath, "data", "challenge2021.jld2")
 @load db dat
 pnames(dat)
 
-X = dat.X 
-y = dat.Y.tbc
-year = dat.Y.year
-tab(year)
-s = year .<= 2012
-Xtrain = X[s, :]
-ytrain = y[s]
-Xtest = rmrow(X, s)
-ytest = rmrow(y, s)
+Xtrain = dat.Xtrain
+Ytrain = dat.Ytrain
+ytrain = Ytrain.y
+s = dat.Ytest.inst .== 1 
+Xtest = dat.Xtest[s, :]
+Ytest = dat.Ytest[s, :]
+ytest = Ytest.y
+wl = names(Xtrain) 
+wl_num = parse.(Float64, wl) 
+ntrain, p = size(Xtrain)
+ntest = nro(Xtest)
+ntot = ntrain + ntest
+(ntot = ntot, ntrain, ntest)
 
 fm = rfr_xgb(Xtrain, ytrain; rep = 100,
     subsample = .7, colsample_bytree = .7)
@@ -271,20 +286,25 @@ https://github.com/dmlc/XGBoost.jl
 ## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie
+
 mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "cassav.jld2") 
+db = joinpath(mypath, "data", "challenge2021.jld2")
 @load db dat
 pnames(dat)
 
-X = dat.X 
-y = dat.Y.tbc
-year = dat.Y.year
-tab(year)
-s = year .<= 2012
-Xtrain = X[s, :]
-ytrain = y[s]
-Xtest = rmrow(X, s)
-ytest = rmrow(y, s)
+Xtrain = dat.Xtrain
+Ytrain = dat.Ytrain
+ytrain = Ytrain.y
+s = dat.Ytest.inst .== 1 
+Xtest = dat.Xtest[s, :]
+Ytest = dat.Ytest[s, :]
+ytest = Ytest.y
+wl = names(Xtrain) 
+wl_num = parse.(Float64, wl) 
+ntrain, p = size(Xtrain)
+ntest = nro(Xtest)
+ntot = ntrain + ntest
+(ntot = ntot, ntrain, ntest)
 
 fm = xgboostr(Xtrain, ytrain; eta = .1,
     subsample = .7, colsample_bytree = .7)
@@ -362,22 +382,27 @@ https://github.com/dmlc/XGBoost.jl
 ## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie, StatsBase
+
 mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "challenge2021_cal.jld2") 
+db = joinpath(mypath, "data", "challenge2021.jld2")
 @load db dat
 pnames(dat)
 
-X = dat.X 
-y = dat.Y.tbc
-n = nro(X)
-wl = names(X)
-wl_num = parse.(Float64, wl)
+Xtrain = dat.Xtrain
+Ytrain = dat.Ytrain
+ytrain = Ytrain.y
+s = dat.Ytest.inst .== 1 
+Xtest = dat.Xtest[s, :]
+Ytest = dat.Ytest[s, :]
+ytest = Ytest.y
+wl = names(Xtrain) 
+wl_num = parse.(Float64, wl) 
+ntrain, p = size(Xtrain)
+ntest = nro(Xtest)
+ntot = ntrain + ntest
+(ntot = ntot, ntrain, ntest)
 
-zX = -log.(10, Matrix(X)) 
-f = 21 ; pol = 3 ; d = 2 ;
-Xp = savgol(snv(X); f, pol, d) ;
-
-fm = xgboostr(Xp, y; rep = 100, 
+fm = xgboostr(Xptrain, ytrain; rep = 100, 
     subsample = .7, col_sample_bynode = .3,
     max_depth = 6, min_child_weight = 5,
     eta = .1, lambda = 1) ;

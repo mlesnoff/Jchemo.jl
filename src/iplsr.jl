@@ -25,38 +25,53 @@ Spectroscopy. Appl Spectrosc 54, 413–419. https://doi.org/10.1366/000370200194
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie, StatsBase
+using JchemoData, DataFrames, JLD2, CairoMakie
+using StatsBase
+
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "challenge2021_cal.jld2") 
 @load db dat
 pnames(dat)
 
-X = dat.X 
-y = dat.Y.tbc
-n = nro(X)
-wl = names(X)
-wl_num = parse.(Float64, wl)
+Xtrain = dat.Xtrain
+Ytrain = dat.Ytrain
+ytrain = Ytrain.y
+ntrain = nro(Xtrain)
 
-zX = -log.(10, Matrix(X)) 
-f = 21 ; pol = 3 ; d = 2 ;
-Xp = savgol(snv(X); f, pol, d) ;
+f = 21 ; pol = 3 ; d = 2 
+Xptrain = savgol(snv(Xtrain); f, pol, d) 
 
-nval = 200
-s = sample(1:n, nval; replace = false)
-Xcal = rmrow(Xp, s)
-ycal = rmrow(y, s)
-Xval = Xp[s, :]
-yval = y[s]
+nval = Int64(round(.20 * ntrain)) 
+ncal = ntrain - nval 
+s = sample(1:ntrain, nval; replace = false)
+Xpcal = rmrow(Xptrain, s)
+ycal = rmrow(ytrain, s)
+Xpval = Xptrain[s, :]
+yval = ytrain[s]
+(ntrain = ntrain, ncal, nval)
 
-res = iplsr(Xcal, ycal, Xval, yval; 
-    nint = 10, nlv = 10) ;
+nlv = 25
+res = iplsr(Xpcal, ycal, Xpval, yval; 
+    nint = 15, nlv = nlv) ;
 zres = res.res
 zres0 = res.res0
 x = wl_num[zres.mid]
-f, ax = scatter(x, zres.y1,
-    axis = (xlabel = "Wawelength (nm)", ylabel = "RMSEP", xticks = x))
+xlo = wl_num[zres.lo]
+xup = wl_num[zres.up]
+dif = xup - xlo
+lims = DataFrame(xlo = xlo, x = x, xup = xup, dif = dif)
+f = Figure(resolution = (900, 400))
+ax = Axis(f[1, 1],
+    xlabel = "Wawelength (nm)", ylabel = "RMSEP",
+    xticks = lims.xlo)
+scatter!(ax, lims.x, zres.y1)
+vlines!(ax, lims.xlo; color = :grey,
+    linestyle = :dash, linewidth = 1)
 hlines!(ax, zres0.y1, linestyle = :dash)
 f
+
+s = (wl_num .>= 728) .& (wl_num .<= 980)
+wl[s]
 ```
 """
 function iplsr(Xtrain, Ytrain, X, Y; 

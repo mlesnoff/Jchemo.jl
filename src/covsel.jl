@@ -7,7 +7,7 @@ Variable (feature) selection from partial correlation or covariance (Covsel).
 * `nlv` : Nb. variables to select.
 * `typ` : Criterion used at each variable selection. 
     Possible values are: "cov" (squared covariance with `Y`, such as in Roger 
-    et al. 2011) and "corr" (squared correlation with `Y`).
+    et al. 2011) and "cor" (squared correlation with `Y`).
 
 The selection is sequential. Once a variable is selected, 
 `X` and `Y` are orthogonolized to this variable, 
@@ -77,16 +77,19 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing,
     cov2 = zeros(p)
     H = similar(X, n, n)
     zcov = similar(X, p, q)
+    C = similar(X, p, nlv)
     for i = 1:nlv
-        if typ == "corr"
-            zcov .= cor(X, Y)
-            z = rowsum(zcov.^2)
-        end
         if typ == "cov"
             zcov .= cov(X, Y; corrected = false)
             z = rowsum(zcov.^2)
         end
-        if typ == "aic"           # <== Same result as "corr"
+        if typ == "cor"
+            zcov .= cor(X, Y)
+            z = rowsum(zcov.^2)
+        end
+        ## Same result as "cor"
+        ## Therefore not useful
+        if typ == "aic"           
             zscor = zeros(p)
             for j = 1:p
                 x = vcol(X, j)
@@ -98,7 +101,8 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing,
             end
             z = -zscor
         end
-        # End
+        ## End
+        C[:, i] .= z
         zsel = argmax(z)
         selvar[i] = zsel
         selcov[i] = z[zsel]
@@ -114,6 +118,6 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing,
     cumpvary = 1 .- yss / ysstot
     sel = DataFrame((sel = selvar, cov2 = selcov,
         cumpvarx = cumpvarx, cumpvary = cumpvary))
-    (sel = sel, cov2 = cov2)
+    (sel = sel, cov2 = cov2, C)
 end
 
