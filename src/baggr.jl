@@ -7,21 +7,21 @@ end
 
 """ 
     baggr(X, Y, weights = nothing, wcol = nothing; rep = 50, 
-        fun, rowsamp = .7, withr = false, colsamp = 1, 
-        kwargs...)
+        rowsamp = .7, colsamp = 1, withr = false, 
+        fun, kwargs...)
 Bagging of regression models.
 * `X` : X-data  (n, p).
 * `Y` : Y-data  (n, q).
 * `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
 * `wcol` : Weights (p) for the sampling of the variables.
 * `rep` : Nb. of bagging repetitions.
-* `fun` : Name of the function computing the model to bagg.
 * `rowsamp` : Proportion of rows sampled in `X` 
+    at each repetition.
+* `colsamp` : Proportion of columns sampled (without replacement) in `X` 
     at each repetition.
 * `withr`: Type of sampling of the observations
     (`true` => with replacement).
-* `colsamp` : Proportion of columns sampled (without replacement) in `X` 
-    at each repetition.
+* `fun` : Name of the function computing the model to bagg.
 * `kwargs` : Optional named arguments to pass in 'fun`.
 
 ## References
@@ -75,8 +75,8 @@ lines(vec(res.imp),
 ```
 """ 
 function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50, 
-        fun, rowsamp = .7, withr = false, colsamp = 1, 
-        kwargs...)
+        rowsamp = .7, colsamp = 1, withr = false, 
+        fun, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
