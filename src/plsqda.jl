@@ -22,14 +22,15 @@ See `?plslda` for examples.
 """ 
 function plsqda(X, y, weights = ones(nro(X)); nlv, 
         prior = "unif", scal = false)
-    z = dummy(y)
-    fm_pls = plskern(X, z.Y, weights; nlv = nlv, scal = scal)
+    res = dummy(y)
+    ni = tab(y).vals
+    fm_pls = plskern(X, res.Y, weights; nlv = nlv, scal = scal)
     fm_da = list(nlv)
-    for i = 1:nlv
+    @inbounds for i = 1:nlv
         fm_da[i] = qda(vcol(fm_pls.T, 1:i), y; prior = prior)
     end
     fm = (fm_pls = fm_pls, fm_da = fm_da)
-    PlsLda(fm, z.lev, z.ni)
+    PlsLda(fm, res.lev, ni)
 end
 
 

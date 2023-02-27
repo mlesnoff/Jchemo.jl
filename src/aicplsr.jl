@@ -160,8 +160,8 @@ function aicplsr(X, y; nlv, correct = true, bic = false, scal = false)
     cp2 ./= n
     res = (aic = aic, cp1 = cp1, cp2 = cp2)
     znlv = 0:nlv
-    tab = DataFrame(nlv = znlv, n = fill(n, nlv + 1), df = df, ct = ct, ssr = zssr)
-    crit = hcat(tab, DataFrame(res))
+    ztab = DataFrame(nlv = znlv, n = fill(n, nlv + 1), df = df, ct = ct, ssr = zssr)
+    crit = hcat(ztab, DataFrame(res))
     opt = map(x -> findmin(x[isnan.(x) .== 0])[2] - 1, res)
     delta = map(x -> x .- findmin(x[isnan.(x) .== 0])[1], res)                  # Differences "Delta"
     delta = reduce(hcat, delta)
@@ -172,6 +172,6 @@ function aicplsr(X, y; nlv, correct = true, bic = false, scal = false)
     #w = reduce(hcat, w)
     #w = DataFrame(w, nam)
     #insertcols!(w, 1, :nlv => znlv)
-    (crit = crit, opt = opt, delta = delta)
+    (crit = crit, opt, delta)
 end
 

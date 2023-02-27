@@ -55,18 +55,18 @@ function lda(X, y; prior = "unif")
     # Scaling X has no effect
     X = ensure_mat(X)
     n = nro(X)
-    z = aggstat(X; group = y, fun = mean)
+    z = aggstat(X, y; fun = mean)
     ct = z.X
     lev = z.lev
     nlev = length(lev)
-    ni = z.ni
+    res = matW(X, y)
+    res.W .= res.W * n / (n - nlev) # Unbiased estimate
+    ni = res.ni
     if isequal(prior, "unif")
         wprior = ones(nlev) / nlev
     elseif isequal(prior, "prop")
         wprior = mweight(ni)
     end
-    res = matW(X, y)
-    res.W .= res.W * n / (n - nlev) # Unbiased estimate
     Lda(res.W, ct, wprior, lev, ni)
 end
 

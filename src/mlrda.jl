@@ -56,9 +56,10 @@ err(res.pred, ytest)
 ```
 """ 
 function mlrda(X, y, weights = ones(nro(X)))
-    z = dummy(y)
-    fm = mlr(X, z.Y, weights)
-    Mlrda(fm, z.lev, z.ni)
+    res = dummy(y)
+    ni = tab(y).vals
+    fm = mlr(X, res.Y, weights)
+    Mlrda(fm, res.lev, ni)
 end
 
 """

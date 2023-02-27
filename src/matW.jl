@@ -9,7 +9,7 @@ Compute the between covariance matrix ("B") of `X`.
 n = 10 ; p = 3
 X = rand(n, p)
 X
-y = sample(1:3, n; replace = true)
+y = rand(1:3, n)
 #y = [3 ; ones(n - 2) ; 10]
 res = matB(X, y)
 res.B
@@ -26,10 +26,10 @@ cov(X; corrected = false)
 """ 
 matB = function(X, y)
     X = ensure_mat(X)
-    y = vec(y) 
-    z = aggstat(X; group = y, fun = mean)
-    B = covm(z.X, mweight(z.ni))
-    (B = B, ct = z.X, lev = z.lev, ni = z.ni)
+    res = aggstat(X, y; fun = mean)
+    ni = tab(y).vals
+    B = covm(res.X, mweight(ni))
+    (B = B, ct = res.X, lev = res.lev, ni)
 end
 
 
@@ -46,14 +46,16 @@ For examples, see `?matB`.
 """ 
 matW = function(X, y)
     X = ensure_mat(X)
-    y = vec(y)  
+    y = vec(y)  # required for findall 
     ztab = tab(y)
     lev = ztab.keys
+    ni = ztab.vals
     nlev = length(lev)
-    ni = collect(values(ztab))
-    # Case with y(s) with only 1 obs
-    sum(ni .== 1) > 0 ? sigma_1obs = cov(X; corrected = false) : nothing
-    # End
+    ## Case with y(s) with only 1 obs
+    if sum(ni .== 1) > 0
+        sigma_1obs = cov(X; corrected = false)
+    end
+    ## End
     w = mweight(ni)
     Wi = list(nlev, Matrix{Float64})
     W = zeros(1, 1)
@@ -71,7 +73,7 @@ matW = function(X, y)
             # Alternative: Could give weight=0 to the class(es) with 1 obs
         end
     end
-    (W = W, Wi = Wi, lev = lev, ni = ni)
+    (W = W, Wi, lev, ni)
 end
 
 

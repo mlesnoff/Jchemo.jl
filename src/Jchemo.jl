@@ -113,6 +113,7 @@ include("svmda.jl")
 
 # Local regression
 include("locw.jl")
+include("locwlv.jl")
 include("knnr.jl")
 include("lwplsr.jl")
 include("lwplsravg.jl")
@@ -169,6 +170,7 @@ export
     list, 
     matB, matW, 
     mblock,
+    mlev,
     mweight, mweight!,
     nco,
     normw,  
@@ -182,7 +184,7 @@ export
     sourcedir,
     ssq,
     summ,
-    tab, tabnum,
+    tab, tabdf,
     vcol, vrow, 
    # Pre-processing
     detrend, detrend!, 

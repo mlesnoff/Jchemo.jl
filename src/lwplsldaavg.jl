@@ -50,6 +50,7 @@ returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 ## Examples
 ```julia
 using JLD2
+
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
@@ -68,8 +69,8 @@ tab(ytest)
 
 nlvdis = 25 ; metric = "mahal"
 h = 2 ; k = 100
-# mininum nlv must be >= 1, 
-# conversely to lwplsrdaavg (nlv >= 0)
+## mininum nlv must be >= 1, 
+## conversely to lwplsrdaavg (nlv >= 0)
 nlv = "1:20"       
 fm = lwplsldaavg(Xtrain, ytrain;
     nlvdis = nlvdis, metric = metric,

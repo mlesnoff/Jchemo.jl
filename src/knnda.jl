@@ -49,6 +49,7 @@ preliminary dimensionality reduction of the data.
 ## Examples
 ```julia
 using JLD2
+
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat

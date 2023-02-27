@@ -30,15 +30,19 @@ db = joinpath(mypath, "data", "forages.jld2")
 @load db dat
 pnames(dat)
 
-Xtrain = dat.Xtrain
-ytrain = dat.Ytrain.y
-Xtest = dat.Xtest
-ytest = dat.Ytest.y
+X = dat.X 
+Y = dat.Y 
+s = Bool.(Y.test)
+Xtrain = rmrow(X, s)
+ytrain = rmrow(Y.typ, s)
+Xtest = X[s, :]
+ytest = Y.typ[s]
 
 tab(ytrain)
 tab(ytest)
 
-# minimum of nlv must be >=1 (conversely to plsrdaavg)
+## minimum of nlv must be >=1 
+## (conversely to plsrdaavg)
 fm = plsldaavg(Xtrain, ytrain; nlv = "1:40") ;    
 #fm = plsldaavg(Xtrain, ytrain; nlv = "1:20") ;
 pnames(fm)

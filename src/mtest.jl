@@ -24,11 +24,11 @@ res = mtest(Y; test = 3, rep = 4) ;
 #res = mtest(Y, string.(1:n); test = 3, rep = 4) ;
 pnames(res)
 res.nam
-length(res.idtest)
-length(res.idtest[1])
+length(res.test)
+length(res.test[1])
 i = 1
-res.idtest[i]
-res.idtrain[i]
+res.test[i]
+res.train[i]
 ```
 """
 function mtest(Y::DataFrame, id = 1:nro(Y); test, rep = 1)
@@ -54,5 +54,5 @@ function mtest(Y::DataFrame, id = 1:nro(Y); test, rep = 1)
         idtest[i] = zidtest
         idtrain[i] = zidtrain
     end
-    (idtest = idtest, idtrain, nam)
+    (test = idtest, train = idtrain, nam)
 end

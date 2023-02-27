@@ -28,6 +28,7 @@ to the dummy variable for which the probability estimate is the highest.
 ## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie
+
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
@@ -59,10 +60,11 @@ Jchemo.predict(fm, Xtest; lb = [.1; .01]).pred
 """ 
 function rrda(X, y, weights = ones(nro(X)); lb,
         scal = false)
-    z = dummy(y)
-    fm = rr(X, z.Y, weights; lb = lb, 
+    res = dummy(y)
+    ni = tab(y).vals 
+    fm = rr(X, res.Y, weights; lb = lb, 
         scal = scal)
-    Rrda(fm, z.lev, z.ni)
+    Rrda(fm, res.lev, ni)
 end
 
 """

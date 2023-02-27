@@ -46,6 +46,7 @@ https://github.com/dmlc/XGBoost.jl
 ## Examples
 ```julia
 using JLD2
+
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
@@ -64,7 +65,7 @@ tab(ytest)
 
 fm = treeda_xgb(Xtrain, ytrain; 
     subsample = .7, 
-    col_sample_bynode = 2/3,
+    colsample_bynode = 2/3,
     max_depth = 200, min_child_weight = 5) ;
 pnames(fm)
 
@@ -86,8 +87,11 @@ function treeda_xgb(X, y;
         X = scale(X, xscales)
     end
     ztab = tab(y)
+    lev = ztab.keys 
+    ni = ztab.vals 
+    nlev = length(lev)
     y_num = recodcat2int(y; start = 0)
-    num_class = length(ztab.keys)
+    num_class = copy(nlev)
     num_round = 1
     fm = xgboost((X, y_num); num_round = num_round,
         seed = Int64(round(rand(1)[1] * 1e5)),
@@ -104,7 +108,7 @@ function treeda_xgb(X, y;
         watchlist = (),
         kwargs...)
     featur = collect(1:p)
-    TreedaXgb(fm, xscales, featur, ztab.keys, ztab.vals)
+    TreedaXgb(fm, xscales, featur, lev, ni)
 end
 
 """ 
@@ -162,15 +166,19 @@ https://github.com/dmlc/XGBoost.jl
 ## Examples
 ```julia
 using JLD2
+
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
 pnames(dat)
 
-Xtrain = dat.Xtrain
-ytrain = dat.Ytrain.y
-Xtest = dat.Xtest
-ytest = dat.Ytest.y
+X = dat.X 
+Y = dat.Y 
+s = Bool.(Y.test)
+Xtrain = rmrow(X, s)
+ytrain = rmrow(Y.typ, s)
+Xtest = X[s, :]
+ytest = Y.typ[s]
 
 tab(ytrain)
 tab(ytest)
@@ -200,8 +208,11 @@ function rfda_xgb(X, y; rep = 50,
         X = scale(X, xscales)
     end
     ztab = tab(y)
+    lev = ztab.keys 
+    ni = ztab.vals 
+    nlev = length(lev)
     y_num = recodcat2int(y; start = 0)
-    num_class = length(ztab.keys)
+    num_class = copy(nlev)
     num_round = 1
     fm = xgboost((X, y_num); num_round = num_round,
         seed = Int64(round(rand(1)[1] * 1e5)), 
@@ -219,7 +230,7 @@ function rfda_xgb(X, y; rep = 50,
         watchlist = (),
         kwargs...)
     featur = collect(1:p)
-    TreedaXgb(fm, xscales, featur, ztab.keys, ztab.vals)
+    TreedaXgb(fm, xscales, featur, lev, ni)
 end
 
 """ 
@@ -264,15 +275,19 @@ https://github.com/dmlc/XGBoost.jl
 ## Examples
 ```julia
 using JLD2
+
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
 pnames(dat)
 
-Xtrain = dat.Xtrain
-ytrain = dat.Ytrain.y
-Xtest = dat.Xtest
-ytest = dat.Ytest.y
+X = dat.X 
+Y = dat.Y 
+s = Bool.(Y.test)
+Xtrain = rmrow(X, s)
+ytrain = rmrow(Y.typ, s)
+Xtest = X[s, :]
+ytest = Y.typ[s]
 
 tab(ytrain)
 tab(ytest)
@@ -302,8 +317,11 @@ function xgboostda(X, y; rep = 50, eta = .3,
         X = scale(X, xscales)
     end
     ztab = tab(y)
+    lev = ztab.keys 
+    ni = ztab.vals 
+    nlev = length(lev)
     y_num = recodcat2int(y; start = 0)
-    num_class = length(ztab.keys)
+    num_class = copy(nlev)
     num_round = rep
     fm = xgboost((X, y_num); num_round = num_round,
         seed = Int64(round(rand(1)[1] * 1e5)), 
@@ -321,7 +339,7 @@ function xgboostda(X, y; rep = 50, eta = .3,
         watchlist = (), 
         kwargs...)
     featur = collect(1:p)
-    TreedaXgb(fm, xscales, featur, ztab.keys, ztab.vals)
+    TreedaXgb(fm, xscales, featur, lev, ni)
 end
 
 """

@@ -61,7 +61,6 @@ https://github.com/dmlc/XGBoost.jl
 ## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie
-mypath = dirname(dirname(pathof(JchemoData)))
 
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "challenge2021.jld2")

@@ -2,7 +2,10 @@
 
 ### *Version 0.1.14* 
 - News
+    - **mlev** Return the sorted levels of a dataset.
     - **pcasph**: Spherical PCA.
+    - **tabdf**: Compute the nb. occurences of groups in categorical variables of 
+        a dataset.
 
 - Modifications
     - **plotgrid**: add of argument 'leg'. 
@@ -10,8 +13,11 @@
     - Code cleaning.
 
 - Breaking changes
+    - **aggstat** has changed (arguments).
     - **gridcv** and **gridcv_mb**: in output 'res_rep', colum 'rept' replaced
          by column 'repl'.
+    - **mtest**: Outputs 'idtrain' and 'idtest' renamed to 'train' and 'test'.
+    - **tabn** was removed.
 
 ### *Version 0.1.13* 
 - News

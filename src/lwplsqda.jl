@@ -50,6 +50,7 @@ This will be fixed in the future.
 ## Examples
 ```julia
 using JLD2
+
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
@@ -110,7 +111,7 @@ function predict(object::LwplsQda, X; nlv = nothing)
     m = size(X, 1)
     a = object.nlv
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
-    # Getknn
+    ## Getknn
     if isnothing(object.fm)
         if object.scal
             xscales = colstd(object.X)
@@ -130,7 +131,7 @@ function predict(object::LwplsQda, X; nlv = nothing)
         w[w .< object.tol] .= object.tol
         listw[i] = w
     end
-    # End
+    ## End
     pred = locwlv(object.X, object.y, X; 
         listnn = res.ind, listw = listw, fun = plsqda, nlv = nlv, 
         prior = object.prior, scal = object.scal,

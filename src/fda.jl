@@ -105,7 +105,11 @@ function fda!(X::Matrix, y; nlv, pseudo = false, scal = false)
     ni = res.ni
     res.W .= res.W * n / (n - nlev)
     zres = matB(X, y)
-    !pseudo ? Winv = LinearAlgebra.inv!(cholesky!(Hermitian(res.W))) : Winv = pinv(res.W)
+    if !pseudo 
+        Winv = LinearAlgebra.inv!(cholesky!(Hermitian(res.W)))
+    else 
+        Winv = pinv(res.W)
+    end
     # Winv * B is not symmetric
     fm = eigen!(Winv * zres.B; sortby = x -> -abs(x))
     nlv = min(nlv, n, p, nlev - 1)
@@ -155,11 +159,11 @@ function fdasvd!(X::Matrix, y; nlv, pseudo = false, scal = false)
     end
     res = matW(X, y)
     lev = res.lev
-    nlev = length(lev)
     ni = res.ni
+    nlev = length(lev)
     res.W .= res.W * n / (n - nlev)
     !pseudo ? Winv = inv(res.W) : Winv = pinv(res.W)
-    ct = aggstat(X; group = y, fun = mean).X
+    ct = aggstat(X, y; fun = mean).X
     Ut = cholesky!(Hermitian(Winv)).U'
     Zct = ct * Ut
     nlv = min(nlv, n, p, nlev - 1)

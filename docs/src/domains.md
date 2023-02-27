@@ -277,7 +277,7 @@
 
 ## UTILITIES
 
-- **aggstat** Compute column-wise statistics (e.g. mean), by group
+- **aggstat** Compute column-wise statistics (e.g. mean), by group in a dataset
 - **center**, **scale**, **cscale** Column-wise centering and scaling of a matrix
 - **colmad**, **colmean**, **colnorm**, **colstd**, **colsum**, **colvar**  Column-wise operations
 - **covm**, **corm** Covariance and correlation matrices
@@ -292,6 +292,7 @@
 - **locw** Working function for local (kNN) models
 - **mad** Median absolute deviation
 - **matB**, **matW** Between- and within-covariance matrices
+- **mlev** Return the sorted levels of a dataset 
 - **mweight** Normalize a vector to sum to 1.
 - **nco**, **nro**, Nb. rows and colmuns of an object.
 - **normw** Weighted norm of a vector
@@ -304,7 +305,7 @@
 - **sourcedir** Include all the files contained in a directory
 - **ssq** Total inertia of a matrix
 - **summ** Summarize the columns of a dataset
-- **tab**, **tabn** Univariate tabulation 
+- **tab**, **tabdf** Tabulations for categorical variables
 - **wdist** Compute weights from distances
 - Other functions in file `utility.jl`
 

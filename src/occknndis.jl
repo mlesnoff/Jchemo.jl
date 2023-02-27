@@ -73,6 +73,8 @@ using JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "challenge2018.jld2") 
 @load db dat
+pnames(dat)
+
 X = dat.X    
 Y = dat.Y
 f = 21 ; pol = 3 ; d = 2 ;

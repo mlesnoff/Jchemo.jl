@@ -24,15 +24,19 @@ to the dummy variable for which the probability estimate is the highest.
 ## Examples
 ```julia
 using JLD2
+
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
 pnames(dat)
 
-Xtrain = dat.Xtrain
-ytrain = dat.Ytrain.y
-Xtest = dat.Xtest
-ytest = dat.Ytest.y
+X = dat.X 
+Y = dat.Y 
+s = Bool.(Y.test)
+Xtrain = rmrow(X, s)
+ytrain = rmrow(Y.typ, s)
+Xtest = X[s, :]
+ytest = Y.typ[s]
 
 tab(ytrain)
 tab(ytest)
@@ -53,10 +57,11 @@ Jchemo.predict(fm, Xtest; lb = [.1; .01]).pred
 """ 
 function krrda(X, y, weights = ones(nro(X)); lb, 
         kern = "krbf", scal = false, kwargs...)
-    z = dummy(y)
-    fm = krr(X, z.Y, weights; lb = lb, 
+    res = dummy(y)
+    ni = tab(y).vals
+    fm = krr(X, res.Y, weights; lb = lb, 
         kern = kern, scal = scal, kwargs...)
-    Rrda(fm, z.lev, z.ni)
+    Rrda(fm, res.lev, ni)
 end
 
 

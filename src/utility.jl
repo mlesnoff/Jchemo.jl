@@ -1,52 +1,55 @@
 """
-    aggstat(X::Union{AbstractMatrix, AbstractVector}; group, fun = mean)
-    aggstat(X::DataFrame; group_nam, var_nam, fun = mean)
-Compute the mean (or other statistic) of each column of `X`, by group.
-* `X` : A matrix or dataframe (n, p) or vector (n).
-* `group` : A vector (n) defining the groups.
-* `group_nam` : Names (vector) of the group variables to consider.
-* `var_nam` : Names (vector) of the variables to summarize.
+    aggstat(X, group; fun = mean)
+    aggstat(X::DataFrame; vars, groups, fun = mean)
+Compute column-wise statistics (e.g. mean), by group in a dataset.
+* `X` : Data.
+* `group` : A variable defining the groups.
+* `vars` : Names of the variables to summarize.
+* `groups` : Names of the group variables to consider.
 * `fun` : Function to compute.
 
-Variables defined in `var_nam` and `group_nam` must be columns of `X`.
+Variables defined in `vars` and `groups` must be columns of `X`.
 
 ## Examples
 ```julia
+using DataFrame, Statistics
+
 n, p = 20, 5
 X = rand(n, p)
+df = DataFrame(X, :auto)
 group = rand(1:3, n)
-res = aggstat(X; group = group, fun = sum)
-pnames(res)
+res = aggstat(X, group; fun = sum)
 res.X
+aggstat(df, group; fun = sum).X
 
-n, p = 20, 6
-X = DataFrame(rand(n, p), :auto)
-X.group1 = rand(1:2, n)
-X.group2 = rand(1:3, n)
-aggstat(X; var_nam = [:x1, :x2], group_nam = [:group1, :group2], fun = mean)
+n, p = 20, 5
+X = rand(n, p)
+df = DataFrame(X, string.("v", 1:p))
+df.gr1 = rand(1:2, n)
+df.gr2 = rand(["a", "b", "c"], n)
+df
+aggstat(df; vars = [:v1, :v2], 
+    groups = [:gr1, :gr2], fun = mean)
 ```
 """ 
-function aggstat(X::Union{AbstractMatrix, AbstractVector}; group, 
-        fun = mean)
+function aggstat(X, group; fun = mean)
     X = ensure_mat(X)
     group = vec(group)
     q = nco(X)
-    ztab = tab(group)
-    lev = ztab.keys
+    lev = mlev(group)
     nlev = length(lev)
-    ni = collect(values(ztab))
     zX = similar(X, nlev, q)
-    for i in 1:nlev
+    @inbounds for i in 1:nlev, j = 1:q
         s = group .== lev[i]
-        zX[i, :] .= vec(fun(vrow(X, s), dims = 1)) 
+        zX[i, j] = fun(X[s, j])
     end
-    (X = zX, lev = lev, ni = ni)
+    (X = zX, lev)
 end
 
-function aggstat(X::DataFrame; group_nam, var_nam, fun = mean)
-    gdf = groupby(X, group_nam) 
-    res = combine(gdf, var_nam .=> fun, renamecols = false)
-    sort!(res, group_nam)
+function aggstat(X::DataFrame; vars, groups, fun = mean)
+    gdf = groupby(X, groups) 
+    res = combine(gdf, vars .=> fun, renamecols = false)
+    sort!(res, groups)
 end
 
 """
@@ -466,29 +469,26 @@ res.Y
 ```
 """
 function dummy(y)
-    ztab = tab(y)
-    lev = ztab.keys
+    n = length(y)
+    lev = mlev(y)
     nlev = length(lev)
-    ni = collect(values(ztab))
-    Y = BitArray(undef, length(y), nlev)
+    Y = BitArray(undef, n, nlev)
     for i = 1:nlev
         Y[:, i] = y .== lev[i]
     end
-    Y = Float64.(Y)
-    (Y = Y, lev = lev, ni = ni)
+    Y = Float64.(Y)   # quite costly
+    (Y = Y, lev)
 end
 
 function dummy2(y)
-    z = tab(y)
-    lev = z.keys
+    lev = mlev(y)
     nlev = length(lev)
-    ni = collect(values(tab(y)))
     res = list(nlev, BitVector)
     for i = 1:nlev
         res[i] = y .== lev[i]
     end
     Y = reduce(hcat, res)
-    (Y = Y, lev = lev, ni = ni)
+    (Y = Y, lev)
 end
 
 """
@@ -524,9 +524,11 @@ findmax_cla(x)
 ```
 """
 function findmax_cla(x, weights = nothing)
-    isnothing(weights) ? weights = ones(length(x)) : nothing
-    res = aggstat(weights; group = x, fun = sum)
-    res.lev[argmax(res.X)]   # if equal, argmax takes the first
+    n = length(x)
+    isnothing(weights) ? weights = ones(n) : nothing
+    res = aggstat(weights, x; fun = sum)
+    # if equal, argmax takes the first
+    res.lev[argmax(res.X)]   
 end
 
 """ 
@@ -638,6 +640,29 @@ mad(x)
 """
 mad(x) = 1.4826 * median(abs.(x .- median(x)))
 
+
+""" 
+    mlev(x)
+Return the sorted levels of a dataset. 
+
+## Examples
+```julia
+x = rand(["a";"b";"c"], 20)
+lev = mlev(x)
+nlev = length(lev)
+
+X = reshape(x, 5, 4)
+mlev(X)
+
+df = DataFrame(g1 = rand(1:2, n), 
+    g2 = rand(["a"; "c"], n))
+mlev(df)
+```
+"""
+mlev(x) = sort(unique(x)) 
+
+
+
 """ 
     mweight(w)
 Return a vector of weights that sums to 1.
@@ -722,7 +747,7 @@ function recodcat2int(x; start::Int64 = 1)
     z = dummy(x).Y
     ncla = nco(z)
     u = z .* collect(start:(start + ncla - 1))'
-    u = sum(u; dims = 2)  ;
+    u = sum(u; dims = 2)  
     Int64.(vec(u))
 end
 
@@ -748,9 +773,9 @@ zx = recodnum2cla(x, q)
 function recodnum2cla(x, q)
     zx = similar(x)
     q = sort(q)
-    for i in eachindex(x)
+    @inbounds for i in eachindex(x)
         k = 1
-        for j in eachindex(q)
+        @inbounds for j in eachindex(q)
             x[i] > q[j] ? k = k + 1 : nothing
         end
         zx[i] = k
@@ -786,13 +811,13 @@ function replacebylev(x, lev)
     lev = sort(lev)
     nlev = length(lev)
     @assert nlev == length(lev) "x and lev must contain the same number of levels."
-    x_lev = tab(x).keys
-    v = similar(lev, n)
+    xlev = mlev(x)
+    z = similar(lev, n)
     @inbounds for i = 1:nlev
-        s = findall(x .== x_lev[i])
-        v[s] .= lev[i] 
+        s = findall(x .== xlev[i])
+        z[s] .= lev[i] 
     end
-    v
+    z
 end
 
 """
@@ -808,7 +833,7 @@ Each element `x[i]` (i = 1,...,n) is replaced by `lev[x[i]]`.
 
 ## Examples
 ```julia
-x = [2; 1; 2]
+x = [2; 1; 2; 2]
 lev = ["B"; "C"; "AA"]
 sort(lev)
 [x replacebylev2(x, lev)]
@@ -821,11 +846,11 @@ replacebylev2(x, lev)
 ```
 """
 function replacebylev2(x::Union{Int64, Array{Int64}}, lev::Array)
+    n = length(x)
     isa(x, Int64) ? x = [x] : x = vec(x)
     lev = vec(sort(lev))
-    n = length(x)
     v = similar(lev, n)
-    for i = 1:n
+    @inbounds for i in eachindex(x)
         v[i] = lev[x[i]]
     end
     v
@@ -1049,45 +1074,57 @@ end
 Univariate tabulation.
 * `x` : Categorical variable.
 
-In the output, the levels in `x` are sorted.
-Levels and values can be get by `tab(x).keys` and `tab(x).vals`.
+The output cointains sorted levels.
 
 ## Examples
 ```julia
-x = rand(1:3, 10) 
-tab(x)
+x = rand(["a";"b";"c"], 20)
+res = tab(x)
+res.keys
+res.vals
 ```
 """
-function tab(x)
-    x = vec(x)
-    sort(StatsBase.countmap(x))
-end
+tab(x) = sort(StatsBase.countmap(vec(x)))
 
 """
-    tabnum(x)
-Univariate tabulation (only integer classes).
-* `x` : Categorical variable.
+    tabdf(X; groups = nothing)
+Compute the nb. occurences of groups in categorical variables of 
+    a dataset.
+* `X` : Data.
+* `groups` : Names of the group variables to consider 
+    in `X` (by default: all the columns of `X`).
 
-In the output, the levels in `x` are sorted.
+The output (dataframe) contains sorted levels.
 
 ## Examples
 ```julia
-x = rand(1:3, 10) 
-tabnum(x)
+n = 20
+X =  hcat(rand(1:2, n), rand(["a", "b", "c"], n))
+tabdf(X)
+tabdf(X[:, 2])
+
+df = DataFrame(X, [:v1, :v2])
+tabdf(df)
+tabdf(df; groups = [:v1, :v2])
+tabdf(df; groups = :v2)
 ```
-"""
-function tabnum(x)
-    x = vec(x)
-    lev = sort(unique(x))
-    cnt = StatsBase.counts(x)
-    cnt = cnt[cnt .> 0]
-    (cnt = cnt, lev = lev)
+""" 
+function tabdf(X; groups = nothing)
+    zX = copy(X)
+    isa(zX, Vector) ? zX = DataFrame(x1 = zX) : nothing
+    isa(zX, DataFrame) ? nothing : zX = DataFrame(zX, :auto)
+    isnothing(groups) ? groups = names(zX) : nothing
+    zX.n = ones(nro(zX))
+    res = aggstat(zX; vars = :n, groups = groups, 
+        fun = sum)
+    res.n = Int64.(res.n)
+    res
 end
 
 """
     vcatdf(dat; cols = :intersect) 
     Vertical concatenation of a list of dataframes.
-* `dat` : List of dataframes.
+* `dat` : List (vector) of dataframes.
 * `cols` : Determines the columns of the returned data frame.
     See ?DataFrames.vcat.
 

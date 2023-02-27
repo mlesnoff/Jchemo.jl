@@ -38,6 +38,7 @@ res = sampks(T; k = k, metric = "mahal")
 ```
 """ 
 function sampks(X; k, metric = "eucl")
+    k = Int64(round(k))
     if metric == "eucl"
         D = euclsq(X, X)
     elseif metric == "mahal"
@@ -115,6 +116,7 @@ f
 ```
 """ 
 function sampdp(X; k, metric = "eucl")
+    k = Int64(round(k))
     if(metric == "eucl")
         D = euclsq(X, X)
     elseif(metric == "mahal")
@@ -164,6 +166,7 @@ y[res.train]
 ```
 """ 
 function sampsys(y; k)
+    k = Int64(round(k))
     y = vec(y)
     n = length(y)
     nint = k - 1            # nb. intervals
@@ -213,12 +216,13 @@ tab(x[res.train])
 ```
 """ 
 function sampclas(x, y = nothing; k)
+    k = Int64(round(k))
     x = vec(x)
     n = length(x)
-    res = tab(x)
-    lev = res.keys
+    ztab = tab(x)
+    lev = ztab.keys
+    ni = ztab.vals
     nlev = length(lev)
-    ni = collect(values(res))
     isequal(length(k), 1) ? k = fill(k[1], nlev) : nothing
     s = list(nlev, Vector{Int64})
     @inbounds for i in 1:nlev
@@ -235,7 +239,7 @@ function sampclas(x, y = nothing; k)
     s = reduce(vcat, s)
     zn = collect(1:n)
     test = zn[setdiff(1:end, s)]
-    (train = s, test = test, lev = lev, ni = ni, k = k)
+    (train = s, test, lev, ni, k)
 end
 
 

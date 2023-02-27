@@ -43,7 +43,9 @@ ytest = Y.typ[s]
 tab(ytrain)
 tab(ytest)
 
-nlv = 20      # nlv must be >=1 (conversely to plsrda for which nlv >= 0)
+## nlv must be >=1 
+## (conversely to plsrda for which nlv >= 0)
+nlv = 20      
 fm = plslda(Xtrain, ytrain; nlv = nlv) ;    
 #fm = plsqda(Xtrain, ytrain; nlv = nlv) ;
 pnames(fm)
@@ -57,13 +59,13 @@ err(res.pred, ytest)
 fm_pls = fm.fm.fm_pls ;
 Jchemo.transform(fm_pls, Xtest)
 Jchemo.transform(fm_pls, Xtest; nlv = 2)
-Base.summary(fm_pls, Xtrain, ytrain)
-coef(fm_pls).B
-coef(fm_pls, nlv = 1).B
-coef(fm_pls, nlv = 2).B
+summary(fm_pls, Xtrain)
+Jchemo.coef(fm_pls).B
+Jchemo.coef(fm_pls, nlv = 1).B
+Jchemo.coef(fm_pls, nlv = 2).B
 
 fm_da = fm.fm.fm_da ;
-T = transform(fm_pls, Xtest)
+T = Jchemo.transform(fm_pls, Xtest)
 Jchemo.predict(fm_da[nlv], T).pred
 
 Jchemo.predict(fm, Xtest; nlv = 1:2).pred
@@ -71,14 +73,15 @@ Jchemo.predict(fm, Xtest; nlv = 1:2).pred
 """ 
 function plslda(X, y, weights = ones(nro(X)); nlv, 
         prior = "unif", scal = false)
-    z = dummy(y)
-    fm_pls = plskern(X, z.Y, weights; nlv = nlv, scal = scal)
+    res = dummy(y)
+    ni = tab(y).vals
+    fm_pls = plskern(X, res.Y, weights; nlv = nlv, scal = scal)
     fm_da = list(nlv)
     @inbounds for i = 1:nlv
         fm_da[i] = lda(fm_pls.T[:, 1:i], y; prior = prior)
     end
     fm = (fm_pls = fm_pls, fm_da = fm_da)
-    PlsLda(fm, z.lev, z.ni)
+    PlsLda(fm, res.lev, ni)
 end
 
 """

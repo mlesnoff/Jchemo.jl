@@ -55,6 +55,7 @@ This will be fixed in the future.
 ## Examples
 ```julia
 using JLD2
+
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
@@ -73,8 +74,8 @@ tab(ytest)
 
 nlvdis = 25 ; metric = "mahal"
 h = 2 ; k = 1000
-# mininum nlv must be >= 1, 
-# conversely to lwplsrdaavg (nlv >= 0)
+## mininum nlv must be >= 1, 
+## conversely to lwplsrdaavg (nlv >= 0)
 nlv = "1:20"       
 fm = lwplsqdaavg(Xtrain, ytrain;
     nlvdis = nlvdis, metric = metric,

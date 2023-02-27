@@ -59,7 +59,7 @@ res.pred
 err(res.pred, ytest)
 
 Jchemo.coef(fm.fm)
-Base.summary(fm.fm, Xtrain, ytrain)
+summary(fm.fm, Xtrain)
 Jchemo.transform(fm.fm, Xtest)
 
 Jchemo.predict(fm, Xtest; nlv = 1:2).pred
@@ -67,9 +67,10 @@ Jchemo.predict(fm, Xtest; nlv = 1:2).pred
 """ 
 function plsrda(X, y, weights = ones(nro(X)); nlv,
         scal = false)
-    z = dummy(y)
-    fm = plskern(X, z.Y, weights; nlv = nlv, scal = scal)
-    Plsrda(fm, z.lev, z.ni)
+    res = dummy(y)
+    ni = tab(y).vals
+    fm = plskern(X, res.Y, weights; nlv = nlv, scal = scal)
+    Plsrda(fm, res.lev, ni)
 end
 
 

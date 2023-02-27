@@ -25,17 +25,20 @@ Spectroscopy. Appl Spectrosc 54, 413–419. https://doi.org/10.1366/000370200194
 
 ## Examples
 ```julia
-using JchemoData, DataFrames, JLD2, CairoMakie
+using JchemoData, DataFrames, JLD2
+using CairoMakie
 using StatsBase
 
 mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "challenge2021_cal.jld2") 
+db = joinpath(mypath, "data", "challenge2021.jld2") 
 @load db dat
 pnames(dat)
 
 Xtrain = dat.Xtrain
 Ytrain = dat.Ytrain
 ytrain = Ytrain.y
+wl = names(Xtrain)
+wl_num = parse.(Float64, wl)
 ntrain = nro(Xtrain)
 
 f = 21 ; pol = 3 ; d = 2 
