@@ -231,7 +231,7 @@ export
     covselr,
     rr, rr!, rrchol, rrchol!,
     rrr, rrr!,   
-    krr, kplsr, kplsr!, dkplsr, dkplsr!,
+    krr, krr!, kplsr, kplsr!, dkplsr, dkplsr!,
     plsravg, plsravg!,
     dfplsr_cg, aicplsr,
     wshenk,

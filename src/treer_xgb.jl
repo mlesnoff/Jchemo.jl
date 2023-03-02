@@ -418,14 +418,15 @@ function vimp_xgb(object::Union{TreerXgb, TreedaXgb})
     feat = zimp.feature
     for i in eachindex(feat) 
         k = feat[i]
-        res[k, 1] = zimp.gain[i]
-        res[k, 2] = zimp.weight[i]
-        res[k, 3] = zimp.cover[i]
-        res[k, 4] = zimp.total_gain[i]
+        res[k, 1] = zimp.weight[i]
+        res[k, 2] = zimp.gain[i]
+        res[k, 3] = zimp.total_gain[i]
+        res[k, 4] = zimp.cover[i]
         res[k, 5] = zimp.total_cover[i]
     end
     res = hcat(1:p, res) 
-    nam = [:featur, :gain, :weight, :cover, :total_gain, :total_cover]
+    nam = [:featur, :weight, :gain, :total_gain, 
+        :cover, :total_cover]
     DataFrame(res, nam)
 end
 
