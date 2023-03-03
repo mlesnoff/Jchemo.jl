@@ -17,7 +17,9 @@
     - **gridcv** and **gridcv_mb**: in output 'res_rep', colum 'rept' replaced
          by column 'repl'.
     - **mtest**: Outputs 'idtrain' and 'idtest' renamed to 'train' and 'test'.
+    - **rd**: argument 'corr' chanfed to 'typ'.
     - **tabn** was removed.
+    - **vip**: outputs have been improved.
 
 ### *Version 0.1.13* 
 - News

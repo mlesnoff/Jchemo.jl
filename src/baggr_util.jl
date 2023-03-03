@@ -45,7 +45,8 @@ end
 
 """ 
     baggr_vi(object::Baggr, X, Y; score = rmsep)
-Compute variance importances (with permutation method) after bagging a regression model.
+Compute variance importances (with permutation method) after bagging a 
+    regression model.
 * `object` : Output of a bagging.
 * `X` : X-data that was used in the model bagging.
 * `Y` : Y-data that was used in the model bagging.
@@ -72,8 +73,10 @@ function baggr_vi(object::Baggr, X, Y; score = rmsep)
     scol = similar(object.scol[1], nscol)
     res = similar(X, p, rep, q)
     @inbounds for i = 1:rep
-        soob = object.soob[i]  # soob has a variable length
+        ## Vector soob has a variable length
+        soob = object.soob[i]
         m = length(soob)
+        ## End
         scol .= object.scol[i]
         zpred = predict(object.fm[i], X[soob, scol]).pred
         zY = vrow(Y, soob)

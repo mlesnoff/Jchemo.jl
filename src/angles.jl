@@ -56,13 +56,13 @@ function lg(Xbl::Vector; centr = true)
 end
 
 """
-    rd(X, Y; corr = true)
-    rd(X, Y, weights; corr = true)
+    rd(X, Y; typ = "cor")
+    rd(X, Y, weights; typ = "cor")
 Compute redundancy coefficients between two matrices.
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
 * `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
-* `corr` : If `true`, correlation is used, else covariance is used. 
+* `typ` : If "cor" (default), correlation is used, else uncorrected covariance is used. 
 
 Returns the redundancy coefficient between `X` and each column
 of `Y`, i.e.: 
@@ -82,11 +82,11 @@ Y = rand(5, 3)
 rd(X, Y)
 ```
 """ 
-function rd(X, Y; corr = true)
+function rd(X, Y; typ = "cor")
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)
-    if corr
+    if typ == "cor"
         z = cor(X, Y).^2
     else
         z = cov(X, Y; corrected = false).^2
@@ -94,12 +94,12 @@ function rd(X, Y; corr = true)
     sum(z; dims = 1) / p
 end
 
-function rd(X, Y, weights; corr = true)
+function rd(X, Y, weights; typ = "cor")
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)
     weights = mweight(weights)
-    corr ? fun = corm : fun = covm
+    typ == "cor" ? fun = corm : fun = covm
     z = fun(X, Y, weights).^2
     sum(z; dims = 1) / p
 end

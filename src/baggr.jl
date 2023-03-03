@@ -92,10 +92,10 @@ function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50,
     zX = similar(X, nsrow, nscol)
     zY = similar(Y, nsrow, q)
     @inbounds for i = 1:rep
-        # Rows
+        ## Rows
         srow[i] = sample(1:n, nsrow; replace = withr)
         soob[i] = findall(in(srow[i]).(1:n) .== 0)
-        # Columns
+        ## Columns
         if colsamp == 1
             scol[i] = zcol
         else
@@ -106,7 +106,7 @@ function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50,
                     replace = false)
             end
         end
-        # End
+        ## End
         zX .= X[srow[i], scol[i]]
         zY .= Y[srow[i], :]
         if(isnothing(weights))
@@ -121,8 +121,8 @@ end
 
 function predict(object::Baggr, X)
     rep = length(object.fm)
-    # @view is not accepted by XGBoost.predict
-    # @view(X[:, object.scol[i]])
+    ## @view is not accepted by XGBoost.predict
+    ## @view(X[:, object.scol[i]])
     acc = predict(object.fm[1], X[:, object.scol[1]]).pred
     @inbounds for i = 2:rep
         acc .+= predict(object.fm[i], X[:, object.scol[i]]).pred

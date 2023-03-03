@@ -1,6 +1,6 @@
 """
-    vip(object::Plsr; nlv = nothing)
-    vip(object::Plsr, Y; nlv = nothing)
+    vip(object::Union{Pcr, Plsr}; nlv = nothing)
+    vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
 Variable importance on PLS projections (VIP).
 * `object` : The fitted model (object of structure `Plsr`).
 * `Y` : The Y-data that was used to fit the model.
@@ -17,6 +17,8 @@ where:
 
 When `Y` is used as argument, R2(Yc, ta) is replaced by the redundancy
 Rd(Yc, ta) (see function `rd`), such as in Tenenhaus 1998 p.139. 
+
+The function also works for PCR models.
 
 ## References
 Chong, I.-G., Jun, C.-H., 2005. Performance of some variable selection methods when 
@@ -40,32 +42,41 @@ ycla = [1; 1; 1; 2; 2]
 nlv = 3
 fm = plskern(X, Y; nlv = nlv) ;
 res = vip(fm)
-mean(res.^2)
-vip(fm; nlv = 1)
+pnames(res)
+mean(res.imp.^2)
+vip(fm; nlv = 1).imp
 
 nlv = 2
 fm = plsrda(X, ycla; nlv = nlv) ;
 fmpls = fm.fm
-vip(fmpls)
+vip(fmpls).imp
 Ydummy = dummy(ycla).Y
-vip(fmpls, Ydummy)
+vip(fmpls, Ydummy).imp
 
 nlv = 2
 fm = plslda(X, ycla; nlv = nlv) ;
 fmpls = fm.fm.fm_pls
-vip(fmpls)
+vip(fmpls).imp
 Ydummy = dummy(ycla).Y
-vip(fmpls, Ydummy)
+vip(fmpls, Ydummy).imp
 ```
 """ 
-function vip(object::Plsr; nlv = nothing)
+function vip(object::Union{Pcr, Plsr}; nlv = nothing)
+    if isa(object, Jchemo.Pcr)
+        W = object.fm_pca.P
+    else
+        W = object.W
+    end
     a = nco(object.T)
-    p = nro(object.W)
+    p = nro(W)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     sqrtw = sqrt.(object.weights)
-    #wnorms = colnorm(object.W, object.weights)
-    #W2 = scale(object.W, wnorms).^2
-    W2 = object.W[:, 1:nlv].^2
+    ## ::Plsr represents algorithmns where W is normed
+    ## ==> No need to do the fllowing: 
+    ## wnorms = colnorm(W)
+    ## W2 = scale(W, wnorms).^2
+    ## End
+    W2 = W[:, 1:nlv].^2
     sst = zeros(nlv)
     for a = 1:nlv
         t = sqrtw .* object.T[:, a]
@@ -75,18 +86,25 @@ function vip(object::Plsr; nlv = nothing)
     end 
     A = rowsum(sst' .* W2)
     B = sum(sst) * (1 / p)
-    sqrt.(A / B)
+    imp = sqrt.(A / B)
+    (imp = imp, W2, sst)
 end
 
-function vip(object::Plsr, Y; nlv = nothing)
+function vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
+    if isa(object, Jchemo.Pcr)
+        W = object.fm_pca.P
+    else
+        W = object.W
+    end
     a = nco(object.T)
-    p = nro(object.W)
+    p = nro(W)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    W2 = object.W[:, 1:nlv].^2
+    W2 = W[:, 1:nlv].^2
     rdd = rd(Y, object.T[:, 1:nlv], object.weights)
     A = rowsum(rdd .* W2)
     B = sum(rdd) * (1 / p)
-    sqrt.(A / B)
+    imp = sqrt.(A / B)
+    (imp = imp, W2, rdd)
 end
 
 
