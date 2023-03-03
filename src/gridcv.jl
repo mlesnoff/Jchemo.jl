@@ -149,13 +149,12 @@ function gridcv(X, Y; segm, score, fun, pars, verbose = false)
     @inbounds for i in 1:nrep
         verbose ? print("/ repl=", i, " ") : nothing
         listsegm = segm[i]       # segments in the repetition
-        nsegm = length(listsegm) # segmts: 1; segmkf: K
+        nsegm = length(listsegm) # segmts: =1; segmkf: =K
         zres = list(nsegm)       # results for the repetition
         @inbounds for j = 1:nsegm
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
-            zres[j] = gridscore(
-                rmrow(X, s), rmrow(Y, s),
+            zres[j] = gridscore(rmrow(X, s), rmrow(Y, s),
                 X[s, :], Y[s, :];
                 score = score, fun = fun, pars = pars)
         end

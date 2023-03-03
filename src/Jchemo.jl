@@ -127,7 +127,7 @@ include("knnda.jl")
 
 # Variable selection/importance (direct methods) 
 include("covsel.jl")
-include("iplsr.jl")
+include("isel.jl")
 
 # Validation
 include("mpar.jl")
@@ -246,7 +246,7 @@ export
     soplsr,
     # Variable selection/importance (direct methods) 
     covsel,
-    iplsr,
+    isel,
     vip,
     #
     xfit, xfit!, xresid, xresid!,

@@ -2,7 +2,8 @@
 
 ### *Version 0.1.14* 
 - News
-    - **mlev** Return the sorted levels of a dataset.
+    - **isel**: Interval variable selection.
+    - **mlev**: Return the sorted levels of a dataset.
     - **pcasph**: Spherical PCA.
     - **tabdf**: Compute the nb. occurences of groups in categorical variables of 
         a dataset.
@@ -16,6 +17,7 @@
     - **aggstat** has changed (arguments).
     - **gridcv** and **gridcv_mb**: in output 'res_rep', colum 'rept' replaced
          by column 'repl'.
+    - **iplsr** was removed and replaced by the more generic function **isel**.
     - **mtest**: Outputs 'idtrain' and 'idtest' renamed to 'train' and 'test'.
     - **rd**: argument 'corr' chanfed to 'typ'.
     - **tabn** was removed.

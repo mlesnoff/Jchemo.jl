@@ -76,7 +76,7 @@
     latent variables (LVs) (PLSR-AVG)
 
 *Variable selection*
-- **iplsr** Interval PLSR (iPLS) (Nørgaard et al. 2000)
+- **isel** Interval variable selection (e.g. Interval PLSR).
 - **covsel** Variable selection from partial correlation or covariance (Covsel)
 - **vip** Variable importance on PLS projections (VIP)
 
