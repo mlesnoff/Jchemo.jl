@@ -80,6 +80,7 @@ function isel(X, Y, wl = 1:nco(X); rep = 1,
     Y = ensure_mat(Y) 
     n, p = size(X)
     q = nco(Y)
+    nint = Int64(nint)
     z = collect(round.(range(1, p + 1; length = nint + 1)))
     int = [z[1:nint] z[2:(nint + 1)] .- 1]
     int = hcat(int, round.(rowmean(int)))
@@ -90,7 +91,7 @@ function isel(X, Y, wl = 1:nco(X); rep = 1,
     Ycal = similar(X, ncal, q)
     Xval = similar(X, nval, p)
     Yval = similar(X, nval, q)
-    s = similar(X, nval)
+    s = list(nval, Int64)
     res0_rep = zeros(1, q, rep)   
     zres = list(nint, Matrix{Float64})
     res_rep = zeros(nint, q, rep)
