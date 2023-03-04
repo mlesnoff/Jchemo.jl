@@ -75,11 +75,6 @@
 - **plsravg** Averaging and stacking PLSR models with different numbers of 
     latent variables (LVs) (PLSR-AVG)
 
-*Variable selection*
-- **isel** Interval variable selection (e.g. Interval PLSR).
-- **covsel** Variable selection from partial correlation or covariance (Covsel)
-- **vip** Variable importance on PLS projections (VIP)
-
 *Multiblock*
 - **mbplsr** Multiblock PLSR (MBPLSR) - Fast version (PLSR on concatenated blocks)
 - **mbplswest** MBPLSR - Nipals algorithm (Westerhuis et al. 1998) 
@@ -115,13 +110,13 @@
 - **treer_xgb** Single tree
 - **rfr_xgb** Random forest
 - **xgboostr** XGBoost
-- **vimp_xgb** Variable importance (Works also for DA models)
+- **vi_xgb** Variable importance (Works also for DA models)
 
 ### **Generic bagging**
 
 - **baggr** Bagging 
-- **baggr_oob** Out-of-bag error rate
-- **baggr_vi** Variance importance (permutation method)
+- **oob_baggr** Out-of-bag (OOB) error rate
+- **vi_baggr** Variable importance (OOB permutation method)
 
 ## DISCRIMINATION ANALYSIS (DA)
 
@@ -191,6 +186,15 @@
 - **treeda_xgb** Single tree
 - **rfda_xgb** Random forest
 - **xgboostda** XGBoost
+
+## VARIABLE IMPORTANCE
+
+- **covsel** Variable selection from partial covariance or correlation (Covsel)
+- **isel** Interval variable selection (e.g. Interval PLSR).
+- **vi_baggr** See above
+- **vip** Variable importance on Projections (VIP)
+- **viperm** Variable importance by permutation
+- **vi_xgb** See above 
 
 ## TUNING MODELS
 

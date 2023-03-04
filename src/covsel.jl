@@ -118,6 +118,6 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing,
     cumpvary = 1 .- yss / ysstot
     sel = DataFrame((sel = selvar, cov2 = selcov,
         cumpvarx = cumpvarx, cumpvary = cumpvary))
-    (sel = sel, cov2 = cov2, C)
+    (sel = sel, cov2, C)
 end
 

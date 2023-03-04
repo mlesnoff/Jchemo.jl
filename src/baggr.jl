@@ -65,10 +65,10 @@ f, ax = scatter(vec(res.pred), ytest)
 ablines!(ax, 0, 1)
 f
 
-res = baggr_oob(fm, Xtrain, ytrain; score = rmsep)
+res = oob_baggr(fm, Xtrain, ytrain; score = rmsep)
 res.scor
 
-res = baggr_vi(fm, Xtrain, ytrain; score = rmsep)
+res = vi_baggr(fm, Xtrain, ytrain; score = rmsep)
 res.imp
 lines(vec(res.imp), 
     axis = (xlabel = "Variable", ylabel = "Importance"))

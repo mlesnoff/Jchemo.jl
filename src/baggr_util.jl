@@ -1,5 +1,5 @@
 """ 
-    baggr_oob(object::Baggr, X, Y; score = rmsep)
+    oob_baggr(object::Baggr, X, Y; score = rmsep)
 Compute the out-of-bag (OOB) error after bagging a regression model.
 * `object` : Output of a bagging.
 * `X` : X-data used in the bagging.
@@ -17,7 +17,7 @@ Gey, S., 2002. Bornes de risque, détection de ruptures, boosting :
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
 Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function baggr_oob(object::Baggr, X, Y; score = rmsep)
+function oob_baggr(object::Baggr, X, Y; score = rmsep)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = nro(X)
@@ -44,15 +44,14 @@ function baggr_oob(object::Baggr, X, Y; score = rmsep)
 end
 
 """ 
-    baggr_vi(object::Baggr, X, Y; score = rmsep)
-Compute variance importances (with permutation method) after bagging a 
-    regression model.
+    vi_baggr(object::Baggr, X, Y; score = rmsep)
+Variable importance (Out-of-bag permutation method).
 * `object` : Output of a bagging.
 * `X` : X-data that was used in the model bagging.
 * `Y` : Y-data that was used in the model bagging.
 Variances importances are computed 
 by permuting sucessively each column of the out-of-bag (X_OOB),
-and by looking at the effect on the MSEP.  
+and by looking at the effect on the error rate (e.g. RMSEP).  
 See `?baggr` for examples.
 ## References
 Breiman, L., 2001. Random Forests. Machine Learning 45, 5–32. 
@@ -63,7 +62,7 @@ Gey, S., 2002. Bornes de risque, détection de ruptures, boosting :
 trois thèmes statistiques autour de CART en régression. PhD Thesis. 
 Univ. Paris 11. http://www.theses.fr/2002PA112245
 """ 
-function baggr_vi(object::Baggr, X, Y; score = rmsep)
+function vi_baggr(object::Baggr, X, Y; score = rmsep)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)
@@ -71,7 +70,7 @@ function baggr_vi(object::Baggr, X, Y; score = rmsep)
     rep = length(object.soob)
     nscol = length(object.scol[1])
     scol = similar(object.scol[1], nscol)
-    res = similar(X, p, rep, q)
+    res = similar(X, p, q, rep)
     @inbounds for i = 1:rep
         ## Vector soob has a variable length
         soob = object.soob[i]
@@ -80,19 +79,19 @@ function baggr_vi(object::Baggr, X, Y; score = rmsep)
         scol .= object.scol[i]
         zpred = predict(object.fm[i], X[soob, scol]).pred
         zY = vrow(Y, soob)
-        zscore = score(zpred, zY)
+        score0 = score(zpred, zY)
         zX = similar(X, m, p)
         @inbounds for j = 1:p
             zX .= X[soob, :]
             s = sample(1:m, m, replace = false)
             zX[:, j] .= zX[s, j]
             zpred .= predict(object.fm[i], zX[:, scol]).pred
-            zscore_perm = score(zpred, zY)
-            res[j, i, :] = zscore_perm .- zscore
+            zscore = score(zpred, zY)
+            res[j, :, i] = zscore .- score0
         end
     end
-    imp = reshape(mean(res, dims = 2), p, q)
-    (imp = imp, res = res)
+    imp = reshape(mean(res, dims = 3), p, q)
+    (imp = imp, res)
 end
 
 

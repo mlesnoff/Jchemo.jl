@@ -1,12 +1,12 @@
 """
     vip(object::Union{Pcr, Plsr}; nlv = nothing)
     vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
-Variable importance on PLS projections (VIP).
+Variable importance on Projections (VIP).
 * `object` : The fitted model (object of structure `Plsr`).
 * `Y` : The Y-data that was used to fit the model.
 * `nlv` : Nb. latent variables (LVs) to consider.
 
-For a PLS model (X, Y) with a number of A latent variables, 
+For a PLS (or PCR, etc.) model (X, Y) with a number of A latent variables, 
 and variable xj (column j of X): 
 * VIP(xj) = Sum(a=1,...,A) R2(Yc, ta) waj^2 / Sum(a=1,...,A) R2(Yc, ta) (1 / p) 
 where:
@@ -17,8 +17,6 @@ where:
 
 When `Y` is used as argument, R2(Yc, ta) is replaced by the redundancy
 Rd(Yc, ta) (see function `rd`), such as in Tenenhaus 1998 p.139. 
-
-The function also works for PCR models.
 
 ## References
 Chong, I.-G., Jun, C.-H., 2005. Performance of some variable selection methods when 
@@ -78,7 +76,7 @@ function vip(object::Union{Pcr, Plsr}; nlv = nothing)
     ## End
     W2 = W[:, 1:nlv].^2
     sst = zeros(nlv)
-    for a = 1:nlv
+    @inbounds for a = 1:nlv
         t = sqrtw .* object.T[:, a]
         tt = dot(t, t)
         beta = object.C[:, a]'

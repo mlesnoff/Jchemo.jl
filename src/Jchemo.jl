@@ -128,6 +128,7 @@ include("knnda.jl")
 # Variable selection/importance (direct methods) 
 include("covsel.jl")
 include("isel.jl")
+include("viperm.jl")
 
 # Validation
 include("mpar.jl")
@@ -236,8 +237,8 @@ export
     dfplsr_cg, aicplsr,
     wshenk,
     svmr,   
-    treer_xgb, rfr_xgb, xgboostr, vimp_xgb,
-    baggr, baggr_vi, baggr_oob,
+    treer_xgb, rfr_xgb, xgboostr, vi_xgb,
+    baggr, vi_baggr, oob_baggr,
     # Rgression Multi-block
     mbplsr, mbplsr!,
     mbplswest, mbplswest!,
@@ -247,7 +248,7 @@ export
     # Variable selection/importance (direct methods) 
     covsel,
     isel,
-    vip,
+    vip, viperm,
     #
     xfit, xfit!, xresid, xresid!,
     # Local regression

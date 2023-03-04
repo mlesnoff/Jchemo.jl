@@ -1,11 +1,10 @@
 """
-    isel(X, Y, wl = 1:nco(X); rep = 1, 
-        nint = 5, psamp = 1/3, score = rmsep, 
-        fun, kwargs...)
-Interval variable selection.
+    viperm(X, Y; rep = 50,
+        psamp = 1/3, score = rmsep, fun, 
+        kwargs...)
+Variable importance by permutation.
 * `X` : X-data (n, p).
-* `Y` : Y-data (n, q).
-* `wl` : Optional numeric labels (p, 1) of the X-columns.  
+* `Y` : Y-data (n, q).  
 * `rep` : Number of replications. 
 * `nint` : Nb. intervals. 
 * `psamp` : Proportion of data used as test set to compute the `score`
@@ -16,12 +15,18 @@ Interval variable selection.
 
 The principle is as follows:
 * Data (X, Y) are splitted randomly to a training and a test set.
-* Range 1:p in `X` is segmented to `nint` intervals of equal (when possible) size. 
-* The model is fitted on the training set and the score (error rate) on the test set, 
-    firtsly accounting for all the p variables (reference) and secondly 
-    for each of the `nint` intervals. 
-* This process is replicated `rep` times. Average results are provided in the outputs,
-    as well the results per replication. 
+* The model is fitted on Xtrain, and the score (error rate) on Xtest.
+    This gives the reference error rate.
+* Rows of a given variable (feature) j in Xtest are randomly permutated
+    (the rest of Xtest is unchanged). The score is computed on 
+    the permuted Xtest and the new score is computed. The importance
+    is computed by the difference between this score and the referece score.
+* This process is run for each variable separately and replicated `rep` times.
+    Average results are provided in the outputs, as well the results per 
+    replication. 
+
+In general, this method returns similar results as the out-of-bag permutation method
+used in random forests (Breiman, 2001).
 
 ## References
 - Nørgaard, L., Saudland, A., Wagner, J., Nielsen, J.P., Munck, L., 
@@ -73,59 +78,41 @@ hlines!(ax, zres0.y1, linestyle = :dash)
 f
 ```
 """
-function isel(X, Y, wl = 1:nco(X); rep = 1, 
-        nint = 5, psamp = 1/3, score = rmsep, 
-        fun, kwargs...)
+function viperm(X, Y; rep = 50,
+        psamp = 1/3, score = rmsep, fun, 
+        kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)
     q = nco(Y)
-    z = collect(round.(range(1, p + 1; length = nint + 1)))
-    int = [z[1:nint] z[2:(nint + 1)] .- 1]
-    int = hcat(int, round.(rowmean(int)))
-    int = Int64.(int)
     nval = Int64(round(psamp * n))
     ncal = n - nval
     Xcal = similar(X, ncal, p)
     Ycal = similar(X, ncal, q)
     Xval = similar(X, nval, p)
     Yval = similar(X, nval, q)
-    s = similar(X, nval)
-    res0_rep = zeros(1, q, rep)   
-    zres = list(nint, Matrix{Float64})
-    res_rep = zeros(nint, q, rep)
+    s = list(nval, Int64)
+    res = similar(X, p, q, rep)
     @inbounds for i = 1:rep
-        s .= sample(1:n, nval; replace = false)
+        s .= sample(1:n, nval; replace = false)  
         Xcal .= rmrow(X, s)
         Ycal .= rmrow(Y, s)
         Xval .= X[s, :]
         Yval .= Y[s, :]
-        ## All variables (Ref0)
         fm = fun(Xcal, Ycal; kwargs...)
-        pred = Jchemo.predict(fm, Xval).pred
-        res0_rep[:, :, i] = score(pred, Yval)
-        ## Intervals
-        @inbounds for j = 1:nint
-            u = int[j, 1]:int[j, 2]
-            fm = fun(vcol(Xcal, u), Ycal; kwargs...)
-            pred .= Jchemo.predict(fm, vcol(Xval, u)).pred
-            zres[j] = score(pred, Yval)
+        pred = predict(fm, Xval).pred
+        score0 = score(pred, Yval)
+        zXval = similar(Xval)
+        @inbounds for j = 1:p
+            zXval .= copy(Xval)
+            zs = sample(1:nval, nval, replace = false)
+            zXval[:, j] .= zXval[zs, j]
+            pred .= predict(fm, zXval).pred
+            zscore = score(pred, Yval)
+            res[j, :, i] = zscore .- score0
         end
-        ## End
-        res_rep[:, :, i] .= reduce(vcat, zres)
     end
-    dat = DataFrame(int, [:lo, :up, :mid])
-    dat.lo = wl[dat.lo]
-    dat.up = wl[dat.up]
-    dat.mid = wl[dat.mid]
-    namy = map(string, repeat(["y"], q), 1:q)
-    res = mean(res_rep, dims = 3)[:, :, 1]
-    res = DataFrame(res, Symbol.(namy))
-    res = hcat(dat, res)
-    res0 = mean(res0_rep, dims = 3)[:, :, 1]
-    res0 = DataFrame(res0, Symbol.(namy))
-    (res = res, res0, res_rep, res0_rep, int)
-end
-
-
+    imp = reshape(mean(res, dims = 3), p, q)
+    (imp = imp, res)
+end 
 

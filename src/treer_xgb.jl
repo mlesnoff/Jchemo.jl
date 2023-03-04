@@ -362,8 +362,8 @@ function predict(object::TreerXgb, X)
 end
 
 """
-    vimp_xgb(object::Union{TreerXgb, TreedaXgb})
-Compute variable (feature) importances from an XGBoost model.
+    vi_xgb(object::Union{TreerXgb, TreedaXgb})
+Variable importance from an XGBoost model.
 * `object` : The fitted model.
 
 The function uses package `XGboost.jl' and library XGBoost.
@@ -406,12 +406,12 @@ fm = xgboostr(Xptrain, ytrain; rep = 100,
     max_depth = 6, min_child_weight = 5,
     eta = .1, lambda = 1) ;
 
-res = vimp_xgb(fm)
+res = vi_xgb(fm)
 f, ax = scatter(res.featur, res.gain)
 f
 ```
 """
-function vimp_xgb(object::Union{TreerXgb, TreedaXgb})
+function vi_xgb(object::Union{TreerXgb, TreedaXgb})
     p = length(object.featur)
     zimp = XGBoost.importancetable(object.fm)
     res = zeros(p, 5)

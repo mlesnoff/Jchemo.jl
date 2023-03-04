@@ -7,6 +7,7 @@
     - **pcasph**: Spherical PCA.
     - **tabdf**: Compute the nb. occurences of groups in categorical variables of 
         a dataset.
+    - **vip**: Variable importance by permutation.
 
 - Modifications
     - **plotgrid**: add of argument 'leg'. 
@@ -15,12 +16,15 @@
 
 - Breaking changes
     - **aggstat** has changed (arguments).
+    - **baggr_vi** renamed to **vi_baggr**
+    - **baggr_oob** renamed to **oob_baggr**
     - **gridcv** and **gridcv_mb**: in output 'res_rep', colum 'rept' replaced
          by column 'repl'.
     - **iplsr** was removed and replaced by the more generic function **isel**.
     - **mtest**: Outputs 'idtrain' and 'idtest' renamed to 'train' and 'test'.
     - **rd**: argument 'corr' chanfed to 'typ'.
     - **tabn** was removed.
+    - **vimp_xgb** renamed to **vi_xgb**
     - **vip**: outputs have been improved.
 
 ### *Version 0.1.13* 
@@ -377,7 +381,7 @@ the Makie's backend (e.g. CairoMakie).
 - News functions
     - **covsel**
     - **interpl** has been replaced by **interpl_mon**
-- Change in output of **vimp_xgb**
+- Change in output of **vi_xgb**
 
 ### *Version 0.0.1*
 
