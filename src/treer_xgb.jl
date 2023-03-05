@@ -357,8 +357,8 @@ function predict(object::TreerXgb, X)
     X = ensure_mat(X)
     m = size(X, 1)
     pred = XGBoost.predict(object.fm, scale(X, object.xscales))
-    pred = reshape(pred, m, 1) ;
-    (pred = pred,)
+    pred = reshape(pred, m, 1)
+    (pred = Float64.(pred),)
 end
 
 """

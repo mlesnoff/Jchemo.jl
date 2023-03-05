@@ -1,11 +1,11 @@
 """
-    viperm(X, Y; rep = 50,
+    viperm(X, Y; perm = 50,
         psamp = 1/3, score = rmsep, fun, 
         kwargs...)
 Variable importance by permutation.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).  
-* `rep` : Number of replications. 
+* `perm` : Number of replications. 
 * `nint` : Nb. intervals. 
 * `psamp` : Proportion of data used as test set to compute the `score`
     (default: n/3 of the data).
@@ -21,7 +21,7 @@ The principle is as follows:
     (the rest of Xtest is unchanged). The score is computed on 
     the permuted Xtest and the new score is computed. The importance
     is computed by the difference between this score and the referece score.
-* This process is run for each variable separately and replicated `rep` times.
+* This process is run for each variable separately and replicated `perm` times.
     Average results are provided in the outputs, as well the results per 
     replication. 
 
@@ -58,27 +58,20 @@ s = typ .== "train"
 Xtrain = Xp[s, :]
 ytrain = y[s]
 
-nint = 10
-nlv = 5
-res = isel(Xtrain, ytrain, wl_num; rep = 20, 
-    nint = nint, fun = plskern, nlv = nlv) ;
-res.res_rep
-res.res0_rep
-zres = res.res
-zres0 = res.res0
-
-f = Figure(resolution = (900, 400))
-ax = Axis(f[1, 1],
-    xlabel = "Wawelength (nm)", ylabel = "RMSEP",
-    xticks = zres.lo)
-scatter!(ax, zres.mid, zres.y1; color = (:red, .5))
-vlines!(ax, zres.lo; color = :grey,
-    linestyle = :dash, linewidth = 1)
-hlines!(ax, zres0.y1, linestyle = :dash)
+res = viperm(Xtrain, ytrain; perm = 50, 
+    score = rmsep, fun = plskern, nlv = 9)
+z = vec(res.imp)
+f = Figure(resolution = (500, 400))
+ax = Axis(f[1, 1];
+    xlabel = "Wavelength (nm)", 
+    ylabel = "Importance")
+scatter!(ax, wl_num, vec(z); color = (:red, .5))
+u = [910; 950]
+vlines!(ax, u; color = :grey, linewidth = 1)
 f
 ```
 """
-function viperm(X, Y; rep = 50,
+function viperm(X, Y; perm = 50,
         psamp = 1/3, score = rmsep, fun, 
         kwargs...)
     X = ensure_mat(X)
@@ -92,8 +85,8 @@ function viperm(X, Y; rep = 50,
     Xval = similar(X, nval, p)
     Yval = similar(X, nval, q)
     s = list(nval, Int64)
-    res = similar(X, p, q, rep)
-    @inbounds for i = 1:rep
+    res = similar(X, p, q, perm)
+    @inbounds for i = 1:perm
         s .= sample(1:n, nval; replace = false)  
         Xcal .= rmrow(X, s)
         Ycal .= rmrow(Y, s)

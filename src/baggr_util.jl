@@ -67,24 +67,32 @@ function vi_baggr(object::Baggr, X, Y; score = rmsep)
     Y = ensure_mat(Y)
     p = nco(X)
     q = nco(Y)
+    ## Nb. bootstrap replications
     rep = length(object.soob)
+    ## Variables selected in each of the replications
     nscol = length(object.scol[1])
     scol = similar(object.scol[1], nscol)
+    ## End
     res = similar(X, p, q, rep)
     @inbounds for i = 1:rep
-        ## Vector soob has a variable length
-        soob = object.soob[i]
+        soob = object.soob[i]   # vector of variable length (OOB)
+        scol .= object.scol[i]  # vector of consistent length
         m = length(soob)
-        ## End
-        scol .= object.scol[i]
+        ## fm[i] has been fitted with observations out of OOB
+        ## and only the columns in scol
         zpred = predict(object.fm[i], X[soob, scol]).pred
         zY = vrow(Y, soob)
-        score0 = score(zpred, zY)
+        score0 = score(zpred, zY)   # reference score (i.e. with no permutation) for OOB
         zX = similar(X, m, p)
-        @inbounds for j = 1:p
+        ## Warning: The following 'for' should be limited to variables 
+        ## in scol.The present version of the function is only valid 
+        ## when scol = all the variables (i.e. 'colsamp = 1' in 'baggr')
+        @inbounds for j = 1:p       
             zX .= X[soob, :]
-            s = sample(1:m, m, replace = false)
+            ## Permutation of the rows of OOB[i]
+            s = sample(1:m, m, replace = false)    #  
             zX[:, j] .= zX[s, j]
+            ## End
             zpred .= predict(object.fm[i], zX[:, scol]).pred
             zscore = score(zpred, zY)
             res[j, :, i] = zscore .- score0
