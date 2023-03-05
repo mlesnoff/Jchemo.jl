@@ -57,9 +57,10 @@ plotgrid(res.nlv, res.y1, group;
     xlabel = "Nb. LVs", ylabel = "RMSECV").f
 ```
 """ 
-function plotgrid(indx::Union{Vector{Integer}, Vector{Int64}, Vector{Real}, Vector{Float64}}, r; 
+function plotgrid(indx::Vector, r;     
         resolution = (500, 350), step = 5, 
         color = nothing, kwargs...)
+    isa(indx, Vector{Any}) ? indx = Float64.(indx) : nothing
     r = Float64.(vec(r))
     xticks = collect(minimum(indx):step:maximum(indx))
     f = Figure(resolution = resolution)
