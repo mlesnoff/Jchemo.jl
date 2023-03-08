@@ -2,6 +2,9 @@
 
 ### *Version 0.1.15* 
 
+- News
+    - **lwmlr**: k-Nearest-neighbours locally weighted multiple linear regression (kNN-LWMLR)
+
 - Modifications
     - Code cleaning.
 
