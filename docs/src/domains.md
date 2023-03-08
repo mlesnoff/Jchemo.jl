@@ -94,8 +94,9 @@
 ### **Local models**
 
 - **knnr** kNNR
-- **lwplsr** kNN Locally weighted PLSR (kNN-LWPLSR)
-- **lwplsr_s** kNN-LWPLSR with preliminary dimension reduction
+- **lwmlr**: kNN locally weighted multiple linear regression (kNN-LWMLR)
+- **lwplsr** kNN locally weighted PLSR (kNN-LWPLSR)
+- **lwplsr_s** kNN-LWPLSR with preliminary dimension reduction  (kNN-LWPLSR-S)
 
 *Averaging and stacking*
 - **lwplsravg** kNN-LWPLSR-AVG 
