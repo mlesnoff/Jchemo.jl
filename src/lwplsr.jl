@@ -108,7 +108,7 @@ res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 plotxy(vec(res.pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed").f  
+    ylabel = "Observed (Test)").f  
 ```
 """ 
 function lwplsr(X, Y; nlvdis, metric, h, k, nlv, 
