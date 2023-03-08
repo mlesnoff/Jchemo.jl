@@ -120,7 +120,7 @@ function checkdupl(X; digits = 3)
     end
     u = findall(rownum1 .!= rownum2)
     res = DataFrame((rownum1 = rownum1[u], rownum2 = rownum2[u]))
-    res
+    Int64.(res)
 end
 
 """
@@ -1123,7 +1123,7 @@ end
 
 """
     vcatdf(dat; cols = :intersect) 
-    Vertical concatenation of a list of dataframes.
+Vertical concatenation of a list of dataframes.
 * `dat` : List (vector) of dataframes.
 * `cols` : Determines the columns of the returned data frame.
     See ?DataFrames.vcat.
@@ -1160,22 +1160,26 @@ function vcatdf(dat; cols = :intersect)
 end
 
 """
+    vcol(X::Matrix, j)
+    vcol(X::DataFrame, j)
+    vcol(x::Vector, j)
+View of the j-th column(s) of a matrix `X`,
+or of the j-th element(s) of vector `x`.
+""" 
+vcol(X, j) = view(X, :, j)
+vcol(x::Vector, i) = view(x, i)
+vcol(X::DataFrame, j) = view(Matrix(X), :, j)
+
+"""
     vrow(X::Matrix, i)
     vrow(X::DataFrame, i)
     vrow(x::Vector, i)
-    vcat(X::Matrix, j)
-    vcat(X::DataFrame, j)
-    vcat(x::Vector, j)
-View of the i-th row(s) or j-th column(s) of a matrix `X`,
+View of the i-th row(s) of a matrix `X`,
 or of the i-th element(s) of vector `x`.
 """ 
 vrow(X, i) = view(X, i, :) 
 vrow(X::DataFrame, i) = view(Matrix(X), i, :)
 vrow(x::Vector, i) = view(x, i)
-
-vcol(X, j) = view(X, :, j)
-vcol(x::Vector, i) = view(x, i)
-vcol(X::DataFrame, j) = view(Matrix(X), :, j)
 
 ##################### MACROS 
 

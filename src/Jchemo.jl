@@ -115,6 +115,7 @@ include("svmda.jl")
 include("locw.jl")
 include("locwlv.jl")
 include("knnr.jl")
+include("lwmlr.jl")
 include("lwplsr.jl")
 include("lwplsravg.jl")
 include("lwplsr_s.jl")
@@ -186,6 +187,7 @@ export
     ssq,
     summ,
     tab, tabdf,
+    vcatdf,
     vcol, vrow, 
    # Pre-processing
     detrend, detrend!, 
@@ -254,6 +256,7 @@ export
     # Local regression
     locw, locwlv,
     knnr,
+    lwmlr,
     lwplsr, lwplsravg, lwplsr_s,  
     cplsravg,
     # Discrimination

@@ -111,8 +111,9 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
     ylabel = "Observed").f  
 ```
 """ 
-function lwplsr(X, Y; nlvdis, metric, h, k, nlv, tol = 1e-4, 
-        scal = false, verbose = false)
+function lwplsr(X, Y; nlvdis, metric, h, k, nlv, 
+        tol = 1e-4, scal = false, 
+        verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     if nlvdis == 0
