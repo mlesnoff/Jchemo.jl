@@ -1057,7 +1057,7 @@ function summ(X; digits = 3)
 end
 
 function summ(X, group; digits = 1)
-    zgroup = sort(unique(group))
+    zgroup = mlev(group)
     for i in eachindex(zgroup)
         u = findall(group .== zgroup[i])
         z = X[u, :]

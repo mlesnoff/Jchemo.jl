@@ -81,7 +81,7 @@ function plotgrid(indx::Union{Vector{Integer}, Vector{Int64}, Vector{Real}, Vect
     r = Float64.(vec(r))
     group = vec(group)
     xticks = collect(minimum(indx):step:maximum(indx))
-    lev = sort(unique(group))
+    lev = mlev(group)
     nlev = length(lev)
     f = Figure(resolution = resolution)
     ax = Axis(f; xticks = (xticks, string.(xticks)), kwargs...)

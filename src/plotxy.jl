@@ -2,12 +2,12 @@
     plotxy(x, y; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", 
+        xlabel = "", ylabel = "", title = "",
         kwargs...)
     plotxy(x, y, group; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", 
+        xlabel = "", ylabel = "", title = "", 
         kwargs...)
         
 Scatter plot of (x, y) data
@@ -25,6 +25,7 @@ Scatter plot of (x, y) data
 *  `zeros` : Boolean. Draw horizontal and vertical axes passing through origin (0, 0).
 *  `xlabel` : Label for the x-axis.
 *  `ylabel` : Label for the y-axis.
+*  `title` : Title of the graphic.
 * `kwargs` : Optional arguments to pass in function `scatter` of Makie.
 
 The user has to specify a backend (e.g. CairoMakie).
@@ -41,7 +42,7 @@ X = dat.X
 y = dat.Y.tbc
 year = dat.Y.year
 tab(year)
-lev = sort(unique(year))
+lev = mlev(year)
 nlev = length(lev)
 
 fm = pcasvd(X, nlv = 3) ; 
@@ -64,10 +65,11 @@ plotxy(T[:, 1], T[:, 2], year).lev
 function plotxy(x, y; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", 
+        xlabel = "", ylabel = "", title = "", 
         kwargs...)
     f = Figure(resolution = resolution)
-    ax = Axis(f; xlabel = xlabel, ylabel = ylabel)
+    ax = Axis(f; xlabel = xlabel, ylabel = ylabel, 
+        title = title)
     if isnothing(color)
         scatter!(ax, x, y; kwargs...)
     else
@@ -102,14 +104,15 @@ end
 function plotxy(x, y, group; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", 
+        xlabel = "", ylabel = "", title = "", 
         kwargs...)
     group = vec(group)
-    lev = sort(unique(group))
+    lev = mlev(group)
     nlev = length(lev)
     lab = string.(lev)
     f = Figure(resolution = resolution)
-    ax = Axis(f; xlabel = xlabel, ylabel = ylabel)
+    ax = Axis(f; xlabel = xlabel, ylabel = ylabel, 
+        title = title)
     for i = 1:nlev
         s = group .== lev[i]
         zx = x[s]
@@ -117,7 +120,8 @@ function plotxy(x, y, group; resolution = (600, 400),
         if isnothing(color)
             scatter!(ax, zx, zy; label = lab[i], kwargs...)
         else
-            scatter!(ax, zx, zy; label = lab[i], color = color[i], kwargs...)
+            scatter!(ax, zx, zy; label = lab[i], color = color[i], 
+                kwargs...)
         end
         if ellipse
             X = hcat(zx, zy)

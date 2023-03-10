@@ -235,7 +235,7 @@ See `?gridscore` for examples.
 function gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb, 
         pars = nothing, verbose = false)
     q = nco(Ytrain)
-    lb = sort(unique(lb))
+    lb = mlev(lb)
     le_lb = length(lb)
     if isnothing(pars)
         verbose ? println("-- Nb. combinations = 0.") : nothing

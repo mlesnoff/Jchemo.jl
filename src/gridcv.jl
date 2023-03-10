@@ -244,7 +244,7 @@ function gridcvlb(X, Y; segm, score, fun, lb,
     q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
-    lb = sort(unique(lb))
+    lb = mlev(lb)
     le_lb = length(lb)
     @inbounds for i in 1:nrep
         verbose ? print("/ repl=", i, " ") : nothing

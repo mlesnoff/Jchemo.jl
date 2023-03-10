@@ -88,7 +88,7 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing,
             z = rowsum(zcov.^2)
         end
         ## Same result as "cor"
-        ## Therefore not useful
+        ## ==> not useful
         if typ == "aic"           
             zscor = zeros(p)
             for j = 1:p
