@@ -6,6 +6,7 @@
     - **lwmlr**: k-Nearest-neighbours locally weighted multiple linear regression (kNN-LWMLR)
 
 - Modifications
+    - Improvement of **vi_baggr**
     - Code cleaning.
 
 ### *Version 0.1.14* 

@@ -67,39 +67,43 @@ function vi_baggr(object::Baggr, X, Y; score = rmsep)
     Y = ensure_mat(Y)
     p = nco(X)
     q = nco(Y)
-    ## Nb. bootstrap replications
-    rep = length(object.soob)
-    ## Variables selected in each of the replications
-    nscol = length(object.scol[1])
-    scol = similar(object.scol[1], nscol)
-    ## End
+    rep = length(object.soob)        # nb. bootstrap replications
+    ncol = length(object.scol[1])    # nb. variables selected in each of the replications
+    scol = similar(object.scol[1], ncol)
     res = similar(X, p, q, rep)
     @inbounds for i = 1:rep
         soob = object.soob[i]   # vector of variable length (OOB)
         scol .= object.scol[i]  # vector of consistent length
-        m = length(soob)
-        ## fm[i] has been fitted with observations out of OOB
-        ## and only the columns in scol
+        m = length(soob)        # nb. OOB obs. for the given replication 
+        ## OOB prediction
+        ## fm[i] has been fitted on the observations not 
+        ## in soob[i]and on columns in scol
         zpred = predict(object.fm[i], X[soob, scol]).pred
         zY = vrow(Y, soob)
-        score0 = score(zpred, zY)   # reference score (i.e. with no permutation) for OOB
+        score0 = score(zpred, zY)   # reference (i.e. with no permutation) OOB score
         zX = similar(X, m, p)
-        ## Warning: The following 'for' should be limited to variables 
-        ## in scol.The present version of the function is only valid 
-        ## when scol = all the variables (i.e. 'colsamp = 1' in 'baggr')
         @inbounds for j = 1:p       
             zX .= X[soob, :]
-            ## Permutation of the rows of OOB[i]
+            ## Permutation of the rows
             s = sample(1:m, m, replace = false)    #  
             zX[:, j] .= zX[s, j]
             ## End
             zpred .= predict(object.fm[i], zX[:, scol]).pred
             zscore = score(zpred, zY)
-            res[j, :, i] = zscore .- score0
+            if in(scol).(j)
+                res[j, :, i] = zscore .- score0
+            else
+                res[j, :, i] .= NaN
+            end
         end
     end
-    imp = reshape(mean(res, dims = 3), p, q)
-    (imp = imp, res)
+    ## Old: imp = reshape(mean(res, dims = 3), p, q)
+    cnt = (!isnan).(res)
+    cnttot = reshape(sum(cnt, dims = 3), p, q)
+    res[isnan.(res)] .= 0
+    restot = reshape(sum(res, dims = 3), p, q)
+    imp = reshape(restot ./ cnttot, p, q)
+    (imp = imp, cnt, res, cnttot, restot)
 end
 
 
