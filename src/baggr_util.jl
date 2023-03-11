@@ -99,8 +99,8 @@ function vi_baggr(object::Baggr, X, Y; score = rmsep)
     end
     ## Old: imp = reshape(mean(res, dims = 3), p, q)
     cnt = (!isnan).(res)
-    cnttot = reshape(sum(cnt, dims = 3), p, q)
     res[isnan.(res)] .= 0
+    cnttot = reshape(sum(cnt, dims = 3), p, q)
     restot = reshape(sum(res, dims = 3), p, q)
     imp = reshape(restot ./ cnttot, p, q)
     (imp = imp, cnt, res, cnttot, restot)
