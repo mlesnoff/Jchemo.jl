@@ -4,6 +4,7 @@
 
 - News
     - **lwmlr**: k-Nearest-neighbours locally weighted multiple linear regression (kNN-LWMLR)
+    - **lwmlr_s**: kNN-LWMLR after preliminary dimension reduction
 
 - Modifications
     - Improvement of **vi_baggr**

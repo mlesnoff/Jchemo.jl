@@ -1,18 +1,24 @@
-struct Lwmlr
+struct LwmlrS
     X::Array{Float64}
     Y::Array{Float64}
+    fm
+    nlv::Int
     metric::String
     h::Real
     k::Int
     tol::Real
+    scal::Bool
     verbose::Bool
 end
 
 """
-    lwmlr(X, Y; metric, h, k, tol = 1e-4, verbose = false)
-k-Nearest-Neighbours locally weighted multiple linear regression (kNN-LWMLR).
+    lwmlr_s(X, Y; nlv, metric, 
+        h, k, pls = true, tol = 1e-4, scal = false, 
+        verbose = false)
+kNN-LWMLR after preliminary dimension reduction (kNN-LWMLR-S).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
+* `nlv` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `metric` : Type of dissimilarity used to select the neighbors and compute
     the weights. Possible values are "eucl" (default; Euclidean distance) 
     and "mahal" (Mahalanobis distance).
@@ -22,9 +28,16 @@ k-Nearest-Neighbours locally weighted multiple linear regression (kNN-LWMLR).
 * `tol` : For stabilization when very close neighbors.
 * `verbose` : If true, fitting information are printed.
 
-This is the same principle as function `lwplsr` except that MLR models
-are fitted (on the neighborhoods) instead of PLSR models.  The neighborhoods 
-are computed on `X` (there is no preliminary dimension reduction).
+A kNN-LWMLR is done after preliminary dimension reduction
+(parameter `nlv`) of the X-data, by PLS or PCA (parameter `pls`). 
+
+When the dimension reduction is done by PCA, this corresponds to the 
+"LWR" algorithm described in Naes et al. (1990).
+
+## References 
+Naes, T., Isaksson, T., Kowalski, B., 1990. Locally weighted regression
+and scatter correction for near-infrared reflectance data. 
+Analytical Chemistry 664–673.
 
 ## Examples
 ```julia
@@ -44,56 +57,36 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-nlv = 20
-zfm = pcasvd(Xtrain; nlv = nlv) ;
-Ttrain = zfm.T 
-Ttest = Jchemo.transform(zfm, Xtest)
-
-fm = lwmlr(Ttrain, ytrain; metric = "mahal",
-    h = 2, k = 100) ;
-pred = Jchemo.predict(fm, Ttest).pred
+fm = lwmlr_s(Xtrain, ytrain; nlv = 20,
+    metric = "eucl", h = 2, k = 100, pls = false) ;
+pred = Jchemo.predict(fm, Xtest).pred
 println(rmsep(pred, ytest))
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed (Test)").f  
 
-####### Example of fitting the function sinc(x)
-####### described in Rosipal & Trejo 2001 J of Machine Learning Res. p. 105-106 
-x = collect(-10:.2:10) 
-x[x .== 0] .= 1e-5
-n = length(x)
-zy = sin.(abs.(x)) ./ abs.(x) 
-y = zy + .2 * randn(n) 
-fm = lwmlr(x, y; metric = "eucl", h = 1, k = 20) ;
-pred = Jchemo.predict(fm, x).pred 
-f = Figure(resolution = (700, 300))
-ax = Axis(f[1, 1])
-scatter!(x, y) 
-lines!(ax, x, zy, label = "True model")
-lines!(ax, x, vec(pred), label = "Fitted model")
-f[1, 2] = Legend(f, ax, framevisible = false)
-f
 ```
 """ 
-function lwmlr(X, Y; metric, 
-        h, k, tol = 1e-4, verbose = false)
+function lwmlr_s(X, Y; nlv, metric, 
+        h, k, pls = true, tol = 1e-4, scal = false, 
+        verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    Lwmlr(X, Y, metric, h, k, tol, 
-        verbose)
+    if pls
+        fm = plskern(X, Y; nlv = nlv, scal = scal)
+    else
+        fm = pcasvd(X; nlv = nlv, scal = scal)
+    end
+    LwmlrS(X, Y, fm, nlv, metric, h, k, 
+        tol, scal, verbose)
 end
 
-"""
-    predict(object::Lwmlr, X)
-Compute the Y-predictions from the fitted model.
-* `object` : The fitted model.
-* `X` : X-data for which predictions are computed.
-""" 
-function predict(object::Lwmlr, X)
+function predict(object::LwmlrS, X)
     X = ensure_mat(X)
     m = nro(X)
+    T = transform(object.fm, X)
     # Getknn
-    res = getknn(object.X, X; 
+    res = getknn(object.fm.T, T; 
         k = object.k, metric = object.metric)
     listw = copy(res.d)
     Threads.@threads for i = 1:m
@@ -102,10 +95,11 @@ function predict(object::Lwmlr, X)
         listw[i] = w
     end
     # End
-    pred = locw(object.X, object.Y, X; 
+    pred = locw(object.fm.T, object.Y, T; 
         listnn = res.ind, listw = listw, fun = mlr,
         verbose = object.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, 
-        listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
+
+
 

@@ -116,6 +116,7 @@ include("locw.jl")
 include("locwlv.jl")
 include("knnr.jl")
 include("lwmlr.jl")
+include("lwmlr_s.jl")
 include("lwplsr.jl")
 include("lwplsravg.jl")
 include("lwplsr_s.jl")
@@ -256,7 +257,7 @@ export
     # Local regression
     locw, locwlv,
     knnr,
-    lwmlr,
+    lwmlr, lwmlr_s,
     lwplsr, lwplsravg, lwplsr_s,  
     cplsravg,
     # Discrimination
