@@ -14,21 +14,21 @@ struct LwmlrS1
 end
 
 """
-    lwmlr_s(X, Y; nlv, gamma = 1, metric, 
-        h, k, typ = "pls", tol = 1e-4, scal = false, 
-        verbose = false)
+    lwmlr_s(X, Y; metric, 
+        h, k, nlv, gamma = 1, typ = "pls", 
+        tol = 1e-4, scal = false, verbose = false)
 kNN-LWMLR after preliminary dimension reduction (kNN-LWMLR-S).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `gamma` :  Scale parameter for the Gaussian kernel when a KPLS is used 
-    for dimension reduction. See function `krbf`.
-* `nlv` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `metric` : Type of dissimilarity used to select the neighbors and compute
     the weights. Possible values are "eucl" (default; Euclidean distance) 
     and "mahal" (Mahalanobis distance).
 * `h` : A scalar defining the shape of the weight function. Lower is h, 
     sharper is the function. See function `wdist`.
 * `k` : The number of nearest neighbors to select for each observation to predict.
+* `nlv` : Nb. latent variables (LVs) for preliminary dimension reduction. 
+* `gamma` :  Scale parameter for the Gaussian kernel when a KPLS is used 
+    for dimension reduction. See function `krbf`.
 * `typ` : Type of dimension reduction (by default a PLS). Possible values are:
     "pca" (PCA), "pls" (PLS), "dkpls" (Gaussian direct KPLS). 
 * `tol` : For stabilization when very close neighbors.
@@ -36,7 +36,7 @@ kNN-LWMLR after preliminary dimension reduction (kNN-LWMLR-S).
 
 A kNN-LWMLR is done after preliminary dimension reduction
 (parameter `nlv`) of the X-data. When the reduction is done by PCA, 
-this corresponds to the "LWR" algorithm described in Naes et al. (1990).
+this corresponds to the "LWR" algorithm proposed by Naes et al. (1990).
 
 ## References 
 Naes, T., Isaksson, T., Kowalski, B., 1990. Locally weighted regression
@@ -61,25 +61,23 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-fm = lwmlr_s(Xtrain, ytrain; nlv = 20,
-    metric = "eucl", h = 2, k = 100, pls = false) ;
+fm = lwmlr_s(Xtrain, ytrain; metric = "eucl", 
+    h = 2, k = 100, nlv = 20, typ = "pca") ;
 pred = Jchemo.predict(fm, Xtest).pred
 println(rmsep(pred, ytest))
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed (Test)").f  
 
-
-fm = lwmlr_s(Xtrain, ytrain; nlv = nlv,
-           metric = res.metric[u], h = res.h[u],
-           k = res.k[u], typ = "dkpls", gamma = .01) ;
+fm = lwmlr_s(Xtrain, ytrain; metric = "eucl", 
+    h = 2, k = 100, nlv = 20, gamma = .01, typ = "dkpls") ;
 pred = Jchemo.predict(fm, Xtest).pred
 rmsep(pred, ytest)
 ```
 """ 
-function lwmlr_s(X, Y; nlv, gamma = 1, metric, 
-        h, k, typ = "pls", tol = 1e-4, scal = false, 
-        verbose = false)
+function lwmlr_s(X, Y; metric, 
+        h, k, nlv, gamma = 1, typ = "pls", 
+        tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     if typ == "pca"
