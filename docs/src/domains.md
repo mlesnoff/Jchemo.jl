@@ -246,6 +246,7 @@
 
 - **checkdupl** Finding replicated rows in a dataset
 - **checkmiss** Finding rows with missing data in a dataset
+- **tabdupl** Tabulate duplicated values in a vector
 
 ### **Calibration transfer**
 

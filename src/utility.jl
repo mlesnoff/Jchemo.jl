@@ -1121,6 +1121,29 @@ function tabdf(X; groups = nothing)
     res
 end
 
+
+"""
+    tabdupl(x)
+Tabulate duplicated values in a vector.
+* `x` : Categorical variable.
+
+## Examples
+```julia
+x = ["a", "b", "c", "a", "b", "b"]
+tab(x)
+res = tabdupl(x)
+res.keys
+res.vals
+```
+"""
+function tabdupl(x)
+    z = tab(x)
+    s = z.vals .> 1
+    u = z.keys[s]
+    tab(x[in(u).(x)])
+end
+
+
 """
     vcatdf(dat; cols = :intersect) 
 Vertical concatenation of a list of dataframes.

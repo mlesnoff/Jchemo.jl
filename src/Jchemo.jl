@@ -187,7 +187,7 @@ export
     sourcedir,
     ssq,
     summ,
-    tab, tabdf,
+    tab, tabdf, tabdupl,
     vcatdf,
     vcol, vrow, 
    # Pre-processing

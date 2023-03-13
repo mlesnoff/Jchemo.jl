@@ -5,6 +5,7 @@
 - News
     - **lwmlr**: k-Nearest-neighbours locally weighted multiple linear regression (kNN-LWMLR)
     - **lwmlr_s**: kNN-LWMLR after preliminary dimension reduction
+    - **tabdupl** Tabulate duplicated values in a vector
 
 - Modifications
     - Improvement of **vi_baggr**
