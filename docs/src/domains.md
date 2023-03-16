@@ -112,13 +112,11 @@
 - **treer_xgb** Single tree
 - **rfr_xgb** Random forest
 - **xgboostr** XGBoost
-- **vi_xgb** Variable importance (Works also for DA models)
 
 ### **Generic bagging**
 
 - **baggr** Bagging 
 - **oob_baggr** Out-of-bag (OOB) error rate
-- **vi_baggr** Variable importance (OOB permutation method)
 
 ## DISCRIMINATION ANALYSIS (DA)
 
@@ -193,10 +191,10 @@
 
 - **covsel** Variable selection from partial covariance or correlation (Covsel)
 - **isel** Interval variable selection (e.g. Interval PLSR).
-- **vi_baggr** See above
 - **vip** Variable importance on Projections (VIP)
+- **vi_baggr** Variable importance (OOB permutation method)
+- **vi_xgb** Variable importance (Works also for DA models)
 - **viperm** Variable importance by permutation
-- **vi_xgb** See above 
 
 ## TUNING MODELS
 
