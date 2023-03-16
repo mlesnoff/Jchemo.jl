@@ -10,29 +10,142 @@ Documentation for [Jchemo.jl](https://github.com/mlesnoff/Jchemo.jl).
 
 ## Overview
 
-**Jchemo** provides [**functions**](https://github.com/mlesnoff/Jchemo.jl/blob/master/docs/src/domains.md) 
-for data exploration and predictions in chemometrics or other domains, with focus on high dimensional data. 
+**Jchemo.jl** provides [**functions**](https://github.com/mlesnoff/Jchemo.jl/blob/master/docs/src/domains.md) 
+for **data exploration and predictions** in chemometrics or other domains, with focus on **high dimensional data**. 
 
 The package was initially designed about **k-nearest neighbors locally weighted partial least squares regression 
 and discrimination models** (kNN-LWPLSR and kNN-LWPLSDA; e.g. https://doi.org/10.1002/cem.3209).
 It has now been expanded to many other methods for analyzing high dimensional data. 
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. 
-**Tuning the predicive models** is facilitated by functions **gridscore** (validation dataset) and 
+**Tuning the predictive models** is facilitated by functions **gridscore** (validation dataset) and 
 **gridcv** (cross-validation). Faster versions are also available for models based on latent variables (LVs) 
 (**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
 
-Some of the functions of **Jchemo** (in particular the function using kNN selections) use multi-threading 
-to speed the computations. To take advantage of thos, the user has to specify his relevant number 
+Some of the **Jchemo** functions (in particular those using kNN selections) use multi-threading 
+to speed the computations. To take advantage of this, the user has to specify his relevant number 
 of threads (e.g. from the setting menu of the VsCode Julia extension and the file settings.json).
 
 **Jchemo** uses **Makie** for plotting. To display the plots, the user has to preliminary install and load one 
 of the Makie's backends (e.g. **CairoMakie**). 
 
-Most of the functions have a **help page** (each given an example), e.g.:
+Most of the functions have a **help page** (providing an example), e.g.:
 
 ```julia
 ?savgol
+```
+
+The datasets used in the examples come frop the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl) 
+and demo examples of the package are available [**here**](https://github.com/mlesnoff/JchemoDemo). 
+
+Before to update **Jchemo**, it is recommended to have a look on 
+[**What changed**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md) to avoid
+eventual problems due to breaking changes. 
+
+## <span style="color:green"> **Examples of syntax for predictive models** </span> 
+
+### **Fitting a model**
+
+```julia
+using Jchemo
+
+n = 150 ; p = 200 ; q = 2 ; m = 50 
+Xtrain = rand(n, p) ; Ytrain = rand(n, q) ;
+Xtest = rand(m, p) ; Ytest = rand(m, q) ;
+
+nlv = 5 
+fm = plskern(Xtrain, Ytrain; nlv = nlv) ;
+pnames(fm)
+
+summary(fm, Xtrain)
+
+Jchemo.transform(fm, Xtest)
+Jchemo.transform(fm, Xtest; nlv = 1)
+
+Jchemo.coef(fm)
+Jchemo.coef(fm; nlv = 2)
+
+res = Jchemo.predict(fm, Xtest) ;
+res.pred
+rmsep(res.pred, Ytest)
+mse(res.pred, Ytest)
+
+Jchemo.predict(fm, Xtest).pred
+Jchemo.predict(fm, Xtest; nlv = 0:3).pred 
+```
+
+### **Tuning a model by grid-search** 
+
+- ### With gridscore
+
+```julia
+using Jchemo, CairoMakie
+
+n = 150 ; p = 200 ; m = 50 
+Xtrain = rand(n, p) ; ytrain = rand(n) 
+Xval = rand(m, p) ; yval = rand(m) 
+
+nlv = 0:10 
+pars = mpar(nlv = nlv)
+res = gridscore(
+    Xtrain, ytrain, Xval, yval;
+    score = rmsep, fun = plskern, pars = pars) 
+
+plotgrid(res.nlv, res.y1,
+    xlabel = "Nb. LVs", ylabel = "RMSEP").f
+
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+fm = plskern(Xval, yval; nlv = res.nlv[u]) ;
+res = Jchemo.predict(fm, Xval) ;
+rmsep(res.pred, yval)
+
+## For PLSR models, using gridscorelv is much faster than gridscore!!!
+## In the same manner, using gridscorelb for ridge regression models
+## is much faster than using the generic function gridcv.
+
+res = gridscorelv(
+    Xtrain, ytrain, Xval, yval;
+    score = rmsep, fun = plskern, nlv = nlv) 
+```
+
+- ### With gridcv
+
+```julia
+using Jchemo
+
+n = 150 ; p = 200 ; m = 50 
+Xtrain = rand(n, p) ; ytrain = rand(n) 
+Xval = rand(m, p) ; yval = rand(m) 
+
+segm = segmkf(n, 5; rep = 5)     # Replicated K-fold cross-validation
+#segm = segmts(n, 30; rep = 5)   # Replicated test-set validation
+
+nlv = 0:10 
+pars = mpar(nlv = nlv)
+zres = gridcv(
+    Xtrain, ytrain; segm,
+    score = rmsep, fun = plskern, pars = pars) ;
+pnames(zres)
+res = zres.res
+
+plotgrid(res.nlv, res.y1,
+    xlabel = "Nb. LVs", ylabel = "RMSEP").f
+
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+fm = plskern(Xval, yval; nlv = res.nlv[u]) ;
+res = Jchemo.predict(fm, Xval) ;
+rmsep(res.pred, yval)
+
+## For PLSR models, using gridcvlv is much faster than gridcv!!!
+## In the same manner, using gridcvlb for ridge regression models
+## is much faster than using the generic function gridcv.
+
+zres = gridcvlv(
+    Xtrain, ytrain; segm,
+    score = rmsep, fun = plskern, nlv = nlv) ;
+zres.res
 ```
 
 ```@autodocs

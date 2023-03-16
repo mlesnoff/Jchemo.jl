@@ -191,10 +191,10 @@
 
 - **covsel** Variable selection from partial covariance or correlation (Covsel)
 - **isel** Interval variable selection (e.g. Interval PLSR).
-- **vip** Variable importance on Projections (VIP)
+- **vip** Variable importance on projections (VIP)
 - **vi_baggr** Variable importance (OOB permutation method)
-- **vi_xgb** Variable importance (Works also for DA models)
-- **viperm** Variable importance by permutation
+- **vi_xgb** Variable importance (from XGBoost.jl)
+- **viperm** Variable importance (permutation)
 
 ## TUNING MODELS
 
