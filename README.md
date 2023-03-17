@@ -18,7 +18,7 @@ Generic functions such as **transform**, **predict**, **coef** and **summary** a
 **gridcv** (cross-validation). Faster versions are also available for models based on latent variables (LVs) 
 (**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
 
-**Examples** demonstrating the package are available in project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo). This project can be used for trainings. **The datasets** used in the examples come from package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl).
+**Examples** demonstrating the package are available in project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo). This project is used for trainings. **The datasets** used in the examples come from package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl).
 
 Some of the **Jchemo** functions (in particular those using kNN selections) use multi-threading 
 to speed the computations. To take advantage of this, the user has to specify his relevant number 
