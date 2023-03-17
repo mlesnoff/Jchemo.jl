@@ -374,6 +374,48 @@ function corm(X, Y, w)
 end
 
 """
+    cosm(X)
+Cosinus between the columns of a matrix.
+* `X` : Data (n, p).
+
+## Examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+
+cosm(X)
+```
+"""
+function cosm(X)
+    X = ensure_mat(X)
+    xnorms = colnorm(X)
+    zX = scale(X, xnorms)
+    zX' * zX 
+end
+
+"""
+    cosv(X)
+Cosinus between two vectors.
+* `x` : vector (n).
+* `y` : vector (n).
+
+## Examples
+```julia
+n = 5
+x = rand(n)
+y = rand(n)
+
+cosv(X)
+```
+"""
+function cosv(x, y)
+    x = scale(x, norm(x))
+    y = scale(y, norm(y))
+    dot(x, y)
+end
+
+
+"""
     covm(X, w)
     covm(X, Y, w)
 Compute covariance matrices.

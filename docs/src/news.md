@@ -3,9 +3,11 @@
 ### *Version 0.1.15* 
 
 - News
+    - **cosm** Cosinus between the columns of a matrix
+    - **cosv** Cosinus between two vectors
     - **lwmlr**: k-Nearest-neighbours locally weighted multiple linear regression (kNN-LWMLR)
     - **lwmlr_s**: kNN-LWMLR after preliminary dimension reduction
-    - **pmod** Shortcut for function 'parentmodule'
+    - **pmod** Short-cut for function 'parentmodule'
     - **tabdupl** Tabulate duplicated values in a vector
 
 - Modifications

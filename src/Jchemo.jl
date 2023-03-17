@@ -162,6 +162,7 @@ export
     center, center!, 
     colmad, colmean, colnorm, colstd, colsum, colvar,
     corm, covm,
+    cosm, cosv,
     cscale, cscale!, 
     dens,
     dummy,
