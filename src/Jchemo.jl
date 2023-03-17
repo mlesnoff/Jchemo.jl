@@ -178,7 +178,7 @@ export
     nco,
     normw,  
     nro,
-    pnames, psize,
+    pmod, pnames, psize,
     recodcat2int, replacebylev2, recodnum2cla,
     replacebylev, replacedict, 
     rmcol, rmrow, 

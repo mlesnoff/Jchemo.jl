@@ -711,6 +711,13 @@ Return the nb. rows of `X`.
 """
 nro(X) = size(X, 1)
 
+
+""" 
+    pmod(foo)
+Shortcut for function `parentmodule`.
+"""
+pmod(foo) = parentmodule(foo)
+
 """ 
     pnames(x)
 Return the names of the elements of `x`.
