@@ -1,4 +1,4 @@
-struct LwmlrS1
+struct LwmlrS
     X::Array{Float64}
     Y::Array{Float64}
     fm
@@ -14,10 +14,11 @@ struct LwmlrS1
 end
 
 """
-    lwmlr_s(X, Y; metric, 
+    lwmlr_s(X, Y; metric = "eucl", 
         h, k, nlv, gamma = 1, typ = "pls", 
         tol = 1e-4, scal = false, verbose = false)
-kNN-LWMLR after preliminary dimension reduction (kNN-LWMLR-S).
+kNN-LWMLR after preliminary (linear or non-linear) dimension 
+    reduction (kNN-LWMLR-S).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `metric` : Type of dissimilarity used to select the neighbors and compute
@@ -27,16 +28,20 @@ kNN-LWMLR after preliminary dimension reduction (kNN-LWMLR-S).
     sharper is the function. See function `wdist`.
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `nlv` : Nb. latent variables (LVs) for preliminary dimension reduction. 
-* `gamma` :  Scale parameter for the Gaussian kernel when a KPLS is used 
+* `gamma` : Scale parameter for the Gaussian kernel when a KPLS is used 
     for dimension reduction. See function `krbf`.
-* `typ` : Type of dimension reduction (by default a PLS). Possible values are:
-    "pca" (PCA), "pls" (PLS), "dkpls" (Gaussian direct KPLS). 
+* `typ` : Type of dimension reduction. Possible values are:
+    "pca" (PCA), "pls" (PLS; default), "dkpls" (direct Gaussian KPLS). 
 * `tol` : For stabilization when very close neighbors.
 * `verbose` : If true, fitting information are printed.
 
 A kNN-LWMLR is done after preliminary dimension reduction
-(parameter `nlv`) of the X-data. When the reduction is done by PCA, 
-this corresponds to the "LWR" algorithm proposed by Naes et al. (1990).
+(parameter `nlv`) of the X-data. The dimension reduction
+can be linear (PCA, PLS) or non linear (DKPL), defined 
+in argument `typ`.
+
+When the reduction is done by PCA, this corresponds to the "LWR" 
+algorithm proposed by Naes et al. (1990).
 
 ## References 
 Naes, T., Isaksson, T., Kowalski, B., 1990. Locally weighted regression
@@ -75,7 +80,7 @@ pred = Jchemo.predict(fm, Xtest).pred
 rmsep(pred, ytest)
 ```
 """ 
-function lwmlr_s(X, Y; metric, 
+function lwmlr_s(X, Y; metric = "eucl", 
         h, k, nlv, gamma = 1, typ = "pls", 
         tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
@@ -88,11 +93,11 @@ function lwmlr_s(X, Y; metric,
         fm = dkplsr(X, Y; gamma = gamma, nlv = nlv, 
             scal = scal)
     end
-    LwmlrS1(X, Y, fm, nlv, gamma, metric, h, k, 
+    LwmlrS(X, Y, fm, nlv, gamma, metric, h, k, 
         typ, tol, scal, verbose)
 end
 
-function predict(object::LwmlrS1, X)
+function predict(object::LwmlrS, X)
     X = ensure_mat(X)
     m = nro(X)
     if object.typ == "dkpls" 
