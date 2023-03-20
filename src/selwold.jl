@@ -1,7 +1,8 @@
 """
     selwold(indx, r; smooth = true, 
-        f = 5, alpha = .05, digits = 3,
-        graph = true, xlabel = "Index", ylabel = "Value", title = "Score")
+        f = 5, alpha = .05, digits = 3, graph = true, 
+        step = 2, xlabel = "Index", ylabel = "Value", 
+        title = "Score")
 
 Wold's criterion to select dimensionality in LV (e.g. PLSR) models.
 * `indx` : A variable representing the model parameter(s), e.g. nb. LVs if PLSR models.
@@ -11,6 +12,7 @@ Wold's criterion to select dimensionality in LV (e.g. PLSR) models.
 * `alpha` : Proportion alpha used as threshold for R.
 * `digits` : Number of digits in the outputs.
 * `graph` : Boolean. If `true`, outputs are plotted.
+* `step` : Step used for defining the xticks in the graphs.
 * `xlabel` : Horizontal label for the plots.
 * `ylabel` : Vertical label for the plots.
 * `title` : Title of the left plot.
@@ -95,8 +97,9 @@ zres.f       # plots
 ```
 """ 
 function selwold(indx, r; smooth = true, 
-        f = 5, alpha = .05, digits = 3,
-        graph = true, xlabel = "Index", ylabel = "Value", title = "Score")
+        f = 5, alpha = .05, digits = 3, graph = true, 
+        step = 2, xlabel = "Index", ylabel = "Value", 
+        title = "Score")
     n = length(r)
     f = round(f)
     ## below, length = n - 1
@@ -122,7 +125,7 @@ function selwold(indx, r; smooth = true,
     if graph
         f = Figure(resolution = (1000, 450))
         ax = list(2)
-        xticks = collect(minimum(indx):2:maximum(indx))
+        xticks = collect(minimum(indx):step:maximum(indx))
         ax[1] = Axis(f, xlabel = xlabel, ylabel = ylabel, title = title, 
             xticks = xticks)
         ax[2] = Axis(f, xlabel = xlabel, ylabel = ylabel, title = "Relative gain",

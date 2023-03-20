@@ -1,5 +1,11 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.1.16* 
+
+- Modifications
+    - **selwold** :  add of argument 'step'- 
+    - Code cleaning.
+
 ### *Version 0.1.15* 
 
 - News

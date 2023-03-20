@@ -129,7 +129,7 @@ end
 """ 
     rfr_xgb(X, y; rep = 50,
         subsample = .7,
-        colsample_bytree = 1, colsample_bynode = .33,
+        colsample_bytree = 1, colsample_bynode = 1/3,
         max_depth = 6, min_child_weight = 5, lambda = 0, 
         scal = false, kwargs...)
 Random forest regression with XGBoost.
@@ -214,7 +214,7 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
 """ 
 function rfr_xgb(X, y; rep = 50,
         subsample = .7,
-        colsample_bytree = 1, colsample_bynode = .33,
+        colsample_bytree = 1, colsample_bynode = 1/3,
         max_depth = 6, min_child_weight = 5, lambda = 0, 
         scal = false, kwargs...)
     X = ensure_mat(X)
@@ -232,7 +232,8 @@ function rfr_xgb(X, y; rep = 50,
         num_parallel_tree = rep,
         eta = 1, # learning rate
         subsample = subsample,
-        colsample_bytree = colsample_bytree, colsample_bylevel = 1,
+        colsample_bytree = colsample_bytree, 
+        colsample_bylevel = 1,
         colsample_bynode = colsample_bynode,
         max_depth = max_depth, min_child_weight = min_child_weight,
         lambda = lambda,
