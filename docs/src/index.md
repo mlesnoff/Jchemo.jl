@@ -42,7 +42,9 @@ Before to update **Jchemo**, it is recommended to have a look on
 [**What changed**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md) to avoid
 eventual problems due to breaking changes. 
 
-## <span style="color:green"> **Examples of syntax for predictive models** </span> 
+## Examples of syntax for predictive models 
+
+More examples are given [**here**](https://github.com/mlesnoff/JchemoDemo).
 
 ### **Fitting a model**
 
