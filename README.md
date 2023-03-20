@@ -8,7 +8,7 @@
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
 **Jchemo.jl** is a [**package**](https://github.com/mlesnoff/Jchemo.jl/blob/master/docs/src/domains.md) 
-for **data exploration and predictions** in chemometrics or other domains, with focus on **high dimensional data** (e.g.  (PLS regression and related methods). 
+for **data exploration and predictions** in chemometrics or other domains, with focus on **high dimensional data** (e.g. PLS regression and related methods). 
 
 The package was initially designed about **k-nearest neighbors locally weighted partial least squares regression and discrimination models** (e.g. https://doi.org/10.1002/cem.3209).
 It has now been expanded to many other methods for analyzing high dimensional data. 
