@@ -91,15 +91,15 @@ function predict(object::Plsrda, X; nlv = nothing)
     pred = list(le_nlv, Union{Matrix{Int64}, Matrix{Float64}, Matrix{String}})
     posterior = list(le_nlv, Matrix{Float64})
     @inbounds for i = 1:le_nlv
-        zp = predict(object.fm, X; nlv = nlv[i]).pred
+        zpred = predict(object.fm, X; nlv = nlv[i]).pred
         #if softmax
         #    @inbounds for j = 1:m
-        #        zp[j, :] .= mweight(exp.(zp[j, :]))
+        #        zpred[j, :] .= mweight(exp.(zpred[j, :]))
         #   end
         #end
-        z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
+        z =  mapslices(argmax, zpred; dims = 2)  # if equal, argmax takes the first
         pred[i] = reshape(replacebylev2(z, object.lev), m, 1)     
-        posterior[i] = zp
+        posterior[i] = zpred
     end 
     if le_nlv == 1
         pred = pred[1]

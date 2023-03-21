@@ -106,7 +106,7 @@ include("plsrda.jl")
 include("plslda.jl") ; include("plsqda.jl")
 include("plsrdaavg.jl") ; include("plsldaavg.jl") ; include("plsqdaavg.jl") 
 include("krrda.jl")
-include("kplsrda.jl")
+include("kplsrda.jl") ; include("dkplsrda.jl")
 
 # SVM
 include("svmda.jl")
@@ -270,7 +270,7 @@ export
     occsd, occod, occsdod,
     occstah, stah,
     occknndis, occlknndis,
-    plsrda, kplsrda,
+    plsrda, kplsrda, dkplsrda,
     plslda, plsqda,
     plsrdaavg, plsldaavg, plsqdaavg,
     svmda,

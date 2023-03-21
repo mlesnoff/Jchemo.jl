@@ -140,15 +140,16 @@
 
 ### DA based on predicted Y-dummy table
 
-- **mlrda** On MLR predictions (MLR-DA)
-- **plsrda** On PLSR predictions (PLSR-DA; = common "PLSDA")
+- **mlrda** Y-dummy MLR predictions (MLR-DA)
+- **plsrda** Y-dummy PLSR predictions (PLSR-DA; = common "PLSDA")
 - **plsrdaavg** Averaging PLSR-DA models with different numbers of 
     latent variables (LVs) (PLSR-DA-AVG)
-- **rrda** On RR predictions (RR-DA)
+- **rrda** Y-dummy RR predictions (RR-DA)
 
 *Non linear*
-- **kplsrda** On KPLSR predictions (KPLSR-DA)
-- **krrda** On KRR predictions (KRR-DA)
+- **kplsrda** Y-dummy KPLSR predictions (KPLSR-DA)
+- **dkplsrda** Y-dummy DKPLSR predictions (DKPLSR-DA)
+- **krrda** Y-dummy KRR predictions (KRR-DA)
 
 ### Probabilistic
 

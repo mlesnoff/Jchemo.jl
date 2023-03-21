@@ -2,6 +2,9 @@
 
 ### *Version 0.1.16* 
 
+- News
+    - **dkplsrda** Discrimination based on direct kernel partial least squares regression (DKPLSR-DA)
+
 - Modifications
     - **selwold** :  add of argument 'step'- 
     - Code cleaning.

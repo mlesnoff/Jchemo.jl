@@ -10,11 +10,11 @@ Documentation for [Jchemo.jl](https://github.com/mlesnoff/Jchemo.jl).
 
 ## Overview
 
-**Jchemo.jl** provides [**functions**](https://github.com/mlesnoff/Jchemo.jl/blob/master/docs/src/domains.md) 
-for **data exploration and predictions** in chemometrics or other domains, with focus on **high dimensional data**. 
+**Jchemo.jl** is a [**package**](https://mlesnoff.github.io/Jchemo.jl/stable/domains/) 
+for **data exploration and predictions** in chemometrics or other domains, with focus on **high dimensional data** (e.g. PLS regression and related methods). 
 
 The package was initially designed about **k-nearest neighbors locally weighted partial least squares regression 
-and discrimination models** (kNN-LWPLSR and kNN-LWPLSDA; e.g. https://doi.org/10.1002/cem.3209).
+and discrimination models** (e.g. https://doi.org/10.1002/cem.3209).
 It has now been expanded to many other methods for analyzing high dimensional data. 
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. 
