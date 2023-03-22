@@ -25,7 +25,7 @@ XGBoost = "009559a3-9522-5dbb-924b-0b6ed2b22bb9"
 [compat]
 Clustering = "0.14"
 DataFrames = "1"
-DataInterpolations = "3"
+DataInterpolations = "3, 4"
 Distances = "0.10"
 Distributions = "0.25"
 HypothesisTests = "0.10"
