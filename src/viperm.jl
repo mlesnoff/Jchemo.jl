@@ -2,7 +2,7 @@
     viperm(X, Y; perm = 50,
         psamp = 1/3, score = rmsep, fun, 
         kwargs...)
-Variable importance by permutation.
+Variable importance by direct permutations.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).  
 * `perm` : Number of replications. 

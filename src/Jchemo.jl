@@ -2,13 +2,13 @@ module Jchemo  # Start-Module
 
 using Clustering
 using DataInterpolations
+using DecisionTree
 using Distributions
 using DataFrames
 using Distances
 using HypothesisTests
 using ImageFiltering
 using Interpolations
-using LIBSVM
 using LinearAlgebra
 using Makie
 using NearestNeighbors
@@ -16,7 +16,6 @@ using Random
 using SparseArrays 
 using Statistics
 using StatsBase    # sample
-using XGBoost
 
 include("utility.jl") 
 include("colmedspa.jl")
@@ -32,7 +31,7 @@ include("preprocessing.jl")
 include("rmgap.jl")
 
 # Exploratory
-include("fda.jl")     # Here since struct in pcasvd
+include("fda.jl")     # Here since ::Fda called in pcasvd
 include("pcasvd.jl")
 include("pcaeigen.jl")
 include("kpca.jl")
@@ -75,6 +74,8 @@ include("aicplsr.jl")
 include("wshenk.jl") 
 include("vip.jl") 
 
+include("xfit.jl")
+
 # Regression Multiblock
 include("mbplsr.jl") 
 include("mbplswest.jl")
@@ -82,17 +83,22 @@ include("mbwcov.jl")
 include("rosaplsr.jl") 
 include("soplsr.jl") 
 
-# SVM
-include("svmr.jl")
+# Local regression
+include("locw.jl")
+include("locwlv.jl")
+include("knnr.jl")
+include("lwmlr.jl")
+include("lwmlr_s.jl")
+include("lwplsr.jl")
+include("lwplsravg.jl")
+include("lwplsr_s.jl")
 
 # Bagging
-include("baggr.jl") ; include("baggr_util.jl")
+include("baggr.jl")
+include("baggr_util.jl")
 
 # Trees
-include("treer_xgb.jl")
-include("treeda_xgb.jl")
-
-include("xfit.jl")
+include("treer_dt.jl")
 
 # Discrimination 
 include("dmnorm.jl")
@@ -108,26 +114,21 @@ include("plsrdaavg.jl") ; include("plsldaavg.jl") ; include("plsqdaavg.jl")
 include("krrda.jl")
 include("kplsrda.jl") ; include("dkplsrda.jl")
 
-# SVM
-include("svmda.jl")
+include("cplsravg.jl")  # Here since call ::PlsrDa
 
-# Local regression
-include("locw.jl")
-include("locwlv.jl")
-include("knnr.jl")
-include("lwmlr.jl")
-include("lwmlr_s.jl")
-include("lwplsr.jl")
-include("lwplsravg.jl")
-include("lwplsr_s.jl")
-include("cplsravg.jl")  # Use structure PlsrDa
+# Trees 
+include("treeda_dt.jl")
 
 # Local discrimination
-include("lwplsrda.jl") ; include("lwplslda.jl") ; include("lwplsqda.jl")
-include("lwplsrdaavg.jl") ; include("lwplsldaavg.jl") ; include("lwplsqdaavg.jl")
+include("lwplsrda.jl")
+include("lwplslda.jl")
+include("lwplsqda.jl")
+include("lwplsrdaavg.jl")
+include("lwplsldaavg.jl")
+include("lwplsqdaavg.jl")
 include("knnda.jl")
 
-# Variable selection/importance (direct methods) 
+# Variable importance (direct methods) 
 include("covsel.jl")
 include("isel.jl")
 include("viperm.jl")
@@ -240,9 +241,9 @@ export
     plsravg, plsravg!,
     dfplsr_cg, aicplsr,
     wshenk,
-    svmr,   
-    treer_xgb, rfr_xgb, xgboostr, vi_xgb,
-    baggr, vi_baggr, oob_baggr,
+    treer_dt, rfr_dt, 
+    baggr, 
+    oob_baggr, vi_baggr, 
     # Rgression Multi-block
     mbplsr, mbplsr!,
     mbplswest, mbplswest!,
@@ -273,8 +274,7 @@ export
     plsrda, kplsrda, dkplsrda,
     plslda, plsqda,
     plsrdaavg, plsldaavg, plsqdaavg,
-    svmda,
-    treeda_xgb, rfda_xgb, xgboostda,
+    treeda_dt, rfda_dt,
     # Local Discrimination
     lwplsrda, lwplslda, lwplsqda,
     lwplsrdaavg, lwplsldaavg, lwplsqdaavg,

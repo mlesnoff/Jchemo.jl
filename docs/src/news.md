@@ -3,11 +3,24 @@
 ### *Version 0.1.16* 
 
 - News
-    - **dkplsrda** Discrimination based on direct kernel partial least squares regression (DKPLSR-DA)
+    - **dkplsrda** Discrimination based on direct kernel partial least 
+        squares regression (DKPLSR-DA)
+    - **treer_dt** Regression tree (CART) with DecisionTree.jl
+    - **rfr_dt** Random forest regression with DecisionTree.jl
+    - **treeda_dt** Discrimination tree (CART) with DecisionTree.jl
+    - **rfda_dt** Random forest discrimination with DecisionTree.jl
 
 - Modifications
-    - **selwold** :  add of argument 'step'- 
+    - **selwold** :  add argument 'step'- 
     - Code cleaning.
+
+- Breaking changes
+    - **Warning**: Difficult breaking bugs appeared in C++ dll from Julia v1.8.4 
+        (still present in v1.9-betas) that removed the possibility to use packages 
+        LIBSVM.jl and XGBoost.jl under Windows. For this reason, Jchemo.jl stopped to use 
+        these two packages, and all the related functions (SVM, RF and XGBoost models) 
+        were removed. For CART models (trees), they were replaced by functions using package 
+        DecisionTree.jl.  
 
 ### *Version 0.1.15* 
 

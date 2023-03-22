@@ -46,7 +46,7 @@ end
 
 """ 
     vi_baggr(object::Baggr, X, Y; score = rmsep)
-Variable importance (Out-of-bag permutation method).
+Variable importance after bagging (Out-of-bag permutations method).
 * `object` : Output of a bagging.
 * `X` : X-data that was used in the model bagging.
 * `Y` : Y-data that was used in the model bagging.

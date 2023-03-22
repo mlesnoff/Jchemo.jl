@@ -103,15 +103,10 @@
 - **lwplsravg** kNN-LWPLSR-AVG 
 - **cplsravg** Clustered PLSR-AVG
 
-### **Support vector machine (SVMR)** -- from LIBSVM.jl
+### **Trees** from DecisionTree.jl
 
-- **svmr** Epsilon-SVM regression
-
-### **Trees** -- from XGBoost.jl
-
-- **treer_xgb** Single tree
-- **rfr_xgb** Random forest
-- **xgboostr** XGBoost
+- **treer_dt** Single tree
+- **rfr_dt** Random forest
 
 ### **Generic bagging**
 
@@ -179,23 +174,18 @@
 - **lwplsldaavg** kNN-LWPLS-LDA-AVG
 - **lwplsqdaavg** kNN-LWPLS-QDA-AVG
 
-### **Support vector machine (SVM-DA)** -- from LIBSVM.jl
-- **svmda** C-SVM discrimination
+### **Trees** from DecisionTree.jl
 
-### **Trees** -- from XGBoost.jl
-
-- **treeda_xgb** Single tree
-- **rfda_xgb** Random forest
-- **xgboostda** XGBoost
+- **treeda_dt** Single tree
+- **rfda_dt** Random forest
 
 ## VARIABLE IMPORTANCE
 
 - **covsel** Variable selection from partial covariance or correlation (Covsel)
 - **isel** Interval variable selection (e.g. Interval PLSR).
 - **vip** Variable importance on projections (VIP)
-- **vi_baggr** Variable importance (OOB permutation method)
-- **vi_xgb** Variable importance (from XGBoost.jl)
-- **viperm** Variable importance (permutation)
+- **vi_baggr** Variable importance after bagging (OOB permutations method)
+- **viperm** Variable importance by direct permutations
 
 ## TUNING MODELS
 
