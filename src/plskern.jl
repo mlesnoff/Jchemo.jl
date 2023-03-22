@@ -105,18 +105,18 @@ lines(z.nlv, z.cumpvar,
 """ 
 function plskern(X, Y, weights = ones(nro(X)); nlv, 
         scal = false)
-    plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
-        scal = scal)
+    plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
+        nlv = nlv, scal = scal)
 end
 
-function plskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
-        scal = false)
+function plskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
+        nlv, scal = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, nlv)
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
-    ymeans = colmean(Y, weights)   
+    ymeans = colmean(Y, weights)  
     xscales = ones(p)
     yscales = ones(q)
     if scal 
@@ -173,7 +173,8 @@ function plskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         C[:, a] .= c
         TT[a] = tt
      end
-     Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing)
+     Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
+         yscales, weights, nothing)
 end
 
 """ 
