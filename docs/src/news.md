@@ -19,8 +19,8 @@
         (still present in v1.9-betas) that removed the possibility to use packages 
         LIBSVM.jl and XGBoost.jl under Windows. For this reason, Jchemo.jl stopped to use 
         these two packages, and all the related functions (SVM, RF and XGBoost models) 
-        were removed. For CART models (trees), they were replaced by functions using package 
-        DecisionTree.jl.  
+        were removed. For CART models (trees), they were replaced by functions 
+        using package DecisionTree.jl.  
 
 ### *Version 0.1.15* 
 
