@@ -22,7 +22,7 @@ end
 Regression tree (CART) with DecisionTree.jl.
 * `X` : X-data (n obs., p variables).
 * `y` : Univariate y-data (n obs.).
-* `n_subfeatures` : Nb. variables to select at random (default: 0 ==> keep all).
+* `n_subfeatures` : Nb. variables to select at random at each split (default: 0 ==> keep all).
 * `max_depth` : Maximum depth of the decision tree (default: -1 ==> no maximum).
 * `min_sample_leaf` : Minimum number of samples each leaf needs to have.
 * `min_sample_split` : Minimum number of observations in needed for a split.
@@ -128,7 +128,7 @@ Random forest regression with DecisionTree.jl.
 * `y` : Univariate y-data (n obs.).
 * `n_trees` : Nb. trees built for the forest. 
 * `partial_sampling` : Proportion of sampled observations for each tree.
-* `n_subfeatures` : Nb. variables to select at random at each split (default: 1 ==> sqrt(#variables)).
+* `n_subfeatures` : Nb. variables to select at random at each split (default: -1 ==> sqrt(#variables)).
 * `max_depth` : Maximum depth of the decision trees (default: -1 ==> no maximum).
 * `min_sample_leaf` : Minimum number of samples each leaf needs to have.
 * `min_sample_split` : Minimum number of observations in needed for a split.
