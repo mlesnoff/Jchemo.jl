@@ -8,17 +8,17 @@
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
 **Jchemo.jl** is a [**package**](https://mlesnoff.github.io/Jchemo.jl/stable/domains/) 
-for **data exploration and predictions** in chemometrics or other domains, with focus on **high dimensional data** (e.g. PLS regression and related methods). 
+for **data exploration and predictions** in chemometrics or other domains, with focus on **high dimensional data**. 
 
-The package was initially designed about **k-nearest neighbors locally weighted partial least squares regression and discrimination models** (e.g. https://doi.org/10.1002/cem.3209).
+The package was initially designed about PLS regression and discrimination models and variants, in particular **locally weighted partial least squares models (LWPLS)** (e.g. https://doi.org/10.1002/cem.3209).
 It has now been expanded to many other methods for analyzing high dimensional data. 
 
 Generic functions such as **transform**, **predict**, **coef** and **summary** are available. 
-**Tuning the predictive models** is facilitated by functions **gridscore** (validation dataset) and 
+**Tuning the predictive models** is facilitated by generic functions **gridscore** (validation dataset) and 
 **gridcv** (cross-validation). Faster versions are also available for models based on latent variables (LVs) 
 (**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
 
-**Examples** demonstrating the package are available in project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo). This project is used for trainings. **The datasets** used in the examples come from package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl).
+**Examples** demonstrating the package are available in project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo), used for trainings. **The datasets** used in the examples come from package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl).
 
 Some of the **Jchemo** functions (in particular those using kNN selections) use multi-threading 
 to speed the computations. To take advantage of this, the user has to specify his relevant number 
@@ -35,7 +35,7 @@ Most of the functions have a **help page** (providing an example), e.g.:
 
 Before to update **Jchemo**, it is recommended to have a look on 
 [**What changed**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md) to avoid
-eventual problems due to breaking changes. 
+problems due to eventual breaking changes. 
 
 ## <span style="color:green"> **Available functions** </span> 
 
@@ -79,8 +79,8 @@ using Jchemo
 using Jchemo
 
 n = 150 ; p = 200 ; q = 2 ; m = 50 
-Xtrain = rand(n, p) ; Ytrain = rand(n, q) ;
-Xtest = rand(m, p) ; Ytest = rand(m, q) ;
+Xtrain = rand(n, p) ; Ytrain = rand(n, q) 
+Xtest = rand(m, p) ; Ytest = rand(m, q) 
 
 nlv = 5 
 fm = plskern(Xtrain, Ytrain; nlv = nlv) ;
