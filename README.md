@@ -74,6 +74,39 @@ Run
 using Jchemo
 ```
 
+## <span style="color:green"> **Benchmark time for a PLS** </span> 
+```julia
+julia> versioninfo()
+Julia Version 1.8.5
+Commit 17cfb8e65e (2023-01-08 06:45 UTC)
+Platform Info:
+  OS: Windows (x86_64-w64-mingw32)
+  CPU: 16 × Intel(R) Core(TM) i9-10885H CPU @ 2.40GHz
+  WORD_SIZE: 64
+  LIBM: libopenlibm
+  LLVM: libLLVM-13.0.1 (ORCJIT, skylake)
+  Threads: 8 on 16 virtual cores
+Environment:
+  JULIA_EDITOR = code
+  JULIA_NUM_THREADS = 8
+```
+```julia
+## PLS2
+## (NB.: multi-threading is not used in plskern) 
+n = 10^6 # nb. observations (samples)
+p = 500  # nb. X-variables (features)
+q = 10   # nb. Y-variables to predict
+X = rand(n, p)
+Y = rand(n, q)
+nlv = 25 # nb. PLS latent variables
+
+@time plskern(X, Y; nlv = nlv) ;
+8.100469 seconds (299 allocations: 4.130 GiB, 6.58% gc time)
+
+@time plskern!(X, Y; nlv = nlv) ;
+7.232234 seconds (6.47 k allocations: 338.617 MiB, 7.39% gc time, 0.13% compilation time)
+```
+
 ## <span style="color:green"> **Examples of syntax for predictive models** </span> 
 
 ### **Fitting a model**
