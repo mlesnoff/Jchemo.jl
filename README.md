@@ -74,7 +74,7 @@ Run
 using Jchemo
 ```
 
-## <span style="color:green"> **Benchmark time for a PLS** </span> 
+## <span style="color:green"> **Benchmark - Computation time for a PLS** </span> 
 ```julia
 julia> versioninfo()
 Julia Version 1.8.5
