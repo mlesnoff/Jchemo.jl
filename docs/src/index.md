@@ -11,12 +11,14 @@ Documentation for [Jchemo.jl](https://github.com/mlesnoff/Jchemo.jl).
 ## Overview
 
 **Jchemo.jl** is a [**package**](https://mlesnoff.github.io/Jchemo.jl/stable/domains/) 
-for **data exploration and predictions** in chemometrics or other domains, with focus on **high dimensional data**. 
+for **data exploration and prediction** with focus on **high dimensional data**. 
 
-The package was initially designed about PLS regression and discrimination models and variants, in particular **locally weighted partial least squares models (LWPLS)** (e.g. https://doi.org/10.1002/cem.3209).
-It has now been expanded to many other methods for analyzing high dimensional data. 
+The package was initially designed about **partial least squares regression and discrimination models** and variants, in particular locally weighted PLS models (**LWPLS**) (e.g. https://doi.org/10.1002/cem.3209).
+Then, it has been expanded to many other methods for analyzing high dimensional data. 
 
-Generic functions such as **transform**, **predict**, **coef** and **summary** are available. 
+The name **Jchemo** comes from the fact that the package is orientated to chemometrics, but most of the provided methods are fully **generic to other domains**. 
+
+Functions such as **transform**, **predict**, **coef** and **summary** are available.  
 **Tuning the predictive models** is facilitated by generic functions **gridscore** (validation dataset) and 
 **gridcv** (cross-validation). Faster versions are also available for models based on latent variables (LVs) 
 (**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
