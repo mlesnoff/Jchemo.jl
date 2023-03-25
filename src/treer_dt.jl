@@ -39,8 +39,7 @@ Breiman, L., Friedman, J. H., Olshen, R. A., and Stone, C. J. Classification
 And Regression Trees. Chapman & Hall, 1984.
 
 DecisionTree.jl
-https://github.com/dmlc/XGBoost.jl
-https://zenodo.org/record/7359268#.ZBswGHbMK3A
+https://github.com/JuliaAI/DecisionTree.jl
 
 Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
 trois thèmes statistiques autour de CART en régression (These de doctorat). 
@@ -150,8 +149,7 @@ Breiman, L., 2001. Random Forests. Machine Learning 45, 5–32.
 https://doi.org/10.1023/A:1010933404324
 
 DecisionTree.jl
-https://github.com/dmlc/XGBoost.jl
-https://zenodo.org/record/7359268#.ZBswGHbMK3A
+https://github.com/JuliaAI/DecisionTree.jl
 
 Genuer, R., 2010. Forêts aléatoires : aspects théoriques, 
 sélection de variables et applications. PhD Thesis. Université Paris Sud - Paris XI.
