@@ -298,7 +298,7 @@ export
     euclsq, mahsq, mahsqchol,
     krbf, kpol,
     # Graphics
-    plotgrid,
+    plotgrid, 
     plotsp,
     plotxy
     # Not exported since surcharge:
