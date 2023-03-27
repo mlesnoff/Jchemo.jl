@@ -230,7 +230,7 @@ chemometrics. https://github.com/mlesnoff/Jchemo. CIRAD, UMR SELMET, Montpellier
 
 ## Acknowledgments
 
-- G. Cornu (Cirad)
+- G. Cornu (Cirad) https://ur-forets-societes.cirad.fr/en/l-unite/l-equipe 
 - L. Plagne, F. Févotte (Triscale.innov) https://www.triscale-innov.com 
 - R. Vezy (Cirad) https://www.youtube.com/channel/UCxArXLI-gxlTmWGGgec5D7w 
 
