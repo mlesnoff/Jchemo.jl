@@ -6,7 +6,6 @@ struct LwmlrS
     h::Real
     k::Int
     tol::Real
-    scal::Bool
     verbose::Bool
 end
 
@@ -120,7 +119,7 @@ function lwmlr_s(X, Y; nlv, reduc = "pls",
     end
     T = transform(fm, X)
     LwmlrS(T, Y, fm, metric, h, k, 
-        tol, scal, verbose)
+        tol, verbose)
 end
 
 function predict(object::LwmlrS, X)
