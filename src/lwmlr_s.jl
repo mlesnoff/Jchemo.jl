@@ -139,8 +139,7 @@ function predict(object::LwmlrS, X)
     pred = locw(object.T, object.Y, T; 
         listnn = res.ind, listw = listw, fun = mlr,
         verbose = object.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, 
-        listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 
 
