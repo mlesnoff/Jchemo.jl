@@ -87,16 +87,16 @@ fm = lwmlr_s(Xtrain, ytrain; nlv = 20, reduc = "dkpls",
 pred = Jchemo.predict(fm, Xtest).pred
 rmsep(pred, ytest)
 
-fm = lwmlr_s(Xtrain, ytrain; nlv = 20, reduc = "dkpls", 
+fm = lwmlrda_s(Xtrain, ytrain; nlv = 20, reduc = "dkpls", 
     metric = "eucl", h = 2, k = 100, gamma = .01,
     psamp = .5, samp = "random") ;
 pred = Jchemo.predict(fm, Xtest).pred
 rmsep(pred, ytest)
 ```
 """ 
-function lwmlr_s(X, Y; nlv, reduc = "pls", 
+function lwmlrda_s(X, Y; nlv, reduc = "pls", 
         metric = "eucl", h, k, 
-        gamma = 1, psamp = 1, samp = "sys", 
+        gamma = 1, psamp = 1, samp = "random", 
         tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
