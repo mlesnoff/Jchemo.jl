@@ -12,10 +12,10 @@ end
 """
     lwmlrda_s(X, y; nlv, reduc = "pls", 
         metric = "eucl", h, k, 
-        gamma = 1, psamp = 1, samp = "sys", 
+        gamma = 1, psamp = 1, samp = "random", 
         tol = 1e-4, scal = false, verbose = false)
-kNN-LWMLR after preliminary (linear or non-linear) dimension 
-    reduction (kNN-LWMLR-S).
+kNN-LWMLR-DA after preliminary (linear or non-linear) dimension 
+    reduction (kNN-LWMLR-DA-S).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership.
 * `nlv` : Nb. latent variables (LVs) for preliminary dimension reduction. 
@@ -36,62 +36,44 @@ kNN-LWMLR after preliminary (linear or non-linear) dimension
 * `tol` : For stabilization when very close neighbors.
 * `verbose` : If true, fitting information are printed.
 
-The principle is as follows. A preliminary dimension reduction (parameter `nlv`) 
-of the X-data (n, p) returns a score matrix T (n, `nlv`). Then, a kNN-LWMLR 
-is done on {T, `y`}.
-
-The dimension reduction can be linear (PCA, PLS) or non linear (DKPLS), defined 
-in argument `reduc`.
-
-When n is too large, the reduction dimension can become too costly,
-in particular for a kernel PLS (that requires to compute a matrix (n, n)).
-Argument `psamp` allows to sample a proportion of the observations
-that will be used to compute (approximate) scores T for the all X-data. 
-
-The case `reduc = "pca"` corresponds to the "LWR" algorithm proposed 
-by Naes et al. (1990).
-
-## References 
-Naes, T., Isaksson, T., Kowalski, B., 1990. Locally weighted regression
-and scatter correction for near-infrared reflectance data. 
-Analytical Chemistry 664–673.
+This is the same principle as function `lwmlr_s` except that local MLR-DA models
+are fitted instead of local MLR models.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using JLD2
+
 mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "cassav.jld2") 
+db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
 pnames(dat)
 
 X = dat.X 
-y = dat.Y.tbc
-year = dat.Y.year
-tab(year)
-s = year .<= 2012
-Xtrain = X[s, :]
-ytrain = y[s]
-Xtest = rmrow(X, s)
-ytest = rmrow(y, s)
+Y = dat.Y 
+s = Bool.(Y.test)
+Xtrain = rmrow(X, s)
+ytrain = rmrow(Y.typ, s)
+Xtest = X[s, :]
+ytest = Y.typ[s]
 
-fm = lwmlr_s(Xtrain, ytrain; nlv = 20, reduc = "pca", 
+tab(ytrain)
+tab(ytest)
+
+fm = lwmlrda_s(Xtrain, ytrain; nlv = 20, reduc = "pca", 
     metric = "eucl", h = 2, k = 100) ;
 pred = Jchemo.predict(fm, Xtest).pred
-println(rmsep(pred, ytest))
-plotxy(vec(pred), ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed (Test)").f  
+err(.pred, ytest)
 
-fm = lwmlr_s(Xtrain, ytrain; nlv = 20, reduc = "dkpls", 
+fm = lwmlrda_s(Xtrain, ytrain; nlv = 20, reduc = "dkpls", 
     metric = "eucl", h = 2, k = 100, gamma = .01) ;
 pred = Jchemo.predict(fm, Xtest).pred
-rmsep(pred, ytest)
+err(.pred, ytest)
 
 fm = lwmlrda_s(Xtrain, ytrain; nlv = 20, reduc = "dkpls", 
     metric = "eucl", h = 2, k = 100, gamma = .01,
     psamp = .5, samp = "random") ;
 pred = Jchemo.predict(fm, Xtest).pred
-rmsep(pred, ytest)
+err(.pred, ytest)
 ```
 """ 
 function lwmlrda_s(X, y; nlv, reduc = "pls", 
@@ -112,9 +94,9 @@ function lwmlrda_s(X, y; nlv, reduc = "pls",
     if reduc == "pca"
         fm = pcasvd(zX; nlv = nlv, scal = scal)
     elseif reduc == "pls"
-        fm = plskern(zX, zy; nlv = nlv, scal = scal)
+        fm = plsrda(zX, zy; nlv = nlv, scal = scal)
     elseif reduc == "dkpls"
-        fm = dkplsr(zX, zy; gamma = gamma, nlv = nlv, 
+        fm = dkplsrda(zX, zy; gamma = gamma, nlv = nlv, 
             scal = scal)
     end
     T = transform(fm, X)
