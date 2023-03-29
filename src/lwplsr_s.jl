@@ -12,24 +12,30 @@ struct LwplsrS1
 end
 
 """
-    lwplsr_s(X, Y; nlv0,
-        nlvdis, metric, h, k, nlv, tol = 1e-4, 
-        scal = false, verbose = false)
+    lwplsr_s(X, Y; nlv0, reduc = "pls", 
+        metric = "eucl", h, k, gamma = 1, psamp = 1, samp = "sys", 
+        nlv, tol = 1e-4, scal = false, verbose = false)
 kNN-LWPLSR after preliminary (linear or non-linear) dimension 
     reduction (kNN-LWPLSR-S).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `nlv0` : Nb. latent variables (LVs) for preliminary dimension reduction. 
-* `nlvdis` : Nb. LVs to consider in the global PLS 
-    used for the dimension reduction before computing the dissimilarities. 
-    If `nlvdis = 0`, there is no dimension reduction.
-* `metric` : Type of dissimilarity used to select the neighbors and computed the weights. 
-    Possible values are "eucl" (default; Euclidean distance) 
+* `reduc` : Type of dimension reduction. Possible values are:
+    "pca" (PCA), "pls" (PLS; default), "dkpls" (direct Gaussian kernel PLS).
+* `metric` : Type of dissimilarity used to select the neighbors and compute
+    the weights. Possible values are "eucl" (default; Euclidean distance) 
     and "mahal" (Mahalanobis distance).
 * `h` : A scalar defining the shape of the weight function. Lower is h, 
     sharper is the function. See function `wdist`.
 * `k` : The number of nearest neighbors to select for each observation to predict.
-* `nlv` : Nb. latent variables (LVs).
+* `gamma` : Scale parameter for the Gaussian kernel when a KPLS is used 
+    for dimension reduction. See function `krbf`.
+* `psamp` : Proportion of observations sampled in `X, Y`to compute the 
+    loadings used to compute the scores.
+* `samp` : Type of sampling applied for `psamp`. Possible values are: 
+    "sys"= systematic grid sampling over `rowsum(Y)`, "random"= random sampling.
+* `nlv` : Nb. latent variables (LVs) for the models fitted on preliminary 
+    scores.
 * `tol` : For stabilization when very close neighbors.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
@@ -37,9 +43,21 @@ kNN-LWPLSR after preliminary (linear or non-linear) dimension
     each neighborhood) computations.
 * `verbose` : If true, fitting information are printed.
 
-This is a fast version of kNN-LWPLSR (Lesnoff et al. 2020) using the same principle as 
-in Shen et al 2019. The kNN-LWPLSR is done after preliminary dimension reduction
-(parameter `nlv0`) of the X-data.
+
+The principle is as follows. A preliminary dimension reduction (parameter `nlv0`) 
+of the X-data (n, p) returns a score matrix T (n, `nlv`). Then, a kNN-LWPLSR 
+is done on {T, `Y`}. This is a fast approximation of kNN-LWPLSR using the same 
+principle as in Shen et al 2019.
+
+The dimension reduction can be linear (PCA, PLS) or non linear (DKPLS), defined 
+in argument `reduc`.
+
+When n is too large, the reduction dimension can become too costly,
+in particular for a kernel PLS (that requires to compute a matrix (n, n)).
+Argument `psamp` allows to sample a proportion of the observations
+that will be used to compute (approximate) scores T for the all X-data. 
+
+Setting `nlv = nlv0` returns the same predicions as function `lwmlr_s`.
 
 ## References
 Lesnoff, M., Metz, M., Roger, J.-M., 2020. Comparison of locally weighted PLS 
@@ -94,6 +112,7 @@ function lwplsr_s(X, Y; nlv0, reduc = "pls",
     end
     zX = vrow(X, s)
     zY = vrow(Y, s)
+    nlv = min(nlv0, nlv)
     if reduc == "pca"
         fm = pcasvd(zX; nlv = nlv0, scal = scal)
     elseif reduc == "pls"

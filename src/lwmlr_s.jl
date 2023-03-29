@@ -44,7 +44,7 @@ The dimension reduction can be linear (PCA, PLS) or non linear (DKPLS), defined
 in argument `reduc`.
 
 When n is too large, the reduction dimension can become too costly,
-in particular for a kernel PLS that requires to compute a matrix (n, n).
+in particular for a kernel PLS (that requires to compute a matrix (n, n)).
 Argument `psamp` allows to sample a proportion of the observations
 that will be used to compute (approximate) scores T for the all X-data. 
 
