@@ -3,6 +3,7 @@
 ### *Version 0.1.17*
 
 - Modifications
+    - **lwmlr_s**: Add arguments 'psamp' and 'samp' 
     - Code cleaning.
 
 ### *Version 0.1.16* 
