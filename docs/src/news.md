@@ -13,6 +13,7 @@
 - Breaking changes
     - **lwplsr_s**: Arguments and pipeline changed to be consistent 
         with **lwmlr_s**. 
+    - **sampclas**: remamed to **sampcla**.
 
 ### *Version 0.1.16* 
 
