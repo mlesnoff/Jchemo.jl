@@ -73,6 +73,16 @@ function plsrda(X, y, weights = ones(nro(X)); nlv,
     Plsrda(fm, res.lev, ni)
 end
 
+""" 
+    transform(object::Plsrda, X; nlv = nothing)
+Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
+* `object` : The fitted model.
+* `X` : Matrix (m, p) for which LVs are computed.
+* `nlv` : Nb. LVs to consider.
+""" 
+function transform(object::Plsrda, X; nlv = nothing)
+    transform(object.fm, X; nlv = nlv)
+end
 
 """
     predict(object::PlsrDa, X; nlv = nothing)
