@@ -3,7 +3,7 @@
 ### *Version 0.1.17*
 
 - Modifications
-    - **lwmlr_s**: Add arguments 'psamp' and 'samp'. 
+    - **lwmlr_s**: Add arguments 'psamp' and 'samp' for large nb. observations. 
     - Code cleaning.
 
 - Breaking changes
@@ -28,8 +28,8 @@
     - **Warning**: Difficult breaking bugs appeared in C++ dll from Julia v1.8.4 
         (still present in v1.9-betas) that removed the possibility to use packages 
         LIBSVM.jl and XGBoost.jl under Windows. For this reason, Jchemo.jl stopped to use 
-        these two packages, and all the related functions (SVM, RF and XGBoost models) 
-        were removed. For CART models (trees), they were replaced by functions 
+        these two packages. All the related functions (SVM, RF and XGBoost models) 
+        were removed. For CART models (trees), they were replaced by new functions 
         using package DecisionTree.jl.  
 
 ### *Version 0.1.15* 
