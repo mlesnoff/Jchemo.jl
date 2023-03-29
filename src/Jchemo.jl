@@ -120,6 +120,7 @@ include("cplsravg.jl")  # Here since call ::PlsrDa
 include("treeda_dt.jl")
 
 # Local discrimination
+include("lwmlrda.jl")
 include("lwplsrda.jl")
 include("lwplslda.jl")
 include("lwplsqda.jl")
@@ -276,6 +277,7 @@ export
     plsrdaavg, plsldaavg, plsqdaavg,
     treeda_dt, rfda_dt,
     # Local Discrimination
+    lwmlrda,
     lwplsrda, lwplslda, lwplsqda,
     lwplsrdaavg, lwplsldaavg, lwplsqdaavg,
     knnda,

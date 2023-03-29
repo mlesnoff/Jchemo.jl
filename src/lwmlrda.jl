@@ -9,10 +9,11 @@ struct Lwmlrda1
 end
 
 """
-    lwmlrda(X, Y; metric, h, k, tol = 1e-4, verbose = false)
+    lwmlrda(X, y; metric = "eucl", h, k, 
+        tol = 1e-4, verbose = false)
 k-Nearest-Neighbours locally weighted multiple linear regression (kNN-LWMLR).
 * `X` : X-data (n, p).
-* `Y` : Y-data (n, q).
+* `y` : Univariate class membership.
 * `metric` : Type of dissimilarity used to select the neighbors and compute
     the weights. Possible values are "eucl" (default; Euclidean distance) 
     and "mahal" (Mahalanobis distance).
@@ -56,29 +57,12 @@ println(rmsep(pred, ytest))
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed (Test)").f  
-
-####### Example of fitting the function sinc(x)
-####### described in Rosipal & Trejo 2001 J of Machine Learning Res. p. 105-106 
-x = collect(-10:.2:10) 
-x[x .== 0] .= 1e-5
-n = length(x)
-zy = sin.(abs.(x)) ./ abs.(x) 
-y = zy + .2 * randn(n) 
-fm = lwmlr(x, y; metric = "eucl", h = 1, k = 20) ;
-pred = Jchemo.predict(fm, x).pred 
-f = Figure(resolution = (700, 300))
-ax = Axis(f[1, 1])
-scatter!(x, y) 
-lines!(ax, x, zy, label = "True model")
-lines!(ax, x, vec(pred), label = "Fitted model")
-f[1, 2] = Legend(f, ax, framevisible = false)
-f
 ```
 """ 
-function lwmlrda(X, y; metric, 
-        h, k, tol = 1e-4, verbose = false)
+function lwmlrda(X, y; metric = "eucl", h, k, 
+        tol = 1e-4, verbose = false)
     X = ensure_mat(X)
-    Y = ensure_mat(y)
+    y = ensure_mat(y)
     Lwmlrda1(X, y, metric, h, k, tol, 
         verbose)
 end
