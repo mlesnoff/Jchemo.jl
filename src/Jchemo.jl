@@ -121,6 +121,7 @@ include("treeda_dt.jl")
 
 # Local discrimination
 include("lwmlrda.jl")
+include("lwmlrda_s.jl")
 include("lwplsrda.jl")
 include("lwplslda.jl")
 include("lwplsqda.jl")
@@ -197,7 +198,8 @@ export
     detrend, detrend!, 
     fdif, fdif!,
     interpl, interpl_mon, 
-    linear_int, quadratic_int, quadratic_spline, cubic_spline,
+    linear_int, quadratic_int, 
+    quadratic_spline, cubic_spline,
     mavg, mavg!, mavg_runmean, mavg_runmean!,
     rmgap, rmgap!,
     savgk, savgol, savgol!,
@@ -208,7 +210,8 @@ export
     # Exploratory
     kpca,
     nipals,
-    pcasvd, pcasvd!, pcaeigen, pcaeigen!, pcaeigenk, pcaeigenk!,
+    pcasvd, pcasvd!, 
+    pcaeigen, pcaeigen!, pcaeigenk, pcaeigenk!,
     rpmatgauss, rpmatli, rp, rp!,
     pcasph, pcasph!,
     # Exploratory Multiblock
@@ -238,7 +241,8 @@ export
     covselr,
     rr, rr!, rrchol, rrchol!,
     rrr, rrr!,   
-    krr, krr!, kplsr, kplsr!, dkplsr, dkplsr!,
+    krr, krr!, kplsr, kplsr!, 
+    dkplsr, dkplsr!,
     plsravg, plsravg!,
     dfplsr_cg, aicplsr,
     wshenk,
@@ -277,7 +281,7 @@ export
     plsrdaavg, plsldaavg, plsqdaavg,
     treeda_dt, rfda_dt,
     # Local Discrimination
-    lwmlrda,
+    lwmlrda, lwmlrda_s,
     lwplsrda, lwplslda, lwplsqda,
     lwplsrdaavg, lwplsldaavg, lwplsqdaavg,
     knnda,
