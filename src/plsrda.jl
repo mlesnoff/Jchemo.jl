@@ -58,9 +58,11 @@ res.posterior
 res.pred
 err(res.pred, ytest)
 
+Jchemo.transform(fm, Xtest)
+
+Jchemo.transform(fm.fm, Xtest)
 Jchemo.coef(fm.fm)
 summary(fm.fm, Xtrain)
-Jchemo.transform(fm, Xtest)
 
 Jchemo.predict(fm, Xtest; nlv = 1:2).pred
 ```
