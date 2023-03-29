@@ -130,8 +130,8 @@ function predict(object::LwplsrS1, X; nlv = nothing)
     end
     # End
     pred = locwlv(object.T, object.Y, T; 
-        listnn = res.ind, listw = listw, fun = plskern, 
-        nlv = nlv, verbose = object.verbose).pred
+        listnn = res.ind, listw = listw, fun = plskern, nlv = nlv, 
+        scal = object.scal, verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, 
         listw = listw)
 end
