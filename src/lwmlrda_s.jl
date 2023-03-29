@@ -89,13 +89,8 @@ function lwmlrda_s(X, y; nlv, reduc = "pls",
         nlev = length(lev)
         zm = Int64(round(m / nlev))
         s = sampcla(y; k = zm).train
-        println(tab(y))
-        println(m)
-        println(zm)
-        println(tab(y[s, 1]))
     elseif samp == "random"
         s = sample(1:n, m; replace = false)
-        println(tab(y[s, 1]))
     end
     zX = vrow(X, s)
     zy = vrow(y, s)
