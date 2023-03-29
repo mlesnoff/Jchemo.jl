@@ -1,6 +1,6 @@
 struct Lwmlrda1
     X::Array{Float64}
-    Y::Array{Float64}
+    y::AbstractMatrix
     metric::String
     h::Real
     k::Int
@@ -75,17 +75,17 @@ f[1, 2] = Legend(f, ax, framevisible = false)
 f
 ```
 """ 
-function lwmlrda(X, Y; metric, 
+function lwmlrda(X, y; metric, 
         h, k, tol = 1e-4, verbose = false)
     X = ensure_mat(X)
-    Y = ensure_mat(Y)
-    Lwmlrda1(X, Y, metric, h, k, tol, 
+    Y = ensure_mat(y)
+    Lwmlrda1(X, y, metric, h, k, tol, 
         verbose)
 end
 
 """
     predict(object::Lwmlrda1, X)
-Compute the Y-predictions from the fitted model.
+Compute y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
@@ -102,8 +102,8 @@ function predict(object::Lwmlrda1, X)
         listw[i] = w
     end
     # End
-    pred = locw(object.X, object.Y, X; 
-        listnn = res.ind, listw = listw, fun = mlr,
+    pred = locw(object.X, object.y, X; 
+        listnn = res.ind, listw = listw, fun = mlrda,
         verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, 
         listw = listw)
