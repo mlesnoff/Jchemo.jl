@@ -32,7 +32,7 @@ kNN-LWMLR-DA after preliminary (linear or non-linear) dimension
 * `psamp` : Proportion of observations sampled in `X, y`to compute the 
     loadings used to compute the scores.
 * `samp` : Type of sampling applied for `psamp`. Possible values are: 
-    "sys"= systematic grid sampling over `rowsum(y)`, "random"= random sampling. 
+    "cla"= stratified random sampling over the classes in `y`, "random"= random sampling. 
 * `tol` : For stabilization when very close neighbors.
 * `verbose` : If true, fitting information are printed.
 
@@ -62,18 +62,18 @@ tab(ytest)
 fm = lwmlrda_s(Xtrain, ytrain; nlv = 20, reduc = "pca", 
     metric = "eucl", h = 2, k = 100) ;
 pred = Jchemo.predict(fm, Xtest).pred
-err(.pred, ytest)
+err(pred, ytest)
 
 fm = lwmlrda_s(Xtrain, ytrain; nlv = 20, reduc = "dkpls", 
     metric = "eucl", h = 2, k = 100, gamma = .01) ;
 pred = Jchemo.predict(fm, Xtest).pred
-err(.pred, ytest)
+err(pred, ytest)
 
 fm = lwmlrda_s(Xtrain, ytrain; nlv = 20, reduc = "dkpls", 
     metric = "eucl", h = 2, k = 100, gamma = .01,
-    psamp = .5, samp = "random") ;
+    psamp = .5, samp = "cla") ;
 pred = Jchemo.predict(fm, Xtest).pred
-err(.pred, ytest)
+err(pred, ytest)
 ```
 """ 
 function lwmlrda_s(X, y; nlv, reduc = "pls", 
