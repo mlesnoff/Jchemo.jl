@@ -101,7 +101,7 @@ function lwplsqda(X, y; nlvdis, metric, h, k, nlv,
 end
 
 """
-    predict(object::LwplsQda, X)
+    predict(object::LwplsQda, X; nlv = nothing)
 Compute the y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
