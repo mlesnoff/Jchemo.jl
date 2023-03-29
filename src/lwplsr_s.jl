@@ -81,11 +81,15 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
 ```
 """ 
 function lwplsr_s(X, Y; nlv0,
-        nlvdis, metric, h, k, nlv, tol = 1e-4, scal = false, 
+        nlvdis, metric, h, k, nlv, gamma = 1, typ = "pls", 
+        psamp = 1, samp = "sys", tol = 1e-4, scal = false, 
         verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     fm0 = plskern(X, Y; nlv = nlv0, scal = scal)
+
+
+    
     ## The new data replacing {X, Y} are {fm0.T, Y}
     if nlvdis == 0
         fm = nothing

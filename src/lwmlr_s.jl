@@ -3,35 +3,35 @@ struct LwmlrS
     Y::Array{Float64}
     fm
     nlv::Int
-    gamma::Real
     metric::String
     h::Real
     k::Int
     typ::String
+    gamma::Real
     tol::Real
     scal::Bool
     verbose::Bool
 end
 
 """
-    lwmlr_s(X, Y; metric = "eucl", 
-        h, k, nlv, gamma = 1, typ = "pls", 
+    lwmlr_s(X, Y; nlv, metric = "eucl", 
+        h, k, typ = "pls", gamma = 1, 
         tol = 1e-4, scal = false, verbose = false)
 kNN-LWMLR after preliminary (linear or non-linear) dimension 
     reduction (kNN-LWMLR-S).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
+* `nlv` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `metric` : Type of dissimilarity used to select the neighbors and compute
     the weights. Possible values are "eucl" (default; Euclidean distance) 
     and "mahal" (Mahalanobis distance).
 * `h` : A scalar defining the shape of the weight function. Lower is h, 
     sharper is the function. See function `wdist`.
 * `k` : The number of nearest neighbors to select for each observation to predict.
-* `nlv` : Nb. latent variables (LVs) for preliminary dimension reduction. 
-* `gamma` : Scale parameter for the Gaussian kernel when a KPLS is used 
-    for dimension reduction. See function `krbf`.
 * `typ` : Type of dimension reduction. Possible values are:
     "pca" (PCA), "pls" (PLS; default), "dkpls" (direct Gaussian kernel PLS).
+* `gamma` : Scale parameter for the Gaussian kernel when a KPLS is used 
+    for dimension reduction. See function `krbf`.
 *  `psamp` : Proportion of observations sampled in `X, Y`to compute the 
     loadings used to compute the scores.
 *  `samp` : Type of sampling applied for `psamp`. Possible values are: 
@@ -77,22 +77,28 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-fm = lwmlr_s(Xtrain, ytrain; metric = "eucl", 
-    h = 2, k = 100, nlv = 20, typ = "pca") ;
+fm = lwmlr_s(Xtrain, ytrain; nlv = 20, metric = "eucl", 
+    h = 2, k = 100, typ = "pca") ;
 pred = Jchemo.predict(fm, Xtest).pred
 println(rmsep(pred, ytest))
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed (Test)").f  
 
-fm = lwmlr_s(Xtrain, ytrain; metric = "eucl", 
-    h = 2, k = 100, nlv = 20, gamma = .01, typ = "dkpls") ;
+fm = lwmlr_s(Xtrain, ytrain; nlv = 20, metric = "eucl", 
+    h = 2, k = 100, typ = "dkpls", gamma = .01) ;
+pred = Jchemo.predict(fm, Xtest).pred
+rmsep(pred, ytest)
+
+fm = lwmlr_s(Xtrain, ytrain; nlv = 20, metric = "eucl", 
+    h = 2, k = 100, typ = "dkpls", gamma = .01,
+    psamp = .5, samp = "random") ;
 pred = Jchemo.predict(fm, Xtest).pred
 rmsep(pred, ytest)
 ```
 """ 
-function lwmlr_s(X, Y; metric = "eucl", 
-        h, k, nlv, gamma = 1, typ = "pls", 
+function lwmlr_s(X, Y; nlv, metric = "eucl", 
+        h, k, typ = "pls", gamma = 1, 
         psamp = 1, samp = "sys", 
         tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
@@ -115,8 +121,8 @@ function lwmlr_s(X, Y; metric = "eucl",
             scal = scal)
     end
     T = transform(fm, X)
-    LwmlrS(T, Y, fm, nlv, gamma, metric, h, k, 
-        typ, tol, scal, verbose)
+    LwmlrS(T, Y, fm, nlv, metric, h, k, 
+        typ, gamma, tol, scal, verbose)
 end
 
 function predict(object::LwmlrS, X)
