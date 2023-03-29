@@ -3,8 +3,12 @@
 ### *Version 0.1.17*
 
 - Modifications
-    - **lwmlr_s**: Add arguments 'psamp' and 'samp' 
+    - **lwmlr_s**: Add arguments 'psamp' and 'samp'. 
     - Code cleaning.
+
+- Breaking changes
+    - **lwplsr_s**: Arguments and pipeline changed to be consistent 
+        with **lwmlr_s**. 
 
 ### *Version 0.1.16* 
 
