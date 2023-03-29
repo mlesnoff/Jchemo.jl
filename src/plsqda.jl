@@ -30,7 +30,7 @@ function plsqda(X, y, weights = ones(nro(X)); nlv,
         fm_da[i] = qda(vcol(fm_pls.T, 1:i), y; prior = prior)
     end
     fm = (fm_pls = fm_pls, fm_da = fm_da)
-    PlsLda(fm, res.lev, ni)
+    Plslda(fm, res.lev, ni)
 end
 
 

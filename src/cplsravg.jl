@@ -1,6 +1,6 @@
 struct CplsrAvg
     fm
-    fm_da::PlsLda
+    fm_da::Plslda
     lev
     ni
 end
