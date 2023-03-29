@@ -60,7 +60,7 @@ err(res.pred, ytest)
 
 Jchemo.coef(fm.fm)
 summary(fm.fm, Xtrain)
-Jchemo.transform(fm.fm, Xtest)
+Jchemo.transform(fm, Xtest)
 
 Jchemo.predict(fm, Xtest; nlv = 1:2).pred
 ```
