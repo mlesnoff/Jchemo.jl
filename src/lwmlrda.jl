@@ -1,4 +1,4 @@
-struct Lwmlr
+struct Lwmlrda1
     X::Array{Float64}
     Y::Array{Float64}
     metric::String
@@ -9,7 +9,7 @@ struct Lwmlr
 end
 
 """
-    lwmlr(X, Y; metric, h, k, tol = 1e-4, verbose = false)
+    lwmlrda(X, Y; metric, h, k, tol = 1e-4, verbose = false)
 k-Nearest-Neighbours locally weighted multiple linear regression (kNN-LWMLR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -75,21 +75,21 @@ f[1, 2] = Legend(f, ax, framevisible = false)
 f
 ```
 """ 
-function lwmlr(X, Y; metric, 
+function lwmlrda(X, Y; metric, 
         h, k, tol = 1e-4, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    Lwmlr(X, Y, metric, h, k, tol, 
+    Lwmlrda1(X, Y, metric, h, k, tol, 
         verbose)
 end
 
 """
-    predict(object::Lwmlr, X)
+    predict(object::Lwmlrda1, X)
 Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Lwmlr, X)
+function predict(object::Lwmlrda1, X)
     X = ensure_mat(X)
     m = nro(X)
     # Getknn
