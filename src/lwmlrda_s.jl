@@ -1,6 +1,6 @@
 struct LwmlrdaS
     T::Array{Float64}
-    Y::Array{Float64}
+    y::Array{Float64}
     fm
     metric::String
     h::Real
@@ -10,7 +10,7 @@ struct LwmlrdaS
 end
 
 """
-    lwmlrda_s(X, Y; nlv, reduc = "pls", 
+    lwmlrda_s(X, y; nlv, reduc = "pls", 
         metric = "eucl", h, k, 
         gamma = 1, psamp = 1, samp = "sys", 
         tol = 1e-4, scal = false, verbose = false)
@@ -29,16 +29,16 @@ kNN-LWMLR after preliminary (linear or non-linear) dimension
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `gamma` : Scale parameter for the Gaussian kernel when a KPLS is used 
     for dimension reduction. See function `krbf`.
-* `psamp` : Proportion of observations sampled in `X, Y`to compute the 
+* `psamp` : Proportion of observations sampled in `X, y`to compute the 
     loadings used to compute the scores.
 * `samp` : Type of sampling applied for `psamp`. Possible values are: 
-    "sys"= systematic grid sampling over `rowsum(Y)`, "random"= random sampling. 
+    "sys"= systematic grid sampling over `rowsum(y)`, "random"= random sampling. 
 * `tol` : For stabilization when very close neighbors.
 * `verbose` : If true, fitting information are printed.
 
 The principle is as follows. A preliminary dimension reduction (parameter `nlv`) 
 of the X-data (n, p) returns a score matrix T (n, `nlv`). Then, a kNN-LWMLR 
-is done on {T, `Y`}.
+is done on {T, `y`}.
 
 The dimension reduction can be linear (PCA, PLS) or non linear (DKPLS), defined 
 in argument `reduc`.
@@ -94,37 +94,37 @@ pred = Jchemo.predict(fm, Xtest).pred
 rmsep(pred, ytest)
 ```
 """ 
-function lwmlrda_s(X, Y; nlv, reduc = "pls", 
+function lwmlrda_s(X, y; nlv, reduc = "pls", 
         metric = "eucl", h, k, 
         gamma = 1, psamp = 1, samp = "random", 
         tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
-    Y = ensure_mat(Y)
+    y = ensure_mat(y)
     n = nro(X)
     m = Int64(round(psamp * n))
     if samp == "sys"
-        s = sampsys(rowsum(Y); k = m).train
+        s = sampsys(rowsum(y); k = m).train
     elseif samp == "random"
         s = sample(1:n, m; replace = false)
     end
     zX = vrow(X, s)
-    zY = vrow(Y, s)
+    zy = vrow(y, s)
     if reduc == "pca"
         fm = pcasvd(zX; nlv = nlv, scal = scal)
     elseif reduc == "pls"
-        fm = plskern(zX, zY; nlv = nlv, scal = scal)
+        fm = plskern(zX, zy; nlv = nlv, scal = scal)
     elseif reduc == "dkpls"
-        fm = dkplsr(zX, zY; gamma = gamma, nlv = nlv, 
+        fm = dkplsr(zX, zy; gamma = gamma, nlv = nlv, 
             scal = scal)
     end
     T = transform(fm, X)
-    LwmlrdaS(T, Y, fm, metric, h, k, 
+    LwmlrdaS(T, y, fm, metric, h, k, 
         tol, verbose)
 end
 
 """
     predict(object::LwmlrdaS, X)
-Compute the Y-predictions from the fitted model.
+Compute the y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
@@ -142,7 +142,7 @@ function predict(object::LwmlrdaS, X)
         listw[i] = w
     end
     # End
-    pred = locw(object.T, object.Y, T; 
+    pred = locw(object.T, object.y, T; 
         listnn = res.ind, listw = listw, fun = mlr,
         verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
