@@ -43,7 +43,6 @@ kNN-LWPLSR after preliminary (linear or non-linear) dimension
     each neighborhood) computations.
 * `verbose` : If true, fitting information are printed.
 
-
 The principle is as follows. A preliminary dimension reduction (parameter `nlv0`) 
 of the X-data (n, p) returns a score matrix T (n, `nlv`). Then, a kNN-LWPLSR 
 is done on {T, `Y`}. This is a fast approximation of kNN-LWPLSR using the same 
@@ -86,16 +85,31 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-nlv0 = 30
-nlvdis = 20 ; metric = "mahal" 
+nlv0 = 20 ; metric = "mahal" 
 h = 2 ; k = 100 ; nlv = 10
-fm = lwplsr_s(Xtrain, ytrain; nlv0 = nlv0, nlvdis = nlvdis,
+fm = lwplsr_s(Xtrain, ytrain; nlv0 = nlv0,
     metric = metric, h = h, k = k, nlv = nlv) ;
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 plotxy(vec(res.pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed (Test)").f  
+
+fm = lwplsr_s(Xtrain, ytrain; nlv0 = nlv0,
+    reduc = "dkpls", metric = metric, 
+    h = h, k = k, gamma = .1, nlv = nlv) ;
+res = Jchemo.predict(fm, Xtest)
+rmsep(res.pred, ytest)
+plotxy(vec(res.pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed (Test)").f  
+
+fm = lwplsr_s(Xtrain, ytrain; nlv0 = nlv0,
+    reduc = "dkpls", metric = metric, 
+    h = h, k = k, gamma = .1, psamp = .8,
+    samp = "random", nlv = nlv) ;
+res = Jchemo.predict(fm, Xtest)
+rmsep(res.pred, ytest)
 ```
 """ 
 function lwplsr_s(X, Y; nlv0, reduc = "pls", 
