@@ -1,5 +1,5 @@
-struct LwmlrS
-    X::Array{Float64}
+struct LwmlrS1
+    T::Array{Float64}
     Y::Array{Float64}
     fm
     nlv::Int
@@ -31,17 +31,26 @@ kNN-LWMLR after preliminary (linear or non-linear) dimension
 * `gamma` : Scale parameter for the Gaussian kernel when a KPLS is used 
     for dimension reduction. See function `krbf`.
 * `typ` : Type of dimension reduction. Possible values are:
-    "pca" (PCA), "pls" (PLS; default), "dkpls" (direct Gaussian KPLS). 
+    "pca" (PCA), "pls" (PLS; default), "dkpls" (direct Gaussian KPLS).
+*  `psamp` : Proportion of observations sampled in `X, Y`to compute the 
+    loadings used to compute the scores.
+*  `samp` : Type of sampling. possible values: "sys" = systematic grid sampling 
+    over `rowsum(Y)`, "random" = random sampling) 
 * `tol` : For stabilization when very close neighbors.
 * `verbose` : If true, fitting information are printed.
 
-A kNN-LWMLR is done after preliminary dimension reduction
-(parameter `nlv`) of the X-data. The dimension reduction
-can be linear (PCA, PLS) or non linear (DKPL), defined 
+A preliminary dimension reduction (parameter `nlv`) of the 
+X-data (n, p) gives score matrix T (n, `nlv`). Then, a kNN-LWMLR 
+is done on {T, `Y`}.
+
+The dimension reduction can be linear (PCA, PLS) or non linear (DKPLS), defined 
 in argument `typ`.
 
-When the reduction is done by PCA, this corresponds to the "LWR" 
-algorithm proposed by Naes et al. (1990).
+
+
+
+The case `typ = "pca"` corresponds to the "LWR" algorithm proposed 
+by Naes et al. (1990).
 
 ## References 
 Naes, T., Isaksson, T., Kowalski, B., 1990. Locally weighted regression
@@ -82,32 +91,38 @@ rmsep(pred, ytest)
 """ 
 function lwmlr_s(X, Y; metric = "eucl", 
         h, k, nlv, gamma = 1, typ = "pls", 
+        psamp = 1, samp = "sys", 
         tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
+    n = nro(X)
+    m = Int64(round(psamp * n))
+    if samp == "sys"
+        s = sampsys(rowsum(Y); k = m).train
+    elseif samp == "random"
+        s = sample(1:n, m; replace = false)
+    end
+    zX = vrow(X, s)
+    zY = vrow(Y, s)
     if typ == "pca"
-        fm = pcasvd(X; nlv = nlv, scal = scal)
+        fm = pcasvd(zX; nlv = nlv, scal = scal)
     elseif typ == "pls"
-        fm = plskern(X, Y; nlv = nlv, scal = scal)
+        fm = plskern(zX, zY; nlv = nlv, scal = scal)
     elseif typ == "dkpls"
-        fm = dkplsr(X, Y; gamma = gamma, nlv = nlv, 
+        fm = dkplsr(zX, zY; gamma = gamma, nlv = nlv, 
             scal = scal)
     end
-    LwmlrS(X, Y, fm, nlv, gamma, metric, h, k, 
+    T = transform(fm, X)
+    LwmlrS1(T, Y, fm, nlv, gamma, metric, h, k, 
         typ, tol, scal, verbose)
 end
 
-function predict(object::LwmlrS, X)
+function predict(object::LwmlrS1, X)
     X = ensure_mat(X)
     m = nro(X)
-    if object.typ == "dkpls" 
-        Ttrain = object.fm.fm.T
-    else
-        Ttrain = object.fm.T
-    end
     T = transform(object.fm, X)
     # Getknn
-    res = getknn(Ttrain, T; 
+    res = getknn(object.T, T; 
         k = object.k, metric = object.metric)
     listw = copy(res.d)
     Threads.@threads for i = 1:m
@@ -116,7 +131,7 @@ function predict(object::LwmlrS, X)
         listw[i] = w
     end
     # End
-    pred = locw(Ttrain, object.Y, T; 
+    pred = locw(object.T, object.Y, T; 
         listnn = res.ind, listw = listw, fun = mlr,
         verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
