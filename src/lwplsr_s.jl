@@ -1,4 +1,4 @@
-struct LwplsrS
+struct LwplsrS1
     X::Array{Float64}
     Y::Array{Float64}
     fm0
@@ -80,16 +80,17 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
     ylabel = "Observed (Test)").f  
 ```
 """ 
-function lwplsr_s(X, Y; nlv0,
-        nlvdis, metric, h, k, nlv, gamma = 1, typ = "pls", 
-        psamp = 1, samp = "sys", tol = 1e-4, scal = false, 
-        verbose = false)
+function lwplsr_s(X, Y; nlv0, metric, 
+        h, k, reduc = "pls", 
+        gamma = 1, psamp = 1, samp = "sys", 
+        nlv, 
+        tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     fm0 = plskern(X, Y; nlv = nlv0, scal = scal)
 
 
-    
+
     ## The new data replacing {X, Y} are {fm0.T, Y}
     if nlvdis == 0
         fm = nothing
@@ -97,7 +98,7 @@ function lwplsr_s(X, Y; nlv0,
         fm = plskern(fm0.T, Y; nlv = nlvdis, scal = scal)
     end
     nlv = min(nlv, nco(fm0.T))
-    LwplsrS(X, Y, fm0, fm, metric, h, k, nlv, 
+    LwplsrS1(X, Y, fm0, fm, metric, h, k, nlv, 
         tol, scal, verbose)
 end
 
@@ -107,7 +108,7 @@ Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::LwplsrS, X; nlv = nothing)
+function predict(object::LwplsrS1, X; nlv = nothing)
     X = ensure_mat(X)
     m = nro(X)
     a = object.nlv
