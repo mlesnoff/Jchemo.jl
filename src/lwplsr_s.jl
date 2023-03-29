@@ -81,7 +81,7 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
 ```
 """ 
 function lwplsr_s(X, Y; nlv0, reduc = "pls", 
-        metric, h, k, gamma = 1, psamp = 1, samp = "sys", 
+        metric = "eucl", h, k, gamma = 1, psamp = 1, samp = "sys", 
         nlv, tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
