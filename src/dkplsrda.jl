@@ -51,8 +51,10 @@ res.posterior
 res.pred
 err(res.pred, ytest)
 
-Jchemo.coef(fm.fm)
+Jchemo.transform(fm, Xtest; nlv = 2)
+
 Jchemo.transform(fm.fm, Xtest)
+Jchemo.coef(fm.fm)
 ```
 """ 
 function dkplsrda(X, y, weights = ones(nro(X)); nlv, kern = "krbf", 
@@ -62,6 +64,17 @@ function dkplsrda(X, y, weights = ones(nro(X)); nlv, kern = "krbf",
     fm = dkplsr(X, res.Y, weights; nlv = nlv, kern = kern, 
         scal = scal, kwargs...)
     Dkplsrda(fm, res.lev, ni)
+end
+
+""" 
+    transform(object::Dkplsrda, X; nlv = nothing)
+Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
+* `object` : The fitted model.
+* `X` : Matrix (m, p) for which LVs are computed.
+* `nlv` : Nb. LVs to consider.
+""" 
+function transform(object::Dkplsrda, X; nlv = nothing)
+    transform(object.fm, X; nlv = nlv)
 end
 
 """
