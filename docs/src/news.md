@@ -2,6 +2,9 @@
 
 ### *Version 0.1.17*
 
+- News 
+    - **lwmlrda**: k-Nearest-Neighbours locally weighted MLR-based discrimination (kNN-LWMLR-DA).
+
 - Modifications
     - **lwmlr_s**: Add arguments 'psamp' and 'samp' for large nb. observations. 
     - Code cleaning.
