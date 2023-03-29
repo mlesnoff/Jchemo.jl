@@ -1,7 +1,6 @@
 struct LwplsrS1
-    X::Array{Float64}
+    T::Array{Float64}
     Y::Array{Float64}
-    fm0
     fm
     metric::String
     h::Real
@@ -16,7 +15,8 @@ end
     lwplsr_s(X, Y; nlv0,
         nlvdis, metric, h, k, nlv, tol = 1e-4, 
         scal = false, verbose = false)
-kNN-LWPLSR after preliminary dimension reduction.
+kNN-LWPLSR after preliminary (linear or non-linear) dimension 
+    reduction (kNN-LWPLSR-S).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `nlv0` : Nb. latent variables (LVs) for preliminary dimension reduction. 
@@ -80,30 +80,35 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
     ylabel = "Observed (Test)").f  
 ```
 """ 
-function lwplsr_s(X, Y; nlv0, metric, 
-        h, k, reduc = "pls", 
-        gamma = 1, psamp = 1, samp = "sys", 
-        nlv, 
-        tol = 1e-4, scal = false, verbose = false)
+function lwplsr_s(X, Y; nlv0, reduc = "pls", 
+        metric, h, k, gamma = 1, psamp = 1, samp = "sys", 
+        nlv, tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    fm0 = plskern(X, Y; nlv = nlv0, scal = scal)
-
-
-
-    ## The new data replacing {X, Y} are {fm0.T, Y}
-    if nlvdis == 0
-        fm = nothing
-    else
-        fm = plskern(fm0.T, Y; nlv = nlvdis, scal = scal)
+    n = nro(X)
+    m = Int64(round(psamp * n))
+    if samp == "sys"
+        s = sampsys(rowsum(Y); k = m).train
+    elseif samp == "random"
+        s = sample(1:n, m; replace = false)
     end
-    nlv = min(nlv, nco(fm0.T))
-    LwplsrS1(X, Y, fm0, fm, metric, h, k, nlv, 
+    zX = vrow(X, s)
+    zY = vrow(Y, s)
+    if reduc == "pca"
+        fm = pcasvd(zX; nlv = nlv0, scal = scal)
+    elseif reduc == "pls"
+        fm = plskern(zX, zY; nlv = nlv0, scal = scal)
+    elseif reduc == "dkpls"
+        fm = dkplsr(zX, zY; gamma = gamma, nlv = nlv0, 
+            scal = scal)
+    end
+    T = transform(fm, X)
+    LwplsrS1(T, Y, fm, metric, h, k, nlv, 
         tol, scal, verbose)
 end
 
 """
-    predict(object::Lwplsr, X)
+    predict(object::LwplsrS1, X; nlv = nothing)
 Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
@@ -113,6 +118,12 @@ function predict(object::LwplsrS1, X; nlv = nothing)
     m = nro(X)
     a = object.nlv
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
+
+
+
+
+
+
     T = transform(object.fm0, X)
     # Getknn
     if isnothing(object.fm)

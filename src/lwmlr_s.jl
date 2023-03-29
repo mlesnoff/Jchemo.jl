@@ -1,4 +1,4 @@
-struct LwmlrS1
+struct LwmlrS
     T::Array{Float64}
     Y::Array{Float64}
     fm
@@ -37,8 +37,8 @@ kNN-LWMLR after preliminary (linear or non-linear) dimension
 * `tol` : For stabilization when very close neighbors.
 * `verbose` : If true, fitting information are printed.
 
-A preliminary dimension reduction (parameter `nlv`) of the 
-X-data (n, p) gives score matrix T (n, `nlv`). Then, a kNN-LWMLR 
+The principle is as follows. A preliminary dimension reduction (parameter `nlv`) 
+of the X-data (n, p) returns a score matrix T (n, `nlv`). Then, a kNN-LWMLR 
 is done on {T, `Y`}.
 
 The dimension reduction can be linear (PCA, PLS) or non linear (DKPLS), defined 
@@ -119,11 +119,11 @@ function lwmlr_s(X, Y; nlv, reduc = "pls",
             scal = scal)
     end
     T = transform(fm, X)
-    LwmlrS1(T, Y, fm, metric, h, k, 
+    LwmlrS(T, Y, fm, metric, h, k, 
         tol, scal, verbose)
 end
 
-function predict(object::LwmlrS1, X)
+function predict(object::LwmlrS, X)
     X = ensure_mat(X)
     m = nro(X)
     T = transform(object.fm, X)
