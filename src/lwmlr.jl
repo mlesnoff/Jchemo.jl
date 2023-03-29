@@ -9,7 +9,8 @@ struct Lwmlr
 end
 
 """
-    lwmlr(X, Y; metric, h, k, tol = 1e-4, verbose = false)
+    lwmlr(X, Y; metric = "eucl", h, k, 
+        tol = 1e-4, verbose = false)
 k-Nearest-Neighbours locally weighted multiple linear regression (kNN-LWMLR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -75,7 +76,7 @@ f[1, 2] = Legend(f, ax, framevisible = false)
 f
 ```
 """ 
-function lwmlr(X, Y; metric, 
+function lwmlr(X, Y; metric = "eucl", 
         h, k, tol = 1e-4, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
