@@ -294,7 +294,7 @@ export
     selwold,
     # Sampling
     mtest,
-    sampks, sampdp, sampsys, sampclas, 
+    sampks, sampdp, sampsys, sampcla, 
     # Distances
     getknn, wdist, wdist!,
     euclsq, mahsq, mahsqchol,

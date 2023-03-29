@@ -269,7 +269,7 @@
 - **sampdp** Duplex sampling 
 - **sampks** Kennard-Stone sampling 
 - **sampsys** Systematic sampling
-- **sampclas** Stratified sampling
+- **sampcla** Stratified sampling
 
 ## PLOTTING
 

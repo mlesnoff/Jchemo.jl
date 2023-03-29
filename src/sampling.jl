@@ -182,7 +182,7 @@ function sampsys(y; k)
 end
 
 """
-    sampclas(x, y = nothing; k)
+    sampcla(x, y = nothing; k)
 Stratified sampling.  
 * `x` : Classes of the observations.
 * `y` : Quantitative variable used if systematic sampling.
@@ -202,20 +202,20 @@ Journal of Chemometrics 1, 121-134.
 ```julia
 x = string.(repeat(1:5, 3))
 tab(x)
-res = sampclas(x; k = 2)
+res = sampcla(x; k = 2)
 res.train
 x[res.train]
 tab(x[res.train])
 
 x = string.(repeat(1:5, 3))
 n = length(x) ; y = rand(n) 
-res = sampclas(x, y; k = 2)
+res = sampcla(x, y; k = 2)
 res.train
 x[res.train]
 tab(x[res.train])
 ```
 """ 
-function sampclas(x, y = nothing; k)
+function sampcla(x, y = nothing; k)
     k = Int64(round(k))
     x = vec(x)
     n = length(x)
