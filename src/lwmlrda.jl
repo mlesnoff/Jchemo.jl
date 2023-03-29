@@ -1,4 +1,4 @@
-struct Lwmlrda1
+struct Lwmlrda
     X::Array{Float64}
     y::AbstractMatrix
     metric::String
@@ -67,17 +67,17 @@ function lwmlrda(X, y; metric = "eucl", h, k,
         tol = 1e-4, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
-    Lwmlrda1(X, y, metric, h, k, tol, 
+    Lwmlrda(X, y, metric, h, k, tol, 
         verbose)
 end
 
 """
-    predict(object::Lwmlrda1, X)
+    predict(object::Lwmlrda, X)
 Compute y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Lwmlrda1, X)
+function predict(object::Lwmlrda, X)
     X = ensure_mat(X)
     m = nro(X)
     # Getknn
