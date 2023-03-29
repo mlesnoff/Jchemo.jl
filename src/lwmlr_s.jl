@@ -122,6 +122,12 @@ function lwmlr_s(X, Y; nlv, reduc = "pls",
         tol, verbose)
 end
 
+"""
+    predict(object::LwmlrS, X)
+Compute the Y-predictions from the fitted model.
+* `object` : The fitted model.
+* `X` : X-data for which predictions are computed.
+""" 
 function predict(object::LwmlrS, X)
     X = ensure_mat(X)
     m = nro(X)
