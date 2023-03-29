@@ -95,9 +95,11 @@
 
 - **knnr** kNNR
 - **lwmlr** kNN locally weighted multiple linear regression (kNN-LWMLR)
-- **lwmlr_s**: kNN-LWMLR after preliminary (linear or non-linear) dimension reduction
 - **lwplsr** kNN locally weighted PLSR (kNN-LWPLSR)
-- **lwplsr_s** kNN-LWPLSR with preliminary dimension reduction  (kNN-LWPLSR-S)
+
+*With preliminary dimension reduction*
+- **lwmlr_s**: kNN-LWMLR-S
+- **lwplsr_s** kNN-LWPLSR-S
 
 *Averaging and stacking*
 - **lwplsravg** kNN-LWPLSR-AVG 
@@ -165,9 +167,13 @@
 ### **Local models**
 
 - **knnda** kNN-DA (Vote within neighbors)
+- **lwmlrda** kNN locally weighted MLR-DA (kNN-LWMLR-DA)
 - **lwplsrda** kNN Locally weighted PLSR-DA (kNN-LWPLSR-DA)
 - **lwplslda** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
 - **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA)
+
+*With preliminary dimension reduction*
+- **lwmlrda_s** kNN-LWMLR-DA-S
 
 *Averaging*
 - **lwplsrdaavg** kNN-LWPLSR-DA-AVG
