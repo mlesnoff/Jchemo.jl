@@ -96,7 +96,7 @@ function lwplslda(X, y; nlvdis, metric, h, k, nlv, prior = "unif",
 end
 
 """
-    predict(object::LwplsLda, X)
+    predict(object::LwplsLda, X; nlv = nothing)
 Compute the y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
