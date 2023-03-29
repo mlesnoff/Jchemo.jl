@@ -78,14 +78,17 @@ err(.pred, ytest)
 """ 
 function lwmlrda_s(X, y; nlv, reduc = "pls", 
         metric = "eucl", h, k, 
-        gamma = 1, psamp = 1, samp = "random", 
+        gamma = 1, psamp = 1, samp = "cla", 
         tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
     n = nro(X)
     m = Int64(round(psamp * n))
-    if samp == "sys"
-        s = sampsys(rowsum(y); k = m).train
+    if samp == "cla"
+        lev = mlev(y)
+        nlev = length(lev)
+        zm = Int64(round(m / nlev))
+        s = sampcla(y; k = zm).train
     elseif samp == "random"
         s = sample(1:n, m; replace = false)
     end
