@@ -11,7 +11,7 @@ end
 """
     lwmlrda(X, y; metric = "eucl", h, k, 
         tol = 1e-4, verbose = false)
-k-Nearest-Neighbours locally weighted multiple linear regression (kNN-LWMLR).
+k-Nearest-Neighbours locally weighted MLR-based discrimination (kNN-LWMLR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership.
 * `metric` : Type of dissimilarity used to select the neighbors and compute
@@ -23,40 +23,44 @@ k-Nearest-Neighbours locally weighted multiple linear regression (kNN-LWMLR).
 * `tol` : For stabilization when very close neighbors.
 * `verbose` : If true, fitting information are printed.
 
-This is the same principle as function `lwplsr` except that MLR models
-are fitted (on the neighborhoods) instead of PLSR models.  The neighborhoods 
-are computed on `X` (there is no preliminary dimension reduction).
+This is the same principle as function `lwmlr` except that local MLR-DA models
+are fitted instead of local MLR models.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using JLD2
+
 mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "cassav.jld2") 
+db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
 pnames(dat)
 
 X = dat.X 
-y = dat.Y.tbc
-year = dat.Y.year
-tab(year)
-s = year .<= 2012
-Xtrain = X[s, :]
-ytrain = y[s]
-Xtest = rmrow(X, s)
-ytest = rmrow(y, s)
+Y = dat.Y 
+s = Bool.(Y.test)
+Xtrain = rmrow(X, s)
+ytrain = rmrow(Y.typ, s)
+Xtest = X[s, :]
+ytest = Y.typ[s]
+
+tab(ytrain)
+tab(ytest)
 
 nlv = 20
 zfm = pcasvd(Xtrain; nlv = nlv) ;
 Ttrain = zfm.T 
 Ttest = Jchemo.transform(zfm, Xtest)
 
-fm = lwmlr(Ttrain, ytrain; metric = "mahal",
-    h = 2, k = 100) ;
-pred = Jchemo.predict(fm, Ttest).pred
-println(rmsep(pred, ytest))
-plotxy(vec(pred), ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed (Test)").f  
+metric = "mahal"
+h = 2 ; k = 100
+fm = lwmlrda(Ttrain, ytrain;
+    metric = metric, h = h, k = k) ;
+res = Jchemo.predict(fm, Ttest) ;
+err(res.pred, ytest)
+
+res.listnn
+res.listd
+res.listw
 ```
 """ 
 function lwmlrda(X, y; metric = "eucl", h, k, 
