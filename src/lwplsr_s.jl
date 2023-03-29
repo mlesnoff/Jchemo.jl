@@ -118,27 +118,10 @@ function predict(object::LwplsrS1, X; nlv = nothing)
     m = nro(X)
     a = object.nlv
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
-
-
-
-
-
-
-    T = transform(object.fm0, X)
+    T = transform(object.fm, X)
     # Getknn
-    if isnothing(object.fm)
-        if object.scal
-            tscales = colstd(object.fm0.T)
-            zT1 = scale(object.fm0.T, tscales)
-            zT2 = scale(T, tscales)
-            res = getknn(zT1, zT2; k = object.k, metric = object.metric)
-        else
-            res = getknn(object.fm0.T, T; k = object.k, metric = object.metric)
-        end
-    else
-        res = getknn(object.fm.T, transform(object.fm, T); k = object.k, 
-            metric = object.metric) 
-    end
+    res = getknn(object.T, T; 
+        k = object.k, metric = object.metric)
     listw = copy(res.d)
     Threads.@threads for i = 1:m
         w = wdist(res.d[i]; h = object.h)
@@ -146,10 +129,10 @@ function predict(object::LwplsrS1, X; nlv = nothing)
         listw[i] = w
     end
     # End
-    pred = locwlv(object.fm0.T, object.Y, T; 
-        listnn = res.ind, listw = listw, fun = plskern, nlv = nlv,
-        scal = object.scal, 
-        verbose = object.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
+    pred = locwlv(object.T, object.Y, T; 
+        listnn = res.ind, listw = listw, fun = plskern, 
+        nlv = nlv, verbose = object.verbose).pred
+    (pred = pred, listnn = res.ind, listd = res.d, 
+        listw = listw)
 end
 
