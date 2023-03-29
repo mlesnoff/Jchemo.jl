@@ -1,4 +1,4 @@
-struct PlsLda    # for plslda and plsqda 
+struct Plslda    # for plslda and plsqda 
     fm  
     lev::AbstractVector
     ni::AbstractVector
@@ -56,9 +56,11 @@ pnames(res)
 res.pred
 err(res.pred, ytest)
 
+Jchemo.transform(fm, Xtest)
+Jchemo.transform(fm, Xtest; nlv = 2)
+
 fm_pls = fm.fm.fm_pls ;
 Jchemo.transform(fm_pls, Xtest)
-Jchemo.transform(fm_pls, Xtest; nlv = 2)
 summary(fm_pls, Xtrain)
 Jchemo.coef(fm_pls).B
 Jchemo.coef(fm_pls, nlv = 1).B
@@ -81,18 +83,29 @@ function plslda(X, y, weights = ones(nro(X)); nlv,
         fm_da[i] = lda(fm_pls.T[:, 1:i], y; prior = prior)
     end
     fm = (fm_pls = fm_pls, fm_da = fm_da)
-    PlsLda(fm, res.lev, ni)
+    Plslda(fm, res.lev, ni)
+end
+
+""" 
+    transform(object::Plslda, X; nlv = nothing)
+Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
+* `object` : The fitted model.
+* `X` : Matrix (m, p) for which LVs are computed.
+* `nlv` : Nb. LVs to consider.
+""" 
+function transform(object::Plslda, X; nlv = nothing)
+    transform(object.fm.fm_pls, X; nlv = nlv)
 end
 
 """
-    predict(object::PlsLda, X; nlv = nothing)
+    predict(object::Plslda, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
    
 """ 
-function predict(object::PlsLda, X; nlv = nothing)
+function predict(object::Plslda, X; nlv = nothing)
     X = ensure_mat(X)
     m = size(X, 1)
     a = size(object.fm.fm_pls.T, 2)
