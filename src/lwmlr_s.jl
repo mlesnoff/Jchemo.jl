@@ -31,11 +31,11 @@ kNN-LWMLR after preliminary (linear or non-linear) dimension
 * `gamma` : Scale parameter for the Gaussian kernel when a KPLS is used 
     for dimension reduction. See function `krbf`.
 * `typ` : Type of dimension reduction. Possible values are:
-    "pca" (PCA), "pls" (PLS; default), "dkpls" (direct Gaussian KPLS).
+    "pca" (PCA), "pls" (PLS; default), "dkpls" (direct Gaussian kernel PLS).
 *  `psamp` : Proportion of observations sampled in `X, Y`to compute the 
     loadings used to compute the scores.
-*  `samp` : Type of sampling. possible values: "sys" = systematic grid sampling 
-    over `rowsum(Y)`, "random" = random sampling) 
+*  `samp` : Type of sampling applied for `psamp`. Possible values are: 
+    "sys"= systematic grid sampling over `rowsum(Y)`, "random"= random sampling. 
 * `tol` : For stabilization when very close neighbors.
 * `verbose` : If true, fitting information are printed.
 
@@ -46,8 +46,10 @@ is done on {T, `Y`}.
 The dimension reduction can be linear (PCA, PLS) or non linear (DKPLS), defined 
 in argument `typ`.
 
-
-
+When n is too large, the reduction dimension can become too costly,
+in particular for a kernel PLS that requires to compute a matrix (n, n).
+Argument `psamp` allows to sample a proportion of the observations
+that will be used to compute (approximate) scores T for the all X-data. 
 
 The case `typ = "pca"` corresponds to the "LWR" algorithm proposed 
 by Naes et al. (1990).
