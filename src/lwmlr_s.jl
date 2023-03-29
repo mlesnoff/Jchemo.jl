@@ -1,4 +1,4 @@
-struct LwmlrS1
+struct LwmlrS
     T::Array{Float64}
     Y::Array{Float64}
     fm
@@ -115,11 +115,11 @@ function lwmlr_s(X, Y; metric = "eucl",
             scal = scal)
     end
     T = transform(fm, X)
-    LwmlrS1(T, Y, fm, nlv, gamma, metric, h, k, 
+    LwmlrS(T, Y, fm, nlv, gamma, metric, h, k, 
         typ, tol, scal, verbose)
 end
 
-function predict(object::LwmlrS1, X)
+function predict(object::LwmlrS, X)
     X = ensure_mat(X)
     m = nro(X)
     T = transform(object.fm, X)
