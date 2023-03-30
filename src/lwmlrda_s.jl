@@ -1,4 +1,4 @@
-struct LwmlrdaS1
+struct LwmlrdaS
     T::Array{Float64}
     y::AbstractMatrix
     fm
@@ -103,17 +103,17 @@ function lwmlrda_s(X, y; nlv, reduc = "pls",
             scal = scal)
     end
     T = transform(fm, X)
-    LwmlrdaS1(T, y, fm, metric, h, k, 
+    LwmlrdaS(T, y, fm, metric, h, k, 
         tol, verbose)
 end
 
 """
-    predict(object::LwmlrdaS1, X)
+    predict(object::LwmlrdaS, X)
 Compute the y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::LwmlrdaS1, X)
+function predict(object::LwmlrdaS, X)
     X = ensure_mat(X)
     m = nro(X)
     T = transform(object.fm, X)
