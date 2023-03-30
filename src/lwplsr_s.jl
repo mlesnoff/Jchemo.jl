@@ -33,7 +33,7 @@ kNN-LWPLSR after preliminary (linear or non-linear) dimension
 * `psamp` : Proportion of observations sampled in `X, Y`to compute the 
     loadings used to compute the scores.
 * `samp` : Type of sampling applied for `psamp`. Possible values are: 
-    "sys"= systematic grid sampling over `rowsum(Y)`, "random"= random sampling.
+    "sys" (systematic grid sampling over `rowsum(Y)`) or "random" (random sampling).
 * `nlv` : Nb. latent variables (LVs) for the models fitted on preliminary 
     scores.
 * `tol` : For stabilization when very close neighbors.
