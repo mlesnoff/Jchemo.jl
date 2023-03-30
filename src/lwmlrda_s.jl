@@ -12,7 +12,7 @@ end
 """
     lwmlrda_s(X, y; nlv, reduc = "pls", 
         metric = "eucl", h, k, 
-        gamma = 1, psamp = 1, samp = "random", 
+        gamma = 1, psamp = 1, samp = "cla", 
         tol = 1e-4, scal = false, verbose = false)
 kNN-LWMLR-DA after preliminary (linear or non-linear) dimension 
     reduction (kNN-LWMLR-DA-S).
