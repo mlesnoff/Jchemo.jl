@@ -32,7 +32,7 @@ kNN-LWPLSR-DA after preliminary (linear or non-linear) dimension
     for dimension reduction. See function `krbf`.
 * `psamp` : Proportion of observations sampled in `X, Y`to compute the 
     loadings used to compute the scores.
-* `samp` : Type of sampling applied for `psamp`. Possible values are: 
+* `samp` : Type of sampling applied for `psamp`. Possible values are 
     "cla" (stratified random sampling over the classes in `y`) or "random" (random sampling). 
 * `nlv` : Nb. latent variables (LVs) for the models fitted on preliminary 
     scores.
