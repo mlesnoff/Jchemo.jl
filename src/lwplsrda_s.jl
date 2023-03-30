@@ -66,8 +66,9 @@ ytest = Y.typ[s]
 tab(ytrain)
 tab(ytest)
 
-fm = lwmlrda_s(Xtrain, ytrain; nlv = 20, reduc = "pca", 
-    metric = "eucl", h = 2, k = 100) ;
+fm = lwmlrda_s(Xtrain, ytrain; nlv0 = 20, 
+    reduc = "pca", metric = "eucl", h = 2, k = 100,
+    nlv = 10) ;
 pred = Jchemo.predict(fm, Xtest).pred
 err(pred, ytest)
 ```
@@ -76,23 +77,25 @@ function lwplsrda_s(X, Y; nlv0, reduc = "pls",
         metric = "eucl", h, k, gamma = 1, psamp = 1, samp = "cla", 
         nlv, tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
-    Y = ensure_mat(Y)
+    y = ensure_mat(y)
     n = nro(X)
     m = Int64(round(psamp * n))
-    if samp == "sys"
-        s = sampsys(rowsum(Y); k = m).train
+    if samp == "cla"
+        lev = mlev(y)
+        nlev = length(lev)
+        zm = Int64(round(m / nlev))
+        s = sampcla(y; k = zm).train
     elseif samp == "random"
         s = sample(1:n, m; replace = false)
     end
     zX = vrow(X, s)
-    zY = vrow(Y, s)
-    nlv = min(nlv0, nlv)
+    zy = vrow(y, s)
     if reduc == "pca"
         fm = pcasvd(zX; nlv = nlv0, scal = scal)
     elseif reduc == "pls"
-        fm = plskern(zX, zY; nlv = nlv0, scal = scal)
+        fm = plsrda(zX, zy; nlv = nlv0, scal = scal)
     elseif reduc == "dkpls"
-        fm = dkplsr(zX, zY; gamma = gamma, nlv = nlv0, 
+        fm = dkplsrda(zX, zy; gamma = gamma, nlv = nlv0, 
             scal = scal)
     end
     T = transform(fm, X)
@@ -123,7 +126,7 @@ function predict(object::LwplsrdaS1, X; nlv = nothing)
     end
     # End
     pred = locwlv(object.T, object.Y, T; 
-        listnn = res.ind, listw = listw, fun = plskern, nlv = nlv, 
+        listnn = res.ind, listw = listw, fun = plsrda, nlv = nlv, 
         scal = object.scal, verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, 
         listw = listw)
