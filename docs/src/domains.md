@@ -174,6 +174,7 @@
 
 *With preliminary dimension reduction*
 - **lwmlrda_s** kNN-LWMLR-DA-S
+- **lwplsrda_s** kNN-LWPLSR-DA-S
 
 *Averaging*
 - **lwplsrdaavg** kNN-LWPLSR-DA-AVG
