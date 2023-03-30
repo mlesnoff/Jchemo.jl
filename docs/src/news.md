@@ -5,6 +5,7 @@
 - News 
     - **lwmlrda**: k-Nearest-Neighbours locally weighted MLR-based discrimination (kNN-LWMLR-DA).
     - **lwmlrda_s**: kNN-LWMLR-DA after preliminary (linear or non-linear) dimension reduction.
+    - **lwplsrda_s** kNN-LWPLSR-DA after preliminary (linear or non-linear) dimension reduction.
 
 - Modifications
     - **lwmlr_s**: Add arguments 'psamp' and 'samp' for large nb. observations. 
