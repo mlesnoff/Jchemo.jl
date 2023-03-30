@@ -1,6 +1,6 @@
-struct LwplsrdaS1
+struct LwplsrdaS
     T::Array{Float64}
-    Y::Array{Float64}
+    y::AbstractMatrix
     fm
     metric::String
     h::Real
@@ -99,17 +99,17 @@ function lwplsrda_s(X, y; nlv0, reduc = "pls",
             scal = scal)
     end
     T = transform(fm, X)
-    LwplsrdaS1(T, Y, fm, metric, h, k, nlv, 
+    LwplsrdaS(T, y, fm, metric, h, k, nlv, 
         tol, scal, verbose)
 end
 
 """
-    predict(object::LwplsrdaS1, X; nlv = nothing)
+    predict(object::LwplsrdaS, X; nlv = nothing)
 Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::LwplsrdaS1, X; nlv = nothing)
+function predict(object::LwplsrdaS, X; nlv = nothing)
     X = ensure_mat(X)
     m = nro(X)
     a = object.nlv
@@ -125,7 +125,7 @@ function predict(object::LwplsrdaS1, X; nlv = nothing)
         listw[i] = w
     end
     # End
-    pred = locwlv(object.T, object.Y, T; 
+    pred = locwlv(object.T, object.y, T; 
         listnn = res.ind, listw = listw, fun = plsrda, nlv = nlv, 
         scal = object.scal, verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, 
