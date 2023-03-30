@@ -46,58 +46,30 @@ kNN-LWPLSR-DA after preliminary (linear or non-linear) dimension
 This is the same principle as function `lwplsr_s` except that, locally, PLSR-DA models
 are fitted instead of PLSR models.
 
-## References
-Lesnoff, M., Metz, M., Roger, J.-M., 2020. Comparison of locally weighted PLS 
-strategies for regression and discrimination on agronomic NIR data. 
-Journal of Chemometrics, e3209. https://doi.org/10.1002/cem.3209
-
-Shen, G., Lesnoff, M., Baeten, V., Dardenne, P., Davrieux, F., Ceballos, H., Belalcazar, J., 
-Dufour, D., Yang, Z., Han, L., Pierna, J.A.F., 2019. Local partial least squares based on global PLS scores. 
-Journal of Chemometrics 0, e3117. https://doi.org/10.1002/cem.3117
-
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using JLD2
+
 mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "cassav.jld2") 
+db = joinpath(mypath, "data", "forages.jld2") 
 @load db dat
 pnames(dat)
 
 X = dat.X 
-y = dat.Y.tbc
-year = dat.Y.year
-tab(year)
-s = year .<= 2012
-Xtrain = X[s, :]
-ytrain = y[s]
-Xtest = rmrow(X, s)
-ytest = rmrow(y, s)
+Y = dat.Y 
+s = Bool.(Y.test)
+Xtrain = rmrow(X, s)
+ytrain = rmrow(Y.typ, s)
+Xtest = X[s, :]
+ytest = Y.typ[s]
 
-nlv0 = 20 ; metric = "mahal" 
-h = 2 ; k = 100 ; nlv = 10
-fm = lwplsrda_s(Xtrain, ytrain; nlv0 = nlv0,
-    metric = metric, h = h, k = k, nlv = nlv) ;
-res = Jchemo.predict(fm, Xtest)
-rmsep(res.pred, ytest)
-plotxy(vec(res.pred), ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed (Test)").f  
+tab(ytrain)
+tab(ytest)
 
-fm = lwplsrda_s(Xtrain, ytrain; nlv0 = nlv0,
-    reduc = "dkpls", metric = metric, 
-    h = h, k = k, gamma = .1, nlv = nlv) ;
-res = Jchemo.predict(fm, Xtest)
-rmsep(res.pred, ytest)
-plotxy(vec(res.pred), ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed (Test)").f  
-
-fm = lwplsrda_s(Xtrain, ytrain; nlv0 = nlv0,
-    reduc = "dkpls", metric = metric, 
-    h = h, k = k, gamma = .1, psamp = .8,
-    samp = "random", nlv = nlv) ;
-res = Jchemo.predict(fm, Xtest)
-rmsep(res.pred, ytest)
+fm = lwmlrda_s(Xtrain, ytrain; nlv = 20, reduc = "pca", 
+    metric = "eucl", h = 2, k = 100) ;
+pred = Jchemo.predict(fm, Xtest).pred
+err(pred, ytest)
 ```
 """ 
 function lwplsrda_s(X, Y; nlv0, reduc = "pls", 
