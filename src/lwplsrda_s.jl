@@ -43,20 +43,8 @@ kNN-LWPLSR-DA after preliminary (linear or non-linear) dimension
     each neighborhood) computations.
 * `verbose` : If true, fitting information are printed.
 
-The principle is as follows. A preliminary dimension reduction (parameter `nlv0`) 
-of the X-data (n, p) returns a score matrix T (n, `nlv`). Then, a kNN-LWPLSR 
-is done on {T, `Y`}. This is a fast approximation of kNN-LWPLSR using the same 
-principle as in Shen et al 2019.
-
-The dimension reduction can be linear (PCA, PLS) or non linear (DKPLS), defined 
-in argument `reduc`.
-
-When n is too large, the reduction dimension can become too costly,
-in particular for a kernel PLS (that requires to compute a matrix (n, n)).
-Argument `psamp` allows to sample a proportion of the observations
-that will be used to compute (approximate) scores T for the all X-data. 
-
-Setting `nlv = nlv0` returns the same predicions as function `lwmlr_s`.
+This is the same principle as function `lwplsr_s` except that, locally, PLSR-DA models
+are fitted instead of PLSR models.
 
 ## References
 Lesnoff, M., Metz, M., Roger, J.-M., 2020. Comparison of locally weighted PLS 
