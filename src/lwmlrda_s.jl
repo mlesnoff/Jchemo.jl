@@ -31,8 +31,8 @@ kNN-LWMLR-DA after preliminary (linear or non-linear) dimension
     for dimension reduction. See function `krbf`.
 * `psamp` : Proportion of observations sampled in `X, y`to compute the 
     loadings used to compute the scores.
-* `samp` : Type of sampling applied for `psamp`. Possible values are: 
-    "cla"= stratified random sampling over the classes in `y`, "random"= random sampling. 
+* `samp` : Type of sampling applied for `psamp`. Possible values are 
+    "sys" (systematic grid sampling over `rowsum(Y)`) or "random" (random sampling). 
 * `tol` : For stabilization when very close neighbors.
 * `verbose` : If true, fitting information are printed.
 

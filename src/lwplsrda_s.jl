@@ -15,10 +15,10 @@ end
     lwplsrda_s(X, Y; nlv0, reduc = "pls", 
         metric = "eucl", h, k, gamma = 1, psamp = 1, samp = "cla", 
         nlv, tol = 1e-4, scal = false, verbose = false)
-kNN-LWPLSR after preliminary (linear or non-linear) dimension 
-    reduction (kNN-LWPLSR-S).
+kNN-LWPLSR-DA after preliminary (linear or non-linear) dimension 
+    reduction (kNN-LWPLSR-DA-S).
 * `X` : X-data (n, p).
-* `Y` : Y-data (n, q).
+* `y` : Univariate class membership.
 * `nlv0` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `reduc` : Type of dimension reduction. Possible values are:
     "pca" (PCA), "pls" (PLS; default), "dkpls" (direct Gaussian kernel PLS).
@@ -32,8 +32,8 @@ kNN-LWPLSR after preliminary (linear or non-linear) dimension
     for dimension reduction. See function `krbf`.
 * `psamp` : Proportion of observations sampled in `X, Y`to compute the 
     loadings used to compute the scores.
-* `samp` : Type of sampling applied for `psamp`. Possible values are: 
-    "sys"= systematic grid sampling over `rowsum(Y)`, "random"= random sampling.
+* `samp` : Type of sampling applied for `psamp`. Possible values are 
+    "sys" (systematic grid sampling over `rowsum(Y)`) or "random" (random sampling).
 * `nlv` : Nb. latent variables (LVs) for the models fitted on preliminary 
     scores.
 * `tol` : For stabilization when very close neighbors.
