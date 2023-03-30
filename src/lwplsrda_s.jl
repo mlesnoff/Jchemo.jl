@@ -1,4 +1,4 @@
-struct LwplsrS
+struct LwplsrdaS1
     T::Array{Float64}
     Y::Array{Float64}
     fm
@@ -12,8 +12,8 @@ struct LwplsrS
 end
 
 """
-    lwplsr_s(X, Y; nlv0, reduc = "pls", 
-        metric = "eucl", h, k, gamma = 1, psamp = 1, samp = "sys", 
+    lwplsrda_s(X, Y; nlv0, reduc = "pls", 
+        metric = "eucl", h, k, gamma = 1, psamp = 1, samp = "cla", 
         nlv, tol = 1e-4, scal = false, verbose = false)
 kNN-LWPLSR after preliminary (linear or non-linear) dimension 
     reduction (kNN-LWPLSR-S).
@@ -87,7 +87,7 @@ ytest = rmrow(y, s)
 
 nlv0 = 20 ; metric = "mahal" 
 h = 2 ; k = 100 ; nlv = 10
-fm = lwplsr_s(Xtrain, ytrain; nlv0 = nlv0,
+fm = lwplsrda_s(Xtrain, ytrain; nlv0 = nlv0,
     metric = metric, h = h, k = k, nlv = nlv) ;
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
@@ -95,7 +95,7 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed (Test)").f  
 
-fm = lwplsr_s(Xtrain, ytrain; nlv0 = nlv0,
+fm = lwplsrda_s(Xtrain, ytrain; nlv0 = nlv0,
     reduc = "dkpls", metric = metric, 
     h = h, k = k, gamma = .1, nlv = nlv) ;
 res = Jchemo.predict(fm, Xtest)
@@ -104,7 +104,7 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed (Test)").f  
 
-fm = lwplsr_s(Xtrain, ytrain; nlv0 = nlv0,
+fm = lwplsrda_s(Xtrain, ytrain; nlv0 = nlv0,
     reduc = "dkpls", metric = metric, 
     h = h, k = k, gamma = .1, psamp = .8,
     samp = "random", nlv = nlv) ;
@@ -112,8 +112,8 @@ res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 ```
 """ 
-function lwplsr_s(X, Y; nlv0, reduc = "pls", 
-        metric = "eucl", h, k, gamma = 1, psamp = 1, samp = "sys", 
+function lwplsrda_s(X, Y; nlv0, reduc = "pls", 
+        metric = "eucl", h, k, gamma = 1, psamp = 1, samp = "cla", 
         nlv, tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -136,17 +136,17 @@ function lwplsr_s(X, Y; nlv0, reduc = "pls",
             scal = scal)
     end
     T = transform(fm, X)
-    LwplsrS(T, Y, fm, metric, h, k, nlv, 
+    LwplsrdaS1(T, Y, fm, metric, h, k, nlv, 
         tol, scal, verbose)
 end
 
 """
-    predict(object::LwplsrS, X; nlv = nothing)
+    predict(object::LwplsrdaS1, X; nlv = nothing)
 Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::LwplsrS, X; nlv = nothing)
+function predict(object::LwplsrdaS1, X; nlv = nothing)
     X = ensure_mat(X)
     m = nro(X)
     a = object.nlv
