@@ -228,6 +228,7 @@
 - **r2** R2
 - **rpd**, **rpdr** Ratio of performance to deviation
 - **mse** Summary for regression
+- **confusion** Confusion matrix
 
 *Discrimination*
 - **err** Classification error rate
@@ -274,6 +275,7 @@
 
 ## PLOTTING
 
+- **plotconf** Plot confusion matrix
 - **plotgrid** Ploting error or performance rates of model predictions
 - **plotsp** Ploting spectra
 - **plotxy** Scatter plot of (x, y) data
