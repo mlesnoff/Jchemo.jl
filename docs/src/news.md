@@ -2,6 +2,14 @@
 
 ### *Version 0.1.18*
 
+- News
+    - **confusion** Confusion matrix
+    - **plotconf** Plot confusion matrix
+
+- Modifications
+    - Code cleaning.
+
+
 ### *Version 0.1.17*
 
 - News 
