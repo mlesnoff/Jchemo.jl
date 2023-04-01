@@ -297,6 +297,7 @@ export
     gridcv, gridcvlv, gridcvlb, 
     gridcv_mb, gridcvlv_mb,
     selwold,
+    confusion, 
     # Sampling
     mtest,
     sampks, sampdp, sampsys, sampcla, 
@@ -305,6 +306,7 @@ export
     euclsq, mahsq, mahsqchol,
     krbf, kpol,
     # Graphics
+    plotconf,
     plotgrid, 
     plotsp,
     plotxy
