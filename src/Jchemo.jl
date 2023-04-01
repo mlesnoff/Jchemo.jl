@@ -137,6 +137,7 @@ include("viperm.jl")
 # Validation
 include("mpar.jl")
 include("scores.jl")
+include("confusion.jl")
 include("gridscore.jl")
 include("segm.jl")
 include("gridcv.jl")
