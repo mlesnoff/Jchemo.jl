@@ -19,15 +19,12 @@ res.cnt       # Counts (dataframe built from `A`)
 res.pct       # Row %  (dataframe built from `Apct`))
 res.A         
 res.Apct
-res.accuracy  # Overall accuracy
+res.accuracy  # Overall accuracy (% classification successes)
 res.lev       # Levels
 
 plotconf(res).f
 
-
-
-
-
+plotconf(res; pct = true, ptext = false).f
 ```
 """
 function confusion(pred, y; digits = 1)
@@ -57,14 +54,29 @@ function confusion(pred, y; digits = 1)
     (cnt = cnt, pct, A, Apct, accuracy, lev)
 end
 
-function plotconf(object; pct = true, ptext = true, 
-        fontsize = 15, resolution = (500, 400))
+"""
+    plotconf(object; pct = false, ptext = true, 
+        fontsize = 15, coldiag = :red, resolution = (500, 400))
+Plot a confusion matrix.
+* `object` : Output of function `confusion`.
+* `pct` : Boolean. If `true` (default), plot the occurrences, 
+    else plot the row %s.
+* `ptext` : Boolean. If `true` (default), display the value in each cell.
+* `fontsize` : Font size when `ptext = true`.
+* `coldiag` : Font color when `ptext = true`.
+* `resolution` : Resolution (horizontal, vertical) of the figure.
+
+See examples in help page of function `confusion`.
+```
+"""
+function plotconf(object; pct = false, ptext = true, 
+        fontsize = 15, coldiag = :red, resolution = (500, 400))
     if pct
         A = object.Apct 
-        namval = "Accuracy (%)"
+        namval = "Row %"
     else
         A = object.A 
-        namval = "Nb. occurence"
+        namval = "Nb. occurences"
     end
     zA = (A')[:, end:-1:1]
     lev = string.(object.lev)
@@ -77,7 +89,7 @@ function plotconf(object; pct = true, ptext = true,
     if ptext
         for i = 1:nlev, j = 1:nlev
             pct ? val = round(A[i, j]; digits = 1) : val = A[i, j]
-            i == j ? col = :red : col = :white
+            i == j ? col = coldiag : col = :white
             text!(ax, string(val); position = (j, nlev - i + 1), 
                 align = (:center, :center), fontsize = fontsize,
                 color = col)
