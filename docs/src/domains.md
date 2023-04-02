@@ -276,9 +276,9 @@
 ## PLOTTING
 
 - **plotconf** Plot confusion matrix
-- **plotgrid** Ploting error or performance rates of model predictions
-- **plotsp** Ploting spectra
-- **plotxy** Scatter plot of (x, y) data
+- **plotgrid** Plot error or performance rates of model predictions
+- **plotsp** Plot spectra
+- **plotxy** xy scatter plot
 
 ## UTILITIES
 
