@@ -8,10 +8,11 @@
 - **pcasvd** SVD decomposition
 - Robust PCA
     - **pcasph** Spherical (with spatial median)
-- Variants for dimension reduction
-    - **rp** Random projection
-    - **rpmatgauss** Gaussian random projection matrix 
-    - **rpmatli** Sparse random projection matrix 
+
+*Random projections*
+- **rp** Random projection
+- **rpmatgauss** Gaussian random projection matrix 
+- **rpmatli** Sparse random projection matrix 
 
 *Non linear PCA*
 - **kpca** Kernel (KPCA) *Scholkopf et al. 2002*
