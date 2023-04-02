@@ -1,4 +1,35 @@
+"""
+    confusion(pred, y)
+Confusion matrix.
+* `pred` : Univariate predictions.
+* `y` : Univariate observed data.
+* `digits` : Nb. digits used to round percentages.
 
+## Examples
+```julia
+y = ["d"; "c"; "b"; "c"; "a"; "d"; "b"; "d"; 
+    "b"; "b"; "a"; "a"; "c"; "d"; "d"]
+pred = ["a"; "d"; "b"; "d"; "b"; "d"; "b"; "d"; 
+    "b"; "b"; "a"; "a"; "d"; "d"; "d"]
+#y = rand(1:10, 200); pred = rand(1:10, 200)
+
+res = confusion(pred, y) ;
+pnames(res)
+res.cnt       # Counts (dataframe built from `A`) 
+res.pct       # Row %  (dataframe built from `Apct`))
+res.A         
+res.Apct
+res.accuracy  # Overall accuracy
+res.lev       # Levels
+
+plotconf(res).f
+
+
+
+
+
+```
+"""
 function confusion(pred, y; digits = 1)
     y = vec(y)
     pred = vec(pred)
@@ -22,11 +53,11 @@ function confusion(pred, y; digits = 1)
     insertcols!(cnt, 1, :y => namy)
     pct = DataFrame(round.(Apct; digits = digits), nampred)
     insertcols!(pct, 1, :levels => namy)
-    accur = sum(diag(A)) / n 
-    (cnt = cnt, pct, A, Apct, accur, lev)
+    accuracy = sum(diag(A)) / n 
+    (cnt = cnt, pct, A, Apct, accuracy, lev)
 end
 
-function plotconf(object; pct = true, ptext = false, 
+function plotconf(object; pct = true, ptext = true, 
         fontsize = 15, resolution = (500, 400))
     if pct
         A = object.Apct 
