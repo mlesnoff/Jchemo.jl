@@ -76,7 +76,7 @@ function plotconf(object; pct = false, ptext = true,
         namval = "Row %"
     else
         A = object.A 
-        namval = "Nb. occurences"
+        namval = "Nb. occurrences"
     end
     zA = (A')[:, end:-1:1]
     lev = string.(object.lev)
