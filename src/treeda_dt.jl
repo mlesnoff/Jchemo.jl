@@ -34,8 +34,8 @@ Paris 11. http://www.theses.fr/2002PA112245
 ```julia
 using JchemoData, JLD2
 
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "iris.jld2") 
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data", "iris.jld2") 
 @load db dat
 pnames(dat)
 summ(dat.X)
@@ -148,8 +148,8 @@ Paris 11. http://www.theses.fr/2002PA112245
 ```julia
 using JchemoData, JLD2
 
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "iris.jld2") 
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data", "iris.jld2") 
 @load db dat
 pnames(dat)
 summ(dat.X)

@@ -80,8 +80,8 @@ Other details are the same as in `?occsd`.
 ## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "challenge2018.jld2") 
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data", "challenge2018.jld2") 
 @load db dat
 X = dat.X    
 Y = dat.Y

@@ -18,8 +18,8 @@ Technometrics, 11(1), 137-148.
 ## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "cassav.jld2") 
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
 
@@ -85,8 +85,8 @@ Technometrics 19, 415-428. https://doi.org/10.1080/00401706.1977.10489581
 ## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "cassav.jld2") 
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
 

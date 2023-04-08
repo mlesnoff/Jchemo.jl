@@ -30,8 +30,8 @@ returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 ## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "forages.jld2") 
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data", "forages.jld2") 
 @load db dat
 pnames(dat)
 

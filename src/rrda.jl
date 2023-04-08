@@ -29,8 +29,8 @@ to the dummy variable for which the probability estimate is the highest.
 ```julia
 using JchemoData, JLD2, CairoMakie
 
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "forages.jld2") 
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data", "forages.jld2") 
 @load db dat
 pnames(dat)
 

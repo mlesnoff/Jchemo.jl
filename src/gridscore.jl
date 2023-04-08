@@ -21,8 +21,8 @@ The vectors in `pars` must have same length.
 ## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "cassav.jld2") 
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
 

@@ -17,8 +17,8 @@ be `indexcol = [651 ; 1425]`.
 
 ```julia
 using JchemoData, JLD2, CairoMakie
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "asdgap.jld2") 
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data", "asdgap.jld2") 
 @load db dat
 pnames(dat)
 

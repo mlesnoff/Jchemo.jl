@@ -72,8 +72,8 @@ least squares. Analytica Chimica Acta 504, 279–289. https://doi.org/10.1016/j.
 ## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "forages2.jld2") 
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data", "forages2.jld2") 
 @load db dat
 pnames(dat)
   

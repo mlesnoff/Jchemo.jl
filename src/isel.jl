@@ -34,8 +34,8 @@ Spectroscopy. Appl Spectrosc 54, 413–419. https://doi.org/10.1366/000370200194
 using JchemoData, DataFrames, JLD2
 using CairoMakie
 
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "tecator.jld2") 
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data", "tecator.jld2") 
 @load db dat
 pnames(dat)
 

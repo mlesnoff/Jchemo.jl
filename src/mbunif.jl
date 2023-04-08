@@ -42,8 +42,8 @@ Intelligent Laboratory Systems 194, 103856. https://doi.org/10.1016/j.chemolab.2
 ## Examples
 ```julia
 using JchemoData, JLD2
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "linnerud.jld2") 
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data", "linnerud.jld2") 
 @load db dat
 pnames(dat)
 Xbl = [dat.X, dat.Y]

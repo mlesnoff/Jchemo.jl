@@ -47,8 +47,8 @@ https://doi.org/10.1016/j.chemolab.2021.104388
 ## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie, StatsBase
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "cassav.jld2") 
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
 

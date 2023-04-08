@@ -17,8 +17,8 @@ is replaced by a non linear kernel PLS2 (KPLS).
 ```julia
 using JLD2
 
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "forages.jld2") 
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data", "forages.jld2") 
 @load db dat
 pnames(dat)
 

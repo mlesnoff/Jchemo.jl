@@ -49,8 +49,8 @@ Paris 11. http://www.theses.fr/2002PA112245
 ```julia
 using JchemoData, JLD2, CairoMakie
 
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "challenge2021.jld2")
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data", "challenge2021.jld2")
 @load db dat
 pnames(dat)
 
@@ -162,8 +162,8 @@ Paris 11. http://www.theses.fr/2002PA112245
 ```julia
 using JchemoData, JLD2, CairoMakie
 
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "challenge2021.jld2")
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data", "challenge2021.jld2")
 @load db dat
 pnames(dat)
 
