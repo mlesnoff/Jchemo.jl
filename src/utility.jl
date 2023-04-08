@@ -1170,7 +1170,6 @@ function tabdf(X; groups = nothing)
     res
 end
 
-
 """
     tabdupl(x)
 Tabulate duplicated values in a vector.
@@ -1191,7 +1190,6 @@ function tabdupl(x)
     u = z.keys[s]
     tab(x[in(u).(x)])
 end
-
 
 """
     vcatdf(dat; cols = :intersect) 
