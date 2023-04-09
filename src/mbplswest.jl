@@ -53,7 +53,7 @@ https://doi.org/10.1002/(SICI)1099-128X(199809/10)12:5<301::AID-CEM515>3.0.CO;2-
 ```julia
 using JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "ham.jld2") 
+db = joinpath(path_jdat, "data/ham.jld2") 
 @load db dat
 pnames(dat) 
 

@@ -43,7 +43,7 @@ squares regression for multiblock data analysis. Journal of Chemometrics 30,
 ```julia
 using JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "ham.jld2") 
+db = joinpath(path_jdat, "data/ham.jld2") 
 @load db dat
 pnames(dat) 
 

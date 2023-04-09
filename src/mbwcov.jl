@@ -47,7 +47,7 @@ up supervised methods of multiblock data analysis. Chemometrics and Intelligent 
 ```julia
 using JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "ham.jld2") 
+db = joinpath(path_jdat, "data/ham.jld2") 
 @load db dat
 pnames(dat) 
 

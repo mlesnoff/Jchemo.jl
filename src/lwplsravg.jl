@@ -59,7 +59,7 @@ See ?plsravg.
 ```julia
 using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "cassav.jld2") 
+db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
 

@@ -24,7 +24,7 @@ The function returns two outputs: `res` (mean results) and `res_p` (results per 
 ```julia
 using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "cassav.jld2") 
+db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
 

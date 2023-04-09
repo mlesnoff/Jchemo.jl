@@ -44,7 +44,7 @@ are fitted instead of MLR models.
 using JLD2
 
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "forages.jld2") 
+db = joinpath(path_jdat, "data/forages.jld2") 
 @load db dat
 pnames(dat)
 

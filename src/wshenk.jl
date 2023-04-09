@@ -23,7 +23,7 @@ least squares. Analytica Chimica Acta 504, 279–289. https://doi.org/10.1016/j.
 ```julia 
 using JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "cassav.jld2") 
+db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
 

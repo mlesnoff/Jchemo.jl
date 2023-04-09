@@ -33,7 +33,7 @@ Journal of Chemometrics n/a, e3369. https://doi.org/10.1002/cem.3369
 
 using JchemoData, JLD2, DataFrames, CairoMakie 
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "ozone.jld2") 
+db = joinpath(path_jdat, "data/ozone.jld2") 
 @load db dat
 pnames(dat)
 
@@ -94,7 +94,7 @@ Journal of Chemometrics n/a, e3369. https://doi.org/10.1002/cem.3369
 ```julia
 using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "cassav.jld2") 
+db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
 

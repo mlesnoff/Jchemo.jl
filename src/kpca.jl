@@ -52,7 +52,7 @@ processing systems, MIT Press. http://papers.nips.cc/paper/1791-sparse-kernel-pr
 ```julia
 using JchemoData, JLD2, CairoMakie, StatsBase
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "iris.jld2") 
+db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat
 pnames(dat)
 summ(dat.X)

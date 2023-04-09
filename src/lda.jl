@@ -18,7 +18,7 @@ Linear discriminant analysis  (LDA).
 ```julia
 using JchemoData, JLD2, StatsBase
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "iris.jld2") 
+db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat
 pnames(dat)
 summ(dat.X)

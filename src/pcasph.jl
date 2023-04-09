@@ -31,7 +31,7 @@ robust scales, Technometrics, 47:3, 264-273, DOI: 10.1198/004017005000000166
 ```julia
 using JLD2, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "octane.jld2") 
+db = joinpath(path_jdat, "data/octane.jld2") 
 @load db dat
 pnames(dat)
   

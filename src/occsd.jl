@@ -56,7 +56,7 @@ projection methods. Journal of Chemometrics 22, 601-609. https://doi.org/10.1002
 ```julia
 using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "challenge2018.jld2") 
+db = joinpath(path_jdat, "data/challenge2018.jld2") 
 @load db dat
 X = dat.X    
 Y = dat.Y

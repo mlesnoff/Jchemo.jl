@@ -33,7 +33,7 @@ coefficients "LD".
 ```julia
 using Jchemo, JLD2, StatsBase, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "iris.jld2") 
+db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat
 pnames(dat)
 summ(dat.X)

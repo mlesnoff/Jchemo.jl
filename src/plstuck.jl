@@ -54,7 +54,7 @@ on the Two-Block Case (No. 371). University of Washington, Seattle, Washington, 
 ```julia
 using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "linnerud.jld2") 
+db = joinpath(path_jdat, "data/linnerud.jld2") 
 @load db dat
 pnames(dat)
 X = dat.X 

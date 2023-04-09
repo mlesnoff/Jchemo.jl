@@ -54,7 +54,7 @@ Laboratory Systems, 80, 227–235. https://doi.org/10.1016/j.chemolab.2005.06.01
 ```julia
 using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "caltransfer.jld2") 
+db = joinpath(path_jdat, "data/caltransfer.jld2") 
 @load db dat
 pnames(dat)
 X1cal = dat.X1cal

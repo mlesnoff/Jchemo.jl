@@ -38,7 +38,7 @@ Computational Statistics & Data Analysis 49, 99–108. https://doi.org/10.1016/j
 using JchemoData, JLD2, CairoMakie
 
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "cassav.jld2") 
+db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
 

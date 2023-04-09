@@ -81,7 +81,7 @@ https://doi.org/10.1137/0905052
 ```julia
 using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data", "linnerud.jld2") 
+db = joinpath(path_jdat, "data/linnerud.jld2") 
 @load db dat
 pnames(dat)
 X = dat.X 
