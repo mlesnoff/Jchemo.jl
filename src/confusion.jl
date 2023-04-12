@@ -50,7 +50,7 @@ function confusion(pred, y; digits = 1)
     insertcols!(cnt, 1, :y => namy)
     pct = DataFrame(round.(Apct; digits = digits), nampred)
     insertcols!(pct, 1, :levels => namy)
-    accuracy = sum(diag(A)) / n 
+    accuracy = round(100 * sum(diag(A)) / n; digits = digits) 
     (cnt = cnt, pct, A, Apct, accuracy, lev)
 end
 
