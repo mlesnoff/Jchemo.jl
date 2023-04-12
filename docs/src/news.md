@@ -3,10 +3,11 @@
 ### *Version 0.1.18*
 
 - News
-    - **confusion** Confusion matrix
-    - **plotconf** Plot confusion matrix
+    - **confusion** Confusion matrix.
+    - **plotconf** Plot confusion matrix.
 
 - Modifications
+    - **cplsravg**: new argument 'typda'. 
     - Code cleaning.
 
 

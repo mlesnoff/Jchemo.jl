@@ -7,15 +7,17 @@ end
 
 """
     cplsravg(X, Y, cla = nothing; ncla = nothing, 
-        nlv_da, nlv, scal = false)
+        typda = "lda", nlv_da, nlv, scal = false)
 Clusterwise PLSR.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `cla` : A vector (n) defining the class membership (clusters). If `cla = nothing`, 
-    a k-means clustering is done internally and returns `ncla` clusters.
+    a random k-means clustering is done internally and returns `ncla` clusters.
 * `ncla` : Only used if `cla = nothing`. 
     Number of clusters that has to be returned by the k-means clustering.
-* `nlv` : A character string such as "5:20" defining the range of the numbers of latent variables (LVs) 
+* `typda` : Type of PLSDA. Possible values are "lda" (PLS-LDA; default) or "qda" (PLS-QDA).
+* `nlv_da` : Nb. latent variables (LVs) for the PLSDA.
+* `nlv` : A character string such as "5:20" defining the range of the numbers of LVs 
     to consider in the PLSR-AVG models ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
     are averaged). Syntax such as "10" is also allowed ("10": correponds to
     the single model with 10 LVs).
@@ -68,7 +70,7 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
 ```
 """
 function cplsravg(X, Y, cla = nothing; ncla = nothing, 
-        nlv_da, nlv, scal = false)
+        typda = "lda", nlv_da, nlv, scal = false)
     X = ensure_mat(X) 
     Y = ensure_mat(Y)
     if isnothing(cla)
@@ -85,9 +87,13 @@ function cplsravg(X, Y, cla = nothing; ncla = nothing,
     ni = ztab.vals
     nlev = length(lev)
     #fm_da = plsrda(X, cla; nlv = nlv_da)
-    fm_da = plslda(X, cla; nlv = nlv_da, prior = "prop",
-        scal = scal)
-    #fm_da = plsqda(X, cla; nlv = nlv_da, prior = "prop")
+    if typda == "lda"
+        fm_da = plslda(X, cla; nlv = nlv_da, prior = "prop",
+            scal = scal)
+    elseif typda == "qda"
+        fm_da = plsqda(X, cla; nlv = nlv_da, prior = "prop", 
+            scal = scal)
+    end
     fm = list(nlev)
     @inbounds for i = 1:nlev
         z = eval(Meta.parse(nlv))
