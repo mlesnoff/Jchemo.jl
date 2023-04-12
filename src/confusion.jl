@@ -55,11 +55,11 @@ function confusion(pred, y; digits = 1)
 end
 
 """
-    plotconf(object; pct = false, ptext = true, 
+    plotconf(object; cnt = true, ptext = true, 
         fontsize = 15, coldiag = :red, resolution = (500, 400))
 Plot a confusion matrix.
 * `object` : Output of function `confusion`.
-* `pct` : Boolean. If `true` (default), plot the occurrences, 
+* `cnt` : Boolean. If `true` (default), plot the occurrences, 
     else plot the row %s.
 * `ptext` : Boolean. If `true` (default), display the value in each cell.
 * `fontsize` : Font size when `ptext = true`.
@@ -69,14 +69,14 @@ Plot a confusion matrix.
 See examples in help page of function `confusion`.
 ```
 """
-function plotconf(object; pct = false, ptext = true, 
+function plotconf(object; cnt = true, ptext = true, 
         fontsize = 15, coldiag = :red, resolution = (500, 400))
-    if pct
-        A = object.Apct 
-        namval = "Row %"
-    else
+    if cnt
         A = object.A 
         namval = "Nb. occurrences"
+    else
+        A = object.Apct 
+        namval = "Row %"
     end
     zA = (A')[:, end:-1:1]
     lev = string.(object.lev)
@@ -88,7 +88,7 @@ function plotconf(object; pct = false, ptext = true,
     Colorbar(f[:, end + 1], hm; label = namval)
     if ptext
         for i = 1:nlev, j = 1:nlev
-            pct ? val = round(A[i, j]; digits = 1) : val = A[i, j]
+            cnt ? val = A[i, j] : val = round(A[i, j]; digits = 1)
             i == j ? col = coldiag : col = :white
             text!(ax, string(val); position = (j, nlev - i + 1), 
                 align = (:center, :center), fontsize = fontsize,
