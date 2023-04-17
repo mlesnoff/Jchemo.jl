@@ -21,7 +21,6 @@ res.pval
 function aov1(x, Y)
     Y = ensure_mat(Y)
     n = length(x)
-    q = nco(Y) 
     A = length(unique(x))
     Xdummy = dummy(x).Y
     zY = center(Y, colmean(Y))
