@@ -6,7 +6,7 @@ using DecisionTree
 using Distributions
 using DataFrames
 using Distances
-using ImageFiltering
+using ImageFiltering     # convolutions in preprocessing (mavg, savgol)
 using Interpolations
 using LinearAlgebra
 using Makie
@@ -14,7 +14,7 @@ using NearestNeighbors
 using Random
 using SparseArrays 
 using Statistics
-using StatsBase    # sample
+using StatsBase          # sample
 
 include("utility.jl") 
 include("colmedspa.jl")
