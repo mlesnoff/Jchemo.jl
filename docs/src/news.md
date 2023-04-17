@@ -1,5 +1,14 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.1.19*
+
+- News
+
+- Modifications
+    - Dependance to unused package **HypothesisTests.jl** was removed. 
+    - Code cleaning.
+
+
 ### *Version 0.1.18*
 
 - News
