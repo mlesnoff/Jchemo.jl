@@ -56,13 +56,6 @@ or for the current developing version (not 100% stable):
 pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ```
 
-## <span style="color:green"> **Usage** </span>
-
-Run
-```julia
-using Jchemo
-```
-
 ## <span style="color:green"> **Benchmark - Computation time for a PLS** </span> 
 ```julia
 julia> versioninfo()
@@ -80,6 +73,8 @@ Environment:
   JULIA_NUM_THREADS = 8
 ```
 ```julia
+using Jchemo
+
 ## PLS2
 ## (NB.: multi-threading is not used in plskern) 
 n = 10^6 # nb. observations (samples)
