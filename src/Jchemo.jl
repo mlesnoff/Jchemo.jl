@@ -16,8 +16,6 @@ using SparseArrays
 using Statistics
 using StatsBase    # sample
 
-## Potentials: HypothesisTests
-
 include("utility.jl") 
 include("colmedspa.jl")
 include("dens.jl")
