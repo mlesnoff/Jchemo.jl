@@ -6,7 +6,6 @@ using DecisionTree
 using Distributions
 using DataFrames
 using Distances
-using HypothesisTests
 using ImageFiltering
 using Interpolations
 using LinearAlgebra
@@ -16,6 +15,8 @@ using Random
 using SparseArrays 
 using Statistics
 using StatsBase    # sample
+
+## Potentials: HypothesisTests
 
 include("utility.jl") 
 include("colmedspa.jl")
