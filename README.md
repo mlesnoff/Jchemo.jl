@@ -29,13 +29,13 @@ Most of the functions of the package have a **help page** (providing an example)
 
 **Examples** demonstrating **Jchemo.jl** are available in project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo), used for trainings. **The datasets** used in the examples are stored in package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl).
 
-Some of the **Jchemo.jl** functions (in particular those using kNN selections) use **multi-threading** 
+Some of the functions of the package (in particular those using kNN selections) use **multi-threading** 
 to speed the computations. Taking advantage of this requires to specify a relevant number 
 of threads (e.g. from the 'Settings' menu of the VsCode Julia extension and the file 'settings.json').
 
 **Jchemo.jl** uses **Makie.jl** for plotting. To install and load one of the Makie's backends (e.g. **CairoMakie.jl**) is required to display the plots. 
 
-Before to update **Jchemo.jl**, it is recommended to have a look on 
+Before to update the package, it is recommended to have a look on 
 [**What changed**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md) to avoid
 problems due to eventual breaking changes. 
 
