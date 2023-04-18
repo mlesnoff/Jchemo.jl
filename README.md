@@ -90,11 +90,9 @@ nlv = 25 # nb. PLS latent variables
 
 @time fm = plskern!(X, Y; nlv = nlv) ;
 0.075646 seconds (295 allocations: 6.650 MiB)
-```
 
-```julia
-n = 10^6 # nb. observations (samples)
-p = 500  # nb. X-variables (features)
+## With 1e6 observations
+n = 10^6 ; p = 500
 X = rand(n, p)
 Y = rand(n, q)
 
