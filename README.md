@@ -72,17 +72,31 @@ Environment:
   JULIA_EDITOR = code
   JULIA_NUM_THREADS = 8
 ```
+
 ```julia
 using Jchemo
 
 ## PLS2
 ## (NB.: multi-threading is not used in plskern) 
-n = 10^6 # nb. observations (samples)
-p = 500  # nb. X-variables (features)
-q = 10   # nb. Y-variables to predict
+n = 5000  # nb. observations (samples)
+p = 1000  # nb. X-variables (features)
+q = 10    # nb. Y-variables to predict
 X = rand(n, p)
 Y = rand(n, q)
 nlv = 25 # nb. PLS latent variables
+
+@time fm = plskern(X, Y; nlv = nlv) ;
+0.079386 seconds (299 allocations: 45.178 MiB)
+
+@time fm = plskern!(X, Y; nlv = nlv) ;
+0.075646 seconds (295 allocations: 6.650 MiB)
+```
+
+```julia
+n = 10^6 # nb. observations (samples)
+p = 500  # nb. X-variables (features)
+X = rand(n, p)
+Y = rand(n, q)
 
 @time plskern(X, Y; nlv = nlv) ;
 8.100469 seconds (299 allocations: 4.130 GiB, 6.58% gc time)
