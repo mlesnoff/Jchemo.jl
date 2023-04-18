@@ -14,28 +14,28 @@ The package was initially designed about **partial least squares regression and 
 Then, it has been expanded to many other methods for 
 analyzing high dimensional data. 
 
-The name **Jchemo** comes from the fact that the package is orientated to chemometrics, but most of the provided methods are fully **generic to other domains**. 
+The package was named **Jchemo** since it is orientated to chemometrics, but most of the provided methods are fully **generic to other domains**. 
 
 Functions such as **transform**, **predict**, **coef** and **summary** are available. 
 **Tuning the predictive models** is facilitated by generic functions **gridscore** (validation dataset) and 
-**gridcv** (cross-validation). Faster versions are also available for models based on latent variables (LVs) 
+**gridcv** (cross-validation). Faster versions of these functions are also available for models based on latent variables (LVs) 
 (**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
 
-Most of the functions have a **help page** (providing an example), e.g.:
+Most of the functions of the package have a **help page** (providing an example), e.g.:
 
 ```julia
 ?savgol
 ```
 
-**Examples** demonstrating the package are available in project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo), used for trainings. **The datasets** used in the examples come from package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl).
+**Examples** demonstrating **Jchemo.jl** are available in project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo), used for trainings. **The datasets** used in the examples are stored in package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl).
 
-Some of the **Jchemo** functions (in particular those using kNN selections) use **multi-threading** 
-to speed the computations. To take advantage of this, the user has to specify his relevant number 
-of threads (e.g. from the setting menu of the VsCode Julia extension and the file settings.json).
+Some of the **Jchemo.jl** functions (in particular those using kNN selections) use **multi-threading** 
+to speed the computations. Taking advantage of this requires to specify a relevant number 
+of threads (e.g. from the 'Settings' menu of the VsCode Julia extension and the file 'settings.json').
 
-**Jchemo** uses **Makie.jl** for plotting. To display the plots, the user has to preliminary install and load one of the Makie's backends (e.g. **CairoMakie.jl**). 
+**Jchemo.jl** uses **Makie.jl** for plotting. To install and load one of the Makie's backends (e.g. **CairoMakie.jl**) is required to display the plots. 
 
-Before to update **Jchemo**, it is recommended to have a look on 
+Before to update **Jchemo.jl**, it is recommended to have a look on 
 [**What changed**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md) to avoid
 problems due to eventual breaking changes. 
 
