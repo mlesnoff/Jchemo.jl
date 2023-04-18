@@ -83,7 +83,7 @@ p = 500   # nb. X-variables (features)
 q = 10    # nb. Y-variables to predict
 X = rand(n, p)
 Y = rand(n, q)
-nlv = 25 # nb. PLS latent variables
+nlv = 25  # nb. PLS latent variables
 
 @time plskern(X, Y; nlv = nlv) ;
 8.100469 seconds (299 allocations: 4.130 GiB, 6.58% gc time)
