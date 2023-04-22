@@ -45,13 +45,16 @@ problems due to eventual breaking changes.
 
 ## <span style="color:green"> **Installation** </span> 
 
-In order to install Jchemo, run
-
+In order to install Jchemo, run in the Pkg REPL:
 ```julia
 pkg> add Jchemo
 ```
-or for the current developing version (not 100% stable):
 
+or for a specific version: 
+```julia
+pkg> add Jchemo@0.1.18
+```
+or for the current developing version (not 100% stable):
 ```julia
 pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ```
