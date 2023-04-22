@@ -106,19 +106,24 @@ n = 150 ; p = 200 ; q = 2 ; m = 50
 Xtrain = rand(n, p) ; Ytrain = rand(n, q) 
 Xtest = rand(m, p) ; Ytest = rand(m, q) 
 
+## Model fitting
 nlv = 5 
 fm = plskern(Xtrain, Ytrain; nlv = nlv) ;
-pnames(fm)
+pnames(fm) # print the names of objects contained in 'fm'
 
+## Some summary
 summary(fm, Xtrain)
 
+## Computation of the PLS scores (LVs) for Xtest
 Jchemo.transform(fm, Xtest)
 Jchemo.transform(fm, Xtest; nlv = 1)
 
+## PLS b-coefficients
 Jchemo.coef(fm)
 Jchemo.coef(fm; nlv = 2)
 
-res = Jchemo.predict(fm, Xtest) ;
+## Predictions and performance of the fitted model
+res = Jchemo.predict(fm, Xtest) 
 res.pred
 rmsep(res.pred, Ytest)
 mse(res.pred, Ytest)
@@ -132,73 +137,106 @@ Jchemo.predict(fm, Xtest; nlv = 0:3).pred
 - ### With gridscore
 
 ```julia
-using Jchemo, CairoMakie
+using Jchemo, StatsBase, CairoMakie
 
-n = 150 ; p = 200 ; m = 50 
-Xtrain = rand(n, p) ; ytrain = rand(n) 
-Xval = rand(m, p) ; yval = rand(m) 
+ntrain = 150 ; p = 200
+ntest = 80 
+Xtrain = rand(ntrain, p) ; ytrain = rand(ntrain) 
+Xtest = rand(ntest, p) ; ytest = rand(ntest)
+## Train is splitted to Cal+Val to tune the model,
+## and the generalization error is estimated on Test.
+nval = 50
+s = sample(1:ntrain, nval; replace = false) 
+Xcal = rmrow(Xtrain, s)
+ycal = rmrow(ytrain, s)
+Xval = Xtrain[s, :]
+yval = ytrain[s]
 
+## Computation of the performance over the grid
+## (the model is fitted on Cal, and the performance is 
+## computed on Val)
 nlv = 0:10 
-pars = mpar(nlv = nlv)
-res = gridscore(
-    Xtrain, ytrain, Xval, yval;
-    score = rmsep, fun = plskern, pars = pars) 
+res = gridscorelv(
+    Xcal, ycal, Xval, yval;
+    score = rmsep, fun = plskern, nlv = nlv) 
 
+## Plot the results
 plotgrid(res.nlv, res.y1,
     xlabel = "Nb. LVs", ylabel = "RMSEP").f
 
+## Predictions and performance of the best model
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-fm = plskern(Xval, yval; nlv = res.nlv[u]) ;
-res = Jchemo.predict(fm, Xval) ;
-rmsep(res.pred, yval)
+fm = plskern(Xtrain, ytrain; nlv = res.nlv[u]) ;
+res = Jchemo.predict(fm, Xtest) 
+rmsep(res.pred, ytest)
 
-## For PLSR models, using gridscorelv is much faster than gridscore!!!
-## In the same manner, using gridscorelb for ridge regression models
-## is much faster than using the generic function gridcv.
+## *Note*: For PLSR models, using gridscorelv is much faster
+## than using the generic function gridscore.
+## In the same manner, for ridge regression models,
+## gridscorelb is much faster than gridscore.
 
-res = gridscorelv(
-    Xtrain, ytrain, Xval, yval;
-    score = rmsep, fun = plskern, nlv = nlv) 
+## Syntax for the generic gridscore
+pars = mpar(nlv = nlv)
+res = gridscore(
+    Xcal, ycal, Xval, yval;
+    score = rmsep, fun = plskern, pars = pars) 
 ```
 
 - ### With gridcv
 
 ```julia
-using Jchemo
+using Jchemo, StatsBase, CairoMakie
 
-n = 150 ; p = 200 ; m = 50 
-Xtrain = rand(n, p) ; ytrain = rand(n) 
-Xval = rand(m, p) ; yval = rand(m) 
+ntrain = 150 ; p = 200
+ntest = 80 
+Xtrain = rand(ntrain, p) ; ytrain = rand(ntrain) 
+Xtest = rand(ntest, p) ; ytest = rand(ntest)
+## Train is used to tune the model,
+## and the generalization error is estimated on Test.
 
-segm = segmkf(n, 5; rep = 5)     # Replicated K-fold cross-validation
-#segm = segmts(n, 30; rep = 5)   # Replicated test-set validation
+## Build the cross-validation (CV) segments
+## Replicated K-Fold CV
+K = 5      # Nb. folds
+rep = 10   # Nb. replications (rep = 1 ==> no replication)
+segm = segmkf(ntrain, K; rep = rep)
 
+## Or replicated test-set CV
+m = 30     # Size of the test-set
+rep = 10   # Nb. replications (rep = 1 ==> no replication)
+segm = segmts(ntrain, m; rep = rep) 
+
+## Computation of the performances over the grid
 nlv = 0:10 
-pars = mpar(nlv = nlv)
-zres = gridcv(
-    Xtrain, ytrain; segm,
-    score = rmsep, fun = plskern, pars = pars) ;
-pnames(zres)
-res = zres.res
+rescv = gridcvlv(
+    Xtrain, ytrain; segm = segm,
+    score = rmsep, fun = plskern, nlv = nlv) ;
+pnames(rescv)
+res = rescv.res
 
+## Plot the results
 plotgrid(res.nlv, res.y1,
     xlabel = "Nb. LVs", ylabel = "RMSEP").f
 
+## Predictions and performance of the best model 
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-fm = plskern(Xval, yval; nlv = res.nlv[u]) ;
-res = Jchemo.predict(fm, Xval) ;
-rmsep(res.pred, yval)
+fm = plskern(Xtrain, ytrain; nlv = res.nlv[u]) ;
+res = Jchemo.predict(fm, Xtest) ;
+rmsep(res.pred, ytest)
 
-## For PLSR models, using gridcvlv is much faster than gridcv!!!
-## In the same manner, using gridcvlb for ridge regression models
-## is much faster than using the generic function gridcv.
+## *Note*: For PLSR models, using gridcvlv is much faster
+## than using the generic function gridcv.
+## In the same manner, for ridge regression models,
+## gridcvlb is much faster than gridcv.
 
-zres = gridcvlv(
-    Xtrain, ytrain; segm,
-    score = rmsep, fun = plskern, nlv = nlv) ;
-zres.res
+## Using the generic function gridcv:
+pars = mpar(nlv = nlv)
+rescv = gridcv(
+    Xtrain, ytrain; segm = segm,
+    score = rmsep, fun = plskern, pars = pars) ;
+pnames(rescv)
+res = rescv.res
 ```
 
 ## <span style="color:green"> **Author** </span> 
