@@ -59,7 +59,7 @@ or for the current developing version (not 100% stable):
 pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ```
 
-## <span style="color:green"> **Benchmark - Computation time for a PLS** </span> 
+## <span style="color:green"> **Benchmark - Computation time for a PLS with 1e6 observations** </span> 
 ```julia
 julia> versioninfo()
 Julia Version 1.8.5
@@ -222,7 +222,7 @@ plotgrid(res.nlv, res.y1,
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
 fm = plskern(Xtrain, ytrain; nlv = res.nlv[u]) ;
-res = Jchemo.predict(fm, Xtest) ;
+res = Jchemo.predict(fm, Xtest) 
 rmsep(res.pred, ytest)
 
 ## *Note*: For PLSR models, using gridcvlv is much faster
