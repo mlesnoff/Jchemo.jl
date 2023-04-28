@@ -39,6 +39,10 @@
 - **xfit** Matrix fitting 
 - **xresid** Residual matrix 
 
+*Factorial discrimination analysis (FDA)*
+- **fda** Eigen decomposition of the compromise "inter/intra"
+- **fdasvd** Weighted SVD decomposition of the class centers
+
 ## REGRESSION
 
 ### **Linear models**
@@ -130,11 +134,6 @@
 - **occlknndis**: Using "local" k-nearest neighbors distances.
 - **occstah** Using Stahel-Donoho outlierness measure.
 - **stah** Compute Stahel-Donoho outlierness measure.
-
-### Factorial discrimination analysis (FDA)
-
-- **fda** Eigen decomposition of the compromise "inter/intra"
-- **fdasvd** Weighted SVD decomposition of the class centers
 
 ### DA based on predicted Y-dummy table
 
@@ -307,6 +306,8 @@
 - **recodnum2cla** Recode a continuous variable to classes
 - **replacebylev** Replace the elements of a vector by levels of corresponding order
 - **replacebylev2** : Replace the elements of an index-vector by levels
+- **rmcol** Remove the columns of a matrix or the components of a vector having indexes s
+- **rmrow** Remove the rows of a matrix or the components of a vector having indexes s
 - **replacedict** : Replace the elements of a vector by levels defined in a dictionary
 - **rowmean**, **rowstd**, **rowsum** Row-wise operations
 - **sourcedir** Include all the files contained in a directory
