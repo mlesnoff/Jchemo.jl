@@ -30,7 +30,7 @@ summ(X)
 # of the class "Setosa"
 
 Xtrain = Matrix(X[1:40, 1:2])
-Xtest = (X[40:50, 1:2])
+Xtest = Matrix(X[40:50, 1:2])
 
 fm = dmnorm(Xtrain) ;
 fm.mu
