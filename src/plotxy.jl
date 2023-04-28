@@ -67,6 +67,8 @@ function plotxy(x, y; resolution = (600, 400),
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", 
         kwargs...)
+    x = vec(x)
+    y = vec(y)
     f = Figure(resolution = resolution)
     ax = Axis(f; xlabel = xlabel, ylabel = ylabel, 
         title = title)
@@ -106,6 +108,8 @@ function plotxy(x, y, group; resolution = (600, 400),
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", 
         kwargs...)
+    x = vec(x)
+    y = vec(y)
     group = vec(group)
     lev = mlev(group)
     nlev = length(lev)
