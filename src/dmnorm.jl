@@ -26,11 +26,10 @@ pnames(dat)
 X = dat.X 
 summ(X)
 
-# Studying a two-dimensionnal distribution
-# of the class "Setosa"
-
+## Studying a two-dimensionnal distribution
+## of the class "Setosa"
 Xtrain = Matrix(X[1:40, 1:2])
-Xtest = Matrix(X[40:50, 1:2])
+Xtest = Matrix(X[41:50, 1:2])
 
 fm = dmnorm(Xtrain) ;
 fm.mu
