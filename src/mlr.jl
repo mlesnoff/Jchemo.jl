@@ -41,7 +41,7 @@ fm = mlr(Xtrain, ytrain) ;
 pnames(fm)
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
-plotxy(vec(pred), ytest; color = (:red, .5),
+plotxy(pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 
 zcoef = Jchemo.coef(fm) 

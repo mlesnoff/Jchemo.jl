@@ -78,7 +78,7 @@ fm = lwmlr_s(Xtrain, ytrain; nlv = 20, reduc = "pca",
     metric = "eucl", h = 2, k = 100) ;
 pred = Jchemo.predict(fm, Xtest).pred
 println(rmsep(pred, ytest))
-plotxy(vec(pred), ytest; color = (:red, .5),
+plotxy(pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed (Test)").f  
 

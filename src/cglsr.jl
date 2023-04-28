@@ -77,7 +77,7 @@ Jchemo.coef(fm; nlv = 7).B
 res = Jchemo.predict(fm, Xtest) ;
 res.pred
 rmsep(ytest, res.pred)
-plotxy(vec(pred), ytest; color = (:red, .5),
+plotxy(pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 ```
 """ 
