@@ -61,7 +61,8 @@ function predict(object::Dens3, x)
     d = object.d.d
     zd = zeros(m)
     zs = findall(s .== 0)
-    zd[zs] .= vec(interpl(reshape(d, 1, n), object.d.x; wlfin = x[zs]))
+    zd[zs] .= vec(interpl(reshape(d, 1, n), object.d.x; 
+        wlfin = x[zs]))
     d = DataFrame(x = x, d = zd, out = s)
     (d = d,)
 end
