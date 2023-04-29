@@ -25,9 +25,10 @@ db = joinpath(path_jdat, "data/iris.jld2")
 pnames(dat)
 X = dat.X 
 summ(X)
+tab(dat.X.species)
 
-## Studying a two-dimensionnal distribution
-## of the class "Setosa"
+## Studying of the Sepal two-dimensionnal 
+## distribution of the class "Setosa"
 Xtrain = Matrix(X[1:40, 1:2])
 Xtest = Matrix(X[41:50, 1:2])
 
@@ -44,19 +45,23 @@ fm.Uinv
 fm.det
 
 k = 50
-x1 = range(.9 * minimum(Xtrain[:, 1]), 1.1 * maximum(Xtrain[:, 1]), length = k) 
-x2 = range(.9 * minimum(Xtrain[:, 2]), 1.1 * maximum(Xtrain[:, 2]), length = k) 
-z = reduce(hcat, mpar(x1 = x1, x2 = x2))
-pred_train = Jchemo.predict(fm, z).pred
-f = Figure()
-ax = Axis(f[1, 1], title = "Dmnorm - Setosa",
-    xlabel = "Sepal length", ylabel = "Sepal width") ;
-co = contour!(ax, z[:, 1], z[:, 2], vec(pred_train))
-#co = contourf!(ax, z[:, 1], z[:, 2], vec(zpred), levels = 10)
+x = Xtrain[:, 1]
+y = Xtrain[:, 2]
+x1 = range(.9 * minimum(x), 1.1 * maximum(x); length = k) 
+x2 = range(.9 * minimum(y), 1.1 * maximum(y); length = k) 
+g = reduce(hcat, mpar(x1 = x1, x2 = x2))
+predg = Jchemo.predict(fm, g).pred
 pred = Jchemo.predict(fm, Xtest).pred
-scatter!(ax, Xtest[:, 1], Xtest[:, 2], vec(pred), color = :red)
-#xlims!(ax, 3.5, 7) ; ylims!(ax, 2, 5)
-Colorbar(f[1, 2], co)
+f = Figure(resolution = (600, 400))
+ax = Axis(f[1, 1]; title = "Dmnorm - Setosa",
+    xlabel = "Sepal length", ylabel = "Sepal width") 
+co = contour!(ax, g[:, 1], g[:, 2], vec(predg); levels = 10)
+Colorbar(f[1, 2], co; label = "Density")
+## Or:
+#contour!(ax, g[:, 1], g[:, 2], vec(predg))
+scatter!(ax, Xtest[:, 1], Xtest[:, 2], vec(pred),
+    color = :red)
+#xlims!(ax, 2, 6) ;ylims!(ax, 2, 6)
 f
 ```
 """ 
