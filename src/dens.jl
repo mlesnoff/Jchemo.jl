@@ -19,18 +19,18 @@ After estimation, the densities (`d`) are normalized to sum to 1.
 n = 10^3 
 x = randn(n)
 
-res = dens(x)
-pnames(res)
-res.d     # Density (normalized to sum to 1)
-res.lims  # Range of x
-res.mu    # Mean expected density value for a uniform distribution
-f, ax = lines(res.d.x, res.d.d;
+fm = dens(x)
+pnames(fm)
+fm.d     # Density (normalized to sum to 1)
+fm.lims  # Range of x
+fm.mu    # Mean expected density value for a uniform distribution
+f, ax = lines(fm.d.x, fm.d.d;
     axis = (xlabel = "x", ylabel = "Density"))
-hlines!(ax, res.mu; color = :grey, linestyle = "-")
+hlines!(ax, fm.mu; color = :grey, linestyle = "-")
 f
 
 xnew = [-4; -1; -3.8; 1; 4]
-d = Jchemo.predict(res, xnew).d
+d = Jchemo.predict(fm, xnew).d
 scatter!(ax, xnew, d.d; color = :red)
 f
 ```
@@ -49,7 +49,7 @@ end
 
 """
     predict(object::Dens2, x)
-Compute Y-predictions from a fitted model.
+Compute predictions from a fitted model.
 * `object` : The fitted model.
 * `x` : Data (vector) for which predictions are computed.
 """ 
