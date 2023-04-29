@@ -36,9 +36,9 @@ f
 ```
 """ 
 function dens(x; npoints = 2^8, lims = nothing)
-    zx = Float64.(vec(x))
-    isnothing(lims) ? lims = (minimum(zx), maximum(zx)) : nothing
-    fm = Makie.KernelDensity.kde(zx; npoints = npoints,
+    x = Float64.(vec(x))
+    isnothing(lims) ? lims = (minimum(x), maximum(x)) : nothing
+    fm = Makie.KernelDensity.kde(x; npoints = npoints,
         boundary = lims)
     d = mweight(fm.density)   # Sum(d) = 1
     mu = 1 / npoints          # Average expected density value; d should be >= mu if "dense" area
