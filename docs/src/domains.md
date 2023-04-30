@@ -293,6 +293,7 @@
 - **frob** Frobenius norm of a matrix
 - **fweight** Compute weights from distances
 - **getknn** Find nearest neighbours between rows of matrices
+- **head** Display the first rows of a dataset
 - **iqr** Interval inter-quartiles
 - **krbf, kpol** Build kernel Gram matrices
 - **locw** Working function for local (kNN) models
@@ -302,6 +303,8 @@
 - **mweight** Normalize a vector to sum to 1
 - **nco**, **nro**, Nb. rows and colmuns of an object
 - **normw** Weighted norm of a vector
+- **pnames** Return the names of the elements of an object
+- **psize(x)** Return the type and size of a dataset
 - **pval** Compute p-value(s) for a distribution, a vector or an ECDF
 - **recodcat2int** Recode a categorical variable to a numeric variable
 - **recodnum2cla** Recode a continuous variable to classes
