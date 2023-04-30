@@ -302,7 +302,7 @@
 - **matB**, **matW** Between- and within-covariance matrices
 - **mlev** Return the sorted levels of a dataset 
 - **mweight** Normalize a vector to sum to 1
-- **nco**, **nro**, Nb. rows and colmuns of an object
+- **nco**, **nro**, Nb. rows and columns of an object
 - **normw** Weighted norm of a vector
 - **pnames** Return the names of the elements of an object
 - **psize(x)** Return the type and size of a dataset
