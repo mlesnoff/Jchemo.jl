@@ -1106,12 +1106,11 @@ function summ(X; digits = 3)
 end
 
 function summ(X, group; digits = 1)
-    zgroup = mlev(group)
-    for i in eachindex(zgroup)
-        u = findall(group .== zgroup[i])
-        z = X[u, :]
-        res = summ(z; digits = digits).res
-        println("Group: ", zgroup[i])
+    lev = mlev(group)
+    for i in eachindex(lev)
+        u = group .== lev[i]
+        res = summ(X[u, :]; digits = digits).res
+        println("Group: ", lev[i])
         println(res)
         println("") ; println("") 
         #println(repeat("-", 70))
