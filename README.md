@@ -7,8 +7,7 @@
 [![Build Status](https://github.com/mlesnoff/Jchemo.jl/workflows/CI/badge.svg)](https://github.com/mlesnoff/Jchemo.jl/actions)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
-**Jchemo.jl** is a [**package**](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)
-for **data exploration and prediction** with focus on **high dimensional data**. 
+**Jchemo.jl** is a package for [**data exploration and prediction**](https://mlesnoff.github.io/Jchemo.jl/dev/domains/) with focus on **high dimensional data**. 
 
 The package was initially designed about **partial least squares regression and discrimination models** and variants, in particular locally weighted PLS models (**LWPLS**) (e.g. https://doi.org/10.1002/cem.3209).
 Then, it has been expanded to many other methods for 
@@ -27,7 +26,7 @@ Most of the functions of the package have a **help page** (providing an example)
 ?savgol
 ```
 
-**Examples** demonstrating **Jchemo.jl** are available in project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo), used for trainings. **The datasets** used in the examples are stored in package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl).
+**Examples** demonstrating **Jchemo.jl** are available in project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo), used for training only. **The datasets** of the examples are stored in package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl).
 
 Some of the functions of the package (in particular those using kNN selections) use **multi-threading** 
 to speed the computations. Taking advantage of this requires to specify a relevant number 
