@@ -798,10 +798,15 @@ function pval(d::Distribution, q)
     Distributions.ccdf(d, q)
 end
 
+function pval(e_cdf::ECDF, q)
+    1 .- e_cdf(q)
+end
+
 function pval(x::Array, q)
     e_cdf = StatsBase.ecdf(x)
     1 .- e_cdf(q)
 end
+
 
 """
     recodcat2int(x; start = 1)
