@@ -59,9 +59,9 @@ function predict(object::Occsdod, X)
     sd = predict(object.fm_sd, X).d
     od = predict(object.fm_od, X).d
     dstand = sqrt.(sd.dstand .* od.dstand)
-    nam = string.("sd_", names(sd))
+    nam = string.(names(sd), "_sd")
     rename!(sd, nam)
-    nam = string.("od_", names(od))
+    nam = string.(names(od), "_od")
     rename!(od, nam)
     d = hcat(sd, od)
     d.dstand = dstand
