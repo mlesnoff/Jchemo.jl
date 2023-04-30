@@ -5,6 +5,7 @@
 - News
 
 - Modifications
+    - **plotxy**: accept a matrix (n, 2) as input.
     - Code cleaning.
 
 

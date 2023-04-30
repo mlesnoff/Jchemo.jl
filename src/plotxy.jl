@@ -23,6 +23,7 @@
 Scatter plot of (x, y) data
 * `x` : A x-vector (n).
 * `y` : A y-vector (n). 
+* `X` : A matrix (n, 2) (col1 = x, col2 = y). 
 * `group` : Categorical variable defining groups. 
     A separate line is plotted for each level of `group`.
 * 'resolution' : Resolution (horizontal, vertical) of the figure.
@@ -60,7 +61,11 @@ T = fm.T
 
 plotxy(T[:, 1], T[:, 2]; color = (:red, .5)).f
 
+plotxy(T[:, 1:2]; color = (:red, .5)).f
+
 plotxy(T[:, 1], T[:, 2], year; ellipse = true).f
+
+plotxy(T[:, 1:2], year; color = (:red, .5)).f
 
 i = 1
 colm = cgrad(:Dark2_5, nlev; categorical = true)
