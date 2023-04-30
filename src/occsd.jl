@@ -125,7 +125,8 @@ function occsd(object::Union{Pca, Plsr}; nlv = nothing,
     typc == "q" ? cutoff = quantile(d, 1 - alpha) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
-    d = DataFrame(d = d, dstand = d / cutoff, pval = p_val, gh = d2 / nlv)
+    d = DataFrame(d = d, dstand = d / cutoff, pval = p_val, 
+        gh = d2 / nlv)
     Occsd(d, object, S, e_cdf, cutoff, nlv)
 end
 
@@ -142,8 +143,8 @@ function predict(object::Occsd, X)
     d2 = vec(mahsq(T, zeros(nlv)', object.Sinv))
     d = sqrt.(d2)
     p_val = pval(object.e_cdf, d)
-    d = DataFrame((d = d, dstand = d / object.cutoff, 
-        pval = p_val, gh = d2 / nlv))
+    d = DataFrame(d = d, dstand = d / object.cutoff, 
+        pval = p_val, gh = d2 / nlv)
     pred = reshape(Int64.(d.dstand .> 1), m, 1)
     (pred = pred, d)
 end

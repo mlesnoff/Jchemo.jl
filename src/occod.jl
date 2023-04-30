@@ -42,7 +42,7 @@ CRC Press, Boca Raton.
 function occod(object::Union{Pca, Plsr}, X; nlv = nothing, 
         typc = "mad", cri = 3, alpha = .05)
     X = ensure_mat(X)
-    a = size(object.T, 2)
+    a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     E = xresid(object, X; nlv = nlv)
     d2 = vec(sum(E .* E, dims = 2))
@@ -50,8 +50,8 @@ function occod(object::Union{Pca, Plsr}, X; nlv = nothing,
     typc == "mad" ? cutoff = median(d) + cri * mad(d) : nothing
     typc == "q" ? cutoff = quantile(d, 1 - alpha) : nothing
     e_cdf = StatsBase.ecdf(d)
-    pval = 1 .- e_cdf(d)
-    d = DataFrame((d = d, dstand = d / cutoff, pval = pval))
+    p_val = pval(e_cdf, d)
+    d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
     Occod(d, object, e_cdf, cutoff, nlv)
 end
 
@@ -66,8 +66,9 @@ function predict(object::Occod, X)
     m = nro(E)
     d2 = vec(sum(E .* E, dims = 2))
     d = sqrt.(d2)
-    pval = 1 .- object.e_cdf(d)
-    d = DataFrame((d = d, dstand = d / object.cutoff, pval = pval))
+    p_val = pval(object.e_cdf, d)
+    d = DataFrame(d = d, dstand = d / object.cutoff, 
+        pval = p_val)
     pred = reshape(Int64.(d.dstand .> 1), m, 1)
     (pred = pred, d)
 end
