@@ -1,18 +1,28 @@
 """
-    plotxy(x, y; resolution = (600, 400), 
+    plotxy(x::Vector, y::Vector; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "",
         kwargs...)
-    plotxy(x, y, group; resolution = (600, 400), 
+    plotxy(x::Vector, y::Vector, group::Vector; resolution = (600, 400), 
+        color = nothing, ellipse::Bool = false, prob = .95, 
+        circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
+        xlabel = "", ylabel = "", title = "", 
+        kwargs...)
+    plotxy(X::Union{Matrix, DataFrame}; resolution = (600, 400), 
+        color = nothing, ellipse::Bool = false, prob = .95, 
+        circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
+        xlabel = "", ylabel = "", title = "", 
+        kwargs...)
+    plotxy(X::Union{Matrix, DataFrame}, group::Vector; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", 
         kwargs...)
         
 Scatter plot of (x, y) data
-* `x` : A x-variable (n).
-* `y` : A y-variable (n). 
+* `x` : A x-vector (n).
+* `y` : A y-vector (n). 
 * `group` : Categorical variable defining groups. 
     A separate line is plotted for each level of `group`.
 * 'resolution' : Resolution (horizontal, vertical) of the figure.
@@ -62,13 +72,11 @@ plotxy(T[:, i], T[:, i + 1], year;
 plotxy(T[:, 1], T[:, 2], year).lev
 ```
 """ 
-function plotxy(x, y; resolution = (600, 400), 
+function plotxy(x::Vector, y::Vector; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", 
         kwargs...)
-    x = vec(x)
-    y = vec(y)
     f = Figure(resolution = resolution)
     ax = Axis(f; xlabel = xlabel, ylabel = ylabel, 
         title = title)
@@ -103,14 +111,11 @@ function plotxy(x, y; resolution = (600, 400),
     (f = f, ax = ax)
 end
 
-function plotxy(x, y, group; resolution = (600, 400), 
+function plotxy(x::Vector, y::Vector, group::Vector; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", 
         kwargs...)
-    x = vec(x)
-    y = vec(y)
-    group = vec(group)
     lev = mlev(group)
     nlev = length(lev)
     lab = string.(lev)
@@ -155,3 +160,26 @@ function plotxy(x, y, group; resolution = (600, 400),
     (f = f, ax = ax, lev = lev)
 end
 
+function plotxy(X::Union{Matrix, DataFrame}; resolution = (600, 400), 
+        color = nothing, ellipse::Bool = false, prob = .95, 
+        circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
+        xlabel = "", ylabel = "", title = "", 
+        kwargs...)
+    plotxy(X[:, 1], X[:, 2]; resolution = resolution, 
+        color = color, ellipse = ellipse, prob = prob, 
+        circle = circle, bisect = bisect, zeros = zeros,
+        xlabel = xlabel, ylabel = ylabel, title = title, 
+        kwargs...)
+end
+
+function plotxy(X::Union{Matrix, DataFrame}, group::Vector; resolution = (600, 400), 
+        color = nothing, ellipse::Bool = false, prob = .95, 
+        circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
+        xlabel = "", ylabel = "", title = "", 
+        kwargs...)
+    plotxy(X[:, 1], X[:, 2], group; resolution = resolution, 
+        color = color, ellipse = ellipse, prob = prob, 
+        circle = circle, bisect = bisect, zeros = zeros,
+        xlabel = xlabel, ylabel = ylabel, title = title, 
+        kwargs...)
+end
