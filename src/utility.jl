@@ -790,8 +790,23 @@ The p-value of quantile `q` is computed by P(Q > `q`).
 
 ## Examples
 ```julia
+using Distributions, StatsBase
 
+d = Distributions.Normal(0, 1)
+q = 1.96
+#q = [1.64; 1.96]
+Distributions.cdf(d, q)
+Distributions.ccdf(d, q)
+pval(d, q)
 
+x = sort(rand(5))
+e_cdf = StatsBase.ecdf(x)
+e_cdf(x)
+p_val = 1 .- e_cdf(x)
+q = x[1]
+#q = copy(x)
+pval(x, q)
+pval(e_cdf, q)
 
 ```
 """
