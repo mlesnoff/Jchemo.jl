@@ -311,6 +311,7 @@
 - **recodnum2cla** Recode a continuous variable to classes
 - **replacebylev** Replace the elements of a vector by levels of corresponding order
 - **replacebylev2** : Replace the elements of an index-vector by levels
+- **replacedict** Replace the elements of a vector by levels defined in a dictionary
 - **rmcol** Remove the columns of a matrix or the components of a vector having indexes s
 - **rmrow** Remove the rows of a matrix or the components of a vector having indexes s
 - **replacedict** : Replace the elements of a vector by levels defined in a dictionary
