@@ -305,7 +305,7 @@
 - **nco**, **nro**, Nb. rows and columns of an object
 - **normw** Weighted norm of a vector
 - **pnames** Return the names of the elements of an object
-- **psize(x)** Return the type and size of a dataset
+- **psize** Return the type and size of a dataset
 - **pval** Compute p-value(s) for a distribution, a vector or an ECDF
 - **recodcat2int** Recode a categorical variable to a numeric variable
 - **recodnum2cla** Recode a continuous variable to classes
