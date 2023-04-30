@@ -3,6 +3,7 @@
 ### *Version 0.1.20*
 
 - News
+    - **pval**: Compute p-value(s) for a distribution, a vector or an ECDF.
 
 - Modifications
     - **plotxy**: accept a matrix (n, 2) as input.

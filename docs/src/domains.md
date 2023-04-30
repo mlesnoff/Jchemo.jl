@@ -299,9 +299,10 @@
 - **mad** Median absolute deviation
 - **matB**, **matW** Between- and within-covariance matrices
 - **mlev** Return the sorted levels of a dataset 
-- **mweight** Normalize a vector to sum to 1.
-- **nco**, **nro**, Nb. rows and colmuns of an object.
+- **mweight** Normalize a vector to sum to 1
+- **nco**, **nro**, Nb. rows and colmuns of an object
 - **normw** Weighted norm of a vector
+- **pval** Compute p-value(s) for a distribution, a vector or an ECDF
 - **recodcat2int** Recode a categorical variable to a numeric variable
 - **recodnum2cla** Recode a continuous variable to classes
 - **replacebylev** Replace the elements of a vector by levels of corresponding order

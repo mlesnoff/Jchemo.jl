@@ -779,31 +779,32 @@ end
 """
     pval(d::Distribution, q)
     pval(x::Array, q)
-Compute p-value for a distribution or a vector
-* `d` : Variable to recode.
-* `start` : Integer value that will be set to the first category.
+    pval(e_cdf::ECDF, q)
+Compute p-value(s) for a distribution, a vector or an ECDF.
+* `d` : A distribution computed from `Distribution.jl`.
+* `x` : Univariate data.
+* `e_cdf` : An ECDF computed from `StatsBase.jl`.
+* `q` : Value(s) for which to compute the p-value(s).
 
-The numeric codes returned by the function are `Int64` and 
-correspond to the sorted categories of `x`.
+The p-value of quantile `q` is computed by P(Q > `q`).
 
 ## Examples
 ```julia
-x = ["b", "a", "b"]   
-[x recodcat2int(x)]
-recodcat2int(x; start = 0)
-recodcat2int([25, 1, 25])
+
+
+
 ```
 """
 function pval(d::Distribution, q)
     Distributions.ccdf(d, q)
 end
 
-function pval(e_cdf::ECDF, q)
+function pval(x::Array, q)
+    e_cdf = StatsBase.ecdf(x)
     1 .- e_cdf(q)
 end
 
-function pval(x::Array, q)
-    e_cdf = StatsBase.ecdf(x)
+function pval(e_cdf::ECDF, q)
     1 .- e_cdf(q)
 end
 
