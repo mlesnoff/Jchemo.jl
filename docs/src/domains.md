@@ -290,6 +290,7 @@
 - **dens** Univariate kernel density estimation
 - **dummy** Build dummy table
 - **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
+- **findmax_cla** Find the most occurent level in a categorical variable
 - **frob** Frobenius norm of a matrix
 - **fweight** Compute weights from distances
 - **getknn** Find nearest neighbours between rows of matrices
@@ -297,7 +298,7 @@
 - **iqr** Interval inter-quartiles
 - **krbf, kpol** Build kernel Gram matrices
 - **locw** Working function for local (kNN) models
-- **mad** Median absolute deviation
+- **mad** Median absolute deviation (not exported)
 - **matB**, **matW** Between- and within-covariance matrices
 - **mlev** Return the sorted levels of a dataset 
 - **mweight** Normalize a vector to sum to 1
