@@ -310,16 +310,15 @@
 - **recodcat2int** Recode a categorical variable to a numeric variable
 - **recodnum2cla** Recode a continuous variable to classes
 - **replacebylev** Replace the elements of a vector by levels of corresponding order
-- **replacebylev2** : Replace the elements of an index-vector by levels
+- **replacebylev2** Replace the elements of an index-vector by levels
 - **replacedict** Replace the elements of a vector by levels defined in a dictionary
 - **rmcol** Remove the columns of a matrix or the components of a vector having indexes s
 - **rmrow** Remove the rows of a matrix or the components of a vector having indexes s
-- **replacedict** : Replace the elements of a vector by levels defined in a dictionary
 - **rowmean**, **rowstd**, **rowsum** Row-wise operations
 - **sourcedir** Include all the files contained in a directory
 - **ssq** Total inertia of a matrix
 - **summ** Summarize the columns of a dataset
-- **tab**, **tabdf** Tabulations for categorical variables
+- **tab**, **tabdf**, **tabdupl** Tabulations for categorical variables
 - **vcatdf** Vertical concatenation of a list of dataframes
 - **wdist** Compute weights from distances
 - Other **utility functions** in file `utility.jl`
