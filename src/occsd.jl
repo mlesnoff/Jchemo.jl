@@ -114,7 +114,7 @@ f
 """ 
 function occsd(object::Union{Pca, Plsr}; nlv = nothing,
         typc = "mad", alpha = .05, cri = 3)
-    a = size(object.T, 2)
+    a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     T = @view(object.T[:, 1:nlv])
     S = Statistics.cov(T, corrected = false)
@@ -124,8 +124,8 @@ function occsd(object::Union{Pca, Plsr}; nlv = nothing,
     typc == "mad" ? cutoff = median(d) + cri * mad(d) : nothing
     typc == "q" ? cutoff = quantile(d, 1 - alpha) : nothing
     e_cdf = StatsBase.ecdf(d)
-    pval = 1 .- e_cdf(d)
-    d = DataFrame(d = d, dstand = d / cutoff, pval = pval, gh = d2 / nlv)
+    p_val = pval(e_cdf, d)
+    d = DataFrame(d = d, dstand = d / cutoff, pval = p_val, gh = d2 / nlv)
     Occsd(d, object, S, e_cdf, cutoff, nlv)
 end
 
@@ -141,8 +141,9 @@ function predict(object::Occsd, X)
     m = nro(T)
     d2 = vec(mahsq(T, zeros(nlv)', object.Sinv))
     d = sqrt.(d2)
-    pval = 1 .- object.e_cdf(d)
-    d = DataFrame((d = d, dstand = d / object.cutoff, pval = pval, gh = d2 / nlv))
+    p_val = pval(object.e_cdf, d)
+    d = DataFrame((d = d, dstand = d / object.cutoff, 
+        pval = p_val, gh = d2 / nlv))
     pred = reshape(Int64.(d.dstand .> 1), m, 1)
     (pred = pred, d)
 end
