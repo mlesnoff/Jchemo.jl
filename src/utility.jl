@@ -775,6 +775,34 @@ function  psize(x)
     println(size(x))
 end
 
+
+"""
+    pval(d::Distribution, q)
+    pval(x::Array, q)
+Compute p-value for a distribution or a vector
+* `d` : Variable to recode.
+* `start` : Integer value that will be set to the first category.
+
+The numeric codes returned by the function are `Int64` and 
+correspond to the sorted categories of `x`.
+
+## Examples
+```julia
+x = ["b", "a", "b"]   
+[x recodcat2int(x)]
+recodcat2int(x; start = 0)
+recodcat2int([25, 1, 25])
+```
+"""
+function pval(d::Distribution, q)
+    Distributions.ccdf(d, q)
+end
+
+function pval(x::Array, q)
+    e_cdf = StatsBase.ecdf(x)
+    1 .- e_cdf(q)
+end
+
 """
     recodcat2int(x; start = 1)
 Recode a categorical variable to a integer variable

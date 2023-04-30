@@ -182,6 +182,7 @@ export
     normw,  
     nro,
     pmod, pnames, psize,
+    pval,
     recodcat2int, replacebylev2, recodnum2cla,
     replacebylev, replacedict, 
     rmcol, rmrow, 
