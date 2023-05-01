@@ -165,8 +165,8 @@ function occlknndis(X; nlv,
     typc == "mad" ? cutoff = median(d) + cri * mad(d) : nothing
     typc == "q" ? cutoff = quantile(d, 1 - alpha) : nothing
     e_cdf = StatsBase.ecdf(d)
-    pval = 1 .- e_cdf(d)
-    d = DataFrame(d = d, dstand = d / cutoff, pval = pval)
+    p_val = pval(e_cdf, d)
+    d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
     Occlknndis(d, fm, fm.T, tscales, k, e_cdf, cutoff)
 end
 
@@ -192,8 +192,8 @@ function predict(object::Occlknndis, X)
         zd[i] = median(vd)
     end
     d ./= zd
-    pval = 1 .- object.e_cdf(d)
-    d = DataFrame(d = d, dstand = d / object.cutoff, pval = pval)
+    p_val = pval(object.e_cdf, d)
+    d = DataFrame(d = d, dstand = d / object.cutoff, pval = p_val)
     pred = reshape(Int64.(d.dstand .> 1), m, 1)
     (pred = pred, d)
 end
