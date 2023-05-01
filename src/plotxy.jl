@@ -1,10 +1,10 @@
 """
-    plotxy(x::Vector, y::Vector; resolution = (600, 400), 
+    plotxy(x::AbstractVector, y::AbstractVector; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "",
         kwargs...)
-    plotxy(x::Vector, y::Vector, group::Vector; resolution = (600, 400), 
+    plotxy(x::AbstractVector, y::AbstractVector, group::Vector; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", 
@@ -77,7 +77,7 @@ plotxy(T[:, i], T[:, i + 1], year;
 plotxy(T[:, 1], T[:, 2], year).lev
 ```
 """ 
-function plotxy(x::Vector, y::Vector; resolution = (600, 400), 
+function plotxy(x::AbstractVector, y::AbstractVector; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", 
@@ -116,7 +116,7 @@ function plotxy(x::Vector, y::Vector; resolution = (600, 400),
     (f = f, ax = ax)
 end
 
-function plotxy(x::Vector, y::Vector, group::Vector; resolution = (600, 400), 
+function plotxy(x::AbstractVector, y::AbstractVector, group::Vector; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", 
