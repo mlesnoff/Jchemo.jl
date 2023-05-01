@@ -9,6 +9,10 @@
 - Robust PCA
     - **pcasph** Spherical (with spatial median)
 
+*Utilities for PCA and PLS* 
+- **xfit** Matrix fitting 
+- **xresid** Residual matrix 
+
 *Random projections*
 - **rp** Random projection
 - **rpmatgauss** Gaussian random projection matrix 
@@ -34,10 +38,6 @@
     - **rd** Redundancy coefficients between two matrices
     - **lg** Lg coefficient
     - **rv** RV correlation coefficient
-
-*Utilities for PCA and PLS* 
-- **xfit** Matrix fitting 
-- **xresid** Residual matrix 
 
 *Factorial discrimination analysis (FDA)*
 - **fda** Eigen decomposition of the compromise "inter/intra"
