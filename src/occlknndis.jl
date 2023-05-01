@@ -130,7 +130,8 @@ tab(res.pred)
 d1 = fm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
-f, ax = plotxy(1:length(d), d)
+f, ax = plotxy(1:length(d), d;
+    xlabel = "Obs. index", ylabel = "Standardized distance")
 hlines!(ax, 1)
 f
 ```
