@@ -1,7 +1,5 @@
 struct Kde11
-    d
-    mu
-    lims
+    fm
 end
 
 """
@@ -36,16 +34,8 @@ f
 ```
 """ 
 function kde1(x; npoints = 2^8, kwargs...)
-    x = vec(x)
-    fm = KernelDensity.kde(x; npoints = npoints, kwargs...)
-    d = fm.density
-
-
-    d = mweight(fm.density)   # Sum(d) = 1
-    mu = 1 / npoints          # Average expected density value; d should be >= mu if "dense" area
-    s = (fm.x .< lims[1]) .| (fm.x .> lims[2])
-    d = DataFrame(x = fm.x, d = d, out = s)
-    Dens3(d, mu, lims)        
+    fm = KernelDensity.kde(vec(x); npoints = npoints, kwargs...)
+    Kde11(fm)
 end
 
 """
@@ -55,18 +45,6 @@ Compute predictions from a fitted model.
 * `x` : Data (vector) for which predictions are computed.
 """ 
 function predict(object::Kde11, x)
-    x = Float64.(vec(x))
-    n = length(object.d.x)
-    m = length(x)
-    s = (x .< object.lims[1]) .| (x .> object.lims[2])
-    d = object.d.d
-    zd = zeros(m)
-    zs = findall(s .== 0)
-    zd[zs] .= vec(interpl(reshape(d, 1, n), object.d.x; 
-        wlfin = x[zs]))
-    d = DataFrame(x = x, d = zd, out = s)
-    (d = d,)
+    KernelDensity.pdf(object.fm, vec(x))
 end
-
-
 
