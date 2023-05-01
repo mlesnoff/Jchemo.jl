@@ -759,7 +759,7 @@ Return if elements of a vector are strictly outside of a given range.
 * `x` : Univariate data.
 * `lims` : Limits (lower, upper) defining the range.
 
-A BitVector is returned.
+Return a BitVector.
 
 ## Examples
 ```julia

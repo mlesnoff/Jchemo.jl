@@ -304,6 +304,7 @@
 - **mweight** Normalize a vector to sum to 1
 - **nco**, **nro**, Nb. rows and columns of an object
 - **normw** Weighted norm of a vector
+- **out** Return if elements of a vector are strictly outside of a given range
 - **pnames** Return the names of the elements of an object
 - **psize** Return the type and size of a dataset
 - **pval** Compute p-value(s) for a distribution, a vector or an ECDF
