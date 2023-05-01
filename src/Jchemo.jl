@@ -100,6 +100,7 @@ include("baggr_util.jl")
 include("treer_dt.jl")
 
 # Discrimination 
+include("kde1.jl")
 include("dmnorm.jl")
 include("rrda.jl")
 include("lda.jl") ; include("qda.jl")
@@ -270,6 +271,7 @@ export
     lwplsr, lwplsravg, lwplsr_s,  
     cplsravg,
     # Discrimination
+    kde1,
     dmnorm, dmnorm!,
     fda, fda!, fdasvd, fdasvd!,
     mlrda,
