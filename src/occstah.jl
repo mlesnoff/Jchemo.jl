@@ -96,8 +96,8 @@ function occstah(X; a = 2000, scal = true,
     typc == "mad" ? cutoff = median(d) + cri * mad(d) : nothing
     typc == "q" ? cutoff = quantile(d, 1 - alpha) : nothing
     e_cdf = StatsBase.ecdf(d)
-    pval = 1 .- e_cdf(d)
-    d = DataFrame(d = d, dstand = d / cutoff, pval = pval)
+    p_val = pval(e_cdf, d)
+    d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
     Occstah(d, res, e_cdf, cutoff)
 end
 
@@ -122,8 +122,8 @@ function predict(object::Occstah, X)
         d[i] = maximum(vrow(T, i))
     end
     #pval = Distributions.ccdf.(object.dist, d.^2 / object.g)
-    pval = 1 .- object.e_cdf(d)
-    d = DataFrame(d = d, dstand = d / object.cutoff, pval = pval)
+    p_val = pval(object.e_cdf, d)
+    d = DataFrame(d = d, dstand = d / object.cutoff, pval = p_val)
     pred = reshape(Int64.(d.dstand .> 1), m, 1)
     (pred = pred, d)
 end
