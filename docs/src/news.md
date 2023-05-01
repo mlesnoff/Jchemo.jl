@@ -10,6 +10,8 @@
     - **plotxy**: accept a matrix (n, 2) as input.
     - Code cleaning.
 
+- Breaking changes
+    - **dens**: removed and replaced by **kde1**.
 
 ### *Version 0.1.19*
 
