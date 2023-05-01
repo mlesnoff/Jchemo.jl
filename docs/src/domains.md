@@ -161,9 +161,6 @@
 - **plsldaavg** Averaging PLS-LDA models with different numbers of 
     latent variables (LVs) (PLS-LDA-AVG)
 
-*Utility*
-- **dmnorm** Normal probability density of multivariate data
-
 ### **Local models**
 
 - **knnda** kNN-DA (Vote within neighbors)
@@ -193,6 +190,12 @@
 - **vip** Variable importance on projections (VIP)
 - **vi_baggr** Variable importance after bagging (OOB permutations method)
 - **viperm** Variable importance by direct permutations
+
+## DISTRIBUTIONS
+
+- **kde1** Univariate kernel density estimation
+- **dmnorm** Normal probability density of multivariate data
+- **pval** Compute p-value(s) for a distribution, a vector or an ECDF
 
 ## TUNING MODELS
 
@@ -287,7 +290,6 @@
 - **colmad**, **colmean**, **colnorm**, **colstd**, **colsum**, **colvar**  Column-wise operations
 - **covm**, **corm** Covariance and correlation matrices
 - **cosv**, **cosm** Cosinus between vectors
-- **dens** Univariate kernel density estimation
 - **dummy** Build dummy table
 - **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
 - **findmax_cla** Find the most occurent level in a categorical variable
@@ -307,7 +309,6 @@
 - **out** Return if elements of a vector are strictly outside of a given range
 - **pnames** Return the names of the elements of an object
 - **psize** Return the type and size of a dataset
-- **pval** Compute p-value(s) for a distribution, a vector or an ECDF
 - **recodcat2int** Recode a categorical variable to a numeric variable
 - **recodnum2cla** Recode a continuous variable to classes
 - **replacebylev** Replace the elements of a vector by levels of corresponding order

@@ -3,6 +3,7 @@
 ### *Version 0.1.20*
 
 - News
+    - **kde1**: Univariate kernel density estimation.
     - **out**: Return if elements of a vector are strictly outside of a given range.
     - **pval**: Compute p-value(s) for a distribution, a vector or an ECDF.
 
