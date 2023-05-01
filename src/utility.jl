@@ -753,6 +753,17 @@ Return the nb. rows of `X`.
 """
 nro(X) = size(X, 1)
 
+""" 
+    out(x)
+Return a boolean vector indicating if elements are inside or outside the range of `x`.
+* `x` : Univariate data.
+* `lims` : If `nothing`, this is `[minimum(x); maximum(x)]`.
+"""
+function out(x; lims = nothing)
+    isnothing(lims) ? lims = (minimum(x), maximum(x)) : nothing
+    (x .< lims[1]) .| (x .> lims[2])
+end
+    
 
 """ 
     pmod(foo)
