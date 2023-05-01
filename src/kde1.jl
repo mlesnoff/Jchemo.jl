@@ -5,14 +5,18 @@ struct Kde1_1
 end
 
 """
-    kde1(x; npoints = 2^8, lims = nothing)
+    kde1(x; npoints = 2^8, kwargs...)
 Univariate kernel density estimation.
-* `x` : Data (vector) on which the density is estimated.
-* `npoints` : Nb. points estimated within the range of `lims`.
-* `lims` : If `nothing`, this is `[minimum(x); maximum(x)]`.
+* `x` : Univariate data.
+* `npoints` : Nb. points for which density is estimated (from `x`).
+* `kwargs` : Optional arguments to pass in function `kde` of `KernelDensity.jl`.
 
-The function uses function `Makie.KernelDensity.kde`.
-After estimation, the densities (`d`) are normalized to sum to 1. 
+The function is a wrapper (with `predict` function) of the univariate KDE 
+function `kde` of package `KernelDebsity.jl`
+
+## References 
+
+https://github.com/JuliaStats/KernelDensity.jl
 
 ## Examples
 ```julia
