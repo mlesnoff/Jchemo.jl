@@ -149,8 +149,8 @@ function occknndis(X; nlv,
     typc == "mad" ? cutoff = median(d) + cri * mad(d) : nothing
     typc == "q" ? cutoff = quantile(d, 1 - alpha) : nothing
     e_cdf = StatsBase.ecdf(d)
-    pval = 1 .- e_cdf(d)
-    d = DataFrame(d = d, dstand = d / cutoff, pval = pval)
+    p_val = pval(e_cdf, d)
+    d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
     Occknndis(d, fm, fm.T, tscales, k, e_cdf, cutoff)
 end
 
