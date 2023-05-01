@@ -121,7 +121,6 @@ function predict(object::Occstah, X)
     @inbounds for i = 1:m
         d[i] = maximum(vrow(T, i))
     end
-    #pval = Distributions.ccdf.(object.dist, d.^2 / object.g)
     p_val = pval(object.e_cdf, d)
     d = DataFrame(d = d, dstand = d / object.cutoff, pval = p_val)
     pred = reshape(Int64.(d.dstand .> 1), m, 1)
