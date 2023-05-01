@@ -47,7 +47,7 @@ pnames(fm)
 T = fm.T
 
 i = 1
-plotxy(T[:, i], T[:, i + 1]; zeros = true,
+plotxy(T[:, i:(i + 1)]; zeros = true,
     xlabel = "PC1", ylabel = "PC2").f
 ```
 """ 

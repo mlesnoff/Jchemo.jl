@@ -58,7 +58,7 @@ Ttest = Jchemo.transform(fm, zXtest)
 T = vcat(Ttrain, Ttest)
 group = vcat(repeat(["0-Train"], ntrain), repeat(["1-Test"], ntest))
 i = 1
-plotxy(T[:, i], T[:, i + 1], group;
+plotxy(T[:, i:(i + 1)], group;
     xlabel = string("PC", i), ylabel = string("PC", i + 1)).f
 
 #### End data
