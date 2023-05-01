@@ -164,8 +164,8 @@ function predict(object::Occknndis, X)
     @inbounds for i = 1:m
         d[i] = median(res.d[i])
     end
-    pval = 1 .- object.e_cdf(d)
-    d = DataFrame(d = d, dstand = d / object.cutoff, pval = pval)
+    p_val = pval(object.e_cdf, d)
+    d = DataFrame(d = d, dstand = d / object.cutoff, pval = p_val)
     pred = reshape(Int64.(d.dstand .> 1), m, 1)
     (pred = pred, d)
 end
