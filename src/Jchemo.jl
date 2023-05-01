@@ -19,7 +19,6 @@ using StatsBase          # sample
 
 include("utility.jl") 
 include("colmedspa.jl")
-include("dens.jl")
 include("fweight.jl") 
 include("ellipse.jl")
 include("matW.jl")
@@ -29,6 +28,8 @@ include("plotsp.jl")
 include("plotxy.jl")
 include("preprocessing.jl") 
 include("rmgap.jl")
+include("kde1.jl")
+include("dmnorm.jl")
 
 # Exploratory
 include("fda.jl")     # Here since ::Fda called in pcasvd
@@ -101,8 +102,6 @@ include("baggr_util.jl")
 include("treer_dt.jl")
 
 # Discrimination 
-include("kde1.jl")
-include("dmnorm.jl")
 include("rrda.jl")
 include("lda.jl") ; include("qda.jl")
 include("mlrda.jl")
@@ -168,7 +167,6 @@ export
     corm, covm,
     cosm, cosv,
     cscale, cscale!, 
-    dens,
     dummy,
     ensure_df, ensure_mat,
     findmax_cla, 
@@ -197,8 +195,11 @@ export
     summ,
     tab, tabdf, tabdupl,
     vcatdf,
-    vcol, vrow, 
-   # Pre-processing
+    vcol, vrow,
+    # Distributions
+    kde1,
+    dmnorm, dmnorm!,
+    # Pre-processing
     detrend, detrend!, 
     fdif, fdif!,
     interpl, interpl_mon, 
@@ -263,7 +264,7 @@ export
     covsel,
     isel,
     vip, viperm,
-    #
+    # Utils
     xfit, xfit!, xresid, xresid!,
     # Local regression
     locw, locwlv,
@@ -272,8 +273,6 @@ export
     lwplsr, lwplsravg, lwplsr_s,  
     cplsravg,
     # Discrimination
-    kde1,
-    dmnorm, dmnorm!,
     fda, fda!, fdasvd, fdasvd!,
     mlrda,
     rrda, krrda,
