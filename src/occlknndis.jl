@@ -170,6 +170,12 @@ function occlknndis(X; nlv,
     Occlknndis(d, fm, fm.T, tscales, k, e_cdf, cutoff)
 end
 
+"""
+    predict(object::Occlknndis, X)
+Compute predictions from a fitted model.
+* `object` : The fitted model.
+* `X` : X-data for which predictions are computed.
+""" 
 function predict(object::Occlknndis, X)
     X = ensure_mat(X)
     m = size(X, 1)
