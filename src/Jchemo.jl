@@ -181,6 +181,7 @@ export
     nco,
     normw,  
     nro,
+    out,
     pmod, pnames, psize,
     pval,
     recodcat2int, recodnum2cla, 

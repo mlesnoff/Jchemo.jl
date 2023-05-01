@@ -755,14 +755,19 @@ nro(X) = size(X, 1)
 
 """ 
     out(x)
-Return a boolean vector indicating if elements are inside or outside the range of `x`.
+Return if elements of a vector are strictly outside of a given range.
 * `x` : Univariate data.
-* `lims` : If `nothing`, this is `[minimum(x); maximum(x)]`.
+* `lims` : Limits (lower, upper) defining the range.
+
+A BitVector is returned.
+
+## Examples
+```julia
+x = [-200.; -100; -1; 0; 1; 200]
+out(x, (-1, 1))
+```
 """
-function out(x; lims = nothing)
-    isnothing(lims) ? lims = (minimum(x), maximum(x)) : nothing
-    (x .< lims[1]) .| (x .> lims[2])
-end
+out(x, lims) = (x .< lims[1]) .| (x .> lims[2])
     
 
 """ 
