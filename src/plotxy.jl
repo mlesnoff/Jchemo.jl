@@ -7,7 +7,7 @@
     plotxy(x::AbstractVector, y::AbstractVector, group::Vector; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", 
+        xlabel = "", ylabel = "", title = "", leg::Bool = true,
         kwargs...)
     plotxy(X::Union{Matrix, DataFrame}; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
@@ -17,7 +17,7 @@
     plotxy(X::Union{Matrix, DataFrame}, group::Vector; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", 
+        xlabel = "", ylabel = "", title = "", leg::Bool = true, 
         kwargs...)
         
 Scatter plot of (x, y) data
@@ -25,8 +25,7 @@ Scatter plot of (x, y) data
 * `y` : A y-vector (n). 
 * `X` : A matrix (n, 2) (col1 = x, col2 = y). 
 * `group` : Categorical variable defining groups. 
-    A separate line is plotted for each level of `group`.
-* 'resolution' : Resolution (horizontal, vertical) of the figure.
+* `resolution` : Resolution (horizontal, vertical) of the figure.
 * `color` : Set color(s). If `group` if used, `color` must be a vector of 
     same length as the number of levels in `group`.
 * `ellipse` : Boolean. Draw an ellipse of confidence, assuming a Ch-square distribution
@@ -37,6 +36,7 @@ Scatter plot of (x, y) data
 *  `xlabel` : Label for the x-axis.
 *  `ylabel` : Label for the y-axis.
 *  `title` : Title of the graphic.
+* `leg` : Boolean. If `group` is used, display a legend or not.
 * `kwargs` : Optional arguments to pass in function `scatter` of Makie.
 
 The user has to specify a backend (e.g. CairoMakie).
@@ -119,7 +119,7 @@ end
 function plotxy(x::AbstractVector, y::AbstractVector, group::Vector; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", 
+        xlabel = "", ylabel = "", title = "", leg::Bool = true,
         kwargs...)
     lev = mlev(group)
     nlev = length(lev)
@@ -161,7 +161,9 @@ function plotxy(x::AbstractVector, y::AbstractVector, group::Vector; resolution 
         vlines!(0; color = :grey60)
     end
     f[1, 1] = ax
-    f[1, 2] = Legend(f, ax, "Group", framevisible = false)
+    if leg
+        f[1, 2] = Legend(f, ax, "Group", framevisible = false)
+    end
     (f = f, ax = ax, lev = lev)
 end
 
@@ -180,11 +182,11 @@ end
 function plotxy(X::Union{Matrix, DataFrame}, group::Vector; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", 
+        xlabel = "", ylabel = "", title = "", leg::Bool = true,
         kwargs...)
     plotxy(X[:, 1], X[:, 2], group; resolution = resolution, 
         color = color, ellipse = ellipse, prob = prob, 
         circle = circle, bisect = bisect, zeros = zeros,
-        xlabel = xlabel, ylabel = ylabel, title = title, 
+        xlabel = xlabel, ylabel = ylabel, title = title, leg = leg,
         kwargs...)
 end

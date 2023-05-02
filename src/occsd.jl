@@ -112,9 +112,10 @@ tab(res.pred)
 d1 = fm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
-f, ax = plotxy(1:length(d), d; 
+group = [repeat([1], ntrain); repeat([2], ntest)]
+f, ax = plotxy(1:length(d), d, group; 
     resolution = (500, 400), xlabel = "Obs. index", 
-    ylabel = "Standardized distance")
+    ylabel = "Standardized distance", leg = false)
 hlines!(ax, 1)
 f
 ```
