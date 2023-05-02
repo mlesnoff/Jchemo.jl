@@ -1,4 +1,4 @@
-struct Kde1_1
+struct Kde1
     fm
     x
     density
@@ -71,7 +71,7 @@ f
 """ 
 function kde1(x; npoints = 2^8, kwargs...)
     fm = KernelDensity.kde(vec(x); npoints = npoints, kwargs...)
-    Kde1_1(fm, fm.x, fm.density)
+    Kde1(fm, fm.x, fm.density)
 end
 
 """
@@ -80,7 +80,7 @@ Compute predictions from a fitted model.
 * `object` : The fitted model.
 * `x` : Data (vector) for which predictions are computed.
 """ 
-function predict(object::Kde1_1, x)
+function predict(object::Kde1, x)
     KernelDensity.pdf(object.fm, vec(x))
 end
 
