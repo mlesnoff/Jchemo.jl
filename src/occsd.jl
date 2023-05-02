@@ -12,35 +12,39 @@ end
         typc = "mad", cri = 3, alpha = .05, kwargs...)
 One-class classification using PCA/PLS score distance (SD).
 
-* `object` : The PCA/PLS fitted model.
+* `object` : The model (e.g. PCA) that was fitted on the training data,
+    assumed to represent the target class.
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, 
     it is the maximum nb. of components of the fitted model.
-* `typc` : Type of cutoff ("mad" or "q"). See below.
-* `cri` : When `typc = "mad"`, constant used for computing the 
-    cutoff detecting extreme values.
-* `alpha` : When `typc = "q"`, risk-I level used for computing the cutoff 
-    detecting extreme values.
+* `typc` : Type of cutoff ("mad" or "q"). See Thereafter.
+* `cri` : When `typc = "mad"`, a constant. See thereafter.
+* `alpha` : When `typc = "q"`, a risk-I level. See thereafter.
 
-In this method, the "outlierness measure" `d` of a given observation
-is the score distance (SD) of this observation, ie. the Mahalanobis distance
-between the projection of the observation on the PCA or PLS score plan and the 
-center of the score plan.
+In this method, the outlierness `d` is defined by its score distance (SD), 
+ie. the Mahalanobis distance between the projection of the observation on the score 
+plan defined by the fitted (e.g. PCA) model and the center of 
+the score plan.
 
-A heuristic cutoff for detecting an "extreme" outlierness is computed on the training data `X.
-* If `typc = "mad"`: The cutoff is computed by median(`d`) + `cri` * mad(`d`). 
-* If `typc = "q"`: The cutoff is estimated from the empirical cdf of `d`. 
-
-Alternative methods of cutoff computation can be found in the literature 
+If a new observation has `d` higher than a given `cutoff`, the observation 
+is assumed to not belong to the target class. The `cutoff` is computed 
+with non-parametric heuristics:
+* If `typc = "mad"`: `cutoff` = median(`d`) + `cri` * mad(`d`). 
+* If `typc = "q"`: `cutoff` is estimated from a univariate gaussian 
+    KDE of the distribution of `d` (see function `kde1`), for a given risk-I (`alpha`). 
+Alternative approximate cutoffs have been proposed in the literature 
 (e.g.: Nomikos & MacGregor 1995, Hubert et al. 2005, Pomerantsev 2008).
 
-`dstand` is the standardized distance defined as `d / cutoff`. 
-A value `dstand` > 1 may be considered as extreme compared to the distribution
-of the training data. `pval` is the p-value computed from 
-empirical (training) cdf. `gh` is the Winisi "GH" (usually, GH > 3 is considered as "extreme").
-
-In the output `pred` of fonction `predict`, an observation is classified 
-as 0 (i.e. belonging to the training class) when `dstand` <= 1 and 
-1 (i.e. extreme) when `dstand` > 1. 
+**Outputs**
+* `pval`: KDE p-value estimate (see functions `kde1` and `pval`), 
+    provided for each data observation. 
+* `dstand`: standardized distance defined as `d` / `cutoff`. 
+    A value `dstand` > 1 may be considered as extreme compared to the distribution
+    of the training data.  Output `gh` is the Winisi "GH" (usually, GH > 3 is 
+    considered as "extreme").
+* `pred` (fonction `predict`): class prediction
+    * `dstand` <= 1 ==> `0`: the observation is expected to belong 
+        the target class, 
+    * `dstand` > 1  ==> `1`: extreme value, possibly outside of the target class. 
 
 ## References
 M. Hubert, P. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust 
@@ -72,7 +76,7 @@ g1 = "EHH" ; g2 = "PEE"
 #g1 = "EHH" ; g2 = g1
 s1 = Ytrain.typ .== g1
 s2 = Ytest.typ .== g2
-zXtrain = Xtrain[s1, :]  
+zXtrain = Xtrain[s1, :]    # = Target
 zXtest = Xtest[s2, :] 
 ntrain = nro(zXtrain)
 ntest = nro(zXtest)
@@ -94,6 +98,7 @@ nlv = 10
 fm0 = pcasvd(zXtrain; nlv = nlv) ;
 
 fm = occsd(fm0) ;
+#fm = occsd(fm0; typc = "q", alpha = .025) ;
 #fm = occod(fm0, zXtrain) ;
 #fm = occsdod(fm0, zXtrain) ;
 fm.d
@@ -107,7 +112,9 @@ tab(res.pred)
 d1 = fm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
-f, ax = plotxy(1:ntot, d, group)
+f, ax = plotxy(1:length(d), d; 
+    resolution = (500, 400), xlabel = "Obs. index", 
+    ylabel = "Standardized distance")
 hlines!(ax, 1)
 f
 ```
