@@ -1,15 +1,15 @@
-struct Occsd
+struct Occsd_1
     d
     fm
     Sinv::Matrix{Float64}
-    e_cdf
+    fm_kde
     cutoff::Real   
     nlv::Int64
 end
 
 """
     occsd(object::Union{Pca, Plsr}; nlv = nothing,
-        typc = "mad", alpha = .05, cri = 3)
+        typc = "mad", cri = 3, alpha = .05, kwargs...)
 One-class classification using PCA/PLS score distance (SD).
 
 * `object` : The PCA/PLS fitted model.
@@ -113,7 +113,7 @@ f
 ```
 """ 
 function occsd(object::Union{Pca, Plsr}; nlv = nothing,
-        typc = "mad", alpha = .05, cri = 3)
+        typc = "mad", alpha = .05, cri = 3, kwargs...)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     T = @view(object.T[:, 1:nlv])
@@ -123,26 +123,26 @@ function occsd(object::Union{Pca, Plsr}; nlv = nothing,
     d = sqrt.(d2)
     typc == "mad" ? cutoff = median(d) + cri * mad(d) : nothing
     typc == "q" ? cutoff = quantile(d, 1 - alpha) : nothing
-    e_cdf = StatsBase.ecdf(d)
-    p_val = pval(e_cdf, d)
+    fm_kde = kde1(d; kwargs...)
+    p_val = pval(fm_kde, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val, 
         gh = d2 / nlv)
-    Occsd(d, object, S, e_cdf, cutoff, nlv)
+    Occsd_1(d, object, S, fm_kde, cutoff, nlv)
 end
 
 """
-    predict(object::Occsd, X)
+    predict(object::Occsd_1, X)
 Compute predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Occsd, X)
+function predict(object::Occsd_1, X)
     nlv = object.nlv
     T = transform(object.fm, X; nlv = nlv)
     m = nro(T)
     d2 = vec(mahsq(T, zeros(nlv)', object.Sinv))
     d = sqrt.(d2)
-    p_val = pval(object.e_cdf, d)
+    p_val = pval(object.fm_kde, d)
     d = DataFrame(d = d, dstand = d / object.cutoff, 
         pval = p_val, gh = d2 / nlv)
     pred = reshape(Int64.(d.dstand .> 1), m, 1)
