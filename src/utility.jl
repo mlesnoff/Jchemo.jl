@@ -795,8 +795,8 @@ end
     pval(d::Distribution, q)
     pval(x::Array, q)
     pval(e_cdf::ECDF, q)
-    pval(object::Kde1_1, q::Real)
-    pval(object::Kde1_1, q::AbstractVector)
+    pval(object::Kde1, q::Real)
+    pval(object::Kde1, q::AbstractVector)
 Compute p-value(s) for a distribution, an ECDF or vector.
 * `d` : A distribution computed from `Distribution.jl`.
 * `x` : Univariate data.
@@ -839,7 +839,7 @@ function pval(x::Array, q)
     pval(StatsBase.ecdf(x), q)
 end
 
-function pval(object::Kde1_1, q::Real)
+function pval(object::Kde1, q::Real)
     d = object.density
     dtot = sum(d)
     dn = d / dtot
@@ -847,7 +847,7 @@ function pval(object::Kde1_1, q::Real)
     sum(dn[s])
 end
 
-function pval(object::Kde1_1, q::AbstractVector)
+function pval(object::Kde1, q::AbstractVector)
     p_val = zeros(length(q)) 
     for i in eachindex(q)
         p_val[i] = pval(object, q[i])
