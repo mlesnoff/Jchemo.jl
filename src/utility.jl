@@ -806,6 +806,8 @@ Compute p-value(s) for a distribution, an ECDF or vector.
 The p-value of quantile `q` is (or estimates) P(Q > `q`)
 where Q is the random variable.
 
+Function also works for KDE, see examples.
+
 ## Examples
 ```julia
 using Distributions, StatsBase
