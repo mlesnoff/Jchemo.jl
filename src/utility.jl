@@ -791,12 +791,11 @@ function  psize(x)
     println(size(x))
 end
 
-
 """
     pval(d::Distribution, q)
     pval(x::Array, q)
     pval(e_cdf::ECDF, q)
-Compute p-value(s) for a distribution, a vector or an ECDF.
+Compute p-value(s) for a distribution, an ECDF or vector.
 * `d` : A distribution computed from `Distribution.jl`.
 * `x` : Univariate data.
 * `e_cdf` : An ECDF computed from `StatsBase.jl`.
@@ -830,15 +829,13 @@ function pval(d::Distribution, q)
     Distributions.ccdf(d, q)
 end
 
-function pval(x::Array, q)
-    e_cdf = StatsBase.ecdf(x)
-    1 .- e_cdf(q)
-end
-
 function pval(e_cdf::ECDF, q)
     1 .- e_cdf(q)
 end
 
+function pval(x::Array, q)
+    pval(StatsBase.ecdf(x), q)
+end
 
 """
     recodcat2int(x; start = 1)
