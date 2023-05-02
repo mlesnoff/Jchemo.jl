@@ -837,6 +837,22 @@ function pval(x::Array, q)
     pval(StatsBase.ecdf(x), q)
 end
 
+function pval(object::Kde1_1, q::Real)
+    d = object.density
+    dtot = sum(d)
+    dn = d / dtot
+    s = object.x .> q
+    sum(dn[s])
+end
+
+function pval(object::Kde1_1, q::AbstractVector)
+    p_val = zeros(length(q)) 
+    for i in eachindex(q)
+        p_val[i] = pval(object, q[i])
+    end
+    p_val
+end
+
 """
     recodcat2int(x; start = 1)
 Recode a categorical variable to a integer variable
