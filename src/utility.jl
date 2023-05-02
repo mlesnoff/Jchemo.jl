@@ -803,8 +803,8 @@ Compute p-value(s) for a distribution, an ECDF or vector.
 * `e_cdf` : An ECDF computed from `StatsBase.jl`.
 * `q` : Value(s) for which to compute the p-value(s).
 
-The p-value of quantile `q` is (or estimates) P(Q > `q`)
-where Q is the random variable.
+Compute or estimate the p-value of quantile `q`,
+ie. P(Q > `q`) where Q is the random variable.
 
 Function also works for KDE, see examples.
 
@@ -819,16 +819,23 @@ Distributions.cdf(d, q)
 Distributions.ccdf(d, q)
 pval(d, q)
 
-x = sort(rand(5))
+x = rand(5)
 e_cdf = StatsBase.ecdf(x)
 e_cdf(x)
 p_val = 1 .- e_cdf(x)
 q = x[1]
 #q = copy(x)
-pval(x, q)
 pval(e_cdf, q)
+pval(x, q)
 
-fm = kde1(x)
+fm = kde1(x; bandwidth = .01)
+pval(fm, q)
+
+x = rand(10^4)
+fm = kde1(x);
+q = [.2; .7]
+pval(x, q)
+pval(StatsBase.ecdf(x)(x), q)
 pval(fm, q)
 ```
 """
