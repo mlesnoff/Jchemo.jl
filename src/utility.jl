@@ -803,7 +803,8 @@ Compute p-value(s) for a distribution, an ECDF or vector.
 * `e_cdf` : An ECDF computed from `StatsBase.jl`.
 * `q` : Value(s) for which to compute the p-value(s).
 
-The p-value of quantile `q` is computed by P(Q > `q`).
+The p-value of quantile `q` is (or estimates) P(Q > `q`)
+where Q is the random variable.
 
 ## Examples
 ```julia
@@ -825,6 +826,8 @@ q = x[1]
 pval(x, q)
 pval(e_cdf, q)
 
+fm = kde1(x)
+pval(fm, q)
 ```
 """
 function pval(d::Distribution, q)
