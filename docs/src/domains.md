@@ -130,10 +130,10 @@
 - **occsdod** Using a compromise between SD and OD 
 
 *Other methods*
-- **occknndis**: Using "global" k-nearest neighbors distances.
-- **occlknndis**: Using "local" k-nearest neighbors distances.
-- **occstah** Using Stahel-Donoho outlierness measure.
-- **stah** Compute Stahel-Donoho outlierness measure.
+- **occknndis**: Using global k-nearest neighbors distances.
+- **occlknndis**: Using local k-nearest neighbors distances.
+- **occstah** Using Stahel-Donoho outlierness.
+- **stah** Compute Stahel-Donoho outlierness.
 
 ### DA based on predicted Y-dummy table
 

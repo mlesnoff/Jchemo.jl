@@ -13,12 +13,14 @@ end
 One-class classification using PCA/PLS score distance (SD).
 
 * `object` : The model (e.g. PCA) that was fitted on the training data,
-    assumed to represent the target class.
+    assumed to represent the training class.
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, 
     it is the maximum nb. of components of the fitted model.
 * `typc` : Type of cutoff ("mad" or "q"). See Thereafter.
 * `cri` : When `typc = "mad"`, a constant. See thereafter.
 * `alpha` : When `typc = "q"`, a risk-I level. See thereafter.
+* `kwargs` : Optional arguments to pass in function `kde` of 
+    KernelDensity.jl (see function `kde1`).
 
 In this method, the outlierness `d` of an observation is defined by its 
 score distance (SD), ie. the Mahalanobis distance between the projection of 
@@ -26,9 +28,9 @@ the observation on the score plan defined by the fitted (e.g. PCA) model and
 the center of the score plan.
 
 If a new observation has `d` higher than a given `cutoff`, the observation 
-is assumed to not belong to the target class (training used to fit the PCA/PLS model). 
-The `cutoff` is computed with non-parametric heuristics. Assuming that [d] is the 
-vector of outliernesses computed on the target class (training):
+is assumed to not belong to the training class. 
+The `cutoff` is computed with non-parametric heuristics. 
+Noting [d] the vector of outliernesses computed on the training class:
 * If `typc = "mad"`, then `cutoff` = median([d]) + `cri` * mad([d]). 
 * If `typc = "q", then `cutoff` is estimated from a univariate gaussian 
     KDE of the distribution of [d] (see function `kde1`), for a given risk-I (`alpha`). 
@@ -44,8 +46,8 @@ Alternative approximate cutoffs have been proposed in the literature
     considered as "extreme").
 * `pred` (fonction `predict`): class prediction
     * `dstand` <= 1 ==> `0`: the observation is expected to belong 
-        the target class, 
-    * `dstand` > 1  ==> `1`: extreme value, possibly outside of the target class. 
+        the training class, 
+    * `dstand` > 1  ==> `1`: extreme value, possibly outside of the training class. 
 
 ## References
 M. Hubert, P. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust 
@@ -77,7 +79,7 @@ g1 = "EHH" ; g2 = "PEE"
 #g1 = "EHH" ; g2 = g1
 s1 = Ytrain.typ .== g1
 s2 = Ytest.typ .== g2
-zXtrain = Xtrain[s1, :]    # = Target
+zXtrain = Xtrain[s1, :]    
 zXtest = Xtest[s2, :] 
 ntrain = nro(zXtrain)
 ntest = nro(zXtest)
@@ -102,6 +104,8 @@ fm = occsd(fm0) ;
 #fm = occsd(fm0; typc = "q", alpha = .025) ;
 #fm = occod(fm0, zXtrain) ;
 #fm = occsdod(fm0, zXtrain) ;
+#fm = occstah(zXtrain)
+#fm = occstah(fm0.T)
 fm.d
 hist(fm.d.dstand; bins = 50)
 

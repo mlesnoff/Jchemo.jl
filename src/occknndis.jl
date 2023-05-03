@@ -9,24 +9,23 @@ struct Occknndis
 end
 
 """
-    occknndis(X; nlv,
-        nsamp, k, 
+    occknndis(X; nlv, nsamp, k, 
         typc = "mad", cri = 3, alpha = .05,
-        scal = false)
-One-class classification using "global" k-nearest neighbors distances.
+        scal = false, kwargs...)
+One-class classification using global k-nearest neighbors distances.
 
 * `X` : X-data (training).
 * `nlv` : Nb. PCA components for the distances computations.
 * `nsamp` : Nb. of observations (rows) sampled in the training `X`
-    used to compute the "H0" empirical distribution of outlierness.
+    used to compute the H0 empirical distribution of outlierness.
 * `k` : Nb. of neighbors used to compute the outlierness.
-* `typc` : Type of cutoff ("mad" or "q"), see below.
-* `cri` : When `typc = "mad"`, constant used to compute the 
-    cutoff detecting extreme values.
-* `alpha` : When `typc = "q"`, risk-I probability level to compute 
-    the cutoff detecting extreme values.
+* `typc` : Type of cutoff ("mad" or "q"). See Thereafter.
+* `cri` : When `typc = "mad"`, a constant. See thereafter.
+* `alpha` : When `typc = "q"`, a risk-I level. See thereafter.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
+* `kwargs` : Optional arguments to pass in function `kde` of KernelDensity.jl
+    (see function `kde1`).
 
 Let us note q a given observation, and o[q] a neighbor of q 
 within the training data `X`. The `k` nearest neighbors of q
@@ -35,7 +34,7 @@ define the neighborhood NNk(q) = {o.1[q], ...., o.k[q]}
 
 The global outlierness of any observation q relatively to `X`, say dk(q),
 is computed as the median distance to NNk(q):
-* dk(q) = median{d(q, o.j[q]), j = 1,...,k}.
+* dk(q) = median{dist(q, o.j[q]), j = 1,...,k}.
 
 Outlierness dk(q) is then compared to the outlierness distribution
 estimated for the training data `X`, say distribution H0.   
@@ -58,14 +57,7 @@ new observation q.
 In the function, distances are computed as Mahalanobis distances in a 
 PCA score space (internally computed), cf. argument `nlv`.
 
-The heuristic cutoff for detecting an extreme outlierness is computed
-as follows:
-* If `typc = "mad"`: cutoff = median(`d`) + `cri` * mad(`d`). 
-* If `typc = "q"`: the cutoff is estimated from the empirical cdf 
-    of `d`, depending on p-value `alpha`. 
-Output `dstand' is the outlierness standardized to the cutoff.
-
-Other details are the same as in `?occsd`. 
+See `?occsd` for details on outputs.
 
 ## Examples
 ```julia
@@ -111,7 +103,7 @@ nlv = 30
 nsamp = 300
 k = Int64(round(.7 * ntrain))
 fm = occknndis(zXtrain; nlv = nlv, 
-    nsamp = nsamp, k = k, typc = "mad") ;
+    nsamp = nsamp, k = k) ;
 fm.d
 hist(fm.d.dstand; bins = 50)
 
@@ -129,10 +121,9 @@ hlines!(ax, 1)
 f
 ```
 """ 
-function occknndis(X; nlv,
-        nsamp, k, 
+function occknndis(X; nlv, nsamp, k, 
         typc = "mad", cri = 3, alpha = .05,
-        scal = false)
+        scal = false, kwargs...)
     X = ensure_mat(X)
     n = nro(X)
     fm = pcasvd(X; nlv = nlv, scal = scal)

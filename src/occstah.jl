@@ -6,83 +6,27 @@ struct Occstah
 end
 
 """
-    occstah(X; a = 2000, scal = true, 
-        typc = "mad", cri = 3, alpha = .05)
-One-class classification using the Stahel-Donoho outlierness measure.
+    occstah(X; a = 2000, typc = "mad", cri = 3, 
+        alpha = .05, scal = true, kwargs...)
+One-class classification using the Stahel-Donoho outlierness.
 
-* `X` : X-data.
+* `X` : X-data (training).
 * `a` : Nb. dimensions simulated for the projection-pursuit method.
+* `typc` : Type of cutoff ("mad" or "q"). See Thereafter.
+* `cri` : When `typc = "mad"`, a constant. See thereafter.
+* `alpha` : When `typc = "q"`, a risk-I level. See thereafter.
 * `scal` : Boolean. If `true`, matrix `X` is centred (by median) 
     and scaled (by MAD) before computing the outlierness.
-* `typc` : Type of cutoff ("mad" or "q"). See below.
-* `cri` : When `typc = "mad"`, constant used for computing the 
-    cutoff detecting extreme values.
-* `alpha` : When `typc = "q"`, risk-I level used for computing the cutoff 
-    detecting extreme values.
+* `kwargs` : Optional arguments to pass in function `kde` of 
+    KernelDensity.jl (see function `kde1`).
 
-In this method, the "outlierness measure" `d` of a given observation
+In this method, the outlierness `d` of a given observation
 is the Stahel-Donoho outlierness (see `?stah`).
 
-See `?occsd` for the cutoff computation (the same principle is applied). 
-
-## Examples
-```julia
-using JchemoData, JLD2, CairoMakie
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/challenge2018.jld2") 
-@load db dat
-X = dat.X    
-Y = dat.Y
-f = 21 ; pol = 3 ; d = 2 ;
-Xp = savgol(snv(X); f = f, pol = pol, d = d) 
-s = Bool.(Y.test)
-Xtrain = rmrow(Xp, s)
-Ytrain = rmrow(Y, s)
-Xtest = Xp[s, :]
-Ytest = Y[s, :]
-
-g1 = "EHH" ; g2 = "PEE"
-#g1 = "EHH" ; g2 = g1
-s1 = Ytrain.typ .== g1
-s2 = Ytest.typ .== g2
-zXtrain = Xtrain[s1, :]  
-zXtest = Xtest[s2, :] 
-ntrain = nro(zXtrain)
-ntest = nro(zXtest)
-ntot = ntrain + ntest
-(ntot = ntot, ntrain, ntest)
-
-fm = pcasvd(zXtrain, nlv = 5) ; 
-Ttrain = fm.T
-Ttest = Jchemo.transform(fm, zXtest)
-T = vcat(Ttrain, Ttest)
-group = vcat(repeat(["0-Train"], ntrain), repeat(["1-Test"], ntest))
-i = 1
-plotxy(T[:, i:(i + 1)], group;
-    xlabel = string("PC", i), ylabel = string("PC", i + 1)).f
-
-#### End data
-
-fm = occstah(zXtrain) ;
-fm.d
-hist(fm.d.dstand; bins = 50)
-
-res = Jchemo.predict(fm, zXtest) ;
-res.d
-res.pred
-tab(res.pred)
-
-d1 = fm.d.dstand
-d2 = res.d.dstand
-d = vcat(d1, d2)
-f, ax = plotxy(1:length(d), d; resolution = (500, 400)
-    xlabel = "Obs. index", ylabel = "Standardized distance")
-hlines!(ax, 1)
-f
-```
+See `?occsd` for details on outputs, and examples. 
 """ 
-function occstah(X; a = 2000, scal = true, 
-        typc = "mad", cri = 3, alpha = .05) 
+function occstah(X; a = 2000, typc = "mad", cri = 3, 
+        alpha = .05, scal = true, kwargs...) 
     res = Jchemo.stah(X, a; scal = scal)
     d = res.d
     #d2 = d.^2 

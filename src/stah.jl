@@ -1,6 +1,6 @@
 """
     stah(X, a; scal = true)
-Stahel-Donoho outlierness measure.
+Stahel-Donoho outlierness.
 
 * `X` : X-data.
 * `a` : Nb. dimensions simulated for the projection pursuit method.
@@ -8,8 +8,9 @@ Stahel-Donoho outlierness measure.
     and scaled (by MAD) before computing the outlierness.
 
 The outlierness measure is computed from a projection-pursuit approach:
-directions in the column-`X` space (linear combinations of the columns of `X`) 
-are randomly simulated, and the observations (rows of `X`) are projected on these directions.
+* directions in the column-`X` space (linear combinations of the columns 
+    of `X`) are randomly simulated, 
+* and the observations (rows of `X`) are projected on these directions.
 
 See Maronna and Yohai (1995) for details. 
 
