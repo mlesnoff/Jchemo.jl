@@ -125,14 +125,14 @@
 ### One-Class Classification (OCC)
 
 *From a PCA or PLS score space*
-- **occsd** Using score distance (SD)
-- **occod** Using orthogonal distance (OD) 
-- **occsdod** Using a compromise between SD and OD 
+- **occsd** Score distance (SD)
+- **occod** Orthogonal distance (OD) 
+- **occsdod** Compromise between SD and OD 
 
 *Other methods*
-- **occknndis**: Using global k-nearest neighbors distances.
-- **occlknndis**: Using local k-nearest neighbors distances.
-- **occstah** Using Stahel-Donoho outlierness.
+- **occknndis**: Global k-nearest neighbors distances.
+- **occlknndis**: Local k-nearest neighbors distances.
+- **occstah** Stahel-Donoho outlierness.
 - **stah** Compute Stahel-Donoho outlierness.
 
 ### DA based on predicted Y-dummy table
