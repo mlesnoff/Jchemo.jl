@@ -183,6 +183,12 @@
 - **treeda_dt** Single tree
 - **rfda_dt** Random forest
 
+## DISTRIBUTIONS
+
+- **kde1** Univariate kernel density estimation
+- **dmnorm** Normal probability density of multivariate data
+- **pval** Compute p-value(s) for a distribution, a vector or an ECDF
+
 ## VARIABLE IMPORTANCE
 
 - **covsel** Variable selection from partial covariance or correlation (Covsel)
@@ -190,12 +196,6 @@
 - **vip** Variable importance on projections (VIP)
 - **vi_baggr** Variable importance after bagging (OOB permutations method)
 - **viperm** Variable importance by direct permutations
-
-## DISTRIBUTIONS
-
-- **kde1** Univariate kernel density estimation
-- **dmnorm** Normal probability density of multivariate data
-- **pval** Compute p-value(s) for a distribution, a vector or an ECDF
 
 ## TUNING MODELS
 
