@@ -79,7 +79,7 @@ Xtest = Xp[s, :]
 Ytest = Y[s, :]
 
 g1 = "EHH" ; g2 = "PEE"
-#g1 = "EHH" ; g2 = g1
+#g1 = "EHH" ; g2 = "EHH"
 s1 = Ytrain.typ .== g1
 s2 = Ytest.typ .== g2
 zXtrain = Xtrain[s1, :]    
