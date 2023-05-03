@@ -97,7 +97,7 @@ group = vcat(repeat(["0-Train"], ntrain), repeat(["1-Test"], ntest))
 i = 1
 plotxy(T[:, i:(i + 1)], group;
     xlabel = string("PC", i), ylabel = string("PC", i + 1)).f
-    
+
 #### End data
 
 nlv = 10
@@ -119,7 +119,6 @@ tab(res.pred)
 d1 = fm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
-group = [repeat(["0-Train"], ntrain); repeat(["1-Test"], ntest)]
 f, ax = plotxy(1:length(d), d, group; 
     resolution = (600, 400), xlabel = "Obs. index", 
     ylabel = "Standardized distance")
