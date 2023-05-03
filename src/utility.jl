@@ -837,13 +837,9 @@ pval(StatsBase.ecdf(x)(x), q)
 pval(fm, q)
 ```
 """
-function pval(d::Distribution, q)
-    Distributions.ccdf(d, q)
-end
+pval(d::Distribution, q) = Distributions.ccdf(d, q)
 
-function pval(e_cdf::ECDF, q)
-    1 .- e_cdf(q)
-end
+pval(e_cdf::ECDF, q) = 1 .- e_cdf(q)
 
 function pval(x::Array, q)
     pval(StatsBase.ecdf(x), q)
