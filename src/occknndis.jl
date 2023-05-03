@@ -77,7 +77,7 @@ Xtest = Xp[s, :]
 Ytest = Y[s, :]
 
 g1 = "EHH" ; g2 = "PEE"
-#g1 = "EHH" ; g2 = g1
+#g1 = "EHH" ; g2 = "EHH"
 s1 = Ytrain.typ .== g1
 s2 = Ytest.typ .== g2
 zXtrain = Xtrain[s1, :]    
@@ -100,7 +100,7 @@ plotxy(T[:, i:(i + 1)], group;
 
 nlv = 30
 nsamp = 300
-k = Int64(round(.7 * ntrain))
+k = round(.7 * ntrain)
 fm = occknndis(zXtrain; nlv = nlv, 
     nsamp = nsamp, k = k) ;
 fm.d
@@ -114,8 +114,10 @@ tab(res.pred)
 d1 = fm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
-f, ax = plotxy(1:length(d), d;
-    xlabel = "Obs. index", ylabel = "Standardized distance")
+group = [repeat(["0-Train"], ntrain); repeat(["1-Test"], ntest)]
+f, ax = plotxy(1:length(d), d, group; 
+    resolution = (600, 400), xlabel = "Obs. index", 
+    ylabel = "Standardized distance")
 hlines!(ax, 1)
 f
 ```
