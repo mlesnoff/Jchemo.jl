@@ -5,7 +5,7 @@
 - News
     - **kde1**: Univariate kernel density estimation. New dependance: KernelDensity.jl.
     - **out**: Return if elements of a vector are strictly outside of a given range.
-    - **pval**: Compute p-value(s) for a distribution, a vector or an ECDF.
+    - **pval**: Compute p-value(s) for a distribution, an ECDF or a vector.
 
 - Modifications
     - **plotxy**: accept a matrix (n, 2) as input.
