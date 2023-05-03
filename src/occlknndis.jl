@@ -73,6 +73,7 @@ using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/challenge2018.jld2") 
 @load db dat
+pnames(dat)
 X = dat.X    
 Y = dat.Y
 f = 21 ; pol = 3 ; d = 2 ;
@@ -84,10 +85,10 @@ Xtest = Xp[s, :]
 Ytest = Y[s, :]
 
 g1 = "EHH" ; g2 = "PEE"
-#g1 = "EHH" ; g2 = g1
+#g1 = "EHH" ; g2 = "EHH"
 s1 = Ytrain.typ .== g1
 s2 = Ytest.typ .== g2
-zXtrain = Xtrain[s1, :]  
+zXtrain = Xtrain[s1, :]    
 zXtest = Xtest[s2, :] 
 ntrain = nro(zXtrain)
 ntest = nro(zXtest)
