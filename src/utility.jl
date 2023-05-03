@@ -813,28 +813,18 @@ using Distributions, StatsBase
 d = Distributions.Normal(0, 1)
 q = 1.96
 #q = [1.64; 1.96]
-Distributions.cdf(d, q)
-Distributions.ccdf(d, q)
-pval(d, q)
+Distributions.cdf(d, q)    # cumulative density function (CDF)
+Distributions.ccdf(d, q)   # complementary CDF (CCDF)
+pval(d, q)                 # Distributions.ccdf
 
 x = rand(5)
 e_cdf = StatsBase.ecdf(x)
-e_cdf(x)
-p_val = 1 .- e_cdf(x)
-q = x[1]
-#q = copy(x)
-pval(e_cdf, q)
+e_cdf(x)                # empirical CDF computed at each point of x (ECDF)
+p_val = 1 .- e_cdf(x)   # complementary ECDF at each point of x
+q = .3
+#q = [.3; .5; 10]
+pval(e_cdf, q)          # 1 .- e_cdf(q)
 pval(x, q)
-
-fm = kde1(x; bandwidth = .01)
-pval(fm, q)
-
-x = rand(10^4)
-fm = kde1(x);
-q = [.2; .7]
-pval(x, q)
-pval(StatsBase.ecdf(x)(x), q)
-pval(fm, q)
 ```
 """
 pval(d::Distribution, q) = Distributions.ccdf(d, q)
