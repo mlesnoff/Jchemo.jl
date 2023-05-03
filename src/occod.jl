@@ -1,14 +1,14 @@
 struct Occod
     d
     fm
-    e_cdf
+    e_cdf::ECDF
     cutoff::Real   
     nlv::Int64
 end
 
 """
     occod(object::Union{Pca, Plsr}, X; nlv = nothing, 
-        typc = "mad", cri = 3, alpha = .05, kwargs...)
+        typc = "mad", cri = 3, alpha = .025, kwargs...)
 One-class classification using PCA/PLS orthognal distance (OD).
 
 * `object` : The model (e.g. PCA) that was fitted on the training data,
@@ -41,7 +41,7 @@ K. Varmuza, P. Filzmoser (2009). Introduction to multivariate statistical analys
 in chemometrics. CRC Press, Boca Raton.
 """ 
 function occod(object::Union{Pca, Plsr}, X; nlv = nothing, 
-        typc = "mad", cri = 3, alpha = .05, kwargs...)
+        typc = "mad", cri = 3, alpha = .025, kwargs...)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)

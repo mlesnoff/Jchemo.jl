@@ -7,7 +7,7 @@ end
 """
     occsdod(object::Union{Pca, Plsr}, X; 
         nlv_sd = nothing, nlv_od = nothing, 
-        typc = "mad", cri = 3, alpha = .05, kwargs...)
+        typc = "mad", cri = 3, alpha = .025, kwargs...)
 One-class classification using a compromise between PCA/PLS score (SD) and 
     orthogonal (OD) distances.
 
@@ -34,7 +34,7 @@ See `?occsd` for details on outputs, and examples.
 """ 
 function occsdod(object::Union{Pca, Plsr}, X; 
         nlv_sd = nothing, nlv_od = nothing, 
-        typc = "mad", cri = 3, alpha = .05, kwargs...)
+        typc = "mad", cri = 3, alpha = .025, kwargs...)
     fm_sd = occsd(object; nlv = nlv_sd,
         typc = typc, cri = cri, alpha = alpha)
     fm_od = occod(object, X; nlv = nlv_od,

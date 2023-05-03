@@ -4,13 +4,13 @@ struct Occlknndis
     T::Array{Float64}
     tscales::Vector{Float64}
     k::Int
-    e_cdf
+    e_cdf::ECDF
     cutoff::Real    
 end
 
 """
     occlknndis(X; nlv, nsamp, k, 
-        typc = "mad", cri = 3, alpha = .05,
+        typc = "mad", cri = 3, alpha = .025,
         scal = false, kwargs...)
 One-class classification using local k-nearest neighbors distances.
 
@@ -127,7 +127,7 @@ f
 ```
 """ 
 function occlknndis(X; nlv, nsamp, k, 
-        typc = "mad", cri = 3, alpha = .05,
+        typc = "mad", cri = 3, alpha = .025,
         scal = false, kwargs...)
     X = ensure_mat(X)
     n = nro(X)

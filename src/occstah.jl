@@ -1,13 +1,13 @@
 struct Occstah
     d
     res_stah
-    e_cdf
+    e_cdf::ECDF
     cutoff::Real
 end
 
 """
     occstah(X; a = 2000, typc = "mad", cri = 3, 
-        alpha = .05, scal = true, kwargs...)
+        alpha = .025, scal = true, kwargs...)
 One-class classification using the Stahel-Donoho outlierness.
 
 * `X` : X-data (training).
@@ -26,7 +26,7 @@ is the Stahel-Donoho outlierness (see `?stah`).
 See `?occsd` for details on outputs, and examples. 
 """ 
 function occstah(X; a = 2000, typc = "mad", cri = 3, 
-        alpha = .05, scal = true, kwargs...) 
+        alpha = .025, scal = true, kwargs...) 
     res = Jchemo.stah(X, a; scal = scal)
     d = res.d
     #d2 = d.^2 
