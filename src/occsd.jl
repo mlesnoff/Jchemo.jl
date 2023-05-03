@@ -107,7 +107,6 @@ fm = occsd(fm0) ;
 #fm = occod(fm0, zXtrain) ;
 #fm = occsdod(fm0, zXtrain) ;
 #fm = occstah(zXtrain)
-#fm = occstah(fm0.T)
 fm.d
 hist(fm.d.dstand; bins = 50)
 
