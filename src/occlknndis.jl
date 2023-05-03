@@ -131,6 +131,7 @@ function occlknndis(X; nlv, nsamp, k,
         scal = false, kwargs...)
     X = ensure_mat(X)
     n = nro(X)
+    k = Int64(k)
     fm = pcasvd(X; nlv = nlv, scal = scal)
     tscales = colstd(fm.T)
     scale!(fm.T, tscales)
