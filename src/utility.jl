@@ -806,8 +806,6 @@ Compute p-value(s) for a distribution, an ECDF or vector.
 Compute or estimate the p-value of quantile `q`,
 ie. P(Q > `q`) where Q is the random variable.
 
-Function also works for KDE, see examples.
-
 ## Examples
 ```julia
 using Distributions, StatsBase
@@ -849,22 +847,6 @@ end
 
 function pval(x::Array, q)
     pval(StatsBase.ecdf(x), q)
-end
-
-function pval(object::Kde1, q::Real)
-    d = object.density
-    dtot = sum(d)
-    dn = d / dtot
-    s = object.x .> q
-    sum(dn[s])
-end
-
-function pval(object::Kde1, q::AbstractVector)
-    p_val = zeros(length(q)) 
-    for i in eachindex(q)
-        p_val[i] = pval(object, q[i])
-    end
-    p_val
 end
 
 """
