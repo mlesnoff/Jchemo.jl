@@ -20,23 +20,24 @@ One-class classification using PCA/PLS score distance (SD).
 * `cri` : When `typc = "mad"`, a constant. See thereafter.
 * `alpha` : When `typc = "q"`, a risk-I level. See thereafter.
 
-In this method, the outlierness `d` is defined by its score distance (SD), 
-ie. the Mahalanobis distance between the projection of the observation on the score 
-plan defined by the fitted (e.g. PCA) model and the center of 
-the score plan.
+In this method, the outlierness `d` of an observation is defined by its 
+score distance (SD), ie. the Mahalanobis distance between the projection of 
+the observation on the score plan defined by the fitted (e.g. PCA) model and 
+the center of the score plan.
 
 If a new observation has `d` higher than a given `cutoff`, the observation 
-is assumed to not belong to the target class. The `cutoff` is computed 
-with non-parametric heuristics:
-* If `typc = "mad"`: `cutoff` = median(`d`) + `cri` * mad(`d`). 
-* If `typc = "q"`: `cutoff` is estimated from a univariate gaussian 
-    KDE of the distribution of `d` (see function `kde1`), for a given risk-I (`alpha`). 
+is assumed to not belong to the target class (training used to fit the PCA/PLS model). 
+The `cutoff` is computed with non-parametric heuristics. Assuming that [d] is the 
+vector of outliernesses computed on the target class (training):
+* If `typc = "mad"`, then `cutoff` = median([d]) + `cri` * mad([d]). 
+* If `typc = "q", then `cutoff` is estimated from a univariate gaussian 
+    KDE of the distribution of [d] (see function `kde1`), for a given risk-I (`alpha`). 
 Alternative approximate cutoffs have been proposed in the literature 
 (e.g.: Nomikos & MacGregor 1995, Hubert et al. 2005, Pomerantsev 2008).
 
 **Outputs**
-* `pval`: KDE p-value estimate (see functions `kde1` and `pval`), 
-    provided for each data observation. 
+* `pval`: Estimate of p-value (see functions `kde1` and `pval`) computed 
+    from the KDE of distribution [d], provided for each data observation. 
 * `dstand`: standardized distance defined as `d` / `cutoff`. 
     A value `dstand` > 1 may be considered as extreme compared to the distribution
     of the training data.  Output `gh` is the Winisi "GH" (usually, GH > 3 is 
@@ -112,10 +113,10 @@ tab(res.pred)
 d1 = fm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
-group = [repeat([1], ntrain); repeat([2], ntest)]
+group = [repeat(["0-Train"], ntrain); repeat(["1-Test"], ntest)]
 f, ax = plotxy(1:length(d), d, group; 
-    resolution = (500, 400), xlabel = "Obs. index", 
-    ylabel = "Standardized distance", leg = false)
+    resolution = (600, 400), xlabel = "Obs. index", 
+    ylabel = "Standardized distance")
 hlines!(ax, 1)
 f
 ```
