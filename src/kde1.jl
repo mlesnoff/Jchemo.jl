@@ -46,7 +46,7 @@ d / mu_unif
 
 ## Prediction
 xnew = [-200; -100; -1; 0; 1; 200]
-dnew = Jchemo.predict(fm, xnew)
+dnew = Jchemo.predict(fm, xnew).pred
 dnew / dtot 
 dnew / mu_unif 
 
@@ -57,7 +57,7 @@ lims = (minimum(x), maximum(x))
 m = 2^8
 bw = .1
 fm = kde1(x; npoints = m, 
-    bandwidth = bw,    # Default = Silverman's rule
+    bandwidth = bw,         # Default = Silverman's rule
     boundary = lims
     ) ;
 f = Figure(resolution = (500, 350))
@@ -81,6 +81,9 @@ Compute predictions from a fitted model.
 * `x` : Data (vector) for which predictions are computed.
 """ 
 function predict(object::Kde1, x)
-    KernelDensity.pdf(object.fm, vec(x))
+    m = length(x)
+    pred = KernelDensity.pdf(object.fm, vec(x))
+    pred = reshape(pred, m, 1)
+    (pred = pred,)
 end
 
