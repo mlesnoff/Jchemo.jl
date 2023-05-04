@@ -35,7 +35,7 @@ fm = dmnorm(Xtrain) ;
 fm.mu
 fm.Uinv
 fm.det
-Jchemo.predict(fm, Xtest).pred
+Jchemo.predict(fm, Xtest).pred    # densities
 
 mu = colmean(Xtrain)
 S = cov(Xtrain)
@@ -48,16 +48,16 @@ x = Xtrain[:, 1]
 y = Xtrain[:, 2]
 x1 = range(.9 * minimum(x), 1.1 * maximum(x); length = k) 
 x2 = range(.9 * minimum(y), 1.1 * maximum(y); length = k) 
-g = reduce(hcat, mpar(x1 = x1, x2 = x2))
-predg = Jchemo.predict(fm, g).pred
-pred = Jchemo.predict(fm, Xtest).pred
+grid = reduce(hcat, mpar(x1 = x1, x2 = x2))
+pred_grid = Jchemo.predict(fm, grid).pred    # densities
+pred = Jchemo.predict(fm, Xtest).pred        # densities
 f = Figure(resolution = (600, 400))
 ax = Axis(f[1, 1]; title = "Dmnorm - Setosa",
     xlabel = "Sepal length", ylabel = "Sepal width") 
-co = contour!(ax, g[:, 1], g[:, 2], vec(predg); levels = 10)
+co = contour!(ax, grid[:, 1], grid[:, 2], vec(pred_grid); levels = 10)
 Colorbar(f[1, 2], co; label = "Density")
 ## Or:
-#contour!(ax, g[:, 1], g[:, 2], vec(predg))
+#contour!(ax, grid[:, 1], grid[:, 2], vec(pred_grid))
 scatter!(ax, Xtest[:, 1], Xtest[:, 2], vec(pred),
     color = :red)
 #xlims!(ax, 2, 6) ;ylims!(ax, 2, 6)
