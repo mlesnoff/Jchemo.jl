@@ -32,8 +32,8 @@ function fdasvd!(X::Matrix, y; nlv, pseudo = false, scal = false)
     end
     res = matW(X, y)
     lev = res.lev
-    ni = res.ni
     nlev = length(lev)
+    ni = res.ni
     res.W .= res.W * n / (n - nlev)
     !pseudo ? Winv = inv(res.W) : Winv = pinv(res.W)
     ct = aggstat(X, y; fun = mean).X
