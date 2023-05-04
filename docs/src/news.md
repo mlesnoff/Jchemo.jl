@@ -9,7 +9,7 @@
 
 - Modifications
     - **plotxy**: accept a matrix (n, 2) as input.
-    - Code cleaning.
+    - Code improvement.
 
 - Breaking changes
     - **dens**: removed and replaced by **kde1**.
