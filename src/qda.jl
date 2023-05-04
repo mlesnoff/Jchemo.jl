@@ -1,5 +1,5 @@
 struct Qda
-    fm_dmnorm
+    fm
     Wi::AbstractVector  
     ct::Array{Float64}
     wprior::AbstractVector
@@ -91,7 +91,7 @@ function predict(object::Qda, X)
     ds = similar(X, m, nlev)
     ni = object.ni
     for i = 1:nlev
-        ds[:, i] .= vec(Jchemo.predict(object.fm_dmnorm[i], X).pred)
+        ds[:, i] .= vec(Jchemo.predict(object.fm[i], X).pred)
     end
     A = object.wprior' .* ds
     v = sum(A, dims = 2)
