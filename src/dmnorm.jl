@@ -6,8 +6,7 @@ end
 
 """
     dmnorm(X = nothing; mu = nothing, S = nothing)
-Compute the normal probability density of 
-multivariate observations.
+Normal probability density estimation for multivariate data.
 * `X` : X-data used to estimate the mean and 
     the covariance matrix of the population. 
     If `nothing`, `mu` and `S` must be provided.
