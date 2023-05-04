@@ -1,4 +1,4 @@
-struct Qda_1
+struct Qda
     fm_dmnorm
     Wi::AbstractVector  
     ct::Array{Float64}
@@ -74,16 +74,16 @@ function qda(X, y; prior = "unif")
         end
         fm[i] = dmnorm(; mu = ct[i, :], S = S) 
     end
-    Qda_1(fm, res.Wi, ct, wprior, lev, ni)
+    Qda(fm, res.Wi, ct, wprior, lev, ni)
 end
 
 """
-    predict(object::Qda_1, X)
+    predict(object::Qda, X)
 Compute y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Qda_1, X)
+function predict(object::Qda, X)
     X = ensure_mat(X)
     m = nro(X)
     lev = object.lev
