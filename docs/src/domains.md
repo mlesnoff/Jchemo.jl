@@ -185,8 +185,8 @@
 
 ## DISTRIBUTIONS
 
-- **kde1** Univariate non-parametric kernel density estimation
-- **dmnorm** Normal probability density estimation for multivariate data
+- **kde1** Univariate non-parametric kernel density estimation (KDE)
+- **dmnorm** Compute multivariate normal probability density
 - **pval** Compute p-value(s) for a distribution, a vector or an ECDF
 
 ## VARIABLE IMPORTANCE
