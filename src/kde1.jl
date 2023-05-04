@@ -6,7 +6,7 @@ end
 
 """
     kde1(x; npoints = 2^8, kwargs...)
-Univariate kernel density estimation.
+Univariate kernel density estimation (KDE).
 * `x` : Univariate data.
 * `npoints` : Nb. points for which density is estimated (from `x`).
 * `kwargs` : Optional arguments to pass in function `kde` of `KernelDensity.jl`.
