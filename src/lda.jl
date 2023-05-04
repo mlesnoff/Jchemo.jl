@@ -1,5 +1,5 @@
 struct Lda
-    fm_dmnorm
+    fm
     W::Array{Float64}  
     ct::Array{Float64}
     wprior::AbstractVector
@@ -88,9 +88,7 @@ function predict(object::Lda, X)
     nlev = length(lev) 
     ds = similar(X, m, nlev)
     for i = 1:nlev
-        #fm = dmnorm(; mu = object.ct[i, :], S = object.W) 
-        #ds[:, i] .= vec(Jchemo.predict(fm, X).pred)
-        ds[:, i] .= vec(Jchemo.predict(object.fm_dmnorm[i], X).pred)
+        ds[:, i] .= vec(Jchemo.predict(object.fm[i], X).pred)
     end
     A = object.wprior' .* ds
     v = sum(A, dims = 2)
