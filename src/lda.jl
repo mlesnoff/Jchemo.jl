@@ -1,4 +1,5 @@
 struct Lda
+    fm_dmnorm
     W::Array{Float64}  
     ct::Array{Float64}
     wprior::AbstractVector
@@ -67,7 +68,11 @@ function lda(X, y; prior = "unif")
     elseif isequal(prior, "prop")
         wprior = mweight(ni)
     end
-    Lda(res.W, ct, wprior, lev, ni)
+    fm = list(nlev)
+    @inbounds for i = 1:nlev
+        fm[i] = dmnorm(; mu = ct[i, :], S = res.W) 
+    end
+    Lda(fm, res.W, ct, wprior, lev, ni)
 end
 
 """
@@ -83,8 +88,9 @@ function predict(object::Lda, X)
     nlev = length(lev) 
     ds = similar(X, m, nlev)
     for i = 1:nlev
-        fm = dmnorm(; mu = object.ct[i, :], S = object.W) 
-        ds[:, i] .= vec(Jchemo.predict(fm, X).pred)
+        #fm = dmnorm(; mu = object.ct[i, :], S = object.W) 
+        #ds[:, i] .= vec(Jchemo.predict(fm, X).pred)
+        ds[:, i] .= vec(Jchemo.predict(object.fm_dmnorm[i], X).pred)
     end
     A = object.wprior' .* ds
     v = sum(A, dims = 2)
