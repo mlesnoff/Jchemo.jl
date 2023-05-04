@@ -78,13 +78,13 @@ function dmnorm!(X = nothing; mu = nothing, S = nothing)
         S = cov(X)
     end
     U = cholesky!(Hermitian(S)).U # This modifies S only if S is provided
-    zd = det(U)^2  
-    zd == 0 ? zd = 1e-20 : nothing
+    zdet = det(U)^2  
+    zdet == 0 ? zdet = 1e-20 : nothing
     Uinv = LinearAlgebra.inv!(U)
     #cholesky!(S)
     #U = sqrt(diag(diag(S), nrow = p))
     #Uinv = solve(diag(diag(S), nrow = p))
-    Dmnorm(mu, Uinv, zd)
+    Dmnorm(mu, Uinv, zdet)
 end
 
 function predict(object::Dmnorm, X)
