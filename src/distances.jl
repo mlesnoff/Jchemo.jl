@@ -5,7 +5,7 @@ between the rows of `X` and `Y`.
 * `X` : Data.
 * `Y` : Data.
 
-When `X` and `Y`are (n, p) and (m, p), repectively, it returns an object (n, m) with:
+For `X`(n, p) and `Y` (m, p), the function returns an object (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
 
 ## Examples
