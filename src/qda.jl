@@ -91,14 +91,7 @@ function predict(object::Qda_1, X)
     ds = similar(X, m, nlev)
     ni = object.ni
     for i = 1:nlev
-        if ni[i] == 1
-            S = object.Wi[i] 
-        else
-            S = object.Wi[i] * ni[i] / (ni[i] - 1)
-        end
-        fm = dmnorm(; mu = object.ct[i, :], S = S) 
-        ds[:, i] .= vec(Jchemo.predict(fm, X).pred)
-        #ds[:, i] .= vec(Jchemo.predict(object.fm_dmnorm[i], X).pred)
+        ds[:, i] .= vec(Jchemo.predict(object.fm_dmnorm[i], X).pred)
     end
     A = object.wprior' .* ds
     v = sum(A, dims = 2)
