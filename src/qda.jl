@@ -1,4 +1,5 @@
-struct Qda
+struct Qda_1
+    fm_dmnorm
     Wi::AbstractVector  
     ct::Array{Float64}
     wprior::AbstractVector
@@ -64,16 +65,25 @@ function qda(X, y; prior = "unif")
     elseif isequal(prior, "prop")
         wprior = mweight(ni)
     end
-    Qda(res.Wi, ct, wprior, lev, ni)
+    fm = list(nlev)
+    @inbounds for i = 1:nlev
+        if ni[i] == 1
+            S = res.Wi[i] 
+        else
+            S = res.Wi[i] * ni[i] / (ni[i] - 1)
+        end
+        fm[i] = dmnorm(; mu = ct[i, :], S = S) 
+    end
+    Qda_1(fm, res.Wi, ct, wprior, lev, ni)
 end
 
 """
-    predict(object::Qda, X)
+    predict(object::Qda_1, X)
 Compute y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Qda, X)
+function predict(object::Qda_1, X)
     X = ensure_mat(X)
     m = nro(X)
     lev = object.lev
@@ -88,6 +98,7 @@ function predict(object::Qda, X)
         end
         fm = dmnorm(; mu = object.ct[i, :], S = S) 
         ds[:, i] .= vec(Jchemo.predict(fm, X).pred)
+        #ds[:, i] .= vec(Jchemo.predict(object.fm_dmnorm[i], X).pred)
     end
     A = object.wprior' .* ds
     v = sum(A, dims = 2)
