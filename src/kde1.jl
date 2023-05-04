@@ -11,8 +11,8 @@ Univariate kernel density estimation (KDE).
 * `npoints` : Nb. points for which density is estimated (from `x`).
 * `kwargs` : Optional arguments to pass in function `kde` of `KernelDensity.jl`.
 
-The function is a wrapper (with `predict` function) of the univariate KDE 
-function `kde` of package `KernelDebsity.jl`
+The function is a wrapper of the univariate KDE function `kde` of 
+package `KernelDebsity.jl`.  Function `kde1` has a `predict` function.
 
 ## References 
 https://github.com/JuliaStats/KernelDensity.jl
