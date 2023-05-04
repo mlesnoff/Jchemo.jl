@@ -60,7 +60,7 @@ function lda(X, y; prior = "unif")
     lev = z.lev
     nlev = length(lev)
     res = matW(X, y)
-    res.W .= res.W * n / (n - nlev) # Unbiased estimate
+    res.W .= res.W * n / (n - nlev) # unbiased estimate
     ni = res.ni
     if isequal(prior, "unif")
         wprior = ones(nlev) / nlev
