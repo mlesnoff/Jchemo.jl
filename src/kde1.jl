@@ -5,10 +5,9 @@ struct Kde1
 end
 
 """
-    kde1(x; npoints = 2^8, kwargs...)
+    kde1(x; kwargs...)
 Univariate kernel density estimation (KDE).
 * `x` : Univariate data.
-* `npoints` : Nb. points for which density is estimated (from `x`).
 * `kwargs` : Optional arguments to pass in function `kde` of `KernelDensity.jl`.
 
 The function is a wrapper of the univariate KDE function `kde` of 
@@ -25,11 +24,11 @@ n = 10^4
 x = randn(n)
 lims = (minimum(x), maximum(x))
 #lims = (-10, 10)
-m = 2^3
+k = 2^3
 bw = .1
-fm = kde1(x; npoints = m, 
-    bandwidth = bw,    # default: Silverman's rule
-    boundary = lims    # default: See KernelDensity
+fm = kde1(x; npoints = k, 
+    bandwidth = bw,     # default: Silverman's rule
+    #boundary = lims    # default: See KernelDensity
     ) ;
 fm.x
 diff(fm.x)
@@ -54,9 +53,9 @@ n = 10^3
 x = randn(n)
 lims = (minimum(x), maximum(x))
 #lims = (-6, 6)
-m = 2^8
+k = 2^8
 bw = .1
-fm = kde1(x; npoints = m, 
+fm = kde1(x; npoints = k, 
     bandwidth = bw,         # Default = Silverman's rule
     boundary = lims
     ) ;
@@ -69,8 +68,8 @@ lines!(ax, fm.x, fm.density;
 f
 ```
 """ 
-function kde1(x; npoints = 2^8, kwargs...)
-    fm = KernelDensity.kde(vec(x); npoints = npoints, kwargs...)
+function kde1(x; kwargs...)
+    fm = KernelDensity.kde(vec(x); kwargs...)
     Kde1(fm, fm.x, fm.density)
 end
 
