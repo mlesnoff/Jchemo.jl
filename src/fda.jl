@@ -106,7 +106,8 @@ function fda!(X::Matrix, y; nlv, pseudo = false, scal = false)
     res.W .= res.W * n / (n - nlev)
     zres = matB(X, y)
     if !pseudo 
-        Winv = LinearAlgebra.inv!(cholesky!(Hermitian(res.W)))
+        ## Inplace! was removed due to side effect on res.W 
+        Winv = LinearAlgebra.inv(cholesky(Hermitian(res.W))) 
     else 
         Winv = pinv(res.W)
     end
