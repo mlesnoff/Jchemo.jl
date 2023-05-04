@@ -40,15 +40,15 @@ dstot = sum(ds)
 dsn = ds / dstot 
 sum(dsn)
 ## Standardization to a uniform distribution
-## ("dense" areas > 1) 
+## (if > 1 ==> "dense" areas) 
 mu_unif = mean(ds)
 ds / mu_unif 
 
 ## Prediction
 xnew = [-200; -100; -1; 0; 1; 200]
-dnew = Jchemo.predict(fm, xnew).pred
-dnew / dstot 
-dnew / mu_unif 
+pred = Jchemo.predict(fm, xnew).pred    # densities
+pred / dstot 
+pred / mu_unif 
 
 n = 10^3 
 x = randn(n)
