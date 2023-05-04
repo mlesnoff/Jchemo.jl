@@ -33,21 +33,21 @@ fm = kde1(x; npoints = m,
     ) ;
 fm.x
 diff(fm.x)
-d = fm.density    # same scale as ':pdf' in Makie.hist
-sum(d * diff(fm.x)[1])  # = 1
+ds = fm.density    # densities with same scale as ':pdf' in Makie.hist
+sum(ds * diff(fm.x)[1])  # = 1
 ## Normalization to sum to 1
-dtot = sum(d)
-dn = d / dtot 
-sum(dn)
+dstot = sum(ds)
+dsn = ds / dstot 
+sum(dsn)
 ## Standardization to a uniform distribution
 ## ("dense" areas > 1) 
-mu_unif = mean(d)
-d / mu_unif 
+mu_unif = mean(ds)
+ds / mu_unif 
 
 ## Prediction
 xnew = [-200; -100; -1; 0; 1; 200]
 dnew = Jchemo.predict(fm, xnew).pred
-dnew / dtot 
+dnew / dstot 
 dnew / mu_unif 
 
 n = 10^3 
