@@ -33,6 +33,7 @@ include("dmnorm.jl")
 
 # Exploratory
 include("fda.jl")     # Here since ::Fda called in pcasvd
+include("fdasvd.jl")     
 include("pcasvd.jl")
 include("pcaeigen.jl")
 include("kpca.jl")
