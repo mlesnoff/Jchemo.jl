@@ -12,7 +12,7 @@
     - Code improvement.
 
 - Breaking changes
-    - **dens**: removed and replaced by **kde1**.
+    - **dens**: removed and replaced by **dmkern**.
 
 ### *Version 0.1.19*
 
