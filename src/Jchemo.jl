@@ -28,8 +28,10 @@ include("plotsp.jl")
 include("plotxy.jl")
 include("preprocessing.jl") 
 include("rmgap.jl")
-include("kde1.jl")
+
+# Distributions
 include("dmnorm.jl")
+include("kdem.jl")
 
 # Exploratory
 include("fda.jl")     # Here since ::Fda called in pcasvd
@@ -198,8 +200,8 @@ export
     vcatdf,
     vcol, vrow,
     # Distributions
-    kde1,
     dmnorm, dmnorm!,
+    kdem,
     # Pre-processing
     detrend, detrend!, 
     fdif, fdif!,
