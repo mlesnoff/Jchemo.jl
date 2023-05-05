@@ -46,7 +46,7 @@ n = nro(X)
 tab(y) 
 
 nlv = 2
-fmda = fdasvd(X, y; nlv = nlv) ;
+fmda = fda(X, y; nlv = nlv) ;
 pnames(fmda)
 T = fmda.T
 head(T)
