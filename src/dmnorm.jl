@@ -17,51 +17,29 @@ Compute normal probability density for multivariate data.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/iris.jld2") 
+using JLD2, CairoMakie
+
+using JchemoData
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "iris.jld2") 
 @load db dat
 pnames(dat)
-X = dat.X 
-summ(X)
-tab(dat.X.species)
 
-## Studying of the Sepal two-dimensionnal 
-## distribution of the class "Setosa"
-Xtrain = Matrix(X[1:40, 1:2])
-Xtest = Matrix(X[41:50, 1:2])
+X = dat.X[:, 1:4] 
+y = dat.X[:, 5]
+n = nro(X)
+tab(y) 
 
-fm = dmnorm(Xtrain) ;
-fm.mu
-fm.Uinv
-fm.detS
-Jchemo.predict(fm, Xtest).pred    # densities
+nlv = 2
+fmda = fda(X, y; nlv = nlv) ;
+pnames(fmda)
+T = fmda.T
+head(T)
+n, p = size(T)
 
-mu = colmean(Xtrain)
-S = cov(Xtrain)
-fm = dmnorm(; mu = mu, S = S)
-fm.Uinv
-fm.detS
+####  Probability density in the FDA score space (2D)
 
-k = 50
-x = Xtrain[:, 1]
-y = Xtrain[:, 2]
-x1 = range(.9 * minimum(x), 1.1 * maximum(x); length = k) 
-x2 = range(.9 * minimum(y), 1.1 * maximum(y); length = k) 
-grid = reduce(hcat, mpar(x1 = x1, x2 = x2))
-pred_grid = Jchemo.predict(fm, grid).pred    # densities
-pred = Jchemo.predict(fm, Xtest).pred        # densities
-f = Figure(resolution = (600, 400))
-ax = Axis(f[1, 1]; title = "Dmnorm - Setosa",
-    xlabel = "Sepal length", ylabel = "Sepal width") 
-co = contour!(ax, grid[:, 1], grid[:, 2], vec(pred_grid); levels = 10)
-Colorbar(f[1, 2], co; label = "Density")
-## Or:
-#contour!(ax, grid[:, 1], grid[:, 2], vec(pred_grid))
-scatter!(ax, Xtest[:, 1], Xtest[:, 2], vec(pred),
-    color = :red)
-#xlims!(ax, 2, 6) ;ylims!(ax, 2, 6)
-f
+
 ```
 """ 
 function dmnorm(X = nothing; mu = nothing, S = nothing)
