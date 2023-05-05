@@ -1,7 +1,7 @@
 struct Dmnorm
     mu
     Uinv 
-    det
+    detS
 end
 
 """
@@ -34,14 +34,14 @@ Xtest = Matrix(X[41:50, 1:2])
 fm = dmnorm(Xtrain) ;
 fm.mu
 fm.Uinv
-fm.det
+fm.detS
 Jchemo.predict(fm, Xtest).pred    # densities
 
 mu = colmean(Xtrain)
 S = cov(Xtrain)
 fm = dmnorm(; mu = mu, S = S)
 fm.Uinv
-fm.det
+fm.detS
 
 k = 50
 x = Xtrain[:, 1]
@@ -78,13 +78,13 @@ function dmnorm!(X = nothing; mu = nothing, S = nothing)
         S = cov(X)
     end
     U = cholesky!(Hermitian(S)).U # This modifies S only if S is provided
-    zdet = det(U)^2  
-    zdet == 0 ? zdet = 1e-20 : nothing
+    detS = det(U)^2  
+    detS == 0 ? detS = 1e-20 : nothing
     Uinv = LinearAlgebra.inv!(U)
     #cholesky!(S)
     #U = sqrt(diag(diag(S), nrow = p))
     #Uinv = solve(diag(diag(S), nrow = p))
-    Dmnorm(mu, Uinv, zdet)
+    Dmnorm(mu, Uinv, detS)
 end
 
 function predict(object::Dmnorm, X)
@@ -92,7 +92,7 @@ function predict(object::Dmnorm, X)
     p = size(X, 2)
     mu = reshape(object.mu, 1, length(object.mu))
     d = mahsqchol(X, mu, object.Uinv)
-    ds = (2 * pi)^(-p / 2) * (1 / sqrt(object.det)) * exp.(-.5 * d)
+    ds = (2 * pi)^(-p / 2) * (1 / sqrt(object.detS)) * exp.(-.5 * d)
     (pred = ds,)
 end
 
