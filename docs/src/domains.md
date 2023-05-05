@@ -186,7 +186,7 @@
 ## DISTRIBUTIONS
 
 - **dmnorm** Normal probability density estimation
-- **dmkern** Kernel density estimation (KDE)
+- **dmkern** Gaussian kernel density estimation (KDE)
 - **pval** Compute p-value(s) for a distribution, a vector or an ECDF
 - **out** Return if elements of a vector are strictly outside of a given range
 
