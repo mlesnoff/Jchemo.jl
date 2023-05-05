@@ -24,7 +24,7 @@ function kdem(X; H = nothing, h = nothing, a = .5)
     Hinv = inv(H)
     detH = det(H)
     detH == 0 ? detH = 1e-20 : nothing
-    (X, H, Hinv, detH)
+    Kdem(X, H, Hinv, detH)
 end
 
 function predict(object::Kdem, X)
@@ -32,7 +32,7 @@ function predict(object::Kdem, X)
     n, p = size(object.X)
     m = nro(X)
     pred = similar(X, m, 1)
-    M = similar(X)
+    M = similar(object.X)
     @inbounds for i = 1:m
         M .= (vrow(X, i:i) .- object.X) * object.Hinv
         sum2 = rowsum(M.^2)
