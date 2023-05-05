@@ -13,7 +13,7 @@ Gaussian kernel density estimation (KDE).
 * `a` : Constant for the Scott's rule (default bandwith), see thereafter.
 
 Estimation of the probability density of `X` (column space) by non parametric
-Gaussian kernel. 
+Gaussian kernels. 
 
 Data `X` can be univariate (p = 1) or multivariate (p > 1). In the last case,
 function `dmkern` computes a multiplicative kernel such as in Scott & Sain 2005 Eq.19,
