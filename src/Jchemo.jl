@@ -8,7 +8,6 @@ using DataFrames
 using Distances
 using ImageFiltering     # convolutions in preprocessing (mavg, savgol)
 using Interpolations
-using KernelDensity
 using LinearAlgebra
 using Makie
 using NearestNeighbors
