@@ -6,7 +6,7 @@ struct Dmkern
 end
 
 """
-    dmkern(X; H = nothing, a = .5)
+    dmkern(X; h = nothing, a = 1)
 Gaussian kernel density estimation (KDE).
 * `X` : X-data (n, p).
 * `h` : Define the bandwith, see examples
@@ -18,8 +18,11 @@ Gaussian kernel.
 Data `X` can be univariate (p = 1) or multivariate (p > 1). In the last case,
 function `dmkern` computes a multiplicative kernel such as in Scott & Sain 2005 Eq.19,
 and the internal bandwidth matrix `H` is diagonal (see the code).
-**Note:  `H` in the code is often noted "H^(1/2)" in the litterature, 
-e.g. https://en.wikipedia.org/wiki/Multivariate_kernel_density_estimation.
+**Note:  `H` in the code is often noted "H^(1/2)" in the litterature (e.g. Wikipedia).
+
+The default bandwith is computed by:
+* `h` = `a` * n^(-1 / (p + 4)) * colstd(`X`)
+(`a` = 1 in Scott & Sain 2005).
 
 ## References 
 Scott, D.W., Sain, S.R., 2005. 9 - Multidimensional Density Estimation, 
@@ -29,70 +32,109 @@ https://doi.org/10.1016/S0169-7161(04)24009-3
 
 ## Examples
 ```julia
-using CairoMakie
+using CairoMakie, LinearAlgebra
 
-n = 10^4
-x = randn(n)
-lims = (minimum(x), maximum(x))
-#lims = (-10, 10)
-k = 2^3
-bw = .1
-fm = kde1(x; npoints = k, 
-    bandwidth = bw,     # default: Silverman's rule
-    #boundary = lims    # default: See KernelDensity
-    ) ;
-fm.x
-diff(fm.x)
-ds = fm.density    # densities with same scale as ':pdf' in Makie.hist
-sum(ds * diff(fm.x)[1])  # = 1
-## Normalization to sum to 1
-dstot = sum(ds)
-dsn = ds / dstot 
-sum(dsn)
-## Standardization to a uniform distribution
-## (if > 1 ==> "dense" areas) 
-mu_unif = mean(ds)
-ds / mu_unif 
+using JchemoData
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "iris.jld2") 
+@load db dat
+pnames(dat)
 
-## Prediction
-xnew = [-200; -100; -1; 0; 1; 200]
-pred = Jchemo.predict(fm, xnew).pred    # densities
-pred / dstot 
-pred / mu_unif 
+X = dat.X[:, 1:4] 
+y = dat.X[:, 5]
+n = nro(X)
+tab(y) 
 
-n = 10^3 
-x = randn(n)
-lims = (minimum(x), maximum(x))
-#lims = (-6, 6)
-k = 2^8
-bw = .1
-fm = kde1(x; npoints = k, 
-    bandwidth = bw,         # Default = Silverman's rule
-    boundary = lims
-    ) ;
-f = Figure(resolution = (500, 350))
-ax = Axis(f[1, 1];
-    xlabel = "x", ylabel = "Density")
+nlv = 2
+fmda = fdasvd(X, y; nlv = nlv) ;
+pnames(fmda)
+T = fmda.T
+head(T)
+n, p = size(T)
+
+####  Probability density in the FDA score space (2D)
+
+fm = Jchemo.dmkern(T) ;
+pnames(fm)
+fm.H
+u = [1; 4; 150]
+Jchemo.predict(fm, T[u, :]).pred
+
+h = .3
+fm = Jchemo.dmkern(T; h = h) ;
+fm.H
+Jchemo.predict(fm, T[u, :]).pred
+
+h = [.3; .1]
+fm = dmkern(T; h = h) ;
+fm.H
+Jchemo.predict(fm, T[u, :]).pred
+
+k = 2^7
+lims = [(minimum(T[:, j]), maximum(T[:, j])) for j = 1:nlv]
+x1 = LinRange(lims[1][1], lims[1][2], k)
+x2 = LinRange(lims[2][1], lims[2][2], k)
+z = mpar(x1 = x1, x2 = x2)
+grid = reduce(hcat, z)
+m = nro(grid)
+fm = dmkern(T) ;
+#fm = dmkern(T; a = .5) ;
+#fm = dmkern(T; h = .3) ;
+res = Jchemo.predict(fm, grid) ;
+pred_grid = vec(res.pred)
+f = Figure(resolution = (600, 400))
+ax = Axis(f[1, 1]; title = "Density for FDA scores (Iris)",
+    xlabel = "Comp1", ylabel = "Comp2")
+co = contour!(ax, grid[:, 1], grid[:, 2], pred_grid; levels = 10)
+Colorbar(f[1, 2], co; label = "Density")
+scatter!(ax, T[:, 1], T[:, 2],
+    color = :red, markersize = 5)
+#xlims!(ax, -15, 15) ;ylims!(ax, -15, 15)
+f
+
+## Univariate 
+x = T[:, 1]
+fm = dmkern(x) ;
+#fm = dmkern(x; a = .5) ;
+#fm = dmkern(x; h = .3) ;
+pred = Jchemo.predict(fm, x).pred 
+f = Figure()
+ax = Axis(f[1, 1])
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
-lines!(ax, fm.x, fm.density;
+scatter!(ax, x, vec(pred);
     color = :red)
+f
+
+x = T[:, 1]
+k = 2^8
+lims = [minimum(x), maximum(x)]
+#delta = 5 ; lims = [minimum(x) - delta, maximum(x) + delta]
+grid = LinRange(lims[1], lims[2], k)
+fm = dmkern(x) ;
+#fm = dmkern(x; a = .5) ;
+#fm = dmkern(x; h = .3) ;
+pred_grid = Jchemo.predict(fm, grid).pred 
+f = Figure()
+ax = Axis(f[1, 1])
+hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
+lines!(ax, grid, vec(pred_grid); color = :red)
 f
 ```
 """ 
-function dmkern(X; H = nothing, a = .5)
+function dmkern(X; h = nothing, a = 1)
     X = ensure_mat(X)
     n, p = size(X)
-    ## Case where n = 1
-    ## (ad'hoc for discrimination functions only)
+    ## Particular case where n = 1
+    ## (ad'hoc code for discrimination functions only)
     if n == 1
         H = diagm(repeat([a * n^(-1/(p + 4))], p))
     end
     ## End
-    if isnothing(H)
+    if isnothing(h)
         h = a * n^(-1 / (p + 4)) * colstd(X)      # a = .9, 1.06
         H = diagm(h)
     else 
-        isa(H, Real) ? H = diagm(repeat([H], p)) : nothing
+        isa(h, Real) ? H = diagm(repeat([h], p)) : H = diagm(h)
     end
     Hinv = inv(H)
     detH = det(H)
