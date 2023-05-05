@@ -120,14 +120,10 @@ function dmnorm!(X = nothing; mu = nothing, S = nothing)
     U = cholesky!(Hermitian(S)).U # This modifies S only if S is provided
     detS = det(U)^2  
     detS == 0 ? detS = 1e-20 : nothing
-    #Uinv = LinearAlgebra.inv!(U)
     LinearAlgebra.inv!(U)
-    
     #cholesky!(S)
     #U = sqrt(diag(diag(S), nrow = p))
     #Uinv = solve(diag(diag(S), nrow = p))
-    
-    #Dmnorm(mu, Uinv, detS)
     Dmnorm(mu, U, detS)
 end
 
