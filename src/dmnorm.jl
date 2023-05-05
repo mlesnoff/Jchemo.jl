@@ -6,14 +6,16 @@ end
 
 """
     dmnorm(X = nothing; mu = nothing, S = nothing)
-Compute normal probability density for multivariate data.
-* `X` : X-data used to estimate the mean and 
-    the covariance matrix of the population. 
-    If `nothing`, `mu` and `S` must be provided.
+Normal probability density estimation.
+* `X` : X-data (n, p) used to estimate the mean and 
+    the covariance matrix. If `nothing`, `mu` and `S` 
+    must be provided.
 * `mu` : Mean vector of the normal distribution. 
     If `nothing`, `mu` is computed by the column-means of `X`.
 * `S` : Covariance matrix of the normal distribution.
     If `nothing`, `S` is computed by cov(`X`).
+
+Data `X` can be univariate (p = 1) or multivariate (p > 1). See examples.
 
 ## Examples
 ```julia
@@ -129,6 +131,12 @@ function dmnorm!(X = nothing; mu = nothing, S = nothing)
     Dmnorm(mu, U, detS)
 end
 
+"""
+    predict(object::Dmnorm, x)
+Compute predictions from a fitted model.
+* `object` : The fitted model.
+* `x` : Data (vector) for which predictions are computed.
+""" 
 function predict(object::Dmnorm, X)
     X = ensure_mat(X)
     p = size(X, 2)
