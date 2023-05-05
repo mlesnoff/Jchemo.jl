@@ -30,7 +30,7 @@ include("rmgap.jl")
 
 # Distributions
 include("dmnorm.jl")
-include("kdem.jl")
+include("dmkern.jl")
 
 # Exploratory
 include("fda.jl")     # Here since ::Fda called in pcasvd
@@ -200,7 +200,7 @@ export
     vcol, vrow,
     # Distributions
     dmnorm, dmnorm!,
-    kdem,
+    dmkern,
     # Pre-processing
     detrend, detrend!, 
     fdif, fdif!,

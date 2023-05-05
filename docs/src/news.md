@@ -3,7 +3,7 @@
 ### *Version 0.1.20*
 
 - News
-    - **kdem**: Multivariate kernel density estimation.
+    - **dmkern**: Multivariate kernel density estimation.
     - **out**: Return if elements of a vector are strictly outside of a given range.
     - **pval**: Compute p-value(s) for a distribution, an ECDF or a vector.
 

@@ -185,8 +185,8 @@
 
 ## DISTRIBUTIONS
 
-- **dmnorm** Compute normal probability density for multivariate data
-- **kdem** Multivariate kernel density estimation (KDE)
+- **dmnorm** Compute normal probability density
+- **dmkern** Kernel density estimation (KDE)
 - **pval** Compute p-value(s) for a distribution, a vector or an ECDF
 - **out** Return if elements of a vector are strictly outside of a given range
 

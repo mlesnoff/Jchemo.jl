@@ -1,11 +1,11 @@
-struct Kdem
+struct Dmkern
     X::Array{Float64}
     H::Array{Float64}
     Hinv::Array{Float64}
     detH::Float64
 end
 
-function kdem(X; H = nothing, h = nothing, a = .5)
+function dmkern(X; H = nothing, h = nothing, a = .5)
     X = ensure_mat(X)
     n, p = size(X)
     ## Case where n = 1 (for discrimination functions)
@@ -24,10 +24,10 @@ function kdem(X; H = nothing, h = nothing, a = .5)
     Hinv = inv(H)
     detH = det(H)
     detH == 0 ? detH = 1e-20 : nothing
-    Kdem(X, H, Hinv, detH)
+    Dmkern(X, H, Hinv, detH)
 end
 
-function predict(object::Kdem, X)
+function predict(object::Dmkern, X)
     X = ensure_mat(X)
     n, p = size(object.X)
     m = nro(X)
