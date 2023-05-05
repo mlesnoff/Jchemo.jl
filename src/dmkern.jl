@@ -32,7 +32,7 @@ https://doi.org/10.1016/S0169-7161(04)24009-3
 
 ## Examples
 ```julia
-using CairoMakie, LinearAlgebra
+using JLD2, CairoMakie
 
 using JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
