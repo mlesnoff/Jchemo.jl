@@ -1,7 +1,5 @@
 struct Kde1
     fm
-    x
-    density
 end
 
 """
@@ -70,7 +68,7 @@ f
 """ 
 function kde1(x; kwargs...)
     fm = KernelDensity.kde(vec(x); kwargs...)
-    Kde1(fm, fm.x, fm.density)
+    Kde1(fm)
 end
 
 """
