@@ -5,21 +5,20 @@ struct Dmkern
     detH::Float64
 end
 
-function dmkern(X; H = nothing, h = nothing, a = .5)
+function dmkern(X; H = nothing, a = .5)
     X = ensure_mat(X)
     n, p = size(X)
-    ## Case where n = 1 (for discrimination functions)
+    ## Case where n = 1
+    ## (ad'hoc for discrimination functions only)
     if n == 1
         H = diagm(repeat([a * n^(-1/(p + 4))], p))
     end
     ## End
     if isnothing(H)
-        if !isnothing(h)
-            isa(h, Real) ? H = diagm(repeat([h], p)) : H = diagm(h)
-        else
-            h = a * n^(-1 / (p + 4)) * colstd(X)      # a = .9, 1.06
-            H = diagm(h)
-        end
+        h = a * n^(-1 / (p + 4)) * colstd(X)      # a = .9, 1.06
+        H = diagm(h)
+    else 
+        isa(H, Real) ? H = diagm(repeat([H], p)) : nothing
     end
     Hinv = inv(H)
     detH = det(H)
