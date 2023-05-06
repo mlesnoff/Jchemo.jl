@@ -128,6 +128,7 @@ function predict(object::LwplsrAvg, X)
             metric = object.metric) 
     end
     listw = copy(res.d)
+    #@inbounds for i = 1:m
     Threads.@threads for i = 1:m
         w = wdist(res.d[i]; h = object.h)
         w[w .< object.tol] .= object.tol
