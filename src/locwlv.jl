@@ -14,6 +14,7 @@ function locwlv(Xtrain, Ytrain, X;
     nlv = max(0, minimum(nlv)):min(p, maximum(nlv))
     le_nlv = length(nlv)
     zpred = similar(Ytrain, m, q, le_nlv)
+    #@inbounds for i = 1:m
     Threads.@threads for i = 1:m
         verbose ? print(i, " ") : nothing
         s = listnn[i]
