@@ -70,10 +70,10 @@ fm = dmkern(T; h = h) ;
 fm.H
 Jchemo.predict(fm, T[u, :]).pred
 
-k = 2^7
+npoints = 2^7
 lims = [(minimum(T[:, j]), maximum(T[:, j])) for j = 1:nlv]
-x1 = LinRange(lims[1][1], lims[1][2], k)
-x2 = LinRange(lims[2][1], lims[2][2], k)
+x1 = LinRange(lims[1][1], lims[1][2], npoints)
+x2 = LinRange(lims[2][1], lims[2][2], npoints)
 z = mpar(x1 = x1, x2 = x2)
 grid = reduce(hcat, z)
 m = nro(grid)
@@ -106,10 +106,10 @@ scatter!(ax, x, vec(pred);
 f
 
 x = T[:, 1]
-k = 2^8
+npoints = 2^8
 lims = [minimum(x), maximum(x)]
 #delta = 5 ; lims = [minimum(x) - delta, maximum(x) + delta]
-grid = LinRange(lims[1], lims[2], k)
+grid = LinRange(lims[1], lims[2], npoints)
 fm = dmkern(x) ;
 #fm = dmkern(x; a = .5) ;
 #fm = dmkern(x; h = .3) ;
