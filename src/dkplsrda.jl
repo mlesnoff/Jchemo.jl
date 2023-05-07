@@ -22,7 +22,7 @@ is replaced by a non linear direct kernel PLS2 (DKPLS).
 ## Examples
 ```julia
 using JLD2
-
+using JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages.jld2") 
 @load db dat
@@ -50,6 +50,7 @@ pnames(res)
 res.posterior
 res.pred
 err(res.pred, ytest)
+confusion(res.pred, ytest).cnt
 
 Jchemo.transform(fm, Xtest; nlv = 2)
 
