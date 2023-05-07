@@ -5,7 +5,6 @@ struct Kernda
     ni::AbstractVector
 end
 
-
 """
     kdeda(X, y; prior = "unif", h = nothing, a = 1)
 Discriminant analysis using non-parametric kernel Gaussian density estimation.
