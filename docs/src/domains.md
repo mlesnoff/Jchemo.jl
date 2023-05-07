@@ -66,7 +66,7 @@
 - **plsrosa** ROSA *Liland et al. 2016*
 - **plssimp** SIMPLS *de Jong 1993*
 
-*Variants* 
+*Variants of regularization with latent variables* 
 - **cglsr** Conjugate gradient for the least squares normal equations (CGLS)
 - **rrr** Reduced rank regression (RRR)  (= redundancy analysis regression) 
 - **pcr** Principal components regression (SVD factorization)
@@ -76,9 +76,8 @@
 - **kplsr** Non linear kernel (KPLSR) *Rosipal & Trejo 2001*
 - **dkplsr** Direct non linear kernel (DKPLSR) *Bennett & Embrechts 2003*
 
-*Averaging and stacking*
-- **plsravg** Averaging and stacking PLSR models with different numbers of 
-    latent variables (LVs) (PLSR-AVG)
+*Averaging and stacking of PLSR models with different numbers of latent variables (LVs)*
+- **plsravg** PLSR-AVG
 
 *Multiblock*
 - **mbplsr** Multiblock PLSR (MBPLSR) - Fast version (PLSR on concatenated blocks)
@@ -122,23 +121,10 @@
 
 ## DISCRIMINATION ANALYSIS (DA)
 
-### One-Class Classification (OCC)
-
-*From a PCA or PLS score space*
-- **occsd** Score distance (SD)
-- **occod** Orthogonal distance (OD) 
-- **occsdod** Compromise between SD and OD 
-
-*Other methods*
-- **occknndis**: Global k-nearest neighbors distances.
-- **occlknndis**: Local k-nearest neighbors distances.
-- **occstah** Stahel-Donoho outlierness.
-- **stah** Compute Stahel-Donoho outlierness.
-
 ### DA based on predicted Y-dummy table
 
 - **mlrda** Y-dummy MLR predictions (MLR-DA)
-- **plsrda** Y-dummy PLSR predictions (PLSR-DA; = common "PLSDA")
+- **plsrda** Y-dummy PLSR predictions (PLSR-DA) = usual "PLSDA"
 - **plsrdaavg** Averaging PLSR-DA models with different numbers of 
     latent variables (LVs) (PLSR-DA-AVG)
 - **rrda** Y-dummy RR predictions (RR-DA)
@@ -148,18 +134,20 @@
 - **dkplsrda** Y-dummy DKPLSR predictions (DKPLSR-DA)
 - **krrda** Y-dummy KRR predictions (KRR-DA)
 
-### Probabilistic
+### Probabilistic DA
 
 - **lda** Linear discriminant analysis (LDA)
 - **qda** Quadratic discriminant analysis (QDA)
-- **plslda** LDA on PLS latent variables (PLS-LDA)
-- **plsqda** QDA on PLS latent variables (PLS-QDA)
-- **plsqdaavg** Averaging PLS-QDA models with different numbers of 
-    latent variables (LVs) (PLS-QDA-AVG)
+- **kdeda** Non-parametric kernel Gaussian density estimation (KDE-DA)
 
-*Averaging*
-- **plsldaavg** Averaging PLS-LDA models with different numbers of 
-    latent variables (LVs) (PLS-LDA-AVG)
+*On PLS latent variables*
+- **plslda** PLS-LDA
+- **plsqda** PLS-QDA
+- **plskdeda**  PLS-KDE-DA
+
+*Averaging PLS-LDA models with different numbers of latent variables (LVs)*
+- **plsldaavg** PLS-LDA-AVG
+- **plsldaavg** PLS-QDA-AVG
 
 ### **Local models**
 
@@ -182,6 +170,19 @@
 
 - **treeda_dt** Single tree
 - **rfda_dt** Random forest
+
+### One-Class Classification (OCC)
+
+*From a PCA or PLS score space*
+- **occsd** Score distance (SD)
+- **occod** Orthogonal distance (OD) 
+- **occsdod** Compromise between SD and OD 
+
+*Other methods*
+- **occknndis**: Global k-nearest neighbors distances.
+- **occlknndis**: Local k-nearest neighbors distances.
+- **occstah** Stahel-Donoho outlierness.
+- **stah** Compute Stahel-Donoho outlierness.
 
 ## DISTRIBUTIONS
 
