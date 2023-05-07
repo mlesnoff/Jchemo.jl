@@ -179,10 +179,10 @@
 - **occsdod** Compromise between SD and OD 
 
 *Other methods*
-- **occknndis**: Global k-nearest neighbors distances.
-- **occlknndis**: Local k-nearest neighbors distances.
-- **occstah** Stahel-Donoho outlierness.
-- **stah** Compute Stahel-Donoho outlierness.
+- **occknndis**: Global k-nearest neighbors distances
+- **occlknndis**: Local k-nearest neighbors distances
+- **occstah** Stahel-Donoho outlierness
+- **stah** Compute Stahel-Donoho outlierness
 
 ## DISTRIBUTIONS
 
@@ -252,8 +252,8 @@
 
 ### **Calibration transfer**
 
-- **calds** : Direct standardization (DS).
-- **calpds** : Piecewise direct standardization (PDS).
+- **calds** : Direct standardization (DS)
+- **calpds** : Piecewise direct standardization (PDS)
 - **eposvd** External parameter orthogonalization (EPO)
 
 ### **Pre-processing**
