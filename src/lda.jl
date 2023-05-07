@@ -46,7 +46,7 @@ println(typeof(fm))
 
 res = Jchemo.predict(fm, Xtest) ;
 pnames(res)
-res.ds
+res.dens
 res.posterior
 res.pred
 err(res.pred, ytest)
@@ -86,15 +86,15 @@ function predict(object::Lda, X)
     m = nro(X)
     lev = object.lev
     nlev = length(lev) 
-    ds = similar(X, m, nlev)
+    dens = similar(X, m, nlev)
     for i = 1:nlev
-        ds[:, i] .= vec(Jchemo.predict(object.fm[i], X).pred)
+        dens[:, i] .= vec(Jchemo.predict(object.fm[i], X).pred)
     end
-    A = object.wprior' .* ds
+    A = object.wprior' .* dens
     v = sum(A, dims = 2)
     posterior = scale(A', v)' # This could be replaced by code similar as in scale! 
     z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
     pred = reshape(replacebylev2(z, object.lev), m, 1)
-    (pred = pred, ds = ds, posterior = posterior)
+    (pred = pred, dens = dens, posterior = posterior)
 end
     
