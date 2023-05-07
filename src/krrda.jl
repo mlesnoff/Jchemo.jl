@@ -51,6 +51,7 @@ res = Jchemo.predict(fm, Xtest) ;
 pnames(res)
 res.pred
 err(res.pred, ytest)
+confusion(res.pred, ytest).cnt
 
 Jchemo.predict(fm, Xtest; lb = [.1; .01]).pred
 ```
