@@ -16,7 +16,6 @@ KDE-LDA on PLS latent variables (PLS-KDE-LDA).
 
 The principle is the same as functions `plslda` and `plsqda` except 
 that densities are estimated from `dmkern` instead of  `dmnorm`.
-Function plskdeda` uses function `kdeda`.
 
 ## Examples
 ```julia
