@@ -23,7 +23,7 @@ Functions such as **transform**, **predict**, **coef** and **summary** are avail
 Most of the functions of the package have a **help page** (providing an example), e.g.:
 
 ```julia
-?savgol
+?plskern
 ```
 
 **Examples** demonstrating **Jchemo.jl** are available in project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo), used for training only. **The datasets** of the examples are stored in package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl).
