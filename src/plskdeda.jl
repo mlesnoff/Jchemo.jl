@@ -10,16 +10,17 @@ KDE-LDA on PLS latent variables (PLS-KDE-LDA).
 * `prior` : Type of prior probabilities for class membership.
     Posible values are: "unif" (uniform), "prop" (proportional).
 * `h` : See `?dmkern`.
-* `h` : See `?dmkern`.
+* `a` : See `?dmkern`.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
 The principle is the same as functions `plslda` and `plsqda` except 
-that densities are estimated from `dmkern` instead of  `dmnorm`. 
+that densities are estimated from `dmkern` instead of  `dmnorm`.
+Function plskdeda` uses function `kdeda`.
 
 ## Examples
 ```julia
-using JLD2
+using JLD2, StatsBase
 using JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "iris.jld2") 
@@ -44,12 +45,7 @@ aggstat(Matrix(Xtrain), ytrain).X
 
 nlv = 2
 fm = plskdeda(Xtrain, ytrain ; nlv = nlv) ;
-pred = Jchemo.predict(fm, Xtest).pred
-tab(pred)
-err(pred, ytest)
-
-nlv = 2
-fm = plsqda(Xtrain, ytrain ; nlv = nlv) ;
+#fm = plskdeda(Xtrain, ytrain ; nlv = nlv, a = .1) ;
 pred = Jchemo.predict(fm, Xtest).pred
 tab(pred)
 err(pred, ytest)

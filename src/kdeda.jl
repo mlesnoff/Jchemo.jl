@@ -16,8 +16,8 @@ Discriminant analysis using non-parametric kernel Gaussian
 * `h` : See `?dmkern`.
 * `h` : See `?dmkern`.
 
-The principle is the same as function `qda` except that densities
-are estimated from  `dmkern` instead of  `dmnorm`. 
+The principle is the same as functions `lda` and `qda` except 
+that densities are estimated from `dmkern` instead of  `dmnorm`. 
 
 ## Examples
 ```julia
