@@ -63,6 +63,7 @@ fm = lwmlrda_s(Xtrain, ytrain; nlv = 20, reduc = "pca",
     metric = "eucl", h = 2, k = 100) ;
 pred = Jchemo.predict(fm, Xtest).pred
 err(pred, ytest)
+confusion(pred, ytest).cnt
 
 fm = lwmlrda_s(Xtrain, ytrain; nlv = 20, reduc = "dkpls", 
     metric = "eucl", h = 2, k = 100, gamma = .01) ;
