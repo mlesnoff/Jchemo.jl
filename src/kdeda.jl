@@ -7,7 +7,8 @@ end
 
 """
     kdeda(X, y; prior = "unif", h = nothing, a = 1)
-Discriminant analysis using non-parametric kernel Gaussian density estimation.
+Discriminant analysis using non-parametric kernel Gaussian 
+    density estimation (KDE-DA).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `prior` : Type of prior probabilities for class membership.
