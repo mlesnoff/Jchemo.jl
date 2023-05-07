@@ -179,10 +179,10 @@
 - **occsdod** Compromise between SD and OD 
 
 *Other methods*
+- **stah** Compute Stahel-Donoho outlierness
+- **occstah** Stahel-Donoho outlierness
 - **occknndis**: Global k-nearest neighbors distances
 - **occlknndis**: Local k-nearest neighbors distances
-- **occstah** Stahel-Donoho outlierness
-- **stah** Compute Stahel-Donoho outlierness
 
 ## DISTRIBUTIONS
 
