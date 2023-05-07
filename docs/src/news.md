@@ -2,8 +2,13 @@
 
 ### *Version 0.1.21*
 
+- News
+
 - Modifications
     - Code improvement.
+
+- Breaking changes
+    - **lda**, **qda**: returned output 'ds' renamed to 'dens'.
 
 
 ### *Version 0.1.20*
