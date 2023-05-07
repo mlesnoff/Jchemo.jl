@@ -20,43 +20,32 @@ Function plskdeda` uses function `kdeda`.
 
 ## Examples
 ```julia
-using JLD2, StatsBase
+using JLD2
 using JchemoData
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "iris.jld2") 
+using JchemoData
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/forages.jld2")
 @load db dat
 pnames(dat)
-summ(dat.X)
-  
-X = dat.X[:, 1:4] 
-y = dat.X[:, 5]
-n = nro(X)
-  
-ntrain = 120
-s = sample(1:n, ntrain; replace = false) 
-Xtrain = X[s, :]
-ytrain = y[s]
-Xtest = rmrow(X, s)
-ytest = rmrow(y, s)
+
+X = dat.X
+Y = dat.Y
+s = Bool.(Y.test)
+Xtrain = rmrow(X, s)
+ytrain = rmrow(Y.typ, s)
+Xtest = X[s, :]
+ytest = Y.typ[s]
 
 tab(ytrain)
 tab(ytest)
-aggstat(Matrix(Xtrain), ytrain).X
 
-nlv = 2
-fm = plskdeda(Xtrain, ytrain ; nlv = nlv) ;
-#fm = plskdeda(Xtrain, ytrain ; nlv = nlv, a = .1) ;
-pred = Jchemo.predict(fm, Xtest).pred
-tab(pred)
-err(pred, ytest)
-
-nlv = 2
+nlv = 20
 fm = plskdeda(Xtrain, ytrain; nlv = nlv) ;
-Jchemo.predict(fm, Xtest).posterior
-Jchemo.predict(fm, Xtest; nlv = 1).posterior
-nlv = 1:2
-Jchemo.predict(fm, Xtest; nlv = nlv).posterior[1]
-Jchemo.predict(fm, Xtest; nlv = nlv).posterior[2]
+#fm = plskdeda(Xtrain, ytrain; nlv = nlv, a = .5) ;
+res = Jchemo.predict(fm, Xtest) ;
+pred = res.pred
+err(pred, ytest)
+confusion(pred, ytest).cnt
 ```
 """ 
 function plskdeda(X, y, weights = ones(nro(X)); nlv, 
