@@ -49,6 +49,7 @@ res.dens
 res.posterior
 res.pred
 err(res.pred, ytest)
+confusion(res.pred, ytest).cnt
 ```
 """ 
 function qda(X, y; prior = "unif")
