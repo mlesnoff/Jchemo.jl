@@ -71,6 +71,7 @@ fm = lwmlrda_s(Xtrain, ytrain; nlv0 = 20,
     nlv = 10) ;
 pred = Jchemo.predict(fm, Xtest).pred
 err(pred, ytest)
+confusion(pred, ytest).cnt
 ```
 """ 
 function lwplsrda_s(X, y; nlv0, reduc = "pls", 
