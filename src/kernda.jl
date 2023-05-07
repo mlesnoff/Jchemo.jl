@@ -8,7 +8,7 @@ end
 
 """
     kernda(X, y; prior = "unif", h = nothing, a = 1)
-Discriminant analysis  based on non-parametric kernel Gaussian density estimation.
+Discriminant analysis using non-parametric kernel Gaussian density estimation.
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `prior` : Type of prior probabilities for class membership.
