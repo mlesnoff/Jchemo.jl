@@ -54,6 +54,7 @@ res = Jchemo.predict(fm, Xtest) ;
 pnames(res)
 res.pred
 err(res.pred, ytest)
+confusion(res.pred, ytest).cnt
 ```
 """ 
 function plsrdaavg(X, y, weights = ones(nro(X)); nlv,

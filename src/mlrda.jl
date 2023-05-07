@@ -53,6 +53,7 @@ pnames(res)
 res.posterior
 res.pred
 err(res.pred, ytest)
+confusion(res.pred, ytest).cnt
 ```
 """ 
 function mlrda(X, y, weights = ones(nro(X)))
