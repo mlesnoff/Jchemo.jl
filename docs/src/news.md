@@ -3,7 +3,9 @@
 ### *Version 0.1.21*
 
 - News
-    - **kdeda**: Discriminant analysis using non-parametric kernel Gaussian density estimation.
+    - **kdeda**: Discriminant analysis using non-parametric kernel Gaussian 
+        density estimation (KDE-DA).
+    - **plskdeda**: PLS-KDE-DA 
 
 - Modifications
     - Code improvement.
