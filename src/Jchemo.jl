@@ -104,17 +104,20 @@ include("baggr_util.jl")
 include("treer_dt.jl")
 
 # Discrimination 
-include("rrda.jl")
 include("lda.jl") ; include("qda.jl")
+include("kernda.jl")
 include("mlrda.jl")
-include("occsd.jl") ; include("occod.jl") ; ; include("occsdod.jl")
-include("occstah.jl") ; include("stah.jl")
-include("occknndis.jl") ; include("occlknndis.jl")
+include("rrda.jl")
 include("plsrda.jl") 
 include("plslda.jl") ; include("plsqda.jl")
+include("plskernda.jl")
 include("plsrdaavg.jl") ; include("plsldaavg.jl") ; include("plsqdaavg.jl") 
 include("krrda.jl")
 include("kplsrda.jl") ; include("dkplsrda.jl")
+
+include("occsd.jl") ; include("occod.jl") ; ; include("occsdod.jl")
+include("occstah.jl") ; include("stah.jl")
+include("occknndis.jl") ; include("occlknndis.jl")
 
 include("cplsravg.jl")  # Here since call ::PlsrDa
 
@@ -278,14 +281,14 @@ export
     fda, fda!, fdasvd, fdasvd!,
     mlrda,
     rrda, krrda,
-    lda, qda, 
+    lda, qda, kernda,
+    plsrda, kplsrda, dkplsrda,
+    plslda, plsqda, plskernda,
+    plsrdaavg, plsldaavg, plsqdaavg,
+    treeda_dt, rfda_dt,
     occsd, occod, occsdod,
     occstah, stah,
     occknndis, occlknndis,
-    plsrda, kplsrda, dkplsrda,
-    plslda, plsqda,
-    plsrdaavg, plsldaavg, plsqdaavg,
-    treeda_dt, rfda_dt,
     # Local Discrimination
     lwmlrda, lwmlrda_s,
     lwplsrda, lwplsrda_s,
