@@ -57,6 +57,7 @@ fm = lwmlrda(Ttrain, ytrain;
     metric = metric, h = h, k = k) ;
 res = Jchemo.predict(fm, Ttest) ;
 err(res.pred, ytest)
+confusion(res.pred, ytest).cnt
 
 res.listnn
 res.listd
