@@ -3,7 +3,7 @@
 ### *Version 0.1.21*
 
 - News
-    - **kernda**: Discriminant analysis using non-parametric kernel Gaussian density estimation.
+    - **kdeda**: Discriminant analysis using non-parametric kernel Gaussian density estimation.
 
 - Modifications
     - Code improvement.

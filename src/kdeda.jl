@@ -7,7 +7,7 @@ end
 
 
 """
-    kernda(X, y; prior = "unif", h = nothing, a = 1)
+    kdeda(X, y; prior = "unif", h = nothing, a = 1)
 Discriminant analysis using non-parametric kernel Gaussian density estimation.
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -44,8 +44,8 @@ tab(ytest)
 
 prior = "unif"
 #prior = "prop"
-fm = kernda(Xtrain, ytrain; prior = prior) ;
-#fm = kernda(Xtrain, ytrain; prior = prior, h = .1) ;
+fm = kdeda(Xtrain, ytrain; prior = prior) ;
+#fm = kdeda(Xtrain, ytrain; prior = prior, h = .1) ;
 pnames(fm)
 fm.fm[1].H
 
@@ -58,7 +58,7 @@ err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
 """ 
-function kernda(X, y; prior = "unif", h = nothing, a = 1)
+function kdeda(X, y; prior = "unif", h = nothing, a = 1)
     X = ensure_mat(X)
     lev = mlev(y)
     nlev = length(lev)

@@ -105,12 +105,12 @@ include("treer_dt.jl")
 
 # Discrimination 
 include("lda.jl") ; include("qda.jl")
-include("kernda.jl")
+include("kdeda.jl")
 include("mlrda.jl")
 include("rrda.jl")
 include("plsrda.jl") 
 include("plslda.jl") ; include("plsqda.jl")
-include("plskernda.jl")
+include("plskdeda.jl")
 include("plsrdaavg.jl") ; include("plsldaavg.jl") ; include("plsqdaavg.jl") 
 include("krrda.jl")
 include("kplsrda.jl") ; include("dkplsrda.jl")
@@ -281,9 +281,9 @@ export
     fda, fda!, fdasvd, fdasvd!,
     mlrda,
     rrda, krrda,
-    lda, qda, kernda,
+    lda, qda, kdeda,
     plsrda, kplsrda, dkplsrda,
-    plslda, plsqda, plskernda,
+    plslda, plsqda, plskdeda,
     plsrdaavg, plsldaavg, plsqdaavg,
     treeda_dt, rfda_dt,
     occsd, occod, occsdod,
