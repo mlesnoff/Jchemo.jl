@@ -45,6 +45,7 @@ tab(ytest)
 prior = "unif"
 #prior = "prop"
 fm = kdeda(Xtrain, ytrain; prior = prior) ;
+#fm = kdeda(Xtrain, ytrain; prior = prior, a = .5) ;
 #fm = kdeda(Xtrain, ytrain; prior = prior, h = .1) ;
 pnames(fm)
 fm.fm[1].H
