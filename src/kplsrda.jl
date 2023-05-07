@@ -44,6 +44,7 @@ pnames(res)
 res.posterior
 res.pred
 err(res.pred, ytest)
+confusion(res.pred, ytest).cnt
 
 Jchemo.coef(fm.fm)
 Jchemo.transform(fm.fm, Xtest)
