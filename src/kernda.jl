@@ -5,6 +5,59 @@ struct Kernda
     ni::AbstractVector
 end
 
+
+"""
+    kernda(X, y; prior = "unif", h = nothing, a = 1)
+Discriminant analysis  based on non-parametric kernel Gaussian density estimation.
+* `X` : X-data.
+* `y` : y-data (class membership).
+* `prior` : Type of prior probabilities for class membership.
+    Posible values are: "unif" (uniform), "prop" (proportional).
+* `h` : See `?dmkern`.
+* `h` : See `?dmkern`.
+
+The principle is the same as function `qda` except that densities
+are estimated from  `dmkern` instead of  `dmnorm`. 
+
+## Examples
+```julia
+using JchemoData, JLD2, StatsBase
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/iris.jld2") 
+@load db dat
+pnames(dat)
+summ(dat.X)
+
+X = dat.X[:, 1:4] 
+y = dat.X[:, 5]
+n = nro(X)
+
+ntrain = 120
+s = sample(1:n, ntrain; replace = false) 
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+tab(ytrain)
+tab(ytest)
+
+prior = "unif"
+#prior = "prop"
+fm = kernda(Xtrain, ytrain; prior = prior) ;
+#fm = kernda(Xtrain, ytrain; prior = prior, h = .1) ;
+pnames(fm)
+fm.fm[1].H
+
+res = Jchemo.predict(fm, Xtest) ;
+pnames(res)
+res.dens
+res.posterior
+res.pred
+err(res.pred, ytest)
+confusion(res.pred, ytest).cnt
+```
+""" 
 function kernda(X, y; prior = "unif", h = nothing, a = 1)
     X = ensure_mat(X)
     lev = mlev(y)
