@@ -29,7 +29,7 @@ are fitted instead of local MLR models.
 ## Examples
 ```julia
 using JLD2
-
+using JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages.jld2") 
 @load db dat

@@ -14,12 +14,13 @@ KDE-LDA on PLS latent variables (PLS-KDE-LDA).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-The principle is the same as function `plsqda` except that densities
-are estimated from  `dmkern` instead of  `dmnorm`. 
+The principle is the same as functions `plslda` and `plsqda` except 
+that densities are estimated from `dmkern` instead of  `dmnorm`. 
 
 ## Examples
 ```julia
-using JLD2, 
+using JLD2
+using JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "iris.jld2") 
 @load db dat
