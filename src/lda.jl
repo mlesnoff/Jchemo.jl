@@ -50,6 +50,7 @@ res.dens
 res.posterior
 res.pred
 err(res.pred, ytest)
+confusion(res.pred, ytest).cnt
 ```
 """ 
 function lda(X, y; prior = "unif")
