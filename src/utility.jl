@@ -1138,7 +1138,7 @@ end
 
 """
     summ(X; digits = 3)
-    summ(X, group; digits = 1)
+    summ(X, group; digits = 3)
 Summarize a dataset (or a variable).
 * `X` : A dataset (n, p).
 * `group` : A vector (n,) defing the groups.
@@ -1164,7 +1164,8 @@ function summ(X; digits = 3)
     (res = res, ntot = nro(X))
 end
 
-function summ(X, group; digits = 1)
+function summ(X, group; digits = 3)
+    group = vec(group)
     lev = mlev(group)
     for i in eachindex(lev)
         s = group .== lev[i]
