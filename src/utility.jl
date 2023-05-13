@@ -1140,6 +1140,7 @@ end
     summ(X; digits = 3)
     summ(X, group; digits = 1)
 Summarize a dataset (or a variable).
+* `X` : A dataset (n, p).
 * `group` : A vector (n,) defing the groups.
 * `digits` : Nb. digits in the outputs.
 
@@ -1166,8 +1167,8 @@ end
 function summ(X, group; digits = 1)
     lev = mlev(group)
     for i in eachindex(lev)
-        u = group .== lev[i]
-        res = summ(X[u, :]; digits = digits).res
+        s = group .== lev[i]
+        res = summ(X[s, :]; digits = digits).res
         println("Group: ", lev[i])
         println(res)
         println("") ; println("") 
