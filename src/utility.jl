@@ -795,7 +795,6 @@ end
     pval(d::Distribution, q)
     pval(x::Array, q)
     pval(e_cdf::ECDF, q)
-    pval(object::Kde1, q::Real)
 Compute p-value(s) for a distribution, an ECDF or vector.
 * `d` : A distribution computed from `Distribution.jl`.
 * `x` : Univariate data.
@@ -830,7 +829,7 @@ pval(d::Distribution, q) = Distributions.ccdf(d, q)
 
 pval(e_cdf::ECDF, q) = 1 .- e_cdf(q)
 
-function pval(x::Array, q)
+function pval(x::AbstractVector, q)
     pval(StatsBase.ecdf(x), q)
 end
 
