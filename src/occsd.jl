@@ -8,7 +8,7 @@ struct Occsd
 end
 
 """
-    occsd(object::Union{Pca, Plsr}; nlv = nothing,
+    occsd(object::Union{Pca, Kpca, Plsr}; nlv = nothing,
         typc = "mad", cri = 3, alpha = .025, kwargs...)
 One-class classification using PCA/PLS score distance (SD).
 
@@ -126,7 +126,7 @@ hlines!(ax, 1)
 f
 ```
 """ 
-function occsd(object::Union{Pca, Plsr}; nlv = nothing,
+function occsd(object::Union{Pca, Kpca, Plsr}; nlv = nothing,
         typc = "mad", alpha = .025, cri = 3, kwargs...)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
