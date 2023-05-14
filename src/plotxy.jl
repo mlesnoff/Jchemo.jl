@@ -76,7 +76,8 @@ plotxy(T[:, i:(i + 1)], year;
 
 plotxy(T[:, 1:2], year).lev
 
-## Add several layers
+## Adding several layers is possible
+## (same syntax as in Makie)
 A = rand(50, 2)
 f, ax = plotxy(A; xlabel = "x1", ylabel = "x2")
 ylims!(ax, -1, 2)
