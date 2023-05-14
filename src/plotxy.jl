@@ -74,7 +74,15 @@ plotxy(T[:, i:(i + 1)], year;
     xlabel = string("PC", i), ylabel = string("PC", i + 1),
     zeros = true, ellipse = true).f
 
-plotxy(T[:, 1], T[:, 2], year).lev
+plotxy(T[:, 1:2], year).lev
+
+## Add several layers
+A = rand(50, 2)
+f, ax = plotxy(A; xlabel = "x1", ylabel = "x2")
+ylims!(ax, -1, 2)
+hlines!(ax, 0.5; color = :red, linestyle = :dot)
+f
+
 ```
 """ 
 function plotxy(x::AbstractVector, y::AbstractVector; resolution = (600, 400), 
