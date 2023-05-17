@@ -8,7 +8,7 @@ end
 Direct standardization (DS) for calibration transfer of spectral data.
 * `Xt` : Target spectra (n, p).
 * `X` : Spectra to transfer to the target (n, p).
-* `fun` : Function used to fit the transfer model.  
+* `fun` : Function used as transfer model.  
 * `kwargs` : Optional arguments for `fun`.
 
 `Xt` and `X` must represent the same n standard samples.
