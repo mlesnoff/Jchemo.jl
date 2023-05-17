@@ -8,17 +8,17 @@ end
 Piecewise direct standardization (PDS) for calibration transfer of spectral data.
 * `Xt` : Target spectra, (n, p).
 * `X` : Spectra to transfer to the target, (n, p).
-* `fun` : Function used for fitting the transfer model.  
+* `fun` : Function used as transfer model.  
 * `m` : Half-window size (nb. points left/right to the target wavelength) 
 * `kwargs` : Optional arguments for `fun`.
 
 `Xt` and `X` must represent the same n standard samples.
 
-The objective is to transform spectra `X` to spectra as close 
-as possible as the target `Xt`. The principle of the method is to fit models 
-predicting `Xt` from `X.
+The objective is to transform spectra `X` to new spectra as close 
+as possible as the target `Xt`. DS method fits models (`fun`) 
+that predict `Xt` from `X`.
 
-To predict wavelength i in `Xt`, the window used in `X` is :
+The window used in `X` to predict wavelength "i" in `Xt` is:
 
 * i - m, i - m + 1, ..., i, ..., i + m - 1, i + m
 
