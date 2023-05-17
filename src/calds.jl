@@ -6,16 +6,16 @@ end
 """
     calds(Xt, X; fun = mlrpinv, kwargs...)
 Direct standardization (DS) for calibration transfer of spectral data.
-* `Xt` : Target spectra, (n, p).
-* `X` : Spectra to transfer to the target, (n, p).
-* `fun` : Function used for fitting the transfer model.  
+* `Xt` : Target spectra (n, p).
+* `X` : Spectra to transfer to the target (n, p).
+* `fun` : Function used to fit the transfer model.  
 * `kwargs` : Optional arguments for `fun`.
 
 `Xt` and `X` must represent the same n standard samples.
 
 The objective is to transform spectra `X` to spectra as close 
-as possible as the target `Xt`. The principle of the method is to fit models 
-predicting `Xt` from `X.
+as possible as the target `Xt`. DS method fits models (`fun`) 
+predicting `Xt` from `X`.
 
 ## References
 
