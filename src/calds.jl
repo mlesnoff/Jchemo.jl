@@ -13,9 +13,9 @@ Direct standardization (DS) for calibration transfer of spectral data.
 
 `Xt` and `X` must represent the same n standard samples.
 
-The objective is to transform spectra `X` to spectra as close 
+The objective is to transform spectra `X` to new spectra as close 
 as possible as the target `Xt`. DS method fits models (`fun`) 
-predicting `Xt` from `X`.
+that predict `Xt` from `X`.
 
 ## References
 
