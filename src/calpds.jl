@@ -15,8 +15,8 @@ Piecewise direct standardization (PDS) for calibration transfer of spectral data
 `Xt` and `X` must represent the same n standard samples.
 
 The objective is to transform spectra `X` to new spectra as close 
-as possible as the target `Xt`. DS method fits models (`fun`) 
-that predict `Xt` from `X`.
+as possible as the target `Xt`. Method PDS method fits models 
+(defined in `fun`) that predict `Xt` from `X`.
 
 The window used in `X` to predict wavelength "i" in `Xt` is:
 
@@ -65,7 +65,7 @@ axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-function calpds(Xt, X; fun = mlrpinv, m = 5, kwargs...)
+function calpds(X, Xt; fun = mlrpinv, m = 5, kwargs...)
     p = nco(Xt)
     fm = list(p)
     s = list(p)
