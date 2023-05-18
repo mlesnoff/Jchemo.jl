@@ -4,18 +4,18 @@ end
 
 
 """
-    calds(Xt, X; fun = mlrpinv, kwargs...)
+    calds(X, Xt; fun = mlrpinv, kwargs...)
 Direct standardization (DS) for calibration transfer of spectral data.
-* `Xt` : Target spectra (n, p).
 * `X` : Spectra to transfer to the target (n, p).
+* `Xt` : Target spectra (n, p).
 * `fun` : Function used as transfer model.  
 * `kwargs` : Optional arguments for `fun`.
 
 `Xt` and `X` must represent the same n standard samples.
 
 The objective is to transform spectra `X` to new spectra as close 
-as possible as the target `Xt`. DS method fits models (`fun`) 
-that predict `Xt` from `X`.
+as possible as the target `Xt`. Method DS fits a model 
+(defined in `fun`) that predicts `Xt` from `X`.
 
 ## References
 
@@ -33,17 +33,18 @@ pnames(dat)
 ## Target
 Xtcal = dat.X1cal
 Xtval = dat.X1val
-## To predict
+## To transfer
 Xcal = dat.X2cal
 Xval = dat.X2val
 
 n = nro(Xtcal)
 m = nro(Xtval)
 
-fm = calds(Xtcal, Xcal; fun = mlrpinv) ;
-#fm = calds(Xtcal, Xcal; fun = pcr, nlv = 15) ;
-#fm = calds(Xtcal, Xcal; fun = plskern, nlv = 15) ;
-pred = Jchemo.predict(fm, Xval).pred     # Transfered spectra
+fm = calds(Xcal, Xtcal; fun = mlrpinv) ;
+#fm = calds(Xcal, Xtcal; fun = pcr, nlv = 15) ;
+#fm = calds(Xcal, Xtcal; fun = plskern, nlv = 15) ;
+## Transfered spectra, expected to be close to Xtval
+pred = Jchemo.predict(fm, Xval).pred 
 
 i = 1
 f = Figure(resolution = (500, 300))
@@ -55,7 +56,7 @@ axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-function calds(Xt, X; fun = mlrpinv, kwargs...)
+function calds(X, Xt; fun = mlrpinv, kwargs...)
     fm = fun(X, Xt; kwargs...)
     CalDs(fm)
 end
