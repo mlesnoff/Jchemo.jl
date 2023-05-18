@@ -70,9 +70,11 @@ function calpds(X, Xt; fun = mlrpinv, m = 5, kwargs...)
     zm = repeat([m], p)
     zm[1:m] .= collect(1:m) .- 1
     zm[(p - m + 1):p] .= collect(m:-1:1) .- 1
+    if isa(fun, String)
+        fun = eval(Meta.parse(fun))
+    end  
     @inbounds for i = 1:p
         s[i] = collect((i - zm[i]):(i + zm[i]))
-        #fm[i] = fun(X[:, s[i]], Xt[:, i]; kwargs...)
         fm[i] = fun(vcol(X, s[i]), vcol(Xt, i); kwargs...)
     end
     CalPds(fm, s)
@@ -89,8 +91,8 @@ function predict(object::CalPds, X; kwargs...)
     X = ensure_mat(X)
     m, p = size(X)
     pred = similar(X, m, p)
-    for i = 1:p 
-        pred[:, i] .= predict(object.fm[i], X[:, object.s[i]]; 
+    @inbounds for i = 1:p 
+        pred[:, i] .= predict(object.fm[i], vcol(X, object.s[i]); 
             kwargs...).pred
     end
     (pred = pred,)
