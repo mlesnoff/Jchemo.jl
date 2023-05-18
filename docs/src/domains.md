@@ -109,7 +109,7 @@
 - **lwplsravg** kNN-LWPLSR-AVG 
 - **cplsravg** Clustered PLSR-AVG
 
-### **Trees** from DecisionTree.jl
+### **Trees** (wrappers to DecisionTree.jl)
 
 - **treer_dt** Single tree
 - **rfr_dt** Random forest
@@ -166,7 +166,7 @@
 - **lwplsldaavg** kNN-LWPLS-LDA-AVG
 - **lwplsqdaavg** kNN-LWPLS-QDA-AVG
 
-### **Trees** from DecisionTree.jl
+### **Trees** (wrappers to DecisionTree.jl)
 
 - **treeda_dt** Single tree
 - **rfda_dt** Random forest
