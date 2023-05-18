@@ -57,6 +57,9 @@ f
 ```
 """ 
 function calds(X, Xt; fun = mlrpinv, kwargs...)
+    if isa(fun, String)
+        fun = eval(Meta.parse(fun))
+    end  
     fm = fun(X, Xt; kwargs...)
     CalDs(fm)
 end
