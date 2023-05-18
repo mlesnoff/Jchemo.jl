@@ -5,6 +5,9 @@
 - Modifications
     - Code improvement.
 
+- Breaking changes
+    - **calds**, **calpds**: Order of arguments 'Xt' and 'X' were inverted
+        (required to be useable by **gridscore** etc.).
 
 ### *Version 0.1.21*
 
