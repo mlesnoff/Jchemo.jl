@@ -4,10 +4,10 @@ struct CalPds
 end
 
 """
-    calpds(Xt, X; fun = mlrpinv, m = 5, kwargs...)
+    calpds(X, Xt; fun = mlrpinv, m = 5, kwargs...)
 Piecewise direct standardization (PDS) for calibration transfer of spectral data.
-* `Xt` : Target spectra, (n, p).
-* `X` : Spectra to transfer to the target, (n, p).
+* `X` : Spectra to transfer to the target (n, p).
+* `Xt` : Target spectra (n, p).
 * `fun` : Function used as transfer model.  
 * `m` : Half-window size (nb. points left/right to the target wavelength) 
 * `kwargs` : Optional arguments for `fun`.
@@ -15,12 +15,12 @@ Piecewise direct standardization (PDS) for calibration transfer of spectral data
 `Xt` and `X` must represent the same n standard samples.
 
 The objective is to transform spectra `X` to new spectra as close 
-as possible as the target `Xt`. Method PDS method fits models 
+as possible as the target `Xt`. Method PDS fits models 
 (defined in `fun`) that predict `Xt` from `X`.
 
 The window used in `X` to predict wavelength "i" in `Xt` is:
 
-* i - m, i - m + 1, ..., i, ..., i + m - 1, i + m
+* i - `m`, i - `m` + 1, ..., i, ..., i + `m` - 1, i + `m`
 
 ## References
 Bouveresse, E., Massart, D.L., 1996. Improvement of the piecewise direct targetisation procedure 
@@ -45,15 +45,13 @@ pnames(dat)
 ## Target
 Xtcal = dat.X1cal
 Xtval = dat.X1val
-## To predict
+## To transfer
 Xcal = dat.X2cal
 Xval = dat.X2val
 
-n = nro(Xtcal)
-m = nro(Xtval)
-
-fm = calpds(Xtcal, Xcal; fun = plskern, nlv = 1, m = 2) ;
-pred = Jchemo.predict(fm, Xval).pred     # Transfered spectra
+fm = calpds(Xcal, Xtcal; fun = plskern, nlv = 1, m = 2) ;
+## Transfered spectra, expected to be close to Xtval
+pred = Jchemo.predict(fm, Xval).pred 
 
 i = 1
 f = Figure(resolution = (500, 300))
@@ -74,7 +72,8 @@ function calpds(X, Xt; fun = mlrpinv, m = 5, kwargs...)
     zm[(p - m + 1):p] .= collect(m:-1:1) .- 1
     @inbounds for i = 1:p
         s[i] = collect((i - zm[i]):(i + zm[i]))
-        fm[i] = fun(X[:, s[i]], Xt[:, i]; kwargs...)
+        #fm[i] = fun(X[:, s[i]], Xt[:, i]; kwargs...)
+        fm[i] = fun(vcol(X, s[i]), vcol(Xt, i); kwargs...)
     end
     CalPds(fm, s)
 end
