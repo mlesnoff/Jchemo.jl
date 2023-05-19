@@ -72,7 +72,6 @@ function center(X, v)
     center!(zX, v)
     zX
 end
-center(X::Matrix{Int64}, v) = center(Float64.(X), v)
 
 function center!(X::Matrix, v)
     p = nco(X)
@@ -1097,7 +1096,6 @@ function scale(X, v)
     scale!(zX, v)
     zX
 end
-scale(X::Matrix{Int64}, v) = scale(Float64.(X), v)
 
 function scale!(X::Matrix, v)
     p = nco(X)
