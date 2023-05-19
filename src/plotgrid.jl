@@ -1,15 +1,14 @@
 """
-    plotgrid(indx::Union{Vector{Integer}, Vector{Int64}, Vector{Real}, Vector{Float64}}, r; 
+    plotgrid(indx::AbstractVector, r; 
         resolution = (500, 350), step = 5, 
         color = nothing, kwargs...)
-    plotgrid(indx::Union{Vector{Integer}, Vector{Int64}, Vector{Real}, Vector{Float64}}, r, 
-        group; 
+    plotgrid(indx::AbstractVector, r, group; 
         resolution = (500, 350), step = 5, 
         color = nothing, leg = true, kwargs...)
 
 Plot error or performance rates of model predictions.
 * `indx` : A numeric variable representing the grid of model parameters, 
-    e.g. nb. LVs if PLSR models.
+    e.g. the nb. LVs if PLSR models.
 * `r` : The error/performance rates for the values of `x`. 
 * `group` : Categorical variable defining groups. 
     A separate line is plotted for each level of `group`.
@@ -57,7 +56,7 @@ plotgrid(res.nlv, res.y1, group;
     xlabel = "Nb. LVs", ylabel = "RMSECV").f
 ```
 """ 
-function plotgrid(indx::Vector, r;     
+function plotgrid(indx::AbstractVector, r;     
         resolution = (500, 350), step = 5, 
         color = nothing, kwargs...)
     isa(indx, Vector{Any}) ? indx = Float64.(indx) : nothing
@@ -74,8 +73,7 @@ function plotgrid(indx::Vector, r;
     (f = f, ax = ax)
 end
 
-function plotgrid(indx::Union{Vector{Integer}, Vector{Int64}, Vector{Real}, Vector{Float64}}, r, 
-        group; 
+function plotgrid(indx::AbstractVector, r, group; 
         resolution = (700, 350), step = 5, 
         color = nothing, leg = true, kwargs...)
     r = Float64.(vec(r))
