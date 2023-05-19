@@ -54,7 +54,7 @@ end
 
 """
     center(X, v)
-    center!(X, v)
+    center!(X::Matrix, v)
 Center each column of `X`.
 * `X` : Data.
 * `v` : Centering factors.
@@ -1081,7 +1081,7 @@ rowsum(X) = vec(sum(ensure_mat(X); dims = 2))
 
 """
     scale(X, v)
-    scale!(X, v)
+    scale!(X::Matrix, v)
 Scale each column of `X`.
 * `X` : Data.
 * `v` : Scaling factors.
