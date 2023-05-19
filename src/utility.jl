@@ -394,7 +394,7 @@ function cosm(X)
 end
 
 """
-    cosv(X)
+    cosv(x, y)
 Cosinus between two vectors.
 * `x` : vector (n).
 * `y` : vector (n).
@@ -405,7 +405,7 @@ n = 5
 x = rand(n)
 y = rand(n)
 
-cosv(X)
+cosv(x, y)
 ```
 """
 function cosv(x, y)
