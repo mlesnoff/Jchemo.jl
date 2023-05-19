@@ -6,29 +6,31 @@ Orthogonalization for calibration transfer of spectral data.
     have to be orthogonalized.
 * `nlv` : Nb. of first loadings vectors of D considered for the orthogonalization.
 
-The general objective is to remove from a dataset X (n, p) some detrimental 
-information (e.g. humidity patterns in signals, multiple spectrometers, etc.) 
-defined by main directions contained in a dataset `D` (m, p). 
-The principle of the method is to orthogonalize the rows of X (observations) 
-to the detrimental sub-space defined by the first `nlv` 
-loadings vectors computed from a (non-centered) PCA of `D`.
+The objective is to remove some detrimental information (e.g. humidity 
+patterns in signals, multiple spectrometers, etc.) from a dataset X (n, p).  
+The detrimental information is defined by main directions contained in 
+a dataset `D` (m, p). The present method orthogonalizes the rows of X 
+(observations) to the detrimental sub-space defined by the first `nlv` 
+loadings vectors computed from a non-centered PCA of `D`.
 
 Matrix `D` can be built from different choices. Two common methods are:
 * EPO (Roger et al. 2003, 2018): `D` is built from differences between spectra
-    collected from the different conditions. 
-* TOP (Andrew & Fearn 2004): Each row of `D` is the mean spectrum for an instrument.
+    collected under different conditions. 
+* TOP (Andrew & Fearn 2004): Each row of `D` is the mean spectrum for a given 
+    instrument.
 
 Function `eposvd` makes a SVD factorization of `D` and returns 
 two matrices:
-* `M` (p, p) : The orthogonalization matrix that can be used to correct any X-data.
+* `M` (p, p) : The orthogonalization matrix that can be used to correct 
+    any X-data.
 * `P` (p, `nlv`) : The matrix of the loading vectors of D. 
 
 Any X-data can be corrected from the detrimental information `D` by:
 * X_corrected = X * `M`.
 
-A particular situation is the following. Assume that D was built from 
-differences between X1 and X2, and that a bilinear model (e.g. PLSR) has 
-been fitted on X1_corrected. For future predictions X2new, there is no need 
+A particular situation is the following. Assume that D is built from 
+differences between X1 and X2, and that a bilinear model (e.g. PLSR) is 
+fitted on X1_corrected. For future predictions, X2new, there is no need 
 to correct X2new.
 
 # References
