@@ -1,10 +1,8 @@
 """
-    plotgrid(indx::AbstractVector, r; 
-        resolution = (500, 350), step = 5, 
-        color = nothing, kwargs...)
-    plotgrid(indx::AbstractVector, r, group; 
-        resolution = (500, 350), step = 5, 
-        color = nothing, leg = true, kwargs...)
+    plotgrid(indx::AbstractVector, r; resolution = (500, 350), 
+        step = 5, color = nothing, kwargs...)
+    plotgrid(indx::AbstractVector, r, group; resolution = (500, 350), 
+        step = 5, color = nothing, leg = true, kwargs...)
 
 Plot error or performance rates of model predictions.
 * `indx` : A numeric variable representing the grid of model parameters, 
@@ -56,9 +54,8 @@ plotgrid(res.nlv, res.y1, group;
     xlabel = "Nb. LVs", ylabel = "RMSECV").f
 ```
 """ 
-function plotgrid(indx::AbstractVector, r;     
-        resolution = (500, 350), step = 5, 
-        color = nothing, kwargs...)
+function plotgrid(indx::AbstractVector, r; resolution = (500, 350), 
+        step = 5, color = nothing, kwargs...)
     isa(indx, Vector{Any}) ? indx = Float64.(indx) : nothing
     r = Float64.(vec(r))
     xticks = collect(minimum(indx):step:maximum(indx))
@@ -73,9 +70,9 @@ function plotgrid(indx::AbstractVector, r;
     (f = f, ax = ax)
 end
 
-function plotgrid(indx::AbstractVector, r, group; 
-        resolution = (700, 350), step = 5, 
-        color = nothing, leg = true, kwargs...)
+function plotgrid(indx::AbstractVector, r, group; resolution = (700, 350), 
+        step = 5, color = nothing, leg = true, kwargs...)
+    isa(indx, Vector{Any}) ? indx = Float64.(indx) : nothing
     r = Float64.(vec(r))
     group = vec(group)
     xticks = collect(minimum(indx):step:maximum(indx))
