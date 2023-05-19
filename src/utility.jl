@@ -408,11 +408,7 @@ y = rand(n)
 cosv(x, y)
 ```
 """
-function cosv(x, y)
-    x = scale(x, norm(x))
-    y = scale(y, norm(y))
-    dot(x, y)
-end
+cosv(x, y) = dot(x / norm(x), y / norm(y))
 
 
 """
