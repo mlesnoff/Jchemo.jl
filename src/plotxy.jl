@@ -4,7 +4,7 @@
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "",
         kwargs...)
-    plotxy(x::AbstractVector, y::AbstractVector, group::Vector; resolution = (600, 400), 
+    plotxy(x::AbstractVector, y::AbstractVector, group::AbstractVector; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", leg::Bool = true,
@@ -14,7 +14,7 @@
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", 
         kwargs...)
-    plotxy(X::Union{Matrix, DataFrame}, group::Vector; resolution = (600, 400), 
+    plotxy(X::Union{Matrix, DataFrame}, group::AbstractVector; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", leg::Bool = true, 
@@ -125,7 +125,7 @@ function plotxy(x::AbstractVector, y::AbstractVector; resolution = (600, 400),
     (f = f, ax = ax)
 end
 
-function plotxy(x::AbstractVector, y::AbstractVector, group::Vector; resolution = (600, 400), 
+function plotxy(x::AbstractVector, y::AbstractVector, group::AbstractVector; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", leg::Bool = true,
@@ -188,7 +188,7 @@ function plotxy(X::Union{Matrix, DataFrame}; resolution = (600, 400),
         kwargs...)
 end
 
-function plotxy(X::Union{Matrix, DataFrame}, group::Vector; resolution = (600, 400), 
+function plotxy(X::Union{Matrix, DataFrame}, group::AbstractVector; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", leg::Bool = true,
