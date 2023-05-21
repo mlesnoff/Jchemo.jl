@@ -87,8 +87,8 @@ f
 """ 
 function eposvd(D; nlv)
     D = ensure_mat(D)
-    m, p = size(D)
-    nlv = min(nlv, m, p)
+    n, p = size(D)
+    nlv = min(nlv, n, p)
     Id = Diagonal(I, p)
     if nlv == 0 
         P = nothing
