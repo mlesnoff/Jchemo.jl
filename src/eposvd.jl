@@ -1,32 +1,33 @@
 
 """
     eposvd(D; nlv)
-Orthogonalization for calibration transfer of spectral data.
-* `D` : Data (m, p) containing the "detrimental" information on which the spectra
-    have to be orthogonalized.
-* `nlv` : Nb. of first loadings vectors of D considered for the orthogonalization.
+Compute an orthogonalization matrix for calibration transfer of spectral data.
+* `D` : Data (m, p) containing the "detrimental" information on which spectra
+    (rows of a matrix X) have to be orthogonalized.
+* `nlv` : Nb. of first loadings vectors of `D` considered for the 
+    orthogonalization.
 
 The objective is to remove some detrimental information (e.g. humidity 
 patterns in signals, multiple spectrometers, etc.) from a dataset X (n, p).  
-The detrimental information is defined by main directions contained in 
-a dataset `D` (m, p). The present method orthogonalizes the rows of X 
-(observations) to the detrimental sub-space defined by the first `nlv` 
-loadings vectors computed from a non-centered PCA (SVD decomposition) 
-of `D`.
+The detrimental information is defined by the main row-directions 
+contained in a matrix `D` (m, p). 
+
+Function `eposvd` returns two objects:
+* `P` (p, `nlv`) : The matrix of the loading vectors of D, computed 
+    from the SVD decomposition (non centered PCA) of X. 
+* `M` (p, p) : The orthogonalization matrix, i.e. that can be used 
+    to orthogonolize X to `P`.
+If `nlv` = 0, there is no SVD decomposition, `M` is computed to 
+orthogonalize directly X to `D`. 
+
+Any X is corrected from the detrimental information `D` by:
+* X_corrected = X * `M`.
 
 Matrix `D` can be built from different choices. Two common methods are:
 * EPO (Roger et al. 2003, 2018): `D` is built from differences between spectra
     collected under different conditions. 
 * TOP (Andrew & Fearn 2004): Each row of `D` is the mean spectrum for a given 
     instrument.
-
-Function `eposvd` returns two matrices:
-* `M` (p, p) : The orthogonalization matrix that can be used to correct 
-    any X-data.
-* `P` (p, `nlv`) : The matrix of the loading vectors of D. 
-
-Any X-data can be corrected from the detrimental information `D` by:
-* X_corrected = X * `M`.
 
 A particular situation is the following. Assume that D is built from 
 differences between X1 and X2, and that a bilinear model (e.g. PLSR) is 
@@ -90,8 +91,8 @@ function eposvd(D; nlv)
     nlv = min(nlv, m, p)
     Id = Diagonal(I, p)
     if nlv == 0 
-        M = Id
         P = nothing
+        M = Id - D' * inv(D * D') * D
     else 
         P = svd(D).V[:, 1:nlv]
         M = Id - P * P'
