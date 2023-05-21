@@ -11,7 +11,8 @@ patterns in signals, multiple spectrometers, etc.) from a dataset X (n, p).
 The detrimental information is defined by main directions contained in 
 a dataset `D` (m, p). The present method orthogonalizes the rows of X 
 (observations) to the detrimental sub-space defined by the first `nlv` 
-loadings vectors computed from a non-centered PCA of `D`.
+loadings vectors computed from a non-centered PCA (SVD decomposition) 
+of `D`.
 
 Matrix `D` can be built from different choices. Two common methods are:
 * EPO (Roger et al. 2003, 2018): `D` is built from differences between spectra
@@ -19,8 +20,7 @@ Matrix `D` can be built from different choices. Two common methods are:
 * TOP (Andrew & Fearn 2004): Each row of `D` is the mean spectrum for a given 
     instrument.
 
-Function `eposvd` makes a SVD factorization of `D` and returns 
-two matrices:
+Function `eposvd` returns two matrices:
 * `M` (p, p) : The orthogonalization matrix that can be used to correct 
     any X-data.
 * `P` (p, `nlv`) : The matrix of the loading vectors of D. 
