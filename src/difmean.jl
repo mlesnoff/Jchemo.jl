@@ -1,10 +1,10 @@
 """
-    difmean(X1, X2)
+    difmean(X1, X2; normx = false)
 Compute a detrimental matrix (for calibration transfer) by column means difference.
 * `X1` : Matrix of spectra (n1, p).
 * `X2` : Matrix of spectra (n2, p).
-* `normx` : Boolean, if * `true`, the vectors of the column means 
-    of `X1` and `X2` are normed before computing the difference.
+* `normx` : Boolean. If `true`, the column means vectors 
+    of `X1` and `X2` are normed before computing their difference.
 
 The function returns a matrix D (1, p) containing the detrimental information
 that has to be removed from spectra `X1` and `X2` for calibration transfer 
