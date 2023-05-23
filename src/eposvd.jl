@@ -13,26 +13,26 @@ The detrimental information is defined by the main row-directions
 contained in a matrix `D` (m, p). 
 
 Function `eposvd` returns two objects:
-* `P` (p, `nlv`) : The matrix of the loading vectors of D, computed 
-    from the SVD decomposition (non centered PCA) of X. 
+* `P` (p, `nlv`) : The matrix of the `nlv` first loading vectors of D, 
+    computed from the SVD decomposition (non centered PCA) of `D`. 
 * `M` (p, p) : The orthogonalization matrix, i.e. that can be used 
     to orthogonolize X to `P`.
-If `nlv` = 0, there is no SVD decomposition, `M` is computed to 
-orthogonalize directly X to `D`. 
 
-Any X is corrected from the detrimental information `D` by:
+The correction of any matrix X from the detrimental information `D` 
+is given by:
 * X_corrected = X * `M`.
 
-Matrix `D` can be built from different choices. Two common methods are:
+Matrix `D` can be built from many different choices. For instance, two common 
+methods are:
 * EPO (Roger et al. 2003, 2018): `D` is built from differences between spectra
     collected under different conditions. 
-* TOP (Andrew & Fearn 2004): Each row of `D` is the mean spectrum for a given 
-    instrument.
+* TOP (Andrew & Fearn 2004): Each row of `D` is the mean spectrum computed for 
+    a given instrument.
 
-A particular situation is the following. Assume that D is built from 
-differences between X1 and X2, and that a bilinear model (e.g. PLSR) is 
-fitted on X1_corrected. For future predictions, X2new, there is no need 
-to correct X2new.
+A particular situation is the following. Assume that `D` is built from 
+some differences between matrices X1 and X2, and that a bilinear model 
+(e.g. PLSR) is fitted on X1_corrected = X1 * `M`. To predict new data 
+X2new with the fitted model, there is no need to correct X2new.
 
 # References
 Andrew, A., Fearn, T., 2004. Transfer by orthogonal projection: making near-infrared 
@@ -82,7 +82,6 @@ lines!(zX1[i, :]; label = "x1_correct")
 lines!(ax, zX2[i, :]; label = "x2_correct")
 axislegend(position = :cb, framevisible = false)
 f
-
 ```
 """ 
 function eposvd(D; nlv)
@@ -90,14 +89,12 @@ function eposvd(D; nlv)
     n, p = size(D)
     nlv = min(nlv, n, p)
     Id = Diagonal(I, p)
-    if nlv == 0 
-        P = nothing
-        M = Id - D' * inv(D * D') * D
-    else 
-        P = svd(D).V[:, 1:nlv]
-        M = Id - P * P'
-    end
-    (M = M, P = P)
+    P = svd(D).V[:, 1:nlv]
+    ## If n = 1, this is the same as:
+    ## zp = vec(D) ; zp ./= norm(zp) ; P = reshape(zp, p, 1)
+    ## End 
+    M = Id - P * P'
+    (M = M, P)
 end
 
 
