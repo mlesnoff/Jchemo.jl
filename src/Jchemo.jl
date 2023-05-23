@@ -152,6 +152,7 @@ include("selwold.jl")
 # Transfer
 include("calds.jl")
 include("calpds.jl")
+include("difmean.jl")
 include("eposvd.jl")
 
 # Sampling
@@ -210,12 +211,14 @@ export
     interpl, interpl_mon, 
     linear_int, quadratic_int, 
     quadratic_spline, cubic_spline,
-    mavg, mavg!, mavg_runmean, mavg_runmean!,
+    mavg, mavg!, 
+    mavg_runmean, mavg_runmean!,
     rmgap, rmgap!,
     savgk, savgol, savgol!,
     snv, snv!, 
     # Transfer
     calds, calpds,
+    difmean,
     eposvd,
     # Exploratory
     kpca,
