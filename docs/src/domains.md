@@ -254,7 +254,7 @@
 
 - **calds** : Direct standardization (DS)
 - **calpds** : Piecewise direct standardization (PDS)
-- **eposvd** External parameter orthogonalization (EPO)
+- **eposvd** : Compute an orthogonalization matrix for calibration transfer
 
 ### **Pre-processing**
 
