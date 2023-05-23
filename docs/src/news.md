@@ -2,6 +2,10 @@
 
 ### *Version 0.1.22*
 
+- News
+    - **difmean** : Compute a detrimental matrix (for calibration transfer) by column 
+        means difference.
+
 - Modifications
     - Code improvement.
 
