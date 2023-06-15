@@ -1,5 +1,5 @@
 """
-    matB(X, y; fun = mean)
+    matB(X, y)
 Compute the between covariance matrix ("B") of `X`.
 * `X` : X-data (n, p).
 * `y` : A vector (n) defing the class memberships.
@@ -34,7 +34,7 @@ end
 
 
 """
-    matW(X, y; fun = mean)
+    matW(X, y)
 Compute the within covariance matrix ("W") of `X`.
 * `X` : X-data (n, p).
 * `y` : A vector (n) defing the class memberships.
