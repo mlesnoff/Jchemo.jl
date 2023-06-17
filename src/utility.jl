@@ -414,7 +414,7 @@ cosv(x, y) = dot(x / norm(x), y / norm(y))
 """
     covm(X, w)
     covm(X, Y, w)
-Compute covariance matrices.
+Compute weighted covariance matrices.
 * `X` : Data (n, p).
 * `Y` : Data (n, q).
 * `w` : Weights (n) of the observations.
