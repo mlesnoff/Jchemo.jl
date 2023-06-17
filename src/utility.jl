@@ -421,7 +421,7 @@ Compute weighted covariance matrices.
 
 `w` is internally normalized to sum to 1.
 
-Uncorrected covariance matrix 
+Uncorrected weighted covariance matrix 
 * of the columns of `X`: ==> (p, p) matrix 
 * or between columns of `X` and `Y` : ==> (p, q) matrix.
 
