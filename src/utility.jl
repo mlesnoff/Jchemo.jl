@@ -325,7 +325,7 @@ end
 """
     corm(X, w)
     corm(X, Y, w)
-Compute correlation matrices.
+Compute weighted correlation matrices.
 * `X` : Data (n, p).
 * `Y` : Data (n, q).
 * `w` : Weights (n) of the observations.
