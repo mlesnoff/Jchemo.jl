@@ -13,7 +13,7 @@ Normal probability density estimation.
 * `mu` : Mean vector of the normal distribution. 
     If `nothing`, `mu` is computed by the column-means of `X`.
 * `S` : Covariance matrix of the normal distribution.
-    If `nothing`, `S` is computed by cov(`X`).
+    If `nothing`, `S` is computed by cov(`X`; corrected = true).
 
 Data `X` can be univariate (p = 1) or multivariate (p > 1). See examples.
 
