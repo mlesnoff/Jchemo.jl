@@ -115,7 +115,7 @@ function dmnorm!(X = nothing; mu = nothing, S = nothing)
         mu = vec(mean(X, dims = 1))
     end
     if isnothing(S)
-        S = cov(X)
+        S = cov(X; corrected = true)
     end
     U = cholesky!(Hermitian(S)).U # This modifies S only if S is provided
     detS = det(U)^2  
