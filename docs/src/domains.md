@@ -292,7 +292,7 @@
 - **aggstat** Compute column-wise statistics (e.g. mean), by group in a dataset
 - **center**, **scale**, **cscale** Column-wise centering and scaling of a matrix
 - **colmad**, **colmean**, **colnorm**, **colstd**, **colsum**, **colvar**  Column-wise operations
-- **covm**, **corm** Covariance and correlation matrices
+- **covm**, **corm** Weighted covariance and correlation matrices
 - **cosv**, **cosm** Cosinus between vectors
 - **dummy** Build dummy table
 - **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
