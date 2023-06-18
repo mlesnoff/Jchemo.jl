@@ -156,6 +156,8 @@ function predict(object::Dmkern, X)
     M = similar(object.X)
     @inbounds for i = 1:m
         M .= (vrow(X, i:i) .- object.X) * object.Hinv
+    #Threads.@threads for i = 1:m
+    #    M = (X[i:i, :] .- object.X) * object.Hinv
         sum2 = rowsum(M.^2)
         pred[i, 1] = 1 / n * (2 * pi)^(-p / 2) * (1 / object.detH) * sum(exp.(-.5 * sum2))
     end
