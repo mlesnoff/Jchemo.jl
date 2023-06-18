@@ -193,7 +193,7 @@ function gridscorelv(Xtrain, Ytrain, X, Y; score, fun, nlv,
             pred = Jchemo.predict(fm, X; nlv = nlv).pred
             le_nlv == 1 ? pred = [pred] : nothing
             zres = zeros(le_nlv, q)
-            for i = 1:le_nlv
+            @inbounds for i = 1:le_nlv
                 zres[i, :] = score(pred[i], Y)
             end
             zres
