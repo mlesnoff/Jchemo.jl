@@ -40,7 +40,7 @@ function fdasvd!(X::Matrix, y; nlv, lb = 0, scal = false)
     if lb > 0
         W .= W + lb * I(p)
     end
-    #Winv = inv(res.W)
+    #Winv = inv(W)
     println(W)
     Winv = LinearAlgebra.inv!(cholesky(Hermitian(W))) 
     println(W)
@@ -56,5 +56,5 @@ function fdasvd!(X::Matrix, y; nlv, lb = 0, scal = false)
     P = Ut * Pz[:, 1:nlv]
     T = X * P
     Tcenters = ct * P
-    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, lev, ni)
+    Fda(T, P, Tcenters, eig, sstot, W, xmeans, xscales, lev, ni)
 end
