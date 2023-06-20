@@ -1,26 +1,28 @@
 """
-    fdasvd(X, y; nlv, pseudo = false, scal = false)
-    fdasvd!(X, y; nlv, pseudo = false, scal = false)
+    fdasvd(X, y; nlv, lb = 0, scal = false)
+    fdasvd!(X, y; nlv, lb = 0, scal = false)
 Factorial discriminant analysis (FDA).
 * `X` : X-data.
 * `y` : Univariate class membership.
 * `nlv` : Nb. discriminant components.
-* `pseudo` : If true, a MP pseudo-inverse is used (instead
-    of a usual inverse) for inverting W.
+* `lb` : A value of the ridge regularization parameter "lambda".
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
-Weighted SVD factorization of the matrix of the class centers.
+FDA by Weighted SVD factorization of the matrix of the class centers.
+
+If `lb` > 0, the 'Within'-covrainaces matrix W is replaced by W + `lb` * I 
+(ridge regularization).
 
 See `?fda` for examples.
 
 """ 
-function fdasvd(X, y; nlv, pseudo = false, scal = false)
-    fdasvd!(copy(ensure_mat(X)), y; nlv = nlv, pseudo = pseudo, 
+function fdasvd(X, y; nlv, lb = 0, scal = false)
+    fdasvd!(copy(ensure_mat(X)), y; nlv = nlv, lb = lb, 
         scal = scal)
 end
 
-function fdasvd!(X::Matrix, y; nlv, pseudo = false, scal = false)
+function fdasvd!(X::Matrix, y; nlv, lb = 0, scal = false)
     n, p = size(X)
     xmeans = colmean(X) 
     xscales = ones(p)
@@ -34,8 +36,14 @@ function fdasvd!(X::Matrix, y; nlv, pseudo = false, scal = false)
     lev = res.lev
     nlev = length(lev)
     ni = res.ni
-    res.W .= res.W * n / (n - nlev)
-    !pseudo ? Winv = inv(res.W) : Winv = pinv(res.W)
+    W = res.W * n / (n - nlev)
+    if lb > 0
+        W .= W + lb * I(p)
+    end
+    #Winv = inv(res.W)
+    println(W)
+    Winv = LinearAlgebra.inv!(cholesky(Hermitian(W))) 
+    println(W)
     ct = aggstat(X, y; fun = mean).X
     Ut = cholesky!(Hermitian(Winv)).U'
     Zct = ct * Ut
