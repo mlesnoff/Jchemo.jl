@@ -84,12 +84,12 @@ fm.sstot
 Base.summary(fm)
 ```
 """ 
-function fda(X, y; nlv, pseudo = false, scal = false)
-    fda!(copy(ensure_mat(X)), y; nlv = nlv, pseudo = pseudo, 
+function fda(X, y; nlv, lb = 0, scal = false)
+    fda!(copy(ensure_mat(X)), y; nlv = nlv, lb = lb, 
         scal = scal)
 end
 
-function fda!(X::Matrix, y; nlv, pseudo = false, scal = false)
+function fda!(X::Matrix, y; nlv, lb = 0, scal = false)
     n, p = size(X)
     xmeans = colmean(X)
     xscales = ones(p)
@@ -103,14 +103,13 @@ function fda!(X::Matrix, y; nlv, pseudo = false, scal = false)
     lev = res.lev
     nlev = length(lev)
     ni = res.ni
-    res.W .= res.W * n / (n - nlev)
-    zres = matB(X, y)
-    if !pseudo 
-        ## Inplace! was removed due to side effect on res.W 
-        Winv = LinearAlgebra.inv(cholesky(Hermitian(res.W))) 
-    else 
-        Winv = pinv(res.W)
+    W = res.W * n / (n - nlev)
+    if lb > 0
+        W .= W + lb * ones(p)
     end
+    zres = matB(X, y)
+    ## Inplace! was removed due to side effect on W 
+    Winv = LinearAlgebra.inv(cholesky(Hermitian(W))) 
     # Winv * B is not symmetric
     fm = eigen!(Winv * zres.B; sortby = x -> -abs(x))
     nlv = min(nlv, n, p, nlev - 1)
@@ -119,11 +118,11 @@ function fda!(X::Matrix, y; nlv, pseudo = false, scal = false)
     P = real.(P)
     eig = real.(eig)
     sstot = sum(eig)
-    norm_P = sqrt.(diag(P' * res.W * P))
+    norm_P = sqrt.(diag(P' * W * P))
     scale!(P, norm_P)
     T = X * P
     Tcenters = zres.ct * P
-    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, lev, ni)
+    Fda(T, P, Tcenters, eig, sstot, W, xmeans, xscales, lev, ni)
 end
 
 """
