@@ -105,11 +105,10 @@ function fda!(X::Matrix, y; nlv, lb = 0, scal = false)
     ni = res.ni
     W = res.W * n / (n - nlev)
     if lb > 0
-        W .= W + lb * ones(p)
+        W .= W + lb * I(p)
     end
     zres = matB(X, y)
-    ## Inplace! was removed due to side effect on W 
-    Winv = LinearAlgebra.inv(cholesky(Hermitian(W))) 
+    Winv = LinearAlgebra.inv!(cholesky(Hermitian(W))) 
     # Winv * B is not symmetric
     fm = eigen!(Winv * zres.B; sortby = x -> -abs(x))
     nlv = min(nlv, n, p, nlev - 1)
