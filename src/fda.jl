@@ -12,22 +12,24 @@ struct Fda
 end
 
 """
-    fda(X, y; nlv, pseudo = false, scal = false)
-    fda!(X::Matrix, y; nlv, pseudo = false, scal = false)
+    fda(X, y; nlv, lb = 0, scal = false)
+    fda!(X::Matrix, y; nlv, lb = 0, scal = false)
 Factorial discriminant analysis (FDA).
 * `X` : X-data (n, p).
 * `y` : y-data (n) (class membership).
 * `nlv` : Nb. discriminant components.
-* `pseudo` : If true, a MP pseudo-inverse is used (instead
-    of a usual inverse) for inverting W.
+* `lb` : A value of the ridge regularization parameter "lambda".
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
-Eigen factorization of Inverse(W) * B. 
+Eigen factorization of Inverse(W) * B, where W is the common 'Within'-covariances 
+matrix, and B the 'Between'-covariances matrix.
 
 The functions maximize the compromise p'Bp / p'Wp, i.e. max p'Bp with 
 constraint p'Wp = 1. Vectors p (columns of P) are the linear discrimant 
 coefficients "LD".
+
+If `lb` > 0, W is replaced by W + `lb` * I (ridge regularization).
 
 ## Examples
 ```julia
@@ -64,17 +66,19 @@ ct = fm.Tcenters
 
 group = copy(ytrain)
 f, ax = plotxy(fm.T[:, 1], fm.T[:, 2], group;
-    title = "FDA")
-scatter!(ax, ct[:, 1], ct[:, 2], 
+    ellipse = true, title = "FDA")
+scatter!(ax, ct[:, 1], ct[:, 2];  
     markersize = 10, color = :red)
+hlines!(ax, 0; color = :grey)
+vlines!(ax, 0; color = :grey)
 f
 
 # Projection of Xtest to the score space
 Jchemo.transform(fm, Xtest)
 
 # X-loadings matrix
-# = coefficients of the linear discriminant function
-# = "LD" of function lda of package MASS
+# Columns of P = coefficients of the linear discriminant function
+# = "LD" of function lda of R package MASS
 fm.P
 
 fm.eig
