@@ -5,6 +5,10 @@
 - Modifications
     - Code improvement.
 
+- Breaking changes
+    - **fda**, **fdasvd** : argument 'pseudo' has been replace by 'lb'
+        (ridge regularization).
+
 ### *Version 0.1.22*
 
 - News
