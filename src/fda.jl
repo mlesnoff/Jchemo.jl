@@ -25,12 +25,13 @@ Factorial discriminant analysis (FDA).
 FDA by eigen factorization of Inverse(W) * B, where W is the 'Within'-covariances 
 matrix (common to all the classes), and B the 'Between'-covariances matrix.
 
-The functions maximize the compromise p'Bp / p'Wp, i.e. max p'Bp with 
+The function maximizes the compromise p'Bp / p'Wp, i.e. max p'Bp with 
 constraint p'Wp = 1. Vectors p (columns of P) are the linear discrimant 
-coefficients "LD".
+coefficients often referred to as "LD".
 
-If `lb` > 0, W is replaced by W + `lb` * I, 
-where I is the Idendity matrix (ridge regularization).
+A ridge regularization can be used:
+* If `lb` > 0, W is replaced by W + `lb` * I, 
+    where I is the Idendity matrix.
 
 ## Examples
 ```julia
