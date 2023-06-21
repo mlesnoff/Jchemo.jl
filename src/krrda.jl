@@ -5,7 +5,7 @@ Discrimination based on kernel ridge regression (KRR-DA).
 * `X` : X-data.
 * `y` : Univariate class membership.
 * `weights` : Weights of the observations. Internally normalized to sum to 1. 
-* `lb` : A value of the ridge regularization parameter "lambda".
+* `lb` : Ridge regularization parameter "lambda".
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 * Other arguments to pass in the kernel: See `?kplsr`.

@@ -18,7 +18,7 @@ Factorial discriminant analysis (FDA).
 * `X` : X-data (n, p).
 * `y` : y-data (n) (class membership).
 * `nlv` : Nb. discriminant components.
-* `lb` : A value of the ridge regularization parameter "lambda".
+* `lb` : Ridge regularization parameter "lambda".
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 

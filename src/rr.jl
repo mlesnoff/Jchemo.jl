@@ -18,7 +18,7 @@ Ridge regression (RR) implemented by SVD factorization.
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations. Internally normalized to sum to 1. 
-* `lb` : A value of the ridge regularization parameter "lambda".
+* `lb` : Ridge regularization parameter "lambda".
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
@@ -115,7 +115,7 @@ Ridge regression (RR) using the Normal equations and a Cholesky factorization.
 * `X` : X-data.
 * `Y` : Y-data.
 * `weights` : Weights of the observations. Internally normalized to sum to 1. 
-* `lb` : A value of the ridge regularization parameter "lambda".
+* `lb` : Ridge regularization parameter "lambda".
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
@@ -168,7 +168,7 @@ end
     coef(object::Rr; lb = nothing)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
-* `lb` : A value of the ridge regularization parameter "lambda".
+* `lb` : Ridge regularization parameter "lambda".
     If nothing, it is the parameter stored in the fitted model.
 """ 
 function coef(object::Rr; lb = nothing)

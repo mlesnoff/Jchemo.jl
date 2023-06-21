@@ -25,7 +25,7 @@ Kernel ridge regression (KRR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
-* `lb` : A value of the ridge regularization parameter "lambda".
+* `lb` : Ridge regularization parameter "lambda".
 * 'kern' : Type of kernel used to compute the Gram matrices.
     Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`.
 * `scal` : Boolean. If `true`, each column of `X` 
@@ -162,7 +162,7 @@ end
     coef(object::Krr; lb = nothing)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
-* `lb` : A value of the ridge regularization parameter "lambda".
+* `lb` : Ridge regularization parameter "lambda".
     If nothing, it is the parameter stored in the fitted model.
 """ 
 function coef(object::Krr; lb = nothing)
