@@ -11,8 +11,8 @@ Factorial discriminant analysis (FDA).
 
 FDA by Weighted SVD factorization of the matrix of the class centers.
 
-If `lb` > 0, the 'Within'-covrainaces matrix W is replaced by W + `lb` * I 
-(ridge regularization).
+If `lb` > 0, the 'Within'-covariances matrix W is replaced by W + `lb` * I, 
+where I is the Idendity matrix (ridge regularization).
 
 See `?fda` for examples.
 
