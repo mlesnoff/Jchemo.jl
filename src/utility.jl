@@ -81,8 +81,8 @@ function center!(X::Matrix, v)
 end
 
 """
-    checkdupl(X; digits = 3)
-Find replicated rows in a dataset.
+    dupl(X; digits = 3)
+Find duplicated rows in a dataset.
 * `X` : A dataset.
 * `digits` : Nb. digits used to round `X` before checking.
 
@@ -90,16 +90,16 @@ Find replicated rows in a dataset.
 ```julia
 X = rand(5, 3)
 Z = vcat(X, X[1:3, :], X[1:1, :])
-checkdupl(X)
-checkdupl(Z)
+dupl(X)
+dupl(Z)
 
 M = hcat(X, fill(missing, 5))
 Z = vcat(M, M[1:3, :])
-checkdupl(M)
-checkdupl(Z)
+dupl(M)
+dupl(Z)
 ```
 """
-function checkdupl(X; digits = 3)
+function dupl(X; digits = 3)
     X = ensure_mat(X)
     # round, etc. does not
     # accept missing values
@@ -124,7 +124,7 @@ function checkdupl(X; digits = 3)
 end
 
 """
-    checkmiss(X)
+    miss(X)
 Find rows with missing data in a dataset.
 * `X` : A dataset.
 
@@ -133,11 +133,11 @@ Find rows with missing data in a dataset.
 X = rand(5, 4)
 zX = hcat(rand(2, 3), fill(missing, 2))
 Z = vcat(X, zX)
-checkmiss(X)
-checkmiss(Z)
+miss(X)
+miss(Z)
 ```
 """
-function checkmiss(X)
+function miss(X)
     X = ensure_mat(X)
     z = vec(sum(ismissing.(X); dims = 2))
     u = findall(z .> 0) 
