@@ -22,14 +22,15 @@ Factorial discriminant analysis (FDA).
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
-Eigen factorization of Inverse(W) * B, where W is the common 'Within'-covariances 
-matrix, and B the 'Between'-covariances matrix.
+FDA by eigen factorization of Inverse(W) * B, where W is the 'Within'-covariances 
+matrix (common to all the classes), and B the 'Between'-covariances matrix.
 
 The functions maximize the compromise p'Bp / p'Wp, i.e. max p'Bp with 
 constraint p'Wp = 1. Vectors p (columns of P) are the linear discrimant 
 coefficients "LD".
 
-If `lb` > 0, W is replaced by W + `lb` * I (ridge regularization).
+If `lb` > 0, W is replaced by W + `lb` * I, 
+where I is the Idendity matrix (ridge regularization).
 
 ## Examples
 ```julia
