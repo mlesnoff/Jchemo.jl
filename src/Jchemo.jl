@@ -167,7 +167,7 @@ include("kernels.jl")
 export 
     # Utilities
     aggstat,
-    checkdupl, checkmiss,
+    dupl, miss,
     center, center!, 
     colmad, colmean, colnorm, colstd, colsum, colvar,
     corm, covm,
