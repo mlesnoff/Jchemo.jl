@@ -42,9 +42,7 @@ function fdasvd!(X::Matrix, y; nlv, lb = 0, scal = false)
         W .= W + lb * I(p)
     end
     #Winv = inv(W)
-    println(W)
     Winv = LinearAlgebra.inv!(cholesky(Hermitian(W))) 
-    println(W)
     ct = aggstat(X, y; fun = mean).X
     Ut = cholesky!(Hermitian(Winv)).U'
     Zct = ct * Ut
