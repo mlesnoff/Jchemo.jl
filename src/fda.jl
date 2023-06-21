@@ -23,7 +23,7 @@ Factorial discriminant analysis (FDA).
     by its uncorrected standard deviation.
 
 FDA by eigen factorization of Inverse(W) * B, where W is the 'Within'-covariance 
-matrix (common to all the classes), and B the 'Between'-covariance matrix.
+matrix (pooled over the classes), and B the 'Between'-covariance matrix.
 
 The function maximizes the compromise p'Bp / p'Wp, i.e. max p'Bp with 
 constraint p'Wp = 1. Vectors p (columns of P) are the linear discrimant 
