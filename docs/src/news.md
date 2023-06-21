@@ -6,7 +6,8 @@
     - Code improvement.
 
 - Breaking changes
-    - **fda**, **fdasvd** : argument 'pseudo' has been replace by 'lb'
+    - **checkdupl**, **checkmiss**: renamed to **dupl** and **miss**.
+    - **fda**, **fdasvd** : argument 'pseudo' has been replaced by 'lb'
         (ridge regularization).
 
 ### *Version 0.1.22*
