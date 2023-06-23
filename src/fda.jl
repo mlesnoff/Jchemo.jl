@@ -110,9 +110,9 @@ function fda!(X::Matrix, y; nlv, lb = 0, scal = false)
     lev = res.lev
     nlev = length(lev)
     ni = res.ni
-    res.W .*= n / (n - nlev)
+    res.W .*= n / (n - nlev)    # unbiased estimate
     if lb > 0
-        res.W .= res.W .+ (lb * I(p)) # @. does not work with I
+        res.W .= res.W .+ (lb * I(p))    # @. does not work with I
     end
     zres = matB(X, y)
     Winv = LinearAlgebra.inv!(cholesky(Hermitian(res.W))) 
