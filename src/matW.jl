@@ -5,8 +5,8 @@ Between-class covariance matrix (B).
 * `y` : A vector (n) defining the class membership.
 
 Compute the between-class covariance matrix (B) of `X`.
-Uncorrected weighted covariances (ni / n) of the class 
-centers.
+This is the (non-corrected) covariance matrix of 
+the weighted (ni / n) class centers.
 
 ## Examples
 ```julia
@@ -43,9 +43,9 @@ Within-class covariance matrix (W).
 * `X` : X-data (n, p).
 * `y` : A vector (n) defing the class membership.
 
-Compute the within-class covariance matrices (Wi) of `X`,
-and the pooled covariance matrix (W).
-Covariances are not corrected.
+Compute the (non-corrected) within-class covariance matrices (Wi)
+ of `X`, and the pooled covariance matrix W by:
+* W = (n1 / n) * W1 + ... + (nI / n) * WI 
 
 If class i contains only one observation, 
 Wi is computed by `cov(`X`; corrected = false)`.
