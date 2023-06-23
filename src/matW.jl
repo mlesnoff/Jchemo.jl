@@ -61,7 +61,7 @@ matW = function(X, y)
     nlev = length(lev)
     ## Case with y(s) with only 1 obs
     if sum(ni .== 1) > 0
-        sigma_1obs = cov(X; corrected = false)
+        Wi_1obs = cov(X; corrected = false)
     end
     ## End
     w = mweight(ni)
@@ -69,7 +69,7 @@ matW = function(X, y)
     W = zeros(1, 1)
     @inbounds for i in 1:nlev 
         if ni[i] == 1
-            Wi[i] = sigma_1obs
+            Wi[i] = Wi_1obs
         else
             s = findall(y .== lev[i])
             Wi[i] = cov(X[s, :]; corrected = false)

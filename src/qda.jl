@@ -68,9 +68,8 @@ function qda(X, y; prior = "unif")
     end
     fm = list(nlev)
     @inbounds for i = 1:nlev
-        if ni[i] > 1
-            res.Wi[i] .*= ni[i] / (ni[i] - 1)
-        end
+        ni[i] == 1 ? zn = n : zn = ni[i]
+        res.Wi[i] .*= zn / (zn - 1)
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
     end
     Qda(fm, res.Wi, ct, wprior, lev, ni)
