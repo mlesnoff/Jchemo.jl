@@ -37,12 +37,12 @@ function fdasvd!(X::Matrix, y; nlv, lb = 0, scal = false)
     lev = res.lev
     nlev = length(lev)
     ni = res.ni
-    W = res.W * n / (n - nlev)
+    res.W .*= n / (n - nlev)
     if lb > 0
-        W .= W + lb * I(p)
+        res.W .= res.W .+ (lb * I(p)) # @. does not work with I
     end
     #Winv = inv(W)
-    Winv = LinearAlgebra.inv!(cholesky(Hermitian(W))) 
+    Winv = LinearAlgebra.inv!(cholesky(Hermitian(res.W))) 
     ct = aggstat(X, y; fun = mean).X
     Ut = cholesky!(Hermitian(Winv)).U'
     Zct = ct * Ut
@@ -55,5 +55,5 @@ function fdasvd!(X::Matrix, y; nlv, lb = 0, scal = false)
     P = Ut * Pz[:, 1:nlv]
     T = X * P
     Tcenters = ct * P
-    Fda(T, P, Tcenters, eig, sstot, W, xmeans, xscales, lev, ni)
+    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, lev, ni)
 end
