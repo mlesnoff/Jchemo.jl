@@ -110,12 +110,12 @@ function fda!(X::Matrix, y; nlv, lb = 0, scal = false)
     lev = res.lev
     nlev = length(lev)
     ni = res.ni
-    W = res.W * n / (n - nlev)
+    res.W .*= n / (n - nlev)
     if lb > 0
-        W .= W + lb * I(p)
+        res.W .= res.W .+ (lb * I(p)) # @. does not work with I
     end
     zres = matB(X, y)
-    Winv = LinearAlgebra.inv!(cholesky(Hermitian(W))) 
+    Winv = LinearAlgebra.inv!(cholesky(Hermitian(res.W))) 
     # Winv * B is not symmetric
     fm = eigen!(Winv * zres.B; sortby = x -> -abs(x))
     nlv = min(nlv, n, p, nlev - 1)
@@ -124,11 +124,11 @@ function fda!(X::Matrix, y; nlv, lb = 0, scal = false)
     P = real.(P)
     eig = real.(eig)
     sstot = sum(eig)
-    norm_P = sqrt.(diag(P' * W * P))
+    norm_P = sqrt.(diag(P' * res.W * P))
     scale!(P, norm_P)
     T = X * P
     Tcenters = zres.ct * P
-    Fda(T, P, Tcenters, eig, sstot, W, xmeans, xscales, lev, ni)
+    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, lev, ni)
 end
 
 """
