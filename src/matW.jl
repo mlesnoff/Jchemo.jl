@@ -1,8 +1,12 @@
 """
     matB(X, y)
-Compute the between covariance matrix ("B") of `X`.
+Between-class covariance matrix (B).
 * `X` : X-data (n, p).
-* `y` : A vector (n) defing the class memberships.
+* `y` : A vector (n) defining the class membership.
+
+Compute the between-class covariance matrix (B) of `X`.
+Uncorrected weighted covariances (ni / n) of the class 
+centers.
 
 ## Examples
 ```julia
@@ -35,12 +39,16 @@ end
 
 """
     matW(X, y)
-Compute the within covariance matrix ("W") of `X`.
+Within-class covariance matrix (W).
 * `X` : X-data (n, p).
-* `y` : A vector (n) defing the class memberships.
+* `y` : A vector (n) defing the class membership.
 
-If class "i" contains only one observation, 
-W_i is computed as `cov(X; corrected = false)`.
+Compute the within-class covariance matrices (Wi) of `X`,
+and the pooled covariance matrix (W).
+Covariances are not corrected.
+
+If class i contains only one observation, 
+Wi is computed by `cov(`X`; corrected = false)`.
 
 For examples, see `?matB`. 
 """ 
@@ -69,8 +77,8 @@ matW = function(X, y)
         if i == 1  
             W = w[i] * Wi[i] 
         else 
-            W = W + w[i] * Wi[i]
-            # Alternative: Could give weight=0 to the class(es) with 1 obs
+            @. W = W + w[i] * Wi[i]
+            ## Alternative: Could give weight = 0 to the class(es) with 1 obs
         end
     end
     (W = W, Wi, lev, ni)
