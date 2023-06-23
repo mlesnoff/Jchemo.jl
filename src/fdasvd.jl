@@ -9,10 +9,10 @@ Factorial discriminant analysis (FDA).
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
-FDA by Weighted SVD factorization of the matrix of the class centers.
+FDA by weighted SVD factorization of the matrix of the class centers.
 
 A ridge regularization can be used:
-* If `lb` > 0, the 'Within'-covariance matrix W (pooled over the classes) 
+* If `lb` > 0, the within-class (pooled) covariance matrix W 
     is replaced by W + `lb` * I, where I is the Idendity matrix.
 
 See `?fda` for examples.
