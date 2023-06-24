@@ -55,6 +55,7 @@ confusion(res.pred, ytest).cnt
 function qda(X, y; prior = "unif")
     # Scaling X has no effect
     X = ensure_mat(X)
+    n = nro(X)
     z = aggstat(X, y; fun = mean)
     ct = z.X
     lev = z.lev
