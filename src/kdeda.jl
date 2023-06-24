@@ -72,8 +72,7 @@ function kdeda(X, y; prior = "unif", h = nothing, a = 1)
     fm = list(nlev)
     for i = 1:nlev
         s = y .== lev[i]
-        zX = vrow(X, s)
-        fm[i] = dmkern(zX; h = h, a = a)
+        fm[i] = dmkern(vrow(X, s); h = h, a = a)
     end
     Kernda(fm, wprior, lev, ni)
 end
