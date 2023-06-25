@@ -13,7 +13,7 @@ Regularized compromise between LDA and QDA, see Friedman 1989.
 
 Noting W the pooled within-class (corrected) covariance matrix and 
 Wi the within-class (corrected) covariance matrix of class i, the 
-regularization is done by with the two following steps:
+regularization is done by with the two successive steps:
 * Wi_1 = (1 - `gamma`) * Wi + `gamma` * W
 * Wi_2 = Wi_1 + `lb` * I 
 Then a QDA is done using matrices Wi_2.
@@ -21,8 +21,8 @@ Then a QDA is done using matrices Wi_2.
 The present function `rda` shrinks the covariance matrices Wi_2 
 to the diagonal of the Idendity matrix (ridge regularization;
 e.g. Guo et al. 2007), which is slightly different from the 
-form presented by Friedman 1989. Note also that parameter 
-`gamma` is referredin Friedman 1989 to as lambda . 
+regularization expression presented by Friedman 1989. Note also 
+that parameter `gamma` is referredin Friedman 1989 to as lambda . 
     
 ## References
 Friedman JH. Regularized Discriminant Analysis. Journal of the American 
@@ -36,25 +36,35 @@ analysis and its application in microarrays. Biostatistics.
 ## Examples
 ```julia
 using JchemoData, JLD2, StatsBase
+
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/iris.jld2") 
+db = joinpath(path_jdat, "data/forages2.jld2") 
 @load db dat
 pnames(dat)
-summ(dat.X)
+  
+X = dat.X 
+Y = dat.Y
+y = Y.typ
+wl = names(X)
+wl_num = parse.(Float64, wl)
+ntot = nro(X)
 
-X = dat.X[:, 1:4] 
-y = dat.X[:, 5]
-n = nro(X)
+plotsp(X, wl_num).f
 
-ntrain = 120
-s = sample(1:n, ntrain; replace = false) 
-Xtrain = X[s, :]
-ytrain = y[s]
-Xtest = rmrow(X, s)
-ytest = rmrow(y, s)
+summ(Y)
+tab(y)
+tab(Y.test)
 
-tab(ytrain)
-tab(ytest)
+s = Bool.(Y.test)
+Xtrain = rmrow(X, s)
+ytrain = rmrow(y, s)
+Xtest = X[s, :]
+ytest = y[s]
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+(ntot = ntot, ntrain, ntest)
+
+
 
 prior = "unif"
 #prior = "prop"
