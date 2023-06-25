@@ -3,6 +3,8 @@
 Quadratic discriminant analysis  (QDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
+* `gamma` : .
+* `lb` : Ridge regularization parameter "lambda".
 * `prior` : Type of prior probabilities for class membership.
     Posible values are: "unif" (uniform), "prop" (proportional).
 
