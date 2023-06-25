@@ -64,14 +64,12 @@ ntrain = nro(Xtrain)
 ntest = nro(Xtest)
 (ntot = ntot, ntrain, ntest)
 
-
-
-prior = "unif"
-#prior = "prop"
-fm = qda(Xtrain, ytrain; prior = prior) ;
+gamma = .2
+lb = 1e-7
+fm = rda(Xtrain, ytrain; gamma = gamma, lb = lb) ;
 pnames(fm)
 
-res = Jchemo.predict(fm, Xtest) ;
+res = Jchemo.predict(fm, Xtest)
 pnames(res)
 res.dens
 res.posterior
