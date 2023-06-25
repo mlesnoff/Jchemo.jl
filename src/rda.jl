@@ -51,8 +51,6 @@ err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
 """ 
-
-
 function rda(X, y; gamma, lb, prior = "unif")
     @assert gamma >= 0 && gamma <= 1 "gamma must be in [0, 1]"
     @assert lb >= 0 "lb must be in >= 0"
@@ -76,8 +74,7 @@ function rda(X, y; gamma, lb, prior = "unif")
         ni[i] == 1 ? zn = n : zn = ni[i]
         res.Wi[i] .*= zn / (zn - 1)        
         @. res.Wi[i] = (1 - gamma) * res.Wi[i] + gamma * res.W
-        #res.Wi[i] .= (1 - gamma) .* res.Wi[i] .+ gamma .* res.W
-        res.Wi[i] .= res.Wi[i] .+ lb .* Id
+        @. res.Wi[i] = res.Wi[i] + lb * Id 
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
     end
     Qda(fm, res.Wi, ct, wprior, lev, ni)
