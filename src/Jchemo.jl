@@ -104,7 +104,9 @@ include("baggr_util.jl")
 include("treer_dt.jl")
 
 # Discrimination 
-include("lda.jl") ; include("qda.jl")
+include("lda.jl")
+include("qda.jl")
+include("rda.jl")
 include("kdeda.jl")
 include("mlrda.jl")
 include("rrda.jl")
@@ -285,6 +287,7 @@ export
     mlrda,
     rrda, krrda,
     lda, qda, kdeda,
+    rda,
     plsrda, kplsrda, dkplsrda,
     plslda, plsqda, plskdeda,
     plsrdaavg, plsldaavg, plsqdaavg,
