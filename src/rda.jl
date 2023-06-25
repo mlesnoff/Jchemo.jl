@@ -1,18 +1,37 @@
 """
     rda(X, y; gamma, lb, prior = "unif", scal = false)
-Quadratic discriminant analysis  (QDA).
+Regularized discriminant analysis  (QDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
-* `gamma` : .
-* `lb` : Ridge regularization parameter "lambda".
+* `gamma` : Parameyter of shrinkage of the separate covariances of 
+    QDA toward a common covariance as in LDA. Must be in [0, 1].
+* `lb` : Ridge regularization parameter "lambda" (>= 0).
 * `prior` : Type of prior probabilities for class membership.
     Posible values are: "unif" (uniform), "prop" (proportional).
 
+Regularized compromise between LDA and QDA, see Friedman 1989. 
+
+Noting W the pooled within-class (corrected) covariance matrix and 
+Wi the within-class (corrected) covariance matrix of class i, the 
+regularization is done by with the two following steps:
+* Wi_1 = (1 - `gamma`) * Wi + `gamma` * W
+* Wi_2 = Wi_1 + `lb` * I 
+Then a QDA is done using matrices Wi_2.
+
+The present function `rda` shrinks the covariance matrices Wi_2 
+to the diagonal of the Idendity matrix (ridge regularization;
+e.g. Guo et al. 2007), which is slightly different from the 
+form presented by Friedman 1989. Note also that parameter 
+`gamma` is referredin Friedman 1989 to as lambda . 
+    
 ## References
 Friedman JH. Regularized Discriminant Analysis. Journal of the American 
 Statistical Association. 1989; 84(405):165-175. 
 doi:10.1080/01621459.1989.10478752.
 
+Guo Y, Hastie T, Tibshirani R. Regularized linear discriminant 
+analysis and its application in microarrays. Biostatistics. 
+2007; 8(1):86-100. doi:10.1093/biostatistics/kxj035.
 
 ## Examples
 ```julia
