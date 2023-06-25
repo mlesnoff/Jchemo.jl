@@ -59,7 +59,7 @@ matW = function(X, y)
     lev = ztab.keys
     ni = ztab.vals
     nlev = length(lev)
-    ## Case with y(s) with only 1 obs
+    ## Case with at least one y(s) with only 1 obs
     if sum(ni .== 1) > 0
         Wi_1obs = cov(X; corrected = false)
     end
