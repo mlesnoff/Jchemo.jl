@@ -1,6 +1,6 @@
 """
     rda(X, y; gamma, lb, prior = "unif", scal = false)
-Regularized discriminant analysis  (QDA).
+Regularized discriminant analysis  (RDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `gamma` : Parameyter of shrinkage of the separate covariances of 
@@ -22,8 +22,12 @@ The present function `rda` shrinks the covariance matrices Wi_2
 to the diagonal of the Idendity matrix (ridge regularization;
 e.g. Guo et al. 2007), which is slightly different from the 
 regularization expression presented by Friedman 1989. Note also 
-that parameter `gamma` is referredin Friedman 1989 to as lambda . 
-    
+that parameter `gamma` is referredin Friedman 1989 to as lambda.
+
+Particular cases:
+* `gamma` = 1 & `lb` = 0 : LDA
+* `gamma` = 0 & `lb` = 0 : QDA
+
 ## References
 Friedman JH. Regularized Discriminant Analysis. Journal of the American 
 Statistical Association. 1989; 84(405):165-175. 
