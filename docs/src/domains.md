@@ -138,6 +138,7 @@
 
 - **lda** Linear discriminant analysis (LDA)
 - **qda** Quadratic discriminant analysis (QDA)
+- **rda** Regularized discriminant analysis (RDA)
 - **kdeda** Non-parametric kernel Gaussian density estimation (KDE-DA)
 
 *On PLS latent variables*
