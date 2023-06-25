@@ -59,7 +59,8 @@ matW = function(X, y)
     lev = ztab.keys
     ni = ztab.vals
     nlev = length(lev)
-    ## Case with at least one y(s) with only 1 obs
+    ## Case with at least one class with only 1 obs
+    ## This creates Wi_1obs used in the boucle
     if sum(ni .== 1) > 0
         Wi_1obs = cov(X; corrected = false)
     end
