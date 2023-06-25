@@ -2,6 +2,9 @@
 
 ### *Version 0.1.23*
 
+- News
+    - **rda**: Regularized discriminant analysis (RDA)
+
 - Modifications
     - Code improvement.
 
