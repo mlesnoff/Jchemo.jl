@@ -3,7 +3,7 @@
 Regularized discriminant analysis  (RDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
-* `gamma` : Parameyter of shrinkage of the separate covariances of 
+* `gamma` : Shrinkage parameter of the separate covariances of 
     QDA toward a common covariance as in LDA. Must be in [0, 1].
 * `lb` : Ridge regularization parameter "lambda" (>= 0).
 * `prior` : Type of prior probabilities for class membership.
@@ -110,5 +110,4 @@ function rda(X, y; gamma, lb, prior = "unif")
     end
     Qda(fm, res.Wi, ct, wprior, lev, ni)
 end
-
 
