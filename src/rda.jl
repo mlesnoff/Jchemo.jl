@@ -11,18 +11,18 @@ Regularized discriminant analysis  (RDA).
 
 Regularized compromise between LDA and QDA, see Friedman 1989. 
 
-Noting W the pooled within-class (corrected) covariance matrix and 
-Wi the within-class (corrected) covariance matrix of class i, the 
+Noting W the (corrected) pooled within-class covariance matrix and 
+Wi the (corrected) within-class covariance matrix of class i, the 
 regularization is done by with the two successive steps:
-* Wi_1 = (1 - `alpha`) * Wi + `alpha` * W
-* Wi_2 = Wi_1 + `lb` * I 
+* Wi(1) = (1 - `alpha`) * Wi + `alpha` * W       (compromise between LDA and QDA)
+* Wi(2) = Wi(1) + `lb` * I       (ridge regularization)
 Then a QDA is done using matrices Wi_2.
 
-The present function `rda` shrinks the covariance matrices Wi_2 
-to the diagonal of the Idendity matrix (ridge regularization;
-e.g. Guo et al. 2007), which is slightly different from the 
-regularization expression presented by Friedman 1989. Note also 
-that parameter `alpha` is referredin Friedman 1989 to as lambda.
+Function `rda` shrinks the covariance matrices Wi(2) 
+to the diagonal of the Idendity matrix (ridge regularization)
+(e.g. Guo et al. 2007). This is slightly different from the 
+regularization expression used by Friedman 1989. 
+Note: Parameter `alpha` is referred to as lambda in Friedman 1989.
 
 Particular cases:
 * `alpha` = 1 & `lb` = 0 : LDA
