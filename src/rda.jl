@@ -21,7 +21,7 @@ Then a QDA is done using matrices Wi_2.
 Function `rda` shrinks the covariance matrices Wi(2) 
 to the diagonal of the Idendity matrix (ridge regularization)
 (e.g. Guo et al. 2007). This is slightly different from the 
-regularization expression used by Friedman 1989. 
+regularization expression used by Friedman 1989 (Eq.18). 
 Note: Parameter `alpha` is referred to as lambda in Friedman 1989.
 
 Particular cases:
