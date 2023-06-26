@@ -14,9 +14,9 @@ Regularized compromise between LDA and QDA, see Friedman 1989.
 Noting W the (corrected) pooled within-class covariance matrix and 
 Wi the (corrected) within-class covariance matrix of class i, the 
 regularization is done by with the two successive steps:
-* Wi(1) = (1 - `alpha`) * Wi + `alpha` * W       (compromise between LDA and QDA)
-* Wi(2) = Wi(1) + `lb` * I       (ridge regularization)
-Then a QDA is done using matrices Wi_2.
+* Compromise between LDA and QDA: Wi(1) = (1 - `alpha`) * Wi + `alpha` * W       
+* Ridge regularization: Wi(2) = Wi(1) + `lb` * I
+Then a QDA is done using matrices Wi(2).
 
 Function `rda` shrinks the covariance matrices Wi(2) 
 to the diagonal of the Idendity matrix (ridge regularization)
