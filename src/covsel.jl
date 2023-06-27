@@ -5,12 +5,12 @@ Variable (feature) selection from partial correlation or covariance (Covsel).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `nlv` : Nb. variables to select.
-* `typ` : Criterion used at each variable selection. 
-    Possible values are: "cov" (squared covariance with `Y`, such as in Roger 
+* `typ` : Criterion used for the variable selection. 
+    Possible values are "cov" (squared covariance with `Y`, such as in Roger 
     et al. 2011) and "cor" (squared correlation with `Y`).
 
 The selection is sequential. Once a variable is selected, 
-`X` and `Y` are orthogonolized to this variable, 
+`X` and `Y` are orthogonolized (deflated) to this variable, 
 and a new variable (the one showing the maximum value for the criterion)
 is selected.
 
@@ -108,14 +108,14 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing,
         selcov[i] = z[zsel]
         cov2[zsel] = z[zsel]
         x = vcol(X, zsel)
-        H .= x * x' / dot(x, x)
+        @. H = x * x' / dot(x, x)
         X .-= H * X 
         Y .-= H * Y
         xss[i] = sum(X.^2)
         yss[i] = sum(Y.^2)
     end
-    cumpvarx = 1 .- xss / xsstot
-    cumpvary = 1 .- yss / ysstot
+    @. cumpvarx = 1 - xss / xsstot
+    @. cumpvary = 1 - yss / ysstot
     sel = DataFrame((sel = selvar, cov2 = selcov,
         cumpvarx = cumpvarx, cumpvary = cumpvary))
     (sel = sel, cov2, C)
