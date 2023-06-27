@@ -27,6 +27,8 @@ Note: Parameter `alpha` is referred to as lambda in Friedman 1989.
 Particular cases:
 * `alpha` = 1 & `lb` = 0 : LDA
 * `alpha` = 0 & `lb` = 0 : QDA
+* `alpha` = 1 & `lb` > 0 : Penalized LDA (Hstie et al 1995) with diagonal
+    regularization matrix
 
 ## References
 Friedman JH. Regularized Discriminant Analysis. Journal of the American 
@@ -36,6 +38,9 @@ doi:10.1080/01621459.1989.10478752.
 Guo Y, Hastie T, Tibshirani R. Regularized linear discriminant 
 analysis and its application in microarrays. Biostatistics. 
 2007; 8(1):86-100. doi:10.1093/biostatistics/kxj035.
+
+Hastie, T., Buja, A., Tibshirani, R., 1995. Penalized Discriminant Analysis. 
+The Annals of Statistics 23, 73–102.
 
 ## Examples
 ```julia
