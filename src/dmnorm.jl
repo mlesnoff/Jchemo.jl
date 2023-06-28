@@ -119,7 +119,7 @@ function dmnorm!(X = nothing; mu = nothing, S = nothing)
     end
     U = cholesky!(Hermitian(S)).U # This modifies S only if S is provided
     detS = det(U)^2  
-    detS == 0 ? detS = 1e-20 : nothing
+    detS < 1e-20 ? detS = 1e-20 : nothing
     LinearAlgebra.inv!(U)
     #cholesky!(S)
     #U = sqrt(diag(diag(S), nrow = p))
@@ -138,8 +138,9 @@ function predict(object::Dmnorm, X)
     p = size(X, 2)
     mu = reshape(object.mu, 1, length(object.mu))
     d = mahsqchol(X, mu, object.Uinv)
-    ds = (2 * pi)^(-p / 2) * (1 / sqrt(object.detS)) * exp.(-.5 * d)
-    (pred = ds,)
+    cst = (2 * pi)^(-p / 2)
+    @. d = cst / sqrt(object.detS) * exp(-.5 * d)
+    (pred = d,)
 end
 
 
