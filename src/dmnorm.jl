@@ -139,7 +139,7 @@ function predict(object::Dmnorm, X)
     mu = reshape(object.mu, 1, length(object.mu))
     d = mahsqchol(X, mu, object.Uinv)
     cst = (2 * pi)^(-p / 2)
-    @. d = cst / sqrt(object.detS) * exp(-.5 * d)
+    @. d = cst / sqrt(object.detS) * exp(d / 2)
     (pred = d,)
 end
 
