@@ -105,6 +105,10 @@ fm = plsravg(Xtrain, ytrain; nlv = nlv,
 res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
+
+predlv = reduce(hcat, res.predlv)
+plotsp(predlv, 0:(nco(predlv) - 1); nsamp = 30).f
+
 ```
 """ 
 function plsravg(X, Y, weights = ones(nro(X)); nlv, 
