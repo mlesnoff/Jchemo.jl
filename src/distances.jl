@@ -82,7 +82,7 @@ between the observations (rows) of `X` and `Y`.
     of a covariance matrix S.
     If not given, the factorization is done on S, the uncorrected covariance matrix of `X`.
 
-When `X` and `Y`are (n, p) and (m, p), repectively, it returns an object (n, m) with:
+When `X` and `Y` are (n, p) and (m, p), repectively, it returns an object (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
 
 ## Examples
