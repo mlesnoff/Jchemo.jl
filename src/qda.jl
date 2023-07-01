@@ -2,25 +2,28 @@ struct Qda
     fm
     Wi::AbstractVector  
     ct::Array{Float64}
-    wprior::AbstractVector
+    wprior::Vector{Float64}
+    theta::Vector{Float64}
+    ni::Vector{Int64}
     lev::AbstractVector
-    ni::AbstractVector
 end
 
 """
-    qda(X, y; prior = "unif", scal = false)
+    qda(X, y, weights = ones(nro(X)); 
+        alpha = 0, prior = "unif")
 Quadratic discriminant analysis  (QDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
-* `alpha` : Continuum parameter (scalar ∈ [0, 1]) between 
-    QDA (`alpha = 0`; default) and LDA (`alpha = 1`).
+* `weights` : Weights (n) of the observations. 
+    Internally normalized to sum to 1.
+* `alpha` : Scalar (∈ [0, 1]) defining the continuum
+    between QDA (`alpha = 0`; default) and LDA (`alpha = 1`).
 * `prior` : Type of prior probabilities for class membership.
     Posible values are: "unif" (uniform), "prop" (proportional).
 
-Parameter `alpha` allows to shrink the separate covariances by class 
-(Wi) toward a common covariance as in LDA (W, except that the denominator 
-is not n - K). 
-This corresponds to the first step (Eqs.16) of the RDA proposed by Friedman 1989.
+A value `alpha` > 0 shrinks the separate covariances by class 
+(Wi) toward a common LDA covariance (W). This corresponds to the first
+step (Eqs.16) of the RDA proposed by Friedman 1989.
 
 ## References
 Friedman JH. Regularized Discriminant Analysis. Journal of the American 
@@ -91,7 +94,7 @@ function qda(X, y; alpha = 0, prior = "unif")
         res.Wi[i] .*= zn / (zn - 1)
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
     end
-    Qda(fm, res.Wi, ct, wprior, lev, ni)
+    Qda(fm, res.Wi, ct, wprior, theta, ni, lev)
 end
 
 """
