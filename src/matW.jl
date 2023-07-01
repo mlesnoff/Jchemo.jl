@@ -56,7 +56,7 @@ matB = function(X, y, weights = ones(nro(X)))
         ct[i, :] = colmean(X[s, :], weights[s])
     end
     B = covm(ct, theta)
-    (B = B, ct, theta, lev, ni, weights)
+    (B = B, ct, theta, ni, lev, weights)
 end
 
 """
@@ -103,7 +103,7 @@ matW = function(X, y, weights = ones(nro(X)))
         @. W = W + theta[i] * Wi[i]
         ## Alternative: give weight = 0 to the class(es) with 1 obs
     end
-    (W = W, Wi, theta, lev, ni, weights)
+    (W = W, Wi, theta, ni, lev, weights)
 end
 
 
