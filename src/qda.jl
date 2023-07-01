@@ -68,7 +68,8 @@ err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
 """ 
-function qda(X, y; alpha = 0, prior = "unif")
+function qda(X, y, weights = ones(nro(X)); 
+        alpha = 0, prior = "unif")
     @assert alpha >= 0 && alpha <= 1 "alpha must ∈ [0, 1]"
     # Scaling X has no effect
     X = ensure_mat(X)
