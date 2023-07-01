@@ -1,20 +1,21 @@
 """
-    matB(X, y)
-Between-class covariance matrix (B).
+    matB(X, y, weights = ones(nro(X)))
+Between-class covariance matrix.
 * `X` : X-data (n, p).
 * `y` : A vector (n) defining the class membership.
+* `weights` : Weights (n) of the observations. 
+    Internally normalized to sum to 1.
 
 Compute the between-class covariance matrix (B) of `X`.
 This is the (non-corrected) covariance matrix of 
-the weighted (ni / n) class centers.
+the weighted class centers.
 
 ## Examples
 ```julia
-n = 10 ; p = 3
+n = 20 ; p = 3
 X = rand(n, p)
 X
 y = rand(1:3, n)
-#y = [3 ; ones(n - 2) ; 10]
 res = matB(X, y)
 res.B
 res.lev
@@ -26,16 +27,19 @@ res.Wi
 
 matW(X, y).W + matB(X, y).B 
 cov(X; corrected = false)
+
+w = ones(n)
+matW(X, y, w).W + matB(X, y, w).B
+cov(X; corrected = false)
+
+w = rand(n)
+matW(X, y, w).theta 
+matB(X, y, w).theta 
+
+matW(X, y, w).W + matB(X, y, w).B
+covm(X, w)
 ```
 """ 
-matB = function(X, y)
-    X = ensure_mat(X)
-    res = aggstat(X, y; fun = mean)
-    ni = tab(y).vals
-    B = covm(res.X, mweight(ni))
-    (B = B, ct = res.X, lev = res.lev, ni)
-end
-
 matB = function(X, y, weights = ones(nro(X)))
     X = ensure_mat(X)
     weights = mweight(weights)
@@ -46,11 +50,12 @@ matB = function(X, y, weights = ones(nro(X)))
     nlev = length(lev)
     theta = aggstat(weights, y; fun = sum).X
     ct = similar(X, nlev, p)
-    
-    res = aggstat(X, y; fun = mean)
-    ni = tab(y).vals
-    B = covm(res.X, theta)
-    (B = B, ct = res.X, theta, weights, lev = res.lev, ni)
+    for i = 1:nlev
+        s = findall(y .== lev[i]) 
+        ct[i, :] = colmean(X[s, :], weights[s])
+    end
+    B = covm(ct, theta)
+    (B = B, ct, theta, weights, lev = lev, ni)
 end
 
 """
