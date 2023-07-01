@@ -37,11 +37,12 @@ matB = function(X, y)
 end
 
 """
-    matW(X, y)
     matW(X, y, weights = ones(nro(X)))
-Within-class covariance matrix (W).
+Within-class covariance matrices.
 * `X` : X-data (n, p).
 * `y` : A vector (n) defing the class membership.
+* `weights` : Weights (n) of the observations. 
+    Internally normalized to sum to 1.
 
 Compute the (non-corrected) within-class covariance matrices (Wi)
  of `X`, and the pooled covariance matrix W by:
