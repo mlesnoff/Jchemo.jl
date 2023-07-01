@@ -45,9 +45,9 @@ matB = function(X, y, weights = ones(nro(X)))
     y = vec(y)  # required for findall 
     p = nco(X)
     weights = mweight(weights)
-    ztab = tab(y)
-    lev = ztab.keys
-    ni = ztab.vals
+    taby = tab(y)
+    lev = taby.keys
+    ni = taby.vals
     nlev = length(lev)
     theta = aggstat(weights, y; fun = sum).X
     ct = similar(X, nlev, p)
@@ -80,9 +80,9 @@ matW = function(X, y, weights = ones(nro(X)))
     y = vec(y)  # required for findall 
     p = nco(X) 
     weights = mweight(weights)
-    ztab = tab(y)
-    lev = ztab.keys
-    ni = ztab.vals
+    taby = tab(y)
+    lev = taby.keys
+    ni = taby.vals
     nlev = length(lev)
     theta = aggstat(weights, y; fun = sum).X
     ## Case with at least one class with only 1 obs:
