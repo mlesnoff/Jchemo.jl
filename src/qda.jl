@@ -73,6 +73,7 @@ function qda(X, y; alpha = 0, prior = "unif")
     # Scaling X has no effect
     X = ensure_mat(X)
     n, p = size(X)
+    weights = mweight(weights)
     res = matW(X, y, weights)
     theta = res.theta
     ni = res.ni
