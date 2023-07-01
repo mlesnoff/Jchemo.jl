@@ -64,7 +64,6 @@ function lda(X, y, weights = ones(nro(X)); prior = "unif")
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
-
     res.W .*= n / (n - nlev)    # unbiased estimate
     if isequal(prior, "unif")
         wprior = ones(nlev) / nlev
