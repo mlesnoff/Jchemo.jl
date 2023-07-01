@@ -73,12 +73,15 @@ function qda(X, y; alpha = 0, prior = "unif")
     # Scaling X has no effect
     X = ensure_mat(X)
     n = nro(X)
-    z = aggstat(X, y; fun = mean)
-    ct = z.X
-    lev = z.lev
-    nlev = length(lev)
+    #z = aggstat(X, y; fun = mean)
+    #ct = z.X
+    #lev = z.lev
+    #nlev = length(lev)
     res = matW(X, y)
+    theta = res.theta
     ni = res.ni
+    lev = res.lev
+    nlev = length(lev)
     if isequal(prior, "unif")
         wprior = ones(nlev) / nlev
     elseif isequal(prior, "prop")
