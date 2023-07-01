@@ -307,7 +307,7 @@
 - **krbf, kpol** Build kernel Gram matrices
 - **locw** Working function for local (kNN) models
 - **mad** Median absolute deviation (not exported)
-- **matB**, **matW** Between- and within-covariance matrices
+- **matB**, **matW** Between- and within-class covariance matrices
 - **mlev** Return the sorted levels of a dataset 
 - **mweight** Normalize a vector to sum to 1
 - **nco**, **nro**, Nb. rows and columns of an object
