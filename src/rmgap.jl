@@ -47,8 +47,8 @@ end
 
 function rmgap!(X; indexcol, k = 5)
     X = ensure_mat(X)
-    size(X, 2) == 1 ? X = reshape(X, 1, :) : nothing
-    p = size(X, 2)
+    nco(X) == 1 ? X = reshape(X, 1, :) : nothing
+    p = nco(X)
     k = max(k, 2)
     ngap = length(indexcol)
     @inbounds for i = 1:ngap

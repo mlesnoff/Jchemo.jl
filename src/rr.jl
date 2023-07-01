@@ -144,7 +144,7 @@ end
 
 function rrchol!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
         scal = false)
-    @assert size(X, 2) > 1 "Method only working for X with > 1 column."
+    @assert nco(X) > 1 "Method only working for X with > 1 column."
     p = nco(X)
     weights = mweight(weights)
     xmeans = colmean(X, weights) 

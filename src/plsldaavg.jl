@@ -58,7 +58,7 @@ confusion(res.pred, ytest).cnt
 function plsldaavg(X, y, weights = ones(nro(X)); nlv,
         scal = false)
     n = size(X, 1)
-    p = size(X, 2)
+    p = nco(X)
     nlv = eval(Meta.parse(nlv))
     nlvmax = maximum(nlv)
     nlv = (max(minimum(nlv), 0):min(nlvmax, n, p))

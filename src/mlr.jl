@@ -105,7 +105,7 @@ function mlrchol(X, Y, weights = ones(nro(X)))
 end
 
 function mlrchol!(X::Matrix, Y::Matrix, weights = ones(nro(X)))
-    @assert size(X, 2) > 1 "Method only working for X with > 1 column."
+    @assert nco(X) > 1 "Method only working for X with > 1 column."
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   

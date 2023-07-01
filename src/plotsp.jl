@@ -1,5 +1,5 @@
 """
-    plotsp(X, wl = 1:size(X, 2); resolution = (500, 350),
+    plotsp(X, wl = 1:nco(X); resolution = (500, 350),
         color = nothing, nsamp, kwargs...) 
 Plotting spectra.
 * `X` : X-data.

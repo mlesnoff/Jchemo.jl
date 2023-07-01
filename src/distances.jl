@@ -104,7 +104,7 @@ mahsqchol(1, 4, sqrt(2.1))
 function mahsqchol(X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)    
-    p = size(X, 2)
+    p = nco(X)
     S = Statistics.cov(X, corrected = false)
     if p == 1
         Uinv = inv(sqrt(S)) 

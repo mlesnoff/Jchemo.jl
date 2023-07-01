@@ -85,7 +85,7 @@ function fdif(X; f = 2)
 end
 
 function fdif!(M::Matrix, X::Matrix; f = 2)
-    p = size(X, 2)
+    p = nco(X)
     zp = p - f + 1
     @Threads.threads for j = 1:zp
         M[:, j] .= vcol(X, j + f - 1) .- vcol(X, j)
