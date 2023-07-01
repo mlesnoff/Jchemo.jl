@@ -58,13 +58,11 @@ function lda(X, y, weights = ones(nro(X)); prior = "unif")
     X = ensure_mat(X)
     n, p = size(X)
     weights = mweight(weights)
-    taby = tab(y)
-    lev = taby.keys
-    ni = taby.vals
-    nlev = length(lev)
     res = matW(X, y, weights)
+    ni = res.ni
+    lev = res.lev
+    nlev = length(lev)
 
-    
     res.W .*= n / (n - nlev)    # unbiased estimate
     if isequal(prior, "unif")
         wprior = ones(nlev) / nlev
