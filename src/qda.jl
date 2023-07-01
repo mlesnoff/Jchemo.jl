@@ -72,7 +72,7 @@ function qda(X, y; alpha = 0, prior = "unif")
     @inbounds for i = 1:nlev
         ni[i] == 1 ? zn = n : zn = ni[i]
         if alpha > 0
-            @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W  
+            @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
         end
         res.Wi[i] .*= zn / (zn - 1)
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
