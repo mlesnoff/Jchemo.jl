@@ -36,6 +36,17 @@ matB = function(X, y)
     (B = B, ct = res.X, lev = res.lev, ni)
 end
 
+matB = function(X, y, weights = ones(nro(X)))
+    X = ensure_mat(X)
+    weights = mweight(weights)
+
+    
+    res = aggstat(X, y; fun = mean)
+    ni = tab(y).vals
+    B = covm(res.X, mweight(ni))
+    (B = B, ct = res.X, theta, weights, lev = res.lev, ni)
+end
+
 """
     matW(X, y, weights = ones(nro(X)))
 Within-class covariance matrices.
@@ -62,13 +73,13 @@ matW = function(X, y, weights = ones(nro(X)))
     ni = ztab.vals
     nlev = length(lev)
     weights = mweight(weights)
+    theta = aggstat(weights, y; fun = sum).X
     ## Case with at least one class with only 1 obs:
     ## this creates Wi_1obs used in the boucle
     if sum(ni .== 1) > 0
         Wi_1obs = covm(X, weights)
     end
     ## End
-    theta = mweight(ni)
     Wi = list(nlev, Matrix{Float64})
     W = zeros(p, p)
     @inbounds for i in 1:nlev 
@@ -81,7 +92,7 @@ matW = function(X, y, weights = ones(nro(X)))
         @. W = W + theta[i] * Wi[i]
         ## Alternative: give weight = 0 to the class(es) with 1 obs
     end
-    (W = W, Wi, weights, lev, ni)
+    (W = W, Wi, theta, weights, lev, ni)
 end
 
 
