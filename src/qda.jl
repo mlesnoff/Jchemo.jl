@@ -93,8 +93,6 @@ function qda(X, y; alpha = 0, prior = "unif")
         if alpha > 0
             @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
         end
-        ## The case 'alpha = 1' is not excatly LDA
-        ## only because the denominator below is not n - K
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
     end
     Qda(fm, res.Wi, ct, wprior, theta, ni, lev, 
@@ -113,7 +111,6 @@ function predict(object::Qda, X)
     lev = object.lev
     nlev = length(lev) 
     dens = similar(X, m, nlev)
-    ni = object.ni
     for i = 1:nlev
         dens[:, i] .= vec(Jchemo.predict(object.fm[i], X).pred)
     end
