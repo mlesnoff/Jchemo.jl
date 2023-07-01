@@ -9,10 +9,13 @@ struct Lda
 end
 
 """
-    lda(X, y; prior = "unif", scal = false)
+    lda(X, y, weights = ones(nro(X)); 
+        prior = "unif")
 Linear discriminant analysis  (LDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
+* `weights` : Weights (n) of the observations. 
+    Internally normalized to sum to 1.
 * `prior` : Type of prior probabilities for class membership.
     Posible values are: "unif" (uniform), "prop" (proportional).
 
@@ -54,7 +57,8 @@ err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
 """ 
-function lda(X, y, weights = ones(nro(X)); prior = "unif")
+function lda(X, y, weights = ones(nro(X)); 
+        prior = "unif")
     # Scaling X has no effect
     X = ensure_mat(X)
     n, p = size(X)
@@ -95,7 +99,7 @@ function predict(object::Lda, X)
     for i = 1:nlev
         dens[:, i] .= vec(Jchemo.predict(object.fm[i], X).pred)
     end
-    @. A = object.wprior' * dens
+    A = object.wprior' .* dens
     v = sum(A, dims = 2)
     posterior = scale(A', v)'                    # This could be replaced by code similar as in scale! 
     z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
