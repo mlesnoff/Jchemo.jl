@@ -41,15 +41,16 @@ tab(y)
 s = y .== "setosa"
 zX = X[s, :]
 
-fm = dmnorm(zT) ;
+fm = dmnormlog(zX) ;
 pnames(fm)
 fm.Uinv 
 fm.logdetS
-pred = Jchemo.predict(fm, zT).pred
+pred = Jchemo.predict(fm, zX).pred
 head(pred) 
 
-
-
+fm0 = dmnorm(zX) ;
+pred0 = Jchemo.predict(fm0, zX).pred
+head(log.(pred0))
 ```
 """ 
 function dmnormlog(X = nothing; mu = nothing, S = nothing,
