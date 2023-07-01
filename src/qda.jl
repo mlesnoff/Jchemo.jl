@@ -89,6 +89,8 @@ function qda(X, y, weights = ones(nro(X));
     fm = list(nlev)
     ct = similar(X, nlev, p)
     @inbounds for i = 1:nlev
+        s = findall(y .== lev[i]) 
+        ct[i, :] = colmean(X[s, :], weights[s])
         ni[i] == 1 ? zn = n : zn = ni[i]
         res.Wi[i] .*= zn / (zn - 1)
         if alpha > 0
