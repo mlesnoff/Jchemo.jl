@@ -85,6 +85,8 @@ function qda(X, y; alpha = 0, prior = "unif")
         if alpha > 0
             @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
         end
+        ## The case 'alpha = 1' is not excatly LDA
+        ## only because the denominator below is not n - K
         res.Wi[i] .*= zn / (zn - 1)
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
     end
