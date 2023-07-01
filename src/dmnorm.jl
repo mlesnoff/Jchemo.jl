@@ -2,6 +2,7 @@ struct Dmnorm
     mu
     Uinv 
     detS
+    cst
 end
 
 """
@@ -117,6 +118,8 @@ function dmnorm!(X = nothing; mu = nothing, S = nothing)
     if isnothing(S)
         S = cov(X; corrected = true)
     end
+    p = nro(S)
+    cst = (2 * pi)^(-p / 2)
     U = cholesky!(Hermitian(S)).U # This modifies S only if S is provided
     detS = det(U)^2  
     detS < 1e-20 ? detS = 1e-20 : nothing
@@ -124,7 +127,7 @@ function dmnorm!(X = nothing; mu = nothing, S = nothing)
     #cholesky!(S)
     #U = sqrt(diag(diag(S), nrow = p))
     #Uinv = solve(diag(diag(S), nrow = p))
-    Dmnorm(mu, U, detS)
+    Dmnorm(mu, U, detS, cst)
 end
 
 """
@@ -135,11 +138,9 @@ Compute predictions from a fitted model.
 """ 
 function predict(object::Dmnorm, X)
     X = ensure_mat(X)
-    p = size(X, 2)
     mu = reshape(object.mu, 1, length(object.mu))
     d = mahsqchol(X, mu, object.Uinv)
-    cst = (2 * pi)^(-p / 2)
-    @. d = cst / sqrt(object.detS) * exp(-d / 2)  # density
+    @. d = object.cst / sqrt(object.detS) * exp(-d / 2)  # = density
     (pred = d,)
 end
 
