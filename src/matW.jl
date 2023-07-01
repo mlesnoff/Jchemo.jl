@@ -39,6 +39,7 @@ end
 
 """
     matW(X, y)
+    matW(X, y, weights = ones(nro(X)))
 Within-class covariance matrix (W).
 * `X` : X-data (n, p).
 * `y` : A vector (n) defing the class membership.
