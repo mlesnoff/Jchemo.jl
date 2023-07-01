@@ -4,7 +4,7 @@ Regularized discriminant analysis  (RDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `alpha` : Shrinkage parameter of the separate covariances of 
-    QDA toward a common covariance as in LDA. Must be in [0, 1].
+    QDA toward a common covariance as in LDA. Must ∈ [0, 1].
 * `lb` : Ridge regularization parameter "lambda" (>= 0).
 * `prior` : Type of prior probabilities for class membership.
     Posible values are: "unif" (uniform), "prop" (proportional).
