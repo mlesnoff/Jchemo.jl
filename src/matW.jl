@@ -66,12 +66,11 @@ Within-class covariance matrices.
 * `weights` : Weights (n) of the observations. 
     Internally normalized to sum to 1.
 
-Compute the (non-corrected) within-class covariance matrices (Wi)
- of `X`, and the pooled covariance matrix W by:
-* W = (n1 / n) * W1 + ... + (nI / n) * WI 
+Compute the (non-corrected) within-class and pooled covariance 
+matrices (Wi and W) of `X`, and the pooled covariance matrix W. 
 
 If class i contains only one observation, 
-Wi is computed by `cov(`X`; corrected = false)`.
+Wi is computed by `covm(`X`, `weights`)`.
 
 For examples, see `?matB`. 
 """ 
