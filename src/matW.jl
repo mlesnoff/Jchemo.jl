@@ -65,7 +65,7 @@ matW = function(X, y)
         Wi_1obs = cov(X; corrected = false)
     end
     ## End
-    w = mweight(ni)
+    theta = mweight(ni)
     Wi = list(nlev, Matrix{Float64})
     W = zeros(1, 1)
     @inbounds for i in 1:nlev 
@@ -76,9 +76,9 @@ matW = function(X, y)
             Wi[i] = cov(X[s, :]; corrected = false)
         end
         if i == 1  
-            W = w[i] * Wi[i] 
+            W = theta[i] * Wi[i] 
         else 
-            @. W = W + w[i] * Wi[i]
+            @. W = W + theta[i] * Wi[i]
             ## Alternative: Could give weight = 0 to the class(es) with 1 obs
         end
     end
