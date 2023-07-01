@@ -6,6 +6,7 @@
     - **rda**: Regularized discriminant analysis (RDA)
 
 - Modifications
+    - Argument 'weights' added to **matB**, **matW**
     - **dmnorm**: new argument 'simpl'. 
     - Code improvement.
 
