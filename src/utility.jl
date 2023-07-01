@@ -439,8 +439,7 @@ covm(X, Y, w)
 function covm(X, w)
     zX = copy(ensure_mat(X))
     w = mweight(w)
-    xmeans = colmean(zX, w)
-    center!(zX, xmeans)
+    center!(zX, colmean(zX, w))
     zX = Diagonal(sqrt.(w)) * zX
     zX' * zX
 end
@@ -449,10 +448,8 @@ function covm(X, Y, w)
     zX = copy(ensure_mat(X))
     zY = copy(ensure_mat(Y))
     w = mweight(w)
-    xmeans = colmean(X, w)
-    ymeans = colmean(Y, w)
-    center!(zX, xmeans)
-    center!(zY, ymeans)
+    center!(zX, colmean(zX, w))
+    center!(zY, colmean(zY, w))
     zX' * Diagonal(w) * zY
 end
 
