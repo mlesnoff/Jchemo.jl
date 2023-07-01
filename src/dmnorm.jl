@@ -7,7 +7,9 @@ end
 
 """
     dmnorm(X = nothing; mu = nothing, S = nothing,
-        simpl::Boolean = false)
+        simpl::Bool = false)
+    dmnorm!(X = nothing; mu = nothing, S = nothing,
+        simpl::Bool = false)
 Normal probability density estimation.
 * `X` : X-data (n, p) used to estimate the mean and 
     the covariance matrix. If `nothing`, `mu` and `S` 
