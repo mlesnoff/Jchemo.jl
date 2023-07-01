@@ -6,6 +6,7 @@
     - **rda**: Regularized discriminant analysis (RDA)
 
 - Modifications
+    - **dmnorm**: new argument 'simpl'. 
     - Code improvement.
 
 - Breaking changes

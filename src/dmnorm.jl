@@ -21,6 +21,10 @@ Normal probability density estimation.
 
 Data `X` can be univariate (p = 1) or multivariate (p > 1). See examples.
 
+When `simpl= true`, the density returned by function `predict` is 
+exp(-d / 2), where d is the squared Mahalanobis distance to the center 
+of `X`. 
+
 Note: When the number of colums (p) becomes large, the determinant of the 
 covariance matrix (object `detS`) can tend to 0 or, conversely, to infinity.
 In function `dmnorm`, `detS` is set to 1e-20 when the computed `detS` < 1e-20.  
