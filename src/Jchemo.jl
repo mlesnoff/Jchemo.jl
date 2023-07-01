@@ -30,6 +30,7 @@ include("rmgap.jl")
 
 # Distributions
 include("dmnorm.jl")
+include("dmnormlog.jl")
 include("dmkern.jl")
 
 # Exploratory
@@ -206,6 +207,7 @@ export
     vcol, vrow,
     # Distributions
     dmnorm, dmnorm!,
+    dmnormlog, dmnormlog!,
     dmkern,
     # Pre-processing
     detrend, detrend!, 
