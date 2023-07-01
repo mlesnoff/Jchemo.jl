@@ -24,7 +24,7 @@ Quadratic discriminant analysis  (QDA).
 
 A value `alpha` > 0 shrinks the separate covariances by class 
 (Wi) toward a common LDA covariance (W). This corresponds to the first
-step (Eqs.16) of the RDA proposed by Friedman 1989.
+regularization (Eqs.16) proposed by Friedman 1989.
 
 ## References
 Friedman JH. Regularized Discriminant Analysis. Journal of the American 
