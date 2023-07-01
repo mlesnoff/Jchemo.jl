@@ -51,7 +51,7 @@ matB = function(X, y, weights = ones(nro(X)))
     lev = taby.keys
     ni = taby.vals
     nlev = length(lev)
-    theta = aggstat(weights, y; fun = sum).X
+    theta = vec(aggstat(weights, y; fun = sum).X)
     ct = similar(X, nlev, p)
     @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
@@ -86,7 +86,7 @@ matW = function(X, y, weights = ones(nro(X)))
     lev = taby.keys
     ni = taby.vals
     nlev = length(lev)
-    theta = aggstat(weights, y; fun = sum).X
+    theta = vec(aggstat(weights, y; fun = sum).X)
     ## Case with at least one class with only 1 obs:
     ## this creates Wi_1obs used in the boucle
     if sum(ni .== 1) > 0
