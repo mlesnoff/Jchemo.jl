@@ -54,7 +54,8 @@ For examples, see `?matB`.
 """ 
 matW = function(X, y)
     X = ensure_mat(X)
-    y = vec(y)  # required for findall 
+    y = vec(y)  # required for findall
+    p = nco(X) 
     ztab = tab(y)
     lev = ztab.keys
     ni = ztab.vals
@@ -67,7 +68,7 @@ matW = function(X, y)
     ## End
     theta = mweight(ni)
     Wi = list(nlev, Matrix{Float64})
-    W = zeros(1, 1)
+    W = zeros(p, p)
     @inbounds for i in 1:nlev 
         if ni[i] == 1
             Wi[i] = Wi_1obs
@@ -75,14 +76,42 @@ matW = function(X, y)
             s = findall(y .== lev[i])
             Wi[i] = cov(X[s, :]; corrected = false)
         end
-        if i == 1  
-            W = theta[i] * Wi[i] 
-        else 
-            @. W = W + theta[i] * Wi[i]
-            ## Alternative: Could give weight = 0 to the class(es) with 1 obs
-        end
+        @. W = W + theta[i] * Wi[i]
+        ## Alternative: give weight = 0 to the class(es) with 1 obs
     end
     (W = W, Wi, lev, ni)
 end
+
+matW = function(X, y, weights = ones(nro(X)))
+    X = ensure_mat(X)
+    y = vec(y)  # required for findall 
+    p = nco(X) 
+    ztab = tab(y)
+    lev = ztab.keys
+    ni = ztab.vals
+    nlev = length(lev)
+    weights = mweight(weights)
+    ## Case with at least one class with only 1 obs:
+    ## this creates Wi_1obs used in the boucle
+    if sum(ni .== 1) > 0
+        Wi_1obs = covm(X, weights)
+    end
+    ## End
+    theta = mweight(ni)
+    Wi = list(nlev, Matrix{Float64})
+    W = zeros(p, p)
+    @inbounds for i in 1:nlev 
+        if ni[i] == 1
+            Wi[i] = Wi_1obs
+        else
+            s = findall(y .== lev[i])
+            Wi[i] = covm(X[s, :], weights[s])
+        end
+        @. W = W + theta[i] * Wi[i]
+    end
+    (W = W, Wi, weights, lev, ni)
+end
+
+
 
 
