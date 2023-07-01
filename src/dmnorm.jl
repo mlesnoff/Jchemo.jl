@@ -6,7 +6,8 @@ struct Dmnorm
 end
 
 """
-    dmnorm(X = nothing; mu = nothing, S = nothing)
+    dmnorm(X = nothing; mu = nothing, S = nothing,
+        simpl::Boolean = false)
 Normal probability density estimation.
 * `X` : X-data (n, p) used to estimate the mean and 
     the covariance matrix. If `nothing`, `mu` and `S` 
@@ -15,8 +16,14 @@ Normal probability density estimation.
     If `nothing`, `mu` is computed by the column-means of `X`.
 * `S` : Covariance matrix of the normal distribution.
     If `nothing`, `S` is computed by cov(`X`; corrected = true).
+* `simpl` : Boolean. If `true`, the constant term and the determinant 
+    in the density formula are set to 1. Default to `false`.
 
 Data `X` can be univariate (p = 1) or multivariate (p > 1). See examples.
+
+Note: When the number of colums (p) becomes large, the determinant of the 
+covariance matrix (object `detS`) can tend to 0 or, conversely, to infinity.
+In function `dmnorm`, `detS` is set to 1e-20 when the computed `detS` < 1e-20.  
 
 ## Examples
 ```julia
@@ -105,12 +112,14 @@ lines!(ax, grid, vec(pred_grid); color = :red)
 f
 ```
 """ 
-function dmnorm(X = nothing; mu = nothing, S = nothing)
+function dmnorm(X = nothing; mu = nothing, S = nothing,
+     simpl::Bool = false)
     isnothing(S) ? zS = nothing : zS = copy(S)
-    dmnorm!(X; mu = mu, S = zS)
+    dmnorm!(X; mu = mu, S = zS, simpl = simpl)
 end
 
-function dmnorm!(X = nothing; mu = nothing, S = nothing)
+function dmnorm!(X = nothing; mu = nothing, S = nothing,
+        simpl::Bool = false)
     !isnothing(X) ? X = ensure_mat(X) : nothing
     if isnothing(mu)
         mu = vec(mean(X, dims = 1))
@@ -118,11 +127,16 @@ function dmnorm!(X = nothing; mu = nothing, S = nothing)
     if isnothing(S)
         S = cov(X; corrected = true)
     end
-    p = nro(S)
-    cst = (2 * pi)^(-p / 2)
     U = cholesky!(Hermitian(S)).U # This modifies S only if S is provided
-    detS = det(U)^2  
-    detS < 1e-20 ? detS = 1e-20 : nothing
+    if simpl 
+        cst = 1
+        detS = 1
+    else
+        p = nro(S)
+        cst = (2 * pi)^(-p / 2)
+        detS = det(U)^2  
+        detS < 1e-20 ? detS = 1e-20 : nothing
+    end
     LinearAlgebra.inv!(U)
     #cholesky!(S)
     #U = sqrt(diag(diag(S), nrow = p))
