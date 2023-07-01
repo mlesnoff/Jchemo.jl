@@ -6,6 +6,7 @@ struct Lda
     theta::Vector{Float64}
     ni::Vector{Int64}
     lev::AbstractVector
+    weights::Vector{Float64}
 end
 
 """
@@ -81,7 +82,8 @@ function lda(X, y, weights = ones(nro(X));
         ct[i, :] = colmean(X[s, :], weights[s])
         fm[i] = dmnorm(; mu = ct[i, :], S = res.W) 
     end
-    Lda(fm, res.W, ct, wprior, theta, ni, lev)
+    Lda(fm, res.W, ct, wprior, theta, ni, lev, 
+        weights)
 end
 
 """
