@@ -18,10 +18,12 @@ X
 y = rand(1:3, n)
 res = matB(X, y)
 res.B
-res.lev
+res.theta
 res.ni
+res.lev
 
 res = matW(X, y)
+pnames(res)
 res.W 
 res.Wi
 
