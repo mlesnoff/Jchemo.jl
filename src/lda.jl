@@ -58,28 +58,24 @@ function lda(X, y, weights = ones(nro(X)); prior = "unif")
     X = ensure_mat(X)
     n, p = size(X)
     weights = mweight(weights)
-    #z = aggstat(X, y; fun = mean)
-    #ct = z.X
-    #lev = z.lev
-    #nlev = length(lev)
+    taby = tab(y)
+    lev = taby.keys
+    ni = taby.vals
+    nlev = length(lev)
+    res = matW(X, y, weights)
 
-    ct = similar(X, nlev, p)
-    @inbounds for i = 1:nlev
-        s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(X[s, :], weights[s])
-    end
-
-
-    res = matW(X, y)
+    
     res.W .*= n / (n - nlev)    # unbiased estimate
-    ni = res.ni
     if isequal(prior, "unif")
         wprior = ones(nlev) / nlev
     elseif isequal(prior, "prop")
         wprior = mweight(ni)
     end
     fm = list(nlev)
+    ct = similar(X, nlev, p)
     @inbounds for i = 1:nlev
+        s = findall(y .== lev[i]) 
+        ct[i, :] = colmean(X[s, :], weights[s])
         fm[i] = dmnorm(; mu = ct[i, :], S = res.W) 
     end
     Lda(fm, res.W, ct, wprior, lev, ni)
