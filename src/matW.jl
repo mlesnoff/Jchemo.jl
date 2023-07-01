@@ -56,7 +56,7 @@ matB = function(X, y, weights = ones(nro(X)))
         ct[i, :] = colmean(X[s, :], weights[s])
     end
     B = covm(ct, theta)
-    (B = B, ct, theta, lev = lev, ni, weights)
+    (B = B, ct, theta, lev, ni, weights)
 end
 
 """
