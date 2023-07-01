@@ -91,7 +91,7 @@ function predict(object::Lda, X)
     for i = 1:nlev
         dens[:, i] .= vec(Jchemo.predict(object.fm[i], X).pred)
     end
-    A = object.wprior' .* dens
+    @. A = object.wprior' * dens
     v = sum(A, dims = 2)
     posterior = scale(A', v)'                    # This could be replaced by code similar as in scale! 
     z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first

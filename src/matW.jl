@@ -51,7 +51,7 @@ matB = function(X, y, weights = ones(nro(X)))
     nlev = length(lev)
     theta = aggstat(weights, y; fun = sum).X
     ct = similar(X, nlev, p)
-    for i = 1:nlev
+    @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(X[s, :], weights[s])
     end
