@@ -42,6 +42,7 @@ covm(X, w)
 """ 
 matB = function(X, y, weights = ones(nro(X)))
     X = ensure_mat(X)
+    y = vec(y)  # required for findall 
     weights = mweight(weights)
     p = nco(X)
     ztab = tab(y)
