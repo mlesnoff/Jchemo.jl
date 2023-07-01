@@ -18,8 +18,9 @@ Quadratic discriminant analysis  (QDA).
     Posible values are: "unif" (uniform), "prop" (proportional).
 
 Parameter `alpha` allows to shrink the separate covariances by class 
-(QDA) toward a common covariance as in LDA. This corresponds to the
-first step (Eqs.16) of the RDA proposed by Friedman 1989.
+(Wi) toward a common covariance as in LDA (W, except that the denominator 
+is not n - K). 
+This corresponds to the first step (Eqs.16) of the RDA proposed by Friedman 1989.
 
 ## References
 Friedman JH. Regularized Discriminant Analysis. Journal of the American 
