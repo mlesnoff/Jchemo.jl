@@ -39,11 +39,17 @@ end
 matB = function(X, y, weights = ones(nro(X)))
     X = ensure_mat(X)
     weights = mweight(weights)
-
+    p = nco(X)
+    ztab = tab(y)
+    lev = ztab.keys
+    ni = ztab.vals
+    nlev = length(lev)
+    theta = aggstat(weights, y; fun = sum).X
+    ct = similar(X, nlev, p)
     
     res = aggstat(X, y; fun = mean)
     ni = tab(y).vals
-    B = covm(res.X, mweight(ni))
+    B = covm(res.X, theta)
     (B = B, ct = res.X, theta, weights, lev = res.lev, ni)
 end
 
@@ -67,12 +73,12 @@ For examples, see `?matB`.
 matW = function(X, y, weights = ones(nro(X)))
     X = ensure_mat(X)
     y = vec(y)  # required for findall 
+    weights = mweight(weights)
     p = nco(X) 
     ztab = tab(y)
     lev = ztab.keys
     ni = ztab.vals
     nlev = length(lev)
-    weights = mweight(weights)
     theta = aggstat(weights, y; fun = sum).X
     ## Case with at least one class with only 1 obs:
     ## this creates Wi_1obs used in the boucle
