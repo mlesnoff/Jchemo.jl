@@ -43,8 +43,8 @@ covm(X, w)
 matB = function(X, y, weights = ones(nro(X)))
     X = ensure_mat(X)
     y = vec(y)  # required for findall 
-    weights = mweight(weights)
     p = nco(X)
+    weights = mweight(weights)
     ztab = tab(y)
     lev = ztab.keys
     ni = ztab.vals
@@ -78,8 +78,8 @@ For examples, see `?matB`.
 matW = function(X, y, weights = ones(nro(X)))
     X = ensure_mat(X)
     y = vec(y)  # required for findall 
-    weights = mweight(weights)
     p = nco(X) 
+    weights = mweight(weights)
     ztab = tab(y)
     lev = ztab.keys
     ni = ztab.vals
