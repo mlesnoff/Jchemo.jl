@@ -2,9 +2,10 @@ struct Lda
     fm
     W::Array{Float64}  
     ct::Array{Float64}
-    wprior::AbstractVector
+    wprior::Vector{Float64}
+    theta::Vector{Float64}
+    ni::Vector{Int64}
     lev::AbstractVector
-    ni::AbstractVector
 end
 
 """
@@ -59,6 +60,7 @@ function lda(X, y, weights = ones(nro(X)); prior = "unif")
     n, p = size(X)
     weights = mweight(weights)
     res = matW(X, y, weights)
+    theta = res.theta
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
@@ -76,7 +78,7 @@ function lda(X, y, weights = ones(nro(X)); prior = "unif")
         ct[i, :] = colmean(X[s, :], weights[s])
         fm[i] = dmnorm(; mu = ct[i, :], S = res.W) 
     end
-    Lda(fm, res.W, ct, wprior, lev, ni)
+    Lda(fm, res.W, ct, wprior, theta, ni, lev)
 end
 
 """
