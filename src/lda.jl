@@ -53,14 +53,23 @@ err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
 """ 
-function lda(X, y; prior = "unif")
+function lda(X, y, weights = ones(nro(X)); prior = "unif")
     # Scaling X has no effect
     X = ensure_mat(X)
-    n = nro(X)
-    z = aggstat(X, y; fun = mean)
-    ct = z.X
-    lev = z.lev
-    nlev = length(lev)
+    n, p = size(X)
+    weights = mweight(weights)
+    #z = aggstat(X, y; fun = mean)
+    #ct = z.X
+    #lev = z.lev
+    #nlev = length(lev)
+
+    ct = similar(X, nlev, p)
+    @inbounds for i = 1:nlev
+        s = findall(y .== lev[i]) 
+        ct[i, :] = colmean(X[s, :], weights[s])
+    end
+
+
     res = matW(X, y)
     res.W .*= n / (n - nlev)    # unbiased estimate
     ni = res.ni
