@@ -22,7 +22,7 @@ Quadratic discriminant analysis  (QDA).
 * `prior` : Type of prior probabilities for class membership.
     Posible values are: "unif" (uniform), "prop" (proportional).
 
-A value `alpha` > 0 shrinks the separate covariances by class 
+A value `alpha` > 0 shrinks the QDA separate covariances by class 
 (Wi) toward a common LDA covariance (W). This corresponds to the first
 regularization (Eqs.16) proposed by Friedman 1989.
 
