@@ -12,8 +12,19 @@ end
 Quadratic discriminant analysis  (QDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
+* `alpha` : Continuum parameter (scalar ∈ [0, 1]) between 
+    QDA (`alpha = 0`; default) and LDA (`alpha = 1`).
 * `prior` : Type of prior probabilities for class membership.
     Posible values are: "unif" (uniform), "prop" (proportional).
+
+Parameter `alpha` allows to shrink the separate covariances by class 
+(QDA) toward a common covariance as in LDA. This corresponds to the
+first step (Eqs.16) of the RDA proposed by Friedman 1989.
+
+## References
+Friedman JH. Regularized Discriminant Analysis. Journal of the American 
+Statistical Association. 1989; 84(405):165-175. 
+doi:10.1080/01621459.1989.10478752.
 
 ## Examples
 ```julia
