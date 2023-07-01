@@ -72,30 +72,28 @@ function qda(X, y; alpha = 0, prior = "unif")
     @assert alpha >= 0 && alpha <= 1 "alpha must ∈ [0, 1]"
     # Scaling X has no effect
     X = ensure_mat(X)
-    n = nro(X)
-    #z = aggstat(X, y; fun = mean)
-    #ct = z.X
-    #lev = z.lev
-    #nlev = length(lev)
-    res = matW(X, y)
+    n, p = size(X)
+    res = matW(X, y, weights)
     theta = res.theta
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
+    res.W .*= n / (n - nlev)    # unbiased estimate
     if isequal(prior, "unif")
         wprior = ones(nlev) / nlev
     elseif isequal(prior, "prop")
         wprior = mweight(ni)
     end
     fm = list(nlev)
+    ct = similar(X, nlev, p)
     @inbounds for i = 1:nlev
         ni[i] == 1 ? zn = n : zn = ni[i]
+        res.Wi[i] .*= zn / (zn - 1)
         if alpha > 0
             @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
         end
         ## The case 'alpha = 1' is not excatly LDA
         ## only because the denominator below is not n - K
-        res.Wi[i] .*= zn / (zn - 1)
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
     end
     Qda(fm, res.Wi, ct, wprior, theta, ni, lev, 
