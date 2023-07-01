@@ -117,7 +117,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::CplsrAvg, X)
     X = ensure_mat(X)
-    m = size(X, 1)
+    m = nro(X)
     nlev = length(object.lev)
     post = predict(object.fm_da, X).posterior
     #post .= (mapreduce(i -> Float64.(post[i, :] .== maximum(post[i, :])), hcat, 1:m)')

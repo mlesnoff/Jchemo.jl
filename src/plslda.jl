@@ -109,7 +109,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Plslda, X; nlv = nothing)
     X = ensure_mat(X)
-    m = size(X, 1)
+    m = nro(X)
     a = size(object.fm.fm_pls.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)

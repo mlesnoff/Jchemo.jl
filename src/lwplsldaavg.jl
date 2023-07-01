@@ -111,7 +111,7 @@ Compute the y-predictions from the fitted model.
 """ 
 function predict(object::LwplsldaAvg, X) 
     X = ensure_mat(X)
-    m = size(X, 1)
+    m = nro(X)
     ### Getknn
     if isnothing(object.fm)
         if object.scal

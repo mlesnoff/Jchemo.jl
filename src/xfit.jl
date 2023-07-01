@@ -39,7 +39,7 @@ function xfit!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     isa(object, Jchemo.Pcr) ? object = object.fm_pca : nothing
     if nlv == 0
-        m = size(X, 1)
+        m = nro(X)
         @inbounds for i = 1:m
             X[i, :] .= object.xmeans
         end

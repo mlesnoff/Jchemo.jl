@@ -71,7 +71,7 @@ Compute y-predictions from a fitted model.
 """ 
 function predict(object::Mlrda, X)
     X = ensure_mat(X)
-    m = size(X, 1)
+    m = nro(X)
     zp = predict(object.fm, X).pred
     z =  mapslices(argmax, zp; dims = 2) 
     pred = reshape(replacebylev2(z, object.lev), m, 1)

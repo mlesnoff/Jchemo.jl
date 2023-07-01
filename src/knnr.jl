@@ -93,7 +93,7 @@ Compute the Y-predictions from the fitted model.
 """ 
 function predict(object::Knnr, X)
     X = ensure_mat(X)
-    m = size(X, 1)
+    m = nro(X)
     q = size(object.Y, 2)
     # Getknn
     if isnothing(object.fm)

@@ -34,7 +34,7 @@ lg(Xbl)
 function lg(X, Y; centr = true)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    n = size(X, 1)
+    n = nro(X)
     if centr
         xmeans = colmean(X)
         ymeans = colmean(Y)

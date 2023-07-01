@@ -24,7 +24,7 @@ See `?plsldaavg` for examples.
 """ 
 function plsqdaavg(X, y, weights = ones(nro(X)); nlv,
         scal = false)
-    n = size(X, 1)
+    n = nro(X)
     p = nco(X)
     nlv = eval(Meta.parse(nlv))
     nlvmax = maximum(nlv)

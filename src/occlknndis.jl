@@ -172,7 +172,7 @@ Compute predictions from a fitted model.
 """ 
 function predict(object::Occlknndis, X)
     X = ensure_mat(X)
-    m = size(X, 1)
+    m = nro(X)
     T = transform(object.fm, X)
     scale!(T, object.tscales)
     res = getknn(object.T, T; k = object.k, metric = "eucl")

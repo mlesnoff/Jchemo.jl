@@ -109,7 +109,7 @@ Compute the y-predictions from the fitted model.
 """ 
 function predict(object::LwplsQda, X; nlv = nothing)
     X = ensure_mat(X)
-    m = size(X, 1)
+    m = nro(X)
     a = object.nlv
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     ## Getknn

@@ -80,7 +80,7 @@ Compute y-predictions from a fitted model.
 """ 
 function predict(object::Plsdaavg, X)
     X = ensure_mat(X)
-    m = size(X, 1)
+    m = nro(X)
     nlv = object.nlv
     le_nlv = length(nlv)
     zpred = predict(object.fm, X; nlv = nlv).pred

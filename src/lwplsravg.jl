@@ -112,7 +112,7 @@ Compute the Y-predictions from the fitted model.
 """ 
 function predict(object::LwplsrAvg, X) 
     X = ensure_mat(X)
-    m = size(X, 1)
+    m = nro(X)
     ### Getknn
     if isnothing(object.fm)
         if object.scal
@@ -147,7 +147,7 @@ end
 # Not used
 function predict_steps(object::LwplsrAvg, X; steps = nothing) 
     X = ensure_mat(X)
-    m = size(X, 1)
+    m = nro(X)
     ### Getknn
     if isnothing(object.fm)
         res = getknn(object.X, X; k = object.k, metric = object.metric)

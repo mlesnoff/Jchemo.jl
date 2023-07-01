@@ -78,7 +78,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Rrda, X; lb = nothing)
     X = ensure_mat(X)
-    m = size(X, 1)
+    m = nro(X)
     isnothing(lb) ? lb = object.fm.lb : nothing
     le_lb = length(lb)
     pred = list(le_lb, Union{Matrix{Int64}, Matrix{Float64}, Matrix{String}})

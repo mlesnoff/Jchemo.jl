@@ -117,7 +117,7 @@ f
 """ 
 function aicplsr(X, y; nlv, correct = true, bic = false, scal = false)
     X = ensure_mat(X)
-    n = size(X, 1)
+    n = nro(X)
     p = nco(X)
     nlv = min(nlv, n, p)
     pars = mpar(scal = scal)  

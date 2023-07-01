@@ -88,7 +88,7 @@ If nothing, it is the maximum nb. LVs.
 """ 
 function predict(object::Dkplsrda, X; nlv = nothing)
     X = ensure_mat(X)
-    m = size(X, 1)
+    m = nro(X)
     a = size(object.fm.fm.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)

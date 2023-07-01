@@ -140,7 +140,7 @@ plotsp(Xp, wlfin).f
 """ 
 function interpl(X, wl; wlfin, fun = cubic_spline)
     X = ensure_mat(X)
-    n = size(X, 1)
+    n = nro(X)
     q = length(wlfin)
     zX = similar(X, n, q)
     # Not faster: @Threads.threads
@@ -196,7 +196,7 @@ in One Dimension", http://adsabs.harvard.edu/abs/1990A%26A...239..443S
 """ 
 function interpl_mon(X, wl; wlfin, fun = FritschCarlsonMonotonicInterpolation)
     X = ensure_mat(X)
-    n = size(X, 1)
+    n = nro(X)
     q = length(wlfin)
     zX = similar(X, n, q)
     # Not faster: @Threads.threads
