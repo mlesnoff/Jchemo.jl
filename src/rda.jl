@@ -88,7 +88,7 @@ confusion(res.pred, ytest).cnt
 ```
 """ 
 function rda(X, y; alpha, lb, prior = "unif")
-    @assert alpha >= 0 && alpha <= 1 "alpha must be in [0, 1]"
+    @assert alpha >= 0 && alpha <= 1 "alpha must ∈ [0, 1]"
     @assert lb >= 0 "lb must be in >= 0"
     X = ensure_mat(X)
     n, p = size(X)

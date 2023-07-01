@@ -52,7 +52,8 @@ err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
 """ 
-function qda(X, y; prior = "unif")
+function qda(X, y; alpha = 0, prior = "unif")
+    @assert alpha >= 0 && alpha <= 1 "alpha must ∈ [0, 1]"
     # Scaling X has no effect
     X = ensure_mat(X)
     n = nro(X)
@@ -70,6 +71,9 @@ function qda(X, y; prior = "unif")
     fm = list(nlev)
     @inbounds for i = 1:nlev
         ni[i] == 1 ? zn = n : zn = ni[i]
+        if alpha > 0
+            @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W  
+        end
         res.Wi[i] .*= zn / (zn - 1)
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
     end
