@@ -6,6 +6,7 @@ struct Qda
     theta::Vector{Float64}
     ni::Vector{Int64}
     lev::AbstractVector
+    weights::Vector{Float64}
 end
 
 """
@@ -94,7 +95,7 @@ function qda(X, y; alpha = 0, prior = "unif")
         res.Wi[i] .*= zn / (zn - 1)
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
     end
-    Qda(fm, res.Wi, ct, wprior, theta, ni, lev)
+    Qda(fm, res.Wi, ct, wprior, theta, ni, lev, weights)
 end
 
 """
