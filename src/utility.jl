@@ -441,8 +441,8 @@ function covm(X, w)
     w = mweight(w)
     xmeans = colmean(zX, w)
     center!(zX, xmeans)
-    z = Diagonal(sqrt.(w)) * zX
-    z' * z
+    zX = Diagonal(sqrt.(w)) * zX
+    zX' * zX
 end
 
 function covm(X, Y, w)
