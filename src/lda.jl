@@ -62,6 +62,7 @@ function lda(X, y, weights = ones(nro(X));
         prior = "unif")
     # Scaling X has no effect
     X = ensure_mat(X)
+    y = vec(y)    # for findall
     n, p = size(X)
     weights = mweight(weights)
     res = matW(X, y, weights)
