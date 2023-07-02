@@ -7,6 +7,7 @@ struct LwplsQda
     k::Int
     nlv::Int
     prior::String
+    alpha::Real
     tol::Real
     scal::Bool
     verbose::Bool
@@ -15,8 +16,9 @@ struct LwplsQda
 end
 
 """
-    lwplsqda(X, y; nlvdis, metric, h, k, nlv, prior = "unif", 
-        tol = 1e-4, scal = false, verbose = false)
+    lwplsqda(X, y; nlvdis, metric, h, k, nlv, 
+        alpha = 0, prior = "unif", tol = 1e-4, scal = false, 
+        verbose = false)
 kNN-LWPLS-QDA models.
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -30,6 +32,8 @@ kNN-LWPLS-QDA models.
     sharper is the function. See function `wdist`.
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `nlv` : Nb. latent variables (LVs).
+* `alpha` : Scalar (∈ [0, 1]) defining the continuum
+    between QDA (`alpha = 0`; default) and LDA (`alpha = 1`).
 * `prior` : Type of prior probabilities for class membership
     (`unif`: uniform; `prop`: proportional).
 * `tol` : For stabilization when very close neighbors.
@@ -87,7 +91,8 @@ res.listw
 ```
 """ 
 function lwplsqda(X, y; nlvdis, metric, h, k, nlv, 
-        prior = "unif", tol = 1e-4, scal = false, verbose = false)
+        alpha = 0, prior = "unif", tol = 1e-4, scal = false, 
+        verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
     ztab = tab(y)
@@ -97,7 +102,7 @@ function lwplsqda(X, y; nlvdis, metric, h, k, nlv,
         fm = plskern(X, dummy(y).Y; nlv = nlvdis,
             scal = scal)
     end
-    return LwplsQda(X, y, fm, metric, h, k, nlv, prior, tol, 
+    return LwplsQda(X, y, fm, metric, h, k, nlv, alpha, prior, tol, 
         scal, verbose, ztab.keys, ztab.vals)
 end
 
@@ -135,7 +140,7 @@ function predict(object::LwplsQda, X; nlv = nothing)
     ## End
     pred = locwlv(object.X, object.y, X; 
         listnn = res.ind, listw = listw, fun = plsqda, nlv = nlv, 
-        prior = object.prior, scal = object.scal,
+        alpha = object.alpha, prior = object.prior, scal = object.scal, 
         verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
