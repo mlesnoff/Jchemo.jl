@@ -7,7 +7,7 @@
 
 - Modifications
     - Argument 'weights' added to **matB**, **matW**, **lda**, **qda**.
-    - **qda**: new argument 'alpha' (continuum toward LDA). 
+    - **qda**, **plsqda**, **lwplsqda**: new argument 'alpha' (continuum toward LDA). 
     - **dmnorm**: new argument 'simpl'. 
     - Code improvement.
 
