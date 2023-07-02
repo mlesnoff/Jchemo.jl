@@ -31,7 +31,7 @@ returning `nlv` latent variables (LVs). Finally, a LDA is run on these LVs and `
 using JLD2
 using JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/forages.jld2") 
+db = joinpath(path_jdat, "data/forages2.jld2") 
 @load db dat
 pnames(dat)
 
