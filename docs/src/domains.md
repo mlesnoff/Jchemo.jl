@@ -136,10 +136,13 @@
 
 ### Probabilistic DA
 
+*Parametric*
 - **lda** Linear discriminant analysis (LDA)
-- **qda** Quadratic discriminant analysis (QDA)
+- **qda** Continuum quadratic discriminant analysis (QDA)
 - **rda** Regularized discriminant analysis (RDA)
-- **kdeda** Non-parametric kernel Gaussian density estimation (KDE-DA)
+
+*Non parametric*
+- **kdeda** DA by kernel Gaussian density estimation (KDE-DA)
 
 *On PLS latent variables*
 - **plslda** PLS-LDA
