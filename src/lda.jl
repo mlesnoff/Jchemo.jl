@@ -18,7 +18,7 @@ Linear discriminant analysis  (LDA).
 * `weights` : Weights (n) of the observations. 
     Internally normalized to sum to 1.
 * `prior` : Type of prior probabilities for class membership.
-    Posible values are: "unif" (uniform), "prop" (proportional).
+    Possible values are: "unif" (uniform), "prop" (proportional).
 
 ## Examples
 ```julia
