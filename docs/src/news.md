@@ -6,8 +6,8 @@
     - **rda**: Regularized discriminant analysis (RDA)
 
 - Modifications
-    - Argument 'weights' added to **matB**, **matW**, **lda**, **qda**
-    - Argument 'alpha' added to **qda**
+    - Argument 'weights' added to **matB**, **matW**, **lda**, **qda**.
+    - **qda**: new argument 'alpha' (continuum toward LDA). 
     - **dmnorm**: new argument 'simpl'. 
     - Code improvement.
 
