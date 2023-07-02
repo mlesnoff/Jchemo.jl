@@ -6,6 +6,7 @@ struct LwplsqdaAvg
     h::Real
     k::Int
     nlv::String
+    alpha::Real
     tol::Real
     scal::Bool
     verbose::Bool
@@ -33,6 +34,8 @@ Averaging of kNN-LWPLSR-DA models with different numbers of
     to consider ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
     are averaged). Syntax such as "10" is also allowed ("10": correponds to 
     the single model with 10 LVs).
+* `alpha` : Scalar (∈ [0, 1]) defining the continuum
+    between QDA (`alpha = 0`; default) and LDA (`alpha = 1`).
 * `tol` : For stabilization when very close neighbors.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
@@ -94,7 +97,7 @@ res.listw
 ```
 """ 
 function lwplsqdaavg(X, y; nlvdis, metric, h, k, nlv, 
-    tol = 1e-4, scal = false, verbose = false)
+    alpha = 0, tol = 1e-4, scal = false, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
     ztab = tab(y)
@@ -104,8 +107,8 @@ function lwplsqdaavg(X, y; nlvdis, metric, h, k, nlv,
         fm = plskern(X, dummy(y).Y; nlv = nlvdis,
             scal = scal)
     end
-    LwplsqdaAvg(X, y, fm, metric, h, k, nlv, tol, 
-        scal, verbose, ztab.keys, ztab.vals)
+    LwplsqdaAvg(X, y, fm, metric, h, k, nlv, alpha,
+        tol, scal, verbose, ztab.keys, ztab.vals)
 end
 
 """
@@ -140,7 +143,7 @@ function predict(object::LwplsqdaAvg, X)
     ### End
     pred = locw(object.X, object.y, X; 
         listnn = res.ind, listw = listw, fun = plsqdaavg, nlv = object.nlv, 
-        scal = object.scal, verbose = object.verbose).pred
+        alpha = object.alpha, scal = object.scal, verbose = object.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 
