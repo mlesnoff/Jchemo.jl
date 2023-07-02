@@ -146,7 +146,7 @@
 
 *On PLS latent variables*
 - **plslda** PLS-LDA
-- **plsqda** PLS-QDA (with continuum towards PLS-LDA)
+- **plsqda** PLS-QDA (with continuum)
 - **plskdeda**  PLS-KDE-DA
 
 *Averaging PLS-LDA models with different numbers of latent variables (LVs)*
@@ -159,7 +159,7 @@
 - **lwmlrda** kNN locally weighted MLR-DA (kNN-LWMLR-DA)
 - **lwplsrda** kNN Locally weighted PLSR-DA (kNN-LWPLSR-DA)
 - **lwplslda** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
-- **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA)
+- **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA, with continuum)
 
 *With preliminary dimension reduction*
 - **lwmlrda_s** kNN-LWMLR-DA-S
@@ -168,7 +168,7 @@
 *Averaging*
 - **lwplsrdaavg** kNN-LWPLSR-DA-AVG
 - **lwplsldaavg** kNN-LWPLS-LDA-AVG
-- **lwplsqdaavg** kNN-LWPLS-QDA-AVG
+- **lwplsqdaavg** kNN-LWPLS-QDA-AVG (with continuum)
 
 ### **Trees** (wrappers to DecisionTree.jl)
 
