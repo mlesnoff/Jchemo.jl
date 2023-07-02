@@ -6,8 +6,8 @@ struct LwplsQda
     h::Real
     k::Int
     nlv::Int
-    prior::String
     alpha::Real
+    prior::String
     tol::Real
     scal::Bool
     verbose::Bool
