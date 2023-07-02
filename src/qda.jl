@@ -12,7 +12,7 @@ end
 """
     qda(X, y, weights = ones(nro(X)); 
         alpha = 0, prior = "unif")
-Continuum quadratic discriminant analysis (QDA).
+Quadratic discriminant analysis (QDA, with continuum).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights (n) of the observations. 
@@ -20,7 +20,7 @@ Continuum quadratic discriminant analysis (QDA).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum
     between QDA (`alpha = 0`; default) and LDA (`alpha = 1`).
 * `prior` : Type of prior probabilities for class membership.
-    Posible values are: "unif" (uniform), "prop" (proportional).
+    Possible values are: "unif" (uniform), "prop" (proportional).
 
 A value `alpha` > 0 shrinks the QDA separate covariances by class 
 (Wi) toward a common LDA covariance (W). This corresponds to the first
