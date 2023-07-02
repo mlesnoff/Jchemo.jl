@@ -73,6 +73,7 @@ function qda(X, y, weights = ones(nro(X));
     @assert alpha >= 0 && alpha <= 1 "alpha must ∈ [0, 1]"
     # Scaling X has no effect
     X = ensure_mat(X)
+    y = vec(y)    # for findall
     n, p = size(X)
     weights = mweight(weights)
     res = matW(X, y, weights)
