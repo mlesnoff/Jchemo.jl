@@ -7,7 +7,7 @@ end
 """
     plslda(X, y, weights = ones(nro(X)); nlv, 
         prior = "unif", scal = false)
-LDA on PLS latent variables (PLS-LDA).
+PLS-LDA.
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights of the observations. 
@@ -17,6 +17,8 @@ LDA on PLS latent variables (PLS-LDA).
     Posible values are: "unif" (uniform), "prop" (proportional).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
+
+LDA on PLS latent variables.
 
 The training variable `y` (univariate class membership) is transformed
 to a dummy table (Ydummy) containing nlev columns, where nlev is the number 
