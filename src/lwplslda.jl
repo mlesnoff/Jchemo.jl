@@ -17,7 +17,7 @@ end
 """
     lwplslda(X, y; nlvdis, metric, h, k, nlv, prior = "unif", 
         tol = 1e-4, scal = false, verbose = false)
-kNN-LWPLS-LDA models.
+kNN-LWPLS-LDA.
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `nlvdis` : Number of latent variables (LVs) to consider in the 
