@@ -45,7 +45,8 @@ tab(ytest)
 ## minimum of nlv must be >=1 
 ## (conversely to plsrdaavg)
 fm = plsldaavg(Xtrain, ytrain; nlv = "1:40") ;    
-#fm = plsldaavg(Xtrain, ytrain; nlv = "1:20") ;
+#fm = plsqdaavg(Xtrain, ytrain; nlv = "1:40") ;
+#fm = plsqdaavg(Xtrain, ytrain; nlv = "1:40", alpha = .5) ;
 pnames(fm)
 
 res = Jchemo.predict(fm, Xtest) ;
