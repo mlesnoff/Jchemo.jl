@@ -12,7 +12,7 @@ end
 """
     qda(X, y, weights = ones(nro(X)); 
         alpha = 0, prior = "unif")
-Quadratic discriminant analysis  (QDA).
+Continuum quadratic discriminant analysis (QDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights (n) of the observations. 
