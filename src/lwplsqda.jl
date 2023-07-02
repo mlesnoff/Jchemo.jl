@@ -19,7 +19,7 @@ end
     lwplsqda(X, y; nlvdis, metric, h, k, nlv, 
         alpha = 0, prior = "unif", tol = 1e-4, scal = false, 
         verbose = false)
-kNN-LWPLS-QDA models.
+kNN-LWPLS-QDA (with continuum).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `nlvdis` : Number of latent variables (LVs) to consider in the 
