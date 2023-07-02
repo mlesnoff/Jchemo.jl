@@ -1,7 +1,7 @@
 """
     plsqda(X, y, weights = ones(nro(X)); nlv, 
         alpha = 0, prior = "unif", scal = false)
-PLS-QDA (with continuum towards PLS-LDA).
+PLS-QDA (with continuum).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights of the observations. 
