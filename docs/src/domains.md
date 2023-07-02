@@ -138,7 +138,7 @@
 
 *Parametric*
 - **lda** Linear discriminant analysis (LDA)
-- **qda** Continuum quadratic discriminant analysis (QDA)
+- **qda** Quadratic discriminant analysis (QDA, with continuum)
 - **rda** Regularized discriminant analysis (RDA)
 
 *Non parametric*
@@ -146,7 +146,7 @@
 
 *On PLS latent variables*
 - **plslda** PLS-LDA
-- **plsqda** PLS-QDA
+- **plsqda** PLS-QDA (with continuum)
 - **plskdeda**  PLS-KDE-DA
 
 *Averaging PLS-LDA models with different numbers of latent variables (LVs)*
