@@ -8,7 +8,8 @@
 
 - Modifications
     - **matB**, **matW**, **lda**, **qda**: new argument 'weights'.
-    - **qda**, **plsqda**, **lwplsqda**: new argument 'alpha' (continuum from QDA toward LDA). 
+    - **qda**, **plsqda**, **lwplsqda**, **plsqdaavg**, **lwplsqdaavg**: new argument 'alpha' 
+        (continuum from QDA toward LDA). 
     - **dmnorm**: new argument 'simpl'. 
     - Code improvement.
 
