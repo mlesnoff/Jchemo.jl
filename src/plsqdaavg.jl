@@ -1,6 +1,6 @@
 """ 
     plsqdaavg(X, y, weights = ones(nro(X)); nlv,
-        scal = false)
+        alpha = 0, scal = false)
 Averaging of PLS-QDA models with different numbers of 
     latent variables (LVs).
 * `X` : X-data.
@@ -10,6 +10,8 @@ Averaging of PLS-QDA models with different numbers of
     to consider ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
     are averaged). Syntax such as "10" is also allowed ("10": correponds to
     the single model with 10 LVs).
+* `alpha` : Scalar (∈ [0, 1]) defining the continuum
+    between QDA (`alpha = 0`; default) and LDA (`alpha = 1`).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
@@ -23,7 +25,7 @@ returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 See `?plsldaavg` for examples.
 """ 
 function plsqdaavg(X, y, weights = ones(nro(X)); nlv,
-        scal = false)
+        alpha = 0, scal = false)
     n = nro(X)
     p = nco(X)
     nlv = eval(Meta.parse(nlv))
@@ -34,7 +36,7 @@ function plsqdaavg(X, y, weights = ones(nro(X)); nlv,
     w_mod = mweight(w[collect(nlv) .+ 1])
     # End   
     fm = plsqda(X, y, weights; nlv = nlvmax,
-        scal = scal)
+        alpha = alpha, scal = scal)
     Plsdaavg(fm, nlv, w_mod, fm.lev, fm.ni)
 end
 
