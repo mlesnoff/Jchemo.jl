@@ -3,11 +3,12 @@
 ### *Version 0.1.23*
 
 - News
+    - **dmnormlog**: Logarithm of the normal probability density estimation.
     - **rda**: Regularized discriminant analysis (RDA)
 
 - Modifications
-    - Argument 'weights' added to **matB**, **matW**, **lda**, **qda**.
-    - **qda**, **plsqda**, **lwplsqda**: new argument 'alpha' (continuum toward LDA). 
+    - **matB**, **matW**, **lda**, **qda**: new argument 'weights'.
+    - **qda**, **plsqda**, **lwplsqda**: new argument 'alpha' (continuum from QDA toward LDA). 
     - **dmnorm**: new argument 'simpl'. 
     - Code improvement.
 
