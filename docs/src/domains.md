@@ -149,9 +149,9 @@
 - **plsqda** PLS-QDA (with continuum)
 - **plskdeda**  PLS-KDE-DA
 
-*Averaging PLS-LDA models with different numbers of latent variables (LVs)*
+*Averaging PLS-LDA and -QDA models with different numbers of latent variables (LVs)*
 - **plsldaavg** PLS-LDA-AVG
-- **plsldaavg** PLS-QDA-AVG
+- **plsqdaavg** PLS-QDA-AVG (with continuum)
 
 ### **Local models**
 
