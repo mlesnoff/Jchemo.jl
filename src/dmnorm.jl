@@ -141,7 +141,7 @@ function dmnorm!(X = nothing; mu = nothing, S = nothing,
         p = nro(S)
         cst = (2 * pi)^(-p / 2)
         detS = det(U)^2  
-        detS < 1e-20 ? detS = 1e-20 : nothing
+        #detS < 1e-20 ? detS = 1e-20 : nothing
     end
     LinearAlgebra.inv!(U)
     #cholesky!(S)
