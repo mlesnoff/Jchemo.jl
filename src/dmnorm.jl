@@ -23,17 +23,17 @@ Normal probability density estimation.
 
 Data `X` can be univariate (p = 1) or multivariate (p > 1). See examples.
 
-When `simpl= true`, the density returned by function `predict` is 
-exp(-d / 2), where d is the squared Mahalanobis distance to the center 
-of `X`. 
+When `simple = true`, the determinant of the covariance matrix (object `detS`) 
+and the constant (2 * pi)^(-p / 2) (object `cst`)
+are set to 1. In such a case, function `dmnorm` computes a pseudo 
+density that does not account for `cst` and `detS`, and resumes to 
+exp(-d / 2), where d is the squared Mahalanobis distance to the center.
 
-When the number of columns (p) of `X` becomes too large:
-* the determinant of the covariance matrix (object `detS`) 
-    can tend to 0 or, conversely, to infinity.
-* The constant  (2 * pi)^(-p / 2) (object `cst`) tends to 0.
-The density can not be computed anymore. In such cases, argument 
-`simple` enables to compute a pseudo density that does not accouunt 
-for `cst` and `detS` (both are set to value = 1).   
+This can be useful for instance When the number of columns (p) of 
+`X` becomes too large and:
+* `detS` tends to 0 or, conversely, to infinity
+* `cst` tends to 0
+which makes impossible to compute the true density. 
 
 ## Examples
 ```julia
