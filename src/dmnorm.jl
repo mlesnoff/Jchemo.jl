@@ -27,9 +27,13 @@ When `simpl= true`, the density returned by function `predict` is
 exp(-d / 2), where d is the squared Mahalanobis distance to the center 
 of `X`. 
 
-Note: When the number of colums (p) becomes large, the determinant of the 
-covariance matrix (object `detS`) can tend to 0 or, conversely, to infinity.
-In function `dmnorm`, `detS` is set to 1e-20 when the computed `detS` < 1e-20.  
+When the number of columns (p) becomes large:
+* the determinant of the covariance matrix (object `detS`) 
+    can tend to 0 or, conversely, to infinity.
+* The constant  (2 * pi)^(-p / 2) (object `cst`) tends to 0.
+The density can not be computed anymore. In such cases, argument 
+`simple` enables to compute a pseudo density that does not accouunt 
+for `cst` and `detS` (both are set to value = 1).   
 
 ## Examples
 ```julia
@@ -141,7 +145,6 @@ function dmnorm!(X = nothing; mu = nothing, S = nothing,
         p = nro(S)
         cst = (2 * pi)^(-p / 2)
         detS = det(U)^2  
-        #detS < 1e-20 ? detS = 1e-20 : nothing
     end
     LinearAlgebra.inv!(U)
     #cholesky!(S)
