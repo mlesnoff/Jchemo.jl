@@ -77,7 +77,6 @@ function qda(X, y, weights = ones(nro(X));
     n, p = size(X)
     weights = mweight(weights)
     res = matW(X, y, weights)
-    theta = res.theta
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
@@ -99,7 +98,7 @@ function qda(X, y, weights = ones(nro(X));
         end
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
     end
-    Qda(fm, res.Wi, ct, wprior, theta, ni, lev, 
+    Qda(fm, res.Wi, ct, wprior, res.theta, ni, lev, 
         weights)
 end
 
