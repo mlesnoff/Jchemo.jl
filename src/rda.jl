@@ -1,10 +1,12 @@
 """
-    rda(X, y; alpha, lb, prior = "unif")
+    rda(X, y, weights = ones(nro(X)); 
+        alpha, lb, simpl::Bool = false, prior = "unif")
 Regularized discriminant analysis (RDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `alpha` : Shrinkage parameter of the separate covariances of 
     QDA toward a common covariance as in LDA. Must ∈ [0, 1].
+* `simpl` : Boolean (default to `false`). See `dmnorm`. 
 * `lb` : Ridge regularization parameter "lambda" (>= 0).
 * `prior` : Type of prior probabilities for class membership.
     Posible values are: "unif" (uniform), "prop" (proportional).
@@ -73,9 +75,10 @@ ntrain = nro(Xtrain)
 ntest = nro(Xtest)
 (ntot = ntot, ntrain, ntest)
 
-alpha = .2
-lb = 1e-7
-fm = rda(Xtrain, ytrain; alpha = alpha, lb = lb) ;
+alpha = .5
+lb = 1e-8
+fm = rda(Xtrain, ytrain; alpha = alpha, 
+    lb = lb, simpl = true) ;
 pnames(fm)
 
 res = Jchemo.predict(fm, Xtest)
@@ -88,7 +91,7 @@ confusion(res.pred, ytest).cnt
 ```
 """ 
 function rda(X, y, weights = ones(nro(X)); 
-        alpha, lb, simpl = false, prior = "unif")
+        alpha, lb, simpl::Bool = false, prior = "unif")
     @assert alpha >= 0 && alpha <= 1 "alpha must ∈ [0, 1]"
     @assert lb >= 0 "lb must be in >= 0"
     X = ensure_mat(X)
