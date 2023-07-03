@@ -1,6 +1,6 @@
 """
-    rda(X, y; alpha, lb, prior = "unif", scal = false)
-Regularized discriminant analysis  (RDA).
+    rda(X, y; alpha, lb, prior = "unif")
+Regularized discriminant analysis (RDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `alpha` : Shrinkage parameter of the separate covariances of 
@@ -87,32 +87,38 @@ err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
 """ 
-function rda(X, y; alpha, lb, prior = "unif")
+function rda(X, y, weights = ones(nro(X)); 
+        alpha, lb, prior = "unif")
     @assert alpha >= 0 && alpha <= 1 "alpha must ∈ [0, 1]"
     @assert lb >= 0 "lb must be in >= 0"
     X = ensure_mat(X)
+    y = vec(y)    # for findall
     n, p = size(X)
-    z = aggstat(X, y; fun = mean)
-    ct = z.X
-    lev = z.lev
-    nlev = length(lev)
-    res = matW(X, y)
+    weights = mweight(weights)
+    res = matW(X, y, weights)
     ni = res.ni
+    lev = res.lev
+    nlev = length(lev)
+    res.W .*= n / (n - nlev)    # unbiased estimate
     if isequal(prior, "unif")
         wprior = ones(nlev) / nlev
     elseif isequal(prior, "prop")
         wprior = mweight(ni)
     end
-    res.W .*= n / (n - nlev)
+    fm = list(nlev)
+    ct = similar(X, nlev, p)
     Id = I(p)
     fm = list(nlev)
     @inbounds for i = 1:nlev
+        s = findall(y .== lev[i]) 
+        ct[i, :] = colmean(X[s, :], weights[s])
         ni[i] == 1 ? zn = n : zn = ni[i]
         res.Wi[i] .*= zn / (zn - 1)        
         @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
         @. res.Wi[i] = res.Wi[i] + lb * Id 
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
     end
-    Qda(fm, res.Wi, ct, wprior, lev, ni)
+    Qda(fm, res.Wi, ct, wprior, res.theta, ni, lev, 
+        weights)
 end
 
