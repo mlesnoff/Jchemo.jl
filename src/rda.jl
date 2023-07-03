@@ -88,7 +88,7 @@ confusion(res.pred, ytest).cnt
 ```
 """ 
 function rda(X, y, weights = ones(nro(X)); 
-        alpha, lb, prior = "unif")
+        alpha, lb, simpl = false, prior = "unif")
     @assert alpha >= 0 && alpha <= 1 "alpha must ∈ [0, 1]"
     @assert lb >= 0 "lb must be in >= 0"
     X = ensure_mat(X)
@@ -116,7 +116,8 @@ function rda(X, y, weights = ones(nro(X));
         res.Wi[i] .*= zn / (zn - 1)        
         @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
         @. res.Wi[i] = res.Wi[i] + lb * Id 
-        fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
+        fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i],
+            simpl = simpl) 
     end
     Qda(fm, res.Wi, ct, wprior, res.theta, ni, lev, 
         weights)
