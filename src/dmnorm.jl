@@ -27,7 +27,7 @@ When `simpl= true`, the density returned by function `predict` is
 exp(-d / 2), where d is the squared Mahalanobis distance to the center 
 of `X`. 
 
-When the number of columns (p) becomes large:
+When the number of columns (p) of `X` becomes too large:
 * the determinant of the covariance matrix (object `detS`) 
     can tend to 0 or, conversely, to infinity.
 * The constant  (2 * pi)^(-p / 2) (object `cst`) tends to 0.
