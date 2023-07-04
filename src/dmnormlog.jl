@@ -19,7 +19,8 @@ Logarithm of the normal probability density estimation.
 * `S` : Covariance matrix of the normal distribution.
     If `nothing`, `S` is computed by cov(`X`; corrected = true).
 * `simpl` : Boolean. If `true`, the constant term and the determinant 
-    in the density formula are set to 1. Default to `false`.
+    in the density formula are set to 1. Default to `false`. 
+    See `dmnorm`.
 
 See the help of function `dmnorm`.
 

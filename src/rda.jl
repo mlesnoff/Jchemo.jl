@@ -1,15 +1,30 @@
+struct Rda
+    fm
+    Wi::AbstractVector  
+    ct::Array{Float64}
+    wprior::Vector{Float64}
+    theta::Vector{Float64}
+    ni::Vector{Int64}
+    lev::AbstractVector
+    xscales::Vector{Float64}
+    weights::Vector{Float64}
+end
+
 """
     rda(X, y, weights = ones(nro(X)); 
-        alpha, lb, simpl::Bool = false, prior = "unif")
+        alpha, lb, prior = "unif", simpl::Bool = false, 
+        scal::Bool = false)
 Regularized discriminant analysis (RDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `alpha` : Shrinkage parameter of the separate covariances of 
     QDA toward a common covariance as in LDA. Must ∈ [0, 1].
-* `simpl` : Boolean (default to `false`). See `dmnorm`. 
 * `lb` : Ridge regularization parameter "lambda" (>= 0).
 * `prior` : Type of prior probabilities for class membership.
     Posible values are: "unif" (uniform), "prop" (proportional).
+* `simpl` : Boolean (default to `false`). See `dmnorm`. 
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 
 Regularized compromise between LDA and QDA, see Friedman 1989. 
 
@@ -91,13 +106,19 @@ confusion(res.pred, ytest).cnt
 ```
 """ 
 function rda(X, y, weights = ones(nro(X)); 
-        alpha, lb, simpl::Bool = false, prior = "unif")
+        alpha, lb, prior = "unif", simpl::Bool = false,
+        scal::Bool = false)
     @assert alpha >= 0 && alpha <= 1 "alpha must ∈ [0, 1]"
     @assert lb >= 0 "lb must be in >= 0"
     X = ensure_mat(X)
     y = vec(y)    # for findall
     n, p = size(X)
     weights = mweight(weights)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X, weights)
+        X = scale(X, xscales)
+    end
     res = matW(X, y, weights)
     ni = res.ni
     lev = res.lev
@@ -122,7 +143,7 @@ function rda(X, y, weights = ones(nro(X));
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i],
             simpl = simpl) 
     end
-    Qda(fm, res.Wi, ct, wprior, res.theta, ni, lev, 
-        weights)
+    Rda(fm, res.Wi, ct, wprior, res.theta, ni, lev, 
+        xscales, weights)
 end
 
