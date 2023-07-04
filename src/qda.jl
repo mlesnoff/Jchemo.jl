@@ -70,14 +70,18 @@ confusion(res.pred, ytest).cnt
 ```
 """ 
 function qda(X, y, weights = ones(nro(X)); 
-        alpha = 0, prior = "unif")
+        alpha = 0, prior = "unif", scal = false)
     @assert alpha >= 0 && alpha <= 1 "alpha must ∈ [0, 1]"
     # Scaling X has no effect
     X = ensure_mat(X)
     y = vec(y)    # for findall
     n, p = size(X)
     weights = mweight(weights)
-    xscales = ones(p)    # for consistent structure with rda
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X, weights)
+        X = scale(X, xscales)
+    end
     res = matW(X, y, weights)
     ni = res.ni
     lev = res.lev
@@ -113,6 +117,7 @@ Compute y-predictions from a fitted model.
 function predict(object::Qda, X)
     X = ensure_mat(X)
     m = nro(X)
+    X = scale(X, object.xscales)
     lev = object.lev
     nlev = length(lev) 
     dens = similar(X, m, nlev)
