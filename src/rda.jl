@@ -1,15 +1,3 @@
-struct Rda
-    fm
-    Wi::AbstractVector  
-    ct::Array{Float64}
-    wprior::Vector{Float64}
-    theta::Vector{Float64}
-    ni::Vector{Int64}
-    lev::AbstractVector
-    xscales::Vector{Float64}
-    weights::Vector{Float64}
-end
-
 """
     rda(X, y, weights = ones(nro(X)); 
         alpha, lb, prior = "unif", simpl::Bool = false, 
@@ -143,7 +131,7 @@ function rda(X, y, weights = ones(nro(X));
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i],
             simpl = simpl) 
     end
-    Rda(fm, res.Wi, ct, wprior, res.theta, ni, lev, 
+    Qda(fm, res.Wi, ct, wprior, res.theta, ni, lev, 
         xscales, weights)
 end
 

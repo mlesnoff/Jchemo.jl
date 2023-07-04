@@ -6,6 +6,7 @@ struct Qda
     theta::Vector{Float64}
     ni::Vector{Int64}
     lev::AbstractVector
+    xscales::Vector{Float64}
     weights::Vector{Float64}
 end
 
@@ -76,6 +77,7 @@ function qda(X, y, weights = ones(nro(X));
     y = vec(y)    # for findall
     n, p = size(X)
     weights = mweight(weights)
+    xscales = ones(p)    # for consistent structure with rda
     res = matW(X, y, weights)
     ni = res.ni
     lev = res.lev
@@ -99,7 +101,7 @@ function qda(X, y, weights = ones(nro(X));
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
     end
     Qda(fm, res.Wi, ct, wprior, res.theta, ni, lev, 
-        weights)
+        xscales, weights)
 end
 
 """
