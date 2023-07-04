@@ -18,7 +18,8 @@ Regularized discriminant analysis (RDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `alpha` : Shrinkage parameter of the separate covariances of 
-    QDA toward a common covariance as in LDA. Must ∈ [0, 1].
+    QDA toward a common covariance as in LDA. Must ∈ [0, 1]
+    (`alpha` is referred to as lambda in Friedman 1989).
 * `lb` : Ridge regularization parameter "lambda" (>= 0).
 * `prior` : Type of prior probabilities for class membership.
     Posible values are: "unif" (uniform), "prop" (proportional).
@@ -31,15 +32,14 @@ Regularized compromise between LDA and QDA, see Friedman 1989.
 Noting W the (corrected) pooled within-class covariance matrix and 
 Wi the (corrected) within-class covariance matrix of class i, the 
 regularization is done by with the two successive steps:
-* Compromise between LDA and QDA: Wi(1) = (1 - `alpha`) * Wi + `alpha` * W       
+* Continuum between QDA and LDA: Wi(1) = (1 - `alpha`) * Wi + `alpha` * W       
 * Ridge regularization: Wi(2) = Wi(1) + `lb` * I
-Then a QDA is done using matrices Wi(2).
+Then the QDA algorithm is run on matrices Wi(2).
 
-Function `rda` shrinks the covariance matrices Wi(2) 
+Function `rda` is slightly different from the regularization expression 
+used by Friedman 1989 (Eq.18). It shrinks the covariance matrices Wi(2) 
 to the diagonal of the Idendity matrix (ridge regularization)
-(e.g. Guo et al. 2007). This is slightly different from the 
-regularization expression used by Friedman 1989 (Eq.18). 
-Note: Parameter `alpha` is referred to as lambda in Friedman 1989.
+(e.g. Guo et al. 2007).  
 
 Particular cases:
 * `alpha` = 1 & `lb` = 0 : LDA
