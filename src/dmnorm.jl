@@ -24,13 +24,12 @@ Normal probability density estimation.
 Data `X` can be univariate (p = 1) or multivariate (p > 1). See examples.
 
 When `simple = true`, the determinant of the covariance matrix (object `detS`) 
-and the constant (2 * pi)^(-p / 2) (object `cst`)
-are set to 1. In such a case, function `dmnorm` computes a pseudo 
-density that does not account for `cst` and `detS`, and resumes to 
-exp(-d / 2), where d is the squared Mahalanobis distance to the center.
+and the constant (2 * pi)^(-p / 2) (object `cst`) in the density formula are 
+set to 1. The function returns a pseudo density that resumes to exp(-d / 2), 
+where d is the squared Mahalanobis distance to the center.
 
-This can be useful for instance When the number of columns (p) of 
-`X` becomes too large and:
+This can for instance be useful when the number of columns (p) of 
+`X` becomes too large and when consequently:
 * `detS` tends to 0 or, conversely, to infinity
 * `cst` tends to 0
 which makes impossible to compute the true density. 

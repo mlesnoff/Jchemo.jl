@@ -20,7 +20,7 @@ Logarithm of the normal probability density estimation.
     If `nothing`, `S` is computed by cov(`X`; corrected = true).
 * `simpl` : Boolean. If `true`, the constant term and the determinant 
     in the density formula are set to 1. Default to `false`. 
-    See `dmnorm`.
+    See `dmnorm` for details.
 
 See the help of function `dmnorm`.
 
