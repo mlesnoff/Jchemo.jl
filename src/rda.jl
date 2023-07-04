@@ -1,3 +1,15 @@
+struct Rda
+    fm
+    Wi::AbstractVector  
+    ct::Array{Float64}
+    wprior::Vector{Float64}
+    theta::Vector{Float64}
+    ni::Vector{Int64}
+    lev::AbstractVector
+    xscales::Vector{Float64}
+    weights::Vector{Float64}
+end
+
 """
     rda(X, y, weights = ones(nro(X)); 
         alpha, lb, prior = "unif", simpl::Bool = false, 
@@ -131,7 +143,31 @@ function rda(X, y, weights = ones(nro(X));
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i],
             simpl = simpl) 
     end
-    Qda(fm, res.Wi, ct, wprior, res.theta, ni, lev, 
+    Rda(fm, res.Wi, ct, wprior, res.theta, ni, lev, 
         xscales, weights)
+end
+
+"""
+    predict(object::Qda, X)
+Compute y-predictions from a fitted model.
+* `object` : The fitted model.
+* `X` : X-data for which predictions are computed.
+""" 
+function predict(object::Rda, X)
+    X = ensure_mat(X)
+    m = nro(X)
+    X = scale(X, object.xscales)
+    lev = object.lev
+    nlev = length(lev) 
+    dens = similar(X, m, nlev)
+    for i = 1:nlev
+        dens[:, i] .= vec(Jchemo.predict(object.fm[i], X).pred)
+    end
+    A = object.wprior' .* dens
+    v = sum(A, dims = 2)
+    posterior = scale(A', v)'                    # This could be replaced by code similar as in scale! 
+    z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
+    pred = reshape(replacebylev2(z, object.lev), m, 1)
+    (pred = pred, dens, posterior)
 end
 

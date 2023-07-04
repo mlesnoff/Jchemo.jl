@@ -6,7 +6,6 @@ struct Qda
     theta::Vector{Float64}
     ni::Vector{Int64}
     lev::AbstractVector
-    xscales::Vector{Float64}
     weights::Vector{Float64}
 end
 
@@ -70,18 +69,13 @@ confusion(res.pred, ytest).cnt
 ```
 """ 
 function qda(X, y, weights = ones(nro(X)); 
-        alpha = 0, prior = "unif", scal = false)
+        alpha = 0, prior = "unif")
     @assert alpha >= 0 && alpha <= 1 "alpha must ∈ [0, 1]"
     # Scaling X has no effect
     X = ensure_mat(X)
     y = vec(y)    # for findall
     n, p = size(X)
     weights = mweight(weights)
-    xscales = ones(p)
-    if scal 
-        xscales .= colstd(X, weights)
-        X = scale(X, xscales)
-    end
     res = matW(X, y, weights)
     ni = res.ni
     lev = res.lev
@@ -105,7 +99,7 @@ function qda(X, y, weights = ones(nro(X));
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
     end
     Qda(fm, res.Wi, ct, wprior, res.theta, ni, lev, 
-        xscales, weights)
+        weights)
 end
 
 """
@@ -117,7 +111,6 @@ Compute y-predictions from a fitted model.
 function predict(object::Qda, X)
     X = ensure_mat(X)
     m = nro(X)
-    X = scale(X, object.xscales)
     lev = object.lev
     nlev = length(lev) 
     dens = similar(X, m, nlev)
