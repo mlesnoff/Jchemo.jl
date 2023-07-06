@@ -1,5 +1,14 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.1.24*
+
+- News
+    - **soft**: Soft threshold function.
+
+- Modifications
+    - Code improvement.
+
+
 ### *Version 0.1.23*
 
 - News
