@@ -1101,6 +1101,38 @@ end
 scale2(X, v) = mapslices(function f(x) ; x ./ v ; end, ensure_mat(X), dims = 2)
 
 """
+    soft(x::Real)
+Soft thresholding function.
+* `X` : Data (n, p).
+* `Y` : Data (n, q).
+* `w` : Weights (n) of the observations.
+
+`w` is internally normalized to sum to 1.
+
+Uncorrected weighted covariance matrix 
+* of the columns of `X`: ==> (p, p) matrix 
+* or between columns of `X` and `Y` : ==> (p, q) matrix.
+
+## Examples
+```julia
+delta = .2
+x = LinRange(-1, 1, 100)
+y = soft.(x, delta)
+lines(x, y)
+```
+"""
+function soft(x::Real, delta)
+    @assert delta >= 0 "delta must be >= 0."
+    z = abs(x) - delta
+    z < 0 ? z = 0 : nothing
+    sign(x) * z
+end
+
+
+
+
+
+"""
     sourcedir(path)
 Include all the files contained in a directory.
 """
