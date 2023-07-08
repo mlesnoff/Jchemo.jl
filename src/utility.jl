@@ -929,7 +929,7 @@ Replace the elements of an index-vector by levels.
 *Warning*: Let us note "nlev" the number of levels in `lev`. 
 Vector `x` must contain integer values between 1 and nlev. 
 
-Each element `x[i]` (i = 1,...,n) is replaced by `lev[x[i]]`.
+Each element `x[i]` (i = 1, ..., n) is replaced by `lev[x[i]]`.
 
 ## Examples
 ```julia
