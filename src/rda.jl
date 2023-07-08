@@ -12,17 +12,17 @@ end
 
 """
     rda(X, y, weights = ones(nro(X)); 
-        alpha, lb, prior = "unif", simpl::Bool = false, 
+        prior = "unif", alpha, lb, simpl::Bool = false, 
         scal::Bool = false)
 Regularized discriminant analysis (RDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
+* `prior` : Type of prior probabilities for class membership.
+    Posible values are: "unif" (uniform), "prop" (proportional).
 * `alpha` : Shrinkage parameter of the separate covariances of 
     QDA toward a common covariance as in LDA. Must ∈ [0, 1]
     (`alpha` is referred to as lambda in Friedman 1989).
 * `lb` : Ridge regularization parameter "lambda" (>= 0).
-* `prior` : Type of prior probabilities for class membership.
-    Posible values are: "unif" (uniform), "prop" (proportional).
 * `simpl` : Boolean (default to `false`). See `dmnorm`. 
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
@@ -106,7 +106,7 @@ confusion(res.pred, ytest).cnt
 ```
 """ 
 function rda(X, y, weights = ones(nro(X)); 
-        alpha, lb, prior = "unif", simpl::Bool = false,
+        prior = "unif", alpha, lb, simpl::Bool = false,
         scal::Bool = false)
     @assert alpha >= 0 && alpha <= 1 "alpha must ∈ [0, 1]"
     @assert lb >= 0 "lb must be in >= 0"
