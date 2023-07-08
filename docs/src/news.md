@@ -3,7 +3,7 @@
 ### *Version 0.1.24*
 
 - News
-    - **soft**: Soft threshold function.
+    - **soft**: Soft thresholding.
 
 - Modifications
     - Code improvement.
