@@ -199,6 +199,7 @@ export
     rmcol, rmrow, 
     rowmean, rowstd, rowsum,   
     scale, scale!,
+    soft,
     sourcedir,
     ssq,
     summ,
