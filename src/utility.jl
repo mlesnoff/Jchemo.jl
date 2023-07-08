@@ -1101,24 +1101,17 @@ end
 scale2(X, v) = mapslices(function f(x) ; x ./ v ; end, ensure_mat(X), dims = 2)
 
 """
-    soft(x::Real)
+    soft(x::Real, delta)
 Soft thresholding function.
-* `X` : Data (n, p).
-* `Y` : Data (n, q).
-* `w` : Weights (n) of the observations.
-
-`w` is internally normalized to sum to 1.
-
-Uncorrected weighted covariance matrix 
-* of the columns of `X`: ==> (p, p) matrix 
-* or between columns of `X` and `Y` : ==> (p, q) matrix.
+* `x` : Value to transform.
+* `delta` : Range for the thresholding.
 
 ## Examples
 ```julia
 delta = .2
 soft(3, delta)
 
-x = LinRange(-1, 1, 100)
+x = LinRange(-2, 2, 100)
 y = soft.(x, delta)
 lines(x, y)
 ```
@@ -1127,9 +1120,6 @@ function soft(x::Real, delta)
     @assert delta >= 0 "delta must be >= 0."
     sign(x) * max(0, abs(x) - delta)
 end
-
-
-
 
 """
     sourcedir(path)
