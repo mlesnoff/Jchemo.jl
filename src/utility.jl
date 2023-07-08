@@ -1116,6 +1116,8 @@ Uncorrected weighted covariance matrix
 ## Examples
 ```julia
 delta = .2
+soft(3, delta)
+
 x = LinRange(-1, 1, 100)
 y = soft.(x, delta)
 lines(x, y)
@@ -1123,11 +1125,8 @@ lines(x, y)
 """
 function soft(x::Real, delta)
     @assert delta >= 0 "delta must be >= 0."
-    z = abs(x) - delta
-    z < 0 ? z = 0 : nothing
-    sign(x) * z
+    sign(x) * max(0, abs(x) - delta)
 end
-
 
 
 
