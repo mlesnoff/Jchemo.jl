@@ -926,10 +926,10 @@ Replace the elements of an index-vector by levels.
 * `x` : Vector (n) of values to replace.
 * `lev` : Vector (nlev) containing the levels.
 
-*Warning*: Let us note "nlev" the number of levels in `lev`. 
+*Warning*: Let us note nlev the number of levels in `lev`. 
 Vector `x` must contain integer values between 1 and nlev. 
 
-Each element `x[i]` (i = 1, ..., n) is replaced by `lev[x[i]]`.
+Each element `x`[i] (i = 1, ..., n) is replaced by sort(`lev`)[`x`[i]].
 
 ## Examples
 ```julia
