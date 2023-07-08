@@ -17,10 +17,10 @@ Quadratic discriminant analysis (QDA, with continuum towards LDA).
 * `y` : y-data (class membership).
 * `weights` : Weights (n) of the observations. 
     Internally normalized to sum to 1.
-* `alpha` : Scalar (∈ [0, 1]) defining the continuum
-    between QDA (`alpha = 0`; default) and LDA (`alpha = 1`).
 * `prior` : Type of prior probabilities for class membership.
     Possible values are: "unif" (uniform), "prop" (proportional).
+* `alpha` : Scalar (∈ [0, 1]) defining the continuum
+    between QDA (`alpha = 0`; default) and LDA (`alpha = 1`).
 
 A value `alpha` > 0 shrinks the QDA separate covariances by class 
 (Wi) toward a common LDA covariance (W). This corresponds to the first
