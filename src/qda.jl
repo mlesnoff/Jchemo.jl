@@ -11,7 +11,7 @@ end
 
 """
     qda(X, y, weights = ones(nro(X)); 
-        alpha = 0, prior = "unif")
+        prior = "unif", alpha = 0)
 Quadratic discriminant analysis (QDA, with continuum towards LDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -69,7 +69,7 @@ confusion(res.pred, ytest).cnt
 ```
 """ 
 function qda(X, y, weights = ones(nro(X)); 
-        alpha = 0, prior = "unif")
+        prior = "unif", alpha = 0)
     @assert alpha >= 0 && alpha <= 1 "alpha must ∈ [0, 1]"
     # Scaling X has no effect
     X = ensure_mat(X)
