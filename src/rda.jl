@@ -17,6 +17,8 @@ end
 Regularized discriminant analysis (RDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
+* `weights` : Weights (n) of the observations. 
+    Internally normalized to sum to 1.
 * `prior` : Type of prior probabilities for class membership.
     Posible values are: "unif" (uniform), "prop" (proportional).
 * `alpha` : Shrinkage parameter of the separate covariances of 
