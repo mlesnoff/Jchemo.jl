@@ -31,7 +31,7 @@ Nearest shrunken centroids.
 
 Compute the nearest shrunken centroids (NSC) proposed by Tibshirani 
 et al. (2002). A soft thresholding is used to shrink the class centroids 
-and to select the important variables (`X`-columns).  
+and to select the important `X`-variables (columns).  
 
 ## References
 Tibshirani, R., Hastie, T., Narasimhan, B., Chu, G., 2002. Diagnosis of multiple 
@@ -44,48 +44,39 @@ Statistical Science 18, 104–117.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, StatsBase
+using JchemoData, JLD2
+using FreqTables
 
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/forages2.jld2") 
+db = joinpath(path_jdat, "data/srbct.jld2") 
 @load db dat
 pnames(dat)
-  
-X = dat.X 
-Y = dat.Y
-y = Y.typ
-wl = names(X)
-wl_num = parse.(Float64, wl)
-ntot = nro(X)
 
-plotsp(X, wl_num).f
-
-summ(Y)
-tab(y)
-tab(Y.test)
-
-s = Bool.(Y.test)
-Xtrain = rmrow(X, s)
-ytrain = rmrow(y, s)
-Xtest = X[s, :]
-ytest = y[s]
-ntrain = nro(Xtrain)
+Xtrain = dat.Xtrain
+Ytrain = dat.Ytrain
+ytrain = Ytrain.y
+Xtest = dat.Xtest
+Ytest = dat.Ytest
+s = Ytest.y .<= 4
+Xtest = Xtest[s, :]
+Ytest = Ytest[s, :]
+ytest = Ytest.y
+ntrain, p = size(Xtrain)
 ntest = nro(Xtest)
-(ntot = ntot, ntrain, ntest)
+(ntrain = ntrain, ntest)
 
-alpha = .5
-lb = 1e-8
-fm = rda(Xtrain, ytrain; alpha = alpha, 
-    lb = lb, simpl = true) ;
+freqtable(ytrain, Ytrain.lab)
+
+delta = 4.34
+fm = nsc(Xtrain, ytrain; delta = delta) ;
 pnames(fm)
-
-res = Jchemo.predict(fm, Xtest)
-pnames(res)
-res.dens
-res.posterior
-res.pred
-err(res.pred, ytest)
-confusion(res.pred, ytest).cnt
+fm.ct   # centroids
+fm.d    # statistic d (eq.[1] in Tibshirani et al. 2002)  
+fm.cts  # shrunken centroids (eq.[4] in Tibshirani et al. 2002)
+fm.ds   # statistic d' (eq.[5] in Tibshirani et al. 2002)
+fm.sel  # indexes of the selected variables
+i = 1
+fm.selc[i]  # indexes of the selected variables for class i
 ```
 """ 
 
