@@ -1,9 +1,10 @@
-struct Nsc
+struct Nsc5
     ds::Array{Float64}
     cts::Array{Float64}
     d::Array{Float64}
     ct::Array{Float64}
     sel::Vector{Int64}
+    selc::AbstractVector
     poolstd::Vector{Float64}
     s0::Real
     mi::Vector{Float64}
@@ -21,47 +22,25 @@ end
 Nearest shrunken centroids.
 * `X` : X-data.
 * `y` : y-data (class membership).
-* `prior` : Type of prior probabilities for class membership.
-    Posible values are: "unif" (uniform), "prop" (proportional).
-* `alpha` : Shrinkage parameter of the separate covariances of 
-    QDA toward a common covariance as in LDA. Must ∈ [0, 1]
-    (`alpha` is referred to as lambda in Friedman 1989).
-* `lb` : Ridge regularization parameter "lambda" (>= 0).
-* `simpl` : Boolean (default to `false`). See `dmnorm`. 
+* `weights` : Weights (n) of the observations. 
+    Internally normalized to sum to 1.
+* `delta` : Threshold value (>= 0) for the soft thresholding 
+    function `soft`.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-Regularized compromise between LDA and QDA, see Friedman 1989. 
-
-Noting W the (corrected) pooled within-class covariance matrix and 
-Wi the (corrected) within-class covariance matrix of class i, the 
-regularization is done by with the two successive steps:
-* Continuum between QDA and LDA: Wi(1) = (1 - `alpha`) * Wi + `alpha` * W       
-* Ridge regularization: Wi(2) = Wi(1) + `lb` * I
-Then the QDA algorithm is run on matrices Wi(2).
-
-Function `rda` is slightly different from the regularization expression 
-used by Friedman 1989 (Eq.18). It shrinks the covariance matrices Wi(2) 
-to the diagonal of the Idendity matrix (ridge regularization)
-(e.g. Guo et al. 2007).  
-
-Particular cases:
-* `alpha` = 1 & `lb` = 0 : LDA
-* `alpha` = 0 & `lb` = 0 : QDA
-* `alpha` = 1 & `lb` > 0 : Penalized LDA (Hstie et al 1995) with diagonal
-    regularization matrix
+Compute the nearest shrunken centroids (NSC) proposed by Tibshirani 
+et al. (2002). A soft thresholding is used to shrink the class centroids 
+and to select the important variables (`X`-columns).  
 
 ## References
-Friedman JH. Regularized Discriminant Analysis. Journal of the American 
-Statistical Association. 1989; 84(405):165-175. 
-doi:10.1080/01621459.1989.10478752.
+Tibshirani, R., Hastie, T., Narasimhan, B., Chu, G., 2002. Diagnosis of multiple 
+cancer types by shrunken centroids of gene expression. Proceedings of the National 
+Academy of Sciences 99, 6567–6572. https://doi.org/10.1073/pnas.082099299
 
-Guo Y, Hastie T, Tibshirani R. Regularized linear discriminant 
-analysis and its application in microarrays. Biostatistics. 
-2007; 8(1):86-100. doi:10.1093/biostatistics/kxj035.
-
-Hastie, T., Buja, A., Tibshirani, R., 1995. Penalized Discriminant Analysis. 
-The Annals of Statistics 23, 73–102.
+Tibshirani, R., Hastie, T., Narasimhan, B., Chu, G., 2003. Class Prediction 
+by Nearest Shrunken Centroids, with Applications to DNA Microarrays. 
+Statistical Science 18, 104–117.
 
 ## Examples
 ```julia
@@ -144,8 +123,13 @@ function nsc(X, y, weights = ones(nro(X));
     scale!(d, poolstd_s0)
     d ./= mi
     ds = soft.(d, delta)
-    cts = scale(ds, 1 ./ poolstd_s0) .* mi
-    sel = findall(colsum(abs.(ds)) .> 0)
-    Nsc(ds, cts, d, ct, sel, poolstd, s0, mi,
+    cts = xmeans' .+ scale(ds, 1 ./ poolstd_s0) .* mi
+    abs_ds = abs.(ds)
+    sel = findall(colsum(abs_ds) .> 0)
+    selc = list(5, Vector{Int64})
+    @inbounds for i = 1:nlev
+        selc[i] = findall(abs_ds[i, :] .> 0)
+    end 
+    Nsc5(ds, cts, d, ct, sel, selc, poolstd, s0, mi,
         ni, lev, theta, delta, xscales, weights)
 end
