@@ -3,7 +3,7 @@
 ### *Version 0.1.25*
 
 - News
-    - **Nsc**: Nearest shrunken centroids.
+    - **Nsc**: Nearest shrunken centroids (and variable selection).
     - **softmax** Softmax function.
 
 - Modifications
