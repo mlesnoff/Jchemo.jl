@@ -1125,8 +1125,11 @@ end
     softmax(x::AbstractVector)
     softmax(X::Union{Matrix, DataFrame})
 Softmax function.
-* `x` : A vetor to transform.
-* `X` : A matrix whose rows are transformed.
+* `x` : A vector to transform.
+* `X` : A matrix whose rows are to transform.
+
+Let v be a vector:
+* 'softmax'(v) = exp.(v) / sum(exp.(v)) 
 
 ## Examples
 ```julia
