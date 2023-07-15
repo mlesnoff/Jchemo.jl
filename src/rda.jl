@@ -12,8 +12,8 @@ end
 
 """
     rda(X, y, weights = ones(nro(X)); 
-        prior = "unif", alpha, lb, simpl::Bool = false, 
-        scal::Bool = false)
+        prior = "unif", alpha = 1, lb = 1e-10, 
+        simpl::Bool = false, scal::Bool = false)
 Regularized discriminant analysis (RDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -108,8 +108,8 @@ confusion(res.pred, ytest).cnt
 ```
 """ 
 function rda(X, y, weights = ones(nro(X)); 
-        prior = "unif", alpha, lb, simpl::Bool = false,
-        scal::Bool = false)
+        prior = "unif", alpha = 1, lb = 1e-10, 
+        simpl::Bool = false, scal::Bool = false)
     @assert alpha >= 0 && alpha <= 1 "alpha must ∈ [0, 1]"
     @assert lb >= 0 "lb must be in >= 0"
     X = ensure_mat(X)
@@ -125,7 +125,6 @@ function rda(X, y, weights = ones(nro(X));
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
-    res.W .*= n / (n - nlev)    # unbiased estimate
     if isequal(prior, "unif")
         wprior = ones(nlev) / nlev
     elseif isequal(prior, "prop")
@@ -135,6 +134,7 @@ function rda(X, y, weights = ones(nro(X));
     ct = similar(X, nlev, p)
     Id = I(p)
     fm = list(nlev)
+    res.W .*= n / (n - nlev)    # unbiased estimate
     @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(X[s, :], weights[s])
