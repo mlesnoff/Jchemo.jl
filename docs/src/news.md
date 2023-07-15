@@ -4,6 +4,7 @@
 
 - News
     - **Nsc**: Nearest shrunken centroids.
+    - **softmax** Softmax function.
 
 - Modifications
     - Code improvement.
