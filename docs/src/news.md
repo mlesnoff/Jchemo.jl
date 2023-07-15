@@ -9,7 +9,6 @@
 - Modifications
     - Code improvement.
 
-
 ### *Version 0.1.24*
 
 - News

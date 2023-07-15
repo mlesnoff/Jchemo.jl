@@ -200,6 +200,7 @@
 
 - **covsel** Variable selection from partial covariance or correlation (Covsel)
 - **isel** Interval variable selection (e.g. Interval PLSR).
+- **nsc**: Nearest shrunken centroids.
 - **vip** Variable importance on projections (VIP)
 - **vi_baggr** Variable importance after bagging (OOB permutations method)
 - **viperm** Variable importance by direct permutations
@@ -326,6 +327,7 @@
 - **rmrow** Remove the rows of a matrix or the components of a vector having indexes s
 - **rowmean**, **rowstd**, **rowsum** Row-wise operations
 - **soft** Soft thresholding
+- **softmax** Softmax function
 - **sourcedir** Include all the files contained in a directory
 - **ssq** Total inertia of a matrix
 - **summ** Summarize the columns of a dataset
