@@ -201,6 +201,7 @@ export
     rowmean, rowstd, rowsum,   
     scale, scale!,
     soft,
+    softmax,
     sourcedir,
     ssq,
     summ,

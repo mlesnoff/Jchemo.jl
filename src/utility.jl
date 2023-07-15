@@ -1122,6 +1122,37 @@ function soft(x::Real, delta)
 end
 
 """
+    softmax(x::Real, delta)
+Softmax function.
+* `x` : Value to transform.
+* `delta` : Range for the thresholding.
+
+## Examples
+```julia
+delta = .2
+soft(3, delta)
+
+x = LinRange(-2, 2, 100)
+y = soft.(x, delta)
+lines(x, y)
+```
+"""
+function softmax(x::AbstractVector)
+    expx = exp.(x) 
+    expx / sum(expx)
+end
+
+function softmax(X::Union{Matrix, DataFrame})
+    X = ensure_mat(X)
+    P = similar(X)
+    n = nro(P)
+    @inbounds for i = 1:n
+        P[i, :] .= softmax(X[i, :])
+    end
+    P
+end
+
+"""
     sourcedir(path)
 Include all the files contained in a directory.
 """
