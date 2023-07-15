@@ -1122,19 +1122,19 @@ function soft(x::Real, delta)
 end
 
 """
-    softmax(x::Real, delta)
+    softmax(x::AbstractVector)
+    softmax(X::Union{Matrix, DataFrame})
 Softmax function.
-* `x` : Value to transform.
-* `delta` : Range for the thresholding.
+* `x` : A vetor to transform.
+* `X` : A matrix whose rows are transformed.
 
 ## Examples
 ```julia
-delta = .2
-soft(3, delta)
+x = 1:3
+softmax(x)
 
-x = LinRange(-2, 2, 100)
-y = soft.(x, delta)
-lines(x, y)
+X = rand(5, 3)
+softmax(X)
 ```
 """
 function softmax(x::AbstractVector)
@@ -1147,7 +1147,7 @@ function softmax(X::Union{Matrix, DataFrame})
     P = similar(X)
     n = nro(P)
     @inbounds for i = 1:n
-        P[i, :] .= softmax(X[i, :])
+        P[i, :] .= softmax(vrow(X, i))
     end
     P
 end
