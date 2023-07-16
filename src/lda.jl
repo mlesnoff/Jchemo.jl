@@ -106,7 +106,7 @@ function predict(object::Lda, X)
     v = sum(A, dims = 2)
     posterior = scale(A', v)'                    # This could be replaced by code similar as in scale! 
     z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
-    pred = reshape(replacebylev2(z, object.lev), m, 1)
+    pred = reshape(replacebylev2(z, lev), m, 1)
     (pred = pred, dens, posterior)
 end
     
