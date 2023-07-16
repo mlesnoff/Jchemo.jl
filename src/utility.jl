@@ -1129,7 +1129,7 @@ Softmax function.
 * `X` : A matrix whose rows are to transform.
 
 Let v be a vector:
-* 'softmax'(v) = exp.(v) / sum(exp.(v)) 
+* 'softmax'(v) = exp.(v) / sum(exp.(v))
 
 ## Examples
 ```julia
