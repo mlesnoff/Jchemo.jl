@@ -1,18 +1,11 @@
 ### NEWS for package **Jchemo**
 
-### *Version 0.1.25*
-
-- News
-    - **Nsc**: Nearest shrunken centroids (and variable selection).
-    - **softmax** Softmax function.
-
-- Modifications
-    - Code improvement.
-
 ### *Version 0.1.24*
 
 - News
+    - **Nsc**: Nearest shrunken centroids (and variable selection).
     - **soft**: Soft thresholding.
+    - **softmax** Softmax function.
 
 - Modifications
     - Code improvement.
