@@ -1,4 +1,4 @@
-struct Nsc7
+struct Nsc
     ds::Array{Float64}
     d::Array{Float64}
     cts::Array{Float64}
@@ -121,6 +121,6 @@ function nsc(X, y, weights = ones(nro(X));
     @inbounds for i = 1:nlev
         selc[i] = findall(abs_ds[i, :] .> 0)
     end 
-    Nsc7(ds, d, cts, ct, sel, selc, poolstd, s0, 
+    Nsc(ds, d, cts, ct, sel, selc, poolstd, s0, 
         mi, ni, lev, theta, xscales, weights)
 end

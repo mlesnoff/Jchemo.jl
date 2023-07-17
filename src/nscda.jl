@@ -1,4 +1,4 @@
-struct Nscda4
+struct Nscda
     fms
     poolstd_s0::Vector{Float64}
     wprior::Vector{Float64}
@@ -84,7 +84,7 @@ function nscda(X, y, weights = ones(nro(X)); delta,
     elseif isequal(prior, "prop")
         wprior = mweight(fms.ni)
     end
-    Nscda4(fms, poolstd_s0, wprior, fms.ni, 
+    Nscda(fms, poolstd_s0, wprior, fms.ni, 
         fms.lev, fms.xscales, weights)
 end
 
@@ -94,7 +94,7 @@ Compute predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : Data (vector) for which predictions are computed.
 """ 
-function predict(object::Nscda4, X)
+function predict(object::Nscda, X)
     zX = scale(X, object.xscales)
     m = nro(zX)
     scale!(zX, object.poolstd_s0)
