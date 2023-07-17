@@ -3,7 +3,8 @@
 ### *Version 0.1.24*
 
 - News
-    - **Nsc**: Nearest shrunken centroids (and variable selection).
+    - **nsc**: Nearest shrunken centroids (NSC).
+    - **nscda**: Discrimination by nearest shrunken centroids.
     - **soft**: Soft thresholding.
     - **softmax** Softmax function.
 
