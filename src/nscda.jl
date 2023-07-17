@@ -24,14 +24,20 @@ function nscda(X, y, weights = ones(nro(X)); delta,
         fms.lev, fms.xscales, weights)
 end
 
-function predict(object::Nscda4, X; meth = 2)
+"""
+    predict(object::Dmnorm, X)
+Compute predictions from a fitted model.
+* `object` : The fitted model.
+* `X` : Data (vector) for which predictions are computed.
+""" 
+function predict(object::Nscda4, X)
     zX = scale(X, object.xscales)
     m = nro(zX)
     scale!(zX, object.poolstd_s0)
     cts = scale(object.fms.cts, object.poolstd_s0)
     d2 = euclsq(zX, cts) .- 2 * log.(object.wprior)'
     posterior = softmax(-.5 * d2)
-    z =  mapslices(argmin, d2; dims = 2)  # if equal, argmax takes the first
+    z =  mapslices(argmin, d2; dims = 2)  # if equal, argmin takes the first
     pred = reshape(replacebylev2(z, object.lev), m, 1)
     (pred = pred, d2, posterior)
 end
