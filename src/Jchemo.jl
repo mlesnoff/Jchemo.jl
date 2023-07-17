@@ -119,7 +119,7 @@ include("krrda.jl")
 include("kplsrda.jl")
 include("dkplsrda.jl")
 include("nsc.jl")
-#include("nscda.jl")
+include("nscda.jl")
 
 include("occsd.jl") ; include("occod.jl") ; ; include("occsdod.jl")
 include("occstah.jl") ; include("stah.jl")
@@ -303,7 +303,7 @@ export
     occstah, stah,
     occknndis, occlknndis,
     nsc, 
-    #nscda,
+    nscda,
     # Local Discrimination
     lwmlrda, lwmlrda_s,
     lwplsrda, lwplsrda_s,
