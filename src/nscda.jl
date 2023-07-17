@@ -8,6 +8,69 @@ struct Nscda4
     weights::Vector{Float64}
 end
 
+"""
+    nscda(X, y, weights = ones(nro(X)); delta = .5, 
+        prior = "unif", scal::Bool = false)
+Nearest shrunken centroids.
+* `X` : X-data.
+* `y` : y-data (class membership).
+* `weights` : Weights (n) of the observations. 
+    Internally normalized to sum to 1.
+* `delta` : Threshold value (>= 0) for function `soft`
+    (soft thresholding). 
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
+
+Compute the nearest shrunken centroids (NSC) proposed by Tibshirani 
+et al. (2002). A soft thresholding is used to shrink the class centroids 
+and to select the important `X`-variables (columns).  
+
+## References
+Tibshirani, R., Hastie, T., Narasimhan, B., Chu, G., 2002. Diagnosis of multiple 
+cancer types by shrunken centroids of gene expression. Proceedings of the National 
+Academy of Sciences 99, 6567–6572. https://doi.org/10.1073/pnas.082099299
+
+Tibshirani, R., Hastie, T., Narasimhan, B., Chu, G., 2003. Class Prediction 
+by Nearest Shrunken Centroids, with Applications to DNA Microarrays. 
+Statistical Science 18, 104–117.
+
+## Examples
+```julia
+using JchemoData, JLD2
+using FreqTables
+
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/srbct.jld2") 
+@load db dat
+pnames(dat)
+
+Xtrain = dat.Xtrain
+Ytrain = dat.Ytrain
+ytrain = Ytrain.y
+Xtest = dat.Xtest
+Ytest = dat.Ytest
+s = Ytest.y .<= 4
+Xtest = Xtest[s, :]
+Ytest = Ytest[s, :]
+ytest = Ytest.y
+ntrain, p = size(Xtrain)
+ntest = nro(Xtest)
+(ntrain = ntrain, ntest)
+
+freqtable(ytrain, Ytrain.lab)
+
+delta = 4.34
+fm = nsc(Xtrain, ytrain; delta = delta) ;
+pnames(fm)
+fm.ct       # centroids
+fm.d        # statistic d (eq.[1] in Tibshirani et al. 2002)  
+fm.cts      # shrunken centroids (eq.[4] in Tibshirani et al. 2002)
+fm.ds       # statistic d' (eq.[5] in Tibshirani et al. 2002)
+fm.sel      # indexes of the selected variables
+i = 1
+fm.selc[i]  # indexes of the selected variables for class i
+```
+""" 
 function nscda(X, y, weights = ones(nro(X)); delta, 
         prior = "unif", scal::Bool = false)
     weights = mweight(weights)
