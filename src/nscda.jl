@@ -23,8 +23,11 @@ Discrimination by nearest shrunken centroids (NSC).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-The new observations to predict are classified by computing the distnace to the 
-shrunken class centroids (Tibshirani et al. 2002, 2003). 
+Discrimination by nearest shrunken centroids (NSC), such as described in 
+Tibshirani et al. 2002, 2003. 
+
+Each new observation to predict is classified to the class
+having the nearest shrunken centroid. 
 
 ## References
 Tibshirani, R., Hastie, T., Narasimhan, B., Chu, G., 2002. Diagnosis of multiple 
