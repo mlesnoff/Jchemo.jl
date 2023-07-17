@@ -1,6 +1,6 @@
-struct Nscda3
+struct Nscda4
     fms
-    cts::Array{Float64}
+    poolstd_s0::Vector{Float64}
     wprior::Vector{Float64}
     ni::Vector{Int64}
     lev::AbstractVector
@@ -20,11 +20,11 @@ function nscda(X, y, weights = ones(nro(X)); delta,
     elseif isequal(prior, "prop")
         wprior = mweight(fms.ni)
     end
-    Nscda3(fms, poolstd_s0, wprior, fms.ni, 
+    Nscda4(fms, poolstd_s0, wprior, fms.ni, 
         fms.lev, fms.xscales, weights)
 end
 
-function predict(object::Nscda3, X; meth = 2)
+function predict(object::Nscda4, X; meth = 2)
     zX = scale(X, object.xscales)
     m = nro(zX)
     scale!(zX, object.poolstd_s0)
