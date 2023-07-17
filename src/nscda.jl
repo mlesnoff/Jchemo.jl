@@ -89,7 +89,7 @@ function nscda(X, y, weights = ones(nro(X)); delta,
 end
 
 """
-    predict(object::Dmnorm, X)
+    predict(object::Nscda, X)
 Compute predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : Data (vector) for which predictions are computed.
