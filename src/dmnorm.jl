@@ -153,10 +153,10 @@ function dmnorm!(X = nothing; mu = nothing, S = nothing,
 end
 
 """
-    predict(object::Dmnorm, x)
+    predict(object::Dmnorm, X)
 Compute predictions from a fitted model.
 * `object` : The fitted model.
-* `x` : Data (vector) for which predictions are computed.
+* `X` : Data (vector) for which predictions are computed.
 """ 
 function predict(object::Dmnorm, X)
     X = ensure_mat(X)
