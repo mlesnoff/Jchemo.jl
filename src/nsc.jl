@@ -5,7 +5,6 @@ struct Nsc7
     ct::Array{Float64}
     sel::Vector{Int64}
     selc::AbstractVector
-    delta::Real
     poolstd::Vector{Float64}
     s0::Real
     mi::Vector{Float64}
@@ -70,11 +69,11 @@ freqtable(ytrain, Ytrain.lab)
 delta = 4.34
 fm = nsc(Xtrain, ytrain; delta = delta) ;
 pnames(fm)
-fm.ct   # centroids
-fm.d    # statistic d (eq.[1] in Tibshirani et al. 2002)  
-fm.cts  # shrunken centroids (eq.[4] in Tibshirani et al. 2002)
-fm.ds   # statistic d' (eq.[5] in Tibshirani et al. 2002)
-fm.sel  # indexes of the selected variables
+fm.ct       # centroids
+fm.d        # statistic d (eq.[1] in Tibshirani et al. 2002)  
+fm.cts      # shrunken centroids (eq.[4] in Tibshirani et al. 2002)
+fm.ds       # statistic d' (eq.[5] in Tibshirani et al. 2002)
+fm.sel      # indexes of the selected variables
 i = 1
 fm.selc[i]  # indexes of the selected variables for class i
 ```
@@ -117,10 +116,10 @@ function nsc(X, y, weights = ones(nro(X));
     cts = xmeans' .+ scale(ds, 1 ./ poolstd_s0) .* mi
     abs_ds = abs.(ds)
     sel = findall(colsum(abs_ds) .> 0)
-    selc = list(5, Vector{Int64})
+    selc = list(nlev, Vector{Int64})
     @inbounds for i = 1:nlev
         selc[i] = findall(abs_ds[i, :] .> 0)
     end 
-    Nsc7(ds, d, cts, ct, sel, selc, delta, poolstd, s0, 
+    Nsc7(ds, d, cts, ct, sel, selc, poolstd, s0, 
         mi, ni, lev, theta, xscales, weights)
 end
