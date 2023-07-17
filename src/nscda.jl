@@ -11,7 +11,7 @@ end
 """
     nscda(X, y, weights = ones(nro(X)); delta = .5, 
         prior = "unif", scal::Bool = false)
-Discrimination by nearest shrunken centroids.
+Discrimination by nearest shrunken centroids (NSC).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights (n) of the observations. 
@@ -23,8 +23,8 @@ Discrimination by nearest shrunken centroids.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-Discrimination by computing the nearest shrunken centroids (NSC) 
-(Tibshirani et al. 2002, 2003). 
+The new observations to predict are classified by computing the distnace to the 
+shrunken class centroids (Tibshirani et al. 2002, 2003). 
 
 ## References
 Tibshirani, R., Hastie, T., Narasimhan, B., Chu, G., 2002. Diagnosis of multiple 
