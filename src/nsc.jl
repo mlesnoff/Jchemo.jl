@@ -1,7 +1,7 @@
-struct Nsc5
+struct Nsc6
     ds::Array{Float64}
-    cts::Array{Float64}
     d::Array{Float64}
+    cts::Array{Float64}
     ct::Array{Float64}
     sel::Vector{Int64}
     selc::AbstractVector
@@ -121,6 +121,6 @@ function nsc(X, y, weights = ones(nro(X));
     @inbounds for i = 1:nlev
         selc[i] = findall(abs_ds[i, :] .> 0)
     end 
-    Nsc5(ds, cts, d, ct, sel, selc, poolstd, s0, mi,
+    Nsc6(ds, d, cts, ct, sel, selc, poolstd, s0, mi,
         ni, lev, theta, delta, xscales, weights)
 end
