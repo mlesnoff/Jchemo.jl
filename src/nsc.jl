@@ -23,8 +23,8 @@ Nearest shrunken centroids.
 * `y` : y-data (class membership).
 * `weights` : Weights (n) of the observations. 
     Internally normalized to sum to 1.
-* `delta` : Threshold value (>= 0) for the soft thresholding 
-    function `soft`.
+* `delta` : Threshold value (>= 0) for function `soft`
+    (soft thresholding). 
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 

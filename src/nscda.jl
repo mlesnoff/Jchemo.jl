@@ -11,19 +11,20 @@ end
 """
     nscda(X, y, weights = ones(nro(X)); delta = .5, 
         prior = "unif", scal::Bool = false)
-Nearest shrunken centroids.
+Discrimination by nearest shrunken centroids.
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights (n) of the observations. 
     Internally normalized to sum to 1.
 * `delta` : Threshold value (>= 0) for function `soft`
     (soft thresholding). 
+* `prior` : Type of prior probabilities for class membership.
+    Posible values are: "unif" (uniform), "prop" (proportional).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-Compute the nearest shrunken centroids (NSC) proposed by Tibshirani 
-et al. (2002). A soft thresholding is used to shrink the class centroids 
-and to select the important `X`-variables (columns).  
+Discrimination by computing the nearest shrunken centroids (NSC) 
+(Tibshirani et al. 2002, 2003). 
 
 ## References
 Tibshirani, R., Hastie, T., Narasimhan, B., Chu, G., 2002. Diagnosis of multiple 
