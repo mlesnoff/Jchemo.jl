@@ -61,15 +61,12 @@ ntest = nro(Xtest)
 freqtable(ytrain, Ytrain.lab)
 
 delta = 4.34
-fm = nsc(Xtrain, ytrain; delta = delta) ;
-pnames(fm)
-fm.ct       # centroids
-fm.d        # statistic d (eq.[1] in Tibshirani et al. 2002)  
-fm.cts      # shrunken centroids (eq.[4] in Tibshirani et al. 2002)
-fm.ds       # statistic d' (eq.[5] in Tibshirani et al. 2002)
-fm.sel      # indexes of the selected variables
-i = 1
-fm.selc[i]  # indexes of the selected variables for class i
+prior = "prop"
+fm = nscda(Xtrain, ytrain; delta = delta, 
+    prior = prior) ;
+res = Jchemo.predict_nscda(fm, Xtest) ; 
+res.d2
+err(res.pred, ytest)
 ```
 """ 
 function nscda(X, y, weights = ones(nro(X)); delta, 
