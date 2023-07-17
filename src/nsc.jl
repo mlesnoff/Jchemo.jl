@@ -18,7 +18,7 @@ end
 """
     nsc(X, y, weights = ones(nro(X)); 
         delta = .5, scal::Bool = false)
-Nearest shrunken centroids.
+Nearest shrunken centroids (NSC).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights (n) of the observations. 
@@ -29,7 +29,9 @@ Nearest shrunken centroids.
     is scaled by its uncorrected standard deviation.
 
 Compute the nearest shrunken centroids (NSC) proposed by Tibshirani 
-et al. (2002). A soft thresholding is used to shrink the class centroids 
+et al. (2002, 2003). 
+
+A soft thresholding is used to shrink the class centroids 
 and to select the important `X`-variables (columns).  
 
 ## References
