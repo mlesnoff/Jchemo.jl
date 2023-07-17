@@ -67,7 +67,7 @@ delta = 4.34
 prior = "prop"
 fm = nscda(Xtrain, ytrain; delta = delta, 
     prior = prior) ;
-res = Jchemo.predict_nscda(fm, Xtest) ; 
+res = Jchemo.predict(fm, Xtest) ; 
 res.d2
 err(res.pred, ytest)
 ```
