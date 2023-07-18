@@ -53,7 +53,7 @@ function covselr(X, Y; nlv)
     res = covsel(X, Y; nlv = nlv)
     zX = vcol(X, res.sel.sel)
     fm = mlr(zX, Y)
-    Covselr(fm, res.sel, res.cov2)
+    Covselr1(fm)
 end 
 
 """
@@ -62,7 +62,7 @@ Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Covselr, X)
+function predict(object::Covselr1, X)
     pred = predict(object.fm, X[:, object.sel.sel]).pred
     (pred = pred,)
 end
