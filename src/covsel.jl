@@ -14,11 +14,11 @@ Variable (feature) selection from partial covariance (Covsel).
 
 Covsel method for variable selection (Roger et al. 2011). 
     
-The selection is sequential. Once a variable is selected, `X` and 
-`Y` are orthogonolized (deflated) to this variable, and a new variable 
-(the one showing the maximum value for the criterion) is selected.
+The selection is sequential. One first variable is selected (the variable
+maximizing the selection criterion), `X` and `Y` are orthogonolized (deflated) 
+to this variable, and a next variable is selected. And so on.
 
-`Y` is automatically scaled by its uncorrected standard deviation.
+`Y` is automatically internally scaled by its uncorrected standard deviation.
 This has the advantage to give the same importance to each `Y`-variable
 when `Y`is  multivariate (q > 1). This has no effect when `Y` is 
 univariate.
