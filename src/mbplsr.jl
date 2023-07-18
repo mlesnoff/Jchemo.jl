@@ -106,7 +106,7 @@ function mbplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
         Xbl = res.X
     end
     X = reduce(hcat, Xbl)
-    fm = plskern(X, Y, weights; nlv = nlv, scal::Bool = false)
+    fm = plskern(X, Y, weights; nlv = nlv, scal = false)
     Mbplsr(fm, fm.T, fm.R, fm.C, 
         bscales, xmeans, xscales, ymeans, yscales, weights)
 end
