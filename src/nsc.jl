@@ -1,20 +1,3 @@
-struct Nsc
-    ds::Array{Float64}
-    d::Array{Float64}
-    cts::Array{Float64}
-    ct::Array{Float64}
-    sel::Vector{Int64}
-    selc::AbstractVector
-    poolstd::Vector{Float64}
-    s0::Real
-    mi::Vector{Float64}
-    ni::Vector{Int64}
-    lev::AbstractVector
-    theta::Vector{Float64}
-    xscales::Vector{Float64}
-    weights::Vector{Float64}
-end
-
 """
     nsc(X, y, weights = ones(nro(X)); 
         delta = .5, scal::Bool = false)
@@ -121,6 +104,6 @@ function nsc(X, y, weights = ones(nro(X));
     @inbounds for i = 1:nlev
         selc[i] = findall(abs_ds[i, :] .> 0)
     end 
-    Nsc(ds, d, cts, ct, sel, selc, poolstd, s0, 
+    (ds = ds, d, cts, ct, sel, selc, poolstd, s0, 
         mi, ni, lev, theta, xscales, weights)
 end
