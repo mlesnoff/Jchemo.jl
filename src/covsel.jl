@@ -64,6 +64,7 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing)
     if q > 1
         scale!(Y, colstd(Y))
     end
+    
     xsstot = sum(X.^2)
     ysstot = sum(Y.^2)
     xss = zeros(nlv)
@@ -84,7 +85,7 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing)
         selcov[i] = z[zsel]
         cov2[zsel] = z[zsel]
         x = vcol(X, zsel)
-        @. H = x * x' / dot(x, x)
+        H .= x * x' ./ dot(x, x)
         X .-= H * X 
         Y .-= H * Y
         xss[i] = sum(X.^2)
