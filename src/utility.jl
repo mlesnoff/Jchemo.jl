@@ -776,8 +776,19 @@ Return the names of the elements of `x`.
 pnames(x) = propertynames(x)
 
 """ 
+    plist(x)
+Print each element of a list.
+"""
+function plist(x)
+    for i in eachindex(x)
+        println(x[i])
+        println("")
+    end
+end
+
+""" 
     psize(x)
-Return the type and size of `x`.
+Print the type and size of `x`.
 """
 function  psize(x)
     println(typeof(x))

@@ -194,6 +194,7 @@ export
     normw,  
     nro,
     out,
+    plist, 
     pmod, pnames, psize,
     pval,
     recodcat2int, recodnum2cla, 
