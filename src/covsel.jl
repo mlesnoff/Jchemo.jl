@@ -1,21 +1,18 @@
 """
-    covsel(X, Y; nlv = nothing, typ = "cov")
-    covsel!(X::Matrix, Y::Matrix; nlv = nothing, typ = "cov")
-Variable (feature) selection from partial correlation or covariance (Covsel).
+    covsel(X, Y; nlv = nothing)
+    covsel!(X::Matrix, Y::Matrix; nlv = nothing)
+Variable (feature) selection from partial covariance (Covsel).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `nlv` : Nb. variables to select.
-* `typ` : Criterion used for the variable selection. 
-    Possible values are "cov" (squared covariance with `Y`, such as in Roger 
-    et al. 2011) and "cor" (squared correlation with `Y`).
 
-The selection is sequential. Once a variable is selected, 
-`X` and `Y` are orthogonolized (deflated) to this variable, 
-and a new variable (the one showing the maximum value for the criterion)
-is selected.
+Covsel variable selection method (Roger et al. 2011). The selection is 
+sequential. Once a variable is selected, `X` and `Y` are orthogonolized 
+(deflated) to this variable, and a new variable (the one showing the maximum 
+value for the criterion) is selected.
 
 if `Y` is multivariate (q > 1), each column of `Y` is scaled by its 
-uncorrected stnandard deviation. This gives the same scales to the columns
+uncorrected standard deviation. This gives the same scales to the columns
 when computing the selection criterion.
 
 ## References
@@ -51,13 +48,12 @@ scatter(sqrt.(res.cov2),
     axis = (xlabel = "Variable", ylabel = "Importance"))
 ```
 """ 
-function covsel(X, Y; nlv = nothing, typ = "cov")
+function covsel(X, Y; nlv = nothing)
     covsel!(copy(ensure_mat(X)), copy(ensure_mat(Y)); 
-        nlv = nlv, typ = typ)
+        nlv = nlv)
 end
 
-function covsel!(X::Matrix, Y::Matrix; nlv = nothing, 
-        typ = "cov") 
+function covsel!(X::Matrix, Y::Matrix; nlv = nothing) 
     n, p = size(X)
     q = nco(Y)
     isnothing(nlv) ? nlv = p : nothing 
@@ -79,30 +75,8 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing,
     zcov = similar(X, p, q)
     C = similar(X, p, nlv)
     for i = 1:nlv
-        if typ == "cov"
-            zcov .= cov(X, Y; corrected = false)
-            z = rowsum(zcov.^2)
-        end
-        if typ == "cor"
-            zcov .= cor(X, Y)
-            z = rowsum(zcov.^2)
-        end
-        ## Same result as "cor"
-        ## ==> not useful
-        if typ == "aic"           
-            zscor = zeros(p)
-            for j = 1:p
-                x = vcol(X, j)
-                fm = mlr(x, Y; noint = true) 
-                pred = Jchemo.predict(fm, x).pred
-                resid = residreg(pred, Y)
-                df = 2
-                zscor[j] = log.(sum(resid.^2)) + q * 2 * df / n
-            end
-            z = -zscor
-        end
-        ## End
-        C[:, i] .= z
+        zcov .= cov(X, Y; corrected = false)
+        C[:, i] .= rowsum(zcov.^2)
         zsel = argmax(z)
         selvar[i] = zsel
         selcov[i] = z[zsel]

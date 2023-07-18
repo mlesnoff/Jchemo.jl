@@ -6,14 +6,13 @@ end
 
 """
     covselr(X, Y; nlv = nothing, typ = "cov")
-MLR on variables selected from partial correlation or covariance (Covsel).
+MLR on variables selected from partial covariance (Covsel).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `nlv` : Nb. variables to select.
-* `typ` : Criterion used at each selection in Covsel (See `?covsel`.). 
 
 A number of `nlv` variables (X-columns) are selected with the Covsel method
-function `covsel`), and then a MLR is implemened on these variables. 
+(function `covsel`), and then a MLR is implemened on these variables. 
 
 ## Examples
 ```julia
