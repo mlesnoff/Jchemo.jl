@@ -49,35 +49,38 @@ scatter(sqrt.(res.cov2),
 ```
 """ 
 function covsel(X, Y, weights = ones(nro(X)); 
-        nlv = nothing)
+        nlv = nothing, scal::Bool = false)
     covsel!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        nlv = nlv)
+        nlv = nlv, scal = scal)
 end
 
 function covsel!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
-        nlv = nothing) 
+        nlv = nothing, scal::Bool = false) 
     n, p = size(X)
     q = nco(Y)
     isnothing(nlv) ? nlv = p : nothing 
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
-    center!(X, xmeans)
-    center!(Y, ymeans)
-    if q > 1
-        yscales = colstd(Y, weights)
-        scale!(Y, yscales)
-    end
-    xsstot = sum(X.^2)
-    ysstot = sum(Y.^2)
-    xss = zeros(nlv)
-    yss = zeros(nlv)
-    sel = Int64.(zeros(nlv))
-    selcov = zeros(nlv)
+    xscales = ones(p)
+    if scal 
+        xscales .= colstd(X)
+        cscale!(X, xmeans, xscales)
+    else
+        center!(X, xmeans)
+    end    
+    yscales = colstd(Y, weights)
+    cscale!(Y, ymeans, yscales)
+    xss = similar(X, nlv)
+    yss = copy(xss)
+    selcov = copy(xss)
     cov2 = zeros(p)
+    sel = Int64.(zeros(nlv))
     H = similar(X, n, n)
     XtY = similar(X, p, q)
     D = Diagonal(weights)
+    xsstot = sum(weights' * X.^2)
+    ysstot = sum(weights' * Y.^2)
     for i = 1:nlv
         XtY = X' * (D * Y)  
         z = rowsum(XtY.^2)
@@ -85,7 +88,7 @@ function covsel!(X::Matrix, Y::Matrix, weights = ones(nro(X));
         selcov[i] = z[sel[i]]
         cov2[sel[i]] = z[sel[i]]
         x = vcol(X, sel[i])
-        H .= x * x' / dot(x, x)
+        H .= x * x' * D / dot(weights .* x, x)
         X .-= H * X 
         Y .-= H * Y
         xss[i] = sum(weights' * X.^2)
@@ -95,6 +98,7 @@ function covsel!(X::Matrix, Y::Matrix, weights = ones(nro(X));
     cumpvary = 1 .- yss ./ ysstot
     explvar = DataFrame((sel = sel, cov2 = selcov,
         cumpvarx = cumpvarx, cumpvary = cumpvary))
-    (sel = sel, explvar, cov2)
+    (sel = sel, explvar, cov2, xmeans, xscales, 
+        ymeans, yscales, weights)
 end
 
