@@ -74,7 +74,7 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing)
     H = similar(X, n, n)
     zcov = similar(X, p, q)
     C = similar(X, p, nlv)
-    z = similar(X, params!)
+    z = similar(X, p)
     for i = 1:nlv
         zcov .= cov(X, Y; corrected = false)
         z .= rowsum(zcov.^2)
@@ -90,8 +90,8 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing)
         xss[i] = sum(X.^2)
         yss[i] = sum(Y.^2)
     end
-    @. cumpvarx = 1 - xss / xsstot
-    @. cumpvary = 1 - yss / ysstot
+    cumpvarx = 1 .- xss ./ xsstot
+    cumpvary = 1 .- yss ./ ysstot
     sel = DataFrame((sel = selvar, cov2 = selcov,
         cumpvarx = cumpvarx, cumpvary = cumpvary))
     (sel = sel, cov2, C)
