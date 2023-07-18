@@ -62,7 +62,6 @@ Jchemo.predict(fm, Xbl_new).pred
 summary(fm, Xbl) 
 ```
 """
-
 function mbplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
         bscal = "none", scal::Bool = false)
     nbl = length(Xbl)  
