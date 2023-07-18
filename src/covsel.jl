@@ -48,21 +48,25 @@ scatter(sqrt.(res.cov2),
     axis = (xlabel = "Variable", ylabel = "Importance"))
 ```
 """ 
-function covsel(X, Y; nlv = nothing)
-    covsel!(copy(ensure_mat(X)), copy(ensure_mat(Y)); 
+function covsel(X, Y, weights = ones(nro(X)); 
+        nlv = nothing)
+    covsel!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
         nlv = nlv)
 end
 
-function covsel!(X::Matrix, Y::Matrix; nlv = nothing) 
+function covsel!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
+        nlv = nothing) 
     n, p = size(X)
     q = nco(Y)
     isnothing(nlv) ? nlv = p : nothing 
-    xmeans = colmean(X)
-    ymeans = colmean(Y)   
+    weights = mweight(weights)
+    xmeans = colmean(X, weights) 
+    ymeans = colmean(Y, weights)  
     center!(X, xmeans)
     center!(Y, ymeans)
     if q > 1
-        scale!(Y, colstd(Y))
+        yscales = colstd(Y, weights)
+        scale!(Y, yscales)
     end
     xsstot = sum(X.^2)
     ysstot = sum(Y.^2)
@@ -73,9 +77,10 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing)
     cov2 = zeros(p)
     H = similar(X, n, n)
     XtY = similar(X, p, q)
+    D = Diagonal(weights)
     for i = 1:nlv
-        XtY .= X' * Y
-        z = rowsum(XtY.^2) ./ n^2
+        XtY = X' * (D * Y)  
+        z = rowsum(XtY.^2)
         sel[i] = argmax(z)
         selcov[i] = z[sel[i]]
         cov2[sel[i]] = z[sel[i]]
@@ -83,8 +88,8 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing)
         H .= x * x' / dot(x, x)
         X .-= H * X 
         Y .-= H * Y
-        xss[i] = sum(X.^2)
-        yss[i] = sum(Y.^2)
+        xss[i] = sum(weights' * X.^2)
+        yss[i] = sum(weights' * Y.^2)
     end
     cumpvarx = 1 .- xss ./ xsstot
     cumpvary = 1 .- yss ./ ysstot
