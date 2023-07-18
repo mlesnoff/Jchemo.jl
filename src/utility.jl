@@ -768,8 +768,10 @@ out(x, y) = (x .< minimum(y)) .| (x .> maximum(y))
 Print each element of a list.
 """
 function plist(x)
-    pnames(x)
-    for i in eachindex(x)
+    z = keys(x)
+    for i in eachindex(z)
+        println("--- ", z[i])        
+        println("")
         println(x[i])
         println("")
     end

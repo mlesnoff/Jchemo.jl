@@ -63,7 +63,6 @@ i = 1
 fm.selc[i]  # indexes of the selected variables for class i
 ```
 """ 
-
 function nsc(X, y, weights = ones(nro(X)); 
         delta = .5, scal::Bool = false)
     X = ensure_mat(X)
