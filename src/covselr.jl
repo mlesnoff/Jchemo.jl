@@ -44,8 +44,8 @@ plotxy(pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 ```
 """ 
-function covselr(X, Y; nlv, typ = "cov")
-    res = covsel(X, Y; nlv = nlv, typ = typ)
+function covselr(X, Y; nlv)
+    res = covsel(X, Y; nlv = nlv)
     zX = vcol(X, res.sel.sel)
     fm = mlr(zX, Y)
     Covselr(fm, res.sel, res.cov2)

@@ -64,28 +64,23 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing)
     if q > 1
         scale!(Y, colstd(Y))
     end
-    
     xsstot = sum(X.^2)
     ysstot = sum(Y.^2)
     xss = zeros(nlv)
     yss = zeros(nlv)
-    selvar = Int64.(zeros(nlv))
+    sel = Int64.(zeros(nlv))
     selcov = zeros(nlv)
     cov2 = zeros(p)
     H = similar(X, n, n)
-    zcov = similar(X, p, q)
-    C = similar(X, p, nlv)
-    z = similar(X, p)
+    XtY = similar(X, p, q)
     for i = 1:nlv
-        zcov .= cov(X, Y; corrected = false)
-        z .= rowsum(zcov.^2)
-        C[:, i] .= z
-        zsel = argmax(z)
-        selvar[i] = zsel
-        selcov[i] = z[zsel]
-        cov2[zsel] = z[zsel]
-        x = vcol(X, zsel)
-        H .= x * x' ./ dot(x, x)
+        XtY .= X' * Y
+        z = rowsum(XtY.^2) ./ n^2
+        sel[i] = argmax(z)
+        selcov[i] = z[sel[i]]
+        cov2[sel[i]] = z[sel[i]]
+        x = vcol(X, sel[i])
+        H .= x * x' / dot(x, x)
         X .-= H * X 
         Y .-= H * Y
         xss[i] = sum(X.^2)
@@ -93,8 +88,8 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing)
     end
     cumpvarx = 1 .- xss ./ xsstot
     cumpvary = 1 .- yss ./ ysstot
-    sel = DataFrame((sel = selvar, cov2 = selcov,
+    explvar = DataFrame((sel = sel, cov2 = selcov,
         cumpvarx = cumpvarx, cumpvary = cumpvary))
-    (sel = sel, cov2, C)
+    (sel = sel, explvar, cov2)
 end
 
