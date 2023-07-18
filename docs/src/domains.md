@@ -317,6 +317,7 @@
 - **mweight** Normalize a vector to sum to 1
 - **nco**, **nro**, Nb. rows and columns of an object
 - **normw** Weighted norm of a vector
+- **plist** Print each element of a list
 - **pnames** Return the names of the elements of an object
 - **psize** Return the type and size of a dataset
 - **recodcat2int** Recode a categorical variable to a numeric variable
