@@ -1,7 +1,5 @@
 struct Covselr1
     fm 
-    #sel::DataFrame
-    #cov2::Vector{Float64}
 end
 
 """
