@@ -1,19 +1,27 @@
 """
-    covsel(X, Y; nlv = nothing)
-    covsel!(X::Matrix, Y::Matrix; nlv = nothing)
+    covsel(X, Y, weights = ones(nro(X)); 
+        nlv = nothing, scal::Bool = false)
+    covsel!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
+        nlv = nothing, scal::Bool = false)
 Variable (feature) selection from partial covariance (Covsel).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
+* `weights` : Weights (n) of the observations. 
+    Internally normalized to sum to 1.
 * `nlv` : Nb. variables to select.
+* `scal` : Boolean. If `true`, each column of `X`
+    is scaled by its uncorrected standard deviation.
 
-Covsel variable selection method (Roger et al. 2011). The selection is 
-sequential. Once a variable is selected, `X` and `Y` are orthogonolized 
-(deflated) to this variable, and a new variable (the one showing the maximum 
-value for the criterion) is selected.
+Covsel method for variable selection (Roger et al. 2011). 
+    
+The selection is sequential. Once a variable is selected, `X` and 
+`Y` are orthogonolized (deflated) to this variable, and a new variable 
+(the one showing the maximum value for the criterion) is selected.
 
-if `Y` is multivariate (q > 1), each column of `Y` is scaled by its 
-uncorrected standard deviation. This gives the same scales to the columns
-when computing the selection criterion.
+`Y` is automatically scaled by its uncorrected standard deviation.
+This has the advantage to give the same importance to each `Y`-variable
+when `Y`is  multivariate (q > 1). This has no effect when `Y` is 
+univariate.
 
 ## References
 Höskuldsson, A., 1992. The H-principle in modelling with applications 
@@ -40,11 +48,11 @@ pnames(dat)
 X = dat.X
 y = dat.Y.tbc
 
-res = covsel(X, y; nlv = 10) ;
-res.sel
-res.cov2
+fm = covsel(X, y; nlv = 10) ;
+fm.sel
+fm.cov2
 
-scatter(sqrt.(res.cov2), 
+scatter(sqrt.(fm.cov2), 
     axis = (xlabel = "Variable", ylabel = "Importance"))
 ```
 """ 
