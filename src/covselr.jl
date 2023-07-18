@@ -1,15 +1,20 @@
-struct Covselr
+struct Covselr1
     fm 
-    sel::DataFrame
-    cov2::Vector{Float64}
+    #sel::DataFrame
+    #cov2::Vector{Float64}
 end
 
 """
-    covselr(X, Y; nlv = nothing, typ = "cov")
+    covselr(X, Y, weights = ones(nro(X)); 
+        nlv = nothing, scal::Bool = false)
 MLR on variables selected from partial covariance (Covsel).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
+* `weights` : Weights (n) of the observations. 
+    Internally normalized to sum to 1.
 * `nlv` : Nb. variables to select.
+* `scal` : Boolean. If `true`, each column of `X`
+    is scaled by its uncorrected standard deviation.
 
 A number of `nlv` variables (X-columns) are selected with the Covsel method
 (function `covsel`), and then a MLR is implemened on these variables. 

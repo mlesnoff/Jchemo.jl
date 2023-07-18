@@ -5,7 +5,7 @@ struct Mlr
 end
 
 """
-    mlr(X, Y, weights = ones(nro(X)); noint = false)
+    mlr(X, Y, weights = ones(nro(X)); noint::Bool = false)
     mlr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); noint::Bool = false)
 Compute a mutiple linear regression model (MLR) by using the QR algorithm.
 * `X` : X-data (n, p).
@@ -61,7 +61,7 @@ zcoef.B
 ```
 """ 
 function mlr(X, Y, weights = ones(nro(X)); 
-        noint = false)
+        noint::Bool = false)
     mlr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights;
         noint = noint)
 end
@@ -118,7 +118,7 @@ function mlrchol!(X::Matrix, Y::Matrix, weights = ones(nro(X)))
 end
 
 """
-    mlrpinv(X, Y, weights = ones(nro(X)); noint = false)
+    mlrpinv(X, Y, weights = ones(nro(X)); noint::Bool = false)
     mlrpinv!(X::Matrix, Y::Matrix, weights = ones(nro(X)); noint::Bool = false)
 Compute a mutiple linear regression model (MLR)  by using a pseudo-inverse. 
 * `X` : X-data.
@@ -131,7 +131,7 @@ Safe but can be slower.
 See `?mlr` for examples.
 """ 
 function mlrpinv(X, Y, weights = ones(nro(X)); 
-        noint = false)
+        noint::Bool = false)
     mlrpinv!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
         noint = noint)
 end
@@ -194,7 +194,7 @@ end
 
 """
     mlrvec(x, Y, weights = ones(length(x));
-        noint = false)
+        noint::Bool = false)
     mlrvec!(x::Matrix, Y::Matrix, weights = ones(length(x));
         noint::Bool = false)
 Compute a simple linear regression model (univariate x).
@@ -208,7 +208,7 @@ See `?mlr` for examples.
 """ 
      
 function mlrvec(x, Y, weights = ones(length(x));
-        noint = false)
+        noint::Bool = false)
     mlrvec!(copy(ensure_mat(x)), copy(ensure_mat(Y)), weights;
         noint = noint)
 end
