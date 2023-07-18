@@ -764,6 +764,18 @@ out(x, (-1, 1))
 out(x, y) = (x .< minimum(y)) .| (x .> maximum(y))
 
 """ 
+    plist(x)
+Print each element of a list.
+"""
+function plist(x)
+    pnames(x)
+    for i in eachindex(x)
+        println(x[i])
+        println("")
+    end
+end
+
+""" 
     pmod(foo)
 Shortcut for function `parentmodule`.
 """
@@ -774,17 +786,6 @@ pmod(foo) = parentmodule(foo)
 Return the names of the elements of `x`.
 """
 pnames(x) = propertynames(x)
-
-""" 
-    plist(x)
-Print each element of a list.
-"""
-function plist(x)
-    for i in eachindex(x)
-        println(x[i])
-        println("")
-    end
-end
 
 """ 
     psize(x)
