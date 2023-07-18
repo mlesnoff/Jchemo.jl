@@ -74,9 +74,11 @@ function covsel!(X::Matrix, Y::Matrix; nlv = nothing)
     H = similar(X, n, n)
     zcov = similar(X, p, q)
     C = similar(X, p, nlv)
+    z = similar(X, params!)
     for i = 1:nlv
         zcov .= cov(X, Y; corrected = false)
-        C[:, i] .= rowsum(zcov.^2)
+        z .= rowsum(zcov.^2)
+        C[:, i] .= z
         zsel = argmax(z)
         selvar[i] = zsel
         selcov[i] = z[zsel]
