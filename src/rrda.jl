@@ -59,7 +59,7 @@ Jchemo.predict(fm, Xtest; lb = [.1; .01]).pred
 ```
 """ 
 function rrda(X, y, weights = ones(nro(X)); lb,
-        scal = false)
+        scal::Bool = false)
     res = dummy(y)
     ni = tab(y).vals 
     fm = rr(X, res.Y, weights; lb = lb, 

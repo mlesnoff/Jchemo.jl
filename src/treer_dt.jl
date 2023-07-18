@@ -17,7 +17,7 @@ end
 """ 
     treer_dt(X, y; n_subfeatures = 0,
         max_depth = -1, min_samples_leaf = 5, 
-        min_samples_split = 2, scal = false, 
+        min_samples_split = 2, scal::Bool = false, 
         kwargs...)
 Regression tree (CART) with DecisionTree.jl.
 * `X` : X-data (n obs., p variables).
@@ -88,7 +88,7 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
 """ 
 function treer_dt(X, y; n_subfeatures = 0,
         max_depth = -1, min_samples_leaf = 5, 
-        min_samples_split = 2, scal = false, 
+        min_samples_split = 2, scal::Bool = false, 
         kwargs...) 
     X = ensure_mat(X)
     y = Float64.(vec(y))
@@ -120,7 +120,7 @@ end
         partial_sampling = .7,  
         n_subfeatures = -1,
         max_depth = -1, min_samples_leaf = 5, 
-        min_samples_split = 2, scal = false, 
+        min_samples_split = 2, scal::Bool = false, 
         mth = true, kwargs...)
 Random forest regression with DecisionTree.jl.
 * `X` : X-data (n obs., p variables).
@@ -201,7 +201,7 @@ function rfr_dt(X, y; n_trees = 10,
         partial_sampling = .7,  
         n_subfeatures = -1,
         max_depth = -1, min_samples_leaf = 5, 
-        min_samples_split = 2, scal = false, 
+        min_samples_split = 2, scal::Bool = false, 
         mth = true, kwargs...)
     X = ensure_mat(X)
     y = Float64.(vec(y))

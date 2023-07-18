@@ -12,8 +12,8 @@ struct Fda
 end
 
 """
-    fda(X, y; nlv, lb = 0, scal = false)
-    fda!(X::Matrix, y; nlv, lb = 0, scal = false)
+    fda(X, y; nlv, lb = 0, scal::Bool = false)
+    fda!(X::Matrix, y; nlv, lb = 0, scal::Bool = false)
 Factorial discriminant analysis (FDA).
 * `X` : X-data (n, p).
 * `y` : y-data (n) (class membership).
@@ -91,12 +91,12 @@ fm.sstot
 Base.summary(fm)
 ```
 """ 
-function fda(X, y; nlv, lb = 0, scal = false)
+function fda(X, y; nlv, lb = 0, scal::Bool = false)
     fda!(copy(ensure_mat(X)), y; nlv = nlv, lb = lb, 
         scal = scal)
 end
 
-function fda!(X::Matrix, y; nlv, lb = 0, scal = false)
+function fda!(X::Matrix, y; nlv, lb = 0, scal::Bool = false)
     n, p = size(X)
     xmeans = colmean(X)
     xscales = ones(p)

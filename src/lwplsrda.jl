@@ -15,7 +15,7 @@ end
 
 """
     lwplsrda(X, y; nlvdis, metric, h, k, nlv, tol = 1e-4,
-        scal = false, verbose = false)
+        scal::Bool = false, verbose = false)
 kNN-LWPLSR-DA.
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -79,7 +79,7 @@ res.listw
 ```
 """ 
 function lwplsrda(X, y; nlvdis, metric, h, k, nlv, tol = 1e-4, 
-        scal = false, verbose = false)
+        scal::Bool = false, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
     ztab = tab(y)

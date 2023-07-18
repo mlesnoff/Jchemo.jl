@@ -18,9 +18,9 @@ end
 
 """
     krr(X, Y, weights = ones(nro(X)); 
-        lb = .01, kern = "krbf", scal = false, kwargs...)
+        lb = .01, kern = "krbf", scal::Bool = false, kwargs...)
     krr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
-        lb, kern = "krbf", scal = false, kwargs...)
+        lb, kern = "krbf", scal::Bool = false, kwargs...)
 Kernel ridge regression (KRR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -120,15 +120,15 @@ f
 ```
 """ 
 function krr(X, Y, weights = ones(nro(X)); 
-    lb, kern = "krbf", scal = false, kwargs...)
+    lb, kern = "krbf", scal::Bool = false, kwargs...)
 krr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
     lb = lb, kern = kern, scal = scal, kwargs...)
 end
 
 function krr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
-    lb, kern = "krbf", scal = false, kwargs...)
+    lb, kern = "krbf", scal::Bool = false, kwargs...)
 #function krr(X, Y, weights = ones(nro(X)); 
-#        lb = .01, kern = "krbf", scal = false, kwargs...)
+#        lb = .01, kern = "krbf", scal::Bool = false, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)

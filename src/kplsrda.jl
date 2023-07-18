@@ -1,6 +1,6 @@
 """
     kplsrda(X, y, weights = ones(nro(X)); nlv, kern = "krbf", 
-        scal = false, kwargs...)
+        scal::Bool = false, kwargs...)
 Discrimination based on kernel partial least squares regression (KPLSR-DA).
 * `X` : X-data.
 * `y` : Univariate class membership.
@@ -51,7 +51,7 @@ Jchemo.transform(fm.fm, Xtest)
 ```
 """ 
 function kplsrda(X, y, weights = ones(nro(X)); nlv, kern = "krbf", 
-        scal = false, kwargs...)
+        scal::Bool = false, kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     fm = kplsr(X, res.Y, weights; nlv = nlv, kern = kern, 

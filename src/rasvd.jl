@@ -14,9 +14,9 @@ end
 
 """
     rasvd(X, Y, weights = ones(nro(X)); nlv,
-        bscal = "none", tau = 1e-8, scal = false)
+        bscal = "none", tau = 1e-8, scal::Bool = false)
     rasvd!(X, Y, weights = ones(nro(X)); nlv,
-        bscal = "none", tau = 1e-8, scal = false)
+        bscal = "none", tau = 1e-8, scal::Bool = false)
 Redundancy analysis (RA) - PCA on instrumental variables (PCAIV)
 * `X` : First block of data (explicative variables).
 * `Y` : Second block of data (dependent variables).
@@ -84,7 +84,7 @@ pnames(res)
 ```
 """
 function rasvd(X, Y, weights = ones(nro(X)); nlv,
-        bscal = "none", tau = 1e-8, scal = false)
+        bscal = "none", tau = 1e-8, scal::Bool = false)
     rasvd!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         bscal = bscal, tau = tau, scal = scal)
 end

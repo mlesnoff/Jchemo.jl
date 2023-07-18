@@ -7,7 +7,7 @@ end
 
 """
     cplsravg(X, Y, cla = nothing; ncla = nothing, 
-        typda = "lda", nlv_da, nlv, scal = false)
+        typda = "lda", nlv_da, nlv, scal::Bool = false)
 Clusterwise PLSR.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -70,7 +70,7 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
 ```
 """
 function cplsravg(X, Y, cla = nothing; ncla = nothing, 
-        typda = "lda", nlv_da, nlv, scal = false)
+        typda = "lda", nlv_da, nlv, scal::Bool = false)
     X = ensure_mat(X) 
     Y = ensure_mat(Y)
     if isnothing(cla)

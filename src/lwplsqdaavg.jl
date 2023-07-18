@@ -16,7 +16,7 @@ end
 
 """
     lwplsqdaavg(X, y; nlvdis, metric, h, k, nlv, 
-        tol = 1e-4, scal = false, verbose = false)
+        tol = 1e-4, scal::Bool = false, verbose = false)
 Averaging of kNN-LWPLS-QDA models with different numbers of 
     latent variables (LVs) (with continuum).
 * `X` : X-data.
@@ -97,7 +97,7 @@ res.listw
 ```
 """ 
 function lwplsqdaavg(X, y; nlvdis, metric, h, k, nlv, 
-    alpha = 0, tol = 1e-4, scal = false, verbose = false)
+    alpha = 0, tol = 1e-4, scal::Bool = false, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
     ztab = tab(y)

@@ -65,7 +65,7 @@ Jchemo.predict(fm, Xbl_new).pred
 ```
 """ 
 function rosaplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
-        scal = false)
+        scal::Bool = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
@@ -76,7 +76,7 @@ function rosaplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
 end
 
 function rosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
-        scal = false)
+        scal::Bool = false)
     n = nro(Xbl[1])
     q = nco(Y)   
     nbl = length(Xbl)

@@ -1,11 +1,11 @@
 function plsrstack(X, y, weights = ones(nro(X)); nlv,
-        K = 5, rep = 10, scal = false)
+        K = 5, rep = 10, scal::Bool = false)
     plsrstack!(copy(ensure_mat(X)), copy(ensure_mat(y)), weights; nlv = nlv, 
         K = K, rep = rep, scal = scal)
 end
 
 function plsrstack!(X::Matrix, y::Matrix, weights = ones(nro(X)); nlv, 
-        K = 5, rep = 10, scal = false)
+        K = 5, rep = 10, scal::Bool = false)
     n, p = size(X)
     weights = mweight(weights)
     nlv = eval(Meta.parse(nlv))

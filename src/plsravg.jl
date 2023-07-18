@@ -5,10 +5,10 @@ end
 """ 
     plsravg(X, Y, weights = ones(nro(X)); nlv, 
         typf = "unif", typw = "bisquare",
-        alpha = 0, K = 5, rep = 10, scal = false)
+        alpha = 0, K = 5, rep = 10, scal::Bool = false)
     plsravg!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
         typf = "unif", typw = "bisquare", 
-        alpha = 0, K = 5, rep = 10, scal = false)
+        alpha = 0, K = 5, rep = 10, scal::Bool = false)
 Averaging and stacking PLSR models with different numbers of 
     latent variables (LVs).
 * `X` : X-data (n, p).
@@ -113,7 +113,7 @@ plotsp(predlv, 0:(nco(predlv) - 1); nsamp = 30).f
 """ 
 function plsravg(X, Y, weights = ones(nro(X)); nlv, 
         typf = "unif", typw = "bisquare", 
-        alpha = 0, K = 5, rep = 10, scal = false)
+        alpha = 0, K = 5, rep = 10, scal::Bool = false)
     plsravg!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
         typf = typf, typw = typw, 
         alpha = alpha, K = K, rep = rep, scal = scal)
@@ -121,7 +121,7 @@ end
 
 function plsravg!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
         typf = "unif", typw = "bisquare", 
-        alpha = 0, K = 5, rep = 10, scal = false)
+        alpha = 0, K = 5, rep = 10, scal::Bool = false)
     if typf == "unif"
         fm = plsravg_unif!(X, Y, weights; nlv = nlv,
             scal = scal)

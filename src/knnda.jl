@@ -85,7 +85,7 @@ res.listw
 ```
 """ 
 function knnda(X, y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, 
-        tol = 1e-4, scal = false)
+        tol = 1e-4, scal::Bool = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
     ztab = tab(y)

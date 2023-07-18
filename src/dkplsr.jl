@@ -10,7 +10,7 @@ end
 
 """
     dkplsr(X, Y, weights = ones(nro(X)); nlv, 
-        kern = "krbf", scal = false, kwargs...)
+        kern = "krbf", scal::Bool = false, kwargs...)
     dkplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
         kern = "krbf", scal = scal, kwargs...)
 Direct kernel partial least squares regression (DKPLSR) (Bennett & Embrechts 2003).
@@ -100,13 +100,13 @@ f
 ```
 """ 
 function dkplsr(X, Y, weights = ones(nro(X)); nlv, 
-        kern = "krbf", scal = false, kwargs...)
+        kern = "krbf", scal::Bool = false, kwargs...)
     dkplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
         nlv = nlv, kern = kern, scal = scal, kwargs...)
 end
 
 function dkplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
-        nlv, kern = "krbf", scal = false, kwargs...)    
+        nlv, kern = "krbf", scal::Bool = false, kwargs...)    
     p = nco(X)
     q = nco(Y)
     xscales = ones(p)

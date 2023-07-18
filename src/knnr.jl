@@ -12,7 +12,7 @@ end
 
 """
     knnr(X, Y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, 
-        tol = 1e-4, scal = false)
+        tol = 1e-4, scal::Bool = false)
 k-Nearest-Neighbours regression (KNNR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -73,7 +73,7 @@ f
 ```
 """ 
 function knnr(X, Y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, 
-        scal = false, tol = 1e-4)
+        scal::Bool = false, tol = 1e-4)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     if nlvdis == 0

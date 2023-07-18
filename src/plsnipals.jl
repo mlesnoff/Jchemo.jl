@@ -1,8 +1,8 @@
 """
     plsnipals(X, Y, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
     plsnipals!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
 Partial Least Squares Regression (PLSR) with the Nipals algorithm 
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -29,13 +29,13 @@ Wold, S., Sjostrom, M., Eriksson, l., 2001. PLS-regression: a basic tool
 for chemometrics. Chem. Int. Lab. Syst., 58, 109-130.
 """ 
 function plsnipals(X, Y, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
     plsnipals!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         scal = scal)
 end
 
 function plsnipals!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(nlv, n, p)

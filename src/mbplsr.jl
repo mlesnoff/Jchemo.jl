@@ -13,9 +13,9 @@ end
 
 """
     mbplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", scal = false)
+        bscal = "none", scal::Bool = false)
     mbplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", scal = false)
+        bscal = "none", scal::Bool = false)
 Multiblock PLSR (MBPLSR) - Fast version.
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
@@ -64,7 +64,7 @@ summary(fm, Xbl)
 """
 
 function mbplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", scal = false)
+        bscal = "none", scal::Bool = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
@@ -75,7 +75,7 @@ function mbplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
 end
 
 function mbplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", scal = false)
+        bscal = "none", scal::Bool = false)
     nbl = length(Xbl)
     Y = ensure_mat(Y)
     q = nco(Y)
@@ -107,7 +107,7 @@ function mbplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
         Xbl = res.X
     end
     X = reduce(hcat, Xbl)
-    fm = plskern(X, Y, weights; nlv = nlv, scal = false)
+    fm = plskern(X, Y, weights; nlv = nlv, scal::Bool = false)
     Mbplsr(fm, fm.T, fm.R, fm.C, 
         bscales, xmeans, xscales, ymeans, yscales, weights)
 end

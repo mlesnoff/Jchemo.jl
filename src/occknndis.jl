@@ -11,7 +11,7 @@ end
 """
     occknndis(X; nlv, nsamp, k, 
         typc = "mad", cri = 3, alpha = .025,
-        scal = false, kwargs...)
+        scal::Bool = false, kwargs...)
 One-class classification using global k-nearest neighbors distances.
 
 * `X` : X-data (training).
@@ -124,7 +124,7 @@ f
 """ 
 function occknndis(X; nlv, nsamp, k, 
         typc = "mad", cri = 3, alpha = .025,
-        scal = false, kwargs...)
+        scal::Bool = false, kwargs...)
     X = ensure_mat(X)
     n = nro(X)
     k = Int64(k)

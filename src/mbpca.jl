@@ -17,10 +17,10 @@ end
 """
     mbpca(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
-        scal = false)
+        scal::Bool = false)
     mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
-        scal = false)
+        scal::Bool = false)
 Consensus principal components analysis (CPCA = MBPCA).
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
@@ -104,7 +104,7 @@ res.rv
 """
 function mbpca(Xbl, weights = ones(nro(Xbl[1])); nlv, 
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
-        scal = false)
+        scal::Bool = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
@@ -117,7 +117,7 @@ end
 
 function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
-        scal = false)
+        scal::Bool = false)
     nbl = length(Xbl)
     n = nro(Xbl[1])
     weights = mweight(weights)

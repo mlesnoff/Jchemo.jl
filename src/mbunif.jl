@@ -1,10 +1,10 @@
 """
     mbunif(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tau = 1e-8, wcov = false, deflat = "global", 
-        tol = sqrt(eps(1.)), maxit = 200, scal = false)
+        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     mbunif!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tau = 1e-8, wcov = false, deflat = "global", 
-        tol = sqrt(eps(1.)), maxit = 200, scal = false)
+        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
 Unified multiblock analysis of Mangana et al. 2019.
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
@@ -69,7 +69,7 @@ fm = mbunif(Xbl; nlv = 3,
 """
 function mbunif(Xbl, weights = ones(nro(Xbl[1])); nlv, 
         bscal = "none", tau = 1e-8, wcov = false, deflat = "global",
-        tol = sqrt(eps(1.)), maxit = 200, scal = false)
+        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
@@ -82,7 +82,7 @@ end
 
 function mbunif!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tau = 1e-8, wcov = false, deflat = "global", 
-        tol = sqrt(eps(1.)), maxit = 200, scal = false)
+        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     @assert tau >= 0 && tau <= 1 "tau must be in [0, 1]"
     nbl = length(Xbl)
     n = nro(Xbl[1])

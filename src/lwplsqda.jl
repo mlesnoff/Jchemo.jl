@@ -17,7 +17,7 @@ end
 
 """
     lwplsqda(X, y; nlvdis, metric, h, k, nlv, 
-        alpha = 0, prior = "unif", tol = 1e-4, scal = false, 
+        alpha = 0, prior = "unif", tol = 1e-4, scal::Bool = false, 
         verbose = false)
 kNN-LWPLS-QDA (with continuum).
 * `X` : X-data.
@@ -91,7 +91,7 @@ res.listw
 ```
 """ 
 function lwplsqda(X, y; nlvdis, metric, h, k, nlv, 
-        alpha = 0, prior = "unif", tol = 1e-4, scal = false, 
+        alpha = 0, prior = "unif", tol = 1e-4, scal::Bool = false, 
         verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)

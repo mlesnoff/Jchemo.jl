@@ -20,10 +20,10 @@ end
 """
     kplsr(X, Y, weights = ones(nro(X)); 
         nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 
-        scal = false, kwargs...)
+        scal::Bool = false, kwargs...)
     kplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
         nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 
-        scal = false, kwargs...)
+        scal::Bool = false, kwargs...)
 Kernel partial least squares regression (KPLSR) implemented with a Nipals 
 algorithm (Rosipal & Trejo, 2001).
 
@@ -110,7 +110,7 @@ f
 """ 
 function kplsr(X, Y, weights = ones(nro(X)); 
         nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 
-        scal = false, kwargs...)
+        scal::Bool = false, kwargs...)
     kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
         nlv = nlv, kern = kern, tol = tol, maxit = maxit, 
         scal = scal, kwargs...)
@@ -118,7 +118,7 @@ end
 
 function kplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
         nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 
-        scal = false, kwargs...)
+        scal::Bool = false, kwargs...)
     n, p = size(X)
     q = nco(Y)
     weights = mweight(weights)

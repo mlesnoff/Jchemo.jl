@@ -14,9 +14,9 @@ end
 
 """
     cca(X, Y, weights = ones(nro(X)); nlv, 
-        bscal = "none", tau = 1e-8, scal = false)
+        bscal = "none", tau = 1e-8, scal::Bool = false)
     cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = "none", tau = 1e-8, scal = false)
+        bscal = "none", tau = 1e-8, scal::Bool = false)
 Canonical correlation Analysis (CCA).
 * `X` : First block (matrix) of data.
 * `Y` : Second block (matrix) of data.
@@ -90,13 +90,13 @@ pnames(res)
 ```
 """
 function cca(X, Y, weights = ones(nro(X)); nlv, 
-        bscal = "none", tau = 1e-8, scal = false)
+        bscal = "none", tau = 1e-8, scal::Bool = false)
     cca!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
         bscal = bscal, tau = tau, scal = scal)
 end
 
 function cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = "none", tau = 1e-8, scal = false)
+        bscal = "none", tau = 1e-8, scal::Bool = false)
     @assert tau >= 0 && tau <= 1 "tau must be in [0, 1]"
     p = nco(X)
     q = nco(Y)

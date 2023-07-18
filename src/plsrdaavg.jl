@@ -58,7 +58,7 @@ confusion(res.pred, ytest).cnt
 ```
 """ 
 function plsrdaavg(X, y, weights = ones(nro(X)); nlv,
-    scal = false)
+    scal::Bool = false)
     n, p = size(X)
     nlv = eval(Meta.parse(nlv))
     nlvmax = maximum(nlv)

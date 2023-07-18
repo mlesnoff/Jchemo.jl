@@ -6,7 +6,7 @@ end
 
 """
     plslda(X, y, weights = ones(nro(X)); nlv, 
-        prior = "unif", scal = false)
+        prior = "unif", scal::Bool = false)
 PLS-LDA.
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -78,7 +78,7 @@ Jchemo.predict(fm, Xtest; nlv = 1:2).pred
 ```
 """ 
 function plslda(X, y, weights = ones(nro(X)); nlv, 
-        prior = "unif", scal = false)
+        prior = "unif", scal::Bool = false)
     res = dummy(y)
     ni = tab(y).vals
     fm_pls = plskern(X, res.Y, weights; nlv = nlv, scal = scal)

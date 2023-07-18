@@ -13,7 +13,7 @@ end
     lwmlr_s(X, Y; nlv, reduc = "pls", 
         metric = "eucl", h, k, 
         gamma = 1, psamp = 1, samp = "sys", 
-        tol = 1e-4, scal = false, verbose = false)
+        tol = 1e-4, scal::Bool = false, verbose = false)
 kNN-LWMLR after preliminary (linear or non-linear) dimension 
     reduction (kNN-LWMLR-S).
 * `X` : X-data (n, p).
@@ -97,7 +97,7 @@ rmsep(pred, ytest)
 function lwmlr_s(X, Y; nlv, reduc = "pls", 
         metric = "eucl", h, k, 
         gamma = 1, psamp = 1, samp = "sys", 
-        tol = 1e-4, scal = false, verbose = false)
+        tol = 1e-4, scal::Bool = false, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = nro(X)

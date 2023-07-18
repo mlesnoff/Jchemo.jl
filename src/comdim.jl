@@ -17,10 +17,10 @@ end
 """
     comdim(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
-        scal = false)
+        scal::Bool = false)
     comdim!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
-        scal = false)
+        scal::Bool = false)
 Common components and specific weights analysis (ComDim = CCSWA).
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
@@ -126,7 +126,7 @@ res.rv
 """
 function comdim(Xbl, weights = ones(nro(Xbl[1])); nlv, 
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
-        scal = false)
+        scal::Bool = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
@@ -141,7 +141,7 @@ end
 ## where TB concatenates the weighted block-scores 
 function comdim!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
-        scal = false)
+        scal::Bool = false)
     nbl = length(Xbl)
     n = nro(Xbl[1])
     weights = mweight(weights)

@@ -1,8 +1,8 @@
 """
     plsrosa(X, Y, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
     plsrosa!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
 Partial Least Squares Regression (PLSR) with the ROSA algorithm (Liland et al. 2016).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -24,13 +24,13 @@ squares regression for multiblock data analysis. Journal of Chemometrics 30,
 651–662. https://doi.org/10.1002/cem.2824
 """ 
 function plsrosa(X, Y, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
     plsrosa!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         scal = scal)
 end
 
 function plsrosa!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(nlv, n, p)

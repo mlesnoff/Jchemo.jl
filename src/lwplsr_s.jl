@@ -14,7 +14,7 @@ end
 """
     lwplsr_s(X, Y; nlv0, reduc = "pls", 
         metric = "eucl", h, k, gamma = 1, psamp = 1, samp = "sys", 
-        nlv, tol = 1e-4, scal = false, verbose = false)
+        nlv, tol = 1e-4, scal::Bool = false, verbose = false)
 kNN-LWPLSR after preliminary (linear or non-linear) dimension 
     reduction (kNN-LWPLSR-S).
 * `X` : X-data (n, p).
@@ -114,7 +114,7 @@ rmsep(res.pred, ytest)
 """ 
 function lwplsr_s(X, Y; nlv0, reduc = "pls", 
         metric = "eucl", h, k, gamma = 1, psamp = 1, samp = "sys", 
-        nlv, tol = 1e-4, scal = false, verbose = false)
+        nlv, tol = 1e-4, scal::Bool = false, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = nro(X)

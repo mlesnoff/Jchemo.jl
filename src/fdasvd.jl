@@ -1,6 +1,6 @@
 """
-    fdasvd(X, y; nlv, lb = 0, scal = false)
-    fdasvd!(X, y; nlv, lb = 0, scal = false)
+    fdasvd(X, y; nlv, lb = 0, scal::Bool = false)
+    fdasvd!(X, y; nlv, lb = 0, scal::Bool = false)
 Factorial discriminant analysis (FDA).
 * `X` : X-data.
 * `y` : Univariate class membership.
@@ -20,12 +20,12 @@ A ridge regularization can be used:
 See `?fda` for examples.
 
 """ 
-function fdasvd(X, y; nlv, lb = 0, scal = false)
+function fdasvd(X, y; nlv, lb = 0, scal::Bool = false)
     fdasvd!(copy(ensure_mat(X)), y; nlv = nlv, lb = lb, 
         scal = scal)
 end
 
-function fdasvd!(X::Matrix, y; nlv, lb = 0, scal = false)
+function fdasvd!(X::Matrix, y; nlv, lb = 0, scal::Bool = false)
     n, p = size(X)
     xmeans = colmean(X) 
     xscales = ones(p)

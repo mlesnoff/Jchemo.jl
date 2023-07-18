@@ -20,9 +20,9 @@ end
 
 """
     plscan(X, Y, weights = ones(nro(X)); nlv,
-        bscal = "none", scal = false)
+        bscal = "none", scal::Bool = false)
     plscan!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = "none", scal = false)
+        bscal = "none", scal::Bool = false)
 Canonical partial least squares regression (Canonical PLS)
 * `X` : First block (matrix) of data.
 * `Y` : Second block (matrix) of data.
@@ -74,13 +74,13 @@ pnames(res)
 ```
 """
 function plscan(X, Y, weights = ones(nro(X)); nlv,
-        bscal = "none", scal = false)
+        bscal = "none", scal::Bool = false)
     plscan!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         bscal = bscal, scal = scal)
 end
 
 function plscan!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = "none", scal = false)
+        bscal = "none", scal::Bool = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(nlv, p, q)

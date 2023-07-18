@@ -2,7 +2,7 @@
     treeda_dt(X, yy::Union{Array{Int64}, Array{String}}; 
         n_subfeatures = 0,
         max_depth = -1, min_samples_leaf = 5, 
-        min_samples_split = 2, scal = false, 
+        min_samples_split = 2, scal::Bool = false, 
         kwargs...)
 Discrimination tree (CART) with DecisionTree.jl.
 * `X` : X-data (n obs., p variables).
@@ -70,7 +70,7 @@ err(res.pred, ytest)
 function treeda_dt(X, y::Union{Array{Int64}, Array{String}}; 
         n_subfeatures = 0,
         max_depth = -1, min_samples_leaf = 5, 
-        min_samples_split = 2, scal = false, 
+        min_samples_split = 2, scal::Bool = false, 
         kwargs...) 
     X = ensure_mat(X)
     y = vec(y)
@@ -106,7 +106,7 @@ end
         partial_sampling = .7,  
         n_subfeatures = -1,
         max_depth = -1, min_samples_leaf = 5, 
-        min_samples_split = 2, scal = false, 
+        min_samples_split = 2, scal::Bool = false, 
         mth = true, kwargs...)
 Random forest discrimination with DecisionTree.jl.
 * `X` : X-data (n obs., p variables).
@@ -185,7 +185,7 @@ function rfda_dt(X, y::Union{Array{Int64}, Array{String}};
         partial_sampling = .7,  
         n_subfeatures = -1,
         max_depth = -1, min_samples_leaf = 5, 
-        min_samples_split = 2, scal = false, 
+        min_samples_split = 2, scal::Bool = false, 
         mth = true, kwargs...)
     X = ensure_mat(X)
     y = vec(y)

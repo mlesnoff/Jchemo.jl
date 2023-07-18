@@ -6,7 +6,7 @@ end
 
 """
     plsrda(X, y, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
 Discrimination based on partial least squares regression (PLSR-DA).
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -69,7 +69,7 @@ Jchemo.predict(fm, Xtest; nlv = 1:2).pred
 ```
 """ 
 function plsrda(X, y, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
     res = dummy(y)
     ni = tab(y).vals
     fm = plskern(X, res.Y, weights; nlv = nlv, scal = scal)

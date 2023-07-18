@@ -4,13 +4,13 @@ struct PlsravgUnif
 end
 
 function plsravg_unif(X, Y, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
     plsravg_unif!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         scal = scal)
 end
 
 function plsravg_unif!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
     X = ensure_mat(X)
     n, p = size(X)
     nlv = eval(Meta.parse(nlv))

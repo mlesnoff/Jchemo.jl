@@ -11,8 +11,8 @@ struct Pca
 end
 
 """
-    pcasvd(X, weights = ones(nro(X)); nlv, scal = false)
-    pcasvd!(X::Matrix, weights = ones(nro(X)); nlv, scal = false)
+    pcasvd(X, weights = ones(nro(X)); nlv, scal::Bool = false)
+    pcasvd!(X::Matrix, weights = ones(nro(X)); nlv, scal::Bool = false)
 PCA by SVD factorization.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
@@ -71,13 +71,13 @@ res.cor_circle
 ```
 """ 
 function pcasvd(X, weights = ones(nro(X)); nlv, 
-        scal = false)
+        scal::Bool = false)
     pcasvd!(copy(ensure_mat(X)), weights; nlv = nlv, 
         scal = scal)
 end
 
 function pcasvd!(X::Matrix, weights = ones(nro(X)); nlv, 
-        scal = false)
+        scal::Bool = false)
     n, p = size(X)
     nlv = min(nlv, n, p)
     weights = mweight(weights)

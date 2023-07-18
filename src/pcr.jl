@@ -12,9 +12,9 @@ end
 
 """
     pcr(X, Y, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
     pcr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
 Principal component regression (PCR) with a SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -74,13 +74,13 @@ res.explvarx
 ```
 """ 
 function pcr(X, Y, weights = ones(nro(X)); nlv, 
-        scal = false)
+        scal::Bool = false)
     pcr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
         scal = scal)
 end
 
 function pcr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
-        scal = false)
+        scal::Bool = false)
     q = nco(Y)
     weights = mweight(weights)
     ymeans = colmean(Y, weights)

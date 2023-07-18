@@ -1,5 +1,5 @@
 """
-    dfplsr_cg(X, y; nlv, reorth = true, scal = false)
+    dfplsr_cg(X, y; nlv, reorth = true, scal::Bool = false)
 Compute the model complexity (df) of PLSR models with the CGLS algorithm.
 * `X` : X-data.
 * `y` : Univariate Y-data.
@@ -58,14 +58,14 @@ ablines!(ax, 1, 1; color = :grey, linestyle = :dot)
 f
 ```
 """ 
-function dfplsr_cg(X, y; nlv, reorth = true, scal = false)
+function dfplsr_cg(X, y; nlv, reorth = true, scal::Bool = false)
     F = cglsr(X, y; nlv = nlv, reorth = reorth, filt = true, scal = scal).F
     df = [1 ; vec(1 .+ sum(F, dims = 1))]
     (df = df,)
 end
 
 """
-    aicplsr(X, y; nlv, correct = true, bic = false, scal = false)
+    aicplsr(X, y; nlv, correct = true, bic = false, scal::Bool = false)
 Compute Akaike's (AIC) and Mallows's (Cp) criteria for univariate PLSR models.
 * `X` : X-data.
 * `y` : Univariate Y-data.
@@ -115,7 +115,7 @@ scatter!(ax, 0:nlv, zaic)
 f
 ```
 """ 
-function aicplsr(X, y; nlv, correct = true, bic = false, scal = false)
+function aicplsr(X, y; nlv, correct = true, bic = false, scal::Bool = false)
     X = ensure_mat(X)
     n = nro(X)
     p = nco(X)

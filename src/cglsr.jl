@@ -9,8 +9,8 @@ struct Cglsr
 end
 
 """
-    cglsr(X, y; nlv, reorth = true, filt = false, scal = false)
-    cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false, scal = false)
+    cglsr(X, y; nlv, reorth = true, filt = false, scal::Bool = false)
+    cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false, scal::Bool = false)
 Conjugate gradient algorithm for the normal equations (CGLS; Björck 1996).
 * `X` : X-data  (n, p).
 * `y` : Univariate Y-data (n).
@@ -81,12 +81,12 @@ plotxy(pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 ```
 """ 
-function cglsr(X, y; nlv, reorth = true, filt = false, scal = false)
+function cglsr(X, y; nlv, reorth = true, filt = false, scal::Bool = false)
     cglsr!(copy(ensure_mat(X)), copy(ensure_mat(y)); 
         nlv = nlv, reorth = reorth, filt = filt, scal = scal)
 end
 
-function cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false, scal = false)
+function cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false, scal::Bool = false)
     n, p = size(X)
     q = nco(y)
     xmeans = colmean(X) 

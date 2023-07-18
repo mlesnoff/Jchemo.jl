@@ -6,7 +6,7 @@ end
 
 """
     dkplsrda(X, y, weights = ones(nro(X)); nlv, kern = "krbf", 
-        scal = false, kwargs...)
+        scal::Bool = false, kwargs...)
 Discrimination based on direct kernel partial least squares regression (DKPLSR-DA).
 * `X` : X-data.
 * `y` : Univariate class membership.
@@ -59,7 +59,7 @@ Jchemo.coef(fm.fm)
 ```
 """ 
 function dkplsrda(X, y, weights = ones(nro(X)); nlv, kern = "krbf", 
-        scal = false, kwargs...)
+        scal::Bool = false, kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     fm = dkplsr(X, res.Y, weights; nlv = nlv, kern = kern, 

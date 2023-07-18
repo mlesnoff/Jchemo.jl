@@ -21,10 +21,10 @@ end
 """
     mbplswest(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200, 
-        scal = false)
+        scal::Bool = false)
     mbplswest!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200, 
-        scal = false)
+        scal::Bool = false)
 Multiblock PLSR - Nipals algorithm (Westerhuis et al. 1998).
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
@@ -80,7 +80,7 @@ summary(fm, Xbl)
 """
 function mbplswest(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200, 
-        scal = false)
+        scal::Bool = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
@@ -93,7 +93,7 @@ end
 
 function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200, 
-        scal = false)
+        scal::Bool = false)
     nbl = length(Xbl)
     n = nro(Xbl[1])
     q = nco(Y)

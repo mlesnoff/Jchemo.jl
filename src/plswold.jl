@@ -1,8 +1,8 @@
 """
     plswold(X, Y, weights = ones(nro(X)); nlv,
-        tol = sqrt(eps(1.)), maxit = 200, scal = false)
+        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     plswold!(X, Y, weights = ones(nro(X)); nlv,
-        tol = sqrt(eps(1.)), maxit = 200, scal = false)
+        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
 Partial Least Squares Regression (PLSR) with the Wold algorithm 
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -28,13 +28,13 @@ Generalized Inverses. SIAM Journal on Scientific and Statistical Computing 5, 73
 https://doi.org/10.1137/0905052
 """ 
 function plswold(X, Y, weights = ones(nro(X)); nlv,
-        tol = sqrt(eps(1.)), maxit = 200, scal = false)
+        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     plswold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         tol = tol, maxit = maxit, scal = scal)
 end
 
 function plswold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        tol = sqrt(eps(1.)), maxit = 200, scal = false)
+        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(nlv, n, p)

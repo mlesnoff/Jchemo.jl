@@ -1,6 +1,6 @@
 """ 
     plsqdaavg(X, y, weights = ones(nro(X)); nlv,
-        alpha = 0, scal = false)
+        alpha = 0, scal::Bool = false)
 Averaging of PLS-QDA models with different numbers of 
     latent variables (LVs).
 * `X` : X-data.
@@ -25,7 +25,7 @@ returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 See `?plsldaavg` for examples.
 """ 
 function plsqdaavg(X, y, weights = ones(nro(X)); nlv,
-        alpha = 0, scal = false)
+        alpha = 0, scal::Bool = false)
     n = nro(X)
     p = nco(X)
     nlv = eval(Meta.parse(nlv))

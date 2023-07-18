@@ -16,9 +16,9 @@ end
 
 """
     plstuck(X, Y, weights = ones(nro(X)); nlv,
-        bscal = "none", scal = false)
+        bscal = "none", scal::Bool = false)
     plstuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = "none", scal = false)
+        bscal = "none", scal::Bool = false)
 Tucker's inter-battery method of factor analysis
 * `X` : First block (matrix) of data.
 * `Y` : Second block (matrix) of data.
@@ -72,13 +72,13 @@ pnames(res)
 ```
 """
 function plstuck(X, Y, weights = ones(nro(X)); nlv,
-        bscal = "none", scal = false)
+        bscal = "none", scal::Bool = false)
     plstuck!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         bscal = bscal, scal = scal)
 end
 
 function plstuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = "none", scal = false)
+        bscal = "none", scal::Bool = false)
     p = nco(X)
     q = nco(Y)
     nlv = min(nlv, p, q)

@@ -1,8 +1,8 @@
 """
     pcasph(X, weights = ones(nro(X)); nlv, typc = "medspa", 
-        delta = .001, scal = false)
+        delta = .001, scal::Bool = false)
     pcasph!(X, weights = ones(nro(X)); nlv, typc = "medspa", 
-        delta = .001, scal = false)
+        delta = .001, scal::Bool = false)
 Spherical PCA.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
@@ -52,13 +52,13 @@ plotxy(T[:, i:(i + 1)]; zeros = true,
 ```
 """ 
 function pcasph(X, weights = ones(nro(X)); nlv, typc = "medspa", 
-        delta = .001, scal = false)
+        delta = .001, scal::Bool = false)
     pcasph!(copy(ensure_mat(X)), weights; nlv = nlv, typc = typc, 
         delta = delta, scal = scal)
 end
 
 function pcasph!(X::Matrix, weights = ones(nro(X)); nlv, typc = "medspa", 
-    delta = .001, scal = false)
+    delta = .001, scal::Bool = false)
     n, p = size(X)
     nlv = min(nlv, n, p)
     weights = mweight(weights)

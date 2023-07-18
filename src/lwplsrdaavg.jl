@@ -15,7 +15,7 @@ end
 
 """
     lwplsrdaavg(X, y; nlvdis, metric, h, k, nlv, 
-        tol = 1e-4, scal = false, verbose = false)
+        tol = 1e-4, scal::Bool = false, verbose = false)
 Averaging of kNN-LWPLSR-DA models with different numbers of 
     latent variables (LVs).
 * `X` : X-data.
@@ -87,7 +87,7 @@ res.listw
 ```
 """ 
 function lwplsrdaavg(X, y; nlvdis, metric, h, k, nlv, 
-    tol = 1e-4, scal = false, verbose = false)
+    tol = 1e-4, scal::Bool = false, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
     ztab = tab(y)

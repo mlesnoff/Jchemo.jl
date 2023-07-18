@@ -19,7 +19,7 @@ end
 """
     lwplsravg(X, Y; nlvdis, metric, h, k, nlv, 
         typf = "unif", typw = "bisquare", alpha = 0, K = 5, rep = 10,
-        tol = 1e-4, scal = false, verbose = false)
+        tol = 1e-4, scal::Bool = false, verbose = false)
 Averaging kNN-LWPLSR models with different numbers of 
     latent variables (LVs).
 * `X` : X-data (n, p).
@@ -92,7 +92,7 @@ rmsep(res.pred, ytest)
 """ 
 function lwplsravg(X, Y; nlvdis, metric, h, k, nlv, 
     typf = "unif", typw = "bisquare", alpha = 0, K = 5, rep = 10,
-    tol = 1e-4, scal = false, verbose = false)
+    tol = 1e-4, scal::Bool = false, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     if nlvdis == 0

@@ -16,7 +16,7 @@ end
 
 """
     lwplslda(X, y; nlvdis, metric, h, k, nlv, prior = "unif", 
-        tol = 1e-4, scal = false, verbose = false)
+        tol = 1e-4, scal::Bool = false, verbose = false)
 kNN-LWPLS-LDA.
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -82,7 +82,7 @@ res.listw
 ```
 """ 
 function lwplslda(X, y; nlvdis, metric, h, k, nlv, prior = "unif", 
-        tol = 1e-4, scal = false, verbose = false)
+        tol = 1e-4, scal::Bool = false, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
     ztab = tab(y)

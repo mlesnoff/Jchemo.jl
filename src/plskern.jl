@@ -15,9 +15,9 @@ end
 
 """
     plskern(X, Y, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
     plskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
 Partial Least Squares Regression (PLSR) with the 
 "improved kernel algorithm #1" (Dayal & McGegor, 1997).
 * `X` : X-data (n, p).
@@ -104,13 +104,13 @@ lines(z.nlv, z.cumpvar,
 ```
 """ 
 function plskern(X, Y, weights = ones(nro(X)); nlv, 
-        scal = false)
+        scal::Bool = false)
     plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
         nlv = nlv, scal = scal)
 end
 
 function plskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
-        nlv, scal = false)
+        nlv, scal::Bool = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, nlv)

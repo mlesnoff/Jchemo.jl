@@ -7,7 +7,7 @@ end
 
 """
     soplsr(Xbl, Y, weights = ones(size(Xbl, 1)); nlv,
-        scal = false)
+        scal::Bool = false)
 Multiblock sequentially orthogonalized PLSR (SO-PLSR).
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
@@ -57,7 +57,7 @@ Jchemo.predict(fm, Xbl_new).pred
 ```
 """
 function soplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
-        scal = false)
+        scal::Bool = false)
     Y = ensure_mat(Y)
     n = size(Xbl[1], 1)
     q = nco(Y)   

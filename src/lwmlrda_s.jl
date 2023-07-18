@@ -13,7 +13,7 @@ end
     lwmlrda_s(X, y; nlv, reduc = "pls", 
         metric = "eucl", h, k, 
         gamma = 1, psamp = 1, samp = "cla", 
-        tol = 1e-4, scal = false, verbose = false)
+        tol = 1e-4, scal::Bool = false, verbose = false)
 kNN-LWMLR-DA after preliminary (linear or non-linear) dimension 
     reduction (kNN-LWMLR-DA-S).
 * `X` : X-data (n, p).
@@ -80,7 +80,7 @@ err(pred, ytest)
 function lwmlrda_s(X, y; nlv, reduc = "pls", 
         metric = "eucl", h, k, 
         gamma = 1, psamp = 1, samp = "cla", 
-        tol = 1e-4, scal = false, verbose = false)
+        tol = 1e-4, scal::Bool = false, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
     n = nro(X)

@@ -4,13 +4,13 @@ struct PlsravgShenk
 end
 
 function plsravg_shenk(X, Y, weights = ones(nro(X)); nlv, 
-        scal = false)
+        scal::Bool = false)
     plsravg_shenk!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
         scal = scal)
 end
 
 function plsravg_shenk!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
-        scal = false)
+        scal::Bool = false)
     n, p = size(X)
     nlv = eval(Meta.parse(nlv))
     nlv = (min(minimum(nlv), n, p):min(maximum(nlv), n, p))

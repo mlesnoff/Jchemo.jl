@@ -11,9 +11,9 @@ end
 
 """
     rr(X, Y, weights = ones(nro(X)); lb = .01,
-        scal = false)
+        scal::Bool = false)
     rr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
-        scal = false)
+        scal::Bool = false)
 Ridge regression (RR) implemented by SVD factorization.
 * `X` : X-data.
 * `Y` : Y-data.
@@ -79,13 +79,13 @@ res.pred[2]
 ```
 """ 
 function rr(X, Y, weights = ones(nro(X)); lb = .01,
-    scal = false)
+    scal::Bool = false)
     rr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; lb = lb, 
         scal = scal)
 end
 
 function rr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
-        scal = false)
+        scal::Bool = false)
     p = nco(X)
     weights = mweight(weights)
     sqrtw = sqrt.(weights)
@@ -108,9 +108,9 @@ end
 
 """
     rrchol(X, Y, weights = ones(nro(X)); lb = .01, 
-        scal = false)
+        scal::Bool = false)
     rrchol!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
-        scal = false)
+        scal::Bool = false)
 Ridge regression (RR) using the Normal equations and a Cholesky factorization.
 * `X` : X-data.
 * `Y` : Y-data.
@@ -137,13 +137,13 @@ Hoerl, A.E., Kennard, R.W., 1970. Ridge Regression: Biased Estimation for Nonort
 Technometrics 12, 55-67. https://doi.org/10.1080/00401706.1970.10488634
 """ 
 function rrchol(X, Y, weights = ones(nro(X)); lb = .01,
-        scal = false)
+        scal::Bool = false)
     rrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; lb = lb,
         scal = scal)
 end
 
 function rrchol!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
-        scal = false)
+        scal::Bool = false)
     @assert nco(X) > 1 "Method only working for X with > 1 column."
     p = nco(X)
     weights = mweight(weights)

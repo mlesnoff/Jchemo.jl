@@ -16,7 +16,7 @@ end
 
 """
     kpca(X, weights = ones(nro(X)); nlv, 
-        kern = "krbf", scal = false, kwargs...)
+        kern = "krbf", scal::Bool = false, kwargs...)
 Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
 
 * `X` : X-data.
@@ -80,7 +80,7 @@ res.explvarx
 ```
 """ 
 function kpca(X, weights = ones(nro(X)); nlv, 
-        kern = "krbf", scal = false, kwargs...)
+        kern = "krbf", scal::Bool = false, kwargs...)
     X = ensure_mat(X)
     n, p = size(X)
     nlv = min(nlv, n)

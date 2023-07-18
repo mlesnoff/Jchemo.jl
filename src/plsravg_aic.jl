@@ -15,7 +15,7 @@ end
 
 function plsravg_aic(X, y, weights = ones(nro(X)); nlv, 
         bic = false, typw = "bisquare",
-        alpha = 0, scal = false)
+        alpha = 0, scal::Bool = false)
     plsravg_aic!(copy(ensure_mat(X)), copy(ensure_mat(y)), weights; nlv = nlv,
         bic = bic, typw = typw, 
         alpha = alpha, scal = scal)
@@ -23,7 +23,7 @@ end
 
 function plsravg_aic!(X::Matrix, y::Matrix, weights = ones(nro(X)); nlv,
         bic = false, typw = "bisquare", 
-        alpha = 0, scal = false)
+        alpha = 0, scal::Bool = false)
     n, p = size(X)
     nlv = eval(Meta.parse(nlv))
     nlv = (min(minimum(nlv), n, p):min(maximum(nlv), n, p))

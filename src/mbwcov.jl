@@ -2,10 +2,10 @@
 """
     mbwcov(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
         bscal = "none", wcov = true, tau = 1,
-        tol = sqrt(eps(1.)), maxit = 200, scal = false)
+        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     mbwcov!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
         bscal = "none", wcov = true, tau = 1,
-        tol = sqrt(eps(1.)), maxit = 200, scal = false)
+        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
 Multiblock weighted covariate analysis regression (MBWCov) (Mangana et al. 2021)
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
@@ -74,7 +74,7 @@ summary(fm, Xbl)
 """
 function mbwcov(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
         bscal = "none", wcov = true, tau = 1,
-        tol = sqrt(eps(1.)), maxit = 200, scal = false)
+        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
@@ -87,7 +87,7 @@ end
 
 function mbwcov!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", wcov = true, tau = 1, 
-        tol = sqrt(eps(1.)), maxit = 200, scal = false)
+        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     nbl = length(Xbl)
     n = nro(Xbl[1])
     q = nco(Y)

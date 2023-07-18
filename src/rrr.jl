@@ -1,10 +1,10 @@
 """
     rrr(X, Y, weights = ones(nro(X)); nlv,
         tau = 1e-5, tol = sqrt(eps(1.)), maxit = 200, 
-        scal = false)
+        scal::Bool = false)
     rrr(X, Y, weights = ones(nro(X)); nlv,
         tau = 1e-5, tol = sqrt(eps(1.)), maxit = 200, 
-        scal = false)
+        scal::Bool = false)
 Reduced rank regression (RRR).
 * `X` : First block of data.
 * `Y` : Second block of data.
@@ -98,7 +98,7 @@ head(Jchemo.predict(fm, Xtest).pred)
 """
 function rrr(X, Y, weights = ones(nro(X)); nlv,
         tau = 1e-5, tol = sqrt(eps(1.)), maxit = 200, 
-        scal = false)
+        scal::Bool = false)
     rrr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         tau = tau, tol = tol, maxit = maxit, 
         scal = scal)
@@ -106,7 +106,7 @@ end
 
 function rrr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         tau = 1e-8, tol = sqrt(eps(1.)), maxit = 200, 
-        scal = false)
+        scal::Bool = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(nlv, p, q)

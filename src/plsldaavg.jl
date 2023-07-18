@@ -1,6 +1,6 @@
 """ 
     plsldaavg(X, y, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
 Averaging of PLS-LDA models with different numbers of 
     latent variables (LVs).
 * `X` : X-data.
@@ -57,7 +57,7 @@ confusion(res.pred, ytest).cnt
 ```
 """ 
 function plsldaavg(X, y, weights = ones(nro(X)); nlv,
-        scal = false)
+        scal::Bool = false)
     n = nro(X)
     p = nco(X)
     nlv = eval(Meta.parse(nlv))

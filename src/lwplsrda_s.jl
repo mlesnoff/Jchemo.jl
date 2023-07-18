@@ -14,7 +14,7 @@ end
 """
     lwplsrda_s(X, y; nlv0, reduc = "pls", 
         metric = "eucl", h, k, gamma = 1, psamp = 1, samp = "cla", 
-        nlv, tol = 1e-4, scal = false, verbose = false)
+        nlv, tol = 1e-4, scal::Bool = false, verbose = false)
 kNN-LWPLSR-DA after preliminary (linear or non-linear) dimension 
     reduction (kNN-LWPLSR-DA-S).
 * `X` : X-data (n, p).
@@ -76,7 +76,7 @@ confusion(pred, ytest).cnt
 """ 
 function lwplsrda_s(X, y; nlv0, reduc = "pls", 
         metric = "eucl", h, k, gamma = 1, psamp = 1, samp = "cla", 
-        nlv, tol = 1e-4, scal = false, verbose = false)
+        nlv, tol = 1e-4, scal::Bool = false, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)
     n = nro(X)

@@ -1,6 +1,6 @@
 """
     plsqda(X, y, weights = ones(nro(X)); nlv, 
-        alpha = 0, prior = "unif", scal = false)
+        alpha = 0, prior = "unif", scal::Bool = false)
 PLS-QDA (with continuum).
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -25,7 +25,7 @@ returning `nlv` latent variables (LVs). Finally, a QDA is run on these LVs and `
 See `?plslda` for examples.
 """ 
 function plsqda(X, y, weights = ones(nro(X)); nlv, 
-        alpha = 0, prior = "unif", scal = false)
+        alpha = 0, prior = "unif", scal::Bool = false)
     res = dummy(y)
     ni = tab(y).vals
     fm_pls = plskern(X, res.Y, weights; nlv = nlv, scal = scal)
