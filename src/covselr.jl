@@ -1,4 +1,4 @@
-struct Covselr2
+struct Covselr
     fm 
     fm_covsel
 end
@@ -53,7 +53,7 @@ function covselr(X, Y; nlv,
     fm0 = covsel(X, Y; nlv = nlv,
         scal = scal)
     fm = mlr(vcol(X, fm0.sel), Y)
-    Covselr2(fm, fm0)
+    Covselr(fm, fm0)
 end 
 
 """
@@ -62,7 +62,7 @@ Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Covselr2, X)
+function predict(object::Covselr, X)
     pred = predict(object.fm, X[:, object.fm_covsel.sel]).pred
     (pred = pred,)
 end
