@@ -13,7 +13,7 @@
     - Code improvement.
 
 - Breaking changes
-    - **covsel**, **covselr**: argument 'typ' was removed. 
+    - **covsel**, **covselr**: argument 'typ' was removed, and internal changes. 
 
 ### *Version 0.1.23*
 
