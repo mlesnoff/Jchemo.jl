@@ -44,7 +44,7 @@ Jchemo.coef(fm.fm)
 res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
-plotxy(pred, ytest; color = (:red, .5),
+plotxy(vec(res.pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 ```
 """ 
