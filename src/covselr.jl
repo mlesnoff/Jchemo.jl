@@ -1,10 +1,11 @@
-struct Covselr1
+struct Covselr2
     fm 
+    fm_covsel
 end
 
 """
-    covselr(X, Y, weights = ones(nro(X)); 
-        nlv = nothing, scal::Bool = false)
+    covselr(X, Y, weights = ones(nro(X)); nlv,
+        scal::Bool = false)
 MLR on variables selected from partial covariance (Covsel).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -15,7 +16,7 @@ MLR on variables selected from partial covariance (Covsel).
     is scaled by its uncorrected standard deviation.
 
 A number of `nlv` variables (X-columns) are selected with the Covsel method
-(function `covsel`), and then a MLR is implemened on these variables. 
+(see function `covsel`), and then a MLR is implemened on these variables. 
 
 ## Examples
 ```julia
@@ -47,11 +48,12 @@ plotxy(pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 ```
 """ 
-function covselr(X, Y; nlv)
-    res = covsel(X, Y; nlv = nlv)
-    zX = vcol(X, res.sel.sel)
-    fm = mlr(zX, Y)
-    Covselr1(fm)
+function covselr(X, Y; nlv,
+        scal::Bool = false)
+    fm0 = covsel(X, Y; nlv = nlv,
+        scal = scal)
+    fm = mlr(vcol(X, fm0.sel), Y)
+    Covselr2(fm, fm0)
 end 
 
 """
@@ -60,8 +62,8 @@ Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Covselr1, X)
-    pred = predict(object.fm, X[:, object.sel.sel]).pred
+function predict(object::Covselr2, X)
+    pred = predict(object.fm, X[:, object.fm_covsel.sel]).pred
     (pred = pred,)
 end
 
