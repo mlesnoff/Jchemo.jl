@@ -195,7 +195,7 @@ function transform(object::Plsr, X; nlv = nothing)
 end
 
 """
-    coef(object::Union{Plsr, Pcr}; nlv = nothing)
+    coef(object::Union{Plsr, Pcr, Splsr1}; nlv = nothing)
 Compute the X b-coefficients of a model fitted with `nlv` LVs.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
@@ -217,7 +217,7 @@ function coef(object::Union{Plsr, Pcr, Splsr1}; nlv = nothing)
 end
 
 """
-    predict(object::Union{Plsr, Pcr}, X; nlv = nothing)
+    predict(object::Union{Plsr, Pcr, Splsr1}, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
@@ -238,7 +238,7 @@ function predict(object::Union{Plsr, Pcr, Splsr1}, X; nlv = nothing)
 end
 
 """
-    summary(object::Plsr, X)
+    summary(object::Union{Plsr, Splsr1}, X)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
