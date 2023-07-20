@@ -1,11 +1,11 @@
 function splsrh(X, Y, weights = ones(nro(X)); nlv, 
-        alpha = 0, scal::Bool = false)
+        nvar = 1, scal::Bool = false)
     splsrh!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        nlv = nlv, alpha = alpha, scal = scal)
+        nlv = nlv, nvar = nvar, scal = scal)
 end
 
 function splsrh!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
-        nlv, alpha = alpha, scal::Bool = false)
+        nlv, nvar = 1, scal::Bool = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, nlv)
@@ -51,11 +51,6 @@ function splsrh!(X::Matrix, Y::Matrix, weights = ones(nro(X));
             w .= svd(XtY).U[:, 1]
         end
         w2 .= w.^2
-        if alpha == 0
-            nvar = 1
-        else
-            nvar = w2 .>= Statistics.quantile(w2, 1 - alpha)
-        end
         sellv[a] = sortperm(w2; rev = true)[1:nvar]
         wmax = w[sellv[a]]
         w .= zeros(p)
