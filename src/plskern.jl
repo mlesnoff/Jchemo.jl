@@ -204,7 +204,7 @@ If X is (n, p) and Y is (n, q), the returned object `B` is a matrix (p, q).
 If `nlv` = 0, `B` is a matrix of zeros.
 The returned object `int` is the intercept.
 """ 
-function coef(object::Union{Plsr, Pcr}; nlv = nothing)
+function coef(object::Union{Plsr, Pcr, Splsr1}; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     beta = object.C[:, 1:nlv]'
@@ -223,7 +223,7 @@ Compute Y-predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{Plsr, Pcr}, X; nlv = nothing)
+function predict(object::Union{Plsr, Pcr, Splsr1}, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
@@ -243,7 +243,7 @@ Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
-function Base.summary(object::Plsr, X::Union{Vector, Matrix, DataFrame})
+function Base.summary(object::Union{Plsr, Splsr1}, X::Union{Vector, Matrix, DataFrame})
     X = ensure_mat(X)
     n, nlv = size(object.T)
     X = cscale(X, object.xmeans, object.xscales)
