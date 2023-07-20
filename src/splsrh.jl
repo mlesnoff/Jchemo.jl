@@ -1,27 +1,11 @@
-struct Splsr1
-    T::Matrix{Float64}
-    P::Matrix{Float64}
-    R::Matrix{Float64}
-    W::Matrix{Float64}
-    C::Matrix{Float64}
-    TT::Vector{Float64}
-    xmeans::Vector{Float64}
-    xscales::Vector{Float64}
-    ymeans::Vector{Float64}
-    yscales::Vector{Float64}
-    weights::Vector{Float64}
-    sellv::Vector{Vector{Int64}}
-    sel::Vector{Int64}
-end
-
 function splsrh(X, Y, weights = ones(nro(X)); nlv, 
-        nvar = 1, scal::Bool = false)
+        alpha = 0, scal::Bool = false)
     splsrh!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        nlv = nlv, nvar = nvar, scal = scal)
+        nlv = nlv, alpha = alpha, scal = scal)
 end
 
 function splsrh!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
-        nlv, nvar = 1, scal::Bool = false)
+        nlv, alpha = alpha, scal::Bool = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, nlv)
@@ -57,6 +41,7 @@ function splsrh!(X::Matrix, Y::Matrix, weights = ones(nro(X));
     c   = similar(X, q)
     tmp = similar(XtY) # = XtY_approx
     sellv = list(nlv, Vector{Int64})
+    w2 = copy(w)
     # End
     @inbounds for a = 1:nlv
         if q == 1
@@ -65,7 +50,13 @@ function splsrh!(X::Matrix, Y::Matrix, weights = ones(nro(X));
         else
             w .= svd(XtY).U[:, 1]
         end
-        sellv[a] = sortperm(w.^2; rev = true)[1:nvar]
+        w2 .= w.^2
+        if alpha == 0
+            nvar = 1
+        else
+            nvar = w2 .>= Statistics.quantile(w2, 1 - alpha)
+        end
+        sellv[a] = sortperm(w2; rev = true)[1:nvar]
         wmax = w[sellv[a]]
         w .= zeros(p)
         w[sellv[a]] .= wmax
