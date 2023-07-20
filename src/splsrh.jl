@@ -50,11 +50,13 @@ function splsrh!(X::Matrix, Y::Matrix, weights = ones(nro(X));
         else
             w .= svd(XtY).U[:, 1]
         end
+        ## Sparsity
         w2 .= w.^2
         sellv[a] = sortperm(w2; rev = true)[1:nvar]
         wmax = w[sellv[a]]
         w .= zeros(p)
         w[sellv[a]] .= wmax
+        ## End
         r .= w
         if a > 1
             @inbounds for j = 1:(a - 1)
