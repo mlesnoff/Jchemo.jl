@@ -80,6 +80,9 @@ include("vip.jl")
 
 include("xfit.jl")
 
+# Sparse plsr 
+include("splsrh.jl")
+
 # Regression Multiblock
 include("mbplsr.jl") 
 include("mbplswest.jl")
@@ -272,6 +275,8 @@ export
     treer_dt, rfr_dt, 
     baggr, 
     oob_baggr, vi_baggr, 
+    # Sparse plsr 
+    splsrh,
     # Rgression Multi-block
     mbplsr, mbplsr!,
     mbplswest, mbplswest!,
