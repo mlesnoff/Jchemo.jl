@@ -96,7 +96,15 @@ function pcr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     Pcr(fm, fm.T, fm.P, beta', fm.xmeans, fm.xscales, ymeans, yscales, weights)
 end
 
-
+"""
+    summary(object::Pcr, X::Union{Vector, Matrix, DataFrame})
+Summarize the fitted model.
+* `object` : The fitted model.
+* `X` : The X-data that was used to fit the model.
+""" 
+function Base.summary(object::Pcr, X::Union{Vector, Matrix, DataFrame})
+    summary(object.fm_pca, X)
+end
 
 
 
