@@ -34,7 +34,7 @@ end
         scal::Bool = false)
     plskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         scal::Bool = false)
-Partial Least Squares Regression (PLSR) with the 
+Partial least squares regression (PLSR) with the 
 "improved kernel algorithm #1" (Dayal & McGegor, 1997).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
