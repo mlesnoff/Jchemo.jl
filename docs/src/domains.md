@@ -70,7 +70,6 @@
 - **cglsr** Conjugate gradient for the least squares normal equations (CGLS)
 - **rrr** Reduced rank regression (RRR)  (= redundancy analysis regression) 
 - **pcr** Principal components regression (SVD factorization)
-- **covselr** MLR on variables selected from Covsel
 
 *Non linear*
 - **kplsr** Non linear kernel (KPLSR) *Rosipal & Trejo 2001*
@@ -94,6 +93,11 @@
 
 *Non linear*
 - **krr** Non linear kernel (KRR) = Least squares SVM (LS-SVMR)
+
+### Sparse models
+
+- **covselr** MLR on variables selected from Covsel
+- **splsrh** Sparse partial least squares regression (SPLSR) by hard thresholding
 
 ### **Local models**
 

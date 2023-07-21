@@ -8,6 +8,8 @@
     - **plist** Print each element of a list.
     - **soft**: Soft thresholding.
     - **softmax** Softmax function.
+    - **splsrh** Sparse partial least squares regression (SPLSR) by hard 
+        thresholding
 
 - Modifications
     - Code improvement.
