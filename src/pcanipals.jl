@@ -6,12 +6,15 @@ PCA by NIPALS algorithm.
 * `weights` : Weights (n) of the observations. 
     Internally normalized to sum to 1.
 * `nlv` : Nb. principal components (PCs).
+* `tol` : Tolerance value for stopping the iterations.
+* `maxit` : Maximum nb. iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
 Let us note D the (n, n) diagonal matrix of `weights`
 and X the centered matrix in metric D. 
-The function minimizes ||X - T * P'||^2  in metric D. 
+The function minimizes ||X - T * P'||^2  in metric D by
+NIPALS (see function `nipals`). 
 
 See `?pcasvd` for examples.
 """ 
