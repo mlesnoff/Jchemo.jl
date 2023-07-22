@@ -38,6 +38,7 @@ include("fda.jl")     # Here since ::Fda called in pcasvd
 include("fdasvd.jl")     
 include("pcasvd.jl")
 include("pcaeigen.jl")
+include("pcaeigenk.jl")
 include("kpca.jl")
 include("rp.jl")
 include("pcasph.jl") 
