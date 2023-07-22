@@ -52,7 +52,6 @@ function nipals(X; tol = sqrt(eps(1.)), maxit = 200)
     sv = norm(u)
     u .= u / sv
     niter = iter - 1
-    n = nro(X)
     (u = u, v, sv, niter)
 end
 

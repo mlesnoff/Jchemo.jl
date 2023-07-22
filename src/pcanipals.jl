@@ -1,11 +1,11 @@
 function pcanipals(X, weights = ones(nro(X)); nlv, 
-    niter = 100, scal::Bool = false)
+    gs = true, niter = 100, scal::Bool = false)
     pcanipals!(copy(ensure_mat(X)), weights; nlv = nlv, 
-        niter = niterscal = scal)
+        gs = gs, niter = niterscal = scal)
 end
 
 function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv, 
-    niter = 100, scal::Bool = false)
+    gs = true, niter = 100, scal::Bool = false)
     n, p = size(X)
     nlv = min(nlv, n, p)
     weights = mweight(weights)
@@ -18,6 +18,9 @@ function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv,
         center!(X, xmeans)
     end
     sqrtw = sqrt.(weights)
+
+
+
     X .= Diagonal(sqrtw) * X
     res = eigen!(Symmetric(X' * X); sortby = x -> -abs(x)) 
     P = res.vectors[:, 1:nlv]
@@ -25,6 +28,7 @@ function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv,
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
     T = Diagonal(1 ./ sqrtw) * X * P
+    
     Pca(T, P, sv, xmeans, xscales, weights, nothing, nothing) 
 end
 
