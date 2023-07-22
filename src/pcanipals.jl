@@ -76,8 +76,8 @@ function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv,
         sv[a] = s
         P[:, a] .= v           
         T[:, a] .= t ./ sqrtw
-        X .-= t * v'
         niter[a] = iter - 1
+        X .-= t * v'
     end    
     Pca(T, P, sv, xmeans, xscales, weights, niter) 
 end
