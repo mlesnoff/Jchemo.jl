@@ -49,6 +49,6 @@ function pcaeigenk!(X::Matrix, weights = ones(nro(X)); nlv, scal::Bool = false)
     sv = sqrt.(eig)
     P = zX' * scale(res.vectors[:, 1:nlv], sv[1:nlv])
     T = X * P
-    Pca(T, P, sv, xmeans, xscales, weights, nothing, nothing) 
+    Pca(T, P, sv, xmeans, xscales, weights, nothing) 
 end
 

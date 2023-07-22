@@ -88,5 +88,5 @@ function pcasph!(X::Matrix, weights = ones(nro(X)); nlv, typc = "medspa",
     T .= T[:, u]
     P .= P[:, u]
     sv .= sv[u]
-    Pca(T, P, sv, xmeans, xscales, weights, nothing, nothing) 
+    Pca(T, P, sv, xmeans, xscales, weights, nothing) 
 end

@@ -40,5 +40,5 @@ function pcaeigen!(X::Matrix, weights = ones(nro(X)); nlv, scal::Bool = false)
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
     T = Diagonal(1 ./ sqrtw) * X * P
-    Pca(T, P, sv, xmeans, xscales, weights, nothing, nothing) 
+    Pca(T, P, sv, xmeans, xscales, weights, nothing) 
 end

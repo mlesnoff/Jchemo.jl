@@ -1,11 +1,13 @@
 function pcanipals(X, weights = ones(nro(X)); nlv, 
-        gs = true, niter = 100, scal::Bool = false)
+        gs = true, tol = sqrt(eps(1.)), maxit = 200, 
+        scal::Bool = false)
     pcanipals!(copy(ensure_mat(X)), weights; nlv = nlv, 
-        gs = gs, niter = niterscal = scal)
+        gs = gs, tol = tol, maxit = maxit, scal = scal)
 end
 
 function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv, 
-        gs = true, niter = 100, scal::Bool = false)
+        gs = true, tol = sqrt(eps(1.)), maxit = 200, 
+        scal::Bool = false)
     n, p = size(X)
     nlv = min(nlv, n, p)
     weights = mweight(weights)

@@ -6,8 +6,7 @@ struct Pca
     xscales::Vector{Float64}
     weights::Vector{Float64}
     ## For consistency with PCA Nipals
-    niter::Union{Int64, Nothing}
-    conv::Union{Bool, Nothing}
+    niter::Union{Vector{Int64}, Nothing}
 end
 
 """
@@ -97,7 +96,7 @@ function pcasvd!(X::Matrix, weights = ones(nro(X)); nlv,
     sv = res.S   
     sv[sv .< 0] .= 0
     T = (1 ./ sqrtw) .* vcol(res.U, 1:nlv) * (Diagonal(sv[1:nlv]))
-    Pca(T, P, sv, xmeans, xscales, weights, nothing, nothing)
+    Pca(T, P, sv, xmeans, xscales, weights, nothing)
 end
 
 """ 
