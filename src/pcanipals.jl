@@ -48,18 +48,36 @@ function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv,
     sqrtw = sqrt.(weights)
     X .= Diagonal(sqrtw) * X
     t = similar(X, n)
+    u = copy(t)
+    u0 = copy(t)
+    v = similar(X, p)
     T = similar(X, n, nlv)
     P = similar(X, p, nlv)
     sv = similar(X, nlv)
     niter = list(nlv, Int64)
     for a = 1:nlv
-        res = nipals(X; tol = tol, maxit = maxit)
-        t .= res.u * res.sv
-        sv[a] = res.sv
-        P[:, a] .= res.v           
+        u .= X[:, argmax(colnorm(X))]
+        cont = true
+        iter = 1
+        while cont
+            u0 .= copy(u)      
+            mul!(v, X', u)
+            v ./= norm(v)
+            mul!(u, X, v)
+            dif = sum((u .- u0).^2)
+            iter = iter + 1
+            if (dif < tol) || (iter > maxit)
+                cont = false
+            end
+        end
+        s = norm(u)
+        u ./= s
+        t .= u * s
+        sv[a] = s
+        P[:, a] .= v           
         T[:, a] .= t ./ sqrtw
-        X .-= t * res.v'
-        niter[a] = res.niter
+        X .-= t * v'
+        niter[a] = iter - 1
     end    
     Pca(T, P, sv, xmeans, xscales, weights, niter) 
 end
