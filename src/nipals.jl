@@ -57,7 +57,8 @@ function nipals(X; tol = sqrt(eps(1.)), maxit = 200)
     (u = u, v, sv, niter)
 end
 
-function nipals(X, UUt, VVt; tol = sqrt(eps(1.)), maxit = 200)
+function nipals(X, UUt, VVt; 
+        tol = sqrt(eps(1.)), maxit = 200)
     X = ensure_mat(X)
     p = nco(X)
     u = X[:, argmax(colnorm(X))]
