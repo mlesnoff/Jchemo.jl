@@ -5,7 +5,9 @@
 *Principal component analysis (PCA)* 
 - **pcaeigen** Eigen decomposition
 - **pcaeigenk** Eigen decomposition for wide matrices (kernel form)
+- **pcanipals**: NIPALS algorithm
 - **pcasvd** SVD decomposition
+
 - Robust PCA
     - **pcasph** Spherical (with spatial median)
 
