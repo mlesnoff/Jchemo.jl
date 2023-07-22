@@ -1,3 +1,21 @@
+"""
+    pcanipals(X, weights = ones(nro(X)); nlv, scal::Bool = false)
+    pcanipals!(X::Matrix, weights = ones(nro(X)); nlv, scal::Bool = false)
+PCA by NIPALS algorithm.
+* `X` : X-data (n, p).
+* `weights` : Weights (n) of the observations. 
+    Internally normalized to sum to 1.
+* `nlv` : Nb. principal components (PCs).
+* `scal` : Boolean. If `true`, each column of `X` is scaled
+    by its uncorrected standard deviation.
+
+Let us note D the (n, n) diagonal matrix of `weights`
+and X the centered matrix in metric D. 
+The function minimizes ||X - T * P'||^2  in metric D. 
+
+See `?pcasvd` for examples.
+""" 
+
 function pcanipals(X, weights = ones(nro(X)); nlv, 
         gs = true, tol = sqrt(eps(1.)), maxit = 200, 
         scal::Bool = false)

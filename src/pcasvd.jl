@@ -54,6 +54,7 @@ nlv = 3
 fm = pcasvd(Xtrain; nlv = nlv) ;
 #fm = pcaeigen(Xtrain; nlv = nlv) ;
 #fm = pcaeigenk(Xtrain; nlv = nlv) ;
+#fm = pcanipals(Xtrain; nlv = nlv) ;
 pnames(fm)
 fm.T
 fm.T' * fm.T
