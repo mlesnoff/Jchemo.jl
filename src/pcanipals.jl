@@ -17,10 +17,9 @@ PCA by NIPALS algorithm.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
-Let us note D the (n, n) diagonal matrix of `weights`
-and X the centered matrix in metric D. 
-The function minimizes ||X - T * P'||^2  in metric D by
-NIPALS (see function `nipals`). 
+Let us note D the (n, n) diagonal matrix of `weights` and X the centered 
+matrix in metric D. The function minimizes ||X - T * P'||^2  in metric D 
+by NIPALS. 
 
 See `?pcasvd` for examples.
 """ 
