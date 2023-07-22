@@ -10,7 +10,8 @@ PCA by NIPALS algorithm.
 * `weights` : Weights (n) of the observations. 
     Internally normalized to sum to 1.
 * `nlv` : Nb. principal components (PCs).
-* `gs` : Boolean. 
+* `gs` : Boolean. If `true` (default), a Gram-Schmidt orthogonalization 
+    of the scores and loadings is done. 
 * `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
@@ -55,6 +56,10 @@ function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv,
     P = similar(X, p, nlv)
     sv = similar(X, nlv)
     niter = list(nlv, Int64)
+    if gs
+        UUt = zeros(n, n)
+        VVt = zeros(p, p)
+    end
     for a = 1:nlv
         u .= X[:, argmax(colnorm(X))]
         cont = true
@@ -63,7 +68,13 @@ function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv,
             u0 .= copy(u)      
             mul!(v, X', u)
             v ./= norm(v)
+            if gs & (a > 1)
+                v .= v .- VVt * v
+            end
             mul!(u, X, v)
+            if gs & (a > 1)
+                u .= u .- UUt * u 
+            end
             dif = sum((u .- u0).^2)
             iter = iter + 1
             if (dif < tol) || (iter > maxit)
@@ -73,11 +84,15 @@ function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv,
         s = norm(u)
         u ./= s
         t .= u * s
-        sv[a] = s
-        P[:, a] .= v           
         T[:, a] .= t ./ sqrtw
+        P[:, a] .= v           
+        sv[a] = s
         niter[a] = iter - 1
         X .-= t * v'
+        if gs
+            UUt .+= u * u' 
+            VVt .+= v * v'
+        end
     end    
     Pca(T, P, sv, xmeans, xscales, weights, niter) 
 end
