@@ -18,10 +18,15 @@ function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv,
         center!(X, xmeans)
     end
     sqrtw = sqrt.(weights)
-
-
-
     X .= Diagonal(sqrtw) * X
+    for a = 1:nlv
+        res = nipals(X; tol = tol, maxit = maxit)
+        P[:, a] .= res.u           
+        T[:, a] .= t    
+
+
+
+
     res = eigen!(Symmetric(X' * X); sortby = x -> -abs(x)) 
     P = res.vectors[:, 1:nlv]
     eig = res.values[1:min(n, p)]

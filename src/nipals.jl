@@ -5,13 +5,14 @@ Nipals to compute the first score and loading vectors of a matrix.
 * `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. iterations.
 
-The function finds {u, v, s} = argmin(||X - u * s * v'||), with the constraints 
+The function finds {u, v, sv} = argmin(||X - u * sv * v'||), with the constraints 
 ||u|| = ||v|| = 1.
 
-X ~ u * s * v', where:
+X ~ u * sv * v', where:
 
-* u, v : left and right singular vectors (scores and loadings, repectively)
-* s : singular value.
+* u : left singular vector (u * sv = scores)
+* v : right singular vector (loadings)
+* sv : singular value.
     
 ## References
 Tenenhaus, M., 1998. La régression PLS: théorie et pratique. Editions Technip, 
