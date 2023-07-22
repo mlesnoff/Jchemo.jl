@@ -5,6 +5,7 @@
 - News
     - **nsc**: Nearest shrunken centroids (NSC).
     - **nscda**: Discrimination by nearest shrunken centroids.
+    - **pcanipals**: PCA by NIPALS algorithm.
     - **plist** Print each element of a list.
     - **soft**: Soft thresholding.
     - **softmax** Softmax function.
