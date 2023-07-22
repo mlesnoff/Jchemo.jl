@@ -1,8 +1,11 @@
-function pcanipals(X, weights = ones(nro(X)); nlv, scal::Bool = false)
-    pcanipals!(copy(ensure_mat(X)), weights; nlv = nlv, scal = scal)
+function pcanipals(X, weights = ones(nro(X)); nlv, 
+    niter = 100, scal::Bool = false)
+    pcanipals!(copy(ensure_mat(X)), weights; nlv = nlv, 
+        niter = niterscal = scal)
 end
 
-function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv, scal::Bool = false)
+function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv, 
+    niter = 100, scal::Bool = false)
     n, p = size(X)
     nlv = min(nlv, n, p)
     weights = mweight(weights)
