@@ -57,3 +57,31 @@ function nipals(X; tol = sqrt(eps(1.)), maxit = 200)
     (u = u, v, sv, niter)
 end
 
+function nipals(X, UUt, VVt; tol = sqrt(eps(1.)), maxit = 200)
+    X = ensure_mat(X)
+    p = nco(X)
+    u = X[:, argmax(colnorm(X))]
+    u0 = copy(u)
+    v = similar(X, p)   
+    cont = true
+    iter = 1
+    while cont
+        u0 .= copy(u)      
+        mul!(v, X', u)
+        v ./= norm(v)
+        v .= v .- VVt * v
+        mul!(u, X, v)
+        u .= u .- UUt * u
+        dif = sum((u .- u0).^2)
+        iter = iter + 1
+        if (dif < tol) || (iter > maxit)
+            cont = false
+        end
+    end
+    sv = norm(u)
+    u .= u / sv
+    niter = iter - 1
+    (u = u, v, sv, niter)
+end
+
+

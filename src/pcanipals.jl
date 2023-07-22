@@ -24,7 +24,6 @@ NIPALS (see function `nipals`).
 
 See `?pcasvd` for examples.
 """ 
-
 function pcanipals(X, weights = ones(nro(X)); nlv, 
         gs::Bool = true, tol = sqrt(eps(1.)), maxit = 200, 
         scal::Bool = false)
