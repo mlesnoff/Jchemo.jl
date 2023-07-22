@@ -1,11 +1,16 @@
 """
-    pcanipals(X, weights = ones(nro(X)); nlv, scal::Bool = false)
-    pcanipals!(X::Matrix, weights = ones(nro(X)); nlv, scal::Bool = false)
+    pcanipals(X, weights = ones(nro(X)); nlv, 
+        gs::Bool = true, tol = sqrt(eps(1.)), maxit = 200, 
+        scal::Bool = false)
+    pcanipals!(X::Matrix, weights = ones(nro(X)); nlv, 
+        gs::Bool = true, tol = sqrt(eps(1.)), maxit = 200, 
+        scal::Bool = false)
 PCA by NIPALS algorithm.
 * `X` : X-data (n, p).
 * `weights` : Weights (n) of the observations. 
     Internally normalized to sum to 1.
 * `nlv` : Nb. principal components (PCs).
+* `gs` : Boolean. 
 * `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
@@ -20,14 +25,14 @@ See `?pcasvd` for examples.
 """ 
 
 function pcanipals(X, weights = ones(nro(X)); nlv, 
-        gs = true, tol = sqrt(eps(1.)), maxit = 200, 
+        gs::Bool = true, tol = sqrt(eps(1.)), maxit = 200, 
         scal::Bool = false)
     pcanipals!(copy(ensure_mat(X)), weights; nlv = nlv, 
         gs = gs, tol = tol, maxit = maxit, scal = scal)
 end
 
 function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv, 
-        gs = true, tol = sqrt(eps(1.)), maxit = 200, 
+        gs::Bool = true, tol = sqrt(eps(1.)), maxit = 200, 
         scal::Bool = false)
     n, p = size(X)
     nlv = min(nlv, n, p)
