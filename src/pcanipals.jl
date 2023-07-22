@@ -31,12 +31,10 @@ function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv,
         t .= res.u * res.sv
         sv[a] = res.sv
         P[:, a] .= res.v           
-        T[:, a] .= t
+        T[:, a] .= t ./ sqrtw
         X .-= t * res.v'
-        t ./= sqrtw
         niter[a] = res.niter
     end    
-    #T = Diagonal(1 ./ sqrtw) * X * P
-    Pca(T, P, sv, xmeans, xscales, weights, niter, nothing) 
+    Pca(T, P, sv, xmeans, xscales, weights, niter) 
 end
 

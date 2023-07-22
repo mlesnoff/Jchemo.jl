@@ -35,12 +35,13 @@ res.niter
 function nipals(X; tol = sqrt(eps(1.)), maxit = 200)
     X = ensure_mat(X)
     p = nco(X)
-    u = X[:, findmax(colnorm(X))[2]]
+    u = X[:, argmax(colnorm(X))]
+    u0 = copy(u)
     v = similar(X, p)   
     cont = true
     iter = 1
     while cont
-        u0 = copy(u)      
+        u0 .= copy(u)      
         mul!(v, X', u)
         v ./= norm(v)
         mul!(u, X, v)
