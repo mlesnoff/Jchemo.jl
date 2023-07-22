@@ -57,8 +57,3 @@ function nipals(X; tol = sqrt(eps(1.)), maxit = 200)
     (u = u, v, sv, niter)
 end
 
-
-
-
-
-
