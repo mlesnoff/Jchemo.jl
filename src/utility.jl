@@ -81,70 +81,6 @@ function center!(X::Matrix, v)
 end
 
 """
-    dupl(X; digits = 3)
-Find duplicated rows in a dataset.
-* `X` : A dataset.
-* `digits` : Nb. digits used to round `X` before checking.
-
-## Examples
-```julia
-X = rand(5, 3)
-Z = vcat(X, X[1:3, :], X[1:1, :])
-dupl(X)
-dupl(Z)
-
-M = hcat(X, fill(missing, 5))
-Z = vcat(M, M[1:3, :])
-dupl(M)
-dupl(Z)
-```
-"""
-function dupl(X; digits = 3)
-    X = ensure_mat(X)
-    # round, etc. does not
-    # accept missing values
-    X[ismissing.(X)] .= -1e5
-    # End
-    X = round.(X, digits = digits)
-    n = nro(X)
-    rownum1 = []
-    rownum2 = []
-    @inbounds for i = 1:n
-        @inbounds for j = (i + 1):n
-            res = isequal(vrow(X, i), vrow(X, j))
-            if res
-                push!(rownum1, i)
-                push!(rownum2, j)
-            end
-        end
-    end
-    u = findall(rownum1 .!= rownum2)
-    res = DataFrame((rownum1 = rownum1[u], rownum2 = rownum2[u]))
-    Int64.(res)
-end
-
-"""
-    miss(X)
-Find rows with missing data in a dataset.
-* `X` : A dataset.
-
-## Examples
-```julia
-X = rand(5, 4)
-zX = hcat(rand(2, 3), fill(missing, 2))
-Z = vcat(X, zX)
-miss(X)
-miss(Z)
-```
-"""
-function miss(X)
-    X = ensure_mat(X)
-    z = vec(sum(ismissing.(X); dims = 2))
-    u = findall(z .> 0) 
-    DataFrame((rownum = u, nmissing = z[u]))
-end
-
-"""
     colmad(X)
 Compute the median absolute deviation (MAD) of each column of `X`.
 * `X` : Data (n, p).
@@ -356,8 +292,6 @@ end
 
 #### END
 
-
-
 """
     corm(X, w)
     corm(X, Y, w)
@@ -523,6 +457,49 @@ end
 function cscale2!(X::Matrix, u, v)
     center!(X, u)
     scale!(X, v)
+end
+
+"""
+    dupl(X; digits = 3)
+Find duplicated rows in a dataset.
+* `X` : A dataset.
+* `digits` : Nb. digits used to round `X` before checking.
+
+## Examples
+```julia
+X = rand(5, 3)
+Z = vcat(X, X[1:3, :], X[1:1, :])
+dupl(X)
+dupl(Z)
+
+M = hcat(X, fill(missing, 5))
+Z = vcat(M, M[1:3, :])
+dupl(M)
+dupl(Z)
+```
+"""
+function dupl(X; digits = 3)
+    X = ensure_mat(X)
+    # round, etc. does not
+    # accept missing values
+    X[ismissing.(X)] .= -1e5
+    # End
+    X = round.(X, digits = digits)
+    n = nro(X)
+    rownum1 = []
+    rownum2 = []
+    @inbounds for i = 1:n
+        @inbounds for j = (i + 1):n
+            res = isequal(vrow(X, i), vrow(X, j))
+            if res
+                push!(rownum1, i)
+                push!(rownum2, j)
+            end
+        end
+    end
+    u = findall(rownum1 .!= rownum2)
+    res = DataFrame((rownum1 = rownum1[u], rownum2 = rownum2[u]))
+    Int64.(res)
 end
 
 """
@@ -711,6 +688,26 @@ mad(x)
 """
 mad(x) = 1.4826 * median(abs.(x .- median(x)))
 
+"""
+    miss(X)
+Find rows with missing data in a dataset.
+* `X` : A dataset.
+
+## Examples
+```julia
+X = rand(5, 4)
+zX = hcat(rand(2, 3), fill(missing, 2))
+Z = vcat(X, zX)
+miss(X)
+miss(Z)
+```
+"""
+function miss(X)
+    X = ensure_mat(X)
+    z = vec(sum(ismissing.(X); dims = 2))
+    u = findall(z .> 0) 
+    DataFrame((rownum = u, nmissing = z[u]))
+end
 
 """ 
     mlev(x)
