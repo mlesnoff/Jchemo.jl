@@ -181,6 +181,7 @@ export
     dupl, miss,
     center, center!, 
     colmad, colmean, colnorm, colstd, colsum, colvar,
+    colmeanskip, colstdskip, colsumskip, colvarskip,
     corm, covm,
     cosm, cosv,
     cscale, cscale!, 

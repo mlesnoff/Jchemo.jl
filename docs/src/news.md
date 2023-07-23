@@ -3,6 +3,7 @@
 ### *Version 0.1.24*
 
 - News
+    - **colmeanskip**, **colstdskip**, **colsumskip**, **colvarskip**
     - **nsc**: Nearest shrunken centroids (NSC).
     - **nscda**: Discrimination by nearest shrunken centroids.
     - **pcanipals**: PCA by NIPALS algorithm.
