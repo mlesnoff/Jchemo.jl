@@ -460,6 +460,43 @@ function cscale2!(X::Matrix, u, v)
 end
 
 """
+    dummy(y)
+Build a table of dummy variables from a categorical variable.
+* `y` : A categorical variable.
+
+## Examples
+```julia
+y = ["d", "a", "b", "c", "b", "c"]
+#y =  rand(1:3, 7)
+res = dummy(y)
+pnames(res)
+res.Y
+```
+"""
+function dummy(y)
+    n = length(y)
+    lev = mlev(y)
+    nlev = length(lev)
+    Y = BitArray(undef, n, nlev)
+    for i = 1:nlev
+        Y[:, i] = y .== lev[i]
+    end
+    Y = Float64.(Y)   # quite costly
+    (Y = Y, lev)
+end
+
+function dummy2(y)
+    lev = mlev(y)
+    nlev = length(lev)
+    res = list(nlev, BitVector)
+    for i = 1:nlev
+        res[i] = y .== lev[i]
+    end
+    Y = reduce(hcat, res)
+    (Y = Y, lev)
+end
+
+"""
     dupl(X; digits = 3)
 Find duplicated rows in a dataset.
 * `X` : A dataset.
@@ -500,43 +537,6 @@ function dupl(X; digits = 3)
     u = findall(rownum1 .!= rownum2)
     res = DataFrame((rownum1 = rownum1[u], rownum2 = rownum2[u]))
     Int64.(res)
-end
-
-"""
-    dummy(y)
-Build a table of dummy variables from a categorical variable.
-* `y` : A categorical variable.
-
-## Examples
-```julia
-y = ["d", "a", "b", "c", "b", "c"]
-#y =  rand(1:3, 7)
-res = dummy(y)
-pnames(res)
-res.Y
-```
-"""
-function dummy(y)
-    n = length(y)
-    lev = mlev(y)
-    nlev = length(lev)
-    Y = BitArray(undef, n, nlev)
-    for i = 1:nlev
-        Y[:, i] = y .== lev[i]
-    end
-    Y = Float64.(Y)   # quite costly
-    (Y = Y, lev)
-end
-
-function dummy2(y)
-    lev = mlev(y)
-    nlev = length(lev)
-    res = list(nlev, BitVector)
-    for i = 1:nlev
-        res[i] = y .== lev[i]
-    end
-    Y = reduce(hcat, res)
-    (Y = Y, lev)
 end
 
 """
