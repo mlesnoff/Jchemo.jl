@@ -319,7 +319,7 @@ function colvar(X, w)
     z 
 end
 
-### SKIP
+#### SKIP
 
 function colsumskip(X)
     X = ensure_mat(X)
@@ -341,20 +341,20 @@ function colvarskip(X)
     [var(skipmissing(vcol(X, i)); corrected = false) for i in 1:nco(X)]
 end
 
-### WEIGHTS
+## WEIGHTS
 
 function colsumskip(X, w)
-
     X = ensure_mat(X)
     p = nco(X)
     z = zeros(p)
     for i = 1:p
-        z[i] = sum(skipmissing(vcol(X, i)))
+        s = ismissing.(vcol(X, i))
+        z[i] = sum(mweight(rmrow(w, s)) .* rmrow(X[:, i], s))
     end
     z
 end
 
-### END
+#### END
 
 
 
