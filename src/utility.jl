@@ -259,7 +259,7 @@ colstd(X)
 colstd(X, w)
 ```
 """ 
-colstd(X) = sqrt.(colvar(X))
+colstd(X) = vec(Statistics.std(ensure_mat(X); corrected = false, dims = 1))
 
 colstd(X, w) = sqrt.(colvar(X, mweight(w)))
 
@@ -287,6 +287,43 @@ colsum(X, w)
 colsum(X) = vec(sum(X; dims = 1))
 
 colsum(X, w) = vec(mweight(w)' * ensure_mat(X))
+
+### SKIP
+
+function colsumskip(X)
+    X = ensure_mat(X)
+    [sum(skipmissing(vcol(X, i))) for i in 1:nco(X)]
+end
+
+function colmeanskip(X)
+    X = ensure_mat(X)
+    [mean(skipmissing(vcol(X, i))) for i in 1:nco(X)]
+end
+
+function colstdskip(X)
+    X = ensure_mat(X)
+    [std(skipmissing(vcol(X, i)); corrected = false) for i in 1:nco(X)]
+end
+
+function colvarskip(X)
+    X = ensure_mat(X)
+    [var(skipmissing(vcol(X, i)); corrected = false) for i in 1:nco(X)]
+end
+
+### WEIGHTS
+
+function colsumskip(X, w)
+
+    X = ensure_mat(X)
+    p = nco(X)
+    z = zeros(p)
+    for i = 1:p
+        z[i] = sum(skipmissing(vcol(X, i)))
+    end
+    z
+end
+
+### END
 
 """
     colvar(X)
