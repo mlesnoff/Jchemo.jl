@@ -191,7 +191,6 @@ colmean(X, w)
 ```
 """ 
 colmean(X) = vec(Statistics.mean(ensure_mat(X); dims = 1))
-
 colmean(X, w) = vec(mweight(w)' * ensure_mat(X))
 
 """
@@ -260,7 +259,6 @@ colstd(X, w)
 ```
 """ 
 colstd(X) = vec(Statistics.std(ensure_mat(X); corrected = false, dims = 1))
-
 colstd(X, w) = sqrt.(colvar(X, mweight(w)))
 
 """
@@ -285,8 +283,41 @@ colsum(X, w)
 ```
 """ 
 colsum(X) = vec(sum(X; dims = 1))
-
 colsum(X, w) = vec(mweight(w)' * ensure_mat(X))
+
+"""
+    colvar(X)
+    colvar(X, w)
+Compute the (uncorrected) variance of each column of `X`.
+* `X` : Data (n, p).
+* `w` : Weights (n) of the observations.
+
+`w` is internally normalized to sum to 1.
+
+Return a vector.
+
+## Examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+w = collect(1:n)
+
+colvar(X)
+colvar(X, w)
+```
+""" 
+colvar(X) = vec(Statistics.var(ensure_mat(X); corrected = false, dims = 1))
+
+function colvar(X, w)
+    X = ensure_mat(X)
+    p = nco(X)
+    w = mweight(w)
+    z = colmean(X, w)
+    @inbounds for j = 1:p
+        z[j] = dot(w, (vcol(X, j) .- z[j]).^2)        
+    end
+    z 
+end
 
 ### SKIP
 
@@ -325,39 +356,7 @@ end
 
 ### END
 
-"""
-    colvar(X)
-    colvar(X, w)
-Compute the (uncorrected) variance of each column of `X`.
-* `X` : Data (n, p).
-* `w` : Weights (n) of the observations.
 
-`w` is internally normalized to sum to 1.
-
-Return a vector.
-
-## Examples
-```julia
-n, p = 5, 6
-X = rand(n, p)
-w = collect(1:n)
-
-colvar(X)
-colvar(X, w)
-```
-""" 
-colvar(X) = vec(Statistics.var(ensure_mat(X); corrected = false, dims = 1))
-
-function colvar(X, w)
-    X = ensure_mat(X)
-    p = nco(X)
-    w = mweight(w)
-    z = colmean(X, w)
-    @inbounds for j = 1:p
-        z[j] = dot(w, (vcol(X, j) .- z[j]).^2)        
-    end
-    z 
-end
 
 """
     corm(X, w)
