@@ -1131,6 +1131,22 @@ rowsum(X)
 """ 
 rowsum(X) = vec(sum(ensure_mat(X); dims = 2))
 
+"""
+    rowvar(X)
+Compute the (uncorrected) standard deviation of each row of `X`.
+* `X` : Data (n, p).
+
+Return a vector.
+
+## Examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+rowvar(X)
+```
+""" 
+rowvar(X) = vec(Statistics.var(ensure_mat(X); dims = 2, corrected = false))
+
 #### SKIP
 function rowmeanskip(X)
     X = ensure_mat(X)

@@ -334,7 +334,7 @@
 - **replacedict** Replace the elements of a vector by levels defined in a dictionary
 - **rmcol** Remove the columns of a matrix or the components of a vector having indexes s
 - **rmrow** Remove the rows of a matrix or the components of a vector having indexes s
-- **rowmean**, **rowstd**, **rowsum** Row-wise operations
+- **rowmean**, **rowstd**, **rowsum**, **rowvar**: Row-wise operations
 - **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations allowing missing data
 - **soft** Soft thresholding
 - **softmax** Softmax function
