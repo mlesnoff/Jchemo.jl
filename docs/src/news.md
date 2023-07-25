@@ -4,11 +4,11 @@
 
 - News
     - **colmeanskip**, **colstdskip**, **colsumskip**, **colvarskip**: Column-wise operations allowing missing data.
-    - **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations allowing missing data.
     - **nsc**: Nearest shrunken centroids (NSC).
     - **nscda**: Discrimination by nearest shrunken centroids.
     - **pcanipals**: PCA by NIPALS algorithm.
     - **plist** Print each element of a list.
+    - **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations allowing missing data.
     - **soft**: Soft thresholding.
     - **softmax** Softmax function.
     - **splsrh** Sparse partial least squares regression (SPLSR) by hard 
