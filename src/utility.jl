@@ -256,12 +256,6 @@ function colvar(X, w)
 end
 
 #### SKIP
-
-function colsumskip(X)
-    X = ensure_mat(X)
-    [sum(skipmissing(vcol(X, i))) for i in 1:nco(X)]
-end
-
 function colmeanskip(X)
     X = ensure_mat(X)
     [mean(skipmissing(vcol(X, i))) for i in 1:nco(X)]
@@ -272,15 +266,20 @@ function colstdskip(X)
     [std(skipmissing(vcol(X, i)); corrected = false) for i in 1:nco(X)]
 end
 
+function colsumskip(X)
+    X = ensure_mat(X)
+    [sum(skipmissing(vcol(X, i))) for i in 1:nco(X)]
+end
+
 function colvarskip(X)
     X = ensure_mat(X)
     [var(skipmissing(vcol(X, i)); corrected = false) for i in 1:nco(X)]
 end
 
 ## WEIGHTS
-
-function colsumskip(X, w)
+function colmeanskip(X, w)
     X = ensure_mat(X)
+    w = collect(w)
     p = nco(X)
     z = zeros(p)
     for i = 1:p
@@ -290,6 +289,7 @@ function colsumskip(X, w)
     z
 end
 
+colsumskip(X, w) = colmeanskip(X, w)
 #### END
 
 """
