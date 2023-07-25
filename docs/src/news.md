@@ -3,7 +3,8 @@
 ### *Version 0.1.24*
 
 - News
-    - **colmeanskip**, **colstdskip**, **colsumskip**, **colvarskip**
+    - **colmeanskip**, **colstdskip**, **colsumskip**, **colvarskip**: Column-wise operations allowing missing data.
+    - **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations allowing missing data.
     - **nsc**: Nearest shrunken centroids (NSC).
     - **nscda**: Discrimination by nearest shrunken centroids.
     - **pcanipals**: PCA by NIPALS algorithm.
