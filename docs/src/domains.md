@@ -305,6 +305,7 @@
 - **aggstat** Compute column-wise statistics (e.g. mean), by group in a dataset
 - **center**, **scale**, **cscale** Column-wise centering and scaling of a matrix
 - **colmad**, **colmean**, **colnorm**, **colstd**, **colsum**, **colvar**  Column-wise operations
+- **colmeanskip**, **colstdskip**, **colsumskip**, **colvarskip**: Column-wise operations allowing missing data
 - **covm**, **corm** Weighted covariance and correlation matrices
 - **cosv**, **cosm** Cosinus between vectors
 - **dummy** Build dummy table
@@ -334,6 +335,7 @@
 - **rmcol** Remove the columns of a matrix or the components of a vector having indexes s
 - **rmrow** Remove the rows of a matrix or the components of a vector having indexes s
 - **rowmean**, **rowstd**, **rowsum** Row-wise operations
+- **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations allowing missing data
 - **soft** Soft thresholding
 - **softmax** Softmax function
 - **sourcedir** Include all the files contained in a directory
