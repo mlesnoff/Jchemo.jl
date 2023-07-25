@@ -22,6 +22,7 @@ include("fweight.jl")
 include("ellipse.jl")
 include("matW.jl")
 include("nipals.jl")
+include("nipalsmiss.jl")
 include("plotgrid.jl")
 include("plotsp.jl")
 include("plotxy.jl")
@@ -240,6 +241,7 @@ export
     # Exploratory
     kpca,
     nipals,
+    nipalsmiss,
     pcasvd, pcasvd!, 
     pcaeigen, pcaeigen!, 
     pcaeigenk, pcaeigenk!,
