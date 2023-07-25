@@ -75,8 +75,8 @@ end
 
 function center!(X::Matrix, v)
     p = nco(X)
-    @inbounds for j = 1:p
-        X[:, j] .= vcol(X, j) .- v[j]
+    @inbounds for i = 1:p
+        X[:, i] .= vcol(X, i) .- v[i]
     end
 end
 
@@ -99,8 +99,8 @@ function colmad(X)
     X = ensure_mat(X)
     p = nco(X)
     z = zeros(p)
-    @inbounds for j = 1:p
-        z[j] = mad(vcol(X, j))        
+    @inbounds for i = 1:p
+        z[i] = mad(vcol(X, i))        
     end
     z 
 end
@@ -164,9 +164,9 @@ function colnorm(X, w)
     #p = nco(X)
     #w = mweight(w)
     #z = similar(X, p)
-    #@inbounds for j = 1:p
-    #    x = vcol(X, j)
-    #    z[j] = sqrt(dot(x, w .* x))
+    #@inbounds for i = 1:p
+    #    x = vcol(X, i)
+    #    z[i] = sqrt(dot(x, w .* x))
     #end
     #z 
     # Faster:
@@ -249,8 +249,8 @@ function colvar(X, w)
     p = nco(X)
     w = mweight(w)
     z = colmean(X, w)
-    @inbounds for j = 1:p
-        z[j] = dot(w, (vcol(X, j) .- z[j]).^2)        
+    @inbounds for i = 1:p
+        z[i] = dot(w, (vcol(X, i) .- z[i]).^2)        
     end
     z 
 end
@@ -279,8 +279,8 @@ end
 ## WEIGHTS
 function colmeanskip(X, w)
     X = ensure_mat(X)
-    w = collect(w)
     p = nco(X)
+    w = collect(w) # rmrow does not accept UnitRange
     z = zeros(p)
     for i = 1:p
         s = ismissing.(vcol(X, i))
@@ -290,6 +290,22 @@ function colmeanskip(X, w)
 end
 
 colsumskip(X, w) = colmeanskip(X, w)
+
+colstdskip(X, w) = colvarskip(X, w)
+
+function colvarskip(X, w)
+    X = ensure_mat(X)
+    p = nco(X)
+    w = collect(w)
+    z = colmeanskip(X, w)
+    @inbounds for i = 1:p
+        s = ismissing.(vcol(X, i))
+        w = mweight(rmrow(w, s))
+        z[i] = dot(w, (rmrow(X[:, i], s) .- z[i]).^2)        
+    end
+    z 
+end
+
 #### END
 
 """
@@ -448,8 +464,8 @@ end
 
 function cscale!(X::Matrix, u, v)
     p = nco(X)
-    @inbounds for j = 1:p
-        X[:, j] .= (vcol(X, j) .- u[j]) ./ v[j]
+    @inbounds for i = 1:p
+        X[:, i] .= (vcol(X, i) .- u[i]) ./ v[i]
     end
 end
 
@@ -1139,8 +1155,8 @@ end
 
 function scale!(X::Matrix, v)
     p = nco(X)
-    @inbounds for j = 1:p
-        X[:, j] .= vcol(X, j) ./ v[j]
+    @inbounds for i = 1:p
+        X[:, i] .= vcol(X, i) ./ v[i]
     end
 end
 
@@ -1251,10 +1267,10 @@ function summ(X; digits = 3)
     X = ensure_df(X)
     res = StatsBase.describe(X, :mean, :std, :min, :max, :nmissing) 
     insertcols!(res, 6, :n => nro(X) .- res.nmissing)
-    for j = 2:4
-        z = vcol(res, j)
+    for i = 2:4
+        z = vcol(res, i)
         s = findall(isa.(z, Float64))
-        res[s, j] .= round.(res[s, j], digits = digits)
+        res[s, i] .= round.(res[s, i], digits = digits)
         end
     (res = res, ntot = nro(X))
 end
