@@ -276,7 +276,7 @@ function colvarskip(X)
     [var(skipmissing(vcol(X, i)); corrected = false) for i in 1:nco(X)]
 end
 
-## WEIGHTS
+## With weights
 function colmeanskip(X, w)
     X = ensure_mat(X)
     p = nco(X)
@@ -291,7 +291,7 @@ end
 
 colsumskip(X, w) = colmeanskip(X, w)
 
-colstdskip(X, w) = colvarskip(X, w)
+colstdskip(X, w) = sqrt.(colvarskip(X, w))
 
 function colvarskip(X, w)
     X = ensure_mat(X)
@@ -305,7 +305,6 @@ function colvarskip(X, w)
     end
     z 
 end
-
 #### END
 
 """
@@ -745,8 +744,6 @@ mlev(df)
 """
 mlev(x) = sort(unique(x)) 
 
-
-
 """ 
     mweight(w)
 Return a vector of weights that sums to 1.
@@ -1133,6 +1130,28 @@ rowsum(X)
 ```
 """ 
 rowsum(X) = vec(sum(ensure_mat(X); dims = 2))
+
+#### SKIP
+function rowmeanskip(X)
+    X = ensure_mat(X)
+    [mean(skipmissing(vrow(X, i))) for i in 1:nro(X)]
+end
+
+function rowstdskip(X)
+    X = ensure_mat(X)
+    [std(skipmissing(vrow(X, i)); corrected = false) for i in 1:nro(X)]
+end
+
+function rowsumskip(X)
+    X = ensure_mat(X)
+    [sum(skipmissing(vrow(X, i))) for i in 1:nro(X)]
+end
+
+function rowvarskip(X)
+    X = ensure_mat(X)
+    [var(skipmissing(vrow(X, i)); corrected = false) for i in 1:nro(X)]
+end
+#### END
 
 """
     scale(X, v)
