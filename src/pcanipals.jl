@@ -65,10 +65,10 @@ function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv,
         while cont
             u0 .= copy(u)      
             mul!(v, X', u)
-            v ./= norm(v)
             if gs & (a > 1)
                 v .= v .- VVt * v
             end
+            v ./= norm(v)
             mul!(u, X, v)
             if gs & (a > 1)
                 u .= u .- UUt * u 

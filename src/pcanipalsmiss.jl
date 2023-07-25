@@ -11,10 +11,10 @@ function pcanipalsmiss!(X::Matrix, weights = ones(nro(X)); nlv,
     n, p = size(X)
     nlv = min(nlv, n, p)
     weights = mweight(weights)
-    xmeans = colmean(X, weights) 
+    xmeans = colmeanskip(X, weights) 
     xscales = ones(p)
     if scal 
-        xscales .= colstd(X, weights)
+        xscales .= colstdskip(X, weights)
         cscale!(X, xmeans, xscales)
     else
         center!(X, xmeans)
@@ -31,11 +31,11 @@ function pcanipalsmiss!(X::Matrix, weights = ones(nro(X)); nlv,
         VVt = zeros(p, p)
     end
     for a = 1:nlv
-        if gs
+        if gs == false
+            res = nipalsmiss(X; tol = tol, maxit = maxit)
+        else
             res = nipalsmiss(X, UUt, VVt; 
                 tol = tol, maxit = maxit)
-        else
-            res = nipalsmiss(X; tol = tol, maxit = maxit)
         end
         t .= res.u * res.sv
         T[:, a] .= t ./ sqrtw
