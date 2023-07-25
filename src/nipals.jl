@@ -76,8 +76,8 @@ function nipals(X, UUt, VVt;
     while cont
         u0 .= copy(u)      
         mul!(v, X', u)
-        v ./= norm(v)
         v .= v .- VVt * v
+        v ./= norm(v)
         mul!(u, X, v)
         u .= u .- UUt * u
         dif = sum((u .- u0).^2)
