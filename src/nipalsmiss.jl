@@ -1,29 +1,29 @@
 function nipalsmiss(X; tol = sqrt(eps(1.)), maxit = 200)
     X = ensure_mat(X)
-    p = nco(X)
+    n, p = size(X)
     X0 = copy(X)
     s = ismissing.(X0)
     ts = ismissing.(X0')
     X0[s] .= 0
-    u = X[:, argmax(colsumskip(abs.(X)))]
+    X0t = X0'
+    u = X0[:, argmax(colsumskip(abs.(X)))]
     u0 = copy(u)
+    zU = similar(X, n, p)
+    zV = similar(X, p, n)
     v = similar(X, p) 
     cont = true
     iter = 1
     while cont
         u0 .= copy(u)
-        
-        zTT = reshape(repeat(u.^2, p), n, p)
-        zTT[s] .= 0
-        mul!(v, X0', u)
-        v ./= colsum(zTT)
+        zU .= reshape(repeat(u.^2, p), n, p)
+        zU[s] .= 0
+        mul!(v, X0t, u)
+        v ./= colsum(zU)
         v ./= norm(v)
-        
-        zPP = reshape(repeat(p.^2, p), p, n)
-        zPP[ts] .= 0
+        zV .= reshape(repeat(v.^2, n), p, n)
+        zV[ts] .= 0
         mul!(u, X0, v)
-        u ./= colsum(zPP)
-
+        u ./= colsum(zV)
         dif = sum((u .- u0).^2)
         iter = iter + 1
         if (dif < tol) || (iter > maxit)
@@ -31,7 +31,7 @@ function nipalsmiss(X; tol = sqrt(eps(1.)), maxit = 200)
         end
     end
     sv = norm(u)
-    u .= u / sv
+    u ./= sv
     niter = iter - 1
     (u = u, v, sv, niter)
 end
@@ -59,7 +59,7 @@ function nipalsmiss(X, UUt, VVt;
         end
     end
     sv = norm(u)
-    u .= u / sv
+    u ./= sv
     niter = iter - 1
     (u = u, v, sv, niter)
 end
