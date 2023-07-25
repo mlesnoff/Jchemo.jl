@@ -30,12 +30,34 @@ xfit(fm, X)
 xresid(fm, X)
 ```
 """ 
+function xfit(object::Union{Pca, Pcr, Plsr}; nlv = nothing)
+    xfit!(object; nlv = nlv)
+end
+
+function xfit!(object::Union{Pca, Pcr, Plsr}; nlv = nothing)
+    a = nco(object.T)
+    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    isa(object, Jchemo.Pcr) ? object = object.fm_pca : nothing
+    if nlv == 0
+        m = nro(X)
+        @inbounds for i = 1:m
+            X[i, :] .= object.xmeans
+        end
+    else
+        mul!(X, vcol(object.T, 1:nlv), vcol(object.P, 1:nlv)')
+        scale!(X, 1 ./ object.xscales)    # Coming back to the original scale
+        center!(X, -object.xmeans)
+    end
+    X
+end
+
+
 function xfit(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
     xfit!(object, copy(ensure_mat(X)); nlv = nlv)
 end
 
 function xfit!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
-    a = size(object.T, 2)
+    a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     isa(object, Jchemo.Pcr) ? object = object.fm_pca : nothing
     if nlv == 0
@@ -46,11 +68,8 @@ function xfit!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
     else
         P = @view(object.P[:, 1:nlv])
         mul!(X, transform(object, X; nlv = nlv), P')
-        # Coming back to the originalm scale
-        scale!(X, 1 ./ object.xscales)
-        # same as: X .=  X * Diagonal(object.xscales)
+        scale!(X, 1 ./ object.xscales)    # Coming back to the originalm scale
         center!(X, -object.xmeans)
-        # End
     end
     X
 end
