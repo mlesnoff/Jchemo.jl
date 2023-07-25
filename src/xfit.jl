@@ -1,4 +1,5 @@
 """
+    xfit(object::Union{Pca, Pcr, Plsr})
     xfit(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
     xfit!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
 Matrix fitting from a PCA, PCR or PLS model
@@ -21,6 +22,7 @@ y = rand(n)
 nlv = 2 ;
 fm = pcasvd(X; nlv = nlv) ;
 #fm = plskern(X, y; nlv = nlv) ;
+xfit(fm)
 xfit(fm, X)
 xfit(fm, X, nlv = 0)
 xfit(fm, X, nlv = 1)
@@ -30,27 +32,13 @@ xfit(fm, X)
 xresid(fm, X)
 ```
 """ 
-function xfit(object::Union{Pca, Pcr, Plsr}; nlv = nothing)
-    xfit!(object; nlv = nlv)
-end
-
-function xfit!(object::Union{Pca, Pcr, Plsr}; nlv = nothing)
-    a = nco(object.T)
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+function xfit(object::Union{Pca, Pcr, Plsr})
     isa(object, Jchemo.Pcr) ? object = object.fm_pca : nothing
-    if nlv == 0
-        m = nro(X)
-        @inbounds for i = 1:m
-            X[i, :] .= object.xmeans
-        end
-    else
-        mul!(X, vcol(object.T, 1:nlv), vcol(object.P, 1:nlv)')
-        scale!(X, 1 ./ object.xscales)    # Coming back to the original scale
-        center!(X, -object.xmeans)
-    end
+    X = object.T * object.P'
+    scale!(X, 1 ./ object.xscales)    # Coming back to the original scale
+    center!(X, -object.xmeans)
     X
 end
-
 
 function xfit(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
     xfit!(object, copy(ensure_mat(X)); nlv = nlv)
@@ -66,7 +54,7 @@ function xfit!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
             X[i, :] .= object.xmeans
         end
     else
-        P = @view(object.P[:, 1:nlv])
+        P = vcol(object.P, 1:nlv)
         mul!(X, transform(object, X; nlv = nlv), P')
         scale!(X, 1 ./ object.xscales)    # Coming back to the originalm scale
         center!(X, -object.xmeans)
@@ -112,7 +100,7 @@ end
 function xresid!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    X .= X .- xfit(object, X; nlv = nlv)
+    X .-= xfit(object, X; nlv = nlv)
     X
 end
 
