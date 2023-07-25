@@ -1,21 +1,13 @@
 function nipalsmiss(X; tol = sqrt(eps(1.)), maxit = 200)
     X = ensure_mat(X)
     p = nco(X)
-
     X0 = copy(X)
     s = ismissing.(X0)
     ts = ismissing.(X0')
     X0[s] .= 0
     u = X[:, argmax(colsumskip(abs.(X)))]
-    
-    z = mweight(ones(nro(X)))[1]
-    head(X / sqrt(z))
-    head(X0 / sqrt(z))
-    println(u / sqrt(z))
-
     u0 = copy(u)
     v = similar(X, p) 
-    
     cont = true
     iter = 1
     while cont
@@ -26,7 +18,7 @@ function nipalsmiss(X; tol = sqrt(eps(1.)), maxit = 200)
         mul!(v, X0', u)
         v ./= colsum(zTT)
         v ./= norm(v)
-
+        
         zPP = reshape(repeat(p.^2, p), p, n)
         zPP[ts] .= 0
         mul!(u, X0, v)
@@ -56,8 +48,8 @@ function nipalsmiss(X, UUt, VVt;
     while cont
         u0 .= copy(u)      
         mul!(v, X', u)
-        v ./= norm(v)
         v .= v .- VVt * v
+        v ./= norm(v)
         mul!(u, X, v)
         u .= u .- UUt * u
         dif = sum((u .- u0).^2)
