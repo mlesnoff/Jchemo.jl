@@ -41,6 +41,7 @@ include("pcasvd.jl")
 include("pcaeigen.jl")
 include("pcaeigenk.jl")
 include("pcanipals.jl")
+include("pcanipalsmiss.jl")
 include("kpca.jl")
 include("rp.jl")
 include("pcasph.jl") 
@@ -246,6 +247,7 @@ export
     pcaeigen, pcaeigen!, 
     pcaeigenk, pcaeigenk!,
     pcanipals, pcanipals!,
+    pcanipalsmiss, pcanipalsmiss!,
     rpmatgauss, rpmatli, rp, rp!,
     pcasph, pcasph!,
     # Exploratory Multiblock
