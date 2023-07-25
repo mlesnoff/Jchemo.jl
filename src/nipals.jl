@@ -59,7 +59,7 @@ function nipals(X; tol = sqrt(eps(1.)), maxit = 200)
         end
     end
     sv = norm(u)
-    u .= u / sv
+    u ./= sv
     niter = iter - 1
     (u = u, v, sv, niter)
 end
@@ -87,7 +87,7 @@ function nipals(X, UUt, VVt;
         end
     end
     sv = norm(u)
-    u .= u / sv
+    u ./= sv
     niter = iter - 1
     (u = u, v, sv, niter)
 end
