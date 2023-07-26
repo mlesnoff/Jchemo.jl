@@ -83,6 +83,7 @@ include("wshenk.jl")
 include("vip.jl") 
 
 include("xfit.jl")
+include("xresid.jl")
 
 # Sparse plsr 
 include("splsrh.jl")
