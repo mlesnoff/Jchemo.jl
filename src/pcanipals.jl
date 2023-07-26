@@ -73,6 +73,8 @@ function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv,
             VVt .+= res.v * res.v'
         end
     end    
+    ## Could recompute the scores by
+    ## X0 = copy(X) ; ... ; T = (1 ./ sqrtw) .* X0 * P 
     Pca(T, P, sv, xmeans, xscales, weights, niter) 
 end
 

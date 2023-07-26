@@ -33,7 +33,6 @@ xresid(fm, X)
 ```
 """ 
 function xfit(object::Union{Pca, Pcr, Plsr})
-    isa(object, Jchemo.Pcr) ? object = object.fm_pca : nothing
     X = object.T * object.P'
     scale!(X, 1 ./ object.xscales)    # Coming back to the original scale
     center!(X, -object.xmeans)
@@ -58,6 +57,7 @@ function xfit!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
         mul!(X, transform(object, X; nlv = nlv), P')
         scale!(X, 1 ./ object.xscales)    # Coming back to the originalm scale
         center!(X, -object.xmeans)
+        #cscale!(X, -object.xmeans, 1 ./ object.xscales)
     end
     X
 end

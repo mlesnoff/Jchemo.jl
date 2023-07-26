@@ -96,7 +96,7 @@ function pcasvd!(X::Matrix, weights = ones(nro(X)); nlv,
     P = res.V[:, 1:nlv]
     sv = res.S   
     sv[sv .< 0] .= 0
-    T = (1 ./ sqrtw) .* vcol(res.U, 1:nlv) * (Diagonal(sv[1:nlv]))
+    T = (1 ./ sqrtw) .* vcol(res.U, 1:nlv) * Diagonal(sv[1:nlv])
     Pca(T, P, sv, xmeans, xscales, weights, nothing)
 end
 
