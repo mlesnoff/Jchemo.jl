@@ -147,7 +147,7 @@
 - **lda** Linear discriminant analysis (LDA)
 - **qda** Quadratic discriminant analysis (QDA, with continuum towards LDA)
 - **rda** Regularized discriminant analysis (RDA)
-- **nscda**: DA by nearest shrunken centroids.
+- **nscda**: DA by nearest shrunken centroids
 
 *Non parametric*
 - **kdeda** DA by kernel Gaussian density estimation (KDE-DA)
