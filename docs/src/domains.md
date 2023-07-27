@@ -6,6 +6,7 @@
 - **pcaeigen** Eigen decomposition
 - **pcaeigenk** Eigen decomposition for wide matrices (kernel form)
 - **pcanipals**: NIPALS algorithm
+- **pcanipalsmiss**: PCA by NIPALS algorithm allowing missing data
 - **pcasvd** SVD decomposition
 
 - Robust PCA
