@@ -7,6 +7,7 @@
     - **nsc**: Nearest shrunken centroids (NSC).
     - **nscda**: Discrimination by nearest shrunken centroids.
     - **pcanipals**: PCA by NIPALS algorithm.
+    - **pcanipalsmiss**: PCA by NIPALS algorithm allowing missing data.
     - **plist** Print each element of a list.
     - **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations allowing missing data.
     - **soft**: Soft thresholding.
