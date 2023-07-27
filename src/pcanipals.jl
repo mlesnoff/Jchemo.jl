@@ -27,7 +27,7 @@ See `?pcasvd` for examples.
 Andrecut, M., 2009. Parallel GPU Implementation of Iterative PCA Algorithms. 
 Journal of Computational Biology 16, 1593-1599. https://doi.org/10.1089/cmb.2008.0221
 
-Gabriel, R. K., 2002. Le biplot - Outil d\'exploration de données multidimensionnelles. 
+Gabriel, R. K., 2002. Le biplot - Outil d'exploration de données multidimensionnelles. 
 Journal de la Société Française de la Statistique, 143, 5-55.
 
 Lingen, F.J., 2000. Efficient Gram-Schmidt orthonormalisation on parallel computers. 

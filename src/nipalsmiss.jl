@@ -18,19 +18,15 @@ X ~ u * sv * v', where:
 * v : right singular vector (loadings)
 * sv : singular value.
 
-When NIPALS is used sequentially on deflated matrices, vectors u and v 
-can loose orthogonality due to rounding errors effects. Orthogonality can
-be rebuilt from the Gram-Schmidt method (use of `UUt` and `VVt`). 
-
-## References
-Tenenhaus, M., 1998. La régression PLS: théorie et pratique. Editions Technip, 
-Paris, France.
+When NIPALS is used sequentially on deflated matrices, vectors u 
+and v can loose orthogonality due to accumulation of rounding errors. 
+Orthogonality can be rebuilt from the Gram-Schmidt method 
+(arguments `UUt` and `VVt`). 
 
 ## Examples
 ```julia
-X = [1. 2 missing 4 ; 4 missing 6 7 ; 
-    missing 5 6 13 ; missing 18 7 6 ; 
-    12 missing 28 7] 
+X = [1. 2 missing 4 ; 4 missing 6 7 ; missing 5 6 13 ; 
+    missing 18 7 6 ; 12 missing 28 7] 
 
 res = nipalsmiss(X)
 res.u
