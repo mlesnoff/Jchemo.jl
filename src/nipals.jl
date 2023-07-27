@@ -43,7 +43,7 @@ function nipals(X; tol = sqrt(eps(1.)), maxit = 200)
     X = ensure_mat(X)
     p = nco(X)
     u = X[:, argmax(colnorm(X))]
-    u0 = copy(u)
+    u0 = similar(X, n)
     v = similar(X, p)   
     cont = true
     iter = 1
