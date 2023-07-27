@@ -52,9 +52,9 @@ function nipalsmiss(X; tol = sqrt(eps(1.)), maxit = 200)
     X0t = X0'
     zU = similar(X0, n, p)
     zV = similar(X0, p, n)
-    u = X0[:, argmax(colsum(abs.(X0)))]
+    u = X0[:, argmax(colsumskip(abs.(X)))]
     #u = X0[:, argmax(colnorm(X0))]
-    u0 = similar(u, n)
+    u0 = similar(X0, n)
     v = similar(X0, p) 
     cont = true
     iter = 1
