@@ -50,6 +50,15 @@ fm.T
 ## Check if orthogonality
 fm.P' * fm.P
 fm.T' * Diagonal(mweight(weights)) * fm.T
+
+## Impute missing data in x
+fm = pcanipalsmiss(X, weights; nlv = 2, 
+    gs = true, scal = scal) ;
+Xfit = xfit(fm)
+s = ismissing.(X)
+Xres = copy(X)
+Xres[s] .= Xfit[s]
+Xres
 ```
 """ 
 function pcanipalsmiss(X, weights = ones(nro(X)); nlv, 
