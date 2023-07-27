@@ -200,6 +200,8 @@ export
     mlev,
     mweight, mweight!,
     nco,
+    nipals,
+    nipalsmiss,
     normw,  
     nro,
     out,
@@ -242,8 +244,6 @@ export
     eposvd,
     # Exploratory
     kpca,
-    nipals,
-    nipalsmiss,
     pcasvd, pcasvd!, 
     pcaeigen, pcaeigen!, 
     pcaeigenk, pcaeigenk!,
