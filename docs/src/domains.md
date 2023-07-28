@@ -100,7 +100,6 @@
 ### Sparse models
 
 - **covselr** MLR on variables selected from Covsel
-- **splsrh** Sparse partial least squares regression (SPLSR) by hard thresholding
 
 ### **Local models**
 
