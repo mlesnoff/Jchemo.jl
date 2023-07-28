@@ -148,7 +148,6 @@ include("lwplsqdaavg.jl")
 include("knnda.jl")
 
 # Variable importance (direct methods) 
-include("covsel.jl")
 include("isel.jl")
 include("viperm.jl")
 
@@ -293,7 +292,6 @@ export
     rosaplsr, rosaplsr!,
     soplsr,
     # Variable selection/importance (direct methods) 
-    covsel,
     isel,
     vip, viperm,
     # Utils
