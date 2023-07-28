@@ -11,7 +11,7 @@
     - **plist** Print each element of a list.
     - **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations allowing missing data.
     - **soft**: Soft thresholding.
-    - **softmax** Softmax function.
+    - **softmax**: Softmax function.
 
 - Modifications
     - Code improvement.
