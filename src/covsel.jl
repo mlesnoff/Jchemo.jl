@@ -78,7 +78,7 @@ function covsel!(X::Matrix, Y::Matrix, weights = ones(nro(X));
         center!(X, xmeans)
     end    
     yscales = colstd(Y, weights)
-    cscale!(Y, ymeans, yscales)
+    #cscale!(Y, ymeans, yscales)
     xss = similar(X, nlv)
     yss = copy(xss)
     selcov = copy(xss)
