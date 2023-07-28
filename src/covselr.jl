@@ -66,13 +66,13 @@
 #""" 
 
 function covselr(X, Y, weights = ones(nro(X)); nlv, 
-        nvar = 1, origin::Bool = true, scal::Bool = false)
+        nvar = 1, scal::Bool = false)
     covselr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        nlv = nlv, nvar = nvar, origin = origin, scal = scal)
+        nlv = nlv, nvar = nvar, scal = scal)
 end
 
 function covselr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
-        nlv, nvar = 1, origin::Bool = true, scal::Bool = false)
+        nlv, nvar = 1, scal::Bool = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, nlv)
@@ -145,7 +145,7 @@ function covselr!(X::Matrix, Y::Matrix, weights = ones(nro(X));
         TT[a] = tt
      end
      sel = reduce(vcat, sellv)
-     Splsr1(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
+     Covselr(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
          yscales, weights, sellv, sel)
 end
 

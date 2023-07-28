@@ -13,7 +13,7 @@ struct Plsr
     niter::Union{Array{Float64}, Nothing}
 end
 
-struct Splsr1
+struct Covselr
     T::Matrix{Float64}
     P::Matrix{Float64}
     R::Matrix{Float64}
@@ -211,7 +211,7 @@ function transform(object::Plsr, X; nlv = nothing)
 end
 
 """
-    coef(object::Union{Plsr, Pcr, Splsr1}; nlv = nothing)
+    coef(object::Union{Plsr, Pcr, Covselr}; nlv = nothing)
 Compute the X b-coefficients of a model fitted with `nlv` LVs.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
@@ -220,7 +220,7 @@ If X is (n, p) and Y is (n, q), the returned object `B` is a matrix (p, q).
 If `nlv` = 0, `B` is a matrix of zeros.
 The returned object `int` is the intercept.
 """ 
-function coef(object::Union{Plsr, Pcr, Splsr1}; nlv = nothing)
+function coef(object::Union{Plsr, Pcr, Covselr}; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     beta = object.C[:, 1:nlv]'
@@ -233,13 +233,13 @@ function coef(object::Union{Plsr, Pcr, Splsr1}; nlv = nothing)
 end
 
 """
-    predict(object::Union{Plsr, Pcr, Splsr1}, X; nlv = nothing)
+    predict(object::Union{Plsr, Pcr, Covselr}, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{Plsr, Pcr, Splsr1}, X; nlv = nothing)
+function predict(object::Union{Plsr, Pcr, Covselr}, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
@@ -254,12 +254,12 @@ function predict(object::Union{Plsr, Pcr, Splsr1}, X; nlv = nothing)
 end
 
 """
-    summary(object::Union{Plsr, Splsr1}, X)
+    summary(object::Union{Plsr, Covselr}, X)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
-function Base.summary(object::Union{Plsr, Splsr1}, X::Union{Vector, Matrix, DataFrame})
+function Base.summary(object::Union{Plsr, Covselr}, X::Union{Vector, Matrix, DataFrame})
     X = ensure_mat(X)
     n, nlv = size(object.T)
     X = cscale(X, object.xmeans, object.xscales)
