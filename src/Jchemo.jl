@@ -75,7 +75,6 @@ include("plsravg_unif.jl")
 include("plsravg_shenk.jl")
 include("plsrstack.jl")
 include("cglsr.jl")
-include("covselr.jl")  
 include("krr.jl")
 include("kplsr.jl") ; include("dkplsr.jl")
 include("aicplsr.jl")
@@ -85,8 +84,8 @@ include("vip.jl")
 include("xfit.jl")
 include("xresid.jl")
 
-# Sparse plsr 
-include("splsrh.jl")
+# Sparse regression
+include("covselr.jl")  
 
 # Regression Multiblock
 include("mbplsr.jl") 
@@ -275,7 +274,6 @@ export
     plswold, plswold!,
     cglsr, cglsr!,
     pcr,
-    covselr,
     rr, rr!, rrchol, rrchol!,
     rrr, rrr!,   
     krr, krr!, kplsr, kplsr!, 
@@ -286,8 +284,8 @@ export
     treer_dt, rfr_dt, 
     baggr, 
     oob_baggr, vi_baggr, 
-    # Sparse plsr 
-    splsrh,
+    # Sparse regression 
+    covselr,
     # Rgression Multi-block
     mbplsr, mbplsr!,
     mbplswest, mbplswest!,
