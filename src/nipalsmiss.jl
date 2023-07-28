@@ -10,7 +10,8 @@ Nipals to compute the first score and loading vectors of a matrix
 * `maxit` : Maximum nb. iterations.
 
 The function finds {u, v, sv} = argmin(||X - u * sv * v'||), with the constraints 
-||u|| = ||v|| = 1.
+||u|| = ||v|| = 1, using the alternating least squares algorithm to 
+compute SVD (Gabriel & Zalir 1979).
 
 X ~ u * sv * v', where:
 
@@ -22,6 +23,13 @@ When NIPALS is used sequentially on deflated matrices, vectors u
 and v can loose orthogonality due to accumulation of rounding errors. 
 Orthogonality can be rebuilt from the Gram-Schmidt method 
 (arguments `UUt` and `VVt`). 
+
+## References
+K.R. Gabriel, S. Zamir, Lower rank approximation of matrices by least squares with 
+any choice of weights, Technometrics 21 (1979) 489–498
+
+Wright, K., 2018. Package nipals: Principal Components Analysis using NIPALS 
+with Gram-Schmidt Orthogonalization. https://cran.r-project.org/
 
 ## Examples
 ```julia

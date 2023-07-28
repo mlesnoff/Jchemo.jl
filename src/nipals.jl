@@ -9,7 +9,8 @@ Nipals to compute the first score and loading vectors of a matrix.
 * `maxit` : Maximum nb. iterations.
 
 The function finds {u, v, sv} = argmin(||X - u * sv * v'||), with the constraints 
-||u|| = ||v|| = 1, using an alternating least squares aglorithm (Gabriel & Zalir 1979).
+||u|| = ||v|| = 1, using the alternating least squares algorithm to 
+compute SVD (Gabriel & Zalir 1979).
 
 X ~ u * sv * v', where:
 
