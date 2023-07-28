@@ -29,13 +29,10 @@ X = [1. 2 missing 4 ; 4 missing 6 7 ; missing 5 6 13 ;
     missing 18 7 6 ; 12 missing 28 7] 
 
 res = nipalsmiss(X)
-res.u
-svd(X).U[:, 1] 
-res.v
-svd(X).V[:, 1] 
-res.sv
-svd(X).S[1] 
 res.niter
+res.sv
+res.v
+res.u
 ```
 """ 
 function nipalsmiss(X; tol = sqrt(eps(1.)), maxit = 200)

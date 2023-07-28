@@ -27,13 +27,13 @@ Orthogonality can be rebuilt from the Gram-Schmidt method
 X = rand(5, 3)
 
 res = nipals(X)
-res.u
-svd(X).U[:, 1] 
-res.v
-svd(X).V[:, 1] 
+res.niter
 res.sv
 svd(X).S[1] 
-res.niter
+res.v
+svd(X).V[:, 1] 
+res.u
+svd(X).U[:, 1] 
 ```
 """ 
 function nipals(X; tol = sqrt(eps(1.)), maxit = 200)
