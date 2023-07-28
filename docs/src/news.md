@@ -12,8 +12,6 @@
     - **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations allowing missing data.
     - **soft**: Soft thresholding.
     - **softmax** Softmax function.
-    - **splsrh** Sparse partial least squares regression (SPLSR) by hard 
-        thresholding
 
 - Modifications
     - Code improvement.
