@@ -15,24 +15,28 @@ Covsel regression.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
 
-The general principle of Covsel regression (Roger et al. 2011; see also Höskuldsson, A., 
-1992, appendix) is in two steps: 
-* In the first step, a number of variables (`X`-columns) maximizing partial 
-covariances is selected as follows: a first variable is selected (teh one maximizing 
-squared covariance with `Y`), `X` is deflated to this variable, and a new variable 
-is then selected on the same criterion, etc.
-* In the second step, a MLR is run on the selected variables.
+The general principle of Covsel regression (Roger et al. 2011; see also 
+Höskuldsson, A., 1992, appendix) is in two steps: 
+* A number of variables (`X`-columns) maximizing partial 
+covariances are selected as follows: a first variable (maximizing 
+squared covariance with `Y`) is selected , `X` is deflated to this variable, 
+and a new variable is then selected on the same criterion, etc.
+* Then, a MLR is run on the selected variables.
 
 Function `covsel` is an extension of the Covsel regression algorithm: 
-* It uses an adaptation of a PLSR algorithm (hard thresholding of 
-the loading weigths w1, w2, ..., wp), which is much faster in computation 
-time than selecting the variables and then fitting a MLR. 
-* With argument `nvar`, the fonction allows to select more than one variable 
-per latent variable (LV) of the adapted PLSR. For each LV, the weights wj 
-(j = 1, ..., p) are set to 0 except the `nvar` largest abs(wj).
+* The function uses the fact that Covsel regression can be considered as a 
+particular case of PLSR algorithm (Roger et al 2011).  The function is 
+an adaptation of function `plskern` where a hard thresholding of 
+the loading weigths (w1, w2, ..., wp) was adeded. This generates much faster 
+computation times than selecting the usual approach sleceting the variables 
+and then fitting a MLR on these variables. 
+* Using argument `nvar`, the fonction allows to select more than one variable 
+per latent variable (LV) of the adapted PLSR. For each LV, by hard thresholding,
+the weights wj (j = 1, ..., p) are set to 0 except the `nvar`largest abs(wj).
 
 When `Y` is multivariate, it is generally recommended to scale the data
-(`scale`) to give the same impornatce to each `Y`-column in the selection.
+(argument `scale`) to give potentially the same importance to each `Y`-column 
+in the selection.
 
 ## References
 Höskuldsson, A., 1992. The H-principle in modelling with applications 
@@ -70,6 +74,8 @@ nlv = 15
 fm = covselr(Xtrain, ytrain; nlv = nlv,
     nvar = 1) ;  # Covsel regressin
 pnames(fm)
+fm.sel
+fm.sellv
 
 zcoef = Jchemo.coef(fm)
 zcoef.int
