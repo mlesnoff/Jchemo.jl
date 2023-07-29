@@ -3,25 +3,50 @@
         nvar = 1; scal::Bool = false)
     covselr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         nvar = 1, scal::Bool = false)
-Sparse partial least squares regression (SPLSR) by hard thresholding.
+Covsel regression.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
     Internally normalized to sum to 1.
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `nvar` : Nb. variables (`X`-columns) selected for each 
-    latent variable (LV).
+    latent variable (LV). Default `nvar = 1` corresponds to 
+    the Covsel regression (Roger et al. 2011). 
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
-    
-The PLSR agorithm is modified as follows. For each LV:
-* The usual PLS weights w1, w2, ..., wp are computed.
-* The weights wj (j = 1, ..., p) are set to 0 except the 
-    `nvar` largest weights in absolute value.  
 
-When `nvar` = 1 and when `Y` is univariate (q = 1), function `covselr`
-returns the same results as Covsel regression algorithm (see functions 
-`covsel` and `covselr`), but is faster.
+The general principle of Covsel regression (Roger et al. 2011; see also Höskuldsson, A., 
+1992, appendix) is in two steps: 
+* In the first step, a number of variables (`X`-columns) maximizing partial 
+covariances is selected as follows: a first variable is selected (teh one maximizing 
+squared covariance with `Y`), `X` is deflated to this variable, and a new variable 
+is then selected on the same criterion, etc.
+* In the second step, a MLR is run on the selected variables.
+
+Function `covsel` is an extension of the Covsel regression algorithm: 
+* It uses an adaptation of a PLSR algorithm (hard thresholding of 
+the loading weigths w1, w2, ..., wp), which is much faster in computation 
+time than selecting the variables and then fitting a MLR. 
+* With argument `nvar`, the fonction allows to select more than one variable 
+per latent variable (LV) of the adapted PLSR. For each LV, the weights wj 
+(j = 1, ..., p) are set to 0 except the `nvar` largest abs(wj).
+
+When `Y` is multivariate, it is generally recommended to scale the data
+(`scale`) to give the same impornatce to each `Y`-column in the selection.
+
+## References
+Höskuldsson, A., 1992. The H-principle in modelling with applications 
+to chemometrics. Chemometrics and Intelligent Laboratory Systems, 
+Proceedings of the 2nd Scandinavian Symposium on Chemometrics 14, 
+139–153. https://doi.org/10.1016/0169-7439(92)80099-P
+
+Roger, J.M., Palagos, B., Bertrand, D., Fernandez-Ahumada, E., 2011. 
+covsel: Variable selection for highly multivariate and multi-response 
+calibration: Application to IR spectroscopy. 
+Chem. Lab. Int. Syst. 106, 216-223.
+
+Wikipedia
+https://en.wikipedia.org/wiki/Partial_correlation
 
 ## Examples
 ```julia
