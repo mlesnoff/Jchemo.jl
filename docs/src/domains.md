@@ -99,7 +99,7 @@
 
 ### Sparse models
 
-- **covselr** MLR on variables selected from Covsel
+- **covselr** MLR on variables selected from Covsel method
 
 ### **Local models**
 
@@ -205,7 +205,6 @@
 
 ## VARIABLE IMPORTANCE
 
-- **covsel** Variable selection from partial covariance or correlation (Covsel)
 - **isel** Interval variable selection (e.g. Interval PLSR).
 - **nsc**: Nearest shrunken centroids (and variable selection).
 - **vip** Variable importance on projections (VIP)

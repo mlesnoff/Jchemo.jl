@@ -1,70 +1,69 @@
-#"""
-#    covselr(X, Y, weights = ones(nro(X)); nlv,
-#        nvar = 1; scal::Bool = false)
-#    covselr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-#        nvar = 1, scal::Bool = false)
-#Sparse partial least squares regression (SPLSR) by hard thresholding.
-#* `X` : X-data (n, p).
-#* `Y` : Y-data (n, q).
-#* `weights` : Weights (n) of the observations. 
-#    Internally normalized to sum to 1.
-#* `nlv` : Nb. latent variables (LVs) to compute.
-#* `nvar` : Nb. variables (`X`-columns) selected for each 
-#    latent variable (LV).
-#* `scal` : Boolean. If `true`, each column of `X` and `Y` 
-#    is scaled by its uncorrected standard deviation.
+"""
+    covselr(X, Y, weights = ones(nro(X)); nlv,
+        nvar = 1; scal::Bool = false)
+    covselr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
+        nvar = 1, scal::Bool = false)
+Sparse partial least squares regression (SPLSR) by hard thresholding.
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
+* `weights` : Weights (n) of the observations. 
+    Internally normalized to sum to 1.
+* `nlv` : Nb. latent variables (LVs) to compute.
+* `nvar` : Nb. variables (`X`-columns) selected for each 
+    latent variable (LV).
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation.
     
-#The PLSR agorithm is modified as follows. For each LV:
-#* The usual PLS weights w1, w2, ..., wp are computed.
-#* The weights wj (j = 1, ..., p) are set to 0 except the 
-#    `nvar` largest weights in absolute value.  
+The PLSR agorithm is modified as follows. For each LV:
+* The usual PLS weights w1, w2, ..., wp are computed.
+* The weights wj (j = 1, ..., p) are set to 0 except the 
+    `nvar` largest weights in absolute value.  
 
-#When `nvar` = 1 and when `Y` is univariate (q = 1), function `covselr`
-#returns the same results as Covsel regression algorithm (see functions 
-#`covsel` and `covselr`), but is faster.
+When `nvar` = 1 and when `Y` is univariate (q = 1), function `covselr`
+returns the same results as Covsel regression algorithm (see functions 
+`covsel` and `covselr`), but is faster.
 
 ## Examples
-#```julia
-#using JchemoData, JLD2, CairoMakie
-#path_jdat = dirname(dirname(pathof(JchemoData)))
-#db = joinpath(path_jdat, "data/cassav.jld2") 
-#@load db dat
-#pnames(dat)
+```julia
+using JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+pnames(dat)
 
-#X = dat.X 
-#y = dat.Y.tbc
-#year = dat.Y.year
-#tab(year)
-#s = year .<= 2012
-#Xtrain = X[s, :]
-#ytrain = y[s]
-#Xtest = rmrow(X, s)
-#ytest = rmrow(y, s)
+X = dat.X 
+y = dat.Y.tbc
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
 
-#nlv = 15
-#fm = covselr(Xtrain, ytrain; nlv = nlv,
-#    nvar = 1) ;  # Covsel regressin
-#pnames(fm)
+nlv = 15
+fm = covselr(Xtrain, ytrain; nlv = nlv,
+    nvar = 1) ;  # Covsel regressin
+pnames(fm)
 
-#zcoef = Jchemo.coef(fm)
-#zcoef.int
-#zcoef.B
+zcoef = Jchemo.coef(fm)
+zcoef.int
+zcoef.B
 
-#res = Jchemo.predict(fm, Xtest)
-#res.pred
-#rmsep(res.pred, ytest)
-#plotxy(vec(res.pred), ytest; color = (:red, .5),
-#    bisect = true, xlabel = "Prediction", 
-#    ylabel = "Observed").f    
+res = Jchemo.predict(fm, Xtest)
+res.pred
+rmsep(res.pred, ytest)
+plotxy(vec(res.pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
 
-#res = summary(fm, Xtrain) ;
-#pnames(res)
-#z = res.explvarx
-#lines(z.nlv, z.cumpvar,
-#    axis = (xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance"))
-#```
-#""" 
-
+res = summary(fm, Xtrain) ;
+pnames(res)
+z = res.explvarx
+lines(z.nlv, z.cumpvar,
+    axis = (xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance"))
+```
+""" 
 function covselr(X, Y, weights = ones(nro(X)); nlv, 
         nvar = 1, scal::Bool = false)
     covselr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
