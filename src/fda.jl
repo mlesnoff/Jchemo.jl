@@ -36,6 +36,7 @@ A ridge regularization can be used:
 ## Examples
 ```julia
 using Jchemo, JLD2, StatsBase, CairoMakie
+using JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat
