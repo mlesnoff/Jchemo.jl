@@ -35,10 +35,10 @@ function spca!(X::Matrix, weights = ones(nro(X)); nlv,
                 delta = delta, tol = tol, maxit = maxit)
         elseif meth == "mix"
             res = snipalsmix(X; 
-                nvar = nvar, tol = tol, maxit = maxit)
+                nvar = nvar[a], tol = tol, maxit = maxit)
         elseif meth == "hard"
             res = snipalsh(X; 
-                nvar = nvar, tol = tol, maxit = maxit)
+                nvar = nvar[a], tol = tol, maxit = maxit)
         end
         t .= res.u * res.sv
         tt = dot(t, t)
