@@ -28,6 +28,9 @@ include("plotsp.jl")
 include("plotxy.jl")
 include("preprocessing.jl") 
 include("rmgap.jl")
+include("snipals.jl")
+include("snipalsh.jl")
+include("snipalsmix.jl")
 
 # Distributions
 include("dmnorm.jl")
@@ -213,6 +216,7 @@ export
     rowmean, rowstd, rowsum, rowvar,
     rowmeanskip, rowstdskip, rowsumskip, rowvarskip,   
     scale, scale!,
+    snipals, snipalsh, snipalsmix
     soft,
     softmax,
     sourcedir,
@@ -249,6 +253,7 @@ export
     pcanipalsmiss, pcanipalsmiss!,
     rpmatgauss, rpmatli, rp, rp!,
     pcasph, pcasph!,
+    spca, spca!,
     # Exploratory Multiblock
     blockscal, blockscal_frob, blockscal_mfa,
     blockscal_ncol, blockscal_sd,
