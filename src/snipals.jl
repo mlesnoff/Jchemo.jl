@@ -2,8 +2,7 @@ function snipals(X; delta = 0,
         tol = sqrt(eps(1.)), maxit = 200)
     X = ensure_mat(X)
     n, p = size(X)
-    res = nipals(X; tol = tol, maxit = maxit)
-    u = res.u
+    u = nipals(X; tol = tol, maxit = maxit).u
     u0 = similar(X, n)
     v = similar(X, p)
     absv = copy(v)
