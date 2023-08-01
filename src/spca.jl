@@ -1,17 +1,14 @@
 function spca(X, weights = ones(nro(X)); nlv,
-        nvar = nco(X),
-        delta = 0, gs::Bool = true, tol = sqrt(eps(1.)), maxit = 200, 
-        scal::Bool = false)
+        meth = "soft", nvar = nco(X), delta = 0, 
+        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     spca!(copy(ensure_mat(X)), weights; nlv = nlv,
-        nvar = nvar, 
-        delta = delta, gs = gs, tol = tol, maxit = maxit, 
-        scal = scal)
+        meth = meth, nvar = nvar, delta = delta, 
+        tol = tol, maxit = maxit, scal = scal)
 end
 
 function spca!(X::Matrix, weights = ones(nro(X)); nlv, 
-        nvar = nco(X),
-        delta = 0, gs::Bool = true, tol = sqrt(eps(1.)), maxit = 200, 
-        scal::Bool = false)
+        meth = "soft", nvar = nco(X), delta = 0, 
+        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     n, p = size(X)
     nlv = min(nlv, n, p)
     length(nvar) == 1 ? nvar = repeat([nvar], nlv) : nothing
@@ -33,8 +30,16 @@ function spca!(X::Matrix, weights = ones(nro(X)); nlv,
     niter = list(nlv, Int64)
     sellv = list(nlv, Vector{Int64})
     for a = 1:nlv
-        res = snipals(X; 
-            delta = delta, tol = tol, maxit = maxit)
+        if meth == "soft"
+            res = snipals(X; 
+                delta = delta, tol = tol, maxit = maxit)
+        elseif meth == "mix"
+            res = snipalsmix(X; 
+                nvar = nvar, tol = tol, maxit = maxit)
+        elseif meth == "mix"
+            res = snipalsmix(X; 
+                nvar = nvar, tol = tol, maxit = maxit)
+        end
         t .= res.u * res.sv
         tt = dot(t, t)
         X .-= t * t' * X / tt        
