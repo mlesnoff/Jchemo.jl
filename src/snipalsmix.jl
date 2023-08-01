@@ -1,4 +1,4 @@
-function snipals(X; delta = 0,
+function snipalsmix(X; nvar = 0,
         tol = sqrt(eps(1.)), maxit = 200)
     X = ensure_mat(X)
     n, p = size(X)
