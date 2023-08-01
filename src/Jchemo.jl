@@ -217,7 +217,7 @@ export
     rowmean, rowstd, rowsum, rowvar,
     rowmeanskip, rowstdskip, rowsumskip, rowvarskip,   
     scale, scale!,
-    snipals, snipalsh, snipalsmix
+    snipals, snipalsh, snipalsmix,
     soft,
     softmax,
     sourcedir,
