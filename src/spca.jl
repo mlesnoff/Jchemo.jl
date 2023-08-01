@@ -40,7 +40,8 @@ function spca!(X::Matrix, weights = ones(nro(X)); nlv,
             res = snipalsh(X; 
                 nvar = nvar[a], tol = tol, maxit = maxit)
         end
-        t .= res.u * res.sv
+        #t .= res.u * res.sv
+        t .= X * res.v    # Shen & Huang 2008 (2.3 p.1020)
         tt = dot(t, t)
         X .-= t * t' * X / tt        
         T[:, a] .= t ./ sqrtw
