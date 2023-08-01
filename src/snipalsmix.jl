@@ -17,10 +17,12 @@ function snipalsmix(X; nvar = 0,
         mul!(v, X', u)
         ## Sparsity
         absv .= abs.(v)
-        absv_max = maximum(absv)
-        absv_stand .= absv / absv_max
-        theta .= max.(0, absv_stand .- delta) 
-        v .= sign.(v) .* theta * absv_max 
+        sellv[a] = sortperm(absv; rev = true)[1:znvar]
+        vmax = v[sellv[a]]
+        v .= zeros(p)
+        v[sellv[a]] .= vmax
+        delta = maximum(sort(absv)[1:nrm])
+        v .= soft.(v, delta)
         ## End
         mul!(u, X, v)
         sv = norm(u)
