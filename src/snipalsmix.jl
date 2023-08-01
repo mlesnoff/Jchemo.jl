@@ -2,23 +2,23 @@ function snipalsmix(X; nvar = nco(X),
         tol = sqrt(eps(1.)), maxit = 200)
     X = ensure_mat(X)
     n, p = size(X)
-    res = nipals(X; tol = tol, maxit = maxit)
-    u = res.u
+    u = nipals(X; tol = tol, maxit = maxit).u
     u0 = similar(X, n)
     v = similar(X, p)
     absv = copy(v)
     cont = true
     iter = 1
     s = 0
+    nrm = p - nvar
     while cont
         u0 .= copy(u)
         mul!(v, X', u)
         ## Sparsity
         absv .= abs.(v)
-        sellv[a] = sortperm(absv; rev = true)[1:znvar]
-        vmax = v[sellv[a]]
+        sel = sortperm(absv; rev = true)[1:nvar]
+        vmax = v[sel]
         v .= zeros(p)
-        v[sellv[a]] .= vmax
+        v[sel] .= vmax
         delta = maximum(sort(absv)[1:nrm])
         v .= soft.(v, delta)
         ## End
