@@ -37,5 +37,4 @@ function snipals(X; delta = 0,
     #(u = u, v, sv, niter)
     (v = v, niter)
 end
-end
 
