@@ -47,7 +47,10 @@ function spca!(X::Matrix, weights = ones(nro(X)); nlv,
         P[:, a] .= res.v           
         #sv[a] = res.sv
         niter[a] = res.niter
+        sellv[a] = findall(abs.(res.v) .> 0)
     end    
-    (T = T, P, sv, xmeans, xscales, weights, niter) 
+    sel = unique(reduce(vcat, sellv))
+    (T = T, P, sv, xmeans, xscales, weights, niter,
+        sellv, sel) 
 end
 

@@ -174,7 +174,7 @@ function covselr!(X::Matrix, Y::Matrix, weights = ones(nro(X));
         C[:, a] .= c
         TT[a] = tt
      end
-     sel = reduce(vcat, sellv)
+     sel = unique(reduce(vcat, sellv))
      Covselr(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
          yscales, weights, sellv, sel)
 end
