@@ -40,7 +40,7 @@ function spca!(X::Matrix, weights = ones(nro(X)); nlv,
             res = snipalsh(X; 
                 nvar = nvar[a], tol = tol, maxit = maxit)
         end
-        t .= res.t   # = PC = X_defl * res.v    
+        t .= res.t   # = PC = X_defl * v    
         tt = dot(t, t)
         X .-= t * t' * X / tt        
         T[:, a] .= t ./ sqrtw
