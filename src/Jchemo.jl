@@ -48,6 +48,7 @@ include("pcanipalsmiss.jl")
 include("kpca.jl")
 include("rp.jl")
 include("pcasph.jl") 
+include("spca.jl")
 
 # Exploratory - Multiblock 
 include("angles.jl")
