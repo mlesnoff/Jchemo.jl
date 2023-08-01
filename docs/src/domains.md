@@ -12,6 +12,9 @@
 - Robust PCA
     - **pcasph** Spherical (with spatial median)
 
+- Sparse PCA
+    - **spca** Sparse PCA (Shen & Huang 2008)
+
 *Utilities for PCA and PLS* 
 - **xfit** Matrix fitting 
 - **xresid** Residual matrix 
