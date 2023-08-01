@@ -9,7 +9,7 @@ function snipalsmix(X; nvar = nco(X),
     absv = copy(v)
     cont = true
     iter = 1
-    sv = 0
+    s = 0
     while cont
         u0 .= copy(u)
         mul!(v, X', u)
@@ -23,8 +23,8 @@ function snipalsmix(X; nvar = nco(X),
         v .= soft.(v, delta)
         ## End
         mul!(u, X, v)
-        sv = norm(u)
-        u ./= sv
+        s = norm(u)
+        u ./= s
         v ./= norm(v)
         dif = sum((u .- u0).^2)
         iter = iter + 1
@@ -32,6 +32,7 @@ function snipalsmix(X; nvar = nco(X),
             cont = false
         end
     end
+    sv = sqrt(s)
     niter = iter - 1
     (u = u, v, sv, niter)
 end
