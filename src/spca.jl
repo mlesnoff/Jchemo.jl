@@ -55,14 +55,30 @@ function spca!(X::Matrix, weights = ones(nro(X)); nlv,
         t .= res.t   # = PC = X_defl * v    
         tt = dot(t, t)
         X .-= t * t' * X / tt        
+        sv[a] = norm(t)
         T[:, a] .= t ./ sqrtw
         P[:, a] .= res.v           
-        #sv[a] = res.sv
         niter[a] = res.niter
         sellv[a] = findall(abs.(res.v) .> 0)
     end    
     sel = unique(reduce(vcat, sellv))
     Spca1(T, P, sv, xmeans, xscales, weights, niter,
         sellv, sel) 
+end
+
+function Base.summary(object::Spca1, X::Union{Matrix, DataFrame})
+    X = ensure_mat(X)
+    nlv = size(object.T, 2)
+    D = Diagonal(object.weights)
+    X = cscale(X, object.xmeans, object.xscales)
+    sstot = sum(colnorm(X, object.weights).^2)   # = tr(X' * D * X)
+    ## Proportion of variance of X explained by each t
+    A = X' * D * object.T
+    ss = diag(A' * A) ./ diag(object.T' * D * object.T)
+    pvar = ss / sstot 
+    cumpvar = cumsum(pvar)
+    explvarx = DataFrame(lv = 1:nlv, pvar = pvar, 
+        cumpvar = cumpvar)
+    (explvarx = explvarx, )
 end
 
