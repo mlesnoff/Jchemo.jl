@@ -1,3 +1,15 @@
+struct Spca1
+    T::Array{Float64} 
+    P::Array{Float64}
+    sv::Vector{Float64}
+    xmeans::Vector{Float64}
+    xscales::Vector{Float64}
+    weights::Vector{Float64}
+    niter::Union{Vector{Int64}, Nothing}
+    sellv::Vector{Vector{Int64}}
+    sel::Vector{Int64}
+end
+
 function spca(X, weights = ones(nro(X)); nlv,
         meth = "soft", nvar = nco(X), delta = 0, 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
@@ -50,7 +62,7 @@ function spca!(X::Matrix, weights = ones(nro(X)); nlv,
         sellv[a] = findall(abs.(res.v) .> 0)
     end    
     sel = unique(reduce(vcat, sellv))
-    (T = T, P, sv, xmeans, xscales, weights, niter,
+    Spca1(T, P, sv, xmeans, xscales, weights, niter,
         sellv, sel) 
 end
 
