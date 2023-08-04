@@ -5,7 +5,7 @@ struct Pca
     xmeans::Vector{Float64}
     xscales::Vector{Float64}
     weights::Vector{Float64}
-    ## For consistency with PCA Nipals
+    ## For PCA Nipals
     niter::Union{Vector{Int64}, Nothing}
 end
 
