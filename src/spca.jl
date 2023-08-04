@@ -71,15 +71,29 @@ function Base.summary(object::Spca1, X::Union{Matrix, DataFrame})
     nlv = size(object.T, 2)
     D = Diagonal(object.weights)
     X = cscale(X, object.xmeans, object.xscales)
-    sstot = sum(colnorm(X, object.weights).^2)   # = tr(X' * D * X)
+    sstot = sum(colnorm(X, object.weights).^2)   # = tr(X' * D * X) = frob(X, weights)^2    
     ## Proportion of variance of X explained by each t
     ## ss = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
     A = X' * D * object.T    
     ss = diag(A' * A) ./ diag(object.T' * D * object.T)
     pvar = ss / sstot 
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(lv = 1:nlv, pvar = pvar, 
-        cumpvar = cumpvar)
-    (explvarx = explvarx, )
+    zrd = vec(rd(X, object.T, object.weights))
+    explvarx = DataFrame(lv = 1:nlv, rd = zrd, 
+        pvar = pvar, cumpvar = cumpvar)
+    ## Adjusted variance (Shen & Hunag 2008 section 2.3)
+    zX = sqrt.(D) * X
+    ss = zeros(nlv)
+    for a = 1:nlv
+        P = object.P[:, 1:a]
+        Xadj = zX * P * inv(P' * P) * P'
+        ss[a] = sum(Xadj.^2)
+    end
+    cumpvar = ss / sstot
+    pvar = [cumpvar[1]; diff(cumpvar)]
+    explvarx_adj = DataFrame(lv = 1:nlv, 
+        pvar = pvar, cumpvar = cumpvar)
+    ## End
+    (explvarx = explvarx, explvarx_adj)
 end
 
