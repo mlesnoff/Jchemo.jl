@@ -73,7 +73,8 @@ function Base.summary(object::Spca1, X::Union{Matrix, DataFrame})
     X = cscale(X, object.xmeans, object.xscales)
     sstot = sum(colnorm(X, object.weights).^2)   # = tr(X' * D * X)
     ## Proportion of variance of X explained by each t
-    A = X' * D * object.T
+    ## ss = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
+    A = X' * D * object.T    
     ss = diag(A' * A) ./ diag(object.T' * D * object.T)
     pvar = ss / sstot 
     cumpvar = cumsum(pvar)
