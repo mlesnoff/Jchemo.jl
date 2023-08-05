@@ -116,13 +116,11 @@ fm.P
 fm.P' * fm.P
 head(fm.T)
 
+Ttest = Jchemo.transform(fm, Xtest)
+
 res = Jchemo.summary(fm, Xtrain) ;
 res.explvarx
 res.explvarx_adj
-
-Ttest = Jchemo.transform(fm, Xtest)
-
-
 ```
 """ 
 function spca(X, weights = ones(nro(X)); nlv,
@@ -201,7 +199,6 @@ function transform(object::Spca, X; nlv = nothing)
     T = similar(X, m, nlv)
     t = similar(X, m)
     for a = 1:nlv
-    println(length(t))
         t .= zX * object.P[:, a]
         T[:, a] .= t
         zX .-= t * vcol(object.beta, a)'  #object.beta[:, a]'
