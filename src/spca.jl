@@ -1,7 +1,8 @@
-struct Spca1
+struct Spca2
     T::Array{Float64} 
     P::Array{Float64}
     sv::Vector{Float64}
+    beta::Array{Float64}
     xmeans::Vector{Float64}
     xscales::Vector{Float64}
     weights::Vector{Float64}
@@ -41,6 +42,8 @@ function spca!(X::Matrix, weights = ones(nro(X)); nlv,
     sv = similar(X, nlv)
     niter = list(nlv, Int64)
     sellv = list(nlv, Vector{Int64})
+    b = similar(X, 1, p)
+    beta = similar(X, p, nlv)
     for a = 1:nlv
         if meth == "soft"
             res = snipals(X; 
@@ -54,19 +57,21 @@ function spca!(X::Matrix, weights = ones(nro(X)); nlv,
         end
         t .= res.t   # = PC = X_defl * v    
         tt = dot(t, t)
-        X .-= t * t' * X / tt        
+        b .= t' * X / tt           
+        X .-= t * b        
         sv[a] = norm(t)
         T[:, a] .= t ./ sqrtw
-        P[:, a] .= res.v           
+        P[:, a] .= res.v
+        beta[:, a] .= vec(b)
         niter[a] = res.niter
         sellv[a] = findall(abs.(res.v) .> 0)
     end    
     sel = unique(reduce(vcat, sellv))
-    Spca1(T, P, sv, xmeans, xscales, weights, niter,
+    Spca2(T, P, sv, beta, xmeans, xscales, weights, niter,
         sellv, sel) 
 end
 
-function Base.summary(object::Spca1, X::Union{Matrix, DataFrame})
+function Base.summary(object::Spca2, X::Union{Matrix, DataFrame})
     X = ensure_mat(X)
     nlv = size(object.T, 2)
     D = Diagonal(object.weights)
