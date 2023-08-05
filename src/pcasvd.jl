@@ -125,12 +125,14 @@ function Base.summary(object::Pca, X::Union{Matrix, DataFrame})
     nlv = nco(object.T)
     D = Diagonal(object.weights)
     X = cscale(X, object.xmeans, object.xscales)
-    sstot = sum(colnorm(X, object.weights).^2)   # = tr(X' * D * X)
+    ## (||X||_D)^2 = tr(X' * D * X) = frob(X, weights)^2
+    sstot = sum(colnorm(X, object.weights).^2)
+    ## End
     TT = D * object.T.^2
     tt = colsum(TT) 
-    # = diag(T' * D * T) 
-    # = colnorm(object.T, object.weights).^2 
-    # = object.sv[1:nlv].^2
+    ## = diag(T' * D * T) 
+    ## = colnorm(object.T, object.weights).^2 
+    ## = object.sv[1:nlv].^2
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
     explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
