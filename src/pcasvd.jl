@@ -135,7 +135,8 @@ function Base.summary(object::Pca, X::Union{Matrix, DataFrame})
     ## = object.sv[1:nlv].^2
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(lv = 1:nlv, var = tt, 
+        pvar = pvar, cumpvar = cumpvar)
     nam = string.("lv", 1:nlv)
     contr_ind = DataFrame(scale(TT, tt), nam)
     cor_circle = DataFrame(corm(X, object.T, object.weights), nam)
@@ -144,7 +145,8 @@ function Base.summary(object::Pca, X::Union{Matrix, DataFrame})
     CC = C .* C
     cc = sum(CC, dims = 1)
     contr_var = DataFrame(scale(CC, cc), nam)
-    (explvarx = explvarx, contr_ind, contr_var, coord_var, cor_circle)
+    (explvarx = explvarx, contr_ind, contr_var, 
+        coord_var, cor_circle)
 end
 
 
