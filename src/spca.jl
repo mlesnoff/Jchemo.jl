@@ -80,14 +80,15 @@ end
 """ 
 function transform(object::Spca2, X; nlv = nothing)
     X = ensure_mat(X)
-    a = nco(object.T)
+    m, a = size(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     zX = cscale(X, fm.xmeans, fm.xscales)
-    T = zeros(n, nlv)
+    T = similar(X, m, nlv)
+    t = similar(X, m)
     for a = 1:nlv
-        tnew = zX * object.P[:, a]
-        T[:, a] .= tnew
-        zX .= zX .- tnew * object.beta[:, a]'
+        t .= zX * object.P[:, a]
+        T[:, a] .= t
+        zX .-= t * vcol(object.beta, a)'  #object.beta[:, a]'
     end
     T 
 end
@@ -103,7 +104,8 @@ function Base.summary(object::Spca2, X::Union{Matrix, DataFrame})
     nlv = nco(object.T)
     D = Diagonal(object.weights)
     X = cscale(X, object.xmeans, object.xscales)
-    sstot = sum(colnorm(X, object.weights).^2)   # = tr(X' * D * X) = frob(X, weights)^2    
+    ## (||X||_D)^2 = tr(X' * D * X) = frob(X, weights)^2
+    sstot = sum(colnorm(X, object.weights).^2)    
     ## Proportion of variance of X explained by each column of T
     ## ss = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
     A = X' * D * object.T    
