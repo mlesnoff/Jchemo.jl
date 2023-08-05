@@ -1,4 +1,4 @@
-struct Spca2
+struct Spca
     T::Array{Float64} 
     P::Array{Float64}
     sv::Vector{Float64}
@@ -67,18 +67,18 @@ function spca!(X::Matrix, weights = ones(nro(X)); nlv,
         sellv[a] = findall(abs.(res.v) .> 0)
     end    
     sel = unique(reduce(vcat, sellv))
-    Spca2(T, P, sv, beta, xmeans, xscales, weights, niter,
+    Spca(T, P, sv, beta, xmeans, xscales, weights, niter,
         sellv, sel) 
 end
 
 """ 
-    transform(object::Spca2, X; nlv = nothing)
+    transform(object::Spca, X; nlv = nothing)
     Compute principal components (PCs = scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
 * `nlv` : Nb. PCs to compute.
 """ 
-function transform(object::Spca2, X; nlv = nothing)
+function transform(object::Spca, X; nlv = nothing)
     X = ensure_mat(X)
     m, a = size(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
@@ -94,12 +94,12 @@ function transform(object::Spca2, X; nlv = nothing)
 end
 
 """
-    summary(object::Spca2, X::Union{Matrix, DataFrame})
+    summary(object::Spca, X::Union{Matrix, DataFrame})
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
-function Base.summary(object::Spca2, X::Union{Matrix, DataFrame})
+function Base.summary(object::Spca, X::Union{Matrix, DataFrame})
     X = ensure_mat(X)
     nlv = nco(object.T)
     D = Diagonal(object.weights)
