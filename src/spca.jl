@@ -29,22 +29,57 @@ Sparse PCA (Shen & Huang 2008).
     PC. Can be a single integer (same nb. variables
     for each PC), or a vector of length `nlv`.
     Only used if `meth = "mix"` or `meth = "hard"`.   
+* `delta` : Range for the thresholding (see function `soft`)
+    on the loadings standardized to their maximal absoulute value.
+    Must be within [0, 1]. Only used if `meth = "soft".
 * `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
 Sparse principal component analysis via regularized low rank 
-matrix approximation (Shen & Huang 2008).
+matrix approximation (Shen & Huang 2008). A Nipals algorithm is used. 
 
+Function `spca' provides three methods of thresholding to compute 
+sparse loadings:
 
+* `meth = "soft"`: Soft thresholding on standardized loadings. 
+    Noting v the loading vector, at each step, abs(v) is standardized to 
+    its maximal value. The soft-thresholding function 
+    (see function `soft`) is applied to this standardized vector, 
+    with the constant `delta` ∈ [0, 1]. This returns the sparse vector theta 
+    that finally multiplies term-by-term vector v, giving the 
+    sparse loadings.
 
+* `meth = "mix"`: Method used in function `spca` of the R package `mixOmics`.
+    For each PC, a number of variables (loadings) showing the largest 
+    values in vector abs(v) are selected. Then a soft-thresholding is 
+    applied to this selected loadings, whith `delta` set to the maximal value
+    of the elements of abs(v) that were removed from the selection.  
+
+* `meth = "hard"`: For each PC, a number of variables (loadings) showing 
+    the largest values in vector abs(v) are selected.
+
+Since the sparse loadings vectors (`P`-columns) are in general 
+non orthogonal, there is no a unique variance decomposition of `X` such 
+as in PCA. Function `summary` returns the following objects:
+* `explvarx`: The proportion of variance of `X` explained by each column 
+    t of `T` is computed by regressing `X` on t (such as what is done in PLS).
+* `explvarx_adj`: Adjusted explained variance proposed by 
+    Shen & Huang 2008 section 2.3.    
 
 ## References
+Kim-Anh Le Cao, Florian Rohart, Ignacio Gonzalez, Sebastien Dejean with key 
+contributors Benoit Gautier, Francois Bartolo, contributions from Pierre Monget, 
+Jeff Coquery, FangZou Yao and Benoit Liquet. (2016). 
+mixOmics: Omics Data Integration Project. R package version 6.1.1. 
+https://CRAN.R-project.org/package=mixOmics
+
+https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html
+
 Shen, H., Huang, J.Z., 2008. Sparse principal component analysis via 
 regularized low rank matrix approximation. Journal of Multivariate Analysis 
 99, 1015–1034. https://doi.org/10.1016/j.jmva.2007.06.007
-
 
 ## Examples
 ```julia
