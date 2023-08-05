@@ -72,7 +72,7 @@ function Base.summary(object::Spca1, X::Union{Matrix, DataFrame})
     D = Diagonal(object.weights)
     X = cscale(X, object.xmeans, object.xscales)
     sstot = sum(colnorm(X, object.weights).^2)   # = tr(X' * D * X) = frob(X, weights)^2    
-    ## Proportion of variance of X explained by each t
+    ## Proportion of variance of X explained by each column of T
     ## ss = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
     A = X' * D * object.T    
     ss = diag(A' * A) ./ diag(object.T' * D * object.T)
