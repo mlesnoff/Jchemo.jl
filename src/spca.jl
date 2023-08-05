@@ -73,26 +73,23 @@ end
 
 """ 
     transform(object::Spca2, X; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model and X-data.
+    Compute principal components (PCs = scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
-* `nlv` : Nb. LVs to compute.
+* `nlv` : Nb. PCs to compute.
 """ 
 function transform(object::Spca2, X; nlv = nothing)
     X = ensure_mat(X)
     a = size(object.T, 2)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    cscale(X, object.xmeans, object.xscales) * vcol(object.P, 1:nlv)
-
-
     zX = cscale(X, fm.xmeans, fm.xscales)
     T = zeros(n, nlv)
     for a = 1:nlv
         tnew = zX * object.P[:, a]
-        Tnew[:, a] .= tnew
+        T[:, a] .= tnew
         zX .= zX .- tnew * object.beta[:, a]'
     end
-    Tnew 
+    T 
 end
 
 """
