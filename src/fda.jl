@@ -138,7 +138,7 @@ Summarize the fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Fda)
-    nlv = size(object.T, 2)
+    nlv = nco(object.T)
     eig = object.eig[1:nlv]
     pvar =  eig ./ sum(object.eig)
     cumpvar = cumsum(pvar)

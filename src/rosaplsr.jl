@@ -207,7 +207,7 @@ Compute latent variables (LVs = scores T) from a fitted model.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transform(object::Rosaplsr, Xbl; nlv = nothing)
-    a = size(object.T, 2)
+    a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(object.xmeans)
     zXbl = list(nbl, Matrix{Float64})
@@ -224,7 +224,7 @@ Compute the X b-coefficients of a model fitted with `nlv` LVs.
 * `nlv` : Nb. LVs to consider.
 """ 
 function coef(object::Rosaplsr; nlv = nothing)
-    a = size(object.T, 2)
+    a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     zxmeans = reduce(vcat, object.xmeans)
     beta = object.C[:, 1:nlv]'
@@ -243,7 +243,7 @@ Compute Y-predictions from a fitted model.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
 function predict(object::Rosaplsr, Xbl; nlv = nothing)
-    a = size(object.T, 2)
+    a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     X = reduce(hcat, Xbl)

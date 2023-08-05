@@ -34,7 +34,7 @@ function xresid(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
 end
 
 function xresid!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
-    a = size(object.T, 2)
+    a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     X .-= xfit(object, X; nlv = nlv)
     X

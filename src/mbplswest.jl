@@ -218,7 +218,7 @@ Compute latent variables (LVs = scores T) from a fitted model.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transform(object::Union{MbplsWest, Mbplsr}, Xbl; nlv = nothing)
-    a = size(object.T, 2)
+    a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
     zXbl = list(nbl, Matrix{Float64})

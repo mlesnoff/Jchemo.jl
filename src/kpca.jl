@@ -117,7 +117,7 @@ Compute PCs (scores T) from a fitted model and X-data.
 * `nlv` : Nb. PCs to consider.
 """ 
 function transform(object::Kpca, X; nlv = nothing)
-    a = size(object.T, 2)
+    a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(object.kern))
     K = fkern(scale(X, object.xscales), object.X; object.dots...)
@@ -135,7 +135,7 @@ Summarize the maximal (i.e. with maximal nb. PCs) fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Kpca)
-    nlv = size(object.T, 2)
+    nlv = nco(object.T)
     TT = object.D * (object.T).^2
     tt = vec(sum(TT, dims = 1))
     sstot = sum(object.eig)

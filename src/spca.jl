@@ -80,7 +80,7 @@ end
 """ 
 function transform(object::Spca2, X; nlv = nothing)
     X = ensure_mat(X)
-    a = size(object.T, 2)
+    a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     zX = cscale(X, fm.xmeans, fm.xscales)
     T = zeros(n, nlv)
@@ -100,7 +100,7 @@ Summarize the fitted model.
 """ 
 function Base.summary(object::Spca2, X::Union{Matrix, DataFrame})
     X = ensure_mat(X)
-    nlv = size(object.T, 2)
+    nlv = nco(object.T)
     D = Diagonal(object.weights)
     X = cscale(X, object.xmeans, object.xscales)
     sstot = sum(colnorm(X, object.weights).^2)   # = tr(X' * D * X) = frob(X, weights)^2    

@@ -236,7 +236,7 @@ Compute latent variables (LVs = scores T) from a fitted model and X-data.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transform(object::Comdim, Xbl; nlv = nothing)
-    a = size(object.T, 2)
+    a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
     m = size(Xbl[1], 1)
@@ -277,7 +277,7 @@ Summarize the fitted model.
 """ 
 function Base.summary(object::Comdim, Xbl)
     nbl = length(Xbl)
-    nlv = size(object.T, 2)
+    nlv = nco(object.T)
     sqrtw = sqrt.(object.weights)
     zXbl = list(nbl, Matrix{Float64})
     Threads.@threads for k = 1:nbl

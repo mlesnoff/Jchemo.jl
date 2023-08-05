@@ -140,7 +140,7 @@ Compute "scores" T from a random projection model and a matrix X.
 """ 
 function transform(object::Rp, X; nlv = nothing)
     X = ensure_mat(X)
-    a = size(object.T, 2)
+    a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     cscale(X, object.xmeans, object.xscales) * vcol(object.P, 1:nlv)
 end
