@@ -98,24 +98,31 @@ s = sample(1:n, ntrain; replace = false)
 Xtrain = X[s, :]
 Xtest = rmrow(X, s)
 
-nlv = 3
-fm = pcasvd(Xtrain; nlv = nlv) ;
-#fm = pcaeigen(Xtrain; nlv = nlv) ;
-#fm = pcaeigenk(Xtrain; nlv = nlv) ;
-#fm = pcanipals(Xtrain; nlv = nlv) ;
-pnames(fm)
-fm.T
-fm.T' * fm.T
+tol = 1e-15
+nlv = 3 
+scal = false
+#scal = true
+meth = "soft"
+#meth = "mix"
+#meth = "hard"
+nvar = 2 ; delta = .4
+fm = spca(Xtrain; nlv = nlv, 
+    meth = meth, nvar = nvar, delta = delta, 
+    tol = tol, scal = scal) ;
+fm.niter
+fm.sellv 
+fm.sel
+fm.P
 fm.P' * fm.P
+head(fm.T)
 
-Jchemo.transform(fm, Xtest)
-
-res = Base.summary(fm, Xtrain) ;
-pnames(res)
+res = Jchemo.summary(fm, Xtrain) ;
 res.explvarx
-res.contr_var
-res.coord_var
-res.cor_circle
+res.explvarx_adj
+
+Ttest = Jchemo.transform(fm, Xtest)
+
+
 ```
 """ 
 function spca(X, weights = ones(nro(X)); nlv,
@@ -187,12 +194,14 @@ end
 """ 
 function transform(object::Spca, X; nlv = nothing)
     X = ensure_mat(X)
-    m, a = size(object.T)
+    m = nro(X)
+    a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     zX = cscale(X, object.xmeans, object.xscales)
     T = similar(X, m, nlv)
     t = similar(X, m)
     for a = 1:nlv
+    println(length(t))
         t .= zX * object.P[:, a]
         T[:, a] .= t
         zX .-= t * vcol(object.beta, a)'  #object.beta[:, a]'
