@@ -24,13 +24,13 @@ Sparse PCA (Shen & Huang 2008).
     Internally normalized to sum to 1.
 * `nlv` : Nb. principal components (PCs).
 * `meth`: Method used for the thresholding. Possible values
-    are "soft" (default), "mix" or "hard". See below.
+    are "soft" (default), "mix" or "hard". See thereafter.
 * `nvar` : Nb. variables (`X`-columns) selected for each 
     PC. Can be a single integer (same nb. variables
     for each PC), or a vector of length `nlv`.
     Only used if `meth = "mix"` or `meth = "hard"`.   
 * `delta` : Range for the thresholding (see function `soft`)
-    on the loadings standardized to their maximal absoulute value.
+    on the loadings standardized to their maximal absolute value.
     Must be within [0, 1]. Only used if `meth = "soft".
 * `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. iterations.
@@ -47,9 +47,9 @@ sparse loadings:
     Noting v the loading vector, at each step, abs(v) is standardized to 
     its maximal value. The soft-thresholding function 
     (see function `soft`) is applied to this standardized vector, 
-    with the constant `delta` ∈ [0, 1]. This returns the sparse vector theta 
-    that finally multiplies term-by-term vector v, giving the 
-    sparse loadings.
+    with the constant `delta` ∈ [0, 1], which returns the sparse vector 
+    theta. Vector v is finally multiplied term-by-term by vector theta
+    that gives the sparse loadings.
 
 * `meth = "mix"`: Method used in function `spca` of the R package `mixOmics`.
     For each PC, a number of variables (loadings) showing the largest 
