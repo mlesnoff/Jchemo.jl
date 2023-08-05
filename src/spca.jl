@@ -11,6 +11,78 @@ struct Spca
     sel::Vector{Int64}
 end
 
+"""
+    spca(X, weights = ones(nro(X)); nlv,
+        meth = "soft", nvar = nco(X), delta = 0, 
+        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
+    spca!(X, weights = ones(nro(X)); nlv,
+        meth = "soft", nvar = nco(X), delta = 0, 
+        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
+Sparse PCA (Shen & Huang 2008).
+* `X` : X-data (n, p). 
+* `weights` : Weights (n) of the observations. 
+    Internally normalized to sum to 1.
+* `nlv` : Nb. principal components (PCs).
+* `meth`: Method used for the thresholding. Possible values
+    are "soft" (default), "mix" or "hard". See below.
+* `nvar` : Nb. variables (`X`-columns) selected for each 
+    PC. Can be a single integer (same nb. variables
+    for each PC), or a vector of length `nlv`.
+    Only used if `meth = "mix"` or `meth = "hard"`.   
+* `tol` : Tolerance value for stopping the iterations.
+* `maxit` : Maximum nb. iterations.
+* `scal` : Boolean. If `true`, each column of `X` is scaled
+    by its uncorrected standard deviation.
+
+Sparse principal component analysis via regularized low rank 
+matrix approximation (Shen & Huang 2008).
+
+
+
+
+## References
+Shen, H., Huang, J.Z., 2008. Sparse principal component analysis via 
+regularized low rank matrix approximation. Journal of Multivariate Analysis 
+99, 1015–1034. https://doi.org/10.1016/j.jmva.2007.06.007
+
+
+## Examples
+```julia
+using JchemoData, JLD2, CairoMakie, StatsBase
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/iris.jld2") 
+@load db dat
+pnames(dat)
+summ(dat.X)
+
+X = dat.X[:, 1:4]
+n = nro(X)
+
+ntrain = 120
+s = sample(1:n, ntrain; replace = false) 
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
+
+nlv = 3
+fm = pcasvd(Xtrain; nlv = nlv) ;
+#fm = pcaeigen(Xtrain; nlv = nlv) ;
+#fm = pcaeigenk(Xtrain; nlv = nlv) ;
+#fm = pcanipals(Xtrain; nlv = nlv) ;
+pnames(fm)
+fm.T
+fm.T' * fm.T
+fm.P' * fm.P
+
+Jchemo.transform(fm, Xtest)
+
+res = Base.summary(fm, Xtrain) ;
+pnames(res)
+res.explvarx
+res.contr_var
+res.coord_var
+res.cor_circle
+```
+""" 
 function spca(X, weights = ones(nro(X)); nlv,
         meth = "soft", nvar = nco(X), delta = 0, 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
