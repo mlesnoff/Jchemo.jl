@@ -82,7 +82,7 @@ function transform(object::Spca, X; nlv = nothing)
     X = ensure_mat(X)
     m, a = size(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    zX = cscale(X, fm.xmeans, fm.xscales)
+    zX = cscale(X, object.xmeans, object.xscales)
     T = similar(X, m, nlv)
     t = similar(X, m)
     for a = 1:nlv
