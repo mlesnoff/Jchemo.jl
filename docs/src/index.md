@@ -14,7 +14,7 @@ Documentation for [Jchemo.jl](https://github.com/mlesnoff/Jchemo.jl).
 
 The package was initially designed about **partial least squares regression and discrimination models** 
 and variants, in particular locally weighted PLS models (**LWPLS**) (e.g. https://doi.org/10.1002/cem.3209).
-It has then been expanded to many other methods around dimension reduction, regression and discrimination. 
+It has then been expanded to many other methods of dimension reduction, regression and discrimination. 
 
 The package was named **Jchemo** since it is orientated to chemometrics, but most of the provided methods 
 are **generic to other domains**. 
