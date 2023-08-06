@@ -254,7 +254,7 @@ res = rescv.res
 
 Lesnoff, M. 2021. Jchemo: Julia package for machine learning, with focus on 
 chemometrics and high-dimensional data. https://github.com/mlesnoff/Jchemo. 
-CIRAD, UMR SELMET, Montpellier, France
+UMR SELMET, Univ Montpellier, CIRAD, INRA, Institut Agro, Montpellier, France
 
 ## Acknowledgments
 
