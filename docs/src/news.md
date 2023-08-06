@@ -12,7 +12,7 @@
     - **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations allowing missing data.
     - **soft**: Soft thresholding.
     - **softmax**: Softmax function.
-    - **spca**, **snipals**, **snipalsh**, **snipalsmix**: Sparse PCA.
+    - **spca**, **snipals**, **snipalsh**, **snipalsmix**: Sparse PCA (Shen & Hunag 2008).
 
 - Modifications
     - Code improvement.
