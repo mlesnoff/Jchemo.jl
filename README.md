@@ -1,24 +1,26 @@
 # Jchemo.jl
 
-## Dimension reduction, Regression and Discrimination for Chemometrics 
+## Julia package for machine learning with focus on chemometrics and high-dimensional data
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/dev)
 [![Build Status](https://github.com/mlesnoff/Jchemo.jl/workflows/CI/badge.svg)](https://github.com/mlesnoff/Jchemo.jl/actions)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
-**Jchemo.jl** is a package for [**data exploration and prediction**](https://mlesnoff.github.io/Jchemo.jl/dev/domains/) with focus on **high dimensional data**. 
+**Jchemo.jl** is a package for [**exploratorory data analyses and supervised predictions**](https://mlesnoff.github.io/Jchemo.jl/dev/domains/), with focus on **high dimensional data**. 
 
-The package was initially designed about **partial least squares regression and discrimination models** and variants, in particular locally weighted PLS models (**LWPLS**) (e.g. https://doi.org/10.1002/cem.3209).
-Then, it has been expanded to many other methods for 
-analyzing high dimensional data. 
+The package was initially designed about **partial least squares regression and discrimination models** 
+and variants, in particular locally weighted PLS models (**LWPLS**) (e.g. https://doi.org/10.1002/cem.3209).
+It has then been expanded to many other methods around dimension reduction, regression and discrimination. 
 
-The package was named **Jchemo** since it is orientated to chemometrics, but most of the provided methods are fully **generic to other domains**. 
+The package was named **Jchemo** since it is orientated to chemometrics, but most of the provided methods 
+are **generic to other domains**. 
 
-Functions such as **transform**, **predict**, **coef** and **summary** are available. 
-**Tuning the predictive models** is facilitated by generic functions **gridscore** (validation dataset) and 
-**gridcv** (cross-validation). Faster versions of these functions are also available for models based on latent variables (LVs) 
-(**gridscorelv** and **gridcvlv**) and ridge regularization (**gridscorelb** and **gridcvlb**).
+Auxilliary functions such as **transform**, **predict**, **coef** and **summary** are available. 
+**Tuning the predictive models** is facilitated by functions **gridscore** (validation dataset) and 
+**gridcv** (cross-validation), generic (same syntax) for all models. Fast versions of these functions 
+are also available for models based on latent variables (LVs) (**gridscorelv** and **gridcvlv**) and 
+ridge regularization (**gridscorelb** and **gridcvlb**).
 
 Most of the functions of the package have a **help page** (providing an example), e.g.:
 
@@ -26,7 +28,7 @@ Most of the functions of the package have a **help page** (providing an example)
 ?plskern
 ```
 
-**Examples** demonstrating **Jchemo.jl** are available in project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo), used for training only. **The datasets** of the examples are stored in package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl).
+**Examples** demonstrating **Jchemo.jl** are available in the project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo), used for training only. **The datasets** of the examples are stored in package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl).
 
 Some of the functions of the package (in particular those using kNN selections) use **multi-threading** 
 to speed the computations. Taking advantage of this requires to specify a relevant number 
@@ -36,7 +38,7 @@ of threads (e.g. from the 'Settings' menu of the VsCode Julia extension and the 
 
 Before to update the package, it is recommended to have a look on 
 [**What changed**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md) to avoid
-problems due to eventual breaking changes. 
+ eventual problems when the new version contains breaking changes. 
 
 ## <span style="color:green"> **Dependent packages** </span> 
 
@@ -250,8 +252,9 @@ res = rescv.res
 
 ## How to cite
 
-Lesnoff, M. 2021. Jchemo: a Julia package for dimension reduction, regression and discrimination for 
-chemometrics. https://github.com/mlesnoff/Jchemo. CIRAD, UMR SELMET, Montpellier, France
+Lesnoff, M. 2021. Jchemo: Julia package for machine learning, with focus on 
+chemometrics and high-dimensional data. https://github.com/mlesnoff/Jchemo. 
+CIRAD, UMR SELMET, Montpellier, France
 
 ## Acknowledgments
 
