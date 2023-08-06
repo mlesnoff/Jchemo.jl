@@ -6,14 +6,14 @@
 - **pcaeigen** Eigen decomposition
 - **pcaeigenk** Eigen decomposition for wide matrices (kernel form)
 - **pcanipals**: NIPALS algorithm
-- **pcanipalsmiss**: PCA by NIPALS algorithm allowing missing data
+- **pcanipalsmiss**: NIPALS algorithm allowing missing data
 - **pcasvd** SVD decomposition
 
 - Robust PCA
     - **pcasph** Spherical (with spatial median)
 
 - Sparse PCA
-    - **spca** Sparse PCA (Shen & Huang 2008)
+    - **spca** sPCA (Shen & Huang 2008)
 
 *Utilities for PCA and PLS* 
 - **xfit** Matrix fitting 
