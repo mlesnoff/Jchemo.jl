@@ -14,13 +14,15 @@ function snipalsmix(X; nvar = nco(X),
         t0 .= copy(t)
         mul!(v, X', t)
         ## Sparsity
-        absv .= abs.(v)
-        sel = sortperm(absv; rev = true)[1:nvar]
-        vmax = v[sel]
-        v .= zeros(p)
-        v[sel] .= vmax
-        delta = maximum(sort(absv)[1:nrm])
-        v .= soft.(v, delta)
+        if nrm > 0
+            absv .= abs.(v)
+            sel = sortperm(absv; rev = true)[1:nvar]
+            vmax = v[sel]
+            v .= zeros(p)
+            v[sel] .= vmax
+            delta = maximum(sort(absv)[1:nrm])
+            v .= soft.(v, delta)
+        end
         ## End
         v ./= norm(v)
         mul!(t, X, v)
