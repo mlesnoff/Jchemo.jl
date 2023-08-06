@@ -41,30 +41,31 @@ Sparse principal component analysis via regularized low rank
 matrix approximation (Shen & Huang 2008). A Nipals algorithm is used. 
 
 Function `spca' provides three methods of thresholding to compute 
-sparse loadings:
+the sparse loadings:
 
-* `meth = "soft"`: Soft thresholding on standardized loadings. 
+* `meth = "soft"`: Soft thresholding of standardized loadings. 
     Noting v the loading vector, at each step, abs(v) is standardized to 
-    its maximal value. The soft-thresholding function 
-    (see function `soft`) is applied to this standardized vector, 
-    with the constant `delta` ∈ [0, 1], which returns the sparse vector 
-    theta. Vector v is finally multiplied term-by-term by vector theta
-    that gives the sparse loadings.
+    its maximal component (= max{abs(v[i]), i = 1..p}). The soft-thresholding 
+    function (see function `soft`) is applied to this standardized vector, 
+    with the constant `delta` ∈ [0, 1]. This returns the sparse vector 
+    theta. Vector v is multiplied term-by-term by vector theta, which
+    finally gives the sparse loadings.
 
 * `meth = "mix"`: Method used in function `spca` of the R package `mixOmics`.
-    For each PC, a number of variables (loadings) showing the largest 
+    For each PC, a number of `X`-variables showing the largest 
     values in vector abs(v) are selected. Then a soft-thresholding is 
-    applied to this selected loadings, whith `delta` set to the maximal value
-    of the elements of abs(v) that were removed from the selection.  
+    applied to the corresponding selected loadings. Range `delta` is 
+    automatically (internally) set to the maximal value of the components 
+    of abs(v) corresponding to variables removed from the selection.  
 
-* `meth = "hard"`: For each PC, a number of variables (loadings) showing 
+* `meth = "hard"`: For each PC, a number of `X-variables showing 
     the largest values in vector abs(v) are selected.
 
-Since the sparse loadings vectors (`P`-columns) are in general 
-non orthogonal, there is no a unique variance decomposition of `X` such 
-as in PCA. Function `summary` returns the following objects:
+Since the resulting sparse loadings vectors (`P`-columns) are in general 
+non orthogonal, there is no a unique decomposition of the variance of `X` 
+such as in PCA. Function `summary` returns the following objects:
 * `explvarx`: The proportion of variance of `X` explained by each column 
-    t of `T` is computed by regressing `X` on t (such as what is done in PLS).
+    t of `T`, computed by regressing `X` on t (such as what is done in PLS).
 * `explvarx_adj`: Adjusted explained variance proposed by 
     Shen & Huang 2008 section 2.3.    
 
