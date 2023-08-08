@@ -291,5 +291,3 @@ function Base.summary(object::Union{Plsr, Covselr, Splsr}, X::Union{Vector, Matr
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)     
     (explvarx = explvarx,)
 end
-
-
