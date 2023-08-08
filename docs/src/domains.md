@@ -2,53 +2,61 @@
 
 ## MULTIVARIATE EXPLORATORY DATA ANALYSES
 
-*Principal component analysis (PCA)* 
-- Usual
-    - **pcaeigen** Eigen decomposition
-    - **pcaeigenk** Eigen decomposition for wide matrices (kernel form)
-    - **pcanipals**: NIPALS algorithm
-    - **pcasvd** SVD decomposition
+### Principal component analysis (PCA) 
 
-- With missing data
-    - **pcanipalsmiss**: NIPALS algorithm allowing missing data
+*Usual*
+- **pcaeigen** Eigen decomposition
+- **pcaeigenk** Eigen decomposition for wide matrices (kernel form)
+- **pcanipals** NIPALS algorithm
+- **pcasvd** SVD decomposition
 
-- Robust 
-    - **pcasph** Spherical (with spatial median)
+*With missing data*
+- **pcanipalsmiss**: NIPALS algorithm allowing missing data
 
-- Sparse 
-    - **spca** sPCA (Shen & Huang 2008)
+*Robust* 
+- **pcasph** Spherical (with spatial median)
 
-*Utilities for PCA and PLS* 
+*Sparse* 
+- **spca** sPCA (Shen & Huang 2008)
+
+### Utilities for PCA and PLS 
+
 - **xfit** Matrix fitting 
 - **xresid** Residual matrix 
 
-*Random projections*
+### Random projections
+
 - **rp** Random projection
 - **rpmatgauss** Gaussian random projection matrix 
 - **rpmatli** Sparse random projection matrix 
 
-*Non linear PCA*
+### Non linear PCA
+
 - **kpca** Kernel (KPCA) *Scholkopf et al. 2002*
 
-*Multiblock*
-- 2 blocks
-    - **cca** Canonical correlation analysis (CCA)
-    - **ccawold** CCA - Wold (1984) Nipals algorithm  
-    - **plscan** Canonical partial least squares regression (Symmetric PLS)
-    - **plstuck** Tucker's inter-battery method of factor analysis (PLS-SVD)
-    - **rasvd** Redundancy analysis (RA) - PCA on instrumental variables (PCAIV)
-- 2 or more blocks 
-    - **mbpca** Multiblock PCA (MBPCA = CPCA Consensus principal component analysis)
-    - **comdim** Common components and specific weights analysis (ComDim = CCSWA = HPCA)
-    - **mbunif** Unified multiblock data analysis of Mangana et al. 2019
-- Utilities
-    - **mblock** Make blocks from a matrix
-    - **blockscal_col, _frob, _mfa, _sd** Scaling blocks
-    - **rd** Redundancy coefficients between two matrices
-    - **lg** Lg coefficient
-    - **rv** RV correlation coefficient
+### Multiblock
 
-*Factorial discrimination analysis (FDA)*
+*2 blocks*
+- **cca** Canonical correlation analysis (CCA)
+- **ccawold** CCA - Wold (1984) Nipals algorithm  
+- **plscan** Canonical partial least squares regression (Symmetric PLS)
+- **plstuck** Tucker's inter-battery method of factor analysis (PLS-SVD)
+- **rasvd** Redundancy analysis (RA) - PCA on instrumental variables (PCAIV)
+
+*2 or more blocks* 
+- **mbpca** Multiblock PCA (MBPCA = CPCA Consensus principal component analysis)
+- **comdim** Common components and specific weights analysis (ComDim = CCSWA = HPCA)
+- **mbunif** Unified multiblock data analysis of Mangana et al. 2019
+
+*Utilities*
+- **mblock** Make blocks from a matrix
+- **blockscal_col, _frob, _mfa, _sd** Scaling blocks
+- **rd** Redundancy coefficients between two matrices
+- **lg** Lg coefficient
+- **rv** RV correlation coefficient
+
+### Factorial discrimination analysis (FDA)
+
 - **fda** Eigen decomposition of the compromise "inter/intra"
 - **fdasvd** Weighted SVD decomposition of the class centers
 
