@@ -62,7 +62,7 @@
 
 ## REGRESSION
 
-### **Linear models**
+### **MLR**
 
 *Multiple linear regression (MLR)*
 - **mlr** QR algorithm
@@ -76,23 +76,27 @@
 
 ### **Partial least squares (PLSR)**
 
-*PLSR*
+*Usual (asymetric)*
 - **plskern** Fast "improved kernel #1" algorithm of *Dayal & McGregor 1997*
 - **plsnipals** Nipals
 - **plswold** Nipals *Wold 1984*
 - **plsrosa** ROSA *Liland et al. 2016*
 - **plssimp** SIMPLS *de Jong 1993*
 
-*Variants of regularization with latent variables* 
+*Variants of regularization using latent variables* 
 - **cglsr** Conjugate gradient for the least squares normal equations (CGLS)
 - **rrr** Reduced rank regression (RRR)  (= redundancy analysis regression) 
 - **pcr** Principal components regression (SVD factorization)
+
+*Sparse*
+- **splskern** sPLSR (Lê Cao et al. 2008)
+- **covselr** MLR on variables selected from Covsel method (Roger et al. 2011)
 
 *Non linear*
 - **kplsr** Non linear kernel (KPLSR) *Rosipal & Trejo 2001*
 - **dkplsr** Direct non linear kernel (DKPLSR) *Bennett & Embrechts 2003*
 
-*Averaging and stacking of PLSR models with different numbers of latent variables (LVs)*
+*Averaging and stacking PLSR models with different numbers of latent variables*
 - **plsravg** PLSR-AVG
 
 *Multiblock*
@@ -111,15 +115,10 @@
 *Non linear*
 - **krr** Non linear kernel (KRR) = Least squares SVM (LS-SVMR)
 
-### Sparse models
-
-- **covselr** MLR on variables selected from Covsel method
-- **splskern** sPLSR (Lê Cao et al. 2008)
-
 ### **Local models**
 
-- **knnr** kNNR
-- **lwmlr** kNN locally weighted multiple linear regression (kNN-LWMLR)
+- **knnr** kNN regression
+- **lwmlr** kNN locally weighted MLR (kNN-LWMLR)
 - **lwplsr** kNN locally weighted PLSR (kNN-LWPLSR)
 
 *With preliminary dimension reduction*
@@ -130,30 +129,31 @@
 - **lwplsravg** kNN-LWPLSR-AVG 
 - **cplsravg** Clustered PLSR-AVG
 
-### **Trees** (wrappers to DecisionTree.jl)
-
-- **treer_dt** Single tree
-- **rfr_dt** Random forest
-
 ### **Generic bagging**
 
 - **baggr** Bagging 
 - **oob_baggr** Out-of-bag (OOB) error rate
 
+### Wrappers to other packages
+
+*DecisionTree.jl (Regression trees)*
+- **treer_dt** Single tree
+- **rfr_dt** Random forest
+
 ## DISCRIMINATION ANALYSIS (DA)
 
-### DA based on predicted Y-dummy table
+### Based on the prediction of the Y-dummy table
 
-- **mlrda** Y-dummy MLR predictions (MLR-DA)
-- **plsrda** Y-dummy PLSR predictions (PLSR-DA) = usual "PLSDA"
-- **plsrdaavg** Averaging PLSR-DA models with different numbers of 
-    latent variables (LVs) (PLSR-DA-AVG)
-- **rrda** Y-dummy RR predictions (RR-DA)
+*Linear*
+- **mlrda** MLR prediction (MLR-DA)
+- **plsrda** PLSR prediction (PLSR-DA) = **usual PLSDA**
+- **plsrdaavg** Averaging PLSR-DA models with different numbers of latent variables (PLSR-DA-AVG)
+- **rrda** RR prediction (RR-DA)
 
 *Non linear*
-- **kplsrda** Y-dummy KPLSR predictions (KPLSR-DA)
-- **dkplsrda** Y-dummy DKPLSR predictions (DKPLSR-DA)
-- **krrda** Y-dummy KRR predictions (KRR-DA)
+- **kplsrda** KPLSR prediction (KPLSR-DA)
+- **dkplsrda** DKPLSR prediction (DKPLSR-DA)
+- **krrda** KRR prediction (KRR-DA)
 
 ### Probabilistic DA
 
@@ -161,7 +161,7 @@
 - **lda** Linear discriminant analysis (LDA)
 - **qda** Quadratic discriminant analysis (QDA, with continuum towards LDA)
 - **rda** Regularized discriminant analysis (RDA)
-- **nscda**: DA by nearest shrunken centroids
+- **nscda**: DA by nearest shrunken centroids (Tibshirani et al. 2002, 2003)
 
 *Non parametric*
 - **kdeda** DA by kernel Gaussian density estimation (KDE-DA)
