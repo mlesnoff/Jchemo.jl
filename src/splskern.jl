@@ -25,7 +25,7 @@ Sparse PLSR (Shen & Huang 2008).
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
-Sparse partial least squares regression (Lê CAo et al. 2008), with 
+Sparse partial least squares regression (Lê Cao et al. 2008), with 
 the fast "improved kernel algorithm #1" of Dayal & McGregor (1997). 
 In the present version, the sparseness only concerns `X` (not `Y`). 
 
