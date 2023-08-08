@@ -8,7 +8,7 @@ function splsnipals(X, Y, weights = ones(size(X, 1)); nlv,
         scal = scal)
 end
 
-function splsnipals(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
+function splsnipals!(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
         nvar = nco(X), tol = 1e-8, maxit = 100, 
         scal = false)
     n, p = size(X)
