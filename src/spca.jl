@@ -61,6 +61,9 @@ the sparse loadings:
 * `meth = "hard"`: For each PC, a number of `X-variables showing 
     the largest values in vector abs(v) are selected.
 
+The case `meth = "mix"` returns the same results as function 
+spca of the R package mixOmics.
+
 Since the resulting sparse loadings vectors (`P`-columns) are in general 
 non orthogonal, there is no a unique decomposition of the variance of `X` 
 such as in PCA. Function `summary` returns the following objects:
