@@ -1,18 +1,21 @@
 # Available methods
 
-## MULTIVARIATE EXPLORATORY ANALYSES
+## MULTIVARIATE EXPLORATORY DATA ANALYSES
 
 *Principal component analysis (PCA)* 
-- **pcaeigen** Eigen decomposition
-- **pcaeigenk** Eigen decomposition for wide matrices (kernel form)
-- **pcanipals**: NIPALS algorithm
-- **pcanipalsmiss**: NIPALS algorithm allowing missing data
-- **pcasvd** SVD decomposition
+- Usual
+    - **pcaeigen** Eigen decomposition
+    - **pcaeigenk** Eigen decomposition for wide matrices (kernel form)
+    - **pcanipals**: NIPALS algorithm
+    - **pcasvd** SVD decomposition
 
-- Robust PCA
+- With missing data
+    - **pcanipalsmiss**: NIPALS algorithm allowing missing data
+
+- Robust 
     - **pcasph** Spherical (with spatial median)
 
-- Sparse PCA
+- Sparse 
     - **spca** sPCA (Shen & Huang 2008)
 
 *Utilities for PCA and PLS* 
@@ -103,6 +106,7 @@
 ### Sparse models
 
 - **covselr** MLR on variables selected from Covsel method
+- **splskern** sPLSR (Lê Cao et al. 2008)
 
 ### **Local models**
 
