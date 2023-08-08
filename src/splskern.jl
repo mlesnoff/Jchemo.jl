@@ -74,6 +74,10 @@ fm = splskern(Xtrain, ytrain; nlv = nlv,
     meth = "mix", nvar = 5) ;
 pnames(fm)
 fm.T
+fm.W
+fm.P
+fm.sellv
+fm.sel
 
 zcoef = Jchemo.coef(fm)
 zcoef.int
