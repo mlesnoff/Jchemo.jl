@@ -53,44 +53,52 @@ Journal of Chemometrics 11, 73-85.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie, StatsBase
+using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/iris.jld2") 
+db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-summ(dat.X)
 
-X = dat.X[:, 1:4]
-n = nro(X)
-
-ntrain = 120
-s = sample(1:n, ntrain; replace = false) 
+X = dat.X 
+y = dat.Y.tbc
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
 Xtrain = X[s, :]
+ytrain = y[s]
 Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
 
-tol = 1e-15
-nlv = 3 
-scal = false
-#scal = true
-meth = "soft"
-#meth = "mix"
-#meth = "hard"
-nvar = 2 ; delta = .4
-fm = splskern(Xtrain; nlv = nlv, 
-    meth = meth, nvar = nvar, delta = delta, 
-    tol = tol, scal = scal) ;
-fm.niter
-fm.sellv 
-fm.sel
-fm.P
-fm.P' * fm.P
-head(fm.T)
+nlv = 15
+fm = splskern(Xtrain, ytrain; nlv = nlv,
+    meth = "mix", nvar = 5) ;
+pnames(fm)
+fm.T
 
-Ttest = Jchemo.transform(fm, Xtest)
+zcoef = Jchemo.coef(fm)
+zcoef.int
+zcoef.B
+Jchemo.coef(fm; nlv = 7).B
 
-res = Jchemo.summary(fm, Xtrain) ;
-res.explvarx
-res.explvarx_adj
+Jchemo.transform(fm, Xtest)
+Jchemo.transform(fm, Xtest; nlv = 7)
+
+res = Jchemo.predict(fm, Xtest)
+res.pred
+rmsep(res.pred, ytest)
+plotxy(vec(res.pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
+
+res = Jchemo.predict(fm, Xtest; nlv = 1:2)
+res.pred[1]
+res.pred[2]
+
+res = summary(fm, Xtrain) ;
+pnames(res)
+z = res.explvarx
+lines(z.nlv, z.cumpvar,
+    axis = (xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance"))
 ```
 """ 
 function splskern(X, Y, weights = ones(nro(X)); nlv, 
