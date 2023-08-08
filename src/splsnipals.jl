@@ -1,18 +1,42 @@
 # Mangamana et al 2021, section 2.1.2
 # wx is optimized, instead of wy in plsmang
-function splsnipals(X, Y; nlv,
-        nvar = nco(X),
-        tol = 1e-8, maxit = 100)
-    X = copy(ensure_mat(X))
-    Y = copy(ensure_mat(Y))
+function splsnipals(X, Y, weights = ones(size(X, 1)); nlv, 
+    nvar = nco(X), tol = 1e-8, maxit = 100, 
+        scal = false)
+    splsnipals!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
+        nvar = nvar, tol = tol, maxit = maxit, 
+        scal = scal)
+end
+
+function splsnipals(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
+        nvar = nco(X), tol = 1e-8, maxit = 100, 
+        scal = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(nlv, n, p)
     length(nvar) == 1 ? nvar = repeat([nvar], nlv) : nothing
-    xmeans = colmean(X) 
-    ymeans = colmean(Y)   
-    center!(X, xmeans)
-    center!(Y, ymeans)
+    weights = mweight(weights)
+    sqrtw = sqrt.(weights)
+    xmeans = colmean(X, weights) 
+    ymeans = colmean(Y, weights)   
+    xscales = ones(p)
+    yscales = ones(q)
+    if scal 
+        xscales .= colstd(X, weights)
+        yscales .= colstd(Y, weights)
+        cscale!(X, xmeans, xscales)
+        cscale!(Y, ymeans, yscales)
+    else
+        center!(X, xmeans)
+        center!(Y, ymeans)
+    end
+    # Row metric
+    # Costly
+    #X .= sqrtD * X
+    #Y .= sqrtD * Y
+    X .= sqrtw .* X
+    Y .= sqrtw .* Y 
+    ## End
     Tx  = similar(X, n, nlv)
     Ty = copy(Tx)
     Wx  = similar(X, p, nlv)
