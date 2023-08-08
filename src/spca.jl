@@ -154,9 +154,9 @@ function spca!(X::Matrix, weights = ones(nro(X)); nlv,
     P = similar(X, p, nlv)
     sv = similar(X, nlv)
     niter = list(nlv, Int64)
-    sellv = list(nlv, Vector{Int64})
     b = similar(X, 1, p)
     beta = similar(X, p, nlv)
+    sellv = list(nlv, Vector{Int64})
     for a = 1:nlv
         if meth == "soft"
             res = snipals(X; 

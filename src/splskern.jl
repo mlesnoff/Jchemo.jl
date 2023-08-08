@@ -42,7 +42,7 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     r   = copy(zp)
     c   = similar(X, q)
     tmp = similar(XtY) # = XtY_approx
-    # End
+    sellv = list(nlv, Vector{Int64})
     @inbounds for a = 1:nlv
         if q == 1
             w .= vcol(XtY, 1)
@@ -60,7 +60,6 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
             ## End
             w ./= norm(w)
         else
-            #w .= svd(XtY).U[:, 1]
             w .= snipalsmix(XtY'; nvar = nvar[a]).v
         end                                  
         r .= w
@@ -82,6 +81,7 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         R[:, a] .= r
         C[:, a] .= c
         TT[a] = tt
+        sellv[a] = findall(abs.(res.v) .> 0)
      end
      Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
          yscales, weights, nothing)
