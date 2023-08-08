@@ -188,7 +188,7 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
      end
      sel = unique(reduce(vcat, sellv))
      Splsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
-         yscales, weights, nothing, sellv sel)
+         yscales, weights, nothing, sellv, sel)
 end
 
 
