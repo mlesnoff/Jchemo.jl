@@ -13,10 +13,10 @@ end
 
 """
     spca(X, weights = ones(nro(X)); nlv,
-        meth = "soft", nvar = nco(X), delta = 0, 
+        meth = "soft", delta = 0, nvar = nco(X), 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     spca!(X, weights = ones(nro(X)); nlv,
-        meth = "soft", nvar = nco(X), delta = 0, 
+        meth = "soft", delta = 0, nvar = nco(X), 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
 Sparse PCA (Shen & Huang 2008).
 * `X` : X-data (n, p). 
@@ -25,13 +25,13 @@ Sparse PCA (Shen & Huang 2008).
 * `nlv` : Nb. principal components (PCs).
 * `meth`: Method used for the thresholding. Possible values
     are "soft" (default), "mix" or "hard". See thereafter.
+* `delta` : Range for the thresholding (see function `soft`)
+    on the loadings standardized to their maximal absolute value.
+    Must be within [0, 1]. Only used if `meth = "soft".
 * `nvar` : Nb. variables (`X`-columns) selected for each 
     PC. Can be a single integer (same nb. variables
     for each PC), or a vector of length `nlv`.
     Only used if `meth = "mix"` or `meth = "hard"`.   
-* `delta` : Range for the thresholding (see function `soft`)
-    on the loadings standardized to their maximal absolute value.
-    Must be within [0, 1]. Only used if `meth = "soft".
 * `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
@@ -109,7 +109,7 @@ scal = false
 meth = "soft"
 #meth = "mix"
 #meth = "hard"
-nvar = 2 ; delta = .4
+delta = .4 ; nvar = 2 
 fm = spca(Xtrain; nlv = nlv, 
     meth = meth, nvar = nvar, delta = delta, 
     tol = tol, scal = scal) ;
@@ -128,15 +128,15 @@ res.explvarx_adj
 ```
 """ 
 function spca(X, weights = ones(nro(X)); nlv,
-        meth = "soft", nvar = nco(X), delta = 0, 
+        meth = "soft", delta = 0, nvar = nco(X), 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     spca!(copy(ensure_mat(X)), weights; nlv = nlv,
-        meth = meth, nvar = nvar, delta = delta, 
+        meth = meth, delta = delta, nvar = nvar, 
         tol = tol, maxit = maxit, scal = scal)
 end
 
 function spca!(X::Matrix, weights = ones(nro(X)); nlv, 
-        meth = "soft", nvar = nco(X), delta = 0, 
+        meth = "soft", delta = 0, nvar = nco(X), 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     n, p = size(X)
     nlv = min(nlv, n, p)
