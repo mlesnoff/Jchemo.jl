@@ -30,9 +30,10 @@ the fast "improved kernel algorithm #1" of Dayal & McGregor (1997).
 In the present version, the sparseness only concerns `X` (not `Y`). 
 
 Function `splskern' provides three methods of thresholding to compute 
-the sparse `X`-loading weights w, see `?spca' for description (same prinv=ciples). 
-The case `meth = "mix"` returns the same results as function spls of the R 
-package mixOmics in regression mode (and no sparseness on `Y`).
+the sparse `X`-loading weights w, see `?spca' for description (same 
+principles). The case `meth = "mix"` returns the same results as function 
+spls of the R package mixOmics in regression mode (and with no sparseness 
+on `Y`).
 
 ## References
 Cao, K.-A.L., Rossouw, D., Robert-Granié, C., Besse, P., 2008. A Sparse PLS 
