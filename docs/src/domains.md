@@ -32,15 +32,15 @@
 
 *Multiblock*
 - 2 blocks
-    - **cca**: Canonical correlation analysis (CCA)
-    - **ccawold**: CCA - Wold (1984) Nipals algorithm  
-    - **plscan**: Canonical partial least squares regression (Symmetric PLS)
-    - **plstuck**: Tucker's inter-battery method of factor analysis (PLS-SVD)
-    - **rasvd**: Redundancy analysis (RA) - PCA on instrumental variables (PCAIV)
+    - **cca** Canonical correlation analysis (CCA)
+    - **ccawold** CCA - Wold (1984) Nipals algorithm  
+    - **plscan** Canonical partial least squares regression (Symmetric PLS)
+    - **plstuck** Tucker's inter-battery method of factor analysis (PLS-SVD)
+    - **rasvd** Redundancy analysis (RA) - PCA on instrumental variables (PCAIV)
 - 2 or more blocks 
     - **mbpca** Multiblock PCA (MBPCA = CPCA Consensus principal component analysis)
     - **comdim** Common components and specific weights analysis (ComDim = CCSWA = HPCA)
-    - **mbunif**: Unified multiblock data analysis of Mangana et al. 2019
+    - **mbunif** Unified multiblock data analysis of Mangana et al. 2019
 - Utilities
     - **mblock** Make blocks from a matrix
     - **blockscal_col, _frob, _mfa, _sd** Scaling blocks
@@ -115,7 +115,7 @@
 - **lwplsr** kNN locally weighted PLSR (kNN-LWPLSR)
 
 *With preliminary dimension reduction*
-- **lwmlr_s**: kNN-LWMLR-S
+- **lwmlr_s** kNN-LWMLR-S
 - **lwplsr_s** kNN-LWPLSR-S
 
 *Averaging and stacking*
@@ -199,8 +199,8 @@
 *Other methods*
 - **stah** Compute Stahel-Donoho outlierness
 - **occstah** Stahel-Donoho outlierness
-- **occknndis**: Global k-nearest neighbors distances
-- **occlknndis**: Local k-nearest neighbors distances
+- **occknndis** Global k-nearest neighbors distances
+- **occlknndis** Local k-nearest neighbors distances
 
 ## DISTRIBUTIONS
 
@@ -271,11 +271,11 @@
 
 ### **Calibration transfer**
 
-- **calds** : Direct standardization (DS)
-- **calpds** : Piecewise direct standardization (PDS)
-- **difmean** : Compute a detrimental matrix (for calibration transfer) by column 
+- **calds** Direct standardization (DS)
+- **calpds** Piecewise direct standardization (PDS)
+- **difmean** Compute a detrimental matrix (for calibration transfer) by column 
     means difference.
-- **eposvd** : Compute an orthogonalization matrix for calibration transfer
+- **eposvd** Compute an orthogonalization matrix for calibration transfer
 
 ### **Pre-processing**
 
