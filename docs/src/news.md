@@ -3,7 +3,7 @@
 ### *Version 0.1.25*
 
 - News
-    - **splsnipals**, **splskern**: Sparse PLSR
+    - **splskern**: Sparse PLSR
 
 - Modifications
     - Code improvement.
