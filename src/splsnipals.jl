@@ -104,8 +104,10 @@ function splsnipals(X::Matrix, Y::Matrix, weights = ones(size(X, 1)); nlv,
         Wytild[:, a] .= wytild
         TTx[a] = tt
      end
-     #R = Wx * inv(Px' * Wx)
-     (Tx = Tx, Ty, Wx, Px, Wy, Wytild, TTx, lambda, covtot, 
+     R = Wx * inv(Px' * Wx)
+     Tx .= (1 ./ sqrtw) .* Tx 
+     Ty .= (1 ./ sqrtw) .* Ty
+     (Tx = Tx, Ty, Wx, Px, Wy, R, Wytild, TTx, lambda, covtot, 
          xmeans, ymeans, weights, iter)
 end
 
