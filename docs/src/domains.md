@@ -192,7 +192,9 @@
 - **lwplsldaavg** kNN-LWPLS-LDA-AVG
 - **lwplsqdaavg** kNN-LWPLS-QDA-AVG (with continuum)
 
-### **Trees** (wrappers to DecisionTree.jl)
+### Wrappers to other packages
+
+*DecisionTree.jl (Regression trees)*
 
 - **treeda_dt** Single tree
 - **rfda_dt** Random forest
@@ -202,7 +204,7 @@
 *From a PCA or PLS score space*
 - **occsd** Score distance (SD)
 - **occod** Orthogonal distance (OD) 
-- **occsdod** Compromise between SD and OD 
+- **occsdod** Compromise between SD and OD (Simca approach) 
 
 *Other methods*
 - **stah** Compute Stahel-Donoho outlierness
