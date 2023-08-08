@@ -102,13 +102,13 @@ lines(z.nlv, z.cumpvar,
 ```
 """ 
 function splskern(X, Y, weights = ones(nro(X)); nlv, 
-        nvar = nco(X), scal::Bool = false)
+        meth = "soft", nvar = nco(X), scal::Bool = false)
     splskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        nvar = nvar, nlv = nlv, scal = scal)
+        meth = meth, nvar = nvar, nlv = nlv, scal = scal)
 end
 
 function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        nvar = nco(X), scal::Bool = false)
+        meth = "soft", nvar = nco(X), scal::Bool = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, nlv)
