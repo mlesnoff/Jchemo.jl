@@ -90,7 +90,6 @@ include("xresid.jl")
 
 # Sparse regression
 include("covselr.jl")  
-include("splsnipals.jl")
 include("splskern.jl")
 
 # Regression Multiblock
@@ -293,7 +292,6 @@ export
     oob_baggr, vi_baggr, 
     # Sparse regression 
     covselr,
-    splsnipals, splsnipals!,
     splskern, splskern!, 
     # Rgression Multi-block
     mbplsr, mbplsr!,

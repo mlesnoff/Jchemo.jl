@@ -81,8 +81,9 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         R[:, a] .= r
         C[:, a] .= c
         TT[a] = tt
-        sellv[a] = findall(abs.(res.v) .> 0)
+        sellv[a] = findall(abs.(w) .> 0)
      end
+     sel = unique(reduce(vcat, sellv))
      Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
          yscales, weights, nothing)
 end
