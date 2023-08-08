@@ -1,3 +1,20 @@
+struct Splsr
+    T::Matrix{Float64}
+    P::Matrix{Float64}
+    R::Matrix{Float64}
+    W::Matrix{Float64}
+    C::Matrix{Float64}
+    TT::Vector{Float64}
+    xmeans::Vector{Float64}
+    xscales::Vector{Float64}
+    ymeans::Vector{Float64}
+    yscales::Vector{Float64}
+    weights::Vector{Float64}
+    niter::Union{Array{Float64}, Nothing}
+    sellv::Vector{Vector{Int64}}
+    sel::Vector{Int64}
+end
+
 """
     splskern(X, Y, weights = ones(nro(X)); nlv,
         meth = "soft", nvar = nco(X), delta = 0, 
