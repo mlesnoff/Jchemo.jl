@@ -1,10 +1,10 @@
 """
     splskern(X, Y, weights = ones(nro(X)); nlv,
         meth = "soft", nvar = nco(X), delta = 0, 
-        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
+        scal::Bool = false)
     splskern!(X, Y, weights = ones(nro(X)); nlv,
         meth = "soft", nvar = nco(X), delta = 0, 
-        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
+        scal::Bool = false)
 Sparse PLSR (Shen & Huang 2008).
 * `X` : X-data (n, p). 
 * `Y` : Y-data (n, q).
@@ -106,13 +106,13 @@ lines(z.nlv, z.cumpvar,
 ```
 """ 
 function splskern(X, Y, weights = ones(nro(X)); nlv, 
-        meth = "soft", nvar = nco(X), scal::Bool = false)
-    splskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        meth = meth, nvar = nvar, nlv = nlv, scal = scal)
+        meth = "soft", nvar = nco(X), delta = 0, scal::Bool = false)
+    splskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
+        meth = meth, nvar = nvar, delta = delta, scal = scal)
 end
 
 function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        meth = "soft", nvar = nco(X), scal::Bool = false)
+        meth = "soft", nvar = nco(X), delta = 0, scal::Bool = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, nlv)
@@ -154,20 +154,30 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         if q == 1
             w .= vcol(XtY, 1)
             ## Sparsity
-            nrm = p - nvar[a]
-            if nrm > 0
-                absw .= abs.(w)
-                sel = sortperm(absw; rev = true)[1:nvar[a]]
-                wmax = w[sel]
-                w .= zeros(p)
-                w[sel] .= wmax
-                delta = maximum(sort(absw)[1:nrm])
-                w .= soft.(w, delta)
+            if meth == "soft"
+            elseif meth == "mix"
+                nrm = p - nvar[a]
+                if nrm > 0
+                    absw .= abs.(w)
+                    sel = sortperm(absw; rev = true)[1:nvar[a]]
+                    wmax = w[sel]
+                    w .= zeros(p)
+                    w[sel] .= wmax
+                    delta = maximum(sort(absw)[1:nrm])
+                    w .= soft.(w, delta)
+                end
+            elseif meth == "hard"
             end
             ## End
             w ./= norm(w)
         else
-            w .= snipalsmix(XtY'; nvar = nvar[a]).v
+            if meth == "soft"
+                w .= snipals(XtY'; delta = delta[a]).v
+            elseif meth == "mix"
+                w .= snipalsmix(XtY'; nvar = nvar[a]).v
+            elseif meth == "hard"
+                w .= snipalsh(XtY'; nvar = nvar[a]).v
+            end
         end                                  
         r .= w
         if a > 1
