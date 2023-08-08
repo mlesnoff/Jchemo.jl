@@ -1,7 +1,7 @@
 # Mangamana et al 2021, section 2.1.2
 # wx is optimized, instead of wy in plsmang
 function splsnipals(X, Y, weights = ones(size(X, 1)); nlv, 
-    nvar = nco(X), tol = 1e-8, maxit = 100, 
+        nvar = nco(X), tol = 1e-8, maxit = 100, 
         scal = false)
     splsnipals!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         nvar = nvar, tol = tol, maxit = maxit, 

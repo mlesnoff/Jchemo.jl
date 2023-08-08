@@ -292,7 +292,7 @@ export
     oob_baggr, vi_baggr, 
     # Sparse regression 
     covselr,
-    splsnipals,
+    splsnipals, splsnipals!,
     # Rgression Multi-block
     mbplsr, mbplsr!,
     mbplswest, mbplswest!,
