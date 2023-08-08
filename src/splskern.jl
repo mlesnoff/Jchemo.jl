@@ -1,9 +1,9 @@
 """
     splskern(X, Y, weights = ones(nro(X)); nlv,
-        meth = "soft", nvar = nco(X), delta = 0, 
+        meth = "soft", delta = 0, nvar = nco(X), 
         scal::Bool = false)
     splskern!(X, Y, weights = ones(nro(X)); nlv,
-        meth = "soft", nvar = nco(X), delta = 0, 
+        meth = "soft", delta = 0, nvar = nco(X), 
         scal::Bool = false)
 Sparse PLSR (Shen & Huang 2008).
 * `X` : X-data (n, p). 
@@ -13,13 +13,13 @@ Sparse PLSR (Shen & Huang 2008).
 * `nlv` : Nb. latent variables (LVs).
 * `meth`: Method used for the thresholding. Possible values
     are "soft" (default), "mix" or "hard". See thereafter.
+* `delta` : Range for the thresholding (see function `soft`)
+    on the loadings standardized to their maximal absolute value.
+    Must be within [0, 1]. Only used if `meth = "soft".
 * `nvar` : Nb. variables (`X`-columns) selected for each 
     LV. Can be a single integer (same nb. variables
     for each LV), or a vector of length `nlv`.
     Only used if `meth = "mix"` or `meth = "hard"`.   
-* `delta` : Range for the thresholding (see function `soft`)
-    on the loadings standardized to their maximal absolute value.
-    Must be within [0, 1]. Only used if `meth = "soft".
 * `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
@@ -106,13 +106,13 @@ lines(z.nlv, z.cumpvar,
 ```
 """ 
 function splskern(X, Y, weights = ones(nro(X)); nlv, 
-        meth = "soft", nvar = nco(X), delta = 0, scal::Bool = false)
+        meth = "soft", delta = 0, nvar = nco(X), scal::Bool = false)
     splskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
-        meth = meth, nvar = nvar, delta = delta, scal = scal)
+        meth = meth, delta = delta, nvar = nvar, scal = scal)
 end
 
 function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        meth = "soft", nvar = nco(X), delta = 0, scal::Bool = false)
+        meth = "soft", delta = 0, nvar = nco(X), scal::Bool = false)
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, nlv)
