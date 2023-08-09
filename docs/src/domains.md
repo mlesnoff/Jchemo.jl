@@ -194,7 +194,7 @@
 
 ### Wrappers to other packages
 
-*DecisionTree.jl (Regression trees)*
+*DecisionTree.jl (Classification trees)*
 
 - **treeda_dt** Single tree
 - **rfda_dt** Random forest
