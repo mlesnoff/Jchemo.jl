@@ -76,7 +76,7 @@
 
 ### **Partial least squares (PLSR)**
 
-*Usual (asymetric)*
+*Usual (asymetric regression mode)*
 - **plskern** Fast "improved kernel #1" algorithm of *Dayal & McGregor 1997*
 - **plsnipals** Nipals
 - **plswold** Nipals *Wold 1984*
