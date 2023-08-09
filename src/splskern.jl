@@ -146,6 +146,7 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     zp  = similar(X, p)
     w   = copy(zp)
     absw = copy(zp)
+    absw_stand = copy(zp)
     theta = copy(zp)
     r   = copy(zp)
     c   = similar(X, q)
@@ -171,7 +172,7 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
                     w .= soft.(w, delta)
                 end
             elseif meth == "hard"
-                sel = sortperm(absw; rev = true)[1:nvar]
+                sel = sortperm(absw; rev = true)[1:nvar[a]]
                 wmax = w[sel]
                 w .= zeros(p)
                 w[sel] .= wmax
