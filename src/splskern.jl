@@ -146,6 +146,7 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     zp  = similar(X, p)
     w   = copy(zp)
     absw = copy(zp)
+    theta = copy(zp)
     r   = copy(zp)
     c   = similar(X, q)
     tmp = similar(XtY) # = XtY_approx
@@ -153,12 +154,15 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     @inbounds for a = 1:nlv
         if q == 1
             w .= vcol(XtY, 1)
-            ## Sparsity
+            absw .= abs.(w)
             if meth == "soft"
+                absw_max = maximum(absw)
+                absw_stand .= absw / absw_max
+                theta .= max.(0, absw_stand .- delta) 
+                w .= sign.(w) .* theta * absw_max 
             elseif meth == "mix"
                 nrm = p - nvar[a]
                 if nrm > 0
-                    absw .= abs.(w)
                     sel = sortperm(absw; rev = true)[1:nvar[a]]
                     wmax = w[sel]
                     w .= zeros(p)
@@ -167,6 +171,10 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
                     w .= soft.(w, delta)
                 end
             elseif meth == "hard"
+                sel = sortperm(absw; rev = true)[1:nvar]
+                wmax = w[sel]
+                w .= zeros(p)
+                w[sel] .= wmax
             end
             ## End
             w ./= norm(w)
