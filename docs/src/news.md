@@ -1,6 +1,6 @@
 ### NEWS for package **Jchemo**
 
-### *Version 0.1.25*
+### *Version 0.2.0*
 
 - News
     - **splskern**: Sparse PLSR
