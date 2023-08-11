@@ -1,9 +1,17 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.2.1*
+
+- News
+    - **splsrda**: Sparse PLSR-DA.
+
+- Modifications
+    - Code improvement.
+    
 ### *Version 0.2.0*
 
 - News
-    - **splskern**: Sparse PLSR
+    - **splskern**: Sparse PLSR.
 
 - Modifications
     - Code improvement.
