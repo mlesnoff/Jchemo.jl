@@ -175,6 +175,10 @@
 - **plsldaavg** PLS-LDA-AVG
 - **plsqdaavg** PLS-QDA-AVG (with continuum)
 
+### **Sparse**
+
+- **splsrda** Sparse PLSR-DA
+
 ### **Local models**
 
 - **knnda** kNN-DA (Vote within neighbors)
