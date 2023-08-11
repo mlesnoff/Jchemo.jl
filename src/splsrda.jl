@@ -19,14 +19,16 @@ Sparse PLSR-DA.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-Same as function `plsrda` (PLSR-DA) except that function `splskern` is used 
-instead function `plskern`. See the help of the respectve functions. 
+Same as function `plsrda` (PLSR-DA) except that sparse PLSR (function 
+`splskern`) is used instead PLSR (function `plskern`). 
+    
+See the help of the respectve functions. 
 
 ## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/forages2.jld2") 
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "forages2.jld2") 
 @load db dat
 pnames(dat)
 
@@ -42,24 +44,34 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-fm = splsrda(Xtrain, ytrain; nlv = nlv) ;
+delta = .8
+nvar = 2
+scal = false
+#scal = true
+meth = "soft"
+#meth = "mix"
+#meth = "hard"
+fm = splsrda(Xtrain, ytrain; nlv = nlv,
+    meth = meth, delta = delta, nvar = nvar,
+    scal = scal) ;
 pnames(fm)
-typeof(fm.fm) # = PLS2 model
-
-res = Jchemo.predict(fm, Xtest) ;
-pnames(res)
+pnames(fm.fm)
+zfm = fm.fm ;
+zfm.sellv
+zfm.sel
+res = Jchemo.predict(fm, Xtest)
 res.posterior
-res.pred
 err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
-Jchemo.transform(fm, Xtest)
-
-Jchemo.transform(fm.fm, Xtest)
-Jchemo.coef(fm.fm)
-summary(fm.fm, Xtrain)
-
-Jchemo.predict(fm, Xtest; nlv = 1:2).pred
+nlv = 0:30 
+pars = mpar(meth = ["mix"], nvar = [1; 5; 10; 20], 
+    scal = [false])
+res = gridscorelv(Xtrain, ytrain, Xtest, ytest; 
+    score = err, fun = splsrda, pars = pars, nlv = nlv)
+typ = string.("nvar=", res.nvar)
+plotgrid(res.nlv, res.y1, typ; step = 2,
+    xlabel = "Nb. LVs", ylabel = "ERR").f
 ```
 """ 
 function splsrda(X, y, weights = ones(nro(X)); nlv,
