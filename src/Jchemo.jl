@@ -32,12 +32,12 @@ include("snipals.jl")
 include("snipalsh.jl")
 include("snipalsmix.jl")
 
-# Distributions
+### Distributions
 include("dmnorm.jl")
 include("dmnormlog.jl")
 include("dmkern.jl")
 
-# Exploratory
+### Exploratory
 include("fda.jl")     # Here since ::Fda called in pcasvd
 include("fdasvd.jl")     
 include("pcasvd.jl")
@@ -50,7 +50,7 @@ include("rp.jl")
 include("pcasph.jl") 
 include("spca.jl")
 
-# Exploratory - Multiblock 
+# Multiblock 
 include("angles.jl")
 include("mblock.jl")
 include("blockscal.jl")
@@ -63,7 +63,7 @@ include("plscan.jl")
 include("plstuck.jl")
 include("rasvd.jl")
 
-# Regression 
+### Regression 
 include("aov1.jl")
 include("mlr.jl")
 include("rr.jl")
@@ -88,18 +88,18 @@ include("vip.jl")
 include("xfit.jl")
 include("xresid.jl")
 
-# Sparse regression
+# Sparse
 include("covselr.jl")  
 include("splskern.jl")
 
-# Regression Multiblock
+# Multiblock
 include("mbplsr.jl") 
 include("mbplswest.jl")
 include("mbwcov.jl")
 include("rosaplsr.jl") 
 include("soplsr.jl") 
 
-# Local regression
+# Local
 include("locw.jl")
 include("locwlv.jl")
 include("knnr.jl")
@@ -109,6 +109,20 @@ include("lwplsr.jl")
 include("lwplsravg.jl")
 include("lwplsr_s.jl")
 
+# Validation
+include("mpar.jl")
+include("scores.jl")
+include("confusion.jl")
+include("gridscore.jl")
+include("segm.jl")
+include("gridcv.jl")
+include("gridcv_mb.jl")
+include("selwold.jl")
+
+# Variable importance (direct methods) 
+include("isel.jl")
+include("viperm.jl")
+
 # Bagging
 include("baggr.jl")
 include("baggr_util.jl")
@@ -116,7 +130,7 @@ include("baggr_util.jl")
 # Trees
 include("treer_dt.jl")
 
-# Discrimination 
+### Discrimination 
 include("lda.jl")
 include("qda.jl")
 include("rda.jl")
@@ -133,16 +147,17 @@ include("dkplsrda.jl")
 include("nsc.jl")
 include("nscda.jl")
 
+# Sparse
+include("splsrda.jl")
+
+# One-class
 include("occsd.jl") ; include("occod.jl") ; ; include("occsdod.jl")
 include("occstah.jl") ; include("stah.jl")
 include("occknndis.jl") ; include("occlknndis.jl")
 
 include("cplsravg.jl")  # Here since call ::PlsrDa
 
-# Trees 
-include("treeda_dt.jl")
-
-# Local discrimination
+# Local
 include("lwmlrda.jl") ; include("lwmlrda_s.jl")
 include("lwplsrda.jl") ; include("lwplsrda_s.jl")
 include("lwplslda.jl")
@@ -152,27 +167,16 @@ include("lwplsldaavg.jl")
 include("lwplsqdaavg.jl")
 include("knnda.jl")
 
-# Variable importance (direct methods) 
-include("isel.jl")
-include("viperm.jl")
+# Trees 
+include("treeda_dt.jl")
 
-# Validation
-include("mpar.jl")
-include("scores.jl")
-include("confusion.jl")
-include("gridscore.jl")
-include("segm.jl")
-include("gridcv.jl")
-include("gridcv_mb.jl")
-include("selwold.jl")
-
-# Transfer
+### Transfer
 include("calds.jl")
 include("calpds.jl")
 include("difmean.jl")
 include("eposvd.jl")
 
-# Sampling
+### Sampling
 include("mtest.jl")
 include("sampling.jl")
 
@@ -182,7 +186,7 @@ include("wdist.jl")
 include("kernels.jl")
 
 export 
-    # Utilities
+    ### Utilities
     aggstat,
     dupl, miss,
     center, center!, 
@@ -227,7 +231,7 @@ export
     tab, tabdf, tabdupl,
     vcatdf,
     vcol, vrow,
-    # Distributions
+    ### Distributions
     dmnorm, dmnorm!,
     dmnormlog, dmnormlog!,
     dmkern,
@@ -242,11 +246,11 @@ export
     rmgap, rmgap!,
     savgk, savgol, savgol!,
     snv, snv!, 
-    # Transfer
+    ### Transfer
     calds, calpds,
     difmean,
     eposvd,
-    # Exploratory
+    ### Exploratory
     kpca,
     pcasvd, pcasvd!, 
     pcaeigen, pcaeigen!, 
@@ -256,7 +260,7 @@ export
     rpmatgauss, rpmatli, rp, rp!,
     pcasph, pcasph!,
     spca, spca!,
-    # Exploratory Multiblock
+    # Multiblock
     blockscal, blockscal_frob, blockscal_mfa,
     blockscal_ncol, blockscal_sd,
     rv, lg, rd, 
@@ -268,7 +272,7 @@ export
     plscan, plscan!,
     plstuck, plstuck!,
     rasvd, rasvd!,
-    # Regression
+    ### Regression
     aov1,
     mlr, mlr!, mlrchol, mlrchol!, 
     mlrpinv, mlrpinv!, mlrpinvn, mlrpinvn!,
@@ -290,10 +294,10 @@ export
     treer_dt, rfr_dt, 
     baggr, 
     oob_baggr, vi_baggr, 
-    # Sparse regression 
+    # Sparse 
     covselr,
     splskern, splskern!, 
-    # Rgression Multi-block
+    # Multi-block
     mbplsr, mbplsr!,
     mbplswest, mbplswest!,
     mbwcov!, mbwcov,
@@ -304,13 +308,13 @@ export
     vip, viperm,
     # Utils
     xfit, xfit!, xresid, xresid!,
-    # Local regression
+    # Local
     locw, locwlv,
     knnr,
     lwmlr, lwmlr_s,
     lwplsr, lwplsravg, lwplsr_s,  
     cplsravg,
-    # Discrimination
+    ### Discrimination
     fda, fda!, fdasvd, fdasvd!,
     mlrda,
     rrda, krrda,
@@ -326,15 +330,15 @@ export
     occknndis, occlknndis,
     nsc, 
     nscda,
-    # Sparse discrimination 
+    # Sparse 
     splsrda,
-    # Local Discrimination
+    # Local 
     lwmlrda, lwmlrda_s,
     lwplsrda, lwplsrda_s,
     lwplslda, lwplsqda,
     lwplsrdaavg, lwplsldaavg, lwplsqdaavg,
     knnda,
-    #
+    # Auxilliary
     transform, coef, predict,
     # Validation
     residreg, residcla, 
@@ -346,14 +350,14 @@ export
     gridcv_mb, gridcvlv_mb,
     selwold,
     confusion, 
-    # Sampling
+    ### Sampling
     mtest,
     sampks, sampdp, sampsys, sampcla, 
-    # Distances
+    ### Distances
     getknn, wdist, wdist!,
     euclsq, mahsq, mahsqchol,
     krbf, kpol,
-    # Graphics
+    ### Graphics
     plotconf,
     plotgrid, 
     plotsp,
