@@ -177,7 +177,7 @@
 - **plsldaavg** PLS-LDA-AVG
 - **plsqdaavg** PLS-QDA-AVG (with continuum)
 
-### **Local models**
+*+### **Local models**
 
 - **knnda** kNN-DA (Vote within neighbors)
 - **lwmlrda** kNN locally weighted MLR-DA (kNN-LWMLR-DA)
