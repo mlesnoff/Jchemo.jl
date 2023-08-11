@@ -1,7 +1,7 @@
 name = "Jchemo"
 uuid = "fbca9394-dd0a-4d1c-b066-ae75f6ef1ad5"
 authors = ["Matthieu Lesnoff <matthieu.lesnoff@gmail.com>"]
-version = "0.2.0"
+version = "0.2.1"
 
 [deps]
 Clustering = "aaaa29a8-35af-508c-8bc3-b662a17a0fe5"
