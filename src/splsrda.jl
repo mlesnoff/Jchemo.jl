@@ -1,11 +1,21 @@
 """
     splsrda(X, y, weights = ones(nro(X)); nlv,
+        meth = "soft", delta = 0, nvar = nco(X), 
         scal::Bool = false)
 Sparse PLSR-DA.
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights of the observations. Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.
+* `meth`: Method used for the thresholding. Possible values
+    are "soft" (default), "mix" or "hard". See thereafter.
+* `delta` : Range for the thresholding (see function `soft`)
+    on the loadings standardized to their maximal absolute value.
+    Must be within [0, 1]. Only used if `meth = "soft".
+* `nvar` : Nb. variables (`X`-columns) selected for each 
+    LV. Can be a single integer (same nb. variables
+    for each LV), or a vector of length `nlv`.
+    Only used if `meth = "mix"` or `meth = "hard"`. 
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
@@ -53,10 +63,13 @@ Jchemo.predict(fm, Xtest; nlv = 1:2).pred
 ```
 """ 
 function splsrda(X, y, weights = ones(nro(X)); nlv,
+        meth = "soft", delta = 0, nvar = nco(X), 
         scal::Bool = false)
     res = dummy(y)
     ni = tab(y).vals
-    fm = splskern(X, res.Y, weights; nlv = nlv, scal = scal)
+    fm = splskern(X, res.Y, weights; nlv = nlv, 
+        meth = meth, delta = delta, nvar = nvar, 
+        scal = scal)
     Plsrda(fm, res.lev, ni)
 end
 
