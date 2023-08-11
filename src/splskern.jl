@@ -20,8 +20,6 @@ Sparse PLSR (Shen & Huang 2008).
     LV. Can be a single integer (same nb. variables
     for each LV), or a vector of length `nlv`.
     Only used if `meth = "mix"` or `meth = "hard"`.   
-* `tol` : Tolerance value for stopping the iterations.
-* `maxit` : Maximum nb. iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
