@@ -17,10 +17,13 @@
 - **pcasph** Spherical (with spatial median)
 
 *Sparse* 
-- **spca** sPCA (Shen & Huang 2008)
+- **spca** sPCA *Shen & Huang 2008*
 
-### Utilities for PCA and PLS 
+*Non linear*
 
+- **kpca** Kernel (KPCA) *Scholkopf et al. 2002*
+
+*Utilities (PCA and PLS)* 
 - **xfit** Matrix fitting 
 - **xresid** Residual matrix 
 
@@ -29,10 +32,6 @@
 - **rp** Random projection
 - **rpmatgauss** Gaussian random projection matrix 
 - **rpmatli** Sparse random projection matrix 
-
-### Non linear PCA
-
-- **kpca** Kernel (KPCA) *Scholkopf et al. 2002*
 
 ### Multiblock
 
@@ -62,7 +61,7 @@
 
 ## REGRESSION
 
-### **MLR**
+### **Ordinary least squares (OLS)**
 
 *Multiple linear regression (MLR)*
 - **mlr** QR algorithm
@@ -89,20 +88,20 @@
 - **pcr** Principal components regression (SVD factorization)
 
 *Sparse*
-- **splskern** sPLSR (Lê Cao et al. 2008)
-- **covselr** MLR on variables selected from Covsel method (Roger et al. 2011)
+- **splskern** sPLSR *Lê Cao et al. 2008*
+- **covselr** MLR on variables selected from Covsel method *Roger et al. 2011*
+
+*Averaging and stacking of PLSR models of different dimensionalities*
+- **plsravg** PLSR-AVG
 
 *Non linear*
 - **kplsr** Non linear kernel (KPLSR) *Rosipal & Trejo 2001*
 - **dkplsr** Direct non linear kernel (DKPLSR) *Bennett & Embrechts 2003*
 
-*Averaging and stacking PLSR models with different numbers of latent variables*
-- **plsravg** PLSR-AVG
-
 *Multiblock*
 - **mbplsr** Multiblock PLSR (MBPLSR) - Fast version (PLSR on concatenated blocks)
-- **mbplswest** MBPLSR - Nipals algorithm (Westerhuis et al. 1998) 
-- **mbwcov** Multiblock weighted covariate analysis regression (MBWCov) (Mangana et al. 2021) 
+- **mbplswest** MBPLSR - Nipals algorithm *Westerhuis et al. 1998* 
+- **mbwcov** Multiblock weighted covariate analysis regression (MBWCov) *Mangana et al. 2021* 
 - **rosaplsr** ROSA *Liland et al. 2016*
 - **soplsr** Sequentially orthogonalized (SO-PLSR) 
 
@@ -146,9 +145,12 @@
 
 *Linear*
 - **mlrda** MLR prediction (MLR-DA)
-- **plsrda** PLSR prediction (PLSR-DA) = **usual PLSDA**
+- **plsrda** PLSR prediction (PLSR-DA) = usual **PLSDA**
 - **plsrdaavg** Averaging PLSR-DA models with different numbers of latent variables (PLSR-DA-AVG)
 - **rrda** RR prediction (RR-DA)
+
+*Sparse*
+- **splsrda** Sparse PLSR-DA
 
 *Non linear*
 - **kplsrda** KPLSR prediction (KPLSR-DA)
@@ -171,13 +173,9 @@
 - **plsqda** PLS-QDA (with continuum)
 - **plskdeda**  PLS-KDE-DA
 
-*Averaging PLS-LDA and -QDA models with different numbers of latent variables (LVs)*
+*Averaging PLS-LDA and -QDA models of different dimensionalities*
 - **plsldaavg** PLS-LDA-AVG
 - **plsqdaavg** PLS-QDA-AVG (with continuum)
-
-### **Sparse**
-
-- **splsrda** Sparse PLSR-DA
 
 ### **Local models**
 
@@ -196,13 +194,6 @@
 - **lwplsldaavg** kNN-LWPLS-LDA-AVG
 - **lwplsqdaavg** kNN-LWPLS-QDA-AVG (with continuum)
 
-### Wrappers to other packages
-
-*DecisionTree.jl (Classification trees)*
-
-- **treeda_dt** Single tree
-- **rfda_dt** Random forest
-
 ### One-Class Classification (OCC)
 
 *From a PCA or PLS score space*
@@ -215,6 +206,13 @@
 - **occstah** Stahel-Donoho outlierness
 - **occknndis** Global k-nearest neighbors distances
 - **occlknndis** Local k-nearest neighbors distances
+
+### Wrappers to other packages
+
+*DecisionTree.jl (Classification trees)*
+
+- **treeda_dt** Single tree
+- **rfda_dt** Random forest
 
 ## DISTRIBUTIONS
 
