@@ -4,6 +4,9 @@
 
 - News
     - **splsrda**: Sparse PLSR-DA.
+    - **splslda**: Sparse PLS-LDA.
+    - **splsqda**: Sparse PLS-QDA.
+    - **splskdeda**: Sparse PLS-KDE-DA.
 
 - Modifications
     - Code improvement.
