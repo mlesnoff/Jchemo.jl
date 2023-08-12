@@ -7,14 +7,14 @@
 [![Build Status](https://github.com/mlesnoff/Jchemo.jl/workflows/CI/badge.svg)](https://github.com/mlesnoff/Jchemo.jl/actions)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
-**Jchemo.jl** is a package for [**exploratory data analyses and supervised predictions**](https://mlesnoff.github.io/Jchemo.jl/dev/domains/), with focus on **high dimensional data**. 
+**Jchemo.jl** provides tools for [**exploratory data analyses and supervised predictions**](https://mlesnoff.github.io/Jchemo.jl/dev/domains/), with focus on **high dimensional data**. 
 
-The package was initially designed about **partial least squares regression and discrimination models** 
+The package was initially designed about **partial least squares (PLS) regression and discrimination models** 
 and variants, in particular locally weighted PLS models (**LWPLS**) (e.g. https://doi.org/10.1002/cem.3209).
-It has then been expanded to many other methods of dimension reduction, regression and discrimination. 
+It has then been expanded to many other methods of dimension reduction, regression and discrimination ([see here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
 
 The package was named **Jchemo** since it is orientated to chemometrics, but most of the provided methods 
-are **generic to other domains**. 
+are generic to other domains. 
 
 Auxiliary functions such as **transform**, **predict**, **coef** and **summary** are available. 
 **Tuning the predictive models** is facilitated by functions **gridscore** (validation dataset) and 
