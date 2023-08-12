@@ -343,7 +343,7 @@ export
     lwplslda, lwplsqda,
     lwplsrdaavg, lwplsldaavg, lwplsqdaavg,
     knnda,
-    # Auxilliary
+    # Auxiliary
     transform, coef, predict,
     # Validation
     residreg, residcla, 
