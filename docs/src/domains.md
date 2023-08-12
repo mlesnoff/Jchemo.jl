@@ -173,11 +173,16 @@
 - **plsqda** PLS-QDA (with continuum)
 - **plskdeda**  PLS-KDE-DA
 
+*Sparse*
+- **splslda**: Sparse PLS-LDA.
+- **splsqda**: Sparse PLS-QDA.
+- **splskdeda**: Sparse PLS-KDE-DA.
+
 *Averaging PLS-LDA and -QDA models of different dimensionalities*
 - **plsldaavg** PLS-LDA-AVG
 - **plsqdaavg** PLS-QDA-AVG (with continuum)
 
-*+### **Local models**
+### **Local models**
 
 - **knnda** kNN-DA (Vote within neighbors)
 - **lwmlrda** kNN locally weighted MLR-DA (kNN-LWMLR-DA)
