@@ -71,7 +71,7 @@ confusion(res.pred, ytest).cnt
 function qda(X, y, weights = ones(nro(X)); 
         prior = "unif", alpha = 0)
     @assert prior == "unif" || prior == "prop" "Wrong value for argument 'prior'."
-    @assert alpha >= 0 && alpha <= 1 "alpha must ∈ [0, 1]"
+    @assert alpha >= 0 && alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     # Scaling X has no effect
     X = ensure_mat(X)
     y = vec(y)    # for findall

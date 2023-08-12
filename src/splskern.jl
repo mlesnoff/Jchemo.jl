@@ -15,7 +15,7 @@ Sparse PLSR (Shen & Huang 2008).
     are "soft" (default), "mix" or "hard". See thereafter.
 * `delta` : Range for the thresholding (see function `soft`)
     on the loadings standardized to their maximal absolute value.
-    Must be within [0, 1]. Only used if `meth = "soft".
+    Must ∈ [0, 1]. Only used if `meth = "soft".
 * `nvar` : Nb. variables (`X`-columns) selected for each 
     LV. Can be a single integer (same nb. variables
     for each LV), or a vector of length `nlv`.
@@ -111,8 +111,8 @@ end
 
 function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         meth = "soft", delta = 0, nvar = nco(X), scal::Bool = false)
-    @assert delta >=0 && delta <= 1 "Argument delta must be within [0, 1]." 
-    @assert meth == "soft" || meth == "mix" || meth == "hard" "Wrong value for Argument meth."
+    @assert delta >=0 && delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
+    @assert meth == "soft" || meth == "mix" || meth == "hard" "Wrong value for argument 'meth'."
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, nlv)

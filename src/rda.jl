@@ -110,7 +110,7 @@ confusion(res.pred, ytest).cnt
 function rda(X, y, weights = ones(nro(X)); 
         prior = "unif", alpha = 1, lb = 1e-10, 
         simpl::Bool = false, scal::Bool = false)
-    @assert alpha >= 0 && alpha <= 1 "alpha must ∈ [0, 1]"
+    @assert alpha >= 0 && alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     @assert lb >= 0 "lb must be in >= 0"
     X = ensure_mat(X)
     y = vec(y)    # for findall

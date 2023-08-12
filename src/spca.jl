@@ -27,7 +27,7 @@ Sparse PCA (Shen & Huang 2008).
     are "soft" (default), "mix" or "hard". See thereafter.
 * `delta` : Range for the thresholding (see function `soft`)
     on the loadings standardized to their maximal absolute value.
-    Must be within [0, 1]. Only used if `meth = "soft".
+    Must ∈ [0, 1]. Only used if `meth = "soft".
 * `nvar` : Nb. variables (`X`-columns) selected for each 
     PC. Can be a single integer (same nb. variables
     for each PC), or a vector of length `nlv`.
@@ -138,7 +138,7 @@ end
 function spca!(X::Matrix, weights = ones(nro(X)); nlv, 
         meth = "soft", delta = 0, nvar = nco(X), 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
-    @assert delta >=0 && delta <= 1 "Argument delta must be within [0, 1]." 
+    @assert delta >=0 && delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
     @assert meth == "soft" || meth == "mix" || meth == "hard" "Wrong value for Argument meth."
     n, p = size(X)
     nlv = min(nlv, n, p)
