@@ -20,9 +20,9 @@ Sparse PLSR-DA.
     is scaled by its uncorrected standard deviation.
 
 Same as function `plsrda` (PLSR-DA) except that sparse PLSR (function 
-`splskern`) is used instead PLSR (function `plskern`). 
-    
-See the help of the respectve functions. 
+`splskern`) is run on the Y-dummy table instead of a PLSR (function `plskern`). 
+
+See `?splskern` and `?plsrda.
 
 ## Examples
 ```julia
