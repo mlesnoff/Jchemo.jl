@@ -149,6 +149,9 @@ include("nscda.jl")
 
 # Sparse
 include("splsrda.jl")
+include("splslda.jl")
+include("splsqda.jl")
+include("splskdeda.jl")
 
 # One-class
 include("occsd.jl") ; include("occod.jl") ; ; include("occsdod.jl")
@@ -332,6 +335,8 @@ export
     nscda,
     # Sparse 
     splsrda,
+    splslda, splsqda,
+    splskdeda,
     # Local 
     lwmlrda, lwmlrda_s,
     lwplsrda, lwplsrda_s,
