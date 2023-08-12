@@ -2,7 +2,7 @@
     splsqda(X, y, weights = ones(nro(X)); nlv, 
         meth = "soft", delta = 0, nvar = nco(X), 
         prior = "unif", scal::Bool = false)
-Sparse PLSR-DA.
+Sparse PLS-QDA.
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights of the observations. Internally normalized to sum to 1. 
@@ -21,7 +21,7 @@ Sparse PLSR-DA.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-Same as function `plsqda` (PLS-LDA) except that sparse PLSR (function 
+Same as function `plsqda` (PLS-QDA) except that sparse PLSR (function 
 `splskern`) is run on the Y-dummy table instead of a PLSR (function `plskern`). 
 
 See `?splskern` and `?plsqda.

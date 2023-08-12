@@ -2,7 +2,7 @@
     splslda(X, y, weights = ones(nro(X)); nlv, 
         meth = "soft", delta = 0, nvar = nco(X), 
         prior = "unif", scal::Bool = false)
-Sparse PLSR-DA.
+Sparse PLS-LDA.
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights of the observations. Internally normalized to sum to 1. 
