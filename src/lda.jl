@@ -60,7 +60,7 @@ confusion(res.pred, ytest).cnt
 """ 
 function lda(X, y, weights = ones(nro(X)); 
         prior = "unif")
-    @assert prior == "unif" || prior == "prop" "Wrong value for argument 'prior'."
+    @assert in(["unif"; "prop"])(prior) "Wrong value for argument 'prior'."
     # Scaling X has no effect
     X = ensure_mat(X)
     y = vec(y)    # for findall
