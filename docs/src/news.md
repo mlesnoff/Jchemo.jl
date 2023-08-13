@@ -1,5 +1,10 @@
 ### NEWS for package **Jchemo**
 
+### *Version 0.2.2*
+
+- Modifications
+
+
 ### *Version 0.2.1*
 
 - News
