@@ -138,8 +138,8 @@ end
 function spca!(X::Matrix, weights = ones(nro(X)); nlv, 
         meth = "soft", delta = 0, nvar = nco(X), 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
-    @assert delta >=0 && delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
     @assert in(["soft"; "mix"; "hard"])(meth) "Wrong value for argument 'meth'."
+    @assert delta >=0 && delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
     n, p = size(X)
     nlv = min(nlv, n, p)
     length(nvar) == 1 ? nvar = repeat([nvar], nlv) : nothing
