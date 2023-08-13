@@ -158,7 +158,7 @@ function rosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
             t = vcol(zT, k)
             corr[k] = sum(corm(Y, t, weights).^2)
         end
-        opt = findmax(corr)[2][1]
+        opt = argmax(corr)
         # End
         bl[a] = opt
         # Outputs for winner
