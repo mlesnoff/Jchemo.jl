@@ -112,7 +112,7 @@ end
 function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         meth = "soft", delta = 0, nvar = nco(X), scal::Bool = false)
     @assert in(["soft"; "mix"; "hard"])(meth) "Wrong value for argument 'meth'."
-    @assert delta >=0 && delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
+    @assert 0 <= delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, nlv)
