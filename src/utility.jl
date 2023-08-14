@@ -54,7 +54,7 @@ end
 
 """
     center(X, v)
-    center!(X::Matrix, v)
+    center!(X::AbstractMatrix, v)
 Center each column of `X`.
 * `X` : Data.
 * `v` : Centering factors.
@@ -73,7 +73,7 @@ function center(X, v)
     zX
 end
 
-function center!(X::Matrix, v)
+function center!(X::AbstractMatrix, v)
     p = nco(X)
     @inbounds for i = 1:p
         X[:, i] .= vcol(X, i) .- v[i]
@@ -461,7 +461,7 @@ function cscale(X, u, v)
     zX
 end
 
-function cscale!(X::Matrix, u, v)
+function cscale!(X::AbstractMatrix, u, v)
     p = nco(X)
     @inbounds for i = 1:p
         X[:, i] .= (vcol(X, i) .- u[i]) ./ v[i]
@@ -469,7 +469,7 @@ function cscale!(X::Matrix, u, v)
 end
 
 # Slower:
-function cscale2!(X::Matrix, u, v)
+function cscale2!(X::AbstractMatrix, u, v)
     center!(X, u)
     scale!(X, v)
 end
@@ -1171,7 +1171,7 @@ end
 
 """
     scale(X, v)
-    scale!(X::Matrix, v)
+    scale!(X::AbstractMatrix, v)
 Scale each column of `X`.
 * `X` : Data.
 * `v` : Scaling factors.
@@ -1188,7 +1188,7 @@ function scale(X, v)
     zX
 end
 
-function scale!(X::Matrix, v)
+function scale!(X::AbstractMatrix, v)
     p = nco(X)
     @inbounds for i = 1:p
         X[:, i] .= vcol(X, i) ./ v[i]
@@ -1439,7 +1439,7 @@ function vcatdf(dat; cols = :intersect)
 end
 
 """
-    vcol(X::Matrix, j)
+    vcol(X::AbstractMatrix, j)
     vcol(X::DataFrame, j)
     vcol(x::Vector, j)
 View of the j-th column(s) of a matrix `X`,
@@ -1450,7 +1450,7 @@ vcol(x::Vector, i) = view(x, i)
 vcol(X::DataFrame, j) = view(Matrix(X), :, j)
 
 """
-    vrow(X::Matrix, i)
+    vrow(X::AbstractMatrix, i)
     vrow(X::DataFrame, i)
     vrow(x::Vector, i)
 View of the i-th row(s) of a matrix `X`,
