@@ -10,7 +10,7 @@
 **Jchemo.jl** provides tools for [**exploratory data analyses and supervised predictions**](https://mlesnoff.github.io/Jchemo.jl/dev/domains/), with focus on **high dimensional data**. 
 
 The package was initially designed about **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
-and variants, in particular locally weighted PLS models (**LWPLSR & -DA**) (e.g. https://doi.org/10.1002/cem.3209).
+and variants, in particular locally weighted PLS models (**LWPLS-R & -DA**) (e.g. https://doi.org/10.1002/cem.3209).
 It has then been expanded to many other methods of **dimension reduction, regression and discrimination** ([see here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
 
 The package was named **Jchemo** since it is orientated to chemometrics, but most of the provided methods 
