@@ -12,17 +12,31 @@ X = rand(n, p)
 
 colmad(X)
 ```
-""" 
+"""
 function colmad(X)
     X = ensure_mat(X)
-    p = nco(X)
-    z = similar(X, p)
-    @inbounds for i = 1:p
-        z[i] = Jchemo.mad(vcol(X, i))        
-    end
-    z 
+    map(Jchemo.mad, eachcol(X))
 end
-## Does not work with CUDA
+
+## Above, 'map' is not efficient for CUDA
+## but little faster than 'broadcast':
+#function colmad(X)
+#    X = ensure_mat(X)
+#    broadcast(eachcol(X)) do x
+#        Jchemo.mad(x)
+#    end
+#end
+## Below, return Warning with CUDA (add CUDA.@allowscalar):
+#function colmad(X)
+#    X = ensure_mat(X)
+#    p = nco(X)
+#    z = similar(X, p)
+#    @inbounds for i = 1:p
+#        z[i] = Jchemo.mad(vcol(X, i))        
+#    end
+#    z 
+#end
+## Below, 'maplsice' does not work with CUDA:
 #colmad(X) = vec(mapslices(mad, ensure_mat(X); dims = 1))
 
 """
@@ -48,6 +62,8 @@ colmean(X, w)
 """ 
 colmean(X) = vec(Statistics.mean(ensure_mat(X); dims = 1))
 colmean(X, w) = vec(mweight(w)' * ensure_mat(X))
+## Above is faster than:
+#colmean(X, w) = vec(Statistics.mean(ensure_mat(X), weights(mweight(w)); dims = 1))
 
 """
     colnorm(X)
@@ -81,15 +97,6 @@ end
 
 function colnorm(X, w)
     X = ensure_mat(X)
-    #p = nco(X)
-    #w = mweight(w)
-    #z = similar(X, p)
-    #@inbounds for i = 1:p
-    #    x = vcol(X, i)
-    #    z[i] = sqrt(dot(x, w .* x))
-    #end
-    #z 
-    # Faster:
     vec(sqrt.(mweight(w)' * X.^2))
 end
 
@@ -166,13 +173,9 @@ colvar(X) = vec(Statistics.var(ensure_mat(X); corrected = false, dims = 1))
 
 function colvar(X, w)
     X = ensure_mat(X)
-    p = nco(X)
     w = mweight(w)
-    z = colmean(X, w)
-    @inbounds for i = 1:p
-        z[i] = dot(w, (vcol(X, i) .- z[i]).^2)        
-    end
-    z 
+    v = colmean(X, w)
+    colnorm(X .- v', w).^2
 end
 
 ####### SKIP MISSING
