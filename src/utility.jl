@@ -67,18 +67,23 @@ xmeans = colmean(X)
 center(X, xmeans)
 ```
 """ 
-function center(X, v)
-    zX = copy(ensure_mat(X))
-    center!(zX, v)
-    zX
-end
+center(X, v) = X .- vec(v)'
 
 function center!(X::AbstractMatrix, v)
-    p = nco(X)
-    @inbounds for i = 1:p
-        X[:, i] .= vcol(X, i) .- v[i]
-    end
+    X .-= vec(v)'
 end
+
+#function center(X, v)
+#    zX = copy(ensure_mat(X))
+#    center!(zX, v)
+#    zX
+#end
+#function center!(X::AbstractMatrix, v)
+#    p = nco(X)
+#    @inbounds for i = 1:p
+#        X[:, i] .= vcol(X, i) .- v[i]
+#    end
+#end
 
 """
     colmad(X)
