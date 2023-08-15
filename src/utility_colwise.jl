@@ -18,27 +18,6 @@ function colmad(X)
     map(Jchemo.mad, eachcol(X))
 end
 
-## Above, 'map' is not efficient for CUDA
-## but little faster than 'broadcast':
-#function colmad(X)
-#    X = ensure_mat(X)
-#    broadcast(eachcol(X)) do x
-#        Jchemo.mad(x)
-#    end
-#end
-## Below, return Warning with CUDA (add CUDA.@allowscalar):
-#function colmad(X)
-#    X = ensure_mat(X)
-#    p = nco(X)
-#    z = similar(X, p)
-#    @inbounds for i = 1:p
-#        z[i] = Jchemo.mad(vcol(X, i))        
-#    end
-#    z 
-#end
-## Below, 'maplsice' does not work with CUDA:
-#colmad(X) = vec(mapslices(mad, ensure_mat(X); dims = 1))
-
 """
     colmean(X)
     colmean(X, w)
@@ -61,9 +40,8 @@ colmean(X, w)
 ```
 """ 
 colmean(X) = vec(Statistics.mean(ensure_mat(X); dims = 1))
+
 colmean(X, w) = vec(mweight(w)' * ensure_mat(X))
-## Above is faster than:
-#colmean(X, w) = vec(Statistics.mean(ensure_mat(X), weights(mweight(w)); dims = 1))
 
 """
     colnorm(X)
@@ -122,7 +100,8 @@ colstd(X, w)
 ```
 """ 
 colstd(X) = vec(Statistics.std(ensure_mat(X); corrected = false, dims = 1))
-colstd(X, w) = sqrt.(colvar(X, mweight(w)))
+
+colstd(X, w) = sqrt.(colvar(X, w))
 
 """
     colsum(X)
@@ -146,6 +125,7 @@ colsum(X, w)
 ```
 """ 
 colsum(X) = vec(sum(X; dims = 1))
+
 colsum(X, w) = vec(mweight(w)' * ensure_mat(X))
 
 """
