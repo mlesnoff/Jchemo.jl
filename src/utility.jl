@@ -1187,6 +1187,14 @@ X = rand(5, 2)
 scale(X, colstd(X))
 ```
 """ 
+
+scale3(X, v) = X ./ vec(v)'
+
+function scale3!(X::AbstractMatrix, v)
+    X ./= vec(v)'
+end
+
+
 function scale(X, v)
     zX = copy(ensure_mat(X))
     scale!(zX, v)
