@@ -16,7 +16,9 @@ using SparseArrays
 using Statistics
 using StatsBase          # sample
 
-include("utility.jl") 
+include("utility.jl")
+include("utility_colwise.jl")
+include("utility_rowwise.jl")
 include("colmedspa.jl")
 include("fweight.jl") 
 include("ellipse.jl")
