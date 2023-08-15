@@ -761,7 +761,7 @@ function mweight(w)
     zw
 end
 
-function mweight!(w::Vector{Float64})
+function mweight!(w::AbstractVector{Float64})
     w ./= sum(w)
 end
 
