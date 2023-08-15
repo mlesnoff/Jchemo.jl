@@ -16,7 +16,7 @@ colmad(X)
 function colmad(X)
     X = ensure_mat(X)
     p = nco(X)
-    z = zeros(p)
+    z = similar(X, p)
     @inbounds for i = 1:p
         z[i] = Jchemo.mad(vcol(X, i))        
     end
