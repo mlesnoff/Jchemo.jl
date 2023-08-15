@@ -18,10 +18,12 @@ function colmad(X)
     p = nco(X)
     z = zeros(p)
     @inbounds for i = 1:p
-        z[i] = mad(vcol(X, i))        
+        z[i] = Jchemo.mad(vcol(X, i))        
     end
     z 
 end
+## Does not work with CUDA
+#colmad(X) = vec(mapslices(mad, ensure_mat(X); dims = 1))
 
 """
     colmean(X)
