@@ -3,7 +3,7 @@
 ### *Version 0.2.2*
 
 - Modifications
-
+    - Code improvement.
 
 ### *Version 0.2.1*
 
