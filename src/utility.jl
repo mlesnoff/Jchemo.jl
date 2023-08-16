@@ -347,7 +347,7 @@ head(X)
 function head(X)
     n = nro(X) 
     m = min(3, n)
-    if isa(X, Vector)
+    if isa(X, AbstractVector)
         display(X[1:m])
     else
         display(X[1:m, :])
