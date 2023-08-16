@@ -55,12 +55,12 @@ xstds = colstd(X)
 cscale(X, xmeans, xstds)
 ```
 """ 
-# Slower:
 function cscale(X, u, v)
     zX = copy(ensure_mat(X))
     cscale!(zX, u, v)
     zX
 end
+
 cscale!(X::AbstractMatrix, u, v) = scale!(center!(X, u), v)
 
 
