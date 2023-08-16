@@ -38,13 +38,6 @@ function scale!(X::AbstractMatrix, v)
     X ./= vec(v)'
 end
 
-
-
-
-
-
-
-
 """
     cscale(X, u, v)
     cscale!(X, u, v)
@@ -62,23 +55,12 @@ xstds = colstd(X)
 cscale(X, xmeans, xstds)
 ```
 """ 
+# Slower:
 function cscale(X, u, v)
     zX = copy(ensure_mat(X))
     cscale!(zX, u, v)
     zX
 end
-
-function cscale!(X::AbstractMatrix, u, v)
-    p = nco(X)
-    @inbounds for i = 1:p
-        X[:, i] .= (vcol(X, i) .- u[i]) ./ v[i]
-    end
-end
-
-# Slower:
-function cscale2!(X::AbstractMatrix, u, v)
-    center!(X, u)
-    scale!(X, v)
-end
+cscale!(X::AbstractMatrix, u, v) = scale!(center!(X, u), v)
 
 
