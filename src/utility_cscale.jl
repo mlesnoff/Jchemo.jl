@@ -19,18 +19,6 @@ function center!(X::AbstractMatrix, v)
     X .-= vec(v)'
 end
 
-#function center(X, v)
-#    zX = copy(ensure_mat(X))
-#    center!(zX, v)
-#    zX
-#end
-#function center!(X::AbstractMatrix, v)
-#    p = nco(X)
-#    @inbounds for i = 1:p
-#        X[:, i] .= vcol(X, i) .- v[i]
-#    end
-#end
-
 """
     scale(X, v)
     scale!(X::AbstractMatrix, v)
@@ -44,29 +32,16 @@ X = rand(5, 2)
 scale(X, colstd(X))
 ```
 """ 
+scale(X, v) = X ./ vec(v)'
 
-scale3(X, v) = X ./ vec(v)'
-
-function scale3!(X::AbstractMatrix, v)
+function scale!(X::AbstractMatrix, v)
     X ./= vec(v)'
 end
 
 
-function scale(X, v)
-    zX = copy(ensure_mat(X))
-    scale!(zX, v)
-    zX
-end
 
-function scale!(X::AbstractMatrix, v)
-    p = nco(X)
-    @inbounds for i = 1:p
-        X[:, i] .= vcol(X, i) ./ v[i]
-    end
-end
 
-# Below: Much slower and requires more memories
-scale2(X, v) = mapslices(function f(x) ; x ./ v ; end, ensure_mat(X), dims = 2)
+
 
 
 

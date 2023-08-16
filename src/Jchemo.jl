@@ -19,6 +19,7 @@ using StatsBase          # sample
 include("utility.jl")
 include("utility_colwise.jl")
 include("utility_rowwise.jl")
+include("utility_cscale.jl")
 include("colmedspa.jl")
 include("fweight.jl") 
 include("ellipse.jl")
