@@ -337,7 +337,7 @@
 - **frob** Frobenius norm of a matrix
 - **fweight** Compute weights from distances
 - **getknn** Find nearest neighbours between rows of matrices
-- **head** Display the first rows of a dataset
+- **head**, **@head** Display the first rows of a dataset
 - **iqr** Interval inter-quartiles
 - **krbf, kpol** Build kernel Gram matrices
 - **locw** Working function for local (kNN) models

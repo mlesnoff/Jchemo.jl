@@ -342,6 +342,7 @@ Display the first rows of a dataset.
 ```julia
 X = rand(100, 5)
 head(X)
+@head X
 ```
 """
 function head(X)
