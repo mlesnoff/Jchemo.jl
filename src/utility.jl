@@ -358,12 +358,6 @@ function head(X)
     println(" ")
 end
 
-macro head(X)
-    quote
-        head($X)
-    end
-end
-
 """
     iqr(x)
 Compute the interquartile interval (IQR).
