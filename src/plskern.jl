@@ -177,7 +177,7 @@ function plskern!(X::Matrix, Y::Matrix, weights = ones(nro(X));
     w   = similar(X, p)
     r   = similar(X, p)
     c   = similar(X, q)
-    tmp = similar(XtY) # = XtY_approx
+    tmpXtY = similar(XtY) # = XtY_approx
     # End
     @inbounds for a = 1:nlv
         if q == 1
@@ -198,7 +198,7 @@ function plskern!(X::Matrix, Y::Matrix, weights = ones(nro(X));
         mul!(c, XtY', r)
         c ./= tt                      # c = XtY' * r / tt
         mul!(zp, X', dt)              # zp = (D * X)' * t = X' * (D * t)
-        XtY .-= mul!(tmp, zp, c')     # XtY = XtY - zp * c' ; deflation of the kernel matrix 
+        XtY .-= mul!(tmpXtY, zp, c')     # XtY = XtY - zp * c' ; deflation of the kernel matrix 
         P[:, a] .= zp ./ tt           # ==> the metric applied to covariance is applied outside the loop,
         T[:, a] .= t                  # conversely to other algorithms such as nipals
         W[:, a] .= w
