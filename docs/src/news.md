@@ -2,6 +2,9 @@
 
 ### *Version 0.2.2*
 
+- News
+    - **@head**: macro for function 'head'.
+
 - Modifications
     - Code improvement.
 
