@@ -206,7 +206,7 @@ export
     findmax_cla, 
     frob,
     fweight,
-    head,
+    head, @head,
     list, 
     matB, matW, 
     mblock,
