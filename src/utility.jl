@@ -276,7 +276,10 @@ ensure_df(X::AbstractMatrix) = DataFrame(X, :auto)
 Reshape `X` to a matrix if necessary.
 """
 ensure_mat(X::AbstractMatrix) = X
-ensure_mat(X::AbstractVector) = Matrix(reshape(X, :, 1))
+## Tentaive to work with CUDA
+#ensure_mat(X::AbstractVector) = Matrix(reshape(X, :, 1))
+ensure_mat(X::AbstractVector) = reshape(X, :, 1)
+## End
 ensure_mat(X::Number) = reshape([X], 1, 1)
 ensure_mat(X::LinearAlgebra.Adjoint) = Matrix(X)
 ensure_mat(X::DataFrame) = Matrix(X)
