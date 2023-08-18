@@ -243,8 +243,8 @@ function coef(object::Union{Plsr, Pcr, Covselr, Splsr}; nlv = nothing)
     beta = object.C[:, 1:nlv]'
     W = Diagonal(object.yscales)
     B = Diagonal(1 ./ object.xscales) * vcol(object.R, 1:nlv) * beta * W
-    # 'int': No correction is needed 
-    # since ymeans, xmeans and B are in the original scale 
+    ## 'int': No correction is needed, since 
+    ## ymeans, xmeans and B are in the original scale 
     int = object.ymeans' .- object.xmeans' * B
     (B = B, int = int)
 end
