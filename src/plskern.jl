@@ -240,7 +240,7 @@ The returned object `int` is the intercept.
 function coef(object::Union{Plsr, Pcr, Covselr, Splsr}; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    beta = object.C[:, 1:nlv]'
+    beta = vcol(object.C, 1:nlv)'
     W = Diagonal(object.yscales)
     B = Diagonal(1 ./ object.xscales) * vcol(object.R, 1:nlv) * beta * W
     ## 'int': No correction is needed, since 
@@ -288,6 +288,7 @@ function Base.summary(object::Union{Plsr, Covselr, Splsr}, X::Union{Vector, Matr
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)     
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
+        cumpvar = cumpvar)     
     (explvarx = explvarx,)
 end
