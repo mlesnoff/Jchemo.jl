@@ -9,6 +9,8 @@
 
 **Jchemo.jl** provides tools for [**exploratory data analyses and supervised predictions**](https://mlesnoff.github.io/Jchemo.jl/dev/domains/), with focus on **high dimensional data**. 
 
+**What changed from the last version:** [Here](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md).
+
 The package was initially designed about **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
 and variants, in particular locally weighted PLS models (**LWPLS-R & -DA**) (e.g. https://doi.org/10.1002/cem.3209).
 It has then been expanded to many other methods of **dimension reduction, regression and discrimination** ([see here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
@@ -22,17 +24,19 @@ Auxiliary functions such as **transform**, **predict**, **coef** and **summary**
 are also available for models based on latent variables (LVs) (**gridscorelv** and **gridcvlv**) and 
 ridge regularization (**gridscorelb** and **gridcvlb**).
 
-Most of the functions of the package have a **help page** (providing an example), e.g.:
+Most of the functions of the package have a **help page** providing an example, e.g.:
 
 ```julia
 ?plskern
 ```
 
-**Examples** demonstrating **Jchemo.jl** are available in the project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo), used for training only. **The datasets** of the examples are stored in package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl).
+Other **examples** (scripts) demonstrating the syntax of **Jchemo.jl** are available in the project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo). 
+
+**The datasets** used in the examples of the help pages and JchemoDemo.jl are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl) (repository of chemometrics datasets and others).
 
 Some of the functions of the package (in particular those using kNN selections) use **multi-threading** 
 to speed the computations. Taking advantage of this requires to specify a relevant number 
-of threads (e.g. from the 'Settings' menu of the VsCode Julia extension and the file 'settings.json').
+of threads (e.g. from the *Settings* menu of the VsCode Julia extension and the file *settings.json*).
 
 **Jchemo.jl** uses **Makie.jl** for plotting. To install and load one of the Makie's backends (e.g. **CairoMakie.jl**) is required to display the plots. 
 
