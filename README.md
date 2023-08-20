@@ -30,9 +30,9 @@ Most of the functions of the package have a **help page** providing an example, 
 ?plskern
 ```
 
-Other **examples** (scripts) demonstrating the syntax of **Jchemo.jl** are available in the project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo). 
+Other **examples** (scripts) demonstrating the syntax of **Jchemo.jl** are available in the project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) that can be used for trainings. 
 
-**The datasets** used in the examples of the help pages and JchemoDemo.jl are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl) (repository of chemometrics datasets and others).
+**The datasets** used in the examples (help pages and JchemoDemo.jl) are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), repository of chemometrics datasets and others.
 
 Some of the functions of the package (in particular those using kNN selections) use **multi-threading** 
 to speed the computations. Taking advantage of this requires to specify a relevant number 
