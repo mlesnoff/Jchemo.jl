@@ -16,7 +16,7 @@ and variants, in particular locally weighted PLS models (**LWPLS-R & -DA**) (e.g
 It has then been expanded to many other methods of **dimension reduction, regression and discrimination** ([see here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
 
 The package was named **Jchemo** since it is orientated to chemometrics, but most of the provided methods 
-are generic to other domains. 
+are **generic to other domains**. 
 
 Auxiliary functions such as **transform**, **predict**, **coef** and **summary** are available. 
 **Tuning the predictive models** is facilitated by functions **gridscore** (validation dataset) and 
