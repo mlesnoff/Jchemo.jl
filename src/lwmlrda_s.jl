@@ -10,7 +10,7 @@ struct LwmlrdaS
 end
 
 """
-    lwmlrda_s(X, y; nlv, reduc = "pls", 
+    lwmlrda_s(X, y; reduc = "pls", nlv, 
         metric = "eucl", h, k, 
         gamma = 1, psamp = 1, samp = "cla", 
         tol = 1e-4, scal::Bool = false, verbose = false)
@@ -18,9 +18,9 @@ kNN-LWMLR-DA after preliminary (linear or non-linear) dimension
     reduction (kNN-LWMLR-DA-S).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership.
-* `nlv` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `reduc` : Type of dimension reduction. Possible values are:
     "pca" (PCA), "pls" (PLS; default), "dkpls" (direct Gaussian kernel PLS).
+* `nlv` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `metric` : Type of dissimilarity used to select the neighbors and compute
     the weights. Possible values are "eucl" (default; Euclidean distance) 
     and "mahal" (Mahalanobis distance).
@@ -59,25 +59,26 @@ ytest = Y.typ[s]
 tab(ytrain)
 tab(ytest)
 
-fm = lwmlrda_s(Xtrain, ytrain; nlv = 20, reduc = "pca", 
-    metric = "eucl", h = 2, k = 100) ;
+fm = lwmlrda_s(Xtrain, ytrain; reduc = "pca", 
+    nlv = 20, metric = "eucl", h = 2, k = 100) ;
 pred = Jchemo.predict(fm, Xtest).pred
 err(pred, ytest)
 confusion(pred, ytest).cnt
 
-fm = lwmlrda_s(Xtrain, ytrain; nlv = 20, reduc = "dkpls", 
-    metric = "eucl", h = 2, k = 100, gamma = .01) ;
+fm = lwmlrda_s(Xtrain, ytrain; reduc = "dkpls", 
+    nlv = 20, metric = "eucl", h = 2, k = 100, 
+    gamma = .01) ;
 pred = Jchemo.predict(fm, Xtest).pred
 err(pred, ytest)
 
-fm = lwmlrda_s(Xtrain, ytrain; nlv = 20, reduc = "dkpls", 
-    metric = "eucl", h = 2, k = 100, gamma = .01,
-    psamp = .5, samp = "cla") ;
+fm = lwmlrda_s(Xtrain, ytrain; reduc = "dkpls", 
+    nlv = 20, metric = "eucl", h = 2, k = 100, 
+    gamma = .01, psamp = .5, samp = "cla") ;
 pred = Jchemo.predict(fm, Xtest).pred
 err(pred, ytest)
 ```
 """ 
-function lwmlrda_s(X, y; nlv, reduc = "pls", 
+function lwmlrda_s(X, y; reduc = "pls", nlv, 
         metric = "eucl", h, k, 
         gamma = 1, psamp = 1, samp = "cla", 
         tol = 1e-4, scal::Bool = false, verbose = false)
