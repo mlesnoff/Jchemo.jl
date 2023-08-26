@@ -12,16 +12,16 @@ struct LwplsrdaS
 end
 
 """
-    lwplsrda_s(X, y; nlv0, reduc = "pls", 
+    lwplsrda_s(X, y; reduc = "pls", nlv0, 
         metric = "eucl", h, k, gamma = 1, psamp = 1, samp = "cla", 
         nlv, tol = 1e-4, scal::Bool = false, verbose = false)
 kNN-LWPLSR-DA after preliminary (linear or non-linear) dimension 
     reduction (kNN-LWPLSR-DA-S).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership.
-* `nlv0` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `reduc` : Type of dimension reduction. Possible values are:
     "pca" (PCA), "pls" (PLS; default), "dkpls" (direct Gaussian kernel PLS).
+* `nlv0` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `metric` : Type of dissimilarity used to select the neighbors and compute
     the weights. Possible values are "eucl" (default; Euclidean distance) 
     and "mahal" (Mahalanobis distance).
@@ -66,9 +66,9 @@ ytest = Y.typ[s]
 tab(ytrain)
 tab(ytest)
 
-fm = lwmlrda_s(Xtrain, ytrain; nlv0 = 20, 
-    reduc = "pca", metric = "eucl", h = 2, k = 100,
-    nlv = 10) ;
+fm = lwmlrda_s(Xtrain, ytrain; reduc = "pca", 
+    nlv0 = 20, metric = "eucl", h = 2, 
+    k = 100, nlv = 10) ;
 pred = Jchemo.predict(fm, Xtest).pred
 err(pred, ytest)
 confusion(pred, ytest).cnt
