@@ -12,16 +12,16 @@ struct LwplsrS
 end
 
 """
-    lwplsr_s(X, Y; nlv0, reduc = "pls", 
+    lwplsr_s(X, Y; reduc = "pls", nlv0, 
         metric = "eucl", h, k, gamma = 1, psamp = 1, samp = "sys", 
         nlv, tol = 1e-4, scal::Bool = false, verbose = false)
 kNN-LWPLSR after preliminary (linear or non-linear) dimension 
     reduction (kNN-LWPLSR-S).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `nlv0` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `reduc` : Type of dimension reduction. Possible values are:
     "pca" (PCA), "pls" (PLS; default), "dkpls" (direct Gaussian kernel PLS).
+* `nlv0` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `metric` : Type of dissimilarity used to select the neighbors and compute
     the weights. Possible values are "eucl" (default; Euclidean distance) 
     and "mahal" (Mahalanobis distance).
@@ -95,8 +95,8 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed (Test)").f  
 
-fm = lwplsr_s(Xtrain, ytrain; nlv0 = nlv0,
-    reduc = "dkpls", metric = metric, 
+fm = lwplsr_s(Xtrain, ytrain; reduc = "dkpls", 
+    nlv0 = nlv0, metric = metric, 
     h = h, k = k, gamma = .1, nlv = nlv) ;
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
@@ -104,15 +104,15 @@ plotxy(vec(res.pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed (Test)").f  
 
-fm = lwplsr_s(Xtrain, ytrain; nlv0 = nlv0,
-    reduc = "dkpls", metric = metric, 
+fm = lwplsr_s(Xtrain, ytrain; reduc = "dkpls", 
+    nlv0 = nlv0, metric = metric, 
     h = h, k = k, gamma = .1, psamp = .8,
     samp = "random", nlv = nlv) ;
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 ```
 """ 
-function lwplsr_s(X, Y; nlv0, reduc = "pls", 
+function lwplsr_s(X, Y; reduc = "pls", nlv0, 
         metric = "eucl", h, k, gamma = 1, psamp = 1, samp = "sys", 
         nlv, tol = 1e-4, scal::Bool = false, verbose = false)
     X = ensure_mat(X)
