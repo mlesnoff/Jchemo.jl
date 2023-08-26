@@ -10,7 +10,7 @@ struct LwmlrS
 end
 
 """
-    lwmlr_s(X, Y; nlv, reduc = "pls", 
+    lwmlr_s(X, Y; reduc = "pls", nlv, 
         metric = "eucl", h, k, 
         gamma = 1, psamp = 1, samp = "sys", 
         tol = 1e-4, scal::Bool = false, verbose = false)
@@ -18,9 +18,9 @@ kNN-LWMLR after preliminary (linear or non-linear) dimension
     reduction (kNN-LWMLR-S).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `nlv` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `reduc` : Type of dimension reduction. Possible values are:
     "pca" (PCA), "pls" (PLS; default), "dkpls" (direct Gaussian kernel PLS).
+* `nlv` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `metric` : Type of dissimilarity used to select the neighbors and compute
     the weights. Possible values are "eucl" (default; Euclidean distance) 
     and "mahal" (Mahalanobis distance).
@@ -74,27 +74,29 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-fm = lwmlr_s(Xtrain, ytrain; nlv = 20, reduc = "pca", 
-    metric = "eucl", h = 2, k = 100) ;
+fm = lwmlr_s(Xtrain, ytrain; reduc = "pca", 
+    nlv = 20, metric = "eucl", h = 2, 
+    k = 100) ;
 pred = Jchemo.predict(fm, Xtest).pred
 println(rmsep(pred, ytest))
 plotxy(pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed (Test)").f  
 
-fm = lwmlr_s(Xtrain, ytrain; nlv = 20, reduc = "dkpls", 
-    metric = "eucl", h = 2, k = 100, gamma = .01) ;
+fm = lwmlr_s(Xtrain, ytrain; reduc = "dkpls", 
+    nlv = 20, metric = "eucl", h = 2, k = 100, 
+    gamma = .01) ;
 pred = Jchemo.predict(fm, Xtest).pred
 rmsep(pred, ytest)
 
-fm = lwmlr_s(Xtrain, ytrain; nlv = 20, reduc = "dkpls", 
-    metric = "eucl", h = 2, k = 100, gamma = .01,
-    psamp = .5, samp = "random") ;
+fm = lwmlr_s(Xtrain, ytrain; reduc = "dkpls", 
+    nlv = 20, metric = "eucl", h = 2, k = 100, 
+    gamma = .01, psamp = .5, samp = "random") ;
 pred = Jchemo.predict(fm, Xtest).pred
 rmsep(pred, ytest)
 ```
 """ 
-function lwmlr_s(X, Y; nlv, reduc = "pls", 
+function lwmlr_s(X, Y; reduc = "pls", nlv, 
         metric = "eucl", h, k, 
         gamma = 1, psamp = 1, samp = "sys", 
         tol = 1e-4, scal::Bool = false, verbose = false)
