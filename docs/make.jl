@@ -20,8 +20,8 @@ makedocs(;
         "Available methods" => "domains.md",
         "Index of functions" => "api.md",
         "News" => "news.md",
-        "Examples of scripts" => "see_jchemodemo",
-        "Datasets (chemometrics and others)" => "see_jchemodata"
+        "Examples of scripts" => "see_jchemodemo.md",
+        "Datasets (chemometrics and others)" => "see_jchemodata.md"
         ]
     )
 
