@@ -15,10 +15,14 @@ makedocs(;
         assets = String[]
         ),
     #format = Documenter.HTML(; prettyurls = get(ENV, "CI", nothing) == "true"),
-    pages = ["Home" => "index.md",
+    pages = [
+        "Home" => "index.md",
         "Available methods" => "domains.md",
         "Index of functions" => "api.md",
-        "News" => "news.md"]
+        "News" => "news.md",
+        "Examples of scripts" ==> "see_jchemodemo",
+        "Datasets (chemometrics and others)" ==> "see_jchemodata"
+        ]
     )
 
 deploydocs(;
