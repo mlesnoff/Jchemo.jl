@@ -13,7 +13,7 @@
 
 The package was initially designed about **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
 and their numerous variants, in particular locally weighted PLS models (**LWPLS-R & -DA**) (e.g. https://doi.org/10.1002/cem.3209).
-The package has then been expanded to many other **dimension reduction** methods, and **regression and discrimination** models (see [here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
+The package has then been expanded to **dimension reduction** methods, and many other **regression and discrimination** models (see [here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
 
 The package was named **Jchemo** since it is orientated to chemometrics, but most of the methods that are provided are **generic to other domains**. 
 
@@ -28,9 +28,9 @@ Most of the functions of the package have a **help page** providing an example, 
 ?plskern
 ```
 
-Other **examples** (notebooks and scripts) demonstrating the syntax of **Jchemo.jl** are available in the project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) that can be used for trainings. 
+Other **examples (notebooks and scripts)** demonstrating the syntax of **Jchemo.jl** are available in the project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) that can be used for trainings. 
 
-**The datasets** used in the examples (help pages and JchemoDemo.jl) are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets (chemometrics and others).
+**The datasets** used in the examples (help pages and JchemoDemo) are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets (chemometrics and others).
 
 Some of the functions of the package (in particular those using kNN selections) use **multi-threading** 
 to speed the computations. Taking advantage of this requires to specify a relevant number 
