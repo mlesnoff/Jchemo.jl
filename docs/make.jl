@@ -21,7 +21,7 @@ makedocs(;
         "Index of functions" => "api.md",
         "News" => "news.md",
         "Examples of scripts" => "see_jchemodemo.md",
-        "Datasets (chemometrics and others)" => "see_jchemodata.md"
+        "Datasets" => "see_jchemodata.md"
         ]
     )
 
