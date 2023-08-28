@@ -9,7 +9,7 @@
 
 **Jchemo.jl** provides tools for [**exploratory data analyses and supervised predictions**](https://mlesnoff.github.io/Jchemo.jl/dev/domains/), with focus on **high dimensional data**. 
 
-To see **what changed from the last version**, see [Here](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md).
+**Changes from the last version:** see [here](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md).
 
 The package was initially designed about **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
 and their numerous variants, in particular locally weighted PLS models (**LWPLS-R & -DA**) (e.g. https://doi.org/10.1002/cem.3209).
