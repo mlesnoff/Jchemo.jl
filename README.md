@@ -9,18 +9,16 @@
 
 **Jchemo.jl** provides tools for [**exploratory data analyses and supervised predictions**](https://mlesnoff.github.io/Jchemo.jl/dev/domains/), with focus on **high dimensional data**. 
 
-**What changed from the last version:** [Here](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md).
+To see **what changed from the last version**, see [Here](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md).
 
 The package was initially designed about **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
-and variants, in particular locally weighted PLS models (**LWPLS-R & -DA**) (e.g. https://doi.org/10.1002/cem.3209).
-It has then been expanded to many other methods of **dimension reduction, regression and discrimination** ([see here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
+and their numerous variants, in particular locally weighted PLS models (**LWPLS-R & -DA**) (e.g. https://doi.org/10.1002/cem.3209).
+The package has then been expanded to many other **dimension reduction** methods, and **regression and discrimination** models (see [here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
 
-The package was named **Jchemo** since it is orientated to chemometrics, but most of the provided methods 
-are **generic to other domains**. 
+The package was named **Jchemo** since it is orientated to chemometrics, but most of the methods that are provided are **generic to other domains**. 
 
 Auxiliary functions such as **transform**, **predict**, **coef** and **summary** are available. 
-**Tuning the predictive models** is facilitated by functions **gridscore** (validation dataset) and 
-**gridcv** (cross-validation), generic (same syntax) for all models. Fast versions of these functions 
+**Tuning the predictive models** is facilitated by grid-search functions **gridscore** (validation dataset) and **gridcv** (cross-validation), generic (same syntax) for all models. Fast versions of these functions 
 are also available for models based on latent variables (LVs) (**gridscorelv** and **gridcvlv**) and 
 ridge regularization (**gridscorelb** and **gridcvlb**).
 
@@ -30,9 +28,9 @@ Most of the functions of the package have a **help page** providing an example, 
 ?plskern
 ```
 
-Other **examples** (scripts) demonstrating the syntax of **Jchemo.jl** are available in the project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) that can be used for trainings. 
+Other **examples** (notebooks and scripts) demonstrating the syntax of **Jchemo.jl** are available in the project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) that can be used for trainings. 
 
-**The datasets** used in the examples (help pages and JchemoDemo.jl) are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), repository of chemometrics datasets and others.
+**The datasets** used in the examples (help pages and JchemoDemo.jl) are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets (chemometrics and others).
 
 Some of the functions of the package (in particular those using kNN selections) use **multi-threading** 
 to speed the computations. Taking advantage of this requires to specify a relevant number 
@@ -64,7 +62,7 @@ or for the current developing version (not 100% stable):
 pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ```
 
-## <span style="color:green"> **Benchmark - Computation time for a PLS with 1e6 observations** </span> 
+## <span style="color:green"> **Benchmark - Computation time for a PLS with n = 1e6 observations** </span> 
 ```julia
 julia> versioninfo()
 Julia Version 1.8.5
@@ -101,6 +99,12 @@ nlv = 25  # nb. PLS latent variables
 ```
 
 ## <span style="color:green"> **Examples of syntax for predictive models** </span> 
+
+### Notebook examples on PLSR (see JchemoDemo.jl for more)
+
+- [Model fitting](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/tecator_plsr.ipynb)
+- [Tuning with gridcvlv](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/tecator_gridcv_plsr.ipynb)
+- [Tuning with gridscorelv](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/challenge2018_gridscore_plsr.ipynb)
 
 ### **Fitting a model**
 
