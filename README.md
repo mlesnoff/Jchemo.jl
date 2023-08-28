@@ -42,7 +42,7 @@ Before to update the package, it is recommended to have a look on
 [**What changed**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md) to avoid
  eventual problems when the new version contains breaking changes. 
 
-## <span style="color:green"> **Notebook examples on PLSR** </span> 
+## <span style="color:green"> **Notebook-examples on PLSR** </span> 
 
 - [Model fitting](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/tecator_plsr.ipynb)
 - [Tuning with gridcvlv](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/tecator_gridcv_plsr.ipynb)
