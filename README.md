@@ -68,9 +68,9 @@ pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 
 ### Notebooks
 
-- [Model fitting](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/tecator_plsr.ipynb)
-- [Tuning with gridcvlv](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/tecator_gridcv_plsr.ipynb)
-- [Tuning with gridscorelv](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/challenge2018_gridscore_plsr.ipynb)
+- [Model fitting](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/plsr_tecator.ipynb)
+- [Tuning with gridcvlv](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/gridcv_plsr_tecator.ipynb)
+- [Tuning with gridscorelv](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/gridscore_plsr_challenge2018.ipynb)
 
 see [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) for more examples.
 
