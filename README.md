@@ -9,7 +9,13 @@
 
 **Jchemo.jl** provides tools for [**exploratory data analyses and supervised predictions**](https://mlesnoff.github.io/Jchemo.jl/dev/domains/), with focus on **high dimensional data**. 
 
-**Changes from the last version:** see [here](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md).
+**Changes from the last version:** [here](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md).
+
+**Preview (notebook examples):** [here](https://github.com/mlesnoff/JchemoDemo/tree/main/Examples_Jchemo/ipynb).
+
+**Dependent packages:**: [here](https://github.com/mlesnoff/Jchemo.jl/blob/master/Project.toml). 
+
+## Summary
 
 The package was initially designed about **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
 and their numerous variants, in particular locally weighted PLS models (**LWPLS-R & -DA**) (e.g. https://doi.org/10.1002/cem.3209).
@@ -42,18 +48,6 @@ Before to update the package, it is recommended to have a look on
 [**What changed**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md) to avoid
  eventual problems when the new version contains breaking changes. 
 
-## <span style="color:green"> **Notebook-examples on PLSR** </span> 
-
-- [Model fitting](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/tecator_plsr.ipynb)
-- [Tuning with gridcvlv](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/tecator_gridcv_plsr.ipynb)
-- [Tuning with gridscorelv](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/challenge2018_gridscore_plsr.ipynb)
-
-see [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) for more examples.
-
-## <span style="color:green"> **Dependent packages** </span> 
-
-- [**List of packages**](https://github.com/mlesnoff/Jchemo.jl/blob/master/Project.toml) 
-
 ## <span style="color:green"> **Installation** </span> 
 
 In order to install Jchemo, run in the Pkg REPL:
@@ -69,6 +63,13 @@ or for the current developing version (not 100% stable):
 ```julia
 pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ```
+## <span style="color:green"> **Notebook-examples on PLSR** </span> 
+
+- [Model fitting](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/tecator_plsr.ipynb)
+- [Tuning with gridcvlv](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/tecator_gridcv_plsr.ipynb)
+- [Tuning with gridscorelv](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/challenge2018_gridscore_plsr.ipynb)
+
+see [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) for more examples.
 
 ## <span style="color:green"> **Benchmark - Computation time for a PLS with n = 1e6 observations** </span> 
 ```julia
