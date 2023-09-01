@@ -16,7 +16,7 @@
 
 - [Dependent packages](https://github.com/mlesnoff/Jchemo.jl/blob/master/Project.toml)
 
-## Summary
+ ## <span style="color:green"> Summary
 
 The package was initially designed about **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
 and their numerous variants, in particular locally weighted PLS models (**LWPLS-R & -DA**) (e.g. https://doi.org/10.1002/cem.3209).
@@ -254,7 +254,9 @@ pnames(rescv)
 res = rescv.res
 ```
 
-## <span style="color:green"> **Author** </span> 
+## <span style="color:green"> **Credit** </span> 
+
+### Author
 
 **Matthieu Lesnoff**
 
@@ -264,13 +266,13 @@ res = rescv.res
 
 **matthieu.lesnoff@cirad.fr**
 
-## How to cite
+###  How to cite
 
 Lesnoff, M. 2021. Jchemo: Julia package for machine learning, with focus on 
 chemometrics and high-dimensional data. https://github.com/mlesnoff/Jchemo. 
 UMR SELMET, Univ Montpellier, CIRAD, INRA, Institut Agro, Montpellier, France
 
-## Acknowledgments
+###  Acknowledgments
 
 - G. Cornu (Cirad) https://ur-forets-societes.cirad.fr/en/l-unite/l-equipe 
 - L. Plagne, F. Févotte (Triscale.innov) https://www.triscale-innov.com 
