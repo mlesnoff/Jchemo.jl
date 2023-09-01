@@ -9,11 +9,12 @@
 
 **Jchemo.jl** provides tools for [**exploratory data analyses and supervised predictions**](https://mlesnoff.github.io/Jchemo.jl/dev/domains/), with focus on **high dimensional data**. 
 
-**Changes from the last version:** [here](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md).
 
-**Preview (notebook examples):** [here](https://github.com/mlesnoff/JchemoDemo/tree/main/Examples_Jchemo/ipynb).
+- [Preview - notebook examples](https://github.com/mlesnoff/JchemoDemo/tree/main/Examples_Jchemo/ipynb)
 
-**Dependent packages:**: [here](https://github.com/mlesnoff/Jchemo.jl/blob/master/Project.toml). 
+- [Changes from the last version](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md)
+
+- [Dependent packages](https://github.com/mlesnoff/Jchemo.jl/blob/master/Project.toml)
 
 ## Summary
 
@@ -63,7 +64,9 @@ or for the current developing version (not 100% stable):
 ```julia
 pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ```
-## <span style="color:green"> **Notebook-examples on PLSR** </span> 
+## <span style="color:green"> **Examples on PLSR** </span> 
+
+### Notebooks
 
 - [Model fitting](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/tecator_plsr.ipynb)
 - [Tuning with gridcvlv](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/tecator_gridcv_plsr.ipynb)
@@ -71,7 +74,7 @@ pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 
 see [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) for more examples.
 
-## <span style="color:green"> **Benchmark - Computation time for a PLS with n = 1e6 observations** </span> 
+### **Benchmark - Computation time for a PLS with n = 1e6 observations** </span> 
 ```julia
 julia> versioninfo()
 Julia Version 1.8.5
@@ -107,9 +110,9 @@ nlv = 25  # nb. PLS latent variables
 7.232234 seconds (6.47 k allocations: 338.617 MiB, 7.39% gc time, 0.13% compilation time)
 ```
 
-## <span style="color:green"> **Examples of syntax for predictive models** </span> 
+### **Examples of syntax for predictive models** </span> 
 
-### **Fitting a model**
+#### **Fitting a model**
 
 ```julia
 using Jchemo
@@ -144,9 +147,9 @@ Jchemo.predict(fm, Xtest).pred
 Jchemo.predict(fm, Xtest; nlv = 0:3).pred 
 ```
 
-### **Tuning a model by grid-search** 
+#### **Tuning a model by grid-search** 
 
-- ### With gridscore
+- #### With gridscore
 
 ```julia
 using Jchemo, StatsBase, CairoMakie
@@ -195,7 +198,7 @@ res = gridscore(
     score = rmsep, fun = plskern, pars = pars) 
 ```
 
-- ### With gridcv
+- #### With gridcv
 
 ```julia
 using Jchemo, StatsBase, CairoMakie
