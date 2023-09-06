@@ -7,8 +7,6 @@
 [![Build Status](https://github.com/mlesnoff/Jchemo.jl/workflows/CI/badge.svg)](https://github.com/mlesnoff/Jchemo.jl/actions)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
-Tools for **exploratory data analyses and supervised predictions**, with focus on **high dimensional data**. 
-
 - [Available methods](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)
 
 - [Preview - script examples](https://mlesnoff.github.io/JchemoDemo/build/)
