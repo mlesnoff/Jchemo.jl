@@ -7,13 +7,7 @@
 [![Build Status](https://github.com/mlesnoff/Jchemo.jl/workflows/CI/badge.svg)](https://github.com/mlesnoff/Jchemo.jl/actions)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
-- [Available methods](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)
-
-- [Preview - script examples](https://mlesnoff.github.io/JchemoDemo/build/)
-
-- [Changes from the last version](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md)
-
-- [Dependent packages](https://github.com/mlesnoff/Jchemo.jl/blob/master/Project.toml)
+For the **latest documentation** (available methods, examples, etc.), see [here](https://mlesnoff.github.io/Jchemo.jl/dev).
 
  ## <span style="color:green"> Summary
 
@@ -68,8 +62,6 @@ pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ### Html examples
 
 - [Here](https://mlesnoff.github.io/JchemoDemo/build/regression/)
-
-see [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) for more examples.
 
 ### **Benchmark - Computation time for a PLS with n = 1e6 observations** </span> 
 ```julia
