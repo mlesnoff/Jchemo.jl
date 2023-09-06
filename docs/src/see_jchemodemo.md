@@ -1,1 +1,1 @@
-**See** [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo/tree/main) (script examples and html outputs).
+[**Html script examples**](https://mlesnoff.github.io/JchemoDemo/build/).
