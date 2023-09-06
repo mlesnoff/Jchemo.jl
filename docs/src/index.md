@@ -5,12 +5,13 @@ end
 ```
 
 # Jchemo.jl
+**Machine learning and chemometrics on high-dimensional data with Julia**
 
-- [Available methods](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)
-- [Index of functions](https://mlesnoff.github.io/Jchemo.jl/dev/api/)
-- [News](https://mlesnoff.github.io/Jchemo.jl/dev/news/)
-- [Examples of scripts](https://github.com/mlesnoff/JchemoDemo)
-- [Datasets (chemometrics and others)](https://github.com/mlesnoff/JchemoData.jl)
+Auxiliary projects related to [Jchemo.jl](https://github.com/mlesnoff/Jchemo.jl)
+
+- [JchemoDemo](https://github.com/mlesnoff/JchemoDemo): Training material about Jchemo.jl
+
+- [JchemoData.jl](https://github.com/mlesnoff/JchemoData.jl): Datasets repository (used in the examples)
 
 ```@autodocs
 Modules = [Jchemo]
