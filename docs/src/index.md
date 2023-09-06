@@ -4,10 +4,10 @@ DocTestSetup  = quote
 end
 ```
 
-# Jchemo.jl
+# [Jchemo.jl](https://github.com/mlesnoff/Jchemo.jl)
 **Machine learning and chemometrics on high-dimensional data with Julia**
 
-Auxiliary projects related to [**Jchemo.jl**](https://github.com/mlesnoff/Jchemo.jl)
+See also related projects:
 
 - [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo): Training material
 

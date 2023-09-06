@@ -7,7 +7,7 @@
 [![Build Status](https://github.com/mlesnoff/Jchemo.jl/workflows/CI/badge.svg)](https://github.com/mlesnoff/Jchemo.jl/actions)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
-For the **latest documentation** (available methods, examples, etc.), see [here](https://mlesnoff.github.io/Jchemo.jl/dev).
+- [**Latest documentation**](https://mlesnoff.github.io/Jchemo.jl/dev) (available methods, examples, etc.).
 
  ## <span style="color:green"> Summary
 
