@@ -39,7 +39,7 @@ of threads (e.g. from the *Settings* menu of the VsCode Julia extension and the 
 **Jchemo.jl** uses **Makie.jl** for plotting. To install and load one of the Makie's backends (e.g. **CairoMakie.jl**) is required to display the plots. 
 
 Before to update the package, it is recommended to have a look on 
-[**What changed**](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md) to avoid
+[**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) to avoid
  eventual problems when the new version contains breaking changes. 
 
 ## <span style="color:green"> **Installation** </span> 
@@ -59,9 +59,7 @@ pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ```
 ## <span style="color:green"> **Examples on PLSR** </span> 
 
-### Html examples
-
-- [Here](https://mlesnoff.github.io/JchemoDemo/build/regression/)
+(see more at [JchemoDemo](https://github.com/mlesnoff/JchemoDemo)).
 
 ### **Benchmark - Computation time for a PLS with n = 1e6 observations** </span> 
 ```julia
