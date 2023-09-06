@@ -1,16 +1,16 @@
 # Jchemo.jl
 
-## Julia package for machine learning with focus on chemometrics and high-dimensional data
+## Machine learning and chemometrics on high-dimensional data with Julia
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/dev)
 [![Build Status](https://github.com/mlesnoff/Jchemo.jl/workflows/CI/badge.svg)](https://github.com/mlesnoff/Jchemo.jl/actions)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
-**Jchemo.jl** provides tools for [**exploratory data analyses and supervised predictions**](https://mlesnoff.github.io/Jchemo.jl/dev/domains/), with focus on **high dimensional data**. 
+Tools for [**exploratory data analyses and supervised predictions**](https://mlesnoff.github.io/Jchemo.jl/dev/domains/), with focus on **high dimensional data**. 
 
 
-- [Preview - notebook examples](https://github.com/mlesnoff/JchemoDemo/tree/main/Examples_Jchemo/ipynb)
+- [Preview - script examples](https://mlesnoff.github.io/JchemoDemo/build/)
 
 - [Changes from the last version](https://github.com/mlesnoff/Jchemo.jl/tree/master/docs/src/news.md)
 
@@ -35,7 +35,7 @@ Most of the functions of the package have a **help page** providing an example, 
 ?plskern
 ```
 
-Other **examples (notebooks and scripts)** demonstrating the syntax of **Jchemo.jl** are available in the project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) that can be used for trainings. 
+Other **examples (scripts)** demonstrating the syntax of **Jchemo.jl** are available in the project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) that can be used for trainings. 
 
 **The datasets** used in the examples (help pages and JchemoDemo) are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets (chemometrics and others).
 
@@ -66,11 +66,9 @@ pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ```
 ## <span style="color:green"> **Examples on PLSR** </span> 
 
-### Notebooks
+### Html examples
 
-- [Model fitting](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/plsr_tecator.ipynb)
-- [Tuning with gridcvlv](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/gridcv_plsr_tecator.ipynb)
-- [Tuning with gridscorelv](https://github.com/mlesnoff/JchemoDemo/blob/main/Examples_Jchemo/ipynb/Regression/gridscore_plsr_challenge2018.ipynb)
+- [Here](https://mlesnoff.github.io/JchemoDemo/build/regression/)
 
 see [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) for more examples.
 
