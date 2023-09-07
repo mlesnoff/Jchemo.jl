@@ -7,9 +7,9 @@
 [![Build Status](https://github.com/mlesnoff/Jchemo.jl/workflows/CI/badge.svg)](https://github.com/mlesnoff/Jchemo.jl/actions)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
-- [**Latest documentation**](https://mlesnoff.github.io/Jchemo.jl/dev) (available methods, examples, etc.).
-
 ## <span style="color:green"> **About** </span> 
+
+- [**Latest documentation**](https://mlesnoff.github.io/Jchemo.jl/dev) (available methods, examples, etc.).
 
 This package was initially designed about **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
 and their numerous variants, in particular locally weighted PLS models (**LWPLS-R & -DA**) (e.g. https://doi.org/10.1002/cem.3209).
