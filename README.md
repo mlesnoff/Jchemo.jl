@@ -1,6 +1,6 @@
 # Jchemo.jl
 
-## Machine learning and chemometrics on high-dimensional data with Julia
+### Machine learning and chemometrics on high-dimensional data with Julia
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/dev)
