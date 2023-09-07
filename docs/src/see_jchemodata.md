@@ -1,1 +1,1 @@
-**See** [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl/tree/main).
+**See package** [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl/tree/main).

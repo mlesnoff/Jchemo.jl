@@ -1,1 +1,2 @@
-**See** [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) (Section 1 - Examples with Jchemo.jl).
+**See in project** [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo)
+- [**Html Examples of data analyses**](https://mlesnoff.github.io/JchemoDemo/build/).
