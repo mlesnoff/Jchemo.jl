@@ -1,4 +1,4 @@
-# Jchemo.jl
+# **Jchemo.jl**
 
 ### Machine learning and chemometrics on high-dimensional data with Julia
 
