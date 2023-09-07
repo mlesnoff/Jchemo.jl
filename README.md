@@ -16,7 +16,7 @@ The package has then been expanded to **dimension reduction** methods, and many 
 Why the name **Jchemo**?: Since it is orientated to chemometrics, but most of the methods provided are **generic to other domains**. 
 
 Auxiliary functions such as **transform**, **predict**, **coef** and **summary** are available. 
-**Tuning the predictive models** is facilitated by generic grid-search functions (same syntax for all models): **gridscore** (validation dataset) and **gridcv** (cross-validation). Accelerated tuning functions 
+**Tuning the predictive models** is facilitated by generic grid-search functions (same syntax for all models): **gridscore** (validation dataset) and **gridcv** (cross-validation). Highly accelerated tuning functions 
 are also available for models based on latent variables (LVs) (**gridscorelv** and **gridcvlv**) and 
 ridge regularization (**gridscorelb** and **gridcvlb**).
 
