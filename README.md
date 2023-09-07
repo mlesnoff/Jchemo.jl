@@ -20,7 +20,7 @@ Auxiliary functions such as **transform**, **predict**, **coef** and **summary**
 are also available for models based on latent variables (LVs) (**gridscorelv** and **gridcvlv**) and 
 ridge regularization (**gridscorelb** and **gridcvlb**).
 
-#### Help and demo
+#### *Help and demo*
 
 Most of the functions of the package have a **help page** providing an example, e.g.:
 
@@ -32,17 +32,17 @@ Other **examples (scripts)** demonstrating the syntax of **Jchemo.jl** are avail
 
 **The datasets** used in the examples (help pages and JchemoDemo) are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets (chemometrics and others).
 
-#### Multi-threading
+#### *Multi-threading*
 
 Some of the functions of the package (in particular those using kNN selections) use **multi-threading** 
 to speed the computations. Taking advantage of this requires to specify a relevant number 
 of threads (e.g. from the *Settings* menu of the VsCode Julia extension and the file *settings.json*).
 
-#### Plotting
+#### *Plotting*
 
 **Jchemo.jl** uses **Makie.jl** for plotting. To install and load one of the Makie's backends (e.g. **CairoMakie.jl**) is required to display the plots. 
 
-#### Follow-up
+#### *Follow-up*
 
 Before to update the package, it is recommended to have a look on 
 [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) to avoid
