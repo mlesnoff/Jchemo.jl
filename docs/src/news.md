@@ -1,12 +1,12 @@
-## News
+# News
 
-### *Version 0.2.3*
+## *Version 0.2.3*
 
 - Modifications
     - Code improvement.
 
 
-### *Version 0.2.2*
+## *Version 0.2.2*
 
 - News
     - **@head**: macro for function 'head'.
@@ -14,7 +14,7 @@
 - Modifications
     - Code improvement.
 
-### *Version 0.2.1*
+## *Version 0.2.1*
 
 - News
     - **splsrda**: Sparse PLSR-DA.
@@ -25,7 +25,7 @@
 - Modifications
     - Code improvement.
     
-### *Version 0.2.0*
+## *Version 0.2.0*
 
 - News
     - **splskern**: Sparse PLSR.
@@ -34,7 +34,7 @@
     - Code improvement.
 
 
-### *Version 0.1.24*
+## *Version 0.1.24*
 
 - News
     - **colmeanskip**, **colstdskip**, **colsumskip**, **colvarskip**: Column-wise operations allowing missing data.
@@ -55,7 +55,7 @@
     - **covsel** has been removed and integrated into **covselr** that was
         extended and made faster. 
 
-### *Version 0.1.23*
+## *Version 0.1.23*
 
 - News
     - **dmnormlog**: Logarithm of the normal probability density estimation.
@@ -73,7 +73,7 @@
     - **fda**, **fdasvd** : argument 'pseudo' has been replaced by 'lb'
         (ridge regularization).
 
-### *Version 0.1.22*
+## *Version 0.1.22*
 
 - News
     - **difmean** : Compute a detrimental matrix (for calibration transfer) by column 
@@ -86,7 +86,7 @@
     - **calds**, **calpds**: Order of arguments 'Xt' and 'X' were inverted
         (required to be useable by **gridscore** etc.).
 
-### *Version 0.1.21*
+## *Version 0.1.21*
 
 - News
     - **kdeda**: Discriminant analysis using non-parametric kernel Gaussian 
@@ -100,7 +100,7 @@
     - **lda**, **qda**: returned output 'ds' renamed to 'dens'.
 
 
-### *Version 0.1.20*
+## *Version 0.1.20*
 
 - News
     - **dmkern**: Gaussian kernel density estimation (KDE)..
@@ -114,7 +114,7 @@
 - Breaking changes
     - **dens**: removed and replaced by **dmkern**.
 
-### *Version 0.1.19*
+## *Version 0.1.19*
 
 - News
 
@@ -123,7 +123,7 @@
     - Code cleaning.
 
 
-### *Version 0.1.18*
+## *Version 0.1.18*
 
 - News
     - **confusion** Confusion matrix.
@@ -134,7 +134,7 @@
     - Code cleaning.
 
 
-### *Version 0.1.17*
+## *Version 0.1.17*
 
 - News 
     - **lwmlrda**: k-Nearest-Neighbours locally weighted MLR-based discrimination (kNN-LWMLR-DA).
@@ -150,7 +150,7 @@
         with **lwmlr_s**. 
     - **sampclas**: remamed to **sampcla**.
 
-### *Version 0.1.16* 
+## *Version 0.1.16* 
 
 - News
     - **dkplsrda** Discrimination based on direct kernel partial least 
@@ -172,7 +172,7 @@
         were removed. For CART models (trees), they were replaced by new functions 
         using package DecisionTree.jl.  
 
-### *Version 0.1.15* 
+## *Version 0.1.15* 
 
 - News
     - **cosm** Cosinus between the columns of a matrix
@@ -186,7 +186,7 @@
     - Improvement of **vi_baggr**
     - Code cleaning.
 
-### *Version 0.1.14* 
+## *Version 0.1.14* 
 - News
     - **isel**: Interval variable selection.
     - **mlev**: Return the sorted levels of a dataset.
@@ -213,7 +213,7 @@
     - **vimp_xgb** renamed to **vi_xgb**
     - **vip**: outputs have been improved.
 
-### *Version 0.1.13* 
+## *Version 0.1.13* 
 - News
     - **mtest** Select indexes defining training and test sets for each column 
         of a dataframe.
@@ -221,15 +221,15 @@
 - Modifications
     - Code cleaning.
 
-### *Version 0.1.12* 
+## *Version 0.1.12* 
 - Modifications
     - All tree functions: Internal changes to adapt to modifications in XGBoost.jl library.
 
-### *Version 0.1.11* 
+## *Version 0.1.11* 
 - News
     - **vip** Variable importance on PLS projections (VIP).
 
-### *Version 0.1.10* 
+## *Version 0.1.10* 
 - News
     - **mbwcov**: Multiblock weighted covariate analysis regression (MBWCov) (Mangana et al. 2021).
 
@@ -240,7 +240,7 @@
     - **mbmang** renamed to **mbunif** (Unified multiblock analysis).
     - **ramang** renamed to **rrr** (Reduced rank regression).
 
-### *Version 0.1.9* 
+## *Version 0.1.9* 
 - News
     - **rasvd**: Redundancy analysis - PCA on instrumental variables (PCAIV).
     - **ramang** Redundancy analysis regression = Reduced rank regression (RRR)
@@ -254,7 +254,7 @@
         to **calds** and **calpds**.
     - **fnorm** renamed to **frob**.
 
-### *Version 0.1.8* 
+## *Version 0.1.8* 
 - News
     - **plswold**: PLSR Wold Nipals algorithm.
     - **ccawold**: CCA Wold Nipals algorithm.
@@ -269,7 +269,7 @@
     - Output 'Tbl' added in **comdim** and **mbpca**.
     - Code cleaning.
 
-### *Version 0.1.7* 
+## *Version 0.1.7* 
 - CairoMakie.jl was removed from the dependances, and replaced by Makie.jl.
 To display the plots, the user has to install and load one of
 the Makie's backend (e.g. CairoMakie).
@@ -298,47 +298,47 @@ the Makie's backend (e.g. CairoMakie).
     The new Jchemo functions does not work anymore with XGBoost.jl 1.5.2.    
     - Code cleaning.
 
-### *Version 0.1.6*
+## *Version 0.1.6*
 - Package Jchemo.jl has been registered.
 
 - Modifications
     - Code cleaning.
 
-### *Version 0.1.5*
+## *Version 0.1.5*
 - Modifications
     - Code cleaning.
 
-### *Version 0.1.4*
+## *Version 0.1.4*
 - News
     - **head**: Display the first rows of a dataset.
 
 - Modifications
     - Remove of side-effects in some functions of multi-bloc analyses.
 
-### *Version 0.1.3*
+## *Version 0.1.3*
 - Modifications
     - **detrend**: argument 'degree' renamed to 'pol'.
     - Code cleaning.
 
-### *Version 0.1.2*
+## *Version 0.1.2*
 - Modifications
     - **detrend**: new argument 'degree'
     - **gridcvlv**: correction of a bug (typing error) inserted 
         in the last version.
 
-### *Version 0.1.1*
+## *Version 0.1.1*
 - Modifications
     - **blockscal**: bug corrected in arguments.
     - Use of *multi-threading* (package Threads)
         in functions **locw** and **locwlv**, used in local models.
 
-### *Version 0.1.0*
+## *Version 0.1.0*
 - Modifications
     - Argument 'scal' (X and/or Y column-scaling) added to various functions.
     - **blockscal**: names of arguments have changed.
     - **plotgrid**: argument 'indx' modified.
 
-### *Version 0.0.26*
+## *Version 0.0.26*
 - News
     - **cscale**: Center and scale each column of a matrix.
     
@@ -348,18 +348,18 @@ the Makie's backend (e.g. CairoMakie).
     - Output 'explvar' replaced by 'explvarx' in all the concerned functions.
     - **rd**: New argument 'corr'.
 
-### *Version 0.0.25*
+## *Version 0.0.25*
 - News 
     - **rd**: Redundancy coefficients between two matrices.
 
 - Modifications
     - **summary** for Plsr objects. See the example in ?plskern.
 
-### *Version 0.0.24*
+## *Version 0.0.24*
 - Modifications
     - **selwold**: Argument "plot" renamed "graph" and bug fixed in plotting.
 
-### *Version 0.0.23*
+## *Version 0.0.23*
 - News 
     - **occknndis**: One-class classification using "global" k-nearest neighbors distances.
     - **occlknndis**: One-class classification using "local" k-nearest neighbors distances.
@@ -367,7 +367,7 @@ the Makie's backend (e.g. CairoMakie).
 - Modifications
     - **occsd**, **occod**, **occsdod**, **occstah**: The methods to compute the cutoff have changed.
 
-### *Version 0.0.22*
+## *Version 0.0.22*
 - News 
     - **colmad**: Median absolute deviation (MAD) of each column of a matrix.
     - **occsdod**: One-class classification using a compromise between PCA/PLS score (SD) and orthogonal (OD) distances.
@@ -379,7 +379,7 @@ the Makie's backend (e.g. CairoMakie).
     - **odis** and **scordis** have been rename to **occsd** and **occod**, and modified.
     - **plotxy**: new argument "bisect".
 
-### *Version 0.0.21* 
+## *Version 0.0.21* 
 - News 
     - **dens**: Univariate kernel density estimation.
 
@@ -390,7 +390,7 @@ the Makie's backend (e.g. CairoMakie).
     - **datasets**: removed and transferred to JchemoData.jl
 
 
-### *Version 0.0.20* 
+## *Version 0.0.20* 
 - News 
     - **covselr**: Covsel regression (Covsel+Mlr).
 
@@ -398,7 +398,7 @@ the Makie's backend (e.g. CairoMakie).
     - **covsel**, **mlrvec**: Arguments changed.
 
 
-### *Version 0.0.19* 
+## *Version 0.0.19* 
 - News 
     - **selwold** : Wold's criterion to select dimensionality in LV (e.g. PLSR) models.
     - **plotxy** : Scatter plot (x, y) data.
@@ -406,14 +406,14 @@ the Makie's backend (e.g. CairoMakie).
 - Modifications 
     - **plotscore**: Renamed to **plotgrid**.    
 
-### *Version 0.0.18* 
+## *Version 0.0.18* 
 - News 
     - **plotgrid** : Plot error or performance rates of model predictions.
  
 - Modifications 
     - **plotsp**: argument 'resolution' was added.
 
-### *Version 0.0.17* 
+## *Version 0.0.17* 
 - News 
     - **replacebylev2** : Replace the elements of an index-vector by levels.
 
@@ -429,7 +429,7 @@ the Makie's backend (e.g. CairoMakie).
     - Examples added in the helps of every functions.
     - Discrimination functions: major updates.
 
-### *Version 0.0.16*
+## *Version 0.0.16*
 - News 
     - **transfer_ds** : Calibration transfert with direct standardization (DS).
     - **transfer_pds** : Calibration transfert with piecewise direct standardization (PDS).
@@ -438,7 +438,7 @@ the Makie's backend (e.g. CairoMakie).
     - **mlr** functions : Argument 'noint' added.
     - **plsr_avg_cv** : Bug corrected.
 
-### *Version 0.0.15*
+## *Version 0.0.15*
 - News 
     - **plsr_stack** : Stacking PLSR models
 
@@ -450,11 +450,11 @@ the Makie's backend (e.g. CairoMakie).
     - **plsr_avg_cv**
     - **lwplsr_avg**
 
-### *Version 0.0.14*
+## *Version 0.0.14*
 - News 
     - **lwplsr_s** 
 
-### *Version 0.0.13*
+## *Version 0.0.13*
 - News 
     - **fweight** 
     - **rowmean**, **rowstd**
@@ -466,7 +466,7 @@ the Makie's backend (e.g. CairoMakie).
     - **snv**
     - **wshenk**
 
-### *Version 0.0.12*
+## *Version 0.0.12*
 - News 
     - **nco**, **nro**
 
@@ -475,7 +475,7 @@ the Makie's backend (e.g. CairoMakie).
     - All functions terminating with "..._agg" renamed to "..._avg".
 
 
-### *Version 0.0.11*
+## *Version 0.0.11*
 - News 
     - **blockscal_mfa**
     - **datasets**
@@ -487,7 +487,7 @@ the Makie's backend (e.g. CairoMakie).
     - All the functions terminating with a "s" have been renamed without "s"
     (e.g. **colmeans** was renamed to **colmean**)
 
-### *Version 0.0.10*
+## *Version 0.0.10*
 - News 
     - **colsum**
     - **mbpca_comdim_s**
@@ -498,7 +498,7 @@ the Makie's backend (e.g. CairoMakie).
     - **mse**
     - **mbpls**
 
-### *Version 0.0.9*
+## *Version 0.0.9*
 - News 
     - **blockscal_frob**, **blockscal_ncol**, **blockscal_sd**
     - **colnorm2**
@@ -515,7 +515,7 @@ the Makie's backend (e.g. CairoMakie).
     - **mbplsr_mid**
     - **mbplsr_mid_seq**
 
-### *Version 0.0.8*
+## *Version 0.0.8*
 - News functions
     - **gridcv_mb**
     - **gridcvlv_mb**
@@ -526,12 +526,12 @@ the Makie's backend (e.g. CairoMakie).
     - **rosaplsr** renamed to **mbplsr_rosa**
     - **soplsr** renamed to **mbplsr_soplsr**
 
-### *Version 0.0.7*
+## *Version 0.0.7*
 - News functions
     - **mbplsr**
     - **soplsr**
 
-### *Version 0.0.6*
+## *Version 0.0.6*
 - News functions
     - **colstd**
     - **plsrosa**
@@ -544,7 +544,7 @@ the Makie's backend (e.g. CairoMakie).
     - **plotsp**: changes in outputs
     - **aggstat** (::AbstractMatrix): changes in arguments and outputs
  
-### *Version 0.0.5*
+## *Version 0.0.5*
 - News functions
     - **blockscal**
     - **pcr**
@@ -552,23 +552,23 @@ the Makie's backend (e.g. CairoMakie).
     - **rpmatgauss**
     - **rpmat_li**
    
-### *Version 0.0.4*
+## *Version 0.0.4*
 - News functions
     - **iplsr**
 
 - Modification of **covsel**
 
-### *Version 0.0.3*
+## *Version 0.0.3*
 - News functions
     - **interpl**
     - **checkdupl**, **checkmiss**
 
-### *Version 0.0.2*
+## *Version 0.0.2*
 - News functions
     - **covsel**
     - **interpl** has been replaced by **interpl_mon**
 - Change in output of **vi_xgb**
 
-### *Version 0.0.1*
+## *Version 0.0.1*
 
 First version of the package

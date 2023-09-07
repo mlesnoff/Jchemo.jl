@@ -1,4 +1,4 @@
-### Jchemo.jl functions 
+# Index of functions 
 
 Here is a list of all exported functions from Jchemo.jl. 
 
