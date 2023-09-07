@@ -7,7 +7,7 @@
 [![Build Status](https://github.com/mlesnoff/Jchemo.jl/workflows/CI/badge.svg)](https://github.com/mlesnoff/Jchemo.jl/actions)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
-## <span style="color:green"> **About** </span> 
+# <span style="color:green"> **About** </span> 
 
 - [**Latest documentation**](https://mlesnoff.github.io/Jchemo.jl/dev) (available methods, examples, etc.).
 
@@ -50,7 +50,7 @@ Before to update the package, it is recommended to have a look on
 [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) to avoid
  eventual problems when the new version contains breaking changes. 
 
-## <span style="color:green"> **Installation** </span> 
+# <span style="color:green"> **Installation** </span> 
 
 In order to install Jchemo, run in the Pkg REPL:
 ```julia
@@ -65,11 +65,11 @@ or for the current developing version (not 100% stable):
 ```julia
 pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ```
-## <span style="color:green"> **Examples on PLSR** </span> 
+# <span style="color:green"> **Examples on PLSR** </span> 
 
 (see more at [JchemoDemo](https://github.com/mlesnoff/JchemoDemo)).
 
-### **Benchmark - Computation time for a PLS with n = 1e6 observations** </span> 
+### **Benchmark - Computation time for a PLS with n = 1e6 observations**
 ```julia
 julia> versioninfo()
 Julia Version 1.8.5
@@ -249,7 +249,7 @@ pnames(rescv)
 res = rescv.res
 ```
 
-## <span style="color:green"> **Credit** </span> 
+# <span style="color:green"> **Credit** </span> 
 
 ### Author
 
