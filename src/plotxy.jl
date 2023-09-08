@@ -86,11 +86,13 @@ f
 
 ```
 """ 
-function plotxy(x::AbstractVector, y::AbstractVector; resolution = (600, 400), 
+function plotxy(x::AbstractArray, y::AbstractArray; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", 
         kwargs...)
+    x = vec(x)
+    y = vec(y)
     f = Figure(resolution = resolution)
     ax = Axis(f; xlabel = xlabel, ylabel = ylabel, 
         title = title)
@@ -130,6 +132,9 @@ function plotxy(x::AbstractVector, y::AbstractVector, group::AbstractVector; res
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", leg::Bool = true,
         kwargs...)
+    x = vec(x)
+    y = vec(y)
+    group = vec(group)
     lev = mlev(group)
     nlev = length(lev)
     lab = string.(lev)
