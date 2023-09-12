@@ -1,30 +1,19 @@
 """
-    plotxy(x::AbstractVector, y::AbstractVector; resolution = (600, 400), 
+    plotxy(x, y; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "",
         kwargs...)
-    plotxy(x::AbstractVector, y::AbstractVector, group::AbstractVector; resolution = (600, 400), 
+    plotxy(x, y, group; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", leg::Bool = true,
-        kwargs...)
-    plotxy(X::Union{Matrix, DataFrame}; resolution = (600, 400), 
-        color = nothing, ellipse::Bool = false, prob = .95, 
-        circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", 
-        kwargs...)
-    plotxy(X::Union{Matrix, DataFrame}, group::AbstractVector; resolution = (600, 400), 
-        color = nothing, ellipse::Bool = false, prob = .95, 
-        circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", leg::Bool = true, 
         kwargs...)
         
 Scatter plot of (x, y) data
 * `x` : A x-vector (n).
 * `y` : A y-vector (n). 
-* `X` : A matrix (n, 2) (col1 = x, col2 = y). 
-* `group` : Categorical variable defining groups. 
+* `group` : Categorical variable defining groups (n). 
 * `resolution` : Resolution (horizontal, vertical) of the figure.
 * `color` : Set color(s). If `group` if used, `color` must be a vector of 
     same length as the number of levels in `group`.
@@ -39,7 +28,7 @@ Scatter plot of (x, y) data
 * `leg` : Boolean. If `group` is used, display a legend or not.
 * `kwargs` : Optional arguments to pass in function `scatter` of Makie.
 
-The user has to specify a backend (e.g. CairoMakie).
+Before using `plotxy`, a backend (e.g. CairoMakie) has to be specified.
 
 ## Examples
 ```julia
@@ -61,36 +50,39 @@ T = fm.T
 
 plotxy(T[:, 1], T[:, 2]; color = (:red, .5)).f
 
-plotxy(T[:, 1:2]; color = (:red, .5)).f
-
 plotxy(T[:, 1], T[:, 2], year; ellipse = true).f
-
-plotxy(T[:, 1:2], year; color = (:red, .5)).f
 
 i = 1
 colm = cgrad(:Dark2_5, nlev; categorical = true)
-plotxy(T[:, i:(i + 1)], year; 
+plotxy(T[:, i], T[:, i + 1], year; 
     color = colm,
     xlabel = string("PC", i), ylabel = string("PC", i + 1),
     zeros = true, ellipse = true).f
 
-plotxy(T[:, 1:2], year).lev
+plotxy(T[:, 1], T[:, 2]), year).lev
 
-## Adding several layers is possible
+plotxy(1:5, 1:5).f
+
+y = reshape(rand(5), 5, 1)
+plotxy(1:5, y).f
+
+## Several layers can be added
 ## (same syntax as in Makie)
 A = rand(50, 2)
-f, ax = plotxy(A; xlabel = "x1", ylabel = "x2")
+f, ax = plotxy(A[:, 1], A[:, 2]; xlabel = "x1", ylabel = "x2")
 ylims!(ax, -1, 2)
 hlines!(ax, 0.5; color = :red, linestyle = :dot)
 f
 
 ```
 """ 
-function plotxy(x::AbstractVector, y::AbstractVector; resolution = (600, 400), 
+function plotxy(x, y; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", 
         kwargs...)
+    x = vec(x)
+    y = vec(y)
     f = Figure(resolution = resolution)
     ax = Axis(f; xlabel = xlabel, ylabel = ylabel, 
         title = title)
@@ -125,11 +117,14 @@ function plotxy(x::AbstractVector, y::AbstractVector; resolution = (600, 400),
     (f = f, ax = ax)
 end
 
-function plotxy(x::AbstractVector, y::AbstractVector, group::AbstractVector; resolution = (600, 400), 
+function plotxy(x, y, group; resolution = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", leg::Bool = true,
         kwargs...)
+    x = vec(x)
+    y = vec(y)
+    group = vec(group)
     lev = mlev(group)
     nlev = length(lev)
     lab = string.(lev)
@@ -176,26 +171,3 @@ function plotxy(x::AbstractVector, y::AbstractVector, group::AbstractVector; res
     (f = f, ax = ax, lev = lev)
 end
 
-function plotxy(X::Union{Matrix, DataFrame}; resolution = (600, 400), 
-        color = nothing, ellipse::Bool = false, prob = .95, 
-        circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", 
-        kwargs...)
-    plotxy(X[:, 1], X[:, 2]; resolution = resolution, 
-        color = color, ellipse = ellipse, prob = prob, 
-        circle = circle, bisect = bisect, zeros = zeros,
-        xlabel = xlabel, ylabel = ylabel, title = title, 
-        kwargs...)
-end
-
-function plotxy(X::Union{Matrix, DataFrame}, group::AbstractVector; resolution = (600, 400), 
-        color = nothing, ellipse::Bool = false, prob = .95, 
-        circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", leg::Bool = true,
-        kwargs...)
-    plotxy(X[:, 1], X[:, 2], group; resolution = resolution, 
-        color = color, ellipse = ellipse, prob = prob, 
-        circle = circle, bisect = bisect, zeros = zeros,
-        xlabel = xlabel, ylabel = ylabel, title = title, leg = leg,
-        kwargs...)
-end

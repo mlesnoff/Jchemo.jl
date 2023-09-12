@@ -60,12 +60,11 @@ ytrain = y[s]
 
 res = viperm(Xtrain, ytrain; perm = 50, 
     score = rmsep, fun = plskern, nlv = 9)
-z = vec(res.imp)
 f = Figure(resolution = (500, 400))
 ax = Axis(f[1, 1];
     xlabel = "Wavelength (nm)", 
     ylabel = "Importance")
-scatter!(ax, wl_num, vec(z); color = (:red, .5))
+scatter!(ax, wl_num, vec(res.imp); color = (:red, .5))
 u = [910; 950]
 vlines!(ax, u; color = :grey, linewidth = 1)
 f

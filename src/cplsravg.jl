@@ -64,7 +64,7 @@ fm.ni
 res = Jchemo.predict(fm, Xtest) 
 res.posterior
 rmsep(res.pred, ytest)
-plotxy(vec(res.pred), ytest; color = (:red, .5),
+plotxy(res.pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f  
 ```

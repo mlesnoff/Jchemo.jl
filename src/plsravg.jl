@@ -97,7 +97,7 @@ fm = plsravg(Xtrain, ytrain; nlv = nlv) ;
 res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
-plotxy(vec(res.pred), ytest; color = (:red, .5),
+plotxy(res.pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f   
 
 fm = plsravg(Xtrain, ytrain; nlv = nlv,

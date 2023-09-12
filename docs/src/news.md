@@ -5,6 +5,11 @@
 - Modifications
     - Code improvement.
 
+- Breaking changes
+    - **plotxy**: The number of methods have been reduced (for simplification). 
+    The aggregated syntax (matrice with two columns as input {x,y}) is not 
+    allowed anymore. 
+
 
 ## *Version 0.2.2*
 

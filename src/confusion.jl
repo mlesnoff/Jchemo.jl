@@ -28,8 +28,8 @@ plotconf(res; pct = true, ptext = false).f
 ```
 """
 function confusion(pred, y; digits = 1)
-    y = vec(y)
     pred = vec(pred)
+    y = vec(y)
     n = length(y)
     z = vcat(y, pred)
     lev = mlev(z) 

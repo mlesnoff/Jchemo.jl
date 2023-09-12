@@ -102,7 +102,7 @@ fm = krr(Xtrain, ytrain; lb = lb, kern = "kpol",
     degree = 2, gamma = 1e-1, coef0 = 10) ;
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
-plotxy(vec(res.pred), ytest; color = (:red, .5),
+plotxy(res.pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 
 # Example of fitting the function sinc(x)

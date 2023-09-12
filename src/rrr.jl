@@ -84,7 +84,7 @@ nlv = 1
 fm = rrr(Xtrain, ytrain; nlv = nlv, tau = tau) ;
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
-plotxy(vec(res.pred), ytest; color = (:red, .5),
+plotxy(res.pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f
     
