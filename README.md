@@ -9,7 +9,7 @@
 
 # <span style="color:green"> About </span> 
 
-- [**Latest documentation**](https://mlesnoff.github.io/Jchemo.jl/dev) (available methods, examples, etc.).
+- [**Latest documentation**](https://mlesnoff.github.io/Jchemo.jl/dev)
 
 This package was initially designed about **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
 and their numerous variants, in particular locally weighted PLS models (**LWPLS-R & -DA**) (e.g. https://doi.org/10.1002/cem.3209).
@@ -32,7 +32,7 @@ Most of the functions of the package have a **help page** providing an example, 
 
 Other **examples (scripts)** demonstrating the syntax of **Jchemo.jl** are available in the project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) that can be used for trainings. 
 
-**The datasets** used in the examples (help pages and JchemoDemo) are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets (chemometrics and others).
+**The datasets** used in the examples (in help pages and JchemoDemo) are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets (chemometrics and others).
 
 ### Multi-threading
 
