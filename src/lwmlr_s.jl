@@ -17,7 +17,7 @@ end
 kNN-LWMLR after preliminary (linear or non-linear) dimension 
     reduction (kNN-LWMLR-S).
 * `X` : X-data (n, p).
-* `Y` : Y-data (n, q).
+* `Y` : Y-data (n, q). 
 * `reduc` : Type of dimension reduction. Possible values are:
     "pca" (PCA), "pls" (PLS; default), "dkpls" (direct Gaussian kernel PLS, see `?dkpls`).
 * `nlv` : Nb. latent variables (LVs) for preliminary dimension reduction. 
