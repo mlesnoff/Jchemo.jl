@@ -12,28 +12,29 @@ struct LwplsrS
 end
 
 """
-    lwplsr_s(X, Y; reduc = "pls", nlv0, 
-        metric = "eucl", h, k, gamma = 1, psamp = 1, samp = "sys", 
-        nlv, tol = 1e-4, scal::Bool = false, verbose = false)
+    lwplsr_s(X, Y; reduc = "pls", 
+        nlv0, gamma = 1, psamp = 1, samp = "sys", 
+        metric = "eucl", h, k, nlv, 
+        tol = 1e-4, scal::Bool = false, verbose = false)
 kNN-LWPLSR after preliminary (linear or non-linear) dimension 
     reduction (kNN-LWPLSR-S).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `reduc` : Type of dimension reduction. Possible values are:
-    "pca" (PCA), "pls" (PLS; default), "dkpls" (direct Gaussian kernel PLS).
+    "pca" (PCA), "pls" (PLS; default), "dkpls" (direct Gaussian kernel PLS, see `?dkpls`).
 * `nlv0` : Nb. latent variables (LVs) for preliminary dimension reduction. 
+* `gamma` : Scale parameter for the Gaussian kernel when a KPLS is used 
+    for dimension reduction. See function `krbf`.
+* `psamp` : Proportion of observations sampled in {`X`, `Y`} to compute the 
+    loadings used to compute the scores of the preliminary dimension reduction.
+* `samp` : Type of sampling applied for `psamp`. Possible values are: 
+    "sys" (systematic grid sampling over `rowsum(Y)`) or "random" (random sampling).
 * `metric` : Type of dissimilarity used to select the neighbors and compute
     the weights. Possible values are "eucl" (default; Euclidean distance) 
     and "mahal" (Mahalanobis distance).
 * `h` : A scalar defining the shape of the weight function. Lower is h, 
     sharper is the function. See function `wdist`.
 * `k` : The number of nearest neighbors to select for each observation to predict.
-* `gamma` : Scale parameter for the Gaussian kernel when a KPLS is used 
-    for dimension reduction. See function `krbf`.
-* `psamp` : Proportion of observations sampled in `X, Y`to compute the 
-    loadings used to compute the scores.
-* `samp` : Type of sampling applied for `psamp`. Possible values are: 
-    "sys" (systematic grid sampling over `rowsum(Y)`) or "random" (random sampling).
 * `nlv` : Nb. latent variables (LVs) for the models fitted on preliminary 
     scores.
 * `tol` : For stabilization when very close neighbors.
@@ -96,8 +97,9 @@ plotxy(res.pred, ytest; color = (:red, .5),
     ylabel = "Observed (Test)").f  
 
 fm = lwplsr_s(Xtrain, ytrain; reduc = "dkpls", 
-    nlv0 = nlv0, metric = metric, 
-    h = h, k = k, gamma = .1, nlv = nlv) ;
+    nlv0 = nlv0, gamma = .1, 
+    metric = metric, h = h, k = k, 
+    nlv = nlv) ;
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5),
@@ -105,16 +107,17 @@ plotxy(res.pred, ytest; color = (:red, .5),
     ylabel = "Observed (Test)").f  
 
 fm = lwplsr_s(Xtrain, ytrain; reduc = "dkpls", 
-    nlv0 = nlv0, metric = metric, 
-    h = h, k = k, gamma = .1, psamp = .8,
-    samp = "random", nlv = nlv) ;
+    nlv0 = nlv0, gamma = .1, samp = "random", psamp = .8, 
+    metric = metric, h = h, k = k,
+    nlv = nlv) ;
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 ```
 """ 
-function lwplsr_s(X, Y; reduc = "pls", nlv0, 
-        metric = "eucl", h, k, gamma = 1, psamp = 1, samp = "sys", 
-        nlv, tol = 1e-4, scal::Bool = false, verbose = false)
+function lwplsr_s(X, Y; reduc = "pls", 
+        nlv0, gamma = 1, psamp = 1, samp = "sys", 
+        metric = "eucl", h, k, nlv, 
+        tol = 1e-4, scal::Bool = false, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = nro(X)
