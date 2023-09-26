@@ -1,14 +1,16 @@
 """ 
-    mtest(Y::DataFrame, id = 1:nro(Y); test, rep = 1)
+    mtest(Y::DataFrame, id = 1:nro(Y); ntest, 
+        rep = 1)
 Select indexes defining training and test sets for each column 
     of a dataframe.
 * `Y` : DataFrame (n, p). Typically responses variables to predict. 
     Missing values are allowed.
 * `id` : Vector (n) of IDs.
-* `test` : Nb. (if Int64) or proportion (if Float64)
-    of observations in each test set, within the non-missing 
-    observations of the considered `Y` column.
-* `rep` : Nb. repetitions of training and test sets for each `Y` column.
+* `ntest` : Nb. of observations selected for each test set, 
+    within the non-missing observations of the considered `Y` column. 
+    If `ntest` is a single value, the nb. test observations is the same 
+    for each variable. Alternatively, a vector of length p can be provided. 
+* `rep` : Nb. replications of training/test sets for each `Y` column.
 
 ## Examples
 ```julia
@@ -19,34 +21,33 @@ Y = hcat([rand(5); missing; rand(6)],
 Y = DataFrame(Y, :auto)
 n = nro(Y)
 
-res = mtest(Y; test = 3, rep = 4) ;
-#res = mtest(Y; test = .3, rep = 4) ;
-#res = mtest(Y, string.(1:n); test = 3, rep = 4) ;
+res = mtest(Y; ntest = 3, rep = 4) ;
+#res = mtest(Y; ntest = [3; 6], rep = 4) ;
+#res = mtest(Y, string.(1:n); ntest = 3, rep = 4) ;
 pnames(res)
 res.nam
 length(res.test)
 length(res.test[1])
-i = 1
+i = 1    # variable i
 res.test[i]
 res.train[i]
 ```
 """
-function mtest(Y::DataFrame, id = 1:nro(Y); test, rep = 1)
+function mtest(Y::DataFrame, id = 1:nro(Y); ntest, 
+        rep = 1)
     nam = names(Y)
-    nvar = length(nam)
-    idtest = list(nvar, Vector)
-    idtrain = list(nvar, Vector)  
-    for i = 1:nvar
-        znam = nam[i]
-        y = Y[:, znam]
+    p = length(nam)
+    idtest = list(p, Vector)
+    idtrain = list(p, Vector)  
+    length(ntest) == 1 ? ntest = repeat([ntest], p) : nothing
+    for i = 1:p
+        y = Y[:, nam[i]]
         s_all = findall(ismissing.(y) .== 0)      
         ntot = length(s_all)
-        isa(test, Int64) ? ntest = copy(test) : nothing
-        isa(test, Float64) ? ntest = Int64(round(test * ntot)) : nothing
         zidtest = list(rep, Vector)
         zidtrain = list(rep, Vector)
         for j = 1:rep 
-            s_test = sample(1:ntot, ntest; replace = false)         
+            s_test = sample(1:ntot, ntest[i]; replace = false)         
             s_train = (1:ntot)[in(s_test).(1:ntot) .== 0]
             zidtest[j] = sort(id[s_all[s_test]])      
             zidtrain[j] = sort(id[s_all[s_train]])
@@ -56,3 +57,4 @@ function mtest(Y::DataFrame, id = 1:nro(Y); test, rep = 1)
     end
     (test = idtest, train = idtrain, nam)
 end
+
