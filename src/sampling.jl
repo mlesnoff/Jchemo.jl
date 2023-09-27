@@ -6,7 +6,7 @@ Kennard-Stone sampling.
 * `metric` : Metric used for the distance computation.
     Possible values: "eucl", "mahal".
 
-The function divides the data X in two sets, `train` vs `test`, 
+The function splits the data X in two sets, `train` vs `test`, 
 using the Kennard-Stone (KS) algorithm (Kennard & Stone, 1969). 
 The two sets have different underlying probability distributions: 
 `train` has higher dispersion than `test`.
