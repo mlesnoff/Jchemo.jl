@@ -153,6 +153,30 @@ function sampdp(X; k, metric = "eucl")
 end
     
 """
+    samprand(y; k)
+Random sampling.  
+* `n` : Total nb. observations.
+* `k` : Nb. observations to sample (output `train`).
+
+Two outputs (indexes) are returned: `train` (`k`) and `test` (`n - k`). 
+Output `train` is built by random sampling within `1:n`, with no replacement. 
+
+## Examples
+```julia
+n = 10
+samprand(n; k = 3)
+```
+""" 
+function samprand(n; k)
+    k = Int64(round(k))
+    zn = collect(1:n)
+    s = sample(zn, k; replace = false)
+    sort!(s)
+    test = zn[setdiff(1:end, s)]
+    (train = s, test = test)
+end
+
+"""
     sampsys(y; k)
 Systematic sampling over a quantitative variable.  
 * `y` : Quantitative variable (n) to sample.
@@ -183,30 +207,6 @@ function sampsys(y; k)
     id = sortperm(y)
     zn = collect(1:n)
     s = zn[id[z]]
-    sort!(s)
-    test = zn[setdiff(1:end, s)]
-    (train = s, test = test)
-end
-
-"""
-    samprand(y; k)
-Random sampling.  
-* `n` : Total nb. observations.
-* `k` : Nb. observations to sample (output `train`).
-
-Two outputs (indexes) are returned: `train` (`k`) and `test` (`n - k`). 
-Output `train` is built by random sampling within `1:n`, with no replacement. 
-
-## Examples
-```julia
-n = 10
-samprand(n; k = 3)
-```
-""" 
-function samprand(n; k)
-    k = Int64(round(k))
-    zn = collect(1:n)
-    s = sample(zn, k; replace = false)
     sort!(s)
     test = zn[setdiff(1:end, s)]
     (train = s, test = test)
@@ -272,12 +272,5 @@ function sampcla(x, y = nothing; k)
     test = zn[setdiff(1:end, s)]
     (train = s, test, lev, ni, k)
 end
-
-
-
-
-
-
-
 
 
