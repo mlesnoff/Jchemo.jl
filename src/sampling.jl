@@ -6,7 +6,7 @@ Kennard-Stone sampling.
 * `metric` : Metric used for the distance computation.
     Possible values: "eucl", "mahal".
 
-Two outputs (indexes) are returned, `train` (`k`) and `test` (n - `k`). 
+Two outputs (indexes) are returned: `train` (`k`) and `test` (n - `k`). 
 Output `train` is built using the Kennard-Stone (KS) algorithm (Kennard & Stone, 1969). 
 The two sets have different underlying probability distributions: `train` has higher 
 dispersion than `test`.
@@ -67,16 +67,15 @@ DUPLEX sampling.
 * `metric` : Metric used for the distance computation.
     Possible values are: "eucl", "mahal".
 
-Three outputs are returned (indexes of the selected observations), 
+Three outputs (indexes) are returned: 
 `train` (`k`), `test` (`k`) and `remain` (n - 2 * `k`). 
 
-Outputs `train` and `test` have equal size and are built using the 
-DUPLEX algorithm (Snee, 1977 p.421).
-They are expected to cover approximately the same X-space region and
-have similar statistical properties. 
+Outputs `train` and `test` and are built using the DUPLEX algorithm 
+(Snee, 1977 p.421). They have equal size and are expected to cover 
+approximately the same X-space region and have similar statistical properties. 
 
-In practice, the user may add (a posteriori) the eventual remaining 
-observations (output `remain`) to `train`.
+In practice, when output `remain` is not empty (remaining observations), 
+one strategy is to add it to output `train`.
 
 ## References
 Kennard, R.W., Stone, L.A., 1969. Computer aided design of experiments. 
@@ -157,7 +156,7 @@ Systematic sampling over a quantitative variable.
 * `k` : Nb. observations to sample (output `train`). 
     Must be >= 2.
 
-Two outputs (indexes) are returned, `train` (`k`) and `test` (n - `k`). 
+Two outputs (indexes) are returned: `train` (`k`) and `test` (n - `k`). 
 Output `train` is built by systematic sampling (regular grid) over `y`. 
 It always contains the indexes of the minimum and maximum of `y`.
 
