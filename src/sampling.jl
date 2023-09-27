@@ -1,65 +1,4 @@
 """
-    sampks(X; k, metric = "eucl")
-Kennard-Stone sampling.  
-* `X` : X-data (n, p).
-* `k` : Nb. observations to sample (output `train`). 
-* `metric` : Metric used for the distance computation.
-    Possible values: "eucl", "mahal".
-
-Two outputs (indexes) are returned: `train` (`k`) and `test` (n - `k`). 
-Output `train` is built using the Kennard-Stone (KS) algorithm (Kennard & Stone, 1969). 
-The two sets have different underlying probability distributions: `train` has higher 
-dispersion than `test`.
-
-## References
-Kennard, R.W., Stone, L.A., 1969. Computer aided design of experiments. 
-Technometrics, 11(1), 137-148.
-
-## Examples
-```julia
-using JchemoData, JLD2, CairoMakie
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/cassav.jld2") 
-@load db dat
-pnames(dat)
-
-X = dat.X 
-y = dat.Y.tbc
-
-k = 200
-res = sampks(X; k = k)
-pnames(res)
-res.train 
-res.test
-
-fm = pcasvd(X; nlv = 15)
-T = fm.T
-res = sampks(T; k = k, metric = "mahal")
-```
-""" 
-function sampks(X; k, metric = "eucl")
-    k = Int64(round(k))
-    if metric == "eucl"
-        D = euclsq(X, X)
-    elseif metric == "mahal"
-        D = mahsq(X, X)
-    end
-    zn = 1:size(D, 1)
-    # Initial 2 selections (train)
-    s = findall(D .== maximum(D))
-    s = [s[1][1] ; s[1][2]]
-    # Candidates
-    cand = zn[setdiff(1:end, s)]
-    @inbounds for i = 1:(k - 2)
-        u = vec(minimum(D[s, cand], dims = 1))
-        zs = cand[findall(u .== maximum(u))[1]]
-        s = [s ; zs]
-        cand = zn[setdiff(1:end, s)]
-    end
-    (train = s, test = cand)
-end
-    
-"""
     sampdp(X; k, metric = "eucl")
 DUPLEX sampling.  
 * `X` : X-data (n, p).
@@ -147,6 +86,67 @@ function sampdp(X; k, metric = "eucl")
         cand = zn[setdiff(1:end, [s1 ; s2])]
     end
     (train = s1, test = s2, remain = cand)
+end
+    
+"""
+    sampks(X; k, metric = "eucl")
+Kennard-Stone sampling.  
+* `X` : X-data (n, p).
+* `k` : Nb. observations to sample (output `train`). 
+* `metric` : Metric used for the distance computation.
+    Possible values: "eucl", "mahal".
+
+Two outputs (indexes) are returned: `train` (`k`) and `test` (n - `k`). 
+Output `train` is built using the Kennard-Stone (KS) algorithm (Kennard & Stone, 1969). 
+The two sets have different underlying probability distributions: `train` has higher 
+dispersion than `test`.
+
+## References
+Kennard, R.W., Stone, L.A., 1969. Computer aided design of experiments. 
+Technometrics, 11(1), 137-148.
+
+## Examples
+```julia
+using JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.tbc
+
+k = 200
+res = sampks(X; k = k)
+pnames(res)
+res.train 
+res.test
+
+fm = pcasvd(X; nlv = 15)
+T = fm.T
+res = sampks(T; k = k, metric = "mahal")
+```
+""" 
+function sampks(X; k, metric = "eucl")
+    k = Int64(round(k))
+    if metric == "eucl"
+        D = euclsq(X, X)
+    elseif metric == "mahal"
+        D = mahsq(X, X)
+    end
+    zn = 1:size(D, 1)
+    # Initial 2 selections (train)
+    s = findall(D .== maximum(D))
+    s = [s[1][1] ; s[1][2]]
+    # Candidates
+    cand = zn[setdiff(1:end, s)]
+    @inbounds for i = 1:(k - 2)
+        u = vec(minimum(D[s, cand], dims = 1))
+        zs = cand[findall(u .== maximum(u))[1]]
+        s = [s ; zs]
+        cand = zn[setdiff(1:end, s)]
+    end
+    (train = s, test = cand)
 end
     
 """

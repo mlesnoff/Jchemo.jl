@@ -1,16 +1,16 @@
 """ 
     mtest(Y::DataFrame, id = 1:nro(Y); ntest, 
         rep = 1)
-Select indexes defining training and test sets for each column 
-    of a dataframe.
-* `Y` : DataFrame (n, p). Typically responses variables to predict. 
-    Missing values are allowed.
+Random selection of training and test sets for each column 
+    of Y-data.
+* `Y` : DataFrame (n, p). Typically, responses variables to predict,
+    containing possible missing values.
 * `id` : Vector (n) of IDs.
-* `ntest` : Nb. of observations selected for each test set, 
-    within the non-missing observations of the considered `Y` column. 
-    If `ntest` is a single value, the nb. test observations is the same 
-    for each variable. Alternatively, a vector of length p can be provided. 
-* `rep` : Nb. replications of training/test sets for each `Y` column.
+* `ntest` : Nb. test observations selected for each `Y` column, 
+    within the non-missing observations (of the considered column). 
+    If `ntest` is a single value, the nb. observations is the same 
+    for each column. Alternatively, `ntest` can be a vector of length p. 
+* `rep` : Nb. replications for each `Y` column.
 
 ## Examples
 ```julia
