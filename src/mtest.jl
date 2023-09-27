@@ -3,13 +3,14 @@
         rep = 1)
 Random splitting of training and test sets for each column 
     of Y-data.
-* `Y` : DataFrame (n, p). Typically, responses variables to predict,
+* `Y` : DataFrame (n, p). Typically: responses variables to predict,
     containing possible missing values.
 * `id` : Vector (n) of IDs.
-* `ntest` : Nb. test observations selected for each `Y` column, 
-    within the non-missing observations (of the considered column). 
-    If `ntest` is a single value, the nb. sampled observations is the same 
-    for each column. Alternatively, `ntest` can be a vector of length p. 
+* `ntest` : Nb. test observations selected for each `Y` column. 
+    The selection is done within the non-missing observations 
+    of the considered column. If `ntest` is a single value, the nb. selected 
+    observations is the same for each column. Alternatively, `ntest` can be a vector 
+    of length p. 
 * `rep` : Nb. replications for each `Y` column.
 
 ## Examples
@@ -47,14 +48,18 @@ function mtest(Y::DataFrame, id = 1:nro(Y); ntest,
         zidtest = list(rep, Vector)
         zidtrain = list(rep, Vector)
         for j = 1:rep 
-            s_test = sample(1:ntot, ntest[i]; replace = false)         
-            s_train = (1:ntot)[in(s_test).(1:ntot) .== 0]
-            zidtest[j] = sort(id[s_all[s_test]])      
-            zidtrain[j] = sort(id[s_all[s_train]])
+            #s_test = sample(1:ntot, ntest[i]; replace = false)         
+            #s_train = (1:ntot)[in(s_test).(1:ntot) .== 0]
+            #zidtest[j] = sort(id[s_all[s_test]])      
+            #zidtrain[j] = sort(id[s_all[s_train]])
+            ntrain = ntot - ntest[i]
+            res = samprand(ntot; k = ntrain)
+            zidtest[j] = sort(id[s_all[res.test]])      
+            zidtrain[j] = sort(id[s_all[res.train]])
         end
         idtest[i] = zidtest
         idtrain[i] = zidtrain
     end
-    (test = idtest, train = idtrain, nam)
+    (train = idtrain, test = idtest, nam)
 end
 
