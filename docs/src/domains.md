@@ -307,14 +307,16 @@
 - **interpl** Sampling signals by interpolation -- From DataInterpolations.jl
 - **interpl_mon** Sampling signals by monotonic interpolation -- From Interpolations.jl
 
-### **Sampling observations**
+### **Sampling observations** (Split training-test sets)
+
+- **samprand** Random sampling (no replacement)
+- **sampks** Kennard-Stone sampling 
+- **sampdp** Duplex sampling 
+- **sampsys** Systematic sampling
+- **sampcla** Stratified sampling
 
 - **mtest** Select indexes defining training and test sets for each column 
     of a dataframe
-- **sampdp** Duplex sampling 
-- **sampks** Kennard-Stone sampling 
-- **sampsys** Systematic sampling
-- **sampcla** Stratified sampling
 
 ## PLOTTING
 
