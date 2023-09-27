@@ -1,7 +1,7 @@
 """ 
     mtest(Y::DataFrame, id = 1:nro(Y); ntest, 
         rep = 1)
-Random selection of training and test sets for each column 
+Random splitting of training and test sets for each column 
     of Y-data.
 * `Y` : DataFrame (n, p). Typically, responses variables to predict,
     containing possible missing values.
