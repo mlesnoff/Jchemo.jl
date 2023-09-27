@@ -48,10 +48,6 @@ function mtest(Y::DataFrame, id = 1:nro(Y); ntest,
         zidtest = list(rep, Vector)
         zidtrain = list(rep, Vector)
         for j = 1:rep 
-            #s_test = sample(1:ntot, ntest[i]; replace = false)         
-            #s_train = (1:ntot)[in(s_test).(1:ntot) .== 0]
-            #zidtest[j] = sort(id[s_all[s_test]])      
-            #zidtrain[j] = sort(id[s_all[s_train]])
             ntrain = ntot - ntest[i]
             res = samprand(ntot; k = ntrain)
             zidtest[j] = sort(id[s_all[res.test]])      
