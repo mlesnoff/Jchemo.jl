@@ -360,7 +360,7 @@ export
     confusion, 
     ### Sampling
     mtest,
-    sampks, sampdp, sampsys, sampcla, 
+    sampks, sampdp, sampsys, samprand, sampcla, 
     ### Distances
     getknn, wdist, wdist!,
     euclsq, mahsq, mahsqchol,
