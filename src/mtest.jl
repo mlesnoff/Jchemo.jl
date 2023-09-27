@@ -36,15 +36,15 @@ function mtest(Y::DataFrame, id = 1:nro(Y); ntest,
         rep = 1)
     nam = names(Y)
     p = length(nam)
-    idtest = list(p, Vector)
     idtrain = list(p, Vector)  
+    idtest = list(p, Vector)
     length(ntest) == 1 ? ntest = repeat([ntest], p) : nothing
     for i = 1:p
         y = Y[:, nam[i]]
         s_all = findall(ismissing.(y) .== 0)      
         ntot = length(s_all)
-        zidtest = list(rep, Vector)
         zidtrain = list(rep, Vector)
+        zidtest = list(rep, Vector)
         for j = 1:rep 
             ntrain = ntot - ntest[i]
             res = samprand(ntot; k = ntrain)
