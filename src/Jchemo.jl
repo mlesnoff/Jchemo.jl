@@ -183,8 +183,9 @@ include("difmean.jl")
 include("eposvd.jl")
 
 ### Sampling
-include("mtest.jl")
 include("sampling.jl")
+include("mtest.jl")
+include("mtestsys.jl")
 
 include("distances.jl")
 include("getknn.jl")
@@ -359,8 +360,8 @@ export
     selwold,
     confusion, 
     ### Sampling
-    mtest,
     sampks, sampdp, samprand, sampsys, sampcla, 
+    mtest, mtestsys,
     ### Distances
     getknn, wdist, wdist!,
     euclsq, mahsq, mahsqchol,
