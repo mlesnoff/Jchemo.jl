@@ -194,8 +194,8 @@ Random sampling.
 * `n` : Total nb. observations.
 * `k` : Nb. observations to sample (output `train`).
 
-Two outputs (indexes) are returned: `train` (`k`) and `test` (n - `k`). 
-Output `train` is built by random sampling within `1:n`. 
+Two outputs (indexes) are returned: `train` (`k`) and `test` (`n - k`). 
+Output `train` is built by random sampling within `1:n`, with no replacement. 
 
 ## Examples
 ```julia

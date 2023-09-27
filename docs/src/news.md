@@ -2,6 +2,9 @@
 
 ## *Version 0.2.3*
 
+- News
+    - **samprand**: Random sampling (training-test spliting).
+
 - Modifications
     - Code improvement.
 
