@@ -1,15 +1,16 @@
 """
     sampks(X; k, metric = "eucl")
 Kennard-Stone sampling.  
-* `X` : X-data.
-* `k` : Nb. observations to sample ==> output `train`. 
+* `X` : X-data (n, p).
+* `k` : Nb. observations to sample to build output `train`. 
 * `metric` : Metric used for the distance computation.
     Possible values: "eucl", "mahal".
 
-The function splits the data X in two sets, `train` vs `test`, 
-using the Kennard-Stone (KS) algorithm (Kennard & Stone, 1969). 
-The two sets have different underlying probability distributions: 
-`train` has higher dispersion than `test`.
+Two outputs are returned (indexes of the selected observations), 
+`train` (`k`) and `test` (n - `k`). Output `train` is built using the 
+Kennard-Stone (KS) algorithm (Kennard & Stone, 1969). The two sets have 
+different underlying probability distributions: `train` has higher 
+dispersion than `test`.
 
 ## References
 Kennard, R.W., Stone, L.A., 1969. Computer aided design of experiments. 
@@ -67,13 +68,16 @@ DUPLEX sampling.
 * `metric` : Metric used for the distance computation.
     Possible values are: "eucl", "mahal".
 
-The function divides the data `X` in two sets of equal size, 
-`train` vs `test`, using the DUPLEX algorithm (Snee, 1977 p.421).
-The two sets are expected to cover approximately the same region and
+Three outputs are returned (indexes of the selected observations), 
+`train` (`k`), `test` (`k`) and `remain` (n - 2 * `k`). 
+
+Outputs `train` and `test` have equal size and are built using the 
+DUPLEX algorithm (Snee, 1977 p.421).
+They are expected to cover approximately the same X-space region and
 have similar statistical properties. 
 
-The user may add (a posteriori) the eventual remaining observations 
-(output `remain`) to `train`.
+In practice, the user may add (a posteriori) the eventual remaining 
+observations (output `remain`) to `train`.
 
 ## References
 Kennard, R.W., Stone, L.A., 1969. Computer aided design of experiments. 
@@ -150,12 +154,14 @@ end
 """
     sampsys(y; k)
 Systematic sampling over a quantitative variable.  
-* `y` : Quantitative variable to sample.
-* `k` : Nb. observations to sample ==> output `train`. Must be >= 2.
+* `y` : Quantitative variable (n) to sample.
+* `k` : Nb. observations to sample to build output `train`. 
+    Must be >= 2.
 
-Systematic sampling (regular grid) over `y`.
-
-The minimum and maximum of `y` are always sampled.
+Two outputs are returned (indexes of the selected observations), 
+`train` (`k`) and `test` (n - `k`). Output `train` is built by systematic 
+sampling (regular grid) over `y`. It always contains the observations 
+corresponding to the minimum and maximum of `y`.
 
 ## Examples
 ```julia
