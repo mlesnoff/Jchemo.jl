@@ -4,7 +4,7 @@
 Random splitting of training and test sets for each column 
     of Y-data.
 * `Y` : DataFrame (n, p). Typically: responses variables to predict,
-    containing possible missing values.
+    which can contain missing values.
 * `id` : Vector (n) of IDs.
 * `ntest` : Nb. test observations selected for each `Y` column. 
     The selection is done within the non-missing observations 
