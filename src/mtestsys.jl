@@ -8,11 +8,11 @@ function mtestsys(Y::DataFrame, id = 1:nro(Y); ntest)
         y = Y[:, nam[i]]
         s_all = findall(ismissing.(y) .== 0)      
         ntot = length(s_all)
-        s_test = sampsys(y; k = ntest[i])         
-        s_train = (1:ntot)[in(s_test).(1:ntot) .== 0]
-        idtest[i] = sort(id[s_all[s_test]])      
-        idtrain[i] = sort(id[s_all[s_train]])
+        ntrain = ntot - ntest[i]
+        res = sampsys(y[s_all]; k = ntrain)
+        idtrain[i] = sort(id[s_all[res.train]])
+        idtest[i] = sort(id[s_all[res.test]])      
     end
-    (test = idtest, train = idtrain, nam)
+    (train = idtrain, test = idtest, nam)
 end
 
