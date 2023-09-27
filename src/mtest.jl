@@ -1,17 +1,16 @@
 """ 
     mtest(Y::DataFrame, id = 1:nro(Y); ntest, 
         rep = 1)
-Random splitting of training and test sets for each column 
-    of Y-data.
-* `Y` : DataFrame (n, p). Typically: responses variables to predict,
-    which can contain missing values.
+Random splitting of each column of a dataset to a training and test set.
+* `Y` : DataFrame (n, p) whose each column (typically, response variables 
+    to predict) can contain missing values.
 * `id` : Vector (n) of IDs.
 * `ntest` : Nb. test observations selected for each `Y` column. 
     The selection is done within the non-missing observations 
-    of the considered column. If `ntest` is a single value, the nb. selected 
-    observations is the same for each column. Alternatively, `ntest` can be a vector 
-    of length p. 
-* `rep` : Nb. replications for each `Y` column.
+    of the considered column. If `ntest` is a single value, the same nb.  
+    observations are selected for each column. Alternatively, `ntest` can 
+    be a vector of length p. 
+* `rep` : Nb. replications of the splitting for each `Y` column.
 
 ## Examples
 ```julia
@@ -28,10 +27,9 @@ res = mtest(Y; ntest = 3, rep = 4) ;
 pnames(res)
 res.nam
 length(res.test)
-length(res.test[1])
 i = 1    # variable i
-res.test[i]
 res.train[i]
+res.test[i]
 ```
 """
 function mtest(Y::DataFrame, id = 1:nro(Y); ntest, 
