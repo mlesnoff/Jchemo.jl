@@ -8,7 +8,7 @@ Random selection of training and test sets for each column
 * `id` : Vector (n) of IDs.
 * `ntest` : Nb. test observations selected for each `Y` column, 
     within the non-missing observations (of the considered column). 
-    If `ntest` is a single value, the nb. observations is the same 
+    If `ntest` is a single value, the nb. sampled observations is the same 
     for each column. Alternatively, `ntest` can be a vector of length p. 
 * `rep` : Nb. replications for each `Y` column.
 

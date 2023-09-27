@@ -1,4 +1,66 @@
 """
+    sampks(X; k, metric = "eucl")
+Kennard-Stone sampling.  
+* `X` : X-data (n, p).
+* `k` : Nb. observations to sample (output `train`). 
+* `metric` : Metric used for the distance computation.
+    Possible values: "eucl", "mahal".
+
+Two outputs (indexes) are returned: `train` (`k`) and `test` (n - `k`). 
+Output `train` is built using the Kennard-Stone (KS) algorithm (Kennard & Stone, 1969). 
+The two sets have different underlying probability distributions: `train` has higher 
+dispersion than `test`.
+
+## References
+Kennard, R.W., Stone, L.A., 1969. Computer aided design of experiments. 
+Technometrics, 11(1), 137-148.
+
+## Examples
+```julia
+using JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X 
+y = dat.Y.tbc
+
+k = 200
+res = sampks(X; k = k)
+pnames(res)
+res.train 
+res.test
+
+fm = pcasvd(X; nlv = 15)
+T = fm.T
+res = sampks(T; k = k, metric = "mahal")
+```
+""" 
+function sampks(X; k, metric = "eucl")
+    k = Int64(round(k))
+    if metric == "eucl"
+        D = euclsq(X, X)
+    elseif metric == "mahal"
+        D = mahsq(X, X)
+    end
+    zn = 1:nro(D)
+    # Initial 2 selections (train)
+    s = findall(D .== maximum(D))
+    s = [s[1][1] ; s[1][2]]
+    # Candidates
+    can = zn[setdiff(1:end, s)]
+    @inbounds for i = 1:(k - 2)
+        u = vec(minimum(D[s, can], dims = 1))
+        zs = can[findall(u .== maximum(u))[1]]
+        s = [s ; zs]
+        can = zn[setdiff(1:end, s)]
+    end
+    sort!(s)
+    (train = s, test = can)
+end
+    
+"""
     sampdp(X; k, metric = "eucl")
 DUPLEX sampling.  
 * `X` : X-data (n, p).
@@ -74,79 +136,20 @@ function sampdp(X; k, metric = "eucl")
     s = findall(D .== maximum(zD)) 
     s2 = [s[1][1] ; s[1][2]]
     # Candidates
-    cand = zn[setdiff(1:end, [s1 ; s2])]
+    can = zn[setdiff(1:end, [s1 ; s2])]
     @inbounds for i = 1:(k - 2)
-        u = vec(minimum(D[s1, cand], dims = 1))
-        zs = cand[findall(u .== maximum(u))[1]]
+        u = vec(minimum(D[s1, can], dims = 1))
+        zs = can[findall(u .== maximum(u))[1]]
         s1 = [s1 ; zs]
-        cand = zn[setdiff(1:end, s1)]
-        u = vec(minimum(D[s2, cand], dims = 1))
-        zs = cand[findall(u .== maximum(u))[1]]
+        can = zn[setdiff(1:end, s1)]
+        u = vec(minimum(D[s2, can], dims = 1))
+        zs = can[findall(u .== maximum(u))[1]]
         s2 = [s2 ; zs]
-        cand = zn[setdiff(1:end, [s1 ; s2])]
+        can = zn[setdiff(1:end, [s1 ; s2])]
     end
-    (train = s1, test = s2, remain = cand)
-end
-    
-"""
-    sampks(X; k, metric = "eucl")
-Kennard-Stone sampling.  
-* `X` : X-data (n, p).
-* `k` : Nb. observations to sample (output `train`). 
-* `metric` : Metric used for the distance computation.
-    Possible values: "eucl", "mahal".
-
-Two outputs (indexes) are returned: `train` (`k`) and `test` (n - `k`). 
-Output `train` is built using the Kennard-Stone (KS) algorithm (Kennard & Stone, 1969). 
-The two sets have different underlying probability distributions: `train` has higher 
-dispersion than `test`.
-
-## References
-Kennard, R.W., Stone, L.A., 1969. Computer aided design of experiments. 
-Technometrics, 11(1), 137-148.
-
-## Examples
-```julia
-using JchemoData, JLD2, CairoMakie
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/cassav.jld2") 
-@load db dat
-pnames(dat)
-
-X = dat.X 
-y = dat.Y.tbc
-
-k = 200
-res = sampks(X; k = k)
-pnames(res)
-res.train 
-res.test
-
-fm = pcasvd(X; nlv = 15)
-T = fm.T
-res = sampks(T; k = k, metric = "mahal")
-```
-""" 
-function sampks(X; k, metric = "eucl")
-    k = Int64(round(k))
-    if metric == "eucl"
-        D = euclsq(X, X)
-    elseif metric == "mahal"
-        D = mahsq(X, X)
-    end
-    zn = 1:size(D, 1)
-    # Initial 2 selections (train)
-    s = findall(D .== maximum(D))
-    s = [s[1][1] ; s[1][2]]
-    # Candidates
-    cand = zn[setdiff(1:end, s)]
-    @inbounds for i = 1:(k - 2)
-        u = vec(minimum(D[s, cand], dims = 1))
-        zs = cand[findall(u .== maximum(u))[1]]
-        s = [s ; zs]
-        cand = zn[setdiff(1:end, s)]
-    end
-    (train = s, test = cand)
+    sort!(s1)
+    sort!(s2)
+    (train = s1, test = s2, remain = can)
 end
     
 """
@@ -163,9 +166,9 @@ It always contains the indexes of the minimum and maximum of `y`.
 ## Examples
 ```julia
 y = rand(7)
-[y sort(y)]
+sort(y)
 res = sampsys(y; k = 3)
-y[res.train]
+sort(y[res.train])
 ```
 """ 
 function sampsys(y; k)
@@ -180,6 +183,31 @@ function sampsys(y; k)
     id = sortperm(y)
     zn = collect(1:n)
     s = zn[id[z]]
+    sort!(s)
+    test = zn[setdiff(1:end, s)]
+    (train = s, test = test)
+end
+
+"""
+    samprand(y; k)
+Random sampling.  
+* `n` : Total nb. observations.
+* `k` : Nb. observations to sample (output `train`).
+
+Two outputs (indexes) are returned: `train` (`k`) and `test` (n - `k`). 
+Output `train` is built by random sampling within `1:n`. 
+
+## Examples
+```julia
+n = 10
+samprand(n; k = 3)
+```
+""" 
+function samprand(n; k)
+    k = Int64(round(k))
+    zn = collect(1:n)
+    s = sample(zn, k; replace = false)
+    sort!(s)
     test = zn[setdiff(1:end, s)]
     (train = s, test = test)
 end
@@ -187,12 +215,12 @@ end
 """
     sampcla(x, y = nothing; k)
 Stratified sampling.  
-* `x` : Classes of the observations.
-* `y` : Quantitative variable used if systematic sampling.
-* `k` : Nb. observations to sample in each class ==> output `train`. 
-
-The length of `k` must be either 1 (`k` = equal number of training observations 
-to select per class) or the number of classes in `x`.
+* `x` : Class membership (n) of the observations.
+* `y` : Quantitative variable (n) used if systematic sampling.
+* `k` : Nb. observations to sample in each class (output `train`). 
+    If `k` is a single value, the nb. sampled observations is the same 
+    for each class. Alternatively, `k` can be a vector of length 
+    equal to the nb. classes in `x`.
 
 If `y = nothing` (default), the sampling is random, else it is 
 systematic (grid over `y`).
