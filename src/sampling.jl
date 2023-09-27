@@ -2,14 +2,13 @@
     sampks(X; k, metric = "eucl")
 Kennard-Stone sampling.  
 * `X` : X-data (n, p).
-* `k` : Nb. observations to sample to build output `train`. 
+* `k` : Nb. observations to sample (output `train`). 
 * `metric` : Metric used for the distance computation.
     Possible values: "eucl", "mahal".
 
-Two outputs are returned (indexes of the selected observations), 
-`train` (`k`) and `test` (n - `k`). Output `train` is built using the 
-Kennard-Stone (KS) algorithm (Kennard & Stone, 1969). The two sets have 
-different underlying probability distributions: `train` has higher 
+Two outputs (indexes) are returned, `train` (`k`) and `test` (n - `k`). 
+Output `train` is built using the Kennard-Stone (KS) algorithm (Kennard & Stone, 1969). 
+The two sets have different underlying probability distributions: `train` has higher 
 dispersion than `test`.
 
 ## References
@@ -155,13 +154,12 @@ end
     sampsys(y; k)
 Systematic sampling over a quantitative variable.  
 * `y` : Quantitative variable (n) to sample.
-* `k` : Nb. observations to sample to build output `train`. 
+* `k` : Nb. observations to sample (output `train`). 
     Must be >= 2.
 
-Two outputs are returned (indexes of the selected observations), 
-`train` (`k`) and `test` (n - `k`). Output `train` is built by systematic 
-sampling (regular grid) over `y`. It always contains the observations 
-corresponding to the minimum and maximum of `y`.
+Two outputs (indexes) are returned, `train` (`k`) and `test` (n - `k`). 
+Output `train` is built by systematic sampling (regular grid) over `y`. 
+It always contains the indexes of the minimum and maximum of `y`.
 
 ## Examples
 ```julia
