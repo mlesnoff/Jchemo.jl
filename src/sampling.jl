@@ -1,6 +1,6 @@
 """
     sampks(X, k; metric = "eucl")
-Kennard-Stone sampling.  
+Split training/test sets by Kennard-Stone sampling.  
 * `X` : X-data (n, p).
 * `k` : Nb. observations to sample (output `train`). 
 * `metric` : Metric used for the distance computation.
@@ -64,7 +64,7 @@ end
     
 """
     sampdp(X, k; metric = "eucl")
-DUPLEX sampling.  
+Split training/test sets by DUPLEX sampling.  
 * `X` : X-data (n, p).
 * `k` : Nb. pairs of observations to sample (outputs `train` and `test`). 
     Must be <= n / 2. 
@@ -159,7 +159,7 @@ end
     
 """
     samprand(n, k)
-Random sampling.  
+Split training/test sets by random sampling.  
 * `n` : Total nb. observations.
 * `k` : Nb. observations to sample (output `train`).
 
@@ -186,7 +186,7 @@ end
 
 """
     sampsys(y, k)
-Systematic sampling over a quantitative variable.  
+Split training/test sets by systematic sampling over a quantitative variable.  
 * `y` : Quantitative variable (n) to sample.
 * `k` : Nb. observations to sample (output `train`). 
     Must be >= 2.
@@ -225,7 +225,7 @@ end
 
 """
     sampcla(x, k, y = nothing)
-Stratified sampling.  
+Split training/test sets by stratified sampling.  
 * `x` : Class membership (n) of the observations.
 * `k` : Nb. observations to sample in each class (output `train`). 
     If `k` is a single value, the nb. sampled observations is the same 
