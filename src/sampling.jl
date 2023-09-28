@@ -1,14 +1,17 @@
 """
-    sampks(X; k, metric = "eucl")
+    sampks(X, k; metric = "eucl")
 Kennard-Stone sampling.  
 * `X` : X-data (n, p).
 * `k` : Nb. observations to sample (output `train`). 
 * `metric` : Metric used for the distance computation.
     Possible values: "eucl", "mahal".
 
-Two outputs (indexes) are returned: `train` (`k`) and `test` (n - `k`). 
+Two outputs (indexes) are returned: 
+* `train` (`k`),
+* `test` (n - `k`). 
+
 Output `train` is built using the Kennard-Stone (KS) algorithm (Kennard & Stone, 1969). 
-The two sets have different underlying probability distributions: `train` has higher 
+After KS, the two outputs have different underlying probability distributions: `train` has higher 
 dispersion than `test`.
 
 ## References
@@ -27,17 +30,16 @@ X = dat.X
 y = dat.Y.tbc
 
 k = 200
-res = sampks(X; k = k)
+res = sampks(X, k)
 pnames(res)
 res.train 
 res.test
 
-fm = pcasvd(X; nlv = 15)
-T = fm.T
-res = sampks(T; k = k, metric = "mahal")
+fm = pcasvd(X; nlv = 15) ;
+res = sampks(fm.T, k; metric = "mahal")
 ```
 """ 
-function sampks(X; k, metric = "eucl")
+function sampks(X, k; metric = "eucl")
     k = Int64(round(k))
     if metric == "eucl"
         D = euclsq(X, X)
@@ -61,19 +63,22 @@ function sampks(X; k, metric = "eucl")
 end
     
 """
-    sampdp(X; k, metric = "eucl")
+    sampdp(X, k; metric = "eucl")
 DUPLEX sampling.  
 * `X` : X-data (n, p).
-* `k` : Nb. pairs of observations to sample. Must be <= n / 2. 
+* `k` : Nb. pairs of observations to sample (outputs `train` and `test`). 
+    Must be <= n / 2. 
 * `metric` : Metric used for the distance computation.
     Possible values are: "eucl", "mahal".
 
 Three outputs (indexes) are returned: 
-`train` (`k`), `test` (`k`) and `remain` (n - 2 * `k`). 
+* `train` (`k`), 
+* `test` (`k`),
+* `remain` (n - 2 * `k`). 
 
-Outputs `train` and `test` and are built using the DUPLEX algorithm 
-(Snee, 1977 p.421). They have equal size and are expected to cover 
-approximately the same X-space region and have similar statistical properties. 
+Outputs `train` and `test` are built using the DUPLEX algorithm 
+(Snee, 1977 p.421). They are expected to cover approximately the same 
+X-space region and have similar statistical properties. 
 
 In practice, when output `remain` is not empty (remaining observations), 
 one strategy is to add it to output `train`.
@@ -98,7 +103,7 @@ y = dat.Y.tbc
 n = nro(X)
 
 k = 140
-res = sampdp(X; k = k)
+res = sampdp(X, k)
 pnames(res)
 res.train 
 res.test
@@ -106,19 +111,19 @@ res.remain
 
 fm = pcasvd(X; nlv = 15)
 T = fm.T
-res = sampdp(T; k = k, metric = "mahal")
+res = sampdp(T, k; metric = "mahal")
 
 n = 10 ; k = 25 
 X = [repeat(1:n, inner = n) repeat(1:n, outer = n)] 
 X = Float64.(X) 
 X .= X + .1 * randn(nro(X), nco(X))
-s = sampks(X; k = k).train 
+s = sampks(X, k).train 
 f, ax = scatter(X[:, 1], X[:, 2])
 scatter!(X[s, 1], X[s, 2], color = "red") 
 f
 ```
 """ 
-function sampdp(X; k, metric = "eucl")
+function sampdp(X, k; metric = "eucl")
     k = Int64(round(k))
     if(metric == "eucl")
         D = euclsq(X, X)
@@ -153,21 +158,24 @@ function sampdp(X; k, metric = "eucl")
 end
     
 """
-    samprand(y; k)
+    samprand(n, k)
 Random sampling.  
 * `n` : Total nb. observations.
 * `k` : Nb. observations to sample (output `train`).
 
-Two outputs (indexes) are returned: `train` (`k`) and `test` (`n - k`). 
+Two outputs (indexes) are returned: 
+* `train` (`k`),
+* `test` (`n` - `k`). 
+
 Output `train` is built by random sampling within `1:n`, with no replacement. 
 
 ## Examples
 ```julia
 n = 10
-samprand(n; k = 3)
+samprand(n, 7)
 ```
 """ 
-function samprand(n; k)
+function samprand(n, k)
     k = Int64(round(k))
     zn = collect(1:n)
     s = sample(zn, k; replace = false)
@@ -177,25 +185,28 @@ function samprand(n; k)
 end
 
 """
-    sampsys(y; k)
+    sampsys(y, k)
 Systematic sampling over a quantitative variable.  
 * `y` : Quantitative variable (n) to sample.
 * `k` : Nb. observations to sample (output `train`). 
     Must be >= 2.
 
-Two outputs (indexes) are returned: `train` (`k`) and `test` (n - `k`). 
+Two outputs (indexes) are returned: 
+* `train` (`k`),
+* `test` (n - `k`). 
+
 Output `train` is built by systematic sampling (regular grid) over `y`. 
 It always contains the indexes of the minimum and maximum of `y`.
 
 ## Examples
 ```julia
 y = rand(7)
-sort(y)
-res = sampsys(y; k = 3)
+[y sort(y)]
+res = sampsys(y, 4)
 sort(y[res.train])
 ```
 """ 
-function sampsys(y; k)
+function sampsys(y, k)
     k = Int64(round(k))
     y = vec(y)
     n = length(y)
@@ -213,14 +224,18 @@ function sampsys(y; k)
 end
 
 """
-    sampcla(x, y = nothing; k)
+    sampcla(x, k, y = nothing)
 Stratified sampling.  
 * `x` : Class membership (n) of the observations.
-* `y` : Quantitative variable (n) used if systematic sampling.
 * `k` : Nb. observations to sample in each class (output `train`). 
     If `k` is a single value, the nb. sampled observations is the same 
     for each class. Alternatively, `k` can be a vector of length 
     equal to the nb. classes in `x`.
+* `y` : Quantitative variable (n) used if systematic sampling.
+
+Two outputs (indexes) are returned: 
+* `train` (`k`),
+* `test` (n - `k`). 
 
 If `y = nothing` (default), the sampling is random, else it is 
 systematic (grid over `y`).
@@ -233,20 +248,22 @@ Journal of Chemometrics 1, 121-134.
 ```julia
 x = string.(repeat(1:5, 3))
 tab(x)
-res = sampcla(x; k = 2)
+res = sampcla(x, 2)
 res.train
 x[res.train]
 tab(x[res.train])
+tab(x[res.test])
 
 x = string.(repeat(1:5, 3))
 n = length(x) ; y = rand(n) 
-res = sampcla(x, y; k = 2)
+[x y]
+res = sampcla(x, 2, y)
 res.train
 x[res.train]
 tab(x[res.train])
 ```
 """ 
-function sampcla(x, y = nothing; k)
+function sampcla(x, k, y = nothing)
     k = Int64(round(k))
     x = vec(x)
     n = length(x)
@@ -263,7 +280,7 @@ function sampcla(x, y = nothing; k)
             s[i] = sample(zs, k[i]; replace = false)
         else
             y = vec(y)
-            u = sampsys(y[zs]; k = k[i]).train
+            u = sampsys(y[zs], k[i]).train
             s[i] = zs[u]
         end
     end
