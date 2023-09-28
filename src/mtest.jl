@@ -1,9 +1,10 @@
 """ 
     mtest(Y::DataFrame, id = 1:nro(Y); ntest, 
         rep = 1)
-Random splitting of each column of a dataset to a training and test set.
-* `Y` : DataFrame (n, p) whose each column (typically, response variables 
-    to predict) can contain missing values.
+Split training/test sets for each column of a dataframe 
+    (typically, response variables to predict) that can contain missing 
+    data
+* `Y` : DataFrame (n, p) whose each column can contain missing values.
 * `id` : Vector (n) of IDs.
 * `ntest` : Nb. test observations selected for each `Y` column. 
     The selection is done within the non-missing observations 
