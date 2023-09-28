@@ -1,6 +1,6 @@
 """ 
     mtest(Y::DataFrame, id = 1:nro(Y); ntest, 
-        rep = 1)
+        typ = "rand")
 Split training/test sets for each column of a dataframe 
     (typically, response variables to predict) that can contain missing 
     data
@@ -11,7 +11,8 @@ Split training/test sets for each column of a dataframe
     of the considered column. If `ntest` is a single value, the same nb.  
     observations are selected for each column. Alternatively, `ntest` can 
     be a vector of length p. 
-* `rep` : Nb. replications of the splitting for each `Y` column.
+* `typ` : Type of sampling for the test set: "rand" (default) = random sampling, 
+    "sys" = systematic sampling (regular grid) over the `Y` column.  
 
 ## Examples
 ```julia
