@@ -3,7 +3,7 @@
         typ = "rand")
 Split training/test sets for each column of a dataframe 
     (typically, response variables to predict) that can contain missing 
-    data
+    values
 * `Y` : DataFrame (n, p) whose each column can contain missing values.
 * `id` : Vector (n) of IDs.
 * `ntest` : Nb. test observations selected for each `Y` column. 
