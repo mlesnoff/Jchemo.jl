@@ -19,37 +19,30 @@ using DataFrames
 Y = hcat([rand(5); missing; rand(6)],
    [rand(2); missing; missing; rand(7); missing])
 Y = DataFrame(Y, :auto)
-n = nro(Y)
 
-res = mtest(Y; ntest = 3, rep = 4) ;
-#res = mtest(Y; ntest = [3; 6], rep = 4) ;
-#res = mtest(Y, string.(1:n); ntest = 3, rep = 4) ;
-pnames(res)
-res.nam
-length(res.test)
-i = 1    # variable i
-res.train[i]
-res.test[i]
+mtest(Y; ntest = 3)
+
+mtest(Y; ntest = 3, typ = "sys")
 ```
 """
 function mtest(Y::DataFrame, id = 1:nro(Y); ntest,
         typ = "rand")
     @assert in(["rand"; "sys"])(typ) "Wrong value for argument 'typ'."
+    p = nco(Y)
     nam = names(Y)
-    p = length(nam)
     idtrain = list(p, Vector)  
     idtest = list(p, Vector)
     length(ntest) == 1 ? ntest = repeat([ntest], p) : nothing
     for i = 1:p
         y = Y[:, nam[i]]
         s_all = findall(ismissing.(y) .== 0)
-        ntot = length(s_all)
-        ntrain = ntot - ntest[i]
         if typ == "rand"   
+            ntot = length(s_all)
+            ntrain = ntot - ntest[i]
             res = samprand(ntot, ntrain)
             idtrain[i] = sort(id[s_all[res.train]])
             idtest[i] = sort(id[s_all[res.test]])
-        elseif typ = "sys"
+        elseif typ == "sys"
             res = sampsys(y[s_all], ntest[i])
             idtrain[i] = sort(id[s_all[res.test]])
             idtest[i] = sort(id[s_all[res.train]])  
