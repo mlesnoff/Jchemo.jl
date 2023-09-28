@@ -314,9 +314,8 @@
 - **sampdp** Duplex  
 - **sampsys** Systematic over a quantitative variable
 - **sampcla** Stratified by class
-- **mtest** Split training/test sets for each column of a dataframe 
-    (typically, response variables to predict) that can contain missing 
-    data
+- **mtest** Split for each column of a dataframe (typically, response variables 
+    to predict) that can contain missing values
 
 ## PLOTTING
 
