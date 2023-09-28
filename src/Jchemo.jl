@@ -185,7 +185,6 @@ include("eposvd.jl")
 ### Sampling
 include("sampling.jl")
 include("mtest.jl")
-include("mtestsys.jl")
 
 include("distances.jl")
 include("getknn.jl")
@@ -361,7 +360,7 @@ export
     confusion, 
     ### Sampling
     sampks, sampdp, samprand, sampsys, sampcla, 
-    mtest, mtestsys,
+    mtest,
     ### Distances
     getknn, wdist, wdist!,
     euclsq, mahsq, mahsqchol,

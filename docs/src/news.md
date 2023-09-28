@@ -3,12 +3,14 @@
 ## *Version 0.2.3*
 
 - News
-    - **samprand**: Random sampling (training-test spliting).
+    - **samprand**: Split training/test sets by random sampling.
 
 - Modifications
     - Code improvement.
 
 - Breaking changes
+    - **sampks**, **sampdp**, **samprand**, **sampsys**, **sampcla**: order of arguments have changed.
+    - **mtest**: Arguments have changed, and function has been improved. 
     - **plotxy**: The number of methods have been reduced (for simplification). 
     The aggregated syntax (matrice with two columns as input {x,y}) is not 
     allowed anymore. 
