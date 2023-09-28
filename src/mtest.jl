@@ -32,8 +32,9 @@ res.train[i]
 res.test[i]
 ```
 """
-function mtest(Y::DataFrame, id = 1:nro(Y); ntest, 
-        rep = 1)
+function mtest(Y::DataFrame, id = 1:nro(Y); ntest,
+        typ = "rand")
+    @assert in(["rand"; "sys"])(typ) "Wrong value for argument 'typ'."
     nam = names(Y)
     p = length(nam)
     idtrain = list(p, Vector)  
@@ -41,18 +42,18 @@ function mtest(Y::DataFrame, id = 1:nro(Y); ntest,
     length(ntest) == 1 ? ntest = repeat([ntest], p) : nothing
     for i = 1:p
         y = Y[:, nam[i]]
-        s_all = findall(ismissing.(y) .== 0)      
+        s_all = findall(ismissing.(y) .== 0)
         ntot = length(s_all)
-        zidtrain = list(rep, Vector)
-        zidtest = list(rep, Vector)
-        for j = 1:rep 
-            ntrain = ntot - ntest[i]
-            res = samprand(ntot; k = ntrain)
-            zidtest[j] = sort(id[s_all[res.test]])      
-            zidtrain[j] = sort(id[s_all[res.train]])
-        end
-        idtest[i] = zidtest
-        idtrain[i] = zidtrain
+        ntrain = ntot - ntest[i]
+        if typ == "rand"   
+            res = samprand(ntot, ntrain)
+            idtrain[i] = sort(id[s_all[res.train]])
+            idtest[i] = sort(id[s_all[res.test]])
+        elseif typ = "sys"
+            res = sampsys(y[s_all], ntest[i])
+            idtrain[i] = sort(id[s_all[res.test]])
+            idtest[i] = sort(id[s_all[res.train]])  
+        end    
     end
     (train = idtrain, test = idtest, nam)
 end
