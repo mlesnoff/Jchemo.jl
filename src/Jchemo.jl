@@ -128,7 +128,7 @@ include("viperm.jl")
 
 # Bagging
 include("baggr.jl")
-include("baggr_util.jl")
+include("baggr_utils.jl")
 
 # Trees
 include("treer_dt.jl")
