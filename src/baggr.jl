@@ -119,15 +119,30 @@ function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50,
     Baggr(fm, srow, scol, soob)
 end
 
+#function predict(object::Baggr, X)
+#    rep = length(object.fm)
+#    ## @view is not accepted by XGBoost.predict
+#    ## @view(X[:, object.scol[i]])
+#    pred = predict(object.fm[1], X[:, object.scol[1]]).pred
+#    @inbounds for i = 2:rep
+#        pred .+= predict(object.fm[i], X[:, object.scol[i]]).pred
+#    end
+#    pred ./= rep
+#    (pred = pred,)
+#end
+
+## Little faster
 function predict(object::Baggr, X)
+    X = ensure_mat(X)
     rep = length(object.fm)
-    ## @view is not accepted by XGBoost.predict
-    ## @view(X[:, object.scol[i]])
-    acc = predict(object.fm[1], X[:, object.scol[1]]).pred
-    @inbounds for i = 2:rep
-        acc .+= predict(object.fm[i], X[:, object.scol[i]]).pred
+    m = nro(X)
+    q = 1
+    res = similar(X, m, q, rep)
+    pred = similar(X, m, q)
+    Threads.@threads for i = 1:rep
+        res[:, :, i] .= predict(object.fm[i], X[:, object.scol[i]]).pred
     end
-    pred = acc ./ rep
+    pred .= mean(res; dims = 3)
     (pred = pred,)
 end
 
