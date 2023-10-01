@@ -1,14 +1,13 @@
 """
     viperm(X, Y; perm = 50,
-        psamp = 1/3, score = rmsep, fun, 
-        kwargs...)
+        psamp = .3, score = rmsep, fun, kwargs...)
 Variable importance by direct permutations.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).  
 * `perm` : Number of replications. 
 * `nint` : Nb. intervals. 
 * `psamp` : Proportion of data used as test set to compute the `score`
-    (default: n/3 of the data).
+    (default: 30% of the data).
 * `score` : Function computing the prediction score (= error rate; e.g. msep).
 * `fun` : Function defining the prediction model.
 * `kwarg` : Optional other arguments to pass to funtion defined in `fun`.
@@ -20,7 +19,7 @@ The principle is as follows:
 * Rows of a given variable (feature) j in Xtest are randomly permutated
     (the rest of Xtest is unchanged). The score is computed on 
     the permuted Xtest and the new score is computed. The importance
-    is computed by the difference between this score and the referece score.
+    is computed by the difference between this score and the reference score.
 * This process is run for each variable separately and replicated `perm` times.
     Average results are provided in the outputs, as well the results per 
     replication. 
@@ -71,8 +70,7 @@ f
 ```
 """
 function viperm(X, Y; perm = 50,
-        psamp = 1/3, score = rmsep, fun, 
-        kwargs...)
+        psamp = .3, score = rmsep, fun, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)
