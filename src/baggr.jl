@@ -3,6 +3,7 @@ struct Baggr
     srow::Vector{Vector{Int64}}  # in-bag
     scol::Vector{Vector{Int64}}
     soob::Vector{Vector{Int64}}  # out-of-bag
+    q
 end
 
 """ 
@@ -116,7 +117,7 @@ function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50,
             fm[i] = fun(zX, zY, w; kwargs...)
         end
     end
-    Baggr(fm, srow, scol, soob)
+    Baggr(fm, srow, scol, soob, q)
 end
 
 #function predict(object::Baggr, X)
@@ -136,9 +137,8 @@ function predict(object::Baggr, X)
     X = ensure_mat(X)
     rep = length(object.fm)
     m = nro(X)
-    q = 1
-    res = similar(X, m, q, rep)
-    pred = similar(X, m, q)
+    res = similar(X, m, object.q, rep)
+    pred = similar(X, m, object.q)
     Threads.@threads for i = 1:rep
         res[:, :, i] .= predict(object.fm[i], X[:, object.scol[i]]).pred
     end
