@@ -20,8 +20,8 @@ Bagging of regression models.
     at each repetition.
 * `colsamp` : Proportion of columns sampled (without replacement) in `X` 
     at each repetition.
-* `withr`: Type of sampling of the observations
-    (`true` => with replacement).
+* `withr`: Boolean. If `false` (default), observations are sampled without
+    replacement.
 * `fun` : Name of the function computing the model to bagg.
 * `kwargs` : Optional named arguments to pass in 'fun`.
 
@@ -76,8 +76,8 @@ lines(vec(res.imp),
 ```
 """ 
 function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50, 
-        rowsamp = .7, colsamp = 1, withr = false, 
-        fun, kwargs...)
+        fun, rowsamp = .7, withr = false, colsamp = 1, 
+        kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
@@ -90,12 +90,11 @@ function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50,
     nscol = max(1, Int64(round(colsamp * p)))
     w = similar(X, nsrow)
     zcol = collect(1:nscol) 
-    zX = similar(X, nsrow, nscol)
-    zY = similar(Y, nsrow, q)
-    @inbounds for i = 1:rep
+    Threads.@threads for i = 1:rep
         ## Rows
-        srow[i] = sample(1:n, nsrow; replace = withr)
-        soob[i] = findall(in(srow[i]).(1:n) .== 0)
+        res = samprand(n, nsrow; replace = withr)
+        srow[i] = res.train
+        soob[i] = res.test
         ## Columns
         if colsamp == 1
             scol[i] = zcol
@@ -108,31 +107,19 @@ function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50,
             end
         end
         ## End
-        zX .= X[srow[i], scol[i]]
-        zY .= Y[srow[i], :]
+        zsrow = srow[i]
+        zscol = scol[i]
         if(isnothing(weights))
-            fm[i] = fun(zX, zY; kwargs...)
+            fm[i] = fun(X[zsrow, zscol], Y[zsrow, :]; kwargs...)
         else
             w .= mweight(weights[srow[i]])
-            fm[i] = fun(zX, zY, w; kwargs...)
+            fm[i] = fun(X[zsrow, zscol], Y[zsrow, :], w; kwargs...)
         end
     end
     Baggr(fm, srow, scol, soob, q)
 end
 
-#function predict(object::Baggr, X)
-#    rep = length(object.fm)
-#    ## @view is not accepted by XGBoost.predict
-#    ## @view(X[:, object.scol[i]])
-#    pred = predict(object.fm[1], X[:, object.scol[1]]).pred
-#    @inbounds for i = 2:rep
-#        pred .+= predict(object.fm[i], X[:, object.scol[i]]).pred
-#    end
-#    pred ./= rep
-#    (pred = pred,)
-#end
-
-## Little faster
+## Little faster than the @inbounds version below
 function predict(object::Baggr, X)
     X = ensure_mat(X)
     rep = length(object.fm)
@@ -146,3 +133,14 @@ function predict(object::Baggr, X)
     (pred = pred,)
 end
 
+#function predict(object::Baggr, X)
+#    rep = length(object.fm)
+#    ## @view is not accepted by XGBoost.predict
+#    ## @view(X[:, object.scol[i]])
+#    pred = predict(object.fm[1], X[:, object.scol[1]]).pred
+#    @inbounds for i = 2:rep
+#        pred .+= predict(object.fm[i], X[:, object.scol[i]]).pred
+#    end
+#    pred ./= rep
+#    (pred = pred,)
+#end
