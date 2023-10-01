@@ -158,10 +158,12 @@ function sampdp(X, k; metric = "eucl")
 end
     
 """
-    samprand(n, k)
+    samprand(n, k; replace = false)
 Split training/test sets by random sampling.  
 * `n` : Total nb. observations.
 * `k` : Nb. observations to sample (output `train`).
+* `replace` : Boolean. If false (default), the sampling is without 
+    replacement.
 
 Two outputs (indexes) are returned: 
 * `train` (`k`),
@@ -175,10 +177,10 @@ n = 10
 samprand(n, 7)
 ```
 """ 
-function samprand(n, k)
+function samprand(n, k; replace = false)
     k = Int64(round(k))
     zn = collect(1:n)
-    s = sample(zn, k; replace = false)
+    s = sample(zn, k; replace = replace)
     sort!(s)
     test = zn[setdiff(1:end, s)]
     (train = s, test = test)
