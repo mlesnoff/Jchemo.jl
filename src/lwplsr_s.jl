@@ -12,7 +12,7 @@ struct LwplsrS
 end
 
 """
-    lwplsr_s(X, Y; reduc = "pls", 
+    lwplsr_s(X, Y; reduc = "pca", 
         nlv0, gamma = 1, psamp = 1, samp = "sys", 
         metric = "eucl", h, k, nlv, 
         tol = 1e-4, scal::Bool = false, verbose = false)
@@ -21,14 +21,14 @@ kNN-LWPLSR after preliminary (linear or non-linear) dimension
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `reduc` : Type of dimension reduction. Possible values are:
-    "pca" (PCA), "pls" (PLS; default), "dkpls" (direct Gaussian kernel PLS, see `?dkpls`).
+    "pca" (PCA; default), "pls" (PLS), "dkpls" (direct Gaussian kernel PLS, see `?dkpls`).
 * `nlv0` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `gamma` : Scale parameter for the Gaussian kernel when a KPLS is used 
     for dimension reduction. See function `krbf`.
 * `psamp` : Proportion of observations sampled in {`X`, `Y`} to compute the 
     loadings used to compute the scores of the preliminary dimension reduction.
 * `samp` : Type of sampling applied for `psamp`. Possible values are: 
-    "sys" (systematic grid sampling over `rowsum(Y)`) or "random" (random sampling).
+    "sys" (systematic grid sampling over `rowsum(Y)`) or "rand" (random sampling).
 * `metric` : Type of dissimilarity used to select the neighbors and compute
     the weights. Possible values are "eucl" (default; Euclidean distance) 
     and "mahal" (Mahalanobis distance).
@@ -107,24 +107,26 @@ plotxy(res.pred, ytest; color = (:red, .5),
     ylabel = "Observed (Test)").f  
 
 fm = lwplsr_s(Xtrain, ytrain; reduc = "dkpls", 
-    nlv0 = nlv0, gamma = .1, samp = "random", psamp = .8, 
+    nlv0 = nlv0, gamma = .1, samp = "rand", psamp = .8, 
     metric = metric, h = h, k = k,
     nlv = nlv) ;
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 ```
 """ 
-function lwplsr_s(X, Y; reduc = "pls", 
+function lwplsr_s(X, Y; reduc = "pca", 
         nlv0, gamma = 1, psamp = 1, samp = "sys", 
         metric = "eucl", h, k, nlv, 
         tol = 1e-4, scal::Bool = false, verbose = false)
+    @assert in(["pca"; "pls"; "dkpls"])(reduc) "Wrong value for argument 'reduc'."    
+    @assert in(["rand"; "sys"])(samp) "Wrong value for argument 'samp'."
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = nro(X)
     m = Int64(round(psamp * n))
     if samp == "sys"
-        s = sampsys(rowsum(Y); k = m).train
-    elseif samp == "random"
+        s = sampsys(rowsum(Y), m).train
+    elseif samp == "rand"
         s = sample(1:n, m; replace = false)
     end
     zX = vrow(X, s)

@@ -27,7 +27,7 @@ mtest(Y; ntest = 3)
 mtest(Y; ntest = 3, typ = "sys")
 ```
 """
-function mtest(Y::DataFrame, id = 1:nro(Y); ntest,
+function mtest(Y::DataFrame, id = 1:nro(Y); ntest, 
         typ = "rand")
     @assert in(["rand"; "sys"])(typ) "Wrong value for argument 'typ'."
     p = nco(Y)
