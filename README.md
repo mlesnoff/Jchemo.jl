@@ -1,6 +1,6 @@
 # Jchemo.jl
 
-### Machine learning and chemometrics on high-dimensional data with Julia
+### Julia package for machine learning and chemometrics on high-dimensional data
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/dev)
@@ -263,8 +263,8 @@ res = rescv.res
 
 ###  How to cite
 
-Lesnoff, M. 2021. Jchemo: Julia package for machine learning, with focus on 
-chemometrics and high-dimensional data. https://github.com/mlesnoff/Jchemo. 
+Lesnoff, M. 2021. Jchemo: Julia package for machine learning and chemometrics 
+on high-dimensional data. https://github.com/mlesnoff/Jchemo. 
 UMR SELMET, Univ Montpellier, CIRAD, INRA, Institut Agro, Montpellier, France
 
 ###  Acknowledgments

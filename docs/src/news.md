@@ -6,7 +6,7 @@
     - **samprand**: Split training/test sets by random sampling.
 
 - Modifications
-    - **baggr** has been parallelized.
+    - **baggr** has been parallelized (multi-threading).
     - Code improvement.
 
 - Breaking changes
