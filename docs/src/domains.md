@@ -290,8 +290,8 @@
 
 - **calds** Direct standardization (DS)
 - **calpds** Piecewise direct standardization (PDS)
-- **difmean** Compute a detrimental matrix (for calibration transfer) by column 
-    means difference.
+- **difmean** Compute a detrimental matrix (for calibration transfer) by 
+    difference of the column means.
 - **eposvd** Compute an orthogonalization matrix for calibration transfer
 
 ### **Pre-processing**
