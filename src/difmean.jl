@@ -1,7 +1,7 @@
 """
     difmean(X1, X2; normx = false)
 Compute a 1-D detrimental matrix (for calibration transfer) by difference of 
-    the column means.
+    two matrix-column means.
 * `X1` : Matrix of spectra (n1, p).
 * `X2` : Matrix of spectra (n2, p).
 * `normx` : Boolean. If `true`, the column means vectors 
