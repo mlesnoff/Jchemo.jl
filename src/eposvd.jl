@@ -1,6 +1,6 @@
 
 """
-    eposvd(D; nlv)
+    eposvd(D; nlv = 1)
 Compute an orthogonalization matrix for calibration transfer of spectral data.
 * `D` : Data (m, p) containing the "detrimental" information on which spectra
     (rows of a matrix X) have to be orthogonalized.
@@ -84,7 +84,7 @@ axislegend(position = :cb, framevisible = false)
 f
 ```
 """ 
-function eposvd(D; nlv)
+function eposvd(D; nlv = 1)
     D = ensure_mat(D)
     n, p = size(D)
     nlv = min(nlv, n, p)
