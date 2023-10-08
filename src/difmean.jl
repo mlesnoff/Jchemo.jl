@@ -8,12 +8,12 @@ Compute a 1-D detrimental matrix (for calibration transfer) by difference of
     of `X1` and `X2` are normed before computing their difference.
     Default is `false`.
 
-The function returns a matrix D (1, p) containing the detrimental information
-that has to be removed from spectra `X1` and `X2` for calibration transfer 
-by orthogonalization (e.g. input for function `eposvd`). 
+The function returns a matrix `D` (1, p) computed by the difference 
+between two mean spectra, i.e. the column means of `X1` and `X2`. 
 
-Matrix D is computed by the difference between the two mean spectra 
-(column means of `X1` and `X2`).
+`D` is assumed to contain the detrimental information that can 
+be removed from `X1` and `X2` by orthogonalization (calibration transfer). 
+For instance, `D` can be the input of function `eposvd`. 
 
 ## Examples
 ```julia
