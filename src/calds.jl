@@ -30,12 +30,12 @@ db = joinpath(path_jdat, "data/caltransfer.jld2")
 @load db dat
 pnames(dat)
 
-## Target
-Xtcal = dat.X1cal
-Xtval = dat.X1val
 ## To transfer
 Xcal = dat.X2cal
 Xval = dat.X2val
+## Target
+Xtcal = dat.X1cal
+Xtval = dat.X1val
 
 n = nro(Xtcal)
 m = nro(Xtval)
