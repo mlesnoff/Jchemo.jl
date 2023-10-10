@@ -105,4 +105,3 @@ function viperm(X, Y; perm = 50,
     imp = reshape(mean(res, dims = 3), p, q)
     (imp = imp, res)
 end 
-

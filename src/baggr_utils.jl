@@ -79,7 +79,7 @@ function vi_baggr(object::Baggr, X, Y; score = rmsep)
         m = length(soob)        # nb. OOB obs. for the given replication 
         ## OOB prediction
         ## fm[i] has been fitted on the observations not 
-        ## in soob[i]and on columns in scol
+        ## in soob[i] and on columns in scol
         zpred = predict(object.fm[i], X[soob, scol]).pred
         zY = vrow(Y, soob)
         score0 = score(zpred, zY)   # reference (i.e. with no permutation) OOB score
@@ -99,7 +99,6 @@ function vi_baggr(object::Baggr, X, Y; score = rmsep)
             end
         end
     end
-    ## Old: imp = reshape(mean(res, dims = 3), p, q)
     cnt = (!isnan).(res)
     res[isnan.(res)] .= 0
     cnttot = reshape(sum(cnt, dims = 3), p, q)
@@ -107,5 +106,4 @@ function vi_baggr(object::Baggr, X, Y; score = rmsep)
     imp = reshape(restot ./ cnttot, p, q)
     (imp = imp, cnt, res, cnttot, restot)
 end
-
 
