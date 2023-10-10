@@ -4,12 +4,12 @@ struct CalPds
 end
 
 """
-    calpds(X, Xt; fun = mlrpinv, m = 5, kwargs...)
+    calpds(X, Xt; m = 5, fun = mlrpinv, kwargs...)
 Piecewise direct standardization (PDS) for calibration transfer of spectral data.
 * `X` : Spectra to transfer to the target (n, p).
 * `Xt` : Target spectra (n, p).
-* `fun` : Function used as transfer model.  
 * `m` : Half-window size (nb. points left/right to the target wavelength) 
+* `fun` : Function used as transfer model.  
 * `kwargs` : Optional arguments for `fun`.
 
 `Xt` and `X` must represent the same n standard samples.
@@ -49,7 +49,7 @@ Xval = dat.X2val
 Xtcal = dat.X1cal
 Xtval = dat.X1val
 
-fm = calpds(Xcal, Xtcal; fun = plskern, nlv = 1, m = 2) ;
+fm = calpds(Xcal, Xtcal;  m = 2, fun = plskern, nlv = 1) ;
 ## Transfered spectra, expected to be close to Xtval
 pred = Jchemo.predict(fm, Xval).pred 
 
@@ -63,7 +63,7 @@ axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-function calpds(X, Xt; fun = mlrpinv, m = 5, kwargs...)
+function calpds(X, Xt; m = 5, fun = mlrpinv, kwargs...)
     p = nco(Xt)
     fm = list(p)
     s = list(p)
