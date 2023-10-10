@@ -8,6 +8,7 @@ using DataFrames
 using Distances
 using ImageFiltering     # convolutions in preprocessing (mavg, savgol)
 using Interpolations
+using LIBSVM 
 using LinearAlgebra
 using Makie
 using NearestNeighbors
@@ -130,7 +131,8 @@ include("viperm.jl")
 include("baggr.jl")
 include("baggr_utils.jl")
 
-# Trees
+# Svm, Trees
+include("svmr.jl")
 include("treer_dt.jl")
 
 ### Discrimination 
@@ -173,7 +175,8 @@ include("lwplsldaavg.jl")
 include("lwplsqdaavg.jl")
 include("knnda.jl")
 
-# Trees 
+# Svm, Trees
+include("svmda.jl")
 include("treeda_dt.jl")
 
 ### Transfer
