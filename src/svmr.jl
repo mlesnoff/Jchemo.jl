@@ -131,7 +131,7 @@ Compute y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict_svmr(object::Svmr, X)
+function predict(object::Svmr, X)
     X = ensure_mat(X)
     pred = svmpredict(object.fm, scale(X, object.xscales)')[1]
     n = length(pred)
