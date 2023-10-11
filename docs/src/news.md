@@ -4,8 +4,8 @@
 
 - News
     - **samprand**: Split training/test sets by random sampling.
-    - SVM models were re-integrated in the package (wrappers to 
-        LIBSVM.jl): **svmr** and **svmda**.
+    - **svmr**, **svmda**: SVM (wrappers to LIBSVM.jl) were reset in 
+        the package.
 
 - Modifications
     - **baggr** has been parallelized (multi-threading).
