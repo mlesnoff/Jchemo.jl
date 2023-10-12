@@ -197,10 +197,11 @@ Two outputs (indexes) are returned:
 * `train` (`k`),
 * `test` (n - `k`). 
 
-Output `train` is built by systematic sampling over the ranks of 
-the `y` values. For instance if `k` / n ~ .3, one sample over three 
-over the sorted `y` is selected. Output `train` always contains the indexes of the 
-minimum and maximum of `y`.
+Output `train` is built by systematic sampling over the rank of 
+the `y` observations. For instance if `k` / n ~ .3, one observation 
+over three observations over the sorted `y` is selected. 
+Output `train` always contains the indexes of the minimum and 
+maximum of `y`.
 
 ## Examples
 ```julia
