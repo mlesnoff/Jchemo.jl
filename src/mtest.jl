@@ -25,6 +25,20 @@ Y = DataFrame(Y, :auto)
 mtest(Y; ntest = 3)
 
 mtest(Y; ntest = 3, typ = "sys")
+
+## Replicated splitting Train/Test
+rep = 10
+ntest = 3
+ids = [mtest(Y[:, namy]; ntest = ntest) for i = 1:rep]
+length(ids)
+i = 1    # replication
+ids[i]
+ids[i].train 
+ids[i].test
+j = 1    # variable y  
+ids[i].train[j]
+ids[i].test[j]
+ids[i].nam[j]
 ```
 """
 function mtest(Y::DataFrame, id = 1:nro(Y); ntest, 
