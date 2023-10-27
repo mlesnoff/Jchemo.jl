@@ -33,7 +33,7 @@ Canonical correlation Analysis (CCA).
 This function implements a CCA algorithm using SVD decompositions and 
 presented in Weenink 2003 section 2. 
 
-A continuum regularization is available. 
+A continuum regularization is available (parameter `tau`). 
 After block centering and scaling, the returned block scores (Tx and Ty) 
 are proportionnal to the eigenvectors of Projx * Projy 
 and Projy * Projx, respectively, defined as follows: 
