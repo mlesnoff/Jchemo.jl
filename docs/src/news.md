@@ -2,6 +2,8 @@
 
 ## *Version 0.2.4*
 
+- Modifications
+    - Code improvement.
 
 ## *Version 0.2.3*
 
