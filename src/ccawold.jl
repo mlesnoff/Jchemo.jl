@@ -46,7 +46,7 @@ by Tenenhaus 1998 p.204 (related to Wold et al. 1984).
 In this implementation, after each step of LVs computation, X and Y are deflated 
 relatively to their respective scores (tx and ty). 
 
-A continuum regularization is available. 
+A continuum regularization is available (parameter `tau`). 
 After block centering and scaling, the covariances matrices are computed as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
 * Cy = (1 - `tau`) * Y'DY + `tau` * Iy
