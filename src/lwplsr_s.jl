@@ -107,7 +107,7 @@ plotxy(res.pred, ytest; color = (:red, .5),
     ylabel = "Observed (Test)").f  
 
 fm = lwplsr_s(Xtrain, ytrain; reduc = "dkpls", 
-    nlv0 = nlv0, gamma = .1, samp = "rand", psamp = .8, 
+    nlv0 = nlv0, gamma = .1, psamp = .7, samp = "rand", 
     metric = metric, h = h, k = k,
     nlv = nlv) ;
 res = Jchemo.predict(fm, Xtest)
@@ -123,11 +123,14 @@ function lwplsr_s(X, Y; reduc = "pca",
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = nro(X)
-    m = Int64(round(psamp * n))
-    if samp == "sys"
-        s = sampsys(rowsum(Y), m).train
-    elseif samp == "rand"
-        s = sample(1:n, m; replace = false)
+    s = 1:n
+    if psamp < 1
+        m = Int64(round(psamp * n))
+        if samp == "sys"
+            s = sampsys(rowsum(Y), m).train
+        elseif samp == "rand"
+            s = sample(1:n, m; replace = false)
+        end
     end
     zX = vrow(X, s)
     zY = vrow(Y, s)
