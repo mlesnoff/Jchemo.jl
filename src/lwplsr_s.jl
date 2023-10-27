@@ -12,7 +12,7 @@ struct LwplsrS
 end
 
 """
-    lwplsr_s(X, Y; reduc = "pca", 
+    lwplsr_s(X, Y; reduc = "pls", 
         nlv0, gamma = 1, psamp = 1, samp = "sys", 
         metric = "eucl", h, k, nlv, 
         tol = 1e-4, scal::Bool = false, verbose = false)
@@ -21,7 +21,7 @@ kNN-LWPLSR after preliminary (linear or non-linear) dimension
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `reduc` : Type of dimension reduction. Possible values are:
-    "pca" (PCA; default), "pls" (PLS), "dkpls" (direct Gaussian kernel PLS, see `?dkpls`).
+    "pca" (PCA), "pls" (PLS; default), "dkpls" (direct Gaussian kernel PLS, see `?dkpls`).
 * `nlv0` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `gamma` : Scale parameter for the Gaussian kernel when a KPLS is used 
     for dimension reduction. See function `krbf`.
@@ -114,12 +114,13 @@ res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 ```
 """ 
-function lwplsr_s(X, Y; reduc = "pca", 
+function lwplsr_s(X, Y; reduc = "pls", 
         nlv0, gamma = 1, psamp = 1, samp = "sys", 
         metric = "eucl", h, k, nlv, 
         tol = 1e-4, scal::Bool = false, verbose = false)
-    @assert in(["pca"; "pls"; "dkpls"])(reduc) "Wrong value for argument 'reduc'."    
-    @assert in(["rand"; "sys"])(samp) "Wrong value for argument 'samp'."
+    @assert in(["pca"; "pls"; "dkpls"])(reduc) "Wrong value for argument 'reduc'." 
+    @assert psamp >= 0 && psamp <= 1 "psamp must be in [0, 1]"   
+    @assert in(["sys"; "rand"])(samp) "Wrong value for argument 'samp'."
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = nro(X)
