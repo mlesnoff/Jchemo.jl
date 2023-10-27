@@ -36,8 +36,8 @@
 ### Multiblock
 
 *2 blocks*
-- **cca** Canonical correlation analysis (CCA)
-- **ccawold** CCA - Wold (1984) Nipals algorithm  
+- **cca** Canonical correlation analysis (CCA, RCCA)
+- **ccawold** CCA, RCCA - Wold (1984) Nipals algorithm  
 - **plscan** Canonical partial least squares regression (Symmetric PLS)
 - **plstuck** Tucker's inter-battery method of factor analysis (PLS-SVD)
 - **rasvd** Redundancy analysis (RA) - PCA on instrumental variables (PCAIV)
