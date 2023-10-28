@@ -20,7 +20,7 @@ Regularized discriminant analysis (RDA).
 * `weights` : Weights (n) of the observations. 
     Internally normalized to sum to 1.
 * `prior` : Type of prior probabilities for class membership.
-    Posible values are: "unif" (uniform), "prop" (proportional).
+    Possible values are: "unif" (uniform; default), "prop" (proportional).
 * `alpha` : Shrinkage parameter of the separate covariances of 
     QDA toward a common covariance as in LDA. Must ∈ [0, 1]
     (`alpha` is referred to as lambda in Friedman 1989).

@@ -19,7 +19,7 @@ Discrimination by nearest shrunken centroids (NSC).
 * `delta` : Threshold value (>= 0) for function `soft`
     (soft thresholding). 
 * `prior` : Type of prior probabilities for class membership.
-    Posible values are: "unif" (uniform), "prop" (proportional).
+    Possible values are: "unif" (uniform; default), "prop" (proportional).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 

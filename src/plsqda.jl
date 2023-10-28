@@ -10,7 +10,7 @@ PLS-QDA (with continuum).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum
     between QDA (`alpha = 0`; default) and LDA (`alpha = 1`).
 * `prior` : Type of prior probabilities for class membership.
-    Posible values are: "unif" (uniform), "prop" (proportional).
+    Possible values are: "unif" (uniform; default), "prop" (proportional).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
