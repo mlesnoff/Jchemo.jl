@@ -95,6 +95,7 @@ Compute predictions from a fitted model.
 * `X` : Data (vector) for which predictions are computed.
 """ 
 function predict(object::Nscda, X)
+    X = ensure_mat(X)
     zX = scale(X, object.xscales)
     m = nro(zX)
     scale!(zX, object.poolstd_s0)
