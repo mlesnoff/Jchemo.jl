@@ -51,7 +51,7 @@ f = Figure(resolution = (500, 300))
 ax = Axis(f[1, 1])
 lines!(Xtval[i, :]; label = "xt")
 lines!(ax, Xval[i, :]; label = "x")
-lines!(pred[i, :]; linestyle = "--", label = "x_transf")
+lines!(pred[i, :]; linestyle = :dash, label = "x_transf")
 axislegend(position = :rb, framevisible = false)
 f
 ```

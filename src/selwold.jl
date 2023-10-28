@@ -138,7 +138,7 @@ function selwold(indx, r; smooth = true,
         lines!(ax[2], zindx, R)
         scatter!(ax[2], zindx, R)
         lines!(ax[2], zindx, Rs) #; color = :red
-        hlines!(ax[2], alpha; linestyle = "-")
+        hlines!(ax[2], alpha; linestyle = :dash)
         f[1, 1] = ax[1]
         f[1, 2] = ax[2]
     end
