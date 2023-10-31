@@ -92,8 +92,8 @@ f
 ```
 """ 
 function svmr(X, y; kern = "krbf", 
-        gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1., 
-        epsilon = .1, scal = false)
+        gamma = 1. / size(X, 2), degree = 3, coef0 = 0., 
+        cost = 1., epsilon = .1, scal = false)
     X = ensure_mat(X)
     y = vec(y)
     p = nco(X)

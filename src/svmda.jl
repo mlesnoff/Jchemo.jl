@@ -6,7 +6,7 @@ struct Svmda
 end
 
 """
-    svmda(X, y; kern = "rbf", 
+    svmda(X, y; kern = "krbf", 
         gamma = 1. / size(X, 2), degree = 3, coef0 = 0., 
         cost = 1., epsilon = .1,
         scal = false)
