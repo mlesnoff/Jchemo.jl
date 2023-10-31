@@ -125,7 +125,6 @@ Compute y-predictions from a fitted model.
 function predict(object::Svmda, X)
     X = ensure_mat(X)
     pred = svmpredict(object.fm, scale(X, object.xscales)')[1]
-    @head pred
     n = length(pred)
     pred = reshape(pred, n, 1)
     (pred = pred,)
