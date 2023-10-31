@@ -12,14 +12,14 @@ end
         scal = false)
 Support vector machine for discrimination "C-SVC" (SVM-DA).
 * `X` : X-data.
-* `y : y-data (univariate).
-* 'kern' : Type of kernel used to compute the Gram matrices.
+* `y` : y-data (univariate).
+* `kern` : Type of kernel used to compute the Gram matrices.
     Possible values are "krbf", "kpol", "klin" or "ktanh". 
-* 'gamma' : See below.
-* 'degree' : See below.
-* 'coef0' : See below.
-* 'cost' : Cost of constraints violation C parameter.
-* 'epsilon' : Epsilon parameter in the loss function.
+* `gamma` : See below.
+* `degree` : See below.
+* `coef0` : See below.
+* `cost` : Cost of constraints violation C parameter.
+* `epsilon` : Epsilon parameter in the loss function.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
