@@ -1,10 +1,3 @@
-struct Svmda
-    fm
-    xscales::Vector{Float64}
-    lev::AbstractVector
-    ni::AbstractVector
-end
-
 """
     svmda(X, y; kern = "krbf", 
         gamma = 1. / size(X, 2), degree = 3, coef0 = 0., 

@@ -1,19 +1,3 @@
-struct TreerDt
-    fm
-    xscales::Vector{Float64}
-    featur::Vector{Int64}
-    mth::Bool 
-end
-
-struct TreedaDt 
-    fm
-    xscales::Vector{Float64}
-    featur::Vector{Int64}
-    lev::AbstractVector
-    ni::AbstractVector
-    mth::Bool 
-end
-
 """ 
     treer_dt(X, y; n_subfeatures = 0,
         max_depth = -1, min_samples_leaf = 5, 

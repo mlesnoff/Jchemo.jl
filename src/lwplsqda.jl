@@ -1,20 +1,3 @@
-struct LwplsQda
-    X::Array{Float64}
-    y::AbstractMatrix
-    fm
-    metric::String
-    h::Real
-    k::Int
-    nlv::Int
-    alpha::Real
-    prior::String
-    tol::Real
-    scal::Bool
-    verbose::Bool
-    lev::AbstractVector
-    ni::AbstractVector
-end
-
 """
     lwplsqda(X, y; nlvdis, metric, h, k, nlv, 
         alpha = 0, prior = "unif", tol = 1e-4, scal::Bool = false, 
@@ -102,17 +85,17 @@ function lwplsqda(X, y; nlvdis, metric, h, k, nlv,
         fm = plskern(X, dummy(y).Y; nlv = nlvdis,
             scal = scal)
     end
-    return LwplsQda(X, y, fm, metric, h, k, nlv, alpha, prior, tol, 
+    return Lwplsqda(X, y, fm, metric, h, k, nlv, alpha, prior, tol, 
         scal, verbose, ztab.keys, ztab.vals)
 end
 
 """
-    predict(object::LwplsQda, X; nlv = nothing)
+    predict(object::Lwplsqda, X; nlv = nothing)
 Compute the y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::LwplsQda, X; nlv = nothing)
+function predict(object::Lwplsqda, X; nlv = nothing)
     X = ensure_mat(X)
     m = nro(X)
     a = object.nlv

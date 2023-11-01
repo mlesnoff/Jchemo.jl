@@ -1,21 +1,3 @@
-struct LwplsrAvg
-    X::Array{Float64}
-    Y::Array{Float64}
-    fm
-    metric::String
-    h::Real
-    k::Int
-    nlv::String
-    typf::String
-    typw::String
-    alpha::Real
-    K::Real
-    rep::Real
-    tol::Real
-    scal::Bool
-    verbose::Bool
-end
-
 """
     lwplsravg(X, Y; nlvdis, metric, h, k, nlv, 
         typf = "unif", typw = "bisquare", alpha = 0, K = 5, rep = 10,

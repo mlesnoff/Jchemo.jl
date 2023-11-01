@@ -1,17 +1,3 @@
-struct Knnda
-    X::Array{Float64}
-    y::AbstractMatrix
-    fm
-    nlvdis::Int
-    metric::String
-    h::Real
-    k::Int
-    tol::Real
-    lev::AbstractVector
-    ni::AbstractVector
-    scal::Bool
-end
-
 """
     knnda(X, y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, tol = 1e-4)
 k-Nearest-Neighbours weighted discrimination (kNN-DA).

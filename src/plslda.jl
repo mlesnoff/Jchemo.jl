@@ -1,9 +1,3 @@
-struct Plslda    # for plslda and plsqda 
-    fm  
-    lev::AbstractVector
-    ni::AbstractVector
-end
-
 """
     plslda(X, y, weights = ones(nro(X)); nlv, 
         prior = "unif", scal::Bool = false)

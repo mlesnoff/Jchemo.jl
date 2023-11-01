@@ -1,10 +1,3 @@
-struct Occstah
-    d
-    res_stah
-    e_cdf::ECDF
-    cutoff::Real
-end
-
 """
     occstah(X; a = 2000, typc = "mad", cri = 3, 
         alpha = .025, scal = true, kwargs...)

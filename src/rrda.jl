@@ -1,9 +1,3 @@
-struct Rrda
-    fm  
-    lev::AbstractVector
-    ni::AbstractVector
-end
-
 """
     rrda(X, y, weights = ones(nro(X)); lb)
 Discrimination based on ridge regression (RR-DA).

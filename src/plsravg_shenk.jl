@@ -1,8 +1,3 @@
-struct PlsravgShenk
-    fm::Plsr
-    nlv
-end
-
 function plsravg_shenk(X, Y, weights = ones(nro(X)); nlv, 
         scal::Bool = false)
     plsravg_shenk!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 

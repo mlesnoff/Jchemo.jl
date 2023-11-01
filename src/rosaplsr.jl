@@ -1,18 +1,3 @@
-struct Rosaplsr
-    T::Matrix{Float64}
-    P::Matrix{Float64}
-    R::Matrix{Float64}
-    W::Matrix{Float64}
-    C::Matrix{Float64}
-    TT::Vector{Float64}
-    xmeans::Vector{Vector{Float64}}
-    xscales::Vector{Vector{Float64}}
-    ymeans::Vector{Float64}
-    yscales::Vector{Float64}
-    weights::Vector{Float64}
-    bl::Vector
-end
-
 """
     rosaplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv)
     rosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv)

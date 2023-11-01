@@ -1,15 +1,3 @@
-struct Pcr
-    fm_pca
-    T::Matrix{Float64}
-    R::Matrix{Float64}
-    C::Matrix{Float64}
-    xmeans::Vector{Float64}
-    xscales::Vector{Float64}
-    ymeans::Vector{Float64}
-    yscales::Vector{Float64}
-    weights::Vector{Float64}
-end
-
 """
     pcr(X, Y, weights = ones(nro(X)); nlv,
         scal::Bool = false)

@@ -1,11 +1,3 @@
-struct Plsdaavg  # for plsrdaavg, plsrlaavg and plsqdaavg 
-    fm
-    nlv
-    w_mod
-    lev::AbstractVector
-    ni::AbstractVector
-end
-
 """ 
     plsrdaavg(X, y, weights = ones(nro(X)); nlv)
 Averaging of PLSR-DA models with different numbers of 

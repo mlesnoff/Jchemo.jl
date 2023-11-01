@@ -1,14 +1,3 @@
-struct Pca
-    T::Array{Float64} 
-    P::Array{Float64}
-    sv::Vector{Float64}
-    xmeans::Vector{Float64}
-    xscales::Vector{Float64}
-    weights::Vector{Float64}
-    ## For PCA Nipals
-    niter::Union{Vector{Int64}, Nothing}
-end
-
 """
     pcasvd(X, weights = ones(nro(X)); nlv, scal::Bool = false)
     pcasvd!(X::Matrix, weights = ones(nro(X)); nlv, scal::Bool = false)

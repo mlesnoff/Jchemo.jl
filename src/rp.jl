@@ -1,10 +1,3 @@
-struct Rp
-    T::Matrix{Float64}
-    P
-    xmeans
-    xscales
-end
-
 """
     rpmatgauss(p, nlv)
 Build a gaussian random projection matrix.

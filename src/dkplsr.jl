@@ -1,13 +1,3 @@
-struct Dkplsr
-    X::Array{Float64}
-    fm
-    K::Array{Float64}
-    kern
-    xscales::Vector{Float64}
-    yscales::Vector{Float64}
-    dots
-end
-
 """
     dkplsr(X, Y, weights = ones(nro(X)); nlv, 
         kern = "krbf", scal::Bool = false, kwargs...)

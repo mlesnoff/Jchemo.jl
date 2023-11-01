@@ -1,13 +1,3 @@
-struct Lwmlr
-    X::Array{Float64}
-    Y::Array{Float64}
-    metric::String
-    h::Real
-    k::Int
-    tol::Real
-    verbose::Bool
-end
-
 """
     lwmlr(X, Y; metric = "eucl", h, k, 
         tol = 1e-4, verbose = false)

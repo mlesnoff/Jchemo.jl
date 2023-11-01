@@ -1,18 +1,3 @@
-struct PlsravgCri
-    fm::Plsr
-    nlv
-    w::Vector
-end
-
-struct Plsrstack
-    fm::Plsr
-    nlv
-    w::Vector
-    Xstack  # = View
-    ystack::Array
-    weightsstack::Array
-end
-
 function plsravg_aic(X, y, weights = ones(nro(X)); nlv, 
         bic = false, typw = "bisquare",
         alpha = 0, scal::Bool = false)

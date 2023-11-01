@@ -1,16 +1,3 @@
-struct LwplsrS
-    T::Array{Float64}
-    Y::Array{Float64}
-    fm
-    metric::String
-    h::Real
-    k::Int
-    nlv::Int
-    tol::Real
-    scal::Bool
-    verbose::Bool
-end
-
 """
     lwplsr_s(X, Y; reduc = "pls", 
         nlv0, gamma = 1, psamp = 1, samp = "sys", 

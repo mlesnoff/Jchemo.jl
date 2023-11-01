@@ -1,14 +1,3 @@
-struct LwmlrdaS
-    T::Array{Float64}
-    y::AbstractMatrix
-    fm
-    metric::String
-    h::Real
-    k::Int
-    tol::Real
-    verbose::Bool
-end
-
 """
     lwmlrda_s(X, y; reduc = "pls", 
         nlv, gamma = 1, psamp = 1, samp = "cla", 

@@ -1,10 +1,3 @@
-struct Dmkern
-    X::Array{Float64}
-    H::Array{Float64}
-    Hinv::Array{Float64}
-    detH::Float64
-end
-
 """
     dmkern(X; h = nothing, a = 1)
 Gaussian kernel density estimation (KDE).

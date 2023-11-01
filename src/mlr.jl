@@ -1,9 +1,3 @@
-struct Mlr
-    B::Matrix{Float64}   
-    int::Matrix{Float64}
-    weights::Vector{Float64}
-end
-
 """
     mlr(X, Y, weights = ones(nro(X)); noint::Bool = false)
     mlr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); noint::Bool = false)

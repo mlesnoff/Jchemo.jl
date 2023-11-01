@@ -1,14 +1,3 @@
-struct Rr
-    V::Array{Float64}
-    TtDY::Array{Float64}
-    sv::Vector{Float64}
-    lb::Float64
-    xmeans::Vector{Float64}
-    xscales::Vector{Float64}
-    ymeans::Vector{Float64}
-    weights::Vector{Float64}
-end
-
 """
     rr(X, Y, weights = ones(nro(X)); lb = .01,
         scal::Bool = false)

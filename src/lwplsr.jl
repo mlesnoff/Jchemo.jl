@@ -1,16 +1,3 @@
-struct Lwplsr
-    X::Array{Float64}
-    Y::Array{Float64}
-    fm
-    metric::String
-    h::Real
-    k::Int
-    nlv::Int
-    tol::Real
-    scal::Bool
-    verbose::Bool
-end
-
 """
     lwplsr(X, Y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
 k-Nearest-Neighbours locally weighted partial least squares regression (kNN-LWPLSR).

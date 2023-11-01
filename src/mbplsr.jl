@@ -1,16 +1,3 @@
-struct Mbplsr
-    fm
-    T::Matrix{Float64}
-    R::Matrix{Float64}
-    C::Matrix{Float64}
-    bscales::Vector{Float64}
-    xmeans::Vector{Vector{Float64}}
-    xscales::Vector{Vector{Float64}}
-    ymeans::Vector{Float64}
-    yscales::Vector{Float64}
-    weights::Vector{Float64}
-end
-
 """
     mbplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
         bscal = "none", scal::Bool = false)

@@ -1,14 +1,3 @@
-struct Qda
-    fm
-    Wi::AbstractVector  
-    ct::Array{Float64}
-    wprior::Vector{Float64}
-    theta::Vector{Float64}
-    ni::Vector{Int64}
-    lev::AbstractVector
-    weights::Vector{Float64}
-end
-
 """
     qda(X, y, weights = ones(nro(X)); 
         prior = "unif", alpha = 0)

@@ -1,13 +1,3 @@
-struct Lwmlrda
-    X::Array{Float64}
-    y::AbstractMatrix
-    metric::String
-    h::Real
-    k::Int
-    tol::Real
-    verbose::Bool
-end
-
 """
     lwmlrda(X, y; metric = "eucl", h, k, 
         tol = 1e-4, verbose = false)

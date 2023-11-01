@@ -1,8 +1,3 @@
-struct Svmr
-    fm
-    xscales::Vector{Float64}
-end
-
 """
     svmr(X, y; kern = "rbf", 
         gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1., 

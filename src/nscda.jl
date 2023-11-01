@@ -1,13 +1,3 @@
-struct Nscda
-    fms
-    poolstd_s0::Vector{Float64}
-    wprior::Vector{Float64}
-    ni::Vector{Int64}
-    lev::AbstractVector
-    xscales::Vector{Float64}
-    weights::Vector{Float64}
-end
-
 """
     nscda(X, y, weights = ones(nro(X)); delta = .5, 
         prior = "unif", scal::Bool = false)

@@ -1,16 +1,3 @@
-struct Fda
-    T::Array{Float64}
-    P::Array{Float64}
-    Tcenters::Array{Float64}
-    eig::Vector{Float64}
-    sstot::Number
-    W::Matrix{Float64}
-    xmeans::Vector{Float64}
-    xscales::Vector{Float64}
-    lev::AbstractVector
-    ni::AbstractVector
-end
-
 """
     fda(X, y; nlv, lb = 0, scal::Bool = false)
     fda!(X::Matrix, y; nlv, lb = 0, scal::Bool = false)

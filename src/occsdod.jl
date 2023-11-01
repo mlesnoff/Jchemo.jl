@@ -1,9 +1,3 @@
-struct Occsdod
-    d::DataFrame
-    fm_sd
-    fm_od
-end
-
 """
     occsdod(object::Union{Pca, Plsr}, X; 
         nlv_sd = nothing, nlv_od = nothing, 

@@ -1,14 +1,3 @@
-struct LwmlrS
-    T::Array{Float64}
-    Y::Array{Float64}
-    fm
-    metric::String
-    h::Real
-    k::Int
-    tol::Real
-    verbose::Bool
-end
-
 """
     lwmlr_s(X, Y; reduc = "pls", 
         nlv, gamma = 1, psamp = 1, samp = "sys",

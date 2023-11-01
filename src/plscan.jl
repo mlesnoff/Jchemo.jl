@@ -1,23 +1,3 @@
-struct PlsCan
-    Tx::Matrix{Float64}
-    Ty::Matrix{Float64}
-    Px::Matrix{Float64}
-    Py::Matrix{Float64}
-    Rx::Matrix{Float64}
-    Ry::Matrix{Float64}    
-    Wx::Matrix{Float64}
-    Wy::Matrix{Float64}
-    TTx::Vector{Float64}
-    TTy::Vector{Float64}
-    delta::Vector{Float64}    
-    bscales::Vector{Float64}    
-    xmeans::Vector{Float64}
-    xscales::Vector{Float64}
-    ymeans::Vector{Float64}
-    yscales::Vector{Float64}
-    weights::Vector{Float64}
-end
-
 """
     plscan(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", scal::Bool = false)

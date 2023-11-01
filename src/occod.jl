@@ -1,11 +1,3 @@
-struct Occod
-    d
-    fm
-    e_cdf::ECDF
-    cutoff::Real   
-    nlv::Int64
-end
-
 """
     occod(object::Union{Pca, Plsr}, X; nlv = nothing, 
         typc = "mad", cri = 3, alpha = .025, kwargs...)

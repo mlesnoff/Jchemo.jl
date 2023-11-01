@@ -1,22 +1,3 @@
-struct Kplsr
-    X::Array{Float64}
-    Kt::Array{Float64}
-    T::Array{Float64}
-    C::Array{Float64}
-    U::Array{Float64}
-    R::Array{Float64}
-    D::Array{Float64} 
-    DKt::Array{Float64}
-    vtot::Array{Float64}   
-    xscales::Vector{Float64}
-    ymeans::Vector{Float64}
-    yscales::Vector{Float64}
-    weights::Vector{Float64}
-    kern
-    dots
-    iter::Vector{Int}
-end
-
 """
     kplsr(X, Y, weights = ones(nro(X)); 
         nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 

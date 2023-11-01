@@ -17,6 +17,8 @@ using SparseArrays
 using Statistics
 using StatsBase          # sample
 
+include("_structures.jl")
+
 include("utility.jl")
 include("utility_colwise.jl")
 include("utility_rowwise.jl")

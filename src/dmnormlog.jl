@@ -1,10 +1,3 @@
-struct Dmnormlog
-    mu
-    Uinv 
-    logdetS
-    logcst
-end
-
 """
     dmnormlog(X = nothing; mu = nothing, S = nothing,
         simpl::Bool = false)

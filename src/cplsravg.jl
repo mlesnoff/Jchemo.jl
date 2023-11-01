@@ -1,10 +1,3 @@
-struct CplsrAvg
-    fm
-    fm_da::Plslda
-    lev
-    ni
-end
-
 """
     cplsravg(X, Y, cla = nothing; ncla = nothing, 
         typda = "lda", nlv_da, nlv, scal::Bool = false)

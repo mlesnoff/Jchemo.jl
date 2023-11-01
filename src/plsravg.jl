@@ -1,7 +1,3 @@
-struct Plsravg
-    fm
-end
-
 """ 
     plsravg(X, Y, weights = ones(nro(X)); nlv, 
         typf = "unif", typw = "bisquare",

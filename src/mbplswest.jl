@@ -1,23 +1,3 @@
-struct MbplsWest            # Used for mbplswest, mbwcov 
-    T::Matrix{Float64}
-    P::Matrix{Float64}
-    R::Matrix{Float64}
-    W::Matrix{Float64}
-    C::Matrix{Float64}
-    Tbl::Vector{Array{Float64}}
-    Tb::Vector{Array{Float64}}
-    Pbl::Vector{Array{Float64}}
-    TT::Vector{Float64}
-    bscales::Vector{Float64}
-    xmeans::Vector{Vector{Float64}}
-    xscales::Vector{Vector{Float64}}
-    ymeans::Vector{Float64}
-    yscales::Vector{Float64}
-    weights::Vector{Float64}
-    lb::Union{Array{Float64}, Nothing}
-    niter::Union{Array{Float64}, Nothing}
-end
-
 """
     mbplswest(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200, 

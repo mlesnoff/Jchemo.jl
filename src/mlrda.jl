@@ -1,9 +1,3 @@
-struct Mlrda
-    fm  
-    lev::AbstractVector
-    ni::AbstractVector
-end
-
 """
     mlrda(X, y, weights = ones(nro(X)))
 Discrimination based on multple linear regression (MLR-DA).

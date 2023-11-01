@@ -1,13 +1,3 @@
-struct Cglsr
-    B::Matrix{Float64}
-    g::Vector{Float64}
-    xmeans::Vector{Float64}
-    xscales::Vector{Float64}
-    ymeans::Vector{Float64}
-    yscales::Vector{Float64}
-    F::Union{Array{Float64}, Nothing}
-end
-
 """
     cglsr(X, y; nlv, reorth = true, filt = false, scal::Bool = false)
     cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false, scal::Bool = false)

@@ -1,19 +1,3 @@
-struct Kpca
-    X::Array{Float64}
-    Kt::Array{Float64}
-    T::Array{Float64}
-    P::Array{Float64}
-    sv::Vector{Float64}  
-    eig::Vector{Float64}    
-    D::Array{Float64} 
-    DKt::Array{Float64}
-    vtot::Array{Float64}
-    xscales::Vector{Float64} 
-    weights::Vector{Float64}
-    kern
-    dots
-end
-
 """
     kpca(X, weights = ones(nro(X)); nlv, 
         kern = "krbf", scal::Bool = false, kwargs...)

@@ -1,12 +1,3 @@
-struct Occsd
-    d
-    fm
-    Sinv::Matrix{Float64}
-    e_cdf::ECDF
-    cutoff::Real   
-    nlv::Int64
-end
-
 """
     occsd(object::Union{Pca, Kpca, Plsr}; nlv = nothing,
         typc = "mad", cri = 3, alpha = .025, kwargs...)

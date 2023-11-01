@@ -1,19 +1,3 @@
-struct LwplsqdaAvg
-    X::Array{Float64}
-    y::AbstractMatrix
-    fm
-    metric::String
-    h::Real
-    k::Int
-    nlv::String
-    alpha::Real
-    tol::Real
-    scal::Bool
-    verbose::Bool
-    lev::AbstractVector
-    ni::AbstractVector
-end
-
 """
     lwplsqdaavg(X, y; nlvdis, metric, h, k, nlv, 
         tol = 1e-4, scal::Bool = false, verbose = false)

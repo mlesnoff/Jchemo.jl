@@ -1,21 +1,3 @@
-struct Krr
-    X::Array{Float64}
-    K::Array{Float64}
-    U::Array{Float64}
-    UtDY::Array{Float64}
-    sv::Vector{Float64}
-    D::Array{Float64}
-    sqrtD::Array{Float64}
-    DKt::Array{Float64}
-    vtot::Array{Float64}
-    lb::Float64
-    xscales::Vector{Float64}
-    ymeans::Vector{Float64}
-    weights::Vector{Float64}
-    kern
-    dots
-end
-
 """
     krr(X, Y, weights = ones(nro(X)); 
         lb = .01, kern = "krbf", scal::Bool = false, kwargs...)

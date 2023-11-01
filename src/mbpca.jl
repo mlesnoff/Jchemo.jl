@@ -1,19 +1,3 @@
-struct Mbpca
-    T::Array{Float64} 
-    U::Array{Float64}
-    W::Array{Float64}
-    Tbl::Vector{Array{Float64}}
-    Tb::Vector{Array{Float64}}
-    Wbl::Vector{Array{Float64}}
-    lb::Array{Float64}
-    mu::Vector{Float64}
-    bscales::Vector{Float64}
-    xmeans::Vector{Vector{Float64}}
-    xscales::Vector{Vector{Float64}}
-    weights::Vector{Float64}
-    niter::Vector{Float64}
-end
-
 """
     mbpca(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = "none", tol = sqrt(eps(1.)), maxit = 200,

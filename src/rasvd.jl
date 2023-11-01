@@ -1,17 +1,3 @@
-struct Rasvd
-    Tx::Matrix{Float64}
-    Ty::Matrix{Float64}
-    Bx::Matrix{Float64}
-    Wy::Matrix{Float64}
-    lambda::Vector{Float64}    
-    bscales::Vector{Float64}    
-    xmeans::Vector{Float64}
-    xscales::Vector{Float64}
-    ymeans::Vector{Float64}
-    yscales::Vector{Float64}
-    weights::Vector{Float64}
-end
-
 """
     rasvd(X, Y, weights = ones(nro(X)); nlv,
         bscal = "none", tau = 1e-8, scal::Bool = false)

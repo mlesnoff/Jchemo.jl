@@ -1,10 +1,3 @@
-struct Soplsr
-    fm
-    T::Matrix{Float64}
-    fit::Matrix{Float64}
-    b
-end
-
 """
     soplsr(Xbl, Y, weights = ones(size(Xbl, 1)); nlv,
         scal::Bool = false)

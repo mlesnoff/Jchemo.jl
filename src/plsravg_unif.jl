@@ -1,8 +1,3 @@
-struct PlsravgUnif
-    fm::Plsr
-    nlv
-end
-
 function plsravg_unif(X, Y, weights = ones(nro(X)); nlv,
         scal::Bool = false)
     plsravg_unif!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,

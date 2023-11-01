@@ -1,9 +1,3 @@
-struct Dkplsrda
-    fm  
-    lev::AbstractVector
-    ni::AbstractVector
-end
-
 """
     dkplsrda(X, y, weights = ones(nro(X)); nlv, kern = "krbf", 
         scal::Bool = false, kwargs...)

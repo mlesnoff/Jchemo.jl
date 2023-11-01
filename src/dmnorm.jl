@@ -1,10 +1,3 @@
-struct Dmnorm
-    mu
-    Uinv 
-    detS
-    cst
-end
-
 """
     dmnorm(X = nothing; mu = nothing, S = nothing,
         simpl::Bool = false)

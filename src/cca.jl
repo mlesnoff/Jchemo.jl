@@ -1,17 +1,3 @@
-struct Cca
-    Tx::Matrix{Float64}
-    Ty::Matrix{Float64}
-    Wx::Matrix{Float64}
-    Wy::Matrix{Float64}
-    d::Vector{Float64}    
-    bscales::Vector{Float64}    
-    xmeans::Vector{Float64}
-    xscales::Vector{Float64}
-    ymeans::Vector{Float64}
-    yscales::Vector{Float64}
-    weights::Vector{Float64}
-end
-
 """
     cca(X, Y, weights = ones(nro(X)); nlv, 
         bscal = "none", tau = 1e-8, scal::Bool = false)

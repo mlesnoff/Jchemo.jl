@@ -1,15 +1,3 @@
-struct Knnr
-    X::Array{Float64}
-    Y::Array{Float64}
-    fm
-    nlvdis::Int
-    metric::String
-    h::Real
-    k::Int
-    tol::Real
-    scal::Bool
-end
-
 """
     knnr(X, Y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, 
         tol = 1e-4, scal::Bool = false)

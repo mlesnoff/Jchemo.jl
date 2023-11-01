@@ -1,16 +1,3 @@
-struct Spca
-    T::Array{Float64} 
-    P::Array{Float64}
-    sv::Vector{Float64}
-    beta::Array{Float64}
-    xmeans::Vector{Float64}
-    xscales::Vector{Float64}
-    weights::Vector{Float64}
-    niter::Union{Vector{Int64}, Nothing}
-    sellv::Vector{Vector{Int64}}
-    sel::Vector{Int64}
-end
-
 """
     spca(X, weights = ones(nro(X)); nlv,
         meth = "soft", delta = 0, nvar = nco(X), 

@@ -1,9 +1,3 @@
-struct Plsrda
-    fm  
-    lev::AbstractVector
-    ni::AbstractVector
-end
-
 """
     plsrda(X, y, weights = ones(nro(X)); nlv,
         scal::Bool = false)
