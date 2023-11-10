@@ -154,10 +154,10 @@ function predict(object::Dkplsr, X; nlv = nothing)
     K = fkern(scale(X, object.xscales), object.X; object.dots...)
     pred = predict(object.fm, K; nlv = nlv).pred
     if le_nlv == 1
-        pred .*= Diagonal(object.yscales)
+        pred .= pred * Diagonal(object.yscales)
     else
         for i = 1:le_nlv
-            pred[i] .*= Diagonal(object.yscales)
+            pred[i] .= pred[i] * Diagonal(object.yscales)
         end
     end
     (pred = pred,)
