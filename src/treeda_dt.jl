@@ -75,8 +75,8 @@ function treeda_dt(X, y::Union{Array{Int64}, Array{String}};
     X = ensure_mat(X)
     y = vec(y)
     p = nco(X)
-    xscales = ones(p)
-    if scal 
+    xscales = ones(eltype(X), p)
+    if par.scal 
         xscales .= colstd(X)
         X = scale(X, xscales)
     end
@@ -190,8 +190,8 @@ function rfda_dt(X, y::Union{Array{Int64}, Array{String}};
     X = ensure_mat(X)
     y = vec(y)
     p = nco(X)
-    xscales = ones(p)
-    if scal 
+    xscales = ones(eltype(X), p)
+    if par.scal 
         xscales .= colstd(X)
         X = scale(X, xscales)
     end

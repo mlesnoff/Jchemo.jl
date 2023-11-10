@@ -1,6 +1,6 @@
 """
     occod(object::Union{Pca, Plsr}, X; nlv = nothing, 
-        typc = "mad", cri = 3, alpha = .025, kwargs...)
+        typc = :mad, cri = 3, alpha = .025, kwargs...)
 One-class classification using PCA/PLS orthognal distance (OD).
 
 * `object` : The model (e.g. PCA) that was fitted on the training data,
@@ -8,9 +8,9 @@ One-class classification using PCA/PLS orthognal distance (OD).
 * `X` : X-data (training) that were used to fit the model.
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, 
     it is the maximum nb. of components of the fitted model.
-* `typc` : Type of cutoff ("mad" or "q"). See Thereafter.
-* `cri` : When `typc = "mad"`, a constant. See thereafter.
-* `alpha` : When `typc = "q"`, a risk-I level. See thereafter.
+* `typc` : Type of cutoff (:mad or :q). See Thereafter.
+* `cri` : When `typc = :mad`, a constant. See thereafter.
+* `alpha` : When `typc = :q`, a risk-I level. See thereafter.
 * `kwargs` : Optional arguments to pass in function `kde` of 
     KernelDensity.jl (see function `kde1`).
 
@@ -33,15 +33,15 @@ K. Varmuza, P. Filzmoser (2009). Introduction to multivariate statistical analys
 in chemometrics. CRC Press, Boca Raton.
 """ 
 function occod(object::Union{Pca, Plsr}, X; nlv = nothing, 
-        typc = "mad", cri = 3, alpha = .025, kwargs...)
+        typc = :mad, cri = 3, alpha = .025, kwargs...)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     E = xresid(object, X; nlv = nlv)
     d2 = vec(sum(E .* E, dims = 2))
     d = sqrt.(d2)
-    typc == "mad" ? cutoff = median(d) + cri * mad(d) : nothing
-    typc == "q" ? cutoff = quantile(d, 1 - alpha) : nothing
+    typc == :mad ? cutoff = median(d) + cri * mad(d) : nothing
+    typc == :q ? cutoff = quantile(d, 1 - alpha) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)

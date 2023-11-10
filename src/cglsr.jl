@@ -81,9 +81,9 @@ function cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false, scal::Bo
     q = nco(y)
     xmeans = colmean(X) 
     ymeans = colmean(y)   
-    xscales = ones(p)
-    yscales = ones(q)
-    if scal 
+    xscales = ones(eltype(X), p)
+    yscales = ones(eltype(Y), q)
+    if par.scal 
         xscales .= colstd(X)
         yscales .= colstd(y)
         cscale!(X, xmeans, xscales)
@@ -186,7 +186,7 @@ function predict(object::Cglsr, X; nlv = nothing)
     a = size(object.B, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
-    pred = list(le_nlv, Matrix{Float64})
+    pred = list(le_nlv, Matrix{eltype(X)})
     @inbounds for i = 1:le_nlv
         z = coef(object; nlv = nlv[i])
         pred[i] = z.int .+ X * z.B

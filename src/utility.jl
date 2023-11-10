@@ -59,19 +59,19 @@ Compute weighted correlation matrices.
 * `X` : Data (n, p).
 * `Y` : Data (n, q).
 * `w` : Weights (n) of the observations.
-
-`w` is internally normalized to sum to 1.
+    Consider to preliminary normalise `w` to 
+    sum to 1 (e.g. function `mweight`).
 
 Uncorrected correlation matrix 
-* of the columns of `X`: ==> (p, p) matrix 
-* or between columns of `X` and `Y` : ==> (p, q) matrix.
+* of `X`-columns :                         ==> (p, p) matrix 
+* or between `X`-columns and `Y`-columns : ==> (p, q) matrix.
 
 ## Examples
 ```julia
 n, p = 5, 6
 X = rand(n, p)
 Y = rand(n, 3)
-w = collect(1:n)
+w = mweight(collect(1:n))
 
 corm(X, w)
 corm(X, Y, w)
@@ -79,7 +79,6 @@ corm(X, Y, w)
 """
 function corm(X, w)
     zX = copy(ensure_mat(X))
-    w = mweight(w)
     xmeans = colmean(zX, w)
     xstds = colstd(zX, w)
     center!(zX, xmeans)
@@ -91,7 +90,6 @@ end
 function corm(X, Y, w)
     zX = copy(ensure_mat(X))
     zY = copy(ensure_mat(Y))
-    w = mweight(w)
     xmeans = colmean(zX, w)
     ymeans = colmean(zY, w)
     xstds = colstd(zX, w)
@@ -148,8 +146,8 @@ Compute weighted covariance matrices.
 * `X` : Data (n, p).
 * `Y` : Data (n, q).
 * `w` : Weights (n) of the observations.
-
-`w` is internally normalized to sum to 1.
+    Consider to preliminary normalise `w` to 
+    sum to 1 (e.g. function `mweight`).
 
 Uncorrected weighted covariance matrix 
 * of the columns of `X`: ==> (p, p) matrix 
@@ -160,7 +158,7 @@ Uncorrected weighted covariance matrix
 n, p = 5, 6
 X = rand(n, p)
 Y = rand(n, 3)
-w = collect(1:n)
+w = mweight(collect(1:n))
 
 covm(X, w)
 covm(X, Y, w)
@@ -168,7 +166,6 @@ covm(X, Y, w)
 """
 function covm(X, w)
     zX = copy(ensure_mat(X))
-    w = mweight(w)
     center!(zX, colmean(zX, w))
     zX = Diagonal(sqrt.(w)) * zX
     zX' * zX
@@ -177,7 +174,6 @@ end
 function covm(X, Y, w)
     zX = copy(ensure_mat(X))
     zY = copy(ensure_mat(Y))
-    w = mweight(w)
     center!(zX, colmean(zX, w))
     center!(zY, colmean(zY, w))
     zX' * Diagonal(w) * zY
@@ -276,8 +272,8 @@ ensure_df(X::AbstractMatrix) = DataFrame(X, :auto)
 Reshape `X` to a matrix if necessary.
 """
 ensure_mat(X::AbstractMatrix) = X
-## Tentaive to work with CUDA
-#ensure_mat(X::AbstractVector) = Matrix(reshape(X, :, 1))
+## Tentative to work with CUDA
+## Old was: ensure_mat(X::AbstractVector) = Matrix(reshape(X, :, 1))
 ensure_mat(X::AbstractVector) = reshape(X, :, 1)
 ## End
 ensure_mat(X::Number) = reshape([X], 1, 1)
@@ -312,8 +308,9 @@ end
 Frobenius norm of a matrix.
 * `X` : A matrix (n, p).
 * `w` : Weights (n) of the observations.
+    Consider to preliminary normalise `w` to 
+    sum to 1 (e.g. function `mweight`).
 
-`w` is internally normalized to sum to 1.
 
 The Frobenius norm of `X` is:
 * sqrt(tr(X' * X)).
@@ -327,12 +324,12 @@ end
 
 function frob(X, w)
     # 1
-    #sqrtD = Diagonal(sqrt.(mweight(w)))
+    #sqrtD = Diagonal(sqrt.(w))
     #sqrt(ssq(sqrtD * X))
     # 2
-    # sqrt(sum(colnorm(X, mweight(w)).^2))
+    # sqrt(sum(colnorm(X, w).^2))
     # Faster:
-    sqrt(sum(mweight(w)' * (X.^2)))
+    sqrt(sum(w' * (X.^2)))
 end
 
 # Test: fnorm_2(X, w) = 
@@ -463,7 +460,8 @@ mlev(x) = sort(unique(x))
 
 """ 
     mweight(w)
-Return a vector of weights that sums to 1.
+    mweight!(w::AbstractVector)
+Return vector `w / sum(w)` (that sums to 1).
 
 ## Examples
 ```julia
@@ -472,15 +470,9 @@ w = mweight(x)
 sum(w)
 ```
 """
-function mweight(w)
-    zw = copy(vec(Float64.(w))) 
-    mweight!(zw)
-    zw
-end
+mweight(w) = mweight!(copy(vec(w)))
 
-function mweight!(w::AbstractVector{Float64})
-    w ./= sum(w)
-end
+mweight!(w::AbstractVector) = w ./= sum(w)
 
 """ 
     nco(X)
@@ -493,14 +485,14 @@ nco(X) = size(X, 2)
 Return the squared weighted norm of a vector.
 * `x` : A vector (n).
 * `w` : Weights (n) of the observations.
-
-`w` is internally normalized to sum to 1.
+    Consider to preliminary normalise `w` to 
+    sum to 1 (e.g. function `mweight`).
 
 The squared weighted norm of vector `x` is:
 * x' * D * x, where D is the diagonal matrix of vector `w`.
 """
 function normw(x, w::Vector)
-    sqrt(dot(x, mweight(w) .* x))
+    sqrt(dot(x, w .* x))
 end
 
 """ 

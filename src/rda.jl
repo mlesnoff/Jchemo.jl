@@ -1,6 +1,6 @@
 """
     rda(X, y, weights = ones(nro(X)); 
-        prior = "unif", alpha = 1, lb = 1e-10, 
+        prior = :unif, alpha = 1, lb = 1e-10, 
         simpl::Bool = false, scal::Bool = false)
 Regularized discriminant analysis (RDA).
 * `X` : X-data.
@@ -8,7 +8,7 @@ Regularized discriminant analysis (RDA).
 * `weights` : Weights (n) of the observations. 
     Internally normalized to sum to 1.
 * `prior` : Type of prior probabilities for class membership.
-    Possible values are: "unif" (uniform; default), "prop" (proportional).
+    Possible values are: :unif (uniform; default), :prop (proportional).
 * `alpha` : Shrinkage parameter of the separate covariances of 
     QDA toward a common covariance as in LDA. Must ∈ [0, 1]
     (`alpha` is referred to as lambda in Friedman 1989).
@@ -96,7 +96,7 @@ confusion(res.pred, ytest).cnt
 ```
 """ 
 function rda(X, y, weights = ones(nro(X)); 
-        prior = "unif", alpha = 1, lb = 1e-10, 
+        prior = :unif, alpha = 1, lb = 1e-10, 
         simpl::Bool = false, scal::Bool = false)
     @assert 0 <= alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     @assert lb >= 0 "lb must be in >= 0"
@@ -104,8 +104,8 @@ function rda(X, y, weights = ones(nro(X));
     y = vec(y)    # for findall
     n, p = size(X)
     weights = mweight(weights)
-    xscales = ones(p)
-    if scal 
+    xscales = ones(eltype(X), p)
+    if par.scal 
         xscales .= colstd(X, weights)
         X = scale(X, xscales)
     end
@@ -113,9 +113,9 @@ function rda(X, y, weights = ones(nro(X));
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
-    if isequal(prior, "unif")
+    if isequal(prior, :unif)
         wprior = ones(nlev) / nlev
-    elseif isequal(prior, "prop")
+    elseif isequal(prior, :prop)
         wprior = mweight(ni)
     end
     fm = list(nlev)

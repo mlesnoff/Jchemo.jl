@@ -67,8 +67,8 @@ function pcasph!(X::Matrix, weights = ones(nro(X)); nlv, typc = "medspa",
     else
         xmeans = colmean(X, weights)
     end 
-    xscales = ones(p)
-    if scal 
+    xscales = ones(eltype(X), p)
+    if par.scal 
         xscales .= colstd(X, weights)
         cscale!(X, xmeans, xscales)
     else

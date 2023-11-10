@@ -1,6 +1,6 @@
 """
     plsqda(X, y, weights = ones(nro(X)); nlv, 
-        alpha = 0, prior = "unif", scal::Bool = false)
+        alpha = 0, prior = :unif, scal::Bool = false)
 PLS-QDA (with continuum).
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -10,7 +10,7 @@ PLS-QDA (with continuum).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum
     between QDA (`alpha = 0`; default) and LDA (`alpha = 1`).
 * `prior` : Type of prior probabilities for class membership.
-    Possible values are: "unif" (uniform; default), "prop" (proportional).
+    Possible values are: :unif (uniform; default), :prop (proportional).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
@@ -25,7 +25,7 @@ returning `nlv` latent variables (LVs). Finally, a QDA is run on these LVs and `
 See `?plslda` for examples.
 """ 
 function plsqda(X, y, weights = ones(nro(X)); nlv, 
-        alpha = 0, prior = "unif", scal::Bool = false)
+        alpha = 0, prior = :unif, scal::Bool = false)
     res = dummy(y)
     ni = tab(y).vals
     fm_pls = plskern(X, res.Y, weights; nlv = nlv, scal = scal)

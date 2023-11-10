@@ -1,9 +1,9 @@
 """
     mbplswest(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", tol = sqrt(eps(1.)), maxit = 200, 
+        bscal = :none, tol = sqrt(eps(1.)), maxit = 200, 
         scal::Bool = false)
     mbplswest!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", tol = sqrt(eps(1.)), maxit = 200, 
+        bscal = :none, tol = sqrt(eps(1.)), maxit = 200, 
         scal::Bool = false)
 Multiblock PLSR - Nipals algorithm (Westerhuis et al. 1998).
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
@@ -12,7 +12,7 @@ Multiblock PLSR - Nipals algorithm (Westerhuis et al. 1998).
 * `weights` : Weights of the observations (rows). 
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `bscal` : Type of `Xbl` block scaling (`"none"`, `"frob"`). 
+* `bscal` : Type of `Xbl` block scaling (`:none`, `:frob`). 
     See functions `blockscal`.
 * `tol` : Tolerance value for convergence.
 * `maxit` : Maximum number of iterations.
@@ -46,7 +46,7 @@ Xbl = mblock(X, listbl)
 # "New" = first two rows of Xbl 
 Xbl_new = mblock(X[1:2, :], listbl)
 
-bscal = "none"
+bscal = :none
 nlv = 5
 fm = mbplswest(Xbl, y; nlv = nlv, bscal = bscal) ;
 pnames(fm)
@@ -59,7 +59,7 @@ summary(fm, Xbl)
 ```
 """
 function mbplswest(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", tol = sqrt(eps(1.)), maxit = 200, 
+        bscal = :none, tol = sqrt(eps(1.)), maxit = 200, 
         scal::Bool = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
@@ -72,7 +72,7 @@ function mbplswest(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
 end
 
 function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
-        bscal = "none", tol = sqrt(eps(1.)), maxit = 200, 
+        bscal = :none, tol = sqrt(eps(1.)), maxit = 200, 
         scal::Bool = false)
     nbl = length(Xbl)
     n = nro(Xbl[1])
@@ -86,7 +86,7 @@ function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
         p[k] = nco(Xbl[k])
         xmeans[k] = colmean(Xbl[k], weights) 
         xscales[k] = ones(nco(Xbl[k]))
-        if scal 
+        if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
             Xbl[k] .= cscale(Xbl[k], xmeans[k], xscales[k])
         else
@@ -94,15 +94,15 @@ function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
         end
     end
     ymeans = colmean(Y, weights)
-    yscales = ones(q)
-    if scal 
+    yscales = ones(eltype(Y), q)
+    if par.scal 
         yscales .= colstd(Y, weights)
         cscale!(Y, ymeans, yscales)
     else
         center!(Y, ymeans)
     end
-    bscal == "none" ? bscales = ones(nbl) : nothing
-    if bscal == "frob"
+    bscal == :none ? bscales = ones(nbl) : nothing
+    if bscal == :frob
         res = blockscal_frob(Xbl, weights) 
         bscales = res.bscales
         Xbl = res.X
@@ -221,7 +221,7 @@ function predict(object::Union{MbplsWest, Mbplsr}, Xbl; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     T = transform(object, Xbl)
-    pred = list(le_nlv, Matrix{Float64})
+    pred = list(le_nlv, Matrix{eltype(X)})
     @inbounds  for i = 1:le_nlv
         znlv = nlv[i]
         int = object.ymeans'

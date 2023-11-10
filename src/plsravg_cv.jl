@@ -1,5 +1,5 @@
 function plsravg_cv(X, Y, weights = ones(nro(X)); nlv, 
-        K = 2, typw = "bisquare", 
+        K = 2, typw = :bisquare, 
         alpha = 0, scal::Bool = false)
     plsravg_cv!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
         K = K, typw = typw,
@@ -7,7 +7,7 @@ function plsravg_cv(X, Y, weights = ones(nro(X)); nlv,
 end
 
 function plsravg_cv!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        K = 2, typw = "bisquare",
+        K = 2, typw = :bisquare,
         alpha = 0, scal::Bool = false)
     n, p = size(X)
     nlv = eval(Meta.parse(nlv))

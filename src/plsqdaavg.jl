@@ -37,6 +37,6 @@ function plsqdaavg(X, y, weights = ones(nro(X)); nlv,
     # End   
     fm = plsqda(X, y, weights; nlv = nlvmax,
         alpha = alpha, scal = scal)
-    Plsdaavg(fm, nlv, w_mod, fm.lev, fm.ni)
+    Plsrdaavg(fm, nlv, w_mod, fm.lev, fm.ni)
 end
 

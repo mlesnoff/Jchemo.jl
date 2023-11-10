@@ -1,5 +1,5 @@
 """
-    knnr(X, Y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, 
+    knnr(X, Y; nlvdis = 0, metric = :eucl, h = Inf, k = 1, 
         tol = 1e-4, scal::Bool = false)
 k-Nearest-Neighbours regression (KNNR).
 * `X` : X-data (n, p).
@@ -8,8 +8,8 @@ k-Nearest-Neighbours regression (KNNR).
     used for the dimension reduction before computing the dissimilarities. 
     If `nlvdis = 0`, there is no dimension reduction.
 * `metric` : Type of dissimilarity used to select the neighbors and compute
-    the weights. Possible values are "eucl" (default; Euclidean distance) 
-    and "mahal" (Mahalanobis distance).
+    the weights. Possible values are :eucl (default; Euclidean distance) 
+    and :mah (Mahalanobis distance).
 * `h` : A scalar defining the shape of the weight function. Lower is h, 
     sharper is the function. See function `wdist`.
 * `k` : The number of nearest neighbors to select for each observation to predict.
@@ -49,7 +49,7 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-nlvdis = 20 ; metric = "mahal" 
+nlvdis = 20 ; metric = :mah 
 h = 2 ; k = 100 ; nlv = 15
 fm = knnr(Xtrain, ytrain; nlvdis = nlvdis,
     metric = metric, h = h, k = k) ;
@@ -60,7 +60,7 @@ ablines!(ax, 0, 1)
 f
 ```
 """ 
-function knnr(X, Y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, 
+function knnr(X, Y; nlvdis = 0, metric = :eucl, h = Inf, k = 1, 
         scal::Bool = false, tol = 1e-4)
     X = ensure_mat(X)
     Y = ensure_mat(Y)

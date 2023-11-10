@@ -68,7 +68,7 @@ function cplsravg(X, Y, cla = nothing; ncla = nothing,
     Y = ensure_mat(Y)
     if isnothing(cla)
         zX = copy(X)
-        if scal 
+        if par.scal 
             scale!(zX, colstd(zX))
         end
         zfm = Clustering.kmeans(zX', ncla; maxiter = 1000, 
@@ -81,10 +81,10 @@ function cplsravg(X, Y, cla = nothing; ncla = nothing,
     nlev = length(lev)
     #fm_da = plsrda(X, cla; nlv = nlv_da)
     if typda == "lda"
-        fm_da = plslda(X, cla; nlv = nlv_da, prior = "prop",
+        fm_da = plslda(X, cla; nlv = nlv_da, prior = :prop,
             scal = scal)
     elseif typda == "qda"
-        fm_da = plsqda(X, cla; nlv = nlv_da, prior = "prop", 
+        fm_da = plsqda(X, cla; nlv = nlv_da, prior = :prop, 
             scal = scal)
     end
     fm = list(nlev)

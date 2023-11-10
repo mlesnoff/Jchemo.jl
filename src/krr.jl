@@ -1,15 +1,15 @@
 """
     krr(X, Y, weights = ones(nro(X)); 
-        lb = .01, kern = "krbf", scal::Bool = false, kwargs...)
+        lb = .01, kern = :krbf, scal::Bool = false, kwargs...)
     krr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
-        lb, kern = "krbf", scal::Bool = false, kwargs...)
+        lb, kern = :krbf, scal::Bool = false, kwargs...)
 Kernel ridge regression (KRR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
 * `lb` : Ridge regularization parameter "lambda".
 * 'kern' : Type of kernel used to compute the Gram matrices.
-    Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`.
+    Possible values are :krbf of :kpol (see respective functions `krbf` and `kpol`.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 * `kwargs` : Named arguments to pass in the kernel function.
@@ -80,7 +80,7 @@ res = Jchemo.predict(fm, Xtest; lb = [.01 ; .001])
 res.pred[1]
 res.pred[2]
 
-fm = krr(Xtrain, ytrain; lb = lb, kern = "kpol", 
+fm = krr(Xtrain, ytrain; lb = lb, kern = :kpol, 
     degree = 2, gamma = 1e-1, coef0 = 10) ;
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
@@ -98,33 +98,36 @@ fm = krr(x, y; lb = 1e-1, gamma = 1 / 3) ;
 pred = Jchemo.predict(fm, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
-lines!(ax, x, vec(pred), label = "Fitted model")
+lines!(ax, x, vec(pred), label = "ted model")
 axislegend("Method")
 f
 ```
 """ 
-function krr(X, Y, weights = ones(nro(X)); 
-    lb, kern = "krbf", scal::Bool = false, kwargs...)
-krr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-    lb = lb, kern = kern, scal = scal, kwargs...)
+function krr(X, Y; par = Par())
+    weights = mweight(ones(eltype(X), nro(X)))
+    krr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
+        par = par)
 end
 
-function krr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
-    lb, kern = "krbf", scal::Bool = false, kwargs...)
-#function krr(X, Y, weights = ones(nro(X)); 
-#        lb = .01, kern = "krbf", scal::Bool = false, kwargs...)
+function krr(X, Y, weights::Vector{Q}; 
+        par = Par()) where {Q <: AbstractFloat}
+    krr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
+        par = par)
+end
+
+function krr!(X::Matrix, Y::Matrix, weights::Vector{Q}; 
+            par = Par()) where {Q <: AbstractFloat} 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)
-    weights = mweight(weights)    
-    xscales = ones(p)
-    if scal 
+    xscales = ones(eltype(X), p)
+    if par.scal 
         xscales .= colstd(X, weights)
         X = scale(X, xscales)
     end
     ymeans = colmean(Y, weights)
-    fkern = eval(Meta.parse(kern))    
-    K = fkern(X, X; kwargs...)
+    fkern = eval(Meta.parse(String(par.kern)))    
+    K = fkern(X, X; par = par)
     D = Diagonal(weights)    
     DKt = D * K'
     vtot = sum(DKt, dims = 1)
@@ -134,12 +137,12 @@ function krr!(X::Matrix, Y::Matrix, weights = ones(nro(X));
     sqrtD = sqrt.(D)
     Kd = sqrtD * Kc * sqrtD
     res = LinearAlgebra.svd(Kd)
-    U = res.V
+    U = Matrix(res.V)
     sv = sqrt.(res.S)
     # UtDY = U' * D^(1/2) * Y
     UtDY = U' * sqrtD * Y
     Krr(X, K, U, UtDY, sv, D, sqrtD, DKt, 
-        vtot, lb, xscales, ymeans, weights, kern, kwargs)
+        vtot, xscales, ymeans, weights, par)
 end
 
 """
@@ -150,7 +153,8 @@ Compute the b-coefficients of a fitted model.
     If nothing, it is the parameter stored in the fitted model.
 """ 
 function coef(object::Krr; lb = nothing)
-    isnothing(lb) ? lb = object.lb : nothing
+    isnothing(lb) ? lb = object.par.lb : nothing
+    lb = convert(eltype(object.X), lb)
     eig = object.sv.^2
     z = 1 ./ (eig .+ lb^2)
     A = object.U * (Diagonal(z) * object.UtDY)
@@ -169,14 +173,14 @@ Compute Y-predictions from a fitted model.
     If nothing, it is the parameter stored in the fitted model.
 """ 
 function predict(object::Krr, X; lb = nothing)
-    isnothing(lb) ? lb = object.lb : nothing
-    fkern = eval(Meta.parse(object.kern))
-    K = fkern(scale(X, object.xscales), object.X; object.dots...)
+    isnothing(lb) ? lb = object.par.lb : nothing
+    fkern = eval(Meta.parse(String(object.par.kern)))
+    K = fkern(scale(X, object.xscales), object.X; par = object.par)
     DKt = object.D * K'
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')
     le_lb = length(lb)
-    pred = list(le_lb, Matrix{Float64})
+    pred = list(le_lb, Matrix{eltype(X)})
     @inbounds for i = 1:le_lb
         z = coef(object; lb = lb[i])
         pred[i] = z.int .+ Kc * (object.sqrtD * z.A)

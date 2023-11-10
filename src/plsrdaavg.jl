@@ -61,16 +61,16 @@ function plsrdaavg(X, y, weights = ones(nro(X)); nlv,
     # End
     fm = plsrda(X, y, weights; nlv = nlvmax,
         scal = scal)
-    Plsdaavg(fm, nlv, w_mod, fm.lev, fm.ni)
+    Plsrdaavg(fm, nlv, w_mod, fm.lev, fm.ni)
 end
 
 """
-    predict(object::Plsdaavg, X)
+    predict(object::Plsrdaavg, X)
 Compute y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Plsdaavg, X)
+function predict(object::Plsrdaavg, X)
     X = ensure_mat(X)
     m = nro(X)
     nlv = object.nlv

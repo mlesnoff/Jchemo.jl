@@ -1,5 +1,5 @@
 function plsravg_aic(X, y, weights = ones(nro(X)); nlv, 
-        bic = false, typw = "bisquare",
+        bic = false, typw = :bisquare,
         alpha = 0, scal::Bool = false)
     plsravg_aic!(copy(ensure_mat(X)), copy(ensure_mat(y)), weights; nlv = nlv,
         bic = bic, typw = typw, 
@@ -7,7 +7,7 @@ function plsravg_aic(X, y, weights = ones(nro(X)); nlv,
 end
 
 function plsravg_aic!(X::Matrix, y::Matrix, weights = ones(nro(X)); nlv,
-        bic = false, typw = "bisquare", 
+        bic = false, typw = :bisquare, 
         alpha = 0, scal::Bool = false)
     n, p = size(X)
     nlv = eval(Meta.parse(nlv))

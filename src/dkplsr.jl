@@ -1,8 +1,8 @@
 """
     dkplsr(X, Y, weights = ones(nro(X)); nlv, 
-        kern = "krbf", scal::Bool = false, kwargs...)
+        kern = :krbf, scal::Bool = false, kwargs...)
     dkplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
-        kern = "krbf", scal = scal, kwargs...)
+        kern = :krbf, scal = scal, kwargs...)
 Direct kernel partial least squares regression (DKPLSR) (Bennett & Embrechts 2003).
 
 * `X` : X-data (n, p).
@@ -11,7 +11,7 @@ Direct kernel partial least squares regression (DKPLSR) (Bennett & Embrechts 200
     Internally normalized to sum to 1.
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * 'kern' : Type of kernel used to compute the Gram matrices.
-    Possible values are "krbf" of "kpol" (see respective functions `krbf` and `kpol`).
+    Possible values are :krbf of :kpol (see respective functions `krbf` and `kpol`).
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
 * `kwargs` : Named arguments to pass in the kernel function.
@@ -46,9 +46,8 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-nlv = 20 ; gamma = 1e-4
-fm = dkplsr(Xtrain, ytrain; nlv = nlv, 
-    gamma = gamma, scal = true) ;
+nlv = 20 ; gamma = 1e-1
+fm = dkplsr(Xtrain, ytrain; nlv = nlv, gamma = gamma) ;
 fm.fm.T
 
 zcoef = Jchemo.coef(fm)
@@ -62,19 +61,19 @@ Jchemo.transform(fm, Xtest; nlv = 7)
 res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 
 res = Jchemo.predict(fm, Xtest; nlv = 1:2)
 res.pred[1]
 res.pred[2]
 
-fm = dkplsr(Xtrain, ytrain; nlv = nlv, kern = "kpol", degree = 2, gamma = 1e-1, coef0 = 10) ;
+fm = dkplsr(Xtrain, ytrain; nlv = nlv, kern = :kpol, degree = 2, gamma = 1e-1, coef0 = 10) ;
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
+plotxy(pred, ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 
-## Example of fitting the function sinc(x)
-## described in Rosipal & Trejo 2001 p. 105-106 
+# Example of fitting the function sinc(x)
+# described in Rosipal & Trejo 2001 p. 105-106 
 
 x = collect(-10:.2:10) 
 x[x .== 0] .= 1e-5
@@ -85,33 +84,39 @@ fm = dkplsr(x, y; nlv = 2) ;
 pred = Jchemo.predict(fm, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
-lines!(ax, x, vec(pred), label = "Fitted model")
+lines!(ax, x, vec(pred), label = "ted model")
 axislegend("Method")
 f
 ```
 """ 
-function dkplsr(X, Y, weights = ones(nro(X)); nlv, 
-        kern = "krbf", scal::Bool = false, kwargs...)
+function dkplsr(X, Y; par = Par())
+    weights = mweight(ones(eltype(X), nro(X)))
     dkplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        nlv = nlv, kern = kern, scal = scal, kwargs...)
+        par = par)
 end
 
-function dkplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
-        nlv, kern = "krbf", scal::Bool = false, kwargs...)    
+function dkplsr(X, Y, weights::Vector{Q}; 
+        par = Par()) where {Q <: AbstractFloat}
+    dkplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
+        par = par)
+end
+
+function dkplsr!(X::Matrix, Y::Matrix, weights::Vector{Q}; 
+            par = Par()) where {Q <: AbstractFloat} 
     p = nco(X)
     q = nco(Y)
-    xscales = ones(p)
-    yscales = ones(q)
-    if scal 
+    xscales = ones(eltype(X), p)
+    yscales = ones(eltype(Y), q)
+    if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
         scale!(X, xscales)
         scale!(Y, yscales)
     end
-    fkern = eval(Meta.parse(kern))
-    K = fkern(X, X; kwargs...)     
-    fm = plskern!(K, Y, weights; nlv = nlv)
-    Dkplsr(X, fm, K, kern, xscales, yscales, kwargs)
+    fkern = eval(Meta.parse(String(par.kern)))
+    K = fkern(X, X; par)     
+    fm = plskern!(K, Y, weights; par)
+    Dkplsr(X, fm, K, xscales, yscales, par)
 end
 
 """ 
@@ -122,8 +127,8 @@ Compute latent variables (LVs = scores T) from a fitted model and X-data.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transform(object::Dkplsr, X; nlv = nothing)
-    fkern = eval(Meta.parse(object.kern))
-    K = fkern(scale(X, object.xscales), object.X; object.dots...)
+    fkern = eval(Meta.parse(String(object.par.kern)))
+    K = fkern(scale(X, object.xscales), object.X; par = object.par)
     transform(object.fm, K; nlv = nlv)
 end
 
@@ -150,8 +155,8 @@ function predict(object::Dkplsr, X; nlv = nothing)
     a = nco(object.fm.T)
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
-    fkern = eval(Meta.parse(object.kern))
-    K = fkern(scale(X, object.xscales), object.X; object.dots...)
+    fkern = eval(Meta.parse(String(object.par.kern)))
+    K = fkern(scale(X, object.xscales), object.X; par = object.par)
     pred = predict(object.fm, K; nlv = nlv).pred
     if le_nlv == 1
         pred .= pred * Diagonal(object.yscales)

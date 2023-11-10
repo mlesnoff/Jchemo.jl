@@ -109,9 +109,9 @@ function covselr!(X::Matrix, Y::Matrix, weights = ones(nro(X));
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
-    xscales = ones(p)
-    yscales = ones(q)
-    if scal 
+    xscales = ones(eltype(X), p)
+    yscales = ones(eltype(Y), q)
+    if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
         cscale!(X, xmeans, xscales)

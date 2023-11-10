@@ -1,6 +1,6 @@
 """
     occlknndis(X; nlv, nsamp, k, 
-        typc = "mad", cri = 3, alpha = .025,
+        typc = :mad, cri = 3, alpha = .025,
         scal::Bool = false, kwargs...)
 One-class classification using local k-nearest neighbors distances.
 
@@ -9,9 +9,9 @@ One-class classification using local k-nearest neighbors distances.
 * `nsamp` : Nb. of observations (rows) sampled in the training `X`
     used to compute the H0 empirical distribution of outlierness.
 * `k` : Nb. of neighbors used to compute the outlierness.
-* `typc` : Type of cutoff ("mad" or "q"). See Thereafter.
-* `cri` : When `typc = "mad"`, a constant. See thereafter.
-* `alpha` : When `typc = "q"`, a risk-I level. See thereafter.
+* `typc` : Type of cutoff (:mad or :q). See Thereafter.
+* `cri` : When `typc = :mad`, a constant. See thereafter.
+* `alpha` : When `typc = :q`, a risk-I level. See thereafter.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 * `kwargs` : Optional arguments to pass in function `kde` of KernelDensity.jl
@@ -99,7 +99,7 @@ plotxy(T[:, i], T[:, i + 1]), group;
 nlv = 30
 nsamp = 50 ; k = 5
 fm = Jchemo.occlknndis(zXtrain; nlv = nlv, 
-    nsamp = nsamp, k = k, typc = "mad") ;
+    nsamp = nsamp, k = k, typc = :mad) ;
 fm.d
 hist(fm.d.dstand; bins = 50)
 
@@ -120,7 +120,7 @@ f
 ```
 """ 
 function occlknndis(X; nlv, nsamp, k, 
-        typc = "mad", cri = 3, alpha = .025,
+        typc = :mad, cri = 3, alpha = .025,
         scal::Bool = false, kwargs...)
     X = ensure_mat(X)
     n = nro(X)
@@ -135,19 +135,19 @@ function occlknndis(X; nlv, nsamp, k,
     vd = zeros(k)
     @inbounds for i = 1:nsamp
         # view vrow(fm.T, i) does not work with getknn
-        res = getknn(rmrow(fm.T, samp[i]), fm.T[i:i, :]; k = k, metric = "eucl")
+        res = getknn(rmrow(fm.T, samp[i]), fm.T[i:i, :]; k = k, metric = :eucl)
         ind .= res.ind[1]
         d[i] = median(res.d[1])
         for j = 1:k
             zind = ind[j]
-            zres = getknn(rmrow(fm.T, zind), fm.T[zind:zind, :]; k = k, metric = "eucl")
+            zres = getknn(rmrow(fm.T, zind), fm.T[zind:zind, :]; k = k, metric = :eucl)
             vd[j] = median(zres.d[1])
         end
         zd[i] = median(vd)
     end
     d ./= zd
-    typc == "mad" ? cutoff = median(d) + cri * mad(d) : nothing
-    typc == "q" ? cutoff = quantile(d, 1 - alpha) : nothing
+    typc == :mad ? cutoff = median(d) + cri * mad(d) : nothing
+    typc == :q ? cutoff = quantile(d, 1 - alpha) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
@@ -165,7 +165,7 @@ function predict(object::Occlknndis, X)
     m = nro(X)
     T = transform(object.fm, X)
     scale!(T, object.tscales)
-    res = getknn(object.T, T; k = object.k, metric = "eucl")
+    res = getknn(object.T, T; k = object.k, metric = :eucl)
     ind = Int64.(zeros(object.k))
     d = zeros(m)
     zd = zeros(m)
@@ -176,7 +176,7 @@ function predict(object::Occlknndis, X)
         for j = 1:object.k
             zind = ind[j]
             zres = getknn(rmrow(object.T, zind), object.T[zind:zind, :]; 
-                k = object.k, metric = "eucl")
+                k = object.k, metric = :eucl)
             vd[j] = median(zres.d[1])
         end 
         zd[i] = median(vd)

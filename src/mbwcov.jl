@@ -1,10 +1,10 @@
 
 """
     mbwcov(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", wcov = true, tau = 1,
+        bscal = :none, wcov = true, tau = 1,
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     mbwcov!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", wcov = true, tau = 1,
+        bscal = :none, wcov = true, tau = 1,
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
 Multiblock weighted covariate analysis regression (MBWCov) (Mangana et al. 2021)
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
@@ -13,7 +13,7 @@ Multiblock weighted covariate analysis regression (MBWCov) (Mangana et al. 2021)
 * `weights` : Weights of the observations (rows). 
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `bscal` : Type of block scaling (`"none"`, `"frob"`). 
+* `bscal` : Type of block scaling (`:none`, `:frob`). 
     See functions `blockscal`.
 * `wcov` : Logical. If `true` (default), a MBWCov is done, else
     a MBPLSR is done.
@@ -60,7 +60,7 @@ Xbl = mblock(X, listbl)
 # "New" = first two rows of Xbl 
 Xbl_new = mblock(X[1:2, :], listbl)
 
-bscal = "none"
+bscal = :none
 nlv = 5
 fm = mbwcov(Xbl, y; nlv = nlv, bscal = bscal) ;
 pnames(fm)
@@ -73,7 +73,7 @@ summary(fm, Xbl)
 ```
 """
 function mbwcov(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", wcov = true, tau = 1,
+        bscal = :none, wcov = true, tau = 1,
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
@@ -86,7 +86,7 @@ function mbwcov(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
 end
 
 function mbwcov!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
-        bscal = "none", wcov = true, tau = 1, 
+        bscal = :none, wcov = true, tau = 1, 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     nbl = length(Xbl)
     n = nro(Xbl[1])
@@ -100,7 +100,7 @@ function mbwcov!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
         p[k] = nco(Xbl[k])
         xmeans[k] = colmean(Xbl[k], weights) 
         xscales[k] = ones(nco(Xbl[k]))
-        if scal 
+        if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
             Xbl[k] .= cscale(Xbl[k], xmeans[k], xscales[k])
         else
@@ -108,15 +108,15 @@ function mbwcov!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
         end
     end
     ymeans = colmean(Y, weights)
-    yscales = ones(q)
-    if scal 
+    yscales = ones(eltype(Y), q)
+    if par.scal 
         yscales .= colstd(Y, weights)
         cscale!(Y, ymeans, yscales)
     else
         center!(Y, ymeans)
     end
-    bscal == "none" ? bscales = ones(nbl) : nothing
-    if bscal == "frob"
+    bscal == :none ? bscales = ones(nbl) : nothing
+    if bscal == :frob
         res = blockscal_frob(Xbl, weights) 
         bscales = res.bscales
         Xbl = res.X

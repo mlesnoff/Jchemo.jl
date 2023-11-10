@@ -1,15 +1,15 @@
 """
     plstuck(X, Y, weights = ones(nro(X)); nlv,
-        bscal = "none", scal::Bool = false)
+        bscal = :none, scal::Bool = false)
     plstuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = "none", scal::Bool = false)
+        bscal = :none, scal::Bool = false)
 Tucker's inter-battery method of factor analysis
 * `X` : First block (matrix) of data.
 * `Y` : Second block (matrix) of data.
 * `weights` : Weights of the observations (rows). 
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-* `bscal` : Type of block scaling (`"none"`, `"frob"`). 
+* `bscal` : Type of block scaling (`:none`, `:frob`). 
     See functions `blockscal`.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation 
@@ -56,22 +56,22 @@ pnames(res)
 ```
 """
 function plstuck(X, Y, weights = ones(nro(X)); nlv,
-        bscal = "none", scal::Bool = false)
+        bscal = :none, scal::Bool = false)
     plstuck!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
         bscal = bscal, scal = scal)
 end
 
 function plstuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = "none", scal::Bool = false)
+        bscal = :none, scal::Bool = false)
     p = nco(X)
     q = nco(Y)
     nlv = min(nlv, p, q)
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
-    xscales = ones(p)
-    yscales = ones(q)
-    if scal 
+    xscales = ones(eltype(X), p)
+    yscales = ones(eltype(Y), q)
+    if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
         cscale!(X, xmeans, xscales)
@@ -80,8 +80,8 @@ function plstuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         center!(X, xmeans)
         center!(Y, ymeans)
     end
-    bscal == "none" ? bscales = ones(2) : nothing
-    if bscal == "frob"
+    bscal == :none ? bscales = ones(2) : nothing
+    if bscal == :frob
         normx = frob(X, weights)
         normy = frob(Y, weights)
         X ./= normx

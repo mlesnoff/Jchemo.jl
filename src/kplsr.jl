@@ -1,9 +1,9 @@
 """
     kplsr(X, Y, weights = ones(nro(X)); 
-        nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 
+        nlv, kern = :krbf, tol = 1.5e-8, maxit = 100, 
         scal::Bool = false, kwargs...)
     kplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
-        nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 
+        nlv, kern = :krbf, tol = 1.5e-8, maxit = 100, 
         scal::Bool = false, kwargs...)
 Kernel partial least squares regression (KPLSR) implemented with a Nipals 
 algorithm (Rosipal & Trejo, 2001).
@@ -13,7 +13,7 @@ algorithm (Rosipal & Trejo, 2001).
 * `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * 'kern' : Type of kernel used to compute the Gram matrices.
-    Possible values are "krbf" or "kpol" (see respective functions `krbf` and `kpol`).
+    Possible values are :krbf or :kpol (see respective functions `krbf` and `kpol`).
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
 * `tol` : Tolerance value for stopping the iterations.
@@ -68,7 +68,7 @@ res = Jchemo.predict(fm, Xtest; nlv = 1:2)
 res.pred[1]
 res.pred[2]
 
-fm = kplsr(Xtrain, ytrain; nlv = nlv, kern = "kpol", degree = 2, 
+fm = kplsr(Xtrain, ytrain; nlv = nlv, kern = :kpol, degree = 2, 
     gamma = 1e-1, coef0 = 10) ;
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
@@ -84,29 +84,32 @@ fm = kplsr(x, y; nlv = 2) ;
 pred = Jchemo.predict(fm, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
-lines!(ax, x, vec(pred), label = "Fitted model")
+lines!(ax, x, vec(pred), label = "ted model")
 axislegend("Method")
 f
 ```
 """ 
-function kplsr(X, Y, weights = ones(nro(X)); 
-        nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 
-        scal::Bool = false, kwargs...)
+function kplsr(X, Y; par = Par())
+    weights = mweight(ones(eltype(X), nro(X)))
     kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        nlv = nlv, kern = kern, tol = tol, maxit = maxit, 
-        scal = scal, kwargs...)
+        par = par)
 end
 
-function kplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
-        nlv, kern = "krbf", tol = 1.5e-8, maxit = 100, 
-        scal::Bool = false, kwargs...)
+function kplsr(X, Y, weights::Vector{Q}; 
+        par = Par()) where {Q <: AbstractFloat}
+    kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
+        par = par)
+end
+
+function kplsr!(X::Matrix, Y::Matrix, weights::Vector{Q}; 
+            par = Par()) where {Q <: AbstractFloat} 
     n, p = size(X)
     q = nco(Y)
-    weights = mweight(weights)
+    nlv = par.nlv
     ymeans = colmean(Y, weights)   
-    xscales = ones(p)
-    yscales = ones(q)
-    if scal 
+    xscales = ones(eltype(X), p)
+    yscales = ones(eltype(Y), q)
+    if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
         scale!(X, xscales)
@@ -114,8 +117,8 @@ function kplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X));
     else
         center!(Y, ymeans)
     end
-    fkern = eval(Meta.parse(kern))  
-    K = fkern(X, X; kwargs...)     # In the future: fkern!(K, X, X; kwargs...)
+    fkern = eval(Meta.parse(String(par.kern)))  
+    K = fkern(X, X; par)     # In the future?: fkern!(K, X, X; par)
     D = Diagonal(weights)
     Kt = K'    
     DKt = D * Kt
@@ -147,7 +150,7 @@ function kplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X));
             u .= Y[:, 1]
             ztol = 1.
             ziter = 1
-            while ztol > tol && ziter <= maxit
+            while ztol > par.tol && ziter <= par.maxit
                 mul!(t, K, weights .* u)
                 t ./= sqrt(dot(t, weights .* t))
                 dt .= weights .* t                
@@ -170,7 +173,7 @@ function kplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X));
     DU = D * U
     zR = DU * inv(T' * D * Kc * DU)
     Kplsr(X, Kt, T, C, U, zR, D, DKt, vtot, xscales, ymeans, yscales, 
-        weights, kern, kwargs, iter)
+        weights, iter, par)
 end
 
 """ 
@@ -183,8 +186,8 @@ Compute latent variables (LVs = scores T) from a fitted model and X-data.
 function transform(object::Kplsr, X; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    fkern = eval(Meta.parse(object.kern))
-    K = fkern(scale(X, object.xscales), object.X; object.dots...)
+    fkern = eval(Meta.parse(String(object.par.kern)))
+    K = fkern(scale(X, object.xscales), object.X; par = object.par)
     DKt = object.D * K'
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')
@@ -221,7 +224,7 @@ function predict(object::Kplsr, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     T = transform(object, X)
-    pred = list(le_nlv, Matrix{Float64})
+    pred = list(le_nlv, Matrix{eltype(X)})
     @inbounds for i = 1:le_nlv
         z = coef(object; nlv = nlv[i])
         pred[i] = z.int .+ @view(T[:, 1:nlv[i]]) * z.beta * Diagonal(object.yscales)

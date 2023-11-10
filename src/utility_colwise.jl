@@ -1,6 +1,6 @@
 """
     colmad(X)
-Compute the median absolute deviation (MAD) of each column of `X`.
+Compute the column-median absolute deviations (MAD) of a matrix.
 * `X` : Data (n, p).
 
 Return a vector.
@@ -21,11 +21,11 @@ end
 """
     colmean(X)
     colmean(X, w)
-Compute the mean of each column of `X`.
+Compute the column-means of a matrix.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
-
-`w` is internally normalized to sum to 1.
+    Consider to preliminary normalise `w` to 
+    sum to 1 (e.g. function `mweight`).
 
 Return a vector.
 
@@ -33,7 +33,7 @@ Return a vector.
 ```julia
 n, p = 5, 6
 X = rand(n, p)
-w = collect(1:n)
+w = mweight(collect(1:n))
 
 colmean(X)
 colmean(X, w)
@@ -41,19 +41,19 @@ colmean(X, w)
 """ 
 colmean(X) = vec(Statistics.mean(ensure_mat(X); dims = 1))
 
-colmean(X, w) = vec(mweight(w)' * ensure_mat(X))
+colmean(X, w) = vec(w' * ensure_mat(X))
 
 """
     colnorm(X)
     colnorm(X, w)
-Compute the norm of each column of a dataset X.
+Compute the column-norms of a matrix.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
+    Consider to preliminary normalise `w` to 
+    sum to 1 (e.g. function `mweight`).
 
-`w` is internally normalized to sum to 1.
-
-The norm of a column x of `X` is:
-* sqrt(x' * x), where D is the diagonal matrix of `w`.
+The computed norm of a column x of `X` is:
+* sqrt(x' * x)
 
 The weighted norm is:
 * sqrt(x' * D * x), where D is the diagonal matrix of `w`.
@@ -62,30 +62,24 @@ The weighted norm is:
 ```julia
 n, p = 5, 6
 X = rand(n, p)
-w = collect(1:n)
+w = mweight(collect(1:n))
 
 colnorm(X)
 colnorm(X, w)
 ```
 """ 
-function colnorm(X)
-    X = ensure_mat(X)
-    map(norm, eachcol(X))
-end
+colnorm(X) = map(norm, eachcol(ensure_mat(X)))
 
-function colnorm(X, w)
-    X = ensure_mat(X)
-    vec(sqrt.(mweight(w)' * X.^2))
-end
+colnorm(X, w) = vec(sqrt.(w' * ensure_mat(X).^2))
 
 """
     colstd(X)
     colstd(X, w)
-Compute the (uncorrected) standard deviation of each column of `X`.
+Compute the column-standard deviations (uncorrected) of a matrix.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
-
-`w` is internally normalized to sum to 1.
+    Consider to preliminary normalise `w` to 
+    sum to 1 (e.g. function `mweight`).
 
 Return a vector.
 
@@ -93,7 +87,7 @@ Return a vector.
 ```julia
 n, p = 5, 6
 X = rand(n, p)
-w = collect(1:n)
+w = mweight(collect(1:n))
 
 colstd(X)
 colstd(X, w)
@@ -106,11 +100,11 @@ colstd(X, w) = sqrt.(colvar(X, w))
 """
     colsum(X)
     colsum(X, w)
-Compute the sum of each column of `X`.
+Compute the column-sums of a matrix.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
-
-`w` is internally normalized to sum to 1.
+    Consider to preliminary normalise `w` to 
+    sum to 1 (e.g. function `mweight`).
 
 Return a vector.
 
@@ -118,7 +112,7 @@ Return a vector.
 ```julia
 n, p = 5, 6
 X = rand(n, p)
-w = collect(1:n)
+w = mweight(collect(1:n))
 
 colsum(X)
 colsum(X, w)
@@ -126,16 +120,16 @@ colsum(X, w)
 """ 
 colsum(X) = vec(sum(X; dims = 1))
 
-colsum(X, w) = vec(mweight(w)' * ensure_mat(X))
+colsum(X, w) = vec(w' * ensure_mat(X))
 
 """
     colvar(X)
     colvar(X, w)
-Compute the (uncorrected) variance of each column of `X`.
+Compute the column-variances (uncorrected) of a matrix.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
-
-`w` is internally normalized to sum to 1.
+    Consider to preliminary normalise `w` to 
+    sum to 1 (e.g. function `mweight`).
 
 Return a vector.
 
@@ -143,7 +137,7 @@ Return a vector.
 ```julia
 n, p = 5, 6
 X = rand(n, p)
-w = collect(1:n)
+w = mweight(collect(1:n))
 
 colvar(X)
 colvar(X, w)
@@ -153,12 +147,11 @@ colvar(X) = vec(Statistics.var(ensure_mat(X); corrected = false, dims = 1))
 
 function colvar(X, w)
     X = ensure_mat(X)
-    w = mweight(w)
     v = colmean(X, w)
     colnorm(X .- v', w).^2
 end
 
-####### SKIP MISSING
+####### Functions with skip missing data
 
 function colmeanskip(X)
     X = ensure_mat(X)

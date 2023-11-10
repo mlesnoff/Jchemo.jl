@@ -1,6 +1,6 @@
 """
     occknndis(X; nlv, nsamp, k, 
-        typc = "mad", cri = 3, alpha = .025,
+        typc = :mad, cri = 3, alpha = .025,
         scal::Bool = false, kwargs...)
 One-class classification using global k-nearest neighbors distances.
 
@@ -9,9 +9,9 @@ One-class classification using global k-nearest neighbors distances.
 * `nsamp` : Nb. of observations (rows) sampled in the training `X`
     used to compute the H0 empirical distribution of outlierness.
 * `k` : Nb. of neighbors used to compute the outlierness.
-* `typc` : Type of cutoff ("mad" or "q"). See Thereafter.
-* `cri` : When `typc = "mad"`, a constant. See thereafter.
-* `alpha` : When `typc = "q"`, a risk-I level. See thereafter.
+* `typc` : Type of cutoff (:mad or :q). See Thereafter.
+* `cri` : When `typc = :mad`, a constant. See thereafter.
+* `alpha` : When `typc = :q`, a risk-I level. See thereafter.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 * `kwargs` : Optional arguments to pass in function `kde` of KernelDensity.jl
@@ -113,7 +113,7 @@ f
 ```
 """ 
 function occknndis(X; nlv, nsamp, k, 
-        typc = "mad", cri = 3, alpha = .025,
+        typc = :mad, cri = 3, alpha = .025,
         scal::Bool = false, kwargs...)
     X = ensure_mat(X)
     n = nro(X)
@@ -125,13 +125,13 @@ function occknndis(X; nlv, nsamp, k,
     # End
     samp = sample(1:n, nsamp; replace = false)
     res = getknn(fm.T, fm.T[samp, :]; 
-            k = k + 1, metric = "eucl")
+            k = k + 1, metric = :eucl)
     d = zeros(nsamp)
     @inbounds for i = 1:nsamp
         d[i] = median(res.d[i][2:end])
     end
-    typc == "mad" ? cutoff = median(d) + cri * mad(d) : nothing
-    typc == "q" ? cutoff = quantile(d, 1 - alpha) : nothing
+    typc == :mad ? cutoff = median(d) + cri * mad(d) : nothing
+    typc == :q ? cutoff = quantile(d, 1 - alpha) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
@@ -149,7 +149,7 @@ function predict(object::Occknndis, X)
     m = nro(X)
     T = transform(object.fm, X)
     scale!(T, object.tscales)
-    res = getknn(object.T, T; k = object.k, metric = "eucl") 
+    res = getknn(object.T, T; k = object.k, metric = :eucl) 
     d = zeros(m)
     @inbounds for i = 1:m
         d[i] = median(res.d[i])

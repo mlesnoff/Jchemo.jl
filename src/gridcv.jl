@@ -46,7 +46,7 @@ ntrain = nro(Xtrain)
 K = 5 ; rep = 1
 segm = segmkf(ntrain, K; rep = rep)
 
-nlvdis = 15 ; metric = ["mahal" ]
+nlvdis = 15 ; metric = [:mah ]
 h = [1 ; 2.5] ; k = [5 ; 10 ; 20 ; 50] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k) 
 length(pars[1]) 
@@ -83,7 +83,7 @@ rmsep(pred, ytest)
 K = 5 ; rep = 1
 segm = segmkf(ntrain, K; rep = rep)
 
-nlvdis = 15 ; metric = ["mahal" ]
+nlvdis = 15 ; metric = [:mah ]
 h = [1 ; 2.5 ; 5] ; k = [50 ; 100] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
 length(pars[1]) 

@@ -1,6 +1,6 @@
 """
     rowmean(X)
-Compute the mean of each row of `X`.
+Compute the row-means of a matrix.
 * `X` : Data (n, p).
 
 Return a vector.
@@ -16,7 +16,7 @@ rowmean(X) = vec(Statistics.mean(ensure_mat(X); dims = 2))
 
 """
     rowstd(X)
-Compute the (uncorrected) standard deviation of each row of `X`.
+Compute the row-standard deviations (uncorrected) of a matrix`.
 * `X` : Data (n, p).
 
 Return a vector.
@@ -32,7 +32,7 @@ rowstd(X) = vec(Statistics.std(ensure_mat(X); dims = 2, corrected = false))
 
 """
     rowsum(X)
-Compute the sum of each row of `X`.
+Compute the row-sums of a matrix.
 * `X` : Data (n, p).
 
 Return a vector.
@@ -47,7 +47,7 @@ rowsum(X) = vec(sum(ensure_mat(X); dims = 2))
 
 """
     rowvar(X)
-Compute the (uncorrected) standard deviation of each row of `X`.
+Compute the row-variances (uncorrected) of a matrix.
 * `X` : Data (n, p).
 
 Return a vector.
@@ -61,7 +61,7 @@ rowvar(X)
 """ 
 rowvar(X) = vec(Statistics.var(ensure_mat(X); dims = 2, corrected = false))
 
-####### SKIP MISSING
+####### Functions with skip missing data
 
 function rowmeanskip(X)
     X = ensure_mat(X)

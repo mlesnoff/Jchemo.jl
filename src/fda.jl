@@ -86,8 +86,8 @@ end
 function fda!(X::Matrix, y; nlv, lb = 0, scal::Bool = false)
     n, p = size(X)
     xmeans = colmean(X)
-    xscales = ones(p)
-    if scal 
+    xscales = ones(eltype(X), p)
+    if par.scal 
         xscales .= colstd(X)
         cscale!(X, xmeans, xscales)
     else

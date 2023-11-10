@@ -1,8 +1,8 @@
 """
     mbplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", scal::Bool = false)
+        bscal = :none, scal::Bool = false)
     mbplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", scal::Bool = false)
+        bscal = :none, scal::Bool = false)
 Multiblock PLSR (MBPLSR) - Fast version.
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
@@ -10,7 +10,7 @@ Multiblock PLSR (MBPLSR) - Fast version.
 * `weights` : Weights of the observations (rows). 
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `bscal` : Type of `Xbl` block scaling (`"none"`, `"frob"`).
+* `bscal` : Type of `Xbl` block scaling (`:none`, `:frob`).
     See functions `blockscal`.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` and 
     of `Y` is scaled by its uncorrected standard deviation 
@@ -37,7 +37,7 @@ Xbl = mblock(X, listbl)
 # "New" = first two rows of Xbl 
 Xbl_new = mblock(X[1:2, :], listbl)
 
-bscal = "none"
+bscal = :none
 nlv = 5
 fm = mbplsr(Xbl, y; nlv = nlv, bscal = bscal) ;
 pnames(fm)
@@ -50,7 +50,7 @@ summary(fm, Xbl)
 ```
 """
 function mbplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", scal::Bool = false)
+        bscal = :none, scal::Bool = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
     @inbounds for k = 1:nbl
@@ -61,7 +61,7 @@ function mbplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
 end
 
 function mbplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", scal::Bool = false)
+        bscal = :none, scal::Bool = false)
     nbl = length(Xbl)
     Y = ensure_mat(Y)
     q = nco(Y)
@@ -71,7 +71,7 @@ function mbplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
     Threads.@threads for k = 1:nbl
         xmeans[k] = colmean(Xbl[k], weights) 
         xscales[k] = ones(nco(Xbl[k]))
-        if scal 
+        if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
             Xbl[k] .= cscale(Xbl[k], xmeans[k], xscales[k])
         else
@@ -79,15 +79,15 @@ function mbplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
         end
     end
     ymeans = colmean(Y, weights)
-    yscales = ones(q)
-    if scal 
+    yscales = ones(eltype(Y), q)
+    if par.scal 
         yscales .= colstd(Y, weights)
         cscale!(Y, ymeans, yscales)
     else
         center!(Y, ymeans)
     end
-    bscal == "none" ? bscales = ones(nbl) : nothing
-    if bscal == "frob"
+    bscal == :none ? bscales = ones(nbl) : nothing
+    if bscal == :frob
         res = blockscal_frob(Xbl, weights) 
         bscales = res.bscales
         Xbl = res.X

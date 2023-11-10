@@ -68,8 +68,8 @@ function nsc(X, y, weights = ones(nro(X));
     X = ensure_mat(X)
     n, p = size(X)
     weights = mweight(weights)
-    xscales = ones(p)
-    if scal 
+    xscales = ones(eltype(X), p)
+    if par.scal 
         xscales .= colstd(X, weights)
         X = scale(X, xscales)
     end

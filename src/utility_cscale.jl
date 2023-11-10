@@ -13,11 +13,9 @@ xmeans = colmean(X)
 center(X, xmeans)
 ```
 """ 
-center(X, v) = X .- vec(v)'
+center(X, v) = X .- vec(v)
 
-function center!(X::AbstractMatrix, v)
-    X .-= vec(v)'
-end
+center!(X::AbstractMatrix, v) = X .-= vec(v)'
 
 """
     scale(X, v)
@@ -34,9 +32,7 @@ scale(X, colstd(X))
 """ 
 scale(X, v) = X ./ vec(v)'
 
-function scale!(X::AbstractMatrix, v)
-    X ./= vec(v)'
-end
+scale!(X::AbstractMatrix, v) = X ./= vec(v)'
 
 """
     cscale(X, u, v)

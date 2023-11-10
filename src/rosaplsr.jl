@@ -74,7 +74,7 @@ function rosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
         p[k] = nco(Xbl[k])
         xmeans[k] = colmean(Xbl[k], weights) 
         xscales[k] = ones(nco(Xbl[k]))
-        if scal 
+        if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
             Xbl[k] .= cscale(Xbl[k], xmeans[k], xscales[k])
         else
@@ -82,8 +82,8 @@ function rosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
         end
     end
     ymeans = colmean(Y, weights)
-    yscales = ones(q)
-    if scal 
+    yscales = ones(eltype(Y), q)
+    if par.scal 
         yscales .= colstd(Y, weights)
         cscale!(Y, ymeans, yscales)
     else
@@ -232,7 +232,7 @@ function predict(object::Rosaplsr, Xbl; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     X = reduce(hcat, Xbl)
-    pred = list(le_nlv, Matrix{Float64})
+    pred = list(le_nlv, Matrix{eltype(X)})
     @inbounds for i = 1:le_nlv
         z = coef(object; nlv = nlv[i])
         pred[i] = z.int .+ X * z.B

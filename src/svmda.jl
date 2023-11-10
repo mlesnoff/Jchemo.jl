@@ -1,5 +1,5 @@
 """
-    svmda(X, y; kern = "krbf", 
+    svmda(X, y; kern = :krbf, 
         gamma = 1. / size(X, 2), degree = 3, coef0 = 0., 
         cost = 1., epsilon = .1,
         scal = false)
@@ -7,7 +7,7 @@ Support vector machine for discrimination "C-SVC" (SVM-DA).
 * `X` : X-data.
 * `y` : y-data (univariate).
 * `kern` : Type of kernel used to compute the Gram matrices.
-    Possible values are "krbf", "kpol", "klin" or "ktanh". 
+    Possible values are :krbf, :kpol, :klin or "ktanh". 
 * `gamma` : See below.
 * `degree` : See below.
 * `coef0` : See below.
@@ -17,10 +17,10 @@ Support vector machine for discrimination "C-SVC" (SVM-DA).
     is scaled by its uncorrected standard deviation.
 
 Kernel types : 
-* "krbf" -- radial basis function: exp(-gamma * |x - y|^2)
-* "kpol" -- polynomial: (gamma * x' * y + coef0)^degree
+* :krbf -- radial basis function: exp(-gamma * |x - y|^2)
+* :kpol -- polynomial: (gamma * x' * y + coef0)^degree
 * "klin* -- linear: x' * y
-* "ktan" -- sigmoid: tanh(gamma * x' * y + coef0)
+* :ktan -- sigmoid: tanh(gamma * x' * y + coef0)
 
 The function uses package LIBSVM.jl (https://github.com/JuliaML/LIBSVM.jl) 
 that is an interface to library LIBSVM (Chang & Li 2001).
@@ -72,15 +72,15 @@ res.pred
 err(res.pred, ytest)
 ```
 """ 
-function svmda(X, y; kern = "krbf", 
+function svmda(X, y; kern = :krbf, 
         gamma = 1. / size(X, 2), degree = 3, coef0 = 0., 
         cost = 1., epsilon = .1,
         scal = false)
     X = ensure_mat(X)
     y = vec(y)
     p = nco(X)
-    xscales = ones(p)
-    if scal 
+    xscales = ones(eltype(X), p)
+    if par.scal 
         xscales .= colstd(X)
         X = scale(X, xscales)
     end
@@ -88,11 +88,11 @@ function svmda(X, y; kern = "krbf",
     gamma = Float64(gamma) ; degree = Int64(degree) ; coef0  = Float64(coef0) ; 
     cost  = Float64(cost)
     epsilon = Float64(epsilon)
-    if kern == "krbf"
+    if kern == :krbf
         fkern = LIBSVM.Kernel.RadialBasis
-    elseif kern == "kpol"
+    elseif kern == :kpol
         fkern = LIBSVM.Kernel.Polynomial
-    elseif kern == "klin"
+    elseif kern == :klin
         fkern = LIBSVM.Kernel.Linear
     elseif kern == "ktanh"
         fkern = LIBSVM.Kernel.Sigmoid

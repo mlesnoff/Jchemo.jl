@@ -1,12 +1,12 @@
 """
-    lwmlr(X, Y; metric = "eucl", h, k, 
+    lwmlr(X, Y; metric = :eucl, h, k, 
         tol = 1e-4, verbose = false)
 k-Nearest-Neighbours locally weighted multiple linear regression (kNN-LWMLR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `metric` : Type of dissimilarity used to select the neighbors and compute
-    the weights. Possible values are "eucl" (default; Euclidean distance) 
-    and "mahal" (Mahalanobis distance).
+    the weights. Possible values are :eucl (default; Euclidean distance) 
+    and :mah (Mahalanobis distance).
 * `h` : A scalar defining the shape of the weight function. Lower is h, 
     sharper is the function. See function `wdist`.
 * `k` : The number of nearest neighbors to select for each observation to predict.
@@ -40,7 +40,7 @@ zfm = pcasvd(Xtrain; nlv = nlv) ;
 Ttrain = zfm.T 
 Ttest = Jchemo.transform(zfm, Xtest)
 
-fm = lwmlr(Ttrain, ytrain; metric = "mahal",
+fm = lwmlr(Ttrain, ytrain; metric = :mah,
     h = 2, k = 100) ;
 pred = Jchemo.predict(fm, Ttest).pred
 println(rmsep(pred, ytest))
@@ -55,18 +55,18 @@ x[x .== 0] .= 1e-5
 n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
-fm = lwmlr(x, y; metric = "eucl", h = 1, k = 20) ;
+fm = lwmlr(x, y; metric = :eucl, h = 1, k = 20) ;
 pred = Jchemo.predict(fm, x).pred 
 f = Figure(resolution = (700, 300))
 ax = Axis(f[1, 1])
 scatter!(x, y) 
 lines!(ax, x, zy, label = "True model")
-lines!(ax, x, vec(pred), label = "Fitted model")
+lines!(ax, x, vec(pred), label = "ted model")
 f[1, 2] = Legend(f, ax, framevisible = false)
 f
 ```
 """ 
-function lwmlr(X, Y; metric = "eucl", 
+function lwmlr(X, Y; metric = :eucl, 
         h, k, tol = 1e-4, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)

@@ -1,6 +1,6 @@
 """
     lwplsqda(X, y; nlvdis, metric, h, k, nlv, 
-        alpha = 0, prior = "unif", tol = 1e-4, scal::Bool = false, 
+        alpha = 0, prior = :unif, tol = 1e-4, scal::Bool = false, 
         verbose = false)
 kNN-LWPLS-QDA (with continuum).
 * `X` : X-data.
@@ -9,8 +9,8 @@ kNN-LWPLS-QDA (with continuum).
     global PLS used for the dimension reduction before 
     calculating the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.
 * `metric` : Type of dissimilarity used to select the neighbors. 
-    Possible values are "eucl" (default; Euclidean distance) 
-    and "mahal" (Mahalanobis distance).
+    Possible values are :eucl (default; Euclidean distance) 
+    and :mah (Mahalanobis distance).
 * `h` : A scalar defining the shape of the weight function. Lower is h, 
     sharper is the function. See function `wdist`.
 * `k` : The number of nearest neighbors to select for each observation to predict.
@@ -54,7 +54,7 @@ ytest = Y.typ[s]
 tab(ytrain)
 tab(ytest)
 
-nlvdis = 25 ; metric = "mahal"
+nlvdis = 25 ; metric = :mah
 h = 2 ; k = 1000
 nlv = 15
 fm = lwplsqda(Xtrain, ytrain;
@@ -74,7 +74,7 @@ res.listw
 ```
 """ 
 function lwplsqda(X, y; nlvdis, metric, h, k, nlv, 
-        alpha = 0, prior = "unif", tol = 1e-4, scal::Bool = false, 
+        alpha = 0, prior = :unif, tol = 1e-4, scal::Bool = false, 
         verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)

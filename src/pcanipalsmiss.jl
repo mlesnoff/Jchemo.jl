@@ -76,8 +76,8 @@ function pcanipalsmiss!(X::Matrix, weights = ones(nro(X)); nlv,
     weights = mweight(weights)
     xmeans = colmeanskip(X, weights) 
     #xmeans = colmeanskip(X)
-    xscales = ones(p)
-    if scal 
+    xscales = ones(eltype(X), p)
+    if par.scal 
         xscales .= colstdskip(X, weights)
         #xscales .= colstdskip(X)
         cscale!(X, xmeans, xscales)

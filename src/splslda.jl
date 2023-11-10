@@ -1,23 +1,23 @@
 """
     splslda(X, y, weights = ones(nro(X)); nlv, 
-        meth = "soft", delta = 0, nvar = nco(X), 
-        prior = "unif", scal::Bool = false)
+        meth = :soft, delta = 0, nvar = nco(X), 
+        prior = :unif, scal::Bool = false)
 Sparse PLS-LDA.
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights of the observations. Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `meth`: Method used for the thresholding. Possible values
-    are "soft" (default), "mix" or "hard". See thereafter.
+    are :soft (default), :mix or :hard. See thereafter.
 * `delta` : Range for the thresholding (see function `soft`)
     on the loadings standardized to their maximal absolute value.
-    Must ∈ [0, 1]. Only used if `meth = "soft".
+    Must ∈ [0, 1]. Only used if `meth = :soft.
 * `nvar` : Nb. variables (`X`-columns) selected for each 
     LV. Can be a single integer (same nb. variables
     for each LV), or a vector of length `nlv`.
-    Only used if `meth = "mix"` or `meth = "hard"`. 
+    Only used if `meth = :mix` or `meth = :hard`. 
 * `prior` : Type of prior probabilities for class membership.
-    Possible values are: "unif" (uniform; default), "prop" (proportional).
+    Possible values are: :unif (uniform; default), :prop (proportional).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
@@ -50,9 +50,9 @@ delta = .8
 nvar = 2
 scal = false
 #scal = true
-meth = "soft"
-#meth = "mix"
-#meth = "hard"
+meth = :soft
+#meth = :mix
+#meth = :hard
 fm = splslda(Xtrain, ytrain; nlv = nlv,
     meth = meth, delta = delta, nvar = nvar,
     scal = scal) ;
@@ -67,7 +67,7 @@ err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
 nlv = 1:30 
-pars = mpar(meth = ["mix"], nvar = [1; 5; 10; 20], 
+pars = mpar(meth = [:mix], nvar = [1; 5; 10; 20], 
     scal = [false])
 res = gridscorelv(Xtrain, ytrain, Xtest, ytest; 
     score = err, fun = splslda, pars = pars, nlv = nlv)
@@ -77,8 +77,8 @@ plotgrid(res.nlv, res.y1, typ; step = 2,
 ```
 """ 
 function splslda(X, y, weights = ones(nro(X)); nlv, 
-        meth = "soft", delta = 0, nvar = nco(X), 
-        prior = "unif", scal::Bool = false)
+        meth = :soft, delta = 0, nvar = nco(X), 
+        prior = :unif, scal::Bool = false)
     res = dummy(y)
     ni = tab(y).vals
     fm_pls = splskern(X, res.Y, weights; nlv = nlv, 

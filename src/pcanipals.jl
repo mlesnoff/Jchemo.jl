@@ -57,8 +57,8 @@ function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv,
     nlv = min(nlv, n, p)
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
-    xscales = ones(p)
-    if scal 
+    xscales = ones(eltype(X), p)
+    if par.scal 
         xscales .= colstd(X, weights)
         cscale!(X, xmeans, xscales)
     else

@@ -5,7 +5,7 @@ Return a tuple with all the combinations of the parameter values defined in kwar
 
 ## Examples
 ```julia
-nlvdis = 25 ; metric = ["mahal"] 
+nlvdis = 25 ; metric = [:mah] 
 h = [1 ; 2 ; Inf] ; k = [500 ; 1000] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k) 
 length(pars[1])

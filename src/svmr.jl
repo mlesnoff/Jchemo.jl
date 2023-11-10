@@ -1,12 +1,12 @@
 """
-    svmr(X, y; kern = "rbf", 
+    svmr(X, y; kern = :krbf, 
         gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1., 
         epsilon = .1, scal = false)
 Support vector machine for regression (Epsilon-SVR).
 * `X` : X-data.
 * `y` : y-data (univariate).
 * `kern` : Type of kernel used to compute the Gram matrices.
-    Possible values are "krbf", "kpol", "klin" or "ktanh". 
+    Possible values are :krbf, :kpol, :klin or "ktanh". 
 * `gamma` : See below.
 * `degree` : See below.
 * `coef0` : See below.
@@ -16,10 +16,10 @@ Support vector machine for regression (Epsilon-SVR).
     is scaled by its uncorrected standard deviation.
 
 Kernel types : 
-* "krbf" -- radial basis function: exp(-gamma * |x - y|^2)
-* "kpol" -- polynomial: (gamma * x' * y + coef0)^degree
+* :krbf -- radial basis function: exp(-gamma * |x - y|^2)
+* :kpol -- polynomial: (gamma * x' * y + coef0)^degree
 * "klin* -- linear: x' * y
-* "ktan" -- sigmoid: tanh(gamma * x' * y + coef0)
+* :ktan -- sigmoid: tanh(gamma * x' * y + coef0)
 
 The function uses LIBSVM.jl (https://github.com/JuliaML/LIBSVM.jl) 
 that is an interface to library LIBSVM (Chang & Li 2001).
@@ -60,7 +60,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 gamma = .1 ; cost = 1000 ; epsilon = 1
-fm = svmr(Xtrain, ytrain; kern = "krbf", 
+fm = svmr(Xtrain, ytrain; kern = :krbf, 
         gamma = gamma, cost = cost, epsilon = epsilon) ;
 pnames(fm)
 
@@ -81,41 +81,37 @@ fm = svmr(x, y; gamma = .1) ;
 pred = Jchemo.predict(fm, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
-lines!(ax, x, vec(pred), label = "Fitted model")
+lines!(ax, x, vec(pred), label = "ted model")
 axislegend("Method")
 f
 ```
 """ 
-function svmr(X, y; kern = "krbf", 
-        gamma = 1. / size(X, 2), degree = 3, coef0 = 0., 
-        cost = 1., epsilon = .1, scal = false)
+function svmr(X, y, args...; par = Par())
     X = ensure_mat(X)
     y = vec(y)
     p = nco(X)
-    xscales = ones(p)
-    if scal 
+    xscales = ones(eltype(X), p)
+    if par.scal 
         xscales .= colstd(X)
         X = scale(X, xscales)
     end
-    gamma = Float64(gamma) ; degree = Int64(degree) ; coef0  = Float64(coef0) ; 
-    cost  = Float64(cost) ; epsilon = Float64(epsilon) ; 
-    if kern == "krbf"
+    if par.kern == :krbf
         fkern = LIBSVM.Kernel.RadialBasis
-    elseif kern == "kpol"
+    elseif par.kern == :kpol
         fkern = LIBSVM.Kernel.Polynomial
-    elseif kern == "klin"
+    elseif par.kern == :klin
         fkern = LIBSVM.Kernel.Linear
-    elseif kern == "ktanh"
+    elseif par.kern == :ktanh
         fkern = LIBSVM.Kernel.Sigmoid
     end
     nt = 0 
     fm = svmtrain(X', y;
         svmtype = EpsilonSVR, 
         kernel = fkern,
-        gamma =  gamma,
-        coef0 = coef0,
-        degree = degree,
-        cost = cost, epsilon = epsilon,
+        gamma =  par.gamma,
+        coef0 = par.coef0,
+        degree = par.degree,
+        cost = par.cost, epsilon = par.epsilon,
         nt = nt) 
     Svmr(fm, xscales)
 end
@@ -130,7 +126,7 @@ function predict(object::Svmr, X)
     X = ensure_mat(X)
     pred = svmpredict(object.fm, scale(X, object.xscales)')[1]
     n = length(pred)
-    pred = reshape(pred, n, 1)
+    pred = reshape(convert.(eltype(X), pred), n, 1)
     (pred = pred,)
 end
 

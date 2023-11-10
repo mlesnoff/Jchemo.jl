@@ -88,23 +88,28 @@ lines(z.nlv, z.cumpvar,
     axis = (xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance"))
 ```
 """ 
-function plskern(X, Y, weights = ones(nro(X)); nlv, 
-        scal::Bool = false)
+function plskern(X, Y; par = Par())
+    weights = mweight(ones(eltype(X), nro(X)))
     plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        nlv = nlv, scal = scal)
+        par = par)
 end
 
-function plskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
-        nlv, scal::Bool = false)
+function plskern(X, Y, weights::Vector{Q}; 
+        par = Par()) where {Q <: AbstractFloat}
+    plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
+        par = par)
+end
+
+function plskern!(X::Matrix, Y::Matrix, weights::Vector{Q}; 
+            par = Par()) where {Q <: AbstractFloat} 
     n, p = size(X)
     q = nco(Y)
-    nlv = min(n, p, nlv)
-    weights = mweight(weights)
+    nlv = min(n, p, par.nlv)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
-    xscales = ones(p)
-    yscales = ones(q)
-    if scal 
+    xscales = ones(eltype(X), p)
+    yscales = ones(eltype(Y), q)
+    if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
         cscale!(X, xmeans, xscales)
@@ -169,7 +174,8 @@ Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transform(object::Union{Plsr, Splsr}, X; nlv = nothing)
+function transform(object::Union{Plsr, Splsr}, 
+        X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
@@ -189,7 +195,8 @@ If X is (n, p) and Y is (n, q), the returned object `B` is a matrix (p, q).
 If `nlv` = 0, `B` is a matrix of zeros.
 The returned object `int` is the intercept.
 """ 
-function coef(object::Union{Plsr, Pcr, Covselr, Splsr}; nlv = nothing)
+function coef(object::Union{Plsr, Pcr, Covselr, Splsr}; 
+        nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     beta = vcol(object.C, 1:nlv)'
@@ -208,12 +215,13 @@ Compute Y-predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{Plsr, Pcr, Covselr, Splsr}, X; nlv = nothing)
+function predict(object::Union{Plsr, Pcr, Covselr, Splsr}, 
+        X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
-    pred = list(le_nlv, Matrix{Float64})
+    pred = list(le_nlv, Matrix{eltype(X)})
     @inbounds  for i = 1:le_nlv
         z = coef(object; nlv = nlv[i])
         pred[i] = z.int .+ X * z.B
@@ -228,7 +236,8 @@ Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
-function Base.summary(object::Union{Plsr, Covselr, Splsr}, X::Union{Vector, Matrix, DataFrame})
+function Base.summary(object::Union{Plsr, Covselr, Splsr}, 
+        X::Union{Vector, Matrix, DataFrame})
     X = ensure_mat(X)
     n, nlv = size(object.T)
     X = cscale(X, object.xmeans, object.xscales)

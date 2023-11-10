@@ -1,4 +1,4 @@
-module Jchemo  # Start-Module
+module Jchemo2  # Start-Module
 
 using Clustering
 using DataInterpolations
@@ -17,7 +17,12 @@ using SparseArrays
 using Statistics
 using StatsBase          # sample
 
-include("_structures.jl")
+include("_structures_param.jl")
+include("_structures_mod.jl")
+include("_structures_fit.jl")
+include("_syntax_embed.jl")
+
+###  Misc
 
 include("utility.jl")
 include("utility_colwise.jl")
@@ -198,6 +203,7 @@ include("wdist.jl")
 include("kernels.jl")
 
 export 
+    Par,
     ### Utilities
     aggstat,
     dupl, miss,

@@ -1,9 +1,9 @@
 """
     mbunif(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = "none", tau = 1e-8, wcov = false, deflat = "global", 
+        bscal = :none, tau = 1e-8, wcov = false, deflat = "global", 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     mbunif!(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = "none", tau = 1e-8, wcov = false, deflat = "global", 
+        bscal = :none, tau = 1e-8, wcov = false, deflat = "global", 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
 Unified multiblock analysis of Mangana et al. 2019.
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
@@ -11,7 +11,7 @@ Unified multiblock analysis of Mangana et al. 2019.
 * `weights` : Weights of the observations (rows). 
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-* `bscal` : Type of block scaling (`"none"`, `"frob"`, `"mfa"`). 
+* `bscal` : Type of block scaling (`:none`, `:frob`, `"mfa"`). 
     See functions `blockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `wcov` : If `false`, the global score is proportionnal to the sum of 
@@ -68,7 +68,7 @@ fm = mbunif(Xbl; nlv = 3,
 ```
 """
 function mbunif(Xbl, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", tau = 1e-8, wcov = false, deflat = "global",
+        bscal = :none, tau = 1e-8, wcov = false, deflat = "global",
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
@@ -81,7 +81,7 @@ function mbunif(Xbl, weights = ones(nro(Xbl[1])); nlv,
 end
 
 function mbunif!(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = "none", tau = 1e-8, wcov = false, deflat = "global", 
+        bscal = :none, tau = 1e-8, wcov = false, deflat = "global", 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     @assert tau >= 0 && tau <= 1 "tau must be in [0, 1]"
     nbl = length(Xbl)
@@ -95,15 +95,15 @@ function mbunif!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         p[k] = nco(Xbl[k])
         xmeans[k] = colmean(Xbl[k], weights) 
         xscales[k] = ones(nco(Xbl[k]))
-        if scal 
+        if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
             Xbl[k] = cscale(Xbl[k], xmeans[k], xscales[k])
         else
             Xbl[k] = center(Xbl[k], xmeans[k])
         end
     end
-    bscal == "none" ? bscales = ones(nbl) : nothing
-    if bscal == "frob"
+    bscal == :none ? bscales = ones(nbl) : nothing
+    if bscal == :frob
         res = blockscal_frob(Xbl, weights) 
         bscales = res.bscales
         Xbl = res.X

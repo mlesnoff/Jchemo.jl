@@ -1,14 +1,14 @@
 """ 
     plsravg(X, Y, weights = ones(nro(X)); nlv, 
-        typf = "unif", typw = "bisquare",
+        typf = :unif, typw = :bisquare,
         alpha = 0, K = 5, rep = 10, scal::Bool = false)
     plsravg!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
-        typf = "unif", typw = "bisquare", 
+        typf = :unif, typw = :bisquare, 
         alpha = 0, K = 5, rep = 10, scal::Bool = false)
 Averaging and stacking PLSR models with different numbers of 
     latent variables (LVs).
 * `X` : X-data (n, p).
-* `Y` : Y-data (n, q). Must be univariate (q = 1) if `typw` != "unif".
+* `Y` : Y-data (n, q). Must be univariate (q = 1) if `typw` != :unif.
 * `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
 * `nlv` : A character string such as "5:20" defining the range of the numbers of LVs 
     to consider ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
@@ -18,11 +18,11 @@ Averaging and stacking PLSR models with different numbers of
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
 
-For `typf` in {"aic", "bic", "cv"}
+For `typf` in {:aic, :bic, :cv}
 * `typw` : Type of weight function. 
-* `alpha` : Parameter of the weight function.
+* `alpha` : Pareter of the weight function.
 
-For `typf` = "stack"
+For `typf` = :stack
 * `K` : Nb. of folds segmenting the data in the (K-fold) CV.
 * `rep` : Nb. of repetitions of the K-fold CV. 
 
@@ -35,12 +35,12 @@ a new observation is the average (eventually weighted) or stacking of the predic
 returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 
 Possible values of `typf` are: 
-* "unif" : Simple average.
-* "aic" : Weighted average based on AIC computed for each model.
-* "bic" : Weighted average based on BIC computed for each model.
-* "cv" : Weighted average based on RMSEP_CV computed for each model.
-* "shenk" : Weighted average using "Shenk et al." weights computed for each model.
-* "stack" : Linear stacking. A K-fold CV (eventually repeated) is done and 
+* :unif : Simple average.
+* :aic : Weighted average based on AIC computed for each model.
+* :bic : Weighted average based on BIC computed for each model.
+* :cv : Weighted average based on RMSEP_CV computed for each model.
+* :shenk : Weighted average using "Shenk et al." weights computed for each model.
+* :stack : Linear stacking. A K-fold CV (eventually repeated) is done and 
 the CV predictions are regressed (multiple linear model without intercept)
 on the observed response data.
 
@@ -97,7 +97,7 @@ plotxy(res.pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f   
 
 fm = plsravg(Xtrain, ytrain; nlv = nlv,
-    typf = "cv") ;
+    typf = :cv) ;
 res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
@@ -108,7 +108,7 @@ plotsp(predlv, 0:(nco(predlv) - 1); nsamp = 30).f
 ```
 """ 
 function plsravg(X, Y, weights = ones(nro(X)); nlv, 
-        typf = "unif", typw = "bisquare", 
+        typf = :unif, typw = :bisquare, 
         alpha = 0, K = 5, rep = 10, scal::Bool = false)
     plsravg!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
         typf = typf, typw = typw, 
@@ -116,27 +116,27 @@ function plsravg(X, Y, weights = ones(nro(X)); nlv,
 end
 
 function plsravg!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
-        typf = "unif", typw = "bisquare", 
+        typf = :unif, typw = :bisquare, 
         alpha = 0, K = 5, rep = 10, scal::Bool = false)
-    if typf == "unif"
+    if typf == :unif
         fm = plsravg_unif!(X, Y, weights; nlv = nlv,
             scal = scal)
-    elseif typf == "aic"
+    elseif typf == :aic
         fm = plsravg_aic!(X, Y, weights; nlv = nlv,
             bic = false, typw = typw, alpha = alpha,
             scal = scal)
-    elseif typf == "bic"
+    elseif typf == :bic
         fm = plsravg_aic!(X, Y, weights; nlv = nlv,
             bic = true, typw = typw, alpha = alpha,
             scal = scal)
-    elseif typf == "cv"
+    elseif typf == :cv
         fm = plsravg_cv!(X, Y, weights; nlv = nlv,
             typw = typw, alpha = alpha, 
             scal = scal)
-    elseif typf == "shenk"
+    elseif typf == :shenk
         fm = plsravg_shenk!(X, Y, weights; nlv = nlv,
             scal = scal)
-    elseif typf == "stack"
+    elseif typf == :stack
         fm = plsrstack!(X, Y, weights; nlv = nlv, 
             K = K, rep = rep, 
             scal = scal) 

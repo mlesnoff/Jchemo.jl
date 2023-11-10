@@ -1,12 +1,12 @@
 """
-    lwmlrda(X, y; metric = "eucl", h, k, 
+    lwmlrda(X, y; metric = :eucl, h, k, 
         tol = 1e-4, verbose = false)
 k-Nearest-Neighbours locally weighted MLR-based discrimination (kNN-LWMLR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership.
 * `metric` : Type of dissimilarity used to select the neighbors and compute
-    the weights. Possible values are "eucl" (default; Euclidean distance) 
-    and "mahal" (Mahalanobis distance).
+    the weights. Possible values are :eucl (default; Euclidean distance) 
+    and :mah (Mahalanobis distance).
 * `h` : A scalar defining the shape of the weight function. Lower is h, 
     sharper is the function. See function `wdist`.
 * `k` : The number of nearest neighbors to select for each observation to predict.
@@ -41,7 +41,7 @@ zfm = pcasvd(Xtrain; nlv = nlv) ;
 Ttrain = zfm.T 
 Ttest = Jchemo.transform(zfm, Xtest)
 
-metric = "mahal"
+metric = :mah
 h = 2 ; k = 100
 fm = lwmlrda(Ttrain, ytrain;
     metric = metric, h = h, k = k) ;
@@ -54,7 +54,7 @@ res.listd
 res.listw
 ```
 """ 
-function lwmlrda(X, y; metric = "eucl", h, k, 
+function lwmlrda(X, y; metric = :eucl, h, k, 
         tol = 1e-4, verbose = false)
     X = ensure_mat(X)
     y = ensure_mat(y)

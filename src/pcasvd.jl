@@ -59,20 +59,23 @@ res.coord_var
 res.cor_circle
 ```
 """ 
-function pcasvd(X, weights = ones(nro(X)); nlv, 
-        scal::Bool = false)
-    pcasvd!(copy(ensure_mat(X)), weights; nlv = nlv, 
-        scal = scal)
+function pcasvd(X; par = Par())
+    weights = mweight(ones(eltype(X), nro(X)))
+    pcasvd!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcasvd!(X::Matrix, weights = ones(nro(X)); nlv, 
-        scal::Bool = false)
+function pcasvd(X, weights::Vector{Q}; 
+        par = Par()) where {Q <: AbstractFloat}
+    pcasvd!(copy(ensure_mat(X)), weights; par)
+end
+
+function pcasvd!(X::Matrix, weights::Vector{Q}; 
+        par = Par()) where {Q <: AbstractFloat}
     n, p = size(X)
-    nlv = min(nlv, n, p)
-    weights = mweight(weights)
+    nlv = min(par.nlv, n, p)
     xmeans = colmean(X, weights)
-    xscales = ones(p)
-    if scal 
+    xscales = ones(eltype(X), p)
+    if par.scal 
         xscales .= colstd(X, weights)
         cscale!(X, xmeans, xscales)
     else

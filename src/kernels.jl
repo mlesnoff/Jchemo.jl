@@ -23,9 +23,10 @@ Y = rand(2, 3)
 krbf(X, Y)
 ```
 """ 
-function krbf(X, Y; gamma = 1)
+function krbf(X, Y; par = Par())
     X = ensure_mat(X)
     Y = ensure_mat(Y)
+    gamma = convert(eltype(X), par.gamma)
     exp.(-gamma * euclsq(X, Y))
 end
 
@@ -56,13 +57,15 @@ Y = rand(2, 3)
 kpol(X, Y)
 ```
 """ 
-function kpol(X, Y; degree = 1, gamma = 1, coef0 = 0)
+function kpol(X, Y; par = Par())
     X = ensure_mat(X)
     Y = ensure_mat(Y)
+    gamma = convert(eltype(X), par.gamma)
+    coef0 = convert(eltype(X), par.coef0)
     K = gamma * X * Y' .+ coef0
-    if degree > 1
+    if par.degree > 1
         zK = copy(K)
-        @inbounds for i = 1:(degree - 1)
+        @inbounds for i = 1:(par.degree - 1)
             K .= K .* zK
         end
     end

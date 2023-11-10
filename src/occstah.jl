@@ -1,13 +1,13 @@
 """
-    occstah(X; a = 2000, typc = "mad", cri = 3, 
+    occstah(X; a = 2000, typc = :mad, cri = 3, 
         alpha = .025, scal = true, kwargs...)
 One-class classification using the Stahel-Donoho outlierness.
 
 * `X` : X-data (training).
 * `a` : Nb. dimensions simulated for the projection-pursuit method.
-* `typc` : Type of cutoff ("mad" or "q"). See Thereafter.
-* `cri` : When `typc = "mad"`, a constant. See thereafter.
-* `alpha` : When `typc = "q"`, a risk-I level. See thereafter.
+* `typc` : Type of cutoff (:mad or :q). See Thereafter.
+* `cri` : When `typc = :mad`, a constant. See thereafter.
+* `alpha` : When `typc = :q`, a risk-I level. See thereafter.
 * `scal` : Boolean. If `true`, matrix `X` is centred (by median) 
     and scaled (by MAD) before computing the outlierness.
 * `kwargs` : Optional arguments to pass in function `kde` of 
@@ -18,7 +18,7 @@ is the Stahel-Donoho outlierness (see `?stah`).
 
 See `?occsd` for details on outputs, and examples. 
 """ 
-function occstah(X; a = 2000, typc = "mad", cri = 3, 
+function occstah(X; a = 2000, typc = :mad, cri = 3, 
         alpha = .025, scal = true, kwargs...) 
     res = Jchemo.stah(X, a; scal = scal)
     d = res.d
@@ -29,10 +29,10 @@ function occstah(X; a = 2000, typc = "mad", cri = 3,
     #g = mu / nu
     #dist = Distributions.Chisq(nu)
     #pval = Distributions.ccdf.(dist, d2 / g)
-    #typc == "par" ? cutoff = sqrt(g * quantile(dist, 1 - alpha)) : nothing
+    #typc == :par ? cutoff = sqrt(g * quantile(dist, 1 - alpha)) : nothing
     #typc == "npar" ? cutoff = median(d) + cri * mad(d) : nothing  
-    typc == "mad" ? cutoff = median(d) + cri * mad(d) : nothing
-    typc == "q" ? cutoff = quantile(d, 1 - alpha) : nothing
+    typc == :mad ? cutoff = median(d) + cri * mad(d) : nothing
+    typc == :q ? cutoff = quantile(d, 1 - alpha) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)

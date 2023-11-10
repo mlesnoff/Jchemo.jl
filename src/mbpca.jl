@@ -1,9 +1,9 @@
 """
     mbpca(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
+        bscal = :none, tol = sqrt(eps(1.)), maxit = 200,
         scal::Bool = false)
     mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
+        bscal = :none, tol = sqrt(eps(1.)), maxit = 200,
         scal::Bool = false)
 Consensus principal components analysis (CPCA = MBPCA).
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
@@ -11,7 +11,7 @@ Consensus principal components analysis (CPCA = MBPCA).
 * `weights` : Weights of the observations (rows). 
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-* `bscal` : Type of block scaling (`"none"`, `"frob"`, `"mfa"`). 
+* `bscal` : Type of block scaling (`:none`, `:frob`, `"mfa"`). 
     See functions `blockscal`.
 * `tol` : Tolerance value for convergence.
 * `maxit` : Maximum number of iterations.
@@ -66,7 +66,7 @@ Xbl = mblock(X, listbl)
 # "New" = first two rows of Xbl 
 Xbl_new = mblock(X[1:2, :], listbl)
 
-bscal = "frob"
+bscal = :frob
 fm = mbpca(Xbl; nlv = 4, bscal = bscal) ;
 fm.U
 fm.T
@@ -78,7 +78,7 @@ fm.lb
 rowsum(fm.lb)
 fm.mu
 res.explvarx
-res.explX # = fm.lb if bscal = "frob"
+res.explX # = fm.lb if bscal = :frob
 rowsum(Matrix(res.explX))
 res.contr_block
 res.corx2t 
@@ -87,7 +87,7 @@ res.rv
 ```
 """
 function mbpca(Xbl, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
+        bscal = :none, tol = sqrt(eps(1.)), maxit = 200,
         scal::Bool = false)
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Float64})
@@ -100,7 +100,7 @@ function mbpca(Xbl, weights = ones(nro(Xbl[1])); nlv,
 end
 
 function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = "none", tol = sqrt(eps(1.)), maxit = 200,
+        bscal = :none, tol = sqrt(eps(1.)), maxit = 200,
         scal::Bool = false)
     nbl = length(Xbl)
     n = nro(Xbl[1])
@@ -113,15 +113,15 @@ function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         p[k] = nco(Xbl[k])
         xmeans[k] = colmean(Xbl[k], weights) 
         xscales[k] = ones(nco(Xbl[k]))
-        if scal 
+        if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
             Xbl[k] = cscale(Xbl[k], xmeans[k], xscales[k])
         else
             Xbl[k] = center(Xbl[k], xmeans[k])
         end
     end
-    bscal == "none" ? bscales = ones(nbl) : nothing
-    if bscal == "frob"
+    bscal == :none ? bscales = ones(nbl) : nothing
+    if bscal == :frob
         res = blockscal_frob(Xbl, weights) 
         bscales = res.bscales
         Xbl = res.X
@@ -263,7 +263,7 @@ function Base.summary(object::Mbpca, Xbl)
     z = scale(object.lb, colsum(object.lb))
     contr_block = DataFrame(z, string.("lv", 1:nlv))
     # Proportion of inertia explained for each block (explained.X)
-    # = object.lb if bscal = "frob" 
+    # = object.lb if bscal = :frob 
     z = scale((object.lb)', sstot)'
     explX = DataFrame(z, string.("lv", 1:nlv))
     # Correlation between the original variables and the global scores (globalcor)

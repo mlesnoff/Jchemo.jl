@@ -1,11 +1,11 @@
 """
-    kdeda(X, y; prior = "unif", h = nothing, a = 1)
+    kdeda(X, y; prior = :unif, h = nothing, a = 1)
 Discriminant analysis using non-parametric kernel Gaussian 
     density estimation (KDE-DA).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `prior` : Type of prior probabilities for class membership.
-    Possible values are: "unif" (uniform; default), "prop" (proportional).
+    Possible values are: :unif (uniform; default), :prop (proportional).
 * `h` : See `?dmkern`.
 * `h` : See `?dmkern`.
 
@@ -35,8 +35,8 @@ ytest = rmrow(y, s)
 tab(ytrain)
 tab(ytest)
 
-prior = "unif"
-#prior = "prop"
+prior = :unif
+#prior = :prop
 fm = kdeda(Xtrain, ytrain; prior = prior) ;
 #fm = kdeda(Xtrain, ytrain; prior = prior, a = .5) ;
 #fm = kdeda(Xtrain, ytrain; prior = prior, h = .1) ;
@@ -52,14 +52,14 @@ err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
 """ 
-function kdeda(X, y; prior = "unif", h = nothing, a = 1)
+function kdeda(X, y; prior = :unif, h = nothing, a = 1)
     X = ensure_mat(X)
     lev = mlev(y)
     nlev = length(lev)
     ni = tab(y).vals
-    if isequal(prior, "unif")
+    if isequal(prior, :unif)
         wprior = ones(nlev) / nlev
-    elseif isequal(prior, "prop")
+    elseif isequal(prior, :prop)
         wprior = mweight(ni)
     end
     fm = list(nlev)

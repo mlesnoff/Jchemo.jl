@@ -1,6 +1,6 @@
 """
     nscda(X, y, weights = ones(nro(X)); delta = .5, 
-        prior = "unif", scal::Bool = false)
+        prior = :unif, scal::Bool = false)
 Discrimination by nearest shrunken centroids (NSC).
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -9,7 +9,7 @@ Discrimination by nearest shrunken centroids (NSC).
 * `delta` : Threshold value (>= 0) for function `soft`
     (soft thresholding). 
 * `prior` : Type of prior probabilities for class membership.
-    Possible values are: "unif" (uniform; default), "prop" (proportional).
+    Possible values are: :unif (uniform; default), :prop (proportional).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
@@ -54,7 +54,7 @@ ntest = nro(Xtest)
 freqtable(ytrain, Ytrain.lab)
 
 delta = 4.34
-prior = "prop"
+prior = :prop
 fm = nscda(Xtrain, ytrain; delta = delta, 
     prior = prior) ;
 res = Jchemo.predict(fm, Xtest) ; 
@@ -63,15 +63,15 @@ err(res.pred, ytest)
 ```
 """ 
 function nscda(X, y, weights = ones(nro(X)); delta, 
-        prior = "unif", scal::Bool = false)
+        prior = :unif, scal::Bool = false)
     weights = mweight(weights)
     fms = nsc(X, y, weights;
         delta = delta, scal = scal)
     poolstd_s0 = fms.poolstd .+ fms.s0
     nlev = length(fms.lev)
-    if isequal(prior, "unif")
+    if isequal(prior, :unif)
         wprior = ones(nlev) / nlev
-    elseif isequal(prior, "prop")
+    elseif isequal(prior, :prop)
         wprior = mweight(fms.ni)
     end
     Nscda(fms, poolstd_s0, wprior, fms.ni, 

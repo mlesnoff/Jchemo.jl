@@ -1,6 +1,6 @@
 """
     krrda(X, y, weights = ones(nro(X)); lb, 
-        scal = scal, kern = "krbf", kwargs...)
+        scal = scal, kern = :krbf, kwargs...)
 Discrimination based on kernel ridge regression (KRR-DA).
 * `X` : X-data.
 * `y` : Univariate class membership.
@@ -57,7 +57,7 @@ Jchemo.predict(fm, Xtest; lb = [.1; .01]).pred
 ```
 """ 
 function krrda(X, y, weights = ones(nro(X)); lb, 
-        kern = "krbf", scal::Bool = false, kwargs...)
+        kern = :krbf, scal::Bool = false, kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     fm = krr(X, res.Y, weights; lb = lb, 

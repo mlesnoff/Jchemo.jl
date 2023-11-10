@@ -80,8 +80,8 @@ function rr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
     sqrtw = sqrt.(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)
-    xscales = ones(p)
-    if scal 
+    xscales = ones(eltype(X), p)
+    if par.scal 
         xscales .= colstd(X, weights)
         cscale!(X, xmeans, xscales)
     else
@@ -138,8 +138,8 @@ function rrchol!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)
-    xscales = ones(p)
-    if scal 
+    xscales = ones(eltype(X), p)
+    if par.scal 
         xscales .= colstd(X, weights)
         cscale!(X, xmeans, xscales)
     else
@@ -184,7 +184,7 @@ function predict(object::Rr, X; lb = nothing)
     X = ensure_mat(X)
     isnothing(lb) ? lb = object.lb : nothing
     le_lb = length(lb)
-    pred = list(le_lb, Matrix{Float64})
+    pred = list(le_lb, Matrix{eltype(X)})
     @inbounds for i = 1:le_lb
         z = coef(object; lb = lb[i])
         pred[i] = z.int .+ X * z.B

@@ -40,7 +40,7 @@ function stah(X, a; scal = true)
     P = reshape(sample(0:1, p * a), p, a)
     mu_scal = zeros(p)
     s_scal = ones(p) 
-    if scal
+    if par.scal
         mu_scal .= vec(median(zX, dims = 1))
         s_scal .= colmad(zX)
         cscale!(zX, mu_scal, s_scal)

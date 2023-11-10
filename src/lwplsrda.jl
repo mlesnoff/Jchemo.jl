@@ -8,8 +8,8 @@ kNN-LWPLSR-DA.
     global PLS used for the dimension reduction before 
     calculating the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.
 * `metric` : Type of dissimilarity used to select the neighbors. 
-    Possible values are "eucl" (default; Euclidean distance) 
-    and "mahal" (Mahalanobis distance).
+    Possible values are :eucl (default; Euclidean distance) 
+    and :mah (Mahalanobis distance).
 * `h` : A scalar defining the shape of the weight function. Lower is h, 
     sharper is the function. See function `wdist`.
 * `k` : The number of nearest neighbors to select for each observation to predict.
@@ -44,7 +44,7 @@ ytest = Y.typ[s]
 tab(ytrain)
 tab(ytest)
 
-nlvdis = 25 ; metric = "mahal"
+nlvdis = 25 ; metric = :mah
 h = 2 ; k = 100
 nlv = 15
 fm = lwplsrda(Xtrain, ytrain;

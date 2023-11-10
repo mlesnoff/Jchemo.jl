@@ -1,6 +1,6 @@
 """ 
     mtest(Y::DataFrame, id = 1:nro(Y); ntest, 
-        typ = "rand")
+        typ = :rand)
 Split training/test sets for each column of a dataframe 
     (typically, response variables to predict) that can contain missing 
     values
@@ -11,8 +11,8 @@ Split training/test sets for each column of a dataframe
     of the considered column. If `ntest` is a single value, the same nb.  
     observations are selected for each column. Alternatively, `ntest` can 
     be a vector of length p. 
-* `typ` : Type of sampling for the test set: "rand" (default) = random sampling, 
-    "sys" = systematic sampling (regular grid) over the `Y` column.  
+* `typ` : Type of sampling for the test set: :rand (default) = random sampling, 
+    :sys = systematic sampling (regular grid) over the `Y` column.  
 
 ## Examples
 ```julia
@@ -24,7 +24,7 @@ Y = DataFrame(Y, :auto)
 
 mtest(Y; ntest = 3)
 
-mtest(Y; ntest = 3, typ = "sys")
+mtest(Y; ntest = 3, typ = :sys)
 
 ## Replicated splitting Train/Test
 rep = 10
@@ -42,8 +42,8 @@ ids[i].nam[j]
 ```
 """
 function mtest(Y::DataFrame, id = 1:nro(Y); ntest, 
-        typ = "rand")
-    @assert in(["rand"; "sys"])(typ) "Wrong value for argument 'typ'."
+        typ = :rand)
+    @assert in([:rand; :sys])(typ) "Wrong value for argument 'typ'."
     p = nco(Y)
     nam = names(Y)
     idtrain = list(p, Vector)  
@@ -52,13 +52,13 @@ function mtest(Y::DataFrame, id = 1:nro(Y); ntest,
     for i = 1:p
         y = Y[:, nam[i]]
         s_all = findall(ismissing.(y) .== 0)
-        if typ == "rand"   
+        if typ == :rand   
             ntot = length(s_all)
             ntrain = ntot - ntest[i]
             res = samprand(ntot, ntrain)
             idtrain[i] = sort(id[s_all[res.train]])
             idtest[i] = sort(id[s_all[res.test]])
-        elseif typ == "sys"
+        elseif typ == :sys
             res = sampsys(y[s_all], ntest[i])
             idtrain[i] = sort(id[s_all[res.test]])
             idtest[i] = sort(id[s_all[res.train]])  

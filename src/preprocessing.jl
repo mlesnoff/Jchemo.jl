@@ -26,7 +26,7 @@ plotsp(Xp[1:30, :], wl_num).f
 """ 
 function detrend(X; pol = 1)
     zX = copy(ensure_mat(X))
-    Jchemo.detrend!(zX; pol = pol)
+    detrend!(zX; pol = pol)
     zX
 end
 function detrend!(X::Matrix; pol = 1)

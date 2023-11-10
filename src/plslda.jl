@@ -1,6 +1,6 @@
 """
     plslda(X, y, weights = ones(nro(X)); nlv, 
-        prior = "unif", scal::Bool = false)
+        prior = :unif, scal::Bool = false)
 PLS-LDA.
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -8,7 +8,7 @@ PLS-LDA.
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `prior` : Type of prior probabilities for class membership.
-    Possible values are: "unif" (uniform; default), "prop" (proportional).
+    Possible values are: :unif (uniform; default), :prop (proportional).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
@@ -72,7 +72,7 @@ Jchemo.predict(fm, Xtest; nlv = 1:2).pred
 ```
 """ 
 function plslda(X, y, weights = ones(nro(X)); nlv, 
-        prior = "unif", scal::Bool = false)
+        prior = :unif, scal::Bool = false)
     res = dummy(y)
     ni = tab(y).vals
     fm_pls = plskern(X, res.Y, weights; nlv = nlv, scal = scal)

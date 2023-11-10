@@ -77,8 +77,8 @@ function treer_dt(X, y; n_subfeatures = 0,
     X = ensure_mat(X)
     y = Float64.(vec(y))
     p = nco(X)
-    xscales = ones(p)
-    if scal 
+    xscales = ones(eltype(X), p)
+    if par.scal 
         xscales .= colstd(X)
         X = scale(X, xscales)
     end
@@ -190,8 +190,8 @@ function rfr_dt(X, y; n_trees = 10,
     X = ensure_mat(X)
     y = Float64.(vec(y))
     p = nco(X)
-    xscales = ones(p)
-    if scal 
+    xscales = ones(eltype(X), p)
+    if par.scal 
         xscales .= colstd(X)
         X = scale(X, xscales)
     end

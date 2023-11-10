@@ -1,13 +1,13 @@
 """
     kpca(X, weights = ones(nro(X)); nlv, 
-        kern = "krbf", scal::Bool = false, kwargs...)
+        kern = :krbf, scal::Bool = false, kwargs...)
 Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
 
 * `X` : X-data.
 * `weights` : vector (n,).
 * `nlv` : Nb. principal components (PCs), or collection of nb. PCs, to consider. 
 * `kern` : Type of kernel used to compute the Gram matrices.
-    Possible values are "krbf" of "kpol" (see respective 
+    Possible values are :krbf of :kpol (see respective 
     functions `krbf` and `kpol`).
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
@@ -64,17 +64,17 @@ res.explvarx
 ```
 """ 
 function kpca(X, weights = ones(nro(X)); nlv, 
-        kern = "krbf", scal::Bool = false, kwargs...)
+        kern = :krbf, scal::Bool = false, kwargs...)
     X = ensure_mat(X)
     n, p = size(X)
     nlv = min(nlv, n)
     weights = mweight(weights) 
-    xscales = ones(p)
-    if scal 
+    xscales = ones(eltype(X), p)
+    if par.scal 
         xscales .= colstd(X, weights)
         X = scale(X, xscales)
     end
-    fkern = eval(Meta.parse(kern))  
+    fkern = eval(Meta.parse(String(par.kern)))  
     K = fkern(X, X; kwargs...)     # In the future: fkern!(K, X, X; kwargs...)
     D = Diagonal(weights)
     Kt = K'    
@@ -103,8 +103,8 @@ Compute PCs (scores T) from a fitted model and X-data.
 function transform(object::Kpca, X; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    fkern = eval(Meta.parse(object.kern))
-    K = fkern(scale(X, object.xscales), object.X; object.dots...)
+    fkern = eval(Meta.parse(String(object.par.kern)))
+    K = fkern(scale(X, object.xscales), object.X; par = object.par)
     DKt = object.D * K'
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')

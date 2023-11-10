@@ -1,5 +1,5 @@
 """
-    knnda(X, y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, tol = 1e-4)
+    knnda(X, y; nlvdis = 0, metric = :eucl, h = Inf, k = 1, tol = 1e-4)
 k-Nearest-Neighbours weighted discrimination (kNN-DA).
 * `X` : X-data.
 * `y` : y-data (class membership).
@@ -7,8 +7,8 @@ k-Nearest-Neighbours weighted discrimination (kNN-DA).
     global PLS used for the dimension reduction before 
     calculating the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.
 * `metric` : Type of dissimilarity used to select the neighbors. 
-    Possible values are "eucl" (default; Euclidean distance) 
-    and "mahal" (Mahalanobis distance).
+    Possible values are :eucl (default; Euclidean distance) 
+    and :mah (Mahalanobis distance).
 * `h` : A scalar defining the shape of the weight function. Lower is h, 
     sharper is the function. See function `wdist`.
 * `k` : The number of nearest neighbors to select for each observation to predict.
@@ -52,7 +52,7 @@ ytest = Y.typ[s]
 tab(ytrain)
 tab(ytest)
 
-nlvdis = 25 ; metric = "mahal"
+nlvdis = 25 ; metric = :mah
 h = 2 ; k = 10
 fm = knnda(Xtrain, ytrain;
     nlvdis = nlvdis, metric = metric,
@@ -70,7 +70,7 @@ res.listd
 res.listw
 ```
 """ 
-function knnda(X, y; nlvdis = 0, metric = "eucl", h = Inf, k = 1, 
+function knnda(X, y; nlvdis = 0, metric = :eucl, h = Inf, k = 1, 
         tol = 1e-4, scal::Bool = false)
     X = ensure_mat(X)
     y = ensure_mat(y)

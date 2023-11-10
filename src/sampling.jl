@@ -1,10 +1,10 @@
 """
-    sampks(X, k; metric = "eucl")
+    sampks(X, k; metric = :eucl)
 Split training/test sets by Kennard-Stone sampling.  
 * `X` : X-data (n, p).
 * `k` : Nb. observations to sample (output `train`). 
 * `metric` : Metric used for the distance computation.
-    Possible values: "eucl", "mahal".
+    Possible values: :eucl, :mah.
 
 Two outputs (indexes) are returned: 
 * `train` (`k`),
@@ -36,14 +36,14 @@ res.train
 res.test
 
 fm = pcasvd(X; nlv = 15) ;
-res = sampks(fm.T, k; metric = "mahal")
+res = sampks(fm.T, k; metric = :mah)
 ```
 """ 
-function sampks(X, k; metric = "eucl")
+function sampks(X, k; metric = :eucl)
     k = Int64(round(k))
-    if metric == "eucl"
+    if metric == :eucl
         D = euclsq(X, X)
-    elseif metric == "mahal"
+    elseif metric == :mah
         D = mahsq(X, X)
     end
     zn = 1:nro(D)
@@ -63,13 +63,13 @@ function sampks(X, k; metric = "eucl")
 end
     
 """
-    sampdp(X, k; metric = "eucl")
+    sampdp(X, k; metric = :eucl)
 Split training/test sets by DUPLEX sampling.  
 * `X` : X-data (n, p).
 * `k` : Nb. pairs of observations to sample (outputs `train` and `test`). 
     Must be <= n / 2. 
 * `metric` : Metric used for the distance computation.
-    Possible values are: "eucl", "mahal".
+    Possible values are: :eucl, :mah.
 
 Three outputs (indexes) are returned: 
 * `train` (`k`), 
@@ -111,7 +111,7 @@ res.remain
 
 fm = pcasvd(X; nlv = 15)
 T = fm.T
-res = sampdp(T, k; metric = "mahal")
+res = sampdp(T, k; metric = :mah)
 
 n = 10 ; k = 25 
 X = [repeat(1:n, inner = n) repeat(1:n, outer = n)] 
@@ -123,11 +123,11 @@ scatter!(X[s, 1], X[s, 2], color = "red")
 f
 ```
 """ 
-function sampdp(X, k; metric = "eucl")
+function sampdp(X, k; metric = :eucl)
     k = Int64(round(k))
-    if(metric == "eucl")
+    if(metric == :eucl)
         D = euclsq(X, X)
-    elseif(metric == "mahal")
+    elseif(metric == :mah)
         D = mahsq(X, X)
     end
     n = size(D, 1)

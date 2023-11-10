@@ -1,13 +1,13 @@
 """
     lda(X, y, weights = ones(nro(X)); 
-        prior = "unif")
+        prior = :unif)
 Linear discriminant analysis  (LDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights (n) of the observations. 
     Internally normalized to sum to 1.
 * `prior` : Type of prior probabilities for class membership.
-    Possible values are: "unif" (uniform), "prop" (proportional).
+    Possible values are: :unif (uniform), :prop (proportional).
 
 ## Examples
 ```julia
@@ -32,8 +32,8 @@ ytest = rmrow(y, s)
 tab(ytrain)
 tab(ytest)
 
-prior = "unif"
-#prior = "prop"
+prior = :unif
+#prior = :prop
 fm = lda(Xtrain, ytrain; prior = prior) ;
 pnames(fm)
 println(typeof(fm))
@@ -48,8 +48,8 @@ confusion(res.pred, ytest).cnt
 ```
 """ 
 function lda(X, y, weights = ones(nro(X)); 
-        prior = "unif")
-    @assert in(["unif"; "prop"])(prior) "Wrong value for argument 'prior'."
+        prior = :unif)
+    @assert in([:unif; :prop])(prior) "Wrong value for argument 'prior'."
     # Scaling X has no effect
     X = ensure_mat(X)
     y = vec(y)    # for findall
@@ -61,9 +61,9 @@ function lda(X, y, weights = ones(nro(X));
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate
-    if isequal(prior, "unif")
+    if isequal(prior, :unif)
         wprior = ones(nlev) / nlev
-    elseif isequal(prior, "prop")
+    elseif isequal(prior, :prop)
         wprior = mweight(ni)
     end
     fm = list(nlev)
