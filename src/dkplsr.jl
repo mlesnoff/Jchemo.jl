@@ -46,8 +46,9 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-nlv = 20 ; gamma = 1e-1
-fm = dkplsr(Xtrain, ytrain; nlv = nlv, gamma = gamma) ;
+nlv = 20 ; gamma = 1e-4
+fm = dkplsr(Xtrain, ytrain; nlv = nlv, 
+    gamma = gamma, scal = true) ;
 fm.fm.T
 
 zcoef = Jchemo.coef(fm)
@@ -61,6 +62,8 @@ Jchemo.transform(fm, Xtest; nlv = 7)
 res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
+plotxy(res.pred, ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 
 res = Jchemo.predict(fm, Xtest; nlv = 1:2)
 res.pred[1]
@@ -69,11 +72,9 @@ res.pred[2]
 fm = dkplsr(Xtrain, ytrain; nlv = nlv, kern = "kpol", degree = 2, gamma = 1e-1, coef0 = 10) ;
 res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
-plotxy(pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 
-# Example of fitting the function sinc(x)
-# described in Rosipal & Trejo 2001 p. 105-106 
+## Example of fitting the function sinc(x)
+## described in Rosipal & Trejo 2001 p. 105-106 
 
 x = collect(-10:.2:10) 
 x[x .== 0] .= 1e-5
@@ -108,8 +109,8 @@ function dkplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X));
         scale!(Y, yscales)
     end
     fkern = eval(Meta.parse(kern))
-    K = fkern(X, X; kwargs...)     # In the future: fkern!(K, X, X; kwargs...)
-    fm = plskern!(K, Y; nlv = nlv)
+    K = fkern(X, X; kwargs...)     
+    fm = plskern!(K, Y, weights; nlv = nlv)
     Dkplsr(X, fm, K, kern, xscales, yscales, kwargs)
 end
 
@@ -148,6 +149,7 @@ Compute Y-predictions from a fitted model and X-data.
 function predict(object::Dkplsr, X; nlv = nothing)
     fkern = eval(Meta.parse(object.kern))
     K = fkern(scale(X, object.xscales), object.X; object.dots...)
+    @show object.yscales
     pred = predict(object.fm, K; nlv = nlv).pred * Diagonal(object.yscales)
     (pred = pred,)
 end
