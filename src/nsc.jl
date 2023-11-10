@@ -99,7 +99,7 @@ function nsc(X, y, weights = ones(nro(X));
     cts = xmeans' .+ scale(ds, 1 ./ poolstd_s0) .* mi
     abs_ds = abs.(ds)
     sel = findall(colsum(abs_ds) .> 0)
-    selc = list(nlev, Vector{Int64})
+    selc = list(nlev, Vector{Int})
     @inbounds for i = 1:nlev
         selc[i] = findall(abs_ds[i, :] .> 0)
     end 

@@ -60,7 +60,7 @@ end
 function pcasph!(X::Matrix, weights = ones(nro(X)); nlv, typc = "medspa", 
     delta = .001, scal::Bool = false)
     n, p = size(X)
-    nlv = min(nlv, n, p)
+    nlv = min(par.nlv, n, p)
     weights = mweight(weights)
     if typc == "medspa"
         xmeans = colmedspa(X; delta = delta)

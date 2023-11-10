@@ -117,7 +117,7 @@ function occknndis(X; nlv, nsamp, k,
         scal::Bool = false, kwargs...)
     X = ensure_mat(X)
     n = nro(X)
-    k = Int64(k)
+    k = Int(k)
     fm = pcasvd(X; nlv = nlv, scal = scal)
     # For the Mahalanobis distance
     tscales = colstd(fm.T)
@@ -156,7 +156,7 @@ function predict(object::Occknndis, X)
     end
     p_val = pval(object.e_cdf, d)
     d = DataFrame(d = d, dstand = d / object.cutoff, pval = p_val)
-    pred = reshape(Int64.(d.dstand .> 1), m, 1)
+    pred = reshape(Int.(d.dstand .> 1), m, 1)
     (pred = pred, d)
 end
 

@@ -246,7 +246,7 @@ end
 
 function mavg!(X::Matrix; f)
     n, p = size(X)
-    f = Int64(f)
+    f = Int(f)
     kern = ImageFiltering.centered(ones(f) / f) ;
     out = similar(X, p) 
     @inbounds for i = 1:n
@@ -364,7 +364,7 @@ function savgk(m, pol, d)
     @assert pol >= 1 && pol <= 2 * m "pol must agree with: 1 <= pol <= 2 * m"
     @assert 0 <= d && d <= pol "d must agree with: 0 <= d <= pol"
     f = 2 * m + 1
-    S = zeros(Int64(f), Int64(pol) + 1) ;
+    S = zeros(Int(f), Int(pol) + 1) ;
     u = collect(-m:m)
     @inbounds for j in 0:pol
         S[:, j + 1] .= u.^j

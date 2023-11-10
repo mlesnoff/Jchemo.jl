@@ -85,7 +85,7 @@ function svmda(X, y; kern = :krbf,
         X = scale(X, xscales)
     end
     ztab = tab(y)
-    gamma = Float64(gamma) ; degree = Int64(degree) ; coef0  = Float64(coef0) ; 
+    gamma = Float64(gamma) ; degree = Int(degree) ; coef0  = Float64(coef0) ; 
     cost  = Float64(cost)
     epsilon = Float64(epsilon)
     if kern == :krbf

@@ -29,8 +29,7 @@ end
 function pcaeigen!(X::Matrix, weights::Vector{Q}; 
         par = Par()) where {Q <: AbstractFloat}
     n, p = size(X)
-    nlv = min(nlv, n, p)
-    weights = mweight(weights)
+    nlv = min(par.nlv, n, p)
     xmeans = colmean(X, weights) 
     xscales = ones(eltype(X), p)
     if par.scal 

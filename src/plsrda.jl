@@ -94,7 +94,7 @@ function predict(object::Plsrda, X; nlv = nothing)
     a = size(object.fm.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
-    pred = list(le_nlv, Union{Matrix{Int64}, Matrix{Float64}, Matrix{String}})
+    pred = list(le_nlv, Union{Matrix{Int}, Matrix{Float64}, Matrix{String}})
     posterior = list(le_nlv, Matrix{Float64})
     @inbounds for i = 1:le_nlv
         zpred = predict(object.fm, X; nlv = nlv[i]).pred

@@ -37,7 +37,7 @@ function plswold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     n, p = size(X)
     q = nco(Y)
-    nlv = min(nlv, n, p)
+    nlv = min(par.nlv, n, p)
     weights = mweight(weights)
     sqrtw = sqrt.(weights)
     xmeans = colmean(X, weights) 

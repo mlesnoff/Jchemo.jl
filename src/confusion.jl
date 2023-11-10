@@ -36,7 +36,7 @@ function confusion(pred, y; digits = 1)
     nlev = length(lev)
     namy = string.(lev)
     nampred = string.("pred_", lev)
-    A = Int64.(zeros(nlev, nlev))
+    A = Int.(zeros(nlev, nlev))
     for i = 1:nlev
         for j = 1:nlev
             zy = y .== lev[i]

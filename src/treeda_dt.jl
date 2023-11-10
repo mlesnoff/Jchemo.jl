@@ -1,5 +1,5 @@
 """ 
-    treeda_dt(X, yy::Union{Array{Int64}, Array{String}}; 
+    treeda_dt(X, yy::Union{Array{Int}, Array{String}}; 
         n_subfeatures = 0,
         max_depth = -1, min_samples_leaf = 5, 
         min_samples_split = 2, scal::Bool = false, 
@@ -67,7 +67,7 @@ res.pred
 err(res.pred, ytest) 
 ```
 """ 
-function treeda_dt(X, y::Union{Array{Int64}, Array{String}}; 
+function treeda_dt(X, y::Union{Array{Int}, Array{String}}; 
         n_subfeatures = 0,
         max_depth = -1, min_samples_leaf = 5, 
         min_samples_split = 2, scal::Bool = false, 
@@ -83,7 +83,7 @@ function treeda_dt(X, y::Union{Array{Int64}, Array{String}};
     ztab = tab(y)
     lev = ztab.keys 
     ni = ztab.vals 
-    n_subfeatures = Int64(round(n_subfeatures))
+    n_subfeatures = Int(round(n_subfeatures))
     min_purity_increase = 0
     fm = build_tree(y, X,
         n_subfeatures,
@@ -101,7 +101,7 @@ function treeda_dt(X, y::Union{Array{Int64}, Array{String}};
 end
 
 """ 
-    rfda_dt(X, yy::Union{Array{Int64}, Array{String}}; 
+    rfda_dt(X, yy::Union{Array{Int}, Array{String}}; 
         n_trees = 10,
         partial_sampling = .7,  
         n_subfeatures = -1,
@@ -180,7 +180,7 @@ res.pred
 err(res.pred, ytest) 
 ```
 """ 
-function rfda_dt(X, y::Union{Array{Int64}, Array{String}}; 
+function rfda_dt(X, y::Union{Array{Int}, Array{String}}; 
         n_trees = 10,
         partial_sampling = .7,  
         n_subfeatures = -1,
@@ -198,7 +198,7 @@ function rfda_dt(X, y::Union{Array{Int64}, Array{String}};
     ztab = tab(y)
     lev = ztab.keys 
     ni = ztab.vals 
-    n_subfeatures = Int64(round(n_subfeatures))
+    n_subfeatures = Int(round(n_subfeatures))
     min_purity_increase = 0
     fm = build_forest(y, X, 
         n_subfeatures, 

@@ -87,7 +87,7 @@ f
 function eposvd(D; nlv = 1)
     D = ensure_mat(D)
     n, p = size(D)
-    nlv = min(nlv, n, p)
+    nlv = min(par.nlv, n, p)
     Id = Diagonal(I, p)
     P = svd(D).V[:, 1:nlv]
     ## If n = 1, this is the same as:

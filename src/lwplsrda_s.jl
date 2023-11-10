@@ -75,11 +75,11 @@ function lwplsrda_s(X, y; reduc = :pls,
     n = nro(X)
     s = 1:n
     if psamp < 1
-        m = Int64(round(psamp * n))
+        m = Int(round(psamp * n))
         if samp == :cla
             lev = mlev(y)
             nlev = length(lev)
-            zm = Int64(round(m / nlev))
+            zm = Int(round(m / nlev))
             s = sampcla(y, zm).train
         elseif samp == :rand
             s = sample(1:n, m; replace = false)

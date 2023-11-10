@@ -82,7 +82,7 @@ function treer_dt(X, y; n_subfeatures = 0,
         xscales .= colstd(X)
         X = scale(X, xscales)
     end
-    n_subfeatures = Int64(round(n_subfeatures))
+    n_subfeatures = Int(round(n_subfeatures))
     min_purity_increase = 0
     fm = build_tree(y, X,
         n_subfeatures,
@@ -195,7 +195,7 @@ function rfr_dt(X, y; n_trees = 10,
         xscales .= colstd(X)
         X = scale(X, xscales)
     end
-    n_subfeatures = Int64(round(n_subfeatures))
+    n_subfeatures = Int(round(n_subfeatures))
     min_purity_increase = 0
     fm = build_forest(y, X, 
         n_subfeatures, 

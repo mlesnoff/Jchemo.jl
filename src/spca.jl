@@ -128,7 +128,7 @@ function spca!(X::Matrix, weights = ones(nro(X)); nlv,
     @assert in([:soft; :mix; :hard])(meth) "Wrong value for argument 'meth'."
     @assert 0 <= delta <= 1 "Argument 'delta' must ∈ [0, 1]."
     n, p = size(X)
-    nlv = min(nlv, n, p)
+    nlv = min(par.nlv, n, p)
     length(nvar) == 1 ? nvar = repeat([nvar], nlv) : nothing
     weights = mweight(weights)
     xmeans = colmean(X, weights) 
@@ -145,10 +145,10 @@ function spca!(X::Matrix, weights = ones(nro(X)); nlv,
     T = similar(X, n, nlv)
     P = similar(X, p, nlv)
     sv = similar(X, nlv)
-    niter = list(nlv, Int64)
+    niter = list(nlv, Int)
     b = similar(X, 1, p)
     beta = similar(X, p, nlv)
-    sellv = list(nlv, Vector{Int64})
+    sellv = list(nlv, Vector{Int})
     for a = 1:nlv
         if meth == :soft
             res = snipals(X; 

@@ -70,7 +70,7 @@ rpmatli(p, nlv)
 """ 
 function rpmatli(p, nlv; s = sqrt(p))
     le = p * nlv
-    k = Int64(round(le / s))
+    k = Int(round(le / s))
     z = zeros(le)
     z[rand(1:le, k)] .= rand([-1. ; 1], k) 
     sparse(reshape(z, p, nlv))

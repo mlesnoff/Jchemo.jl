@@ -256,7 +256,7 @@ function dupl(X; digits = 3)
     end
     u = findall(rownum1 .!= rownum2)
     res = DataFrame((rownum1 = rownum1[u], rownum2 = rownum2[u]))
-    Int64.(res)
+    Int.(res)
 end
 
 """
@@ -601,7 +601,7 @@ Recode a categorical variable to a integer variable
 * `x` : Variable to recode.
 * `start` : Integer value that will be set to the first category.
 
-The numeric codes returned by the function are `Int64` and 
+The numeric codes returned by the function are `Int` and 
 correspond to the sorted categories of `x`.
 
 ## Examples
@@ -612,12 +612,12 @@ recodcat2int(x; start = 0)
 recodcat2int([25, 1, 25])
 ```
 """
-function recodcat2int(x; start::Int64 = 1)
+function recodcat2int(x; start::Int = 1)
     z = dummy(x).Y
     ncla = nco(z)
     u = z .* collect(start:(start + ncla - 1))'
     u = sum(u; dims = 2)  
-    Int64.(vec(u))
+    Int.(vec(u))
 end
 
 """
@@ -649,7 +649,7 @@ function recodnum2cla(x, q)
         end
         zx[i] = k
     end
-    Int64.(zx)
+    Int.(zx)
 end
 
 """
@@ -690,7 +690,7 @@ function replacebylev(x, lev)
 end
 
 """
-    replacebylev2(x::Union{Int64, Array{Int64}}, lev::Array)
+    replacebylev2(x::Union{Int, Array{Int}}, lev::Array)
 Replace the elements of an index-vector by levels.
 * `x` : Vector (n) of values to replace.
 * `lev` : Vector (nlev) containing the levels.
@@ -714,9 +714,9 @@ lev = [3; 0; -1]
 replacebylev2(x, lev)
 ```
 """
-function replacebylev2(x::Union{Int64, Array{Int64}}, lev::Array)
+function replacebylev2(x::Union{Int, Array{Int}}, lev::Array)
     n = length(x)
-    isa(x, Int64) ? x = [x] : x = vec(x)
+    isa(x, Int) ? x = [x] : x = vec(x)
     lev = vec(sort(lev))
     v = similar(lev, n)
     @inbounds for i in eachindex(x)
@@ -762,12 +762,12 @@ rmcol(X, [1, 3])
 """
 function rmcol(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
-    X[:, setdiff(1:end, Int64.(s))]
+    X[:, setdiff(1:end, Int.(s))]
 end
 
 function rmcol(X::Vector, s::Union{Vector, BitVector, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
-    X[setdiff(1:end, Int64.(s))]
+    X[setdiff(1:end, Int.(s))]
 end
 
 """
@@ -785,12 +785,12 @@ rmrow(X, [1, 4])
 """
 function rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
-    X[setdiff(1:end, Int64.(s)), :]
+    X[setdiff(1:end, Int.(s)), :]
 end
 
 function rmrow(X::Vector, s::Union{Vector, BitVector, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
-    X[setdiff(1:end, Int64.(s))]
+    X[setdiff(1:end, Int.(s))]
 end
 
 """
@@ -970,7 +970,7 @@ function tabdf(X; groups = nothing)
     zX.n = ones(nro(zX))
     res = aggstat(zX; vars = :n, groups = groups, 
         fun = sum)
-    res.n = Int64.(res.n)
+    res.n = Int.(res.n)
     res
 end
 

@@ -75,7 +75,7 @@ function predict(object::Rrda, X; lb = nothing)
     m = nro(X)
     isnothing(lb) ? lb = object.fm.lb : nothing
     le_lb = length(lb)
-    pred = list(le_lb, Union{Matrix{Int64}, Matrix{Float64}, Matrix{String}})
+    pred = list(le_lb, Union{Matrix{Int}, Matrix{Float64}, Matrix{String}})
     posterior = list(le_lb, Matrix{Float64})
     @inbounds for i = 1:le_lb
         zp = predict(object.fm, X; lb = lb[i]).pred

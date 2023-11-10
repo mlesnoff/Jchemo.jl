@@ -62,7 +62,7 @@ function predict(object::Occod, X)
     p_val = pval(object.e_cdf, d)
     d = DataFrame(d = d, dstand = d / object.cutoff, 
         pval = p_val)
-    pred = reshape(Int64.(d.dstand .> 1), m, 1)
+    pred = reshape(Int.(d.dstand .> 1), m, 1)
     (pred = pred, d)
 end
 

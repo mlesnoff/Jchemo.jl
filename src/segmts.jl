@@ -47,15 +47,15 @@ group[segm[i][1]]
 ```
 """ 
 function segmts(n, m; rep = 1, seed = nothing)
-    n = Int64(round(n))
-    m = Int64(round(m))
+    n = Int(round(n))
+    m = Int(round(m))
     s = list(rep)
     for i = 1:rep
-        s[i] = list(1, Vector{Int64})
+        s[i] = list(1, Vector{Int})
         if isnothing(seed)
             s[i][1] = sample(1:n, m; replace = false, ordered = true)
         else
-            s[i][1] = sample(MersenneTwister(Int64(seed[i])), 1:n, m;
+            s[i][1] = sample(MersenneTwister(Int(seed[i])), 1:n, m;
                 replace = false, ordered = true)
         end
     end
@@ -64,18 +64,18 @@ end
 
 function segmts(n, m, group; rep = 1, seed = nothing)
     # n is not used but is kept for multiple dispatch
-    m = Int64(round(m))
+    m = Int(round(m))
     group = vec(group) # must be of length n
     s = list(rep)
     yagg = unique(group)
     zn = length(yagg)
     m = min(m, zn)
     @inbounds for i = 1:rep
-        s[i] = list(1, Vector{Int64})
+        s[i] = list(1, Vector{Int})
         if isnothing(seed)
             s[i][1] = sample(1:zn, m; replace = false, ordered = true)
         else
-            s[i][1] = sample(MersenneTwister(Int64(seed[i])), 1:zn, m; 
+            s[i][1] = sample(MersenneTwister(Int(seed[i])), 1:zn, m; 
                 replace = false, ordered = true)
         end
     end

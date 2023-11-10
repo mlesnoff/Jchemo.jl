@@ -8,8 +8,9 @@ Base.@kwdef struct Par
     coef0::Float64 = 0. 
     cost::Float64 = 1.
     ##
+    gs::Bool = true
     epsilon::Float64 = .1
-    tol::Float64 = 1.5e-8
+    tol::Float64 = sqrt(eps(1.))
     maxit::Int = 100
     scal::Bool = false
 end

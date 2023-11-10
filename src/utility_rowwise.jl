@@ -61,7 +61,7 @@ rowvar(X)
 """ 
 rowvar(X) = vec(Statistics.var(ensure_mat(X); dims = 2, corrected = false))
 
-####### Functions with skip missing data
+####### Functions skipping missing data
 
 function rowmeanskip(X)
     X = ensure_mat(X)

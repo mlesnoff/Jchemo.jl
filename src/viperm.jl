@@ -75,13 +75,13 @@ function viperm(X, Y; perm = 50,
     Y = ensure_mat(Y) 
     n, p = size(X)
     q = nco(Y)
-    nval = Int64(round(psamp * n))
+    nval = Int(round(psamp * n))
     ncal = n - nval
     Xcal = similar(X, ncal, p)
     Ycal = similar(X, ncal, q)
     Xval = similar(X, nval, p)
     Yval = similar(X, nval, q)
-    s = list(nval, Int64)
+    s = list(nval, Int)
     res = similar(X, p, q, perm)
     @inbounds for i = 1:perm
         s .= sample(1:n, nval; replace = false)  

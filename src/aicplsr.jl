@@ -119,7 +119,7 @@ function aicplsr(X, y; nlv, correct = true, bic = false, scal::Bool = false)
     X = ensure_mat(X)
     n = nro(X)
     p = nco(X)
-    nlv = min(nlv, n, p)
+    nlv = min(par.nlv, n, p)
     pars = mpar(scal = scal)  
     res = gridscorelv(X, y, X, y;
         fun = plskern, score = ssr, nlv = 0:nlv, pars = pars)

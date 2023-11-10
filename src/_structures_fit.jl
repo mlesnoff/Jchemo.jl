@@ -191,9 +191,9 @@ struct Spca{Q <: AbstractFloat}
     xmeans::Vector{Q}
     xscales::Vector{Q}
     weights::Vector{Q}
-    niter::Union{Vector{Int64}, Nothing}
-    sellv::Vector{Vector{Int64}}
-    sel::Vector{Int64}
+    niter::Union{Vector{Int}, Nothing}
+    sellv::Vector{Vector{Int}}
+    sel::Vector{Int}
 end
 
 ###### Regression
@@ -220,8 +220,8 @@ struct Covselr{Q <: AbstractFloat}
     ymeans::Vector{Q}
     yscales::Vector{Q}
     weights::Vector{Q}
-    sellv::Vector{Vector{Int64}}
-    sel::Vector{Int64}
+    sellv::Vector{Vector{Int}}
+    sel::Vector{Int}
 end
 
 struct Knnr{Q <: AbstractFloat}
@@ -456,8 +456,8 @@ struct Splsr{Q <: AbstractFloat}
     yscales::Vector{Q}
     weights::Vector{Q}
     niter::Union{Array{Q}, Nothing}
-    sellv::Vector{Vector{Int64}}
-    sel::Vector{Int64}
+    sellv::Vector{Vector{Int}}
+    sel::Vector{Int}
 end
 
 struct Svmr{Q <: AbstractFloat}
@@ -468,7 +468,7 @@ end
 struct TreerDt{Q <: AbstractFloat}
     fm
     xscales::Vector{Q}
-    featur::Vector{Int64}
+    featur::Vector{Int}
     mth::Bool 
 end
 
@@ -528,7 +528,7 @@ struct Lda{Q <: AbstractFloat}
     ct::Array{Q}
     wprior::Vector{Q}
     theta::Vector{Q}
-    ni::Vector{Int64}
+    ni::Vector{Int}
     lev::AbstractVector
     weights::Vector{Q}
 end
@@ -671,7 +671,7 @@ struct Nscda{Q <: AbstractFloat}
     fms
     poolstd_s0::Vector{Q}
     wprior::Vector{Q}
-    ni::Vector{Int64}
+    ni::Vector{Int}
     lev::AbstractVector
     xscales::Vector{Q}
     weights::Vector{Q}
@@ -702,7 +702,7 @@ struct Occod{Q <: AbstractFloat}
     fm
     e_cdf::ECDF
     cutoff::Real   
-    nlv::Int64
+    nlv::Int
 end
 
 struct Occsd{Q <: AbstractFloat}
@@ -711,7 +711,7 @@ struct Occsd{Q <: AbstractFloat}
     Sinv::Matrix{Q}
     e_cdf::ECDF
     cutoff::Real   
-    nlv::Int64
+    nlv::Int
 end
 
 struct Occsdod{Q <: AbstractFloat}
@@ -753,7 +753,7 @@ struct Qda{Q <: AbstractFloat}
     ct::Array{Q}
     wprior::Vector{Q}
     theta::Vector{Q}
-    ni::Vector{Int64}
+    ni::Vector{Int}
     lev::AbstractVector
     weights::Vector{Q}
 end
@@ -764,7 +764,7 @@ struct Rda{Q <: AbstractFloat}
     ct::Array{Q}
     wprior::Vector{Q}
     theta::Vector{Q}
-    ni::Vector{Int64}
+    ni::Vector{Int}
     lev::AbstractVector
     xscales::Vector{Q}
     weights::Vector{Q}
@@ -786,7 +786,7 @@ end
 struct TreedaDt{Q <: AbstractFloat} 
     fm
     xscales::Vector{Q}
-    featur::Vector{Int64}
+    featur::Vector{Int}
     lev::AbstractVector
     ni::AbstractVector
     mth::Bool 

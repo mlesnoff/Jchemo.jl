@@ -61,19 +61,20 @@ Xres[s] .= Xfit[s]
 Xres
 ```
 """ 
-function pcanipalsmiss(X, weights = ones(nro(X)); nlv, 
-        gs::Bool = true, tol = sqrt(eps(1.)), maxit = 200, 
-        scal::Bool = false)
-    pcanipalsmiss!(copy(ensure_mat(X)), weights; nlv = nlv, 
-        gs = gs, tol = tol, maxit = maxit, scal = scal)
+function pcanipalsmiss(X; par = Par())
+    weights = mweight(ones(eltype(X), nro(X)))
+    pcanipalsmiss!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcanipalsmiss!(X::Matrix, weights = ones(nro(X)); nlv, 
-        gs::Bool = true, tol = sqrt(eps(1.)), maxit = 200, 
-        scal::Bool = false)
+function pcanipalsmiss(X, weights::Vector{Q}; 
+        par = Par()) where {Q <: AbstractFloat}
+    pcanipalsmiss!(copy(ensure_mat(X)), weights; par)
+end
+
+function pcanipalsmiss!(X::Matrix, weights::Vector{Q}; 
+        par = Par()) where {Q <: AbstractFloat}
     n, p = size(X)
-    nlv = min(nlv, n, p)
-    weights = mweight(weights)
+    nlv = min(par.nlv, n, p)
     xmeans = colmeanskip(X, weights) 
     #xmeans = colmeanskip(X)
     xscales = ones(eltype(X), p)
@@ -90,17 +91,17 @@ function pcanipalsmiss!(X::Matrix, weights = ones(nro(X)); nlv,
     T = similar(X, n, nlv)
     P = similar(X, p, nlv)
     sv = similar(X, nlv)
-    niter = list(nlv, Int64)
-    if gs
+    niter = list(nlv, Int)
+    if par.gs
         UUt = zeros(n, n)
         VVt = zeros(p, p)
     end
     for a = 1:nlv
-        if gs == false
-            res = nipalsmiss(X; tol = tol, maxit = maxit)
+        if par.gs == false
+            res = nipalsmiss(X; tol = par.tol, maxit = par.maxit)
         else
             res = nipalsmiss(X, UUt, VVt; 
-                tol = tol, maxit = maxit)
+                tol = par.tol, maxit = par.maxit)
         end
         t .= res.u * res.sv
         T[:, a] .= t ./ sqrtw
@@ -109,7 +110,7 @@ function pcanipalsmiss!(X::Matrix, weights = ones(nro(X)); nlv,
         sv[a] = res.sv
         niter[a] = res.niter
         X .-= t * res.v'
-        if gs
+        if par.gs
             UUt .+= res.u * res.u' 
             VVt .+= res.v * res.v'
         end

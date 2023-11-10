@@ -1,8 +1,8 @@
 struct Baggr
     fm
-    srow::Vector{Vector{Int64}}  # in-bag
-    scol::Vector{Vector{Int64}}
-    soob::Vector{Vector{Int64}}  # out-of-bag
+    srow::Vector{Vector{Int}}  # in-bag
+    scol::Vector{Vector{Int}}
+    soob::Vector{Vector{Int}}  # out-of-bag
     q
 end
 
@@ -83,11 +83,11 @@ function baggr(X, Y, weights = nothing, wcol = nothing; rep = 50,
     n, p = size(X)
     q = nco(Y)   
     fm = list(rep)
-    srow = list(rep, Vector{Int64})
-    scol = list(rep, Vector{Int64})
-    soob = list(rep, Vector{Int64})
-    nsrow = Int64(round(rowsamp * n))
-    nscol = max(1, Int64(round(colsamp * p)))
+    srow = list(rep, Vector{Int})
+    scol = list(rep, Vector{Int})
+    soob = list(rep, Vector{Int})
+    nsrow = Int(round(rowsamp * n))
+    nscol = max(1, Int(round(colsamp * p)))
     w = similar(X, nsrow)
     zcol = collect(1:nscol) 
     Threads.@threads for i = 1:rep

@@ -42,11 +42,11 @@ group[segm[i][3]]
 ```
 """ 
 function segmkf(n, K; rep = 1)
-    n = Int64(round(n))
+    n = Int(round(n))
     m = K - n % K ;
     s = list(rep)
     @inbounds for i = 1:rep
-        s[i] = list(K, Vector{Int64})
+        s[i] = list(K, Vector{Int})
         v = [randperm(n) ; repeat([0], outer = m)] 
         v = reshape(v, K, :)
         @inbounds for j = 1:K 
@@ -66,7 +66,7 @@ function segmkf(n, K, group; rep = 1)
     m = K - zn % K ;
     s = list(rep)
     @inbounds for i = 1:rep
-        s[i] = list(K, Vector{Int64})
+        s[i] = list(K, Vector{Int})
         v = [randperm(zn) ; repeat([0], outer = m)] 
         v = reshape(v, K, :)
         @inbounds for j = 1:K 

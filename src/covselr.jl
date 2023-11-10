@@ -137,7 +137,7 @@ function covselr!(X::Matrix, Y::Matrix, weights = ones(nro(X));
     r   = similar(X, p)
     c   = similar(X, q)
     tmp = similar(XtY) # = XtY_approx
-    sellv = list(nlv, Vector{Int64})
+    sellv = list(nlv, Vector{Int})
     zw = copy(w)
     # End
     @inbounds for a = 1:nlv

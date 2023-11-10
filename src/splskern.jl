@@ -151,7 +151,7 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     r   = copy(zp)
     c   = similar(X, q)
     tmp = similar(XtY) # = XtY_approx
-    sellv = list(nlv, Vector{Int64})
+    sellv = list(nlv, Vector{Int})
     @inbounds for a = 1:nlv
         if q == 1
             w .= vcol(XtY, 1)

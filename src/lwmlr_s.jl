@@ -98,7 +98,7 @@ function lwmlr_s(X, Y; reduc = :pca,
     n = nro(X)
     s = 1:n
     if psamp < 1
-        m = Int64(round(psamp * n))
+        m = Int(round(psamp * n))
         if samp == :sys
             s = sampsys(rowsum(Y), m).train
         elseif samp == :rand

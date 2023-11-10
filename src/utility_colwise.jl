@@ -151,7 +151,7 @@ function colvar(X, w)
     colnorm(X .- v', w).^2
 end
 
-####### Functions with skip missing data
+####### Functions skipping missing data
 
 function colmeanskip(X)
     X = ensure_mat(X)
@@ -181,14 +181,13 @@ function colmeanskip(X, w)
     z = zeros(p)
     for i = 1:p
         s = ismissing.(vcol(X, i))
-        z[i] = sum(mweight(rmrow(w, s)) .* rmrow(X[:, i], s))
+        w = mweight(rmrow(w, s))
+        z[i] = sum(w .* rmrow(X[:, i], s))
     end
     z
 end
 
 colsumskip(X, w) = colmeanskip(X, w)
-
-colstdskip(X, w) = sqrt.(colvarskip(X, w))
 
 function colvarskip(X, w)
     X = ensure_mat(X)
@@ -202,4 +201,6 @@ function colvarskip(X, w)
     end
     z 
 end
+
+colstdskip(X, w) = sqrt.(colvarskip(X, w))
 

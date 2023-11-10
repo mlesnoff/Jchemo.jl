@@ -43,19 +43,20 @@ Editions Technip, Paris, France.
 Wright, K., 2018. Package nipals: Principal Components Analysis using NIPALS 
 with Gram-Schmidt Orthogonalization. https://cran.r-project.org/
 """ 
-function pcanipals(X, weights = ones(nro(X)); nlv, 
-        gs::Bool = true, tol = sqrt(eps(1.)), maxit = 200, 
-        scal::Bool = false)
-    pcanipals!(copy(ensure_mat(X)), weights; nlv = nlv, 
-        gs = gs, tol = tol, maxit = maxit, scal = scal)
+function pcanipals(X; par = Par())
+    weights = mweight(ones(eltype(X), nro(X)))
+    pcanipals!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv, 
-        gs::Bool = true, tol = sqrt(eps(1.)), maxit = 200, 
-        scal::Bool = false)
+function pcanipals(X, weights::Vector{Q}; 
+        par = Par()) where {Q <: AbstractFloat}
+    pcanipals!(copy(ensure_mat(X)), weights; par)
+end
+
+function pcanipals!(X::Matrix, weights::Vector{Q}; 
+        par = Par()) where {Q <: AbstractFloat}
     n, p = size(X)
-    nlv = min(nlv, n, p)
-    weights = mweight(weights)
+    nlv = min(par.nlv, n, p)
     xmeans = colmean(X, weights) 
     xscales = ones(eltype(X), p)
     if par.scal 
@@ -70,17 +71,17 @@ function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv,
     T = similar(X, n, nlv)
     P = similar(X, p, nlv)
     sv = similar(X, nlv)
-    niter = list(nlv, Int64)
-    if gs
+    niter = list(nlv, Int)
+    if par.gs
         UUt = zeros(n, n)
         VVt = zeros(p, p)
     end
     for a = 1:nlv
-        if gs == false
-            res = nipals(X; tol = tol, maxit = maxit)
+        if par.gs == false
+            res = nipals(X; tol = par.tol, maxit = par.maxit)
         else
             res = nipals(X, UUt, VVt; 
-                tol = tol, maxit = maxit)
+                tol = par.tol, maxit = par.maxit)
         end
         t .= res.u * res.sv
         T[:, a] .= t ./ sqrtw
@@ -88,7 +89,7 @@ function pcanipals!(X::Matrix, weights = ones(nro(X)); nlv,
         sv[a] = res.sv
         niter[a] = res.niter
         X .-= t * res.v'
-        if gs
+        if par.gs
             UUt .+= res.u * res.u' 
             VVt .+= res.v * res.v'
         end

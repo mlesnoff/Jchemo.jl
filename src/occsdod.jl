@@ -63,7 +63,7 @@ function predict(object::Occsdod, X)
     rename!(od, nam)
     d = hcat(sd, od)
     d.dstand = dstand
-    pred = reshape(Int64.(dstand .> 1), m, 1)
+    pred = reshape(Int.(dstand .> 1), m, 1)
     (pred = pred, d)
 end
 

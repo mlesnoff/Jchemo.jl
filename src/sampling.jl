@@ -40,7 +40,7 @@ res = sampks(fm.T, k; metric = :mah)
 ```
 """ 
 function sampks(X, k; metric = :eucl)
-    k = Int64(round(k))
+    k = Int(round(k))
     if metric == :eucl
         D = euclsq(X, X)
     elseif metric == :mah
@@ -124,7 +124,7 @@ f
 ```
 """ 
 function sampdp(X, k; metric = :eucl)
-    k = Int64(round(k))
+    k = Int(round(k))
     if(metric == :eucl)
         D = euclsq(X, X)
     elseif(metric == :mah)
@@ -178,7 +178,7 @@ samprand(n, 7)
 ```
 """ 
 function samprand(n, k; replace = false)
-    k = Int64(round(k))
+    k = Int(round(k))
     zn = collect(1:n)
     s = sample(zn, k; replace = replace)
     sort!(s)
@@ -212,13 +212,13 @@ sort(y[res.train])
 ```
 """ 
 function sampsys(y, k)
-    k = Int64(round(k))
+    k = Int(round(k))
     y = vec(y)
     n = length(y)
     nint = k - 1            # nb. intervals
     alpha = (n - 1) / nint  # step
     z = collect(1:alpha:n)
-    z = Int64.(round.(z))
+    z = Int.(round.(z))
     z = unique(z)
     id = sortperm(y)
     zn = collect(1:n)
@@ -269,7 +269,7 @@ tab(x[res.train])
 ```
 """ 
 function sampcla(x, k, y = nothing)
-    k = Int64(round(k))
+    k = Int(round(k))
     x = vec(x)
     n = length(x)
     ztab = tab(x)
@@ -277,7 +277,7 @@ function sampcla(x, k, y = nothing)
     ni = ztab.vals
     nlev = length(lev)
     isequal(length(k), 1) ? k = fill(k[1], nlev) : nothing
-    s = list(nlev, Vector{Int64})
+    s = list(nlev, Vector{Int})
     @inbounds for i in 1:nlev
         k[i] = min(k[i], ni[i])
         zs = findall(x .== lev[i])
