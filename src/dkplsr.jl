@@ -147,9 +147,18 @@ Compute Y-predictions from a fitted model and X-data.
    
 """ 
 function predict(object::Dkplsr, X; nlv = nothing)
+    a = nco(object.fm.T)
+    isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
+    le_nlv = length(nlv)
     fkern = eval(Meta.parse(object.kern))
     K = fkern(scale(X, object.xscales), object.X; object.dots...)
-    @show object.yscales
-    pred = predict(object.fm, K; nlv = nlv).pred * Diagonal(object.yscales)
+    pred = predict(object.fm, K; nlv = nlv).pred
+    if le_nlv == 1
+        pred .*= Diagonal(object.yscales)
+    else
+        for i = 1:le_nlv
+            pred[i] .*= Diagonal(object.yscales)
+        end
+    end
     (pred = pred,)
 end
