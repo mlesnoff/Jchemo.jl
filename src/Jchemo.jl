@@ -1,4 +1,4 @@
-module Jchemo2  # Start-Module
+module Jchemo  # Start-Module
 
 using Clustering
 using DataInterpolations
