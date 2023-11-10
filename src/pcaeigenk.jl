@@ -25,11 +25,18 @@ Wu, W., Massart, D.L., de Jong, S., 1997. The kernel PCA algorithms for wide dat
 Part I: Theory and algorithms. Chemometrics and Intelligent Laboratory Systems 36, 165-172.
 https://doi.org/10.1016/S0169-7439(97)00010-5
 """ 
-function pcaeigenk(X, weights = ones(nro(X)); nlv, scal::Bool = false)
-    pcaeigenk!(copy(ensure_mat(X)), weights; nlv = nlv, scal = scal)
+function pcaeigenk(X; par = Par())
+    weights = mweight(ones(eltype(X), nro(X)))
+    pcaeigenk!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcaeigenk!(X::Matrix, weights = ones(nro(X)); nlv, scal::Bool = false)
+function pcaeigenk(X, weights::Vector{Q}; 
+        par = Par()) where {Q <: AbstractFloat}
+    pcaeigenk!(copy(ensure_mat(X)), weights; par)
+end
+
+function pcaeigenk!(X::Matrix, weights::Vector{Q}; 
+        par = Par()) where {Q <: AbstractFloat}
     n, p = size(X)
     nlv = min(nlv, n, p)
     weights = mweight(weights)

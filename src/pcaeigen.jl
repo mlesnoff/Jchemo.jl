@@ -16,11 +16,18 @@ computing an Eigen factorization of X' * D * X.
 
 See `?pcasvd` for examples.
 """ 
-function pcaeigen(X, weights = ones(nro(X)); nlv = 1, scal::Bool = false)
-    pcaeigen!(copy(ensure_mat(X)), weights; nlv = nlv, scal = scal)
+function pcaeigen(X; par = Par())
+    weights = mweight(ones(eltype(X), nro(X)))
+    pcasvd!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcaeigen!(X::Matrix, weights = ones(nro(X)); nlv = 1, scal::Bool = false)
+function pcaeigen(X, weights::Vector{Q}; 
+        par = Par()) where {Q <: AbstractFloat}
+    pcasvd!(copy(ensure_mat(X)), weights; par)
+end
+
+function pcaeigen!(X::Matrix, weights::Vector{Q}; 
+        par = Par()) where {Q <: AbstractFloat}
     n, p = size(X)
     nlv = min(nlv, n, p)
     weights = mweight(weights)
