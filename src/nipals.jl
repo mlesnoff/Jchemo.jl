@@ -67,6 +67,8 @@ function nipals(X; par = Par())
 end
 
 function nipals(X, UUt, VVt; par = Par())
+#function nipals(X::Matrix{Q}, UUt::Matrix{Q}, VVt::Matrix{Q}; 
+#      par = Par()) where {Q <: AbstractFloat}
     X = ensure_mat(X)
     n, p = size(X)
     u = X[:, argmax(colnorm(X))]
