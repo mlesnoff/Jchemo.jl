@@ -470,14 +470,14 @@ w = mweight(x)
 sum(w)
 ```
 """
-function mweight(w::Vector{Int}) 
-    w = Float64.(w)
-    w ./= sum(w)
-end
+mweight(w::Vector) = Weight(w / sum(w))
 
-mweight(w::Vector{Q}) where {Q <: AbstractFloat} = mweight!(copy(w))
-
-mweight!(w::Vector{Q}) where {Q <: AbstractFloat} = w ./= sum(w)
+#function mweight(w::Vector{Int}) 
+#    w = Float64.(w)
+#    w ./= sum(w)
+#end
+#mweight(w::Vector{Q}) where {Q <: AbstractFloat} = mweight!(copy(w))
+#mweight!(w::Vector{Q}) where {Q <: AbstractFloat} = w ./= sum(w)
 
 #mweight(w::Union{Vector{Float32}, Vector{Float64}}) = mweight!(copy(w))
 #mweight!(w::Union{Vector{Float32}, Vector{Float64}}) = w ./= sum(w)

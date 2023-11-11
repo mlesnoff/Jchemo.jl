@@ -1,118 +1,118 @@
 ###### Dimension reduction
 
-struct Cca{Q <: AbstractFloat}
-    Tx::Matrix{Q}
-    Ty::Matrix{Q}
-    Wx::Matrix{Q}
-    Wy::Matrix{Q}
-    d::Vector{Q}    
-    bscales::Vector{Q}    
-    xmeans::Vector{Q}
-    xscales::Vector{Q}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    weights::Vector{Q}
+struct Cca
+    Tx::Matrix
+    Ty::Matrix
+    Wx::Matrix
+    Wy::Matrix
+    d::Vector    
+    bscales::Vector    
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    yscales::Vector
+    weights::Vector
 end
 
-struct CcaWold{Q <: AbstractFloat}
-    Tx::Matrix{Q}
-    Ty::Matrix{Q}
-    Px::Matrix{Q}
-    Py::Matrix{Q}
-    Rx::Matrix{Q}
-    Ry::Matrix{Q}    
-    Wx::Matrix{Q}
-    Wy::Matrix{Q}
-    TTx::Vector{Q}
-    TTy::Vector{Q}  
-    bscales::Vector{Q}    
-    xmeans::Vector{Q}
-    xscales::Vector{Q}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    weights::Vector{Q}
+struct CcaWold
+    Tx::Matrix
+    Ty::Matrix
+    Px::Matrix
+    Py::Matrix
+    Rx::Matrix
+    Ry::Matrix    
+    Wx::Matrix
+    Wy::Matrix
+    TTx::Vector
+    TTy::Vector  
+    bscales::Vector    
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    yscales::Vector
+    weights::Vector
     niter::Vector{Int}
 end
 
-struct Comdim{Q <: AbstractFloat}
-    T::Array{Q} 
-    U::Array{Q}
-    W::Array{Q}
-    Tbl::Vector{Array{Q}}
-    Tb::Vector{Array{Q}}
-    Wbl::Vector{Array{Q}}
-    lb::Array{Q}
-    mu::Vector{Q}
-    bscales::Vector{Q}
-    xmeans::Vector{Vector{Q}}
-    xscales::Vector{Vector{Q}}
-    weights::Vector{Q}
+struct Comdim
+    T::Array 
+    U::Array
+    W::Array
+    Tbl::Vector{Array}
+    Tb::Vector{Array}
+    Wbl::Vector{Array}
+    lb::Array
+    mu::Vector
+    bscales::Vector
+    xmeans::Vector{Vector}
+    xscales::Vector{Vector}
+    weights::Vector
     niter::Vector{Int}
 end
 
-struct Fda{Q <: AbstractFloat}
-    T::Array{Q}
-    P::Array{Q}
-    Tcenters::Array{Q}
-    eig::Vector{Q}
+struct Fda
+    T::Array
+    P::Array
+    Tcenters::Array
+    eig::Vector
     sstot::Number
-    W::Matrix{Q}
-    xmeans::Vector{Q}
-    xscales::Vector{Q}
+    W::Matrix
+    xmeans::Vector
+    xscales::Vector
     lev::AbstractVector
     ni::AbstractVector
 end
 
-struct Kpca{Q <: AbstractFloat}
-    X::Array{Q}
-    Kt::Array{Q}
-    T::Array{Q}
-    P::Array{Q}
-    sv::Vector{Q}  
-    eig::Vector{Q}    
-    D::Array{Q} 
-    DKt::Array{Q}
-    vtot::Array{Q}
-    xscales::Vector{Q} 
-    weights::Vector{Q}
+struct Kpca
+    X::Array
+    Kt::Array
+    T::Array
+    P::Array
+    sv::Vector  
+    eig::Vector    
+    D::Array 
+    DKt::Array
+    vtot::Array
+    xscales::Vector 
+    weights::Vector
     kern
     dots
 end
 
-struct Mbpca{Q <: AbstractFloat}
-    T::Array{Q} 
-    U::Array{Q}
-    W::Array{Q}
-    Tbl::Vector{Array{Q}}
-    Tb::Vector{Array{Q}}
-    Wbl::Vector{Array{Q}}
-    lb::Array{Q}
-    mu::Vector{Q}
-    bscales::Vector{Q}
-    xmeans::Vector{Vector{Q}}
-    xscales::Vector{Vector{Q}}
-    weights::Vector{Q}
+struct Mbpca
+    T::Array 
+    U::Array
+    W::Array
+    Tbl::Vector{Array}
+    Tb::Vector{Array}
+    Wbl::Vector{Array}
+    lb::Array
+    mu::Vector
+    bscales::Vector
+    xmeans::Vector{Vector}
+    xscales::Vector{Vector}
+    weights::Vector
     niter::Vector{Int}
 end
 
-struct MbplsWest{Q <: AbstractFloat}            # Used for mbplswest, mbwcov 
-    T::Matrix{Q}
-    P::Matrix{Q}
-    R::Matrix{Q}
-    W::Matrix{Q}
-    C::Matrix{Q}
-    Tbl::Vector{Array{Q}}
-    Tb::Vector{Array{Q}}
-    Pbl::Vector{Array{Q}}
-    TT::Vector{Q}
-    bscales::Vector{Q}
-    xmeans::Vector{Vector{Q}}
-    xscales::Vector{Vector{Q}}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    weights::Vector{Q}
-    lb::Union{Array{Q}, Nothing}
-    niter::Union{Array{Q}, Nothing}
+struct MbplsWest            # Used for mbplswest, mbwcov 
+    T::Matrix
+    P::Matrix
+    R::Matrix
+    W::Matrix
+    C::Matrix
+    Tbl::Vector{Array}
+    Tb::Vector{Array}
+    Pbl::Vector{Array}
+    TT::Vector
+    bscales::Vector
+    xmeans::Vector{Vector}
+    xscales::Vector{Vector}
+    ymeans::Vector
+    yscales::Vector
+    weights::Vector
+    lb::Union{Array, Nothing}
+    niter::Union{Array, Nothing}
 end
 
 struct Pca 
@@ -126,71 +126,71 @@ struct Pca
     niter::Union{Vector{Int}, Nothing}
 end
 
-struct PlsCan{Q <: AbstractFloat}
-    Tx::Matrix{Q}
-    Ty::Matrix{Q}
-    Px::Matrix{Q}
-    Py::Matrix{Q}
-    Rx::Matrix{Q}
-    Ry::Matrix{Q}    
-    Wx::Matrix{Q}
-    Wy::Matrix{Q}
-    TTx::Vector{Q}
-    TTy::Vector{Q}
-    delta::Vector{Q}    
-    bscales::Vector{Q}    
-    xmeans::Vector{Q}
-    xscales::Vector{Q}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    weights::Vector{Q}
+struct PlsCan
+    Tx::Matrix
+    Ty::Matrix
+    Px::Matrix
+    Py::Matrix
+    Rx::Matrix
+    Ry::Matrix    
+    Wx::Matrix
+    Wy::Matrix
+    TTx::Vector
+    TTy::Vector
+    delta::Vector    
+    bscales::Vector    
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    yscales::Vector
+    weights::Vector
 end
 
-struct PlsTuck{Q <: AbstractFloat}
-    Tx::Matrix{Q}
-    Ty::Matrix{Q}
-    Wx::Matrix{Q}
-    Wy::Matrix{Q}
-    TTx::Vector{Q}
-    TTy::Vector{Q}
-    delta::Vector{Q}
-    bscales::Vector{Q}    
-    xmeans::Vector{Q}
-    xscales::Vector{Q}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    weights::Vector{Q}
+struct PlsTuck
+    Tx::Matrix
+    Ty::Matrix
+    Wx::Matrix
+    Wy::Matrix
+    TTx::Vector
+    TTy::Vector
+    delta::Vector
+    bscales::Vector    
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    yscales::Vector
+    weights::Vector
 end
 
-struct Rasvd{Q <: AbstractFloat}
-    Tx::Matrix{Q}
-    Ty::Matrix{Q}
-    Bx::Matrix{Q}
-    Wy::Matrix{Q}
-    lambda::Vector{Q}    
-    bscales::Vector{Q}    
-    xmeans::Vector{Q}
-    xscales::Vector{Q}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    weights::Vector{Q}
+struct Rasvd
+    Tx::Matrix
+    Ty::Matrix
+    Bx::Matrix
+    Wy::Matrix
+    lambda::Vector    
+    bscales::Vector    
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    yscales::Vector
+    weights::Vector
 end
 
-struct Rp{Q <: AbstractFloat}
-    T::Matrix{Q}
+struct Rp
+    T::Matrix
     P
     xmeans
     xscales
 end
 
-struct Spca{Q <: AbstractFloat}
-    T::Array{Q} 
-    P::Array{Q}
-    sv::Vector{Q}
-    beta::Array{Q}
-    xmeans::Vector{Q}
-    xscales::Vector{Q}
-    weights::Vector{Q}
+struct Spca
+    T::Array 
+    P::Array
+    sv::Vector
+    beta::Array
+    xmeans::Vector
+    xscales::Vector
+    weights::Vector
     niter::Union{Vector{Int}, Nothing}
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
@@ -198,35 +198,35 @@ end
 
 ###### Regression
 
-struct Cglsr{Q <: AbstractFloat}
-    B::Matrix{Q}
-    g::Vector{Q}
-    xmeans::Vector{Q}
-    xscales::Vector{Q}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    F::Union{Array{Q}, Nothing}
+struct Cglsr
+    B::Matrix
+    g::Vector
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    yscales::Vector
+    F::Union{Array, Nothing}
 end
 
-struct Covselr{Q <: AbstractFloat}
-    T::Matrix{Q}
-    P::Matrix{Q}
-    R::Matrix{Q}
-    W::Matrix{Q}
-    C::Matrix{Q}
-    TT::Vector{Q}
-    xmeans::Vector{Q}
-    xscales::Vector{Q}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    weights::Vector{Q}
+struct Covselr
+    T::Matrix
+    P::Matrix
+    R::Matrix
+    W::Matrix
+    C::Matrix
+    TT::Vector
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    yscales::Vector
+    weights::Vector
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
 end
 
-struct Knnr{Q <: AbstractFloat}
-    X::Array{Q}
-    Y::Array{Q}
+struct Knnr
+    X::Array
+    Y::Array
     fm
     nlvdis::Int
     metric::String
@@ -236,43 +236,43 @@ struct Knnr{Q <: AbstractFloat}
     scal::Bool
 end
 
-struct Kplsr{Q <: AbstractFloat}
-    X::Matrix{Q}
-    Kt::Adjoint{Q, Matrix{Q}}
-    T::Matrix{Q}
-    C::Matrix{Q}
-    U::Matrix{Q}
-    R::Matrix{Q}
-    D::Diagonal{Q, Vector{Q}} 
-    DKt::Matrix{Q}
-    vtot::Matrix{Q}   
-    xscales::Vector{Q}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    weights::Vector{Q}
+struct Kplsr
+    X::Matrix
+    Kt::Adjoint{Matrix}
+    T::Matrix
+    C::Matrix
+    U::Matrix
+    R::Matrix
+    D::Diagonal{Vector} 
+    DKt::Matrix
+    vtot::Matrix   
+    xscales::Vector
+    ymeans::Vector
+    yscales::Vector
+    weights::Vector
     iter::Vector{Int}
     par::Par
 end
 
-struct Krr{Q <: AbstractFloat}
-    X::Matrix{Q}
-    K::Matrix{Q}
-    U::Matrix{Q}
-    UtDY::Matrix{Q}
-    sv::Vector{Q}
-    D::Diagonal{Q, Vector{Q}}
-    sqrtD::Diagonal{Q, Vector{Q}}
-    DKt::Matrix{Q}
-    vtot::Matrix{Q}
-    xscales::Vector{Q}
-    ymeans::Vector{Q}
-    weights::Vector{Q}
+struct Krr
+    X::Matrix
+    K::Matrix
+    U::Matrix
+    UtDY::Matrix
+    sv::Vector
+    D::Diagonal{Vector}
+    sqrtD::Diagonal{Vector}
+    DKt::Matrix
+    vtot::Matrix
+    xscales::Vector
+    ymeans::Vector
+    weights::Vector
     par::Par
 end
 
-struct Lwmlr{Q <: AbstractFloat}
-    X::Array{Q}
-    Y::Array{Q}
+struct Lwmlr
+    X::Array
+    Y::Array
     metric::String
     h::Real
     k::Int
@@ -280,9 +280,9 @@ struct Lwmlr{Q <: AbstractFloat}
     verbose::Bool
 end
 
-struct LwmlrS{Q <: AbstractFloat}
-    T::Array{Q}
-    Y::Array{Q}
+struct LwmlrS
+    T::Array
+    Y::Array
     fm
     metric::String
     h::Real
@@ -291,9 +291,9 @@ struct LwmlrS{Q <: AbstractFloat}
     verbose::Bool
 end
 
-struct Lwplsr{Q <: AbstractFloat}
-    X::Array{Q}
-    Y::Array{Q}
+struct Lwplsr
+    X::Array
+    Y::Array
     fm
     metric::String
     h::Real
@@ -304,9 +304,9 @@ struct Lwplsr{Q <: AbstractFloat}
     verbose::Bool
 end
 
-struct LwplsrAvg{Q <: AbstractFloat}
-    X::Array{Q}
-    Y::Array{Q}
+struct LwplsrAvg
+    X::Array
+    Y::Array
     fm
     metric::String
     h::Real
@@ -322,9 +322,9 @@ struct LwplsrAvg{Q <: AbstractFloat}
     verbose::Bool
 end
 
-struct LwplsrS{Q <: AbstractFloat}
-    T::Array{Q}
-    Y::Array{Q}
+struct LwplsrS
+    T::Array
+    Y::Array
     fm
     metric::String
     h::Real
@@ -335,49 +335,49 @@ struct LwplsrS{Q <: AbstractFloat}
     verbose::Bool
 end
 
-struct Mbplsr{Q <: AbstractFloat}
+struct Mbplsr
     fm
-    T::Matrix{Q}
-    R::Matrix{Q}
-    C::Matrix{Q}
-    bscales::Vector{Q}
-    xmeans::Vector{Vector{Q}}
-    xscales::Vector{Vector{Q}}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    weights::Vector{Q}
+    T::Matrix
+    R::Matrix
+    C::Matrix
+    bscales::Vector
+    xmeans::Vector{Vector}
+    xscales::Vector{Vector}
+    ymeans::Vector
+    yscales::Vector
+    weights::Vector
 end
 
-struct Mlr{Q <: AbstractFloat}
-    B::Matrix{Q}   
-    int::Matrix{Q}
-    weights::Vector{Q}
+struct Mlr
+    B::Matrix   
+    int::Matrix
+    weights::Vector
 end
 
-struct Pcr{Q <: AbstractFloat}
+struct Pcr
     fm_pca
-    T::Matrix{Q}
-    R::Matrix{Q}
-    C::Matrix{Q}
-    xmeans::Vector{Q}
-    xscales::Vector{Q}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    weights::Vector{Q}
+    T::Matrix
+    R::Matrix
+    C::Matrix
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    yscales::Vector
+    weights::Vector
 end
 
-struct Plsr{Q <: AbstractFloat}
-    T::Matrix{Q}
-    P::Matrix{Q}
-    R::Matrix{Q}
-    W::Matrix{Q}
-    C::Matrix{Q}
-    TT::Vector{Q}
-    xmeans::Vector{Q}
-    xscales::Vector{Q}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    weights::Vector{Q}
+struct Plsr
+    T::Matrix
+    P::Matrix
+    R::Matrix
+    W::Matrix
+    C::Matrix
+    TT::Vector
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    yscales::Vector
+    weights::Vector
     niter::Union{Vector{Int}, Nothing}
 end
 
@@ -385,10 +385,10 @@ struct Plsravg
     fm
 end
 
-struct PlsravgCri{Q <: AbstractFloat}
+struct PlsravgCri
     fm::Plsr
     nlv
-    w::Vector{Q}
+    w::Vector
 end
 
 struct PlsravgShenk
@@ -401,73 +401,73 @@ struct PlsravgUnif
     nlv
 end
 
-struct Plsrstack{Q <: AbstractFloat}
+struct Plsrstack
     fm::Plsr
     nlv
-    w::Vector{Q}
+    w::Vector
     Xstack  # = View
-    ystack::Array{Q}
-    weightsstack::Array{Q}
+    ystack::Array
+    weightsstack::Array
 end
 
-struct Rosaplsr{Q <: AbstractFloat}
-    T::Matrix{Q}
-    P::Matrix{Q}
-    R::Matrix{Q}
-    W::Matrix{Q}
-    C::Matrix{Q}
-    TT::Vector{Q}
-    xmeans::Vector{Vector{Q}}
-    xscales::Vector{Vector{Q}}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    weights::Vector{Q}
+struct Rosaplsr
+    T::Matrix
+    P::Matrix
+    R::Matrix
+    W::Matrix
+    C::Matrix
+    TT::Vector
+    xmeans::Vector{Vector}
+    xscales::Vector{Vector}
+    ymeans::Vector
+    yscales::Vector
+    weights::Vector
     bl::Vector
 end
 
-struct Rr{Q <: AbstractFloat}
-    V::Array{Q}
-    TtDY::Array{Q}
-    sv::Vector{Q}
+struct Rr
+    V::Array
+    TtDY::Array
+    sv::Vector
     lb::Float64
-    xmeans::Vector{Q}
-    xscales::Vector{Q}
-    ymeans::Vector{Q}
-    weights::Vector{Q}
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    weights::Vector
 end
 
-struct Soplsr{Q <: AbstractFloat}
+struct Soplsr
     fm
-    T::Matrix{Q}
-    fit::Matrix{Q}
+    T::Matrix
+    fit::Matrix
     b
 end
 
-struct Splsr{Q <: AbstractFloat}
-    T::Matrix{Q}
-    P::Matrix{Q}
-    R::Matrix{Q}
-    W::Matrix{Q}
-    C::Matrix{Q}
-    TT::Vector{Q}
-    xmeans::Vector{Q}
-    xscales::Vector{Q}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    weights::Vector{Q}
-    niter::Union{Array{Q}, Nothing}
+struct Splsr
+    T::Matrix
+    P::Matrix
+    R::Matrix
+    W::Matrix
+    C::Matrix
+    TT::Vector
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    yscales::Vector
+    weights::Vector
+    niter::Union{Array, Nothing}
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
 end
 
-struct Svmr{Q <: AbstractFloat}
+struct Svmr
     fm
-    xscales::Vector{Q}
+    xscales::Vector
 end
 
-struct TreerDt{Q <: AbstractFloat}
+struct TreerDt
     fm
-    xscales::Vector{Q}
+    xscales::Vector
     featur::Vector{Int}
     mth::Bool 
 end
@@ -480,36 +480,36 @@ struct Dkplsrda
     ni::AbstractVector
 end
 
-struct Dmkern{Q <: AbstractFloat}
-    X::Array{Q}
-    H::Array{Q}
-    Hinv::Array{Q}
+struct Dmkern
+    X::Array
+    H::Array
+    Hinv::Array
     detH::Float64
 end
 
-struct Dmnorm{Q <: AbstractFloat}
+struct Dmnorm
     mu
     Uinv 
     detS
     cst
 end
 
-struct Dmnormlog{Q <: AbstractFloat}
+struct Dmnormlog
     mu
     Uinv 
     logdetS
     logcst
 end
 
-struct Kernda{Q <: AbstractFloat}
+struct Kernda
     fm
     wprior::AbstractVector
     lev::AbstractVector
     ni::AbstractVector
 end
 
-struct Knnda{Q <: AbstractFloat}
-    X::Array{Q}
+struct Knnda
+    X::Array
     y::AbstractMatrix
     fm
     nlvdis::Int
@@ -522,19 +522,19 @@ struct Knnda{Q <: AbstractFloat}
     scal::Bool
 end
 
-struct Lda{Q <: AbstractFloat}
+struct Lda
     fm
-    W::Array{Q}  
-    ct::Array{Q}
-    wprior::Vector{Q}
-    theta::Vector{Q}
+    W::Array  
+    ct::Array
+    wprior::Vector
+    theta::Vector
     ni::Vector{Int}
     lev::AbstractVector
-    weights::Vector{Q}
+    weights::Vector
 end
 
-struct Lwmlrda{Q <: AbstractFloat}
-    X::Array{Q}
+struct Lwmlrda
+    X::Array
     y::AbstractMatrix
     metric::String
     h::Real
@@ -543,8 +543,8 @@ struct Lwmlrda{Q <: AbstractFloat}
     verbose::Bool
 end
 
-struct LwmlrdaS{Q <: AbstractFloat}
-    T::Array{Q}
+struct LwmlrdaS
+    T::Array
     y::AbstractMatrix
     fm
     metric::String
@@ -554,8 +554,8 @@ struct LwmlrdaS{Q <: AbstractFloat}
     verbose::Bool
 end
 
-struct Lwplslda{Q <: AbstractFloat}
-    X::Array{Q}
+struct Lwplslda
+    X::Array
     y::AbstractMatrix
     fm
     metric::String
@@ -570,8 +570,8 @@ struct Lwplslda{Q <: AbstractFloat}
     ni::AbstractVector
 end
 
-struct LwplsldaAvg{Q <: AbstractFloat}
-    X::Array{Q}
+struct LwplsldaAvg
+    X::Array
     y::AbstractMatrix
     fm
     metric::String
@@ -585,8 +585,8 @@ struct LwplsldaAvg{Q <: AbstractFloat}
     ni::AbstractVector
 end
 
-struct Lwplsqda{Q <: AbstractFloat}
-    X::Array{Q}
+struct Lwplsqda
+    X::Array
     y::AbstractMatrix
     fm
     metric::String
@@ -602,8 +602,8 @@ struct Lwplsqda{Q <: AbstractFloat}
     ni::AbstractVector
 end
 
-struct LwplsqdaAvg{Q <: AbstractFloat}
-    X::Array{Q}
+struct LwplsqdaAvg
+    X::Array
     y::AbstractMatrix
     fm
     metric::String
@@ -618,8 +618,8 @@ struct LwplsqdaAvg{Q <: AbstractFloat}
     ni::AbstractVector
 end
 
-struct Lwplsrda{Q <: AbstractFloat}
-    X::Array{Q}
+struct Lwplsrda
+    X::Array
     y::AbstractMatrix
     fm
     metric::String
@@ -633,8 +633,8 @@ struct Lwplsrda{Q <: AbstractFloat}
     ni::AbstractVector
 end
 
-struct LwplsrdaAvg{Q <: AbstractFloat}
-    X::Array{Q}
+struct LwplsrdaAvg
+    X::Array
     y::AbstractMatrix
     fm
     metric::String
@@ -648,8 +648,8 @@ struct LwplsrdaAvg{Q <: AbstractFloat}
     ni::AbstractVector
 end
 
-struct LwplsrdaS{Q <: AbstractFloat}
-    T::Array{Q}
+struct LwplsrdaS
+    T::Array
     y::AbstractMatrix
     fm
     metric::String
@@ -661,43 +661,43 @@ struct LwplsrdaS{Q <: AbstractFloat}
     verbose::Bool
 end
 
-struct Mlrda{Q <: AbstractFloat}
+struct Mlrda
     fm  
     lev::AbstractVector
     ni::AbstractVector
 end
 
-struct Nscda{Q <: AbstractFloat}
+struct Nscda
     fms
-    poolstd_s0::Vector{Q}
-    wprior::Vector{Q}
+    poolstd_s0::Vector
+    wprior::Vector
     ni::Vector{Int}
     lev::AbstractVector
-    xscales::Vector{Q}
-    weights::Vector{Q}
+    xscales::Vector
+    weights::Vector
 end
 
-struct Occknndis{Q <: AbstractFloat}
+struct Occknndis
     d::DataFrame
     fm
-    T::Array{Q}
-    tscales::Vector{Q}
+    T::Array
+    tscales::Vector
     k::Int
     e_cdf::ECDF
     cutoff::Real    
 end
 
-struct Occlknndis{Q <: AbstractFloat}
+struct Occlknndis
     d::DataFrame
     fm
-    T::Array{Q}
-    tscales::Vector{Q}
+    T::Array
+    tscales::Vector
     k::Int
     e_cdf::ECDF
     cutoff::Real    
 end
 
-struct Occod{Q <: AbstractFloat}
+struct Occod
     d
     fm
     e_cdf::ECDF
@@ -705,22 +705,22 @@ struct Occod{Q <: AbstractFloat}
     nlv::Int
 end
 
-struct Occsd{Q <: AbstractFloat}
+struct Occsd
     d
     fm
-    Sinv::Matrix{Q}
+    Sinv::Matrix
     e_cdf::ECDF
     cutoff::Real   
     nlv::Int
 end
 
-struct Occsdod{Q <: AbstractFloat}
+struct Occsdod
     d::DataFrame
     fm_sd
     fm_od
 end
 
-struct Occstah{Q <: AbstractFloat}
+struct Occstah
     d
     res_stah
     e_cdf::ECDF
@@ -739,7 +739,7 @@ struct Plsrda
     ni::AbstractVector
 end
 
-struct Plsrdaavg{Q <: AbstractFloat}  # for plsrdaavg, plsldaavg and plsqdaavg 
+struct Plsrdaavg  # for plsrdaavg, plsldaavg and plsqdaavg 
     fm
     nlv
     w_mod
@@ -747,27 +747,27 @@ struct Plsrdaavg{Q <: AbstractFloat}  # for plsrdaavg, plsldaavg and plsqdaavg
     ni::AbstractVector
 end
 
-struct Qda{Q <: AbstractFloat}
+struct Qda
     fm
     Wi::AbstractVector  
-    ct::Array{Q}
-    wprior::Vector{Q}
-    theta::Vector{Q}
+    ct::Array
+    wprior::Vector
+    theta::Vector
     ni::Vector{Int}
     lev::AbstractVector
-    weights::Vector{Q}
+    weights::Vector
 end
 
-struct Rda{Q <: AbstractFloat}
+struct Rda
     fm
     Wi::AbstractVector  
-    ct::Array{Q}
-    wprior::Vector{Q}
-    theta::Vector{Q}
+    ct::Array
+    wprior::Vector
+    theta::Vector
     ni::Vector{Int}
     lev::AbstractVector
-    xscales::Vector{Q}
-    weights::Vector{Q}
+    xscales::Vector
+    weights::Vector
 end
 
 struct Rrda
@@ -776,16 +776,16 @@ struct Rrda
     ni::AbstractVector
 end
 
-struct Svmda{Q <: AbstractFloat}
+struct Svmda
     fm
-    xscales::Vector{Q}
+    xscales::Vector
     lev::AbstractVector
     ni::AbstractVector
 end
 
-struct TreedaDt{Q <: AbstractFloat} 
+struct TreedaDt 
     fm
-    xscales::Vector{Q}
+    xscales::Vector
     featur::Vector{Int}
     lev::AbstractVector
     ni::AbstractVector
@@ -801,12 +801,12 @@ struct CplsrAvg
     ni
 end
 
-struct Dkplsr{Q <: AbstractFloat}
-    X::Matrix{Q}
+struct Dkplsr
+    X::Matrix
     fm::Plsr
-    K::Matrix{Q}
-    xscales::Vector{Q}
-    yscales::Vector{Q}
+    K::Matrix
+    xscales::Vector
+    yscales::Vector
     par::Par
 end
 

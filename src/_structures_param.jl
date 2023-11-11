@@ -15,3 +15,9 @@ Base.@kwdef struct Par
     scal::Bool = false
 end
 
+struct Weight{T <: AbstractFloat}
+    w::Vector{T} 
+end
+
+
+

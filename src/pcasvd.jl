@@ -146,34 +146,34 @@ end
 #####################################
 
 function pcasvd2(X; par = Par())
-    weights = mweight(ones(eltype(X), nro(X)))
+    weights = mweights(ones(eltype(X), nro(X)))
     pcasvd2!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcasvd2(X, weights; par = Par())
+function pcasvd2(X, weights::Weight; par = Par())
     pcasvd2!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcasvd2!(X, weights; par = Par())
+function pcasvd2!(X, weights::Weight; par = Par())
     n, p = size(X)
     nlv = min(par.nlv, n, p)
-    xmeans = colmean(X, weights)
+    xmeans = colmean(X, weights.w)
     xscales = ones(eltype(X), p)
     if par.scal 
-        xscales .= colstd(X, weights)
+        xscales .= colstd(X, weights.w)
         cscale!(X, xmeans, xscales)
     else
         center!(X, xmeans)
     end
     ## by default in LinearAlgebra.svd
     ## "full = false" ==> [1:min(n, p)]
-    sqrtw = sqrt.(weights)
+    sqrtw = sqrt.(weights.w)
     res = LinearAlgebra.svd!(sqrtw .* X)
     P = res.V[:, 1:nlv]
     sv = res.S   
     sv[sv .< 0] .= 0
     T = (1 ./ sqrtw) .* vcol(res.U, 1:nlv) * Diagonal(sv[1:nlv])
-    Pca2(T, P, sv, xmeans, xscales, weights, nothing)
+    (T = T, P, sv, xmeans, xscales, weights, nothing)
 end
 
 
