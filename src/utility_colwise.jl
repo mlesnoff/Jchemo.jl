@@ -20,7 +20,7 @@ end
 
 """
     colmean(X)
-    colmean(X, w)
+    colmean(X, weights)
 Compute the column-means of a matrix.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
@@ -41,7 +41,7 @@ colmean(X, w)
 """ 
 colmean(X) = vec(Statistics.mean(ensure_mat(X); dims = 1))
 
-colmean(X, w) = vec(w' * ensure_mat(X))
+colmean(X, weights::Weight) = vec(weights.w' * ensure_mat(X))
 
 """
     colnorm(X)
@@ -70,7 +70,7 @@ colnorm(X, w)
 """ 
 colnorm(X) = map(norm, eachcol(ensure_mat(X)))
 
-colnorm(X, w) = vec(sqrt.(w' * ensure_mat(X).^2))
+colnorm(X, weights::Weight) = vec(sqrt.(weights.w' * ensure_mat(X).^2))
 
 """
     colstd(X)
@@ -93,9 +93,10 @@ colstd(X)
 colstd(X, w)
 ```
 """ 
-colstd(X) = vec(Statistics.std(ensure_mat(X); corrected = false, dims = 1))
+colstd(X) = vec(Statistics.std(ensure_mat(X); 
+    corrected = false, dims = 1))
 
-colstd(X, w) = sqrt.(colvar(X, w))
+colstd(X, weights::Weight) = sqrt.(colvar(X, weights))
 
 """
     colsum(X)
@@ -120,7 +121,7 @@ colsum(X, w)
 """ 
 colsum(X) = vec(sum(X; dims = 1))
 
-colsum(X, w) = vec(w' * ensure_mat(X))
+colsum(X, weights::Weight) = vec(weights.w' * ensure_mat(X))
 
 """
     colvar(X)
@@ -143,12 +144,13 @@ colvar(X)
 colvar(X, w)
 ```
 """ 
-colvar(X) = vec(Statistics.var(ensure_mat(X); corrected = false, dims = 1))
+colvar(X) = vec(Statistics.var(ensure_mat(X); 
+    corrected = false, dims = 1))
 
-function colvar(X, w)
+function colvar(X, weights::Weight)
     X = ensure_mat(X)
-    v = colmean(X, w)
-    colnorm(X .- v', w).^2
+    v = colmean(X, weights)
+    colnorm(X .- v', weights).^2
 end
 
 ####### Functions skipping missing data
@@ -174,33 +176,31 @@ function colvarskip(X)
 end
 
 ## With weights
-function colmeanskip(X, w)
+function colmeanskip(X, weights::Weight)
     X = ensure_mat(X)
     p = nco(X)
-    isa(w, UnitRange) ? w = collect(w) : nothing   # rmrow does not accept UnitRange
     z = zeros(p)
     for j = 1:p
         s = ismissing.(vcol(X, j))
-        zw = mweight(rmrow(w, s))
+        zw = mweight(rmrow(weights.w, s))
         z[j] = sum(zw .* rmrow(X[:, j], s))
     end
     z
 end
 
-colsumskip(X, w) = colmeanskip(X, w)
+colsumskip(X, weights::Weight) = colmeanskip(X, weights)
 
-function colvarskip(X, w)
+function colvarskip(X, weights::Weight)
     X = ensure_mat(X)
     p = nco(X)
-    isa(w, UnitRange) ? w = collect(w) : nothing
-    z = colmeanskip(X, w)
+    z = colmeanskip(X, weights)
     @inbounds for j = 1:p
         s = ismissing.(vcol(X, j))
-        zw = mweight(rmrow(w, s))
+        zw = mweight(rmrow(weights.w, s))
         z[j] = dot(zw, (rmrow(X[:, j], s) .- z[j]).^2)        
     end
     z 
 end
 
-colstdskip(X, w) = sqrt.(colvarskip(X, w))
+colstdskip(X, weights::Weight) = sqrt.(colvarskip(X, weights))
 

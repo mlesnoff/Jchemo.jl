@@ -77,28 +77,28 @@ corm(X, w)
 corm(X, Y, w)
 ```
 """
-function corm(X, w)
+function corm(X, weights::Weight)
     zX = copy(ensure_mat(X))
-    xmeans = colmean(zX, w)
-    xstds = colstd(zX, w)
+    xmeans = colmean(zX, weights)
+    xstds = colstd(zX, weights)
     center!(zX, xmeans)
     scale!(zX, xstds)
     z = Diagonal(sqrt.(w)) * zX
     z' * z
 end
 
-function corm(X, Y, w)
+function corm(X, Y, weights::Weight)
     zX = copy(ensure_mat(X))
     zY = copy(ensure_mat(Y))
-    xmeans = colmean(zX, w)
-    ymeans = colmean(zY, w)
-    xstds = colstd(zX, w)
-    ystds = colstd(zY, w)
+    xmeans = colmean(zX, weights)
+    ymeans = colmean(zY, weights)
+    xstds = colstd(zX, weights)
+    ystds = colstd(zY, weights)
     center!(zX, xmeans)
     center!(zY, ymeans)
     scale!(zX, xstds)
     scale!(zY, ystds)
-    zX' * Diagonal(w) * zY
+    zX' * Diagonal(weights.w) * zY
 end
 
 """
@@ -164,19 +164,19 @@ covm(X, w)
 covm(X, Y, w)
 ```
 """
-function covm(X, w)
+function covm(X, weights::Weight)
     zX = copy(ensure_mat(X))
-    center!(zX, colmean(zX, w))
-    zX = Diagonal(sqrt.(w)) * zX
+    center!(zX, colmean(zX, weights))
+    zX = Diagonal(sqrt.(weights.w)) * zX
     zX' * zX
 end
 
-function covm(X, Y, w)
+function covm(X, Y, weights::Weight)
     zX = copy(ensure_mat(X))
     zY = copy(ensure_mat(Y))
-    center!(zX, colmean(zX, w))
-    center!(zY, colmean(zY, w))
-    zX' * Diagonal(w) * zY
+    center!(zX, colmean(zX, weights))
+    center!(zY, colmean(zY, weights))
+    zX' * Diagonal(weights.w) * zY
 end
 
 """
@@ -294,11 +294,15 @@ tab(x)
 findmax_cla(x)
 ```
 """
-function findmax_cla(x, weights = nothing)
+function findmax_cla(x)
     n = length(x)
-    isnothing(weights) ? weights = ones(n) : nothing
-    res = aggstat(weights, x; fun = sum)
-    # if equal, argmax takes the first
+    res = aggstat(ones(n), x; fun = sum)
+    res.lev[argmax(res.X)]   # if equal, argmax takes the first
+end
+
+function findmax_cla(x, weights::Weight)
+    n = length(x)
+    res = aggstat(weights.w, x; fun = sum)
     res.lev[argmax(res.X)]   
 end
 
@@ -318,19 +322,15 @@ The Frobenius norm of `X` is:
 The weighted norm is:
 * sqrt(tr(X' * D * X)), where D is the diagonal matrix of vector `w`.
 """
-function frob(X)
-    LinearAlgebra.norm(X)
-end
+frob(X) = LinearAlgebra.norm(X)
 
-function frob(X, w)
-    # 1
-    #sqrtD = Diagonal(sqrt.(w))
-    #sqrt(ssq(sqrtD * X))
-    # 2
-    # sqrt(sum(colnorm(X, w).^2))
-    # Faster:
-    sqrt(sum(w' * (X.^2)))
-end
+frob(X, weights::Weight) = sqrt(sum(weights.w' * (X.^2))) 
+# Faster than:
+# 1
+#sqrtD = Diagonal(sqrt.(w))
+#sqrt(ssq(sqrtD * X))
+# 2
+# sqrt(sum(colnorm(X, w).^2))
 
 # Test: fnorm_2(X, w) = 
 
@@ -402,7 +402,7 @@ list(5, Array{Float64})
 list(5, Matrix{Float64})
 ```
 """  
-list(n::Integer, type) = Vector{type}(undef, n)
+list(n::Integer, T) = Vector{T}(undef, n)
 
 """ 
     mad(x)
@@ -499,8 +499,8 @@ Return the squared weighted norm of a vector.
 The squared weighted norm of vector `x` is:
 * x' * D * x, where D is the diagonal matrix of vector `w`.
 """
-function normw(x, w::Vector)
-    sqrt(dot(x, w .* x))
+function normw(x, weights::Weight)
+    sqrt(dot(x, weights.w .* x))
 end
 
 """ 
@@ -599,9 +599,7 @@ pval(d::Distribution, q) = Distributions.ccdf(d, q)
 
 pval(e_cdf::ECDF, q) = 1 .- e_cdf(q)
 
-function pval(x::AbstractVector, q)
-    pval(StatsBase.ecdf(x), q)
-end
+pval(x::AbstractVector, q) = pval(StatsBase.ecdf(x), q)
 
 """
     recodcat2int(x; start = 1)
