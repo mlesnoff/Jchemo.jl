@@ -41,7 +41,7 @@ res.u
 svd(X).U[:, 1] 
 ```
 """ 
-function nipals(X; tol = sqrt(eps(1.)), maxit = 200)
+function nipals(X; par = Par())
     X = ensure_mat(X)
     n, p = size(X)
     u = X[:, argmax(colnorm(X))]
@@ -56,7 +56,7 @@ function nipals(X; tol = sqrt(eps(1.)), maxit = 200)
         mul!(u, X, v)
         dif = sum((u .- u0).^2)
         iter = iter + 1
-        if (dif < tol) || (iter > maxit)
+        if (dif < par.tol) || (iter > par.maxit)
             cont = false
         end
     end
@@ -66,8 +66,7 @@ function nipals(X; tol = sqrt(eps(1.)), maxit = 200)
     (u = u, v, sv, niter)
 end
 
-function nipals(X, UUt, VVt; 
-        tol = sqrt(eps(1.)), maxit = 200)
+function nipals(X, UUt, VVt; par = Par())
     X = ensure_mat(X)
     n, p = size(X)
     u = X[:, argmax(colnorm(X))]
@@ -84,7 +83,7 @@ function nipals(X, UUt, VVt;
         u .= u .- UUt * u
         dif = sum((u .- u0).^2)
         iter = iter + 1
-        if (dif < tol) || (iter > maxit)
+        if (dif < par.tol) || (iter > par.maxit)
             cont = false
         end
     end

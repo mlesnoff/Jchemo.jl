@@ -48,13 +48,12 @@ function pcanipals(X; par = Par())
     pcanipals!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcanipals(X, weights::Vector{Q}; 
-        par = Par()) where {Q <: AbstractFloat}
+function pcanipals(X, weights; par = Par())
     pcanipals!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcanipals!(X::Matrix, weights::Vector{Q}; 
-        par = Par()) where {Q <: AbstractFloat}
+function pcanipals!(X::Matrix, weights::Vector; 
+        par = Par()) 
     n, p = size(X)
     nlv = min(par.nlv, n, p)
     xmeans = colmean(X, weights) 
@@ -73,15 +72,15 @@ function pcanipals!(X::Matrix, weights::Vector{Q};
     sv = similar(X, nlv)
     niter = list(nlv, Int)
     if par.gs
-        UUt = zeros(n, n)
-        VVt = zeros(p, p)
+        typ = eltype(X)
+        UUt = zeros(typ, n, n)
+        VVt = zeros(typ, p, p)
     end
     for a = 1:nlv
-        if par.gs == false
-            res = nipals(X; tol = par.tol, maxit = par.maxit)
+        if par.gs
+            res = nipals(X, UUt, VVt; par)
         else
-            res = nipals(X, UUt, VVt; 
-                tol = par.tol, maxit = par.maxit)
+            res = nipals(X; par)
         end
         t .= res.u * res.sv
         T[:, a] .= t ./ sqrtw

@@ -18,16 +18,15 @@ See `?pcasvd` for examples.
 """ 
 function pcaeigen(X; par = Par())
     weights = mweight(ones(eltype(X), nro(X)))
-    pcasvd!(copy(ensure_mat(X)), weights; par)
+    pcaeigen!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcaeigen(X, weights::Vector{Q}; 
-        par = Par()) where {Q <: AbstractFloat}
-    pcasvd!(copy(ensure_mat(X)), weights; par)
+function pcaeigen(X, weights; par = Par())
+    pcaeigen!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcaeigen!(X::Matrix, weights::Vector{Q}; 
-        par = Par()) where {Q <: AbstractFloat}
+function pcaeigen!(X::Matrix, weights::Vector; 
+        par = Par()) 
     n, p = size(X)
     nlv = min(par.nlv, n, p)
     xmeans = colmean(X, weights) 

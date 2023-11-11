@@ -115,13 +115,13 @@ struct MbplsWest{Q <: AbstractFloat}            # Used for mbplswest, mbwcov
     niter::Union{Array{Q}, Nothing}
 end
 
-struct Pca{Q <: AbstractFloat} 
-    T::Matrix{Q} 
-    P::Matrix{Q}
-    sv::Vector{Q}
-    xmeans::Vector{Q}
-    xscales::Vector{Q}
-    weights::Vector{Q}
+struct Pca 
+    T::Matrix 
+    P::Matrix
+    sv::Vector
+    xmeans::Vector
+    xscales::Vector
+    weights::Vector
     ## For PCA Nipals
     niter::Union{Vector{Int}, Nothing}
 end

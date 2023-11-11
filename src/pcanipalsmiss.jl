@@ -66,21 +66,18 @@ function pcanipalsmiss(X; par = Par())
     pcanipalsmiss!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcanipalsmiss(X, weights::Vector{Q}; 
-        par = Par()) where {Q <: AbstractFloat}
+function pcanipalsmiss(X, weights; par = Par())
     pcanipalsmiss!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcanipalsmiss!(X::Matrix, weights::Vector{Q}; 
-        par = Par()) where {Q <: AbstractFloat}
+function pcanipalsmiss!(X::Matrix, weights::Vector; 
+        par = Par())
     n, p = size(X)
     nlv = min(par.nlv, n, p)
     xmeans = colmeanskip(X, weights) 
-    #xmeans = colmeanskip(X)
     xscales = ones(eltype(X), p)
     if par.scal 
         xscales .= colstdskip(X, weights)
-        #xscales .= colstdskip(X)
         cscale!(X, xmeans, xscales)
     else
         center!(X, xmeans)
@@ -98,10 +95,9 @@ function pcanipalsmiss!(X::Matrix, weights::Vector{Q};
     end
     for a = 1:nlv
         if par.gs == false
-            res = nipalsmiss(X; tol = par.tol, maxit = par.maxit)
+            res = nipalsmiss(X; par)
         else
-            res = nipalsmiss(X, UUt, VVt; 
-                tol = par.tol, maxit = par.maxit)
+            res = nipalsmiss(X, UUt, VVt; par)
         end
         t .= res.u * res.sv
         T[:, a] .= t ./ sqrtw
@@ -114,7 +110,7 @@ function pcanipalsmiss!(X::Matrix, weights::Vector{Q};
             UUt .+= res.u * res.u' 
             VVt .+= res.v * res.v'
         end
-    end    
+    end
     Pca(T, P, sv, xmeans, xscales, weights, niter) 
 end
 

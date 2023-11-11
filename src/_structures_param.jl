@@ -11,7 +11,7 @@ Base.@kwdef struct Par
     gs::Bool = true
     epsilon::Float64 = .1
     tol::Float64 = sqrt(eps(1.))
-    maxit::Int = 100
+    maxit::Int = 200
     scal::Bool = false
 end
 

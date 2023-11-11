@@ -155,34 +155,34 @@ end
 
 function colmeanskip(X)
     X = ensure_mat(X)
-    [mean(skipmissing(vcol(X, i))) for i in 1:nco(X)]
+    [mean(skipmissing(vcol(X, j))) for j in 1:nco(X)]
 end
 
 function colstdskip(X)
     X = ensure_mat(X)
-    [std(skipmissing(vcol(X, i)); corrected = false) for i in 1:nco(X)]
+    [std(skipmissing(vcol(X, j)); corrected = false) for j in 1:nco(X)]
 end
 
 function colsumskip(X)
     X = ensure_mat(X)
-    [sum(skipmissing(vcol(X, i))) for i in 1:nco(X)]
+    [sum(skipmissing(vcol(X, j))) for j in 1:nco(X)]
 end
 
 function colvarskip(X)
     X = ensure_mat(X)
-    [var(skipmissing(vcol(X, i)); corrected = false) for i in 1:nco(X)]
+    [var(skipmissing(vcol(X, j)); corrected = false) for j in 1:nco(X)]
 end
 
 ## With weights
 function colmeanskip(X, w)
     X = ensure_mat(X)
     p = nco(X)
-    w = collect(w) # rmrow does not accept UnitRange
+    isa(w, UnitRange) ? w = collect(w) : nothing   # rmrow does not accept UnitRange
     z = zeros(p)
-    for i = 1:p
-        s = ismissing.(vcol(X, i))
-        w = mweight(rmrow(w, s))
-        z[i] = sum(w .* rmrow(X[:, i], s))
+    for j = 1:p
+        s = ismissing.(vcol(X, j))
+        zw = mweight(rmrow(w, s))
+        z[j] = sum(zw .* rmrow(X[:, j], s))
     end
     z
 end
@@ -192,12 +192,12 @@ colsumskip(X, w) = colmeanskip(X, w)
 function colvarskip(X, w)
     X = ensure_mat(X)
     p = nco(X)
-    w = collect(w)
+    isa(w, UnitRange) ? w = collect(w) : nothing
     z = colmeanskip(X, w)
-    @inbounds for i = 1:p
-        s = ismissing.(vcol(X, i))
-        w = mweight(rmrow(w, s))
-        z[i] = dot(w, (rmrow(X[:, i], s) .- z[i]).^2)        
+    @inbounds for j = 1:p
+        s = ismissing.(vcol(X, j))
+        zw = mweight(rmrow(w, s))
+        z[j] = dot(zw, (rmrow(X[:, j], s) .- z[j]).^2)        
     end
     z 
 end

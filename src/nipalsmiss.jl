@@ -43,7 +43,7 @@ res.v
 res.u
 ```
 """ 
-function nipalsmiss(X; tol = sqrt(eps(1.)), maxit = 200)
+function nipalsmiss(X; par = Par())
     X = ensure_mat(X)
     n, p = size(X)
     s = ismissing.(X)
@@ -71,7 +71,7 @@ function nipalsmiss(X; tol = sqrt(eps(1.)), maxit = 200)
         u ./= colsum(zV)
         dif = sum((u .- u0).^2)
         iter = iter + 1
-        if (dif < tol) || (iter > maxit)
+        if (dif < par.tol) || (iter > par.maxit)
             cont = false
         end
     end
@@ -81,8 +81,7 @@ function nipalsmiss(X; tol = sqrt(eps(1.)), maxit = 200)
     (u = u, v, sv, niter)
 end
 
-function nipalsmiss(X, UUt, VVt; 
-        tol = sqrt(eps(1.)), maxit = 200)
+function nipalsmiss(X, UUt, VVt; par = Par())
     X = ensure_mat(X)
     n, p = size(X)
     s = ismissing.(X)
@@ -112,7 +111,7 @@ function nipalsmiss(X, UUt, VVt;
         u .= u .- UUt * u
         dif = sum((u .- u0).^2)
         iter = iter + 1
-        if (dif < tol) || (iter > maxit)
+        if (dif < par.tol) || (iter > par.maxit)
             cont = false
         end
     end

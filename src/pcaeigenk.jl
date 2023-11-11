@@ -30,13 +30,12 @@ function pcaeigenk(X; par = Par())
     pcaeigenk!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcaeigenk(X, weights::Vector{Q}; 
-        par = Par()) where {Q <: AbstractFloat}
+function pcaeigenk(X, weights; par = Par())
     pcaeigenk!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcaeigenk!(X::Matrix, weights::Vector{Q}; 
-        par = Par()) where {Q <: AbstractFloat}
+function pcaeigenk!(X::Matrix, weights::Vector; 
+        par = Par()) 
     n, p = size(X)
     nlv = min(par.nlv, n, p)
     xmeans = colmean(X, weights) 
