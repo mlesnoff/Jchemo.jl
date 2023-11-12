@@ -95,13 +95,13 @@ function dkplsr(X, Y; par = Par())
         par = par)
 end
 
-function dkplsr(X, Y, weights::Vector{Q}; 
+function dkplsr(X, Y, weights::Weight{Q}; 
         par = Par()) where {Q <: AbstractFloat}
     dkplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
         par = par)
 end
 
-function dkplsr!(X::Matrix, Y::Matrix, weights::Vector{Q}; 
+function dkplsr!(X::Matrix, Y::Matrix, weights::Weight{Q}; 
             par = Par()) where {Q <: AbstractFloat} 
     p = nco(X)
     q = nco(Y)
@@ -113,7 +113,7 @@ function dkplsr!(X::Matrix, Y::Matrix, weights::Vector{Q};
         scale!(X, xscales)
         scale!(Y, yscales)
     end
-    fkern = eval(Meta.parse(String(par.kern)))
+    fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
     K = fkern(X, X; par)     
     fm = plskern!(K, Y, weights; par)
     Dkplsr(X, fm, K, xscales, yscales, par)

@@ -139,7 +139,7 @@ function spca!(X::Matrix, weights = ones(nro(X)); nlv,
     else
         center!(X, xmeans)
     end
-    sqrtw = sqrt.(weights)
+    sqrtw = sqrt.(weights.w)
     X .= Diagonal(sqrtw) * X
     t = similar(X, n)
     T = similar(X, n, nlv)
@@ -208,7 +208,7 @@ Summarize the fitted model.
 function Base.summary(object::Spca, X::Union{Matrix, DataFrame})
     X = ensure_mat(X)
     nlv = nco(object.T)
-    D = Diagonal(object.weights)
+    D = Diagonal(object.weights.w)
     X = cscale(X, object.xmeans, object.xscales)
     ## (||X||_D)^2 = tr(X' * D * X) = frob(X, weights)^2
     sstot = sum(colnorm(X, object.weights).^2)    

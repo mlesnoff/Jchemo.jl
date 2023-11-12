@@ -44,15 +44,16 @@ Wright, K., 2018. Package nipals: Principal Components Analysis using NIPALS
 with Gram-Schmidt Orthogonalization. https://cran.r-project.org/
 """ 
 function pcanipals(X; par = Par())
-    weights = mweight(ones(eltype(X), nro(X)))
+    X = copy(ensure_mat(X))
+    pcanipals!(X, mweight(ones(eltype(X), nro(X))); 
+        par)
+end
+
+function pcanipals(X, weights::Weight; par = Par())
     pcanipals!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcanipals(X, weights; par = Par())
-    pcanipals!(copy(ensure_mat(X)), weights; par)
-end
-
-function pcanipals!(X::Matrix, weights::Vector; 
+function pcanipals!(X::Matrix, weights::Weight; 
         par = Par()) 
     n, p = size(X)
     nlv = min(par.nlv, n, p)
@@ -64,7 +65,7 @@ function pcanipals!(X::Matrix, weights::Vector;
     else
         center!(X, xmeans)
     end
-    sqrtw = sqrt.(weights)
+    sqrtw = sqrt.(weights.w)
     X .= Diagonal(sqrtw) * X
     t = similar(X, n)
     T = similar(X, n, nlv)

@@ -315,7 +315,6 @@ Frobenius norm of a matrix.
     Consider to preliminary normalise `w` to 
     sum to 1 (e.g. function `mweight`).
 
-
 The Frobenius norm of `X` is:
 * sqrt(tr(X' * X)).
 
@@ -331,8 +330,6 @@ frob(X, weights::Weight) = sqrt(sum(weights.w' * (X.^2)))
 #sqrt(ssq(sqrtD * X))
 # 2
 # sqrt(sum(colnorm(X, w).^2))
-
-# Test: fnorm_2(X, w) = 
 
 """
     head(X)
@@ -374,7 +371,6 @@ iqr(x)
 ```
 """
 iqr(x) = quantile(x, .75) - quantile(x, .25)
-
 
 """
     list(n::Integer)

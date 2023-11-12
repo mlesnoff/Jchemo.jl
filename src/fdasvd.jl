@@ -26,6 +26,7 @@ function fdasvd(X, y; nlv, lb = 0, scal::Bool = false)
 end
 
 function fdasvd!(X::Matrix, y; nlv, lb = 0, scal::Bool = false)
+    @assert par.lb < 0 "Argument 'lb' must ∈ [0, Inf[."
     n, p = size(X)
     xmeans = colmean(X) 
     xscales = ones(eltype(X), p)

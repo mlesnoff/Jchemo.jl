@@ -42,20 +42,20 @@ matW(X, y, w).W + matB(X, y, w).B
 covm(X, w)
 ```
 """ 
-matB = function(X, y, weights = ones(nro(X)))
+matB = function(X, y, weights::Weight)
     X = ensure_mat(X)
     y = vec(y)  # required for findall 
     p = nco(X)
-    weights = mweight(weights)
     taby = tab(y)
     lev = taby.keys
     ni = taby.vals
     nlev = length(lev)
-    theta = vec(aggstat(weights, y; fun = sum).X)
+    w = weights.w
+    theta = mweight(vec(aggstat(w, y; fun = sum).X))
     ct = similar(X, nlev, p)
     @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(X[s, :], weights[s])
+        ct[i, :] = colmean(X[s, :], mweight(w[s]))
     end
     B = covm(ct, theta)
     (B = B, ct, theta, ni, lev, weights)
@@ -77,32 +77,32 @@ Wi is computed by `covm(`X`, `weights`)`.
 
 For examples, see `?matB`. 
 """ 
-matW = function(X, y, weights = ones(nro(X)))
+matW = function(X, y, weights::Weight)
     X = ensure_mat(X)
     y = vec(y)  # required for findall 
     p = nco(X) 
-    weights = mweight(weights)
     taby = tab(y)
     lev = taby.keys
     ni = taby.vals
     nlev = length(lev)
-    theta = vec(aggstat(weights, y; fun = sum).X)
+    w = weights.w
+    theta = mweight(vec(aggstat(w, y; fun = sum).X))
     ## Case with at least one class with only 1 obs:
     ## this creates Wi_1obs used in the boucle
     if sum(ni .== 1) > 0
         Wi_1obs = covm(X, weights)
     end
     ## End
-    Wi = list(nlev, Matrix{Float64})
-    W = zeros(p, p)
+    Wi = list(nlev, Matrix)
+    W = zeros(eltype(X), p, p)
     @inbounds for i in 1:nlev 
         if ni[i] == 1
             Wi[i] = Wi_1obs
         else
             s = findall(y .== lev[i])
-            Wi[i] = covm(X[s, :], weights[s])
+            Wi[i] = covm(X[s, :], mweight(w[s]))
         end
-        @. W = W + theta[i] * Wi[i]
+        @. W = W + theta.w[i] * Wi[i]
         ## Alternative: give weight = 0 to the class(es) with 1 obs
     end
     (W = W, Wi, theta, ni, lev, weights)

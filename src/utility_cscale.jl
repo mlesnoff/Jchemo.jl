@@ -13,7 +13,7 @@ xmeans = colmean(X)
 center(X, xmeans)
 ```
 """ 
-center(X, v) = X .- vec(v)
+center(X, v) = X .- vec(v)'
 
 center!(X::AbstractMatrix, v) = X .-= vec(v)'
 

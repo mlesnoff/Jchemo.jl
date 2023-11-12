@@ -82,7 +82,7 @@ function rasvd!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     q = nco(Y)
     nlv = min(nlv, p, q)
     weights = mweight(weights)
-    sqrtw = sqrt.(weights)
+    sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     xscales = ones(eltype(X), p)
@@ -176,7 +176,7 @@ function Base.summary(object::Rasvd, X::Union{Vector, Matrix, DataFrame},
     n, nlv = size(object.Tx)
     X = cscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = cscale(Y, object.ymeans, object.yscales) / object.bscales[2]
-    D = Diagonal(object.weights)
+    D = Diagonal(object.weights.w)
     # X
     T = object.Tx
     sstot = frob(X, object.weights)^2

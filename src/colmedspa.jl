@@ -21,7 +21,7 @@ function colmedspa(X; delta = 1e-6)
         w[s] .= ep 
         s = w .> ep
         w[s] .= 1 ./ w[s]
-        mweight!(w)
+        w ./= sum(w)
         for i = 1:n
             X1[i, :] .= w[i] * vrow(X, i)
         end

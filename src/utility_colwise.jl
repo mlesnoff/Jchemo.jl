@@ -162,7 +162,8 @@ end
 
 function colstdskip(X)
     X = ensure_mat(X)
-    [std(skipmissing(vcol(X, j)); corrected = false) for j in 1:nco(X)]
+    [std(skipmissing(vcol(X, j)); corrected = false) 
+        for j in 1:nco(X)]
 end
 
 function colsumskip(X)
@@ -172,7 +173,8 @@ end
 
 function colvarskip(X)
     X = ensure_mat(X)
-    [var(skipmissing(vcol(X, j)); corrected = false) for j in 1:nco(X)]
+    [var(skipmissing(vcol(X, j)); corrected = false) 
+        for j in 1:nco(X)]
 end
 
 ## With weights
@@ -182,7 +184,7 @@ function colmeanskip(X, weights::Weight)
     z = zeros(p)
     for j = 1:p
         s = ismissing.(vcol(X, j))
-        zw = mweight(rmrow(weights.w, s))
+        zw = mweight(rmrow(weights.w, s)).w
         z[j] = sum(zw .* rmrow(X[:, j], s))
     end
     z
@@ -196,7 +198,7 @@ function colvarskip(X, weights::Weight)
     z = colmeanskip(X, weights)
     @inbounds for j = 1:p
         s = ismissing.(vcol(X, j))
-        zw = mweight(rmrow(weights.w, s))
+        zw = mweight(rmrow(weights.w, s)).w
         z[j] = dot(zw, (rmrow(X[:, j], s) .- z[j]).^2)        
     end
     z 

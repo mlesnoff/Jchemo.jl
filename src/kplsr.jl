@@ -95,13 +95,13 @@ function kplsr(X, Y; par = Par())
         par = par)
 end
 
-function kplsr(X, Y, weights::Vector{Q}; 
+function kplsr(X, Y, weights::Weight{Q}; 
         par = Par()) where {Q <: AbstractFloat}
     kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
         par = par)
 end
 
-function kplsr!(X::Matrix, Y::Matrix, weights::Vector{Q}; 
+function kplsr!(X::Matrix, Y::Matrix, weights::Weight{Q}; 
             par = Par()) where {Q <: AbstractFloat} 
     n, p = size(X)
     q = nco(Y)
@@ -117,9 +117,9 @@ function kplsr!(X::Matrix, Y::Matrix, weights::Vector{Q};
     else
         center!(Y, ymeans)
     end
-    fkern = eval(Meta.parse(String(par.kern)))  
+    fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
     K = fkern(X, X; par)     # In the future?: fkern!(K, X, X; par)
-    D = Diagonal(weights)
+    D = Diagonal(weights.w)
     Kt = K'    
     DKt = D * Kt
     vtot = sum(DKt, dims = 1)

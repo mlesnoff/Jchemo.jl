@@ -26,15 +26,16 @@ Part I: Theory and algorithms. Chemometrics and Intelligent Laboratory Systems 3
 https://doi.org/10.1016/S0169-7439(97)00010-5
 """ 
 function pcaeigenk(X; par = Par())
-    weights = mweight(ones(eltype(X), nro(X)))
+    X = copy(ensure_mat(X))
+    pcaeigenk!(X, mweight(ones(eltype(X), nro(X))); 
+        par)
+end
+
+function pcaeigenk(X, weights::Weight; par = Par())
     pcaeigenk!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcaeigenk(X, weights; par = Par())
-    pcaeigenk!(copy(ensure_mat(X)), weights; par)
-end
-
-function pcaeigenk!(X::Matrix, weights::Vector; 
+function pcaeigenk!(X::Matrix, weights::Weight; 
         par = Par()) 
     n, p = size(X)
     nlv = min(par.nlv, n, p)
@@ -46,7 +47,7 @@ function pcaeigenk!(X::Matrix, weights::Vector;
     else
         center!(X, xmeans)
     end
-    sqrtw = sqrt.(weights)
+    sqrtw = sqrt.(weights.w)
     zX = Diagonal(sqrtw) * X
     res = eigen!(Symmetric(zX * zX'); sortby = x -> -abs(x))
     eig = res.values[1:min(n, p)]

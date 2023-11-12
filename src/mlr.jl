@@ -105,7 +105,7 @@ function mlrchol!(X::Matrix, Y::Matrix, weights = ones(nro(X)))
     ymeans = colmean(Y, weights)   
     center!(X, xmeans)
     center!(Y, ymeans)
-    XtD = X' * Diagonal(weights)
+    XtD = X' * Diagonal(weights.w)
     B = cholesky!(Hermitian(XtD * X)) \ (XtD * Y)
     int = ymeans' .- xmeans' * B
     Mlr(B, int, weights)
@@ -178,7 +178,7 @@ function mlrpinvn!(X::Matrix, Y::Matrix, weights = ones(nro(X)))
     ymeans = colmean(Y, weights)   
     center!(X, xmeans)
     center!(Y, ymeans)
-    XtD = X' * Diagonal(weights)
+    XtD = X' * Diagonal(weights.w)
     XtDX = XtD * X
     tol = sqrt(eps(real(float(one(eltype(XtDX))))))
     B = pinv(XtD * X, rtol = tol) * (XtD * Y)
@@ -213,7 +213,7 @@ function mlrvec!(x::Matrix, Y::Matrix, weights = ones(length(x));
     weights = mweight(weights)
     if noint
         q = nco(Y)
-        xtD = x' * Diagonal(weights)
+        xtD = x' * Diagonal(weights.w)
         B = (xtD * Y) ./ (xtD * x)
         int = zeros(q)'
     else
@@ -221,7 +221,7 @@ function mlrvec!(x::Matrix, Y::Matrix, weights = ones(length(x));
         ymeans = colmean(Y, weights)   
         center!(x, xmeans)
         center!(Y, ymeans)
-        xtD = x' * Diagonal(weights)
+        xtD = x' * Diagonal(weights.w)
         B = (xtD * Y) ./ (xtD * x)
         int = ymeans' .- xmeans' * B
     end

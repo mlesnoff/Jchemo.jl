@@ -87,7 +87,7 @@ function mbunif!(Xbl, weights = ones(nro(Xbl[1])); nlv,
     nbl = length(Xbl)
     n = nro(Xbl[1])
     weights = mweight(weights)
-    sqrtw = sqrt.(weights)
+    sqrtw = sqrt.(weights.w)
     xmeans = list(nbl, Vector{Float64})
     xscales = list(nbl, Vector{Float64})
     p = fill(0, nbl)
@@ -109,7 +109,7 @@ function mbunif!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         Xbl = res.X
     end
     # Row metric
-    sqrtw = sqrt.(weights)
+    sqrtw = sqrt.(weights.w)
     @inbounds for k = 1:nbl
         Xbl[k] .= sqrtw .* Xbl[k]
     end

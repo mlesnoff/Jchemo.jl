@@ -62,15 +62,16 @@ Xres
 ```
 """ 
 function pcanipalsmiss(X; par = Par())
-    weights = mweight(ones(eltype(X), nro(X)))
+    X = copy(ensure_mat(X))
+    pcanipalsmiss!(X, mweight(ones(eltype(X), nro(X))); 
+        par)
+end
+
+function pcanipalsmiss(X, weights::Weight; par = Par())
     pcanipalsmiss!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcanipalsmiss(X, weights; par = Par())
-    pcanipalsmiss!(copy(ensure_mat(X)), weights; par)
-end
-
-function pcanipalsmiss!(X::Matrix, weights::Vector; 
+function pcanipalsmiss!(X::Matrix, weights::Weight; 
         par = Par())
     n, p = size(X)
     nlv = min(par.nlv, n, p)
@@ -82,7 +83,7 @@ function pcanipalsmiss!(X::Matrix, weights::Vector;
     else
         center!(X, xmeans)
     end
-    sqrtw = sqrt.(weights)
+    sqrtw = sqrt.(weights.w)
     X .= Diagonal(sqrtw) * X
     t = similar(X, n)
     T = similar(X, n, nlv)

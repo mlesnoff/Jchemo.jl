@@ -44,7 +44,7 @@ function plssimp!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         center!(X, xmeans)
         center!(Y, ymeans)
     end
-    D = Diagonal(weights)
+    D = Diagonal(weights.w)
     XtY = X' * (D * Y)   
     # Pre-allocation
     T = similar(X, n, nlv)

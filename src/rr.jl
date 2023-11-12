@@ -77,7 +77,7 @@ function rr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
         scal::Bool = false)
     p = nco(X)
     weights = mweight(weights)
-    sqrtw = sqrt.(weights)
+    sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)
     xscales = ones(eltype(X), p)
@@ -146,7 +146,7 @@ function rrchol!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
         center!(X, xmeans)
     end
     center!(Y, ymeans)  
-    XtD = X' * Diagonal(weights)
+    XtD = X' * Diagonal(weights.w)
     B = cholesky!(Hermitian(XtD * X + lb^2 * Diagonal(ones(p)))) \ (XtD * Y)
     B .= Diagonal(1 ./ xscales) * B 
     int = ymeans' .- xmeans' * B

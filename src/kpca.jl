@@ -63,20 +63,24 @@ pnames(res)
 res.explvarx
 ```
 """ 
-function kpca(X, weights = ones(nro(X)); nlv, 
-        kern = :krbf, scal::Bool = false, kwargs...)
+function kpca(X; par = Par())
+    X = copy(ensure_mat(X))
+    kpca(X, mweight(ones(eltype(X), nro(X))); 
+        par)
+end
+
+function kpca(X, weights::Weight; par = Par())
     X = ensure_mat(X)
     n, p = size(X)
-    nlv = min(nlv, n)
-    weights = mweight(weights) 
+    nlv = min(par.nlv, n)
     xscales = ones(eltype(X), p)
     if par.scal 
         xscales .= colstd(X, weights)
         X = scale(X, xscales)
     end
-    fkern = eval(Meta.parse(String(par.kern)))  
-    K = fkern(X, X; kwargs...)     # In the future: fkern!(K, X, X; kwargs...)
-    D = Diagonal(weights)
+    fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
+    K = fkern(X, X; par)  # in the future?: fkern!(K, X, X; par)
+    D = Diagonal(weights.w)
     Kt = K'    
     DKt = D * Kt
     vtot = sum(DKt, dims = 1)
@@ -90,7 +94,8 @@ function kpca(X, weights = ones(nro(X)); nlv,
     sv = sqrt.(eig)
     P = sqrtD * scale(U, sv[1:nlv])     # In the future: scale!
     T = Kc * P       # T = Kc * P = D^(-1/2) * U * Delta
-    Kpca(X, Kt, T, P, sv, eig, D, DKt, vtot, xscales, weights, kern, kwargs)
+    Kpca(X, Kt, T, P, sv, eig, D, DKt, vtot, xscales, 
+        weights, par)
 end
 
 """ 

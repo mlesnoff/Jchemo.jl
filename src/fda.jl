@@ -78,13 +78,17 @@ fm.sstot
 Base.summary(fm)
 ```
 """ 
-function fda(X, y; nlv, lb = 0, scal::Bool = false)
-    fda!(copy(ensure_mat(X)), y; nlv = nlv, lb = lb, 
-        scal = scal)
-end
+fda(X; par = Par()) = fda!(copy(ensure_mat(X)); par)
 
-function fda!(X::Matrix, y; nlv, lb = 0, scal::Bool = false)
+function fda!(X::Matrix; par = Par())
+#function fda(X, y; nlv, lb = 0, scal::Bool = false)
+#    fda!(copy(ensure_mat(X)), y; nlv = nlv, lb = lb, 
+#        scal = scal)
+#end
+#function fda!(X::Matrix, y; nlv, lb = 0, scal::Bool = false)
+    @assert par.lb < 0 "Argument 'lb' must ∈ [0, Inf[."
     n, p = size(X)
+    lb = convert(eltype(X), par.lb)
     xmeans = colmean(X)
     xscales = ones(eltype(X), p)
     if par.scal 

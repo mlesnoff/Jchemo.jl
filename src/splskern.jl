@@ -131,7 +131,7 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         center!(X, xmeans)
         center!(Y, ymeans)
     end
-    D = Diagonal(weights)
+    D = Diagonal(weights.w)
     XtY = X' * (D * Y)                   # = Xd' * Y = X' * D * Y  (Xd = D * X   Very costly!!)
     #XtY = X' * (weights .* Y)           # Can create OutOfMemory errors for very large matrices
     # Pre-allocation

@@ -94,13 +94,13 @@ function plskern(X, Y; par = Par())
         par = par)
 end
 
-function plskern(X, Y, weights::Vector{Q}; 
+function plskern(X, Y, weights::Weight{Q}; 
         par = Par()) where {Q <: AbstractFloat}
     plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
         par = par)
 end
 
-function plskern!(X::Matrix, Y::Matrix, weights::Vector{Q}; 
+function plskern!(X::Matrix, Y::Matrix, weights::Weight{Q}; 
             par = Par()) where {Q <: AbstractFloat} 
     n, p = size(X)
     q = nco(Y)
@@ -118,7 +118,7 @@ function plskern!(X::Matrix, Y::Matrix, weights::Vector{Q};
         center!(X, xmeans)
         center!(Y, ymeans)
     end
-    D = Diagonal(weights)
+    D = Diagonal(weights.w)
     XtY = X' * (D * Y)                   # = Xd' * Y = X' * D * Y  (Xd = D * X   Very costly!!)
     #XtY = X' * (weights .* Y)           # Can create OutOfMemory errors for very large matrices
     # Pre-allocation

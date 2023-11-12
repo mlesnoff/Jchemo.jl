@@ -11,7 +11,7 @@ struct Cca
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Vector
+    weights::Weight
 end
 
 struct CcaWold
@@ -30,68 +30,67 @@ struct CcaWold
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Vector
+    weights::Weight
     niter::Vector{Int}
 end
 
 struct Comdim
-    T::Array 
-    U::Array
-    W::Array
-    Tbl::Vector{Array}
-    Tb::Vector{Array}
-    Wbl::Vector{Array}
-    lb::Array
+    T::Matrix 
+    U::Matrix
+    W::Matrix
+    Tbl::Vector{Matrix}
+    Tb::Vector{Matrix}
+    Wbl::Vector{Matrix}
+    lb::Matrix
     mu::Vector
     bscales::Vector
     xmeans::Vector{Vector}
     xscales::Vector{Vector}
-    weights::Vector
+    weights::Weight
     niter::Vector{Int}
 end
 
 struct Fda
-    T::Array
-    P::Array
-    Tcenters::Array
+    T::Matrix
+    P::Matrix
+    Tcenters::Matrix
     eig::Vector
-    sstot::Number
+    sstot::AbstractFloat
     W::Matrix
     xmeans::Vector
     xscales::Vector
-    lev::AbstractVector
-    ni::AbstractVector
+    lev::Vector
+    ni::Vector{Int}
 end
 
 struct Kpca
-    X::Array
-    Kt::Array
-    T::Array
-    P::Array
+    X::Matrix
+    Kt::Adjoint
+    T::Matrix
+    P::Matrix
     sv::Vector  
     eig::Vector    
-    D::Array 
-    DKt::Array
-    vtot::Array
+    D::Diagonal
+    DKt::Matrix
+    vtot::Matrix
     xscales::Vector 
-    weights::Vector
-    kern
-    dots
+    weights::Weight
+    par::Par
 end
 
 struct Mbpca
-    T::Array 
-    U::Array
-    W::Array
-    Tbl::Vector{Array}
-    Tb::Vector{Array}
-    Wbl::Vector{Array}
-    lb::Array
+    T::Matrix 
+    U::Matrix
+    W::Matrix
+    Tbl::Vector{Matrix}
+    Tb::Vector{Matrix}
+    Wbl::Vector{Matrix}
+    lb::Matrix
     mu::Vector
     bscales::Vector
     xmeans::Vector{Vector}
     xscales::Vector{Vector}
-    weights::Vector
+    weights::Weight
     niter::Vector{Int}
 end
 
@@ -101,18 +100,18 @@ struct MbplsWest            # Used for mbplswest, mbwcov
     R::Matrix
     W::Matrix
     C::Matrix
-    Tbl::Vector{Array}
-    Tb::Vector{Array}
-    Pbl::Vector{Array}
+    Tbl::Vector{Matrix}
+    Tb::Vector{Matrix}
+    Pbl::Vector{Matrix}
     TT::Vector
     bscales::Vector
     xmeans::Vector{Vector}
     xscales::Vector{Vector}
     ymeans::Vector
     yscales::Vector
-    weights::Vector
-    lb::Union{Array, Nothing}
-    niter::Union{Array, Nothing}
+    weights::Weight
+    lb::Union{Matrix, Nothing}
+    niter::Union{Matrix, Nothing}
 end
 
 struct Pca 
@@ -121,9 +120,8 @@ struct Pca
     sv::Vector
     xmeans::Vector
     xscales::Vector
-    weights::Vector
-    ## For PCA Nipals
-    niter::Union{Vector{Int}, Nothing}
+    weights::Weight
+    niter::Union{Vector{Int}, Nothing} # for PCA Nipals
 end
 
 struct PlsCan
@@ -143,7 +141,7 @@ struct PlsCan
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Vector
+    weights::Weight
 end
 
 struct PlsTuck
@@ -159,7 +157,7 @@ struct PlsTuck
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Vector
+    weights::Weight
 end
 
 struct Rasvd
@@ -173,7 +171,7 @@ struct Rasvd
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Vector
+    weights::Weight
 end
 
 struct Rp
@@ -184,13 +182,13 @@ struct Rp
 end
 
 struct Spca
-    T::Array 
-    P::Array
+    T::Matrix 
+    P::Matrix
     sv::Vector
-    beta::Array
+    beta::Matrix
     xmeans::Vector
     xscales::Vector
-    weights::Vector
+    weights::Weight
     niter::Union{Vector{Int}, Nothing}
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
@@ -205,7 +203,7 @@ struct Cglsr
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    F::Union{Array, Nothing}
+    F::Union{Matrix, Nothing}
 end
 
 struct Covselr
@@ -219,14 +217,14 @@ struct Covselr
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Vector
+    weights::Weight
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
 end
 
 struct Knnr
-    X::Array
-    Y::Array
+    X::Matrix
+    Y::Matrix
     fm
     nlvdis::Int
     metric::String
@@ -238,18 +236,18 @@ end
 
 struct Kplsr
     X::Matrix
-    Kt::Adjoint{Matrix}
+    Kt::Adjoint
     T::Matrix
     C::Matrix
     U::Matrix
     R::Matrix
-    D::Diagonal{Vector} 
+    D::Diagonal 
     DKt::Matrix
     vtot::Matrix   
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Vector
+    weights::Weight
     iter::Vector{Int}
     par::Par
 end
@@ -260,19 +258,19 @@ struct Krr
     U::Matrix
     UtDY::Matrix
     sv::Vector
-    D::Diagonal{Vector}
-    sqrtD::Diagonal{Vector}
+    D::Diagonal
+    sqrtD::Diagonal
     DKt::Matrix
     vtot::Matrix
     xscales::Vector
     ymeans::Vector
-    weights::Vector
+    weights::Weight
     par::Par
 end
 
 struct Lwmlr
-    X::Array
-    Y::Array
+    X::Matrix
+    Y::Matrix
     metric::String
     h::Real
     k::Int
@@ -281,8 +279,8 @@ struct Lwmlr
 end
 
 struct LwmlrS
-    T::Array
-    Y::Array
+    T::Matrix
+    Y::Matrix
     fm
     metric::String
     h::Real
@@ -292,8 +290,8 @@ struct LwmlrS
 end
 
 struct Lwplsr
-    X::Array
-    Y::Array
+    X::Matrix
+    Y::Matrix
     fm
     metric::String
     h::Real
@@ -305,8 +303,8 @@ struct Lwplsr
 end
 
 struct LwplsrAvg
-    X::Array
-    Y::Array
+    X::Matrix
+    Y::Matrix
     fm
     metric::String
     h::Real
@@ -323,8 +321,8 @@ struct LwplsrAvg
 end
 
 struct LwplsrS
-    T::Array
-    Y::Array
+    T::Matrix
+    Y::Matrix
     fm
     metric::String
     h::Real
@@ -345,13 +343,13 @@ struct Mbplsr
     xscales::Vector{Vector}
     ymeans::Vector
     yscales::Vector
-    weights::Vector
+    weights::Weight
 end
 
 struct Mlr
     B::Matrix   
     int::Matrix
-    weights::Vector
+    weights::Weight
 end
 
 struct Pcr
@@ -363,7 +361,7 @@ struct Pcr
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Vector
+    weights::Weight
 end
 
 struct Plsr
@@ -377,7 +375,7 @@ struct Plsr
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Vector
+    weights::Weight
     niter::Union{Vector{Int}, Nothing}
 end
 
@@ -406,8 +404,8 @@ struct Plsrstack
     nlv
     w::Vector
     Xstack  # = View
-    ystack::Array
-    weightsstack::Array
+    ystack::Matrix
+    weightsstack::Matrix
 end
 
 struct Rosaplsr
@@ -421,19 +419,19 @@ struct Rosaplsr
     xscales::Vector{Vector}
     ymeans::Vector
     yscales::Vector
-    weights::Vector
+    weights::Weight
     bl::Vector
 end
 
 struct Rr
-    V::Array
-    TtDY::Array
+    V::Matrix
+    TtDY::Matrix
     sv::Vector
     lb::Float64
     xmeans::Vector
     xscales::Vector
     ymeans::Vector
-    weights::Vector
+    weights::Weight
 end
 
 struct Soplsr
@@ -454,8 +452,8 @@ struct Splsr
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Vector
-    niter::Union{Array, Nothing}
+    weights::Weight
+    niter::Union{Matrix, Nothing}
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
 end
@@ -477,13 +475,13 @@ end
 struct Dkplsrda
     fm  
     lev::AbstractVector
-    ni::AbstractVector
+    ni::Int
 end
 
 struct Dmkern
-    X::Array
-    H::Array
-    Hinv::Array
+    X::Matrix
+    H::Matrix
+    Hinv::Matrix
     detH::Float64
 end
 
@@ -505,11 +503,11 @@ struct Kernda
     fm
     wprior::AbstractVector
     lev::AbstractVector
-    ni::AbstractVector
+    ni::Int
 end
 
 struct Knnda
-    X::Array
+    X::Matrix
     y::AbstractMatrix
     fm
     nlvdis::Int
@@ -518,23 +516,23 @@ struct Knnda
     k::Int
     tol::Real
     lev::AbstractVector
-    ni::AbstractVector
+    ni::Int
     scal::Bool
 end
 
 struct Lda
     fm
-    W::Array  
-    ct::Array
+    W::Matrix  
+    ct::Matrix
     wprior::Vector
     theta::Vector
     ni::Vector{Int}
     lev::AbstractVector
-    weights::Vector
+    weights::Weight
 end
 
 struct Lwmlrda
-    X::Array
+    X::Matrix
     y::AbstractMatrix
     metric::String
     h::Real
@@ -544,7 +542,7 @@ struct Lwmlrda
 end
 
 struct LwmlrdaS
-    T::Array
+    T::Matrix
     y::AbstractMatrix
     fm
     metric::String
@@ -555,7 +553,7 @@ struct LwmlrdaS
 end
 
 struct Lwplslda
-    X::Array
+    X::Matrix
     y::AbstractMatrix
     fm
     metric::String
@@ -567,11 +565,11 @@ struct Lwplslda
     scal::Bool
     verbose::Bool
     lev::AbstractVector
-    ni::AbstractVector
+    ni::Int
 end
 
 struct LwplsldaAvg
-    X::Array
+    X::Matrix
     y::AbstractMatrix
     fm
     metric::String
@@ -582,11 +580,11 @@ struct LwplsldaAvg
     scal::Bool
     verbose::Bool
     lev::AbstractVector
-    ni::AbstractVector
+    ni::Int
 end
 
 struct Lwplsqda
-    X::Array
+    X::Matrix
     y::AbstractMatrix
     fm
     metric::String
@@ -599,11 +597,11 @@ struct Lwplsqda
     scal::Bool
     verbose::Bool
     lev::AbstractVector
-    ni::AbstractVector
+    ni::Int
 end
 
 struct LwplsqdaAvg
-    X::Array
+    X::Matrix
     y::AbstractMatrix
     fm
     metric::String
@@ -615,11 +613,11 @@ struct LwplsqdaAvg
     scal::Bool
     verbose::Bool
     lev::AbstractVector
-    ni::AbstractVector
+    ni::Int
 end
 
 struct Lwplsrda
-    X::Array
+    X::Matrix
     y::AbstractMatrix
     fm
     metric::String
@@ -630,11 +628,11 @@ struct Lwplsrda
     scal::Bool
     verbose::Bool
     lev::AbstractVector
-    ni::AbstractVector
+    ni::Int
 end
 
 struct LwplsrdaAvg
-    X::Array
+    X::Matrix
     y::AbstractMatrix
     fm
     metric::String
@@ -645,11 +643,11 @@ struct LwplsrdaAvg
     scal::Bool
     verbose::Bool
     lev::AbstractVector
-    ni::AbstractVector
+    ni::Int
 end
 
 struct LwplsrdaS
-    T::Array
+    T::Matrix
     y::AbstractMatrix
     fm
     metric::String
@@ -664,7 +662,7 @@ end
 struct Mlrda
     fm  
     lev::AbstractVector
-    ni::AbstractVector
+    ni::Int
 end
 
 struct Nscda
@@ -674,13 +672,13 @@ struct Nscda
     ni::Vector{Int}
     lev::AbstractVector
     xscales::Vector
-    weights::Vector
+    weights::Weight
 end
 
 struct Occknndis
     d::DataFrame
     fm
-    T::Array
+    T::Matrix
     tscales::Vector
     k::Int
     e_cdf::ECDF
@@ -690,7 +688,7 @@ end
 struct Occlknndis
     d::DataFrame
     fm
-    T::Array
+    T::Matrix
     tscales::Vector
     k::Int
     e_cdf::ECDF
@@ -730,13 +728,13 @@ end
 struct Plslda    # for plslda and plsqda 
     fm  
     lev::AbstractVector
-    ni::AbstractVector
+    ni::Int
 end
 
 struct Plsrda
     fm  
     lev::AbstractVector
-    ni::AbstractVector
+    ni::Int
 end
 
 struct Plsrdaavg  # for plsrdaavg, plsldaavg and plsqdaavg 
@@ -744,43 +742,43 @@ struct Plsrdaavg  # for plsrdaavg, plsldaavg and plsqdaavg
     nlv
     w_mod
     lev::AbstractVector
-    ni::AbstractVector
+    ni::Int
 end
 
 struct Qda
     fm
     Wi::AbstractVector  
-    ct::Array
+    ct::Matrix
     wprior::Vector
     theta::Vector
     ni::Vector{Int}
     lev::AbstractVector
-    weights::Vector
+    weights::Weight
 end
 
 struct Rda
     fm
     Wi::AbstractVector  
-    ct::Array
+    ct::Matrix
     wprior::Vector
     theta::Vector
     ni::Vector{Int}
     lev::AbstractVector
     xscales::Vector
-    weights::Vector
+    weights::Weight
 end
 
 struct Rrda
     fm  
     lev::AbstractVector
-    ni::AbstractVector
+    ni::Int
 end
 
 struct Svmda
     fm
     xscales::Vector
     lev::AbstractVector
-    ni::AbstractVector
+    ni::Int
 end
 
 struct TreedaDt 
@@ -788,7 +786,7 @@ struct TreedaDt
     xscales::Vector
     featur::Vector{Int}
     lev::AbstractVector
-    ni::AbstractVector
+    ni::Int
     mth::Bool 
 end
 

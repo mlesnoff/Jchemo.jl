@@ -109,13 +109,13 @@ function krr(X, Y; par = Par())
         par = par)
 end
 
-function krr(X, Y, weights::Vector{Q}; 
+function krr(X, Y, weights::Weight{Q}; 
         par = Par()) where {Q <: AbstractFloat}
     krr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
         par = par)
 end
 
-function krr!(X::Matrix, Y::Matrix, weights::Vector{Q}; 
+function krr!(X::Matrix, Y::Matrix, weights::Weight{Q}; 
             par = Par()) where {Q <: AbstractFloat} 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -126,9 +126,9 @@ function krr!(X::Matrix, Y::Matrix, weights::Vector{Q};
         X = scale(X, xscales)
     end
     ymeans = colmean(Y, weights)
-    fkern = eval(Meta.parse(String(par.kern)))    
+    fkern = eval(Meta.parse(string("Jchemo.", par.kern)))    
     K = fkern(X, X; par = par)
-    D = Diagonal(weights)    
+    D = Diagonal(weights.w)    
     DKt = D * K'
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- vtot .+ sum(D * DKt')

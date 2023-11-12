@@ -28,7 +28,8 @@ X = rand(n, p)
 rowstd(X)
 ```
 """ 
-rowstd(X) = vec(Statistics.std(ensure_mat(X); dims = 2, corrected = false))
+rowstd(X) = vec(Statistics.std(ensure_mat(X); 
+    dims = 2, corrected = false))
 
 """
     rowsum(X)
@@ -59,7 +60,8 @@ X = rand(n, p)
 rowvar(X)
 ```
 """ 
-rowvar(X) = vec(Statistics.var(ensure_mat(X); dims = 2, corrected = false))
+rowvar(X) = vec(Statistics.var(ensure_mat(X); 
+    dims = 2, corrected = false))
 
 ####### Functions skipping missing data
 
@@ -70,7 +72,8 @@ end
 
 function rowstdskip(X)
     X = ensure_mat(X)
-    [std(skipmissing(vrow(X, i)); corrected = false) for i in 1:nro(X)]
+    [std(skipmissing(vrow(X, i)); corrected = false) 
+        for i in 1:nro(X)]
 end
 
 function rowsumskip(X)
@@ -80,5 +83,6 @@ end
 
 function rowvarskip(X)
     X = ensure_mat(X)
-    [var(skipmissing(vrow(X, i)); corrected = false) for i in 1:nro(X)]
+    [var(skipmissing(vrow(X, i)); corrected = false) 
+        for i in 1:nro(X)]
 end

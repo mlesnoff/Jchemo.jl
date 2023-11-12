@@ -60,15 +60,16 @@ res.cor_circle
 ```
 """ 
 function pcasvd(X; par = Par())
-    weights = mweight(ones(eltype(X), nro(X)))
+    X = copy(ensure_mat(X))
+    pcasvd!(X, mweight(ones(eltype(X), nro(X))); 
+        par)
+end
+
+function pcasvd(X, weights::Weight; par = Par())
     pcasvd!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcasvd(X, weights; par = Par())
-    pcasvd!(copy(ensure_mat(X)), weights; par)
-end
-
-function pcasvd!(X::Matrix, weights::Vector; 
+function pcasvd!(X::Matrix, weights::Weight; 
         par = Par())
     n, p = size(X)
     nlv = min(par.nlv, n, p)
@@ -82,7 +83,7 @@ function pcasvd!(X::Matrix, weights::Vector;
     end
     ## by default in LinearAlgebra.svd
     ## "full = false" ==> [1:min(n, p)]
-    sqrtw = sqrt.(weights)
+    sqrtw = sqrt.(weights.w)
     res = LinearAlgebra.svd!(sqrtw .* X)
     P = res.V[:, 1:nlv]
     sv = res.S   
@@ -98,7 +99,8 @@ Compute principal components (PCs = scores T) from a fitted model and X-data.
 * `X` : X-data for which PCs are computed.
 * `nlv` : Nb. PCs to compute.
 """ 
-function transform(object::Union{Pca, Fda}, X; nlv = nothing)
+function transform(object::Union{Pca, Fda}, X; 
+        nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
@@ -111,10 +113,11 @@ Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
-function Base.summary(object::Pca, X::Union{Matrix, DataFrame})
+function Base.summary(object::Pca, 
+        X::Union{Matrix, DataFrame})
     X = ensure_mat(X)
     nlv = nco(object.T)
-    D = Diagonal(object.weights)
+    D = Diagonal(object.weights.w)
     X = cscale(X, object.xmeans, object.xscales)
     ## (||X||_D)^2 = tr(X' * D * X) = frob(X, weights)^2
     sstot = sum(colnorm(X, object.weights).^2)
@@ -146,34 +149,36 @@ end
 #####################################
 
 function pcasvd2(X; par = Par())
-    weights = mweights(ones(eltype(X), nro(X)))
+    #weights = mweights(ones(eltype(X), nro(X)))
+    weights = ones(eltype(X), nro(X))
     pcasvd2!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcasvd2(X, weights::Weight; par = Par())
+function pcasvd2(X, weights; par = Par())
     pcasvd2!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcasvd2!(X, weights::Weight; par = Par())
+function pcasvd2!(X, weights; par = Par())
     n, p = size(X)
     nlv = min(par.nlv, n, p)
-    xmeans = colmean(X, weights.w)
+    xmeans = colmean(X)
+    #xmeans = colmean(X, weights)
     xscales = ones(eltype(X), p)
     if par.scal 
-        xscales .= colstd(X, weights.w)
+        xscales .= colstd(X, weights)
         cscale!(X, xmeans, xscales)
     else
         center!(X, xmeans)
     end
     ## by default in LinearAlgebra.svd
     ## "full = false" ==> [1:min(n, p)]
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights)
     res = LinearAlgebra.svd!(sqrtw .* X)
     P = res.V[:, 1:nlv]
     sv = res.S   
     sv[sv .< 0] .= 0
     T = (1 ./ sqrtw) .* vcol(res.U, 1:nlv) * Diagonal(sv[1:nlv])
-    (T = T, P, sv, xmeans, xscales, weights, nothing)
+    #(T = T, P, sv, xmeans, xscales, weights, nothing)
 end
 
 

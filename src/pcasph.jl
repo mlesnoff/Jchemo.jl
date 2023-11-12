@@ -51,22 +51,22 @@ plotxy(T[:, i], T[:, i + 1]); zeros = true,
     xlabel = "PC1", ylabel = "PC2").f
 ```
 """ 
-function pcasph(X, weights = ones(nro(X)); nlv, typc = "medspa", 
-        delta = .001, scal::Bool = false)
-    pcasph!(copy(ensure_mat(X)), weights; nlv = nlv, typc = typc, 
-        delta = delta, scal = scal)
+function pcasph(X; par = Par())
+    X = copy(ensure_mat(X))
+    pcasph!(X, mweight(ones(eltype(X), nro(X))); 
+        par)
 end
 
-function pcasph!(X::Matrix, weights = ones(nro(X)); nlv, typc = "medspa", 
-    delta = .001, scal::Bool = false)
+function pcasph(X, weights::Weight; par = Par())
+    pcasph!(copy(ensure_mat(X)), weights; par)
+end
+
+function pcasph!(X::Matrix, weights::Weight; 
+        par = Par())
     n, p = size(X)
     nlv = min(par.nlv, n, p)
-    weights = mweight(weights)
-    if typc == "medspa"
-        xmeans = colmedspa(X; delta = delta)
-    else
-        xmeans = colmean(X, weights)
-    end 
+    xmeans = colmedspa(X; 
+        delta = convert(eltype(X), 1e-6))
     xscales = ones(eltype(X), p)
     if par.scal 
         xscales .= colstd(X, weights)
@@ -74,19 +74,21 @@ function pcasph!(X::Matrix, weights = ones(nro(X)); nlv, typc = "medspa",
     else
         center!(X, xmeans)
     end
-    sqrtw = sqrt.(weights)
+    sqrtw = sqrt.(weights.w)
     tX = Matrix(X')
     xnorms = colnorm(tX)
     scale!(tX, xnorms)
     zX = tX'
     res = LinearAlgebra.svd!(sqrtw .* zX)
     P = res.V[:, 1:nlv]
-    zT = zX * P
-    sv = colmad(zT)
-    T = X * P
-    u = sortperm(sv; rev = true)
-    T .= T[:, u]
-    P .= P[:, u]
-    sv .= sv[u]
+    T = zX * P
+    sv = colmad(T)
+    #zT = zX * P
+    #sv = colmad(zT)
+    T .= X * P
+    s = sortperm(sv; rev = true)
+    T .= T[:, s]
+    P .= P[:, s]
+    sv .= sv[s]
     Pca(T, P, sv, xmeans, xscales, weights, nothing) 
 end

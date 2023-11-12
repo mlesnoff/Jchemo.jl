@@ -88,7 +88,7 @@ function plstuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         Y ./= normy
         bscales = [normx; normy]
     end
-    D = Diagonal(weights)
+    D = Diagonal(weights.w)
     XtY = X' * D * Y
     U, delta, V = svd(XtY)
     delta = delta[1:nlv]
