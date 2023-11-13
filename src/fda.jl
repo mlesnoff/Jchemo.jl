@@ -78,15 +78,10 @@ fm.sstot
 Base.summary(fm)
 ```
 """ 
-fda(X; par = Par()) = fda!(copy(ensure_mat(X)); par)
+fda(X, y; par = Par()) = fda!(copy(ensure_mat(X)), y; par)
 
-function fda!(X::Matrix; par = Par())
-#function fda(X, y; nlv, lb = 0, scal::Bool = false)
-#    fda!(copy(ensure_mat(X)), y; nlv = nlv, lb = lb, 
-#        scal = scal)
-#end
-#function fda!(X::Matrix, y; nlv, lb = 0, scal::Bool = false)
-    @assert par.lb < 0 "Argument 'lb' must ∈ [0, Inf[."
+function fda!(X::Matrix, y; par = Par())
+    @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     n, p = size(X)
     lb = convert(eltype(X), par.lb)
     xmeans = colmean(X)
@@ -96,8 +91,9 @@ function fda!(X::Matrix; par = Par())
         cscale!(X, xmeans, xscales)
     else
         center!(X, xmeans)
-    end    
-    res = matW(X, y)
+    end
+    w = mweight(ones(eltype(X), n))    
+    res = matW(X, y, w)
     lev = res.lev
     nlev = length(lev)
     ni = res.ni
@@ -105,11 +101,11 @@ function fda!(X::Matrix; par = Par())
     if lb > 0
         res.W .= res.W .+ lb .* I(p)    # @. does not work with I
     end
-    zres = matB(X, y)
+    zres = matB(X, y, w)
     Winv = LinearAlgebra.inv!(cholesky(Hermitian(res.W))) 
     # Winv * B is not symmetric
     fm = eigen!(Winv * zres.B; sortby = x -> -abs(x))
-    nlv = min(nlv, n, p, nlev - 1)
+    nlv = min(par.nlv, n, p, nlev - 1)
     P = fm.vectors[:, 1:nlv]
     eig = fm.values
     P = real.(P)

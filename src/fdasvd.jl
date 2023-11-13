@@ -20,14 +20,12 @@ A ridge regularization can be used:
 See `?fda` for examples.
 
 """ 
-function fdasvd(X, y; nlv, lb = 0, scal::Bool = false)
-    fdasvd!(copy(ensure_mat(X)), y; nlv = nlv, lb = lb, 
-        scal = scal)
-end
+fdasvd(X, y; par = Par()) = fdasvd!(copy(ensure_mat(X)), y; par)
 
-function fdasvd!(X::Matrix, y; nlv, lb = 0, scal::Bool = false)
-    @assert par.lb < 0 "Argument 'lb' must ∈ [0, Inf[."
+function fdasvd!(X::Matrix, y; par = Par())
+    @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     n, p = size(X)
+    lb = convert(eltype(X), par.lb)
     xmeans = colmean(X) 
     xscales = ones(eltype(X), p)
     if par.scal 
@@ -36,7 +34,8 @@ function fdasvd!(X::Matrix, y; nlv, lb = 0, scal::Bool = false)
     else
         center!(X, xmeans)
     end
-    res = matW(X, y)
+    w = mweight(ones(eltype(X), n))
+    res = matW(X, y, w)
     lev = res.lev
     nlev = length(lev)
     ni = res.ni
@@ -44,13 +43,14 @@ function fdasvd!(X::Matrix, y; nlv, lb = 0, scal::Bool = false)
     if lb > 0
         res.W .= res.W .+ lb .* I(p) # @. does not work with I
     end
-    #Winv = inv(W)
+    #Winv = inv(res.W)
     Winv = LinearAlgebra.inv!(cholesky(Hermitian(res.W))) 
     ct = aggstat(X, y; fun = mean).X
     Ut = cholesky!(Hermitian(Winv)).U'
     Zct = ct * Ut
-    nlv = min(nlv, n, p, nlev - 1)
-    fm = pcasvd(Zct, ni; nlv = nlv)
+    nlv = min(par.nlv, n, p, nlev - 1)
+    par = Par(nlv = nlv, scal = false)
+    fm = pcasvd(Zct, mweight(ni); par)
     Pz = fm.P
     Tcenters = Zct * Pz        
     eig = (fm.sv).^2 
