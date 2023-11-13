@@ -166,7 +166,7 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
                 if nrm > 0
                     sel = sortperm(absw; rev = true)[1:nvar[a]]
                     wmax = w[sel]
-                    w .= zeros(p)
+                    w .= zeros(eltype(X), p)
                     w[sel] .= wmax
                     delta = maximum(sort(absw)[1:nrm])
                     w .= soft.(w, delta)
@@ -174,7 +174,7 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
             elseif meth == :hard
                 sel = sortperm(absw; rev = true)[1:nvar[a]]
                 wmax = w[sel]
-                w .= zeros(p)
+                w .= zeros(eltype(X), p)
                 w[sel] .= wmax
             end
             ## End

@@ -81,7 +81,7 @@ function nsc(X, y, weights = ones(nro(X));
     theta = vec(aggstat(weights, y; fun = sum).X)
     ct = similar(X, nlev, p)
     d = copy(ct)
-    poolstd = zeros(p)
+    poolstd = zeros(eltype(X), p)
     mi = similar(X, nlev)
     @inbounds for i = 1:nlev
         s = y .== lev[i]

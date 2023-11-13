@@ -11,6 +11,7 @@ Base.@kwdef struct Par
     prior::Symbol = :unif
     ##
     gs::Bool = true
+    filt::Bool = true
     epsilon::Float64 = .1
     tol::Float64 = sqrt(eps(1.))
     maxit::Int = 200

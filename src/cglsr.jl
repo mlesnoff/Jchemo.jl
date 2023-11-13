@@ -1,11 +1,11 @@
 """
-    cglsr(X, y; nlv, reorth = true, filt = false, scal::Bool = false)
-    cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false, scal::Bool = false)
+    cglsr(X, y; nlv, gs = true, filt = false, scal::Bool = false)
+    cglsr!(X::Matrix, y::Matrix; nlv, gs = true, filt = false, scal::Bool = false)
 Conjugate gradient algorithm for the normal equations (CGLS; Björck 1996).
 * `X` : X-data  (n, p).
 * `y` : Univariate Y-data (n).
 * `nlv` : Nb. CG iterations.
-* `reorth` : If `true`, a Gram-Schmidt reorthogonalization of the normal equation 
+* `gs` : If `true`, a Gram-Schmidt gsogonalization of the normal equation 
     residual vectors is done.
 * `filt` : Logical indicating if the CG filter factors are computed (output `F`).
 * `scal` : Boolean. If `true`, each column of `X` and `y` 
@@ -71,18 +71,17 @@ plotxy(pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 ```
 """ 
-function cglsr(X, y; nlv, reorth = true, filt = false, scal::Bool = false)
-    cglsr!(copy(ensure_mat(X)), copy(ensure_mat(y)); 
-        nlv = nlv, reorth = reorth, filt = filt, scal = scal)
-end
+cglsr(X, y; par = Par()) = cglsr!(copy(ensure_mat(X)), 
+    copy(ensure_mat(y)); par)
 
-function cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false, scal::Bool = false)
+function cglsr!(X::Matrix, y::Matrix; par = Par())
     n, p = size(X)
     q = nco(y)
-    xmeans = colmean(X) 
+    nlv = min(n, p, par.nlv)
+    xmeans = colmean(X)
     ymeans = colmean(y)   
     xscales = ones(eltype(X), p)
-    yscales = ones(eltype(Y), q)
+    yscales = ones(eltype(X), q)
     if par.scal 
         xscales .= colstd(X)
         yscales .= colstd(y)
@@ -94,19 +93,19 @@ function cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false, scal::Bo
     end
     # Pre-allocation and initialization
     B = similar(X, p, nlv)
-    b = zeros(p) 
+    b = zeros(eltype(X), p) 
     r = vec(y)       # r = y - X * b, with b = 0
     s = X' * r
     zp = copy(s)
     q = similar(X, n)
     g = dot(s, s)
     gnew = similar(X, nlv)
-    if(reorth)
+    if par.gs 
         A = similar(X, p, nlv + 1)
         A[:, 1] .= s ./ sqrt(g)
     end
     F = nothing
-    if(filt)
+    if par.filt
         eig = svd(X).S.^2
         if(n < p)
             eig = [eig ; zeros(p - n)]
@@ -123,7 +122,7 @@ function cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false, scal::Bo
         r .-= alpha * q 
         mul!(s, X', r)
         # Reorthogonalize s to previous s-vectors
-        if reorth
+        if par.gs
             @inbounds for i in 1:j
                 v = vcol(A, i)
                 s .-= dot(v, s) * v
@@ -138,7 +137,7 @@ function cglsr!(X::Matrix, y::Matrix; nlv, reorth = true, filt = false, scal::Bo
         B[:, j] .= b
         # Filter factors
         # fudge threshold is used to prevent filter factors from exploding
-        if filt
+        if par.filt
             if j == 1
                 F[:, 1] .= alpha * eig
                 Fd .= eig .- eig .* F[:, 1] .+ beta * eig
@@ -165,7 +164,7 @@ Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 """ 
 function coef(object::Cglsr; nlv = nothing)
-    a = size(object.B, 2)
+    a = nco(object.B)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     W = Diagonal(object.yscales)
     B = Diagonal(1 ./ object.xscales) * object.B[:, nlv:nlv] *  W
@@ -183,7 +182,7 @@ If nothing, it is the maximum nb. iterations.
 """ 
 function predict(object::Cglsr, X; nlv = nothing)
     X = ensure_mat(X)
-    a = size(object.B, 2)
+    a = nco(object.B)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     pred = list(le_nlv, Matrix{eltype(X)})

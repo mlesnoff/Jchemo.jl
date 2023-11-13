@@ -151,7 +151,7 @@ function covselr!(X::Matrix, Y::Matrix, weights = ones(nro(X));
         zw .= abs.(w)
         sellv[a] = sortperm(zw; rev = true)[1:nvar]
         wmax = w[sellv[a]]
-        w .= zeros(p)
+        w .= zeros(eltype(X), p)
         w[sellv[a]] .= wmax
         ## End
         r .= w
