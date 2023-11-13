@@ -142,7 +142,7 @@ function kplsr!(X::Matrix, Y::Matrix, weights::Weight{Q};
         if q == 1      
             mul!(t, K, D * vec(Y))   # t = K * D * Y
             t ./= sqrt(dot(t, weights .* t))
-            dt .= weights .* t
+            dt .= weights.w .* t
             mul!(c, Y', dt)
             u .= Y * c 
             u ./= sqrt(dot(u, u))
@@ -153,7 +153,7 @@ function kplsr!(X::Matrix, Y::Matrix, weights::Weight{Q};
             while ztol > par.tol && ziter <= par.maxit
                 mul!(t, K, weights .* u)
                 t ./= sqrt(dot(t, weights .* t))
-                dt .= weights .* t                
+                dt .= weights.w .* t                
                 mul!(c, Y', dt)
                 zu .= Y * c 
                 zu ./= sqrt(dot(zu, zu))

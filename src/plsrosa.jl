@@ -16,25 +16,30 @@ algorithm of Liland et al. (2016):
 * Scores T (LVs) are not normed.
 * Multivariate Y is allowed.
 
-See `?plskern` for examples.
+See `?plsrosa` for examples.
     
 ## References
 Liland, K.H., Næs, T., Indahl, U.G., 2016. ROSA—a fast extension of partial least 
 squares regression for multiblock data analysis. Journal of Chemometrics 30, 
 651–662. https://doi.org/10.1002/cem.2824
 """ 
-function plsrosa(X, Y, weights = ones(nro(X)); nlv,
-        scal::Bool = false)
-    plsrosa!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
-        scal = scal)
+function plsrosa(X, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
+    weights = mweight(ones(eltype(X), nro(X)))
+    plsrosa!(X, Y, weights; par)
 end
 
-function plsrosa!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        scal::Bool = false)
+function plsrosa(X, Y, weights::Weight; par = Par())
+    plsrosa!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function plsrosa!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
     n, p = size(X)
     q = nco(Y)
     nlv = min(par.nlv, n, p)
-    weights = mweight(weights)
     D = Diagonal(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
@@ -78,7 +83,7 @@ function plsrosa!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
             w = w .- z * (z' * w)
             w ./= sqrt(dot(w, w))
         end
-        dt .= weights .* t
+        dt .= weights.w .* t
         tt = dot(t, dt)
         mul!(c, Y', dt)
         c ./= tt                      

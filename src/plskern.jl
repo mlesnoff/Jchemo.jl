@@ -89,19 +89,19 @@ lines(z.nlv, z.cumpvar,
 ```
 """ 
 function plskern(X, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
     weights = mweight(ones(eltype(X), nro(X)))
-    plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        par = par)
+    plskern!(X, Y, weights; par)
 end
 
-function plskern(X, Y, weights::Weight{Q}; 
-        par = Par()) where {Q <: AbstractFloat}
-    plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        par = par)
+function plskern(X, Y, weights::Weight; par = Par())
+    plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
 end
 
-function plskern!(X::Matrix, Y::Matrix, weights::Weight{Q}; 
-            par = Par()) where {Q <: AbstractFloat} 
+function plskern!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)
@@ -120,7 +120,7 @@ function plskern!(X::Matrix, Y::Matrix, weights::Weight{Q};
     end
     D = Diagonal(weights.w)
     XtY = X' * (D * Y)                   # = Xd' * Y = X' * D * Y  (Xd = D * X   Very costly!!)
-    #XtY = X' * (weights .* Y)           # Can create OutOfMemory errors for very large matrices
+    #XtY = X' * (weights.w .* Y)           # Can create OutOfMemory errors for very large matrices
     # Pre-allocation
     T = similar(X, n, nlv)
     W = similar(X, p, nlv)
@@ -150,7 +150,7 @@ function plskern!(X::Matrix, Y::Matrix, weights::Weight{Q};
             end
         end                   
         mul!(t, X, r)                 # t = X * r
-        dt .= weights .* t            # dt = D * t
+        dt .= weights.w .* t            # dt = D * t
         tt = dot(t, dt)               # tt = t' * dt = t' * D * t 
         mul!(c, XtY', r)
         c ./= tt                      # c = XtY' * r / tt
@@ -243,7 +243,7 @@ function Base.summary(object::Union{Plsr, Covselr, Splsr},
     X = cscale(X, object.xmeans, object.xscales)
     # Could be cscale! but changes X
     # If too heavy ==> Makes summary!
-    sstot = sum(object.weights' * (X.^2)) # = frob(X, object.weights)^2 
+    sstot = sum(object.weights.w' * (X.^2)) # = frob(X, object.weights)^2 
     tt = object.TT
     tt_adj = colsum(object.P.^2) .* tt    # tt_adj[a] = p[a]'p[a] * tt[a]
     pvar = tt_adj / sstot

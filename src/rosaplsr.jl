@@ -131,7 +131,7 @@ function rosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
         ### Old
         #@inbounds for k = 1:nbl
         #    t = vcol(zT, k)
-        #    dt .= weights .* t
+        #    dt .= weights.w .* t
         #    tt = dot(t, dt)
         #    Res[:, :, k] .= Y .- (t * t') * DY / tt
         #end
@@ -148,7 +148,7 @@ function rosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
         bl[a] = opt
         # Outputs for winner
         t .= zT[:, opt]
-        dt .= weights .* t
+        dt .= weights.w .* t
         tt = dot(t, dt)
         mul!(c, Y', dt)
         c ./= tt     

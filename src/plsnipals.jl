@@ -16,7 +16,7 @@ In this function, for PLS2 (multivariate Y), the Nipals iterations are replaced 
 direct computation of the PLS weights (w) by SVD decomposition of matrix X'Y 
 (Hoskuldsson 1988 p.213).
 
-See `?plskern` for examples.
+See `?plsnipals` for examples.
 
 ## References
 Hoskuldsson, A., 1988. PLS regression methods. Journal of Chemometrics 2, 211-228.
@@ -28,18 +28,23 @@ Paris, France.
 Wold, S., Sjostrom, M., Eriksson, l., 2001. PLS-regression: a basic tool 
 for chemometrics. Chem. Int. Lab. Syst., 58, 109-130.
 """ 
-function plsnipals(X, Y, weights = ones(nro(X)); nlv,
-        scal::Bool = false)
-    plsnipals!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
-        scal = scal)
+function plsnipals(X, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
+    weights = mweight(ones(eltype(X), nro(X)))
+    plsnipals!(X, Y, weights; par)
 end
 
-function plsnipals!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        scal::Bool = false)
+function plsnipals(X, Y, weights::Weight; par = Par())
+    plsnipals!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
     n, p = size(X)
     q = nco(Y)
     nlv = min(par.nlv, n, p)
-    weights = mweight(weights)
     D = Diagonal(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
@@ -76,7 +81,7 @@ function plsnipals!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
             w .= svd!(XtY).U[:, 1]
         end
         mul!(t, X, w)
-        dt .= weights .* t
+        dt .= weights.w .* t
         tt = dot(t, dt)
         mul!(zp, X', dt)
         zp ./= tt

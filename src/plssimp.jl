@@ -19,18 +19,23 @@ de Jong, S., 1993. SIMPLS: An alternative approach to partial least squares
 regression. Chemometrics and Intelligent Laboratory Systems 18, 251–263. 
 https://doi.org/10.1016/0169-7439(93)85002-X
 """ 
-function plssimp(X, Y, weights = ones(nro(X)); nlv,
-        scal::Bool = false)
-    plssimp!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
-        scal = scal)
+function plssimp(X, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
+    weights = mweight(ones(eltype(X), nro(X)))
+    plssimp!(X, Y, weights; par)
 end
 
-function plssimp!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        scal::Bool = false)
+function plssimp(X, Y, weights::Weight; par = Par())
+    plssimp!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function plssimp!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
     n, p = size(X)
     q = nco(Y)
     nlv = min(par.nlv, n, p)
-    weights = mweight(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     xscales = ones(eltype(X), p)
@@ -70,7 +75,7 @@ function plssimp!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         end
         r .= svd!(tmpXtY).U[:, 1] 
         mul!(t, X, r)                 
-        dt .= weights .* t            
+        dt .= weights.w .* t            
         tt = dot(t, dt)
         mul!(c, XtY', r)
         c ./= tt                      

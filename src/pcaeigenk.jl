@@ -27,8 +27,8 @@ https://doi.org/10.1016/S0169-7439(97)00010-5
 """ 
 function pcaeigenk(X; par = Par())
     X = copy(ensure_mat(X))
-    pcaeigenk!(X, mweight(ones(eltype(X), nro(X))); 
-        par)
+    weights = mweight(ones(eltype(X), nro(X)))
+    pcaeigenk!(X, weights; par)
 end
 
 function pcaeigenk(X, weights::Weight; par = Par())

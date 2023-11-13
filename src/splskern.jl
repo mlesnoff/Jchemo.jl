@@ -195,7 +195,7 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
             end
         end                   
         mul!(t, X, r)                 # t = X * r
-        dt .= weights .* t            # dt = D * t
+        dt .= weights.w .* t            # dt = D * t
         tt = dot(t, dt)               # tt = t' * dt = t' * D * t 
         mul!(c, XtY', r)
         c ./= tt                      # c = XtY' * r / tt

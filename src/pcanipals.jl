@@ -45,8 +45,8 @@ with Gram-Schmidt Orthogonalization. https://cran.r-project.org/
 """ 
 function pcanipals(X; par = Par())
     X = copy(ensure_mat(X))
-    pcanipals!(X, mweight(ones(eltype(X), nro(X))); 
-        par)
+    weights = mweight(ones(eltype(X), nro(X)))
+    pcanipals!(X, weights; par)
 end
 
 function pcanipals(X, weights::Weight; par = Par())

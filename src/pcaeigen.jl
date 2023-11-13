@@ -18,8 +18,8 @@ See `?pcasvd` for examples.
 """ 
 function pcaeigen(X; par = Par())
     X = copy(ensure_mat(X))
-    pcaeigen!(X, mweight(ones(eltype(X), nro(X))); 
-        par)
+    weights = mweight(ones(eltype(X), nro(X)))
+    pcaeigen!(X, weights; par)
 end
 
 function pcaeigen(X, weights::Weight; par = Par())
