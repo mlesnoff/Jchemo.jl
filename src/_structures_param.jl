@@ -17,7 +17,7 @@ Base.@kwdef mutable struct Par
     maxit::Int = 200
     scal::Bool = false
     ##
-    spmeth::Symbol = :soft
+    meth_sp::Symbol = :soft
     delta::Float64 = 0.
     nvar::Union{Int, Vector{Int}} = 1
 end

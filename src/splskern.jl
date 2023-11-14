@@ -1,9 +1,9 @@
 """
     splskern(X, Y, weights = ones(nro(X)); nlv,
-        spmeth = :soft, delta = 0, nvar = nco(X), 
+        meth_sp = :soft, delta = 0, nvar = nco(X), 
         scal::Bool = false)
     splskern!(X, Y, weights = ones(nro(X)); nlv,
-        spmeth = :soft, delta = 0, nvar = nco(X), 
+        meth_sp = :soft, delta = 0, nvar = nco(X), 
         scal::Bool = false)
 Sparse PLSR (Shen & Huang 2008).
 * `X` : X-data (n, p). 
@@ -11,15 +11,15 @@ Sparse PLSR (Shen & Huang 2008).
 * `weights` : Weights (n) of the observations. 
     Internally normalized to sum to 1.
 * `nlv` : Nb. latent variables (LVs).
-* `spmeth`: Method used for the thresholding. Possible values
+* `meth_sp`: Method used for the thresholding. Possible values
     are :soft (default), :mix or :hard. See thereafter.
 * `delta` : Range for the thresholding (see function `soft`)
     on the loadings standardized to their maximal absolute value.
-    Must ∈ [0, 1]. Only used if `spmeth = :soft.
+    Must ∈ [0, 1]. Only used if `meth_sp = :soft.
 * `nvar` : Nb. variables (`X`-columns) selected for each 
     LV. Can be a single integer (same nb. variables
     for each LV), or a vector of length `nlv`.
-    Only used if `spmeth = :mix` or `spmeth = :hard`.   
+    Only used if `meth_sp = :mix` or `meth_sp = :hard`.   
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
@@ -29,7 +29,7 @@ In the present version, the sparseness only concerns `X` (not `Y`).
 
 Function `splskern' provides three methods of thresholding to compute 
 the sparse `X`-loading weights w, see `?spca' for description (same 
-principles). The case `spmeth = :mix` returns the same results as function 
+principles). The case `meth_sp = :mix` returns the same results as function 
 spls of the R package mixOmics in regression mode (and with no sparseness 
 on `Y`).
 
@@ -69,7 +69,7 @@ ytest = rmrow(y, s)
 
 nlv = 15
 fm = splskern(Xtrain, ytrain; nlv = nlv,
-    spmeth = :mix, nvar = 5) ;
+    meth_sp = :mix, nvar = 5) ;
 pnames(fm)
 fm.T
 fm.W
@@ -103,21 +103,27 @@ lines(z.nlv, z.cumpvar,
     axis = (xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance"))
 ```
 """ 
-function splskern(X, Y, weights = ones(nro(X)); nlv, 
-        spmeth = :soft, delta = 0, nvar = nco(X), scal::Bool = false)
-    splskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
-        spmeth = spmeth, delta = delta, nvar = nvar, scal = scal)
+function splskern(X, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
+    weights = mweight(ones(eltype(X), nro(X)))
+    splskern!(X, Y, weights; par)
 end
 
-function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        spmeth = :soft, delta = 0, nvar = nco(X), scal::Bool = false)
-    @assert in([:soft; :mix; :hard])(spmeth) "Wrong value for argument 'spmeth'."
-    @assert 0 <= delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
+function splskern(X, Y, weights::Weight; par = Par())
+    splskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function splskern!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
+    @assert in([:soft; :mix; :hard])(par.meth_sp) "Wrong value for argument 'meth_sp'."
+    @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
     n, p = size(X)
     q = nco(Y)
-    nlv = min(n, p, nlv)
+    nlv = min(n, p, par.nlv)
+    nvar = par.nvar
     length(nvar) == 1 ? nvar = repeat([nvar], nlv) : nothing
-    weights = mweight(weights)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
     xscales = ones(eltype(X), p)
@@ -156,22 +162,22 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         if q == 1
             w .= vcol(XtY, 1)
             absw .= abs.(w)
-            if spmeth == :soft
+            if par.meth_sp == :soft
                 absw_max = maximum(absw)
                 absw_stand .= absw / absw_max
-                theta .= max.(0, absw_stand .- delta) 
+                theta .= max.(0, absw_stand .- par.delta) 
                 w .= sign.(w) .* theta * absw_max 
-            elseif spmeth == :mix
+            elseif par.meth_sp == :mix
                 nrm = p - nvar[a]
                 if nrm > 0
                     sel = sortperm(absw; rev = true)[1:nvar[a]]
                     wmax = w[sel]
                     w .= zeros(eltype(X), p)
                     w[sel] .= wmax
-                    delta = maximum(sort(absw)[1:nrm])
-                    w .= soft.(w, delta)
+                    zdelta = maximum(sort(absw)[1:nrm])
+                    w .= soft.(w, zdelta)
                 end
-            elseif spmeth == :hard
+            elseif par.meth_sp == :hard
                 sel = sortperm(absw; rev = true)[1:nvar[a]]
                 wmax = w[sel]
                 w .= zeros(eltype(X), p)
@@ -180,12 +186,15 @@ function splskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
             ## End
             w ./= norm(w)
         else
-            if spmeth == :soft
-                w .= snipals(XtY'; delta = delta[a]).v
-            elseif spmeth == :mix
-                w .= snipalsmix(XtY'; nvar = nvar[a]).v
-            elseif spmeth == :hard
-                w .= snipalsh(XtY'; nvar = nvar[a]).v
+            if par.meth_sp == :soft
+                w .= snipals(XtY'; par).v
+            else
+                par.nvar = nvar[a]
+                if par.meth_sp == :mix
+                    w .= snipalsmix(XtY'; par).v
+                else
+                    w .= snipalsh(XtY'; par).v
+                end
             end
         end                                  
         r .= w
