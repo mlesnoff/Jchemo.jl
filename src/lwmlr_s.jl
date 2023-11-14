@@ -91,8 +91,8 @@ function lwmlr_s(X, Y; reduc = :pca,
         metric = :eucl, h, k, 
         tol = 1e-4, scal::Bool = false, verbose = false)
     @assert in([:pca; :pls; :dkpls])(reduc) "Wrong value for argument 'reduc'."    
-    @assert psamp >= 0 && psamp <= 1 "psamp must be in [0, 1]"   
-    @assert in([:sys; :rand])(samp) "Wrong value for argument 'samp'."
+    @assert 0 <= par.psamp <=1 "psamp must be in [0, 1]"   
+    @assert in([:sys; :rand])(par.samp) "Wrong value for argument 'samp'."
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = nro(X)

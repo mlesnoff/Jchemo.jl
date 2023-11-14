@@ -1,24 +1,24 @@
 """
     spca(X, weights = ones(nro(X)); nlv,
-        meth = :soft, delta = 0, nvar = nco(X), 
+        spmeth = :soft, delta = 0, nvar = nco(X), 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     spca!(X, weights = ones(nro(X)); nlv,
-        meth = :soft, delta = 0, nvar = nco(X), 
+        spmeth = :soft, delta = 0, nvar = nco(X), 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
 Sparse PCA (Shen & Huang 2008).
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
     Internally normalized to sum to 1.
 * `nlv` : Nb. principal components (PCs).
-* `meth`: Method used for the thresholding. Possible values
+* `spmeth`: Method used for the thresholding. Possible values
     are :soft (default), :mix or :hard. See thereafter.
 * `delta` : Range for the thresholding (see function `soft`)
     on the loadings standardized to their maximal absolute value.
-    Must ∈ [0, 1]. Only used if `meth = :soft.
+    Must ∈ [0, 1]. Only used if `spmeth = :soft.
 * `nvar` : Nb. variables (`X`-columns) selected for each 
     PC. Can be a single integer (same nb. variables
     for each PC), or a vector of length `nlv`.
-    Only used if `meth = :mix` or `meth = :hard`.   
+    Only used if `spmeth = :mix` or `spmeth = :hard`.   
 * `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
@@ -30,7 +30,7 @@ matrix approximation (Shen & Huang 2008). A Nipals algorithm is used.
 Function `spca' provides three methods of thresholding to compute 
 the sparse loadings:
 
-* `meth = :soft`: Soft thresholding of standardized loadings. 
+* `spmeth = :soft`: Soft thresholding of standardized loadings. 
     Noting v the loading vector, at each step, abs(v) is standardized to 
     its maximal component (= max{abs(v[i]), i = 1..p}). The soft-thresholding 
     function (see function `soft`) is applied to this standardized vector, 
@@ -38,17 +38,17 @@ the sparse loadings:
     theta. Vector v is multiplied term-by-term by vector theta, which
     finally gives the sparse loadings.
 
-* `meth = :mix`: Method used in function `spca` of the R package `mixOmics`.
+* `spmeth = :mix`: Method used in function `spca` of the R package `mixOmics`.
     For each PC, a number of `X`-variables showing the largest 
     values in vector abs(v) are selected. Then a soft-thresholding is 
     applied to the corresponding selected loadings. Range `delta` is 
     automatically (internally) set to the maximal value of the components 
     of abs(v) corresponding to variables removed from the selection.  
 
-* `meth = :hard`: For each PC, a number of `X-variables showing 
+* `spmeth = :hard`: For each PC, a number of `X-variables showing 
     the largest values in vector abs(v) are selected.
 
-The case `meth = :mix` returns the same results as function 
+The case `spmeth = :mix` returns the same results as function 
 spca of the R package mixOmics.
 
 Since the resulting sparse loadings vectors (`P`-columns) are in general 
@@ -93,12 +93,12 @@ tol = 1e-15
 nlv = 3 
 scal = false
 #scal = true
-meth = :soft
-#meth = :mix
-#meth = :hard
+spmeth = :soft
+#spmeth = :mix
+#spmeth = :hard
 delta = .4 ; nvar = 2 
 fm = spca(Xtrain; nlv = nlv, 
-    meth = meth, nvar = nvar, delta = delta, 
+    spmeth = spmeth, nvar = nvar, delta = delta, 
     tol = tol, scal = scal) ;
 fm.niter
 fm.sellv 
@@ -114,23 +114,24 @@ res.explvarx
 res.explvarx_adj
 ```
 """ 
-function spca(X, weights = ones(nro(X)); nlv,
-        meth = :soft, delta = 0, nvar = nco(X), 
-        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
-    spca!(copy(ensure_mat(X)), weights; nlv = nlv,
-        meth = meth, delta = delta, nvar = nvar, 
-        tol = tol, maxit = maxit, scal = scal)
+function spca(X; par = Par())
+    X = copy(ensure_mat(X))
+    weights = mweight(ones(eltype(X), nro(X)))
+    spca!(X, weights; par)
 end
 
-function spca!(X::Matrix, weights = ones(nro(X)); nlv, 
-        meth = :soft, delta = 0, nvar = nco(X), 
-        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
-    @assert in([:soft; :mix; :hard])(meth) "Wrong value for argument 'meth'."
-    @assert 0 <= delta <= 1 "Argument 'delta' must ∈ [0, 1]."
+function spca(X, weights::Weight; par = Par())
+    spca!(copy(ensure_mat(X)), weights; par)
+end
+
+function spca!(X::Matrix, weights::Weight; 
+        par = Par())
+    @assert in([:soft; :mix; :hard])(par.spmeth) "Wrong value for argument 'spmeth'."
+    @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]."
     n, p = size(X)
     nlv = min(par.nlv, n, p)
+    nvar = par.nvar
     length(nvar) == 1 ? nvar = repeat([nvar], nlv) : nothing
-    weights = mweight(weights)
     xmeans = colmean(X, weights) 
     xscales = ones(eltype(X), p)
     if par.scal 
@@ -150,15 +151,15 @@ function spca!(X::Matrix, weights = ones(nro(X)); nlv,
     beta = similar(X, p, nlv)
     sellv = list(nlv, Vector{Int})
     for a = 1:nlv
-        if meth == :soft
-            res = snipals(X; 
-                delta = delta, tol = tol, maxit = maxit)
-        elseif meth == :mix
-            res = snipalsmix(X; 
-                nvar = nvar[a], tol = tol, maxit = maxit)
-        elseif meth == :hard
-            res = snipalsh(X; 
-                nvar = nvar[a], tol = tol, maxit = maxit)
+        if par.spmeth == :soft
+            res = snipals(X; par)
+        else
+            par.nvar = nvar[a]
+            if par.spmeth == :mix
+                res = snipalsmix(X; par = par)
+            else 
+                res = snipalsh(X; par = par)
+            end
         end
         t .= res.t      
         tt = dot(t, t)
@@ -194,7 +195,7 @@ function transform(object::Spca, X; nlv = nothing)
     for a = 1:nlv
         t .= zX * object.P[:, a]
         T[:, a] .= t
-        zX .-= t * vcol(object.beta, a)'  #object.beta[:, a]'
+        zX .-= t * vcol(object.beta, a)' 
     end
     T 
 end
@@ -221,7 +222,7 @@ function Base.summary(object::Spca, X::Union{Matrix, DataFrame})
     zrd = vec(rd(X, object.T, object.weights))
     explvarx = DataFrame(lv = 1:nlv, rd = zrd, 
         pvar = pvar, cumpvar = cumpvar)
-    ## Adjusted variance (Shen & Hunag 2008 section 2.3)
+    ## Adjusted variance (Shen & Huang 2008 section 2.3)
     zX = sqrt.(D) * X
     ss = zeros(nlv)
     for a = 1:nlv

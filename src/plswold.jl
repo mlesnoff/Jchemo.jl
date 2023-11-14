@@ -86,7 +86,7 @@ function plswold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
             ty .= Y * wy
             dif = sum((wx .- w0).^2)
             iter = iter + 1
-            if (dif < tol) || (iter > maxit)
+            if (dif < par.tol) || (iter > par.maxit)
                 cont = false
             end
         end

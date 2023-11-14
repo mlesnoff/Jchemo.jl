@@ -90,7 +90,7 @@ end
 function ccawold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = :none, tau = 1e-8, 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
-    @assert tau >= 0 && tau <= 1 "tau must be in [0, 1]"
+    @assert 0 <= par.tau <=1 "tau must be in [0, 1]"
     n, p = size(X)
     q = nco(Y)
     nlv = min(nlv, p, q)
@@ -172,7 +172,7 @@ function ccawold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
             mul!(ty, Y, wy)
             dif = sum((wx .- w0).^2)
             iter = iter + 1
-            if (dif < tol) || (iter > maxit)
+            if (dif < par.tol) || (iter > par.maxit)
                 cont = false
             end
         end

@@ -159,7 +159,7 @@ function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
             ty .= Y * wy
             dif = sum((ty .- t0).^2)
             iter = iter + 1
-            if (dif < tol) || (iter > maxit)
+            if (dif < par.tol) || (iter > par.maxit)
                 cont = false
             end
         end

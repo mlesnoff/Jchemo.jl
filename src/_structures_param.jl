@@ -1,4 +1,4 @@
-Base.@kwdef struct Par
+Base.@kwdef mutable struct Par
     nlv::Int = 1
     lb::Float64 = 1e-5
     ## 
@@ -16,11 +16,16 @@ Base.@kwdef struct Par
     tol::Float64 = sqrt(eps(1.))
     maxit::Int = 200
     scal::Bool = false
+    ##
+    spmeth::Symbol = :soft
+    delta::Float64 = 0.
+    nvar::Union{Int, Vector{Int}} = 1
 end
 
 struct Weight{T <: AbstractFloat}
     w::Vector{T} 
 end
+
 
 
 

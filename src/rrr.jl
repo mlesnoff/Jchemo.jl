@@ -170,7 +170,7 @@ function rrr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
             wy ./= norm(wy)
             dif = sum((wy .- w0).^2)
             iter = iter + 1
-            if (dif < tol) || (iter[a] > maxit)
+            if (dif < par.tol) || (iter[a] > maxit)
                 cont = false
             end
         end

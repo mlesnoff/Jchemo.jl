@@ -98,8 +98,8 @@ confusion(res.pred, ytest).cnt
 function rda(X, y, weights = ones(nro(X)); 
         prior = :unif, alpha = 1, lb = 1e-10, 
         simpl::Bool = false, scal::Bool = false)
-    @assert 0 <= alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
-    @assert lb >= 0 "lb must be in >= 0"
+    @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
+    @assert par.lb >= 0 "lb must be in >= 0"
     X = ensure_mat(X)
     y = vec(y)    # for findall
     n, p = size(X)

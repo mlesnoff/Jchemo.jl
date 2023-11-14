@@ -815,7 +815,7 @@ y = soft.(x, delta)
 lines(x, y)
 ```
 """
-function soft(x::Real, delta)
+function soft(x::AbstractFloat, delta::Float64)
     @assert delta >= 0 "delta must be >= 0."
     sign(x) * max(0, abs(x) - delta)
 end

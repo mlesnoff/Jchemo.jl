@@ -1,8 +1,7 @@
-function snipalsh(X; nvar = nco(X),
-        tol = sqrt(eps(1.)), maxit = 200)
+function snipalsh(X; par = Par())
     X = ensure_mat(X)
     n, p = size(X)
-    res = nipals(X; tol = tol, maxit = maxit)
+    res = nipals(X; par)
     t = res.u * res.sv
     t0 = similar(X, n)
     v = similar(X, p)
@@ -14,7 +13,7 @@ function snipalsh(X; nvar = nco(X),
         mul!(v, X', t)
         ## Sparsity
         absv .= abs.(v)
-        sel = sortperm(absv; rev = true)[1:nvar]
+        sel = sortperm(absv; rev = true)[1:par.nvar]
         vmax = v[sel]
         v .= zeros(eltype(X), p)
         v[sel] .= vmax
@@ -23,7 +22,7 @@ function snipalsh(X; nvar = nco(X),
         mul!(t, X, v)
         dif = sum((t .- t0).^2)
         iter = iter + 1
-        if (dif < tol) || (iter > maxit)
+        if (dif < par.tol) || (iter > par.maxit)
             cont = false
         end
     end

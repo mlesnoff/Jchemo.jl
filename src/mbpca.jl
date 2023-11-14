@@ -173,7 +173,7 @@ function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
             w .= res.v
             dif = sum((u .- u0).^2)
             iter = iter + 1
-            if (dif < tol) || (iter > maxit)
+            if (dif < par.tol) || (iter > par.maxit)
                 cont = false
             end
         end

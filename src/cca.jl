@@ -83,7 +83,7 @@ end
 
 function cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         bscal = :none, tau = 1e-8, scal::Bool = false)
-    @assert tau >= 0 && tau <= 1 "tau must be in [0, 1]"
+    @assert 0 <= par.tau <=1 "tau must be in [0, 1]"
     p = nco(X)
     q = nco(Y)
     nlv = min(nlv, p, q)

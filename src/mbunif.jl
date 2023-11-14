@@ -83,7 +83,7 @@ end
 function mbunif!(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = :none, tau = 1e-8, wcov = false, deflat = "global", 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
-    @assert tau >= 0 && tau <= 1 "tau must be in [0, 1]"
+    @assert 0 <= par.tau <=1 "tau must be in [0, 1]"
     nbl = length(Xbl)
     n = nro(Xbl[1])
     weights = mweight(weights)
@@ -171,7 +171,7 @@ function mbunif!(Xbl, weights = ones(nro(Xbl[1])); nlv,
             u .= q / mu[a]
             dif = sum((u .- u0).^2)
             iter = iter + 1
-            if (dif < tol) || (iter > maxit)
+            if (dif < par.tol) || (iter > par.maxit)
                 cont = false
             end
         end

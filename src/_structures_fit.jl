@@ -230,7 +230,7 @@ struct Knnr
     metric::String
     h::Real
     k::Int
-    tol::Real
+    tol::AbstractFloat
     scal::Bool
 end
 
@@ -274,7 +274,7 @@ struct Lwmlr
     metric::String
     h::Real
     k::Int
-    tol::Real
+    tol::AbstractFloat
     verbose::Bool
 end
 
@@ -285,7 +285,7 @@ struct LwmlrS
     metric::String
     h::Real
     k::Int
-    tol::Real
+    tol::AbstractFloat
     verbose::Bool
 end
 
@@ -297,7 +297,7 @@ struct Lwplsr
     h::Real
     k::Int
     nlv::Int
-    tol::Real
+    tol::AbstractFloat
     scal::Bool
     verbose::Bool
 end
@@ -315,7 +315,7 @@ struct LwplsrAvg
     alpha::Real
     K::Real
     rep::Real
-    tol::Real
+    tol::AbstractFloat
     scal::Bool
     verbose::Bool
 end
@@ -328,7 +328,7 @@ struct LwplsrS
     h::Real
     k::Int
     nlv::Int
-    tol::Real
+    tol::AbstractFloat
     scal::Bool
     verbose::Bool
 end
@@ -474,7 +474,7 @@ end
 
 struct Dkplsrda
     fm  
-    lev::AbstractVector
+    lev::Vector
     ni::Int
 end
 
@@ -502,7 +502,7 @@ end
 struct Kernda
     fm
     wprior::AbstractVector
-    lev::AbstractVector
+    lev::Vector
     ni::Int
 end
 
@@ -514,8 +514,8 @@ struct Knnda
     metric::String
     h::Real
     k::Int
-    tol::Real
-    lev::AbstractVector
+    tol::AbstractFloat
+    lev::Vector
     ni::Int
     scal::Bool
 end
@@ -527,7 +527,7 @@ struct Lda
     wprior::Vector
     theta::Vector
     ni::Vector{Int}
-    lev::AbstractVector
+    lev::Vector
     weights::Weight
 end
 
@@ -537,7 +537,7 @@ struct Lwmlrda
     metric::String
     h::Real
     k::Int
-    tol::Real
+    tol::AbstractFloat
     verbose::Bool
 end
 
@@ -548,7 +548,7 @@ struct LwmlrdaS
     metric::String
     h::Real
     k::Int
-    tol::Real
+    tol::AbstractFloat
     verbose::Bool
 end
 
@@ -561,10 +561,10 @@ struct Lwplslda
     k::Int
     nlv::Int
     prior::String
-    tol::Real
+    tol::AbstractFloat
     scal::Bool
     verbose::Bool
-    lev::AbstractVector
+    lev::Vector
     ni::Int
 end
 
@@ -576,10 +576,10 @@ struct LwplsldaAvg
     h::Real
     k::Int
     nlv::String
-    tol::Real
+    tol::AbstractFloat
     scal::Bool
     verbose::Bool
-    lev::AbstractVector
+    lev::Vector
     ni::Int
 end
 
@@ -593,10 +593,10 @@ struct Lwplsqda
     nlv::Int
     alpha::Real
     prior::String
-    tol::Real
+    tol::AbstractFloat
     scal::Bool
     verbose::Bool
-    lev::AbstractVector
+    lev::Vector
     ni::Int
 end
 
@@ -609,10 +609,10 @@ struct LwplsqdaAvg
     k::Int
     nlv::String
     alpha::Real
-    tol::Real
+    tol::AbstractFloat
     scal::Bool
     verbose::Bool
-    lev::AbstractVector
+    lev::Vector
     ni::Int
 end
 
@@ -624,10 +624,10 @@ struct Lwplsrda
     h::Real
     k::Int
     nlv::Int
-    tol::Real
+    tol::AbstractFloat
     scal::Bool
     verbose::Bool
-    lev::AbstractVector
+    lev::Vector
     ni::Int
 end
 
@@ -639,10 +639,10 @@ struct LwplsrdaAvg
     h::Real
     k::Int
     nlv::String
-    tol::Real
+    tol::AbstractFloat
     scal::Bool
     verbose::Bool
-    lev::AbstractVector
+    lev::Vector
     ni::Int
 end
 
@@ -654,14 +654,14 @@ struct LwplsrdaS
     h::Real
     k::Int
     nlv::Int
-    tol::Real
+    tol::AbstractFloat
     scal::Bool
     verbose::Bool
 end
 
 struct Mlrda
     fm  
-    lev::AbstractVector
+    lev::Vector
     ni::Int
 end
 
@@ -670,7 +670,7 @@ struct Nscda
     poolstd_s0::Vector
     wprior::Vector
     ni::Vector{Int}
-    lev::AbstractVector
+    lev::Vector
     xscales::Vector
     weights::Weight
 end
@@ -727,13 +727,13 @@ end
 
 struct Plslda    # for plslda and plsqda 
     fm  
-    lev::AbstractVector
+    lev::Vector
     ni::Int
 end
 
 struct Plsrda
     fm  
-    lev::AbstractVector
+    lev::Vector
     ni::Int
 end
 
@@ -741,7 +741,7 @@ struct Plsrdaavg  # for plsrdaavg, plsldaavg and plsqdaavg
     fm
     nlv
     w_mod
-    lev::AbstractVector
+    lev::Vector
     ni::Int
 end
 
@@ -752,7 +752,7 @@ struct Qda
     wprior::Vector
     theta::Vector
     ni::Vector{Int}
-    lev::AbstractVector
+    lev::Vector
     weights::Weight
 end
 
@@ -763,21 +763,21 @@ struct Rda
     wprior::Vector
     theta::Vector
     ni::Vector{Int}
-    lev::AbstractVector
+    lev::Vector
     xscales::Vector
     weights::Weight
 end
 
 struct Rrda
     fm  
-    lev::AbstractVector
+    lev::Vector
     ni::Int
 end
 
 struct Svmda
     fm
     xscales::Vector
-    lev::AbstractVector
+    lev::Vector
     ni::Int
 end
 
@@ -785,7 +785,7 @@ struct TreedaDt
     fm
     xscales::Vector
     featur::Vector{Int}
-    lev::AbstractVector
+    lev::Vector
     ni::Int
     mth::Bool 
 end

@@ -94,11 +94,10 @@ function rd(X, Y; typ = :cor)
     sum(z; dims = 1) / p
 end
 
-function rd(X, Y, weights; typ = :cor)
+function rd(X, Y, weights::Weight; typ = :cor)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)
-    weights = mweight(weights)
     typ == :cor ? fun = corm : fun = covm
     z = fun(X, Y, weights).^2
     sum(z; dims = 1) / p
