@@ -193,15 +193,15 @@ pnames(res)
 res.Y
 ```
 """
-function dummy(y)
+function dummy(y, T = Float64)
     n = length(y)
     lev = mlev(y)
     nlev = length(lev)
-    Y = BitArray(undef, n, nlev)
-    for i = 1:nlev
+    Y = BitArray(undef, n, nlev)  # Type = BitMatrix
+    @inbounds for i = 1:nlev
         Y[:, i] = y .== lev[i]
     end
-    Y = Float64.(Y)   # quite costly
+    Y = convert.(T, Y)
     (Y = Y, lev)
 end
 

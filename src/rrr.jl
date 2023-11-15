@@ -96,21 +96,24 @@ fm = plskern(Xtrain, ytrain; nlv = 3) ;
 head(Jchemo.predict(fm, Xtest).pred)
 ```
 """
-function rrr(X, Y, weights = ones(nro(X)); nlv,
-        tau = 1e-5, tol = sqrt(eps(1.)), maxit = 200, 
-        scal::Bool = false)
-    rrr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
-        tau = tau, tol = tol, maxit = maxit, 
-        scal = scal)
+function rrr(X, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
+    weights = mweight(ones(eltype(X), nro(X)))
+    rrr!(X, Y, weights; par)
 end
 
-function rrr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        tau = 1e-8, tol = sqrt(eps(1.)), maxit = 200, 
-        scal::Bool = false)
+function rrr(X, Y, weights::Weight; par = Par())
+    rrr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function rrr!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
+    @assert 0 <= par.tau <=1 "tau must be in [0, 1]"
     n, p = size(X)
     q = nco(Y)
-    nlv = min(nlv, p, q)
-    weights = mweight(weights)
+    nlv = min(par.nlv, p, q)
     sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)    
@@ -147,10 +150,11 @@ function rrr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     lambda = copy(TTx)
     covtot = copy(TTx)
     niter = Int.(ones(nlv))
+    tau = par.tau
     @inbounds for a = 1:nlv
         cont = true
         iter = 1
-        wy .= rand(q)
+        wy .= ones(eltype(Y), q)
         wy ./= norm(q)
         if tau == 0       
             invCx = inv(X' * X)
@@ -170,7 +174,7 @@ function rrr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
             wy ./= norm(wy)
             dif = sum((wy .- w0).^2)
             iter = iter + 1
-            if (dif < par.tol) || (iter[a] > maxit)
+            if (dif < par.tol) || (iter[a] > par.maxit)
                 cont = false
             end
         end
@@ -201,9 +205,5 @@ function rrr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
      Plsr(Tx, Px, Rx, Wx, Wytild, TTx, 
          xmeans, xscales, ymeans, yscales, weights, niter)
 end
-
-
-
-
 
 

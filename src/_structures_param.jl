@@ -3,6 +3,8 @@ Base.@kwdef mutable struct Par
     lb::Float64 = 1e-5
     ##
     noint::Bool = false
+    ##
+    tau::Float64 = 1e-8
     ## 
     kern::Symbol = :krbf
     gamma::Float64 = 1. 
