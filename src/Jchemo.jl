@@ -101,13 +101,11 @@ include("xfit.jl")
 include("xresid.jl")
 
 # Sparse
-include("covselr.jl")  
 include("splskern.jl")
 
 # Multiblock
 include("mbplsr.jl") 
 include("mbplswest.jl")
-include("mbwcov.jl")
 include("rosaplsr.jl") 
 include("soplsr.jl") 
 
@@ -315,12 +313,10 @@ export
     baggr, 
     oob_baggr, vi_baggr, 
     # Sparse 
-    covselr,
     splskern, splskern!, 
     # Multi-block
     mbplsr, mbplsr!,
     mbplswest, mbplswest!,
-    mbwcov!, mbwcov,
     rosaplsr, rosaplsr!,
     soplsr,
     # Variable selection/importance (direct methods) 

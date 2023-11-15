@@ -27,18 +27,23 @@ Linear Regression. The Partial Least Squares (PLS). Approach to
 Generalized Inverses. SIAM Journal on Scientific and Statistical Computing 5, 735–743. 
 https://doi.org/10.1137/0905052
 """ 
-function plswold(X, Y, weights = ones(nro(X)); nlv,
-        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
-    plswold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
-        tol = tol, maxit = maxit, scal = scal)
+function plswold(X, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
+    weights = mweight(ones(eltype(X), nro(X)))
+    plswold!(X, Y, weights; par)
 end
 
-function plswold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
+function plswold(X, Y, weights::Weight; par = Par())
+    plswold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function plswold!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
     n, p = size(X)
     q = nco(Y)
     nlv = min(par.nlv, n, p)
-    weights = mweight(weights)
     sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   

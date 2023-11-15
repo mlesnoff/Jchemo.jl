@@ -186,7 +186,7 @@ function transform(object::Union{Plsr, Splsr},
 end
 
 """
-    coef(object::Union{Plsr, Pcr, Covselr}; nlv = nothing)
+    coef(object::Union{Plsr, Pcr}; nlv = nothing)
 Compute the X b-coefficients of a model fitted with `nlv` LVs.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
@@ -195,7 +195,7 @@ If X is (n, p) and Y is (n, q), the returned object `B` is a matrix (p, q).
 If `nlv` = 0, `B` is a matrix of zeros.
 The returned object `int` is the intercept.
 """ 
-function coef(object::Union{Plsr, Pcr, Covselr, Splsr}; 
+function coef(object::Union{Plsr, Pcr, Splsr}; 
         nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
@@ -209,13 +209,13 @@ function coef(object::Union{Plsr, Pcr, Covselr, Splsr};
 end
 
 """
-    predict(object::Union{Plsr, Pcr, Covselr}, X; nlv = nothing)
+    predict(object::Union{Plsr, Pcr}, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{Plsr, Pcr, Covselr, Splsr}, 
+function predict(object::Union{Plsr, Pcr, Splsr}, 
         X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
@@ -231,12 +231,12 @@ function predict(object::Union{Plsr, Pcr, Covselr, Splsr},
 end
 
 """
-    summary(object::Union{Plsr, Covselr}, X)
+    summary(object::Plsr, X)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
-function Base.summary(object::Union{Plsr, Covselr, Splsr}, 
+function Base.summary(object::Union{Plsr, Splsr}, 
         X::Union{Vector, Matrix, DataFrame})
     X = ensure_mat(X)
     n, nlv = size(object.T)

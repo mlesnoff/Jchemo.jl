@@ -206,22 +206,6 @@ struct Cglsr
     F::Union{Matrix, Nothing}
 end
 
-struct Covselr
-    T::Matrix
-    P::Matrix
-    R::Matrix
-    W::Matrix
-    C::Matrix
-    TT::Vector
-    xmeans::Vector
-    xscales::Vector
-    ymeans::Vector
-    yscales::Vector
-    weights::Weight
-    sellv::Vector{Vector{Int}}
-    sel::Vector{Int}
-end
-
 struct Knnr
     X::Matrix
     Y::Matrix

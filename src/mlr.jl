@@ -54,17 +54,22 @@ zcoef.int
 zcoef.B
 ```
 """ 
-function mlr(X, Y, weights = ones(nro(X)); 
-        noint::Bool = false)
-    mlr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights;
-        noint = noint)
+function mlr(X, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
+    weights = mweight(ones(eltype(X), nro(X)))
+    mlr!(X, Y, weights; par)
 end
 
-function mlr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
-        noint::Bool = false)
-    weights = mweight(weights)
-    sqrtD = Diagonal(sqrt.(weights))
-    if noint
+function mlr(X, Y, weights::Weight; par = Par())
+    mlr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function mlr!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
+    sqrtD = Diagonal(sqrt.(weights.w))
+    if par.noint
         q = nco(Y)
         B = (sqrtD * X) \ (sqrtD * Y)
         int = zeros(q)'
@@ -94,13 +99,20 @@ Faster but can be less accurate (squared element X'X).
 
 See `?mlr` for examples.
 """ 
-function mlrchol(X, Y, weights = ones(nro(X)))
-    mlrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights)
+function mlrchol(X, Y)
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
+    weights = mweight(ones(eltype(X), nro(X)))
+    mlrchol!(X, Y, weights)
 end
 
-function mlrchol!(X::Matrix, Y::Matrix, weights = ones(nro(X)))
-    @assert nco(X) > 1 "Method only working for X with > 1 column."
-    weights = mweight(weights)
+function mlrchol(X, Y, weights::Weight)
+    mlrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights)
+end
+
+function mlrchol!(X::Matrix, Y::Matrix, weights::Weight)
+    @assert nco(X) > 1 "The Method only works for X with nb. columns > 1."
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     center!(X, xmeans)
@@ -124,17 +136,22 @@ Safe but can be slower.
 
 See `?mlr` for examples.
 """ 
-function mlrpinv(X, Y, weights = ones(nro(X)); 
-        noint::Bool = false)
-    mlrpinv!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        noint = noint)
+function mlrpinv(X, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
+    weights = mweight(ones(eltype(X), nro(X)))
+    mlrpinv!(X, Y, weights; par)
 end
 
-function mlrpinv!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
-        noint::Bool = false)
-    weights = mweight(weights)
-    sqrtD = Diagonal(sqrt.(weights))
-    if noint
+function mlrpinv(X, Y, weights::Weight; par = Par())
+    mlrpinv!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
+    sqrtD = Diagonal(sqrt.(weights.w))
+    if par.noint
         q = nco(Y)
         sqrtDX = sqrtD * X
         tol = sqrt(eps(real(float(one(eltype(sqrtDX))))))      # see ?pinv
@@ -168,12 +185,19 @@ Compute a model with intercept.
 
 See `?mlr` for examples.
 """ 
-function mlrpinvn(X, Y, weights = ones(nro(X)))
-    mlrpinvn!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights)
+function mlrpinvn(X, Y)
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
+    weights = mweight(ones(eltype(X), nro(X)))
+    mlrpinvn!(X, Y, weights)
 end
 
-function mlrpinvn!(X::Matrix, Y::Matrix, weights = ones(nro(X)))
-    weights = mweight(weights)
+function mlrpinvn(X, Y, weights::Weight)
+    mlrpinvn!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights)
+end
+
+function mlrpinvn!(X::Matrix, Y::Matrix, weights::Weight)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     center!(X, xmeans)
@@ -200,18 +224,22 @@ Compute a model with intercept.
 
 See `?mlr` for examples.
 """ 
-     
-function mlrvec(x, Y, weights = ones(length(x));
-        noint::Bool = false)
-    mlrvec!(copy(ensure_mat(x)), copy(ensure_mat(Y)), weights;
-        noint = noint)
+function mlrvec(x, Y; par = Par())
+    x = copy(ensure_mat(x))
+    Y = copy(ensure_mat(Y))
+    weights = mweight(ones(eltype(x), nro(x)))
+    mlrvec!(x, Y, weights; par)
 end
 
-function mlrvec!(x::Matrix, Y::Matrix, weights = ones(length(x));
-        noint::Bool = false)
+function mlrvec(x, Y, weights::Weight; par = Par())
+    mlrvec!(copy(ensure_mat(x)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function mlrvec!(x::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
     @assert nco(x) == 1 "Method only working for univariate x."
-    weights = mweight(weights)
-    if noint
+    if par.noint
         q = nco(Y)
         xtD = x' * Diagonal(weights.w)
         B = (xtD * Y) ./ (xtD * x)

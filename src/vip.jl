@@ -1,6 +1,6 @@
 """
-    vip(object::Union{Pcr, Plsr, Covselr}; nlv = nothing)
-    vip(object::Union{Pcr, Plsr, Covselr}, Y; nlv = nothing)
+    vip(object::Union{Pcr, Plsr}; nlv = nothing)
+    vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
 Variable importance on Projections (VIP).
 * `object` : The fitted model (object of structure `Plsr`).
 * `Y` : The Y-data that was used to fit the model.
@@ -59,7 +59,7 @@ Ydummy = dummy(ycla).Y
 vip(fmpls, Ydummy).imp
 ```
 """ 
-function vip(object::Union{Pcr, Plsr, Covselr}; nlv = nothing)
+function vip(object::Union{Pcr, Plsr}; nlv = nothing)
     if isa(object, Jchemo.Pcr)
         W = object.fm_pca.P
     else
@@ -88,7 +88,7 @@ function vip(object::Union{Pcr, Plsr, Covselr}; nlv = nothing)
     (imp = imp, W2, sst)
 end
 
-function vip(object::Union{Pcr, Plsr, Covselr}, Y; nlv = nothing)
+function vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
     if isa(object, Jchemo.Pcr)
         W = object.fm_pca.P
     else

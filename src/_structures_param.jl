@@ -1,6 +1,8 @@
 Base.@kwdef mutable struct Par
     nlv::Int = 1
     lb::Float64 = 1e-5
+    ##
+    noint::Bool = false
     ## 
     kern::Symbol = :krbf
     gamma::Float64 = 1. 

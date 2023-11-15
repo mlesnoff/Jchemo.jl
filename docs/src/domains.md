@@ -88,8 +88,9 @@
 - **pcr** Principal components regression (SVD factorization)
 
 *Sparse*
-- **splskern** sPLSR *Lê Cao et al. 2008*
-- **covselr** MLR on variables selected from Covsel method *Roger et al. 2011*
+- **splskern** 
+    - sPLSR *Lê Cao et al. 2008*
+    - Covsel regression *Roger et al. 2011*
 
 *Averaging and stacking of PLSR models of different dimensionalities*
 - **plsravg** PLSR-AVG
@@ -101,7 +102,6 @@
 *Multiblock*
 - **mbplsr** Multiblock PLSR (MBPLSR) - Fast version (PLSR on concatenated blocks)
 - **mbplswest** MBPLSR - Nipals algorithm *Westerhuis et al. 1998* 
-- **mbwcov** Multiblock weighted covariate analysis regression (MBWCov) *Mangana et al. 2021* 
 - **rosaplsr** ROSA *Liland et al. 2016*
 - **soplsr** Sequentially orthogonalized (SO-PLSR) 
 
