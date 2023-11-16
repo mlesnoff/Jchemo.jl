@@ -1,17 +1,23 @@
-function plsravg_unif(X, Y, weights = ones(nro(X)); nlv,
-        scal::Bool = false)
-    plsravg_unif!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
-        scal = scal)
+function plsravg_unif(X, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
+    weights = mweight(ones(eltype(X), nro(X)))
+    plsravg_unif!(X, Y, weights; par)
 end
 
-function plsravg_unif!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        scal::Bool = false)
+function plsravg_unif(X, Y, weights::Weight; par = Par())
+    plsravg_unif!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function plsravg_unif!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
     X = ensure_mat(X)
     n, p = size(X)
-    nlv = eval(Meta.parse(nlv))
-    nlv = (min(minimum(nlv), n, p):min(maximum(nlv), n, p))
-    nlvmax = maximum(nlv)     
-    fm = plskern!(X, Y, weights; nlv = nlvmax, scal = scal)
+    nlv = (min(minimum(par.nlv), n, p):min(maximum(par.nlv), n, p))
+    nlvmax = maximum(nlv)
+    par.nlv = nlvmax     
+    fm = plskern!(X, Y, weights; par)
     PlsravgUnif(fm, nlv)
 end
 

@@ -1,5 +1,5 @@
 Base.@kwdef mutable struct Par
-    nlv::Int = 1
+    nlv::Union{Int, UnitRange} = 1
     lb::Float64 = 1e-5
     ##
     noint::Bool = false

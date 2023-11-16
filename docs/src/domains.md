@@ -92,7 +92,7 @@
     - sPLSR *Lê Cao et al. 2008*
     - Covsel regression *Roger et al. 2011*
 
-*Averaging and stacking of PLSR models of different dimensionalities*
+*Averaging PLSR models of different dimensionalities*
 - **plsravg** PLSR-AVG
 
 *Non linear*

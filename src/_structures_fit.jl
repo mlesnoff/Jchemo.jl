@@ -363,33 +363,13 @@ struct Plsr
     niter::Union{Vector{Int}, Nothing}
 end
 
-struct Plsravg
-    fm
-end
-
-struct PlsravgCri
-    fm::Plsr
-    nlv
-    w::Vector
-end
-
-struct PlsravgShenk
-    fm::Plsr
-    nlv
-end
-
 struct PlsravgUnif
     fm::Plsr
-    nlv
+    nlv::UnitRange
 end
 
-struct Plsrstack
-    fm::Plsr
-    nlv
-    w::Vector
-    Xstack  # = View
-    ystack::Matrix
-    weightsstack::Matrix
+struct Plsravg
+    fm::PlsravgUnif
 end
 
 struct Rosaplsr

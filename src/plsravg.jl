@@ -1,9 +1,9 @@
 """ 
     plsravg(X, Y, weights = ones(nro(X)); nlv, 
-        typf = :unif, typw = :bisquare,
+        typavg = :unif, typw = :bisquare,
         alpha = 0, K = 5, rep = 10, scal::Bool = false)
     plsravg!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
-        typf = :unif, typw = :bisquare, 
+        typavg = :unif, typw = :bisquare, 
         alpha = 0, K = 5, rep = 10, scal::Bool = false)
 Averaging and stacking PLSR models with different numbers of 
     latent variables (LVs).
@@ -14,15 +14,15 @@ Averaging and stacking PLSR models with different numbers of
     to consider ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
     are averaged). Syntax such as "10" is also allowed ("10": correponds to
     the single model with 10 LVs).
-* `typf` : Type of averaging. 
+* `typavg` : Type of averaging. 
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
 
-For `typf` in {:aic, :bic, :cv}
+For `typavg` in {:aic, :bic, :cv}
 * `typw` : Type of weight function. 
 * `alpha` : Pareter of the weight function.
 
-For `typf` = :stack
+For `typavg` = :stack
 * `K` : Nb. of folds segmenting the data in the (K-fold) CV.
 * `rep` : Nb. of repetitions of the K-fold CV. 
 
@@ -34,7 +34,7 @@ For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for
 a new observation is the average (eventually weighted) or stacking of the predictions 
 returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
 
-Possible values of `typf` are: 
+Possible values of `typavg` are: 
 * :unif : Simple average.
 * :aic : Weighted average based on AIC computed for each model.
 * :bic : Weighted average based on BIC computed for each model.
@@ -97,7 +97,7 @@ plotxy(res.pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f   
 
 fm = plsravg(Xtrain, ytrain; nlv = nlv,
-    typf = :cv) ;
+    typavg = :cv) ;
 res = Jchemo.predict(fm, Xtest)
 res.pred
 rmsep(res.pred, ytest)
@@ -107,40 +107,35 @@ plotsp(predlv, 0:(nco(predlv) - 1); nsamp = 30).f
 
 ```
 """ 
-function plsravg(X, Y, weights = ones(nro(X)); nlv, 
-        typf = :unif, typw = :bisquare, 
-        alpha = 0, K = 5, rep = 10, scal::Bool = false)
-    plsravg!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
-        typf = typf, typw = typw, 
-        alpha = alpha, K = K, rep = rep, scal = scal)
+function plsravg(X, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
+    weights = mweight(ones(eltype(X), nro(X)))
+    plsravg!(X, Y, weights; par)
 end
 
-function plsravg!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
-        typf = :unif, typw = :bisquare, 
-        alpha = 0, K = 5, rep = 10, scal::Bool = false)
-    if typf == :unif
-        fm = plsravg_unif!(X, Y, weights; nlv = nlv,
-            scal = scal)
-    elseif typf == :aic
-        fm = plsravg_aic!(X, Y, weights; nlv = nlv,
-            bic = false, typw = typw, alpha = alpha,
-            scal = scal)
-    elseif typf == :bic
-        fm = plsravg_aic!(X, Y, weights; nlv = nlv,
-            bic = true, typw = typw, alpha = alpha,
-            scal = scal)
-    elseif typf == :cv
-        fm = plsravg_cv!(X, Y, weights; nlv = nlv,
-            typw = typw, alpha = alpha, 
-            scal = scal)
-    elseif typf == :shenk
-        fm = plsravg_shenk!(X, Y, weights; nlv = nlv,
-            scal = scal)
-    elseif typf == :stack
-        fm = plsrstack!(X, Y, weights; nlv = nlv, 
-            K = K, rep = rep, 
-            scal = scal) 
-    end
+function plsravg(X, Y, weights::Weight; par = Par())
+    plsravg!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function plsravg!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
+    fun = plsravg_unif!
+    #if typavg == :unif
+    #    fun = plsravg_unif!
+    #elseif typavg == :aic
+    #    fun = plsravg_aic!
+    #elseif typavg == :bic
+    #    fun = plsravg_aic!
+    #elseif typavg == :cv
+    #    fun = plsravg_cv!
+    #elseif typavg == :shenk
+    #    fun = plsravg_shenk!
+    #elseif typavg == :stack
+    #    fun = plsrstack! 
+    #end
+    fm = fun(X, Y, weights; par)
     Plsravg(fm)
 end
 
