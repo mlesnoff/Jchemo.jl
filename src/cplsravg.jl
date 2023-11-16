@@ -79,12 +79,12 @@ function cplsravg(X, Y, cla = nothing; ncla = nothing,
     lev = ztab.keys
     ni = ztab.vals
     nlev = length(lev)
-    #fm_da = plsrda(X, cla; nlv = nlv_da)
+    #fmda = plsrda(X, cla; nlv = nlv_da)
     if typda == "lda"
-        fm_da = plslda(X, cla; nlv = nlv_da, prior = :prop,
+        fmda = plslda(X, cla; nlv = nlv_da, prior = :prop,
             scal = scal)
     elseif typda == "qda"
-        fm_da = plsqda(X, cla; nlv = nlv_da, prior = :prop, 
+        fmda = plsqda(X, cla; nlv = nlv_da, prior = :prop, 
             scal = scal)
     end
     fm = list(nlev)
@@ -99,7 +99,7 @@ function cplsravg(X, Y, cla = nothing; ncla = nothing,
         fm[i] = plsravg(X[s, :], Y[s, :]; nlv = znlv,
             scal = scal)
     end
-    CplsrAvg(fm, fm_da, lev, ni)
+    CplsrAvg(fm, fmda, lev, ni)
 end
 
 """
@@ -112,7 +112,7 @@ function predict(object::CplsrAvg, X)
     X = ensure_mat(X)
     m = nro(X)
     nlev = length(object.lev)
-    post = predict(object.fm_da, X).posterior
+    post = predict(object.fmda, X).posterior
     #post .= (mapreduce(i -> Float64.(post[i, :] .== maximum(post[i, :])), hcat, 1:m)')
     #post = (mapreduce(i -> mweight(exp.(post[i, :])), hcat, 1:m))'
     #post .= (mapreduce(i -> 1 ./ (1 .+ exp.(-post[i, :])), hcat, 1:m)')

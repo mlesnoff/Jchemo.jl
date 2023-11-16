@@ -53,7 +53,7 @@ vip(fmpls, Ydummy).imp
 
 nlv = 2
 fm = plslda(X, ycla; nlv = nlv) ;
-fmpls = fm.fm.fm_pls
+fmpls = fm.fm.fmpls
 vip(fmpls).imp
 Ydummy = dummy(ycla).Y
 vip(fmpls, Ydummy).imp
@@ -61,7 +61,7 @@ vip(fmpls, Ydummy).imp
 """ 
 function vip(object::Union{Pcr, Plsr}; nlv = nothing)
     if isa(object, Jchemo.Pcr)
-        W = object.fm_pca.P
+        W = object.fmpca.P
     else
         W = object.W
     end
@@ -90,7 +90,7 @@ end
 
 function vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
     if isa(object, Jchemo.Pcr)
-        W = object.fm_pca.P
+        W = object.fmpca.P
     else
         W = object.W
     end

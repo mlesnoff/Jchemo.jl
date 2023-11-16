@@ -46,7 +46,7 @@ end
 function xfit!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    isa(object, Jchemo.Pcr) ? object = object.fm_pca : nothing
+    isa(object, Jchemo.Pcr) ? object = object.fmpca : nothing
     if nlv == 0
         m = nro(X)
         @inbounds for i = 1:m

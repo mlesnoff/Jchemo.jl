@@ -58,7 +58,7 @@ fm = splslda(Xtrain, ytrain; nlv = nlv,
     scal = scal) ;
 pnames(fm)
 pnames(fm.fm)
-zfm = fm.fm.fm_pls ;
+zfm = fm.fm.fmpls ;
 zfm.sellv
 zfm.sel
 res = Jchemo.predict(fm, Xtest)
@@ -81,14 +81,14 @@ function splslda(X, y, weights = ones(nro(X)); nlv,
         prior = :unif, scal::Bool = false)
     res = dummy(y)
     ni = tab(y).vals
-    fm_pls = splskern(X, res.Y, weights; nlv = nlv, 
+    fmpls = splskern(X, res.Y, weights; nlv = nlv, 
         meth = meth, delta = delta, nvar = nvar, 
         scal = scal)
-    fm_da = list(nlv)
+    fmda = list(nlv)
     @inbounds for i = 1:nlv
-        fm_da[i] = lda(fm_pls.T[:, 1:i], y, weights; prior = prior)
+        fmda[i] = lda(fmpls.T[:, 1:i], y, weights; prior = prior)
     end
-    fm = (fm_pls = fm_pls, fm_da = fm_da)
+    fm = (fmpls = fmpls, fmda = fmda)
     Plslda(fm, res.lev, ni)
 end
 

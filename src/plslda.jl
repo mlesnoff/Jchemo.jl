@@ -57,16 +57,16 @@ confusion(res.pred, ytest).cnt
 Jchemo.transform(fm, Xtest)
 Jchemo.transform(fm, Xtest; nlv = 2)
 
-fm_pls = fm.fm.fm_pls ;
-Jchemo.transform(fm_pls, Xtest)
-summary(fm_pls, Xtrain)
-Jchemo.coef(fm_pls).B
-Jchemo.coef(fm_pls, nlv = 1).B
-Jchemo.coef(fm_pls, nlv = 2).B
+fmpls = fm.fm.fmpls ;
+Jchemo.transform(fmpls, Xtest)
+summary(fmpls, Xtrain)
+Jchemo.coef(fmpls).B
+Jchemo.coef(fmpls, nlv = 1).B
+Jchemo.coef(fmpls, nlv = 2).B
 
-fm_da = fm.fm.fm_da ;
-T = Jchemo.transform(fm_pls, Xtest)
-Jchemo.predict(fm_da[nlv], T).pred
+fmda = fm.fm.fmda ;
+T = Jchemo.transform(fmpls, Xtest)
+Jchemo.predict(fmda[nlv], T).pred
 
 Jchemo.predict(fm, Xtest; nlv = 1:2).pred
 ```
@@ -75,12 +75,12 @@ function plslda(X, y, weights = ones(nro(X)); nlv,
         prior = :unif, scal::Bool = false)
     res = dummy(y)
     ni = tab(y).vals
-    fm_pls = plskern(X, res.Y, weights; nlv = nlv, scal = scal)
-    fm_da = list(nlv)
+    fmpls = plskern(X, res.Y, weights; nlv = nlv, scal = scal)
+    fmda = list(nlv)
     @inbounds for i = 1:nlv
-        fm_da[i] = lda(fm_pls.T[:, 1:i], y, weights; prior = prior)
+        fmda[i] = lda(fmpls.T[:, 1:i], y, weights; prior = prior)
     end
-    fm = (fm_pls = fm_pls, fm_da = fm_da)
+    fm = (fmpls = fmpls, fmda = fmda)
     Plslda(fm, res.lev, ni)
 end
 
@@ -92,7 +92,7 @@ Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transform(object::Plslda, X; nlv = nothing)
-    transform(object.fm.fm_pls, X; nlv = nlv)
+    transform(object.fm.fmpls, X; nlv = nlv)
 end
 
 """
@@ -106,15 +106,15 @@ Compute Y-predictions from a fitted model.
 function predict(object::Plslda, X; nlv = nothing)
     X = ensure_mat(X)
     m = nro(X)
-    a = size(object.fm.fm_pls.T, 2)
+    a = size(object.fm.fmpls.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     pred = list(le_nlv, Union{Matrix{Int}, Matrix{Float64}, Matrix{String}})
     posterior = list(le_nlv, Matrix{Float64})
     @inbounds for i = 1:le_nlv
         znlv = nlv[i]
-        T = transform(object.fm.fm_pls, X, nlv = znlv)
-        zres = predict(object.fm.fm_da[znlv], T)
+        T = transform(object.fm.fmpls, X, nlv = znlv)
+        zres = predict(object.fm.fmda[znlv], T)
         z =  mapslices(argmax, zres.posterior; dims = 2) 
         pred[i] = reshape(replacebylev2(z, object.lev), m, 1)
         posterior[i] = zres.posterior

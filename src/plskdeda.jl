@@ -53,13 +53,13 @@ function plskdeda(X, y, weights = ones(nro(X)); nlv,
         prior = :unif, h = nothing, a = 1, scal::Bool = false)
     res = dummy(y)
     ni = tab(y).vals
-    fm_pls = plskern(X, res.Y, weights; nlv = nlv, scal = scal)
-    fm_da = list(nlv)
+    fmpls = plskern(X, res.Y, weights; nlv = nlv, scal = scal)
+    fmda = list(nlv)
     @inbounds for i = 1:nlv
-        fm_da[i] = kdeda(vcol(fm_pls.T, 1:i), y; prior = prior,
+        fmda[i] = kdeda(vcol(fmpls.T, 1:i), y; prior = prior,
             h = h, a = a)
     end
-    fm = (fm_pls = fm_pls, fm_da = fm_da)
+    fm = (fmpls = fmpls, fmda = fmda)
     Plslda(fm, res.lev, ni)
 end
 

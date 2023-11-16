@@ -337,7 +337,7 @@ struct Mlr
 end
 
 struct Pcr
-    fm_pca
+    fmpca::Pca
     T::Matrix
     R::Matrix
     C::Matrix
@@ -698,8 +698,8 @@ end
 
 struct Occsdod
     d::DataFrame
-    fm_sd
-    fm_od
+    fmsd
+    fmod
 end
 
 struct Occstah
@@ -778,7 +778,7 @@ end
 
 struct CplsrAvg
     fm
-    fm_da::Plslda
+    fmda::Plslda
     lev
     ni
 end

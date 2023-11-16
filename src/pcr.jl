@@ -42,9 +42,9 @@ zcoef.int
 zcoef.B
 Jchemo.coef(fm; nlv = 7).B
 
-fm_pca = fm.fm_pca ;
-transform(fm_pca, Xtest)
-transform(fm_pca, Xtest; nlv = 7)
+fmpca = fm.fmpca ;
+transform(fmpca, Xtest)
+transform(fmpca, Xtest; nlv = 7)
 
 res = Jchemo.predict(fm, Xtest)
 res.pred
@@ -57,27 +57,32 @@ res.pred[1]
 res.pred[2]
 
 # See ?pcasvd
-res = Base.summary(fm_pca, Xtrain)
+res = Base.summary(fmpca, Xtrain)
 res.explvarx
 ```
 """ 
-function pcr(X, Y, weights = ones(nro(X)); nlv, 
-        scal::Bool = false)
-    pcr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
-        scal = scal)
+function pcr(X, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
+    weights = mweight(ones(eltype(X), nro(X)))
+    pcr!(X, Y, weights; par)
 end
 
-function pcr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
-        scal::Bool = false)
+function pcr(X, Y, weights::Weight; par = Par())
+    pcr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function pcr!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
     q = nco(Y)
-    weights = mweight(weights)
     ymeans = colmean(Y, weights)
     # No need to scale Y
-    # Only for consistency with coef::Plsr  
+    # below yscales is built only for consistency with coef::Plsr  
     yscales = ones(eltype(Y), q)
     # End 
-    fm = pcasvd!(X, weights; nlv = nlv, scal = scal)
-    D = Diagonal(fm.weights)
+    fm = pcasvd!(X, weights; par)
+    D = Diagonal(fm.weights.w)
     beta = inv(fm.T' * D * fm.T) * fm.T' * D * Y
     # first term of the product = Diagonal(1 ./ fm.sv[1:nlv].^2) if T is D-orthogonal
     # This is the case for the actual version (pcasvd)
@@ -91,7 +96,7 @@ Summarize the fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Pcr, X::Union{Vector, Matrix, DataFrame})
-    summary(object.fm_pca, X)
+    summary(object.fmpca, X)
 end
 
 

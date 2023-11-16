@@ -29,12 +29,12 @@ See `?occsd` for details on outputs, and examples.
 function occsdod(object::Union{Pca, Plsr}, X; 
         nlv_sd = nothing, nlv_od = nothing, 
         typc = :mad, cri = 3, alpha = .025, kwargs...)
-    fm_sd = occsd(object; nlv = nlv_sd,
+    fmsd = occsd(object; nlv = nlv_sd,
         typc = typc, cri = cri, alpha = alpha)
-    fm_od = occod(object, X; nlv = nlv_od,
+    fmod = occod(object, X; nlv = nlv_od,
         typc = typc, cri = cri, alpha = alpha)
-    sd = fm_sd.d
-    od = fm_od.d
+    sd = fmsd.d
+    od = fmod.d
     z = sqrt.(sd.dstand .* od.dstand)
     nam = string.(names(sd), "_sd")
     rename!(sd, nam)
@@ -42,7 +42,7 @@ function occsdod(object::Union{Pca, Plsr}, X;
     rename!(od, nam)
     d = hcat(sd, od)
     d.dstand = z
-    Occsdod(d, fm_sd, fm_od)
+    Occsdod(d, fmsd, fmod)
 end
 
 """
@@ -54,8 +54,8 @@ Compute predictions from a fitted model.
 function predict(object::Occsdod, X)
     X = ensure_mat(X)
     m = nro(X)
-    sd = predict(object.fm_sd, X).d
-    od = predict(object.fm_od, X).d
+    sd = predict(object.fmsd, X).d
+    od = predict(object.fmod, X).d
     dstand = sqrt.(sd.dstand .* od.dstand)
     nam = string.(names(sd), "_sd")
     rename!(sd, nam)
