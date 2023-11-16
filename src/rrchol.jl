@@ -28,17 +28,24 @@ inference, and prediction, 2nd ed. Springer, New York.
 Hoerl, A.E., Kennard, R.W., 1970. Ridge Regression: Biased Estimation for Nonorthogonal Problems. 
 Technometrics 12, 55-67. https://doi.org/10.1080/00401706.1970.10488634
 """ 
-function rrchol(X, Y, weights = ones(nro(X)); lb = .01,
-        scal::Bool = false)
-    rrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; lb = lb,
-        scal = scal)
+function rrchol(X, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
+    weights = mweight(ones(eltype(X), nro(X)))
+    rrchol!(X, Y, weights; par)
 end
 
-function rrchol!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
-        scal::Bool = false)
-    @assert nco(X) > 1 "Method only working for X with > 1 column."
+function rrchol(X, Y, weights::Weight; par = Par())
+    rrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function rrchol!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
+    @assert nco(X) > 1 "The method only works for X with nb columns > 1."
     p = nco(X)
-    weights = mweight(weights)
+    T = eltype(X)
+    lb = convert(T, par.lb)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)
     xscales = ones(eltype(X), p)
@@ -50,7 +57,7 @@ function rrchol!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
     end
     center!(Y, ymeans)  
     XtD = X' * Diagonal(weights.w)
-    B = cholesky!(Hermitian(XtD * X + lb^2 * Diagonal(ones(p)))) \ (XtD * Y)
+    B = cholesky!(Hermitian(XtD * X + lb^2 * Diagonal(ones(T, p)))) \ (XtD * Y)
     B .= Diagonal(1 ./ xscales) * B 
     int = ymeans' .- xmeans' * B
     Mlr(B, int, weights)

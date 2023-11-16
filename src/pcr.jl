@@ -89,6 +89,17 @@ function pcr!(X::Matrix, Y::Matrix, weights::Weight;
     Pcr(fm, fm.T, fm.P, beta', fm.xmeans, fm.xscales, ymeans, yscales, weights)
 end
 
+""" 
+    transform(object::Pcr, X; nlv = nothing)
+Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
+* `object` : The fitted model.
+* `X` : Matrix (m, p) for which LVs are computed.
+* `nlv` : Nb. LVs to consider.
+""" 
+function transform(object::Pcr, X; nlv = nothing)
+    transform(object.fmpca, X; nlv = nlv)
+end
+
 """
     summary(object::Pcr, X::Union{Vector, Matrix, DataFrame})
 Summarize the fitted model.

@@ -90,19 +90,19 @@ f
 ```
 """ 
 function kplsr(X, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
     weights = mweight(ones(eltype(X), nro(X)))
-    kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        par = par)
+    kplsr!(X, Y, weights; par)
 end
 
-function kplsr(X, Y, weights::Weight{Q}; 
-        par = Par()) where {Q <: AbstractFloat}
-    kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        par = par)
+function kplsr(X, Y, weights::Weight; par = Par())
+    kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
 end
 
-function kplsr!(X::Matrix, Y::Matrix, weights::Weight{Q}; 
-            par = Par()) where {Q <: AbstractFloat} 
+function kplsr!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
     n, p = size(X)
     q = nco(Y)
     nlv = par.nlv
@@ -141,7 +141,7 @@ function kplsr!(X::Matrix, Y::Matrix, weights::Weight{Q};
     for a in 1:nlv
         if q == 1      
             mul!(t, K, D * vec(Y))   # t = K * D * Y
-            t ./= sqrt(dot(t, weights .* t))
+            t ./= sqrt(dot(t, weights.w .* t))
             dt .= weights.w .* t
             mul!(c, Y', dt)
             u .= Y * c 
@@ -151,8 +151,8 @@ function kplsr!(X::Matrix, Y::Matrix, weights::Weight{Q};
             ztol = 1.
             ziter = 1
             while ztol > par.tol && ziter <= par.maxit
-                mul!(t, K, weights .* u)
-                t ./= sqrt(dot(t, weights .* t))
+                mul!(t, K, weights.w .* u)
+                t ./= sqrt(dot(t, weights.w .* t))
                 dt .= weights.w .* t                
                 mul!(c, Y', dt)
                 zu .= Y * c 

@@ -104,19 +104,19 @@ f
 ```
 """ 
 function krr(X, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
     weights = mweight(ones(eltype(X), nro(X)))
-    krr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        par = par)
+    krr!(X, Y, weights; par)
 end
 
-function krr(X, Y, weights::Weight{Q}; 
-        par = Par()) where {Q <: AbstractFloat}
-    krr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        par = par)
+function krr(X, Y, weights::Weight; par = Par())
+    krr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
 end
 
-function krr!(X::Matrix, Y::Matrix, weights::Weight{Q}; 
-            par = Par()) where {Q <: AbstractFloat} 
+function krr!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)

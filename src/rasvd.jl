@@ -111,7 +111,7 @@ function rasvd!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
     if tau == 0       
         invCx = inv(X' * X)
     else
-        Ix = Diagonal(ones(p)) 
+        Ix = Diagonal(ones(eltype(X), p)) 
         if tau == 1   
             invCx = Ix
         else

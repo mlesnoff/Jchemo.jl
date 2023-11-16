@@ -411,11 +411,11 @@ struct Rr
     V::Matrix
     TtDY::Matrix
     sv::Vector
-    lb::Float64
     xmeans::Vector
     xscales::Vector
     ymeans::Vector
     weights::Weight
+    par::Par
 end
 
 struct Soplsr

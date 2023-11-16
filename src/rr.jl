@@ -67,16 +67,21 @@ res.pred[1]
 res.pred[2]
 ```
 """ 
-function rr(X, Y, weights = ones(nro(X)); lb = .01,
-    scal::Bool = false)
-    rr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; lb = lb, 
-        scal = scal)
+function rr(X, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
+    weights = mweight(ones(eltype(X), nro(X)))
+    rr!(X, Y, weights; par)
 end
 
-function rr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
-        scal::Bool = false)
+function rr(X, Y, weights::Weight; par = Par())
+    rr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function rr!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
     p = nco(X)
-    weights = mweight(weights)
     sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)
@@ -92,7 +97,7 @@ function rr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
     res = LinearAlgebra.svd!(sqrtD * X)
     sv = res.S
     TtDY = Diagonal(sv) * res.U' * (sqrtD * Y)
-    Rr(res.V, TtDY, sv, lb, xmeans, xscales, ymeans, weights)
+    Rr(res.V, TtDY, sv, xmeans, xscales, ymeans, weights, par)
 end
 
 """
@@ -103,7 +108,8 @@ Compute the b-coefficients of a fitted model.
     If nothing, it is the parameter stored in the fitted model.
 """ 
 function coef(object::Rr; lb = nothing)
-    isnothing(lb) ? lb = object.lb : nothing
+    isnothing(lb) ? lb = object.par.lb : nothing
+    lb = convert(eltype(object.sv), lb)
     eig = object.sv.^2
     z = 1 ./ (eig .+ lb^2)
     beta = Diagonal(z) * object.TtDY
@@ -124,7 +130,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Rr, X; lb = nothing)
     X = ensure_mat(X)
-    isnothing(lb) ? lb = object.lb : nothing
+    isnothing(lb) ? lb = object.par.lb : nothing
     le_lb = length(lb)
     pred = list(le_lb, Matrix{eltype(X)})
     @inbounds for i = 1:le_lb

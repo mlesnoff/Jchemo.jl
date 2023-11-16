@@ -139,7 +139,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight;
     Px  = similar(X, p, nlv)
     Cx = similar(X, p, p)
     invCx = copy(Cx)
-    Ix = Diagonal(ones(p))
+    Ix = Diagonal(ones(eltype(X), p))
     TTx = similar(X, nlv)
     tx  = similar(X, n)
     ty  = copy(tx)
@@ -159,7 +159,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight;
         if tau == 0       
             invCx = inv(X' * X)
         else
-            Ix = Diagonal(ones(p)) 
+            Ix = Diagonal(ones(eltype(X), p)) 
             if tau == 1   
                 invCx = Ix
             else

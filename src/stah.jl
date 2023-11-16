@@ -39,7 +39,7 @@ function stah(X, a; scal = true)
     n, p = size(zX)
     P = reshape(sample(0:1, p * a), p, a)
     mu_scal = zeros(eltype(X), p)
-    s_scal = ones(p) 
+    s_scal = ones(eltype(X), p) 
     if par.scal
         mu_scal .= vec(median(zX, dims = 1))
         s_scal .= colmad(zX)

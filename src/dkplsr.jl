@@ -90,19 +90,19 @@ f
 ```
 """ 
 function dkplsr(X, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
     weights = mweight(ones(eltype(X), nro(X)))
-    dkplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        par = par)
+    dkplsr!(X, Y, weights; par)
 end
 
-function dkplsr(X, Y, weights::Weight{Q}; 
-        par = Par()) where {Q <: AbstractFloat}
-    dkplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; 
-        par = par)
+function dkplsr(X, Y, weights::Weight; par = Par())
+    dkplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
 end
 
-function dkplsr!(X::Matrix, Y::Matrix, weights::Weight{Q}; 
-            par = Par()) where {Q <: AbstractFloat} 
+function dkplsr!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
     p = nco(X)
     q = nco(Y)
     xscales = ones(eltype(X), p)
