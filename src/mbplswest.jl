@@ -59,12 +59,10 @@ summary(fm, Xbl)
 ```
 """
 function mbplswest(Xbl, Y; par = Par())
-    X = copy(ensure_mat(X))
-    Y = copy(ensure_mat(Y))
     Q = eltype(Xbl[1])
     n = nro(Xbl[1])
     weights = mweight(ones(Q, n))
-    mbplswest!(Xbl, Y, weights; par)
+    mbplswest(Xbl, Y, weights; par)
 end
 
 function mbplswest(Xbl, Y, weights::Weight; par = Par())
@@ -79,25 +77,11 @@ end
 
 function mbplswest!(Xbl, Y::Matrix, weights::Weight; 
         par = Par())
-#function mbplswest(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-#        bscal = :none, tol = sqrt(eps(1.)), maxit = 200, 
-#        scal::Bool = false)
-#    nbl = length(Xbl)  
-#    zXbl = list(nbl, Matrix{Float64})
-#    @inbounds for k = 1:nbl
-#        zXbl[k] = copy(ensure_mat(Xbl[k]))
-#    end
-#    mbplswest!(zXbl, copy(ensure_mat(Y)), weights; nlv = nlv, 
-#        bscal = bscal, tol = tol, maxit = maxit, 
-#        scal = scal)
-#end
-#function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
-#        bscal = :none, tol = sqrt(eps(1.)), maxit = 200, 
-#        scal::Bool = false)
-    @assert in([:none; :frob])(bscal) "Wrong value for argument 'bscal'."
+    @assert in([:none; :frob])(par.bscal) "Wrong value for argument 'bscal'."
     nbl = length(Xbl)
     n = nro(Xbl[1])
     q = nco(Y)
+    nlv = par.nlv
     Q = eltype(Xbl[1])
     sqrtw = sqrt.(weights.w)
     xmeans = list(nbl, Vector)
@@ -106,7 +90,7 @@ function mbplswest!(Xbl, Y::Matrix, weights::Weight;
     Threads.@threads for k = 1:nbl
         p[k] = nco(Xbl[k])
         xmeans[k] = colmean(Xbl[k], weights) 
-        xscales[k] = ones(nco(Xbl[k]))
+        xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
             Xbl[k] .= cscale(Xbl[k], xmeans[k], xscales[k])
@@ -122,8 +106,8 @@ function mbplswest!(Xbl, Y::Matrix, weights::Weight;
     else
         center!(Y, ymeans)
     end
-    bscal == :none ? bscales = ones(nbl) : nothing
-    if bscal == :frob
+    par.bscal == :none ? bscales = ones(Q, nbl) : nothing
+    if par.bscal == :frob
         res = blockscal_frob(Xbl, weights) 
         bscales = res.bscales
         Xbl = res.Xbl
@@ -222,12 +206,12 @@ function transform(object::Union{MbplsWest, Mbplsr}, Xbl; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
-    zXbl = list(nbl, Matrix{Float64})
+    zXbl = list(nbl, Matrix{eltype(Xbl[1])})
     Threads.@threads for k = 1:nbl
         zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
     res = blockscal(zXbl, object.bscales)
-    reduce(hcat, res.X) * vcol(object.R, 1:nlv) 
+    reduce(hcat, res.Xbl) * vcol(object.R, 1:nlv) 
 end
 
 """
@@ -237,12 +221,13 @@ Compute Y-predictions from a fitted model.
 * `Xbl` : A list (vector) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{MbplsWest, Mbplsr}, Xbl; nlv = nothing)
+function predict(object::Union{MbplsWest, Mbplsr}, Xbl; 
+        nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     T = transform(object, Xbl)
-    pred = list(le_nlv, Matrix{eltype(X)})
+    pred = list(le_nlv, Matrix{eltype(Xbl[1])})
     @inbounds  for i = 1:le_nlv
         znlv = nlv[i]
         int = object.ymeans'
@@ -262,12 +247,12 @@ Summarize the fitted model.
 function Base.summary(object::MbplsWest, Xbl)
     n, nlv = size(object.T)
     nbl = length(Xbl)
-    sqrtw = sqrt.(object.weights)
-    zXbl = list(nbl, Matrix{Float64})
+    sqrtw = sqrt.(object.weights.w)
+    zXbl = list(nbl, Matrix{eltype(Xbl[1])})
     Threads.@threads for k = 1:nbl
         zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
-    zXbl = blockscal(zXbl, object.bscales).X
+    zXbl = blockscal(zXbl, object.bscales).Xbl
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end
@@ -283,20 +268,21 @@ function Base.summary(object::MbplsWest, Xbl)
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)     
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
+        pvar = pvar, cumpvar = cumpvar)     
     # Correlation between the original X-variables
     # and the global scores
     z = cor(X, sqrtw .* object.T)  
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     # Correlation between the X-block scores and the global scores 
-    z = list(nlv, Matrix{Float64})
+    z = list(nlv, Matrix)
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], sqrtw .* object.T[:, a])
     end
     cortb2t = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
     # Redundancies (Average correlations) Rd(X, t) 
     # between each X-block and each global score
-    z = list(nbl, Matrix{Float64})
+    z = list(nbl, Matrix)
     @inbounds for k = 1:nbl
         z[k] = rd(zXbl[k], sqrtw .* object.T)
     end

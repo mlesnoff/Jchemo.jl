@@ -94,26 +94,6 @@ struct Mbpca
     niter::Vector{Int}
 end
 
-struct MbplsWest            # Used for mbplswest, mbwcov 
-    T::Matrix
-    P::Matrix
-    R::Matrix
-    W::Matrix
-    C::Matrix
-    Tbl::Vector{Matrix}
-    Tb::Vector{Matrix}
-    Pbl::Vector{Matrix}
-    TT::Vector
-    bscales::Vector
-    xmeans::Vector{Vector}
-    xscales::Vector{Vector}
-    ymeans::Vector
-    yscales::Vector
-    weights::Weight
-    lb::Union{Matrix, Nothing}
-    niter::Union{Matrix, Nothing}
-end
-
 struct Pca 
     T::Matrix 
     P::Matrix
@@ -328,6 +308,26 @@ struct Mbplsr
     ymeans::Vector
     yscales::Vector
     weights::Weight
+end
+
+struct MbplsWest            # Used for mbplswest, mbwcov 
+    T::Matrix
+    P::Matrix
+    R::Matrix
+    W::Matrix
+    C::Matrix
+    Tbl::Vector{Matrix}
+    Tb::Vector{Matrix}
+    Pbl::Vector{Matrix}
+    TT::Vector
+    bscales::Vector
+    xmeans::Vector{Vector}
+    xscales::Vector{Vector}
+    ymeans::Vector
+    yscales::Vector
+    weights::Weight
+    lb::Union{Matrix, Nothing}
+    niter::Union{Vector, Nothing}
 end
 
 struct Mlr

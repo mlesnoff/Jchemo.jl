@@ -49,23 +49,29 @@ Jchemo.predict(fm, Xbl_new).pred
 summary(fm, Xbl) 
 ```
 """
-function mbplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = :none, scal::Bool = false)
+function mbplsr(Xbl, Y; par = Par())
+    Q = eltype(Xbl[1])
+    n = nro(Xbl[1])
+    weights = mweight(ones(Q, n))
+    mbplsr(Xbl, Y, weights; par)
+end
+
+function mbplsr(Xbl, Y, weights::Weight; par = Par())
     nbl = length(Xbl)  
-    zXbl = list(nbl, Matrix{Float64})
+    zXbl = list(nbl, Matrix)
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    mbplsr!(zXbl, copy(ensure_mat(Y)), weights; nlv = nlv, 
-        bscal = bscal, scal = scal)
+    mbplsr!(zXbl, copy(ensure_mat(Y)), 
+        weights; par)
 end
 
-function mbplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = :none, scal::Bool = false)
+function mbplsr!(Xbl, Y::Matrix, weights::Weight; 
+        par = Par())
+    @assert in([:none; :frob])(par.bscal) "Wrong value for argument 'bscal'."
     nbl = length(Xbl)
-    Y = ensure_mat(Y)
     q = nco(Y)
-    weights = mweight(weights)
+    Q = eltype(Xbl[1])
     xmeans = list(nbl, Vector{Float64})
     xscales = list(nbl, Vector{Float64})
     Threads.@threads for k = 1:nbl
@@ -79,21 +85,21 @@ function mbplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
         end
     end
     ymeans = colmean(Y, weights)
-    yscales = ones(eltype(Y), q)
+    yscales = ones(Q, q)
     if par.scal 
         yscales .= colstd(Y, weights)
         cscale!(Y, ymeans, yscales)
     else
         center!(Y, ymeans)
     end
-    bscal == :none ? bscales = ones(nbl) : nothing
-    if bscal == :frob
+    par.bscal == :none ? bscales = ones(nbl) : nothing
+    if par.bscal == :frob
         res = blockscal_frob(Xbl, weights) 
         bscales = res.bscales
         Xbl = res.Xbl
     end
     X = reduce(hcat, Xbl)
-    fm = plskern(X, Y, weights; nlv = nlv, scal = false)
+    fm = plskern(X, Y, weights; par)
     Mbplsr(fm, fm.T, fm.R, fm.C, 
         bscales, xmeans, xscales, ymeans, yscales, weights)
 end
@@ -107,12 +113,12 @@ Summarize the fitted model.
 function Base.summary(object::Mbplsr, Xbl)
     n, nlv = size(object.T)
     nbl = length(Xbl)
-    sqrtw = sqrt.(object.weights)
-    zXbl = list(nbl, Matrix{Float64})
+    sqrtw = sqrt.(object.weights.w)
+    zXbl = list(nbl, Matrix{eltype(Xbl[1])})
     Threads.@threads for k = 1:nbl
         zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
-    zXbl = blockscal(zXbl, object.bscales).X
+    zXbl = blockscal(zXbl, object.bscales).Xbl
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end
