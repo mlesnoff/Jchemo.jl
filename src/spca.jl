@@ -115,9 +115,8 @@ res.explvarx_adj
 ```
 """ 
 function spca(X; par = Par())
-    X = copy(ensure_mat(X))
-    weights = mweight(ones(eltype(X), nro(X)))
-    spca!(X, weights; par)
+    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    spca(X, weights; par)
 end
 
 function spca(X, weights::Weight; par = Par())

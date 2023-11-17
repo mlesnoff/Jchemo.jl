@@ -90,7 +90,7 @@ function mbplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
     if bscal == :frob
         res = blockscal_frob(Xbl, weights) 
         bscales = res.bscales
-        Xbl = res.X
+        Xbl = res.Xbl
     end
     X = reduce(hcat, Xbl)
     fm = plskern(X, Y, weights; nlv = nlv, scal = false)

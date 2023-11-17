@@ -62,9 +62,11 @@ Xres
 ```
 """ 
 function pcanipalsmiss(X; par = Par())
-    X = copy(ensure_mat(X))
-    weights = mweight(ones(eltype(X), nro(X)))
-    pcanipalsmiss!(X, weights; par)
+    z = vec(Matrix(X))
+    s = ismissing.(z) .== 0
+    T = eltype(z[s][1, 1])
+    weights = mweight(ones(T, nro(X)))
+    pcanipalsmiss(X, weights; par)
 end
 
 function pcanipalsmiss(X, weights::Weight; par = Par())

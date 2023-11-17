@@ -60,9 +60,8 @@ res.cor_circle
 ```
 """ 
 function pcasvd(X; par = Par())
-    X = copy(ensure_mat(X))
-    weights = mweight(ones(eltype(X), nro(X)))
-    pcasvd!(X, weights; par)
+    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    pcasvd(X, weights; par)
 end
 
 function pcasvd(X, weights::Weight; par = Par())

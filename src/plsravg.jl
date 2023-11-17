@@ -108,10 +108,8 @@ plotsp(predlv, 0:(nco(predlv) - 1); nsamp = 30).f
 ```
 """ 
 function plsravg(X, Y; par = Par())
-    X = copy(ensure_mat(X))
-    Y = copy(ensure_mat(Y))
-    weights = mweight(ones(eltype(X), nro(X)))
-    plsravg!(X, Y, weights; par)
+    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    plsravg(X, Y, weights; par)
 end
 
 function plsravg(X, Y, weights::Weight; par = Par())
@@ -122,19 +120,6 @@ end
 function plsravg!(X::Matrix, Y::Matrix, weights::Weight; 
         par = Par())
     fun = plsravg_unif!
-    #if typavg == :unif
-    #    fun = plsravg_unif!
-    #elseif typavg == :aic
-    #    fun = plsravg_aic!
-    #elseif typavg == :bic
-    #    fun = plsravg_aic!
-    #elseif typavg == :cv
-    #    fun = plsravg_cv!
-    #elseif typavg == :shenk
-    #    fun = plsravg_shenk!
-    #elseif typavg == :stack
-    #    fun = plsrstack! 
-    #end
     fm = fun(X, Y, weights; par)
     Plsravg(fm)
 end

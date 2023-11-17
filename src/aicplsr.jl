@@ -4,8 +4,8 @@ Compute Akaike's (AIC) and Mallows's (Cp) criteria for univariate PLSR models.
 * `X` : X-data.
 * `y` : Univariate Y-data.
 * `nlv` : Nb. latent variables (LVs).
-* `correct` : Define if the bias correction is applied.
-* `bic` : Define is BIC is computed instead of AIC.
+* `correct` : Define if the bias correction is applied.  # Removed
+* `bic` : Define is BIC is computed instead of AIC.  # Replaced by par.alpha_aic
 * `scal` : Boolean. If `true`, each column of `X` and `y` 
     is scaled by its uncorrected standard deviation.
 
@@ -49,43 +49,48 @@ scatter!(ax, 0:nlv, zaic)
 f
 ```
 """ 
-function aicplsr(X, y; nlv, correct = true, bic = false, scal::Bool = false)
+function aicplsr(X, y; par = Par())
     X = ensure_mat(X)
-    n = nro(X)
-    p = nco(X)
+    n, p = size(X)
     nlv = min(par.nlv, n, p)
-    pars = mpar(scal = scal)  
-    res = gridscorelv(X, y, X, y;
-        fun = plskern, score = ssr, nlv = 0:nlv, pars = pars)
+    #pars = mpar(scal = scal)  
+    #res = gridscorelv(X, y, X, y;
+    #    fun = plskern, score = ssr, nlv = 0:nlv, pars = pars)
+    ## Temporary
+    pars = mpar(nlv = 0:nlv, scal = par.scal)  
+    res = gridscore(X, y, X, y;
+        fun = plskern, score = ssr, pars = pars)
+    ## End 
     zssr = res.y1
-    df = dfplsr_cg(X, y, nlv = nlv, reorth = true, scal = scal).df
+    df = dfplsr_cg(X, y; par).df
     df_ssr = n .- df
-    # For Cp, unbiased estimate of sigma2 
-    # ----- Cp1: From a low biased model
-    # Not stable with dfcov and nlv too large compared to best model !!
-    # If df stays below .95 * n, this corresponds
-    # to the maximal model (nlv)
-    # Option 2 gives in general results
-    # very close to those of option 1,
-    # but can give poor results with dfcov
-    # when nlv is set too large to the best model
+    ## For Cp, unbiased estimate of sigma2 
+    ## ----- Cp1: From a low biased model
+    ## Not stable with dfcov and nlv too large compared to best model !!
+    ## If df stays below .95 * n, this corresponds
+    ## to the maximal model (nlv)
+    ## Option 2 gives in general results
+    ## very close to those of option 1,
+    ## but can give poor results with dfcov
+    ## when nlv is set too large to the best model
     k = maximum(findall(df .<= .5 * n))
     s2_1 = zssr[k] / df_ssr[k]
-    # ----- Cp2: FPE-like
-    # s2 is estimated from the model under evaluation
-    # Used in Kraemer & Sugiyama 2011 Eq.5-6
+    ## ----- Cp2: FPE-like
+    ## s2 is estimated from the model under evaluation
+    ## Used in Kraemer & Sugiyama 2011 Eq.5-6
     s2_2 = zssr ./ df_ssr
-    ct = ones(nlv + 1)
-    correct ? ct .= n ./ (n .- df .- 2) : nothing
+    ct = ones(eltype(X), nlv + 1)
+    ct .= n ./ (n .- df .- 2)  # bias correction
     ct[(df .> n) .| (ct .<= 0)] .= NaN 
-    # For safe predictions when df stabilizes and fluctuates
+    ## For safe predictions when df stabilizes and fluctuates
     ct[df .> .8 * n] .= NaN
-    # End
+    ## End
     u = findall(isnan.(ct)) 
     if length(u) > 0
         ct[minimum(u):(nlv + 1)] .= NaN
     end
-    bic ? alpha = log(n) : alpha = 2
+    #bic ? alpha = log(n) : alpha = 2
+    alpha = convert(eltype(X), par.alpha_aic)
     aic = n * log.(zssr) + alpha * (df .+ 1) .* ct
     cp1 = zssr .+ 2 * s2_1 * df .* ct
     cp2 = zssr .+ 2 * s2_2 .* df .* ct
@@ -94,10 +99,11 @@ function aicplsr(X, y; nlv, correct = true, bic = false, scal::Bool = false)
     cp2 ./= n
     res = (aic = aic, cp1 = cp1, cp2 = cp2)
     znlv = 0:nlv
-    ztab = DataFrame(nlv = znlv, n = fill(n, nlv + 1), df = df, ct = ct, ssr = zssr)
+    ztab = DataFrame(nlv = znlv, n = fill(n, nlv + 1), 
+        df = df, ct = ct, ssr = zssr)
     crit = hcat(ztab, DataFrame(res))
     opt = map(x -> findmin(x[isnan.(x) .== 0])[2] - 1, res)
-    delta = map(x -> x .- findmin(x[isnan.(x) .== 0])[1], res)                  # Differences "Delta"
+    delta = map(x -> x .- findmin(x[isnan.(x) .== 0])[1], res)  # differences "Delta"
     delta = reduce(hcat, delta)
     nam = [:aic, :cp1, :cp2]
     delta = DataFrame(delta, nam)

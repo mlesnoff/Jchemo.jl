@@ -1,8 +1,6 @@
 function plsravg_unif(X, Y; par = Par())
-    X = copy(ensure_mat(X))
-    Y = copy(ensure_mat(Y))
-    weights = mweight(ones(eltype(X), nro(X)))
-    plsravg_unif!(X, Y, weights; par)
+    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    plsravg_unif(X, Y, weights; par)
 end
 
 function plsravg_unif(X, Y, weights::Weight; par = Par())

@@ -124,12 +124,12 @@ function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
     if bscal == :frob
         res = blockscal_frob(Xbl, weights) 
         bscales = res.bscales
-        Xbl = res.X
+        Xbl = res.Xbl
     end
     if bscal == "mfa"
         res = blockscal_mfa(Xbl, weights) 
         bscales = res.bscales
-        Xbl = res.X
+        Xbl = res.Xbl
     end
     # Row metric
     @inbounds for k = 1:nbl

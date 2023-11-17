@@ -58,29 +58,50 @@ Jchemo.predict(fm, Xbl_new).pred
 summary(fm, Xbl)
 ```
 """
-function mbplswest(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = :none, tol = sqrt(eps(1.)), maxit = 200, 
-        scal::Bool = false)
+function mbplswest(Xbl, Y; par = Par())
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
+    Q = eltype(Xbl[1])
+    n = nro(Xbl[1])
+    weights = mweight(ones(Q, n))
+    mbplswest!(Xbl, Y, weights; par)
+end
+
+function mbplswest(Xbl, Y, weights::Weight; par = Par())
     nbl = length(Xbl)  
-    zXbl = list(nbl, Matrix{Float64})
+    zXbl = list(nbl, Matrix)
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    mbplswest!(zXbl, copy(ensure_mat(Y)), weights; nlv = nlv, 
-        bscal = bscal, tol = tol, maxit = maxit, 
-        scal = scal)
+    mbplswest!(zXbl, copy(ensure_mat(Y)), 
+        weights; par)
 end
 
-function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
-        bscal = :none, tol = sqrt(eps(1.)), maxit = 200, 
-        scal::Bool = false)
+function mbplswest!(Xbl, Y::Matrix, weights::Weight; 
+        par = Par())
+#function mbplswest(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
+#        bscal = :none, tol = sqrt(eps(1.)), maxit = 200, 
+#        scal::Bool = false)
+#    nbl = length(Xbl)  
+#    zXbl = list(nbl, Matrix{Float64})
+#    @inbounds for k = 1:nbl
+#        zXbl[k] = copy(ensure_mat(Xbl[k]))
+#    end
+#    mbplswest!(zXbl, copy(ensure_mat(Y)), weights; nlv = nlv, 
+#        bscal = bscal, tol = tol, maxit = maxit, 
+#        scal = scal)
+#end
+#function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
+#        bscal = :none, tol = sqrt(eps(1.)), maxit = 200, 
+#        scal::Bool = false)
+    @assert in([:none; :frob])(bscal) "Wrong value for argument 'bscal'."
     nbl = length(Xbl)
     n = nro(Xbl[1])
     q = nco(Y)
-    weights = mweight(weights)
+    Q = eltype(Xbl[1])
     sqrtw = sqrt.(weights.w)
-    xmeans = list(nbl, Vector{Float64})
-    xscales = list(nbl, Vector{Float64})
+    xmeans = list(nbl, Vector)
+    xscales = list(nbl, Vector)
     p = fill(0, nbl)
     Threads.@threads for k = 1:nbl
         p[k] = nco(Xbl[k])
@@ -94,7 +115,7 @@ function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
         end
     end
     ymeans = colmean(Y, weights)
-    yscales = ones(eltype(Y), q)
+    yscales = ones(Q, q)
     if par.scal 
         yscales .= colstd(Y, weights)
         cscale!(Y, ymeans, yscales)
@@ -105,7 +126,7 @@ function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
     if bscal == :frob
         res = blockscal_frob(Xbl, weights) 
         bscales = res.bscales
-        Xbl = res.X
+        Xbl = res.Xbl
     end
     # Row metric
     @inbounds for k = 1:nbl
@@ -114,11 +135,11 @@ function mbplswest!(Xbl, Y::Matrix, weights = ones(nro(Xbl[1])); nlv,
     Y .= sqrtw .* Y
     # Pre-allocation
     X = similar(Xbl[1], n, sum(p))
-    Tbl = list(nbl, Matrix{Float64})
+    Tbl = list(nbl, Matrix)
     for k = 1:nbl ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
-    Tb = list(nlv, Matrix{Float64})
+    Tb = list(nlv, Matrix)
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
-    Pbl = list(nbl, Matrix{Float64})
+    Pbl = list(nbl, Matrix)
     for k = 1:nbl ; Pbl[k] = similar(Xbl[1], p[k], nlv) ; end
     Tx = similar(Xbl[1], n, nlv)
     Wx = similar(Xbl[1], sum(p), nlv)

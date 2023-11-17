@@ -97,10 +97,8 @@ head(Jchemo.predict(fm, Xtest).pred)
 ```
 """
 function rrr(X, Y; par = Par())
-    X = copy(ensure_mat(X))
-    Y = copy(ensure_mat(Y))
-    weights = mweight(ones(eltype(X), nro(X)))
-    rrr!(X, Y, weights; par)
+    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    rrr(X, Y, weights; par)
 end
 
 function rrr(X, Y, weights::Weight; par = Par())

@@ -89,10 +89,8 @@ lines(z.nlv, z.cumpvar,
 ```
 """ 
 function plskern(X, Y; par = Par())
-    X = copy(ensure_mat(X))
-    Y = copy(ensure_mat(Y))
-    weights = mweight(ones(eltype(X), nro(X)))
-    plskern!(X, Y, weights; par)
+    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    plskern(X, Y, weights; par)
 end
 
 function plskern(X, Y, weights::Weight; par = Par())

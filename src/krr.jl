@@ -104,10 +104,8 @@ f
 ```
 """ 
 function krr(X, Y; par = Par())
-    X = copy(ensure_mat(X))
-    Y = copy(ensure_mat(Y))
-    weights = mweight(ones(eltype(X), nro(X)))
-    krr!(X, Y, weights; par)
+    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    krr(X, Y, weights; par)
 end
 
 function krr(X, Y, weights::Weight; par = Par())

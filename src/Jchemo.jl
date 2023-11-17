@@ -67,7 +67,6 @@ include("mblock.jl")
 include("blockscal.jl")
 include("mbpca.jl")
 include("comdim.jl")
-include("mbunif.jl")
 include("cca.jl")
 include("ccawold.jl")
 include("plscan.jl")
@@ -281,8 +280,7 @@ export
     blockscal_ncol, blockscal_sd,
     rv, lg, rd, 
     mbpca, mbpca!,
-    comdim, comdim!,
-    mbunif, mbunif!,  
+    comdim, comdim!, 
     cca, cca!,
     ccawold, ccawold!,
     plscan, plscan!,

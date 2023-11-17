@@ -55,10 +55,8 @@ zcoef.B
 ```
 """ 
 function mlr(X, Y; par = Par())
-    X = copy(ensure_mat(X))
-    Y = copy(ensure_mat(Y))
-    weights = mweight(ones(eltype(X), nro(X)))
-    mlr!(X, Y, weights; par)
+    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    mlr(X, Y, weights; par)
 end
 
 function mlr(X, Y, weights::Weight; par = Par())
@@ -100,10 +98,8 @@ Faster but can be less accurate (squared element X'X).
 See `?mlr` for examples.
 """ 
 function mlrchol(X, Y)
-    X = copy(ensure_mat(X))
-    Y = copy(ensure_mat(Y))
-    weights = mweight(ones(eltype(X), nro(X)))
-    mlrchol!(X, Y, weights)
+    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    mlrchol(X, Y, weights)
 end
 
 function mlrchol(X, Y, weights::Weight)
@@ -137,10 +133,8 @@ Safe but can be slower.
 See `?mlr` for examples.
 """ 
 function mlrpinv(X, Y; par = Par())
-    X = copy(ensure_mat(X))
-    Y = copy(ensure_mat(Y))
-    weights = mweight(ones(eltype(X), nro(X)))
-    mlrpinv!(X, Y, weights; par)
+    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    mlrpinv(X, Y, weights; par)
 end
 
 function mlrpinv(X, Y, weights::Weight; par = Par())
@@ -186,10 +180,8 @@ Compute a model with intercept.
 See `?mlr` for examples.
 """ 
 function mlrpinvn(X, Y)
-    X = copy(ensure_mat(X))
-    Y = copy(ensure_mat(Y))
-    weights = mweight(ones(eltype(X), nro(X)))
-    mlrpinvn!(X, Y, weights)
+    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    mlrpinvn(X, Y, weights)
 end
 
 function mlrpinvn(X, Y, weights::Weight)
@@ -225,10 +217,8 @@ Compute a model with intercept.
 See `?mlr` for examples.
 """ 
 function mlrvec(x, Y; par = Par())
-    x = copy(ensure_mat(x))
-    Y = copy(ensure_mat(Y))
     weights = mweight(ones(eltype(x), nro(x)))
-    mlrvec!(x, Y, weights; par)
+    mlrvec(x, Y, weights; par)
 end
 
 function mlrvec(x, Y, weights::Weight; par = Par())

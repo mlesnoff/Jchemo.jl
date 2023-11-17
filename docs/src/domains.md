@@ -45,7 +45,6 @@
 *2 or more blocks* 
 - **mbpca** Multiblock PCA (MBPCA = CPCA Consensus principal component analysis)
 - **comdim** Common components and specific weights analysis (ComDim = CCSWA = HPCA)
-- **mbunif** Unified multiblock data analysis of Mangana et al. 2019
 
 *Utilities*
 - **mblock** Make blocks from a matrix

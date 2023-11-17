@@ -72,33 +72,29 @@ sum(colvar(res.X[3], w))
 X_concat = reduce(hcat, res.X)
 ```
 """
-function blockscal(Xbl, 
-        bscales)
+function blockscal(Xbl, bscales)
     X = copy(Xbl)
     nbl = length(X)
     #Threads not faster
     @inbounds for k = 1:nbl
         X[k] = X[k] / bscales[k]
     end
-    (X = X, bscales)
+    (Xbl = X, bscales)
 end 
 
-function blockscal_frob(Xbl, 
-        weights = ones(nro(Xbl[1])))
+function blockscal_frob(Xbl, weights::Weight)
     nbl = length(Xbl)
-    bscales = list(nbl, Float64)
+    bscales = list(nbl, eltype(Xbl[1]))
     @inbounds for k = 1:nbl
-        bscales[k] =  frob(Xbl[k], mweight(weights))
+        bscales[k] =  frob(Xbl[k], weights)
     end
     blockscal(Xbl, bscales)
 end 
 
-function blockscal_mfa(Xbl, 
-        weights = ones(nro(Xbl[1])))
+function blockscal_mfa(Xbl, weights::Weight)
     nbl = length(Xbl)
-    sqrtw = sqrt.(mweight(weights))
-    sqrtD = Diagonal(sqrtw)
-    bscales = list(nbl, Float64)
+    sqrtD = Diagonal(sqrt.(weights.w))
+    bscales = list(nbl, eltype(Xbl[1]))
     @inbounds for k = 1:nbl
         xmeans = colmean(Xbl[k], weights)
         zX = center(Xbl[k], xmeans)
@@ -109,17 +105,16 @@ end
 
 function blockscal_ncol(Xbl)
     nbl = length(Xbl)
-    bscales = list(nbl, Float64)
+    bscales = list(nbl, eltype(Xbl[1]))
     @inbounds for k = 1:nbl
-        bscales[k] =  size(Xbl[k], 2) 
+        bscales[k] =  nco(Xbl[k]) 
     end
     blockscal(Xbl, bscales)
 end 
 
-function blockscal_sd(Xbl,
-        weights = ones(nro(Xbl[1])))
+function blockscal_sd(Xbl, weights::Weight)
     nbl = length(Xbl)
-    bscales = list(nbl, Float64)
+    bscales = list(nbl, eltype(Xbl[1]))
     @inbounds for k = 1:nbl
         bscales[k] = sqrt(sum(colvar(Xbl[k], weights)))
     end

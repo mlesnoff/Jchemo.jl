@@ -1,10 +1,10 @@
 """
-    dfplsr_cg(X, y; nlv, reorth = true, scal::Bool = false)
+    dfplsr_cg(X, y; nlv, gs = true, scal::Bool = false)
 Compute the model complexity (df) of PLSR models with the CGLS algorithm.
 * `X` : X-data.
 * `y` : Univariate Y-data.
 * `nlv` : Nb. latent variables (LVs).
-* `reorth` : If `true`, a Gram-Schmidt reorthogonalization of the normal equation 
+* `gs` : If `true`, a Gram-Schmidt reorthogonalization of the normal equation 
     residual vectors is done.
 * `scal` : Boolean. If `true`, each column of `X` and `y` 
     is scaled by its uncorrected standard deviation.
@@ -48,7 +48,7 @@ zXs = scale(zX, xstds)
 # End
 
 nlv = 12 
-df = dfplsr_cg(zXs, y; nlv = nlv, reorth = true) 
+df = dfplsr_cg(zXs, y; nlv = nlv, gs = true) 
 df_kramer = [1.000000, 3.712373, 6.456417, 11.633565, 12.156760, 11.715101, 12.349716,
     12.192682, 13.000000, 13.000000, 13.000000, 13.000000, 13.000000]
 f, ax = plotgrid(0:nlv, df_kramer; step = 2,

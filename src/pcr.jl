@@ -62,10 +62,8 @@ res.explvarx
 ```
 """ 
 function pcr(X, Y; par = Par())
-    X = copy(ensure_mat(X))
-    Y = copy(ensure_mat(Y))
-    weights = mweight(ones(eltype(X), nro(X)))
-    pcr!(X, Y, weights; par)
+    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    pcr(X, Y, weights; par)
 end
 
 function pcr(X, Y, weights::Weight; par = Par())

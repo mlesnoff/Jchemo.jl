@@ -324,12 +324,6 @@ The weighted norm is:
 frob(X) = LinearAlgebra.norm(X)
 
 frob(X, weights::Weight) = sqrt(sum(weights.w' * (X.^2))) 
-# Faster than:
-# 1
-#sqrtD = Diagonal(sqrt.(w))
-#sqrt(ssq(sqrtD * X))
-# 2
-# sqrt(sum(colnorm(X, w).^2))
 
 """
     head(X)

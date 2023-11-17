@@ -2,6 +2,8 @@ Base.@kwdef mutable struct Par
     nlv::Union{Int, UnitRange} = 1
     lb::Float64 = 1e-5
     ##
+    bscal::Symbol = :none
+    ##
     noint::Bool = false
     ##
     tau::Float64 = 1e-8
@@ -21,6 +23,7 @@ Base.@kwdef mutable struct Par
     maxit::Int = 200
     scal::Bool = false
     ##
+    alpha_aic::Float64 = 2.
     meth_sp::Symbol = :soft
     delta::Float64 = 0.
     nvar::Union{Int, Vector{Int}} = 1

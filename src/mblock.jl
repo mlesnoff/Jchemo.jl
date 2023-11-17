@@ -22,9 +22,9 @@ Xbl[3]
 """
 function mblock(X, listbl)
     nbl = length(listbl)
-    zX = list(nbl, Matrix{Float64})
+    Xbl = list(nbl, Matrix)
     @inbounds for i = 1:nbl
-        zX[i] = ensure_mat(X[:, listbl[i]])
+        Xbl[i] = ensure_mat(X[:, listbl[i]])
     end
-    zX
+    Xbl
 end 

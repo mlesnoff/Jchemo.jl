@@ -20,10 +20,8 @@ regression. Chemometrics and Intelligent Laboratory Systems 18, 251–263.
 https://doi.org/10.1016/0169-7439(93)85002-X
 """ 
 function plssimp(X, Y; par = Par())
-    X = copy(ensure_mat(X))
-    Y = copy(ensure_mat(Y))
-    weights = mweight(ones(eltype(X), nro(X)))
-    plssimp!(X, Y, weights; par)
+    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    plssimp(X, Y, weights; par)
 end
 
 function plssimp(X, Y, weights::Weight; par = Par())

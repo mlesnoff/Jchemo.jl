@@ -29,10 +29,8 @@ Hoerl, A.E., Kennard, R.W., 1970. Ridge Regression: Biased Estimation for Nonort
 Technometrics 12, 55-67. https://doi.org/10.1080/00401706.1970.10488634
 """ 
 function rrchol(X, Y; par = Par())
-    X = copy(ensure_mat(X))
-    Y = copy(ensure_mat(Y))
-    weights = mweight(ones(eltype(X), nro(X)))
-    rrchol!(X, Y, weights; par)
+    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    rrchol(X, Y, weights; par)
 end
 
 function rrchol(X, Y, weights::Weight; par = Par())
