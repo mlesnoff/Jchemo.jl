@@ -46,7 +46,7 @@ end
 
 function lg(Xbl::Vector; centr = true)
     nbl = length(Xbl)
-    mat = zeros(nbl, nbl)
+    mat = zeros(eltype(Xbl[1]), nbl, nbl)
     for i = 1:(nbl)
         for j = 1:(nbl)
             mat[i, j] = lg(Xbl[i], Xbl[j]; centr = centr)
@@ -83,6 +83,7 @@ rd(X, Y)
 ```
 """ 
 function rd(X, Y; typ = :cor)
+    @assert in([:cov; :cor])(typ) "Wrong value for argument 'typ'." 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)
@@ -95,6 +96,7 @@ function rd(X, Y; typ = :cor)
 end
 
 function rd(X, Y, weights::Weight; typ = :cor)
+    @assert in([:cov; :cor])(typ) "Wrong value for argument 'typ'." 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)
@@ -188,7 +190,7 @@ end
 
 function rv(Xbl::Vector; centr = true)
     nbl = length(Xbl)
-    mat = zeros(nbl, nbl)
+    mat = zeros(eltype(Xbl[1]), nbl, nbl)
     for i = 1:(nbl)
         for j = 1:(nbl)
             mat[i, j] = rv(Xbl[i], Xbl[j]; centr = centr)
