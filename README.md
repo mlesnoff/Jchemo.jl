@@ -9,6 +9,8 @@
 
 # <span style="color:green"> About </span> 
 
+**Warning:** Major breaking changes on the current main branch. Work in progress. See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/).  
+
 This package was initially designed about **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
 and their numerous variants, in particular locally weighted PLS models (**LWPLS-R & -DA**) (e.g. https://doi.org/10.1002/cem.3209).
 The package has then been expanded to **dimension reduction** methods, and many other **regression and discrimination** models (see [here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
