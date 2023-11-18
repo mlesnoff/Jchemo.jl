@@ -423,12 +423,12 @@ struct Splsr
 end
 
 struct Svmr
-    fm
+    fm::LIBSVM.SVM
     xscales::Vector
 end
 
 struct TreerDt
-    fm
+    fm::Union{DecisionTree.Root, DecisionTree.Ensemble}
     xscales::Vector
     featur::Vector{Int}
     mth::Bool 
@@ -532,21 +532,6 @@ struct Lwplslda
     ni::Int
 end
 
-struct LwplsldaAvg
-    X::Matrix
-    y::AbstractMatrix
-    fm
-    metric::String
-    h::Real
-    k::Int
-    nlv::String
-    tol::AbstractFloat
-    scal::Bool
-    verbose::Bool
-    lev::Vector
-    ni::Int
-end
-
 struct Lwplsqda
     X::Matrix
     y::AbstractMatrix
@@ -564,22 +549,6 @@ struct Lwplsqda
     ni::Int
 end
 
-struct LwplsqdaAvg
-    X::Matrix
-    y::AbstractMatrix
-    fm
-    metric::String
-    h::Real
-    k::Int
-    nlv::String
-    alpha::Real
-    tol::AbstractFloat
-    scal::Bool
-    verbose::Bool
-    lev::Vector
-    ni::Int
-end
-
 struct Lwplsrda
     X::Matrix
     y::AbstractMatrix
@@ -588,21 +557,6 @@ struct Lwplsrda
     h::Real
     k::Int
     nlv::Int
-    tol::AbstractFloat
-    scal::Bool
-    verbose::Bool
-    lev::Vector
-    ni::Int
-end
-
-struct LwplsrdaAvg
-    X::Matrix
-    y::AbstractMatrix
-    fm
-    metric::String
-    h::Real
-    k::Int
-    nlv::String
     tol::AbstractFloat
     scal::Bool
     verbose::Bool
@@ -627,16 +581,6 @@ struct Mlrda
     fm  
     lev::Vector
     ni::Int
-end
-
-struct Nscda
-    fms
-    poolstd_s0::Vector
-    wprior::Vector
-    ni::Vector{Int}
-    lev::Vector
-    xscales::Vector
-    weights::Weight
 end
 
 struct Occknndis
@@ -701,14 +645,6 @@ struct Plsrda
     ni::Int
 end
 
-struct Plsrdaavg  # for plsrdaavg, plsldaavg and plsqdaavg 
-    fm
-    nlv
-    w_mod
-    lev::Vector
-    ni::Int
-end
-
 struct Qda
     fm
     Wi::AbstractVector  
@@ -755,13 +691,6 @@ struct TreedaDt
 end
 
 ###### Related
-
-struct CplsrAvg
-    fm
-    fmda::Plslda
-    lev
-    ni
-end
 
 struct Dkplsr
     X::Matrix

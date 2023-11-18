@@ -1,5 +1,34 @@
 # News
 
+## *Version 0.3.0*
+
+**Warning:** Major breaking changes.
+Package Jchemo has been deeply restructured, to
+enable embededd syntax and facilitate pipelines building.
+The syntax of most of the functions has changed.
+Users who prefer the previous syntax has to keep 
+working with versions < 0.3.0. Sorry for any 
+inconveniance. 
+
+Other specific points are:
+
+- In the arguments, all String types have been replaced by 
+    Type Symbol (e.g. "unif" is replaced by :unif)
+- The 'weights' (row weighting in some functions, such as pcasvd etc.) 
+    argument must now be of type 'Weight', built from function 'mweight'. 
+- Temporary removed:
+    - mbunif, mbwcov
+    - baggr and utilities
+    - cplsravg
+    - nsc, nscda
+    - plsrdaavg, plsldaavg, plsqdaavg
+    - lwplsrdaavg, lwplsldaavg, lwplsqdaavg
+
+Some bugs may have been introduced due to the restructuration.
+They will be corrected in versions > 0.3.0.
+
+
+
 ## *Version 0.2.4*
 
 - Modifications

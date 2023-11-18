@@ -127,11 +127,6 @@
 - **lwplsravg** kNN-LWPLSR-AVG 
 - **cplsravg** Clustered PLSR-AVG
 
-### **Generic bagging**
-
-- **baggr** Bagging 
-- **oob_baggr** Out-of-bag (OOB) error rate
-
 ### Wrappers to other packages
 
 *SVM regression with LIBSVM.jl*
@@ -149,7 +144,6 @@
 *Linear*
 - **mlrda** MLR prediction (MLR-DA)
 - **plsrda** PLSR prediction (PLSR-DA) = usual **PLSDA**
-- **plsrdaavg** Averaging PLSR-DA models with different numbers of latent variables (PLSR-DA-AVG)
 - **rrda** RR prediction (RR-DA)
 
 *Sparse*
@@ -181,10 +175,6 @@
 - **splsqda**: Sparse PLS-QDA.
 - **splskdeda**: Sparse PLS-KDE-DA.
 
-*Averaging PLS-LDA and -QDA models of different dimensionalities*
-- **plsldaavg** PLS-LDA-AVG
-- **plsqdaavg** PLS-QDA-AVG (with continuum)
-
 ### **Local models**
 
 - **knnda** kNN-DA (Vote within neighbors)
@@ -196,11 +186,6 @@
 *With preliminary dimension reduction*
 - **lwmlrda_s** kNN-LWMLR-DA-S
 - **lwplsrda_s** kNN-LWPLSR-DA-S
-
-*Averaging*
-- **lwplsrdaavg** kNN-LWPLSR-DA-AVG
-- **lwplsldaavg** kNN-LWPLS-LDA-AVG
-- **lwplsqdaavg** kNN-LWPLS-QDA-AVG (with continuum)
 
 ### One-Class Classification (OCC)
 

@@ -86,7 +86,10 @@ axislegend("Method")
 f
 ```
 """ 
-function svmr(X, y, args...; par = Par())
+function svmr(X, y; par = Par())
+#function svmr(X, y, args...; par = Par())   # perhaps needed for embedded syntax
+    kern = par.kern 
+    @assert in([:krbf, :kpol, :klin, :ktanh])(kern) "Wrong value for argument 'kern'." 
     X = ensure_mat(X)
     y = vec(y)
     p = nco(X)
@@ -95,24 +98,26 @@ function svmr(X, y, args...; par = Par())
         xscales .= colstd(X)
         X = scale(X, xscales)
     end
-    if par.kern == :krbf
+    if kern == :krbf
         fkern = LIBSVM.Kernel.RadialBasis
-    elseif par.kern == :kpol
+    elseif kern == :kpol
         fkern = LIBSVM.Kernel.Polynomial
-    elseif par.kern == :klin
+    elseif kern == :klin
         fkern = LIBSVM.Kernel.Linear
-    elseif par.kern == :ktanh
+    elseif kern == :ktanh
         fkern = LIBSVM.Kernel.Sigmoid
     end
-    nt = 0 
     fm = svmtrain(X', y;
         svmtype = EpsilonSVR, 
         kernel = fkern,
         gamma =  par.gamma,
         coef0 = par.coef0,
         degree = par.degree,
-        cost = par.cost, epsilon = par.epsilon,
-        nt = nt) 
+        cost = par.cost, 
+        epsilon = par.epsilon,
+        tolerance = 0.001,
+        nt = 0,
+        verbose = false) 
     Svmr(fm, xscales)
 end
 

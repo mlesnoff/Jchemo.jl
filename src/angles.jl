@@ -83,7 +83,7 @@ rd(X, Y)
 ```
 """ 
 function rd(X, Y; typ = :cor)
-    @assert in([:cov; :cor])(typ) "Wrong value for argument 'typ'." 
+    @assert in([:cov, :cor])(typ) "Wrong value for argument 'typ'." 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)
@@ -96,7 +96,7 @@ function rd(X, Y; typ = :cor)
 end
 
 function rd(X, Y, weights::Weight; typ = :cor)
-    @assert in([:cov; :cor])(typ) "Wrong value for argument 'typ'." 
+    @assert in([:cov, :cor])(typ) "Wrong value for argument 'typ'." 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)

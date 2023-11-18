@@ -15,6 +15,14 @@ Base.@kwdef mutable struct Par
     cost::Float64 = 1.
     epsilon::Float64 = .1
     ##
+    n_trees::Int = 10
+    partial_sampling::Float64 = .7
+    n_subfeatures::Float64 = 0   # internally rounded/set to Int 
+    max_depth::Int = -1
+    min_samples_leaf::Int = 5
+    min_samples_split::Int = 5
+    mth::Bool = true
+    ##
     prior::Symbol = :unif
     ##
     gs::Bool = true
@@ -32,7 +40,3 @@ end
 struct Weight{T <: AbstractFloat}
     w::Vector{T} 
 end
-
-
-
-

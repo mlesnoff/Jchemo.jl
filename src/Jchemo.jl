@@ -89,7 +89,8 @@ include("plsravg.jl")
 include("plsravg_unif.jl")
 include("cglsr.jl")
 include("krr.jl")
-include("kplsr.jl") ; include("dkplsr.jl")
+include("kplsr.jl")
+include("dkplsr.jl")
 include("dfplsr_cg.jl")
 include("aicplsr.jl")
 include("wshenk.jl") 
@@ -132,13 +133,10 @@ include("selwold.jl")
 include("isel.jl")
 include("viperm.jl")
 
-# Bagging
-include("baggr.jl")
-include("baggr_utils.jl")
-
 # Svm, Trees
 include("svmr.jl")
 include("treer_dt.jl")
+include("rfr_dt.jl")
 
 ### Discrimination 
 include("lda.jl")
@@ -148,14 +146,12 @@ include("kdeda.jl")
 include("mlrda.jl")
 include("rrda.jl")
 include("plsrda.jl") 
-include("plslda.jl") ; include("plsqda.jl")
+include("plslda.jl")
+include("plsqda.jl")
 include("plskdeda.jl")
-include("plsrdaavg.jl") ; include("plsldaavg.jl") ; include("plsqdaavg.jl") 
 include("krrda.jl")
 include("kplsrda.jl")
 include("dkplsrda.jl")
-include("nsc.jl")
-include("nscda.jl")
 
 # Sparse
 include("splsrda.jl")
@@ -164,25 +160,27 @@ include("splsqda.jl")
 include("splskdeda.jl")
 
 # One-class
-include("occsd.jl") ; include("occod.jl") ; ; include("occsdod.jl")
-include("occstah.jl") ; include("stah.jl")
-include("occknndis.jl") ; include("occlknndis.jl")
-
-include("cplsravg.jl")  # Here since call ::PlsrDa
+include("occsd.jl")
+include("occod.jl") 
+include("occsdod.jl")
+include("occstah.jl")
+include("stah.jl")
+include("occknndis.jl")
+include("occlknndis.jl")
 
 # Local
-include("lwmlrda.jl") ; include("lwmlrda_s.jl")
-include("lwplsrda.jl") ; include("lwplsrda_s.jl")
+include("lwmlrda.jl")
+include("lwplsrda.jl")
 include("lwplslda.jl")
 include("lwplsqda.jl")
-include("lwplsrdaavg.jl")
-include("lwplsldaavg.jl")
-include("lwplsqdaavg.jl")
+include("lwmlrda_s.jl")
+include("lwplsrda_s.jl")
 include("knnda.jl")
 
 # Svm, Trees
 include("svmda.jl")
 include("treeda_dt.jl")
+include("rfda_dt.jl")
 
 ### Transfer
 include("calds.jl")
@@ -307,8 +305,6 @@ export
     wshenk,
     svmr,
     treer_dt, rfr_dt, 
-    baggr, 
-    oob_baggr, vi_baggr, 
     # Sparse 
     splskern, splskern!, 
     # Multi-block
@@ -326,7 +322,6 @@ export
     knnr,
     lwmlr, lwmlr_s,
     lwplsr, lwplsravg, lwplsr_s,  
-    cplsravg,
     ### Discrimination
     fda, fda!, fdasvd, fdasvd!,
     mlrda,
@@ -335,15 +330,12 @@ export
     rda,
     plsrda,
     plslda, plsqda, plskdeda,
-    plsrdaavg, plsldaavg, plsqdaavg,
     kplsrda, dkplsrda,
     svmda, 
     treeda_dt, rfda_dt,
     occsd, occod, occsdod,
     occstah, stah,
     occknndis, occlknndis,
-    nsc, 
-    nscda,
     # Sparse 
     splsrda,
     splslda, splsqda,
@@ -352,7 +344,6 @@ export
     lwmlrda, lwmlrda_s,
     lwplsrda, lwplsrda_s,
     lwplslda, lwplsqda,
-    lwplsrdaavg, lwplsldaavg, lwplsqdaavg,
     knnda,
     # Auxiliary
     transform, coef, predict,
