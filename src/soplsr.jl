@@ -49,20 +49,28 @@ Jchemo.transform(fm, Xbl_new)
 Jchemo.predict(fm, Xbl_new).pred
 ```
 """
-function soplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
-        scal::Bool = false)
+function soplsr(Xbl, Y; par = Par())
+    T = eltype(Xbl[1])
+    n = nro(Xbl[1])
+    weights = mweight(ones(T, n))
+    soplsr(Xbl, Y, weights; par)
+end
+
+function soplsr(Xbl, Y, weights::Weight; 
+        par = Par())
     Y = ensure_mat(Y)
     n = size(Xbl[1], 1)
     q = nco(Y)   
     nbl = length(Xbl)
-    weights = mweight(weights)
+    nlv = par.nlv
+    length(nlv) == 1 ? nlv = repeat([nlv], nbl) : nothing  
     D = Diagonal(weights.w)
     fm = list(nbl)
     pred = similar(Xbl[1], n, q)
     b = list(nbl)
     # First block
-    fm[1] = plskern(Xbl[1], Y, weights; nlv = nlv[1], 
-        scal = scal)
+    fm[1] = plskern(Xbl[1], Y, weights; 
+        par = Par(nlv = nlv[1], scal = par.scal))
     T = fm[1].T
     pred .= Jchemo.predict(fm[1], Xbl[1]).pred
     b[1] = nothing
@@ -71,7 +79,8 @@ function soplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
         for i = 2:nbl
             b[i] = inv(T' * (D * T)) * T' * (D * Xbl[i])
             X = Xbl[i] - T * b[i]
-            fm[i] = plskern(X, Y - pred, weights; nlv = nlv[i])
+            fm[i] = plskern(X, Y - pred, weights; 
+                par = Par(nlv = nlv[i], scal = par.scal))
             T = hcat(T, fm[i].T)
             pred .+= Jchemo.predict(fm[i], X).pred 
         end

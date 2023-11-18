@@ -50,9 +50,9 @@ summary(fm, Xbl)
 ```
 """
 function mbplsr(Xbl, Y; par = Par())
-    Q = eltype(Xbl[1])
+    T = eltype(Xbl[1])
     n = nro(Xbl[1])
-    weights = mweight(ones(Q, n))
+    weights = mweight(ones(T, n))
     mbplsr(Xbl, Y, weights; par)
 end
 
@@ -72,11 +72,11 @@ function mbplsr!(Xbl, Y::Matrix, weights::Weight;
     nbl = length(Xbl)
     q = nco(Y)
     Q = eltype(Xbl[1])
-    xmeans = list(nbl, Vector{Float64})
-    xscales = list(nbl, Vector{Float64})
+    xmeans = list(nbl, Vector)
+    xscales = list(nbl, Vector)
     Threads.@threads for k = 1:nbl
         xmeans[k] = colmean(Xbl[k], weights) 
-        xscales[k] = ones(nco(Xbl[k]))
+        xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
             Xbl[k] .= cscale(Xbl[k], xmeans[k], xscales[k])

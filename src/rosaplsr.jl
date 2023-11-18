@@ -49,31 +49,38 @@ Jchemo.transform(fm, Xbl_new)
 Jchemo.predict(fm, Xbl_new).pred
 ```
 """ 
-function rosaplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
-        scal::Bool = false)
+function rosaplsr(Xbl, Y; par = Par())
+    T = eltype(Xbl[1])
+    n = nro(Xbl[1])
+    weights = mweight(ones(T, n))
+    rosaplsr(Xbl, Y, weights; par)
+end
+
+function rosaplsr(Xbl, Y, weights::Weight; par = Par())
     nbl = length(Xbl)  
-    zXbl = list(nbl, Matrix{Float64})
+    zXbl = list(nbl, Matrix)
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    rosaplsr!(zXbl, copy(ensure_mat(Y)), weights; nlv = nlv, 
-        scal = scal)
+    rosaplsr!(zXbl, copy(ensure_mat(Y)), 
+        weights; par)
 end
 
-function rosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
-        scal::Bool = false)
+function rosaplsr!(Xbl, Y::Matrix, weights::Weight; 
+        par = Par())
     n = nro(Xbl[1])
-    q = nco(Y)   
+    q = nco(Y)
+    Q = eltype(Xbl[1])   
+    nlv = par.nlv
     nbl = length(Xbl)
-    weights = mweight(weights)
     D = Diagonal(weights.w)
-    xmeans = list(nbl, Vector{Float64})
-    xscales = list(nbl, Vector{Float64})
+    xmeans = list(nbl, Vector)
+    xscales = list(nbl, Vector)
     p = fill(0, nbl)
     Threads.@threads for k = 1:nbl
         p[k] = nco(Xbl[k])
         xmeans[k] = colmean(Xbl[k], weights) 
-        xscales[k] = ones(nco(Xbl[k]))
+        xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
             Xbl[k] .= cscale(Xbl[k], xmeans[k], xscales[k])
@@ -82,7 +89,7 @@ function rosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
         end
     end
     ymeans = colmean(Y, weights)
-    yscales = ones(eltype(Y), q)
+    yscales = ones(Q, q)
     if par.scal 
         yscales .= colstd(Y, weights)
         cscale!(Y, ymeans, yscales)
@@ -99,13 +106,13 @@ function rosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
     t   = similar(Xbl[1], n)
     dt  = similar(Xbl[1], n)   
     c   = similar(Xbl[1], q)
-    zp_bl = list(nbl, Vector{Float64})
+    zp_bl = list(nbl, Vector)
     zp = similar(Xbl[1], sum(p))
     #ssr = similar(Xbl[1], nbl)
     corr = similar(Xbl[1], nbl)
-    Wbl = list(nbl, Array{Float64})
-    wbl = list(nbl, Vector{Float64})  # List of the weights "w" by block for a given "a"
-    zT = similar(Xbl[1], n, nbl)      # Matrix gathering the nbl scores for a given "a"
+    Wbl = list(nbl, Array)
+    wbl = list(nbl, Vector)         # List of the weights "w" by block for a given "a"
+    zT = similar(Xbl[1], n, nbl)    # Matrix gathering the nbl scores for a given "a"
     bl = fill(0, nlv)
     #Res = zeros(n, q, nbl)
     ### Start 
@@ -127,7 +134,13 @@ function rosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
             z = vcol(T, 1:(a - 1))
             zT .= zT .- z * inv(z' * (D * z)) * z' * (D * zT)
         end
-        # Selection of the winner block
+        # Selection of the winner block (opt)
+        @inbounds for k = 1:nbl
+            t = vcol(zT, k)
+            corr[k] = sum(corm(Y, t, weights).^2)
+        end
+        opt = argmax(corr)
+        # Faster than:
         ### Old
         #@inbounds for k = 1:nbl
         #    t = vcol(zT, k)
@@ -138,13 +151,6 @@ function rosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
         #ssr = vec(sum(Res.^2, dims = (1, 2)))
         #opt = findmin(ssr)[2][1]
         ### End
-        # Much faster:
-        @inbounds for k = 1:nbl
-            t = vcol(zT, k)
-            corr[k] = sum(corm(Y, t, weights).^2)
-        end
-        opt = argmax(corr)
-        # End
         bl[a] = opt
         # Outputs for winner
         t .= zT[:, opt]
@@ -177,7 +183,7 @@ function rosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv,
             Wbl[opt] = hcat(Wbl[opt], zw)
         end
         # Build the weights over the overall matrix
-        z = zeros(nbl) ; z[opt] = 1
+        z = zeros(Q, nbl) ; z[opt] = 1
         W[:, a] .= reduce(vcat, z .* wbl)
     end
     R = W * inv(P' * W)
@@ -195,7 +201,7 @@ function transform(object::Rosaplsr, Xbl; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(object.xmeans)
-    zXbl = list(nbl, Matrix{Float64})
+    zXbl = list(nbl, Matrix{eltype(Xbl[1])})
     Threads.@threads for k = 1:nbl
         zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
@@ -232,7 +238,7 @@ function predict(object::Rosaplsr, Xbl; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     X = reduce(hcat, Xbl)
-    pred = list(le_nlv, Matrix{eltype(X)})
+    pred = list(le_nlv, Matrix{eltype(Xbl[1])})
     @inbounds for i = 1:le_nlv
         z = coef(object; nlv = nlv[i])
         pred[i] = z.int .+ X * z.B

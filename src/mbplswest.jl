@@ -59,9 +59,9 @@ summary(fm, Xbl)
 ```
 """
 function mbplswest(Xbl, Y; par = Par())
-    Q = eltype(Xbl[1])
+    T = eltype(Xbl[1])
     n = nro(Xbl[1])
-    weights = mweight(ones(Q, n))
+    weights = mweight(ones(T, n))
     mbplswest(Xbl, Y, weights; par)
 end
 

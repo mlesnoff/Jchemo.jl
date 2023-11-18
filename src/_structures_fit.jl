@@ -384,7 +384,7 @@ struct Rosaplsr
     ymeans::Vector
     yscales::Vector
     weights::Weight
-    bl::Vector
+    bl::Vector{Int}
 end
 
 struct Rr

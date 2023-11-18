@@ -1,5 +1,5 @@
 Base.@kwdef mutable struct Par
-    nlv::Union{Int, UnitRange} = 1
+    nlv::Union{Int, Vector{Int}, UnitRange} = 1
     lb::Float64 = 1e-5
     ##
     bscal::Symbol = :none
