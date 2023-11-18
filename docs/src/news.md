@@ -2,15 +2,17 @@
 
 ## *Version 0.3.0*
 
-**Warning:** Major breaking changes.
-Package Jchemo has been deeply restructured, to
-enable embededd syntax and facilitate pipelines building.
-The syntax of most of the functions has changed.
-Users who prefer the previous syntax has to keep 
+**Warning:** Major breaking changes. Work in progress.
+Package Jchemo is being deeply restructured, to
+enable an embededd syntax and facilitate pipelines 
+building. The syntax of most of the functions will change.
+Users who prefer the previous syntax will have to keep 
 working with versions < 0.3.0. Sorry for any 
 inconveniance. 
 
-Other specific points are:
+Tentative new version 0.3.0 should be ready at end December 2023. 
+
+Other current specific points are:
 
 - In the arguments, all String types have been replaced by 
     Type Symbol (e.g. "unif" is replaced by :unif)
