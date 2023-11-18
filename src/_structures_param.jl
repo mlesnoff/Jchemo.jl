@@ -13,12 +13,12 @@ Base.@kwdef mutable struct Par
     degree::Int = 3
     coef0::Float64 = 0. 
     cost::Float64 = 1.
+    epsilon::Float64 = .1
     ##
     prior::Symbol = :unif
     ##
     gs::Bool = true
     filt::Bool = true
-    epsilon::Float64 = .1
     tol::Float64 = sqrt(eps(1.))
     maxit::Int = 200
     scal::Bool = false
