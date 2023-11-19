@@ -24,7 +24,8 @@ squares regression for multiblock data analysis. Journal of Chemometrics 30,
 651–662. https://doi.org/10.1002/cem.2824
 """ 
 function plsrosa(X, Y; par = Par())
-    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
     plsrosa(X, Y, weights; par)
 end
 

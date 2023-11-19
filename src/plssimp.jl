@@ -20,7 +20,8 @@ regression. Chemometrics and Intelligent Laboratory Systems 18, 251–263.
 https://doi.org/10.1016/0169-7439(93)85002-X
 """ 
 function plssimp(X, Y; par = Par())
-    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
     plssimp(X, Y, weights; par)
 end
 

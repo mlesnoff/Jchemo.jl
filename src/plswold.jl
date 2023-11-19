@@ -28,7 +28,8 @@ Generalized Inverses. SIAM Journal on Scientific and Statistical Computing 5, 73
 https://doi.org/10.1137/0905052
 """ 
 function plswold(X, Y; par = Par())
-    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
     plswold(X, Y, weights; par)
 end
 

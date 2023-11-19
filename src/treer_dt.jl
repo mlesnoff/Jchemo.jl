@@ -70,7 +70,7 @@ plotxy(res.pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f  
 ```
 """ 
-function treer_dt(X, y; par) 
+function treer_dt(X, y; par = Par()) 
     X = ensure_mat(X)
     y = vec(y)
     p = nco(X)

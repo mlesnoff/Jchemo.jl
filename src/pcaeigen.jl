@@ -17,7 +17,8 @@ computing an Eigen factorization of X' * D * X.
 See `?pcasvd` for examples.
 """ 
 function pcaeigen(X; par = Par())
-    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
     pcaeigen(X, weights; par)
 end
 

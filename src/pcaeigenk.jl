@@ -26,7 +26,8 @@ Part I: Theory and algorithms. Chemometrics and Intelligent Laboratory Systems 3
 https://doi.org/10.1016/S0169-7439(97)00010-5
 """ 
 function pcaeigenk(X; par = Par())
-    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
     pcaeigenk(X, weights; par)
 end
 

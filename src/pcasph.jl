@@ -52,7 +52,8 @@ plotxy(T[:, i], T[:, i + 1]); zeros = true,
 ```
 """ 
 function pcasph(X; par = Par())
-    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
     pcasph(X, weights; par)
 end
 

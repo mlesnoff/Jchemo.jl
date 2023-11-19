@@ -138,7 +138,7 @@ function gridscore(Xtrain, Ytrain, X, Y; score, fun,
     q = nco(Ytrain)
     dat = DataFrame(pars)
     listpar = [Par(; Dict(kws)...) for 
-        kws in zip([[k=>vv for vv in v] for (k,v) in pairs(pars)]...)]
+        kws in zip([[k=>vv for vv in v] for (k, v) in pairs(pars)]...)]
     ncomb = length(listpar)  # nb. combinations in pars
     res = list(ncomb)
     verbose ? println("-- Nb. combinations = ", ncomb) : nothing

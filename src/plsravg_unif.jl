@@ -1,5 +1,6 @@
 function plsravg_unif(X, Y; par = Par())
-    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
     plsravg_unif(X, Y, weights; par)
 end
 

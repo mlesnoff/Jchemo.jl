@@ -80,9 +80,9 @@ function cglsr!(X::Matrix, y::Matrix; par = Par())
     nlv = min(n, p, par.nlv)
     xmeans = colmean(X)
     ymeans = colmean(y)
-    T = eltype(X)   
-    xscales = ones(T, p)
-    yscales = ones(T, q)
+    Q = eltype(X)   
+    xscales = ones(Q, p)
+    yscales = ones(Q, q)
     if par.scal 
         xscales .= colstd(X)
         yscales .= colstd(y)
@@ -150,7 +150,7 @@ function cglsr!(X::Matrix, y::Matrix; par = Par())
                 u = (abs.(F[:, j - 1] .- 1) .< fudge) .* (abs.(F[:, j - 2] .- 1) .< fudge)
                 u = findall(u)
                 if length(u) > 0
-                    F[u, j] .= ones(T, length(u))
+                    F[u, j] .= ones(Q, length(u))
                 end
             end
         end 

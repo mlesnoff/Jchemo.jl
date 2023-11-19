@@ -90,7 +90,8 @@ f
 ```
 """ 
 function kplsr(X, Y; par = Par())
-    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
     kplsr(X, Y, weights; par)
 end
 

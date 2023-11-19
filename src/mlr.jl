@@ -55,7 +55,8 @@ zcoef.B
 ```
 """ 
 function mlr(X, Y; par = Par())
-    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
     mlr(X, Y, weights; par)
 end
 
@@ -98,7 +99,8 @@ Faster but can be less accurate (squared element X'X).
 See `?mlr` for examples.
 """ 
 function mlrchol(X, Y)
-    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
     mlrchol(X, Y, weights)
 end
 
@@ -133,7 +135,8 @@ Safe but can be slower.
 See `?mlr` for examples.
 """ 
 function mlrpinv(X, Y; par = Par())
-    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
     mlrpinv(X, Y, weights; par)
 end
 
@@ -180,7 +183,8 @@ Compute a model with intercept.
 See `?mlr` for examples.
 """ 
 function mlrpinvn(X, Y)
-    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
     mlrpinvn(X, Y, weights)
 end
 
@@ -217,7 +221,8 @@ Compute a model with intercept.
 See `?mlr` for examples.
 """ 
 function mlrvec(x, Y; par = Par())
-    weights = mweight(ones(eltype(x), nro(x)))
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
     mlrvec(x, Y, weights; par)
 end
 

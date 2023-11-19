@@ -50,9 +50,9 @@ Jchemo.predict(fm, Xbl_new).pred
 ```
 """ 
 function rosaplsr(Xbl, Y; par = Par())
-    T = eltype(Xbl[1])
+    Q = eltype(Xbl[1])
     n = nro(Xbl[1])
-    weights = mweight(ones(T, n))
+    weights = mweight(ones(Q, n))
     rosaplsr(Xbl, Y, weights; par)
 end
 

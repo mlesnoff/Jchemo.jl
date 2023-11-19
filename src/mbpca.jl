@@ -11,7 +11,7 @@ Consensus principal components analysis (CPCA = MBPCA).
 * `weights` : Weights of the observations (rows). 
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-* `bscal` : Type of block scaling (`:none`, `:frob`, `"mfa"`). 
+* `bscal` : Type of block scaling (`:none`, `:frob`, `:mfa`). 
     See functions `blockscal`.
 * `tol` : Tolerance value for convergence.
 * `maxit` : Maximum number of iterations.
@@ -86,25 +86,29 @@ res.cortb2t
 res.rv
 ```
 """
-function mbpca(Xbl, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = :none, tol = sqrt(eps(1.)), maxit = 200,
-        scal::Bool = false)
+function mbpca(Xbl; par = Par())
+    Q = eltype(Xbl[1])
+    n = nro(Xbl[1])
+    weights = mweight(ones(Q, n))
+    mbpca(Xbl, weights; par)
+end
+
+function mbpca(Xbl, weights::Weight; par = Par())
     nbl = length(Xbl)  
-    zXbl = list(nbl, Matrix{Float64})
+    zXbl = list(nbl, Matrix)
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    mbpca!(zXbl, weights; nlv = nlv, 
-        bscal = bscal, tol = tol, maxit = maxit, 
-        scal = scal)
+    mbpca!(zXbl, weights; par)
 end
 
-function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = :none, tol = sqrt(eps(1.)), maxit = 200,
-        scal::Bool = false)
+function mbpca!(Xbl, weights::Weight; 
+        par = Par())
+    @assert in([:none, :frob, :mfa])(par.bscal) "Wrong value for argument 'bscal'."
     nbl = length(Xbl)
     n = nro(Xbl[1])
-    weights = mweight(weights)
+    nlv = par.nlv
+    Q = eltype(Xbl[1])
     sqrtw = sqrt.(weights.w)
     xmeans = list(nbl, Vector{Float64})
     xscales = list(nbl, Vector{Float64})
@@ -112,7 +116,7 @@ function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
     @inbounds for k = 1:nbl
         p[k] = nco(Xbl[k])
         xmeans[k] = colmean(Xbl[k], weights) 
-        xscales[k] = ones(nco(Xbl[k]))
+        xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
             Xbl[k] = cscale(Xbl[k], xmeans[k], xscales[k])
@@ -120,13 +124,13 @@ function mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
             Xbl[k] = center(Xbl[k], xmeans[k])
         end
     end
-    bscal == :none ? bscales = ones(nbl) : nothing
+    par.bscal == :none ? bscales = ones(Q, nbl) : nothing
     if bscal == :frob
         res = blockscal_frob(Xbl, weights) 
         bscales = res.bscales
         Xbl = res.Xbl
     end
-    if bscal == "mfa"
+    if bscal == :mfa
         res = blockscal_mfa(Xbl, weights) 
         bscales = res.bscales
         Xbl = res.Xbl

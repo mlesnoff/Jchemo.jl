@@ -29,7 +29,8 @@ Wold, S., Sjostrom, M., Eriksson, l., 2001. PLS-regression: a basic tool
 for chemometrics. Chem. Int. Lab. Syst., 58, 109-130.
 """ 
 function plsnipals(X, Y; par = Par())
-    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
     plsnipals(X, Y, weights; par)
 end
 

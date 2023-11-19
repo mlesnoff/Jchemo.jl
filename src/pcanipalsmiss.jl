@@ -64,8 +64,8 @@ Xres
 function pcanipalsmiss(X; par = Par())
     z = vec(Matrix(X))
     s = ismissing.(z) .== 0
-    T = eltype(z[s][1, 1])
-    weights = mweight(ones(T, nro(X)))
+    Q = eltype(z[s][1, 1])
+    weights = mweight(ones(Q, nro(X)))
     pcanipalsmiss(X, weights; par)
 end
 

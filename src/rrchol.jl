@@ -29,7 +29,8 @@ Hoerl, A.E., Kennard, R.W., 1970. Ridge Regression: Biased Estimation for Nonort
 Technometrics 12, 55-67. https://doi.org/10.1080/00401706.1970.10488634
 """ 
 function rrchol(X, Y; par = Par())
-    weights = mweight(ones(eltype(X[1, 1]), nro(X)))
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
     rrchol(X, Y, weights; par)
 end
 
@@ -42,8 +43,8 @@ function rrchol!(X::Matrix, Y::Matrix, weights::Weight;
         par = Par())
     @assert nco(X) > 1 "The method only works for X with nb columns > 1."
     p = nco(X)
-    T = eltype(X)
-    lb = convert(T, par.lb)
+    Q = eltype(X)
+    lb = convert(Q, par.lb)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)
     xscales = ones(eltype(X), p)
@@ -55,7 +56,7 @@ function rrchol!(X::Matrix, Y::Matrix, weights::Weight;
     end
     center!(Y, ymeans)  
     XtD = X' * Diagonal(weights.w)
-    B = cholesky!(Hermitian(XtD * X + lb^2 * Diagonal(ones(T, p)))) \ (XtD * Y)
+    B = cholesky!(Hermitian(XtD * X + lb^2 * Diagonal(ones(Q, p)))) \ (XtD * Y)
     B .= Diagonal(1 ./ xscales) * B 
     int = ymeans' .- xmeans' * B
     Mlr(B, int, weights)
