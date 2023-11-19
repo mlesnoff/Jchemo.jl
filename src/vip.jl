@@ -68,7 +68,7 @@ function vip(object::Union{Pcr, Plsr}; nlv = nothing)
     a = nco(object.T)
     p = nro(W)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    sqrtw = sqrt.(object.weights)
+    sqrtw = sqrt.(object.weights.w)
     ## ::Plsr represents algorithmns where W is normed
     ## ==> No need to do the fllowing: 
     ## wnorms = colnorm(W)

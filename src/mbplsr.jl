@@ -50,15 +50,16 @@ summary(fm, Xbl)
 ```
 """
 function mbplsr(Xbl, Y; par = Par())
-    Q = eltype(Xbl[1])
+    Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     weights = mweight(ones(Q, n))
     mbplsr(Xbl, Y, weights; par)
 end
 
 function mbplsr(Xbl, Y, weights::Weight; par = Par())
+    Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
-    zXbl = list(nbl, Matrix)
+    zXbl = list(nbl, Matrix{Q})
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
@@ -66,14 +67,14 @@ function mbplsr(Xbl, Y, weights::Weight; par = Par())
         weights; par)
 end
 
-function mbplsr!(Xbl, Y::Matrix, weights::Weight; 
+function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; 
         par = Par())
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
+    Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     q = nco(Y)
-    Q = eltype(Xbl[1])
-    xmeans = list(nbl, Vector)
-    xscales = list(nbl, Vector)
+    xmeans = list(nbl, Vector{Q})
+    xscales = list(nbl, Vector{Q})
     Threads.@threads for k = 1:nbl
         xmeans[k] = colmean(Xbl[k], weights) 
         xscales[k] = ones(Q, nco(Xbl[k]))
@@ -113,8 +114,9 @@ Summarize the fitted model.
 function Base.summary(object::Mbplsr, Xbl)
     n, nlv = size(object.T)
     nbl = length(Xbl)
+    Q = eltype(Xbl[1][1, 1])
     sqrtw = sqrt.(object.weights.w)
-    zXbl = list(nbl, Matrix{eltype(Xbl[1])})
+    zXbl = list(nbl, Matrix{Q})
     Threads.@threads for k = 1:nbl
         zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
@@ -142,7 +144,7 @@ function Base.summary(object::Mbplsr, Xbl)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     # Redundancies (Average correlations) Rd(X, t) 
     # between each X-block and each global score
-    z = list(nbl, Matrix{Float64})
+    z = list(nbl, Vector{Q})
     @inbounds for k = 1:nbl
         z[k] = rd(zXbl[k], sqrtw .* object.T)
     end

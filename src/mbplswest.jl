@@ -59,15 +59,16 @@ summary(fm, Xbl)
 ```
 """
 function mbplswest(Xbl, Y; par = Par())
-    Q = eltype(Xbl[1])
+    Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     weights = mweight(ones(Q, n))
     mbplswest(Xbl, Y, weights; par)
 end
 
 function mbplswest(Xbl, Y, weights::Weight; par = Par())
+    Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
-    zXbl = list(nbl, Matrix)
+    zXbl = list(nbl, Matrix{Q})
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
@@ -75,17 +76,17 @@ function mbplswest(Xbl, Y, weights::Weight; par = Par())
         weights; par)
 end
 
-function mbplswest!(Xbl, Y::Matrix, weights::Weight; 
+function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; 
         par = Par())
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
+    Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     n = nro(Xbl[1])
     q = nco(Y)
     nlv = par.nlv
-    Q = eltype(Xbl[1])
     sqrtw = sqrt.(weights.w)
-    xmeans = list(nbl, Vector)
-    xscales = list(nbl, Vector)
+    xmeans = list(nbl, Vector{Q})
+    xscales = list(nbl, Vector{Q})
     p = fill(0, nbl)
     Threads.@threads for k = 1:nbl
         p[k] = nco(Xbl[k])
@@ -119,11 +120,11 @@ function mbplswest!(Xbl, Y::Matrix, weights::Weight;
     Y .= sqrtw .* Y
     # Pre-allocation
     X = similar(Xbl[1], n, sum(p))
-    Tbl = list(nbl, Matrix)
+    Tbl = list(nbl, Matrix{Q})
     for k = 1:nbl ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
-    Tb = list(nlv, Matrix)
+    Tb = list(nlv, Matrix{Q})
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
-    Pbl = list(nbl, Matrix)
+    Pbl = list(nbl, Matrix{Q})
     for k = 1:nbl ; Pbl[k] = similar(Xbl[1], p[k], nlv) ; end
     Tx = similar(Xbl[1], n, nlv)
     Wx = similar(Xbl[1], sum(p), nlv)
@@ -206,7 +207,8 @@ function transform(object::Union{MbplsWest, Mbplsr}, Xbl; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
-    zXbl = list(nbl, Matrix{eltype(Xbl[1])})
+    Q = eltype(Xbl[1][1, 1])
+    zXbl = list(nbl, Matrix{Q})
     Threads.@threads for k = 1:nbl
         zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
@@ -226,8 +228,9 @@ function predict(object::Union{MbplsWest, Mbplsr}, Xbl;
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
+    Q = eltype(Xbl[1][1, 1])
     T = transform(object, Xbl)
-    pred = list(le_nlv, Matrix{eltype(Xbl[1])})
+    pred = list(le_nlv, Matrix{Q})
     @inbounds  for i = 1:le_nlv
         znlv = nlv[i]
         int = object.ymeans'
@@ -247,8 +250,9 @@ Summarize the fitted model.
 function Base.summary(object::MbplsWest, Xbl)
     n, nlv = size(object.T)
     nbl = length(Xbl)
+    Q = eltype(Xbl[1][1, 1])
     sqrtw = sqrt.(object.weights.w)
-    zXbl = list(nbl, Matrix{eltype(Xbl[1])})
+    zXbl = list(nbl, Matrix{Q})
     Threads.@threads for k = 1:nbl
         zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
@@ -275,14 +279,14 @@ function Base.summary(object::MbplsWest, Xbl)
     z = cor(X, sqrtw .* object.T)  
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     # Correlation between the X-block scores and the global scores 
-    z = list(nlv, Matrix)
+    z = list(nlv, Matrix{Q})
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], sqrtw .* object.T[:, a])
     end
     cortb2t = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
     # Redundancies (Average correlations) Rd(X, t) 
     # between each X-block and each global score
-    z = list(nbl, Matrix)
+    z = list(nbl, Matrix{Q})
     @inbounds for k = 1:nbl
         z[k] = rd(zXbl[k], sqrtw .* object.T)
     end

@@ -87,31 +87,32 @@ res.rv
 ```
 """
 function mbpca(Xbl; par = Par())
-    Q = eltype(Xbl[1])
+    Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     weights = mweight(ones(Q, n))
     mbpca(Xbl, weights; par)
 end
 
 function mbpca(Xbl, weights::Weight; par = Par())
+    Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
-    zXbl = list(nbl, Matrix)
+    zXbl = list(nbl, Matrix{Q})
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     mbpca!(zXbl, weights; par)
 end
 
-function mbpca!(Xbl, weights::Weight; 
+function mbpca!(Xbl::Vector, weights::Weight; 
         par = Par())
     @assert in([:none, :frob, :mfa])(par.bscal) "Wrong value for argument 'bscal'."
+    Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     n = nro(Xbl[1])
     nlv = par.nlv
-    Q = eltype(Xbl[1])
     sqrtw = sqrt.(weights.w)
-    xmeans = list(nbl, Vector{Float64})
-    xscales = list(nbl, Vector{Float64})
+    xmeans = list(nbl, Vector{Q})
+    xscales = list(nbl, Vector{Q})
     p = fill(0, nbl)
     @inbounds for k = 1:nbl
         p[k] = nco(Xbl[k])
@@ -125,12 +126,12 @@ function mbpca!(Xbl, weights::Weight;
         end
     end
     par.bscal == :none ? bscales = ones(Q, nbl) : nothing
-    if bscal == :frob
+    if par.bscal == :frob
         res = blockscal_frob(Xbl, weights) 
         bscales = res.bscales
         Xbl = res.Xbl
     end
-    if bscal == :mfa
+    if par.bscal == :mfa
         res = blockscal_mfa(Xbl, weights) 
         bscales = res.bscales
         Xbl = res.Xbl
@@ -142,11 +143,11 @@ function mbpca!(Xbl, weights::Weight;
     # Pre-allocation
     U = similar(Xbl[1], n, nlv)
     W = similar(Xbl[1], nbl, nlv)
-    Tbl = list(nbl, Matrix{Float64})
+    Tbl = list(nbl, Matrix{Q})
     for k = 1:nbl ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
-    Tb = list(nlv, Matrix{Float64})
+    Tb = list(nlv, Matrix{Q})
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
-    Wbl = list(nbl, Matrix{Float64})
+    Wbl = list(nbl, Matrix{Q})
     for k = 1:nbl ; Wbl[k] = similar(Xbl[1], p[k], nlv) ; end
     u = similar(Xbl[1], n)
     tk = copy(u)
@@ -206,14 +207,16 @@ function transform(object::Mbpca, Xbl; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
     m = size(Xbl[1], 1)
-    zXbl = list(nbl, Matrix{Float64})
+    Q = eltype(Xbl[1][1, 1])
+    zXbl = list(nbl, Matrix{Q})
     Threads.@threads for k = 1:nbl
-        zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
+        zXbl[k] = cscale(Xbl[k], object.xmeans[k], 
+            object.xscales[k])
     end
-    zXbl = blockscal(zXbl, object.bscales).X
+    zXbl = blockscal(zXbl, object.bscales).Xbl
     U = similar(zXbl[1], m, nlv)
     TB = similar(zXbl[1], m, nbl)
-    Tbl = list(nbl, Matrix{Float64})
+    Tbl = list(nbl, Matrix{Q})
     for k = 1:nbl ; Tbl[k] = similar(zXbl[1], m, nlv) ; end
     u = similar(zXbl[1], m)
     tk = copy(u)
@@ -241,14 +244,16 @@ Summarize the fitted model.
 * `Xbl` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Mbpca, Xbl)
+    Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     nlv = nco(object.T)
-    sqrtw = sqrt.(object.weights)
-    zXbl = list(nbl, Matrix{Float64})
+    sqrtw = sqrt.(object.weights.w)
+    zXbl = list(nbl, Matrix{Q})
     Threads.@threads for k = 1:nbl
-        zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
+        zXbl[k] = cscale(Xbl[k], object.xmeans[k], 
+            object.xscales[k])
     end
-    zXbl = blockscal(zXbl, object.bscales).X
+    zXbl = blockscal(zXbl, object.bscales).Xbl
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end
@@ -274,7 +279,7 @@ function Base.summary(object::Mbpca, Xbl)
     z = cor(X, object.U)  
     corx2t = DataFrame(z, string.("lv", 1:nlv))  
     # Correlation between the block scores and the global scores (cor.g.b)
-    z = list(nlv, Matrix{Float64})
+    z = list(nlv, Matrix{Q})
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], object.U[:, a])
     end

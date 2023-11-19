@@ -50,13 +50,24 @@ Jchemo.predict(fm, Xbl_new).pred
 ```
 """
 function soplsr(Xbl, Y; par = Par())
-    Q = eltype(Xbl[1])
+    Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     weights = mweight(ones(Q, n))
     soplsr(Xbl, Y, weights; par)
 end
 
-function soplsr(Xbl, Y, weights::Weight; 
+function soplsr(Xbl, Y, weights::Weight; par = Par())
+    Q = eltype(Xbl[1][1, 1])
+    nbl = length(Xbl)  
+    zXbl = list(nbl, Matrix{Q})
+    @inbounds for k = 1:nbl
+        zXbl[k] = copy(ensure_mat(Xbl[k]))
+    end
+    soplsr!(zXbl, copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; 
         par = Par())
     Y = ensure_mat(Y)
     n = size(Xbl[1], 1)

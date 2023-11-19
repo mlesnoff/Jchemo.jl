@@ -112,7 +112,7 @@ function comdim(Xbl, weights = ones(nro(Xbl[1])); nlv,
         bscal = :none, tol = sqrt(eps(1.)), maxit = 200,
         scal::Bool = false)
     nbl = length(Xbl)  
-    zXbl = list(nbl, Matrix{Float64})
+    zXbl = list(nbl, Matrix{Q})
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
@@ -130,8 +130,8 @@ function comdim!(Xbl, weights = ones(nro(Xbl[1])); nlv,
     n = nro(Xbl[1])
     weights = mweight(weights)
     sqrtw = sqrt.(weights.w)
-    xmeans = list(nbl, Vector{Float64})
-    xscales = list(nbl, Vector{Float64})
+    xmeans = list(nbl, Vector{Q})
+    xscales = list(nbl, Vector{Q})
     p = fill(0, nbl)
     @inbounds for k = 1:nbl
         p[k] = nco(Xbl[k])
@@ -158,11 +158,11 @@ function comdim!(Xbl, weights = ones(nro(Xbl[1])); nlv,
     u = similar(Xbl[1], n)
     U = similar(Xbl[1], n, nlv)
     tk = copy(u)
-    Tbl = list(nbl, Matrix{Float64})
+    Tbl = list(nbl, Matrix{Q})
     for k = 1:nbl ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
-    Tb = list(nlv, Matrix{Float64})
+    Tb = list(nlv, Matrix{Q})
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
-    Wbl = list(nbl, Matrix{Float64})
+    Wbl = list(nbl, Matrix{Q})
     for k = 1:nbl ; Wbl[k] = similar(Xbl[1], p[k], nlv) ; end
     lb = similar(Xbl[1], nbl, nlv)
     mu = similar(Xbl[1], nlv)
@@ -224,14 +224,14 @@ function transform(object::Comdim, Xbl; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
     m = size(Xbl[1], 1)
-    zXbl = list(nbl, Matrix{Float64})
+    zXbl = list(nbl, Matrix{Q})
     Threads.@threads for k = 1:nbl
         zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
-    zXbl = blockscal(zXbl, object.bscales).X
+    zXbl = blockscal(zXbl, object.bscales).Xbl
     U = similar(zXbl[1], m, nlv)
     TB = similar(zXbl[1], m, nbl)
-    Tbl = list(nbl, Matrix{Float64})
+    Tbl = list(nbl, Matrix{Q})
     for k = 1:nbl ; Tbl[k] = similar(zXbl[1], m, nlv) ; end
     u = similar(zXbl[1], m)
     tk = copy(u)
@@ -262,12 +262,12 @@ Summarize the fitted model.
 function Base.summary(object::Comdim, Xbl)
     nbl = length(Xbl)
     nlv = nco(object.T)
-    sqrtw = sqrt.(object.weights)
-    zXbl = list(nbl, Matrix{Float64})
+    sqrtw = sqrt.(object.weights.w)
+    zXbl = list(nbl, Matrix{Q})
     Threads.@threads for k = 1:nbl
         zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
-    zXbl = blockscal(zXbl, object.bscales).X
+    zXbl = blockscal(zXbl, object.bscales).Xbl
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end
@@ -282,7 +282,7 @@ function Base.summary(object::Comdim, Xbl)
     explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, 
         cumpvar = cumpvar)
     # Explained_XXt (indicator "V")
-    S = list(nbl, Matrix{Float64})
+    S = list(nbl, Vector{Q})
     sstot_xx = 0 
     @inbounds for k = 1:nbl
         S[k] = zXbl[k] * zXbl[k]'
@@ -311,7 +311,7 @@ function Base.summary(object::Comdim, Xbl)
     z = cor(X, object.U)  
     corx2t = DataFrame(z, string.("lv", 1:nlv))  
     # Correlation between the block scores and the global scores (cor.g.b)
-    z = list(nlv, Matrix{Float64})
+    z = list(nlv, Matrix{Q})
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], object.U[:, a])
     end
