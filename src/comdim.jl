@@ -108,24 +108,27 @@ res.cortb2t
 res.rv
 ```
 """
-function comdim(Xbl, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = :none, tol = sqrt(eps(1.)), maxit = 200,
-        scal::Bool = false)
+function comdim(Xbl; par = Par())
+    Q = eltype(Xbl[1][1, 1])
+    n = nro(Xbl[1])
+    weights = mweight(ones(Q, n))
+    comdim(Xbl, weights; par)
+end
+
+function comdim(Xbl, weights::Weight; par = Par())
+    Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Q})
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    comdim!(zXbl, weights; nlv = nlv, 
-        bscal = bscal, tol = tol, maxit = maxit, scal = scal)
+    comdim!(zXbl, weights; par)
 end
 
-## Approach Hannafi & Qannari 2008 p.84: "SVD" algorithm
-## Normed global score u = 1st left singular vector of SVD of TB,
-## where TB concatenates the weighted block-scores 
-function comdim!(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = :none, tol = sqrt(eps(1.)), maxit = 200,
-        scal::Bool = false)
+function comdim!(Xbl::Vector, weights::Weight; 
+        par = Par())
+    @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
+    Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     n = nro(Xbl[1])
     weights = mweight(weights)
