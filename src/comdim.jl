@@ -37,7 +37,7 @@ Function `summary` returns:
 * `explvarxx` : Proportion of the XX' total inertia (sum of the squared norms of the
     products X_k * X_k') explained by each global score 
     (= indicator "V" in Qannari et al. 2000, Hanafi et al. 2008).
-* `sal2` : Proportion of the squared saliences (specific weights)
+* `sal2` : Proportion of the squared saliences
     of each block within each global score. 
 * `contr_block` : Contribution of each block to the global scores 
     (= proportions of the saliences "lambda" within each score)
