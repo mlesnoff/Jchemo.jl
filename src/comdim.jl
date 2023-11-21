@@ -223,6 +223,7 @@ Compute latent variables (LVs = scores T) from a fitted model and X-data.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transform(object::Comdim, Xbl; nlv = nothing)
+    Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
@@ -263,6 +264,7 @@ Summarize the fitted model.
 * `Xbl` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Comdim, Xbl)
+    Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     nlv = nco(object.T)
     sqrtw = sqrt.(object.weights.w)

@@ -203,11 +203,11 @@ Compute latent variables (LVs = scores T) from a fitted model and X-data.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transform(object::Mbpca, Xbl; nlv = nothing)
+    Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
     m = size(Xbl[1], 1)
-    Q = eltype(Xbl[1][1, 1])
     zXbl = list(nbl, Matrix{Q})
     Threads.@threads for k = 1:nbl
         zXbl[k] = cscale(Xbl[k], object.xmeans[k], 
