@@ -126,7 +126,7 @@ function Base.summary(object::Mbplsr, Xbl)
     end
     X = reduce(hcat, zXbl)
     # Explained_X
-    ssk = zeros(nbl)
+    ssk = zeros(Q, nbl)
     @inbounds for k = 1:nbl
         ssk[k] = ssq(zXbl[k])
     end

@@ -259,7 +259,7 @@ function Base.summary(object::Mbpca, Xbl)
     end
     X = reduce(hcat, zXbl)
     # Explained_X
-    sstot = zeros(nbl)
+    sstot = zeros(Q, nbl)
     @inbounds for k = 1:nbl
         sstot[k] = ssq(zXbl[k])
     end

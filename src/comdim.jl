@@ -131,7 +131,7 @@ function comdim!(Xbl::Vector, weights::Weight;
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     n = nro(Xbl[1])
-    weights = mweight(weights)
+    nlv = par.nlv
     sqrtw = sqrt.(weights.w)
     xmeans = list(nbl, Vector{Q})
     xscales = list(nbl, Vector{Q})
@@ -147,8 +147,8 @@ function comdim!(Xbl::Vector, weights::Weight;
             Xbl[k] = center(Xbl[k], xmeans[k])
         end
     end
-    bscal == :none ? bscales = ones(nbl) : nothing
-    if bscal == :frob
+    par.bscal == :none ? bscales = ones(nbl) : nothing
+    if par.bscal == :frob
         res = blockscal_frob(Xbl, weights) 
         bscales = res.bscales
         Xbl = res.Xbl
@@ -277,7 +277,7 @@ function Base.summary(object::Comdim, Xbl)
         zXbl[k] .= sqrtw .* zXbl[k]
     end
     # Explained_X by global scores
-    sstot = zeros(nbl)
+    sstot = zeros(Q, nbl)
     @inbounds for k = 1:nbl
         sstot[k] = ssq(zXbl[k])
     end
@@ -287,7 +287,7 @@ function Base.summary(object::Comdim, Xbl)
     explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, 
         cumpvar = cumpvar)
     # Explained_XXt (indicator "V")
-    S = list(nbl, Vector{Q})
+    S = list(nbl, Matrix{Q})
     sstot_xx = 0 
     @inbounds for k = 1:nbl
         S[k] = zXbl[k] * zXbl[k]'

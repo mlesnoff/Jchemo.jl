@@ -225,10 +225,10 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Union{MbplsWest, Mbplsr}, Xbl; 
         nlv = nothing)
+    Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
-    Q = eltype(Xbl[1][1, 1])
     T = transform(object, Xbl)
     pred = list(le_nlv, Matrix{Q})
     @inbounds  for i = 1:le_nlv
@@ -248,9 +248,9 @@ Summarize the fitted model.
 * `Xbl` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::MbplsWest, Xbl)
+    Q = eltype(Xbl[1][1, 1])
     n, nlv = size(object.T)
     nbl = length(Xbl)
-    Q = eltype(Xbl[1][1, 1])
     sqrtw = sqrt.(object.weights.w)
     zXbl = list(nbl, Matrix{Q})
     Threads.@threads for k = 1:nbl
@@ -262,7 +262,7 @@ function Base.summary(object::MbplsWest, Xbl)
     end
     X = reduce(hcat, zXbl)
     # Explained_X
-    ssk = zeros(nbl)
+    ssk = zeros(Q, nbl)
     @inbounds for k = 1:nbl
         ssk[k] = ssq(zXbl[k])
     end
