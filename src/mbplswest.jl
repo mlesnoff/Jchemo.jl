@@ -204,10 +204,10 @@ Compute latent variables (LVs = scores T) from a fitted model.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transform(object::Union{MbplsWest, Mbplsr}, Xbl; nlv = nothing)
+    Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
-    Q = eltype(Xbl[1][1, 1])
     zXbl = list(nbl, Matrix{Q})
     Threads.@threads for k = 1:nbl
         zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
