@@ -112,9 +112,9 @@ Summarize the fitted model.
 * `Xbl` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Mbplsr, Xbl)
+    Q = eltype(Xbl[1][1, 1])
     n, nlv = size(object.T)
     nbl = length(Xbl)
-    Q = eltype(Xbl[1][1, 1])
     sqrtw = sqrt.(object.weights.w)
     zXbl = list(nbl, Matrix{Q})
     Threads.@threads for k = 1:nbl
