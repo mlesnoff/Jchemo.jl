@@ -99,7 +99,7 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight;
     n, p = size(X)
     q = nco(Y)
     nlv = min(par.nlv, p, q)
-    tau = par.tau
+    tau = convert(Q, par.tau) 
     sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
