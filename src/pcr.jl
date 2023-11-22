@@ -101,12 +101,12 @@ function transform(object::Pcr, X; nlv = nothing)
 end
 
 """
-    summary(object::Pcr, X::Union{Vector, Matrix, DataFrame})
+    summary(object::Pcr, X)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
-function Base.summary(object::Pcr, X::Union{Vector, Matrix, DataFrame})
+function Base.summary(object::Pcr, X)
     summary(object.fmpca, X)
 end
 

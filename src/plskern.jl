@@ -237,7 +237,7 @@ Summarize the fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Union{Plsr, Splsr}, 
-        X::Union{Vector, Matrix, DataFrame})
+        X)
     X = ensure_mat(X)
     n, nlv = size(object.T)
     X = cscale(X, object.xmeans, object.xscales)

@@ -94,7 +94,7 @@ end
 function ccawold!(X::Matrix, Y::Matrix, weights::Weight; 
         par = Par())
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
-    @assert 0 <= par.tau <=1 "tau must be in [0, 1]"
+    @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
     Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
@@ -241,8 +241,8 @@ Summarize the fitted model.
 * `X` : The X-data that was used to fit the model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
-function Base.summary(object::CcaWold, X::Union{Vector, Matrix, DataFrame},
-        Y::Union{Vector, Matrix, DataFrame})
+function Base.summary(object::CcaWold, X,
+        Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, nlv = size(object.Tx)
