@@ -75,24 +75,32 @@ res = summary(fm, X, Y)
 pnames(res)
 ```
 """
-function cca(X, Y, weights = ones(nro(X)); nlv, 
-        bscal = :none, tau = 1e-8, scal::Bool = false)
-    cca!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv, 
-        bscal = bscal, tau = tau, scal = scal)
+function cca(X, Y; par = Par())
+    Q = eltype(X[1, 1])
+    n = nro(X)
+    weights = mweight(ones(Q, n))
+    cca(X, Y, weights; par)
 end
 
-function cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = :none, tau = 1e-8, scal::Bool = false)
+function cca(X, Y, weights::Weight; par = Par())
+    cca!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function cca!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
+    @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <=1 "tau must be in [0, 1]"
+    Q = eltype(X)
     p = nco(X)
     q = nco(Y)
-    nlv = min(nlv, p, q)
-    weights = mweight(weights)
+    nlv = min(par.nlv, p, q)
+    tau = par.tau 
     sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
-    xscales = ones(eltype(X), p)
-    yscales = ones(eltype(Y), q)
+    xscales = ones(Q, p)
+    yscales = ones(Q, q)
     if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
@@ -102,8 +110,8 @@ function cca!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         center!(X, xmeans)
         center!(Y, ymeans)
     end
-    bscal == :none ? bscales = ones(2) : nothing
-    if bscal == :frob
+    par.bscal == :none ? bscales = ones(Q, 2) : nothing
+    if par.bscal == :frob
         normx = frob(X, weights)
         normy = frob(Y, weights)
         X ./= normx

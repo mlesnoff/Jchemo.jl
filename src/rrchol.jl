@@ -42,8 +42,8 @@ end
 function rrchol!(X::Matrix, Y::Matrix, weights::Weight; 
         par = Par())
     @assert nco(X) > 1 "The method only works for X with nb columns > 1."
-    p = nco(X)
     Q = eltype(X)
+    p = nco(X)
     lb = convert(Q, par.lb)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)

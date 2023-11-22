@@ -75,12 +75,12 @@ cglsr(X, y; par = Par()) = cglsr!(copy(ensure_mat(X)),
     copy(ensure_mat(y)); par)
 
 function cglsr!(X::Matrix, y::Matrix; par = Par())
+    Q = eltype(X)   
     n, p = size(X)
     q = nco(y)
     nlv = min(n, p, par.nlv)
     xmeans = colmean(X)
     ymeans = colmean(y)
-    Q = eltype(X)   
     xscales = ones(Q, p)
     yscales = ones(Q, q)
     if par.scal 

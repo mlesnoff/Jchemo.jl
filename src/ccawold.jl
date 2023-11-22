@@ -5,7 +5,7 @@
     ccawold!(X, Y, weights = ones(nro(X)); nlv,
         bscal = :none, tau = 1e-8, 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
-Canonical correlation analysis (CCA, RCCA) - Wold Nipals algorithm.
+Canonical correlation analysis (ccawold, RCCA) - Wold Nipals algorithm.
 * `X` : First block (matrix) of data.
 * `Y` : Second block (matrix) of data.
 * `weights` : Weights of the observations (rows). 
@@ -20,7 +20,7 @@ Canonical correlation analysis (CCA, RCCA) - Wold Nipals algorithm.
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-This function implements the Nipals CCA algorithm presented 
+This function implements the Nipals ccawold algorithm presented 
 by Tenenhaus 1998 p.204 (related to Wold et al. 1984). 
 
 In this implementation, after each step of LVs computation, X and Y are deflated 
@@ -79,27 +79,32 @@ res = summary(fm, X, Y)
 pnames(res)
 ```
 """
-function ccawold(X, Y, weights = ones(nro(X)); nlv,
-        bscal = :none, tau = 1e-8, 
-        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
-    ccawold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
-        bscal = bscal, tau = tau, 
-        tol = tol, maxit = maxit, scal = scal)
+function ccawold(X, Y; par = Par())
+    Q = eltype(X[1, 1])
+    n = nro(X)
+    weights = mweight(ones(Q, n))
+    ccawold(X, Y, weights; par)
 end
 
-function ccawold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = :none, tau = 1e-8, 
-        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
+function ccawold(X, Y, weights::Weight; par = Par())
+    ccawold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function ccawold!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
+    @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <=1 "tau must be in [0, 1]"
+    Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
-    nlv = min(nlv, p, q)
-    weights = mweight(weights)
+    nlv = min(par.nlv, p, q)
+    tau = par.tau
     sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
-    xscales = ones(eltype(X), p)
-    yscales = ones(eltype(Y), q)
+    xscales = ones(Q, p)
+    yscales = ones(Q, q)
     if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
@@ -109,8 +114,8 @@ function ccawold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         center!(X, xmeans)
         center!(Y, ymeans)
     end
-    bscal == :none ? bscales = ones(2) : nothing
-    if bscal == :frob
+    par.bscal == :none ? bscales = ones(Q, 2) : nothing
+    if par.bscal == :frob
         normx = frob(X, weights)
         normy = frob(Y, weights)
         X ./= normx
@@ -144,7 +149,7 @@ function ccawold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         ty .= Y[:, 1]
         cont = true
         iter = 1
-        wx .= rand(p)
+        wx .= convert.(Q, rand(p))
         if tau == 0       
             invCx = inv(X' * X)
             invCy = inv(Y' * Y)
@@ -159,7 +164,8 @@ function ccawold!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
                 invCy = inv((1 - tau) * Y' * Y + tau * Iy)
             end
         end 
-        ttx = 0 ; tty = 0
+        ttx = 0
+        tty = 0
         while cont
             w0 = copy(wx)
             tty = dot(ty, ty)
