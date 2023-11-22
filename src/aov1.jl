@@ -20,12 +20,13 @@ res.pval
 """ 
 function aov1(x, Y)
     Y = ensure_mat(Y)
+    Q = eltype(Y)
     n = length(x)
     ztab = tab(x)
     lev = ztab.keys
     ni = ztab.vals
     nlev = length(lev)
-    Xdummy = dummy(x, eltype(Y)).Y
+    Xdummy = dummy(x, Q).Y
     zY = center(Y, colmean(Y))
     fm = mlr(Xdummy, zY) ;
     pred = predict(fm, Xdummy).pred

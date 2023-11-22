@@ -106,7 +106,7 @@ function dkplsr!(X::Matrix, Y::Matrix, weights::Weight;
     p = nco(X)
     q = nco(Y)
     xscales = ones(Q, p)
-    yscales = ones(eltype(Y), q)
+    yscales = ones(Q, q)
     if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)

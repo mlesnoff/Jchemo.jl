@@ -154,7 +154,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight;
     @inbounds for a = 1:nlv
         cont = true
         iter = 1
-        wy .= ones(eltype(Y), q)
+        wy .= ones(Q, q)
         wy ./= norm(q)
         if tau == 0       
             invCx = inv(X' * X)

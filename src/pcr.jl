@@ -74,11 +74,12 @@ end
 
 function pcr!(X::Matrix, Y::Matrix, weights::Weight; 
         par = Par())
+    Q = eltype(X)
     q = nco(Y)
     ymeans = colmean(Y, weights)
     # No need to scale Y
     # below yscales is built only for consistency with coef::Plsr  
-    yscales = ones(eltype(Y), q)
+    yscales = ones(Q, q)
     # End 
     fm = pcasvd!(X, weights; par)
     D = Diagonal(fm.weights.w)
