@@ -94,7 +94,7 @@ function cglsr!(X::Matrix, y::Matrix; par = Par())
     end
     # Pre-allocation and initialization
     B = similar(X, p, nlv)
-    b = zeros(eltype(X), p) 
+    b = zeros(Q, p) 
     r = vec(y)       # r = y - X * b, with b = 0
     s = X' * r
     zp = copy(s)

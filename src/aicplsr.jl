@@ -50,6 +50,7 @@ f
 ```
 """ 
 function aicplsr(X, y; par = Par())
+    Q = eltype(X)
     X = ensure_mat(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
@@ -79,7 +80,7 @@ function aicplsr(X, y; par = Par())
     ## s2 is estimated from the model under evaluation
     ## Used in Kraemer & Sugiyama 2011 Eq.5-6
     s2_2 = zssr ./ df_ssr
-    ct = ones(eltype(X), nlv + 1)
+    ct = ones(Q, nlv + 1)
     ct .= n ./ (n .- df .- 2)  # bias correction
     ct[(df .> n) .| (ct .<= 0)] .= NaN 
     ## For safe predictions when df stabilizes and fluctuates
@@ -90,7 +91,7 @@ function aicplsr(X, y; par = Par())
         ct[minimum(u):(nlv + 1)] .= NaN
     end
     #bic ? alpha = log(n) : alpha = 2
-    alpha = convert(eltype(X), par.alpha_aic)
+    alpha = convert(Q, par.alpha_aic)
     aic = n * log.(zssr) + alpha * (df .+ 1) .* ct
     cp1 = zssr .+ 2 * s2_1 * df .* ct
     cp2 = zssr .+ 2 * s2_2 .* df .* ct

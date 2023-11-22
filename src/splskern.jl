@@ -118,6 +118,7 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight;
         par = Par())
     @assert in([:soft; :mix; :hard])(par.meth_sp) "Wrong value for argument 'meth_sp'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
+    Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)
@@ -125,8 +126,8 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight;
     length(nvar) == 1 ? nvar = repeat([nvar], nlv) : nothing
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
-    xscales = ones(eltype(X), p)
-    yscales = ones(eltype(Y), q)
+    xscales = ones(Q, p)
+    yscales = ones(Q, q)
     if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
@@ -171,7 +172,7 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight;
                 if nrm > 0
                     sel = sortperm(absw; rev = true)[1:nvar[a]]
                     wmax = w[sel]
-                    w .= zeros(eltype(X), p)
+                    w .= zeros(Q, p)
                     w[sel] .= wmax
                     zdelta = maximum(sort(absw)[1:nrm])
                     w .= soft.(w, zdelta)
@@ -179,7 +180,7 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight;
             elseif par.meth_sp == :hard
                 sel = sortperm(absw; rev = true)[1:nvar[a]]
                 wmax = w[sel]
-                w .= zeros(eltype(X), p)
+                w .= zeros(Q, p)
                 w[sel] .= wmax
             end
             ## End

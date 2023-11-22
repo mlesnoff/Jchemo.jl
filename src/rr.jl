@@ -80,11 +80,12 @@ end
 
 function rr!(X::Matrix, Y::Matrix, weights::Weight; 
         par = Par())
+    Q = eltype(X)
     p = nco(X)
     sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)
-    xscales = ones(eltype(X), p)
+    xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
         cscale!(X, xmeans, xscales)
@@ -129,9 +130,10 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Rr, X; lb = nothing)
     X = ensure_mat(X)
+    Q = eltype(X)
     isnothing(lb) ? lb = object.par.lb : nothing
     le_lb = length(lb)
-    pred = list(le_lb, Matrix{eltype(X)})
+    pred = list(le_lb, Matrix{Q})
     @inbounds for i = 1:le_lb
         z = coef(object; lb = lb[i])
         pred[i] = z.int .+ X * z.B

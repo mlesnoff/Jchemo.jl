@@ -108,11 +108,11 @@ end
 
 function rp!(X::Matrix, weights = ones(nro(X)); nlv, fun = rpmatli, 
         scal::Bool = false, kwargs...)
-    X = ensure_mat(X)
+    Q = eltype(X)
     p = nco(X)
     weights = mweight(weights)
     xmeans = colmean(X, weights)
-    xscales = ones(eltype(X), p)
+    xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
         cscale!(X, xmeans, xscales)

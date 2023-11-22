@@ -24,9 +24,10 @@ krbf(X, Y)
 ```
 """ 
 function krbf(X, Y; par = Par())
+    Q = eltype(X[1, 1])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    gamma = convert(eltype(X), par.gamma)
+    gamma = convert(Q, par.gamma)
     exp.(-gamma * euclsq(X, Y))
 end
 
@@ -58,10 +59,11 @@ kpol(X, Y)
 ```
 """ 
 function kpol(X, Y; par = Par())
+    Q = eltype(X[1, 1])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    gamma = convert(eltype(X), par.gamma)
-    coef0 = convert(eltype(X), par.coef0)
+    gamma = convert(Q, par.gamma)
+    coef0 = convert(Q, par.coef0)
     K = gamma * X * Y' .+ coef0
     if par.degree > 1
         zK = copy(K)

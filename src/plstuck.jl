@@ -55,22 +55,29 @@ res = summary(fm, X, Y)
 pnames(res)
 ```
 """
-function plstuck(X, Y, weights = ones(nro(X)); nlv,
-        bscal = :none, scal::Bool = false)
-    plstuck!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
-        bscal = bscal, scal = scal)
+function plstuck(X, Y; par = Par())
+    Q = eltype(X[1, 1])
+    n = nro(X)
+    weights = mweight(ones(Q, n))
+    plstuck(X, Y, weights; par)
 end
 
-function plstuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = :none, scal::Bool = false)
+function plstuck(X, Y, weights::Weight; par = Par())
+    plstuck!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function plstuck!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
+    @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
+    Q = eltype(X)
     p = nco(X)
     q = nco(Y)
-    nlv = min(nlv, p, q)
-    weights = mweight(weights)
+    nlv = min(par.nlv, p, q)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
-    xscales = ones(eltype(X), p)
-    yscales = ones(eltype(Y), q)
+    xscales = ones(Q, p)
+    yscales = ones(Q, q)
     if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
@@ -80,8 +87,8 @@ function plstuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         center!(X, xmeans)
         center!(Y, ymeans)
     end
-    bscal == :none ? bscales = ones(2) : nothing
-    if bscal == :frob
+    par.bscal == :none ? bscales = ones(2) : nothing
+    if par.bscal == :frob
         normx = frob(X, weights)
         normy = frob(Y, weights)
         X ./= normx

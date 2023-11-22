@@ -154,8 +154,8 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight;
             invCx = inv(X' * X)
             invCy = inv(Y' * Y)
         else
-            Ix = Diagonal(ones(eltype(X), p)) 
-            Iy = Diagonal(ones(eltype(X), q)) 
+            Ix = Diagonal(ones(Q, p)) 
+            Iy = Diagonal(ones(Q, q)) 
             if tau == 1   
                 invCx = Ix
                 invCy = Iy

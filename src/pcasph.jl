@@ -63,11 +63,12 @@ end
 
 function pcasph!(X::Matrix, weights::Weight; 
         par = Par())
+    Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
     xmeans = colmedspa(X; 
-        delta = convert(eltype(X), 1e-6))
-    xscales = ones(eltype(X), p)
+        delta = convert(Q, 1e-6))
+    xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
         cscale!(X, xmeans, xscales)

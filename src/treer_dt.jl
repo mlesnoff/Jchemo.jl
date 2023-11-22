@@ -72,9 +72,10 @@ plotxy(res.pred, ytest; color = (:red, .5),
 """ 
 function treer_dt(X, y; par = Par()) 
     X = ensure_mat(X)
+    Q = eltype(X)
     y = vec(y)
     p = nco(X)
-    xscales = ones(eltype(X), p)
+    xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
         X = scale(X, xscales)

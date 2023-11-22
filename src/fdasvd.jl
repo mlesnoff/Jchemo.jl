@@ -24,17 +24,18 @@ fdasvd(X, y; par = Par()) = fdasvd!(copy(ensure_mat(X)), y; par)
 
 function fdasvd!(X::Matrix, y; par = Par())
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
+    Q = eltype(X)
     n, p = size(X)
-    lb = convert(eltype(X), par.lb)
+    lb = convert(Q, par.lb)
     xmeans = colmean(X) 
-    xscales = ones(eltype(X), p)
+    xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
         cscale!(X, xmeans, xscales)
     else
         center!(X, xmeans)
     end
-    w = mweight(ones(eltype(X), n))
+    w = mweight(ones(Q, n))
     res = matW(X, y, w)
     lev = res.lev
     nlev = length(lev)

@@ -28,10 +28,11 @@ end
 
 function pcaeigen!(X::Matrix, weights::Weight; 
         par = Par()) 
+    Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
     xmeans = colmean(X, weights) 
-    xscales = ones(eltype(X), p)
+    xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
         cscale!(X, xmeans, xscales)

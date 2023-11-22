@@ -116,10 +116,9 @@ end
 
 function krr!(X::Matrix, Y::Matrix, weights::Weight; 
         par = Par())
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
+    Q = eltype(X)
     p = nco(X)
-    xscales = ones(eltype(X), p)
+    xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
         X = scale(X, xscales)
@@ -172,6 +171,7 @@ Compute Y-predictions from a fitted model.
     If nothing, it is the parameter stored in the fitted model.
 """ 
 function predict(object::Krr, X; lb = nothing)
+    X = ensure_mat(X)
     isnothing(lb) ? lb = object.par.lb : nothing
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(scale(X, object.xscales), object.X; par = object.par)

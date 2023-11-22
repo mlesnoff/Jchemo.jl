@@ -47,7 +47,7 @@ function rrchol!(X::Matrix, Y::Matrix, weights::Weight;
     lb = convert(Q, par.lb)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)
-    xscales = ones(eltype(X), p)
+    xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
         cscale!(X, xmeans, xscales)

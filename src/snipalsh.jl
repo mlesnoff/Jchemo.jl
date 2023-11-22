@@ -1,5 +1,6 @@
 function snipalsh(X; par = Par())
     X = ensure_mat(X)
+    Q = eltype(X)
     n, p = size(X)
     res = nipals(X; par)
     t = res.u * res.sv
@@ -15,7 +16,7 @@ function snipalsh(X; par = Par())
         absv .= abs.(v)
         sel = sortperm(absv; rev = true)[1:par.nvar]
         vmax = v[sel]
-        v .= zeros(eltype(X), p)
+        v .= zeros(Q, p)
         v[sel] .= vmax
         ## End
         v ./= norm(v)

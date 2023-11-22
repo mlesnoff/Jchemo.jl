@@ -40,14 +40,15 @@ end
 
 function plswold!(X::Matrix, Y::Matrix, weights::Weight; 
         par = Par())
+    Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
     nlv = min(par.nlv, n, p)
     sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
-    xscales = ones(eltype(X), p)
-    yscales = ones(eltype(Y), q)
+    xscales = ones(Q, p)
+    yscales = ones(Q, q)
     if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)

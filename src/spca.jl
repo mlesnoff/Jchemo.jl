@@ -128,12 +128,13 @@ function spca!(X::Matrix, weights::Weight;
         par = Par())
     @assert in([:soft; :mix; :hard])(par.meth_sp) "Wrong value for argument 'meth_sp'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]."
+    Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
     nvar = par.nvar
     length(nvar) == 1 ? nvar = repeat([nvar], nlv) : nothing
     xmeans = colmean(X, weights) 
-    xscales = ones(eltype(X), p)
+    xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
         cscale!(X, xmeans, xscales)

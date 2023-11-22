@@ -86,9 +86,10 @@ function rfda_dt(X, y::Union{Array{Int}, Array{String}};
         min_samples_split = 2, scal::Bool = false, 
         mth = true, kwargs...)
     X = ensure_mat(X)
+    Q = eltype(X)
     y = vec(y)
     p = nco(X)
-    xscales = ones(eltype(X), p)
+    xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
         X = scale(X, xscales)

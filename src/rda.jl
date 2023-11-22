@@ -101,10 +101,11 @@ function rda(X, y, weights = ones(nro(X));
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     @assert par.lb >= 0 "lb must be in >= 0"
     X = ensure_mat(X)
+    Q = eltype(X)
     y = vec(y)    # for findall
     n, p = size(X)
     weights = mweight(weights)
-    xscales = ones(eltype(X), p)
+    xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
         X = scale(X, xscales)

@@ -91,9 +91,10 @@ function svmr(X, y; par = Par())
     kern = par.kern 
     @assert in([:krbf, :kpol, :klin, :ktanh])(kern) "Wrong value for argument 'kern'." 
     X = ensure_mat(X)
+    Q = eltype(X)
     y = vec(y)
     p = nco(X)
-    xscales = ones(eltype(X), p)
+    xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
         X = scale(X, xscales)
@@ -129,9 +130,10 @@ Compute y-predictions from a fitted model.
 """ 
 function predict(object::Svmr, X)
     X = ensure_mat(X)
+    Q = eltype(X)
     pred = svmpredict(object.fm, scale(X, object.xscales)')[1]
     n = length(pred)
-    pred = reshape(convert.(eltype(X), pred), n, 1)
+    pred = reshape(convert.(Q, pred), n, 1)
     (pred = pred,)
 end
 

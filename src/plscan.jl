@@ -53,23 +53,30 @@ res = summary(fm, X, Y)
 pnames(res)
 ```
 """
-function plscan(X, Y, weights = ones(nro(X)); nlv,
-        bscal = :none, scal::Bool = false)
-    plscan!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
-        bscal = bscal, scal = scal)
+function plscan(X, Y; par = Par())
+    Q = eltype(X[1, 1])
+    n = nro(X)
+    weights = mweight(ones(Q, n))
+    plscan(X, Y, weights; par)
 end
 
-function plscan!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = :none, scal::Bool = false)
+function plscan(X, Y, weights::Weight; par = Par())
+    plscan!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function plscan!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
+    @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
+    Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
-    nlv = min(nlv, p, q)
-    weights = mweight(weights)
+    nlv = min(par.nlv, p, q)
     D = Diagonal(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
-    xscales = ones(eltype(X), p)
-    yscales = ones(eltype(Y), q)
+    xscales = ones(Q, p)
+    yscales = ones(Q, q)
     if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
@@ -79,8 +86,8 @@ function plscan!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         center!(X, xmeans)
         center!(Y, ymeans)
     end
-    bscal == :none ? bscales = ones(2) : nothing
-    if bscal == :frob
+    par.bscal == :none ? bscales = ones(2) : nothing
+    if par.bscal == :frob
         normx = frob(X, weights)
         normy = frob(Y, weights)
         X ./= normx
@@ -114,7 +121,7 @@ function plscan!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         # X
         wx .= U[:, 1]
         mul!(tx, X, wx)
-        dtx .= weights .* tx
+        dtx .= weights.w .* tx
         ttx = dot(tx, dtx)
         mul!(px, X', dtx)
         px ./= ttx
@@ -125,7 +132,7 @@ function plscan!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
         # wy ./= norm(wy)
         # End
         mul!(ty, Y, wy)
-        dty .= weights .* ty
+        dty .= weights.w .* ty
         tty = dot(ty, dty)
         mul!(py, Y', dty)
         py ./= tty

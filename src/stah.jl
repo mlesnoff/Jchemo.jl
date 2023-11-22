@@ -36,10 +36,11 @@ plotxy(1:nro(X), res.d).f
 """ 
 function stah(X, a; scal = true) 
     zX = copy(ensure_mat(X))
+    Q = eltype(zX)
     n, p = size(zX)
     P = reshape(sample(0:1, p * a), p, a)
-    mu_scal = zeros(eltype(X), p)
-    s_scal = ones(eltype(X), p) 
+    mu_scal = zeros(Q, p)
+    s_scal = ones(Q, p) 
     if par.scal
         mu_scal .= vec(median(zX, dims = 1))
         s_scal .= colmad(zX)

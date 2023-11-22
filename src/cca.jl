@@ -126,8 +126,8 @@ function cca!(X::Matrix, Y::Matrix, weights::Weight;
         Cx = Symmetric(X' * X)
         Cy = Symmetric(Y' * Y)
     else
-        Ix = Diagonal(ones(eltype(X), p)) 
-        Iy = Diagonal(ones(eltype(X), q)) 
+        Ix = Diagonal(ones(Q, p)) 
+        Iy = Diagonal(ones(Q, q)) 
         if tau == 1
             Cx = Ix
             Cy = Iy

@@ -77,9 +77,10 @@ function svmda(X, y; kern = :krbf,
         cost = 1., epsilon = .1,
         scal = false)
     X = ensure_mat(X)
+    Q = eltype(X)
     y = vec(y)
     p = nco(X)
-    xscales = ones(eltype(X), p)
+    xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
         X = scale(X, xscales)

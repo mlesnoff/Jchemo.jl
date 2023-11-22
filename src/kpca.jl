@@ -64,16 +64,18 @@ res.explvarx
 ```
 """ 
 function kpca(X; par = Par())
-    X = copy(ensure_mat(X))
-    kpca(X, mweight(ones(eltype(X), nro(X))); 
+    X = ensure_mat(X)
+    Q = eltype(X)
+    kpca(X, mweight(ones(Q, nro(X))); 
         par)
 end
 
 function kpca(X, weights::Weight; par = Par())
     X = ensure_mat(X)
+    Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n)
-    xscales = ones(eltype(X), p)
+    xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
         X = scale(X, xscales)

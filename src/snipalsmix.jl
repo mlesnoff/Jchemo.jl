@@ -1,5 +1,6 @@
 function snipalsmix(X; par = Par())
     X = ensure_mat(X)
+    Q = eltype(X)
     n, p = size(X)
     res = nipals(X; par)
     t = res.u * res.sv
@@ -17,7 +18,7 @@ function snipalsmix(X; par = Par())
             absv .= abs.(v)
             sel = sortperm(absv; rev = true)[1:par.nvar]
             vmax = v[sel]
-            v .= zeros(eltype(X), p)
+            v .= zeros(Q, p)
             v[sel] .= vmax
             zdelta = maximum(sort(absv)[1:nrm])
             v .= soft.(v, zdelta)

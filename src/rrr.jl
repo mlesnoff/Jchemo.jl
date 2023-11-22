@@ -110,14 +110,15 @@ end
 function rrr!(X::Matrix, Y::Matrix, weights::Weight; 
         par = Par())
     @assert 0 <= par.tau <=1 "tau must be in [0, 1]"
+    Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
     nlv = min(par.nlv, p, q)
     sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)    
-    xscales = ones(eltype(X), p)
-    yscales = ones(eltype(Y), q)
+    xscales = ones(Q, p)
+    yscales = ones(Q, q)
     if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
@@ -138,7 +139,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight;
     Px  = similar(X, p, nlv)
     Cx = similar(X, p, p)
     invCx = copy(Cx)
-    Ix = Diagonal(ones(eltype(X), p))
+    Ix = Diagonal(ones(Q, p))
     TTx = similar(X, nlv)
     tx  = similar(X, n)
     ty  = copy(tx)
@@ -158,7 +159,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight;
         if tau == 0       
             invCx = inv(X' * X)
         else
-            Ix = Diagonal(ones(eltype(X), p)) 
+            Ix = Diagonal(ones(Q, p)) 
             if tau == 1   
                 invCx = Ix
             else
