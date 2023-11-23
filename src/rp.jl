@@ -112,7 +112,7 @@ end
 
 function rp!(X::Matrix, weights::Weight; 
         par = Par())
-    @assert in([:gauss, :li])(par.projm) "Wrong value for argument 'projm'."
+    @assert in([:gauss, :li])(par.rpmeth) "Wrong value for argument 'rpmeth'."
     Q = eltype(X)
     p = nco(X)
     xmeans = colmean(X, weights)
@@ -123,7 +123,7 @@ function rp!(X::Matrix, weights::Weight;
     else
         center!(X, xmeans)
     end
-    if par.projm == :gauss
+    if par.rpmeth == :gauss
         P = rpmatgauss(p, par.nlv, Q)
     else
         P = rpmatli(p, par.nlv, Q; s = par.s)
