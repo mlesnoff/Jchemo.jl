@@ -88,7 +88,7 @@ function rasvd!(X::Matrix, Y::Matrix, weights::Weight;
     Q = eltype(X)
     p = nco(X)
     q = nco(Y)
-    nlv = min(nlv, p, q)
+    nlv = min(par.nlv, p, q)
     tau = convert(Q, par.tau)
     sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 
@@ -104,8 +104,8 @@ function rasvd!(X::Matrix, Y::Matrix, weights::Weight;
         center!(X, xmeans)
         center!(Y, ymeans)
     end
-    bscal == :none ? bscales = ones(2) : nothing
-    if bscal == :frob
+    par.bscal == :none ? bscales = ones(Q, 2) : nothing
+    if par.bscal == :frob
         normx = frob(X, weights)
         normy = frob(Y, weights)
         X ./= normx

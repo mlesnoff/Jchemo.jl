@@ -86,7 +86,7 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight;
         center!(X, xmeans)
         center!(Y, ymeans)
     end
-    par.bscal == :none ? bscales = ones(2) : nothing
+    par.bscal == :none ? bscales = ones(Q, 2) : nothing
     if par.bscal == :frob
         normx = frob(X, weights)
         normy = frob(Y, weights)
