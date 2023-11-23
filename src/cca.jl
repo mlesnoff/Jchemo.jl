@@ -180,8 +180,7 @@ Summarize the fitted model.
 * `X` : The X-data that was used to fit the model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
-function Base.summary(object::Cca, X,
-        Y)
+function Base.summary(object::Cca, X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = nro(X)

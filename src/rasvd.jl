@@ -69,20 +69,27 @@ res = summary(fm, X, Y)
 pnames(res)
 ```
 """
-function rasvd(X, Y, weights = ones(nro(X)); nlv,
-        bscal = :none, tau = 1e-8, scal::Bool = false)
-    rasvd!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv = nlv,
-        bscal = bscal, tau = tau, scal = scal)
+function rasvd(X, Y; par = Par())
+    Q = eltype(X[1, 1])
+    n = nro(X)
+    weights = mweight(ones(Q, n))
+    rasvd(X, Y, weights; par)
 end
 
-function rasvd!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = :none, tau = 1e-8, scal = scal)
-    @assert 0 <= par.tau <=1 "tau must be in [0, 1]"
+function rasvd(X, Y, weights::Weight; par = Par())
+    rasvd!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
+        weights; par)
+end
+
+function rasvd!(X::Matrix, Y::Matrix, weights::Weight; 
+        par = Par())
+    @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
+    @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
     Q = eltype(X)
     p = nco(X)
     q = nco(Y)
     nlv = min(nlv, p, q)
-    weights = mweight(weights)
+    tau = convert(Q, par.tau)
     sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
@@ -170,8 +177,7 @@ Summarize the fitted model.
 * `X` : The X-data that was used to fit the model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
-function Base.summary(object::Rasvd, X,
-        Y)
+function Base.summary(object::Rasvd, X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, nlv = size(object.Tx)

@@ -241,8 +241,7 @@ Summarize the fitted model.
 * `X` : The X-data that was used to fit the model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
-function Base.summary(object::CcaWold, X,
-        Y)
+function Base.summary(object::CcaWold, X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, nlv = size(object.Tx)
