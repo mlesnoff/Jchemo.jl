@@ -22,10 +22,9 @@ p = 10 ; nlv = 3
 rpmatgauss(p, nlv)
 ```
 """ 
-function rpmatgauss(p, nlv)
-    randn(p, nlv) / sqrt(nlv)
+function rpmatgauss(p::Int, nlv::Int, Q = Float64)
+    randn(Q, p, nlv) / convert(Q, sqrt(nlv))
 end
-
 
 """
     rpmatli(p, nlv; s = sqrt(p))
@@ -68,11 +67,12 @@ p = 10 ; nlv = 3
 rpmatli(p, nlv)
 ```
 """ 
-function rpmatli(p, nlv; s = sqrt(p))
+function rpmatli(p::Int, nlv::Int, Q = Float64; s = sqrt(p))
     le = p * nlv
     k = Int(round(le / s))
-    z = zeros(le)
-    z[rand(1:le, k)] .= rand([-1. ; 1], k) 
+    z = zeros(Q, le)
+    u = convert.(Q, [-1 ; 1])
+    z[rand(1:le, k)] .= rand(u, k) 
     sparse(reshape(z, p, nlv))
 end
 
@@ -100,14 +100,27 @@ fm.T # = X * fm.P
 Jchemo.transform(fm, X[1:2, :])
 ```
 """
-function rp(X, weights = ones(nro(X)); nlv, fun = rpmatli, 
-    scal::Bool = false, kwargs...)
-    rp!(copy(ensure_mat(X)), weights; nlv, 
-        fun = fun, scal = scal, kwargs...)
+function pcasvd(X; par = Par())
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    pcasvd(X, weights; par)
 end
 
-function rp!(X::Matrix, weights = ones(nro(X)); nlv, fun = rpmatli, 
-        scal::Bool = false, kwargs...)
+function pcasvd(X, weights::Weight; par = Par())
+    pcasvd!(copy(ensure_mat(X)), weights; par)
+end
+
+function pcasvd!(X::Matrix, weights::Weight; 
+        par = Par())
+    Q = eltype(X)
+#function rp(X, weights = ones(nro(X)); nlv, fun = rpmatli, 
+#    scal::Bool = false, kwargs...)
+#    rp!(copy(ensure_mat(X)), weights; nlv, 
+#        fun = fun, scal = scal, kwargs...)
+#end
+
+#function rp!(X::Matrix, weights = ones(nro(X)); nlv, fun = rpmatli, 
+#        scal::Bool = false, kwargs...)
     Q = eltype(X)
     p = nco(X)
     weights = mweight(weights)
