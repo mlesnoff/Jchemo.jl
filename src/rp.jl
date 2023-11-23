@@ -100,30 +100,21 @@ fm.T # = X * fm.P
 Jchemo.transform(fm, X[1:2, :])
 ```
 """
-function pcasvd(X; par = Par())
+function rp(X; par = Par())
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    pcasvd(X, weights; par)
+    rp(X, weights; par)
 end
 
-function pcasvd(X, weights::Weight; par = Par())
-    pcasvd!(copy(ensure_mat(X)), weights; par)
+function rp(X, weights::Weight; par = Par())
+    rp!(copy(ensure_mat(X)), weights; par)
 end
 
-function pcasvd!(X::Matrix, weights::Weight; 
+function rp!(X::Matrix, weights::Weight; 
         par = Par())
-    Q = eltype(X)
-#function rp(X, weights = ones(nro(X)); nlv, fun = rpmatli, 
-#    scal::Bool = false, kwargs...)
-#    rp!(copy(ensure_mat(X)), weights; nlv, 
-#        fun = fun, scal = scal, kwargs...)
-#end
-
-#function rp!(X::Matrix, weights = ones(nro(X)); nlv, fun = rpmatli, 
-#        scal::Bool = false, kwargs...)
+    @assert in([:gauss, :li])(par.projm) "Wrong value for argument 'projm'."
     Q = eltype(X)
     p = nco(X)
-    weights = mweight(weights)
     xmeans = colmean(X, weights)
     xscales = ones(Q, p)
     if par.scal 
@@ -132,7 +123,11 @@ function pcasvd!(X::Matrix, weights::Weight;
     else
         center!(X, xmeans)
     end
-    P = fun(p, nlv; kwargs...)
+    if par.projm == :gauss
+        P = rpmatgauss(p, par.nlv, Q)
+    else
+        P = rpmatli(p, par.nlv, Q; s = par.s)
+    end 
     T = X * P
     Rp(T, P, xmeans, xscales)
 end
