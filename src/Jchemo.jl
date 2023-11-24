@@ -57,9 +57,10 @@ include("pcaeigenk.jl")
 include("pcanipals.jl")
 include("pcanipalsmiss.jl")
 include("kpca.jl")
-include("rp.jl")
 include("pcasph.jl") 
 include("spca.jl")
+include("rpmat.jl")
+include("rp.jl")
 
 # Multiblock 
 include("angles.jl")
