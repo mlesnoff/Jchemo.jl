@@ -18,6 +18,7 @@ Other current specific points are:
     Type Symbol (e.g. "unif" is replaced by :unif)
 - The 'weights' (row weighting in some functions, such as pcasvd etc.) 
     argument must now be of type 'Weight', built from function 'mweight'. 
+- Function 'mtest' renamed to 'mtestdf'
 - Temporary removed:
     - mbunif, mbwcov
     - baggr and utilities
