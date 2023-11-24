@@ -193,8 +193,12 @@ include("difmean.jl")
 include("eposvd.jl")
 
 ### Sampling
-include("sampling.jl")
-include("mtestdf.jl")
+include("sampks.jl")
+include("sampdp.jl")
+include("samprand.jl")
+include("sampsys.jl")
+include("sampcla.jl")
+include("sampdf.jl")
 
 include("distances.jl")
 include("getknn.jl")
@@ -358,12 +362,11 @@ export
     gridscore, gridscorelv, gridscorelb,
     segmts, segmkf,
     gridcv, gridcvlv, gridcvlb, 
-    gridcv_mb, gridcvlv_mb,
     selwold,
     confusion, 
     ### Sampling
     sampks, sampdp, samprand, sampsys, sampcla, 
-    mtestdf,
+    sampdf,
     ### Distances
     getknn, wdist, wdist!,
     euclsq, mahsq, mahsqchol,

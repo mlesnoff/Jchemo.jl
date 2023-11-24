@@ -18,7 +18,7 @@ Other current specific points are:
     Type Symbol (e.g. "unif" is replaced by :unif)
 - The 'weights' (row weighting in some functions, such as pcasvd etc.) 
     argument must now be of type 'Weight', built from function 'mweight'. 
-- Function 'mtest' renamed to 'mtestdf'
+- Function 'mtest' renamed to 'sampdf'
 - Temporary removed:
     - mbunif, mbwcov
     - baggr and utilities
@@ -26,6 +26,7 @@ Other current specific points are:
     - nsc, nscda
     - plsrdaavg, plsldaavg, plsqdaavg
     - lwplsrdaavg, lwplsldaavg, lwplsqdaavg
+    - gridcv_mb, gridcvlv_mb
 
 Some bugs may have been introduced due to the restructuration.
 They will be corrected in versions > 0.3.0.

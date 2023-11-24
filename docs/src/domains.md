@@ -244,8 +244,6 @@
 - **gridcv** Any model
 - **gridcvlv** Models with LVs (faster)
 - **gridcvlb** Models with ridge parameter (faster)  
-- **gridcv_mb** Multiblock models 
-- **gridcvlv_mb** Multiblock models with LVs 
 - **segmkf** Building segments for K-fold CV
 - **segmts** Building segments for test-set validation
 
@@ -301,12 +299,12 @@
 
 ### **Split training/test sets by sampling**
 
-- **samprand** Random (no replacement)
+- **samprand** Random (without replacement)
 - **sampks** Kennard-Stone 
 - **sampdp** Duplex  
 - **sampsys** Systematic over a quantitative variable
 - **sampcla** Stratified by class
-- **mtestdf** Split for each column of a dataframe (typically, response variables 
+- **sampdf** Split for each column of a dataframe (typically, response variables 
     to predict) that can contain missing values
 
 ## PLOTTING

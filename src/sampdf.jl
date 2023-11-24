@@ -1,5 +1,5 @@
 """ 
-    mtestdf(Y::DataFrame, id = 1:nro(Y); ntest, 
+    sampdf(Y::DataFrame, id = 1:nro(Y); ntest, 
         typ = :rand)
 Split training/test sets for each column of a dataframe 
     (typically, response variables to predict) that can contain missing 
@@ -22,14 +22,14 @@ Y = hcat([rand(5); missing; rand(6)],
    [rand(2); missing; missing; rand(7); missing])
 Y = DataFrame(Y, :auto)
 
-mtestdf(Y; ntest = 3)
+sampdf(Y; ntest = 3)
 
-mtestdf(Y; ntest = 3, typ = :sys)
+sampdf(Y; ntest = 3, typ = :sys)
 
 ## Replicated splitting Train/Test
 rep = 10
 ntest = 3
-ids = [mtestdf(Y[:, namy]; ntest = ntest) for i = 1:rep]
+ids = [sampdf(Y[:, namy]; ntest = ntest) for i = 1:rep]
 length(ids)
 i = 1    # replication
 ids[i]
@@ -41,7 +41,7 @@ ids[i].test[j]
 ids[i].nam[j]
 ```
 """
-function mtestdf(Y::DataFrame, id = 1:nro(Y); 
+function sampdf(Y::DataFrame, id = 1:nro(Y); 
         ntest, typ = :rand)
     @assert in([:rand; :sys])(typ) "Wrong value for argument 'typ'."
     p = nco(Y)
