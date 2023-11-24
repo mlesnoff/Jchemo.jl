@@ -12,33 +12,38 @@ See `?gridscore` for examples.
 """
 function gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb, 
         pars = nothing, verbose = false)
+    Q = eltype(Xtrain[1, 1])
     q = nco(Ytrain)
     lb = mlev(lb)
     le_lb = length(lb)
-    if isnothing(pars)
+    if isnothing(pars)    # e.g.: case of RR
         verbose ? println("-- Nb. combinations = 0.") : nothing
-        fm = fun(Xtrain, Ytrain, lb = maximum(lb))
-        pred = Jchemo.predict(fm, X; lb = lb).pred
+        fm = fun(Xtrain, Ytrain, par = Par(lb = maximum(lb)))
+        pred = predict(fm, X; lb = lb).pred
         le_lb == 1 ? pred = [pred] : nothing
-        res = zeros(le_lb, q)
+        res = zeros(Q, le_lb, q)
         @inbounds for i = 1:le_lb
             res[i, :] = score(pred[i], Y)
         end
         dat = DataFrame(lb = lb)
     else
-        ncomb = length(pars[1])  # nb. combinations in pars
+        listpar = [Par(; Dict(kws)...) for 
+            kws in zip([[k=>vv for vv in v] for (k, v) in pairs(pars)]...)]
+        ncomb = length(listpar)  # nb. combinations in pars
+        res = list(ncomb)
         verbose ? println("-- Nb. combinations = ", ncomb) : nothing
-        res = map(values(pars)...) do v...
-            verbose ? println(Pair.(keys(pars), v)...) : nothing
-            fm = fun(Xtrain, Ytrain ; lb = maximum(lb), Pair.(keys(pars), v)...)
-            pred = Jchemo.predict(fm, X; lb = lb).pred
-            le_lb == 1 ? pred = [pred] : nothing
-            zres = zeros(le_lb, q)
-            for i = 1:le_lb
-                zres[i, :] = score(pred[i], Y)
+        for i = 1:ncomb
+            verbose ? println(convert(NamedTuple, dat[i, :])) : nothing 
+            listpar[i].lb = maximum(lb)
+            fm = fun(Xtrain, Ytrain; par = listpar[i])
+            pred = predict(fm, X; lb = lb).pred
+            zres = zeros(Q, le_lb, q)
+            @inbounds for j = 1:le_lb
+                zres[j, :] = score(pred[j], Y)
             end
-            zres
-        end 
+            res[i] = zres
+        end
+        verbose ? println("-- End.") : nothing
         ncomb == 1 ? res = res[1] : res = reduce(vcat, res) 
         ## Make dat
         if le_lb == 1

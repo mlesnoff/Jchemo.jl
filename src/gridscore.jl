@@ -136,10 +136,10 @@ rmsep(pred, ytest)
 function gridscore(Xtrain, Ytrain, X, Y; score, fun, 
         pars, verbose = false)
     q = nco(Ytrain)
-    dat = DataFrame(pars)
     listpar = [Par(; Dict(kws)...) for 
         kws in zip([[k=>vv for vv in v] for (k, v) in pairs(pars)]...)]
     ncomb = length(listpar)  # nb. combinations in pars
+    dat = DataFrame(pars)
     res = list(ncomb)
     verbose ? println("-- Nb. combinations = ", ncomb) : nothing
     for i = 1:ncomb
