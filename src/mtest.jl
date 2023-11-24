@@ -41,8 +41,8 @@ ids[i].test[j]
 ids[i].nam[j]
 ```
 """
-function mtest(Y::DataFrame, id = 1:nro(Y); ntest, 
-        typ = :rand)
+function mtest(Y::DataFrame, id = 1:nro(Y); 
+        ntest, typ = :rand)
     @assert in([:rand; :sys])(typ) "Wrong value for argument 'typ'."
     p = nco(Y)
     nam = names(Y)
