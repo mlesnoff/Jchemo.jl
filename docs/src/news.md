@@ -28,7 +28,7 @@ Other current specific points are:
     - lwplsrdaavg, lwplsldaavg, lwplsqdaavg
     - gridcv_mb, gridcvlv_mb
 
-Some bugs may have been introduced due to the restructuration.
+Some typing errors may be introduced due to the restructuration.
 They will be corrected in versions > 0.3.0.
 
 
