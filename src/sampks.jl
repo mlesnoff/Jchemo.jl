@@ -16,10 +16,10 @@ algorithm (Kennard & Stone, 1969).
 **Note:** By construction, the set of observations 
 selected by KS sampling contains higher variability than 
 the set of the remaining observations. In the seminal 
-paper (K&S, 1969), the algorithm is used to select observations
-that will be used to build a calibration set. In the present 
-function, KS is used to select a test set with higher variability
-yhan the training set. 
+article (K&S, 1969), the algorithm is used to select observations
+that will be used to build a calibration set. To the opposite,
+in the present function, KS is used to select a test set with 
+higher variability than the training set. 
 
 ## References
 Kennard, R.W., Stone, L.A., 1969. Computer aided design of experiments. 

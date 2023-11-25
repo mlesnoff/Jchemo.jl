@@ -46,24 +46,21 @@ function sampdf(Y::DataFrame, k, id = 1:nro(Y);
     @assert in([:rand; :sys])(sampm) "Wrong value for argument 'sampm'."
     p = nco(Y)
     nam = names(Y)
-    idtrain = list(p, Vector)  
-    idtest = list(p, Vector)
+    train = list(p, Vector)  
+    test = list(p, Vector)
     length(k) == 1 ? k = repeat([k], p) : nothing
     @inbounds for i = 1:p
         y = Y[:, nam[i]]
         s_all = findall(ismissing.(y) .== 0)
         if sampm == :rand   
             n = length(s_all)
-            ntrain = n - k[i]
-            res = samprand(n, ntrain)
-            idtrain[i] = sort(id[s_all[res.train]])
-            idtest[i] = sort(id[s_all[res.test]])
+            res = samprand(n, k[i])
         elseif sampm == :sys
             res = sampsys(y[s_all], k[i])
-            idtrain[i] = sort(id[s_all[res.test]])
-            idtest[i] = sort(id[s_all[res.train]])  
-        end    
+        end 
+        train[i] = sort(id[s_all[res.train]])
+        test[i] = sort(id[s_all[res.test]])             
     end
-    (train = idtrain, test = idtest, nam)
+    (train = train, test, nam)
 end
 
