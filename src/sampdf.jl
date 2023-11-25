@@ -6,13 +6,15 @@ Build training/test sets for each column of a dataframe
     values
 * `Y` : DataFrame (n, p) whose each column can contain missing values.
 * `id` : Vector (n) of IDs.
-* `k` : Nb. test observations selected for each `Y` column. 
+* `k` : Nb. of test observations selected for each `Y` column. 
     The selection is done within the non-missing observations 
     of the considered column. If `k` is a single value, the same nb.  
     observations are selected for each column. Alternatively, `k` can 
     be a vector of length p. 
-* `sampm` : Type of sampling for the test set: :rand (default) = random sampling, 
-    :sys = systematic sampling (regular grid) over the `Y` column.  
+* `sampm` : Type of sampling for the test set.
+    Possible values are: :rand (default) = random sampling, 
+    :sys = systematic sampling over each sorted `Y` column
+    (see function `sampsys`).  
 
 ## Examples
 ```julia
@@ -58,6 +60,7 @@ function sampdf(Y::DataFrame, k, id = 1:nro(Y);
         elseif sampm == :sys
             res = sampsys(y[s_all], k[i])
         end 
+        ## Sorting
         train[i] = sort(id[s_all[res.train]])
         test[i] = sort(id[s_all[res.test]])             
     end
