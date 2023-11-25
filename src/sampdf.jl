@@ -57,7 +57,7 @@ function sampdf(Y::DataFrame, k, id = 1:nro(Y);
         if sampm == :rand   
             n = length(s_all)
             res = samprand(n, k[i])
-        elseif sampm == :sys
+        else
             res = sampsys(y[s_all], k[i])
         end 
         ## Sorting
