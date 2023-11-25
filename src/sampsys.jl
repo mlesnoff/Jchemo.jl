@@ -1,18 +1,19 @@
 """
     sampsys(y, k)
-Split training/test sets by systematic sampling over a quantitative variable.  
+Build training/test sets by systematic sampling over
+    a quantitative variable.  
 * `y` : Quantitative variable (n) to sample.
-* `k` : Nb. observations to sample (output `train`). 
+* `k` : Nb. observations to sample (= output `test`). 
     Must be >= 2.
 
-Two outputs (indexes) are returned: 
-* `train` (`k`),
-* `test` (n - `k`). 
+Two outputs (= row indexes of the data) are returned: 
+* `train` (n - `k`),
+* `test` (`k`). 
 
-Output `train` is built by systematic sampling over the rank of 
+Output `test` is built by systematic sampling over the rank of 
 the `y` observations. For instance if `k` / n ~ .3, one observation 
 over three observations over the sorted `y` is selected. 
-Output `train` always contains the indexes of the minimum and 
+Output `test` always contains the indexes of the minimum and 
 maximum of `y`.
 
 ## Examples
@@ -36,8 +37,8 @@ function sampsys(y, k)
     zn = collect(1:n)
     s = zn[id[z]]
     sort!(s)
-    test = zn[setdiff(1:end, s)]
-    (train = s, test = test)
+    train = zn[setdiff(1:end, s)]
+    (train = train, test = s)
 end
 
 

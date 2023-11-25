@@ -1,23 +1,23 @@
 """
     sampdp(X, k; metric = :eucl)
-Split training/test sets by DUPLEX sampling.  
+Build training/test sets by DUPLEX sampling.  
 * `X` : X-data (n, p).
-* `k` : Nb. pairs of observations to sample (outputs `train` and `test`). 
-    Must be <= n / 2. 
+* `k` : Nb. pairs of observations to sample 
+    (outputs `train` and `test`). Must be <= n / 2. 
 * `metric` : Metric used for the distance computation.
     Possible values are: :eucl, :mah.
 
-Three outputs (indexes) are returned: 
+Three outputs (= row indexes of the data) are returned: 
 * `train` (`k`), 
 * `test` (`k`),
 * `remain` (n - 2 * `k`). 
 
-Outputs `train` and `test` are built using the DUPLEX algorithm 
+Outputs `train` and `test` are built from the DUPLEX algorithm 
 (Snee, 1977 p.421). They are expected to cover approximately the same 
 X-space region and have similar statistical properties. 
 
-In practice, when output `remain` is not empty (remaining observations), 
-one strategy is to add it to output `train`.
+In practice, when output `remain` is not empty (i.e. theer are remaining 
+observations), one common strategy is to add it to output `train`.
 
 ## References
 Kennard, R.W., Stone, L.A., 1969. Computer aided design of experiments. 
@@ -60,15 +60,16 @@ f
 ```
 """ 
 function sampdp(X, k; metric = :eucl)
+    @assert in([:eucl, :mah])(metric) "Wrong value for argument 'metric'."
     k = Int(round(k))
-    if(metric == :eucl)
+    if metric == :eucl
         D = euclsq(X, X)
-    elseif(metric == :mah)
+    else
         D = mahsq(X, X)
     end
     n = size(D, 1)
     zn = 1:n
-    # Initial selection of 2 pairs
+    ## Initial selection of 2 pairs of obs.
     s = findall(D .== maximum(D)) 
     s1 = [s[1][1] ; s[1][2]]
     zD = copy(D)
@@ -76,7 +77,7 @@ function sampdp(X, k; metric = :eucl)
     zD[:, s1] .= -Inf ;
     s = findall(D .== maximum(zD)) 
     s2 = [s[1][1] ; s[1][2]]
-    # Candidates
+    ## Candidates
     can = zn[setdiff(1:end, [s1 ; s2])]
     @inbounds for i = 1:(k - 2)
         u = vec(minimum(D[s1, can], dims = 1))

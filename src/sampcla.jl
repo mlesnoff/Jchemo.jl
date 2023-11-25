@@ -1,23 +1,23 @@
 """
     sampcla(x, k, y = nothing)
-Split training/test sets by stratified sampling.  
+Build training/test sets by stratified sampling.  
 * `x` : Class membership (n) of the observations.
-* `k` : Nb. observations to sample in each class (output `train`). 
+* `k` : Nb. observations to sample in each class (= output `test`). 
     If `k` is a single value, the nb. sampled observations is the same 
     for each class. Alternatively, `k` can be a vector of length 
     equal to the nb. classes in `x`.
 * `y` : Quantitative variable (n) used if systematic sampling.
 
-Two outputs (indexes) are returned: 
-* `train` (`k`),
-* `test` (n - `k`). 
+Two outputs (= row indexes of the data) are returned: 
+* `train` (n - `k`),
+* `test` (`k`). 
 
 If `y = nothing` (default), the sampling is random, else it is 
-systematic (grid over `y`).
+systematic over the sorted `y`(see function `sampsys`).
 
 ## References
-Naes, T., 1987. The design of calibration in near infra-red reflectance analysis by clustering. 
-Journal of Chemometrics 1, 121-134.
+Naes, T., 1987. The design of calibration in near infra-red reflectance 
+analysis by clustering. Journal of Chemometrics 1, 121-134.
 
 ## Examples
 ```julia
@@ -55,14 +55,14 @@ function sampcla(x, k, y = nothing)
             s[i] = sample(zs, k[i]; replace = false)
         else
             y = vec(y)
-            u = sampsys(y[zs], k[i]).train
+            u = sampsys(y[zs], k[i]).test
             s[i] = zs[u]
         end
     end
     s = reduce(vcat, s)
     zn = collect(1:n)
-    test = zn[setdiff(1:end, s)]
-    (train = s, test, lev, ni, k)
+    train = zn[setdiff(1:end, s)]
+    (train = train, test = s, lev, ni, k)
 end
 
 

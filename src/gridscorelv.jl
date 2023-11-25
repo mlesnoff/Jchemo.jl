@@ -33,7 +33,7 @@ function gridscorelv(Xtrain, Ytrain, X, Y; score, fun,
         ncomb = length(listpar)  # nb. combinations in pars
         res = list(ncomb)
         verbose ? println("-- Nb. combinations = ", ncomb) : nothing
-        for i = 1:ncomb
+        @inbounds for i = 1:ncomb
             verbose ? println(convert(NamedTuple, dat[i, :])) : nothing 
             listpar[i].nlv = maximum(nlv)
             fm = fun(Xtrain, Ytrain; par = listpar[i])

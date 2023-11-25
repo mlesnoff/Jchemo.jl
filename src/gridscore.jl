@@ -142,7 +142,7 @@ function gridscore(Xtrain, Ytrain, X, Y; score, fun,
     dat = DataFrame(pars)
     res = list(ncomb)
     verbose ? println("-- Nb. combinations = ", ncomb) : nothing
-    for i = 1:ncomb
+    @inbounds for i = 1:ncomb
         verbose ? println(convert(NamedTuple, dat[i, :])) : nothing 
         fm = fun(Xtrain, Ytrain; par = listpar[i])
         pred = predict(fm, X).pred

@@ -297,7 +297,7 @@
 - **interpl** Sampling signals by interpolation -- From DataInterpolations.jl
 - **interpl_mon** Sampling signals by monotonic interpolation -- From Interpolations.jl
 
-### **Split training/test sets by sampling**
+### **Build training/test sets by sampling**
 
 - **samprand** Random (without replacement)
 - **sampks** Kennard-Stone 

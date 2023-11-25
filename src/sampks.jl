@@ -1,18 +1,25 @@
 """
     sampks(X, k; metric = :eucl)
-Split training/test sets by Kennard-Stone sampling.  
+Build training/test sets by Kennard-Stone sampling.  
 * `X` : X-data (n, p).
-* `k` : Nb. observations to sample (output `train`). 
+* `k` : Nb. observations to sample (= output `test`). 
 * `metric` : Metric used for the distance computation.
     Possible values: :eucl, :mah.
 
-Two outputs (indexes) are returned: 
-* `train` (`k`),
-* `test` (n - `k`). 
+Two outputs (= row indexes of the data) are returned: 
+* `train` (n - `k`),
+* `test` (`k`). 
 
-Output `train` is built using the Kennard-Stone (KS) algorithm (Kennard & Stone, 1969). 
-After KS, the two outputs have different underlying probability distributions: `train` has higher 
-dispersion than `test`.
+Output `test` is built from the Kennard-Stone (KS) 
+algorithm (Kennard & Stone, 1969). 
+
+**Note:** By construction, the set of observations 
+selected by KS sampling contains higher variability than 
+the set of the remaining observations. In the seminal 
+paper (K&S, 1969), the algorithm is used to select observations
+that will be used to build a calibration set. In the present 
+function, KS is used to select a test set with higher variability
+yhan the training set. 
 
 ## References
 Kennard, R.W., Stone, L.A., 1969. Computer aided design of experiments. 
@@ -40,17 +47,18 @@ res = sampks(fm.T, k; metric = :mah)
 ```
 """ 
 function sampks(X, k; metric = :eucl)
+    @assert in([:eucl, :mah])(metric) "Wrong value for argument 'metric'."
     k = Int(round(k))
     if metric == :eucl
         D = euclsq(X, X)
-    elseif metric == :mah
+    else
         D = mahsq(X, X)
     end
     zn = 1:nro(D)
-    # Initial 2 selections (train)
+    ## Initial selection of 2 obs. (train)
     s = findall(D .== maximum(D))
     s = [s[1][1] ; s[1][2]]
-    # Candidates
+    ## Candidates
     can = zn[setdiff(1:end, s)]
     @inbounds for i = 1:(k - 2)
         u = vec(minimum(D[s, can], dims = 1))
@@ -59,6 +67,6 @@ function sampks(X, k; metric = :eucl)
         can = zn[setdiff(1:end, s)]
     end
     sort!(s)
-    (train = s, test = can)
+    (train = can, test = s)
 end
 

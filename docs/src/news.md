@@ -18,6 +18,7 @@ Other current specific points are:
     Type Symbol (e.g. "unif" is replaced by :unif)
 - The 'weights' (row weighting in some functions, such as pcasvd etc.) 
     argument must now be of type 'Weight', built from function 'mweight'. 
+- Sampling functions 'samp...' have changed. 
 - Function 'mtest' renamed to 'sampdf'
 - Temporary removed:
     - mbunif, mbwcov
@@ -41,7 +42,7 @@ They will be corrected in versions > 0.3.0.
 ## *Version 0.2.3*
 
 - News
-    - **samprand**: Split training/test sets by random sampling.
+    - **samprand**: Build training/test sets by random sampling.
     - **svmr**, **svmda**: SVM (wrappers to LIBSVM.jl) were reset in 
         the package.
 

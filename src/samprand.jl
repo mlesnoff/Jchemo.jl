@@ -1,16 +1,16 @@
 """
     samprand(n, k; replace = false)
-Split training/test sets by random sampling.  
+Build training/test sets by random sampling.  
 * `n` : Total nb. observations.
-* `k` : Nb. observations to sample (output `train`).
-* `replace` : Boolean. If false (default), the sampling is without 
-    replacement.
+* `k` : Nb. observations to sample (= output `test`).
+* `replace` : Boolean. If false (default), the sampling is 
+    without replacement.
 
-Two outputs (indexes) are returned: 
-* `train` (`k`),
-* `test` (`n` - `k`). 
+Two outputs (= row indexes of the data) are returned: 
+* `train` (n - `k`),
+* `test` (`k`). 
 
-Output `train` is built by random sampling within `1:n`, with no replacement. 
+Output `test` is built by random sampling within `1:n`. 
 
 ## Examples
 ```julia
@@ -23,7 +23,7 @@ function samprand(n, k; replace = false)
     zn = collect(1:n)
     s = sample(zn, k; replace = replace)
     sort!(s)
-    test = zn[setdiff(1:end, s)]
-    (train = s, test = test)
+    train = zn[setdiff(1:end, s)]
+    (train = train, test = s)
 end
 
