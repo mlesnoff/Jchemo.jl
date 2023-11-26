@@ -235,9 +235,10 @@
 
 ### **Validation**
 
-- **gridscore** Any model
-- **gridscorelv** Models with LVs (faster)
-- **gridscorelb** Models with ridge parameter (faster)
+- **gridscore** Generic wrapper calling
+    - **gridscorebr** Any model
+    - **gridscorelv** Accelerator for models with LVs
+    - **gridscorelb** Accelerator for models with ridge parameter
   
 ### **Cross-validation (CV)**
 

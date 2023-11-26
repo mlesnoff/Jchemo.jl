@@ -124,6 +124,7 @@ include("mpar.jl")
 include("scores.jl")
 include("confusion.jl")
 include("gridscore.jl")
+include("gridscorebr.jl")
 include("gridscorelv.jl")
 include("gridscorelb.jl")
 include("segmkf.jl")
@@ -360,7 +361,8 @@ export
     ssr, msep, rmsep, rmsepstand, 
     bias, sep, cor2, r2, rpd, rpdr, mse, err,
     mpar,
-    gridscore, gridscorelv, gridscorelb,
+    gridscore, 
+    gridscorebr, gridscorelv, gridscorelb,
     segmts, segmkf,
     gridcv, gridcvlv, gridcvlb, 
     selwold,
