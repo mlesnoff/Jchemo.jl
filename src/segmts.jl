@@ -1,12 +1,15 @@
 """
-    segmts(n, m; rep = 1, seed = nothing)
-    segmts(n, m, group; rep = 1, seed = nothing)
+    segmts(n::Int, m::Int; rep = 1, seed = nothing)
+    segmts(group::Vector, m::Int; rep = 1, 
+        seed = nothing)
 Build segments for "test-set" validation.
 * `n` : Total nb. observations in the dataset. The sampling 
     is implemented within 1:`n`.
-* `m` : Nb. observations, or groups (if `group` is used), returned in each segment.
-* `seed` : Can set the seet for the `Random.MersenneTwister` generator. 
-    Must be of length = `rep`. When `nothing`, the seed is random at each sampling.
+* `m` : Nb. observations, or groups if `group` is used, returned 
+    in each segment.
+* `seed` : Eventual seed for the `Random.MersenneTwister` 
+    generator. Must be of length = `rep`. When `nothing` (default), 
+    the seed is random at each sampling.
 * `group` : A vector (n) defining blocks of observations.
 * `rep` : Nb. replications of the sampling.
     
@@ -20,8 +23,8 @@ when the response to predict is correlated within blocks.
 This prevents underestimation of the generalization error.
 
 The function returns a list (vector) of `rep` elements. 
-Each element of the list contains `K` segments (= `K` vectors).
-Each segment contains the indexes (position within 1:`n`) of the sampled observations.  
+Each element of the list is a vector of the indexes (positions 
+within 1:`n`) of the sampled observations.  
 
 ## Examples
 ```julia
@@ -46,14 +49,15 @@ segm[i][1]
 group[segm[i][1]]
 ```
 """ 
-function segmts(n, m; rep = 1, seed = nothing)
-    n = Int(round(n))
-    m = Int(round(m))
-    s = list(rep)
+function segmts(n::Int, m::Int; rep = 1, 
+        seed = nothing)
+    Q = Vector{Int}
+    s = list(rep, Vector{Q})
     for i = 1:rep
-        s[i] = list(1, Vector{Int})
+        s[i] = list(1, Q)
         if isnothing(seed)
-            s[i][1] = sample(1:n, m; replace = false, ordered = true)
+            s[i][1] = sample(1:n, m; replace = false, 
+                ordered = true)
         else
             s[i][1] = sample(MersenneTwister(Int(seed[i])), 1:n, m;
                 replace = false, ordered = true)
@@ -62,20 +66,21 @@ function segmts(n, m; rep = 1, seed = nothing)
     s
 end
 
-function segmts(n, m, group; rep = 1, seed = nothing)
-    # n is not used but is kept for multiple dispatch
-    m = Int(round(m))
-    group = vec(group) # must be of length n
-    s = list(rep)
+function segmts(group::Vector, m::Int; rep = 1, 
+        seed = nothing)
+    Q = Vector{Int}
+    group = vec(group)
+    s = list(rep, Vector{Q})
     yagg = unique(group)
-    zn = length(yagg)
-    m = min(m, zn)
+    nlev = length(yagg)
+    m = min(m, nlev)
     @inbounds for i = 1:rep
-        s[i] = list(1, Vector{Int})
+        s[i] = list(1, Q)
         if isnothing(seed)
-            s[i][1] = sample(1:zn, m; replace = false, ordered = true)
+            s[i][1] = sample(1:nlev, m; replace = false, 
+                ordered = true)
         else
-            s[i][1] = sample(MersenneTwister(Int(seed[i])), 1:zn, m; 
+            s[i][1] = sample(MersenneTwister(Int(seed[i])), 1:nlev, m; 
                 replace = false, ordered = true)
         end
     end
