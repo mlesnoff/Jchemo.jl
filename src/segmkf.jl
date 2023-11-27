@@ -43,8 +43,8 @@ group[segm[i][3]]
 ```
 """ 
 function segmkf(n::Int, K::Int; rep = 1)
-    m = K - n % K ;
     Q = Vector{Int}
+    m = K - n % K ;
     s = list(rep, Vector{Q})
     @inbounds for i = 1:rep
         s[i] = list(K, Q)
@@ -58,11 +58,11 @@ function segmkf(n::Int, K::Int; rep = 1)
 end
 
 function segmkf(group::Vector, K::Int; rep = 1)
+    Q = Vector{Int}
     yagg = unique(group)
     nlev = length(yagg)
     K = min(K, nlev)
     m = K - nlev % K ;
-    Q = Vector{Int}
     s = list(rep, Vector{Q})
     @inbounds for i = 1:rep
         s[i] = list(K, Q)

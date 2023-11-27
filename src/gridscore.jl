@@ -133,16 +133,16 @@ pred = Jchemo.predict(fm, Xtest).pred
 rmsep(pred, ytest)
 ```
 """
-function gridscore(Xtrain, Ytrain, X, Y; score, fun, 
+function gridscore(Xtrain, Ytrain, X, Y; fun, score, 
         pars = nothing, nlv = nothing, lb = nothing, verbose = false)
     if isnothing(nlv) && isnothing(lb)
-        res = gridscorebr(Xtrain, Ytrain, X, Y; score, fun, 
+        res = gridscorebr(Xtrain, Ytrain, X, Y; fun, score, 
             pars, verbose = verbose)
     elseif !isnothing(nlv)
-        res = gridscorelv(Xtrain, Ytrain, X, Y; score, fun, 
+        res = gridscorelv(Xtrain, Ytrain, X, Y; fun, score, 
             pars, nlv, verbose)
     elseif !isnothing(lb)
-        res = gridscorelb(Xtrain, Ytrain, X, Y; score, fun, 
+        res = gridscorelb(Xtrain, Ytrain, X, Y; fun, score, 
             pars, lb, verbose)
     end
     res

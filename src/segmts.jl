@@ -68,8 +68,8 @@ end
 
 function segmts(group::Vector, m::Int; rep = 1, 
         seed = nothing)
-    Q = Vector{Int}
     group = vec(group)
+    Q = Vector{Int}
     s = list(rep, Vector{Q})
     yagg = unique(group)
     nlev = length(yagg)

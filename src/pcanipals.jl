@@ -74,9 +74,8 @@ function pcanipals!(X::Matrix, weights::Weight;
     sv = similar(X, nlv)
     niter = list(nlv, Int)
     if par.gs
-        typ = eltype(X)
-        UUt = zeros(typ, n, n)
-        VVt = zeros(typ, p, p)
+        UUt = zeros(Q, n, n)
+        VVt = zeros(Q, p, p)
     end
     for a = 1:nlv
         if par.gs

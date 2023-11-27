@@ -1,9 +1,9 @@
 """
-    detrend(X; pol = 1)
-    detrend!(X::Matrix; pol = 1)
+    detrend(X; degree = 1)
+    detrend!(X::Matrix; degree = 1)
 De-trend transformation of each row of a matrix X. 
 * `X` : X-data.
-* `pol` : Polynom order.
+* `degree` : Polynom order.
 
 The function fits a polynomial regression to each observation
 and returns the residuals.
@@ -24,15 +24,16 @@ Xp = detrend(X)
 plotsp(Xp[1:30, :], wl_num).f
 ```
 """ 
-function detrend(X; pol = 1)
+function detrend(X; degree = 1)
     zX = copy(ensure_mat(X))
-    detrend!(zX; pol = pol)
+    detrend!(zX; degree = degree)
     zX
 end
-function detrend!(X::Matrix; pol = 1)
+
+function detrend!(X::Matrix; degree = 1)
     n, p = size(X)
-    vX = similar(X, p, pol + 1)
-    for j = 0:pol
+    vX = similar(X, p, degree + 1)
+    for j = 0:degree
         vX[:, j + 1] .= collect(1:p).^j
     end
     vXt = vX'
@@ -151,10 +152,10 @@ function interpl(X, wl; wlfin, fun = cubic_spline)
     zX
 end
 # Due to conflicts with Interpolations.jl
+cubic_spline(y, x) = DataInterpolations.CubicSpline(y, x)
 linear_int(y, x) = DataInterpolations.LinearInterpolation(y, x)
 quadratic_int(y, x) = DataInterpolations.QuadraticInterpolation(y, x)
 quadratic_spline(y, x) = DataInterpolations.QuadraticSpline(y, x)
-cubic_spline(y, x) = DataInterpolations.CubicSpline(y, x)
 
 """ 
     interpl_mon(X, wl; wlfin, fun = FritschCarlsonMonotonicInterpolation)
@@ -335,15 +336,15 @@ function runmean!(out, x; f)
 end
 
 """ 
-    savgk(m, pol, d)
+    savgk(m, degree, deriv)
 Compute the kernel of the Savitzky-Golay filter.
 * `m` : Nb. points of the half window (m >= 1) 
     --> the size of the kernel is odd (f = 2 * m + 1): 
     x[-m], x[-m+1], ..., x[0], ...., x[m-1], x[m].
-* `pol` : Polynom order (1 <= pol <= 2 * m).
-    The case "pol = 0" (simple moving average) is not allowed by the funtion.
-* `d` : Derivation order (0 <= d <= pol).
-    If `d = 0`, there is no derivation (only polynomial smoothing).
+* `degree` : Polynom order (1 <= degree <= 2 * m).
+    The case "degree = 0" (simple moving average) is not allowed by the funtion.
+* `deriv` : Derivation order (0 <= deriv <= degree).
+    If `deriv = 0`, there is no derivation (only polynomial smoothing).
 
 ## References
 Luo, J., Ying, K., Bai, J., 2005. Savitzky–Golay smoothing and differentiation 
@@ -359,30 +360,30 @@ res.G
 res.kern
 ```
 """ 
-function savgk(m, pol, d)
+function savgk(m, degree, deriv)
     @assert m >= 1 "m must be >= 1"
-    @assert pol >= 1 && pol <= 2 * m "pol must agree with: 1 <= pol <= 2 * m"
-    @assert 0 <= d && d <= pol "d must agree with: 0 <= d <= pol"
+    @assert 1 <= degree <= 2 * m "degree must agree with: 1 <= degree <= 2 * m"
+    @assert 0 <= deriv <= degree "deriv must agree with: 0 <= deriv <= degree"
     f = 2 * m + 1
-    S = zeros(Int(f), Int(pol) + 1) ;
+    S = zeros(Int(f), Int(degree) + 1) ;
     u = collect(-m:m)
-    @inbounds for j in 0:pol
+    @inbounds for j in 0:degree
         S[:, j + 1] .= u.^j
     end
     G = S * inv(S' * S)
-    kern = factorial(d) * vcol(G, d + 1)
+    kern = factorial(deriv) * vcol(G, deriv + 1)
     (S = S, G = G, kern = kern)
 end
 
 """
-    savgol(X; f, pol, d)
-    savgol!(X::Matrix; f, pol, d)
+    savgol(X; f, degree, deriv)
+    savgol!(X::Matrix; f, degree, deriv)
 Savitzky-Golay smoothing of each row of a matrix `X`.
 * `X` : X-data (n, p).
 * `f` : Size of the filter (nb. points involved in the kernel). Must be odd and >= 3.
     The half-window size is m = (f - 1) / 2.
-* `pol` : Polynom order (1 <= pol <= f - 1).
-* `d` : Derivation order (0 <= d <= pol).
+* `degree` : Polynom order (1 <= degree <= f - 1).
+* `deriv` : Derivation order (0 <= deriv <= degree).
 
 The smoothing is computed by convolution (with padding), with function 
 imfilter of package ImageFiltering.jl. Each returned point is located on the center 
@@ -410,23 +411,23 @@ X = dat.X
 wl = names(dat.X)
 wl_num = parse.(Float64, wl)
 
-f = 21 ; pol = 3 ; d = 2 ; 
-Xp = savgol(X; f = f, pol = pol, d = d) 
+f = 21 ; degree = 3 ; deriv = 2 ; 
+Xp = savgol(X; f = f, degree = degree, deriv = deriv) 
 plotsp(Xp[1:30, :], wl_num).f
 ```
 """ 
-function savgol(X; f, pol, d)
+function savgol(X; f, degree, deriv)
     zX = ensure_mat(copy(X))
-    savgol!(zX; f, pol, d)
+    savgol!(zX; f, degree, deriv)
     zX
 end
 
-function savgol!(X::Matrix; f, pol, d)
+function savgol!(X::Matrix; f, degree, deriv)
     X = ensure_mat(X)
     @assert isodd(f) && f >= 3 "f must be odd and >= 3"
     n, p = size(X)
     m = (f - 1) / 2
-    kern = savgk(m, pol, d).kern
+    kern = savgk(m, degree, deriv).kern
     zkern = ImageFiltering.centered(kern)
     out = similar(X, p)
     @inbounds for i = 1:n
@@ -441,11 +442,11 @@ function savgol!(X::Matrix; f, pol, d)
 end
 
 """
-    snv(X; cent = true, scal = true)
-    snv!(X::Matrix; cent = true, scal = true)
+    snv(X; centr = true, scal = true)
+    snv!(X::Matrix; centr = true, scal = true)
 Standard-normal-variate (SNV) transformation of each row of X-data.
 * `X` : X-data.
-* `cent` : Logical indicating if the centering in done.
+* `centr` : Logical indicating if the centering in done.
 * `scal` : Logical indicating if the scaling in done.
 
 ## Examples
@@ -464,15 +465,15 @@ Xp = snv(X)
 plotsp(Xp[1:30, :], wl_num).f
 ```
 """ 
-function snv(X; cent = true, scal = true)
+function snv(X; centr = true, scal = true)
     zX = ensure_mat(copy(X))
-    snv!(zX; cent = cent, scal = scal)
+    snv!(zX; centr = centr, scal = scal)
     zX
 end
 
-function snv!(X::Matrix; cent = true, scal = true) 
+function snv!(X::Matrix; centr = true, scal = true) 
     n, p = size(X)
-    cent ? mu = rowmean(X) : mu = zeros(n)
+    centr ? mu = rowmean(X) : mu = zeros(n)
     scal ? s = rowstd(X) : s = ones(n)
     # Not faster: @Threads.threads
     @inbounds for j = 1:p
