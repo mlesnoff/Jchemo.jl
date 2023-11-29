@@ -39,7 +39,8 @@ function plswold(X, Y, weights::Weight; kwargs...)
 end
 
 function plswold!(X::Matrix, Y::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
@@ -108,9 +109,9 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight;
         Px[:, a] .= px
         Wytild[:, a] .= wytild
         TTx[a] = ttx
-     end
-     Tx .= (1 ./ sqrtw) .* Tx
-     Rx = Wx * inv(Px' * Wx)
-     Plsr(Tx, Px, Rx, Wx, Wytild, TTx, 
-        xmeans, xscales, ymeans, yscales, weights, niter)
+    end
+    Tx .= (1 ./ sqrtw) .* Tx
+    Rx = Wx * inv(Px' * Wx)
+    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
+        yscales, weights, niter, kwargs, par)
 end

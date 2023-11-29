@@ -91,8 +91,7 @@ lines(z.nlv, z.cumpvar,
 function plskern(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    plskern(X, Y, weights; 
-        values(kwargs)...)
+    plskern(X, Y, weights; values(kwargs)...)
 end
 
 function plskern(X, Y, weights::Weight; kwargs...)
@@ -164,10 +163,9 @@ function plskern!(X::Matrix, Y::Matrix, weights::Weight;
         R[:, a] .= r
         C[:, a] .= c
         TT[a] = tt
-     end
-     Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
-         yscales, weights, nothing,
-         kwargs, par)
+    end
+    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
+        yscales, weights, nothing, kwargs, par)
 end
 
 """ 
