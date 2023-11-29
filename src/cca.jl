@@ -68,23 +68,23 @@ fm = cca(X, Y; nlv = 3, tau = tau)
 pnames(fm)
 
 fm.Tx
-transform(fm, X, Y).Tx
+transf(fm, X, Y).Tx
 scale(fm.Tx, colnorm(fm.Tx))
 
 res = summary(fm, X, Y)
 pnames(res)
 ```
 """
-function cca(X, Y; par = Par())
+function cca(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)
     weights = mweight(ones(Q, n))
-    cca(X, Y, weights; par)
+    cca(X, Y, weights; values(kwargs)...)
 end
 
-function cca(X, Y, weights::Weight; par = Par())
+function cca(X, Y, weights::Weight; kwargs...)
     cca!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
 function cca!(X::Matrix, Y::Matrix, weights::Weight; 
@@ -153,7 +153,7 @@ function cca!(X::Matrix, Y::Matrix, weights::Weight;
 end
 
 """ 
-    transform(object::Cca, X, Y; nlv = nothing)
+    transf(object::Cca, X, Y; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
@@ -161,7 +161,7 @@ Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
 * `nlv` : Nb. LVs to compute. If nothing, it is the maximum number
     from the fitted model.
 """ 
-function transform(object::Cca, X, Y; nlv = nothing)
+function transf(object::Cca, X, Y; nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)

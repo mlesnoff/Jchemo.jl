@@ -83,7 +83,7 @@ function plotxy(x, y; resolution = (600, 400),
         kwargs...)
     x = vec(x)
     y = vec(y)
-    f = Figure(resolution = resolution)
+    f = Figure(size = resolution)
     ax = Axis(f; xlabel = xlabel, ylabel = ylabel, 
         title = title)
     if isnothing(color)
@@ -128,7 +128,7 @@ function plotxy(x, y, group; resolution = (600, 400),
     lev = mlev(group)
     nlev = length(lev)
     lab = string.(lev)
-    f = Figure(resolution = resolution)
+    f = Figure(size = resolution)
     ax = Axis(f; xlabel = xlabel, ylabel = ylabel, 
         title = title)
     for i = 1:nlev

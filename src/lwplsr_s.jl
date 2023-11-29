@@ -131,7 +131,7 @@ function lwplsr_s(X, Y; reduc = :pls,
         fm = dkplsr(zX, zY; gamma = gamma, nlv = nlv0, 
             scal = scal)
     end
-    T = transform(fm, X)
+    T = transf(fm, X)
     LwplsrS(T, Y, fm, metric, h, k, nlv, 
         tol, scal, verbose)
 end
@@ -147,7 +147,7 @@ function predict(object::LwplsrS, X; nlv = nothing)
     m = nro(X)
     a = object.nlv
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
-    T = transform(object.fm, X)
+    T = transf(object.fm, X)
     # Getknn
     res = getknn(object.T, T; 
         k = object.k, metric = object.metric)

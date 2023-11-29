@@ -649,6 +649,18 @@ function recodnum2cla(x, q)
 end
 
 """
+    recovkwargs(ParamStruct, kwargs)
+"""
+function recovkwargs(ParamStruct, kwargs)
+    if length(Dict(kwargs)) == 0
+        par = ParamStruct()
+    else
+    par = [ParamStruct(; Dict(kws)...) for kws 
+        in zip([[k => v] for (k, v) in kwargs]...)][1]
+    end
+end
+
+"""
     replacebylev(x, lev)
 Replace the elements of a vector by levels of corresponding order.
 * `x` : Vector (n) of values to replace.

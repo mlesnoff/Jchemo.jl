@@ -49,7 +49,7 @@ scatter!(ax, 0:nlv, zaic)
 f
 ```
 """ 
-function aicplsr(X, y; par = Par())
+function aicplsr(X, y; kwargs...)
     Q = eltype(X)
     X = ensure_mat(X)
     n, p = size(X)
@@ -63,7 +63,7 @@ function aicplsr(X, y; par = Par())
         fun = plskern, score = ssr, pars = pars)
     ## End 
     zssr = res.y1
-    df = dfplsr_cg(X, y; par).df
+    df = dfplsr_cg(X, y; values(kwargs)...).df
     df_ssr = n .- df
     ## For Cp, unbiased estimate of sigma2 
     ## ----- Cp1: From a low biased model

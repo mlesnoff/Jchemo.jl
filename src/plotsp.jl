@@ -1,11 +1,11 @@
 """
-    plotsp(X, wl = 1:nco(X); resolution = (500, 350),
+    plotsp(X, wl = 1:nco(X); size = (500, 350),
         color = nothing, nsamp, kwargs...) 
 Plotting spectra.
 * `X` : X-data.
 * `wl` : Column names of `X`. Must be numeric.
 * `color` : Set a unique color (and eventually transparency) to the spectra.
-* 'resolution' : Resolution (horizontal, vertical) of the figure.
+* 'size' : Resolution (horizontal, vertical) of the figure.
 * `nsamp` : Nb. spectra to plot. If `nothing` (default), all spectra are plotted.
 * `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.
 The function plots the rows of `X`.
@@ -21,11 +21,11 @@ The user has to specify a backend (e.g. CairoMakie).
     pnames(dat)
     
     X = dat.X
-    wl = names(X)
-    wl_num = parse.(Float64, wl) 
+    wl_str = names(X)
+    wl = parse.(Float64, wl_str) 
     plotsp(X).f
     plotsp(X; color = (:red, .2)).f
-    plotsp(X, wl_num; xlabel = "Wavelength (nm)",
+    plotsp(X, wl; xlabel = "Wavelength (nm)",
         ylabel = "Absorbance").f
 
     f, ax = plotsp(X)
@@ -41,7 +41,7 @@ function plotsp(X, wl = 1:nco(X); resolution = (500, 350),
         X = X[sample(1:nro(X), nsamp; replace = false), :]
     end
     n, p = size(X)
-    f = Figure(resolution = resolution)
+    f = Figure(size = resolution)
     ax = Axis(f; kwargs...)
     res = list(n, Matrix{Float64})
     if isnothing(color)

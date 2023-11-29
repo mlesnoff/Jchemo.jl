@@ -82,8 +82,8 @@ zcoef.int
 zcoef.B
 Jchemo.coef(fm; nlv = 7).B
 
-Jchemo.transform(fm, Xtest)
-Jchemo.transform(fm, Xtest; nlv = 7)
+transf(fm, Xtest)
+transf(fm, Xtest; nlv = 7)
 
 res = Jchemo.predict(fm, Xtest)
 res.pred
@@ -103,15 +103,15 @@ lines(z.nlv, z.cumpvar,
     axis = (xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance"))
 ```
 """ 
-function splskern(X, Y; par = Par())
+function splskern(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    splskern(X, Y, weights; par)
+    splskern(X, Y, weights; values(kwargs)...)
 end
 
-function splskern(X, Y, weights::Weight; par = Par())
+function splskern(X, Y, weights::Weight; kwargs...)
     splskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
 function splskern!(X::Matrix, Y::Matrix, weights::Weight; 
@@ -187,13 +187,13 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight;
             w ./= norm(w)
         else
             if par.meth_sp == :soft
-                w .= snipals(XtY'; par).v
+                w .= snipals(XtY'; values(kwargs)...).v
             else
                 par.nvar = nvar[a]
                 if par.meth_sp == :mix
-                    w .= snipalsmix(XtY'; par).v
+                    w .= snipalsmix(XtY'; values(kwargs)...).v
                 else
-                    w .= snipalsh(XtY'; par).v
+                    w .= snipalsh(XtY'; values(kwargs)...).v
                 end
             end
         end                                  

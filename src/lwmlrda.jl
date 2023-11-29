@@ -39,7 +39,7 @@ tab(ytest)
 nlv = 20
 zfm = pcasvd(Xtrain; nlv = nlv) ;
 Ttrain = zfm.T 
-Ttest = Jchemo.transform(zfm, Xtest)
+Ttest = transf(zfm, Xtest)
 
 metric = :mah
 h = 2 ; k = 100

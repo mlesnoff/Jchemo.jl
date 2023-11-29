@@ -71,10 +71,10 @@ plotxy(pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 ```
 """ 
-cglsr(X, y; par = Par()) = cglsr!(copy(ensure_mat(X)), 
-    copy(ensure_mat(y)); par)
+cglsr(X, y; kwargs...) = cglsr!(copy(ensure_mat(X)), 
+    copy(ensure_mat(y)); values(kwargs)...)
 
-function cglsr!(X::Matrix, y::Matrix; par = Par())
+function cglsr!(X::Matrix, y::Matrix; kwargs...)
     Q = eltype(X)   
     n, p = size(X)
     q = nco(y)

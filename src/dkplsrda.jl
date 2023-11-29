@@ -46,9 +46,9 @@ res.pred
 err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
-Jchemo.transform(fm, Xtest; nlv = 2)
+transf(fm, Xtest; nlv = 2)
 
-Jchemo.transform(fm.fm, Xtest)
+transf(fm.fm, Xtest)
 Jchemo.coef(fm.fm)
 ```
 """ 
@@ -62,14 +62,14 @@ function dkplsrda(X, y, weights = ones(nro(X)); nlv, kern = :krbf,
 end
 
 """ 
-    transform(object::Dkplsrda, X; nlv = nothing)
+    transf(object::Dkplsrda, X; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transform(object::Dkplsrda, X; nlv = nothing)
-    transform(object.fm, X; nlv = nlv)
+function transf(object::Dkplsrda, X; nlv = nothing)
+    transf(object.fm, X; nlv = nlv)
 end
 
 """

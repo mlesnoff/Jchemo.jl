@@ -43,7 +43,7 @@ res.v
 res.u
 ```
 """ 
-function nipalsmiss(X; par = Par())
+function nipalsmiss(X; kwargs...)
     X = ensure_mat(X)
     n, p = size(X)
     s = ismissing.(X)
@@ -81,7 +81,7 @@ function nipalsmiss(X; par = Par())
     (u = u, v, sv, niter)
 end
 
-function nipalsmiss(X, UUt, VVt; par = Par())
+function nipalsmiss(X, UUt, VVt; kwargs...)
     X = ensure_mat(X)
     n, p = size(X)
     s = ismissing.(X)

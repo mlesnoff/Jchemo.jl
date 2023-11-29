@@ -47,7 +47,7 @@ err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
 Jchemo.coef(fm.fm)
-Jchemo.transform(fm.fm, Xtest)
+transf(fm.fm, Xtest)
 ```
 """ 
 function kplsrda(X, y, weights = ones(nro(X)); nlv, kern = :krbf, 

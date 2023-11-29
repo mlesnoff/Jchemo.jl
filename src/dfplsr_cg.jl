@@ -58,8 +58,8 @@ ablines!(ax, 1, 1; color = :grey, linestyle = :dot)
 f
 ```
 """ 
-function dfplsr_cg(X, y; par = Par())
-    F = cglsr(X, y; par).F
+function dfplsr_cg(X, y; kwargs...)
+    F = cglsr(X, y; values(kwargs)...).F
     df = [1 ; vec(1 .+ sum(F, dims = 1))]
     (df = df,)
 end

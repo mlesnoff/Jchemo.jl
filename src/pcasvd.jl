@@ -49,7 +49,7 @@ fm.T
 fm.T' * fm.T
 fm.P' * fm.P
 
-Jchemo.transform(fm, Xtest)
+transf(fm, Xtest)
 
 res = Base.summary(fm, Xtrain) ;
 pnames(res)
@@ -59,14 +59,14 @@ res.coord_var
 res.cor_circle
 ```
 """ 
-function pcasvd(X; par = Par())
+function pcasvd(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    pcasvd(X, weights; par)
+    pcasvd(X, weights; values(kwargs)...)
 end
 
-function pcasvd(X, weights::Weight; par = Par())
-    pcasvd!(copy(ensure_mat(X)), weights; par)
+function pcasvd(X, weights::Weight; kwargs...)
+    pcasvd!(copy(ensure_mat(X)), weights; values(kwargs)...)
 end
 
 function pcasvd!(X::Matrix, weights::Weight; 
@@ -94,13 +94,13 @@ function pcasvd!(X::Matrix, weights::Weight;
 end
 
 """ 
-    transform(object::Pca, X; nlv = nothing)
+    transf(object::Pca, X; nlv = nothing)
 Compute principal components (PCs = scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
 * `nlv` : Nb. PCs to compute.
 """ 
-function transform(object::Union{Pca, Fda}, X; 
+function transf(object::Union{Pca, Fda}, X; 
         nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)

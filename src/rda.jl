@@ -61,11 +61,11 @@ pnames(dat)
 X = dat.X 
 Y = dat.Y
 y = Y.typ
-wl = names(X)
-wl_num = parse.(Float64, wl)
+wl_str = names(X)
+wl = parse.(Float64, wl_str)
 ntot = nro(X)
 
-plotsp(X, wl_num).f
+plotsp(X, wl).f
 
 summ(Y)
 tab(y)

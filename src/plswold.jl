@@ -27,15 +27,15 @@ Linear Regression. The Partial Least Squares (PLS). Approach to
 Generalized Inverses. SIAM Journal on Scientific and Statistical Computing 5, 735–743. 
 https://doi.org/10.1137/0905052
 """ 
-function plswold(X, Y; par = Par())
+function plswold(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    plswold(X, Y, weights; par)
+    plswold(X, Y, weights; values(kwargs)...)
 end
 
-function plswold(X, Y, weights::Weight; par = Par())
+function plswold(X, Y, weights::Weight; kwargs...)
     plswold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
 function plswold!(X::Matrix, Y::Matrix, weights::Weight; 

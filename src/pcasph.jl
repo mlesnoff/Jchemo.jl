@@ -36,8 +36,8 @@ db = joinpath(path_jdat, "data/octane.jld2")
 pnames(dat)
   
 X = dat.X 
-wl = names(X)
-wl_num = parse.(Float64, wl)
+wl_str = names(X)
+wl = parse.(Float64, wl_str)
 n = nro(X)
 
 nlv = 6
@@ -51,14 +51,14 @@ plotxy(T[:, i], T[:, i + 1]); zeros = true,
     xlabel = "PC1", ylabel = "PC2").f
 ```
 """ 
-function pcasph(X; par = Par())
+function pcasph(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    pcasph(X, weights; par)
+    pcasph(X, weights; values(kwargs)...)
 end
 
-function pcasph(X, weights::Weight; par = Par())
-    pcasph!(copy(ensure_mat(X)), weights; par)
+function pcasph(X, weights::Weight; kwargs...)
+    pcasph!(copy(ensure_mat(X)), weights; values(kwargs)...)
 end
 
 function pcasph!(X::Matrix, weights::Weight; 

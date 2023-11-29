@@ -55,8 +55,8 @@ zcoef.int
 zcoef.B
 Jchemo.coef(fm; nlv = 7).B
 
-Jchemo.transform(fm, Xtest)
-Jchemo.transform(fm, Xtest; nlv = 7)
+transf(fm, Xtest)
+transf(fm, Xtest; nlv = 7)
 
 res = Jchemo.predict(fm, Xtest)
 res.pred
@@ -89,15 +89,15 @@ axislegend("Method")
 f
 ```
 """ 
-function dkplsr(X, Y; par = Par())
+function dkplsr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    dkplsr(X, Y, weights; par)
+    dkplsr(X, Y, weights; values(kwargs)...)
 end
 
-function dkplsr(X, Y, weights::Weight; par = Par())
+function dkplsr(X, Y, weights::Weight; kwargs...)
     dkplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
 function dkplsr!(X::Matrix, Y::Matrix, weights::Weight; 
@@ -114,22 +114,22 @@ function dkplsr!(X::Matrix, Y::Matrix, weights::Weight;
         scale!(Y, yscales)
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
-    K = fkern(X, X; par)     
-    fm = plskern!(K, Y, weights; par)
+    K = fkern(X, X; values(kwargs)...)     
+    fm = plskern!(K, Y, weights; values(kwargs)...)
     Dkplsr(X, fm, K, xscales, yscales, par)
 end
 
 """ 
-    transform(object::Dkplsr, X; nlv = nothing)
+    transf(object::Dkplsr, X; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transform(object::Dkplsr, X; nlv = nothing)
+function transf(object::Dkplsr, X; nlv = nothing)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(scale(X, object.xscales), object.X; par = object.par)
-    transform(object.fm, K; nlv = nlv)
+    transf(object.fm, K; nlv = nlv)
 end
 
 """

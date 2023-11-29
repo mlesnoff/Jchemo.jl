@@ -45,8 +45,8 @@ pnames(dat)
 
 X = dat.X
 Y = dat.Y 
-wl = names(X)
-wl_num = parse.(Float64, wl) 
+wl_str = names(X)
+wl = parse.(Float64, wl_str) 
 typ = Y.typ
 y = Y.fat
 
@@ -63,7 +63,7 @@ f = Figure(resolution = (500, 400))
 ax = Axis(f[1, 1];
     xlabel = "Wavelength (nm)", 
     ylabel = "Importance")
-scatter!(ax, wl_num, vec(res.imp); color = (:red, .5))
+scatter!(ax, wl, vec(res.imp); color = (:red, .5))
 u = [910; 950]
 vlines!(ax, u; color = :grey, linewidth = 1)
 f

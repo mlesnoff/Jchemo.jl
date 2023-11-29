@@ -42,21 +42,21 @@ nlv = 5
 fm = mbplsr(Xbl, y; nlv = nlv, bscal = bscal) ;
 pnames(fm)
 fm.T
-Jchemo.transform(fm, Xbl_new)
+transf(fm, Xbl_new)
 [y Jchemo.predict(fm, Xbl).pred]
 Jchemo.predict(fm, Xbl_new).pred
 
 summary(fm, Xbl) 
 ```
 """
-function mbplsr(Xbl, Y; par = Par())
+function mbplsr(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     weights = mweight(ones(Q, n))
-    mbplsr(Xbl, Y, weights; par)
+    mbplsr(Xbl, Y, weights; values(kwargs)...)
 end
 
-function mbplsr(Xbl, Y, weights::Weight; par = Par())
+function mbplsr(Xbl, Y, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Q})
@@ -64,7 +64,7 @@ function mbplsr(Xbl, Y, weights::Weight; par = Par())
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     mbplsr!(zXbl, copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
 function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; 
@@ -100,7 +100,7 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
         Xbl = res.Xbl
     end
     X = reduce(hcat, Xbl)
-    fm = plskern(X, Y, weights; par)
+    fm = plskern(X, Y, weights; values(kwargs)...)
     Mbplsr(fm, fm.T, fm.R, fm.C, 
         bscales, xmeans, xscales, ymeans, yscales, weights)
 end

@@ -1,8 +1,8 @@
-function snipalsh(X; par = Par())
+function snipalsh(X; kwargs...)
     X = ensure_mat(X)
     Q = eltype(X)
     n, p = size(X)
-    res = nipals(X; par)
+    res = nipals(X; values(kwargs)...)
     t = res.u * res.sv
     t0 = similar(X, n)
     v = similar(X, p)

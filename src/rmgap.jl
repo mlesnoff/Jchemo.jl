@@ -23,20 +23,20 @@ db = joinpath(path_jdat, "data/asdgap.jld2")
 pnames(dat)
 
 X = dat.X
-wl = names(dat.X)
-wl_num = parse.(Float64, wl)
+wl_str = names(dat.X)
+wl = parse.(Float64, wl_str)
 
 z = [1000 ; 1800] 
-u = findall(in(z).(wl_num))
-f, ax = plotsp(X, wl_num)
+u = findall(in(z).(wl))
+f, ax = plotsp(X, wl)
 vlines!(ax, z; linestyle = :dash, color = (:grey, .8))
 f
 
 # Corrected data
 
-u = findall(in(z).(wl_num))
+u = findall(in(z).(wl))
 zX = rmgap(X; indexcol = u, k = 5)  
-f, ax = plotsp(zX, wl_num)
+f, ax = plotsp(zX, wl)
 vlines!(ax, z; linestyle = :dash, color = (:grey, .8))
 f
 ```

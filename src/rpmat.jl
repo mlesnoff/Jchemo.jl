@@ -67,9 +67,10 @@ p = 10 ; nlv = 3
 rpmatli(p, nlv)
 ```
 """ 
-function rpmatli(p::Int, nlv::Int, Q = Float64; s = sqrt(p))
+function rpmatli(p::Int, nlv::Int, Q = Float64; 
+        spar = sqrt(p))
     le = p * nlv
-    k = Int(round(le / s))
+    k = Int(round(le / spar))
     z = zeros(Q, le)
     u = convert.(Q, [-1 ; 1])
     z[rand(1:le, k)] .= rand(u, k) 

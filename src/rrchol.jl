@@ -28,15 +28,15 @@ inference, and prediction, 2nd ed. Springer, New York.
 Hoerl, A.E., Kennard, R.W., 1970. Ridge Regression: Biased Estimation for Nonorthogonal Problems. 
 Technometrics 12, 55-67. https://doi.org/10.1080/00401706.1970.10488634
 """ 
-function rrchol(X, Y; par = Par())
+function rrchol(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    rrchol(X, Y, weights; par)
+    rrchol(X, Y, weights; values(kwargs)...)
 end
 
-function rrchol(X, Y, weights::Weight; par = Par())
+function rrchol(X, Y, weights::Weight; kwargs...)
     rrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
 function rrchol!(X::Matrix, Y::Matrix, weights::Weight; 

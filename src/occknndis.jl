@@ -79,7 +79,7 @@ ntot = ntrain + ntest
 
 fm = pcasvd(zXtrain, nlv = 5) ; 
 Ttrain = fm.T
-Ttest = Jchemo.transform(fm, zXtest)
+Ttest = transf(fm, zXtest)
 T = vcat(Ttrain, Ttest)
 group = vcat(repeat(["0-Train"], ntrain), repeat(["1-Test"], ntest))
 i = 1
@@ -147,7 +147,7 @@ Compute predictions from a fitted model.
 function predict(object::Occknndis, X)
     X = ensure_mat(X)
     m = nro(X)
-    T = transform(object.fm, X)
+    T = transf(object.fm, X)
     scale!(T, object.tscales)
     res = getknn(object.T, T; k = object.k, metric = :eucl) 
     d = zeros(m)

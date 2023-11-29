@@ -70,8 +70,8 @@ bscal = :frob
 fm = mbpca(Xbl; nlv = 4, bscal = bscal) ;
 fm.U
 fm.T
-Jchemo.transform(fm, Xbl).T
-Jchemo.transform(fm, Xbl_new).T 
+transf(fm, Xbl).T
+transf(fm, Xbl_new).T 
 
 res = summary(fm, Xbl) ;
 fm.lb
@@ -86,21 +86,21 @@ res.cortb2t
 res.rv
 ```
 """
-function mbpca(Xbl; par = Par())
+function mbpca(Xbl; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     weights = mweight(ones(Q, n))
-    mbpca(Xbl, weights; par)
+    mbpca(Xbl, weights; values(kwargs)...)
 end
 
-function mbpca(Xbl, weights::Weight; par = Par())
+function mbpca(Xbl, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Q})
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    mbpca!(zXbl, weights; par)
+    mbpca!(zXbl, weights; values(kwargs)...)
 end
 
 function mbpca!(Xbl::Vector, weights::Weight; 
@@ -196,13 +196,13 @@ function mbpca!(Xbl::Vector, weights::Weight;
 end
 
 """ 
-    transform(object::Mbpca, Xbl; nlv = nothing)
+    transf(object::Mbpca, Xbl; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `Xbl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transform(object::Mbpca, Xbl; nlv = nothing)
+function transf(object::Mbpca, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)

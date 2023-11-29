@@ -44,19 +44,19 @@ nlv = [2; 1; 2]
 fm = soplsr(Xbl, y; nlv = nlv) ;
 pnames(fm)
 fm.T
-Jchemo.transform(fm, Xbl_new)
+transf(fm, Xbl_new)
 [y Jchemo.predict(fm, Xbl).pred]
 Jchemo.predict(fm, Xbl_new).pred
 ```
 """
-function soplsr(Xbl, Y; par = Par())
+function soplsr(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     weights = mweight(ones(Q, n))
-    soplsr(Xbl, Y, weights; par)
+    soplsr(Xbl, Y, weights; values(kwargs)...)
 end
 
-function soplsr(Xbl, Y, weights::Weight; par = Par())
+function soplsr(Xbl, Y, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Q})
@@ -64,7 +64,7 @@ function soplsr(Xbl, Y, weights::Weight; par = Par())
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     soplsr!(zXbl, copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
 function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; 
@@ -100,18 +100,18 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
 end
 
 """ 
-    transform(object::Soplsr, Xbl)
+    transf(object::Soplsr, Xbl)
 Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list (vector) of blocks (matrices) for which LVs are computed.
 """ 
-function transform(object::Soplsr, Xbl)
+function transf(object::Soplsr, Xbl)
     nbl = length(object.fm)
-    T = transform(object.fm[1], Xbl[1])
+    T = transf(object.fm[1], Xbl[1])
     if nbl > 1
         @inbounds for i = 2:nbl
             X = Xbl[i] - T * object.b[i]
-            T = hcat(T, transform(object.fm[i], X))
+            T = hcat(T, transf(object.fm[i], X))
         end
     end
     T
@@ -125,14 +125,14 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Soplsr, Xbl)
     nbl = length(object.fm)
-    T = transform(object.fm[1], Xbl[1])
+    T = transf(object.fm[1], Xbl[1])
     pred =  object.fm[1].ymeans' .+ T * object.fm[1].C'
     if nbl > 1
         @inbounds for i = 2:nbl
             X = Xbl[i] - T * object.b[i]
-            zT = transform(object.fm[i], X)
+            zT = transf(object.fm[i], X)
             pred .+= object.fm[i].ymeans' .+ zT * object.fm[i].C'
-            T = hcat(T, transform(object.fm[i], X))
+            T = hcat(T, transf(object.fm[i], X))
         end
     end
     (pred = pred,)

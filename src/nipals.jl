@@ -41,7 +41,7 @@ res.u
 svd(X).U[:, 1] 
 ```
 """ 
-function nipals(X; par = Par())
+function nipals(X; kwargs...)
     X = ensure_mat(X)
     n, p = size(X)
     u = X[:, argmax(colnorm(X))]
@@ -66,7 +66,7 @@ function nipals(X; par = Par())
     (u = u, v, sv, niter)
 end
 
-function nipals(X, UUt, VVt; par = Par())
+function nipals(X, UUt, VVt; kwargs...)
 #function nipals(X::Matrix{Q}, UUt::Matrix{Q}, VVt::Matrix{Q}; 
 #      par = Par()) where {Q <: AbstractFloat}
     X = ensure_mat(X)

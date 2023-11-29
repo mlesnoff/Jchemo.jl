@@ -1,7 +1,7 @@
-function snipals(X; par = Par())
+function snipals(X; kwargs...)
     X = ensure_mat(X)
     n, p = size(X)
-    res = nipals(X; par)
+    res = nipals(X; values(kwargs)...)
     t = res.u * res.sv
     t0 = similar(X, n)
     v = similar(X, p)

@@ -67,8 +67,8 @@ zcoef.int
 zcoef.B
 Jchemo.coef(fm; nlv = 7).B
 
-Jchemo.transform(fm, Xtest)
-Jchemo.transform(fm, Xtest; nlv = 7)
+transf(fm, Xtest)
+transf(fm, Xtest; nlv = 7)
 
 res = Jchemo.predict(fm, Xtest)
 res.pred
@@ -88,19 +88,21 @@ lines(z.nlv, z.cumpvar,
     axis = (xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance"))
 ```
 """ 
-function plskern(X, Y; par = Par())
+function plskern(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    plskern(X, Y, weights; par)
+    plskern(X, Y, weights; 
+        values(kwargs)...)
 end
 
-function plskern(X, Y, weights::Weight; par = Par())
+function plskern(X, Y, weights::Weight; kwargs...)
     plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
 function plskern!(X::Matrix, Y::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
@@ -164,17 +166,18 @@ function plskern!(X::Matrix, Y::Matrix, weights::Weight;
         TT[a] = tt
      end
      Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
-         yscales, weights, nothing)
+         yscales, weights, nothing,
+         kwargs, par)
 end
 
 """ 
-    transform(object::Plsr, X; nlv = nothing)
+    transf(object::Plsr, X; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transform(object::Union{Plsr, Splsr}, 
+function transf(object::Union{Plsr, Splsr}, 
         X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)

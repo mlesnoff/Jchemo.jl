@@ -106,7 +106,7 @@ function predict(object::LwplsrAvg, X)
             res = getknn(object.X, X; k = object.k, metric = object.metric)
         end
     else
-        res = getknn(object.fm.T, transform(object.fm, X); k = object.k, 
+        res = getknn(object.fm.T, transf(object.fm, X); k = object.k, 
             metric = object.metric) 
     end
     listw = copy(res.d)
@@ -134,7 +134,7 @@ function predict_steps(object::LwplsrAvg, X; steps = nothing)
     if isnothing(object.fm)
         res = getknn(object.X, X; k = object.k, metric = object.metric)
     else
-        res = getknn(object.fm.T, transform(object.fm, X); k = object.k, metric = object.metric) 
+        res = getknn(object.fm.T, transf(object.fm, X); k = object.k, metric = object.metric) 
     end
     listw = copy(res.d)
     for i = 1:m

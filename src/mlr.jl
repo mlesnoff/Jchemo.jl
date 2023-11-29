@@ -54,15 +54,15 @@ zcoef.int
 zcoef.B
 ```
 """ 
-function mlr(X, Y; par = Par())
+function mlr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    mlr(X, Y, weights; par)
+    mlr(X, Y, weights; values(kwargs)...)
 end
 
-function mlr(X, Y, weights::Weight; par = Par())
+function mlr(X, Y, weights::Weight; kwargs...)
     mlr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
 function mlr!(X::Matrix, Y::Matrix, weights::Weight; 
@@ -134,15 +134,15 @@ Safe but can be slower.
 
 See `?mlr` for examples.
 """ 
-function mlrpinv(X, Y; par = Par())
+function mlrpinv(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    mlrpinv(X, Y, weights; par)
+    mlrpinv(X, Y, weights; values(kwargs)...)
 end
 
-function mlrpinv(X, Y, weights::Weight; par = Par())
+function mlrpinv(X, Y, weights::Weight; kwargs...)
     mlrpinv!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
 function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; 
@@ -220,15 +220,15 @@ Compute a model with intercept.
 
 See `?mlr` for examples.
 """ 
-function mlrvec(x, Y; par = Par())
+function mlrvec(x, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    mlrvec(x, Y, weights; par)
+    mlrvec(x, Y, weights; values(kwargs)...)
 end
 
-function mlrvec(x, Y, weights::Weight; par = Par())
+function mlrvec(x, Y, weights::Weight; kwargs...)
     mlrvec!(copy(ensure_mat(x)), copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
 function mlrvec!(x::Matrix, Y::Matrix, weights::Weight; 

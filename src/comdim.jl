@@ -89,8 +89,8 @@ bscal = :none
 fm = comdim(Xbl; nlv = 4, bscal = bscal) ;
 fm.U
 fm.T
-Jchemo.transform(fm, Xbl)
-Jchemo.transform(fm, Xbl_new) 
+transf(fm, Xbl)
+transf(fm, Xbl_new) 
 
 res = summary(fm, Xbl) ;
 fm.lb
@@ -108,21 +108,21 @@ res.cortb2t
 res.rv
 ```
 """
-function comdim(Xbl; par = Par())
+function comdim(Xbl; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     weights = mweight(ones(Q, n))
-    comdim(Xbl, weights; par)
+    comdim(Xbl, weights; values(kwargs)...)
 end
 
-function comdim(Xbl, weights::Weight; par = Par())
+function comdim(Xbl, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Q})
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    comdim!(zXbl, weights; par)
+    comdim!(zXbl, weights; values(kwargs)...)
 end
 
 function comdim!(Xbl::Vector, weights::Weight; 
@@ -216,13 +216,13 @@ function comdim!(Xbl::Vector, weights::Weight;
 end
 
 """ 
-    transform(object::Comdim, Xbl; nlv = nothing)
+    transf(object::Comdim, Xbl; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `Xbl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transform(object::Comdim, Xbl; nlv = nothing)
+function transf(object::Comdim, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)

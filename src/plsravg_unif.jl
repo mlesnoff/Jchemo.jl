@@ -1,12 +1,12 @@
-function plsravg_unif(X, Y; par = Par())
+function plsravg_unif(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    plsravg_unif(X, Y, weights; par)
+    plsravg_unif(X, Y, weights; values(kwargs)...)
 end
 
-function plsravg_unif(X, Y, weights::Weight; par = Par())
+function plsravg_unif(X, Y, weights::Weight; kwargs...)
     plsravg_unif!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
 function plsravg_unif!(X::Matrix, Y::Matrix, weights::Weight; 
@@ -16,7 +16,7 @@ function plsravg_unif!(X::Matrix, Y::Matrix, weights::Weight;
     nlv = (min(minimum(par.nlv), n, p):min(maximum(par.nlv), n, p))
     nlvmax = maximum(nlv)
     par.nlv = nlvmax     
-    fm = plskern!(X, Y, weights; par)
+    fm = plskern!(X, Y, weights; values(kwargs)...)
     PlsravgUnif(fm, nlv)
 end
 

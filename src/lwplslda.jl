@@ -102,7 +102,7 @@ function predict(object::Lwplslda, X; nlv = nothing)
             res = getknn(object.X, X; k = object.k, metric = object.metric)
         end
     else
-        res = getknn(object.fm.T, transform(object.fm, X); 
+        res = getknn(object.fm.T, transf(object.fm, X); 
             k = object.k, metric = object.metric) 
     end
     listw = copy(res.d)

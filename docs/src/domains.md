@@ -269,7 +269,7 @@
 - **aicplsr** AIC and Cp for PLSR
 - **selwold** Wold's criterion to select dimensionality in LV (e.g. PLSR) models
 
-## DATA MANAGEMENT
+## DATA PROCESSING
 
 ### **Checking**
 
@@ -277,26 +277,25 @@
 - **tabdupl** Tabulate duplicated values in a vector
 - **miss** Finding rows with missing data in a dataset
 
-### **Calibration transfer**
-
-- **calds** Direct standardization (DS)
-- **calpds** Piecewise direct standardization (PDS)
-- **difmean** Compute a detrimental matrix (for calibration transfer) by 
-    difference of two matrix-column means.
-- **eposvd** Compute an orthogonalization matrix for calibration transfer
-
 ### **Pre-processing**
 
 - **detrend** Polynomial detrend
 - **fdif** Finite differences
-- **mavg**, **mavg_runmean** Smoothing by moving average
+- **mavg** Smoothing by moving average
 - **rmgap** Remove vertical gaps in spectra, e.g. for ASD NIR data
 - **savgk**, **savgol** Savitsky-Golay filtering
 - **snv** Standard-normal-deviation transformation
 
 ### **Interpolation**
 - **interpl** Sampling signals by interpolation -- From DataInterpolations.jl
-- **interpl_mon** Sampling signals by monotonic interpolation -- From Interpolations.jl
+
+### **Calibration transfer**
+
+- **difmean** Compute a detrimental matrix (for calibration transfer) by 
+    difference of two matrix-column means.
+- **eposvd** Compute an orthogonalization matrix for calibration transfer
+- **calds** Direct standardization (DS)
+- **calpds** Piecewise direct standardization (PDS)
 
 ### **Build training/test sets by sampling**
 

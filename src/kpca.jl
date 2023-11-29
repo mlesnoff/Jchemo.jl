@@ -56,21 +56,21 @@ fm.T
 fm.T' * fm.T
 fm.P' * fm.P
 
-Jchemo.transform(fm, Xtest)
+transf(fm, Xtest)
 
 res = Base.summary(fm) ;
 pnames(res)
 res.explvarx
 ```
 """ 
-function kpca(X; par = Par())
+function kpca(X; kwargs...)
     X = ensure_mat(X)
     Q = eltype(X)
     kpca(X, mweight(ones(Q, nro(X))); 
         par)
 end
 
-function kpca(X, weights::Weight; par = Par())
+function kpca(X, weights::Weight; kwargs...)
     X = ensure_mat(X)
     Q = eltype(X)
     n, p = size(X)
@@ -81,7 +81,7 @@ function kpca(X, weights::Weight; par = Par())
         X = scale(X, xscales)
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
-    K = fkern(X, X; par)  # in the future?: fkern!(K, X, X; par)
+    K = fkern(X, X; values(kwargs)...)  # in the future?: fkern!(K, X, X; values(kwargs)...)
     D = Diagonal(weights.w)
     Kt = K'    
     DKt = D * Kt
@@ -101,13 +101,13 @@ function kpca(X, weights::Weight; par = Par())
 end
 
 """ 
-    transform(object::Kpca, X; nlv = nothing)
+    transf(object::Kpca, X; nlv = nothing)
 Compute PCs (scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
 * `nlv` : Nb. PCs to consider.
 """ 
-function transform(object::Kpca, X; nlv = nothing)
+function transf(object::Kpca, X; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))

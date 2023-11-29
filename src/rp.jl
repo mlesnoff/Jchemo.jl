@@ -19,17 +19,17 @@ pnames(fm)
 size(fm.P) 
 fm.P
 fm.T # = X * fm.P 
-Jchemo.transform(fm, X[1:2, :])
+transf(fm, X[1:2, :])
 ```
 """
-function rp(X; par = Par())
+function rp(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    rp(X, weights; par)
+    rp(X, weights; values(kwargs)...)
 end
 
-function rp(X, weights::Weight; par = Par())
-    rp!(copy(ensure_mat(X)), weights; par)
+function rp(X, weights::Weight; kwargs...)
+    rp!(copy(ensure_mat(X)), weights; values(kwargs)...)
 end
 
 function rp!(X::Matrix, weights::Weight; 
@@ -55,13 +55,13 @@ function rp!(X::Matrix, weights::Weight;
 end
 
 """ 
-    transform(object::Rp, X; nlv = nothing)
+    transf(object::Rp, X; nlv = nothing)
 Compute "scores" T from a random projection model and a matrix X.
 * `object` : The random projection model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. dimensions to consider. If nothing, it is the maximum nb. dimensions.
 """ 
-function transform(object::Rp, X; nlv = nothing)
+function transf(object::Rp, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)

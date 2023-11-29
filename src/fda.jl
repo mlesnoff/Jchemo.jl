@@ -63,7 +63,7 @@ vlines!(ax, 0; color = :grey)
 f
 
 # Projection of Xtest to the score space
-Jchemo.transform(fm, Xtest)
+transf(fm, Xtest)
 
 # X-loadings matrix
 # Columns of P = coefficients of the linear discriminant function
@@ -78,9 +78,9 @@ fm.sstot
 Base.summary(fm)
 ```
 """ 
-fda(X, y; par = Par()) = fda!(copy(ensure_mat(X)), y; par)
+fda(X, y; kwargs...) = fda!(copy(ensure_mat(X)), y; values(kwargs)...)
 
-function fda!(X::Matrix, y; par = Par())
+function fda!(X::Matrix, y; kwargs...)
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     Q = eltype(X)
     n, p = size(X)

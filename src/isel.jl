@@ -41,8 +41,8 @@ pnames(dat)
 
 X = dat.X
 Y = dat.Y 
-wl = names(X)
-wl_num = parse.(Float64, wl) 
+wl_str = names(X)
+wl = parse.(Float64, wl_str) 
 typ = Y.typ
 y = Y.fat
 
@@ -55,7 +55,7 @@ ytrain = y[s]
 
 nint = 10
 nlv = 5
-res = isel(Xtrain, ytrain, wl_num; rep = 20, 
+res = isel(Xtrain, ytrain, wl; rep = 20, 
     nint = nint, fun = plskern, nlv = nlv) ;
 res.res_rep
 res.res0_rep

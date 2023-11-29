@@ -107,21 +107,21 @@ fm.P
 fm.P' * fm.P
 head(fm.T)
 
-Ttest = Jchemo.transform(fm, Xtest)
+Ttest = transf(fm, Xtest)
 
 res = Jchemo.summary(fm, Xtrain) ;
 res.explvarx
 res.explvarx_adj
 ```
 """ 
-function spca(X; par = Par())
+function spca(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    spca(X, weights; par)
+    spca(X, weights; values(kwargs)...)
 end
 
-function spca(X, weights::Weight; par = Par())
-    spca!(copy(ensure_mat(X)), weights; par)
+function spca(X, weights::Weight; kwargs...)
+    spca!(copy(ensure_mat(X)), weights; values(kwargs)...)
 end
 
 function spca!(X::Matrix, weights::Weight; 
@@ -153,7 +153,7 @@ function spca!(X::Matrix, weights::Weight;
     sellv = list(nlv, Vector{Int})
     for a = 1:nlv
         if par.meth_sp == :soft
-            res = snipals(X; par)
+            res = snipals(X; values(kwargs)...)
         else
             par.nvar = nvar[a]
             if par.meth_sp == :mix
@@ -179,13 +179,13 @@ function spca!(X::Matrix, weights::Weight;
 end
 
 """ 
-    transform(object::Spca, X; nlv = nothing)
+    transf(object::Spca, X; nlv = nothing)
     Compute principal components (PCs = scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
 * `nlv` : Nb. PCs to compute.
 """ 
-function transform(object::Spca, X; nlv = nothing)
+function transf(object::Spca, X; nlv = nothing)
     X = ensure_mat(X)
     m = nro(X)
     a = nco(object.T)

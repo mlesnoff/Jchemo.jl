@@ -54,7 +54,7 @@ function xfit!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
         end
     else
         P = vcol(object.P, 1:nlv)
-        mul!(X, transform(object, X; nlv = nlv), P')
+        mul!(X, transf(object, X; nlv = nlv), P')
         scale!(X, 1 ./ object.xscales)    # Coming back to the originalm scale
         center!(X, -object.xmeans)
         #cscale!(X, -object.xmeans, 1 ./ object.xscales)

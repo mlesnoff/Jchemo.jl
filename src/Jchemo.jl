@@ -208,6 +208,9 @@ include("kernels.jl")
 
 export 
     Par,
+    Transformer, Predictor,
+    fit!,
+    transf!,
     ### Utilities
     aggstat,
     dupl, miss,
@@ -238,6 +241,7 @@ export
     pmod, pnames, psize,
     pval,
     recodcat2int, recodnum2cla, 
+    recovkwargs,
     replacebylev, replacebylev2, 
     replacedict, 
     rmcol, rmrow, 
@@ -260,11 +264,9 @@ export
     # Pre-processing
     detrend, detrend!, 
     fdif, fdif!,
-    interpl, interpl_mon, 
-    linear_int, quadratic_int, 
-    quadratic_spline, cubic_spline,
+    interpl, 
+    #cubic_spline,
     mavg, mavg!, 
-    mavg_runmean, mavg_runmean!,
     rmgap, rmgap!,
     savgk, savgol, savgol!,
     snv, snv!, 
@@ -355,7 +357,7 @@ export
     lwplslda, lwplsqda,
     knnda,
     # Auxiliary
-    transform, coef, predict,
+    transf, coef, predict, 
     # Validation
     residreg, residcla, 
     ssr, msep, rmsep, rmsepstand, 

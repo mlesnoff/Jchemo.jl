@@ -55,8 +55,8 @@ zcoef.int
 zcoef.beta
 Jchemo.coef(fm; nlv = 7).beta
 
-Jchemo.transform(fm, Xtest)
-Jchemo.transform(fm, Xtest; nlv = 7)
+transf(fm, Xtest)
+transf(fm, Xtest; nlv = 7)
 
 res = Jchemo.predict(fm, Xtest)
 res.pred
@@ -89,15 +89,15 @@ axislegend("Method")
 f
 ```
 """ 
-function kplsr(X, Y; par = Par())
+function kplsr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    kplsr(X, Y, weights; par)
+    kplsr(X, Y, weights; values(kwargs)...)
 end
 
-function kplsr(X, Y, weights::Weight; par = Par())
+function kplsr(X, Y, weights::Weight; kwargs...)
     kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
 function kplsr!(X::Matrix, Y::Matrix, weights::Weight; 
@@ -118,7 +118,7 @@ function kplsr!(X::Matrix, Y::Matrix, weights::Weight;
         center!(Y, ymeans)
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
-    K = fkern(X, X; par)     # In the future?: fkern!(K, X, X; par)
+    K = fkern(X, X; values(kwargs)...)     # In the future?: fkern!(K, X, X; values(kwargs)...)
     D = Diagonal(weights.w)
     Kt = K'    
     DKt = D * Kt
@@ -177,13 +177,13 @@ function kplsr!(X::Matrix, Y::Matrix, weights::Weight;
 end
 
 """ 
-    transform(object::Kplsr, X; nlv = nothing)
+    transf(object::Kplsr, X; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transform(object::Kplsr, X; nlv = nothing)
+function transf(object::Kplsr, X; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
@@ -224,7 +224,7 @@ function predict(object::Kplsr, X; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
-    T = transform(object, X)
+    T = transf(object, X)
     pred = list(le_nlv, Matrix{eltype(X)})
     @inbounds for i = 1:le_nlv
         z = coef(object; nlv = nlv[i])

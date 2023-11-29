@@ -28,6 +28,8 @@ Other current specific points are:
     - plsrdaavg, plsldaavg, plsqdaavg
     - lwplsrdaavg, lwplsldaavg, lwplsqdaavg
     - gridcv_mb, gridcvlv_mb
+    - mavg_runmean
+    - interpl_mon
 
 Some typing errors may be introduced due to the restructuration.
 They will be corrected in versions > 0.3.0.

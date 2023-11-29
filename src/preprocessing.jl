@@ -10,28 +10,35 @@ and returns the residuals.
 
 ## Examples
 ```julia
-using JLD2
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
 
 X = dat.X
-wl = names(dat.X)
-wl_num = parse.(Float64, wl)
+wl_str = names(dat.X)
+wl = parse.(Float64, wl_str)
 
 Xp = detrend(X)
-plotsp(Xp[1:30, :], wl_num).f
+plotsp(Xp[1:30, :], wl).f
 ```
 """ 
-function detrend(X; degree = 1)
-    zX = copy(ensure_mat(X))
-    detrend!(zX; degree = degree)
-    zX
+
+function detrend(X; kwargs...)
+    par = recovkwargs(Par, kwargs)
+    Detrend(kwargs, par)
 end
 
-function detrend!(X::Matrix; degree = 1)
+function transf(object::Detrend, X)
+    X = copy(ensure_mat(X))
+    transf!(object, X)
+    X
+end
+
+function transf!(object::Detrend, X::Matrix)
     n, p = size(X)
+    degree = object.par.degree
     vX = similar(X, p, degree + 1)
     for j = 0:degree
         vX[:, j + 1] .= collect(1:p).^j
@@ -40,7 +47,7 @@ function detrend!(X::Matrix; degree = 1)
     vXtvX = vXt * vX
     tol = sqrt(eps(real(float(one(eltype(vXtvX))))))
     A = pinv(vXtvX, rtol = tol) * vXt
-    # Not faster: @Threads.threads
+    ## Not faster: @Threads.threads
     @inbounds for i = 1:n
         y = vrow(X, i)
         X[i, :] .= y - vX * A * y
@@ -48,16 +55,16 @@ function detrend!(X::Matrix; degree = 1)
 end
 
 """
-    fdif(X; f = 2)
-    fdif!(M::Matrix, X::Matrix; f = 2)
+    fdif(X; npoint = 2)
+    fdif!(M::Matrix, X::Matrix; npoint = 2)
 Compute finite differences for each row of a matrix X. 
 * `X` : X-data (n, p).
-* `M` : Pre-allocated output matrix (n, p - f + 1).
-* `f` : Size of the window (nb. points involved) for the finite differences.
-    The range of the window (= nb. intervals of two successive colums) is f - 1.
+* `M` : Pre-allocated output matrix (n, p - npoint + 1).
+* `npoint` : Nb. points involved in the window for the finite differences.
+    The range of the window (= nb. intervals of two successive colums) is npoint - 1.
 
 The finite differences can be used for computing discrete derivates.
-The method reduces the column-dimension: (n, p) --> (n, p - f + 1). 
+The method reduces the column-dimension: (n, p) --> (n, p - npoint + 1). 
 
 The in-place function stores the output in `M`.
 
@@ -70,26 +77,33 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 pnames(dat)
 
 X = dat.X
-wl = names(dat.X)
-wl_num = parse.(Float64, wl)
+wl_str = names(dat.X)
+wl = parse.(Float64, wl_str)
 
-Xp = fdif(X; f = 10)
+Xp = fdif(X; npoint = 10)
 plotsp(Xp[1:30, :]).f
 ```
 """ 
-function fdif(X; f = 2)
+function fdif(X; kwargs...)
+    par = recovkwargs(Par, kwargs)
+    Fdif(kwargs, par)
+end
+
+function transf(object::Fdif, X)
     X = ensure_mat(X)
     n, p = size(X)
-    M = similar(X, n, p - f + 1)
-    fdif!(M, X; f)
+    npoint = object.par.npoint
+    M = similar(X, n, p - npoint + 1)
+    transf!(object, X, M)
     M
 end
 
-function fdif!(M::Matrix, X::Matrix; f = 2)
+function transf!(object::Fdif, X::Matrix, M::Matrix)
     p = nco(X)
-    zp = p - f + 1
+    npoint = object.par.npoint
+    zp = p - npoint + 1
     @Threads.threads for j = 1:zp
-        M[:, j] .= vcol(X, j + f - 1) .- vcol(X, j)
+        M[:, j] .= vcol(X, j + npoint - 1) .- vcol(X, j)
     end
 end
 
@@ -125,99 +139,61 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 pnames(dat)
 
 X = dat.X 
-wl = names(X)
-wl_num = parse.(Float64, wl) 
+wl_str = names(X)
+wl = parse.(Float64, wl_str) 
 
-plotsp(X[1:10,:], wl_num).f
+plotsp(X[1:10,:], wl).f
 
 wlfin = collect(range(500, 2400, length = 10))
 #wlfin = range(500, 2400, length = 10)
-Xp = interpl(X[1:10, :], wl_num; wlfin = wlfin) 
+Xp = interpl(X[1:10, :], wl; wlfin = wlfin) 
 plotsp(Xp, wlfin).f
 
-Xp = interpl_mon(X[1:10, :], wl_num; wlfin = wlfin) ;
+Xp = interpl_mon(X[1:10, :], wl; wlfin = wlfin) ;
 plotsp(Xp, wlfin).f
 ```
-""" 
-function interpl(X, wl; wlfin, fun = cubic_spline)
+"""
+function interpl(X; kwargs...)
+    par = recovkwargs(Par, kwargs)
+    Interpl(kwargs, par)
+end
+
+function transf(object::Interpl, X)
     X = ensure_mat(X)
     n = nro(X)
-    q = length(wlfin)
-    zX = similar(X, n, q)
-    # Not faster: @Threads.threads
+    p = length(object.par.wlfin)
+    M = similar(X, n, p)
+    transf!(object, X, M)
+    M
+end
+
+function transf!(object::Interpl, X::Matrix, M::Matrix)
+    n = nro(X)
+    wl = object.par.wl 
+    wlfin = object.par.wlfin 
+    fun = DataInterpolations.CubicSpline
+    ## Not faster: @Threads.threads
     @inbounds for i = 1:n
         itp = fun(vrow(X, i), wl)
-        zX[i, :] .= itp.(wlfin)
+        M[i, :] .= itp.(wlfin)
     end
-    zX
 end
-# Due to conflicts with Interpolations.jl
-cubic_spline(y, x) = DataInterpolations.CubicSpline(y, x)
-linear_int(y, x) = DataInterpolations.LinearInterpolation(y, x)
-quadratic_int(y, x) = DataInterpolations.QuadraticInterpolation(y, x)
-quadratic_spline(y, x) = DataInterpolations.QuadraticSpline(y, x)
-
-""" 
-    interpl_mon(X, wl; wlfin, fun = FritschCarlsonMonotonicInterpolation)
-Sampling signals by monotonic interpolation.
-* `X` : Matrix (n, p) of signals (rows).
-* `wl` : Values representing the column "names" of `X`. 
-    Must be a numeric vector of length p, or an AbstractRange.
-* `wlfin` : Values where to interpolate within the range of `wl`.
-    Must be a numeric vector, or an AbstractRange.
-* `fun` : Function defining the interpolation method.
-
-See e.g. https://en.wikipedia.org/wiki/Monotone_cubic_interpolation.
-
-The function uses package Interpolations.jl.
-
-Possible values of `fun` (methods) are:
-- `LinearMonotonicInterpolation`
-- `FiniteDifferenceMonotonicInterpolation` : Classic cubic
-- `CardinalMonotonicInterpolation`
-- `FritschCarlsonMonotonicInterpolation`
-- `FritschButlandMonotonicInterpolation`
-- `SteffenMonotonicInterpolation`
-See https://github.com/JuliaMath/Interpolations.jl/pull/243/files#diff-92e3f2a374c9a54769084bad1bbfb4ff20ee50716accf008074cda7af1cd6149
-
-See '?interpl' for examples. 
-
-## References
-Package Interpolations.jl
-https://github.com/JuliaMath/Interpolations.jl
-
-Fritsch & Carlson (1980), "Monotone Piecewise Cubic Interpolation", 
-doi:10.1137/0717021.
-
-Fritsch & Butland (1984), "A Method for Constructing Local Monotone Piecewise 
-Cubic Interpolants", doi:10.1137/0905021.
-
-Steffen (1990), "A Simple Method for Monotonic Interpolation 
-in One Dimension", http://adsabs.harvard.edu/abs/1990A%26A...239..443S
-""" 
-function interpl_mon(X, wl; wlfin, fun = FritschCarlsonMonotonicInterpolation)
-    X = ensure_mat(X)
-    n = nro(X)
-    q = length(wlfin)
-    zX = similar(X, n, q)
-    # Not faster: @Threads.threads
-    @inbounds for i = 1:n
-        itp = interpolate(wl, vrow(X, i), fun())
-        zX[i, :] .= itp.(wlfin)
-    end
-    zX
-end
+#cubic_spline(y, x) = DataInterpolations.CubicSpline(y, x)
+#linear_int(y, x) = DataInterpolations.LinearInterpolation(y, x)
+#quadratic_int(y, x) = DataInterpolations.QuadraticInterpolation(y, x)
+#quadratic_spline(y, x) = DataInterpolations.QuadraticSpline(y, x)
 
 """
-    mavg(X; f)
-    mavg!(X::Matrix; f)
+    mavg(X; npoint)
+    mavg!(X::Matrix; npoint)
 Moving averages smoothing of each row of X-data.
 * `X` : X-data.
-* `f` : Size (nb. points involved) of the filter.
+* `npoint` : Nb. points involved in the window 
 
-The smoothing is computed by convolution (with padding), with function 
-imfilter of package ImageFiltering.jl. The centered kernel is ones(`f`) / `f`.
-Each returned point is located on the center of the kernel.
+The smoothing is computed by convolution (with padding), 
+with function imfilter of package ImageFiltering.jl. The centered 
+kernel is ones(`npoint`) / `npoint`. Each returned point is located on 
+the center of the kernel.
 
 ## References
 Package ImageFiltering.jl
@@ -232,23 +208,23 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 pnames(dat)
 
 X = dat.X
-wl = names(dat.X)
-wl_num = parse.(Float64, wl)
+wl_str = names(dat.X)
+wl = parse.(Float64, wl_str)
 
-Xp = mavg(X; f = 10) 
-plotsp(Xp[1:30, :], wl_num).f
+Xp = mavg(X; npoint = 10) 
+plotsp(Xp[1:30, :], wl).f
 ```
 """ 
-function mavg(X; f)
+function mavg(X; npoint)
+    npoint = Int(npoint)
     zX = copy(ensure_mat(X))
-    mavg!(zX; f)
+    mavg!(zX; npoint)
     zX
 end
 
-function mavg!(X::Matrix; f)
+function mavg!(X::Matrix; npoint::Int)
     n, p = size(X)
-    f = Int(f)
-    kern = ImageFiltering.centered(ones(f) / f) ;
+    kern = ImageFiltering.centered(ones(npoint) / npoint) ;
     out = similar(X, p) 
     @inbounds for i = 1:n
         imfilter!(out, vrow(X, i), kern)
@@ -260,88 +236,13 @@ function mavg!(X::Matrix; f)
     #end
 end
 
-"""
-    mavg_runmean(X, f)
-    mavg_runmean!(M::Matrix, X::Matrix; f)
-Moving average smoothing of each row of a matrix X.
-* `X` : X-data (n, p).
-* `M` : Pre-allocated output matrix (n, p - f + 1).
-* `f` : Size (nb. points involved) of the filter.
-
-The smoothing is computed by convolution, without padding (which reduces 
-the column dimension). The function is an adaptation/simplification of function 
-runmean (V. G. Gumennyy) of package Indicators.jl. See
-https://github.com/dysonance/Indicators.jl/blob/a449c1d68487c3a8fea0008f7abb3e068552aa08/src/run.jl.
-The kernel is ones(`f`) / `f`. Each returned point is located on the 1st unit of the kernel.
-In general, this function can be faster than mavg, especialy for in-place versions.
-
-The in-place function stores the output in `M`.
-
-## References
-Package Indicators.jl
-https://github.com/dysonance/Indicators.jl
-
-## Examples
-```julia
-using JLD2
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/cassav.jld2") 
-@load db dat
-pnames(dat)
-
-X = dat.X
-wl = names(dat.X)
-wl_num = parse.(Float64, wl)
-
-Xp = mavg_runmean(X; f = 10) 
-plotsp(Xp[1:30, :]).f
-```
 """ 
-function mavg_runmean(X; f)
-    X = ensure_mat(X)
-    n, p = size(X)
-    M = similar(X, n, p - f + 1)
-    mavg_runmean!(M, X; f)
-    M
-end
-
-function mavg_runmean!(M::Matrix, X::Matrix; f)
-    n, zp = size(M)
-    out = similar(M, zp)
-    # Not faster: @Threads.threads 
-    @inbounds for i = 1:n
-        Jchemo.runmean!(out, vrow(X, i); f)
-        M[i, :] .= out    
-    end
-end
-
-## This is an adaptation from function runmean  (V. G. Gumennyy)
-## of package Indicators.jl
-function runmean!(out, x; f)
-    ## x : (n,)
-    ## out : (n - f + 1,)
-    ## f : integer
-    ## There is no padding
-    ## Location on the 1st unit of the kernel
-    n = length(x)
-    zsum = 0.
-    @inbounds for i = 1:f
-        zsum += x[i]
-    end
-    out[1] = zsum / f
-    @inbounds for i = (f + 1):n
-        zsum += x[i] - x[i - f] 
-        out[i - f + 1] = zsum / f
-    end
-end
-
-""" 
-    savgk(m, degree, deriv)
+    savgk(nhwindow, degree, deriv)
 Compute the kernel of the Savitzky-Golay filter.
-* `m` : Nb. points of the half window (m >= 1) 
-    --> the size of the kernel is odd (f = 2 * m + 1): 
-    x[-m], x[-m+1], ..., x[0], ...., x[m-1], x[m].
-* `degree` : Polynom order (1 <= degree <= 2 * m).
+* `nhwindow` : Nb. points of the half window (nhwindow >= 1) 
+    --> the size of the kernel is odd (npoint = 2 * nhwindow + 1): 
+    x[-nhwindow], x[-nhwindow+1], ..., x[0], ...., x[nhwindow-1], x[nhwindow].
+* `degree` : Polynom order (1 <= degree <= 2 * nhwindow).
     The case "degree = 0" (simple moving average) is not allowed by the funtion.
 * `deriv` : Derivation order (0 <= deriv <= degree).
     If `deriv = 0`, there is no derivation (only polynomial smoothing).
@@ -360,13 +261,13 @@ res.G
 res.kern
 ```
 """ 
-function savgk(m, degree, deriv)
-    @assert m >= 1 "m must be >= 1"
-    @assert 1 <= degree <= 2 * m "degree must agree with: 1 <= degree <= 2 * m"
-    @assert 0 <= deriv <= degree "deriv must agree with: 0 <= deriv <= degree"
-    f = 2 * m + 1
-    S = zeros(Int(f), Int(degree) + 1) ;
-    u = collect(-m:m)
+function savgk(nhwindow::Int, deriv::Int, degree::Int)
+    @assert nhwindow >= 1 "Argument 'nhwindow' must be >= 1."
+    @assert 1 <= degree <= 2 * nhwindow "Argument 'degree' must agree with: 1 <= 'degree' <= 2 * 'nhwindow'."
+    @assert 0 <= deriv <= degree "Argument 'deriv' must agree with: 0 <= 'deriv' <= 'degree'."
+    npoint = 2 * nhwindow + 1
+    S = zeros(Int(npoint), Int(degree) + 1) ;
+    u = collect(-nhwindow:nhwindow)
     @inbounds for j in 0:degree
         S[:, j + 1] .= u.^j
     end
@@ -376,13 +277,14 @@ function savgk(m, degree, deriv)
 end
 
 """
-    savgol(X; f, degree, deriv)
-    savgol!(X::Matrix; f, degree, deriv)
+    savgol(X; npoint, degree, deriv)
+    savgol!(X::Matrix; npoint, degree, deriv)
 Savitzky-Golay smoothing of each row of a matrix `X`.
 * `X` : X-data (n, p).
-* `f` : Size of the filter (nb. points involved in the kernel). Must be odd and >= 3.
-    The half-window size is m = (f - 1) / 2.
-* `degree` : Polynom order (1 <= degree <= f - 1).
+* `npoint` : Size of the filter (nb. points involved in 
+    the kernel). Must be odd and >= 3. The half-window size is 
+    nhwindow = (npoint - 1) / 2.
+* `degree` : Polynom order (1 <= degree <= npoint - 1).
 * `deriv` : Derivation order (0 <= deriv <= degree).
 
 The smoothing is computed by convolution (with padding), with function 
@@ -408,26 +310,25 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 pnames(dat)
 
 X = dat.X
-wl = names(dat.X)
-wl_num = parse.(Float64, wl)
+wl_str = names(dat.X)
+wl = parse.(Float64, wl_str)
 
-f = 21 ; degree = 3 ; deriv = 2 ; 
-Xp = savgol(X; f = f, degree = degree, deriv = deriv) 
-plotsp(Xp[1:30, :], wl_num).f
+npoint = 21 ; degree = 3 ; deriv = 2 ; 
+Xp = savgol(X; npoint = npoint, degree = degree, deriv = deriv) 
+plotsp(Xp[1:30, :], wl).f
 ```
 """ 
-function savgol(X; f, degree, deriv)
+function savgol(X; npoint::Int, deriv::Int, degree::Int)
     zX = ensure_mat(copy(X))
-    savgol!(zX; f, degree, deriv)
+    savgol!(zX; npoint, deriv, degree)
     zX
 end
 
-function savgol!(X::Matrix; f, degree, deriv)
-    X = ensure_mat(X)
-    @assert isodd(f) && f >= 3 "f must be odd and >= 3"
+function savgol!(X::Matrix; npoint::Int, deriv::Int, degree::Int)
+    @assert isodd(npoint) && npoint >= 3 "Argument 'npoint' must be odd and >= 3."
     n, p = size(X)
-    m = (f - 1) / 2
-    kern = savgk(m, degree, deriv).kern
+    nhwindow = Int((npoint - 1) / 2)
+    kern = savgk(nhwindow, deriv, degree).kern
     zkern = ImageFiltering.centered(kern)
     out = similar(X, p)
     @inbounds for i = 1:n
@@ -458,20 +359,20 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 pnames(dat)
 
 X = dat.X
-wl = names(dat.X)
-wl_num = parse.(Float64, wl)
+wl_str = names(dat.X)
+wl = parse.(Float64, wl_str)
 
 Xp = snv(X) 
-plotsp(Xp[1:30, :], wl_num).f
+plotsp(Xp[1:30, :], wl).f
 ```
 """ 
-function snv(X; centr = true, scal = true)
+function snv(X; centr::Bool = true, scal::Bool = true)
     zX = ensure_mat(copy(X))
     snv!(zX; centr = centr, scal = scal)
     zX
 end
 
-function snv!(X::Matrix; centr = true, scal = true) 
+function snv!(X::Matrix; centr::Bool = true, scal::Bool = true) 
     n, p = size(X)
     centr ? mu = rowmean(X) : mu = zeros(n)
     scal ? s = rowstd(X) : s = ones(n)

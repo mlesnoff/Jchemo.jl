@@ -86,8 +86,8 @@ axislegend("Method")
 f
 ```
 """ 
-function svmr(X, y; par = Par())
-#function svmr(X, y, args...; par = Par())   # perhaps needed for embedded syntax
+function svmr(X, y; kwargs...)
+#function svmr(X, y, args...; kwargs...)   # perhaps needed for embedded syntax
     kern = par.kern 
     @assert in([:krbf, :kpol, :klin, :ktanh])(kern) "Wrong value for argument 'kern'." 
     X = ensure_mat(X)

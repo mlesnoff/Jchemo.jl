@@ -100,7 +100,7 @@ function lwmlrda_s(X, y; reduc = :pls,
         fm = dkplsrda(zX, zy; gamma = gamma, nlv = nlv, 
             scal = scal)
     end
-    T = transform(fm, X)
+    T = transf(fm, X)
     LwmlrdaS(T, y, fm, metric, h, k, 
         tol, verbose)
 end
@@ -114,7 +114,7 @@ Compute the y-predictions from the fitted model.
 function predict(object::LwmlrdaS, X)
     X = ensure_mat(X)
     m = nro(X)
-    T = transform(object.fm, X)
+    T = transf(object.fm, X)
     # Getknn
     res = getknn(object.T, T; 
         k = object.k, metric = object.metric)

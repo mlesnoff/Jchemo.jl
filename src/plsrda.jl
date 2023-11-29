@@ -53,9 +53,9 @@ res.pred
 err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
-Jchemo.transform(fm, Xtest)
+transf(fm, Xtest)
 
-Jchemo.transform(fm.fm, Xtest)
+transf(fm.fm, Xtest)
 Jchemo.coef(fm.fm)
 summary(fm.fm, Xtrain)
 
@@ -71,14 +71,14 @@ function plsrda(X, y, weights = ones(nro(X)); nlv,
 end
 
 """ 
-    transform(object::Plsrda, X; nlv = nothing)
+    transf(object::Plsrda, X; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transform(object::Plsrda, X; nlv = nothing)
-    transform(object.fm, X; nlv = nlv)
+function transf(object::Plsrda, X; nlv = nothing)
+    transf(object.fm, X; nlv = nlv)
 end
 
 """

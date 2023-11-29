@@ -96,15 +96,15 @@ fm = plskern(Xtrain, ytrain; nlv = 3) ;
 head(Jchemo.predict(fm, Xtest).pred)
 ```
 """
-function rrr(X, Y; par = Par())
+function rrr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    rrr(X, Y, weights; par)
+    rrr(X, Y, weights; values(kwargs)...)
 end
 
-function rrr(X, Y, weights::Weight; par = Par())
+function rrr(X, Y, weights::Weight; kwargs...)
     rrr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
 function rrr!(X::Matrix, Y::Matrix, weights::Weight; 

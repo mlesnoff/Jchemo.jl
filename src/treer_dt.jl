@@ -45,8 +45,8 @@ s = dat.Ytest.inst .== 1
 Xtest = dat.Xtest[s, :]
 Ytest = dat.Ytest[s, :]
 ytest = Ytest.y
-wl = names(Xtrain) 
-wl_num = parse.(Float64, wl) 
+wl_str = names(Xtrain) 
+wl = parse.(Float64, wl_str) 
 ntrain, p = size(Xtrain)
 ntest = nro(Xtest)
 ntot = ntrain + ntest
@@ -70,7 +70,7 @@ plotxy(res.pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f  
 ```
 """ 
-function treer_dt(X, y; par = Par()) 
+function treer_dt(X, y; kwargs...) 
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)

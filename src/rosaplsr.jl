@@ -44,19 +44,19 @@ nlv = 5
 fm = rosaplsr(Xbl, y; nlv = nlv) ;
 pnames(fm)
 fm.T
-Jchemo.transform(fm, Xbl_new)
+transf(fm, Xbl_new)
 [y Jchemo.predict(fm, Xbl).pred]
 Jchemo.predict(fm, Xbl_new).pred
 ```
 """ 
-function rosaplsr(Xbl, Y; par = Par())
+function rosaplsr(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     weights = mweight(ones(Q, n))
-    rosaplsr(Xbl, Y, weights; par)
+    rosaplsr(Xbl, Y, weights; values(kwargs)...)
 end
 
-function rosaplsr(Xbl, Y, weights::Weight; par = Par())
+function rosaplsr(Xbl, Y, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Q})
@@ -64,11 +64,10 @@ function rosaplsr(Xbl, Y, weights::Weight; par = Par())
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     rosaplsr!(zXbl, copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
-function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; 
-        par = Par())
+function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])   
     n = nro(Xbl[1])
     q = nco(Y)
@@ -192,13 +191,13 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
 end
 
 """ 
-    transform(object::Rosaplsr, Xbl; nlv = nothing)
+    transf(object::Rosaplsr, Xbl; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transform(object::Rosaplsr, Xbl; nlv = nothing)
+function transf(object::Rosaplsr, Xbl; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(object.xmeans)

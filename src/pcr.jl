@@ -43,8 +43,8 @@ zcoef.B
 Jchemo.coef(fm; nlv = 7).B
 
 fmpca = fm.fmpca ;
-transform(fmpca, Xtest)
-transform(fmpca, Xtest; nlv = 7)
+transf(fmpca, Xtest)
+transf(fmpca, Xtest; nlv = 7)
 
 res = Jchemo.predict(fm, Xtest)
 res.pred
@@ -61,15 +61,15 @@ res = Base.summary(fmpca, Xtrain)
 res.explvarx
 ```
 """ 
-function pcr(X, Y; par = Par())
+function pcr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    pcr(X, Y, weights; par)
+    pcr(X, Y, weights; values(kwargs)...)
 end
 
-function pcr(X, Y, weights::Weight; par = Par())
+function pcr(X, Y, weights::Weight; kwargs...)
     pcr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
 function pcr!(X::Matrix, Y::Matrix, weights::Weight; 
@@ -81,7 +81,7 @@ function pcr!(X::Matrix, Y::Matrix, weights::Weight;
     ## below yscales is built only for consistency with coef::Plsr  
     yscales = ones(Q, q)
     # End 
-    fm = pcasvd!(X, weights; par)
+    fm = pcasvd!(X, weights; values(kwargs)...)
     D = Diagonal(fm.weights.w)
     ## Below, first term of the product = Diagonal(1 ./ fm.sv[1:nlv].^2) if T is D-orthogonal
     ## This is the case for the actual version (pcasvd)
@@ -90,14 +90,14 @@ function pcr!(X::Matrix, Y::Matrix, weights::Weight;
 end
 
 """ 
-    transform(object::Pcr, X; nlv = nothing)
+    transf(object::Pcr, X; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transform(object::Pcr, X; nlv = nothing)
-    transform(object.fmpca, X; nlv = nlv)
+function transf(object::Pcr, X; nlv = nothing)
+    transf(object.fmpca, X; nlv = nlv)
 end
 
 """

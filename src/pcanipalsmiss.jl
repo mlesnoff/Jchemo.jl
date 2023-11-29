@@ -61,16 +61,16 @@ Xres[s] .= Xfit[s]
 Xres
 ```
 """ 
-function pcanipalsmiss(X; par = Par())
+function pcanipalsmiss(X; kwargs...)
     z = vec(Matrix(X))
     s = ismissing.(z) .== 0
     Q = eltype(z[s][1, 1])
     weights = mweight(ones(Q, nro(X)))
-    pcanipalsmiss(X, weights; par)
+    pcanipalsmiss(X, weights; values(kwargs)...)
 end
 
-function pcanipalsmiss(X, weights::Weight; par = Par())
-    pcanipalsmiss!(copy(ensure_mat(X)), weights; par)
+function pcanipalsmiss(X, weights::Weight; kwargs...)
+    pcanipalsmiss!(copy(ensure_mat(X)), weights; values(kwargs)...)
 end
 
 function pcanipalsmiss!(X::Matrix, weights::Weight; 
@@ -99,9 +99,9 @@ function pcanipalsmiss!(X::Matrix, weights::Weight;
     end
     for a = 1:nlv
         if par.gs == false
-            res = nipalsmiss(X; par)
+            res = nipalsmiss(X; values(kwargs)...)
         else
-            res = nipalsmiss(X, UUt, VVt; par)
+            res = nipalsmiss(X, UUt, VVt; values(kwargs)...)
         end
         t .= res.u * res.sv
         T[:, a] .= t ./ sqrtw

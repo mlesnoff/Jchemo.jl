@@ -67,15 +67,15 @@ res.pred[1]
 res.pred[2]
 ```
 """ 
-function rr(X, Y; par = Par())
+function rr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    rr(X, Y, weights; par)
+    rr(X, Y, weights; values(kwargs)...)
 end
 
-function rr(X, Y, weights::Weight; par = Par())
+function rr(X, Y, weights::Weight; kwargs...)
     rr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
 function rr!(X::Matrix, Y::Matrix, weights::Weight; 

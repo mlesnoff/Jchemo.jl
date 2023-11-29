@@ -361,6 +361,8 @@ struct Plsr
     yscales::Vector
     weights::Weight
     niter::Union{Vector{Int}, Nothing}
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct PlsravgUnif
@@ -701,3 +703,19 @@ struct Dkplsr
     par::Par
 end
 
+###### Preprocessing 
+
+struct Detrend
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Fdif
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Interpl
+    kwargs::Base.Pairs
+    par::Par
+end

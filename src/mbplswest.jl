@@ -51,21 +51,21 @@ nlv = 5
 fm = mbplswest(Xbl, y; nlv = nlv, bscal = bscal) ;
 pnames(fm)
 fm.T
-Jchemo.transform(fm, Xbl_new)
+transf(fm, Xbl_new)
 [y Jchemo.predict(fm, Xbl).pred]
 Jchemo.predict(fm, Xbl_new).pred
 
 summary(fm, Xbl)
 ```
 """
-function mbplswest(Xbl, Y; par = Par())
+function mbplswest(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     weights = mweight(ones(Q, n))
-    mbplswest(Xbl, Y, weights; par)
+    mbplswest(Xbl, Y, weights; values(kwargs)...)
 end
 
-function mbplswest(Xbl, Y, weights::Weight; par = Par())
+function mbplswest(Xbl, Y, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Q})
@@ -73,7 +73,7 @@ function mbplswest(Xbl, Y, weights::Weight; par = Par())
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     mbplswest!(zXbl, copy(ensure_mat(Y)), 
-        weights; par)
+        weights; values(kwargs)...)
 end
 
 function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; 
@@ -197,13 +197,13 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight;
 end
 
 """ 
-    transform(object::Union{MbplsWest, Mbplsr}, Xbl; nlv = nothing)
+    transf(object::Union{MbplsWest, Mbplsr}, Xbl; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list (vector) of blocks (matrices) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transform(object::Union{MbplsWest, Mbplsr}, Xbl; nlv = nothing)
+function transf(object::Union{MbplsWest, Mbplsr}, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
@@ -229,7 +229,7 @@ function predict(object::Union{MbplsWest, Mbplsr}, Xbl;
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
-    T = transform(object, Xbl)
+    T = transf(object, Xbl)
     pred = list(le_nlv, Matrix{Q})
     @inbounds  for i = 1:le_nlv
         znlv = nlv[i]

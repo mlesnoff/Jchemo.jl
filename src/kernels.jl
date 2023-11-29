@@ -23,7 +23,7 @@ Y = rand(2, 3)
 krbf(X, Y)
 ```
 """ 
-function krbf(X, Y; par = Par())
+function krbf(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -58,7 +58,7 @@ Y = rand(2, 3)
 kpol(X, Y)
 ```
 """ 
-function kpol(X, Y; par = Par())
+function kpol(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     X = ensure_mat(X)
     Y = ensure_mat(Y)

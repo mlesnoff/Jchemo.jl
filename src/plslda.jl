@@ -54,18 +54,18 @@ res.pred
 err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
-Jchemo.transform(fm, Xtest)
-Jchemo.transform(fm, Xtest; nlv = 2)
+transf(fm, Xtest)
+transf(fm, Xtest; nlv = 2)
 
 fmpls = fm.fm.fmpls ;
-Jchemo.transform(fmpls, Xtest)
+transf(fmpls, Xtest)
 summary(fmpls, Xtrain)
 Jchemo.coef(fmpls).B
 Jchemo.coef(fmpls, nlv = 1).B
 Jchemo.coef(fmpls, nlv = 2).B
 
 fmda = fm.fm.fmda ;
-T = Jchemo.transform(fmpls, Xtest)
+T = transf(fmpls, Xtest)
 Jchemo.predict(fmda[nlv], T).pred
 
 Jchemo.predict(fm, Xtest; nlv = 1:2).pred
@@ -85,14 +85,14 @@ function plslda(X, y, weights = ones(nro(X)); nlv,
 end
 
 """ 
-    transform(object::Plslda, X; nlv = nothing)
+    transf(object::Plslda, X; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transform(object::Plslda, X; nlv = nothing)
-    transform(object.fm.fmpls, X; nlv = nlv)
+function transf(object::Plslda, X; nlv = nothing)
+    transf(object.fm.fmpls, X; nlv = nlv)
 end
 
 """
@@ -113,7 +113,7 @@ function predict(object::Plslda, X; nlv = nothing)
     posterior = list(le_nlv, Matrix{Float64})
     @inbounds for i = 1:le_nlv
         znlv = nlv[i]
-        T = transform(object.fm.fmpls, X, nlv = znlv)
+        T = transf(object.fm.fmpls, X, nlv = znlv)
         zres = predict(object.fm.fmda[znlv], T)
         z =  mapslices(argmax, zres.posterior; dims = 2) 
         pred[i] = reshape(replacebylev2(z, object.lev), m, 1)
