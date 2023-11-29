@@ -36,6 +36,7 @@ end
 
 #### Functions
 
+center(; kwargs...) = Transformer{Function, Center, Base.Pairs}(center, nothing, kwargs)
 detrend(; kwargs...) = Transformer{Function, Detrend, Base.Pairs}(detrend, nothing, kwargs)
 fdif(; kwargs...) = Transformer{Function, Fdif, Base.Pairs}(fdif, nothing, kwargs)
 interpl(; kwargs...) = Transformer{Function, Interpl, Base.Pairs}(interpl, nothing, kwargs)
