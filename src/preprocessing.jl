@@ -406,7 +406,14 @@ end
 """
     center(X)
 """
-function center!(X; kwargs...)
+function center(X; kwargs...)
+    xmeans = colmean(X)
+    par = recovkwargs(Par, kwargs)
+    Center(xmeans, kwargs, par)
+end
+
+function center(X, weights::Weight; kwargs...)
+    xmeans = colmean(X, weights)
     par = recovkwargs(Par, kwargs)
     Center(xmeans, kwargs, par)
 end
@@ -418,4 +425,5 @@ function transf(object::Center, X)
 end
 
 function transf!(object::Center, X::Matrix)
+    fcenter!(X, object.xmeans)
 end
