@@ -735,3 +735,11 @@ struct Snv
     par::Par
 end
 
+struct Center
+    xmeans::Vector
+    kwargs::Base.Pairs
+    par::Par
+end
+
+
+

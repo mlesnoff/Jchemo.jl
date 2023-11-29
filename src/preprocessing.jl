@@ -403,3 +403,19 @@ function transf!(object::Snv, X::Matrix)
 end
 
 
+"""
+    center(X)
+"""
+function center!(X; kwargs...)
+    par = recovkwargs(Par, kwargs)
+    Center(xmeans, kwargs, par)
+end
+
+function transf(object::Center, X)
+    X = copy(ensure_mat(X))
+    transf!(object, X)
+    X
+end
+
+function transf!(object::Center, X::Matrix)
+end
