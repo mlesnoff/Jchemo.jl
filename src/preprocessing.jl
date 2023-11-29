@@ -323,15 +323,23 @@ Xp = savgol(X; npoint = npoint, degree = degree, deriv = deriv)
 plotsp(Xp[1:30, :], wl).f
 ```
 """ 
-function savgol(X; npoint::Int, deriv::Int, degree::Int)
-    zX = ensure_mat(copy(X))
-    savgol!(zX; npoint, deriv, degree)
-    zX
+function savgol(X; kwargs...)
+    par = recovkwargs(Par, kwargs)
+    Savgol(kwargs, par)
 end
 
-function savgol!(X::Matrix; npoint::Int, deriv::Int, degree::Int)
+function transf(object::Savgol, X)
+    X = copy(ensure_mat(X))
+    transf!(object, X)
+    X
+end
+
+function transf!(object::Savgol, X::Matrix)
+    npoint = object.par.npoint 
     @assert isodd(npoint) && npoint >= 3 "Argument 'npoint' must be odd and >= 3."
     n, p = size(X)
+    deriv = object.par.deriv
+    degree = object.par.degree
     nhwindow = Int((npoint - 1) / 2)
     kern = savgk(nhwindow, deriv, degree).kern
     zkern = ImageFiltering.centered(kern)
@@ -341,7 +349,7 @@ function savgol!(X::Matrix; npoint::Int, deriv::Int, degree::Int)
         imfilter!(out, vrow(X, i), reflect(zkern))
         X[i, :] .= out
     end
-    # Not faster
+    ## Not faster
     #@Threads.threads for i = 1:n
     #    X[i, :] .= imfilter(vrow(X, i), reflect(zkern))
     #end
@@ -371,14 +379,21 @@ Xp = snv(X)
 plotsp(Xp[1:30, :], wl).f
 ```
 """ 
-function snv(X; centr::Bool = true, scal::Bool = true)
-    zX = ensure_mat(copy(X))
-    snv!(zX; centr = centr, scal = scal)
-    zX
+function snv(X; kwargs...)
+    par = recovkwargs(Par, kwargs)
+    Snv(kwargs, par)
 end
 
-function snv!(X::Matrix; centr::Bool = true, scal::Bool = true) 
+function transf(object::Snv, X)
+    X = copy(ensure_mat(X))
+    transf!(object, X)
+    X
+end
+
+function transf!(object::Snv, X::Matrix)
     n, p = size(X)
+    centr = object.par.centr 
+    scal = object.par.scal
     centr ? mu = rowmean(X) : mu = zeros(n)
     scal ? s = rowstd(X) : s = ones(n)
     # Not faster: @Threads.threads
