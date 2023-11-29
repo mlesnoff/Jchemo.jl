@@ -26,8 +26,8 @@ The function returns several objects, in particular:
 * `T` : The non normed global scores.
 * `U` : The normed global scores.
 * `W` : The global loadings.
-* `Tbl` : The block scores (grouped by blocks, in the original scale).
-* `Tb` : The block scores (grouped by LV, in the metric scale).
+* `Tbl` : The block scores (grouped by blocks, in the original fscale).
+* `Tb` : The block scores (grouped by LV, in the metric fscale).
 * `Wbl` : The block loadings.
 * `lb` : The specific weights "lambda".
 * `mu` : The sum of the specific weights (= eigen value of the global PCA).
@@ -120,9 +120,9 @@ function mbpca!(Xbl::Vector, weights::Weight;
         xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
-            Xbl[k] = cscale(Xbl[k], xmeans[k], xscales[k])
+            Xbl[k] = fcscale(Xbl[k], xmeans[k], xscales[k])
         else
-            Xbl[k] = center(Xbl[k], xmeans[k])
+            Xbl[k] = fcenter(Xbl[k], xmeans[k])
         end
     end
     par.bscal == :none ? bscales = ones(Q, nbl) : nothing
@@ -210,7 +210,7 @@ function transf(object::Mbpca, Xbl; nlv = nothing)
     m = size(Xbl[1], 1)
     zXbl = list(nbl, Matrix{Q})
     Threads.@threads for k = 1:nbl
-        zXbl[k] = cscale(Xbl[k], object.xmeans[k], 
+        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], 
             object.xscales[k])
     end
     zXbl = blockscal(zXbl, object.bscales).Xbl
@@ -250,7 +250,7 @@ function Base.summary(object::Mbpca, Xbl)
     sqrtw = sqrt.(object.weights.w)
     zXbl = list(nbl, Matrix{Q})
     Threads.@threads for k = 1:nbl
-        zXbl[k] = cscale(Xbl[k], object.xmeans[k], 
+        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], 
             object.xscales[k])
     end
     zXbl = blockscal(zXbl, object.bscales).Xbl
@@ -269,11 +269,11 @@ function Base.summary(object::Mbpca, Xbl)
     explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, 
         cumpvar = cumpvar)
     # Contribution of the blocks to global scores = lb proportions (contrib)
-    z = scale(object.lb, colsum(object.lb))
+    z = fscale(object.lb, colsum(object.lb))
     contr_block = DataFrame(z, string.("lv", 1:nlv))
     # Proportion of inertia explained for each block (explained.X)
     # = object.lb if bscal = :frob 
-    z = scale((object.lb)', sstot)'
+    z = fscale((object.lb)', sstot)'
     explX = DataFrame(z, string.("lv", 1:nlv))
     # Correlation between the original variables and the global scores (globalcor)
     z = cor(X, object.U)  

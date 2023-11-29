@@ -11,7 +11,7 @@ Matrix fitting from a PCA, PCR or PLS model
 Compute an approximate of matrix `X` (X_fit) from a PCA, PCR 
 or PLS fitted on `X`.
 
-`X` and X_fit are in the original scale, i.e. before centering and eventual scaling.
+`X` and X_fit are in the original fscale, i.e. before centering and eventual scaling.
 
 ## Examples 
 ```julia 
@@ -34,8 +34,8 @@ xresid(fm, X)
 """ 
 function xfit(object::Union{Pca, Pcr, Plsr})
     X = object.T * object.P'
-    scale!(X, 1 ./ object.xscales)    # Coming back to the original scale
-    center!(X, -object.xmeans)
+    fscale!(X, 1 ./ object.xscales)    # Coming back to the original fscale
+    fcenter!(X, -object.xmeans)
     X
 end
 
@@ -55,9 +55,9 @@ function xfit!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
     else
         P = vcol(object.P, 1:nlv)
         mul!(X, transf(object, X; nlv = nlv), P')
-        scale!(X, 1 ./ object.xscales)    # Coming back to the originalm scale
-        center!(X, -object.xmeans)
-        #cscale!(X, -object.xmeans, 1 ./ object.xscales)
+        fscale!(X, 1 ./ object.xscales)    # Coming back to the originalm fscale
+        fcenter!(X, -object.xmeans)
+        #fcscale!(X, -object.xmeans, 1 ./ object.xscales)
     end
     X
 end

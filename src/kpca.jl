@@ -78,7 +78,7 @@ function kpca(X, weights::Weight; kwargs...)
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
-        X = scale(X, xscales)
+        X = fscale(X, xscales)
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
     K = fkern(X, X; values(kwargs)...)  # in the future?: fkern!(K, X, X; values(kwargs)...)
@@ -94,7 +94,7 @@ function kpca(X, weights::Weight; kwargs...)
     eig = res.S
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
-    P = sqrtD * scale(U, sv[1:nlv])     # In the future: scale!
+    P = sqrtD * fscale(U, sv[1:nlv])     # In the future: fscale!
     T = Kc * P       # T = Kc * P = D^(-1/2) * U * Delta
     Kpca(X, Kt, T, P, sv, eig, D, DKt, vtot, xscales, 
         weights, par)
@@ -111,7 +111,7 @@ function transf(object::Kpca, X; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
-    K = fkern(scale(X, object.xscales), object.X; par = object.par)
+    K = fkern(fscale(X, object.xscales), object.X; par = object.par)
     DKt = object.D * K'
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')

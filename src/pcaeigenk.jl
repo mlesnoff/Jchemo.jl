@@ -44,9 +44,9 @@ function pcaeigenk!(X::Matrix, weights::Weight;
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
-        cscale!(X, xmeans, xscales)
+        fcscale!(X, xmeans, xscales)
     else
-        center!(X, xmeans)
+        fcenter!(X, xmeans)
     end
     sqrtw = sqrt.(weights.w)
     zX = Diagonal(sqrtw) * X
@@ -54,7 +54,7 @@ function pcaeigenk!(X::Matrix, weights::Weight;
     eig = res.values[1:min(n, p)]
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
-    P = zX' * scale(res.vectors[:, 1:nlv], sv[1:nlv])
+    P = zX' * fscale(res.vectors[:, 1:nlv], sv[1:nlv])
     T = X * P
     Pca(T, P, sv, xmeans, xscales, weights, nothing) 
 end

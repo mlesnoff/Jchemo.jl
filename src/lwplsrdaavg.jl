@@ -114,8 +114,8 @@ function predict(object::LwplsrdaAvg, X)
     if isnothing(object.fm)
         if object.scal
             xscales = colstd(object.X)
-            zX1 = scale(object.X, xscales)
-            zX2 = scale(X, xscales)
+            zX1 = fscale(object.X, xscales)
+            zX2 = fscale(X, xscales)
             res = getknn(zX1, zX2; k = object.k, metric = object.metric)
         else
             res = getknn(object.X, X; k = object.k, metric = object.metric)

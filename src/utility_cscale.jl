@@ -1,6 +1,6 @@
 """
-    center(X, v)
-    center!(X::AbstractMatrix, v)
+    fcenter(X, v)
+    fcenter!(X::AbstractMatrix, v)
 Center each column of `X`.
 * `X` : Data.
 * `v` : Centering factors.
@@ -10,16 +10,16 @@ Center each column of `X`.
 n, p = 5, 6
 X = rand(n, p)
 xmeans = colmean(X)
-center(X, xmeans)
+fcenter(X, xmeans)
 ```
 """ 
-center(X, v) = X .- vec(v)'
+fcenter(X, v) = X .- vec(v)'
 
-center!(X::AbstractMatrix, v) = X .-= vec(v)'
+fcenter!(X::AbstractMatrix, v) = X .-= vec(v)'
 
 """
-    scale(X, v)
-    scale!(X::AbstractMatrix, v)
+    fscale(X, v)
+    fscale!(X::AbstractMatrix, v)
 Scale each column of `X`.
 * `X` : Data.
 * `v` : Scaling factors.
@@ -27,17 +27,17 @@ Scale each column of `X`.
 ## Examples
 ```julia
 X = rand(5, 2) 
-scale(X, colstd(X))
+fscale(X, colstd(X))
 ```
 """ 
-scale(X, v) = X ./ vec(v)'
+fscale(X, v) = X ./ vec(v)'
 
-scale!(X::AbstractMatrix, v) = X ./= vec(v)'
+fscale!(X::AbstractMatrix, v) = X ./= vec(v)'
 
 """
-    cscale(X, u, v)
-    cscale!(X, u, v)
-Center and scale each column of `X`.
+    fcscale(X, u, v)
+    fcscale!(X, u, v)
+Center and fscale each column of `X`.
 * `X` : Data.
 * `u` : Centering factors.
 * `v` : Scaling factors.
@@ -48,15 +48,15 @@ n, p = 5, 6
 X = rand(n, p)
 xmeans = colmean(X)
 xstds = colstd(X)
-cscale(X, xmeans, xstds)
+fcscale(X, xmeans, xstds)
 ```
 """ 
-function cscale(X, u, v)
+function fcscale(X, u, v)
     zX = copy(ensure_mat(X))
-    cscale!(zX, u, v)
+    fcscale!(zX, u, v)
     zX
 end
 
-cscale!(X::AbstractMatrix, u, v) = scale!(center!(X, u), v)
+fcscale!(X::AbstractMatrix, u, v) = fscale!(fcenter!(X, u), v)
 
 

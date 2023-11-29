@@ -9,7 +9,7 @@ Residual matrix after fitting by a PCA, PCR or PLS model
 
 Compute the residual matrix E = X - X_fit.
 
-`X` and X_fit are in the original scale, i.e. before centering and eventual scaling.
+`X` and X_fit are in the original fscale, i.e. before centering and eventual scaling.
 
 ## Examples 
 ```julia 

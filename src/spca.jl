@@ -137,9 +137,9 @@ function spca!(X::Matrix, weights::Weight;
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
-        cscale!(X, xmeans, xscales)
+        fcscale!(X, xmeans, xscales)
     else
-        center!(X, xmeans)
+        fcenter!(X, xmeans)
     end
     sqrtw = sqrt.(weights.w)
     X .= Diagonal(sqrtw) * X
@@ -190,7 +190,7 @@ function transf(object::Spca, X; nlv = nothing)
     m = nro(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    zX = cscale(X, object.xmeans, object.xscales)
+    zX = fcscale(X, object.xmeans, object.xscales)
     T = similar(X, m, nlv)
     t = similar(X, m)
     for a = 1:nlv
@@ -211,7 +211,7 @@ function Base.summary(object::Spca, X::Union{Matrix, DataFrame})
     X = ensure_mat(X)
     nlv = nco(object.T)
     D = Diagonal(object.weights.w)
-    X = cscale(X, object.xmeans, object.xscales)
+    X = fcscale(X, object.xmeans, object.xscales)
     ## (||X||_D)^2 = tr(X' * D * X) = frob(X, weights)^2
     sstot = sum(colnorm(X, object.weights).^2)    
     ## Proportion of variance of X explained by each column of T

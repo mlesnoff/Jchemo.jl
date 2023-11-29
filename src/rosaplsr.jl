@@ -17,7 +17,7 @@ algorithm of Liland et al. (2016):
 * Scores T are not normed to 1.
 * Multivariate `Y` is allowed. In such a case, the squared residuals are summed 
     over the columns for finding the winning block for each global LV 
-    (therefore Y-columns should have the same scale).
+    (therefore Y-columns should have the same fscale).
 
 ## References
 Liland, K.H., Næs, T., Indahl, U.G., 2016. ROSA — a fast extension of partial least 
@@ -83,18 +83,18 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
-            Xbl[k] .= cscale(Xbl[k], xmeans[k], xscales[k])
+            Xbl[k] .= fcscale(Xbl[k], xmeans[k], xscales[k])
         else
-            Xbl[k] .= center(Xbl[k], xmeans[k])
+            Xbl[k] .= fcenter(Xbl[k], xmeans[k])
         end
     end
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
     if par.scal 
         yscales .= colstd(Y, weights)
-        cscale!(Y, ymeans, yscales)
+        fcscale!(Y, ymeans, yscales)
     else
-        center!(Y, ymeans)
+        fcenter!(Y, ymeans)
     end
     # Pre-allocation
     W = similar(Xbl[1], sum(p), nlv)
@@ -204,7 +204,7 @@ function transf(object::Rosaplsr, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     zXbl = list(nbl, Matrix{Q})
     Threads.@threads for k = 1:nbl
-        zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
+        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
     reduce(hcat, zXbl) * vcol(object.R, 1:nlv)
 end

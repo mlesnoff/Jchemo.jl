@@ -72,7 +72,7 @@ function vip(object::Union{Pcr, Plsr}; nlv = nothing)
     ## ::Plsr represents algorithmns where W is normed
     ## ==> No need to do the fllowing: 
     ## wnorms = colnorm(W)
-    ## W2 = scale(W, wnorms).^2
+    ## W2 = fscale(W, wnorms).^2
     ## End
     W2 = W[:, 1:nlv].^2
     sst = zeros(nlv)

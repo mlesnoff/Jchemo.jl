@@ -16,7 +16,7 @@ One-class classification using PCA/PLS score distance (SD).
 In this method, the outlierness `d` of an observation is defined by its 
 score distance (SD), ie. the Mahalanobis distance between the projection of 
 the observation on the score plan defined by the fitted (e.g. PCA) model and 
-the center of the score plan.
+the fcenter of the score plan.
 
 If a new observation has `d` higher than a given `cutoff`, the observation 
 is assumed to not belong to the training class. 

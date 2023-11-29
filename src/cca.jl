@@ -69,7 +69,7 @@ pnames(fm)
 
 fm.Tx
 transf(fm, X, Y).Tx
-scale(fm.Tx, colnorm(fm.Tx))
+fscale(fm.Tx, colnorm(fm.Tx))
 
 res = summary(fm, X, Y)
 pnames(res)
@@ -104,11 +104,11 @@ function cca!(X::Matrix, Y::Matrix, weights::Weight;
     if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
-        cscale!(X, xmeans, xscales)
-        cscale!(Y, ymeans, yscales)
+        fcscale!(X, xmeans, xscales)
+        fcscale!(Y, ymeans, yscales)
     else
-        center!(X, xmeans)
-        center!(Y, ymeans)
+        fcenter!(X, xmeans)
+        fcenter!(Y, ymeans)
     end
     par.bscal == :none ? bscales = ones(Q, 2) : nothing
     if par.bscal == :frob
@@ -166,8 +166,8 @@ function transf(object::Cca, X, Y; nlv = nothing)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    X = cscale(X, object.xmeans, object.xscales) / object.bscales[1]
-    Y = cscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     Tx = X * vcol(object.Wx, 1:nlv)
     Ty = Y * vcol(object.Wy, 1:nlv)
     (Tx = Tx, Ty)
@@ -185,8 +185,8 @@ function Base.summary(object::Cca, X, Y)
     Y = ensure_mat(Y)
     n = nro(X)
     nlv = nco(object.Tx)
-    X = cscale(X, object.xmeans, object.xscales) / object.bscales[1]
-    Y = cscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     D = Diagonal(object.weights.w)
     # X
     sstot = frob(X, object.weights)^2

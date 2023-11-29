@@ -97,7 +97,7 @@ function svmr(X, y; kwargs...)
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
-        X = scale(X, xscales)
+        X = fscale(X, xscales)
     end
     if kern == :krbf
         fkern = LIBSVM.Kernel.RadialBasis
@@ -131,7 +131,7 @@ Compute y-predictions from a fitted model.
 function predict(object::Svmr, X)
     X = ensure_mat(X)
     Q = eltype(X)
-    pred = svmpredict(object.fm, scale(X, object.xscales)')[1]
+    pred = svmpredict(object.fm, fscale(X, object.xscales)')[1]
     n = length(pred)
     pred = reshape(convert.(Q, pred), n, 1)
     (pred = pred,)

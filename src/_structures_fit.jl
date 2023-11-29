@@ -719,3 +719,19 @@ struct Interpl
     kwargs::Base.Pairs
     par::Par
 end
+
+struct Mavg
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Savgol
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Snv
+    kwargs::Base.Pairs
+    par::Par
+end
+

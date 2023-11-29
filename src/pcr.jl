@@ -77,7 +77,7 @@ function pcr!(X::Matrix, Y::Matrix, weights::Weight;
     Q = eltype(X)
     q = nco(Y)
     ymeans = colmean(Y, weights)
-    ## No need to scale Y
+    ## No need to fscale Y
     ## below yscales is built only for consistency with coef::Plsr  
     yscales = ones(Q, q)
     # End 

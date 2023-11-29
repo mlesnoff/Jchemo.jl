@@ -49,11 +49,11 @@ function predict(object::Occstah, X)
     zX = copy(ensure_mat(X))
     m = nro(zX)
     res = object.res_stah
-    center!(zX, res.mu_scal)
-    scale!(zX, res.s_scal)
+    fcenter!(zX, res.mu_scal)
+    fscale!(zX, res.s_scal)
     T = zX * res.P
-    center!(T, res.mu)
-    scale!(T, res.s)
+    fcenter!(T, res.mu)
+    fscale!(T, res.s)
     T .= abs.(T)
     d = similar(T, m)
     @inbounds for i = 1:m

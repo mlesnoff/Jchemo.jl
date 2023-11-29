@@ -44,12 +44,12 @@ function stah(X, a; scal = true)
     if par.scal
         mu_scal .= vec(median(zX, dims = 1))
         s_scal .= colmad(zX)
-        cscale!(zX, mu_scal, s_scal)
+        fcscale!(zX, mu_scal, s_scal)
     end
     T = zX * P
     mu = vec(median(T, dims = 1))
     s = colmad(T)
-    cscale!(T, mu, s)
+    fcscale!(T, mu, s)
     T .= abs.(T)
     d = similar(T, n)
     @inbounds for i = 1:n

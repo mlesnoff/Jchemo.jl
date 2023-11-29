@@ -92,7 +92,7 @@ function rfda_dt(X, y::Union{Array{Int}, Array{String}};
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
-        X = scale(X, xscales)
+        X = fscale(X, xscales)
     end
     ztab = tab(y)
     lev = ztab.keys 

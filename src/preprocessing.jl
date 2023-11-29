@@ -17,8 +17,8 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 pnames(dat)
 
 X = dat.X
-wl_str = names(dat.X)
-wl = parse.(Float64, wl_str)
+wlstr = names(dat.X)
+wl = parse.(Float64, wlstr)
 
 Xp = detrend(X)
 plotsp(Xp[1:30, :], wl).f
@@ -77,8 +77,8 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 pnames(dat)
 
 X = dat.X
-wl_str = names(dat.X)
-wl = parse.(Float64, wl_str)
+wlstr = names(dat.X)
+wl = parse.(Float64, wlstr)
 
 Xp = fdif(X; npoint = 10)
 plotsp(Xp[1:30, :]).f
@@ -139,8 +139,8 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 pnames(dat)
 
 X = dat.X 
-wl_str = names(X)
-wl = parse.(Float64, wl_str) 
+wlstr = names(X)
+wl = parse.(Float64, wlstr) 
 
 plotsp(X[1:10,:], wl).f
 
@@ -193,7 +193,7 @@ Moving averages smoothing of each row of X-data.
 The smoothing is computed by convolution (with padding), 
 with function imfilter of package ImageFiltering.jl. The centered 
 kernel is ones(`npoint`) / `npoint`. Each returned point is located on 
-the center of the kernel.
+the fcenter of the kernel.
 
 ## References
 Package ImageFiltering.jl
@@ -208,8 +208,8 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 pnames(dat)
 
 X = dat.X
-wl_str = names(dat.X)
-wl = parse.(Float64, wl_str)
+wlstr = names(dat.X)
+wl = parse.(Float64, wlstr)
 
 Xp = mavg(X; npoint = 10) 
 plotsp(Xp[1:30, :], wl).f
@@ -293,7 +293,7 @@ Savitzky-Golay smoothing of each row of a matrix `X`.
 * `deriv` : Derivation order (0 <= deriv <= degree).
 
 The smoothing is computed by convolution (with padding), with function 
-imfilter of package ImageFiltering.jl. Each returned point is located on the center 
+imfilter of package ImageFiltering.jl. Each returned point is located on the fcenter 
 of the kernel. The kernel is computed with function `savgk`.
 
 ## References 
@@ -315,8 +315,8 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 pnames(dat)
 
 X = dat.X
-wl_str = names(dat.X)
-wl = parse.(Float64, wl_str)
+wlstr = names(dat.X)
+wl = parse.(Float64, wlstr)
 
 npoint = 21 ; degree = 3 ; deriv = 2 ; 
 Xp = savgol(X; npoint = npoint, degree = degree, deriv = deriv) 
@@ -364,8 +364,8 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 pnames(dat)
 
 X = dat.X
-wl_str = names(dat.X)
-wl = parse.(Float64, wl_str)
+wlstr = names(dat.X)
+wl = parse.(Float64, wlstr)
 
 Xp = snv(X) 
 plotsp(Xp[1:30, :], wl).f

@@ -81,8 +81,8 @@ function corm(X, weights::Weight)
     zX = copy(ensure_mat(X))
     xmeans = colmean(zX, weights)
     xstds = colstd(zX, weights)
-    center!(zX, xmeans)
-    scale!(zX, xstds)
+    fcenter!(zX, xmeans)
+    fscale!(zX, xstds)
     z = Diagonal(sqrt.(w)) * zX
     z' * z
 end
@@ -94,10 +94,10 @@ function corm(X, Y, weights::Weight)
     ymeans = colmean(zY, weights)
     xstds = colstd(zX, weights)
     ystds = colstd(zY, weights)
-    center!(zX, xmeans)
-    center!(zY, ymeans)
-    scale!(zX, xstds)
-    scale!(zY, ystds)
+    fcenter!(zX, xmeans)
+    fcenter!(zY, ymeans)
+    fscale!(zX, xstds)
+    fscale!(zY, ystds)
     zX' * Diagonal(weights.w) * zY
 end
 
@@ -117,7 +117,7 @@ cosm(X)
 function cosm(X)
     X = ensure_mat(X)
     xnorms = colnorm(X)
-    zX = scale(X, xnorms)
+    zX = fscale(X, xnorms)
     zX' * zX 
 end
 
@@ -166,7 +166,7 @@ covm(X, Y, w)
 """
 function covm(X, weights::Weight)
     zX = copy(ensure_mat(X))
-    center!(zX, colmean(zX, weights))
+    fcenter!(zX, colmean(zX, weights))
     zX = Diagonal(sqrt.(weights.w)) * zX
     zX' * zX
 end
@@ -174,8 +174,8 @@ end
 function covm(X, Y, weights::Weight)
     zX = copy(ensure_mat(X))
     zY = copy(ensure_mat(Y))
-    center!(zX, colmean(zX, weights))
-    center!(zY, colmean(zY, weights))
+    fcenter!(zX, colmean(zX, weights))
+    fcenter!(zY, colmean(zY, weights))
     zX' * Diagonal(weights.w) * zY
 end
 

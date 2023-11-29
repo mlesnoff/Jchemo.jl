@@ -97,7 +97,7 @@ function blockscal_mfa(Xbl, weights::Weight)
     bscales = list(nbl, eltype(Xbl[1]))
     @inbounds for k = 1:nbl
         xmeans = colmean(Xbl[k], weights)
-        zX = center(Xbl[k], xmeans)
+        zX = fcenter(Xbl[k], xmeans)
         bscales[k] = nipals(sqrtD * zX).sv
     end
     blockscal(Xbl, bscales)

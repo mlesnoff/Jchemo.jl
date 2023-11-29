@@ -110,8 +110,8 @@ function dkplsr!(X::Matrix, Y::Matrix, weights::Weight;
     if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
-        scale!(X, xscales)
-        scale!(Y, yscales)
+        fscale!(X, xscales)
+        fscale!(Y, yscales)
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
     K = fkern(X, X; values(kwargs)...)     
@@ -128,7 +128,7 @@ Compute latent variables (LVs = scores T) from a fitted model and X-data.
 """ 
 function transf(object::Dkplsr, X; nlv = nothing)
     fkern = eval(Meta.parse(String(object.par.kern)))
-    K = fkern(scale(X, object.xscales), object.X; par = object.par)
+    K = fkern(fscale(X, object.xscales), object.X; par = object.par)
     transf(object.fm, K; nlv = nlv)
 end
 
@@ -156,7 +156,7 @@ function predict(object::Dkplsr, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     fkern = eval(Meta.parse(String(object.par.kern)))
-    K = fkern(scale(X, object.xscales), object.X; par = object.par)
+    K = fkern(fscale(X, object.xscales), object.X; par = object.par)
     pred = predict(object.fm, K; nlv = nlv).pred
     if le_nlv == 1
         pred .= pred * Diagonal(object.yscales)

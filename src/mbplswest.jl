@@ -94,18 +94,18 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight;
         xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
-            Xbl[k] .= cscale(Xbl[k], xmeans[k], xscales[k])
+            Xbl[k] .= fcscale(Xbl[k], xmeans[k], xscales[k])
         else
-            Xbl[k] .= center(Xbl[k], xmeans[k])
+            Xbl[k] .= fcenter(Xbl[k], xmeans[k])
         end
     end
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
     if par.scal 
         yscales .= colstd(Y, weights)
-        cscale!(Y, ymeans, yscales)
+        fcscale!(Y, ymeans, yscales)
     else
-        center!(Y, ymeans)
+        fcenter!(Y, ymeans)
     end
     par.bscal == :none ? bscales = ones(Q, nbl) : nothing
     if par.bscal == :frob
@@ -210,7 +210,7 @@ function transf(object::Union{MbplsWest, Mbplsr}, Xbl; nlv = nothing)
     nbl = length(Xbl)
     zXbl = list(nbl, Matrix{Q})
     Threads.@threads for k = 1:nbl
-        zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
+        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
     res = blockscal(zXbl, object.bscales)
     reduce(hcat, res.Xbl) * vcol(object.R, 1:nlv) 
@@ -254,7 +254,7 @@ function Base.summary(object::MbplsWest, Xbl)
     sqrtw = sqrt.(object.weights.w)
     zXbl = list(nbl, Matrix{Q})
     Threads.@threads for k = 1:nbl
-        zXbl[k] = cscale(Xbl[k], object.xmeans[k], object.xscales[k])
+        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
     zXbl = blockscal(zXbl, object.bscales).Xbl
     @inbounds for k = 1:nbl
@@ -295,7 +295,7 @@ function Base.summary(object::MbplsWest, Xbl)
     sal2 = nothing
     if !isnothing(object.lb)
         lb2 = colsum(object.lb.^2)
-        sal2 = scale(object.lb.^2, lb2)
+        sal2 = fscale(object.lb.^2, lb2)
         sal2 = DataFrame(sal2, string.("lv", 1:nlv))
     end
     # Output

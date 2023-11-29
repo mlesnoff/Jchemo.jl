@@ -50,11 +50,11 @@ function rrchol!(X::Matrix, Y::Matrix, weights::Weight;
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
-        cscale!(X, xmeans, xscales)
+        fcscale!(X, xmeans, xscales)
     else
-        center!(X, xmeans)
+        fcenter!(X, xmeans)
     end
-    center!(Y, ymeans)  
+    fcenter!(Y, ymeans)  
     XtD = X' * Diagonal(weights.w)
     B = cholesky!(Hermitian(XtD * X + lb^2 * Diagonal(ones(Q, p)))) \ (XtD * Y)
     B .= Diagonal(1 ./ xscales) * B 

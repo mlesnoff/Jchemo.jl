@@ -82,9 +82,9 @@ function pcanipalsmiss!(X::Matrix, weights::Weight;
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstdskip(X, weights)
-        cscale!(X, xmeans, xscales)
+        fcscale!(X, xmeans, xscales)
     else
-        center!(X, xmeans)
+        fcenter!(X, xmeans)
     end
     sqrtw = sqrt.(weights.w)
     X .= Diagonal(sqrtw) * X

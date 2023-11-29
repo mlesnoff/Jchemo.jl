@@ -25,7 +25,7 @@ Journal of Chemometrics n/a, e3369. https://doi.org/10.1002/cem.3369
 ## Examples
 ```julia
 # The example below reproduces the numerical illustration
-# given by Kramer & Sugiyama 2011 on the Ozone data (Fig. 1, center).
+# given by Kramer & Sugiyama 2011 on the Ozone data (Fig. 1, fcenter).
 # Function "pls.model" used for df calculations
 # in the R package "plsdof" v0.2-9 (Kramer & Braun 2019)
 # automatically scales the X matrix before PLS.
@@ -44,7 +44,7 @@ y = X[:, 4]
 
 # For consistency with plsdof
 xstds = colstd(zX)
-zXs = scale(zX, xstds)
+zXs = fscale(zX, xstds)
 # End
 
 nlv = 12 

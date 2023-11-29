@@ -95,7 +95,7 @@ function plotxy(x, y; resolution = (600, 400),
         X = hcat(x, y)
         xmeans = colmean(X)
         radius = sqrt(quantile(Chi(2), prob))
-        res = Jchemo.ellipse(cov(X); center = xmeans, radius = radius)
+        res = Jchemo.ellipse(cov(X); fcenter = xmeans, radius = radius)
         if isnothing(color)
             lines!(ax, res.X; color = :grey40)
         else
@@ -145,7 +145,7 @@ function plotxy(x, y, group; resolution = (600, 400),
             X = hcat(zx, zy)
             xmeans = colmean(X)
             radius = sqrt(quantile(Chi(2), prob))
-            res = Jchemo.ellipse(cov(X); center = xmeans, radius = radius)
+            res = Jchemo.ellipse(cov(X); fcenter = xmeans, radius = radius)
             if isnothing(color)
                 lines!(ax, res.X; color = :grey40)
             else

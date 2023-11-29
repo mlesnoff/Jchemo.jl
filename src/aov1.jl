@@ -27,7 +27,7 @@ function aov1(x, Y)
     ni = ztab.vals
     nlev = length(lev)
     Xdummy = dummy(x, Q).Y
-    zY = center(Y, colmean(Y))
+    zY = fcenter(Y, colmean(Y))
     fm = mlr(Xdummy, zY) ;
     pred = predict(fm, Xdummy).pred
     SSF = sum((pred.^2), dims = 1)   # = colvar(pred) * n

@@ -61,8 +61,8 @@ pnames(dat)
 X = dat.X 
 Y = dat.Y
 y = Y.typ
-wl_str = names(X)
-wl = parse.(Float64, wl_str)
+wlstr = names(X)
+wl = parse.(Float64, wlstr)
 ntot = nro(X)
 
 plotsp(X, wl).f
@@ -108,7 +108,7 @@ function rda(X, y, weights = ones(nro(X));
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
-        X = scale(X, xscales)
+        X = fscale(X, xscales)
     end
     res = matW(X, y, weights)
     ni = res.ni
@@ -147,7 +147,7 @@ Compute y-predictions from a fitted model.
 function predict(object::Rda, X)
     X = ensure_mat(X)
     m = nro(X)
-    X = scale(X, object.xscales)
+    X = fscale(X, object.xscales)
     lev = object.lev
     nlev = length(lev) 
     dens = similar(X, m, nlev)
@@ -156,7 +156,7 @@ function predict(object::Rda, X)
     end
     A = object.wprior' .* dens
     v = sum(A, dims = 2)
-    posterior = scale(A', v)'                    # This could be replaced by code similar as in scale! 
+    posterior = fscale(A', v)'                    # This could be replaced by code similar as in fscale! 
     z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
     pred = reshape(replacebylev2(z, lev), m, 1)
     (pred = pred, dens, posterior)

@@ -83,7 +83,7 @@ function svmda(X, y; kern = :krbf,
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
-        X = scale(X, xscales)
+        X = fscale(X, xscales)
     end
     ztab = tab(y)
     gamma = Float64(gamma) ; degree = Int(degree) ; coef0  = Float64(coef0) ; 
@@ -118,7 +118,7 @@ Compute y-predictions from a fitted model.
 """ 
 function predict(object::Svmda, X)
     X = ensure_mat(X)
-    pred = svmpredict(object.fm, scale(X, object.xscales)')[1]
+    pred = svmpredict(object.fm, fscale(X, object.xscales)')[1]
     n = length(pred)
     pred = reshape(pred, n, 1)
     (pred = pred,)

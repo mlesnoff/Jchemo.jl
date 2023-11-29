@@ -78,9 +78,9 @@ function pcasvd!(X::Matrix, weights::Weight;
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
-        cscale!(X, xmeans, xscales)
+        fcscale!(X, xmeans, xscales)
     else
-        center!(X, xmeans)
+        fcenter!(X, xmeans)
     end
     ## by default in LinearAlgebra.svd
     ## "full = false" ==> [1:min(n, p)]
@@ -105,7 +105,7 @@ function transf(object::Union{Pca, Fda}, X;
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    cscale(X, object.xmeans, object.xscales) * vcol(object.P, 1:nlv)
+    fcscale(X, object.xmeans, object.xscales) * vcol(object.P, 1:nlv)
 end
 
 """
@@ -119,7 +119,7 @@ function Base.summary(object::Pca,
     X = ensure_mat(X)
     nlv = nco(object.T)
     D = Diagonal(object.weights.w)
-    X = cscale(X, object.xmeans, object.xscales)
+    X = fcscale(X, object.xmeans, object.xscales)
     ## (||X||_D)^2 = tr(X' * D * X) = frob(X, weights)^2
     sstot = sum(colnorm(X, object.weights).^2)
     ## End
@@ -133,13 +133,13 @@ function Base.summary(object::Pca,
     explvarx = DataFrame(lv = 1:nlv, var = tt, 
         pvar = pvar, cumpvar = cumpvar)
     nam = string.("lv", 1:nlv)
-    contr_ind = DataFrame(scale(TT, tt), nam)
+    contr_ind = DataFrame(fscale(TT, tt), nam)
     cor_circle = DataFrame(corm(X, object.T, object.weights), nam)
-    C = X' * D * scale(object.T, sqrt.(tt))
+    C = X' * D * fscale(object.T, sqrt.(tt))
     coord_var = DataFrame(C, nam)
     CC = C .* C
     cc = sum(CC, dims = 1)
-    contr_var = DataFrame(scale(CC, cc), nam)
+    contr_var = DataFrame(fscale(CC, cc), nam)
     (explvarx = explvarx, contr_ind, contr_var, 
         coord_var, cor_circle)
 end

@@ -82,7 +82,7 @@ function predict(object::Kernda, X)
     end
     A = object.wprior' .* dens
     v = sum(A, dims = 2)
-    posterior = scale(A', v)'                    # This could be replaced by code similar as in scale! 
+    posterior = fscale(A', v)'                    # This could be replaced by code similar as in fscale! 
     z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
     pred = reshape(replacebylev2(z, object.lev), m, 1)
     (pred = pred, dens = dens, posterior = posterior)

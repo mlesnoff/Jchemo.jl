@@ -112,10 +112,10 @@ function kplsr!(X::Matrix, Y::Matrix, weights::Weight;
     if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
-        scale!(X, xscales)
-        cscale!(Y, ymeans, yscales)
+        fscale!(X, xscales)
+        fcscale!(Y, ymeans, yscales)
     else
-        center!(Y, ymeans)
+        fcenter!(Y, ymeans)
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
     K = fkern(X, X; values(kwargs)...)     # In the future?: fkern!(K, X, X; values(kwargs)...)
@@ -187,7 +187,7 @@ function transf(object::Kplsr, X; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
-    K = fkern(scale(X, object.xscales), object.X; par = object.par)
+    K = fkern(fscale(X, object.xscales), object.X; par = object.par)
     DKt = object.D * K'
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')

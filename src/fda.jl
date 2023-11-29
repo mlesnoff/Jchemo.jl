@@ -74,7 +74,7 @@ fm.P' * fm.P    # not orthogonal
 fm.eig
 fm.sstot
 # Explained variance by PCA of the class centers 
-# in transformed scale
+# in transformed fscale
 Base.summary(fm)
 ```
 """ 
@@ -89,9 +89,9 @@ function fda!(X::Matrix, y; kwargs...)
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
-        cscale!(X, xmeans, xscales)
+        fcscale!(X, xmeans, xscales)
     else
-        center!(X, xmeans)
+        fcenter!(X, xmeans)
     end
     w = mweight(ones(Q, n))    
     res = matW(X, y, w)
@@ -113,7 +113,7 @@ function fda!(X::Matrix, y; kwargs...)
     eig = real.(eig)
     sstot = sum(eig)
     norm_P = sqrt.(diag(P' * res.W * P))
-    scale!(P, norm_P)
+    fscale!(P, norm_P)
     T = X * P
     Tcenters = zres.ct * P
     Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, lev, ni)

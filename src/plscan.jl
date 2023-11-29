@@ -47,7 +47,7 @@ pnames(fm)
 
 fm.Tx
 transf(fm, X, Y).Tx
-scale(fm.Tx, colnorm(fm.Tx))
+fscale(fm.Tx, colnorm(fm.Tx))
 
 res = summary(fm, X, Y)
 pnames(res)
@@ -80,11 +80,11 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight;
     if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
-        cscale!(X, xmeans, xscales)
-        cscale!(Y, ymeans, yscales)
+        fcscale!(X, xmeans, xscales)
+        fcscale!(Y, ymeans, yscales)
     else
-        center!(X, xmeans)
-        center!(Y, ymeans)
+        fcenter!(X, xmeans)
+        fcenter!(Y, ymeans)
     end
     par.bscal == :none ? bscales = ones(Q, 2) : nothing
     if par.bscal == :frob
@@ -169,8 +169,8 @@ function transf(object::PlsCan, X, Y; nlv = nothing)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    Tx = cscale(X, object.xmeans, object.xscales) * vcol(object.Rx, 1:nlv)
-    Ty = cscale(Y, object.ymeans, object.yscales) * vcol(object.Ry, 1:nlv)
+    Tx = fcscale(X, object.xmeans, object.xscales) * vcol(object.Rx, 1:nlv)
+    Ty = fcscale(Y, object.ymeans, object.yscales) * vcol(object.Ry, 1:nlv)
     (Tx = Tx, Ty)
 end
 
@@ -185,8 +185,8 @@ function Base.summary(object::PlsCan, X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, nlv = size(object.Tx)
-    X = cscale(X, object.xmeans, object.xscales)
-    Y = cscale(Y, object.ymeans, object.yscales)
+    X = fcscale(X, object.xmeans, object.xscales)
+    Y = fcscale(Y, object.ymeans, object.yscales)
     ttx = object.TTx 
     tty = object.TTy 
     # X

@@ -79,7 +79,7 @@ function treeda_dt(X, y::Union{Array{Int}, Array{String}};
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
-        X = scale(X, xscales)
+        X = fscale(X, xscales)
     end
     ztab = tab(y)
     lev = ztab.keys 
@@ -111,9 +111,9 @@ function predict(object::TreedaDt, X)
     X = ensure_mat(X)
     m = nro(X)
     if pnames(object.fm)[1] == :node
-        pred = apply_tree(object.fm, scale(X, object.xscales))
+        pred = apply_tree(object.fm, fscale(X, object.xscales))
     else
-        pred = apply_forest(object.fm, scale(X, object.xscales); 
+        pred = apply_forest(object.fm, fscale(X, object.xscales); 
             use_multithreading = object.mth)
     end
     pred = reshape(pred, m, 1)

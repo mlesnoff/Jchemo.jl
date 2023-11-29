@@ -41,9 +41,9 @@ function rp!(X::Matrix, weights::Weight;
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
-        cscale!(X, xmeans, xscales)
+        fcscale!(X, xmeans, xscales)
     else
-        center!(X, xmeans)
+        fcenter!(X, xmeans)
     end
     if par.rpmeth == :gauss
         P = rpmatgauss(p, par.nlv, Q)
@@ -65,6 +65,6 @@ function transf(object::Rp, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    cscale(X, object.xmeans, object.xscales) * vcol(object.P, 1:nlv)
+    fcscale(X, object.xmeans, object.xscales) * vcol(object.P, 1:nlv)
 end
 

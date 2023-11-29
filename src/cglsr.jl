@@ -86,11 +86,11 @@ function cglsr!(X::Matrix, y::Matrix; kwargs...)
     if par.scal 
         xscales .= colstd(X)
         yscales .= colstd(y)
-        cscale!(X, xmeans, xscales)
-        cscale!(y, ymeans, yscales)
+        fcscale!(X, xmeans, xscales)
+        fcscale!(y, ymeans, yscales)
     else
-        center!(X, xmeans)
-        center!(y, ymeans)
+        fcenter!(X, xmeans)
+        fcenter!(y, ymeans)
     end
     # Pre-allocation and initialization
     B = similar(X, p, nlv)

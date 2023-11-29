@@ -121,7 +121,7 @@ function occknndis(X; nlv, nsamp, k,
     fm = pcasvd(X; nlv = nlv, scal = scal)
     # For the Mahalanobis distance
     tscales = colstd(fm.T)
-    scale!(fm.T, tscales)
+    fscale!(fm.T, tscales)
     # End
     samp = sample(1:n, nsamp; replace = false)
     res = getknn(fm.T, fm.T[samp, :]; 
@@ -148,7 +148,7 @@ function predict(object::Occknndis, X)
     X = ensure_mat(X)
     m = nro(X)
     T = transf(object.fm, X)
-    scale!(T, object.tscales)
+    fscale!(T, object.tscales)
     res = getknn(object.T, T; k = object.k, metric = :eucl) 
     d = zeros(m)
     @inbounds for i = 1:m

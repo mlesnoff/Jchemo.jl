@@ -75,8 +75,8 @@ function mlr!(X::Matrix, Y::Matrix, weights::Weight;
     else
         xmeans = colmean(X, weights) 
         ymeans = colmean(Y, weights)   
-        center!(X, xmeans)
-        center!(Y, ymeans)
+        fcenter!(X, xmeans)
+        fcenter!(Y, ymeans)
         B = (sqrtD * X) \ (sqrtD * Y)
         int = ymeans' .- xmeans' * B
     end
@@ -113,8 +113,8 @@ function mlrchol!(X::Matrix, Y::Matrix, weights::Weight)
     @assert nco(X) > 1 "The Method only works for X with nb. columns > 1."
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
-    center!(X, xmeans)
-    center!(Y, ymeans)
+    fcenter!(X, xmeans)
+    fcenter!(Y, ymeans)
     XtD = X' * Diagonal(weights.w)
     B = cholesky!(Hermitian(XtD * X)) \ (XtD * Y)
     int = ymeans' .- xmeans' * B
@@ -157,8 +157,8 @@ function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight;
     else
         xmeans = colmean(X, weights) 
         ymeans = colmean(Y, weights)   
-        center!(X, xmeans)
-        center!(Y, ymeans)
+        fcenter!(X, xmeans)
+        fcenter!(Y, ymeans)
         sqrtDX = sqrtD * X
         tol = sqrt(eps(real(float(one(eltype(sqrtDX))))))      # see ?pinv
         B = pinv(sqrtDX, rtol = tol) * (sqrtD * Y)
@@ -196,8 +196,8 @@ end
 function mlrpinvn!(X::Matrix, Y::Matrix, weights::Weight)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
-    center!(X, xmeans)
-    center!(Y, ymeans)
+    fcenter!(X, xmeans)
+    fcenter!(Y, ymeans)
     XtD = X' * Diagonal(weights.w)
     XtDX = XtD * X
     tol = sqrt(eps(real(float(one(eltype(XtDX))))))
@@ -242,8 +242,8 @@ function mlrvec!(x::Matrix, Y::Matrix, weights::Weight;
     else
         xmeans = colmean(x, weights) 
         ymeans = colmean(Y, weights)   
-        center!(x, xmeans)
-        center!(Y, ymeans)
+        fcenter!(x, xmeans)
+        fcenter!(Y, ymeans)
         xtD = x' * Diagonal(weights.w)
         B = (xtD * Y) ./ (xtD * x)
         int = ymeans' .- xmeans' * B

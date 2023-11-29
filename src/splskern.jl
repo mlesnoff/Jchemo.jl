@@ -131,11 +131,11 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight;
     if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
-        cscale!(X, xmeans, xscales)
-        cscale!(Y, ymeans, yscales)
+        fcscale!(X, xmeans, xscales)
+        fcscale!(Y, ymeans, yscales)
     else
-        center!(X, xmeans)
-        center!(Y, ymeans)
+        fcenter!(X, xmeans)
+        fcenter!(Y, ymeans)
     end
     D = Diagonal(weights.w)
     XtY = X' * (D * Y)                   # = Xd' * Y = X' * D * Y  (Xd = D * X   Very costly!!)

@@ -31,9 +31,9 @@ function fdasvd!(X::Matrix, y; kwargs...)
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
-        cscale!(X, xmeans, xscales)
+        fcscale!(X, xmeans, xscales)
     else
-        center!(X, xmeans)
+        fcenter!(X, xmeans)
     end
     w = mweight(ones(Q, n))
     res = matW(X, y, w)

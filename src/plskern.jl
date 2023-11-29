@@ -114,11 +114,11 @@ function plskern!(X::Matrix, Y::Matrix, weights::Weight;
     if par.scal 
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
-        cscale!(X, xmeans, xscales)
-        cscale!(Y, ymeans, yscales)
+        fcscale!(X, xmeans, xscales)
+        fcscale!(Y, ymeans, yscales)
     else
-        center!(X, xmeans)
-        center!(Y, ymeans)
+        fcenter!(X, xmeans)
+        fcenter!(Y, ymeans)
     end
     D = Diagonal(weights.w)
     XtY = X' * (D * Y)                   # = Xd' * Y = X' * D * Y  (Xd = D * X   Very costly!!)
@@ -182,8 +182,8 @@ function transf(object::Union{Plsr, Splsr},
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    T = cscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
-    # Could be cscale! but changes X
+    T = fcscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
+    # Could be fcscale! but changes X
     # If too heavy ==> Makes summary!
     T
 end
@@ -206,7 +206,7 @@ function coef(object::Union{Plsr, Pcr, Splsr};
     W = Diagonal(object.yscales)
     B = Diagonal(1 ./ object.xscales) * vcol(object.R, 1:nlv) * beta * W
     ## 'int': No correction is needed, since 
-    ## ymeans, xmeans and B are in the original scale 
+    ## ymeans, xmeans and B are in the original fscale 
     int = object.ymeans' .- object.xmeans' * B
     (B = B, int = int)
 end
@@ -243,8 +243,8 @@ function Base.summary(object::Union{Plsr, Splsr},
         X)
     X = ensure_mat(X)
     n, nlv = size(object.T)
-    X = cscale(X, object.xmeans, object.xscales)
-    # Could be cscale! but changes X
+    X = fcscale(X, object.xmeans, object.xscales)
+    # Could be fcscale! but changes X
     # If too heavy ==> Makes summary!
     sstot = sum(object.weights.w' * (X.^2)) # = frob(X, object.weights)^2 
     tt = object.TT

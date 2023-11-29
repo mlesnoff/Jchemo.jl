@@ -40,8 +40,8 @@ function lg(X, Y; centr = true)
     if centr
         xmeans = colmean(X)
         ymeans = colmean(Y)
-        X = center(X, xmeans)
-        Y = center(Y, ymeans)
+        X = fcenter(X, xmeans)
+        Y = fcenter(Y, ymeans)
     end
     ## Same as: sum(cov(X, Y; corrected = false).^2)
     ssq(X' * Y) / n^2 
@@ -174,8 +174,8 @@ function rv(X, Y; centr = true)
     if centr
         xmeans = colmean(X)
         ymeans = colmean(Y)
-        X = center(X, xmeans)
-        Y = center(Y, ymeans)
+        X = fcenter(X, xmeans)
+        Y = fcenter(Y, ymeans)
     end
     if n < p
         XXt = X * X'

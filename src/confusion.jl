@@ -91,12 +91,12 @@ function plotconf(object; cnt = true, ptext = true,
             cnt ? val = A[i, j] : val = round(A[i, j]; digits = 1)
             i == j ? col = coldiag : col = :white
             text!(ax, string(val); position = (j, nlev - i + 1), 
-                align = (:center, :center), fontsize = fontsize,
+                align = (:fcenter, :fcenter), fontsize = fontsize,
                 color = col)
         end
     end
     ax.xticklabelrotation = π / 3   # default: 0
-    ax.xticklabelalign = (:right, :center)
+    ax.xticklabelalign = (:right, :fcenter)
     (f = f, ax, hm)
 end
 

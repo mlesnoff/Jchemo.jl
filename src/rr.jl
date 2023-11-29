@@ -88,11 +88,11 @@ function rr!(X::Matrix, Y::Matrix, weights::Weight;
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
-        cscale!(X, xmeans, xscales)
+        fcscale!(X, xmeans, xscales)
     else
-        center!(X, xmeans)
+        fcenter!(X, xmeans)
     end
-    center!(Y, ymeans)  
+    fcenter!(Y, ymeans)  
     sqrtD = Diagonal(sqrtw)
     res = LinearAlgebra.svd!(sqrtD * X)
     sv = res.S

@@ -57,8 +57,8 @@ s = dat.Ytest.inst .== 1
 Xtest = dat.Xtest[s, :]
 Ytest = dat.Ytest[s, :]
 ytest = Ytest.y
-wl_str = names(Xtrain) 
-wl = parse.(Float64, wl_str) 
+wlstr = names(Xtrain) 
+wl = parse.(Float64, wlstr) 
 ntrain, p = size(Xtrain)
 ntest = nro(Xtest)
 ntot = ntrain + ntest
@@ -88,7 +88,7 @@ function rfr_dt(X, y; kwargs...)
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
-        X = scale(X, xscales)
+        X = fscale(X, xscales)
     end
     n_subfeatures = Int(round(par.n_subfeatures))
     min_purity_increase = 0

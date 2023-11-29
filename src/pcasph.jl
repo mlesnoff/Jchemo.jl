@@ -36,8 +36,8 @@ db = joinpath(path_jdat, "data/octane.jld2")
 pnames(dat)
   
 X = dat.X 
-wl_str = names(X)
-wl = parse.(Float64, wl_str)
+wlstr = names(X)
+wl = parse.(Float64, wlstr)
 n = nro(X)
 
 nlv = 6
@@ -71,14 +71,14 @@ function pcasph!(X::Matrix, weights::Weight;
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
-        cscale!(X, xmeans, xscales)
+        fcscale!(X, xmeans, xscales)
     else
-        center!(X, xmeans)
+        fcenter!(X, xmeans)
     end
     sqrtw = sqrt.(weights.w)
     tX = Matrix(X')
     xnorms = colnorm(tX)
-    scale!(tX, xnorms)
+    fscale!(tX, xnorms)
     zX = tX'
     res = LinearAlgebra.svd!(sqrtw .* zX)
     P = res.V[:, 1:nlv]

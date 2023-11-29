@@ -41,8 +41,8 @@ pnames(dat)
 
 X = dat.X
 Y = dat.Y 
-wl_str = names(X)
-wl = parse.(Float64, wl_str) 
+wlstr = names(X)
+wl = parse.(Float64, wlstr) 
 typ = Y.typ
 y = Y.fat
 
