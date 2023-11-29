@@ -265,6 +265,7 @@ export
     detrend, detrend!, 
     fdif, fdif!,
     interpl, 
+    center, scale, cscale,
     #cubic_spline,
     mavg, mavg!, 
     rmgap, rmgap!,

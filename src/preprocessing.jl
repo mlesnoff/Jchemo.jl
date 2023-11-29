@@ -406,16 +406,14 @@ end
 """
     center(X)
 """
-function center(X; kwargs...)
+function center(X)
     xmeans = colmean(X)
-    par = recovkwargs(Par, kwargs)
-    Center(xmeans, kwargs, par)
+    Center(xmeans)
 end
 
-function center(X, weights::Weight; kwargs...)
+function center(X, weights::Weight)
     xmeans = colmean(X, weights)
-    par = recovkwargs(Par, kwargs)
-    Center(xmeans, kwargs, par)
+    Center(xmeans)
 end
 
 function transf(object::Center, X)
@@ -426,4 +424,52 @@ end
 
 function transf!(object::Center, X::Matrix)
     fcenter!(X, object.xmeans)
+end
+
+"""
+    scale(X)
+"""
+function scale(X)
+    xscales = colstd(X)
+    Scale(xscales)
+end
+
+function scale(X, weights::Weight)
+    xscales = colstd(X, weights)
+    Scale(xscales)
+end
+
+function transf(object::Scale, X)
+    X = copy(ensure_mat(X))
+    transf!(object, X)
+    X
+end
+
+function transf!(object::Scale, X::Matrix)
+    fscale!(X, object.xscales)
+end
+
+"""
+    cscale(X)
+"""
+function cscale(X)
+    xmeans = colmean(X)
+    xscales = colstd(X)
+    Cscale(xmeans, xscales)
+end
+
+function cscale(X, weights::Weight)
+    xmeans = colmean(X, weights)
+    xscales = colstd(X, weights)
+    Cscale(xmeans, xscales)
+end
+
+function transf(object::Cscale, X)
+    X = copy(ensure_mat(X))
+    transf!(object, X)
+    X
+end
+
+function transf!(object::Cscale, X::Matrix)
+    fcscale!(X, object.xmeans, object.xscales)
 end

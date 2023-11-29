@@ -737,9 +737,15 @@ end
 
 struct Center
     xmeans::Vector
-    kwargs::Base.Pairs
-    par::Par
 end
 
+struct Scale
+    xscales::Vector
+end
+
+struct Cscale
+    xmeans::Vector
+    xscales::Vector
+end
 
 

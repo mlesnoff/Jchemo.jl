@@ -36,13 +36,16 @@ end
 
 #### Functions
 
-center(; kwargs...) = Transformer{Function, Center, Base.Pairs}(center, nothing, kwargs)
 detrend(; kwargs...) = Transformer{Function, Detrend, Base.Pairs}(detrend, nothing, kwargs)
 fdif(; kwargs...) = Transformer{Function, Fdif, Base.Pairs}(fdif, nothing, kwargs)
 interpl(; kwargs...) = Transformer{Function, Interpl, Base.Pairs}(interpl, nothing, kwargs)
 mavg(; kwargs...) = Transformer{Function, Mavg, Base.Pairs}(mavg, nothing, kwargs)
 savgol(; kwargs...) = Transformer{Function, Savgol, Base.Pairs}(savgol, nothing, kwargs)
 snv(; kwargs...) = Transformer{Function, Snv, Base.Pairs}(snv, nothing, kwargs)
+
+center(; kwargs...) = Transformer{Function, Center, Base.Pairs}(center, nothing, kwargs)
+scale(; kwargs...) = Transformer{Function, Scale, Base.Pairs}(scale, nothing, kwargs)
+cscale(; kwargs...) = Transformer{Function, Cscale, Base.Pairs}(cscale, nothing, kwargs)
 
 plskern(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plskern, nothing, kwargs)
 
