@@ -215,15 +215,20 @@ Xp = mavg(X; npoint = 10)
 plotsp(Xp[1:30, :], wl).f
 ```
 """ 
-function mavg(X; npoint)
-    npoint = Int(npoint)
-    zX = copy(ensure_mat(X))
-    mavg!(zX; npoint)
-    zX
+function mavg(X; kwargs...)
+    par = recovkwargs(Par, kwargs)
+    Mavg(kwargs, par)
 end
 
-function mavg!(X::Matrix; npoint::Int)
+function transf(object::Mavg, X)
+    X = copy(ensure_mat(X))
+    transf!(object, X)
+    X
+end
+
+function transf!(object::Mavg, X::Matrix)
     n, p = size(X)
+    npoint = object.par.npoint
     kern = ImageFiltering.centered(ones(npoint) / npoint) ;
     out = similar(X, p) 
     @inbounds for i = 1:n
