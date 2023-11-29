@@ -286,6 +286,10 @@
 - **savgk**, **savgol** Savitsky-Golay filtering
 - **snv** Standard-normal-deviation transformation
 
+- **center** Column centering
+- **scale** Column scaling
+- **cscale** Column centering and scaling
+
 ### **Interpolation**
 - **interpl** Sampling signals by interpolation -- From DataInterpolations.jl
 
