@@ -70,7 +70,8 @@ function pcasvd(X, weights::Weight; kwargs...)
 end
 
 function pcasvd!(X::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
@@ -90,7 +91,7 @@ function pcasvd!(X::Matrix, weights::Weight;
     sv = res.S   
     sv[sv .< 0] .= 0
     T = (1 ./ sqrtw) .* vcol(res.U, 1:nlv) * Diagonal(sv[1:nlv])
-    Pca(T, P, sv, xmeans, xscales, weights, nothing)
+    Pca(T, P, sv, xmeans, xscales, weights, nothing, kwargs, par)
 end
 
 """ 

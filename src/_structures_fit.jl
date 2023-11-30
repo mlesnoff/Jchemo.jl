@@ -83,6 +83,7 @@ struct Kpca
     vtot::Matrix
     xscales::Vector 
     weights::Weight
+    kwargs::Base.Pairs
     par::Par
 end
 
@@ -112,6 +113,8 @@ struct Pca
     xscales::Vector
     weights::Weight
     niter::Union{Vector{Int}, Nothing} # for PCA Nipals
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct PlsCan
@@ -172,9 +175,11 @@ end
 
 struct Rp
     T::Matrix
-    P
-    xmeans
-    xscales
+    P::Matrix
+    xmeans::Vector
+    xscales::Vector
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Spca

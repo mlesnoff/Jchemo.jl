@@ -36,7 +36,8 @@ function pcaeigenk(X, weights::Weight; kwargs...)
 end
 
 function pcaeigenk!(X::Matrix, weights::Weight; 
-        par = Par()) 
+        kwargs...)
+    par = recovkwargs(Par, kwargs) 
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
@@ -56,6 +57,6 @@ function pcaeigenk!(X::Matrix, weights::Weight;
     sv = sqrt.(eig)
     P = zX' * fscale(res.vectors[:, 1:nlv], sv[1:nlv])
     T = X * P
-    Pca(T, P, sv, xmeans, xscales, weights, nothing) 
+    Pca(T, P, sv, xmeans, xscales, weights, nothing, kwargs, par) 
 end
 

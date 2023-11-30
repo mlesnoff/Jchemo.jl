@@ -91,5 +91,5 @@ function pcasph!(X::Matrix, weights::Weight;
     T .= T[:, s]
     P .= P[:, s]
     sv .= sv[s]
-    Pca(T, P, sv, xmeans, xscales, weights, nothing) 
+    Pca(T, P, sv, xmeans, xscales, weights, nothing, kwargs, par) 
 end
