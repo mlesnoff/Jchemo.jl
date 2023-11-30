@@ -101,7 +101,7 @@ function kplsr(X, Y, weights::Weight; kwargs...)
 end
 
 function kplsr!(X::Matrix, Y::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
     Q = eltype(X)
     n, p = size(X)
     q = nco(Y)

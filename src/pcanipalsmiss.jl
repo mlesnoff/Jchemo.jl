@@ -66,15 +66,17 @@ function pcanipalsmiss(X; kwargs...)
     s = ismissing.(z) .== 0
     Q = eltype(z[s][1, 1])
     weights = mweight(ones(Q, nro(X)))
-    pcanipalsmiss(X, weights; values(kwargs)...)
+    pcanipalsmiss(X, weights; kwargs...)
 end
 
 function pcanipalsmiss(X, weights::Weight; kwargs...)
-    pcanipalsmiss!(copy(ensure_mat(X)), weights; values(kwargs)...)
+    pcanipalsmiss!(copy(ensure_mat(X)), weights; 
+        kwargs...)
 end
 
 function pcanipalsmiss!(X::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
+    par = recovkwargs(Par, kwargs) 
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
@@ -99,9 +101,9 @@ function pcanipalsmiss!(X::Matrix, weights::Weight;
     end
     for a = 1:nlv
         if par.gs == false
-            res = nipalsmiss(X; values(kwargs)...)
+            res = nipalsmiss(X; kwargs...)
         else
-            res = nipalsmiss(X, UUt, VVt; values(kwargs)...)
+            res = nipalsmiss(X, UUt, VVt; kwargs...)
         end
         t .= res.u * res.sv
         T[:, a] .= t ./ sqrtw
@@ -115,6 +117,6 @@ function pcanipalsmiss!(X::Matrix, weights::Weight;
             VVt .+= res.v * res.v'
         end
     end
-    Pca(T, P, sv, xmeans, xscales, weights, niter) 
+    Pca(T, P, sv, xmeans, xscales, weights, niter, kwargs, par) 
 end
 

@@ -73,7 +73,7 @@ function pcr(X, Y, weights::Weight; kwargs...)
 end
 
 function pcr!(X::Matrix, Y::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
     Q = eltype(X)
     q = nco(Y)
     ymeans = colmean(Y, weights)
@@ -81,7 +81,7 @@ function pcr!(X::Matrix, Y::Matrix, weights::Weight;
     ## below yscales is built only for consistency with coef::Plsr  
     yscales = ones(Q, q)
     # End 
-    fm = pcasvd!(X, weights; values(kwargs)...)
+    fm = pcasvd!(X, weights; kwargs...)
     D = Diagonal(fm.weights.w)
     ## Below, first term of the product = Diagonal(1 ./ fm.sv[1:nlv].^2) if T is D-orthogonal
     ## This is the case for the actual version (pcasvd)

@@ -117,15 +117,15 @@ res.explvarx_adj
 function spca(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    spca(X, weights; values(kwargs)...)
+    spca(X, weights; kwargs...)
 end
 
 function spca(X, weights::Weight; kwargs...)
-    spca!(copy(ensure_mat(X)), weights; values(kwargs)...)
+    spca!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
 function spca!(X::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
     @assert in([:soft; :mix; :hard])(par.meth_sp) "Wrong value for argument 'meth_sp'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]."
     Q = eltype(X)

@@ -46,16 +46,17 @@ with Gram-Schmidt Orthogonalization. https://cran.r-project.org/
 function pcanipals(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    pcanipals(X, weights; values(kwargs)...)
+    pcanipals(X, weights; kwargs...)
 end
 
 function pcanipals(X, weights::Weight; kwargs...)
-    pcanipals!(copy(ensure_mat(X)), weights; values(kwargs)...)
+    pcanipals!(copy(ensure_mat(X)), weights; 
+        kwargs...)
 end
 
 function pcanipals!(X::Matrix, weights::Weight; 
         kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
@@ -80,9 +81,9 @@ function pcanipals!(X::Matrix, weights::Weight;
     end
     for a = 1:nlv
         if par.gs
-            res = nipals(X, UUt, VVt; values(kwargs)...)
+            res = nipals(X, UUt, VVt; kwargs...)
         else
-            res = nipals(X; values(kwargs)...)
+            res = nipals(X; kwargs...)
         end
         t .= res.u * res.sv
         T[:, a] .= t ./ sqrtw
@@ -97,6 +98,6 @@ function pcanipals!(X::Matrix, weights::Weight;
     end    
     ## Could recompute the scores by
     ## X0 = copy(X) ; ... ; T = (1 ./ sqrtw) .* X0 * P 
-    Pca(T, P, sv, xmeans, xscales, weights, niter) 
+    Pca(T, P, sv, xmeans, xscales, weights, niter, kwargs, par) 
 end
 

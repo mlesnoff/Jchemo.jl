@@ -68,7 +68,7 @@ function soplsr(Xbl, Y, weights::Weight; kwargs...)
 end
 
 function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
     Y = ensure_mat(Y)
     n = size(Xbl[1], 1)
     q = nco(Y)   

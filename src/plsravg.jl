@@ -119,7 +119,7 @@ function plsravg(X, Y, weights::Weight; kwargs...)
 end
 
 function plsravg!(X::Matrix, Y::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
     fun = plsravg_unif!
     fm = fun(X, Y, weights; values(kwargs)...)
     Plsravg(fm)

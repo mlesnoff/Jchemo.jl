@@ -19,11 +19,12 @@ See `?pcasvd` for examples.
 function pcaeigen(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    pcaeigen(X, weights; values(kwargs)...)
+    pcaeigen(X, weights; kwargs...)
 end
 
 function pcaeigen(X, weights::Weight; kwargs...)
-    pcaeigen!(copy(ensure_mat(X)), weights; values(kwargs)...)
+    pcaeigen!(copy(ensure_mat(X)), weights; 
+        kwargs...)
 end
 
 function pcaeigen!(X::Matrix, weights::Weight; 

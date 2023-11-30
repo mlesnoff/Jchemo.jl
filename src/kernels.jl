@@ -24,6 +24,7 @@ krbf(X, Y)
 ```
 """ 
 function krbf(X, Y; kwargs...)
+    par = recovkwargs(Par, kwargs) 
     Q = eltype(X[1, 1])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -59,6 +60,7 @@ kpol(X, Y)
 ```
 """ 
 function kpol(X, Y; kwargs...)
+    par = recovkwargs(Par, kwargs) 
     Q = eltype(X[1, 1])
     X = ensure_mat(X)
     Y = ensure_mat(Y)

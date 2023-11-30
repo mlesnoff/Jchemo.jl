@@ -82,7 +82,7 @@ function rasvd(X, Y, weights::Weight; kwargs...)
 end
 
 function rasvd!(X::Matrix, Y::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
     Q = eltype(X)

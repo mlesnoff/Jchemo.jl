@@ -40,7 +40,7 @@ function rrchol(X, Y, weights::Weight; kwargs...)
 end
 
 function rrchol!(X::Matrix, Y::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
     @assert nco(X) > 1 "The method only works for X with nb columns > 1."
     Q = eltype(X)
     p = nco(X)

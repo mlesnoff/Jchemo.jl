@@ -115,7 +115,7 @@ function krr(X, Y, weights::Weight; kwargs...)
 end
 
 function krr!(X::Matrix, Y::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
     Q = eltype(X)
     p = nco(X)
     xscales = ones(Q, p)

@@ -44,6 +44,7 @@ res.u
 ```
 """ 
 function nipalsmiss(X; kwargs...)
+    par = recovkwargs(Par, kwargs)
     X = ensure_mat(X)
     n, p = size(X)
     s = ismissing.(X)
@@ -82,6 +83,7 @@ function nipalsmiss(X; kwargs...)
 end
 
 function nipalsmiss(X, UUt, VVt; kwargs...)
+    par = recovkwargs(Par, kwargs)
     X = ensure_mat(X)
     n, p = size(X)
     s = ismissing.(X)
@@ -120,5 +122,4 @@ function nipalsmiss(X, UUt, VVt; kwargs...)
     niter = iter - 1
     (u = u, v, sv, niter)
 end
-
 

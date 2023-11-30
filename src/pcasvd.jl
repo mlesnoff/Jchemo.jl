@@ -62,11 +62,11 @@ res.cor_circle
 function pcasvd(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    pcasvd(X, weights; values(kwargs)...)
+    pcasvd(X, weights; kwargs...)
 end
 
 function pcasvd(X, weights::Weight; kwargs...)
-    pcasvd!(copy(ensure_mat(X)), weights; values(kwargs)...)
+    pcasvd!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
 function pcasvd!(X::Matrix, weights::Weight; 
@@ -91,7 +91,7 @@ function pcasvd!(X::Matrix, weights::Weight;
     sv = res.S   
     sv[sv .< 0] .= 0
     T = (1 ./ sqrtw) .* vcol(res.U, 1:nlv) * Diagonal(sv[1:nlv])
-    Pca(T, P, sv, xmeans, xscales, weights, nothing, kwargs, par)
+    Pca(T, P, sv, xmeans, xscales, weights, nothing, kwargs, par) 
 end
 
 """ 

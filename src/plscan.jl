@@ -66,7 +66,7 @@ function plscan(X, Y, weights::Weight; kwargs...)
 end
 
 function plscan!(X::Matrix, Y::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(X)
     n, p = size(X)

@@ -54,15 +54,17 @@ plotxy(T[:, i], T[:, i + 1]); zeros = true,
 function pcasph(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    pcasph(X, weights; values(kwargs)...)
+    pcasph(X, weights; kwargs...)
 end
 
 function pcasph(X, weights::Weight; kwargs...)
-    pcasph!(copy(ensure_mat(X)), weights; values(kwargs)...)
+    pcasph!(copy(ensure_mat(X)), weights; 
+        kwargs...)
 end
 
 function pcasph!(X::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
+    par = recovkwargs(Par, kwargs) 
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)

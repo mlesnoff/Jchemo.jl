@@ -10,7 +10,7 @@
 - **pcanipals** NIPALS algorithm
 - **pcasvd** SVD decomposition
 
-*With missing data*
+*Allow missing data*
 - **pcanipalsmiss**: NIPALS algorithm allowing missing data
 
 *Robust* 

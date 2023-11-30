@@ -115,7 +115,7 @@ function splskern(X, Y, weights::Weight; kwargs...)
 end
 
 function splskern!(X::Matrix, Y::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
     @assert in([:soft; :mix; :hard])(par.meth_sp) "Wrong value for argument 'meth_sp'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
     Q = eltype(X)

@@ -43,7 +43,7 @@ Base.@kwdef mutable struct Par
     nvar::Union{Int, Vector{Int}} = 1       # sparse methods, threshold
     ##
     rpmeth::Symbol = :gauss                 # rp projection method
-    spar::Float64 = 1.                      # rpmatli sparsity parameter  
+    rps::Float64 = 1.                       # rpmatli sparsity parameter  
 end 
 
 struct Weight{T <: AbstractFloat}

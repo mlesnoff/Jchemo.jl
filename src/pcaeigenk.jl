@@ -28,11 +28,12 @@ https://doi.org/10.1016/S0169-7439(97)00010-5
 function pcaeigenk(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    pcaeigenk(X, weights; values(kwargs)...)
+    pcaeigenk(X, weights; kwargs...)
 end
 
 function pcaeigenk(X, weights::Weight; kwargs...)
-    pcaeigenk!(copy(ensure_mat(X)), weights; values(kwargs)...)
+    pcaeigenk!(copy(ensure_mat(X)), weights; 
+        kwargs...)
 end
 
 function pcaeigenk!(X::Matrix, weights::Weight; 

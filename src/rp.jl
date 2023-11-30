@@ -25,15 +25,17 @@ transf(fm, X[1:2, :])
 function rp(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    rp(X, weights; values(kwargs)...)
+    rp(X, weights; kwargs...)
 end
 
 function rp(X, weights::Weight; kwargs...)
-    rp!(copy(ensure_mat(X)), weights; values(kwargs)...)
+    rp!(copy(ensure_mat(X)), weights; 
+        kwargs...)
 end
 
 function rp!(X::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
+    par = recovkwargs(Par, kwargs) 
     @assert in([:gauss, :li])(par.rpmeth) "Wrong value for argument 'rpmeth'."
     Q = eltype(X)
     p = nco(X)
@@ -48,10 +50,11 @@ function rp!(X::Matrix, weights::Weight;
     if par.rpmeth == :gauss
         P = rpmatgauss(p, par.nlv, Q)
     else
-        P = rpmatli(p, par.nlv, Q; s = par.s)
+        P = rpmatli(p, par.nlv, Q; 
+            rps = par.rps)
     end 
     T = X * P
-    Rp(T, P, xmeans, xscales)
+    Rp(T, P, xmeans, xscales, kwargs, par)
 end
 
 """ 

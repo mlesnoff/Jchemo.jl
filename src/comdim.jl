@@ -126,7 +126,7 @@ function comdim(Xbl, weights::Weight; kwargs...)
 end
 
 function comdim!(Xbl::Vector, weights::Weight; 
-        par = Par())
+        kwargs...)
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)

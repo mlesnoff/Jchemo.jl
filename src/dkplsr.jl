@@ -101,7 +101,7 @@ function dkplsr(X, Y, weights::Weight; kwargs...)
 end
 
 function dkplsr!(X::Matrix, Y::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
     Q = eltype(X)
     p = nco(X)
     q = nco(Y)

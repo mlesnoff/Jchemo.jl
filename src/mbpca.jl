@@ -104,7 +104,7 @@ function mbpca(Xbl, weights::Weight; kwargs...)
 end
 
 function mbpca!(Xbl::Vector, weights::Weight; 
-        par = Par())
+        kwargs...)
     @assert in([:none, :frob, :mfa])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)

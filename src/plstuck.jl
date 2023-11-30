@@ -68,7 +68,7 @@ function plstuck(X, Y, weights::Weight; kwargs...)
 end
 
 function plstuck!(X::Matrix, Y::Matrix, weights::Weight; 
-        par = Par())
+        kwargs...)
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(X)
     p = nco(X)

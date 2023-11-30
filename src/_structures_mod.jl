@@ -56,11 +56,24 @@ interpl(; kwargs...) = Transformer{Function, Interpl, Base.Pairs}(interpl, nothi
 mavg(; kwargs...) = Transformer{Function, Mavg, Base.Pairs}(mavg, nothing, kwargs)
 savgol(; kwargs...) = Transformer{Function, Savgol, Base.Pairs}(savgol, nothing, kwargs)
 snv(; kwargs...) = Transformer{Function, Snv, Base.Pairs}(snv, nothing, kwargs)
-
 center(; kwargs...) = Transformer{Function, Center, Base.Pairs}(center, nothing, kwargs)
 scale(; kwargs...) = Transformer{Function, Scale, Base.Pairs}(scale, nothing, kwargs)
 cscale(; kwargs...) = Transformer{Function, Cscale, Base.Pairs}(cscale, nothing, kwargs)
-
+##
+pcasvd(; kwargs...) = Transformer{Function, Pca, Base.Pairs}(pcasvd, nothing, kwargs)
+pcaeigen(; kwargs...) = Transformer{Function, Pca, Base.Pairs}(pcaeigen, nothing, kwargs)
+pcaeigenk(; kwargs...) = Transformer{Function, Pca, Base.Pairs}(pcaeigenk, nothing, kwargs)
+pcanipals(; kwargs...) = Transformer{Function, Pca, Base.Pairs}(pcanipals, nothing, kwargs)
+pcanipalsmiss(; kwargs...) = Transformer{Function, Pca, Base.Pairs}(pcanipalsmiss, nothing, kwargs)
+pcasph(; kwargs...) = Transformer{Function, Pca, Base.Pairs}(pcasph, nothing, kwargs)
+rp(; kwargs...) = Transformer{Function, Rp, Base.Pairs}(rp, nothing, kwargs)
+kpca(; kwargs...) = Transformer{Function, Kpca, Base.Pairs}(kpca, nothing, kwargs)
+##
 plskern(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plskern, nothing, kwargs)
+plsnipals(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plsnipals, nothing, kwargs)
+plswold(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plswold, nothing, kwargs)
+plsrosa(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plsrosa, nothing, kwargs)
+plssimp(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plssimp, nothing, kwargs)
+
 
 

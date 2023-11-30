@@ -66,11 +66,13 @@ res.explvarx
 function kpca(X; kwargs...)
     X = ensure_mat(X)
     Q = eltype(X)
-    kpca(X, mweight(ones(Q, nro(X))); 
-        par)
+    weights = mweight(ones(Q, nro(X)))
+    kpca(X, weights; kwargs...)
 end
 
-function kpca(X, weights::Weight; kwargs...)
+function kpca(X, weights::Weight; 
+        kwargs...)
+    par = recovkwargs(Par, kwargs) 
     X = ensure_mat(X)
     Q = eltype(X)
     n, p = size(X)
@@ -81,7 +83,7 @@ function kpca(X, weights::Weight; kwargs...)
         X = fscale(X, xscales)
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
-    K = fkern(X, X; values(kwargs)...)  # in the future?: fkern!(K, X, X; values(kwargs)...)
+    K = fkern(X, X; kwargs...)  # in the future?: fkern!(K, X, X; kwargs...)
     D = Diagonal(weights.w)
     Kt = K'    
     DKt = D * Kt
@@ -97,7 +99,7 @@ function kpca(X, weights::Weight; kwargs...)
     P = sqrtD * fscale(U, sv[1:nlv])     # In the future: fscale!
     T = Kc * P       # T = Kc * P = D^(-1/2) * U * Delta
     Kpca(X, Kt, T, P, sv, eig, D, DKt, vtot, xscales, 
-        weights, par)
+        weights, kwargs, par)
 end
 
 """ 
@@ -111,7 +113,7 @@ function transf(object::Kpca, X; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; par = object.par)
+    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     DKt = object.D * K'
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')
