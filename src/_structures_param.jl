@@ -42,8 +42,8 @@ Base.@kwdef mutable struct Par
     delta::Float64 = 0.                     # sparse methods, threshold
     nvar::Union{Int, Vector{Int}} = 1       # sparse methods, threshold
     ##
-    rpmeth::Symbol = :gauss                 # rp projection method
-    rps::Float64 = 1.                       # rpmatli sparsity parameter  
+    meth_rp::Symbol = :gauss                # rp projection method
+    s_li::Float64 = 1.                      # rpmatli sparsity parameter  
 end 
 
 struct Weight{T <: AbstractFloat}

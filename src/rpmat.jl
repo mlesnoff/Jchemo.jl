@@ -68,9 +68,9 @@ rpmatli(p, nlv)
 ```
 """ 
 function rpmatli(p::Int, nlv::Int, Q = Float64; 
-        rps = sqrt(p))
+        s_li = sqrt(p))
     le = p * nlv
-    k = Int(round(le / rps))
+    k = Int(round(le / s_li))
     z = zeros(Q, le)
     u = convert.(Q, [-1 ; 1])
     z[rand(1:le, k)] .= rand(u, k) 

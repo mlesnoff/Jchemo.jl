@@ -121,11 +121,13 @@ function spca(X; kwargs...)
 end
 
 function spca(X, weights::Weight; kwargs...)
-    spca!(copy(ensure_mat(X)), weights; kwargs...)
+    spca!(copy(ensure_mat(X)), weights; 
+        kwargs...)
 end
 
 function spca!(X::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs) 
     @assert in([:soft; :mix; :hard])(par.meth_sp) "Wrong value for argument 'meth_sp'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]."
     Q = eltype(X)
@@ -153,13 +155,13 @@ function spca!(X::Matrix, weights::Weight;
     sellv = list(nlv, Vector{Int})
     for a = 1:nlv
         if par.meth_sp == :soft
-            res = snipals(X; values(kwargs)...)
+            res = snipals(X; kwargs...)
         else
             par.nvar = nvar[a]
             if par.meth_sp == :mix
-                res = snipalsmix(X; par = par)
+                res = snipalsmix(X; kwargs...)
             else 
-                res = snipalsh(X; par = par)
+                res = snipalsh(X; kwargs...)
             end
         end
         t .= res.t      
@@ -175,7 +177,7 @@ function spca!(X::Matrix, weights::Weight;
     end    
     sel = unique(reduce(vcat, sellv))
     Spca(T, P, sv, beta, xmeans, xscales, weights, niter,
-        sellv, sel) 
+        sellv, sel, kwargs, par) 
 end
 
 """ 
