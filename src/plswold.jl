@@ -112,6 +112,6 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight;
     end
     Tx .= (1 ./ sqrtw) .* Tx
     Rx = Wx * inv(Px' * Wx)
-    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
+    Plsr(Tx, Px, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, 
         yscales, weights, niter, kwargs, par)
 end
