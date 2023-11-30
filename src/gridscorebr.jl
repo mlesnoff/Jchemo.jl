@@ -1,4 +1,4 @@
-function gridscorebr(Xtrain, Ytrain, X, Y; score, fun, 
+function gridscorebr(Xtrain, Ytrain, X, Y; fun, score, 
        pars, verbose = false)
     q = nco(Ytrain)
     ncomb = length(pars[1]) # nb. combinations in pars
@@ -17,6 +17,7 @@ function gridscorebr(Xtrain, Ytrain, X, Y; score, fun,
     hcat(dat, res)
 end
 
+#### To be removed
 function gridscorebr_par(Xtrain, Ytrain, X, Y; score, fun, 
         pars, verbose = false)
     q = nco(Ytrain)

@@ -12,6 +12,8 @@ struct Cca
     ymeans::Vector
     yscales::Vector
     weights::Weight
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct CcaWold
@@ -32,6 +34,8 @@ struct CcaWold
     yscales::Vector
     weights::Weight
     niter::Vector{Int}
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Comdim
@@ -48,6 +52,8 @@ struct Comdim
     xscales::Vector{Vector}
     weights::Weight
     niter::Vector{Int}
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Fda
@@ -61,6 +67,8 @@ struct Fda
     xscales::Vector
     lev::Vector
     ni::Vector{Int}
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Kpca
@@ -92,6 +100,8 @@ struct Mbpca
     xscales::Vector{Vector}
     weights::Weight
     niter::Vector{Int}
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Pca 
@@ -122,6 +132,8 @@ struct PlsCan
     ymeans::Vector
     yscales::Vector
     weights::Weight
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct PlsTuck
@@ -138,6 +150,8 @@ struct PlsTuck
     ymeans::Vector
     yscales::Vector
     weights::Weight
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Rasvd
@@ -152,6 +166,8 @@ struct Rasvd
     ymeans::Vector
     yscales::Vector
     weights::Weight
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Rp
@@ -172,6 +188,8 @@ struct Spca
     niter::Union{Vector{Int}, Nothing}
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
+    kwargs::Base.Pairs
+    par::Par
 end
 
 ###### Regression
@@ -184,6 +202,8 @@ struct Cglsr
     ymeans::Vector
     yscales::Vector
     F::Union{Matrix, Nothing}
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Knnr
@@ -213,6 +233,7 @@ struct Kplsr
     yscales::Vector
     weights::Weight
     iter::Vector{Int}
+    kwargs::Base.Pairs
     par::Par
 end
 
@@ -229,6 +250,7 @@ struct Krr
     xscales::Vector
     ymeans::Vector
     weights::Weight
+    kwargs::Base.Pairs
     par::Par
 end
 
@@ -240,6 +262,8 @@ struct Lwmlr
     k::Int
     tol::AbstractFloat
     verbose::Bool
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct LwmlrS
@@ -251,6 +275,8 @@ struct LwmlrS
     k::Int
     tol::AbstractFloat
     verbose::Bool
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Lwplsr
@@ -264,6 +290,8 @@ struct Lwplsr
     tol::AbstractFloat
     scal::Bool
     verbose::Bool
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct LwplsrAvg
@@ -282,6 +310,8 @@ struct LwplsrAvg
     tol::AbstractFloat
     scal::Bool
     verbose::Bool
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct LwplsrS
@@ -295,6 +325,8 @@ struct LwplsrS
     tol::AbstractFloat
     scal::Bool
     verbose::Bool
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Mbplsr
@@ -308,6 +340,8 @@ struct Mbplsr
     ymeans::Vector
     yscales::Vector
     weights::Weight
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct MbplsWest            # Used for mbplswest, mbwcov 
@@ -328,12 +362,16 @@ struct MbplsWest            # Used for mbplswest, mbwcov
     weights::Weight
     lb::Union{Matrix, Nothing}
     niter::Union{Vector, Nothing}
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Mlr
     B::Matrix   
     int::Matrix
     weights::Weight
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Pcr
@@ -346,6 +384,8 @@ struct Pcr
     ymeans::Vector
     yscales::Vector
     weights::Weight
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Plsr
@@ -387,6 +427,8 @@ struct Rosaplsr
     yscales::Vector
     weights::Weight
     bl::Vector{Int}
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Rr
@@ -422,6 +464,8 @@ struct Splsr
     niter::Union{Matrix, Nothing}
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Svmr
@@ -434,6 +478,8 @@ struct TreerDt
     xscales::Vector
     featur::Vector{Int}
     mth::Bool 
+    kwargs::Base.Pairs
+    par::Par
 end
 
 ###### Discrimination
@@ -495,6 +541,8 @@ struct Lda
     ni::Vector{Int}
     lev::Vector
     weights::Weight
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Lwmlrda
@@ -505,6 +553,8 @@ struct Lwmlrda
     k::Int
     tol::AbstractFloat
     verbose::Bool
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct LwmlrdaS
@@ -516,6 +566,8 @@ struct LwmlrdaS
     k::Int
     tol::AbstractFloat
     verbose::Bool
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Lwplslda
@@ -577,6 +629,8 @@ struct LwplsrdaS
     tol::AbstractFloat
     scal::Bool
     verbose::Bool
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Mlrda
@@ -593,6 +647,8 @@ struct Occknndis
     k::Int
     e_cdf::ECDF
     cutoff::Real    
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Occlknndis
@@ -603,6 +659,8 @@ struct Occlknndis
     k::Int
     e_cdf::ECDF
     cutoff::Real    
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Occod
@@ -656,6 +714,8 @@ struct Qda
     ni::Vector{Int}
     lev::Vector
     weights::Weight
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Rda
@@ -668,6 +728,8 @@ struct Rda
     lev::Vector
     xscales::Vector
     weights::Weight
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Rrda
@@ -690,6 +752,8 @@ struct TreedaDt
     lev::Vector
     ni::Int
     mth::Bool 
+    kwargs::Base.Pairs
+    par::Par
 end
 
 ###### Related
@@ -700,6 +764,7 @@ struct Dkplsr
     K::Matrix
     xscales::Vector
     yscales::Vector
+    kwargs::Base.Pairs
     par::Par
 end
 

@@ -30,11 +30,25 @@ end
 
 #### Transf
 
-function transf(mod::Union{Transformer, Predictor}, X)
-    transf(mod.fm, X)
+function transf(mod::Union{Transformer, Predictor}, X; 
+        nlv = nothing)
+    isnothing(nlv) ? transf(mod.fm, X) : transf(mod.fm, X; nlv = nlv)
 end  
 
-#### Functions
+#### Predict 
+
+function predict(mod::Union{Transformer, Predictor}, X; 
+        nlv = nothing, lb = nothing)
+    if isnothing(nlv) && isnothing(lb)
+        predict(mod.fm, X)
+    elseif !isnothing(nlv) 
+        predict(mod.fm, X; nlv = nlv)
+    elseif !isnothing(lb) 
+        predct(mod.fm, X; lb = lb)
+    end
+end  
+
+#### Functions building mod
 
 detrend(; kwargs...) = Transformer{Function, Detrend, Base.Pairs}(detrend, nothing, kwargs)
 fdif(; kwargs...) = Transformer{Function, Fdif, Base.Pairs}(fdif, nothing, kwargs)
@@ -48,56 +62,5 @@ scale(; kwargs...) = Transformer{Function, Scale, Base.Pairs}(scale, nothing, kw
 cscale(; kwargs...) = Transformer{Function, Cscale, Base.Pairs}(cscale, nothing, kwargs)
 
 plskern(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plskern, nothing, kwargs)
-
-#### Pipelines
-
-function fit!(mod::Tuple, X)
-    K = length(mod)
-    for i = 1:(K - 1)
-        fit!(mod[i], X)
-        X = transf(mod[i], X)
-    end
-    fit!(mod[K], X)
-end
-
-function fit!(mod::Tuple, X, Y)
-    K = length(mod)
-    for i = 1:(K - 1)
-        fit!(mod[i], X, Y)
-        X = transf(mod[i], X)
-    end
-    fit!(mod[K], X, Y)
-end
-
-## Future: can build 
-## fit!(mod::Tuple, X, weights::Weight)
-## fit!(mod::Tuple, X, Y, weights::Weight)
-
-#function fit!(mod::Tuple, X, Y = nothing)
-#    K = length(mod)
-#    for i = 1:(K - 1)
-#        if isa(mod[i], Transformer)
-#            fit!(mod[i], X)
-#        elseif isa(mod[i], Predictor)
-#            fit!(mod[i], X, Y)
-#        end
-#        X = transf(mod[i], X)
-#    end
-#    if isa(mod[K], Transformer)
-#        fit!(mod[K], X)
-#    elseif isa(mod[K], Predictor)
-#        fit!(mod[K], X, Y)
-#    end
-#end
-
-function transf(mod::Tuple, X)  
-    K = length(mod)
-    for i = 1:K
-        X = transf(mod[i], X)
-    end
-    X
-end
-
-
 
 

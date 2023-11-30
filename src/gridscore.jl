@@ -134,7 +134,8 @@ rmsep(pred, ytest)
 ```
 """
 function gridscore(Xtrain, Ytrain, X, Y; fun, score, 
-        pars = nothing, nlv = nothing, lb = nothing, verbose = false)
+        pars = nothing, nlv = nothing, lb = nothing, 
+        verbose = false)
     if isnothing(nlv) && isnothing(lb)
         res = gridscorebr(Xtrain, Ytrain, X, Y; fun, score, 
             pars, verbose = verbose)
