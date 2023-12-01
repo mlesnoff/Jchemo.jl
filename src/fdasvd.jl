@@ -20,9 +20,11 @@ A ridge regularization can be used:
 See `?fda` for examples.
 
 """ 
-fdasvd(X, y; kwargs...) = fdasvd!(copy(ensure_mat(X)), y; values(kwargs)...)
+fdasvd(X, y; kwargs...) = fdasvd!(copy(ensure_mat(X)), y; 
+    kwargs...)
 
 function fdasvd!(X::Matrix, y; kwargs...)
+    par = recovkwargs(Par, kwargs)
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     Q = eltype(X)
     n, p = size(X)
@@ -51,13 +53,17 @@ function fdasvd!(X::Matrix, y; kwargs...)
     Zct = ct * Ut
     nlv = min(par.nlv, n, p, nlev - 1)
     par = Par(nlv = nlv, scal = false)
-    fm = pcasvd(Zct, mweight(ni); values(kwargs)...)
+    weights = mweight(convert.(Q, ni))
+    fm = pcasvd(Zct, weights; kwargs...)
     Pz = fm.P
-    Tcenters = Zct * Pz        
+    Tcenters = Zct * Pz
     eig = (fm.sv).^2 
     sstot = sum(eig)
     P = Ut * Pz[:, 1:nlv]
     T = X * P
     Tcenters = ct * P
-    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, lev, ni)
+    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, lev, ni,
+        kwargs, par)
 end
+
+

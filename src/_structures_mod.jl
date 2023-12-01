@@ -113,7 +113,9 @@ plstuck(; kwargs...) = Transformer{Function, Plstuck, Base.Pairs}(plstuck, nothi
 rasvd(; kwargs...) = Transformer{Function, Rasvd, Base.Pairs}(rasvd, nothing, kwargs)
 mbpca(; kwargs...) = Transformer{Function, Mbpca, Base.Pairs}(mbpca, nothing, kwargs)
 comdim(; kwargs...) = Transformer{Function, Comdim, Base.Pairs}(comdim, nothing, kwargs)
-
+##
+fda(; kwargs...) = Predictor{Function, Fda, Base.Pairs}(fda, nothing, kwargs)
+fdasvd(; kwargs...) = Predictor{Function, Fda, Base.Pairs}(fdasvd, nothing, kwargs)
 ##
 plskern(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plskern, nothing, kwargs)
 plsnipals(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plsnipals, nothing, kwargs)

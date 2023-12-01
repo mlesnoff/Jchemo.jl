@@ -78,9 +78,11 @@ fm.sstot
 Base.summary(fm)
 ```
 """ 
-fda(X, y; kwargs...) = fda!(copy(ensure_mat(X)), y; values(kwargs)...)
+fda(X, y; kwargs...) = fda!(copy(ensure_mat(X)), y; 
+    kwargs...)
 
 function fda!(X::Matrix, y; kwargs...)
+    par = recovkwargs(Par, kwargs)
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     Q = eltype(X)
     n, p = size(X)
@@ -116,7 +118,8 @@ function fda!(X::Matrix, y; kwargs...)
     fscale!(P, norm_P)
     T = X * P
     Tcenters = zres.ct * P
-    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, lev, ni)
+    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, lev, ni,
+        kwargs, par)
 end
 
 """
