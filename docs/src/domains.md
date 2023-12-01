@@ -56,7 +56,7 @@
 ### Factorial discrimination analysis (FDA)
 
 - **fda** Eigen decomposition of the compromise "inter/intra"
-- **fdasvd** Weighted SVD decomposition of the class centers
+- **fdasvd** Weighted SVD of the class centers
 
 ## REGRESSION
 
