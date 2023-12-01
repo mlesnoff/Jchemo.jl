@@ -36,15 +36,15 @@
 ### Multiblock
 
 *2 blocks*
-- **cca** Canonical correlation analysis (CCA, RCCA)
-- **ccawold** CCA, RCCA - Wold (1984) Nipals algorithm  
+- **cca** Canonical correlation analysis (CCA and RCCA)
+- **ccawold** CCA and RCCA - Wold (1984) Nipals algorithm  
 - **plscan** Canonical partial least squares regression (Symmetric PLS)
 - **plstuck** Tucker's inter-battery method of factor analysis (PLS-SVD)
-- **rasvd** Redundancy analysis (RA) - PCA on instrumental variables (PCAIV)
+- **rasvd** Redundancy analysis (RA), *aka* PCA on instrumental variables (PCAIV)
 
 *2 or more blocks* 
-- **mbpca** Multiblock PCA (MBPCA = CPCA Consensus principal component analysis)
-- **comdim** Common components and specific weights analysis (ComDim = CCSWA = HPCA)
+- **mbpca** Multiblock PCA (MBPCA), *aka* Consensus principal component analysis (*aka* CPCA))
+- **comdim** Common components and specific weights analysis (ComDim), *aka* CCSWA or HPCA
 
 *Utilities*
 - **mblock** Make blocks from a matrix
@@ -83,7 +83,7 @@
 
 *Variants of regularization using latent variables* 
 - **cglsr** Conjugate gradient for the least squares normal equations (CGLS)
-- **rrr** Reduced rank regression (RRR)  (= redundancy analysis regression) 
+- **rrr** Reduced rank regression (RRR), *aka*  Redundancy analysis regression 
 - **pcr** Principal components regression (SVD factorization)
 
 *Sparse*
@@ -111,7 +111,7 @@
 - **rrchol** Choleski factorization (RR)
 
 *Non linear*
-- **krr** Non linear kernel (KRR) = Least squares SVM (LS-SVMR)
+- **krr** Non linear kernel (KRR), *aka* Least squares SVM (LS-SVMR)
 
 ### **Local models**
 
@@ -143,7 +143,7 @@
 
 *Linear*
 - **mlrda** MLR prediction (MLR-DA)
-- **plsrda** PLSR prediction (PLSR-DA) = usual **PLSDA**
+- **plsrda** PLSR prediction (PLSR-DA), *aka* usual PLSDA
 - **rrda** RR prediction (RR-DA)
 
 *Sparse*
