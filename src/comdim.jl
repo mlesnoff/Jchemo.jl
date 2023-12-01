@@ -127,6 +127,7 @@ end
 
 function comdim!(Xbl::Vector, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs) 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
@@ -212,7 +213,8 @@ function comdim!(Xbl::Vector, weights::Weight;
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
     Comdim(T, U, W, Tbl, Tb, Wbl, lb, mu, 
-        bscales, xmeans, xscales, weights, niter)
+        bscales, xmeans, xscales, weights, niter,
+        kwargs, par)
 end
 
 """ 

@@ -108,7 +108,7 @@ function plstuck!(X::Matrix, Y::Matrix, weights::Weight;
     TTy = colsum(D * Ty .* Ty)
     Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
         ymeans, yscales, weights,
-        kwargs, pars)
+        kwargs, par)
 end
 
 """ 
