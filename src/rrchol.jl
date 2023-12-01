@@ -31,12 +31,12 @@ Technometrics 12, 55-67. https://doi.org/10.1080/00401706.1970.10488634
 function rrchol(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    rrchol(X, Y, weights; values(kwargs)...)
+    rrchol(X, Y, weights; kwargs...)
 end
 
 function rrchol(X, Y, weights::Weight; kwargs...)
     rrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function rrchol!(X::Matrix, Y::Matrix, weights::Weight; 

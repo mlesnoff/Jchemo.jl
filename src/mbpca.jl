@@ -12,7 +12,7 @@ Consensus principal components analysis (CPCA = MBPCA).
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling (`:none`, `:frob`, `:mfa`). 
-    See functions `blockscal`.
+    See functions `fblockscal`.
 * `tol` : Tolerance value for convergence.
 * `maxit` : Maximum number of iterations.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
@@ -90,7 +90,7 @@ function mbpca(Xbl; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     weights = mweight(ones(Q, n))
-    mbpca(Xbl, weights; values(kwargs)...)
+    mbpca(Xbl, weights; kwargs...)
 end
 
 function mbpca(Xbl, weights::Weight; kwargs...)
@@ -100,7 +100,7 @@ function mbpca(Xbl, weights::Weight; kwargs...)
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    mbpca!(zXbl, weights; values(kwargs)...)
+    mbpca!(zXbl, weights; kwargs...)
 end
 
 function mbpca!(Xbl::Vector, weights::Weight; 
@@ -127,12 +127,12 @@ function mbpca!(Xbl::Vector, weights::Weight;
     end
     par.bscal == :none ? bscales = ones(Q, nbl) : nothing
     if par.bscal == :frob
-        res = blockscal_frob(Xbl, weights) 
+        res = fblockscal_frob(Xbl, weights) 
         bscales = res.bscales
         Xbl = res.Xbl
     end
     if par.bscal == :mfa
-        res = blockscal_mfa(Xbl, weights) 
+        res = fblockscal_mfa(Xbl, weights) 
         bscales = res.bscales
         Xbl = res.Xbl
     end
@@ -213,7 +213,7 @@ function transf(object::Mbpca, Xbl; nlv = nothing)
         zXbl[k] = fcscale(Xbl[k], object.xmeans[k], 
             object.xscales[k])
     end
-    zXbl = blockscal(zXbl, object.bscales).Xbl
+    zXbl = fblockscal(zXbl, object.bscales).Xbl
     U = similar(zXbl[1], m, nlv)
     TB = similar(zXbl[1], m, nbl)
     Tbl = list(nbl, Matrix{Q})
@@ -253,7 +253,7 @@ function Base.summary(object::Mbpca, Xbl)
         zXbl[k] = fcscale(Xbl[k], object.xmeans[k], 
             object.xscales[k])
     end
-    zXbl = blockscal(zXbl, object.bscales).Xbl
+    zXbl = fblockscal(zXbl, object.bscales).Xbl
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end

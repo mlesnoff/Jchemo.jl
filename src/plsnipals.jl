@@ -31,12 +31,12 @@ for chemometrics. Chem. Int. Lab. Syst., 58, 109-130.
 function plsnipals(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    plsnipals(X, Y, weights; values(kwargs)...)
+    plsnipals(X, Y, weights; kwargs...)
 end
 
 function plsnipals(X, Y, weights::Weight; kwargs...)
     plsnipals!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; 

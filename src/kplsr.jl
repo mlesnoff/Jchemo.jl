@@ -92,12 +92,12 @@ f
 function kplsr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    kplsr(X, Y, weights; values(kwargs)...)
+    kplsr(X, Y, weights; kwargs...)
 end
 
 function kplsr(X, Y, weights::Weight; kwargs...)
     kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function kplsr!(X::Matrix, Y::Matrix, weights::Weight; 

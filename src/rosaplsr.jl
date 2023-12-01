@@ -53,7 +53,7 @@ function rosaplsr(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     weights = mweight(ones(Q, n))
-    rosaplsr(Xbl, Y, weights; values(kwargs)...)
+    rosaplsr(Xbl, Y, weights; kwargs...)
 end
 
 function rosaplsr(Xbl, Y, weights::Weight; kwargs...)
@@ -64,7 +64,7 @@ function rosaplsr(Xbl, Y, weights::Weight; kwargs...)
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     rosaplsr!(zXbl, copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)

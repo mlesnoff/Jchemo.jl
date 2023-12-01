@@ -11,7 +11,7 @@ Multiblock PLSR (MBPLSR) - Fast version.
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `bscal` : Type of `Xbl` block scaling (`:none`, `:frob`).
-    See functions `blockscal`.
+    See functions `fblockscal`.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` and 
     of `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
@@ -53,7 +53,7 @@ function mbplsr(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     weights = mweight(ones(Q, n))
-    mbplsr(Xbl, Y, weights; values(kwargs)...)
+    mbplsr(Xbl, Y, weights; kwargs...)
 end
 
 function mbplsr(Xbl, Y, weights::Weight; kwargs...)
@@ -64,7 +64,7 @@ function mbplsr(Xbl, Y, weights::Weight; kwargs...)
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     mbplsr!(zXbl, copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; 
@@ -95,12 +95,12 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
     end
     par.bscal == :none ? bscales = ones(nbl) : nothing
     if par.bscal == :frob
-        res = blockscal_frob(Xbl, weights) 
+        res = fblockscal_frob(Xbl, weights) 
         bscales = res.bscales
         Xbl = res.Xbl
     end
     X = reduce(hcat, Xbl)
-    fm = plskern(X, Y, weights; values(kwargs)...)
+    fm = plskern(X, Y, weights; kwargs...)
     Mbplsr(fm, fm.T, fm.R, fm.C, 
         bscales, xmeans, xscales, ymeans, yscales, weights)
 end
@@ -120,7 +120,7 @@ function Base.summary(object::Mbplsr, Xbl)
     Threads.@threads for k = 1:nbl
         zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
-    zXbl = blockscal(zXbl, object.bscales).Xbl
+    zXbl = fblockscal(zXbl, object.bscales).Xbl
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end

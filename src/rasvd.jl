@@ -10,7 +10,7 @@ Redundancy analysis (RA) - PCA on instrumental variables (PCAIV)
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling (`:none`, `:frob`). 
-    See functions `blockscal`.
+    See functions `fblockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation 
@@ -73,12 +73,12 @@ function rasvd(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)
     weights = mweight(ones(Q, n))
-    rasvd(X, Y, weights; values(kwargs)...)
+    rasvd(X, Y, weights; kwargs...)
 end
 
 function rasvd(X, Y, weights::Weight; kwargs...)
     rasvd!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function rasvd!(X::Matrix, Y::Matrix, weights::Weight; 

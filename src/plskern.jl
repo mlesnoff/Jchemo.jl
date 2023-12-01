@@ -91,12 +91,12 @@ lines(z.nlv, z.cumpvar,
 function plskern(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    plskern(X, Y, weights; values(kwargs)...)
+    plskern(X, Y, weights; kwargs...)
 end
 
 function plskern(X, Y, weights::Weight; kwargs...)
     plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function plskern!(X::Matrix, Y::Matrix, weights::Weight; 

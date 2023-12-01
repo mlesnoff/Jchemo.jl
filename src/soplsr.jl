@@ -53,7 +53,7 @@ function soplsr(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     weights = mweight(ones(Q, n))
-    soplsr(Xbl, Y, weights; values(kwargs)...)
+    soplsr(Xbl, Y, weights; kwargs...)
 end
 
 function soplsr(Xbl, Y, weights::Weight; kwargs...)
@@ -64,7 +64,7 @@ function soplsr(Xbl, Y, weights::Weight; kwargs...)
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     soplsr!(zXbl, copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; 

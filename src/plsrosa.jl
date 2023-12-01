@@ -26,12 +26,12 @@ squares regression for multiblock data analysis. Journal of Chemometrics 30,
 function plsrosa(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    plsrosa(X, Y, weights; values(kwargs)...)
+    plsrosa(X, Y, weights; kwargs...)
 end
 
 function plsrosa(X, Y, weights::Weight; kwargs...)
     plsrosa!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function plsrosa!(X::Matrix, Y::Matrix, weights::Weight; 

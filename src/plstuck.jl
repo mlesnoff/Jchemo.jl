@@ -10,7 +10,7 @@ Tucker's inter-battery method of factor analysis
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling (`:none`, `:frob`). 
-    See functions `blockscal`.
+    See functions `fblockscal`.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
@@ -59,12 +59,12 @@ function plstuck(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)
     weights = mweight(ones(Q, n))
-    plstuck(X, Y, weights; values(kwargs)...)
+    plstuck(X, Y, weights; kwargs...)
 end
 
 function plstuck(X, Y, weights::Weight; kwargs...)
     plstuck!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function plstuck!(X::Matrix, Y::Matrix, weights::Weight; 

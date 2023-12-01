@@ -22,12 +22,12 @@ https://doi.org/10.1016/0169-7439(93)85002-X
 function plssimp(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    plssimp(X, Y, weights; values(kwargs)...)
+    plssimp(X, Y, weights; kwargs...)
 end
 
 function plssimp(X, Y, weights::Weight; kwargs...)
     plssimp!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function plssimp!(X::Matrix, Y::Matrix, weights::Weight; 

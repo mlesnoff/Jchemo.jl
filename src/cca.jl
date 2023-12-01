@@ -10,7 +10,7 @@ Canonical correlation Analysis (CCA, RCCA).
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling (`:none`, `:frob`). 
-    See functions `blockscal`.
+    See functions `fblockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation 
@@ -79,16 +79,17 @@ function cca(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)
     weights = mweight(ones(Q, n))
-    cca(X, Y, weights; values(kwargs)...)
+    cca(X, Y, weights; kwargs...)
 end
 
 function cca(X, Y, weights::Weight; kwargs...)
     cca!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function cca!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs) 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
     Q = eltype(X)
@@ -149,7 +150,8 @@ function cca!(X::Matrix, Y::Matrix, weights::Weight;
     Tx = (1 ./ sqrtw) .* X * Wx 
     Ty = (1 ./ sqrtw) .* Y * Wy
     Cca(Tx, Ty, Wx, Wy, d, 
-        bscales, xmeans, xscales, ymeans, yscales, weights)
+        bscales, xmeans, xscales, ymeans, yscales, weights,
+        kwargs, par)
 end
 
 """ 

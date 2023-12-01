@@ -30,12 +30,12 @@ https://doi.org/10.1137/0905052
 function plswold(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    plswold(X, Y, weights; values(kwargs)...)
+    plswold(X, Y, weights; kwargs...)
 end
 
 function plswold(X, Y, weights::Weight; kwargs...)
     plswold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function plswold!(X::Matrix, Y::Matrix, weights::Weight; 

@@ -99,12 +99,12 @@ head(Jchemo.predict(fm, Xtest).pred)
 function rrr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    rrr(X, Y, weights; values(kwargs)...)
+    rrr(X, Y, weights; kwargs...)
 end
 
 function rrr(X, Y, weights::Weight; kwargs...)
     rrr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function rrr!(X::Matrix, Y::Matrix, weights::Weight; 

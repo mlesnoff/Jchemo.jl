@@ -106,12 +106,12 @@ f
 function krr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    krr(X, Y, weights; values(kwargs)...)
+    krr(X, Y, weights; kwargs...)
 end
 
 function krr(X, Y, weights::Weight; kwargs...)
     krr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function krr!(X::Matrix, Y::Matrix, weights::Weight; 

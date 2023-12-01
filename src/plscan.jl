@@ -10,7 +10,7 @@ Canonical partial least squares regression (Canonical PLS)
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling (`:none`, `:frob`). 
-    See functions `blockscal`.
+    See functions `fblockscal`.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
@@ -57,12 +57,12 @@ function plscan(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)
     weights = mweight(ones(Q, n))
-    plscan(X, Y, weights; values(kwargs)...)
+    plscan(X, Y, weights; kwargs...)
 end
 
 function plscan(X, Y, weights::Weight; kwargs...)
     plscan!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function plscan!(X::Matrix, Y::Matrix, weights::Weight; 

@@ -110,18 +110,18 @@ plotsp(predlv, 0:(nco(predlv) - 1); nsamp = 30).f
 function plsravg(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    plsravg(X, Y, weights; values(kwargs)...)
+    plsravg(X, Y, weights; kwargs...)
 end
 
 function plsravg(X, Y, weights::Weight; kwargs...)
     plsravg!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function plsravg!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
     fun = plsravg_unif!
-    fm = fun(X, Y, weights; values(kwargs)...)
+    fm = fun(X, Y, weights; kwargs...)
     Plsravg(fm)
 end
 

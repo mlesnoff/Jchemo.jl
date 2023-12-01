@@ -64,12 +64,12 @@ res.explvarx
 function pcr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    pcr(X, Y, weights; values(kwargs)...)
+    pcr(X, Y, weights; kwargs...)
 end
 
 function pcr(X, Y, weights::Weight; kwargs...)
     pcr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function pcr!(X::Matrix, Y::Matrix, weights::Weight; 

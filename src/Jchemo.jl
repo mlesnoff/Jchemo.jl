@@ -28,6 +28,7 @@ include("utility.jl")
 include("utility_colwise.jl")
 include("utility_rowwise.jl")
 include("utility_cscale.jl")
+include("utility_blockscal.jl")
 include("colmedspa.jl")
 include("fweight.jl") 
 include("ellipse.jl")
@@ -65,7 +66,6 @@ include("rp.jl")
 # Multiblock 
 include("angles.jl")
 include("mblock.jl")
-include("blockscal.jl")
 include("mbpca.jl")
 include("comdim.jl")
 include("cca.jl")
@@ -286,8 +286,8 @@ export
     pcasph, pcasph!,
     spca, spca!,
     # Multiblock
-    blockscal, blockscal_frob, blockscal_mfa,
-    blockscal_ncol, blockscal_sd,
+    fblockscal, fblockscal_frob, fblockscal_mfa,
+    fblockscal_ncol, fblockscal_sd,
     rv, lg, rd, 
     mbpca, mbpca!,
     comdim, comdim!, 

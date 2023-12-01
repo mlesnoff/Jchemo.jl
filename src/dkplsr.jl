@@ -92,12 +92,12 @@ f
 function dkplsr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    dkplsr(X, Y, weights; values(kwargs)...)
+    dkplsr(X, Y, weights; kwargs...)
 end
 
 function dkplsr(X, Y, weights::Weight; kwargs...)
     dkplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function dkplsr!(X::Matrix, Y::Matrix, weights::Weight; 
@@ -115,7 +115,7 @@ function dkplsr!(X::Matrix, Y::Matrix, weights::Weight;
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
     K = fkern(X, X; values(kwargs)...)     
-    fm = plskern!(K, Y, weights; values(kwargs)...)
+    fm = plskern!(K, Y, weights; kwargs...)
     Dkplsr(X, fm, K, xscales, yscales, par)
 end
 

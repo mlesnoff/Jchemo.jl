@@ -57,12 +57,12 @@ zcoef.B
 function mlr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    mlr(X, Y, weights; values(kwargs)...)
+    mlr(X, Y, weights; kwargs...)
 end
 
 function mlr(X, Y, weights::Weight; kwargs...)
     mlr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function mlr!(X::Matrix, Y::Matrix, weights::Weight; 
@@ -137,12 +137,12 @@ See `?mlr` for examples.
 function mlrpinv(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    mlrpinv(X, Y, weights; values(kwargs)...)
+    mlrpinv(X, Y, weights; kwargs...)
 end
 
 function mlrpinv(X, Y, weights::Weight; kwargs...)
     mlrpinv!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; 
@@ -223,12 +223,12 @@ See `?mlr` for examples.
 function mlrvec(x, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    mlrvec(x, Y, weights; values(kwargs)...)
+    mlrvec(x, Y, weights; kwargs...)
 end
 
 function mlrvec(x, Y, weights::Weight; kwargs...)
     mlrvec!(copy(ensure_mat(x)), copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function mlrvec!(x::Matrix, Y::Matrix, weights::Weight; 

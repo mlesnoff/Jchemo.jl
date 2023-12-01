@@ -48,7 +48,7 @@
 
 *Utilities*
 - **mblock** Make blocks from a matrix
-- **blockscal_col, _frob, _mfa, _sd** Scaling blocks
+- **fblockscal_col, _frob, _mfa, _sd** Scaling blocks
 - **rd** Redundancy coefficients between two matrices
 - **lg** Lg coefficient
 - **rv** RV correlation coefficient

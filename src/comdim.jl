@@ -12,7 +12,7 @@ Common components and specific weights analysis (ComDim = CCSWA).
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling (`:none`, `:frob`). 
-    See functions `blockscal`.
+    See functions `fblockscal`.
 * `tol` : Tolerance value for convergence.
 * `maxit` : Maximum number of iterations.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
@@ -112,7 +112,7 @@ function comdim(Xbl; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     weights = mweight(ones(Q, n))
-    comdim(Xbl, weights; values(kwargs)...)
+    comdim(Xbl, weights; kwargs...)
 end
 
 function comdim(Xbl, weights::Weight; kwargs...)
@@ -122,7 +122,7 @@ function comdim(Xbl, weights::Weight; kwargs...)
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    comdim!(zXbl, weights; values(kwargs)...)
+    comdim!(zXbl, weights; kwargs...)
 end
 
 function comdim!(Xbl::Vector, weights::Weight; 
@@ -149,7 +149,7 @@ function comdim!(Xbl::Vector, weights::Weight;
     end
     par.bscal == :none ? bscales = ones(nbl) : nothing
     if par.bscal == :frob
-        res = blockscal_frob(Xbl, weights) 
+        res = fblockscal_frob(Xbl, weights) 
         bscales = res.bscales
         Xbl = res.Xbl
     end
@@ -232,7 +232,7 @@ function transf(object::Comdim, Xbl; nlv = nothing)
     Threads.@threads for k = 1:nbl
         zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
-    zXbl = blockscal(zXbl, object.bscales).Xbl
+    zXbl = fblockscal(zXbl, object.bscales).Xbl
     U = similar(zXbl[1], m, nlv)
     TB = similar(zXbl[1], m, nbl)
     Tbl = list(nbl, Matrix{Q})
@@ -272,7 +272,7 @@ function Base.summary(object::Comdim, Xbl)
     Threads.@threads for k = 1:nbl
         zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
-    zXbl = blockscal(zXbl, object.bscales).Xbl
+    zXbl = fblockscal(zXbl, object.bscales).Xbl
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end

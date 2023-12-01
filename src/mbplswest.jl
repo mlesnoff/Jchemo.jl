@@ -13,7 +13,7 @@ Multiblock PLSR - Nipals algorithm (Westerhuis et al. 1998).
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `bscal` : Type of `Xbl` block scaling (`:none`, `:frob`). 
-    See functions `blockscal`.
+    See functions `fblockscal`.
 * `tol` : Tolerance value for convergence.
 * `maxit` : Maximum number of iterations.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` and 
@@ -62,7 +62,7 @@ function mbplswest(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     weights = mweight(ones(Q, n))
-    mbplswest(Xbl, Y, weights; values(kwargs)...)
+    mbplswest(Xbl, Y, weights; kwargs...)
 end
 
 function mbplswest(Xbl, Y, weights::Weight; kwargs...)
@@ -73,7 +73,7 @@ function mbplswest(Xbl, Y, weights::Weight; kwargs...)
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     mbplswest!(zXbl, copy(ensure_mat(Y)), 
-        weights; values(kwargs)...)
+        weights; kwargs...)
 end
 
 function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; 
@@ -109,7 +109,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight;
     end
     par.bscal == :none ? bscales = ones(Q, nbl) : nothing
     if par.bscal == :frob
-        res = blockscal_frob(Xbl, weights) 
+        res = fblockscal_frob(Xbl, weights) 
         bscales = res.bscales
         Xbl = res.Xbl
     end
@@ -212,7 +212,7 @@ function transf(object::Union{MbplsWest, Mbplsr}, Xbl; nlv = nothing)
     Threads.@threads for k = 1:nbl
         zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
-    res = blockscal(zXbl, object.bscales)
+    res = fblockscal(zXbl, object.bscales)
     reduce(hcat, res.Xbl) * vcol(object.R, 1:nlv) 
 end
 
@@ -256,7 +256,7 @@ function Base.summary(object::MbplsWest, Xbl)
     Threads.@threads for k = 1:nbl
         zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
-    zXbl = blockscal(zXbl, object.bscales).Xbl
+    zXbl = fblockscal(zXbl, object.bscales).Xbl
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end
