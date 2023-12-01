@@ -192,18 +192,18 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight;
     Tx .= (1 ./ sqrtw) .* Tx
     Rx = Wx * inv(Px' * Wx)
     lb = nothing
-    MbplsWest(Tx, Px, Rx, Wx, Wytild, Tbl, Tb, Pbl, TTx,    
+    Mbplswest(Tx, Px, Rx, Wx, Wytild, Tbl, Tb, Pbl, TTx,    
         bscales, xmeans, xscales, ymeans, yscales, weights, lb, niter)
 end
 
 """ 
-    transf(object::Union{MbplsWest, Mbplsr}, Xbl; nlv = nothing)
+    transf(object::Union{Mbplswest, Mbplsr}, Xbl; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list (vector) of blocks (matrices) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Union{MbplsWest, Mbplsr}, Xbl; nlv = nothing)
+function transf(object::Union{Mbplswest, Mbplsr}, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
@@ -217,13 +217,13 @@ function transf(object::Union{MbplsWest, Mbplsr}, Xbl; nlv = nothing)
 end
 
 """
-    predict(object::Union{MbplsWest, Mbplsr}, Xbl; nlv = nothing)
+    predict(object::Union{Mbplswest, Mbplsr}, Xbl; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list (vector) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{MbplsWest, Mbplsr}, Xbl; 
+function predict(object::Union{Mbplswest, Mbplsr}, Xbl; 
         nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
@@ -242,12 +242,12 @@ function predict(object::Union{MbplsWest, Mbplsr}, Xbl;
 end
 
 """
-    summary(object::MbplsWest, Xbl)
+    summary(object::Mbplswest, Xbl)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `Xbl` : The X-data that was used to fit the model.
 """ 
-function Base.summary(object::MbplsWest, Xbl)
+function Base.summary(object::Mbplswest, Xbl)
     Q = eltype(Xbl[1][1, 1])
     n, nlv = size(object.T)
     nbl = length(Xbl)

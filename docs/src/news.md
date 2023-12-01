@@ -20,6 +20,7 @@ Other current specific points are:
     argument must now be of type 'Weight', built from function 'mweight'. 
 - Sampling functions 'samp...' have changed. 
 - Function 'mtest' renamed to 'sampdf'
+- Functions center, scale, cscale, blockscale remaned to f...
 - Temporary removed:
     - mbunif, mbwcov
     - baggr and utilities

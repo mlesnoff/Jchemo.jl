@@ -210,13 +210,13 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight;
     Ty .= (1 ./ sqrtw) .* Ty
     Rx = Wx * inv(Px' * Wx)
     Ry = Wy * inv(Py' * Wy)
-    CcaWold(Tx, Ty, Px, Py, Rx, Ry, Wx, Wy, TTx, TTy, 
+    Ccawold(Tx, Ty, Px, Py, Rx, Ry, Wx, Wy, TTx, TTy, 
         bscales, xmeans, xscales, ymeans, yscales, weights, niter,
         kwargs, par)
 end
 
 """ 
-    transf(object::CcaWold, X, Y; nlv = nothing)
+    transf(object::Ccawold, X, Y; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
@@ -224,7 +224,7 @@ Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
 * `nlv` : Nb. LVs to compute. If nothing, it is the maximum number
     from the fitted model.
 """ 
-function transf(object::CcaWold, X, Y; nlv = nothing)
+function transf(object::Ccawold, X, Y; nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
@@ -237,13 +237,13 @@ function transf(object::CcaWold, X, Y; nlv = nothing)
 end
 
 """
-    summary(object::CcaWold, X, Y)
+    summary(object::Ccawold, X, Y)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
-function Base.summary(object::CcaWold, X, Y)
+function Base.summary(object::Ccawold, X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, nlv = size(object.Tx)

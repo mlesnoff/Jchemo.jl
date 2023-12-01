@@ -10,8 +10,7 @@ Base.@kwdef mutable struct Predictor{FUN <: Function, FM, KWARGS <: Base.Pairs}
     kwargs::KWARGS    
 end
 
-#### Fit
-
+############ Fit
 function fit!(mod::Transformer, X)
     mod.fm = mod.fun(X; values(mod.kwargs)...)
     return
@@ -20,23 +19,39 @@ function fit!(mod::Transformer, X, weights::Weight)
     mod.fm = mod.fun(X, weights; values(mod.kwargs)...)
     return
 end  
-
 function fit!(mod::Predictor, X, Y)
     mod.fm = mod.fun(X, Y; values(mod.kwargs)...)
 end  
 function fit!(mod::Predictor, X, Y, weights::Weight)
     mod.fm = mod.fun(X, Y, weights; values(mod.kwargs)...)
 end  
+## 2 blocks
+function fit!(mod::Transformer, X, Y)
+    mod.fm = mod.fun(X, Y; values(mod.kwargs)...)
+    return
+end  
+function fit!(mod::Transformer, X, Y, weights::Weight)
+    mod.fm = mod.fun(X, Y, weights; values(mod.kwargs)...)
+    return
+end  
+## >= 2 blocks 
+## To do
 
-#### Transf
+############ Transf
 
 function transf(mod::Union{Transformer, Predictor}, X; 
         nlv = nothing)
-    isnothing(nlv) ? transf(mod.fm, X) : transf(mod.fm, X; nlv = nlv)
-end  
+    isnothing(nlv) ? transf(mod.fm, X) : 
+        transf(mod.fm, X; nlv = nlv)
+end
+## 2 blocks
+function transf(mod::Union{Transformer, Predictor}, X, Y; 
+        nlv = nothing)
+    isnothing(nlv) ? transf(mod.fm, X, Y) : 
+        transf(mod.fm, X, Y; nlv = nlv)
+end
 
-#### Predict 
-
+############ Predict 
 function predict(mod::Union{Transformer, Predictor}, X; 
         nlv = nothing, lb = nothing)
     if isnothing(nlv) && isnothing(lb)
@@ -48,7 +63,7 @@ function predict(mod::Union{Transformer, Predictor}, X;
     end
 end  
 
-#### Functions building mod
+############ Functions building mod
 
 detrend(; kwargs...) = Transformer{Function, Detrend, Base.Pairs}(detrend, nothing, kwargs)
 fdif(; kwargs...) = Transformer{Function, Fdif, Base.Pairs}(fdif, nothing, kwargs)
@@ -66,8 +81,15 @@ pcaeigenk(; kwargs...) = Transformer{Function, Pca, Base.Pairs}(pcaeigenk, nothi
 pcanipals(; kwargs...) = Transformer{Function, Pca, Base.Pairs}(pcanipals, nothing, kwargs)
 pcanipalsmiss(; kwargs...) = Transformer{Function, Pca, Base.Pairs}(pcanipalsmiss, nothing, kwargs)
 pcasph(; kwargs...) = Transformer{Function, Pca, Base.Pairs}(pcasph, nothing, kwargs)
-rp(; kwargs...) = Transformer{Function, Rp, Base.Pairs}(rp, nothing, kwargs)
+spca(; kwargs...) = Transformer{Function, Spca, Base.Pairs}(spca, nothing, kwargs)
 kpca(; kwargs...) = Transformer{Function, Kpca, Base.Pairs}(kpca, nothing, kwargs)
+rp(; kwargs...) = Transformer{Function, Rp, Base.Pairs}(rp, nothing, kwargs)
+##
+cca(; kwargs...) = Transformer{Function, Cca, Base.Pairs}(cca, nothing, kwargs)
+ccawold(; kwargs...) = Transformer{Function, Ccawold, Base.Pairs}(ccawold, nothing, kwargs)
+plscan(; kwargs...) = Transformer{Function, Plscan, Base.Pairs}(plscan, nothing, kwargs)
+plstuck(; kwargs...) = Transformer{Function, Plstuck, Base.Pairs}(plstuck, nothing, kwargs)
+rasvd(; kwargs...) = Transformer{Function, Rasvd, Base.Pairs}(rasvd, nothing, kwargs)
 ##
 plskern(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plskern, nothing, kwargs)
 plsnipals(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plsnipals, nothing, kwargs)

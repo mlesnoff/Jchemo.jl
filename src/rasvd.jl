@@ -83,6 +83,7 @@ end
 
 function rasvd!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs) 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
     Q = eltype(X)
@@ -142,7 +143,8 @@ function rasvd!(X::Matrix, Y::Matrix, weights::Weight;
     Tx .= (1 ./ sqrtw) .* Tx
     Ty .= (1 ./ sqrtw) .* Ty   
     Rasvd(Tx, Ty, Bx, Wy, lambda, 
-        bscales, xmeans, xscales, ymeans, yscales, weights)
+        bscales, xmeans, xscales, ymeans, yscales, weights,
+        kwargs, par)
 end
 
 """ 

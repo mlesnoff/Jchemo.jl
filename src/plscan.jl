@@ -67,6 +67,7 @@ end
 
 function plscan!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs) 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(X)
     n, p = size(X)
@@ -151,12 +152,13 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight;
      end
      Rx = Wx * inv(Px' * Wx)
      Ry = Wy * inv(Py' * Wy)
-     PlsCan(Tx, Ty, Px, Py, Rx, Ry, Wx, Wy, TTx, TTy, delta, 
-         bscales, xmeans, xscales, ymeans, yscales, weights)
+     Plscan(Tx, Ty, Px, Py, Rx, Ry, Wx, Wy, TTx, TTy, delta, 
+         bscales, xmeans, xscales, ymeans, yscales, weights,
+         kwargs, par)
 end
 
 """ 
-    transf(object::PlsCan, X, Y; nlv = nothing)
+    transf(object::Plscan, X, Y; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
@@ -164,7 +166,7 @@ Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
 * `nlv` : Nb. LVs to compute. If nothing, it is the maximum number
     from the fitted model.
 """ 
-function transf(object::PlsCan, X, Y; nlv = nothing)
+function transf(object::Plscan, X, Y; nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
@@ -175,13 +177,13 @@ function transf(object::PlsCan, X, Y; nlv = nothing)
 end
 
 """
-    summary(object::PlsCan, X, Y)
+    summary(object::Plscan, X, Y)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
-function Base.summary(object::PlsCan, X, Y)
+function Base.summary(object::Plscan, X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, nlv = size(object.Tx)

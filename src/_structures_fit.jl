@@ -16,7 +16,7 @@ struct Cca
     par::Par
 end
 
-struct CcaWold
+struct Ccawold
     Tx::Matrix
     Ty::Matrix
     Px::Matrix
@@ -117,7 +117,7 @@ struct Pca
     par::Par
 end
 
-struct PlsCan
+struct Plscan
     Tx::Matrix
     Ty::Matrix
     Px::Matrix
@@ -139,7 +139,7 @@ struct PlsCan
     par::Par
 end
 
-struct PlsTuck
+struct Plstuck
     Tx::Matrix
     Ty::Matrix
     Wx::Matrix
@@ -349,7 +349,7 @@ struct Mbplsr
     par::Par
 end
 
-struct MbplsWest            # Used for mbplswest, mbwcov 
+struct Mbplswest            # Used for mbplswest, mbwcov 
     T::Matrix
     P::Matrix
     R::Matrix

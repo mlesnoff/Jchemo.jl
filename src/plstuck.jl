@@ -69,6 +69,7 @@ end
 
 function plstuck!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs) 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(X)
     p = nco(X)
@@ -105,8 +106,9 @@ function plstuck!(X::Matrix, Y::Matrix, weights::Weight;
     Ty = Y * Wy
     TTx = colsum(D * Tx .* Tx)
     TTy = colsum(D * Ty .* Ty)
-    PlsTuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
-        ymeans, yscales, weights)
+    Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
+        ymeans, yscales, weights,
+        kwargs, pars)
 end
 
 """ 
@@ -118,7 +120,7 @@ Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
 * `nlv` : Nb. LVs to compute. If nothing, it is the maximum number
     from the fitted model.
 """ 
-function transf(object::PlsTuck, X, Y; nlv = nothing)
+function transf(object::Plstuck, X, Y; nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
@@ -129,13 +131,13 @@ function transf(object::PlsTuck, X, Y; nlv = nothing)
 end
 
 """
-    summary(object::PlsTuck, X, Y)
+    summary(object::Plstuck, X, Y)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
-function Base.summary(object::PlsTuck, X, Y)
+function Base.summary(object::Plstuck, X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, nlv = size(object.Tx)
