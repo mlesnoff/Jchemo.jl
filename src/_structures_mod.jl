@@ -12,33 +12,48 @@ end
 
 ############ Fit
 function fit!(mod::Transformer, X)
-    mod.fm = mod.fun(X; values(mod.kwargs)...)
+    kwargs = values(mod.kwargs)
+    mod.fm = mod.fun(X; kwargs...)
     return
 end  
 function fit!(mod::Transformer, X, weights::Weight)
-    mod.fm = mod.fun(X, weights; values(mod.kwargs)...)
+    kwargs = values(mod.kwargs)
+    mod.fm = mod.fun(X, weights; kwargs...)
     return
 end  
 function fit!(mod::Predictor, X, Y)
-    mod.fm = mod.fun(X, Y; values(mod.kwargs)...)
+    kwargs = values(mod.kwargs)
+    mod.fm = mod.fun(X, Y; kwargs...)
 end  
 function fit!(mod::Predictor, X, Y, weights::Weight)
-    mod.fm = mod.fun(X, Y, weights; values(mod.kwargs)...)
+    kwargs = values(mod.kwargs)
+    mod.fm = mod.fun(X, Y, weights; kwargs...)
 end  
 ## 2 blocks
 function fit!(mod::Transformer, X, Y)
-    mod.fm = mod.fun(X, Y; values(mod.kwargs)...)
+    kwargs = values(mod.kwargs)
+    mod.fm = mod.fun(X, Y; kwargs...)
     return
 end  
 function fit!(mod::Transformer, X, Y, weights::Weight)
-    mod.fm = mod.fun(X, Y, weights; values(mod.kwargs)...)
+    kwargs = values(mod.kwargs)
+    mod.fm = mod.fun(X, Y, weights; kwargs...)
     return
 end  
 ## >= 2 blocks 
-## To do
+function fit!(mod::Transformer, Xbl::Vector{Matrix})
+    kwargs = values(mod.kwargs)
+    mod.fm = mod.fun(Xbl; kwargs...)
+    return
+end  
+function fit!(mod::Transformer, Xbl::Vector{Matrix}, 
+        weights::Weight)
+    kwargs = values(mod.kwargs)
+    mod.fm = mod.fun(Xbl, weights; kwargs...)
+    return
+end  
 
 ############ Transf
-
 function transf(mod::Union{Transformer, Predictor}, X; 
         nlv = nothing)
     isnothing(nlv) ? transf(mod.fm, X) : 
@@ -49,6 +64,12 @@ function transf(mod::Union{Transformer, Predictor}, X, Y;
         nlv = nothing)
     isnothing(nlv) ? transf(mod.fm, X, Y) : 
         transf(mod.fm, X, Y; nlv = nlv)
+end
+## >= 2 blocks 
+function transf(mod::Union{Transformer, Predictor}, 
+        Xbl::Vector{Matrix}; nlv = nothing)
+    isnothing(nlv) ? transf(mod.fm, Xbl) : 
+        transf(mod.fm, Xbl; nlv = nlv)
 end
 
 ############ Predict 
@@ -90,6 +111,9 @@ ccawold(; kwargs...) = Transformer{Function, Ccawold, Base.Pairs}(ccawold, nothi
 plscan(; kwargs...) = Transformer{Function, Plscan, Base.Pairs}(plscan, nothing, kwargs)
 plstuck(; kwargs...) = Transformer{Function, Plstuck, Base.Pairs}(plstuck, nothing, kwargs)
 rasvd(; kwargs...) = Transformer{Function, Rasvd, Base.Pairs}(rasvd, nothing, kwargs)
+mbpca(; kwargs...) = Transformer{Function, Mbpca, Base.Pairs}(mbpca, nothing, kwargs)
+comdim(; kwargs...) = Transformer{Function, Comdim, Base.Pairs}(comdim, nothing, kwargs)
+
 ##
 plskern(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plskern, nothing, kwargs)
 plsnipals(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plsnipals, nothing, kwargs)

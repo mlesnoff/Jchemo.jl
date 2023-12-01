@@ -255,7 +255,7 @@ function transf(object::Comdim, Xbl; nlv = nothing)
             zXbl[k] .-= u * Px
         end
     end
-    T = sqrt.(object.mu)' .* U
+    T = sqrt.(object.mu[1:nlv])' .* U
     (T = T, Tbl)
 end
 
