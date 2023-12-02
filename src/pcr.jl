@@ -74,6 +74,7 @@ end
 
 function pcr!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     q = nco(Y)
     ymeans = colmean(Y, weights)
@@ -86,7 +87,8 @@ function pcr!(X::Matrix, Y::Matrix, weights::Weight;
     ## Below, first term of the product = Diagonal(1 ./ fm.sv[1:nlv].^2) if T is D-orthogonal
     ## This is the case for the actual version (pcasvd)
     beta = inv(fm.T' * D * fm.T) * fm.T' * D * Y
-    Pcr(fm, fm.T, fm.P, beta', fm.xmeans, fm.xscales, ymeans, yscales, weights)
+    Pcr(fm, fm.T, fm.P, beta', fm.xmeans, fm.xscales, ymeans, yscales, weights,
+        kwargs, par)
 end
 
 """ 

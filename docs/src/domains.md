@@ -83,8 +83,8 @@
 
 *Variants of regularization using latent variables* 
 - **cglsr** Conjugate gradient for the least squares normal equations (CGLS)
-- **rrr** Reduced rank regression (RRR), *aka*  Redundancy analysis regression 
 - **pcr** Principal components regression (SVD factorization)
+- **rrr** Reduced rank regression (RRR), *aka*  Redundancy analysis regression 
 
 *Sparse*
 - **splskern** 
