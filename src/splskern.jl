@@ -116,6 +116,7 @@ end
 
 function splskern!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs)
     @assert in([:soft; :mix; :hard])(par.meth_sp) "Wrong value for argument 'meth_sp'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
     Q = eltype(X)
@@ -220,7 +221,8 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight;
      end
      sel = unique(reduce(vcat, sellv))
      Splsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
-         yscales, weights, nothing, sellv, sel)
+         yscales, weights, nothing, sellv, sel,
+         kwargs, par)
 end
 
 

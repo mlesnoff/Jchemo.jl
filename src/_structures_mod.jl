@@ -131,6 +131,7 @@ plssimp(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plssimp, nothing, k
 cglsr(; kwargs...) = Predictor{Function, Cglsr, Base.Pairs}(cglsr, nothing, kwargs)
 pcr(; kwargs...) = Predictor{Function, Pcr, Base.Pairs}(pcr, nothing, kwargs)
 rrr(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(rrr, nothing, kwargs)
+splskern(; kwargs...) = Predictor{Function, Splsr, Base.Pairs}(splskern, nothing, kwargs)
 
 
 
