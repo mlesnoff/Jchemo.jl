@@ -50,20 +50,22 @@ f
 ```
 """ 
 function aicplsr(X, y; kwargs...)
-    Q = eltype(X)
+    par = recovkwargs(Par, kwargs)
+    Q = eltype(X[1, 1])
     X = ensure_mat(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
-    #pars = mpar(scal = scal)  
-    #res = gridscorelv(X, y, X, y;
-    #    fun = plskern, score = ssr, nlv = 0:nlv, pars = pars)
+    pars = mpar(scal = par.scal)  
+    res = gridscorelv(X, y, X, y;
+        fun = plskern, score = ssr, pars = pars, 
+        nlv = 0:nlv)
     ## Temporary
-    pars = mpar(nlv = 0:nlv, scal = par.scal)  
-    res = gridscore(X, y, X, y;
-        fun = plskern, score = ssr, pars = pars)
+    #pars = mpar(nlv = 0:nlv, scal = par.scal)  
+    #res = gridscore(X, y, X, y;
+    #    fun = plskern, score = ssr, pars = pars)
     ## End 
     zssr = res.y1
-    df = dfplsr_cg(X, y; values(kwargs)...).df
+    df = dfplsr_cg(X, y; kwargs...).df
     df_ssr = n .- df
     ## For Cp, unbiased estimate of sigma2 
     ## ----- Cp1: From a low biased model

@@ -71,10 +71,12 @@ plotxy(pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 ```
 """ 
-cglsr(X, y; kwargs...) = cglsr!(copy(ensure_mat(X)), 
-    copy(ensure_mat(y)); values(kwargs)...)
+cglsr(X, y; kwargs...) = cglsr!(
+    copy(ensure_mat(X)), copy(ensure_mat(y)); 
+    kwargs...)
 
 function cglsr!(X::Matrix, y::Matrix; kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X)   
     n, p = size(X)
     q = nco(y)
@@ -156,7 +158,8 @@ function cglsr!(X::Matrix, y::Matrix; kwargs...)
         end 
         # End
     end
-    Cglsr(B, gnew, xmeans, xscales, ymeans, yscales, F)
+    Cglsr(B, gnew, xmeans, xscales, ymeans, yscales, F,
+        kwargs, par)
 end
 
 """

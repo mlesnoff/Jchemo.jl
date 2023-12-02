@@ -59,7 +59,8 @@ f
 ```
 """ 
 function dfplsr_cg(X, y; kwargs...)
-    F = cglsr(X, y; values(kwargs)...).F
+    F = cglsr(X, y; kwargs...).F
     df = [1 ; vec(1 .+ sum(F, dims = 1))]
     (df = df,)
 end
+
