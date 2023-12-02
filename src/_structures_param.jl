@@ -38,6 +38,7 @@ Base.@kwdef mutable struct Par
     maxit::Int = 200                        # maximal nb. iterations in Nipals 
     ##
     alpha_aic::Float64 = 2.                 # aicplsr
+    ##
     meth_sp::Symbol = :soft                 # sparse methods, threshold 
     delta::Float64 = 0.                     # sparse methods, threshold
     nvar::Union{Int, Vector{Int}} = 1       # sparse methods, threshold
