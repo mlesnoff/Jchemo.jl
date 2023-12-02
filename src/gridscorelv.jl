@@ -11,7 +11,7 @@ Argument `pars` must not contain `nlv`.
 See `?gridscore` for examples.
 """
 function gridscorelv(Xtrain, Ytrain, X, Y; fun, score, 
-        nlv, pars = nothing, verbose = false)
+        pars = nothing, nlv, verbose = false)
     # If not multiblock
     if isa(Xtrain, Matrix)
         p = nco(Xtrain)

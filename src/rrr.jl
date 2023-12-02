@@ -109,6 +109,7 @@ end
 
 function rrr!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs)
     @assert 0 <= par.tau <=1 "tau must be in [0, 1]"
     Q = eltype(X)
     n, p = size(X)
@@ -203,7 +204,8 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight;
      Rx = Wx * inv(Px' * Wx)
      Tx .= (1 ./ sqrtw) .* Tx
      Plsr(Tx, Px, Rx, Wx, Wytild, TTx, 
-         xmeans, xscales, ymeans, yscales, weights, niter)
+         xmeans, xscales, ymeans, yscales, weights, niter,
+         kwargs, par)
 end
 
 

@@ -11,7 +11,7 @@ Argument `pars` must not contain `lb`.
 See `?gridscore` for examples.
 """
 function gridscorelb(Xtrain, Ytrain, X, Y; score, fun, 
-        lb, pars = nothing, verbose = false)
+        pars = nothing, lb, verbose = false)
     q = nco(Ytrain)
     lb = mlev(lb)
     le_lb = length(lb)
