@@ -129,7 +129,7 @@ plswold(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plswold, nothing, k
 plsrosa(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plsrosa, nothing, kwargs)
 plssimp(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plssimp, nothing, kwargs)
 cglsr(; kwargs...) = Predictor{Function, Cglsr, Base.Pairs}(cglsr, nothing, kwargs)
-pcr(; kwargs...) = Predictor{Function, Pcr, Base.Pairs}(Pcr, nothing, kwargs)
+pcr(; kwargs...) = Predictor{Function, Pcr, Base.Pairs}(pcr, nothing, kwargs)
 rrr(; kwargs...) = Predictor{Function, Rrr, Base.Pairs}(rrr, nothing, kwargs)
 
 
