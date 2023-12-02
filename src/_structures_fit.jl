@@ -379,6 +379,12 @@ struct Mlr
     par::Par
 end
 
+struct MlrNoArg
+    B::Matrix   
+    int::Matrix
+    weights::Weight
+end
+
 struct Pcr
     fmpca::Pca
     T::Matrix

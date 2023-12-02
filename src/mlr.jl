@@ -67,6 +67,7 @@ end
 
 function mlr!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs)
     sqrtD = Diagonal(sqrt.(weights.w))
     if par.noint
         q = nco(Y)
@@ -80,7 +81,7 @@ function mlr!(X::Matrix, Y::Matrix, weights::Weight;
         B = (sqrtD * X) \ (sqrtD * Y)
         int = ymeans' .- xmeans' * B
     end
-    Mlr(B, int, weights)
+    Mlr(B, int, weights, kwargs, par)
 end
 
 """
@@ -118,7 +119,7 @@ function mlrchol!(X::Matrix, Y::Matrix, weights::Weight)
     XtD = X' * Diagonal(weights.w)
     B = cholesky!(Hermitian(XtD * X)) \ (XtD * Y)
     int = ymeans' .- xmeans' * B
-    Mlr(B, int, weights)
+    MlrNoArg(B, int, weights)
 end
 
 """
@@ -147,6 +148,7 @@ end
 
 function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs)
     sqrtD = Diagonal(sqrt.(weights.w))
     if par.noint
         q = nco(Y)
@@ -164,7 +166,7 @@ function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight;
         B = pinv(sqrtDX, rtol = tol) * (sqrtD * Y)
         int = ymeans' .- xmeans' * B
     end
-    Mlr(B, int, weights)
+    Mlr(B, int, weights, kwargs, par)
 end
 
 """
@@ -203,7 +205,7 @@ function mlrpinvn!(X::Matrix, Y::Matrix, weights::Weight)
     tol = sqrt(eps(real(float(one(eltype(XtDX))))))
     B = pinv(XtD * X, rtol = tol) * (XtD * Y)
     int = ymeans' .- xmeans' * B
-    Mlr(B, int, weights)
+    MlrNoArg(B, int, weights)
 end
 
 """
@@ -233,6 +235,7 @@ end
 
 function mlrvec!(x::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs)
     @assert nco(x) == 1 "Method only working for univariate x."
     if par.noint
         q = nco(Y)
@@ -248,7 +251,7 @@ function mlrvec!(x::Matrix, Y::Matrix, weights::Weight;
         B = (xtD * Y) ./ (xtD * x)
         int = ymeans' .- xmeans' * B
     end
-    Mlr(B, int, weights)
+    Mlr(B, int, weights, kwargs, par)
 end
 
 """
@@ -256,7 +259,7 @@ end
 Compute the coefficients of the fitted model.
 * `object` : The fitted model.
 """ 
-function coef(object::Mlr)
+function coef(object::Union{Mlr, MlrNoArg})
     (B = object.B, int = object.int)
 end
 
@@ -266,7 +269,7 @@ Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Mlr, X)
+function predict(object::Union{Mlr, MlrNoArg}, X)
     X = ensure_mat(X)
     z = coef(object)
     pred = z.int .+ X * z.B

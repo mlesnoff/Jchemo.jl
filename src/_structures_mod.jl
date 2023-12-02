@@ -117,6 +117,12 @@ comdim(; kwargs...) = Transformer{Function, Comdim, Base.Pairs}(comdim, nothing,
 fda(; kwargs...) = Predictor{Function, Fda, Base.Pairs}(fda, nothing, kwargs)
 fdasvd(; kwargs...) = Predictor{Function, Fda, Base.Pairs}(fdasvd, nothing, kwargs)
 ##
+mlr(; kwargs...) = Predictor{Function, Mlr, Base.Pairs}(mlr, nothing, kwargs)
+mlrchol(; kwargs...) = Predictor{Function, MlrNoArg, Base.Pairs}(mlrchol, nothing, kwargs)
+mlrpinv(; kwargs...) = Predictor{Function, Mlr, Base.Pairs}(mlrpinv, nothing, kwargs)
+mlrpinvn(; kwargs...) = Predictor{Function, MlrNoArg, Base.Pairs}(mlrpinvn, nothing, kwargs)
+mlrvec(; kwargs...) = Predictor{Function, Mlr, Base.Pairs}(mlrvec, nothing, kwargs)
+##
 plskern(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plskern, nothing, kwargs)
 plsnipals(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plsnipals, nothing, kwargs)
 plswold(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(plswold, nothing, kwargs)
