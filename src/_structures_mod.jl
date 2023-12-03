@@ -132,6 +132,9 @@ cglsr(; kwargs...) = Predictor{Function, Cglsr, Base.Pairs}(cglsr, nothing, kwar
 pcr(; kwargs...) = Predictor{Function, Pcr, Base.Pairs}(pcr, nothing, kwargs)
 rrr(; kwargs...) = Predictor{Function, Plsr, Base.Pairs}(rrr, nothing, kwargs)
 splskern(; kwargs...) = Predictor{Function, Splsr, Base.Pairs}(splskern, nothing, kwargs)
+plsravg(; kwargs...) = Predictor{Function, Plsravg, Base.Pairs}(plsravg, nothing, kwargs)
+kplsr(; kwargs...) = Predictor{Function, Kplsr, Base.Pairs}(kplsr, nothing, kwargs)
+dkplsr(; kwargs...) = Predictor{Function, Dkplsr, Base.Pairs}(dkplsr, nothing, kwargs)
 
 
 

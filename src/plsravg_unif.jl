@@ -11,11 +11,10 @@ end
 
 function plsravg_unif!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs)
     X = ensure_mat(X)
     n, p = size(X)
     nlv = (min(minimum(par.nlv), n, p):min(maximum(par.nlv), n, p))
-    nlvmax = maximum(nlv)
-    par.nlv = nlvmax     
     fm = plskern!(X, Y, weights; kwargs...)
     PlsravgUnif(fm, nlv)
 end

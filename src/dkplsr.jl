@@ -114,9 +114,9 @@ function dkplsr!(X::Matrix, Y::Matrix, weights::Weight;
         fscale!(Y, yscales)
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
-    K = fkern(X, X; values(kwargs)...)     
+    K = fkern(X, X; kwargs...)     
     fm = plskern!(K, Y, weights; kwargs...)
-    Dkplsr(X, fm, K, xscales, yscales, par)
+    Dkplsr(X, fm, K, xscales, yscales, kwargs, par)
 end
 
 """ 

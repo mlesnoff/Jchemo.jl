@@ -105,7 +105,7 @@ function plskern!(X::Matrix, Y::Matrix, weights::Weight;
     Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
-    nlv = min(n, p, par.nlv)
+    nlv = min(n, p, maximum(par.nlv)) # 'maximum' required for plsravg 
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
     xscales = ones(Q, p)
