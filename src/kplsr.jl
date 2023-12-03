@@ -189,7 +189,7 @@ function transf(object::Kplsr, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; 
-        values(object.kwargs)...)
+        object.kwargs...)
     DKt = object.D * K'
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')
@@ -224,7 +224,8 @@ If nothing, it is the maximum nb. LVs.
 function predict(object::Kplsr, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
-    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
+    isnothing(nlv) ? nlv = a : 
+        nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     T = transf(object, X)
     pred = list(le_nlv, Matrix{eltype(X)})

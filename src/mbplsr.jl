@@ -69,6 +69,7 @@ end
 
 function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs)
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
@@ -102,7 +103,8 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
     X = reduce(hcat, Xbl)
     fm = plskern(X, Y, weights; kwargs...)
     Mbplsr(fm, fm.T, fm.R, fm.C, 
-        bscales, xmeans, xscales, ymeans, yscales, weights)
+        bscales, xmeans, xscales, ymeans, yscales, weights,
+        kwargs, par)
 end
 
 """
@@ -144,7 +146,7 @@ function Base.summary(object::Mbplsr, Xbl)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     # Redundancies (Average correlations) Rd(X, t) 
     # between each X-block and each global score
-    z = list(nbl, Vector{Q})
+    z = list(nbl, Matrix{Q})
     @inbounds for k = 1:nbl
         z[k] = rd(zXbl[k], sqrtw .* object.T)
     end

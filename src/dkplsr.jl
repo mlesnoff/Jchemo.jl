@@ -102,6 +102,7 @@ end
 
 function dkplsr!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     p = nco(X)
     q = nco(Y)
@@ -157,7 +158,8 @@ function predict(object::Dkplsr, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     fkern = eval(Meta.parse(String(object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; kwargs...)
+    K = fkern(fscale(X, object.xscales), object.X; 
+        object.kwargs...)
     pred = predict(object.fm, K; nlv = nlv).pred
     if le_nlv == 1
         pred .= pred * Diagonal(object.yscales)

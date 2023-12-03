@@ -78,6 +78,7 @@ end
 
 function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs)
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
@@ -193,7 +194,8 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight;
     Rx = Wx * inv(Px' * Wx)
     lb = nothing
     Mbplswest(Tx, Px, Rx, Wx, Wytild, Tbl, Tb, Pbl, TTx,    
-        bscales, xmeans, xscales, ymeans, yscales, weights, lb, niter)
+        bscales, xmeans, xscales, ymeans, yscales, weights, lb, niter,
+        kwargs, par)
 end
 
 """ 
