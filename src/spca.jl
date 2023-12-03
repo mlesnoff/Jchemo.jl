@@ -128,7 +128,7 @@ end
 function spca!(X::Matrix, weights::Weight; 
         kwargs...)
     par = recovkwargs(Par, kwargs) 
-    @assert in([:soft; :mix; :hard])(par.meth_sp) "Wrong value for argument 'meth_sp'."
+    @assert in([:hard ; :soft ; :mix])(par.meth_sp) "Wrong value for argument 'meth_sp'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]."
     Q = eltype(X)
     n, p = size(X)
@@ -158,10 +158,10 @@ function spca!(X::Matrix, weights::Weight;
             res = snipals(X; kwargs...)
         else
             par.nvar = nvar[a]
-            if par.meth_sp == :mix
-                res = snipalsmix(X; kwargs...)
-            else 
+            if par.meth_sp == :hard
                 res = snipalsh(X; kwargs...)
+            elseif par.meth_sp == :mix
+                res = snipalsmix(X; kwargs...)
             end
         end
         t .= res.t      

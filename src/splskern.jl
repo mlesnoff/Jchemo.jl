@@ -117,7 +117,7 @@ end
 function splskern!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
     par = recovkwargs(Par, kwargs)
-    @assert in([:soft; :mix; :hard])(par.meth_sp) "Wrong value for argument 'meth_sp'."
+    @assert in([:hard ; :soft ; :mix])(par.meth_sp) "Wrong value for argument 'meth_sp'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
     Q = eltype(X)
     n, p = size(X)
@@ -163,7 +163,12 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight;
         if q == 1
             w .= vcol(XtY, 1)
             absw .= abs.(w)
-            if par.meth_sp == :soft
+            if par.meth_sp == :hard
+                sel = sortperm(absw; rev = true)[1:nvar[a]]
+                wmax = w[sel]
+                w .= zeros(Q, p)
+                w[sel] .= wmax
+            elseif par.meth_sp == :soft
                 absw_max = maximum(absw)
                 absw_stand .= absw / absw_max
                 theta .= max.(0, absw_stand .- par.delta) 
@@ -178,11 +183,6 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight;
                     zdelta = maximum(sort(absw)[1:nrm])
                     w .= soft.(w, zdelta)
                 end
-            elseif par.meth_sp == :hard
-                sel = sortperm(absw; rev = true)[1:nvar[a]]
-                wmax = w[sel]
-                w .= zeros(Q, p)
-                w[sel] .= wmax
             end
             ## End
             w ./= norm(w)
