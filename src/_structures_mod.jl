@@ -80,7 +80,7 @@ function predict(mod::Union{Transformer, Predictor}, X;
     elseif !isnothing(nlv) 
         predict(mod.fm, X; nlv = nlv)
     elseif !isnothing(lb) 
-        predct(mod.fm, X; lb = lb)
+        predict(mod.fm, X; lb = lb)
     end
 end  
 
@@ -135,6 +135,10 @@ splskern(; kwargs...) = Predictor{Function, Splsr, Base.Pairs}(splskern, nothing
 plsravg(; kwargs...) = Predictor{Function, Plsravg, Base.Pairs}(plsravg, nothing, kwargs)
 kplsr(; kwargs...) = Predictor{Function, Kplsr, Base.Pairs}(kplsr, nothing, kwargs)
 dkplsr(; kwargs...) = Predictor{Function, Dkplsr, Base.Pairs}(dkplsr, nothing, kwargs)
-
+##
+mbplsr(; kwargs...) = Predictor{Function, Mbplsr, Base.Pairs}(mbplsr, nothing, kwargs)
+mbplswest(; kwargs...) = Predictor{Function, Mbplswest, Base.Pairs}(mbplswest, nothing, kwargs)
+rosaplsr(; kwargs...) = Predictor{Function, Rosaplsr, Base.Pairs}(rosaplsr, nothing, kwargs)
+soplsr(; kwargs...) = Predictor{Function, Soplsr, Base.Pairs}(soplsr, nothing, kwargs)
 
 

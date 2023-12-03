@@ -198,51 +198,6 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight;
         kwargs, par)
 end
 
-""" 
-    transf(object::Union{Mbplswest, Mbplsr}, Xbl; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model.
-* `object` : The fitted model.
-* `Xbl` : A list (vector) of blocks (matrices) for which LVs are computed.
-* `nlv` : Nb. LVs to consider.
-""" 
-function transf(object::Union{Mbplswest, Mbplsr}, Xbl; nlv = nothing)
-    Q = eltype(Xbl[1][1, 1])
-    a = nco(object.T)
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    nbl = length(Xbl)
-    zXbl = list(nbl, Matrix{Q})
-    Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
-    end
-    res = fblockscal(zXbl, object.bscales)
-    reduce(hcat, res.Xbl) * vcol(object.R, 1:nlv) 
-end
-
-"""
-    predict(object::Union{Mbplswest, Mbplsr}, Xbl; nlv = nothing)
-Compute Y-predictions from a fitted model.
-* `object` : The fitted model.
-* `Xbl` : A list (vector) of X-data for which predictions are computed.
-* `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
-""" 
-function predict(object::Union{Mbplswest, Mbplsr}, Xbl; 
-        nlv = nothing)
-    Q = eltype(Xbl[1][1, 1])
-    a = nco(object.T)
-    isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
-    le_nlv = length(nlv)
-    T = transf(object, Xbl)
-    pred = list(le_nlv, Matrix{Q})
-    @inbounds  for i = 1:le_nlv
-        znlv = nlv[i]
-        int = object.ymeans'
-        B = object.C[:, 1:znlv]'
-        pred[i] = int .+ vcol(T, 1:znlv) * B 
-    end 
-    le_nlv == 1 ? pred = pred[1] : nothing
-    (pred = pred,)
-end
-
 """
     summary(object::Mbplswest, Xbl)
 Summarize the fitted model.
