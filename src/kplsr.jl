@@ -102,6 +102,7 @@ end
 
 function kplsr!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
@@ -118,7 +119,7 @@ function kplsr!(X::Matrix, Y::Matrix, weights::Weight;
         fcenter!(Y, ymeans)
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
-    K = fkern(X, X; values(kwargs)...)     # In the future?: fkern!(K, X, X; values(kwargs)...)
+    K = fkern(X, X; kwargs...)     # In the future?: fkern!(K, X, X; values(kwargs)...)
     D = Diagonal(weights.w)
     Kt = K'    
     DKt = D * Kt
@@ -173,7 +174,7 @@ function kplsr!(X::Matrix, Y::Matrix, weights::Weight;
     DU = D * U
     zR = DU * inv(T' * D * Kc * DU)
     Kplsr(X, Kt, T, C, U, zR, D, DKt, vtot, xscales, ymeans, yscales, 
-        weights, iter, par)
+        weights, iter, kwargs, par)
 end
 
 """ 
@@ -187,7 +188,8 @@ function transf(object::Kplsr, X; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; par = object.par)
+    K = fkern(fscale(X, object.xscales), object.X; 
+        values(object.kwargs)...)
     DKt = object.D * K'
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')

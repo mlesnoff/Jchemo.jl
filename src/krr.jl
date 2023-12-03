@@ -116,6 +116,7 @@ end
 
 function krr!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     p = nco(X)
     xscales = ones(Q, p)
@@ -140,7 +141,7 @@ function krr!(X::Matrix, Y::Matrix, weights::Weight;
     # UtDY = U' * D^(1/2) * Y
     UtDY = U' * sqrtD * Y
     Krr(X, K, U, UtDY, sv, D, sqrtD, DKt, 
-        vtot, xscales, ymeans, weights, par)
+        vtot, xscales, ymeans, weights, par, kwargs)
 end
 
 """
@@ -174,7 +175,8 @@ function predict(object::Krr, X; lb = nothing)
     X = ensure_mat(X)
     isnothing(lb) ? lb = object.par.lb : nothing
     fkern = eval(Meta.parse(String(object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; par = object.par)
+    K = fkern(fscale(X, object.xscales), object.X; 
+        values(object.kwargs)...)
     DKt = object.D * K'
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')

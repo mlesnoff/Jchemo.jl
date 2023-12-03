@@ -128,7 +128,8 @@ Compute latent variables (LVs = scores T) from a fitted model and X-data.
 """ 
 function transf(object::Dkplsr, X; nlv = nothing)
     fkern = eval(Meta.parse(String(object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; par = object.par)
+    K = fkern(fscale(X, object.xscales), object.X; 
+        values(object.kwargs)...)
     transf(object.fm, K; nlv = nlv)
 end
 
@@ -156,7 +157,7 @@ function predict(object::Dkplsr, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     fkern = eval(Meta.parse(String(object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; par = object.par)
+    K = fkern(fscale(X, object.xscales), object.X; kwargs...)
     pred = predict(object.fm, K; nlv = nlv).pred
     if le_nlv == 1
         pred .= pred * Diagonal(object.yscales)
