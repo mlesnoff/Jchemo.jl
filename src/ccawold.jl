@@ -224,7 +224,7 @@ Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
 * `nlv` : Nb. LVs to compute. If nothing, it is the maximum number
     from the fitted model.
 """ 
-function transf(object::Ccawold, X, Y; nlv = nothing)
+function transfbl(object::Ccawold, X, Y; nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)

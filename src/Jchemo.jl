@@ -358,7 +358,8 @@ export
     lwplslda, lwplsqda,
     knnda,
     # Auxiliary
-    transf, coef, predict, 
+    transf, coef, predict,
+    transfbl, 
     # Validation
     residreg, residcla, 
     ssr, msep, rmsep, rmsepstand, 

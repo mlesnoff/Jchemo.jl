@@ -225,6 +225,14 @@ Compute latent variables (LVs = scores T) from a fitted model and X-data.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transf(object::Comdim, Xbl; nlv = nothing)
+    ftransf(object, Xbl; nlv).T
+end
+
+function transfbl(object::Comdim, Xbl; nlv = nothing)
+    ftransf(object, Xbl; nlv).Tbl
+end
+
+function ftransf(object::Comdim, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
