@@ -68,6 +68,7 @@ function rosaplsr(Xbl, Y, weights::Weight; kwargs...)
 end
 
 function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(Xbl[1][1, 1])   
     n = nro(Xbl[1])
     q = nco(Y)
@@ -187,7 +188,8 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         W[:, a] .= reduce(vcat, z .* wbl)
     end
     R = W * inv(P' * W)
-    Rosaplsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, bl)
+    Rosaplsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, bl,
+        kwargs, par)
 end
 
 """ 
