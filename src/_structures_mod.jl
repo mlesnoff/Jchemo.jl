@@ -145,6 +145,9 @@ splskern(; kwargs...) = Predictor{Function, Splsr, Base.Pairs}(splskern, nothing
 plsravg(; kwargs...) = Predictor{Function, Plsravg, Base.Pairs}(plsravg, nothing, kwargs)
 kplsr(; kwargs...) = Predictor{Function, Kplsr, Base.Pairs}(kplsr, nothing, kwargs)
 dkplsr(; kwargs...) = Predictor{Function, Dkplsr, Base.Pairs}(dkplsr, nothing, kwargs)
+rr(; kwargs...) = Predictor{Function, Rr, Base.Pairs}(rr, nothing, kwargs)
+rrchol(; kwargs...) = Predictor{Function, Mlr, Base.Pairs}(rrchol, nothing, kwargs)
+krr(; kwargs...) = Predictor{Function, Krr, Base.Pairs}(Krr, nothing, kwargs)
 ##
 mbplsr(; kwargs...) = Predictor{Function, Mbplsr, Base.Pairs}(mbplsr, nothing, kwargs)
 mbplswest(; kwargs...) = Predictor{Function, Mbplswest, Base.Pairs}(mbplswest, nothing, kwargs)

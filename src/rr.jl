@@ -80,6 +80,7 @@ end
 
 function rr!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     p = nco(X)
     sqrtw = sqrt.(weights.w)
@@ -97,7 +98,8 @@ function rr!(X::Matrix, Y::Matrix, weights::Weight;
     res = LinearAlgebra.svd!(sqrtD * X)
     sv = res.S
     TtDY = Diagonal(sv) * res.U' * (sqrtD * Y)
-    Rr(res.V, TtDY, sv, xmeans, xscales, ymeans, weights, par)
+    Rr(res.V, TtDY, sv, xmeans, xscales, ymeans, weights, 
+        kwargs, par)
 end
 
 """
