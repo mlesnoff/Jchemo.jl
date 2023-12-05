@@ -56,7 +56,8 @@ function soplsr(Xbl, Y; kwargs...)
     soplsr(Xbl, Y, weights; kwargs...)
 end
 
-function soplsr(Xbl, Y, weights::Weight; kwargs...)
+function soplsr(Xbl, Y, weights::Weight; 
+        kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(nbl, Matrix{Q})
@@ -69,6 +70,7 @@ end
 
 function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; 
         kwargs...)
+    par = recovkwargs(Par, kwargs)
     Y = ensure_mat(Y)
     n = size(Xbl[1], 1)
     q = nco(Y)   
@@ -81,7 +83,7 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
     b = list(nbl)
     # First block
     fm[1] = plskern(Xbl[1], Y, weights; 
-        par = Par(nlv = nlv[1], scal = par.scal))
+        nlv = nlv[1], scal = par.scal)
     T = fm[1].T
     pred .= Jchemo.predict(fm[1], Xbl[1]).pred
     b[1] = nothing
@@ -91,12 +93,12 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
             b[i] = inv(T' * (D * T)) * T' * (D * Xbl[i])
             X = Xbl[i] - T * b[i]
             fm[i] = plskern(X, Y - pred, weights; 
-                par = Par(nlv = nlv[i], scal = par.scal))
+                nlv = nlv[i], scal = par.scal)
             T = hcat(T, fm[i].T)
-            pred .+= Jchemo.predict(fm[i], X).pred 
+            pred .+= predict(fm[i], X).pred 
         end
     end
-    Soplsr(fm, T, pred, b)
+    Soplsr(fm, T, pred, b, kwargs, par)
 end
 
 """ 
@@ -137,6 +139,4 @@ function predict(object::Soplsr, Xbl)
     end
     (pred = pred,)
 end
-
-
 

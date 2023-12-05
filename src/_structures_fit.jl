@@ -221,6 +221,8 @@ struct Knnr
     k::Int
     tol::AbstractFloat
     scal::Bool
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Kplsr
@@ -423,6 +425,8 @@ end
 
 struct Plsravg
     fm::PlsravgUnif
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Rosaplsr
@@ -450,6 +454,7 @@ struct Rr
     xscales::Vector
     ymeans::Vector
     weights::Weight
+    kwargs::Base.Pairs
     par::Par
 end
 
@@ -458,6 +463,8 @@ struct Soplsr
     T::Matrix
     fit::Matrix
     b
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Splsr
@@ -482,6 +489,8 @@ end
 struct Svmr
     fm::LIBSVM.SVM
     xscales::Vector
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct TreerDt
