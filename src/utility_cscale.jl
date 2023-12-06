@@ -59,4 +59,3 @@ end
 
 fcscale!(X::AbstractMatrix, u, v) = fscale!(fcenter!(X, u), v)
 
-
