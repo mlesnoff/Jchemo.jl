@@ -18,9 +18,9 @@ using Statistics
 using StatsBase          # sample
 
 include("_structures_param.jl")
-include("_structures_mod.jl")
 include("_structures_fit.jl")
-include("_syntax_embed.jl")
+include("_structures_mod.jl")
+include("_structures_mod_pipelines.jl")
 
 ###  Misc
 
