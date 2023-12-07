@@ -87,6 +87,7 @@ Compute the Y-predictions from the fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Knnr, X)
+    Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
     q = size(object.Y, 2)
@@ -114,7 +115,7 @@ function predict(object::Knnr, X)
         listw[i] = w
     end
     # End
-    pred = zeros(m, q)
+    pred = zeros(Q, m, q)
     @inbounds for i = 1:m
         weights = mweight(listw[i])
         pred[i, :] .= colmean(
