@@ -87,7 +87,7 @@ f
 ```
 """ 
 function svmr(X, y; kwargs...)
-#function svmr(X, y, args...; kwargs...)   # perhaps needed for embedded syntax
+    par = recovkwargs(Par, kwargs)
     kern = par.kern 
     @assert in([:krbf, :kpol, :klin, :ktanh])(kern) "Wrong value for argument 'kern'." 
     X = ensure_mat(X)
@@ -119,7 +119,7 @@ function svmr(X, y; kwargs...)
         tolerance = 0.001,
         nt = 0,
         verbose = false) 
-    Svmr(fm, xscales)
+    Svmr(fm, xscales, kwargs, par)
 end
 
 """
