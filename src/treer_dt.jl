@@ -71,6 +71,7 @@ plotxy(res.pred, ytest; color = (:red, .5),
 ```
 """ 
 function treer_dt(X, y; kwargs...) 
+    par = recovkwargs(Par, kwargs)
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)
@@ -94,7 +95,8 @@ function treer_dt(X, y; kwargs...)
         )
     featur = collect(1:p)
     mth = true
-    TreerDt(fm, xscales, featur, mth)
+    TreerDt(fm, xscales, featur, mth,
+        kwargs, par)
 end
 
 """
