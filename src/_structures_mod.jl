@@ -148,10 +148,15 @@ dkplsr(; kwargs...) = Predictor{Function, Dkplsr, Base.Pairs}(dkplsr, nothing, k
 rr(; kwargs...) = Predictor{Function, Rr, Base.Pairs}(rr, nothing, kwargs)
 rrchol(; kwargs...) = Predictor{Function, Mlr, Base.Pairs}(rrchol, nothing, kwargs)
 krr(; kwargs...) = Predictor{Function, Krr, Base.Pairs}(Krr, nothing, kwargs)
+treer_dt(; kwargs...) = Predictor{Function, TreerDt, Base.Pairs}(treer_dt, nothing, kwargs)
+rfr_dt(; kwargs...) = Predictor{Function, TreerDt, Base.Pairs}(rfr_dt, nothing, kwargs)
 ##
 mbplsr(; kwargs...) = Predictor{Function, Mbplsr, Base.Pairs}(mbplsr, nothing, kwargs)
 mbplswest(; kwargs...) = Predictor{Function, Mbplswest, Base.Pairs}(mbplswest, nothing, kwargs)
 rosaplsr(; kwargs...) = Predictor{Function, Rosaplsr, Base.Pairs}(rosaplsr, nothing, kwargs)
 soplsr(; kwargs...) = Predictor{Function, Soplsr, Base.Pairs}(soplsr, nothing, kwargs)
+## 
+
+
 
 

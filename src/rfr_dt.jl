@@ -81,6 +81,7 @@ plotxy(res.pred, ytest; color = (:red, .5),
 ```
 """ 
 function rfr_dt(X, y; kwargs...)
+    par = recovkwargs(Par, kwargs)
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)
@@ -105,6 +106,7 @@ function rfr_dt(X, y; kwargs...)
         #rng = 3
         ) 
     featur = collect(1:p)
-    TreerDt(fm, xscales, featur, par.mth)
+    TreerDt(fm, xscales, featur, par.mth,
+        kwargs, par)
 end
 
