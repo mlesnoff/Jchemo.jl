@@ -157,7 +157,9 @@ mbplswest(; kwargs...) = Predictor{Function, Mbplswest, Base.Pairs}(mbplswest, n
 rosaplsr(; kwargs...) = Predictor{Function, Rosaplsr, Base.Pairs}(rosaplsr, nothing, kwargs)
 soplsr(; kwargs...) = Predictor{Function, Soplsr, Base.Pairs}(soplsr, nothing, kwargs)
 ## 
-
+knnr(; kwargs...) = Predictor{Function, Knnr, Base.Pairs}(knnr, nothing, kwargs)
+lwplsr(; kwargs...) = Predictor{Function, Lwplsr, Base.Pairs}(knnr, nothing, kwargs)
+lwplsravg(; kwargs...) = Predictor{Function, LwplsrAvg, Base.Pairs}(knnr, nothing, kwargs)
 
 
 
