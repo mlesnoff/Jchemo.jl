@@ -37,6 +37,7 @@ Base.@kwdef mutable struct Par
     h::Float64 = Inf                        # shape parameter in fweight
     k::Int = 1                              # nb neighbors
     tolw::Float64 = 1e-4                    # tolerance for local weights
+    verbose::Bool = false                   # print obs. indexes when prediction
     ##
     prior::Symbol = :unif                   # prior in DA
     ##

@@ -66,12 +66,12 @@ f[1, 2] = Legend(f, ax, framevisible = false)
 f
 ```
 """ 
-function lwmlr(X, Y; metric = :eucl, 
-        h, k, tol = 1e-4, verbose = false)
+function lwmlr(X, Y; kwargs...) 
+#function lwmlr(X, Y; metric = :eucl, 
+#        h, k, tol = 1e-4, verbose = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    Lwmlr(X, Y, metric, h, k, tol, 
-        verbose)
+    Lwmlr(X, Y, kwargs, par)
 end
 
 """

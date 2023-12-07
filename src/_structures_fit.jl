@@ -211,21 +211,6 @@ struct Cglsr
     par::Par
 end
 
-struct Knnr
-    X::Matrix
-    Y::Matrix
-    fm
-    xscales::Vector
-    #nlvdis::Int
-    #metric::String
-    #h::Real
-    #k::Int
-    #tol::AbstractFloat
-    #scal::Bool
-    kwargs::Base.Pairs
-    par::Par
-end
-
 struct Kplsr
     X::Matrix
     Kt::Adjoint
@@ -258,81 +243,6 @@ struct Krr
     xscales::Vector
     ymeans::Vector
     weights::Weight
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Lwmlr
-    X::Matrix
-    Y::Matrix
-    metric::String
-    h::Real
-    k::Int
-    tol::AbstractFloat
-    verbose::Bool
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct LwmlrS
-    T::Matrix
-    Y::Matrix
-    fm
-    metric::String
-    h::Real
-    k::Int
-    tol::AbstractFloat
-    verbose::Bool
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Lwplsr
-    X::Matrix
-    Y::Matrix
-    fm
-    metric::String
-    h::Real
-    k::Int
-    nlv::Int
-    tol::AbstractFloat
-    scal::Bool
-    verbose::Bool
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct LwplsrAvg
-    X::Matrix
-    Y::Matrix
-    fm
-    metric::String
-    h::Real
-    k::Int
-    nlv::String
-    typf::String
-    typw::String
-    alpha::Real
-    K::Real
-    rep::Real
-    tol::AbstractFloat
-    scal::Bool
-    verbose::Bool
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct LwplsrS
-    T::Matrix
-    Y::Matrix
-    fm
-    metric::String
-    h::Real
-    k::Int
-    nlv::Int
-    tol::AbstractFloat
-    scal::Bool
-    verbose::Bool
     kwargs::Base.Pairs
     par::Par
 end
@@ -419,6 +329,17 @@ struct Plsr
     par::Par
 end
 
+## Here since Plsr
+struct Dkplsr
+    X::Matrix
+    fm::Plsr
+    K::Matrix
+    xscales::Vector
+    yscales::Vector
+    kwargs::Base.Pairs
+    par::Par
+end
+
 struct PlsravgUnif
     fm::Plsr
     nlv::UnitRange
@@ -499,6 +420,68 @@ struct TreerDt
     xscales::Vector
     featur::Vector{Int}
     mth::Bool 
+    kwargs::Base.Pairs
+    par::Par
+end
+
+## Local
+
+struct Knnr
+    X::Matrix
+    Y::Matrix
+    fm::Union{Nothing, Plsr}
+    xscales::Vector
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Lwmlr
+    X::Matrix
+    Y::Matrix
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct LwmlrS
+    T::Matrix
+    Y::Matrix
+    fm::Union{Nothing, Pca, Plsr, Dkplsr}
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Lwplsr
+    X::Matrix
+    Y::Matrix
+    fm::Union{Nothing, Plsr}
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct LwplsrAvg
+    X::Matrix
+    Y::Matrix
+    fm::Union{Nothing, Plsr}
+    #metric::String
+    #h::Real
+    #k::Int
+    #nlv::String
+    #typf::String
+    #typw::String
+    #alpha::Real
+    #K::Real
+    #rep::Real
+    #tol::AbstractFloat
+    #scal::Bool
+    #verbose::Bool
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct LwplsrS
+    T::Matrix
+    Y::Matrix
+    fm::Union{Nothing, Pca, Plsr, Dkplsr}
     kwargs::Base.Pairs
     par::Par
 end
@@ -773,18 +756,6 @@ struct TreedaDt
     lev::Vector
     ni::Int
     mth::Bool 
-    kwargs::Base.Pairs
-    par::Par
-end
-
-###### Related
-
-struct Dkplsr
-    X::Matrix
-    fm::Plsr
-    K::Matrix
-    xscales::Vector
-    yscales::Vector
     kwargs::Base.Pairs
     par::Par
 end
