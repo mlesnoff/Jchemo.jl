@@ -39,7 +39,7 @@ function locw(Xtrain, Ytrain, X;
             else
                 fm = fun(Xtrain[s, :], zYtrain, listw[i] ; kwargs...)
             end
-            pred[i, :] = Jchemo.predict(fm, X[i:i, :]).pred
+            pred[i, :] = predict(fm, X[i:i, :]).pred
         end
     end
     verbose ? println() : nothing    

@@ -768,12 +768,14 @@ X = rand(5, 3)
 rmcol(X, [1, 3])
 ```
 """
-function rmcol(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, Number})
+function rmcol(X::Union{AbstractMatrix, DataFrame}, 
+        s::Union{Vector, BitVector, UnitRange, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
     X[:, setdiff(1:end, Int.(s))]
 end
 
-function rmcol(X::Vector, s::Union{Vector, BitVector, Number})
+function rmcol(X::Vector, 
+        s::Union{Vector, BitVector, UnitRange, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
     X[setdiff(1:end, Int.(s))]
 end
@@ -791,12 +793,14 @@ X = rand(5, 2)
 rmrow(X, [1, 4])
 ```
 """
-function rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, Number})
+function rmrow(X::Union{AbstractMatrix, DataFrame}, 
+        s::Union{Vector, BitVector, UnitRange, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
     X[setdiff(1:end, Int.(s)), :]
 end
 
-function rmrow(X::Vector, s::Union{Vector, BitVector, Number})
+function rmrow(X::Vector, 
+        s::Union{Vector, BitVector, UnitRange, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
     X[setdiff(1:end, Int.(s))]
 end

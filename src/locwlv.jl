@@ -29,25 +29,25 @@ function locwlv(Xtrain, Ytrain, X;
         ## End 
         else
             if isnothing(listw)
-                fm = fun(Xtrain[s, :],  zYtrain ; nlv = maximum(nlv), kwargs...)
+                fm = fun(Xtrain[s, :],  zYtrain ; 
+                    nlv = maximum(nlv), kwargs...)
             else
-                fm = fun(Xtrain[s, :], zYtrain, listw[i] ; nlv = maximum(nlv), kwargs...)
+                fm = fun(Xtrain[s, :], zYtrain, listw[i] ; 
+                    nlv = maximum(nlv), kwargs...)
             end
             @inbounds for a = 1:le_nlv
-                zpred[i, :, a] = Jchemo.predict(fm, X[i:i, :] ; nlv = nlv[a]).pred
+                zpred[i, :, a] = Jchemo.predict(fm, X[i:i, :] ; 
+                    nlv = nlv[a]).pred
             end
         end
     end 
     verbose ? println() : nothing    
-    pred = list(le_nlv, Union{Matrix{Int}, Matrix{Float64}, Matrix{String}})
+    pred = list(le_nlv, 
+        Union{Matrix{Int}, Matrix{Float64}, Matrix{String}})
     for a = 1:le_nlv
         pred[a] = zpred[:, :, a]
     end
     le_nlv == 1 ? pred = pred[1] : nothing
     (pred = pred, )
 end
-
-
-
-
 
