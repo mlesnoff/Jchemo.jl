@@ -65,7 +65,7 @@ function sampdp(X, k; metric = :eucl)
     if metric == :eucl
         D = euclsq(X, X)
     else
-        D = mahsq(X, X)
+        D = mahsqchol(X, X)
     end
     n = size(D, 1)
     zn = 1:n

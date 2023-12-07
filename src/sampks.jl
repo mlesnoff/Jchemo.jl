@@ -52,7 +52,7 @@ function sampks(X, k; metric = :eucl)
     if metric == :eucl
         D = euclsq(X, X)
     else
-        D = mahsq(X, X)
+        D = mahsqchol(X, X)
     end
     zn = 1:nro(D)
     ## Initial selection of 2 obs. (train)
