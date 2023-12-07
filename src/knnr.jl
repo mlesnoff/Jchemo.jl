@@ -61,24 +61,22 @@ f
 ```
 """ 
 function knnr(X, Y; kwargs...) 
-#function knnr(X, Y; nlvdis = 0, metric = :eucl, h = Inf, k = 1, 
-#        scal::Bool = false, tol = 1e-4)
     par = recovkwargs(Par, kwargs)
+    @assert in([:eucl, :mah])(par.metric) "Wrong value for argument 'metric'."
     X = ensure_mat(X)
     Y = ensure_mat(Y)
+    p = nco(X)
     Q = eltype(X)
-    if nlvdis == 0
+    if par.nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, Y; nlv = nlvdis, 
-            scal = scal)
+        fm = plskern(X, Y; nlv = par.nlvdis, 
+            scal = par.scal)
     end
     xscales = ones(Q, p)
-    if par.scal
-        xscale .= colstd(X)
+    if par.scal && isnothing(fm)
+        xscales .= colstd(X)
     end
-    #return Knnr(X, Y, fm, nlvdis, metric, h, k, tol, scal,
-    #    kwargs, par)
     Knnr(X, Y, fm, xscales, kwargs, par)
 end
 
@@ -92,35 +90,38 @@ function predict(object::Knnr, X)
     X = ensure_mat(X)
     m = nro(X)
     q = size(object.Y, 2)
+    h = object.par.h
+    k = object.par.k
+    metric = object.par.metric
+    tol = object.par.tolw
     # Getknn
     if isnothing(object.fm)
         if object.par.scal
-            xscales = colstd(object.X)
-            zX1 = fscale(object.X, xscales)
-            zX2 = fscale(X, xscales)
-            res = getknn(zX1, zX2; k = object.k, 
-                metric = object.metric)
+            zX1 = fscale(object.X, object.xscales)
+            zX2 = fscale(X, object.xscales)
+            res = getknn(zX1, zX2; k, metric)
         else
-            res = getknn(object.X, X; k = object.k, 
-                metric = object.metric)
+            res = getknn(object.X, X; k, metric)
         end
     else
         res = getknn(object.fm.T, transf(object.fm, X); 
-            k = object.k, metric = object.metric) 
+           k, metric) 
     end
     listw = copy(res.d)
     @inbounds for i = 1:m
-        w = wdist(res.d[i]; h = object.h)
-        w[w .< object.tol] .= object.tol
+        w = wdist(res.d[i]; h)
+        w[w .< tol] .= tol
         listw[i] = w
     end
     # End
     pred = zeros(m, q)
     @inbounds for i = 1:m
-        s = res.ind[i]
-        w = mweight(listw[i])
-        pred[i, :] .= colmean(vrow(object.Y, s), w)
+        weights = mweight(listw[i])
+        pred[i, :] .= colmean(
+            vrow(object.Y, res.ind[i]), 
+            weights)
     end
-    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, 
+        listw = listw)
 end
 

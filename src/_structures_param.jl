@@ -22,17 +22,21 @@ Base.@kwdef mutable struct Par
     cost::Float64 = 1.                      # svm
     epsilon::Float64 = .1                   # svm
     ##
-    n_trees::Int = 10                       # random forest
-    partial_sampling::Float64 = .7          # random forest
+    n_trees::Int = 10                       # nb treees in random forest
+    partial_sampling::Float64 = .7          # row sampling in random forest
     n_subfeatures::Float64 = 0              # internally rounded/set to Int 
     max_depth::Int = -1                     # tree, random forest
     min_samples_leaf::Int = 5               # tree, random forest
     min_samples_split::Int = 5              # tree, random forest
     mth::Bool = true                        # multi-threading in random forest
     ##
-    nlvdis::Int = 20
-    k::Int = 200
-    h::Float64 = 2.
+    reduc::Symbol = :pls                    # type of preliminary reduction
+    nlvdis::Int = 0                         # nb LVs for global space
+    nlv0::Int = 20                          # nb LVs for global space 
+    metric::Symbol = :eucl                  # metric for global space
+    h::Float64 = Inf                        # shape parameter in fweight
+    k::Int = 1                              # nb neighbors
+    tolw::Float64 = 1e-4                    # tolerance for local weights
     ##
     prior::Symbol = :unif                   # prior in DA
     ##
