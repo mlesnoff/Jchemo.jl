@@ -60,17 +60,26 @@ ablines!(ax, 0, 1)
 f
 ```
 """ 
-function knnr(X, Y; nlvdis = 0, metric = :eucl, h = Inf, k = 1, 
-        scal::Bool = false, tol = 1e-4)
+function knnr(X, Y; kwargs...) 
+#function knnr(X, Y; nlvdis = 0, metric = :eucl, h = Inf, k = 1, 
+#        scal::Bool = false, tol = 1e-4)
+    par = recovkwargs(Par, kwargs)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
+    Q = eltype(X)
     if nlvdis == 0
         fm = nothing
     else
         fm = plskern(X, Y; nlv = nlvdis, 
             scal = scal)
     end
-    return Knnr(X, Y, fm, nlvdis, metric, h, k, tol, scal)
+    xscales = ones(Q, p)
+    if par.scal
+        xscale .= colstd(X)
+    end
+    #return Knnr(X, Y, fm, nlvdis, metric, h, k, tol, scal,
+    #    kwargs, par)
+    Knnr(X, Y, fm, xscales, kwargs, par)
 end
 
 """
@@ -85,17 +94,19 @@ function predict(object::Knnr, X)
     q = size(object.Y, 2)
     # Getknn
     if isnothing(object.fm)
-        if object.scal
+        if object.par.scal
             xscales = colstd(object.X)
             zX1 = fscale(object.X, xscales)
             zX2 = fscale(X, xscales)
-            res = getknn(zX1, zX2; k = object.k, metric = object.metric)
+            res = getknn(zX1, zX2; k = object.k, 
+                metric = object.metric)
         else
-            res = getknn(object.X, X; k = object.k, metric = object.metric)
+            res = getknn(object.X, X; k = object.k, 
+                metric = object.metric)
         end
     else
-        res = getknn(object.fm.T, transf(object.fm, X); k = object.k, 
-            metric = object.metric) 
+        res = getknn(object.fm.T, transf(object.fm, X); 
+            k = object.k, metric = object.metric) 
     end
     listw = copy(res.d)
     @inbounds for i = 1:m

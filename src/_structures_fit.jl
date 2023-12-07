@@ -215,12 +215,13 @@ struct Knnr
     X::Matrix
     Y::Matrix
     fm
-    nlvdis::Int
-    metric::String
-    h::Real
-    k::Int
-    tol::AbstractFloat
-    scal::Bool
+    xscales::Vector
+    #nlvdis::Int
+    #metric::String
+    #h::Real
+    #k::Int
+    #tol::AbstractFloat
+    #scal::Bool
     kwargs::Base.Pairs
     par::Par
 end

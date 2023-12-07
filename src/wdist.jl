@@ -67,8 +67,9 @@ function wdist!(d; h = 2, cri = 4, squared = false)
     zmed =  Statistics.median(d)
     zmad = Jchemo.mad(d)
     cutoff = zmed + cri * zmad
-    d .= map(x -> ifelse(x <= cutoff, exp(-x / (h * zmad)), zero(eltype(d))), d)
-    ## Alternative e.g.: d .= fweight(d; typw = :bisquare)
+    d .= map(x -> ifelse(x <= cutoff, 
+        exp(-x / (h * zmad)), zero(eltype(d))), d)
+    ## Alternative, e.g.: d .= fweight(d; typw = :bisquare)
     d .= d / maximum(d)
     d[isnan.(d)] .= 1
     return

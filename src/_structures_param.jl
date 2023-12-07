@@ -30,6 +30,10 @@ Base.@kwdef mutable struct Par
     min_samples_split::Int = 5              # tree, random forest
     mth::Bool = true                        # multi-threading in random forest
     ##
+    nlvdis::Int = 20
+    k::Int = 200
+    h::Float64 = 2.
+    ##
     prior::Symbol = :unif                   # prior in DA
     ##
     gs::Bool = true                         # Gram-Schmidt orthogonalization 
