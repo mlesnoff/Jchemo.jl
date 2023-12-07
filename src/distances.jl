@@ -68,8 +68,9 @@ function mahsq(X, Y, Sinv)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     Sinv = ensure_mat(Sinv)
-    ishermitian(Sinv) ? nothing : Sinv = Hermitian(Sinv)
-    Distances.pairwise(SqMahalanobis(Sinv), X', Y', dims = 2)
+    Distances.pairwise(
+        SqMahalanobis(Sinv; skipchecks = true), 
+        X', Y', dims = 2)
 end
 
 """

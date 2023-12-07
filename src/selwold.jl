@@ -123,7 +123,7 @@ function selwold(indx, r; smooth = true,
     res.Rs = [round.(Rs, digits = digits); missing]
     f = nothing
     if graph
-        f = Figure(resolution = (1000, 450))
+        f = Figure(size = (1000, 450))
         ax = list(2)
         xticks = collect(minimum(indx):step:maximum(indx))
         ax[1] = Axis(f, xlabel = xlabel, ylabel = ylabel, title = title, 

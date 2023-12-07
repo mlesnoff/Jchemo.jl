@@ -76,7 +76,7 @@ zX1 = X1val * res.M
 zX2 = X2val * res.M    
 
 i = 1
-f = Figure(resolution = (500, 300))
+f = Figure(size = (500, 300))
 ax = Axis(f[1, 1])
 lines!(zX1[i, :]; label = "x1_correct")
 lines!(ax, zX2[i, :]; label = "x2_correct")

@@ -30,7 +30,7 @@ x2 = rand(Chisq(40), 10) ;
 d = [sqrt.(x1) ; sqrt.(x2)]
 h = 2 ; cri = 3
 w = wdist(d; h = h, cri = cri) ;
-f = Figure(resolution = (600, 400))
+f = Figure(size = (600, 400))
 ax1 = Axis(f, xlabel = "Distance", ylabel = "Nb. observations")
 hist!(ax1, d, bins = 30)
 ax2 = Axis(f, xlabel = "Distance", ylabel = "Weight")
@@ -43,7 +43,7 @@ d = collect(0:.5:15) ;
 h = [.5, 1, 1.5, 2.5, 5, 10, Inf] ;
 #h = [1, 2, 5, Inf] ;
 w = wdist(d; h = h[1]) ;
-f = Figure(resolution = (600, 500))
+f = Figure(size = (600, 500))
 ax = Axis(f, xlabel = "Distance", ylabel = "Weight")
 lines!(ax, d, w, label = string("h = ", h[1]))
 for i = 2:length(h)

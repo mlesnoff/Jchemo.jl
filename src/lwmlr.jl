@@ -57,7 +57,7 @@ zy = sin.(abs.(x)) ./ abs.(x)
 y = zy + .2 * randn(n) 
 fm = lwmlr(x, y; metric = :eucl, h = 1, k = 20) ;
 pred = Jchemo.predict(fm, x).pred 
-f = Figure(resolution = (700, 300))
+f = Figure(size = (700, 300))
 ax = Axis(f[1, 1])
 scatter!(x, y) 
 lines!(ax, x, zy, label = "True model")

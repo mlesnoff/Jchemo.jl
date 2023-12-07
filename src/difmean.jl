@@ -34,7 +34,7 @@ X1 = X1val * res.M
 X2 = X2val * res.M    
 
 i = 1
-f = Figure(resolution = (500, 300))
+f = Figure(size = (500, 300))
 ax = Axis(f[1, 1])
 lines!(X1[i, :]; label = "x1_correct")
 lines!(ax, X2[i, :]; label = "x2_correct")

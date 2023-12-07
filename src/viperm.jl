@@ -59,7 +59,7 @@ ytrain = y[s]
 
 res = viperm(Xtrain, ytrain; perm = 50, 
     score = rmsep, fun = plskern, nlv = 9)
-f = Figure(resolution = (500, 400))
+f = Figure(size = (500, 400))
 ax = Axis(f[1, 1];
     xlabel = "Wavelength (nm)", 
     ylabel = "Importance")

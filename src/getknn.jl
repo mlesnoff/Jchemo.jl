@@ -27,33 +27,37 @@ res.ind
 ```
 """ 
 function getknn(Xtrain, X; k = 1, metric = :eucl)
+    @assert in([:eucl, :mah])(metric) "Wrong value for argument 'metric'."
     Xtrain = ensure_mat(Xtrain)
     X = ensure_mat(X)
     n, p = size(Xtrain)
     k > n ? k = n : nothing
     if metric == :eucl
-        ztree = BruteTree(Matrix(Xtrain'), Euclidean())
-        ind, d = knn(ztree, Matrix(X'), k, true) 
+        ztree = NearestNeighbors.BruteTree(Matrix(Xtrain'), 
+            Euclidean())
+        ind, d = NearestNeighbors.knn(ztree, 
+            Matrix(X'), k, true)    # 'ind' and 'd' are lists 
     elseif metric == :mah
         S = Statistics.cov(Xtrain, corrected = false)
+        ## Since ztree = BruteTree(Xtrain', Mahalanobis(Sinv))
+        ## is very slow:
         if p == 1
             Uinv = inv(sqrt(S)) 
         else
             if isposdef(S) == false
                 Uinv = Diagonal(1 ./ diag(S))
             else
-            Uinv = LinearAlgebra.inv!(cholesky!(Hermitian(S)).U)
+                Uinv = LinearAlgebra.inv!(cholesky!(Hermitian(S)).U)
             end
         end
         zXtrain = Xtrain * Uinv
         zX = X * Uinv
-        ztree = BruteTree(Matrix(zXtrain'), Euclidean())
-        # Since ztree = BruteTree(Xtraint, Mahalanobis(Sinv))
-        # is very slow
-        ind, d = knn(ztree, Matrix(zX'), k, true)    # ind and d = lists
+        ztree = NearestNeighbors.BruteTree(Matrix(zXtrain'), 
+            Euclidean())
+        ind, d = NearestNeighbors.knn(ztree, 
+            Matrix(zX'), k, true)
     end
     #ind = reduce(hcat, ind)'
     (ind = ind, d)
 end
-
 

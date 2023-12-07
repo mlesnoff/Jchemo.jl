@@ -28,39 +28,39 @@ Stat Comput 1, 47–62. https://doi.org/10.1007/BF01890836
 ```julia
 using CairoMakie, Distributions
 
-cols = cgrad(:tab10, collect(1:9)) ;
 d = sort(sqrt.(rand(Chi(1), 1000)))
+cols = cgrad(:tab10, collect(1:9)) ;
 alpha = 0
+f = Figure(size = (600, 500))
+ax = Axis(f, xlabel = "d", ylabel = "Weight")
 typw = :bisquare
 w = fweight(d; typw = typw, alpha = alpha)
-f = Figure(resolution = (600, 500))
-ax = Axis(f, xlabel = "Distance", ylabel = "Weight")
-lines!(ax, d, w, label = typw, color = cols[1])
+lines!(ax, d, w, label = String(typw), color = cols[1])
 typw = :cauchy
 w = fweight(d; typw = typw, alpha = alpha)
-lines!(ax, d, w, label = typw, color = cols[2])
+lines!(ax, d, w, label = String(typw), color = cols[2])
 typw = :epan
 w = fweight(d; typw = typw, alpha = alpha)
-lines!(ax, d, w, label = typw, color = cols[3])
+lines!(ax, d, w, label = String(typw), color = cols[3])
 typw = :fair
 w = fweight(d; typw = typw, alpha = alpha)
-lines!(ax, d, w, label = typw, color = cols[4])
+lines!(ax, d, w, label = String(typw), color = cols[4])
 typw = :gauss
 w = fweight(d; typw = typw, alpha = alpha)
-lines!(ax, d, w, label = typw, color = cols[5])
+lines!(ax, d, w, label = String(typw), color = cols[5])
 typw = :trian
 w = fweight(d; typw = typw, alpha = alpha)
-lines!(ax, d, w, label = typw, color = cols[6])
+lines!(ax, d, w, label = String(typw), color = cols[6])
 typw = :invexp
 w = fweight(d; typw = typw, alpha = alpha)
-lines!(ax, d, w, label = typw, color = cols[7])
+lines!(ax, d, w, label = String(typw), color = cols[7])
 typw = :invexp2
 w = fweight(d; typw = typw, alpha = alpha)
-lines!(ax, d, w, label = typw, color = cols[8])
+lines!(ax, d, w, label = String(typw), color = cols[8])
 typw = :tricube
 w = fweight(d; typw = typw, alpha = alpha)
-lines!(ax, d, w, label = typw, color = cols[9])
-axislegend("Function")
+lines!(ax, d, w, label = String(typw), color = cols[9])
+axislegend("Function", position = :lb)
 f[1, 1] = ax
 f
 ```

@@ -47,7 +47,7 @@ fm = calds(Xcal, Xtcal; fun = mlrpinv) ;
 pred = Jchemo.predict(fm, Xval).pred 
 
 i = 1
-f = Figure(resolution = (500, 300))
+f = Figure(size = (500, 300))
 ax = Axis(f[1, 1])
 lines!(Xtval[i, :]; label = "xt")
 lines!(ax, Xval[i, :]; label = "x")

@@ -77,7 +77,7 @@ m = nro(grid)
 fm = dmnorm(zT) ;
 res = Jchemo.predict(fm, grid) ;
 pred_grid = vec(res.pred)
-f = Figure(resolution = (600, 400))
+f = Figure(size = (600, 400))
 ax = Axis(f[1, 1]; title = "Density for FDA scores (Iris - Setosa)",
     xlabel = "Comp1", ylabel = "Comp2")
 co = contour!(ax, grid[:, 1], grid[:, 2], pred_grid; levels = 10)

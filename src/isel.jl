@@ -62,7 +62,7 @@ res.res0_rep
 zres = res.res
 zres0 = res.res0
 
-f = Figure(resolution = (900, 400))
+f = Figure(size = (900, 400))
 ax = Axis(f[1, 1],
     xlabel = "Wawelength (nm)", ylabel = "RMSEP",
     xticks = zres.lo)
