@@ -69,7 +69,9 @@ f
 function lwmlr(X, Y; kwargs...) 
 #function lwmlr(X, Y; metric = :eucl, 
 #        h, k, tol = 1e-4, verbose = false)
-    X = ensure_mat(X)
+    par = recovkwargs(Par, kwargs)
+    @assert in([:eucl, :mah])(par.metric) "Wrong value for argument 'metric'."  
+    X = ensure_mat(X)  
     Y = ensure_mat(Y)
     Lwmlr(X, Y, kwargs, par)
 end
@@ -83,19 +85,22 @@ Compute the Y-predictions from the fitted model.
 function predict(object::Lwmlr, X)
     X = ensure_mat(X)
     m = nro(X)
-    # Getknn
-    res = getknn(object.X, X; 
-        k = object.k, metric = object.metric)
+    ## Getknn
+    metric = object.par.metric
+    h = object.par.h
+    k = object.par.k
+    tol = object.par.tolw
+    res = getknn(object.X, X; k, metric)
     listw = copy(res.d)
     Threads.@threads for i = 1:m
-        w = wdist(res.d[i]; h = object.h)
-        w[w .< object.tol] .= object.tol
+        w = wdist(res.d[i]; h)
+        w[w .< tol] .= tol
         listw[i] = w
     end
-    # End
+    ## End
     pred = locw(object.X, object.Y, X; 
         listnn = res.ind, listw = listw, fun = mlr,
-        verbose = object.verbose).pred
+        verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, 
         listw = listw)
 end

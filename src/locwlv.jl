@@ -32,7 +32,7 @@ function locwlv(Xtrain, Ytrain, X;
                 fm = fun(Xtrain[s, :],  zYtrain ; 
                     nlv = maximum(nlv), kwargs...)
             else
-                fm = fun(Xtrain[s, :], zYtrain, listw[i] ; 
+                fm = fun(Xtrain[s, :], zYtrain, mweight(listw[i]) ; 
                     nlv = maximum(nlv), kwargs...)
             end
             @inbounds for a = 1:le_nlv

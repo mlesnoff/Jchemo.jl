@@ -90,12 +90,12 @@ function predict(object::Knnr, X)
     Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
-    q = size(object.Y, 2)
+    q = nco(object.Y)
+    ## Getknn
+    metric = object.par.metric
     h = object.par.h
     k = object.par.k
-    metric = object.par.metric
     tol = object.par.tolw
-    # Getknn
     if isnothing(object.fm)
         if object.par.scal
             zX1 = fscale(object.X, object.xscales)
@@ -114,7 +114,7 @@ function predict(object::Knnr, X)
         w[w .< tol] .= tol
         listw[i] = w
     end
-    # End
+    ## End
     pred = zeros(Q, m, q)
     @inbounds for i = 1:m
         weights = mweight(listw[i])

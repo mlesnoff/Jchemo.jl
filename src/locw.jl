@@ -17,8 +17,8 @@ for i = 1,...,m can be different.
 
 All the arguments in kwargs must have length = 1 (not collections).
 """
-function locw(Xtrain, Ytrain, X; 
-        listnn, listw = nothing, fun, verbose = false, kwargs...)
+function locw(Xtrain, Ytrain, X; listnn, 
+        listw = nothing, fun, verbose = false, kwargs...)
     m = nro(X)
     q = nco(Ytrain)
     pred = similar(Ytrain, m, q)
@@ -37,7 +37,8 @@ function locw(Xtrain, Ytrain, X;
             if isnothing(listw)
                 fm = fun(Xtrain[s, :],  zYtrain; kwargs...)
             else
-                fm = fun(Xtrain[s, :], zYtrain, listw[i] ; kwargs...)
+                fm = fun(Xtrain[s, :], zYtrain, mweight(listw[i]) ; 
+                    kwargs...)
             end
             pred[i, :] = predict(fm, X[i:i, :]).pred
         end
