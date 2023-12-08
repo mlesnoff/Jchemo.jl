@@ -82,7 +82,7 @@ function lwplsravg(X, Y; nlvdis, metric, h, k, nlv,
     else
         fm = plskern(X, Y; nlv = nlvdis, scal = scal)
     end
-    LwplsrAvg(X, Y, fm, metric, h, k, nlv, 
+    Lwplsr(X, Y, fm, metric, h, k, nlv, 
         typf, typw, alpha, K, rep, tol, scal, verbose)
 end
 

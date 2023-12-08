@@ -454,6 +454,7 @@ struct Lwplsr
     X::Matrix
     Y::Matrix
     fm::Union{Nothing, Plsr}
+    xscales::Vector
     kwargs::Base.Pairs
     par::Par
 end

@@ -7,13 +7,14 @@ Compute predictions for a given kNN model.
 Same as [`locw`](@ref) but specific (and much faster) for LV-based (e.g. PLSR) models.
 """
 function locwlv(Xtrain, Ytrain, X; 
-        listnn, listw = nothing, fun, nlv, verbose = true, kwargs...)
+        listnn, listw = nothing, fun, nlv, verbose = true, 
+        kwargs...)
     p = nco(Xtrain)
     m = nro(X)
     q = nco(Ytrain)
     nlv = max(0, minimum(nlv)):min(p, maximum(nlv))
     le_nlv = length(nlv)
-    zpred = similar(Ytrain, m, q, le_nlv)
+    zpred = similar(Xtrain, m, q, le_nlv)
     #@inbounds for i = 1:m
     Threads.@threads for i = 1:m
         verbose ? print(i, " ") : nothing
@@ -29,21 +30,21 @@ function locwlv(Xtrain, Ytrain, X;
         ## End 
         else
             if isnothing(listw)
-                fm = fun(Xtrain[s, :],  zYtrain ; 
+                fm = fun(Xtrain[s, :],  zYtrain; 
                     nlv = maximum(nlv), kwargs...)
             else
-                fm = fun(Xtrain[s, :], zYtrain, mweight(listw[i]) ; 
+                fm = fun(Xtrain[s, :], zYtrain, mweight(listw[i]); 
                     nlv = maximum(nlv), kwargs...)
             end
             @inbounds for a = 1:le_nlv
-                zpred[i, :, a] = Jchemo.predict(fm, X[i:i, :] ; 
+                zpred[i, :, a] = predict(fm, X[i:i, :]; 
                     nlv = nlv[a]).pred
             end
         end
     end 
     verbose ? println() : nothing    
     pred = list(le_nlv, 
-        Union{Matrix{Int}, Matrix{Float64}, Matrix{String}})
+        Union{Matrix{Int}, Matrix, Matrix})
     for a = 1:le_nlv
         pred[a] = zpred[:, :, a]
     end

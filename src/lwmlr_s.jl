@@ -142,11 +142,12 @@ function predict(object::LwmlrS, X)
         w[w .< tol] .= tol
         listw[i] = w
     end
-    # End
+    ## End
     pred = locw(object.T, object.Y, T; 
         listnn = res.ind, listw = listw, fun = mlr,
         verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, 
+        listw = listw)
 end
 
 

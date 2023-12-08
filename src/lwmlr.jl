@@ -67,8 +67,6 @@ f
 ```
 """ 
 function lwmlr(X, Y; kwargs...) 
-#function lwmlr(X, Y; metric = :eucl, 
-#        h, k, tol = 1e-4, verbose = false)
     par = recovkwargs(Par, kwargs)
     @assert in([:eucl, :mah])(par.metric) "Wrong value for argument 'metric'."  
     X = ensure_mat(X)  
