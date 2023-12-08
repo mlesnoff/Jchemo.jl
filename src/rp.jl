@@ -36,7 +36,7 @@ end
 function rp!(X::Matrix, weights::Weight; 
         kwargs...)
     par = recovkwargs(Par, kwargs) 
-    @assert in([:gauss, :li])(par.meth_rp) "Wrong value for argument 'meth_rp'."
+    @assert in([:gauss, :li])(par.mrp) "Wrong value for argument 'mrp'."
     Q = eltype(X)
     p = nco(X)
     xmeans = colmean(X, weights)
@@ -47,7 +47,7 @@ function rp!(X::Matrix, weights::Weight;
     else
         fcenter!(X, xmeans)
     end
-    if par.meth_rp == :gauss
+    if par.mrp == :gauss
         P = rpmatgauss(p, par.nlv, Q)
     else
         P = rpmatli(p, par.nlv, Q; 

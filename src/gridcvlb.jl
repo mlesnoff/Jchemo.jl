@@ -10,15 +10,15 @@ Argument `pars` must not contain `lb`.
 
 See `?gridcv` for examples.
 """
-function gridcvlb(X, Y; segm, score, fun, lb, 
-        pars = nothing, verbose = false)
+function gridcvlb(X, Y; segm, fun, score, 
+        pars = nothing, lb, verbose = false)
     q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
     lb = mlev(lb)
     le_lb = length(lb)
     @inbounds for i in 1:nrep
-        verbose ? print("/ repl=", i, " ") : nothing
+        verbose ? print("/ rep=", i, " ") : nothing
         listsegm = segm[i]       # segments in the repetition
         nsegm = length(listsegm) # segmts: 1; segmkf: K
         zres = list(nsegm)       # results for the repetition
@@ -33,11 +33,11 @@ function gridcvlb(X, Y; segm, score, fun, lb,
         zres = reduce(vcat, zres)
         ## Case where pars is empty
         if isnothing(pars) 
-            dat = DataFrame(repl = fill(i, nsegm * le_lb),
+            dat = DataFrame(rep = fill(i, nsegm * le_lb),
                 segm = repeat(1:nsegm, inner = le_lb))
         else
             ncomb = length(pars[1]) # nb. combinations in pars
-            dat = DataFrame(repl = fill(i, nsegm * le_lb * ncomb),
+            dat = DataFrame(rep = fill(i, nsegm * le_lb * ncomb),
                 segm = repeat(1:nsegm, inner = le_lb * ncomb))
         end
         zres = hcat(dat, zres)

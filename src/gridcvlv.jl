@@ -10,8 +10,8 @@ Argument `pars` must not contain `nlv`.
 
 See `?gridcv` for examples.
 """
-function gridcvlv(X, Y; segm, score, fun, nlv, 
-        pars = nothing, verbose = false)
+function gridcvlv(X, Y; segm, fun, score, 
+        pars = nothing, nlv, verbose = false)
     p = nco(X)
     q = nco(Y)
     nrep = length(segm)
@@ -19,7 +19,7 @@ function gridcvlv(X, Y; segm, score, fun, nlv,
     nlv = max(0, minimum(nlv)):min(p, maximum(nlv))
     le_nlv = length(nlv)
     @inbounds for i in 1:nrep
-        verbose ? print("/ repl=", i, " ") : nothing
+        verbose ? print("/ rep=", i, " ") : nothing
         listsegm = segm[i]       # segments in the repetition
         nsegm = length(listsegm) # segmts: 1; segmkf: K
         zres = list(nsegm)       # results for the repetition
@@ -34,11 +34,11 @@ function gridcvlv(X, Y; segm, score, fun, nlv,
         zres = reduce(vcat, zres)
         ## Case where pars is empty
         if isnothing(pars) 
-            dat = DataFrame(repl = fill(i, nsegm * le_nlv),
+            dat = DataFrame(rep = fill(i, nsegm * le_nlv),
                 segm = repeat(1:nsegm, inner = le_nlv))
         else
             ncomb = length(pars[1]) # nb. combinations in pars
-            dat = DataFrame(repl = fill(i, nsegm * le_nlv * ncomb),
+            dat = DataFrame(rep = fill(i, nsegm * le_nlv * ncomb),
                 segm = repeat(1:nsegm, inner = le_nlv * ncomb))
         end
         zres = hcat(dat, zres)

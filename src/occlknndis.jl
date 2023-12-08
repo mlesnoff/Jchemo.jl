@@ -128,14 +128,14 @@ function occlknndis(X; nlv, nsamp, k,
     fm = pcasvd(X; nlv = nlv, scal = scal)
     tscales = colstd(fm.T)
     fscale!(fm.T, tscales)
-    samp = sample(1:n, nsamp; replace = false)
+    sp = sample(1:n, nsamp; replace = false)
     ind = Int.(zeros(k))
     d = zeros(nsamp)
     zd = zeros(nsamp)
     vd = zeros(k)
     @inbounds for i = 1:nsamp
         # view vrow(fm.T, i) does not work with getknn
-        res = getknn(rmrow(fm.T, samp[i]), fm.T[i:i, :]; k = k, metric = :eucl)
+        res = getknn(rmrow(fm.T, sp[i]), fm.T[i:i, :]; k = k, metric = :eucl)
         ind .= res.ind[1]
         d[i] = median(res.d[1])
         for j = 1:k

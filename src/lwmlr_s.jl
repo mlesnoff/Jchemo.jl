@@ -86,38 +86,38 @@ pred = Jchemo.predict(fm, Xtest).pred
 rmsep(pred, ytest)
 ```
 """ 
-function lwmlr_s(X, Y; reduc = :pca, 
-        nlv, gamma = 1, psamp = 1, samp = :sys,
-        metric = :eucl, h, k, 
-        tol = 1e-4, scal::Bool = false, verbose = false)
-    @assert in([:pca; :pls; :dkpls])(reduc) "Wrong value for argument 'reduc'."    
+function lwmlr_s(X, Y; kwargs...)
+#function lwmlr_s(X, Y; reduc = :pca, 
+#        nlv, gamma = 1, psamp = 1, samp = :sys,
+#        metric = :eucl, h, k, 
+#        tol = 1e-4, scal::Bool = false, verbose = false)
+    par = recovkwargs(Par, kwargs)
+    @assert in([:pca; :pls; :dkpls])(par.reduc) "Wrong value for argument 'reduc'."    
     @assert 0 <= par.psamp <=1 "psamp must be in [0, 1]"   
-    @assert in([:sys; :rand])(par.samp) "Wrong value for argument 'samp'."
+    @assert in([:sys; :rand])(par.msamp) "Wrong value for argument 'samp'."
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = nro(X)
     s = 1:n
-    if psamp < 1
-        m = Int(round(psamp * n))
-        if samp == :sys
-            s = sampsys(rowsum(Y), m).train
-        elseif samp == :rand
+    if par.psamp < 1
+        m = Int(round(par.psamp * n))
+        if par.msamp == :sys
+            s = sampsys(rowsum(Y), m).test
+        elseif par.msamp == :rand
             s = sample(1:n, m; replace = false)
         end
     end
     zX = vrow(X, s)
     zY = vrow(Y, s)
-    if reduc == :pca
-        fm = pcasvd(zX; nlv = nlv, scal = scal)
-    elseif reduc == :pls
-        fm = plskern(zX, zY; nlv = nlv, scal = scal)
-    elseif reduc == :dkpls
-        fm = dkplsr(zX, zY; gamma = gamma, nlv = nlv, 
-            scal = scal)
+    if par.reduc == :pca
+        fm = pcasvd(zX; kwargs...)
+    elseif par.reduc == :pls
+        fm = plskern(zX, zY; kwargs...)
+    elseif par.reduc == :dkpls
+        fm = dkplsr(zX, zY; kwargs...)
     end
     T = transf(fm, X)
-    LwmlrS(T, Y, fm, metric, h, k, 
-        tol, verbose)
+    LwmlrS(T, Y, fm, kwargs, par)
 end
 
 """
@@ -130,19 +130,22 @@ function predict(object::LwmlrS, X)
     X = ensure_mat(X)
     m = nro(X)
     T = transf(object.fm, X)
-    # Getknn
-    res = getknn(object.T, T; 
-        k = object.k, metric = object.metric)
+    ## Getknn
+    metric = object.par.metric
+    h = object.par.h
+    k = object.par.k
+    tol = object.par.tolw
+    res = getknn(object.T, T; k, metric)
     listw = copy(res.d)
     Threads.@threads for i = 1:m
-        w = wdist(res.d[i]; h = object.h)
-        w[w .< object.tol] .= object.tol
+        w = wdist(res.d[i]; h)
+        w[w .< tol] .= tol
         listw[i] = w
     end
     # End
     pred = locw(object.T, object.Y, T; 
         listnn = res.ind, listw = listw, fun = mlr,
-        verbose = object.verbose).pred
+        verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 

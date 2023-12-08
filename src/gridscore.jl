@@ -138,7 +138,7 @@ function gridscore(Xtrain, Ytrain, X, Y; fun, score,
         verbose = false)
     if isnothing(nlv) && isnothing(lb)
         res = gridscorebr(Xtrain, Ytrain, X, Y; fun, score, 
-            pars, verbose = verbose)
+            pars, verbose)
     elseif !isnothing(nlv)
         res = gridscorelv(Xtrain, Ytrain, X, Y; fun, score, 
             pars, nlv, verbose)

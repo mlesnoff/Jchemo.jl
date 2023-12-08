@@ -159,8 +159,10 @@ soplsr(; kwargs...) = Predictor{Function, Soplsr, Base.Pairs}(soplsr, nothing, k
 ## 
 knnr(; kwargs...) = Predictor{Function, Knnr, Base.Pairs}(knnr, nothing, kwargs)
 lwmlr(; kwargs...) = Predictor{Function, Lwmlr, Base.Pairs}(lwmlr, nothing, kwargs)
-lwplsr(; kwargs...) = Predictor{Function, Lwplsr, Base.Pairs}(knnr, nothing, kwargs)
-lwplsravg(; kwargs...) = Predictor{Function, LwplsrAvg, Base.Pairs}(knnr, nothing, kwargs)
+lwmlr_s(; kwargs...) = Predictor{Function, LwmlrS, Base.Pairs}(lwmlr_s, nothing, kwargs)
+lwplsr(; kwargs...) = Predictor{Function, Lwplsr, Base.Pairs}(lwplsr, nothing, kwargs)
+lwplsr_s(; kwargs...) = Predictor{Function, LwplsrS, Base.Pairs}(lwplsr_s, nothing, kwargs)
+lwplsravg(; kwargs...) = Predictor{Function, LwplsrAvg, Base.Pairs}(lwplsravg, nothing, kwargs)
 
 
 

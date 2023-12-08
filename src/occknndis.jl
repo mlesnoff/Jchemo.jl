@@ -123,8 +123,8 @@ function occknndis(X; nlv, nsamp, k,
     tscales = colstd(fm.T)
     fscale!(fm.T, tscales)
     # End
-    samp = sample(1:n, nsamp; replace = false)
-    res = getknn(fm.T, fm.T[samp, :]; 
+    sp = sample(1:n, nsamp; replace = false)
+    res = getknn(fm.T, fm.T[sp, :]; 
             k = k + 1, metric = :eucl)
     d = zeros(nsamp)
     @inbounds for i = 1:nsamp

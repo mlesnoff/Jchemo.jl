@@ -130,6 +130,7 @@ include("gridscorelb.jl")
 include("segmkf.jl")
 include("segmts.jl")
 include("gridcv.jl")
+include("gridcvbr.jl")
 include("gridcvlv.jl")
 include("gridcvlb.jl")
 include("selwold.jl")
@@ -368,7 +369,8 @@ export
     gridscore, 
     gridscorebr, gridscorelv, gridscorelb,
     segmts, segmkf,
-    gridcv, gridcvlv, gridcvlb, 
+    gridcv, 
+    gridcvbr, gridcvlv, gridcvlb, 
     selwold,
     confusion, 
     ### Sampling
