@@ -94,7 +94,6 @@ include("kplsr.jl")
 include("dkplsr.jl")
 include("dfplsr_cg.jl")
 include("aicplsr.jl")
-include("wshenk.jl") 
 include("vip.jl") 
 
 include("xfit.jl")
@@ -315,7 +314,6 @@ export
     dkplsr, dkplsr!,
     plsravg, plsravg!,
     dfplsr_cg, aicplsr,
-    wshenk,
     svmr,
     treer_dt, rfr_dt, 
     # Sparse 
