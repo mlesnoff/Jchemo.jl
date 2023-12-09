@@ -97,19 +97,19 @@ zres.f       # plots
 ```
 """ 
 function selwold(indx, r; smooth = true, 
-        f = 5, alpha = .05, digits = 3, graph = true, 
+        npoint = 5, alpha = .05, digits = 3, graph = true, 
         step = 2, xlabel = "Index", ylabel = "Value", 
         title = "Score")
     n = length(r)
-    f = round(f)
     ## below, length = n - 1
     zdiff = -diff(r) 
     R = zdiff ./ abs.(rmrow(r, n))
     Rs = copy(R)
     if smooth
-        Rs = vec(mavg(R'; f = f))
-        #iseven(f) ? f = f + 1 : nothing
-        #Rs = vec(savgol(R'; f = f, pol = 3, d = 0))
+        Rt = R'
+        fm = mavg(Rt; npoint) 
+        Rs = vec(transf(fm, Rt)) 
+        #Rs = vec(mavg(R'; f = f))
     end
     ## End
     opt = indx[r .== minimum(r)][1]

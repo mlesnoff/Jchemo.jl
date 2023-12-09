@@ -221,7 +221,6 @@
 ## VARIABLE IMPORTANCE
 
 - **isel** Interval variable selection (e.g. Interval PLSR).
-- **nsc**: Nearest shrunken centroids (and variable selection).
 - **vip** Variable importance on projections (VIP)
 - **vi_baggr** Variable importance after bagging (OOB permutations method)
 - **viperm** Variable importance by direct permutations
