@@ -32,7 +32,7 @@ Base.@kwdef mutable struct Par
     ##
     reduc::Symbol = :pls                    # type of preliminary reduction
     nlvdis::Int = 0                         # nb LVs for global space
-    nlv0::Int = 20                          # nb LVs for global space 
+    nlvreduc::Int = 20                          # nb LVs for global space 
     metric::Symbol = :eucl                  # metric for global space
     h::Float64 = Inf                        # shape parameter in fweight
     k::Int = 1                              # nb neighbors

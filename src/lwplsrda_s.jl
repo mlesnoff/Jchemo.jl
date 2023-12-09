@@ -1,6 +1,6 @@
 """
     lwplsrda_s(X, y; reduc = :pls, 
-        nlv0, gamma = 1, psamp = 1, samp = :cla, 
+        nlvreduc, gamma = 1, psamp = 1, samp = :cla, 
         metric = :eucl, h, k, nlv, 
         tol = 1e-4, scal::Bool = false, verbose = false)
 kNN-LWPLSR-DA after preliminary (linear or non-linear) dimension 
@@ -9,7 +9,7 @@ kNN-LWPLSR-DA after preliminary (linear or non-linear) dimension
 * `y` : Univariate class membership.
 * `reduc` : Type of dimension reduction. Possible values are:
     :pca (PCA), :pls (PLS; default), :dkpls (direct Gaussian kernel PLS).
-* `nlv0` : Nb. latent variables (LVs) for preliminary dimension reduction. 
+* `nlvreduc` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `gamma` : Scale parameter for the Gaussian kernel when a KPLS is used 
     for dimension reduction. See function `krbf`.
 * `psamp` : Proportion of observations sampled in `X, Y`to compute the 
@@ -56,7 +56,7 @@ tab(ytrain)
 tab(ytest)
 
 fm = lwplsrda_s(Xtrain, ytrain; reduc = :pca, 
-    nlv0 = 20, metric = :eucl, h = 2, 
+    nlvreduc = 20, metric = :eucl, h = 2, 
     k = 100, nlv = 10) ;
 pred = Jchemo.predict(fm, Xtest).pred
 err(pred, ytest)
@@ -64,7 +64,7 @@ confusion(pred, ytest).cnt
 ```
 """ 
 function lwplsrda_s(X, y; reduc = :pls, 
-        nlv0, gamma = 1, psamp = 1, samp = :cla, 
+        nlvreduc, gamma = 1, psamp = 1, samp = :cla, 
         metric = :eucl, h, k, nlv, 
         tol = 1e-4, scal::Bool = false, verbose = false)
     @assert in([:pca; :pls; :dkpls])(reduc) "Wrong value for argument 'reduc'."    
@@ -88,11 +88,11 @@ function lwplsrda_s(X, y; reduc = :pls,
     zX = vrow(X, s)
     zy = vrow(y, s)
     if reduc == :pca
-        fm = pcasvd(zX; nlv = nlv0, scal = scal)
+        fm = pcasvd(zX; nlv = nlvreduc, scal = scal)
     elseif reduc == :pls
-        fm = plsrda(zX, zy; nlv = nlv0, scal = scal)
+        fm = plsrda(zX, zy; nlv = nlvreduc, scal = scal)
     elseif reduc == :dkpls
-        fm = dkplsrda(zX, zy; gamma = gamma, nlv = nlv0, 
+        fm = dkplsrda(zX, zy; gamma = gamma, nlv = nlvreduc, 
             scal = scal)
     end
     T = transf(fm, X)

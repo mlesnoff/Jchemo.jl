@@ -87,10 +87,6 @@ rmsep(pred, ytest)
 ```
 """ 
 function lwmlr_s(X, Y; kwargs...)
-#function lwmlr_s(X, Y; reduc = :pca, 
-#        nlv, gamma = 1, psamp = 1, samp = :sys,
-#        metric = :eucl, h, k, 
-#        tol = 1e-4, scal::Bool = false, verbose = false)
     par = recovkwargs(Par, kwargs)
     @assert in([:pca; :pls; :dkpls])(par.reduc) "Wrong value for argument 'reduc'."    
     @assert 0 <= par.psamp <=1 "psamp must be in [0, 1]"   
@@ -110,11 +106,15 @@ function lwmlr_s(X, Y; kwargs...)
     zX = vrow(X, s)
     zY = vrow(Y, s)
     if par.reduc == :pca
-        fm = pcasvd(zX; kwargs...)
+        fm = pcasvd(zX; nlv = par.nlvreduc, 
+            scal = par.scal)
     elseif par.reduc == :pls
-        fm = plskern(zX, zY; kwargs...)
+        fm = plskern(zX, zY; nlv = par.nlvreduc, 
+            scal = par.scal)
     elseif par.reduc == :dkpls
-        fm = dkplsr(zX, zY; kwargs...)
+        fm = dkplsr(zX, zY; kern = :krbf, 
+            gamma = par.gamma, nlv = par.nlvreduc, 
+            scal = par.scal)
     end
     T = transf(fm, X)
     LwmlrS(T, Y, fm, kwargs, par)

@@ -134,9 +134,8 @@ function predict(object::Lwplsr, X; nlv = nothing)
     h = object.par.h
     k = object.par.k
     tol = object.par.tolw
-    scal = object.par.scal
     if isnothing(object.fm)
-        if scal
+        if object.par.scal
             zX1 = fscale(object.X, object.xscales)
             zX2 = fscale(X, object.xscales)
             res = getknn(zX1, zX2; k, metric)
@@ -148,8 +147,8 @@ function predict(object::Lwplsr, X; nlv = nothing)
             k, metric) 
     end
     listw = copy(res.d)
-    #@inbounds for i = 1:m
     Threads.@threads for i = 1:m
+    #@inbounds for i = 1:m
         w = wdist(res.d[i]; h)
         w[w .< tol] .= tol
         listw[i] = w
@@ -157,8 +156,9 @@ function predict(object::Lwplsr, X; nlv = nothing)
     ## End
     pred = locwlv(object.X, object.Y, X; 
         listnn = res.ind, listw = listw, fun = plskern, 
-        nlv = nlv, scal = scal,
+        nlv = nlv, scal = object.par.scal,
         verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, 
+        listw = listw)
 end
 
