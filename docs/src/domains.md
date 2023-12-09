@@ -123,9 +123,8 @@
 - **lwmlr_s** kNN-LWMLR-S
 - **lwplsr_s** kNN-LWPLSR-S
 
-*Averaging and stacking*
+*Averaging*
 - **lwplsravg** kNN-LWPLSR-AVG 
-- **cplsravg** Clustered PLSR-AVG
 
 ### Wrappers to other packages
 
