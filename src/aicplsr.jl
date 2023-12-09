@@ -59,11 +59,6 @@ function aicplsr(X, y; kwargs...)
     res = gridscorelv(X, y, X, y;
         fun = plskern, score = ssr, pars = pars, 
         nlv = 0:nlv)
-    ## Temporary
-    #pars = mpar(nlv = 0:nlv, scal = par.scal)  
-    #res = gridscore(X, y, X, y;
-    #    fun = plskern, score = ssr, pars = pars)
-    ## End 
     zssr = res.y1
     df = dfplsr_cg(X, y; kwargs...).df
     df_ssr = n .- df
