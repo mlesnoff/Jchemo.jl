@@ -99,7 +99,7 @@ plotxy(res.pred, ytest; color = (:red, .5),
 ```
 """ 
 function lwplsr(X, Y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkwargs(Par, kwargs) 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     Q = eltype(X)
@@ -111,7 +111,7 @@ function lwplsr(X, Y; kwargs...)
             scal = par.scal)
     end
     xscales = ones(Q, p)
-    if par.scal && isnothing(fm)
+    if isnothing(fm) && par.scal
         xscales .= colstd(X)
     end
     Lwplsr(X, Y, fm, xscales, kwargs, par)

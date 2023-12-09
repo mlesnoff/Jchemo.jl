@@ -463,18 +463,7 @@ struct LwplsrAvg
     X::Matrix
     Y::Matrix
     fm::Union{Nothing, Plsr}
-    #metric::String
-    #h::Real
-    #k::Int
-    #nlv::String
-    #typf::String
-    #typw::String
-    #alpha::Real
-    #K::Real
-    #rep::Real
-    #tol::AbstractFloat
-    #scal::Bool
-    #verbose::Bool
+    xscales::Vector
     kwargs::Base.Pairs
     par::Par
 end

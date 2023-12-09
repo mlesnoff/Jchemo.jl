@@ -72,18 +72,26 @@ res = Jchemo.predict(fm, Xtest)
 rmsep(res.pred, ytest)
 ```
 """ 
-function lwplsravg(X, Y; nlvdis, metric, h, k, nlv, 
-    typf = :unif, typw = :bisquare, alpha = 0, K = 5, rep = 10,
-    tol = 1e-4, scal::Bool = false, verbose = false)
+function lwplsravg(X, Y; kwargs...)
+    par = recovkwargs(Par, kwargs)
+#function lwplsravg(X, Y; nlvdis, metric, h, k, nlv, 
+#    typf = :unif, typw = :bisquare, alpha = 0, K = 5, rep = 10,
+#    tol = 1e-4, scal::Bool = false, verbose = false) 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    if nlvdis == 0
+    Q = eltype(X)
+    p = nco(X)
+    if par.nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, Y; nlv = nlvdis, scal = scal)
+        fm = plskern(X, Y; nlv = par.nlvdis, 
+            scal = par.scal)
     end
-    Lwplsr(X, Y, fm, metric, h, k, nlv, 
-        typf, typw, alpha, K, rep, tol, scal, verbose)
+    xscales = ones(Q, p)
+    if isnothing(fm) && par.scal
+        xscales .= colstd(X)
+    end
+    LwplsrAvg(X, Y, fm, xscales, kwargs, par)
 end
 
 """
@@ -95,67 +103,33 @@ Compute the Y-predictions from the fitted model.
 function predict(object::LwplsrAvg, X) 
     X = ensure_mat(X)
     m = nro(X)
-    ### Getknn
+    ## Getknn
+    metric = object.par.metric
+    h = object.par.h
+    k = object.par.k
+    tol = object.par.tolw
     if isnothing(object.fm)
-        if object.scal
-            xscales = colstd(object.X)
-            zX1 = fscale(object.X, xscales)
-            zX2 = fscale(X, xscales)
-            res = getknn(zX1, zX2; k = object.k, metric = object.metric)
+        if object.par.scal
+            zX1 = fscale(object.X, object.xscales)
+            zX2 = fscale(X, object.xscales)
+            res = getknn(zX1, zX2; k, metric)
         else
-            res = getknn(object.X, X; k = object.k, metric = object.metric)
+            res = getknn(object.X, X; k, metric)
         end
     else
-        res = getknn(object.fm.T, transf(object.fm, X); k = object.k, 
-            metric = object.metric) 
+        res = getknn(object.fm.T, transf(object.fm, X); 
+            k, metric) 
     end
     listw = copy(res.d)
-    #@inbounds for i = 1:m
     Threads.@threads for i = 1:m
-        w = wdist(res.d[i]; h = object.h)
-        w[w .< object.tol] .= object.tol
+        w = wdist(res.d[i]; h)
+        w[w .< tol] .= tol
         listw[i] = w
     end
-    ### End
+    ## End
     pred = locw(object.X, object.Y, X; 
-        listnn = res.ind, listw = listw, fun = plsravg, nlv = object.nlv, 
-        typf = object.typf, typw = object.typw,
-        alpha = object.alpha, K = object.K, rep = object.rep,
-        scal = object.scal,
-        verbose = object.verbose).pred
+        listnn = res.ind, listw = listw, fun = plsravg, 
+        nlv = object.par.nlv, scal = object.par.scal,
+        verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
-
-# Not used
-function predict_steps(object::LwplsrAvg, X; steps = nothing) 
-    X = ensure_mat(X)
-    m = nro(X)
-    ### Getknn
-    if isnothing(object.fm)
-        res = getknn(object.X, X; k = object.k, metric = object.metric)
-    else
-        res = getknn(object.fm.T, transf(object.fm, X); k = object.k, metric = object.metric) 
-    end
-    listw = copy(res.d)
-    for i = 1:m
-        w = wdist(res.d[i]; h = object.h)
-        if isnothing(steps)
-            w[w .< object.tol] .= object.tol
-        else 
-            w[1:steps] .= 1 ; w[(steps + 1):end] .= object.tol
-        end
-        listw[i] = w
-    end
-    ### End
-    pred = locw(object.X, object.Y, X; 
-        listnn = res.ind, listw = listw, nlv = object.nlv, fun = plsravg, 
-        typf = object.typf, typw = object.typw, alpha = object.alpha, K = object.K, rep = object.rep,
-        verbose = object.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
-end
-
-
-
-
-
-

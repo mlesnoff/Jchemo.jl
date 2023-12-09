@@ -102,14 +102,10 @@ rmsep(res.pred, ytest)
 ```
 """ 
 function lwplsr_s(X, Y; kwargs...)
-#function lwplsr_s(X, Y; reduc = :pls, 
-#        nlvreduc, gamma = 1, psamp = 1, samp = :sys, 
-#        metric = :eucl, h, k, nlv, 
-#        tol = 1e-4, scal::Bool = false, verbose = false)
     par = recovkwargs(Par, kwargs)
     @assert in([:pca; :pls; :dkpls])(par.reduc) "Wrong value for argument 'reduc'."    
     @assert 0 <= par.psamp <=1 "psamp must be in [0, 1]"   
-    @assert in([:sys; :rand])(par.msamp) "Wrong value for argument 'samp'."
+    @assert in([:sys; :rand])(par.msamp) "Wrong value for argument 'samp'." 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = nro(X)
