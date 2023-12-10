@@ -14,13 +14,14 @@ Variable importance by direct permutations.
 
 The principle is as follows:
 * Data (X, Y) are splitted randomly to a training and a test set.
-* The model is fitted on Xtrain, and the score (error rate) on Xtest.
-    This gives the reference error rate.
+* The model is fitted on Xtrain, and the score (error rate) is computed 
+    on Xtest. This gives the reference error rate.
 * Rows of a given variable (feature) j in Xtest are randomly permutated
     (the rest of Xtest is unchanged). The score is computed on 
-    the permuted Xtest and the new score is computed. The importance
-    is computed by the difference between this score and the reference score.
-* This process is run for each variable separately and replicated `perm` times.
+    the Xtest_perm_j (i.e. Xtest after thta the rows of variable j were permuted). 
+    The importance of variable j is computed by the difference between this score
+    and the reference score.
+* This process is run for each variable j separately and replicated `perm` times.
     Average results are provided in the outputs, as well the results per 
     replication. 
 
@@ -70,7 +71,7 @@ f
 ```
 """
 function viperm(X, Y; perm = 50,
-        psamp = .3, score = rmsep, fun, kwargs...)
+        psamp = .3, fun, score = rmsep, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)
@@ -84,18 +85,20 @@ function viperm(X, Y; perm = 50,
     s = list(nval, Int)
     res = similar(X, p, q, perm)
     @inbounds for i = 1:perm
-        s .= sample(1:n, nval; replace = false)  
-        Xcal .= rmrow(X, s)
-        Ycal .= rmrow(Y, s)
-        Xval .= X[s, :]
-        Yval .= Y[s, :]
+        s = samprand(n, nval)
+        Xcal .= X[s.train, :]
+        Ycal .= Y[s.train, :]
+        Xval .= X[s.test, :]
+        Yval .= Y[s.test, :]
         fm = fun(Xcal, Ycal; kwargs...)
         pred = predict(fm, Xval).pred
         score0 = score(pred, Yval)
         zXval = similar(Xval)
         @inbounds for j = 1:p
             zXval .= copy(Xval)
+            ## Permutation variable j
             zs = sample(1:nval, nval, replace = false)
+            ## End  
             zXval[:, j] .= zXval[zs, j]
             pred .= predict(fm, zXval).pred
             zscore = score(pred, Yval)
