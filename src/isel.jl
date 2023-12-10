@@ -1,7 +1,7 @@
 """
     isel(X, Y, wl = 1:nco(X); rep = 1, 
-        nint = 5, psamp = 1/3, score = rmsep, 
-        fun, kwargs...)
+        nint = 5, psamp = 1/3, fun, 
+        score = rmsep, kwargs...)
 Interval variable selection.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -74,14 +74,15 @@ f
 ```
 """
 function isel(X, Y, wl = 1:nco(X); rep = 1, 
-        nint = 5, psamp = 1/3, score = rmsep, 
-        fun, kwargs...)
+        nint = 5, psamp = 1/3, fun, 
+        score = rmsep, kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)
     q = nco(Y)
     nint = Int(nint)
-    z = collect(round.(range(1, p + 1; length = nint + 1)))
+    z = collect(round.(range(1, p + 1; 
+        length = nint + 1)))
     int = [z[1:nint] z[2:(nint + 1)] .- 1]
     int = hcat(int, round.(rowmean(int)))
     int = Int.(int)
@@ -103,13 +104,13 @@ function isel(X, Y, wl = 1:nco(X); rep = 1,
         Yval .= Y[s, :]
         ## All variables (Ref0)
         fm = fun(Xcal, Ycal; kwargs...)
-        pred = Jchemo.predict(fm, Xval).pred
+        pred = predict(fm, Xval).pred
         res0_rep[:, :, i] = score(pred, Yval)
         ## Intervals
         @inbounds for j = 1:nint
             u = int[j, 1]:int[j, 2]
             fm = fun(vcol(Xcal, u), Ycal; kwargs...)
-            pred .= Jchemo.predict(fm, vcol(Xval, u)).pred
+            pred .= predict(fm, vcol(Xval, u)).pred
             zres[j] = score(pred, Yval)
         end
         ## End
