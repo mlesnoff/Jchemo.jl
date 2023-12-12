@@ -277,11 +277,11 @@
 ### **Pre-processing**
 
 - **detrend** Polynomial detrend
-- **fdif** Finite differences
-- **mavg** Smoothing by moving average
-- **rmgap** Remove vertical gaps in spectra, e.g. for ASD NIR data
-- **savgk**, **savgol** Savitsky-Golay filtering
 - **snv** Standard-normal-deviation transformation
+- **mavg** Smoothing by moving average
+- **fdif** Finite differences
+- **savgk**, **savgol** Savitsky-Golay filtering
+- **rmgap** Remove vertical gaps in spectra, e.g. for ASD NIR data
 
 - **center** Column centering
 - **scale** Column scaling
@@ -310,10 +310,10 @@
 
 ## PLOTTING
 
-- **plotconf** Plot confusion matrix
-- **plotgrid** Plot error or performance rates of model predictions
 - **plotsp** Plot spectra
 - **plotxy** xy scatter plot
+- **plotgrid** Plot error or performance rates of model predictions
+- **plotconf** Plot confusion matrix
 
 ## UTILITIES
 
