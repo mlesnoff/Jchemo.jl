@@ -71,11 +71,18 @@ res = eposvd(D; nlv = nlv)
 res.M      # orthogonalization matrix
 res.P      # detrimental directions (columns of matrix P = loadings of D)
 
-## Corrected matrices
-zX1 = X1val * res.M    
-zX2 = X2val * res.M    
+## Corrected Val matrices
+zX1 = X1val * res.M
+zX2 = X2val * res.M
 
 i = 1
+f = Figure(size = (500, 300))
+ax = Axis(f[1, 1])
+lines!(X1val[i, :]; label = "x1_correct")
+lines!(ax, X2val[i, :]; label = "x2_correct")
+axislegend(position = :cb, framevisible = false)
+f
+##
 f = Figure(size = (500, 300))
 ax = Axis(f[1, 1])
 lines!(zX1[i, :]; label = "x1_correct")
@@ -87,7 +94,7 @@ f
 function eposvd(D; nlv = 1)
     D = ensure_mat(D)
     n, p = size(D)
-    nlv = min(par.nlv, n, p)
+    nlv = min(nlv, n, p)
     Id = Diagonal(I, p)
     P = svd(D).V[:, 1:nlv]
     ## If n = 1, this is the same as:
@@ -96,6 +103,4 @@ function eposvd(D; nlv = 1)
     M = Id - P * P'
     (M = M, P)
 end
-
-
 
