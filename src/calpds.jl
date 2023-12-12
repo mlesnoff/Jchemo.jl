@@ -4,23 +4,24 @@ struct CalPds
 end
 
 """
-    calpds(X, Xt; m = 5, fun = mlrpinv, kwargs...)
+    calpds(X, Xtar; npoint = 5, 
+        fun = mlrpinv, kwargs...)
 Piecewise direct standardization (PDS) for calibration transfer of spectral data.
 * `X` : Spectra to transfer to the target (n, p).
-* `Xt` : Target spectra (n, p).
-* `m` : Half-window size (nb. points left/right to the target wavelength) 
+* `Xtar` : Target spectra (n, p).
+* `npoint` : Half-window size (nb. points left/right to the target wavelength) 
 * `fun` : Function used as transfer model.  
 * `kwargs` : Optional arguments for `fun`.
 
-`Xt` and `X` must represent the same n standard samples.
+`Xtar` and `X` must represent the same n standard samples.
 
 The objective is to transform spectra `X` to new spectra as close 
-as possible as the target `Xt`. Method PDS fits models 
-(defined in `fun`) that predict `Xt` from `X`.
+as possible as the target `Xtar`. Method PDS fits models 
+(defined in `fun`) that predict `Xtar` from `X`.
 
-The window used in `X` to predict wavelength "i" in `Xt` is:
+The window used in `X` to predict wavelength "i" in `Xtar` is:
 
-* i - `m`, i - `m` + 1, ..., i, ..., i + `m` - 1, i + `m`
+* i - `npoint`, i - `npoint` + 1, ..., i, ..., i + `npoint` - 1, i + `npoint`
 
 ## References
 Bouveresse, E., Massart, D.L., 1996. Improvement of the piecewise direct targetisation procedure 
@@ -38,44 +39,46 @@ https://doi.org/10.1021/ac9906835
 ```julia
 using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/caltransfer.jld2") 
+db = joinpath(path_jdat, "data/caltransfer.jld2")
 @load db dat
 pnames(dat)
 
-## To transfer
+## Target
+Xtarcal = dat.X1cal
+Xtarval = dat.X1val
+## To transfer to the target
 Xcal = dat.X2cal
 Xval = dat.X2val
-## Target
-Xtcal = dat.X1cal
-Xtval = dat.X1val
+n = nro(Xtarcal)
+m = nro(Xtarval)
 
-fm = calpds(Xcal, Xtcal;  m = 2, fun = plskern, nlv = 1) ;
-## Transfered spectra, expected to be close to Xtval
-pred = Jchemo.predict(fm, Xval).pred 
+fm = calpds(Xcal, Xtarcal;  npoint = 2, 
+    fun = plskern, nlv = 1) ;
+## Transfered (= corrected) spectra, 
+## expected to be close to Xtarval
+pred = Jchemo.predict(fm, Xval).pred
 
 i = 1
 f = Figure(size = (500, 300))
 ax = Axis(f[1, 1])
-lines!(Xtval[i, :]; label = "xt")
-lines!(ax, Xval[i, :]; label = "x")
-lines!(pred[i, :]; linestyle = dash, label = "x_transf")
+lines!(Xtarval[i, :]; label = "xtar")
+lines!(ax, Xval[i, :]; label = "x_not_correct")
+lines!(pred[i, :]; linestyle = :dash, label = "x_correct")
 axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-function calpds(X, Xt; m = 5, fun = mlrpinv, kwargs...)
-    p = nco(Xt)
+function calpds(X, Xtar; npoint = 5, 
+        fun = mlrpinv, kwargs...)
+    p = nco(X)
     fm = list(p)
     s = list(p)
-    zm = repeat([m], p)
-    zm[1:m] .= collect(1:m) .- 1
-    zm[(p - m + 1):p] .= collect(m:-1:1) .- 1
-    if isa(fun, String)
-        fun = eval(Meta.parse(fun))
-    end  
+    npo = repeat([npoint], p)
+    npo[1:npoint] .= collect(1:npoint) .- 1
+    npo[(p - npoint + 1):p] .= collect(npoint:-1:1) .- 1
     @inbounds for i = 1:p
-        s[i] = collect((i - zm[i]):(i + zm[i]))
-        fm[i] = fun(vcol(X, s[i]), vcol(Xt, i); kwargs...)
+        s[i] = collect((i - npo[i]):(i + npo[i]))
+        fm[i] = fun(vcol(X, s[i]), vcol(Xtar, i); kwargs...)
     end
     CalPds(fm, s)
 end
@@ -92,11 +95,9 @@ function predict(object::CalPds, X; kwargs...)
     m, p = size(X)
     pred = similar(X, m, p)
     @inbounds for i = 1:p 
-        pred[:, i] .= predict(object.fm[i], vcol(X, object.s[i]); 
-            kwargs...).pred
+        pred[:, i] .= predict(object.fm[i], 
+            vcol(X, object.s[i]); kwargs...).pred
     end
     (pred = pred,)
 end
-
-
 

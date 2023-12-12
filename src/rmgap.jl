@@ -1,10 +1,10 @@
 """
-    rmgap(X; indexcol, k = 5)
-    rmgap!(X; indexcol, k = 5)
+    rmgap(X; indexcol, npoint = 5)
+    rmgap!(X; indexcol, npoint = 5)
 Remove vertical gaps in spectra , e.g. for ASD.  
 * `X` : X-data.
 * `indexcol` : The indexes of the columns where are located the gaps. 
-* `k` : The number of columns used on the left side 
+* `npoint` : The number of columns used on the left side 
         of the gaps for fitting the linear regressions.
 
 For each observation (row of matrix `X`),
@@ -35,25 +35,25 @@ f
 # Corrected data
 
 u = findall(in(z).(wl))
-zX = rmgap(X; indexcol = u, k = 5)  
+zX = rmgap(X; indexcol = u, npoint = 5)  
 f, ax = plotsp(zX, wl)
 vlines!(ax, z; linestyle = :dash, color = (:grey, .8))
 f
 ```
 """ 
-function rmgap(X; indexcol, k = 5)
-    rmgap!(copy(X); indexcol, k)
+function rmgap(X; indexcol, npoint = 5)
+    rmgap!(copy(X); indexcol, npoint)
 end
 
-function rmgap!(X; indexcol, k = 5)
+function rmgap!(X; indexcol, npoint = 5)
     X = ensure_mat(X)
     nco(X) == 1 ? X = reshape(X, 1, :) : nothing
     p = nco(X)
-    k = max(k, 2)
+    npoint = max(npoint, 2)
     ngap = length(indexcol)
     @inbounds for i = 1:ngap
         ind = indexcol[i]
-        wl = max(ind - k + 1, 1):ind
+        wl = max(ind - npoint + 1, 1):ind
         fm = mlr(Float64.(wl), X[:, wl]')
         pred = Jchemo.predict(fm, ind + 1).pred
         bias = X[:, ind + 1] .- pred'
