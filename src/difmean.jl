@@ -36,9 +36,16 @@ X2 = X2val * res.M
 i = 1
 f = Figure(size = (500, 300))
 ax = Axis(f[1, 1])
-lines!(X1[i, :]; label = "x1_correct")
-lines!(ax, X2[i, :]; label = "x2_correct")
-axislegend(position = :rb, framevisible = false)
+lines!(X1val[i, :]; label = "x1_correct")
+lines!(ax, X2val[i, :]; label = "x2_correct")
+axislegend(position = :cb, framevisible = false)
+f
+##
+f = Figure(size = (500, 300))
+ax = Axis(f[1, 1])
+lines!(zX1[i, :]; label = "x1_correct")
+lines!(ax, zX2[i, :]; label = "x2_correct")
+axislegend(position = :cb, framevisible = false)
 f
 ```
 """
