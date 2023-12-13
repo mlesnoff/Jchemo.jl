@@ -40,21 +40,21 @@ pnames(fm)
 fm.Uinv 
 fm.logdetS
 pred = Jchemo.predict(fm, zX).pred
-head(pred) 
+@head pred 
 
 fm0 = dmnorm(zX) ;
 pred0 = Jchemo.predict(fm0, zX).pred
-head(log.(pred0))
+@head log.(pred0)
 ```
 """ 
-function dmnormlog(X = nothing; mu = nothing, S = nothing,
-        simpl = false)
+function dmnormlog(X = nothing; mu = nothing, 
+        S = nothing, simpl = false)
     isnothing(S) ? zS = nothing : zS = copy(S)
     dmnormlog!(X; mu = mu, S = zS, simpl = simpl)
 end
 
-function dmnormlog!(X = nothing; mu = nothing, S = nothing,
-        simpl = false)
+function dmnormlog!(X = nothing; mu = nothing, 
+        S = nothing, simpl = false)
     !isnothing(X) ? X = ensure_mat(X) : nothing
     if isnothing(mu)
         mu = vec(mean(X, dims = 1))
