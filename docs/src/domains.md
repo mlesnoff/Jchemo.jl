@@ -128,11 +128,11 @@
 
 ### Wrappers to other packages
 
-*SVM regression with LIBSVM.jl*
+*SVM regression -- with LIBSVM.jl*
 
 - **svmr** Epsilon-SVR (SVM-R)
 
-*Regression trees with DecisionTree.jl*
+*Regression trees -- with DecisionTree.jl*
 - **treer_dt** Single tree
 - **rfr_dt** Random forest
 
@@ -201,11 +201,11 @@
 
 ### Wrappers to other packages
 
-*SVM classification with LIBSVM.jl*
+*SVM classification -- with LIBSVM.jl*
 
 - **svmda** C-SVC (SVM-DA)
 
-*Classification trees with DecisionTree.jl*
+*Classification trees -- with DecisionTree.jl*
 
 - **treeda_dt** Single tree
 - **rfda_dt** Random forest
