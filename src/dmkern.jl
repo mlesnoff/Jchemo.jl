@@ -47,22 +47,25 @@ n, p = size(T)
 
 ####  Probability density in the FDA score space (2D)
 
-fm = Jchemo.dmkern(T) ;
+fm = dmkern(T) ;
 pnames(fm)
 fm.H
 u = [1; 4; 150]
 Jchemo.predict(fm, T[u, :]).pred
 
 h = .3
-fm = Jchemo.dmkern(T; h = h) ;
+fm = dmkern(T; h = h) ;
 fm.H
+u = [1; 4; 150]
 Jchemo.predict(fm, T[u, :]).pred
 
 h = [.3; .1]
 fm = dmkern(T; h = h) ;
 fm.H
+u = [1; 4; 150]
 Jchemo.predict(fm, T[u, :]).pred
 
+## Bivariate distribution
 npoints = 2^7
 lims = [(minimum(T[:, j]), maximum(T[:, j])) for j = 1:nlv]
 x1 = LinRange(lims[1][1], lims[1][2], npoints)
@@ -70,22 +73,25 @@ x2 = LinRange(lims[2][1], lims[2][2], npoints)
 z = mpar(x1 = x1, x2 = x2)
 grid = reduce(hcat, z)
 m = nro(grid)
+#plotxy(grid).f
 fm = dmkern(T) ;
 #fm = dmkern(T; a = .5) ;
 #fm = dmkern(T; h = .3) ;
 res = Jchemo.predict(fm, grid) ;
 pred_grid = vec(res.pred)
 f = Figure(size = (600, 400))
-ax = Axis(f[1, 1]; title = "Density for FDA scores (Iris)",
-    xlabel = "Comp1", ylabel = "Comp2")
-co = contour!(ax, grid[:, 1], grid[:, 2], pred_grid; levels = 10)
-Colorbar(f[1, 2], co; label = "Density")
+ax = Axis(f[1, 1]; 
+    title = "Density for FDA scores (Iris)",
+    xlabel = "Score 1", ylabel = "Score 2")
+co = contour!(ax, grid[:, 1], grid[:, 2], pred_grid; 
+    levels = 10, labels = true)
+#Colorbar(f[1, 2], co; label = "Density")
 scatter!(ax, T[:, 1], T[:, 2],
     color = :red, markersize = 5)
 #xlims!(ax, -15, 15) ;ylims!(ax, -15, 15)
 f
 
-## Univariate 
+## Univariate distribution
 x = T[:, 1]
 fm = dmkern(x) ;
 #fm = dmkern(x; a = .5) ;
@@ -152,7 +158,8 @@ function predict(object::Dmkern, X)
     #Threads.@threads for i = 1:m
     #    M = (X[i:i, :] .- object.X) * object.Hinv
         sum2 = rowsum(M.^2)
-        pred[i, 1] = 1 / n * (2 * pi)^(-p / 2) * (1 / object.detH) * sum(exp.(-.5 * sum2))
+        C = 1 / n * (2 * pi)^(-p / 2)
+        pred[i, 1] =  C * (1 / object.detH) * sum(exp.(-.5 * sum2))
     end
     (pred = pred,)
 end
