@@ -43,7 +43,7 @@ n = nro(X)
 tab(y) 
 
 nlv = 2
-fmda = fda(X, y; nlv = nlv) ;
+fmda = fda(X, y; nlv) ;
 pnames(fmda)
 T = fmda.T
 head(T)
@@ -51,10 +51,11 @@ n, p = size(T)
 
 ####  Probability density in the FDA score space (2D)
 
-## Class Setosa 
+## Example of class Setosa 
 s = y .== "setosa"
 zT = T[s, :]
 
+## Bivariate distribution
 fm = dmnorm(zT) ;
 pnames(fm)
 fm.Uinv 
@@ -78,29 +79,33 @@ fm = dmnorm(zT) ;
 res = Jchemo.predict(fm, grid) ;
 pred_grid = vec(res.pred)
 f = Figure(size = (600, 400))
-ax = Axis(f[1, 1]; title = "Density for FDA scores (Iris - Setosa)",
-    xlabel = "Comp1", ylabel = "Comp2")
-co = contour!(ax, grid[:, 1], grid[:, 2], pred_grid; levels = 10)
-Colorbar(f[1, 2], co; label = "Density")
+ax = Axis(f[1, 1]; 
+    title = "Density for FDA scores (Iris - Setosa)",
+    xlabel = "Score 1", ylabel = "Score 2")
+co = contour!(ax, grid[:, 1], grid[:, 2], pred_grid; 
+    levels = 10, labels = true)
+#Colorbar(f[1, 2], co; label = "Density")
 scatter!(ax, T[:, 1], T[:, 2],
     color = :red, markersize = 5)
 scatter!(ax, zT[:, 1], zT[:, 2],
     color = :blue, markersize = 5)
-#xlims!(ax, -15, 15) ;ylims!(ax, -15, 15)
+#xlims!(ax, -12, 12) ;ylims!(ax, -12, 12)
 f
 
-## Univariate 
-x = zT[:, 1]
+## Univariate distribution
+j = 1
+x = zT[:, j]
 fm = dmnorm(x) ;
 pred = Jchemo.predict(fm, x).pred 
 f = Figure()
-ax = Axis(f[1, 1])
+ax = Axis(f[1, 1]; 
+    xlabel = string("FDA-score ", j))
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
 scatter!(ax, x, vec(pred);
     color = :red)
 f
 
-x = zT[:, 1]
+x = zT[:, j]
 npoints = 2^8
 lims = [minimum(x), maximum(x)]
 #delta = 5 ; lims = [minimum(x) - delta, maximum(x) + delta]
@@ -108,9 +113,11 @@ grid = LinRange(lims[1], lims[2], npoints)
 fm = dmnorm(x) ;
 pred_grid = Jchemo.predict(fm, grid).pred 
 f = Figure()
-ax = Axis(f[1, 1])
+ax = Axis(f[1, 1];
+    xlabel = string("FDA-score ", j))
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
-lines!(ax, grid, vec(pred_grid); color = :red)
+lines!(ax, grid, vec(pred_grid); 
+    color = :red)
 f
 ```
 """ 
