@@ -61,12 +61,19 @@ summary(fm.fm, Xtrain)
 
 Jchemo.predict(fm, Xtest; nlv = 1:2).pred
 ```
-""" 
-function plsrda(X, y, weights = ones(nro(X)); nlv,
-        scal::Bool = false)
+"""
+function plsrda(X, y; kwargs...)
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    plsrda(X, y, weights; kwargs...)
+end
+
+function plsrda(X, y, weights::Weight; 
+        kwargs...)
     res = dummy(y)
     ni = tab(y).vals
-    fm = plskern(X, res.Y, weights; nlv = nlv, scal = scal)
+    fm = plskern(X, res.Y, weights; 
+        kwargs...)
     Plsrda(fm, res.lev, ni)
 end
 
@@ -77,7 +84,8 @@ Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Plsrda, X; nlv = nothing)
+function transf(object::Plsrda, X; 
+        nlv = nothing)
     transf(object.fm, X; nlv = nlv)
 end
 
@@ -90,12 +98,15 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Plsrda, X; nlv = nothing)
     X = ensure_mat(X)
+    Q = eltype(X)
+    Qy = eltype(object.lev)
     m = nro(X)
     a = size(object.fm.T, 2)
-    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
+    isnothing(nlv) ? nlv = a : 
+        nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
-    pred = list(le_nlv, Union{Matrix{Int}, Matrix{Float64}, Matrix{String}})
-    posterior = list(le_nlv, Matrix{Float64})
+    pred = list(le_nlv, Matrix{Qy})
+    posterior = list(le_nlv, Matrix{Q})
     @inbounds for i = 1:le_nlv
         zpred = predict(object.fm, X; nlv = nlv[i]).pred
         #if softmax

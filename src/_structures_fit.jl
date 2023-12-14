@@ -505,7 +505,7 @@ struct Dmnormlog
     logcst
 end
 
-struct Kernda
+struct Kdeda
     fm
     wprior::AbstractVector
     lev::Vector
@@ -524,6 +524,12 @@ struct Knnda
     lev::Vector
     ni::Vector{Int}
     scal::Bool
+end
+
+struct Krrda
+    fm  
+    lev::Vector
+    ni::Vector{Int}
 end
 
 struct Lda
@@ -730,6 +736,8 @@ struct Rrda
     fm  
     lev::Vector
     ni::Vector{Int}
+    kwargs::Base.Pairs
+    par::Par
 end
 
 struct Svmda

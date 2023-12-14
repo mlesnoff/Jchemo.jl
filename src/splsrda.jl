@@ -74,14 +74,18 @@ plotgrid(res.nlv, res.y1, typ; step = 2,
     xlabel = "Nb. LVs", ylabel = "ERR").f
 ```
 """ 
-function splsrda(X, y, weights = ones(nro(X)); nlv,
-        meth = :soft, delta = 0, nvar = nco(X), 
-        scal::Bool = false)
+function splsrda(X, y; kwargs...)
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    splsrda(X, y, weights; kwargs...)
+end
+
+function splsrda(X, y, weights::Weight; 
+        kwargs...)
     res = dummy(y)
     ni = tab(y).vals
-    fm = splskern(X, res.Y, weights; nlv = nlv, 
-        meth = meth, delta = delta, nvar = nvar, 
-        scal = scal)
+    fm = splskern(X, res.Y, weights; 
+        kwargs...)
     Plsrda(fm, res.lev, ni)
 end
 

@@ -56,13 +56,19 @@ confusion(res.pred, ytest).cnt
 Jchemo.predict(fm, Xtest; lb = [.1; .01]).pred
 ```
 """ 
-function krrda(X, y, weights = ones(nro(X)); lb, 
-        kern = :krbf, scal::Bool = false, kwargs...)
+function krrda(X, y; kwargs...)
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    krrda(X, y, weights; kwargs...)
+end
+
+function krrda(X, y, weights::Weight; 
+        kwargs...)  
     res = dummy(y)
     ni = tab(y).vals
-    fm = krr(X, res.Y, weights; lb = lb, 
-        kern = kern, scal = scal, kwargs...)
-    Rrda(fm, res.lev, ni)
+    fm = krr(X, res.Y, weights; 
+        kwargs...)
+    Krrda(fm, res.lev, ni, kwargs, par)
 end
 
 

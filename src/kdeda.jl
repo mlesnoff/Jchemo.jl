@@ -67,10 +67,10 @@ function kdeda(X, y; prior = :unif, h = nothing, a = 1)
         s = y .== lev[i]
         fm[i] = dmkern(vrow(X, s); h = h, a = a)
     end
-    Kernda(fm, wprior, lev, ni)
+    Kdeda(fm, wprior, lev, ni)
 end
 
-function predict(object::Kernda, X)
+function predict(object::Kdeda, X)
     X = ensure_mat(X)
     m = nro(X)
     lev = object.lev

@@ -52,13 +52,20 @@ err(res.pred, ytest)
 Jchemo.predict(fm, Xtest; lb = [.1; .01]).pred
 ```
 """ 
-function rrda(X, y, weights = ones(nro(X)); lb,
-        scal::Bool = false)
+function rrda(X, y; kwargs...)
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    rrda(X, y, weights; kwargs...)
+end
+
+function rrda(X, y, weights::Weight; 
+        kwargs...)    
+    par = recovkwargs(Par, kwargs)
     res = dummy(y)
     ni = tab(y).vals 
-    fm = rr(X, res.Y, weights; lb = lb, 
-        scal = scal)
-    Rrda(fm, res.lev, ni)
+    fm = rr(X, res.Y, weights; 
+        kwargs...)
+    Rrda(fm, res.lev, ni, kwargs, par)
 end
 
 """
@@ -70,13 +77,15 @@ Compute Y-predictions from a fitted model.
     "lambda" to consider. If nothing, it is the parameter stored in the 
     fitted model.
 """ 
-function predict(object::Rrda, X; lb = nothing)
+function predict(object::Union{Rrda, Krrda}, X; lb = nothing)
     X = ensure_mat(X)
+    Q = eltype(X)
+    Qy = eltype(object.lev)
     m = nro(X)
-    isnothing(lb) ? lb = object.fm.lb : nothing
+    isnothing(lb) ? lb = object.par.lb : nothing
     le_lb = length(lb)
-    pred = list(le_lb, Union{Matrix{Int}, Matrix{Float64}, Matrix{String}})
-    posterior = list(le_lb, Matrix{Float64})
+    pred = list(le_lb, Matrix{Qy})
+    posterior = list(le_lb, Matrix{Q})
     @inbounds for i = 1:le_lb
         zp = predict(object.fm, X; lb = lb[i]).pred
         z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first

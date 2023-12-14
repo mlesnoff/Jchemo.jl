@@ -50,12 +50,18 @@ Jchemo.coef(fm.fm)
 transf(fm.fm, Xtest)
 ```
 """ 
-function kplsrda(X, y, weights = ones(nro(X)); nlv, kern = :krbf, 
-        scal::Bool = false, kwargs...)
+function kplsrda(X, y; kwargs...)
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    kplsrda(X, y, weights; kwargs...)
+end
+
+function kplsrda(X, y, weights::Weight; 
+        kwargs...)
     res = dummy(y)
     ni = tab(y).vals
-    fm = kplsr(X, res.Y, weights; nlv = nlv, kern = kern, 
-        scal = scal, kwargs...)
+    fm = kplsr(X, res.Y, weights; 
+        kwargs...)
     Plsrda(fm, res.lev, ni)
 end
 

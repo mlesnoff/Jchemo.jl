@@ -52,12 +52,18 @@ transf(fm.fm, Xtest)
 Jchemo.coef(fm.fm)
 ```
 """ 
-function dkplsrda(X, y, weights = ones(nro(X)); nlv, kern = :krbf, 
-        scal::Bool = false, kwargs...)
+function dkplsrda(X, y; kwargs...)
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    dkplsrda(X, y, weights; kwargs...)
+end
+
+function dkplsrda(X, y, weights::Weight; 
+        kwargs...)
     res = dummy(y)
     ni = tab(y).vals
-    fm = dkplsr(X, res.Y, weights; nlv = nlv, kern = kern, 
-        scal = scal, kwargs...)
+    fm = dkplsr(X, res.Y, weights; 
+        kwargs...)
     Dkplsrda(fm, res.lev, ni)
 end
 
@@ -82,19 +88,17 @@ If nothing, it is the maximum nb. LVs.
 """ 
 function predict(object::Dkplsrda, X; nlv = nothing)
     X = ensure_mat(X)
+    Q = eltype(X)
+    Qy = eltype(object.lev)
     m = nro(X)
     a = size(object.fm.fm.T, 2)
-    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
+    isnothing(nlv) ? nlv = a : 
+        nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
-    pred = list(le_nlv, Union{Matrix{Int}, Matrix{Float64}, Matrix{String}})
-    posterior = list(le_nlv, Matrix{Float64})
+    pred = list(le_nlv, Matrix{Qy})
+    posterior = list(le_nlv, Matrix{Q})
     @inbounds for i = 1:le_nlv
         zp = predict(object.fm, X; nlv = nlv[i]).pred
-        #if softmax
-        #    @inbounds for j = 1:m
-        #        zp[j, :] .= mweight(exp.(zp[j, :]))
-        #   end
-        #end
         z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
         pred[i] = reshape(replacebylev2(z, object.lev), m, 1)     
         posterior[i] = zp
