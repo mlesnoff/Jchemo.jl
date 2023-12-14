@@ -77,7 +77,7 @@ Compute Y-predictions from a fitted model.
     "lambda" to consider. If nothing, it is the parameter stored in the 
     fitted model.
 """ 
-function predict(object::Union{Rrda, Krrda}, X; lb = nothing)
+function predict(object::Rrda, X; lb = nothing)
     X = ensure_mat(X)
     Q = eltype(X)
     Qy = eltype(object.lev)

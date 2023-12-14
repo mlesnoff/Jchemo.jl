@@ -526,12 +526,6 @@ struct Knnda
     scal::Bool
 end
 
-struct Krrda
-    fm  
-    lev::Vector
-    ni::Vector{Int}
-end
-
 struct Lda
     fm
     W::Matrix  

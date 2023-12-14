@@ -64,11 +64,12 @@ end
 
 function krrda(X, y, weights::Weight; 
         kwargs...)  
+    par = recovkwargs(Par, kwargs)
     res = dummy(y)
     ni = tab(y).vals
     fm = krr(X, res.Y, weights; 
         kwargs...)
-    Krrda(fm, res.lev, ni, kwargs, par)
+    Rrda(fm, res.lev, ni, kwargs, par)
 end
 
 
