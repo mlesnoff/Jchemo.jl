@@ -25,7 +25,7 @@ Other current specific points are:
     - mbunif, mbwcov
     - baggr and utilities
     - cplsravg
-    - nsc, nscda
+    - nsc, nscrda, nscda
     - plsrdaavg, plsldaavg, plsqdaavg
     - lwplsrdaavg, lwplsldaavg, lwplsqdaavg
     - gridcv_mb, gridcvlv_mb
