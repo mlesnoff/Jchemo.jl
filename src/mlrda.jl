@@ -50,7 +50,15 @@ err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
 """ 
-function mlrda(X, y, weights = ones(nro(X)))
+function mlrda(X, y)
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    mlrda(X, y, weights)
+end
+
+function mlrda(X, y, weights::Weight)
+    X = ensure_mat(X)
+    y = ensure_mat(y)
     res = dummy(y)
     ni = tab(y).vals
     fm = mlr(X, res.Y, weights)
@@ -72,5 +80,3 @@ function predict(object::Mlrda, X)
     (pred = pred, posterior = zp)
 end
     
-
-

@@ -110,7 +110,8 @@ function mlrchol(X, Y, weights::Weight)
         weights)
 end
 
-function mlrchol!(X::Matrix, Y::Matrix, weights::Weight)
+function mlrchol!(X::Matrix, Y::Matrix, 
+        weights::Weight)
     @assert nco(X) > 1 "The Method only works for X with nb. columns > 1."
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
@@ -195,7 +196,8 @@ function mlrpinvn(X, Y, weights::Weight)
         weights)
 end
 
-function mlrpinvn!(X::Matrix, Y::Matrix, weights::Weight)
+function mlrpinvn!(X::Matrix, Y::Matrix, 
+        weights::Weight)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)

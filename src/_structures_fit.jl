@@ -481,7 +481,7 @@ end
 struct Dkplsrda
     fm  
     lev::Vector
-    ni::Int
+    ni::Vector{Int}
 end
 
 struct Dmkern
@@ -509,7 +509,7 @@ struct Kernda
     fm
     wprior::AbstractVector
     lev::Vector
-    ni::Int
+    ni::Vector{Int}
 end
 
 struct Knnda
@@ -522,7 +522,7 @@ struct Knnda
     k::Int
     tol::AbstractFloat
     lev::Vector
-    ni::Int
+    ni::Vector{Int}
     scal::Bool
 end
 
@@ -577,7 +577,7 @@ struct Lwplslda
     scal::Bool
     verbose::Bool
     lev::Vector
-    ni::Int
+    ni::Vector{Int}
 end
 
 struct Lwplsqda
@@ -594,7 +594,7 @@ struct Lwplsqda
     scal::Bool
     verbose::Bool
     lev::Vector
-    ni::Int
+    ni::Vector{Int}
 end
 
 struct Lwplsrda
@@ -609,7 +609,7 @@ struct Lwplsrda
     scal::Bool
     verbose::Bool
     lev::Vector
-    ni::Int
+    ni::Vector{Int}
 end
 
 struct LwplsrdaS
@@ -630,7 +630,7 @@ end
 struct Mlrda
     fm  
     lev::Vector
-    ni::Int
+    ni::Vector{Int}
 end
 
 struct Occknndis
@@ -690,13 +690,13 @@ end
 struct Plslda    # for plslda and plsqda 
     fm  
     lev::Vector
-    ni::Int
+    ni::Vector{Int}
 end
 
 struct Plsrda
     fm  
     lev::Vector
-    ni::Int
+    ni::Vector{Int}
 end
 
 struct Qda
@@ -729,14 +729,14 @@ end
 struct Rrda
     fm  
     lev::Vector
-    ni::Int
+    ni::Vector{Int}
 end
 
 struct Svmda
     fm
     xscales::Vector
     lev::Vector
-    ni::Int
+    ni::Vector{Int}
 end
 
 struct TreedaDt 
@@ -744,7 +744,7 @@ struct TreedaDt
     xscales::Vector
     featur::Vector{Int}
     lev::Vector
-    ni::Int
+    ni::Vector{Int}
     mth::Bool 
     kwargs::Base.Pairs
     par::Par
