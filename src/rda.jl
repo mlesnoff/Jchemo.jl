@@ -95,16 +95,24 @@ err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
 """ 
-function rda(X, y, weights = ones(nro(X)); 
-        prior = :unif, alpha = 1, lb = 1e-10, 
-        simpl::Bool = false, scal::Bool = false)
+function rda(X, y; kwargs...)
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    rda(X, y, weights; 
+        kwargs...)
+end
+
+function rda(X, y, weights::Weight; 
+        kwargs...)  
+    par = recovkwargs(Par, kwargs)
+    @assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     @assert par.lb >= 0 "lb must be in >= 0"
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)    # for findall
     n, p = size(X)
-    weights = mweight(weights)
+    alpha = convert(Q, par.alpha)
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
@@ -114,10 +122,10 @@ function rda(X, y, weights = ones(nro(X));
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
-    if isequal(prior, :unif)
-        wprior = ones(nlev) / nlev
-    elseif isequal(prior, :prop)
-        wprior = mweight(ni)
+    if isequal(par.prior, :unif)
+        wprior = ones(Q, nlev) / nlev
+    elseif isequal(par.prior, :prop)
+        wprior = convert.(Q, mweight(ni).w)
     end
     fm = list(nlev)
     ct = similar(X, nlev, p)
@@ -126,16 +134,16 @@ function rda(X, y, weights = ones(nro(X));
     res.W .*= n / (n - nlev)    # unbiased estimate
     @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(X[s, :], weights[s])
+        ct[i, :] = colmean(X[s, :], mweight(weights.w[s]))
         ni[i] == 1 ? zn = n : zn = ni[i]
         res.Wi[i] .*= zn / (zn - 1)        
         @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
-        @. res.Wi[i] = res.Wi[i] + lb * Id 
+        @. res.Wi[i] = res.Wi[i] + par.lb * Id 
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i],
-            simpl = simpl) 
+            simpl = par.simpl) 
     end
-    Rda(fm, res.Wi, ct, wprior, res.theta, ni, lev, 
-        xscales, weights)
+    Rda(fm, res.Wi, ct, wprior, res.theta.w, ni, lev, 
+        xscales, weights, kwargs, par)
 end
 
 """

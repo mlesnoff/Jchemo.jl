@@ -645,48 +645,6 @@ struct Occknndis
     par::Par
 end
 
-struct Occlknndis
-    d::DataFrame
-    fm
-    T::Matrix
-    tscales::Vector
-    k::Int
-    e_cdf::ECDF
-    cutoff::Real    
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Occod
-    d
-    fm
-    e_cdf::ECDF
-    cutoff::Real   
-    nlv::Int
-end
-
-struct Occsd
-    d
-    fm
-    Sinv::Matrix
-    e_cdf::ECDF
-    cutoff::Real   
-    nlv::Int
-end
-
-struct Occsdod
-    d::DataFrame
-    fmsd
-    fmod
-end
-
-struct Occstah
-    d
-    res_stah
-    e_cdf::ECDF
-    cutoff::Real
-end
-
 struct Plslda    # for plslda and plsqda 
     fm  
     lev::Vector
@@ -750,6 +708,50 @@ struct TreedaDt
     mth::Bool 
     kwargs::Base.Pairs
     par::Par
+end
+
+## Occ
+
+struct Occlknndis
+    d::DataFrame
+    fm
+    T::Matrix
+    tscales::Vector
+    k::Int
+    e_cdf::ECDF
+    cutoff::Real    
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Occod
+    d
+    fm
+    e_cdf::ECDF
+    cutoff::Real   
+    nlv::Int
+end
+
+struct Occsd
+    d
+    fm
+    Sinv::Matrix
+    e_cdf::ECDF
+    cutoff::Real   
+    nlv::Int
+end
+
+struct Occsdod
+    d::DataFrame
+    fmsd
+    fmod
+end
+
+struct Occstah
+    d
+    res_stah
+    e_cdf::ECDF
+    cutoff::Real
 end
 
 ###### Preprocessing 
