@@ -71,14 +71,25 @@ Jchemo.predict(fmda[nlv], T).pred
 Jchemo.predict(fm, Xtest; nlv = 1:2).pred
 ```
 """ 
-function plslda(X, y, weights = ones(nro(X)); nlv, 
-        prior = :unif, scal::Bool = false)
+function plslda(X, y; kwargs...)
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    plslda(X, y, weights; 
+        kwargs...)
+end
+
+function plslda(X, y, weights::Weight; 
+        kwargs...)
+    par = recovkwargs(Par, kwargs)
+    @assert par.nlv >= 1 "nlv must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmpls = plskern(X, res.Y, weights; nlv = nlv, scal = scal)
-    fmda = list(nlv)
-    @inbounds for i = 1:nlv
-        fmda[i] = lda(fmpls.T[:, 1:i], y, weights; prior = prior)
+    fmpls = plskern(X, res.Y, weights; 
+        kwargs...)
+    fmda = list(par.nlv)
+    @inbounds for i = 1:par.nlv
+        fmda[i] = lda(fmpls.T[:, 1:i], y, weights; 
+            kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
     Plslda(fm, res.lev, ni)
@@ -105,12 +116,15 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Plslda, X; nlv = nothing)
     X = ensure_mat(X)
+    Q = eltype(X)
+    Qy = eltype(object.lev)
     m = nro(X)
     a = size(object.fm.fmpls.T, 2)
-    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
+    isnothing(nlv) ? nlv = a : 
+        nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
-    pred = list(le_nlv, Union{Matrix{Int}, Matrix{Float64}, Matrix{String}})
-    posterior = list(le_nlv, Matrix{Float64})
+    pred = list(le_nlv, Matrix{Qy})
+    posterior = list(le_nlv, Matrix{Q})
     @inbounds for i = 1:le_nlv
         znlv = nlv[i]
         T = transf(object.fm.fmpls, X, nlv = znlv)
