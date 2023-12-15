@@ -57,30 +57,39 @@ err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
 """ 
-function qda(X, y, weights = ones(nro(X)); 
-        prior = :unif, alpha = 0)
-    @assert in([:unif; :prop])(prior) "Wrong value for argument 'prior'."
+function qda(X, y; kwargs...)
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    qda(X, y, weights; 
+        kwargs...)
+end
+
+function qda(X, y, weights::Weight; 
+        kwargs...)  
+    par = recovkwargs(Par, kwargs)
+    @assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     # Scaling X has no effect
     X = ensure_mat(X)
     y = vec(y)    # for findall
+    Q = eltype(X)
     n, p = size(X)
-    weights = mweight(weights)
+    alpha = convert(Q, par.alpha)
     res = matW(X, y, weights)
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate
-    if isequal(prior, :unif)
-        wprior = ones(nlev) / nlev
-    elseif isequal(prior, :prop)
-        wprior = mweight(ni)
+    if isequal(par.prior, :unif)
+        wprior = ones(Q, nlev) / nlev
+    elseif isequal(par.prior, :prop)
+        wprior = convert.(Q, mweight(ni).w)
     end
     fm = list(nlev)
     ct = similar(X, nlev, p)
     @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(X[s, :], weights[s])
+        ct[i, :] = colmean(X[s, :], mweight(weights.w[s]))
         ni[i] == 1 ? zn = n : zn = ni[i]
         res.Wi[i] .*= zn / (zn - 1)
         if alpha > 0
@@ -88,8 +97,8 @@ function qda(X, y, weights = ones(nro(X));
         end
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
     end
-    Qda(fm, res.Wi, ct, wprior, res.theta, ni, lev, 
-        weights)
+    Qda(fm, res.Wi, ct, wprior, res.theta.w, ni, lev, 
+        weights, kwargs, par)
 end
 
 """

@@ -42,6 +42,7 @@ Base.@kwdef mutable struct Par
     verbose::Bool = false                   # print obs. indexes when prediction
     ##
     prior::Symbol = :unif                   # prior in DA
+    alpha::Float64 = 0.                     # regularization in qda
     ##
     gs::Bool = true                         # Gram-Schmidt orthogonalization 
     filt::Bool = true                       # cglsr
