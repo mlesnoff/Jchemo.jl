@@ -47,23 +47,32 @@ err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
 """ 
-function lda(X, y, weights = ones(nro(X)); 
-        prior = :unif)
-    @assert in([:unif; :prop])(prior) "Wrong value for argument 'prior'."
+function lda(X, y; kwargs...)
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    lda(X, y, weights; 
+        kwargs...)
+end
+
+function lda(X, y, weights::Weight; 
+        kwargs...)  
+#function lda(X, y, weights = ones(nro(X)); 
+#        prior = :unif)
+    par = recovkwargs(Par, kwargs)
+    @assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
     # Scaling X has no effect
     X = ensure_mat(X)
     y = vec(y)    # for findall
     n, p = size(X)
-    weights = mweight(weights)
     res = matW(X, y, weights)
     theta = res.theta
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate
-    if isequal(prior, :unif)
+    if isequal(par.prior, :unif)
         wprior = ones(nlev) / nlev
-    elseif isequal(prior, :prop)
+    elseif isequal(par.prior, :prop)
         wprior = mweight(ni)
     end
     fm = list(nlev)
@@ -74,7 +83,7 @@ function lda(X, y, weights = ones(nro(X));
         fm[i] = dmnorm(; mu = ct[i, :], S = res.W) 
     end
     Lda(fm, res.W, ct, wprior, theta, ni, lev, 
-        weights)
+        weights, kwargs, par)
 end
 
 """
@@ -95,7 +104,7 @@ function predict(object::Lda, X)
     A = object.wprior' .* dens
     v = sum(A, dims = 2)
     posterior = fscale(A', v)'                    # This could be replaced by code similar as in fscale! 
-    z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
+    z =  mapslices(argmax, posterior; dims = 2)   # if equal, argmax takes the first
     pred = reshape(replacebylev2(z, lev), m, 1)
     (pred = pred, dens, posterior)
 end
