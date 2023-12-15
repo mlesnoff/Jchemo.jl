@@ -535,8 +535,6 @@ struct Lda
     ni::Vector{Int}
     lev::Vector
     weights::Weight
-    kwargs::Base.Pairs
-    par::Par
 end
 
 struct Lwmlrda
@@ -633,18 +631,6 @@ struct Mlrda
     ni::Vector{Int}
 end
 
-struct Occknndis
-    d::DataFrame
-    fm
-    T::Matrix
-    tscales::Vector
-    k::Int
-    e_cdf::ECDF
-    cutoff::Real    
-    kwargs::Base.Pairs
-    par::Par
-end
-
 struct Plslda    # for plslda and plsqda 
     fm  
     lev::Vector
@@ -666,8 +652,6 @@ struct Qda
     ni::Vector{Int}
     lev::Vector
     weights::Weight
-    kwargs::Base.Pairs
-    par::Par
 end
 
 struct Rda
@@ -680,8 +664,6 @@ struct Rda
     lev::Vector
     xscales::Vector
     weights::Weight
-    kwargs::Base.Pairs
-    par::Par
 end
 
 struct Rrda
@@ -711,6 +693,18 @@ struct TreedaDt
 end
 
 ## Occ
+
+struct Occknndis
+    d::DataFrame
+    fm
+    T::Matrix
+    tscales::Vector
+    k::Int
+    e_cdf::ECDF
+    cutoff::Real    
+    kwargs::Base.Pairs
+    par::Par
+end
 
 struct Occlknndis
     d::DataFrame

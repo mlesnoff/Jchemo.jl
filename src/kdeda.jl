@@ -52,20 +52,32 @@ err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
 """ 
-function kdeda(X, y; prior = :unif, h = nothing, a = 1)
+function kdeda(X, y; kwargs...)
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    kdeda(X, y, weights; 
+        kwargs...)
+end
+
+function kdeda(X, y, weights::Weight; 
+        kwargs...) 
+    par = recovkwargs(Par, kwargs)
+    @assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
     X = ensure_mat(X)
+    Q = eltype(X)
     lev = mlev(y)
     nlev = length(lev)
     ni = tab(y).vals
-    if isequal(prior, :unif)
-        wprior = ones(nlev) / nlev
-    elseif isequal(prior, :prop)
-        wprior = mweight(ni)
+    if isequal(par.prior, :unif)
+        wprior = ones(Q, nlev) / nlev
+    elseif isequal(par.prior, :prop)
+        wprior = convert.(Q, mweight(ni).w)
     end
     fm = list(nlev)
     for i = 1:nlev
         s = y .== lev[i]
-        fm[i] = dmkern(vrow(X, s); h = h, a = a)
+        fm[i] = dmkern(vrow(X, s); 
+            h = par.h_kde, a = par.a_kde)
     end
     Kdeda(fm, wprior, lev, ni)
 end

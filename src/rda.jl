@@ -109,8 +109,8 @@ function rda(X, y, weights::Weight;
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     @assert par.lb >= 0 "lb must be in >= 0"
     X = ensure_mat(X)
-    Q = eltype(X)
     y = vec(y)    # for findall
+    Q = eltype(X)
     n, p = size(X)
     alpha = convert(Q, par.alpha)
     xscales = ones(Q, p)
@@ -142,8 +142,8 @@ function rda(X, y, weights::Weight;
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i],
             simpl = par.simpl) 
     end
-    Rda(fm, res.Wi, ct, wprior, res.theta.w, ni, lev, 
-        xscales, weights, kwargs, par)
+    Rda(fm, res.Wi, ct, wprior, res.theta.w, ni, 
+        lev, xscales, weights)
 end
 
 """
@@ -164,7 +164,7 @@ function predict(object::Rda, X)
     end
     A = object.wprior' .* dens
     v = sum(A, dims = 2)
-    posterior = fscale(A', v)'                    # This could be replaced by code similar as in fscale! 
+    posterior = fscale(A', v)'                   # This could be replaced by code similar as in fscale! 
     z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
     pred = reshape(replacebylev2(z, lev), m, 1)
     (pred = pred, dens, posterior)

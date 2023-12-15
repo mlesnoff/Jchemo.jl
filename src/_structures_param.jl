@@ -18,7 +18,7 @@ Base.@kwdef mutable struct Par
     ## 
     kern::Symbol = :krbf                    # type of kernel
     gamma::Float64 = 1.                     # kernel parameter
-    coef0::Float64 = 0.                     # coef. in polynomial kernel
+    coef0::Float64 = 0.                     # coefficient in polynomial kernel
     cost::Float64 = 1.                      # svm
     epsilon::Float64 = .1                   # svm
     ##
@@ -43,7 +43,9 @@ Base.@kwdef mutable struct Par
     ##
     prior::Symbol = :unif                   # prior in DA
     alpha::Float64 = 0.                     # regularization in qda and rda 
-    simpl::Bool = false                     # dmnorm parameter in rda
+    simpl::Bool = false                     # dmnorm-parameter in rda
+    h_kde::Union{Nothing, Float64} = nothing  # dmkern-parameter 'h' in kdeda
+    a_kde::Float64 = 1.                     # dmkern-parameter 'a' in kdeda
     ##
     gs::Bool = true                         # Gram-Schmidt orthogonalization 
     filt::Bool = true                       # cglsr
@@ -56,7 +58,7 @@ Base.@kwdef mutable struct Par
     delta::Float64 = 0.                     # sparse methods, threshold
     nvar::Union{Int, Vector{Int}} = 1       # sparse methods, threshold
     ##
-    mrp::Symbol = :gauss                # rp projection method
+    mrp::Symbol = :gauss                    # rp projection method
     s_li::Float64 = 1.                      # rpmatli sparsity parameter  
 end 
 

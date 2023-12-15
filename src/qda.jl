@@ -97,8 +97,8 @@ function qda(X, y, weights::Weight;
         end
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
     end
-    Qda(fm, res.Wi, ct, wprior, res.theta.w, ni, lev, 
-        weights, kwargs, par)
+    Qda(fm, res.Wi, ct, wprior, res.theta.w, ni, 
+        lev, weights)
 end
 
 """
