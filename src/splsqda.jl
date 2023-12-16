@@ -1,21 +1,21 @@
 """
     splsqda(X, y, weights = ones(nro(X)); nlv, 
-        meth = :soft, delta = 0, nvar = nco(X), 
+        methsp = :soft, delta = 0, nvar = nco(X), 
         prior = :unif, scal::Bool = false)
 Sparse PLS-QDA.
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights of the observations. Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `meth`: Method used for the thresholding. Possible values
+* `methsp`: Method used for the thresholding. Possible values
     are :soft (default), :mix or :hard. See thereafter.
 * `delta` : Range for the thresholding (see function `soft`)
     on the loadings standardized to their maximal absolute value.
-    Must ∈ [0, 1]. Only used if `meth = :soft.
+    Must ∈ [0, 1]. Only used if `methsp = :soft.
 * `nvar` : Nb. variables (`X`-columns) selected for each 
     LV. Can be a single integer (same nb. variables
     for each LV), or a vector of length `nlv`.
-    Only used if `meth = :mix` or `meth = :hard`. 
+    Only used if `methsp = :mix` or `methsp = :hard`. 
 * `prior` : Type of prior probabilities for class membership.
     Possible values are: :unif (uniform; default), :prop (proportional).
 * `scal` : Boolean. If `true`, each column of `X` 
@@ -28,18 +28,25 @@ See `?splskern` and `?plsqda.
 
 See `?splslda` for examples.
 """ 
-function splsqda(X, y, weights = ones(nro(X)); nlv, 
-        meth = :soft, delta = 0, nvar = nco(X),
-        alpha = 0, prior = :unif, scal::Bool = false)
+function splsqda(X, y; kwargs...)
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    splsqda(X, y, weights; 
+        kwargs...)
+end
+
+function splsqda(X, y, weights::Weight; 
+        kwargs...)
+    par = recovkwargs(Par, kwargs)
+    @assert par.nlv >= 1 "nlv must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmpls = splskern(X, res.Y, weights; nlv = nlv, 
-        meth = meth, delta = delta, nvar = nvar,
-        scal = scal)
-    fmda = list(nlv)
-    @inbounds for i = 1:nlv
+    fmpls = splskern(X, res.Y, weights; 
+        kwargs...)
+    fmda = list(par.nlv, Qda)
+    @inbounds for i = 1:par.nlv
         fmda[i] = qda(vcol(fmpls.T, 1:i), y, weights; 
-            alpha = alpha, prior = prior)
+            kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
     Plslda(fm, res.lev, ni)

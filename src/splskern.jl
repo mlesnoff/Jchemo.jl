@@ -1,9 +1,9 @@
 """
     splskern(X, Y, weights = ones(nro(X)); nlv,
-        msp = :soft, delta = 0, nvar = nco(X), 
+        methsp = :soft, delta = 0, nvar = nco(X), 
         scal::Bool = false)
     splskern!(X, Y, weights = ones(nro(X)); nlv,
-        msp = :soft, delta = 0, nvar = nco(X), 
+        methsp = :soft, delta = 0, nvar = nco(X), 
         scal::Bool = false)
 Sparse PLSR (Shen & Huang 2008).
 * `X` : X-data (n, p). 
@@ -11,15 +11,15 @@ Sparse PLSR (Shen & Huang 2008).
 * `weights` : Weights (n) of the observations. 
     Internally normalized to sum to 1.
 * `nlv` : Nb. latent variables (LVs).
-* `msp`: Method used for the thresholding. Possible values
+* `methsp`: Method used for the thresholding. Possible values
     are :soft (default), :mix or :hard. See thereafter.
 * `delta` : Range for the thresholding (see function `soft`)
     on the loadings standardized to their maximal absolute value.
-    Must ∈ [0, 1]. Only used if `msp = :soft.
+    Must ∈ [0, 1]. Only used if `methsp = :soft.
 * `nvar` : Nb. variables (`X`-columns) selected for each 
     LV. Can be a single integer (same nb. variables
     for each LV), or a vector of length `nlv`.
-    Only used if `msp = :mix` or `msp = :hard`.   
+    Only used if `methsp = :mix` or `methsp = :hard`.   
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
@@ -29,7 +29,7 @@ In the present version, the sparseness only concerns `X` (not `Y`).
 
 Function `splskern' provides three methods of thresholding to compute 
 the sparse `X`-loading weights w, see `?spca' for description (same 
-principles). The case `msp = :mix` returns the same results as function 
+principles). The case `methsp = :mix` returns the same results as function 
 spls of the R package mixOmics in regression mode (and with no sparseness 
 on `Y`).
 
@@ -69,7 +69,7 @@ ytest = rmrow(y, s)
 
 nlv = 15
 fm = splskern(Xtrain, ytrain; nlv = nlv,
-    msp = :mix, nvar = 5) ;
+    methsp = :mix, nvar = 5) ;
 pnames(fm)
 fm.T
 fm.W
@@ -117,7 +117,7 @@ end
 function splskern!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
     par = recovkwargs(Par, kwargs)
-    @assert in([:hard ; :soft ; :mix])(par.msp) "Wrong value for argument 'msp'."
+    @assert in([:hard ; :soft ; :mix])(par.methsp) "Wrong value for argument 'methsp'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
     Q = eltype(X)
     n, p = size(X)
@@ -163,17 +163,17 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight;
         if q == 1
             w .= vcol(XtY, 1)
             absw .= abs.(w)
-            if par.msp == :hard
+            if par.methsp == :hard
                 sel = sortperm(absw; rev = true)[1:nvar[a]]
                 wmax = w[sel]
                 w .= zeros(Q, p)
                 w[sel] .= wmax
-            elseif par.msp == :soft
+            elseif par.methsp == :soft
                 absw_max = maximum(absw)
                 absw_stand .= absw / absw_max
                 theta .= max.(0, absw_stand .- par.delta) 
                 w .= sign.(w) .* theta * absw_max 
-            elseif par.msp == :mix
+            elseif par.methsp == :mix
                 nrm = p - nvar[a]
                 if nrm > 0
                     sel = sortperm(absw; rev = true)[1:nvar[a]]
@@ -187,11 +187,11 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight;
             ## End
             w ./= norm(w)
         else
-            if par.msp == :soft
+            if par.methsp == :soft
                 w .= snipals(XtY'; values(kwargs)...).v
             else
                 par.nvar = nvar[a]
-                if par.msp == :mix
+                if par.methsp == :mix
                     w .= snipalsmix(XtY'; values(kwargs)...).v
                 else
                     w .= snipalsh(XtY'; values(kwargs)...).v

@@ -59,6 +59,7 @@ end
 function plskdeda(X, y, weights::Weight; 
         kwargs...)
     par = recovkwargs(Par, kwargs)
+    @assert par.nlv >= 1 "nlv must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
     fmpls = plskern(X, res.Y, weights; 
