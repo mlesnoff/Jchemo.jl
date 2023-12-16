@@ -24,15 +24,24 @@ returning `nlv` latent variables (LVs). Finally, a QDA is run on these LVs and `
 
 See `?plslda` for examples.
 """ 
-function plsqda(X, y, weights = ones(nro(X)); nlv, 
-        alpha = 0, prior = :unif, scal::Bool = false)
+function plsqda(X, y; kwargs...)
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    plsqda(X, y, weights; 
+        kwargs...)
+end
+
+function plsqda(X, y, weights::Weight; 
+        kwargs...)
+    par = recovkwargs(Par, kwargs)
     res = dummy(y)
     ni = tab(y).vals
-    fmpls = plskern(X, res.Y, weights; nlv = nlv, scal = scal)
-    fmda = list(nlv)
-    @inbounds for i = 1:nlv
+    fmpls = plskern(X, res.Y, weights;
+        kwargs...)
+    fmda = list(par.nlv)
+    @inbounds for i = 1:par.nlv
         fmda[i] = qda(vcol(fmpls.T, 1:i), y, weights; 
-            alpha = alpha, prior = prior)
+            kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
     Plslda(fm, res.lev, ni)

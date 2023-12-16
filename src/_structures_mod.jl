@@ -176,5 +176,6 @@ lda(; kwargs...) = Predictor{Function, Lda, Base.Pairs}(lda, nothing, kwargs)
 qda(; kwargs...) = Predictor{Function, Qda, Base.Pairs}(qda, nothing, kwargs)
 rda(; kwargs...) = Predictor{Function, Rda, Base.Pairs}(rda, nothing, kwargs)
 kdeda(; kwargs...) = Predictor{Function, Kdeda, Base.Pairs}(kdeda, nothing, kwargs)
-
+plslda(; kwargs...) = Predictor{Function, Plslda, Base.Pairs}(plslda, nothing, kwargs)
+plsqda(; kwargs...) = Predictor{Function, Plslda, Base.Pairs}(plsqda, nothing, kwargs)
 
