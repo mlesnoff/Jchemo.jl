@@ -606,7 +606,8 @@ end
 struct Lwmlrda
     X::Matrix
     y::AbstractMatrix
-    verbose::Bool
+    lev::Vector
+    ni::Vector{Int}
     kwargs::Base.Pairs
     par::Par
 end
@@ -615,7 +616,8 @@ struct LwmlrdaS
     T::Matrix
     y::AbstractMatrix
     fm
-    verbose::Bool
+    lev::Vector
+    ni::Vector{Int}
     kwargs::Base.Pairs
     par::Par
 end
@@ -624,7 +626,6 @@ struct Lwplslda
     X::Matrix
     y::AbstractMatrix
     fm
-    verbose::Bool
     lev::Vector
     ni::Vector{Int}
     kwargs::Base.Pairs
@@ -635,7 +636,6 @@ struct Lwplsqda
     X::Matrix
     y::AbstractMatrix
     fm
-    verbose::Bool
     lev::Vector
     ni::Vector{Int}
     kwargs::Base.Pairs
@@ -647,7 +647,6 @@ struct Lwplsrda
     y::AbstractMatrix
     fm
     xscales::Vector
-    verbose::Bool
     lev::Vector
     ni::Vector{Int}
     kwargs::Base.Pairs
@@ -658,7 +657,8 @@ struct LwplsrdaS
     T::Matrix
     y::AbstractMatrix
     fm
-    verbose::Bool
+    lev::Vector
+    ni::Vector{Int}
     kwargs::Base.Pairs
     par::Par
 end

@@ -100,13 +100,13 @@ function predict(object::Knnr, X)
         if object.par.scal
             zX1 = fscale(object.X, object.xscales)
             zX2 = fscale(X, object.xscales)
-            res = getknn(zX1, zX2; k, metric)
+            res = getknn(zX1, zX2; metric, k)
         else
-            res = getknn(object.X, X; k, metric)
+            res = getknn(object.X, X; metric, k)
         end
     else
         res = getknn(object.fm.T, transf(object.fm, X); 
-           k, metric) 
+           metric, k) 
     end
     listw = copy(res.d)
     @inbounds for i = 1:m

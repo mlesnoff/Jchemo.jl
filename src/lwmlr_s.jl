@@ -135,7 +135,7 @@ function predict(object::LwmlrS, X)
     h = object.par.h
     k = object.par.k
     tolw = object.par.tolw
-    res = getknn(object.T, T; k, metric)
+    res = getknn(object.T, T; metric, k)
     listw = copy(res.d)
     Threads.@threads for i = 1:m
         w = wdist(res.d[i]; h)

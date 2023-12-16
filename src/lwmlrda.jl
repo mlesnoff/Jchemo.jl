@@ -54,12 +54,13 @@ res.listd
 res.listw
 ```
 """ 
-function lwmlrda(X, y; metric = :eucl, h, k, 
-        tol = 1e-4, verbose = false)
+function lwmlrda(X, y; kwargs...) 
+    par = recovkwargs(Par, kwargs)
     X = ensure_mat(X)
     y = ensure_mat(y)
-    Lwmlrda(X, y, metric, h, k, tol, 
-        verbose)
+    ztab = tab(y)
+    Lwmlrda(X, y, ztab.keys, ztab.vals, 
+        kwargs, par) 
 end
 
 """
@@ -71,19 +72,22 @@ Compute y-predictions from the fitted model.
 function predict(object::Lwmlrda, X)
     X = ensure_mat(X)
     m = nro(X)
-    # Getknn
-    res = getknn(object.X, X; 
-        k = object.k, metric = object.metric)
+    ## Getknn
+    metric = object.par.metric
+    h = object.par.h
+    k = object.par.k
+    tolw = object.par.tolw
+    res = getknn(object.X, X; metric, k)
     listw = copy(res.d)
     Threads.@threads for i = 1:m
-        w = wdist(res.d[i]; h = object.h)
-        w[w .< object.tol] .= object.tol
+        w = wdist(res.d[i]; h)
+        w[w .< tolw] .= tolw
         listw[i] = w
     end
-    # End
+    ## End
     pred = locw(object.X, object.y, X; 
         listnn = res.ind, listw = listw, fun = mlrda,
-        verbose = object.verbose).pred
+        verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, 
         listw = listw)
 end

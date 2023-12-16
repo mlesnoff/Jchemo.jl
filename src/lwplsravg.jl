@@ -74,9 +74,6 @@ rmsep(res.pred, ytest)
 """ 
 function lwplsravg(X, Y; kwargs...)
     par = recovkwargs(Par, kwargs)
-#function lwplsravg(X, Y; nlvdis, metric, h, k, nlv, 
-#    typf = :unif, typw = :bisquare, alpha = 0, K = 5, rep = 10,
-#    tol = 1e-4, scal::Bool = false, verbose = false) 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     Q = eltype(X)
@@ -112,13 +109,13 @@ function predict(object::LwplsrAvg, X)
         if object.par.scal
             zX1 = fscale(object.X, object.xscales)
             zX2 = fscale(X, object.xscales)
-            res = getknn(zX1, zX2; k, metric)
+            res = getknn(zX1, zX2; metric, k)
         else
-            res = getknn(object.X, X; k, metric)
+            res = getknn(object.X, X; metric, k)
         end
     else
         res = getknn(object.fm.T, transf(object.fm, X); 
-            k, metric) 
+            metric, k) 
     end
     listw = copy(res.d)
     Threads.@threads for i = 1:m

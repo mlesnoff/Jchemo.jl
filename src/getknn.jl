@@ -26,7 +26,7 @@ res = getknn(Xtrain, X; k = k, metric = :mah)
 res.ind
 ```
 """ 
-function getknn(Xtrain, X; k = 1, metric = :eucl)
+function getknn(Xtrain, X; metric = :eucl, k = 1)
     @assert in([:eucl, :mah])(metric) "Wrong value for argument 'metric'."
     Xtrain = ensure_mat(Xtrain)
     X = ensure_mat(X)
