@@ -63,19 +63,24 @@ res.listd
 res.listw
 ```
 """ 
-function lwplsrda(X, y; nlvdis, metric, h, k, nlv, tol = 1e-4, 
-        scal::Bool = false, verbose = false)
+function lwplsrda(X, y; kwargs...) 
     X = ensure_mat(X)
     y = ensure_mat(y)
-    ztab = tab(y)
-    if nlvdis == 0
+    Q = eltype(X)
+    ztab = tab(y)    
+    p = nco(X)
+    if par.nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, dummy(y).Y; nlv = nlvdis, 
-            scal = scal)
+        fm = plskern(X, dummy(y).Y; 
+            nlv = par.nlvdis, scal = par.scal)
     end
-    return Lwplsrda(X, y, fm, metric, h, k, nlv, tol, 
-        scal, verbose, ztab.keys, ztab.vals)
+    xscales = ones(Q, p)
+    if isnothing(fm) && par.scal
+        xscales .= colstd(X)
+    end
+    Lwplsrda(X, y, fm, xscales, ztab.keys, 
+        ztab.vals, kwargs, par)
 end
 
 """
@@ -87,33 +92,38 @@ Compute the y-predictions from the fitted model.
 function predict(object::Lwplsrda, X; nlv = nothing)
     X = ensure_mat(X)
     m = nro(X)
-    a = object.nlv
-    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
+    a = object.par.nlv
+    isnothing(nlv) ? nlv = a : 
+        nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     ## Getknn
+    metric = object.par.metric
+    h = object.par.h
+    k = object.par.k
+    tolw = object.par.tolw
     if isnothing(object.fm)
-        if object.scal
-            xscales = colstd(object.X)
-            zX1 = fscale(object.X, xscales)
-            zX2 = fscale(X, xscales)
-            res = getknn(zX1, zX2; k = object.k, metric = object.metric)
+        if object.par.scal
+            zX1 = fscale(object.X, object.xscales)
+            zX2 = fscale(X, object.xscales)
+            res = getknn(zX1, zX2; metric, k)
         else
-            res = getknn(object.X, X; k = object.k, metric = object.metric)
+            res = getknn(object.X, X; metric, k)
         end
     else
         res = getknn(object.fm.T, transf(object.fm, X); 
-            k = object.k, metric = object.metric) 
+            metric, k) 
     end
     listw = copy(res.d)
     Threads.@threads for i = 1:m
-        w = wdist(res.d[i]; h = object.h)
-        w[w .< object.tol] .= object.tol
+    #@inbounds for i = 1:m
+        w = wdist(res.d[i]; h)
+        w[w .< tolw] .= tolw
         listw[i] = w
     end
     ## End
     pred = locwlv(object.X, object.y, X; 
-        listnn = res.ind, listw = listw, fun = plsrda, nlv = nlv, 
-        scal = object.scal,
-        verbose = object.verbose).pred
+        listnn = res.ind, listw = listw, fun = plsrda, 
+        nlv = nlv, scal = object.par.scal,
+        verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 

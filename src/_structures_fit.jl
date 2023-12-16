@@ -1,5 +1,74 @@
 ###### Dimension reduction
 
+struct Pca 
+    T::Matrix 
+    P::Matrix
+    sv::Vector
+    xmeans::Vector
+    xscales::Vector
+    weights::Weight
+    niter::Union{Vector{Int}, Nothing} # for PCA Nipals
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Rp
+    T::Matrix
+    P::Matrix
+    xmeans::Vector
+    xscales::Vector
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Spca
+    T::Matrix 
+    P::Matrix
+    sv::Vector
+    beta::Matrix
+    xmeans::Vector
+    xscales::Vector
+    weights::Weight
+    niter::Union{Vector{Int}, Nothing}
+    sellv::Vector{Vector{Int}}
+    sel::Vector{Int}
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Kpca
+    X::Matrix
+    Kt::Adjoint
+    T::Matrix
+    P::Matrix
+    sv::Vector  
+    eig::Vector    
+    D::Diagonal
+    DKt::Matrix
+    vtot::Matrix
+    xscales::Vector 
+    weights::Weight
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Fda
+    T::Matrix
+    P::Matrix
+    Tcenters::Matrix
+    eig::Vector
+    sstot::AbstractFloat
+    W::Matrix
+    xmeans::Vector
+    xscales::Vector
+    lev::Vector
+    ni::Vector{Int}
+    kwargs::Base.Pairs
+    par::Par
+end
+
+## Multiblock
+
 struct Cca
     Tx::Matrix
     Ty::Matrix
@@ -56,37 +125,6 @@ struct Comdim
     par::Par
 end
 
-struct Fda
-    T::Matrix
-    P::Matrix
-    Tcenters::Matrix
-    eig::Vector
-    sstot::AbstractFloat
-    W::Matrix
-    xmeans::Vector
-    xscales::Vector
-    lev::Vector
-    ni::Vector{Int}
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Kpca
-    X::Matrix
-    Kt::Adjoint
-    T::Matrix
-    P::Matrix
-    sv::Vector  
-    eig::Vector    
-    D::Diagonal
-    DKt::Matrix
-    vtot::Matrix
-    xscales::Vector 
-    weights::Weight
-    kwargs::Base.Pairs
-    par::Par
-end
-
 struct Mbpca
     T::Matrix 
     U::Matrix
@@ -101,18 +139,6 @@ struct Mbpca
     xscales::Vector{Vector}
     weights::Weight
     niter::Vector{Int}
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Pca 
-    T::Matrix 
-    P::Matrix
-    sv::Vector
-    xmeans::Vector
-    xscales::Vector
-    weights::Weight
-    niter::Union{Vector{Int}, Nothing} # for PCA Nipals
     kwargs::Base.Pairs
     par::Par
 end
@@ -173,31 +199,21 @@ struct Rasvd
     par::Par
 end
 
-struct Rp
-    T::Matrix
-    P::Matrix
-    xmeans::Vector
-    xscales::Vector
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Spca
-    T::Matrix 
-    P::Matrix
-    sv::Vector
-    beta::Matrix
-    xmeans::Vector
-    xscales::Vector
-    weights::Weight
-    niter::Union{Vector{Int}, Nothing}
-    sellv::Vector{Vector{Int}}
-    sel::Vector{Int}
-    kwargs::Base.Pairs
-    par::Par
-end
-
 ###### Regression
+
+struct Mlr
+    B::Matrix   
+    int::Matrix
+    weights::Weight
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct MlrNoArg
+    B::Matrix   
+    int::Matrix
+    weights::Weight
+end
 
 struct Cglsr
     B::Matrix
@@ -207,6 +223,50 @@ struct Cglsr
     ymeans::Vector
     yscales::Vector
     F::Union{Matrix, Nothing}
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Plsr
+    T::Matrix
+    P::Matrix
+    R::Matrix
+    W::Matrix
+    C::Matrix
+    TT::Vector
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    yscales::Vector
+    weights::Weight
+    niter::Union{Vector{Int}, Nothing}
+    kwargs::Base.Pairs
+    par::Par
+end
+
+
+struct Pcr
+    fmpca::Pca
+    T::Matrix
+    R::Matrix
+    C::Matrix
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    yscales::Vector
+    weights::Weight
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Rr
+    V::Matrix
+    TtDY::Matrix
+    sv::Vector
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    weights::Weight
     kwargs::Base.Pairs
     par::Par
 end
@@ -230,6 +290,16 @@ struct Kplsr
     par::Par
 end
 
+struct Dkplsr
+    X::Matrix
+    fm::Plsr
+    K::Matrix
+    xscales::Vector
+    yscales::Vector
+    kwargs::Base.Pairs
+    par::Par
+end
+
 struct Krr
     X::Matrix
     K::Matrix
@@ -246,6 +316,54 @@ struct Krr
     kwargs::Base.Pairs
     par::Par
 end
+
+struct PlsravgUnif
+    fm::Plsr
+    nlv::UnitRange
+end
+
+struct Plsravg
+    fm::PlsravgUnif
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Splsr
+    T::Matrix
+    P::Matrix
+    R::Matrix
+    W::Matrix
+    C::Matrix
+    TT::Vector
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    yscales::Vector
+    weights::Weight
+    niter::Union{Matrix, Nothing}
+    sellv::Vector{Vector{Int}}
+    sel::Vector{Int}
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Svmr
+    fm::LIBSVM.SVM
+    xscales::Vector
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct TreerDt
+    fm::Union{DecisionTree.Root, DecisionTree.Ensemble}
+    xscales::Vector
+    featur::Vector{Int}
+    mth::Bool 
+    kwargs::Base.Pairs
+    par::Par
+end
+
+## Multiblock
 
 struct Mbplsr
     fm
@@ -284,73 +402,6 @@ struct Mbplswest            # Used for mbplswest, mbwcov
     par::Par
 end
 
-struct Mlr
-    B::Matrix   
-    int::Matrix
-    weights::Weight
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct MlrNoArg
-    B::Matrix   
-    int::Matrix
-    weights::Weight
-end
-
-struct Pcr
-    fmpca::Pca
-    T::Matrix
-    R::Matrix
-    C::Matrix
-    xmeans::Vector
-    xscales::Vector
-    ymeans::Vector
-    yscales::Vector
-    weights::Weight
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Plsr
-    T::Matrix
-    P::Matrix
-    R::Matrix
-    W::Matrix
-    C::Matrix
-    TT::Vector
-    xmeans::Vector
-    xscales::Vector
-    ymeans::Vector
-    yscales::Vector
-    weights::Weight
-    niter::Union{Vector{Int}, Nothing}
-    kwargs::Base.Pairs
-    par::Par
-end
-
-## Here since Plsr
-struct Dkplsr
-    X::Matrix
-    fm::Plsr
-    K::Matrix
-    xscales::Vector
-    yscales::Vector
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct PlsravgUnif
-    fm::Plsr
-    nlv::UnitRange
-end
-
-struct Plsravg
-    fm::PlsravgUnif
-    kwargs::Base.Pairs
-    par::Par
-end
-
 struct Rosaplsr
     T::Matrix
     P::Matrix
@@ -368,58 +419,11 @@ struct Rosaplsr
     par::Par
 end
 
-struct Rr
-    V::Matrix
-    TtDY::Matrix
-    sv::Vector
-    xmeans::Vector
-    xscales::Vector
-    ymeans::Vector
-    weights::Weight
-    kwargs::Base.Pairs
-    par::Par
-end
-
 struct Soplsr
     fm
     T::Matrix
     fit::Matrix
     b
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Splsr
-    T::Matrix
-    P::Matrix
-    R::Matrix
-    W::Matrix
-    C::Matrix
-    TT::Vector
-    xmeans::Vector
-    xscales::Vector
-    ymeans::Vector
-    yscales::Vector
-    weights::Weight
-    niter::Union{Matrix, Nothing}
-    sellv::Vector{Vector{Int}}
-    sel::Vector{Int}
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Svmr
-    fm::LIBSVM.SVM
-    xscales::Vector
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct TreerDt
-    fm::Union{DecisionTree.Root, DecisionTree.Ensemble}
-    xscales::Vector
-    featur::Vector{Int}
-    mth::Bool 
     kwargs::Base.Pairs
     par::Par
 end
@@ -612,10 +616,11 @@ struct Lwmlrda
     par::Par
 end
 
-struct LwmlrdaS
-    T::Matrix
+struct Lwplsrda
+    X::Matrix
     y::AbstractMatrix
     fm
+    xscales::Vector
     lev::Vector
     ni::Vector{Int}
     kwargs::Base.Pairs
@@ -626,6 +631,7 @@ struct Lwplslda
     X::Matrix
     y::AbstractMatrix
     fm
+    xscales::Vector
     lev::Vector
     ni::Vector{Int}
     kwargs::Base.Pairs
@@ -636,17 +642,17 @@ struct Lwplsqda
     X::Matrix
     y::AbstractMatrix
     fm
+    xscales::Vector
     lev::Vector
     ni::Vector{Int}
     kwargs::Base.Pairs
     par::Par
 end
 
-struct Lwplsrda
-    X::Matrix
+struct LwmlrdaS
+    T::Matrix
     y::AbstractMatrix
     fm
-    xscales::Vector
     lev::Vector
     ni::Vector{Int}
     kwargs::Base.Pairs
