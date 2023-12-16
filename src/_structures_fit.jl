@@ -482,12 +482,6 @@ end
 
 ###### Discrimination
 
-struct Dkplsrda
-    fm  
-    lev::Vector
-    ni::Vector{Int}
-end
-
 struct Dmkern
     X::Matrix
     H::Matrix
@@ -509,6 +503,12 @@ struct Dmnormlog
     logcst
 end
 
+struct Mlrda
+    fm  
+    lev::Vector
+    ni::Vector{Int}
+end
+
 struct Kdeda
     fm
     wprior::AbstractVector
@@ -525,24 +525,6 @@ struct Lda
     ni::Vector{Int}
     lev::Vector
     weights::Weight
-end
-
-struct Mlrda
-    fm  
-    lev::Vector
-    ni::Vector{Int}
-end
-
-struct Plslda    # for plslda and plsqda 
-    fm  
-    lev::Vector
-    ni::Vector{Int}
-end
-
-struct Plsrda
-    fm  
-    lev::Vector
-    ni::Vector{Int}
 end
 
 struct Qda
@@ -566,6 +548,24 @@ struct Rda
     lev::Vector
     xscales::Vector
     weights::Weight
+end
+
+struct Plsrda
+    fm  
+    lev::Vector
+    ni::Vector{Int}
+end
+
+struct Plslda    # for plslda and plsqda 
+    fm  
+    lev::Vector
+    ni::Vector{Int}
+end
+
+struct Dkplsrda
+    fm  
+    lev::Vector
+    ni::Vector{Int}
 end
 
 struct Rrda

@@ -64,6 +64,7 @@ res.listw
 ```
 """ 
 function lwplsrda(X, y; kwargs...) 
+    par = recovkwargs(Par, kwargs) 
     X = ensure_mat(X)
     y = ensure_mat(y)
     Q = eltype(X)
@@ -124,7 +125,8 @@ function predict(object::Lwplsrda, X; nlv = nothing)
         listnn = res.ind, listw = listw, fun = plsrda, 
         nlv = nlv, scal = object.par.scal,
         verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, 
+        listw = listw)
 end
 
 
