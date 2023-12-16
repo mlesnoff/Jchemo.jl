@@ -301,7 +301,6 @@ function findmax_cla(x)
 end
 
 function findmax_cla(x, weights::Weight)
-    n = length(x)
     res = aggstat(weights.w, x; fun = sum)
     res.lev[argmax(res.X)]   
 end

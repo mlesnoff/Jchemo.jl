@@ -70,19 +70,26 @@ res.listd
 res.listw
 ```
 """ 
-function knnda(X, y; nlvdis = 0, metric = :eucl, h = Inf, k = 1, 
-        tol = 1e-4, scal::Bool = false)
+function knnda(X, y; kwargs...) 
+    par = recovkwargs(Par, kwargs)
+    @assert in([:eucl, :mah])(par.metric) "Wrong value for argument 'metric'."
     X = ensure_mat(X)
     y = ensure_mat(y)
-    ztab = tab(y)
-    if nlvdis == 0
+    Q = eltype(X)
+    p = nco(X)
+    ztab = tab(y)    # only for description
+    if par.nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, dummy(y).Y; nlv = nlvdis, 
-            scal = scal)
+        fm = plskern(X, dummy(y).Y; 
+            nlv = par.nlvdis, scal = par.scal)
     end
-    return Knnda(X, y, fm, nlvdis, metric, h, k, tol, 
-        ztab.keys, ztab.vals, scal)
+    xscales = ones(Q, p)
+    if par.scal && isnothing(fm)
+        xscales .= colstd(X)
+    end
+    Knnda(X, y, fm, xscales, ztab.keys, 
+        ztab.vals, kwargs, par) 
 end
 
 """
@@ -94,32 +101,37 @@ Compute the y-predictions from the fitted model.
 function predict(object::Knnda, X)
     X = ensure_mat(X)
     m = nro(X)
-    # Getknn
+    ## Getknn
+    metric = object.par.metric
+    h = object.par.h
+    k = object.par.k
+    tolw = object.par.tolw
     if isnothing(object.fm)
-        if object.scal
-            xscales = colstd(object.X)
-            zX1 = fscale(object.X, xscales)
-            zX2 = fscale(X, xscales)
-            res = getknn(zX1, zX2; k = object.k, metric = object.metric)
+        if object.par.scal
+            zX1 = fscale(object.X, object.xscales)
+            zX2 = fscale(X, object.xscales)
+            res = getknn(zX1, zX2; k, metric)
         else
-            res = getknn(object.X, X; k = object.k, metric = object.metric)
+            res = getknn(object.X, X; k, metric)
         end
     else
-        res = getknn(object.fm.T, transf(object.fm, X); k = object.k, 
-            metric = object.metric) 
+        res = getknn(object.fm.T, transf(object.fm, X); 
+           k, metric) 
     end
     listw = copy(res.d)
-    for i = 1:m
-        w = wdist(res.d[i]; h = object.h)
-        w[w .< object.tol] .= object.tol
+    @inbounds for i = 1:m
+        w = wdist(res.d[i]; h)
+        w[w .< tolw] .= tolw
         listw[i] = w
     end
-    # End
+    ## End
     pred = similar(object.y, m, 1)
     @inbounds for i = 1:m
         s = res.ind[i]
-        pred[i, :] .= findmax_cla(object.y[s], listw[i])
+        pred[i, :] .= findmax_cla(object.y[s], 
+            mweight(listw[i]))
     end
-    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, 
+        listw = listw)
 end
 

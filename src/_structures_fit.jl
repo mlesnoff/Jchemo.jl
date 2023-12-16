@@ -512,20 +512,6 @@ struct Kdeda
     ni::Vector{Int}
 end
 
-struct Knnda
-    X::Matrix
-    y::AbstractMatrix
-    fm
-    nlvdis::Int
-    metric::String
-    h::Real
-    k::Int
-    tol::AbstractFloat
-    lev::Vector
-    ni::Vector{Int}
-    scal::Bool
-end
-
 struct Lda
     fm
     W::Matrix  
@@ -535,94 +521,6 @@ struct Lda
     ni::Vector{Int}
     lev::Vector
     weights::Weight
-end
-
-struct Lwmlrda
-    X::Matrix
-    y::AbstractMatrix
-    metric::String
-    h::Real
-    k::Int
-    tol::AbstractFloat
-    verbose::Bool
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct LwmlrdaS
-    T::Matrix
-    y::AbstractMatrix
-    fm
-    metric::String
-    h::Real
-    k::Int
-    tol::AbstractFloat
-    verbose::Bool
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Lwplslda
-    X::Matrix
-    y::AbstractMatrix
-    fm
-    metric::String
-    h::Real
-    k::Int
-    nlv::Int
-    prior::String
-    tol::AbstractFloat
-    scal::Bool
-    verbose::Bool
-    lev::Vector
-    ni::Vector{Int}
-end
-
-struct Lwplsqda
-    X::Matrix
-    y::AbstractMatrix
-    fm
-    metric::String
-    h::Real
-    k::Int
-    nlv::Int
-    alpha::Real
-    prior::String
-    tol::AbstractFloat
-    scal::Bool
-    verbose::Bool
-    lev::Vector
-    ni::Vector{Int}
-end
-
-struct Lwplsrda
-    X::Matrix
-    y::AbstractMatrix
-    fm
-    metric::String
-    h::Real
-    k::Int
-    nlv::Int
-    tol::AbstractFloat
-    scal::Bool
-    verbose::Bool
-    lev::Vector
-    ni::Vector{Int}
-end
-
-struct LwplsrdaS
-    T::Matrix
-    y::AbstractMatrix
-    fm
-    metric::String
-    h::Real
-    k::Int
-    nlv::Int
-    tol::AbstractFloat
-    scal::Bool
-    verbose::Bool
-    kwargs::Base.Pairs
-    par::Par
 end
 
 struct Mlrda
@@ -688,6 +586,79 @@ struct TreedaDt
     lev::Vector
     ni::Vector{Int}
     mth::Bool 
+    kwargs::Base.Pairs
+    par::Par
+end
+
+## Local
+
+struct Knnda
+    X::Matrix
+    y::AbstractMatrix
+    fm
+    xscales::Vector
+    lev::Vector
+    ni::Vector{Int}
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Lwmlrda
+    X::Matrix
+    y::AbstractMatrix
+    verbose::Bool
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct LwmlrdaS
+    T::Matrix
+    y::AbstractMatrix
+    fm
+    verbose::Bool
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Lwplslda
+    X::Matrix
+    y::AbstractMatrix
+    fm
+    verbose::Bool
+    lev::Vector
+    ni::Vector{Int}
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Lwplsqda
+    X::Matrix
+    y::AbstractMatrix
+    fm
+    verbose::Bool
+    lev::Vector
+    ni::Vector{Int}
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Lwplsrda
+    X::Matrix
+    y::AbstractMatrix
+    fm
+    xscales::Vector
+    verbose::Bool
+    lev::Vector
+    ni::Vector{Int}
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct LwplsrdaS
+    T::Matrix
+    y::AbstractMatrix
+    fm
+    verbose::Bool
     kwargs::Base.Pairs
     par::Par
 end

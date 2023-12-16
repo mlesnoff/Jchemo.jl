@@ -184,3 +184,7 @@ splslda(; kwargs...) = Predictor{Function, Plslda, Base.Pairs}(splslda, nothing,
 splsqda(; kwargs...) = Predictor{Function, Plslda, Base.Pairs}(splsqda, nothing, kwargs)
 splskdeda(; kwargs...) = Predictor{Function, Plslda, Base.Pairs}(splskdeda, nothing, kwargs)
 ##
+knnda(; kwargs...) = Predictor{Function, Knnda, Base.Pairs}(knnda, nothing, kwargs)
+
+
+
