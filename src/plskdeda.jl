@@ -49,15 +49,24 @@ err(pred, ytest)
 confusion(pred, ytest).cnt
 ```
 """ 
-function plskdeda(X, y, weights = ones(nro(X)); nlv, 
-        prior = :unif, h = nothing, a = 1, scal::Bool = false)
+function plskdeda(X, y; kwargs...)
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    plskdeda(X, y, weights; 
+        kwargs...)
+end
+
+function plskdeda(X, y, weights::Weight; 
+        kwargs...)
+    par = recovkwargs(Par, kwargs)
     res = dummy(y)
     ni = tab(y).vals
-    fmpls = plskern(X, res.Y, weights; nlv = nlv, scal = scal)
-    fmda = list(nlv)
-    @inbounds for i = 1:nlv
-        fmda[i] = kdeda(vcol(fmpls.T, 1:i), y; prior = prior,
-            h = h, a = a)
+    fmpls = plskern(X, res.Y, weights; 
+        kwargs...)
+    fmda = list(par.nlv, Kdeda)
+    @inbounds for i = 1:par.nlv
+        fmda[i] = kdeda(vcol(fmpls.T, 1:i), y; 
+            kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
     Plslda(fm, res.lev, ni)

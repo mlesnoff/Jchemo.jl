@@ -38,7 +38,7 @@ function plsqda(X, y, weights::Weight;
     ni = tab(y).vals
     fmpls = plskern(X, res.Y, weights;
         kwargs...)
-    fmda = list(par.nlv)
+    fmda = list(par.nlv, Qda)
     @inbounds for i = 1:par.nlv
         fmda[i] = qda(vcol(fmpls.T, 1:i), y, weights; 
             kwargs...)

@@ -86,7 +86,7 @@ function plslda(X, y, weights::Weight;
     ni = tab(y).vals
     fmpls = plskern(X, res.Y, weights; 
         kwargs...)
-    fmda = list(par.nlv)
+    fmda = list(par.nlv, Lda)
     @inbounds for i = 1:par.nlv
         fmda[i] = lda(fmpls.T[:, 1:i], y, weights; 
             kwargs...)
