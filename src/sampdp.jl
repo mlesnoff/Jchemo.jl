@@ -59,9 +59,8 @@ scatter!(X[s, 1], X[s, 2], color = "red")
 f
 ```
 """ 
-function sampdp(X, k; metric = :eucl)
+function sampdp(X, k::Int; metric = :eucl)
     @assert in([:eucl, :mah])(metric) "Wrong value for argument 'metric'."
-    k = Int(round(k))
     if metric == :eucl
         D = euclsq(X, X)
     else

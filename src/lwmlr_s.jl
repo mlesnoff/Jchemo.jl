@@ -89,7 +89,7 @@ rmsep(pred, ytest)
 function lwmlr_s(X, Y; kwargs...)
     par = recovkwargs(Par, kwargs)
     @assert in([:pca; :pls; :dkpls])(par.reduc) "Wrong value for argument 'reduc'."    
-    @assert 0 <= par.psamp <=1 "psamp must be in [0, 1]"   
+    @assert 0 <= par.psamp <= 1 "psamp must be in [0, 1]"   
     @assert in([:sys; :rand])(par.msamp) "Wrong value for argument 'samp'."
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -97,10 +97,10 @@ function lwmlr_s(X, Y; kwargs...)
     s = 1:n
     if par.psamp < 1
         m = Int(round(par.psamp * n))
-        if par.msamp == :sys
-            s = sampsys(rowsum(Y), m).test
-        elseif par.msamp == :rand
+        if par.msamp == :rand
             s = sample(1:n, m; replace = false)
+        elseif par.msamp == :sys
+            s = sampsys(rowsum(Y), m).test
         end
     end
     zX = vrow(X, s)

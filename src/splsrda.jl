@@ -1,21 +1,21 @@
 """
     splsrda(X, y, weights = ones(nro(X)); nlv,
-        methsp = :soft, delta = 0, nvar = nco(X), 
+        msparse = :soft, delta = 0, nvar = nco(X), 
         scal::Bool = false)
 Sparse PLSR-DA.
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights of the observations. Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `methsp`: Method used for the thresholding. Possible values
+* `msparse`: Method used for the thresholding. Possible values
     are :soft (default), :mix or :hard. See thereafter.
 * `delta` : Range for the thresholding (see function `soft`)
     on the loadings standardized to their maximal absolute value.
-    Must ∈ [0, 1]. Only used if `methsp = :soft.
+    Must ∈ [0, 1]. Only used if `msparse = :soft.
 * `nvar` : Nb. variables (`X`-columns) selected for each 
     LV. Can be a single integer (same nb. variables
     for each LV), or a vector of length `nlv`.
-    Only used if `methsp = :mix` or `methsp = :hard`. 
+    Only used if `msparse = :mix` or `msparse = :hard`. 
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
@@ -48,11 +48,11 @@ delta = .8
 nvar = 2
 scal = false
 #scal = true
-methsp = :soft
-#methsp = :mix
-#methsp = :hard
+msparse = :soft
+#msparse = :mix
+#msparse = :hard
 fm = splsrda(Xtrain, ytrain; nlv = nlv,
-    methsp = methsp, delta = delta, nvar = nvar,
+    msparse = msparse, delta = delta, nvar = nvar,
     scal = scal) ;
 pnames(fm)
 pnames(fm.fm)
@@ -65,7 +65,7 @@ err(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
 nlv = 0:30 
-pars = mpar(methsp = [:mix], nvar = [1; 5; 10; 20], 
+pars = mpar(msparse = [:mix], nvar = [1; 5; 10; 20], 
     scal = [false])
 res = gridscorelv(Xtrain, ytrain, Xtest, ytest; 
     score = err, fun = splsrda, pars = pars, nlv = nlv)

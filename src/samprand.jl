@@ -18,8 +18,7 @@ n = 10
 samprand(n, 7)
 ```
 """ 
-function samprand(n, k; replace = false)
-    k = Int(round(k))
+function samprand(n::Int, k::Int; replace = false)
     zn = collect(1:n)
     s = sample(zn, k; replace = replace)
     sort!(s)

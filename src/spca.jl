@@ -1,24 +1,24 @@
 """
     spca(X, weights = ones(nro(X)); nlv,
-        methsp = :soft, delta = 0, nvar = nco(X), 
+        msparse = :soft, delta = 0, nvar = nco(X), 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
     spca!(X, weights = ones(nro(X)); nlv,
-        methsp = :soft, delta = 0, nvar = nco(X), 
+        msparse = :soft, delta = 0, nvar = nco(X), 
         tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
 Sparse PCA (Shen & Huang 2008).
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
     Internally normalized to sum to 1.
 * `nlv` : Nb. principal components (PCs).
-* `methsp`: Method used for the thresholding. Possible values
+* `msparse`: Method used for the thresholding. Possible values
     are :soft (default), :mix or :hard. See thereafter.
 * `delta` : Range for the thresholding (see function `soft`)
     on the loadings standardized to their maximal absolute value.
-    Must ∈ [0, 1]. Only used if `methsp = :soft.
+    Must ∈ [0, 1]. Only used if `msparse = :soft.
 * `nvar` : Nb. variables (`X`-columns) selected for each 
     PC. Can be a single integer (same nb. variables
     for each PC), or a vector of length `nlv`.
-    Only used if `methsp = :mix` or `methsp = :hard`.   
+    Only used if `msparse = :mix` or `msparse = :hard`.   
 * `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
@@ -30,7 +30,7 @@ matrix approximation (Shen & Huang 2008). A Nipals algorithm is used.
 Function `spca' provides three methods of thresholding to compute 
 the sparse loadings:
 
-* `methsp = :soft`: Soft thresholding of standardized loadings. 
+* `msparse = :soft`: Soft thresholding of standardized loadings. 
     Noting v the loading vector, at each step, abs(v) is standardized to 
     its maximal component (= max{abs(v[i]), i = 1..p}). The soft-thresholding 
     function (see function `soft`) is applied to this standardized vector, 
@@ -38,17 +38,17 @@ the sparse loadings:
     theta. Vector v is multiplied term-by-term by vector theta, which
     finally gives the sparse loadings.
 
-* `methsp = :mix`: Method used in function `spca` of the R package `mixOmics`.
+* `msparse = :mix`: Method used in function `spca` of the R package `mixOmics`.
     For each PC, a number of `X`-variables showing the largest 
     values in vector abs(v) are selected. Then a soft-thresholding is 
     applied to the corresponding selected loadings. Range `delta` is 
     automatically (internally) set to the maximal value of the components 
     of abs(v) corresponding to variables removed from the selection.  
 
-* `methsp = :hard`: For each PC, a number of `X-variables showing 
+* `msparse = :hard`: For each PC, a number of `X-variables showing 
     the largest values in vector abs(v) are selected.
 
-The case `methsp = :mix` returns the same results as function 
+The case `msparse = :mix` returns the same results as function 
 spca of the R package mixOmics.
 
 Since the resulting sparse loadings vectors (`P`-columns) are in general 
@@ -93,12 +93,12 @@ tol = 1e-15
 nlv = 3 
 scal = false
 #scal = true
-methsp = :soft
-#methsp = :mix
-#methsp = :hard
+msparse = :soft
+#msparse = :mix
+#msparse = :hard
 delta = .4 ; nvar = 2 
 fm = spca(Xtrain; nlv = nlv, 
-    methsp = methsp, nvar = nvar, delta = delta, 
+    msparse = msparse, nvar = nvar, delta = delta, 
     tol = tol, scal = scal) ;
 fm.niter
 fm.sellv 
@@ -128,7 +128,7 @@ end
 function spca!(X::Matrix, weights::Weight; 
         kwargs...)
     par = recovkwargs(Par, kwargs) 
-    @assert in([:hard ; :soft ; :mix])(par.methsp) "Wrong value for argument 'methsp'."
+    @assert in([:hard ; :soft ; :mix])(par.msparse) "Wrong value for argument 'msparse'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]."
     Q = eltype(X)
     n, p = size(X)
@@ -154,13 +154,13 @@ function spca!(X::Matrix, weights::Weight;
     beta = similar(X, p, nlv)
     sellv = list(nlv, Vector{Int})
     for a = 1:nlv
-        if par.methsp == :soft
+        if par.msparse == :soft
             res = snipals(X; kwargs...)
         else
             par.nvar = nvar[a]
-            if par.methsp == :hard
+            if par.msparse == :hard
                 res = snipalsh(X; kwargs...)
-            elseif par.methsp == :mix
+            elseif par.msparse == :mix
                 res = snipalsmix(X; kwargs...)
             end
         end

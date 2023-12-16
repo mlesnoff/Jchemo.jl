@@ -46,9 +46,8 @@ fm = pcasvd(X; nlv = 15) ;
 res = sampks(fm.T, k; metric = :mah)
 ```
 """ 
-function sampks(X, k; metric = :eucl)
+function sampks(X, k::Int; metric = :eucl)
     @assert in([:eucl, :mah])(metric) "Wrong value for argument 'metric'."
-    k = Int(round(k))
     if metric == :eucl
         D = euclsq(X, X)
     else

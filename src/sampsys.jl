@@ -24,8 +24,7 @@ res = sampsys(y, 4)
 sort(y[res.train])
 ```
 """ 
-function sampsys(y, k)
-    k = Int(round(k))
+function sampsys(y, k::Int)
     y = vec(y)
     n = length(y)
     nint = k - 1            # nb. intervals

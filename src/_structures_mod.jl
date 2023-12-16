@@ -189,5 +189,6 @@ lwmlrda(; kwargs...) = Predictor{Function, Lwmlrda, Base.Pairs}(lwmlrda, nothing
 lwplsrda(; kwargs...) = Predictor{Function, Lwplsrda, Base.Pairs}(lwplsrda, nothing, kwargs)
 lwplslda(; kwargs...) = Predictor{Function, Lwplslda, Base.Pairs}(lwplslda, nothing, kwargs)
 lwplsqda(; kwargs...) = Predictor{Function, Lwplsqda, Base.Pairs}(lwplsqda, nothing, kwargs)
-
+lwmlrda_s(; kwargs...) = Predictor{Function, LwmlrdaS, Base.Pairs}(lwmlrda_s, nothing, kwargs)
+lwplsrda_s(; kwargs...) = Predictor{Function, LwplsrdaS, Base.Pairs}(lwplsrda_s, nothing, kwargs)
 

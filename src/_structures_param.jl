@@ -38,7 +38,7 @@ Base.@kwdef mutable struct Par
     k::Int = 1                              # nb neighbors
     tolw::Float64 = 1e-4                    # tolerance for local weights
     psamp::Float64 = 1.                     # row sampling
-    msamp::Symbol = :sys                    # method of row sampling
+    msamp::Symbol = :rand                   # method of row sampling
     verbose::Bool = false                   # print obs. indexes when prediction
     ##
     prior::Symbol = :unif                   # prior in DA
@@ -54,7 +54,7 @@ Base.@kwdef mutable struct Par
     ##
     alpha_aic::Float64 = 2.                 # aicplsr
     ##
-    methsp::Symbol = :soft                     # sparse methods, threshold 
+    msparse::Symbol = :soft                     # sparse methods, threshold 
     delta::Float64 = 0.                     # sparse methods, threshold
     nvar::Union{Int, Vector{Int}} = 1       # sparse methods, threshold
     ##
@@ -65,3 +65,5 @@ end
 struct Weight{T <: AbstractFloat}
     w::Vector{T} 
 end
+
+

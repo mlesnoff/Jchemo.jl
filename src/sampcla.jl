@@ -38,15 +38,14 @@ x[res.train]
 tab(x[res.train])
 ```
 """ 
-function sampcla(x, k, y = nothing)
-    k = Int(round(k))
+function sampcla(x, k::Union{Int, Vector{Int}}, y = nothing)
     x = vec(x)
     n = length(x)
     ztab = tab(x)
     lev = ztab.keys
     ni = ztab.vals
     nlev = length(lev)
-    isequal(length(k), 1) ? k = fill(k[1], nlev) : nothing
+    length(k) == 1 ? k = repeat([k], nlev) : nothing
     s = list(nlev, Vector{Int})
     @inbounds for i in 1:nlev
         k[i] = min(k[i], ni[i])

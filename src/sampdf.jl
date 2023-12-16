@@ -43,8 +43,8 @@ ids[i].test[j]
 ids[i].nam[j]
 ```
 """
-function sampdf(Y::DataFrame, k, id = 1:nro(Y); 
-        sampm = :rand)
+function sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, 
+        id = 1:nro(Y); sampm = :rand)
     @assert in([:rand; :sys])(sampm) "Wrong value for argument 'sampm'."
     p = nco(Y)
     nam = names(Y)
