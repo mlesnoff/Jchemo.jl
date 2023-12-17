@@ -80,7 +80,9 @@ function predict(object::Lwmlrda, X)
     res = getknn(object.X, X; metric, k)
     listw = copy(res.d)
     Threads.@threads for i = 1:m
-        w = wdist(res.d[i]; h)
+        w = wdist(res.d[i]; h, 
+            cri = object.par.cri_w,
+            squared = object.par.squared)
         w[w .< tolw] .= tolw
         listw[i] = w
     end

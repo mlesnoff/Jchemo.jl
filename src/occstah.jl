@@ -1,13 +1,13 @@
 """
-    occstah(X; a = 2000, typc = :mad, cri = 3, 
-        alpha = .025, scal = true, kwargs...)
+    occstah(X; a = 2000, mcut = :mad, cri = 3, 
+        risk = .025, scal = true, kwargs...)
 One-class classification using the Stahel-Donoho outlierness.
 
 * `X` : X-data (training).
 * `a` : Nb. dimensions simulated for the projection-pursuit method.
-* `typc` : Type of cutoff (:mad or :q). See Thereafter.
-* `cri` : When `typc = :mad`, a constant. See thereafter.
-* `alpha` : When `typc = :q`, a risk-I level. See thereafter.
+* `mcut` : Type of cutoff (:mad or :q). See Thereafter.
+* `cri` : When `mcut = :mad`, a constant. See thereafter.
+* `risk` : When `mcut = :q`, a risk-I level. See thereafter.
 * `scal` : Boolean. If `true`, matrix `X` is centred (by median) 
     and scaled (by MAD) before computing the outlierness.
 * `kwargs` : Optional arguments to pass in function `kde` of 
@@ -18,9 +18,10 @@ is the Stahel-Donoho outlierness (see `?stah`).
 
 See `?occsd` for details on outputs, and examples. 
 """ 
-function occstah(X; a = 2000, typc = :mad, cri = 3, 
-        alpha = .025, scal = true, kwargs...) 
-    res = Jchemo.stah(X, a; scal = scal)
+function occstah(X; kwargs...) 
+    par = recovkwargs(Par, kwargs) 
+    res = stah(X, par.nlv; 
+        scal = par.scal)
     d = res.d
     #d2 = d.^2 
     #mu = median(d2)
@@ -29,13 +30,16 @@ function occstah(X; a = 2000, typc = :mad, cri = 3,
     #g = mu / nu
     #dist = Distributions.Chisq(nu)
     #pval = Distributions.ccdf.(dist, d2 / g)
-    #typc == :par ? cutoff = sqrt(g * quantile(dist, 1 - alpha)) : nothing
-    #typc == "npar" ? cutoff = median(d) + cri * mad(d) : nothing  
-    typc == :mad ? cutoff = median(d) + cri * mad(d) : nothing
-    typc == :q ? cutoff = quantile(d, 1 - alpha) : nothing
+    #mcut == :par ? cutoff = sqrt(g * quantile(dist, 1 - risk)) : nothing
+    #mcut == "npar" ? cutoff = median(d) + par.cri * mad(d) : nothing  
+    par.mcut == :mad ? cutoff = median(d) + 
+        par.cri * mad(d) : nothing
+    par.mcut == :q ? cutoff = quantile(d, 1 - risk) : 
+        nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
-    d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
+    d = DataFrame(d = d, dstand = d / cutoff, 
+        pval = p_val)
     Occstah(d, res, e_cdf, cutoff)
 end
 
@@ -60,7 +64,8 @@ function predict(object::Occstah, X)
         d[i] = maximum(vrow(T, i))
     end
     p_val = pval(object.e_cdf, d)
-    d = DataFrame(d = d, dstand = d / object.cutoff, pval = p_val)
+    d = DataFrame(d = d, 
+        dstand = d / object.cutoff, pval = p_val)
     pred = reshape(Int.(d.dstand .> 1), m, 1)
     (pred = pred, d)
 end

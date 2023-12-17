@@ -1,15 +1,15 @@
 """
     occsd(object::Union{Pca, Kpca, Plsr}; nlv = nothing,
-        typc = :mad, cri = 3, alpha = .025, kwargs...)
+        mcut = :mad, cri = 3, risk = .025, kwargs...)
 One-class classification using PCA/PLS score distance (SD).
 
 * `object` : The model (e.g. PCA) that was fitted on the training data,
     assumed to represent the training class.
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, 
     it is the maximum nb. of components of the fitted model.
-* `typc` : Type of cutoff (:mad or :q). See Thereafter.
-* `cri` : When `typc = :mad`, a constant. See thereafter.
-* `alpha` : When `typc = :q`, a risk-I level. See thereafter.
+* `mcut` : Type of cutoff (:mad or :q). See Thereafter.
+* `cri` : When `mcut = :mad`, a constant. See thereafter.
+* `risk` : When `mcut = :q`, a risk-I level. See thereafter.
 * `kwargs` : Optional arguments to pass in function `kde` of 
     KernelDensity.jl (see function `kde1`).
 
@@ -22,9 +22,9 @@ If a new observation has `d` higher than a given `cutoff`, the observation
 is assumed to not belong to the training class. 
 The `cutoff` is computed with non-parametric heuristics. 
 Noting [d] the vector of outliernesses computed on the training class:
-* If `typc = :mad`, then `cutoff` = median([d]) + `cri` * mad([d]). 
-* If `typc = :q, then `cutoff` is estimated from the empirical cumulative
-    density function computed on [d], for a given risk-I (`alpha`). 
+* If `mcut = :mad`, then `cutoff` = median([d]) + `cri` * mad([d]). 
+* If `mcut = :q, then `cutoff` is estimated from the empirical cumulative
+    density function computed on [d], for a given risk-I (`risk`). 
 Alternative approximate cutoffs have been proposed in the literature 
 (e.g.: Nomikos & MacGregor 1995, Hubert et al. 2005, Pomerantsev 2008).
 Typically and whatever the approximation method, it is recommended to tune 
@@ -95,7 +95,7 @@ nlv = 10
 fm0 = pcasvd(zXtrain; nlv = nlv) ;
 
 fm = occsd(fm0) ;
-#fm = occsd(fm0; typc = :q, alpha = .025) ;
+#fm = occsd(fm0; mcut = :q, risk = .025) ;
 #fm = occod(fm0, zXtrain) ;
 #fm = occsdod(fm0, zXtrain) ;
 #fm = occstah(zXtrain)
@@ -118,7 +118,7 @@ f
 ```
 """ 
 function occsd(object::Union{Pca, Kpca, Plsr}; nlv = nothing,
-        typc = :mad, alpha = .025, cri = 3, kwargs...)
+        mcut = :mad, risk = .025, cri = 3, kwargs...)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     T = @view(object.T[:, 1:nlv])
@@ -126,8 +126,8 @@ function occsd(object::Union{Pca, Kpca, Plsr}; nlv = nothing,
     LinearAlgebra.inv!(cholesky!(S))   # ==> S := Sinv
     d2 = vec(mahsq(T, zeros(nlv)', S))
     d = sqrt.(d2)
-    typc == :mad ? cutoff = median(d) + cri * mad(d) : nothing
-    typc == :q ? cutoff = quantile(d, 1 - alpha) : nothing
+    mcut == :mad ? cutoff = median(d) + par.cri * mad(d) : nothing
+    mcut == :q ? cutoff = quantile(d, 1 - risk) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val, 

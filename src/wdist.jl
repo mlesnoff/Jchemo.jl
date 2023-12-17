@@ -55,13 +55,16 @@ f[1, 1] = ax
 f
 ```
 """  
-function wdist(d; h = 2, cri = 4, squared = false)
+function wdist(d; h = 2, cri = 4, 
+        squared = false)
     w = copy(d)
-    wdist!(w; h = h, cri = cri, squared = squared)
+    wdist!(w; h = h, cri = cri, 
+        squared = squared)
     w
 end
 
-function wdist!(d; h = 2, cri = 4, squared = false)
+function wdist!(d; h = 2, cri = 4, 
+        squared = false)
     # d, out : (n,)
     squared ? d = d.^2 : nothing
     zmed =  Statistics.median(d)

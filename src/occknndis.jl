@@ -130,7 +130,7 @@ function occknndis(X; nlv, nsamp, k,
     @inbounds for i = 1:nsamp
         d[i] = median(res.d[i][2:end])
     end
-    typc == :mad ? cutoff = median(d) + cri * mad(d) : nothing
+    typc == :mad ? cutoff = median(d) + par.cri * mad(d) : nothing
     typc == :q ? cutoff = quantile(d, 1 - alpha) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)

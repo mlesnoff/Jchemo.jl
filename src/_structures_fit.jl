@@ -671,28 +671,11 @@ end
 
 ## Occ
 
-struct Occknndis
-    d::DataFrame
-    fm
-    T::Matrix
-    tscales::Vector
-    k::Int
+struct Occstah
+    d
+    res_stah
     e_cdf::ECDF
-    cutoff::Real    
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Occlknndis
-    d::DataFrame
-    fm
-    T::Matrix
-    tscales::Vector
-    k::Int
-    e_cdf::ECDF
-    cutoff::Real    
-    kwargs::Base.Pairs
-    par::Par
+    cutoff::Real
 end
 
 struct Occod
@@ -718,11 +701,28 @@ struct Occsdod
     fmod
 end
 
-struct Occstah
-    d
-    res_stah
+struct Occknndis
+    d::DataFrame
+    fm
+    T::Matrix
+    tscales::Vector
+    k::Int
     e_cdf::ECDF
-    cutoff::Real
+    cutoff::Real    
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Occlknndis
+    d::DataFrame
+    fm
+    T::Matrix
+    tscales::Vector
+    k::Int
+    e_cdf::ECDF
+    cutoff::Real    
+    kwargs::Base.Pairs
+    par::Par
 end
 
 ###### Preprocessing 

@@ -30,15 +30,17 @@ Base.@kwdef mutable struct Par
     min_samples_split::Int = 5              # tree, random forest
     mth::Bool = true                        # multi-threading in random forest
     ##
-    mreduc::Symbol = :pls                    # type of preliminary reduction
+    mreduc::Symbol = :pls                   # type of preliminary reduction
+    nlvreduc::Int = 20                      # nb LVs for preliminary reduction 
+    msamp::Symbol = :rand                   # method of row sampling
+    psamp::Float64 = 1.                     # row sampling
     nlvdis::Int = 0                         # nb LVs for global space
-    nlvreduc::Int = 20                      # nb LVs for global space 
     metric::Symbol = :eucl                  # metric for global space
     h::Float64 = Inf                        # shape parameter in fweight
     k::Int = 1                              # nb neighbors
+    cri_w::Float64 = 4                      # coefficient for cutoff in wdist
+    squared::Bool = false                   # type of curve in wdist 
     tolw::Float64 = 1e-4                    # tolerance for local weights
-    psamp::Float64 = 1.                     # row sampling
-    msamp::Symbol = :rand                   # method of row sampling
     verbose::Bool = false                   # print obs. indexes when prediction
     ##
     prior::Symbol = :unif                   # prior in DA
@@ -47,16 +49,20 @@ Base.@kwdef mutable struct Par
     h_kde::Union{Nothing, Float64} = nothing  # dmkern-parameter 'h' in kdeda
     a_kde::Float64 = 1.                     # dmkern-parameter 'a' in kdeda
     ##
+    mcut::Symbol = :mad                     # type of cutoff in occ methods
+    risk::Float64 = .025                    # risk I ("alpha") for cutoff in occ methods
+    cri::Float64 = 3.                       # coefficient for cutoff in occ methods
+    ##
     gs::Bool = true                         # Gram-Schmidt orthogonalization 
     filt::Bool = true                       # cglsr
     tol::Float64 = sqrt(eps(1.))            # tolerance in Nipals
     maxit::Int = 200                        # maximal nb. iterations in Nipals 
     ##
-    alpha_aic::Float64 = 2.                 # aicplsr
+    alpha_aic::Float64 = 2.                 # coefficient to compute AIC in aicplsr
     ##
-    msparse::Symbol = :soft                     # sparse methods, threshold 
-    delta::Float64 = 0.                     # sparse methods, threshold
-    nvar::Union{Int, Vector{Int}} = 1       # sparse methods, threshold
+    msparse::Symbol = :soft                 # threshold in sparse methods 
+    delta::Float64 = 0.                     # threshold in sparse methods
+    nvar::Union{Int, Vector{Int}} = 1       # threshold in sparse methods
     ##
     mrp::Symbol = :gauss                    # rp projection method
     s_li::Float64 = 1.                      # rpmatli sparsity parameter  

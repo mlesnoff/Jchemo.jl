@@ -119,7 +119,9 @@ function predict(object::Knnda, X)
     end
     listw = copy(res.d)
     @inbounds for i = 1:m
-        w = wdist(res.d[i]; h)
+        w = wdist(res.d[i]; h, 
+            cri = object.par.cri_w,
+            squared = object.par.squared)
         w[w .< tolw] .= tolw
         listw[i] = w
     end

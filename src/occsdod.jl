@@ -1,7 +1,7 @@
 """
     occsdod(object::Union{Pca, Plsr}, X; 
         nlv_sd = nothing, nlv_od = nothing, 
-        typc = :mad, cri = 3, alpha = .025, kwargs...)
+        mcut = :mad, cri = 3, risk = .025, kwargs...)
 One-class classification using a compromise between PCA/PLS score (SD) and 
     orthogonal (OD) distances.
 
@@ -12,9 +12,9 @@ One-class classification using a compromise between PCA/PLS score (SD) and
     it is the maximum nb. of components of the fitted model.
 * `nlv_od` : Nb. components (PCs or LVs) to consider for OD. If nothing, 
     it is the maximum nb. of components of the fitted model.
-* `typc` : Type of cutoff (:mad or :q). See Thereafter.
-* `cri` : When `typc = :mad`, a constant. See thereafter.
-* `alpha` : When `typc = :q`, a risk-I level. See thereafter.
+* `mcut` : Type of cutoff (:mad or :q). See Thereafter.
+* `cri` : When `mcut = :mad`, a constant. See thereafter.
+* `risk` : When `mcut = :q`, a risk-I level. See thereafter.
 * `kwargs` : Optional arguments to pass in function `kde` of 
     KernelDensity.jl (see function `kde1`).
 
@@ -28,11 +28,11 @@ See `?occsd` for details on outputs, and examples.
 """ 
 function occsdod(object::Union{Pca, Plsr}, X; 
         nlv_sd = nothing, nlv_od = nothing, 
-        typc = :mad, cri = 3, alpha = .025, kwargs...)
+        mcut = :mad, cri = 3, risk = .025, kwargs...)
     fmsd = occsd(object; nlv = nlv_sd,
-        typc = typc, cri = cri, alpha = alpha)
+        mcut = mcut, cri = cri, risk = risk)
     fmod = occod(object, X; nlv = nlv_od,
-        typc = typc, cri = cri, alpha = alpha)
+        mcut = mcut, cri = cri, risk = risk)
     sd = fmsd.d
     od = fmod.d
     z = sqrt.(sd.dstand .* od.dstand)
