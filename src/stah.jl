@@ -35,13 +35,13 @@ plotxy(1:nro(X), res.d).f
 ```
 """ 
 function stah(X, a; scal = true) 
-    zX = copy(ensure_mat(X))
+    zX = copy(ensure_mat(X))  # for inplace if scal
     Q = eltype(zX)
     n, p = size(zX)
-    P = reshape(sample(0:1, p * a), p, a)
+    P = reshape(rand(0:1, p * a), p, a)
     mu_scal = zeros(Q, p)
     s_scal = ones(Q, p) 
-    if par.scal
+    if scal
         mu_scal .= vec(median(zX, dims = 1))
         s_scal .= colmad(zX)
         fcscale!(zX, mu_scal, s_scal)
