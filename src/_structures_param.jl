@@ -30,7 +30,7 @@ Base.@kwdef mutable struct Par
     min_samples_split::Int = 5              # tree, random forest
     mth::Bool = true                        # multi-threading in random forest
     ##
-    reduc::Symbol = :pls                    # type of preliminary reduction
+    mreduc::Symbol = :pls                    # type of preliminary reduction
     nlvdis::Int = 0                         # nb LVs for global space
     nlvreduc::Int = 20                      # nb LVs for global space 
     metric::Symbol = :eucl                  # metric for global space

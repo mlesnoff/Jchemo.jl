@@ -1,5 +1,5 @@
 """
-    lwmlrda_s(X, y; reduc = :pls, 
+    lwmlrda_s(X, y; mreduc = :pls, 
         nlv, gamma = 1, psamp = 1, msamp = :cla, 
         metric = :eucl, h, k, 
         tol = 1e-4, scal::Bool = false, verbose = false)
@@ -7,7 +7,7 @@ kNN-LWMLR-DA after preliminary (linear or non-linear) dimension
     reduction (kNN-LWMLR-DA-S).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership.
-* `reduc` : Type of dimension reduction. Possible values are:
+* `mreduc` : Type of dimension reduction. Possible values are:
     :pca (PCA), :pls (PLS; default), :dkpls (direct Gaussian kernel PLS).
 * `nlvreduc` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `gamma` : Scale parameter for the Gaussian kernel when a KPLS is used 
@@ -49,19 +49,19 @@ ytest = Y.typ[s]
 tab(ytrain)
 tab(ytest)
 
-fm = lwmlrda_s(Xtrain, ytrain; reduc = :pca, 
+fm = lwmlrda_s(Xtrain, ytrain; mreduc = :pca, 
     nlv = 20, metric = :eucl, h = 2, k = 100) ;
 pred = Jchemo.predict(fm, Xtest).pred
 err(pred, ytest)
 confusion(pred, ytest).cnt
 
-fm = lwmlrda_s(Xtrain, ytrain; reduc = :dkpls, 
+fm = lwmlrda_s(Xtrain, ytrain; mreduc = :dkpls, 
     nlv = 20, gamma = .01,
     metric = :eucl, h = 2, k = 100) ;
 pred = Jchemo.predict(fm, Xtest).pred
 err(pred, ytest)
 
-fm = lwmlrda_s(Xtrain, ytrain; reduc = :dkpls, 
+fm = lwmlrda_s(Xtrain, ytrain; mreduc = :dkpls, 
     nlv = 20, gamma = .01, psamp = .5, samp = :cla,
     metric = :eucl, h = 2, k = 100) ;
 pred = Jchemo.predict(fm, Xtest).pred
@@ -70,7 +70,7 @@ err(pred, ytest)
 """
 function lwmlrda_s(X, y; kwargs...) 
     par = recovkwargs(Par, kwargs) 
-    @assert in([:pca; :pls; :dkpls])(par.reduc) "Wrong value for argument 'reduc'."    
+    @assert in([:pca; :pls; :dkpls])(par.mreduc) "Wrong value for argument 'mreduc'."    
     @assert 0 <= par.psamp <= 1 "psamp must be in [0, 1]"   
     @assert in([:cla; :rand])(par.msamp) "Wrong value for argument 'msamp'."
     X = ensure_mat(X)
@@ -90,13 +90,13 @@ function lwmlrda_s(X, y; kwargs...)
     end
     zX = vrow(X, s)
     zy = vrow(y, s)
-    if par.reduc == :pca
+    if par.mreduc == :pca
         fm = pcasvd(zX; nlv = par.nlvreduc, 
             scal = par.scal)
-    elseif par.reduc == :pls
+    elseif par.mreduc == :pls
         fm = plskern(zX, dummy(zy).Y; 
             nlv = par.nlvreduc, scal = par.scal)
-    elseif par.reduc == :dkpls
+    elseif par.mreduc == :dkpls
         fm = dkplsr(zX, dummy(zy).Y; 
             kern = :krbf, 
             gamma = par.gamma, nlv = par.nlvreduc, 

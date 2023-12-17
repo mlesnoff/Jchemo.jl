@@ -1,5 +1,5 @@
 """
-    lwmlr_s(X, Y; reduc = :pls, 
+    lwmlr_s(X, Y; mreduc = :pls, 
         nlv, gamma = 1, psamp = 1, samp = :sys,
         metric = :eucl, h, k, 
         tol = 1e-4, scal::Bool = false, verbose = false)
@@ -7,7 +7,7 @@ kNN-LWMLR after preliminary (linear or non-linear) dimension
     reduction (kNN-LWMLR-S).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q). 
-* `reduc` : Type of dimension reduction. Possible values are:
+* `mreduc` : Type of dimension reduction. Possible values are:
     :pca (PCA), :pls (PLS; default), :dkpls (direct Gaussian kernel PLS, see `?dkpls`).
 * `nlv` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `gamma` : Scale parameter for the Gaussian kernel when a KPLS is used 
@@ -31,14 +31,14 @@ of the X-data (n, p) returns a score matrix T (n, `nlv`). Then, a kNN-LWMLR
 is done on {T, `Y`}.
 
 The dimension reduction can be linear (PCA, PLS) or non linear (DKPLS), defined 
-in argument `reduc`.
+in argument `mreduc`.
 
 When n is too large, the reduction dimension can become too costly,
 in particular for a kernel PLS (that requires to compute a matrix (n, n)).
 Argument `psamp` allows to sample a proportion of the observations
 that will be used to compute (approximate) scores T for the all X-data. 
 
-The case `reduc = :pca` corresponds to the "LWR" algorithm proposed 
+The case `mreduc = :pca` corresponds to the "LWR" algorithm proposed 
 by Naes et al. (1990).
 
 ## References 
@@ -64,7 +64,7 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-fm = lwmlr_s(Xtrain, ytrain; reduc = :pca, 
+fm = lwmlr_s(Xtrain, ytrain; mreduc = :pca, 
     nlv = 20, metric = :eucl, h = 2, 
     k = 100) ;
 pred = Jchemo.predict(fm, Xtest).pred
@@ -73,13 +73,13 @@ plotxy(pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed (Test)").f  
 
-fm = lwmlr_s(Xtrain, ytrain; reduc = :dkpls, 
+fm = lwmlr_s(Xtrain, ytrain; mreduc = :dkpls, 
     nlv = 20, gamma = .01, metric = :eucl, 
     h = 2, k = 100) ;
 pred = Jchemo.predict(fm, Xtest).pred
 rmsep(pred, ytest)
 
-fm = lwmlr_s(Xtrain, ytrain; reduc = :dkpls, 
+fm = lwmlr_s(Xtrain, ytrain; mreduc = :dkpls, 
     nlv = 20, gamma = .01, psamp = .5, samp = :rand,
     metric = :eucl, h = 2, k = 100) ;
 pred = Jchemo.predict(fm, Xtest).pred
@@ -88,7 +88,7 @@ rmsep(pred, ytest)
 """ 
 function lwmlr_s(X, Y; kwargs...)
     par = recovkwargs(Par, kwargs)
-    @assert in([:pca; :pls; :dkpls])(par.reduc) "Wrong value for argument 'reduc'."    
+    @assert in([:pca; :pls; :dkpls])(par.mreduc) "Wrong value for argument 'mreduc'."    
     @assert 0 <= par.psamp <= 1 "psamp must be in [0, 1]"   
     @assert in([:sys; :rand])(par.msamp) "Wrong value for argument 'samp'."
     X = ensure_mat(X)
@@ -105,13 +105,13 @@ function lwmlr_s(X, Y; kwargs...)
     end
     zX = vrow(X, s)
     zY = vrow(Y, s)
-    if par.reduc == :pca
+    if par.mreduc == :pca
         fm = pcasvd(zX; nlv = par.nlvreduc, 
             scal = par.scal)
-    elseif par.reduc == :pls
+    elseif par.mreduc == :pls
         fm = plskern(zX, zY; nlv = par.nlvreduc, 
             scal = par.scal)
-    elseif par.reduc == :dkpls
+    elseif par.mreduc == :dkpls
         fm = dkplsr(zX, zY; kern = :krbf, 
             gamma = par.gamma, nlv = par.nlvreduc, 
             scal = par.scal)

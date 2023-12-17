@@ -1,5 +1,5 @@
 """
-    lwplsr_s(X, Y; reduc = :pls, 
+    lwplsr_s(X, Y; mreduc = :pls, 
         nlvreduc, gamma = 1, psamp = 1, samp = :sys, 
         metric = :eucl, h, k, nlv, 
         tol = 1e-4, scal::Bool = false, verbose = false)
@@ -7,7 +7,7 @@ kNN-LWPLSR after preliminary (linear or non-linear) dimension
     reduction (kNN-LWPLSR-S).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `reduc` : Type of preliminary dimension reduction. Possible values are:
+* `mreduc` : Type of preliminary dimension reduction. Possible values are:
     :pca (PCA), :pls (PLS; default), :dkpls (direct Gaussian kernel PLS, see `?dkpls`).
 * `nlvreduc` : Nb. latent variables (LVs) for preliminary dimension reduction. 
 * `gamma` : Scale parameter for the Gaussian kernel when a KPLS is used 
@@ -37,7 +37,7 @@ is done on {T, `Y`}. This is a fast approximation of kNN-LWPLSR using the same
 principle as in Shen et al 2019.
 
 The dimension reduction can be linear (PCA, PLS) or non linear (DKPLS), defined 
-in argument `reduc`.
+in argument `mreduc`.
 
 When n is too large, the reduction dimension can become too costly,
 in particular for a kernel PLS (that requires to compute a matrix (n, n)).
@@ -83,7 +83,7 @@ plotxy(res.pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed (Test)").f  
 
-fm = lwplsr_s(Xtrain, ytrain; reduc = :dkpls, 
+fm = lwplsr_s(Xtrain, ytrain; mreduc = :dkpls, 
     nlvreduc = nlvreduc, gamma = .1, 
     metric = metric, h = h, k = k, 
     nlv = nlv) ;
@@ -93,7 +93,7 @@ plotxy(res.pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed (Test)").f  
 
-fm = lwplsr_s(Xtrain, ytrain; reduc = :dkpls, 
+fm = lwplsr_s(Xtrain, ytrain; mreduc = :dkpls, 
     nlvreduc = nlvreduc, gamma = .1, psamp = .7, samp = :rand, 
     metric = metric, h = h, k = k,
     nlv = nlv) ;
@@ -103,7 +103,7 @@ rmsep(res.pred, ytest)
 """ 
 function lwplsr_s(X, Y; kwargs...)
     par = recovkwargs(Par, kwargs)
-    @assert in([:pca; :pls; :dkpls])(par.reduc) "Wrong value for argument 'reduc'."    
+    @assert in([:pca; :pls; :dkpls])(par.mreduc) "Wrong value for argument 'mreduc'."    
     @assert 0 <= par.psamp <= 1 "psamp must be in [0, 1]"   
     @assert in([:sys; :rand])(par.msamp) "Wrong value for argument 'samp'." 
     X = ensure_mat(X)
@@ -121,13 +121,13 @@ function lwplsr_s(X, Y; kwargs...)
     zX = vrow(X, s)
     zY = vrow(Y, s)
     par.nlv = min(par.nlvreduc, par.nlv)
-    if par.reduc == :pca
+    if par.mreduc == :pca
         fm = pcasvd(zX; nlv = par.nlvreduc, 
             scal = par.scal)
-    elseif par.reduc == :pls
+    elseif par.mreduc == :pls
         fm = plskern(zX, zY; nlv = par.nlvreduc, 
             scal = par.scal)
-    elseif par.reduc == :dkpls
+    elseif par.mreduc == :dkpls
         fm = dkplsr(zX, zY; kern = :krbf, 
             gamma = par.gamma, nlv = par.nlvreduc, 
             scal = par.scal)
