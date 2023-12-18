@@ -34,7 +34,7 @@ function occstah(X; kwargs...)
     #mcut == "npar" ? cutoff = median(d) + par.cri * mad(d) : nothing  
     par.mcut == :mad ? cutoff = median(d) + 
         par.cri * mad(d) : nothing
-    par.mcut == :q ? cutoff = quantile(d, 1 - risk) : 
+    par.mcut == :q ? cutoff = quantile(d, 1 - par.risk) : 
         nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
@@ -66,7 +66,9 @@ function predict(object::Occstah, X)
     p_val = pval(object.e_cdf, d)
     d = DataFrame(d = d, 
         dstand = d / object.cutoff, pval = p_val)
-    pred = reshape(Int.(d.dstand .> 1), m, 1)
+    pred = [if d.dstand[i] <= 1 ; "in" else "out" ; 
+        end ; for i = 1:m]
+    pred = reshape(pred, m, 1)
     (pred = pred, d)
 end
 

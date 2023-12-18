@@ -38,7 +38,7 @@ function stah(X, a; scal = true)
     zX = copy(ensure_mat(X))  # for inplace if scal
     Q = eltype(zX)
     n, p = size(zX)
-    P = reshape(rand(0:1, p * a), p, a)
+    P = rand(0:1, p, a)
     mu_scal = zeros(Q, p)
     s_scal = ones(Q, p) 
     if scal

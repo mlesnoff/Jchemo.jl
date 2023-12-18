@@ -39,7 +39,7 @@ the cutoff, depending on detection objectives.
     considered as "extreme").
 * `pred` (fonction `predict`): class prediction
     * `dstand` <= 1 ==> `0`: the observation is expected to belong 
-        the training class, 
+        to the training class, 
     * `dstand` > 1  ==> `1`: extreme value, possibly outside of the training class. 
 
 ## References
@@ -150,7 +150,9 @@ function predict(object::Occsd, X)
     p_val = pval(object.e_cdf, d)
     d = DataFrame(d = d, dstand = d / object.cutoff, 
         pval = p_val, gh = d2 / nlv)
-    pred = reshape(Int.(d.dstand .> 1), m, 1)
+    pred = [if d.dstand[i] <= 1 ; "in" else "out" ; 
+        end ; for i = 1:m]
+    pred = reshape(pred, m, 1)
     (pred = pred, d)
 end
 

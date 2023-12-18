@@ -1,10 +1,19 @@
-Base.@kwdef mutable struct Transformer{FUN <: Function, FM, KWARGS <: Base.Pairs}
+Base.@kwdef mutable struct Transformer{FUN <: Function, 
+        FM, KWARGS <: Base.Pairs}
     fun::FUN   
     fm::Union{Nothing, FM}
     kwargs::KWARGS    
 end
 
-Base.@kwdef mutable struct Predictor{FUN <: Function, FM, KWARGS <: Base.Pairs}
+Base.@kwdef mutable struct Predictor{FUN <: Function, 
+        FM, KWARGS <: Base.Pairs}
+    fun::FUN   
+    fm::Union{Nothing, FM}
+    kwargs::KWARGS    
+end
+
+Base.@kwdef mutable struct PredictorNoY{FUN <: Function, 
+        FM, KWARGS <: Base.Pairs}
     fun::FUN   
     fm::Union{Nothing, FM}
     kwargs::KWARGS    
@@ -16,7 +25,8 @@ function fit!(mod::Transformer, X)
     mod.fm = mod.fun(X; kwargs...)
     return
 end  
-function fit!(mod::Transformer, X, weights::Weight)
+function fit!(mod::Transformer, X, 
+        weights::Weight)
     kwargs = values(mod.kwargs)
     mod.fm = mod.fun(X, weights; kwargs...)
     return
@@ -25,17 +35,24 @@ function fit!(mod::Predictor, X, Y)
     kwargs = values(mod.kwargs)
     mod.fm = mod.fun(X, Y; kwargs...)
 end  
-function fit!(mod::Predictor, X, Y, weights::Weight)
+function fit!(mod::Predictor, X, Y, 
+        weights::Weight)
     kwargs = values(mod.kwargs)
     mod.fm = mod.fun(X, Y, weights; kwargs...)
-end  
+end 
+function fit!(mod::PredictorNoY, X)
+    kwargs = values(mod.kwargs)
+    mod.fm = mod.fun(X; kwargs...)
+    return
+end   
 ## 2 blocks
 function fit!(mod::Transformer, X, Y)
     kwargs = values(mod.kwargs)
     mod.fm = mod.fun(X, Y; kwargs...)
     return
 end  
-function fit!(mod::Transformer, X, Y, weights::Weight)
+function fit!(mod::Transformer, X, Y, 
+        weights::Weight)
     kwargs = values(mod.kwargs)
     mod.fm = mod.fun(X, Y, weights; kwargs...)
     return
@@ -93,6 +110,7 @@ function predict(mod::Union{Transformer, Predictor}, X;
         predict(mod.fm, X; lb = lb)
     end
 end  
+predict(mod::PredictorNoY, X) = predict(mod.fm, X)
 
 ############ Functions building mod
 
@@ -193,10 +211,10 @@ lwplsqda(; kwargs...) = Predictor{Function, Lwplsqda, Base.Pairs}(lwplsqda, noth
 lwmlrda_s(; kwargs...) = Predictor{Function, LwmlrdaS, Base.Pairs}(lwmlrda_s, nothing, kwargs)
 lwplsrda_s(; kwargs...) = Predictor{Function, LwplsrdaS, Base.Pairs}(lwplsrda_s, nothing, kwargs)
 ##
-occstah(; kwargs...) = Predictor{Function, Occstah, Base.Pairs}(occstah, nothing, kwargs)
-occsd(; kwargs...) = Predictor{Function, Occsd, Base.Pairs}(occsd, nothing, kwargs)
-occod(; kwargs...) = Predictor{Function, Occod, Base.Pairs}(occod, nothing, kwargs)
-occsdod(; kwargs...) = Predictor{Function, Occsdod, Base.Pairs}(occsdod, nothing, kwargs)
+occstah(; kwargs...) = PredictorNoY{Function, Occstah, Base.Pairs}(occstah, nothing, kwargs)
+occsd(; kwargs...) = PredictorNoY{Function, Occsd, Base.Pairs}(occsd, nothing, kwargs)
+occod(; kwargs...) = PredictorNoY{Function, Occod, Base.Pairs}(occod, nothing, kwargs)
+occsdod(; kwargs...) = PredictorNoY{Function, Occsdod, Base.Pairs}(occsdod, nothing, kwargs)
 ##
 svmda(; kwargs...) = Predictor{Function, Svmda, Base.Pairs}(svmda, nothing, kwargs)
 treeda_dt(; kwargs...) = Predictor{Function, TreedaDt, Base.Pairs}(treeda_dt, nothing, kwargs)
