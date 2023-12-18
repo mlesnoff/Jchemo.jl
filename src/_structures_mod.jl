@@ -148,6 +148,7 @@ dkplsr(; kwargs...) = Predictor{Function, Dkplsr, Base.Pairs}(dkplsr, nothing, k
 rr(; kwargs...) = Predictor{Function, Rr, Base.Pairs}(rr, nothing, kwargs)
 rrchol(; kwargs...) = Predictor{Function, Mlr, Base.Pairs}(rrchol, nothing, kwargs)
 krr(; kwargs...) = Predictor{Function, Krr, Base.Pairs}(Krr, nothing, kwargs)
+##
 svmr(; kwargs...) = Predictor{Function, Svmr, Base.Pairs}(svmr, nothing, kwargs)
 treer_dt(; kwargs...) = Predictor{Function, TreerDt, Base.Pairs}(treer_dt, nothing, kwargs)
 rfr_dt(; kwargs...) = Predictor{Function, TreerDt, Base.Pairs}(rfr_dt, nothing, kwargs)
@@ -191,4 +192,14 @@ lwplslda(; kwargs...) = Predictor{Function, Lwplslda, Base.Pairs}(lwplslda, noth
 lwplsqda(; kwargs...) = Predictor{Function, Lwplsqda, Base.Pairs}(lwplsqda, nothing, kwargs)
 lwmlrda_s(; kwargs...) = Predictor{Function, LwmlrdaS, Base.Pairs}(lwmlrda_s, nothing, kwargs)
 lwplsrda_s(; kwargs...) = Predictor{Function, LwplsrdaS, Base.Pairs}(lwplsrda_s, nothing, kwargs)
+##
+occstah(; kwargs...) = Predictor{Function, Occstah, Base.Pairs}(occstah, nothing, kwargs)
+occsd(; kwargs...) = Predictor{Function, Occsd, Base.Pairs}(occsd, nothing, kwargs)
+occod(; kwargs...) = Predictor{Function, Occod, Base.Pairs}(occod, nothing, kwargs)
+occsdod(; kwargs...) = Predictor{Function, Occsdod, Base.Pairs}(occsdod, nothing, kwargs)
+##
+svmda(; kwargs...) = Predictor{Function, Svmda, Base.Pairs}(svmda, nothing, kwargs)
+treeda_dt(; kwargs...) = Predictor{Function, TreedaDt, Base.Pairs}(treeda_dt, nothing, kwargs)
+rfda_dt(; kwargs...) = Predictor{Function, TreedaDt, Base.Pairs}(rfda_dt, nothing, kwargs)
+
 
