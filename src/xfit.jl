@@ -1,9 +1,9 @@
 """
-    xfit(object::Union{Pca, Pcr, Plsr})
-    xfit(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
-    xfit!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
+    xfit(fm::Union{Pca, Pcr, Plsr})
+    xfit(fm::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
+    xfit!(fm::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
 Matrix fitting from a PCA, PCR or PLS model
-* `object` : The fitted model.
+* `fm` : The fitted model.
 * `X` : X-data to be approximatred from the model.
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, 
     it is the maximum nb. of components.
@@ -32,32 +32,34 @@ xfit(fm, X)
 xresid(fm, X)
 ```
 """ 
-function xfit(object::Union{Pca, Pcr, Plsr})
-    X = object.T * object.P'
-    fscale!(X, 1 ./ object.xscales)    # Coming back to the original fscale
-    fcenter!(X, -object.xmeans)
+function xfit(fm)
+    X = fm.T * fm.P'
+    ## Coming back to the original scale
+    fscale!(X, 1 ./ fm.xscales)    
+    fcenter!(X, -fm.xmeans)
     X
 end
 
-function xfit(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
-    xfit!(object, copy(ensure_mat(X)); nlv = nlv)
+function xfit(fm, X; nlv = nothing)
+    xfit!(fm, copy(ensure_mat(X)); 
+        nlv)
 end
 
-function xfit!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
-    a = nco(object.T)
+function xfit!(fm, X::Matrix; 
+        nlv = nothing)
+    a = nco(fm.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    isa(object, Jchemo.Pcr) ? object = object.fmpca : nothing
     if nlv == 0
         m = nro(X)
         @inbounds for i = 1:m
-            X[i, :] .= object.xmeans
+            X[i, :] .= fm.xmeans
         end
     else
-        P = vcol(object.P, 1:nlv)
-        mul!(X, transf(object, X; nlv = nlv), P')
-        fscale!(X, 1 ./ object.xscales)    # Coming back to the originalm fscale
-        fcenter!(X, -object.xmeans)
-        #fcscale!(X, -object.xmeans, 1 ./ object.xscales)
+        P = vcol(fm.P, 1:nlv)
+        mul!(X, transf(fm, X; nlv), P')
+        ## Coming back to the original scale
+        fscale!(X, 1 ./ fm.xscales)    
+        fcenter!(X, -fm.xmeans)
     end
     X
 end

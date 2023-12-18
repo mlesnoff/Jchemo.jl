@@ -670,6 +670,7 @@ struct LwplsrdaS
 end
 
 ## Occ
+## (fm not yet specified)
 
 struct Occstah
     d::DataFrame
@@ -680,7 +681,7 @@ end
 
 struct Occsd
     d::DataFrame 
-    fm::Union{Pca, Rp, Plsr, Kpca, Kplsr}
+    fm
     Uinv::Matrix
     e_cdf::ECDF
     cutoff::Real   
@@ -688,15 +689,15 @@ end
 
 struct Occod
     d::DataFrame
-    fm::Union{Pca, Rp, Plsr}
+    fm
     e_cdf::ECDF
     cutoff::Real   
 end
 
 struct Occsdod
     d::DataFrame
-    fmsd::Union{Pca, Rp, Plsr}
-    fmod::Union{Pca, Rp, Plsr}
+    fmsd
+    fmod
 end
 
 ###### Preprocessing 
