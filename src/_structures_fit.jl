@@ -366,7 +366,7 @@ end
 ## Multiblock
 
 struct Mbplsr
-    fm
+    fm::Plsr
     T::Matrix
     R::Matrix
     C::Matrix
@@ -420,10 +420,10 @@ struct Rosaplsr
 end
 
 struct Soplsr
-    fm
+    fm::Vector
     T::Matrix
     fit::Matrix
-    b
+    b::Vector
     kwargs::Base.Pairs
     par::Par
 end
@@ -672,57 +672,31 @@ end
 ## Occ
 
 struct Occstah
-    d
-    res_stah
+    d::DataFrame
+    res_stah::NamedTuple
     e_cdf::ECDF
     cutoff::Real
 end
 
-struct Occod
-    d
-    fm
+struct Occsd
+    d::DataFrame 
+    fm::Union{Pca, Rp, Plsr, Kpca, Kplsr}
+    Uinv::Matrix
     e_cdf::ECDF
     cutoff::Real   
-    nlv::Int
 end
 
-struct Occsd
-    d
-    fm
-    Sinv::Matrix
+struct Occod
+    d::DataFrame
+    fm::Union{Pca, Rp, Plsr}
     e_cdf::ECDF
     cutoff::Real   
-    nlv::Int
 end
 
 struct Occsdod
     d::DataFrame
-    fmsd
-    fmod
-end
-
-struct Occknndis
-    d::DataFrame
-    fm
-    T::Matrix
-    tscales::Vector
-    k::Int
-    e_cdf::ECDF
-    cutoff::Real    
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Occlknndis
-    d::DataFrame
-    fm
-    T::Matrix
-    tscales::Vector
-    k::Int
-    e_cdf::ECDF
-    cutoff::Real    
-    kwargs::Base.Pairs
-    par::Par
+    fmsd::Union{Pca, Rp, Plsr}
+    fmod::Union{Pca, Rp, Plsr}
 end
 
 ###### Preprocessing 

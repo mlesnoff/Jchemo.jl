@@ -10,7 +10,7 @@ Users who prefer the previous syntax will have to keep
 working with versions < 0.3.0. Sorry for any 
 inconveniance. 
 
-Tentative new version 0.3.0 should be ready at end December 2023. 
+Tentative new version 0.3.0 should be ready at mid January 2023. 
 
 Other current specific points are:
 
@@ -31,6 +31,7 @@ Other current specific points are:
     - gridcv_mb, gridcvlv_mb
     - mavg_runmean
     - interpl_mon
+    - occknndis, occlknndis
 
 Some typing errors may be introduced due to the restructuration.
 They will be corrected in versions > 0.3.0.

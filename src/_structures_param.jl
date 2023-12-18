@@ -49,6 +49,7 @@ Base.@kwdef mutable struct Par
     h_kde::Union{Nothing, Float64} = nothing  # dmkern-parameter 'h' in kdeda
     a_kde::Float64 = 1.                     # dmkern-parameter 'a' in kdeda
     ##
+    freduc::Function = pcasvd               # method of dimension reduction in occsd-od-sdod
     mcut::Symbol = :mad                     # type of cutoff in occ methods
     risk::Float64 = .025                    # risk I ("alpha") for cutoff in occ methods
     cri::Float64 = 3.                       # coefficient for cutoff in occ methods

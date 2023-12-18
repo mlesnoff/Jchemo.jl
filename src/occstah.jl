@@ -20,6 +20,7 @@ See `?occsd` for details on outputs, and examples.
 """ 
 function occstah(X; kwargs...) 
     par = recovkwargs(Par, kwargs) 
+    @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
     res = stah(X, par.nlv; 
         scal = par.scal)
     d = res.d

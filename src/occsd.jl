@@ -116,23 +116,25 @@ f, ax = plotxy(1:length(d), d, group;
 hlines!(ax, 1)
 f
 ```
-""" 
-function occsd(object::Union{Pca, Kpca, Plsr}; nlv = nothing,
-        mcut = :mad, risk = .025, cri = 3, kwargs...)
-    a = nco(object.T)
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    T = @view(object.T[:, 1:nlv])
-    S = Statistics.cov(T, corrected = false)
-    LinearAlgebra.inv!(cholesky!(S))   # ==> S := Sinv
-    d2 = vec(mahsq(T, zeros(nlv)', S))
+"""
+function occsd(fm; kwargs...)
+    par = recovkwargs(Par, kwargs) 
+    @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
+    Q = eltype(fm.T)
+    nlv = nco(fm.T)
+    S = Statistics.cov(fm.T; corrected = false)
+    Uinv = LinearAlgebra.inv!(cholesky!(Hermitian(S)).U)
+    d2 = vec(mahsqchol(fm.T, zeros(Q, nlv)', Uinv))
     d = sqrt.(d2)
-    mcut == :mad ? cutoff = median(d) + par.cri * mad(d) : nothing
-    mcut == :q ? cutoff = quantile(d, 1 - risk) : nothing
+    par.mcut == :mad ? cutoff = median(d) + 
+        par.cri * mad(d) : nothing
+    par.mcut == :q ? cutoff = quantile(d, 1 - par.risk) : 
+        nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
-    d = DataFrame(d = d, dstand = d / cutoff, pval = p_val, 
-        gh = d2 / nlv)
-    Occsd(d, object, S, e_cdf, cutoff, nlv)
+    d = DataFrame(d = d, dstand = d / cutoff, 
+        pval = p_val, gh = d2 / nlv)
+    Occsd(d, fm, Uinv, e_cdf, cutoff)
 end
 
 """
@@ -142,10 +144,10 @@ Compute predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Occsd, X)
-    nlv = object.nlv
-    T = transf(object.fm, X; nlv = nlv)
-    m = nro(T)
-    d2 = vec(mahsq(T, zeros(nlv)', object.Sinv))
+    T = transf(object.fm, X)
+    Q = eltype(T)
+    m, nlv = size(T)
+    d2 = vec(mahsqchol(T, zeros(Q, nlv)', object.Uinv))
     d = sqrt.(d2)
     p_val = pval(object.e_cdf, d)
     d = DataFrame(d = d, dstand = d / object.cutoff, 

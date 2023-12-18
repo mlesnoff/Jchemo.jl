@@ -169,8 +169,6 @@ include("occod.jl")
 include("occsdod.jl")
 include("occstah.jl")
 include("stah.jl")
-include("occknndis.jl")
-include("occlknndis.jl")
 
 ## Local
 include("lwmlrda.jl")
@@ -343,9 +341,9 @@ export
     kplsrda, dkplsrda,
     svmda, 
     treeda_dt, rfda_dt,
+    stah,
+    occstah,
     occsd, occod, occsdod,
-    occstah, stah,
-    occknndis, occlknndis,
     ## Sparse 
     splsrda,
     splslda, splsqda,

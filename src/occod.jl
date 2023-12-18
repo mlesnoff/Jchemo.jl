@@ -34,17 +34,22 @@ in chemometrics. CRC Press, Boca Raton.
 """ 
 function occod(object::Union{Pca, Plsr}, X; nlv = nothing, 
         mcut = :mad, cri = 3, risk = .025, kwargs...)
+    par = recovkwargs(Par, kwargs) 
+    @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     E = xresid(object, X; nlv = nlv)
     d2 = vec(sum(E .* E, dims = 2))
     d = sqrt.(d2)
-    mcut == :mad ? cutoff = median(d) + par.cri * mad(d) : nothing
-    mcut == :q ? cutoff = quantile(d, 1 - risk) : nothing
+    par.mcut == :mad ? cutoff = median(d) + 
+        par.cri * mad(d) : nothing
+    par.mcut == :q ? cutoff = quantile(d, 1 - par.risk) : 
+        nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
-    d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
+    d = DataFrame(d = d, dstand = d / cutoff, 
+        pval = p_val)
     Occod(d, object, e_cdf, cutoff, nlv)
 end
 

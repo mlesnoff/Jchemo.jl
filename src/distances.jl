@@ -24,7 +24,8 @@ euclsq(1, 4)
 function euclsq(X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    Distances.pairwise(SqEuclidean(), X', Y', dims = 2)
+    Distances.pairwise(SqEuclidean(), X', 
+        Y', dims = 2)
 end
 
 """
@@ -61,7 +62,8 @@ function mahsq(X, Y)
     Y = ensure_mat(Y)
     S = Statistics.cov(X, corrected = false)
     LinearAlgebra.inv!(cholesky!(Hermitian(S)))
-    Distances.pairwise(SqMahalanobis(S), X', Y', dims = 2)
+    Distances.pairwise(SqMahalanobis(S), X', 
+        Y', dims = 2)
 end
 
 function mahsq(X, Y, Sinv)

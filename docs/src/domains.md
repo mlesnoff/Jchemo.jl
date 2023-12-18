@@ -190,13 +190,12 @@
 *From a PCA or PLS score space*
 - **occsd** Score distance (SD)
 - **occod** Orthogonal distance (OD) 
-- **occsdod** Compromise between SD and OD (Simca approach) 
+- **occsdod** Compromise between SD 
+    and OD ("Simca" approach) 
 
 *Other methods*
 - **stah** Compute Stahel-Donoho outlierness
 - **occstah** Stahel-Donoho outlierness
-- **occknndis** Global k-nearest neighbors distances
-- **occlknndis** Local k-nearest neighbors distances
 
 ### Wrappers to other packages
 
