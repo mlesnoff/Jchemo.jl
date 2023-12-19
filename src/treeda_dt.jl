@@ -67,38 +67,35 @@ res.pred
 err(res.pred, ytest) 
 ```
 """ 
+## For DA in DecisionTree.jl, 
+## y must be Int or String
 function treeda_dt(X, y::Union{Array{Int}, Array{String}}; 
-        n_subfeatures = 0,
-        max_depth = -1, min_samples_leaf = 5, 
-        min_samples_split = 2, scal::Bool = false, 
         kwargs...) 
+    par = recovkwargs(Par, kwargs)
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)
     p = nco(X)
+    ztab = tab(y)
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
         X = fscale(X, xscales)
     end
-    ztab = tab(y)
-    lev = ztab.keys 
-    ni = ztab.vals 
-    n_subfeatures = Int(round(n_subfeatures))
+    n_subfeatures = Int(round(par.n_subfeatures))
     min_purity_increase = 0
     fm = build_tree(y, X,
         n_subfeatures,
-        max_depth,
-        min_samples_leaf,
-        min_samples_split,
+        par.max_depth,
+        par.min_samples_leaf,
+        par.min_samples_split,
         min_purity_increase;
-        kwargs...
         #rng = Random.GLOBAL_RNG
         #rng = 3
         )
     featur = collect(1:p)
-    mth = true
-    TreedaDt(fm, xscales, featur, lev, ni, mth)
+    TreedaDt(fm, xscales, featur, ztab.keys, 
+        ztab.vals, kwargs, par)
 end
 
 """
@@ -110,11 +107,15 @@ Compute Y-predictions from a fitted model.
 function predict(object::TreedaDt, X)
     X = ensure_mat(X)
     m = nro(X)
+    ## Tree
     if pnames(object.fm)[1] == :node
-        pred = apply_tree(object.fm, fscale(X, object.xscales))
+        pred = apply_tree(object.fm, 
+            fscale(X, object.xscales))
+    ## Forest 
     else
-        pred = apply_forest(object.fm, fscale(X, object.xscales); 
-            use_multithreading = object.mth)
+        pred = apply_forest(object.fm, 
+            fscale(X, object.xscales); 
+            use_multithreading = object.par.mth)
     end
     pred = reshape(pred, m, 1)
     (pred = pred,)

@@ -78,39 +78,35 @@ res.pred
 err(res.pred, ytest) 
 ```
 """ 
-function rfda_dt(X, y::Union{Array{Int}, Array{String}}; 
-        n_trees = 10,
-        partial_sampling = .7,  
-        n_subfeatures = -1,
-        max_depth = -1, min_samples_leaf = 5, 
-        min_samples_split = 2, scal::Bool = false, 
-        mth = true, kwargs...)
+## For DA in DecisionTree.jl, 
+## y must be Int or String
+function rfda_dt(X, y::Union{Array{Int}, Array{String}};
+        kwargs...)
+    par = recovkwargs(Par, kwargs)
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)
     p = nco(X)
+    ztab = tab(y)
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
         X = fscale(X, xscales)
     end
-    ztab = tab(y)
-    lev = ztab.keys 
-    ni = ztab.vals 
-    n_subfeatures = Int(round(n_subfeatures))
+    n_subfeatures = Int(round(par.n_subfeatures))
     min_purity_increase = 0
     fm = build_forest(y, X, 
         n_subfeatures, 
-        n_trees, 
-        partial_sampling,
-        max_depth, 
-        min_samples_leaf,
-        min_samples_split,
+        par.n_trees, 
+        par.partial_sampling,
+        par.max_depth, 
+        par.min_samples_leaf,
+        par.min_samples_split,
         min_purity_increase;
-        kwargs...
         #rng = Random.GLOBAL_RNG
         #rng = 3
         ) 
     featur = collect(1:p)
-    TreedaDt(fm, xscales, featur, lev, ni, mth)
+    TreedaDt(fm, xscales, featur, ztab.keys, 
+        ztab.vals, kwargs, par)
 end

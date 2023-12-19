@@ -410,7 +410,6 @@ struct TreerDt
     fm::Union{DecisionTree.Root, DecisionTree.Ensemble}
     xscales::Vector
     featur::Vector{Int}
-    mth::Bool 
     kwargs::Base.Pairs
     par::Par
 end
@@ -666,7 +665,6 @@ struct TreedaDt
     featur::Vector{Int}
     lev::Vector
     ni::Vector{Int}
-    mth::Bool 
     kwargs::Base.Pairs
     par::Par
 end
