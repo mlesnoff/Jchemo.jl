@@ -32,14 +32,10 @@ on the SIMCA method. Chem. Lab. Int. Syst, 79, 10-21.
 K. Varmuza, P. Filzmoser (2009). Introduction to multivariate statistical analysis 
 in chemometrics. CRC Press, Boca Raton.
 """ 
-function occod(object::Union{Pca, Plsr}, X; nlv = nothing, 
-        mcut = :mad, cri = 3, risk = .025, kwargs...)
+function occod(fm, X; kwargs...)
     par = recovkwargs(Par, kwargs) 
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
-    X = ensure_mat(X)
-    a = nco(object.T)
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    E = xresid(object, X; nlv = nlv)
+    E = xresid(fm, X)
     d2 = vec(sum(E .* E, dims = 2))
     d = sqrt.(d2)
     par.mcut == :mad ? cutoff = median(d) + 
@@ -50,7 +46,7 @@ function occod(object::Union{Pca, Plsr}, X; nlv = nothing,
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, 
         pval = p_val)
-    Occod(d, object, e_cdf, cutoff, nlv)
+    Occod(d, fm, e_cdf, cutoff)
 end
 
 """
@@ -60,7 +56,7 @@ Compute predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Occod, X)
-    E = xresid(object.fm, X; nlv = object.nlv)
+    E = xresid(object.fm, X)
     m = nro(E)
     d2 = vec(sum(E .* E, dims = 2))
     d = sqrt.(d2)

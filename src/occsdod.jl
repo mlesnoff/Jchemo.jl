@@ -26,13 +26,9 @@ standardized distances by:
 
 See `?occsd` for details on outputs, and examples.
 """ 
-function occsdod(object::Union{Pca, Plsr}, X; 
-        nlv_sd = nothing, nlv_od = nothing, 
-        mcut = :mad, cri = 3, risk = .025, kwargs...)
-    fmsd = occsd(object; nlv = nlv_sd,
-        mcut = mcut, cri = cri, risk = risk)
-    fmod = occod(object, X; nlv = nlv_od,
-        mcut = mcut, cri = cri, risk = risk)
+function occsdod(fm, X; kwargs...) 
+    fmsd = occsd(fm; kwargs...)
+    fmod = occod(fm, X; kwargs...)
     sd = fmsd.d
     od = fmod.d
     z = sqrt.(sd.dstand .* od.dstand)
@@ -56,13 +52,12 @@ function predict(object::Occsdod, X)
     m = nro(X)
     sd = predict(object.fmsd, X).d
     od = predict(object.fmod, X).d
-    dstand = sqrt.(sd.dstand .* od.dstand)
     nam = string.(names(sd), "_sd")
     rename!(sd, nam)
     nam = string.(names(od), "_od")
     rename!(od, nam)
     d = hcat(sd, od)
-    d.dstand = dstand
+    d.dstand = sqrt.(sd.dstand .* od.dstand)
     pred = [if d.dstand[i] <= 1 ; "in" else "out" ; 
         end ; for i = 1:m]
     pred = reshape(pred, m, 1)
