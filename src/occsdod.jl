@@ -48,7 +48,6 @@ Compute predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Occsdod, X)
-    X = ensure_mat(X)
     m = nro(X)
     sd = predict(object.fmsd, X).d
     od = predict(object.fmod, X).d
@@ -57,7 +56,7 @@ function predict(object::Occsdod, X)
     nam = string.(names(od), "_od")
     rename!(od, nam)
     d = hcat(sd, od)
-    d.dstand = sqrt.(sd.dstand .* od.dstand)
+    d.dstand = sqrt.(sd.dstand_sd .* od.dstand_od)
     pred = [if d.dstand[i] <= 1 ; "in" else "out" ; 
         end ; for i = 1:m]
     pred = reshape(pred, m, 1)
