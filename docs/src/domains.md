@@ -333,15 +333,15 @@
 - **locw** Working function for local (kNN) models
 - **mad** Median absolute deviation (not exported)
 - **matB**, **matW** Between- and within-class covariance matrices
-- **mlev** Return the sorted levels of a dataset 
+- **mlev** Return the sorted levels of a vecor or a dataset 
 - **mweight** Normalize a vector to sum to 1
 - **nco**, **nro**, Nb. rows and columns of an object
 - **normw** Weighted norm of a vector
 - **plist** Print each element of a list
 - **pnames** Return the names of the elements of an object
 - **psize** Return the type and size of a dataset
-- **recodcat2int** Recode a categorical variable to a numeric variable
-- **recodnum2cla** Recode a continuous variable to classes
+- **recodcat2int** Recode a categorical variable to a integer variable
+- **recodnum2cla** Recode a continuous variable to integer classes
 - **replacebylev** Replace the elements of a vector by levels of corresponding order
 - **replacebylev2** Replace the elements of an index-vector by levels
 - **replacedict** Replace the elements of a vector by levels defined in a dictionary
