@@ -3,7 +3,7 @@
     fcenter!(X::AbstractMatrix, v)
 Center each column of `X`.
 * `X` : Data.
-* `v` : Centering factors.
+* `v` : Centering vector.
 
 ## examples
 ```julia
@@ -22,7 +22,7 @@ fcenter!(X::AbstractMatrix, v) = X .-= vec(v)'
     fscale!(X::AbstractMatrix, v)
 Scale each column of `X`.
 * `X` : Data.
-* `v` : Scaling factors.
+* `v` : Scaling vector.
 
 ## Examples
 ```julia
@@ -39,8 +39,8 @@ fscale!(X::AbstractMatrix, v) = X ./= vec(v)'
     fcscale!(X, u, v)
 Center and fscale each column of `X`.
 * `X` : Data.
-* `u` : Centering factors.
-* `v` : Scaling factors.
+* `u` : Centering vector.
+* `v` : Scaling vector.
 
 ## examples
 ```julia

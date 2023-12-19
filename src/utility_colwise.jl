@@ -1,6 +1,6 @@
 """
     colmad(X)
-Compute the column-median absolute deviations (MAD) of a matrix.
+Compute columnwise median absolute deviations (MAD) of a matrix.
 * `X` : Data (n, p).
 
 Return a vector.
@@ -21,7 +21,7 @@ end
 """
     colmean(X)
     colmean(X, weights)
-Compute the column-means of a matrix.
+Compute columnwise means of a matrix.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
     Consider to preliminary normalise `w` to 
@@ -33,7 +33,7 @@ Return a vector.
 ```julia
 n, p = 5, 6
 X = rand(n, p)
-w = mweight(collect(1:n))
+w = mweight(rand(n))
 
 colmean(X)
 colmean(X, w)
@@ -46,7 +46,7 @@ colmean(X, weights::Weight) = vec(weights.w' * ensure_mat(X))
 """
     colnorm(X)
     colnorm(X, w)
-Compute the column-norms of a matrix.
+Compute columnwise norms of a matrix.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
     Consider to preliminary normalise `w` to 
@@ -62,7 +62,7 @@ The weighted norm is:
 ```julia
 n, p = 5, 6
 X = rand(n, p)
-w = mweight(collect(1:n))
+w = mweight(rand(n))
 
 colnorm(X)
 colnorm(X, w)
@@ -75,7 +75,7 @@ colnorm(X, weights::Weight) = vec(sqrt.(weights.w' * ensure_mat(X).^2))
 """
     colstd(X)
     colstd(X, w)
-Compute the column-standard deviations (uncorrected) of a matrix.
+Compute columnwise standard deviations (uncorrected) of a matrix.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
     Consider to preliminary normalise `w` to 
@@ -87,7 +87,7 @@ Return a vector.
 ```julia
 n, p = 5, 6
 X = rand(n, p)
-w = mweight(collect(1:n))
+w = mweight(rand(n))
 
 colstd(X)
 colstd(X, w)
@@ -101,7 +101,7 @@ colstd(X, weights::Weight) = sqrt.(colvar(X, weights))
 """
     colsum(X)
     colsum(X, w)
-Compute the column-sums of a matrix.
+Compute columnwise sums of a matrix.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
     Consider to preliminary normalise `w` to 
@@ -113,7 +113,7 @@ Return a vector.
 ```julia
 n, p = 5, 6
 X = rand(n, p)
-w = mweight(collect(1:n))
+w = mweight(rand(n))
 
 colsum(X)
 colsum(X, w)
@@ -126,7 +126,7 @@ colsum(X, weights::Weight) = vec(weights.w' * ensure_mat(X))
 """
     colvar(X)
     colvar(X, w)
-Compute the column-variances (uncorrected) of a matrix.
+Compute columnwise variances (uncorrected) of a matrix.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
     Consider to preliminary normalise `w` to 
@@ -138,7 +138,7 @@ Return a vector.
 ```julia
 n, p = 5, 6
 X = rand(n, p)
-w = mweight(collect(1:n))
+w = mweight(rand(n))
 
 colvar(X)
 colvar(X, w)

@@ -43,7 +43,7 @@ res.X[3]
 Xbl[3]
 
 w = ones(n)
-#w = mweight(collect(1:n))
+#w = mweight(rand(n))
 D = Diagonal(mweight(w))
 res = fblockscal_frob(Xbl, w) ;
 res.bscales
@@ -51,7 +51,7 @@ k = 3 ; tr(Xbl[k]' * D * Xbl[3])^.5
 tr(res.X[k]' * D * res.X[k])^.5
 
 w = ones(n)
-#w = mweight(collect(1:n))
+#w = mweight(rand(n))
 res = fblockscal_mfa(Xbl, w) ;
 res.bscales
 k = 3 ; pcasvd(Xbl[k], w; nlv = 1).sv[1]
@@ -62,7 +62,7 @@ res.X[3]
 Xbl[3] / size(Xbl[3], 2)
 
 w = ones(n)
-#w = mweight(collect(1:n))
+#w = mweight(rand(n))
 res = fblockscal_sd(Xbl, w) ;
 res.bscales
 sum(colvar(res.X[3], w))
