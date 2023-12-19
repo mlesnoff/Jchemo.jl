@@ -222,7 +222,7 @@ function predict(object::Union{Plsr, Pcr, Splsr},
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
-    pred = list(le_nlv, Matrix{eltype(X)})
+    pred = list(Matrix{eltype(X)}, le_nlv)
     @inbounds  for i = 1:le_nlv
         z = coef(object; nlv = nlv[i])
         pred[i] = z.int .+ X * z.B

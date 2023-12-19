@@ -84,8 +84,8 @@ function predict(object::Rrda, X; lb = nothing)
     m = nro(X)
     isnothing(lb) ? lb = object.par.lb : nothing
     le_lb = length(lb)
-    pred = list(le_lb, Matrix{Qy})
-    posterior = list(le_lb, Matrix{Q})
+    pred = list(Matrix{Qy}, le_lb)
+    posterior = list(Matrix{Q}, le_lb)
     @inbounds for i = 1:le_lb
         zp = predict(object.fm, X; lb = lb[i]).pred
         z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first

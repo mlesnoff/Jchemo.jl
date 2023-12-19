@@ -92,9 +92,9 @@ function isel(X, Y, wl = 1:nco(X); rep = 1,
     Ycal = similar(X, ncal, q)
     Xval = similar(X, nval, p)
     Yval = similar(X, nval, q)
-    s = list(nval, Int)
+    s = list(Int, nval)
     res0_rep = zeros(1, q, rep)   
-    zres = list(nint, Matrix{Float64})
+    zres = list(Matrix{Float64}, nint)
     res_rep = zeros(nint, q, rep)
     @inbounds for i = 1:rep
         s .= sample(1:n, nval; replace = false)

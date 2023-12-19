@@ -93,7 +93,7 @@ matW = function(X, y, weights::Weight)
         Wi_1obs = covm(X, weights)
     end
     ## End
-    Wi = list(nlev, Matrix)
+    Wi = list(Matrix, nlev)
     W = zeros(eltype(X), p, p)
     @inbounds for i in 1:nlev 
         if ni[i] == 1

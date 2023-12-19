@@ -94,7 +94,7 @@ function pcanipalsmiss!(X::Matrix, weights::Weight;
     T = similar(X, n, nlv)
     P = similar(X, p, nlv)
     sv = similar(X, nlv)
-    niter = list(nlv, Int)
+    niter = list(Int, nlv)
     if par.gs
         UUt = zeros(n, n)
         VVt = zeros(p, p)

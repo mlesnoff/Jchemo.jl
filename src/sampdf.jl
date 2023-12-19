@@ -48,8 +48,8 @@ function sampdf(Y::DataFrame, k::Union{Int, Vector{Int}},
     @assert in([:rand; :sys])(sampm) "Wrong value for argument 'sampm'."
     p = nco(Y)
     nam = names(Y)
-    train = list(p, Vector)  
-    test = list(p, Vector)
+    train = list(Vector, p)  
+    test = list(Vector, p)
     length(k) == 1 ? k = repeat([k], p) : nothing
     @inbounds for i = 1:p
         y = Y[:, nam[i]]

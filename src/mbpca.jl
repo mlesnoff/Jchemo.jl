@@ -96,7 +96,7 @@ end
 function mbpca(Xbl, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
-    zXbl = list(nbl, Matrix{Q})
+    zXbl = list(Matrix{Q}, nbl)
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
@@ -112,8 +112,8 @@ function mbpca!(Xbl::Vector, weights::Weight;
     n = nro(Xbl[1])
     nlv = par.nlv
     sqrtw = sqrt.(weights.w)
-    xmeans = list(nbl, Vector{Q})
-    xscales = list(nbl, Vector{Q})
+    xmeans = list(Vector{Q}, nbl)
+    xscales = list(Vector{Q}, nbl)
     p = fill(0, nbl)
     @inbounds for k = 1:nbl
         p[k] = nco(Xbl[k])
@@ -144,11 +144,11 @@ function mbpca!(Xbl::Vector, weights::Weight;
     # Pre-allocation
     U = similar(Xbl[1], n, nlv)
     W = similar(Xbl[1], nbl, nlv)
-    Tbl = list(nbl, Matrix{Q})
+    Tbl = list(Matrix{Q}, nbl)
     for k = 1:nbl ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
-    Tb = list(nlv, Matrix{Q})
+    Tb = list(Matrix{Q}, nlv)
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
-    Wbl = list(nbl, Matrix{Q})
+    Wbl = list(Matrix{Q}, nbl)
     for k = 1:nbl ; Wbl[k] = similar(Xbl[1], p[k], nlv) ; end
     u = similar(Xbl[1], n)
     tk = copy(u)
@@ -218,7 +218,7 @@ function ftransf(object::Mbpca, Xbl; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
     m = size(Xbl[1], 1)
-    zXbl = list(nbl, Matrix{Q})
+    zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
         zXbl[k] = fcscale(Xbl[k], object.xmeans[k], 
             object.xscales[k])
@@ -226,7 +226,7 @@ function ftransf(object::Mbpca, Xbl; nlv = nothing)
     zXbl = fblockscal(zXbl, object.bscales).Xbl
     U = similar(zXbl[1], m, nlv)
     TB = similar(zXbl[1], m, nbl)
-    Tbl = list(nbl, Matrix{Q})
+    Tbl = list(Matrix{Q}, nbl)
     for k = 1:nbl ; Tbl[k] = similar(zXbl[1], m, nlv) ; end
     u = similar(zXbl[1], m)
     tk = copy(u)
@@ -258,7 +258,7 @@ function Base.summary(object::Mbpca, Xbl)
     nbl = length(Xbl)
     nlv = nco(object.T)
     sqrtw = sqrt.(object.weights.w)
-    zXbl = list(nbl, Matrix{Q})
+    zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
         zXbl[k] = fcscale(Xbl[k], object.xmeans[k], 
             object.xscales[k])
@@ -289,7 +289,7 @@ function Base.summary(object::Mbpca, Xbl)
     z = cor(X, object.U)  
     corx2t = DataFrame(z, string.("lv", 1:nlv))  
     # Correlation between the block scores and the global scores (cor.g.b)
-    z = list(nlv, Matrix{Q})
+    z = list(Matrix{Q}, nlv)
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], object.U[:, a])
     end

@@ -86,7 +86,7 @@ function plslda(X, y, weights::Weight;
     ni = tab(y).vals
     fmpls = plskern(X, res.Y, weights; 
         kwargs...)
-    fmda = list(par.nlv, Lda)
+    fmda = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
         fmda[i] = lda(fmpls.T[:, 1:i], y, weights; 
             kwargs...)
@@ -123,8 +123,8 @@ function predict(object::Plslda, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : 
         nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
-    pred = list(le_nlv, Matrix{Qy})
-    posterior = list(le_nlv, Matrix{Q})
+    pred = list(Matrix{Qy}, le_nlv)
+    posterior = list(Matrix{Q}, le_nlv)
     @inbounds for i = 1:le_nlv
         znlv = nlv[i]
         T = transf(object.fm.fmpls, X, nlv = znlv)

@@ -135,7 +135,7 @@ function predict(object::Rr, X; lb = nothing)
     Q = eltype(X)
     isnothing(lb) ? lb = object.par.lb : nothing
     le_lb = length(lb)
-    pred = list(le_lb, Matrix{Q})
+    pred = list(Matrix{Q}, le_lb)
     @inbounds for i = 1:le_lb
         z = coef(object; lb = lb[i])
         pred[i] = z.int .+ X * z.B

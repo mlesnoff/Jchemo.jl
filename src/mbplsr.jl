@@ -59,7 +59,7 @@ end
 function mbplsr(Xbl, Y, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
-    zXbl = list(nbl, Matrix{Q})
+    zXbl = list(Matrix{Q}, nbl)
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
@@ -74,8 +74,8 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     q = nco(Y)
-    xmeans = list(nbl, Vector{Q})
-    xscales = list(nbl, Vector{Q})
+    xmeans = list(Vector{Q}, nbl)
+    xscales = list(Vector{Q}, nbl)
     Threads.@threads for k = 1:nbl
         xmeans[k] = colmean(Xbl[k], weights) 
         xscales[k] = ones(Q, nco(Xbl[k]))
@@ -119,7 +119,7 @@ function transf(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
-    zXbl = list(nbl, Matrix{Q})
+    zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
         zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
@@ -141,7 +141,7 @@ function predict(object::Union{Mbplsr, Mbplswest}, Xbl;
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     T = transf(object, Xbl)
-    pred = list(le_nlv, Matrix{Q})
+    pred = list(Matrix{Q}, le_nlv)
     @inbounds  for i = 1:le_nlv
         znlv = nlv[i]
         int = object.ymeans'
@@ -163,7 +163,7 @@ function Base.summary(object::Mbplsr, Xbl)
     n, nlv = size(object.T)
     nbl = length(Xbl)
     sqrtw = sqrt.(object.weights.w)
-    zXbl = list(nbl, Matrix{Q})
+    zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
         zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
@@ -191,7 +191,7 @@ function Base.summary(object::Mbplsr, Xbl)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     # Redundancies (Average correlations) Rd(X, t) 
     # between each X-block and each global score
-    z = list(nbl, Matrix{Q})
+    z = list(Matrix{Q}, nbl)
     @inbounds for k = 1:nbl
         z[k] = rd(zXbl[k], sqrtw .* object.T)
     end

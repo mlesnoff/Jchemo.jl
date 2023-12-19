@@ -228,7 +228,7 @@ function predict(object::Kplsr, X; nlv = nothing)
         nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     T = transf(object, X)
-    pred = list(le_nlv, Matrix{eltype(X)})
+    pred = list(Matrix{eltype(X)}, le_nlv)
     @inbounds for i = 1:le_nlv
         z = coef(object; nlv = nlv[i])
         pred[i] = z.int .+ @view(T[:, 1:nlv[i]]) * z.beta * Diagonal(object.yscales)

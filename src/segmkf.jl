@@ -45,9 +45,9 @@ group[segm[i][3]]
 function segmkf(n::Int, K::Int; rep = 1)
     Q = Vector{Int}
     m = K - n % K ;
-    s = list(rep, Vector{Q})
+    s = list(Vector{Q}, rep)
     @inbounds for i = 1:rep
-        s[i] = list(K, Q)
+        s[i] = list(Q, K)
         v = [randperm(n) ; repeat([0], outer = m)] 
         v = reshape(v, K, :)
         @inbounds for j = 1:K 
@@ -63,9 +63,9 @@ function segmkf(group::Vector, K::Int; rep = 1)
     nlev = length(yagg)
     K = min(K, nlev)
     m = K - nlev % K ;
-    s = list(rep, Vector{Q})
+    s = list(Vector{Q}, rep)
     @inbounds for i = 1:rep
-        s[i] = list(K, Q)
+        s[i] = list(Q, K)
         v = [randperm(nlev) ; repeat([0], outer = m)] 
         v = reshape(v, K, :)
         @inbounds for j = 1:K 

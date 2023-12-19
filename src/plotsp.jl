@@ -43,7 +43,7 @@ function plotsp(X, wl = 1:nco(X); resolution = (500, 350),
     n, p = size(X)
     f = Figure(size = resolution)
     ax = Axis(f; kwargs...)
-    res = list(n, Matrix{Float64})
+    res = list(Matrix{Float64}, n)
     if isnothing(color)
         s = randperm(n)
         for i = 1:n

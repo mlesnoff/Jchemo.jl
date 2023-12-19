@@ -224,6 +224,7 @@ export
     frob,
     fweight,
     head, @head,
+    iqr,
     list, 
     matB, matW, 
     mblock,

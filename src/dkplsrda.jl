@@ -95,8 +95,8 @@ function predict(object::Dkplsrda, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : 
         nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
-    pred = list(le_nlv, Matrix{Qy})
-    posterior = list(le_nlv, Matrix{Q})
+    pred = list(Matrix{Qy}, le_nlv)
+    posterior = list(Matrix{Q}, le_nlv)
     @inbounds for i = 1:le_nlv
         zp = predict(object.fm, X; nlv = nlv[i]).pred
         z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first

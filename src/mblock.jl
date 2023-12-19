@@ -23,7 +23,7 @@ Xbl[3]
 function mblock(X, listbl)
     Q = eltype(X[1, 1])
     nbl = length(listbl)
-    Xbl = list(nbl, Matrix{Q})
+    Xbl = list(Matrix{Q}, nbl)
     @inbounds for i = 1:nbl
         Xbl[i] = ensure_mat(X[:, listbl[i]])
     end

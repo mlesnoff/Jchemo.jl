@@ -68,7 +68,7 @@ end
 function mbplswest(Xbl, Y, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
-    zXbl = list(nbl, Matrix{Q})
+    zXbl = list(Matrix{Q}, nbl)
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
@@ -86,8 +86,8 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight;
     q = nco(Y)
     nlv = par.nlv
     sqrtw = sqrt.(weights.w)
-    xmeans = list(nbl, Vector{Q})
-    xscales = list(nbl, Vector{Q})
+    xmeans = list(Vector{Q}, nbl)
+    xscales = list(Vector{Q}, nbl)
     p = fill(0, nbl)
     Threads.@threads for k = 1:nbl
         p[k] = nco(Xbl[k])
@@ -121,11 +121,11 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight;
     Y .= sqrtw .* Y
     # Pre-allocation
     X = similar(Xbl[1], n, sum(p))
-    Tbl = list(nbl, Matrix{Q})
+    Tbl = list(Matrix{Q}, nbl)
     for k = 1:nbl ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
-    Tb = list(nlv, Matrix{Q})
+    Tb = list(Matrix{Q}, nlv)
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
-    Pbl = list(nbl, Matrix{Q})
+    Pbl = list(Matrix{Q}, nbl)
     for k = 1:nbl ; Pbl[k] = similar(Xbl[1], p[k], nlv) ; end
     Tx = similar(Xbl[1], n, nlv)
     Wx = similar(Xbl[1], sum(p), nlv)
@@ -209,7 +209,7 @@ function Base.summary(object::Mbplswest, Xbl)
     n, nlv = size(object.T)
     nbl = length(Xbl)
     sqrtw = sqrt.(object.weights.w)
-    zXbl = list(nbl, Matrix{Q})
+    zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
         zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
@@ -236,14 +236,14 @@ function Base.summary(object::Mbplswest, Xbl)
     z = cor(X, sqrtw .* object.T)  
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     # Correlation between the X-block scores and the global scores 
-    z = list(nlv, Matrix{Q})
+    z = list(Matrix{Q}, nlv)
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], sqrtw .* object.T[:, a])
     end
     cortb2t = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
     # Redundancies (Average correlations) Rd(X, t) 
     # between each X-block and each global score
-    z = list(nbl, Matrix{Q})
+    z = list(Matrix{Q}, nbl)
     @inbounds for k = 1:nbl
         z[k] = rd(zXbl[k], sqrtw .* object.T)
     end

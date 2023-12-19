@@ -189,7 +189,7 @@ function predict(object::Cglsr, X; nlv = nothing)
     a = nco(object.B)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
-    pred = list(le_nlv, Matrix{eltype(X)})
+    pred = list(Matrix{eltype(X)}, le_nlv)
     @inbounds for i = 1:le_nlv
         z = coef(object; nlv = nlv[i])
         pred[i] = z.int .+ X * z.B

@@ -60,7 +60,7 @@ function soplsr(Xbl, Y, weights::Weight;
         kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
-    zXbl = list(nbl, Matrix{Q})
+    zXbl = list(Matrix{Q}, nbl)
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end

@@ -149,10 +149,10 @@ function spca!(X::Matrix, weights::Weight;
     T = similar(X, n, nlv)
     P = similar(X, p, nlv)
     sv = similar(X, nlv)
-    niter = list(nlv, Int)
+    niter = list(Int, nlv)
     b = similar(X, 1, p)
     beta = similar(X, p, nlv)
-    sellv = list(nlv, Vector{Int})
+    sellv = list(Vector{Int}, nlv)
     for a = 1:nlv
         if par.msparse == :soft
             res = snipals(X; kwargs...)

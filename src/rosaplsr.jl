@@ -59,7 +59,7 @@ end
 function rosaplsr(Xbl, Y, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
-    zXbl = list(nbl, Matrix{Q})
+    zXbl = list(Matrix{Q}, nbl)
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
@@ -75,8 +75,8 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     nlv = par.nlv
     nbl = length(Xbl)
     D = Diagonal(weights.w)
-    xmeans = list(nbl, Vector{Q})
-    xscales = list(nbl, Vector{Q})
+    xmeans = list(Vector{Q}, nbl)
+    xscales = list(Vector{Q}, nbl)
     p = fill(0, nbl)
     Threads.@threads for k = 1:nbl
         p[k] = nco(Xbl[k])
@@ -107,12 +107,12 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     t   = similar(Xbl[1], n)
     dt  = similar(Xbl[1], n)   
     c   = similar(Xbl[1], q)
-    zp_bl = list(nbl, Vector{Q})
+    zp_bl = list(Vector{Q}, nbl)
     zp = similar(Xbl[1], sum(p))
     #ssr = similar(Xbl[1], nbl)
     corr = similar(Xbl[1], nbl)
-    Wbl = list(nbl, Array)
-    wbl = list(nbl, Vector{Q})         # List of the weights "w" by block for a given "a"
+    Wbl = list(Array, nbl)
+    wbl = list(Vector{Q}, nbl)         # List of the weights "w" by block for a given "a"
     zT = similar(Xbl[1], n, nbl)    # Matrix gathering the nbl scores for a given "a"
     bl = fill(0, nlv)
     #Res = zeros(n, q, nbl)
@@ -204,7 +204,7 @@ function transf(object::Rosaplsr, Xbl; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(object.xmeans)
     Q = eltype(Xbl[1][1, 1])
-    zXbl = list(nbl, Matrix{Q})
+    zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
         zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
@@ -242,7 +242,7 @@ function predict(object::Rosaplsr, Xbl; nlv = nothing)
     le_nlv = length(nlv)
     Q = eltype(Xbl[1][1, 1])
     X = reduce(hcat, Xbl)
-    pred = list(le_nlv, Matrix{Q})
+    pred = list(Matrix{Q}, le_nlv)
     @inbounds for i = 1:le_nlv
         z = coef(object; nlv = nlv[i])
         pred[i] = z.int .+ X * z.B

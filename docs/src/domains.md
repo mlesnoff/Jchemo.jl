@@ -315,7 +315,7 @@
 
 ## UTILITIES
 
-- **aggstat** Compute column-wise statistics (e.g. mean), by group in a dataset
+- **aggstat** Compute column-wise statistics by group in a dataset
 - **fcenter**, **fscale**, **fcscale** Column-wise centering and scaling of a matrix
 - **colmad**, **colmean**, **colnorm**, **colstd**, **colsum**, **colvar**  Column-wise operations
 - **colmeanskip**, **colstdskip**, **colsumskip**, **colvarskip**: Column-wise operations allowing missing data

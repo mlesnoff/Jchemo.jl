@@ -52,9 +52,9 @@ group[segm[i][1]]
 function segmts(n::Int, m::Int; rep = 1, 
         seed = nothing)
     Q = Vector{Int}
-    s = list(rep, Vector{Q})
+    s = list(Vector{Q}, rep)
     for i = 1:rep
-        s[i] = list(1, Q)
+        s[i] = list(Q, 1)
         if isnothing(seed)
             s[i][1] = sample(1:n, m; replace = false, 
                 ordered = true)
@@ -70,12 +70,12 @@ function segmts(group::Vector, m::Int; rep = 1,
         seed = nothing)
     group = vec(group)
     Q = Vector{Int}
-    s = list(rep, Vector{Q})
+    s = list(Vector{Q}, rep)
     yagg = unique(group)
     nlev = length(yagg)
     m = min(m, nlev)
     @inbounds for i = 1:rep
-        s[i] = list(1, Q)
+        s[i] = list(Q, 1)
         if isnothing(seed)
             s[i][1] = sample(1:nlev, m; replace = false, 
                 ordered = true)

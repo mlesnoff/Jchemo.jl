@@ -182,7 +182,7 @@ function predict(object::Krr, X; lb = nothing)
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')
     le_lb = length(lb)
-    pred = list(le_lb, Matrix{eltype(X)})
+    pred = list(Matrix{eltype(X)}, le_lb)
     @inbounds for i = 1:le_lb
         z = coef(object; lb = lb[i])
         pred[i] = z.int .+ Kc * (object.sqrtD * z.A)

@@ -84,7 +84,7 @@ end
 
 function fblockscal_frob(Xbl, weights::Weight)
     nbl = length(Xbl)
-    bscales = list(nbl, eltype(Xbl[1]))
+    bscales = list(eltype(Xbl[1]), nbl)
     @inbounds for k = 1:nbl
         bscales[k] =  frob(Xbl[k], weights)
     end
@@ -94,7 +94,7 @@ end
 function fblockscal_mfa(Xbl, weights::Weight)
     nbl = length(Xbl)
     sqrtD = Diagonal(sqrt.(weights.w))
-    bscales = list(nbl, eltype(Xbl[1]))
+    bscales = list(eltype(Xbl[1]), nbl)
     @inbounds for k = 1:nbl
         xmeans = colmean(Xbl[k], weights)
         zX = fcenter(Xbl[k], xmeans)
@@ -105,7 +105,7 @@ end
 
 function fblockscal_ncol(Xbl)
     nbl = length(Xbl)
-    bscales = list(nbl, eltype(Xbl[1]))
+    bscales = list(eltype(Xbl[1]), nbl)
     @inbounds for k = 1:nbl
         bscales[k] =  nco(Xbl[k]) 
     end
@@ -114,7 +114,7 @@ end
 
 function fblockscal_sd(Xbl, weights::Weight)
     nbl = length(Xbl)
-    bscales = list(nbl, eltype(Xbl[1]))
+    bscales = list(eltype(Xbl[1]), nbl)
     @inbounds for k = 1:nbl
         bscales[k] = sqrt(sum(colvar(Xbl[k], weights)))
     end
