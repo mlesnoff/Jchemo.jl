@@ -119,7 +119,7 @@ function svmr(X, y; kwargs...)
         tolerance = 0.001,
         nt = 0,
         verbose = false) 
-    Svmr(fm, xscales, kwargs, par)
+    Svmr(fm, xscales)
 end
 
 """
@@ -131,9 +131,10 @@ Compute y-predictions from a fitted model.
 function predict(object::Svmr, X)
     X = ensure_mat(X)
     Q = eltype(X)
-    pred = svmpredict(object.fm, fscale(X, object.xscales)')[1]
-    n = length(pred)
-    pred = reshape(convert.(Q, pred), n, 1)
+    pred = svmpredict(object.fm, 
+        fscale(X, object.xscales)')[1]
+    m = length(pred)
+    pred = reshape(convert.(Q, pred), m, 1)
     (pred = pred,)
 end
 

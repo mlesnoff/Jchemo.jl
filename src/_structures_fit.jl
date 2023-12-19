@@ -347,11 +347,63 @@ struct Splsr
     par::Par
 end
 
-struct Svmr
-    fm::LIBSVM.SVM
+## Local
+
+struct Knnr
+    X::Matrix
+    Y::Matrix
+    fm::Union{Nothing, Plsr}
     xscales::Vector
     kwargs::Base.Pairs
     par::Par
+end
+
+struct Lwmlr
+    X::Matrix
+    Y::Matrix
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct LwmlrS
+    T::Matrix
+    Y::Matrix
+    fm::Union{Nothing, Pca, Plsr, Dkplsr}
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Lwplsr
+    X::Matrix
+    Y::Matrix
+    fm::Union{Nothing, Plsr}
+    xscales::Vector
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct LwplsrAvg
+    X::Matrix
+    Y::Matrix
+    fm::Union{Nothing, Plsr}
+    xscales::Vector
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct LwplsrS
+    T::Matrix
+    Y::Matrix
+    fm::Union{Nothing, Pca, Plsr, Dkplsr}
+    kwargs::Base.Pairs
+    par::Par
+end
+
+## Svm, Trees
+
+struct Svmr
+    fm::LIBSVM.SVM
+    xscales::Vector
 end
 
 struct TreerDt
@@ -424,58 +476,6 @@ struct Soplsr
     T::Matrix
     fit::Matrix
     b::Vector
-    kwargs::Base.Pairs
-    par::Par
-end
-
-## Local
-
-struct Knnr
-    X::Matrix
-    Y::Matrix
-    fm::Union{Nothing, Plsr}
-    xscales::Vector
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Lwmlr
-    X::Matrix
-    Y::Matrix
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct LwmlrS
-    T::Matrix
-    Y::Matrix
-    fm::Union{Nothing, Pca, Plsr, Dkplsr}
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Lwplsr
-    X::Matrix
-    Y::Matrix
-    fm::Union{Nothing, Plsr}
-    xscales::Vector
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct LwplsrAvg
-    X::Matrix
-    Y::Matrix
-    fm::Union{Nothing, Plsr}
-    xscales::Vector
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct LwplsrS
-    T::Matrix
-    Y::Matrix
-    fm::Union{Nothing, Pca, Plsr, Dkplsr}
     kwargs::Base.Pairs
     par::Par
 end
@@ -576,24 +576,6 @@ struct Rrda
     par::Par
 end
 
-struct Svmda
-    fm
-    xscales::Vector
-    lev::Vector
-    ni::Vector{Int}
-end
-
-struct TreedaDt 
-    fm
-    xscales::Vector
-    featur::Vector{Int}
-    lev::Vector
-    ni::Vector{Int}
-    mth::Bool 
-    kwargs::Base.Pairs
-    par::Par
-end
-
 ## Local
 
 struct Knnda
@@ -669,8 +651,28 @@ struct LwplsrdaS
     par::Par
 end
 
+## Svm, Trees
+
+struct Svmda
+    fm
+    xscales::Vector
+    lev::Vector
+    ni::Vector{Int}
+end
+
+struct TreedaDt 
+    fm
+    xscales::Vector
+    featur::Vector{Int}
+    lev::Vector
+    ni::Vector{Int}
+    mth::Bool 
+    kwargs::Base.Pairs
+    par::Par
+end
+
 ## Occ
-## (fm not yet specified)
+## (below, fm not yet specified)
 
 struct Occstah
     d::DataFrame
