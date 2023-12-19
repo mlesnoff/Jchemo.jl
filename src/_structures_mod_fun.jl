@@ -98,8 +98,8 @@ lwplsrda_s(; kwargs...) = Predictor{Function, LwplsrdaS, Base.Pairs}(lwplsrda_s,
 ##
 occstah(; kwargs...) = PredictorNoY{Function, Occstah, Base.Pairs}(occstah, nothing, kwargs)
 occsd(; kwargs...) = PredictorNoY{Function, Occsd, Base.Pairs}(occsd, nothing, kwargs)
-occod(; kwargs...) = PredictorNoY{Function, Occod, Base.Pairs}(occod, nothing, kwargs)
-occsdod(; kwargs...) = PredictorNoY{Function, Occsdod, Base.Pairs}(occsdod, nothing, kwargs)
+occod(; kwargs...) = Predictor{Function, Occod, Base.Pairs}(occod, nothing, kwargs)
+occsdod(; kwargs...) = Predictor{Function, Occsdod, Base.Pairs}(occsdod, nothing, kwargs)
 ##
 svmda(; kwargs...) = Predictor{Function, Svmda, Base.Pairs}(svmda, nothing, kwargs)
 treeda_dt(; kwargs...) = Predictor{Function, TreedaDt, Base.Pairs}(treeda_dt, nothing, kwargs)

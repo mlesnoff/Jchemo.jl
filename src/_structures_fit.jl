@@ -503,20 +503,20 @@ struct Dmnormlog
 end
 
 struct Mlrda
-    fm  
+    fm::Mlr 
     lev::Vector
     ni::Vector{Int}
 end
 
 struct Kdeda
-    fm
+    fm::Vector{Dmkern}
     wprior::AbstractVector
     lev::Vector
     ni::Vector{Int}
 end
 
 struct Lda
-    fm
+    fm::Vector{Dmnorm}
     W::Matrix  
     ct::Matrix
     wprior::Vector
@@ -527,7 +527,7 @@ struct Lda
 end
 
 struct Qda
-    fm
+    fm::Vector{Dmnorm}
     Wi::AbstractVector  
     ct::Matrix
     wprior::Vector
@@ -538,7 +538,7 @@ struct Qda
 end
 
 struct Rda
-    fm
+    fm::Vector{Dmnorm}
     Wi::AbstractVector  
     ct::Matrix
     wprior::Vector
@@ -550,25 +550,25 @@ struct Rda
 end
 
 struct Plsrda
-    fm  
+    fm::Plsr  
     lev::Vector
     ni::Vector{Int}
 end
 
 struct Plslda    # for plslda and plsqda 
-    fm  
+    fm::NamedTuple  
     lev::Vector
     ni::Vector{Int}
 end
 
 struct Dkplsrda
-    fm  
+    fm::Dkplsr  
     lev::Vector
     ni::Vector{Int}
 end
 
 struct Rrda
-    fm  
+    fm::Rr  
     lev::Vector
     ni::Vector{Int}
     kwargs::Base.Pairs
@@ -576,6 +576,7 @@ struct Rrda
 end
 
 ## Local
+## (from below, fm not yet specified)
 
 struct Knnda
     X::Matrix
@@ -670,7 +671,6 @@ struct TreedaDt
 end
 
 ## Occ
-## (below, fm not yet specified)
 
 struct Occstah
     d::DataFrame

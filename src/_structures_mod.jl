@@ -19,7 +19,7 @@ Base.@kwdef mutable struct PredictorNoY{FUN <: Function,
     kwargs::KWARGS    
 end
 
-############ Fit
+######## Fit
 function fit!(mod::Transformer, X)
     kwargs = values(mod.kwargs)
     mod.fm = mod.fun(X; kwargs...)
@@ -70,7 +70,7 @@ function fit!(mod::Transformer, Xbl::Vector{Matrix},
     return
 end  
 
-############ Transf
+######## Transf
 function transf(mod::Union{Transformer, Predictor}, X; 
         nlv = nothing)
     isnothing(nlv) ? transf(mod.fm, X) : 
@@ -99,7 +99,7 @@ function transfbl(mod::Union{Transformer, Predictor},
         transfbl(mod.fm, Xbl; nlv = nlv)
 end
 
-############ Predict 
+######## Predict 
 function predict(mod::Union{Transformer, Predictor}, X; 
         nlv = nothing, lb = nothing)
     if isnothing(nlv) && isnothing(lb)
