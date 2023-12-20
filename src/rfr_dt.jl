@@ -57,8 +57,8 @@ s = dat.Ytest.inst .== 1
 Xtest = dat.Xtest[s, :]
 Ytest = dat.Ytest[s, :]
 ytest = Ytest.y
-wlstr = names(Xtrain) 
-wl = parse.(Float64, wlstr) 
+wlst = names(Xtrain) 
+wl = parse.(Float64, wlst) 
 ntrain, p = size(Xtrain)
 ntest = nro(Xtest)
 ntot = ntrain + ntest

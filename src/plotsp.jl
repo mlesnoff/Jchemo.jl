@@ -21,8 +21,8 @@ The user has to specify a backend (e.g. CairoMakie).
     pnames(dat)
     
     X = dat.X
-    wlstr = names(X)
-    wl = parse.(Float64, wlstr) 
+    wlst = names(X)
+    wl = parse.(Float64, wlst) 
     plotsp(X).f
     plotsp(X; color = (:red, .2)).f
     plotsp(X, wl; xlabel = "Wavelength (nm)",

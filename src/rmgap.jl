@@ -23,8 +23,8 @@ db = joinpath(path_jdat, "data/asdgap.jld2")
 pnames(dat)
 
 X = dat.X
-wlstr = names(dat.X)
-wl = parse.(Float64, wlstr)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
 
 z = [1000 ; 1800] 
 u = findall(in(z).(wl))

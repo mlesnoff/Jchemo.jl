@@ -61,8 +61,8 @@ pnames(dat)
 X = dat.X 
 Y = dat.Y
 y = Y.typ
-wlstr = names(X)
-wl = parse.(Float64, wlstr)
+wlst = names(X)
+wl = parse.(Float64, wlst)
 ntot = nro(X)
 
 plotsp(X, wl).f

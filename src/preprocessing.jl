@@ -17,8 +17,8 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 pnames(dat)
 
 X = dat.X
-wlstr = names(dat.X)
-wl = parse.(Float64, wlstr)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
 
 Xp = detrend(X)
 plotsp(Xp[1:30, :], wl).f
@@ -77,8 +77,8 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 pnames(dat)
 
 X = dat.X
-wlstr = names(dat.X)
-wl = parse.(Float64, wlstr)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
 
 Xp = fdif(X; npoint = 10)
 plotsp(Xp[1:30, :]).f
@@ -139,8 +139,8 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 pnames(dat)
 
 X = dat.X 
-wlstr = names(X)
-wl = parse.(Float64, wlstr) 
+wlst = names(X)
+wl = parse.(Float64, wlst) 
 
 plotsp(X[1:10,:], wl).f
 
@@ -208,8 +208,8 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 pnames(dat)
 
 X = dat.X
-wlstr = names(dat.X)
-wl = parse.(Float64, wlstr)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
 
 Xp = mavg(X; npoint = 10) 
 plotsp(Xp[1:30, :], wl).f
@@ -315,8 +315,8 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 pnames(dat)
 
 X = dat.X
-wlstr = names(dat.X)
-wl = parse.(Float64, wlstr)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
 
 npoint = 21 ; degree = 3 ; deriv = 2 ; 
 Xp = savgol(X; npoint = npoint, degree = degree, deriv = deriv) 
@@ -372,8 +372,8 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 pnames(dat)
 
 X = dat.X
-wlstr = names(dat.X)
-wl = parse.(Float64, wlstr)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
 
 Xp = snv(X) 
 plotsp(Xp[1:30, :], wl).f
