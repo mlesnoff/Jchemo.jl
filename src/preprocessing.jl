@@ -3,7 +3,7 @@
 De-trend transformation of each row of X-data. 
 * `X` : X-data.
 Keyword arguments:
-* `degree` : Polynom degree (default = 1).
+* `degree` : Polynom degree.
 
 The function fits a polynomial regression to each observation
 and returns the residuals.
@@ -20,7 +20,7 @@ X = dat.X
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 
-mod = detrend()
+mod = detrend()  # default (degree = 1)
 #mod = detrend(degree = 2)
 fit!(mod, X)
 Xp = transf(mod, X)
@@ -44,7 +44,6 @@ function transf(object::Detrend, X)
     transf!(object, X)
     X
 end
-
 function transf!(object::Detrend, X::Matrix)
     n, p = size(X)
     degree = object.par.degree
@@ -65,17 +64,16 @@ end
 
 """
     fdif(X; npoint = 2)
-    fdif!(M::Matrix, X::Matrix; npoint = 2)
-Compute finite differences for each row of a matrix X. 
+Compute finite differences (discrete derivates) for each 
+    row of X-data. 
 * `X` : X-data (n, p).
-* `M` : Pre-allocated output matrix (n, p - npoint + 1).
-* `npoint` : Nb. points involved in the window for the finite differences.
-    The range of the window (= nb. intervals of two successive colums) is npoint - 1.
+Keyword arguments:
+* `npoint` : Nb. points involved in the window for the 
+    finite differences. The range of the window 
+    (= nb. intervals of two successive colums) is npoint - 1.
 
-The finite differences can be used for computing discrete derivates.
-The method reduces the column-dimension: (n, p) --> (n, p - npoint + 1). 
-
-The in-place function stores the output in `M`.
+The method reduces the column-dimension: 
+* (n, p) --> (n, p - npoint + 1). 
 
 ## Examples
 ```julia
@@ -89,8 +87,10 @@ X = dat.X
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 
-Xp = fdif(X; npoint = 10)
-plotsp(Xp[1:30, :]).f
+mod = fdif(npoint = 2) 
+fit!(mod, X)
+@head Xp = transf(mod, X)
+plotsp(Xp; nsamp = 30).f
 ```
 """ 
 function fdif(X; kwargs...)
@@ -98,6 +98,15 @@ function fdif(X; kwargs...)
     Fdif(kwargs, par)
 end
 
+""" 
+    transf(object::Fdif, X)
+    transf!(object::Fdif, X::Matrix, M::Matrix)
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+* `M` : Pre-allocated output matrix (n, p - npoint + 1).
+The in-place function stores the output in `M`.
+""" 
 function transf(object::Fdif, X)
     X = ensure_mat(X)
     n, p = size(X)
@@ -106,7 +115,6 @@ function transf(object::Fdif, X)
     transf!(object, X, M)
     M
 end
-
 function transf!(object::Fdif, X::Matrix, M::Matrix)
     p = nco(X)
     npoint = object.par.npoint
@@ -117,11 +125,12 @@ function transf!(object::Fdif, X::Matrix, M::Matrix)
 end
 
 """ 
-    interpl(X, wl; wlfin, fun = cubic_spline)
+    interpl(X; kwargs...)
 Sampling signals by interpolation.
 * `X` : Matrix (n, p) of signals (rows).
 * `wl` : Values representing the column "names" of `X`. 
     Must be a numeric vector of length p, or an AbstractRange.
+Keyword arguments:
 * `wlfin` : Final values where to interpolate within the range of `wl`.
     Must be a numeric vector, or an AbstractRange.
 * `fun` : Function defining the interpolation method.
@@ -167,6 +176,15 @@ function interpl(X; kwargs...)
     Interpl(kwargs, par)
 end
 
+""" 
+    transf(object::Interpl, X)
+    transf!(object::Interpl, X::Matrix, M::Matrix)
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+* `M` : Pre-allocated output matrix (n, p).
+The in-place function stores the output in `M`.
+""" 
 function transf(object::Interpl, X)
     X = ensure_mat(X)
     n = nro(X)
@@ -175,7 +193,6 @@ function transf(object::Interpl, X)
     transf!(object, X, M)
     M
 end
-
 function transf!(object::Interpl, X::Matrix, M::Matrix)
     n = nro(X)
     wl = object.par.wl 
@@ -193,8 +210,7 @@ end
 #quadratic_spline(y, x) = DataInterpolations.QuadraticSpline(y, x)
 
 """
-    mavg(X; npoint)
-    mavg!(X::Matrix; npoint)
+    mavg(X; kwargs...)
 Moving averages smoothing of each row of X-data.
 * `X` : X-data.
 * `npoint` : Nb. points involved in the window 
@@ -229,12 +245,18 @@ function mavg(X; kwargs...)
     Mavg(kwargs, par)
 end
 
+""" 
+    transf(object::Mavg, X)
+    transf!(object::Mavg, X)
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+""" 
 function transf(object::Mavg, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
-
 function transf!(object::Mavg, X::Matrix)
     n, p = size(X)
     npoint = object.par.npoint
@@ -291,8 +313,7 @@ function savgk(nhwindow::Int, deriv::Int, degree::Int)
 end
 
 """
-    savgol(X; npoint, degree, deriv)
-    savgol!(X::Matrix; npoint, degree, deriv)
+    savgol(X; kwargs...)
 Savitzky-Golay smoothing of each row of a matrix `X`.
 * `X` : X-data (n, p).
 * `npoint` : Size of the filter (nb. points involved in 
@@ -337,12 +358,18 @@ function savgol(X; kwargs...)
     Savgol(kwargs, par)
 end
 
+""" 
+    transf(object::Savgol, X)
+    transf!(object::Savgol, X)
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+""" 
 function transf(object::Savgol, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
-
 function transf!(object::Savgol, X::Matrix)
     npoint = object.par.npoint 
     @assert isodd(npoint) && npoint >= 3 "Argument 'npoint' must be odd and >= 3."
@@ -365,8 +392,7 @@ function transf!(object::Savgol, X::Matrix)
 end
 
 """
-    snv(X; centr = true, scal = true)
-    snv!(X::Matrix; centr = true, scal = true)
+    snv(X; kwargs...)
 Standard-normal-variate (SNV) transformation of each row of X-data.
 * `X` : X-data.
 * `centr` : Logical indicating if the centering in done.
@@ -393,12 +419,18 @@ function snv(X; kwargs...)
     Snv(kwargs, par)
 end
 
+""" 
+    transf(object::Snv, X)
+    transf!(object::Snv, X)
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+""" 
 function transf(object::Snv, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
-
 function transf!(object::Snv, X::Matrix)
     n, p = size(X)
     centr = object.par.centr 
@@ -419,18 +451,23 @@ function center(X)
     xmeans = colmean(X)
     Center(xmeans)
 end
-
 function center(X, weights::Weight)
     xmeans = colmean(X, weights)
     Center(xmeans)
 end
 
+""" 
+    transf(object::Center, X)
+    transf!(object::Center, X)
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+""" 
 function transf(object::Center, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
-
 function transf!(object::Center, X::Matrix)
     fcenter!(X, object.xmeans)
 end
@@ -442,18 +479,23 @@ function scale(X)
     xscales = colstd(X)
     Scale(xscales)
 end
-
 function scale(X, weights::Weight)
     xscales = colstd(X, weights)
     Scale(xscales)
 end
 
+""" 
+    transf(object::Scale, X)
+    transf!(object::Scale, X)
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+""" 
 function transf(object::Scale, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
-
 function transf!(object::Scale, X::Matrix)
     fscale!(X, object.xscales)
 end
@@ -466,19 +508,26 @@ function cscale(X)
     xscales = colstd(X)
     Cscale(xmeans, xscales)
 end
-
 function cscale(X, weights::Weight)
     xmeans = colmean(X, weights)
     xscales = colstd(X, weights)
     Cscale(xmeans, xscales)
 end
 
+""" 
+    transf(object::Cscale, X)
+    transf!(object::Cscale, X)
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+""" 
 function transf(object::Cscale, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
-
 function transf!(object::Cscale, X::Matrix)
     fcscale!(X, object.xmeans, object.xscales)
 end
+
+
