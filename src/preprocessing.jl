@@ -1,9 +1,9 @@
 """
-    detrend(X; degree = 1)
-    detrend!(X::Matrix; degree = 1)
-De-trend transformation of each row of a matrix X. 
+    detrend(X; kwargs...)
+De-trend transformation of each row of X-data. 
 * `X` : X-data.
-* `degree` : Polynom order.
+Keyword arguments:
+* `degree` : Polynom degree (default = 1).
 
 The function fits a polynomial regression to each observation
 and returns the residuals.
@@ -20,16 +20,25 @@ X = dat.X
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 
-Xp = detrend(X)
+mod = detrend()
+#mod = detrend(degree = 2)
+fit!(mod, X)
+Xp = transf(mod, X)
 plotsp(Xp[1:30, :], wl).f
 ```
 """ 
-
 function detrend(X; kwargs...)
     par = recovkwargs(Par, kwargs)
     Detrend(kwargs, par)
 end
 
+""" 
+    transf(object::Detrend, X)
+    transf!(object::Detrend, X)
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+""" 
 function transf(object::Detrend, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
