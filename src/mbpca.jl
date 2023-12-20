@@ -205,14 +205,14 @@ Compute latent variables (LVs = scores T) from a fitted model and X-data.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transf(object::Mbpca, Xbl; nlv = nothing)
-    ftransf(object, Xbl; nlv).T
+    transf_all(object, Xbl; nlv).T
 end
 
 function transfbl(object::Mbpca, Xbl; nlv = nothing)
-    ftransf(object, Xbl; nlv).Tbl
+    transf_all(object, Xbl; nlv).Tbl
 end
 
-function ftransf(object::Mbpca, Xbl; nlv = nothing)
+function transf_all(object::Mbpca, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)

@@ -1,25 +1,31 @@
-Base.@kwdef mutable struct Transformer{FUN <: Function, 
-        FM, KWARGS <: Base.Pairs}
+Base.@kwdef mutable struct Transformer{
+        FUN <: Function, 
+        FM, 
+        KWARGS <: Base.Pairs}
     fun::FUN   
     fm::Union{Nothing, FM}
     kwargs::KWARGS    
 end
 
-Base.@kwdef mutable struct Predictor{FUN <: Function, 
-        FM, KWARGS <: Base.Pairs}
+Base.@kwdef mutable struct Predictor{
+        FUN <: Function, 
+        FM, 
+        KWARGS <: Base.Pairs}
     fun::FUN   
     fm::Union{Nothing, FM}
     kwargs::KWARGS    
 end
 
-Base.@kwdef mutable struct PredictorNoY{FUN <: Function, 
-        FM, KWARGS <: Base.Pairs}
+Base.@kwdef mutable struct PredictorNoY{
+        FUN <: Function, 
+        FM, 
+        KWARGS <: Base.Pairs}
     fun::FUN   
     fm::Union{Nothing, FM}
     kwargs::KWARGS    
 end
 
-######## Fit
+###### Fit
 function fit!(mod::Transformer, X)
     kwargs = values(mod.kwargs)
     mod.fm = mod.fun(X; kwargs...)
@@ -34,11 +40,13 @@ end
 function fit!(mod::Predictor, X, Y)
     kwargs = values(mod.kwargs)
     mod.fm = mod.fun(X, Y; kwargs...)
+    return
 end  
 function fit!(mod::Predictor, X, Y, 
         weights::Weight)
     kwargs = values(mod.kwargs)
     mod.fm = mod.fun(X, Y, weights; kwargs...)
+    return
 end 
 function fit!(mod::PredictorNoY, X)
     kwargs = values(mod.kwargs)
@@ -70,22 +78,17 @@ function fit!(mod::Transformer, Xbl::Vector{Matrix},
     return
 end  
 
-######## Transf
-function transf(mod::Union{Transformer, Predictor}, X; 
-        nlv = nothing)
+###### Transf
+function transf(mod::Union{Transformer, Predictor}, 
+        X; nlv = nothing)
     isnothing(nlv) ? transf(mod.fm, X) : 
         transf(mod.fm, X; nlv = nlv)
 end
 ## 2 blocks
-function transf(mod::Union{Transformer, Predictor}, X, Y; 
-        nlv = nothing)
+function transf(mod::Union{Transformer, Predictor}, 
+        X, Y; nlv = nothing)
     isnothing(nlv) ? transf(mod.fm, X, Y) : 
         transf(mod.fm, X, Y; nlv = nlv)
-end
-function transfbl(mod::Union{Transformer, Predictor}, X, Y; 
-        nlv = nothing)
-    isnothing(nlv) ? transfbl(mod.fm, X, Y) : 
-        transfbl(mod.fm, X, Y; nlv = nlv)
 end
 ## >= 2 blocks 
 function transf(mod::Union{Transformer, Predictor}, 
@@ -93,15 +96,24 @@ function transf(mod::Union{Transformer, Predictor},
     isnothing(nlv) ? transf(mod.fm, Xbl) : 
         transf(mod.fm, Xbl; nlv = nlv)
 end
+
+###### Transfbl
+## 2 blocks
+function transfbl(mod::Union{Transformer, Predictor}, 
+    X, Y; nlv = nothing)
+isnothing(nlv) ? transfbl(mod.fm, X, Y) : 
+    transfbl(mod.fm, X, Y; nlv = nlv)
+end
+## >= 2 blocks 
 function transfbl(mod::Union{Transformer, Predictor}, 
     Xbl::Vector{Matrix}; nlv = nothing)
     isnothing(nlv) ? transfbl(mod.fm, Xbl) : 
         transfbl(mod.fm, Xbl; nlv = nlv)
 end
 
-######## Predict 
-function predict(mod::Union{Transformer, Predictor}, X; 
-        nlv = nothing, lb = nothing)
+###### Predict 
+function predict(mod::Union{Transformer, Predictor}, 
+        X; nlv = nothing, lb = nothing)
     if isnothing(nlv) && isnothing(lb)
         predict(mod.fm, X)
     elseif !isnothing(nlv) 
