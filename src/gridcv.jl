@@ -67,7 +67,7 @@ K = 5 ; rep = 1
 segm = segmkf(ntrain, K; rep = rep)
 
 nlv = 0:20
-res = gridcvlv(Xtrain, ytrain; segm = segm, 
+res = gridcv_lv(Xtrain, ytrain; segm = segm, 
     score = rmsep, fun = plskern, nlv = nlv).res
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
@@ -88,7 +88,7 @@ h = [1 ; 2.5 ; 5] ; k = [50 ; 100]
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
 length(pars[1]) 
 nlv = 0:20
-res = gridcvlv(Xtrain, ytrain; segm = segm, 
+res = gridcv_lv(Xtrain, ytrain; segm = segm, 
     score = rmsep, fun = lwplsr, pars = pars, nlv = nlv, verbose = true).res
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
@@ -108,7 +108,7 @@ K = 5 ; rep = 1
 segm = segmkf(ntrain, K; rep = rep)
 
 lb = (10.).^collect(-5:1:-1)
-res = gridcvlb(Xtrain, ytrain; segm = segm, 
+res = gridcv_lb(Xtrain, ytrain; segm = segm, 
     score = rmsep, fun = rr, lb = lb).res
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
@@ -128,7 +128,7 @@ gamma = (10.).^collect(-4:1:4)
 pars = mpar(gamma = gamma)
 length(pars[1]) 
 lb = (10.).^collect(-5:1:-1)
-res = gridcvlb(Xtrain, ytrain; segm = segm, 
+res = gridcv_lb(Xtrain, ytrain; segm = segm, 
     score = rmsep, fun = krr, pars = pars, lb = lb).res
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
@@ -145,13 +145,13 @@ function gridcv(X, Y; segm, fun, score,
         pars = nothing, nlv = nothing, lb = nothing, 
         verbose = false)
     if isnothing(nlv) && isnothing(lb)
-        res = gridcvbr(X, Y; segm, fun, score, 
+        res = gridcv_br(X, Y; segm, fun, score, 
             pars, verbose)
     elseif !isnothing(nlv)
-        res = gridcvlv(X, Y; segm, fun, score, 
+        res = gridcv_lv(X, Y; segm, fun, score, 
             pars, nlv, verbose)
     elseif !isnothing(lb)
-        res = gridcvlb(X, Y; segm, fun, score, 
+        res = gridcv_lb(X, Y; segm, fun, score, 
             pars, lb, verbose)
     end
     res

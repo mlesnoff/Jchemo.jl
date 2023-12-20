@@ -123,15 +123,15 @@ include("mpar.jl")
 include("scores.jl")
 include("confusion.jl")
 include("gridscore.jl")
-include("gridscorebr.jl")
-include("gridscorelv.jl")
-include("gridscorelb.jl")
+include("gridscore_br.jl")
+include("gridscore_lv.jl")
+include("gridscore_lb.jl")
 include("segmkf.jl")
 include("segmts.jl")
 include("gridcv.jl")
-include("gridcvbr.jl")
-include("gridcvlv.jl")
-include("gridcvlb.jl")
+include("gridcv_br.jl")
+include("gridcv_lv.jl")
+include("gridcv_lb.jl")
 include("selwold.jl")
 
 ## Variable importance (direct methods) 
@@ -363,10 +363,10 @@ export
     bias, sep, cor2, r2, rpd, rpdr, mse, err,
     mpar,
     gridscore, 
-    gridscorebr, gridscorelv, gridscorelb,
+    gridscore_br, gridscore_lv, gridscore_lb,
     segmts, segmkf,
     gridcv, 
-    gridcvbr, gridcvlv, gridcvlb, 
+    gridcv_br, gridcv_lv, gridcv_lb, 
     selwold,
     confusion, 
     ###### Sampling

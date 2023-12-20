@@ -1,5 +1,5 @@
 """
-    gridcvlb(X, Y; segm, score, fun, lb, pars, verbose = false)
+    gridcv_lb(X, Y; segm, score, fun, lb, pars, verbose = false)
 * See `gridcv`.
 * `lb` : Value, or collection of values, of the ridge regularization parameter "lambda".
 
@@ -10,7 +10,7 @@ Argument `pars` must not contain `lb`.
 
 See `?gridcv` for examples.
 """
-function gridcvlb(X, Y; segm, fun, score, 
+function gridcv_lb(X, Y; segm, fun, score, 
         pars = nothing, lb, verbose = false)
     q = nco(Y)
     nrep = length(segm)
@@ -25,7 +25,7 @@ function gridcvlb(X, Y; segm, fun, score,
         @inbounds for j = 1:nsegm
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
-            zres[j] = gridscorelb(
+            zres[j] = gridscore_lb(
                 rmrow(X, s), rmrow(Y, s),
                 X[s, :], Y[s, :];
                 score = score, fun = fun, lb = lb, pars = pars)

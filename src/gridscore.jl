@@ -68,7 +68,7 @@ rmsep(pred, ytest)
 ################# PLSR models
 
 nlv = 0:20
-res = gridscorelv(Xcal, ycal, Xval, yval;
+res = gridscore_lv(Xcal, ycal, Xval, yval;
     score = rmsep, fun = plskern, nlv = nlv)
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
@@ -86,7 +86,7 @@ h = [1 ; 2.5 ; 5] ; k = [50 ; 100]
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
 length(pars[1]) 
 nlv = 0:20
-res = gridscorelv(Xcal, ycal, Xval, yval;
+res = gridscore_lv(Xcal, ycal, Xval, yval;
     score = rmsep, fun = lwplsr, pars = pars, nlv = nlv, verbose = true)
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
@@ -103,7 +103,7 @@ rmsep(pred, ytest)
 ################# RR models
 
 lb = (10.).^collect(-5:1:-1)
-res = gridscorelb(Xcal, ycal, Xval, yval;
+res = gridscore_lb(Xcal, ycal, Xval, yval;
     score = rmsep, fun = rr, lb = lb)
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
@@ -120,7 +120,7 @@ gamma = (10.).^collect(-4:1:4)
 pars = mpar(gamma = gamma)
 length(pars[1]) 
 lb = (10.).^collect(-5:1:-1)
-res = gridscorelb(Xcal, ycal, Xval, yval;
+res = gridscore_lb(Xcal, ycal, Xval, yval;
     score = rmsep, fun = krr, pars = pars, lb = lb)
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
@@ -137,13 +137,13 @@ function gridscore(Xtrain, Ytrain, X, Y; fun, score,
         pars = nothing, nlv = nothing, lb = nothing, 
         verbose = false)
     if isnothing(nlv) && isnothing(lb)
-        res = gridscorebr(Xtrain, Ytrain, X, Y; fun, score, 
+        res = gridscore_br(Xtrain, Ytrain, X, Y; fun, score, 
             pars, verbose)
     elseif !isnothing(nlv)
-        res = gridscorelv(Xtrain, Ytrain, X, Y; fun, score, 
+        res = gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, 
             pars, nlv, verbose)
     elseif !isnothing(lb)
-        res = gridscorelb(Xtrain, Ytrain, X, Y; fun, score, 
+        res = gridscore_lb(Xtrain, Ytrain, X, Y; fun, score, 
             pars, lb, verbose)
     end
     res

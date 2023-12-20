@@ -69,7 +69,7 @@ confusion(res.pred, ytest).cnt
 nlv = 1:30 
 pars = mpar(msparse = [:mix], nvar = [1; 5; 10; 20], 
     scal = [false])
-res = gridscorelv(Xtrain, ytrain, Xtest, ytest; 
+res = gridscore_lv(Xtrain, ytrain, Xtest, ytest; 
     score = err, fun = splslda, pars = pars, nlv = nlv)
 typ = string.("nvar=", res.nvar)
 plotgrid(res.nlv, res.y1, typ; step = 2,

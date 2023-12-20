@@ -1,4 +1,4 @@
-function gridcvbr(X, Y; segm, fun, score, 
+function gridcv_br(X, Y; segm, fun, score, 
         pars, verbose = false)
     q = nco(Y)
     nrep = length(segm)

@@ -1,5 +1,5 @@
 """
-    gridcvlv(X, Y; segm, score, fun, nlv, pars, verbose = false)
+    gridcv_lv(X, Y; segm, score, fun, nlv, pars, verbose = false)
 * See `gridcv`.
 * `nlv` : Nb., or collection of nb., of latent variables (LVs).
 
@@ -10,7 +10,7 @@ Argument `pars` must not contain `nlv`.
 
 See `?gridcv` for examples.
 """
-function gridcvlv(X, Y; segm, fun, score, 
+function gridcv_lv(X, Y; segm, fun, score, 
         pars = nothing, nlv, verbose = false)
     p = nco(X)
     q = nco(Y)
@@ -26,7 +26,7 @@ function gridcvlv(X, Y; segm, fun, score,
         @inbounds for j = 1:nsegm
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
-            zres[j] = gridscorelv(
+            zres[j] = gridscore_lv(
                 rmrow(X, s), rmrow(Y, s),
                 X[s, :], Y[s, :];
                 score = score, fun = fun, nlv = nlv, pars = pars)

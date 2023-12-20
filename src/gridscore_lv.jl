@@ -1,5 +1,5 @@
 """
-    gridscorelv(Xtrain, Ytrain, X, Y; score, fun, pars, nlv, verbose = FALSE)
+    gridscore_lv(Xtrain, Ytrain, X, Y; score, fun, pars, nlv, verbose = FALSE)
 * See `gridscore`.
 * `nlv` : Nb., or collection of nb., of latent variables (LVs).
 
@@ -10,7 +10,7 @@ Argument `pars` must not contain `nlv`.
 
 See `?gridscore` for examples.
 """
-function gridscorelv(Xtrain, Ytrain, X, Y; fun, score, 
+function gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, 
         pars = nothing, nlv, verbose = false)
     # If not multiblock
     if isa(Xtrain, Matrix)
@@ -67,7 +67,7 @@ function gridscorelv(Xtrain, Ytrain, X, Y; fun, score,
 end
 
 #### To be removed
-function gridscorelv_par(Xtrain, Ytrain, X, Y; score, fun, 
+function gridscore_lv_par(Xtrain, Ytrain, X, Y; score, fun, 
         pars = nothing, nlv, verbose = false)
     Q = eltype(Xtrain[1, 1])
     p = nco(Xtrain)

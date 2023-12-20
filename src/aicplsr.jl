@@ -56,7 +56,7 @@ function aicplsr(X, y; kwargs...)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
     pars = mpar(scal = par.scal)  
-    res = gridscorelv(X, y, X, y;
+    res = gridscore_lv(X, y, X, y;
         fun = plskern, score = ssr, pars = pars, 
         nlv = 0:nlv)
     zssr = res.y1

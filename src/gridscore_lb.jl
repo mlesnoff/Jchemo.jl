@@ -1,5 +1,5 @@
 """
-    gridscorelb(Xtrain, Ytrain, X, Y; score, fun, lb, pars, verbose = FALSE)
+    gridscore_lb(Xtrain, Ytrain, X, Y; score, fun, lb, pars, verbose = FALSE)
 * See `gridscore`.
 * `lb` : Value, or collection of values, of the ridge regularization parameter "lambda".
 
@@ -10,7 +10,7 @@ Argument `pars` must not contain `lb`.
 
 See `?gridscore` for examples.
 """
-function gridscorelb(Xtrain, Ytrain, X, Y; score, fun, 
+function gridscore_lb(Xtrain, Ytrain, X, Y; score, fun, 
         pars = nothing, lb, verbose = false)
     q = nco(Ytrain)
     lb = mlev(lb)
@@ -62,7 +62,7 @@ function gridscorelb(Xtrain, Ytrain, X, Y; score, fun,
 end
 
 #### Tmp
-function gridscorelb_par(Xtrain, Ytrain, X, Y; score, fun, lb, 
+function gridscore_lb_par(Xtrain, Ytrain, X, Y; score, fun, lb, 
         pars = nothing, verbose = false)
     Q = eltype(Xtrain[1, 1])
     q = nco(Ytrain)

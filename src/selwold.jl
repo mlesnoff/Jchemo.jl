@@ -86,7 +86,7 @@ n = nro(Xtrain)
 segm = segmts(n, 50; rep = 10)
 
 nlv = 0:20
-res = gridcvlv(Xtrain, ytrain; segm = segm, nlv = nlv, 
+res = gridcv_lv(Xtrain, ytrain; segm = segm, nlv = nlv, 
     score = rmsep, fun = plskern, verbose = false).res
 
 zres = selwold(res.nlv, res.y1; smooth = true, 

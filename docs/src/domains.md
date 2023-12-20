@@ -231,15 +231,15 @@
 ### **Validation**
 
 - **gridscore** Generic wrapper calling
-    - **gridscorebr** Any model
-    - **gridscorelv** Accelerator for models with LVs
-    - **gridscorelb** Accelerator for models with ridge parameter
+    - **gridscore_br** Any model
+    - **gridscore_lv** Accelerator for models with LVs
+    - **gridscore_lb** Accelerator for models with ridge parameter
   
 ### **Cross-validation (CV)**
 
 - **gridcv** Any model
-- **gridcvlv** Models with LVs (faster)
-- **gridcvlb** Models with ridge parameter (faster)  
+- **gridcv_lv** Models with LVs (faster)
+- **gridcv_lb** Models with ridge parameter (faster)  
 - **segmkf** Building segments for K-fold CV
 - **segmts** Building segments for test-set validation
 

@@ -72,7 +72,7 @@ yval = ytrain[s]
 
 pars = mpar(tau = 1e-4)
 nlv = 0:20
-res = gridscorelv(Xcal, ycal, Xval, yval;
+res = gridscore_lv(Xcal, ycal, Xval, yval;
     score = rmsep, fun = rrr, nlv = nlv, pars = pars)
 u = findall(res.y1 .== minimum(res.y1))[1]
 res[u, :]
