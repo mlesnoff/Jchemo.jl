@@ -15,16 +15,21 @@ path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
+plotsp(dat.X, wl; nsamp = 20).f
 
-mod = detrend()  # default (degree = 1)
-#mod = detrend(degree = 2)
-fit!(mod, X)
-Xp = transf(mod, X)
-plotsp(Xp[1:30, :], wl).f
+mod = detrend(degree = 2)
+fit!(mod, Xtrain)
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
+plotsp(Xptrain, wl).f
+plotsp(Xptest, wl).f
 ```
 """ 
 function detrend(X; kwargs...)
@@ -77,20 +82,26 @@ The method reduces the column-dimension:
 
 ## Examples
 ```julia
-using JLD2
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
+plotsp(dat.X, wl; nsamp = 20).f
 
 mod = fdif(npoint = 2) 
-fit!(mod, X)
-@head Xp = transf(mod, X)
-plotsp(Xp; nsamp = 30).f
+fit!(mod, Xtrain)
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
+plotsp(Xptrain).f
+plotsp(Xptest).f
 ```
 """ 
 function fdif(X; kwargs...)
@@ -150,15 +161,19 @@ https://htmlpreview.github.io/?https://github.com/PumasAI/DataInterpolations.jl/
 
 ## Examples
 ```julia
-using JLD2
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-
-X = dat.X 
-wlst = names(X)
-wl = parse.(Float64, wlst) 
+X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
+plotsp(dat.X, wl; nsamp = 20).f
 
 plotsp(X[1:10,:], wl).f
 
@@ -211,14 +226,15 @@ end
 
 """
     mavg(X; kwargs...)
-Moving averages smoothing of each row of X-data.
+Smoothing by moving averages of each row of X-data.
 * `X` : X-data.
+Keyword arguments:
 * `npoint` : Nb. points involved in the window 
 
 The smoothing is computed by convolution (with padding), 
-with function imfilter of package ImageFiltering.jl. The centered 
+using function imfilter of package ImageFiltering.jl. The centered 
 kernel is ones(`npoint`) / `npoint`. Each returned point is located on 
-the fcenter of the kernel.
+the center of the kernel.
 
 ## References
 Package ImageFiltering.jl
@@ -226,15 +242,19 @@ https://github.com/JuliaImages/ImageFiltering.jl
 
 ## Examples
 ```julia
-using JLD2
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
+plotsp(dat.X, wl; nsamp = 20).f
 
 Xp = mavg(X; npoint = 10) 
 plotsp(Xp[1:30, :], wl).f
@@ -316,6 +336,7 @@ end
     savgol(X; kwargs...)
 Savitzky-Golay smoothing of each row of a matrix `X`.
 * `X` : X-data (n, p).
+Keyword arguments:
 * `npoint` : Size of the filter (nb. points involved in 
     the kernel). Must be odd and >= 3. The half-window size is 
     nhwindow = (npoint - 1) / 2.
@@ -338,15 +359,19 @@ IEEE Signal Processing Magazine 28, 111–117. https://doi.org/10.1109/MSP.2011.
 
 ## Examples
 ```julia
-using JLD2
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
+plotsp(dat.X, wl; nsamp = 20).f
 
 npoint = 21 ; degree = 3 ; deriv = 2 ; 
 Xp = savgol(X; npoint = npoint, degree = degree, deriv = deriv) 
@@ -395,20 +420,25 @@ end
     snv(X; kwargs...)
 Standard-normal-variate (SNV) transformation of each row of X-data.
 * `X` : X-data.
+Keyword arguments:
 * `centr` : Logical indicating if the centering in done.
 * `scal` : Logical indicating if the scaling in done.
 
 ## Examples
 ```julia
-using JLD2
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
+plotsp(dat.X, wl; nsamp = 20).f
 
 Xp = snv(X) 
 plotsp(Xp[1:30, :], wl).f
