@@ -1,40 +1,40 @@
 """
     rmgap(X; indexcol, npoint = 5)
     rmgap!(X; indexcol, npoint = 5)
-Remove vertical gaps in spectra , e.g. for ASD.  
-* `X` : X-data.
-* `indexcol` : The indexes of the columns where are located the gaps. 
-* `npoint` : The number of columns used on the left side 
-        of the gaps for fitting the linear regressions.
+Remove vertical gaps in spectra (e.g. for ASD).  
+* `X` : X-data (n, p).
+Keyword arguments:
+* `indexcol` : Indexes (∈ [1, p]) of the `X`-columns where are 
+    located the gaps to remove. 
+* `npoint` : The number of `X`-columns used on the left side 
+        of each gap for fitting the linear regressions.
 
-For each observation (row of matrix `X`),
-the corrections are done by extrapolation from simple linear regressions 
-computed on the left side of the defined gaps. 
+For each spectra (row-observation of matrix `X`) and each 
+defined gap, the correction is done by extrapolation from 
+a simple linear regression computed on the left side of the gap. 
 
-For instance, If two gaps are observed between indexes 651-652 and 
-between indexes 1425-1426, respectively, then the syntax should 
-be `indexcol = [651 ; 1425]`.
+For instance, If two gaps are observed between column-indexes 651-652
+and between column-indexes 1425-1426, respectively, the syntax should 
+be `indexcol` = [651 ; 1425].
 
+## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/asdgap.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X
-wlst = names(dat.X)
-wl = parse.(Float64, wlst)
+wlstr = names(dat.X)
+wl = parse.(Float64, wlstr)
 
-z = [1000 ; 1800] 
-u = findall(in(z).(wl))
+wl_target = [1000 ; 1800] 
+u = findall(in(wl_target).(wl))
 f, ax = plotsp(X, wl)
 vlines!(ax, z; linestyle = :dash, color = (:grey, .8))
 f
-
-# Corrected data
-
-u = findall(in(z).(wl))
+## Corrected data
+u = findall(in(wl_target).(wl))
 zX = rmgap(X; indexcol = u, npoint = 5)  
 f, ax = plotsp(zX, wl)
 vlines!(ax, z; linestyle = :dash, color = (:grey, .8))

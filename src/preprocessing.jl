@@ -139,13 +139,13 @@ end
 
 """ 
     interpl(X; kwargs...)
-Sampling signals by interpolation.
-* `X` : Matrix (n, p) of signals (rows).
+Sampling spectra by interpolation.
+* `X` : Matrix (n, p) of spectra (rows).
 Keyword arguments:
 * `wl` : Values representing the column "names" of `X`. 
     Must be a numeric vector of length p, or an AbstractRange.
 * `wlfin` : Final values (within the range of `wl`) where to interpolate
-    the signal. Must be a numeric vector, or an AbstractRange.
+    the spectrum. Must be a numeric vector, or an AbstractRange.
 
 The function implements a cubic spline interpolation using 
 package DataInterpolations.jl.
