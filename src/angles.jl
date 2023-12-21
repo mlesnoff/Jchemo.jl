@@ -5,7 +5,7 @@ Compute the Lg coefficient between matrices.
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
 * `Xbl` : A list (vector) of matrices.
-* `centr` : Logical indicating if the matrices are internally 
+* `centr` : Boolean indicating if the matrices are internally 
     centered or not.
 
 Lg(X, Y) = Sum_j(=1..p) Sum_k(= 1..q) cov(xj, yk)^2
@@ -119,7 +119,7 @@ Compute the RV coefficient between matrices.
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
 * `Xbl` : A list (vector) of matrices.
-* `centr` : Logical indicating if the matrices are internally 
+* `centr` : Boolean indicating if the matrices are internally 
     centered or not.
 
 RV is bounded in [0, 1]. 

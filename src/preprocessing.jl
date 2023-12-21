@@ -24,6 +24,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
+#### Embedded syntax
 mod = detrend(degree = 2)
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
@@ -68,8 +69,8 @@ function transf!(object::Detrend, X::Matrix)
 end
 
 """
-    fdif(X; npoint = 2)
-Compute finite differences (discrete derivates) for each 
+    fdif(X; kwargs...)
+Finite differences (discrete derivates) for each 
     row of X-data. 
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -96,6 +97,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
+#### Embedded syntax
 mod = fdif(npoint = 2) 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
@@ -175,7 +177,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-plotsp(X[1:10,:], wl).f
+#### Embedded syntax
 
 wlfin = collect(range(500, 2400, length = 10))
 #wlfin = range(500, 2400, length = 10)
@@ -227,7 +229,7 @@ end
 """
     mavg(X; kwargs...)
 Smoothing by moving averages of each row of X-data.
-* `X` : X-data.
+* `X` : X-data (n, p).
 Keyword arguments:
 * `npoint` : Nb. points involved in the window 
 
@@ -235,6 +237,8 @@ The smoothing is computed by convolution (with padding),
 using function imfilter of package ImageFiltering.jl. The centered 
 kernel is ones(`npoint`) / `npoint`. Each returned point is located on 
 the center of the kernel.
+
+The function returns a matrix (n, p).
 
 ## References
 Package ImageFiltering.jl
@@ -256,8 +260,13 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-Xp = mavg(X; npoint = 10) 
-plotsp(Xp[1:30, :], wl).f
+#### Embedded syntax
+mod = mavg(npoint = 10) 
+fit!(mod, Xtrain)
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
+plotsp(Xptrain).f
+plotsp(Xptest).f
 ```
 """ 
 function mavg(X; kwargs...)
@@ -293,15 +302,20 @@ function transf!(object::Mavg, X::Matrix)
 end
 
 """ 
-    savgk(nhwindow, degree, deriv)
+    savgk(nhwindow::Int, deriv::Int, degree::Int)
 Compute the kernel of the Savitzky-Golay filter.
-* `nhwindow` : Nb. points of the half window (nhwindow >= 1) 
-    --> the size of the kernel is odd (npoint = 2 * nhwindow + 1): 
-    x[-nhwindow], x[-nhwindow+1], ..., x[0], ...., x[nhwindow-1], x[nhwindow].
-* `degree` : Polynom order (1 <= degree <= 2 * nhwindow).
-    The case "degree = 0" (simple moving average) is not allowed by the funtion.
-* `deriv` : Derivation order (0 <= deriv <= degree).
-    If `deriv = 0`, there is no derivation (only polynomial smoothing).
+* `nhwindow` : Nb. points (>= 1) of the half window.
+* `deriv` : Derivation order, where 0 <= `deriv` <= degree.
+* `degree` : Degree of the smoothing polynom, where
+   1 <= `degree` <= 2 * nhwindow.
+
+The size of the kernel is odd (npoint = 2 * nhwindow + 1): 
+* x[-nhwindow], x[-nhwindow+1], ..., x[0], ...., x[nhwindow-1], x[nhwindow].
+
+If `deriv` = 0, there is no derivation (only polynomial smoothing).
+
+The case `degree` = 0 (i.e. simple moving average) is not 
+allowed by the funtion.
 
 ## References
 Luo, J., Ying, K., Bai, J., 2005. Savitzky–Golay smoothing and differentiation 
@@ -310,7 +324,7 @@ https://doi.org/10.1016/j.sigpro.2005.02.002
 
 ## Examples
 ```julia
-res = savgk(21, 3, 2)
+res = savgk(21, 2, 3)
 pnames(res)
 res.S 
 res.G 
@@ -334,18 +348,22 @@ end
 
 """
     savgol(X; kwargs...)
-Savitzky-Golay smoothing of each row of a matrix `X`.
+Savitzky-Golay derivation and smoothing of each row of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `npoint` : Size of the filter (nb. points involved in 
     the kernel). Must be odd and >= 3. The half-window size is 
-    nhwindow = (npoint - 1) / 2.
-* `degree` : Polynom order (1 <= degree <= npoint - 1).
-* `deriv` : Derivation order (0 <= deriv <= degree).
+    nhwindow = (`npoint` - 1) / 2.
+* `deriv` : Derivation order. Must be: 0 <= `deriv` <= `degree`.
+* `degree` : Degree of the smoothing polynom.
+    Must be: 1 <= `degree` <= `npoint` - 1.
 
-The smoothing is computed by convolution (with padding), with function 
-imfilter of package ImageFiltering.jl. Each returned point is located on the fcenter 
-of the kernel. The kernel is computed with function `savgk`.
+The smoothing is computed by convolution (with padding), using 
+function imfilter of package ImageFiltering.jl. Each returned point is 
+located on the center of the kernel. The kernel is computed with 
+function `savgk`.
+
+The function returns a matrix (n, p).
 
 ## References 
 Luo, J., Ying, K., Bai, J., 2005. Savitzky–Golay smoothing and differentiation filter for 
@@ -373,9 +391,15 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-npoint = 21 ; degree = 3 ; deriv = 2 ; 
-Xp = savgol(X; npoint = npoint, degree = degree, deriv = deriv) 
-plotsp(Xp[1:30, :], wl).f
+#### Embedded syntax
+npoint = 11 ; deriv = 2 ; degree = 2
+mod = savgol(; npoint, deriv , 
+    degree) 
+fit!(mod, Xtrain)
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
+plotsp(Xptrain).f
+plotsp(Xptest).f
 ```
 """ 
 function savgol(X; kwargs...)
@@ -407,7 +431,8 @@ function transf!(object::Savgol, X::Matrix)
     out = similar(X, p)
     @inbounds for i = 1:n
         ## convolution with "replicate" padding
-        imfilter!(out, vrow(X, i), reflect(zkern))
+        imfilter!(out, vrow(X, i),
+            reflect(zkern))
         X[i, :] .= out
     end
     ## Not faster
@@ -418,11 +443,12 @@ end
 
 """
     snv(X; kwargs...)
-Standard-normal-variate (SNV) transformation of each row of X-data.
+Standard-normal-variate (SNV) transformation of each 
+    row of X-data.
 * `X` : X-data.
 Keyword arguments:
-* `centr` : Logical indicating if the centering in done.
-* `scal` : Logical indicating if the scaling in done.
+* `centr` : Boolean indicating if the centering in done.
+* `scal` : Boolean indicating if the scaling in done.
 
 ## Examples
 ```julia
@@ -440,8 +466,15 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-Xp = snv(X) 
-plotsp(Xp[1:30, :], wl).f
+#### Embedded syntax
+centr = true ; scal = true
+mod = snv(; centr, scal) 
+fit!(mod, Xtrain)
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
+plotsp(Xptrain).f
+plotsp(Xptest).f
+
 ```
 """ 
 function snv(X; kwargs...)
@@ -476,6 +509,36 @@ end
 
 """
     center(X)
+Column-wise centering of X-data.
+* `X` : X-data.
+
+## Examples
+```julia
+using JchemoData, JLD2
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+pnames(dat)
+X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
+plotsp(dat.X, wl; nsamp = 20).f
+
+#### Embedded syntax
+mod = center() 
+fit!(mod, Xtrain)
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
+colmean(Xptrain)
+@head Xptest 
+@head Xtest .- colmean(Xtrain)'
+plotsp(Xptrain).f
+plotsp(Xptest).f
+```
 """
 function center(X)
     xmeans = colmean(X)
@@ -504,6 +567,36 @@ end
 
 """
     scale(X)
+Column-wise scaling of X-data.
+* `X` : X-data.
+
+## Examples
+```julia 
+using JchemoData, JLD2
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+pnames(dat)
+X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
+plotsp(dat.X, wl; nsamp = 20).f
+
+#### Embedded syntax
+mod = scale() 
+fit!(mod, Xtrain)
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
+colstd(Xptrain)
+@head Xptest 
+@head Xtest ./ colstd(Xtrain)'
+plotsp(Xptrain).f
+plotsp(Xptest).f
+```
 """
 function scale(X)
     xscales = colstd(X)
@@ -532,6 +625,37 @@ end
 
 """
     cscale(X)
+Column-wise centering and scaling of X-data.
+* `X` : X-data.
+
+## Examples
+```julia
+using JchemoData, JLD2
+path_jdat = dirname(dirname(pathof(JchemoData)))
+
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+pnames(dat)
+X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
+plotsp(dat.X, wl; nsamp = 20).f
+
+#### Embedded syntaxmod = cscale() 
+fit!(mod, Xtrain)
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
+colmean(Xptrain)
+colstd(Xptrain)
+@head Xptest 
+@head (Xtest .- colmean(Xtrain)') ./ colstd(Xtrain)'
+plotsp(Xptrain).f
+plotsp(Xptest).f
+```
 """
 function cscale(X)
     xmeans = colmean(X)

@@ -7,7 +7,7 @@ Conjugate gradient algorithm for the normal equations (CGLS; Björck 1996).
 * `nlv` : Nb. CG iterations.
 * `gs` : If `true`, a Gram-Schmidt gsogonalization of the normal equation 
     residual vectors is done.
-* `filt` : Logical indicating if the CG filter factors are computed (output `F`).
+* `filt` : Boolean indicating if the CG filter factors are computed (output `F`).
 * `scal` : Boolean. If `true`, each column of `X` and `y` 
     is scaled by its uncorrected standard deviation.
 

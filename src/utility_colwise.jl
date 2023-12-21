@@ -1,6 +1,6 @@
 """
     colmad(X)
-Compute columnwise median absolute deviations (MAD) of a matrix.
+Compute column-wise median absolute deviations (MAD) of a matrix.
 * `X` : Data (n, p).
 
 Return a vector.
@@ -21,7 +21,7 @@ end
 """
     colmean(X)
     colmean(X, weights)
-Compute columnwise means of a matrix.
+Compute column-wise means of a matrix.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
     Consider to preliminary normalise `w` to 
@@ -46,7 +46,7 @@ colmean(X, weights::Weight) = vec(weights.w' * ensure_mat(X))
 """
     colnorm(X)
     colnorm(X, w)
-Compute columnwise norms of a matrix.
+Compute column-wise norms of a matrix.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
     Consider to preliminary normalise `w` to 
@@ -75,7 +75,7 @@ colnorm(X, weights::Weight) = vec(sqrt.(weights.w' * ensure_mat(X).^2))
 """
     colstd(X)
     colstd(X, w)
-Compute columnwise standard deviations (uncorrected) of a matrix.
+Compute column-wise standard deviations (uncorrected) of a matrix.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
     Consider to preliminary normalise `w` to 
@@ -101,7 +101,7 @@ colstd(X, weights::Weight) = sqrt.(colvar(X, weights))
 """
     colsum(X)
     colsum(X, w)
-Compute columnwise sums of a matrix.
+Compute column-wise sums of a matrix.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
     Consider to preliminary normalise `w` to 
@@ -126,7 +126,7 @@ colsum(X, weights::Weight) = vec(weights.w' * ensure_mat(X))
 """
     colvar(X)
     colvar(X, w)
-Compute columnwise variances (uncorrected) of a matrix.
+Compute column-wise variances (uncorrected) of a matrix.
 * `X` : Data (n, p).
 * `w` : Weights (n) of the observations.
     Consider to preliminary normalise `w` to 

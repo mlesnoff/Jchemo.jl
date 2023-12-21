@@ -1,6 +1,6 @@
 """
     rowmean(X)
-Compute rownwise means of a matrix.
+Compute row-wise means of a matrix.
 * `X` : Data (n, p).
 
 Return a vector.
@@ -16,7 +16,7 @@ rowmean(X) = vec(Statistics.mean(ensure_mat(X); dims = 2))
 
 """
     rowstd(X)
-Compute rownwise standard deviations (uncorrected) of a matrix`.
+Compute row-wise standard deviations (uncorrected) of a matrix`.
 * `X` : Data (n, p).
 
 Return a vector.
@@ -33,7 +33,7 @@ rowstd(X) = vec(Statistics.std(ensure_mat(X);
 
 """
     rowsum(X)
-Compute rownwise sums of a matrix.
+Compute row-wise sums of a matrix.
 * `X` : Data (n, p).
 
 Return a vector.
@@ -48,7 +48,7 @@ rowsum(X) = vec(sum(ensure_mat(X); dims = 2))
 
 """
     rowvar(X)
-Compute rownwise variances (uncorrected) of a matrix.
+Compute row-wise variances (uncorrected) of a matrix.
 * `X` : Data (n, p).
 
 Return a vector.
