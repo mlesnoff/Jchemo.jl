@@ -645,7 +645,8 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-#### Embedded syntaxmod = cscale() 
+#### Embedded syntax
+mod = cscale() 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
