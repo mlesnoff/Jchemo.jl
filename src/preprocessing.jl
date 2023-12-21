@@ -24,7 +24,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-#### Embedded syntax
+### Embedded syntax
 mod = detrend(degree = 2)
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
@@ -97,7 +97,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-#### Embedded syntax
+### Embedded syntax
 mod = fdif(npoint = 2) 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
@@ -141,20 +141,14 @@ end
     interpl(X; kwargs...)
 Sampling signals by interpolation.
 * `X` : Matrix (n, p) of signals (rows).
+Keyword arguments:
 * `wl` : Values representing the column "names" of `X`. 
     Must be a numeric vector of length p, or an AbstractRange.
-Keyword arguments:
-* `wlfin` : Final values where to interpolate within the range of `wl`.
-    Must be a numeric vector, or an AbstractRange.
-* `fun` : Function defining the interpolation method.
+* `wlfin` : Final values (within the range of `wl`) where to interpolate
+    the signal. Must be a numeric vector, or an AbstractRange.
 
-The function uses package DataInterpolations.jl.
-
-Possible values of `fun` (methods) are:
-- `linear_int`: A linear interpolation (LinearInterpolation).
-- `quadratic_int`: A quadratic interpolation (QuadraticInterpolation).
-- `quadratic_spline`: A quadratic spline interpolation(QuadraticSpline).
-- `cubic_spline`: A cubic spline interpolation (CubicSpline)
+The function implements a cubic spline interpolation using 
+package DataInterpolations.jl.
 
 ## References
 Package Interpolations.jl
@@ -177,15 +171,15 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-#### Embedded syntax
-
-wlfin = collect(range(500, 2400, length = 10))
-#wlfin = range(500, 2400, length = 10)
-Xp = interpl(X[1:10, :], wl; wlfin = wlfin) 
-plotsp(Xp, wlfin).f
-
-Xp = interpl_mon(X[1:10, :], wl; wlfin = wlfin) ;
-plotsp(Xp, wlfin).f
+### Embedded syntax
+wlfin = range(500, 2400, length = 10)
+#wlfin = collect(range(500, 2400, length = 10))
+mod = interpl(; wl, wlfin)
+fit!(mod, Xtrain)
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
+plotsp(Xptrain).f
+plotsp(Xptest).f
 ```
 """
 function interpl(X; kwargs...)
@@ -260,7 +254,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-#### Embedded syntax
+### Embedded syntax
 mod = mavg(npoint = 10) 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
@@ -391,7 +385,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-#### Embedded syntax
+### Embedded syntax
 npoint = 11 ; deriv = 2 ; degree = 2
 mod = savgol(; npoint, deriv , 
     degree) 
@@ -466,7 +460,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-#### Embedded syntax
+### Embedded syntax
 centr = true ; scal = true
 mod = snv(; centr, scal) 
 fit!(mod, Xtrain)
@@ -528,7 +522,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-#### Embedded syntax
+### Embedded syntax
 mod = center() 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
@@ -586,7 +580,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-#### Embedded syntax
+### Embedded syntax
 mod = scale() 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
@@ -645,7 +639,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-#### Embedded syntax
+### Embedded syntax
 mod = cscale() 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
