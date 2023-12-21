@@ -29,7 +29,7 @@ X1val = dat.X1val
 X2val = dat.X2val
 
 ## The objective is to remove a detrimental 
-## information (here, D) from column-spaces X1 and X2
+## information (here, D) from spaces X1 and X2
 D = difmean(X1cal, X2cal).D
 res = eposvd(D; nlv = 1)
 ## Corrected Val matrices

@@ -4,6 +4,7 @@
 Compute an orthogonalization matrix for calibration transfer of spectral data.
 * `D` : Data (m, p) containing the "detrimental" information on which spectra
     (rows of a matrix X) have to be orthogonalized.
+Keyword arguments:
 * `nlv` : Nb. of first loadings vectors of `D` considered for the 
     orthogonalization.
 
@@ -57,7 +58,7 @@ Laboratory Systems, 80, 227–235. https://doi.org/10.1016/j.chemolab.2005.06.01
 ```julia
 using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/caltransfer.jld2") 
+db = joinpath(path_jdat, "data/caltransfer.jld2")
 @load db dat
 pnames(dat)
 X1cal = dat.X1cal
@@ -65,29 +66,28 @@ X2cal = dat.X2cal
 X1val = dat.X1val
 X2val = dat.X2val
 
+## The objective is to remove a detrimental 
+## information (here, D) from spaces X1 and X2
 D = X1cal - X2cal
 nlv = 2
 res = eposvd(D; nlv = nlv)
-res.M      # orthogonalization matrix
-res.P      # detrimental directions (columns of matrix P = loadings of D)
+res.M # orthogonalization matrix
+res.P # detrimental directions (columns of matrix P = loadings of D)
 
 ## Corrected Val matrices
-zX1 = X1val * res.M
-zX2 = X2val * res.M
+X1val_c = X1val * res.M
+X2val_c = X2val * res.M
 
 i = 1
-f = Figure(size = (500, 300))
-ax = Axis(f[1, 1])
-lines!(X1val[i, :]; label = "x1_correct")
-lines!(ax, X2val[i, :]; label = "x2_correct")
-axislegend(position = :cb, framevisible = false)
-f
-##
-f = Figure(size = (500, 300))
-ax = Axis(f[1, 1])
-lines!(zX1[i, :]; label = "x1_correct")
-lines!(ax, zX2[i, :]; label = "x2_correct")
-axislegend(position = :cb, framevisible = false)
+f = Figure(size = (800, 300))
+ax1 = Axis(f[1, 1])
+ax2 = Axis(f[1, 2])
+lines!(ax1, X1val[i, :]; label = "x1")
+lines!(ax1, X2val[i, :]; label = "x2")
+axislegend(ax1, position = :cb, framevisible = false)
+lines!(ax2, X1val_c[i, :]; label = "x1_correct")
+lines!(ax2, X2val_c[i, :]; label = "x2_correct")
+axislegend(ax2, position = :cb, framevisible = false)
 f
 ```
 """ 
