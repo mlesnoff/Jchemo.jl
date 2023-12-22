@@ -1,5 +1,5 @@
 """
-    calds(X1, X2; fun = mlrpinv, kwargs...)
+    calds(X1, X2; fun = plskern, kwargs...)
 Direct standardization (DS) for calibration transfer of spectral data.
 * `X1` : Spectra (n, p) to transfer to the target.
 * `X2` : Target spectra (n, p).
@@ -44,9 +44,9 @@ fm = calds(X1cal, X2cal;
     fun = plskern, nlv = 10) ;
 #fm = calds(X1cal, X2cal; fun = mlrpinv) ;  # less robust
 
-## Transfer of new spectra X2val 
-## expected to be close to X1val
-pred = Jchemo.predict(fm, X1val).pred
+## Transfer of new spectra X1val 
+## expected to be close to X2val
+pred = predict(fm, X1val).pred
 
 i = 1
 f = Figure(size = (500, 300))
@@ -58,7 +58,7 @@ axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-function calds(X1, X2; fun = mlrpinv, 
+function calds(X1, X2; fun = plskern, 
         kwargs...)
     fm = fun(X1, X2; kwargs...)
     CalDs(fm)
