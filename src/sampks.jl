@@ -1,8 +1,9 @@
 """
-    sampks(X, k; metric = :eucl)
+    sampks(X, k::Int; metric = :eucl)
 Build training vs. test sets by Kennard-Stone sampling.  
 * `X` : X-data (n, p).
-* `k` : Nb. test observations to sample. 
+* `k` : Nb. test observations to sample.
+Keyword arguments: 
 * `metric` : Metric used for the distance computation.
     Possible values: :eucl, :mah.
 
@@ -36,14 +37,29 @@ pnames(dat)
 X = dat.X 
 y = dat.Y.tbc
 
-k = 200
+k = 80
 res = sampks(X, k)
 pnames(res)
 res.train 
 res.test
 
-fm = pcasvd(X; nlv = 15) ;
-res = sampks(fm.T, k; metric = :mah)
+mod = pcasvd(nlv = 15) ;
+fit!(mod, X) 
+@head T = mod.fm.T
+res = sampks(T, k; metric = :mah)
+
+#####################
+
+n = 10
+k = 25 
+X = [repeat(1:n, inner = n) repeat(1:n, outer = n)] 
+X = Float64.(X) 
+X .= X + .1 * randn(nro(X), nco(X))
+s = sampks(X, k).test
+f, ax = plotxy(X[:, 1], X[:, 2])
+scatter!(ax, X[s, 1], X[s, 2]; 
+    color = "red") 
+
 ```
 """ 
 function sampks(X, k::Int; metric = :eucl)
