@@ -40,11 +40,14 @@
 - **ccawold** CCA and RCCA - Wold (1984) Nipals algorithm  
 - **plscan** Canonical partial least squares regression (Symmetric PLS)
 - **plstuck** Tucker's inter-battery method of factor analysis (PLS-SVD)
-- **rasvd** Redundancy analysis (RA), *aka* PCA on instrumental variables (PCAIV)
+- **rasvd** Redundancy analysis (RA), *aka* PCA on instrumental 
+    variables (PCAIV)
 
 *2 or more blocks* 
-- **mbpca** Multiblock PCA (MBPCA), *aka* Consensus principal component analysis (*aka* CPCA))
-- **comdim** Common components and specific weights analysis (ComDim), *aka* CCSWA or HPCA
+- **mbpca** Multiblock PCA (MBPCA), *aka* Consensus principal component 
+    analysis (*aka* CPCA))
+- **comdim** Common components and specific weights analysis (ComDim), 
+    *aka* CCSWA or HPCA
 
 *Utilities*
 - **mblock** Make blocks from a matrix
@@ -84,7 +87,8 @@
 *Variants of regularization using latent variables* 
 - **cglsr** Conjugate gradient for the least squares normal equations (CGLS)
 - **pcr** Principal components regression (SVD factorization)
-- **rrr** Reduced rank regression (RRR), *aka*  Redundancy analysis regression 
+- **rrr** Reduced rank regression (RRR), *aka*  Redundancy analysis
+    regression 
 
 *Sparse*
 - **splskern** 
@@ -99,7 +103,8 @@
 - **dkplsr** Direct non linear kernel (DKPLSR) *Bennett & Embrechts 2003*
 
 *Multiblock*
-- **mbplsr** Multiblock PLSR (MBPLSR) - Fast version (PLSR on concatenated blocks)
+- **mbplsr** Multiblock PLSR (MBPLSR) - Fast version (PLSR 
+    on concatenated blocks)
 - **mbplswest** MBPLSR - Nipals algorithm *Westerhuis et al. 1998* 
 - **rosaplsr** ROSA *Liland et al. 2016*
 - **soplsr** Sequentially orthogonalized (SO-PLSR) 
@@ -157,7 +162,8 @@
 
 *Parametric*
 - **lda** Linear discriminant analysis (LDA)
-- **qda** Quadratic discriminant analysis (QDA, with continuum towards LDA)
+- **qda** Quadratic discriminant analysis (QDA, with continuum 
+    towards LDA)
 - **rda** Regularized discriminant analysis (RDA)
 
 *Non parametric*
@@ -179,7 +185,8 @@
 - **lwmlrda** kNN locally weighted MLR-DA (kNN-LWMLR-DA)
 - **lwplsrda** kNN Locally weighted PLSR-DA (kNN-LWPLSR-DA)
 - **lwplslda** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
-- **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA, with continuum)
+- **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA, 
+    with continuum)
 
 *With preliminary dimension reduction*
 - **lwmlrda_s** kNN-LWMLR-DA-S
@@ -214,7 +221,8 @@
 - **dmnormlog** Logarithm of the normal probability density estimation
 - **dmkern** Gaussian kernel density estimation (KDE)
 - **pval** Compute p-value(s) for a distribution, a vector or an ECDF
-- **out** Return if elements of a vector are strictly outside of a given range
+- **out** Return if elements of a vector are strictly outside 
+    of a given range
 
 ## VARIABLE IMPORTANCE
 
@@ -262,7 +270,8 @@
 
 *Model dimensionality*
 - **aicplsr** AIC and Cp for PLSR
-- **selwold** Wold's criterion to select dimensionality in LV (e.g. PLSR) models
+- **selwold** Wold's criterion to select dimensionality 
+    in LV (e.g. PLSR) models
 
 ## DATA PROCESSING
 
@@ -290,39 +299,48 @@
 
 ### **Calibration transfer**
 
-- **difmean** Compute a detrimental matrix (for calibration transfer) by 
-    difference of two matrix-column means.
-- **eposvd** Compute an orthogonalization matrix for calibration transfer
+- **difmean** Compute a detrimental matrix (for 
+    calibration transfer) by difference of two matrix-column
+    means.
+- **eposvd** Compute an orthogonalization matrix for 
+    calibration transfer
 - **calds** Direct standardization (DS)
 - **calpds** Piecewise direct standardization (PDS)
 
-### **Build training/test sets by sampling**
+### **Build training vs. test sets by sampling**
 
 - **samprand** Random (without replacement)
-- **sampks** Kennard-Stone 
-- **sampdp** Duplex  
 - **sampsys** Systematic over a quantitative variable
 - **sampcla** Stratified by class
-- **sampdf** Split for each column of a dataframe (typically, response variables 
-    to predict) that can contain missing values
+- **sampdf** From each column of a dataframe (with missing 
+    values allowed)
+
+- **sampks** Kennard-Stone 
+- **sampdp** Duplex  
 
 ## PLOTTING
 
 - **plotsp** Plot spectra
 - **plotxy** xy scatter plot
-- **plotgrid** Plot error or performance rates of model predictions
+- **plotgrid** Plot error or performance rates of 
+    model predictions
 - **plotconf** Plot confusion matrix
 
 ## UTILITIES
 
-- **aggstat** Compute column-wise statistics by group in a dataset
-- **fcenter**, **fscale**, **fcscale** Column-wise centering and scaling of a matrix
-- **colmad**, **colmean**, **colnorm**, **colstd**, **colsum**, **colvar**  Column-wise operations
-- **colmeanskip**, **colstdskip**, **colsumskip**, **colvarskip**: Column-wise operations allowing missing data
+- **aggstat** Compute column-wise statistics by group 
+    in a dataset
+- **fcenter**, **fscale**, **fcscale** Column-wise centering 
+    and scaling of a matrix
+- **colmad**, **colmean**, **colnorm**, **colstd**, **colsum**, **colvar**  Column-wise 
+    operations
+- **colmeanskip**, **colstdskip**, **colsumskip**, **colvarskip**: Column-wise operations 
+    allowing missing data
 - **covm**, **corm** Weighted covariance and correlation matrices
 - **cosv**, **cosm** Cosinus between vectors
 - **dummy** Build dummy table
-- **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
+- **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) 
+    between rows of matrices
 - **findmax_cla** Find the most occurent level in a categorical variable
 - **frob** Frobenius norm of a matrix
 - **fweight** Compute weights from distances
@@ -342,13 +360,18 @@
 - **psize** Return the type and size of a dataset
 - **recodcat2int** Recode a categorical variable to a integer variable
 - **recodnum2cla** Recode a continuous variable to integer classes
-- **replacebylev** Replace the elements of a vector by levels of corresponding order
+- **replacebylev** Replace the elements of a vector by levels 
+    of corresponding order
 - **replacebylev2** Replace the elements of an index-vector by levels
-- **replacedict** Replace the elements of a vector by levels defined in a dictionary
-- **rmcol** Remove the columns of a matrix or the components of a vector having indexes s
-- **rmrow** Remove the rows of a matrix or the components of a vector having indexes s
+- **replacedict** Replace the elements of a vector by levels 
+    defined in a dictionary
+- **rmcol** Remove the columns of a matrix or the components 
+    of a vector having indexes s
+- **rmrow** Remove the rows of a matrix or the components 
+    of a vector having indexes s
 - **rowmean**, **rowstd**, **rowsum**, **rowvar**: Row-wise operations
-- **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations allowing missing data
+- **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations 
+    allowing missing data
 - **soft** Soft thresholding
 - **softmax** Softmax function
 - **sourcedir** Include all the files contained in a directory

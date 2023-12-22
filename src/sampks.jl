@@ -1,13 +1,13 @@
 """
     sampks(X, k; metric = :eucl)
-Build training/test sets by Kennard-Stone sampling.  
+Build training vs. test sets by Kennard-Stone sampling.  
 * `X` : X-data (n, p).
-* `k` : Nb. observations to sample (= output `test`). 
+* `k` : Nb. test observations to sample. 
 * `metric` : Metric used for the distance computation.
     Possible values: :eucl, :mah.
 
 Two outputs (= row indexes of the data) are returned: 
-* `train` (n - `k`),
+* `train` (`n` - `k`),
 * `test` (`k`). 
 
 Output `test` is built from the Kennard-Stone (KS) 

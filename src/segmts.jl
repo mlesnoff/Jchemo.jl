@@ -3,7 +3,7 @@
     segmts(group::Vector, m::Int; rep = 1, 
         seed = nothing)
 Build segments for "test-set" validation.
-* `n` : Total nb. observations in the dataset. The sampling 
+* `n` : Total nb. of observations in the dataset. The sampling 
     is implemented within 1:`n`.
 * `m` : Nb. observations, or groups if `group` is used, returned 
     in each segment.

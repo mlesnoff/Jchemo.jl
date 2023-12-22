@@ -1,6 +1,6 @@
 """
     sampdp(X, k; metric = :eucl)
-Build training/test sets by DUPLEX sampling.  
+Build training vs. test sets by DUPLEX sampling.  
 * `X` : X-data (n, p).
 * `k` : Nb. pairs of observations to sample 
     (outputs `train` and `test`). Must be <= n / 2. 

@@ -45,7 +45,7 @@ They will be corrected in versions > 0.3.0.
 ## *Version 0.2.3*
 
 - News
-    - **samprand**: Build training/test sets by random sampling.
+    - **samprand**: Build training vs. test sets by random sampling.
     - **svmr**, **svmda**: SVM (wrappers to LIBSVM.jl) were reset in 
         the package.
 

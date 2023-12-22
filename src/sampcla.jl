@@ -1,18 +1,20 @@
 """
-    sampcla(x, k, y = nothing)
-Build training/test sets by stratified sampling.  
+    sampcla(x, k::Union{Int, Vector{Int}}, 
+        y = nothing)
+Build training vs. test sets by stratified sampling.  
 * `x` : Class membership (n) of the observations.
-* `k` : Nb. observations to sample in each class (= output `test`). 
-    If `k` is a single value, the nb. sampled observations is the same 
-    for each class. Alternatively, `k` can be a vector of length 
-    equal to the nb. classes in `x`.
+* `k` : Nb. test observations to sample in each class. 
+    If `k` is a single value, the nb. of sampled 
+    observations is the same for each class. Alternatively, 
+    `k`can be a vector of length equal to the nb. of 
+    classes in `x`.
 * `y` : Quantitative variable (n) used if systematic sampling.
 
-Two outputs (= row indexes of the data) are returned: 
+Two outputs are returned (= row indexes of the data): 
 * `train` (n - `k`),
 * `test` (`k`). 
 
-If `y = nothing` (default), the sampling is random, else it is 
+If `y = nothing`, the sampling is random, else it is 
 systematic over the sorted `y`(see function `sampsys`).
 
 ## References
@@ -21,24 +23,24 @@ analysis by clustering. Journal of Chemometrics 1, 121-134.
 
 ## Examples
 ```julia
-x = string.(repeat(1:5, 3))
+x = string.(repeat(1:3, 5))
+n = length(x)
 tab(x)
-res = sampcla(x, 2)
-res.train
-x[res.train]
-tab(x[res.train])
+k = 2 
+res = sampcla(x, k)
+res.test
+x[res.test]
 tab(x[res.test])
 
-x = string.(repeat(1:5, 3))
-n = length(x) ; y = rand(n) 
-[x y]
-res = sampcla(x, 2, y)
-res.train
-x[res.train]
-tab(x[res.train])
+y = rand(n)
+res = sampcla(x, k, y)
+res.test
+x[res.test]
+tab(x[res.test])
 ```
 """ 
-function sampcla(x, k::Union{Int, Vector{Int}}, y = nothing)
+function sampcla(x, k::Union{Int, Vector{Int}}, 
+        y = nothing)
     x = vec(x)
     n = length(x)
     ztab = tab(x)

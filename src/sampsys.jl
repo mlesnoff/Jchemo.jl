@@ -1,18 +1,19 @@
 """
-    sampsys(y, k)
-Build training/test sets by systematic sampling over
-    a quantitative variable.  
+    sampsys(y, k::Int)
+Build training vs. test sets by systematic sampling 
+    over a quantitative variable.  
 * `y` : Quantitative variable (n) to sample.
-* `k` : Nb. observations to sample (= output `test`). 
+* `k` : Nb. test observations to sample. 
     Must be >= 2.
 
-Two outputs (= row indexes of the data) are returned: 
+Two outputs are returned (= row indexes of the data): 
 * `train` (n - `k`),
 * `test` (`k`). 
 
 Output `test` is built by systematic sampling over the rank of 
 the `y` observations. For instance if `k` / n ~ .3, one observation 
 over three observations over the sorted `y` is selected. 
+
 Output `test` always contains the indexes of the minimum and 
 maximum of `y`.
 
@@ -20,8 +21,8 @@ maximum of `y`.
 ```julia
 y = rand(7)
 [y sort(y)]
-res = sampsys(y, 4)
-sort(y[res.train])
+res = sampsys(y, 3)
+sort(y[res.test])
 ```
 """ 
 function sampsys(y, k::Int)

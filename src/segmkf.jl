@@ -2,7 +2,7 @@
     segmkf(n::Int, K::Int; rep = 1)
     segmkf(group::Vector, K::Int; rep = 1)
 Build segments for K-fold cross-validation.  
-* `n` : Total nb. observations in the dataset. The sampling 
+* `n` : Total nb. of observations in the dataset. The sampling 
     is implemented with 1:n.
 * `K` : Nb. folds (segments) splitting the data. 
 * `group` : A vector (n) defining blocks.

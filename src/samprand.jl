@@ -1,13 +1,14 @@
 """
-    samprand(n, k; replace = false)
-Build training/test sets by random sampling.  
-* `n` : Total nb. observations.
-* `k` : Nb. observations to sample (= output `test`).
-* `replace` : Boolean. If false (default), the sampling is 
+    samprand(n::Int, k::Int; replace = false)
+Build training vs. test sets by random sampling.  
+* `n` : Total nb. of observations.
+* `k` : Nb. test observations to sample.
+Keyword arguments:
+* `replace` : Boolean. If false, the sampling is 
     without replacement.
 
-Two outputs (= row indexes of the data) are returned: 
-* `train` (n - `k`),
+Two outputs are returned (= row indexes of the data): 
+* `train` (`n` - `k`),
 * `test` (`k`). 
 
 Output `test` is built by random sampling within `1:n`. 
@@ -15,10 +16,11 @@ Output `test` is built by random sampling within `1:n`.
 ## Examples
 ```julia
 n = 10
-samprand(n, 7)
+samprand(n, 4)
 ```
 """ 
-function samprand(n::Int, k::Int; replace = false)
+function samprand(n::Int, k::Int; 
+        replace = false)
     zn = collect(1:n)
     s = sample(zn, k; replace = replace)
     sort!(s)
