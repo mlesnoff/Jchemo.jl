@@ -1,20 +1,17 @@
-struct CalDs
-    fm
-end
-
 """
-    calds(X, Xtar; fun = mlrpinv, kwargs...)
+    calds(X1, X2; fun = mlrpinv, kwargs...)
 Direct standardization (DS) for calibration transfer of spectral data.
-* `X` : Spectra to transfer to the target (n, p).
-* `Xtar` : Target spectra (n, p).
+* `X1` : Spectra (n, p) to transfer to the target.
+* `X2` : Target spectra (n, p).
+Keyword arguments:
 * `fun` : Function used as transfer model.  
 * `kwargs` : Optional arguments for `fun`.
 
-`Xtar` and `X` must represent the same n standard samples.
+`X1` and `X2` must represent the same n samples ("standards").
 
-The objective is to transform spectra `X` to new spectra as close 
-as possible as the target `Xtar`. Method DS fits a model 
-(defined in `fun`) that predicts `Xtar` from `X`.
+The objective is to transform spectra `X1` to new spectra as close 
+as possible as the target `X2`. Method DS fits a model 
+(defined in `fun`) that predicts `X2` from `X1`.
 
 ## References
 
@@ -28,36 +25,42 @@ path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/caltransfer.jld2")
 @load db dat
 pnames(dat)
+## Objects X1 and X2 are spectra collected 
+## on the same samples. 
+## X2 represents the target space. 
+## We want to transfer X1 in the same space
+## as X2.
+## Data to transfer
+X1cal = dat.X1cal
+X1val = dat.X1val
+n = nro(X1cal)
+m = nro(X1val)
+## Target space
+X2cal = dat.X2cal
+X2val = dat.X2val
 
-## Target
-Xtarcal = dat.X1cal
-Xtarval = dat.X1val
-## To transfer to the target
-Xcal = dat.X2cal
-Xval = dat.X2val
-n = nro(Xtarcal)
-m = nro(Xtarval)
+## Fitting the model
+fm = calds(X1cal, X2cal; 
+    fun = plskern, nlv = 10) ;
+#fm = calds(X1cal, X2cal; fun = mlrpinv) ;  # less robust
 
-fm = calds(Xcal, Xtarcal; fun = mlrpinv) ;
-#fm = calds(Xcal, Xtarcal; fun = pcr, nlv = 15) ;
-#fm = calds(Xcal, Xtarcal; fun = plskern, nlv = 15) ;
-## Transfered (= corrected) spectra, 
-## expected to be close to Xtarval
-pred = Jchemo.predict(fm, Xval).pred
+## Transfer of new spectra X2val 
+## expected to be close to X1val
+pred = Jchemo.predict(fm, X1val).pred
 
 i = 1
 f = Figure(size = (500, 300))
 ax = Axis(f[1, 1])
-lines!(Xtarval[i, :]; label = "xtar")
-lines!(ax, Xval[i, :]; label = "x_not_correct")
-lines!(pred[i, :]; linestyle = :dash, label = "x_correct")
+lines!(X2val[i, :]; label = "x2")
+lines!(ax, X1val[i, :]; label = "x1")
+lines!(pred[i, :]; linestyle = :dash, label = "x1_corrected")
 axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-function calds(X, Xtar; fun = mlrpinv, 
+function calds(X1, X2; fun = mlrpinv, 
         kwargs...)
-    fm = fun(X, Xtar; kwargs...)
+    fm = fun(X1, X2; kwargs...)
     CalDs(fm)
 end
 

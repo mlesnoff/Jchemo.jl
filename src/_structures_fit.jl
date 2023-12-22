@@ -700,7 +700,9 @@ struct Occsdod
     fmod
 end
 
-###### Preprocessing 
+###### Data Processing 
+
+## Preprocessing
 
 struct Detrend
     kwargs::Base.Pairs
@@ -744,5 +746,17 @@ struct Cscale
     xmeans::Vector
     xscales::Vector
 end
+
+## Calibration transfer
+
+struct CalDs
+    fm
+end
+
+struct CalPds
+    fm
+    s
+end
+
 
 

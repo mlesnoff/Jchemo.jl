@@ -24,8 +24,8 @@ db = joinpath(path_jdat, "data/caltransfer.jld2")
 @load db dat
 pnames(dat)
 X1cal = dat.X1cal
-X2cal = dat.X2cal
 X1val = dat.X1val
+X2cal = dat.X2cal
 X2val = dat.X2val
 
 ## The objective is to remove a detrimental 

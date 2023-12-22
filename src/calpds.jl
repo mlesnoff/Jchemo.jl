@@ -1,8 +1,3 @@
-struct CalPds
-    fm
-    s
-end
-
 """
     calpds(X, Xtar; npoint = 5, 
         fun = mlrpinv, kwargs...)
