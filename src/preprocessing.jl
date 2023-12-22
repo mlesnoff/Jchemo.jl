@@ -1,4 +1,5 @@
 """
+    detrend(; kwargs...)
     detrend(X; kwargs...)
 De-trend transformation of each row of X-data. 
 * `X` : X-data.
@@ -24,7 +25,6 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-### Embedded syntax
 mod = detrend(degree = 2)
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
@@ -69,6 +69,7 @@ function transf!(object::Detrend, X::Matrix)
 end
 
 """
+    fdif(; kwargs...)
     fdif(X; kwargs...)
 Finite differences (discrete derivates) for each 
     row of X-data. 
@@ -97,7 +98,6 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-### Embedded syntax
 mod = fdif(npoint = 2) 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
@@ -138,6 +138,7 @@ function transf!(object::Fdif, X::Matrix, M::Matrix)
 end
 
 """ 
+    interpl(; kwargs...)
     interpl(X; kwargs...)
 Sampling spectra by interpolation.
 * `X` : Matrix (n, p) of spectra (rows).
@@ -171,7 +172,6 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-### Embedded syntax
 wlfin = range(500, 2400, length = 10)
 #wlfin = collect(range(500, 2400, length = 10))
 mod = interpl(; wl, wlfin)
@@ -221,6 +221,7 @@ end
 #quadratic_spline(y, x) = DataInterpolations.QuadraticSpline(y, x)
 
 """
+    mavg(; kwargs...)
     mavg(X; kwargs...)
 Smoothing by moving averages of each row of X-data.
 * `X` : X-data (n, p).
@@ -254,7 +255,6 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-### Embedded syntax
 mod = mavg(npoint = 10) 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
@@ -341,6 +341,7 @@ function savgk(nhwindow::Int, deriv::Int, degree::Int)
 end
 
 """
+    savgol(; kwargs...)
     savgol(X; kwargs...)
 Savitzky-Golay derivation and smoothing of each row of X-data.
 * `X` : X-data (n, p).
@@ -385,9 +386,8 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-### Embedded syntax
 npoint = 11 ; deriv = 2 ; degree = 2
-mod = savgol(; npoint, deriv , 
+mod = savgol(; npoint, deriv, 
     degree) 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
@@ -436,6 +436,7 @@ function transf!(object::Savgol, X::Matrix)
 end
 
 """
+    snv(; kwargs...)
     snv(X; kwargs...)
 Standard-normal-variate (SNV) transformation of each 
     row of X-data.
@@ -460,7 +461,6 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-### Embedded syntax
 centr = true ; scal = true
 mod = snv(; centr, scal) 
 fit!(mod, Xtrain)
@@ -502,6 +502,7 @@ end
 
 
 """
+    center()
     center(X)
 Column-wise centering of X-data.
 * `X` : X-data.
@@ -522,7 +523,6 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-### Embedded syntax
 mod = center() 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
@@ -560,6 +560,7 @@ function transf!(object::Center, X::Matrix)
 end
 
 """
+    scale()
     scale(X)
 Column-wise scaling of X-data.
 * `X` : X-data.
@@ -580,7 +581,6 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-### Embedded syntax
 mod = scale() 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
@@ -618,6 +618,7 @@ function transf!(object::Scale, X::Matrix)
 end
 
 """
+    cscale()
     cscale(X)
 Column-wise centering and scaling of X-data.
 * `X` : X-data.
@@ -639,7 +640,6 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-### Embedded syntax
 mod = cscale() 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
