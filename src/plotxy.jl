@@ -32,7 +32,8 @@ Keyword arguments:
 * `kwargs` : Optional arguments to pass in function `scatter` 
     of Makie.
 
-To use `plotxy`, a backend (e.g. CairoMakie) has to be specified.
+To use `plotxy`, a backend (e.g. CairoMakie) has 
+to be specified.
 
 ## Examples
 ```julia
@@ -79,7 +80,8 @@ A = rand(50, 2)
 f, ax = plotxy(A[:, 1], A[:, 2]; 
     xlabel = "x1", ylabel = "x2")
 ylims!(ax, -1, 2)
-hlines!(ax, 0.5; color = :red, linestyle = :dot)
+hlines!(ax, 0.5; color = :red, 
+    linestyle = :dot)
 f
 ```
 """ 

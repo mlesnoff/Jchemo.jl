@@ -3,21 +3,22 @@
         step = 5, color = nothing, kwargs...)
     plotgrid(indx::AbstractVector, r, group; size = (500, 350), 
         step = 5, color = nothing, leg = true, kwargs...)
-
-Plot error or performance rates of model predictions.
-* `indx` : A numeric variable representing the grid of model parameters, 
-    e.g. the nb. LVs if PLSR models.
-* `r` : The error/performance rates for the values of `x`. 
+Plot error/performance rates of a model.
+* `indx` : A numeric variable representing the grid of 
+    model parameters, e.g. the nb. LVs if PLSR models.
+* `r` : The error/performance rate.
+Keyword arguments: 
 * `group` : Categorical variable defining groups. 
     A separate line is plotted for each level of `group`.
 * `size` : Size (horizontal, vertical) of the figure.
 * `step` : Step used for defining the xticks.
-* `color` : Set color. If `group` if used, must be a vector of same length
-    as the number of levels in `group`.
+* `color` : Set color. If `group` if used, must be a vector 
+    of same length as the number of levels in `group`.
 * `leg` : Boolean. If `group` is used, display a legend or not.
 * `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.
 
-The user has to specify a backend (e.g. CairoMakie).
+To use `plotgrid`, a backend (e.g. CairoMakie) has to 
+be specified.
 
 ## Examples
 ```julia
@@ -37,17 +38,19 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 0:20
-res = gridscore_lv(Xtrain, ytrain, Xtest, ytest;
+res = gridscore(Xtrain, ytrain, Xtest, ytest;
     score = rmsep, fun = plskern, nlv = nlv)
 plotgrid(res.nlv, res.y1;
     xlabel = "Nb. LVs", ylabel = "RMSEP").f
 
-nlvdis = 15 ; metric = [:mah ]
+nlvdis = 15 ; metric = [:mah]
 h = [1 ; 2.5 ; 5] ; k = [50 ; 100] 
-pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
+pars = mpar(nlvdis = nlvdis, metric = metric, 
+    h = h, k = k)
 nlv = 0:20
-res = gridscore_lv(Xtrain, ytrain, Xtest, ytest;
-    score = rmsep, fun = lwplsr, pars = pars, nlv = nlv)
+res = gridscore(Xtrain, ytrain, Xtest, ytest;
+    score = rmsep, fun = lwplsr, pars = pars, 
+    nlv = nlv)
 group = string.("h=", res.h, " k=", res.k)
 plotgrid(res.nlv, res.y1, group;
     xlabel = "Nb. LVs", ylabel = "RMSECV").f

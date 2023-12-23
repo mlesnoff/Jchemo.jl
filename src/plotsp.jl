@@ -14,7 +14,8 @@ Keyword arguments:
 
 The function plots the rows of `X`.
 
-To use `plotxy`, a backend (e.g. CairoMakie) has to be specified.
+To use `plotxy`, a backend (e.g. CairoMakie) has 
+to be specified.
 
 ## Examples
 ```julia
