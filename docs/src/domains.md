@@ -6,12 +6,14 @@
 
 *Usual*
 - **pcaeigen** Eigen decomposition
-- **pcaeigenk** Eigen decomposition for wide matrices (kernel form)
+- **pcaeigenk** Eigen decomposition for wide matrices 
+    (kernel form)
 - **pcanipals** NIPALS algorithm
 - **pcasvd** SVD decomposition
 
 *Allow missing data*
-- **pcanipalsmiss**: NIPALS algorithm allowing missing data
+- **pcanipalsmiss**: NIPALS algorithm allowing 
+    missing data
 
 *Robust* 
 - **pcasph** Spherical (with spatial median)
@@ -24,8 +26,8 @@
 - **kpca** Kernel (KPCA) *Scholkopf et al. 2002*
 
 *Utilities (PCA and PLS)* 
-- **xfit** Matrix fitting 
-- **xresid** Residual matrix 
+- **xfit** X-matrix fitting 
+- **xresid** X-residual matrix 
 
 ### Random projections
 
@@ -38,27 +40,30 @@
 *2 blocks*
 - **cca** Canonical correlation analysis (CCA and RCCA)
 - **ccawold** CCA and RCCA - Wold (1984) Nipals algorithm  
-- **plscan** Canonical partial least squares regression (Symmetric PLS)
-- **plstuck** Tucker's inter-battery method of factor analysis (PLS-SVD)
-- **rasvd** Redundancy analysis (RA), *aka* PCA on instrumental 
-    variables (PCAIV)
+- **plscan** Canonical partial least squares 
+    regression (Symmetric PLS)
+- **plstuck** Tucker's inter-battery method of factor 
+    analysis (PLS-SVD)
+- **rasvd** Redundancy analysis (RA), *aka* PCA on 
+    instrumental variables (PCAIV)
 
 *2 or more blocks* 
-- **mbpca** Multiblock PCA (MBPCA), *aka* Consensus principal component 
-    analysis (*aka* CPCA))
-- **comdim** Common components and specific weights analysis (ComDim), 
-    *aka* CCSWA or HPCA
+- **mbpca** Multiblock PCA (MBPCA), *aka* Consensus 
+    principal component analysis (CPCA)
+- **comdim** Common components and specific weights 
+    analysis (ComDim), *aka* CCSWA or HPCA
 
 *Utilities*
 - **mblock** Make blocks from a matrix
-- **fblockscal_col, _frob, _mfa, _sd** Scaling blocks
+- **fblockscal_col, _frob, _mfa, _sd** Scale blocks
 - **rd** Redundancy coefficients between two matrices
 - **lg** Lg coefficient
 - **rv** RV correlation coefficient
 
 ### Factorial discrimination analysis (FDA)
 
-- **fda** Eigen decomposition of the compromise "inter/intra"
+- **fda** Eigen decomposition of the compromise 
+    "inter/intra"
 - **fdasvd** Weighted SVD of the class centers
 
 ## REGRESSION
@@ -78,17 +83,19 @@
 ### **Partial least squares (PLSR)**
 
 *Usual (asymetric regression mode)*
-- **plskern** Fast "improved kernel #1" algorithm of *Dayal & McGregor 1997*
+- **plskern** Fast "improved kernel #1" algorithm 
+    of *Dayal & McGregor 1997*
 - **plsnipals** Nipals
 - **plswold** Nipals *Wold 1984*
 - **plsrosa** ROSA *Liland et al. 2016*
 - **plssimp** SIMPLS *de Jong 1993*
 
 *Variants of regularization using latent variables* 
-- **cglsr** Conjugate gradient for the least squares normal equations (CGLS)
+- **cglsr** Conjugate gradient for the least squares 
+    normal equations (CGLS)
 - **pcr** Principal components regression (SVD factorization)
-- **rrr** Reduced rank regression (RRR), *aka*  Redundancy analysis
-    regression 
+- **rrr** Reduced rank regression (RRR), *aka*  
+    Redundancy analysis regression 
 
 *Sparse*
 - **splskern** 
@@ -112,11 +119,12 @@
 ### **Ridge (RR, KRR)**
 
 *RR*
-- **rr** Pseudo-inverse (RR)
-- **rrchol** Choleski factorization (RR)
+- **rr** Pseudo-inverse
+- **rrchol** Choleski factorization
 
 *Non linear*
-- **krr** Non linear kernel (KRR), *aka* Least squares SVM (LS-SVMR)
+- **krr** Non linear kernel (KRR), *aka* Least 
+    squares SVM (LS-SVMR)
 
 ### **Local models**
 
@@ -125,7 +133,7 @@
 - **lwplsr** kNN locally weighted PLSR (kNN-LWPLSR)
 
 *With preliminary dimension reduction*
-- **lwmlr_s** kNN-LWMLR-S
+- **lwmlr_s** kNN-LWMLR-S, including LWR of *Naes et al 1990*
 - **lwplsr_s** kNN-LWPLSR-S
 
 *Averaging*
@@ -162,12 +170,13 @@
 
 *Parametric*
 - **lda** Linear discriminant analysis (LDA)
-- **qda** Quadratic discriminant analysis (QDA, with continuum 
-    towards LDA)
+- **qda** Quadratic discriminant analysis (QDA, 
+    with continuum towards LDA)
 - **rda** Regularized discriminant analysis (RDA)
 
 *Non parametric*
-- **kdeda** DA by kernel Gaussian density estimation (KDE-DA)
+- **kdeda** DA by kernel Gaussian density 
+    estimation (KDE-DA)
 
 *On PLS latent variables*
 - **plslda** PLS-LDA
@@ -198,7 +207,7 @@
 - **occsd** Score distance (SD)
 - **occod** Orthogonal distance (OD) 
 - **occsdod** Compromise between SD 
-    and OD ("Simca" approach) 
+    and OD (*aka* Simca approach) 
 
 *Other methods*
 - **stah** Compute Stahel-Donoho outlierness
@@ -218,11 +227,13 @@
 ## DISTRIBUTIONS
 
 - **dmnorm** Normal probability density estimation
-- **dmnormlog** Logarithm of the normal probability density estimation
+- **dmnormlog** Logarithm of the normal probability 
+    density estimation
 - **dmkern** Gaussian kernel density estimation (KDE)
-- **pval** Compute p-value(s) for a distribution, a vector or an ECDF
-- **out** Return if elements of a vector are strictly outside 
-    of a given range
+- **pval** Compute p-value(s) for a distribution, 
+    a vector or an ECDF
+- **out** Return if elements of a vector are strictly 
+    outside of a given range
 
 ## VARIABLE IMPORTANCE
 
@@ -236,20 +247,15 @@
 
 - **mpar** Expand a grid of parameter values
 
-### **Validation**
+### **Test-set validation**
 
-- **gridscore** Generic wrapper calling
-    - **gridscore_br** Any model
-    - **gridscore_lv** Accelerator for models with LVs
-    - **gridscore_lb** Accelerator for models with ridge parameter
+- **gridscore** 
   
 ### **Cross-validation (CV)**
 
-- **gridcv** Any model
-- **gridcv_lv** Models with LVs (faster)
-- **gridcv_lb** Models with ridge parameter (faster)  
-- **segmkf** Building segments for K-fold CV
-- **segmts** Building segments for test-set validation
+- **gridcv**  
+- **segmkf** Build segments for K-fold CV
+- **segmts** Build segments for test-set validation
 
 ### **Performance scores**
 
@@ -261,7 +267,8 @@
 - **bias** Bias
 - **cor2** Squared correlation coefficient
 - **r2** R2
-- **rpd**, **rpdr** Ratio of performance to deviation
+- **rpd**, **rpdr** Ratio of performance 
+    to deviation
 - **mse** Summary for regression
 - **confusion** Confusion matrix
 
@@ -270,16 +277,18 @@
 
 *Model dimensionality*
 - **aicplsr** AIC and Cp for PLSR
-- **selwold** Wold's criterion to select dimensionality 
-    in LV (e.g. PLSR) models
+- **selwold** Wold's criterion to select 
+    dimensionality in LV models (e.g. PLSR)
 
 ## DATA PROCESSING
 
 ### **Checking**
 
-- **dupl** Finding replicated rows in a dataset
-- **tabdupl** Tabulate duplicated values in a vector
-- **miss** Finding rows with missing data in a dataset
+- **dupl** Find replicated rows in a dataset
+- **tabdupl** Tabulate duplicated values 
+    in a vector
+- **miss** Find rows with missing data 
+    in a dataset
 
 ### **Pre-processing**
 
@@ -288,7 +297,8 @@
 - **mavg** Smoothing by moving average
 - **fdif** Finite differences
 - **savgk**, **savgol** Savitsky-Golay filtering
-- **rmgap** Remove vertical gaps in spectra, e.g. for ASD NIR data
+- **rmgap** Remove vertical gaps in spectra, 
+    e.g. for ASD NIR data
 
 
 - **center** Column centering
@@ -296,13 +306,14 @@
 - **cscale** Column centering and scaling
 
 ### **Interpolation**
-- **interpl** Sampling spectra by interpolation -- From DataInterpolations.jl
+- **interpl** Sampling spectra by interpolation 
+    -- From DataInterpolations.jl
 
 ### **Calibration transfer**
 
 - **difmean** Compute a detrimental matrix (for 
-    calibration transfer) by difference of two matrix-column
-    means.
+    calibration transfer) by difference of 
+    two matrix-column means.
 - **eposvd** Compute an orthogonalization matrix for 
     calibration transfer
 - **calds** Direct standardization (DS)
@@ -313,8 +324,8 @@
 - **samprand** Random (without replacement)
 - **sampsys** Systematic over a quantitative variable
 - **sampcla** Stratified by class
-- **sampdf** From each column of a dataframe (with missing 
-    values allowed)
+- **sampdf** From each column of a dataframe 
+    (where missing values are allowed)
 
 - **sampks** Kennard-Stone 
 - **sampdp** Duplex  
@@ -322,9 +333,9 @@
 ## PLOTTING
 
 - **plotsp** Plot spectra
-- **plotxy** xy scatter plot
-- **plotgrid** Plot error or performance rates of 
-    model predictions
+- **plotxy** x-y scatter plot
+- **plotgrid** Plot error/performance rates 
+    of a model
 - **plotconf** Plot confusion matrix
 
 ## UTILITIES
@@ -333,16 +344,19 @@
     in a dataset
 - **fcenter**, **fscale**, **fcscale** Column-wise centering 
     and scaling of a matrix
-- **colmad**, **colmean**, **colnorm**, **colstd**, **colsum**, **colvar**  Column-wise 
-    operations
-- **colmeanskip**, **colstdskip**, **colsumskip**, **colvarskip**: Column-wise operations 
+- **colmad**, **colmean**, **colnorm**, **colstd**, 
+    **colsum**, **colvar**  Column-wise operations
+- **colmeanskip**, **colstdskip**, **colsumskip**, 
+    **colvarskip**: Column-wise operations 
     allowing missing data
-- **covm**, **corm** Weighted covariance and correlation matrices
+- **covm**, **corm** Weighted covariance 
+    and correlation matrices
 - **cosv**, **cosm** Cosinus between vectors
 - **dummy** Build dummy table
-- **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) 
-    between rows of matrices
-- **findmax_cla** Find the most occurent level in a categorical variable
+- **euclsq**, **mahsq**, **mahsqchol** Distances 
+    (Euclidean, Mahalanobis) between rows of matrices
+- **findmax_cla** Find the most occurent level in 
+    a categorical variable
 - **frob** Frobenius norm of a matrix
 - **fweight** Compute weights from distances
 - **getknn** Find nearest neighbours between rows of matrices
@@ -351,7 +365,8 @@
 - **krbf, kpol** Build kernel Gram matrices
 - **locw** Working function for local (kNN) models
 - **mad** Median absolute deviation (not exported)
-- **matB**, **matW** Between- and within-class covariance matrices
+- **matB**, **matW** Between- and within-class 
+    covariance matrices
 - **mlev** Return the sorted levels of a vecor or a dataset 
 - **mweight** Normalize a vector to sum to 1
 - **nco**, **nro**, Nb. rows and columns of an object
@@ -359,11 +374,14 @@
 - **plist** Print each element of a list
 - **pnames** Return the names of the elements of an object
 - **psize** Return the type and size of a dataset
-- **recodcat2int** Recode a categorical variable to a integer variable
-- **recodnum2cla** Recode a continuous variable to integer classes
+- **recodcat2int** Recode a categorical variable 
+    to a integer variable
+- **recodnum2cla** Recode a continuous variable 
+    to integer classes
 - **replacebylev** Replace the elements of a vector by levels 
     of corresponding order
-- **replacebylev2** Replace the elements of an index-vector by levels
+- **replacebylev2** Replace the elements of an index-vector 
+    by levels
 - **replacedict** Replace the elements of a vector by levels 
     defined in a dictionary
 - **rmcol** Remove the columns of a matrix or the components 
@@ -371,14 +389,15 @@
 - **rmrow** Remove the rows of a matrix or the components 
     of a vector having indexes s
 - **rowmean**, **rowstd**, **rowsum**, **rowvar**: Row-wise operations
-- **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations 
-    allowing missing data
+- **rowmeanskip**, **rowstdskip**, **rowsumskip**, 
+    **rowvarskip**: Row-wise operations allowing missing data
 - **soft** Soft thresholding
 - **softmax** Softmax function
 - **sourcedir** Include all the files contained in a directory
 - **ssq** Total inertia of a matrix
 - **summ** Summarize the columns of a dataset
-- **tab**, **tabdf**, **tabdupl** Tabulations for categorical variables
+- **tab**, **tabdf**, **tabdupl** Tabulations 
+    for categorical variables
 - **vcatdf** Vertical concatenation of a list of dataframes
 - **wdist** Compute weights from distances
 - Other **utility functions** in file `utility.jl`
