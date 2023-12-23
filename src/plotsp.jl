@@ -14,7 +14,7 @@ Keyword arguments:
 
 The function plots the rows of `X`.
 
-The user has to specify a backend (e.g. CairoMakie).
+To use `plotxy`, a backend (e.g. CairoMakie) has to be specified.
 
 ## Examples
 ```julia
@@ -23,10 +23,10 @@ path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X
 wlst = names(X)
 wl = parse.(Float64, wlst) 
+
 plotsp(X).f
 plotsp(X; color = (:red, .2)).f
 plotsp(X, wl; xlabel = "Wavelength (nm)",
