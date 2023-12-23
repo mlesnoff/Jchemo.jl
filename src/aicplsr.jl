@@ -26,23 +26,28 @@ Journal of Chemometrics n/a, e3369. https://doi.org/10.1002/cem.3369
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/cassav.jld2") 
+using JchemoData
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X 
-y = dat.Y.tbc 
+y = dat.Y.tbc
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
 
-nlv = 25
-res = aicplsr(X, y; nlv = nlv) 
-pnames(res)
+nlv = 40
+res = aicplsr(X, y; nlv) ;
 res.crit
 res.opt
 res.delta
 
-zaic = aicplsr(X, y; nlv = nlv).crit.aic
+zaic = res.crit.aic
 f, ax = plotgrid(0:nlv, zaic;
     xlabel = "Nb. LVs", ylabel = "AIC")
 scatter!(ax, 0:nlv, zaic)
