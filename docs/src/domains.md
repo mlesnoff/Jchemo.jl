@@ -290,6 +290,7 @@
 - **savgk**, **savgol** Savitsky-Golay filtering
 - **rmgap** Remove vertical gaps in spectra, e.g. for ASD NIR data
 
+
 - **center** Column centering
 - **scale** Column scaling
 - **cscale** Column centering and scaling
