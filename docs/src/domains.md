@@ -295,7 +295,7 @@
 - **cscale** Column centering and scaling
 
 ### **Interpolation**
-- **interpl** Sampling signals by interpolation -- From DataInterpolations.jl
+- **interpl** Sampling spectra by interpolation -- From DataInterpolations.jl
 
 ### **Calibration transfer**
 
