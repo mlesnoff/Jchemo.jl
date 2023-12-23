@@ -466,7 +466,7 @@ the Makie's backend (e.g. CairoMakie).
     - **plotgrid** : Plot error or performance rates of model predictions.
  
 - Modifications 
-    - **plotsp**: argument 'resolution' was added.
+    - **plotsp**: argument 'size' was added.
 
 ## *Version 0.0.17* 
 - News 

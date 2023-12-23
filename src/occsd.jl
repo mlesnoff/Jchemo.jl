@@ -111,7 +111,7 @@ d1 = fm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
 f, ax = plotxy(1:length(d), d, group; 
-    resolution = (600, 400), xlabel = "Obs. index", 
+    size = (600, 400), xlabel = "Obs. index", 
     ylabel = "Standardized distance")
 hlines!(ax, 1)
 f

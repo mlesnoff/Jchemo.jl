@@ -56,7 +56,7 @@ end
 
 """
     plotconf(object; cnt = true, ptext = true, 
-        fontsize = 15, coldiag = :red, resolution = (500, 400))
+        fontsize = 15, coldiag = :red, size = (500, 400))
 Plot a confusion matrix.
 * `object` : Output of function `confusion`.
 * `cnt` : Boolean. If `true` (default), plot the occurrences, 
@@ -64,13 +64,13 @@ Plot a confusion matrix.
 * `ptext` : Boolean. If `true` (default), display the value in each cell.
 * `fontsize` : Font size when `ptext = true`.
 * `coldiag` : Font color when `ptext = true`.
-* `resolution` : Resolution (horizontal, vertical) of the figure.
+* `size` : Size (horizontal, vertical) of the figure.
 
 See examples in help page of function `confusion`.
 ```
 """
 function plotconf(object; cnt = true, ptext = true, 
-        fontsize = 15, coldiag = :red, resolution = (500, 400))
+        fontsize = 15, coldiag = :red, size = (500, 400))
     if cnt
         A = object.A 
         namval = "Nb. occurrences"
@@ -81,7 +81,7 @@ function plotconf(object; cnt = true, ptext = true,
     zA = (A')[:, end:-1:1]
     lev = string.(object.lev)
     nlev = length(lev)
-    f = Figure(size = resolution)
+    f = Figure(size = size)
     ax = Axis(f[1, 1], xlabel = "Predicted", ylabel = "Observed", 
         xticks = (1:nlev, lev), yticks = (1:nlev, lev[end:-1:1]))
     hm = heatmap!(ax, 1:nlev, 1:nlev, zA)

@@ -1,7 +1,7 @@
 """
-    plotgrid(indx::AbstractVector, r; resolution = (500, 350), 
+    plotgrid(indx::AbstractVector, r; size = (500, 350), 
         step = 5, color = nothing, kwargs...)
-    plotgrid(indx::AbstractVector, r, group; resolution = (500, 350), 
+    plotgrid(indx::AbstractVector, r, group; size = (500, 350), 
         step = 5, color = nothing, leg = true, kwargs...)
 
 Plot error or performance rates of model predictions.
@@ -10,7 +10,7 @@ Plot error or performance rates of model predictions.
 * `r` : The error/performance rates for the values of `x`. 
 * `group` : Categorical variable defining groups. 
     A separate line is plotted for each level of `group`.
-* `resolution` : Resolution (horizontal, vertical) of the figure.
+* `size` : Size (horizontal, vertical) of the figure.
 * `step` : Step used for defining the xticks.
 * `color` : Set color. If `group` if used, must be a vector of same length
     as the number of levels in `group`.
@@ -54,12 +54,12 @@ plotgrid(res.nlv, res.y1, group;
     xlabel = "Nb. LVs", ylabel = "RMSECV").f
 ```
 """ 
-function plotgrid(indx::AbstractVector, r; resolution = (500, 350), 
+function plotgrid(indx::AbstractVector, r; size = (500, 350), 
         step = 5, color = nothing, kwargs...)
     isa(indx, Vector{Any}) ? indx = Float64.(indx) : nothing
     r = Float64.(vec(r))
     xticks = collect(minimum(indx):step:maximum(indx))
-    f = Figure(size = resolution)
+    f = Figure(size = size)
     ax = Axis(f; xticks = (xticks, string.(xticks)), kwargs...)
     if isnothing(color)
         lines!(ax, indx, r)
@@ -70,7 +70,7 @@ function plotgrid(indx::AbstractVector, r; resolution = (500, 350),
     (f = f, ax = ax)
 end
 
-function plotgrid(indx::AbstractVector, r, group; resolution = (700, 350), 
+function plotgrid(indx::AbstractVector, r, group; size = (700, 350), 
         step = 5, color = nothing, leg = true, kwargs...)
     isa(indx, Vector{Any}) ? indx = Float64.(indx) : nothing
     r = Float64.(vec(r))
@@ -78,7 +78,7 @@ function plotgrid(indx::AbstractVector, r, group; resolution = (700, 350),
     xticks = collect(minimum(indx):step:maximum(indx))
     lev = mlev(group)
     nlev = length(lev)
-    f = Figure(size = resolution)
+    f = Figure(size = size)
     ax = Axis(f; xticks = (xticks, string.(xticks)), kwargs...)
     for i = 1:nlev
         s = group .== lev[i]

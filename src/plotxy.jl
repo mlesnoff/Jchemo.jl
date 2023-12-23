@@ -1,10 +1,10 @@
 """
-    plotxy(x, y; resolution = (600, 400), 
+    plotxy(x, y; size = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "",
         kwargs...)
-    plotxy(x, y, group; resolution = (600, 400), 
+    plotxy(x, y, group; size = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", leg::Bool = true,
@@ -14,7 +14,7 @@ Scatter plot of (x, y) data
 * `x` : A x-vector (n).
 * `y` : A y-vector (n). 
 * `group` : Categorical variable defining groups (n). 
-* `resolution` : Resolution (horizontal, vertical) of the figure.
+* `size` : Size (horizontal, vertical) of the figure.
 * `color` : Set color(s). If `group` if used, `color` must be a vector of 
     same length as the number of levels in `group`.
 * `ellipse` : Boolean. Draw an ellipse of confidence, assuming a Ch-square distribution
@@ -76,14 +76,14 @@ f
 
 ```
 """ 
-function plotxy(x, y; resolution = (600, 400), 
+function plotxy(x, y; size = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", 
         kwargs...)
     x = vec(x)
     y = vec(y)
-    f = Figure(size = resolution)
+    f = Figure(size = size)
     ax = Axis(f; xlabel = xlabel, ylabel = ylabel, 
         title = title)
     if isnothing(color)
@@ -117,7 +117,7 @@ function plotxy(x, y; resolution = (600, 400),
     (f = f, ax = ax)
 end
 
-function plotxy(x, y, group; resolution = (600, 400), 
+function plotxy(x, y, group; size = (600, 400), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", leg::Bool = true,
@@ -128,7 +128,7 @@ function plotxy(x, y, group; resolution = (600, 400),
     lev = mlev(group)
     nlev = length(lev)
     lab = string.(lev)
-    f = Figure(size = resolution)
+    f = Figure(size = size)
     ax = Axis(f; xlabel = xlabel, ylabel = ylabel, 
         title = title)
     for i = 1:nlev
