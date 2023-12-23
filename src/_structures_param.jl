@@ -59,8 +59,6 @@ Base.@kwdef mutable struct Par
     tol::Float64 = sqrt(eps(1.))            # tolerance in Nipals
     maxit::Int = 200                        # maximal nb. iterations in Nipals 
     ##
-    alpha_aic::Float64 = 2.                 # coefficient to compute AIC in aicplsr
-    ##
     msparse::Symbol = :soft                 # threshold in sparse methods 
     delta::Float64 = 0.                     # threshold in sparse methods
     nvar::Union{Int, Vector{Int}} = 1       # threshold in sparse methods

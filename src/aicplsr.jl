@@ -1,16 +1,14 @@
 """
-    aicplsr(X, y; nlv, correct = true, bic = false, scal::Bool = false)
-Compute Akaike's (AIC) and Mallows's (Cp) criteria for univariate PLSR models.
+    aicplsr(X, y; alpha = 2, 
+        kwargs...)
+Compute Akaike's (AIC) and Mallows's (Cp) criteria 
+    for univariate PLSR models.
 * `X` : X-data.
 * `y` : Univariate Y-data.
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs).
-* `correct` : Define if the bias correction is applied.  # Removed
-* `bic` : Define is BIC is computed instead of AIC.  # Replaced by par.alpha_aic
-* `scal` : Boolean. If `true`, each column of `X` and `y` 
-    is scaled by its uncorrected standard deviation.
-
-`X` and `y` are internally centered. 
+* Same as function `cglsr`.
+* `alpha` : Coefficient multiplicating
+    the model complexity (df) to compute AIC. 
 
 The function uses function `dfplsr_cg`. 
 
@@ -55,7 +53,8 @@ scatter!(ax, 0:nlv, zaic)
 f
 ```
 """ 
-function aicplsr(X, y; kwargs...)
+function aicplsr(X, y; alpha = 2, 
+        kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
     X = ensure_mat(X)
@@ -96,7 +95,7 @@ function aicplsr(X, y; kwargs...)
         ct[minimum(u):(nlv + 1)] .= NaN
     end
     #bic ? alpha = log(n) : alpha = 2
-    alpha = convert(Q, par.alpha_aic)
+    alpha = convert(Q, alpha)
     aic = n * log.(zssr) + alpha * (df .+ 1) .* ct
     cp1 = zssr .+ 2 * s2_1 * df .* ct
     cp2 = zssr .+ 2 * s2_2 .* df .* ct
@@ -115,7 +114,8 @@ function aicplsr(X, y; kwargs...)
     nam = [:aic, :cp1, :cp2]
     delta = DataFrame(delta, nam)
     insertcols!(delta, 1, :nlv => znlv)
-    #w = map(x -> exp.(-x / 2) / sum(exp.(-x[isnan.(x) .== 0] / 2)), delta)      # AIC model weights   
+    #w = map(
+    #    x -> exp.(-x / 2) / sum(exp.(-x[isnan.(x) .== 0] / 2)), delta)  # AIC model weights   
     #w = reduce(hcat, w)
     #w = DataFrame(w, nam)
     #insertcols!(w, 1, :nlv => znlv)

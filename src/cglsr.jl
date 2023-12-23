@@ -8,11 +8,13 @@ Conjugate gradient algorithm for the normal equations (CGLS; Björck 1996).
 Keyword arguments:
 * `nlv` : Nb. CG iterations.
 * `gs` : Boolean. If `true` (default), a Gram-Schmidt 
-    orthogonalization of the normal equation residual vectors is done.
+    orthogonalization of the normal equation residual vectors 
+    is done.
 * `filt` : Boolean. If `true`, CG filter factors 
     are computed (output `F`). Default = `false`.
-* `scal` : Boolean. If `true`, each column of `X` and `y` is 
-    scaled by its uncorrected standard deviation (default = `false`).
+* `scal` : Boolean. If `true`, each column of `X` and `y` 
+    are scaled by its uncorrected standard deviation 
+    (default = `false`).
 
 `X` and `y` are internally centered. 
 
