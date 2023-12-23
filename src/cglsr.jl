@@ -1,15 +1,18 @@
 """
-    cglsr(X, y; nlv, gs = true, filt = false, scal::Bool = false)
-    cglsr!(X::Matrix, y::Matrix; nlv, gs = true, filt = false, scal::Bool = false)
+    cglsr(; kwargs...)
+    cglsr(X, y; kwargs...)
+    cglsr!(X::Matrix, y::Matrix; kwargs...)
 Conjugate gradient algorithm for the normal equations (CGLS; Björck 1996).
 * `X` : X-data  (n, p).
 * `y` : Univariate Y-data (n).
+Keyword arguments:
 * `nlv` : Nb. CG iterations.
-* `gs` : If `true`, a Gram-Schmidt gsogonalization of the normal equation 
-    residual vectors is done.
-* `filt` : Boolean indicating if the CG filter factors are computed (output `F`).
-* `scal` : Boolean. If `true`, each column of `X` and `y` 
-    is scaled by its uncorrected standard deviation.
+* `gs` : Boolean. If `true` (default), a Gram-Schmidt 
+    orthogonalization of the normal equation residual vectors is done.
+* `filt` : Boolean. If `true`, CG filter factors 
+    are computed (output `F`). Default = `false`.
+* `scal` : Boolean. If `true`, each column of `X` and `y` is 
+    scaled by its uncorrected standard deviation (default = `false`).
 
 `X` and `y` are internally centered. 
 
@@ -40,12 +43,11 @@ Report, Dept. of Mathematical Sciences, Montana State University, 1987.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/cassav.jld2") 
+using JchemoData
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -56,24 +58,23 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-nlv = 12 ;
-fm = cglsr(Xtrain, ytrain; nlv = nlv) ;
+nlv = 5 ; scal = true
+mod = cglsr(; nlv, scal) ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod.fm) 
+@head mod.fm.B
+coef(mod.fm).B
+coef(mod.fm).int
 
-zcoef = Jchemo.coef(fm)
-zcoef.int
-zcoef.B
-Jchemo.coef(fm; nlv = 7).B
-
-res = Jchemo.predict(fm, Xtest) ;
-res.pred
-rmsep(ytest, res.pred)
-plotxy(pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
+pred = predict(mod, Xtest).pred
+@show rmsep(pred, ytest)
+plotxy(vec(pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f   
 ```
 """ 
-cglsr(X, y; kwargs...) = cglsr!(
-    copy(ensure_mat(X)), copy(ensure_mat(y)); 
-    kwargs...)
+cglsr(X, y; kwargs...) = cglsr!(copy(ensure_mat(X)), 
+    copy(ensure_mat(y)); kwargs...)
 
 function cglsr!(X::Matrix, y::Matrix; kwargs...)
     par = recovkwargs(Par, kwargs)
@@ -138,8 +139,9 @@ function cglsr!(X::Matrix, y::Matrix; kwargs...)
         g = copy(gnew[j])
         zp .= s .+ beta * zp
         B[:, j] .= b
-        # Filter factors
-        # fudge threshold is used to prevent filter factors from exploding
+        ## Filter factors
+        ## fudge threshold is used to prevent 
+        ## filter factors from exploding
         if par.filt
             if j == 1
                 F[:, 1] .= alpha * eig

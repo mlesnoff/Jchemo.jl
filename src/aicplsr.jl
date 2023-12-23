@@ -3,6 +3,7 @@
 Compute Akaike's (AIC) and Mallows's (Cp) criteria for univariate PLSR models.
 * `X` : X-data.
 * `y` : Univariate Y-data.
+Keyword arguments:
 * `nlv` : Nb. latent variables (LVs).
 * `correct` : Define if the bias correction is applied.  # Removed
 * `bic` : Define is BIC is computed instead of AIC.  # Replaced by par.alpha_aic
@@ -69,7 +70,8 @@ function aicplsr(X, y; kwargs...)
     df_ssr = n .- df
     ## For Cp, unbiased estimate of sigma2 
     ## ----- Cp1: From a low biased model
-    ## Not stable with dfcov and nlv too large compared to best model !!
+    ## Not stable with dfcov and nlv too large 
+    ## compared to best model !!
     ## If df stays below .95 * n, this corresponds
     ## to the maximal model (nlv)
     ## Option 2 gives in general results
@@ -85,7 +87,8 @@ function aicplsr(X, y; kwargs...)
     ct = ones(Q, nlv + 1)
     ct .= n ./ (n .- df .- 2)  # bias correction
     ct[(df .> n) .| (ct .<= 0)] .= NaN 
-    ## For safe predictions when df stabilizes and fluctuates
+    ## For safe predictions when df stabilizes 
+    ## and fluctuates
     ct[df .> .8 * n] .= NaN
     ## End
     u = findall(isnan.(ct)) 
@@ -106,7 +109,8 @@ function aicplsr(X, y; kwargs...)
         df = df, ct = ct, ssr = zssr)
     crit = hcat(ztab, DataFrame(res))
     opt = map(x -> findmin(x[isnan.(x) .== 0])[2] - 1, res)
-    delta = map(x -> x .- findmin(x[isnan.(x) .== 0])[1], res)  # differences "Delta"
+    delta = map(
+        x -> x .- findmin(x[isnan.(x) .== 0])[1], res)  # differences "Delta"
     delta = reduce(hcat, delta)
     nam = [:aic, :cp1, :cp2]
     delta = DataFrame(delta, nam)
