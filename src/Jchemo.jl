@@ -35,14 +35,17 @@ include("ellipse.jl")
 include("matW.jl")
 include("nipals.jl")
 include("nipalsmiss.jl")
-include("plotgrid.jl")
-include("plotsp.jl")
-include("plotxy.jl")
 include("preprocessing.jl") 
 include("rmgap.jl")
 include("snipals.jl")
 include("snipalsh.jl")
 include("snipalsmix.jl")
+
+###### Graphics
+include("plotsp.jl")
+include("plotgrid.jl")
+include("plotxy.jl")
+include("plotconf.jl")
 
 ###### Distributions
 include("dmnorm.jl")

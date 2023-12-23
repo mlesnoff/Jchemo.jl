@@ -5,9 +5,9 @@ Plotting spectra.
 * `X` : X-data.
 * `wl` : Column names of `X`. Must be numeric.
 Keyword arguments:
+* 'size' : Size (horizontal, vertical) of the figure.
 * `color` : Set a unique color (and eventually transparency) 
     to the spectra.
-* 'size' : Size (horizontal, vertical) of the figure.
 * `nsamp` : Nb. spectra (X-rows) to plot. If `nothing`, 
     all spectra are plotted.
 * `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.

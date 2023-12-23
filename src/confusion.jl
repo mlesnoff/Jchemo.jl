@@ -1,8 +1,9 @@
 """
-    confusion(pred, y)
+    confusion(pred, y; digits = 1)
 Confusion matrix.
 * `pred` : Univariate predictions.
 * `y` : Univariate observed data.
+Keyword arguments:
 * `digits` : Nb. digits used to round percentages.
 
 ## Examples
@@ -24,7 +25,8 @@ res.lev       # Levels
 
 plotconf(res).f
 
-plotconf(res; pct = true, ptext = false).f
+plotconf(res; cnt = false, 
+    ptext = false).f
 ```
 """
 function confusion(pred, y; digits = 1)
@@ -53,53 +55,5 @@ function confusion(pred, y; digits = 1)
     accuracy = round(100 * sum(diag(A)) / n; digits = digits) 
     (cnt = cnt, pct, A, Apct, accuracy, lev)
 end
-
-"""
-    plotconf(object; cnt = true, ptext = true, 
-        fontsize = 15, coldiag = :red, size = (500, 400))
-Plot a confusion matrix.
-* `object` : Output of function `confusion`.
-* `cnt` : Boolean. If `true` (default), plot the occurrences, 
-    else plot the row %s.
-* `ptext` : Boolean. If `true` (default), display the value in each cell.
-* `fontsize` : Font size when `ptext = true`.
-* `coldiag` : Font color when `ptext = true`.
-* `size` : Size (horizontal, vertical) of the figure.
-
-See examples in help page of function `confusion`.
-```
-"""
-function plotconf(object; cnt = true, ptext = true, 
-        fontsize = 15, coldiag = :red, size = (500, 400))
-    if cnt
-        A = object.A 
-        namval = "Nb. occurrences"
-    else
-        A = object.Apct 
-        namval = "Row %"
-    end
-    zA = (A')[:, end:-1:1]
-    lev = string.(object.lev)
-    nlev = length(lev)
-    f = Figure(size = size)
-    ax = Axis(f[1, 1], xlabel = "Predicted", ylabel = "Observed", 
-        xticks = (1:nlev, lev), yticks = (1:nlev, lev[end:-1:1]))
-    hm = heatmap!(ax, 1:nlev, 1:nlev, zA)
-    Colorbar(f[:, end + 1], hm; label = namval)
-    if ptext
-        for i = 1:nlev, j = 1:nlev
-            cnt ? val = A[i, j] : val = round(A[i, j]; digits = 1)
-            i == j ? col = coldiag : col = :white
-            text!(ax, string(val); position = (j, nlev - i + 1), 
-                align = (:fcenter, :fcenter), fontsize = fontsize,
-                color = col)
-        end
-    end
-    ax.xticklabelrotation = π / 3   # default: 0
-    ax.xticklabelalign = (:right, :fcenter)
-    (f = f, ax, hm)
-end
-
-
 
 
