@@ -6,7 +6,8 @@ Build training vs. test sets by DUPLEX sampling.
     to sample. Must be <= n / 2. 
 Keyword arguments:
 * `metric` : Metric used for the distance computation.
-    Possible values are: :eucl, :mah.
+    Possible values are: `:eucl` (Euclidean), 
+    `:mah` (Mahalanobis).
 
 Three outputs (= row indexes of the data) are returned: 
 * `train` (`k`), 

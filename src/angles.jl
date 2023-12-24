@@ -5,10 +5,11 @@ Compute the Lg coefficient between matrices.
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
 * `Xbl` : A list (vector) of matrices.
-* `centr` : Boolean indicating if the matrices are internally 
-    centered or not.
+Keyword arguments:
+* `centr` : Boolean indicating if the matrices will 
+    be internally centered or not.
 
-Lg(X, Y) = Sum_j(=1..p) Sum_k(= 1..q) cov(xj, yk)^2
+Lg(X, Y) = Sum.(j=1..p) Sum.(k= 1..q) cov(xj, yk)^2
 
 RV(X, Y) = Lg(X, Y) / sqrt(Lg(X, X), Lg(Y, Y))
 
@@ -53,7 +54,7 @@ function lg(Xbl::Vector; centr = true)
     for i = 1:(nbl)
         for j = 1:(nbl)
             mat[i, j] = lg(Xbl[i], Xbl[j]; 
-                centr = centr)
+                centr)
         end
     end
     mat
@@ -61,19 +62,20 @@ end
 
 """
     rd(X, Y; typ = :cor)
-    rd(X, Y, weights; typ = :cor)
+    rd(X, Y, weights::Weight; typ = :cor)
 Compute redundancy coefficients between two matrices.
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
-* `weights` : Weights (n) of the observations. Internally 
-    normalized to sum to 1.
-* `typ` : If :cor (default), correlation is used, else uncorrected 
-    covariance is used. 
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
+Keyword arguments:
+* `typ` : Possibles values are: `:cor` (correlation), 
+    `:cov` (uncorrected covariance). 
 
 Returns the redundancy coefficient between `X` and each column
 of `Y`, i.e.: 
 
-(1 / p) * [Sum(j=1, .., p) cor(xj, y1)^2 ; ... ; Sum(j=1, .., p) cor(xj, yq)^2] 
+(1 / p) * [Sum.(j=1, .., p) cor(xj, y1)^2 ; ... ; Sum.(j=1, .., p) cor(xj, yq)^2] 
 
 See Tenenhaus 1998 section 2.2.1 p.10-11.
 
@@ -113,14 +115,14 @@ function rd(X, Y, weights::Weight;
 end
 
 """
-    rv(X, Y)
-    rv(Xbl)
+    rv(X, Y; centr = true)
+    rv(Xbl::Vector; centr = true)
 Compute the RV coefficient between matrices.
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
 * `Xbl` : A list (vector) of matrices.
-* `centr` : Boolean indicating if the matrices are internally 
-    centered or not.
+* `centr` : Boolean indicating if the matrices 
+    will be internally centered or not.
 
 RV is bounded in [0, 1]. 
 
@@ -203,7 +205,7 @@ function rv(Xbl::Vector; centr = true)
     for i = 1:(nbl)
         for j = 1:(nbl)
             mat[i, j] = rv(Xbl[i], Xbl[j]; 
-                centr = centr)
+                centr)
         end
     end
     mat

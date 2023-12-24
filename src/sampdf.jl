@@ -11,8 +11,8 @@ Build training vs. test sets from each column of a dataframe.
     `k` can be a vector of length p. 
 Keyword arguments:
 * `msamp` : Type of sampling for the test set.
-    Possible values are: :rand = random sampling, 
-    :sys = systematic sampling over each sorted 
+    Possible values are: `:rand` = random sampling, 
+    `:sys` = systematic sampling over each sorted 
     `Y` column (see function `sampsys`).  
 
 Typically, dataframe `Y` contains a set of response variables 

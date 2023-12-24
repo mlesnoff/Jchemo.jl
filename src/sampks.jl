@@ -5,7 +5,8 @@ Build training vs. test sets by Kennard-Stone sampling.
 * `k` : Nb. test observations to sample.
 Keyword arguments: 
 * `metric` : Metric used for the distance computation.
-    Possible values: :eucl, :mah.
+    Possible values are: `:eucl` (Euclidean), 
+    `:mah` (Mahalanobis).
 
 Two outputs (= row indexes of the data) are returned: 
 * `train` (`n` - `k`),
