@@ -1,11 +1,12 @@
 """
     euclsq(X, Y)
-Squared Euclidean distances 
-between the rows of `X` and `Y`.
-* `X` : Data.
-* `Y` : Data.
+Squared Euclidean distances between 
+    the rows of `X` and `Y`.
+* `X` : Data (n, p).
+* `Y` : Data (m, p).
 
-For `X`(n, p) and `Y` (m, p), the function returns an object (n, m) with:
+For `X`(n, p) and `Y` (m, p), the function returns 
+an object (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
 
 ## Examples
@@ -31,18 +32,22 @@ end
 """
     mahsq(X, Y)
     mahsq(X, Y, Sinv)
-Squared Mahalanobis distances 
-between the rows of `X` and `Y`.
-* `X` : Data.
-* `Y` : Data.
+Squared Mahalanobis distances between 
+    the rows of `X` and `Y`.
+* `X` : Data (n, p).
+* `Y` : Data (m, p).
 * `Sinv` : Inverse of a covariance matrix S.
-    If not given, this is the uncorrected covariance matrix of `X`.
+    If not given, S is computed as the uncorrected 
+    covariance matrix of `X`.
 
-When `X` and `Y`are (n, p) and (m, p), repectively, it returns an object (n, m) with:
+When `X` and `Y` are (n, p) and (m, p), repectively, it returns 
+an object (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
 
 ## Examples
 ```julia
+using StatsBase 
+
 X = rand(5, 3)
 Y = rand(2, 3)
 
@@ -80,26 +85,30 @@ end
     mahsqchol(X, Y, Uinv)
 Compute the squared Mahalanobis distances (with a Cholesky factorization)
 between the observations (rows) of `X` and `Y`.
-* `X` : Data.
-* `Y` : Data.
+* `X` : Data (n, p).
+* `Y` : Data (m, p).
 * `Uinv` : Inverse of the upper matrix of a Cholesky factorization 
     of a covariance matrix S.
-    If not given, the factorization is done on S, the uncorrected covariance matrix of `X`.
+    If not given, the factorization is done on S, 
+    the uncorrected covariance matrix of `X`.
 
-When `X` and `Y` are (n, p) and (m, p), repectively, it returns an object (n, m) with:
+When `X` and `Y` are (n, p) and (m, p), repectively, it returns 
+an object (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
 
 ## Examples
 ```julia
+using LinearAlgebra
+
 X = rand(5, 3)
 Y = rand(2, 3)
 
 mahsqchol(X, Y)
 
+S = cov(X, corrected = false)
 U = cholesky(Hermitian(S)).U 
 Uinv = inv(U)
 mahsqchol(X, Y, Uinv)
-mahsq(X[1:1, :], Y[1:1, :], Sinv)
 
 mahsqchol(X[:, 1], 4)
 mahsqchol(1, 4, sqrt(2.1))
@@ -109,11 +118,13 @@ function mahsqchol(X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)    
     p = nco(X)
-    S = Statistics.cov(X, corrected = false)
+    S = Statistics.cov(X, 
+        corrected = false)
     if p == 1
         Uinv = inv(sqrt(S)) 
     else
-        Uinv = LinearAlgebra.inv!(cholesky!(Hermitian(S)).U)
+        Uinv = LinearAlgebra.inv!(
+            cholesky!(Hermitian(S)).U)
     end
     zX = X * Uinv
     zY = Y * Uinv
