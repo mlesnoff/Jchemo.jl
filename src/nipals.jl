@@ -18,7 +18,6 @@ using the alternating least squares algorithm to compute
 SVD (Gabriel & Zalir 1979).
 
 At the end, X ~ u * sv * v', where:
-
 * u : left singular vector (u * sv = scores)
 * v : right singular vector (loadings)
 * sv : singular value.
