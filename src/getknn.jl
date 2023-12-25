@@ -1,10 +1,15 @@
 """ 
-    getknn(Xtrain, X; k = 1, metric = :eucl)
-Return the k nearest neighbors in Xtrain of each row of `X`.
+    getknn(Xtrain, X; 
+        metric = :eucl, k = 1)
+Return the k nearest neighbors in `Xtrain` of each row 
+    of the query `X`.
 * `Xtrain` : Training X-data.
-* `X` : Query X-dta.
+* `X` : Query X-data.
+Keyword arguments:
 * `metric` : Type of distance used for the query. 
-    Possible values are :eucl or :mah.
+    Possible values are ':eucl' (Euclidean),
+        ':mah' (Mahalanobis).
+* `k` : Number of neighbors to return.
 
 The distances (not squared) are also returned.
 
@@ -15,18 +20,20 @@ X = rand(2, 3)
 x = X[1:1, :]
 
 k = 3
-res = getknn(Xtrain, X; k = k)
+res = getknn(Xtrain, X; k)
 res.ind  # indexes
 res.d    # distances
 
-res = getknn(Xtrain, x; k = k)
+res = getknn(Xtrain, x; k)
 res.ind
 
-res = getknn(Xtrain, X; k = k, metric = :mah)
+res = getknn(Xtrain, X; 
+    metric = :mah, k)
 res.ind
 ```
 """ 
-function getknn(Xtrain, X; metric = :eucl, k = 1)
+function getknn(Xtrain, X; 
+        metric = :eucl, k = 1)
     @assert in([:eucl, :mah])(metric) "Wrong value for argument 'metric'."
     Xtrain = ensure_mat(Xtrain)
     X = ensure_mat(X)
@@ -47,7 +54,8 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
             if isposdef(S) == false
                 Uinv = Diagonal(1 ./ diag(S))
             else
-                Uinv = LinearAlgebra.inv!(cholesky!(Hermitian(S)).U)
+                Uinv = LinearAlgebra.inv!(
+                    cholesky!(Hermitian(S)).U)
             end
         end
         zXtrain = Xtrain * Uinv
