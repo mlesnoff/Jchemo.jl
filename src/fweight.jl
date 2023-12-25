@@ -2,12 +2,15 @@
     fweight(d; typw = :bisquare, alpha = 0)
 Computation of weights from distances.
 * `d` : Vector of distances.
+Keyword arguments:
 * `typw` : Define the weight function.
-* `alpha` : Pareter of the weight function, see below.
+* `alpha` : Parameter of the weight function, 
+    see below.
 
 The returned weight vector is: 
-* w = f(`d` / q) where f is the weight function and q the 1-`alpha` 
-quantile of `d` (Cleveland & Grosse 1991).
+* w = f(`d` / q) where f is the weight function 
+    and q the 1-`alpha` quantile of `d` 
+    (Cleveland & Grosse 1991).
 
 Possible values for `typw` are: 
 * :bisquare: w = (1 - x^2)^2 
@@ -34,32 +37,41 @@ alpha = 0
 f = Figure(size = (600, 500))
 ax = Axis(f, xlabel = "d", ylabel = "Weight")
 typw = :bisquare
-w = fweight(d; typw = typw, alpha = alpha)
-lines!(ax, d, w, label = String(typw), color = cols[1])
+w = fweight(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), 
+    color = cols[1])
 typw = :cauchy
-w = fweight(d; typw = typw, alpha = alpha)
-lines!(ax, d, w, label = String(typw), color = cols[2])
+w = fweight(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), 
+    color = cols[2])
 typw = :epan
-w = fweight(d; typw = typw, alpha = alpha)
-lines!(ax, d, w, label = String(typw), color = cols[3])
+w = fweight(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), 
+    color = cols[3])
 typw = :fair
-w = fweight(d; typw = typw, alpha = alpha)
-lines!(ax, d, w, label = String(typw), color = cols[4])
+w = fweight(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), 
+    color = cols[4])
 typw = :gauss
-w = fweight(d; typw = typw, alpha = alpha)
-lines!(ax, d, w, label = String(typw), color = cols[5])
+w = fweight(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), 
+    color = cols[5])
 typw = :trian
-w = fweight(d; typw = typw, alpha = alpha)
-lines!(ax, d, w, label = String(typw), color = cols[6])
+w = fweight(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), 
+    color = cols[6])
 typw = :invexp
-w = fweight(d; typw = typw, alpha = alpha)
-lines!(ax, d, w, label = String(typw), color = cols[7])
+w = fweight(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), 
+    color = cols[7])
 typw = :invexp2
-w = fweight(d; typw = typw, alpha = alpha)
-lines!(ax, d, w, label = String(typw), color = cols[8])
+w = fweight(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), 
+    color = cols[8])
 typw = :tricube
-w = fweight(d; typw = typw, alpha = alpha)
-lines!(ax, d, w, label = String(typw), color = cols[9])
+w = fweight(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), 
+    color = cols[9])
 axislegend("Function", position = :lb)
 f[1, 1] = ax
 f
