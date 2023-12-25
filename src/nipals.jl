@@ -28,8 +28,9 @@ of rounding errors. Orthogonality can be rebuilt from the
 Gram-Schmidt method (arguments `UUt` and `VVt`). 
 
 ## References
-K.R. Gabriel, S. Zamir, Lower rank approximation of matrices by least 
-squares with any choice of weights, Technometrics 21 (1979) 489–498
+K.R. Gabriel, S. Zamir, Lower rank approximation of matrices
+by least squares with any choice of weights, 
+Technometrics 21 (1979) 489–498.
 
 ## Examples
 ```julia
