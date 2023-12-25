@@ -2,9 +2,9 @@
     mblock(X, listbl)
 Make blocks from a matrix.
 * `X` : X-data.
-* `listbl` : A vector whose each component defines the colum numbers
-    defining a block in `X`. The length of `listbl` is the number
-    of blocks.
+* `listbl` : A vector whose each component defines 
+    the colum numbers defining a block in `X`.
+    The length of `listbl` is the number of blocks.
 
 The function returns a list (vector) of blocks.
 
