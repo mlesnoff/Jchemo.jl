@@ -77,7 +77,8 @@ f[1, 1] = ax
 f
 ```
 """ 
-function fweight(d; typw = :bisquare, alpha = 0)
+function fweight(d; typw = :bisquare, 
+        alpha = 0)
     d = vec(abs.(d))
     alpha = max(0, min(1, alpha))
     zd = d[isnan.(d) .== 0]
