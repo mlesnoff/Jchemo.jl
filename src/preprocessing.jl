@@ -226,12 +226,12 @@ end
 Smoothing by moving averages of each row of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `npoint` : Nb. points involved in the window 
+* `npoint` : Nb. points involved in the window. 
 
-The smoothing is computed by convolution (with padding), 
-using function imfilter of package ImageFiltering.jl. The centered 
-kernel is ones(`npoint`) / `npoint`. Each returned point is located on 
-the center of the kernel.
+The smoothing is computed by convolution with padding, 
+using function imfilter of package ImageFiltering.jl. 
+The centered kernel is ones(`npoint`) / `npoint`. 
+Each returned point is located on the center of the kernel.
 
 The function returns a matrix (n, p).
 
