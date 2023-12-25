@@ -1,10 +1,23 @@
 """
     locwlv(Xtrain, Ytrain, X; 
-        listnn, listw = nothing, fun, nlv, verbose = true, kwargs...)
+        listnn, listw = nothing, fun, nlv, 
+        verbose = true, kwargs...)
 Compute predictions for a given kNN model.
+* `Xtrain` : Training X-data.
+* `Ytrain` : Training Y-data.
+* `X` : X-data (m observations) to predict.
+Keyword arguments:
+* `listnn` : List (vector) of m vectors of indexes.
+* `listw` : List (vector) of m vectors of weights.
+* `fun` : Function computing the model on 
+    the m neighborhoods.
 * `nlv` : Nb. or collection of nb. of latent variables (LVs).
+* `verbose` : Boolean. If true, fitting information 
+    are printed.
+* `kwargs` : Keywords arguments to pass in function fun. 
 
-Same as [`locw`](@ref) but specific (and much faster) for LV-based (e.g. PLSR) models.
+Same as [`locw`](@ref) but specific and much faster 
+for LV-based models (e.g. PLSR).
 """
 function locwlv(Xtrain, Ytrain, X; 
         listnn, listw = nothing, fun, nlv, 

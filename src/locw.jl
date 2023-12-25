@@ -9,8 +9,10 @@ Compute predictions for a given kNN model.
 Keyword arguments:
 * `listnn` : List (vector) of m vectors of indexes.
 * `listw` : List (vector) of m vectors of weights.
-* `fun` : Function computing the model on the m neighborhoods.
-* `verbose` : Boolean. If true, fitting information are printed.
+* `fun` : Function computing the model on 
+    the m neighborhoods.
+* `verbose` : Boolean. If true, fitting information
+    are printed.
 * `kwargs` : Keywords arguments to pass in function fun. 
 
 Each component i of `listnn` and `listw` contains the indexes 
