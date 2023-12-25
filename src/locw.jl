@@ -1,24 +1,27 @@
 """
-    locw(Xtrain, Ytrain, X ; 
-        listnn, listw = nothing, fun, verbose = false, kwargs...)
+    locw(Xtrain, Ytrain, X; listnn, 
+        listw = nothing, fun, verbose = false, 
+        kwargs...)
 Compute predictions for a given kNN model.
 * `Xtrain` : Training X-data.
 * `Ytrain` : Training Y-data.
 * `X` : X-data (m observations) to predict.
-* `listnn` : List of m vectors of indexes.
-* `listw` : List of m vectors of weights.
+Keyword arguments:
+* `listnn` : List (vector) of m vectors of indexes.
+* `listw` : List (vector) of m vectors of weights.
 * `fun` : Function computing the model on the m neighborhoods.
-* `verbose` : If true, fitting information are printed.
+* `verbose` : Boolean. If true, fitting information are printed.
 * `kwargs` : Keywords arguments to pass in function fun. 
 
-Each component i of `listnn` and `listw` contains the indexes and weights, respectively,
-of the nearest neighbors of x_i in Xtrain. The sizes of the neighborhood 
-for i = 1,...,m can be different.
+Each component i of `listnn` and `listw` contains the indexes 
+and weights, respectively, of the nearest neighbors of x_i in Xtrain. 
+The sizes of the neighborhood for i = 1,...,m can be different.
 
 All the arguments in kwargs must have length = 1 (not collections).
 """
 function locw(Xtrain, Ytrain, X; listnn, 
-        listw = nothing, fun, verbose = false, kwargs...)
+        listw = nothing, fun, verbose = false, 
+        kwargs...)
     m = nro(X)
     q = nco(Ytrain)
     pred = similar(Ytrain, m, q)
@@ -35,7 +38,8 @@ function locw(Xtrain, Ytrain, X; listnn,
         ## End
         else
             if isnothing(listw)
-                fm = fun(Xtrain[s, :],  zYtrain; kwargs...)
+                fm = fun(Xtrain[s, :],  zYtrain; 
+                    kwargs...)
             else
                 fm = fun(Xtrain[s, :], zYtrain, mweight(listw[i]); 
                     kwargs...)
