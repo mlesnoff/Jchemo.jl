@@ -7,31 +7,31 @@ Logarithm of the normal probability density estimation.
 * `X` : X-data (n, p) used to estimate the mean and 
     the covariance matrix. If `nothing`, `mu` and `S` 
     must be provided.
-* `mu` : Mean vector of the normal distribution. 
-    If `nothing`, `mu` is computed by the column-means of `X`.
-* `S` : Covariance matrix of the normal distribution.
-    If `nothing`, `S` is computed by cov(`X`; corrected = true).
-* `simpl` : Boolean. If `true`, the constant term and the determinant 
-    in the density formula are set to 1. Default to `false`. 
-    See `dmnorm` for details.
+Keyword arguments:
+    * `mu` : Mean vector of the normal distribution. 
+        If `nothing`, `mu` is computed by the column-means
+        of `X`.
+    * `S` : Covariance matrix of the normal distribution.
+        If `nothing`, `S` is computed by cov(`X`; corrected = true).
+    * `simpl` : Boolean. If `true`, the constant term and 
+        the determinant in the density formula are set to 1.
 
 See the help of function `dmnorm`.
 
 ## Examples
 ```julia
 using JLD2, CairoMakie
-
 using JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "iris.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X[:, 1:4] 
 y = dat.X[:, 5]
 n = nro(X)
 tab(y) 
 
+## Example of class Setosa 
 s = y .== "setosa"
 zX = X[s, :]
 
