@@ -24,8 +24,9 @@ https://cran.r-project.org/
 
 ## Examples
 ```julia
-X = [1. 2 missing 4 ; 4 missing 6 7 ; missing 5 6 13 ; 
-    missing 18 7 6 ; 12 missing 28 7] 
+X = [1. 2 missing 4 ; 4 missing 6 7 ; 
+    missing 5 6 13 ; missing 18 7 6 ; 
+    12 missing 28 7] 
 
 res = nipalsmiss(X)
 res.niter
