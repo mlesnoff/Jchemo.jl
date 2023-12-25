@@ -5,7 +5,7 @@ Linear discriminant analysis  (LDA).
 * `X` : X-data.
 * `y` : y-data (class membership).
 * `weights` : Weights (n) of the observations. 
-    Internally normalized to sum to 1.
+    Must be of type `Weight` (see e.g. function `mweight`).
 * `prior` : Type of prior probabilities for class membership.
     Possible values are: :unif (uniform), :prop (proportional).
 

@@ -8,7 +8,7 @@ Direct kernel partial least squares regression (DKPLSR) (Bennett & Embrechts 200
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
-    Internally normalized to sum to 1.
+    Must be of type `Weight` (see e.g. function `mweight`).
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * 'kern' : Type of kernel used to compute the Gram matrices.
     Possible values are :krbf of :kpol (see respective functions `krbf` and `kpol`).

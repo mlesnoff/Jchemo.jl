@@ -7,7 +7,7 @@ Partial Least Squares Regression (PLSR) with the Wold algorithm
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
-    Internally normalized to sum to 1.
+    Must be of type `Weight` (see e.g. function `mweight`).
 * `nlv` : Nb. latent variables (LVs) to consider.
 * `tol` : Tolerance for the Nipals algorithm.
 * `maxit` : Maximum number of iterations for the Nipals algorithm.

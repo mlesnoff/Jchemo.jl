@@ -6,7 +6,7 @@
 Spherical PCA.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
-    Internally normalized to sum to 1.
+    Must be of type `Weight` (see e.g. function `mweight`).
 * `nlv` : Nb. principal components (PCs).
 * `typc` : Type of centering.
 * `scal` : Boolean. If `true`, each column of `X` is scaled

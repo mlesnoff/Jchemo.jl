@@ -8,7 +8,7 @@ Partial least squares regression (PLSR) with the
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
-    Internally normalized to sum to 1.
+    Must be of type `Weight` (see e.g. function `mweight`).
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.

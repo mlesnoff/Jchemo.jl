@@ -9,7 +9,7 @@ Sparse PLSR (Shen & Huang 2008).
 * `X` : X-data (n, p). 
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
-    Internally normalized to sum to 1.
+    Must be of type `Weight` (see e.g. function `mweight`).
 * `nlv` : Nb. latent variables (LVs).
 * `msparse`: Method used for the thresholding. Possible values
     are :soft (default), :mix or :hard. See thereafter.

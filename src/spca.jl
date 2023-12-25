@@ -8,7 +8,7 @@
 Sparse PCA (Shen & Huang 2008).
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
-    Internally normalized to sum to 1.
+    Must be of type `Weight` (see e.g. function `mweight`).
 * `nlv` : Nb. principal components (PCs).
 * `msparse`: Method used for the thresholding. Possible values
     are :soft (default), :mix or :hard. See thereafter.

@@ -1,45 +1,43 @@
 """
-    matB(X, y, weights = ones(nro(X)))
+    matB(X, y, weights::Weight)
 Between-class covariance matrix.
 * `X` : X-data (n, p).
 * `y` : A vector (n) defining the class membership.
 * `weights` : Weights (n) of the observations. 
-    Internally normalized to sum to 1.
+    Must be of type `Weight` (see e.g. function `mweight`).
 
-Compute the between-class covariance matrix (B) of `X`.
-This is the (non-corrected) covariance matrix of 
+Compute the between-class covariance matrix (output `B`) 
+of `X`. This is the (non-corrected) covariance matrix of 
 the weighted class centers.
 
 ## Examples
 ```julia
+using StatsBase
+
 n = 20 ; p = 3
 X = rand(n, p)
-X
 y = rand(1:3, n)
-res = matB(X, y)
+tab(y) 
+weights = mweight(ones(n)) 
+
+res = matB(X, y, weights) ;
 res.B
 res.theta
 res.ni
 res.lev
 
-res = matW(X, y)
-pnames(res)
-res.W 
+res = matW(X, y, weights) ;
+res.W
 res.Wi
 
-matW(X, y).W + matB(X, y).B 
+matW(X, y, weights).W + matB(X, y, weights).B
 cov(X; corrected = false)
 
-w = ones(n)
-matW(X, y, w).W + matB(X, y, w).B
-cov(X; corrected = false)
-
-w = rand(n)
-matW(X, y, w).theta 
-matB(X, y, w).theta 
-
-matW(X, y, w).W + matB(X, y, w).B
-covm(X, w)
+v = mweight(collect(1:n))
+matW(X, y, v).theta 
+matB(X, y, v).theta 
+matW(X, y, v).W + matB(X, y, v).B
+covm(X, v)
 ```
 """ 
 matB = function(X, y, weights::Weight)
@@ -62,20 +60,20 @@ matB = function(X, y, weights::Weight)
 end
 
 """
-    matW(X, y, weights = ones(nro(X)))
+    matW(X, y, weights::Weight)
 Within-class covariance matrices.
 * `X` : X-data (n, p).
 * `y` : A vector (n) defing the class membership.
 * `weights` : Weights (n) of the observations. 
-    Internally normalized to sum to 1.
+    Must be of type `Weight` (see e.g. function `mweight`).
 
 Compute the (non-corrected) within-class and pooled covariance 
-matrices (Wi and W) of `X`, and the pooled covariance matrix W. 
+matrices  (outputs `Wi` and `W`, respectively) of `X`. 
 
-If class i contains only one observation, 
-Wi is computed by `covm(`X`, `weights`)`.
+If class i contains only one observation, Wi is computed by:
+* `covm(`X`, `weights`)`.
 
-For examples, see `?matB`. 
+For examples, see function `matB`. 
 """ 
 matW = function(X, y, weights::Weight)
     X = ensure_mat(X)
