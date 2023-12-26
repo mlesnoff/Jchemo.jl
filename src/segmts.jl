@@ -3,7 +3,7 @@
         rep = 1, seed = nothing)
     segmts(group::Vector, m::Int; 
         rep = 1, seed = nothing)
-Build segments of test observations for "test-set" validation.
+Build segments of observations for "test-set" validation.
 * `n` : Total nb. of observations in the dataset. 
     The sampling  is implemented within 1:`n`.
 * `group` : A vector (n) defining blocks of observations.
@@ -26,7 +26,7 @@ This prevents underestimation of the generalization error.
 
 The function returns a list (vector) of `rep` elements. 
 Each element of the list is a vector of the indexes (positions 
-within 1:`n`) of the sampled test observations.  
+within 1:`n`) of the sampled observations.  
 
 ## Examples
 ```julia
