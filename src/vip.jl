@@ -1,65 +1,78 @@
 """
-    vip(object::Union{Pcr, Plsr}; nlv = nothing)
-    vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
+    vip(object::Union{Pcr, Plsr}; 
+        nlv = nothing)
+    vip(object::Union{Pcr, Plsr}, Y; 
+        nlv = nothing)
 Variable importance on Projections (VIP).
-* `object` : The fitted model (object of structure `Plsr`).
+* `object` : The fitted model.
 * `Y` : The Y-data that was used to fit the model.
+Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider.
+    If `nothing`, the maximal model is considered.
 
-For a PLS (or PCR, etc.) model (X, Y) with a number of A latent variables, 
-and variable xj (column j of X): 
-* VIP(xj) = Sum(a=1,...,A) R2(Yc, ta) waj^2 / Sum(a=1,...,A) R2(Yc, ta) (1 / p) 
+For a PLS model  (or PCR, etc.) fitted on (X, Y) with a number 
+of A latent variables, and for variable xj (column j of X): 
+* VIP(xj) = Sum.a(1,...,A) R2(Yc, ta) waj^2 / Sum.a(1,...,A) R2(Yc, ta) (1 / p) 
 where:
 * Yc is the centered Y, 
-* ta is the ath X-score, 
-* and R2(Yc, ta) the proportion of Yc-variance explained by ta, 
-    i.e. ||Yc.hat||^2 / ||Yc||^2 (where Yc.hat is the LS estimate of Yc by ta).  
+* ta is the a-th X-score, 
+* R2(Yc, ta) is the proportion of Yc-variance explained 
+    by ta, i.e. ||Yc.hat||^2 / ||Yc||^2 (where Yc.hat is the 
+    LS estimate of Yc by ta).  
 
-When `Y` is used as argument, R2(Yc, ta) is replaced by the redundancy
+When `Y` is used, R2(Yc, ta) is replaced by the redundancy
 Rd(Yc, ta) (see function `rd`), such as in Tenenhaus 1998 p.139. 
 
 ## References
-Chong, I.-G., Jun, C.-H., 2005. Performance of some variable selection methods when 
-multicollinearity is present. Chemometrics and Intelligent Laboratory Systems 78, 103–112. 
-https://doi.org/10.1016/j.chemolab.2004.12.011
+Chong, I.-G., Jun, C.-H., 2005. Performance of some variable selection 
+methods when multicollinearity is present. Chemometrics and Intelligent 
+Laboratory Systems 78, 103–112. https://doi.org/10.1016/j.chemolab.2004.12.011
 
-Mehmood, T., Sæbø, S., Liland, K.H., 2020. Comparison of variable selection methods 
-in partial least squares regression. Journal of Chemometrics 34, e3226. 
-https://doi.org/10.1002/cem.3226
+Mehmood, T., Sæbø, S., Liland, K.H., 2020. Comparison of variable 
+selection methods in partial least squares regression. Journal of 
+Chemometrics 34, e3226. https://doi.org/10.1002/cem.3226
 
 Tenenhaus, M., 1998. La régression PLS: théorie et pratique. 
 Editions Technip, Paris.
 
 ## Examples
 ```julia
-X = [1. 2 3 4; 4 1 6 7; 12 5 6 13; 27 18 7 6; 12 11 28 7] 
-Y = [10. 11 13; 120 131 27; 8 12 4; 1 200 8; 100 10 89] 
+X = [1. 2 3 4; 4 1 6 7; 12 5 6 13; 
+    27 18 7 6; 12 11 28 7] 
+Y = [10. 11 13; 120 131 27; 8 12 4; 
+    1 200 8; 100 10 89] 
 y = Y[:, 1] 
 ycla = [1; 1; 1; 2; 2]
 
 nlv = 3
-fm = plskern(X, Y; nlv = nlv) ;
-res = vip(fm)
+mod = plskern(; nlv) ;
+fit!(mod, X, y)
+res = vip(mod.fm)
 pnames(res)
-mean(res.imp.^2)
-vip(fm; nlv = 1).imp
+res.imp
 
-nlv = 2
-fm = plsrda(X, ycla; nlv = nlv) ;
-fmpls = fm.fm
-vip(fmpls).imp
-Ydummy = dummy(ycla).Y
-vip(fmpls, Ydummy).imp
+fit!(mod, X, Y)
+vip(mod.fm).imp
+vip(mod.fm, Y).imp
 
-nlv = 2
-fm = plslda(X, ycla; nlv = nlv) ;
-fmpls = fm.fm.fmpls
-vip(fmpls).imp
+mod = plsrda(; nlv) ;
+fit!(mod, X, ycla)
+pnames(mod.fm)
+fm = mod.fm.fm ;
+vip(fm).imp
 Ydummy = dummy(ycla).Y
-vip(fmpls, Ydummy).imp
+vip(fm, Ydummy).imp
+
+mod = plslda(; nlv) ;
+fit!(mod, X, ycla)
+pnames(mod.fm.fm)
+fm = mod.fm.fm.fmpls ;
+vip(fm).imp
+vip(fm, Ydummy).imp
 ```
 """ 
-function vip(object::Union{Pcr, Plsr}; nlv = nothing)
+function vip(object::Union{Pcr, Plsr}; 
+        nlv = nothing)
     if isa(object, Jchemo.Pcr)
         W = object.fmpca.P
     else
@@ -67,9 +80,11 @@ function vip(object::Union{Pcr, Plsr}; nlv = nothing)
     end
     a = nco(object.T)
     p = nro(W)
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    isnothing(nlv) ? nlv = a : 
+        nlv = min(nlv, a)
     sqrtw = sqrt.(object.weights.w)
-    ## ::Plsr contains algorithmns where W is normed
+    ## Type '::Plsr' contains algorithmns 
+    ## where W is normed
     ## ==> No need to do the following: 
     ## wnorms = colnorm(W)
     ## W2 = fscale(W, wnorms).^2
@@ -88,7 +103,8 @@ function vip(object::Union{Pcr, Plsr}; nlv = nothing)
     (imp = imp, W2, sst)
 end
 
-function vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
+function vip(object::Union{Pcr, Plsr}, Y; 
+        nlv = nothing)
     if isa(object, Jchemo.Pcr)
         W = object.fmpca.P
     else
@@ -96,9 +112,11 @@ function vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
     end
     a = nco(object.T)
     p = nro(W)
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    isnothing(nlv) ? nlv = a : 
+        nlv = min(nlv, a)
     W2 = W[:, 1:nlv].^2
-    rdd = rd(Y, object.T[:, 1:nlv], object.weights)
+    rdd = rd(Y, object.T[:, 1:nlv], 
+        object.weights)
     A = rowsum(rdd .* W2)
     B = sum(rdd) * (1 / p)
     imp = sqrt.(A / B)
