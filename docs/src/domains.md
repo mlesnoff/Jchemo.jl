@@ -246,13 +246,13 @@
 
 ### **Test-set validation**
 
-- **gridscore** 
+- **gridscore** Compute an error rate over a grid of parameters
   
 ### **Cross-validation (CV)**
 
-- **gridcv**  
 - **segmkf** Build segments for K-fold CV
 - **segmts** Build segments for test-set validation
+- **gridcv** Compute an error rate over a grid of parameters
 
 ### **Performance scores**
 
