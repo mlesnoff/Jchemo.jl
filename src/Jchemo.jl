@@ -327,8 +327,9 @@ export
     rosaplsr, rosaplsr!,
     soplsr,
     ## Variable selection/importance (direct methods) 
-    isel,
-    vip, viperm,
+    isel!,
+    vip, 
+    viperm!,
     ## Utils
     xfit, xfit!, xresid, xresid!,
     ## Local

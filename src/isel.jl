@@ -1,13 +1,13 @@
 """
-    isel(mod, X, Y, wl = 1:nco(X); 
-        rep = 1, nint = 5, psamp = 1 / 3, 
+    isel!(mod, X, Y, wl = 1:nco(X); 
+        rep = 1, nint = 5, psamp = .3, 
         score = rmsep)
 Interval variable selection.
+* `mod` : Model to evaluate.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `wl` : Optional numeric labels (p, 1) of the X-columns.
 Keyword arguments:  
-* `mod` : The model to evaluate.
 * `rep` : Number of replications of the splitting
     training/test. 
 * `nint` : Nb. intervals. 
@@ -69,7 +69,7 @@ ytest = Ytest[:, nam]
 
 mod = plskern(nlv = 5)
 nint = 10
-res = isel(mod, Xtrain, ytrain, wl; 
+res = isel!(mod, Xtrain, ytrain, wl; 
     rep = 30, nint) ;
 res.res_rep
 res.res0_rep
@@ -86,8 +86,8 @@ hlines!(ax, zres0.y1, linestyle = :dash)
 f
 ```
 """
-function isel(mod, X, Y, wl = 1:nco(X); 
-        rep = 1, nint = 5, psamp = 1 / 3, 
+function isel!(mod, X, Y, wl = 1:nco(X); 
+        rep = 1, nint = 5, psamp = .3, 
         score = rmsep)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
@@ -110,11 +110,11 @@ function isel(mod, X, Y, wl = 1:nco(X);
     zres = list(Matrix{Float64}, nint)
     res_rep = zeros(nint, q, rep)
     @inbounds for i = 1:rep
-        s .= sample(1:n, nval; replace = false)
-        Xcal .= rmrow(X, s)
-        Ycal .= rmrow(Y, s)
-        Xval .= X[s, :]
-        Yval .= Y[s, :]
+        s = samprand(n, nval)
+        Xcal .= X[s.train, :]
+        Ycal .= Y[s.train, :]
+        Xval .= X[s.test, :]
+        Yval .= Y[s.test, :]
         ## All variables ('res0')
         fit!(mod, Xcal, Ycal)
         pred = predict(mod, Xval).pred
