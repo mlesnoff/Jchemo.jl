@@ -88,8 +88,8 @@ function plslda(X, y, weights::Weight;
         kwargs...)
     fmda = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = lda(fmpls.T[:, 1:i], y, weights; 
-            kwargs...)
+        fmda[i] = lda(fmpls.T[:, 1:i], y, 
+            weights; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
     Plslda(fm, res.lev, ni)
