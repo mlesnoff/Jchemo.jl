@@ -1,14 +1,13 @@
 """
-    gridscore_lv(Xtrain, Ytrain, X, Y; score, fun, pars, nlv, verbose = FALSE)
-* See `gridscore`.
-* `nlv` : Nb., or collection of nb., of latent variables (LVs).
+    gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, 
+        pars = nothing, nlv, verbose = false)
+Working function for `gridscore`.
 
-Same as [`gridscore`](@ref) but specific to (and much faster for) models 
-using latent variables (e.g. PLSR).
+Specific and faster than `gridscore_br` for models 
+using latent variables (e.g. PLSR). Argument `pars` 
+must not contain `nlv`.
 
-Argument `pars` must not contain `nlv`.
-
-See `?gridscore` for examples.
+See function `gridscore` for examples.
 """
 function gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, 
         pars = nothing, nlv, verbose = false)

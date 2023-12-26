@@ -11,6 +11,8 @@ Model validation over a grid of parameters.
     involved in the calculation of the score (e.g. output of function `mpar`).
 * `verbose` : If true, fitting information are printed.
 
+* `lb` : Value, or collection of values, of the ridge regularization parameter "lambda".
+
 Compute a prediction score (= error rate) for a given model over a grid of parameters.
 
 The score is computed over the validation sets `X` and `Y` for each combination 
@@ -133,7 +135,27 @@ pred = Jchemo.predict(fm, Xtest).pred
 rmsep(pred, ytest)
 ```
 """
-function gridscore(Xtrain, Ytrain, X, Y; fun, score, 
+function gridscore(mod, Xtrain, Ytrain, X, Y; 
+    score, pars = nothing, nlv = nothing, 
+    lb = nothing, verbose = false)
+#function gridscore(Xtrain, Ytrain, X, Y; fun, score, 
+#        pars = nothing, nlv = nothing, lb = nothing, 
+#        verbose = false)
+    fun = mod.fun
+    if isnothing(nlv) && isnothing(lb)
+        res = gridscore_br(Xtrain, Ytrain, X, Y; fun, score, 
+            pars, verbose)
+    elseif !isnothing(nlv)
+        res = gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, 
+            pars, nlv, verbose)
+    elseif !isnothing(lb)
+        res = gridscore_lb(Xtrain, Ytrain, X, Y; fun, score, 
+            pars, lb, verbose)
+    end
+    res
+end
+
+function gridscore_old(Xtrain, Ytrain, X, Y; fun, score, 
         pars = nothing, nlv = nothing, lb = nothing, 
         verbose = false)
     if isnothing(nlv) && isnothing(lb)
@@ -148,4 +170,3 @@ function gridscore(Xtrain, Ytrain, X, Y; fun, score,
     end
     res
 end
-

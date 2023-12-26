@@ -1,3 +1,10 @@
+"""
+    gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, 
+        pars, verbose = false)
+Working function for `gridscore`.
+
+See function `gridscore` for examples.
+"""
 function gridscore_br(Xtrain, Ytrain, X, Y; fun, score, 
        pars, verbose = false)
     q = nco(Ytrain)

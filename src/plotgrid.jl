@@ -1,8 +1,10 @@
 """
-    plotgrid(indx::AbstractVector, r; size = (500, 350), 
-        step = 5, color = nothing, kwargs...)
-    plotgrid(indx::AbstractVector, r, group; size = (500, 350), 
-        step = 5, color = nothing, leg = true, kwargs...)
+    plotgrid(indx::AbstractVector, r; 
+        size = (500, 350), step = 5, color = nothing, 
+        kwargs...)
+    plotgrid(indx::AbstractVector, r, group; 
+        size = (500, 350), step = 5, color = nothing, 
+        leg = true, leg_title = "Group", kwargs...)
 Plot error/performance rates of a model.
 * `indx` : A numeric variable representing the grid of 
     model parameters, e.g. the nb. LVs if PLSR models.
@@ -15,6 +17,7 @@ Keyword arguments:
 * `color` : Set color. If `group` if used, must be a vector 
     of same length as the number of levels in `group`.
 * `leg` : Boolean. If `group` is used, display a legend or not.
+* `leg_title` : Title of the legend.
 * `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.
 
 To use `plotgrid`, a backend (e.g. CairoMakie) has to 
@@ -56,8 +59,9 @@ plotgrid(res.nlv, res.y1, group;
     xlabel = "Nb. LVs", ylabel = "RMSECV").f
 ```
 """ 
-function plotgrid(indx::AbstractVector, r; size = (500, 350), 
-        step = 5, color = nothing, kwargs...)
+function plotgrid(indx::AbstractVector, r; 
+        size = (500, 350), step = 5, color = nothing, 
+        kwargs...)
     isa(indx, Vector{Any}) ? indx = Float64.(indx) : nothing
     r = Float64.(vec(r))
     xticks = collect(minimum(indx):step:maximum(indx))
@@ -72,8 +76,9 @@ function plotgrid(indx::AbstractVector, r; size = (500, 350),
     (f = f, ax = ax)
 end
 
-function plotgrid(indx::AbstractVector, r, group; size = (700, 350), 
-        step = 5, color = nothing, leg = true, kwargs...)
+function plotgrid(indx::AbstractVector, r, group; 
+        size = (700, 350), step = 5, color = nothing, 
+        leg = true, leg_title = "Group", kwargs...)
     isa(indx, Vector{Any}) ? indx = Float64.(indx) : nothing
     r = Float64.(vec(r))
     group = vec(group)
@@ -81,7 +86,8 @@ function plotgrid(indx::AbstractVector, r, group; size = (700, 350),
     lev = mlev(group)
     nlev = length(lev)
     f = Figure(size = size)
-    ax = Axis(f; xticks = (xticks, string.(xticks)), kwargs...)
+    ax = Axis(f; xticks = (xticks, string.(xticks)), 
+        kwargs...)
     for i = 1:nlev
         s = group .== lev[i]
         x = indx[s]
@@ -90,12 +96,14 @@ function plotgrid(indx::AbstractVector, r, group; size = (700, 350),
         if isnothing(color)
             lines!(ax, x, y; label = lab)
         else
-            lines!(ax, x, y; label = lab, color = color[i])
+            lines!(ax, x, y; label = lab, 
+                color = color[i])
         end
     end
     f[1, 1] = ax
     if leg
-        f[1, 2] = Legend(f, ax, "Group", framevisible = false)
+        f[1, 2] = Legend(f, ax, leg_title, 
+            framevisible = false)
     end
     (f = f, ax = ax)
 end
