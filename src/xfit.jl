@@ -1,9 +1,9 @@
 """
-    xfit(fm::Union{Pca, Pcr, Plsr})
-    xfit(fm::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
-    xfit!(fm::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
+    xfit(object::Union{Pca, Pcr, Plsr})
+    xfit(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
+    xfit!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
 Matrix fitting from a PCA, PCR or PLS model
-* `fm` : The fitted model.
+* `object` : The fitted model.
 * `X` : X-data to be approximatred from the model.
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, 
     it is the maximum nb. of components.
@@ -32,34 +32,34 @@ xfit(fm, X)
 xresid(fm, X)
 ```
 """ 
-function xfit(fm)
-    X = fm.T * fm.P'
+function xfit(object)
+    X = object.T * object.P'
     ## Coming back to the original scale
-    fscale!(X, 1 ./ fm.xscales)    
-    fcenter!(X, -fm.xmeans)
+    fscale!(X, 1 ./ object.xscales)    
+    fcenter!(X, -object.xmeans)
     X
 end
 
-function xfit(fm, X; nlv = nothing)
-    xfit!(fm, copy(ensure_mat(X)); 
+function xfit(object, X; nlv = nothing)
+    xfit!(object, copy(ensure_mat(X)); 
         nlv)
 end
 
-function xfit!(fm, X::Matrix; 
+function xfit!(object, X::Matrix; 
         nlv = nothing)
-    a = nco(fm.T)
+    a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     if nlv == 0
         m = nro(X)
         @inbounds for i = 1:m
-            X[i, :] .= fm.xmeans
+            X[i, :] .= object.xmeans
         end
     else
-        P = vcol(fm.P, 1:nlv)
-        mul!(X, transf(fm, X; nlv), P')
+        P = vcol(object.P, 1:nlv)
+        mul!(X, transf(object, X; nlv), P')
         ## Coming back to the original scale
-        fscale!(X, 1 ./ fm.xscales)    
-        fcenter!(X, -fm.xmeans)
+        fscale!(X, 1 ./ object.xscales)    
+        fcenter!(X, -object.xmeans)
     end
     X
 end

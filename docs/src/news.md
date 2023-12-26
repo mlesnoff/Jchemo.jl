@@ -26,8 +26,9 @@ Other current specific points are:
 - Functions isel and viperm remated to isel! and viperm!, 
     and syntax changed.
 - Syntax of tuning functions gridscore and gridcv
-    has changed, and the functions are now genereic (no need 
-    anymore to call specific functions ...lv and ...lb).
+    has changed, and the functions are now genereic 
+    (no need anymore to call specific functions ...lv 
+    and ...lb).
 - Temporary removed:
     - mbunif, mbwcov
     - baggr and its utilities
@@ -40,8 +41,8 @@ Other current specific points are:
     - interpl_mon
     - occknndis, occlknndis
 
-Some typing errors may be introduced due to the restructuration.
-They will be corrected in versions > 0.3.0.
+Some typing errors may have been introduced due to the 
+restructuration. They will be corrected in versions > 0.3.0.
 
 
 ## *Version 0.2.4*
