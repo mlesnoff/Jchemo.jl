@@ -1,24 +1,31 @@
 """
-    gridscore(Xtrain, Ytrain, X, Y; score, fun, pars, verbose = FALSE) 
+    gridscore(mod, Xtrain, Ytrain, X, Y; 
+        score, pars = nothing, nlv = nothing, 
+        lb = nothing, verbose = false) 
 Model validation over a grid of parameters.
+* `mod` : Model to evaluate.
 * `Xtrain` : Training X-data (n, p).
 * `Ytrain` : Training Y-data (n, q).
 * `X` : Validation X-data (m, p).
 * `Y` : Validation Y-data (m, q).
-* `score` : Function (e.g. `msep`) computing the prediction score.
-* `fun` : Function computing the prediction model.
-* `pars` : tuple of named vectors (= arguments of fun) of same length
-    involved in the calculation of the score (e.g. output of function `mpar`).
+Keyword arguments: 
+* `score` : Function computing the prediction 
+    score (e.g. `rmsep`).
+* `pars` : tuple of named vectors of same length defining 
+    the parameter combinations (e.g. output of function `mpar`).
 * `verbose` : If true, fitting information are printed.
+* `nlv` : Value, or vector of values, of the nb. of latent
+    variables (LVs).
+* `lb` : Value, or vector of values, of the ridge 
+    regularization parameter "lambda".
 
-* `lb` : Value, or collection of values, of the ridge regularization parameter "lambda".
-
-Compute a prediction score (= error rate) for a given model over a grid of parameters.
-
-The score is computed over the validation sets `X` and `Y` for each combination 
-of the grid defined in `pars`. 
+Compute a prediction score (= error rate) for a given model 
+over a grid of parameters. The score is computed over the validation 
+sets `X` and `Y` for each combination of the grid defined in `pars`. 
     
-The vectors in `pars` must have same length.
+For models based on LV or ridge regularization, using arguments `nlv` 
+and `lb` allow faster computations than including these parameters in 
+argument `pars. See the examples.   
 
 ## Examples
 ```julia
