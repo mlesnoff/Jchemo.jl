@@ -1,8 +1,8 @@
 """
-    xresid(fm::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
-    xresid!(fm::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
+    xresid(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
+    xresid!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
 Residual matrix after fitting by a PCA, PCR or PLS model
-* `fm` : The fitted model.
+* `object` : The fitted model.
 * `X` : X-data for which the residuals have to be computed.
 * `nlv` : Nb. components (PCs or LVs) to consider. If nothing, 
     it is the maximum nb. of components.
@@ -29,16 +29,16 @@ xfit(fm, X)
 xresid(fm, X)
 ```
 """ 
-function xresid(fm, X; nlv = nothing)
-    xresid!(fm, copy(ensure_mat(X)); 
+function xresid(object, X; nlv = nothing)
+    xresid!(object, copy(ensure_mat(X)); 
         nlv)
 end
 
-function xresid!(fm, X::Matrix; 
+function xresid!(object, X::Matrix; 
         nlv = nothing)
-    a = nco(fm.T)
+    a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    X .-= xfit(fm, X; nlv)
+    X .-= xfit(object, X; nlv)
     X
 end
 
