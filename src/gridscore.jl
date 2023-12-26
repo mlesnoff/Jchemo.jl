@@ -2,7 +2,7 @@
     gridscore(mod, Xtrain, Ytrain, X, Y; 
         score, pars = nothing, nlv = nothing, 
         lb = nothing, verbose = false) 
-Model validation over a grid of parameters.
+Test-set model validation over a grid of parameters.
 * `mod` : Model to evaluate.
 * `Xtrain` : Training X-data (n, p).
 * `Ytrain` : Training Y-data (n, q).
