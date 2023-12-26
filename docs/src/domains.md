@@ -142,7 +142,6 @@
 ### Wrappers to other packages
 
 *SVM regression -- with LIBSVM.jl*
-
 - **svmr** Epsilon-SVR (SVM-R)
 
 *Regression trees -- with DecisionTree.jl*
