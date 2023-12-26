@@ -215,11 +215,9 @@
 ### Wrappers to other packages
 
 *SVM classification -- with LIBSVM.jl*
-
 - **svmda** C-SVC (SVM-DA)
 
 *Classification trees -- with DecisionTree.jl*
-
 - **treeda_dt** Single tree
 - **rfda_dt** Random forest
 
