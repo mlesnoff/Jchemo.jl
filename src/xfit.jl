@@ -1,35 +1,87 @@
 """
-    xfit(object::Union{Pca, Pcr, Plsr})
-    xfit(object::Union{Pca, Pcr, Plsr}, X; nlv = nothing)
-    xfit!(object::Union{Pca, Pcr, Plsr}, X::Matrix; nlv = nothing)
-Matrix fitting from a PCA, PCR or PLS model
+    xfit(object)
+    xfit(object, X; nlv = nothing)
+    xfit!(object, X::Matrix; 
+        nlv = nothing)
+Matrix fitting from a bilinear model (e.g. PCA)
 * `object` : The fitted model.
-* `X` : X-data to be approximatred from the model.
-* `nlv` : Nb. components (PCs or LVs) to consider. If nothing, 
-    it is the maximum nb. of components.
+* `X` : New X-data to be approximated from the model.
+    Must be in the same scale as the X-data used to fit
+    the model `object`, i.e. before centering 
+    and eventual scaling.
+Keyword arguments:
+* `nlv` : Nb. components (PCs or LVs) to consider. 
+    If `nothing`, it is the maximum nb. of components.
 
-Compute an approximate of matrix `X` (X_fit) from a PCA, PCR 
-or PLS fitted on `X`.
+Compute an approximate of matrix `X` (X_fit) from a bilnear 
+model (e.g. PCA or PLS) fitted on `X`.
 
-`X` and X_fit are in the original fscale, i.e. before centering and eventual scaling.
+The fitted X is returned in the original scale of the X-data
+used to fit the model `object`.
 
 ## Examples 
 ```julia 
-n, p = 5, 3
-X = rand(n, p)
-y = rand(n)
+X = [1. 2 3 4; 4 1 6 7; 12 5 6 13; 
+    27 18 7 6; 12 11 28 7] 
+Y = [10. 11 13; 120 131 27; 8 12 4; 
+    1 200 8; 100 10 89] 
+n, p = size(X)
+Xnew = X[1:3, :]
+Ynew = Y[1:3, :]
+y = Y[:, 1]
+ynew = Ynew[:, 1]
+weights = mweight(collect(1:n))
 
-nlv = 2 ;
-fm = pcasvd(X; nlv = nlv) ;
-#fm = plskern(X, y; nlv = nlv) ;
-xfit(fm)
-xfit(fm, X)
-xfit(fm, X, nlv = 0)
-xfit(fm, X, nlv = 1)
+nlv = 2 
+scal = false
+#scal = true
+mod = pcasvd(; nlv, scal) ;
+fit!(mod, X)
+fm = mod.fm ;
+@head xfit(fm)
+xfit(fm, Xnew)
+xfit(fm, Xnew; nlv = 0)
+xfit(fm, Xnew; nlv = 1)
+fm.xmeans
 
-fm = pcasvd(X; nlv = min(n, p)) ;
-xfit(fm, X)
-xresid(fm, X)
+@head X
+@head xfit(fm) + xresid(fm, X)
+@head xfit(fm, X; nlv = 1) + xresid(fm, X; nlv = 1)
+
+@head Xnew
+@head xfit(fm, Xnew) + xresid(fm, Xnew)
+
+mod = pcasvd(; nlv = min(n, p), 
+    scal) ;
+fit!(mod, X)
+fm = mod.fm ;
+@head xfit(fm) 
+@head xfit(fm, X)
+@head xresid(fm, X)
+
+nlv = 3
+scal = false
+#scal = true
+fm = plskern(X, Y, weights; 
+    nlv, scal) ;
+@head xfit(fm)
+xfit(fm, Xnew)
+xfit(fm, Xnew, nlv = 0)
+xfit(fm, Xnew, nlv = 1)
+
+@head X
+@head xfit(fm) + xresid(fm, X)
+@head xfit(fm, X; nlv = 1) + xresid(fm, X; nlv = 1)
+
+@head Xnew
+@head xfit(fm, Xnew) + xresid(fm, Xnew)
+
+mod = plskern(; nlv = min(n, p), 
+    scal) ;
+fit!(mod, X, Y, weights) 
+@head xfit(fm) 
+@head xfit(fm, Xnew)
+@head xresid(fm, Xnew)
 ```
 """ 
 function xfit(object)
