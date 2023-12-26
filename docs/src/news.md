@@ -19,11 +19,18 @@ Other current specific points are:
 - The 'weights' (row weighting in some functions, such as pcasvd etc.) 
     argument must now be of type 'Weight', built from function 'mweight'. 
 - Sampling functions 'samp...' have changed. 
-- Function 'mtest' renamed to 'sampdf'
-- Functions center, scale, cscale, blockscale remaned to f...
+- Function 'mtest' renamed to 'sampdf'.
+- Functions center, scale, cscale, blockscale renamed to fcenter,
+    fscale, etc. Alternatively, new transformers center, scale 
+    and cscale have been created.
+- Functions isel and viperm remated to isel! and viperm!, 
+    and syntax changed.
+- Syntax of tuning functions gridscore and gridcv
+    has changed, and the functions are now genereic (no need 
+    anymore to call specific functions ...lv and ...lb).
 - Temporary removed:
     - mbunif, mbwcov
-    - baggr and utilities
+    - baggr and its utilities
     - cplsravg
     - nsc, nscrda, nscda
     - plsrdaavg, plsldaavg, plsqdaavg
