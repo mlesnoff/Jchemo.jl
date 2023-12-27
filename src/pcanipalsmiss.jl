@@ -1,64 +1,66 @@
 """
-    pcanipalsmiss(X, weights = ones(nro(X)); nlv, 
-        gs::Bool = true, tol = sqrt(eps(1.)), maxit = 200, 
-        scal::Bool = false)
-    pcanipalsmiss!(X::Matrix, weights = ones(nro(X)); nlv, 
-        gs::Bool = true, tol = sqrt(eps(1.)), maxit = 200, 
-        scal::Bool = false)
+    pcanipals(; kwargs...)
+    pcanipals(X; kwargs...)
+    pcanipals(X, weights::Weight; kwargs...)
+    pcanipals!(X::Matrix, weights::Weight; 
+        kwargs...)
 PCA by NIPALS algorithm allowing missing data.
-* `X` : X-data (n, p).
+* `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
-* `nlv` : Nb. principal components (PCs).
-* `gs` : Boolean. If `true` (default), a Gram-Schmidt orthogonalization 
-    of the scores and loadings is done. 
-* `tol` : Tolerance value for stopping the iterations.
-* `maxit` : Maximum nb. iterations.
-* `scal` : Boolean. If `true`, each column of `X` is scaled
-    by its uncorrected standard deviation.
+Keyword arguments:
+* `nlv` : Nb. of principal components (PCs).
+* `gs` : Boolean. If `true` (default), a Gram-Schmidt 
+    orthogonalization of the scores and loadings is done
+    before each X-deflation. 
+* `tol` : Tolerance value for stopping 
+    the iterations.
+* `maxit` : Maximum nb. of iterations.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 
-Let us note D the (n, n) diagonal matrix of `weights` and X the centered 
-matrix in metric D. The function minimizes ||X - T * P'||^2  in metric D 
-by NIPALS. 
 
 ## References
-Wright, K., 2018. Package nipals: Principal Components Analysis using NIPALS 
-with Gram-Schmidt Orthogonalization. https://cran.r-project.org/
+Wright, K., 2018. Package nipals: Principal Components Analysis 
+using NIPALS with Gram-Schmidt Orthogonalization. 
+https://cran.r-project.org/
 
 ## Examples
 ```julia
-using LinearAlgebra
+X = [1 2. missing 4 ; 4 missing 6 7 ; 
+    missing 5 6 13 ; missing 18 7 6 ; 
+    12 missing 28 7] 
 
-X = [1. 2 missing 4 ; 4 missing 6 7 ; missing 5 6 13 ; 
-    missing 18 7 6 ; 12 missing 28 7] 
-
-tol = 1e-15
 nlv = 3 
-weights = ones(n) 
-#weights = collect(1:n) 
+tol = 1e-15
 scal = false
 #scal = true
 gs = false
 #gs = true
-fm = pcanipalsmiss(X, weights; nlv = nlv, 
-    tol = tol, gs = gs, scal = scal, maxit = 500) ;
-pnames(fm)
+mod = pcanipalsmiss(; nlv, 
+    tol, gs, maxit = 500, scal) ;
+fit!(mod, X)
+pnames(mod) 
+pnames(mod.fm)
+fm = mod.fm ;
 fm.niter
 fm.sv
 fm.P
 fm.T
-## Check if orthogonality
+## Orthogonality 
+## only if gs = true
+fm.T' * fm.T
 fm.P' * fm.P
-fm.T' * Diagonal(mweight(weights)) * fm.T
 
-## Impute missing data in x
-fm = pcanipalsmiss(X, weights; nlv = 2, 
-    gs = true, scal = scal) ;
-Xfit = xfit(fm)
+## Impute missing data in X
+mod = pcanipalsmiss(; nlv = 2, 
+    gs = true) ;
+fit!(mod, X)
+Xfit = xfit(mod.fm)
 s = ismissing.(X)
-Xres = copy(X)
-Xres[s] .= Xfit[s]
-Xres
+X_imput = copy(X)
+X_imput[s] .= Xfit[s]
+X_imput
 ```
 """ 
 function pcanipalsmiss(X; kwargs...)
