@@ -1,25 +1,28 @@
 """
-    pcasvd(X, weights = ones(nro(X)); nlv, scal::Bool = false)
-    pcasvd!(X::Matrix, weights = ones(nro(X)); nlv, scal::Bool = false)
+    pcasvd(; kwargs...)
+    pcasvd(X; kwargs...)
+    pcasvd(X, weights::Weight; kwargs...)
+    pcasvd!(X::Matrix, weights::Weight; 
+        kwargs...)
 PCA by SVD factorization.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
-* `nlv` : Nb. principal components (PCs).
+Keyword arguments:
+* `nlv` : Nb. of principal components (PCs).
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
-Let us note D the (n, n) diagonal matrix of `weights`
-and X the centered matrix in metric D.
+Let us note D the (n, n) diagonal matrix of weights
+(`weights.w`) and X the centered matrix in metric D.
 The function minimizes ||X - T * P'||^2  in metric D, by 
 computing a SVD factorization of sqrt(D) * X:
 
 * sqrt(D) * X ~ U * S * V'
 
 Outputs are:
-
-* T = D^(-1/2) * U * S
-* P = V
+* `T` = D^(-1/2) * U * S
+* `P` = V
 * The diagonal of S   
 
 ## Examples

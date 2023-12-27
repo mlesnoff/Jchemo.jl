@@ -5,11 +5,11 @@
 ### Principal component analysis (PCA) 
 
 *Usual*
+- **pcasvd** SVD decomposition
 - **pcaeigen** Eigen decomposition
 - **pcaeigenk** Eigen decomposition for wide matrices 
     (kernel form)
 - **pcanipals** NIPALS algorithm
-- **pcasvd** SVD decomposition
 
 *Allow missing data*
 - **pcanipalsmiss**: NIPALS algorithm allowing 
