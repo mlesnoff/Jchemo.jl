@@ -96,9 +96,10 @@ ytest = rmrow(y, s)
 n = nro(Xtrain)
 
 segm = segmts(n, 50; rep = 30)
+mod = plskern()
 nlv = 0:20
-res = gridcv(Xtrain, ytrain; segm = segm, nlv = nlv, 
-    fun = plskern, score = rmsep, verbose = false).res
+res = gridcv(mod, Xtrain, ytrain; segm, 
+    score = rmsep, nlv).res
 res[res.y1 .== minimum(res.y1), :]
 plotgrid(res.nlv, res.y1;
     xlabel = "Nb. LVs", ylabel = "RMSEP").f
