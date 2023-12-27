@@ -17,7 +17,7 @@ A ridge regularization can be used:
 * If `lb` > 0, the within-class (pooled) covariance matrix W 
     is replaced by W + `lb` * I, where I is the Idendity matrix.
 
-See `?fda` for examples.
+See function `fda` for examples.
 
 """ 
 fdasvd(X, y; kwargs...) = fdasvd!(copy(ensure_mat(X)), y; 

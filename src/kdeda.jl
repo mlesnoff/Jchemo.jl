@@ -6,8 +6,8 @@ Discriminant analysis using non-parametric kernel Gaussian
 * `y` : y-data (class membership).
 * `prior` : Type of prior probabilities for class membership.
     Possible values are: :unif (uniform; default), :prop (proportional).
-* `h` : See `?dmkern`.
-* `h` : See `?dmkern`.
+* `h` : See function `dmkern`.
+* `h` : See function `dmkern`.
 
 The principle is the same as functions `lda` and `qda` except 
 that densities are estimated from `dmkern` instead of  `dmnorm`. 

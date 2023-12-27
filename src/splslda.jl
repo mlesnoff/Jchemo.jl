@@ -24,7 +24,7 @@ Sparse PLS-LDA.
 Same as function `plslda` (PLS-LDA) except that sparse PLSR (function 
 `splskern`) is run on the Y-dummy table instead of a PLSR (function `plskern`). 
 
-See `?splskern` and `?plslda.
+See function `splskern` and `?plslda.
 
 ## Examples
 ```julia

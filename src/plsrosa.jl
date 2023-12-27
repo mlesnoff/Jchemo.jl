@@ -16,7 +16,7 @@ algorithm of Liland et al. (2016):
 * Scores T (LVs) are not normed.
 * Multivariate Y is allowed.
 
-See `?plsrosa` for examples.
+See function `plsrosa` for examples.
     
 ## References
 Liland, K.H., Næs, T., Indahl, U.G., 2016. ROSA—a fast extension of partial least 

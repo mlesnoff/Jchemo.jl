@@ -16,7 +16,7 @@ In this function, for PLS2 (multivariate Y), the Nipals iterations are replaced 
 direct computation of the PLS weights (w) by SVD decomposition of matrix X'Y 
 (Hoskuldsson 1988 p.213).
 
-See `?plsnipals` for examples.
+See function `plsnipals` for examples.
 
 ## References
 Hoskuldsson, A., 1988. PLS regression methods. Journal of Chemometrics 2, 211-228.

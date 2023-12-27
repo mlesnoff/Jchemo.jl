@@ -16,7 +16,7 @@ One-class classification using the Stahel-Donoho outlierness.
 In this method, the outlierness `d` of a given observation
 is the Stahel-Donoho outlierness (see `?stah`).
 
-See `?occsd` for details on outputs, and examples. 
+See function `occsd` for details on outputs, and examples. 
 """ 
 function occstah(X; kwargs...) 
     par = recovkwargs(Par, kwargs) 

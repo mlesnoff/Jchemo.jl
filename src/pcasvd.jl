@@ -10,8 +10,8 @@ PCA by SVD factorization.
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
-* `scal` : Boolean. If `true`, each column of `X` is scaled
-    by its uncorrected standard deviation.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 
 Let us note D the (n, n) diagonal matrix of weights
 (`weights.w`) and X the centered matrix in metric D.
@@ -27,34 +27,35 @@ Outputs are:
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie, StatsBase
+using JLD2, CairoMakie, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat
 pnames(dat)
-summ(dat.X)
-
+@head dat.X
 X = dat.X[:, 1:4]
 n = nro(X)
-
-ntrain = 120
-s = sample(1:n, ntrain; replace = false) 
-Xtrain = X[s, :]
-Xtest = rmrow(X, s)
+ntest = 30
+s = samprand(n, ntest) 
+@head Xtrain = X[s.train, :]
+@head Xtest = X[s.test, :]
 
 nlv = 3
-fm = pcasvd(Xtrain; nlv = nlv) ;
-#fm = pcaeigen(Xtrain; nlv = nlv) ;
-#fm = pcaeigenk(Xtrain; nlv = nlv) ;
-#fm = pcanipals(Xtrain; nlv = nlv) ;
-pnames(fm)
-fm.T
-fm.T' * fm.T
-fm.P' * fm.P
+mod = pcasvd(; nlv)
+#mod = pcaeigen(; nlv)
+#mod = pcaeigenk(; nlv)
+#mod = pcanipals(; nlv)
+fit!(mod, Xtrain)
+pnames(mod)
+pnames(mod.fm)
+@head T = mod.fm.T
+@head P = mod.fm.P
+T' * T
+P' * P
 
-transf(fm, Xtest)
+@head Ttest = transf(mod, Xtest)
 
-res = Base.summary(fm, Xtrain) ;
+res = summary(mod.fm, Xtrain) ;
 pnames(res)
 res.explvarx
 res.contr_var
@@ -94,7 +95,8 @@ function pcasvd!(X::Matrix, weights::Weight;
     sv = res.S   
     sv[sv .< 0] .= 0
     T = (1 ./ sqrtw) .* vcol(res.U, 1:nlv) * Diagonal(sv[1:nlv])
-    Pca(T, P, sv, xmeans, xscales, weights, nothing, kwargs, par) 
+    Pca(T, P, sv, xmeans, xscales, weights, 
+        nothing, kwargs, par) 
 end
 
 """ 

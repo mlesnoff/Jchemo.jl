@@ -9,8 +9,8 @@ KDE-LDA on PLS latent variables (PLS-KDE-LDA).
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `prior` : Type of prior probabilities for class membership.
     Possible values are: :unif (uniform; default), :prop (proportional).
-* `h` : See `?dmkern`.
-* `a` : See `?dmkern`.
+* `h` : See function `dmkern`.
+* `a` : See function `dmkern`.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 

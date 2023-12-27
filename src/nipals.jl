@@ -8,7 +8,7 @@ Nipals to compute the first score and loading vectors of a matrix.
 Keyword arguments:
 * `tol` : Tolerance value for stopping 
     the iterations.
-* `maxit` : Maximum nb. iterations.
+* `maxit` : Maximum nb. of iterations.
 
 The function finds:
 * {u, v, sv} = argmin(||X - u * sv * v'||)

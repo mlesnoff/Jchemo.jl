@@ -8,7 +8,7 @@ Discrimination based on kernel ridge regression (KRR-DA).
 * `lb` : Ridge regularization parameter "lambda".
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
-* Other arguments to pass in the kernel: See `?kplsr`.
+* Other arguments to pass in the kernel: See function `kplsr`.
 
 The training variable `y` (univariate class membership) is transformed
 to a dummy table (Ydummy) containing nlev columns, where nlev is the number 

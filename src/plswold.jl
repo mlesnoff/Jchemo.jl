@@ -16,7 +16,7 @@ Partial Least Squares Regression (PLSR) with the Wold algorithm
 
 Wold Nipals PLSR algorithm: Tenenhaus 1998 p.204.
     
-See `?plskern` for examples.
+See function `plskern` for examples.
 
 ## References
 Tenenhaus, M., 1998. La régression PLS: thÃ©orie et pratique. Editions Technip, 

@@ -24,9 +24,9 @@ Sparse PLS-KDE-DA.
 Same as function `plskdeda` (PLS-KDE-DA) except that sparse PLSR (function 
 `splskern`) is run on the Y-dummy table instead of a PLSR (function `plskern`). 
 
-See `?splskern` and `?plskdeda.
+See function `splskern` and `?plskdeda.
 
-See `?splslda` for examples.
+See function `splslda` for examples.
 """ 
 function splskdeda(X, y; kwargs...)
     Q = eltype(X[1, 1])

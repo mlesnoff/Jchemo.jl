@@ -22,7 +22,7 @@ of classes present in `y`. Each column of Ydummy is a dummy variable (0/1).
 Then, a PLS2 is implemented on `X` and Ydummy, 
 returning `nlv` latent variables (LVs). Finally, a QDA is run on these LVs and `y`.
 
-See `?plslda` for examples.
+See function `plslda` for examples.
 """ 
 function plsqda(X, y; kwargs...)
     Q = eltype(X[1, 1])

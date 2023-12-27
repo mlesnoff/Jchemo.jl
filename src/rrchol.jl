@@ -13,7 +13,7 @@ Ridge regression (RR) using the Normal equations and a Cholesky factorization.
 
 `X` and `Y` are internally centered. The model is computed with an intercept. 
 
-See `?rr` for eaxamples.
+See function `rr` for eaxamples.
 
 ## References 
 Cule, E., De Iorio, M., 2012. A semi-automatic method to guide the choice 

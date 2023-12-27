@@ -20,7 +20,7 @@ the Euclidean distance between the observation and its projection on the
 score plan defined by the fitted (e.g. PCA) model (e.g. Hubert et al. 2005, 
 Van Branden & Hubert 2005 p. 66, Varmuza & Filzmoser 2009 p. 79).
 
-See `?occsd` for details on outputs, and examples.
+See function `occsd` for details on outputs, and examples.
 
 ## References
 M. Hubert, P. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach 

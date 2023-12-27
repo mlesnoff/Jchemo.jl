@@ -24,7 +24,7 @@ orthogonal distance (OD). The compromise is computed from the
 standardized distances by: 
 * `dstand` = sqrt(`dstand_sd` * `dstand_od`).
 
-See `?occsd` for details on outputs, and examples.
+See function `occsd` for details on outputs, and examples.
 """ 
 function occsdod(fm, X; kwargs...) 
     fmsd = occsd(fm; kwargs...)

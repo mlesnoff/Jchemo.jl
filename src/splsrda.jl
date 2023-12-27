@@ -22,7 +22,7 @@ Sparse PLSR-DA.
 Same as function `plsrda` (PLSR-DA) except that sparse PLSR (function 
 `splskern`) is run on the Y-dummy table instead of a PLSR (function `plskern`). 
 
-See `?splskern` and `?plsrda.
+See function `splskern` and `?plsrda.
 
 ## Examples
 ```julia

@@ -12,7 +12,7 @@ Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 * `kwargs` : Named arguments to pass in the kernel function. 
-    See `?krbf`, `?kpol`.
+    See functions `krbf`, `kpol`.
 
 The method is implemented by SVD factorization of the weighted Gram matrix 
 D^(1/2) * Phi(`X`) * Phi(`X`)' * D^(1/2), where D is a diagonal matrix of weights for 

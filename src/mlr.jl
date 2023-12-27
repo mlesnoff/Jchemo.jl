@@ -97,7 +97,7 @@ Compute a model with intercept.
 
 Faster but can be less accurate (squared element X'X).
 
-See `?mlr` for examples.
+See function `mlr` for examples.
 """ 
 function mlrchol(X, Y)
     Q = eltype(X[1, 1])
@@ -134,7 +134,7 @@ Compute a mutiple linear regression model (MLR)  by using a pseudo-inverse.
 
 Safe but can be slower.  
 
-See `?mlr` for examples.
+See function `mlr` for examples.
 """ 
 function mlrpinv(X, Y; kwargs...)
     Q = eltype(X[1, 1])
@@ -183,7 +183,7 @@ Safe and fast for p not too large.
 
 Compute a model with intercept.
 
-See `?mlr` for examples.
+See function `mlr` for examples.
 """ 
 function mlrpinvn(X, Y)
     Q = eltype(X[1, 1])
@@ -222,7 +222,7 @@ Compute a simple linear regression model (univariate x).
 
 Compute a model with intercept.
 
-See `?mlr` for examples.
+See function `mlr` for examples.
 """ 
 function mlrvec(x, Y; kwargs...)
     Q = eltype(X[1, 1])

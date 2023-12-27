@@ -8,7 +8,7 @@ Discrimination based on kernel partial least squares regression (KPLSR-DA).
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
-* Other arguments to pass in the kernel: See `?kplsr`.
+* Other arguments to pass in the kernel: See function `kplsr`.
 
 This is the same approach as for `plsrda` except that the PLS2 step 
 is replaced by a non linear kernel PLS2 (KPLS).
