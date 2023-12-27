@@ -30,6 +30,9 @@ function transf(mod::Pipeline, X)
     X
 end
 
+###### Predict 
+# predict : see old_new in \Jchemo2
+
 
 #function fit!(mod::Tuple, X)
 #    K = length(mod)
@@ -57,4 +60,3 @@ end
 
 
 
-# predict : see old_new in \Jchemo2
