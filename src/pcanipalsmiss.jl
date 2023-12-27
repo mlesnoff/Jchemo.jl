@@ -105,7 +105,8 @@ function pcanipalsmiss!(X::Matrix, weights::Weight;
         if par.gs == false
             res = nipalsmiss(X; kwargs...)
         else
-            res = nipalsmiss(X, UUt, VVt; kwargs...)
+            res = nipalsmiss(X, UUt, VVt; 
+                kwargs...)
         end
         t .= res.u * res.sv
         T[:, a] .= t ./ sqrtw
@@ -119,6 +120,7 @@ function pcanipalsmiss!(X::Matrix, weights::Weight;
             VVt .+= res.v * res.v'
         end
     end
-    Pca(T, P, sv, xmeans, xscales, weights, niter, kwargs, par) 
+    Pca(T, P, sv, xmeans, xscales, weights, 
+        niter, kwargs, par) 
 end
 
