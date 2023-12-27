@@ -758,5 +758,9 @@ struct CalPds
     s
 end
 
+###### Weights
 
+struct Weight{T <: AbstractFloat}
+    w::Vector{T} 
+end
 
