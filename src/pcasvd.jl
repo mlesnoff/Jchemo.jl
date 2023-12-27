@@ -55,7 +55,7 @@ P' * P
 
 @head Ttest = transf(mod, Xtest)
 
-res = summary(mod.fm, Xtrain) ;
+res = summary(mod, Xtrain) ;
 pnames(res)
 res.explvarx
 res.contr_var
