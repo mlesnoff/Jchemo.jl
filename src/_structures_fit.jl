@@ -1,3 +1,9 @@
+###### Weights
+
+struct Weight{T <: AbstractFloat}
+    w::Vector{T} 
+end
+
 ###### Dimension reduction
 
 struct Pca 
@@ -756,11 +762,5 @@ end
 struct CalPds
     fm
     s
-end
-
-###### Weights
-
-struct Weight{T <: AbstractFloat}
-    w::Vector{T} 
 end
 
