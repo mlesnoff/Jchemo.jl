@@ -31,7 +31,13 @@ function transf(mod::Pipeline, X)
 end
 
 ###### Predict 
-# predict : see old_new in \Jchemo2
+function predict(mod::Pipeline, X)
+    K = length(mod.mod)
+    for i = 1:(K - 1)
+        X = transf(mod.mod[i], X)
+    end
+    predict(mod[K], X)
+end
 
 
 #function fit!(mod::Tuple, X)
@@ -54,9 +60,3 @@ end
 ## In the future, build: 
 ## fit!(mod::Tuple, X, weights::Weight)
 ## fit!(mod::Tuple, X, Y, weights::Weight)
-
-
-
-
-
-
