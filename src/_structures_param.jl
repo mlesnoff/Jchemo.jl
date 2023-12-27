@@ -67,8 +67,3 @@ Base.@kwdef mutable struct Par
     s_li::Float64 = 1.                      # rpmatli sparsity parameter  
 end 
 
-struct Weight{T <: AbstractFloat}
-    w::Vector{T} 
-end
-
-
