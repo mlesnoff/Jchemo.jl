@@ -1,149 +1,276 @@
 """
-    gridcv(X, Y; segm, score, fun, pars, verbose = false) 
-Cross-validation (CV) over a grid of parameters.
-* `X` : X-data (n, p).
-* `Y` : Y-data (n, q).
-* `segm` : Segments of the CV (output of functions
-     [`segmts`](@ref), [`segmkf`](@ref) etc.).
-* `score` : Function (e.g. `msep`) computing a prediction score.
-* `fun` : Function computing the prediction model.
-* `pars` : tuple of named vectors (arguments of `fun`) 
-    defining the grid of parameters (e.g. output of function `mpar`).
+    gridcv(mod, X, Y; segm, score, 
+        pars = nothing, nlv = nothing, lb = nothing, 
+        verbose = false)
+Cross-validation (CV) of a model over a grid of parameters.
+* `mod` : Model to evaluate.
+* `X` : Training X-data (n, p).
+* `Y` : Training Y-data (n, q).
+Keyword arguments: 
+* `segm` : Segments of observations used for 
+    the CV (output of functions [`segmts`](@ref), 
+    [`segmkf`](@ref), etc.).
+* `score` : Function computing the prediction 
+    score (e.g. `rmsep`).
+* `pars` : tuple of named vectors of same length defining 
+    the parameter combinations (e.g. output of function `mpar`).
 * `verbose` : If true, fitting information are printed.
+* `nlv` : Value, or vector of values, of the nb. of latent
+    variables (LVs).
+* `lb` : Value, or vector of values, of the ridge 
+    regularization parameter "lambda".
 
-Compute a prediction score (= error rate) for a given model over a grid of parameters.
+The function is used for grid-search: it computed a prediction score 
+(= error rate) for model `mod` over the combinations of parameters 
+defined in `pars`. 
+    
+For models based on LV or ridge regularization, using arguments `nlv` 
+and `lb` allow faster computations than including these parameters in 
+argument `pars. See the examples.   
 
-The score is computed over the training sets `X` and `Y` for each combination 
-of the grid defined in `pars`. 
-
-The vectors in `pars` must have same length.
-
-The function returns two outputs: `res` (mean results) and `res_p` (results per replication).
+The function returns two outputs: 
+* `res` : mean results
+* `res_p` : results per replication.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/cassav.jld2") 
+######## Regression
+
+using JLD2, CairoMakie, JchemoData
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
 pnames(dat)
-
-# Building Train (years <= 2012) and Test  (year = 2012)
-
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
 tab(year)
+mod = savgol(npoint = 21, 
+    deriv = 2, degree = 2)
+fit!(mod, X)
+Xp = transf(mod, X)
 s = year .<= 2012
-Xtrain = X[s, :]
+Xtrain = Xp[s, :]
 ytrain = y[s]
-Xtest = rmrow(X, s)
+Xtest = rmrow(Xp, s)
 ytest = rmrow(y, s)
 ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+ntot = ntrain + ntest
+(ntot = ntot, ntrain, ntest)
 
-# KNNR models
+## Replicated K-fold CV 
+K = 3 ; rep = 10
+segm = segmkf(ntrain, K; rep)
+## Replicated test-set validation
+#m = Int(round(ntrain / 3)) ; rep = 30
+#segm = segmts(ntrain, m; rep)
 
-K = 5 ; rep = 1
-segm = segmkf(ntrain, K; rep = rep)
-
-nlvdis = 15 ; metric = [:mah ]
-h = [1 ; 2.5] ; k = [5 ; 10 ; 20 ; 50] 
-pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k) 
-length(pars[1]) 
-res = gridcv(Xtrain, ytrain; segm = segm, 
-    score = rmsep, fun = knnr, pars = pars, verbose = true).res ;
-u = findall(res.y1 .== minimum(res.y1))[1] 
-res[u, :]
-
-fm = knnr(Xtrain, ytrain;
-    nlvdis = res.nlvdis[u], metric = res.metric[u],
-    h = res.h[u], k = res.k[u]) ;
-pred = Jchemo.predict(fm, Xtest).pred 
-rmsep(pred, ytest)
-
-################# PLSR models
-
-K = 5 ; rep = 1
-segm = segmkf(ntrain, K; rep = rep)
-
-nlv = 0:20
-res = gridcv_lv(Xtrain, ytrain; segm = segm, 
-    score = rmsep, fun = plskern, nlv = nlv).res
-u = findall(res.y1 .== minimum(res.y1))[1] 
-res[u, :]
-plotgrid(res.nlv, res.y1;
+#### Plsr
+mod = plskern()
+nlv = 0:30
+rescv = gridcv(mod, Xtrain, ytrain; 
+    segm, score = rmsep, nlv) ;
+pnames(rescv)
+res = rescv.res 
+plotgrid(res.nlv, res.y1; step = 2,
     xlabel = "Nb. LVs", ylabel = "RMSEP").f
-
-fm = plskern(Xtrain, ytrain; nlv = res.nlv[u]) ;
-pred = Jchemo.predict(fm, Xtest).pred 
-rmsep(pred, ytest)
-
-# LWPLSR models
-
-K = 5 ; rep = 1
-segm = segmkf(ntrain, K; rep = rep)
-
-nlvdis = 15 ; metric = [:mah ]
-h = [1 ; 2.5 ; 5] ; k = [50 ; 100] 
-pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
-length(pars[1]) 
-nlv = 0:20
-res = gridcv_lv(Xtrain, ytrain; segm = segm, 
-    score = rmsep, fun = lwplsr, pars = pars, nlv = nlv, verbose = true).res
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
+mod = plskern(nlv = res.nlv[u])
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
+@show rmsep(pred, ytest)
+plotxy(vec(pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
+
+## Adding pars 
+pars = mpar(scal = [false; true])
+rescv = gridcv(mod, Xtrain, ytrain; 
+    segm, score = rmsep, pars, nlv) ;
+res = rescv.res 
+typ = res.scal
+plotgrid(res.nlv, res.y1, typ; step = 2,
+    xlabel = "Nb. LVs", ylabel = "RMSEP").f
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+mod = plskern(nlv = res.nlv[u], 
+    scal = res.scal[u])
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
+@show rmsep(pred, ytest)
+plotxy(vec(pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
+
+#### Rr 
+lb = (10).^(-8:.1:3)
+mod = rr() 
+rescv = gridcv(mod, Xtrain, ytrain; 
+    segm, score = rmsep, lb) ;
+res = rescv.res 
+loglb = log.(10, res.lb)
+plotgrid(loglb, res.y1; step = 2,
+    xlabel = "log(lambda)", ylabel = "RMSEP").f
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+mod = rr(lb = res.lb[u])
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
+@show rmsep(pred, ytest)
+plotxy(vec(pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
+    
+## Adding pars 
+pars = mpar(scal = [false; true])
+rescv = gridcv(mod, Xtrain, ytrain; 
+    segm, score = rmsep, pars, lb) ;
+res = rescv.res 
+loglb = log.(10, res.lb)
+typ = string.(res.scal)
+plotgrid(loglb, res.y1, typ; step = 2,
+    xlabel = "log(lambda)", ylabel = "RMSEP").f
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+mod = rr(lb = res.lb[u],
+    scal = res.scal[u])
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
+@show rmsep(pred, ytest)
+plotxy(vec(pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
+
+#### Kplsr 
+mod = kplsr()
+nlv = 0:30
+gamma = (10).^collect(-5:1.:5)
+pars = mpar(gamma = gamma)
+rescv = gridcv(mod, Xtrain, ytrain; 
+    segm, score = rmsep, pars, nlv) ;
+res = rescv.res 
+loggamma = round.(log.(10, res.gamma), digits = 1)
+plotgrid(res.nlv, res.y1, loggamma; step = 2,
+    xlabel = "Nb. LVs", ylabel = "RMSEP",
+    leg_title = "Log(gamma)").f
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+mod = kplsr(nlv = res.nlv[u], 
+    gamma = res.gamma[u])
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
+@show rmsep(pred, ytest)
+plotxy(vec(pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
+
+#### Lwplsr 
+nlvdis = 15 ; metric = [:mah]
+h = [1 ; 2.5 ; 5] ; k = [50 ; 100] 
+pars = mpar(nlvdis = nlvdis, 
+    metric = metric, h = h, k = k)
+length(pars[1]) 
+nlv = 0:20
+mod = lwplsr()
+rescv = gridcv(mod, Xtrain, ytrain;
+    segm, score = rmsep, pars, nlv, 
+    verbose = true) ;
+res = rescv.res 
 group = string.("h=", res.h, " k=", res.k)
 plotgrid(res.nlv, res.y1, group;
-    xlabel = "Nb. LVs", ylabel = "RMSECV").f
-
-fm = lwplsr(Xtrain, ytrain;
-    nlvdis = res.nlvdis[u], metric = res.metric[u],
-    h = res.h[u], k = res.k[u], nlv = res.nlv[u]) ;
-pred = Jchemo.predict(fm, Xtest).pred 
-rmsep(pred, ytest)
-
-################# RR models
-
-K = 5 ; rep = 1
-segm = segmkf(ntrain, K; rep = rep)
-
-lb = (10.).^collect(-5:1:-1)
-res = gridcv_lb(Xtrain, ytrain; segm = segm, 
-    score = rmsep, fun = rr, lb = lb).res
+    xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-plotgrid(log.(res.lb), res.y1;
-    xlabel = "Lambda", ylabel = "RMSECV").f
+mod = lwplsr(nlvdis = res.nlvdis[u],
+    metric = res.metric[u], h = res.h[u], 
+    k = res.k[u], nlv = res.nlv[u])
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
+@show rmsep(pred, ytest)
+plotxy(vec(pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
 
-fm = rr(Xtrain, ytrain; lb = res.lb[u]) ;
-pred = Jchemo.predict(fm, Xtest).pred 
-rmsep(pred, ytest)
-
-################# KRR models
-
-K = 5 ; rep = 1
-segm = segmkf(ntrain, K; rep = rep)
-
-gamma = (10.).^collect(-4:1:4)
-pars = mpar(gamma = gamma)
+#### Knnr 
+nlvdis = [15; 25] ; metric = [:mah]
+h = [1 ; 2.5 ; 5]
+k = [1; 5; 10; 20; 50 ; 100] 
+pars = mpar(nlvdis = nlvdis, 
+    metric = metric, h = h, k = k)
 length(pars[1]) 
-lb = (10.).^collect(-5:1:-1)
-res = gridcv_lb(Xtrain, ytrain; segm = segm, 
-    score = rmsep, fun = krr, pars = pars, lb = lb).res
+mod = knnr()
+rescv = gridcv(mod, Xtrain, ytrain;
+    segm, score = rmsep, pars, 
+    verbose = true) ;
+res = rescv.res 
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-group = string.("gamma=", res.gamma)
-plotgrid(log.(res.lb), res.y1, group;
-    xlabel = "Lambda", ylabel = "RMSECV").f
+mod = knnr(nlvdis = res.nlvdis[u],
+    metric = res.metric[u], h = res.h[u], 
+    k = res.k[u])
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
+@show rmsep(pred, ytest)
+plotxy(vec(pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
 
-fm = krr(Xtrain, ytrain; gamma = res.gamma[u], lb = res.lb[u]) ;
-pred = Jchemo.predict(fm, Xtest).pred 
-rmsep(pred, ytest)
+######## Discrimination
+## The principle is the same as 
+## for regression
+
+using JLD2, CairoMakie, JchemoData
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/forages2.jld2")
+@load db dat
+pnames(dat)
+X = dat.X
+Y = dat.Y
+tab(Y.typ)
+s = Bool.(Y.test)
+Xtrain = rmrow(X, s)
+ytrain = rmrow(Y.typ, s)
+Xtest = X[s, :]
+ytest = Y.typ[s]
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+ntot = ntrain + ntest
+(ntot = ntot, ntrain, ntest)
+
+## Replicated K-fold CV 
+K = 3 ; rep = 10
+segm = segmkf(ntrain, K; rep)
+## Replicated test-set validation
+#m = Int(round(ntrain / 3)) ; rep = 30
+#segm = segmts(ntrain, m; rep)
+
+#### Plslda
+mod = plslda()
+nlv = 1:30
+prior = [:unif; :prop]
+pars = mpar(prior = prior)
+rescv = gridcv(mod, Xtrain, ytrain; 
+    segm, score = err, pars, nlv)
+res = rescv.res
+typ = res.prior
+plotgrid(res.nlv, res.y1, typ; step = 2,
+    xlabel = "Nb. LVs", ylabel = "ERR").f
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+mod = plslda(nlv = res.nlv[u], 
+    prior = res.prior[u])
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
+@show err(pred, ytest)
+confusion(pred, ytest).pct
 ```
 """
-function gridcv(X, Y; segm, fun, score, 
+function gridcv(mod, X, Y; segm, score, 
         pars = nothing, nlv = nothing, lb = nothing, 
         verbose = false)
+    fun = mod.fun 
     if isnothing(nlv) && isnothing(lb)
         res = gridcv_br(X, Y; segm, fun, score, 
             pars, verbose)

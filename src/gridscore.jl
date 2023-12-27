@@ -2,7 +2,7 @@
     gridscore(mod, Xtrain, Ytrain, X, Y; 
         score, pars = nothing, nlv = nothing, 
         lb = nothing, verbose = false) 
-Test-set model validation over a grid of parameters.
+Test-set validation of a model over a grid of parameters.
 * `mod` : Model to evaluate.
 * `Xtrain` : Training X-data (n, p).
 * `Ytrain` : Training Y-data (n, q).
@@ -19,9 +19,9 @@ Keyword arguments:
 * `lb` : Value, or vector of values, of the ridge 
     regularization parameter "lambda".
 
-Compute a prediction score (= error rate) for a given model 
-over a grid of parameters. The score is computed over the validation 
-sets `X` and `Y` for each combination of the grid defined in `pars`. 
+The function is used for grid-search: it computed a prediction score 
+(= error rate) for model `mod` over the combinations of parameters 
+defined in `pars`. The score is computed over sets {`X, `Y`}. 
     
 For models based on LV or ridge regularization, using arguments `nlv` 
 and `lb` allow faster computations than including these parameters in 
@@ -239,7 +239,7 @@ nlv = 1:30
 prior = [:unif; :prop]
 pars = mpar(prior = prior)
 res = gridscore(mod, Xcal, ycal, Xval, yval; 
-    score = err, pars = pars, nlv = nlv)
+    score = err, pars, nlv)
 typ = res.prior
 plotgrid(res.nlv, res.y1, typ; step = 2,
     xlabel = "Nb. LVs", ylabel = "RMSEP").f

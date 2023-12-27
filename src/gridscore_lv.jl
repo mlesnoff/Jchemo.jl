@@ -1,6 +1,6 @@
 """
-    gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, 
-        pars = nothing, nlv, verbose = false)
+    gridscore_lv(Xtrain, Ytrain, X, Y; fun, 
+        score, pars = nothing, nlv, verbose = false)
 Working function for `gridscore`.
 
 Specific and faster than `gridscore_br` for models 
@@ -9,8 +9,8 @@ must not contain `nlv`.
 
 See function `gridscore` for examples.
 """
-function gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, 
-        pars = nothing, nlv, verbose = false)
+function gridscore_lv(Xtrain, Ytrain, X, Y; fun, 
+        score, pars = nothing, nlv, verbose = false)
     # If not multiblock
     if isa(Xtrain, Matrix)
         p = nco(Xtrain)
@@ -21,7 +21,7 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; fun, score,
     le_nlv = length(nlv)
     if isnothing(pars)   # e.g.: case of PLSR
         verbose ? println("-- Nb. combinations = 0.") : nothing
-        fm = fun(Xtrain, Ytrain, nlv = maximum(nlv))
+        fm = fun(Xtrain, Ytrain; nlv = maximum(nlv))
         pred = Jchemo.predict(fm, X; nlv = nlv).pred
         le_nlv == 1 ? pred = [pred] : nothing
         res = zeros(le_nlv, q)
@@ -34,7 +34,8 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; fun, score,
         verbose ? println("-- Nb. combinations = ", ncomb) : nothing
         res = map(values(pars)...) do v...    
             verbose ? println(Pair.(keys(pars), v)...) : nothing
-            fm = fun(Xtrain, Ytrain ; nlv = maximum(nlv), Pair.(keys(pars), v)...)
+            fm = fun(Xtrain, Ytrain ; 
+                nlv = maximum(nlv), Pair.(keys(pars), v)...)
             pred = Jchemo.predict(fm, X; nlv = nlv).pred
             le_nlv == 1 ? pred = [pred] : nothing
             zres = zeros(le_nlv, q)
@@ -43,7 +44,8 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; fun, score,
             end
             zres
         end 
-        ncomb == 1 ? res = res[1] : res = reduce(vcat, res) 
+        ncomb == 1 ? res = res[1] : 
+            res = reduce(vcat, res) 
         ## Make dat
         if le_nlv == 1
             dat = DataFrame(pars)
@@ -51,7 +53,8 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; fun, score,
             zdat = DataFrame(pars)
             dat = list(ncomb)
             @inbounds for i = 1:ncomb
-                dat[i] = reduce(vcat, fill(zdat[i:i, :], le_nlv))
+                dat[i] = reduce(vcat, 
+                    fill(zdat[i:i, :], le_nlv))
             end
             dat = reduce(vcat, dat)
         end
@@ -64,62 +67,3 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; fun, score,
     res = DataFrame(res, Symbol.(namy))
     hcat(dat, res)
 end
-
-#### To be removed
-function gridscore_lv_par(Xtrain, Ytrain, X, Y; score, fun, 
-        pars = nothing, nlv, verbose = false)
-    Q = eltype(Xtrain[1, 1])
-    p = nco(Xtrain)
-    q = nco(Ytrain)
-    nlv = max(0, minimum(nlv)):min(p, maximum(nlv))
-    le_nlv = length(nlv)
-    if isnothing(pars)    # e.g.: case of PLSR
-        verbose ? println("-- Nb. combinations = 0.") : nothing
-        fm = fun(Xtrain, Ytrain, par = Par(nlv = maximum(nlv)))
-        pred = predict(fm, X; nlv = nlv).pred
-        le_nlv == 1 ? pred = [pred] : nothing
-        res = zeros(Q, le_nlv, q)
-        @inbounds for i = 1:le_nlv
-            res[i, :] = score(pred[i], Y)
-        end
-        dat = DataFrame(nlv = nlv)
-    else
-        listpar = [Par(; Dict(kws)...) for 
-            kws in zip([[k=>vv for vv in v] for (k, v) in pairs(pars)]...)]
-        ncomb = length(listpar)  # nb. combinations in pars
-        res = list(ncomb)
-        verbose ? println("-- Nb. combinations = ", ncomb) : nothing
-        @inbounds for i = 1:ncomb
-            verbose ? println(convert(NamedTuple, dat[i, :])) : nothing 
-            listpar[i].nlv = maximum(nlv)
-            fm = fun(Xtrain, Ytrain; par = listpar[i])
-            pred = predict(fm, X; nlv = nlv).pred
-            zres = zeros(Q, le_nlv, q)
-            @inbounds for j = 1:le_nlv
-                zres[j, :] = score(pred[j], Y)
-            end
-            res[i] = zres
-        end
-        verbose ? println("-- End.") : nothing
-        ncomb == 1 ? res = res[1] : res = reduce(vcat, res) 
-        ## Make dat
-        if le_nlv == 1
-            dat = DataFrame(pars)
-        else
-            zdat = DataFrame(pars)
-            dat = list(ncomb)
-            @inbounds for i = 1:ncomb
-                dat[i] = reduce(vcat, fill(zdat[i:i, :], le_nlv))
-            end
-            dat = reduce(vcat, dat)
-        end
-        znlv = repeat(nlv, ncomb)
-        dat = hcat(dat, DataFrame(nlv = znlv))
-        ## End
-    end
-    verbose ? println("-- End.") : nothing
-    namy = map(string, repeat(["y"], q), 1:q)
-    res = DataFrame(res, Symbol.(namy))
-    hcat(dat, res)
-end
-

@@ -1,14 +1,13 @@
 """
-    gridcv_lv(X, Y; segm, score, fun, nlv, pars, verbose = false)
-* See `gridcv`.
-* `nlv` : Nb., or collection of nb., of latent variables (LVs).
+    gridcv_lv((X, Y; segm, fun, score, 
+        pars = nothing, nlv, verbose = false)
+Working function for `gridcv`.
 
-Same as [`gridcv`](@ref) but specific to (and much faster for) models 
-using latent variables (e.g. PLSR).
+Specific and faster than `gridcv_br` for models 
+using latent variables (e.g. PLSR). Argument `pars` 
+must not contain `nlv`.
 
-Argument `pars` must not contain `nlv`.
-
-See `?gridcv` for examples.
+See function `gridcv` for examples.
 """
 function gridcv_lv(X, Y; segm, fun, score, 
         pars = nothing, nlv, verbose = false)
@@ -26,10 +25,8 @@ function gridcv_lv(X, Y; segm, fun, score,
         @inbounds for j = 1:nsegm
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
-            zres[j] = gridscore_lv(
-                rmrow(X, s), rmrow(Y, s),
-                X[s, :], Y[s, :];
-                score = score, fun = fun, nlv = nlv, pars = pars)
+            zres[j] = gridscore_lv(rmrow(X, s), rmrow(Y, s), 
+                X[s, :], Y[s, :]; fun, score, nlv, pars)
         end
         zres = reduce(vcat, zres)
         ## Case where pars is empty
@@ -46,11 +43,13 @@ function gridcv_lv(X, Y; segm, fun, score,
     end
     verbose ? println("/ End.") : nothing
     res_rep = reduce(vcat, res_rep)
-    isnothing(pars) ? namgroup = [:nlv] : namgroup =  [:nlv ; collect(keys(pars))]
+    isnothing(pars) ? namgroup = [:nlv] : 
+        namgroup =  [:nlv ; collect(keys(pars))]
     gdf = groupby(res_rep, namgroup) 
     namy = map(string, repeat(["y"], q), 1:q)
-    res = combine(gdf, namy .=> mean, renamecols = false)
-    (res = res, res_rep = res_rep, )
+    res = combine(gdf, namy .=> mean, 
+        renamecols = false)
+    (res = res, res_rep)
 end
 
 

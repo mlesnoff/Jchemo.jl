@@ -1,6 +1,6 @@
 """
-    gridscore_lb(Xtrain, Ytrain, X, Y; fun, score, 
-        pars = nothing, lb, verbose = false)
+    gridscore_lb(Xtrain, Ytrain, X, Y; fun, 
+        score, pars = nothing, lb, verbose = false)
 Working function for `gridscore`.
 
 Specific and faster than `gridscore_br` for models 
@@ -9,8 +9,8 @@ must not contain `lb`.
 
 See function `gridscore` for examples.
 """
-function gridscore_lb(Xtrain, Ytrain, X, Y; fun, score, 
-        pars = nothing, lb, verbose = false)
+function gridscore_lb(Xtrain, Ytrain, X, Y; fun, 
+        score, pars = nothing, lb, verbose = false)
     q = nco(Ytrain)
     lb = mlev(lb)
     le_lb = length(lb)
@@ -29,7 +29,8 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; fun, score,
         verbose ? println("-- Nb. combinations = ", ncomb) : nothing
         res = map(values(pars)...) do v...
             verbose ? println(Pair.(keys(pars), v)...) : nothing
-            fm = fun(Xtrain, Ytrain ; lb = maximum(lb), Pair.(keys(pars), v)...)
+            fm = fun(Xtrain, Ytrain ; 
+                lb = maximum(lb), Pair.(keys(pars), v)...)
             pred = Jchemo.predict(fm, X; lb = lb).pred
             le_lb == 1 ? pred = [pred] : nothing
             zres = zeros(le_lb, q)
@@ -46,7 +47,8 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; fun, score,
             zdat = DataFrame(pars)
             dat = list(ncomb)
             @inbounds for i = 1:ncomb
-                dat[i] = reduce(vcat, fill(zdat[i:i, :], le_lb))
+                dat[i] = reduce(vcat, 
+                    fill(zdat[i:i, :], le_lb))
             end
             dat = reduce(vcat, dat)
         end

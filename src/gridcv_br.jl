@@ -1,9 +1,16 @@
-function gridcv_br(X, Y; segm, fun, score, 
-        pars, verbose = false)
+"""
+    gridcv_br(X, Y; segm, fun, 
+        score, pars, verbose = false)
+Working function for `gridcv`.
+
+See function `gridcv` for examples.
+"""
+function gridcv_br(X, Y; segm, fun, 
+        score, pars, verbose = false)
     q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
-    ncomb = length(pars[1]) # nb. combinations in pars
+    ncomb = length(pars[1])      # nb. combinations in pars
     @inbounds for i in 1:nrep
         verbose ? print("/ rep=", i, " ") : nothing
         listsegm = segm[i]       # segments in the repetition
@@ -12,9 +19,8 @@ function gridcv_br(X, Y; segm, fun, score,
         @inbounds for j = 1:nsegm
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
-            zres[j] = gridscore(rmrow(X, s), rmrow(Y, s),
-                X[s, :], Y[s, :];
-                score = score, fun = fun, pars = pars)
+            zres[j] = gridscore_br(rmrow(X, s), rmrow(Y, s),
+                X[s, :], Y[s, :]; fun, score, pars)
         end
         zres = reduce(vcat, zres)
         dat = DataFrame(rep = fill(i, nsegm * ncomb),
@@ -26,7 +32,8 @@ function gridcv_br(X, Y; segm, fun, score,
     res_rep = reduce(vcat, res_rep)
     gdf = groupby(res_rep, collect(keys(pars))) 
     namy = map(string, repeat(["y"], q), 1:q)
-    res = combine(gdf, namy .=> mean, renamecols = false)
-    (res = res, res_rep = res_rep, )
+    res = combine(gdf, namy .=> mean, 
+        renamecols = false)
+    (res = res, res_rep)
 end
     
