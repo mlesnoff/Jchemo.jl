@@ -40,20 +40,22 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
+mod = plskern() 
 nlv = 0:20
-res = gridscore(Xtrain, ytrain, Xtest, ytest;
-    score = rmsep, fun = plskern, nlv = nlv)
+res = gridscore(mod, Xtrain, ytrain, 
+    Xtest, ytest; score = rmsep, nlv)
 plotgrid(res.nlv, res.y1;
     xlabel = "Nb. LVs", ylabel = "RMSEP").f
 
+mod = lwplsr() 
 nlvdis = 15 ; metric = [:mah]
 h = [1 ; 2.5 ; 5] ; k = [50 ; 100] 
 pars = mpar(nlvdis = nlvdis, metric = metric, 
     h = h, k = k)
 nlv = 0:20
-res = gridscore(Xtrain, ytrain, Xtest, ytest;
-    score = rmsep, fun = lwplsr, pars = pars, 
-    nlv = nlv)
+res = gridscore(mod, Xtrain, ytrain, 
+    Xtest, ytest; score = rmsep, 
+    pars, nlv = nlv)
 group = string.("h=", res.h, " k=", res.k)
 plotgrid(res.nlv, res.y1, group;
     xlabel = "Nb. LVs", ylabel = "RMSECV").f
