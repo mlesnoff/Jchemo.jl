@@ -64,17 +64,19 @@ Function `summary` returns the following objects:
     Shen & Huang 2008 section 2.3.    
 
 ## References
-Kim-Anh Le Cao, Florian Rohart, Ignacio Gonzalez, Sebastien Dejean 
-with key contributors Benoit Gautier, Francois Bartolo, contributions 
-from Pierre Monget, Jeff Coquery, FangZou Yao and Benoit Liquet. (2016). 
-mixOmics: Omics Data Integration Project. R package version 6.1.1. 
+Kim-Anh Le Cao, Florian Rohart, Ignacio Gonzalez, Sebastien 
+Dejean with key contributors Benoit Gautier, Francois Bartolo, 
+contributions from Pierre Monget, Jeff Coquery, FangZou Yao 
+and Benoit Liquet. (2016). mixOmics: Omics Data Integration 
+Project. R package version 6.1.1. 
 https://CRAN.R-project.org/package=mixOmics
 
 https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html
 
-Shen, H., Huang, J.Z., 2008. Sparse principal component analysis via 
-regularized low rank matrix approximation. Journal of Multivariate Analysis 
-99, 1015–1034. https://doi.org/10.1016/j.jmva.2007.06.007
+Shen, H., Huang, J.Z., 2008. Sparse principal component 
+analysis via regularized low rank matrix approximation. 
+Journal of Multivariate Analysis 99, 1015–1034. 
+https://doi.org/10.1016/j.jmva.2007.06.007
 
 ## Examples
 ```julia
