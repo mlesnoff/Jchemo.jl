@@ -17,9 +17,9 @@ Keyword arguments:
 
 The method is implemented by SVD factorization of the weighted 
 Gram matrix: 
-* D^(1/2) * Phi(`X`) * Phi(`X`)' * D^(1/2)
-where D is a diagonal matrix of weights (`weights.w`) of 
-the observations (rows of X).
+* D^(1/2) * Phi(X) * Phi(X)' * D^(1/2)
+where X is the cenetred matrix and D is a diagonal matrix 
+of weights (`weights.w`) of the observations (rows of X).
 
 ## References 
 Scholkopf, B., Smola, A., MÃ¼ller, K.-R., 1997. Kernel principal 
