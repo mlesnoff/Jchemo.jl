@@ -6,12 +6,13 @@
 Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
 
 * `X` : X-data (n, p).
-* `weights` : vector (n).
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. principal components (PCs) to consider. 
 * `kern` : Type of kernel used to compute the Gram matrices.
     Possible values are: `:krbf`, `:kpol`. See respective 
-    functions `krbf` and `kpol` for their arguments.
+    functions `krbf` and `kpol` for their keyword arguments.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
@@ -112,7 +113,7 @@ end
 Compute PCs (scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
-* `nlv` : Nb. PCs to consider.
+* `nlv` : Nb. PCs to compute.
 """ 
 function transf(object::Kpca, X; nlv = nothing)
     a = nco(object.T)

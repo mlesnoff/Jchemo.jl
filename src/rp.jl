@@ -1,25 +1,36 @@
 """
-    rp(X, weights = ones(nro(X)); nlv, fun = rpmatli, scal::Bool = false, kwargs ...)
-    rp!(X::Matrix, weights = ones(nro(X)); nlv, fun = rpmatli, scal::Bool = false, kwargs ...)
-Make a random projection of matrix X.
+    rp(; kwargs...)
+    rp(X; kwargs...)
+    rp(X, weights::Weight; kwargs...)
+    rp!(X::Matrix, weights::Weight; 
+        kwargs...)
+Make a random projection of X-data.
 * `X` : X-data (n, p).
-* `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
+Keyword arguments:
 * `nlv` : Nb. dimensions on which `X` is projected.
-* `fun` : A function of random projection.
-* `kwargs` : Optional arguments of function `fun`.
-* `scal` : Boolean. If `true`, each column of `X` is scaled
-    by its uncorrected standard deviation.
+* `mrp` : Method of random projection. Possible
+    values are: `:gauss`, `:li`. See the respective 
+    functions `rpmatgauss` and `rpmatli` for their 
+    keyword arguments.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 
 ## Examples
 ```julia
-X = rand(5, 10)
+n, p = (5, 10)
+X = rand(n, p)
 nlv = 3
-fm = rp(X; nlv = nlv)
-pnames(fm)
-size(fm.P) 
-fm.P
-fm.T # = X * fm.P 
-transf(fm, X[1:2, :])
+mrp = :li ; s_li = sqrt(p) 
+#mrp = :gauss
+mod = rp(; nlv, mrp, s_li)
+fit!(mod, X)
+pnames(mod)
+pnames(mod.fm)
+@head mod.fm.T 
+@head mod.fm.P 
+transf(mod, X[1:2, :])
 ```
 """
 function rp(X; kwargs...)
@@ -59,10 +70,10 @@ end
 
 """ 
     transf(object::Rp, X; nlv = nothing)
-Compute "scores" T from a random projection model and a matrix X.
-* `object` : The random projection model.
-* `X` : Matrix (m, p) for which LVs are computed.
-* `nlv` : Nb. dimensions to consider. If nothing, it is the maximum nb. dimensions.
+Compute scores T from a fitted model and X-data.
+* `object` : The fitted model.
+* `X` : Matrix (m, p) for which scores T are computed.
+* `nlv` : Nb. scores to compute.
 """ 
 function transf(object::Rp, X; nlv = nothing)
     X = ensure_mat(X)

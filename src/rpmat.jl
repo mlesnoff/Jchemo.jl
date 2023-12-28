@@ -1,9 +1,11 @@
 """
-    rpmatgauss(p, nlv)
+    rpmatgauss(p::Int, nlv::Int, Q = Float64)
 Build a gaussian random projection matrix.
 * `p` : Nb. variables (attributes) to project.
 * `nlv` : Nb. of simulated projection 
     dimensions.
+* `Q` : Type of components of the built 
+    projection matrix.
 
 The function returns a random projection matrix P of 
 dimension `p` x `nlv`. The projection of a given matrix X 
@@ -29,14 +31,17 @@ function rpmatgauss(p::Int, nlv::Int, Q = Float64)
 end
 
 """
-    rpmatli(p, nlv; s = sqrt(p))
+    rpmatli(p::Int, nlv::Int, Q = Float64; 
+        s_li)
 Build a sparse random projection matrix 
     (Achlioptas 2001, Li et al. 2006).
 * `p` : Nb. variables (attributes) to project.
 * `nlv` : Nb. of simulated projection 
     dimensions.
+* `Q` : Type of components of the built 
+    projection matrix.
 Keyword arguments:
-* `s` : Coefficient defining the sparsity of the 
+* `s_li` : Coefficient defining the sparsity of the 
     returned matrix (higher is `s`, higher is the sparsity).
 
 The function returns a random projection matrix P of 
@@ -75,7 +80,7 @@ rpmatli(p, nlv)
 ```
 """ 
 function rpmatli(p::Int, nlv::Int, Q = Float64; 
-        s_li = sqrt(p))
+        s_li)
     le = p * nlv
     k = Int(round(le / s_li))
     z = zeros(Q, le)

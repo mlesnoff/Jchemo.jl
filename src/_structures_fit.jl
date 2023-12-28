@@ -20,7 +20,7 @@ end
 
 struct Rp
     T::Matrix
-    P::Matrix
+    P::Union{Matrix, SparseArrays.SparseMatrixCSC}
     xmeans::Vector
     xscales::Vector
     kwargs::Base.Pairs
