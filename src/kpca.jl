@@ -1,64 +1,69 @@
 """
-    kpca(X, weights = ones(nro(X)); nlv, 
-        kern = :krbf, scal::Bool = false, kwargs...)
+    kpca(; kwargs...)
+    kpca(X; kwargs...)
+    kpca(X, weights::Weight; 
+        kwargs...)
 Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
 
-* `X` : X-data.
-* `weights` : vector (n,).
-* `nlv` : Nb. principal components (PCs), or collection of nb. PCs, to consider. 
+* `X` : X-data (n, p).
+* `weights` : vector (n).
+Keyword arguments:
+* `nlv` : Nb. principal components (PCs) to consider. 
 * `kern` : Type of kernel used to compute the Gram matrices.
-    Possible values are :krbf of :kpol (see respective 
-    functions `krbf` and `kpol`).
+    Possible values are: `:krbf`, `:kpol`. See respective 
+    functions `krbf` and `kpol` for their arguments.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
-* `kwargs` : Named arguments to pass in the kernel function. 
-    See functions `krbf`, `kpol`.
 
-The method is implemented by SVD factorization of the weighted Gram matrix 
-D^(1/2) * Phi(`X`) * Phi(`X`)' * D^(1/2), where D is a diagonal matrix of weights for 
+The method is implemented by SVD factorization of the weighted 
+Gram matrix: 
+* D^(1/2) * Phi(`X`) * Phi(`X`)' * D^(1/2)
+where D is a diagonal matrix of weights (`weights.w`) of 
 the observations (rows of X).
 
-The kernel Gram matrices are internally centered. 
-
 ## References 
-Scholkopf, B., Smola, A., MÃ¼ller, K.-R., 1997. Kernel principal component analysis, 
-in: Gerstner, W., Germond, A., Hasler, M., Nicoud, J.-D. (Eds.), Artificial Neural Networks, 
-ICANN 97, Lecture Notes in Computer Science. Springer, Berlin, Heidelberg, 
-pp. 583-588. https://doi.org/10.1007/BFb0020217
+Scholkopf, B., Smola, A., MÃ¼ller, K.-R., 1997. Kernel principal 
+component analysis, in: Gerstner, W., Germond, A., Hasler, 
+M., Nicoud, J.-D. (Eds.), Artificial Neural Networks, 
+ICANN 97, Lecture Notes in Computer Science. Springer, Berlin, 
+Heidelberg, pp. 583-588. https://doi.org/10.1007/BFb0020217
 
-Scholkopf, B., Smola, A.J., 2002. Learning with kernels: support vector machines, regularization, 
-optimization, and beyond, Adaptive computation and machine learning. MIT Press, Cambridge, Mass.
+Scholkopf, B., Smola, A.J., 2002. Learning with kernels: support 
+vector machines, regularization, optimization, and beyond, Adaptive 
+computation and machine learning. MIT Press, Cambridge, Mass.
 
-Tipping, M.E., 2001. Sparse kernel principal component analysis. Advances in neural information 
-processing systems, MIT Press. http://papers.nips.cc/paper/1791-sparse-kernel-principal-component-analysis.pdf
+Tipping, M.E., 2001. Sparse kernel principal component analysis. Advances 
+in neural information processing systems, MIT Press. 
+http://papers.nips.cc/paper/1791-sparse-kernel-principal-component-analysis.pdf
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie, StatsBase
+using JchemoData, JLD2 
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat
 pnames(dat)
-summ(dat.X)
-
+@head dat.X
 X = dat.X[:, 1:4]
 n = nro(X)
+ntest = 30
+s = samprand(n, ntest) 
+Xtrain = X[s.train, :]
+Xtest = X[s.test, :]
 
-ntrain = 120
-s = sample(1:n, ntrain; replace = false) 
-Xtrain = X[s, :]
-Xtest = rmrow(X, s)
+nlv = 3
+kern = :krbf ; gamma = 1e-4
+mod = kpca(; nlv, kern, 
+    gamma) ;
+fit!(mod, Xtrain)
+pnames(mod.fm)
+@head T = mod.fm.T
+T' * T
+mod.fm.P' * mod.fm.P
 
-nlv = 3 ; gamma = 1e-4
-fm = kpca(Xtrain; nlv = nlv, gamma = gamma) ;
-pnames(fm)
-fm.T
-fm.T' * fm.T
-fm.P' * fm.P
+@head Ttest = transf(mod, Xtest)
 
-transf(fm, Xtest)
-
-res = Base.summary(fm) ;
+res = summary(mod) ;
 pnames(res)
 res.explvarx
 ```
@@ -122,10 +127,9 @@ function transf(object::Kpca, X; nlv = nothing)
 end
 
 """
-    summary(object::Kpca, X)
-Summarize the maximal (i.e. with maximal nb. PCs) fitted model.
+    summary(object::Kpca)
+Summarize the fitted model.
 * `object` : The fitted model.
-* `X` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Kpca)
     nlv = nco(object.T)

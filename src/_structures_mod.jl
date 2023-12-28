@@ -126,6 +126,10 @@ predict(mod::PredictorNoY, X) = predict(mod.fm, X)
 
 ###### Summary 
 function Base.summary(mod::Union{Jchemo.Transformer, 
+        Jchemo.Predictor})
+    Base.summary(mod.fm)
+end
+function Base.summary(mod::Union{Jchemo.Transformer, 
         Jchemo.Predictor}, X)
     Base.summary(mod.fm, X)
 end

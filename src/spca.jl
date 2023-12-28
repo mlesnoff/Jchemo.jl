@@ -214,12 +214,12 @@ function transf(object::Spca, X; nlv = nothing)
 end
 
 """
-    summary(object::Spca, X::Union{Matrix, DataFrame})
+    summary(object::Spca, X)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
-function Base.summary(object::Spca, X::Union{Matrix, DataFrame})
+function Base.summary(object::Spca, X)
     X = ensure_mat(X)
     nlv = nco(object.T)
     D = Diagonal(object.weights.w)

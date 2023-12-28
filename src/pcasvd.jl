@@ -102,7 +102,8 @@ function pcasvd!(X::Matrix, weights::Weight;
 end
 
 """ 
-    transf(object::Pca, X; nlv = nothing)
+    transf(object::Union{Pca, Fda}, X; 
+        nlv = nothing)
 Compute principal components (PCs = scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
@@ -122,8 +123,7 @@ Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
-function Base.summary(object::Pca, 
-        X::Union{Matrix, DataFrame})
+function Base.summary(object::Pca, X)
     X = ensure_mat(X)
     nlv = nco(object.T)
     D = Diagonal(object.weights.w)
