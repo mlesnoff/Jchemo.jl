@@ -30,7 +30,7 @@ robust scales, Technometrics, 47:3, 264-273, DOI: 10.1198/004017005000000166
 
 ## Examples
 ```julia
-using JLD2, CairoMakie, JchemoData
+using JchemoData, JLD2, CairoMakie 
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "octane.jld2") 
 @load db dat

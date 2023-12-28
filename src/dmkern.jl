@@ -3,15 +3,17 @@
 Gaussian kernel density estimation (KDE).
 * `X` : X-data (n, p).
 * `h` : Define the bandwith, see examples
-* `a` : Constant for the Scott's rule (default bandwith), see thereafter.
+* `a` : Constant for the Scott's rule (default bandwith), 
+    see thereafter.
 
 Estimation of the probability density of `X` (column space) by non parametric
 Gaussian kernels. 
 
-Data `X` can be univariate (p = 1) or multivariate (p > 1). In the last case,
-function `dmkern` computes a multiplicative kernel such as in Scott & Sain 2005 Eq.19,
-and the internal bandwidth matrix `H` is diagonal (see the code).
-**Note:  `H` in the code is often noted "H^(1/2)" in the litterature (e.g. Wikipedia).
+Data `X` can be univariate (p = 1) or multivariate (p > 1). In the last 
+case, function `dmkern` computes a multiplicative kernel such as in 
+Scott & Sain 2005 Eq.19, and the internal bandwidth matrix `H` is diagonal
+(see the code). **Note:  `H` in the code is often noted "H^(1/2)" in 
+the litterature (e.g. Wikipedia).
 
 The default bandwith is computed by:
 * `h` = `a` * n^(-1 / (p + 4)) * colstd(`X`)
@@ -32,7 +34,6 @@ mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "iris.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X[:, 1:4] 
 y = dat.X[:, 5]
 n = nro(X)

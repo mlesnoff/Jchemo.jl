@@ -1,68 +1,72 @@
 """
-    spca(X, weights = ones(nro(X)); nlv,
-        msparse = :soft, delta = 0, nvar = nco(X), 
-        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
-    spca!(X, weights = ones(nro(X)); nlv,
-        msparse = :soft, delta = 0, nvar = nco(X), 
-        tol = sqrt(eps(1.)), maxit = 200, scal::Bool = false)
+    spca(; kwargs...)
+    spca(X; kwargs...)
+    spca(X, weights::Weight; kwargs...)
+    spca!(X::Matrix, weights::Weight; 
+        kwargs...)
 Sparse PCA (Shen & Huang 2008).
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
+Keyword arguments:
 * `nlv` : Nb. principal components (PCs).
-* `msparse`: Method used for the thresholding. Possible values
-    are :soft (default), :mix or :hard. See thereafter.
-* `delta` : Range for the thresholding (see function `soft`)
-    on the loadings standardized to their maximal absolute value.
-    Must ∈ [0, 1]. Only used if `msparse = :soft.
-* `nvar` : Nb. variables (`X`-columns) selected for each 
-    PC. Can be a single integer (same nb. variables
-    for each PC), or a vector of length `nlv`.
-    Only used if `msparse = :mix` or `msparse = :hard`.   
+* `msparse` : Method used for the sparse thresholding. 
+    Possible values are: `:soft`, `:mix`, 
+    `:hard`. See thereafter.
+* `delta` : Only used if `msparse = `:soft`. Range for the 
+    thresholding on the loadings (after they are standardized 
+    to their maximal absolute value). Must ∈ [0, 1].
+    Higher is `delta`, stronger is the thresholding. 
+* `nvar` : Only used if `msparse` = `:mix` or `:hard`.
+    Nb. variables (`X`-columns) selected for each principal
+    component (PC). Can be a single integer (i.e. same nb. 
+    of variables for each PC), or a vector of length `nlv`.   
 * `tol` : Tolerance value for stopping the iterations.
-* `maxit` : Maximum nb. iterations.
+* `maxit` : Maximum nb. of Nipals iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
 Sparse principal component analysis via regularized low rank 
 matrix approximation (Shen & Huang 2008). A Nipals algorithm is used. 
-
-Function `spca' provides three methods of thresholding to compute 
+The Function provides three methods of thresholding to compute 
 the sparse loadings:
+* `msparse = :soft` : Soft thresholding of standardized loadings. 
+    Let us note v a given loading vector before thresholding. 
+    Vector abs(v) is then standardized to its maximal component 
+    (= max{abs(v[i]), i = 1..p}). The soft-thresholding function 
+    (see function `soft`) is applied to this standardized vector, 
+    with the constant `delta` ∈ [0, 1]. This returns the sparse 
+    vector `theta`. Vector v is multiplied term-by-term by this vector
+    `theta`, which finally gives the sparse loadings.
 
-* `msparse = :soft`: Soft thresholding of standardized loadings. 
-    Noting v the loading vector, at each step, abs(v) is standardized to 
-    its maximal component (= max{abs(v[i]), i = 1..p}). The soft-thresholding 
-    function (see function `soft`) is applied to this standardized vector, 
-    with the constant `delta` ∈ [0, 1]. This returns the sparse vector 
-    theta. Vector v is multiplied term-by-term by vector theta, which
-    finally gives the sparse loadings.
-
-* `msparse = :mix`: Method used in function `spca` of the R package `mixOmics`.
-    For each PC, a number of `X`-variables showing the largest 
-    values in vector abs(v) are selected. Then a soft-thresholding is 
-    applied to the corresponding selected loadings. Range `delta` is 
-    automatically (internally) set to the maximal value of the components 
+* `msparse = :mix`: Method used in function `spca` of the R 
+    package `mixOmics` (Le Cao et al.). For each PC, the `nvar` 
+    `X`-variables showing the largest values in vector abs(v) 
+    are selected. Then a soft-thresholding is applied to the 
+    corresponding selected loadings. Range `delta` is automatically
+    (internally) set equal to the maximal value of the components 
     of abs(v) corresponding to variables removed from the selection.  
 
-* `msparse = :hard`: For each PC, a number of `X-variables showing 
+* `msparse = :hard`: For each PC, the `nvar` `X`-variables showing 
     the largest values in vector abs(v) are selected.
 
 The case `msparse = :mix` returns the same results as function 
-spca of the R package mixOmics.
+`spca` of the R package mixOmics.
 
-Since the resulting sparse loadings vectors (`P`-columns) are in general 
-non orthogonal, there is no a unique decomposition of the variance of `X` 
-such as in PCA. Function `summary` returns the following objects:
-* `explvarx`: The proportion of variance of `X` explained by each column 
-    t of `T`, computed by regressing `X` on t (such as what is done in PLS).
+**Note:** The resulting sparse loadings vectors (`P`-columns) 
+are in general non orthogonal. Therefore, there is no a unique 
+decomposition of the variance of `X` such as in PCA. 
+Function `summary` returns the following objects:
+* `explvarx`: The proportion of variance of `X` explained 
+    by each column t of `T`, computed by regressing `X` 
+    on t (such as what is done in PLS).
 * `explvarx_adj`: Adjusted explained variance proposed by 
     Shen & Huang 2008 section 2.3.    
 
 ## References
-Kim-Anh Le Cao, Florian Rohart, Ignacio Gonzalez, Sebastien Dejean with key 
-contributors Benoit Gautier, Francois Bartolo, contributions from Pierre Monget, 
-Jeff Coquery, FangZou Yao and Benoit Liquet. (2016). 
+Kim-Anh Le Cao, Florian Rohart, Ignacio Gonzalez, Sebastien Dejean 
+with key contributors Benoit Gautier, Francois Bartolo, contributions 
+from Pierre Monget, Jeff Coquery, FangZou Yao and Benoit Liquet. (2016). 
 mixOmics: Omics Data Integration Project. R package version 6.1.1. 
 https://CRAN.R-project.org/package=mixOmics
 
@@ -74,44 +78,48 @@ regularized low rank matrix approximation. Journal of Multivariate Analysis
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie, StatsBase
+using JchemoData, JLD2 
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat
 pnames(dat)
-summ(dat.X)
-
+@head dat.X
 X = dat.X[:, 1:4]
 n = nro(X)
+ntest = 30
+s = samprand(n, ntest) 
+Xtrain = X[s.train, :]
+Xtest = X[s.test, :]
 
-ntrain = 120
-s = sample(1:n, ntrain; replace = false) 
-Xtrain = X[s, :]
-Xtest = rmrow(X, s)
-
-tol = 1e-15
 nlv = 3 
+msparse = :mix ; nvar = 2
+#msparse = :hard ; nvar = 2
 scal = false
-#scal = true
-msparse = :soft
-#msparse = :mix
-#msparse = :hard
-delta = .4 ; nvar = 2 
-fm = spca(Xtrain; nlv = nlv, 
-    msparse = msparse, nvar = nvar, delta = delta, 
-    tol = tol, scal = scal) ;
+mod = spca(; nlv, msparse, 
+    nvar, scal) ;
+fit!(mod, Xtrain) 
+fm = mod.fm ;
+pnames(fm)
 fm.niter
 fm.sellv 
 fm.sel
 fm.P
 fm.P' * fm.P
-head(fm.T)
+@head T = fm.T
+@head transf(mod, Xtrain)
 
-Ttest = transf(fm, Xtest)
+@head Ttest = transf(fm, Xtest)
 
-res = Jchemo.summary(fm, Xtrain) ;
+res = summary(mod, Xtrain) ;
 res.explvarx
 res.explvarx_adj
+
+nlv = 3 
+msparse = :soft ; delta = .4 
+mod = spca(; nlv, msparse, 
+    delta) ;
+fit!(mod, Xtrain) 
+mod.fm.P
 ```
 """ 
 function spca(X; kwargs...)

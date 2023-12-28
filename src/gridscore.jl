@@ -31,7 +31,7 @@ argument `pars. See the examples.
 ```julia
 ######## Regression 
 
-using JLD2, CairoMakie, JchemoData
+using JchemoData, JLD2, CairoMakie 
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
@@ -207,7 +207,7 @@ plotxy(vec(pred), ytest; color = (:red, .5),
 ## The principle is the same as 
 ## for regression
 
-using JLD2, CairoMakie, JchemoData
+using JchemoData, JLD2, CairoMakie 
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
