@@ -1,9 +1,9 @@
 """
     plotgrid(indx::AbstractVector, r; 
-        size = (500, 350), step = 5, color = nothing, 
+        size = (500, 300), step = 5, color = nothing, 
         kwargs...)
     plotgrid(indx::AbstractVector, r, group; 
-        size = (500, 350), step = 5, color = nothing, 
+        size = (700, 350), step = 5, color = nothing, 
         leg = true, leg_title = "Group", kwargs...)
 Plot error/performance rates of a model.
 * `indx` : A numeric variable representing the grid of 
@@ -62,7 +62,7 @@ plotgrid(res.nlv, res.y1, group;
 ```
 """ 
 function plotgrid(indx::AbstractVector, r; 
-        size = (500, 350), step = 5, color = nothing, 
+        size = (500, 300), step = 5, color = nothing, 
         kwargs...)
     isa(indx, Vector{Any}) ? indx = Float64.(indx) : nothing
     r = Float64.(vec(r))

@@ -1,19 +1,20 @@
 """
-    pcasph(X, weights = ones(nro(X)); nlv, typc = "medspa", 
-        delta = .001, scal::Bool = false)
-    pcasph!(X, weights = ones(nro(X)); nlv, typc = "medspa", 
-        delta = .001, scal::Bool = false)
+    pcasph(; kwargs...)
+    pcasph(X; kwargs...)
+    pcasph(X, weights::Weight; kwargs...)
+    pcasph!(X::Matrix, weights::Weight; 
+        kwargs...)
 Spherical PCA.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
-* `nlv` : Nb. principal components (PCs).
-* `typc` : Type of centering.
-* `scal` : Boolean. If `true`, each column of `X` is scaled
-    by its uncorrected standard deviation.
+Keyword arguments:
+* `nlv` : Nb. of principal components (PCs).
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 
 Spherical PCA (Locantore et al. 1990, Maronna 2005, Daszykowski et al. 2007). 
-The spatial median used for centering matrix \eqn{X} is calculated by function
+Matrix `X` is centered by the spatial median computed by function
 `Jchemo.colmedspa`.
 
 ## References
@@ -29,25 +30,28 @@ robust scales, Technometrics, 47:3, 264-273, DOI: 10.1198/004017005000000166
 
 ## Examples
 ```julia
-using JLD2, JchemoData
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/octane.jld2") 
+using JLD2, CairoMakie, JchemoData
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "octane.jld2") 
 @load db dat
 pnames(dat)
-  
 X = dat.X 
-wlst = names(X)
-wl = parse.(Float64, wlst)
+wl = names(X)
+wl_num = parse.(Float64, wl)
 n = nro(X)
 
 nlv = 6
-fm = pcasph(X; nlv = nlv) ; 
-#fm = pcasvd(X; nlv = nlv) ; 
-pnames(fm)
-T = fm.T
+mod = pcasph(; nlv) ; 
+#mod = pcasvd(; nlv) ; 
+fit!(mod, X)
+pnames(mod)
+pnames(mod.fm)
+@head T = mod.fm.T
+## Same as:
+transf(mod, X)
 
 i = 1
-plotxy(T[:, i], T[:, i + 1]); zeros = true,
+plotxy(T[:, i], T[:, i + 1]; zeros = true,
     xlabel = "PC1", ylabel = "PC2").f
 ```
 """ 

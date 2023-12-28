@@ -49,8 +49,10 @@ fit!(mod, Xtrain)
 pnames(mod)
 pnames(mod.fm)
 @head T = mod.fm.T
-@head P = mod.fm.P
+## Same as:
+@head transf(mod, X)
 T' * T
+@head P = mod.fm.P
 P' * P
 
 @head Ttest = transf(mod, Xtest)

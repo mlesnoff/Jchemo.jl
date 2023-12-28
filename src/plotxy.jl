@@ -1,10 +1,10 @@
 """
-    plotxy(x, y; size = (600, 400), 
+    plotxy(x, y; size = (500, 300), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "",
         kwargs...)
-    plotxy(x, y, group; size = (600, 400), 
+    plotxy(x, y, group; size = (600, 350), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", leg::Bool = true,
@@ -85,7 +85,7 @@ hlines!(ax, 0.5; color = :red,
 f
 ```
 """ 
-function plotxy(x, y; size = (600, 400), 
+function plotxy(x, y; size = (500, 300), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", 
@@ -104,7 +104,8 @@ function plotxy(x, y; size = (600, 400),
         X = hcat(x, y)
         xmeans = colmean(X)
         radius = sqrt(quantile(Chi(2), prob))
-        res = Jchemo.ellipse(cov(X); fcenter = xmeans, radius = radius)
+        res = Jchemo.ellipse(cov(X); 
+            fcenter = xmeans, radius = radius)
         if isnothing(color)
             lines!(ax, res.X; color = :grey40)
         else
@@ -126,7 +127,7 @@ function plotxy(x, y; size = (600, 400),
     (f = f, ax = ax)
 end
 
-function plotxy(x, y, group; size = (600, 400), 
+function plotxy(x, y, group; size = (600, 350), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", leg::Bool = true,

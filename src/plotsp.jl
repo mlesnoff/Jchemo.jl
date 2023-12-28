@@ -1,5 +1,5 @@
 """
-    plotsp(X, wl = 1:nco(X); size = (500, 350),
+    plotsp(X, wl = 1:nco(X); size = (500, 300),
         color = nothing, nsamp = nothing, kwargs...)
 Plotting spectra.
 * `X` : X-data.
@@ -43,7 +43,7 @@ f
 ```
 
 """ 
-function plotsp(X, wl = 1:nco(X); size = (500, 350),
+function plotsp(X, wl = 1:nco(X); size = (500, 300),
         color = nothing, nsamp = nothing, kwargs...) 
     X = ensure_mat(X)
     if !isnothing(nsamp)
