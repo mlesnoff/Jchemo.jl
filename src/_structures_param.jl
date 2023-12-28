@@ -1,6 +1,6 @@
 Base.@kwdef mutable struct Par
     nlv::Union{Int, Vector{Int}, UnitRange} = 1     # nb LVs
-    lb::Float64 = 1e-5                              # ridge parameter "lambda"
+    lb::Float64 = 1e-6                              # ridge parameter "lambda"
     ##
     centr::Bool = false                     # centering
     scal::Bool = false                      # scaling

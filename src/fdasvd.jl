@@ -1,24 +1,22 @@
 """
-    fdasvd(X, y; nlv, lb = 0, scal::Bool = false)
-    fdasvd!(X, y; nlv, lb = 0, scal::Bool = false)
+    fdasvd(; kwargs...)
+    fdasvd(X, y; kwargs...)
+    fdasvd!(X::Matrix, y; kwargs...)
 Factorial discriminant analysis (FDA).
-* `X` : X-data.
-* `y` : Univariate class membership.
-* `nlv` : Nb. discriminant components.
+* `X` : X-data (n, p).
+* `y` : y-data (n) (class membership).
+Keyword arguments:
+* `nlv` : Nb. of discriminant components.
 * `lb` : Ridge regularization parameter "lambda".
-* `scal` : Boolean. If `true`, each column of `X` is scaled
-    by its uncorrected standard deviation.
+    Can be used when `X` has collinearities. 
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 
-FDA by a weighted SVD factorization of the matrix of the class 
-centers (after spherical transformaton). 
+FDA by a weighted SVD factorization of the matrix of the 
+class centers (after spherical transformaton). 
 The function gives the same results as function `fda`.
 
-A ridge regularization can be used:
-* If `lb` > 0, the within-class (pooled) covariance matrix W 
-    is replaced by W + `lb` * I, where I is the Idendity matrix.
-
 See function `fda` for examples.
-
 """ 
 fdasvd(X, y; kwargs...) = fdasvd!(copy(ensure_mat(X)), y; 
     kwargs...)
@@ -62,8 +60,8 @@ function fdasvd!(X::Matrix, y; kwargs...)
     P = Ut * Pz[:, 1:nlv]
     T = X * P
     Tcenters = ct * P
-    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, lev, ni,
-        kwargs, par)
+    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, 
+        xscales, lev, ni, kwargs, par)
 end
 
 
