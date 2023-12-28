@@ -5,7 +5,8 @@
 Sparse PLS-LDA.
 * `X` : X-data.
 * `y` : y-data (class membership).
-* `weights` : Weights of the observations. Internally normalized to sum to 1. 
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`). 
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `msparse`: Method used for the thresholding. Possible values
     are :soft (default), :mix or :hard. See thereafter.

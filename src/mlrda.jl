@@ -3,7 +3,8 @@
 Discrimination based on multple linear regression (MLR-DA).
 * `X` : X-data.
 * `y` : Univariate class membership.
-* `weights` : Weights of the observations. Internally normalized to sum to 1. 
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`). 
 
 The training variable `y` (univariate class membership) is transformed
 to a dummy table (Ydummy) containing nlev columns, where nlev is the number 

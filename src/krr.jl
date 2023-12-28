@@ -6,7 +6,8 @@
 Kernel ridge regression (KRR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
 * `lb` : Ridge regularization parameter "lambda".
 * 'kern' : Type of kernel used to compute the Gram matrices.
     Possible values are :krbf of :kpol (see respective functions `krbf` and `kpol`.

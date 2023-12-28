@@ -1,11 +1,19 @@
 """
-    mlr(X, Y, weights = ones(nro(X)); noint::Bool = false)
-    mlr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); noint::Bool = false)
-Compute a mutiple linear regression model (MLR) by using the QR algorithm.
+    mlr(; kwargs...)
+    mlr(X, Y; kwargs...)
+    mlr(X, Y, weights::Weight; 
+        kwargs...)
+    mlr!(X::Matrix, Y::Matrix, weights::Weight; 
+        kwargs...)
+Compute a mutiple linear regression model (MLR) by 
+    using the QR algorithm.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
-* `noint` : Define if the model is computed with an intercept or not.
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
+Keyword arguments:
+* `noint` : Boolean. Define if the model is computed 
+    with an intercept or not.
 
 Safe but can be little slower than other methods.
 
@@ -60,7 +68,8 @@ function mlr(X, Y; kwargs...)
     mlr(X, Y, weights; kwargs...)
 end
 
-function mlr(X, Y, weights::Weight; kwargs...)
+function mlr(X, Y, weights::Weight; 
+        kwargs...)
     mlr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
         weights; kwargs...)
 end
@@ -91,7 +100,8 @@ Compute a mutiple linear regression model (MLR)
 using the Normal equations and a Choleski factorization.
 * `X` : X-data, with nb. columns >= 2 (required by function cholesky).
 * `Y` : Y-data.
-* `weights` : Weights of the observations. Internally normalized to sum to 1. 
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`). 
 
 Compute a model with intercept.
 
@@ -129,8 +139,11 @@ end
 Compute a mutiple linear regression model (MLR)  by using a pseudo-inverse. 
 * `X` : X-data.
 * `Y` : Y-data.
-* `weights` : Weights of the observations. Internally normalized to sum to 1. 
-* `noint` : Define if the model is computed with an intercept or not.
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`). 
+Keyword arguments:
+* `noint` : Boolean. Define if the model is computed 
+    with an intercept or not.
 
 Safe but can be slower.  
 
@@ -177,7 +190,8 @@ Compute a mutiple linear regression model (MLR)
 by using the Normal equations and a pseudo-inverse.
 * `X` : X-data.
 * `Y` : Y-data.
-* `weights` : Weights of the observations. Internally normalized to sum to 1. 
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`). 
 
 Safe and fast for p not too large.
 
@@ -218,9 +232,11 @@ end
 Compute a simple linear regression model (univariate x).
 * `x` : Univariate X-data.
 * `Y` : Y-data.
-* `weights` : Weights of the observations. Internally normalized to sum to 1. 
-
-Compute a model with intercept.
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`). 
+Keyword arguments:
+* `noint` : Boolean. Define if the model is computed 
+    with an intercept or not.
 
 See function `mlr` for examples.
 """ 

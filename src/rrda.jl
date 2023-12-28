@@ -3,7 +3,8 @@
 Discrimination based on ridge regression (RR-DA).
 * `X` : X-data.
 * `y` : y-data (class membership).
-* `weights` : Weights of the observations. Internally normalized to sum to 1. 
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`). 
 * `lb` : Ridge regularization parameter "lambda".
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.

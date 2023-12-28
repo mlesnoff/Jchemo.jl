@@ -9,7 +9,8 @@ Averaging and stacking PLSR models with different numbers of
     latent variables (LVs).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q). Must be univariate (q = 1) if `typw` != :unif.
-* `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
 * `nlv` : A character string such as "5:20" defining the range of the numbers of LVs 
     to consider ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
     are averaged). Syntax such as "10" is also allowed ("10": correponds to
