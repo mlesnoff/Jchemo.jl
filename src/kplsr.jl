@@ -1,33 +1,31 @@
 """
-    kplsr(X, Y, weights = ones(nro(X)); 
-        nlv, kern = :krbf, tol = 1.5e-8, maxit = 100, 
-        scal::Bool = false, kwargs...)
-    kplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); 
-        nlv, kern = :krbf, tol = 1.5e-8, maxit = 100, 
-        scal::Bool = false, kwargs...)
-Kernel partial least squares regression (KPLSR) implemented with a Nipals 
-algorithm (Rosipal & Trejo, 2001).
-
+    kplsr(; kwargs...)
+    kplsr(X, Y; kwargs...)
+    kplsr(X, Y, weights::Weight; 
+        kwargs...)
+    kplsr!(X::Matrix, Y::Matrix, weights::Weight; 
+        kwargs...)
+Kernel partial least squares regression (KPLSR) implemented 
+    with a Nipals algorithm (Rosipal & Trejo, 2001).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
+Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. 
-* 'kern' : Type of kernel used to compute the Gram matrices.
-    Possible values are :krbf or :kpol (see respective functions `krbf` and `kpol`).
+* `kern` : Type of kernel used to compute the Gram matrices.
+    Possible values are: `:krbf`, `:kpol`. See respective 
+    functions `krbf` and `kpol` for their keyword arguments.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
-* `tol` : Tolerance value for stopping the iterations.
-* `maxit` : Maximum nb. iterations.
-* `kwargs` : Named arguments to pass in the kernel function.
 
-This algorithm becomes slow for n > 1000.
-
-The kernel Gram matrices are internally centered. 
+This algorithm becomes slow for n > 1000. 
+Use function `dkplsr` instead.
 
 ## References 
-Rosipal, R., Trejo, L.J., 2001. Kernel Partial Least Squares Regression in 
-Reproducing Kernel Hilbert Space. Journal of Machine Learning Research 2, 97-123.
+Rosipal, R., Trejo, L.J., 2001. Kernel Partial Least 
+Squares Regression in Reproducing Kernel Hilbert Space. 
+Journal of Machine Learning Research 2, 97-123.
 
 ## Examples
 ```julia
@@ -36,7 +34,6 @@ path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -47,47 +44,26 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-nlv = 20 ; gamma = 1e-1
-fm = kplsr(Xtrain, ytrain; nlv = nlv, gamma = gamma) ;
-fm.T
+nlv = 20
+kern = :krbf ; gamma = 1e-1
+mod = kplsr(; nlv, kern, gamma) ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+@head mod.fm.T
 
-zcoef = Jchemo.coef(fm)
-zcoef.int
-zcoef.beta
-Jchemo.coef(fm; nlv = 7).beta
+coef(mod)
+coef(mod; nlv = 3)
 
-transf(fm, Xtest)
-transf(fm, Xtest; nlv = 7)
+@head transf(mod, Xtest)
+@head transf(mod, Xtest; nlv = 3)
 
-res = Jchemo.predict(fm, Xtest)
-res.pred
-rmsep(res.pred, ytest)
+res = predict(mod, Xtest)
+@head res.pred
+@show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
-
-res = Jchemo.predict(fm, Xtest; nlv = 1:2)
-res.pred[1]
-res.pred[2]
-
-fm = kplsr(Xtrain, ytrain; nlv = nlv, kern = :kpol, degree = 2, 
-    gamma = 1e-1, coef0 = 10) ;
-res = Jchemo.predict(fm, Xtest)
-rmsep(res.pred, ytest)
-
-# Example of fitting the function sinc(x)
-# described in Rosipal & Trejo 2001 p. 105-106 
-x = collect(-10:.2:10) 
-x[x .== 0] .= 1e-5
-n = length(x)
-zy = sin.(abs.(x)) ./ abs.(x) 
-y = zy + .2 * randn(n) 
-fm = kplsr(x, y; nlv = 2) ;
-pred = Jchemo.predict(fm, x).pred 
-f, ax = scatter(x, y) 
-lines!(ax, x, zy, label = "True model")
-lines!(ax, x, vec(pred), label = "ted model")
-axislegend("Method")
-f
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
 ```
 """ 
 function kplsr(X, Y; kwargs...)
