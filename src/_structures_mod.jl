@@ -1,30 +1,3 @@
-Base.@kwdef mutable struct Transformer{
-        FUN <: Function, 
-        FM, 
-        KWARGS <: Base.Pairs}
-    fun::FUN   
-    fm::Union{Nothing, FM}
-    kwargs::KWARGS    
-end
-
-Base.@kwdef mutable struct Predictor{
-        FUN <: Function, 
-        FM, 
-        KWARGS <: Base.Pairs}
-    fun::FUN   
-    fm::Union{Nothing, FM}
-    kwargs::KWARGS    
-end
-
-Base.@kwdef mutable struct PredictorNoY{
-        FUN <: Function, 
-        FM, 
-        KWARGS <: Base.Pairs}
-    fun::FUN   
-    fm::Union{Nothing, FM}
-    kwargs::KWARGS    
-end
-
 ###### Fit
 function fit!(mod::Transformer, X)
     kwargs = values(mod.kwargs)
@@ -117,16 +90,23 @@ function predict(mod::Union{Transformer, Predictor},
     if isnothing(nlv) && isnothing(lb)
         predict(mod.fm, X)
     elseif !isnothing(nlv) 
-        predict(mod.fm, X; nlv = nlv)
+        predict(mod.fm, X; nlv)
     elseif !isnothing(lb) 
-        predict(mod.fm, X; lb = lb)
+        predict(mod.fm, X; lb)
     end
 end  
 predict(mod::PredictorNoY, X) = predict(mod.fm, X)
 
 ###### Coef 
-function coef(mod::Jchemo.Predictor)
-    coef(mod.fm)
+function coef(mod::Jchemo.Predictor; 
+        nlv = nothing, lb = nothing)
+    if isnothing(nlv) && isnothing(lb)
+        coef(mod.fm)
+    elseif !isnothing(nlv) 
+        coef(mod.fm; nlv)
+    elseif !isnothing(lb) 
+        coef(mod.fm; lb)
+    end
 end
 
 ###### Summary 
