@@ -168,8 +168,8 @@ end
     coef(object::Krr; lb = nothing)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
-* `lb` : Ridge regularization parameter "lambda".
-    If nothing, it is the parameter stored in the fitted model.
+* `lb` : Ridge regularization parameter 
+    "lambda".
 """ 
 function coef(object::Krr; lb = nothing)
     isnothing(lb) ? lb = object.par.lb : nothing
@@ -188,8 +188,8 @@ end
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
-* `lb` : Regularization parameter, or collection of regularization parameters, "lambda" to consider. 
-    If nothing, it is the parameter stored in the fitted model.
+* `lb` : Regularization parameter, or collection of 
+    regularization parameters, "lambda" to consider. 
 """ 
 function predict(object::Krr, X; lb = nothing)
     X = ensure_mat(X)
