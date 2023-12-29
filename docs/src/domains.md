@@ -78,7 +78,7 @@
 - **mlrvec** Simple linear regression (Univariate x)
 
 *Anova*
-- **aov1** One factor ANOVA
+- **aov1** One-factor ANOVA
 
 ### **Partial least squares (PLSR)**
 

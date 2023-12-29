@@ -1,16 +1,23 @@
 """
     aov1(x, Y)
-    Univariate anova test.
-* `x` : Univariate categorical X-data.
-* `Y` : Y-data.
+    One-factor ANOVA test.
+* `x` : Univariate categorical (factor) 
+    data (n).
+* `Y` : Y-data (n, q).
 
 ## Examples
 ```julia
-n = 100 ; p = 5
-x = rand(1:3, n)
-Y = randn(n, p) 
+using JchemoData, JLD2
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/iris.jld2") 
+@load db dat
+pnames(dat)
+@head dat.X
+x = dat.X[:, 5]
+Y = dat.X[:, 1:4]
+tab(x) 
 
-res = aov1(x, Y)
+res = aov1(x, Y) ;
 pnames(res)
 res.SSF
 res.SSR 
