@@ -1,32 +1,39 @@
 """
-    dkplsr(X, Y, weights = ones(nro(X)); nlv, 
-        kern = :krbf, scal::Bool = false, kwargs...)
-    dkplsr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv, 
-        kern = :krbf, scal = scal, kwargs...)
-Direct kernel partial least squares regression (DKPLSR) (Bennett & Embrechts 2003).
-
+    dkplsr(; kwargs...)
+    dkplsr(X, Y; kwargs...)
+    dkplsr(X, Y, weights::Weight; 
+        kwargs...)
+    dkplsr!(X::Matrix, Y::Matrix, weights::Weight; 
+        kwargs...)
+Direct kernel partial least squares regression (DKPLSR) 
+    (Bennett & Embrechts 2003).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
+Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. 
-* 'kern' : Type of kernel used to compute the Gram matrices.
-    Possible values are :krbf of :kpol (see respective functions `krbf` and `kpol`).
+* `kern` : Type of kernel used to compute the Gram matrices.
+    Possible values are: `:krbf`, `:kpol`. See respective 
+    functions `krbf` and `kpol` for their keyword arguments.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
-* `kwargs` : Named arguments to pass in the kernel function.
 
-The method builds kernel Gram matrices and then runs a usual PLSR algorithm on them. 
-This is faster (but not equivalent) to the "true" Nipals KPLSR algorithm described 
-in Rosipal & Trejo (2001).
+The method builds kernel Gram matrices and then runs a usual 
+PLSR algorithm on them. This is faster (but not equivalent) to the 
+"true" Nipals KPLSR algorithm (function `kplsr`) described in 
+Rosipal & Trejo (2001).
 
 ## References 
-Bennett, K.P., Embrechts, M.J., 2003. An optimization perspective on kernel partial 
-least squares regression, in: Advances in Learning Theory: Methods, Models and Applications, 
-NATO Science Series III: Computer & Systems Sciences. IOS Press Amsterdam, pp. 227-250.
+Bennett, K.P., Embrechts, M.J., 2003. An optimization 
+perspective on kernel partial least squares regression, 
+in: Advances in Learning Theory: Methods, Models and Applications, 
+NATO Science Series III: Computer & Systems Sciences. 
+IOS Press Amsterdam, pp. 227-250.
 
-Rosipal, R., Trejo, L.J., 2001. Kernel Partial Least Squares Regression in 
-Reproducing Kernel Hilbert Space. Journal of Machine Learning Research 2, 97-123.
+Rosipal, R., Trejo, L.J., 2001. Kernel Partial Least 
+Squares Regression in Reproducing Kernel Hilbert Space. 
+Journal of Machine Learning Research 2, 97-123.
 
 ## Examples
 ```julia
@@ -35,7 +42,6 @@ path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -46,45 +52,42 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-nlv = 20 ; gamma = 1e-1
-fm = dkplsr(Xtrain, ytrain; nlv = nlv, gamma = gamma) ;
-fm.fm.T
+nlv = 20
+kern = :krbf ; gamma = 1e-1
+mod = dkplsr(; nlv, kern, gamma) ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+@head mod.fm.fm.T
 
-zcoef = Jchemo.coef(fm)
-zcoef.int
-zcoef.B
-Jchemo.coef(fm; nlv = 7).B
+coef(mod)
+coef(mod; nlv = 3)
 
-transf(fm, Xtest)
-transf(fm, Xtest; nlv = 7)
+@head transf(mod, Xtest)
+@head transf(mod, Xtest; nlv = 3)
 
-res = Jchemo.predict(fm, Xtest)
-res.pred
-rmsep(res.pred, ytest)
+res = predict(mod, Xtest)
+@head res.pred
+@show rmsep(res.pred, ytest)
+plotxy(res.pred, ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f  
 
-res = Jchemo.predict(fm, Xtest; nlv = 1:2)
-res.pred[1]
-res.pred[2]
-
-fm = dkplsr(Xtrain, ytrain; nlv = nlv, kern = :kpol, degree = 2, gamma = 1e-1, coef0 = 10) ;
-res = Jchemo.predict(fm, Xtest)
-rmsep(res.pred, ytest)
-plotxy(pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
-
-# Example of fitting the function sinc(x)
-# described in Rosipal & Trejo 2001 p. 105-106 
-
+####### Example of fitting the function sinc(x)
+####### described in Rosipal & Trejo 2001 p. 105-106 
 x = collect(-10:.2:10) 
 x[x .== 0] .= 1e-5
 n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
-fm = dkplsr(x, y; nlv = 2) ;
-pred = Jchemo.predict(fm, x).pred 
+nlv = 2
+gamma = 1 / 3
+mod = dkplsr(; nlv, gamma) ;
+fit!(mod, x, y)
+pred = predict(mod, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
-lines!(ax, x, vec(pred), label = "ted model")
+lines!(ax, x, vec(pred), label = "Fitted model")
 axislegend("Method")
 f
 ```
