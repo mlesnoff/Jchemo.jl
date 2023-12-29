@@ -256,11 +256,11 @@ function Base.summary(object::Union{Plsr, Splsr},
     X = ensure_mat(X)
     n, nlv = size(object.T)
     X = fcscale(X, object.xmeans, object.xscales)
-    # Could be fcscale! but changes X
-    # If too heavy ==> Makes summary!
+    ## Could be fcscale! but changes X
+    ## If too heavy ==> Makes summary!
     sstot = sum(object.weights.w' * (X.^2)) # = frob(X, object.weights)^2 
     tt = object.TT
-    tt_adj = colsum(object.P.^2) .* tt    # tt_adj[a] = p[a]'p[a] * tt[a]
+    tt_adj = colsum(object.P.^2) .* tt      # tt_adj[a] = p[a]'p[a] * tt[a]
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    

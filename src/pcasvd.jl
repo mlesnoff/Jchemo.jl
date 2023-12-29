@@ -115,7 +115,8 @@ function transf(object::Union{Pca, Fda}, X;
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    fcscale(X, object.xmeans, object.xscales) * vcol(object.P, 1:nlv)
+    fcscale(X, object.xmeans, 
+        object.xscales) * vcol(object.P, 1:nlv)
 end
 
 """
@@ -139,11 +140,12 @@ function Base.summary(object::Pca, X)
     ## = object.sv[1:nlv].^2
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(lv = 1:nlv, var = tt, 
+    explvarx = DataFrame(nlv = 1:nlv, var = tt, 
         pvar = pvar, cumpvar = cumpvar)
     nam = string.("lv", 1:nlv)
     contr_ind = DataFrame(fscale(TT, tt), nam)
-    cor_circle = DataFrame(corm(X, object.T, object.weights), nam)
+    cor_circle = DataFrame(corm(X, object.T, 
+        object.weights), nam)
     C = X' * D * fscale(object.T, sqrt.(tt))
     coord_var = DataFrame(C, nam)
     CC = C .* C

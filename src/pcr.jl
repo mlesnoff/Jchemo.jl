@@ -1,18 +1,20 @@
 """
-    pcr(X, Y, weights = ones(nro(X)); nlv,
-        scal::Bool = false)
-    pcr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        scal::Bool = false)
-Principal component regression (PCR) with a SVD factorization.
+    pcr(; kwargs...)
+    pcr(X, Y; kwargs...)
+    pcr(X, Y, weights::Weight; 
+        kwargs...)
+    pcr!(X::Matrix, Y::Matrix, weights::Weight; 
+        kwargs...)
+Principal component regression (PCR) with a SVD 
+    factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
+Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Boolean. If `true`, each column of `X`
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
-
-`X` and `Y` are internally centered. 
 
 ## Examples
 ```julia
@@ -21,7 +23,6 @@ path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -33,32 +34,36 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-fm = pcr(Xtrain, ytrain; nlv = nlv) ;
-pnames(fm)
-fm.T
+mod = pcr(; nlv) ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+@head mod.fm.T
 
-zcoef = Jchemo.coef(fm)
-zcoef.int
-zcoef.B
-Jchemo.coef(fm; nlv = 7).B
+coef(mod)
+coef(mod; nlv = 3)
 
-fmpca = fm.fmpca ;
-transf(fmpca, Xtest)
-transf(fmpca, Xtest; nlv = 7)
+@head transf(mod, Xtest)
+@head transf(mod, Xtest; nlv = 3)
 
-res = Jchemo.predict(fm, Xtest)
-res.pred
-rmsep(res.pred, ytest)
+res = predict(mod, Xtest)
+@head res.pred
+@show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", ylabel = "Observed").f   
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
 
-res = Jchemo.predict(fm, Xtest; nlv = 1:2)
-res.pred[1]
-res.pred[2]
+res = predict(mod, Xtest; 
+    nlv = 1:2)
+@head res.pred[1]
+@head res.pred[2]
 
-# See ?pcasvd
-res = Base.summary(fmpca, Xtrain)
-res.explvarx
+res = summary(mod, Xtrain) ;
+pnames(res)
+z = res.explvarx
+plotgrid(z.nlv, z.cumpvar; 
+    step = 2, xlabel = "Nb. LVs", 
+    ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
 function pcr(X, Y; kwargs...)
@@ -81,14 +86,14 @@ function pcr!(X::Matrix, Y::Matrix, weights::Weight;
     ## No need to fscale Y
     ## below yscales is built only for consistency with coef::Plsr  
     yscales = ones(Q, q)
-    # End 
+    ## End 
     fm = pcasvd!(X, weights; kwargs...)
     D = Diagonal(fm.weights.w)
     ## Below, first term of the product = Diagonal(1 ./ fm.sv[1:nlv].^2) if T is D-orthogonal
     ## This is the case for the actual version (pcasvd)
     beta = inv(fm.T' * D * fm.T) * fm.T' * D * Y
-    Pcr(fm, fm.T, fm.P, beta', fm.xmeans, fm.xscales, ymeans, yscales, weights,
-        kwargs, par)
+    Pcr(fm, fm.T, fm.P, beta', fm.xmeans, fm.xscales, 
+        ymeans, yscales, weights, kwargs, par)
 end
 
 """ 
