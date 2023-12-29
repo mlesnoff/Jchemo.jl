@@ -49,7 +49,6 @@ path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -61,37 +60,40 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-fm = plskern(Xtrain, ytrain; nlv = nlv) ;
-#fm = plsnipals(Xtrain, ytrain; nlv = nlv) ;
-#fm = plsrosa(Xtrain, ytrain; nlv = nlv) ;
-#fm = plssimp(Xtrain, ytrain; nlv = nlv) ;
-pnames(fm)
-fm.T
+mod = plskern(; nlv) ;
+#mod = plsnipals(; nlv) ;
+#mod = plswold(; nlv) ;
+#mod = plsrosa(; nlv) ;
+#mod = plssimp(; nlv) ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+@head mod.fm.T
 
-zcoef = Jchemo.coef(fm)
-zcoef.int
-zcoef.B
-Jchemo.coef(fm; nlv = 7).B
+coef(mod)
+coef(mod; nlv = 3)
 
-transf(fm, Xtest)
-transf(fm, Xtest; nlv = 7)
+@head transf(mod, Xtest)
+@head transf(mod, Xtest; nlv = 3)
 
-res = Jchemo.predict(fm, Xtest)
-res.pred
-rmsep(res.pred, ytest)
+res = predict(mod, Xtest)
+@head res.pred
+@show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-res = Jchemo.predict(fm, Xtest; nlv = 1:2)
-res.pred[1]
-res.pred[2]
+res = predict(mod, Xtest; 
+    nlv = 1:2)
+@head res.pred[1]
+@head res.pred[2]
 
-res = summary(fm, Xtrain) ;
+res = summary(mod, Xtrain) ;
 pnames(res)
 z = res.explvarx
-lines(z.nlv, z.cumpvar,
-    axis = (xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance"))
+plotgrid(z.nlv, z.cumpvar; 
+    step = 2, xlabel = "Nb. LVs", 
+    ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
 function plskern(X, Y; kwargs...)
