@@ -19,47 +19,42 @@ Safe but can be little slower than other methods.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie, StatsBase
+using JchemoData, JLD2, CairoMakie 
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat
 pnames(dat)
-summ(dat.X)
-
-X = Matrix(dat.X[:, 2:4]) 
+@head dat.X
+X = dat.X[:, 2:4]
 y = dat.X[:, 1]
 n = nro(X)
-ntrain = 120
-s = sample(1:n, ntrain; replace = false) 
-Xtrain = X[s, :]
-ytrain = y[s]
-Xtest = rmrow(X, s)
-ytest = rmrow(y, s)
+ntest = 30
+s = samprand(n, ntest) 
+Xtrain = X[s.train, :]
+ytrain = y[s.train]
+Xtest = X[s.test, :]
+ytest = y[s.test]
 
-fm = mlr(Xtrain, ytrain) ;
-#fm = mlrchol(Xtrain, ytrain) ;
-#fm = mlrpinv(Xtrain, ytrain) ;
-#fm = mlrpinvn(Xtrain, ytrain) ;
-pnames(fm)
-res = Jchemo.predict(fm, Xtest)
-rmsep(res.pred, ytest)
-plotxy(pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
+mod = mlr() ;
+#mod = mlrchol() ;
+#mod = mlrpinv() ;
+#mod = mlrpinvn() ;
+fit!(mod, Xtrain, ytrain) 
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
+fm.B
+fm.int 
+coef(mod) 
+res = predict(mod, Xtest)
+@show rmsep(res.pred, ytest)
+plotxy(res.pred, ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
 
-zcoef = Jchemo.coef(fm) 
-zcoef.int 
-zcoef.B 
-
-fm = mlr(Xtrain, ytrain; noint = true) ;
-zcoef = Jchemo.coef(fm) 
-zcoef.int 
-zcoef.B
-
-fm = mlr(Xtrain[:, 1], ytrain) ;
-#fm = mlrvec(Xtrain[:, 1], ytrain) ;
-zcoef = Jchemo.coef(fm) 
-zcoef.int 
-zcoef.B
+mod = mlr(noint = true)
+fit!(mod, Xtrain, ytrain) 
+coef(mod) 
 ```
 """ 
 function mlr(X, Y; kwargs...)
@@ -94,18 +89,21 @@ function mlr!(X::Matrix, Y::Matrix, weights::Weight;
 end
 
 """
-    mlrchol(X, Y, weights = ones(nro(X)))
-    mlrchol!(X::Matrix, Y::Matrix, weights = ones(nro(X)))
+    mlrchol() 
+    mlrchol(X, Y)
+    mlrchol(X, Y, weights::Weight)
+    mlrchol!mlrchol!(X::Matrix, Y::Matrix, 
+        weights::Weight)
 Compute a mutiple linear regression model (MLR) 
 using the Normal equations and a Choleski factorization.
 * `X` : X-data, with nb. columns >= 2 (required by function cholesky).
-* `Y` : Y-data.
+* `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`). 
 
 Compute a model with intercept.
 
-Faster but can be less accurate (squared element X'X).
+Faster but can be less accurate (based on squared element X'X).
 
 See function `mlr` for examples.
 """ 
@@ -134,11 +132,16 @@ function mlrchol!(X::Matrix, Y::Matrix,
 end
 
 """
-    mlrpinv(X, Y, weights = ones(nro(X)); noint::Bool = false)
-    mlrpinv!(X::Matrix, Y::Matrix, weights = ones(nro(X)); noint::Bool = false)
-Compute a mutiple linear regression model (MLR)  by using a pseudo-inverse. 
-* `X` : X-data.
-* `Y` : Y-data.
+    mlrpinv(; kwargs...)
+    mlrpinv(X, Y; kwargs...)
+    mlrpinv(X, Y, weights::Weight; 
+        kwargs...)
+    mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; 
+        kwargs...)
+Compute a mutiple linear regression model (MLR)  by using 
+    a pseudo-inverse. 
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`). 
 Keyword arguments:
@@ -184,12 +187,15 @@ function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight;
 end
 
 """
-    mlrpinvn(X, Y, weights = ones(nro(X)))
-    mlrpinvn!(X::Matrix, Y::Matrix, weights = ones(nro(X)))
+    mlrpinvn() 
+    mlrpinvn(X, Y)
+    mlrpinvn(X, Y, weights::Weight)
+    mlrpinvn!mlrchol!(X::Matrix, Y::Matrix, 
+        weights::Weight)
 Compute a mutiple linear regression model (MLR) 
-by using the Normal equations and a pseudo-inverse.
-* `X` : X-data.
-* `Y` : Y-data.
+    by using the Normal equations and a pseudo-inverse.
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`). 
 
@@ -225,13 +231,15 @@ function mlrpinvn!(X::Matrix, Y::Matrix,
 end
 
 """
-    mlrvec(x, Y, weights = ones(length(x));
-        noint::Bool = false)
-    mlrvec!(x::Matrix, Y::Matrix, weights = ones(length(x));
-        noint::Bool = false)
+    mlrvec(; kwargs...)
+    mlrvec(X, Y; kwargs...)
+    mlrvec(X, Y, weights::Weight; 
+        kwargs...)
+    mlrvec!(X::Matrix, Y::Matrix, weights::Weight; 
+        kwargs...)
 Compute a simple linear regression model (univariate x).
-* `x` : Univariate X-data.
-* `Y` : Y-data.
+* `x` : Univariate X-data (n).
+* `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`). 
 Keyword arguments:

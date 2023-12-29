@@ -124,6 +124,11 @@ function predict(mod::Union{Transformer, Predictor},
 end  
 predict(mod::PredictorNoY, X) = predict(mod.fm, X)
 
+###### Coef 
+function coef(mod::Jchemo.Predictor)
+    coef(mod.fm)
+end
+
 ###### Summary 
 function Base.summary(mod::Union{Jchemo.Transformer, 
         Jchemo.Predictor})
