@@ -40,7 +40,7 @@ the sparse loadings:
     `theta`, which finally gives the sparse loadings.
 
 * `msparse = :mix`: Method used in function `spca` of the R 
-    package `mixOmics` (Le Cao et al.). For each PC, the `nvar` 
+    package `mixOmics` (Lê Cao et al.). For each PC, the `nvar` 
     `X`-variables showing the largest values in vector abs(v) 
     are selected. Then a soft-thresholding is applied to the 
     corresponding selected loadings. Range `delta` is automatically
@@ -64,7 +64,7 @@ Function `summary` returns the following objects:
     Shen & Huang 2008 section 2.3.    
 
 ## References
-Kim-Anh Le Cao, Florian Rohart, Ignacio Gonzalez, Sebastien 
+Kim-Anh Lê Cao, Florian Rohart, Ignacio Gonzalez, Sebastien 
 Dejean with key contributors Benoit Gautier, Francois Bartolo, 
 contributions from Pierre Monget, Jeff Coquery, FangZou Yao 
 and Benoit Liquet. (2016). mixOmics: Omics Data Integration 

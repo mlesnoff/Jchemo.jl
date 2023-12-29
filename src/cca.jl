@@ -36,7 +36,7 @@ to get similar results as with pseudo-inverses.
 With uniform `weights`, the normed scores returned 
 by the function are expected to be the same as those returned 
 by functions `rcc` of the R packages `CCA` (González et al.) and `mixOmics` 
-(Le Cao et al.) whith the parameters lambda1 and lambda2 set to:
+(Lê Cao et al.) whith the parameters lambda1 and lambda2 set to:
 * lambda1 = lambda2 = `tau` / (1 - `tau`) * n / (n - 1) 
 
 ## References
@@ -46,7 +46,7 @@ Software 23, 1-14. https://doi.org/10.18637/jss.v023.i12
 
 Hotelling, H. (1936): “Relations between two sets of variates”, Biometrika 28: pp. 321–377.
 
-Le Cao, K.-A., Rohart, F., Gonzalez, I., Dejean, S., Abadi, A.J., Gautier, B., Bartolo, F., 
+Lê Cao, K.-A., Rohart, F., Gonzalez, I., Dejean, S., Abadi, A.J., Gautier, B., Bartolo, F., 
 Monget, P., Coquery, J., Yao, F., Liquet, B., 2022. mixOmics: Omics Data Integration Project. 
 https://doi.org/10.18129/B9.bioc.mixOmics
 

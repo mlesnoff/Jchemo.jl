@@ -1,53 +1,75 @@
 """
-    splskern(X, Y, weights = ones(nro(X)); nlv,
-        msparse = :soft, delta = 0, nvar = nco(X), 
-        scal::Bool = false)
-    splskern!(X, Y, weights = ones(nro(X)); nlv,
-        msparse = :soft, delta = 0, nvar = nco(X), 
-        scal::Bool = false)
-Sparse PLSR (Shen & Huang 2008).
-* `X` : X-data (n, p). 
+    splskern(; kwargs...)
+    splskern(X, Y; kwargs...)
+    splskern(X, Y, weights::Weight; 
+        kwargs...)
+    splskern!(X::Matrix, Y::Matrix, weights::Weight; 
+        kwargs...)
+Sparse partial least squares regression (Lê Cao et al. 2008)
+* `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
-* `nlv` : Nb. latent variables (LVs).
-* `msparse`: Method used for the thresholding. Possible values
-    are :soft (default), :mix or :hard. See thereafter.
-* `delta` : Range for the thresholding (see function `soft`)
-    on the loadings standardized to their maximal absolute value.
-    Must ∈ [0, 1]. Only used if `msparse = :soft.
-* `nvar` : Nb. variables (`X`-columns) selected for each 
-    LV. Can be a single integer (same nb. variables
-    for each LV), or a vector of length `nlv`.
-    Only used if `msparse = :mix` or `msparse = :hard`.   
-* `scal` : Boolean. If `true`, each column of `X` is scaled
-    by its uncorrected standard deviation.
+Keyword arguments:
+* `nlv` : Nb. latent variables (LVs) to compute.
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation.
+* `msparse` : Method used for the sparse thresholding. 
+    Possible values are: `:soft`, `:mix`, 
+    `:hard`. See thereafter.
+* `delta` : Only used if `msparse = `:soft`. Range for the 
+    thresholding on the loadings (after they are standardized 
+    to their maximal absolute value). Must ∈ [0, 1].
+    Higher is `delta`, stronger is the thresholding. 
+* `nvar` : Only used if `msparse` = `:mix` or `:hard`.
+    Nb. variables (`X`-columns) selected for each principal
+    component (PC). Can be a single integer (i.e. same nb. 
+    of variables for each PC), or a vector of length `nlv`.   
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+    is scaled by its uncorrected standard deviation.
 
 Sparse partial least squares regression (Lê Cao et al. 2008), with 
 the fast "improved kernel algorithm #1" of Dayal & McGregor (1997). 
-In the present version, the sparseness only concerns `X` (not `Y`). 
 
-Function `splskern' provides three methods of thresholding to compute 
-the sparse `X`-loading weights w, see `?spca' for description (same 
-principles). The case `msparse = :mix` returns the same results as function 
-spls of the R package mixOmics in regression mode (and with no sparseness 
+In the present version of `splskern`, the sparse correction 
+only concerns `X`. The function provides three methods of 
+thresholding to compute the sparse `X`-loading weights w, 
+see function `spca' for description (same principles). The case 
+`msparse` = `:mix` returns the same results as function `spls` of 
+the R package mixOmics in regression mode (and with no sparseness 
 on `Y`).
 
+The case `msparse` = `:hard` (or `:mix`) and `nvar` = 1 correspond 
+to the COVSEL regression described in Roger et al 2011 (see also
+Höskuldsson 1992).
+
 ## References
-Cao, K.-A.L., Rossouw, D., Robert-Granié, C., Besse, P., 2008. A Sparse PLS 
-for Variable Selection when Integrating Omics Data. Statistical Applications 
-in Genetics and Molecular Biology 7. https://doi.org/10.2202/1544-6115.1390
-
-Kim-Anh Lê Cao, Florian Rohart, Ignacio Gonzalez, Sebastien Dejean with key 
-contributors Benoit Gautier, Francois Bartolo, contributions from Pierre Monget, 
-Jeff Coquery, FangZou Yao and Benoit Liquet. (2016). 
-mixOmics: Omics Data Integration Project. R package version 6.1.1. 
-https://CRAN.R-project.org/package=mixOmics
-
-https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html
 
 Dayal, B.S., MacGregor, J.F., 1997. Improved PLS algorithms. 
 Journal of Chemometrics 11, 73-85.
+
+Höskuldsson, A., 1992. The H-principle in modelling with applications 
+to chemometrics. Chemometrics and Intelligent Laboratory Systems, 
+Proceedings of the 2nd Scandinavian Symposium on Chemometrics 14, 
+139–153. https://doi.org/10.1016/0169-7439(92)80099-P
+
+Lê Cao, K.-A., Rossouw, D., Robert-Granié, C., Besse, P., 2008. 
+A Sparse PLS for Variable Selection when Integrating Omics Data. 
+Statistical Applications in Genetics and Molecular Biology 7. 
+https://doi.org/10.2202/1544-6115.1390
+
+Kim-Anh Lê Cao, Florian Rohart, Ignacio Gonzalez, Sebastien Dejean 
+with key contributors Benoit Gautier, Francois Bartolo, contributions 
+from Pierre Monget, Jeff Coquery, FangZou Yao and Benoit Liquet. 
+(2016). mixOmics: Omics Data Integration Project. R package 
+version 6.1.1. https://CRAN.R-project.org/package=mixOmics
+
+https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html
+
+Roger, J.M., Palagos, B., Bertrand, D., Fernandez-Ahumada, E., 2011. 
+covsel: Variable selection for highly multivariate and multi-response 
+calibration: Application to IR spectroscopy. 
+Chem. Lab. Int. Syst. 106, 216-223.
 
 ## Examples
 ```julia
@@ -56,7 +78,6 @@ path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -68,39 +89,35 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-fm = splskern(Xtrain, ytrain; nlv = nlv,
-    msparse = :mix, nvar = 5) ;
-pnames(fm)
-fm.T
-fm.W
-fm.P
-fm.sellv
-fm.sel
+msparse = :mix ; nvar = 5
+#msparse = :hard ; nvar = 5
+mod = splskern(; nlv, msparse, 
+    nvar) ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+@head mod.fm.T
+@head mod.fm.W
 
-zcoef = Jchemo.coef(fm)
-zcoef.int
-zcoef.B
-Jchemo.coef(fm; nlv = 7).B
+coef(mod)
+coef(mod; nlv = 3)
 
-transf(fm, Xtest)
-transf(fm, Xtest; nlv = 7)
+@head transf(mod, Xtest)
+@head transf(mod, Xtest; nlv = 3)
 
-res = Jchemo.predict(fm, Xtest)
-res.pred
-rmsep(res.pred, ytest)
+res = predict(mod, Xtest)
+@head res.pred
+@show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-res = Jchemo.predict(fm, Xtest; nlv = 1:2)
-res.pred[1]
-res.pred[2]
-
-res = summary(fm, Xtrain) ;
+res = summary(mod, Xtrain) ;
 pnames(res)
 z = res.explvarx
-lines(z.nlv, z.cumpvar,
-    axis = (xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance"))
+plotgrid(z.nlv, z.cumpvar; 
+    step = 2, xlabel = "Nb. LVs", 
+    ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
 function splskern(X, Y; kwargs...)
