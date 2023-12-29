@@ -1,31 +1,36 @@
 """
-    rr(X, Y, weights = ones(nro(X)); lb = .01,
-        scal::Bool = false)
-    rr!(X::Matrix, Y::Matrix, weights = ones(nro(X)); lb = .01,
-        scal::Bool = false)
+    rr(; kwargs...)
+    rr(X, Y; kwargs...)
+    rr(X, Y, weights::Weight; 
+        kwargs...)
+    rr!(X::Matrix, Y::Matrix, weights::Weight; 
+        kwargs...)
 Ridge regression (RR) implemented by SVD factorization.
-* `X` : X-data.
-* `Y` : Y-data.
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`). 
+    Must be of type `Weight` (see e.g. function `mweight`).
+Keyword arguments:
 * `lb` : Ridge regularization parameter "lambda".
-* `scal` : Boolean. If `true`, each column of `X` 
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
 
-`X` and `Y` are internally centered. The model is computed with an intercept. 
-
 ## References 
-Cule, E., De Iorio, M., 2012. A semi-automatic method to guide the choice 
-of ridge parameter in ridge regression. arXiv:1205.0686.
+Cule, E., De Iorio, M., 2012. A semi-automatic method 
+to guide the choice of ridge parameter in ridge regression. 
+arXiv:1205.0686.
 
-Hastie, T., Tibshirani, R., 2004. Efficient quadratic regularization 
-for expression arrays. Biostatistics 5, 329-340. https://doi.org/10.1093/biostatistics/kxh010
+Hastie, T., Tibshirani, R., 2004. Efficient quadratic 
+regularization for expression arrays. Biostatistics 5, 329-340. 
+https://doi.org/10.1093/biostatistics/kxh010
 
-Hastie, T., Tibshirani, R., Friedman, J., 2009. The elements of statistical learning: data mining, 
+Hastie, T., Tibshirani, R., Friedman, J., 2009. The 
+elements of statistical learning: data mining, 
 inference, and prediction, 2nd ed. Springer, New York.
 
-Hoerl, A.E., Kennard, R.W., 1970. Ridge Regression: Biased Estimation for Nonorthogonal Problems. 
-Technometrics 12, 55-67. https://doi.org/10.1080/00401706.1970.10488634
+Hoerl, A.E., Kennard, R.W., 1970. Ridge Regression: Biased 
+Estimation for Nonorthogonal Problems. Technometrics 12, 55-67. 
+https://doi.org/10.1080/00401706.1970.10488634
 
 ## Examples
 ```julia
@@ -34,7 +39,6 @@ path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -45,27 +49,29 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-lb = 10^(-2)
-fm = rr(Xtrain, ytrain; lb = lb) ;
-#fm = rrchol(Xtrain, ytrain; lb = lb) ;
-pnames(fm)
+lb = 1e-3
+mod = rr(; lb) ;
+#mod = rrchol(; lb) ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
 
-zcoef = Jchemo.coef(fm)
-zcoef.int
-zcoef.B
-# Only for rr
-Jchemo.coef(fm; lb = .1).B
+coef(mod)
 
-res = Jchemo.predict(fm, Xtest)
-res.pred
-rmsep(res.pred, ytest)
+res = predict(mod, Xtest)
+@head res.pred
+@show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
 
-# Only for rr
-res = Jchemo.predict(fm, Xtest; lb = [.1 ; .01])
-res.pred[1]
-res.pred[2]
+## Only for function 'rr'
+## (not 'rrchol')
+coef(mod; lb = 1e-1)
+res = predict(mod, Xtest; 
+    lb = [.1 ; .01])
+@head res.pred[1]
+@head res.pred[2]
 ```
 """ 
 function rr(X, Y; kwargs...)
