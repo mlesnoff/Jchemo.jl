@@ -50,7 +50,7 @@ kplsr(; kwargs...) = Predictor{Function, Kplsr, Base.Pairs}(kplsr, nothing, kwar
 dkplsr(; kwargs...) = Predictor{Function, Dkplsr, Base.Pairs}(dkplsr, nothing, kwargs)
 rr(; kwargs...) = Predictor{Function, Rr, Base.Pairs}(rr, nothing, kwargs)
 rrchol(; kwargs...) = Predictor{Function, Mlr, Base.Pairs}(rrchol, nothing, kwargs)
-krr(; kwargs...) = Predictor{Function, Krr, Base.Pairs}(Krr, nothing, kwargs)
+krr(; kwargs...) = Predictor{Function, Krr, Base.Pairs}(krr, nothing, kwargs)
 ##
 svmr(; kwargs...) = Predictor{Function, Svmr, Base.Pairs}(svmr, nothing, kwargs)
 treer_dt(; kwargs...) = Predictor{Function, TreerDt, Base.Pairs}(treer_dt, nothing, kwargs)

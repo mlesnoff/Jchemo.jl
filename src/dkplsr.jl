@@ -106,6 +106,7 @@ end
 function dkplsr!(X::Matrix, Y::Matrix, weights::Weight; 
         kwargs...)
     par = recovkwargs(Par, kwargs)
+    @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     Q = eltype(X)
     p = nco(X)
     q = nco(Y)

@@ -78,7 +78,8 @@ end
 
 function kpca(X, weights::Weight; 
         kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkwargs(Par, kwargs)
+    @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     X = ensure_mat(X)
     Q = eltype(X)
     n, p = size(X)
