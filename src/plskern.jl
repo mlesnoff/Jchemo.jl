@@ -1,40 +1,46 @@
 """
-    plskern(X, Y, weights = ones(nro(X)); nlv,
-        scal::Bool = false)
-    plskern!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        scal::Bool = false)
+    plskern(; kwargs...)
+    plskern(X, Y; kwargs...)
+    plskern(X, Y, weights::Weight; 
+        kwargs...)
+    plskern!(X::Matrix, Y::Matrix, weights::Weight; 
+        kwargs...)
 Partial least squares regression (PLSR) with the 
-"improved kernel algorithm #1" (Dayal & McGegor, 1997).
+    "improved kernel algorithm #1" (Dayal & McGegor, 1997).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
+Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
     
-About the row-weighting in PLS algorithms (`weights`), see in particular Schaal et al. 2002, 
-Siccard & Sabatier 2006, Kim et al. 2011, and Lesnoff et al. 2020. 
+About the row-weighting in PLS algorithms (`weights`):
+See in particular Schaal et al. 2002, Siccard & Sabatier 2006, 
+Kim et al. 2011, and Lesnoff et al. 2020. 
 
 ## References
 Dayal, B.S., MacGregor, J.F., 1997. Improved PLS algorithms. 
 Journal of Chemometrics 11, 73-85.
 
-Kim, S., Kano, M., Nakagawa, H., Hasebe, S., 2011. Estimation of active 
-pharmaceutical ingredients content using locally weighted partial 
-least squares and statistical wavelength selection. Int. J. Pharm., 421, 269-274.
+Kim, S., Kano, M., Nakagawa, H., Hasebe, S., 2011. Estimation 
+of active pharmaceutical ingredients content using locally 
+weighted partial least squares and statistical wavelength 
+selection. Int. J. Pharm., 421, 269-274.
 
-Lesnoff, M., Metz, M., Roger, J.M., 2020. Comparison of locally weighted 
-PLS strategies for regression and discrimination on agronomic NIR Data. 
-Journal of Chemometrics. e3209. 
+Lesnoff, M., Metz, M., Roger, J.M., 2020. Comparison of locally 
+weighted PLS strategies for regression and discrimination on 
+agronomic NIR Data. Journal of Chemometrics. e3209. 
 https://onlinelibrary.wiley.com/doi/abs/10.1002/cem.3209
 
-Schaal, S., Atkeson, C., Vijayamakumar, S. 2002. Scalable techniques 
-from nonparametric statistics for the real time robot learning. 
-Applied Intell., 17, 49-60.
+Schaal, S., Atkeson, C., Vijayamakumar, S. 2002. Scalable 
+techniques from nonparametric statistics for the real time 
+robot learning. Applied Intell., 17, 49-60.
 
-Sicard, E. Sabatier, R., 2006. Theoretical framework for local PLS1 regression 
-and application to a rainfall data set. Comput. Stat. Data Anal., 51, 1393-1410.
+Sicard, E. Sabatier, R., 2006. Theoretical framework for local 
+PLS1 regression and application to a rainfall data set. Comput. Stat. 
+Data Anal., 51, 1393-1410.
 
 ## Examples
 ```julia
@@ -169,8 +175,10 @@ function plskern!(X::Matrix, Y::Matrix,
 end
 
 """ 
-    transf(object::Plsr, X; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
+    transf(object::Union{Plsr, Splsr}, 
+        X; nlv = nothing)
+Compute latent variables (LVs = scores T) from 
+    a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
@@ -180,21 +188,23 @@ function transf(object::Union{Plsr, Splsr},
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    T = fcscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
+    T = fcscale(X, object.xmeans, 
+        object.xscales) * vcol(object.R, 1:nlv)
     # Could be fcscale! but changes X
     # If too heavy ==> Makes summary!
     T
 end
 
 """
-    coef(object::Union{Plsr, Pcr}; nlv = nothing)
-Compute the X b-coefficients of a model fitted with `nlv` LVs.
+    coef(object::Union{Plsr, Pcr, Splsr}; 
+        nlv = nothing)
+Compute the b-coefficients of a LV model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
 
-If X is (n, p) and Y is (n, q), the returned object `B` is a matrix (p, q). 
-If `nlv` = 0, `B` is a matrix of zeros.
-The returned object `int` is the intercept.
+For a model fitted from X(n, p) and Y(n, q), the returned 
+object `B` is a matrix (p, q). If `nlv` = 0, `B` is a matrix 
+of zeros. The returned object `int` is the intercept.
 """ 
 function coef(object::Union{Plsr, Pcr, Splsr}; 
         nlv = nothing)
@@ -210,7 +220,8 @@ function coef(object::Union{Plsr, Pcr, Splsr};
 end
 
 """
-    predict(object::Union{Plsr, Pcr}, X; nlv = nothing)
+    predict(object::Union{Plsr, Pcr, Splsr}, 
+        X; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
@@ -220,7 +231,8 @@ function predict(object::Union{Plsr, Pcr, Splsr},
         X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
-    isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
+    isnothing(nlv) ? nlv = a : 
+        nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     pred = list(Matrix{eltype(X)}, le_nlv)
     @inbounds  for i = 1:le_nlv
@@ -232,10 +244,12 @@ function predict(object::Union{Plsr, Pcr, Splsr},
 end
 
 """
-    summary(object::Plsr, X)
+    summary(object::Union{Plsr, Splsr}, 
+        X)
 Summarize the fitted model.
 * `object` : The fitted model.
-* `X` : The X-data that was used to fit the model.
+* `X` : The X-data that was used to 
+    fit the model.
 """ 
 function Base.summary(object::Union{Plsr, Splsr}, 
         X)
@@ -250,7 +264,7 @@ function Base.summary(object::Union{Plsr, Splsr},
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
-        cumpvar = cumpvar)     
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
+        pvar = pvar, cumpvar = cumpvar)     
     (explvarx = explvarx,)
 end
