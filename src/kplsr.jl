@@ -64,6 +64,24 @@ res = predict(mod, Xtest)
 plotxy(res.pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
+
+####### Example of fitting the function sinc(x)
+####### described in Rosipal & Trejo 2001 p. 105-106 
+x = collect(-10:.2:10) 
+x[x .== 0] .= 1e-5
+n = length(x)
+zy = sin.(abs.(x)) ./ abs.(x) 
+y = zy + .2 * randn(n) 
+nlv = 2
+gamma = 1 / 3
+mod = kplsr(; nlv, gamma) ;
+fit!(mod, x, y)
+pred = predict(mod, x).pred 
+f, ax = scatter(x, y) 
+lines!(ax, x, zy, label = "True model")
+lines!(ax, x, vec(pred), label = "Fitted model")
+axislegend("Method")
+f
 ```
 """ 
 function kplsr(X, Y; kwargs...)
