@@ -33,8 +33,8 @@ Scholkopf, B., Smola, A.J., 2002. Learning with kernels: support
 vector machines, regularization, optimization, and beyond, Adaptive 
 computation and machine learning. MIT Press, Cambridge, Mass.
 
-Tipping, M.E., 2001. Sparse kernel principal component analysis. Advances 
-in neural information processing systems, MIT Press. 
+Tipping, M.E., 2001. Sparse kernel principal component analysis. 
+Advances in neural information processing systems, MIT Press. 
 http://papers.nips.cc/paper/1791-sparse-kernel-principal-component-analysis.pdf
 
 ## Examples

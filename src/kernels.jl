@@ -5,7 +5,7 @@ Compute a Radial-Basis-Function (RBF) kernel
 * `X` : X-data (n, p).
 * `Y` : Y-data (m, p).
 Keyword arguments:
-* `gamma` : Scale parameter (default = 1).
+* `gamma` : Scale parameter.
 
 Given matrices `X` and `Y`of sizes (n, p) and (m, p), 
 respectively, the function returns the (n, m) Gram matrix:
@@ -41,9 +41,9 @@ Compute a polynomial kernel Gram matrix.
 * `X` : X-data (n, p).
 * `Y` : Y-data (m, p).
 Keyword arguments:
-* `degree` : Degree of the polynom (default = 1).
-* `gamma` : Scale of the polynom (default = 1).
-* `coef0` : Offset of the polynom (default = 0).
+* `degree` : Degree of the polynom.
+* `gamma` : Scale of the polynom.
+* `coef0` : Offset of the polynom.
 
 Given matrices `X` and `Y`of sizes (n, p) and (m, p), 
 respectively, the function returns the (n, m) Gram matrix:
@@ -61,8 +61,8 @@ computation and machine learning. MIT Press, Cambridge, Mass.
 ```julia
 X = rand(5, 3)
 Y = rand(2, 3)
-kpol(X, Y; gamma = .1, 
-    degree = 3)
+kpol(X, Y; degree = 3,
+    gamma = .1, cost = 10)
 ```
 """ 
 function kpol(X, Y; kwargs...)

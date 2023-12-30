@@ -13,7 +13,7 @@ Ridge regression (RR) using the Normal equations
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `lb` : Ridge regularization parameter "lambda".
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+* `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
 See function `rr` for examples.

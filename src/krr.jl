@@ -16,7 +16,7 @@ Keyword arguments:
 * `kern` : Type of kernel used to compute the Gram matrices.
     Possible values are: `:krbf`, `:kpol`. See respective 
     functions `krbf` and `kpol` for their keyword arguments.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+* `scal` : Boolean. If `true`, each column of `X 
     is scaled by its uncorrected standard deviation.
 
 KRR is also referred to as least squared SVM regression 
