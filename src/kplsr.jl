@@ -73,8 +73,8 @@ n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
 nlv = 2
-gamma = 1 / 3
-mod = kplsr(; nlv, gamma) ;
+kern = :krbf ; gamma = 1 / 3
+mod = kplsr(; nlv, kern, gamma) ;
 fit!(mod, x, y)
 pred = predict(mod, x).pred 
 f, ax = scatter(x, y) 
