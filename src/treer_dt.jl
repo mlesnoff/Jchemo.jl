@@ -1,73 +1,68 @@
 """ 
-    treer_dt(X, y; n_subfeatures = 0,
-        max_depth = -1, min_samples_leaf = 5, 
-        min_samples_split = 2, scal::Bool = false, 
-        kwargs...)
+    treer_dt(X, y; kwargs...)
 Regression tree (CART) with DecisionTree.jl.
-* `X` : X-data (n obs., p variables).
-* `y` : Univariate y-data (n obs.).
-* `n_subfeatures` : Nb. variables to select at random at each split (default: 0 ==> keep all).
-* `max_depth` : Maximum depth of the decision tree (default: -1 ==> no maximum).
-* `min_sample_leaf` : Minimum number of samples each leaf needs to have.
-* `min_sample_split` : Minimum number of observations in needed for a split.
+* `X` : X-data (n, p).
+* `y` : Univariate y-data (n).
+Keyword arguments:
+* `n_subfeatures` : Nb. variables to select at random 
+    at each split (default: 0 ==> keep all).
+* `max_depth` : Maximum depth of the 
+    decision tree (default: -1 ==> no maximum).
+* `min_sample_leaf` : Minimum number of samples 
+    each leaf needs to have.
+* `min_sample_split` : Minimum number of observations 
+    in needed for a split.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
-* `kwargs` : Optional named arguments to pass in function `build_tree` 
-    of `DecisionTree.jl`.
 
-The function fits a single regression tree (CART) using package 
-`DecisionTree.jl'.
+The function fits a single regression tree (CART) using 
+package `DecisionTree.jl'.
 
 ## References
-Breiman, L., Friedman, J. H., Olshen, R. A., and Stone, C. J. Classification
-And Regression Trees. Chapman & Hall, 1984.
+Breiman, L., Friedman, J. H., Olshen, R. A., and 
+Stone, C. J. Classification And Regression Trees. 
+Chapman & Hall, 1984.
 
 DecisionTree.jl
 https://github.com/JuliaAI/DecisionTree.jl
 
-Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
-trois thèmes statistiques autour de CART en régression (These de doctorat). 
-Paris 11. http://www.theses.fr/2002PA112245
+Gey, S., 2002. Bornes de risque, détection de ruptures, 
+boosting : trois thèmes statistiques autour de CART en
+régression (These de doctorat). Paris 11. 
+http://www.theses.fr/2002PA112245
 
 ## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie
-
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/challenge2021.jld2")
+db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-
-Xtrain = dat.Xtrain
-Ytrain = dat.Ytrain
-ytrain = Ytrain.y
-s = dat.Ytest.inst .== 1 
-Xtest = dat.Xtest[s, :]
-Ytest = dat.Ytest[s, :]
-ytest = Ytest.y
-wlst = names(Xtrain) 
-wl = parse.(Float64, wlst) 
-ntrain, p = size(Xtrain)
-ntest = nro(Xtest)
-ntot = ntrain + ntest
-(ntot = ntot, ntrain, ntest)
-
-f = 21 ; pol = 3 ; d = 2 
-Xptrain = savgol(snv(Xtrain); f, pol, d) 
-Xptest = savgol(snv(Xtest); f, pol, d) 
+X = dat.X 
+y = dat.Y.tbc
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+p = nco(X)
 
 n_subfeatures = p / 3 
-max_depth = 20
-fm = treer_dt(Xptrain, ytrain; 
-    n_subfeatures = n_subfeatures, 
-    max_depth = max_depth) ;
-pnames(fm)
+max_depth = 15
+mod = treer_dt(; n_subfeatures, 
+    max_depth) ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
 
-res = Jchemo.predict(fm, Xptest)
-res.pred
-rmsep(res.pred, ytest)
+res = predict(mod, Xtest)
+@head res.pred
+@show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", ylabel = "Observed").f  
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
 ```
 """ 
 function treer_dt(X, y; kwargs...) 
