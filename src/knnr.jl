@@ -26,9 +26,9 @@ Keyword arguments:
 The function uses functions `getknn` and `locw`; 
 see the code for details. 
     
-The general principle of the 
-pipeline is as follows (many other variants of kNNR 
-pipelines can be built):
+The general principle of the pipeline is as 
+follows (many other variants of kNNR pipelines 
+can be built):
 
 For each new observation to predict, the prediction is the 
 weighted mean over a selected neighborhood (in `X`) of 
@@ -50,7 +50,6 @@ path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -61,14 +60,39 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-nlvdis = 20 ; metric = :mah 
-h = 2 ; k = 100 ; nlv = 15
-fm = knnr(Xtrain, ytrain; nlvdis = nlvdis,
-    metric = metric, h = h, k = k) ;
-res = Jchemo.predict(fm, Xtest)
-rmsep(res.pred, ytest)
-f, ax = scatter(vec(pred), ytest)
-ablines!(ax, 0, 1)
+nlvdis = 5 ; metric = :mah 
+#nlvdis = 0 ; metric = :eucl 
+h = 1 ; k = 5 
+mod = knnr(; nlvdis, metric, h, k) ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+
+res = predict(mod, Xtest) ; 
+pnames(res) 
+res.listnn
+res.listd
+res.listw
+@head res.pred
+@show rmsep(res.pred, ytest)
+plotxy(res.pred, ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
+
+####### Example of fitting the function sinc(x)
+####### described in Rosipal & Trejo 2001 p. 105-106 
+x = collect(-10:.2:10) 
+x[x .== 0] .= 1e-5
+n = length(x)
+zy = sin.(abs.(x)) ./ abs.(x) 
+y = zy + .2 * randn(n) 
+mod = knnr(; k = 15, h = 5) ;
+fit!(mod, x, y)
+pred = predict(mod, x).pred 
+f, ax = scatter(x, y) 
+lines!(ax, x, zy, label = "True model")
+lines!(ax, x, vec(pred), label = "Fitted model")
+axislegend("Method")
 f
 ```
 """ 
