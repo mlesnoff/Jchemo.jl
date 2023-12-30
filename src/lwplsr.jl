@@ -134,6 +134,8 @@ function predict(object::Lwplsr, X; nlv = nothing)
     h = object.par.h
     k = object.par.k
     tolw = object.par.tolw
+    criw = object.par.criw
+    squared = object.par.squared
     if isnothing(object.fm)
         if object.par.scal
             zX1 = fscale(object.X, object.xscales)
@@ -143,15 +145,14 @@ function predict(object::Lwplsr, X; nlv = nothing)
             res = getknn(object.X, X; metric, k)
         end
     else
-        res = getknn(object.fm.T, transf(object.fm, X); 
-            metric, k) 
+        res = getknn(object.fm.T, 
+            transf(object.fm, X); metric, k) 
     end
     listw = copy(res.d)
     Threads.@threads for i = 1:m
     #@inbounds for i = 1:m
-        w = wdist(res.d[i]; h, 
-            cri = object.par.cri_w,
-            squared = object.par.squared)
+        w = wdist(res.d[i]; h, criw,
+            squared)
         w[w .< tolw] .= tolw
         listw[i] = w
     end

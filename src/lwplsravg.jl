@@ -120,7 +120,7 @@ function predict(object::LwplsrAvg, X)
     listw = copy(res.d)
     Threads.@threads for i = 1:m
         w = wdist(res.d[i]; h, 
-            cri = object.par.cri_w,
+            cri = object.par.criw,
             squared = object.par.squared)
         w[w .< tolw] .= tolw
         listw[i] = w

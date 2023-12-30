@@ -38,7 +38,7 @@ Base.@kwdef mutable struct Par
     metric::Symbol = :eucl                  # metric for global space
     h::Float64 = Inf                        # shape parameter in fweight
     k::Int = 1                              # nb neighbors
-    cri_w::Float64 = 4                      # coefficient for cutoff in wdist
+    criw::Float64 = 4                      # coefficient for cutoff in wdist
     squared::Bool = false                   # type of curve in wdist 
     tolw::Float64 = 1e-4                    # tolerance for local weights
     verbose::Bool = false                   # print obs. indexes when prediction

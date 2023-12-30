@@ -1,4 +1,5 @@
 """ 
+    rfr_dt(; kwargs...)
     rfr_dt(X, y; kwargs...)
 Random forest regression with DecisionTree.jl.
 * `X` : X-data (n, p).

@@ -1,4 +1,5 @@
 """ 
+    treer_dt(; kwargs...)
     treer_dt(X, y; kwargs...)
 Regression tree (CART) with DecisionTree.jl.
 * `X` : X-data (n, p).

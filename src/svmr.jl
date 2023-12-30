@@ -1,7 +1,6 @@
 """
-    svmr(X, y; kern = :krbf, 
-        gamma = 1. / size(X, 2), degree = 3, coef0 = 0., cost = 1., 
-        epsilon = .1, scal = false)
+    svmr(; kwargs...)
+    svmr(X, y; kwargs...)
 Support vector machine for regression (Epsilon-SVR).
 * `X` : X-data (n, p).
 * `y` : Univariate y-data (n).

@@ -1,4 +1,5 @@
 """
+    knnr(; kwargs...) 
     knnr(X, Y; kwargs...) 
 k-Nearest-Neighbours regression (KNNR).
 * `X` : X-data (n, p).
@@ -13,19 +14,17 @@ Keyword arguments:
     are: `:eucl` (Euclidean distance), `:mah` (Mahalanobis 
     distance).
 * `h` : A scalar defining the shape of the weight 
-    function. Lower is h, sharper is the function. 
-        See function `wdist`.
+    function computed by function `wdist`. Lower is h, 
+    sharper is the function. See function `wdist` for 
+    details (keyword arguments `criw` and `squared` of 
+    `wdist` can also be specified here).
 * `k` : The number of nearest neighbors to select for 
     each observation to predict.
-* `tol` : For stabilization when very close neighbors.
+* `tolw` : For stabilization when very close neighbors.
 * `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
-    The scaling is implemented for the global (distances) 
-    computations.
+    and `Y` is scaled by its uncorrected standard deviation
+    for the global dimension reduction.
 
-The function uses functions `getknn` and `locw`; 
-see the code for details. 
-    
 The general principle of the pipeline is as 
 follows (many other variants of kNNR pipelines 
 can be built):
@@ -36,7 +35,7 @@ size `k`. Within the selected neighborhood, the weights
 are defined from the dissimilarities between the new 
 observation and the neighborhood, and are computed from 
 function 'wdist'.
-
+    
 In general, for high dimensional X-data, using the 
 Mahalanobis distance requires preliminary dimensionality 
 reduction of the data. In function `knnr', the 
@@ -133,6 +132,8 @@ function predict(object::Knnr, X)
     h = object.par.h
     k = object.par.k
     tolw = object.par.tolw
+    criw = object.par.criw
+    squared = object.par.squared
     if isnothing(object.fm)
         if object.par.scal
             zX1 = fscale(object.X, object.xscales)
@@ -142,14 +143,13 @@ function predict(object::Knnr, X)
             res = getknn(object.X, X; metric, k)
         end
     else
-        res = getknn(object.fm.T, transf(object.fm, X); 
-           metric, k) 
+        res = getknn(object.fm.T, 
+            transf(object.fm, X); metric, k) 
     end
     listw = copy(res.d)
     @inbounds for i = 1:m
-        w = wdist(res.d[i]; h, 
-            cri = object.par.cri_w,
-            squared = object.par.squared)
+        w = wdist(res.d[i]; h, criw,
+            squared)
         w[w .< tolw] .= tolw
         listw[i] = w
     end
