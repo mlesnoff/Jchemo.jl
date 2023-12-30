@@ -7,11 +7,8 @@ Support vector machine for regression (Epsilon-SVR).
 * `y` : Univariate y-data (n).
 Keyword arguments:
 * `kern` : Type of kernel used to compute the Gram matrices.
-    Possible values are: `:krbf`, `:kpol`. See respective 
-    functions `krbf` and `kpol` for their keyword arguments.
-
-* `kern` : Type of kernel used to compute the Gram matrices.
-    Possible values are :krbf, :kpol, :klin, :ktanh". 
+    Possible values are: `:krbf`, `:kpol`, `:klin`, 
+    `:ktanh`. See below.  
 * `gamma` : `kern` parameter, see below.
 * `degree` : `kern` parameter, see below.
 * `coef0` : `kern` parameter, see below.
