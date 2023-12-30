@@ -63,7 +63,8 @@ ytest = rmrow(y, s)
 nlvdis = 5 ; metric = :mah 
 #nlvdis = 0 ; metric = :eucl 
 h = 1 ; k = 5 
-mod = knnr(; nlvdis, metric, h, k) ;
+mod = knnr(; nlvdis, metric, 
+    h, k) ;
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
