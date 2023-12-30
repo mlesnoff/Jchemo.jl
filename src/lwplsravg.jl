@@ -33,8 +33,8 @@ Keyword arguments:
 Ensemblist method where the predictions are computed 
 by averaging the predictions of a set of models built 
 with different numbers of LVs, such as in Lesnoff 2023.
-On each neighborhood, a PLSR-averaging is done instead 
-of a PLSR.
+On each neighborhood, a PLSR-averaging (Lesnoff et al. 
+2022) is done instead of a PLSR.
 
 For instance, if argument `nlv` is set to `nlv` = `5:10`, 
 the prediction for a new observation is the simple average
@@ -42,6 +42,14 @@ of the predictions returned by the models with 5 LVs, 6 LVs,
 ... 10 LVs, respectively.
 
 ## References
+Lesnoff, M., Andueza, D., Barotin, C., Barre, P., Bonnal, L., 
+Fernández Pierna, J.A., Picard, F., Vermeulen, P., Roger, 
+J.-M., 2022. Averaging and Stacking Partial Least Squares 
+Regression Models to Predict the Chemical Compositions and 
+the Nutritive Values of Forages from Spectral Near Infrared 
+Data. Applied Sciences 12, 7850. 
+https://doi.org/10.3390/app12157850
+
 M. Lesnoff, Averaging a local PLSR pipeline to predict 
 chemical compositions and nutritive values of forages 
 and feed from spectral near infrared data, Chemometrics and 
