@@ -110,8 +110,8 @@ n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
 lb = 1e-1
-gamma = 1 / 3
-mod = krr(; lb, gamma) ;
+kern = :krbf ; gamma = 1 / 3
+mod = krr(; lb, kern, gamma) ;
 fit!(mod, x, y)
 pred = predict(mod, x).pred 
 f, ax = scatter(x, y) 
