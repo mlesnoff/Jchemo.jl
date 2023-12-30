@@ -73,7 +73,7 @@ x[x .== 0] .= 1e-5
 n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
-mod = knnr(; metric = :eucl, 
+mod = lwmlr(; metric = :eucl, 
     h = 1.5, k = 20) ;
 fit!(mod, x, y)
 pred = predict(mod, x).pred 
