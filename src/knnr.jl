@@ -1,35 +1,47 @@
 """
-    knnr(X, Y; nlvdis = 0, metric = :eucl, h = Inf, k = 1, 
-        tol = 1e-4, scal::Bool = false)
+    knnr(X, Y; kwargs...) 
 k-Nearest-Neighbours regression (KNNR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `nlvdis` : Number of latent variables (LVs) to consider in the global PLS 
-    used for the dimension reduction before computing the dissimilarities. 
+Keyword arguments:
+* `nlvdis` : Number of latent variables (LVs) to consider 
+    in the global PLS used for the dimension reduction 
+    before computing the dissimilarities. 
     If `nlvdis = 0`, there is no dimension reduction.
-* `metric` : Type of dissimilarity used to select the neighbors and compute
-    the weights. Possible values are :eucl (default; Euclidean distance) 
-    and :mah (Mahalanobis distance).
-* `h` : A scalar defining the shape of the weight function. Lower is h, 
-    sharper is the function. See function `wdist`.
-* `k` : The number of nearest neighbors to select for each observation to predict.
+* `metric` : Type of dissimilarity used to select the 
+    neighbors and to compute the weights. Possible values 
+    are: `:eucl` (Euclidean distance), `:mah` (Mahalanobis 
+    distance).
+* `h` : A scalar defining the shape of the weight 
+    function. Lower is h, sharper is the function. 
+        See function `wdist`.
+* `k` : The number of nearest neighbors to select for 
+    each observation to predict.
 * `tol` : For stabilization when very close neighbors.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
-    The scaling is implemented for the global (distances) computations.
+    The scaling is implemented for the global (distances) 
+    computations.
 
 The function uses functions `getknn` and `locw`; 
-see the code for details. Many other variants of kNNR pipelines can be built.
+see the code for details. 
     
-The general principle of the method is as follows.
+The general principle of the 
+pipeline is as follows (many other variants of kNNR 
+pipelines can be built):
 
-For each new observation to predict, the prediction is the weighted mean
-over the selected neighborhood (in `X`). Within the selected neighborhood,
-the weights are defined from the dissimilarities between the new observation 
-and the neighborhood, and are computed from function 'wdist'.
+For each new observation to predict, the prediction is the 
+weighted mean over a selected neighborhood (in `X`) of 
+size `k`. Within the selected neighborhood, the weights 
+are defined from the dissimilarities between the new 
+observation and the neighborhood, and are computed from 
+function 'wdist'.
 
-In general, for high dimensional X-data, using the Mahalanobis distance requires 
-preliminary dimensionality reduction of the data.
+In general, for high dimensional X-data, using the 
+Mahalanobis distance requires preliminary dimensionality 
+reduction of the data. In function `knnr', the 
+preliminary reduction (argument `nlvdis`) is done by PLS
+on {`X`, `Y`}.
 
 ## Examples
 ```julia
