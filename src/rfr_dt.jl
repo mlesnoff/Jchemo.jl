@@ -15,10 +15,10 @@ Keyword arguments:
     each leaf needs to have.
 * `min_sample_split` : Minimum number of observations
     in needed for a split.
-* `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
 * `mth` : Boolean indicating if a multi-threading is 
     done when new data are predicted with function `predict`.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled by its uncorrected standard deviation.
 
 The function fits a random forest regression model using 
 package `DecisionTree.jl'.
@@ -45,40 +45,36 @@ http://www.theses.fr/2002PA112245
 ## Examples
 ```julia
 using JchemoData, JLD2, CairoMakie
-
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/challenge2021.jld2")
+db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
+X = dat.X 
+y = dat.Y.tbc
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+p = nco(X)
 
-Xtrain = dat.Xtrain
-Ytrain = dat.Ytrain
-ytrain = Ytrain.y
-s = dat.Ytest.inst .== 1 
-Xtest = dat.Xtest[s, :]
-Ytest = dat.Ytest[s, :]
-ytest = Ytest.y
-wlst = names(Xtrain) 
-wl = parse.(Float64, wlst) 
-ntrain, p = size(Xtrain)
-ntest = nro(Xtest)
-ntot = ntrain + ntest
-(ntot = ntot, ntrain, ntest)
+n_trees = 200
+n_subfeatures = p / 3
+max_depth = 15
+mod = rfr_dt(; n_trees, 
+    n_subfeatures, max_depth) ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
 
-f = 21 ; pol = 3 ; d = 2 
-Xptrain = savgol(snv(Xtrain); f, pol, d) 
-Xptest = savgol(snv(Xtest); f, pol, d) 
-
-n_subfeatures = p / 3 
-fm = rfr_dt(Xptrain, ytrain; n_trees = 100,
-    n_subfeatures = n_subfeatures) ;
-pnames(fm)
-
-res = Jchemo.predict(fm, Xptest)
-res.pred
-rmsep(res.pred, ytest)
+res = predict(mod, Xtest)
+@head res.pred
+@show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", ylabel = "Observed").f  
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
 ```
 """ 
 function rfr_dt(X, y; kwargs...)
