@@ -1,5 +1,6 @@
 """
-    lwplsr(X, Y; nlvdis, metric, h, k, nlv, tol = 1e-4, verbose = false)
+    lwplsr(; kwargs...)
+    lwplsr(X, Y; kwargs...)
 k-Nearest-Neighbours locally weighted partial 
     least squares regression (kNN-LWPLSR).
 * `X` : X-data (n, p).

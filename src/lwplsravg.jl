@@ -1,41 +1,53 @@
 """
-    lwplsravg(X, Y; nlvdis, metric, h, k, nlv, 
-        typf = :unif, typw = :bisquare, alpha = 0, K = 5, rep = 10,
-        tol = 1e-4, scal::Bool = false, verbose = false)
+    lwplsravg(; kwargs...)
+    lwplsravg(X, Y; kwargs...)
 Averaging kNN-LWPLSR models with different numbers of 
     latent variables (LVs).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `nlvdis` : Number of latent variables (LVs) to consider in the global PLS 
-    used for the dimension reduction before calculating the dissimilarities. 
-        If `nlvdis = 0`, there is no dimension reduction.
-* `metric` : Type of dissimilarity used to select the neighbors. 
-    Possible values are :eucl (default; Euclidean distance) 
-    and :mah (Mahalanobis distance).
-* `h` : A scalar defining the shape of the weight function. Lower is h, 
-    sharper is the function. See function `wdist`.
-* `k` : The number of nearest neighbors to select for each observation to predict.
-* `nlv` : A character string such as "5:20" defining the range of the numbers of LVs 
-    to consider ("5:20": the predictions of models with nb LVS = 5, 6, ..., 20 
-    are averaged). Syntax such as "10" is also allowed ("10": correponds to 
-    the single model with 10 LVs).   
-* `tol` : For stabilization when very close neighbors.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
-    is scaled by its uncorrected standard deviation.
-    The scaling is implemented for the global (distances) and local (i.e. inside
-    each neighborhood) computations.
-* `verbose` : If true, fitting information are printed.
-*  Other arguments: see ?plsravg.
+Keyword arguments:
+* `nlvdis` : Number of latent variables (LVs) to consider 
+    in the global PLS used for the dimension reduction 
+    before computing the dissimilarities. 
+    If `nlvdis = 0`, there is no dimension reduction.
+* `metric` : Type of dissimilarity used to select the 
+    neighbors and to compute the weights. Possible values 
+    are: `:eucl` (Euclidean distance), `:mah` (Mahalanobis 
+    distance).
+* `h` : A scalar defining the shape of the weight 
+    function computed by function `wdist`. Lower is h, 
+    sharper is the function. See function `wdist` for 
+    details (keyword arguments `criw` and `squared` of 
+    `wdist` can also be specified here).
+* `k` : The number of nearest neighbors to select for 
+    each observation to predict.
+* `tolw` : For stabilization when very close neighbors.
+* `nlv` : A range of nb. of latent variables (LVs) 
+    to compute for the local (i.e. inside each neighborhood) 
+    models.
+* `scal` : Boolean. If `true`, each column of `X` 
+    and `Y` is scaled by its uncorrected standard deviation
+    for the global dimension reduction and the local
+    models.
 
-Ensemblist method where the predictions of each local model are computed 
-are computed by averaging or stacking the predictions of a set of models 
-built with different numbers of latent variables (LVs).
+Ensemblist method where the predictions are computed 
+by averaging the predictions of a set of models built 
+with different numbers of LVs, such as in Lesnoff 2023.
+On each neighborhood, a PLSR-averaging is done instead 
+of a PLSR.
 
-For instance, if argument `nlv` is set to `nlv = "5:10"`, the prediction for 
-a new observation is the average (eventually weighted) or stacking of the predictions 
-returned by the models with 5 LVS, 6 LVs, ... 10 LVs, respectively.
+For instance, if argument `nlv` is set to `nlv` = `5:10`, 
+the prediction for a new observation is the simple average
+of the predictions returned by the models with 5 LVs, 6 LVs, 
+... 10 LVs, respectively.
 
-See ?plsravg.
+## References
+M. Lesnoff, Averaging a local PLSR pipeline to predict 
+chemical compositions and nutritive values of forages 
+and feed from spectral near infrared data, Chemometrics and 
+Intelligent Laboratory Systems. 244 (2023) 105031. 
+https://doi.org/10.1016/j.chemolab.2023.105031.
+
 
 ## Examples
 ```julia
@@ -44,7 +56,6 @@ path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -55,21 +66,24 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-nlvdis = 20 ; metric = :mah 
-h = 1 ; k = 100 ; nlv = "5:15"
-fm = lwplsravg(Xtrain, ytrain; nlvdis = nlvdis,
-    metric = metric, h = h, k = k, nlv = nlv) ;
-res = Jchemo.predict(fm, Xtest)
-rmsep(res.pred, ytest)
-f, ax = scatter(vec(res.pred), ytest)
-ablines!(ax, 0, 1)
-f
+nlvdis = 5 ; metric = :mah 
+h = 1 ; k = 200 ; nlv = 4:20
+mod = lwplsravg(; nlvdis, metric, 
+    h, k, nlv) ;
+fit!(mod, Ttrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
 
-fm = lwplsravg(Xtrain, ytrain; nlvdis = nlvdis,
-    metric = metric, h = h, k = k, nlv = nlv,
-    typf = :cv) ;
-res = Jchemo.predict(fm, Xtest)
-rmsep(res.pred, ytest)
+res = predict(mod, Ttest) ; 
+pnames(res) 
+res.listnn
+res.listd
+res.listw
+@head res.pred
+@show rmsep(res.pred, ytest)
+plotxy(res.pred, ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f  
 ```
 """ 
 function lwplsravg(X, Y; kwargs...)
@@ -105,6 +119,8 @@ function predict(object::LwplsrAvg, X)
     h = object.par.h
     k = object.par.k
     tolw = object.par.tolw
+    criw = object.par.criw
+    squared = object.par.squared
     if isnothing(object.fm)
         if object.par.scal
             zX1 = fscale(object.X, object.xscales)
@@ -114,14 +130,13 @@ function predict(object::LwplsrAvg, X)
             res = getknn(object.X, X; metric, k)
         end
     else
-        res = getknn(object.fm.T, transf(object.fm, X); 
-            metric, k) 
+        res = getknn(object.fm.T, 
+            transf(object.fm, X); metric, k) 
     end
     listw = copy(res.d)
     Threads.@threads for i = 1:m
-        w = wdist(res.d[i]; h, 
-            cri = object.par.criw,
-            squared = object.par.squared)
+        w = wdist(res.d[i]; h, criw,
+            squared)
         w[w .< tolw] .= tolw
         listw[i] = w
     end
@@ -130,5 +145,6 @@ function predict(object::LwplsrAvg, X)
         listnn = res.ind, listw = listw, fun = plsravg, 
         nlv = object.par.nlv, scal = object.par.scal,
         verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, 
+        listw = listw)
 end
