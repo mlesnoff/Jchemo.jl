@@ -46,7 +46,7 @@ Base.@kwdef mutable struct Par
     prior::Symbol = :unif                   # prior in DA
     alpha::Float64 = 0.                     # regularization in qda and rda 
     simpl::Bool = false                     # dmnorm-parameter in rda
-    h_kde::Union{Nothing, Float64} = nothing  # dmkern-parameter 'h' in kdeda
+    h_kde::Union{Nothing, Float64, Vector{Float64}} = nothing  # dmkern-parameter 'h' in kdeda
     a_kde::Float64 = 1.                     # dmkern-parameter 'a' in kdeda
     ##
     freduc::Function = pcasvd               # method of dimension reduction in occsd-od-sdod
