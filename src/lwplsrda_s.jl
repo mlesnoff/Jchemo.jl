@@ -30,7 +30,7 @@ kNN-LWPLSR-DA after preliminary (linear or non-linear) dimension
     is scaled by its uncorrected standard deviation.
     The scaling is implemented for the global (distances) and local (i.e. inside
     each neighborhood) computations.
-* `verbose` : If true, fitting information are printed.
+* `verbose` : If `true`, fitting information are printed.
 
 This is the same principle as function `lwplsr_s` except that, locally, PLSR-DA models
 are fitted instead of PLSR models.

@@ -11,7 +11,7 @@ Keyword arguments:
 * `listw` : List (vector) of m vectors of weights.
 * `fun` : Function computing the model on 
     the m neighborhoods.
-* `verbose` : Boolean. If true, fitting information
+* `verbose` : Boolean. If `true`, fitting information
     are printed.
 * `kwargs` : Keywords arguments to pass in function fun. 
 

@@ -29,7 +29,7 @@ kNN-LWPLSR after preliminary (linear or non-linear) dimension
     is scaled by its uncorrected standard deviation.
     The scaling is implemented for the global (distances) and local (i.e. inside
     each neighborhood) computations.
-* `verbose` : If true, fitting information are printed.
+* `verbose` : If `true`, fitting information are printed.
 
 The principle is as follows. A preliminary dimension reduction (parameter `nlvreduc`) 
 of the X-data (n, p) returns a score matrix T (n, `nlv`). Then, a kNN-LWPLSR 

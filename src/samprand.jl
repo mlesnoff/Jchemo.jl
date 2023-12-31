@@ -4,7 +4,7 @@ Build training vs. test sets by random sampling.
 * `n` : Total nb. of observations.
 * `k` : Nb. test observations to sample.
 Keyword arguments:
-* `replace` : Boolean. If false, the sampling is 
+* `replace` : Boolean. If `false`, the sampling is 
     without replacement.
 
 Two outputs are returned (= row indexes of the data): 

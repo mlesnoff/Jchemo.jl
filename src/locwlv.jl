@@ -12,7 +12,7 @@ Keyword arguments:
 * `fun` : Function computing the model on 
     the m neighborhoods.
 * `nlv` : Nb. or collection of nb. of latent variables (LVs).
-* `verbose` : Boolean. If true, fitting information 
+* `verbose` : Boolean. If `true`, fitting information 
     are printed.
 * `kwargs` : Keywords arguments to pass in function fun. 
 

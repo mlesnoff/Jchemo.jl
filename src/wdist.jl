@@ -11,7 +11,7 @@ Keyword arguments:
     of the weight function. 
 * `criw` : A positive scalar defining outliers in the 
     distances vector `d`.
-* `squared`: If true, distances are replaced by the squared 
+* `squared`: If `true`, distances are replaced by the squared 
     distances; the weight function is then a Gaussian (RBF) 
     kernel function.
 

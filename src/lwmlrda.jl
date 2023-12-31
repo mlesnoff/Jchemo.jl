@@ -11,7 +11,7 @@ k-Nearest-Neighbours locally weighted MLR-based discrimination (kNN-LWMLR-DA).
     sharper is the function. See function `wdist`.
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tol` : For stabilization when very close neighbors.
-* `verbose` : If true, fitting information are printed.
+* `verbose` : If `true`, fitting information are printed.
 
 This is the same principle as function `lwmlr` except that local MLR-DA models
 are fitted instead of local MLR models.

@@ -13,7 +13,7 @@ Keyword arguments:
     score (e.g. `rmsep`).
 * `pars` : tuple of named vectors of same length defining 
     the parameter combinations (e.g. output of function `mpar`).
-* `verbose` : If true, fitting information are printed.
+* `verbose` : If `true`, fitting information are printed.
 * `nlv` : Value, or vector of values, of the nb. of latent
     variables (LVs).
 * `lb` : Value, or vector of values, of the ridge 

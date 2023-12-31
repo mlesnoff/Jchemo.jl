@@ -19,7 +19,7 @@ kNN-LWPLSR-DA.
     is scaled by its uncorrected standard deviation.
     The scaling is implemented for the global (distances) and local (i.e. inside
     each neighborhood) computations.
-* `verbose` : If true, fitting information are printed.
+* `verbose` : If `true`, fitting information are printed.
 
 This is the same methodology as for `lwplsr` except that 
 PLSR is replaced by PLSR-DA.

@@ -128,12 +128,13 @@
 
 ### **Local models**
 
-- **knnr** kNN regression
+- **knnr** kNN weighted regression (kNNR)
 - **lwmlr** kNN locally weighted MLR (kNN-LWMLR)
 - **lwplsr** kNN locally weighted PLSR (kNN-LWPLSR)
 
 *With preliminary dimension reduction*
-- **lwmlr_s** kNN-LWMLR-S, including LWR of *Naes et al 1990*
+- **lwmlr_s** kNN-LWMLR-S
+    - Including LWR *Naes et al 1990*
 - **lwplsr_s** kNN-LWPLSR-S
 
 *Averaging*
