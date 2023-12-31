@@ -101,8 +101,8 @@ psamp = .5 ; msamp = :rand
 metric = :eucl
 h = 2 ; k = 100
 mod = lwmlr_s(; mreduc, 
-    nlvreduc, gamma, psamp, msamp,
-    metric, h, k) ;
+    nlvreduc, gamma, psamp, 
+    msamp, metric, h, k) ;
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 @show rmsep(pred, ytest)
