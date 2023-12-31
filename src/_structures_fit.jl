@@ -556,7 +556,7 @@ struct Rda
 end
 
 struct Plsrda
-    fm::Union{Plsr, Splsr}  
+    fm::Union{Plsr, Splsr, Kplsr}  
     lev::Vector
     ni::Vector{Int}
 end

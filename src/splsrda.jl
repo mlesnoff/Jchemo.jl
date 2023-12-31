@@ -25,8 +25,8 @@ Keyword arguments:
     is scaled by its uncorrected standard deviation.
 
 Same as function `plsrda` (PLSR-DA) except that 
-a sparse PLSR (function `splskern`) is run on the Y-dummy 
-table instead of a PLSR (function `plskern`). 
+a sparse PLSR (function `splskern`), instead of a 
+PLSR (function `plskern`), is run on the Y-dummy table. 
 
 See function `plsrda` and `splskern` for details.
 
