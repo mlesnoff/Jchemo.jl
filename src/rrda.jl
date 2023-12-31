@@ -1,56 +1,74 @@
 """
-    rrda(X, y, weights = ones(nro(X)); lb)
+    rrda(; kwargs...)
+    rrda(X, y; kwargs...)
+    rrda(X, y, weights::Weight; 
+        kwargs...)
 Discrimination based on ridge regression (RR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`). 
+Keyword arguments: 
 * `lb` : Ridge regularization parameter "lambda".
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-The training variable `y` (univariate class membership) is transformed
-to a dummy table (Ydummy) containing nlev columns, where nlev is the number 
-of classes present in `y`. Each column of Ydummy is a dummy (0/1) variable. 
-Then, a RR is implemented on the `y` and each column of Ydummy,
-returning predictions of the dummy variables (= object `posterior` returned by 
-function `predict`). 
-These predictions can be considered as unbounded 
-estimates (i.e. eventually outside of [0, 1]) of the class membership probabilities.
-For a given observation, the final prediction is the class corresponding 
-to the dummy variable for which the probability estimate is the highest.
+The training variable `y` (univariate class membership) is 
+transformed to a dummy table (Ydummy) containing nlev columns, 
+where nlev is the number of classes present in `y`. Each column of 
+Ydummy is a dummy (0/1) variable. Then, a ridge regression 
+(RR) is run on {`X`, Ydummy}, returning predictions of the dummy 
+variables (= object `posterior` returned by fuction `predict`).  
+These predictions can be considered as unbounded estimates (i.e. 
+eventuall outside of [0, 1]) of the class membership probabilities. 
+For a given observation, the final prediction is the class 
+corresponding to the dummy variable for which the probability 
+estimate is the highest.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
-
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/forages2.jld2") 
+db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
 pnames(dat)
-
-X = dat.X 
-Y = dat.Y 
+X = dat.X
+Y = dat.Y
+b = nro(X) 
 s = Bool.(Y.test)
 Xtrain = rmrow(X, s)
 ytrain = rmrow(Y.typ, s)
 Xtest = X[s, :]
 ytest = Y.typ[s]
-
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+(ntot = n, ntrain, ntest)
 tab(ytrain)
 tab(ytest)
 
-lb = .001
-fm = rrda(Xtrain, ytrain; lb = lb) ;    
-pnames(fm)
-pnames(fm.fm)
+lb = 1e-5
+mod = rrda(; lb) 
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
+fm.lev
+fm.ni
 
-res = Jchemo.predict(fm, Xtest) ;
+coef(fm.fm)
+
+res = predict(mod, Xtest) ;
 pnames(res)
-res.pred
+@head res.posterior
+@head res.pred
 errp(res.pred, ytest)
+confusion(res.pred, ytest).cnt
 
-Jchemo.predict(fm, Xtest; lb = [.1; .01]).pred
+predict(mod, Xtest; nlv = 1:2).pred
+summary(fm.fm, Xtrain)
+
+predict(mod, Xtest; 
+    lb = [.1; .01]).pred
 ```
 """ 
 function rrda(X, y; kwargs...)

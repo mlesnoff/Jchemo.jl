@@ -49,7 +49,7 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-mod = plsrda(; nlv) ;
+mod = plsrda(; nlv) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
