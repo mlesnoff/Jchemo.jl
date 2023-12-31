@@ -1,60 +1,68 @@
 """
-    krrda(X, y, weights = ones(nro(X)); lb, 
-        scal = scal, kern = :krbf, kwargs...)
+    krrda(; kwargs...)
+    krrda(X, y; kwargs...)
+    krrda(X, y, weights::Weight; 
+        kwargs...)
 Discrimination based on kernel ridge regression (KRR-DA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership.
+* `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`). 
+Keyword arguments: 
 * `lb` : Ridge regularization parameter "lambda".
+* `kern` : Type of kernel used to compute the Gram matrices.
+    Possible values are: `:krbf`, `:kpol`. See respective 
+    functions `krbf` and `kpol` for their keyword arguments.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
-* Other arguments to pass in the kernel: See function `kplsr`.
 
-The training variable `y` (univariate class membership) is transformed
-to a dummy table (Ydummy) containing nlev columns, where nlev is the number 
-of classes present in `y`. Each column of Ydummy is a dummy (0/1) variable. 
-Then, a RR is implemented on the `y` and each column of Ydummy,
-returning predictions of the dummy variables (= object `posterior` returned by 
-function `predict`). 
-These predictions can be considered as unbounded 
-estimates (i.e. eventually outside of [0, 1]) of the class membership probabilities.
-For a given observation, the final prediction is the class corresponding 
-to the dummy variable for which the probability estimate is the highest.
+Same as function `rrda` (RR-DA) except that a kernel 
+RR (function `krr`), instead of a RR (function `rr`), 
+is run on the Y-dummy table. 
 
 ## Examples
 ```julia
-using JLD2
-using JchemoData
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/forages2.jld2") 
+db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
 pnames(dat)
-
-X = dat.X 
-Y = dat.Y 
+X = dat.X
+Y = dat.Y
+n = nro(X) 
 s = Bool.(Y.test)
 Xtrain = rmrow(X, s)
 ytrain = rmrow(Y.typ, s)
 Xtest = X[s, :]
 ytest = Y.typ[s]
-
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+(ntot = n, ntrain, ntest)
 tab(ytrain)
 tab(ytest)
 
-gamma = .01
-lb = .001
-fm = krrda(Xtrain, ytrain; lb = lb, gamma = gamma) ;    
-pnames(fm)
-pnames(fm.fm)
+lb = 1e-5
+kern = :krbf ; gamma = .001 
+scal = true
+mod = krrda(; lb,
+    kern, gamma, scal) 
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
+fm.lev
+fm.ni
 
-res = Jchemo.predict(fm, Xtest) ;
+coef(fm.fm)
+
+res = predict(mod, Xtest) ;
 pnames(res)
-res.pred
+@head res.posterior
+@head res.pred
 errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
-Jchemo.predict(fm, Xtest; lb = [.1; .01]).pred
+predict(mod, Xtest; lb = [.1, .001]).pred
 ```
 """ 
 function krrda(X, y; kwargs...)

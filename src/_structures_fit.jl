@@ -574,7 +574,7 @@ struct Dkplsrda
 end
 
 struct Rrda
-    fm::Rr  
+    fm::Union{Rr, Krr}  
     lev::Vector
     ni::Vector{Int}
     kwargs::Base.Pairs
