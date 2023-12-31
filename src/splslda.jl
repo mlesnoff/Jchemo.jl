@@ -64,14 +64,14 @@ zfm.sellv
 zfm.sel
 res = Jchemo.predict(fm, Xtest)
 res.posterior
-err(res.pred, ytest)
+errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
 nlv = 1:30 
 pars = mpar(msparse = [:mix], nvar = [1; 5; 10; 20], 
     scal = [false])
 res = gridscore_lv(Xtrain, ytrain, Xtest, ytest; 
-    score = err, fun = splslda, pars = pars, nlv = nlv)
+    score = errp, fun = splslda, pars = pars, nlv = nlv)
 typ = string.("nvar=", res.nvar)
 plotgrid(res.nlv, res.y1, typ; step = 2,
     xlabel = "Nb. LVs", ylabel = "ERR").f

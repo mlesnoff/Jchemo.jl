@@ -1,53 +1,58 @@
 """
-    mlrda(X, y, weights = ones(nro(X)))
-Discrimination based on multple linear regression (MLR-DA).
-* `X` : X-data.
-* `y` : Univariate class membership.
+    mlrda()
+    mlrda(X, y)
+    mlrda(X, y, weights::Weight)
+Discrimination based on multple linear regression 
+    (MLR-DA).
+* `X` : X-data (n, p).
+* `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`). 
 
-The training variable `y` (univariate class membership) is transformed
-to a dummy table (Ydummy) containing nlev columns, where nlev is the number 
-of classes present in `y`. Each column of Ydummy is a dummy (0/1) variable. 
-Then, a multiple linear regression (MLR) is run between the `X` and and each column 
-of Ydummy, returning predictions of the dummy variables (= object `posterior` 
-returned by fuction `predict`).  
-These predictions can be  considered as unbounded 
-estimates (i.e. eventuall outside of [0, 1]) of the class membership probabilities.
-For a given observation, the final prediction is the class corresponding 
-to the dummy variable for which the probability estimate is the highest.
+The training variable `y` (univariate class membership) is 
+transformed to a dummy table (Ydummy) containing nlev columns, 
+where nlev is the number of classes present in `y`. Each column of 
+Ydummy is a dummy (0/1) variable. Then, a multiple linear regression 
+(MLR) is run on {`X`, Ydummy}, returning predictions of the dummy 
+variables (= object `posterior` returned by fuction `predict`).  
+These predictions can be considered as unbounded estimates (i.e. 
+eventuall outside of [0, 1]) of the class membership probabilities. 
+For a given observation, the final prediction is the class 
+corresponding to the dummy variable for which the probability 
+estimate is the highest.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, StatsBase
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/iris.jld2") 
+db = joinpath(path_jdat, "data/iris.jld2")
 @load db dat
 pnames(dat)
-summ(dat.X)
-
-X = dat.X[:, 1:4] 
+@head dat.X
+X = dat.X[:, 1:4]
 y = dat.X[:, 5]
 n = nro(X)
-
-ntrain = 120
-s = sample(1:n, ntrain; replace = false) 
-Xtrain = X[s, :]
-ytrain = y[s]
-Xtest = rmrow(X, s)
-ytest = rmrow(y, s)
-
+ntest = 30
+s = samprand(n, ntest)
+Xtrain = X[s.train, :]
+ytrain = y[s.train]
+Xtest = X[s.test, :]
+ytest = y[s.test]
+ntrain = n - ntest
+(ntot = n, ntrain, ntest)
 tab(ytrain)
 tab(ytest)
 
-fm = mlrda(Xtrain, ytrain) ;
-pnames(fm)
+mod = mlrda()
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
 
-res = Jchemo.predict(fm, Xtest) ;
+res = predict(mod, Xtest) ;
 pnames(res)
-res.posterior
-res.pred
-err(res.pred, ytest)
+@head res.posterior
+@head res.pred
+errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
 """ 
@@ -77,7 +82,8 @@ function predict(object::Mlrda, X)
     m = nro(X)
     zp = predict(object.fm, X).pred
     z =  mapslices(argmax, zp; dims = 2) 
-    pred = reshape(replacebylev2(z, object.lev), m, 1)
+    pred = reshape(replacebylev2(z, 
+        object.lev), m, 1)
     (pred = pred, posterior = zp)
 end
     

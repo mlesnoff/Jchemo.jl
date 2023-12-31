@@ -48,7 +48,7 @@ pnames(fm.fm)
 res = Jchemo.predict(fm, Xtest) ;
 pnames(res)
 res.pred
-err(res.pred, ytest)
+errp(res.pred, ytest)
 
 Jchemo.predict(fm, Xtest; lb = [.1; .01]).pred
 ```

@@ -75,7 +75,7 @@ pnames(fm)
 
 res = Jchemo.predict(fm, Xtest)
 res.pred
-err(res.pred, ytest) 
+errp(res.pred, ytest) 
 ```
 """ 
 ## For DA in DecisionTree.jl, 

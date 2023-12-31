@@ -44,7 +44,7 @@ res = Jchemo.predict(fm, Xtest) ;
 pnames(res)
 res.posterior
 res.pred
-err(res.pred, ytest)
+errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
 Jchemo.coef(fm.fm)

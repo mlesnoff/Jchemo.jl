@@ -45,7 +45,7 @@ fm = plskdeda(Xtrain, ytrain; nlv = nlv) ;
 #fm = plskdeda(Xtrain, ytrain; nlv = nlv, a = .5) ;
 res = Jchemo.predict(fm, Xtest) ;
 pred = res.pred
-err(pred, ytest)
+errp(pred, ytest)
 confusion(pred, ytest).cnt
 ```
 """ 

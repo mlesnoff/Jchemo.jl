@@ -252,7 +252,7 @@ nlv = 1:30
 prior = [:unif; :prop]
 pars = mpar(prior = prior)
 rescv = gridcv(mod, Xtrain, ytrain; 
-    segm, score = err, pars, nlv)
+    segm, score = errp, pars, nlv)
 res = rescv.res
 typ = res.prior
 plotgrid(res.nlv, res.y1, typ; step = 2,
@@ -263,7 +263,7 @@ mod = plslda(nlv = res.nlv[u],
     prior = res.prior[u])
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
-@show err(pred, ytest)
+@show errp(pred, ytest)
 confusion(pred, ytest).pct
 ```
 """

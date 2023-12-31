@@ -43,7 +43,7 @@ pnames(res)
 res.dens
 res.posterior
 res.pred
-err(res.pred, ytest)
+errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
 """ 

@@ -60,7 +60,7 @@ function cor2(pred, Y)
 end
 
 """
-    err(pred, y)
+    errp(pred, y)
 Compute the classification error rate (ERR).
 * `pred` : Predictions.
 * `y` : Observed data.
@@ -74,10 +74,10 @@ ytest = rand(["a" ; "b"], 4)
 
 fm = plsrda(Xtrain, ytrain; nlv = 2)
 pred = Jchemo.predict(fm, Xtest).pred
-err(pred, ytest)
+errp(pred, ytest)
 ```
 """
-function err(pred, y)
+function errp(pred, y)
     r = residcla(pred, y)
     res = [sum(r)] / nro(y)
     reshape(res, 1, :)
@@ -430,6 +430,6 @@ end
 
 # scores:
 # - Must return a matrix
-# - In particular for err, create multiple dispatches Y::AbstractVector, Y::AbstractMatrix
+# - In particular for errp, create multiple dispatches Y::AbstractVector, Y::AbstractMatrix
 
 

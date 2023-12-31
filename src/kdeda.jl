@@ -48,7 +48,7 @@ pnames(res)
 res.dens
 res.posterior
 res.pred
-err(res.pred, ytest)
+errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
 """ 
@@ -96,7 +96,8 @@ function predict(object::Kdeda, X)
     v = sum(A, dims = 2)
     posterior = fscale(A', v)'                    # This could be replaced by code similar as in fscale! 
     z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
-    pred = reshape(replacebylev2(z, object.lev), m, 1)
+    pred = reshape(replacebylev2(z, 
+        object.lev), m, 1)
     (pred = pred, dens = dens, posterior = posterior)
 end
     

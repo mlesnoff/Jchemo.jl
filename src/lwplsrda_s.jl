@@ -59,7 +59,7 @@ fm = lwplsrda_s(Xtrain, ytrain; mreduc = :pca,
     nlvreduc = 20, metric = :eucl, h = 2, 
     k = 100, nlv = 10) ;
 pred = Jchemo.predict(fm, Xtest).pred
-err(pred, ytest)
+errp(pred, ytest)
 confusion(pred, ytest).cnt
 ```
 """ 

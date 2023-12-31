@@ -52,20 +52,20 @@ tab(ytest)
 fm = lwmlrda_s(Xtrain, ytrain; mreduc = :pca, 
     nlv = 20, metric = :eucl, h = 2, k = 100) ;
 pred = Jchemo.predict(fm, Xtest).pred
-err(pred, ytest)
+errp(pred, ytest)
 confusion(pred, ytest).cnt
 
 fm = lwmlrda_s(Xtrain, ytrain; mreduc = :dkpls, 
     nlv = 20, gamma = .01,
     metric = :eucl, h = 2, k = 100) ;
 pred = Jchemo.predict(fm, Xtest).pred
-err(pred, ytest)
+errp(pred, ytest)
 
 fm = lwmlrda_s(Xtrain, ytrain; mreduc = :dkpls, 
     nlv = 20, gamma = .01, psamp = .5, samp = :cla,
     metric = :eucl, h = 2, k = 100) ;
 pred = Jchemo.predict(fm, Xtest).pred
-err(pred, ytest)
+errp(pred, ytest)
 ```
 """
 function lwmlrda_s(X, y; kwargs...) 

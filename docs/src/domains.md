@@ -271,7 +271,7 @@
 - **confusion** Confusion matrix
 
 *Discrimination*
-- **err** Classification error rate
+- **errp** Classification error rate
 
 *Model dimensionality*
 - **aicplsr** AIC and Cp for PLSR

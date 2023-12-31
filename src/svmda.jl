@@ -69,7 +69,7 @@ pnames(fm)
 res = Jchemo.predict(fm, Xtest) ;
 pnames(res)
 res.pred
-err(res.pred, ytest)
+errp(res.pred, ytest)
 ```
 """ 
 function svmda(X, y; kwargs...)
