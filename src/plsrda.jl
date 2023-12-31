@@ -36,7 +36,7 @@ db = joinpath(path_jdat, "data/forages2.jld2")
 pnames(dat)
 X = dat.X
 Y = dat.Y
-b = nro(X) 
+n = nro(X) 
 s = Bool.(Y.test)
 Xtrain = rmrow(X, s)
 ytrain = rmrow(Y.typ, s)

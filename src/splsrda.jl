@@ -1,78 +1,83 @@
 """
-    splsrda(X, y, weights = ones(nro(X)); nlv,
-        msparse = :soft, delta = 0, nvar = nco(X), 
-        scal::Bool = false)
+    splsrda(; kwargs...)
+    splsrda(X, y; kwargs...)
+    splsrda(X, y, weights::Weight; 
+        kwargs...)
 Sparse PLSR-DA.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`). 
+Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `msparse`: Method used for the thresholding. Possible values
-    are :soft (default), :mix or :hard. See thereafter.
-* `delta` : Range for the thresholding (see function `soft`)
-    on the loadings standardized to their maximal absolute value.
-    Must ∈ [0, 1]. Only used if `msparse = :soft.
-* `nvar` : Nb. variables (`X`-columns) selected for each 
-    LV. Can be a single integer (same nb. variables
-    for each LV), or a vector of length `nlv`.
-    Only used if `msparse = :mix` or `msparse = :hard`. 
+* `msparse` : Method used for the sparse thresholding. 
+    Possible values are: `:soft`, `:mix`, 
+    `:hard`. See thereafter.
+* `delta` : Only used if `msparse = `:soft`. Range for the 
+    thresholding on the loadings (after they are standardized 
+    to their maximal absolute value). Must ∈ [0, 1].
+    Higher is `delta`, stronger is the thresholding. 
+* `nvar` : Only used if `msparse` = `:mix` or `:hard`.
+    Nb. variables (`X`-columns) selected for each principal
+    component (PC). Can be a single integer (i.e. same nb. 
+    of variables for each PC), or a vector of length `nlv`.   
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-Same as function `plsrda` (PLSR-DA) except that sparse PLSR (function 
-`splskern`) is run on the Y-dummy table instead of a PLSR (function `plskern`). 
+Same as function `plsrda` (PLSR-DA) except that 
+a sparse PLSR (function `splskern`) is run on the Y-dummy 
+table instead of a PLSR (function `plskern`). 
 
-See function `splskern` and `?plsrda.
+See function `plsrda` and `splskern` for details.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "forages2.jld2") 
+using JchemoData, JLD2
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
 pnames(dat)
-
-X = dat.X 
-Y = dat.Y 
+X = dat.X
+Y = dat.Y
+n = nro(X)
 s = Bool.(Y.test)
 Xtrain = rmrow(X, s)
 ytrain = rmrow(Y.typ, s)
 Xtest = X[s, :]
 ytest = Y.typ[s]
-
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+(ntot = n, ntrain, ntest)
 tab(ytrain)
 tab(ytest)
 
 nlv = 15
-delta = .8
-nvar = 2
-scal = false
-#scal = true
-msparse = :soft
-#msparse = :mix
-#msparse = :hard
-fm = splsrda(Xtrain, ytrain; nlv = nlv,
-    msparse = msparse, delta = delta, nvar = nvar,
-    scal = scal) ;
-pnames(fm)
-pnames(fm.fm)
-zfm = fm.fm ;
-zfm.sellv
-zfm.sel
-res = Jchemo.predict(fm, Xtest)
-res.posterior
+msparse = :mix ; nvar = 10
+mod = splsrda(; nlv, 
+    msparse, nvar) 
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
+fm.lev
+fm.ni
+
+@head fm.fm.T
+@head transf(mod, Xtrain)
+@head transf(mod, Xtest)
+@head transf(mod, Xtest; nlv = 3)
+
+coef(fm.fm)
+
+res = predict(mod, Xtest) ;
+pnames(res)
+@head res.posterior
+@head res.pred
 errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
-nlv = 0:30 
-pars = mpar(msparse = [:mix], nvar = [1; 5; 10; 20], 
-    scal = [false])
-res = gridscore_lv(Xtrain, ytrain, Xtest, ytest; 
-    score = errp, fun = splsrda, pars = pars, nlv = nlv)
-typ = string.("nvar=", res.nvar)
-plotgrid(res.nlv, res.y1, typ; step = 2,
-    xlabel = "Nb. LVs", ylabel = "ERR").f
+predict(mod, Xtest; nlv = 1:2).pred
+summary(fm.fm, Xtrain)
 ```
 """ 
 function splsrda(X, y; kwargs...)

@@ -12,8 +12,6 @@ Sparse partial least squares regression (Lê Cao et al. 2008)
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
-    is scaled by its uncorrected standard deviation.
 * `msparse` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:mix`, 
     `:hard`. See thereafter.
