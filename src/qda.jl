@@ -18,7 +18,8 @@ Keyword arguments:
 
 A value `alpha` > 0 shrinks the class-covariances by class 
 (Wi) toward a common LDA covariance (W). This corresponds to 
-the "first regularization (Eqs.16)" described in Friedman 1989.
+the "first regularization (Eqs.16)" described in Friedman 1989
+(where `alpha` is referred to as "lambda" in Friedman 1989).
 
 ## References
 Friedman JH. Regularized Discriminant Analysis. Journal 
@@ -130,13 +131,16 @@ function predict(object::Qda, X)
     nlev = length(lev) 
     dens = similar(X, m, nlev)
     for i = 1:nlev
-        dens[:, i] .= vec(Jchemo.predict(object.fm[i], X).pred)
+        dens[:, i] .= vec(Jchemo.predict(object.fm[i],
+            X).pred)
     end
     A = object.wprior' .* dens
     v = sum(A, dims = 2)
-    posterior = fscale(A', v)'                    # This could be replaced by code similar as in fscale! 
-    z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
-    pred = reshape(replacebylev2(z, lev), m, 1)
+    posterior = fscale(A', v)'  # Could be replaced by similar as in fscale! 
+    z =  mapslices(argmax, posterior; 
+        dims = 2)  # if equal, argmax takes the first
+    pred = reshape(replacebylev2(z, 
+        lev), m, 1)
     (pred = pred, dens, posterior)
 end
     

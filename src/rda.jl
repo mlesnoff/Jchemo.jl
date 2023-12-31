@@ -1,96 +1,93 @@
 """
-    rda(X, y, weights = ones(nro(X)); 
-        prior = :unif, alpha = 1, lb = 1e-10, 
-        simpl::Bool = false, scal::Bool = false)
+    rda(; kwargs...)
+    rda(X, y; kwargs...)
+    rda(X, y, weights::Weight; 
+        kwargs...)
 Regularized discriminant analysis (RDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
-* `prior` : Type of prior probabilities for class membership.
-    Possible values are: :unif (uniform; default), :prop (proportional).
-* `alpha` : Shrinkage parameter of the separate covariances of 
-    QDA toward a common covariance as in LDA. Must ∈ [0, 1]
-    (`alpha` is referred to as lambda in Friedman 1989).
+Keyword arguments:
+* `prior` : Type of prior probabilities for class 
+    membership. Possible values are: `:unif` (uniform), 
+    `:prop` (proportional).
+* `alpha` : Scalar (∈ [0, 1]) defining the continuum
+    between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `lb` : Ridge regularization parameter "lambda" (>= 0).
-* `simpl` : Boolean (default to `false`). See `dmnorm`. 
+* `simpl` : Boolean. See function `dmnorm`. 
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-Regularized compromise between LDA and QDA, see Friedman 1989. 
-
-Noting W the (corrected) pooled within-class covariance matrix and 
-Wi the (corrected) within-class covariance matrix of class i, the 
-regularization is done by with the two successive steps:
+Let us note W the (corrected) pooled within-class 
+covariance matrix and Wi the (corrected) within-class 
+covariance matrix of class i. The regularization is done 
+by the two following successive steps (for each class i):
 * Continuum between QDA and LDA: Wi(1) = (1 - `alpha`) * Wi + `alpha` * W       
 * Ridge regularization: Wi(2) = Wi(1) + `lb` * I
-Then the QDA algorithm is run on matrices Wi(2).
+Then the QDA algorithm is run on matrices {Wi(2)}.
 
-Function `rda` is slightly different from the regularization expression 
-used by Friedman 1989 (Eq.18). It shrinks the covariance matrices Wi(2) 
-to the diagonal of the Idendity matrix (ridge regularization)
-(e.g. Guo et al. 2007).  
+Function `rda` is slightly different from the regularization 
+expression used by Friedman 1989 (Eq.18). It shrinks the 
+covariance matrices Wi(2) to the diagonal of the Idendity 
+matrix (ridge regularization; e.g. Guo et al. 2007).  
 
 Particular cases:
 * `alpha` = 1 & `lb` = 0 : LDA
 * `alpha` = 0 & `lb` = 0 : QDA
-* `alpha` = 1 & `lb` > 0 : Penalized LDA (Hstie et al 1995) with diagonal
-    regularization matrix
+* `alpha` = 1 & `lb` > 0 : Penalized LDA 
+    (Hastie et al 1995) with diagonal regularization 
+    matrix
 
 ## References
-Friedman JH. Regularized Discriminant Analysis. Journal of the American 
-Statistical Association. 1989; 84(405):165-175. 
-doi:10.1080/01621459.1989.10478752.
+Friedman JH. Regularized Discriminant Analysis. 
+Journal of the American Statistical Association. 1989; 
+84(405):165-175. doi:10.1080/01621459.1989.10478752.
 
-Guo Y, Hastie T, Tibshirani R. Regularized linear discriminant 
-analysis and its application in microarrays. Biostatistics. 
-2007; 8(1):86-100. doi:10.1093/biostatistics/kxj035.
+Guo Y, Hastie T, Tibshirani R. Regularized linear 
+discriminant analysis and its application in microarrays. 
+Biostatistics. 2007; 8(1):86-100. 
+doi:10.1093/biostatistics/kxj035.
 
-Hastie, T., Buja, A., Tibshirani, R., 1995. Penalized Discriminant Analysis. 
-The Annals of Statistics 23, 73–102.
+Hastie, T., Buja, A., Tibshirani, R., 1995. Penalized 
+Discriminant Analysis. The Annals of Statistics 23, 73–102.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, StatsBase
-
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/forages2.jld2") 
+db = joinpath(path_jdat, "data/iris.jld2")
 @load db dat
 pnames(dat)
-  
-X = dat.X 
-Y = dat.Y
-y = Y.typ
-wlst = names(X)
-wl = parse.(Float64, wlst)
-ntot = nro(X)
-
-plotsp(X, wl).f
-
-summ(Y)
-tab(y)
-tab(Y.test)
-
-s = Bool.(Y.test)
-Xtrain = rmrow(X, s)
-ytrain = rmrow(y, s)
-Xtest = X[s, :]
-ytest = y[s]
-ntrain = nro(Xtrain)
-ntest = nro(Xtest)
-(ntot = ntot, ntrain, ntest)
+@head dat.X
+X = dat.X[:, 1:4]
+y = dat.X[:, 5]
+n = nro(X)
+ntest = 30
+s = samprand(n, ntest)
+Xtrain = X[s.train, :]
+ytrain = y[s.train]
+Xtest = X[s.test, :]
+ytest = y[s.test]
+ntrain = n - ntest
+(ntot = n, ntrain, ntest)
+tab(ytrain)
+tab(ytest)
 
 alpha = .5
 lb = 1e-8
-fm = rda(Xtrain, ytrain; alpha = alpha, 
-    lb = lb, simpl = true) ;
-pnames(fm)
+mod = rda(; alpha, lb)
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
+fm.lev
+fm.ni
 
-res = Jchemo.predict(fm, Xtest)
+res = predict(mod, Xtest) ;
 pnames(res)
-res.dens
-res.posterior
-res.pred
+@head res.posterior
+@head res.pred
 errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
@@ -134,16 +131,17 @@ function rda(X, y, weights::Weight;
     res.W .*= n / (n - nlev)    # unbiased estimate
     @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(X[s, :], mweight(weights.w[s]))
+        ct[i, :] = colmean(X[s, :], 
+            mweight(weights.w[s]))
         ni[i] == 1 ? zn = n : zn = ni[i]
         res.Wi[i] .*= zn / (zn - 1)        
         @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
         @. res.Wi[i] = res.Wi[i] + par.lb * Id 
-        fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i],
-            simpl = par.simpl) 
+        fm[i] = dmnorm(; mu = ct[i, :], 
+            S = res.Wi[i], simpl = par.simpl) 
     end
-    Rda(fm, res.Wi, ct, wprior, res.theta.w, ni, 
-        lev, xscales, weights)
+    Rda(fm, res.Wi, ct, wprior, res.theta.w,
+        ni, lev, xscales, weights)
 end
 
 """
@@ -160,13 +158,16 @@ function predict(object::Rda, X)
     nlev = length(lev) 
     dens = similar(X, m, nlev)
     for i = 1:nlev
-        dens[:, i] .= vec(Jchemo.predict(object.fm[i], X).pred)
+        dens[:, i] .= vec(Jchemo.predict(object.fm[i], 
+            X).pred)
     end
     A = object.wprior' .* dens
     v = sum(A, dims = 2)
-    posterior = fscale(A', v)'                   # This could be replaced by code similar as in fscale! 
-    z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
-    pred = reshape(replacebylev2(z, lev), m, 1)
+    posterior = fscale(A', v)'  # Could be replaced by similar as in fscale! 
+    z =  mapslices(argmax, posterior; 
+        dims = 2)  # if equal, argmax takes the first
+    pred = reshape(replacebylev2(z, 
+        lev), m, 1)
     (pred = pred, dens, posterior)
 end
 
