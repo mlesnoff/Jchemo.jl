@@ -1,59 +1,70 @@
 """
-    lwplsr_s(X, Y; mreduc = :pls, 
-        nlvreduc, gamma = 1, psamp = 1, samp = :sys, 
-        metric = :eucl, h, k, nlv, 
-        tol = 1e-4, scal::Bool = false, verbose = false)
-kNN-LWPLSR after preliminary (linear or non-linear) dimension 
-    reduction (kNN-LWPLSR-S).
+    lwplsr_s(; kwargs...)
+    lwplsr_s(X, Y; kwargs...)
+kNN-LWPLSR after preliminary dimension reduction 
+    (kNN-LWPLSR-S).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `mreduc` : Type of preliminary dimension reduction. Possible values are:
-    :pca (PCA), :pls (PLS; default), :dkpls (direct Gaussian kernel PLS, see `?dkpls`).
-* `nlvreduc` : Nb. latent variables (LVs) for preliminary dimension reduction. 
-* `gamma` : Scale parameter for the Gaussian kernel when a KPLS is used 
-    for dimension reduction. See function `krbf`.
-* `psamp` : Proportion of observations sampled in {`X`, `Y`} to compute the 
-    loadings used to compute the scores of the preliminary dimension reduction.
-* `samp` : Type of sampling applied for `psamp`. Possible values are: 
-    :sys (systematic grid sampling over `rowsum(Y)`) or :rand (random sampling).
-* `metric` : Type of dissimilarity used to select the neighbors and compute
-    the weights. Possible values are :eucl (default; Euclidean distance) 
-    and :mah (Mahalanobis distance).
-* `h` : A scalar defining the shape of the weight function. Lower is h, 
-    sharper is the function. See function `wdist`.
-* `k` : The number of nearest neighbors to select for each observation to predict.
-* `nlv` : Nb. latent variables (LVs) for the models fitted on preliminary 
-    scores.
-* `tol` : For stabilization when very close neighbors.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
-    is scaled by its uncorrected standard deviation.
-    The scaling is implemented for the global (distances) and local (i.e. inside
-    each neighborhood) computations.
+Keyword arguments:
+* `mreduc` : Type of dimension reduction. Possible 
+    values are: `:pca` (PCA), `:pls` (PLS), `:dkpls` 
+    (direct Gaussian kernel PLS; see function 
+    `dkpls`, and function `krbf` for its keyword 
+    argument).
+* `nlvreduc` : Nb. latent variables (LVs) for 
+    preliminary dimension reduction. 
+* `psamp` : Proportion of observations sampled 
+    in {`X`, `Y`} to compute the loadings of the 
+    preliminary dimension reduction.
+* `msamp` : Type of sampling applied when 
+    `psamp` < 1. Possible values are: `:sys` 
+    (systematic grid sampling over `rowsum(Y)`), 
+    `:rand` (random sampling).
+* `metric` : Type of dissimilarity used to select the 
+    neighbors and to compute the weights. Possible values 
+    are: `:eucl` (Euclidean distance), `:mah` (Mahalanobis 
+    distance).
+* `h` : A scalar defining the shape of the weight 
+    function computed by function `wdist`. Lower is h, 
+    sharper is the function. See function `wdist` for 
+    details (keyword arguments `criw` and `squared` of 
+    `wdist` can also be specified here).
+* `k` : The number of nearest neighbors to select for 
+    each observation to predict.
+* `nlv` : Nb. latent variables (LVs) for the local (i.e. 
+    inside each neighborhood) models fitted on the 
+    preliminary scores.
+* `tolw` : For stabilization when very close neighbors.
 * `verbose` : If `true`, fitting information are printed.
 
-The principle is as follows. A preliminary dimension reduction (parameter `nlvreduc`) 
-of the X-data (n, p) returns a score matrix T (n, `nlv`). Then, a kNN-LWPLSR 
-is done on {T, `Y`}. This is a fast approximation of kNN-LWPLSR using the same 
-principle as in Shen et al 2019.
+The principle is as follows. A preliminary dimension 
+reduction (parameter `nlvreduc`) of the X-data (n, p) returns 
+a score matrix `T` (n, `nlvreduc`). This dimension reduction can 
+be linear (PCA, PLS) or non linear (direct kernel pls DKPLS with
+gaussian Kernel), defined in argument `mreduc`. Then, a 
+kNN-LWPLSR (function `lwplsr`) is done on {`T`, `Y`}.
+An illustration of such approach is given in Shen et al 2019.
 
-The dimension reduction can be linear (PCA, PLS) or non linear (DKPLS), defined 
-in argument `mreduc`.
+When n is too large, the reduction dimension can become too 
+costly, in particular for a kernel PLS (that requires to compute
+a matrix (n, n)). Argument `psamp` allows to sample a proportion 
+of the observations on which are computed loadings that are then 
+used to compute approximate scores `T` for the all X-data. 
 
-When n is too large, the reduction dimension can become too costly,
-in particular for a kernel PLS (that requires to compute a matrix (n, n)).
-Argument `psamp` allows to sample a proportion of the observations
-that will be used to compute (approximate) scores T for the all X-data. 
-
-Setting `nlv = nlvreduc` returns the same predicions as function `lwmlr_s`.
+If `nlv` = `nlvreduc`, the function  returns the same predicions 
+as function `lwmlr_s`.
 
 ## References
-Lesnoff, M., Metz, M., Roger, J.-M., 2020. Comparison of locally weighted PLS 
-strategies for regression and discrimination on agronomic NIR data. 
-Journal of Chemometrics, e3209. https://doi.org/10.1002/cem.3209
+Lesnoff, M., Metz, M., Roger, J.-M., 2020. Comparison 
+of locally weighted PLS strategies for regression and 
+discrimination on agronomic NIR data. Journal of Chemometrics, 
+e3209. https://doi.org/10.1002/cem.3209
 
-Shen, G., Lesnoff, M., Baeten, V., Dardenne, P., Davrieux, F., Ceballos, H., Belalcazar, J., 
-Dufour, D., Yang, Z., Han, L., Pierna, J.A.F., 2019. Local partial least squares based on global PLS scores. 
-Journal of Chemometrics 0, e3117. https://doi.org/10.1002/cem.3117
+Shen, G., Lesnoff, M., Baeten, V., Dardenne, P., Davrieux, F., 
+Ceballos, H., Belalcazar, J., Dufour, D., Yang, Z., Han, L., 
+Pierna, J.A.F., 2019. Local partial least squares based on 
+global PLS scores. Journal of Chemometrics 0, e3117. 
+https://doi.org/10.1002/cem.3117
 
 ## Examples
 ```julia
@@ -62,7 +73,6 @@ path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -73,32 +83,47 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-nlvreduc = 20 ; metric = :mah 
-h = 2 ; k = 100 ; nlv = 10
-fm = lwplsr_s(Xtrain, ytrain; nlvreduc = nlvreduc,
-    metric = metric, h = h, k = k, nlv = nlv) ;
-res = Jchemo.predict(fm, Xtest)
-rmsep(res.pred, ytest)
+mreduc = :pls 
+nlvreduc = 10
+metric = :mah 
+h = 2 ; k = 100 
+nlv = 5 
+mod = lwplsr_s(; mreduc, 
+    nlvreduc, metric, h, k,
+    nlv) ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+
+res = predict(mod, Xtest) ; 
+pnames(res) 
+res.listnn
+res.listd
+res.listw
+@head res.pred
+@show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed (Test)").f  
+    ylabel = "Observed").f    
 
-fm = lwplsr_s(Xtrain, ytrain; mreduc = :dkpls, 
-    nlvreduc = nlvreduc, gamma = .1, 
-    metric = metric, h = h, k = k, 
-    nlv = nlv) ;
-res = Jchemo.predict(fm, Xtest)
-rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
+## With non-linear dimension 
+## reduction
+mreduc = :dkpls
+nlvreduc = 10
+gamma = .01 
+psamp = .5 ; msamp = :rand
+metric = :mah
+h = 2 ; k = 100
+nlv = 5
+mod = lwmlr_s(; mreduc, 
+    nlvreduc, gamma, psamp, 
+    msamp, metric, h, k) ;
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
+@show rmsep(pred, ytest)
+plotxy(pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed (Test)").f  
-
-fm = lwplsr_s(Xtrain, ytrain; mreduc = :dkpls, 
-    nlvreduc = nlvreduc, gamma = .1, psamp = .7, samp = :rand, 
-    metric = metric, h = h, k = k,
-    nlv = nlv) ;
-res = Jchemo.predict(fm, Xtest)
-rmsep(res.pred, ytest)
+    ylabel = "Observed").f      
 ```
 """ 
 function lwplsr_s(X, Y; kwargs...)
@@ -154,12 +179,13 @@ function predict(object::LwplsrS, X; nlv = nothing)
     h = object.par.h
     k = object.par.k
     tolw = object.par.tolw
+    criw = object.par.criw
+    squared = object.par.squared
     res = getknn(object.T, T; metric, k)
     listw = copy(res.d)
     Threads.@threads for i = 1:m
-        w = wdist(res.d[i]; h, 
-            cri = object.par.criw,
-            squared = object.par.squared)
+        w = wdist(res.d[i]; h, criw,
+            squared)
         w[w .< tolw] .= tolw
         listw[i] = w
     end

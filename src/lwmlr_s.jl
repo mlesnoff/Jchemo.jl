@@ -5,6 +5,7 @@ kNN-LWMLR after preliminary dimension reduction
     (kNN-LWMLR-S).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q). 
+Keyword arguments:
 * `mreduc` : Type of dimension reduction. Possible 
     values are: `:pca` (PCA), `:pls` (PLS), `:dkpls` 
     (direct Gaussian kernel PLS; see function 
