@@ -2,7 +2,7 @@
     dfplsr_cg(X, y; kwargs...)
 Compute the model complexity (df) of PLSR models with 
     the CGLS algorithm.
-* `X` : X-data.
+* `X` : X-data (n, p).
 * `y` : Univariate Y-data.
 Keyword arguments:
 * Same as function `cglsr`.

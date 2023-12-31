@@ -3,8 +3,8 @@
         prior = :unif, alpha = 1, lb = 1e-10, 
         simpl::Bool = false, scal::Bool = false)
 Regularized discriminant analysis (RDA).
-* `X` : X-data.
-* `y` : y-data (class membership).
+* `X` : X-data (n, p).
+* `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 * `prior` : Type of prior probabilities for class membership.

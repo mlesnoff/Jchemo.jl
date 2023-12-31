@@ -2,7 +2,7 @@
     detrend(; kwargs...)
     detrend(X; kwargs...)
 De-trend transformation of each row of X-data. 
-* `X` : X-data.
+* `X` : X-data (n, p).
 Keyword arguments:
 * `degree` : Polynom degree.
 
@@ -440,7 +440,7 @@ end
     snv(X; kwargs...)
 Standard-normal-variate (SNV) transformation of each 
     row of X-data.
-* `X` : X-data.
+* `X` : X-data (n, p).
 Keyword arguments:
 * `centr` : Boolean indicating if the centering in done.
 * `scal` : Boolean indicating if the scaling in done.
@@ -505,7 +505,7 @@ end
     center()
     center(X)
 Column-wise centering of X-data.
-* `X` : X-data.
+* `X` : X-data (n, p).
 
 ## Examples
 ```julia
@@ -563,7 +563,7 @@ end
     scale()
     scale(X)
 Column-wise scaling of X-data.
-* `X` : X-data.
+* `X` : X-data (n, p).
 
 ## Examples
 ```julia 
@@ -621,7 +621,7 @@ end
     cscale()
     cscale(X)
 Column-wise centering and scaling of X-data.
-* `X` : X-data.
+* `X` : X-data (n, p).
 
 ## Examples
 ```julia

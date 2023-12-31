@@ -2,7 +2,7 @@
     plotsp(X, wl = 1:nco(X); size = (500, 300),
         color = nothing, nsamp = nothing, kwargs...)
 Plotting spectra.
-* `X` : X-data.
+* `X` : X-data (n, p).
 * `wl` : Column names of `X`. Must be numeric.
 Keyword arguments:
 * 'size' : Size (horizontal, vertical) of the figure.

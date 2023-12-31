@@ -47,6 +47,9 @@ mod = mlrda()
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
+fm = mod.fm ;
+fm.lev
+fm.ni
 
 res = predict(mod, Xtest) ;
 pnames(res)

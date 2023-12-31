@@ -1,8 +1,8 @@
 """
     rrda(X, y, weights = ones(nro(X)); lb)
 Discrimination based on ridge regression (RR-DA).
-* `X` : X-data.
-* `y` : y-data (class membership).
+* `X` : X-data (n, p).
+* `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`). 
 * `lb` : Ridge regularization parameter "lambda".

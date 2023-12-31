@@ -2,8 +2,8 @@
     plsqda(X, y, weights = ones(nro(X)); nlv, 
         alpha = 0, prior = :unif, scal::Bool = false)
 PLS-QDA (with continuum).
-* `X` : X-data.
-* `y` : y-data (class membership).
+* `X` : X-data (n, p).
+* `y` : Univariate class membership (n).
 * `weights` : Weights of the observations. 
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.

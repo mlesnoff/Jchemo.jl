@@ -126,7 +126,7 @@ end
 
 """ 
     transf(object::Dkplsr, X; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model and X-data.
+Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
@@ -151,7 +151,7 @@ end
 
 """
     predict(object::Dkplsr, X; nlv = nothing)
-Compute Y-predictions from a fitted model and X-data.
+Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 

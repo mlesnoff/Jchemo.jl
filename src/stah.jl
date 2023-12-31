@@ -1,7 +1,7 @@
 """
     stah(X, a; scal = true)
 Compute the Stahel-Donoho outlierness.
-* `X` : X-data.
+* `X` : X-data (n, p).
 * `a` : Nb. dimensions simulated for the 
     projection pursuit method.
 Keyword arguments:

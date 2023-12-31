@@ -4,7 +4,7 @@
         cost = 1., epsilon = .1,
         scal = false)
 Support vector machine for discrimination "C-SVC" (SVM-DA).
-* `X` : X-data.
+* `X` : X-data (n, p).
 * `y` : y-data (univariate).
 * `kern` : Type of kernel used to compute the Gram matrices.
     Possible values are :krbf, :kpol, :klin or "ktanh". 

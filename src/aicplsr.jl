@@ -3,7 +3,7 @@
         kwargs...)
 Compute Akaike's (AIC) and Mallows's (Cp) criteria 
     for univariate PLSR models.
-* `X` : X-data.
+* `X` : X-data (n, p).
 * `y` : Univariate Y-data.
 Keyword arguments:
 * Same as function `cglsr`.

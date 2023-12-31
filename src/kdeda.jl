@@ -2,8 +2,8 @@
     kdeda(X, y; prior = :unif, h = nothing, a = 1)
 Discriminant analysis using non-parametric kernel Gaussian 
     density estimation (KDE-DA).
-* `X` : X-data.
-* `y` : y-data (class membership).
+* `X` : X-data (n, p).
+* `y` : Univariate class membership (n).
 * `prior` : Type of prior probabilities for class membership.
     Possible values are: :unif (uniform; default), :prop (proportional).
 * `h` : See function `dmkern`.

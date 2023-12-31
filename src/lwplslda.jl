@@ -2,8 +2,8 @@
     lwplslda(X, y; nlvdis, metric, h, k, nlv, prior = :unif, 
         tol = 1e-4, scal::Bool = false, verbose = false)
 kNN-LWPLS-LDA.
-* `X` : X-data.
-* `y` : y-data (class membership).
+* `X` : X-data (n, p).
+* `y` : Univariate class membership (n).
 * `nlvdis` : Number of latent variables (LVs) to consider in the 
     global PLS used for the dimension reduction before 
     calculating the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.

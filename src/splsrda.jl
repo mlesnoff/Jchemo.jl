@@ -3,8 +3,8 @@
         msparse = :soft, delta = 0, nvar = nco(X), 
         scal::Bool = false)
 Sparse PLSR-DA.
-* `X` : X-data.
-* `y` : y-data (class membership).
+* `X` : X-data (n, p).
+* `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`). 
 * `nlv` : Nb. latent variables (LVs) to compute.

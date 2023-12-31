@@ -2,7 +2,7 @@
     dkplsrda(X, y, weights = ones(nro(X)); nlv, kern = :krbf, 
         scal::Bool = false, kwargs...)
 Discrimination based on direct kernel partial least squares regression (DKPLSR-DA).
-* `X` : X-data.
+* `X` : X-data (n, p).
 * `y` : Univariate class membership.
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`). 

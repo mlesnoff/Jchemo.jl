@@ -2,7 +2,7 @@
     krrda(X, y, weights = ones(nro(X)); lb, 
         scal = scal, kern = :krbf, kwargs...)
 Discrimination based on kernel ridge regression (KRR-DA).
-* `X` : X-data.
+* `X` : X-data (n, p).
 * `y` : Univariate class membership.
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`). 

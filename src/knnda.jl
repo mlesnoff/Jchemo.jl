@@ -1,8 +1,8 @@
 """
     knnda(X, y; nlvdis = 0, metric = :eucl, h = Inf, k = 1, tol = 1e-4)
 k-Nearest-Neighbours weighted discrimination (kNN-DA).
-* `X` : X-data.
-* `y` : y-data (class membership).
+* `X` : X-data (n, p).
+* `y` : Univariate class membership (n).
 * `nlvdis` : Number of latent variables (LVs) to consider in the 
     global PLS used for the dimension reduction before 
     calculating the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.

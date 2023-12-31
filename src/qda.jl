@@ -2,8 +2,8 @@
     qda(X, y, weights = ones(nro(X)); 
         prior = :unif, alpha = 0)
 Quadratic discriminant analysis (QDA, with continuum towards LDA).
-* `X` : X-data.
-* `y` : y-data (class membership).
+* `X` : X-data (n, p).
+* `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 * `prior` : Type of prior probabilities for class membership.

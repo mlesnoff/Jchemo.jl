@@ -2,8 +2,8 @@
     plslda(X, y, weights = ones(nro(X)); nlv, 
         prior = :unif, scal::Bool = false)
 PLS-LDA.
-* `X` : X-data.
-* `y` : y-data (class membership).
+* `X` : X-data (n, p).
+* `y` : Univariate class membership (n).
 * `weights` : Weights of the observations. 
     Internally normalized to sum to 1. 
 * `nlv` : Nb. latent variables (LVs) to compute.

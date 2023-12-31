@@ -1,66 +1,78 @@
 """
-    plsrda(X, y, weights = ones(nro(X)); nlv,
-        scal::Bool = false)
-Discrimination based on partial least squares regression (PLSR-DA).
-* `X` : X-data.
-* `y` : y-data (class membership).
+    plsrda(; kwargs...)
+    plsrda(X, y; kwargs...)
+    plsrda(X, y, weights::Weight; 
+        kwargs...)
+Discrimination based on partial least squares 
+    regression (PLSR-DA).
+* `X` : X-data (n, p).
+* `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`). 
+Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-This is the usual "PLSDA". 
-The training variable `y` (univariate class membership) is transformed
-to a dummy table (Ydummy) containing nlev columns, where nlev is the number 
-of classes present in `y`. Each column of Ydummy is a dummy (0/1) variable. 
-Then, a PLS2 is implemented on `X` and Ydummy, returning `nlv` LVs.
-Finally, a multiple linear regression (MLR) is run between the LVs and each 
-column of Ydummy, returning predictions of the dummy variables 
-(= object `posterior` returned by function `predict`). 
-These predictions can be considered as unbounded 
-estimates (i.e. eventually outside of [0, 1]) of the class membership probabilities.
-For a given observation, the final prediction is the class corresponding 
-to the dummy variable for which the probability estimate is the highest.
+This is the usual "PLSDA". The training variable `y` 
+(univariate class membership) is transformed to a dummy table 
+(Ydummy) containing nlev columns, where nlev is the number of 
+classes present in `y`. Each column of Ydummy is a dummy (0/1) 
+variable. Then, a PLSR2 (i.e. multivariate) is run on 
+{`X`, Ydummy}, returning predictions of the dummy 
+variables (= object `posterior` returned by fuction `predict`).  
+These predictions can be considered as unbounded estimates (i.e. 
+eventuall outside of [0, 1]) of the class membership probabilities. 
+For a given observation, the final prediction is the class 
+corresponding to the dummy variable for which the probability 
+estimate is the highest.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/forages2.jld2") 
+db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
 pnames(dat)
-
-X = dat.X 
-Y = dat.Y 
+X = dat.X
+Y = dat.Y
+b = nro(X) 
 s = Bool.(Y.test)
 Xtrain = rmrow(X, s)
 ytrain = rmrow(Y.typ, s)
 Xtest = X[s, :]
 ytest = Y.typ[s]
-
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+(ntot = n, ntrain, ntest)
 tab(ytrain)
 tab(ytest)
 
 nlv = 15
-fm = plsrda(Xtrain, ytrain; nlv = nlv) ;
-pnames(fm)
-typeof(fm.fm) # = PLS2 model
+mod = plsrda(; nlv) ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
+fm.lev
+fm.ni
 
-res = Jchemo.predict(fm, Xtest) ;
+@head fm.fm.T
+@head transf(mod, Xtrain)
+@head transf(mod, Xtest)
+@head transf(mod, Xtest; nlv = 3)
+
+coef(fm.fm)
+
+res = predict(mod, Xtest) ;
 pnames(res)
-res.posterior
-res.pred
+@head res.posterior
+@head res.pred
 errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
-transf(fm, Xtest)
-
-transf(fm.fm, Xtest)
-Jchemo.coef(fm.fm)
+predict(mod, Xtest; nlv = 1:2).pred
 summary(fm.fm, Xtrain)
-
-Jchemo.predict(fm, Xtest; nlv = 1:2).pred
 ```
 """
 function plsrda(X, y; kwargs...)
@@ -80,9 +92,10 @@ end
 
 """ 
     transf(object::Plsrda, X; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
+Compute latent variables (LVs = scores T) from 
+    a fitted model.
 * `object` : The fitted model.
-* `X` : Matrix (m, p) for which LVs are computed.
+* `X` : X-data (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Plsrda, X; 
@@ -95,7 +108,8 @@ end
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
-* `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
+* `nlv` : Nb. LVs, or collection of nb. LVs, 
+    to consider. 
 """ 
 function predict(object::Plsrda, X; nlv = nothing)
     X = ensure_mat(X)
@@ -109,14 +123,17 @@ function predict(object::Plsrda, X; nlv = nothing)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
     @inbounds for i = 1:le_nlv
-        zpred = predict(object.fm, X; nlv = nlv[i]).pred
+        zpred = predict(object.fm, X; 
+            nlv = nlv[i]).pred
         #if softmax
         #    @inbounds for j = 1:m
         #        zpred[j, :] .= mweight(exp.(zpred[j, :]))
         #   end
         #end
-        z =  mapslices(argmax, zpred; dims = 2)  # if equal, argmax takes the first
-        pred[i] = reshape(replacebylev2(z, object.lev), m, 1)     
+        z =  mapslices(argmax, zpred; 
+            dims = 2)  # if equal, argmax takes the first
+        pred[i] = reshape(replacebylev2(z, 
+            object.lev), m, 1)     
         posterior[i] = zpred
     end 
     if le_nlv == 1

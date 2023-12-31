@@ -199,7 +199,7 @@ end
 
 """ 
     transf(object::Mbpca, Xbl; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model and X-data.
+Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.

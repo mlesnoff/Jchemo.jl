@@ -3,8 +3,8 @@
         msparse = :soft, delta = 0, nvar = nco(X), 
         prior = :unif, h = nothing, a = 1, scal::Bool = false)
 Sparse PLS-KDE-DA.
-* `X` : X-data.
-* `y` : y-data (class membership).
+* `X` : X-data (n, p).
+* `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`). 
 * `nlv` : Nb. latent variables (LVs) to compute.
