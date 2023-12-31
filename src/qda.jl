@@ -1,60 +1,74 @@
 """
-    qda(X, y, weights = ones(nro(X)); 
-        prior = :unif, alpha = 0)
-Quadratic discriminant analysis (QDA, with continuum towards LDA).
+    qda(; kwargs...)
+    qda(X, y; kwargs...)
+    qda(X, y, weights::Weight; 
+        kwargs...)
+Quadratic discriminant analysis (QDA, with continuum 
+    towards LDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
-* `prior` : Type of prior probabilities for class membership.
-    Possible values are: :unif (uniform), :prop (proportional).
+Keyword arguments:
+* `prior` : Type of prior probabilities for class 
+    membership. Possible values are: `:unif` (uniform), 
+    `:prop` (proportional).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum
-    between QDA (`alpha = 0`; default) and LDA (`alpha = 1`).
+    between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 
-A value `alpha` > 0 shrinks the QDA separate covariances by class 
-(Wi) toward a common LDA covariance (W). This corresponds to the first
-regularization (Eqs.16) proposed by Friedman 1989.
+A value `alpha` > 0 shrinks the class-covariances by class 
+(Wi) toward a common LDA covariance (W). This corresponds to 
+the "first regularization (Eqs.16)" described in Friedman 1989.
 
 ## References
-Friedman JH. Regularized Discriminant Analysis. Journal of the American 
-Statistical Association. 1989; 84(405):165-175. 
-doi:10.1080/01621459.1989.10478752.
+Friedman JH. Regularized Discriminant Analysis. Journal 
+of the American Statistical Association. 1989; 
+84(405):165-175. doi:10.1080/01621459.1989.10478752.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, StatsBase
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/iris.jld2") 
+db = joinpath(path_jdat, "data/iris.jld2")
 @load db dat
 pnames(dat)
-summ(dat.X)
-
-X = dat.X[:, 1:4] 
+@head dat.X
+X = dat.X[:, 1:4]
 y = dat.X[:, 5]
 n = nro(X)
-
-ntrain = 120
-s = sample(1:n, ntrain; replace = false) 
-Xtrain = X[s, :]
-ytrain = y[s]
-Xtest = rmrow(X, s)
-ytest = rmrow(y, s)
-
+ntest = 30
+s = samprand(n, ntest)
+Xtrain = X[s.train, :]
+ytrain = y[s.train]
+Xtest = X[s.test, :]
+ytest = y[s.test]
+ntrain = n - ntest
+(ntot = n, ntrain, ntest)
 tab(ytrain)
 tab(ytest)
 
-prior = :unif
-#prior = :prop
-fm = qda(Xtrain, ytrain; prior = prior) ;
-pnames(fm)
+mod = qda()
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
+fm.lev
+fm.ni
 
-res = Jchemo.predict(fm, Xtest) ;
+res = predict(mod, Xtest) ;
 pnames(res)
-res.dens
-res.posterior
-res.pred
+@head res.posterior
+@head res.pred
 errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
+
+## With regularization
+mod = qda(; alpha = .5)
+#mod = qda(; alpha = 1) # = LDA
+fit!(mod, Xtrain, ytrain)
+mod.fm.Wi
+res = predict(mod, Xtest) ;
+errp(res.pred, ytest)
 ```
 """ 
 function qda(X, y; kwargs...)
@@ -89,16 +103,18 @@ function qda(X, y, weights::Weight;
     ct = similar(X, nlev, p)
     @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(X[s, :], mweight(weights.w[s]))
+        ct[i, :] = colmean(X[s, :], 
+            mweight(weights.w[s]))
         ni[i] == 1 ? zn = n : zn = ni[i]
         res.Wi[i] .*= zn / (zn - 1)
         if alpha > 0
             @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
         end
-        fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
+        fm[i] = dmnorm(; mu = ct[i, :], 
+            S = res.Wi[i]) 
     end
-    Qda(fm, res.Wi, ct, wprior, res.theta.w, ni, 
-        lev, weights)
+    Qda(fm, res.Wi, ct, wprior, res.theta.w, 
+        ni, lev, weights)
 end
 
 """

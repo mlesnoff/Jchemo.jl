@@ -1,48 +1,52 @@
 """
-    lda(X, y, weights = ones(nro(X)); 
-        prior = :unif)
-Linear discriminant analysis  (LDA).
+    lda(; kwargs...)
+    lda(X, y; kwargs...)
+    lda(X, y, weights::Weight; 
+        kwargs...)
+Linear discriminant analysis (LDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
-* `prior` : Type of prior probabilities for class membership.
-    Possible values are: :unif (uniform), :prop (proportional).
+Keyword arguments:
+* `prior` : Type of prior probabilities for class 
+    membership. Possible values are: `:unif` (uniform), 
+    `:prop` (proportional).
 
 ## Examples
 ```julia
-using JchemoData, JLD2, StatsBase
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/iris.jld2") 
+db = joinpath(path_jdat, "data/iris.jld2")
 @load db dat
 pnames(dat)
-summ(dat.X)
-
-X = dat.X[:, 1:4] 
+@head dat.X
+X = dat.X[:, 1:4]
 y = dat.X[:, 5]
 n = nro(X)
-
-ntrain = 120
-s = sample(1:n, ntrain; replace = false) 
-Xtrain = X[s, :]
-ytrain = y[s]
-Xtest = rmrow(X, s)
-ytest = rmrow(y, s)
-
+ntest = 30
+s = samprand(n, ntest)
+Xtrain = X[s.train, :]
+ytrain = y[s.train]
+Xtest = X[s.test, :]
+ytest = y[s.test]
+ntrain = n - ntest
+(ntot = n, ntrain, ntest)
 tab(ytrain)
 tab(ytest)
 
-prior = :unif
-#prior = :prop
-fm = lda(Xtrain, ytrain; prior = prior) ;
-pnames(fm)
-println(typeof(fm))
+mod = lda()
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
+fm.lev
+fm.ni
 
-res = Jchemo.predict(fm, Xtest) ;
+res = predict(mod, Xtest) ;
 pnames(res)
-res.dens
-res.posterior
-res.pred
+@head res.posterior
+@head res.pred
 errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
@@ -77,11 +81,13 @@ function lda(X, y, weights::Weight;
     ct = similar(X, nlev, p)
     @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(X[s, :], mweight(weights.w[s]))
-        fm[i] = dmnorm(; mu = ct[i, :], S = res.W) 
+        ct[i, :] = colmean(X[s, :], 
+            mweight(weights.w[s]))
+        fm[i] = dmnorm(; mu = ct[i, :], 
+            S = res.W) 
     end
-    Lda(fm, res.W, ct, wprior, res.theta.w, ni, 
-        lev, weights)
+    Lda(fm, res.W, ct, wprior, res.theta.w, 
+        ni, lev, weights)
 end
 
 """
@@ -97,13 +103,16 @@ function predict(object::Lda, X)
     nlev = length(lev) 
     dens = similar(X, m, nlev)
     for i = 1:nlev
-        dens[:, i] .= vec(Jchemo.predict(object.fm[i], X).pred)
+        dens[:, i] .= vec(predict(object.fm[i], 
+            X).pred)
     end
     A = object.wprior' .* dens
     v = sum(A, dims = 2)
-    posterior = fscale(A', v)'                    # This could be replaced by code similar as in fscale! 
-    z =  mapslices(argmax, posterior; dims = 2)   # if equal, argmax takes the first
-    pred = reshape(replacebylev2(z, lev), m, 1)
+    posterior = fscale(A', v)'  # Could be replaced by similar as in fscale! 
+    z =  mapslices(argmax, posterior; 
+        dims = 2)   # if equal, argmax takes the first
+    pred = reshape(replacebylev2(z, 
+        lev), m, 1)
     (pred = pred, dens, posterior)
 end
     
