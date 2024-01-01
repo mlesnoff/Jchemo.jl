@@ -1,6 +1,7 @@
 """
     bias(pred, Y)
-Compute the prediction bias, i.e. the opposite of the mean prediction error.
+Compute the prediction bias, i.e. the opposite 
+    of the mean prediction error.
 * `pred` : Predictions.
 * `Y` : Observed data.
 
@@ -13,12 +14,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, Ytrain)
+pred = predict(mod, Xtest).pred
 bias(pred, Ytest)
 
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
 bias(pred, ytest)
 ```
 """
@@ -29,7 +32,8 @@ end
 
 """
     cor2(pred, Y)
-Compute the squared linear correlation between data and predictions.
+Compute the squared linear correlation between 
+    data and predictions.
 * `pred` : Predictions.
 * `Y` : Observed data.
 
@@ -42,12 +46,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, Ytrain)
+pred = predict(mod, Xtest).pred
 cor2(pred, Ytest)
 
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
 cor2(pred, ytest)
 ```
 """
@@ -72,8 +78,9 @@ ytrain = rand(["a" ; "b"], 10)
 Xtest = rand(4, 5) 
 ytest = rand(["a" ; "b"], 4)
 
-fm = plsrda(Xtrain, ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plsrda(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
 errp(pred, ytest)
 ```
 """
@@ -98,12 +105,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, Ytrain)
+pred = predict(mod, Xtest).pred
 mse(pred, Ytest)
 
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
 mse(pred, ytest)
 ```
 """
@@ -130,7 +139,8 @@ end
 
 """
     msep(pred, Y)
-Compute the mean of the squared prediction errors (MSEP).
+Compute the mean of the squared prediction 
+    errors (MSEP).
 * `pred` : Predictions.
 * `Y` : Observed data.
 
@@ -143,12 +153,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, Ytrain)
+pred = predict(mod, Xtest).pred
 msep(pred, Ytest)
 
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
 msep(pred, ytest)
 ```
 """
@@ -163,11 +175,13 @@ Compute the R2 coefficient.
 * `pred` : Predictions.
 * `Y` : Observed data.
 
-The rate R2 is calculated by R2 = 1 - MSEP(current model) / MSEP(null model), 
+The rate R2 is calculated by:
+* R2 = 1 - MSEP(current model) / MSEP(null model) 
 where the "null model" is the overall mean. 
-For predictions over CV or test sets, and/or for non linear models, 
-it can be different from the square of the correlation coefficient (`cor2`) 
-between the true data and the predictions. 
+For predictions over CV or test sets, and/or for 
+non linear models, it can be different from the square 
+of the correlation coefficient (`cor2`) between the true 
+data and the predictions. 
 
 ## Examples
 ```julia
@@ -178,12 +192,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, Ytrain)
+pred = predict(mod, Xtest).pred
 r2(pred, Ytest)
 
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
 r2(pred, ytest)
 ```
 """
@@ -196,7 +212,8 @@ end
 
 """
     residcla(pred, y) 
-Compute classification prediction error (0 = no error, 1 = error).
+Compute discrimination residual error 
+    (0 = no error, 1 = error).
 * `pred` : Predictions.
 * `y` : Observed data.
 
@@ -207,8 +224,9 @@ ytrain = rand(["a" ; "b"], 10)
 Xtest = rand(4, 5) 
 ytest = rand(["a" ; "b"], 4)
 
-fm = plsrda(Xtrain, ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plsrda(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
 residcla(pred, ytest)
 ```
 """
@@ -229,12 +247,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, Ytrain)
+pred = predict(mod, Xtest).pred
 residreg(pred, Ytest)
 
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
 residreg(pred, ytest)
 ```
 """
@@ -242,8 +262,8 @@ residreg(pred, Y) = ensure_mat(Y) - pred
 
 """
     rmsep(pred, Y)
-Compute the square root of the mean of the squared prediction 
-errors (RMSEP).
+Compute the square root of the mean of the squared 
+    prediction errors (RMSEP).
 * `pred` : Predictions.
 * `Y` : Observed data.
 
@@ -256,12 +276,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, Ytrain)
+pred = predict(mod, Xtest).pred
 rmsep(pred, Ytest)
 
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
 rmsep(pred, ytest)
 ```
 """
@@ -269,12 +291,14 @@ rmsep(pred, Y) = sqrt.(msep(pred, Y))
 
 """
     rmsepstand(pred, Y)
-Compute the standardized square root of the mean of the squared 
-prediction errors (RMSEP_stand).
+Compute the standardized square root of the 
+    mean of the squared prediction errors 
+    (RMSEP_stand).
 * `pred` : Predictions.
 * `Y` : Observed data.
 
-RMSEP is standardized to `Y`: RMSEP_stand = RMSEP ./ `Y`.
+RMSEP is standardized to `Y`: 
+* RMSEP_stand = RMSEP ./ `Y`.
 
 ## Examples
 ```julia
@@ -285,12 +309,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, Ytrain)
+pred = predict(mod, Xtest).pred
 rmsepstand(pred, Ytest)
 
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
 rmsepstand(pred, ytest)
 ```
 """
@@ -301,15 +327,19 @@ end
 
 """
     rpd(pred, Y)
-Compute the ratio "deviation to model performance" (RPD).
+Compute the ratio "deviation to model performance" 
+    (RPD).
 * `pred` : Predictions.
 * `Y` : Observed data.
 
-This is the ratio of the deviation to the model performance to the deviation,
-defined by RPD = Std(Y) / RMSEP, where Std(Y) is the standard deviation. 
+This is the ratio of the deviation to the model performance 
+to the deviation, defined by:
+* RPD = Std(Y) / RMSEP
+where Std(Y) is the standard deviation. 
 
-Since Std(Y) = RMSEP(null model) where the null model is the simple average,
-this also gives RPD = RMSEP(null model) / RMSEP. 
+Since Std(Y) = RMSEP(null model) where the null model is 
+the simple average, this also gives:
+* RPD = RMSEP(null model) / RMSEP 
 
 ## Examples
 ```julia
@@ -320,12 +350,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, Ytrain)
+pred = predict(mod, Xtest).pred
 rpd(pred, Ytest)
 
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
 rpd(pred, ytest)
 ```
 """
@@ -349,12 +381,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, Ytrain)
+pred = predict(mod, Xtest).pred
 rpdr(pred, Ytest)
 
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
 rpdr(pred, ytest)
 ```
 """
@@ -369,15 +403,19 @@ end
 
 """
     sep(pred, Y)
-Compute the corrected SEP ("SEP_c"), i.e. the standard deviation of the prediction errors.
+Compute the corrected SEP ("SEP_c"), i.e. the standard 
+    deviation of the prediction errors.
 * `pred` : Predictions.
 * `Y` : Observed data.
 
 ## References
-Bellon-Maurel, V., Fernandez-Ahumada, E., Palagos, B., Roger, J.-M., McBratney, A., 2010.
-Critical review of chemometric indicators commonly used for assessing the quality of 
-the prediction of soil attributes by NIR spectroscopy. 
-TrAC Trends in Analytical Chemistry 29, 1073–1081. https://doi.org/10.1016/j.trac.2010.05.006
+Bellon-Maurel, V., Fernandez-Ahumada, E., Palagos, B., 
+Roger, J.-M., McBratney, A., 2010. Critical review of 
+chemometric indicators commonly used for assessing the 
+quality of the prediction of soil attributes by NIR 
+spectroscopy. TrAC Trends in Analytical Chemistry 29, 
+1073–1081. 
+https://doi.org/10.1016/j.trac.2010.05.006
 
 ## Examples
 ```julia
@@ -388,12 +426,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, Ytrain)
+pred = predict(mod, Xtest).pred
 sep(pred, Ytest)
 
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
 sep(pred, ytest)
 ```
 """
@@ -414,12 +454,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-fm = plskern(Xtrain, Ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, Ytrain)
+pred = predict(mod, Xtest).pred
 ssr(pred, Ytest)
 
-fm = plskern(Xtrain, ytrain; nlv = 2)
-pred = Jchemo.predict(fm, Xtest).pred
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
 ssr(pred, ytest)
 ```
 """
@@ -428,8 +470,7 @@ function ssr(pred, Y)
     reshape(sum(r.^2, dims = 1), 1, :)
 end
 
-# scores:
-# - Must return a matrix
-# - In particular for errp, create multiple dispatches Y::AbstractVector, Y::AbstractMatrix
-
-
+## scores:
+## - Must return a matrix
+## - In particular for errp, create multiple 
+## dispatches Y::AbstractVector, Y::AbstractMatrix
