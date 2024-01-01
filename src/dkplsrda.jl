@@ -94,7 +94,7 @@ Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Dkplsrda, X; nlv = nothing)
-    transf(object.fm, X; nlv = nlv)
+    transf(object.fm, X; nlv)
 end
 
 """

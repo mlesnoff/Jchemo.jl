@@ -41,7 +41,7 @@ Xbl = mblock(X, listbl)
 Xbl_new = mblock(X[1:2, :], listbl)
 
 nlv = [2; 1; 2]
-fm = soplsr(Xbl, y; nlv = nlv) ;
+fm = soplsr(Xbl, y; nlv) ;
 pnames(fm)
 fm.T
 transf(fm, Xbl_new)

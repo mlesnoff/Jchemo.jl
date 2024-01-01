@@ -104,7 +104,7 @@ Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Pcr, X; nlv = nothing)
-    transf(object.fmpca, X; nlv = nlv)
+    transf(object.fmpca, X; nlv)
 end
 
 """

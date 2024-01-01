@@ -77,7 +77,7 @@ X2val = dat.X2val
 ## information (here, D) from spaces X1 and X2
 D = X1cal - X2cal
 nlv = 2
-res = eposvd(D; nlv = nlv)
+res = eposvd(D; nlv)
 res.M # orthogonalization matrix
 res.P # detrimental directions (columns of matrix P = loadings of D)
 

@@ -135,7 +135,7 @@ function transf(object::Dkplsr, X; nlv = nothing)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; 
         values(object.kwargs)...)
-    transf(object.fm, K; nlv = nlv)
+    transf(object.fm, K; nlv)
 end
 
 """
@@ -146,7 +146,7 @@ Compute the b-coefficients of a fitted model.
    
 """ 
 function coef(object::Dkplsr; nlv = nothing)
-    coef(object.fm; nlv = nlv)
+    coef(object.fm; nlv)
 end
 
 """
@@ -164,7 +164,7 @@ function predict(object::Dkplsr, X; nlv = nothing)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; 
         object.kwargs...)
-    pred = predict(object.fm, K; nlv = nlv).pred
+    pred = predict(object.fm, K; nlv).pred
     if le_nlv == 1
         pred .= pred * Diagonal(object.yscales)
     else

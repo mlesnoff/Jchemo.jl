@@ -59,7 +59,7 @@ end
 ###### Transform
 function transf_mod(X; nlv = nothing)
     isnothing(nlv) ? transf(mod.fm, X) : 
-        transf(mod.fm, X; nlv = nlv)
+        transf(mod.fm, X; nlv)
 end
 ###### Predict 
 function predict_mod(X; 
@@ -67,7 +67,7 @@ function predict_mod(X;
     if isnothing(nlv) && isnothing(lb)
         predict(mod.fm, X)
     elseif !isnothing(nlv) 
-        predict(mod.fm, X; nlv = nlv)
+        predict(mod.fm, X; nlv)
     elseif !isnothing(lb) 
         predict(mod.fm, X; lb = lb)
     end

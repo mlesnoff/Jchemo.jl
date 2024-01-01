@@ -59,7 +59,7 @@ h = 2 ; k = 1000
 nlv = 15
 fm = lwplsqda(Xtrain, ytrain;
     nlvdis = nlvdis, metric = metric,
-    h = h, k = k, nlv = nlv) ;
+    h = h, k = k, nlv) ;
 pnames(fm)
 
 res = Jchemo.predict(fm, Xtest) ;

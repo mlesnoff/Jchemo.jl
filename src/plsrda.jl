@@ -100,7 +100,7 @@ Compute latent variables (LVs = scores T) from
 """ 
 function transf(object::Plsrda, X; 
         nlv = nothing)
-    transf(object.fm, X; nlv = nlv)
+    transf(object.fm, X; nlv)
 end
 
 """

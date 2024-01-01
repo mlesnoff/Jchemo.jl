@@ -71,7 +71,7 @@ nlv = 1:30
 pars = mpar(msparse = [:mix], nvar = [1; 5; 10; 20], 
     scal = [false])
 res = gridscore_lv(Xtrain, ytrain, Xtest, ytest; 
-    score = errp, fun = splslda, pars = pars, nlv = nlv)
+    score = errp, fun = splslda, pars = pars, nlv)
 typ = string.("nvar=", res.nvar)
 plotgrid(res.nlv, res.y1, typ; step = 2,
     xlabel = "Nb. LVs", ylabel = "ERR").f
@@ -87,7 +87,7 @@ end
 function splslda(X, y, weights::Weight; 
         kwargs...)
     par = recovkwargs(Par, kwargs)
-    @assert par.nlv >= 1 "nlv must be in >= 1"   
+    @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
     fmpls = splskern(X, res.Y, weights; 

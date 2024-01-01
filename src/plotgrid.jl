@@ -55,7 +55,7 @@ pars = mpar(nlvdis = nlvdis, metric = metric,
 nlv = 0:20
 res = gridscore(mod, Xtrain, ytrain, 
     Xtest, ytest; score = rmsep, 
-    pars, nlv = nlv)
+    pars, nlv)
 group = string.("h=", res.h, " k=", res.k)
 plotgrid(res.nlv, res.y1, group;
     xlabel = "Nb. LVs", ylabel = "RMSECV").f

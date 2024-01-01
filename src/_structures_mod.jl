@@ -55,19 +55,19 @@ end
 function transf(mod::Union{Transformer, Predictor}, 
         X; nlv = nothing)
     isnothing(nlv) ? transf(mod.fm, X) : 
-        transf(mod.fm, X; nlv = nlv)
+        transf(mod.fm, X; nlv)
 end
 ## 2 blocks
 function transf(mod::Union{Transformer, Predictor}, 
         X, Y; nlv = nothing)
     isnothing(nlv) ? transf(mod.fm, X, Y) : 
-        transf(mod.fm, X, Y; nlv = nlv)
+        transf(mod.fm, X, Y; nlv)
 end
 ## >= 2 blocks 
 function transf(mod::Union{Transformer, Predictor}, 
         Xbl::Vector{Matrix}; nlv = nothing)
     isnothing(nlv) ? transf(mod.fm, Xbl) : 
-        transf(mod.fm, Xbl; nlv = nlv)
+        transf(mod.fm, Xbl; nlv)
 end
 
 ###### Transfbl
@@ -75,13 +75,13 @@ end
 function transfbl(mod::Union{Transformer, Predictor}, 
     X, Y; nlv = nothing)
 isnothing(nlv) ? transfbl(mod.fm, X, Y) : 
-    transfbl(mod.fm, X, Y; nlv = nlv)
+    transfbl(mod.fm, X, Y; nlv)
 end
 ## >= 2 blocks 
 function transfbl(mod::Union{Transformer, Predictor}, 
     Xbl::Vector{Matrix}; nlv = nothing)
     isnothing(nlv) ? transfbl(mod.fm, Xbl) : 
-        transfbl(mod.fm, Xbl; nlv = nlv)
+        transfbl(mod.fm, Xbl; nlv)
 end
 
 ###### Predict 

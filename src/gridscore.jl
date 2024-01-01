@@ -82,7 +82,7 @@ plotxy(vec(pred), ytest; color = (:red, .5),
 ## Adding pars 
 pars = mpar(scal = [false; true])
 res = gridscore(mod, Xcal, ycal, Xval, yval; 
-    score = rmsep, pars = pars, nlv = nlv)
+    score = rmsep, pars = pars, nlv)
 typ = res.scal
 plotgrid(res.nlv, res.y1, typ; step = 2,
     xlabel = "Nb. LVs", ylabel = "RMSEP").f
@@ -140,7 +140,7 @@ nlv = 0:30
 gamma = (10).^collect(-5:1.:5)
 pars = mpar(gamma = gamma)
 res = gridscore(mod, Xcal, ycal, Xval, yval; 
-    score = rmsep, pars = pars, nlv = nlv)
+    score = rmsep, pars = pars, nlv)
 loggamma = round.(log.(10, res.gamma), digits = 1)
 plotgrid(res.nlv, res.y1, loggamma; step = 2,
     xlabel = "Nb. LVs", ylabel = "RMSEP",

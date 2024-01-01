@@ -92,7 +92,7 @@ plotxy(T[:, i], T[:, i + 1]), group;
 #### End data
 
 nlv = 10
-fm0 = pcasvd(zXtrain; nlv = nlv) ;
+fm0 = pcasvd(zXtrain; nlv) ;
 
 fm = occsd(fm0) ;
 #fm = occsd(fm0; mcut = :q, risk = .025) ;

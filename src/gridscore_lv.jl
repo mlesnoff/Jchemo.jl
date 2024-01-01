@@ -22,7 +22,7 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; fun,
     if isnothing(pars)   # e.g.: case of PLSR
         verbose ? println("-- Nb. combinations = 0.") : nothing
         fm = fun(Xtrain, Ytrain; nlv = maximum(nlv))
-        pred = Jchemo.predict(fm, X; nlv = nlv).pred
+        pred = Jchemo.predict(fm, X; nlv).pred
         le_nlv == 1 ? pred = [pred] : nothing
         res = zeros(le_nlv, q)
         @inbounds for i = 1:le_nlv
@@ -36,7 +36,7 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; fun,
             verbose ? println(Pair.(keys(pars), v)...) : nothing
             fm = fun(Xtrain, Ytrain ; 
                 nlv = maximum(nlv), Pair.(keys(pars), v)...)
-            pred = Jchemo.predict(fm, X; nlv = nlv).pred
+            pred = Jchemo.predict(fm, X; nlv).pred
             le_nlv == 1 ? pred = [pred] : nothing
             zres = zeros(le_nlv, q)
             @inbounds for i = 1:le_nlv

@@ -37,7 +37,7 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 20
-zfm = pcasvd(Xtrain; nlv = nlv) ;
+zfm = pcasvd(Xtrain; nlv) ;
 Ttrain = zfm.T 
 Ttest = transf(zfm, Xtest)
 

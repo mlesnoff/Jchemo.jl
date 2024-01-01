@@ -41,7 +41,7 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 20
-fm = plskdeda(Xtrain, ytrain; nlv = nlv) ;
+fm = plskdeda(Xtrain, ytrain; nlv) ;
 #fm = plskdeda(Xtrain, ytrain; nlv = nlv, a = .5) ;
 res = Jchemo.predict(fm, Xtest) ;
 pred = res.pred
@@ -59,7 +59,7 @@ end
 function plskdeda(X, y, weights::Weight; 
         kwargs...)
     par = recovkwargs(Par, kwargs)
-    @assert par.nlv >= 1 "nlv must be in >= 1"   
+    @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
     fmpls = plskern(X, res.Y, weights; 

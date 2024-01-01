@@ -98,10 +98,10 @@ X = rand(n, p)
 Y = rand(n, q)
 nlv = 25  # nb. PLS latent variables
 
-@time plskern(X, Y; nlv = nlv) ;
+@time plskern(X, Y; nlv) ;
 8.100469 seconds (299 allocations: 4.130 GiB, 6.58% gc time)
 
-@time plskern!(X, Y; nlv = nlv) ;
+@time plskern!(X, Y; nlv) ;
 7.232234 seconds (6.47 k allocations: 338.617 MiB, 7.39% gc time, 0.13% compilation time)
 ```
 
@@ -118,7 +118,7 @@ Xtest = rand(m, p) ; Ytest = rand(m, q)
 
 ## Model fitting
 nlv = 5 
-fm = plskern(Xtrain, Ytrain; nlv = nlv) ;
+fm = plskern(Xtrain, Ytrain; nlv) ;
 pnames(fm) # print the names of objects contained in 'fm'
 
 ## Some summary
@@ -168,7 +168,7 @@ yval = ytrain[s]
 nlv = 0:10 
 res = gridscorelv(
     Xcal, ycal, Xval, yval;
-    score = rmsep, fun = plskern, nlv = nlv) 
+    score = rmsep, fun = plskern, nlv) 
 
 ## Plot the results
 plotgrid(res.nlv, res.y1,
@@ -220,7 +220,7 @@ segm = segmts(ntrain, m; rep = rep)
 nlv = 0:10 
 rescv = gridcvlv(
     Xtrain, ytrain; segm = segm,
-    score = rmsep, fun = plskern, nlv = nlv) ;
+    score = rmsep, fun = plskern, nlv) ;
 pnames(rescv)
 res = rescv.res
 

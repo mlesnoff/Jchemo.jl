@@ -41,7 +41,7 @@ Xbl = mblock(X, listbl)
 Xbl_new = mblock(X[1:2, :], listbl)
 
 nlv = 5
-fm = rosaplsr(Xbl, y; nlv = nlv) ;
+fm = rosaplsr(Xbl, y; nlv) ;
 pnames(fm)
 fm.T
 transf(fm, Xbl_new)

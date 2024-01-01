@@ -22,7 +22,7 @@ end
 function predict(object::PlsravgUnif, X)
     nlv = object.nlv
     le_nlv = length(nlv)
-    zpred = predict(object.fm, X; nlv = nlv).pred
+    zpred = predict(object.fm, X; nlv).pred
     if(le_nlv == 1)
         pred = zpred
     else
