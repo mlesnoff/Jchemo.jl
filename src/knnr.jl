@@ -1,7 +1,7 @@
 """
     knnr(; kwargs...) 
     knnr(X, Y; kwargs...) 
-k-Nearest-Neighbours regression (KNNR).
+k-Nearest-Neighbours weighted regression (KNNR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 Keyword arguments:
@@ -25,7 +25,7 @@ Keyword arguments:
     and `Y` is scaled by its uncorrected standard deviation
     for the global dimension reduction.
 
-The general principle of the pipeline is as 
+The general principle of this function is as 
 follows (many other variants of kNNR pipelines 
 can be built):
 

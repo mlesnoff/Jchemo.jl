@@ -1,73 +1,76 @@
 """
-    knnda(X, y; nlvdis = 0, metric = :eucl, h = Inf, k = 1, tol = 1e-4)
-k-Nearest-Neighbours weighted discrimination (kNN-DA).
+    knnda(; kwargs...) 
+    knnda(X, Y; kwargs...) 
+k-Nearest-Neighbours weighted discrimination 
+    (KNN-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `nlvdis` : Number of latent variables (LVs) to consider in the 
-    global PLS used for the dimension reduction before 
-    calculating the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.
-* `metric` : Type of dissimilarity used to select the neighbors. 
-    Possible values are :eucl (default; Euclidean distance) 
-    and :mah (Mahalanobis distance).
-* `h` : A scalar defining the shape of the weight function. Lower is h, 
-    sharper is the function. See function `wdist`.
-* `k` : The number of nearest neighbors to select for each observation to predict.
-* `tol` : For stabilization when very close neighbors.
+Keyword arguments:
+* `nlvdis` : Number of latent variables (LVs) to consider 
+    in the global PLS used for the dimension reduction 
+    before computing the dissimilarities. 
+    If `nlvdis = 0`, there is no dimension reduction.
+* `metric` : Type of dissimilarity used to select the 
+    neighbors and to compute the weights. Possible values 
+    are: `:eucl` (Euclidean distance), `:mah` (Mahalanobis 
+    distance).
+* `h` : A scalar defining the shape of the weight 
+    function computed by function `wdist`. Lower is h, 
+    sharper is the function. See function `wdist` for 
+    details (keyword arguments `criw` and `squared` of 
+    `wdist` can also be specified here).
+* `k` : The number of nearest neighbors to select for 
+    each observation to predict.
+* `tolw` : For stabilization when very close neighbors.
 * `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
-    The scaling is implemented for the global (distances) computations.
+    and `Y` is scaled by its uncorrected standard deviation
+    for the global dimension reduction.
 
-For each new observation to predict:
-* i) a number of `k` nearest neighbors (= "weighting 1") is selected
-* ii) a weigthed (= "weighting 2") vote is then computed in this neighborhood 
-    to select the most frequent class. 
-
-Weightings 1 and 2 are computed from the dissimilarities between the observation 
-to predict and the training observations. Depending on argument `nlvdis`, 
-the computation is done from the raw X-data or after a dimension reduction. 
-In the last case, global PLS2 scores (LVs) are 
-computed from {`X`, Y-dummy} (where Y-dummy is the dummy table build from `y`), 
-and the dissimilarities are computed over these scores. 
-
-In general, for high dimensional X-data, using the Mahalanobis distance requires 
-preliminary dimensionality reduction of the data.
-
+This function has the same principle as function 
+`knnr`except that a discrimination is done instead of a 
+regression. A weighted vote is done over the neighborhood, 
+and the prediction corresponds to the most frequent class.
+ 
 ## Examples
 ```julia
-using JLD2
-using JchemoData
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/forages2.jld2") 
+db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
 pnames(dat)
-
-X = dat.X 
-Y = dat.Y 
+X = dat.X
+Y = dat.Y
+n = nro(X) 
 s = Bool.(Y.test)
 Xtrain = rmrow(X, s)
 ytrain = rmrow(Y.typ, s)
 Xtest = X[s, :]
 ytest = Y.typ[s]
-
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+(ntot = n, ntrain, ntest)
 tab(ytrain)
 tab(ytest)
 
 nlvdis = 25 ; metric = :mah
 h = 2 ; k = 10
-fm = knnda(Xtrain, ytrain;
-    nlvdis = nlvdis, metric = metric,
-    h = h, k = k) ;
-pnames(fm)
+mod = knnda(; nlvdis, 
+    metric, h, k) 
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
+fm.lev
+fm.ni
 
-res = Jchemo.predict(fm, Xtest) ;
-pnames(res)
-res.pred
-errp(res.pred, ytest)
-confusion(res.pred, ytest).cnt
-
+res = predict(mod, Xtest) ; 
+pnames(res) 
 res.listnn
 res.listd
 res.listw
+@head res.pred
+errp(res.pred, ytest)
+confusion(res.pred, ytest).cnt
 ```
 """ 
 function knnda(X, y; kwargs...) 
@@ -105,6 +108,8 @@ function predict(object::Knnda, X)
     h = object.par.h
     k = object.par.k
     tolw = object.par.tolw
+    criw = object.par.criw
+    squared = object.par.squared
     if isnothing(object.fm)
         if object.par.scal
             zX1 = fscale(object.X, object.xscales)
@@ -114,14 +119,13 @@ function predict(object::Knnda, X)
             res = getknn(object.X, X; metric, k)
         end
     else
-        res = getknn(object.fm.T, transf(object.fm, X); 
-           metric, k) 
+        res = getknn(object.fm.T, 
+            transf(object.fm, X); metric, k) 
     end
     listw = copy(res.d)
     @inbounds for i = 1:m
-        w = wdist(res.d[i]; h, 
-            cri = object.par.criw,
-            squared = object.par.squared)
+        w = wdist(res.d[i]; h, criw,
+            squared)
         w[w .< tolw] .= tolw
         listw[i] = w
     end
