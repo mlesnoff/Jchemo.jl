@@ -26,12 +26,12 @@ The function uses LIBSVM.jl (https://github.com/JuliaML/LIBSVM.jl)
 that is an interface to library LIBSVM (Chang & Li 2001).
 
 ## References 
-
 Julia package LIBSVM.jl: https://github.com/JuliaML/LIBSVM.jl
 
 Chang, C.-C. & Lin, C.-J. (2001). LIBSVM: a library for support 
-vector machines. Software available at http://www.csie.ntu.edu.tw/~cjlin/libsvm. 
-Detailed documentation (algorithms, formulae, ...) can be found in
+vector machines. Software available at 
+http://www.csie.ntu.edu.tw/~cjlin/libsvm. Detailed documentation 
+(algorithms, formulae, ...) can be found in
 http://www.csie.ntu.edu.tw/~cjlin/papers/libsvm.ps.gz
 
 Chih-Chung Chang and Chih-Jen Lin, LIBSVM: a library for support 
