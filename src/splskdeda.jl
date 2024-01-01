@@ -1,31 +1,38 @@
 """
-    splskdeda(X, y, weights = ones(nro(X)); nlv, 
-        msparse = :soft, delta = 0, nvar = nco(X), 
-        prior = :unif, h = nothing, a = 1, scal::Bool = false)
+    splskdeda(; kwargs...)
+    splskdeda(X, y; kwargs...)
+    splskdeda(X, y, weights::Weight; 
+        kwargs...)
 Sparse PLS-KDE-DA.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`). 
+Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `msparse`: Method used for the thresholding. Possible values
-    are :soft (default), :mix or :hard. See thereafter.
-* `delta` : Range for the thresholding (see function `soft`)
-    on the loadings standardized to their maximal absolute value.
-    Must ∈ [0, 1]. Only used if `msparse = :soft.
-* `nvar` : Nb. variables (`X`-columns) selected for each 
-    LV. Can be a single integer (same nb. variables
-    for each LV), or a vector of length `nlv`.
-    Only used if `msparse = :mix` or `msparse = :hard`. 
-* `prior` : Type of prior probabilities for class membership.
-    Possible values are: :unif (uniform; default), :prop (proportional).
+    Must be >= 1.
+* `msparse` : Method used for the sparse thresholding. 
+    Possible values are: `:soft`, `:mix`, 
+    `:hard`. See thereafter.
+* `delta` : Only used if `msparse = `:soft`. Range for the 
+    thresholding on the loadings (after they are standardized 
+    to their maximal absolute value). Must ∈ [0, 1].
+    Higher is `delta`, stronger is the thresholding. 
+* `nvar` : Only used if `msparse` = `:mix` or `:hard`.
+    Nb. variables (`X`-columns) selected for each principal
+    component (PC). Can be a single integer (i.e. same nb. 
+    of variables for each PC), or a vector of length `nlv`.   
+* `prior` : Type of prior probabilities for class 
+    membership. Possible values are: `:unif` (uniform), 
+    `:prop` (proportional).
+* Keyword arguments of function `dmkern` (bandwidth 
+    definition) can also be specified here.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-Same as function `plskdeda` (PLS-KDE-DA) except that sparse PLSR (function 
-`splskern`) is run on the Y-dummy table instead of a PLSR (function `plskern`). 
-
-See function `splskern` and `?plskdeda.
+Same as function `plskdeda` (PLS-LDA) except that 
+a sparse PLSR (function `splskern`), instead of a 
+PLSR (function `plskern`), is run on the Y-dummy table. 
 
 See function `splslda` for examples.
 """ 

@@ -3,7 +3,7 @@
     plskdeda(X, y; kwargs...)
     plskdeda(X, y, weights::Weight; 
         kwargs...)
-KDE-LDA on PLS latent variables (PLS-KDE-LDA).
+KDE-DA on PLS latent variables (PLS-KDE-LDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
