@@ -36,29 +36,30 @@ Matrix `D` can be built from many methods. For instance,
 A particular situation is the following. Assume that `D` is 
 built from some differences between matrices X1 and X2, and that 
 a bilinear model (e.g. PLSR) is fitted on the data {X1_corrected, Y}
-where X1_corrected = X1 * `M`. To predict new data X2_new with the fitted 
-model, there is no need to correct X2_new.
+where X1_corrected = X1 * `M`. To predict new data X2_new with 
+the fitted model, there is no need to correct X2_new.
 
 # References
 Andrew, A., Fearn, T., 2004. Transfer by orthogonal projection: 
-making near-infrared calibrations robust to between-instrument variation. 
-Chemometrics and Intelligent Laboratory Systems 72, 51–56. 
-https://doi.org/10.1016/j.chemolab.2004.02.004
+making near-infrared calibrations robust to between-instrument 
+variation. Chemometrics and Intelligent Laboratory Systems 72, 
+51–56. https://doi.org/10.1016/j.chemolab.2004.02.004
 
 Roger, J.-M., Chauchard, F., Bellon-Maurel, V., 2003. EPO-PLS 
 external parameter orthogonalisation of PLS application to 
-temperature-independent measurement of sugar content of intact fruits. 
-Chemometrics and Intelligent Laboratory Systems 66, 191-204. 
-https://doi.org/10.1016/S0169-7439(03)00051-0
+temperature-independent measurement of sugar content of intact 
+fruits. Chemometrics and Intelligent Laboratory Systems 66, 
+191-204. https://doi.org/10.1016/S0169-7439(03)00051-0
 
-Roger, J.-M., Boulet, J.-C., 2018. A review of orthogonal projections 
-for calibration. Journal of Chemometrics 32, e3045. 
+Roger, J.-M., Boulet, J.-C., 2018. A review of orthogonal 
+projections for calibration. Journal of Chemometrics 32, e3045. 
 https://doi.org/10.1002/cem.3045
 
-Zeaiter, M., Roger, J.M., Bellon-Maurel, V., 2006. Dynamic orthogonal 
-projection. A new method to maintain the on-line robustness of multivariate 
-calibrations. Application to NIR-based monitoring of wine fermentations. 
-Chemometrics and Intelligent Laboratory Systems, 80, 227–235. 
+Zeaiter, M., Roger, J.M., Bellon-Maurel, V., 2006. Dynamic 
+orthogonal projection. A new method to maintain the on-line 
+robustness of multivariate calibrations. Application to NIR-based 
+monitoring of wine fermentations. Chemometrics and Intelligent 
+Laboratory Systems, 80, 227–235. 
 https://doi.org/10.1016/j.chemolab.2005.06.011
 
 ## Examples
