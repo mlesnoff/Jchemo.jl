@@ -6,10 +6,11 @@ Discriminant analysis using non-parametric kernel Gaussian
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 Keyword arguments:
-* `prior` : Type of prior probabilities for class membership.
-    Possible values are: :unif (uniform; default), :prop (proportional).
-* Keyword arguments of function `dmkern` (bandwidth definition) 
-    can also be specified here.
+* `prior` : Type of prior probabilities for class 
+    membership. Possible values are: :unif (uniform; default), 
+    :prop (proportional).
+* Keyword arguments of function `dmkern` (bandwidth 
+    definition) can also be specified here.
 
 The principle is the same as functions `lda` and `qda` 
 except that densities are estimated from function `dmkern` 

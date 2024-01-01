@@ -88,7 +88,8 @@ end
 
 """ 
     transf(object::Dkplsrda, X; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
+Compute latent variables (LVs = scores T) from 
+    a fitted model.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.

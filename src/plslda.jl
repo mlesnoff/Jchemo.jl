@@ -57,12 +57,12 @@ fm = mod.fm ;
 fm.lev
 fm.ni
 
-@head fm.fm.fmpls.T
+fmpls = fm.fm.fmpls ;
+@head fmpls.T
 @head transf(mod, Xtrain)
 @head transf(mod, Xtest)
 @head transf(mod, Xtest; nlv = 3)
 
-fmpls = fm.fm.fmpls ;
 coef(fmpls)
 
 res = predict(mod, Xtest) ;

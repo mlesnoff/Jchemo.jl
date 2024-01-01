@@ -1,52 +1,76 @@
 """
-    plskdeda(X, y, weights = ones(nro(X)); nlv, 
-        prior = :unif, h = nothing, a = 1, scal::Bool = false)
+    plskdeda(; kwargs...)
+    plskdeda(X, y; kwargs...)
+    plskdeda(X, y, weights::Weight; 
+        kwargs...)
 KDE-LDA on PLS latent variables (PLS-KDE-LDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights of the observations. 
-    Internally normalized to sum to 1. 
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
+Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `prior` : Type of prior probabilities for class membership.
-    Possible values are: :unif (uniform; default), :prop (proportional).
-* `h` : See function `dmkern`.
-* `a` : See function `dmkern`.
+    Must be >= 1.
+* `prior` : Type of prior probabilities for class 
+    membership. Possible values are: `:unif` (uniform), 
+    `:prop` (proportional).
+* Keyword arguments of function `dmkern` (bandwidth 
+    definition) can also be specified here.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-The principle is the same as functions `plslda` and `plsqda` except 
-that densities are estimated from `dmkern` instead of  `dmnorm`.
-
-See examples in `?plslda` for detailed outputs.
+The principle is the same as functions `plslda` and 
+`plslda` except that densities are estimated from `dmkern` 
+instead of `dmnorm`.
 
 ## Examples
 ```julia
-using JLD2
-using JchemoData
-using JchemoData
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
 pnames(dat)
-
 X = dat.X
 Y = dat.Y
+n = nro(X) 
 s = Bool.(Y.test)
 Xtrain = rmrow(X, s)
 ytrain = rmrow(Y.typ, s)
 Xtest = X[s, :]
 ytest = Y.typ[s]
-
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+(ntot = n, ntrain, ntest)
 tab(ytrain)
 tab(ytest)
 
-nlv = 20
-fm = plskdeda(Xtrain, ytrain; nlv) ;
-#fm = plskdeda(Xtrain, ytrain; nlv = nlv, a = .5) ;
-res = Jchemo.predict(fm, Xtest) ;
-pred = res.pred
-errp(pred, ytest)
-confusion(pred, ytest).cnt
+nlv = 15
+mod = plskdeda(; nlv) 
+#mod = plskdeda(; nlv, a_kde = .5)
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
+fm.lev
+fm.ni
+
+fmpls = fm.fm.fmpls ;
+@head fmpls.T
+@head transf(mod, Xtrain)
+@head transf(mod, Xtest)
+@head transf(mod, Xtest; nlv = 3)
+
+coef(fmpls)
+
+res = predict(mod, Xtest) ;
+pnames(res)
+@head res.posterior
+@head res.pred
+errp(res.pred, ytest)
+confusion(res.pred, ytest).cnt
+
+predict(mod, Xtest; nlv = 1:2).pred
+summary(fmpls, Xtrain)
 ```
 """ 
 function plskdeda(X, y; kwargs...)
