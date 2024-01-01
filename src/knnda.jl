@@ -1,6 +1,6 @@
 """
     knnda(; kwargs...) 
-    knnda(X, Y; kwargs...) 
+    knnda(X, y; kwargs...) 
 k-Nearest-Neighbours weighted discrimination 
     (KNN-DA).
 * `X` : X-data (n, p).
