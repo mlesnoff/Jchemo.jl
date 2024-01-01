@@ -1,38 +1,43 @@
 """
-    lwplsqda(X, y; nlvdis, metric, h, k, nlv, 
-        alpha = 0, prior = :unif, tol = 1e-4, scal::Bool = false, 
-        verbose = false)
-kNN-LWPLS-QDA (with continuum).
+    lwplsqda(; kwargs...) 
+    lwplsqda(X, y; kwargs...)
+kNN-LWPLS-QDA.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `nlvdis` : Number of latent variables (LVs) to consider in the 
-    global PLS used for the dimension reduction before 
-    calculating the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.
-* `metric` : Type of dissimilarity used to select the neighbors. 
-    Possible values are :eucl (default; Euclidean distance) 
-    and :mah (Mahalanobis distance).
-* `h` : A scalar defining the shape of the weight function. Lower is h, 
-    sharper is the function. See function `wdist`.
-* `k` : The number of nearest neighbors to select for each observation to predict.
-* `nlv` : Nb. latent variables (LVs).
-* `alpha` : Scalar (∈ [0, 1]) defining the continuum
-    between QDA (`alpha = 0`; default) and LDA (`alpha = 1`).
-* `prior` : Type of prior probabilities for class membership
-    (`unif`: uniform; `prop`: proportional).
-* `tol` : For stabilization when very close neighbors.
+Keyword arguments:
+* `nlvdis` : Number of latent variables (LVs) to consider 
+    in the global PLS used for the dimension reduction 
+    before computing the dissimilarities. 
+    If `nlvdis = 0`, there is no dimension reduction.
+* `metric` : Type of dissimilarity used to select the 
+    neighbors and to compute the weights. Possible values 
+    are: `:eucl` (Euclidean distance), `:mah` (Mahalanobis 
+    distance).
+* `h` : A scalar defining the shape of the weight 
+    function computed by function `wdist`. Lower is h, 
+    sharper is the function. See function `wdist` for 
+    details (keyword arguments `criw` and `squared` of 
+    `wdist` can also be specified here).
+* `k` : The number of nearest neighbors to select for 
+    each observation to predict.
+* `tolw` : For stabilization when very close neighbors.
+* `nlv` : Nb. latent variables (LVs) for the local (i.e. 
+    inside each neighborhood) models.
 * `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
-    The scaling is implemented for the global (distances) and local (i.e. inside
-    each neighborhood) computations.
-* `verbose` : If `true`, fitting information are printed.
+    and `Y` is scaled by its uncorrected standard deviation
+    for the global dimension reduction and the local
+    models.
 
-This is the same methodology as for `lwplsr` except that 
-PLSR is replaced by PLS-QDA.
+This is the same principle as function `lwplsr` except 
+that PLS-QDA models, instead of PLSR models, are fitted 
+on the neighborhoods.
 
-The present version of the function suffers from frequent stops
-due to non positive definite matrices when doing local QDA. 
-The present recommandation is to select a sufficiant large number of neighbors.
-This will be fixed in the future.
+The present version of this function suffers from frequent 
+stops due to non positive definite matrices when doing QDA
+on neighborhoods (some classes within the neighborhood can 
+have very few ovservations). The recommandation is to select 
+a sufficiantly large number of neighbors, or/and to use a 
+regularized QDA (argument `alpha`).
 
 ## Examples
 ```julia
@@ -78,7 +83,7 @@ function lwplsqda(X, y; kwargs...)
     X = ensure_mat(X)
     y = ensure_mat(y)
     Q = eltype(X)
-    ztab = tab(y)    
+    taby = tab(y)    
     p = nco(X)
     if par.nlvdis == 0
         fm = nothing
@@ -90,8 +95,8 @@ function lwplsqda(X, y; kwargs...)
     if isnothing(fm) && par.scal
         xscales .= colstd(X)
     end
-    Lwplsqda(X, y, fm, xscales, ztab.keys, 
-        ztab.vals, kwargs, par)
+    Lwplsqda(X, y, fm, xscales, taby.keys, 
+        taby.vals, kwargs, par)
 end
 
 """
@@ -111,6 +116,8 @@ function predict(object::Lwplsqda, X; nlv = nothing)
     h = object.par.h
     k = object.par.k
     tolw = object.par.tolw
+    criw = object.par.criw
+    squared = object.par.squared
     if isnothing(object.fm)
         if object.par.scal
             zX1 = fscale(object.X, object.xscales)
@@ -126,9 +133,8 @@ function predict(object::Lwplsqda, X; nlv = nothing)
     listw = copy(res.d)
     Threads.@threads for i = 1:m
     #@inbounds for i = 1:m
-        w = wdist(res.d[i]; h, 
-            cri = object.par.criw,
-            squared = object.par.squared)
+        w = wdist(res.d[i]; h, criw,
+            squared)
         w[w .< tolw] .= tolw
         listw[i] = w
     end

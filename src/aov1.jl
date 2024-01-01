@@ -29,9 +29,9 @@ function aov1(x, Y)
     Y = ensure_mat(Y)
     Q = eltype(Y)
     n = length(x)
-    ztab = tab(x)
-    lev = ztab.keys
-    ni = ztab.vals
+    tabx = tab(x)
+    lev = tabx.keys
+    ni = tabx.vals
     nlev = length(lev)
     Xdummy = dummy(x, Q).Y
     Yc = fcenter(Y, colmean(Y))

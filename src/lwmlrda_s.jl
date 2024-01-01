@@ -76,14 +76,14 @@ function lwmlrda_s(X, y; kwargs...)
     X = ensure_mat(X)
     y = ensure_mat(y)
     n = nro(X)
-    ztab = tab(y)    
+    taby = tab(y)    
     s = 1:n
     if par.psamp < 1
         m = Int(round(par.psamp * n))
         if par.msamp == :rand
             s = sample(1:n, m; replace = false)
         elseif par.msamp == :cla
-            nlev = length(ztab.keys)
+            nlev = length(taby.keys)
             zm = Int(round(m / nlev))
             s = sampcla(y, zm).test
         end
@@ -103,7 +103,7 @@ function lwmlrda_s(X, y; kwargs...)
             scal = par.scal)
     end
     T = transf(fm, X)
-    LwmlrdaS(T, y, fm, ztab.keys, ztab.vals, 
+    LwmlrdaS(T, y, fm, taby.keys, taby.vals, 
         kwargs, par)
 end
 

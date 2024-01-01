@@ -82,7 +82,7 @@ function svmda(X, y; kwargs...)
     p = nco(X)
     y = vec(y)
     p = nco(X)
-    ztab = tab(y)
+    taby = tab(y)
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
@@ -108,7 +108,7 @@ function svmda(X, y; kwargs...)
         tolerance = 0.001,
         nt = 0,
         verbose = false) 
-    Svmda(fm, xscales, ztab.keys, ztab.vals)
+    Svmda(fm, xscales, taby.keys, taby.vals)
 end
 
 """

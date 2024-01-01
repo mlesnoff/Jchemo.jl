@@ -79,7 +79,7 @@ function knnda(X, y; kwargs...)
     y = ensure_mat(y)
     Q = eltype(X)
     p = nco(X)
-    ztab = tab(y)    # only for description
+    taby = tab(y)    # only for description
     if par.nlvdis == 0
         fm = nothing
     else
@@ -90,8 +90,8 @@ function knnda(X, y; kwargs...)
     if par.scal && isnothing(fm)
         xscales .= colstd(X)
     end
-    Knnda(X, y, fm, xscales, ztab.keys, 
-        ztab.vals, kwargs, par) 
+    Knnda(X, y, fm, xscales, taby.keys, 
+        taby.vals, kwargs, par) 
 end
 
 """

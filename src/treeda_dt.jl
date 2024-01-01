@@ -76,7 +76,7 @@ function treeda_dt(X, y::Union{Array{Int}, Array{String}};
     Q = eltype(X)
     y = vec(y)
     p = nco(X)
-    ztab = tab(y)
+    taby = tab(y)
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
@@ -94,8 +94,8 @@ function treeda_dt(X, y::Union{Array{Int}, Array{String}};
         #rng = 3
         )
     featur = collect(1:p)
-    TreedaDt(fm, xscales, featur, ztab.keys, 
-        ztab.vals, kwargs, par)
+    TreedaDt(fm, xscales, featur, taby.keys, 
+        taby.vals, kwargs, par)
 end
 
 """

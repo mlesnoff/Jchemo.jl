@@ -43,9 +43,9 @@ function sampcla(x, k::Union{Int, Vector{Int}},
         y = nothing)
     x = vec(x)
     n = length(x)
-    ztab = tab(x)
-    lev = ztab.keys
-    ni = ztab.vals
+    tabx = tab(x)
+    lev = tabx.keys
+    ni = tabx.vals
     nlev = length(lev)
     length(k) == 1 ? k = repeat([k], nlev) : nothing
     s = list(Vector{Int}, nlev)

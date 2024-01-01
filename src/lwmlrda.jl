@@ -23,8 +23,8 @@ Keyword arguments:
     for the global dimension reduction.
 
 This is the same principle as function `lwmlr` except 
-that MLR-DA models are fitted, instead of MLR models,
-are fitted on the neighborhoods.
+that MLR-DA models, instead of MLR models, are fitted 
+on the neighborhoods.
 
 ## Examples
 ```julia
@@ -73,8 +73,8 @@ function lwmlrda(X, y; kwargs...)
     par = recovkwargs(Par, kwargs)
     X = ensure_mat(X)
     y = ensure_mat(y)
-    ztab = tab(y)
-    Lwmlrda(X, y, ztab.keys, ztab.vals, 
+    taby = tab(y)
+    Lwmlrda(X, y, taby.keys, taby.vals, 
         kwargs, par) 
 end
 
