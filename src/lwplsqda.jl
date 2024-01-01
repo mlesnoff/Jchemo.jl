@@ -26,6 +26,8 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class 
     membership. Possible values are: `:unif` (uniform), 
     `:prop` (proportional).
+* `alpha` : Scalar (∈ [0, 1]) defining the continuum
+    between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation
     for the global dimension reduction and the local
@@ -44,41 +46,45 @@ regularized QDA (argument `alpha`).
 
 ## Examples
 ```julia
-using JLD2
-using JchemoData
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/forages2.jld2") 
+db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
 pnames(dat)
-
-X = dat.X 
-Y = dat.Y 
+X = dat.X
+Y = dat.Y
+n = nro(X) 
 s = Bool.(Y.test)
 Xtrain = rmrow(X, s)
 ytrain = rmrow(Y.typ, s)
 Xtest = X[s, :]
 ytest = Y.typ[s]
-
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+(ntot = n, ntrain, ntest)
 tab(ytrain)
 tab(ytest)
 
 nlvdis = 25 ; metric = :mah
-h = 2 ; k = 1000
-nlv = 15
-fm = lwplsqda(Xtrain, ytrain;
-    nlvdis = nlvdis, metric = metric,
-    h = h, k = k, nlv) ;
-pnames(fm)
+h = 1 ; k = 200
+mod = lwplsqda(; nlvdis, 
+    metric, h, k, prior = :prop,
+    alpha = .5) 
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
+fm.lev
+fm.ni
 
-res = Jchemo.predict(fm, Xtest) ;
-pnames(res)
-res.pred
-errp(res.pred, ytest)
-confusion(res.pred, ytest).cnt
-
+res = predict(mod, Xtest) ; 
+pnames(res) 
 res.listnn
 res.listd
 res.listw
+@head res.pred
+errp(res.pred, ytest)
+confusion(res.pred, ytest).cnt
 ```
 """ 
 function lwplsqda(X, y; kwargs...) 
