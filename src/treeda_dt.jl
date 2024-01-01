@@ -53,7 +53,7 @@ ntest = nro(Xtest)
 tab(ytrain)
 tab(ytest)
 
-n_subfeatures = round(p / 3) 
+n_subfeatures = p / 3 
 max_depth = 10
 mod = treeda_dt(; 
     n_subfeatures, max_depth) ;
