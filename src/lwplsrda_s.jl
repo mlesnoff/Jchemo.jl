@@ -1,66 +1,104 @@
 """
-    lwplsrda_s(X, y; mreduc = :pls, 
-        nlvreduc, gamma = 1, psamp = 1, samp = :cla, 
-        metric = :eucl, h, k, nlv, 
-        tol = 1e-4, scal::Bool = false, verbose = false)
-kNN-LWPLSR-DA after preliminary (linear or non-linear) dimension 
+    lwplsrda_s(; kwargs...) 
+    lwplsrda_s(X, y; kwargs...) 
+kNN-LWPLSR-DA after preliminary dimension 
     reduction (kNN-LWPLSR-DA-S).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership.
-* `mreduc` : Type of dimension reduction. Possible values are:
-    :pca (PCA), :pls (PLS; default), :dkpls (direct Gaussian kernel PLS).
-* `nlvreduc` : Nb. latent variables (LVs) for preliminary dimension reduction. 
-* `gamma` : Scale parameter for the Gaussian kernel when a KPLS is used 
-    for dimension reduction. See function `krbf`.
-* `psamp` : Proportion of observations sampled in `X, Y`to compute the 
-    loadings used to compute the scores.
-* `samp` : Type of sampling applied for `psamp`. Possible values are 
-    :cla (stratified random sampling over the classes in `y`; default) 
-    or :rand (random sampling). 
-* `metric` : Type of dissimilarity used to select the neighbors and compute
-    the weights. Possible values are :eucl (default; Euclidean distance) 
-    and :mah (Mahalanobis distance).
-* `h` : A scalar defining the shape of the weight function. Lower is h, 
-    sharper is the function. See function `wdist`.
-* `k` : The number of nearest neighbors to select for each observation to predict.
-* `nlv` : Nb. latent variables (LVs) for the models fitted on preliminary 
-    scores.
-* `tol` : For stabilization when very close neighbors.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
-    is scaled by its uncorrected standard deviation.
-    The scaling is implemented for the global (distances) and local (i.e. inside
-    each neighborhood) computations.
-* `verbose` : If `true`, fitting information are printed.
+* `y` : Univariate class membership (n).
+Keyword arguments:
+* `mreduc` : Type of dimension reduction. Possible 
+    values are: `:pca` (PCA), `:pls` (PLS), `:dkpls` 
+    (direct Gaussian kernel PLS; see function 
+    `dkpls`, and function `krbf` for its keyword 
+    argument).
+* `nlvreduc` : Nb. latent variables (LVs) for 
+    preliminary dimension reduction. 
+* `psamp` : Proportion of observations sampled 
+    in {`X`, `Y`} to compute the loadings of the 
+    preliminary dimension reduction.
+* `msamp` : Type of sampling applied when 
+    `psamp` < 1. Possible values are: `:sys` 
+    (systematic grid sampling over `rowsum(Y)`), 
+    `:rand` (random sampling).
+* `metric` : Type of dissimilarity used to select the 
+    neighbors and to compute the weights. Possible values 
+    are: `:eucl` (Euclidean distance), `:mah` (Mahalanobis 
+    distance).
+* `h` : A scalar defining the shape of the weight 
+    function computed by function `wdist`. Lower is h, 
+    sharper is the function. See function `wdist` for 
+    details (keyword arguments `criw` and `squared` of 
+    `wdist` can also be specified here).
+* `k` : The number of nearest neighbors to select for 
+    each observation to predict.
+* `nlv` : Nb. latent variables (LVs) for the local (i.e. 
+    inside each neighborhood) models fitted on the 
+    preliminary scores.
+* `tolw` : For stabilization when very close neighbors.
+* `scal` : Boolean. If `true`, each column of `X` 
+    and `Y` is scaled by its uncorrected standard deviation
+    for the global dimension reduction.
 
-This is the same principle as function `lwplsr_s` except that, locally, PLSR-DA models
-are fitted instead of PLSR models.
+This is the same principle as function `lwplsr_s` except 
+that PLSR-DA models, instead of PLSR models, are fitted 
+on the neighborhoods.
 
 ## Examples
 ```julia
-using JLD2
-using JchemoData
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/forages2.jld2") 
+db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
 pnames(dat)
-
-X = dat.X 
-Y = dat.Y 
+X = dat.X
+Y = dat.Y
+n = nro(X) 
 s = Bool.(Y.test)
 Xtrain = rmrow(X, s)
 ytrain = rmrow(Y.typ, s)
 Xtest = X[s, :]
 ytest = Y.typ[s]
-
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+(ntot = n, ntrain, ntest)
 tab(ytrain)
 tab(ytest)
 
-fm = lwplsrda_s(Xtrain, ytrain; mreduc = :pca, 
-    nlvreduc = 20, metric = :eucl, h = 2, 
-    k = 100, nlv = 10) ;
-pred = Jchemo.predict(fm, Xtest).pred
+mreduc = :pca ; nlvreduc = 25 ; 
+metric = :eucl
+h = 2 ; k = 200
+nlv = 5
+mod = lwplsrda_s(; mreduc, 
+    nlvreduc, metric, h, k,
+    nlv) 
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
+fm.lev
+fm.ni
+
+res = predict(mod, Xtest) ; 
+pnames(res) 
+res.listnn
+res.listd
+res.listw
+@head res.pred
+errp(res.pred, ytest)
+confusion(res.pred, ytest).cnt
+
+## With non-linear dimension 
+## reduction
+mreduc = :dkpls ; nlvreduc = 25 ;
+gamma = 1000 
+metric = :eucl
+h = 2 ; k = 200
+nlv = 5
+mod = lwmlrda_s(; mreduc, 
+    nlvreduc, gamma, metric, h, k) 
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
 errp(pred, ytest)
-confusion(pred, ytest).cnt
 ```
 """ 
 function lwplsrda_s(X, y; kwargs...) 
@@ -120,12 +158,13 @@ function predict(object::LwplsrdaS, X; nlv = nothing)
     h = object.par.h
     k = object.par.k
     tolw = object.par.tolw
+    criw = object.par.criw
+    squared = object.par.squared
     res = getknn(object.T, T; metric, k)
     listw = copy(res.d)
     Threads.@threads for i = 1:m
-        w = wdist(res.d[i]; h, 
-            cri = object.par.criw,
-            squared = object.par.squared)
+        w = wdist(res.d[i]; h, criw,
+            squared)
         w[w .< tolw] .= tolw
         listw[i] = w
     end
