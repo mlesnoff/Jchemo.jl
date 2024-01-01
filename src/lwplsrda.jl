@@ -24,7 +24,7 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) for the local (i.e. 
     inside each neighborhood) models.
 * `scal` : Boolean. If `true`, each column of `X` 
-    and `Y` is scaled by its uncorrected standard deviation
+    is scaled by its uncorrected standard deviation
     for the global dimension reduction and the local
     models.
 

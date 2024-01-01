@@ -23,8 +23,11 @@ Keyword arguments:
 * `tolw` : For stabilization when very close neighbors.
 * `nlv` : Nb. latent variables (LVs) for the local (i.e. 
     inside each neighborhood) models.
+* `prior` : Type of prior probabilities for class 
+    membership. Possible values are: `:unif` (uniform), 
+    `:prop` (proportional).
 * `scal` : Boolean. If `true`, each column of `X` 
-    and `Y` is scaled by its uncorrected standard deviation
+    is scaled by its uncorrected standard deviation
     for the global dimension reduction and the local
     models.
 
