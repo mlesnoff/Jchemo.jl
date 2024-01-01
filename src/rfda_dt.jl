@@ -1,81 +1,88 @@
 """ 
-    rfda_dt(X, yy::Union{Array{Int}, Array{String}}; 
-        n_trees = 10,
-        partial_sampling = .7,  
-        n_subfeatures = -1,
-        max_depth = -1, min_samples_leaf = 5, 
-        min_samples_split = 2, scal::Bool = false, 
-        mth = true, kwargs...)
+    rfda_dt(; kwargs...)
+    rfda_dt(X, y; kwargs...)
 Random forest discrimination with DecisionTree.jl.
-* `X` : X-data (n obs., p variables).
-* `y` : Univariate Y-data (n obs.).
+* `X` : X-data (n, p).
+* `y` : Univariate class membership (n).
+Keyword arguments:
 * `n_trees` : Nb. trees built for the forest. 
-* `partial_sampling` : Proportion of sampled observations for each tree.
-* `n_subfeatures` : Nb. variables to select at random at each split (default: -1 ==> sqrt(#variables)).
-* `max_depth` : Maximum depth of the decision trees (default: -1 ==> no maximum).
-* `min_sample_leaf` : Minimum number of samples each leaf needs to have.
-* `min_sample_split` : Minimum number of observations in needed for a split.
+* `partial_sampling` : Proportion of sampled 
+    observations for each tree.
+* `n_subfeatures` : Nb. variables to select at random 
+    at each split (default: -1 ==> sqrt(#variables)).
+* `max_depth` : Maximum depth of the decision trees 
+    (default: -1 ==> no maximum).
+* `min_sample_leaf` : Minimum number of samples 
+    each leaf needs to have.
+* `min_sample_split` : Minimum number of observations
+    in needed for a split.
+* `mth` : Boolean indicating if a multi-threading is 
+    done when new data are predicted with function `predict`.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
-* `mth` : Boolean indicating if a multi-threading is done when new data are 
-    predicted with function `predict`.
-* `kwargs` : Optional named arguments to pass in function `build_forest` 
-    of `DecisionTree.jl`.
+* Do `dump(Par(), maxdepth = 1)` to print the default 
+    values of the keyword arguments. 
 
-The function fits a random forest discrimination model using package 
-`DecisionTree.jl'.
+The function fits a random forest discrimination² model using 
+package `DecisionTree.jl'.
 
 ## References
-Breiman, L., 1996. Bagging predictors. Mach Learn 24, 123–140. 
-https://doi.org/10.1007/BF00058655
+Breiman, L., 1996. Bagging predictors. Mach Learn 24, 
+123–140. https://doi.org/10.1007/BF00058655
 
-Breiman, L., 2001. Random Forests. Machine Learning 45, 5–32. 
-https://doi.org/10.1023/A:1010933404324
+Breiman, L., 2001. Random Forests. Machine Learning 
+45, 5–32. https://doi.org/10.1023/A:1010933404324
 
 DecisionTree.jl
 https://github.com/JuliaAI/DecisionTree.jl
 
 Genuer, R., 2010. Forêts aléatoires : aspects théoriques, 
-sélection de variables et applications. PhD Thesis. Université Paris Sud - Paris XI.
+sélection de variables et applications. PhD Thesis. 
+Université Paris Sud - Paris XI.
 
-Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
-trois thèmes statistiques autour de CART en régression (These de doctorat). 
-Paris 11. http://www.theses.fr/2002PA112245
+Gey, S., 2002. Bornes de risque, détection de ruptures, 
+boosting : trois thèmes statistiques autour de CART en 
+régression (These de doctorat). Paris 11. 
+http://www.theses.fr/2002PA112245
 
 ## Examples
 ```julia
 using JchemoData, JLD2
-
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/iris.jld2") 
+db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
 pnames(dat)
-summ(dat.X)
-  
-X = dat.X[:, 1:4] 
-y = dat.X[:, 5]
-ntot, p = size(X)
-  
-ntrain = 120
-s = sample(1:n, ntrain; replace = false) 
-Xtrain = X[s, :]
-ytrain = y[s]
-Xtest = rmrow(X, s)
-ytest = rmrow(y, s)
-ntest = ntot - ntrain
-(ntot = ntot, ntrain, ntest)
-
+X = dat.X
+Y = dat.Y
+n, p = size(X) 
+s = Bool.(Y.test)
+Xtrain = rmrow(X, s)
+ytrain = rmrow(Y.typ, s)
+Xtest = X[s, :]
+ytest = Y.typ[s]
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+(ntot = n, ntrain, ntest)
 tab(ytrain)
 tab(ytest)
 
-n_subfeatures = 2 
-fm = rfda_dt(Xtrain, ytrain; n_trees = 100,
-    n_subfeatures = n_subfeatures) ;
-pnames(fm)
+n_trees = 200
+n_subfeatures = p / 3 
+max_depth = 10
+mod = rfda_dt(; n_trees, 
+    n_subfeatures, max_depth) ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
+fm.lev
+fm.ni
 
-res = Jchemo.predict(fm, Xtest)
-res.pred
-errp(res.pred, ytest) 
+res = predict(mod, Xtest) ; 
+pnames(res) 
+@head res.pred
+errp(res.pred, ytest)
+confusion(res.pred, ytest).cnt
 ```
 """ 
 ## For DA in DecisionTree.jl, 

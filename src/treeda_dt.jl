@@ -1,70 +1,74 @@
 """ 
-    treeda_dt(X, yy::Union{Array{Int}, Array{String}}; 
-        n_subfeatures = 0,
-        max_depth = -1, min_samples_leaf = 5, 
-        min_samples_split = 2, scal::Bool = false, 
-        kwargs...)
+    treeda_dt(; kwargs...)
+    treeda_dt(X, y; kwargs...)
 Discrimination tree (CART) with DecisionTree.jl.
-* `X` : X-data (n obs., p variables).
-* `y` : Univariate y-data (n obs.).
-* `n_subfeatures` : Nb. variables to select at random at each split (default: 0 ==> keep all).
-* `max_depth` : Maximum depth of the decision tree (default: -1 ==> no maximum).
-* `min_sample_leaf` : Minimum number of samples each leaf needs to have.
-* `min_sample_split` : Minimum number of observations in needed for a split.
+* `X` : X-data (n, p).
+* `y` : Univariate class membership (n).
+Keyword arguments:
+* `n_subfeatures` : Nb. variables to select at random 
+    at each split (default: 0 ==> keep all).
+* `max_depth` : Maximum depth of the 
+    decision tree (default: -1 ==> no maximum).
+* `min_sample_leaf` : Minimum number of samples 
+    each leaf needs to have.
+* `min_sample_split` : Minimum number of observations 
+    in needed for a split.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
-* `kwargs` : Optional named arguments to pass in function `build_tree` 
-    of `DecisionTree.jl`.
 
-The function fits a single discrimination tree (CART) using package 
-`DecisionTree.jl'.
+The function fits a single discrimination tree (CART) using 
+package `DecisionTree.jl'.
 
 ## References
-Breiman, L., Friedman, J. H., Olshen, R. A., and Stone, C. J. Classification
-And Regression Trees. Chapman & Hall, 1984.
+Breiman, L., Friedman, J. H., Olshen, R. A., and 
+Stone, C. J. Classification And Regression Trees. 
+Chapman & Hall, 1984.
 
 DecisionTree.jl
 https://github.com/JuliaAI/DecisionTree.jl
 
-Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
-trois thèmes statistiques autour de CART en régression (These de doctorat). 
-Paris 11. http://www.theses.fr/2002PA112245
+Gey, S., 2002. Bornes de risque, détection de ruptures, 
+boosting : trois thèmes statistiques autour de CART en
+régression (These de doctorat). Paris 11. 
+http://www.theses.fr/2002PA112245
 
 ## Examples
 ```julia
-using JLD2
-using JchemoData
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/iris.jld2") 
+db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
 pnames(dat)
-summ(dat.X)
-  
-X = dat.X[:, 1:4] 
-y = dat.X[:, 5]
-ntot, p = size(X)
-  
-ntrain = 120
-s = sample(1:n, ntrain; replace = false) 
-Xtrain = X[s, :]
-ytrain = y[s]
-Xtest = rmrow(X, s)
-ytest = rmrow(y, s)
-ntest = ntot - ntrain
-(ntot = ntot, ntrain, ntest)
-
+X = dat.X
+Y = dat.Y
+n, p = size(X) 
+s = Bool.(Y.test)
+Xtrain = rmrow(X, s)
+ytrain = rmrow(Y.typ, s)
+Xtest = X[s, :]
+ytest = Y.typ[s]
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+(ntot = n, ntrain, ntest)
 tab(ytrain)
 tab(ytest)
 
-n_subfeatures = 2 
-max_depth = 6
-fm = treeda_dt(Xtrain, ytrain;
-    n_subfeatures = n_subfeatures, max_depth = max_depth) ;
-pnames(fm)
+n_subfeatures = round(p / 3) 
+max_depth = 10
+mod = treeda_dt(; 
+    n_subfeatures, max_depth) ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
+fm.lev
+fm.ni
 
-res = Jchemo.predict(fm, Xtest)
-res.pred
-errp(res.pred, ytest) 
+res = predict(mod, Xtest) ; 
+pnames(res) 
+@head res.pred
+errp(res.pred, ytest)
+confusion(res.pred, ytest).cnt
 ```
 """ 
 ## For DA in DecisionTree.jl, 
