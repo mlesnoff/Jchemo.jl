@@ -201,6 +201,15 @@
 - **lwmlrda_s** kNN-LWMLR-DA-S
 - **lwplsrda_s** kNN-LWPLSR-DA-S
 
+### Wrappers to other packages
+
+*SVM classification -- with LIBSVM.jl*
+- **svmda** C-SVC (SVM-DA)
+
+*Classification trees -- with DecisionTree.jl*
+- **treeda_dt** Single tree
+- **rfda_dt** Random forest
+
 ### One-Class Classification (OCC)
 
 *From a PCA or PLS score space*
@@ -212,15 +221,6 @@
 *Other methods*
 - **stah** Compute Stahel-Donoho outlierness
 - **occstah** Stahel-Donoho outlierness
-
-### Wrappers to other packages
-
-*SVM classification -- with LIBSVM.jl*
-- **svmda** C-SVC (SVM-DA)
-
-*Classification trees -- with DecisionTree.jl*
-- **treeda_dt** Single tree
-- **rfda_dt** Random forest
 
 ## DISTRIBUTIONS
 
