@@ -86,7 +86,8 @@ function treeda_dt(X, y::Union{Array{Int}, Array{String}};
         xscales .= colstd(X)
         X = fscale(X, xscales)
     end
-    n_subfeatures = Int(round(par.n_subfeatures))
+    n_subfeatures = Int(
+        round(par.n_subfeatures))
     min_purity_increase = 0
     fm = build_tree(y, X,
         n_subfeatures,
