@@ -15,7 +15,95 @@ Keyword arguments:
 In this method, the outlierness `d` of a given observation
 is the Stahel-Donoho outlierness (see `?stah`).
 
-See function `occsd` for details on outputs, and examples. 
+See function `occsd` for details on outputs.
+
+## Examples
+```julia
+using JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/challenge2018.jld2") 
+@load db dat
+pnames(dat)
+X = dat.X    
+Y = dat.Y
+mod = savgol(npoint = 21, 
+    deriv = 2, degree = 3)
+fit!(mod, X) 
+Xp = transf(mod, X) 
+s = Bool.(Y.test)
+Xtrain = rmrow(Xp, s)
+Ytrain = rmrow(Y, s)
+Xtest = Xp[s, :]
+Ytest = Y[s, :]
+
+## Below, the reference class is "EEH"
+cla1 = "EHH" ; cla2 = "PEE" ; cod = "out"   # here cla2 should be detected
+#cla1 = "EHH" ; cla2 = "EHH" ; cod = "in"   # here cla2 should not be detected
+s1 = Ytrain.typ .== cla1
+s2 = Ytest.typ .== cla2
+zXtrain = Xtrain[s1, :]    
+zXtest = Xtest[s2, :] 
+ntrain = nro(zXtrain)
+ntest = nro(zXtest)
+ntot = ntrain + ntest
+(ntot = ntot, ntrain, ntest)
+ytrain = repeat(["in"], ntrain)
+ytest = repeat([cod], ntest)
+
+## Group description
+mod = pcasvd(nlv = 10) 
+fit!(mod, zXtrain) 
+Ttrain = mod.fm.T
+Ttest = transf(mod, zXtest)
+T = vcat(Ttrain, Ttest)
+group = vcat(repeat(["1"], ntrain), 
+    repeat(["2"], ntest))
+i = 1
+plotxy(T[:, i], T[:, i + 1], group;
+    leg_title = "Class", 
+    xlabel = string("PC", i), 
+    ylabel = string("PC", i + 1)).f
+
+#### Occ
+## Preliminary dimension 
+## Not required but often more 
+## efficient
+nlv = 50
+mod = pcasvd(; nlv) ;
+fit!(mod, zXtrain)
+Ttrain = mod.fm.T
+Ttest = transf(mod, zXtest)
+## Outlierness
+mod = occstah(; nlv,
+    scal = true)
+fit!(mod, Ttrain) 
+pnames(mod) 
+pnames(mod.fm) 
+@head d = mod.fm.d
+d = d.dstand
+f, ax = plotxy(1:length(d), d; 
+    size = (500, 300), xlabel = "Obs. index", 
+    ylabel = "Standardized distance")
+hlines!(ax, 1; linestyle = :dot)
+f
+
+res = predict(mod, Ttest) ;
+pnames(res)
+@head res.d
+@head res.pred
+tab(res.pred)
+errp(res.pred, ytest)
+confusion(res.pred, ytest).cnt
+d1 = mod.fm.d.dstand
+d2 = res.d.dstand
+d = vcat(d1, d2)
+f, ax = plotxy(1:length(d), d, group; 
+    size = (500, 300), leg_title = "Class", 
+    xlabel = "Obs. index", 
+    ylabel = "Standardized distance")
+hlines!(ax, 1; linestyle = :dot)
+f
+```
 """ 
 function occstah(X; kwargs...) 
     par = recovkwargs(Par, kwargs) 

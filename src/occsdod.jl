@@ -1,6 +1,6 @@
 """
     occsdod(; kwargs...)
-    occsdod(object; kwargs...)
+    occsdod(object, X; kwargs...)
 One-class classification using a compromise between 
     PCA/PLS score (SD) and orthogonal (OD) distances.
 * `object` : The preliminary model "fm" (e.g. PCA) that 
