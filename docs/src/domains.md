@@ -55,7 +55,6 @@
 
 *Utilities*
 - **mblock** Make blocks from a matrix
-- **fblockscal_col, _frob, _mfa, _sd** Scale blocks
 - **rd** Redundancy coefficients between two matrices
 - **lg** Lg coefficient
 - **rv** RV correlation coefficient
@@ -106,13 +105,16 @@
 - **plsravg** PLSR-AVG
 
 *Non linear*
-- **kplsr** Non linear kernel (KPLSR) *Rosipal & Trejo 2001*
-- **dkplsr** Direct non linear kernel (DKPLSR) *Bennett & Embrechts 2003*
+- **kplsr** Non linear kernel (KPLSR) 
+    *Rosipal & Trejo 2001*
+- **dkplsr** Direct non linear kernel (DKPLSR) 
+    *Bennett & Embrechts 2003*
 
 *Multiblock*
 - **mbplsr** Multiblock PLSR (MBPLSR) - Fast version (PLSR 
     on concatenated blocks)
-- **mbplswest** MBPLSR - Nipals algorithm *Westerhuis et al. 1998* 
+- **mbplswest** MBPLSR - Nipals algorithm 
+    *Westerhuis et al. 1998* 
 - **rosaplsr** ROSA *Liland et al. 2016*
 - **soplsr** Sequentially orthogonalized (SO-PLSR) 
 
@@ -155,7 +157,8 @@
 
 *Linear*
 - **mlrda** MLR prediction (MLR-DA)
-- **plsrda** PLSR prediction (PLSR-DA), *aka* usual PLSDA
+- **plsrda** PLSR prediction (PLSR-DA), 
+    *aka* usual PLSDA
 - **rrda** RR prediction (RR-DA)
 
 *Sparse*
@@ -340,8 +343,6 @@
 
 - **aggstat** Compute column-wise statistics by group 
     in a dataset
-- **fcenter**, **fscale**, **fcscale** Column-wise centering 
-    and scaling of a matrix
 - **colmad**, **colmean**, **colnorm**, **colstd**, 
     **colsum**, **colvar**  Column-wise operations
 - **colmeanskip**, **colstdskip**, **colsumskip**, 
@@ -353,6 +354,9 @@
 - **dummy** Build dummy table
 - **euclsq**, **mahsq**, **mahsqchol** Distances 
     (Euclidean, Mahalanobis) between rows of matrices
+- **fblockscal_col, _frob, _mfa, _sd** Scale blocks
+- **fcenter**, **fscale**, **fcscale** Column-wise centering 
+    and scaling of a matrix
 - **findmax_cla** Find the most occurent level in 
     a categorical variable
 - **frob** Frobenius norm of a matrix
