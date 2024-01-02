@@ -1,5 +1,4 @@
 ######-------- Fit
-## Transformers
 function fit!(mod::Jchemo.Transformer, X)
     kwargs = values(mod.kwargs)
     mod.fm = mod.fun(X; kwargs...)
@@ -10,20 +9,7 @@ function fit!(mod::Jchemo.Transformer, X,
     kwargs = values(mod.kwargs)
     mod.fm = mod.fun(X, weights; kwargs...)
     return
-end
-## Transformers 2 blocks
-function fit!(mod::Jchemo.Transformer, X, Y)
-    kwargs = values(mod.kwargs)
-    mod.fm = mod.fun(X, Y; kwargs...)
-    return
 end  
-function fit!(mod::Jchemo.Transformer, X, Y, 
-        weights::Weight)
-    kwargs = values(mod.kwargs)
-    mod.fm = mod.fun(X, Y, weights; kwargs...)
-    return
-end  
-## Predictors
 function fit!(mod::Jchemo.Predictor, X, Y)
     kwargs = values(mod.kwargs)
     mod.fm = mod.fun(X, Y; kwargs...)
@@ -40,6 +26,32 @@ function fit!(mod::PredictorNoY, X)
     mod.fm = mod.fun(X; kwargs...)
     return
 end   
+## Transformers 2 blocks
+function fit!(mod::Jchemo.Transformer, X, Y)
+    kwargs = values(mod.kwargs)
+    mod.fm = mod.fun(X, Y; kwargs...)
+    return
+end  
+function fit!(mod::Jchemo.Transformer, X, Y, 
+        weights::Weight)
+    kwargs = values(mod.kwargs)
+    mod.fm = mod.fun(X, Y, weights; kwargs...)
+    return
+end  
+## >= 2 blocks 
+#function fit!(mod::Jchemo.Transformer, 
+#        Xbl::Vector{Matrix})
+#    @show 22 
+#    kwargs = values(mod.kwargs)
+#    mod.fm = mod.fun(Xbl; kwargs...)
+#    return
+#end  
+#function fit!(mod::Jchemo.Transformer, 
+#        Xbl::Vector{Matrix}, weights::Weight)
+#    kwargs = values(mod.kwargs)
+#    mod.fm = mod.fun(Xbl, weights; kwargs...)
+#    return
+#end  
 
 ######-------- Transf
 function transf(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, 
@@ -53,18 +65,26 @@ function transf(mod::Union{Jchemo.Transformer, Jchemo.Predictor},
     isnothing(nlv) ? transf(mod.fm, X, Y) : 
         transf(mod.fm, X, Y; nlv)
 end
+## Xbl 
+function transf(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, 
+        Xbl::Vector{Matrix}; nlv = nothing)
+    isnothing(nlv) ? transf(mod.fm, Xbl) : 
+        transf(mod.fm, Xbl; nlv)
+end
 
 ######-------- Transfbl
-function transfbl(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, 
-        X; nlv = nothing)
-    isnothing(nlv) ? transfbl(mod.fm, X) : 
-        transfbl(mod.fm, X; nlv)
-end
 ## X, Y
 function transfbl(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, 
         X, Y; nlv = nothing)
     isnothing(nlv) ? transfbl(mod.fm, X, Y) : 
     transfbl(mod.fm, X, Y; nlv)
+end
+## Xbl 
+function transfbl(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, 
+        Xbl::Vector{Matrix}; nlv = nothing)
+    @show 22
+    isnothing(nlv) ? transfbl(mod.fm, Xbl) : 
+        transfbl(mod.fm, Xbl; nlv)
 end
 
 ###### Predict 

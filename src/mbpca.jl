@@ -1,86 +1,105 @@
 """
-    mbpca(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = :none, tol = sqrt(eps(1.)), maxit = 200,
-        scal::Bool = false)
-    mbpca!(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = :none, tol = sqrt(eps(1.)), maxit = 200,
-        scal::Bool = false)
+    mbpca(; kwargs...)
+    mbpca(Xbl; kwargs...)
+    mbpca(Xbl, weights::Weight; kwargs...)
+    mbpca!(Xbl::Matrix, weights::Weight; 
+        kwargs...)
 Consensus principal components analysis (CPCA = MBPCA).
-* `Xbl` : List (vector) of blocks (matrices) of X-data. 
-    Each component of the list is a block.
+* `Xbl` : List of blocks (vector of matrices) of X-data. 
+    Typically, output of function `mblock`.  
 * `weights` : Weights of the observations (rows). 
     Internally normalized to sum to 1. 
+Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-* `bscal` : Type of block scaling (`:none`, `:frob`, `:mfa`). 
-    See functions `fblockscal`.
-* `tol` : Tolerance value for convergence.
-* `maxit` : Maximum number of iterations.
+* `bscal` : Type of block scaling. Possible values are:
+    `:none`, `:frob`, `:mfa`. See functions `fblockscal`.
+* `tol` : Tolerance value for Nipals convergence.
+* `maxit` : Maximum number of Nipals iterations.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-The global scores are equal to the scores of the PCA of 
-the horizontal concatenation X = [X1 X2 ... Xk].
+The MBPCA global scores are equal to the scores of the PCA 
+of the horizontal concatenation X = [X1 X2 ... Xk].
 
 The function returns several objects, in particular:
 * `T` : The non normed global scores.
 * `U` : The normed global scores.
 * `W` : The global loadings.
-* `Tbl` : The block scores (grouped by blocks, in the original fscale).
-* `Tb` : The block scores (grouped by LV, in the metric fscale).
+* `Tbl` : The block scores (grouped by blocks, in 
+    original fscale).
+* `Tb` : The block scores (grouped by LV, in 
+    the metric fscale).
 * `Wbl` : The block loadings.
 * `lb` : The specific weights "lambda".
-* `mu` : The sum of the specific weights (= eigen value of the global PCA).
+* `mu` : The sum of the specific weights (= eigen value
+    of the global PCA).
 
 Function `summary` returns: 
-* `explvarx` : Proportion of the total inertia of X (sum of the squared norms of the 
+* `explvarx` : Proportion of the total inertia of X 
+    (sum of the squared norms of the 
     blocks) explained by each global score.
-* `contr_block` : Contribution of each block to the global scores 
-* `explX` : Proportion of the inertia of the blocks explained by each global score.
-* `corx2t` : Correlation between the global scores and the original variables.  
-* `cortb2t` : Correlation between the global scores and the block scores.
+* `contr_block` : Contribution of each block 
+    to the global scores. 
+* `explX` : Proportion of the inertia of the blocks 
+    explained by each global score.
+* `corx2t` : Correlation between the global scores 
+    and the original variables.  
+* `cortb2t` : Correlation between the global scores 
+    and the block scores.
 * `rv` : RV coefficient. 
 * `lg` : Lg coefficient. 
 
 ## References
-Mangamana, E.T., Cariou, V., Vigneau, E., Glèlè Kakaï, R.L., Qannari, E.M., 2019. 
-Unsupervised multiblock data analysis: A unified approach and extensions. Chemometrics and 
-Intelligent Laboratory Systems 194, 103856. https://doi.org/10.1016/j.chemolab.2019.103856
+Mangamana, E.T., Cariou, V., Vigneau, E., Glèlè Kakaï, R.L., 
+Qannari, E.M., 2019. Unsupervised multiblock data 
+analysis: A unified approach and extensions. Chemometrics and 
+Intelligent Laboratory Systems 194, 103856. 
+https://doi.org/10.1016/j.chemolab.2019.103856
 
-Westerhuis, J.A., Kourti, T., MacGregor, J.F., 1998. Analysis of multiblock and hierarchical 
-PCA and PLS models. Journal of Chemometrics 12, 301–321. 
+Westerhuis, J.A., Kourti, T., MacGregor, J.F., 1998. Analysis 
+of multiblock and hierarchical PCA and PLS models. Journal 
+of Chemometrics 12, 301–321. 
 https://doi.org/10.1002/(SICI)1099-128X(199809/10)12:5<301::AID-CEM515>3.0.CO;2-S
 
 ## Examples
 ```julia
-using JLD2
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/ham.jld2") 
+using JchemoData, JLD2
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "ham.jld2") 
 @load db dat
 pnames(dat) 
-
 X = dat.X
 group = dat.group
 listbl = [1:11, 12:19, 20:25]
-Xbl = mblock(X, listbl)
-# "New" = first two rows of Xbl 
-Xbl_new = mblock(X[1:2, :], listbl)
+Xbl = mblock(X[1:6, :], listbl)
+Xbl_new = mblock(X[7:8, :], listbl)
+n = nro(Xbl[1]) 
 
+nlv = 3
 bscal = :frob
-fm = mbpca(Xbl; nlv = 4, bscal = bscal) ;
-fm.U
-fm.T
-transf(fm, Xbl).T
-transf(fm, Xbl_new).T 
+scal = false
+#scal = true
+mod = mbpca(; nlv, 
+    bscal, scal)
+fit!(mod, Xbl)
+pnames(mod) 
+pnames(mod.fm)
+## Global scores 
+@head mod.fm.T
+@head transf(mod, Xbl)
+transf(mod, Xbl_new)
+## Blocks scores
+i = 1
+@head mod.fm.Tb[i]
+@head transfbl(mod.fm, Xbl)[i]
 
-res = summary(fm, Xbl) ;
-fm.lb
-rowsum(fm.lb)
-fm.mu
+res = summary(mod, Xbl) ;
+pnames(res) 
 res.explvarx
-res.explX # = fm.lb if bscal = :frob
-rowsum(Matrix(res.explX))
 res.contr_block
+res.explX   # = mod.fm.lb if bscal = :frob
+rowsum(Matrix(res.explX))
 res.corx2t 
 res.cortb2t
 res.rv
@@ -93,7 +112,8 @@ function mbpca(Xbl; kwargs...)
     mbpca(Xbl, weights; kwargs...)
 end
 
-function mbpca(Xbl, weights::Weight; kwargs...)
+function mbpca(Xbl, weights::Weight; 
+        kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
@@ -121,7 +141,8 @@ function mbpca!(Xbl::Vector, weights::Weight;
         xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
-            Xbl[k] = fcscale(Xbl[k], xmeans[k], xscales[k])
+            Xbl[k] = fcscale(Xbl[k], 
+                xmeans[k], xscales[k])
         else
             Xbl[k] = fcenter(Xbl[k], xmeans[k])
         end
@@ -198,21 +219,31 @@ function mbpca!(Xbl::Vector, weights::Weight;
 end
 
 """ 
-    transf(object::Mbpca, Xbl; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model.
+    transf(object::Mbpca, Xbl; 
+        nlv = nothing)
+    transfbl(object::Mbpca, Xbl; 
+        nlv = nothing)
+Compute latent variables (LVs = scores T) from 
+    a fitted model.
 * `object` : The fitted model.
-* `Xbl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
+* `Xbl` : A list of blocks (vector of matrices) 
+    of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transf(object::Mbpca, Xbl; nlv = nothing)
+function transf(object::Mbpca, Xbl; 
+        nlv = nothing)
     transf_all(object, Xbl; nlv).T
 end
 
-function transfbl(object::Mbpca, Xbl; nlv = nothing)
+function transfbl(object::Mbpca, Xbl; 
+        nlv = nothing)
     transf_all(object, Xbl; nlv).Tbl
 end
 
-function transf_all(object::Mbpca, Xbl; nlv = nothing)
+## Working function for transf 
+## and transfbl 
+function transf_all(object::Mbpca, Xbl; 
+        nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
@@ -220,8 +251,8 @@ function transf_all(object::Mbpca, Xbl; nlv = nothing)
     m = size(Xbl[1], 1)
     zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], 
-            object.xscales[k])
+        zXbl[k] = fcscale(Xbl[k], 
+            object.xmeans[k], object.xscales[k])
     end
     zXbl = fblockscal(zXbl, object.bscales).Xbl
     U = similar(zXbl[1], m, nlv)
@@ -268,7 +299,7 @@ function Base.summary(object::Mbpca, Xbl)
         zXbl[k] .= sqrtw .* zXbl[k]
     end
     X = reduce(hcat, zXbl)
-    # Explained_X
+    ## Explained_X
     sstot = zeros(Q, nbl)
     @inbounds for k = 1:nbl
         sstot[k] = ssq(zXbl[k])
@@ -276,30 +307,35 @@ function Base.summary(object::Mbpca, Xbl)
     tt = colsum(object.lb)    
     pvar = tt / sum(sstot)
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, 
-        cumpvar = cumpvar)
-    # Contribution of the blocks to global scores = lb proportions (contrib)
+    explvarx = DataFrame(lv = 1:nlv, var = tt, 
+        pvar = pvar, cumpvar = cumpvar)
+    ## Contribution of the blocks to global 
+    ## scores = lb proportions (contrib)
     z = fscale(object.lb, colsum(object.lb))
     contr_block = DataFrame(z, string.("lv", 1:nlv))
-    # Proportion of inertia explained for each block (explained.X)
-    # = object.lb if bscal = :frob 
+    ## Proportion of inertia explained for 
+    ## each block (explained.X)
+    ## = object.lb if bscal = :frob 
     z = fscale((object.lb)', sstot)'
     explX = DataFrame(z, string.("lv", 1:nlv))
-    # Correlation between the original variables and the global scores (globalcor)
+    ## Correlation between the original variables 
+    ## and the global scores (globalcor)
     z = cor(X, object.U)  
     corx2t = DataFrame(z, string.("lv", 1:nlv))  
-    # Correlation between the block scores and the global scores (cor.g.b)
+    ## Correlation between the block scores 
+    ## and the global scores (cor.g.b)
     z = list(Matrix{Q}, nlv)
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], object.U[:, a])
     end
-    cortb2t = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
-    # RV 
+    cortb2t = DataFrame(reduce(hcat, z), 
+        string.("lv", 1:nlv))
+    ## RV 
     X = vcat(zXbl, [sqrtw .* object.T])
     nam = [string.("block", 1:nbl) ; "T"]
     res = rv(X)
     zrv = DataFrame(res, nam)
-    # Lg
+    ## Lg
     res = lg(X)
     zlg = DataFrame(res, nam)
     (explvarx = explvarx, contr_block, explX, 

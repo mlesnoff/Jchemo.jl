@@ -1,11 +1,10 @@
 """
-    comdim(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = :none, tol = sqrt(eps(1.)), maxit = 200,
-        scal::Bool = false)
-    comdim!(Xbl, weights = ones(nro(Xbl[1])); nlv,
-        bscal = :none, tol = sqrt(eps(1.)), maxit = 200,
-        scal::Bool = false)
-Common components and specific weights analysis (ComDim = CCSWA).
+    comdim(; kwargs...)
+    comdim(Xbl; kwargs...)
+    comdim(Xbl, weights::Weight; kwargs...)
+    comdim!(Xbl::Matrix, weights::Weight; 
+        kwargs...)
+Common components and specific weights analysis (ComDim, *aka* CCSWA).
 * `Xbl` : List (vector) of blocks (matrices) of X-data. 
     Each component of the list is a block.
 * `weights` : Weights of the observations (rows). 
@@ -32,77 +31,94 @@ The function returns several objects, in particular:
 * `mu` : The sum of the squared saliences.
 
 Function `summary` returns: 
-* `explvarx` : Proportion of the X total inertia (sum of the squared norms of the 
+* `explvarx` : Proportion of the total inertia of X 
+    (sum of the squared norms of the 
     blocks) explained by each global score.
-* `explvarxx` : Proportion of the XX' total inertia (sum of the squared norms of the
-    products X_k * X_k') explained by each global score 
-    (= indicator "V" in Qannari et al. 2000, Hanafi et al. 2008).
+* `explvarxx` : Proportion of the XX' total inertia 
+    (sum of the squared norms of the products X_k * X_k') 
+    explained by each global score (= indicator "V" in Qannari 
+    et al. 2000, Hanafi et al. 2008).
 * `sal2` : Proportion of the squared saliences
     of each block within each global score. 
-* `contr_block` : Contribution of each block to the global scores 
-    (= proportions of the saliences "lambda" within each score)
-* `explX` : Proportion of the inertia of the blocks explained by each global score.
-* `corx2t` : Correlation between the global scores and the original variables.  
-* `cortb2t` : Correlation between the global scores and the block scores.
+* `contr_block` : Contribution of each block 
+    to the global scores (= proportions of the saliences 
+    "lambda" within each score).
+    * `explX` : Proportion of the inertia of the blocks 
+    explained by each global score.
+* `corx2t` : Correlation between the global scores 
+    and the original variables.  
+* `cortb2t` : Correlation between the global scores 
+    and the block scores.
 * `rv` : RV coefficient. 
 * `lg` : Lg coefficient. 
 
 ## References
-Cariou, V., Qannari, E.M., Rutledge, D.N., Vigneau, E., 2018. ComDim: From multiblock data 
-analysis to path modeling. Food Quality and Preference, Sensometrics 2016: 
-Sensometrics-by-the-Sea 67, 27–34. https://doi.org/10.1016/j.foodqual.2017.02.012
+Cariou, V., Qannari, E.M., Rutledge, D.N., Vigneau, E., 2018. 
+ComDim: From multiblock data analysis to path modeling. Food 
+Quality and Preference, Sensometrics 2016: Sensometrics-by-the-Sea 
+67, 27–34. https://doi.org/10.1016/j.foodqual.2017.02.012
 
-Cariou, V., Jouan-Rimbaud Bouveresse, D., Qannari, E.M., Rutledge, D.N., 2019. 
-Chapter 7 - ComDim Methods for the Analysis of Multiblock Data in a Data Fusion 
-Perspective, in: Cocchi, M. (Ed.), Data Handling in Science and Technology, 
+Cariou, V., Jouan-Rimbaud Bouveresse, D., Qannari, E.M., 
+Rutledge, D.N., 2019. Chapter 7 - ComDim Methods for the Analysis 
+of Multiblock Data in a Data Fusion Perspective, in: Cocchi, M. (Ed.), 
+Data Handling in Science and Technology, 
 Data Fusion Methodology and Applications. Elsevier, pp. 179–204. 
 https://doi.org/10.1016/B978-0-444-63984-4.00007-7
 
-Ghaziri, A.E., Cariou, V., Rutledge, D.N., Qannari, E.M., 2016. Analysis of multiblock 
-datasets using ComDim: Overview and extension to the analysis of (K + 1) datasets. 
-Journal of Chemometrics 30, 420–429. https://doi.org/10.1002/cem.2810
+Ghaziri, A.E., Cariou, V., Rutledge, D.N., Qannari, E.M., 2016. 
+Analysis of multiblock datasets using ComDim: Overview and extension 
+to the analysis of (K + 1) datasets. Journal of Chemometrics 30, 
+420–429. https://doi.org/10.1002/cem.2810
 
-Hanafi, M., 2008. Nouvelles propriétés de l’analyse en composantes communes et 
-poids spécifiques. Journal de la société française de statistique 149, 75–97.
+Hanafi, M., 2008. Nouvelles propriétés de l’analyse en composantes 
+communes et poids spécifiques. Journal de la société française 
+de statistique 149, 75–97.
 
-Qannari, E.M., Wakeling, I., Courcoux, P., MacFie, H.J.H., 2000. Defining the underlying 
-sensory dimensions. Food Quality and Preference 11, 151–154. 
+Qannari, E.M., Wakeling, I., Courcoux, P., MacFie, H.J.H., 2000. 
+Defining the underlying sensory dimensions. Food Quality and 
+Preference 11, 151–154. 
 https://doi.org/10.1016/S0950-3293(99)00069-5
 
 ## Examples
 ```julia
-using JLD2
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/ham.jld2") 
+using JchemoData, JLD2
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "ham.jld2") 
 @load db dat
 pnames(dat) 
-
 X = dat.X
 group = dat.group
 listbl = [1:11, 12:19, 20:25]
-Xbl = mblock(X, listbl)
-# "New" = first two rows of Xbl 
-Xbl_new = mblock(X[1:2, :], listbl)
+Xbl = mblock(X[1:6, :], listbl)
+Xbl_new = mblock(X[7:8, :], listbl)
+n = nro(Xbl[1]) 
 
-bscal = :none
-#bscal = :frob
-fm = comdim(Xbl; nlv = 4, bscal = bscal) ;
-fm.U
-fm.T
-transf(fm, Xbl)
-transf(fm, Xbl_new) 
+nlv = 3
+bscal = :frob
+scal = false
+#scal = true
+mod = comdim(; nlv, 
+    bscal, scal)
+fit!(mod, Xbl)
+pnames(mod) 
+pnames(mod.fm)
+## Global scores 
+@head mod.fm.T
+@head transf(mod, Xbl)
+transf(mod, Xbl_new)
+## Blocks scores
+i = 1
+@head mod.fm.Tb[i]
+@head transfbl(mod.fm, Xbl)[i]
 
-res = summary(fm, Xbl) ;
-fm.lb
-rowsum(fm.lb)
-fm.mu
+res = summary(mod, Xbl) ;
+pnames(res) 
 res.explvarx
 res.explvarxx
-res.explX # = fm.lb if bscal = :frob
-rowsum(Matrix(res.explX))
+res.sal2 
 res.contr_block
-res.sal2
-colsum(Matrix(res.sal2))
+res.explX   # = mod.fm.lb if bscal = :frob
+rowsum(Matrix(res.explX))
 res.corx2t 
 res.cortb2t
 res.rv
