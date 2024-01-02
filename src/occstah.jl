@@ -1,17 +1,16 @@
 """
-    occstah(X; a = 2000, mcut = :mad, cri = 3, 
-        risk = .025, scal = true, kwargs...)
+    occstah(kwargs...)
+    occstah(X; kwargs...)
 One-class classification using the Stahel-Donoho outlierness.
-
-* `X` : X-data (training).
-* `a` : Nb. dimensions simulated for the projection-pursuit method.
-* `mcut` : Type of cutoff (:mad or :q). See Thereafter.
-* `cri` : When `mcut = :mad`, a constant. See thereafter.
-* `risk` : When `mcut = :q`, a risk-I level. See thereafter.
-* `scal` : Boolean. If `true`, matrix `X` is centred (by median) 
-    and scaled (by MAD) before computing the outlierness.
-* `kwargs` : Optional arguments to pass in function `kde` of 
-    KernelDensity.jl (see function `kde1`).
+* `X` : Training X-data (n, p).
+Keyword arguments:
+* `nlv` : Nb. dimensions on which `X` is projected. 
+* `mcut` : Type of cutoff. Possible values are: `:mad`, 
+    `:q`. See Thereafter.
+* `cri` : When `mcut` = `:mad`, a constant. See thereafter.
+* `risk` : When `mcut` = `:q`, a risk-I level. See thereafter.
+* `scal` : Boolean. If `true`, each column of `X` 
+    is scaled such as in function `stah`.
 
 In this method, the outlierness `d` of a given observation
 is the Stahel-Donoho outlierness (see `?stah`).
