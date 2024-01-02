@@ -2,7 +2,6 @@
     occsd(; kwargs...)
     occsd(object; kwargs...)
 One-class classification using PCA/PLS score distance (SD).
-
 * `object` : The preliminary model "fm" (e.g. PCA) that 
     was fitted on the training data assumed to represent 
     the training class.
@@ -48,9 +47,9 @@ Specific for function `predict`:
         belonging to the same class as the training. 
 
 ## References
-M. Hubert, P. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: 
-a new approach to robust principal components analysis. 
-Technometrics, 47, 64-79.
+M. Hubert, P. J. Rousseeuw, K. Vanden Branden (2005). 
+ROBPCA: a new approach to robust principal components 
+analysis. Technometrics, 47, 64-79.
 
 Nomikos, P., MacGregor, J.F., 1995. Multivariate SPC Charts for 
 Monitoring Batch Processes. null 37, 41-59. 
@@ -69,59 +68,80 @@ db = joinpath(path_jdat, "data/challenge2018.jld2")
 pnames(dat)
 X = dat.X    
 Y = dat.Y
-f = 21 ; pol = 3 ; d = 2 ;
-#Xp = savgol(snv(X); f = f, pol = pol, d = d) 
+mod = savgol(npoint = 21, 
+    deriv = 2, degree = 3)
+fit!(mod, X) 
+Xp = transf(mod, X) 
 s = Bool.(Y.test)
-Xtrain = rmrow(X, s)
+Xtrain = rmrow(Xp, s)
 Ytrain = rmrow(Y, s)
-Xtest = X[s, :]
+Xtest = Xp[s, :]
 Ytest = Y[s, :]
 
-g1 = "EHH" ; g2 = "PEE"
-#g1 = "EHH" ; g2 = "EHH"
-s1 = Ytrain.typ .== g1
-s2 = Ytest.typ .== g2
+## Below, the reference class is "EEH"
+cla1 = "EHH" ; cla2 = "PEE" ; cod = "out"   # here cla2 should be detected
+#cla1 = "EHH" ; cla2 = "EHH" ; cod = "in"   # here cla2 should not be detected
+s1 = Ytrain.typ .== cla1
+s2 = Ytest.typ .== cla2
 zXtrain = Xtrain[s1, :]    
 zXtest = Xtest[s2, :] 
 ntrain = nro(zXtrain)
 ntest = nro(zXtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
+ytrain = repeat(["in"], ntrain)
+ytest = repeat([cod], ntest)
 
-fm = pcasvd(zXtrain, nlv = 10) ; 
-Ttrain = fm.T
-Ttest = transf(fm, zXtest)
+## Group description
+mod = pcasvd(nlv = 10) 
+fit!(mod, zXtrain) 
+Ttrain = mod.fm.T
+Ttest = transf(mod, zXtest)
 T = vcat(Ttrain, Ttest)
-group = vcat(repeat(["0-Train"], ntrain), repeat(["1-Test"], ntest))
+group = vcat(repeat(["1"], ntrain), 
+    repeat(["2"], ntest))
 i = 1
-plotxy(T[:, i], T[:, i + 1], group; 
-    xlabel = string("PC", i), ylabel = string("PC", i + 1)).f
+plotxy(T[:, i], T[:, i + 1], group;
+    leg_title = "Class", 
+    xlabel = string("PC", i), 
+    ylabel = string("PC", i + 1)).f
 
-#### End data
+#### Occ
+## Preliminary fitted model
+nlv = 30
+mod = pcasvd(; nlv) ;
+fit!(mod, zXtrain)
+fm0 = mod.fm ;  
+## Outlierness
+mod = occsd()
+#mod = occsd(mcut = :mad, cri = 4)
+#mod = occsd(mcut = :q, risk = .01) ;
+fit!(mod, fm0) 
+pnames(mod) 
+pnames(mod.fm) 
+@head d = mod.fm.d
+d = d.dstand
+f, ax = plotxy(1:length(d), d; 
+    size = (500, 300), xlabel = "Obs. index", 
+    ylabel = "Standardized distance")
+hlines!(ax, 1; linestyle = :dot)
+f
 
-nlv = 10
-fm0 = pcasvd(zXtrain; nlv) ;
-
-fm = occsd(fm0) ;
-#fm = occsd(fm0; mcut = :q, risk = .025) ;
-#fm = occod(fm0, zXtrain) ;
-#fm = occsdod(fm0, zXtrain) ;
-#fm = occstah(zXtrain)
-fm.d
-hist(fm.d.dstand; bins = 50)
-
-res = Jchemo.predict(fm, zXtest) ;
-res.d
-res.pred
+res = predict(mod, zXtest) ;
+pnames(res)
+@head res.d
+@head res.pred
 tab(res.pred)
-
-d1 = fm.d.dstand
+errp(res.pred, ytest)
+confusion(res.pred, ytest).cnt
+d1 = mod.fm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
 f, ax = plotxy(1:length(d), d, group; 
-    size = (600, 400), xlabel = "Obs. index", 
+    size = (500, 300), leg_title = "Class", 
+    xlabel = "Obs. index", 
     ylabel = "Standardized distance")
-hlines!(ax, 1)
+hlines!(ax, 1; linestyle = :dot)
 f
 ```
 """

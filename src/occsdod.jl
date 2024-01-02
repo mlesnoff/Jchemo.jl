@@ -1,22 +1,18 @@
 """
-    occsdod(object::Union{Pca, Plsr}, X; 
-        nlv_sd = nothing, nlv_od = nothing, 
-        mcut = :mad, cri = 3, risk = .025, kwargs...)
-One-class classification using a compromise between PCA/PLS score (SD) and 
-    orthogonal (OD) distances.
-
-* `object` : The model (e.g. PCA) that was fitted on the training data,
-    assumed to represent the training class.
-* `X` : X-data (training) that were used to fit the model.
-* `nlv_sd` : Nb. components (PCs or LVs) to consider for SD. If nothing, 
-    it is the maximum nb. of components of the fitted model.
-* `nlv_od` : Nb. components (PCs or LVs) to consider for OD. If nothing, 
-    it is the maximum nb. of components of the fitted model.
-* `mcut` : Type of cutoff (:mad or :q). See Thereafter.
-* `cri` : When `mcut = :mad`, a constant. See thereafter.
-* `risk` : When `mcut = :q`, a risk-I level. See thereafter.
-* `kwargs` : Optional arguments to pass in function `kde` of 
-    KernelDensity.jl (see function `kde1`).
+    occsdod(; kwargs...)
+    occsdod(object; kwargs...)
+One-class classification using a compromise between 
+    PCA/PLS score (SD) and orthogonal (OD) distances.
+* `object` : The preliminary model "fm" (e.g. PCA) that 
+    was fitted on the training data assumed to represent 
+    the training class.
+* `X` : Training X-data (n, p), on which was fitted 
+    the model "fm".
+Keyword arguments:
+* `mcut` : Type of cutoff. Possible values are: `:mad`, 
+    `:q`. See Thereafter.
+* `cri` : When `mcut` = `:mad`, a constant. See thereafter.
+* `risk` : When `mcut` = `:q`, a risk-I level. See thereafter.
 
 In this method, the outlierness `d` of a given observation
 is a compromise between the score distance (SD) and the
@@ -24,7 +20,8 @@ orthogonal distance (OD). The compromise is computed from the
 standardized distances by: 
 * `dstand` = sqrt(`dstand_sd` * `dstand_od`).
 
-See function `occsd` for details on outputs, and examples.
+See function `occsd` for details on outputs, and function 
+`occod` for examples.
 """ 
 function occsdod(fm, X; kwargs...) 
     fmsd = occsd(fm; kwargs...)

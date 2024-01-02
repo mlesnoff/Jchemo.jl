@@ -1,36 +1,125 @@
 """
-    occod(object::Union{Pca, Plsr}, X; nlv = nothing, 
-        mcut = :mad, cri = 3, risk = .025, kwargs...)
+    occod(; kwargs...)
+    occod(object, X; kwargs...)
 One-class classification using PCA/PLS orthognal distance (OD).
-
-* `object` : The model (e.g. PCA) that was fitted on the training data,
-    assumed to represent the training class.
-* `X` : X-data (training) that were used to fit the model.
-* `nlv` : Nb. components (PCs or LVs) to consider. If nothing, 
-    it is the maximum nb. of components of the fitted model.
-* `mcut` : Type of cutoff (:mad or :q). See Thereafter.
-* `cri` : When `mcut = :mad`, a constant. See thereafter.
-* `risk` : When `mcut = :q`, a risk-I level. See thereafter.
-* `kwargs` : Optional arguments to pass in function `kde` of 
-    KernelDensity.jl (see function `kde1`).
+* `object` : The preliminary model "fm" (e.g. PCA) that 
+    was fitted on the training data assumed to represent 
+    the training class.
+* `X` : Training X-data (n, p), on which was fitted 
+    the model "fm".
+Keyword arguments:
+* `mcut` : Type of cutoff. Possible values are: `:mad`, 
+    `:q`. See Thereafter.
+* `cri` : When `mcut` = `:mad`, a constant. See thereafter.
+* `risk` : When `mcut` = `:q`, a risk-I level. See thereafter.
 
 In this method, the outlierness `d` of an observation
-is the orthogonal distance (OD =  "X-residuals") of this observation, ie.
-the Euclidean distance between the observation and its projection on the 
-score plan defined by the fitted (e.g. PCA) model (e.g. Hubert et al. 2005, 
-Van Branden & Hubert 2005 p. 66, Varmuza & Filzmoser 2009 p. 79).
+is the orthogonal distance (OD =  "X-residuals") of this 
+observation, ie. the Euclidean distance between the observation 
+and its projection on the  score plan defined by the fitted 
+(e.g. PCA) model (e.g. Hubert et al. 2005, Van Branden & Hubert 
+2005 p. 66, Varmuza & Filzmoser 2009 p. 79).
 
-See function `occsd` for details on outputs, and examples.
+See function `occsd` for details on outputs.
 
 ## References
-M. Hubert, P. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach 
-to robust principal components analysis. Technometrics, 47, 64-79.
+M. Hubert, P. J. Rousseeuw, K. Vanden Branden (2005). 
+ROBPCA: a new approach to robust principal components 
+analysis. Technometrics, 47, 64-79.
 
-K. Vanden Branden, M. Hubert (2005). Robuts classification in high dimension based 
-on the SIMCA method. Chem. Lab. Int. Syst, 79, 10-21.
+K. Vanden Branden, M. Hubert (2005). Robuts classification 
+in high dimension based on the SIMCA method. Chem. Lab. Int. 
+Syst, 79, 10-21.
 
-K. Varmuza, P. Filzmoser (2009). Introduction to multivariate statistical analysis 
-in chemometrics. CRC Press, Boca Raton.
+K. Varmuza, P. Filzmoser (2009). Introduction to multivariate 
+statistical analysis in chemometrics. CRC Press, Boca Raton.
+
+## Examples
+```julia
+using JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/challenge2018.jld2") 
+@load db dat
+pnames(dat)
+X = dat.X    
+Y = dat.Y
+mod = savgol(npoint = 21, 
+    deriv = 2, degree = 3)
+fit!(mod, X) 
+Xp = transf(mod, X) 
+s = Bool.(Y.test)
+Xtrain = rmrow(Xp, s)
+Ytrain = rmrow(Y, s)
+Xtest = Xp[s, :]
+Ytest = Y[s, :]
+
+## Below, the reference class is "EEH"
+cla1 = "EHH" ; cla2 = "PEE" ; cod = "out"   # here cla2 should be detected
+#cla1 = "EHH" ; cla2 = "EHH" ; cod = "in"   # here cla2 should not be detected
+s1 = Ytrain.typ .== cla1
+s2 = Ytest.typ .== cla2
+zXtrain = Xtrain[s1, :]    
+zXtest = Xtest[s2, :] 
+ntrain = nro(zXtrain)
+ntest = nro(zXtest)
+ntot = ntrain + ntest
+(ntot = ntot, ntrain, ntest)
+ytrain = repeat(["in"], ntrain)
+ytest = repeat([cod], ntest)
+
+## Group description
+mod = pcasvd(nlv = 10) 
+fit!(mod, zXtrain) 
+Ttrain = mod.fm.T
+Ttest = transf(mod, zXtest)
+T = vcat(Ttrain, Ttest)
+group = vcat(repeat(["1"], ntrain), 
+    repeat(["2"], ntest))
+i = 1
+plotxy(T[:, i], T[:, i + 1], group;
+    leg_title = "Class", 
+    xlabel = string("PC", i), 
+    ylabel = string("PC", i + 1)).f
+
+#### Occ
+## Preliminary fitted model
+nlv = 10
+mod = pcasvd(; nlv) ;
+fit!(mod, zXtrain)
+fm0 = mod.fm ;  
+## Outlierness
+mod = occod()
+#mod = occod(mcut = :mad, cri = 4)
+#mod = occod(mcut = :q, risk = .01) ;
+#mod = occsdod()
+fit!(mod, fm0, zXtrain) 
+pnames(mod) 
+pnames(mod.fm) 
+@head d = mod.fm.d
+d = d.dstand
+f, ax = plotxy(1:length(d), d; 
+    size = (500, 300), xlabel = "Obs. index", 
+    ylabel = "Standardized distance")
+hlines!(ax, 1; linestyle = :dot)
+f
+
+res = predict(mod, zXtest) ;
+pnames(res)
+@head res.d
+@head res.pred
+tab(res.pred)
+errp(res.pred, ytest)
+confusion(res.pred, ytest).cnt
+d1 = mod.fm.d.dstand
+d2 = res.d.dstand
+d = vcat(d1, d2)
+f, ax = plotxy(1:length(d), d, group; 
+    size = (500, 300), leg_title = "Class", 
+    xlabel = "Obs. index", 
+    ylabel = "Standardized distance")
+hlines!(ax, 1; linestyle = :dot)
+f
+```
 """ 
 function occod(fm, X; kwargs...)
     par = recovkwargs(Par, kwargs) 
