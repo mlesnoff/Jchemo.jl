@@ -1,56 +1,64 @@
 """
-    occsd(object::Union{Pca, Kpca, Plsr}; nlv = nothing,
-        mcut = :mad, cri = 3, risk = .025, kwargs...)
+    occsd(; kwargs...)
+    occsd(object; kwargs...)
 One-class classification using PCA/PLS score distance (SD).
 
-* `object` : The model (e.g. PCA) that was fitted on the training data,
-    assumed to represent the training class.
-* `nlv` : Nb. components (PCs or LVs) to consider. If nothing, 
-    it is the maximum nb. of components of the fitted model.
-* `mcut` : Type of cutoff (:mad or :q). See Thereafter.
-* `cri` : When `mcut = :mad`, a constant. See thereafter.
-* `risk` : When `mcut = :q`, a risk-I level. See thereafter.
-* `kwargs` : Optional arguments to pass in function `kde` of 
-    KernelDensity.jl (see function `kde1`).
+* `object` : The preliminary model "fm" (e.g. PCA) that 
+    was fitted on the training data assumed to represent 
+    the training class.
+Keyword arguments:
+* `mcut` : Type of cutoff. Possible values are: `:mad`, 
+    `:q`. See Thereafter.
+* `cri` : When `mcut` = `:mad`, a constant. See thereafter.
+* `risk` : When `mcut` = `:q`, a risk-I level. See thereafter.
 
-In this method, the outlierness `d` of an observation is defined by its 
-score distance (SD), ie. the Mahalanobis distance between the projection of 
-the observation on the score plan defined by the fitted (e.g. PCA) model and 
-the fcenter of the score plan.
+In this method, the outlierness `d` of an observation is 
+defined by its score distance (SD), ie. the Mahalanobis distance 
+between the projection of the observation on the score plan 
+defined by the fitted (e.g. PCA) model and the center of the 
+score plan.
 
-If a new observation has `d` higher than a given `cutoff`, the observation 
-is assumed to not belong to the training class. 
-The `cutoff` is computed with non-parametric heuristics. 
+If a new observation has `d` higher than a given `cutoff`, the 
+observation is assumed to not belong to the training (= reference) 
+class. The `cutoff` is computed with non-parametric heuristics. 
 Noting [d] the vector of outliernesses computed on the training class:
-* If `mcut = :mad`, then `cutoff` = median([d]) + `cri` * mad([d]). 
-* If `mcut = :q, then `cutoff` is estimated from the empirical cumulative
-    density function computed on [d], for a given risk-I (`risk`). 
-Alternative approximate cutoffs have been proposed in the literature 
-(e.g.: Nomikos & MacGregor 1995, Hubert et al. 2005, Pomerantsev 2008).
-Typically and whatever the approximation method, it is recommended to tune 
-the cutoff, depending on detection objectives. 
+* If `mcut` = `:mad`, then `cutoff` = median([d]) + `cri` * mad([d]). 
+* If `mcut` = `:q`, then `cutoff` is estimated from the empirical 
+    cumulative density function computed on [d], for a given 
+    risk-I (`risk`). 
+Alternative approximate cutoffs have been proposed in the 
+literature (e.g.: Nomikos & MacGregor 1995, Hubert et al. 2005,
+Pomerantsev 2008). Typically, and whatever the approximation method 
+used to compute the cutoff, it is recommended to tune this cutoff 
+depending on the detection objectives. 
 
 **Outputs**
-* `pval`: Estimate of p-value (see functions `kde1` and `pval`) computed 
-    from the KDE of distribution [d], provided for each data observation. 
+* `pval`: Estimate of p-value (see functions `pval`) computed 
+    from the training distribution [d]. 
 * `dstand`: standardized distance defined as `d` / `cutoff`. 
-    A value `dstand` > 1 may be considered as extreme compared to the distribution
-    of the training data.  Output `gh` is the Winisi "GH" (usually, GH > 3 is 
-    considered as "extreme").
-* `pred` (fonction `predict`): class prediction
-    * `dstand` <= 1 ==> `0`: the observation is expected to belong 
-        to the training class, 
-    * `dstand` > 1  ==> `1`: extreme value, possibly outside of the training class. 
+    A value `dstand` > 1 may be considered as extreme compared to 
+    the distribution of the training data.  
+* `gh` is the Winisi "GH" (usually, GH > 3 is considered as 
+    extreme).
+Specific for function `predict`:
+* `pred`: class prediction
+    * `dstand` <= 1 ==> `in`: the observation is expected to 
+        belong to the training class, 
+    * `dstand` > 1  ==> `out`: extreme value, possibly not 
+        belonging to the same class as the training. 
 
 ## References
-M. Hubert, P. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust 
-principal components analysis. Technometrics, 47, 64-79.
+M. Hubert, P. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: 
+a new approach to robust principal components analysis. 
+Technometrics, 47, 64-79.
 
-Nomikos, P., MacGregor, J.F., 1995. Multivariate SPC Charts for Monitoring Batch Processes. 
-null 37, 41-59. https://doi.org/10.1080/00401706.1995.10485888
+Nomikos, P., MacGregor, J.F., 1995. Multivariate SPC Charts for 
+Monitoring Batch Processes. null 37, 41-59. 
+https://doi.org/10.1080/00401706.1995.10485888
 
-Pomerantsev, A.L., 2008. Acceptance areas for multivariate classification derived by 
-projection methods. Journal of Chemometrics 22, 601-609. https://doi.org/10.1002/cem.1147
+Pomerantsev, A.L., 2008. Acceptance areas for multivariate 
+classification derived by projection methods. Journal of Chemometrics 
+22, 601-609. https://doi.org/10.1002/cem.1147
 
 ## Examples
 ```julia
@@ -62,11 +70,11 @@ pnames(dat)
 X = dat.X    
 Y = dat.Y
 f = 21 ; pol = 3 ; d = 2 ;
-Xp = savgol(snv(X); f = f, pol = pol, d = d) 
+#Xp = savgol(snv(X); f = f, pol = pol, d = d) 
 s = Bool.(Y.test)
-Xtrain = rmrow(Xp, s)
+Xtrain = rmrow(X, s)
 Ytrain = rmrow(Y, s)
-Xtest = Xp[s, :]
+Xtest = X[s, :]
 Ytest = Y[s, :]
 
 g1 = "EHH" ; g2 = "PEE"
@@ -80,13 +88,13 @@ ntest = nro(zXtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
 
-fm = pcasvd(zXtrain, nlv = 5) ; 
+fm = pcasvd(zXtrain, nlv = 10) ; 
 Ttrain = fm.T
 Ttest = transf(fm, zXtest)
 T = vcat(Ttrain, Ttest)
 group = vcat(repeat(["0-Train"], ntrain), repeat(["1-Test"], ntest))
 i = 1
-plotxy(T[:, i], T[:, i + 1]), group;
+plotxy(T[:, i], T[:, i + 1], group; 
     xlabel = string("PC", i), ylabel = string("PC", i + 1)).f
 
 #### End data
@@ -147,7 +155,8 @@ function predict(object::Occsd, X)
     T = transf(object.fm, X)
     Q = eltype(T)
     m, nlv = size(T)
-    d2 = vec(mahsqchol(T, zeros(Q, nlv)', object.Uinv))
+    d2 = vec(mahsqchol(T, zeros(Q, nlv)', 
+        object.Uinv))
     d = sqrt.(d2)
     p_val = pval(object.e_cdf, d)
     d = DataFrame(d = d, dstand = d / object.cutoff, 

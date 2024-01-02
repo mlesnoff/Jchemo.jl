@@ -8,7 +8,7 @@
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", leg::Bool = true,
-        kwargs...)
+        leg_title = "Group", kwargs...)
 Scatter plot of (x, y) data
 * `x` : A x-vector (n).
 * `y` : A y-vector (n). 
@@ -29,6 +29,7 @@ Keyword arguments:
 *  `title` : Title of the graphic.
 * `leg` : Boolean. If `group` is used, display a legend 
     or not.
+* `leg_title` : Title of the legend.
 * `kwargs` : Optional arguments to pass in function `scatter` 
     of Makie.
 
@@ -105,7 +106,7 @@ function plotxy(x, y; size = (500, 300),
         xmeans = colmean(X)
         radius = sqrt(quantile(Chi(2), prob))
         res = Jchemo.ellipse(cov(X); 
-            fcenter = xmeans, radius = radius)
+            center = xmeans, radius)
         if isnothing(color)
             lines!(ax, res.X; color = :grey40)
         else
@@ -131,7 +132,7 @@ function plotxy(x, y, group; size = (600, 350),
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", leg::Bool = true,
-        kwargs...)
+        leg_title = "Group", kwargs...)
     x = vec(x)
     y = vec(y)
     group = vec(group)
@@ -146,16 +147,18 @@ function plotxy(x, y, group; size = (600, 350),
         zx = x[s]
         zy = y[s]
         if isnothing(color)
-            scatter!(ax, zx, zy; label = lab[i], kwargs...)
-        else
-            scatter!(ax, zx, zy; label = lab[i], color = color[i], 
+            scatter!(ax, zx, zy; label = lab[i], 
                 kwargs...)
+        else
+            scatter!(ax, zx, zy; label = lab[i], 
+                color = color[i], kwargs...)
         end
         if ellipse
             X = hcat(zx, zy)
             xmeans = colmean(X)
             radius = sqrt(quantile(Chi(2), prob))
-            res = Jchemo.ellipse(cov(X); fcenter = xmeans, radius = radius)
+            res = Jchemo.ellipse(cov(X); 
+                center = xmeans, radius)
             if isnothing(color)
                 lines!(ax, res.X; color = :grey40)
             else
@@ -176,7 +179,8 @@ function plotxy(x, y, group; size = (600, 350),
     end
     f[1, 1] = ax
     if leg
-        f[1, 2] = Legend(f, ax, "Group", framevisible = false)
+        f[1, 2] = Legend(f, ax, leg_title, 
+            framevisible = false)
     end
     (f = f, ax = ax, lev = lev)
 end

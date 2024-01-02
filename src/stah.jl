@@ -9,19 +9,21 @@ Keyword arguments:
     (by median) and scaled (by MAD) before computing 
     the outlierness.
 
-The outlierness measure is computed from a projection-pursuit 
-approach:
-* directions in the column-`X` space (linear combinations of 
-    the columns of `X`) are randomly simulated, 
-* and the observations (rows of `X`) are projected on 
-    these directions.
+See Maronna and Yohai 1995 for details on the 
+outlierness measure. 
 
-See Maronna and Yohai (1995) for details. 
+This outlierness measure is computed from a projection-pursuit 
+approach:
+* A projection matrix `P` (p,  `a `) is built randomly 
+    from binary (0/1) data, 
+* and the observations (rows of `X`) are projected on 
+    the  `a` directions.
 
 ## References
-Maronna, R.A., Yohai, V.J., 1995. The Behavior of the Stahel-Donoho Robust 
-Multivariate Estimator. Journal of the American Statistical Association 90, 
-330–341. https://doi.org/10.1080/01621459.1995.10476517
+Maronna, R.A., Yohai, V.J., 1995. The Behavior of the 
+Stahel-Donoho Robust Multivariate Estimator. Journal of the 
+American Statistical Association 90, 330–341. 
+https://doi.org/10.1080/01621459.1995.10476517
 
 ## Examples
 ```julia
@@ -38,7 +40,6 @@ res = stah(X, a; scal) ;
 pnames(res)
 res.d
 plotxy(1:nro(X), res.d).f
-
 ```
 """ 
 function stah(X, a; scal = true) 
