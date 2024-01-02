@@ -24,6 +24,7 @@ ccawold(; kwargs...) = Transformer{Function, Ccawold, Base.Pairs}(ccawold, nothi
 plscan(; kwargs...) = Transformer{Function, Plscan, Base.Pairs}(plscan, nothing, kwargs)
 plstuck(; kwargs...) = Transformer{Function, Plstuck, Base.Pairs}(plstuck, nothing, kwargs)
 rasvd(; kwargs...) = Transformer{Function, Rasvd, Base.Pairs}(rasvd, nothing, kwargs)
+##
 mbpca(; kwargs...) = Transformer{Function, Mbpca, Base.Pairs}(mbpca, nothing, kwargs)
 comdim(; kwargs...) = Transformer{Function, Comdim, Base.Pairs}(comdim, nothing, kwargs)
 ## Future: Could be a type TransformerY
