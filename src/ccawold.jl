@@ -14,7 +14,7 @@ Canonical correlation analysis (CCA, RCCA) - Wold
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling. Possible values are:
-    `:none`, `:frob`, `:mfa`. See functions `fblockscal`.
+    `:none`, `:frob`. See functions `fblockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
@@ -110,7 +110,8 @@ function ccawold(X, Y; kwargs...)
     ccawold(X, Y, weights; kwargs...)
 end
 
-function ccawold(X, Y, weights::Weight; kwargs...)
+function ccawold(X, Y, weights::Weight; 
+        kwargs...)
     ccawold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
         weights; kwargs...)
 end
@@ -240,7 +241,7 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight;
 end
 
 """ 
-    transf(object::Ccawold, X, Y; 
+    transfbl(object::Ccawold, X, Y; 
         nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.

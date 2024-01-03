@@ -1,66 +1,90 @@
 """
-    plscan(X, Y, weights = ones(nro(X)); nlv,
-        bscal = :none, scal::Bool = false)
-    plscan!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = :none, scal::Bool = false)
-Canonical partial least squares regression (Canonical PLS)
-* `X` : First block (matrix) of data.
-* `Y` : Second block (matrix) of data.
+    plscan(; kwargs...)
+    plscan(X, Y; kwargs...)
+    plscan(X, Y, weights::Weight; 
+        kwargs...)
+    plscan!(X::Matrix, Y::Matrix, weights::Weight; 
+        kwargs...)
+Canonical partial least squares regression (Canonical PLS).
+* `X` : First block of data.
+* `Y` : Second block of data.
 * `weights` : Weights of the observations (rows). 
     Internally normalized to sum to 1. 
+Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-* `bscal` : Type of block scaling (`:none`, `:frob`). 
-    See functions `fblockscal`.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+* `bscal` : Type of block scaling. Possible values are:
+    `:none`, `:frob`. See functions `fblockscal`.
+* `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-Canonical PLS with the Nipals algorithm (Wold 1984, Tenenhaus 1998 chap.11),
-referred to as PLS-W2A (i.e. Wold PLS mode A) in Wegelin 2000.
-The two blocks `X` and `X` play a symmetric role.  
-After each step of scores computation, X and Y are deflated by the x- and 
-y-scores, respectively. 
+Canonical PLS with the Nipals algorithm (Wold 1984, 
+Tenenhaus 1998 chap.11), referred to as PLS-W2A (i.e. Wold 
+PLS mode A) in Wegelin 2000. The two blocks `X` and `X` 
+play a symmetric role.  After each step of scores computation, 
+X and Y are deflated by the x- and y-scores, respectively. 
 
 ## References
-Tenenhaus, M., 1998. La régression PLS: théorie et pratique. Editions Technip, Paris.
+Tenenhaus, M., 1998. La régression PLS: théorie 
+et pratique. Editions Technip, Paris.
 
-Wegelin, J.A., 2000. A Survey of Partial Least Squares (PLS) Methods, with Emphasis 
-on the Two-Block Case (No. 371). University of Washington, Seattle, Washington, USA.
+Wegelin, J.A., 2000. A Survey of Partial Least 
+Squares (PLS) Methods, with Emphasis on the Two-Block 
+Case (No. 371). University of Washington, Seattle, 
+Washington, USA.
 
-Wold, S., Ruhe, A., Wold, H., Dunn, III, W.J., 1984. The Collinearity Problem in Linear 
-Regression. The Partial Least Squares (PLS) Approach to Generalized Inverses. 
-SIAM Journal on Scientific and Statistical Computing 5, 735–743. 
-https://doi.org/10.1137/0905052
+Wold, S., Ruhe, A., Wold, H., Dunn, III, W.J., 1984. 
+The Collinearity Problem in Linear Regression. The Partial 
+Least Squares (PLS) Approach to Generalized Inverses. 
+SIAM Journal on Scientific and Statistical Computing 5, 
+735–743. https://doi.org/10.1137/0905052
 
 ## Examples
 ```julia
 using JchemoData, JLD2
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/linnerud.jld2") 
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "linnerud.jld2") 
 @load db dat
 pnames(dat)
-X = dat.X 
+X = dat.X
 Y = dat.Y
+n, p = size(X)
+q = nco(Y)
 
-fm = plscan(X, Y; nlv = 3)
-pnames(fm)
+nlv = 2
+bscal = :frob
+mod = plscan(; nlv, bscal)
+fit!(mod, X, Y)
+pnames(mod)
+pnames(mod.fm)
 
-fm.Tx
-transf(fm, X, Y).Tx
-fscale(fm.Tx, colnorm(fm.Tx))
+@head mod.fm.Tx
+@head transfbl(mod, X, Y).Tx
 
-res = summary(fm, X, Y)
+@head mod.fm.Ty
+@head transfbl(mod, X, Y).Ty
+
+res = summary(mod, X, Y) ;
 pnames(res)
+res.explvarx
+res.explvary
+res.cort2t 
+res.rdx
+res.rdy
+res.corx2t 
+res.cory2t 
 ```
 """
 function plscan(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)
     weights = mweight(ones(Q, n))
-    plscan(X, Y, weights; kwargs...)
+    plscan(X, Y, weights; 
+        kwargs...)
 end
 
-function plscan(X, Y, weights::Weight; kwargs...)
+function plscan(X, Y, weights::Weight; 
+        kwargs...)
     plscan!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
         weights; kwargs...)
 end
@@ -158,21 +182,26 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight;
 end
 
 """ 
-    transf(object::Plscan, X, Y; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
+    transfbl(object::Plscan, X, Y; 
+        nlv = nothing)
+Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
 * `Y` : Y-data for which components (LVs) are computed.
-* `nlv` : Nb. LVs to compute. If nothing, it is the maximum number
-    from the fitted model.
+* `nlv` : Nb. LVs to compute.
 """ 
-function transfbl(object::Plscan, X, Y; nlv = nothing)
+function transfbl(object::Plscan, X, Y; 
+        nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    Tx = fcscale(X, object.xmeans, object.xscales) * vcol(object.Rx, 1:nlv)
-    Ty = fcscale(Y, object.ymeans, object.yscales) * vcol(object.Ry, 1:nlv)
+    X = fcscale(X, object.xmeans, 
+        object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ymeans, 
+        object.yscales) / object.bscales[2]
+    Tx = X * vcol(object.Rx, 1:nlv)
+    Ty = Y * vcol(object.Ry, 1:nlv)
     (Tx = Tx, Ty)
 end
 
@@ -187,41 +216,46 @@ function Base.summary(object::Plscan, X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, nlv = size(object.Tx)
-    X = fcscale(X, object.xmeans, object.xscales)
-    Y = fcscale(Y, object.ymeans, object.yscales)
+    X = fcscale(X, object.xmeans, 
+        object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ymeans, 
+        object.yscales) / object.bscales[2]
     ttx = object.TTx 
     tty = object.TTy 
-    # X
+    ## X
     sstot = frob(X, object.weights)^2
     tt_adj = colsum(object.Px.^2) .* ttx
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
-        cumpvar = cumpvar)
-    # Y
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
+        pvar = pvar, cumpvar = cumpvar)
+    ## Y
     sstot = frob(Y, object.weights)^2
     tt_adj = colsum(object.Py.^2) .* tty
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
-        cumpvar = cumpvar)
-    # Correlation between X- and Y-block scores
+    explvary = DataFrame(nlv = 1:nlv, var = xvar, 
+        pvar = pvar, cumpvar = cumpvar)
+    ## Correlation between X- and 
+    ## Y-block scores
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)
-    # Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
+    ## Redundancies (Average correlations) 
+    ## Rd(X, tx) and Rd(Y, ty)
     z = rd(X, object.Tx, object.weights)
     rdx = DataFrame(lv = 1:nlv, rd = vec(z))
     z = rd(Y, object.Ty, object.weights)
     rdy = DataFrame(lv = 1:nlv, rd = vec(z))
-    # Correlation between block variables and their block scores
+    ## Correlation between block variables 
+    ## and their block scores
     z = corm(X, object.Tx, object.weights)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)
     cory2t = DataFrame(z, string.("lv", 1:nlv))
-    # End
-    (explvarx = explvarx, explvary, cort2t, rdx, rdy, 
-        corx2t, cory2t)
+    ## End
+    (explvarx = explvarx, explvary, cort2t, 
+        rdx, rdy, corx2t, cory2t)
 end
 

@@ -13,7 +13,7 @@ Canonical correlation Analysis (CCA, RCCA).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling. Possible values are:
-    `:none`, `:frob`, `:mfa`. See functions `fblockscal`.
+    `:none`, `:frob`. See functions `fblockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
     is scaled by its uncorrected standard deviation 
@@ -210,15 +210,14 @@ Summarize the fitted model.
 function Base.summary(object::Cca, X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    nlv = nco(object.Tx)
+    n, nlv = size(object.Tx)
     X = fcscale(X, object.xmeans, 
         object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, 
         object.yscales) / object.bscales[2]
     ## To do: explvarx, explvary
-    #n = nro(X) 
     #D = Diagonal(object.weights.w)   
-    ## X
+    ### X
     #sstot = frob(X, object.weights)^2
     #T = object.Tx
     #tt = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
@@ -228,7 +227,7 @@ function Base.summary(object::Cca, X, Y)
     #xvar = tt / n    
     #explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
     #    pvar = pvar, cumpvar = cumpvar)
-    ## Y
+    ### Y
     #sstot = frob(Y, object.weights)^2
     #T = object.Ty
     #tt = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)
