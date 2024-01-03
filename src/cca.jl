@@ -210,14 +210,14 @@ Summarize the fitted model.
 function Base.summary(object::Cca, X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    n = nro(X)
     nlv = nco(object.Tx)
     X = fcscale(X, object.xmeans, 
         object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, 
         object.yscales) / object.bscales[2]
-    D = Diagonal(object.weights.w)   
-    ## To do: explvarx, explvary 
+    ## To do: explvarx, explvary
+    #n = nro(X) 
+    #D = Diagonal(object.weights.w)   
     ## X
     #sstot = frob(X, object.weights)^2
     #T = object.Tx
