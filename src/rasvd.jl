@@ -1,18 +1,22 @@
 """
-    rasvd(X, Y, weights = ones(nro(X)); nlv,
-        bscal = :none, tau = 1e-8, scal::Bool = false)
-    rasvd!(X, Y, weights = ones(nro(X)); nlv,
-        bscal = :none, tau = 1e-8, scal::Bool = false)
-Redundancy analysis (RA) - PCA on instrumental variables (PCAIV)
-* `X` : First block of data (explicative variables).
-* `Y` : Second block of data (dependent variables).
+    rasvd(; kwargs...)
+    rasvd(X, Y; kwargs...)
+    rasvd(X, Y, weights::Weight; 
+        kwargs...)
+    rasvd!(X::Matrix, Y::Matrix, weights::Weight; 
+        kwargs...)
+Redundancy analysis (RA), *aka* PCA on instrumental 
+    variables (PCAIV)
+* `X` : First block of data.
+* `Y` : Second block of data.
 * `weights` : Weights of the observations (rows). 
     Internally normalized to sum to 1. 
+Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-* `bscal` : Type of block scaling (`:none`, `:frob`). 
-    See functions `fblockscal`.
+* `bscal` : Type of block scaling. Possible values are:
+    `:none`, `:frob`. See functions `fblockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+* `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
  
@@ -21,52 +25,70 @@ Let Y_hat be the fitted values of the regression of `Y` on `X`.
 The scores `Ty` are the PCA scores of Y_hat. The scores `Tx` are 
 the fitted values of the regression of `Ty` on `X`.
 
-A continuum regularization is available.  
-After block centering and scaling, the covariances matrices are 
-computed as follows: 
+A continuum regularization is available.  After block 
+centering and scaling, the covariances matrices are computed 
+as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
 where D is the observation (row) metric. 
-Value `tau` = 0 can generate unstability when inverting the covariance matrices. 
-A better alternative is generally to use an epsilon value (e.g. `tau` = 1e-8) 
-to get similar results as with pseudo-inverses.    
+Value `tau` = 0 can generate unstability when inverting 
+the covariance matrices. Often, a better alternative is 
+to use an epsilon value (e.g. `tau` = 1e-8) to get similar 
+results as with pseudo-inverses.    
 
 ## References
-Bougeard, S., Qannari, E.M., Lupo, C., Chauvin, C., 2011. Multiblock redundancy 
-analysis from a user's perspective. Application in veterinary epidemiology. 
-Electronic Journal of Applied Statistical Analysis 4, 203-214. 
-https://doi.org/10.1285/i20705948v4n2p203
+Bougeard, S., Qannari, E.M., Lupo, C., Chauvin, C., 
+2011-a. Multiblock redundancy analysis from a user's 
+perspective. Application in veterinary epidemiology. 
+Electronic Journal of Applied Statistical Analysis 
+4, 203-214. https://doi.org/10.1285/i20705948v4n2p203
 
-Bougeard, S., Qannari, E.M., Rose, N., 2011. Multiblock redundancy analysis: 
-interpretation tools and application in epidemiology. Journal of Chemometrics 25, 
+Bougeard, S., Qannari, E.M., Rose, N., 2011-b. Multiblock 
+redundancy analysis: interpretation tools and application 
+in epidemiology. Journal of Chemometrics 25, 
 467-475. https://doi.org/10.1002/cem.1392
 
-Legendre, P., Legendre, L., 2012. Numerical Ecology. Elsevier, 
-Amsterdam, The Netherlands.
+Legendre, P., Legendre, L., 2012. Numerical Ecology. 
+Elsevier, Amsterdam, The Netherlands.
 
-Tenenhaus, A., Guillemot, V. 2017. RGCCA: Regularized and Sparse Generalized Canonical 
-Correlation Analysis for Multiblock Data Multiblock data analysis.
+Tenenhaus, A., Guillemot, V. 2017. RGCCA: Regularized 
+and Sparse Generalized Canonical Correlation Analysis 
+for Multiblock Data Multiblock data analysis.
 https://cran.r-project.org/web/packages/RGCCA/index.html 
 
 ## Examples
 ```julia
 using JchemoData, JLD2
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/linnerud.jld2") 
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "linnerud.jld2") 
 @load db dat
 pnames(dat)
-X = dat.X 
+X = dat.X
 Y = dat.Y
+n, p = size(X)
+q = nco(Y)
 
-tau = 1e-8
-fm = rasvd(X, Y; nlv = 3, tau = tau)
-pnames(fm)
+nlv = 2
+bscal = :frob ; tau = 1e-4
+mod = rasvd(; nlv, bscal, 
+    tau)
+fit!(mod, X, Y)
+pnames(mod)
+pnames(mod.fm)
 
-fm.Tx
-transf(fm, X, Y).Tx
-fscale(fm.Tx, colnorm(fm.Tx))
+@head mod.fm.Tx
+@head transfbl(mod, X, Y).Tx
 
-res = summary(fm, X, Y)
+@head mod.fm.Ty
+@head transfbl(mod, X, Y).Ty
+
+res = summary(mod, X, Y) ;
 pnames(res)
+res.explvarx
+res.cort2t 
+res.rdx
+res.rdy
+res.corx2t 
+res.cory2t 
 ```
 """
 function rasvd(X, Y; kwargs...)
@@ -142,9 +164,9 @@ function rasvd!(X::Matrix, Y::Matrix, weights::Weight;
     # End
     Tx .= (1 ./ sqrtw) .* Tx
     Ty .= (1 ./ sqrtw) .* Ty   
-    Rasvd(Tx, Ty, Bx, Wy, lambda, 
-        bscales, xmeans, xscales, ymeans, yscales, weights,
-        kwargs, par)
+    Rasvd(Tx, Ty, Bx, Wy, lambda, bscales, 
+        xmeans, xscales, ymeans, yscales, 
+        weights, kwargs, par)
 end
 
 """ 
@@ -161,8 +183,10 @@ function transfbl(object::Rasvd, X, Y; nlv = nothing)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xmeans, 
+        object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ymeans, 
+        object.yscales) / object.bscales[2]
     Yfit = X * object.Bx
     Wy = vcol(object.Wy, 1:nlv)
     Tx = Yfit * Wy
@@ -183,40 +207,47 @@ function Base.summary(object::Rasvd, X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, nlv = size(object.Tx)
-    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xmeans, 
+        object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ymeans, 
+        object.yscales) / object.bscales[2]
     D = Diagonal(object.weights.w)
-    # X
+    ## X
     T = object.Tx
     sstot = frob(X, object.weights)^2
     sst = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
     pvar =  sst / sstot
     cumpvar = cumsum(pvar)
     xvar = sst / n
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
-        cumpvar = cumpvar)
-    # Y
-    T .= object.Ty
-    frob(Y, object.weights)^2
-    sst = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)
-    pvar =  sst / sstot
-    cumpvar = cumsum(pvar)
-    explvary = nothing # TO DO
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
+        pvar = pvar, cumpvar = cumpvar)
+    ## To do: explvary 
+    ### Y
+    #T .= object.Ty
+    #frob(Y, object.weights)^2
+    #sst = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)
+    #pvar =  sst / sstot
+    #cumpvar = cumsum(pvar)
     #explvary = DataFrame(nlv = 1:nlv, var = sst, pvar = pvar, cumpvar = cumpvar)
-    # Correlation between X- and Y-block scores
-    z = diag(corm(object.Tx, object.Ty, object.weights))
+    explvary = nothing 
+    ## Correlation between X- and 
+    ## Y-block scores
+    z = diag(corm(object.Tx, 
+        object.Ty, object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)
-    # Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
+    ## Redundancies (Average correlations) 
+    ## Rd(X, tx) and Rd(Y, ty)
     z = rd(X, object.Tx, object.weights)
     rdx = DataFrame(lv = 1:nlv, rd = vec(z))
     z = rd(Y, object.Ty, object.weights)
     rdy = DataFrame(lv = 1:nlv, rd = vec(z))
-    # Correlation between block variables and their block scores
+    ## Correlation between block variables 
+    ## and their block scores
     z = corm(X, object.Tx, object.weights)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)
     cory2t = DataFrame(z, string.("lv", 1:nlv))
-    # End 
+    ## End 
     (explvarx = explvarx, explvary, cort2t, rdx, rdy, 
         corx2t, cory2t)
 end

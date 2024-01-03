@@ -71,7 +71,8 @@
 
 *Multiple linear regression (MLR)*
 - **mlr** QR algorithm
-- **mlrchol** Normal equations and Choleski factorization
+- **mlrchol** Normal equations and Choleski 
+    factorization
 - **mlrpinv** Pseudo-inverse
 - **mlrpinvn** Normal equations and pseudo-inverse
 - **mlrvec** Simple linear regression (Univariate x)
@@ -82,8 +83,8 @@
 ### **Partial least squares (PLSR)**
 
 *Usual (asymetric regression mode)*
-- **plskern** Fast "improved kernel #1" algorithm 
-    of *Dayal & McGregor 1997*
+- **plskern** Fast "improved kernel #1" 
+    algorithm of *Dayal & McGregor 1997*
 - **plsnipals** Nipals
 - **plswold** Nipals *Wold 1984*
 - **plsrosa** ROSA *Liland et al. 2016*
