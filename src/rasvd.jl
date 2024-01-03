@@ -170,15 +170,16 @@ function rasvd!(X::Matrix, Y::Matrix, weights::Weight;
 end
 
 """ 
-    transf(object::Rasvd, X, Y; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
+    transfbl(object::Rasvd, X, Y; 
+        nlv = nothing)
+Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
 * `Y` : Y-data for which components (LVs) are computed.
-* `nlv` : Nb. LVs to compute. If nothing, it is the maximum number
-    from the fitted model.
+* `nlv` : Nb. LVs to compute.
 """ 
-function transfbl(object::Rasvd, X, Y; nlv = nothing)
+function transfbl(object::Rasvd, X, Y; 
+        nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
