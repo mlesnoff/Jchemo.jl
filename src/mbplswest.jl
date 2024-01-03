@@ -14,8 +14,8 @@ Multiblock PLSR - Nipals algorithm (Westerhuis et al. 1998).
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `bscal` : Type of `Xbl` block scaling (`:none`, `:frob`). 
     See functions `fblockscal`.
-* `tol` : Tolerance value for convergence.
-* `maxit` : Maximum number of iterations.
+* `tol` : Tolerance value for convergence (Nipals).
+* `maxit` : Maximum number of iterations (Nipals).
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` and 
     of `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).

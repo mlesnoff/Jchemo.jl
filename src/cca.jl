@@ -39,7 +39,7 @@ to use an epsilon value (e.g. `tau` = 1e-8) to get similar
 results as with pseudo-inverses.  
 
 The normed scores returned by the function are expected 
-((using uniform `weights`) to be the same as those 
+(using uniform `weights`) to be the same as those 
 returned by functions `rcc` of the R packages `CCA` (González et al.) 
 and `mixOmics` (Lê Cao et al.) whith their parameters lambda1 
 and lambda2 set to:
