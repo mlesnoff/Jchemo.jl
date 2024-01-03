@@ -65,23 +65,36 @@ Phonetic Sciences, Univ. of Amsterdam, Proceedings 25, 81-99.
 ## Examples
 ```julia
 using JchemoData, JLD2
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/linnerud.jld2") 
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "linnerud.jld2") 
 @load db dat
 pnames(dat)
-X = dat.X 
+X = dat.X
 Y = dat.Y
+n, p = size(X)
+q = nco(Y)
 
-tau = 1e-8
-fm = cca(X, Y; nlv = 3, tau = tau)
-pnames(fm)
+nlv = 3
+bscal = :frob ; tau = 1e-8
+mod = cca(; nlv, bscal, 
+    tau)
+fit!(mod, X, Y)
+pnames(mod)
+pnames(mod.fm)
 
-fm.Tx
-transf(fm, X, Y).Tx
-fscale(fm.Tx, colnorm(fm.Tx))
+@head mod.fm.Tx
+@head transfbl(mod, X, Y).Tx
 
-res = summary(fm, X, Y)
+@head mod.fm.Ty
+@head transfbl(mod, X, Y).Ty
+
+res = summary(mod, X, Y) ;
 pnames(res)
+res.cort2t 
+res.rdx
+res.rdy
+res.corx2t 
+res.cory2t 
 ```
 """
 function cca(X, Y; kwargs...)
@@ -159,27 +172,29 @@ function cca!(X::Matrix, Y::Matrix, weights::Weight;
     d = d[1:nlv]
     Tx = (1 ./ sqrtw) .* X * Wx 
     Ty = (1 ./ sqrtw) .* Y * Wy
-    Cca(Tx, Ty, Wx, Wy, d, 
-        bscales, xmeans, xscales, ymeans, yscales, weights,
-        kwargs, par)
+    Cca(Tx, Ty, Wx, Wy, d, bscales, xmeans, xscales, 
+        ymeans, yscales, weights, kwargs, par)
 end
 
 """ 
-    transf(object::Cca, X, Y; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
+    transfbl(object::Cca, X, Y; 
+        nlv = nothing)
+Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
 * `Y` : Y-data for which components (LVs) are computed.
-* `nlv` : Nb. LVs to compute. If nothing, it is the maximum number
-    from the fitted model.
+* `nlv` : Nb. LVs to compute.
 """ 
-function transfbl(object::Cca, X, Y; nlv = nothing)
+function transfbl(object::Cca, X, Y; 
+        nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xmeans, 
+        object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ymeans, 
+        object.yscales) / object.bscales[2]
     Tx = X * vcol(object.Wx, 1:nlv)
     Ty = Y * vcol(object.Wy, 1:nlv)
     (Tx = Tx, Ty)
@@ -197,44 +212,51 @@ function Base.summary(object::Cca, X, Y)
     Y = ensure_mat(Y)
     n = nro(X)
     nlv = nco(object.Tx)
-    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
-    D = Diagonal(object.weights.w)
-    # X
-    sstot = frob(X, object.weights)^2
-    T = object.Tx
-    tt = colsum(D * T .* T)
+    X = fcscale(X, object.xmeans, 
+        object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ymeans, 
+        object.yscales) / object.bscales[2]
+    D = Diagonal(object.weights.w)   
+    ## To do: explvarx, explvary 
+    ## X
+    #sstot = frob(X, object.weights)^2
+    #T = object.Tx
     #tt = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
-    pvar =  tt / sstot
-    cumpvar = cumsum(pvar)
-    xvar = tt / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
-        cumpvar = cumpvar)
-    # Y
-    sstot = frob(Y, object.weights)^2
-    T = object.Ty
-    tt = colsum(D * T .* T)
+    ##tt = colsum(D * T .* T)  # = [1]
+    #pvar =  tt / sstot
+    #cumpvar = cumsum(pvar)
+    #xvar = tt / n    
+    #explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
+    #    pvar = pvar, cumpvar = cumpvar)
+    ## Y
+    #sstot = frob(Y, object.weights)^2
+    #T = object.Ty
     #tt = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)
-    pvar =  tt / sstot
-    cumpvar = cumsum(pvar)
-    xvar = tt / n    
-    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
-        cumpvar = cumpvar)
-    # Correlation between X- and Y-block scores
-    z = diag(corm(object.Tx, object.Ty, object.weights))
+    ##tt = colsum(D * T .* T)  # = [1]
+    #pvar =  tt / sstot
+    #cumpvar = cumsum(pvar)
+    #xvar = tt / n    
+    #explvary = DataFrame(nlv = 1:nlv, var = xvar, 
+    #    pvar = pvar, cumpvar = cumpvar)
+    ## Correlation between X- and 
+    ## Y-block scores
+    z = diag(corm(object.Tx, object.Ty, 
+        object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)
-    # Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
+    ## Redundancies (Average correlations) 
+    ## Rd(X, tx) and Rd(Y, ty)
     z = rd(X, object.Tx, object.weights)
     rdx = DataFrame(lv = 1:nlv, rd = vec(z))
     z = rd(Y, object.Ty, object.weights)
     rdy = DataFrame(lv = 1:nlv, rd = vec(z))
-    # Correlation between block variables and their block scores
+    ## Correlation between block variables 
+    ## and their block scores
     z = corm(X, object.Tx, object.weights)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)
     cory2t = DataFrame(z, string.("lv", 1:nlv))
-    # End
-    (explvarx = explvarx, explvary, cort2t, rdx, rdy, 
-        corx2t, cory2t)
+    ## End
+    (cort2t = cort2t, 
+        rdx, rdy, corx2t, cory2t)
 end
 

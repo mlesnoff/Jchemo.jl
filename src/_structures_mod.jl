@@ -99,3 +99,6 @@ end
 function Base.summary(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, X)
     Base.summary(mod.fm, X)
 end
+function Base.summary(mod::Jchemo.Transformer, X, Y)
+    Base.summary(mod.fm, X, Y)
+end
