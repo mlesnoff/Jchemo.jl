@@ -1,38 +1,45 @@
 """
-    plstuck(X, Y, weights = ones(nro(X)); nlv,
-        bscal = :none, scal::Bool = false)
-    plstuck!(X::Matrix, Y::Matrix, weights = ones(nro(X)); nlv,
-        bscal = :none, scal::Bool = false)
+    plstuck(; kwargs...)
+    plstuck(X, Y; kwargs...)
+    plstuck(X, Y, weights::Weight; 
+        kwargs...)
+    plstuck!(X::Matrix, Y::Matrix, weights::Weight; 
+        kwargs...)
 Tucker's inter-battery method of factor analysis
-* `X` : First block (matrix) of data.
-* `Y` : Second block (matrix) of data.
+* `X` : First block of data.
+* `Y` : Second block of data.
 * `weights` : Weights of the observations (rows). 
     Internally normalized to sum to 1. 
+Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-* `bscal` : Type of block scaling (`:none`, `:frob`). 
-    See functions `fblockscal`.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
+* `bscal` : Type of block scaling. Possible values are:
+    `:none`, `:frob`. See functions `fblockscal`.
+* `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-Inter-battery method of factor analysis (Tucker 1958, Tenenhaus 1998 chap.3), 
-The two blocks `X` and `X` play a symmetric role.  This method is referred to 
-as PLS-SVD in Wegelin 2000. The basis of the method is to factorize the covariance 
-matrix X'Y by SVD. 
+Inter-battery method of factor analysis (Tucker 1958, 
+Tenenhaus 1998 chap.3). The two blocks `X` and `X` play 
+a symmetric role.  This method is referred to as PLS-SVD 
+in Wegelin 2000. The basis of the method is to factorize 
+the covariance matrix X'Y by SVD. 
 
 ## References
+Tenenhaus, M., 1998. La régression PLS: théorie 
+et pratique. Editions Technip, Paris.
 
-Tenenhaus, M., 1998. La régression PLS: théorie et pratique. Editions Technip, Paris.
+Tishler, A., Lipovetsky, S., 2000. Modelling and forecasting 
+with robust canonical analysis: method and application. 
+Computers & Operations Research 27, 217–232. 
+https://doi.org/10.1016/S0305-0548(99)00014-3
 
-Tishler, A., Lipovetsky, S., 2000. Modelling and forecasting with robust 
-canonical analysis: method and application. Computers & Operations Research 27, 
-217–232. https://doi.org/10.1016/S0305-0548(99)00014-3
-
-Tucker, L.R., 1958. An inter-battery method of factor analysis. Psychometrika 23, 111–136.
+Tucker, L.R., 1958. An inter-battery method of factor 
+analysis. Psychometrika 23, 111–136.
 https://doi.org/10.1007/BF02289009
 
-Wegelin, J.A., 2000. A Survey of Partial Least Squares (PLS) Methods, with Emphasis 
-on the Two-Block Case (No. 371). University of Washington, Seattle, Washington, USA.
+Wegelin, J.A., 2000. A Survey of Partial Least Squares (PLS) 
+Methods, with Emphasis on the Two-Block Case (No. 371). 
+University of Washington, Seattle, Washington, USA.
 
 ## Examples
 ```julia
@@ -62,7 +69,8 @@ function plstuck(X, Y; kwargs...)
     plstuck(X, Y, weights; kwargs...)
 end
 
-function plstuck(X, Y, weights::Weight; kwargs...)
+function plstuck(X, Y, weights::Weight; 
+        kwargs...)
     plstuck!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
         weights; kwargs...)
 end
@@ -106,27 +114,32 @@ function plstuck!(X::Matrix, Y::Matrix, weights::Weight;
     Ty = Y * Wy
     TTx = colsum(D * Tx .* Tx)
     TTy = colsum(D * Ty .* Ty)
-    Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
-        ymeans, yscales, weights,
+    Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, 
+        xmeans, xscales, ymeans, yscales, weights,
         kwargs, par)
 end
 
 """ 
-    transf(object::PlsSVd, X, Y; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model and (X, Y)-data.
+    transfbl(object::Plstuck, X, Y; 
+        nlv = nothing)
+Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
 * `Y` : Y-data for which components (LVs) are computed.
-* `nlv` : Nb. LVs to compute. If nothing, it is the maximum number
-    from the fitted model.
+* `nlv` : Nb. LVs to compute.
 """ 
-function transfbl(object::Plstuck, X, Y; nlv = nothing)
+function transfbl(object::Plstuck, X, Y; 
+        nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    Tx = fcscale(X, object.xmeans, object.xscales) * vcol(object.Wx, 1:nlv)
-    Ty = fcscale(Y, object.ymeans, object.yscales) * vcol(object.Wy, 1:nlv)
+    X = fcscale(X, object.xmeans, 
+        object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ymeans, 
+        object.yscales) / object.bscales[2]
+    Tx = X * vcol(object.Wx, 1:nlv)
+    Ty = Y * vcol(object.Wy, 1:nlv)
     (Tx = Tx, Ty)
 end
 
@@ -141,38 +154,43 @@ function Base.summary(object::Plstuck, X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, nlv = size(object.Tx)
-    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
-    # X
+    X = fcscale(X, object.xmeans, 
+        object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ymeans, 
+        object.yscales) / object.bscales[2]
+    ## X
     tt = object.TTx
     sstot = frob(X, object.weights)^2
     pvar = tt / sstot
     cumpvar = cumsum(pvar) 
     xvar = tt / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
-        cumpvar = cumpvar)
-    # Y
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
+        pvar = pvar, cumpvar = cumpvar)
+    ## Y
     tt = object.TTy
     sstot = frob(Y, object.weights)^2
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
     xvar = tt / n    
-    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
-        cumpvar = cumpvar)
-    # Correlation between X- and Y-block scores
+    explvary = DataFrame(nlv = 1:nlv, var = xvar, 
+        pvar = pvar, cumpvar = cumpvar)
+    ## Correlation between X- and 
+    ## Y-block scores
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)
-    # Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
+    ## Redundancies (Average correlations) 
+    ## Rd(X, tx) and Rd(Y, ty)
     z = rd(X, object.Tx, object.weights)
     rdx = DataFrame(lv = 1:nlv, rd = vec(z))
     z = rd(Y, object.Ty, object.weights)
     rdy = DataFrame(lv = 1:nlv, rd = vec(z))
-    # Correlation between block variables and their block scores
+    ## Correlation between block variables 
+    ## and their block scores
     z = corm(X, object.Tx, object.weights)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)
     cory2t = DataFrame(z, string.("lv", 1:nlv))
-    # End
+    ## End
     (explvarx = explvarx, explvary, cort2t, rdx, rdy, 
         corx2t, cory2t)
 end
