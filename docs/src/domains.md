@@ -245,19 +245,19 @@
 
 ## TUNING MODELS
 
-### **Grid**
-
-- **mpar** Expand a grid of parameter values
-
 ### **Test-set validation**
 
 - **gridscore** Compute an error rate over a grid of parameters
   
 ### **Cross-validation (CV)**
 
+- **gridcv** Compute an error rate over a grid of parameters
+
+### **Utilities**
+
+- **mpar** Expand a grid of parameter values
 - **segmkf** Build segments for K-fold CV
 - **segmts** Build segments for test-set validation
-- **gridcv** Compute an error rate over a grid of parameters
 
 ### **Performance scores**
 
