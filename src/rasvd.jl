@@ -133,7 +133,7 @@ function rasvd!(X::Matrix, Y::Matrix, weights::Weight;
         normy = frob(Y, weights)
         X ./= normx
         Y ./= normy
-        bscales = [normx; normy]
+        bscales = [normx ; normy]
     end
     # Row metric
     X .= sqrtw .* X
@@ -216,20 +216,21 @@ function Base.summary(object::Rasvd, X, Y)
     ## X
     T = object.Tx
     sstot = frob(X, object.weights)^2
-    sst = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
-    pvar =  sst / sstot
+    tt = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
+    pvar =  tt / sstot
     cumpvar = cumsum(pvar)
-    xvar = sst / n
+    xvar = tt / n
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
         pvar = pvar, cumpvar = cumpvar)
     ## To do: explvary 
     ### Y
     #T .= object.Ty
-    #frob(Y, object.weights)^2
-    #sst = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)
-    #pvar =  sst / sstot
+    #sstot = frob(Y, object.weights)^2
+    #tt = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)
+    #pvar =  tt / sstot
     #cumpvar = cumsum(pvar)
-    #explvary = DataFrame(nlv = 1:nlv, var = sst, pvar = pvar, cumpvar = cumpvar)
+    #explvary = DataFrame(nlv = 1:nlv, var = tt, 
+    #    pvar = pvar, cumpvar = cumpvar)
     explvary = nothing 
     ## Correlation between X- and 
     ## Y-block scores
@@ -249,6 +250,6 @@ function Base.summary(object::Rasvd, X, Y)
     z = corm(Y, object.Ty, object.weights)
     cory2t = DataFrame(z, string.("lv", 1:nlv))
     ## End 
-    (explvarx = explvarx, explvary, cort2t, rdx, rdy, 
-        corx2t, cory2t)
+    (explvarx = explvarx, explvary, cort2t, 
+        rdx, rdy, corx2t, cory2t)
 end

@@ -146,7 +146,7 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight;
         normy = frob(Y, weights)
         X ./= normx
         Y ./= normy
-        bscales = [normx; normy]
+        bscales = [normx ; normy]
     end
     # Row metric
     X .= sqrtw .* X

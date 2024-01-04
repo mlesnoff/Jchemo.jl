@@ -140,7 +140,7 @@ function cca!(X::Matrix, Y::Matrix, weights::Weight;
         normy = frob(Y, weights)
         X ./= normx
         Y ./= normy
-        bscales = [normx; normy]
+        bscales = [normx ; normy]
     end
     # Row metric
     X .= sqrtw .* X
@@ -215,7 +215,7 @@ function Base.summary(object::Cca, X, Y)
         object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, 
         object.yscales) / object.bscales[2]
-    ## To do: explvarx, explvary
+    ## To do: explvarx, explvary 
     #D = Diagonal(object.weights.w)   
     ### X
     #T = object.Tx
@@ -227,9 +227,10 @@ function Base.summary(object::Cca, X, Y)
     #xvar = tt / n    
     #explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
     #    pvar = pvar, cumpvar = cumpvar)
+    explvarx = nothing 
     ### Y
-    #sstot = frob(Y, object.weights)^2
     #T = object.Ty
+    #sstot = frob(Y, object.weights)^2
     #tt = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)
     ##tt = colsum(D * T .* T)  # = [1]
     #pvar =  tt / sstot
@@ -237,6 +238,7 @@ function Base.summary(object::Cca, X, Y)
     #xvar = tt / n    
     #explvary = DataFrame(nlv = 1:nlv, var = xvar, 
     #    pvar = pvar, cumpvar = cumpvar)
+    explvary = nothing
     ## Correlation between X- and 
     ## Y-block scores
     z = diag(corm(object.Tx, object.Ty, 
@@ -255,7 +257,7 @@ function Base.summary(object::Cca, X, Y)
     z = corm(Y, object.Ty, object.weights)
     cory2t = DataFrame(z, string.("lv", 1:nlv))
     ## End
-    (cort2t = cort2t, 
+    (explvarx = explvarx, explvary, cort2t, 
         rdx, rdy, corx2t, cory2t)
 end
 

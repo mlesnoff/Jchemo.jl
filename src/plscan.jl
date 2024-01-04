@@ -117,7 +117,7 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight;
         normy = frob(Y, weights)
         X ./= normx
         Y ./= normy
-        bscales = [normx; normy]
+        bscales = [normx ; normy]
     end
     # Pre-allocation
     XtY = similar(X, p, q)

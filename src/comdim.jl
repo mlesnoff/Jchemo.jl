@@ -310,8 +310,8 @@ function Base.summary(object::Comdim, Xbl)
     tt = colsum(object.lb)    
     pvar = tt / sum(sstot)
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, 
-        cumpvar = cumpvar)
+    explvarx = DataFrame(lv = 1:nlv, var = tt, 
+        pvar = pvar, cumpvar = cumpvar)
     # Explained_XXt (indicator "V")
     S = list(Matrix{Q}, nbl)
     sstot_xx = 0 
