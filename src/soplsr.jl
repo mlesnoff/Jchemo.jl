@@ -1,52 +1,73 @@
 """
-    soplsr(Xbl, Y, weights = ones(size(Xbl, 1)); nlv,
-        scal::Bool = false)
+    soplsr(; kwargs...)
+    soplsr(Xbl; kwargs...)
+    soplsr(Xbl, weights::Weight; kwargs...)
+    soplsr!(Xbl::Matrix, weights::Weight; 
+        kwargs...)
 Multiblock sequentially orthogonalized PLSR (SO-PLSR).
-* `Xbl` : List (vector) of blocks (matrices) of X-data. 
-    Each component of the list is a block.
-* `Y` : Y-data.
-* `weights` : Weights of the observations (rows). 
-    Internally normalized to sum to 1. 
-* `nlv` : Nb. latent variables (LVs) to consider for each block. 
-    A vector having a length equal to the nb. blocks.
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and 
-    of `Y` is scaled by its uncorrected standard deviation 
-    (before the block scaling).
+* `Xbl` : List of blocks (vector of matrices) of X-data 
+    Typically, output of function `mblock` from (n, p) data.  
+* `Y` : Y-data (n, q).
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
+Keyword arguments:
+    * `nlv` : Nb. latent variables (LVs = scores T) to compute.
+    * `bscal` : Type of block scaling. Possible values are:
+        `:none`, `:frob`. See functions `fblockscal`.
+    * `scal` : Boolean. If `true`, each column of blocks in `X` 
+        and `Y` is scaled by its uncorrected standard deviation 
+        (before the block scaling).
 
 ## References
-- Biancolillo et al. , 2015. Combining SO-PLS and linear discriminant analysis 
-    for multi-block classification. Chemometrics and Intelligent Laboratory Systems, 
-    141, 58-67.
+Biancolillo et al. , 2015. Combining SO-PLS and linear 
+discriminant analysis for multi-block classification. 
+Chemometrics and Intelligent Laboratory Systems, 141, 58-67.
 
-- Biancolillo, A. 2016. Method development in the area of multi-block analysis focused on 
-    food analysis. PhD. University of copenhagen.
+Biancolillo, A. 2016. Method development in the area of 
+multi-block analysis focused on food analysis. PhD. 
+University of copenhagen.
 
-- Menichelli et al., 2014. SO-PLS as an exploratory tool for path modelling. 
-    Food Quality and Preference, 36, 122-134.
+Menichelli et al., 2014. SO-PLS as an exploratory tool
+for path modelling. Food Quality and Preference, 36, 122-134.
 
-    ## Examples
+## Examples
 ```julia
-using JLD2
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/ham.jld2") 
+using JchemoData, JLD2
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "ham.jld2") 
 @load db dat
 pnames(dat) 
-
 X = dat.X
-y = dat.Y.c1
+Y = dat.Y
+y = Y.c1
 group = dat.group
 listbl = [1:11, 12:19, 20:25]
-Xbl = mblock(X, listbl)
-# "New" = first two rows of Xbl 
-Xbl_new = mblock(X[1:2, :], listbl)
+s = 1:6
+Xbl_train = mblock(X[s, :], listbl)
+Xbl_test = mblock(rmrow(X, s), listbl)
+ytrain = y[s]
+ytest = rmrow(y, s) 
+ntrain = nro(ytrain) 
+ntest = nro(ytest) 
+ntot = ntrain + ntest 
+(ntot = ntot, ntrain , ntest)
 
-nlv = [2; 1; 2]
-fm = soplsr(Xbl, y; nlv) ;
-pnames(fm)
-fm.T
-transf(fm, Xbl_new)
-[y Jchemo.predict(fm, Xbl).pred]
-Jchemo.predict(fm, Xbl_new).pred
+nlv = 2
+#nlv = [2, 1, 2]
+#nlv = [2, 0, 1]
+scal = false
+#scal = true
+mod = soplsr(; nlv, scal)
+fit!(mod, Xbl_train, ytrain)
+pnames(mod) 
+pnames(mod.fm)
+@head mod.fm.T
+@head transf(mod, Xbl_train)
+transf(mod, Xbl_test)
+
+res = predict(mod, Xbl_test)
+res.pred 
+rmsep(res.pred, ytest)
 ```
 """
 function soplsr(Xbl, Y; kwargs...)
@@ -85,7 +106,7 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
     fm[1] = plskern(Xbl[1], Y, weights; 
         nlv = nlv[1], scal = par.scal)
     T = fm[1].T
-    pred .= Jchemo.predict(fm[1], Xbl[1]).pred
+    pred .= predict(fm[1], Xbl[1]).pred
     b[1] = nothing
     # Other blocks
     if nbl > 1
@@ -105,7 +126,8 @@ end
     transf(object::Soplsr, Xbl)
 Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
-* `Xbl` : A list (vector) of blocks (matrices) for which LVs are computed.
+* `Xbl` : A list of blocks (vector of matrices) 
+    of X-data for which LVs are computed.
 """ 
 function transf(object::Soplsr, Xbl)
     nbl = length(object.fm)
@@ -123,7 +145,8 @@ end
     predict(object::Soplsr, Xbl)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
-* `Xbl` : A list (vector) of X-data for which predictions are computed.
+* `Xbl` : A list of blocks (vector of matrices) 
+    of X-data for which predictions are computed.
 """ 
 function predict(object::Soplsr, Xbl)
     nbl = length(object.fm)
