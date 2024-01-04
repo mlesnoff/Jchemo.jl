@@ -5,10 +5,10 @@
     comdim!(Xbl::Matrix, weights::Weight; 
         kwargs...)
 Common components and specific weights analysis (ComDim, *aka* CCSWA).
-* `Xbl` : List (vector) of blocks (matrices) of X-data. 
-    Each component of the list is a block.
-* `weights` : Weights of the observations (rows). 
-    Internally normalized to sum to 1. 
+* `Xbl` : List of blocks (vector of matrices) of X-data. 
+    Typically, output of function `mblock`.  
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling (`:none`, `:frob`). 
     See functions `fblockscal`.
@@ -159,7 +159,8 @@ function comdim!(Xbl::Vector, weights::Weight;
         xscales[k] = ones(nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
-            Xbl[k] = fcscale(Xbl[k], xmeans[k], xscales[k])
+            Xbl[k] = fcscale(Xbl[k], 
+                xmeans[k], xscales[k])
         else
             Xbl[k] = fcenter(Xbl[k], xmeans[k])
         end
@@ -234,21 +235,29 @@ function comdim!(Xbl::Vector, weights::Weight;
 end
 
 """ 
-    transf(object::Comdim, Xbl; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model.
+    transf(object::Mbpca, Xbl; 
+        nlv = nothing)
+    transfbl(object::Mbpca, Xbl; 
+        nlv = nothing)
+Compute latent variables (LVs = scores T) from 
+    a fitted model.
 * `object` : The fitted model.
-* `Xbl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
+* `Xbl` : A list of blocks (vector of matrices) 
+    of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transf(object::Comdim, Xbl; nlv = nothing)
+function transf(object::Comdim, Xbl; 
+        nlv = nothing)
     transf_all(object, Xbl; nlv).T
 end
 
-function transfbl(object::Comdim, Xbl; nlv = nothing)
+function transfbl(object::Comdim, Xbl; 
+        nlv = nothing)
     transf_all(object, Xbl; nlv).Tbl
 end
 
-function transf_all(object::Comdim, Xbl; nlv = nothing)
+function transf_all(object::Comdim, Xbl; 
+        nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
@@ -256,7 +265,8 @@ function transf_all(object::Comdim, Xbl; nlv = nothing)
     m = size(Xbl[1], 1)
     zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
+        zXbl[k] = fcscale(Xbl[k], 
+            object.xmeans[k], object.xscales[k])
     end
     zXbl = fblockscal(zXbl, object.bscales).Xbl
     U = similar(zXbl[1], m, nlv)
@@ -287,7 +297,8 @@ end
     summary(object::Comdim, Xbl)
 Summarize the fitted model.
 * `object` : The fitted model.
-* `Xbl` : The X-data that was used to fit the model.
+* `Xbl` : The X-data that was used to 
+    fit the model.
 """ 
 function Base.summary(object::Comdim, Xbl)
     Q = eltype(Xbl[1][1, 1])
@@ -296,13 +307,14 @@ function Base.summary(object::Comdim, Xbl)
     sqrtw = sqrt.(object.weights.w)
     zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
+        zXbl[k] = fcscale(Xbl[k], 
+            object.xmeans[k], object.xscales[k])
     end
     zXbl = fblockscal(zXbl, object.bscales).Xbl
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end
-    # Explained_X by global scores
+    ## Explained_X by global scores
     sstot = zeros(Q, nbl)
     @inbounds for k = 1:nbl
         sstot[k] = ssq(zXbl[k])
@@ -312,7 +324,7 @@ function Base.summary(object::Comdim, Xbl)
     cumpvar = cumsum(pvar)
     explvarx = DataFrame(lv = 1:nlv, var = tt, 
         pvar = pvar, cumpvar = cumpvar)
-    # Explained_XXt (indicator "V")
+    ## Explained_XXt (indicator "V")
     S = list(Matrix{Q}, nbl)
     sstot_xx = 0 
     @inbounds for k = 1:nbl
@@ -322,41 +334,46 @@ function Base.summary(object::Comdim, Xbl)
     tt = object.mu
     pvar = tt / sstot_xx
     cumpvar = cumsum(pvar)
-    explvarxx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, 
-        cumpvar = cumpvar)
-    # Proportions of squared saliences
+    explvarxx = DataFrame(lv = 1:nlv, var = tt, 
+        pvar = pvar, cumpvar = cumpvar)
+    ## Proportions of squared saliences
     sal2 = copy(object.lb)
     for a = 1:nlv
         sal2[:, a] .= object.lb[:, a].^2 / object.mu[a]
     end
     sal2 = DataFrame(sal2, string.("lv", 1:nlv))
-    # Contribution of the blocks to global scores = lb proportions (contrib)
+    ## Contribution of the blocks to global 
+    ## scores = lb proportions (contrib)
     z = fscale(object.lb, colsum(object.lb))
     contr_block = DataFrame(z, string.("lv", 1:nlv))
-    # Proportion of inertia explained for each block (explained.X)
+    ## Proportion of inertia explained for 
+    ## each block (explained.X)
     # = object.lb if bscal = :frob 
     z = fscale((object.lb)', sstot)'
     explX = DataFrame(z, string.("lv", 1:nlv))
-    # Correlation between the original variables and the global scores (globalcor)
+    ## Correlation between the original variables and 
+    ## the global scores (globalcor)
     X = reduce(hcat, zXbl)
     z = cor(X, object.U)  
     corx2t = DataFrame(z, string.("lv", 1:nlv))  
-    # Correlation between the block scores and the global scores (cor.g.b)
+    ## Correlation between the block scores and 
+    ## the global scores (cor.g.b)
     z = list(Matrix{Q}, nlv)
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], object.U[:, a])
     end
-    cortb2t = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
-    # RV 
+    cortb2t = DataFrame(reduce(hcat, z), 
+        string.("lv", 1:nlv))
+    ## RV 
     X = vcat(zXbl, [sqrtw .* object.T])
     nam = [string.("block", 1:nbl) ; "T"]
     res = rv(X)
     zrv = DataFrame(res, nam)
-    # Lg
+    ## Lg
     res = lg(X)
     zlg = DataFrame(res, nam)
-    (explvarx = explvarx, explvarxx, sal2, contr_block, explX, 
-        corx2t, cortb2t, rv = zrv, lg = zlg)
+    (explvarx = explvarx, explvarxx, sal2, contr_block, 
+        explX, corx2t, cortb2t, rv = zrv, lg = zlg)
 end
 
 

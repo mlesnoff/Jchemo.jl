@@ -1,52 +1,67 @@
 """
-    mbplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = :none, scal::Bool = false)
-    mbplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = :none, scal::Bool = false)
-Multiblock PLSR (MBPLSR) - Fast version.
-* `Xbl` : List (vector) of blocks (matrices) of X-data. 
-    Each component of the list is a block.
-* `Y` : Y-data.
-* `weights` : Weights of the observations (rows). 
-    Internally normalized to sum to 1. 
-* `nlv` : Nb. latent variables (LVs) to compute.
-* `bscal` : Type of `Xbl` block scaling (`:none`, `:frob`).
-    See functions `fblockscal`.
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and 
-    of `Y` is scaled by its uncorrected standard deviation 
-    (before the block scaling).
+    mbplsr(; kwargs...)
+    mbplsr(Xbl; kwargs...)
+    mbplsr(Xbl, weights::Weight; kwargs...)
+    mbplsr!(Xbl::Matrix, weights::Weight; 
+        kwargs...)
+Multiblock PLSR (MBPLSR)
+* `Xbl` : List of blocks (vector of matrices) of X-data 
+    Typically, output of function `mblock` from (n, p) data.  
+* `Y` : Y-data (n, q).
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
+Keyword arguments:
+    * `nlv` : Nb. latent variables (LVs = scores T) to compute.
+    * `bscal` : Type of block scaling. Possible values are:
+        `:none`, `:frob`. See functions `fblockscal`.
+    * `scal` : Boolean. If `true`, each column of blocks in `X` 
+        and `Y` is scaled by its uncorrected standard deviation 
+        (before the block scaling).
 
-PLSR (X, `Y`) where X is the horizontal concatenation of the blocks in `Xbl`.
-The function gives the same results as function `mbplswest`, 
-but is much faster.
+This function runs a PLSR on {X, `Y`} where X is the horizontal 
+concatenation of the blocks in `Xbl`. The function gives the 
+same results as function `mbplswest`, but is much faster.
 
 ## Examples
 ```julia
-using JLD2
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/ham.jld2") 
+using JchemoData, JLD2
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "ham.jld2") 
 @load db dat
 pnames(dat) 
-
 X = dat.X
 Y = dat.Y
-y = dat.Y.c1
+y = Y.c1
 group = dat.group
 listbl = [1:11, 12:19, 20:25]
-Xbl = mblock(X, listbl)
-# "New" = first two rows of Xbl 
-Xbl_new = mblock(X[1:2, :], listbl)
+s = 1:6
+Xbl_train = mblock(X[s, :], listbl)
+Xbl_test = mblock(rmrow(X, s), listbl)
+ytrain = y[s]
+ytest = rmrow(y, s) 
+ntrain = nro(ytrain) 
+ntest = nro(ytest) 
+ntot = ntrain + ntest 
+(ntot = ntot, ntrain , ntest)
 
-bscal = :none
-nlv = 5
-fm = mbplsr(Xbl, y; nlv = nlv, bscal = bscal) ;
-pnames(fm)
-fm.T
-transf(fm, Xbl_new)
-[y Jchemo.predict(fm, Xbl).pred]
-Jchemo.predict(fm, Xbl_new).pred
+nlv = 3
+bscal = :frob
+scal = false
+#scal = true
+mod = mbplsr(; nlv, 
+    bscal, scal)
+fit!(mod, Xbl_train, ytrain)
+pnames(mod) 
+pnames(mod.fm)
+@head mod.fm.T
+@head transf(mod, Xbl_train)
+transf(mod, Xbl_test)
 
-summary(fm, Xbl) 
+res = summary(mod, Xbl_train) ;
+pnames(res) 
+res.explvarx
+res.corx2t 
+res.rdx
 ```
 """
 function mbplsr(Xbl, Y; kwargs...)
@@ -56,7 +71,8 @@ function mbplsr(Xbl, Y; kwargs...)
     mbplsr(Xbl, Y, weights; kwargs...)
 end
 
-function mbplsr(Xbl, Y, weights::Weight; kwargs...)
+function mbplsr(Xbl, Y, weights::Weight; 
+        kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
@@ -81,7 +97,8 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
         xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
-            Xbl[k] .= fcscale(Xbl[k], xmeans[k], xscales[k])
+            Xbl[k] .= fcscale(Xbl[k], 
+                xmeans[k], xscales[k])
         else
             Xbl[k] .= fcenter(Xbl[k], xmeans[k])
         end
@@ -103,42 +120,49 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
     X = reduce(hcat, Xbl)
     fm = plskern(X, Y, weights; kwargs...)
     Mbplsr(fm, fm.T, fm.R, fm.C, 
-        bscales, xmeans, xscales, ymeans, yscales, weights,
-        kwargs, par)
+        bscales, xmeans, xscales, ymeans, yscales, 
+        weights, kwargs, par)
 end
 
 """ 
-    transf(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
+    transf(object::Union{Mbplsr, Mbplswest}, Xbl; 
+        nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
-* `Xbl` : A list (vector) of blocks (matrices) for which LVs are computed.
-* `nlv` : Nb. LVs to consider.
+* `Xbl` : A list of blocks (vector of matrices) 
+    of X-data for which LVs are computed.
+* `nlv` : Nb. LVs to compute.
 """ 
-function transf(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
+function transf(object::Union{Mbplsr, Mbplswest}, Xbl; 
+        nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
     zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
+        zXbl[k] = fcscale(Xbl[k], 
+            object.xmeans[k], object.xscales[k])
     end
     res = fblockscal(zXbl, object.bscales)
     reduce(hcat, res.Xbl) * vcol(object.R, 1:nlv) 
 end
 
 """
-    predict(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
+    predict(object::Union{Mbplsr, Mbplswest}, Xbl; 
+        nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
-* `Xbl` : A list (vector) of X-data for which predictions are computed.
+* `Xbl` : A list of blocks (vector of matrices) 
+    of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
 function predict(object::Union{Mbplsr, Mbplswest}, Xbl; 
         nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
-    isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
+    isnothing(nlv) ? nlv = a : 
+        nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     T = transf(object, Xbl)
     pred = list(Matrix{Q}, le_nlv)
@@ -156,7 +180,8 @@ end
     summary(object::Mbplsr, Xbl)
 Summarize the fitted model.
 * `object` : The fitted model.
-* `Xbl` : The X-data that was used to fit the model.
+* `Xbl` : The X-data that was used to 
+    fit the model.
 """ 
 function Base.summary(object::Mbplsr, Xbl)
     Q = eltype(Xbl[1][1, 1])
@@ -165,7 +190,8 @@ function Base.summary(object::Mbplsr, Xbl)
     sqrtw = sqrt.(object.weights.w)
     zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
+        zXbl[k] = fcscale(Xbl[k], 
+            object.xmeans[k], object.xscales[k])
     end
     zXbl = fblockscal(zXbl, object.bscales).Xbl
     @inbounds for k = 1:nbl
@@ -183,19 +209,20 @@ function Base.summary(object::Mbplsr, Xbl)
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
-        cumpvar = cumpvar)
-    # Correlation between the original X-variables
-    # and the global scores 
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
+        pvar = pvar, cumpvar = cumpvar)
+    ## Correlation between the original X-variables
+    ## and the global scores 
     z = cor(X, sqrtw .* object.T)  
     corx2t = DataFrame(z, string.("lv", 1:nlv))
-    # Redundancies (Average correlations) Rd(X, t) 
-    # between each X-block and each global score
+    ## Redundancies (Average correlations) Rd(X, t) 
+    ## between each X-block and each global score
     z = list(Matrix{Q}, nbl)
     @inbounds for k = 1:nbl
         z[k] = rd(zXbl[k], sqrtw .* object.T)
     end
-    rdx = DataFrame(reduce(vcat, z), string.("lv", 1:nlv))       
-    # Outputs
+    rdx = DataFrame(reduce(vcat, z), 
+        string.("lv", 1:nlv))       
+    ## Outputs
     (explvarx = explvarx, corx2t, rdx)
 end

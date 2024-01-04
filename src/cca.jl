@@ -8,15 +8,15 @@
 Canonical correlation Analysis (CCA, RCCA).
 * `X` : First block of data.
 * `Y` : Second block of data.
-* `weights` : Weights of the observations (rows). 
-    Internally normalized to sum to 1. 
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling. Possible values are:
     `:none`, `:frob`. See functions `fblockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
-    is scaled by its uncorrected standard deviation 
+* `scal` : Boolean. If `true`, each column of blocks in `X` 
+    and `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
 This function implements a CCA algorithm using SVD decompositions and 
@@ -217,7 +217,7 @@ function Base.summary(object::Cca, X, Y)
         object.yscales) / object.bscales[2]
     ## To do: explvarx, explvary 
     #D = Diagonal(object.weights.w)   
-    ### X
+    ## X
     #T = object.Tx
     #sstot = frob(X, object.weights)^2
     #tt = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
@@ -228,7 +228,7 @@ function Base.summary(object::Cca, X, Y)
     #explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
     #    pvar = pvar, cumpvar = cumpvar)
     explvarx = nothing 
-    ### Y
+    ## Y
     #T = object.Ty
     #sstot = frob(Y, object.weights)^2
     #tt = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)

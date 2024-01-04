@@ -9,15 +9,15 @@ Redundancy analysis (RA), *aka* PCA on instrumental
     variables (PCAIV)
 * `X` : First block of data.
 * `Y` : Second block of data.
-* `weights` : Weights of the observations (rows). 
-    Internally normalized to sum to 1. 
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling. Possible values are:
     `:none`, `:frob`. See functions `fblockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
-    is scaled by its uncorrected standard deviation 
+* `scal` : Boolean. If `true`, each column of blocks in `X` 
+    and `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
  
 See e.g. Bougeard et al. 2011a,b and Legendre & Legendre 2012. 
@@ -223,7 +223,7 @@ function Base.summary(object::Rasvd, X, Y)
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
         pvar = pvar, cumpvar = cumpvar)
     ## To do: explvary 
-    ### Y
+    ## Y
     #T .= object.Ty
     #sstot = frob(Y, object.weights)^2
     #tt = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)

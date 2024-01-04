@@ -8,14 +8,14 @@
 Canonical partial least squares regression (Canonical PLS).
 * `X` : First block of data.
 * `Y` : Second block of data.
-* `weights` : Weights of the observations (rows). 
-    Internally normalized to sum to 1. 
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling. Possible values are:
     `:none`, `:frob`. See functions `fblockscal`.
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
-    is scaled by its uncorrected standard deviation 
+* `scal` : Boolean. If `true`, each column of blocks in `X` 
+    and `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
 Canonical PLS with the Nipals algorithm (Wold 1984, 

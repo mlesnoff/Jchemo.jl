@@ -1,61 +1,76 @@
 """
-    mbplswest(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = :none, tol = sqrt(eps(1.)), maxit = 200, 
-        scal::Bool = false)
-    mbplswest!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv, 
-        bscal = :none, tol = sqrt(eps(1.)), maxit = 200, 
-        scal::Bool = false)
-Multiblock PLSR - Nipals algorithm (Westerhuis et al. 1998).
-* `Xbl` : List (vector) of blocks (matrices) of X-data. 
-    Each component of the list is a block.
-* `Y` : Y-data.
-* `weights` : Weights of the observations (rows). 
-    Internally normalized to sum to 1. 
-* `nlv` : Nb. latent variables (LVs) to compute.
-* `bscal` : Type of `Xbl` block scaling (`:none`, `:frob`). 
-    See functions `fblockscal`.
-* `tol` : Tolerance value for convergence (Nipals).
-* `maxit` : Maximum number of iterations (Nipals).
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and 
-    of `Y` is scaled by its uncorrected standard deviation 
-    (before the block scaling).
+    mbplswest(; kwargs...)
+    mbplswest(Xbl; kwargs...)
+    mbplswest(Xbl, weights::Weight; kwargs...)
+    mbplswest!(Xbl::Matrix, weights::Weight; 
+        kwargs...)
+Multiblock PLSR (MBPLSR) - Nipals algorithm.
+* `Xbl` : List of blocks (vector of matrices) of X-data 
+    Typically, output of function `mblock` from (n, p) data.  
+* `Y` : Y-data (n, q).
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
+Keyword arguments:
+    * `nlv` : Nb. latent variables (LVs = scores T) to compute.
+    * `bscal` : Type of block scaling. Possible values are:
+        `:none`, `:frob`. See functions `fblockscal`.
+    * `tol` : Tolerance value for convergence (Nipals).
+    * `maxit` : Maximum number of iterations (Nipals).
+    * `scal` : Boolean. If `true`, each column of blocks in `X` 
+        and `Y` is scaled by its uncorrected standard deviation 
+        (before the block scaling).
 
-MBPLSR is equivalent to the the PLSR (X, `Y`) where X is the horizontal 
-concatenation of the blocks in `Xbl`.
-The function gives the same results as function `mbplsr`.
+This functions implements the MBPLSR Nipals algorithm such 
+as in Westerhuis et al. 1998. The function gives the same 
+results as function `mbplsr`.
 
 ## References 
-Westerhuis, J.A., Kourti, T., MacGregor, J.F., 1998. Analysis of multiblock and hierarchical 
-PCA and PLS models. Journal of Chemometrics 12, 301–321. 
+Westerhuis, J.A., Kourti, T., MacGregor, J.F., 1998. Analysis 
+of multiblock and hierarchical PCA and PLS models. Journal of 
+Chemometrics 12, 301–321. 
 https://doi.org/10.1002/(SICI)1099-128X(199809/10)12:5<301::AID-CEM515>3.0.CO;2-S
 
 ## Examples
 ```julia
-using JLD2
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/ham.jld2") 
+using JchemoData, JLD2
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "ham.jld2") 
 @load db dat
 pnames(dat) 
-
 X = dat.X
 Y = dat.Y
-y = dat.Y.c1
+y = Y.c1
 group = dat.group
 listbl = [1:11, 12:19, 20:25]
-Xbl = mblock(X, listbl)
-# "New" = first two rows of Xbl 
-Xbl_new = mblock(X[1:2, :], listbl)
+s = 1:6
+Xbl_train = mblock(X[s, :], listbl)
+Xbl_test = mblock(rmrow(X, s), listbl)
+ytrain = y[s]
+ytest = rmrow(y, s) 
+ntrain = nro(ytrain) 
+ntest = nro(ytest) 
+ntot = ntrain + ntest 
+(ntot = ntot, ntrain , ntest)
 
-bscal = :none
-nlv = 5
-fm = mbplswest(Xbl, y; nlv = nlv, bscal = bscal) ;
-pnames(fm)
-fm.T
-transf(fm, Xbl_new)
-[y Jchemo.predict(fm, Xbl).pred]
-Jchemo.predict(fm, Xbl_new).pred
+nlv = 3
+bscal = :frob
+scal = false
+#scal = true
+mod = mbplswest(; nlv, 
+    bscal, scal)
+fit!(mod, Xbl_train, ytrain)
+pnames(mod) 
+pnames(mod.fm)
+@head mod.fm.T
+@head transf(mod, Xbl_train)
+transf(mod, Xbl_test)
 
-summary(fm, Xbl)
+res = summary(mod, Xbl_train) ;
+pnames(res) 
+res.explvarx
+res.corx2t 
+res.cortb2t 
+res.rdx
 ```
 """
 function mbplswest(Xbl, Y; kwargs...)
@@ -65,7 +80,8 @@ function mbplswest(Xbl, Y; kwargs...)
     mbplswest(Xbl, Y, weights; kwargs...)
 end
 
-function mbplswest(Xbl, Y, weights::Weight; kwargs...)
+function mbplswest(Xbl, Y, weights::Weight; 
+        kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
@@ -95,9 +111,11 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight;
         xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
-            Xbl[k] .= fcscale(Xbl[k], xmeans[k], xscales[k])
+            Xbl[k] .= fcscale(Xbl[k], 
+                xmeans[k], xscales[k])
         else
-            Xbl[k] .= fcenter(Xbl[k], xmeans[k])
+            Xbl[k] .= fcenter(Xbl[k], 
+                xmeans[k])
         end
     end
     ymeans = colmean(Y, weights)
@@ -194,15 +212,16 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight;
     Rx = Wx * inv(Px' * Wx)
     lb = nothing
     Mbplswest(Tx, Px, Rx, Wx, Wytild, Tbl, Tb, Pbl, TTx,    
-        bscales, xmeans, xscales, ymeans, yscales, weights, lb, niter,
-        kwargs, par)
+        bscales, xmeans, xscales, ymeans, yscales, weights, 
+        lb, niter, kwargs, par)
 end
 
 """
     summary(object::Mbplswest, Xbl)
 Summarize the fitted model.
 * `object` : The fitted model.
-* `Xbl` : The X-data that was used to fit the model.
+* `Xbl` : The X-data that was used to 
+    fit the model.
 """ 
 function Base.summary(object::Mbplswest, Xbl)
     Q = eltype(Xbl[1][1, 1])
@@ -211,7 +230,8 @@ function Base.summary(object::Mbplswest, Xbl)
     sqrtw = sqrt.(object.weights.w)
     zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
+        zXbl[k] = fcscale(Xbl[k], 
+            object.xmeans[k], object.xscales[k])
     end
     zXbl = fblockscal(zXbl, object.bscales).Xbl
     @inbounds for k = 1:nbl
@@ -231,30 +251,36 @@ function Base.summary(object::Mbplswest, Xbl)
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
         pvar = pvar, cumpvar = cumpvar)     
-    # Correlation between the original X-variables
-    # and the global scores
+    ## Correlation between the original X-variables
+    ## and the global scores
     z = cor(X, sqrtw .* object.T)  
     corx2t = DataFrame(z, string.("lv", 1:nlv))
-    # Correlation between the X-block scores and the global scores 
+    ## Correlation between the X-block scores 
+    ## and the global scores 
     z = list(Matrix{Q}, nlv)
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], sqrtw .* object.T[:, a])
     end
-    cortb2t = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
-    # Redundancies (Average correlations) Rd(X, t) 
-    # between each X-block and each global score
+    cortb2t = DataFrame(reduce(hcat, z), 
+        string.("lv", 1:nlv))
+    ## Redundancies (Average correlations) Rd(X, t) 
+    ## between each X-block and each global score
     z = list(Matrix{Q}, nbl)
     @inbounds for k = 1:nbl
         z[k] = rd(zXbl[k], sqrtw .* object.T)
     end
-    rdx = DataFrame(reduce(vcat, z), string.("lv", 1:nlv))         
-    # Specific weights of each block on each X-global score
-    sal2 = nothing
-    if !isnothing(object.lb)
-        lb2 = colsum(object.lb.^2)
-        sal2 = fscale(object.lb.^2, lb2)
-        sal2 = DataFrame(sal2, string.("lv", 1:nlv))
-    end
-    # Output
-    (explvarx = explvarx, corx2t, cortb2t, rdx, sal2)
+    rdx = DataFrame(reduce(vcat, z), 
+        string.("lv", 1:nlv))         
+    ## Specific weights of each block on 
+    ## each X-global score
+    #sal2 = nothing
+    #if !isnothing(object.lb)
+    #    lb2 = colsum(object.lb.^2)
+    #    sal2 = fscale(object.lb.^2, lb2)
+    #    sal2 = DataFrame(sal2, 
+    #        string.("lv", 1:nlv))
+    #end
+    ## End
+    (explvarx = explvarx, corx2t, cortb2t, 
+        rdx)
 end

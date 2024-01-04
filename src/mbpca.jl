@@ -7,8 +7,8 @@
 Consensus principal components analysis (CPCA = MBPCA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. 
     Typically, output of function `mblock`.  
-* `weights` : Weights of the observations (rows). 
-    Internally normalized to sum to 1. 
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling. Possible values are:
@@ -282,7 +282,8 @@ end
     summary(object::Mbpca, Xbl)
 Summarize the fitted model.
 * `object` : The fitted model.
-* `Xbl` : The X-data that was used to fit the model.
+* `Xbl` : The X-data that was used to 
+    fit the model.
 """ 
 function Base.summary(object::Mbpca, Xbl)
     Q = eltype(Xbl[1][1, 1])
