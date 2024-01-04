@@ -226,6 +226,33 @@ plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
 
+####-- Mbplsr
+groups = [1:525, 526:1050]
+Xtrain_bl = mblock(Xtrain, groups)
+Xtest_bl = mblock(Xtest, groups) 
+Xcal_bl = mblock(Xcal, groups) 
+Xval_bl = mblock(Xval, groups) 
+
+mod = mbplsr()
+bscal = [:none, :frob]
+pars = mpar(bscal = bscal) 
+nlv = 0:30
+res = gridscore(mod, Xcal_bl, ycal, Xval_bl, yval; 
+    score = rmsep, pars, nlv)
+group = res.bscal 
+plotgrid(res.nlv, res.y1, group; step = 2,
+    xlabel = "Nb. LVs", ylabel = "RMSEP").f
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+mod = mbplsr(bscal = res.bscal[u], 
+    nlv = res.nlv[u])
+fit!(mod, Xtrain_bl, ytrain)
+pred = predict(mod, Xtest_bl).pred
+@show rmsep(pred, ytest)
+plotxy(vec(pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
+    
 ######## Discrimination
 ## The principle is the same as 
 ## for regression

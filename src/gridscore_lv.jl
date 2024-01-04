@@ -11,18 +11,18 @@ See function `gridscore` for examples.
 """
 function gridscore_lv(Xtrain, Ytrain, X, Y; fun, 
         score, pars = nothing, nlv, verbose = false)
-    # If not multiblock
-    if isa(Xtrain, Matrix)
+    ## If not multiblock
+    if isa(Xtrain[1, 1], Number)
         p = nco(Xtrain)
         nlv = max(0, minimum(nlv)):min(p, maximum(nlv))
     end
-    # End
+    ## End
     q = nco(Ytrain)
     le_nlv = length(nlv)
     if isnothing(pars)   # e.g.: case of PLSR
         verbose ? println("-- Nb. combinations = 0.") : nothing
         fm = fun(Xtrain, Ytrain; nlv = maximum(nlv))
-        pred = Jchemo.predict(fm, X; nlv).pred
+        pred = predict(fm, X; nlv).pred
         le_nlv == 1 ? pred = [pred] : nothing
         res = zeros(le_nlv, q)
         @inbounds for i = 1:le_nlv
