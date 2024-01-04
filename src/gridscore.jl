@@ -31,7 +31,7 @@ argument `pars. See the examples.
 ```julia
 ######## Regression 
 
-using JchemoData, JLD2, CairoMakie 
+using JLD2, CairoMakie, JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
@@ -62,7 +62,7 @@ ycal = ytrain[s.train]
 Xval = Xtrain[s.test, :]
 yval = ytrain[s.test]
 
-#### Plsr
+####-- Plsr
 mod = plskern()
 nlv = 0:30
 res = gridscore(mod, Xcal, ycal, Xval, yval; 
@@ -82,7 +82,7 @@ plotxy(vec(pred), ytest; color = (:red, .5),
 ## Adding pars 
 pars = mpar(scal = [false; true])
 res = gridscore(mod, Xcal, ycal, Xval, yval; 
-    score = rmsep, pars = pars, nlv)
+    score = rmsep, pars = pars, nlv = nlv)
 typ = res.scal
 plotgrid(res.nlv, res.y1, typ; step = 2,
     xlabel = "Nb. LVs", ylabel = "RMSEP").f
@@ -97,7 +97,7 @@ plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-#### Rr 
+####-- Rr 
 lb = (10).^(-8:.1:3)
 mod = rr() 
 res = gridscore(mod, Xcal, ycal, Xval, yval; 
@@ -134,13 +134,13 @@ plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-#### Kplsr 
+####-- Kplsr 
 mod = kplsr()
 nlv = 0:30
 gamma = (10).^collect(-5:1.:5)
 pars = mpar(gamma = gamma)
 res = gridscore(mod, Xcal, ycal, Xval, yval; 
-    score = rmsep, pars = pars, nlv)
+    score = rmsep, pars = pars, nlv = nlv)
 loggamma = round.(log.(10, res.gamma), digits = 1)
 plotgrid(res.nlv, res.y1, loggamma; step = 2,
     xlabel = "Nb. LVs", ylabel = "RMSEP",
@@ -156,9 +156,31 @@ plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-#### Lwplsr 
+####-- Knnr 
+nlvdis = [15; 25] ; metric = [:mah]
+h = [1, 2.5, 5]
+k = [1, 5, 10, 20, 50, 100] 
+pars = mpar(nlvdis = nlvdis, 
+    metric = metric, h = h, k = k)
+length(pars[1]) 
+mod = knnr()
+res = gridscore(mod, Xcal, ycal, Xval, yval;
+    score = rmsep, pars, verbose = true)
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+mod = knnr(nlvdis = res.nlvdis[u],
+    metric = res.metric[u], h = res.h[u], 
+    k = res.k[u])
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
+@show rmsep(pred, ytest)
+plotxy(vec(pred), ytest; color = (:red, .5),
+    bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
+
+####-- Lwplsr 
 nlvdis = 15 ; metric = [:mah]
-h = [1 ; 2.5 ; 5] ; k = [50 ; 100] 
+h = [1, 2.5, 5] ; k = [50, 100] 
 pars = mpar(nlvdis = nlvdis, 
     metric = metric, h = h, k = k)
 length(pars[1]) 
@@ -181,33 +203,34 @@ plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-#### Knnr 
-nlvdis = [15; 25] ; metric = [:mah]
-h = [1 ; 2.5 ; 5]
-k = [1; 5; 10; 20; 50 ; 100] 
+####-- LwplsrAvg 
+nlvdis = 15 ; metric = [:mah]
+h = [1, 2.5, 5] ; k = [50, 100]
+nlv = [0:15, 0:20, 5:20] 
 pars = mpar(nlvdis = nlvdis, 
-    metric = metric, h = h, k = k)
+    metric = metric, h = h, k = k,
+    nlv = nlv)
 length(pars[1]) 
-mod = knnr()
+mod = lwplsravg()
 res = gridscore(mod, Xcal, ycal, Xval, yval;
     score = rmsep, pars, verbose = true)
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-mod = knnr(nlvdis = res.nlvdis[u],
+mod = lwplsravg(nlvdis = res.nlvdis[u],
     metric = res.metric[u], h = res.h[u], 
-    k = res.k[u])
+    k = res.k[u], nlv = res.nlv[u])
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed").f    
+    ylabel = "Observed").f   
 
 ######## Discrimination
 ## The principle is the same as 
 ## for regression
 
-using JchemoData, JLD2, CairoMakie 
+using JLD2, CairoMakie, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -233,10 +256,10 @@ ycal = ytrain[s.train]
 Xval = Xtrain[s.test, :]
 yval = ytrain[s.test]
 
-#### Plslda
+####-- Plslda
 mod = plslda()
 nlv = 1:30
-prior = [:unif; :prop]
+prior = [:unif, :prop]
 pars = mpar(prior = prior)
 res = gridscore(mod, Xcal, ycal, Xval, yval; 
     score = errp, pars, nlv)
