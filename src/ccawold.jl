@@ -151,7 +151,7 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight;
     # Row metric
     X .= sqrtw .* X
     Y .= sqrtw .* Y
-    # Pre-allocation
+    ## Pre-allocation
     Tx = similar(X, n, nlv)
     Ty = copy(Tx)
     Wx = similar(X, p, nlv)

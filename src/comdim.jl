@@ -175,7 +175,7 @@ function comdim!(Xbl::Vector, weights::Weight;
     @inbounds for k = 1:nbl
         Xbl[k] .= sqrtw .* Xbl[k]
     end
-    # Pre-allocation
+    ## Pre-allocation
     u = similar(Xbl[1], n)
     U = similar(Xbl[1], n, nlv)
     tk = copy(u)

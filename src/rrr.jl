@@ -121,7 +121,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight;
     # Row metric
     X .= sqrtw .* X
     Y .= sqrtw .* Y
-    # Pre-allocation
+    ## Pre-allocation
     Tx  = similar(X, n, nlv)
     Wx  = similar(X, p, nlv)
     Wy  = similar(X, q, nlv)

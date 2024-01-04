@@ -105,7 +105,7 @@ function cglsr!(X::Matrix, y::Matrix;
         fcenter!(X, xmeans)
         fcenter!(y, ymeans)
     end
-    # Pre-allocation and initialization
+    ## Pre-allocation and initialization
     B = similar(X, p, nlv)
     b = zeros(Q, p) 
     r = vec(y)       # r = y - X * b, with b = 0

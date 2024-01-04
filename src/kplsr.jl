@@ -121,7 +121,7 @@ function kplsr!(X::Matrix, Y::Matrix, weights::Weight;
     DKt = D * Kt
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- vtot .+ sum(D * DKt')
-    # Pre-allocation
+    ## Pre-allocation
     K = copy(Kc)
     T = similar(X, n, nlv)
     U = copy(T)

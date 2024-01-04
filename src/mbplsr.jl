@@ -4,7 +4,7 @@
     mbplsr(Xbl, weights::Weight; kwargs...)
     mbplsr!(Xbl::Matrix, weights::Weight; 
         kwargs...)
-Multiblock PLSR (MBPLSR)
+Multiblock PLSR (MBPLSR).
 * `Xbl` : List of blocks (vector of matrices) of X-data 
     Typically, output of function `mblock` from (n, p) data.  
 * `Y` : Y-data (n, q).
@@ -56,6 +56,10 @@ pnames(mod.fm)
 @head mod.fm.T
 @head transf(mod, Xbl_train)
 transf(mod, Xbl_test)
+
+res = predict(mod, Xbl_test)
+res.pred 
+rmsep(res.pred, ytest)
 
 res = summary(mod, Xbl_train) ;
 pnames(res) 

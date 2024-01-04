@@ -162,7 +162,7 @@ function mbpca!(Xbl::Vector, weights::Weight;
     @inbounds for k = 1:nbl
         Xbl[k] = sqrtw .* Xbl[k]
     end
-    # Pre-allocation
+    ## Pre-allocation
     U = similar(Xbl[1], n, nlv)
     W = similar(Xbl[1], nbl, nlv)
     Tbl = list(Matrix{Q}, nbl)

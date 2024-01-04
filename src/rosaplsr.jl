@@ -1,52 +1,71 @@
 """
-    rosaplsr(Xbl, Y, weights = ones(nro(Xbl[1])); nlv)
-    rosaplsr!(Xbl, Y, weights = ones(nro(Xbl[1])); nlv)
-Multiblock PLSR with the ROSA algorithm (Liland et al. 2016).
-* `Xbl` : List (vector) of blocks (matrices) of X-data. 
-    Each component of the list is a block.
-* `Y` : Y-data.
-* `weights` : Weights of the observations (rows). 
-    Internally normalized to sum to 1. 
-* `nlv` : Nb. latent variables (LVs) to consider.
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and 
-    of `Y` is scaled by its uncorrected standard deviation 
-    (before the block scaling).
+    rosaplsr(; kwargs...)
+    rosaplsr(Xbl; kwargs...)
+    rosaplsr(Xbl, weights::Weight; kwargs...)
+    rosaplsr!(Xbl::Matrix, weights::Weight; 
+        kwargs...)
+Multiblock ROSA PLSR (Liland et al. 2016).
+* `Xbl` : List of blocks (vector of matrices) of X-data 
+    Typically, output of function `mblock` from (n, p) data.  
+* `Y` : Y-data (n, q).
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
+Keyword arguments:
+    * `nlv` : Nb. latent variables (LVs = scores T) to compute.
+    * `scal` : Boolean. If `true`, each column of blocks in `X` 
+        and `Y` is scaled by its uncorrected standard deviation 
+        (before the block scaling).
 
-The function has the following differences with the original 
-algorithm of Liland et al. (2016):
+The function has the following differences with the 
+original algorithm of Liland et al. (2016):
 * Scores T are not normed to 1.
-* Multivariate `Y` is allowed. In such a case, the squared residuals are summed 
-    over the columns for finding the winning block for each global LV 
+* Multivariate `Y` is allowed. In such a case, 
+    the squared residuals are summed over the columns 
+    for finding the winning block for each global LV 
     (therefore Y-columns should have the same fscale).
 
 ## References
-Liland, K.H., Næs, T., Indahl, U.G., 2016. ROSA — a fast extension of partial least 
-squares regression for multiblock data analysis. Journal of Chemometrics 30, 
-651–662. https://doi.org/10.1002/cem.2824
+Liland, K.H., Næs, T., Indahl, U.G., 2016. ROSA — a fast 
+extension of partial least squares regression for multiblock 
+data analysis. Journal of Chemometrics 30, 651–662. 
+https://doi.org/10.1002/cem.2824
 
 ## Examples
 ```julia
-using JLD2
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/ham.jld2") 
+using JchemoData, JLD2
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "ham.jld2") 
 @load db dat
 pnames(dat) 
-
 X = dat.X
-y = dat.Y.c1
+Y = dat.Y
+y = Y.c1
 group = dat.group
 listbl = [1:11, 12:19, 20:25]
-Xbl = mblock(X, listbl)
-# "New" = first two rows of Xbl 
-Xbl_new = mblock(X[1:2, :], listbl)
+s = 1:6
+Xbl_train = mblock(X[s, :], listbl)
+Xbl_test = mblock(rmrow(X, s), listbl)
+ytrain = y[s]
+ytest = rmrow(y, s) 
+ntrain = nro(ytrain) 
+ntest = nro(ytest) 
+ntot = ntrain + ntest 
+(ntot = ntot, ntrain , ntest)
 
-nlv = 5
-fm = rosaplsr(Xbl, y; nlv) ;
-pnames(fm)
-fm.T
-transf(fm, Xbl_new)
-[y Jchemo.predict(fm, Xbl).pred]
-Jchemo.predict(fm, Xbl_new).pred
+nlv = 3
+scal = false
+#scal = true
+mod = rosaplsr(; nlv, scal)
+fit!(mod, Xbl_train, ytrain)
+pnames(mod) 
+pnames(mod.fm)
+@head mod.fm.T
+@head transf(mod, Xbl_train)
+transf(mod, Xbl_test)
+
+res = predict(mod, Xbl_test)
+res.pred 
+rmsep(res.pred, ytest)
 ```
 """ 
 function rosaplsr(Xbl, Y; kwargs...)
@@ -56,7 +75,8 @@ function rosaplsr(Xbl, Y; kwargs...)
     rosaplsr(Xbl, Y, weights; kwargs...)
 end
 
-function rosaplsr(Xbl, Y, weights::Weight; kwargs...)
+function rosaplsr(Xbl, Y, weights::Weight; 
+        kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
@@ -67,7 +87,8 @@ function rosaplsr(Xbl, Y, weights::Weight; kwargs...)
         weights; kwargs...)
 end
 
-function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
+function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; 
+        kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(Xbl[1][1, 1])   
     n = nro(Xbl[1])
@@ -84,9 +105,11 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
-            Xbl[k] .= fcscale(Xbl[k], xmeans[k], xscales[k])
+            Xbl[k] .= fcscale(Xbl[k], 
+                xmeans[k], xscales[k])
         else
-            Xbl[k] .= fcenter(Xbl[k], xmeans[k])
+            Xbl[k] .= fcenter(Xbl[k], 
+                xmeans[k])
         end
     end
     ymeans = colmean(Y, weights)
@@ -97,7 +120,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(Y, ymeans)
     end
-    # Pre-allocation
+    ## Pre-allocation
     W = similar(Xbl[1], sum(p), nlv)
     P = copy(W)
     T = similar(Xbl[1], n, nlv)
@@ -112,11 +135,11 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     #ssr = similar(Xbl[1], nbl)
     corr = similar(Xbl[1], nbl)
     Wbl = list(Array, nbl)
-    wbl = list(Vector{Q}, nbl)         # List of the weights "w" by block for a given "a"
+    wbl = list(Vector{Q}, nbl)      # List of the weights "w" by block for a given "a"
     zT = similar(Xbl[1], n, nbl)    # Matrix gathering the nbl scores for a given "a"
     bl = fill(0, nlv)
     #Res = zeros(n, q, nbl)
-    ### Start 
+    ## Start 
     @inbounds for a = 1:nlv
         DY .= D * Y  # apply the metric on covariance
         @inbounds for k = 1:nbl
@@ -130,19 +153,19 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
             end
             zT[:, k] .= Xbl[k] * wbl[k]
         end
-        # GS Orthogonalization of the scores
+        ## GS Orthogonalization of the scores
         if a > 1
             z = vcol(T, 1:(a - 1))
             zT .= zT .- z * inv(z' * (D * z)) * z' * (D * zT)
         end
-        # Selection of the winner block (opt)
+        ## Selection of the winner block (opt)
         @inbounds for k = 1:nbl
             t = vcol(zT, k)
             corr[k] = sum(corm(Y, t, weights).^2)
         end
         opt = argmax(corr)
-        # Faster than:
-        ### Old
+        ## Faster than:
+        ## Old
         #@inbounds for k = 1:nbl
         #    t = vcol(zT, k)
         #    dt .= weights.w .* t
@@ -151,9 +174,9 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         #end
         #ssr = vec(sum(Res.^2, dims = (1, 2)))
         #opt = findmin(ssr)[2][1]
-        ### End
+        ## End
         bl[a] = opt
-        # Outputs for winner
+        ## Outputs for winner
         t .= zT[:, opt]
         dt .= weights.w .* t
         tt = dot(t, dt)
@@ -162,16 +185,17 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         T[:, a] .= t
         TT[a] = tt
         C[:, a] .= c
-        # Old
+        ## Old
         #Y .= Res[:, :, opt]
-        # End
+        ## End
         Y .-= (t * t') * DY / tt
         for k = 1:nbl
             zp_bl[k] = Xbl[k]' * dt
         end
         zp .= reduce(vcat, zp_bl)
         P[:, a] .= zp / tt
-        # Orthogonalization of the weights "w" by block
+        ## Orthogonalization of the weights "w" 
+        ## by block
         zw = wbl[opt]
         if (a > 1) && isassigned(Wbl, opt)       
             zW = Wbl[opt]
@@ -183,21 +207,24 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         else
             Wbl[opt] = hcat(Wbl[opt], zw)
         end
-        # Build the weights over the overall matrix
+        ## Build the weights over the overall 
+        ## matrix
         z = zeros(Q, nbl) ; z[opt] = 1
         W[:, a] .= reduce(vcat, z .* wbl)
     end
     R = W * inv(P' * W)
-    Rosaplsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, bl,
-        kwargs, par)
+    Rosaplsr(T, P, R, W, C, TT, xmeans, xscales, 
+        ymeans, yscales, weights, bl, kwargs, par)
 end
 
 """ 
-    transf(object::Rosaplsr, Xbl; nlv = nothing)
+    transf(object::Rosaplsr, Xbl; 
+        nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
-* `Xbl` : A list (vector) of blocks (matrices) of X-data for which LVs are computed.
-* `nlv` : Nb. LVs to consider.
+* `Xbl` : A list of blocks (vector of matrices) 
+    of X-data for which LVs are computed.
+* `nlv` : Nb. LVs to compute.
 """ 
 function transf(object::Rosaplsr, Xbl; nlv = nothing)
     a = nco(object.T)
@@ -206,13 +233,15 @@ function transf(object::Rosaplsr, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
+        zXbl[k] = fcscale(Xbl[k], 
+            object.xmeans[k], object.xscales[k])
     end
     reduce(hcat, zXbl) * vcol(object.R, 1:nlv)
 end
 
 """
-    coef(object::Rosaplsr; nlv = nothing)
+    coef(object::Rosaplsr; 
+        nlv = nothing)
 Compute the X b-coefficients of a model fitted with `nlv` LVs.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
@@ -230,15 +259,18 @@ function coef(object::Rosaplsr; nlv = nothing)
 end
 
 """
-    predict(object::Rosaplsr, Xbl; nlv = nothing)
+    predict(object::Rosaplsr, Xbl; 
+        nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
-* `Xbl` : A list (vector) of X-data for which predictions are computed.
+* `Xbl` : A list of blocks (vector of matrices) 
+    of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
 function predict(object::Rosaplsr, Xbl; nlv = nothing)
     a = nco(object.T)
-    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
+    isnothing(nlv) ? nlv = a : 
+        nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     Q = eltype(Xbl[1][1, 1])
     X = reduce(hcat, Xbl)

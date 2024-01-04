@@ -60,7 +60,7 @@ function plssimp!(X::Matrix, Y::Matrix, weights::Weight;
     end
     D = Diagonal(weights.w)
     XtY = X' * (D * Y)   
-    # Pre-allocation
+    ## Pre-allocation
     T = similar(X, n, nlv)
     W = similar(X, p, nlv)
     P = copy(W)

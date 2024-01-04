@@ -65,6 +65,10 @@ pnames(mod.fm)
 @head transf(mod, Xbl_train)
 transf(mod, Xbl_test)
 
+res = predict(mod, Xbl_test)
+res.pred 
+rmsep(res.pred, ytest)
+
 res = summary(mod, Xbl_train) ;
 pnames(res) 
 res.explvarx
@@ -137,7 +141,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight;
         Xbl[k] .= sqrtw .* Xbl[k]
     end
     Y .= sqrtw .* Y
-    # Pre-allocation
+    ## Pre-allocation
     X = similar(Xbl[1], n, sum(p))
     Tbl = list(Matrix{Q}, nbl)
     for k = 1:nbl ; Tbl[k] = similar(Xbl[1], n, nlv) ; end

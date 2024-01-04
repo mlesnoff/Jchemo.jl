@@ -65,7 +65,7 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::Weight;
         fcenter!(X, xmeans)
         fcenter!(Y, ymeans)
     end
-    # Pre-allocation
+    ## Pre-allocation
     XtY = similar(X, p, q)
     T = similar(X, n, nlv)
     W = similar(X, p, nlv)

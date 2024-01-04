@@ -156,7 +156,7 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight;
     D = Diagonal(weights.w)
     XtY = X' * (D * Y)                   # = Xd' * Y = X' * D * Y  (Xd = D * X   Very costly!!)
     #XtY = X' * (weights .* Y)           # Can create OutOfMemory errors for very large matrices
-    # Pre-allocation
+    ## Pre-allocation
     T = similar(X, n, nlv)
     W = similar(X, p, nlv)
     P = copy(W)
