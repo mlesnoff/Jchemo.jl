@@ -29,17 +29,19 @@ Other current specific points are:
     has changed, and the functions are now genereic 
     (no need anymore to call specific functions ...lv 
     and ...lb).
-- Temporary removed:
-    - mbunif, mbwcov
+- Removed function (for some, temporary):
     - baggr and its utilities
     - cplsravg
-    - nsc, nscrda, nscda
-    - plsrdaavg, plsldaavg, plsqdaavg
-    - lwplsrdaavg, lwplsldaavg, lwplsqdaavg
     - gridcv_mb, gridcvlv_mb
-    - mavg_runmean
     - interpl_mon
+    - lwmlr_s, lwplsr_s, lwmlrda_s, lwlsrda_s 
+        (since can be built from pipelines)
+    - lwplsrdaavg, lwplsldaavg, lwplsqdaavg
+    - mavg_runmean
+    - mbunif, mbwcov
+    - nsc, nscrda, nscda
     - occknndis, occlknndis
+    - plsrdaavg, plsldaavg, plsqdaavg
 
 Some typing errors may have been introduced due to the 
 restructuration. They will be corrected in versions > 0.3.0.

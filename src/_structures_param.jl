@@ -30,15 +30,14 @@ Base.@kwdef mutable struct Par
     min_samples_split::Int = 5              # tree, random forest
     mth::Bool = true                        # multi-threading in random forest
     ##
-    mreduc::Symbol = :pls                   # type of preliminary reduction
-    nlvreduc::Int = 20                      # nb LVs for preliminary reduction 
     msamp::Symbol = :rand                   # method of row sampling
-    psamp::Float64 = 1.                     # row sampling
+    psamp::Float64 = 1.                     # proportion of row sampling
+    ##
     nlvdis::Int = 0                         # nb LVs for global space
     metric::Symbol = :eucl                  # metric for global space
     h::Float64 = Inf                        # shape parameter in fweight
     k::Int = 1                              # nb neighbors
-    criw::Float64 = 4                      # coefficient for cutoff in wdist
+    criw::Float64 = 4                       # coefficient for cutoff in wdist
     squared::Bool = false                   # type of curve in wdist 
     tolw::Float64 = 1e-4                    # tolerance for local weights
     verbose::Bool = false                   # print obs. indexes when prediction

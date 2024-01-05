@@ -135,11 +135,6 @@
 - **lwmlr** kNN locally weighted MLR (kNN-LWMLR)
 - **lwplsr** kNN locally weighted PLSR (kNN-LWPLSR)
 
-*With preliminary dimension reduction*
-- **lwmlr_s** kNN-LWMLR-S
-    - Including LWR *Naes et al 1990*
-- **lwplsr_s** kNN-LWPLSR-S
-
 *Averaging*
 - **lwplsravg** kNN-LWPLSR-AVG 
 
@@ -200,10 +195,6 @@
 - **lwplslda** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
 - **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA, 
     with continuum)
-
-*With preliminary dimension reduction*
-- **lwmlrda_s** kNN-LWMLR-DA-S
-- **lwplsrda_s** kNN-LWPLSR-DA-S
 
 ### Wrappers to other packages
 

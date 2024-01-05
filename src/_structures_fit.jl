@@ -371,14 +371,6 @@ struct Lwmlr
     par::Par
 end
 
-struct LwmlrS
-    T::Matrix
-    Y::Matrix
-    fm::Union{Nothing, Pca, Plsr, Dkplsr}
-    kwargs::Base.Pairs
-    par::Par
-end
-
 struct Lwplsr
     X::Matrix
     Y::Matrix
@@ -393,14 +385,6 @@ struct LwplsrAvg
     Y::Matrix
     fm::Union{Nothing, Plsr}
     xscales::Vector
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct LwplsrS
-    T::Matrix
-    Y::Matrix
-    fm::Union{Nothing, Pca, Plsr, Dkplsr}
     kwargs::Base.Pairs
     par::Par
 end
@@ -631,26 +615,6 @@ struct Lwplsqda
     y::AbstractMatrix
     fm
     xscales::Vector
-    lev::Vector
-    ni::Vector{Int}
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct LwmlrdaS
-    T::Matrix
-    y::AbstractMatrix
-    fm
-    lev::Vector
-    ni::Vector{Int}
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct LwplsrdaS
-    T::Matrix
-    y::AbstractMatrix
-    fm
     lev::Vector
     ni::Vector{Int}
     kwargs::Base.Pairs

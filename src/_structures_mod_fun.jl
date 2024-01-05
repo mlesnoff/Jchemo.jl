@@ -64,9 +64,7 @@ soplsr(; kwargs...) = Predictor{Function, Soplsr, Base.Pairs}(soplsr, nothing, k
 ## 
 knnr(; kwargs...) = Predictor{Function, Knnr, Base.Pairs}(knnr, nothing, kwargs)
 lwmlr(; kwargs...) = Predictor{Function, Lwmlr, Base.Pairs}(lwmlr, nothing, kwargs)
-lwmlr_s(; kwargs...) = Predictor{Function, LwmlrS, Base.Pairs}(lwmlr_s, nothing, kwargs)
 lwplsr(; kwargs...) = Predictor{Function, Lwplsr, Base.Pairs}(lwplsr, nothing, kwargs)
-lwplsr_s(; kwargs...) = Predictor{Function, LwplsrS, Base.Pairs}(lwplsr_s, nothing, kwargs)
 lwplsravg(; kwargs...) = Predictor{Function, LwplsrAvg, Base.Pairs}(lwplsravg, nothing, kwargs)
 ## 
 mlrda(; kwargs...) = Predictor{Function, Mlrda, Base.Pairs}(mlrda, nothing, kwargs)
@@ -94,8 +92,6 @@ lwmlrda(; kwargs...) = Predictor{Function, Lwmlrda, Base.Pairs}(lwmlrda, nothing
 lwplsrda(; kwargs...) = Predictor{Function, Lwplsrda, Base.Pairs}(lwplsrda, nothing, kwargs)
 lwplslda(; kwargs...) = Predictor{Function, Lwplslda, Base.Pairs}(lwplslda, nothing, kwargs)
 lwplsqda(; kwargs...) = Predictor{Function, Lwplsqda, Base.Pairs}(lwplsqda, nothing, kwargs)
-lwmlrda_s(; kwargs...) = Predictor{Function, LwmlrdaS, Base.Pairs}(lwmlrda_s, nothing, kwargs)
-lwplsrda_s(; kwargs...) = Predictor{Function, LwplsrdaS, Base.Pairs}(lwplsrda_s, nothing, kwargs)
 ##
 occstah(; kwargs...) = PredictorNoY{Function, Occstah, Base.Pairs}(occstah, nothing, kwargs)
 occsd(; kwargs...) = PredictorNoY{Function, Occsd, Base.Pairs}(occsd, nothing, kwargs)

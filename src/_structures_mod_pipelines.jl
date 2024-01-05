@@ -36,7 +36,7 @@ function predict(mod::Pipeline, X)
     for i = 1:(K - 1)
         X = transf(mod.mod[i], X)
     end
-    predict(mod[K], X)
+    predict(mod.mod[K], X)
 end
 
 

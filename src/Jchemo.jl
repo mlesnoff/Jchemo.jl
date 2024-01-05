@@ -119,10 +119,8 @@ include("locw.jl")
 include("locwlv.jl")
 include("knnr.jl")
 include("lwmlr.jl")
-include("lwmlr_s.jl")
 include("lwplsr.jl")
 include("lwplsravg.jl")
-include("lwplsr_s.jl")
 
 ## Validation
 include("mpar.jl")
@@ -182,8 +180,6 @@ include("lwmlrda.jl")
 include("lwplsrda.jl")
 include("lwplslda.jl")
 include("lwplsqda.jl")
-include("lwmlrda_s.jl")
-include("lwplsrda_s.jl")
 include("knnda.jl")
 
 ## Svm, Trees
@@ -337,8 +333,8 @@ export
     ## Local
     locw, locwlv,
     knnr,
-    lwmlr, lwmlr_s,
-    lwplsr, lwplsravg, lwplsr_s,  
+    lwmlr,
+    lwplsr, lwplsravg,
     ###### Discrimination
     fda, fda!, fdasvd, fdasvd!,
     mlrda,
@@ -358,8 +354,8 @@ export
     splslda, splsqda,
     splskdeda,
     ## Local 
-    lwmlrda, lwmlrda_s,
-    lwplsrda, lwplsrda_s,
+    lwmlrda,
+    lwplsrda, 
     lwplslda, lwplsqda,
     knnda,
     ## Auxiliary
