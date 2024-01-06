@@ -23,7 +23,7 @@ Keyword arguments:
 In the present version of the function, only the last model 
 of the pipeline (= the final predictor) is validated.
 
-See function `gridscore` for simple models for other details. 
+For other details, see function `gridscore` for simple models. 
 
 ## Examples
 ```julia

@@ -6,6 +6,7 @@ pip(args...) = Pipeline(values(args))
 ###### Fit
 function fit!(mod::Pipeline, X, Y = nothing)
     K = length(mod.mod)
+    @assert K > 1 "Wrong pipeline: must contain at least 2 models."
     for i = 1:(K - 1)
         if isa(mod.mod[i], Transformer)
             fit!(mod.mod[i], X)
@@ -24,6 +25,7 @@ end
 ###### Transf
 function transf(mod::Pipeline, X)  
     K = length(mod.mod)
+    @assert K > 1 "Wrong pipeline: must contain at least 2 models."
     for i = 1:K
         X = transf(mod.mod[i], X)
     end
@@ -33,6 +35,7 @@ end
 ###### Predict 
 function predict(mod::Pipeline, X)
     K = length(mod.mod)
+    @assert K > 1 "Wrong pipeline: must contain at least 2 models."
     for i = 1:(K - 1)
         X = transf(mod.mod[i], X)
     end
