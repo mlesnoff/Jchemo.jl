@@ -107,15 +107,19 @@ zX = Float32.(X)
 zY = Float32.(Y)
 ```
 ```julia
-nlv = 25
+
+## Float64
 @benchmark fit!($mod, $X, $Y)
+
 BenchmarkTools.Trial: 1 sample with 1 evaluation.
  Single result which took 7.532 s (1.07% GC) to evaluate,
  with a memory estimate of 4.09 GiB, over 2677 allocations.
 ```
 
 ```julia
+# Float32 
 @benchmark fit!($mod, $zX, $zY) 
+
 BenchmarkTools.Trial: 2 samples with 1 evaluation.
  Range (min … max):  3.956 s …    4.148 s  ┊ GC (min … max): 0.82% … 3.95%
  Time  (median):     4.052 s               ┊ GC (median):    2.42%
@@ -128,12 +132,9 @@ BenchmarkTools.Trial: 2 samples with 1 evaluation.
  Memory estimate: 2.05 GiB, allocs estimate: 2677.
 ```
 
-# <span style="color:green"> Examples on PLSR </span> 
+# <span style="color:green"> Examples of syntax </span> 
 
-(see more at [JchemoDemo](https://github.com/mlesnoff/JchemoDemo)).
-
-
-### **Examples of syntax for predictive models** </span> 
+### **Examples of syntax** </span> 
 
 #### **Fitting a model**
 
@@ -291,13 +292,14 @@ res = rescv.res
 
 ###  How to cite
 
-Lesnoff, M. 2021. Jchemo: Julia package for machine learning and chemometrics 
-on high-dimensional data. https://github.com/mlesnoff/Jchemo. 
+Lesnoff, M. 2021. Jchemo: Machine learning and chemometrics 
+on high-dimensional data with Julia. https://github.com/mlesnoff/Jchemo. 
 UMR SELMET, Univ Montpellier, CIRAD, INRA, Institut Agro, Montpellier, France
 
 ###  Acknowledgments
 
-- G. Cornu (Cirad) https://ur-forets-societes.cirad.fr/en/l-unite/l-equipe 
+- G. Cornu (Cirad) https://ur-forets-societes.cirad.fr/en/l-unite/l-equipe
+- M. Metz (Pellenc ST, Pertuis, France) 
 - L. Plagne, F. Févotte (Triscale.innov) https://www.triscale-innov.com 
 - R. Vezy (Cirad) https://www.youtube.com/channel/UCxArXLI-gxlTmWGGgec5D7w 
 
