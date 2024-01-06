@@ -1,6 +1,6 @@
 # Jchemo.jl
 
-### Julia package for machine learning and chemometrics on high-dimensional data
+### Machine learning and chemometrics on high-dimensional data with Julia
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/dev)
@@ -9,30 +9,35 @@
 
 # <span style="color:green"> About </span> 
 
-**Warning:** Major breaking changes on the current main branch. Work in progress. See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/).  
+This package was initially dedicated to **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
+and their many extensions, in particular locally weighted PLS models (**LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209).
+The package has then been expanded to various **dimension reduction methods** and **regression and discrimination models** ([see the list of functions here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
 
-This package was initially designed about **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
-and their numerous variants, in particular locally weighted PLS models (**LWPLS-R & -DA**) (e.g. https://doi.org/10.1002/cem.3209).
-The package has then been expanded to **dimension reduction** methods, and many other **regression and discrimination** models (see [here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
+Why the name **Jchemo**?: Since it is orientated to **chemometrics** (in brief, the use of biometrics for chemistry), but most of the provided methods are **generic to other domains of application**. 
 
-Why the name **Jchemo**?: Since it is orientated to chemometrics, but most of the methods provided are **generic to other domains**. 
+**Warning:** Major breaking changes were made between **version 0.2.4** and **version 0.3.0** (to come, **work in progress** on the current main branch). See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for some details on the changes. Mainly, a new syntax, said **embedded**, is proposed. 
 
-Auxiliary functions such as **transform**, **predict**, **coef** and **summary** are available. 
-**Tuning the predictive models** is facilitated by generic grid-search functions (same syntax for all models): **gridscore** (validation dataset) and **gridcv** (cross-validation). Highly accelerated tuning functions 
-are also available for models based on latent variables (LVs) (**gridscorelv** and **gridcvlv**) and 
-ridge regularization (**gridscorelb** and **gridcvlb**).
+**Jchemo** is organized between **transformers** (e.g. Pca models), **predictors** (e.g. Plsr/Plsda models) and **utility functions**. For transformers and predictors, two syntaxes are allowed: the **direct syntax** (almost the same as for versions <= 2.4.0) and the **embedded syntax**. The last is intended to make easier the building of pipelines (chains) of models, and is now favored. Only this embbeded syntax is given in the **help pages** of the functions. 
+
+# <span style="color:green"> Tips </span> 
+
+### Model tuning
+
+The predictive models can be **tuned** by generic (i.e. same syntax for all models) grid-search functions: **gridscore** ("test-set" validation) and **gridcv** (cross-validation). Highly accelerated versions 
+of these tuning tools are available for models based on latent variables (LVs) and 
+ridge regularization.
 
 ### Help and demo
 
-Most of the functions of the package have a **help page** providing an example, e.g.:
+Each function of **Jchemo** has a **help page** providing an example, e.g.:
 
 ```julia
-?plskern
+julia> ?plskern
 ```
+The **datasets** used in the examples are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets (chemometrics and other domains).
 
-Other **examples (scripts)** demonstrating the syntax of **Jchemo.jl** are available in the project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) that can be used for trainings. 
+Aditionnal **examples of scripts** demonstrating the syntax of **Jchemo** are available in the training project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) (this project is not still updated for Jchemo versions > 2.4.0). 
 
-**The datasets** used in the examples (in help pages and JchemoDemo) are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets (chemometrics and others).
 
 ### Multi-threading
 
@@ -44,7 +49,7 @@ of threads (e.g. from the *Settings* menu of the VsCode Julia extension and the 
 
 **Jchemo.jl** uses **Makie.jl** for plotting. To install and load one of the Makie's backends (e.g. **CairoMakie.jl**) is required to display the plots. 
 
-### Follow-up
+### News
 
 Before to update the package, it is recommended to have a look on 
 [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) to avoid
@@ -61,30 +66,31 @@ or for a specific version:
 ```julia
 pkg> add Jchemo@0.1.18
 ```
+
 or for the current developing version (not stable):
 ```julia
 pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ```
-# <span style="color:green"> Examples on PLSR </span> 
+# <span style="color:green">  Benchmark  </span>
 
-(see more at [JchemoDemo](https://github.com/mlesnoff/JchemoDemo)).
-
-### **Benchmark - Computation time for a PLS with n = 1e6 observations**
 ```julia
 julia> versioninfo()
-Julia Version 1.8.5
-Commit 17cfb8e65e (2023-01-08 06:45 UTC)
+Julia Version 1.10.0
+Commit 3120989f39 (2023-12-25 18:01 UTC)
+Build Info:
+  Official https://julialang.org/ release
 Platform Info:
   OS: Windows (x86_64-w64-mingw32)
   CPU: 16 × Intel(R) Core(TM) i9-10885H CPU @ 2.40GHz
   WORD_SIZE: 64
   LIBM: libopenlibm
-  LLVM: libLLVM-13.0.1 (ORCJIT, skylake)
-  Threads: 8 on 16 virtual cores
+  LLVM: libLLVM-15.0.7 (ORCJIT, skylake)
+  Threads: 23 on 16 virtual cores
 Environment:
   JULIA_EDITOR = code
-  JULIA_NUM_THREADS = 8
 ```
+
+### PLS with n = 1e6 observations
 
 ```julia
 using Jchemo
@@ -94,16 +100,38 @@ using Jchemo
 n = 10^6  # nb. observations (samples)
 p = 500   # nb. X-variables (features)
 q = 10    # nb. Y-variables to predict
+nlv = 25  # nb. PLS latent variables
 X = rand(n, p)
 Y = rand(n, q)
-nlv = 25  # nb. PLS latent variables
-
-@time plskern(X, Y; nlv) ;
-8.100469 seconds (299 allocations: 4.130 GiB, 6.58% gc time)
-
-@time plskern!(X, Y; nlv) ;
-7.232234 seconds (6.47 k allocations: 338.617 MiB, 7.39% gc time, 0.13% compilation time)
+zX = Float32.(X)
+zY = Float32.(Y)
 ```
+```julia
+nlv = 25
+@benchmark fit!($mod, $X, $Y)
+BenchmarkTools.Trial: 1 sample with 1 evaluation.
+ Single result which took 7.532 s (1.07% GC) to evaluate,
+ with a memory estimate of 4.09 GiB, over 2677 allocations.
+```
+
+```julia
+@benchmark fit!($mod, $zX, $zY) 
+BenchmarkTools.Trial: 2 samples with 1 evaluation.
+ Range (min … max):  3.956 s …    4.148 s  ┊ GC (min … max): 0.82% … 3.95%
+ Time  (median):     4.052 s               ┊ GC (median):    2.42%
+ Time  (mean ± σ):   4.052 s ± 135.259 ms  ┊ GC (mean ± σ):  2.42% ± 2.21%
+
+  █                                                        █  
+  █▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█ ▁
+  3.96 s         Histogram: frequency by time         4.15 s <
+
+ Memory estimate: 2.05 GiB, allocs estimate: 2677.
+```
+
+# <span style="color:green"> Examples on PLSR </span> 
+
+(see more at [JchemoDemo](https://github.com/mlesnoff/JchemoDemo)).
+
 
 ### **Examples of syntax for predictive models** </span> 
 
