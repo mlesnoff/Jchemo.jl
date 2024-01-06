@@ -129,7 +129,7 @@ function plskern!(X::Matrix, Y::Matrix,
     end
     D = Diagonal(weights.w)
     XtY = X' * (D * Y)                   # = Xd' * Y = X' * D * Y  (Xd = D * X   Very costly!!)
-    #XtY = X' * (weights.w .* Y)           # Can create OutOfMemory errors for very large matrices
+    #XtY = X' * (weights.w .* Y)         # Can create OutOfMemory errors for very large matrices
     ## Pre-allocation
     T = similar(X, n, nlv)
     W = similar(X, p, nlv)
