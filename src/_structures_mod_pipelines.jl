@@ -40,23 +40,3 @@ function predict(mod::Pipeline, X)
 end
 
 
-#function fit!(mod::Tuple, X)
-#    K = length(mod)
-#    for i = 1:(K - 1)
-#        fit!(mod[i], X)
-#        X = transf(mod[i], X)
-#    end
-#    fit!(mod[K], X)
-#end
-
-#function fit!(mod::Tuple, X, Y)
-#    K = length(mod)
-#    for i = 1:(K - 1)
-#        fit!(mod[i], X, Y)
-#        X = transf(mod[i], X)
-#    end
-#    fit!(mod[K], X, Y)
-#end
-## In the future, build: 
-## fit!(mod::Tuple, X, weights::Weight)
-## fit!(mod::Tuple, X, Y, weights::Weight)

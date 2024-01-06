@@ -146,7 +146,7 @@ plotxy(vec(pred), ytest; color = (:red, .5),
 ####-- Kplsr 
 mod = kplsr()
 nlv = 0:30
-gamma = (10).^collect(-5:1.:5)
+gamma = (10).^(-5:1.:5)
 pars = mpar(gamma = gamma)
 rescv = gridcv(mod, Xtrain, ytrain; 
     segm, score = rmsep, pars, nlv) ;

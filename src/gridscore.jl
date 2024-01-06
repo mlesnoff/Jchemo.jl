@@ -137,7 +137,7 @@ plotxy(vec(pred), ytest; color = (:red, .5),
 ####-- Kplsr 
 mod = kplsr()
 nlv = 0:30
-gamma = (10).^collect(-5:1.:5)
+gamma = (10).^(-5:1.:5)
 pars = mpar(gamma = gamma)
 res = gridscore(mod, Xcal, ycal, Xval, yval; 
     score = rmsep, pars = pars, nlv = nlv)
