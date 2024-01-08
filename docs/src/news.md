@@ -2,34 +2,27 @@
 
 ## *Version 0.3.0*
 
-**Warning:** Major breaking changes. Work in progress.
-Package Jchemo is being deeply restructured, to
-enable an embededd syntax and facilitate pipelines 
-building. The syntax of most of the functions will change.
-Users who prefer the previous syntax will have to keep 
-working with versions < 0.3.0. Sorry for any 
-inconveniance. 
+**Warning:** Major breaking changes.
+Package Jchemo has been deeply restructured, to
+enable an "embedded" syntax and facilitate pipelines 
+building. The previous "direct" syntax is still allowed (although arugments have changed for some functions, see the help pages) but is not favor anymore. Users who prefer the previous syntax will have to keep working with versions < 0.3.0. Sorry for any inconveniance. 
 
-Tentative new version 0.3.0 should be ready at end January 2024. 
+Some typing errors may have been introduced due to the 
+restructuration. They will be corrected in versions > 0.3.0.
 
-Other current specific points are:
+Some specific modified points are:
 
-- In the arguments, all String types have been replaced by 
-    Type Symbol (e.g. "unif" is replaced by :unif)
-- The 'weights' (row weighting in some functions, such as pcasvd etc.) 
-    argument must now be of type 'Weight', built from function 'mweight'. 
+- In the arguments, all String types have been replaced by Type Symbol (e.g. "unif" is replaced by :unif)
+- The 'weights' (row weighting in some functions, such as pcasvd etc.) argument must now be of type 'Weight', built from function 'mweight'. 
 - Sampling functions 'samp...' have changed. 
 - Function 'mtest' renamed to 'sampdf'.
-- Functions center, scale, cscale, blockscale renamed to fcenter,
-    fscale, etc. Alternatively, new transformers center, scale 
-    and cscale have been created.
-- Functions isel and viperm remated to isel! and viperm!, 
-    and syntax changed.
+- Functions center, scale, cscale, blockscale renamed to fcenter, fscale, etc. Alternatively, new transformers center, scale and cscale have been created.
+- Functions isel and viperm remated to isel! and viperm!, and syntax changed.
 - Syntax of tuning functions gridscore and gridcv
     has changed, and the functions are now genereic 
     (no need anymore to call specific functions ...lv 
     and ...lb).
-- Removed function (for some, temporary):
+- Removed function (temporary or not):
     - baggr and its utilities
     - cplsravg
     - gridcv_mb, gridcvlv_mb
@@ -42,9 +35,6 @@ Other current specific points are:
     - nsc, nscrda, nscda
     - occknndis, occlknndis
     - plsrdaavg, plsldaavg, plsqdaavg
-
-Some typing errors may have been introduced due to the 
-restructuration. They will be corrected in versions > 0.3.0.
 
 
 ## *Version 0.2.4*

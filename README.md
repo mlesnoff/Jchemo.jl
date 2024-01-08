@@ -1,6 +1,6 @@
 # Jchemo.jl
 
-### Machine learning and chemometrics on high-dimensional data with Julia
+### Chemometrics and machine learning on high-dimensional data with Julia
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/dev)
@@ -9,50 +9,69 @@
 
 # <span style="color:green"> About </span> 
 
-This package was initially dedicated to **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
-and their many extensions, in particular locally weighted PLS models (**LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209).
-The package has then been expanded to various **dimension reduction methods** and **regression and discrimination models** ([see the list of functions here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
+**Jchemo** was initially dedicated to **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
+and their extensions, in particular locally weighted PLS models (**LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). The package has then been expanded to various **dimension reduction** and **regression and discrimination** models ([see the list of functions here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
 
-Why the name **Jchemo**?: Since it is orientated to **chemometrics** (in brief, the use of biometrics for chemistry), but most of the provided methods are **generic to other domains of application**. 
+Why the name **Jchemo**?: Since it is orientated to **chemometrics** (in brief, the use of biometrics for chemistry), but most of the provided methods are **generic to other application domains**. 
 
-**Warning:** Major breaking changes were made between **version 0.2.4** and **version 0.3.0** (to come, **work in progress** on the current main branch). See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for some details on the changes. Mainly, a new syntax, said **embedded**, is proposed. 
+**Jchemo** is organized between 
+- **transformers** (e.g. Pca models),
+- **predictors** (e.g. Plsr/Plsda models), 
+- and **utility functions**. 
 
-**Jchemo** is organized between **transformers** (e.g. Pca models), **predictors** (e.g. Plsr/Plsda models) and **utility functions**. For transformers and predictors, two syntaxes are allowed: the **direct syntax** (almost the same as for versions <= 2.4.0) and the **embedded syntax**. The last is intended to make easier the building of pipelines (chains) of models, and is now favored. Only this embbeded syntax is given in the **help pages** of the functions. 
+**Warning:** Major breaking changes were made between **version 0.2.4** and **version 0.3.0** to come (**work in progress** on the current main branch). See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for some details on the changes. Mainly, a new **embedded** syntax is proposed. 
 
 # <span style="color:green"> Tips </span> 
 
-### Model tuning
+### Package syntax
 
-The predictive models can be **tuned** by generic (i.e. same syntax for all models) grid-search functions: **gridscore** ("test-set" validation) and **gridcv** (cross-validation). Highly accelerated versions 
-of these tuning tools are available for models based on latent variables (LVs) and 
-ridge regularization.
+For transformers and predictors, two syntaxes are allowed:
+- the **direct** syntax (almost the same as for versions <= 0.2.4),
+- and the **embedded** syntax. 
 
-### Help and demo
+The **embedded** syntax is intended to make easier the building of pipelines (chains) of models, and is now favored. Only this embbeded syntax is given in the **help pages** of the functions. 
 
-Each function of **Jchemo** has a **help page** providing an example, e.g.:
+Most the **Jchemo** functions have keyword arguments (kwargs). The keyword arguments required by (or allowed in) a function can be found in the **Index of functions** section of the documentation:
+- [Stable](https://mlesnoff.github.io/Jchemo.jl/stable/api/) 
+- [Developping](https://mlesnoff.github.io/Jchemo.jl/dev/api/) 
+
+or in the REPL at the function's help page, for instance for function `plskern`:
 
 ```julia
 julia> ?plskern
 ```
-The **datasets** used in the examples are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets (chemometrics and other domains).
 
-Aditionnal **examples of scripts** demonstrating the syntax of **Jchemo** are available in the training project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) (this project is not still updated for Jchemo versions > 2.4.0). 
+### Model tuning
 
+Generic grid-search functions are available to tune the predictors: 
+- **gridscore** ("test-set" validation)
+- **gridcv** (cross-validation). 
+
+Highly accelerated versions of these tuning tools have been implemented for models based on latent variables (LVs) and ridge regularization.
+
+### Help and demo
+
+Each function of **Jchemo** has a **help page** providing an example, see for instance in the REPL:
+```julia
+julia> ?plskern
+```
+The **datasets** used in the examples are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets on chemometrics and other domains.
+
+**Examples of scripts** demonstrating the syntax of **Jchemo** are also available in the training project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) (this project is not still updated for Jchemo versions >= 0.3.0). 
 
 ### Multi-threading
 
-Some of the functions of the package (in particular those using kNN selections) use **multi-threading** 
+Some functions of the package (in particular those using kNN selections) use **multi-threading** 
 to speed the computations. Taking advantage of this requires to specify a relevant number 
 of threads (e.g. from the *Settings* menu of the VsCode Julia extension and the file *settings.json*).
 
 ### Plotting
 
-**Jchemo.jl** uses **Makie.jl** for plotting. To install and load one of the Makie's backends (e.g. **CairoMakie.jl**) is required to display the plots. 
+**Jchemo** uses **Makie** for plotting. To preliminary install and load one of the Makie's backends (e.g. **CairoMakie**) is required to display the plots. 
 
 ### News
 
-Before to update the package, it is recommended to have a look on 
-[**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) to avoid
+Before to update the package, it is recommended to have a look on [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) to avoid
  eventual problems when the new version contains breaking changes. 
 
 # <span style="color:green"> Installation </span> 
@@ -90,13 +109,11 @@ Environment:
   JULIA_EDITOR = code
 ```
 
-### PLS with n = 1e6 observations
+### Multi-variate PLSR with n = 1e6 observations
 
 ```julia
-using Jchemo
+using Jchemo, BenchmarkTools
 
-## PLS2 with 1e6 observations
-## (NB.: multi-threading is not used in plskern) 
 n = 10^6  # nb. observations (samples)
 p = 500   # nb. X-variables (features)
 q = 10    # nb. Y-variables to predict
@@ -106,9 +123,11 @@ Y = rand(n, q)
 zX = Float32.(X)
 zY = Float32.(Y)
 ```
-```julia
 
+```julia
 ## Float64
+## (NB.: multi-threading is not used in plskern) 
+mod = plskern(; nlv)
 @benchmark fit!($mod, $X, $Y)
 
 BenchmarkTools.Trial: 1 sample with 1 evaluation.
@@ -134,22 +153,137 @@ BenchmarkTools.Trial: 2 samples with 1 evaluation.
 
 # <span style="color:green"> Examples of syntax </span> 
 
-### **Examples of syntax** </span> 
-
-#### **Fitting a model**
+### Some fictive data
 
 ```julia
-using Jchemo
+n = 150 ; p = 200 
+q = 2 ; m = 50 
+Xtrain = rand(n, p)
+Ytrain = rand(n, q) 
+Xtest = rand(m, p)
+Ytest = rand(m, q) 
+```
 
-n = 150 ; p = 200 ; q = 2 ; m = 50 
-Xtrain = rand(n, p) ; Ytrain = rand(n, q) 
-Xtest = rand(m, p) ; Ytest = rand(m, q) 
+### **Fitting a transformer**
 
-## Model fitting
-nlv = 5 
-fm = plskern(Xtrain, Ytrain; nlv) ;
-pnames(fm) # print the names of objects contained in 'fm'
+#### **Example of a signal preprocessing**
 
+Let us consider a signal preprocessing with the Savitsky-Golay filter, using function `savgol`.
+
+The keyword arguments of `savgol` are `npoint`, `deriv` and `degree`. See for instance in the REPL:
+
+```julia
+julia> ?savgol
+```
+
+The embedded syntax to fit the model is as follows:
+
+```julia
+## Below, the order of the kwargs is not 
+## important but the argument names have 
+## to be correct.
+## Keywords arguments are specified
+## after character ";"
+
+## Model definition
+npoint = 11 ; deriv = 2 ; degree = 3
+mod = savgol(; npoint, deriv,
+    degree)
+## Fitting
+fit!(mod, Xtrain)
+```
+
+which is the strictly equivalent to:
+
+```julia
+## Here, ";" is not required
+## since the argument values are
+## specified within the function
+mod = savgol(npoint = 11, deriv = 2,
+    degree = 3)
+fit!(mod, Xtrain)
+```
+
+Contents of objects `mod` and `fm` can be displayed by:
+
+```
+pnames(mod)
+pnames(mod.fm)
+```
+
+Once the model is fitted, the transformed data are given by:
+
+```julia
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
+```
+
+Several preprocessing can be applied sequentially (chain) to the data. See the **Pipelines section** thereafter for an example.
+
+#### **Example of a PCA**
+
+Let us consider a principal component analysis (PCA), using function `pcasvd`. 
+
+The embedded syntax to fit the model is as follows:
+```julia
+nlv = 15  # nb. principal components
+mod = pcasvd(; nlv)
+fit!(mod, Xtrain, ytrain)
+```
+
+For scaling the data before the PCA, the syntax is:
+
+```julia
+nlv = 15 ; scal = true
+mod = pcasvd(; nlv, scal)
+fit!(mod, Xtrain, ytrain)
+```
+
+The PCA score matrices (i.e. the data projections on the PCA directions) can be computed by:
+```julia
+Ttrain = transf(mod, Xtrain)
+Ttest = transf(mod, Xtest)
+```
+
+Object `Ttrain` above can also be built directly by:
+
+```julia
+Ttrain = mod.fm.T
+```
+
+
+### **Fitting a predictive model** </span> 
+
+Let us consider the example of a Gaussian kernel PLSR with 15 latent variables, using function `kplsr`. 
+
+The keyword arguments required or allowed in the function can be found at its help page, here see
+```julia
+?kplsr
+```
+
+
+The embedded syntax to fit a model is as follows:
+```julia
+## Below,  the character `;` within the 
+## function definition specifies that 
+## `nlv`, `kern` and `gamma`
+## are keyword arguments of the function.  
+nlv = 15
+kern = :krbf ; gamma = .001 
+mod = kpls(; nlv, kern, gamma)
+fit!(mod, Xtrain, ytrain)
+```
+This is the strictly the same as:
+```julia
+mod = kplsr(nlv = 15,
+    kern = :krbf, gamma = .001)
+fit!(mod, Xtrain, ytrain)
+```
+
+Predictions are given by:
+```julia
+pred = predict(mod, Xtest).pred
+```
 ## Some summary
 summary(fm, Xtrain)
 
