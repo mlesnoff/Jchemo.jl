@@ -19,19 +19,19 @@ Why the name **Jchemo**?: Since it is orientated to **chemometrics** (in brief, 
 - **predictors** (e.g. PLSR/PLSDA models), 
 - and **utility functions**. 
 
-**Warning:** Major breaking changes were made between **version 0.2.4** and **version 0.3.0** to come (**work in progress** on the current main branch). See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for some details on the changes. Mainly, a new **embedded** syntax is proposed. 
+**Warning:** Major breaking changes were made between **version 0.2.4** and **version 0.3.0**. See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for some details on the changes. Mainly, a new **embedded** syntax is proposed. 
 
 # <span style="color:green"> Tips </span> 
 
-### Package syntax
+### Syntax
 
-For **transformers** and **predictors**, two syntaxes are allowed:
+Two syntaxes are allowed for **transformers** and **predictors**:
 - the direct syntax (almost the same as for versions <= 0.2.4),
 - and the **embedded** syntax. 
 
 The **embedded** syntax is intended to make easier the building of pipelines (chains) of models, and is now favored. Only this embbeded syntax is given in the **help pages** of the functions. 
 
-Most the **Jchemo** functions have keyword arguments (kwargs). The keyword arguments required by (or allowed in) a function can be found in the **Index of function section** of the documentation:
+Most the **Jchemo** functions have keyword arguments (`kwargs`). The keyword arguments required by (or allowed in) a function can be found in the **Index of function section** of the documentation:
 - [Stable](https://mlesnoff.github.io/Jchemo.jl/stable/api/) 
 - [Developping](https://mlesnoff.github.io/Jchemo.jl/dev/api/) 
 
@@ -48,8 +48,8 @@ The **datasets** used in the examples (help pages) are stored in the package [**
 ### Tuning predictive models
 
 **Generic grid-search functions** are available to tune the predictors: 
-- **gridscore** (*test-set* validation)
-- **gridcv** (cross-validation). 
+- [`gridscore`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridscore-NTuple{5,%20Any}) (*test-set* validation)
+- [`gridcv`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridcv-Tuple{Any,%20Any,%20Any}) (cross-validation). 
 
 Highly accelerated versions of these tuning tools have been implemented for models based on latent variables (LVs) and ridge regularization.
 
@@ -87,6 +87,10 @@ pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 # <span style="color:green">  Benchmark  </span>
 
 ```julia
+using Jchemo, BenchmarkTools
+```
+
+```julia
 julia> versioninfo()
 Julia Version 1.10.0
 Commit 3120989f39 (2023-12-25 18:01 UTC)
@@ -106,8 +110,6 @@ Environment:
 ### Multi-variate PLSR with n = 1e6 observations
 
 ```julia
-using Jchemo, BenchmarkTools
-
 n = 10^6  # nb. observations (samples)
 p = 500   # nb. X-variables (features)
 q = 10    # nb. Y-variables to predict
@@ -189,7 +191,7 @@ fit!(mod, Xtrain)
 which is the strictly equivalent to:
 
 ```julia
-## Here, ";" is not required
+## Below, ";" is not required
 ## since the kwargs values are
 ## specified within the function
 mod = savgol(npoint = 11, deriv = 2,
@@ -211,7 +213,7 @@ Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
 ```
 
-Several preprocessing can be applied sequentially to the data: see the **Pipelines section** thereafter for an example.
+Several preprocessing can be applied sequentially to the data: see the **Fitting a pipeline** section thereafter for examples.
 
 #### **Example of a PCA**
 
@@ -224,7 +226,7 @@ mod = pcasvd(; nlv)
 fit!(mod, Xtrain, ytrain)
 ```
 
-For preliminary scaling the data before the PCA decomposition, the syntax is:
+For a preliminary scaling of the data before the PCA decomposition, the syntax is:
 
 ```julia
 nlv = 15 ; scal = true
@@ -232,7 +234,7 @@ mod = pcasvd(; nlv, scal)
 fit!(mod, Xtrain, ytrain)
 ```
 
-The PCA score matrices (i.e. the data projections on the PCA directions) can be computed by:
+The PCA score matrices (i.e. the projections of the observations on the PCA directions) can be computed by:
 ```julia
 Ttrain = transf(mod, Xtrain)
 Ttest = transf(mod, Xtest)
@@ -288,7 +290,10 @@ pred = predict(mod, Xtest).pred
 ?gridscore
 ?gridcv
 ```
-### **Pipelines**
+### **Fitting a pipeline**
+
+#### Example of chain of preprocessing
+
 
 
 
