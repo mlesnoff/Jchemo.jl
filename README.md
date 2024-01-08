@@ -15,8 +15,8 @@ and their extensions, in particular locally weighted PLS models (**LWPLS-R** & *
 Why the name **Jchemo**?: Since it is orientated to **chemometrics** (in brief, the use of biometrics for chemistry), but most of the provided methods are **generic to other application domains**. 
 
 **Jchemo** is organized between 
-- **transformers** (e.g. Pca models),
-- **predictors** (e.g. Plsr/Plsda models), 
+- **transformers** (e.g. PCA models),
+- **predictors** (e.g. PLSR/PLSDA models), 
 - and **utility functions**. 
 
 **Warning:** Major breaking changes were made between **version 0.2.4** and **version 0.3.0** to come (**work in progress** on the current main branch). See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for some details on the changes. Mainly, a new **embedded** syntax is proposed. 
@@ -162,9 +162,7 @@ Ytest = rand(m, q)
 
 #### **Example of a signal preprocessing**
 
-Let us consider a signal preprocessing with the Savitsky-Golay filter, using function `savgol`.
-
-The keyword arguments of `savgol` are `npoint`, `deriv` and `degree`. See for instance in the REPL:
+Let us consider a signal preprocessing with the Savitsky-Golay filter, using function `savgol`. The keyword arguments of `savgol` are `npoint`, `deriv` and `degree`. See for instance in the REPL:
 
 ```julia
 julia> ?savgol
@@ -183,6 +181,7 @@ The embedded syntax to fit the model is as follows:
 npoint = 11 ; deriv = 2 ; degree = 3
 mod = savgol(; npoint, deriv,
     degree)
+
 ## Fitting
 fit!(mod, Xtrain)
 ```
@@ -191,7 +190,7 @@ which is the strictly equivalent to:
 
 ```julia
 ## Here, ";" is not required
-## since the argument values are
+## since the kwargs values are
 ## specified within the function
 mod = savgol(npoint = 11, deriv = 2,
     degree = 3)
@@ -205,14 +204,14 @@ pnames(mod)
 pnames(mod.fm)
 ```
 
-Once the model is fitted, the transformed data are given by:
+Once the model is fitted, the transformed (i.e. preprocessed) data are given by:
 
 ```julia
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
 ```
 
-Several preprocessing can be applied sequentially (chain) to the data. See the **Pipelines section** thereafter for an example.
+Several preprocessing can be applied sequentially to the data: see the **Pipelines section** thereafter for an example.
 
 #### **Example of a PCA**
 
@@ -225,7 +224,7 @@ mod = pcasvd(; nlv)
 fit!(mod, Xtrain, ytrain)
 ```
 
-For scaling the data before the PCA, the syntax is:
+For preliminary scaling the data before the PCA decomposition, the syntax is:
 
 ```julia
 nlv = 15 ; scal = true
@@ -239,13 +238,13 @@ Ttrain = transf(mod, Xtrain)
 Ttest = transf(mod, Xtest)
 ```
 
-Object `Ttrain` above can also be built directly by:
+Object `Ttrain` above can also be obtained directly by:
 
 ```julia
 Ttrain = mod.fm.T
 ```
 
-Some summary of the model (% of explained variance, etc.) can be displayed by:
+Some model summary (% of explained variance, etc.) can be displayed by:
 
 ```julia
 summary(mod, Xtrain)
@@ -278,7 +277,7 @@ and model summary by:
 summary(mod, Xtrain)
 ```
 
-Predictions (Y-values) are given by:
+Y-Predictions are given by:
 ```julia
 pred = predict(mod, Xtest).pred
 ```
