@@ -7,7 +7,7 @@
 [![Build Status](https://github.com/mlesnoff/Jchemo.jl/workflows/CI/badge.svg)](https://github.com/mlesnoff/Jchemo.jl/actions)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
-# <span style="color:green"> About </span> 
+# <span style="color:green"> **About** </span> 
 
 **Jchemo** was initially dedicated to **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
 and their extensions, in particular locally weighted PLS models (**LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). The package has then been expanded to various **dimension reduction** and **regression and discrimination** models ([see the list of functions here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
@@ -27,9 +27,9 @@ The pipelines are built with function `pip`.
 
 **Warning:** Major breaking changes were made between **version 0.2.4** and **version 0.3.0**. See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for some details on the changes. Mainly, a new **embedded** syntax is proposed. 
 
-# <span style="color:green"> Tips </span> 
+# <span style="color:green"> **Tips** </span> 
 
-### Syntax
+## Syntax
 
 Two syntaxes are allowed for **transformers** and **predictors**:
 - the direct syntax (almost the same as for versions <= 0.2.4),
@@ -51,7 +51,7 @@ The **datasets** used in the examples (help pages) are stored in the package [**
 
 **Examples of scripts** demonstrating the **Jchemo** syntax are also available in the project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) (this project is not still updated for Jchemo versions >= 0.3.0). 
 
-### Tuning predictive models
+## Tuning predictive models
 
 **Generic grid-search functions** are available to tune the predictors: 
 - [`gridscore`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridscore-NTuple{5,%20Any}) (*test-set* validation)
@@ -74,7 +74,7 @@ of threads (e.g. from the *Settings* menu of the VsCode Julia extension and the 
 Before to update the package, it is recommended to have a look on [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) to avoid
  eventual problems when the new version contains breaking changes. 
 
-# <span style="color:green"> Installation </span> 
+# <span style="color:green"> **Installation** </span> 
 
 In order to install **Jchemo**, run in the Pkg REPL:
 ```julia
@@ -90,7 +90,7 @@ or for the **current developing version** (not stable):
 ```julia
 pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ```
-# <span style="color:green">  Benchmark  </span>
+# <span style="color:green">  **Benchmark**  </span>
 
 ```julia
 using Jchemo, BenchmarkTools
@@ -153,7 +153,7 @@ BenchmarkTools.Trial: 2 samples with 1 evaluation.
  Memory estimate: 2.05 GiB, allocs estimate: 2677.
 ```
 
-# <span style="color:green"> Examples of syntax </span> 
+# <span style="color:green"> **Examples of syntax** </span> 
 
 ### Some fictive data
 
@@ -339,7 +339,7 @@ The Y-predictions are given by:
 pred = predict(mod, Xtest).pred
 ```
 
-# <span style="color:green"> Credit </span> 
+# <span style="color:green"> **Credit** </span> 
 
 ### Author
 
