@@ -318,9 +318,26 @@ The transformed data are given by:
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
 ```
+#### Example of a PCA-SVMR
 
+Let us consider a support vector machine regression model implemented on PCA scores (PCA-SVMR). 
 
+The pipeline is fitted as follows:
 
+```julia
+nlv = 15
+kern = :krbf ; gamma = .001 ; cost = 1000
+mod1 = pcasvd(; nlv)
+mod2 = svmr(; kern, 
+    gamma, cost)
+mod = pip(mod1, mod2)
+fit!(mod, Xtrain)
+```
+
+The Y-predictions are given by:
+```julia
+pred = predict(mod, Xtest).pred
+```
 
 # <span style="color:green"> Credit </span> 
 
