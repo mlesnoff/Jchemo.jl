@@ -328,8 +328,7 @@ The pipeline is fitted as follows:
 nlv = 15
 kern = :krbf ; gamma = .001 ; cost = 1000
 mod1 = pcasvd(; nlv)
-mod2 = svmr(; kern, 
-    gamma, cost)
+mod2 = svmr(; kern, gamma, cost)
 mod = pip(mod1, mod2)
 fit!(mod, Xtrain)
 ```
