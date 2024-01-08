@@ -251,166 +251,54 @@ Object `Ttrain` above can also be built directly by:
 Ttrain = mod.fm.T
 ```
 
+Some summary of the model (% of explained variance, etc.) can be displayed by:
 
-### **Fitting a predictive model** </span> 
-
-Let us consider the example of a Gaussian kernel PLSR with 15 latent variables, using function `kplsr`. 
-
-The keyword arguments required or allowed in the function can be found at its help page, here see
 ```julia
-?kplsr
+summary(mod, Xtrain)
 ```
 
+### **Fitting a predictive model**
 
-The embedded syntax to fit a model is as follows:
+#### **Example of a KPLSR**
+
+Let us consider a Gaussian kernel partial least squares regression (KPLSR), using function `kplsr`. 
+
+The embedded syntax to fit the model is as follows:
 ```julia
-## Below,  the character `;` within the 
-## function definition specifies that 
-## `nlv`, `kern` and `gamma`
-## are keyword arguments of the function.  
-nlv = 15
+nlv = 15  # nb. latent variables
 kern = :krbf ; gamma = .001 
 mod = kpls(; nlv, kern, gamma)
 fit!(mod, Xtrain, ytrain)
 ```
-This is the strictly the same as:
+
+As for PCA, the score matrices can be computed by:
 ```julia
-mod = kplsr(nlv = 15,
-    kern = :krbf, gamma = .001)
-fit!(mod, Xtrain, ytrain)
+Ttrain = transf(mod, Xtrain)
+## or:   Ttrain = mod.fm.T
+Ttest = transf(mod, Xtest)
 ```
 
-Predictions are given by:
+and model summary by:
+
+```julia
+summary(mod, Xtrain)
+```
+
+Predictions (Y-values) are given by:
 ```julia
 pred = predict(mod, Xtest).pred
 ```
-## Some summary
-summary(fm, Xtrain)
 
-## Computation of the PLS scores (LVs) for Xtest
-Jchemo.transform(fm, Xtest)
-Jchemo.transform(fm, Xtest; nlv = 1)
-
-## PLS b-coefficients
-Jchemo.coef(fm)
-Jchemo.coef(fm; nlv = 2)
-
-## Predictions and performance of the fitted model
-res = Jchemo.predict(fm, Xtest) 
-res.pred
-rmsep(res.pred, Ytest)
-mse(res.pred, Ytest)
-
-Jchemo.predict(fm, Xtest).pred
-Jchemo.predict(fm, Xtest; nlv = 0:3).pred 
-```
-
-#### **Tuning a model by grid-search** 
-
-- #### With gridscore
+**Examples of tuning** of predictive models (test-set validation and cross-validation) are given in the help pages of functions `gridscore` and `gridcv`: 
 
 ```julia
-using Jchemo, StatsBase, CairoMakie
-
-ntrain = 150 ; p = 200
-ntest = 80 
-Xtrain = rand(ntrain, p) ; ytrain = rand(ntrain) 
-Xtest = rand(ntest, p) ; ytest = rand(ntest)
-## Train is splitted to Cal+Val to tune the model,
-## and the generalization error is estimated on Test.
-nval = 50
-s = sample(1:ntrain, nval; replace = false) 
-Xcal = rmrow(Xtrain, s)
-ycal = rmrow(ytrain, s)
-Xval = Xtrain[s, :]
-yval = ytrain[s]
-
-## Computation of the performance over the grid
-## (the model is fitted on Cal, and the performance is 
-## computed on Val)
-nlv = 0:10 
-res = gridscorelv(
-    Xcal, ycal, Xval, yval;
-    score = rmsep, fun = plskern, nlv) 
-
-## Plot the results
-plotgrid(res.nlv, res.y1,
-    xlabel = "Nb. LVs", ylabel = "RMSEP").f
-
-## Predictions and performance of the best model
-u = findall(res.y1 .== minimum(res.y1))[1] 
-res[u, :]
-fm = plskern(Xtrain, ytrain; nlv = res.nlv[u]) ;
-res = Jchemo.predict(fm, Xtest) 
-rmsep(res.pred, ytest)
-
-## *Note*: For PLSR models, using gridscorelv is much faster
-## than using the generic function gridscore.
-## In the same manner, for ridge regression models,
-## gridscorelb is much faster than gridscore.
-
-## Syntax for the generic gridscore
-pars = mpar(nlv = nlv)
-res = gridscore(
-    Xcal, ycal, Xval, yval;
-    score = rmsep, fun = plskern, pars = pars) 
+?gridscore
+?gridcv
 ```
+### **Pipelines**
 
-- #### With gridcv
 
-```julia
-using Jchemo, StatsBase, CairoMakie
 
-ntrain = 150 ; p = 200
-ntest = 80 
-Xtrain = rand(ntrain, p) ; ytrain = rand(ntrain) 
-Xtest = rand(ntest, p) ; ytest = rand(ntest)
-## Train is used to tune the model,
-## and the generalization error is estimated on Test.
-
-## Build the cross-validation (CV) segments
-## Replicated K-Fold CV
-K = 5      # Nb. folds
-rep = 10   # Nb. replications (rep = 1 ==> no replication)
-segm = segmkf(ntrain, K; rep = rep)
-
-## Or replicated test-set CV
-m = 30     # Size of the test-set
-rep = 10   # Nb. replications (rep = 1 ==> no replication)
-segm = segmts(ntrain, m; rep = rep) 
-
-## Computation of the performances over the grid
-nlv = 0:10 
-rescv = gridcvlv(
-    Xtrain, ytrain; segm = segm,
-    score = rmsep, fun = plskern, nlv) ;
-pnames(rescv)
-res = rescv.res
-
-## Plot the results
-plotgrid(res.nlv, res.y1,
-    xlabel = "Nb. LVs", ylabel = "RMSEP").f
-
-## Predictions and performance of the best model 
-u = findall(res.y1 .== minimum(res.y1))[1] 
-res[u, :]
-fm = plskern(Xtrain, ytrain; nlv = res.nlv[u]) ;
-res = Jchemo.predict(fm, Xtest) 
-rmsep(res.pred, ytest)
-
-## *Note*: For PLSR models, using gridcvlv is much faster
-## than using the generic function gridcv.
-## In the same manner, for ridge regression models,
-## gridcvlb is much faster than gridcv.
-
-## Using the generic function gridcv:
-pars = mpar(nlv = nlv)
-rescv = gridcv(
-    Xtrain, ytrain; segm = segm,
-    score = rmsep, fun = plskern, pars = pars) ;
-pnames(rescv)
-res = rescv.res
-```
 
 # <span style="color:green"> Credit </span> 
 
@@ -426,8 +314,7 @@ res = rescv.res
 
 ###  How to cite
 
-Lesnoff, M. 2021. Jchemo: Machine learning and chemometrics 
-on high-dimensional data with Julia. https://github.com/mlesnoff/Jchemo. 
+Lesnoff, M. 2021. Jchemo: Chemometrics and machine learning on high-dimensional data with Julia. https://github.com/mlesnoff/Jchemo. 
 UMR SELMET, Univ Montpellier, CIRAD, INRA, Institut Agro, Montpellier, France
 
 ###  Acknowledgments
