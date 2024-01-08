@@ -29,7 +29,7 @@ The pipelines are built with function `pip`.
 
 # <span style="color:green"> **Tips** </span> 
 
-## Syntax
+### Syntax
 
 Two syntaxes are allowed for **transformers** and **predictors**:
 - the direct syntax (almost the same as for versions <= 0.2.4),
@@ -51,7 +51,7 @@ The **datasets** used in the examples (help pages) are stored in the package [**
 
 **Examples of scripts** demonstrating the **Jchemo** syntax are also available in the project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) (this project is not still updated for Jchemo versions >= 0.3.0). 
 
-## Tuning predictive models
+### Tuning predictive models
 
 **Generic grid-search functions** are available to tune the predictors: 
 - [`gridscore`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridscore-NTuple{5,%20Any}) (*test-set* validation)
@@ -168,7 +168,7 @@ Ytest = rand(m, q)
 
 ### **Fitting a transformer**
 
-#### **Example of a signal preprocessing**
+#### **a) Example of a signal preprocessing**
 
 Let us consider a signal preprocessing with the Savitsky-Golay filter, using function `savgol`. The keyword arguments of `savgol` are `npoint`, `deriv` and `degree`. See for instance in the REPL:
 
@@ -221,7 +221,7 @@ Xptest = transf(mod, Xtest)
 
 Several preprocessing can be applied sequentially to the data: see the **Fitting a pipeline** section thereafter for examples.
 
-#### **Example of a PCA**
+#### **b) Example of a PCA**
 
 Let us consider a principal component analysis (PCA), using function `pcasvd`. 
 
@@ -260,7 +260,7 @@ summary(mod, Xtrain)
 
 ### **Fitting a predictive model**
 
-#### **Example of a KPLSR**
+#### **a) Example of a KPLSR**
 
 Let us consider a Gaussian kernel partial least squares regression (KPLSR), using function `kplsr`. 
 
@@ -298,7 +298,7 @@ pred = predict(mod, Xtest).pred
 ```
 ### **Fitting a pipeline**
 
-#### Example of chained preprocessing
+#### **a) Example of chained preprocessing**
 
 Let us consider a data prepocessing by standard-normal-variation transformation (SNV) followed by a Savitsky-Golay filter and a de-trending transformation. 
 
@@ -318,9 +318,9 @@ The transformed data are given by:
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
 ```
-#### Example of a PCA-SVMR
+#### **b) Example of PCA-SVMR**
 
-Let us consider a support vector machine regression model implemented on PCA scores (PCA-SVMR). 
+Let us consider a support vector machine regression model implemented on preliminary computed PCA scores (PCA-SVMR). 
 
 The pipeline is fitted as follows:
 
@@ -338,25 +338,28 @@ The Y-predictions are given by:
 ```julia
 pred = predict(mod, Xtest).pred
 ```
+#### **c) Example of LWR Naes et al. 1998**
+
+
+
 
 # <span style="color:green"> **Credit** </span> 
 
-### Author
+### **Author**
 
-**Matthieu Lesnoff**
+Matthieu Lesnoff     
+contact: **matthieu.lesnoff@cirad.fr**
 
 - Cirad, [**UMR Selmet**](https://umr-selmet.cirad.fr/en), Montpellier, France
 
 - [**ChemHouse**](https://www.chemproject.org/ChemHouse), Montpellier
 
-**matthieu.lesnoff@cirad.fr**
-
-###  How to cite
+### **How to cite**
 
 Lesnoff, M. 2021. Jchemo: Chemometrics and machine learning on high-dimensional data with Julia. https://github.com/mlesnoff/Jchemo. 
 UMR SELMET, Univ Montpellier, CIRAD, INRA, Institut Agro, Montpellier, France
 
-###  Acknowledgments
+###  **Acknowledgments**
 
 - G. Cornu (Cirad) https://ur-forets-societes.cirad.fr/en/l-unite/l-equipe
 - M. Metz (Pellenc ST, Pertuis, France) 
