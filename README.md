@@ -25,13 +25,13 @@ Why the name **Jchemo**?: Since it is orientated to **chemometrics** (in brief, 
 
 ### Package syntax
 
-For transformers and predictors, two syntaxes are allowed:
-- the **direct** syntax (almost the same as for versions <= 0.2.4),
+For **transformers** and **predictors**, two syntaxes are allowed:
+- the direct syntax (almost the same as for versions <= 0.2.4),
 - and the **embedded** syntax. 
 
 The **embedded** syntax is intended to make easier the building of pipelines (chains) of models, and is now favored. Only this embbeded syntax is given in the **help pages** of the functions. 
 
-Most the **Jchemo** functions have keyword arguments (kwargs). The keyword arguments required by (or allowed in) a function can be found in the **Index of functions** section of the documentation:
+Most the **Jchemo** functions have keyword arguments (kwargs). The keyword arguments required by (or allowed in) a function can be found in the **Index of function section** of the documentation:
 - [Stable](https://mlesnoff.github.io/Jchemo.jl/stable/api/) 
 - [Developping](https://mlesnoff.github.io/Jchemo.jl/dev/api/) 
 
@@ -41,27 +41,21 @@ or in the REPL at the function's help page, for instance for function `plskern`:
 julia> ?plskern
 ```
 
-### Model tuning
+The **datasets** used in the examples (help pages) are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets on chemometrics and other domains.
 
-Generic grid-search functions are available to tune the predictors: 
-- **gridscore** ("test-set" validation)
+**Examples of scripts** demonstrating the **Jchemo** syntax are also available in the project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) (this project is not still updated for Jchemo versions >= 0.3.0). 
+
+### Tuning predictive models
+
+**Generic grid-search functions** are available to tune the predictors: 
+- **gridscore** (*test-set* validation)
 - **gridcv** (cross-validation). 
 
 Highly accelerated versions of these tuning tools have been implemented for models based on latent variables (LVs) and ridge regularization.
 
-### Help and demo
-
-Each function of **Jchemo** has a **help page** providing an example, see for instance in the REPL:
-```julia
-julia> ?plskern
-```
-The **datasets** used in the examples are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets on chemometrics and other domains.
-
-**Examples of scripts** demonstrating the syntax of **Jchemo** are also available in the training project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo) (this project is not still updated for Jchemo versions >= 0.3.0). 
-
 ### Multi-threading
 
-Some functions of the package (in particular those using kNN selections) use **multi-threading** 
+Some **Jchemo** functions (in particular those using kNN selections) use **multi-threading** 
 to speed the computations. Taking advantage of this requires to specify a relevant number 
 of threads (e.g. from the *Settings* menu of the VsCode Julia extension and the file *settings.json*).
 
@@ -76,17 +70,17 @@ Before to update the package, it is recommended to have a look on [**What change
 
 # <span style="color:green"> Installation </span> 
 
-In order to install Jchemo, run in the Pkg REPL:
+In order to install **Jchemo**, run in the Pkg REPL:
 ```julia
 pkg> add Jchemo
 ```
 
-or for a specific version: 
+or for a **specific version**: 
 ```julia
 pkg> add Jchemo@0.1.18
 ```
 
-or for the current developing version (not stable):
+or for the **current developing version** (not stable):
 ```julia
 pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ```
