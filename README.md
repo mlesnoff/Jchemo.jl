@@ -17,7 +17,13 @@ Why the name **Jchemo**?: Since it is orientated to **chemometrics** (in brief, 
 **Jchemo** is organized between 
 - **transformers** (e.g. PCA models),
 - **predictors** (e.g. PLSR/PLSDA models), 
-- and **utility functions**. 
+- **utility functions**. 
+
+Ad'hoc **pipelines** can also be built. In **Jchemo**, a pipeline is a **chain of *K* models** containing
+- either a set of ***K* transformers**,
+- or a set of ***K* - 1 transformers** and **a final predictor**. 
+
+The pipelines are built with function `pip`.
 
 **Warning:** Major breaking changes were made between **version 0.2.4** and **version 0.3.0**. See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for some details on the changes. Mainly, a new **embedded** syntax is proposed. 
 
@@ -292,8 +298,26 @@ pred = predict(mod, Xtest).pred
 ```
 ### **Fitting a pipeline**
 
-#### Example of chain of preprocessing
+#### Example of chained preprocessing
 
+Let us consider a data prepocessing by standard-normal-variation transformation (SNV) followed by a Savitsky-Golay filter and a de-trending transformation. 
+
+The pipeline is fitted as follows:
+
+```julia
+mod1 = snv(centr = true, scal = true)
+mod2 = saggol(npoint = 5, deriv = 1, degree = 2)
+mod3 = detrend()
+mod = pip(mod1, mod2, mod3)
+fit!(mod, Xtrain)
+```
+
+The transformed data are given by:
+
+```julia
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
+```
 
 
 
