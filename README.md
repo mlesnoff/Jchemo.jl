@@ -317,10 +317,13 @@ Let us consider a data preprocessing by standard-normal-variation transformation
 The pipeline is fitted as follows:
 
 ```julia
+## Models' definition
 mod1 = snv(centr = true, scal = true)
 mod2 = saggol(npoint = 5, deriv = 1, degree = 2)
 mod3 = detrend()
+## Pipeline building
 mod = pip(mod1, mod2, mod3)
+## Fitting
 fit!(mod, Xtrain)
 ```
 
@@ -337,14 +340,11 @@ Let us consider a support vector machine regression model implemented on prelimi
 The pipeline is fitted as follows:
 
 ```julia
-## Models' definition
 nlv = 15
 kern = :krbf ; gamma = .001 ; cost = 1000
 mod1 = pcasvd(; nlv)
 mod2 = svmr(; kern, gamma, cost)
-## Pipeline building
 mod = pip(mod1, mod2)
-## Fitting
 fit!(mod, Xtrain)
 ```
 
@@ -353,7 +353,7 @@ The Y-predictions are given by:
 pred = predict(mod, Xtest).pred
 ```
 
-Any step(s) of data preprocessing can obviously be implemented  either outside the given predictive pipeline or be involded directlty in the pipeline, such as for instance:
+Any step(s) of data preprocessing can obviously be implemented either outside (before) the given predictive pipeline or be involded directlty in the pipeline, such as for instance:
 
 ```julia
 degree = 2    # de-trending with polynom degree 2
