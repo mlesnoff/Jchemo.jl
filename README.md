@@ -258,7 +258,7 @@ Some model summary (% of explained variance, etc.) can be displayed by:
 summary(mod, Xtrain)
 ```
 
-### **Fitting a predictive model**
+### **Fitting a predictor**
 
 #### **a) Example of a KPLSR**
 
@@ -300,7 +300,7 @@ pred = predict(mod, Xtest).pred
 
 #### **a) Example of chained preprocessing**
 
-Let us consider a data prepocessing by standard-normal-variation transformation (SNV) followed by a Savitsky-Golay filter and a de-trending transformation. 
+Let us consider a data preprocessing by standard-normal-variation transformation (SNV) followed by a Savitsky-Golay filter and a de-trending transformation. 
 
 The pipeline is fitted as follows:
 
@@ -325,11 +325,14 @@ Let us consider a support vector machine regression model implemented on prelimi
 The pipeline is fitted as follows:
 
 ```julia
+## Models' definition
 nlv = 15
 kern = :krbf ; gamma = .001 ; cost = 1000
 mod1 = pcasvd(; nlv)
 mod2 = svmr(; kern, gamma, cost)
+## Pipeline building
 mod = pip(mod1, mod2)
+## Fitting
 fit!(mod, Xtrain)
 ```
 
@@ -337,10 +340,46 @@ The Y-predictions are given by:
 ```julia
 pred = predict(mod, Xtest).pred
 ```
-#### **c) Example of LWR Naes et al. 1998**
 
+Any step(s) of data preprocessing can obviously be implemented  either outside the given predictive pipeline or be involded directlty in the pipeline, such as for instance:
 
+```julia
+degree = 2    # de-trending with polynom degree 2
+nlv = 15
+kern = :krbf ; gamma = .001 ; cost = 1000
+mod1 = detrend(; degree)
+mod2 = pcasvd(; nlv)
+mod3 = svmr(; kern, gamma, cost)
+mod = pip(mod1, mod2, mod3)
+```
 
+#### **c) Example of LWR Naes et al. 1990**
+
+The LWR algorithm of Naes et al (1990) consists in implementing a preliminary global PCA on the data and then a kNN locally weighted multiple linear regression (kNN-LWMLR) on the global PCA scores.
+
+The pipeline is defined as follows:
+
+```julia
+nlv = 25
+metric = :eucl ; h = 2 ; k = 200
+mod1 = pcasvd(; nlv)
+mod2 = lwmlr(; metric, h, k)
+mod = pip(mod1, mod2)
+```
+
+#### **d) Example of Shen et al. 2019**
+
+The pipeline of Shen et al. (2019) consists in implementing a preliminary global PLSR on the data and then a kNN-PLSR on the global PLSR scores.
+
+The pipeline is defined as follows:
+
+```julia
+nlv = 25
+metric = :mah ; h = Inf ; k = 200
+mod1 = plskern(; nlv)
+mod2 = lwplsr(; metric, h, k)
+mod = pip(mod1, mod2)
+```
 
 # <span style="color:green"> **Credit** </span> 
 
