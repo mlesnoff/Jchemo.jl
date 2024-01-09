@@ -319,7 +319,7 @@ The pipeline is fitted as follows:
 ```julia
 ## Models' definition
 mod1 = snv(centr = true, scal = true)
-mod2 = saggol(npoint = 5, deriv = 1, degree = 2)
+mod2 = savgol(npoint = 5, deriv = 1, degree = 2)
 mod3 = detrend()
 ## Pipeline building
 mod = pip(mod1, mod2, mod3)
@@ -353,7 +353,7 @@ The Y-predictions are given by:
 pred = predict(mod, Xtest).pred
 ```
 
-Any step(s) of data preprocessing can obviously be implemented either outside (before) the given predictive pipeline or be involded directlty in the pipeline, such as for instance:
+Any step(s) of data preprocessing can obviously be implemented before the modeling, either outside of the given predictive pipeline or being involded directlty in the pipeline, such as for instance:
 
 ```julia
 degree = 2    # de-trending with polynom degree 2
@@ -379,6 +379,8 @@ mod2 = lwmlr(; metric, h, k)
 mod = pip(mod1, mod2)
 ```
 
+*Naes, T. et al. 1990. Analytical Chemistry 664–673.*
+
 #### **d) Example of Shen et al. 2019**
 
 The pipeline of Shen et al. (2019) consists in implementing a preliminary global PLSR on the data and then a kNN-PLSR on the global PLSR scores.
@@ -392,6 +394,8 @@ mod1 = plskern(; nlv)
 mod2 = lwplsr(; metric, h, k)
 mod = pip(mod1, mod2)
 ```
+
+*Shen et al. 2019. Journal of Chemometrics 0, e3117. https://doi.org/10.1002/cem.3117*
 
 # <span style="color:green"> **Credit** </span> 
 
