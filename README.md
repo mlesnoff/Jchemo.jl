@@ -393,6 +393,8 @@ mod2 = lwplsr(; metric, h, k)
 mod = pip(mod1, mod2)
 ```
 
+*Naes et al., 1990. Analytical Chemistry 664–673.*
+
 # <span style="color:green"> **Credit** </span> 
 
 ### **Author**
