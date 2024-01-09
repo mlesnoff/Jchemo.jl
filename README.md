@@ -395,7 +395,7 @@ mod2 = lwplsr(; metric, h, k)
 mod = pip(mod1, mod2)
 ```
 
-*Shen et al. 2019. Journal of Chemometrics 0, e3117. https://doi.org/10.1002/cem.3117*
+*Shen et al. 2019. Journal of Chemometrics 0, e3117*
 
 # <span style="color:green"> **Credit** </span> 
 
