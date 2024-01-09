@@ -379,8 +379,6 @@ mod2 = lwmlr(; metric, h, k)
 mod = pip(mod1, mod2)
 ```
 
-*Naes et al. 1990. Analytical Chemistry 664–673.*
-
 #### **d) Example of Shen et al. 2019**
 
 The pipeline of Shen et al. (2019) consists in implementing a preliminary global PLSR on the data and then a kNN-PLSR on the global PLSR scores.
