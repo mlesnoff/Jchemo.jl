@@ -37,7 +37,7 @@ Two syntaxes are allowed for **transformers** and **predictors**:
 
 The **embedded** syntax is intended to make easier the building of pipelines (chains) of models, and is now favored. Only this embbeded syntax is given in the **help pages** of the functions. 
 
-Most the **Jchemo** functions have keyword arguments (`kwargs`). The keyword arguments required by (or allowed in) a function can be found in the **Index of function section** of the documentation:
+Most the **Jchemo** functions have **keyword arguments** (`kwargs`). The keyword arguments required by (or allowed in) a function can be found in the **Index of function section** of the documentation:
 - [Stable](https://mlesnoff.github.io/Jchemo.jl/stable/api/) 
 - [Developping](https://mlesnoff.github.io/Jchemo.jl/dev/api/) 
 
@@ -45,6 +45,18 @@ or in the REPL at the function's help page, for instance for function `plskern`:
 
 ```julia
 julia> ?plskern
+```
+
+The default `kwargs` values can be displayed by:
+
+```julia
+julia> dump(Par(); maxdepth = 1)
+```
+
+or for a given argument (e.g. `gamma`):
+
+```julia
+julia> Par().gamma
 ```
 
 The **datasets** used in the examples (help pages) are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets on chemometrics and other domains.
@@ -357,7 +369,7 @@ mod = pip(mod1, mod2, mod3)
 
 The LWR algorithm of Naes et al (1990) consists in implementing a preliminary global PCA on the data and then a kNN locally weighted multiple linear regression (kNN-LWMLR) on the global PCA scores.
 
-The pipeline is defined as follows:
+The pipeline is defined by:
 
 ```julia
 nlv = 25
@@ -371,7 +383,7 @@ mod = pip(mod1, mod2)
 
 The pipeline of Shen et al. (2019) consists in implementing a preliminary global PLSR on the data and then a kNN-PLSR on the global PLSR scores.
 
-The pipeline is defined as follows:
+The pipeline is defined by:
 
 ```julia
 nlv = 25
