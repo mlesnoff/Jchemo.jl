@@ -25,7 +25,7 @@ Ad'hoc **pipelines** can also be built. In **Jchemo**, a pipeline is a **chain o
 
 The pipelines are built with function `pip`.
 
-**Warning:** Major breaking changes were made between **version 0.2.4** and **version 0.3.0**. See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for some details on the changes. Mainly, a new **embedded** syntax is proposed. 
+**Warning:** Major breaking changes were made between **version 0.2.4** and **version 0.3.0**. See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for some details on the changes. Mainly, a new **embedded syntax** is proposed. 
 
 # <span style="color:green"> **Tips** </span> 
 
@@ -199,8 +199,7 @@ The embedded syntax to fit the model is as follows:
 
 ## Model definition
 npoint = 11 ; deriv = 2 ; degree = 3
-mod = savgol(; npoint, deriv,
-    degree)
+mod = savgol(; npoint, deriv, degree)
 
 ## Fitting
 fit!(mod, Xtrain)
@@ -212,8 +211,8 @@ which is the strictly equivalent to:
 ## Below, ";" is not required
 ## since the kwargs values are
 ## specified within the function
-mod = savgol(npoint = 11, deriv = 2,
-    degree = 3)
+
+mod = savgol(npoint = 11, deriv = 2, degree = 3)
 fit!(mod, Xtrain)
 ```
 
@@ -286,8 +285,7 @@ fit!(mod, Xtrain, ytrain)
 
 As for PCA, the score matrices can be computed by:
 ```julia
-Ttrain = transf(mod, Xtrain)
-## or:   Ttrain = mod.fm.T
+Ttrain = transf(mod, Xtrain)   # = mod.fm.T
 Ttest = transf(mod, Xtest)
 ```
 
