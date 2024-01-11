@@ -5,7 +5,7 @@ Plotting spectra.
 * `X` : X-data (n, p).
 * `wl` : Column names of `X`. Must be numeric.
 Keyword arguments:
-* 'size' : Size (horizontal, vertical) of the figure.
+* `size` : Size (horizontal, vertical) of the figure.
 * `color` : Set a unique color (and eventually transparency) 
     to the spectra.
 * `nsamp` : Nb. spectra (X-rows) to plot. If `nothing`, 
