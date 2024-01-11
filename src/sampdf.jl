@@ -3,12 +3,12 @@
         id = 1:nro(Y); msamp = :rand)
 Build training vs. test sets from each column of a dataframe. 
 * `Y` : DataFrame (n, p) whose each column can contain missing values.
-* `id` : Vector (n) of IDs.
 * `k` : Nb. of test observations selected for each `Y` column. 
     The selection is done within the non-missing observations 
     of the considered column. If `k` is a single value, the same nb.  
     of observations are selected for each column. Alternatively, 
     `k` can be a vector of length p. 
+* `id` : Vector (n) of IDs.
 Keyword arguments:
 * `msamp` : Type of sampling for the test set.
     Possible values are: `:rand` = random sampling, 
