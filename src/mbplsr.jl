@@ -122,7 +122,9 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
         Xbl = res.Xbl
     end
     X = reduce(hcat, Xbl)
-    fm = plskern(X, Y, weights; kwargs...)
+    fm = plskern(X, Y, weights; nlv = par.nlv, 
+        scal = false)
+
     Mbplsr(fm, fm.T, fm.R, fm.C, 
         bscales, xmeans, xscales, ymeans, yscales, 
         weights, kwargs, par)
