@@ -105,11 +105,10 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
         xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
-            Xbl[k] .= fcscale(Xbl[k], 
+            fcscale!(Xbl[k], 
                 xmeans[k], xscales[k])
         else
-            Xbl[k] .= fcenter(Xbl[k], 
-                xmeans[k])
+            fcenter!(Xbl[k], xmeans[k])
         end
     end
     ymeans = colmean(Y, weights)

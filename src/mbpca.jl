@@ -141,10 +141,10 @@ function mbpca!(Xbl::Vector, weights::Weight;
         xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
-            Xbl[k] = fcscale(Xbl[k], 
+            fcscale!(Xbl[k], 
                 xmeans[k], xscales[k])
         else
-            Xbl[k] = fcenter(Xbl[k], xmeans[k])
+            fcenter!(Xbl[k], xmeans[k])
         end
     end
     par.bscal == :none ? bscales = ones(Q, nbl) : nothing
