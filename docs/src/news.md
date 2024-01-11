@@ -3,6 +3,7 @@
 ## *Version 0.3.1*
 
 - Modifications
+    - Code improvement. 
     - **mbplsr** : bug correction (adaptating new syntax; wrong parameters in plskern).
 
 
