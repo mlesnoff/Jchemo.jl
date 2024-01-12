@@ -4,7 +4,8 @@
 
 - Modifications
     - Code improvement. 
-    - **mbplsr** : bug correction (adaptating new syntax; wrong parameters in plskern).
+    - **mbplsr** : correction of typing error when new syntax; 
+        wrong parameters in plskern, and predict.
 
 
 
