@@ -92,6 +92,7 @@ end
 function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; 
         kwargs...)
     par = recovkwargs(Par, kwargs)
+    Q = eltype(Xbl[1][1, 1])
     Y = ensure_mat(Y)
     n = size(Xbl[1], 1)
     q = nco(Y)   
@@ -99,6 +100,31 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
     nlv = par.nlv
     length(nlv) == 1 ? nlv = repeat([nlv], nbl) : nothing  
     D = Diagonal(weights.w)
+
+    ##
+    xmeans = list(Vector{Q}, nbl)
+    xscales = list(Vector{Q}, nbl)
+    Threads.@threads for k = 1:nbl
+        xmeans[k] = colmean(Xbl[k], weights) 
+        xscales[k] = ones(Q, nco(Xbl[k]))
+        if par.scal 
+            xscales[k] = colstd(Xbl[k], weights)
+            fcscale!(Xbl[k], 
+                xmeans[k], xscales[k])
+        else
+            fcenter!(Xbl[k], xmeans[k])
+        end
+    end
+    ymeans = colmean(Y, weights)
+    yscales = ones(Q, q)
+    if par.scal 
+        yscales .= colstd(Y, weights)
+        fcscale!(Y, ymeans, yscales)
+    else
+        fcenter!(Y, ymeans)
+    end
+    ##
+
     fm = list(nbl)
     pred = similar(Xbl[1], n, q)
     b = list(nbl)
