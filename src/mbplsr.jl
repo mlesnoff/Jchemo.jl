@@ -174,9 +174,11 @@ function predict(object::Union{Mbplsr, Mbplswest}, Xbl;
     pred = list(Matrix{Q}, le_nlv)
     @inbounds  for i = 1:le_nlv
         znlv = nlv[i]
+        W = Diagonal(object.yscales)
+        beta = object.C[:, 1:znlv]'
         int = object.ymeans'
-        B = object.C[:, 1:znlv]'
-        pred[i] = int .+ vcol(T, 1:znlv) * B 
+        pred[i] = int .+ vcol(T, 1:znlv) * beta * W 
+
     end 
     le_nlv == 1 ? pred = pred[1] : nothing
     (pred = pred,)
