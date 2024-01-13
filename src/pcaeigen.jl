@@ -2,8 +2,7 @@
     pcaeigen(; kwargs...)
     pcaeigen(X; kwargs...)
     pcaeigen(X, weights::Weight; kwargs...)
-    pcaeigen!(X::Matrix, weights::Weight; 
-        kwargs...)
+    pcaeigen!(X::Matrix, weights::Weight; kwargs...)
 PCA by Eigen factorization.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
@@ -31,8 +30,7 @@ function pcaeigen(X, weights::Weight; kwargs...)
         kwargs...)
 end
 
-function pcaeigen!(X::Matrix, weights::Weight; 
-        kwargs...)
+function pcaeigen!(X::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs) 
     Q = eltype(X)
     n, p = size(X)

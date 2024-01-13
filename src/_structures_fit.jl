@@ -465,6 +465,8 @@ struct Soplsr
     T::Matrix
     fit::Matrix
     b::Vector
+    xscales::Vector{Vector}
+    yscales::Vector
     kwargs::Base.Pairs
     par::Par
 end

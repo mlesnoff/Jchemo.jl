@@ -3,8 +3,7 @@
     plscan(X, Y; kwargs...)
     plscan(X, Y, weights::Weight; 
         kwargs...)
-    plscan!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+    plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Canonical partial least squares regression (Canonical PLS).
 * `X` : First block of data.
 * `Y` : Second block of data.
@@ -89,8 +88,7 @@ function plscan(X, Y, weights::Weight;
         weights; kwargs...)
 end
 
-function plscan!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs) 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(X)

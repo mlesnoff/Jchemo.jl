@@ -2,8 +2,7 @@
     pcasph(; kwargs...)
     pcasph(X; kwargs...)
     pcasph(X, weights::Weight; kwargs...)
-    pcasph!(X::Matrix, weights::Weight; 
-        kwargs...)
+    pcasph!(X::Matrix, weights::Weight; kwargs...)
 Spherical PCA.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
@@ -66,8 +65,7 @@ function pcasph(X, weights::Weight; kwargs...)
         kwargs...)
 end
 
-function pcasph!(X::Matrix, weights::Weight; 
-        kwargs...)
+function pcasph!(X::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs) 
     Q = eltype(X)
     n, p = size(X)

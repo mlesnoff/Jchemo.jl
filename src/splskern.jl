@@ -3,8 +3,7 @@
     splskern(X, Y; kwargs...)
     splskern(X, Y, weights::Weight; 
         kwargs...)
-    splskern!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+    splskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Sparse partial least squares regression (Lê Cao et al. 2008)
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -129,8 +128,7 @@ function splskern(X, Y, weights::Weight; kwargs...)
         weights; kwargs...)
 end
 
-function splskern!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+function splskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     @assert in([:hard ; :soft ; :mix])(par.msparse) "Wrong value for argument 'msparse'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]." 

@@ -2,8 +2,7 @@
     spca(; kwargs...)
     spca(X; kwargs...)
     spca(X, weights::Weight; kwargs...)
-    spca!(X::Matrix, weights::Weight; 
-        kwargs...)
+    spca!(X::Matrix, weights::Weight; kwargs...)
 Sparse PCA (Shen & Huang 2008).
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
@@ -135,8 +134,7 @@ function spca(X, weights::Weight; kwargs...)
         kwargs...)
 end
 
-function spca!(X::Matrix, weights::Weight; 
-        kwargs...)
+function spca!(X::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs) 
     @assert in([:hard ; :soft ; :mix])(par.msparse) "Wrong value for argument 'msparse'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]."

@@ -2,8 +2,7 @@
     mbpca(; kwargs...)
     mbpca(Xbl; kwargs...)
     mbpca(Xbl, weights::Weight; kwargs...)
-    mbpca!(Xbl::Matrix, weights::Weight; 
-        kwargs...)
+    mbpca!(Xbl::Matrix, weights::Weight; kwargs...)
 Consensus principal components analysis (CPCA = MBPCA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. 
     Typically, output of function `mblock`.  

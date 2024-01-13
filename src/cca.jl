@@ -3,8 +3,7 @@
     cca(X, Y; kwargs...)
     cca(X, Y, weights::Weight; 
         kwargs...)
-    cca!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+    cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Canonical correlation Analysis (CCA, RCCA).
 * `X` : First block of data.
 * `Y` : Second block of data.
@@ -110,8 +109,7 @@ function cca(X, Y, weights::Weight;
         weights; kwargs...)
 end
 
-function cca!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+function cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs) 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"

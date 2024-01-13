@@ -3,8 +3,7 @@
     mlr(X, Y; kwargs...)
     mlr(X, Y, weights::Weight; 
         kwargs...)
-    mlr!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+    mlr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Compute a mutiple linear regression model (MLR) by 
     using the QR algorithm.
 * `X` : X-data (n, p).
@@ -69,8 +68,7 @@ function mlr(X, Y, weights::Weight;
         weights; kwargs...)
 end
 
-function mlr!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+function mlr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     sqrtD = Diagonal(sqrt.(weights.w))
     if par.noint
@@ -136,8 +134,7 @@ end
     mlrpinv(X, Y; kwargs...)
     mlrpinv(X, Y, weights::Weight; 
         kwargs...)
-    mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+    mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Compute a mutiple linear regression model (MLR)  by using 
     a pseudo-inverse. 
 * `X` : X-data (n, p).
@@ -163,8 +160,7 @@ function mlrpinv(X, Y, weights::Weight; kwargs...)
         weights; kwargs...)
 end
 
-function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     sqrtD = Diagonal(sqrt.(weights.w))
     if par.noint
@@ -235,8 +231,7 @@ end
     mlrvec(X, Y; kwargs...)
     mlrvec(X, Y, weights::Weight; 
         kwargs...)
-    mlrvec!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+    mlrvec!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Compute a simple linear regression model (univariate x).
 * `x` : Univariate X-data (n).
 * `Y` : Y-data (n, q).
@@ -259,8 +254,7 @@ function mlrvec(x, Y, weights::Weight; kwargs...)
         weights; kwargs...)
 end
 
-function mlrvec!(x::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+function mlrvec!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     @assert nco(x) == 1 "Method only working for univariate x."
     if par.noint

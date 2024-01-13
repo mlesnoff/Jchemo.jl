@@ -3,8 +3,7 @@
     plstuck(X, Y; kwargs...)
     plstuck(X, Y, weights::Weight; 
         kwargs...)
-    plstuck!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+    plstuck!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Tucker's inter-battery method of factor analysis
 * `X` : First block of data.
 * `Y` : Second block of data.
@@ -75,8 +74,7 @@ function plstuck(X, Y, weights::Weight;
         weights; kwargs...)
 end
 
-function plstuck!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+function plstuck!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs) 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(X)

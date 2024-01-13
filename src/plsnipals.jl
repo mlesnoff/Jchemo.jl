@@ -3,8 +3,7 @@
     plsnipals(X, Y; kwargs...)
     plsnipals(X, Y, weights::Weight; 
         kwargs...)
-    plsnipals!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+    plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Partial Least Squares Regression (PLSR) with the Nipals 
     algorithm.
 * `X` : X-data (n, p).
@@ -44,8 +43,7 @@ function plsnipals(X, Y, weights::Weight; kwargs...)
         weights; kwargs...)
 end
 
-function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     n, p = size(X)

@@ -2,8 +2,7 @@
     soplsr(; kwargs...)
     soplsr(Xbl; kwargs...)
     soplsr(Xbl, weights::Weight; kwargs...)
-    soplsr!(Xbl::Matrix, weights::Weight; 
-        kwargs...)
+    soplsr!(Xbl::Matrix, weights::Weight; kwargs...)
 Multiblock sequentially orthogonalized PLSR (SO-PLSR).
 * `Xbl` : List of blocks (vector of matrices) of X-data 
     Typically, output of function `mblock` from (n, p) data.  
@@ -77,20 +76,17 @@ function soplsr(Xbl, Y; kwargs...)
     soplsr(Xbl, Y, weights; kwargs...)
 end
 
-function soplsr(Xbl, Y, weights::Weight; 
-        kwargs...)
+function soplsr(Xbl, Y, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    soplsr!(zXbl, copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    soplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; 
-        kwargs...)
+function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(Xbl[1][1, 1])
     Y = ensure_mat(Y)
@@ -100,52 +96,40 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
     nlv = par.nlv
     length(nlv) == 1 ? nlv = repeat([nlv], nbl) : nothing  
     D = Diagonal(weights.w)
-
-    ##
-    xmeans = list(Vector{Q}, nbl)
     xscales = list(Vector{Q}, nbl)
     Threads.@threads for k = 1:nbl
-        xmeans[k] = colmean(Xbl[k], weights) 
         xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
-            fcscale!(Xbl[k], 
-                xmeans[k], xscales[k])
-        else
-            fcenter!(Xbl[k], xmeans[k])
+            fscale!(Xbl[k], xscales[k])
         end
     end
-    ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
     if par.scal 
         yscales .= colstd(Y, weights)
-        fcscale!(Y, ymeans, yscales)
-    else
-        fcenter!(Y, ymeans)
+        fscale!(Y, yscales)
     end
-    ##
-
     fm = list(nbl)
-    pred = similar(Xbl[1], n, q)
+    fit = similar(Xbl[1], n, q)
     b = list(nbl)
-    # First block
-    fm[1] = plskern(Xbl[1], Y, weights; 
-        nlv = nlv[1], scal = par.scal)
+    ## Below, if 'scal' = true, 'fit' is in scale 'Y-scaled' 
+    ## First block
+    fm[1] = plskern(Xbl[1], Y, weights; nlv = nlv[1], scal = false)  
     T = fm[1].T
-    pred .= predict(fm[1], Xbl[1]).pred
+    fit .= predict(fm[1], Xbl[1]).pred
     b[1] = nothing
-    # Other blocks
+    ## Other blocks
     if nbl > 1
         for i = 2:nbl
             b[i] = inv(T' * (D * T)) * T' * (D * Xbl[i])
             X = Xbl[i] - T * b[i]
-            fm[i] = plskern(X, Y - pred, weights; 
-                nlv = nlv[i], scal = par.scal)
+            fm[i] = plskern(X, Y - fit, weights; nlv = nlv[i], scal = false)  
             T = hcat(T, fm[i].T)
-            pred .+= predict(fm[i], X).pred 
+            fit .+= predict(fm[i], X).pred 
         end
     end
-    Soplsr(fm, T, pred, b, kwargs, par)
+    Soplsr(fm, T, fit, b, xscales, yscales, 
+        kwargs, par)
 end
 
 """ 
@@ -156,11 +140,16 @@ Compute latent variables (LVs = scores T) from a fitted model.
     of X-data for which LVs are computed.
 """ 
 function transf(object::Soplsr, Xbl)
+    Q = eltype(Xbl[1][1, 1])
     nbl = length(object.fm)
-    T = transf(object.fm[1], Xbl[1])
+    zXbl = list(Matrix{Q}, nbl)
+    Threads.@threads for k = 1:nbl
+        zXbl[k] = fscale(Xbl[k], object.xscales[k])
+    end
+    T = transf(object.fm[1], zXbl[1])
     if nbl > 1
         @inbounds for i = 2:nbl
-            X = Xbl[i] - T * object.b[i]
+            X = zXbl[i] - T * object.b[i]
             T = hcat(T, transf(object.fm[i], X))
         end
     end
@@ -175,17 +164,23 @@ Compute Y-predictions from a fitted model.
     of X-data for which predictions are computed.
 """ 
 function predict(object::Soplsr, Xbl)
+    Q = eltype(Xbl[1][1, 1])
     nbl = length(object.fm)
-    T = transf(object.fm[1], Xbl[1])
+    zXbl = list(Matrix{Q}, nbl)
+    Threads.@threads for k = 1:nbl
+        zXbl[k] = fscale(Xbl[k], object.xscales[k])
+    end
+    T = transf(object.fm[1], zXbl[1])
     pred =  object.fm[1].ymeans' .+ T * object.fm[1].C'
     if nbl > 1
         @inbounds for i = 2:nbl
-            X = Xbl[i] - T * object.b[i]
+            X = zXbl[i] - T * object.b[i]
             zT = transf(object.fm[i], X)
             pred .+= object.fm[i].ymeans' .+ zT * object.fm[i].C'
             T = hcat(T, transf(object.fm[i], X))
         end
     end
+    pred .= pred .* object.yscales' 
     (pred = pred,)
 end
 

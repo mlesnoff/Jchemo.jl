@@ -4,8 +4,7 @@
 
 - Modifications
     - Code improvement. 
-    - **mbplsr** : correction of typing error when new syntax; 
-        wrong parameters in plskern, and predict.
+    - **mbplsr**, **soplsr** : correction when 'scal' = true.
 
 
 

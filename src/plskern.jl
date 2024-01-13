@@ -3,8 +3,7 @@
     plskern(X, Y; kwargs...)
     plskern(X, Y, weights::Weight; 
         kwargs...)
-    plskern!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+    plskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Partial least squares regression (PLSR) with the 
     "improved kernel algorithm #1" (Dayal & McGegor, 1997).
 * `X` : X-data (n, p).
@@ -233,8 +232,7 @@ function predict(object::Union{Plsr, Pcr, Splsr},
         X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
-    isnothing(nlv) ? nlv = a : 
-        nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
+    isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     pred = list(Matrix{eltype(X)}, le_nlv)
     @inbounds  for i = 1:le_nlv

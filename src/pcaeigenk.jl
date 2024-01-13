@@ -2,8 +2,7 @@
     pcaeigenk(; kwargs...)
     pcaeigenk(X; kwargs...)
     pcaeigenk(X, weights::Weight; kwargs...)
-    pcaeigenk!(X::Matrix, weights::Weight; 
-        kwargs...)
+    pcaeigenk!(X::Matrix, weights::Weight; kwargs...)
 PCA by Eigen factorization of the kernel matrix XX'.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
@@ -42,8 +41,7 @@ function pcaeigenk(X, weights::Weight; kwargs...)
         kwargs...)
 end
 
-function pcaeigenk!(X::Matrix, weights::Weight; 
-        kwargs...)
+function pcaeigenk!(X::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs) 
     Q = eltype(X)
     n, p = size(X)

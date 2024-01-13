@@ -2,8 +2,7 @@
     comdim(; kwargs...)
     comdim(Xbl; kwargs...)
     comdim(Xbl, weights::Weight; kwargs...)
-    comdim!(Xbl::Matrix, weights::Weight; 
-        kwargs...)
+    comdim!(Xbl::Matrix, weights::Weight; kwargs...)
 Common components and specific weights analysis (ComDim, *aka* CCSWA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. 
     Typically, output of function `mblock`.  

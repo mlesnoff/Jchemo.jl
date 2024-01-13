@@ -2,8 +2,7 @@
     rosaplsr(; kwargs...)
     rosaplsr(Xbl; kwargs...)
     rosaplsr(Xbl, weights::Weight; kwargs...)
-    rosaplsr!(Xbl::Matrix, weights::Weight; 
-        kwargs...)
+    rosaplsr!(Xbl::Matrix, weights::Weight; kwargs...)
 Multiblock ROSA PLSR (Liland et al. 2016).
 * `Xbl` : List of blocks (vector of matrices) of X-data 
     Typically, output of function `mblock` from (n, p) data.  

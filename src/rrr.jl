@@ -3,8 +3,7 @@
     rrr(X, Y; kwargs...)
     rrr(X, Y, weights::Weight; 
         kwargs...)
-    rr!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+    rr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Reduced rank regression (RRR, *aka* RA).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -96,8 +95,7 @@ function rrr(X, Y, weights::Weight; kwargs...)
         weights; kwargs...)
 end
 
-function rrr!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     @assert 0 <= par.tau <=1 "tau must be in [0, 1]"
     Q = eltype(X)

@@ -3,8 +3,7 @@
     plssimp(X, Y; kwargs...)
     plssimp(X, Y, weights::Weight; 
         kwargs...)
-    plssimp!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+    plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Partial Least Squares Regression (PLSR) with the 
     SIMPLS algorithm (de Jong 1993).
 * `X` : X-data (n, p).
@@ -38,8 +37,7 @@ function plssimp(X, Y, weights::Weight; kwargs...)
         weights; kwargs...)
 end
 
-function plssimp!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+function plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     n, p = size(X)

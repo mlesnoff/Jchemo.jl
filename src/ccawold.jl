@@ -3,8 +3,7 @@
     ccawold(X, Y; kwargs...)
     ccawold(X, Y, weights::Weight; 
         kwargs...)
-    ccawold!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+    ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Canonical correlation analysis (CCA, RCCA) - Wold 
     Nipals algorithm.
 * `X` : First block of data.
@@ -116,8 +115,7 @@ function ccawold(X, Y, weights::Weight;
         weights; kwargs...)
 end
 
-function ccawold!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs) 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"

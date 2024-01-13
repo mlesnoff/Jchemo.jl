@@ -2,8 +2,7 @@
     pcanipals(; kwargs...)
     pcanipals(X; kwargs...)
     pcanipals(X, weights::Weight; kwargs...)
-    pcanipals!(X::Matrix, weights::Weight; 
-        kwargs...)
+    pcanipals!(X::Matrix, weights::Weight; kwargs...)
 PCA by NIPALS algorithm.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
@@ -62,8 +61,7 @@ function pcanipals(X, weights::Weight; kwargs...)
         kwargs...)
 end
 
-function pcanipals!(X::Matrix, weights::Weight; 
-        kwargs...)
+function pcanipals!(X::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     n, p = size(X)

@@ -2,8 +2,7 @@
     rp(; kwargs...)
     rp(X; kwargs...)
     rp(X, weights::Weight; kwargs...)
-    rp!(X::Matrix, weights::Weight; 
-        kwargs...)
+    rp!(X::Matrix, weights::Weight; kwargs...)
 Make a random projection of X-data.
 * `X` : X-data (n, p).
 * `weights` : Weights (n) of the observations. 
@@ -44,8 +43,7 @@ function rp(X, weights::Weight; kwargs...)
         kwargs...)
 end
 
-function rp!(X::Matrix, weights::Weight; 
-        kwargs...)
+function rp!(X::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs) 
     @assert in([:gauss, :li])(par.mrp) "Wrong value for argument 'mrp'."
     Q = eltype(X)

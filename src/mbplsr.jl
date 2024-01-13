@@ -2,8 +2,7 @@
     mbplsr(; kwargs...)
     mbplsr(Xbl; kwargs...)
     mbplsr(Xbl, weights::Weight; kwargs...)
-    mbplsr!(Xbl::Matrix, weights::Weight; 
-        kwargs...)
+    mbplsr!(Xbl::Matrix, weights::Weight; kwargs...)
 Multiblock PLSR (MBPLSR).
 * `Xbl` : List of blocks (vector of matrices) of X-data 
     Typically, output of function `mblock` from (n, p) data.  
@@ -75,20 +74,17 @@ function mbplsr(Xbl, Y; kwargs...)
     mbplsr(Xbl, Y, weights; kwargs...)
 end
 
-function mbplsr(Xbl, Y, weights::Weight; 
-        kwargs...)
+function mbplsr(Xbl, Y, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    mbplsr!(zXbl, copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    mbplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; 
-        kwargs...)
+function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
@@ -101,8 +97,7 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
         xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
-            fcscale!(Xbl[k], 
-                xmeans[k], xscales[k])
+            fcscale!(Xbl[k], xmeans[k], xscales[k])
         else
             fcenter!(Xbl[k], xmeans[k])
         end
@@ -130,44 +125,38 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
 end
 
 """ 
-    transf(object::Union{Mbplsr, Mbplswest}, Xbl; 
-        nlv = nothing)
+    transf(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 
     of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transf(object::Union{Mbplsr, Mbplswest}, Xbl; 
-        nlv = nothing)
+function transf(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
     zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], 
-            object.xmeans[k], object.xscales[k])
+        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
     res = fblockscal(zXbl, object.bscales)
     reduce(hcat, res.Xbl) * vcol(object.R, 1:nlv) 
 end
 
 """
-    predict(object::Union{Mbplsr, Mbplswest}, Xbl; 
-        nlv = nothing)
+    predict(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 
     of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{Mbplsr, Mbplswest}, Xbl; 
-        nlv = nothing)
+function predict(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
-    isnothing(nlv) ? nlv = a : 
-        nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
+    isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     T = transf(object, Xbl)
     pred = list(Matrix{Q}, le_nlv)
@@ -177,7 +166,6 @@ function predict(object::Union{Mbplsr, Mbplswest}, Xbl;
         beta = object.C[:, 1:znlv]'
         int = object.ymeans'
         pred[i] = int .+ vcol(T, 1:znlv) * beta * W 
-
     end 
     le_nlv == 1 ? pred = pred[1] : nothing
     (pred = pred,)
@@ -197,8 +185,7 @@ function Base.summary(object::Mbplsr, Xbl)
     sqrtw = sqrt.(object.weights.w)
     zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], 
-            object.xmeans[k], object.xscales[k])
+        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
     zXbl = fblockscal(zXbl, object.bscales).Xbl
     @inbounds for k = 1:nbl

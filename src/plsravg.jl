@@ -3,8 +3,7 @@
     plsravg(X, Y; kwargs...)
     plsravg(X, Y, weights::Weight; 
         kwargs...)
-    plsravg!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+    plsravg!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Averaging PLSR models with different numbers of 
     latent variables (LVs).
 * `X` : X-data (n, p).
@@ -83,8 +82,7 @@ function plsravg(X, Y, weights::Weight; kwargs...)
         weights; kwargs...)
 end
 
-function plsravg!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+function plsravg!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     fun = plsravg_unif!
     fm = fun(X, Y, weights; kwargs...)

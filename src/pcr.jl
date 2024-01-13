@@ -3,8 +3,7 @@
     pcr(X, Y; kwargs...)
     pcr(X, Y, weights::Weight; 
         kwargs...)
-    pcr!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+    pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Principal component regression (PCR) with a SVD 
     factorization.
 * `X` : X-data (n, p).
@@ -77,8 +76,7 @@ function pcr(X, Y, weights::Weight; kwargs...)
         weights; kwargs...)
 end
 
-function pcr!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+function pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     q = nco(Y)

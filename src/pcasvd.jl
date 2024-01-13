@@ -2,8 +2,7 @@
     pcasvd(; kwargs...)
     pcasvd(X; kwargs...)
     pcasvd(X, weights::Weight; kwargs...)
-    pcasvd!(X::Matrix, weights::Weight; 
-        kwargs...)
+    pcasvd!(X::Matrix, weights::Weight; kwargs...)
 PCA by SVD factorization.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
@@ -75,8 +74,7 @@ function pcasvd(X, weights::Weight; kwargs...)
     pcasvd!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
-function pcasvd!(X::Matrix, weights::Weight; 
-        kwargs...)
+function pcasvd!(X::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     n, p = size(X)
@@ -102,16 +100,14 @@ function pcasvd!(X::Matrix, weights::Weight;
 end
 
 """ 
-    transf(object::Union{Pca, Fda}, X; 
-        nlv = nothing)
+    transf(object::Union{Pca, Fda}, X; nlv = nothing)
 Compute principal components (PCs = scores T) from a 
     fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
 * `nlv` : Nb. PCs to compute.
 """ 
-function transf(object::Union{Pca, Fda}, X; 
-        nlv = nothing)
+function transf(object::Union{Pca, Fda}, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)

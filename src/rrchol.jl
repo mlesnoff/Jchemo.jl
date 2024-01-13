@@ -3,8 +3,7 @@
     rrchol(X, Y; kwargs...)
     rrchol(X, Y, weights::Weight; 
         kwargs...)
-    rrchol!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+    rrchol!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Ridge regression (RR) using the Normal equations 
     and a Cholesky factorization.
 * `X` : X-data (n, p).
@@ -46,8 +45,7 @@ function rrchol(X, Y, weights::Weight; kwargs...)
         weights; kwargs...)
 end
 
-function rrchol!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+function rrchol!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     @assert nco(X) > 1 "The method only works for X with nb columns > 1."
     Q = eltype(X)

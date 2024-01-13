@@ -2,8 +2,7 @@
     pcanipals(; kwargs...)
     pcanipals(X; kwargs...)
     pcanipals(X, weights::Weight; kwargs...)
-    pcanipals!(X::Matrix, weights::Weight; 
-        kwargs...)
+    pcanipals!(X::Matrix, weights::Weight; kwargs...)
 PCA by NIPALS algorithm allowing missing data.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
@@ -76,8 +75,7 @@ function pcanipalsmiss(X, weights::Weight; kwargs...)
         kwargs...)
 end
 
-function pcanipalsmiss!(X::Matrix, weights::Weight; 
-        kwargs...)
+function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs) 
     Q = eltype(X)
     n, p = size(X)

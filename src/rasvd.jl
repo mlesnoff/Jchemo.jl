@@ -3,8 +3,7 @@
     rasvd(X, Y; kwargs...)
     rasvd(X, Y, weights::Weight; 
         kwargs...)
-    rasvd!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+    rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Redundancy analysis (RA), *aka* PCA on instrumental 
     variables (PCAIV)
 * `X` : First block of data.
@@ -103,8 +102,7 @@ function rasvd(X, Y, weights::Weight; kwargs...)
         weights; kwargs...)
 end
 
-function rasvd!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+function rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs) 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"

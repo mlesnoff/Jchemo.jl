@@ -3,8 +3,7 @@
     plswold(X, Y; kwargs...)
     plswold(X, Y, weights::Weight; 
         kwargs...)
-    plswold!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+    plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Partial Least Squares Regression (PLSR) with the 
     Wold algorithm 
 * `X` : X-data (n, p).
@@ -43,8 +42,7 @@ function plswold(X, Y, weights::Weight; kwargs...)
         weights; kwargs...)
 end
 
-function plswold!(X::Matrix, Y::Matrix, weights::Weight; 
-        kwargs...)
+function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     n, p = size(X)

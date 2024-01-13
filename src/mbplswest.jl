@@ -2,8 +2,7 @@
     mbplswest(; kwargs...)
     mbplswest(Xbl; kwargs...)
     mbplswest(Xbl, weights::Weight; kwargs...)
-    mbplswest!(Xbl::Matrix, weights::Weight; 
-        kwargs...)
+    mbplswest!(Xbl::Matrix, weights::Weight; kwargs...)
 Multiblock PLSR (MBPLSR) - Nipals algorithm.
 * `Xbl` : List of blocks (vector of matrices) of X-data 
     Typically, output of function `mblock` from (n, p) data.  
@@ -84,20 +83,17 @@ function mbplswest(Xbl, Y; kwargs...)
     mbplswest(Xbl, Y, weights; kwargs...)
 end
 
-function mbplswest(Xbl, Y, weights::Weight; 
-        kwargs...)
+function mbplswest(Xbl, Y, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    mbplswest!(zXbl, copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    mbplswest!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; 
-        kwargs...)
+function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
@@ -115,8 +111,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight;
         xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
-            fcscale!(Xbl[k], 
-                xmeans[k], xscales[k])
+            fcscale!(Xbl[k], xmeans[k], xscales[k])
         else
             fcenter!(Xbl[k], xmeans[k])
         end
@@ -233,8 +228,7 @@ function Base.summary(object::Mbplswest, Xbl)
     sqrtw = sqrt.(object.weights.w)
     zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], 
-            object.xmeans[k], object.xscales[k])
+        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
     zXbl = fblockscal(zXbl, object.bscales).Xbl
     @inbounds for k = 1:nbl
