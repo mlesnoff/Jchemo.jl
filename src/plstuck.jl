@@ -1,8 +1,7 @@
 """
     plstuck(; kwargs...)
     plstuck(X, Y; kwargs...)
-    plstuck(X, Y, weights::Weight; 
-        kwargs...)
+    plstuck(X, Y, weights::Weight; kwargs...)
     plstuck!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Tucker's inter-battery method of factor analysis
 * `X` : First block of data.
@@ -68,10 +67,8 @@ function plstuck(X, Y; kwargs...)
     plstuck(X, Y, weights; kwargs...)
 end
 
-function plstuck(X, Y, weights::Weight; 
-        kwargs...)
-    plstuck!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+function plstuck(X, Y, weights::Weight; kwargs...)
+    plstuck!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function plstuck!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

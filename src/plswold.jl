@@ -1,8 +1,7 @@
 """
     plswold(; kwargs...)
     plswold(X, Y; kwargs...)
-    plswold(X, Y, weights::Weight; 
-        kwargs...)
+    plswold(X, Y, weights::Weight; kwargs...)
     plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Partial Least Squares Regression (PLSR) with the 
     Wold algorithm 
@@ -38,8 +37,7 @@ function plswold(X, Y; kwargs...)
 end
 
 function plswold(X, Y, weights::Weight; kwargs...)
-    plswold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    plswold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

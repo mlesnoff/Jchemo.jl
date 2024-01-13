@@ -1,8 +1,7 @@
 """
     mlr(; kwargs...)
     mlr(X, Y; kwargs...)
-    mlr(X, Y, weights::Weight; 
-        kwargs...)
+    mlr(X, Y, weights::Weight; kwargs...)
     mlr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Compute a mutiple linear regression model (MLR) by 
     using the QR algorithm.
@@ -62,10 +61,8 @@ function mlr(X, Y; kwargs...)
     mlr(X, Y, weights; kwargs...)
 end
 
-function mlr(X, Y, weights::Weight; 
-        kwargs...)
-    mlr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+function mlr(X, Y, weights::Weight; kwargs...)
+    mlr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function mlr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -132,8 +129,7 @@ end
 """
     mlrpinv(; kwargs...)
     mlrpinv(X, Y; kwargs...)
-    mlrpinv(X, Y, weights::Weight; 
-        kwargs...)
+    mlrpinv(X, Y, weights::Weight; kwargs...)
     mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Compute a mutiple linear regression model (MLR)  by using 
     a pseudo-inverse. 
@@ -156,8 +152,7 @@ function mlrpinv(X, Y; kwargs...)
 end
 
 function mlrpinv(X, Y, weights::Weight; kwargs...)
-    mlrpinv!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    mlrpinv!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -229,8 +224,7 @@ end
 """
     mlrvec(; kwargs...)
     mlrvec(X, Y; kwargs...)
-    mlrvec(X, Y, weights::Weight; 
-        kwargs...)
+    mlrvec(X, Y, weights::Weight; kwargs...)
     mlrvec!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Compute a simple linear regression model (univariate x).
 * `x` : Univariate X-data (n).
@@ -250,8 +244,7 @@ function mlrvec(x, Y; kwargs...)
 end
 
 function mlrvec(x, Y, weights::Weight; kwargs...)
-    mlrvec!(copy(ensure_mat(x)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    mlrvec!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function mlrvec!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

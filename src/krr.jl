@@ -1,8 +1,7 @@
 """
     krr(; kwargs...)
     krr(X, Y; kwargs...)
-    krr(X, Y, weights::Weight; 
-        kwargs...)
+    krr(X, Y, weights::Weight; kwargs...)
     krr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Kernel ridge regression (KRR) implemented by 
     SVD factorization.
@@ -127,8 +126,7 @@ function krr(X, Y; kwargs...)
 end
 
 function krr(X, Y, weights::Weight; kwargs...)
-    krr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    krr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function krr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

@@ -1,8 +1,7 @@
 """
     cca(; kwargs...)
     cca(X, Y; kwargs...)
-    cca(X, Y, weights::Weight; 
-        kwargs...)
+    cca(X, Y, weights::Weight; kwargs...)
     cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Canonical correlation Analysis (CCA, RCCA).
 * `X` : First block of data.
@@ -103,10 +102,8 @@ function cca(X, Y; kwargs...)
     cca(X, Y, weights; kwargs...)
 end
 
-function cca(X, Y, weights::Weight; 
-        kwargs...)
-    cca!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+function cca(X, Y, weights::Weight; kwargs...)
+    cca!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

@@ -1,8 +1,7 @@
 """
     plskern(; kwargs...)
     plskern(X, Y; kwargs...)
-    plskern(X, Y, weights::Weight; 
-        kwargs...)
+    plskern(X, Y, weights::Weight; kwargs...)
     plskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Partial least squares regression (PLSR) with the 
     "improved kernel algorithm #1" (Dayal & McGegor, 1997).
@@ -102,8 +101,7 @@ function plskern(X, Y; kwargs...)
 end
 
 function plskern(X, Y, weights::Weight; kwargs...)
-    plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function plskern!(X::Matrix, Y::Matrix, 

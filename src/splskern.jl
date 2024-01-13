@@ -1,8 +1,7 @@
 """
     splskern(; kwargs...)
     splskern(X, Y; kwargs...)
-    splskern(X, Y, weights::Weight; 
-        kwargs...)
+    splskern(X, Y, weights::Weight; kwargs...)
     splskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Sparse partial least squares regression (Lê Cao et al. 2008)
 * `X` : X-data (n, p).
@@ -124,8 +123,7 @@ function splskern(X, Y; kwargs...)
 end
 
 function splskern(X, Y, weights::Weight; kwargs...)
-    splskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    splskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function splskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

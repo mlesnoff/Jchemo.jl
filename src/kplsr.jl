@@ -1,8 +1,7 @@
 """
     kplsr(; kwargs...)
     kplsr(X, Y; kwargs...)
-    kplsr(X, Y, weights::Weight; 
-        kwargs...)
+    kplsr(X, Y, weights::Weight; kwargs...)
     kplsr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Kernel partial least squares regression (KPLSR) implemented 
     with a Nipals algorithm (Rosipal & Trejo, 2001).
@@ -90,8 +89,7 @@ function kplsr(X, Y; kwargs...)
 end
 
 function kplsr(X, Y, weights::Weight; kwargs...)
-    kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function kplsr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

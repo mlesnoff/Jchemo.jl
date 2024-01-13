@@ -1,8 +1,7 @@
 """
     pcr(; kwargs...)
     pcr(X, Y; kwargs...)
-    pcr(X, Y, weights::Weight; 
-        kwargs...)
+    pcr(X, Y, weights::Weight; kwargs...)
     pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Principal component regression (PCR) with a SVD 
     factorization.
@@ -72,8 +71,7 @@ function pcr(X, Y; kwargs...)
 end
 
 function pcr(X, Y, weights::Weight; kwargs...)
-    pcr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    pcr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

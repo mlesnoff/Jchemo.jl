@@ -1,8 +1,7 @@
 """
     plssimp(; kwargs...)
     plssimp(X, Y; kwargs...)
-    plssimp(X, Y, weights::Weight; 
-        kwargs...)
+    plssimp(X, Y, weights::Weight; kwargs...)
     plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Partial Least Squares Regression (PLSR) with the 
     SIMPLS algorithm (de Jong 1993).
@@ -33,8 +32,7 @@ function plssimp(X, Y; kwargs...)
 end
 
 function plssimp(X, Y, weights::Weight; kwargs...)
-    plssimp!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    plssimp!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

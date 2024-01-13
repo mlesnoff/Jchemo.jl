@@ -1,8 +1,7 @@
 """
     rda(; kwargs...)
     rda(X, y; kwargs...)
-    rda(X, y, weights::Weight; 
-        kwargs...)
+    rda(X, Y, weights::Weight; kwargs...)
 Regularized discriminant analysis (RDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
@@ -99,8 +98,7 @@ function rda(X, y; kwargs...)
         kwargs...)
 end
 
-function rda(X, y, weights::Weight; 
-        kwargs...)  
+function rda(X, Y, weights::Weight; kwargs...)  
     par = recovkwargs(Par, kwargs)
     @assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."

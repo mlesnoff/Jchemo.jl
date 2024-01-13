@@ -1,8 +1,7 @@
 """
     ccawold(; kwargs...)
     ccawold(X, Y; kwargs...)
-    ccawold(X, Y, weights::Weight; 
-        kwargs...)
+    ccawold(X, Y, weights::Weight; kwargs...)
     ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Canonical correlation analysis (CCA, RCCA) - Wold 
     Nipals algorithm.
@@ -109,10 +108,8 @@ function ccawold(X, Y; kwargs...)
     ccawold(X, Y, weights; kwargs...)
 end
 
-function ccawold(X, Y, weights::Weight; 
-        kwargs...)
-    ccawold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+function ccawold(X, Y, weights::Weight; kwargs...)
+    ccawold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

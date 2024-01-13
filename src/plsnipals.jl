@@ -1,8 +1,7 @@
 """
     plsnipals(; kwargs...)
     plsnipals(X, Y; kwargs...)
-    plsnipals(X, Y, weights::Weight; 
-        kwargs...)
+    plsnipals(X, Y, weights::Weight; kwargs...)
     plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Partial Least Squares Regression (PLSR) with the Nipals 
     algorithm.
@@ -39,8 +38,7 @@ function plsnipals(X, Y; kwargs...)
 end
 
 function plsnipals(X, Y, weights::Weight; kwargs...)
-    plsnipals!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    plsnipals!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

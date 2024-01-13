@@ -5,8 +5,7 @@ function plsravg_unif(X, Y; kwargs...)
 end
 
 function plsravg_unif(X, Y, weights::Weight; kwargs...)
-    plsravg_unif!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    plsravg_unif!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function plsravg_unif!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

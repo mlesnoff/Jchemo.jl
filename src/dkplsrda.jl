@@ -1,8 +1,7 @@
 """
     dkplsrda(; kwargs...)
     dkplsrda(X, y; kwargs...)
-    dkplsrda(X, y, weights::Weight; 
-        kwargs...)
+    dkplsrda(X, Y, weights::Weight; kwargs...)
 Discrimination based on direct kernel partial least 
     squares regression (KPLSR-DA).
 * `X` : X-data (n, p).
@@ -77,8 +76,7 @@ function dkplsrda(X, y; kwargs...)
     dkplsrda(X, y, weights; kwargs...)
 end
 
-function dkplsrda(X, y, weights::Weight; 
-        kwargs...)
+function dkplsrda(X, Y, weights::Weight; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     fm = dkplsr(X, res.Y, weights; 

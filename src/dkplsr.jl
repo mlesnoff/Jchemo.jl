@@ -1,8 +1,7 @@
 """
     dkplsr(; kwargs...)
     dkplsr(X, Y; kwargs...)
-    dkplsr(X, Y, weights::Weight; 
-        kwargs...)
+    dkplsr(X, Y, weights::Weight; kwargs...)
     dkplsr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Direct kernel partial least squares regression (DKPLSR) 
     (Bennett & Embrechts 2003).
@@ -98,8 +97,7 @@ function dkplsr(X, Y; kwargs...)
 end
 
 function dkplsr(X, Y, weights::Weight; kwargs...)
-    dkplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    dkplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function dkplsr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

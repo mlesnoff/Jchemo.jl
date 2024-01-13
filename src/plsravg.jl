@@ -1,8 +1,7 @@
 """ 
     plsravg(; kwargs...)
     plsravg(X, Y; kwargs...)
-    plsravg(X, Y, weights::Weight; 
-        kwargs...)
+    plsravg(X, Y, weights::Weight; kwargs...)
     plsravg!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Averaging PLSR models with different numbers of 
     latent variables (LVs).
@@ -78,8 +77,7 @@ function plsravg(X, Y; kwargs...)
 end
 
 function plsravg(X, Y, weights::Weight; kwargs...)
-    plsravg!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    plsravg!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function plsravg!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

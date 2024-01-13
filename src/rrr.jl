@@ -1,8 +1,7 @@
 """
     rrr(; kwargs...)
     rrr(X, Y; kwargs...)
-    rrr(X, Y, weights::Weight; 
-        kwargs...)
+    rrr(X, Y, weights::Weight; kwargs...)
     rr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Reduced rank regression (RRR, *aka* RA).
 * `X` : X-data (n, p).
@@ -91,8 +90,7 @@ function rrr(X, Y; kwargs...)
 end
 
 function rrr(X, Y, weights::Weight; kwargs...)
-    rrr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    rrr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

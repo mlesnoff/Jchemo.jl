@@ -1,8 +1,7 @@
 """
     plslda(; kwargs...)
     plslda(X, y; kwargs...)
-    plslda(X, y, weights::Weight; 
-        kwargs...)
+    plslda(X, Y, weights::Weight; kwargs...)
 PLS-LDA.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
@@ -83,8 +82,7 @@ function plslda(X, y; kwargs...)
         kwargs...)
 end
 
-function plslda(X, y, weights::Weight; 
-        kwargs...)
+function plslda(X, Y, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)

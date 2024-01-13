@@ -1,8 +1,7 @@
 """
     rrda(; kwargs...)
     rrda(X, y; kwargs...)
-    rrda(X, y, weights::Weight; 
-        kwargs...)
+    rrda(X, Y, weights::Weight; kwargs...)
 Discrimination based on ridge regression (RR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
@@ -77,8 +76,7 @@ function rrda(X, y; kwargs...)
     rrda(X, y, weights; kwargs...)
 end
 
-function rrda(X, y, weights::Weight; 
-        kwargs...)    
+function rrda(X, Y, weights::Weight; kwargs...)    
     par = recovkwargs(Par, kwargs)
     res = dummy(y)
     ni = tab(y).vals 

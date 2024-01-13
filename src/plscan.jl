@@ -1,8 +1,7 @@
 """
     plscan(; kwargs...)
     plscan(X, Y; kwargs...)
-    plscan(X, Y, weights::Weight; 
-        kwargs...)
+    plscan(X, Y, weights::Weight; kwargs...)
     plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Canonical partial least squares regression (Canonical PLS).
 * `X` : First block of data.
@@ -82,10 +81,8 @@ function plscan(X, Y; kwargs...)
         kwargs...)
 end
 
-function plscan(X, Y, weights::Weight; 
-        kwargs...)
-    plscan!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+function plscan(X, Y, weights::Weight; kwargs...)
+    plscan!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

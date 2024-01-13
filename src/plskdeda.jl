@@ -1,8 +1,7 @@
 """
     plskdeda(; kwargs...)
     plskdeda(X, y; kwargs...)
-    plskdeda(X, y, weights::Weight; 
-        kwargs...)
+    plskdeda(X, Y, weights::Weight; kwargs...)
 KDE-DA on PLS latent variables (PLS-KDE-LDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
@@ -80,8 +79,7 @@ function plskdeda(X, y; kwargs...)
         kwargs...)
 end
 
-function plskdeda(X, y, weights::Weight; 
-        kwargs...)
+function plskdeda(X, Y, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)

@@ -1,8 +1,7 @@
 """
     rasvd(; kwargs...)
     rasvd(X, Y; kwargs...)
-    rasvd(X, Y, weights::Weight; 
-        kwargs...)
+    rasvd(X, Y, weights::Weight; kwargs...)
     rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Redundancy analysis (RA), *aka* PCA on instrumental 
     variables (PCAIV)
@@ -98,8 +97,7 @@ function rasvd(X, Y; kwargs...)
 end
 
 function rasvd(X, Y, weights::Weight; kwargs...)
-    rasvd!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    rasvd!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

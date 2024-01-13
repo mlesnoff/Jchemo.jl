@@ -1,8 +1,7 @@
 """
     rr(; kwargs...)
     rr(X, Y; kwargs...)
-    rr(X, Y, weights::Weight; 
-        kwargs...)
+    rr(X, Y, weights::Weight; kwargs...)
     rr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Ridge regression (RR) implemented by SVD factorization.
 * `X` : X-data (n, p).
@@ -80,8 +79,7 @@ function rr(X, Y; kwargs...)
 end
 
 function rr(X, Y, weights::Weight; kwargs...)
-    rr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    rr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function rr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

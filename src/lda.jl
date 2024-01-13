@@ -1,8 +1,7 @@
 """
     lda(; kwargs...)
     lda(X, y; kwargs...)
-    lda(X, y, weights::Weight; 
-        kwargs...)
+    lda(X, Y, weights::Weight; kwargs...)
 Linear discriminant analysis (LDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
@@ -58,8 +57,7 @@ function lda(X, y; kwargs...)
         kwargs...)
 end
 
-function lda(X, y, weights::Weight; 
-        kwargs...)  
+function lda(X, Y, weights::Weight; kwargs...)  
     par = recovkwargs(Par, kwargs)
     @assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
     # Scaling X has no effect

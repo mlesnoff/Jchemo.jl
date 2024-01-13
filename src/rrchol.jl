@@ -1,8 +1,7 @@
 """
     rrchol(; kwargs...)
     rrchol(X, Y; kwargs...)
-    rrchol(X, Y, weights::Weight; 
-        kwargs...)
+    rrchol(X, Y, weights::Weight; kwargs...)
     rrchol!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Ridge regression (RR) using the Normal equations 
     and a Cholesky factorization.
@@ -41,8 +40,7 @@ function rrchol(X, Y; kwargs...)
 end
 
 function rrchol(X, Y, weights::Weight; kwargs...)
-    rrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    rrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function rrchol!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
