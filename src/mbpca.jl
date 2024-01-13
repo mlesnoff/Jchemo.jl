@@ -140,8 +140,7 @@ function mbpca!(Xbl::Vector, weights::Weight;
         xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
-            fcscale!(Xbl[k], 
-                xmeans[k], xscales[k])
+            fcscale!(Xbl[k], xmeans[k], xscales[k])
         else
             fcenter!(Xbl[k], xmeans[k])
         end
@@ -250,8 +249,7 @@ function transf_all(object::Mbpca, Xbl;
     m = size(Xbl[1], 1)
     zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], 
-            object.xmeans[k], object.xscales[k])
+        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
     zXbl = fblockscal(zXbl, object.bscales).Xbl
     U = similar(zXbl[1], m, nlv)
@@ -291,8 +289,7 @@ function Base.summary(object::Mbpca, Xbl)
     sqrtw = sqrt.(object.weights.w)
     zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], 
-            object.xmeans[k], object.xscales[k])
+        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
     zXbl = fblockscal(zXbl, object.bscales).Xbl
     @inbounds for k = 1:nbl

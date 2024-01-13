@@ -1,8 +1,8 @@
 """
     rosaplsr(; kwargs...)
-    rosaplsr(Xbl; kwargs...)
-    rosaplsr(Xbl, weights::Weight; kwargs...)
-    rosaplsr!(Xbl::Matrix, weights::Weight; kwargs...)
+    rosaplsr(Xbl, Y; kwargs...)
+    rosaplsr(Xbl, Y, weights::Weight; kwargs...)
+    rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
 Multiblock ROSA PLSR (Liland et al. 2016).
 * `Xbl` : List of blocks (vector of matrices) of X-data 
     Typically, output of function `mblock` from (n, p) data.  
@@ -74,8 +74,7 @@ function rosaplsr(Xbl, Y; kwargs...)
     rosaplsr(Xbl, Y, weights; kwargs...)
 end
 
-function rosaplsr(Xbl, Y, weights::Weight; 
-        kwargs...)
+function rosaplsr(Xbl, Y, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
@@ -86,8 +85,7 @@ function rosaplsr(Xbl, Y, weights::Weight;
         weights; kwargs...)
 end
 
-function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; 
-        kwargs...)
+function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(Xbl[1][1, 1])   
     n = nro(Xbl[1])
@@ -104,8 +102,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
         xscales[k] = ones(Q, nco(Xbl[k]))
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
-            fcscale!(Xbl[k], 
-                xmeans[k], xscales[k])
+            fcscale!(Xbl[k], xmeans[k], xscales[k])
         else
             fcenter!(Xbl[k], xmeans[k])
         end
@@ -216,8 +213,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight;
 end
 
 """ 
-    transf(object::Rosaplsr, Xbl; 
-        nlv = nothing)
+    transf(object::Rosaplsr, Xbl; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 
@@ -231,15 +227,13 @@ function transf(object::Rosaplsr, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     zXbl = list(Matrix{Q}, nbl)
     Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], 
-            object.xmeans[k], object.xscales[k])
+        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
     end
     reduce(hcat, zXbl) * vcol(object.R, 1:nlv)
 end
 
 """
-    coef(object::Rosaplsr; 
-        nlv = nothing)
+    coef(object::Rosaplsr; nlv = nothing)
 Compute the X b-coefficients of a model fitted with `nlv` LVs.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
@@ -257,8 +251,7 @@ function coef(object::Rosaplsr; nlv = nothing)
 end
 
 """
-    predict(object::Rosaplsr, Xbl; 
-        nlv = nothing)
+    predict(object::Rosaplsr, Xbl; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 
