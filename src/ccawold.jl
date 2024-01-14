@@ -236,8 +236,7 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 end
 
 """ 
-    transfbl(object::Ccawold, X, Y; 
-        nlv = nothing)
+    transfbl(object::Ccawold, X, Y; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
@@ -249,10 +248,8 @@ function transfbl(object::Ccawold, X, Y; nlv = nothing)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    X = fcscale(X, object.xmeans, 
-        object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, 
-        object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     Tx = X * vcol(object.Rx, 1:nlv)
     Ty = Y * vcol(object.Ry, 1:nlv)
     (Tx = Tx, Ty)
@@ -269,10 +266,8 @@ function Base.summary(object::Ccawold, X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, nlv = size(object.Tx)
-    X = fcscale(X, object.xmeans, 
-        object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, 
-        object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     # X
     tt = object.TTx 
     sstot = frob(X, object.weights)^2

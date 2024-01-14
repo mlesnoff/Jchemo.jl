@@ -38,8 +38,7 @@ See function `splslda` for examples.
 function splskdeda(X, y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    splskdeda(X, y, weights; 
-        kwargs...)
+    splskdeda(X, y, weights; kwargs...)
 end
 
 function splskdeda(X, y, weights::Weight; kwargs...)
@@ -47,8 +46,7 @@ function splskdeda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmpls = splskern(X, res.Y, weights; 
-        kwargs...)
+    fmpls = splskern(X, res.Y, weights; kwargs...)
     fmda = list(Kdeda, par.nlv)
     @inbounds for i = 1:par.nlv
         fmda[i] = kdeda(vcol(fmpls.T, 1:i), y; 

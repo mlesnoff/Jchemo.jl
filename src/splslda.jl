@@ -85,8 +85,7 @@ summary(fm.fm, Xtrain)
 function splslda(X, y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    splslda(X, y, weights; 
-        kwargs...)
+    splslda(X, y, weights; kwargs...)
 end
 
 function splslda(X, y, weights::Weight; kwargs...)
@@ -94,8 +93,7 @@ function splslda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmpls = splskern(X, res.Y, weights; 
-        kwargs...)
+    fmpls = splskern(X, res.Y, weights; kwargs...)
     fmda = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
         fmda[i] = lda(fmpls.T[:, 1:i], y, weights; 

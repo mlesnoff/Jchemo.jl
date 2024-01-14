@@ -75,8 +75,7 @@ summary(fmpls, Xtrain)
 function plskdeda(X, y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    plskdeda(X, y, weights; 
-        kwargs...)
+    plskdeda(X, y, weights; kwargs...)
 end
 
 function plskdeda(X, y, weights::Weight; kwargs...)
@@ -84,12 +83,10 @@ function plskdeda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmpls = plskern(X, res.Y, weights; 
-        kwargs...)
+    fmpls = plskern(X, res.Y, weights; kwargs...)
     fmda = list(Kdeda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = kdeda(vcol(fmpls.T, 1:i), y; 
-            kwargs...)
+        fmda[i] = kdeda(vcol(fmpls.T, 1:i), y; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
     Plslda(fm, res.lev, ni)

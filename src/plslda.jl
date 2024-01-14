@@ -78,8 +78,7 @@ summary(fmpls, Xtrain)
 function plslda(X, y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    plslda(X, y, weights; 
-        kwargs...)
+    plslda(X, y, weights; kwargs...)
 end
 
 function plslda(X, y, weights::Weight; kwargs...)
@@ -87,8 +86,7 @@ function plslda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmpls = plskern(X, res.Y, weights; 
-        kwargs...)
+    fmpls = plskern(X, res.Y, weights; kwargs...)
     fmda = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
         fmda[i] = lda(fmpls.T[:, 1:i], y, 
@@ -99,16 +97,14 @@ function plslda(X, y, weights::Weight; kwargs...)
 end
 
 """ 
-    transf(object::Plslda, X; 
-        nlv = nothing)
+    transf(object::Plslda, X; nlv = nothing)
 Compute latent variables (LVs = scores T) from 
     a fitted model.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Plslda, X; 
-        nlv = nothing)
+function transf(object::Plslda, X; nlv = nothing)
     transf(object.fm.fmpls, X; nlv)
 end
 
@@ -126,8 +122,7 @@ function predict(object::Plslda, X;
     Qy = eltype(object.lev)
     m = nro(X)
     a = size(object.fm.fmpls.T, 2)
-    isnothing(nlv) ? nlv = a : 
-        nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
+    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
@@ -136,10 +131,8 @@ function predict(object::Plslda, X;
         T = transf(object.fm.fmpls, X; 
             nlv = znlv)
         zres = predict(object.fm.fmda[znlv], T)
-        z =  mapslices(argmax, zres.posterior; 
-            dims = 2) 
-        pred[i] = reshape(replacebylev2(z, 
-            object.lev), m, 1)
+        z =  mapslices(argmax, zres.posterior; dims = 2) 
+        pred[i] = reshape(replacebylev2(z, object.lev), m, 1)
         posterior[i] = zres.posterior
     end 
     if le_nlv == 1

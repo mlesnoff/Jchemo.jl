@@ -74,8 +74,7 @@ errp(res.pred, ytest)
 function qda(X, y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    qda(X, y, weights; 
-        kwargs...)
+    qda(X, y, weights; kwargs...)
 end
 
 function qda(X, y, weights::Weight; kwargs...)  

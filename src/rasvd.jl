@@ -166,24 +166,20 @@ function rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 end
 
 """ 
-    transfbl(object::Rasvd, X, Y; 
-        nlv = nothing)
+    transfbl(object::Rasvd, X, Y; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
 * `Y` : Y-data for which components (LVs) are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transfbl(object::Rasvd, X, Y; 
-        nlv = nothing)
+function transfbl(object::Rasvd, X, Y; nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = nco(object.Tx)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    X = fcscale(X, object.xmeans, 
-        object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, 
-        object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     Yfit = X * object.Bx
     Wy = vcol(object.Wy, 1:nlv)
     Tx = Yfit * Wy
@@ -204,10 +200,8 @@ function Base.summary(object::Rasvd, X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, nlv = size(object.Tx)
-    X = fcscale(X, object.xmeans, 
-        object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, 
-        object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     D = Diagonal(object.weights.w)
     ## X
     T = object.Tx

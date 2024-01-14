@@ -94,8 +94,7 @@ confusion(res.pred, ytest).cnt
 function rda(X, y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    rda(X, y, weights; 
-        kwargs...)
+    rda(X, y, weights; kwargs...)
 end
 
 function rda(X, y, weights::Weight; kwargs...)  

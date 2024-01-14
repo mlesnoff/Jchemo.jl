@@ -31,8 +31,7 @@ See function `plslda` for examples.
 function plsqda(X, y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    plsqda(X, y, weights; 
-        kwargs...)
+    plsqda(X, y, weights; kwargs...)
 end
 
 function plsqda(X, y, weights::Weight; kwargs...)
@@ -44,8 +43,7 @@ function plsqda(X, y, weights::Weight; kwargs...)
         kwargs...)
     fmda = list(Qda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = qda(vcol(fmpls.T, 1:i), y, weights; 
-            kwargs...)
+        fmda[i] = qda(vcol(fmpls.T, 1:i), y, weights; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
     Plslda(fm, res.lev, ni)

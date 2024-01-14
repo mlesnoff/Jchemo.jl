@@ -53,8 +53,7 @@ confusion(res.pred, ytest).cnt
 function lda(X, y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    lda(X, y, weights; 
-        kwargs...)
+    lda(X, y, weights; kwargs...)
 end
 
 function lda(X, y, weights::Weight; kwargs...)  

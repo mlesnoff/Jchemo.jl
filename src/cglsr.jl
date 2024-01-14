@@ -199,8 +199,7 @@ Compute Y-predictions from a fitted model.
 function predict(object::Cglsr, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.B)
-    isnothing(nlv) ? nlv = a : 
-        nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
+    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     pred = list(Matrix{eltype(X)}, le_nlv)
     @inbounds for i = 1:le_nlv

@@ -79,8 +79,7 @@ end
 function kplsrda(X, y, weights::Weight; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
-    fm = kplsr(X, res.Y, weights; 
-        kwargs...)
+    fm = kplsr(X, res.Y, weights; kwargs...)
     Plsrda(fm, res.lev, ni)
 end
 

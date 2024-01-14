@@ -79,8 +79,7 @@ end
 function dkplsrda(X, y, weights::Weight; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
-    fm = dkplsr(X, res.Y, weights; 
-        kwargs...)
+    fm = dkplsr(X, res.Y, weights; kwargs...)
     Dkplsrda(fm, res.lev, ni)
 end
 
@@ -111,8 +110,7 @@ function predict(object::Dkplsrda, X;
     Qy = eltype(object.lev)
     m = nro(X)
     a = size(object.fm.fm.T, 2)
-    isnothing(nlv) ? nlv = a : 
-        nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
+    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)

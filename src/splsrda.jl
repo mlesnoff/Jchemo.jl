@@ -88,8 +88,7 @@ end
 function splsrda(X, y, weights::Weight; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
-    fm = splskern(X, res.Y, weights; 
-        kwargs...)
+    fm = splskern(X, res.Y, weights; kwargs...)
     Plsrda(fm, res.lev, ni)
 end
 

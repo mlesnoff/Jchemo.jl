@@ -36,8 +36,7 @@ See function `splslda` for examples.
 function splsqda(X, y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    splsqda(X, y, weights; 
-        kwargs...)
+    splsqda(X, y, weights; kwargs...)
 end
 
 function splsqda(X, y, weights::Weight; kwargs...)
@@ -45,8 +44,7 @@ function splsqda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmpls = splskern(X, res.Y, weights; 
-        kwargs...)
+    fmpls = splskern(X, res.Y, weights; kwargs...)
     fmda = list(Qda, par.nlv)
     @inbounds for i = 1:par.nlv
         fmda[i] = qda(vcol(fmpls.T, 1:i), y, weights; 

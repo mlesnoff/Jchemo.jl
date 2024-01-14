@@ -83,8 +83,7 @@ end
 function plsrda(X, y, weights::Weight; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
-    fm = plskern(X, res.Y, weights; 
-        kwargs...)
+    fm = plskern(X, res.Y, weights; kwargs...)
     Plsrda(fm, res.lev, ni)
 end
 
@@ -96,8 +95,7 @@ Compute latent variables (LVs = scores T) from
 * `X` : X-data (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Plsrda, X; 
-        nlv = nothing)
+function transf(object::Plsrda, X; nlv = nothing)
     transf(object.fm, X; nlv)
 end
 
@@ -115,8 +113,7 @@ function predict(object::Plsrda, X; nlv = nothing)
     Qy = eltype(object.lev)
     m = nro(X)
     a = size(object.fm.T, 2)
-    isnothing(nlv) ? nlv = a : 
-        nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
+    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
@@ -128,10 +125,8 @@ function predict(object::Plsrda, X; nlv = nothing)
         #        zpred[j, :] .= mweight(exp.(zpred[j, :]))
         #   end
         #end
-        z =  mapslices(argmax, zpred; 
-            dims = 2)  # if equal, argmax takes the first
-        pred[i] = reshape(replacebylev2(z, 
-            object.lev), m, 1)     
+        z =  mapslices(argmax, zpred; dims = 2)  # if equal, argmax takes the first
+        pred[i] = reshape(replacebylev2(z, object.lev), m, 1)     
         posterior[i] = zpred
     end 
     if le_nlv == 1
