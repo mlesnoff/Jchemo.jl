@@ -227,11 +227,11 @@ plotxy(vec(pred), ytest; color = (:red, .5),
     ylabel = "Observed").f   
 
 ####-- Mbplsr
-groups = [1:525, 526:1050]
-Xtrain_bl = mblock(Xtrain, groups)
-Xtest_bl = mblock(Xtest, groups) 
-Xcal_bl = mblock(Xcal, groups) 
-Xval_bl = mblock(Xval, groups) 
+listbl = [1:525, 526:1050]
+Xtrain_bl = mblock(Xtrain, listbl)
+Xtest_bl = mblock(Xtest, listbl) 
+Xcal_bl = mblock(Xcal, listbl) 
+Xval_bl = mblock(Xval, listbl) 
 
 mod = mbplsr()
 bscal = [:none, :frob]
