@@ -1,7 +1,7 @@
 """
     krrda(; kwargs...)
     krrda(X, y; kwargs...)
-    krrda(X, Y, weights::Weight; kwargs...)
+    krrda(X, y, weights::Weight; kwargs...)
 Discrimination based on kernel ridge regression (KRR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
@@ -70,7 +70,7 @@ function krrda(X, y; kwargs...)
     krrda(X, y, weights; kwargs...)
 end
 
-function krrda(X, Y, weights::Weight; kwargs...)  
+function krrda(X, y, weights::Weight; kwargs...)  
     par = recovkwargs(Par, kwargs)
     res = dummy(y)
     ni = tab(y).vals

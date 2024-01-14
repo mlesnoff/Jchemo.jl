@@ -1,7 +1,7 @@
 """
     splslda(; kwargs...)
     splslda(X, y; kwargs...)
-    splslda(X, Y, weights::Weight; kwargs...)
+    splslda(X, y, weights::Weight; kwargs...)
 Sparse PLS-LDA.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
@@ -89,7 +89,7 @@ function splslda(X, y; kwargs...)
         kwargs...)
 end
 
-function splslda(X, Y, weights::Weight; kwargs...)
+function splslda(X, y, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)

@@ -1,7 +1,7 @@
 """
     plsrda(; kwargs...)
     plsrda(X, y; kwargs...)
-    plsrda(X, Y, weights::Weight; kwargs...)
+    plsrda(X, y, weights::Weight; kwargs...)
 Discrimination based on partial least squares 
     regression (PLSR-DA).
 * `X` : X-data (n, p).
@@ -80,7 +80,7 @@ function plsrda(X, y; kwargs...)
     plsrda(X, y, weights; kwargs...)
 end
 
-function plsrda(X, Y, weights::Weight; kwargs...)
+function plsrda(X, y, weights::Weight; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     fm = plskern(X, res.Y, weights; 

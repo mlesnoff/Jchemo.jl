@@ -1,7 +1,7 @@
 """
     splskdeda(; kwargs...)
     splskdeda(X, y; kwargs...)
-    splskdeda(X, Y, weights::Weight; kwargs...)
+    splskdeda(X, y, weights::Weight; kwargs...)
 Sparse PLS-KDE-DA.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
@@ -42,7 +42,7 @@ function splskdeda(X, y; kwargs...)
         kwargs...)
 end
 
-function splskdeda(X, Y, weights::Weight; kwargs...)
+function splskdeda(X, y, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)

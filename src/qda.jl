@@ -1,7 +1,7 @@
 """
     qda(; kwargs...)
     qda(X, y; kwargs...)
-    qda(X, Y, weights::Weight; kwargs...)
+    qda(X, y, weights::Weight; kwargs...)
 Quadratic discriminant analysis (QDA, with continuum 
     towards LDA).
 * `X` : X-data (n, p).
@@ -78,7 +78,7 @@ function qda(X, y; kwargs...)
         kwargs...)
 end
 
-function qda(X, Y, weights::Weight; kwargs...)  
+function qda(X, y, weights::Weight; kwargs...)  
     par = recovkwargs(Par, kwargs)
     @assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."

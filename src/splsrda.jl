@@ -1,7 +1,7 @@
 """
     splsrda(; kwargs...)
     splsrda(X, y; kwargs...)
-    splsrda(X, Y, weights::Weight; kwargs...)
+    splsrda(X, y, weights::Weight; kwargs...)
 Sparse PLSR-DA.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
@@ -85,7 +85,7 @@ function splsrda(X, y; kwargs...)
     splsrda(X, y, weights; kwargs...)
 end
 
-function splsrda(X, Y, weights::Weight; kwargs...)
+function splsrda(X, y, weights::Weight; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     fm = splskern(X, res.Y, weights; 

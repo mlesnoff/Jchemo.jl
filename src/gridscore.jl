@@ -228,16 +228,16 @@ plotxy(vec(pred), ytest; color = (:red, .5),
 
 ####-- Mbplsr
 listbl = [1:525, 526:1050]
-Xtrain_bl = mblock(Xtrain, listbl)
-Xtest_bl = mblock(Xtest, listbl) 
-Xcal_bl = mblock(Xcal, listbl) 
-Xval_bl = mblock(Xval, listbl) 
+Xbl_train = mblock(Xtrain, listbl)
+Xbl_test = mblock(Xtest, listbl) 
+Xbl_cal = mblock(Xcal, listbl) 
+Xbl_val = mblock(Xval, listbl) 
 
 mod = mbplsr()
 bscal = [:none, :frob]
 pars = mpar(bscal = bscal) 
 nlv = 0:30
-res = gridscore(mod, Xcal_bl, ycal, Xval_bl, yval; 
+res = gridscore(mod, Xbl_cal, ycal, Xbl_val, yval; 
     score = rmsep, pars, nlv)
 group = res.bscal 
 plotgrid(res.nlv, res.y1, group; step = 2,
@@ -246,8 +246,8 @@ u = findall(res.y1 .== minimum(res.y1))[1]
 res[u, :]
 mod = mbplsr(bscal = res.bscal[u], 
     nlv = res.nlv[u])
-fit!(mod, Xtrain_bl, ytrain)
-pred = predict(mod, Xtest_bl).pred
+fit!(mod, Xbl_train, ytrain)
+pred = predict(mod, Xbl_test).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
