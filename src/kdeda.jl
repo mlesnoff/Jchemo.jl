@@ -99,8 +99,7 @@ function predict(object::Kdeda, X)
     posterior = fscale(A', v)'  # Could be replaced by similar as in fscale! 
     z =  mapslices(argmax, posterior; 
         dims = 2)  # if equal, argmax takes the first
-    pred = reshape(replacebylev2(z, 
-        object.lev), m, 1)
+    pred = reshape(replacebylev2(z, object.lev), m, 1)
     (pred = pred, dens, posterior)
 end
     
