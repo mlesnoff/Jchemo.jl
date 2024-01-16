@@ -42,14 +42,7 @@ function fblockscal!(Xbl::Vector, bscales::Vector)
     Xbl
 end 
 
-
-
-
-
-
-
-
-
+########### To be removed
 
 function fblockscal_frob(Xbl, weights::Weight)
     nbl = length(Xbl)
