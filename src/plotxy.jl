@@ -94,8 +94,7 @@ function plotxy(x, y; size = (500, 300),
     x = vec(x)
     y = vec(y)
     f = Figure(size = size)
-    ax = Axis(f; xlabel = xlabel, ylabel = ylabel, 
-        title = title)
+    ax = Axis(f; xlabel = xlabel, ylabel = ylabel, title = title)
     if isnothing(color)
         scatter!(ax, x, y; kwargs...)
     else
@@ -106,7 +105,7 @@ function plotxy(x, y; size = (500, 300),
         xmeans = colmean(X)
         radius = sqrt(quantile(Chi(2), prob))
         res = Jchemo.ellipse(cov(X); 
-            center = xmeans, radius)
+            mu = xmeans, radius)
         if isnothing(color)
             lines!(ax, res.X; color = :grey40)
         else
@@ -140,25 +139,21 @@ function plotxy(x, y, group; size = (600, 350),
     nlev = length(lev)
     lab = string.(lev)
     f = Figure(size = size)
-    ax = Axis(f; xlabel = xlabel, ylabel = ylabel, 
-        title = title)
+    ax = Axis(f; xlabel = xlabel, ylabel = ylabel, title = title)
     for i = 1:nlev
         s = group .== lev[i]
         zx = x[s]
         zy = y[s]
         if isnothing(color)
-            scatter!(ax, zx, zy; label = lab[i], 
-                kwargs...)
+            scatter!(ax, zx, zy; label = lab[i], kwargs...)
         else
-            scatter!(ax, zx, zy; label = lab[i], 
-                color = color[i], kwargs...)
+            scatter!(ax, zx, zy; label = lab[i], color = color[i], kwargs...)
         end
         if ellipse
             X = hcat(zx, zy)
             xmeans = colmean(X)
             radius = sqrt(quantile(Chi(2), prob))
-            res = Jchemo.ellipse(cov(X); 
-                center = xmeans, radius)
+            res = Jchemo.ellipse(cov(X); mu = xmeans, radius)
             if isnothing(color)
                 lines!(ax, res.X; color = :grey40)
             else
@@ -179,8 +174,7 @@ function plotxy(x, y, group; size = (600, 350),
     end
     f[1, 1] = ax
     if leg
-        f[1, 2] = Legend(f, ax, leg_title, 
-            framevisible = false)
+        f[1, 2] = Legend(f, ax, leg_title, framevisible = false)
     end
     (f = f, ax = ax, lev = lev)
 end
