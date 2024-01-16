@@ -680,3 +680,17 @@ function transf!(object::Cscale, X::Matrix)
 end
 
 
+function blockscal(X)
+    xmeans = colmean(X)
+    xscales = colstd(X)
+    Cscale(xmeans, xscales)
+end
+function blockscal(X, weights::Weight)
+    xmeans = colmean(X, weights)
+    xscales = colstd(X, weights)
+    Cscale(xmeans, xscales)
+end
+
+
+
+
