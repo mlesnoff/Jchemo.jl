@@ -353,57 +353,6 @@ struct Splsr
     par::Par
 end
 
-## Local
-
-struct Knnr
-    X::Matrix
-    Y::Matrix
-    fm::Union{Nothing, Plsr}
-    xscales::Vector
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Lwmlr
-    X::Matrix
-    Y::Matrix
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Lwplsr
-    X::Matrix
-    Y::Matrix
-    fm::Union{Nothing, Plsr}
-    xscales::Vector
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct LwplsrAvg
-    X::Matrix
-    Y::Matrix
-    fm::Union{Nothing, Plsr}
-    xscales::Vector
-    kwargs::Base.Pairs
-    par::Par
-end
-
-## Svm, Trees
-
-struct Svmr
-    fm::LIBSVM.SVM
-    xscales::Vector
-end
-
-struct TreerDt
-    fm::Union{DecisionTree.Root, DecisionTree.Ensemble}
-    xscales::Vector
-    featur::Vector{Int}
-    kwargs::Base.Pairs
-    par::Par
-end
-
 ## Multiblock
 
 struct Mbplsr
@@ -467,6 +416,57 @@ struct Soplsr
     b::Vector
     xscales::Vector{Vector}
     yscales::Vector
+    kwargs::Base.Pairs
+    par::Par
+end
+
+## Local
+
+struct Knnr
+    X::Matrix
+    Y::Matrix
+    fm::Union{Nothing, Plsr}
+    xscales::Vector
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Lwmlr
+    X::Matrix
+    Y::Matrix
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Lwplsr
+    X::Matrix
+    Y::Matrix
+    fm::Union{Nothing, Plsr}
+    xscales::Vector
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct LwplsrAvg
+    X::Matrix
+    Y::Matrix
+    fm::Union{Nothing, Plsr}
+    xscales::Vector
+    kwargs::Base.Pairs
+    par::Par
+end
+
+## Svm, Trees
+
+struct Svmr
+    fm::LIBSVM.SVM
+    xscales::Vector
+end
+
+struct TreerDt
+    fm::Union{DecisionTree.Root, DecisionTree.Ensemble}
+    xscales::Vector
+    featur::Vector{Int}
     kwargs::Base.Pairs
     par::Par
 end
@@ -565,6 +565,14 @@ struct Rrda
     ni::Vector{Int}
     kwargs::Base.Pairs
     par::Par
+end
+
+## Multiblock
+
+struct Mbplsrda
+    fm::Mbplsr  
+    lev::Vector
+    ni::Vector{Int}
 end
 
 ## Local
