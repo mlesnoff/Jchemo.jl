@@ -1,4 +1,4 @@
-######-------- Fit
+######---- Fit
 ## Transformers
 function fit!(mod::Jchemo.Transformer, X)
     kwargs = values(mod.kwargs)
@@ -41,7 +41,7 @@ function fit!(mod::PredictorNoY, X)
     return
 end   
 
-######-------- Transf
+######---- Transf
 function transf(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, 
         X; nlv = nothing)
     isnothing(nlv) ? transf(mod.fm, X) : 
@@ -54,7 +54,7 @@ function transf(mod::Union{Jchemo.Transformer, Jchemo.Predictor},
         transf(mod.fm, X, Y; nlv)
 end
 
-######-------- Transfbl
+######---- Transfbl
 function transfbl(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, 
         X; nlv = nothing)
     isnothing(nlv) ? transfbl(mod.fm, X) : 
@@ -67,7 +67,7 @@ function transfbl(mod::Union{Jchemo.Transformer, Jchemo.Predictor},
     transfbl(mod.fm, X, Y; nlv)
 end
 
-###### Predict 
+######---- Predict 
 function predict(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, 
         X; nlv = nothing, lb = nothing)
     if isnothing(nlv) && isnothing(lb)
@@ -80,7 +80,7 @@ function predict(mod::Union{Jchemo.Transformer, Jchemo.Predictor},
 end  
 predict(mod::PredictorNoY, X) = predict(mod.fm, X)
 
-######-------- Coef 
+######---- Coef 
 function coef(mod::Jchemo.Predictor; 
         nlv = nothing, lb = nothing)
     if isnothing(nlv) && isnothing(lb)
@@ -92,7 +92,7 @@ function coef(mod::Jchemo.Predictor;
     end
 end
 
-######-------- Summary 
+######---- Summary 
 function Base.summary(mod::Union{Jchemo.Transformer, Jchemo.Predictor})
     Base.summary(mod.fm)
 end

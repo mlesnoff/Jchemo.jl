@@ -1,18 +1,18 @@
 """
     fblockscal(Xbl; bscales)
+    fblockscal!(Xbl::Vector, bscales::Vector)
     fblockscal_frob(Xbl, weights::Weight)
     fblockscal_mfa(Xbl, weights::Weight)
     fblockscal_ncol(Xbl)
     fblockscal_sd(Xbl, weights::Weight)
-Scale a list of blocks (matrices).
-* `Xbl` : List (vector) of blocks (matrices) of 
-    X-data. 
+Scale multiblock X-data.
+* `Xbl` : List of blocks (vector of matrices) of X-data 
+    Typically, output of function `mblock` from (n, p) data.  
+* `bscales` : A vector (of length equal to the nb. 
+    of blocks) of the scalars diving the blocks.
 * `weights` : Weights (n) of the observations (rows 
     of the blocks). Must be of type `Weight` (see e.g. 
     function `mweight`).
-Keyword arguments: 
-* `bscales` : A vector (of length equal to the nb. 
-    of blocks) of the scalars diving the blocks.
 
 Specificities of each function:
 * `fblockscal`: Each block X is tranformed 
@@ -86,14 +86,32 @@ X_concat = reduce(hcat, res.Xbl)
 ```
 """
 function fblockscal(Xbl, bscales)
-    X = copy(Xbl)
-    nbl = length(X)
+    Q = eltype(Xbl[1][1, 1])
+    nbl = length(Xbl)  
+    zXbl = list(Matrix{Q}, nbl)
+    @inbounds for k = 1:nbl
+        zXbl[k] = copy(ensure_mat(Xbl[k]))
+    end
+    fblockscal!(zXbl, bscales)
+end
+
+function fblockscal!(Xbl::Vector, bscales::Vector)
+    nbl = length(Xbl)
     #Threads not faster
     @inbounds for k = 1:nbl
-        X[k] = X[k] / bscales[k]
+        Xbl[k] ./= bscales[k]
     end
-    (Xbl = X, bscales)
+    (Xbl = Xbl, bscales)
 end 
+
+
+
+
+
+
+
+
+
 
 function fblockscal_frob(Xbl, weights::Weight)
     nbl = length(Xbl)
@@ -133,5 +151,10 @@ function fblockscal_sd(Xbl, weights::Weight)
     end
     fblockscal(Xbl, bscales)
 end 
+
+
+
+
+
 
 

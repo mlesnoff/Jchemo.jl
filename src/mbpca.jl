@@ -11,7 +11,7 @@ Consensus principal components analysis (CPCA = MBPCA).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling. Possible values are:
-    `:none`, `:frob`, `:mfa`. See functions `fblockscal`.
+    `:none`, `:frob`, `:mfa`. See functions `blockscal`.
 * `tol` : Tolerance value for Nipals convergence.
 * `maxit` : Maximum number of iterations (Nipals).
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 

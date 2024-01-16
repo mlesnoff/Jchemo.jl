@@ -10,7 +10,7 @@ Common components and specific weights analysis (ComDim, *aka* CCSWA).
     Must be of type `Weight` (see e.g. function `mweight`).
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling (`:none`, `:frob`). 
-    See functions `fblockscal`.
+    See functions `blockscal`.
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 

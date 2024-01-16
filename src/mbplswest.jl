@@ -12,7 +12,7 @@ Multiblock PLSR (MBPLSR) - Nipals algorithm.
 Keyword arguments:
     * `nlv` : Nb. latent variables (LVs = scores T) to compute.
     * `bscal` : Type of block scaling. Possible values are:
-        `:none`, `:frob`. See functions `fblockscal`.
+        `:none`, `:frob`. See functions `blockscal`.
     * `tol` : Tolerance value for convergence (Nipals).
     * `maxit` : Maximum number of iterations (Nipals).
     * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 

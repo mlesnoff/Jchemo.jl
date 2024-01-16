@@ -1,10 +1,10 @@
-###### Weights
+######---- Weights
 
 struct Weight{T <: AbstractFloat}
     w::Vector{T} 
 end
 
-###### Dimension reduction
+######---- Dimension reduction
 
 struct Pca 
     T::Matrix 
@@ -74,6 +74,14 @@ struct Fda
 end
 
 ## Multiblock
+
+struct Blockscal
+    bscales::Vector
+    xmeans::Vector{Vector}
+    xscales::Vector{Vector}
+    kwargs::Base.Pairs
+    par::Par
+end
 
 struct Cca
     Tx::Matrix
@@ -205,7 +213,7 @@ struct Rasvd
     par::Par
 end
 
-###### Regression
+######---- Regression
 
 struct Mlr
     B::Matrix   
@@ -470,7 +478,7 @@ struct Soplsr
     par::Par
 end
 
-###### Discrimination
+######---- Discrimination
 
 struct Dmkern
     X::Matrix
@@ -679,7 +687,7 @@ struct Occsdod
     fmod
 end
 
-###### Data Processing 
+######---- Data Processing 
 
 ## Preprocessing
 

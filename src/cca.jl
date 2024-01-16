@@ -11,7 +11,7 @@ Canonical correlation Analysis (CCA, RCCA).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling. Possible values are:
-    `:none`, `:frob`. See functions `fblockscal`.
+    `:none`, `:frob`. See functions `blockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `scal` : Boolean. If `true`, each column of blocks in `X` 
     and `Y` is scaled by its uncorrected standard deviation 

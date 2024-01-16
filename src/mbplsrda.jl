@@ -13,7 +13,7 @@ Discrimination based on multiblock partial least squares
 Keyword arguments:
     * `nlv` : Nb. latent variables (LVs = scores T) to compute.
     * `bscal` : Type of block scaling. Possible values are:
-        `:none`, `:frob`. See functions `fblockscal`.
+        `:none`, `:frob`. See functions `blockscal`.
     * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
         is scaled by its uncorrected standard deviation 
         (before the block scaling).

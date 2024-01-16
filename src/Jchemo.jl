@@ -24,12 +24,12 @@ include("_structures_mod_fun.jl")
 include("_structures_mod.jl")
 include("_structures_mod_pipelines.jl")
 
-###### Misc
+######---- Misc
 include("utility.jl")
 include("utility_colwise.jl")
 include("utility_rowwise.jl")
-include("utility_cscale.jl")
-include("utility_blockscal.jl")
+include("utility_scaling.jl")
+include("utility_scaling_mb.jl")
 include("colmedspa.jl")
 include("fweight.jl") 
 include("ellipse.jl")
@@ -37,23 +37,25 @@ include("matW.jl")
 include("nipals.jl")
 include("nipalsmiss.jl")
 include("preprocessing.jl") 
+include("preprocessing_scaling.jl") 
+include("preprocessing_scaling_mb.jl") 
 include("rmgap.jl")
 include("snipals.jl")
 include("snipalsh.jl")
 include("snipalsmix.jl")
 
-###### Graphics
+######---- Graphics
 include("plotsp.jl")
 include("plotgrid.jl")
 include("plotxy.jl")
 include("plotconf.jl")
 
-###### Distributions
+######---- Distributions
 include("dmnorm.jl")
 include("dmnormlog.jl")
 include("dmkern.jl")
 
-###### Exploratory
+######---- Exploratory
 include("fda.jl")     # Here since ::Fda called in pcasvd
 include("fdasvd.jl")     
 include("pcasvd.jl")
@@ -71,7 +73,6 @@ include("spca.jl")
 
 ## Multiblock 
 include("angles.jl")
-include("mblock.jl")
 include("mbpca.jl")
 include("comdim.jl")
 include("cca.jl")
@@ -80,7 +81,7 @@ include("plscan.jl")
 include("plstuck.jl")
 include("rasvd.jl")
 
-###### Regression 
+######---- Regression 
 include("aov1.jl")
 include("mlr.jl")
 include("rr.jl")
@@ -148,7 +149,7 @@ include("svmr.jl")
 include("treer_dt.jl")
 include("rfr_dt.jl")
 
-###### Discrimination 
+######---- Discrimination 
 include("lda.jl")
 include("qda.jl")
 include("rda.jl")
@@ -191,13 +192,13 @@ include("svmda.jl")
 include("treeda_dt.jl")
 include("rfda_dt.jl")
 
-###### Calibration transfer
+######---- Calibration transfer
 include("calds.jl")
 include("calpds.jl")
 include("difmean.jl")
 include("eposvd.jl")
 
-###### Sampling
+######---- Sampling
 include("sampks.jl")
 include("sampdp.jl")
 include("samprand.jl")
@@ -216,19 +217,23 @@ export
     fit!,
     transf!,
     pip,
-    ###### Utilities
+    ######---- Utilities
     aggstat,
-    dupl, miss,
-    fcenter, fcenter!, 
     colmad, colmean, colnorm, colstd, colsum, colvar,
     colmeanskip, colstdskip, colsumskip, colvarskip,
     corm, covm,
     cosm, cosv,
-    fcscale, fcscale!, 
     dummy,
+    dupl, miss,
     ensure_df, ensure_mat,
+    fblockscal, fblockscal!,
+    fblockscal_frob, fblockscal_mfa,
+    fblockscal_ncol, fblockscal_sd,
+    fcenter, fcenter!, 
+    fcscale, fcscale!, 
     findmax_cla, 
     frob,
+    fscale, fscale!,
     fweight,
     head, @head,
     list, 
@@ -252,7 +257,6 @@ export
     rmcol, rmrow, 
     rowmean, rowstd, rowsum, rowvar,
     rowmeanskip, rowstdskip, rowsumskip, rowvarskip,   
-    fscale, fscale!,
     snipals, snipalsh, snipalsmix,
     soft,
     softmax,
@@ -262,7 +266,7 @@ export
     tab, tabdf, tabdupl,
     vcatdf,
     vcol, vrow,
-    ###### Distributions
+    ######---- Distributions
     dmnorm, dmnorm!,
     dmnormlog, dmnormlog!,
     dmkern,
@@ -271,16 +275,17 @@ export
     fdif, fdif!,
     interpl, 
     center, scale, cscale,
+    blockscal,
     #cubic_spline,
     mavg, mavg!, 
     rmgap, rmgap!,
     savgk, savgol, savgol!,
     snv, snv!, 
-    ###### Calibration ransfer
+    ######---- Calibration ransfer
     calds, calpds,
     difmean,
     eposvd,
-    ###### Exploratory
+    ######---- Exploratory
     kpca,
     pcasvd, pcasvd!, 
     pcaeigen, pcaeigen!, 
@@ -291,8 +296,6 @@ export
     pcasph, pcasph!,
     spca, spca!,
     ## Multiblock
-    fblockscal, fblockscal_frob, fblockscal_mfa,
-    fblockscal_ncol, fblockscal_sd,
     rv, lg, rd, 
     mbpca, mbpca!,
     comdim, comdim!, 
@@ -301,7 +304,7 @@ export
     plscan, plscan!,
     plstuck, plstuck!,
     rasvd, rasvd!,
-    ###### Regression
+    ######---- Regression
     aov1,
     mlr, mlr!, mlrchol, mlrchol!, 
     mlrpinv, mlrpinv!, mlrpinvn, mlrpinvn!,
@@ -339,7 +342,7 @@ export
     knnr,
     lwmlr,
     lwplsr, lwplsravg,
-    ###### Discrimination
+    ######---- Discrimination
     fda, fda!, fdasvd, fdasvd!,
     mlrda,
     rrda, krrda,
@@ -379,14 +382,14 @@ export
     gridcv_br, gridcv_lv, gridcv_lb, 
     selwold,
     confusion, 
-    ###### Sampling
+    ######---- Sampling
     sampks, sampdp, samprand, sampsys, sampcla, 
     sampdf,
-    ###### Distances
+    ######---- Distances
     getknn, wdist, wdist!,
     euclsq, mahsq, mahsqchol,
     krbf, kpol,
-    ###### Graphics
+    ######---- Graphics
     plotconf,
     plotgrid, 
     plotsp,
