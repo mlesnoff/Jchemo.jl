@@ -12,11 +12,11 @@ function mbplsrda(Xbl, y, weights::Weight; kwargs...)
     Mbplsrda1(fm, res.lev, ni) 
 end
 
-function transf(object::Mbplsrda1, Xbl; nlv = nothing)
+function transf(object::Mbplsrda, Xbl; nlv = nothing)
     transf(object.fm, Xbl; nlv)
 end
 
-function predict(object::Mbplsrda1, Xbl; nlv = nothing)
+function predict(object::Mbplsrda, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     Qy = eltype(object.lev)
     m = nro(Xbl[1])
