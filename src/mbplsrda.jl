@@ -1,9 +1,3 @@
-struct Mbplsrda1
-    fm::Mbplsr  
-    lev::Vector
-    ni::Vector{Int}
-end
-
 function mbplsrda(Xbl, y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
