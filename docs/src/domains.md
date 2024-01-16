@@ -165,6 +165,10 @@
 - **dkplsrda** DKPLSR prediction (DKPLSR-DA)
 - **krrda** KRR prediction (KRR-DA)
 
+*Multiblock* 
+
+- **mbplsrda** Multiblock PLSR prediction (MBPLSR-DA)
+
 ### Probabilistic DA
 
 *Parametric*

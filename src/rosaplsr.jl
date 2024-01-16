@@ -11,7 +11,7 @@ Multiblock ROSA PLSR (Liland et al. 2016).
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
     * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-    * `scal` : Boolean. If `true`, each column of blocks in `X` 
+    * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
         and `Y` is scaled by its uncorrected standard deviation 
         (before the block scaling).
 

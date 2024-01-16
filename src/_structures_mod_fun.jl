@@ -97,7 +97,7 @@ svmda(; kwargs...) = Predictor{Function, Svmda, Base.Pairs}(svmda, nothing, kwar
 treeda_dt(; kwargs...) = Predictor{Function, TreedaDt, Base.Pairs}(treeda_dt, nothing, kwargs)
 rfda_dt(; kwargs...) = Predictor{Function, TreedaDt, Base.Pairs}(rfda_dt, nothing, kwargs)
 ## 
-mbplsrda(; kwargs...) = Predictor{Function, Mbplsrda, Base.Pairs}(mbpsrda, nothing, kwargs)
+mbplsrda(; kwargs...) = Predictor{Function, Mbplsrda, Base.Pairs}(mbplsrda, nothing, kwargs)
 ##
 occstah(; kwargs...) = PredictorNoY{Function, Occstah, Base.Pairs}(occstah, nothing, kwargs)
 occsd(; kwargs...) = PredictorNoY{Function, Occsd, Base.Pairs}(occsd, nothing, kwargs)

@@ -1,8 +1,8 @@
 """
     soplsr(; kwargs...)
-    soplsr(Xbl; kwargs...)
-    soplsr(Xbl, weights::Weight; kwargs...)
-    soplsr!(Xbl::Matrix, weights::Weight; kwargs...)
+    soplsr(Xbl, Y; kwargs...)
+    soplsr(Xbl, Y, weights::Weight; kwargs...)
+    soplsr!(Xbl::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Multiblock sequentially orthogonalized PLSR (SO-PLSR).
 * `Xbl` : List of blocks (vector of matrices) of X-data 
     Typically, output of function `mblock` from (n, p) data.  
@@ -13,7 +13,7 @@ Keyword arguments:
     * `nlv` : Nb. latent variables (LVs = scores T) to compute.
     * `bscal` : Type of block scaling. Possible values are:
         `:none`, `:frob`. See functions `fblockscal`.
-    * `scal` : Boolean. If `true`, each column of blocks in `X` 
+    * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
         and `Y` is scaled by its uncorrected standard deviation 
         (before the block scaling).
 

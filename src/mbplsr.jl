@@ -1,8 +1,8 @@
 """
     mbplsr(; kwargs...)
-    mbplsr(Xbl; kwargs...)
-    mbplsr(Xbl, weights::Weight; kwargs...)
-    mbplsr!(Xbl::Matrix, weights::Weight; kwargs...)
+    mbplsr(Xbl, Y; kwargs...)
+    mbplsr(Xbl, Y, weights::Weight; kwargs...)
+    mbplsr!(Xbl::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Multiblock PLSR (MBPLSR).
 * `Xbl` : List of blocks (vector of matrices) of X-data 
     Typically, output of function `mblock` from (n, p) data.  
@@ -13,7 +13,7 @@ Keyword arguments:
     * `nlv` : Nb. latent variables (LVs = scores T) to compute.
     * `bscal` : Type of block scaling. Possible values are:
         `:none`, `:frob`. See functions `fblockscal`.
-    * `scal` : Boolean. If `true`, each column of blocks in `X` 
+    * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
         and `Y` is scaled by its uncorrected standard deviation 
         (before the block scaling).
 

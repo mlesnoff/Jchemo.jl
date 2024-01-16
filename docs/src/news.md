@@ -2,6 +2,10 @@
 
 ## *Version 0.3.1*
 
+- New 
+    - **mbplsrda** Discrimination based on multiblock partial 
+        least squares regression (MBPLSR-DA).
+
 - Modifications
     - Code improvement. 
     - **mbplsr**, **soplsr** : correction when 'scal' = true.
