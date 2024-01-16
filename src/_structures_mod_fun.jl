@@ -52,6 +52,11 @@ dkplsr(; kwargs...) = Predictor{Function, Dkplsr, Base.Pairs}(dkplsr, nothing, k
 rr(; kwargs...) = Predictor{Function, Rr, Base.Pairs}(rr, nothing, kwargs)
 rrchol(; kwargs...) = Predictor{Function, Mlr, Base.Pairs}(rrchol, nothing, kwargs)
 krr(; kwargs...) = Predictor{Function, Krr, Base.Pairs}(krr, nothing, kwargs)
+## 
+knnr(; kwargs...) = Predictor{Function, Knnr, Base.Pairs}(knnr, nothing, kwargs)
+lwmlr(; kwargs...) = Predictor{Function, Lwmlr, Base.Pairs}(lwmlr, nothing, kwargs)
+lwplsr(; kwargs...) = Predictor{Function, Lwplsr, Base.Pairs}(lwplsr, nothing, kwargs)
+lwplsravg(; kwargs...) = Predictor{Function, LwplsrAvg, Base.Pairs}(lwplsravg, nothing, kwargs)
 ##
 svmr(; kwargs...) = Predictor{Function, Svmr, Base.Pairs}(svmr, nothing, kwargs)
 treer_dt(; kwargs...) = Predictor{Function, TreerDt, Base.Pairs}(treer_dt, nothing, kwargs)
@@ -61,11 +66,6 @@ mbplsr(; kwargs...) = Predictor{Function, Mbplsr, Base.Pairs}(mbplsr, nothing, k
 mbplswest(; kwargs...) = Predictor{Function, Mbplswest, Base.Pairs}(mbplswest, nothing, kwargs)
 rosaplsr(; kwargs...) = Predictor{Function, Rosaplsr, Base.Pairs}(rosaplsr, nothing, kwargs)
 soplsr(; kwargs...) = Predictor{Function, Soplsr, Base.Pairs}(soplsr, nothing, kwargs)
-## 
-knnr(; kwargs...) = Predictor{Function, Knnr, Base.Pairs}(knnr, nothing, kwargs)
-lwmlr(; kwargs...) = Predictor{Function, Lwmlr, Base.Pairs}(lwmlr, nothing, kwargs)
-lwplsr(; kwargs...) = Predictor{Function, Lwplsr, Base.Pairs}(lwplsr, nothing, kwargs)
-lwplsravg(; kwargs...) = Predictor{Function, LwplsrAvg, Base.Pairs}(lwplsravg, nothing, kwargs)
 ## 
 mlrda(; kwargs...) = Predictor{Function, Mlrda, Base.Pairs}(mlrda, nothing, kwargs)
 plsrda(; kwargs...) = Predictor{Function, Plsrda, Base.Pairs}(plsrda, nothing, kwargs)
@@ -93,13 +93,15 @@ lwplsrda(; kwargs...) = Predictor{Function, Lwplsrda, Base.Pairs}(lwplsrda, noth
 lwplslda(; kwargs...) = Predictor{Function, Lwplslda, Base.Pairs}(lwplslda, nothing, kwargs)
 lwplsqda(; kwargs...) = Predictor{Function, Lwplsqda, Base.Pairs}(lwplsqda, nothing, kwargs)
 ##
+svmda(; kwargs...) = Predictor{Function, Svmda, Base.Pairs}(svmda, nothing, kwargs)
+treeda_dt(; kwargs...) = Predictor{Function, TreedaDt, Base.Pairs}(treeda_dt, nothing, kwargs)
+rfda_dt(; kwargs...) = Predictor{Function, TreedaDt, Base.Pairs}(rfda_dt, nothing, kwargs)
+## 
+mbplsrda(; kwargs...) = Predictor{Function, Mbplsrda, Base.Pairs}(mbpsrda, nothing, kwargs)
+##
 occstah(; kwargs...) = PredictorNoY{Function, Occstah, Base.Pairs}(occstah, nothing, kwargs)
 occsd(; kwargs...) = PredictorNoY{Function, Occsd, Base.Pairs}(occsd, nothing, kwargs)
 occod(; kwargs...) = Predictor{Function, Occod, Base.Pairs}(occod, nothing, kwargs)
 occsdod(; kwargs...) = Predictor{Function, Occsdod, Base.Pairs}(occsdod, nothing, kwargs)
-##
-svmda(; kwargs...) = Predictor{Function, Svmda, Base.Pairs}(svmda, nothing, kwargs)
-treeda_dt(; kwargs...) = Predictor{Function, TreedaDt, Base.Pairs}(treeda_dt, nothing, kwargs)
-rfda_dt(; kwargs...) = Predictor{Function, TreedaDt, Base.Pairs}(rfda_dt, nothing, kwargs)
 
 

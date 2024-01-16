@@ -169,6 +169,9 @@ include("splslda.jl")
 include("splsqda.jl")
 include("splskdeda.jl")
 
+## Multiblock
+include("mbplsrda.jl") 
+
 ## One-class
 include("occsd.jl")
 include("occod.jl") 
@@ -359,6 +362,8 @@ export
     lwplsrda, 
     lwplslda, lwplsqda,
     knnda,
+    ## Multiblock
+    mbplsrda,
     ## Auxiliary
     transf, coef, predict,
     transfbl, 
