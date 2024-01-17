@@ -48,6 +48,7 @@
     instrumental variables (PCAIV)
 
 *2 or more blocks* 
+- **hconcat** Transformer contatenating multi-block X-data
 - **mbpca** Multiblock PCA (MBPCA), *aka* Consensus 
     principal component analysis (CPCA)
 - **comdim** Common components and specific weights 
@@ -297,10 +298,13 @@
 - **rmgap** Remove vertical gaps in spectra, 
     e.g. for ASD NIR data
 
+*Scaling*
 
 - **center** Column centering
 - **scale** Column scaling
 - **cscale** Column centering and scaling
+
+- **blockscal** Scaling of multiblock data
 
 ### **Interpolation**
 - **interpl** Sampling spectra by interpolation 
