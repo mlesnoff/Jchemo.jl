@@ -9,8 +9,8 @@ Common components and specific weights analysis (ComDim, *aka* CCSWA).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-* `bscal` : Type of block scaling (`:none`, `:frob`). 
-    See functions `blockscal`.
+* `bscal` : Type of block scaling. See function `blockscal`
+    for possible values.
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
@@ -23,8 +23,8 @@ The function returns several objects, in particular:
 * `T` : The non normed global scores.
 * `U` : The normed global scores.
 * `W` : The global loadings.
-* `Tbl` : The block scores (grouped by blocks, in the original fscale).
-* `Tb` : The block scores (grouped by LV, in the metric fscale).
+* `Tbl` : The block scores (grouped by blocks, in the original scale).
+* `Tb` : The block scores (grouped by LV, in the metric scale).
 * `Wbl` : The block loadings.
 * `lb` : The specific weights (saliences) "lambda".
 * `mu` : The sum of the squared saliences.
@@ -89,26 +89,25 @@ X = dat.X
 group = dat.group
 listbl = [1:11, 12:19, 20:25]
 Xbl = mblock(X[1:6, :], listbl)
-Xbl_new = mblock(X[7:8, :], listbl)
+Xblnew = mblock(X[7:8, :], listbl)
 n = nro(Xbl[1]) 
 
 nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-mod = comdim(; nlv, 
-    bscal, scal)
+mod = comdim(; nlv, bscal, scal)
 fit!(mod, Xbl)
 pnames(mod) 
 pnames(mod.fm)
 ## Global scores 
 @head mod.fm.T
 @head transf(mod, Xbl)
-transf(mod, Xbl_new)
+transf(mod, Xblnew)
 ## Blocks scores
 i = 1
-@head mod.fm.Tb[i]
-@head transfbl(mod.fm, Xbl)[i]
+@head mod.fm.Tbl[i]
+@head transfbl(mod, Xbl)[i]
 
 res = summary(mod, Xbl) ;
 pnames(res) 
@@ -143,32 +142,14 @@ end
 function comdim!(Xbl::Vector, weights::Weight; 
         kwargs...)
     par = recovkwargs(Par, kwargs) 
-    @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     n = nro(Xbl[1])
     nlv = par.nlv
     sqrtw = sqrt.(weights.w)
-    xmeans = list(Vector{Q}, nbl)
-    xscales = list(Vector{Q}, nbl)
-    p = fill(0, nbl)
-    @inbounds for k = 1:nbl
-        p[k] = nco(Xbl[k])
-        xmeans[k] = colmean(Xbl[k], weights) 
-        xscales[k] = ones(nco(Xbl[k]))
-        if par.scal 
-            xscales[k] = colstd(Xbl[k], weights)
-            fcscale!(Xbl[k], xmeans[k], xscales[k])
-        else
-            fcenter!(Xbl[k], xmeans[k])
-        end
-    end
-    par.bscal == :none ? bscales = ones(nbl) : nothing
-    if par.bscal == :frob
-        res = fblockscal_frob(Xbl, weights) 
-        bscales = res.bscales
-        Xbl = res.Xbl
-    end
+    fm0 = blockscal(Xbl, weights; bscal = par.bscal,  
+        centr = true, scal = par.scal)
+    transf!(fm0, Xbl)
     # Row metric
     @inbounds for k = 1:nbl
         Xbl[k] .= sqrtw .* Xbl[k]
@@ -182,13 +163,14 @@ function comdim!(Xbl::Vector, weights::Weight;
     Tb = list(Matrix{Q}, nlv)
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
     Wbl = list(Matrix{Q}, nbl)
-    for k = 1:nbl ; Wbl[k] = similar(Xbl[1], p[k], nlv) ; end
+    for k = 1:nbl ; Wbl[k] = similar(Xbl[1], nco(Xbl[k]), nlv) ; end
     lb = similar(Xbl[1], nbl, nlv)
     mu = similar(Xbl[1], nlv)
     TB = similar(Xbl[1], n, nbl)
     W = similar(Xbl[1], nbl, nlv)
     niter = zeros(nlv)
     # End
+    res = 0
     @inbounds for a = 1:nlv
         X = reduce(hcat, Xbl)
         u .= nipals(X).u
@@ -228,15 +210,12 @@ function comdim!(Xbl::Vector, weights::Weight;
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
     Comdim(T, U, W, Tbl, Tb, Wbl, lb, mu, 
-        bscales, xmeans, xscales, weights, niter,
-        kwargs, par)
+        fm0, weights, niter, kwargs, par)
 end
 
 """ 
-    transf(object::Mbpca, Xbl; 
-        nlv = nothing)
-    transfbl(object::Mbpca, Xbl; 
-        nlv = nothing)
+    transf(object::Comdim, Xbl; nlv = nothing)
+    transfbl(object::Comdim, Xbl; nlv = nothing)
 Compute latent variables (LVs = scores T) from 
     a fitted model.
 * `object` : The fitted model.
@@ -244,28 +223,21 @@ Compute latent variables (LVs = scores T) from
     of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transf(object::Comdim, Xbl; 
-        nlv = nothing)
+function transf(object::Comdim, Xbl; nlv = nothing)
     transf_all(object, Xbl; nlv).T
 end
 
-function transfbl(object::Comdim, Xbl; 
-        nlv = nothing)
+function transfbl(object::Comdim, Xbl; nlv = nothing)
     transf_all(object, Xbl; nlv).Tbl
 end
 
-function transf_all(object::Comdim, Xbl; 
-        nlv = nothing)
+function transf_all(object::Comdim, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
     m = size(Xbl[1], 1)
-    zXbl = list(Matrix{Q}, nbl)
-    Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
-    end
-    zXbl = fblockscal(zXbl, object.bscales).Xbl
+    zXbl = transf(object.fm0, Xbl)    
     U = similar(zXbl[1], m, nlv)
     TB = similar(zXbl[1], m, nbl)
     Tbl = list(Matrix{Q}, nbl)
@@ -302,11 +274,7 @@ function Base.summary(object::Comdim, Xbl)
     nbl = length(Xbl)
     nlv = nco(object.T)
     sqrtw = sqrt.(object.weights.w)
-    zXbl = list(Matrix{Q}, nbl)
-    Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
-    end
-    zXbl = fblockscal(zXbl, object.bscales).Xbl
+    zXbl = transf(object.fm0, Xbl)
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end

@@ -142,7 +142,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     Tb = list(Matrix{Q}, nlv)
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
     Pbl = list(Matrix{Q}, nbl)
-    for k = 1:nbl ; Pbl[k] = similar(Xbl[1], p[k], nlv) ; end
+    for k = 1:nbl ; Pbl[k] = similar(Xbl[1], nco(Xbl[k]), nlv) ; end
     Tx = similar(Xbl[1], n, nlv)
     Wx = similar(Xbl[1], sum(p), nlv)
     Wytild = similar(Xbl[1], q, nlv)

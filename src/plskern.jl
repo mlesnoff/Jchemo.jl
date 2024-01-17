@@ -213,7 +213,7 @@ function coef(object::Union{Plsr, Pcr, Splsr};
     W = Diagonal(object.yscales)
     B = Diagonal(1 ./ object.xscales) * vcol(object.R, 1:nlv) * beta * W
     ## 'int': No correction is needed, since 
-    ## ymeans, xmeans and B are in the original fscale 
+    ## ymeans, xmeans and B are in the original scale 
     int = object.ymeans' .- object.xmeans' * B
     (B = B, int = int)
 end

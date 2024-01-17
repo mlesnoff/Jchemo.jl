@@ -18,15 +18,6 @@ struct Pca
     par::Par
 end
 
-struct Rp
-    T::Matrix
-    P::Union{Matrix, SparseArrays.SparseMatrixCSC}
-    xmeans::Vector
-    xscales::Vector
-    kwargs::Base.Pairs
-    par::Par
-end
-
 struct Spca
     T::Matrix 
     P::Matrix
@@ -58,6 +49,15 @@ struct Kpca
     par::Par
 end
 
+struct Rp
+    T::Matrix
+    P::Union{Matrix, SparseArrays.SparseMatrixCSC}
+    xmeans::Vector
+    xscales::Vector
+    kwargs::Base.Pairs
+    par::Par
+end
+
 struct Fda
     T::Matrix
     P::Matrix
@@ -74,18 +74,6 @@ struct Fda
 end
 
 ## Multiblock
-
-struct Blockscal
-    bscales::Vector
-    xmeans::Vector{Vector}
-    xscales::Vector{Vector}
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Hconcat
-    res::Nothing
-end
 
 struct Cca
     Tx::Matrix
@@ -119,42 +107,6 @@ struct Ccawold
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Weight
-    niter::Vector{Int}
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Comdim
-    T::Matrix 
-    U::Matrix
-    W::Matrix
-    Tbl::Vector{Matrix}
-    Tb::Vector{Matrix}
-    Wbl::Vector{Matrix}
-    lb::Matrix
-    mu::Vector
-    bscales::Vector
-    xmeans::Vector{Vector}
-    xscales::Vector{Vector}
-    weights::Weight
-    niter::Vector{Int}
-    kwargs::Base.Pairs
-    par::Par
-end
-
-struct Mbpca
-    T::Matrix 
-    U::Matrix
-    W::Matrix
-    Tbl::Vector{Matrix}
-    Tb::Vector{Matrix}
-    Wbl::Vector{Matrix}
-    lb::Matrix
-    mu::Vector
-    bscales::Vector
-    xmeans::Vector{Vector}
-    xscales::Vector{Vector}
     weights::Weight
     niter::Vector{Int}
     kwargs::Base.Pairs
@@ -213,6 +165,50 @@ struct Rasvd
     ymeans::Vector
     yscales::Vector
     weights::Weight
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Blockscal
+    bscales::Vector
+    xmeans::Vector{Vector}
+    xscales::Vector{Vector}
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Hconcat
+    res::Nothing
+end
+
+struct Mbpca
+    T::Matrix 
+    U::Matrix
+    W::Matrix
+    Tbl::Vector{Matrix}
+    Tb::Vector{Matrix}
+    Wbl::Vector{Matrix}
+    lb::Matrix
+    mu::Vector
+    fm0::Blockscal
+    weights::Weight
+    niter::Vector{Int}
+    kwargs::Base.Pairs
+    par::Par
+end
+
+struct Comdim
+    T::Matrix 
+    U::Matrix
+    W::Matrix
+    Tbl::Vector{Matrix}
+    Tb::Vector{Matrix}
+    Wbl::Vector{Matrix}
+    lb::Matrix
+    mu::Vector
+    fm0::Blockscal
+    weights::Weight
+    niter::Vector{Int}
     kwargs::Base.Pairs
     par::Par
 end
