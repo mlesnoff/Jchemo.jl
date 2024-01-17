@@ -34,54 +34,23 @@ Types of block scaling:
 
 ## Examples
 ```julia
-using LinearAlgebra
-
 n = 5 ; m = 3 ; p = 10 
 X = rand(n, p) 
 Xnew = rand(m, p)
-
 listbl = [3:4, 1, [6; 8:10]]
 Xbl = mblock(X, listbl) 
 Xblnew = mblock(Xnew, listbl) 
+@head Xbl[3]
 
-Xbl[1]
-Xbl[2]
-Xbl[3]
+centr = true ; scal = true
+bscal = :frob
+mod = blockscal(; centr, scal, bscal)
+fit!(mod, Xbl)
+zXbl = transf(mod, Xbl) ; 
+@head zXbl[3]
 
-bscales = ones(3)
-res = fblockscal(Xbl, bscales) ;
-res.bscales
-res.Xbl[3]
-Xbl[3]
-
-w = ones(n)
-#w = rand(n)
-weights = mweight(w) 
-
-res = fblockscal_frob(Xbl, weights) ;
-res.bscales
-i = 3
-D = Diagonal(weights.w)
-tr(res.Xbl[i]' * D * res.Xbl[i])^.5
-
-res = fblockscal_mfa(Xbl, weights) ;
-i = 3
-res.bscales[i]
-pcasvd(Xbl[i], weights).sv[1]
-
-res = fblockscal_ncol(Xbl) ;
-res.bscales
-i = 3
-res.Xbl[i]
-Xbl[3] / nco(Xbl[3])
-
-res = fblockscal_sd(Xbl, weights) ;
-res.bscales
-i = 3
-sum(colvar(res.Xbl[i], weights))
-
-## To concatenate the returned blocks
-X_concat = reduce(hcat, res.Xbl)
+zXblnew = transf(mod, Xblnew) ; 
+zXblnew[3]
 ```
 """
 function blockscal(Xbl; kwargs...)
