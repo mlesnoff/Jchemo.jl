@@ -23,9 +23,8 @@ Types of block scaling:
     of vector `weights.w`. Each block X is divided by 
     its Frobenius norm  = sqrt(tr(X' * D * X)). After 
     this scaling, tr(X' * D * X) = 1.
-* `mfa` : Each block X is divided by sqrt(lamda),
-    where lambda is the dominant eigenvalue of the
-    centered X (this is the "MFA" approach).
+* `mfa` : Each block X is divided by sv, where sv is the 
+    dominant singular value of X (this is the "MFA" approach).
 * `ncol` : Each block X is divided by the nb. 
     of columns of the block.
 * `sd` : Each block X is divided by 
@@ -104,16 +103,16 @@ function blockscal(Xbl, weights::Weight; kwargs...)
     for k = 1:nbl
         par.centr ? xmeans[k] = colmean(Xbl[k], weights) : xmeans[k] = zeros(Q, nco(Xbl[k]))
         par.scal ? xscales[k] = colstd(Xbl[k], weights) : xscales[k] = ones(Q, nco(Xbl[k]))
+        zX = fcscale(Xbl[k], xmeans[k], xscales[k])
         if bscal == :frob
-            bscales[k] = frob(Xbl[k], weights)
+            bscales[k] = frob(zX, weights)
         elseif bscal == :mfa
             sqrtD = Diagonal(sqrt.(weights.w))
-            par.centr ? zX = copy(Xbl[k]) : zX = fcenter(Xbl[k], zxmeans)
             bscales[k] = nipals(sqrtD * zX).sv
         elseif bscal == :ncol
-            bscales[k] = nco(Xbl[k])
+            bscales[k] = nco(zX)
         elseif bscal == :sd
-            bscales[k] = sqrt(sum(colvar(Xbl[k], weights)))
+            bscales[k] = sqrt(sum(colvar(zX, weights)))
         end
     end
     Blockscal(bscales, xmeans, xscales, kwargs, par)
