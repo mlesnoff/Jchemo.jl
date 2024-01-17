@@ -3,6 +3,7 @@
 ## *Version 0.3.1*
 
 - New 
+    - **hconcat** Transformer contatenating multi-block X-data.
     - **mbplsrda** Discrimination based on multiblock partial 
         least squares regression (MBPLSR-DA).
 
