@@ -30,6 +30,7 @@ include("utility_colwise.jl")
 include("utility_rowwise.jl")
 include("utility_scale.jl")
 include("utility_mb.jl")
+include("angles.jl")
 include("colmedspa.jl")
 include("fweight.jl") 
 include("ellipse.jl")
@@ -56,15 +57,15 @@ include("dmnormlog.jl")
 include("dmkern.jl")
 
 ######---- Exploratory
-include("fda.jl")     # Here since ::Fda called in pcasvd
+include("fda.jl")  # Here since ::Fda called in pcasvd
 include("fdasvd.jl")     
 include("pcasvd.jl")
 include("pcaeigen.jl")
 include("pcaeigenk.jl")
 include("pcanipals.jl")
 include("pcanipalsmiss.jl")
-include("kpca.jl")
 include("pcasph.jl") 
+include("kpca.jl")
 include("rpmat.jl")
 include("rp.jl")
 
@@ -72,14 +73,14 @@ include("rp.jl")
 include("spca.jl")
 
 ## Multiblock 
-include("angles.jl")
-include("mbpca.jl")
-include("comdim.jl")
+include("hconcat.jl")
 include("cca.jl")
 include("ccawold.jl")
 include("plscan.jl")
 include("plstuck.jl")
 include("rasvd.jl")
+include("mbpca.jl")
+include("comdim.jl")
 
 ######---- Regression 
 include("aov1.jl")
@@ -286,24 +287,25 @@ export
     difmean,
     eposvd,
     ######---- Exploratory
-    kpca,
     pcasvd, pcasvd!, 
     pcaeigen, pcaeigen!, 
     pcaeigenk, pcaeigenk!,
     pcanipals, pcanipals!,
     pcanipalsmiss, pcanipalsmiss!,
-    rpmatgauss, rpmatli, rp, rp!,
     pcasph, pcasph!,
     spca, spca!,
+    kpca,
+    rpmatgauss, rpmatli, rp, rp!,
     ## Multiblock
     rv, lg, rd, 
-    mbpca, mbpca!,
-    comdim, comdim!, 
+    hconcat,
     cca, cca!,
     ccawold, ccawold!,
     plscan, plscan!,
     plstuck, plstuck!,
     rasvd, rasvd!,
+    mbpca, mbpca!,
+    comdim, comdim!, 
     ######---- Regression
     aov1,
     mlr, mlr!, mlrchol, mlrchol!, 

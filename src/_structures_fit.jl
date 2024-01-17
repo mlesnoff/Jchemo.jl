@@ -83,6 +83,10 @@ struct Blockscal
     par::Par
 end
 
+struct Hconcat
+    res::Nothing
+end
+
 struct Cca
     Tx::Matrix
     Ty::Matrix
