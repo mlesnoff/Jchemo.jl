@@ -17,14 +17,14 @@ Xbl = mblock(X, listbl)
 Xblnew = mblock(Xnew, listbl) 
 @head Xbl[3]
 
-mod = hconcat()
+mod = hconcat() 
 fit!(mod, Xbl)
-transf(Xbl)
-transf(Xblnew)
+transf(mod, Xbl)
+transf(mod, Xblnew)
 ```
 """
 function hconcat(Xbl)
-    Hconcat(Nothing)
+    Hconcat(nothing)
 end
 
 """ 
