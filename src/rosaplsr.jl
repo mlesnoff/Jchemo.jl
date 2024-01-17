@@ -92,20 +92,9 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     nlv = par.nlv
     nbl = length(Xbl)
     D = Diagonal(weights.w)
-    xmeans = list(Vector{Q}, nbl)
-    xscales = list(Vector{Q}, nbl)
-    p = fill(0, nbl)
-    Threads.@threads for k = 1:nbl
-        p[k] = nco(Xbl[k])
-        xmeans[k] = colmean(Xbl[k], weights) 
-        xscales[k] = ones(Q, nco(Xbl[k]))
-        if par.scal 
-            xscales[k] = colstd(Xbl[k], weights)
-            fcscale!(Xbl[k], xmeans[k], xscales[k])
-        else
-            fcenter!(Xbl[k], xmeans[k])
-        end
-    end
+    fmsc = blockscal(Xbl, weights; bscal = :none,  
+        centr = true, scal = par.scal)
+    transf!(fmsc, Xbl)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
     if par.scal 
@@ -114,6 +103,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(Y, ymeans)
     end
+    p = [nco(Xbl[k]) for k = 1:nbl]
     ## Pre-allocation
     W = similar(Xbl[1], sum(p), nlv)
     P = copy(W)
@@ -207,7 +197,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         W[:, a] .= reduce(vcat, z .* wbl)
     end
     R = W * inv(P' * W)
-    Rosaplsr(T, P, R, W, C, TT, xmeans, xscales, 
+    Rosaplsr(T, P, R, W, C, TT, fmsc, 
         ymeans, yscales, weights, bl, kwargs, par)
 end
 
@@ -222,12 +212,7 @@ Compute latent variables (LVs = scores T) from a fitted model.
 function transf(object::Rosaplsr, Xbl; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    nbl = length(object.xmeans)
-    Q = eltype(Xbl[1][1, 1])
-    zXbl = list(Matrix{Q}, nbl)
-    Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
-    end
+    zXbl = transf(object.fmsc, Xbl)
     reduce(hcat, zXbl) * vcol(object.R, 1:nlv)
 end
 
@@ -240,9 +225,9 @@ Compute the X b-coefficients of a model fitted with `nlv` LVs.
 function coef(object::Rosaplsr; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    zxmeans = reduce(vcat, object.xmeans)
+    zxmeans = reduce(vcat, object.fmsc.xmeans)
     beta = object.C[:, 1:nlv]'
-    xscales = reduce(vcat, object.xscales)
+    xscales = reduce(vcat, object.fmsc.xscales)
     W = Diagonal(object.yscales)
     B = Diagonal(1 ./ xscales) * vcol(object.R, 1:nlv) * beta * W
     int = object.ymeans' .- zxmeans' * B
