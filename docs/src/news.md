@@ -4,6 +4,7 @@
 
 - New 
     - **hconcat** Transformer contatenating multi-block X-data.
+    - **blockscal** Scaling of multiblock X-data.
     - **mbplsrda** Discrimination based on multiblock partial 
         least squares regression (MBPLSR-DA).
 
