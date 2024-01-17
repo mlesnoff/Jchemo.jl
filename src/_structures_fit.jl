@@ -190,7 +190,7 @@ struct Mbpca
     Wbl::Vector{Matrix}
     lb::Matrix
     mu::Vector
-    fm0::Blockscal
+    fmsc::Blockscal
     weights::Weight
     niter::Vector{Int}
     kwargs::Base.Pairs
@@ -206,7 +206,7 @@ struct Comdim
     Wbl::Vector{Matrix}
     lb::Matrix
     mu::Vector
-    fm0::Blockscal
+    fmsc::Blockscal
     weights::Weight
     niter::Vector{Int}
     kwargs::Base.Pairs
@@ -418,9 +418,7 @@ struct Mbplsr
     T::Matrix
     R::Matrix
     C::Matrix
-    bscales::Vector
-    xmeans::Vector{Vector}
-    xscales::Vector{Vector}
+    fmsc::Blockscal
     ymeans::Vector
     yscales::Vector
     weights::Weight
@@ -438,9 +436,7 @@ struct Mbplswest            # Used for mbplswest, mbwcov
     Tb::Vector{Matrix}
     Pbl::Vector{Matrix}
     TT::Vector
-    bscales::Vector
-    xmeans::Vector{Vector}
-    xscales::Vector{Vector}
+    fmsc::Blockscal
     ymeans::Vector
     yscales::Vector
     weights::Weight
@@ -457,8 +453,7 @@ struct Rosaplsr
     W::Matrix
     C::Matrix
     TT::Vector
-    xmeans::Vector{Vector}
-    xscales::Vector{Vector}
+    fmsc::Blockscal
     ymeans::Vector
     yscales::Vector
     weights::Weight
@@ -472,7 +467,7 @@ struct Soplsr
     T::Matrix
     fit::Matrix
     b::Vector
-    xscales::Vector{Vector}
+    fmsc::Blockscal    
     yscales::Vector
     kwargs::Base.Pairs
     par::Par

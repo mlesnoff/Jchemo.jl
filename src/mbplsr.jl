@@ -11,8 +11,8 @@ Multiblock PLSR (MBPLSR).
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
     * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-    * `bscal` : Type of block scaling. Possible values are:
-        `:none`, `:frob`. See functions `blockscal`.
+    * `bscal` : Type of block scaling. See function `blockscal`
+        for possible values.
     * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
         and `Y` is scaled by its uncorrected standard deviation 
         (before the block scaling).
@@ -34,8 +34,8 @@ y = Y.c1
 group = dat.group
 listbl = [1:11, 12:19, 20:25]
 s = 1:6
-Xbl_train = mblock(X[s, :], listbl)
-Xbl_test = mblock(rmrow(X, s), listbl)
+Xbltrain = mblock(X[s, :], listbl)
+Xbltest = mblock(rmrow(X, s), listbl)
 ytrain = y[s]
 ytest = rmrow(y, s) 
 ntrain = nro(ytrain) 
@@ -47,20 +47,19 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-mod = mbplsr(; nlv, 
-    bscal, scal)
-fit!(mod, Xbl_train, ytrain)
+mod = mbplsr(; nlv, bscal, scal)
+fit!(mod, Xbltrain, ytrain)
 pnames(mod) 
 pnames(mod.fm)
 @head mod.fm.T
-@head transf(mod, Xbl_train)
-transf(mod, Xbl_test)
+@head transf(mod, Xbltrain)
+transf(mod, Xbltest)
 
-res = predict(mod, Xbl_test)
+res = predict(mod, Xbltest)
 res.pred 
 rmsep(res.pred, ytest)
 
-res = summary(mod, Xbl_train) ;
+res = summary(mod, Xbltrain) ;
 pnames(res) 
 res.explvarx
 res.corx2t 
@@ -86,22 +85,12 @@ end
 
 function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
-    @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
-    nbl = length(Xbl)
     q = nco(Y)
-    xmeans = list(Vector{Q}, nbl)
-    xscales = list(Vector{Q}, nbl)
-    Threads.@threads for k = 1:nbl
-        xmeans[k] = colmean(Xbl[k], weights) 
-        xscales[k] = ones(Q, nco(Xbl[k]))
-        if par.scal 
-            xscales[k] = colstd(Xbl[k], weights)
-            fcscale!(Xbl[k], xmeans[k], xscales[k])
-        else
-            fcenter!(Xbl[k], xmeans[k])
-        end
-    end
+    fmsc = blockscal(Xbl, weights; bscal = par.bscal,  
+        centr = true, scal = par.scal)
+    transf!(fmsc, Xbl)
+    X = reduce(hcat, Xbl)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
     if par.scal 
@@ -110,16 +99,8 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(Y, ymeans)
     end
-    par.bscal == :none ? bscales = ones(nbl) : nothing
-    if par.bscal == :frob
-        res = fblockscal_frob(Xbl, weights) 
-        bscales = res.bscales
-        Xbl = res.Xbl
-    end
-    X = reduce(hcat, Xbl)
     fm = plskern(X, Y, weights; nlv = par.nlv, scal = false)
-    Mbplsr(fm, fm.T, fm.R, fm.C, 
-        bscales, xmeans, xscales, ymeans, yscales, 
+    Mbplsr(fm, fm.T, fm.R, fm.C, fmsc, ymeans, yscales, 
         weights, kwargs, par)
 end
 
@@ -132,16 +113,10 @@ Compute latent variables (LVs = scores T) from a fitted model.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transf(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
-    Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    nbl = length(Xbl)
-    zXbl = list(Matrix{Q}, nbl)
-    Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
-    end
-    res = fblockscal(zXbl, object.bscales)
-    reduce(hcat, res.Xbl) * vcol(object.R, 1:nlv) 
+    zXbl = transf(object.fmsc, Xbl)    
+    reduce(hcat, zXbl) * vcol(object.R, 1:nlv) 
 end
 
 """
@@ -182,11 +157,7 @@ function Base.summary(object::Mbplsr, Xbl)
     n, nlv = size(object.T)
     nbl = length(Xbl)
     sqrtw = sqrt.(object.weights.w)
-    zXbl = list(Matrix{Q}, nbl)
-    Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
-    end
-    zXbl = fblockscal(zXbl, object.bscales).Xbl
+    zXbl = transf(object.fmsc, Xbl)
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end

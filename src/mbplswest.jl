@@ -11,8 +11,8 @@ Multiblock PLSR (MBPLSR) - Nipals algorithm.
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
     * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-    * `bscal` : Type of block scaling. Possible values are:
-        `:none`, `:frob`. See functions `blockscal`.
+    * `bscal` : Type of block scaling. See function `blockscal`
+        for possible values.
     * `tol` : Tolerance value for convergence (Nipals).
     * `maxit` : Maximum number of iterations (Nipals).
     * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
@@ -42,8 +42,8 @@ y = Y.c1
 group = dat.group
 listbl = [1:11, 12:19, 20:25]
 s = 1:6
-Xbl_train = mblock(X[s, :], listbl)
-Xbl_test = mblock(rmrow(X, s), listbl)
+Xbltrain = mblock(X[s, :], listbl)
+Xbltest = mblock(rmrow(X, s), listbl)
 ytrain = y[s]
 ytest = rmrow(y, s) 
 ntrain = nro(ytrain) 
@@ -55,20 +55,19 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-mod = mbplswest(; nlv, 
-    bscal, scal)
-fit!(mod, Xbl_train, ytrain)
+mod = mbplswest(; nlv, bscal, scal)
+fit!(mod, Xbltrain, ytrain)
 pnames(mod) 
 pnames(mod.fm)
 @head mod.fm.T
-@head transf(mod, Xbl_train)
-transf(mod, Xbl_test)
+@head transf(mod, Xbltrain)
+transf(mod, Xbltest)
 
-res = predict(mod, Xbl_test)
+res = predict(mod, Xbltest)
 res.pred 
 rmsep(res.pred, ytest)
 
-res = summary(mod, Xbl_train) ;
+res = summary(mod, Xbltrain) ;
 pnames(res) 
 res.explvarx
 res.corx2t 
@@ -102,20 +101,10 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     q = nco(Y)
     nlv = par.nlv
     sqrtw = sqrt.(weights.w)
-    xmeans = list(Vector{Q}, nbl)
-    xscales = list(Vector{Q}, nbl)
-    p = fill(0, nbl)
-    Threads.@threads for k = 1:nbl
-        p[k] = nco(Xbl[k])
-        xmeans[k] = colmean(Xbl[k], weights) 
-        xscales[k] = ones(Q, nco(Xbl[k]))
-        if par.scal 
-            xscales[k] = colstd(Xbl[k], weights)
-            fcscale!(Xbl[k], xmeans[k], xscales[k])
-        else
-            fcenter!(Xbl[k], xmeans[k])
-        end
-    end
+    fmsc = blockscal(Xbl, weights; bscal = par.bscal,  
+        centr = true, scal = par.scal)
+    transf!(fmsc, Xbl)
+    X = reduce(hcat, Xbl)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
     if par.scal 
@@ -124,14 +113,10 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(Y, ymeans)
     end
-    par.bscal == :none ? bscales = ones(Q, nbl) : nothing
-    if par.bscal == :frob
-        res = fblockscal_frob(Xbl, weights) 
-        bscales = res.bscales
-        Xbl = res.Xbl
-    end
     # Row metric
+    p = list(Int, nbl)
     @inbounds for k = 1:nbl
+        p[k] = nco(Xbl[k])
         Xbl[k] .= sqrtw .* Xbl[k]
     end
     Y .= sqrtw .* Y
@@ -210,7 +195,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     Rx = Wx * inv(Px' * Wx)
     lb = nothing
     Mbplswest(Tx, Px, Rx, Wx, Wytild, Tbl, Tb, Pbl, TTx,    
-        bscales, xmeans, xscales, ymeans, yscales, weights, 
+        fmsc, ymeans, yscales, weights, 
         lb, niter, kwargs, par)
 end
 
@@ -226,11 +211,7 @@ function Base.summary(object::Mbplswest, Xbl)
     n, nlv = size(object.T)
     nbl = length(Xbl)
     sqrtw = sqrt.(object.weights.w)
-    zXbl = list(Matrix{Q}, nbl)
-    Threads.@threads for k = 1:nbl
-        zXbl[k] = fcscale(Xbl[k], object.xmeans[k], object.xscales[k])
-    end
-    zXbl = fblockscal(zXbl, object.bscales).Xbl
+    zXbl = transf(object.fmsc, Xbl)
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end

@@ -228,8 +228,8 @@ plotxy(vec(pred), ytest; color = (:red, .5),
 
 ####-- Mbplsr
 listbl = [1:525, 526:1050]
-Xbl_train = mblock(Xtrain, listbl)
-Xbl_test = mblock(Xtest, listbl) 
+Xbltrain = mblock(Xtrain, listbl)
+Xbltest = mblock(Xtest, listbl) 
 Xbl_cal = mblock(Xcal, listbl) 
 Xbl_val = mblock(Xval, listbl) 
 
@@ -246,8 +246,8 @@ u = findall(res.y1 .== minimum(res.y1))[1]
 res[u, :]
 mod = mbplsr(bscal = res.bscal[u], 
     nlv = res.nlv[u])
-fit!(mod, Xbl_train, ytrain)
-pred = predict(mod, Xbl_test).pred
+fit!(mod, Xbltrain, ytrain)
+pred = predict(mod, Xbltest).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 

@@ -11,8 +11,8 @@ Multiblock sequentially orthogonalized PLSR (SO-PLSR).
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
     * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-    * `bscal` : Type of block scaling. Possible values are:
-        `:none`, `:frob`. See functions `blockscal`.
+    * `bscal` : Type of block scaling. See function `blockscal`
+        for possible values.
     * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
         and `Y` is scaled by its uncorrected standard deviation 
         (before the block scaling).
@@ -42,8 +42,8 @@ y = Y.c1
 group = dat.group
 listbl = [1:11, 12:19, 20:25]
 s = 1:6
-Xbl_train = mblock(X[s, :], listbl)
-Xbl_test = mblock(rmrow(X, s), listbl)
+Xbltrain = mblock(X[s, :], listbl)
+Xbltest = mblock(rmrow(X, s), listbl)
 ytrain = y[s]
 ytest = rmrow(y, s) 
 ntrain = nro(ytrain) 
@@ -57,14 +57,14 @@ nlv = 2
 scal = false
 #scal = true
 mod = soplsr(; nlv, scal)
-fit!(mod, Xbl_train, ytrain)
+fit!(mod, Xbltrain, ytrain)
 pnames(mod) 
 pnames(mod.fm)
 @head mod.fm.T
-@head transf(mod, Xbl_train)
-transf(mod, Xbl_test)
+@head transf(mod, Xbltrain)
+transf(mod, Xbltest)
 
-res = predict(mod, Xbl_test)
+res = predict(mod, Xbltest)
 res.pred 
 rmsep(res.pred, ytest)
 ```

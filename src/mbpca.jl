@@ -10,8 +10,8 @@ Consensus principal components analysis (CPCA = MBPCA).
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-* `bscal` : Type of block scaling. See function `blockscal`
-    for possible values.
+    * `bscal` : Type of block scaling. See function `blockscal`
+        for possible values.
 * `tol` : Tolerance value for Nipals convergence.
 * `maxit` : Maximum number of iterations (Nipals).
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
@@ -129,9 +129,9 @@ function mbpca!(Xbl::Vector, weights::Weight;
     n = nro(Xbl[1])
     nlv = par.nlv
     sqrtw = sqrt.(weights.w)
-    fm0 = blockscal(Xbl, weights; bscal = par.bscal,  
+    fmsc = blockscal(Xbl, weights; bscal = par.bscal,  
         centr = true, scal = par.scal)
-    transf!(fm0, Xbl)
+    transf!(fmsc, Xbl)
     # Row metric
     @inbounds for k = 1:nbl
         Xbl[k] = sqrtw .* Xbl[k]
@@ -189,7 +189,7 @@ function mbpca!(Xbl::Vector, weights::Weight;
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
     Mbpca(T, U, W, Tbl, Tb, Wbl, lb, mu,
-        fm0, weights, niter, kwargs, par)
+        fmsc, weights, niter, kwargs, par)
 end
 
 """ 
@@ -216,7 +216,7 @@ function transf_all(object::Mbpca, Xbl; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
     m = size(Xbl[1], 1)
-    zXbl = transf(object.fm0, Xbl)
+    zXbl = transf(object.fmsc, Xbl)
     U = similar(zXbl[1], m, nlv)
     TB = similar(zXbl[1], m, nbl)
     Tbl = list(Matrix{Q}, nbl)
@@ -252,7 +252,7 @@ function Base.summary(object::Mbpca, Xbl)
     nbl = length(Xbl)
     nlv = nco(object.T)
     sqrtw = sqrt.(object.weights.w)
-    zXbl = transf(object.fm0, Xbl)
+    zXbl = transf(object.fmsc, Xbl)
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end

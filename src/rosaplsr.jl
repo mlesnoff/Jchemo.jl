@@ -42,8 +42,8 @@ y = Y.c1
 group = dat.group
 listbl = [1:11, 12:19, 20:25]
 s = 1:6
-Xbl_train = mblock(X[s, :], listbl)
-Xbl_test = mblock(rmrow(X, s), listbl)
+Xbltrain = mblock(X[s, :], listbl)
+Xbltest = mblock(rmrow(X, s), listbl)
 ytrain = y[s]
 ytest = rmrow(y, s) 
 ntrain = nro(ytrain) 
@@ -55,14 +55,14 @@ nlv = 3
 scal = false
 #scal = true
 mod = rosaplsr(; nlv, scal)
-fit!(mod, Xbl_train, ytrain)
+fit!(mod, Xbltrain, ytrain)
 pnames(mod) 
 pnames(mod.fm)
 @head mod.fm.T
-@head transf(mod, Xbl_train)
-transf(mod, Xbl_test)
+@head transf(mod, Xbltrain)
+transf(mod, Xbltest)
 
-res = predict(mod, Xbl_test)
+res = predict(mod, Xbltest)
 res.pred 
 rmsep(res.pred, ytest)
 ```
@@ -81,8 +81,7 @@ function rosaplsr(Xbl, Y, weights::Weight; kwargs...)
     @inbounds for k = 1:nbl
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    rosaplsr!(zXbl, copy(ensure_mat(Y)), 
-        weights; kwargs...)
+    rosaplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)

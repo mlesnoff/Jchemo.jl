@@ -12,8 +12,8 @@ Discrimination based on multiblock partial least squares
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
     * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-    * `bscal` : Type of block scaling. Possible values are:
-        `:none`, `:frob`. See functions `blockscal`.
+    * `bscal` : Type of block scaling. See function `blockscal`
+        for possible values.
     * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
         is scaled by its uncorrected standard deviation 
         (before the block scaling).
@@ -44,8 +44,8 @@ wl = parse.(Float64, wlst)
 #plotsp(X, wl; nsamp = 20).f
 ##
 listbl = [1:350, 351:700]
-Xbl_train = mblock(Xtrain, listbl)
-Xbl_test = mblock(Xtest, listbl) 
+Xbltrain = mblock(Xtrain, listbl)
+Xbltest = mblock(Xtest, listbl) 
 
 nlv = 15
 scal = false
@@ -53,20 +53,20 @@ scal = false
 bscal = :none
 #bscal = :frob
 mod = mbplsrda(; nlv, bscal, scal)
-fit!(mod, Xbl_train, ytrain) 
+fit!(mod, Xbltrain, ytrain) 
 pnames(mod) 
 
 @head mod.fm.fm.T 
-@head transf(mod, Xbl_train)
+@head transf(mod, Xbltrain)
 
-@head transf(mod, Xbl_test)
+@head transf(mod, Xbltest)
 
-res = predict(mod, Xbl_test) ; 
+res = predict(mod, Xbltest) ; 
 @head res.pred 
 @show errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
-predict(mod, Xbl_test; nlv = 1:2).pred
+predict(mod, Xbltest; nlv = 1:2).pred
 ```
 """
 function mbplsrda(Xbl, y; kwargs...)
