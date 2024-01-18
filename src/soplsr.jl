@@ -96,14 +96,9 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     nlv = par.nlv
     length(nlv) == 1 ? nlv = repeat([nlv], nbl) : nothing  
     D = Diagonal(weights.w)
-    xscales = list(Vector{Q}, nbl)
-    Threads.@threads for k = 1:nbl
-        xscales[k] = ones(Q, nco(Xbl[k]))
-        if par.scal 
-            xscales[k] = colstd(Xbl[k], weights)
-            fscale!(Xbl[k], xscales[k])
-        end
-    end
+    fmsc = blockscal(Xbl, weights; bscal = :none,  
+        centr = false, scal = par.scal)
+    transf!(fmsc, Xbl)
     yscales = ones(Q, q)
     if par.scal 
         yscales .= colstd(Y, weights)
@@ -128,8 +123,7 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
             fit .+= predict(fm[i], X).pred 
         end
     end
-    Soplsr(fm, T, fit, b, xscales, yscales, 
-        kwargs, par)
+    Soplsr(fm, T, fit, b, fmsc, yscales, kwargs, par)
 end
 
 """ 
@@ -140,12 +134,8 @@ Compute latent variables (LVs = scores T) from a fitted model.
     of X-data for which LVs are computed.
 """ 
 function transf(object::Soplsr, Xbl)
-    Q = eltype(Xbl[1][1, 1])
-    nbl = length(object.fm)
-    zXbl = list(Matrix{Q}, nbl)
-    Threads.@threads for k = 1:nbl
-        zXbl[k] = fscale(Xbl[k], object.xscales[k])
-    end
+    nbl = length(Xbl)
+    zXbl = transf(object.fmsc, Xbl)   
     T = transf(object.fm[1], zXbl[1])
     if nbl > 1
         @inbounds for i = 2:nbl
@@ -164,12 +154,8 @@ Compute Y-predictions from a fitted model.
     of X-data for which predictions are computed.
 """ 
 function predict(object::Soplsr, Xbl)
-    Q = eltype(Xbl[1][1, 1])
-    nbl = length(object.fm)
-    zXbl = list(Matrix{Q}, nbl)
-    Threads.@threads for k = 1:nbl
-        zXbl[k] = fscale(Xbl[k], object.xscales[k])
-    end
+    nbl = length(Xbl)
+    zXbl = transf(object.fmsc, Xbl)   
     T = transf(object.fm[1], zXbl[1])
     pred =  object.fm[1].ymeans' .+ T * object.fm[1].C'
     if nbl > 1
