@@ -101,8 +101,8 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     q = nco(Y)
     nlv = par.nlv
     sqrtw = sqrt.(weights.w)
-    fmsc = blockscal(Xbl, weights; bscal = par.bscal,  
-        centr = true, scal = par.scal)
+    fmsc = blockscal(Xbl, weights; bscal = par.bscal, centr = true, 
+        scal = par.scal)
     transf!(fmsc, Xbl)
     X = reduce(hcat, Xbl)
     ymeans = colmean(Y, weights)
