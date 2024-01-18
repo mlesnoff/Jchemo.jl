@@ -228,8 +228,6 @@ export
     dupl, miss,
     ensure_df, ensure_mat,
     fblockscal, fblockscal!,
-    fblockscal_frob, fblockscal_mfa,
-    fblockscal_ncol, fblockscal_sd,
     fcenter, fcenter!, 
     fcscale, fcscale!, 
     findmax_cla, 
