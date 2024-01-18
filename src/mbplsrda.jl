@@ -58,7 +58,6 @@ pnames(mod)
 
 @head mod.fm.fm.T 
 @head transf(mod, Xbltrain)
-
 @head transf(mod, Xbltest)
 
 res = predict(mod, Xbltest) ; 
