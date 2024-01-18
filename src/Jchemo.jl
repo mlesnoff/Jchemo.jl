@@ -37,13 +37,16 @@ include("ellipse.jl")
 include("matW.jl")
 include("nipals.jl")
 include("nipalsmiss.jl")
-include("preprocessing.jl") 
-include("preprocessing_scale.jl") 
-include("preprocessing_scale_mb.jl") 
-include("rmgap.jl")
 include("snipals.jl")
 include("snipalsh.jl")
 include("snipalsmix.jl")
+
+######---- Preprocessing
+
+include("preprocessing.jl") 
+include("preprocessing_scale.jl") 
+include("blockscal.jl") 
+include("rmgap.jl")
 
 ######---- Graphics
 include("plotsp.jl")
