@@ -11,12 +11,12 @@ Discrimination based on multiblock partial least squares
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-    * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-    * `bscal` : Type of block scaling. See function `blockscal`
-        for possible values.
-    * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
-        is scaled by its uncorrected standard deviation 
-        (before the block scaling).
+* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `bscal` : Type of block scaling. See function `blockscal`
+    for possible values.
+* `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
+    and `Y` is scaled by its uncorrected standard deviation 
+    (before the block scaling).
 
 This is the same principle as function `plsrda`, for multiblock X-data.
 

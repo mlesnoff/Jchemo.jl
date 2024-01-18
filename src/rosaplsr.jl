@@ -10,10 +10,10 @@ Multiblock ROSA PLSR (Liland et al. 2016).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-    * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-    * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
-        and `Y` is scaled by its uncorrected standard deviation 
-        (before the block scaling).
+* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
+    and `Y` is scaled by its uncorrected standard deviation 
+    (before the block scaling).
 
 The function has the following differences with the 
 original algorithm of Liland et al. (2016):
@@ -92,8 +92,8 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     nlv = par.nlv
     nbl = length(Xbl)
     D = Diagonal(weights.w)
-    fmsc = blockscal(Xbl, weights; bscal = :none,  
-        centr = true, scal = par.scal)
+    fmsc = blockscal(Xbl, weights; bscal = :none, centr = true, 
+        scal = par.scal)
     transf!(fmsc, Xbl)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)

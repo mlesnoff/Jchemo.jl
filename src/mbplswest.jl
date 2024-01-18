@@ -10,14 +10,14 @@ Multiblock PLSR (MBPLSR) - Nipals algorithm.
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-    * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-    * `bscal` : Type of block scaling. See function `blockscal`
-        for possible values.
-    * `tol` : Tolerance value for convergence (Nipals).
-    * `maxit` : Maximum number of iterations (Nipals).
-    * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
-        and `Y` is scaled by its uncorrected standard deviation 
-        (before the block scaling).
+* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `bscal` : Type of block scaling. See function `blockscal`
+    for possible values.
+* `tol` : Tolerance value for convergence (Nipals).
+* `maxit` : Maximum number of iterations (Nipals).
+* `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
+    and `Y` is scaled by its uncorrected standard deviation 
+    (before the block scaling).
 
 This functions implements the MBPLSR Nipals algorithm such 
 as in Westerhuis et al. 1998. The function gives the same 

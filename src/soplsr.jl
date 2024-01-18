@@ -10,12 +10,12 @@ Multiblock sequentially orthogonalized PLSR (SO-PLSR).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-    * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-    * `bscal` : Type of block scaling. See function `blockscal`
-        for possible values.
-    * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
-        and `Y` is scaled by its uncorrected standard deviation 
-        (before the block scaling).
+* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `bscal` : Type of block scaling. See function `blockscal`
+    for possible values.
+* `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
+    and `Y` is scaled by its uncorrected standard deviation 
+    (before the block scaling).
 
 ## References
 Biancolillo et al. , 2015. Combining SO-PLS and linear 
@@ -96,8 +96,8 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     nlv = par.nlv
     length(nlv) == 1 ? nlv = repeat([nlv], nbl) : nothing  
     D = Diagonal(weights.w)
-    fmsc = blockscal(Xbl, weights; bscal = :none,  
-        centr = false, scal = par.scal)
+    fmsc = blockscal(Xbl, weights; bscal = :none, centr = false, 
+        scal = par.scal)
     transf!(fmsc, Xbl)
     yscales = ones(Q, q)
     if par.scal 

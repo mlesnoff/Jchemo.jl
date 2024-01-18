@@ -10,12 +10,12 @@ Multiblock PLSR (MBPLSR).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-    * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-    * `bscal` : Type of block scaling. See function `blockscal`
-        for possible values.
-    * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
-        and `Y` is scaled by its uncorrected standard deviation 
-        (before the block scaling).
+* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `bscal` : Type of block scaling. See function `blockscal`
+    for possible values.
+* `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
+    and `Y` is scaled by its uncorrected standard deviation 
+    (before the block scaling).
 
 This function runs a PLSR on {X, `Y`} where X is the horizontal 
 concatenation of the blocks in `Xbl`. The function gives the 
@@ -87,8 +87,8 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(Xbl[1][1, 1])
     q = nco(Y)
-    fmsc = blockscal(Xbl, weights; bscal = par.bscal,  
-        centr = true, scal = par.scal)
+    fmsc = blockscal(Xbl, weights; bscal = par.bscal, centr = true, 
+        scal = par.scal)
     transf!(fmsc, Xbl)
     X = reduce(hcat, Xbl)
     ymeans = colmean(Y, weights)

@@ -8,8 +8,9 @@ Common components and specific weights analysis (ComDim, *aka* CCSWA).
     Typically, output of function `mblock`.  
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
+Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-    * `bscal` : Type of block scaling. See function `blockscal`
+* `bscal` : Type of block scaling. See function `blockscal`
         for possible values.
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
