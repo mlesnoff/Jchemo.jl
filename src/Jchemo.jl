@@ -44,7 +44,7 @@ include("snipalsmix.jl")
 ######---- Preprocessing
 
 include("preprocessing.jl") 
-include("preprocessing_scale.jl") 
+include("scale.jl") 
 include("blockscal.jl") 
 include("rmgap.jl")
 
