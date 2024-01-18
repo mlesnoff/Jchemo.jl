@@ -42,7 +42,6 @@ include("snipalsh.jl")
 include("snipalsmix.jl")
 
 ######---- Preprocessing
-
 include("preprocessing.jl") 
 include("scale.jl") 
 include("blockscal.jl") 
@@ -76,7 +75,7 @@ include("rp.jl")
 include("spca.jl")
 
 ## Multiblock 
-include("hconcat.jl")
+include("mbconcat.jl")
 include("cca.jl")
 include("ccawold.jl")
 include("plscan.jl")
@@ -299,7 +298,7 @@ export
     rpmatgauss, rpmatli, rp, rp!,
     ## Multiblock
     rv, lg, rd, 
-    hconcat,
+    mbconcat,
     cca, cca!,
     ccawold, ccawold!,
     plscan, plscan!,

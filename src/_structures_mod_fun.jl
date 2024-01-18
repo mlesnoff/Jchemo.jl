@@ -26,10 +26,10 @@ plscan(; kwargs...) = Transformer{Function, Plscan, Base.Pairs}(plscan, nothing,
 plstuck(; kwargs...) = Transformer{Function, Plstuck, Base.Pairs}(plstuck, nothing, kwargs)
 rasvd(; kwargs...) = Transformer{Function, Rasvd, Base.Pairs}(rasvd, nothing, kwargs)
 ##
-hconcat(; kwargs...) = Transformer{Function, Hconcat, Base.Pairs}(hconcat, nothing, kwargs)
+mbconcat(; kwargs...) = Transformer{Function, Mbconcat, Base.Pairs}(mbconcat, nothing, kwargs)
 mbpca(; kwargs...) = Transformer{Function, Mbpca, Base.Pairs}(mbpca, nothing, kwargs)
 comdim(; kwargs...) = Transformer{Function, Comdim, Base.Pairs}(comdim, nothing, kwargs)
-## Future: Could be a type TransformerY
+## Future: Could be a type TransformerXY
 fda(; kwargs...) = Predictor{Function, Fda, Base.Pairs}(fda, nothing, kwargs)
 fdasvd(; kwargs...) = Predictor{Function, Fda, Base.Pairs}(fdasvd, nothing, kwargs)
 ##

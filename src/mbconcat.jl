@@ -1,8 +1,8 @@
 
 
 """
-    hconcat()
-    hconcat(Xbl)
+    mbconcat()
+    mbconcat(Xbl)
 Concatenate horizontaly multiblock X-data.
 * `Xbl` : List of blocks (vector of matrices) of X-data 
     Typically, output of function `mblock` from (n, p) data.  
@@ -17,24 +17,24 @@ Xbl = mblock(X, listbl)
 Xblnew = mblock(Xnew, listbl) 
 @head Xbl[3]
 
-mod = hconcat() 
+mod = mbconcat() 
 fit!(mod, Xbl)
 transf(mod, Xbl)
 transf(mod, Xblnew)
 ```
 """
-function hconcat(Xbl)
-    Hconcat(nothing)
+function mbconcat(Xbl)
+    Mbconcat(nothing)
 end
 
 """ 
-    transf(object::Hconcat, Xbl)
+    transf(object::Mbconcat, Xbl)
 Compute the preprocessed data from a model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 
     of X-data for which LVs are computed.
 """ 
-transf(object::Hconcat, Xbl) = reduce(hcat, Xbl)
+transf(object::Mbconcat, Xbl) = reduce(hcat, Xbl)
 
 
 

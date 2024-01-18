@@ -177,7 +177,7 @@ struct Blockscal
     par::Par
 end
 
-struct Hconcat
+struct Mbconcat
     res::Nothing
 end
 

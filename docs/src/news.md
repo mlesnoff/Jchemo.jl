@@ -2,6 +2,15 @@
 
 ## *Version 0.3.1*
 
+- Modifications
+    - Code improvement. 
+
+- Breaking
+    - **hconcat** renamed to **mbconcat**
+
+
+## *Version 0.3.1*
+
 - New 
     - **hconcat** Transformer contatenating multi-block X-data.
     - **blockscal** Scaling of multiblock X-data. Replace functions

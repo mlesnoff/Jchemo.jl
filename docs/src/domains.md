@@ -48,7 +48,7 @@
     instrumental variables (PCAIV)
 
 *2 or more blocks* 
-- **hconcat** Transformer contatenating multi-block X-data
+- **mbconcat** Transformer concatenating multi-block X-data
 - **mbpca** Multiblock PCA (MBPCA), *aka* Consensus 
     principal component analysis (CPCA)
 - **comdim** Common components and specific weights 
