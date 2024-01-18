@@ -16,7 +16,7 @@ Why the name **Jchemo**?: Since it is orientated to **chemometrics** (in brief, 
 
 **Jchemo** is organized between 
 - **transformers** (e.g. PCA models),
-- **predictors** (e.g. PLSR/PLSDA models), 
+- **predictors** (e.g. regression models), 
 - **utility functions**. 
 
 Ad'hoc **pipelines** can also be built. In **Jchemo**, a pipeline is a **chain of *K* models** containing
