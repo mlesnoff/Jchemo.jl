@@ -168,7 +168,7 @@
 
 *Multiblock* 
 
-- **mbplsrda** Multiblock PLSR prediction (MBPLSR-DA)
+- **mbplsrda** MBPLSR-DA
 
 ### Probabilistic DA
 
