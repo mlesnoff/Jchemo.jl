@@ -306,14 +306,11 @@ function gridscore(mod, Xtrain, Ytrain, X, Y; score, pars = nothing,
         nlv = nothing, lb = nothing, verbose = false)
     fun = mod.fun
     if isnothing(nlv) && isnothing(lb)
-        res = gridscore_br(Xtrain, Ytrain, X, Y; fun, score, pars, 
-            verbose)
+        res = gridscore_br(Xtrain, Ytrain, X, Y; fun, score, pars, verbose)
     elseif !isnothing(nlv)
-        res = gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, pars, 
-            nlv, verbose)
+        res = gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, pars, nlv, verbose)
     elseif !isnothing(lb)
-        res = gridscore_lb(Xtrain, Ytrain, X, Y; fun, score, pars, 
-            lb, verbose)
+        res = gridscore_lb(Xtrain, Ytrain, X, Y; fun, score, pars, lb, verbose)
     end
     res
 end
