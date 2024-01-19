@@ -1,7 +1,6 @@
 """
-    locw(Xtrain, Ytrain, X; listnn, 
-        listw = nothing, fun, verbose = false, 
-        kwargs...)
+    locw(Xtrain, Ytrain, X; listnn, listw = nothing, fun, 
+        verbose = false, kwargs...)
 Compute predictions for a given kNN model.
 * `Xtrain` : Training X-data.
 * `Ytrain` : Training Y-data.
@@ -21,9 +20,8 @@ The sizes of the neighborhood for i = 1,...,m can be different.
 
 All the arguments in kwargs must have length = 1 (not collections).
 """
-function locw(Xtrain, Ytrain, X; listnn, 
-        listw = nothing, fun, verbose = false, 
-        kwargs...)
+function locw(Xtrain, Ytrain, X; listnn, listw = nothing, fun, 
+        verbose = false, kwargs...)
     m = nro(X)
     q = nco(Ytrain)
     pred = similar(Ytrain, m, q)
