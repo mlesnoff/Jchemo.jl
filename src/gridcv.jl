@@ -1,7 +1,6 @@
 """
-    gridcv(mod, X, Y; segm, score, 
-        pars = nothing, nlv = nothing, lb = nothing, 
-        verbose = false)
+    gridcv(mod, X, Y; segm, score, pars = nothing, 
+        nlv = nothing, lb = nothing, verbose = false)
 Cross-validation (CV) of a model over a grid of parameters.
 * `mod` : Model to evaluate.
 * `X` : Training X-data (n, p).
@@ -292,19 +291,15 @@ pred = predict(mod, Xtest).pred
 confusion(pred, ytest).pct
 ```
 """
-function gridcv(mod, X, Y; segm, score, 
-        pars = nothing, nlv = nothing, lb = nothing, 
-        verbose = false)
+function gridcv(mod, X, Y; segm, score, pars = nothing, 
+        nlv = nothing, lb = nothing, verbose = false)
     fun = mod.fun 
     if isnothing(nlv) && isnothing(lb)
-        res = gridcv_br(X, Y; segm, fun, score, 
-            pars, verbose)
+        res = gridcv_br(X, Y; segm, fun, score, pars, verbose)
     elseif !isnothing(nlv)
-        res = gridcv_lv(X, Y; segm, fun, score, 
-            pars, nlv, verbose)
+        res = gridcv_lv(X, Y; segm, fun, score, pars, nlv, verbose)
     elseif !isnothing(lb)
-        res = gridcv_lb(X, Y; segm, fun, score, 
-            pars, lb, verbose)
+        res = gridcv_lb(X, Y; segm, fun, score, pars, lb, verbose)
     end
     res
 end
