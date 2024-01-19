@@ -34,7 +34,7 @@ function locw(Xtrain, Ytrain, X; listnn,
         length(s) == 1 ? s = (s:s) : nothing
         zYtrain = Ytrain[s, :]
         ## For discrimination, 
-        ## case where all the neighbors are of same class
+        ## case where all the neighbors have the same class
         if q == 1 && length(unique(zYtrain)) == 1
             pred[i, :] .= zYtrain[1]
         ## End
