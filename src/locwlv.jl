@@ -1,6 +1,5 @@
 """
-    locwlv(Xtrain, Ytrain, X; 
-        listnn, listw = nothing, fun, nlv, 
+    locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, fun, nlv, 
         verbose = true, kwargs...)
 Compute predictions for a given kNN model.
 * `Xtrain` : Training X-data.
@@ -19,8 +18,7 @@ Keyword arguments:
 Same as [`locw`](@ref) but specific and much faster 
 for LV-based models (e.g. PLSR).
 """
-function locwlv(Xtrain, Ytrain, X; 
-        listnn, listw = nothing, fun, nlv, 
+function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, fun, nlv, 
         verbose = true, kwargs...)
     p = nco(Xtrain)
     m = nro(X)
@@ -35,7 +33,7 @@ function locwlv(Xtrain, Ytrain, X;
         length(s) == 1 ? s = (s:s) : nothing
         zYtrain = Ytrain[s, :]
         ## For discrimination,
-        ## case where all the neighbors are of same class
+        ## case where all the neighbors have the same class
         if q == 1 && length(unique(zYtrain)) == 1
             @inbounds for a = 1:le_nlv
                 zpred[i, :, a] .= zYtrain[1]
@@ -43,15 +41,12 @@ function locwlv(Xtrain, Ytrain, X;
         ## End 
         else
             if isnothing(listw)
-                fm = fun(Xtrain[s, :],  zYtrain; 
-                    nlv = maximum(nlv), kwargs...)
+                fm = fun(Xtrain[s, :],  zYtrain; nlv = maximum(nlv), kwargs...)
             else
-                fm = fun(Xtrain[s, :], zYtrain, mweight(listw[i]); 
-                    nlv = maximum(nlv), kwargs...)
+                fm = fun(Xtrain[s, :], zYtrain, mweight(listw[i]); nlv = maximum(nlv), kwargs...)
             end
             @inbounds for a = 1:le_nlv
-                zpred[i, :, a] = predict(fm, X[i:i, :]; 
-                    nlv = nlv[a]).pred
+                zpred[i, :, a] = predict(fm, X[i:i, :]; nlv = nlv[a]).pred
             end
         end
     end 
