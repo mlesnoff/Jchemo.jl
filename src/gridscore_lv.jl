@@ -1,6 +1,6 @@
 """
-    gridscore_lv(Xtrain, Ytrain, X, Y; fun, 
-        score, pars = nothing, nlv, verbose = false)
+    gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, pars = nothing, 
+        nlv, verbose = false)
 Working function for `gridscore`.
 
 Specific and faster than `gridscore_br` for models 
@@ -9,9 +9,10 @@ must not contain `nlv`.
 
 See function `gridscore` for examples.
 """
-function gridscore_lv(Xtrain, Ytrain, X, Y; fun, 
-        score, pars = nothing, nlv, verbose = false)
-    ## If not multiblock
+function gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, pars = nothing, 
+        nlv, verbose = false)
+    ## Multiblock Xbl is allowed
+    ## Case where not multiblock
     if isa(Xtrain[1, 1], Number)
         p = nco(Xtrain)
         nlv = max(0, minimum(nlv)):min(p, maximum(nlv))
@@ -34,8 +35,7 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; fun,
         verbose ? println("-- Nb. combinations = ", ncomb) : nothing
         res = map(values(pars)...) do v...    
             verbose ? println(Pair.(keys(pars), v)...) : nothing
-            fm = fun(Xtrain, Ytrain ; 
-                nlv = maximum(nlv), Pair.(keys(pars), v)...)
+            fm = fun(Xtrain, Ytrain ; nlv = maximum(nlv), Pair.(keys(pars), v)...)
             pred = Jchemo.predict(fm, X; nlv).pred
             le_nlv == 1 ? pred = [pred] : nothing
             zres = zeros(le_nlv, q)
