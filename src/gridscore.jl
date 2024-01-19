@@ -304,6 +304,7 @@ confusion(pred, ytest).pct
 """
 function gridscore(mod, Xtrain, Ytrain, X, Y; score, pars = nothing, 
         nlv = nothing, lb = nothing, verbose = false)
+    ## Multiblock Xbl is allowed
     fun = mod.fun
     if isnothing(nlv) && isnothing(lb)
         res = gridscore_br(Xtrain, Ytrain, X, Y; fun, score, pars, verbose)
