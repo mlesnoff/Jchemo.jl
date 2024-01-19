@@ -17,8 +17,8 @@ function gridcv_br(X, Y; segm, fun, score, pars, verbose = false)
         @inbounds for j = 1:nsegm
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
-            zres[j] = gridscore_br(rmrow(X, s), rmrow(Y, s),
-                X[s, :], Y[s, :]; fun, score, pars)
+            zres[j] = gridscore_br(rmrow(X, s), rmrow(Y, s), X[s, :], Y[s, :]; 
+                fun, score, pars)
         end
         zres = reduce(vcat, zres)
         dat = DataFrame(rep = fill(i, nsegm * ncomb),
