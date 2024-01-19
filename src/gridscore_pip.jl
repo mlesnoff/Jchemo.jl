@@ -116,16 +116,15 @@ plotxy(res.pred, ytest; color = (:red, .5),
       ylabel = "Observed").f
 ```
 """
-function gridscore(mod::Pipeline, Xtrain, Ytrain, X, Y; 
-        score, pars = nothing, nlv = nothing, 
-        lb = nothing, verbose = false)
+function gridscore(mod::Pipeline, Xtrain, Ytrain, X, Y; score, pars = nothing, 
+        nlv = nothing, lb = nothing, verbose = false)
     fit!(mod, Xtrain, Ytrain)
     K = length(mod.mod)
     for i = 1:(K - 1)
         Xtrain = transf(mod.mod[i], Xtrain)
         X = transf(mod.mod[i], X)
     end
-    gridscore(mod.mod[K], Xtrain, Ytrain, X, Y; 
-        score, pars, nlv, lb, verbose)
+    gridscore(mod.mod[K], Xtrain, Ytrain, X, Y; score, pars, 
+        nlv, lb, verbose)
 end
 
