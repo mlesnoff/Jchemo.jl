@@ -43,7 +43,7 @@ function gridcv_lv(X, Y; segm, fun, score, pars = nothing, nlv,
     end
     verbose ? println("/ End.") : nothing
     res_rep = reduce(vcat, res_rep)
-    isnothing(pars) ? namgroup = [:nlv] : namgroup =  [:nlv ; collect(keys(pars))]
+    isnothing(pars) ? namgroup = [:nlv] : namgroup = [:nlv ; collect(keys(pars))]
     gdf = groupby(res_rep, namgroup) 
     namy = map(string, repeat(["y"], q), 1:q)
     res = combine(gdf, namy .=> mean, renamecols = false)
