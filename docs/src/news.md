@@ -7,6 +7,7 @@
 
 - Breaking
     - **hconcat** renamed to **mbconcat**
+    - **viperm!** renamed to **viperm**
 
 
 ## *Version 0.3.1*

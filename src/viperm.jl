@@ -1,6 +1,5 @@
 """
-    viperm!(mod, X, Y; rep = 50, psamp = .3, 
-        score = rmsep)
+    viperm(mod, X, Y; rep = 50, psamp = .3, score = rmsep)
 Variable importance by direct permutations.
 * `mod` : Model to evaluate.
 * `X` : X-data (n, p).
@@ -37,8 +36,7 @@ https://doi.org/10.1366/0003702001949500
 
 ## Examples
 ```julia
-using DataFrames, JLD2, CairoMakie
-using JchemoData
+using JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "tecator.jld2") 
 @load db dat
@@ -52,7 +50,6 @@ typ = Y.typ
 namy = names(Y)[1:3]
 plotsp(X, wl; xlabel = "Wavelength (nm)", 
     ylabel = "Absorbance").f
-
 s = typ .== "train"
 Xtrain = X[s, :]
 Ytrain = Y[s, namy]
@@ -71,8 +68,7 @@ ytrain = Ytrain[:, nam]
 ytest = Ytest[:, nam]
 
 mod = plskern(nlv = 9)
-res = viperm!(mod, Xtrain, ytrain; 
-    rep = 50, score = rmsep)
+res = viperm(mod, Xtrain, ytrain; rep = 50, score = rmsep) ;
 z = vec(res.imp)
 f = Figure(size = (500, 400))
 ax = Axis(f[1, 1];
@@ -83,10 +79,8 @@ u = [910; 950]
 vlines!(ax, u; color = :grey, linewidth = 1)
 f
 
-mod = rfr_dt(n_trees = 10, 
-    max_depth = 2000, min_samples_leaf = 5)
-res = viperm!(mod, Xtrain, ytrain; 
-    rep = 50)
+mod = rfr_dt(n_trees = 10, max_depth = 2000, min_samples_leaf = 5)
+res = viperm(mod, Xtrain, ytrain; rep = 50)
 z = vec(res.imp)
 f = Figure(size = (500, 400))
 ax = Axis(f[1, 1];
@@ -98,8 +92,7 @@ vlines!(ax, u; color = :grey, linewidth = 1)
 f
 ```
 """
-function viperm!(mod, X, Y; rep = 50, psamp = .3, 
-        score = rmsep)
+function viperm(mod, X, Y; rep = 50, psamp = .3, score = rmsep)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)

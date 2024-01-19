@@ -336,7 +336,7 @@ export
     ## Variable selection/importance (direct methods) 
     isel!,
     vip, 
-    viperm!,
+    viperm,
     ## Utils
     xfit, xfit!, xresid, xresid!,
     ## Local
