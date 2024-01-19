@@ -30,8 +30,7 @@ function gridcv_br(X, Y; segm, fun, score, pars, verbose = false)
     res_rep = reduce(vcat, res_rep)
     gdf = groupby(res_rep, collect(keys(pars))) 
     namy = map(string, repeat(["y"], q), 1:q)
-    res = combine(gdf, namy .=> mean, 
-        renamecols = false)
+    res = combine(gdf, namy .=> mean, renamecols = false)
     (res = res, res_rep)
 end
     
