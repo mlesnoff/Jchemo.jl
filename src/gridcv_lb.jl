@@ -24,8 +24,8 @@ function gridcv_lb(X, Y; segm, fun, score, pars = nothing, lb,
         @inbounds for j = 1:nsegm
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
-            zres[j] = gridscore_lb(rmrow(X, s), rmrow(Y, s),
-                X[s, :], Y[s, :]; fun, score, lb, pars)
+            zres[j] = gridscore_lb(rmrow(X, s), rmrow(Y, s), X[s, :], Y[s, :]; 
+                fun, score, lb, pars)
         end
         zres = reduce(vcat, zres)
         ## Case where pars is empty
@@ -42,12 +42,10 @@ function gridcv_lb(X, Y; segm, fun, score, pars = nothing, lb,
     end
     verbose ? println("/ End.") : nothing
     res_rep = reduce(vcat, res_rep)
-    isnothing(pars) ? namgroup = [:lb] :
-        namgroup =  [:lb ; collect(keys(pars))]
+    isnothing(pars) ? namgroup = [:lb] : namgroup = [:lb ; collect(keys(pars))]
     gdf = groupby(res_rep, namgroup) 
     namy = map(string, repeat(["y"], q), 1:q)
-    res = combine(gdf, namy .=> mean, 
-        renamecols = false)
+    res = combine(gdf, namy .=> mean, renamecols = false)
     (res = res, res_rep)
 end
 
