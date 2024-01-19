@@ -11,7 +11,6 @@ See function `gridscore` for examples.
 """
 function gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, pars = nothing, 
         nlv, verbose = false)
-    ## Multiblock Xbl is allowed
     ## Case where not multiblock
     if isa(Xtrain[1, 1], Number)
         p = nco(Xtrain)
