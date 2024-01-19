@@ -1,12 +1,10 @@
 """
-    gridcv_br(X, Y; segm, fun, 
-        score, pars, verbose = false)
+    gridcv_br(X, Y; segm, fun, score, pars, verbose = false)
 Working function for `gridcv`.
 
 See function `gridcv` for examples.
 """
-function gridcv_br(X, Y; segm, fun, 
-        score, pars, verbose = false)
+function gridcv_br(X, Y; segm, fun, score, pars, verbose = false)
     q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
