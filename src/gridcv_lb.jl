@@ -1,6 +1,6 @@
 """
-    gridcv_lb(X, Y; segm, fun, score, pars = nothing, 
-        lb, verbose = false)
+    gridcv_lb(X, Y; segm, fun, score, pars = nothing, lb, 
+        verbose = false)
 Working function for `gridcv`.
 
 Specific and faster than `gridcv_br` for models 
@@ -9,8 +9,8 @@ must not contain `nlv`.
 
 See function `gridcv` for examples.
 """
-function gridcv_lb(X, Y; segm, fun, score, pars = nothing, 
-        lb, verbose = false)
+function gridcv_lb(X, Y; segm, fun, score, pars = nothing, lb, 
+        verbose = false)
     q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
