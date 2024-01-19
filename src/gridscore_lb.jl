@@ -1,6 +1,6 @@
 """
-    gridscore_lb(Xtrain, Ytrain, X, Y; fun, 
-        score, pars = nothing, lb, verbose = false)
+    gridscore_lb(Xtrain, Ytrain, X, Y; fun, score, pars = nothing, 
+        lb, verbose = false)
 Working function for `gridscore`.
 
 Specific and faster than `gridscore_br` for models 
