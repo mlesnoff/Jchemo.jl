@@ -1,7 +1,6 @@
 """
-    gridscore(mod, Xtrain, Ytrain, X, Y; 
-        score, pars = nothing, nlv = nothing, 
-        lb = nothing, verbose = false) 
+    gridscore(mod, Xtrain, Ytrain, X, Y; score, pars = nothing, 
+        nlv = nothing, lb = nothing, verbose = false) 
 Test-set validation of a model over a grid of parameters.
 * `mod` : Model to evaluate.
 * `Xtrain` : Training X-data (n, p).
@@ -303,19 +302,18 @@ pred = predict(mod, Xtest).pred
 confusion(pred, ytest).pct
 ```
 """
-function gridscore(mod, Xtrain, Ytrain, X, Y; 
-        score, pars = nothing, nlv = nothing, 
-        lb = nothing, verbose = false)
+function gridscore(mod, Xtrain, Ytrain, X, Y; score, pars = nothing, 
+        nlv = nothing, lb = nothing, verbose = false)
     fun = mod.fun
     if isnothing(nlv) && isnothing(lb)
-        res = gridscore_br(Xtrain, Ytrain, X, Y; fun, score, 
-            pars, verbose)
+        res = gridscore_br(Xtrain, Ytrain, X, Y; fun, score, pars, 
+            verbose)
     elseif !isnothing(nlv)
-        res = gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, 
-            pars, nlv, verbose)
+        res = gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, pars, 
+            nlv, verbose)
     elseif !isnothing(lb)
-        res = gridscore_lb(Xtrain, Ytrain, X, Y; fun, score, 
-            pars, lb, verbose)
+        res = gridscore_lb(Xtrain, Ytrain, X, Y; fun, score, pars, 
+            lb, verbose)
     end
     res
 end
