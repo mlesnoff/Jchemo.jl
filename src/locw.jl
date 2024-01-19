@@ -40,11 +40,9 @@ function locw(Xtrain, Ytrain, X; listnn,
         ## End
         else
             if isnothing(listw)
-                fm = fun(Xtrain[s, :],  zYtrain; 
-                    kwargs...)
+                fm = fun(Xtrain[s, :],  zYtrain; kwargs...)
             else
-                fm = fun(Xtrain[s, :], zYtrain, mweight(listw[i]); 
-                    kwargs...)
+                fm = fun(Xtrain[s, :], zYtrain, mweight(listw[i]); kwargs...)
             end
             pred[i, :] = predict(fm, X[i:i, :]).pred
         end
