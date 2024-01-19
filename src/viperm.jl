@@ -1,6 +1,6 @@
 """
-    viperm!(mod, X, Y; rep = 50,
-        psamp = .3, score = rmsep)
+    viperm!(mod, X, Y; rep = 50, psamp = .3, 
+        score = rmsep)
 Variable importance by direct permutations.
 * `mod` : Model to evaluate.
 * `X` : X-data (n, p).
@@ -98,8 +98,8 @@ vlines!(ax, u; color = :grey, linewidth = 1)
 f
 ```
 """
-function viperm!(mod, X, Y; rep = 50,
-        psamp = .3, score = rmsep)
+function viperm!(mod, X, Y; rep = 50, psamp = .3, 
+        score = rmsep)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)
