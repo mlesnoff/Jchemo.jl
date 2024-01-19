@@ -29,8 +29,7 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; fun,
         verbose ? println("-- Nb. combinations = ", ncomb) : nothing
         res = map(values(pars)...) do v...
             verbose ? println(Pair.(keys(pars), v)...) : nothing
-            fm = fun(Xtrain, Ytrain ; 
-                lb = maximum(lb), Pair.(keys(pars), v)...)
+            fm = fun(Xtrain, Ytrain ; lb = maximum(lb), Pair.(keys(pars), v)...)
             pred = Jchemo.predict(fm, X; lb = lb).pred
             le_lb == 1 ? pred = [pred] : nothing
             zres = zeros(le_lb, q)
@@ -47,8 +46,7 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; fun,
             zdat = DataFrame(pars)
             dat = list(ncomb)
             @inbounds for i = 1:ncomb
-                dat[i] = reduce(vcat, 
-                    fill(zdat[i:i, :], le_lb))
+                dat[i] = reduce(vcat, fill(zdat[i:i, :], le_lb))
             end
             dat = reduce(vcat, dat)
         end
