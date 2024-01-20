@@ -1,12 +1,12 @@
 """
     occod(; kwargs...)
-    occod(object, X; kwargs...)
+    occod(fm, X; kwargs...)
 One-class classification using PCA/PLS orthognal distance (OD).
-* `object` : The preliminary model "fm" (e.g. PCA) that 
-    was fitted on the training data assumed to represent 
+* `fm` : The preliminary model that (e.g. PCA) was fitted 
+    (object `fm`) on the training data assumed to represent 
     the training class.
 * `X` : Training X-data (n, p), on which was fitted 
-    the model "fm".
+    the model `fm`.
 Keyword arguments:
 * `mcut` : Type of cutoff. Possible values are: `:mad`, 
     `:q`. See Thereafter.
