@@ -34,8 +34,8 @@ f, ax = plotsp(X, wl)
 vlines!(ax, z; linestyle = :dash, color = (:grey, .8))
 f
 ## Corrected data
-u = findall(in(wl_target).(wl))
-zX = rmgap(X; indexcol = u, npoint = 5)  
+indexcol = findall(in(wl_target).(wl))
+zX = rmgap(X; indexcol, npoint = 5)  
 f, ax = plotsp(zX, wl)
 vlines!(ax, z; linestyle = :dash, color = (:grey, .8))
 f
