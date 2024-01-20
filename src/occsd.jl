@@ -1,9 +1,9 @@
 """
     occsd(; kwargs...)
-    occsd(object; kwargs...)
+    occsd(fm; kwargs...)
 One-class classification using PCA/PLS score distance (SD).
-* `object` : The preliminary model "fm" (e.g. PCA) that 
-    was fitted on the training data assumed to represent 
+* `fm` : The preliminary model that (e.g. PCA) was fitted 
+    (object `fm`) on the training data assumed to represent 
     the training class.
 Keyword arguments:
 * `mcut` : Type of cutoff. Possible values are: `:mad`, 
