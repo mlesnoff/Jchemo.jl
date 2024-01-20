@@ -73,18 +73,15 @@ fit!(mod, zXtrain)
 Ttrain = mod.fm.T
 Ttest = transf(mod, zXtest)
 T = vcat(Ttrain, Ttest)
-group = vcat(repeat(["1"], ntrain), 
-    repeat(["2"], ntest))
+group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
 i = 1
-plotxy(T[:, i], T[:, i + 1], group;
+plotxy(T[:, i], T[:, i + 1], group; 
     leg_title = "Class", 
-    xlabel = string("PC", i), 
-    ylabel = string("PC", i + 1)).f
+    xlabel = string("PC", i), ylabel = string("PC", i + 1)).f
 
 #### Occ
-## Preliminary fitted model
-nlv = 10
-mod = pcasvd(; nlv) ;
+## Preliminary PCA fitted model
+mod = pcasvd(nlv = 10) ;
 fit!(mod, zXtrain)
 fm0 = mod.fm ;  
 ## Outlierness
