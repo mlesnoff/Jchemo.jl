@@ -104,7 +104,7 @@ plotxy(T[:, i], T[:, i + 1], group;
     xlabel = string("PC", i), ylabel = string("PC", i + 1)).f
 
 #### Occ
-## Preliminary fitted model
+## Preliminary PCA fitted model
 mod = pcasvd(nlv = 30) ;
 fit!(mod, zXtrain)
 fm0 = mod.fm ;  
