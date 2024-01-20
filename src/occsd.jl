@@ -68,8 +68,7 @@ db = joinpath(path_jdat, "data/challenge2018.jld2")
 pnames(dat)
 X = dat.X    
 Y = dat.Y
-mod = savgol(npoint = 21, 
-    deriv = 2, degree = 3)
+mod = savgol(npoint = 21, deriv = 2, degree = 3)
 fit!(mod, X) 
 Xp = transf(mod, X) 
 s = Bool.(Y.test)
@@ -98,18 +97,15 @@ fit!(mod, zXtrain)
 Ttrain = mod.fm.T
 Ttest = transf(mod, zXtest)
 T = vcat(Ttrain, Ttest)
-group = vcat(repeat(["1"], ntrain), 
-    repeat(["2"], ntest))
+group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
 i = 1
-plotxy(T[:, i], T[:, i + 1], group;
+plotxy(T[:, i], T[:, i + 1], group; 
     leg_title = "Class", 
-    xlabel = string("PC", i), 
-    ylabel = string("PC", i + 1)).f
+    xlabel = string("PC", i), ylabel = string("PC", i + 1)).f
 
 #### Occ
 ## Preliminary fitted model
-nlv = 30
-mod = pcasvd(; nlv) ;
+mod = pcasvd(nlv = 30) ;
 fit!(mod, zXtrain)
 fm0 = mod.fm ;  
 ## Outlierness
