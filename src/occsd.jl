@@ -117,9 +117,8 @@ pnames(mod)
 pnames(mod.fm) 
 @head d = mod.fm.d
 d = d.dstand
-f, ax = plotxy(1:length(d), d; 
-    size = (500, 300), xlabel = "Obs. index", 
-    ylabel = "Standardized distance")
+f, ax = plotxy(1:length(d), d; size = (500, 300), 
+    xlabel = "Obs. index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 
