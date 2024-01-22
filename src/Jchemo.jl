@@ -251,7 +251,7 @@ export
     plist, 
     pmod, pnames, psize,
     pval,
-    recodcat2int, recodnum2cla, 
+    recodcat2int, recodnum2int, 
     recovkwargs,
     replacebylev, replacebylev2, 
     replacedict, 

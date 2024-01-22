@@ -606,7 +606,7 @@ pval(x::AbstractVector, q) = pval(StatsBase.ecdf(x), q)
 
 """
     recodcat2int(x; start = 1)
-Recode a categorical variable to a integer variable
+Recode a categorical variable to a integer variable.
 * `x` : Variable to recode.
 * `start` : Integer that will be set to the first category.
 
@@ -630,7 +630,7 @@ function recodcat2int(x; start::Int = 1)
 end
 
 """
-    recodnum2cla(x, q)
+    recodnum2int(x, q)
 Recode a continuous variable to integer classes.
 * `x` : Variable to recode.
 * `q` : Values separating the classes. 
@@ -640,15 +640,15 @@ Recode a continuous variable to integer classes.
 using Statistics
 x = [collect(1:10); 8.1 ; 3.1] 
 q = [3; 8]
-zx = recodnum2cla(x, q)  
+zx = recodnum2int(x, q)  
 [x zx]
 probs = [.33; .66]
 q = quantile(x, probs) 
-zx = recodnum2cla(x, q)  
+zx = recodnum2int(x, q)  
 [x zx]
 ```
 """
-function recodnum2cla(x, q)
+function recodnum2int(x, q)
     zx = similar(x)
     q = sort(q)
     @inbounds for i in eachindex(x)

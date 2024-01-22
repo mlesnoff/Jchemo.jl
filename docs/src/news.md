@@ -7,6 +7,7 @@
 
 - Breaking
     - **hconcat** renamed to **mbconcat**
+    - **recodnum2cla** renamed to **recodnum2int**
     - **viperm!** renamed to **viperm**
 
 

@@ -378,7 +378,7 @@
 - **psize** Return the type and size of a dataset
 - **recodcat2int** Recode a categorical variable 
     to a integer variable
-- **recodnum2cla** Recode a continuous variable 
+- **recodnum2int** Recode a continuous variable 
     to integer classes
 - **replacebylev** Replace the elements of a vector by levels 
     of corresponding order
