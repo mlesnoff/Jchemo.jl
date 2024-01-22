@@ -35,8 +35,8 @@ db = joinpath(mypath, "data", "octane.jld2")
 @load db dat
 pnames(dat)
 X = dat.X 
-wl = names(X)
-wl_num = parse.(Float64, wl)
+wlst = names(X)
+wl = parse.(Float64, wlst)
 n = nro(X)
 
 nlv = 6
