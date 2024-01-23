@@ -623,8 +623,8 @@ recodcat2int([25, 1, 25])
 """
 function recodcat2int(x; start::Int = 1)
     z = dummy(x).Y
-    ncla = nco(z)
-    u = z .* collect(start:(start + ncla - 1))'
+    nlev = nco(z)
+    u = z .* collect(start:(start + nlev - 1))'
     u = sum(u; dims = 2)  
     Int.(vec(u))
 end
