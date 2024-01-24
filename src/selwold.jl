@@ -1,7 +1,6 @@
 """
-    selwold(indx, r; smooth = true, 
-        f = 5, alpha = .05, digits = 3, 
-        graph = true, step = 2, xlabel = "Index", 
+    selwold(indx, r; smooth = true, npoint = 5, alpha = .05, 
+        digits = 3, graph = true, step = 2, xlabel = "Index", 
         ylabel = "Value", title = "Score")
 Wold's criterion to select dimensionality in LV models 
     (e.g. PLSR).
@@ -11,7 +10,7 @@ Keyword arguments:
 * `smooth` : Boolean. If `true`,  the selection is done 
     after a moving-average smoothing of rate R
     (see function `mavg`).
-* 'npoint' : Window of the moving-average used to 
+* `npoint` : Window of the moving-average used to 
     smooth rate R.
 * `alpha` : Proportion alpha used as threshold 
     for rate R.
@@ -110,9 +109,8 @@ zres = selwold(res.nlv, res.y1;
 zres.f
 ```
 """ 
-function selwold(indx, r; smooth = true, 
-        npoint = 5, alpha = .05, digits = 3, 
-        graph = true, step = 2, xlabel = "Index", 
+function selwold(indx, r; smooth = true, npoint = 5, alpha = .05, 
+        digits = 3, graph = true, step = 2, xlabel = "Index", 
         ylabel = "Value", title = "Score")
     n = length(r)
     ## below, length = n - 1
