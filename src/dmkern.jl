@@ -39,8 +39,7 @@ y = dat.X[:, 5]
 n = nro(X)
 tab(y) 
 
-nlv = 2
-mod = fda(; nlv)
+mod = fda(nlv = 2)
 fit!(mod, X, y)
 @head T = mod.fm.T
 p = nco(T)
@@ -64,7 +63,7 @@ h_kde = [.3; .1]
 fm = dmkern(T; h_kde) ;
 fm.H
 u = [1; 4; 150]
-Jchemo.predict(fm, T[u, :]).pred
+predict(fm, T[u, :]).pred
 
 ## Bivariate distribution
 npoints = 2^7
@@ -80,12 +79,9 @@ fm = dmkern(T) ;
 res = predict(fm, grid) ;
 pred_grid = vec(res.pred)
 f = Figure(size = (600, 400))
-ax = Axis(f[1, 1]; 
-    title = "Density for FDA scores (Iris)",
-    xlabel = "Score 1", ylabel = "Score 2")
-co = contour!(ax, grid[:, 1], grid[:, 2], pred_grid; 
-    levels = 10, labels = true)
-#Colorbar(f[1, 2], co; label = "Density")
+ax = Axis(f[1, 1];  title = "Density for FDA scores (Iris)", xlabel = "Score 1", 
+    ylabel = "Score 2")
+co = contour!(ax, grid[:, 1], grid[:, 2], pred_grid; levels = 10, labels = true)
 scatter!(ax, T[:, 1], T[:, 2],
     color = :red, markersize = 5)
 #xlims!(ax, -15, 15) ;ylims!(ax, -15, 15)
@@ -96,12 +92,11 @@ x = T[:, 1]
 fm = dmkern(x) ;
 #fm = dmkern(x; a_kde = .5) ;
 #fm = dmkern(x; h_kde = .3) ;
-pred = Jchemo.predict(fm, x).pred 
+pred = predict(fm, x).pred 
 f = Figure()
 ax = Axis(f[1, 1])
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
-scatter!(ax, x, vec(pred);
-    color = :red)
+scatter!(ax, x, vec(pred); color = :red)
 f
 
 x = T[:, 1]
@@ -112,7 +107,7 @@ grid = LinRange(lims[1], lims[2], npoints)
 fm = dmkern(x) ;
 #fm = dmkern(x; a_kde = .5) ;
 #fm = dmkern(x; h_kde = .3) ;
-pred_grid = Jchemo.predict(fm, grid).pred 
+pred_grid = predict(fm, grid).pred 
 f = Figure()
 ax = Axis(f[1, 1])
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
