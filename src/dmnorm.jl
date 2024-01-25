@@ -30,8 +30,7 @@ which makes impossible to compute the true density.
 
 ## Examples
 ```julia
-using JLD2, CairoMakie, StatsBase
-using JchemoData
+using JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "iris.jld2") 
 @load db dat
@@ -41,9 +40,8 @@ y = dat.X[:, 5]
 n = nro(X)
 tab(y) 
 
-nlv = 2
-mod = fda(; nlv) ;
-Jchemo.fit!(mod, X, y)
+mod = fda(nlv = 2)
+fit!(mod, X, y)
 @head T = mod.fm.T 
 n, p = size(T)
 
@@ -53,7 +51,7 @@ s = y .== "setosa"
 zT = T[s, :]
 
 ## Bivariate distribution
-fm = dmnorm(zT) ;
+fm = dmnorm(zT)
 pnames(fm)
 fm.Uinv 
 fm.detS
@@ -71,21 +69,16 @@ x1 = LinRange(lims[1][1], lims[1][2], npoints)
 x2 = LinRange(lims[2][1], lims[2][2], npoints)
 z = mpar(x1 = x1, x2 = x2)
 grid = reduce(hcat, z)
-m = nro(grid)
 fm = dmnorm(zT) ;
-res = Jchemo.predict(fm, grid) ;
+res = predict(fm, grid) ;
 pred_grid = vec(res.pred)
 f = Figure(size = (600, 400))
-ax = Axis(f[1, 1]; 
-    title = "Density for FDA scores (Iris - Setosa)",
+ax = Axis(f[1, 1];  title = "Density for FDA scores (Iris - Setosa)", 
     xlabel = "Score 1", ylabel = "Score 2")
-co = contour!(ax, grid[:, 1], grid[:, 2], pred_grid; 
-    levels = 10, labels = true)
-#Colorbar(f[1, 2], co; label = "Density")
-scatter!(ax, T[:, 1], T[:, 2],
-    color = :red, markersize = 5)
-scatter!(ax, zT[:, 1], zT[:, 2],
-    color = :blue, markersize = 5)
+co = contour!(ax, grid[:, 1], grid[:, 2], pred_grid; levels = 10, 
+    labels = true)
+scatter!(ax, T[:, 1], T[:, 2], color = :red, markersize = 5)
+scatter!(ax, zT[:, 1], zT[:, 2], color = :blue, markersize = 5)
 #xlims!(ax, -12, 12) ;ylims!(ax, -12, 12)
 f
 
@@ -93,7 +86,7 @@ f
 j = 1
 x = zT[:, j]
 fm = dmnorm(x) ;
-pred = Jchemo.predict(fm, x).pred 
+pred = predict(fm, x).pred 
 f = Figure()
 ax = Axis(f[1, 1]; 
     xlabel = string("FDA-score ", j))
@@ -108,13 +101,11 @@ lims = [minimum(x), maximum(x)]
 #delta = 5 ; lims = [minimum(x) - delta, maximum(x) + delta]
 grid = LinRange(lims[1], lims[2], npoints)
 fm = dmnorm(x) ;
-pred_grid = Jchemo.predict(fm, grid).pred 
+pred_grid = predict(fm, grid).pred 
 f = Figure()
-ax = Axis(f[1, 1];
-    xlabel = string("FDA-score ", j))
+ax = Axis(f[1, 1]; xlabel = string("FDA-score ", j))
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
-lines!(ax, grid, vec(pred_grid); 
-    color = :red)
+lines!(ax, grid, vec(pred_grid); color = :red)
 f
 ```
 """ 
