@@ -15,17 +15,19 @@ and their extensions, in particular locally weighted PLS models (**LWPLS-R** & *
 Why the name **Jchemo**?: Since it is orientated to **chemometrics** (in brief, the use of biometrics for chemistry), but most of the provided methods are **generic to other application domains**. 
 
 **Jchemo** is organized between 
-- **transformers** (e.g. PCA models),
-- **predictors** (e.g. regression models), 
+- **transformers** (that have a function `transf`),
+- **predictors** (that have a function `predict`), 
 - **utility functions**. 
 
-Ad'hoc **pipelines** can also be built. In **Jchemo**, a pipeline is a **chain of *K* models** containing
-- either a set of ***K* transformers**,
-- or a set of ***K* - 1 transformers** and **a final predictor**. 
+Some models are both a transformer and a predictor, such as PLSR or PCR models.
+
+Ad'hoc **pipelines** can also be built. In **Jchemo**, a pipeline is a **chain of *K* modeling steps** containing
+- either a set of ***K* transform steps**,
+- or a set of ***K* - 1 transform steps** and **a final prediction step**. 
 
 The pipelines are built with function `pip`.
 
-**Warning:** Major breaking changes were made between **version 0.2.4** and **version 0.3.0**. See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for some details on the changes. Mainly, a new **embedded syntax** is proposed. 
+**Warning:** Major breaking changes were made between **version 0.2.4** and **version 0.3.0**. See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for some details on the changes. Mainly, a new **embedded syntax** was proposed. 
 
 # <span style="color:green"> **Tips** </span> 
 
