@@ -101,15 +101,13 @@ function qda(X, y, weights::Weight; kwargs...)
     ct = similar(X, nlev, p)
     @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(X[s, :], 
-            mweight(weights.w[s]))
+        ct[i, :] = colmean(X[s, :], mweight(weights.w[s]))
         ni[i] == 1 ? zn = n : zn = ni[i]
         res.Wi[i] .*= zn / (zn - 1)
         if alpha > 0
             @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
         end
-        fm[i] = dmnorm(; mu = ct[i, :], 
-            S = res.Wi[i]) 
+        fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
     end
     Qda(fm, res.Wi, ct, wprior, res.theta.w, 
         ni, lev, weights)
@@ -128,16 +126,13 @@ function predict(object::Qda, X)
     nlev = length(lev) 
     dens = similar(X, m, nlev)
     for i = 1:nlev
-        dens[:, i] .= vec(Jchemo.predict(object.fm[i],
-            X).pred)
+        dens[:, i] .= vec(Jchemo.predict(object.fm[i], X).pred)
     end
     A = object.wprior' .* dens
     v = sum(A, dims = 2)
     posterior = fscale(A', v)'  # Could be replaced by similar as in fscale! 
-    z =  mapslices(argmax, posterior; 
-        dims = 2)  # if equal, argmax takes the first
-    pred = reshape(replacebylev2(z, 
-        lev), m, 1)
+    z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
+    pred = reshape(replacebylev2(z, lev), m, 1)
     (pred = pred, dens, posterior)
 end
     
