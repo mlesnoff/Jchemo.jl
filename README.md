@@ -281,7 +281,7 @@ The embedded syntax to fit the model is as follows:
 ```julia
 nlv = 15  # nb. latent variables
 kern = :krbf ; gamma = .001 
-mod = kpls(; nlv, kern, gamma)
+mod = kplsr(; nlv, kern, gamma)
 fit!(mod, Xtrain, ytrain)
 ```
 
