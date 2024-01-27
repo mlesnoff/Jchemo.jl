@@ -152,16 +152,13 @@ function predict(object::Rda, X)
     nlev = length(lev) 
     dens = similar(X, m, nlev)
     for i = 1:nlev
-        dens[:, i] .= vec(Jchemo.predict(object.fm[i], 
-            X).pred)
+        dens[:, i] .= vec(Jchemo.predict(object.fm[i], X).pred)
     end
     A = object.wprior' .* dens
     v = sum(A, dims = 2)
     posterior = fscale(A', v)'  # Could be replaced by similar as in fscale! 
-    z =  mapslices(argmax, posterior; 
-        dims = 2)  # if equal, argmax takes the first
-    pred = reshape(replacebylev2(z, 
-        lev), m, 1)
+    z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
+    pred = reshape(replacebylev2(z, lev), m, 1)
     (pred = pred, dens, posterior)
 end
 
