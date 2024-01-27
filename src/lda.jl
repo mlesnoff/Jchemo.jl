@@ -78,13 +78,10 @@ function lda(X, y, weights::Weight; kwargs...)
     ct = similar(X, nlev, p)
     @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(X[s, :], 
-            mweight(weights.w[s]))
-        fm[i] = dmnorm(; mu = ct[i, :], 
-            S = res.W) 
+        ct[i, :] = colmean(X[s, :], mweight(weights.w[s]))
+        fm[i] = dmnorm(; mu = ct[i, :], S = res.W) 
     end
-    Lda(fm, res.W, ct, wprior, res.theta.w, 
-        ni, lev, weights)
+    Lda(fm, res.W, ct, wprior, res.theta.w, ni, lev, weights)
 end
 
 """
@@ -106,10 +103,8 @@ function predict(object::Lda, X)
     A = object.wprior' .* dens
     v = sum(A, dims = 2)
     posterior = fscale(A', v)'  # Could be replaced by similar as in fscale! 
-    z =  mapslices(argmax, posterior; 
-        dims = 2)   # if equal, argmax takes the first
-    pred = reshape(replacebylev2(z, 
-        lev), m, 1)
+    z =  mapslices(argmax, posterior; dims = 2)   # if equal, argmax takes the first
+    pred = reshape(replacebylev2(z, lev), m, 1)
     (pred = pred, dens, posterior)
 end
     
