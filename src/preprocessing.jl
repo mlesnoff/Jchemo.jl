@@ -50,6 +50,7 @@ function transf(object::Detrend, X)
     transf!(object, X)
     X
 end
+
 function transf!(object::Detrend, X::Matrix)
     n, p = size(X)
     degree = object.par.degree
@@ -128,6 +129,7 @@ function transf(object::Fdif, X)
     transf!(object, X, M)
     M
 end
+
 function transf!(object::Fdif, X::Matrix, M::Matrix)
     p = nco(X)
     npoint = object.par.npoint
@@ -204,6 +206,7 @@ function transf(object::Interpl, X)
     transf!(object, X, M)
     M
 end
+
 function transf!(object::Interpl, X::Matrix, M::Matrix)
     n = nro(X)
     wl = object.par.wl 
@@ -280,6 +283,7 @@ function transf(object::Mavg, X)
     transf!(object, X)
     X
 end
+
 function transf!(object::Mavg, X::Matrix)
     n, p = size(X)
     npoint = object.par.npoint
@@ -413,6 +417,7 @@ function transf(object::Savgol, X)
     transf!(object, X)
     X
 end
+
 function transf!(object::Savgol, X::Matrix)
     npoint = object.par.npoint 
     @assert isodd(npoint) && npoint >= 3 "Argument 'npoint' must be odd and >= 3."
@@ -488,6 +493,7 @@ function transf(object::Snv, X)
     transf!(object, X)
     X
 end
+
 function transf!(object::Snv, X::Matrix)
     n, p = size(X)
     centr = object.par.centr 
