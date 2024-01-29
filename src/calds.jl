@@ -58,8 +58,7 @@ axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-function calds(X1, X2; fun = plskern, 
-        kwargs...)
+function calds(X1, X2; fun = plskern, kwargs...)
     fm = fun(X1, X2; kwargs...)
     CalDs(fm)
 end
@@ -71,8 +70,7 @@ Compute predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 * `kwargs` : Optional arguments.
 """ 
-function predict(object::CalDs, X; 
-        kwargs...)
+function predict(object::CalDs, X; kwargs...)
     predict(object.fm, X; kwargs...)
 end
 
