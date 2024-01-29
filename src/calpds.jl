@@ -53,8 +53,7 @@ X2cal = dat.X2cal
 X2val = dat.X2val
 
 ## Fitting the model
-fm = calpds(X1cal, X2cal; npoint = 2, 
-    fun = plskern, nlv = 2) ;
+fm = calpds(X1cal, X2cal; npoint = 2, fun = plskern, nlv = 2) ;
 
 ## Transfer of new spectra X1val 
 ## expected to be close to X2val
