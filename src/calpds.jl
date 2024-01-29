@@ -1,6 +1,5 @@
 """
-    calpds(X1, X2; npoint = 5, 
-        fun = plskern, kwargs...)
+    calpds(X1, X2; npoint = 5, fun = plskern, kwargs...)
 Piecewise direct standardization (PDS) for calibration transfer of spectral data.
 * `X1` : Spectra (n, p) to transfer to the target.
 * `X2` : Target spectra (n, p).
@@ -71,8 +70,7 @@ axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-function calpds(X1, X2; npoint = 5, 
-        fun = plskern, kwargs...)
+function calpds(X1, X2; npoint = 5, fun = plskern, kwargs...)
     p = nco(X1)
     fm = list(p)
     s = list(p)
@@ -98,8 +96,7 @@ function predict(object::CalPds, X; kwargs...)
     m, p = size(X)
     pred = similar(X, m, p)
     @inbounds for i = 1:p 
-        pred[:, i] .= predict(object.fm[i], 
-            vcol(X, object.s[i]); kwargs...).pred
+        pred[:, i] .= predict(object.fm[i], vcol(X, object.s[i]); kwargs...).pred
     end
     (pred = pred,)
 end
