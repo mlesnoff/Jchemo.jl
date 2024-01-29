@@ -40,8 +40,7 @@ X2cal = dat.X2cal
 X2val = dat.X2val
 
 ## Fitting the model
-fm = calds(X1cal, X2cal; 
-    fun = plskern, nlv = 10) ;
+fm = calds(X1cal, X2cal; fun = plskern, nlv = 10) ;
 #fm = calds(X1cal, X2cal; fun = mlrpinv) ;  # less robust
 
 ## Transfer of new spectra X1val 
