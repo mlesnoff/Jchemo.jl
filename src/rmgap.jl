@@ -41,9 +41,14 @@ vlines!(ax, z; linestyle = :dash, color = (:grey, .8))
 f
 ```
 """ 
-function rmgap(X; indexcol, npoint = 5)
-    rmgap!(copy(X); indexcol, npoint)
+function rmgap(X; kwargs...)
+    par = recovkwargs(Par, kwargs)
+    Rmgap(kwargs, par)
 end
+
+#function rmgap(X; indexcol, npoint = 5)
+#    rmgap!(copy(X); indexcol, npoint)
+#end
 
 function rmgap!(X; indexcol, npoint = 5)
     X = ensure_mat(X)
@@ -71,17 +76,24 @@ Compute the preprocessed data from a model.
 """ 
 function transf(object::Rmgap, X)
     X = copy(ensure_mat(X))
+    nco(X) == 1 ? X = reshape(X, 1, :) : nothing
     transf!(object, X)
     X
 end
+
 function transf!(object::Rmgap, X::Matrix)
-    n, p = size(X)
-    centr = object.par.centr 
-    scal = object.par.scal
-    centr ? mu = rowmean(X) : mu = zeros(n)
-    scal ? s = rowstd(X) : s = ones(n)
-    # Not faster: @Threads.threads
-    @inbounds for j = 1:p
-        X[:, j] .= (vcol(X, j) .- mu) ./ s
+    Q = eltype(X)
+    p = nco(X)
+    indexcol = object.par.indexcol
+    @assert indexcol >= 2 "Argument 'indexcol' must be >= 2."
+    npoint = max(npoint, 2)
+    ngap = length(indexcol)
+    @inbounds for i = 1:ngap
+        ind = indexcol[i]
+        wl = max(ind - npoint + 1, 1):ind
+        fm = mlr(convert.(Q, wl), X[:, wl]')
+        pred = Jchemo.predict(fm, ind + 1).pred
+        bias = X[:, ind + 1] .- pred'
+        X[:, (ind + 1):p] .= X[:, (ind + 1):p] .- bias
     end
 end
