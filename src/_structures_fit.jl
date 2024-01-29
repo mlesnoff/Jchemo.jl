@@ -729,6 +729,11 @@ struct Cscale
     xscales::Vector
 end
 
+struct Rmgap
+    kwargs::Base.Pairs
+    par::Par
+end
+
 ## Calibration transfer
 
 struct CalDs

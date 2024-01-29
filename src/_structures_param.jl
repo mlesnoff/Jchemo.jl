@@ -10,6 +10,7 @@ Base.@kwdef mutable struct Par
     degree::Int = 1                         # degree of polynom
     wl::Union{Vector, UnitRange, StepRangeLen} = range(1, 10; length = 3)
     wlfin::Union{Vector, UnitRange, StepRangeLen} = range(1, 10; length = 3)
+    indexcol::Union{Int, Vector{Int}} = 10  # index of columns in rmgap
     ##
     noint::Bool = false                     # intercept in MLR models
     ##

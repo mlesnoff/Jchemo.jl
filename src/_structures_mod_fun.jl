@@ -10,6 +10,8 @@ scale(; kwargs...) = Transformer{Function, Scale, Base.Pairs}(scale, nothing, kw
 cscale(; kwargs...) = Transformer{Function, Cscale, Base.Pairs}(cscale, nothing, kwargs)
 blockscal(; kwargs...) = Transformer{Function, Blockscal, Base.Pairs}(blockscal, nothing, kwargs)
 ##
+rmgap(; kwargs...) = Transformer{Function, Rmgap, Base.Pairs}(rmgap, nothing, kwargs)
+##
 pcasvd(; kwargs...) = Transformer{Function, Pca, Base.Pairs}(pcasvd, nothing, kwargs)
 pcaeigen(; kwargs...) = Transformer{Function, Pca, Base.Pairs}(pcaeigen, nothing, kwargs)
 pcaeigenk(; kwargs...) = Transformer{Function, Pca, Base.Pairs}(pcaeigenk, nothing, kwargs)
