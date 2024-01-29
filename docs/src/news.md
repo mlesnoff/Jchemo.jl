@@ -1,5 +1,16 @@
 # New
 
+## *Version 0.3.3*
+
+- Modifications
+    - Code improvement. 
+
+- Breaking
+    - **rmgap**: works now with a function 'transf'. 
+        Function **rmgap!** was removed.
+
+
+
 ## *Version 0.3.2*
 
 - Modifications

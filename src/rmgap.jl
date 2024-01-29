@@ -1,6 +1,6 @@
 """
-    rmgap(X; indexcol, npoint = 5)
-    rmgap!(X; indexcol, npoint = 5)
+    rmgap(; kwargs...)
+    rmgap(X; kwargs...)
 Remove vertical gaps in spectra (e.g. for ASD).  
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -29,42 +29,24 @@ wlstr = names(dat.X)
 wl = parse.(Float64, wlstr)
 
 wl_target = [1000 ; 1800] 
-u = findall(in(wl_target).(wl))
-f, ax = plotsp(X, wl)
-vlines!(ax, z; linestyle = :dash, color = (:grey, .8))
-f
-## Corrected data
 indexcol = findall(in(wl_target).(wl))
-zX = rmgap(X; indexcol, npoint = 5)  
-f, ax = plotsp(zX, wl)
-vlines!(ax, z; linestyle = :dash, color = (:grey, .8))
+
+f, ax = plotsp(X, wl)
+vlines!(ax, wl_target; linestyle = :dot, color = (:grey, .8))
+f
+
+## Corrected data
+mod = rmgap(; npoint = 5, indexcol)
+fit!(mod, X)
+Xc = transf(mod, X)
+f, ax = plotsp(Xc, wl)
+vlines!(ax, wl_target; linestyle = :dot, color = (:grey, .8))
 f
 ```
 """ 
 function rmgap(X; kwargs...)
     par = recovkwargs(Par, kwargs)
     Rmgap(kwargs, par)
-end
-
-#function rmgap(X; indexcol, npoint = 5)
-#    rmgap!(copy(X); indexcol, npoint)
-#end
-
-function rmgap!(X; indexcol, npoint = 5)
-    X = ensure_mat(X)
-    nco(X) == 1 ? X = reshape(X, 1, :) : nothing
-    p = nco(X)
-    npoint = max(npoint, 2)
-    ngap = length(indexcol)
-    @inbounds for i = 1:ngap
-        ind = indexcol[i]
-        wl = max(ind - npoint + 1, 1):ind
-        fm = mlr(Float64.(wl), X[:, wl]')
-        pred = Jchemo.predict(fm, ind + 1).pred
-        bias = X[:, ind + 1] .- pred'
-        X[:, (ind + 1):p] .= X[:, (ind + 1):p] .- bias
-    end
-    X
 end
 
 """ 
@@ -85,8 +67,8 @@ function transf!(object::Rmgap, X::Matrix)
     Q = eltype(X)
     p = nco(X)
     indexcol = object.par.indexcol
-    @assert indexcol >= 2 "Argument 'indexcol' must be >= 2."
-    npoint = max(npoint, 2)
+    npoint = object.par.npoint
+    @assert npoint >= 2 "Argument 'npoint' must be >= 2."
     ngap = length(indexcol)
     @inbounds for i = 1:ngap
         ind = indexcol[i]

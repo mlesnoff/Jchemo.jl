@@ -279,7 +279,7 @@ export
     blockscal,
     #cubic_spline,
     mavg, mavg!, 
-    rmgap, rmgap!,
+    rmgap,
     savgk, savgol, savgol!,
     snv, snv!, 
     ######---- Calibration ransfer
