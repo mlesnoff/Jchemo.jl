@@ -53,11 +53,12 @@ X2cal = dat.X2cal
 X2val = dat.X2val
 
 ## Fitting the model
-fm = calpds(X1cal, X2cal; npoint = 2, fun = plskern, nlv = 2) ;
+mod = calpds(npoint = 2, fun = plskern, nlv = 2) 
+fit!(mod, X1cal, X2cal)
 
 ## Transfer of new spectra X1val 
 ## expected to be close to X2val
-pred = predict(fm, X1val).pred
+pred = predict(mod, X1val).pred
 
 i = 1
 f = Figure(size = (500, 300))
@@ -71,8 +72,10 @@ f
 """ 
 function calpds(X1, X2; kwargs...)
     par = recovkwargs(Par, kwargs) 
+    @show par.fun
+    @show kwargs
     npoint = par.npoint
-    @assert npoint >= 2 "Argument 'npoint' must be >= 2."
+    @assert npoint >= 2 "Argument 'npoint' must be >= 1."
     p = nco(X1)
     fm = list(p)
     s = list(p)
