@@ -69,7 +69,6 @@ end
 Compute predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
-* `kwargs` : Optional arguments.
 """ 
 function predict(object::CalDs, X)
     predict(object.fm, X)

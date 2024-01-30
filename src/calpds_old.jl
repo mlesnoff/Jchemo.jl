@@ -69,18 +69,16 @@ axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-function calpds(X1, X2; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+function calpds(X1, X2; npoint = 5, fun = plskern, kwargs...)
     p = nco(X1)
     fm = list(p)
     s = list(p)
-    npoint = par.npoint
     npo = repeat([npoint], p)
     npo[1:npoint] .= collect(1:npoint) .- 1
     npo[(p - npoint + 1):p] .= collect(npoint:-1:1) .- 1
     @inbounds for i = 1:p
         s[i] = collect((i - npo[i]):(i + npo[i]))
-        fm[i] = par.fun(vcol(X1, s[i]), vcol(X2, i); kwargs...)
+        fm[i] = fun(vcol(X1, s[i]), vcol(X2, i); kwargs...)
     end
     CalPds(fm, s)
 end
@@ -90,13 +88,14 @@ end
 Compute predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
+* `kwargs` : Optional arguments.
 """ 
-function predict(object::CalPds, X)
+function predict(object::CalPds, X; kwargs...)
     X = ensure_mat(X)
     m, p = size(X)
     pred = similar(X, m, p)
     @inbounds for i = 1:p 
-        pred[:, i] .= predict(object.fm[i], vcol(X, object.s[i])).pred
+        pred[:, i] .= predict(object.fm[i], vcol(X, object.s[i]); kwargs...).pred
     end
     (pred = pred,)
 end
