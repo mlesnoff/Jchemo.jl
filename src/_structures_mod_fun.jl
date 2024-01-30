@@ -12,6 +12,7 @@ blockscal(; kwargs...) = Transformer{Function, Blockscal, Base.Pairs}(blockscal,
 ##
 rmgap(; kwargs...) = Transformer{Function, Rmgap, Base.Pairs}(rmgap, nothing, kwargs)
 calds(; kwargs...) = Predictor{Function, CalDs, Base.Pairs}(calds, nothing, kwargs)
+calpds(; kwargs...) = Predictor{Function, CalDs, Base.Pairs}(calpds, nothing, kwargs)
 ##
 pcasvd(; kwargs...) = Transformer{Function, Pca, Base.Pairs}(pcasvd, nothing, kwargs)
 pcaeigen(; kwargs...) = Transformer{Function, Pca, Base.Pairs}(pcaeigen, nothing, kwargs)
