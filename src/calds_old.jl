@@ -1,11 +1,11 @@
 """
-    calds(X1, X2; kwargs...)
+    calds(X1, X2; fun = plskern, kwargs...)
 Direct standardization (DS) for calibration transfer of spectral data.
 * `X1` : Spectra (n, p) to transfer to the target.
 * `X2` : Target spectra (n, p).
 Keyword arguments:
 * `fun` : Function used as transfer model.  
-* Other optional arguments for function `fun`.
+* `kwargs` : Optional arguments for `fun`.
 
 `X1` and `X2` must represent the same n samples ("standards").
 
@@ -40,13 +40,12 @@ X2cal = dat.X2cal
 X2val = dat.X2val
 
 ## Fitting the model
-mod = calds(fun = plskern, nlv = 10) 
-#mod = calds(fun = mlrpinv)   # less robust
-fit!(mod, X1cal, X2cal)
+fm = calds(X1cal, X2cal; fun = plskern, nlv = 10) ;
+#fm = calds(X1cal, X2cal; fun = mlrpinv) ;  # less robust
 
 ## Transfer of new spectra X1val 
 ## expected to be close to X2val
-pred = predict(mod, X1val).pred
+pred = predict(fm, X1val).pred
 
 i = 1
 f = Figure(size = (500, 300))
@@ -58,9 +57,8 @@ axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-function calds(X1, X2; kwargs...)
-    par = recovkwargs(Par, kwargs)
-    fm = par.fun(X1, X2; kwargs...)
+function calds(X1, X2; fun = plskern, kwargs...)
+    fm = fun(X1, X2; kwargs...)
     CalDs(fm)
 end
 
@@ -71,7 +69,7 @@ Compute predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 * `kwargs` : Optional arguments.
 """ 
-function predict(object::CalDs, X)
-    predict(object.fm, X)
+function predict(object::CalDs, X; kwargs...)
+    predict(object.fm, X; kwargs...)
 end
 
