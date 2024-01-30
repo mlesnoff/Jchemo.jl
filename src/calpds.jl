@@ -71,10 +71,11 @@ f
 """ 
 function calpds(X1, X2; kwargs...)
     par = recovkwargs(Par, kwargs) 
+    npoint = par.npoint
+    @assert npoint >= 2 "Argument 'npoint' must be >= 2."
     p = nco(X1)
     fm = list(p)
     s = list(p)
-    npoint = par.npoint
     npo = repeat([npoint], p)
     npo[1:npoint] .= collect(1:npoint) .- 1
     npo[(p - npoint + 1):p] .= collect(npoint:-1:1) .- 1
