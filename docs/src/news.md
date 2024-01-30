@@ -4,7 +4,7 @@
 
 - Modifications
     - Code improvement. 
-
+    - **calds**, **calpds**: Function 'fit!' was added.
 - Breaking
     - **rmgap**: works now with a function 'transf'. 
         Function **rmgap!** was removed.
