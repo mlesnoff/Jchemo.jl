@@ -106,7 +106,7 @@ end
 
 """
     cosm(X)
-Computed cosinus between the columns of a matrix.
+Compute cosinus between the columns of a matrix.
 * `X` : Data (n, p).
 
 ## Examples
