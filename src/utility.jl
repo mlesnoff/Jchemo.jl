@@ -58,7 +58,7 @@ end
 """
     corm(X, weights::Weight)
     corm(X, Y, weights::Weight)
-Compute weighted correlation matrices.
+Compute a weighted correlation matrix.
 * `X` : Data (n, p).
 * `Y` : Data (n, q).
 * `weights` : Weights (n) of the observations.
@@ -106,15 +106,23 @@ end
 
 """
     cosm(X)
-Compute cosinus between the columns of a matrix.
+    cosm(X, Y)
+Compute a cosinus matrix.
 * `X` : Data (n, p).
+* `Y` : Data (n, q).
+
+The function computes the cosinus matrix: 
+* of the columns of `X`:  ==> (p, p) matrix 
+* or between columns of `X` and `Y` :  ==> (p, q) matrix.
 
 ## Examples
 ```julia
 n, p = 5, 6
 X = rand(n, p)
+Y = rand(n, 3)
 
 cosm(X)
+cosm(X, Y)
 ```
 """
 function cosm(X)
@@ -122,6 +130,16 @@ function cosm(X)
     xnorms = colnorm(X)
     zX = fscale(X, xnorms)
     zX' * zX 
+end
+
+function cosm(X, Y)
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    xnorms = colnorm(X)
+    ynorms = colnorm(Y)
+    zX = fscale(X, xnorms)
+    zY = fscale(Y, ynorms)
+    zX' * zY 
 end
 
 """
@@ -145,7 +163,7 @@ cosv(x, y) = dot(x / norm(x), y / norm(y))
 """
     covm(X, weights::Weight)
     covm(X, Y, weights::Weight)
-Compute weighted covariance matrices.
+Compute a weighted covariance matrix.
 * `X` : Data (n, p).
 * `Y` : Data (n, q).
 * `weights` : Weights (n) of the observations.
