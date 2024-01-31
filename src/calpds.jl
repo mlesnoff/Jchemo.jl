@@ -72,8 +72,6 @@ f
 """ 
 function calpds(X1, X2; kwargs...)
     par = recovkwargs(Par, kwargs) 
-    @show par.fun
-    @show kwargs
     npoint = par.npoint
     @assert npoint >= 1 "Argument 'npoint' must be >= 1."
     p = nco(X1)
