@@ -75,7 +75,7 @@ function calpds(X1, X2; kwargs...)
     @show par.fun
     @show kwargs
     npoint = par.npoint
-    @assert npoint >= 2 "Argument 'npoint' must be >= 1."
+    @assert npoint >= 1 "Argument 'npoint' must be >= 1."
     p = nco(X1)
     fm = list(p)
     s = list(p)
