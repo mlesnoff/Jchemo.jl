@@ -222,7 +222,7 @@ export
     pip,
     ######---- Utilities
     aggstat,
-    colmad, colmean, colnorm, colstd, colsum, colvar,
+    colmad, colmean, colmed, colnorm, colstd, colsum, colvar,
     colmeanskip, colstdskip, colsumskip, colvarskip,
     corm, covm,
     cosm, cosv,
