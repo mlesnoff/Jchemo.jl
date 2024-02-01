@@ -44,6 +44,23 @@ colmean(X) = vec(Statistics.mean(ensure_mat(X); dims = 1))
 colmean(X, weights::Weight) = vec(weights.w' * ensure_mat(X))
 
 """
+    colmed(X)
+Compute column-wise medians of a matrix.
+* `X` : Data (n, p).
+
+Return a vector.
+
+## Examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+
+colmedian(X)
+```
+""" 
+colmed(X) = vec(Statistics.median(ensure_mat(X); dims = 1))
+
+"""
     colnorm(X)
     colnorm(X, w)
 Compute column-wise norms of a matrix.
