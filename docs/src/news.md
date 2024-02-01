@@ -1,5 +1,14 @@
 # New
 
+## *Version 0.3.4*
+
+- News
+    - **colmed**: Colmn-wise medians.
+
+- Modifications
+    - Code improvement. 
+
+
 ## *Version 0.3.3*
 
 - Modifications
