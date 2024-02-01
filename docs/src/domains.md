@@ -343,7 +343,7 @@
 
 - **aggstat** Compute column-wise statistics by group 
     in a dataset
-- **colmad**, **colmean**, **colnorm**, **colstd**, 
+- **colmad**, **colmean**, **colmed**, **colnorm**, **colstd**, 
     **colsum**, **colvar**  Column-wise operations
 - **colmeanskip**, **colstdskip**, **colsumskip**, 
     **colvarskip**: Column-wise operations 
