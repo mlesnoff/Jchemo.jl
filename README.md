@@ -200,6 +200,7 @@ The embedded syntax to fit the model is as follows:
 ## after character ";"
 
 ## Model definition
+## (below, the name 'mod' can be replaced by any other name)
 npoint = 11 ; deriv = 2 ; degree = 3
 mod = savgol(; npoint, deriv, degree)
 
