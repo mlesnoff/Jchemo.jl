@@ -49,13 +49,13 @@ fit!(mod0, Xtrain)
 
 metric = :eucl 
 h = 2 ; k = 100 
-mo = lwmlr(; metric, 
+mod = lwmlr(; metric, 
     h, k) ;
-fit!(mo, Ttrain, ytrain)
-pnames(mo)
-pnames(mo.fm)
+fit!(mod, Ttrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
 
-res = predict(mo, Ttest) ; 
+res = predict(mod, Ttest) ; 
 pnames(res) 
 res.listnn
 res.listd
@@ -73,10 +73,10 @@ x[x .== 0] .= 1e-5
 n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
-mo = lwmlr(; metric = :eucl, 
+mod = lwmlr(; metric = :eucl, 
     h = 1.5, k = 20) ;
-fit!(mo, x, y)
-pred = predict(mo, x).pred 
+fit!(mod, x, y)
+pred = predict(mod, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
 lines!(ax, x, vec(pred), label = "Fitted model")

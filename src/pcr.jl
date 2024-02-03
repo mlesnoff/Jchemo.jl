@@ -32,31 +32,31 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-mo = pcr(; nlv) ;
-fit!(mo, Xtrain, ytrain)
-pnames(mo)
-pnames(mo.fm)
-@head mo.fm.T
+mod = pcr(; nlv) ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+@head mod.fm.T
 
-coef(mo)
-coef(mo; nlv = 3)
+coef(mod)
+coef(mod; nlv = 3)
 
-@head transf(mo, Xtest)
-@head transf(mo, Xtest; nlv = 3)
+@head transf(mod, Xtest)
+@head transf(mod, Xtest; nlv = 3)
 
-res = predict(mo, Xtest)
+res = predict(mod, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-res = predict(mo, Xtest; 
+res = predict(mod, Xtest; 
     nlv = 1:2)
 @head res.pred[1]
 @head res.pred[2]
 
-res = summary(mo, Xtrain) ;
+res = summary(mod, Xtrain) ;
 pnames(res)
 z = res.explvarx
 plotgrid(z.nlv, z.cumpvar; 

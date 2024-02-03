@@ -26,10 +26,10 @@ db = joinpath(path_jdat, "data/challenge2018.jld2")
 pnames(dat)
 X = dat.X    
 Y = dat.Y
-mo = savgol(npoint = 21, 
+mod = savgol(npoint = 21, 
     deriv = 2, degree = 3)
-fit!(mo, X) 
-Xp = transf(mo, X) 
+fit!(mod, X) 
+Xp = transf(mod, X) 
 s = Bool.(Y.test)
 Xtrain = rmrow(Xp, s)
 Ytrain = rmrow(Y, s)
@@ -51,10 +51,10 @@ ytrain = repeat(["in"], ntrain)
 ytest = repeat([cod], ntest)
 
 ## Group description
-mo = pcasvd(nlv = 10) 
-fit!(mo, zXtrain) 
-Ttrain = mo.fm.T
-Ttest = transf(mo, zXtest)
+mod = pcasvd(nlv = 10) 
+fit!(mod, zXtrain) 
+Ttrain = mod.fm.T
+Ttest = transf(mod, zXtest)
 T = vcat(Ttrain, Ttest)
 group = vcat(repeat(["1"], ntrain), 
     repeat(["2"], ntest))
@@ -69,17 +69,17 @@ plotxy(T[:, i], T[:, i + 1], group;
 ## Not required but often more 
 ## efficient
 nlv = 50
-mo = pcasvd(; nlv) ;
-fit!(mo, zXtrain)
-Ttrain = mo.fm.T
-Ttest = transf(mo, zXtest)
+mod = pcasvd(; nlv) ;
+fit!(mod, zXtrain)
+Ttrain = mod.fm.T
+Ttest = transf(mod, zXtest)
 ## Outlierness
-mo = occstah(; nlv,
+mod = occstah(; nlv,
     scal = true)
-fit!(mo, Ttrain) 
-pnames(mo) 
-pnames(mo.fm) 
-@head d = mo.fm.d
+fit!(mod, Ttrain) 
+pnames(mod) 
+pnames(mod.fm) 
+@head d = mod.fm.d
 d = d.dstand
 f, ax = plotxy(1:length(d), d; 
     size = (500, 300), xlabel = "Obs. index", 
@@ -87,14 +87,14 @@ f, ax = plotxy(1:length(d), d;
 hlines!(ax, 1; linestyle = :dot)
 f
 
-res = predict(mo, Ttest) ;
+res = predict(mod, Ttest) ;
 pnames(res)
 @head res.d
 @head res.pred
 tab(res.pred)
 errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
-d1 = mo.fm.d.dstand
+d1 = mod.fm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
 f, ax = plotxy(1:length(d), d, group; 

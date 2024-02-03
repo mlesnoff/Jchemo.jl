@@ -1,45 +1,45 @@
 struct Pipeline
-    mo::Tuple
+    mod::Tuple
 end
 pip(args...) = Pipeline(values(args))
 
 ###### Fit
-function fit!(mo::Pipeline, X, Y = nothing)
-    K = length(mo.mo)
+function fit!(mod::Pipeline, X, Y = nothing)
+    K = length(mod.mod)
     @assert K > 1 "Wrong pipeline: must contain at least 2 models."
     for i = 1:(K - 1)
-        if isa(mo.mo[i], Transformer)
-            fit!(mo.mo[i], X)
-        elseif isa(mo.mo[i], Predictor)
-            fit!(mo.mo[i], X, Y)
+        if isa(mod.mod[i], Transformer)
+            fit!(mod.mod[i], X)
+        elseif isa(mod.mod[i], Predictor)
+            fit!(mod.mod[i], X, Y)
         end
-        X = transf(mo.mo[i], X)
+        X = transf(mod.mod[i], X)
     end
-    if isa(mo.mo[K], Transformer)
-        fit!(mo.mo[K], X)
-    elseif isa(mo.mo[K], Predictor)
-        fit!(mo.mo[K], X, Y)
+    if isa(mod.mod[K], Transformer)
+        fit!(mod.mod[K], X)
+    elseif isa(mod.mod[K], Predictor)
+        fit!(mod.mod[K], X, Y)
     end
 end
 
 ###### Transf
-function transf(mo::Pipeline, X)  
-    K = length(mo.mo)
+function transf(mod::Pipeline, X)  
+    K = length(mod.mod)
     @assert K > 1 "Wrong pipeline: must contain at least 2 models."
     for i = 1:K
-        X = transf(mo.mo[i], X)
+        X = transf(mod.mod[i], X)
     end
     X
 end
 
 ###### Predict 
-function predict(mo::Pipeline, X)
-    K = length(mo.mo)
+function predict(mod::Pipeline, X)
+    K = length(mod.mod)
     @assert K > 1 "Wrong pipeline: must contain at least 2 models."
     for i = 1:(K - 1)
-        X = transf(mo.mo[i], X)
+        X = transf(mod.mod[i], X)
     end
-    predict(mo.mo[K], X)
+    predict(mod.mod[K], X)
 end
 
 

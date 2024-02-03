@@ -55,19 +55,19 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-mo = mbplswest(; nlv, bscal, scal)
-fit!(mo, Xbltrain, ytrain)
-pnames(mo) 
-pnames(mo.fm)
-@head mo.fm.T
-@head transf(mo, Xbltrain)
-transf(mo, Xbltest)
+mod = mbplswest(; nlv, bscal, scal)
+fit!(mod, Xbltrain, ytrain)
+pnames(mod) 
+pnames(mod.fm)
+@head mod.fm.T
+@head transf(mod, Xbltrain)
+transf(mod, Xbltest)
 
-res = predict(mo, Xbltest)
+res = predict(mod, Xbltest)
 res.pred 
 rmsep(res.pred, ytest)
 
-res = summary(mo, Xbltrain) ;
+res = summary(mod, Xbltrain) ;
 pnames(res) 
 res.explvarx
 res.corx2t 

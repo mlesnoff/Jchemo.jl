@@ -96,10 +96,10 @@ nlv = 3
 msparse = :mix ; nvar = 2
 #msparse = :hard ; nvar = 2
 scal = false
-mo = spca(; nlv, msparse, 
+mod = spca(; nlv, msparse, 
     nvar, scal) ;
-fit!(mo, Xtrain) 
-fm = mo.fm ;
+fit!(mod, Xtrain) 
+fm = mod.fm ;
 pnames(fm)
 fm.niter
 fm.sellv 
@@ -107,20 +107,20 @@ fm.sel
 fm.P
 fm.P' * fm.P
 @head T = fm.T
-@head transf(mo, Xtrain)
+@head transf(mod, Xtrain)
 
 @head Ttest = transf(fm, Xtest)
 
-res = summary(mo, Xtrain) ;
+res = summary(mod, Xtrain) ;
 res.explvarx
 res.explvarx_adj
 
 nlv = 3 
 msparse = :soft ; delta = .4 
-mo = spca(; nlv, msparse, 
+mod = spca(; nlv, msparse, 
     delta) ;
-fit!(mo, Xtrain) 
-mo.fm.P
+fit!(mod, Xtrain) 
+mod.fm.P
 ```
 """ 
 function spca(X; kwargs...)

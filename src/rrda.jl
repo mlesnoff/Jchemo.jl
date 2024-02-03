@@ -46,27 +46,27 @@ tab(ytrain)
 tab(ytest)
 
 lb = 1e-5
-mo = rrda(; lb) 
-fit!(mo, Xtrain, ytrain)
-pnames(mo)
-pnames(mo.fm)
-fm = mo.fm ;
+mod = rrda(; lb) 
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
 fm.lev
 fm.ni
 
 coef(fm.fm)
 
-res = predict(mo, Xtest) ;
+res = predict(mod, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
-predict(mo, Xtest; nlv = 1:2).pred
+predict(mod, Xtest; nlv = 1:2).pred
 summary(fm.fm, Xtrain)
 
-predict(mo, Xtest; 
+predict(mod, Xtest; 
     lb = [.1; .01]).pred
 ```
 """ 

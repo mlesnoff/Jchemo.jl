@@ -43,25 +43,25 @@ tab(ytest)
 lb = 1e-5
 kern = :krbf ; gamma = .001 
 scal = true
-mo = krrda(; lb,
+mod = krrda(; lb,
     kern, gamma, scal) 
-fit!(mo, Xtrain, ytrain)
-pnames(mo)
-pnames(mo.fm)
-fm = mo.fm ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
 fm.lev
 fm.ni
 
 coef(fm.fm)
 
-res = predict(mo, Xtest) ;
+res = predict(mod, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
-predict(mo, Xtest; lb = [.1, .001]).pred
+predict(mod, Xtest; lb = [.1, .001]).pred
 ```
 """ 
 function krrda(X, y; kwargs...)

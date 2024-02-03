@@ -54,31 +54,31 @@ tab(ytest)
 
 nlv = 15
 msparse = :mix ; nvar = 10
-mo = splslda(; nlv, 
+mod = splslda(; nlv, 
     msparse, nvar) 
-fit!(mo, Xtrain, ytrain)
-pnames(mo)
-pnames(mo.fm)
-fm = mo.fm ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
 fm.lev
 fm.ni
 
 fmpls = fm.fm.fmpls ; 
 @head fmpls.T
-@head transf(mo, Xtrain)
-@head transf(mo, Xtest)
-@head transf(mo, Xtest; nlv = 3)
+@head transf(mod, Xtrain)
+@head transf(mod, Xtest)
+@head transf(mod, Xtest; nlv = 3)
 
 coef(fmpls)
 
-res = predict(mo, Xtest) ;
+res = predict(mod, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
-predict(mo, Xtest; nlv = 1:2).pred
+predict(mod, Xtest; nlv = 1:2).pred
 summary(fm.fm, Xtrain)
 ```
 """ 

@@ -45,28 +45,28 @@ y = Y[:, 1]
 ycla = [1; 1; 1; 2; 2]
 
 nlv = 3
-mo = plskern(; nlv) ;
-fit!(mo, X, y)
-res = vip(mo.fm)
+mod = plskern(; nlv) ;
+fit!(mod, X, y)
+res = vip(mod.fm)
 pnames(res)
 res.imp
 
-fit!(mo, X, Y)
-vip(mo.fm).imp
-vip(mo.fm, Y).imp
+fit!(mod, X, Y)
+vip(mod.fm).imp
+vip(mod.fm, Y).imp
 
-mo = plsrda(; nlv) ;
-fit!(mo, X, ycla)
-pnames(mo.fm)
-fm = mo.fm.fm ;
+mod = plsrda(; nlv) ;
+fit!(mod, X, ycla)
+pnames(mod.fm)
+fm = mod.fm.fm ;
 vip(fm).imp
 Ydummy = dummy(ycla).Y
 vip(fm, Ydummy).imp
 
-mo = plslda(; nlv) ;
-fit!(mo, X, ycla)
-pnames(mo.fm.fm)
-fm = mo.fm.fm.fmpls ;
+mod = plslda(; nlv) ;
+fit!(mod, X, ycla)
+pnames(mod.fm.fm)
+fm = mod.fm.fm.fmpls ;
 vip(fm).imp
 vip(fm, Ydummy).imp
 ```

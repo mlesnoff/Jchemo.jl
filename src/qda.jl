@@ -47,15 +47,15 @@ ntrain = n - ntest
 tab(ytrain)
 tab(ytest)
 
-mo = qda()
-fit!(mo, Xtrain, ytrain)
-pnames(mo)
-pnames(mo.fm)
-fm = mo.fm ;
+mod = qda()
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
 fm.lev
 fm.ni
 
-res = predict(mo, Xtest) ;
+res = predict(mod, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
@@ -63,11 +63,11 @@ errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
 ## With regularization
-mo = qda(; alpha = .5)
-#mo = qda(; alpha = 1) # = LDA
-fit!(mo, Xtrain, ytrain)
-mo.fm.Wi
-res = predict(mo, Xtest) ;
+mod = qda(; alpha = .5)
+#mod = qda(; alpha = 1) # = LDA
+fit!(mod, Xtrain, ytrain)
+mod.fm.Wi
+res = predict(mod, Xtest) ;
 errp(res.pred, ytest)
 ```
 """ 

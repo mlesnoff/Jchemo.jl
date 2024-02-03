@@ -52,13 +52,13 @@ p = nco(X)
 
 n_subfeatures = p / 3 
 max_depth = 15
-mo = treer_dt(; n_subfeatures, 
+mod = treer_dt(; n_subfeatures, 
     max_depth) ;
-fit!(mo, Xtrain, ytrain)
-pnames(mo)
-pnames(mo.fm)
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
 
-res = predict(mo, Xtest)
+res = predict(mod, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5),

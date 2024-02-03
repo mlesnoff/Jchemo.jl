@@ -36,12 +36,12 @@ scal = false
 #scal = true
 gs = false
 #gs = true
-mo = pcanipalsmiss(; nlv, 
+mod = pcanipalsmiss(; nlv, 
     tol, gs, maxit = 500, scal) ;
-fit!(mo, X)
-pnames(mo) 
-pnames(mo.fm)
-fm = mo.fm ;
+fit!(mod, X)
+pnames(mod) 
+pnames(mod.fm)
+fm = mod.fm ;
 fm.niter
 fm.sv
 fm.P
@@ -52,10 +52,10 @@ fm.T' * fm.T
 fm.P' * fm.P
 
 ## Impute missing data in X
-mo = pcanipalsmiss(; nlv = 2, 
+mod = pcanipalsmiss(; nlv = 2, 
     gs = true) ;
-fit!(mo, X)
-Xfit = xfit(mo.fm)
+fit!(mod, X)
+Xfit = xfit(mod.fm)
 s = ismissing.(X)
 X_imput = copy(X)
 X_imput[s] .= Xfit[s]

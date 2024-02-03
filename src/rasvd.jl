@@ -67,19 +67,19 @@ q = nco(Y)
 
 nlv = 2
 bscal = :frob ; tau = 1e-4
-mo = rasvd(; nlv, bscal, 
+mod = rasvd(; nlv, bscal, 
     tau)
-fit!(mo, X, Y)
-pnames(mo)
-pnames(mo.fm)
+fit!(mod, X, Y)
+pnames(mod)
+pnames(mod.fm)
 
-@head mo.fm.Tx
-@head transfbl(mo, X, Y).Tx
+@head mod.fm.Tx
+@head transfbl(mod, X, Y).Tx
 
-@head mo.fm.Ty
-@head transfbl(mo, X, Y).Ty
+@head mod.fm.Ty
+@head transfbl(mod, X, Y).Ty
 
-res = summary(mo, X, Y) ;
+res = summary(mod, X, Y) ;
 pnames(res)
 res.explvarx
 res.cort2t 

@@ -79,24 +79,24 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-mo = mbpca(; nlv, bscal, scal)
-fit!(mo, Xbl)
-pnames(mo) 
-pnames(mo.fm)
+mod = mbpca(; nlv, bscal, scal)
+fit!(mod, Xbl)
+pnames(mod) 
+pnames(mod.fm)
 ## Global scores 
-@head mo.fm.T
-@head transf(mo, Xbl)
-transf(mo, Xblnew)
+@head mod.fm.T
+@head transf(mod, Xbl)
+transf(mod, Xblnew)
 ## Blocks scores
 i = 1
-@head mo.fm.Tbl[i]
-@head transfbl(mo, Xbl)[i]
+@head mod.fm.Tbl[i]
+@head transfbl(mod, Xbl)[i]
 
-res = summary(mo, Xbl) ;
+res = summary(mod, Xbl) ;
 pnames(res) 
 res.explvarx
 res.contr_block
-res.explX   # = mo.fm.lb if bscal = :frob
+res.explX   # = mod.fm.lb if bscal = :frob
 rowsum(Matrix(res.explX))
 res.corx2t 
 res.cortb2t

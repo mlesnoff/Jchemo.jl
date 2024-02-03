@@ -71,33 +71,33 @@ ytest = rmrow(y, s)
 
 lb = 1e-3
 kern = :krbf ; gamma = 1e-1
-mo = krr(; lb, kern, 
+mod = krr(; lb, kern, 
     gamma) ;
-fit!(mo, Xtrain, ytrain)
-pnames(mo)
-pnames(mo.fm)
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
 
-coef(mo)
+coef(mod)
 
-res = predict(mo, Xtest)
+res = predict(mod, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-coef(mo; lb = 1e-1)
-res = predict(mo, Xtest; 
+coef(mod; lb = 1e-1)
+res = predict(mod, Xtest; 
     lb = [.1 ; .01])
 @head res.pred[1]
 @head res.pred[2]
 
 lb = 1e-3
 kern = :kpol ; degree = 1
-mo = krr(; lb, kern, 
+mod = krr(; lb, kern, 
     degree) ;
-fit!(mo, Xtrain, ytrain)
-res = predict(mo, Xtest)
+fit!(mod, Xtrain, ytrain)
+res = predict(mod, Xtest)
 rmsep(res.pred, ytest)
 
 ####### Example of fitting the function sinc(x)
@@ -109,9 +109,9 @@ zy = sin.(abs.(x)) ./ abs.(x)
 y = zy + .2 * randn(n) 
 lb = 1e-1
 kern = :krbf ; gamma = 1 / 3
-mo = krr(; lb, kern, gamma) ;
-fit!(mo, x, y)
-pred = predict(mo, x).pred 
+mod = krr(; lb, kern, gamma) ;
+fit!(mod, x, y)
+pred = predict(mod, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
 lines!(ax, x, vec(pred), label = "Fitted model")

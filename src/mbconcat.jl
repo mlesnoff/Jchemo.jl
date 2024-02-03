@@ -17,10 +17,10 @@ Xbl = mblock(X, listbl)
 Xblnew = mblock(Xnew, listbl) 
 @head Xbl[3]
 
-mo = mbconcat() 
-fit!(mo, Xbl)
-transf(mo, Xbl)
-transf(mo, Xblnew)
+mod = mbconcat() 
+fit!(mod, Xbl)
+transf(mod, Xbl)
+transf(mod, Xblnew)
 ```
 """
 function mbconcat(Xbl)

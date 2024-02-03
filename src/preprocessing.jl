@@ -25,10 +25,10 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-mo = detrend(degree = 2)
-fit!(mo, Xtrain)
-Xptrain = transf(mo, Xtrain)
-Xptest = transf(mo, Xtest)
+mod = detrend(degree = 2)
+fit!(mod, Xtrain)
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
 plotsp(Xptrain, wl).f
 plotsp(Xptest, wl).f
 ```
@@ -99,10 +99,10 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-mo = fdif(npoint = 2) 
-fit!(mo, Xtrain)
-Xptrain = transf(mo, Xtrain)
-Xptest = transf(mo, Xtest)
+mod = fdif(npoint = 2) 
+fit!(mod, Xtrain)
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
 plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
@@ -176,10 +176,10 @@ plotsp(dat.X, wl; nsamp = 20).f
 
 wlfin = range(500, 2400, length = 10)
 #wlfin = collect(range(500, 2400, length = 10))
-mo = interpl(; wl, wlfin)
-fit!(mo, Xtrain)
-Xptrain = transf(mo, Xtrain)
-Xptest = transf(mo, Xtest)
+mod = interpl(; wl, wlfin)
+fit!(mod, Xtrain)
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
 plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
@@ -258,10 +258,10 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-mo = mavg(npoint = 10) 
-fit!(mo, Xtrain)
-Xptrain = transf(mo, Xtrain)
-Xptest = transf(mo, Xtest)
+mod = mavg(npoint = 10) 
+fit!(mod, Xtrain)
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
 plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
@@ -391,11 +391,11 @@ wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
 npoint = 11 ; deriv = 2 ; degree = 2
-mo = savgol(; npoint, deriv, 
+mod = savgol(; npoint, deriv, 
     degree) 
-fit!(mo, Xtrain)
-Xptrain = transf(mo, Xtrain)
-Xptest = transf(mo, Xtest)
+fit!(mod, Xtrain)
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
 plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
@@ -467,10 +467,10 @@ wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
 centr = true ; scal = true
-mo = snv(; centr, scal) 
-fit!(mo, Xtrain)
-Xptrain = transf(mo, Xtrain)
-Xptest = transf(mo, Xtest)
+mod = snv(; centr, scal) 
+fit!(mod, Xtrain)
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
 plotsp(Xptrain).f
 plotsp(Xptest).f
 

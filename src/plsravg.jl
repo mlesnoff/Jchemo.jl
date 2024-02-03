@@ -58,10 +58,10 @@ ntest = nro(Xtest)
 nlv = 0:30
 #nlv = 5:20
 #nlv = 25
-mo = plsravg(; nlv) ;
-fit!(mo, Xtrain, ytrain)
+mod = plsravg(; nlv) ;
+fit!(mod, Xtrain, ytrain)
 
-res = predict(mo, Xtest)
+res = predict(mod, Xtest)
 @head res.pred
 res.predlv   # predictions for each nb. of LVs 
 @show rmsep(res.pred, ytest)

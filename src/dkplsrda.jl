@@ -44,30 +44,30 @@ tab(ytest)
 nlv = 15
 kern = :krbf ; gamma = .001 
 scal = true
-mo = dkplsrda(; nlv,
+mod = dkplsrda(; nlv,
     kern, gamma, scal) 
-fit!(mo, Xtrain, ytrain)
-pnames(mo)
-pnames(mo.fm)
-fm = mo.fm ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
 fm.lev
 fm.ni
 
 @head fm.fm.fm.T
-@head transf(mo, Xtrain)
-@head transf(mo, Xtest)
-@head transf(mo, Xtest; nlv = 3)
+@head transf(mod, Xtrain)
+@head transf(mod, Xtest)
+@head transf(mod, Xtest; nlv = 3)
 
 coef(fm.fm)
 
-res = predict(mo, Xtest) ;
+res = predict(mod, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
-predict(mo, Xtest; nlv = 1:2).pred
+predict(mod, Xtest; nlv = 1:2).pred
 ```
 """ 
 function dkplsrda(X, y; kwargs...)

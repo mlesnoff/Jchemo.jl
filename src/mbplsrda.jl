@@ -52,20 +52,20 @@ scal = false
 #scal = true
 bscal = :none
 #bscal = :frob
-mo = mbplsrda(; nlv, bscal, scal)
-fit!(mo, Xbltrain, ytrain) 
-pnames(mo) 
+mod = mbplsrda(; nlv, bscal, scal)
+fit!(mod, Xbltrain, ytrain) 
+pnames(mod) 
 
-@head mo.fm.fm.T 
-@head transf(mo, Xbltrain)
-@head transf(mo, Xbltest)
+@head mod.fm.fm.T 
+@head transf(mod, Xbltrain)
+@head transf(mod, Xbltest)
 
-res = predict(mo, Xbltest) ; 
+res = predict(mod, Xbltest) ; 
 @head res.pred 
 @show errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
-predict(mo, Xbltest; nlv = 1:2).pred
+predict(mod, Xbltest; nlv = 1:2).pred
 ```
 """
 function mbplsrda(Xbl, y; kwargs...)

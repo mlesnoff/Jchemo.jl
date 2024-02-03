@@ -62,13 +62,13 @@ ytest = rmrow(y, s)
 nlvdis = 5 ; metric = :mah 
 #nlvdis = 0 ; metric = :eucl 
 h = 1 ; k = 5 
-mo = knnr(; nlvdis, metric, 
+mod = knnr(; nlvdis, metric, 
     h, k) ;
-fit!(mo, Xtrain, ytrain)
-pnames(mo)
-pnames(mo.fm)
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
 
-res = predict(mo, Xtest) ; 
+res = predict(mod, Xtest) ; 
 pnames(res) 
 res.listnn
 res.listd
@@ -86,9 +86,9 @@ x[x .== 0] .= 1e-5
 n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
-mo = knnr(; k = 15, h = 5) ;
-fit!(mo, x, y)
-pred = predict(mo, x).pred 
+mod = knnr(; k = 15, h = 5) ;
+fit!(mod, x, y)
+pred = predict(mod, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
 lines!(ax, x, vec(pred), label = "Fitted model")

@@ -87,28 +87,28 @@ ytest = rmrow(y, s)
 nlv = 15
 msparse = :mix ; nvar = 5
 #msparse = :hard ; nvar = 5
-mo = splskern(; nlv, msparse, 
+mod = splskern(; nlv, msparse, 
     nvar) ;
-fit!(mo, Xtrain, ytrain)
-pnames(mo)
-pnames(mo.fm)
-@head mo.fm.T
-@head mo.fm.W
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+@head mod.fm.T
+@head mod.fm.W
 
-coef(mo)
-coef(mo; nlv = 3)
+coef(mod)
+coef(mod; nlv = 3)
 
-@head transf(mo, Xtest)
-@head transf(mo, Xtest; nlv = 3)
+@head transf(mod, Xtest)
+@head transf(mod, Xtest; nlv = 3)
 
-res = predict(mo, Xtest)
+res = predict(mod, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-res = summary(mo, Xtrain) ;
+res = summary(mod, Xtrain) ;
 pnames(res)
 z = res.explvarx
 plotgrid(z.nlv, z.cumpvar; 

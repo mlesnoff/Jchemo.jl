@@ -40,14 +40,14 @@ wl = parse.(Float64, wlst)
 n = nro(X)
 
 nlv = 6
-mo = pcasph(; nlv) ; 
-#mo = pcasvd(; nlv) ; 
-fit!(mo, X)
-pnames(mo)
-pnames(mo.fm)
-@head T = mo.fm.T
+mod = pcasph(; nlv) ; 
+#mod = pcasvd(; nlv) ; 
+fit!(mod, X)
+pnames(mod)
+pnames(mod.fm)
+@head T = mod.fm.T
 ## Same as:
-transf(mo, X)
+transf(mod, X)
 
 i = 1
 plotxy(T[:, i], T[:, i + 1]; zeros = true,

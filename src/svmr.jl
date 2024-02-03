@@ -64,13 +64,13 @@ p = nco(X)
 
 kern = :krbf ; gamma = .1
 cost = 1000 ; epsilon = 1
-mo = svmr(; kern, gamma,
+mod = svmr(; kern, gamma,
     cost, epsilon) ;
-fit!(mo, Xtrain, ytrain)
-pnames(mo)
-pnames(mo.fm)
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
 
-res = predict(mo, Xtest)
+res = predict(mod, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5),
@@ -85,9 +85,9 @@ n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
 kern = :krbf ; gamma = .1
-mo = svmr(; kern, gamma) ;
-fit!(mo, x, y)
-pred = predict(mo, x).pred 
+mod = svmr(; kern, gamma) ;
+fit!(mod, x, y)
+pred = predict(mod, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
 lines!(ax, x, vec(pred), label = "Fitted model")

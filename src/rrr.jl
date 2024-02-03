@@ -63,19 +63,19 @@ ytest = rmrow(y, s)
 
 nlv = 1
 tau = 1e-4
-mo = rrr(; nlv, tau) ;
-fit!(mo, Xtrain, ytrain)
-pnames(mo)
-pnames(mo.fm)
-@head mo.fm.T
+mod = rrr(; nlv, tau) ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+@head mod.fm.T
 
-coef(mo)
-coef(mo; nlv = 3)
+coef(mod)
+coef(mod; nlv = 3)
 
-@head transf(mo, Xtest)
-@head transf(mo, Xtest; nlv = 3)
+@head transf(mod, Xtest)
+@head transf(mod, Xtest; nlv = 3)
 
-res = predict(mo, Xtest)
+res = predict(mod, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5),

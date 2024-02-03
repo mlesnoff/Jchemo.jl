@@ -46,32 +46,32 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-mo = plslda(; nlv) 
-#mo = plslda(; nlv, prior = :prop) 
-#mo = plsqda(; nlv) 
-fit!(mo, Xtrain, ytrain)
-pnames(mo)
-pnames(mo.fm)
-fm = mo.fm ;
+mod = plslda(; nlv) 
+#mod = plslda(; nlv, prior = :prop) 
+#mod = plsqda(; nlv) 
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
 fm.lev
 fm.ni
 
 fmpls = fm.fm.fmpls ;
 @head fmpls.T
-@head transf(mo, Xtrain)
-@head transf(mo, Xtest)
-@head transf(mo, Xtest; nlv = 3)
+@head transf(mod, Xtrain)
+@head transf(mod, Xtest)
+@head transf(mod, Xtest; nlv = 3)
 
 coef(fmpls)
 
-res = predict(mo, Xtest) ;
+res = predict(mod, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
-predict(mo, Xtest; nlv = 1:2).pred
+predict(mod, Xtest; nlv = 1:2).pred
 summary(fmpls, Xtrain)
 ```
 """ 

@@ -1,7 +1,7 @@
 """
-    viperm(mo, X, Y; rep = 50, psamp = .3, score = rmsep)
+    viperm(mod, X, Y; rep = 50, psamp = .3, score = rmsep)
 Variable importance by direct permutations.
-* `mo` : Model to evaluate.
+* `mod` : Model to evaluate.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).  
 Keyword arguments:
@@ -67,8 +67,8 @@ nam = namy[j]
 ytrain = Ytrain[:, nam]
 ytest = Ytest[:, nam]
 
-mo = plskern(nlv = 9)
-res = viperm(mo, Xtrain, ytrain; rep = 50, score = rmsep) ;
+mod = plskern(nlv = 9)
+res = viperm(mod, Xtrain, ytrain; rep = 50, score = rmsep) ;
 z = vec(res.imp)
 f = Figure(size = (500, 400))
 ax = Axis(f[1, 1];
@@ -79,8 +79,8 @@ u = [910; 950]
 vlines!(ax, u; color = :grey, linewidth = 1)
 f
 
-mo = rfr_dt(n_trees = 10, max_depth = 2000, min_samples_leaf = 5)
-res = viperm(mo, Xtrain, ytrain; rep = 50)
+mod = rfr_dt(n_trees = 10, max_depth = 2000, min_samples_leaf = 5)
+res = viperm(mod, Xtrain, ytrain; rep = 50)
 z = vec(res.imp)
 f = Figure(size = (500, 400))
 ax = Axis(f[1, 1];
@@ -92,7 +92,7 @@ vlines!(ax, u; color = :grey, linewidth = 1)
 f
 ```
 """
-function viperm(mo, X, Y; rep = 50, psamp = .3, score = rmsep)
+function viperm(mod, X, Y; rep = 50, psamp = .3, score = rmsep)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)
@@ -111,8 +111,8 @@ function viperm(mo, X, Y; rep = 50, psamp = .3, score = rmsep)
         Ycal .= Y[s.train, :]
         Xval .= X[s.test, :]
         Yval .= Y[s.test, :]
-        fit!(mo, Xcal, Ycal)
-        pred = predict(mo, Xval).pred
+        fit!(mod, Xcal, Ycal)
+        pred = predict(mod, Xval).pred
         score0 = score(pred, Yval)
         zXval = similar(Xval)
         @inbounds for j = 1:p
@@ -121,7 +121,7 @@ function viperm(mo, X, Y; rep = 50, psamp = .3, score = rmsep)
             zs = sample(1:nval, nval, replace = false)
             ## End  
             zXval[:, j] .= zXval[zs, j]
-            pred .= predict(mo, zXval).pred
+            pred .= predict(mod, zXval).pred
             zscore = score(pred, Yval)
             res[j, :, i] = zscore .- score0
         end

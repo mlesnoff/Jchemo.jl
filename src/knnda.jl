@@ -54,16 +54,16 @@ tab(ytest)
 
 nlvdis = 25 ; metric = :mah
 h = 2 ; k = 10
-mo = knnda(; nlvdis, 
+mod = knnda(; nlvdis, 
     metric, h, k) 
-fit!(mo, Xtrain, ytrain)
-pnames(mo)
-pnames(mo.fm)
-fm = mo.fm ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+fm = mod.fm ;
 fm.lev
 fm.ni
 
-res = predict(mo, Xtest) ; 
+res = predict(mod, Xtest) ; 
 pnames(res) 
 res.listnn
 res.listd
