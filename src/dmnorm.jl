@@ -40,9 +40,9 @@ y = dat.X[:, 5]
 n = nro(X)
 tab(y) 
 
-mod = fda(nlv = 2)
-fit!(mod, X, y)
-@head T = mod.fm.T 
+mo = fda(nlv = 2)
+fit!(mo, X, y)
+@head T = mo.fm.T 
 n, p = size(T)
 
 #### Probability density in the FDA score space (2D)

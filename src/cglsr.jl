@@ -68,14 +68,14 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 5 ; scal = true
-mod = cglsr(; nlv, scal) ;
-fit!(mod, Xtrain, ytrain)
-pnames(mod.fm) 
-@head mod.fm.B
-coef(mod.fm).B
-coef(mod.fm).int
+mo = cglsr(; nlv, scal) ;
+fit!(mo, Xtrain, ytrain)
+pnames(mo.fm) 
+@head mo.fm.B
+coef(mo.fm).B
+coef(mo.fm).int
 
-pred = predict(mod, Xtest).pred
+pred = predict(mo, Xtest).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 

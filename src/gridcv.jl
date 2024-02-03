@@ -1,8 +1,8 @@
 """
-    gridcv(mod, X, Y; segm, score, pars = nothing, nlv = nothing, 
+    gridcv(mo, X, Y; segm, score, pars = nothing, nlv = nothing, 
         lb = nothing, verbose = false)
 Cross-validation (CV) of a model over a grid of parameters.
-* `mod` : Model to evaluate.
+* `mo` : Model to evaluate.
 * `X` : Training X-data (n, p).
 * `Y` : Training Y-data (n, q).
 Keyword arguments: 
@@ -20,7 +20,7 @@ Keyword arguments:
     regularization parameter "lambda".
 
 The function is used for grid-search: it computed a prediction score 
-(= error rate) for model `mod` over the combinations of parameters 
+(= error rate) for model `mo` over the combinations of parameters 
 defined in `pars`. 
     
 For models based on LV or ridge regularization, using arguments `nlv` 
@@ -44,10 +44,10 @@ X = dat.X
 y = dat.Y.tbc
 year = dat.Y.year
 tab(year)
-mod = savgol(npoint = 21, 
+mo = savgol(npoint = 21, 
     deriv = 2, degree = 2)
-fit!(mod, X)
-Xp = transf(mod, X)
+fit!(mo, X)
+Xp = transf(mo, X)
 s = year .<= 2012
 Xtrain = Xp[s, :]
 ytrain = y[s]
@@ -66,9 +66,9 @@ segm = segmkf(ntrain, K; rep)
 #segm = segmts(ntrain, m; rep)
 
 ####-- Plsr
-mod = plskern()
+mo = plskern()
 nlv = 0:30
-rescv = gridcv(mod, Xtrain, ytrain; 
+rescv = gridcv(mo, Xtrain, ytrain; 
     segm, score = rmsep, nlv) ;
 pnames(rescv)
 res = rescv.res 
@@ -76,9 +76,9 @@ plotgrid(res.nlv, res.y1; step = 2,
     xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-mod = plskern(nlv = res.nlv[u])
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+mo = plskern(nlv = res.nlv[u])
+fit!(mo, Xtrain, ytrain)
+pred = predict(mo, Xtest).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
@@ -86,7 +86,7 @@ plotxy(vec(pred), ytest; color = (:red, .5),
 
 ## Adding pars 
 pars = mpar(scal = [false; true])
-rescv = gridcv(mod, Xtrain, ytrain; 
+rescv = gridcv(mo, Xtrain, ytrain; 
     segm, score = rmsep, pars, nlv) ;
 res = rescv.res 
 typ = res.scal
@@ -94,10 +94,10 @@ plotgrid(res.nlv, res.y1, typ; step = 2,
     xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-mod = plskern(nlv = res.nlv[u], 
+mo = plskern(nlv = res.nlv[u], 
     scal = res.scal[u])
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+fit!(mo, Xtrain, ytrain)
+pred = predict(mo, Xtest).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
@@ -105,8 +105,8 @@ plotxy(vec(pred), ytest; color = (:red, .5),
 
 ####-- Rr 
 lb = (10).^(-8:.1:3)
-mod = rr() 
-rescv = gridcv(mod, Xtrain, ytrain; 
+mo = rr() 
+rescv = gridcv(mo, Xtrain, ytrain; 
     segm, score = rmsep, lb) ;
 res = rescv.res 
 loglb = log.(10, res.lb)
@@ -114,9 +114,9 @@ plotgrid(loglb, res.y1; step = 2,
     xlabel = "log(lambda)", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-mod = rr(lb = res.lb[u])
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+mo = rr(lb = res.lb[u])
+fit!(mo, Xtrain, ytrain)
+pred = predict(mo, Xtest).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
@@ -124,7 +124,7 @@ plotxy(vec(pred), ytest; color = (:red, .5),
     
 ## Adding pars 
 pars = mpar(scal = [false; true])
-rescv = gridcv(mod, Xtrain, ytrain; 
+rescv = gridcv(mo, Xtrain, ytrain; 
     segm, score = rmsep, pars, lb) ;
 res = rescv.res 
 loglb = log.(10, res.lb)
@@ -133,21 +133,21 @@ plotgrid(loglb, res.y1, typ; step = 2,
     xlabel = "log(lambda)", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-mod = rr(lb = res.lb[u],
+mo = rr(lb = res.lb[u],
     scal = res.scal[u])
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+fit!(mo, Xtrain, ytrain)
+pred = predict(mo, Xtest).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
 ####-- Kplsr 
-mod = kplsr()
+mo = kplsr()
 nlv = 0:30
 gamma = (10).^(-5:1.:5)
 pars = mpar(gamma = gamma)
-rescv = gridcv(mod, Xtrain, ytrain; 
+rescv = gridcv(mo, Xtrain, ytrain; 
     segm, score = rmsep, pars, nlv) ;
 res = rescv.res 
 loggamma = round.(log.(10, res.gamma), digits = 1)
@@ -156,10 +156,10 @@ plotgrid(res.nlv, res.y1, loggamma; step = 2,
     leg_title = "Log(gamma)").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-mod = kplsr(nlv = res.nlv[u], 
+mo = kplsr(nlv = res.nlv[u], 
     gamma = res.gamma[u])
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+fit!(mo, Xtrain, ytrain)
+pred = predict(mo, Xtest).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
@@ -172,18 +172,18 @@ k = [1; 5; 10; 20; 50 ; 100]
 pars = mpar(nlvdis = nlvdis, 
     metric = metric, h = h, k = k)
 length(pars[1]) 
-mod = knnr()
-rescv = gridcv(mod, Xtrain, ytrain;
+mo = knnr()
+rescv = gridcv(mo, Xtrain, ytrain;
     segm, score = rmsep, pars, 
     verbose = true) ;
 res = rescv.res 
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-mod = knnr(nlvdis = res.nlvdis[u],
+mo = knnr(nlvdis = res.nlvdis[u],
     metric = res.metric[u], h = res.h[u], 
     k = res.k[u])
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+fit!(mo, Xtrain, ytrain)
+pred = predict(mo, Xtest).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
@@ -196,8 +196,8 @@ pars = mpar(nlvdis = nlvdis,
     metric = metric, h = h, k = k)
 length(pars[1]) 
 nlv = 0:20
-mod = lwplsr()
-rescv = gridcv(mod, Xtrain, ytrain;
+mo = lwplsr()
+rescv = gridcv(mo, Xtrain, ytrain;
     segm, score = rmsep, pars, nlv, 
     verbose = true) ;
 res = rescv.res 
@@ -206,11 +206,11 @@ plotgrid(res.nlv, res.y1, group;
     xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-mod = lwplsr(nlvdis = res.nlvdis[u],
+mo = lwplsr(nlvdis = res.nlvdis[u],
     metric = res.metric[u], h = res.h[u], 
     k = res.k[u], nlv = res.nlv[u])
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+fit!(mo, Xtrain, ytrain)
+pred = predict(mo, Xtest).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
@@ -224,18 +224,18 @@ pars = mpar(nlvdis = nlvdis,
     metric = metric, h = h, k = k,
     nlv = nlv)
 length(pars[1]) 
-mod = lwplsravg()
-rescv = gridcv(mod, Xtrain, ytrain;
+mo = lwplsravg()
+rescv = gridcv(mo, Xtrain, ytrain;
     segm, score = rmsep, pars, 
     verbose = true) ;
 res = rescv.res 
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-mod = lwplsr(nlvdis = res.nlvdis[u],
+mo = lwplsr(nlvdis = res.nlvdis[u],
     metric = res.metric[u], h = res.h[u], 
     k = res.k[u], nlv = res.nlv[u])
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+fit!(mo, Xtrain, ytrain)
+pred = predict(mo, Xtest).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5),
     bisect = true, xlabel = "Prediction", 
@@ -271,11 +271,11 @@ segm = segmkf(ntrain, K; rep)
 #segm = segmts(ntrain, m; rep)
 
 ####-- Plslda
-mod = plslda()
+mo = plslda()
 nlv = 1:30
 prior = [:unif; :prop]
 pars = mpar(prior = prior)
-rescv = gridcv(mod, Xtrain, ytrain; 
+rescv = gridcv(mo, Xtrain, ytrain; 
     segm, score = errp, pars, nlv)
 res = rescv.res
 typ = res.prior
@@ -283,17 +283,17 @@ plotgrid(res.nlv, res.y1, typ; step = 2,
     xlabel = "Nb. LVs", ylabel = "ERR").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-mod = plslda(nlv = res.nlv[u], 
+mo = plslda(nlv = res.nlv[u], 
     prior = res.prior[u])
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+fit!(mo, Xtrain, ytrain)
+pred = predict(mo, Xtest).pred
 @show errp(pred, ytest)
 confusion(pred, ytest).pct
 ```
 """
-function gridcv(mod, X, Y; segm, score, pars = nothing, nlv = nothing, 
+function gridcv(mo, X, Y; segm, score, pars = nothing, nlv = nothing, 
         lb = nothing, verbose = false)
-    fun = mod.fun 
+    fun = mo.fun 
     if isnothing(nlv) && isnothing(lb)
         res = gridcv_br(X, Y; segm, fun, score, pars, verbose)
     elseif !isnothing(nlv)

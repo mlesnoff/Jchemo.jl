@@ -55,16 +55,16 @@ tab(ytest)
 
 nlvdis = 25 ; metric = :mah
 h = 2 ; k = 100
-mod = lwplsrda(; nlvdis, 
+mo = lwplsrda(; nlvdis, 
     metric, h, k) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+fit!(mo, Xtrain, ytrain)
+pnames(mo)
+pnames(mo.fm)
+fm = mo.fm ;
 fm.lev
 fm.ni
 
-res = predict(mod, Xtest) ; 
+res = predict(mo, Xtest) ; 
 pnames(res) 
 res.listnn
 res.listd

@@ -97,26 +97,26 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-mod = comdim(; nlv, bscal, scal)
-fit!(mod, Xbl)
-pnames(mod) 
-pnames(mod.fm)
+mo = comdim(; nlv, bscal, scal)
+fit!(mo, Xbl)
+pnames(mo) 
+pnames(mo.fm)
 ## Global scores 
-@head mod.fm.T
-@head transf(mod, Xbl)
-transf(mod, Xblnew)
+@head mo.fm.T
+@head transf(mo, Xbl)
+transf(mo, Xblnew)
 ## Blocks scores
 i = 1
-@head mod.fm.Tbl[i]
-@head transfbl(mod, Xbl)[i]
+@head mo.fm.Tbl[i]
+@head transfbl(mo, Xbl)[i]
 
-res = summary(mod, Xbl) ;
+res = summary(mo, Xbl) ;
 pnames(res) 
 res.explvarx
 res.explvarxx
 res.sal2 
 res.contr_block
-res.explX   # = mod.fm.lb if bscal = :frob
+res.explX   # = mo.fm.lb if bscal = :frob
 rowsum(Matrix(res.explX))
 res.corx2t 
 res.cortb2t

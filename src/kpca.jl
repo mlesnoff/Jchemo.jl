@@ -54,17 +54,17 @@ Xtest = X[s.test, :]
 
 nlv = 3
 kern = :krbf ; gamma = 1e-4
-mod = kpca(; nlv, kern, 
+mo = kpca(; nlv, kern, 
     gamma) ;
-fit!(mod, Xtrain)
-pnames(mod.fm)
-@head T = mod.fm.T
+fit!(mo, Xtrain)
+pnames(mo.fm)
+@head T = mo.fm.T
 T' * T
-mod.fm.P' * mod.fm.P
+mo.fm.P' * mo.fm.P
 
-@head Ttest = transf(mod, Xtest)
+@head Ttest = transf(mo, Xtest)
 
-res = summary(mod) ;
+res = summary(mo) ;
 pnames(res)
 res.explvarx
 ```

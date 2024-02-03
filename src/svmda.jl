@@ -67,16 +67,16 @@ tab(ytest)
 
 kern = :krbf ; gamma = 1e4
 cost = 1000 ; epsilon = .5
-mod = svmda(; kern, gamma,
+mo = svmda(; kern, gamma,
     cost, epsilon) ;
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+fit!(mo, Xtrain, ytrain)
+pnames(mo)
+pnames(mo.fm)
+fm = mo.fm ;
 fm.lev
 fm.ni
 
-res = predict(mod, Xtest) ; 
+res = predict(mo, Xtest) ; 
 pnames(res) 
 @head res.pred
 errp(res.pred, ytest)

@@ -44,31 +44,31 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-mod = plskdeda(; nlv) 
-#mod = plskdeda(; nlv, a_kde = .5)
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+mo = plskdeda(; nlv) 
+#mo = plskdeda(; nlv, a_kde = .5)
+fit!(mo, Xtrain, ytrain)
+pnames(mo)
+pnames(mo.fm)
+fm = mo.fm ;
 fm.lev
 fm.ni
 
 fmpls = fm.fm.fmpls ;
 @head fmpls.T
-@head transf(mod, Xtrain)
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
+@head transf(mo, Xtrain)
+@head transf(mo, Xtest)
+@head transf(mo, Xtest; nlv = 3)
 
 coef(fmpls)
 
-res = predict(mod, Xtest) ;
+res = predict(mo, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 
-predict(mod, Xtest; nlv = 1:2).pred
+predict(mo, Xtest; nlv = 1:2).pred
 summary(fmpls, Xtrain)
 ```
 """ 

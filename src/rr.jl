@@ -48,15 +48,15 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 lb = 1e-3
-mod = rr(; lb) ;
-#mod = rrchol(; lb) ;
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
+mo = rr(; lb) ;
+#mo = rrchol(; lb) ;
+fit!(mo, Xtrain, ytrain)
+pnames(mo)
+pnames(mo.fm)
 
-coef(mod)
+coef(mo)
 
-res = predict(mod, Xtest)
+res = predict(mo, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5),
@@ -65,8 +65,8 @@ plotxy(res.pred, ytest; color = (:red, .5),
 
 ## Only for function 'rr'
 ## (not 'rrchol')
-coef(mod; lb = 1e-1)
-res = predict(mod, Xtest; 
+coef(mo; lb = 1e-1)
+res = predict(mo, Xtest; 
     lb = [.1 ; .01])
 @head res.pred[1]
 @head res.pred[2]

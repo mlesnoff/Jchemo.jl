@@ -43,10 +43,10 @@ db = joinpath(path_jdat, "data/challenge2018.jld2")
 pnames(dat)
 X = dat.X    
 Y = dat.Y
-mod = savgol(npoint = 21, 
+mo = savgol(npoint = 21, 
     deriv = 2, degree = 3)
-fit!(mod, X) 
-Xp = transf(mod, X) 
+fit!(mo, X) 
+Xp = transf(mo, X) 
 s = Bool.(Y.test)
 Xtrain = rmrow(Xp, s)
 Ytrain = rmrow(Y, s)
@@ -68,10 +68,10 @@ ytrain = repeat(["in"], ntrain)
 ytest = repeat([cod], ntest)
 
 ## Group description
-mod = pcasvd(nlv = 10) 
-fit!(mod, zXtrain) 
-Ttrain = mod.fm.T
-Ttest = transf(mod, zXtest)
+mo = pcasvd(nlv = 10) 
+fit!(mo, zXtrain) 
+Ttrain = mo.fm.T
+Ttest = transf(mo, zXtest)
 T = vcat(Ttrain, Ttest)
 group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
 i = 1
@@ -81,32 +81,32 @@ plotxy(T[:, i], T[:, i + 1], group;
 
 #### Occ
 ## Preliminary PCA fitted model
-mod = pcasvd(nlv = 10) ;
-fit!(mod, zXtrain)
-fm0 = mod.fm ;  
+mo = pcasvd(nlv = 10) ;
+fit!(mo, zXtrain)
+fm0 = mo.fm ;  
 ## Outlierness
-mod = occod()
-#mod = occod(mcut = :mad, cri = 4)
-#mod = occod(mcut = :q, risk = .01) ;
-#mod = occsdod()
-fit!(mod, fm0, zXtrain) 
-pnames(mod) 
-pnames(mod.fm) 
-@head d = mod.fm.d
+mo = occod()
+#mo = occod(mcut = :mad, cri = 4)
+#mo = occod(mcut = :q, risk = .01) ;
+#mo = occsdod()
+fit!(mo, fm0, zXtrain) 
+pnames(mo) 
+pnames(mo.fm) 
+@head d = mo.fm.d
 d = d.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), 
     xlabel = "Obs. index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 
-res = predict(mod, zXtest) ;
+res = predict(mo, zXtest) ;
 pnames(res)
 @head res.d
 @head res.pred
 tab(res.pred)
 errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
-d1 = mod.fm.d.dstand
+d1 = mo.fm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
 f, ax = plotxy(1:length(d), d, group; 

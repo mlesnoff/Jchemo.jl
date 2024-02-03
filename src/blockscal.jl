@@ -44,12 +44,12 @@ Xblnew = mblock(Xnew, listbl)
 
 centr = true ; scal = true
 bscal = :frob
-mod = blockscal(; centr, scal, bscal)
-fit!(mod, Xbl)
-zXbl = transf(mod, Xbl) ; 
+mo = blockscal(; centr, scal, bscal)
+fit!(mo, Xbl)
+zXbl = transf(mo, Xbl) ; 
 @head zXbl[3]
 
-zXblnew = transf(mod, Xblnew) ; 
+zXblnew = transf(mo, Xblnew) ; 
 zXblnew[3]
 ```
 """

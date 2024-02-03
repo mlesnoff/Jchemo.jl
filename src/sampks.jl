@@ -44,9 +44,9 @@ pnames(res)
 res.train 
 res.test
 
-mod = pcasvd(nlv = 15) ;
-fit!(mod, X) 
-@head T = mod.fm.T
+mo = pcasvd(nlv = 15) ;
+fit!(mo, X) 
+@head T = mo.fm.T
 res = sampks(T, k; metric = :mah)
 
 #####################

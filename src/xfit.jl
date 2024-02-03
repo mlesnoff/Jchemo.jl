@@ -34,9 +34,9 @@ weights = mweight(collect(1:n))
 nlv = 2 
 scal = false
 #scal = true
-mod = pcasvd(; nlv, scal) ;
-fit!(mod, X)
-fm = mod.fm ;
+mo = pcasvd(; nlv, scal) ;
+fit!(mo, X)
+fm = mo.fm ;
 @head xfit(fm)
 xfit(fm, Xnew)
 xfit(fm, Xnew; nlv = 0)
@@ -50,10 +50,10 @@ fm.xmeans
 @head Xnew
 @head xfit(fm, Xnew) + xresid(fm, Xnew)
 
-mod = pcasvd(; nlv = min(n, p), 
+mo = pcasvd(; nlv = min(n, p), 
     scal) ;
-fit!(mod, X)
-fm = mod.fm ;
+fit!(mo, X)
+fm = mo.fm ;
 @head xfit(fm) 
 @head xfit(fm, X)
 @head xresid(fm, X)
@@ -75,9 +75,9 @@ xfit(fm, Xnew, nlv = 1)
 @head Xnew
 @head xfit(fm, Xnew) + xresid(fm, Xnew)
 
-mod = plskern(; nlv = min(n, p), 
+mo = plskern(; nlv = min(n, p), 
     scal) ;
-fit!(mod, X, Y, weights) 
+fit!(mo, X, Y, weights) 
 @head xfit(fm) 
 @head xfit(fm, Xnew)
 @head xresid(fm, Xnew)

@@ -20,10 +20,10 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-mod = center() 
-fit!(mod, Xtrain)
-Xptrain = transf(mod, Xtrain)
-Xptest = transf(mod, Xtest)
+mo = center() 
+fit!(mo, Xtrain)
+Xptrain = transf(mo, Xtrain)
+Xptest = transf(mo, Xtest)
 colmean(Xptrain)
 @head Xptest 
 @head Xtest .- colmean(Xtrain)'
@@ -78,10 +78,10 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-mod = scale() 
-fit!(mod, Xtrain)
-Xptrain = transf(mod, Xtrain)
-Xptest = transf(mod, Xtest)
+mo = scale() 
+fit!(mo, Xtrain)
+Xptrain = transf(mo, Xtrain)
+Xptest = transf(mo, Xtest)
 colstd(Xptrain)
 @head Xptest 
 @head Xtest ./ colstd(Xtrain)'
@@ -137,10 +137,10 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-mod = cscale() 
-fit!(mod, Xtrain)
-Xptrain = transf(mod, Xtrain)
-Xptest = transf(mod, Xtest)
+mo = cscale() 
+fit!(mo, Xtrain)
+Xptrain = transf(mo, Xtrain)
+Xptest = transf(mo, Xtest)
 colmean(Xptrain)
 colstd(Xptrain)
 @head Xptest 

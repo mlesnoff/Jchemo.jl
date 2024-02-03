@@ -76,13 +76,13 @@ ytest = rmrow(y, s)
 
 nlvdis = 5 ; metric = :mah 
 h = 1 ; k = 200 ; nlv = 4:20
-mod = lwplsravg(; nlvdis, metric, 
+mo = lwplsravg(; nlvdis, metric, 
     h, k, nlv) ;
-fit!(mod, Ttrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
+fit!(mo, Ttrain, ytrain)
+pnames(mo)
+pnames(mo.fm)
 
-res = predict(mod, Ttest) ; 
+res = predict(mo, Ttest) ; 
 pnames(res) 
 res.listnn
 res.listd

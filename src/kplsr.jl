@@ -44,19 +44,19 @@ ytest = rmrow(y, s)
 
 nlv = 20
 kern = :krbf ; gamma = 1e-1
-mod = kplsr(; nlv, kern, gamma) ;
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-@head mod.fm.T
+mo = kplsr(; nlv, kern, gamma) ;
+fit!(mo, Xtrain, ytrain)
+pnames(mo)
+pnames(mo.fm)
+@head mo.fm.T
 
-coef(mod)
-coef(mod; nlv = 3)
+coef(mo)
+coef(mo; nlv = 3)
 
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
+@head transf(mo, Xtest)
+@head transf(mo, Xtest; nlv = 3)
 
-res = predict(mod, Xtest)
+res = predict(mo, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5),
@@ -72,9 +72,9 @@ zy = sin.(abs.(x)) ./ abs.(x)
 y = zy + .2 * randn(n) 
 nlv = 2
 kern = :krbf ; gamma = 1 / 3
-mod = kplsr(; nlv, kern, gamma) ;
-fit!(mod, x, y)
-pred = predict(mod, x).pred 
+mo = kplsr(; nlv, kern, gamma) ;
+fit!(mo, x, y)
+pred = predict(mo, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
 lines!(ax, x, vec(pred), label = "Fitted model")

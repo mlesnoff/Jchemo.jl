@@ -75,15 +75,15 @@ tab(ytest)
 
 alpha = .5
 lb = 1e-8
-mod = rda(; alpha, lb)
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+mo = rda(; alpha, lb)
+fit!(mo, Xtrain, ytrain)
+pnames(mo)
+pnames(mo.fm)
+fm = mo.fm ;
 fm.lev
 fm.ni
 
-res = predict(mod, Xtest) ;
+res = predict(mo, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred

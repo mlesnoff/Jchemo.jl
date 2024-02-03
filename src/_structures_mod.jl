@@ -1,104 +1,104 @@
 ######---- Fit
 ## Transformers
-function fit!(mod::Jchemo.Transformer, X)
-    kwargs = values(mod.kwargs)
-    mod.fm = mod.fun(X; kwargs...)
+function fit!(mo::Jchemo.Transformer, X)
+    kwargs = values(mo.kwargs)
+    mo.fm = mo.fun(X; kwargs...)
     return
 end  
-function fit!(mod::Jchemo.Transformer, X, 
+function fit!(mo::Jchemo.Transformer, X, 
         weights::Weight)
-    kwargs = values(mod.kwargs)
-    mod.fm = mod.fun(X, weights; kwargs...)
+    kwargs = values(mo.kwargs)
+    mo.fm = mo.fun(X, weights; kwargs...)
     return
 end
 ## Transformers 2 blocks
-function fit!(mod::Jchemo.Transformer, X, Y)
-    kwargs = values(mod.kwargs)
-    mod.fm = mod.fun(X, Y; kwargs...)
+function fit!(mo::Jchemo.Transformer, X, Y)
+    kwargs = values(mo.kwargs)
+    mo.fm = mo.fun(X, Y; kwargs...)
     return
 end  
-function fit!(mod::Jchemo.Transformer, X, Y, 
+function fit!(mo::Jchemo.Transformer, X, Y, 
         weights::Weight)
-    kwargs = values(mod.kwargs)
-    mod.fm = mod.fun(X, Y, weights; kwargs...)
+    kwargs = values(mo.kwargs)
+    mo.fm = mo.fun(X, Y, weights; kwargs...)
     return
 end  
 ## Predictors
-function fit!(mod::Jchemo.Predictor, X, Y)
-    kwargs = values(mod.kwargs)
-    mod.fm = mod.fun(X, Y; kwargs...)
+function fit!(mo::Jchemo.Predictor, X, Y)
+    kwargs = values(mo.kwargs)
+    mo.fm = mo.fun(X, Y; kwargs...)
     return
 end  
-function fit!(mod::Jchemo.Predictor, X, Y, 
+function fit!(mo::Jchemo.Predictor, X, Y, 
         weights::Weight)
-    kwargs = values(mod.kwargs)
-    mod.fm = mod.fun(X, Y, weights; kwargs...)
+    kwargs = values(mo.kwargs)
+    mo.fm = mo.fun(X, Y, weights; kwargs...)
     return
 end 
-function fit!(mod::PredictorNoY, X)
-    kwargs = values(mod.kwargs)
-    mod.fm = mod.fun(X; kwargs...)
+function fit!(mo::PredictorNoY, X)
+    kwargs = values(mo.kwargs)
+    mo.fm = mo.fun(X; kwargs...)
     return
 end   
 
 ######---- Transf
-function transf(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, 
+function transf(mo::Union{Jchemo.Transformer, Jchemo.Predictor}, 
         X; nlv = nothing)
-    isnothing(nlv) ? transf(mod.fm, X) : 
-        transf(mod.fm, X; nlv)
+    isnothing(nlv) ? transf(mo.fm, X) : 
+        transf(mo.fm, X; nlv)
 end
 ## X, Y
-function transf(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, 
+function transf(mo::Union{Jchemo.Transformer, Jchemo.Predictor}, 
         X, Y; nlv = nothing)
-    isnothing(nlv) ? transf(mod.fm, X, Y) : 
-        transf(mod.fm, X, Y; nlv)
+    isnothing(nlv) ? transf(mo.fm, X, Y) : 
+        transf(mo.fm, X, Y; nlv)
 end
 
 ######---- Transfbl
-function transfbl(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, 
+function transfbl(mo::Union{Jchemo.Transformer, Jchemo.Predictor}, 
         X; nlv = nothing)
-    isnothing(nlv) ? transfbl(mod.fm, X) : 
-        transfbl(mod.fm, X; nlv)
+    isnothing(nlv) ? transfbl(mo.fm, X) : 
+        transfbl(mo.fm, X; nlv)
 end
 ## X, Y
-function transfbl(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, 
+function transfbl(mo::Union{Jchemo.Transformer, Jchemo.Predictor}, 
         X, Y; nlv = nothing)
-    isnothing(nlv) ? transfbl(mod.fm, X, Y) : 
-    transfbl(mod.fm, X, Y; nlv)
+    isnothing(nlv) ? transfbl(mo.fm, X, Y) : 
+    transfbl(mo.fm, X, Y; nlv)
 end
 
 ######---- Predict 
-function predict(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, 
+function predict(mo::Union{Jchemo.Transformer, Jchemo.Predictor}, 
         X; nlv = nothing, lb = nothing)
     if isnothing(nlv) && isnothing(lb)
-        predict(mod.fm, X)
+        predict(mo.fm, X)
     elseif !isnothing(nlv) 
-        predict(mod.fm, X; nlv)
+        predict(mo.fm, X; nlv)
     elseif !isnothing(lb) 
-        predict(mod.fm, X; lb)
+        predict(mo.fm, X; lb)
     end
 end  
-predict(mod::PredictorNoY, X) = predict(mod.fm, X)
+predict(mo::PredictorNoY, X) = predict(mo.fm, X)
 
 ######---- Coef 
-function coef(mod::Jchemo.Predictor; 
+function coef(mo::Jchemo.Predictor; 
         nlv = nothing, lb = nothing)
     if isnothing(nlv) && isnothing(lb)
-        coef(mod.fm)
+        coef(mo.fm)
     elseif !isnothing(nlv) 
-        coef(mod.fm; nlv)
+        coef(mo.fm; nlv)
     elseif !isnothing(lb) 
-        coef(mod.fm; lb)
+        coef(mo.fm; lb)
     end
 end
 
 ######---- Summary 
-function Base.summary(mod::Union{Jchemo.Transformer, Jchemo.Predictor})
-    Base.summary(mod.fm)
+function Base.summary(mo::Union{Jchemo.Transformer, Jchemo.Predictor})
+    Base.summary(mo.fm)
 end
-function Base.summary(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, X)
-    Base.summary(mod.fm, X)
+function Base.summary(mo::Union{Jchemo.Transformer, Jchemo.Predictor}, X)
+    Base.summary(mo.fm, X)
 end
-function Base.summary(mod::Jchemo.Transformer, X, Y)
-    Base.summary(mod.fm, X, Y)
+function Base.summary(mo::Jchemo.Transformer, X, Y)
+    Base.summary(mo.fm, X, Y)
 end

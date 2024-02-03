@@ -53,12 +53,12 @@ X2cal = dat.X2cal
 X2val = dat.X2val
 
 ## Fitting the model
-mod = calpds(npoint = 2, fun = plskern, nlv = 2) 
-fit!(mod, X1cal, X2cal)
+mo = calpds(npoint = 2, fun = plskern, nlv = 2) 
+fit!(mo, X1cal, X2cal)
 
 ## Transfer of new spectra X1val 
 ## expected to be close to X2val
-pred = predict(mod, X1val).pred
+pred = predict(mo, X1val).pred
 
 i = 1
 f = Figure(size = (500, 300))

@@ -40,13 +40,13 @@ X2cal = dat.X2cal
 X2val = dat.X2val
 
 ## Fitting the model
-mod = calds(fun = plskern, nlv = 10) 
-#mod = calds(fun = mlrpinv)   # less robust
-fit!(mod, X1cal, X2cal)
+mo = calds(fun = plskern, nlv = 10) 
+#mo = calds(fun = mlrpinv)   # less robust
+fit!(mo, X1cal, X2cal)
 
 ## Transfer of new spectra X1val 
 ## expected to be close to X2val
-pred = predict(mod, X1val).pred
+pred = predict(mo, X1val).pred
 
 i = 1
 f = Figure(size = (500, 300))

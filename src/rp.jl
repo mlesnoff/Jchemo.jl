@@ -23,13 +23,13 @@ X = rand(n, p)
 nlv = 3
 mrp = :li ; s_li = sqrt(p) 
 #mrp = :gauss
-mod = rp(; nlv, mrp, s_li)
-fit!(mod, X)
-pnames(mod)
-pnames(mod.fm)
-@head mod.fm.T 
-@head mod.fm.P 
-transf(mod, X[1:2, :])
+mo = rp(; nlv, mrp, s_li)
+fit!(mo, X)
+pnames(mo)
+pnames(mo.fm)
+@head mo.fm.T 
+@head mo.fm.P 
+transf(mo, X[1:2, :])
 ```
 """
 function rp(X; kwargs...)

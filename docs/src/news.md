@@ -2,6 +2,9 @@
 
 ## *Version 0.3.4*
 
+**Warning**: Name "mod" was replaced everywhere in the examples
+    by "mo" due to new conflict with function 'Base.mod'.
+
 - News
     - **colmed**: Colmn-wise medians.
 

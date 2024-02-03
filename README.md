@@ -143,8 +143,8 @@ zY = Float32.(Y)
 ```julia
 ## Float64
 ## (NB.: multi-threading is not used in plskern) 
-mod = plskern(; nlv)
-@benchmark fit!($mod, $X, $Y)
+mo = plskern(; nlv)
+@benchmark fit!($mo, $X, $Y)
 
 BenchmarkTools.Trial: 1 sample with 1 evaluation.
  Single result which took 7.532 s (1.07% GC) to evaluate,
@@ -153,7 +153,7 @@ BenchmarkTools.Trial: 1 sample with 1 evaluation.
 
 ```julia
 # Float32 
-@benchmark fit!($mod, $zX, $zY) 
+@benchmark fit!($mo, $zX, $zY) 
 
 BenchmarkTools.Trial: 2 samples with 1 evaluation.
  Range (min … max):  3.956 s …    4.148 s  ┊ GC (min … max): 0.82% … 3.95%
@@ -201,10 +201,10 @@ The embedded syntax to fit the model is as follows:
 
 ## Model definition
 npoint = 11 ; deriv = 2 ; degree = 3
-mod = savgol(; npoint, deriv, degree)
+mo = savgol(; npoint, deriv, degree)
 
 ## Fitting
-fit!(mod, Xtrain)
+fit!(mo, Xtrain)
 ```
 
 which is the strictly equivalent to:
@@ -214,22 +214,22 @@ which is the strictly equivalent to:
 ## since the kwargs values are
 ## specified within the function
 
-mod = savgol(npoint = 11, deriv = 2, degree = 3)
-fit!(mod, Xtrain)
+mo = savgol(npoint = 11, deriv = 2, degree = 3)
+fit!(mo, Xtrain)
 ```
 
-Contents of objects `mod` and `fm` can be displayed by:
+Contents of objects `mo` and `fm` can be displayed by:
 
 ```
-pnames(mod)
-pnames(mod.fm)
+pnames(mo)
+pnames(mo.fm)
 ```
 
 Once the model is fitted, the transformed (i.e. preprocessed) data are given by:
 
 ```julia
-Xptrain = transf(mod, Xtrain)
-Xptest = transf(mod, Xtest)
+Xptrain = transf(mo, Xtrain)
+Xptest = transf(mo, Xtest)
 ```
 
 Several preprocessing can be applied sequentially to the data: see the **Fitting a pipeline** section thereafter for examples.
@@ -241,34 +241,34 @@ Let us consider a principal component analysis (PCA), using function `pcasvd`.
 The embedded syntax to fit the model is as follows:
 ```julia
 nlv = 15  # nb. principal components
-mod = pcasvd(; nlv)
-fit!(mod, Xtrain, ytrain)
+mo = pcasvd(; nlv)
+fit!(mo, Xtrain, ytrain)
 ```
 
 For a preliminary scaling of the data before the PCA decomposition, the syntax is:
 
 ```julia
 nlv = 15 ; scal = true
-mod = pcasvd(; nlv, scal)
-fit!(mod, Xtrain, ytrain)
+mo = pcasvd(; nlv, scal)
+fit!(mo, Xtrain, ytrain)
 ```
 
 The PCA score matrices (i.e. the projections of the observations on the PCA directions) can be computed by:
 ```julia
-Ttrain = transf(mod, Xtrain)
-Ttest = transf(mod, Xtest)
+Ttrain = transf(mo, Xtrain)
+Ttest = transf(mo, Xtest)
 ```
 
 Object `Ttrain` above can also be obtained directly by:
 
 ```julia
-Ttrain = mod.fm.T
+Ttrain = mo.fm.T
 ```
 
 Some model summary (% of explained variance, etc.) can be displayed by:
 
 ```julia
-summary(mod, Xtrain)
+summary(mo, Xtrain)
 ```
 
 ### **Fitting a predictor**
@@ -281,25 +281,25 @@ The embedded syntax to fit the model is as follows:
 ```julia
 nlv = 15  # nb. latent variables
 kern = :krbf ; gamma = .001 
-mod = kplsr(; nlv, kern, gamma)
-fit!(mod, Xtrain, ytrain)
+mo = kplsr(; nlv, kern, gamma)
+fit!(mo, Xtrain, ytrain)
 ```
 
 As for PCA, the score matrices can be computed by:
 ```julia
-Ttrain = transf(mod, Xtrain)   # = mod.fm.T
-Ttest = transf(mod, Xtest)
+Ttrain = transf(mo, Xtrain)   # = mo.fm.T
+Ttest = transf(mo, Xtest)
 ```
 
 and model summary by:
 
 ```julia
-summary(mod, Xtrain)
+summary(mo, Xtrain)
 ```
 
 Y-Predictions are given by:
 ```julia
-pred = predict(mod, Xtest).pred
+pred = predict(mo, Xtest).pred
 ```
 
 **Examples of tuning** of predictive models (test-set validation and cross-validation) are given in the help pages of functions `gridscore` and `gridcv`: 
@@ -318,20 +318,20 @@ The pipeline is fitted as follows:
 
 ```julia
 ## Models' definition
-mod1 = snv(centr = true, scal = true)
-mod2 = savgol(npoint = 5, deriv = 1, degree = 2)
-mod3 = detrend()
+mo1 = snv(centr = true, scal = true)
+mo2 = savgol(npoint = 5, deriv = 1, degree = 2)
+mo3 = detrend()
 ## Pipeline building
-mod = pip(mod1, mod2, mod3)
+mo = pip(mo1, mo2, mo3)
 ## Fitting
-fit!(mod, Xtrain)
+fit!(mo, Xtrain)
 ```
 
 The transformed data are given by:
 
 ```julia
-Xptrain = transf(mod, Xtrain)
-Xptest = transf(mod, Xtest)
+Xptrain = transf(mo, Xtrain)
+Xptest = transf(mo, Xtest)
 ```
 #### **b) Example of PCA-SVMR**
 
@@ -342,15 +342,15 @@ The pipeline is fitted as follows:
 ```julia
 nlv = 15
 kern = :krbf ; gamma = .001 ; cost = 1000
-mod1 = pcasvd(; nlv)
-mod2 = svmr(; kern, gamma, cost)
-mod = pip(mod1, mod2)
-fit!(mod, Xtrain)
+mo1 = pcasvd(; nlv)
+mo2 = svmr(; kern, gamma, cost)
+mo = pip(mo1, mo2)
+fit!(mo, Xtrain)
 ```
 
 The Y-predictions are given by:
 ```julia
-pred = predict(mod, Xtest).pred
+pred = predict(mo, Xtest).pred
 ```
 
 Any step(s) of data preprocessing can obviously be implemented before the modeling, either outside of the given predictive pipeline or being involded directlty in the pipeline, such as for instance:
@@ -359,10 +359,10 @@ Any step(s) of data preprocessing can obviously be implemented before the modeli
 degree = 2    # de-trending with polynom degree 2
 nlv = 15
 kern = :krbf ; gamma = .001 ; cost = 1000
-mod1 = detrend(; degree)
-mod2 = pcasvd(; nlv)
-mod3 = svmr(; kern, gamma, cost)
-mod = pip(mod1, mod2, mod3)
+mo1 = detrend(; degree)
+mo2 = pcasvd(; nlv)
+mo3 = svmr(; kern, gamma, cost)
+mo = pip(mo1, mo2, mo3)
 ```
 
 #### **c) Example of LWR Naes et al. 1990**
@@ -374,9 +374,9 @@ The pipeline is defined by:
 ```julia
 nlv = 25
 metric = :eucl ; h = 2 ; k = 200
-mod1 = pcasvd(; nlv)
-mod2 = lwmlr(; metric, h, k)
-mod = pip(mod1, mod2)
+mo1 = pcasvd(; nlv)
+mo2 = lwmlr(; metric, h, k)
+mo = pip(mo1, mo2)
 ```
 
 *Naes et al., 1990. Analytical Chemistry 664–673.*
@@ -390,9 +390,9 @@ The pipeline is defined by:
 ```julia
 nlv = 25
 metric = :mah ; h = Inf ; k = 200
-mod1 = plskern(; nlv)
-mod2 = lwplsr(; metric, h, k)
-mod = pip(mod1, mod2)
+mo1 = plskern(; nlv)
+mo2 = lwplsr(; metric, h, k)
+mo = pip(mo1, mo2)
 ```
 
 *Shen et al., 2019. Journal of Chemometrics, 33(5) e3117.*

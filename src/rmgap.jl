@@ -36,9 +36,9 @@ vlines!(ax, wl_target; linestyle = :dot, color = (:grey, .8))
 f
 
 ## Corrected data
-mod = rmgap(; npoint = 5, indexcol)
-fit!(mod, X)
-Xc = transf(mod, X)
+mo = rmgap(; npoint = 5, indexcol)
+fit!(mo, X)
+Xc = transf(mo, X)
 f, ax = plotsp(Xc, wl)
 vlines!(ax, wl_target; linestyle = :dot, color = (:grey, .8))
 f
