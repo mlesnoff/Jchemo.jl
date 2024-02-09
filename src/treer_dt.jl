@@ -107,8 +107,8 @@ function predict(object::TreerDt, X)
             fscale(X, object.xscales))
     ## Forest 
     else
-        pred = apply_forest(object.fm, 
-            fscale(X, object.xscales); use_multithreading = object.par.mth)
+        pred = apply_forest(object.fm, fscale(X, object.xscales); 
+            use_multithreading = object.par.mth)
     end
     pred = reshape(pred, m, 1)
     (pred = pred,)
