@@ -103,8 +103,7 @@ function predict(object::TreerDt, X)
     m = nro(X)
     ## Tree
     if pnames(object.fm)[1] == :node
-        pred = apply_tree(object.fm, 
-            fscale(X, object.xscales))
+        pred = apply_tree(object.fm, fscale(X, object.xscales))
     ## Forest 
     else
         pred = apply_forest(object.fm, fscale(X, object.xscales); 

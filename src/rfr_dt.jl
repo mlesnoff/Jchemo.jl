@@ -102,7 +102,7 @@ function rfr_dt(X, y; kwargs...)
         par.min_samples_split,
         min_purity_increase;
         #rng = Random.GLOBAL_RNG
-        #rng = 3
+        rng = 3
         ) 
     featur = collect(1:p)
     TreerDt(fm, xscales, featur, kwargs, par)
