@@ -105,7 +105,6 @@ function rfr_dt(X, y; kwargs...)
         #rng = 3
         ) 
     featur = collect(1:p)
-    TreerDt(fm, xscales, featur,
-        kwargs, par)
+    TreerDt(fm, xscales, featur, kwargs, par)
 end
 
