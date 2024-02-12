@@ -1,3 +1,8 @@
+## scores:
+## - Must return a matrix
+## - In particular for errp, create multiple 
+## dispatches Y::AbstractVector, Y::AbstractMatrix
+
 """
     bias(pred, Y)
 Compute the prediction bias, i.e. the opposite 
@@ -63,78 +68,6 @@ function cor2(pred, Y)
     res = cor(pred, Y).^2
     q == 1 ? res = [res; ] : res = diag(res)
     reshape(res, 1, :)
-end
-
-"""
-    errp(pred, y)
-Compute the classification error rate (ERR).
-* `pred` : Predictions.
-* `y` : Observed data.
-
-## Examples
-```julia
-Xtrain = rand(10, 5) 
-ytrain = rand(["a" ; "b"], 10)
-Xtest = rand(4, 5) 
-ytest = rand(["a" ; "b"], 4)
-
-mod = plsrda(nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
-errp(pred, ytest)
-```
-"""
-function errp(pred, y)
-    r = residcla(pred, y)
-    res = [sum(r)] / nro(y)
-    reshape(res, 1, :)
-end
-
-"""
-    mse(pred, Y; digits = 3)
-Summary of model performance for regression.
-* `pred` : Predictions.
-* `Y` : Observed data.
-
-## Examples
-```julia
-Xtrain = rand(10, 5) 
-Ytrain = rand(10, 2)
-ytrain = Ytrain[:, 1]
-Xtest = rand(4, 5) 
-Ytest = rand(4, 2)
-ytest = Ytest[:, 1]
-
-mod = plskern(nlv = 2)
-fit!(mod, Xtrain, Ytrain)
-pred = predict(mod, Xtest).pred
-mse(pred, Ytest)
-
-mod = plskern(nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
-mse(pred, ytest)
-```
-"""
-function mse(pred, Y; digits = 3)
-    q = nco(Y)
-    zmsep = msep(pred, Y)
-    zrmsep = sqrt.(zmsep)
-    zsep = sep(pred, Y)
-    zbias = bias(pred, Y)
-    zcor2 = cor2(pred, Y)    
-    zr2 = r2(pred, Y)
-    zrpd = rpd(pred, Y)
-    zrpdr = rpdr(pred, Y)
-    zmean = reshape(colmean(Y), 1, :)
-    nam = map(string, repeat(["y"], q), 1:q)
-    nam = reshape(nam, 1, :)
-    res = (nam = nam, msep = zmsep, rmsep = zrmsep, sep = zsep, bias = zbias, 
-        cor2 = zcor2, r2 = zr2, rpd = zrpd, rpdr = zrpdr, mean = zmean)
-    res = map(vec, res)
-    res = DataFrame(res)  
-    res[:, 2:end] = round.(res[:, 2:end], digits = digits)
-    res
 end
 
 """
@@ -209,28 +142,6 @@ function r2(pred, Y)
     M = reduce(hcat, fill(ymeans, m, 1))'
     1 .- msep(pred, Y) ./ msep(M, Y)
 end
-
-"""
-    residcla(pred, y) 
-Compute discrimination residual error 
-    (0 = no error, 1 = error).
-* `pred` : Predictions.
-* `y` : Observed data.
-
-## Examples
-```julia
-Xtrain = rand(10, 5) 
-ytrain = rand(["a" ; "b"], 10)
-Xtest = rand(4, 5) 
-ytest = rand(["a" ; "b"], 4)
-
-mod = plsrda(nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
-residcla(pred, ytest)
-```
-"""
-residcla(pred, Y) = pred .!= ensure_mat(Y)
 
 """
     residreg(pred, Y) 
@@ -470,7 +381,100 @@ function ssr(pred, Y)
     reshape(sum(r.^2, dims = 1), 1, :)
 end
 
-## scores:
-## - Must return a matrix
-## - In particular for errp, create multiple 
-## dispatches Y::AbstractVector, Y::AbstractMatrix
+"""
+    mse(pred, Y; digits = 3)
+Summary of model performance for regression.
+* `pred` : Predictions.
+* `Y` : Observed data.
+
+## Examples
+```julia
+Xtrain = rand(10, 5) 
+Ytrain = rand(10, 2)
+ytrain = Ytrain[:, 1]
+Xtest = rand(4, 5) 
+Ytest = rand(4, 2)
+ytest = Ytest[:, 1]
+
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, Ytrain)
+pred = predict(mod, Xtest).pred
+mse(pred, Ytest)
+
+mod = plskern(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
+mse(pred, ytest)
+```
+"""
+function mse(pred, Y; digits = 3)
+    Y = ensure_mat(Y)
+    n, q = size(Y)
+    zmsep = msep(pred, Y)
+    zrmsep = sqrt.(zmsep)
+    zsep = sep(pred, Y)
+    zbias = bias(pred, Y)
+    zcor2 = cor2(pred, Y)    
+    zr2 = r2(pred, Y)
+    zrpd = rpd(pred, Y)
+    zrpdr = rpdr(pred, Y)
+    zmean = reshape(colmean(Y), 1, :)
+    zn = reshape(repeat([n], q), 1, :)
+    nam = map(string, repeat(["y"], q), 1:q)
+    nam = reshape(nam, 1, :)
+    res = (nam = nam, msep = zmsep, rmsep = zrmsep, sep = zsep, bias = zbias, 
+        cor2 = zcor2, r2 = zr2, rpd = zrpd, rpdr = zrpdr, mean = zmean, n = zn) 
+    res = map(vec, res)
+    res = DataFrame(res)  
+    res[:, 2:end] = round.(res[:, 2:end], digits = digits)
+    res
+end
+
+#### Discrete variables
+
+"""
+    residcla(pred, y) 
+Compute discrimination residual error 
+    (0 = no error, 1 = error).
+* `pred` : Predictions.
+* `y` : Observed data.
+
+## Examples
+```julia
+Xtrain = rand(10, 5) 
+ytrain = rand(["a" ; "b"], 10)
+Xtest = rand(4, 5) 
+ytest = rand(["a" ; "b"], 4)
+
+mod = plsrda(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
+residcla(pred, ytest)
+```
+"""
+residcla(pred, Y) = pred .!= ensure_mat(Y)
+
+"""
+    errp(pred, y)
+Compute the classification error rate (ERR).
+* `pred` : Predictions.
+* `y` : Observed data.
+
+## Examples
+```julia
+Xtrain = rand(10, 5) 
+ytrain = rand(["a" ; "b"], 10)
+Xtest = rand(4, 5) 
+ytest = rand(["a" ; "b"], 4)
+
+mod = plsrda(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
+errp(pred, ytest)
+```
+"""
+function errp(pred, y)
+    r = residcla(pred, y)
+    res = [sum(r)] / nro(y)
+    reshape(res, 1, :)
+end
