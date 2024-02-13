@@ -19,11 +19,11 @@ Why the name **Jchemo**?: Since it is orientated to **chemometrics** (in brief, 
 - **predictors** (that have a function `predict`), 
 - **utility functions**. 
 
-Some models are both a transformer and a predictor, such as PLSR or PCR models.
+Some models, such as PLSR models, are both transformer and predictor.
 
 Ad'hoc **pipelines** can also be built. In **Jchemo**, a pipeline is a **chain of *K* modeling steps** containing
-- either a set of ***K* transform steps**,
-- or a set of ***K* - 1 transform steps** and **a final prediction step**. 
+- either ***K* transform steps**,
+- or ***K* - 1 transform steps** and **a final prediction step**. 
 
 The pipelines are built with function `pip`.
 
