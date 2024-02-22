@@ -60,9 +60,9 @@ nlev = length(lev)
 @head transf(mod, Xtrain)
 @head transf(mod, Xtest)
 
-# X-loadings matrix
-# = coefficients of the linear discriminant function
-# = "LD" of function lda of the R package MASS
+## X-loadings matrix
+## = coefficients of the linear discriminant function
+## = "LD" of function lda of the R package MASS
 fm.P
 fm.P' * fm.P
 
