@@ -85,10 +85,10 @@ errp(res.pred, ytest)
 confusion(res.pred, ytest).cnt
 ```
 """ 
-## For DA in DecisionTree.jl, 
-## y must be Int or String
 function rfda_dt(X, y::Union{Array{Int}, Array{String}};
         kwargs...)
+    ## For DA in DecisionTree.jl, 
+    ## y must be Int or String
     par = recovkwargs(Par, kwargs)
     X = ensure_mat(X)
     Q = eltype(X)
