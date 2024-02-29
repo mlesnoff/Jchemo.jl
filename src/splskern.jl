@@ -13,11 +13,11 @@ Keyword arguments:
 * `msparse` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:mix`, 
     `:hard`. See thereafter.
-* `delta` : Only used if `msparse` = `:soft`. Range for the 
+* `delta` : Only used if `msparse = :soft`. Range for the 
     thresholding on the loadings (after they are standardized 
     to their maximal absolute value). Must ∈ [0, 1].
     Higher is `delta`, stronger is the thresholding. 
-* `nvar` : Only used if `msparse` = `:mix` or `:hard`.
+* `nvar` : Only used if `msparse = :mix` or `msparse = :hard`.
     Nb. variables (`X`-columns) selected for each principal
     component (PC). Can be a single integer (i.e. same nb. 
     of variables for each PC), or a vector of length `nlv`.   
@@ -30,12 +30,12 @@ the fast "improved kernel algorithm #1" of Dayal & McGregor (1997).
 In the present version of `splskern`, the sparse correction 
 only concerns `X`. The function provides three methods of 
 thresholding to compute the sparse `X`-loading weights w, 
-see function `spca' for description (same principles). The case 
-`msparse` = `:mix` returns the same results as function `spls` of 
-the R package mixOmics in regression mode (and with no sparseness 
+see function `spca` for description (same principles). The case 
+`msparse = :mix` returns the same results as function `spls` of 
+the R package mixOmics with the regression mode (and without sparseness 
 on `Y`).
 
-The case `msparse` = `:hard` (or `:mix`) and `nvar` = 1 correspond 
+The case `msparse = :hard` (or `msparse = :mix`) and `nvar = 1` correspond 
 to the COVSEL regression described in Roger et al 2011 (see also
 Höskuldsson 1992).
 

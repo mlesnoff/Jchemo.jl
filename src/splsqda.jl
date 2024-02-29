@@ -13,11 +13,11 @@ Keyword arguments:
 * `msparse` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:mix`, 
     `:hard`. See thereafter.
-* `delta` : Only used if `msparse` = `:soft`. Range for the 
+* `delta` : Only used if `msparse = :soft`. Range for the 
     thresholding on the loadings (after they are standardized 
     to their maximal absolute value). Must ∈ [0, 1].
     Higher is `delta`, stronger is the thresholding. 
-* `nvar` : Only used if `msparse` = `:mix` or `:hard`.
+* `nvar` : Only used if `msparse = :mix` or `msparse = :hard`.
     Nb. variables (`X`-columns) selected for each principal
     component (PC). Can be a single integer (i.e. same nb. 
     of variables for each PC), or a vector of length `nlv`.   

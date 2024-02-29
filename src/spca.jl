@@ -12,11 +12,11 @@ Keyword arguments:
 * `msparse` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:mix`, 
     `:hard`. See thereafter.
-* `delta` : Only used if `msparse` = `:soft`. Range for the 
+* `delta` : Only used if `msparse = :soft`. Range for the 
     thresholding on the loadings (after they are standardized 
     to their maximal absolute value). Must ∈ [0, 1].
     Higher is `delta`, stronger is the thresholding. 
-* `nvar` : Only used if `msparse` = `:mix` or `:hard`.
+* `nvar` : Only used if `msparse = :mix` or `msparse = :hard`.
     Nb. variables (`X`-columns) selected for each principal
     component (PC). Can be a single integer (i.e. same nb. 
     of variables for each PC), or a vector of length `nlv`.   
@@ -29,7 +29,7 @@ Sparse principal component analysis via regularized low rank
 matrix approximation (Shen & Huang 2008). A Nipals algorithm is used. 
 The Function provides three methods of thresholding to compute 
 the sparse loadings:
-* `msparse = :soft` : Soft thresholding of standardized loadings. 
+* `msparse = :soft`: Soft thresholding of standardized loadings. 
     Let us note v a given loading vector before thresholding. 
     Vector abs(v) is then standardized to its maximal component 
     (= max{abs(v[i]), i = 1..p}). The soft-thresholding function 
