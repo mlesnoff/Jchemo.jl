@@ -117,7 +117,7 @@ function plotxy(x, y; size = (500, 300),
         lines!(ax, z; color = :grey60)
     end
     if bisect
-        ablines!(ax, 0, 1)
+        ablines!(ax, 0, 1; color = :grey, linewidth = 1)
     end
     if zeros
         hlines!(0; color = :grey60)
