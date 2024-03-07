@@ -1,5 +1,11 @@
 # New
 
+## *Version 0.3.7*
+
+- Modifications
+    - Code improvement. 
+
+
 ## *Version 0.3.6*
 
 - Modifications
