@@ -85,14 +85,30 @@ colnorm(X) = map(norm, eachcol(ensure_mat(X)))
 colnorm(X, weights::Weight) = sqrt.(vec(weights.w' * ensure_mat(X).^2))
 
 """
+    colnormsq(X) 
     colnormsq(X, weights::Weight)
 Compute column-wise squared norms of a matrix.
 * `X` : Data (n, p).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 
-See function `colnorm`.
+The squared norm computed for a column x of `X` is:
+* x' * x
+
+The weighted squared norm is:
+* x' * D * x, where D is the diagonal matrix of `weights.w`.
+
+## Examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+w = mweight(rand(n))
+
+colnormsq(X)
+colnormsq(X, w)
 """ 
+colnormsq(X) = colnorm(X).^2 
+
 colnormsq(X, weights::Weight) = vec(weights.w' * ensure_mat(X).^2)
 
 """
