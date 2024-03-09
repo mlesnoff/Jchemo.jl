@@ -84,6 +84,15 @@ colnorm(X) = map(norm, eachcol(ensure_mat(X)))
 
 colnorm(X, weights::Weight) = sqrt.(vec(weights.w' * ensure_mat(X).^2))
 
+"""
+    colnormsq(X, weights::Weight)
+Compute column-wise squared norms of a matrix.
+* `X` : Data (n, p).
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
+
+See function `colnorm`.
+""" 
 colnormsq(X, weights::Weight) = vec(weights.w' * ensure_mat(X).^2)
 
 """
