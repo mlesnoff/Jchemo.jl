@@ -104,7 +104,7 @@ colstd(X)
 colstd(X, w)
 ```
 """ 
-colstd(X) = vec(Statistics.std(ensure_mat(X); corrected = false, dims = 1))
+colstd(X) = map(v -> Statistics.std(v ; corrected = false), eachcol(ensure_mat(X)))
 
 colstd(X, weights::Weight) = colnorm(X .- colmean(ensure_mat(X), weights)', weights)
 
@@ -152,7 +152,7 @@ colvar(X)
 colvar(X, w)
 ```
 """ 
-colvar(X) = vec(Statistics.var(ensure_mat(X); corrected = false, dims = 1))
+colvar(X) = map(v -> Statistics.var(v ; corrected = false), eachcol(ensure_mat(X)))
 
 colvar(X, weights::Weight) = colnorm(X .- colmean(ensure_mat(X), weights)', weights).^2
 
