@@ -28,8 +28,7 @@ X = rand(n, p)
 rowstd(X)
 ```
 """ 
-rowstd(X) = vec(Statistics.std(ensure_mat(X); 
-    dims = 2, corrected = false))
+rowstd(X) = vec(Statistics.std(ensure_mat(X); dims = 2, corrected = false))
 
 """
     rowsum(X)
@@ -60,8 +59,7 @@ X = rand(n, p)
 rowvar(X)
 ```
 """ 
-rowvar(X) = vec(Statistics.var(ensure_mat(X); 
-    dims = 2, corrected = false))
+rowvar(X) = vec(Statistics.var(ensure_mat(X); dims = 2, corrected = false))
 
 ####### Functions skipping missing data
 
