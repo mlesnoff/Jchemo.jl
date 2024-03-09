@@ -154,7 +154,7 @@ colvar(X, w)
 """ 
 colvar(X) = map(v -> Statistics.var(v ; corrected = false), eachcol(ensure_mat(X)))
 
-colvar(X, weights::Weight) = colnorm(X .- colmean(ensure_mat(X), weights)', weights).^2
+colvar(X, weights::Weight) = colstd(X, weights).^2
 
 ####### Functions skipping missing data
 
