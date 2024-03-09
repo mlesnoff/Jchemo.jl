@@ -82,7 +82,9 @@ colnorm(X, w)
 """ 
 colnorm(X) = map(norm, eachcol(ensure_mat(X)))
 
-colnorm(X, weights::Weight) = vec(sqrt.(weights.w' * ensure_mat(X).^2))
+colnorm(X, weights::Weight) = sqrt.(vec(weights.w' * ensure_mat(X).^2))
+
+colnormsq(X, weights::Weight) = vec(weights.w' * ensure_mat(X).^2)
 
 """
     colstd(X)
