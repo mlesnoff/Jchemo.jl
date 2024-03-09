@@ -13,19 +13,15 @@ X = rand(n, p)
 colmad(X)
 ```
 """
-function colmad(X)
-    X = ensure_mat(X)
-    map(Jchemo.mad, eachcol(X))
-end
+colmad(X) = map(Jchemo.mad, eachcol(ensure_mat(X)))
 
 """
     colmean(X)
-    colmean(X, weights)
+    colmean(X, weights::Weight)
 Compute column-wise means of a matrix.
 * `X` : Data (n, p).
-* `w` : Weights (n) of the observations.
-    Consider to preliminary normalise `w` to 
-    sum to 1 (e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
 
 Return a vector.
 
@@ -39,7 +35,7 @@ colmean(X)
 colmean(X, w)
 ```
 """ 
-colmean(X) = vec(Statistics.mean(ensure_mat(X); dims = 1))
+colmean(X) = map(Statistics.mean, eachcol(ensure_mat(X)))
 
 colmean(X, weights::Weight) = vec(weights.w' * ensure_mat(X))
 
@@ -55,25 +51,24 @@ Return a vector.
 n, p = 5, 6
 X = rand(n, p)
 
-colmedian(X)
+colmed(X)
 ```
 """ 
-colmed(X) = vec(Statistics.median(ensure_mat(X); dims = 1))
+colmed(X) = map(Statistics.median, eachcol(ensure_mat(X)))
 
 """
     colnorm(X)
-    colnorm(X, w)
+    colnorm(X, weights::Weight)
 Compute column-wise norms of a matrix.
 * `X` : Data (n, p).
-* `w` : Weights (n) of the observations.
-    Consider to preliminary normalise `w` to 
-    sum to 1 (e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
 
-The computed norm of a column x of `X` is:
+The norm computed for a column x of `X` is:
 * sqrt(x' * x)
 
 The weighted norm is:
-* sqrt(x' * D * x), where D is the diagonal matrix of `w`.
+* sqrt(x' * D * x), where D is the diagonal matrix of `weights.w`.
 
 ## Examples
 ```julia
@@ -91,12 +86,11 @@ colnorm(X, weights::Weight) = vec(sqrt.(weights.w' * ensure_mat(X).^2))
 
 """
     colstd(X)
-    colstd(X, w)
+    colstd(X, weights::Weight)
 Compute column-wise standard deviations (uncorrected) of a matrix.
 * `X` : Data (n, p).
-* `w` : Weights (n) of the observations.
-    Consider to preliminary normalise `w` to 
-    sum to 1 (e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
 
 Return a vector.
 
@@ -110,19 +104,17 @@ colstd(X)
 colstd(X, w)
 ```
 """ 
-colstd(X) = vec(Statistics.std(ensure_mat(X); 
-    corrected = false, dims = 1))
+colstd(X) = vec(Statistics.std(ensure_mat(X); corrected = false, dims = 1))
 
-colstd(X, weights::Weight) = sqrt.(colvar(X, weights))
+colstd(X, weights::Weight) = colnorm(X .- colmean(ensure_mat(X), weights)', weights)
 
 """
     colsum(X)
-    colsum(X, w)
+    colsum(X, weights::Weight)
 Compute column-wise sums of a matrix.
 * `X` : Data (n, p).
-* `w` : Weights (n) of the observations.
-    Consider to preliminary normalise `w` to 
-    sum to 1 (e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
 
 Return a vector.
 
@@ -142,12 +134,11 @@ colsum(X, weights::Weight) = vec(weights.w' * ensure_mat(X))
 
 """
     colvar(X)
-    colvar(X, w)
+    colvar(X, weights::Weight)
 Compute column-wise variances (uncorrected) of a matrix.
 * `X` : Data (n, p).
-* `w` : Weights (n) of the observations.
-    Consider to preliminary normalise `w` to 
-    sum to 1 (e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
 
 Return a vector.
 
@@ -161,14 +152,9 @@ colvar(X)
 colvar(X, w)
 ```
 """ 
-colvar(X) = vec(Statistics.var(ensure_mat(X); 
-    corrected = false, dims = 1))
+colvar(X) = vec(Statistics.var(ensure_mat(X); corrected = false, dims = 1))
 
-function colvar(X, weights::Weight)
-    X = ensure_mat(X)
-    v = colmean(X, weights)
-    colnorm(X .- v', weights).^2
-end
+colvar(X, weights::Weight) = colnorm(X .- colmean(ensure_mat(X), weights)', weights).^2
 
 ####### Functions skipping missing data
 
