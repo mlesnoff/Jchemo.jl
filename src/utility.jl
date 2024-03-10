@@ -519,7 +519,7 @@ Compute the weighted norm of a vector.
 The weighted norm of vector `x` is computed by:
 * sqrt(x' * D * x), where D is the diagonal matrix of vector `weights.w`.
 """
-normw(x, weights::Weight) = sqrt(dot(x, weights.w .* x))
+normw(x, weights::Weight) = sqrt(sum(x .* weights.w .* x))
 
 """ 
     nro(X)
