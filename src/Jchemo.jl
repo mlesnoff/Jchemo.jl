@@ -256,7 +256,7 @@ export
     replacebylev, replacebylev2, 
     replacedict, 
     rmcol, rmrow, 
-    rowmean, rowstd, rowsum, rowvar,
+    rowmean, rownorm, rowstd, rowsum, rowvar,
     rowmeanskip, rowstdskip, rowsumskip, rowvarskip,   
     snipals, snipalsh, snipalsmix,
     soft,
