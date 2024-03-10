@@ -70,6 +70,8 @@ The norm computed for a column x of `X` is:
 The weighted norm is:
 * sqrt(x' * D * x), where D is the diagonal matrix of `weights.w`.
 
+Return a vector.
+
 ## Examples
 ```julia
 n, p = 5, 6
