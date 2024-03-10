@@ -15,6 +15,26 @@ rowmean(X)
 rowmean(X) = vec(Statistics.mean(ensure_mat(X); dims = 2))
 
 """
+    rownorm(X)
+Compute row-wise norms of a matrix.
+* `X` : Data (n, p).
+
+The norm computed for a row x of `X` is:
+* sqrt(x' * x)
+
+Return a vector.
+
+## Examples
+```julia
+n, p = 5, 6
+X = rand(n, p)
+
+rownorm(X)
+```
+""" 
+rownorm(X) = map(norm, eachrow(ensure_mat(X)))
+
+"""
     rowstd(X)
 Compute row-wise standard deviations (uncorrected) of a matrix`.
 * `X` : Data (n, p).
