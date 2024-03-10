@@ -4,6 +4,7 @@
 
 - News 
     - **rownorm**: Row-wise norms.
+    - **snorm**: Row-wise norming of X-data.
 
 - Modifications
     - Code improvement. 

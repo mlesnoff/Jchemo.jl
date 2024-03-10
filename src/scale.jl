@@ -1,6 +1,7 @@
 """
     center()
     center(X)
+    center(X, weights::Weight)
 Column-wise centering of X-data.
 * `X` : X-data (n, p).
 
@@ -42,7 +43,7 @@ end
 
 """ 
     transf(object::Center, X)
-    transf!(object::Center, X)
+    transf!(object::Center, X::Matrix)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -59,6 +60,7 @@ end
 """
     scale()
     scale(X)
+    scale(X, weights::Weight)
 Column-wise scaling of X-data.
 * `X` : X-data (n, p).
 
@@ -100,7 +102,7 @@ end
 
 """ 
     transf(object::Scale, X)
-    transf!(object::Scale, X)
+    transf!(object::Scale, X::Matrix)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -117,6 +119,7 @@ end
 """
     cscale()
     cscale(X)
+    cscale(X, weights::Weight)
 Column-wise centering and scaling of X-data.
 * `X` : X-data (n, p).
 
@@ -162,7 +165,7 @@ end
 
 """ 
     transf(object::Cscale, X)
-    transf!(object::Cscale, X)
+    transf!(object::Cscale, X::Matrix)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.

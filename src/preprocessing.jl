@@ -441,6 +441,61 @@ function transf!(object::Savgol, X::Matrix)
 end
 
 """
+    snorm()
+    snorm(X)
+Row-wise norming of X-data.
+* `X` : X-data (n, p).
+
+Each row of `X` is divide by its norm.
+
+## Examples
+```julia
+using JchemoData, JLD2
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+pnames(dat)
+X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
+plotsp(dat.X, wl; nsamp = 20).f
+
+mod = snorm() 
+fit!(mod, Xtrain)
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
+plotsp(Xptrain).f
+plotsp(Xptest).f
+rownorm(Xptrain)
+rownorm(Xptest)
+```
+""" 
+function snorm(X)
+    Snorm()
+end
+
+""" 
+    transf(object::Snorm, X)
+    transf!(object::Snorm, X)
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+""" 
+function transf(object::Snorm, X)
+    X = copy(ensure_mat(X))
+    transf!(object, X)
+    X
+end
+
+function transf!(object::Snorm, X::Matrix)
+    X ./= rownorm(X)
+end
+
+"""
     snv(; kwargs...)
     snv(X; kwargs...)
 Standard-normal-variate (SNV) transformation of each 

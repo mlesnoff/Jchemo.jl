@@ -716,6 +716,9 @@ struct Snv
     par::Par
 end
 
+struct Snorm
+end
+
 struct Center
     xmeans::Vector
 end

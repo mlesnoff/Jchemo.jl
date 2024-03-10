@@ -4,6 +4,7 @@ fdif(; kwargs...) = Transformer{Function, Fdif, Base.Pairs}(fdif, nothing, kwarg
 interpl(; kwargs...) = Transformer{Function, Interpl, Base.Pairs}(interpl, nothing, kwargs)
 mavg(; kwargs...) = Transformer{Function, Mavg, Base.Pairs}(mavg, nothing, kwargs)
 savgol(; kwargs...) = Transformer{Function, Savgol, Base.Pairs}(savgol, nothing, kwargs)
+snorm(; kwargs...) = Transformer{Function, Snorm, Base.Pairs}(snorm, nothing, kwargs)
 snv(; kwargs...) = Transformer{Function, Snv, Base.Pairs}(snv, nothing, kwargs)
 center(; kwargs...) = Transformer{Function, Center, Base.Pairs}(center, nothing, kwargs)
 scale(; kwargs...) = Transformer{Function, Scale, Base.Pairs}(scale, nothing, kwargs)
