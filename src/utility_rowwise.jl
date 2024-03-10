@@ -24,6 +24,9 @@ The norm computed for a row x of `X` is:
 
 Return a vector.
 
+Note: Thanks to @mcabbott 
+at https://discourse.julialang.org/t/orders-of-magnitude-runtime-difference-in-row-wise-norm/96363.
+
 ## Examples
 ```julia
 n, p = 5, 6
@@ -32,7 +35,7 @@ X = rand(n, p)
 rownorm(X)
 ```
 """ 
-rownorm(X) = map(norm, eachrow(ensure_mat(X)))
+rownorm(X) = sqrt.(vec(sum(abs2, X ; dims = 2)))
 
 """
     rowstd(X)

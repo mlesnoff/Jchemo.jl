@@ -2,6 +2,9 @@
 
 ## *Version 0.3.7*
 
+- News 
+    - **rownorm**: Row-wise norms.
+
 - Modifications
     - Code improvement. 
 
@@ -21,7 +24,7 @@
 ## *Version 0.3.4*
 
 - News
-    - **colmed**: Colmn-wise medians.
+    - **colmed**: Column-wise medians.
 
 - Modifications
     - Code improvement. 
