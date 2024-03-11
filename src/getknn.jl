@@ -1,6 +1,5 @@
 """ 
-    getknn(Xtrain, X; 
-        metric = :eucl, k = 1)
+    getknn(Xtrain, X; metric = :eucl, k = 1)
 Return the k nearest neighbors in `Xtrain` of each row 
     of the query `X`.
 * `Xtrain` : Training X-data.
@@ -27,13 +26,11 @@ res.d    # distances
 res = getknn(Xtrain, x; k)
 res.ind
 
-res = getknn(Xtrain, X; 
-    metric = :mah, k)
+res = getknn(Xtrain, X; metric = :mah, k)
 res.ind
 ```
 """ 
-function getknn(Xtrain, X; 
-        metric = :eucl, k = 1)
+function getknn(Xtrain, X; metric = :eucl, k = 1)
     @assert in([:eucl, :mah])(metric) "Wrong value for argument 'metric'."
     Xtrain = ensure_mat(Xtrain)
     X = ensure_mat(X)
