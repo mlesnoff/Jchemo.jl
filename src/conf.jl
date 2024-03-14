@@ -8,6 +8,8 @@ Keyword arguments:
 
 ## Examples
 ```julia
+using CairoMakie
+
 y = ["d"; "c"; "b"; "c"; "a"; "d"; "b"; "d"; 
     "b"; "b"; "a"; "a"; "c"; "d"; "d"]
 pred = ["a"; "d"; "b"; "d"; "b"; "d"; "b"; "d"; 
@@ -25,8 +27,7 @@ res.lev       # Levels
 
 plotconf(res).f
 
-plotconf(res; cnt = false, 
-    ptext = false).f
+plotconf(res; cnt = false, ptext = false).f
 ```
 """
 function conf(pred, y; digits = 1)
