@@ -6,6 +6,9 @@
     - **rownorm**: Row-wise norms.
     - **snorm**: Row-wise norming of X-data.
 
+- Breaking
+    - **confusion**: renamed to **conf**. 
+
 - Modifications
     - Code improvement. 
 
