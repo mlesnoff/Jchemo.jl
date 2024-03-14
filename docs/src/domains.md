@@ -268,7 +268,7 @@
 - **rpd**, **rpdr** Ratio of performance 
     to deviation
 - **mse** Summary for regression
-- **confusion** Confusion matrix
+- **conf** Confusion matrix
 
 *Discrimination*
 - **errp** Classification error rate
@@ -337,7 +337,7 @@
 - **plotxy** x-y scatter plot
 - **plotgrid** Plot error/performance rates 
     of a model
-- **plotconf** Plot confusion matrix
+- **plotconf** Plot conf matrix
 
 ## UTILITIES
 

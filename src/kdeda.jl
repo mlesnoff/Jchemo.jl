@@ -53,7 +53,7 @@ pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
-confusion(res.pred, ytest).cnt
+conf(res.pred, ytest).cnt
 
 mod = kdeda(; prior, a_kde = .5) ;
 #mod = kdeda(; prior, h_kde = .1) ;

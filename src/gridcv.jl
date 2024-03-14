@@ -263,7 +263,7 @@ mod = plslda(nlv = res.nlv[u], prior = res.prior[u])
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 @show errp(pred, ytest)
-confusion(pred, ytest).pct
+conf(pred, ytest).pct
 ```
 """
 function gridcv(mod, X, Y; segm, score, pars = nothing, nlv = nothing, 

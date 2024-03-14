@@ -129,7 +129,7 @@ include("lwplsravg.jl")
 ## Validation
 include("mpar.jl")
 include("scores.jl")
-include("confusion.jl")
+include("conf.jl")
 include("segmkf.jl")
 include("segmts.jl")
 include("gridscore.jl")
@@ -384,7 +384,7 @@ export
     gridcv, 
     gridcv_br, gridcv_lv, gridcv_lb, 
     selwold,
-    confusion, 
+    conf, 
     ######---- Sampling
     sampks, sampdp, samprand, sampsys, sampcla, 
     sampdf,

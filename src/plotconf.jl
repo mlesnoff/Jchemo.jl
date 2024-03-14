@@ -2,8 +2,8 @@
     plotconf(object; size = (500, 400), 
         cnt = true, ptext = true, fontsize = 15, 
         coldiag = :red, )
-Plot a confusion matrix.
-* `object` : Output of function `confusion`.
+Plot a conf matrix.
+* `object` : Output of function `conf`.
 Keyword arguments:
 * `size` : Size (horizontal, vertical) of the figure.
 * `cnt` : Boolean. If `true`, plot the occurrences, 
@@ -12,7 +12,7 @@ Keyword arguments:
 * `fontsize` : Font size when `ptext = true`.
 * `coldiag` : Font color when `ptext = true`.
 
-See examples in help page of function `confusion`.
+See examples in help page of function `conf`.
 ```
 """
 function plotconf(object; size = (500, 400), 

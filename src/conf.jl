@@ -1,5 +1,5 @@
 """
-    confusion(pred, y; digits = 1)
+    conf(pred, y; digits = 1)
 Confusion matrix.
 * `pred` : Univariate predictions.
 * `y` : Univariate observed data.
@@ -14,7 +14,7 @@ pred = ["a"; "d"; "b"; "d"; "b"; "d"; "b"; "d";
     "b"; "b"; "a"; "a"; "d"; "d"; "d"]
 #y = rand(1:10, 200); pred = rand(1:10, 200)
 
-res = confusion(pred, y) ;
+res = conf(pred, y) ;
 pnames(res)
 res.cnt       # Counts (dataframe built from `A`) 
 res.pct       # Row %  (dataframe built from `Apct`))
@@ -29,7 +29,7 @@ plotconf(res; cnt = false,
     ptext = false).f
 ```
 """
-function confusion(pred, y; digits = 1)
+function conf(pred, y; digits = 1)
     pred = vec(pred)
     y = vec(y)
     n = length(y)

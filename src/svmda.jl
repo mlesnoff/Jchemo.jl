@@ -80,7 +80,7 @@ res = predict(mod, Xtest) ;
 pnames(res) 
 @head res.pred
 errp(res.pred, ytest)
-confusion(res.pred, ytest).cnt
+conf(res.pred, ytest).cnt
 ```
 """ 
 function svmda(X, y; kwargs...)

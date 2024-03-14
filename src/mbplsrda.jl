@@ -63,7 +63,7 @@ pnames(mod)
 res = predict(mod, Xbltest) ; 
 @head res.pred 
 @show errp(res.pred, ytest)
-confusion(res.pred, ytest).cnt
+conf(res.pred, ytest).cnt
 
 predict(mod, Xbltest; nlv = 1:2).pred
 ```

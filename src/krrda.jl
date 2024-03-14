@@ -59,7 +59,7 @@ pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
-confusion(res.pred, ytest).cnt
+conf(res.pred, ytest).cnt
 
 predict(mod, Xtest; lb = [.1, .001]).pred
 ```

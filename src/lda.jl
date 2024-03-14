@@ -47,7 +47,7 @@ pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
-confusion(res.pred, ytest).cnt
+conf(res.pred, ytest).cnt
 ```
 """ 
 function lda(X, y; kwargs...)

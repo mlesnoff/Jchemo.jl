@@ -128,7 +128,7 @@ pnames(res)
 @head res.pred
 tab(res.pred)
 errp(res.pred, ytest)
-confusion(res.pred, ytest).cnt
+conf(res.pred, ytest).cnt
 d1 = mod.fm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)

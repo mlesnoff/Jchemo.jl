@@ -60,7 +60,7 @@ pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
-confusion(res.pred, ytest).cnt
+conf(res.pred, ytest).cnt
 
 ## With regularization
 mod = qda(; alpha = .5)

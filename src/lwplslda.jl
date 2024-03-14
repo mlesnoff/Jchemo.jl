@@ -74,7 +74,7 @@ res.listd
 res.listw
 @head res.pred
 errp(res.pred, ytest)
-confusion(res.pred, ytest).cnt
+conf(res.pred, ytest).cnt
 ```
 """ 
 function lwplslda(X, y; kwargs...) 
