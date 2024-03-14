@@ -1,7 +1,6 @@
 """
-    plotconf(object; size = (500, 400), 
-        cnt = true, ptext = true, fontsize = 15, 
-        coldiag = :red, )
+    plotconf(object; size = (500, 400), cnt = true, 
+        ptext = true, fontsize = 15, coldiag = :red, )
 Plot a conf matrix.
 * `object` : Output of function `conf`.
 Keyword arguments:
@@ -15,9 +14,8 @@ Keyword arguments:
 See examples in help page of function `conf`.
 ```
 """
-function plotconf(object; size = (500, 400), 
-        cnt = true, ptext = true, fontsize = 15, 
-        coldiag = :red, )
+function plotconf(object; size = (500, 400), cnt = true, 
+        ptext = true, fontsize = 15, coldiag = :red, )
     if cnt
         A = object.A 
         namval = "Nb. occurrences"
