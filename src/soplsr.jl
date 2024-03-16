@@ -96,7 +96,8 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     nlv = par.nlv
     length(nlv) == 1 ? nlv = repeat([nlv], nbl) : nothing  
     D = Diagonal(weights.w)
-    fmsc = blockscal(Xbl, weights; bscal = :none, centr = false, scal = par.scal)
+    #fmsc = blockscal(Xbl, weights; bscal = :none, centr = false, scal = par.scal)
+    fmsc = blockscal(Xbl, weights; bscal = par.bscal, centr = false, scal = par.scal)
     transf!(fmsc, Xbl)
     yscales = ones(Q, q)
     if par.scal 
