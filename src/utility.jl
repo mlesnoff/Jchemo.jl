@@ -157,7 +157,7 @@ y = rand(n)
 cosv(x, y)
 ```
 """
-cosv(x, y) = dot(x / norm(x), y / norm(y))
+cosv(x, y) = dot(x, y) / (norm(x) * norm(y))
 
 
 """
