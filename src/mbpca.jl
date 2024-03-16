@@ -129,8 +129,7 @@ function mbpca!(Xbl::Vector, weights::Weight;
     n = nro(Xbl[1])
     nlv = par.nlv
     sqrtw = sqrt.(weights.w)
-    fmsc = blockscal(Xbl, weights; bscal = par.bscal, centr = true, 
-        scal = par.scal)
+    fmsc = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
     transf!(fmsc, Xbl)
     # Row metric
     @inbounds for k = 1:nbl
