@@ -11,11 +11,8 @@ Multiblock sequentially orthogonalized PLSR (SO-PLSR).
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-* `bscal` : Type of block scaling. See function `blockscal`
-    for possible values.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
-    and `Y` is scaled by its uncorrected standard deviation 
-    (before the block scaling).
+    and `Y` is scaled by its uncorrected standard deviation.
 
 ## References
 Biancolillo et al. , 2015. Combining SO-PLS and linear 
@@ -108,7 +105,7 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     fm = list(nbl)
     fit = similar(Xbl[1], n, q)
     b = list(nbl)
-    ## Below, if 'scal' = true, 'fit' is in scale 'Y-scaled' 
+    ## Below, if 'scal' = true, 'fit' is in scale 'scaled-Y' 
     ## First block
     fm[1] = plskern(Xbl[1], Y, weights; nlv = nlv[1], scal = false)  
     T = fm[1].T
