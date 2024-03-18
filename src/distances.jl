@@ -140,7 +140,17 @@ function mahsqchol(X, Y, Uinv)
     euclsq(zX, zY)
 end
 
+#### Angular and correlation distances (not exported)
 
+## Usage:
+## n = 1000
+## x = rand(n)
+## y = rand(n)
+## Jchemo.SamDist()(x, y)
+struct SamDist <: Distances.Metric end
+(::SamDist)(a, b) = acos(1 - Distances.CosineDist()(a, b)) / pi
 
+struct CorDist <: Distances.Metric end
+(::CorDist)(a, b) = sqrt(max(0, .5 * Distances.CorrDist()(a, b)))
 
 

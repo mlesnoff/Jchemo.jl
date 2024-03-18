@@ -31,14 +31,13 @@ res.ind
 ```
 """ 
 function getknn(Xtrain, X; metric = :eucl, k = 1)
-    @assert in([:eucl, :mah])(metric) "Wrong value for argument 'metric'."
+    @assert in([:eucl, :mah, :sam, :cor])(metric) "Wrong value for argument 'metric'."
     Xtrain = ensure_mat(Xtrain)
     X = ensure_mat(X)
     n, p = size(Xtrain)
     k > n ? k = n : nothing
     if metric == :eucl
-        ztree = NearestNeighbors.BruteTree(Matrix(Xtrain'), Euclidean())
-        ind, d = NearestNeighbors.knn(ztree, Matrix(X'), k, true)    # 'ind' and 'd' are lists 
+        tree = NearestNeighbors.BruteTree(Xtrain', Euclidean())
     elseif metric == :mah
         S = Statistics.cov(Xtrain, corrected = false)
         if p == 1
@@ -50,13 +49,17 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
                 Uinv = LinearAlgebra.inv!(cholesky!(Hermitian(S)).U)
             end
         end
-        ## Below, since ztree = BruteTree(Xtrain', Mahalanobis(Sinv))
+        ## Below, since tree = BruteTree(Xtrain', Mahalanobis(Sinv))
         ## is very slow:
-        zXtrain = Xtrain * Uinv
-        zX = X * Uinv
-        ztree = NearestNeighbors.BruteTree(Matrix(zXtrain'), Euclidean())
-        ind, d = NearestNeighbors.knn(ztree, Matrix(zX'), k, true)
+        Xtrain = Xtrain * Uinv
+        X = X * Uinv
+        tree = NearestNeighbors.BruteTree(Xtrain', Euclidean())
+    elseif metric == :sam
+        tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.SamDist())
+    elseif metric == :cor
+        tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.CorDist())
     end
+    ind, d = NearestNeighbors.knn(tree, X', k, true)     # 'ind' and 'd' are lists  
     #ind = reduce(hcat, ind)'
     (ind = ind, d)
 end
