@@ -38,12 +38,9 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
     k > n ? k = n : nothing
     if metric == :eucl
         ztree = NearestNeighbors.BruteTree(Matrix(Xtrain'), Euclidean())
-        ind, d = NearestNeighbors.knn(ztree, 
-            Matrix(X'), k, true)    # 'ind' and 'd' are lists 
+        ind, d = NearestNeighbors.knn(ztree, Matrix(X'), k, true)    # 'ind' and 'd' are lists 
     elseif metric == :mah
         S = Statistics.cov(Xtrain, corrected = false)
-        ## Since ztree = BruteTree(Xtrain', Mahalanobis(Sinv))
-        ## is very slow:
         if p == 1
             Uinv = inv(sqrt(S)) 
         else
@@ -53,12 +50,12 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
                 Uinv = LinearAlgebra.inv!(cholesky!(Hermitian(S)).U)
             end
         end
+        ## Below, since ztree = BruteTree(Xtrain', Mahalanobis(Sinv))
+        ## is very slow:
         zXtrain = Xtrain * Uinv
         zX = X * Uinv
-        ztree = NearestNeighbors.BruteTree(Matrix(zXtrain'), 
-            Euclidean())
-        ind, d = NearestNeighbors.knn(ztree, 
-            Matrix(zX'), k, true)
+        ztree = NearestNeighbors.BruteTree(Matrix(zXtrain'), Euclidean())
+        ind, d = NearestNeighbors.knn(ztree, Matrix(zX'), k, true)
     end
     #ind = reduce(hcat, ind)'
     (ind = ind, d)
