@@ -7,10 +7,16 @@ Return the k nearest neighbors in `Xtrain` of each row
 Keyword arguments:
 * `metric` : Type of distance used for the query. 
     Possible values are ':eucl' (Euclidean),
-        ':mah' (Mahalanobis).
+        ':mah' (Mahalanobis), ':sam' (spectral angular distance),
+        ':cor' (correlation distance).
 * `k` : Number of neighbors to return.
 
 The distances (not squared) are also returned.
+
+Let x and y be two vectors:
+* Spectral angular distance (x, y) = acos(x'y / norm(x)norm(y)) / pi
+* Correlation distance (x, y) = sqrt((1 - cor(x, y)) / 2)
+Both distances are bounded within 0 (y = x) and 1 (y = -x).
 
 ## Examples
 ```julia

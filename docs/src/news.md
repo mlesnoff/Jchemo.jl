@@ -5,6 +5,7 @@
 - News 
     - **rownorm**: Row-wise norms.
     - **snorm**: Row-wise norming of X-data.
+    - **getknn**: Add of angular and correlation distances.
 
 - Breaking
     - **confusion**: renamed to **conf**. 
