@@ -37,8 +37,7 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
     n, p = size(Xtrain)
     k > n ? k = n : nothing
     if metric == :eucl
-        ztree = NearestNeighbors.BruteTree(Matrix(Xtrain'), 
-            Euclidean())
+        ztree = NearestNeighbors.BruteTree(Matrix(Xtrain'), Euclidean())
         ind, d = NearestNeighbors.knn(ztree, 
             Matrix(X'), k, true)    # 'ind' and 'd' are lists 
     elseif metric == :mah
@@ -51,8 +50,7 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
             if isposdef(S) == false
                 Uinv = Diagonal(1 ./ diag(S))
             else
-                Uinv = LinearAlgebra.inv!(
-                    cholesky!(Hermitian(S)).U)
+                Uinv = LinearAlgebra.inv!(cholesky!(Hermitian(S)).U)
             end
         end
         zXtrain = Xtrain * Uinv
