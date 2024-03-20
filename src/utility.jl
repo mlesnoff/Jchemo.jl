@@ -316,6 +316,9 @@ Replace a vector containg levels by the indexes of a set of levels.
 
 ## Examples
 ```julia
+lev = ["EHH" ; "FFS" ; "ANF" ; "CLZ" ; "CNG" ; "FRG" ; "MPW" ; "PEE" ; "SFG" ; "TTS"]
+x = ["EHH" ; "TTS" ; "FRG"]
+findindex(x, lev)
 ```
 """
 function findindex(x, lev)
