@@ -341,24 +341,18 @@
 
 ## UTILITIES
 
-- **aggstat** Compute column-wise statistics by group 
-    in a dataset
+- **aggstat** Compute column-wise statistics by group in a dataset
 - **colmad**, **colmean**, **colmed**, **colnorm**, 
     **colstd**, **colsum**, **colvar**  Column-wise operations
 - **colmeanskip**, **colstdskip**, **colsumskip**, 
-    **colvarskip**: Column-wise operations 
-    allowing missing data
-- **covm**, **corm** Weighted covariance 
-    and correlation matrices
+    **colvarskip**: Column-wise operations allowing missing data
+- **covm**, **corm** Weighted covariance and correlation matrices
 - **cosv**, **cosm** Cosinus between vectors
 - **dummy** Build dummy table
-- **euclsq**, **mahsq**, **mahsqchol** Distances 
-    (Euclidean, Mahalanobis) between rows of matrices
+- **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
 - **fblockscal_col, _frob, _mfa, _sd** Scale blocks
-- **fcenter**, **fscale**, **fcscale** Column-wise centering 
-    and scaling of a matrix
-- **findmax_cla** Find the most occurent level in 
-    a categorical variable
+- **fcenter**, **fscale**, **fcscale** Column-wise centering and scaling of a matrix
+- **findmax_cla** Find the most occurent level in a categorical variable
 - **frob** Frobenius norm of a matrix
 - **fweight** Compute weights from distances
 - **getknn** Find nearest neighbours between rows of matrices
@@ -367,8 +361,7 @@
 - **krbf, kpol** Build kernel Gram matrices
 - **locw** Working function for local (kNN) models
 - **mad** Median absolute deviation (not exported)
-- **matB**, **matW** Between- and within-class 
-    covariance matrices
+- **matB**, **matW** Between- and within-class covariance matrices
 - **mlev** Return the sorted levels of a vecor or a dataset 
 - **mweight** Normalize a vector to sum to 1
 - **nco**, **nro**, Nb. rows and columns of an object
@@ -376,30 +369,23 @@
 - **plist** Print each element of a list
 - **pnames** Return the names of the elements of an object
 - **psize** Return the type and size of a dataset
-- **recodcat2int** Recode a categorical variable 
-    to a integer variable
-- **recodnum2int** Recode a continuous variable 
-    to integer classes
-- **replacebylev** Replace the elements of a vector by levels 
-    of corresponding order
-- **replacebylev2** Replace the elements of an index-vector 
-    by levels
-- **replacedict** Replace the elements of a vector by levels 
-    defined in a dictionary
-- **rmcol** Remove the columns of a matrix or the components 
-    of a vector having indexes s
-- **rmrow** Remove the rows of a matrix or the components 
-    of a vector having indexes s
+- **findindex** Replace a vector containg levels by the indexes of a set of levels
+- **recodcat2int** Recode a categorical variable to a integer variable
+- **recodnum2int** Recode a continuous variable to integer classes
+- **replacebylev** Replace the elements of a vector by levels of corresponding order
+- **replacebylev2** Replace the elements of an index-vector by levels
+- **replacedict** Replace the elements of a vector by levels defined in a dictionary
+- **rmcol** Remove the columns of a matrix or the components of a vector having indexes s
+- **rmrow** Remove the rows of a matrix or the components of a vector having indexes s
 - **rowmean**, **rownorm**, **rowstd**, **rowsum**, **rowvar**: Row-wise operations
-- **rowmeanskip**, **rowstdskip**, **rowsumskip**, 
-    **rowvarskip**: Row-wise operations allowing missing data
+- **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations 
+    allowing missing data
 - **soft** Soft thresholding
 - **softmax** Softmax function
 - **sourcedir** Include all the files contained in a directory
 - **ssq** Total inertia of a matrix
 - **summ** Summarize the columns of a dataset
-- **tab**, **tabdf**, **tabdupl** Tabulations 
-    for categorical variables
+- **tab**, **tabdf**, **tabdupl** Tabulations for categorical variables
 - **vcatdf** Vertical concatenation of a list of dataframes
 - **wdist** Compute weights from distances
 - Other **utility functions** in file `utility.jl`
