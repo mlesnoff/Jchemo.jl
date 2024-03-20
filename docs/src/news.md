@@ -6,6 +6,7 @@
     - **rownorm**: Row-wise norms.
     - **snorm**: Row-wise norming of X-data.
     - **getknn**: Add of angular and correlation distances.
+    - **findindex** Replace a vector containg levels by the indexes of a set of levels.
 
 - Breaking
     - **confusion**: renamed to **conf**. 
