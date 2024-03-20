@@ -232,6 +232,7 @@ export
     fblockscal, fblockscal!,
     fcenter, fcenter!, 
     fcscale, fcscale!, 
+    findindex,
     findmax_cla, 
     frob,
     fscale, fscale!,
