@@ -307,6 +307,28 @@ ensure_mat(X::LinearAlgebra.Adjoint) = Matrix(X)
 ensure_mat(X::DataFrame) = Matrix(X)
 
 """
+    findindex(x, lev)
+Replace a vector containg levels by the indexes of a set of levels.
+* `x` : Vector (n) of levels to replace.
+* `lev` : Vector (nlev) containing the levels.
+
+*Warning*: The levels in `x` must be contained in `lev`.
+
+## Examples
+```julia
+```
+"""
+function findindex(x, lev)
+    n = length(x)
+    lev = mlev(lev)
+    xindex = Vector{Int}(undef, n)
+    @inbounds for i = 1:n
+        xindex[i] = findall(lev .== x[i])[1]
+    end
+    xindex 
+end
+
+"""
     findmax_cla(x)
     findmax_cla(x, weights::Weight)
 Find the most occurent level in `x`.
