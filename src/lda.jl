@@ -97,8 +97,7 @@ function predict(object::Lda, X)
     nlev = length(lev) 
     dens = similar(X, m, nlev)
     for i = 1:nlev
-        dens[:, i] .= vec(predict(object.fm[i], 
-            X).pred)
+        dens[:, i] .= vec(predict(object.fm[i], X).pred)
     end
     A = object.wprior' .* dens
     v = sum(A, dims = 2)
