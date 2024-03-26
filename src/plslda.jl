@@ -89,8 +89,7 @@ function plslda(X, y, weights::Weight; kwargs...)
     fmpls = plskern(X, res.Y, weights; kwargs...)
     fmda = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = lda(fmpls.T[:, 1:i], y, 
-            weights; kwargs...)
+        fmda[i] = lda(fmpls.T[:, 1:i], y, weights; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
     Plslda(fm, res.lev, ni)
@@ -128,8 +127,7 @@ function predict(object::Plslda, X;
     posterior = list(Matrix{Q}, le_nlv)
     @inbounds for i = 1:le_nlv
         znlv = nlv[i]
-        T = transf(object.fm.fmpls, X; 
-            nlv = znlv)
+        T = transf(object.fm.fmpls, X; nlv = znlv)
         zres = predict(object.fm.fmda[znlv], T)
         z =  mapslices(argmax, zres.posterior; dims = 2) 
         pred[i] = reshape(replacebylev2(z, object.lev), m, 1)
