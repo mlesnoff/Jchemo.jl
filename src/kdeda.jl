@@ -77,8 +77,7 @@ function kdeda(X, y; kwargs...)
     fm = list(nlev)
     for i = 1:nlev
         s = y .== lev[i]
-        fm[i] = dmkern(vrow(X, s); 
-            h_kde = par.h_kde, a_kde = par.a_kde)
+        fm[i] = dmkern(vrow(X, s); h_kde = par.h_kde, a_kde = par.a_kde)
     end
     Kdeda(fm, wprior, lev, ni)
 end
@@ -91,14 +90,12 @@ function predict(object::Kdeda, X)
     dens = similar(X, m, nlev)
     ni = object.ni
     for i = 1:nlev
-        dens[:, i] .= vec(
-            predict(object.fm[i], X).pred)
+        dens[:, i] .= vec(predict(object.fm[i], X).pred)
     end
     A = object.wprior' .* dens
     v = sum(A, dims = 2)
-    posterior = fscale(A', v)'  # Could be replaced by similar as in fscale! 
-    z =  mapslices(argmax, posterior; 
-        dims = 2)  # if equal, argmax takes the first
+    posterior = fscale(A', v)'    # Could be replaced by similar as in fscale! 
+    z =  mapslices(argmax, posterior; dims = 2)    # if equal, argmax takes the first
     pred = reshape(replacebylev2(z, object.lev), m, 1)
     (pred = pred, dens, posterior)
 end
