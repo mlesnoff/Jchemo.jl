@@ -37,10 +37,10 @@ This is the same principle as function `lwplsr` except
 that PLS-QDA models, instead of PLSR models, are fitted 
 on the neighborhoods.
 
-The present version of this function suffers from frequent 
+**Warning:** The present version of this function suffers from frequent 
 stops due to non positive definite matrices when doing QDA
-on neighborhoods (some classes within the neighborhood can 
-have very few ovservations). The recommandation is to select 
+on neighborhoods: some classes within the neighborhood can 
+have very few observations. The recommandation is to select 
 a sufficiantly large number of neighbors, or/and to use a 
 regularized QDA (argument `alpha`).
 
