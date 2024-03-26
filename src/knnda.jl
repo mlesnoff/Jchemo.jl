@@ -124,8 +124,7 @@ function predict(object::Knnda, X)
     end
     listw = copy(res.d)
     @inbounds for i = 1:m
-        w = wdist(res.d[i]; h, criw,
-            squared)
+        w = wdist(res.d[i]; h, criw, squared)
         w[w .< tolw] .= tolw
         listw[i] = w
     end
@@ -136,7 +135,6 @@ function predict(object::Knnda, X)
         pred[i, :] .= findmax_cla(object.y[s], 
             mweight(listw[i]))
     end
-    (pred = pred, listnn = res.ind, listd = res.d, 
-        listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 

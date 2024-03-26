@@ -87,8 +87,7 @@ function lwplslda(X, y; kwargs...)
     if par.nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, dummy(y).Y; 
-            nlv = par.nlvdis, scal = par.scal)
+        fm = plskern(X, dummy(y).Y; nlv = par.nlvdis, scal = par.scal)
     end
     xscales = ones(Q, p)
     if isnothing(fm) && par.scal
@@ -125,14 +124,12 @@ function predict(object::Lwplslda, X; nlv = nothing)
             res = getknn(object.X, X; metric, k)
         end
     else
-        res = getknn(object.fm.T, transf(object.fm, X); 
-            metric, k) 
+        res = getknn(object.fm.T, transf(object.fm, X); metric, k) 
     end
     listw = copy(res.d)
     Threads.@threads for i = 1:m
     #@inbounds for i = 1:m
-        w = wdist(res.d[i]; h, criw,
-            squared)
+        w = wdist(res.d[i]; h, criw, squared)
         w[w .< tolw] .= tolw
         listw[i] = w
     end
@@ -141,8 +138,7 @@ function predict(object::Lwplslda, X; nlv = nothing)
         listnn = res.ind, listw = listw, fun = plslda, 
         nlv = nlv, prior = object.par.prior, 
         scal = object.par.scal, verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, 
-        listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 
 

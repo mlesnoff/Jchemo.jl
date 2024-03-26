@@ -148,8 +148,7 @@ function predict(object::Knnr, X)
     end
     listw = copy(res.d)
     @inbounds for i = 1:m
-        w = wdist(res.d[i]; h, criw,
-            squared)
+        w = wdist(res.d[i]; h, criw, squared)
         w[w .< tolw] .= tolw
         listw[i] = w
     end
@@ -161,7 +160,6 @@ function predict(object::Knnr, X)
             vrow(object.Y, res.ind[i]), 
             weights)
     end
-    (pred = pred, listnn = res.ind, listd = res.d, 
-        listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 

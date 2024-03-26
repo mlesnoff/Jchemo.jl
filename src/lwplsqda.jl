@@ -135,14 +135,12 @@ function predict(object::Lwplsqda, X; nlv = nothing)
             res = getknn(object.X, X; metric, k)
         end
     else
-        res = getknn(object.fm.T, transf(object.fm, X); 
-            metric, k) 
+        res = getknn(object.fm.T, transf(object.fm, X); metric, k) 
     end
     listw = copy(res.d)
     Threads.@threads for i = 1:m
     #@inbounds for i = 1:m
-        w = wdist(res.d[i]; h, criw,
-            squared)
+        w = wdist(res.d[i]; h, criw, squared)
         w[w .< tolw] .= tolw
         listw[i] = w
     end
@@ -151,8 +149,7 @@ function predict(object::Lwplsqda, X; nlv = nothing)
         listnn = res.ind, listw = listw, fun = plsqda, 
         nlv = nlv, prior = object.par.prior, alpha = object.par.alpha, 
         scal = object.par.scal, verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, 
-        listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 
 

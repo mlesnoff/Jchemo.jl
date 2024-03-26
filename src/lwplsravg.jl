@@ -143,8 +143,7 @@ function predict(object::LwplsrAvg, X)
     end
     listw = copy(res.d)
     Threads.@threads for i = 1:m
-        w = wdist(res.d[i]; h, criw,
-            squared)
+        w = wdist(res.d[i]; h, criw, squared)
         w[w .< tolw] .= tolw
         listw[i] = w
     end
@@ -153,6 +152,5 @@ function predict(object::LwplsrAvg, X)
         listnn = res.ind, listw = listw, fun = plsravg, 
         nlv = object.par.nlv, scal = object.par.scal,
         verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, 
-        listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end

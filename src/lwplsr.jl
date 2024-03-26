@@ -178,8 +178,7 @@ function predict(object::Lwplsr, X; nlv = nothing)
     listw = copy(res.d)
     Threads.@threads for i = 1:m
     #@inbounds for i = 1:m
-        w = wdist(res.d[i]; h, criw,
-            squared)
+        w = wdist(res.d[i]; h, criw, squared)
         w[w .< tolw] .= tolw
         listw[i] = w
     end
@@ -188,7 +187,6 @@ function predict(object::Lwplsr, X; nlv = nothing)
         listnn = res.ind, listw = listw, fun = plskern, 
         nlv = nlv, scal = object.par.scal,
         verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, 
-        listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
 
