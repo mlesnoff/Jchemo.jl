@@ -13,8 +13,10 @@ non parametric Gaussian kernels.
 Data `X` can be univariate (p = 1) or multivariate (p > 1). 
 In the last case, function `dmkern` computes a multiplicative 
 kernel such as in Scott & Sain 2005 Eq.19, and the internal bandwidth 
-matrix `H` is diagonal (see the code). **Note:  `H` in the code is 
-often noted "H^(1/2)" in the litterature (e.g. Wikipedia).
+matrix `H` is diagonal (see the code). 
+
+**Note:**  `H` in the `dmkern` code is often noted "H^(1/2)" in the 
+litterature (e.g. Wikipedia).
 
 The default bandwith is computed by:
 * `h_kde` = `a_kde` * n^(-1 / (p + 4)) * colstd(`X`)
@@ -124,16 +126,14 @@ function dmkern(X; kwargs...)
     ## Particular case where n = 1
     ## (ad'hoc code for discrimination functions only)
     if n == 1
-        H = diagm(repeat(
-            [a_kde * n^(-1/(p + 4))], p))
+        H = diagm(repeat([a_kde * n^(-1/(p + 4))], p))
     end
     ## End
     if isnothing(h_kde)
         h_kde = a_kde * n^(-1 / (p + 4)) * colstd(X)      # a_kde = .9, 1.06
         H = diagm(h_kde)
     else 
-        isa(h_kde, Real) ? H = diagm(repeat([h_kde], p)) : 
-            H = diagm(h_kde)
+        isa(h_kde, Real) ? H = diagm(repeat([h_kde], p)) : H = diagm(h_kde)
     end
     Hinv = inv(H)
     detH = det(H)
