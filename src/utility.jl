@@ -519,10 +519,7 @@ sum(w.w)
 """
 mweight(x::Vector) = Weight(x / sum(x))
 
-#function mweight(w::Vector{Int}) 
-#    w = Float64.(w)
-#    w ./= sum(w)
-#end
+
 #mweight(w::Vector{Q}) where {Q <: AbstractFloat} = mweight!(copy(w))
 #mweight!(w::Vector{Q}) where {Q <: AbstractFloat} = w ./= sum(w)
 
@@ -536,11 +533,12 @@ mweight(x::Vector) = Weight(x / sum(x))
 ## Examples
 ```julia
 x = rand(10)
-w = mweight(x)
+w = mweightcla_unif(x)
 sum(w.w)
 ```
 """
-mweight(w::Vector) = Weight(w / sum(w))
+function mweightcla_unif(y::Vector, prior = nothing) 
+end
 
 
 
