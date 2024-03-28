@@ -505,9 +505,10 @@ mlev(df)
 mlev(x) = sort(unique(x)) 
 
 """ 
-    mweight(w)
-    mweight!(w::AbstractVector)
-Return vector `w / sum(w)` (that sums to 1).
+    mweight(x)
+    mweight!(x::AbstractVector)
+Return an object of type `Weight` containing vector 
+`w = x / sum(x)` (that sums to 1).
 
 ## Examples
 ```julia
@@ -516,7 +517,7 @@ w = mweight(x)
 sum(w.w)
 ```
 """
-mweight(w::Vector) = Weight(w / sum(w))
+mweight(x::Vector) = Weight(x / sum(x))
 
 #function mweight(w::Vector{Int}) 
 #    w = Float64.(w)
@@ -527,6 +528,23 @@ mweight(w::Vector) = Weight(w / sum(w))
 
 #mweight(w::Union{Vector{Float32}, Vector{Float64}}) = mweight!(copy(w))
 #mweight!(w::Union{Vector{Float32}, Vector{Float64}}) = w ./= sum(w)
+
+""" 
+    mweightcla_unif(y, prior = nothing)
+
+    
+## Examples
+```julia
+x = rand(10)
+w = mweight(x)
+sum(w.w)
+```
+"""
+mweight(w::Vector) = Weight(w / sum(w))
+
+
+
+
 
 """ 
     nco(X)
