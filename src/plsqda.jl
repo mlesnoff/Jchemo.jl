@@ -29,8 +29,13 @@ variable. Then, a PLSR2 (i.e. multivariate) is run on
 See function `plslda` for examples.
 """ 
 function plsqda(X, y; kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    if isequal(par.prior, :unif)
+        weights = mweightcla(Q, y)
+    elseif isequal(par.prior, :prop)
+        weights = mweight(ones(Q, nro(X)))
+    end
     plsqda(X, y, weights; kwargs...)
 end
 
