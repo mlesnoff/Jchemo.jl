@@ -82,7 +82,7 @@ function plsrda(X, y; kwargs...)
     Q = eltype(X[1, 1])
     @assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
     if isequal(par.prior, :unif)
-        weights = mweightcla(y, Q)
+        weights = mweightcla(Q, y)
     elseif isequal(par.prior, :prop)
         weights = mweight(ones(Q, nro(X)))
     end

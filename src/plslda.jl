@@ -77,7 +77,11 @@ summary(fmpls, Xtrain)
 """ 
 function plslda(X, y; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    if isequal(par.prior, :unif)
+        weights = mweightcla(Q, y)
+    elseif isequal(par.prior, :prop)
+        weights = mweight(ones(Q, nro(X)))
+    end
     plslda(X, y, weights; kwargs...)
 end
 
