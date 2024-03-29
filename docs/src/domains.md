@@ -364,8 +364,8 @@
 - **matB**, **matW** Between- and within-class covariance matrices
 - **mlev** Return the sorted levels of a vecor or a dataset 
 - **mweight** Normalize a vector to sum to 1
-- **mweightcla** Compute weights (sum to 1) for a categorical variable 
-        giving equal total weight for each class.
+- **mweightcla** Compute weights (sum to 1) for observations of a categorical variable, 
+    giving specific sub-total weights for the classes
 - **nco**, **nro**, Nb. rows and columns of an object
 - **normw** Weighted norm of a vector
 - **plist** Print each element of a list
