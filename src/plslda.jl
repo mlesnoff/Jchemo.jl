@@ -76,6 +76,7 @@ summary(fmpls, Xtrain)
 ```
 """ 
 function plslda(X, y; kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
     if isequal(par.prior, :unif)
         weights = mweightcla(Q, y)
