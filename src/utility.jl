@@ -545,12 +545,12 @@ weights = mweightcla(x)
 aggstat(weights.w, x; fun = sum).X
 ```
 """
-function mweightcla(x::Vector, prior = nothing) 
+function mweightcla(x::Vector, prior::Union{Vector, Nothing} = nothing) 
     n = length(x)
     res = tab(x)
     lev = res.keys
     nlev = length(lev)
-    vals = nlev * res.vals
+    isnothing(prior) ? vals = nlev * res.vals : vals = res.vals ./ prior
     w = zeros(n)
     for i in eachindex(lev)
         s = x .== lev[i]
