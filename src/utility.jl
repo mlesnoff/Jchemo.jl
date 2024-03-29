@@ -527,8 +527,8 @@ mweight(x::Vector) = Weight(x / sum(x))
 
 """ 
     mweightcla(x, prior = nothing)
-Compute weights (sum to 1) for observations of a categorical variable 
-    giving equal sub-total weight for each class.
+Compute weights (sum to 1) for observations of a categorical variable, 
+    giving specific sub-total weights for the classes.
 * `x` : A categorical variable (n) (class membership).
 * `prior` : If `nothing`, an equal weight is given to each class.
     If not, must be a vector (of length equal to the number of classes) 
@@ -539,28 +539,25 @@ Return an object of type `Weight` (see function `mweight`).
 
 ## Examples
 ```julia
-x = rand(10)
-w = mweightcla(x)
-sum(w.w)
+x = rand(["a"; "b"; "c"], 1000)
+tab(x)
+weights = mweightcla(x)
+aggstat(weights.w, x; fun = sum).X
 ```
 """
-function mweightcla(y::Vector, prior = nothing) 
-    n = length(y)
-    res = tab(y)
+function mweightcla(x::Vector, prior = nothing) 
+    n = length(x)
+    res = tab(x)
     lev = res.keys
     nlev = length(lev)
     vals = nlev * res.vals
     w = zeros(n)
     for i in eachindex(lev)
-        s = ycla .== lev[i]
+        s = x .== lev[i]
         w[s] .= 1 / vals[i]
     end
     mweight(w)
 end
-
-
-
-
 
 """ 
     nco(X)
