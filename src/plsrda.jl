@@ -10,6 +10,9 @@ Discrimination based on partial least squares
     Must be of type `Weight` (see e.g. function `mweight`). 
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
+* `prior` : Type of prior probabilities for class 
+    membership. Possible values are: `:unif` (uniform), 
+    `:prop` (proportional).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
@@ -75,8 +78,14 @@ summary(fm.fm, Xtrain)
 ```
 """
 function plsrda(X, y; kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    @assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
+    if isequal(par.prior, :unif)
+        weights = mweightcla(y, Q)
+    elseif isequal(par.prior, :prop)
+        weights = mweight(ones(Q, nro(X)))
+    end
     plsrda(X, y, weights; kwargs...)
 end
 

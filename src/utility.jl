@@ -526,10 +526,12 @@ mweight(x::Vector) = Weight(x / sum(x))
 #mweight!(w::Union{Vector{Float32}, Vector{Float64}}) = w ./= sum(w)
 
 """ 
-    mweightcla(x, prior = nothing)
+    mweightcla(x::Vector, prior::Union{Vector, Nothing} = nothing)
+    mweightcla(Q::DataType, x::Vector, prior::Union{Vector, Nothing} = nothing)
 Compute weights (sum to 1) for observations of a categorical variable, 
     giving specific sub-total weights for the classes.
 * `x` : A categorical variable (n) (class membership).
+* `Q` : A data type (e.g. `Float32`).
 * `prior` : If `nothing`, an equal weight is given to each class.
     If not, must be a vector (of length equal to the number of classes) 
     giving the expected weight for each class (the vector must be sorted 
@@ -557,6 +559,10 @@ function mweightcla(x::Vector, prior::Union{Vector, Nothing} = nothing)
         w[s] .= 1 / vals[i]
     end
     mweight(w)
+end
+
+function mweightcla(Q::DataType, x::Vector, prior::Union{Vector, Nothing} = nothing)
+    mweight(convert.(Q, mweightcla(x, prior).w))
 end
 
 """ 
