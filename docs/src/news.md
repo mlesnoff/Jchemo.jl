@@ -14,7 +14,8 @@
     - **confusion**: renamed to **conf**. 
 
 - Modifications
-    - Code improvement. 
+    - **plsrda**, **plslda**, **plsqda**, **plskdeda**: improvement for unbalnaced classes.
+    - Code clenaning. 
 
 
 ## *Version 0.3.6*
