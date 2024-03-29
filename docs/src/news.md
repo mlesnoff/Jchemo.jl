@@ -5,7 +5,7 @@
 - News 
     - **findindex**: Replace a vector containg levels by the indexes of a set of levels.
     - **getknn**: Add of angular and correlation distances.
-    - **mweightcla_unif**: Compute weights (sum to 1) for a categorical variable 
+    - **mweightcla**: Compute weights (sum to 1) for a categorical variable 
         giving equal total weight for each class.
     - **rownorm**: Row-wise norms.
     - **snorm**: Row-wise norming of X-data.

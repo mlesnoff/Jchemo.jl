@@ -519,7 +519,6 @@ sum(w.w)
 """
 mweight(x::Vector) = Weight(x / sum(x))
 
-
 #mweight(w::Vector{Q}) where {Q <: AbstractFloat} = mweight!(copy(w))
 #mweight!(w::Vector{Q}) where {Q <: AbstractFloat} = w ./= sum(w)
 
@@ -527,17 +526,36 @@ mweight(x::Vector) = Weight(x / sum(x))
 #mweight!(w::Union{Vector{Float32}, Vector{Float64}}) = w ./= sum(w)
 
 """ 
-    mweightcla_unif(y, prior = nothing)
+    mweightcla(x, prior = nothing)
+Compute weights (sum to 1) for observations of a categorical variable 
+    giving equal sub-total weight for each class.
+* `x` : A categorical variable (n) (class membership).
+* `prior` : If `nothing`, an equal weight is given to each class.
+    If not, must be a vector (of length equal to the number of classes) 
+    giving the expected weight for each class (the vector must be sorted 
+    in the same order as `mlev(x)`).
 
-    
+Return an object of type `Weight` (see function `mweight`).
+
 ## Examples
 ```julia
 x = rand(10)
-w = mweightcla_unif(x)
+w = mweightcla(x)
 sum(w.w)
 ```
 """
-function mweightcla_unif(y::Vector, prior = nothing) 
+function mweightcla(y::Vector, prior = nothing) 
+    n = length(y)
+    res = tab(y)
+    lev = res.keys
+    nlev = length(lev)
+    vals = nlev * res.vals
+    w = zeros(n)
+    for i in eachindex(lev)
+        s = ycla .== lev[i]
+        w[s] .= 1 / vals[i]
+    end
+    mweight(w)
 end
 
 
