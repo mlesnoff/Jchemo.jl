@@ -14,7 +14,7 @@
     - **confusion**: renamed to **conf**. 
 
 - Modifications
-    - **plsrda**, **plslda**, **plsqda**, **plskdeda**: improvement for unbalnaced classes.
+    - **plsrda**, **plslda**, **plsqda**, **plskdeda**: improvement for unbalanced classes.
     - Code clenaning. 
 
 
