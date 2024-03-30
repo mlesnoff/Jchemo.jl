@@ -481,7 +481,7 @@ end
 
 """
     merrp(pred, y)
-Compute the mean intra-class error rate (ERR).
+Compute the mean intra-class classification error rate.
 * `pred` : Predictions.
 * `y` : Observed data (class membership).
 
