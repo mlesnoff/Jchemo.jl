@@ -3,6 +3,7 @@
 ## *Version 0.3.7*
 
 - News 
+    - **merrp**: Mean intra-class classification error rate.
     - **findindex**: Replace a vector containg levels by the indexes of a set of levels.
     - **getknn**: Add of angular and correlation distances.
     - **mweightcla**: Compute weights (sum to 1) for observations of a categorical variable, 
