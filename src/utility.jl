@@ -519,6 +519,8 @@ sum(w.w)
 """
 mweight(x::Vector) = Weight(x / sum(x))
 
+mweight(Q::DataType, x::Vector) = Weight(convert.(Q, x / sum(x)))
+
 #mweight(w::Vector{Q}) where {Q <: AbstractFloat} = mweight!(copy(w))
 #mweight!(w::Vector{Q}) where {Q <: AbstractFloat} = w ./= sum(w)
 
@@ -562,7 +564,7 @@ function mweightcla(x::Vector, prior::Union{Vector, Nothing} = nothing)
 end
 
 function mweightcla(Q::DataType, x::Vector, prior::Union{Vector, Nothing} = nothing)
-    mweight(convert.(Q, mweightcla(x, prior).w))
+    mweight(Q, mweightcla(x, prior).w)
 end
 
 """ 
