@@ -104,8 +104,7 @@ function plskern(X, Y, weights::Weight; kwargs...)
     plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plskern!(X::Matrix, Y::Matrix, 
-        weights::Weight; kwargs...)
+function plskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     n, p = size(X)
