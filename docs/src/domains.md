@@ -272,6 +272,7 @@
 
 *Discrimination*
 - **errp** Classification error rate
+- **merrp** Mean intra-class classification error rate
 
 *Model dimensionality*
 - **aicplsr** AIC and Cp for PLSR
