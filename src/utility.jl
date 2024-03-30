@@ -505,8 +505,8 @@ mlev(df)
 mlev(x) = sort(unique(x)) 
 
 """ 
-    mweight(x)
-    mweight!(x::AbstractVector)
+    mweight(x::Vector)
+    mweight(Q::DataType, x::Vector)
 Return an object of type `Weight` containing vector 
 `w = x / sum(x)` (that sums to 1).
 
