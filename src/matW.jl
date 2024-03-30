@@ -83,10 +83,10 @@ matW = function(X, y, weights::Weight)
     lev = taby.keys
     ni = taby.vals
     nlev = length(lev)
-    w = weights.w
-    theta = mweight(vec(aggstat(w, y; fun = sum).X))
+    w = weights.w                                      # observation weights
+    theta = mweight(vec(aggstat(w, y; fun = sum).X))   # class weights
     ## Case with at least one class with only 1 obs:
-    ## this creates Wi_1obs used in the boucle
+    ## this creates variable "Wi_1obs" used in the boucle
     if sum(ni .== 1) > 0
         Wi_1obs = covm(X, weights)
     end
