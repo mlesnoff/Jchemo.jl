@@ -145,7 +145,7 @@ end
 
 """
     residreg(pred, Y) 
-Compute regression prediction errors.
+Compute the regression residual vector.
 * `pred` : Predictions.
 * `Y` : Observed data.
 
@@ -434,7 +434,7 @@ end
 
 """
     residcla(pred, y) 
-Compute discrimination residual error 
+Compute the discrimination residual vector 
     (0 = no error, 1 = error).
 * `pred` : Predictions.
 * `y` : Observed data (class membership).
