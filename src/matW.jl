@@ -48,9 +48,9 @@ matB = function(X, y, weights::Weight)
     lev = taby.keys
     ni = taby.vals
     nlev = length(lev)
-    w = weights.w
-    theta = mweight(vec(aggstat(w, y; fun = sum).X))
-    ct = similar(X, nlev, p)
+    w = weights.w                                       # observation weights
+    theta = mweight(vec(aggstat(w, y; fun = sum).X))    # class weights
+    ct = similar(X, nlev, p)                            # class centers
     @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(X[s, :], mweight(w[s]))
