@@ -437,7 +437,7 @@ end
 Compute discrimination residual error 
     (0 = no error, 1 = error).
 * `pred` : Predictions.
-* `y` : Observed data.
+* `y` : Observed data (class membership).
 
 ## Examples
 ```julia
@@ -458,7 +458,7 @@ residcla(pred, Y) = pred .!= ensure_mat(Y)
     errp(pred, y)
 Compute the classification error rate (ERR).
 * `pred` : Predictions.
-* `y` : Observed data.
+* `y` : Observed data (class membership).
 
 ## Examples
 ```julia
@@ -479,6 +479,28 @@ function errp(pred, y)
     reshape(res, 1, :)
 end
 
+"""
+    merrp(pred, y)
+Compute the mean intra-class error rate (ERR).
+* `pred` : Predictions.
+* `y` : Observed data (class membership).
+
+ERR (see function `errp`) is computed for each class.
+Function `merrp` returns the average of these intra-class ERRs.   
+
+## Examples
+```julia
+Xtrain = rand(10, 5) 
+ytrain = rand(["a" ; "b"], 10)
+Xtest = rand(4, 5) 
+ytest = rand(["a" ; "b"], 4)
+
+mod = plsrda(nlv = 2)
+fit!(mod, Xtrain, ytrain)
+pred = predict(mod, Xtest).pred
+merrp(pred, ytest)
+```
+"""
 function merrp(pred, y)
     r = residcla(pred, y)
     res = tab(y)
