@@ -478,3 +478,15 @@ function errp(pred, y)
     res = [sum(r)] / nro(y)
     reshape(res, 1, :)
 end
+
+function merrp(pred, y)
+    r = residcla(pred, y)
+    res = tab(y)
+    nlev = length(res.keys)
+    v = zeros(nlev)
+    for i = 1:nlev
+        s = y .== res.keys[i]
+        v[i] = sum(r[s]) / res.vals[i]
+    end
+    mean(v)
+end
