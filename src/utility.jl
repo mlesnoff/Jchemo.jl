@@ -506,7 +506,6 @@ mlev(x) = sort(unique(x))
 
 """ 
     mweight(x::Vector)
-    mweight(Q::DataType, x::Vector)
 Return an object of type `Weight` containing vector 
 `w = x / sum(x)` (that sums to 1).
 
@@ -518,8 +517,6 @@ sum(w.w)
 ```
 """
 mweight(x::Vector) = Weight(x / sum(x))
-
-mweight(Q::DataType, x::Vector) = Weight(convert.(Q, x / sum(x)))
 
 #mweight(w::Vector{Q}) where {Q <: AbstractFloat} = mweight!(copy(w))
 #mweight!(w::Vector{Q}) where {Q <: AbstractFloat} = w ./= sum(w)
@@ -564,7 +561,7 @@ function mweightcla(x::Vector, prior::Union{Vector, Nothing} = nothing)
 end
 
 function mweightcla(Q::DataType, x::Vector, prior::Union{Vector, Nothing} = nothing)
-    mweight(Q, mweightcla(x, prior).w)
+    mweight(convert.(Q, mweightcla(x, prior).w))
 end
 
 """ 
