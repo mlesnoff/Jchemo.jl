@@ -510,5 +510,5 @@ function merrp(pred, y)
         s = y .== res.keys[i]
         v[i] = sum(r[s]) / res.vals[i]
     end
-    mean(v)
+    reshape([mean(v)], 1, :)
 end
