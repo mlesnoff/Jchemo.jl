@@ -377,7 +377,7 @@ export
     ## Validation
     residreg, residcla, 
     ssr, msep, rmsep, rmsepstand, 
-    bias, sep, cor2, r2, rpd, rpdr, mse, errp,
+    bias, sep, cor2, r2, rpd, rpdr, mse, errp, merrp,
     mpar,
     gridscore, 
     gridscore_br, gridscore_lv, gridscore_lb,
