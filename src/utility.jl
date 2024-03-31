@@ -504,9 +504,23 @@ mlev(df)
 """
 mlev(x) = sort(unique(x)) 
 
-function mprior(weights::Weight, y::Vector)
-    vec(aggstat(weights.w, y; fun = sum).X)
-end 
+""" 
+    mprior(weights::Weight, x::Vector)
+Return an object of type `Weight` containing vector 
+`w = x / sum(x)` (if ad'hoc building, `w` must sum to 1).
+
+* `weights` : An object of type `Weight` (see functio `mweight`)
+* `x` : A categorical variable (n) (class membership).
+
+## Examples
+```julia
+n = 1000
+weights = mweight(rand(n))
+x = rand(["a"; "b"; "c"], n)
+mprior(weights, x)
+```
+"""
+mprior(weights::Weight, y::Vector) = vec(aggstat(weights.w, y; fun = sum).X)
 
 """ 
     mweight(x::Vector)
