@@ -504,6 +504,10 @@ mlev(df)
 """
 mlev(x) = sort(unique(x)) 
 
+function mprior(w::Vector, y::Vector)
+    vec(aggstat(mweight(w).w, y; fun = sum).X)
+end 
+
 """ 
     mweight(x::Vector)
 Return an object of type `Weight` containing vector 
