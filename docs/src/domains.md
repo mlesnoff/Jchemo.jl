@@ -364,6 +364,8 @@
 - **mad** Median absolute deviation (not exported)
 - **matB**, **matW** Between- and within-class covariance matrices
 - **mlev** Return the sorted levels of a vecor or a dataset 
+- **mprior** Return class prior probabilities for a categorical variable,
+    given observation weights
 - **mweight** Normalize a vector to sum to 1
 - **mweightcla** Compute observation weights for a categorical variable, 
     given specified sub-total weights for the classes
