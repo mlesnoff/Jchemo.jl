@@ -242,7 +242,7 @@ export
     matB, matW, 
     mblock,
     mlev,
-    mweight, mweightcla,
+    mweight, mweightcla, mprior,
     nco,
     nipals,
     nipalsmiss,
