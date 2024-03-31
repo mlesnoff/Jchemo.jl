@@ -535,7 +535,7 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class 
     membership. Possible values are: `:unif` (uniform), 
     `:prop` (proportional), or a vector (of length equal to 
-    the number of classes) giving the expected weight for each class 
+    the number of classes) giving the prior weight for each class 
     (the vector must be sorted in the same order as `mlev(x)`).
 
 Return an object of type `Weight` (see function `mweight`).

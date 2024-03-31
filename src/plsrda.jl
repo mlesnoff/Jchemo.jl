@@ -12,7 +12,9 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `prior` : Type of prior probabilities for class 
     membership. Possible values are: `:unif` (uniform), 
-    `:prop` (proportional).
+    `:prop` (proportional), or a vector (of length equal to 
+    the number of classes) giving the prior weight for each class 
+    (the vector must be sorted in the same order as `mlev(x)`).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
@@ -81,12 +83,6 @@ function plsrda(X, y; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
-    #@assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
-    #if isequal(par.prior, :unif)
-    #    weights = mweightcla(Q, y)
-    #elseif isequal(par.prior, :prop)
-    #    weights = mweight(ones(Q, nro(X)))
-    #end
     plsrda(X, y, weights; kwargs...)
 end
 
