@@ -135,7 +135,7 @@ function rda(X, y, weights::Weight; kwargs...)
         @. res.Wi[i] = res.Wi[i] + par.lb * Id 
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i], simpl = par.simpl) 
     end
-    Rda(fm, res.Wi, ct, wprior, res.theta.w, ni, lev, xscales, weights)
+    Rda(fm, res.Wi, ct, wprior, ni, lev, xscales, weights)
 end
 
 """

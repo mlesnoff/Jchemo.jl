@@ -514,7 +514,6 @@ struct Lda
     W::Matrix  
     ct::Matrix
     wprior::Vector
-    theta::Vector
     ni::Vector{Int}
     lev::Vector
     weights::Weight
@@ -525,7 +524,6 @@ struct Qda
     Wi::AbstractVector  
     ct::Matrix
     wprior::Vector
-    theta::Vector
     ni::Vector{Int}
     lev::Vector
     weights::Weight
@@ -536,7 +534,6 @@ struct Rda
     Wi::AbstractVector  
     ct::Matrix
     wprior::Vector
-    theta::Vector
     ni::Vector{Int}
     lev::Vector
     xscales::Vector

@@ -81,7 +81,7 @@ function lda(X, y, weights::Weight; kwargs...)
         ct[i, :] = colmean(X[s, :], mweight(weights.w[s]))
         fm[i] = dmnorm(; mu = ct[i, :], S = res.W) 
     end
-    Lda(fm, res.W, ct, wprior, res.theta.w, ni, lev, weights)
+    Lda(fm, res.W, ct, wprior, ni, lev, weights)
 end
 
 """
