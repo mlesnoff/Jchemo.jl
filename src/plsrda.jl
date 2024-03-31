@@ -80,12 +80,13 @@ summary(fm.fm, Xtrain)
 function plsrda(X, y; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
-    @assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
-    if isequal(par.prior, :unif)
-        weights = mweightcla(Q, y)
-    elseif isequal(par.prior, :prop)
-        weights = mweight(ones(Q, nro(X)))
-    end
+    weights = mweightcla(Q, y; prior = par.prior)
+    #@assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
+    #if isequal(par.prior, :unif)
+    #    weights = mweightcla(Q, y)
+    #elseif isequal(par.prior, :prop)
+    #    weights = mweight(ones(Q, nro(X)))
+    #end
     plsrda(X, y, weights; kwargs...)
 end
 
