@@ -525,16 +525,18 @@ mweight(x::Vector) = Weight(x / sum(x))
 #mweight!(w::Union{Vector{Float32}, Vector{Float64}}) = w ./= sum(w)
 
 """ 
-    mweightcla(x::Vector, prior::Union{Vector, Nothing} = nothing)
-    mweightcla(Q::DataType, x::Vector, prior::Union{Vector, Nothing} = nothing)
+    mweightcla(x::Vector; kwargs...)
+    mweightcla(Q::DataType, x::Vector; kwargs...)
 Compute weights (sum to 1) for observations of a categorical variable, 
     giving specific sub-total weights for the classes.
 * `x` : A categorical variable (n) (class membership).
 * `Q` : A data type (e.g. `Float32`).
-* `prior` : If `nothing`, an equal weight is given to each class.
-    If not, must be a vector (of length equal to the number of classes) 
-    giving the expected weight for each class (the vector must be sorted 
-    in the same order as `mlev(x)`).
+Keyword arguments:
+* `prior` : Type of prior probabilities for class 
+    membership. Possible values are: `:unif` (uniform), 
+    `:prop` (proportional), or a vector (of length equal to 
+    the number of classes) giving the expected weight for each class 
+    (the vector must be sorted in the same order as `mlev(x)`).
 
 Return an object of type `Weight` (see function `mweight`).
 
@@ -543,25 +545,34 @@ Return an object of type `Weight` (see function `mweight`).
 x = rand(["a"; "b"; "c"], 1000)
 tab(x)
 weights = mweightcla(x)
+#weights = mweightcla(x; prior = :prop)
+#weights = mweightcla(x; prior = [.1, .7, .2])
 aggstat(weights.w, x; fun = sum).X
 ```
 """
-function mweightcla(x::Vector, prior::Union{Vector, Nothing} = nothing) 
+function mweightcla(x::Vector; kwargs...)
+    par = recovkwargs(Par, kwargs) 
     n = length(x)
     res = tab(x)
     lev = res.keys
     nlev = length(lev)
-    isnothing(prior) ? vals = nlev * res.vals : vals = res.vals ./ prior
+    if isequal(par.prior, :unif)
+        priors = repeat([1 / nlev], nlev)
+    elseif isequal(par.prior, :prop)
+        priors = res.vals / n
+    else
+        priors = par.prior
+    end
     w = zeros(n)
-    for i in eachindex(lev)
+    @inbounds for i in eachindex(lev)
         s = x .== lev[i]
-        w[s] .= 1 / vals[i]
+        w[s] .= priors[i] / res.vals[i]
     end
     mweight(w)
 end
 
-function mweightcla(Q::DataType, x::Vector, prior::Union{Vector, Nothing} = nothing)
-    mweight(convert.(Q, mweightcla(x, prior).w))
+function mweightcla(Q::DataType, x::Vector; kwargs...)
+    mweight(convert.(Q, mweightcla(x; kwargs...).w))
 end
 
 """ 
