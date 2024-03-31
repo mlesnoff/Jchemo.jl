@@ -51,8 +51,10 @@ conf(res.pred, ytest).cnt
 ```
 """ 
 function lda(X, y; kwargs...)
-    ## In this high-levl version we decide to choose options
-    ## For more generalrity, use the low-level version
+    ## In this high-level version we decide to choose options
+    ## 'weights' is defined by the given priors 
+    ## Therefore, prior sub-total weights are the same as prior probs 
+    ## For more generality, use the low-level version
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
     lda(X, y, weights; kwargs...)
