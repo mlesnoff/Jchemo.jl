@@ -58,7 +58,7 @@ end
 
 function lda(X, y, weights::Weight; kwargs...)  
     par = recovkwargs(Par, kwargs)
-    @assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
+    #@assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
     # Scaling X has no effect
     X = ensure_mat(X)
     y = vec(y)    # for findall

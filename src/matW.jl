@@ -48,8 +48,8 @@ matB = function(X, y, weights::Weight)
     lev = taby.keys
     ni = taby.vals
     nlev = length(lev)
-    priors = mprior(weights.w, y)      # sub-total weights by class                                
-    ct = similar(X, nlev, p)           # class centers
+    priors = mprior(weights, y)      # sub-total weights by class                                
+    ct = similar(X, nlev, p)         # class centers
     @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(X[s, :], mweight(weights.w[s]))
@@ -82,9 +82,10 @@ matW = function(X, y, weights::Weight)
     lev = taby.keys
     ni = taby.vals
     nlev = length(lev)                                 
-    priors = mweight(vec(aggstat(weights.w, y; fun = sum).X))   # sub-total weights by class
-    ## Case with at least one class with only 1 obs:
-    ## this creates variable "Wi_1obs" used in the boucle
+    priors = mprior(weights, y)      # sub-total weights by class   
+    ## Case with at least one class containing only 1 obs:
+    ## this creates variable "Wi_1obs" equal to the overal covariance matrix 
+    ## (other choices could be chosen) that is then used in the next "for" boucle
     if sum(ni .== 1) > 0
         Wi_1obs = covm(X, weights)
     end
@@ -96,9 +97,9 @@ matW = function(X, y, weights::Weight)
             Wi[i] = Wi_1obs
         else
             s = findall(y .== lev[i])
-            Wi[i] = covm(X[s, :], mweight(w[s]))
+            Wi[i] = covm(X[s, :], mweight(weights.w[s]))
         end
-        @. W = W + priors.w[i] * Wi[i]
+        @. W = W + priors[i] * Wi[i]
         ## Alternative: give weight = 0 to the class(es) with 1 obs
     end
     (W = W, Wi, priors, ni, lev, weights)
