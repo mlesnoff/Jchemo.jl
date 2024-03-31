@@ -6,6 +6,8 @@
     - **findindex**: Replace a vector containg levels by the indexes of a set of levels.
     - **getknn**: Add of angular and correlation distances.
     - **merrp**: Mean intra-class classification error rate.
+    - **mprior** Return class prior probabilities for a categorical variable,
+        given observation weights.
     - **mweightcla**: Compute observation weights for a categorical variable, 
         given specified sub-total weights for the classes.
     - **rownorm**: Row-wise norms.
