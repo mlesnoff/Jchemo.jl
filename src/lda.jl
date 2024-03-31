@@ -69,11 +69,13 @@ function lda(X, y, weights::Weight; kwargs...)
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate
+
     if isequal(par.prior, :unif)
         priors = ones(Q, nlev) / nlev
     elseif isequal(par.prior, :prop)
         priors = convert.(Q, mweight(ni).w)
     end
+    
     fm = list(nlev)
     ct = similar(X, nlev, p)
     @inbounds for i = 1:nlev
