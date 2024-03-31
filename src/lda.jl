@@ -58,7 +58,6 @@ end
 
 function lda(X, y, weights::Weight; kwargs...)  
     par = recovkwargs(Par, kwargs)
-    #@assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
     # Scaling X has no effect
     X = ensure_mat(X)
     y = vec(y)    # for findall
@@ -69,18 +68,20 @@ function lda(X, y, weights::Weight; kwargs...)
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate
-
+    ## Priors
     if isequal(par.prior, :unif)
         priors = ones(Q, nlev) / nlev
     elseif isequal(par.prior, :prop)
         priors = convert.(Q, mweight(ni).w)
+    else
+        priors = mweight(par.prior).w
     end
-    
+    ## End
     fm = list(nlev)
     ct = similar(X, nlev, p)
     @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(X[s, :], mweight(weights.w[s]))
+        ct[i, :] = colmean(vrow(X, s), mweight(weights.w[s]))
         fm[i] = dmnorm(; mu = ct[i, :], S = res.W) 
     end
     Lda(fm, res.W, ct, priors, ni, lev, weights)
