@@ -48,14 +48,13 @@ matB = function(X, y, weights::Weight)
     lev = taby.keys
     ni = taby.vals
     nlev = length(lev)
-    w = weights.w                                       # observation weights
-    priors = mweight(vec(aggstat(w, y; fun = sum).X))    # sub-total weights by class
-    ct = similar(X, nlev, p)                            # class centers
+    priors = mprior(weights.w, y)      # sub-total weights by class                                
+    ct = similar(X, nlev, p)           # class centers
     @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(X[s, :], mweight(w[s]))
+        ct[i, :] = colmean(X[s, :], mweight(weights.w[s]))
     end
-    B = covm(ct, priors)
+    B = covm(ct, mweight(priors))
     (B = B, ct, priors, ni, lev, weights)
 end
 
@@ -82,9 +81,8 @@ matW = function(X, y, weights::Weight)
     taby = tab(y)
     lev = taby.keys
     ni = taby.vals
-    nlev = length(lev)
-    w = weights.w                                      # observation weights
-    priors = mweight(vec(aggstat(w, y; fun = sum).X))   # sub-total weights by class
+    nlev = length(lev)                                 
+    priors = mweight(vec(aggstat(weights.w, y; fun = sum).X))   # sub-total weights by class
     ## Case with at least one class with only 1 obs:
     ## this creates variable "Wi_1obs" used in the boucle
     if sum(ni .== 1) > 0

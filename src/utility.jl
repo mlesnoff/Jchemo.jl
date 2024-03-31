@@ -504,14 +504,14 @@ mlev(df)
 """
 mlev(x) = sort(unique(x)) 
 
-function mprior(w::Vector, y::Vector)
-    vec(aggstat(mweight(w).w, y; fun = sum).X)
+function mprior(weights::Weight, y::Vector)
+    vec(aggstat(weights.w, y; fun = sum).X)
 end 
 
 """ 
     mweight(x::Vector)
 Return an object of type `Weight` containing vector 
-`w = x / sum(x)` (that sums to 1).
+`w = x / sum(x)` (if ad'hoc building, `w` must sum to 1).
 
 ## Examples
 ```julia
@@ -531,8 +531,8 @@ mweight(x::Vector) = Weight(x / sum(x))
 """ 
     mweightcla(x::Vector; kwargs...)
     mweightcla(Q::DataType, x::Vector; kwargs...)
-Compute weights (sum to 1) for observations of a categorical variable, 
-    giving specific sub-total weights for the classes.
+Compute observation weights for a categorical variable, 
+    given specified sub-total weights for the classes.
 * `x` : A categorical variable (n) (class membership).
 * `Q` : A data type (e.g. `Float32`).
 Keyword arguments:
@@ -542,7 +542,8 @@ Keyword arguments:
     the number of classes) giving the prior weight for each class 
     (the vector must be sorted in the same order as `mlev(x)`).
 
-Return an object of type `Weight` (see function `mweight`).
+Return an object of type `Weight` (see function `mweight`) containing
+a vector `w` (n) that sums to 1.
 
 ## Examples
 ```julia
