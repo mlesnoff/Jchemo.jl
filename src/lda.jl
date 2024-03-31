@@ -51,6 +51,8 @@ conf(res.pred, ytest).cnt
 ```
 """ 
 function lda(X, y; kwargs...)
+    ## In this high-levl version we decide to choose options
+    ## For more generalrity, use the low-level version
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
     lda(X, y, weights; kwargs...)
