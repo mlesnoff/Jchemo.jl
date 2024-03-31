@@ -506,21 +506,21 @@ mlev(x) = sort(unique(x))
 
 """ 
     mprior(weights::Weight, x::Vector)
-Return an object of type `Weight` containing vector 
-`w = x / sum(x)` (if ad'hoc building, `w` must sum to 1).
-
-* `weights` : An object of type `Weight` (see functio `mweight`)
+Return class prior probabilities for a categorical variable,
+    given observation weights.
+* `weights` : An object of type `Weight` (see function `mweight`)
 * `x` : A categorical variable (n) (class membership).
+
+Returns a vector.
 
 ## Examples
 ```julia
-n = 1000
-weights = mweight(rand(n))
-x = rand(["a"; "b"; "c"], n)
+x = vcat(rand(["a" ; "c"], 900), repeat(["b"], 100))
+weights = mweight(ones(1000))
 mprior(weights, x)
 ```
 """
-mprior(weights::Weight, y::Vector) = vec(aggstat(weights.w, y; fun = sum).X)
+mprior(weights::Weight, x::Vector) = vec(aggstat(weights.w, x; fun = sum).X)
 
 """ 
     mweight(x::Vector)
@@ -561,7 +561,7 @@ a vector `w` (n) that sums to 1.
 
 ## Examples
 ```julia
-x = rand(["a"; "b"; "c"], 1000)
+x = vcat(rand(["a" ; "c"], 900), repeat(["b"], 100))
 tab(x)
 weights = mweightcla(x)
 #weights = mweightcla(x; prior = :prop)
