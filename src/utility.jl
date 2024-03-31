@@ -561,7 +561,7 @@ function mweightcla(x::Vector; kwargs...)
     elseif isequal(par.prior, :prop)
         priors = res.vals / n
     else
-        priors = par.prior
+        priors = mweight(par.prior).w
     end
     w = zeros(n)
     @inbounds for i in eachindex(lev)
