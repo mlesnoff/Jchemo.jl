@@ -576,7 +576,7 @@ function mweightcla(x::Vector; kwargs...)
     lev = res.keys
     nlev = length(lev)
     if isequal(par.prior, :unif)
-        priors = repeat([1 / nlev], nlev)
+        priors = ones(nlev) / nlev
     elseif isequal(par.prior, :prop)
         priors = res.vals / n
     else
