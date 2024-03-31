@@ -22,7 +22,7 @@ weights = mweight(ones(n))
 
 res = matB(X, y, weights) ;
 res.B
-res.wprior
+res.priors
 res.ni
 res.lev
 
@@ -34,8 +34,8 @@ matW(X, y, weights).W + matB(X, y, weights).B
 cov(X; corrected = false)
 
 v = mweight(collect(1:n))
-matW(X, y, v).wprior 
-matB(X, y, v).wprior 
+matW(X, y, v).priors 
+matB(X, y, v).priors 
 matW(X, y, v).W + matB(X, y, v).B
 covm(X, v)
 ```
@@ -49,14 +49,14 @@ matB = function(X, y, weights::Weight)
     ni = taby.vals
     nlev = length(lev)
     w = weights.w                                       # observation weights
-    wprior = mweight(vec(aggstat(w, y; fun = sum).X))    # sub-total weights by class
+    priors = mweight(vec(aggstat(w, y; fun = sum).X))    # sub-total weights by class
     ct = similar(X, nlev, p)                            # class centers
     @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(X[s, :], mweight(w[s]))
     end
-    B = covm(ct, wprior)
-    (B = B, ct, wprior, ni, lev, weights)
+    B = covm(ct, priors)
+    (B = B, ct, priors, ni, lev, weights)
 end
 
 """
@@ -84,7 +84,7 @@ matW = function(X, y, weights::Weight)
     ni = taby.vals
     nlev = length(lev)
     w = weights.w                                      # observation weights
-    wprior = mweight(vec(aggstat(w, y; fun = sum).X))   # sub-total weights by class
+    priors = mweight(vec(aggstat(w, y; fun = sum).X))   # sub-total weights by class
     ## Case with at least one class with only 1 obs:
     ## this creates variable "Wi_1obs" used in the boucle
     if sum(ni .== 1) > 0
@@ -100,10 +100,10 @@ matW = function(X, y, weights::Weight)
             s = findall(y .== lev[i])
             Wi[i] = covm(X[s, :], mweight(w[s]))
         end
-        @. W = W + wprior.w[i] * Wi[i]
+        @. W = W + priors.w[i] * Wi[i]
         ## Alternative: give weight = 0 to the class(es) with 1 obs
     end
-    (W = W, Wi, wprior, ni, lev, weights)
+    (W = W, Wi, priors, ni, lev, weights)
 end
 
 

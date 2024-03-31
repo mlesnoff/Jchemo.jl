@@ -70,9 +70,9 @@ function lda(X, y, weights::Weight; kwargs...)
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate
     if isequal(par.prior, :unif)
-        wprior = ones(Q, nlev) / nlev
+        priors = ones(Q, nlev) / nlev
     elseif isequal(par.prior, :prop)
-        wprior = convert.(Q, mweight(ni).w)
+        priors = convert.(Q, mweight(ni).w)
     end
     fm = list(nlev)
     ct = similar(X, nlev, p)
@@ -81,7 +81,7 @@ function lda(X, y, weights::Weight; kwargs...)
         ct[i, :] = colmean(X[s, :], mweight(weights.w[s]))
         fm[i] = dmnorm(; mu = ct[i, :], S = res.W) 
     end
-    Lda(fm, res.W, ct, wprior, ni, lev, weights)
+    Lda(fm, res.W, ct, priors, ni, lev, weights)
 end
 
 """
@@ -99,7 +99,7 @@ function predict(object::Lda, X)
     for i = 1:nlev
         dens[:, i] .= vec(predict(object.fm[i], X).pred)
     end
-    A = object.wprior' .* dens
+    A = object.priors' .* dens
     v = sum(A, dims = 2)
     posterior = fscale(A', v)'  # Could be replaced by similar as in fscale! 
     z =  mapslices(argmax, posterior; dims = 2)   # if equal, argmax takes the first

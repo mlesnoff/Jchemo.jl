@@ -45,7 +45,7 @@ Base.@kwdef mutable struct Par
     tolw::Float64 = 1e-4                    # tolerance for local weights
     verbose::Bool = false                   # print obs. indexes when prediction
     ##
-    prior::Symbol = :unif                   # prior in DA
+    prior::Union{Symbol, Vector{Float64}} = :unif              # prior in DA
     alpha::Float64 = 0.                     # regularization in qda and rda 
     simpl::Bool = false                     # dmnorm-parameter in rda
     h_kde::Union{Nothing, Float64, Vector{Float64}} = nothing  # dmkern-parameter 'h' in kdeda

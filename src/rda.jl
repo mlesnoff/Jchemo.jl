@@ -117,9 +117,9 @@ function rda(X, y, weights::Weight; kwargs...)
     lev = res.lev
     nlev = length(lev)
     if isequal(par.prior, :unif)
-        wprior = ones(Q, nlev) / nlev
+        priors = ones(Q, nlev) / nlev
     elseif isequal(par.prior, :prop)
-        wprior = convert.(Q, mweight(ni).w)
+        priors = convert.(Q, mweight(ni).w)
     end
     fm = list(nlev)
     ct = similar(X, nlev, p)
@@ -135,7 +135,7 @@ function rda(X, y, weights::Weight; kwargs...)
         @. res.Wi[i] = res.Wi[i] + par.lb * Id 
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i], simpl = par.simpl) 
     end
-    Rda(fm, res.Wi, ct, wprior, ni, lev, xscales, weights)
+    Rda(fm, res.Wi, ct, priors, ni, lev, xscales, weights)
 end
 
 """
@@ -154,7 +154,7 @@ function predict(object::Rda, X)
     for i = 1:nlev
         dens[:, i] .= vec(Jchemo.predict(object.fm[i], X).pred)
     end
-    A = object.wprior' .* dens
+    A = object.priors' .* dens
     v = sum(A, dims = 2)
     posterior = fscale(A', v)'  # Could be replaced by similar as in fscale! 
     z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first

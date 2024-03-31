@@ -70,16 +70,16 @@ function kdeda(X, y; kwargs...)
     nlev = length(lev)
     ni = tab(y).vals
     if isequal(par.prior, :unif)
-        wprior = ones(Q, nlev) / nlev
+        priors = ones(Q, nlev) / nlev
     elseif isequal(par.prior, :prop)
-        wprior = convert.(Q, mweight(ni).w)
+        priors = convert.(Q, mweight(ni).w)
     end
     fm = list(nlev)
     for i = 1:nlev
         s = y .== lev[i]
         fm[i] = dmkern(vrow(X, s); h_kde = par.h_kde, a_kde = par.a_kde)
     end
-    Kdeda(fm, wprior, lev, ni)
+    Kdeda(fm, priors, lev, ni)
 end
 
 function predict(object::Kdeda, X)
@@ -92,7 +92,7 @@ function predict(object::Kdeda, X)
     for i = 1:nlev
         dens[:, i] .= vec(predict(object.fm[i], X).pred)
     end
-    A = object.wprior' .* dens
+    A = object.priors' .* dens
     v = sum(A, dims = 2)
     posterior = fscale(A', v)'    # Could be replaced by similar as in fscale! 
     z =  mapslices(argmax, posterior; dims = 2)    # if equal, argmax takes the first

@@ -504,7 +504,7 @@ end
 
 struct Kdeda
     fm::Vector{Dmkern}
-    wprior::AbstractVector
+    priors::AbstractVector
     lev::Vector
     ni::Vector{Int}
 end
@@ -513,7 +513,7 @@ struct Lda
     fm::Vector{Dmnorm}
     W::Matrix  
     ct::Matrix
-    wprior::Vector
+    priors::Vector
     ni::Vector{Int}
     lev::Vector
     weights::Weight
@@ -523,7 +523,7 @@ struct Qda
     fm::Vector{Dmnorm}
     Wi::AbstractVector  
     ct::Matrix
-    wprior::Vector
+    priors::Vector
     ni::Vector{Int}
     lev::Vector
     weights::Weight
@@ -533,7 +533,7 @@ struct Rda
     fm::Vector{Dmnorm}
     Wi::AbstractVector  
     ct::Matrix
-    wprior::Vector
+    priors::Vector
     ni::Vector{Int}
     lev::Vector
     xscales::Vector
