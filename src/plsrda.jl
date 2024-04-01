@@ -63,6 +63,7 @@ pnames(mod.fm)
 fm = mod.fm ;
 fm.lev
 fm.ni
+aggsum(fm.weights.w, ytrain)
 
 @head fm.fm.T
 @head transf(mod, Xtrain)
