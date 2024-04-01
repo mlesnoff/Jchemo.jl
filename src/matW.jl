@@ -48,7 +48,7 @@ matB = function(X, y, weights::Weight)
     lev = taby.keys
     ni = taby.vals
     nlev = length(lev)
-    priors = aggsum(weights,.w y)      # sub-total weights by class                                
+    priors = aggsum(weights.w, y)      # sub-total weights by class                                
     ct = similar(X, nlev, p)         # class centers
     @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
@@ -82,7 +82,7 @@ matW = function(X, y, weights::Weight)
     lev = taby.keys
     ni = taby.vals
     nlev = length(lev)                                 
-    priors = aggsum(weights,.w y)      # sub-total weights by class   
+    priors = aggsum(weights.w, y)     # sub-total weights by class   
     ## Case with at least one class containing only 1 obs:
     ## this creates variable "Wi_1obs" equal to the overal covariance matrix 
     ## (other choices could be chosen) that is then used in the next "for" boucle
