@@ -342,7 +342,7 @@
 
 ## UTILITIES
 
-- **aggstat** Compute column-wise statistics by group in a dataset
+- **aggstat** Compute column-wise statistics by class in a dataset
 - **colmad**, **colmean**, **colmed**, **colnorm**, 
     **colstd**, **colsum**, **colvar**  Column-wise operations
 - **colmeanskip**, **colstdskip**, **colsumskip**, 
