@@ -12,6 +12,11 @@ Keyword arguments:
     membership. Possible values are: `:unif` (uniform), 
     `:prop` (proportional).
 
+In this high-level version we decide to choose options
+'weights' is defined by the given priors 
+Therefore, prior sub-total weights are the same as prior probs 
+For more generality, use the low-level version
+
 ## Examples
 ```julia
 using JchemoData, JLD2
@@ -51,12 +56,9 @@ conf(res.pred, ytest).cnt
 ```
 """ 
 function lda(X, y; kwargs...)
-    ## In this high-level version we decide to choose options
-    ## 'weights' is defined by the given priors 
-    ## Therefore, prior sub-total weights are the same as prior probs 
-    ## For more generality, use the low-level version
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    weights = mweightcla(Q, y; prior = par.prior)
     lda(X, y, weights; kwargs...)
 end
 
