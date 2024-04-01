@@ -27,7 +27,7 @@ to compute covariance matrices Wi and W. Argument `prior` is used to define
 the usual prior class probabilities. 
 
 In the high-level version, the observation weights are automatically 
-defined by the given priors: the sub-total weights by class are set 
+defined by the given priors (`prior`): the sub-total weights by class are set 
 equal to the prior probabilities. For higher generality, use the low-level 
 version.
 
