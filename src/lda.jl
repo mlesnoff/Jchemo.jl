@@ -52,6 +52,7 @@ pnames(mod.fm)
 fm = mod.fm ;
 fm.lev
 fm.ni
+aggsum(fm.weights.w, ytrain)
 
 res = predict(mod, Xtest) ;
 pnames(res)
