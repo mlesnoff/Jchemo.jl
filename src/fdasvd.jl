@@ -18,8 +18,7 @@ The function gives the same results as function `fda`.
 
 See function `fda` for examples.
 """ 
-fdasvd(X, y; kwargs...) = fdasvd!(copy(ensure_mat(X)), y; 
-    kwargs...)
+fdasvd(X, y; kwargs...) = fdasvd!(copy(ensure_mat(X)), y; kwargs...)
 
 function fdasvd!(X::Matrix, y; kwargs...)
     par = recovkwargs(Par, kwargs)
