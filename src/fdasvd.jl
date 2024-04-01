@@ -1,10 +1,12 @@
 """
     fdasvd(; kwargs...)
-    fdasvd(X, y; kwargs...)
-    fdasvd!(X::Matrix, y; kwargs...)
+    fdasvd(X, y, weights; kwargs...)
+    fdasvd!(X::Matrix, y, weights; kwargs...)
 Factorial discriminant analysis (FDA).
 * `X` : X-data (n, p).
 * `y` : y-data (n) (class membership).
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. of discriminant components.
 * `lb` : Ridge regularization parameter "lambda".
