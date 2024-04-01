@@ -79,24 +79,23 @@ scatter!(ax, ct[:, 1], ct[:, 2], markersize = 15, color = :red)
 f
 ```
 """ 
-fda(X, y; kwargs...) = fda!(copy(ensure_mat(X)), y; kwargs...)
+fda(X, y, weights; kwargs...) = fda!(copy(ensure_mat(X)), y, weights; kwargs...)
 
-function fda!(X::Matrix, y; kwargs...)
+function fda!(X::Matrix, y, weights; kwargs...)
     par = recovkwargs(Par, kwargs)
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     Q = eltype(X)
     n, p = size(X)
     lb = convert(Q, par.lb)
-    xmeans = colmean(X)
+    xmeans = colmean(X, weights)
     xscales = ones(Q, p)
     if par.scal 
-        xscales .= colstd(X)
+        xscales .= colstd(X, weights)
         fcscale!(X, xmeans, xscales)
     else
         fcenter!(X, xmeans)
     end
-    w = mweight(ones(Q, n))    
-    res = matW(X, y, w)
+    res = matW(X, y, weights)
     lev = res.lev
     nlev = length(lev)
     ni = res.ni
@@ -104,7 +103,7 @@ function fda!(X::Matrix, y; kwargs...)
     if lb > 0
         res.W .= res.W .+ lb .* I(p)    # @. does not work with I
     end
-    zres = matB(X, y, w)
+    zres = matB(X, y, weights)
     Winv = LinearAlgebra.inv!(cholesky(Hermitian(res.W))) 
     ## Winv * B is not symmetric
     fm = eigen!(Winv * zres.B; sortby = x -> -abs(x))
@@ -119,7 +118,7 @@ function fda!(X::Matrix, y; kwargs...)
     T = X * P
     Tcenters = zres.ct * P
     Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, 
-        xscales, lev, ni, kwargs, par)
+        xscales, weights, lev, ni, kwargs, par)
 end
 
 """
