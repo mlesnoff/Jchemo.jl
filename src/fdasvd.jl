@@ -18,24 +18,23 @@ The function gives the same results as function `fda`.
 
 See function `fda` for examples.
 """ 
-fdasvd(X, y; kwargs...) = fdasvd!(copy(ensure_mat(X)), y; kwargs...)
+fdasvd(X, y, weights; kwargs...) = fdasvd!(copy(ensure_mat(X)), y, weights; kwargs...)
 
-function fdasvd!(X::Matrix, y; kwargs...)
+function fdasvd!(X::Matrix, y, weights; kwargs...)
     par = recovkwargs(Par, kwargs)
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     Q = eltype(X)
     n, p = size(X)
     lb = convert(Q, par.lb)
-    xmeans = colmean(X) 
+    xmeans = colmean(X, weights)
     xscales = ones(Q, p)
     if par.scal 
-        xscales .= colstd(X)
+        xscales .= colstd(X, weights)
         fcscale!(X, xmeans, xscales)
     else
         fcenter!(X, xmeans)
     end
-    w = mweight(ones(Q, n))
-    res = matW(X, y, w)
+    res = matW(X, y, weights)
     lev = res.lev
     nlev = length(lev)
     ni = res.ni
