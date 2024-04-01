@@ -10,12 +10,18 @@ Linear discriminant analysis (LDA).
 Keyword arguments:
 * `prior` : Type of prior probabilities for class 
     membership. Possible values are: `:unif` (uniform), 
-    `:prop` (proportional).
+    `:prop` (proportional), or a vector (of length equal to 
+    the number of classes) giving the prior weight for each class 
+    (the vector must be sorted in the same order as `mlev(x)`).
 
-In this high-level version we decide to choose options
-'weights' is defined by the given priors 
-Therefore, prior sub-total weights are the same as prior probs 
-For more generality, use the low-level version
+In these functions, observation weights (argument `weights`) are used 
+to compute the intra-class ("within") covariance matrix. Argument `prior` 
+is used to define the prior class probabilities. 
+
+In the high-level version of the functions, the observation 
+weights are automatically defined by the given priors: the sub-total 
+weights by class are set equal to the prior probabilities. 
+For more generality, use the low-level version.
 
 ## Examples
 ```julia
