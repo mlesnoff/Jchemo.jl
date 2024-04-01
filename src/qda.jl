@@ -72,16 +72,16 @@ errp(res.pred, ytest)
 ```
 """ 
 function qda(X, y; kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    weights = mweightcla(Q, y; prior = par.prior)
     qda(X, y, weights; kwargs...)
 end
 
 function qda(X, y, weights::Weight; kwargs...)  
-    par = recovkwargs(Par, kwargs)
-    @assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
-    @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     # Scaling X has no effect
+    par = recovkwargs(Par, kwargs)
+    @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     X = ensure_mat(X)
     y = vec(y)    # for findall
     Q = eltype(X)
