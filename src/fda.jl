@@ -81,8 +81,7 @@ scatter!(ax, ct[:, 1], ct[:, 2],
 f
 ```
 """ 
-fda(X, y; kwargs...) = fda!(copy(ensure_mat(X)), y; 
-    kwargs...)
+fda(X, y; kwargs...) = fda!(copy(ensure_mat(X)), y; kwargs...)
 
 function fda!(X::Matrix, y; kwargs...)
     par = recovkwargs(Par, kwargs)
