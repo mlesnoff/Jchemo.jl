@@ -70,7 +70,15 @@ y = vcat(rand(["a" ; "c"], 900), repeat(["b"], 100))
 aggsum(x, y)
 ```
 """
-aggsum(x::Vector, y::Vector) = vec(aggstat(x, y; fun = sum).X)
+function aggsum(x::Vector, y::Vector)
+    lev = mlev(y)
+    v = similar(x, length(lev)) 
+    @inbounds for i in eachindex(lev) 
+        s = y .== lev[i]
+        v[i] = sum(vrow(x, s))
+    end
+    v
+end
 
 """
     corm(X, weights::Weight)
