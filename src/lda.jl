@@ -70,8 +70,8 @@ function lda(X, y; kwargs...)
 end
 
 function lda(X, y, weights::Weight; kwargs...)  
-    par = recovkwargs(Par, kwargs)
     # Scaling X has no effect
+    par = recovkwargs(Par, kwargs)
     X = ensure_mat(X)
     y = vec(y)    # for findall
     Q = eltype(X)
