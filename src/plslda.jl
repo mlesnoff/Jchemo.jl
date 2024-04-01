@@ -12,7 +12,9 @@ Keyword arguments:
     Must be >= 1.
 * `prior` : Type of prior probabilities for class 
     membership. Possible values are: `:unif` (uniform), 
-    `:prop` (proportional).
+    `:prop` (proportional), or a vector (of length equal to 
+    the number of classes) giving the prior weight for each class 
+    (the vector must be sorted in the same order as `mlev(x)`).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
@@ -20,9 +22,18 @@ LDA on PLS latent variables. The training variable `y`
 (univariate class membership) is transformed to a dummy table 
 (Ydummy) containing nlev columns, where nlev is the number of 
 classes present in `y`. Each column of Ydummy is a dummy (0/1) 
-variable. Then, a PLSR2 (i.e. multivariate) is run on 
+variable. Then, a weighted PLSR2 (i.e. multivariate) is run on 
 {`X`, Ydummy}, returning a score matrix `T`. Finally, a LDA 
 is done on {`T`, `y`}. 
+
+In these `plslda` functions, observation weights (argument `weights`) are used 
+to compute the PLS scores and the LDA intra-class (= "within") covariance matrix. 
+Argument `prior` is used to define the usual LDA prior class probabilities. 
+
+In the high-level version, the observation weights are automatically 
+defined by the given priors: the sub-total weights by class are set 
+equal to the prior probabilities. For higher generality, use the low-level 
+version.
 
 ## Examples
 ```julia
@@ -55,6 +66,7 @@ pnames(mod.fm)
 fm = mod.fm ;
 fm.lev
 fm.ni
+aggsum(fm.weights.w, ytrain)
 
 fmpls = fm.fm.fmpls ;
 @head fmpls.T
@@ -78,11 +90,7 @@ summary(fmpls, Xtrain)
 function plslda(X, y; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
-    if isequal(par.prior, :unif)
-        weights = mweightcla(Q, y)
-    elseif isequal(par.prior, :prop)
-        weights = mweight(ones(Q, nro(X)))
-    end
+    weights = mweightcla(Q, y; prior = par.prior)
     plslda(X, y, weights; kwargs...)
 end
 
@@ -119,8 +127,7 @@ Compute Y-predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Plslda, X; 
-        nlv = nothing)
+function predict(object::Plslda, X; nlv = nothing)
     X = ensure_mat(X)
     Q = eltype(X)
     Qy = eltype(object.lev)
