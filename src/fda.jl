@@ -74,10 +74,8 @@ summary(mod).explvarx
 ## to the score space
 ct = fm.Tcenters 
 f, ax = plotxy(fm.T[:, 1], fm.T[:, 2], ytrain;
-    xlabel = "Score-1", ylabel = "Score-2",
-    title = "FDA")
-scatter!(ax, ct[:, 1], ct[:, 2], 
-    markersize = 15, color = :red)
+    xlabel = "Score-1", ylabel = "Score-2", title = "FDA")
+scatter!(ax, ct[:, 1], ct[:, 2], markersize = 15, color = :red)
 f
 ```
 """ 
