@@ -15,17 +15,15 @@ Keyword arguments:
     is scaled by its uncorrected standard deviation.
 
 FDA by eigen factorization of Inverse(W) * B, where W is 
-the 'Within'-covariance matrix (pooled over the classes), 
-and B the 'Between'-covariance matrix.
+the "Within"-covariance matrix (pooled over the classes), 
+and B the "Between"-covariance matrix.
 
-The function maximizes the compromise:0
+The function maximizes the compromise:
 * p'Bp / p'Wp 
-i.e. max p'Bp with constraint p'Wp = 1. Vectors p 
-(columns of `P`) are the linear discrimant coefficients 
-often referred to as "LD".
+i.e. max p'Bp with constraint p'Wp = 1. Vectors p (columns of `P`) 
+are the linear discrimant coefficients often referred to as "LD".
 
-If `X` is ill-conditionned, a ridge regularization can 
-be used:
+If `X` is ill-conditionned, a ridge regularization can be used:
 * If `lb` > 0, W is replaced by W + `lb` * I, 
     where I is the Idendity matrix.
 
@@ -58,6 +56,8 @@ pnames(mod.fm)
 fm = mod.fm ;
 lev = fm.lev
 nlev = length(lev)
+aggsum(fm.weights.w, ytrain)
+
 @head fm.T 
 @head transf(mod, Xtrain)
 @head transf(mod, Xtest)
@@ -75,8 +75,8 @@ summary(mod).explvarx
 ## Projections of the class centers 
 ## to the score space
 ct = fm.Tcenters 
-f, ax = plotxy(fm.T[:, 1], fm.T[:, 2], ytrain;
-    xlabel = "Score-1", ylabel = "Score-2", title = "FDA")
+f, ax = plotxy(fm.T[:, 1], fm.T[:, 2], ytrain; title = "FDA",
+    xlabel = "Score-1", ylabel = "Score-2")
 scatter!(ax, ct[:, 1], ct[:, 2], markersize = 15, color = :red)
 f
 ```
