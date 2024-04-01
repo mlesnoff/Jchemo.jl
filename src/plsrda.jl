@@ -22,7 +22,7 @@ This is the usual "PLSDA". The training variable `y`
 (univariate class membership) is transformed to a dummy table 
 (Ydummy) containing nlev columns, where nlev is the number of 
 classes present in `y`. Each column of Ydummy is a dummy (0/1) 
-variable. Then, a PLSR2 (i.e. multivariate) is run on 
+variable. Then, a weighted PLSR2 (i.e. multivariate) is run on 
 {`X`, Ydummy}, returning predictions of the dummy 
 variables (= object `posterior` returned by fuction `predict`).  
 These predictions can be considered as unbounded estimates (i.e. 
@@ -30,6 +30,9 @@ eventuall outside of [0, 1]) of the class membership probabilities.
 For a given observation, the final prediction is the class 
 corresponding to the dummy variable for which the probability 
 estimate is the highest.
+
+The observation weights used in the PLSR2 are defined with argument 
+`prior`.
 
 ## Examples
 ```julia
