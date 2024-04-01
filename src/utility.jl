@@ -1,15 +1,18 @@
 """
-    aggstat(X, group; fun = mean)
+    aggstat(X, y; fun = mean)
     aggstat(X::DataFrame; vars, groups, fun = mean)
-Compute column-wise statistics by group in a dataset.
-* `X` : Data.
-* `group` : A variable defining the groups.
+Compute column-wise statistics by class in a dataset.
+* `X` : Data (n, p).
+* `y` : A categorical variable (n) (class membership).
 * `fun` : Function to compute (default = mean).
 Specific for dataframes:
-* `vars` : Names of the variables to summarize.
-* `groups` : Names of the group variables to consider.
+* `vars` : Vector of the ames of the variables to summarize.
+* `groups` : Vector of the names of the categorical variables to consider
+    for computations by class.
 
 Variables defined in `vars` and `groups` must be columns of `X`.
+
+Return a matrix or, if only argument `X::DataFrame` is used, a dataframe.
 
 ## Examples
 ```julia
@@ -18,10 +21,10 @@ using DataFrames, Statistics
 n, p = 20, 5
 X = rand(n, p)
 df = DataFrame(X, :auto)
-group = rand(1:3, n)
-res = aggstat(X, group; fun = sum)
+y = rand(1:3, n)
+res = aggstat(X, y; fun = sum)
 res.X
-aggstat(df, group; fun = sum).X
+aggstat(df, y; fun = sum).X
 
 n, p = 20, 5
 X = rand(n, p)
@@ -29,31 +32,45 @@ df = DataFrame(X, string.("v", 1:p))
 df.gr1 = rand(1:2, n)
 df.gr2 = rand(["a", "b", "c"], n)
 df
-aggstat(df; vars = [:v1, :v2], 
-    groups = [:gr1, :gr2], fun = var)
+aggstat(df; vars = [:v1, :v2], groups = [:gr1, :gr2], fun = var)
 ```
 """ 
-function aggstat(X, group; fun = mean)
+function aggstat(X, y; fun = mean)
     X = ensure_mat(X)
-    group = vec(group)
+    y = vec(y)
     q = nco(X)
-    lev = mlev(group)
+    lev = mlev(y)
     nlev = length(lev)
     zX = similar(X, nlev, q)
     @inbounds for i in 1:nlev, j = 1:q
-        s = group .== lev[i]
+        s = y .== lev[i]
         zX[i, j] = fun(X[s, j])
     end
     (X = zX, lev)
 end
 
-function aggstat(X::DataFrame; vars, groups, 
-        fun = mean)
+function aggstat(X::DataFrame; vars, groups, fun = mean)
     gdf = groupby(X, groups) 
-    res = combine(gdf, vars .=> fun, 
-        renamecols = false)
+    res = combine(gdf, vars .=> fun, renamecols = false)
     sort!(res, groups)
 end
+
+""" 
+    aggsum(x::Vector, y::Vector)
+Compute sub-total sums by class for a categorical variable.
+* `x` : A quantitative variable to sum (n) 
+* `y` : A categorical variable (n) (class membership).
+
+Return a vector.
+
+## Examples
+```julia
+x = rand(1000)
+y = vcat(rand(["a" ; "c"], 900), repeat(["b"], 100))
+aggsum(x, y)
+```
+"""
+aggsum(x::Vector, y::Vector) = vec(aggstat(x, y; fun = sum).X)
 
 """
     corm(X, weights::Weight)
@@ -503,24 +520,6 @@ mlev(df)
 ```
 """
 mlev(x) = sort(unique(x)) 
-
-""" 
-    mprior(weights::Weight, x::Vector)
-Return class prior probabilities for a categorical variable,
-    given observation weights.
-* `weights` : An object of type `Weight` (see function `mweight`)
-* `x` : A categorical variable (n) (class membership).
-
-Returns a vector.
-
-## Examples
-```julia
-x = vcat(rand(["a" ; "c"], 900), repeat(["b"], 100))
-weights = mweight(ones(1000))
-mprior(weights, x)
-```
-"""
-mprior(weights::Weight, x::Vector) = vec(aggstat(weights.w, x; fun = sum).X)
 
 """ 
     mweight(x::Vector)
@@ -1016,10 +1015,10 @@ end
 
 """
     summ(X; digits = 3)
-    summ(X, group; digits = 3)
+    summ(X, y; digits = 3)
 Summarize a dataset (or a variable).
 * `X` : A dataset (n, p).
-* `group` : A vector (n,) defing the groups.
+* `y` : A vector (n,) defing the groups.
 * `digits` : Nb. digits in the outputs.
 
 ## Examples
@@ -1042,11 +1041,11 @@ function summ(X; digits = 3)
     (res = res, ntot = nro(X))
 end
 
-function summ(X, group; digits = 3)
-    group = vec(group)
-    lev = mlev(group)
+function summ(X, y; digits = 3)
+    y = vec(y)
+    lev = mlev(y)
     for i in eachindex(lev)
-        s = group .== lev[i]
+        s = y .== lev[i]
         res = summ(X[s, :]; digits = digits).res
         println("Group: ", lev[i])
         println(res)
