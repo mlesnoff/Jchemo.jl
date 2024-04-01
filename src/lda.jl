@@ -14,14 +14,14 @@ Keyword arguments:
     the number of classes) giving the prior weight for each class 
     (the vector must be sorted in the same order as `mlev(x)`).
 
-In these functions, observation weights (argument `weights`) are used 
-to compute the intra-class ("within") covariance matrix. Argument `prior` 
-is used to define the prior class probabilities. 
+In these functions `lda`, observation weights (argument `weights`) are used 
+to compute the intra-class (= "within") covariance matrix. Argument `prior` 
+is used to define the usual prior class probabilities. 
 
-In the high-level version of the functions, the observation 
-weights are automatically defined by the given priors: the sub-total 
-weights by class are set equal to the prior probabilities. 
-For more generality, use the low-level version.
+In the high-level version, the observation weights are automatically 
+defined by the given priors: the sub-total weights by class are set 
+equal to the prior probabilities. For higher generality, use the low-level 
+version.
 
 ## Examples
 ```julia
