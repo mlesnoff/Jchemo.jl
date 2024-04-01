@@ -18,7 +18,7 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-QDA on PLS latent variables.The training variable `y` 
+QDA on PLS latent variables. The training variable `y` 
 (univariate class membership) is transformed to a dummy table 
 (Ydummy) containing nlev columns, where nlev is the number of 
 classes present in `y`. Each column of Ydummy is a dummy (0/1) 
@@ -26,16 +26,13 @@ variable. Then, a PLSR2 (i.e. multivariate) is run on
 {`X`, Ydummy}, returning a score matrix `T`. Finally, a QDA 
 (possibly with continuum) is done on {`T`, `y`}. 
 
-See function `plslda` for examples.
+See functions `qda` `plslda` for details (arguments `weights`, `prior` 
+and `alpha`)  and examples.
 """ 
 function plsqda(X, y; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
-    if isequal(par.prior, :unif)
-        weights = mweightcla(Q, y)
-    elseif isequal(par.prior, :prop)
-        weights = mweight(ones(Q, nro(X)))
-    end
+    weights = mweightcla(Q, y; prior = par.prior)
     plsqda(X, y, weights; kwargs...)
 end
 
