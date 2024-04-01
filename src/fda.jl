@@ -1,5 +1,6 @@
 """
     fda(; kwargs...)
+    fda(X, y; kwargs...)
     fda(X, y, weights; kwargs...)
     fda!(X::Matrix, y, weights; kwargs...)
 Factorial discriminant analysis (FDA).
@@ -75,12 +76,19 @@ summary(mod).explvarx
 ## Projections of the class centers 
 ## to the score space
 ct = fm.Tcenters 
-f, ax = plotxy(fm.T[:, 1], fm.T[:, 2], ytrain; title = "FDA",
+f, ax = plotxy(fm.T[:, 1], fm.T[:, 2], ytrain; ellipse = true, title = "FDA",
     xlabel = "Score-1", ylabel = "Score-2")
 scatter!(ax, ct[:, 1], ct[:, 2], markersize = 15, color = :red)
 f
 ```
 """ 
+function fda(X, y; kwargs...)
+    par = recovkwargs(Par, kwargs)
+    Q = eltype(X[1, 1])
+    weights = mweightcla(Q, y; prior = par.prior)
+    fda(X, y, weights; kwargs...)
+end
+
 fda(X, y, weights; kwargs...) = fda!(copy(ensure_mat(X)), y, weights; kwargs...)
 
 function fda!(X::Matrix, y, weights; kwargs...)
