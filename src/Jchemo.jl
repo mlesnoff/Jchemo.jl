@@ -221,7 +221,7 @@ export
     transf!,
     pip,
     ######---- Utilities
-    aggstat,
+    aggstat, aggsum,
     colmad, colmean, colmed, colnorm, colstd, colsum, colvar,
     colmeanskip, colstdskip, colsumskip, colvarskip,
     corm, covm,
@@ -242,7 +242,7 @@ export
     matB, matW, 
     mblock,
     mlev,
-    mweight, mweightcla, mprior,
+    mweight, mweightcla,
     nco,
     nipals,
     nipalsmiss,
