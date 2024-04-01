@@ -1018,15 +1018,19 @@ end
     summ(X, y; digits = 3)
 Summarize a dataset (or a variable).
 * `X` : A dataset (n, p).
-* `y` : A vector (n,) defing the groups.
+* `y` : A categorical variable (n) (class membership).
 * `digits` : Nb. digits in the outputs.
 
 ## Examples
 ```julia
-X = rand(10, 3) 
+n = 50
+X = rand(n, 3) 
+y = rand(1:3, n)
 res = summ(X)
 pnames(res)
 summ(X[:, 2]).res
+
+summ(X, y)
 ```
 """
 function summ(X; digits = 3)
@@ -1037,7 +1041,7 @@ function summ(X; digits = 3)
         z = vcol(res, i)
         s = findall(isa.(z, Float64))
         res[s, i] .= round.(res[s, i], digits = digits)
-        end
+    end
     (res = res, ntot = nro(X))
 end
 
@@ -1047,7 +1051,7 @@ function summ(X, y; digits = 3)
     for i in eachindex(lev)
         s = y .== lev[i]
         res = summ(X[s, :]; digits = digits).res
-        println("Group: ", lev[i])
+        println("Class: ", lev[i])
         println(res)
         println("") ; println("") 
     end
