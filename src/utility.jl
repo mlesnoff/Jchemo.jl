@@ -1076,10 +1076,9 @@ tab(x) = sort(StatsBase.countmap(vec(x)))
 
 """
     tabdf(X; groups = nothing)
-Compute the nb. occurences of groups in categorical variables of 
-    a dataset.
+Compute the nb. occurences in categorical variables of a dataset.
 * `X` : Data.
-* `groups` : Names of the group variables to consider 
+* `groups` : Vector of the names of the group variables to consider 
     in `X` (by default: all the columns of `X`).
 
 The output (dataframe) contains sorted levels.
