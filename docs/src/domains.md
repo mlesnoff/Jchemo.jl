@@ -343,6 +343,7 @@
 ## UTILITIES
 
 - **aggstat** Compute column-wise statistics by class in a dataset
+- **aggsum** Compute sub-total sums by class for a categorical variable
 - **colmad**, **colmean**, **colmed**, **colnorm**, 
     **colstd**, **colsum**, **colvar**  Column-wise operations
 - **colmeanskip**, **colstdskip**, **colsumskip**, 
@@ -364,8 +365,6 @@
 - **mad** Median absolute deviation (not exported)
 - **matB**, **matW** Between- and within-class covariance matrices
 - **mlev** Return the sorted levels of a vecor or a dataset 
-- **mprior** Return class prior probabilities for a categorical variable,
-    given observation weights
 - **mweight** Normalize a vector to sum to 1
 - **mweightcla** Compute observation weights for a categorical variable, 
     given specified sub-total weights for the classes
