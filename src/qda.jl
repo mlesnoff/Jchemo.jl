@@ -11,14 +11,25 @@ Quadratic discriminant analysis (QDA, with continuum
 Keyword arguments:
 * `prior` : Type of prior probabilities for class 
     membership. Possible values are: `:unif` (uniform), 
-    `:prop` (proportional).
+    `:prop` (proportional), or a vector (of length equal to 
+    the number of classes) giving the prior weight for each class 
+    (the vector must be sorted in the same order as `mlev(x)`).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum
     between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 
 A value `alpha` > 0 shrinks the class-covariances by class 
-(Wi) toward a common LDA covariance (W). This corresponds to 
+(Wi) toward a common LDA covariance ("within" W). This corresponds to 
 the "first regularization (Eqs.16)" described in Friedman 1989
-(where `alpha` is referred to as "lambda" in Friedman 1989).
+(where `alpha` is referred to as "lambda").
+
+In these `qda` functions, observation weights (argument `weights`) are used 
+to compute covariance matrices Wi and W. Argument `prior` is used to define 
+the usual prior class probabilities. 
+
+In the high-level version, the observation weights are automatically 
+defined by the given priors: the sub-total weights by class are set 
+equal to the prior probabilities. For higher generality, use the low-level 
+version.
 
 ## References
 Friedman JH. Regularized Discriminant Analysis. Journal 
