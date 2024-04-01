@@ -12,6 +12,11 @@ Keyword arguments:
 * `nlv` : Nb. of discriminant components.
 * `lb` : Ridge regularization parameter "lambda".
     Can be used when `X` has collinearities. 
+* `prior` : Type of prior probabilities for class 
+    membership. Possible values are: `:unif` (uniform), 
+    `:prop` (proportional), or a vector (of length equal to 
+    the number of classes) giving the prior weight for each class 
+    (the vector must be sorted in the same order as `mlev(x)`).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
@@ -27,6 +32,14 @@ are the linear discrimant coefficients often referred to as "LD".
 If `X` is ill-conditionned, a ridge regularization can be used:
 * If `lb` > 0, W is replaced by W + `lb` * I, 
     where I is the Idendity matrix.
+
+In these `fda` functions, observation weights (argument `weights`) are used 
+to compute matrices W and B. 
+
+In the high-level version, the observation weights are automatically 
+defined by the given priors (argument `prior`): the sub-total weights by 
+class are set equal to the prior probabilities. For other choices, 
+use the low-level versions.
 
 ## Examples
 ```julia

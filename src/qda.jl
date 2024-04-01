@@ -28,7 +28,7 @@ the usual prior class probabilities.
 
 In the high-level version, the observation weights are automatically 
 defined by the given priors (`prior`): the sub-total weights by class are set 
-equal to the prior probabilities. For higher generality, use the low-level 
+equal to the prior probabilities. For other choices, use the low-level 
 version.
 
 ## References
