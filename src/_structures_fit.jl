@@ -67,6 +67,7 @@ struct Fda
     W::Matrix
     xmeans::Vector
     xscales::Vector
+    weights::Weight
     lev::Vector
     ni::Vector{Int}
     kwargs::Base.Pairs
