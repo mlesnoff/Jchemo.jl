@@ -75,11 +75,7 @@ summary(fmpls, Xtrain)
 function plskdeda(X, y; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
-    if isequal(par.prior, :unif)
-        weights = mweightcla(Q, y)
-    elseif isequal(par.prior, :prop)
-        weights = mweight(ones(Q, nro(X)))
-    end
+    weights = mweightcla(Q, y; prior = par.prior)
     plskdeda(X, y, weights; kwargs...)
 end
 
