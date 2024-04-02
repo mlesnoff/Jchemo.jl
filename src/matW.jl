@@ -50,7 +50,7 @@ matB = function(X, y, weights::Weight)
     nlev = length(lev)
     priors = aggsum(weights.w, y)      # sub-total weights by class                                
     ct = similar(X, nlev, p)         # class centers
-    @inbounds for i = 1:nlev
+    @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(X[s, :], mweight(weights.w[s]))
     end

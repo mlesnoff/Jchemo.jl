@@ -61,9 +61,8 @@ plotgrid(res.nlv, res.y1, group;
     xlabel = "Nb. LVs", ylabel = "RMSECV").f
 ```
 """ 
-function plotgrid(indx::AbstractVector, r; 
-        size = (500, 300), step = 5, color = nothing, 
-        kwargs...)
+function plotgrid(indx::AbstractVector, r; size = (500, 300), 
+        step = 5, color = nothing, kwargs...)
     isa(indx, Vector{Any}) ? indx = Float64.(indx) : nothing
     r = Float64.(vec(r))
     xticks = collect(minimum(indx):step:maximum(indx))
@@ -78,19 +77,17 @@ function plotgrid(indx::AbstractVector, r;
     (f = f, ax = ax)
 end
 
-function plotgrid(indx::AbstractVector, r, group; 
-        size = (700, 350), step = 5, color = nothing, 
-        leg = true, leg_title = "Group", kwargs...)
+function plotgrid(indx::AbstractVector, r, group; size = (700, 350), 
+        step = 5, color = nothing, leg = true, leg_title = "Group", kwargs...)
     isa(indx, Vector{Any}) ? indx = Float64.(indx) : nothing
     r = Float64.(vec(r))
     group = vec(group)
     xticks = collect(minimum(indx):step:maximum(indx))
     lev = mlev(group)
-    nlev = length(lev)
     f = Figure(size = size)
     ax = Axis(f; xticks = (xticks, string.(xticks)), 
         kwargs...)
-    for i = 1:nlev
+    @inbounds for i in eachindex(lev)
         s = group .== lev[i]
         x = indx[s]
         y = r[s]
@@ -98,14 +95,12 @@ function plotgrid(indx::AbstractVector, r, group;
         if isnothing(color)
             lines!(ax, x, y; label = lab)
         else
-            lines!(ax, x, y; label = lab, 
-                color = color[i])
+            lines!(ax, x, y; label = lab, color = color[i])
         end
     end
     f[1, 1] = ax
     if leg
-        f[1, 2] = Legend(f, ax, leg_title, 
-            framevisible = false)
+        f[1, 2] = Legend(f, ax, leg_title, framevisible = false)
     end
     (f = f, ax = ax)
 end

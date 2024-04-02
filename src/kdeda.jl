@@ -78,7 +78,7 @@ function kdeda(X, y; kwargs...)
     end
     ## End
     fm = list(nlev)
-    for i = 1:nlev
+    @inbounds for i in eachindex(lev)
         s = y .== lev[i]
         fm[i] = dmkern(vrow(X, s); h_kde = par.h_kde, a_kde = par.a_kde)
     end
@@ -91,7 +91,7 @@ function predict(object::Kdeda, X)
     lev = object.lev
     nlev = length(lev) 
     dens = similar(X, m, nlev)
-    @inbounds for i = 1:nlev
+    @inbounds for i in eachindex(lev)
         dens[:, i] .= vec(predict(object.fm[i], X).pred)
     end
     A = object.priors' .* dens

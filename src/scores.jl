@@ -506,7 +506,7 @@ function merrp(pred, y)
     res = tab(y)
     nlev = length(res.keys)
     v = zeros(nlev)
-    for i = 1:nlev
+    @inbounds for i in eachindex(lev)
         s = y .== res.keys[i]
         v[i] = sum(r[s]) / res.vals[i]
     end

@@ -246,7 +246,7 @@ function dummy(y, T = Float64)
     lev = mlev(y)
     nlev = length(lev)
     Y = BitArray(undef, n, nlev)  # Type = BitMatrix
-    @inbounds for i = 1:nlev
+    @inbounds for i in eachindex(lev)
         Y[:, i] = y .== lev[i]
     end
     Y = convert.(T, Y)
@@ -258,7 +258,7 @@ function dummy2(y)
     lev = mlev(y)
     nlev = length(lev)
     res = list(BitVector, nlev)
-    for i = 1:nlev
+    @inbounds for i in eachindex(lev)
         res[i] = y .== lev[i]
     end
     Y = reduce(hcat, res)
@@ -816,7 +816,7 @@ function replacebylev(x, lev)
     @assert nlev == length(lev) "x and lev must contain the same number of levels."
     xlev = mlev(x)
     z = similar(lev, n)
-    @inbounds for i = 1:nlev
+    @inbounds for i in eachindex(lev)
         s = findall(x .== xlev[i])
         z[s] .= lev[i] 
     end

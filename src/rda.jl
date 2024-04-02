@@ -126,7 +126,7 @@ function rda(X, y, weights::Weight; kwargs...)
     Id = I(p)
     fm = list(nlev)
     res.W .*= n / (n - nlev)    # unbiased estimate
-    @inbounds for i = 1:nlev
+    @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(X[s, :], mweight(weights.w[s]))
         ni[i] == 1 ? zn = n : zn = ni[i]
@@ -151,7 +151,7 @@ function predict(object::Rda, X)
     lev = object.lev
     nlev = length(lev) 
     dens = similar(X, m, nlev)
-    for i = 1:nlev
+    @inbounds for i in eachindex(lev)
         dens[:, i] .= vec(Jchemo.predict(object.fm[i], X).pred)
     end
     A = object.priors' .* dens

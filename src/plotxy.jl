@@ -89,8 +89,7 @@ f
 function plotxy(x, y; size = (500, 300), 
         color = nothing, ellipse::Bool = false, prob = .95, 
         circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", 
-        kwargs...)
+        xlabel = "", ylabel = "", title = "", kwargs...)
     x = vec(x)
     y = vec(y)
     f = Figure(size = size)
@@ -136,11 +135,10 @@ function plotxy(x, y, group; size = (600, 350),
     y = vec(y)
     group = vec(group)
     lev = mlev(group)
-    nlev = length(lev)
     lab = string.(lev)
     f = Figure(size = size)
     ax = Axis(f; xlabel = xlabel, ylabel = ylabel, title = title)
-    for i = 1:nlev
+    @inbounds for i in eachindex(lev)
         s = group .== lev[i]
         zx = x[s]
         zy = y[s]

@@ -92,7 +92,7 @@ function lda(X, y, weights::Weight; kwargs...)
     ## End
     fm = list(nlev)
     ct = similar(X, nlev, p)
-    @inbounds for i = 1:nlev
+    @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(vrow(X, s), mweight(weights.w[s]))
         fm[i] = dmnorm(; mu = ct[i, :], S = res.W) 
@@ -112,7 +112,7 @@ function predict(object::Lda, X)
     lev = object.lev
     nlev = length(lev) 
     dens = similar(X, m, nlev)
-    for i = 1:nlev
+    @inbounds for i in eachindex(lev)
         dens[:, i] .= vec(predict(object.fm[i], X).pred)
     end
     A = object.priors' .* dens

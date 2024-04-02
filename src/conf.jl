@@ -40,8 +40,8 @@ function conf(pred, y; digits = 1)
     namy = string.(lev)
     nampred = string.("pred_", lev)
     A = Int.(zeros(nlev, nlev))
-    for i = 1:nlev
-        for j = 1:nlev
+    @inbounds for i in eachindex(lev)
+        @inbounds for j in eachindex(lev)
             zy = y .== lev[i]
             zpred = pred .== lev[j]
             A[i, j] = sum(zy .* zpred)
