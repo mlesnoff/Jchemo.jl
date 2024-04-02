@@ -118,8 +118,6 @@ function qda(X, y, weights::Weight; kwargs...)
     @inbounds for i = 1:nlev
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(vrow(X, s), mweight(weights.w[s]))
-        ni[i] == 1 ? zn = n : zn = ni[i]
-        res.Wi[i] .*= zn / (zn - 1)
         if alpha > 0
             @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
         end
