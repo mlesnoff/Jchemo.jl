@@ -54,7 +54,7 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     ni = res.ni
     res.W .*= n / (n - nlev)
     if lb > 0
-        res.W .= res.W .+ lb .* I(p) # @. does not work with I
+        res.W .+= lb .* I(p) # @. does not work with I
     end
     #Winv = inv(res.W)
     Winv = LinearAlgebra.inv!(cholesky(Hermitian(res.W))) 
