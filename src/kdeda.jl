@@ -7,8 +7,10 @@ Discriminant analysis using non-parametric kernel Gaussian
 * `y` : Univariate class membership (n).
 Keyword arguments:
 * `prior` : Type of prior probabilities for class 
-    membership. Possible values are: :unif (uniform; default), 
-    :prop (proportional).
+    membership. Possible values are: `:unif` (uniform), 
+    `:prop` (proportional), or a vector (of length equal to 
+    the number of classes) giving the prior weight for each class 
+    (the vector must be sorted in the same order as `mlev(x)`).
 * Keyword arguments of function `dmkern` (bandwidth 
     definition) can also be specified here.
 
