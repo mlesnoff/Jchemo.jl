@@ -91,8 +91,7 @@ function predict(object::Kdeda, X)
     lev = object.lev
     nlev = length(lev) 
     dens = similar(X, m, nlev)
-    ni = object.ni
-    for i = 1:nlev
+    @inbounds for i = 1:nlev
         dens[:, i] .= vec(predict(object.fm[i], X).pred)
     end
     A = object.priors' .* dens
