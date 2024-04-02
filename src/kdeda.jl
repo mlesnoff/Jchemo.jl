@@ -63,17 +63,20 @@ mod.fm.fm[1].H
 """ 
 function kdeda(X, y; kwargs...) 
     par = recovkwargs(Par, kwargs)
-    @assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
     X = ensure_mat(X)
     Q = eltype(X)
     lev = mlev(y)
     nlev = length(lev)
     ni = tab(y).vals
+    ## Priors
     if isequal(par.prior, :unif)
         priors = ones(Q, nlev) / nlev
     elseif isequal(par.prior, :prop)
         priors = convert.(Q, mweight(ni).w)
+    else
+        priors = mweight(par.prior).w
     end
+    ## End
     fm = list(nlev)
     for i = 1:nlev
         s = y .== lev[i]
