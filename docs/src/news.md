@@ -16,8 +16,9 @@
     - **confusion**: renamed to **conf**. 
 
 - Modifications
-    - **plsrda**, **plslda**, **plsqda**, **plskdeda**: improvement for unbalanced classes.
-    - Code clenaning. 
+    - FDA and predictive DA functions: improvements to better take into account 
+        for unbalanced classes.
+    - Code cleaning. 
 
 
 ## *Version 0.3.6*
