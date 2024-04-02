@@ -504,7 +504,8 @@ merrp(pred, ytest)
 function merrp(pred, y)
     r = residcla(pred, y)
     res = tab(y)
-    nlev = length(res.keys)
+    lev = res.keys
+    nlev = length(lev)
     v = zeros(nlev)
     @inbounds for i in eachindex(lev)
         s = y .== res.keys[i]
