@@ -54,6 +54,7 @@ pnames(mod.fm)
 fm = mod.fm ;
 fm.lev
 fm.ni
+aggsum(fm.weights.w, ytrain)
 
 fmpls = fm.fm.fmpls ;
 @head fmpls.T
