@@ -20,7 +20,14 @@ The function gives the same results as function `fda`.
 
 See function `fda` for examples.
 """ 
-fdasvd(X, y, weights; kwargs...) = fdasvd!(copy(ensure_mat(X)), y, weights; kwargs...)
+function fdasvd(X, y; kwargs...)
+    par = recovkwargs(Par, kwargs)
+    Q = eltype(X[1, 1])
+    weights = mweightcla(Q, y; prior = par.prior)
+    fdasvd(X, y, weights; kwargs...)
+end
+
+fdasvd(X, y, weights; kwargs...) = fda!(copy(ensure_mat(X)), y, weights; kwargs...)
 
 function fdasvd!(X::Matrix, y, weights; kwargs...)
     par = recovkwargs(Par, kwargs)
@@ -46,13 +53,18 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     end
     #Winv = inv(res.W)
     Winv = LinearAlgebra.inv!(cholesky(Hermitian(res.W))) 
-    ct = aggstat(X, y; fun = mean).X
+    ct = similar(X, nlev, p)
+    @inbounds for i = 1:nlev
+        s = findall(y .== lev[i]) 
+        ct[i, :] = colmean(vrow(X, s), mweight(weights.w[s]))
+    end
+    #ct = aggstat(X, y; fun = mean).X
     Ut = cholesky!(Hermitian(Winv)).U'
     Zct = ct * Ut
     nlv = min(par.nlv, n, p, nlev - 1)
     par = Par(nlv = nlv, scal = false)
-    weights = mweight(convert.(Q, ni))
-    fm = pcasvd(Zct, weights; kwargs...)
+    zweights = mweight(convert.(Q, ni))
+    fm = pcasvd(Zct, zweights; kwargs...)
     Pz = fm.P
     Tcenters = Zct * Pz
     eig = (fm.sv).^2 
@@ -61,7 +73,7 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     T = X * P
     Tcenters = ct * P
     Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, 
-        xscales, lev, ni, kwargs, par)
+        xscales, weights, lev, ni, kwargs, par)
 end
 
 
