@@ -21,7 +21,7 @@ Keyword arguments:
     is scaled by its uncorrected standard deviation.
 
 The principle is the same as functions `plslda` and 
-`plslda` except that densities are estimated from `dmkern` 
+`plsqda` except that class densities are estimated from `dmkern` 
 instead of `dmnorm`.
 
 ## Examples
