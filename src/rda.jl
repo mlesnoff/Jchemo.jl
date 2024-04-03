@@ -10,7 +10,9 @@ Regularized discriminant analysis (RDA).
 Keyword arguments:
 * `prior` : Type of prior probabilities for class 
     membership. Possible values are: `:unif` (uniform), 
-    `:prop` (proportional).
+    `:prop` (proportional), or a vector (of length equal to 
+    the number of classes) giving the prior weight for each class 
+    (the vector must be sorted in the same order as `mlev(x)`).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum
     between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `lb` : Ridge regularization parameter "lambda" (>= 0).
@@ -37,6 +39,9 @@ Particular cases:
 * `alpha` = 1 & `lb` > 0 : Penalized LDA 
     (Hastie et al 1995) with diagonal regularization 
     matrix
+
+See functions `lda` and `qda` for other details (arguments `weights`
+and `prior`).
 
 ## References
 Friedman JH. Regularized Discriminant Analysis. 
@@ -92,14 +97,14 @@ conf(res.pred, ytest).cnt
 ```
 """ 
 function rda(X, y; kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    weights = mweightcla(Q, y; prior = par.prior)
     rda(X, y, weights; kwargs...)
 end
 
 function rda(X, y, weights::Weight; kwargs...)  
     par = recovkwargs(Par, kwargs)
-    @assert in([:unif; :prop])(par.prior) "Wrong value for argument 'prior'."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     @assert par.lb >= 0 "lb must be in >= 0"
     X = ensure_mat(X)
@@ -126,13 +131,12 @@ function rda(X, y, weights::Weight; kwargs...)
     Id = I(p)
     fm = list(nlev)
     res.W .*= n / (n - nlev)    # unbiased estimate
+    A = par.lb * Id
     @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(X[s, :], mweight(weights.w[s]))
-        ni[i] == 1 ? zn = n : zn = ni[i]
-        res.Wi[i] .*= zn / (zn - 1)        
+        ct[i, :] = colmean(vrow(X, s), mweight(weights.w[s]))   
         @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
-        @. res.Wi[i] = res.Wi[i] + par.lb * Id 
+        @. res.Wi[i] = res.Wi[i] + A
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i], simpl = par.simpl) 
     end
     Rda(fm, res.Wi, ct, priors, ni, lev, xscales, weights)
