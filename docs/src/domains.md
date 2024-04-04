@@ -196,6 +196,7 @@
 
 - **mbplslda** MBPLS-LDA
 - **mbplsqda** MBPLS-QDA
+- **mbplskdeda** MBPLS-KDEDA
 
 ### **Local models**
 
