@@ -72,7 +72,6 @@ predict(mod, Xbltest; nlv = 1:2).pred
 ```
 """ 
 function mbplslda(Xbl, y; kwargs...)
-    println(22)
     par = recovkwargs(Par, kwargs)
     Q = eltype(Xbl[1][1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
@@ -115,7 +114,7 @@ Compute Y-predictions from a fitted model.
 function predict(object::Mbplslda, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     Qy = eltype(object.lev)
-    m = nro(X)
+    m = nro(Xbl[1])
     a = size(object.fm.fmpls.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
@@ -123,7 +122,7 @@ function predict(object::Mbplslda, Xbl; nlv = nothing)
     posterior = list(Matrix{Q}, le_nlv)
     @inbounds for i = 1:le_nlv
         znlv = nlv[i]
-        T = transf(object.fm.fmpls, X; nlv = znlv)
+        T = transf(object.fm.fmpls, Xbl; nlv = znlv)
         zres = predict(object.fm.fmda[znlv], T)
         z =  mapslices(argmax, zres.posterior; dims = 2) 
         pred[i] = reshape(replacebylev2(z, object.lev), m, 1)
