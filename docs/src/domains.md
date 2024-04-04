@@ -7,13 +7,11 @@
 *Usual*
 - **pcasvd** SVD decomposition
 - **pcaeigen** Eigen decomposition
-- **pcaeigenk** Eigen decomposition for wide matrices 
-    (kernel form)
+- **pcaeigenk** Eigen decomposition for wide matrices (kernel form)
 - **pcanipals** NIPALS algorithm
 
 *Allow missing data*
-- **pcanipalsmiss**: NIPALS algorithm allowing 
-    missing data
+- **pcanipalsmiss**: NIPALS algorithm allowing missing data
 
 *Robust* 
 - **pcasph** Spherical (with spatial median)
@@ -40,19 +38,15 @@
 *2 blocks*
 - **cca** Canonical correlation analysis (CCA and RCCA)
 - **ccawold** CCA and RCCA - Wold (1984) Nipals algorithm  
-- **plscan** Canonical partial least squares 
-    regression (Symmetric PLS)
-- **plstuck** Tucker's inter-battery method of factor 
-    analysis (PLS-SVD)
+- **plscan** Canonical partial least squares regression (Symmetric PLS)
+- **plstuck** Tucker's inter-battery method of factor analysis (PLS-SVD)
 - **rasvd** Redundancy analysis (RA), *aka* PCA on 
     instrumental variables (PCAIV)
 
 *2 or more blocks* 
 - **mbconcat** Transformer concatenating multi-block X-data
-- **mbpca** Multiblock PCA (MBPCA), *aka* Consensus 
-    principal component analysis (CPCA)
-- **comdim** Common components and specific weights 
-    analysis (ComDim), *aka* CCSWA or HPCA
+- **mbpca** Multiblock PCA (MBPCA), *aka* Consensus principal component analysis (CPCA)
+- **comdim** Common components and specific weights analysis (ComDim), *aka* CCSWA or HPCA
 
 *Utilities*
 - **mblock** Make blocks from a matrix
@@ -62,8 +56,7 @@
 
 ### Factorial discrimination analysis (FDA)
 
-- **fda** Eigen decomposition of the compromise 
-    "inter/intra"
+- **fda** Eigen decomposition of the compromise "inter/intra"
 - **fdasvd** Weighted SVD of the class centers
 
 ## REGRESSION
@@ -72,8 +65,7 @@
 
 *Multiple linear regression (MLR)*
 - **mlr** QR algorithm
-- **mlrchol** Normal equations and Choleski 
-    factorization
+- **mlrchol** Normal equations and Choleski factorization
 - **mlrpinv** Pseudo-inverse
 - **mlrpinvn** Normal equations and pseudo-inverse
 - **mlrvec** Simple linear regression (Univariate x)
@@ -84,19 +76,16 @@
 ### **Partial least squares (PLSR)**
 
 *Usual (asymetric regression mode)*
-- **plskern** Fast "improved kernel #1" 
-    algorithm of *Dayal & McGregor 1997*
+- **plskern** Fast "improved kernel #1" algorithm of *Dayal & McGregor 1997*
 - **plsnipals** Nipals
 - **plswold** Nipals *Wold 1984*
 - **plsrosa** ROSA *Liland et al. 2016*
 - **plssimp** SIMPLS *de Jong 1993*
 
 *Variants of regularization using latent variables* 
-- **cglsr** Conjugate gradient for the least squares 
-    normal equations (CGLS)
+- **cglsr** Conjugate gradient for the least squares normal equations (CGLS)
 - **pcr** Principal components regression (SVD factorization)
-- **rrr** Reduced rank regression (RRR), *aka*  
-    Redundancy analysis regression 
+- **rrr** Reduced rank regression (RRR), *aka*  Redundancy analysis regression 
 
 *Sparse*
 - **splskern** 
@@ -109,14 +98,11 @@
 *Non linear*
 - **kplsr** Non linear kernel (KPLSR) 
     *Rosipal & Trejo 2001*
-- **dkplsr** Direct non linear kernel (DKPLSR) 
-    *Bennett & Embrechts 2003*
+- **dkplsr** Direct non linear kernel (DKPLSR) *Bennett & Embrechts 2003*
 
 *Multiblock*
-- **mbplsr** Multiblock PLSR (MBPLSR) - Fast version (PLSR 
-    on concatenated blocks)
-- **mbplswest** MBPLSR - Nipals algorithm 
-    *Westerhuis et al. 1998* 
+- **mbplsr** Multiblock PLSR (MBPLSR) - Fast version (PLSR on concatenated blocks)
+- **mbplswest** MBPLSR - Nipals algorithm *Westerhuis et al. 1998* 
 - **rosaplsr** ROSA *Liland et al. 2016*
 - **soplsr** Sequentially orthogonalized (SO-PLSR) 
 
@@ -127,8 +113,7 @@
 - **rrchol** Choleski factorization
 
 *Non linear*
-- **krr** Non linear kernel (KRR), *aka* Least 
-    squares SVM (LS-SVMR)
+- **krr** Non linear kernel (KRR), *aka* Least squares SVM (LS-SVMR)
 
 ### **Local models**
 
@@ -154,8 +139,7 @@
 
 *Linear*
 - **mlrda** MLR prediction (MLR-DA)
-- **plsrda** PLSR prediction (PLSR-DA), 
-    *aka* usual PLSDA
+- **plsrda** PLSR prediction (PLSR-DA), *aka* usual PLSDA
 - **rrda** RR prediction (RR-DA)
 
 *Sparse*
@@ -174,13 +158,11 @@
 
 *Parametric*
 - **lda** Linear discriminant analysis (LDA)
-- **qda** Quadratic discriminant analysis (QDA, 
-    with continuum towards LDA)
+- **qda** Quadratic discriminant analysis (QDA, with continuum towards LDA)
 - **rda** Regularized discriminant analysis (RDA)
 
 *Non parametric*
-- **kdeda** DA by kernel Gaussian density 
-    estimation (KDE-DA)
+- **kdeda** DA by kernel Gaussian density estimation (KDE-DA)
 
 *On PLS latent variables*
 - **plslda** PLS-LDA
@@ -204,8 +186,7 @@
 - **lwmlrda** kNN locally weighted MLR-DA (kNN-LWMLR-DA)
 - **lwplsrda** kNN Locally weighted PLSR-DA (kNN-LWPLSR-DA)
 - **lwplslda** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
-- **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA, 
-    with continuum)
+- **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA, with continuum)
 
 ### Wrappers to other packages
 
@@ -221,8 +202,7 @@
 *From a PCA or PLS score space*
 - **occsd** Score distance (SD)
 - **occod** Orthogonal distance (OD) 
-- **occsdod** Compromise between SD 
-    and OD (*aka* Simca approach) 
+- **occsdod** Compromise between SD and OD (*aka* Simca approach) 
 
 *Other methods*
 - **stah** Compute Stahel-Donoho outlierness
@@ -231,13 +211,10 @@
 ## DISTRIBUTIONS
 
 - **dmnorm** Normal probability density estimation
-- **dmnormlog** Logarithm of the normal probability 
-    density estimation
+- **dmnormlog** Logarithm of the normal probability density estimation
 - **dmkern** Gaussian kernel density estimation (KDE)
-- **pval** Compute p-value(s) for a distribution, 
-    a vector or an ECDF
-- **out** Return if elements of a vector are strictly 
-    outside of a given range
+- **pval** Compute p-value(s) for a distribution, a vector or an ECDF
+- **out** Return if elements of a vector are strictly outside of a given range
 
 ## VARIABLE IMPORTANCE
 
@@ -271,8 +248,7 @@
 - **bias** Bias
 - **cor2** Squared correlation coefficient
 - **r2** R2
-- **rpd**, **rpdr** Ratio of performance 
-    to deviation
+- **rpd**, **rpdr** Ratio of performance to deviation
 - **mse** Summary for regression
 - **conf** Confusion matrix
 
@@ -282,18 +258,15 @@
 
 *Model dimensionality*
 - **aicplsr** AIC and Cp for PLSR
-- **selwold** Wold's criterion to select 
-    dimensionality in LV models (e.g. PLSR)
+- **selwold** Wold's criterion to select dimensionality in LV models (e.g. PLSR)
 
 ## DATA PROCESSING
 
 ### **Checking**
 
 - **dupl** Find replicated rows in a dataset
-- **tabdupl** Tabulate duplicated values 
-    in a vector
-- **miss** Find rows with missing data 
-    in a dataset
+- **tabdupl** Tabulate duplicated values in a vector
+- **miss** Find rows with missing data in a dataset
 
 ### **Pre-processing**
 
@@ -302,8 +275,7 @@
 - **mavg** Smoothing by moving average
 - **fdif** Finite differences
 - **savgk**, **savgol** Savitsky-Golay filtering
-- **rmgap** Remove vertical gaps in spectra, 
-    e.g. for ASD NIR data
+- **rmgap** Remove vertical gaps in spectra, e.g. for ASD NIR data
 
 *Scaling*
 
@@ -319,11 +291,9 @@
 
 ### **Calibration transfer**
 
-- **difmean** Compute a detrimental matrix (for 
-    calibration transfer) by difference of 
+- **difmean** Compute a detrimental matrix (for calibration transfer) by difference of 
     two matrix-column means.
-- **eposvd** Compute an orthogonalization matrix for 
-    calibration transfer
+- **eposvd** Compute an orthogonalization matrix for calibration transfer
 - **calds** Direct standardization (DS)
 - **calpds** Piecewise direct standardization (PDS)
 
@@ -332,8 +302,7 @@
 - **samprand** Random (without replacement)
 - **sampsys** Systematic over a quantitative variable
 - **sampcla** Stratified by class
-- **sampdf** From each column of a dataframe 
-    (where missing values are allowed)
+- **sampdf** From each column of a dataframe (where missing values are allowed)
 
 - **sampks** Kennard-Stone 
 - **sampdp** Duplex  
@@ -342,8 +311,7 @@
 
 - **plotsp** Plot spectra
 - **plotxy** x-y scatter plot
-- **plotgrid** Plot error/performance rates 
-    of a model
+- **plotgrid** Plot error/performance rates of a model
 - **plotconf** Plot conf matrix
 
 ## UTILITIES
