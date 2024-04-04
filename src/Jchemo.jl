@@ -370,7 +370,7 @@ export
     lwplslda, lwplsqda,
     knnda,
     ## Multiblock
-    mbplsrda,
+    mbplsrda, mbplslda,
     ## Auxiliary
     transf, coef, predict,
     transfbl, 
