@@ -1,6 +1,6 @@
 """
-    mlrda()
-    mlrda(X, y)
+    mlrda(; kwargs...)
+    mlrda(X, y; kwargs...)
     mlrda(X, y, weights::Weight)
 Discrimination based on multple linear regression 
     (MLR-DA).
@@ -69,11 +69,11 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
-function mlrda(X, y)
+function mlrda(X, y; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
-    mlrda(X, y, weights; kwargs...)
+    mlrda(X, y, weights)
 end
 
 function mlrda(X, y, weights::Weight)
