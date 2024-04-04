@@ -1,50 +1,38 @@
 """
-    mbplsda(; kwargs...)
-    mbplsda(X, y; kwargs...)
-    mbplsda(X, y, weights::Weight; kwargs...)
-PLS-LDA.
-* `X` : X-data (n, p).
+    mbplslda(; kwargs...)
+    mbplslda(Xbl, y; kwargs...)
+    mbplslda(Xbl, y, weights::Weight; kwargs...)
+Multiblock PLS-LDA.
+* `Xbl` : List of blocks (vector of matrices) of X-data 
+    Typically, output of function `mblock` from (n, p) data.  
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs) to compute.
-    Must be >= 1.
+* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `bscal` : Type of block scaling. See function `blockscal`
+    for possible values.
 * `prior` : Type of prior probabilities for class 
     membership. Possible values are: `:unif` (uniform), 
     `:prop` (proportional), or a vector (of length equal to 
     the number of classes) giving the prior weight for each class 
     (the vector must be sorted in the same order as `mlev(x)`).
-* `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+* `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
+    and `Y` is scaled by its uncorrected standard deviation 
+    (before the block scaling).
 
-LDA on PLS latent variables. The training variable `y` 
-(univariate class membership) is transformed to a dummy table 
-(Ydummy) containing nlev columns, where nlev is the number of 
-classes present in `y`. Each column of Ydummy is a dummy (0/1) 
-variable. Then, a weighted PLSR2 (i.e. multivariate) is run on 
-{`X`, Ydummy}, returning a score matrix `T`. Finally, a LDA 
-is done on {`T`, `y`}. 
-
-In these `mbplsda` functions, observation weights (argument `weights`) are used 
-to compute the PLS scores and the LDA intra-class (= "within") covariance matrix. 
-Argument `prior` is used to define the usual LDA prior class probabilities. 
-
-In the high-level version, the observation weights are automatically 
-defined by the given priors: the sub-total weights by class are set 
-equal to the prior probabilities. For other choices, use the low-level 
-version.
+This is the same principle as function `plslda`, for multiblock X-data.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using JLD2, CairoMakie, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
 pnames(dat)
 X = dat.X
 Y = dat.Y
-n = nro(X) 
+tab(Y.typ)
 s = Bool.(Y.test)
 Xtrain = rmrow(X, s)
 ytrain = rmrow(Y.typ, s)
@@ -52,39 +40,35 @@ Xtest = X[s, :]
 ytest = Y.typ[s]
 ntrain = nro(Xtrain)
 ntest = nro(Xtest)
-(ntot = n, ntrain, ntest)
-tab(ytrain)
-tab(ytest)
+ntot = ntrain + ntest
+(ntot = ntot, ntrain, ntest)
+wlst = names(X)
+wl = parse.(Float64, wlst)
+#plotsp(X, wl; nsamp = 20).f
+##
+listbl = [1:350, 351:700]
+Xbltrain = mblock(Xtrain, listbl)
+Xbltest = mblock(Xtest, listbl) 
 
 nlv = 15
-mod = mbplsda(; nlv) 
-#mod = mbplsda(; nlv, prior = :prop) 
-#mod = plsqda(; nlv) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
-fm.lev
-fm.ni
-aggsum(fm.weights.w, ytrain)
+scal = false
+#scal = true
+bscal = :none
+#bscal = :frob
+mod = mbplslda(; nlv, bscal, scal)
+fit!(mod, Xbltrain, ytrain) 
+pnames(mod) 
 
-fmpls = fm.fm.fmpls ;
-@head fmpls.T
-@head transf(mod, Xtrain)
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
+@head mod.fm.fm.T 
+@head transf(mod, Xbltrain)
+@head transf(mod, Xbltest)
 
-coef(fmpls)
-
-res = predict(mod, Xtest) ;
-pnames(res)
-@head res.posterior
-@head res.pred
-errp(res.pred, ytest)
+res = predict(mod, Xbltest) ; 
+@head res.pred 
+@show errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(mod, Xtest; nlv = 1:2).pred
-summary(fmpls, Xtrain)
+predict(mod, Xbltest; nlv = 1:2).pred
 ```
 """ 
 function mbplslda(Xbl, y; kwargs...)
