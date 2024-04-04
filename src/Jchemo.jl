@@ -175,6 +175,7 @@ include("splskdeda.jl")
 
 ## Multiblock
 include("mbplsrda.jl") 
+include("mbplslda.jl") 
 
 ## One-class
 include("occsd.jl")
