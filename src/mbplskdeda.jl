@@ -17,13 +17,13 @@ Keyword arguments:
     `:prop` (proportional), or a vector (of length equal to 
     the number of classes) giving the prior weight for each class 
     (the vector must be sorted in the same order as `mlev(x)`).
-* `alpha` : Scalar (∈ [0, 1]) defining the continuum
-    between QDA (`alpha = 0`) and LDA (`alpha = 1`).
+* Keyword arguments of function `dmkern` (bandwidth 
+    definition) can also be specified here.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
     and `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-This is the same principle as function `plsqda`, for multiblock X-data.
+This is the same principle as function `plskdeda`, for multiblock X-data.
 
 See function `mbplslda` for examples.
 
@@ -43,7 +43,7 @@ function mbplskdeda(Xbl, y, weights::Weight; kwargs...)
     fmpls = mbplsr(Xbl, res.Y, weights; kwargs...)
     fmda = list(Qda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = qda(fmpls.T[:, 1:i], y, weights; kwargs...)
+        fmda[i] = kdeda(fmpls.T[:, 1:i], y, weights; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
     Mbplslda(fm, res.lev, ni)

@@ -57,6 +57,7 @@ bscal = :none
 #bscal = :frob
 mod = mbplslda(; nlv, bscal, scal)
 #mod = mbplsqda(; nlv, bscal, alpha = .5, scal)
+#mod = mbplskdeda(; nlv, bscal, scal)
 fit!(mod, Xbltrain, ytrain) 
 pnames(mod) 
 
