@@ -72,6 +72,7 @@ predict(mod, Xbltest; nlv = 1:2).pred
 ```
 """ 
 function mbplslda(Xbl, y; kwargs...)
+    println(22)
     par = recovkwargs(Par, kwargs)
     Q = eltype(Xbl[1][1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
