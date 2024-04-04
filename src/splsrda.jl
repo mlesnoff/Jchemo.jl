@@ -9,6 +9,11 @@ Sparse PLSR-DA.
     Must be of type `Weight` (see e.g. function `mweight`). 
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
+* `prior` : Type of prior probabilities for class 
+    membership. Possible values are: `:unif` (uniform), 
+    `:prop` (proportional), or a vector (of length equal to 
+    the number of classes) giving the prior weight for each class 
+    (the vector must be sorted in the same order as `mlev(x)`).
 * `msparse` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:mix`, 
     `:hard`. See thereafter.
