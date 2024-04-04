@@ -28,8 +28,8 @@ variable. Then, a PLSR2 (i.e. multivariate) is run on
 {`X`, Ydummy}, returning a score matrix `T`. Finally, a QDA 
 (possibly with continuum) is done on {`T`, `y`}. 
 
-See functions `qda` `plslda` for details (arguments `weights`, `prior` 
-and `alpha`)  and examples.
+See functions `qda` and `plslda` for details (arguments `weights`, `prior` 
+and `alpha`) and examples.
 """ 
 function plsqda(X, y; kwargs...)
     par = recovkwargs(Par, kwargs)
