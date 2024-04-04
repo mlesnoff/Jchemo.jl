@@ -83,37 +83,36 @@ function mbplslda(Xbl, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmpls = plskern(X, res.Y, weights; kwargs...)
+    fmpls = mbplsr(Xbl, res.Y, weights; kwargs...)
     fmda = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
         fmda[i] = lda(fmpls.T[:, 1:i], y, weights; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
-    Plslda(fm, res.lev, ni)
+    Mbplslda(fm, res.lev, ni)
 end
 
 """ 
-    transf(object::Plslda, X; nlv = nothing)
+    transf(object::Mbplslda, X; nlv = nothing)
 Compute latent variables (LVs = scores T) from 
     a fitted model.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Plslda, X; nlv = nothing)
-    transf(object.fm.fmpls, X; nlv)
+function transf(object::Mbplslda, Xbl; nlv = nothing)
+    transf(object.fm.fmpls, Xbl; nlv)
 end
 
 """
-    predict(object::Plslda, X; nlv = nothing)
+    predict(object::Mbplslda, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Plslda, X; nlv = nothing)
-    X = ensure_mat(X)
-    Q = eltype(X)
+function predict(object::Mbplslda, Xbl; nlv = nothing)
+    Q = eltype(Xbl[1][1, 1])
     Qy = eltype(object.lev)
     m = nro(X)
     a = size(object.fm.fmpls.T, 2)
