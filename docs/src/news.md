@@ -8,6 +8,7 @@
     - **getknn**: Add of angular and correlation distances.
     - **mbplslda**: Multiblock PLS-LDA.
     - **mbplsqda**: Multiblock PLS-QDA.
+    - **mbplskdeda**: Multiblock PLS-KDEDA.
     - **merrp**: Mean intra-class classification error rate.
     - **mweightcla**: Compute observation weights for a categorical variable, 
         given specified sub-total weights for the classes.
