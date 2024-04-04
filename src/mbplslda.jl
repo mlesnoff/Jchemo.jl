@@ -93,11 +93,12 @@ function mbplslda(Xbl, y, weights::Weight; kwargs...)
 end
 
 """ 
-    transf(object::Mbplslda, X; nlv = nothing)
+    transf(object::Mbplslda, Xbl; nlv = nothing)
 Compute latent variables (LVs = scores T) from 
     a fitted model.
 * `object` : The fitted model.
-* `X` : Matrix (m, p) for which LVs are computed.
+* `Xbl` : A list of blocks (vector of matrices) 
+    of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Mbplslda, Xbl; nlv = nothing)
@@ -105,10 +106,11 @@ function transf(object::Mbplslda, Xbl; nlv = nothing)
 end
 
 """
-    predict(object::Mbplslda, X; nlv = nothing)
+    predict(object::Mbplslda, Xbl; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
-* `X` : X-data for which predictions are computed.
+* `Xbl` : A list of blocks (vector of matrices) 
+    of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
 function predict(object::Mbplslda, Xbl; nlv = nothing)
