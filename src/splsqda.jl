@@ -23,7 +23,9 @@ Keyword arguments:
     of variables for each PC), or a vector of length `nlv`.   
 * `prior` : Type of prior probabilities for class 
     membership. Possible values are: `:unif` (uniform), 
-    `:prop` (proportional).
+    `:prop` (proportional), or a vector (of length equal to 
+    the number of classes) giving the prior weight for each class 
+    (the vector must be sorted in the same order as `mlev(x)`).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
@@ -34,8 +36,9 @@ PLSR (function `plskern`), is run on the Y-dummy table.
 See function `splslda` for examples.
 """ 
 function splsqda(X, y; kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    weights = mweightcla(Q, y; prior = par.prior)
     splsqda(X, y, weights; kwargs...)
 end
 
@@ -47,8 +50,7 @@ function splsqda(X, y, weights::Weight; kwargs...)
     fmpls = splskern(X, res.Y, weights; kwargs...)
     fmda = list(Qda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = qda(vcol(fmpls.T, 1:i), y, weights; 
-            kwargs...)
+        fmda[i] = qda(vcol(fmpls.T, 1:i), y, weights; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
     Plslda(fm, res.lev, ni)
