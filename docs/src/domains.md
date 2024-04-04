@@ -123,7 +123,7 @@
 ### **Ridge (RR, KRR)**
 
 *RR*
-- **rr** Pseudo-inverse
+- **rr** SVD factorization
 - **rrchol** Choleski factorization
 
 *Non linear*
