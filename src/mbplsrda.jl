@@ -2,7 +2,6 @@
     mbplsrda(; kwargs...)
     mbplsrda(Xbl, y; kwargs...)
     mbplsrda(Xbl, y, weights::Weight; kwargs...)
-    mbplsr!(Xbl::Matrix, y, weights::Weight; kwargs...)
 Discrimination based on multiblock partial least squares 
     regression (MBPLSR-DA).
 * `Xbl` : List of blocks (vector of matrices) of X-data 
@@ -69,9 +68,9 @@ predict(mod, Xbltest; nlv = 1:2).pred
 ```
 """
 function mbplsrda(Xbl, y; kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(Xbl[1][1, 1])
-    n = nro(Xbl[1])
-    weights = mweight(ones(Q, n))
+    weights = mweightcla(Q, y; prior = par.prior)
     mbplsrda(Xbl, y, weights; kwargs...)
 end
 

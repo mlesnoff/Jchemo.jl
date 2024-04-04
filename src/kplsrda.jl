@@ -13,6 +13,11 @@ Keyword arguments:
 * `kern` : Type of kernel used to compute the Gram matrices.
     Possible values are: `:krbf`, `:kpol`. See respective 
     functions `krbf` and `kpol` for their keyword arguments.
+* `prior` : Type of prior probabilities for class 
+    membership. Possible values are: `:unif` (uniform), 
+    `:prop` (proportional), or a vector (of length equal to 
+    the number of classes) giving the prior weight for each class 
+    (the vector must be sorted in the same order as `mlev(x)`).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
@@ -44,8 +49,7 @@ tab(ytest)
 nlv = 15
 kern = :krbf ; gamma = .001 
 scal = true
-mod = kplsrda(; nlv,
-    kern, gamma, scal) 
+mod = kplsrda(; nlv, kern, gamma, scal) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -71,8 +75,9 @@ predict(mod, Xtest; nlv = 1:2).pred
 ```
 """ 
 function kplsrda(X, y; kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    weights = mweightcla(Q, y; prior = par.prior)
     kplsrda(X, y, weights; kwargs...)
 end
 
