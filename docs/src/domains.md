@@ -185,12 +185,12 @@
 *On PLS latent variables*
 - **plslda** PLS-LDA
 - **plsqda** PLS-QDA (with continuum)
-- **plskdeda**  PLS-KDE-DA
+- **plskdeda**  PLS-KDEDA
 
 *Sparse*
 - **splslda**: Sparse PLS-LDA.
 - **splsqda**: Sparse PLS-QDA.
-- **splskdeda**: Sparse PLS-KDE-DA.
+- **splskdeda**: Sparse PLS-KDEDA.
 
 *Multiblock* 
 
