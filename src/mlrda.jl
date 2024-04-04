@@ -29,7 +29,7 @@ estimate is the highest.
 
 In the high-level version of the function, the observation weights used in 
 the MLR are defined with argument `prior`. For other choices, use the 
-low-level version.
+low-level version (argument `weights`).
 
 ## Examples
 ```julia
@@ -70,9 +70,10 @@ conf(res.pred, ytest).cnt
 ```
 """ 
 function mlrda(X, y)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
-    mlrda(X, y, weights)
+    weights = mweightcla(Q, y; prior = par.prior)
+    mlrda(X, y, weights; kwargs...)
 end
 
 function mlrda(X, y, weights::Weight)
