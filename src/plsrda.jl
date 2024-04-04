@@ -18,7 +18,8 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-This is the usual "PLSDA". The training variable `y` 
+This is the usual "PLSDA" (prediction of the Y-dummy table 
+by a PLS2 regression). The training variable `y` 
 (univariate class membership) is transformed to a dummy table 
 (Ydummy) containing nlev columns, where nlev is the number of 
 classes present in `y`. Each column of Ydummy is a dummy (0/1) 
@@ -31,8 +32,9 @@ For a given observation, the final prediction is the class
 corresponding to the dummy variable for which the probability 
 estimate is the highest.
 
-The observation weights used in the PLSR2 are defined with argument 
-`prior`.
+In the high-level version of the function, the observation weights used in 
+the PLS2-R are defined with argument `prior`. For other choices, use the 
+low-level version (argument `weights`).
 
 ## Examples
 ```julia
