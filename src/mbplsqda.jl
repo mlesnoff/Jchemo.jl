@@ -25,53 +25,8 @@ Keyword arguments:
 
 This is the same principle as function `plsqda`, for multiblock X-data.
 
-## Examples
-```julia
-using JLD2, CairoMakie, JchemoData
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/forages2.jld2")
-@load db dat
-pnames(dat)
-X = dat.X
-Y = dat.Y
-tab(Y.typ)
-s = Bool.(Y.test)
-Xtrain = rmrow(X, s)
-ytrain = rmrow(Y.typ, s)
-Xtest = X[s, :]
-ytest = Y.typ[s]
-ntrain = nro(Xtrain)
-ntest = nro(Xtest)
-ntot = ntrain + ntest
-(ntot = ntot, ntrain, ntest)
-wlst = names(X)
-wl = parse.(Float64, wlst)
-#plotsp(X, wl; nsamp = 20).f
-##
-listbl = [1:350, 351:700]
-Xbltrain = mblock(Xtrain, listbl)
-Xbltest = mblock(Xtest, listbl) 
+See function `mbplslda` for examples.
 
-nlv = 15
-scal = false
-#scal = true
-bscal = :none
-#bscal = :frob
-mod = mbplsqda(; nlv, bscal, scal)
-fit!(mod, Xbltrain, ytrain) 
-pnames(mod) 
-
-@head mod.fm.fm.T 
-@head transf(mod, Xbltrain)
-@head transf(mod, Xbltest)
-
-res = predict(mod, Xbltest) ; 
-@head res.pred 
-@show errp(res.pred, ytest)
-conf(res.pred, ytest).cnt
-
-predict(mod, Xbltest; nlv = 1:2).pred
-```
 """ 
 function mbplsqda(Xbl, y; kwargs...)
     par = recovkwargs(Par, kwargs)
