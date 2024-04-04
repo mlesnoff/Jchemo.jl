@@ -13,6 +13,11 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
 * `bscal` : Type of block scaling. See function `blockscal`
     for possible values.
+* `prior` : Type of prior probabilities for class 
+    membership. Possible values are: `:unif` (uniform), 
+    `:prop` (proportional), or a vector (of length equal to 
+    the number of classes) giving the prior weight for each class 
+    (the vector must be sorted in the same order as `mlev(x)`).
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
     and `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
