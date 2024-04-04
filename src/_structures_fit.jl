@@ -650,6 +650,12 @@ struct Mbplsrda
     ni::Vector{Int}
 end
 
+struct Mbplslda    # for Mbplslda and Mbplsqda 
+    fm::NamedTuple  
+    lev::Vector
+    ni::Vector{Int}
+end
+
 ## Occ
 
 struct Occstah
