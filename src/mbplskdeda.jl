@@ -41,9 +41,9 @@ function mbplskdeda(Xbl, y, weights::Weight; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     fmpls = mbplsr(Xbl, res.Y, weights; kwargs...)
-    fmda = list(Qda, par.nlv)
+    fmda = list(Kdeda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = kdeda(fmpls.T[:, 1:i], y, weights; kwargs...)
+        fmda[i] = kdeda(fmpls.T[:, 1:i], y; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
     Mbplslda(fm, res.lev, ni)
