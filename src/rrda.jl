@@ -24,6 +24,10 @@ For a given observation, the final prediction is the class
 corresponding to the dummy variable for which the probability 
 estimate is the highest.
 
+In the high-level version of the function, the observation weights used in 
+the RR are defined with argument `prior`. For other choices, use the 
+low-level version (argument `weights`).
+
 ## Examples
 ```julia
 using JchemoData, JLD2
@@ -71,8 +75,9 @@ predict(mod, Xtest;
 ```
 """ 
 function rrda(X, y; kwargs...)
+    par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    weights = mweightcla(Q, y; prior = par.prior)
     rrda(X, y, weights; kwargs...)
 end
 
