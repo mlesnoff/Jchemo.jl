@@ -41,9 +41,9 @@ function mbplsqda(Xbl, y, weights::Weight; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     fmpls = mbplsr(Xbl, res.Y, weights; kwargs...)
-    fmda = list(Lda, par.nlv)
+    fmda = list(Qda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = lda(fmpls.T[:, 1:i], y, weights; kwargs...)
+        fmda[i] = qda(fmpls.T[:, 1:i], y, weights; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
     Mbplslda(fm, res.lev, ni)
