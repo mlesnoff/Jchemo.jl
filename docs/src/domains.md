@@ -192,6 +192,11 @@
 - **splsqda**: Sparse PLS-QDA.
 - **splskdeda**: Sparse PLS-KDE-DA.
 
+*Multiblock* 
+
+- **mbplslda** MBPLS-LDA
+- **mbplsqda** MBPLS-QDA
+
 ### **Local models**
 
 - **knnda** kNN-DA (Vote within neighbors)
