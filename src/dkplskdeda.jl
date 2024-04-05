@@ -1,15 +1,15 @@
 """
-    dkplslda(; kwargs...)
-    dkplslda(X, y; kwargs...)
-    dkplslda(X, y, weights::Weight; kwargs...)
-DKPLS-LDA.
+    dkplskdeda(; kwargs...)
+    dkplskdeda(X, y; kwargs...)
+    dkplskdeda(X, y, weights::Weight; kwargs...)
+KPLS-KDEDA.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-    Must be >= 1.
+    Must be >= 1
 * `kern` : Type of kernel used to compute the Gram matrices.
     Possible values are: `:krbf`, `:kpol`. See respective 
     functions `krbf` and `kpol` for their keyword arguments.
@@ -18,86 +18,39 @@ Keyword arguments:
     `:prop` (proportional), or a vector (of length equal to 
     the number of classes) giving the prior weight for each class 
     (the vector must be sorted in the same order as `mlev(x)`).
+* Keyword arguments of function `dmkern` (bandwidth 
+    definition) can also be specified here.
+* `alpha` : Scalar (∈ [0, 1]) defining the continuum
+    between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-Same as function `plslda` (PLS-LDA) except that 
+Same as function `plskdeda` (PLS-KDEDA) except that 
 a direct kernel PLSR (function `dkplsr`), instead of a 
 PLSR (function `plskern`), is run on the Y-dummy table. 
 
-## Examples
-```julia
-using JchemoData, JLD2
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/forages2.jld2")
-@load db dat
-pnames(dat)
-X = dat.X
-Y = dat.Y
-n = nro(X) 
-s = Bool.(Y.test)
-Xtrain = rmrow(X, s)
-ytrain = rmrow(Y.typ, s)
-Xtest = X[s, :]
-ytest = Y.typ[s]
-ntrain = nro(Xtrain)
-ntest = nro(Xtest)
-(ntot = n, ntrain, ntest)
-tab(ytrain)
-tab(ytest)
-
-nlv = 15
-gamma = .1
-mod = dkplslda(; nlv, gamma) 
-#mod = dkplslda(; nlv, gamma, prior = :prop) 
-#mod = dkplsqda(; nlv, gamma, alpha = .5) 
-#mod = dkplskdeda(; nlv, gamma, a_kde = .5) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
-fm.lev
-fm.ni
-
-fmpls = fm.fm.fmpls ;
-@head fmpls.T
-@head transf(mod, Xtrain)
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
-
-coef(fmpls)
-
-res = predict(mod, Xtest) ;
-pnames(res)
-@head res.posterior
-@head res.pred
-errp(res.pred, ytest)
-conf(res.pred, ytest).cnt
-
-predict(mod, Xtest; nlv = 1:2).pred
-```
+See function `dkplslda` for examples.
 """ 
-function dkplslda(X, y; kwargs...)
+function dkplskdeda(X, y; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
-    dkplslda(X, y, weights; kwargs...)
+    dkplskdeda(X, y, weights; kwargs...)
 end
 
-function dkplslda(X, y, weights::Weight; kwargs...)
+function dkplskdeda(X, y, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
     fmpls = dkplsr(X, res.Y, weights; kwargs...)
-    fmda = list(Lda, par.nlv)
+    fmda = list(Kdeda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = lda(fmpls.T[:, 1:i], y, weights; kwargs...)
+        fmda[i] = kdeda(fmpls.T[:, 1:i], y; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
     Plslda(fm, res.lev, ni)
 end
-
 
 
 
