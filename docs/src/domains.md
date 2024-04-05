@@ -165,19 +165,24 @@
 - **kdeda** DA by kernel Gaussian density estimation (KDE-DA)
 
 *On PLS latent variables*
-- **plslda** PLS-LDA
-- **plsqda** PLS-QDA (with continuum)
-- **plskdeda**  PLS-KDEDA
+
+* *PLSDA*
+    - **plslda** PLS-LDA
+    - **plsqda** PLS-QDA (with continuum)
+    - **plskdeda**  PLS-KDEDA
+
 
 * *Sparse*
     - **splslda**: Sparse PLS-LDA
     - **splsqda**: Sparse PLS-QDA
     - **splskdeda**: Sparse PLS-KDEDA
 
+
 * *Non linear*
     - **kplslda** KPLS-LDA
     - **kplsqda** KPLS-QDA
     - **kplskdeda** KPLS-KDEDA
+
 
 * *Multiblock* 
     - **mbplslda** MBPLS-LDA
