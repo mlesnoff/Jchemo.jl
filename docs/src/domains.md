@@ -182,7 +182,9 @@
     - **kplslda** KPLS-LDA
     - **kplsqda** KPLS-QDA
     - **kplskdeda** KPLS-KDEDA
-
+    - **dkplslda** Direct KPLS-LDA
+    - **dkplsqda** Direct KPLS-QDA
+    - **dkplskdeda** Direct KPLS-KDEDA
 
 * *Multiblock* 
     - **mbplslda** MBPLS-LDA
