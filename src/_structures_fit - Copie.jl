@@ -543,7 +543,7 @@ struct Rda
 end
 
 struct Plsrda
-    fm::Union{Plsr, Splsr, Kplsr, Dkplsr}  
+    fm::Union{Plsr, Splsr, Kplsr}  
     lev::Vector
     ni::Vector{Int}
 end
@@ -560,6 +560,12 @@ struct Rrda
     ni::Vector{Int}
     kwargs::Base.Pairs
     par::Par
+end
+ 
+struct Dkplsrda   # required since ::Dkplsr has no field 'T'
+    fm::Dkplsr  
+    lev::Vector
+    ni::Vector{Int}
 end
 
 ## Local

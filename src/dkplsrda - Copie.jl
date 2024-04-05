@@ -85,6 +85,48 @@ function dkplsrda(X, y, weights::Weight; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     fm = dkplsr(X, res.Y, weights; kwargs...)
-    Plsrda(fm, res.lev, ni)
+    Dkplsrda(fm, res.lev, ni)
 end
 
+""" 
+    transf(object::Dkplsrda, X; nlv = nothing)
+Compute latent variables (LVs = scores T) from 
+    a fitted model.
+* `object` : The fitted model.
+* `X` : Matrix (m, p) for which LVs are computed.
+* `nlv` : Nb. LVs to consider.
+""" 
+function transf(object::Dkplsrda, X; nlv = nothing)
+    transf(object.fm, X; nlv)
+end
+
+"""
+    predict(object::Dkplsrda, X; nlv = nothing)
+Compute Y-predictions from a fitted model.
+* `object` : The fitted model.
+* `X` : X-data for which predictions are computed.
+* `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
+If nothing, it is the maximum nb. LVs.
+""" 
+function predict(object::Dkplsrda, X; nlv = nothing)
+    X = ensure_mat(X)
+    Q = eltype(X)
+    Qy = eltype(object.lev)
+    m = nro(X)
+    a = size(object.fm.fm.T, 2)
+    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
+    le_nlv = length(nlv)
+    pred = list(Matrix{Qy}, le_nlv)
+    posterior = list(Matrix{Q}, le_nlv)
+    @inbounds for i = 1:le_nlv
+        zp = predict(object.fm, X; nlv = nlv[i]).pred
+        z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
+        pred[i] = reshape(replacebylev2(z, object.lev), m, 1)     
+        posterior[i] = zp
+    end 
+    if le_nlv == 1
+        pred = pred[1]
+        posterior = posterior[1]
+    end
+    (pred = pred, posterior = posterior)
+end
