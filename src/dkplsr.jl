@@ -51,8 +51,9 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 20
-kern = :krbf ; gamma = 1e-1
-mod = dkplsr(; nlv, kern, gamma) ;
+kern = :krbf ; gamma = 1e-1 ; scal = false
+#gamma = 1e-4 ; scal = true
+mod = dkplsr(; nlv, kern, gamma, scal) ;
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -67,9 +68,8 @@ coef(mod; nlv = 3)
 res = predict(mod, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed").f  
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
+    xlabel = "Prediction", ylabel = "Observed").f  
 
 ####### Example of fitting the function sinc(x)
 ####### described in Rosipal & Trejo 2001 p. 105-106 
