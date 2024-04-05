@@ -92,6 +92,9 @@ plskdeda(; kwargs...) = Predictor{Function, Plslda, Base.Pairs}(plskdeda, nothin
 kplslda(; kwargs...) = Predictor{Function, Plslda, Base.Pairs}(kplslda, nothing, kwargs)
 kplsqda(; kwargs...) = Predictor{Function, Plslda, Base.Pairs}(kplsqda, nothing, kwargs)
 kplskdeda(; kwargs...) = Predictor{Function, Plslda, Base.Pairs}(kplskdeda, nothing, kwargs)
+dkplslda(; kwargs...) = Predictor{Function, Plslda, Base.Pairs}(dkplslda, nothing, kwargs)
+dkplsqda(; kwargs...) = Predictor{Function, Plslda, Base.Pairs}(dkplsqda, nothing, kwargs)
+dkplskdeda(; kwargs...) = Predictor{Function, Plslda, Base.Pairs}(dkplskdeda, nothing, kwargs)
 ##
 splslda(; kwargs...) = Predictor{Function, Plslda, Base.Pairs}(splslda, nothing, kwargs)
 splsqda(; kwargs...) = Predictor{Function, Plslda, Base.Pairs}(splsqda, nothing, kwargs)
