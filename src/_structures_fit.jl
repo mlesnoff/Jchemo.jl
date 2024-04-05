@@ -503,13 +503,6 @@ struct Mlrda
     ni::Vector{Int}
 end
 
-struct Kdeda
-    fm::Vector{Dmkern}
-    priors::AbstractVector
-    lev::Vector
-    ni::Vector{Int}
-end
-
 struct Lda
     fm::Vector{Dmnorm}
     W::Matrix  
@@ -528,6 +521,13 @@ struct Qda
     ni::Vector{Int}
     lev::Vector
     weights::Weight
+end
+
+struct Kdeda
+    fm::Vector{Dmkern}
+    priors::AbstractVector
+    lev::Vector
+    ni::Vector{Int}
 end
 
 struct Rda
@@ -553,18 +553,18 @@ struct Plslda    # for plslda and plsqda
     ni::Vector{Int}
 end
 
-struct Dkplsrda
-    fm::Dkplsr  
-    lev::Vector
-    ni::Vector{Int}
-end
-
 struct Rrda
     fm::Union{Rr, Krr}  
     lev::Vector
     ni::Vector{Int}
     kwargs::Base.Pairs
     par::Par
+end
+ 
+struct Dkplsrda   # required since ::Dkplsr has no field 'T'
+    fm::Dkplsr  
+    lev::Vector
+    ni::Vector{Int}
 end
 
 ## Local

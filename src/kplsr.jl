@@ -180,13 +180,11 @@ function transf(object::Kplsr, X; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; 
-        object.kwargs...)
+    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     DKt = object.D * K'
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')
-    T = Kc * @view(object.R[:, 1:nlv])
-    T
+    Kc * @view(object.R[:, 1:nlv])
 end
 
 """
@@ -202,7 +200,7 @@ function coef(object::Kplsr; nlv = nothing)
     beta = object.C[:, 1:nlv]'
     q = length(object.ymeans)
     int = reshape(object.ymeans, 1, q)
-    (beta = beta, int = int)
+    (beta = beta, int)
 end
 
 """

@@ -25,6 +25,7 @@ include("_structures_mod.jl")
 include("_structures_mod_pipelines.jl")
 
 ######---- Misc
+
 include("utility.jl")
 include("utility_colwise.jl")
 include("utility_rowwise.jl")
@@ -42,23 +43,27 @@ include("snipalsh.jl")
 include("snipalsmix.jl")
 
 ######---- Preprocessing
+
 include("preprocessing.jl") 
 include("scale.jl") 
 include("blockscal.jl") 
 include("rmgap.jl")
 
 ######---- Graphics
+
 include("plotsp.jl")
 include("plotgrid.jl")
 include("plotxy.jl")
 include("plotconf.jl")
 
 ######---- Distributions
+
 include("dmnorm.jl")
 include("dmnormlog.jl")
 include("dmkern.jl")
 
 ######---- Exploratory
+
 include("fda.jl")  # Here since ::Fda called in pcasvd
 include("fdasvd.jl")     
 include("pcasvd.jl")
@@ -85,6 +90,7 @@ include("mbpca.jl")
 include("comdim.jl")
 
 ######---- Regression 
+
 include("aov1.jl")
 include("mlr.jl")
 include("rr.jl")
@@ -153,6 +159,7 @@ include("treer_dt.jl")
 include("rfr_dt.jl")
 
 ######---- Discrimination 
+
 include("lda.jl")
 include("qda.jl")
 include("rda.jl")
@@ -165,6 +172,9 @@ include("plsqda.jl")
 include("plskdeda.jl")
 include("krrda.jl")
 include("kplsrda.jl")
+include("kplslda.jl")
+include("kplsqda.jl")
+include("kplskdeda.jl")
 include("dkplsrda.jl")
 
 ## Sparse
@@ -199,12 +209,14 @@ include("treeda_dt.jl")
 include("rfda_dt.jl")
 
 ######---- Calibration transfer
+
 include("calds.jl")
 include("calpds.jl")
 include("difmean.jl")
 include("eposvd.jl")
 
 ######---- Sampling
+
 include("sampks.jl")
 include("sampdp.jl")
 include("samprand.jl")
@@ -357,7 +369,9 @@ export
     rda,
     plsrda,
     plslda, plsqda, plskdeda,
-    kplsrda, dkplsrda,
+    kplsrda, 
+    kplslda, kplsqda, kplskdeda, 
+    dkplsrda,
     svmda, 
     treeda_dt, rfda_dt,
     stah,
@@ -365,22 +379,23 @@ export
     occsd, occod, occsdod,
     ## Sparse 
     splsrda,
-    splslda, splsqda,
-    splskdeda,
+    splslda, splsqda, splskdeda,
     ## Local 
     lwmlrda,
     lwplsrda, 
     lwplslda, lwplsqda,
     knnda,
     ## Multiblock
-    mbplsrda, mbplslda, mbplsqda, mbplskdeda,
+    mbplsrda, 
+    mbplslda, mbplsqda, mbplskdeda,
     ## Auxiliary
     transf, coef, predict,
     transfbl, 
     ## Validation
     residreg, residcla, 
     ssr, msep, rmsep, rmsepstand, 
-    bias, sep, cor2, r2, rpd, rpdr, mse, errp, merrp,
+    bias, sep, cor2, r2, rpd, rpdr, mse, 
+    errp, merrp,
     mpar,
     gridscore, 
     gridscore_br, gridscore_lv, gridscore_lb,

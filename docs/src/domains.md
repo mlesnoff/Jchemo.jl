@@ -138,17 +138,17 @@
 ### Based on the prediction of the Y-dummy table
 
 *Linear*
-- **mlrda** MLR prediction (MLR-DA)
-- **plsrda** PLSR prediction (PLSR-DA), *aka* usual PLSDA
-- **rrda** RR prediction (RR-DA)
+- **mlrda** MLR-DA
+- **plsrda** PLSR-DA, *aka* usual PLSDA
+- **rrda** RR-DA
 
 *Sparse*
 - **splsrda** Sparse PLSR-DA
 
 *Non linear*
-- **kplsrda** KPLSR prediction (KPLSR-DA)
-- **dkplsrda** DKPLSR prediction (DKPLSR-DA)
-- **krrda** KRR prediction (KRR-DA)
+- **kplsrda** KPLSR-DA
+- **dkplsrda** DKPLSR-DA
+- **krrda** KRR-DA
 
 *Multiblock* 
 
@@ -169,16 +169,20 @@
 - **plsqda** PLS-QDA (with continuum)
 - **plskdeda**  PLS-KDEDA
 
-*Sparse*
-- **splslda**: Sparse PLS-LDA.
-- **splsqda**: Sparse PLS-QDA.
-- **splskdeda**: Sparse PLS-KDEDA.
+* *Sparse*
+    - **splslda**: Sparse PLS-LDA
+    - **splsqda**: Sparse PLS-QDA
+    - **splskdeda**: Sparse PLS-KDEDA
 
-*Multiblock* 
+* *Non linear*
+    - **kplslda** KPLS-LDA
+    - **kplsqda** KPLS-QDA
+    - **kplskdeda** KPLS-KDEDA
 
-- **mbplslda** MBPLS-LDA
-- **mbplsqda** MBPLS-QDA
-- **mbplskdeda** MBPLS-KDEDA
+* *Multiblock* 
+    - **mbplslda** MBPLS-LDA
+    - **mbplsqda** MBPLS-QDA
+    - **mbplskdeda** MBPLS-KDEDA
 
 ### **Local models**
 

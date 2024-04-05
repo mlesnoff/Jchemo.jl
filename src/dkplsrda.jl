@@ -108,8 +108,7 @@ Compute Y-predictions from a fitted model.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 If nothing, it is the maximum nb. LVs.
 """ 
-function predict(object::Dkplsrda, X; 
-        nlv = nothing)
+function predict(object::Dkplsrda, X; nlv = nothing)
     X = ensure_mat(X)
     Q = eltype(X)
     Qy = eltype(object.lev)
@@ -120,12 +119,9 @@ function predict(object::Dkplsrda, X;
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
     @inbounds for i = 1:le_nlv
-        zp = predict(object.fm, X; 
-            nlv = nlv[i]).pred
-        z =  mapslices(argmax, zp; 
-            dims = 2)  # if equal, argmax takes the first
-        pred[i] = reshape(replacebylev2(z, 
-            object.lev), m, 1)     
+        zp = predict(object.fm, X; nlv = nlv[i]).pred
+        z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
+        pred[i] = reshape(replacebylev2(z, object.lev), m, 1)     
         posterior[i] = zp
     end 
     if le_nlv == 1
