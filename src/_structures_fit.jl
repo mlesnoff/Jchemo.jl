@@ -308,6 +308,7 @@ struct Dkplsr
     X::Matrix
     fm::Plsr
     K::Matrix
+    T::Matrix
     xscales::Vector
     yscales::Vector
     kwargs::Base.Pairs
