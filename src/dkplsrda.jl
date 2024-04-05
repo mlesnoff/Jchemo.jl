@@ -57,7 +57,7 @@ fm = mod.fm ;
 fm.lev
 fm.ni
 
-@head fm.fm.fm.T
+@head fm.fm.T
 @head transf(mod, Xtrain)
 @head transf(mod, Xtest)
 @head transf(mod, Xtest; nlv = 3)
