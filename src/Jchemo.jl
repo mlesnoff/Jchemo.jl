@@ -374,6 +374,7 @@ export
     kplsrda, 
     kplslda, kplsqda, kplskdeda, 
     dkplsrda,
+    dkplslda, dkplsqda, dkplskdeda, 
     svmda, 
     treeda_dt, rfda_dt,
     stah,
