@@ -175,6 +175,9 @@ include("kplslda.jl")
 include("kplsqda.jl")
 include("kplskdeda.jl")
 include("dkplsrda.jl")
+include("dkplslda.jl")
+include("dkplsqda.jl")
+include("dkplskdeda.jl")
 
 ## Sparse
 include("splsrda.jl")
