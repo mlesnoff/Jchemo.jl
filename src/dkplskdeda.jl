@@ -2,7 +2,7 @@
     dkplskdeda(; kwargs...)
     dkplskdeda(X, y; kwargs...)
     dkplskdeda(X, y, weights::Weight; kwargs...)
-KPLS-KDEDA.
+DKPLS-KDEDA.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
