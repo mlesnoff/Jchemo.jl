@@ -7,6 +7,7 @@
     - **findindex**: Replace a vector containg levels by the indexes of a set of levels.
     - **getknn**: Add of angular and correlation distances.
     - **kplslda**, **kplsqda**, **kplskdeda**: Kernel PLS-LDA, PLS-QDA, PLS-KDEDA.
+    - **dkplslda**, **dkplsqda**, **dkplskdeda**: Direct kernel PLS-LDA, PLS-QDA, PLS-KDEDA.
     - **mbplslda**, **mbplsqda**, **mbplskdeda**: Multiblock PLS-LDA, PLS-QDA, PLS-KDEDA.
     - **merrp**: Mean intra-class classification error rate.
     - **mweightcla**: Compute observation weights for a categorical variable, 
