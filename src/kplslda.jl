@@ -50,7 +50,8 @@ nlv = 15
 gamma = .1
 mod = kplslda(; nlv, gamma) 
 #mod = kplslda(; nlv, gamma, prior = :prop) 
-#mod = kplsqda(; nlv, gamma) 
+#mod = kplsqda(; nlv, gamma, alpha = .5) 
+#mod = kplskdeda(; nlv, gamma, a_kde = .5) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
