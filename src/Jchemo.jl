@@ -1,6 +1,5 @@
 module Jchemo  # Start-Module
 
-using Clustering
 using DataInterpolations
 using DecisionTree
 using Distributions

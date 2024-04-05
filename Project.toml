@@ -4,7 +4,6 @@ authors = ["Matthieu Lesnoff <matthieu.lesnoff@gmail.com>"]
 version = "0.3.7"
 
 [deps]
-Clustering = "aaaa29a8-35af-508c-8bc3-b662a17a0fe5"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 DataInterpolations = "82cc6244-b520-54b8-b5a6-8a565e85f1d0"
 DecisionTree = "7806a523-6efd-50cb-b5f6-3fa6f1930dbb"
@@ -22,7 +21,6 @@ Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
-Clustering = "0.15"
 DataFrames = "1"
 DataInterpolations = "4"
 DecisionTree = "0.12"
