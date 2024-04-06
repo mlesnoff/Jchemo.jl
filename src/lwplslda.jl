@@ -87,7 +87,8 @@ function lwplslda(X, y; kwargs...)
     if par.nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, dummy(y).Y; nlv = par.nlvdis, scal = par.scal)
+        weights = mweightcla(vec(y); prior = par.prior)
+        fm = plskern(X, dummy(y).Y, weights; nlv = par.nlvdis, scal = par.scal)
     end
     xscales = ones(Q, p)
     if isnothing(fm) && par.scal
