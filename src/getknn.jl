@@ -43,7 +43,7 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
     n, p = size(Xtrain)
     k > n ? k = n : nothing
     if metric == :eucl
-        tree = NearestNeighbors.BruteTree(Xtrain', Euclidean())
+        tree = NearestNeighbors.BruteTree(Xtrain', Distances.Euclidean())
     elseif metric == :mah
         S = Statistics.cov(Xtrain, corrected = false)
         if p == 1
@@ -59,7 +59,7 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
         ## is very slow:
         Xtrain = Xtrain * Uinv
         X = X * Uinv
-        tree = NearestNeighbors.BruteTree(Xtrain', Euclidean())
+        tree = NearestNeighbors.BruteTree(Xtrain', Distances.Euclidean())
     elseif metric == :sam
         tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.SamDist())
     elseif metric == :cor
