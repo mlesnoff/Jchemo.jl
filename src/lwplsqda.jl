@@ -39,10 +39,10 @@ on the neighborhoods.
 
 * **Warning:** The present version of this function suffers from 
 frequent stops due to non positive definite matrices when doing QDA
-on neighborhoods: some classes within the neighborhood can 
-have very few observations. The recommandation is to select 
-a sufficiantly large number of neighbors, or/and to use a 
-regularized QDA (argument `alpha`).
+on neighborhoods, since some classes within the neighborhood can 
+have very few observations. It is recommended to select 
+a sufficiantly large number of neighbors or/and to use a 
+regularized QDA (`alpha > 0`).
 
 ## Examples
 ```julia
@@ -67,9 +67,7 @@ tab(ytest)
 
 nlvdis = 25 ; metric = :mah
 h = 1 ; k = 200
-mod = lwplsqda(; nlvdis, 
-    metric, h, k, prior = :prop,
-    alpha = .5) 
+mod = lwplsqda(; nlvdis, metric, h, k, prior = :prop, alpha = .5) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
