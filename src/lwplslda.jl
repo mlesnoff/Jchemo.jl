@@ -25,7 +25,9 @@ Keyword arguments:
     inside each neighborhood) models.
 * `prior` : Type of prior probabilities for class 
     membership. Possible values are: `:unif` (uniform), 
-    `:prop` (proportional).
+    `:prop` (proportional), or a vector (of length equal to 
+    the number of classes) giving the prior weight for each class 
+    (the vector must be sorted in the same order as `mlev(x)`).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation
     for the global dimension reduction and the local
