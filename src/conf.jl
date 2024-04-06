@@ -53,8 +53,8 @@ function conf(pred, y; digits = 1)
     insertcols!(cnt, 1, :y => namy)
     pct = DataFrame(round.(Apct; digits = digits), nampred)
     insertcols!(pct, 1, :levels => namy)
-    accuracy = round(100 * sum(diag(A)) / n; digits = digits)
-    diagpct = DataFrame(cla = mlev(zy), err = round.(100 .- diag(conf(res.pred, ytest).Apct) ; digits))
+    accuracy = round(100 * sum(diag(A)) / n; digits)
+    diagpct = DataFrame(lev = lev, err_pct = round.(100 .- diag(Apct) ; digits))
     (cnt = cnt, pct, A, Apct, diagpct, accuracy, lev)
 end
 
