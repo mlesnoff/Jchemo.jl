@@ -51,8 +51,7 @@ function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, fun, nlv,
         end
     end 
     verbose ? println() : nothing    
-    pred = list(Union{Matrix{Int}, Matrix, Matrix},
-        le_nlv)
+    pred = list(Union{Matrix{Int}, Matrix, Matrix}, le_nlv)
     for a = 1:le_nlv
         pred[a] = zpred[:, :, a]
     end

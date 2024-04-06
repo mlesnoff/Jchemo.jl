@@ -79,19 +79,18 @@ function knnda(X, y; kwargs...)
     y = ensure_mat(y)
     Q = eltype(X)
     p = nco(X)
-    taby = tab(y)    # only for description
+    taby = tab(y)    
     if par.nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, dummy(y).Y; 
-            nlv = par.nlvdis, scal = par.scal)
+        weights = mweightcla(vec(y); prior = par.prior)
+        fm = plskern(X, dummy(y).Y, weights; nlv = par.nlvdis, scal = par.scal)
     end
     xscales = ones(Q, p)
     if par.scal && isnothing(fm)
         xscales .= colstd(X)
     end
-    Knnda(X, y, fm, xscales, taby.keys, 
-        taby.vals, kwargs, par) 
+    Knnda(X, y, fm, xscales, taby.keys, taby.vals, kwargs, par) 
 end
 
 """
@@ -119,21 +118,24 @@ function predict(object::Knnda, X)
             res = getknn(object.X, X; metric, k)
         end
     else
-        res = getknn(object.fm.T, 
-            transf(object.fm, X); metric, k) 
+        res = getknn(object.fm.T, transf(object.fm, X); metric, k) 
     end
     listw = copy(res.d)
-    @inbounds for i = 1:m
+    Threads.@threads for i = 1:m
         w = wdist(res.d[i]; h, criw, squared)
         w[w .< tolw] .= tolw
         listw[i] = w
+        ## New
+        #wpr = mweightcla(object.y[res.ind[i]]; prior = object.par.prior).w 
+        #listw[i] = wpr
+        #listw[i] = sqrt.(w .* wpr)
+        ## End
     end
     ## End
     pred = similar(object.y, m, 1)
     @inbounds for i = 1:m
         s = res.ind[i]
-        pred[i, :] .= findmax_cla(object.y[s], 
-            mweight(listw[i]))
+        pred[i, :] .= findmax_cla(object.y[s], mweight(listw[i]))
     end
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end

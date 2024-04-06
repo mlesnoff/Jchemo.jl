@@ -111,7 +111,7 @@ function predict(object::Lwmlr, X)
         metric, k)
     listw = copy(res.d)
     Threads.@threads for i = 1:m
-           w = wdist(res.d[i]; h, criw, squared)
+        w = wdist(res.d[i]; h, criw, squared)
         w[w .< tolw] .= tolw
         listw[i] = w
     end

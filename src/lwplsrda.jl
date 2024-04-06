@@ -84,15 +84,14 @@ function lwplsrda(X, y; kwargs...)
     if par.nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, dummy(y).Y; 
-            nlv = par.nlvdis, scal = par.scal)
+        weights = mweightcla(vec(y); prior = par.prior)
+        fm = plskern(X, dummy(y).Y, weights; nlv = par.nlvdis, scal = par.scal)
     end
     xscales = ones(Q, p)
     if isnothing(fm) && par.scal
         xscales .= colstd(X)
     end
-    Lwplsrda(X, y, fm, xscales, taby.keys, 
-        taby.vals, kwargs, par)
+    Lwplsrda(X, y, fm, xscales, taby.keys, taby.vals, kwargs, par)
 end
 
 """
@@ -132,12 +131,9 @@ function predict(object::Lwplsrda, X; nlv = nothing)
         listw[i] = w
     end
     ## End
-    pred = locwlv(object.X, object.y, X; 
-        listnn = res.ind, listw = listw, fun = plsrda, 
-        nlv = nlv, scal = object.par.scal,
+    pred = locwlv(object.X, object.y, X; listnn = res.ind, listw = listw, 
+        fun = plsrda, nlv, scal = object.par.scal,
         verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
-
-
 

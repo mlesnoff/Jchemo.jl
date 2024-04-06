@@ -139,7 +139,6 @@ function predict(object::Lwplsqda, X; nlv = nothing)
     end
     listw = copy(res.d)
     Threads.@threads for i = 1:m
-    #@inbounds for i = 1:m
         w = wdist(res.d[i]; h, criw, squared)
         w[w .< tolw] .= tolw
         listw[i] = w

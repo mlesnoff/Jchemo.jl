@@ -147,7 +147,7 @@ function predict(object::Knnr, X)
             transf(object.fm, X); metric, k) 
     end
     listw = copy(res.d)
-    @inbounds for i = 1:m
+    Threads.@threads for i = 1:m
         w = wdist(res.d[i]; h, criw, squared)
         w[w .< tolw] .= tolw
         listw[i] = w
@@ -156,9 +156,7 @@ function predict(object::Knnr, X)
     pred = zeros(Q, m, q)
     @inbounds for i = 1:m
         weights = mweight(listw[i])
-        pred[i, :] .= colmean(
-            vrow(object.Y, res.ind[i]), 
-            weights)
+        pred[i, :] .= colmean(vrow(object.Y, res.ind[i]), weights)
     end
     (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
 end
