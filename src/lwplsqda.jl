@@ -25,9 +25,7 @@ Keyword arguments:
     inside each neighborhood) models.
 * `prior` : Type of prior probabilities for class 
     membership. Possible values are: `:unif` (uniform), 
-    `:prop` (proportional), or a vector (of length equal to 
-    the number of classes) giving the prior weight for each class 
-    (the vector must be sorted in the same order as `mlev(x)`).
+    `:prop` (proportional).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum
     between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `scal` : Boolean. If `true`, each column of `X` 
@@ -39,8 +37,8 @@ This is the same principle as function `lwplsr` except
 that PLS-QDA models, instead of PLSR models, are fitted 
 on the neighborhoods.
 
-**Warning:** The present version of this function suffers from frequent 
-stops due to non positive definite matrices when doing QDA
+* **Warning:** The present version of this function suffers from 
+frequent stops due to non positive definite matrices when doing QDA
 on neighborhoods: some classes within the neighborhood can 
 have very few observations. The recommandation is to select 
 a sufficiantly large number of neighbors, or/and to use a 
