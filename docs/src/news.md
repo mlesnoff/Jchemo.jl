@@ -16,7 +16,8 @@
     - **snorm**: Row-wise norming of X-data.
 
 - Breaking
-    - **confusion**: renamed to **conf**. 
+    - **confusion**: renamed to **conf**, and output 'accuracy' renamed to 'accpct' 
+        and modified. 
 
 - Modifications
     - FDA and predictive DA functions: improvements to better take into account 
