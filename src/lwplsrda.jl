@@ -55,8 +55,7 @@ tab(ytest)
 
 nlvdis = 25 ; metric = :mah
 h = 2 ; k = 100
-mod = lwplsrda(; nlvdis, 
-    metric, h, k) 
+mod = lwplsrda(; nlvdis, metric, h, k) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
