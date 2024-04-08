@@ -328,7 +328,7 @@
 ## UTILITIES
 
 - **aggstat** Compute column-wise statistics by class in a dataset
-- **aggsum** Compute sub-total sums by class for a categorical variable
+- **aggsum** Compute sub-total sums by class of a categorical variable
 - **colmad**, **colmean**, **colmed**, **colnorm**, 
     **colstd**, **colsum**, **colvar**  Column-wise operations
 - **colmeanskip**, **colstdskip**, **colsumskip**, 
