@@ -57,7 +57,7 @@ end
 
 """ 
     aggsum(x::Vector, y::Vector)
-Compute sub-total sums by class for a categorical variable.
+Compute sub-total sums by class of a categorical variable.
 * `x` : A quantitative variable to sum (n) 
 * `y` : A categorical variable (n) (class membership).
 
