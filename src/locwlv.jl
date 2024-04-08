@@ -46,7 +46,7 @@ function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, fun, nlv,
                 fm = fun(Xtrain[s, :], zYtrain, mweight(listw[i]); nlv = maximum(nlv), kwargs...)
             end
             @inbounds for a = 1:le_nlv
-                zpred[i, :, a] = predict(fm, X[i:i, :]; nlv = nlv[a]).pred
+                zpred[i, :, a] = predict(fm, vrow(X, i:i); nlv = nlv[a]).pred
             end
         end
     end 

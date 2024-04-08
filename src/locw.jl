@@ -42,7 +42,7 @@ function locw(Xtrain, Ytrain, X; listnn, listw = nothing, fun,
             else
                 fm = fun(Xtrain[s, :], zYtrain, mweight(listw[i]); kwargs...)
             end
-            pred[i, :] = predict(fm, X[i:i, :]).pred
+            pred[i, :] = predict(fm, vrow(X, i:i)).pred
         end
     end
     verbose ? println() : nothing    
