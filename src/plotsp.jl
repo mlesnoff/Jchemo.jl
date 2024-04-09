@@ -30,14 +30,11 @@ wl = parse.(Float64, wlst)
 
 plotsp(X).f
 plotsp(X; color = (:red, .2)).f
-plotsp(X, wl; xlabel = "Wavelength (nm)",
-    ylabel = "Absorbance").f
+plotsp(X, wl; xlabel = "Wavelength (nm)", ylabel = "Absorbance").f
 
-f, ax = plotsp(X, wl;
-    color = (:red, .2))
+f, ax = plotsp(X, wl; color = (:red, .2))
 xmeans = colmean(X)
-lines!(ax, wl, xmeans;
-    color = :black, linewidth = 2)
+lines!(ax, wl, xmeans; color = :black, linewidth = 2)
 vlines!(ax, 1200)
 f
 ```
