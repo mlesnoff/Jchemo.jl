@@ -40,24 +40,20 @@ end
 
 ##--------------- Transf
 function transf(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, X; nlv = nothing)
-    isnothing(nlv) ? transf(mod.fm, X) : 
-        transf(mod.fm, X; nlv)
+    isnothing(nlv) ? transf(mod.fm, X) : transf(mod.fm, X; nlv)
 end
 ## X, Y
 function transf(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, X, Y; nlv = nothing)
-    isnothing(nlv) ? transf(mod.fm, X, Y) : 
-        transf(mod.fm, X, Y; nlv)
+    isnothing(nlv) ? transf(mod.fm, X, Y) : transf(mod.fm, X, Y; nlv)
 end
 
 ##--------------- Transfbl
 function transfbl(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, X; nlv = nothing)
-    isnothing(nlv) ? transfbl(mod.fm, X) : 
-        transfbl(mod.fm, X; nlv)
+    isnothing(nlv) ? transfbl(mod.fm, X) : transfbl(mod.fm, X; nlv)
 end
 ## X, Y
 function transfbl(mod::Union{Jchemo.Transformer, Jchemo.Predictor}, X, Y; nlv = nothing)
-    isnothing(nlv) ? transfbl(mod.fm, X, Y) : 
-    transfbl(mod.fm, X, Y; nlv)
+    isnothing(nlv) ? transfbl(mod.fm, X, Y) : transfbl(mod.fm, X, Y; nlv)
 end
 
 ##--------------- Predict 
