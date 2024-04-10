@@ -1,8 +1,7 @@
 """
     aov1(x, Y)
     One-factor ANOVA test.
-* `x` : Univariate categorical (factor) 
-    data (n).
+* `x` : Univariate categorical (factor) data (n).
 * `Y` : Y-data (n, q).
 
 ## Examples
