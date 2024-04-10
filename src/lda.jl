@@ -3,8 +3,8 @@
     lda(X, y; kwargs...)
     lda(X, y, weights::Weight; kwargs...)
 Linear discriminant analysis (LDA).
-* `X`: blabla X-data (n, p).
-* `y`: Univariate class membership (n).
+* `X` : X-data (n, p).
+* `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
