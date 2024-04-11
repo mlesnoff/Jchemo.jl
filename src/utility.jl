@@ -576,18 +576,17 @@ weights = mweightcla(x)
 aggstat(weights.w, x; fun = sum).X
 ```
 """
-function mweightcla(x::Vector; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+function mweightcla(x::Vector; prior::Union{Symbol, Vector} = :unif)
     n = length(x)
     res = tab(x)
     lev = res.keys
     nlev = length(lev)
-    if isequal(par.prior, :unif)
+    if isequal(prior, :unif)
         priors = ones(nlev) / nlev
-    elseif isequal(par.prior, :prop)
+    elseif isequal(prior, :prop)
         priors = res.vals / n
     else
-        priors = mweight(par.prior).w  # could be '= par.prior', but not costly 
+        priors = mweight(prior).w  # could be '= prior', but mweight not costly 
     end
     w = zeros(n)
     @inbounds for i in eachindex(lev)
@@ -597,8 +596,8 @@ function mweightcla(x::Vector; kwargs...)
     mweight(w)
 end
 
-function mweightcla(Q::DataType, x::Vector; kwargs...)
-    mweight(convert.(Q, mweightcla(x; kwargs...).w))
+function mweightcla(Q::DataType, x::Vector; prior::Union{Symbol, Vector} = :unif)
+    mweight(convert.(Q, mweightcla(x; prior).w))
 end
 
 """ 
