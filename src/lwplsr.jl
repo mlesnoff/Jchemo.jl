@@ -108,13 +108,12 @@ ytest = rmrow(y, s)
 
 nlvdis = 5 ; metric = :mah 
 h = 1 ; k = 200 ; nlv = 15
-mod = lwplsr(; nlvdis, metric, 
-    h, k, nlv) ;
-fit!(mod, Ttrain, ytrain)
+mod = lwplsr(; nlvdis, metric, h, k, nlv) ;
+fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
 
-res = predict(mod, Ttest) ; 
+res = predict(mod, Xtest) ; 
 pnames(res) 
 res.listnn
 res.listd
@@ -172,8 +171,7 @@ function predict(object::Lwplsr, X; nlv = nothing)
             res = getknn(object.X, X; metric, k)
         end
     else
-        res = getknn(object.fm.T, 
-            transf(object.fm, X); metric, k) 
+        res = getknn(object.fm.T, transf(object.fm, X); metric, k) 
     end
     listw = copy(res.d)
     Threads.@threads for i = 1:m
