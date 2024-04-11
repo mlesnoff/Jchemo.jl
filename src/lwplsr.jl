@@ -1,8 +1,8 @@
 """
     lwplsr(; kwargs...)
     lwplsr(X, Y; kwargs...)
-k-Nearest-Neighbours locally weighted partial 
-    least squares regression (kNN-LWPLSR).
+k-Nearest-Neighbours locally weighted partial least squares 
+    regression (kNN-LWPLSR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 Keyword arguments:
