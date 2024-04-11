@@ -1,12 +1,11 @@
 """
-    aicplsr(X, y; alpha = 2, 
-        kwargs...)
+    aicplsr(X, y; alpha = 2, kwargs...)
 Compute Akaike's (AIC) and Mallows's (Cp) criteria 
     for univariate PLSR models.
 * `X` : X-data (n, p).
 * `y` : Univariate Y-data.
 Keyword arguments:
-* Same as function `cglsr`.
+* Same arguments as those of function `cglsr`.
 * `alpha` : Coefficient multiplicating
     the model complexity (df) to compute AIC. 
 
@@ -47,8 +46,7 @@ res.opt
 res.delta
 
 zaic = res.crit.aic
-f, ax = plotgrid(0:nlv, zaic;
-    xlabel = "Nb. LVs", ylabel = "AIC")
+f, ax = plotgrid(0:nlv, zaic; xlabel = "Nb. LVs", ylabel = "AIC")
 scatter!(ax, 0:nlv, zaic)
 f
 ```
