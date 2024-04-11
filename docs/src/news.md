@@ -1,6 +1,8 @@
 # New
 
-## *Version 0.3.8*
+## *Version 0.4.0*
+
+**Warning:** Major breaking changes with versions 0.3.
 
 - Modifications
     - Code cleaning. 
