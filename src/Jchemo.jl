@@ -232,6 +232,7 @@ include("wdist.jl")
 include("kernels.jl")
 
 export 
+    model,
     Par,
     Transformer, Predictor,
     fit!,
