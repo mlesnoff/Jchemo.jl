@@ -550,8 +550,8 @@ mweight(x::Vector) = Weight(x / sum(x))
 #mweight!(w::Union{Vector{Float32}, Vector{Float64}}) = w ./= sum(w)
 
 """ 
-    mweightcla(x::Vector; kwargs...)
-    mweightcla(Q::DataType, x::Vector; kwargs...)
+    mweightcla(x::Vector; prior::Union{Symbol, Vector} = :unif)
+    mweightcla(Q::DataType, x::Vector; prior::Union{Symbol, Vector} = :unif)
 Compute observation weights for a categorical variable, 
     given specified sub-total weights for the classes.
 * `x` : A categorical variable (n) (class membership).
