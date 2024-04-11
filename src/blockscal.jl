@@ -1,5 +1,4 @@
 """
-    blockscal(; kwargs...)
     blockscal(Xbl; kwargs...)
     blockscal(Xbl, weights::Weight; kwargs...)
 Scale multiblock X-data.
@@ -44,7 +43,7 @@ Xblnew = mblock(Xnew, listbl)
 
 centr = true ; scal = true
 bscal = :frob
-mod = blockscal(; centr, scal, bscal)
+mod = model(blockscal; centr, scal, bscal)
 fit!(mod, Xbl)
 zXbl = transf(mod, Xbl) ; 
 @head zXbl[3]
