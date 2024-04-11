@@ -14,8 +14,7 @@ model = function(fun::Function; kwargs...)
     Model(fun, nothing, kwargs)
 end
 
-
-
+############ TO BE REMOVED
 
 ##
 detrend(; kwargs...) = Transformer{Function, Detrend, Base.Pairs}(detrend, nothing, kwargs)
