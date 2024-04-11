@@ -1,12 +1,13 @@
-Base.@kwdef mutable struct Model
-    fun::Function   
+Base.@kwdef mutable struct Model{T <: Function, K <: Base.Pairs}
+    fun::T   
     fm
-    kwargs    
+    kwargs::K
+    typ::Symbol    
 end
 
-model = function(fun::Function; kwargs...)
-    Model(fun, nothing, kwargs)
+model = function(fun::Function, typ::Symbol = :x; kwargs...)
+    @assert in([:x, :xy])(typ) "Wrong value for argument 'typ'."
+    Model(fun, nothing, kwargs, typ)
 end
-
 
 

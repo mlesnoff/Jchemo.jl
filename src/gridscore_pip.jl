@@ -1,7 +1,6 @@
 """
-    gridscore(mod::Pipeline, Xtrain, Ytrain, X, Y; 
-        score, pars = nothing, nlv = nothing, 
-        lb = nothing, verbose = false) 
+    gridscore(mod::Pipeline, Xtrain, Ytrain, X, Y; score, pars = nothing, 
+        nlv = nothing, lb = nothing, verbose = false) 
 Test-set validation of a model pipeline over a grid 
     of parameters.
 * `mod` : A pipeline of models to evaluate.
@@ -124,7 +123,6 @@ function gridscore(mod::Pipeline, Xtrain, Ytrain, X, Y; score, pars = nothing,
         Xtrain = transf(mod.mod[i], Xtrain)
         X = transf(mod.mod[i], X)
     end
-    gridscore(mod.mod[K], Xtrain, Ytrain, X, Y; score, pars, 
-        nlv, lb, verbose)
+    gridscore(mod.mod[K], Xtrain, Ytrain, X, Y; score, pars, nlv, lb, verbose)
 end
 

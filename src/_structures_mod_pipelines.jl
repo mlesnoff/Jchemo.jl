@@ -3,26 +3,17 @@ struct Pipeline
 end
 pip(args...) = Pipeline(values(args))
 
-###### Fit
 function fit!(mod::Pipeline, X, Y = nothing)
     K = length(mod.mod)
     @assert K > 1 "Wrong pipeline: must contain at least 2 models."
+    typ = [mod.mod[i]. typ for i in eachindex(mod.mod)]
     @inbounds for i = 1:(K - 1)
-        if isa(mod.mod[i], Transformer)
-            fit!(mod.mod[i], X)
-        elseif isa(mod.mod[i], Predictor)
-            fit!(mod.mod[i], X, Y)
-        end
+        isequal(typ[i], :x) ? fit!(mod.mod[i], X) : fit!(mod.mod[i], X, Y) 
         X = transf(mod.mod[i], X)
     end
-    if isa(mod.mod[K], Transformer)
-        fit!(mod.mod[K], X)
-    elseif isa(mod.mod[K], Predictor)
-        fit!(mod.mod[K], X, Y)
-    end
+    isequal(typ[K], :x) ? fit!(mod.mod[K], X) : fit!(mod.mod[K], X, Y) 
 end
 
-###### Transf
 function transf(mod::Pipeline, X)  
     K = length(mod.mod)
     @assert K > 1 "Wrong pipeline: must contain at least 2 models."
@@ -32,7 +23,6 @@ function transf(mod::Pipeline, X)
     X
 end
 
-###### Predict 
 function predict(mod::Pipeline, X)
     K = length(mod.mod)
     @assert K > 1 "Wrong pipeline: must contain at least 2 models."

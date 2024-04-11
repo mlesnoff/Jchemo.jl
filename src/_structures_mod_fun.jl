@@ -64,13 +64,13 @@ end
 
 ###### Summary 
 
-function Base.summary(mod)
+function Base.summary(mod::Jchemo.Model)
     Base.summary(mod.fm)
 end
-function Base.summary(mod, X)
+function Base.summary(mod::Jchemo.Model, X)
     Base.summary(mod.fm, X)
 end
-function Base.summary(mod, X, Y)
+function Base.summary(mod::Jchemo.Model, X, Y)
     Base.summary(mod.fm, X, Y)
 end
 
