@@ -51,10 +51,9 @@ end
 function lg(Xbl::Vector; centr = true)
     nbl = length(Xbl)
     mat = zeros(eltype(Xbl[1]), nbl, nbl)
-    for i = 1:(nbl)
-        for j = 1:(nbl)
-            mat[i, j] = lg(Xbl[i], Xbl[j]; 
-                centr)
+    for i = 1:nbl
+        for j = 1:nbl
+            mat[i, j] = lg(Xbl[i], Xbl[j]; centr)
         end
     end
     mat
@@ -91,27 +90,26 @@ rd(X, Y)
 ```
 """ 
 function rd(X, Y; typ = :cor)
-    @assert in([:cov, :cor])(typ) "Wrong value for argument 'typ'." 
+    @assert in([:cor, :cov])(typ) "Wrong value for argument 'typ'." 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)
     if typ == :cor
-        z = cor(X, Y).^2
-    else
-        z = cov(X, Y; corrected = false).^2
+        A = cor(X, Y).^2
+    elseif typ == :cov
+        A = cov(X, Y; corrected = false).^2
     end    
-    sum(z; dims = 1) / p
+    sum(A; dims = 1) / p
 end
 
-function rd(X, Y, weights::Weight; 
-        typ = :cor)
-    @assert in([:cov, :cor])(typ) "Wrong value for argument 'typ'." 
+function rd(X, Y, weights::Weight; typ = :cor)
+    @assert in([:cor, :cov])(typ) "Wrong value for argument 'typ'." 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)
     typ == :cor ? fun = corm : fun = covm
-    z = fun(X, Y, weights).^2
-    sum(z; dims = 1) / p
+    A = fun(X, Y, weights).^2
+    sum(A; dims = 1) / p
 end
 
 """
@@ -202,10 +200,9 @@ end
 function rv(Xbl::Vector; centr = true)
     nbl = length(Xbl)
     mat = zeros(eltype(Xbl[1]), nbl, nbl)
-    for i = 1:(nbl)
-        for j = 1:(nbl)
-            mat[i, j] = rv(Xbl[i], Xbl[j]; 
-                centr)
+    for i = 1:nbl
+        for j = 1:nbl
+            mat[i, j] = rv(Xbl[i], Xbl[j]; centr)
         end
     end
     mat
