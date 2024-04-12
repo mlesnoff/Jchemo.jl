@@ -1,5 +1,4 @@
 """
-    plstuck(; kwargs...)
     plstuck(X, Y; kwargs...)
     plstuck(X, Y, weights::Weight; kwargs...)
     plstuck!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -109,9 +108,8 @@ function plstuck!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     Ty = Y * Wy
     TTx = colsum(D * Tx .* Tx)
     TTy = colsum(D * Ty .* Ty)
-    Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, 
-        xmeans, xscales, ymeans, yscales, weights,
-        kwargs, par)
+    Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
+        ymeans, yscales, weights, kwargs, par)
 end
 
 """ 
@@ -153,16 +151,14 @@ function Base.summary(object::Plstuck, X, Y)
     pvar = tt / sstot
     cumpvar = cumsum(pvar) 
     xvar = tt / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
-        pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Y
     tt = object.TTy
     sstot = frob(Y, object.weights)^2
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
     xvar = tt / n    
-    explvary = DataFrame(nlv = 1:nlv, var = xvar, 
-        pvar = pvar, cumpvar = cumpvar)
+    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Correlation between X- and 
     ## Y-block scores
     z = diag(corm(object.Tx, object.Ty, object.weights))
@@ -180,6 +176,5 @@ function Base.summary(object::Plstuck, X, Y)
     z = corm(Y, object.Ty, object.weights)
     cory2t = DataFrame(z, string.("lv", 1:nlv))
     ## End
-    (explvarx = explvarx, explvary, cort2t, rdx, rdy, 
-        corx2t, cory2t)
+    (explvarx = explvarx, explvary, cort2t, rdx, rdy, corx2t, cory2t)
 end

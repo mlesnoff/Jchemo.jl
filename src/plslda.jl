@@ -1,8 +1,7 @@
 """
-    plslda(; kwargs...)
     plslda(X, y; kwargs...)
     plslda(X, y, weights::Weight; kwargs...)
-PLS-LDA.
+LDA on PLS latent variables (PLS-LDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
@@ -57,16 +56,15 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-mod = plslda(; nlv) 
-#mod = plslda(; nlv, prior = :prop) 
-#mod = plsqda(; nlv) 
+mod = model(plslda; nlv) 
+#mod = model(plslda; nlv, prior = :prop) 
+#mod = model(plsqda; nlv, alpha = .1) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
 fm = mod.fm ;
 fm.lev
 fm.ni
-aggsum(fm.weights.w, ytrain)
 
 fmpls = fm.fm.fmpls ;
 @head fmpls.T

@@ -1,10 +1,8 @@
 """
-    plsrosa(; kwargs...)
     plsrosa(X, Y; kwargs...)
     plsrosa(X, Y, weights::Weight; kwargs...)
     plsrosa!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-Partial Least Squares Regression (PLSR) with the 
-    ROSA algorithm (Liland et al. 2016).
+Partial Least Squares Regression (PLSR) with the  ROSA algorithm (Liland et al. 2016).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
@@ -100,7 +98,7 @@ function plsrosa!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         TT[a] = tt
     end
     R = W * inv(P' * W)
-    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
-        yscales, weights, nothing, kwargs, par)
+    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, 
+        nothing, kwargs, par)
 end
 

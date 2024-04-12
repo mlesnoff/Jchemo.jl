@@ -1,5 +1,4 @@
 """
-    detrend(; kwargs...)
     detrend(X; kwargs...)
 De-trend transformation of each row of X-data. 
 * `X` : X-data (n, p).
@@ -25,7 +24,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-mod = detrend(degree = 2)
+mod = model(detrend; degree = 2)
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
@@ -70,7 +69,6 @@ function transf!(object::Detrend, X::Matrix)
 end
 
 """
-    fdif(; kwargs...)
     fdif(X; kwargs...)
 Finite differences (discrete derivates) for each 
     row of X-data. 
@@ -99,7 +97,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-mod = fdif(npoint = 2) 
+mod = model(fdif; npoint = 2) 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
@@ -140,7 +138,6 @@ function transf!(object::Fdif, X::Matrix, M::Matrix)
 end
 
 """ 
-    interpl(; kwargs...)
     interpl(X; kwargs...)
 Sampling spectra by interpolation.
 * `X` : Matrix (n, p) of spectra (rows).
@@ -176,7 +173,7 @@ plotsp(dat.X, wl; nsamp = 20).f
 
 wlfin = range(500, 2400, length = 10)
 #wlfin = collect(range(500, 2400, length = 10))
-mod = interpl(; wl, wlfin)
+mod = model(interpl; wl, wlfin)
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
@@ -224,7 +221,6 @@ end
 #quadratic_spline(y, x) = DataInterpolations.QuadraticSpline(y, x)
 
 """
-    mavg(; kwargs...)
     mavg(X; kwargs...)
 Smoothing by moving averages of each row of X-data.
 * `X` : X-data (n, p).
@@ -258,7 +254,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-mod = mavg(npoint = 10) 
+mod = model(mavg; npoint = 10) 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
@@ -287,7 +283,7 @@ end
 function transf!(object::Mavg, X::Matrix)
     n, p = size(X)
     npoint = object.par.npoint
-    kern = ImageFiltering.centered(ones(npoint) / npoint) ;
+    kern = ImageFiltering.centered(ones(npoint) / npoint) 
     out = similar(X, p) 
     @inbounds for i = 1:n
         imfilter!(out, vrow(X, i), kern)
@@ -345,7 +341,6 @@ function savgk(nhwindow::Int, deriv::Int, degree::Int)
 end
 
 """
-    savgol(; kwargs...)
     savgol(X; kwargs...)
 Savitzky-Golay derivation and smoothing of each row of X-data.
 * `X` : X-data (n, p).
@@ -391,8 +386,7 @@ wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
 npoint = 11 ; deriv = 2 ; degree = 2
-mod = savgol(; npoint, deriv, 
-    degree) 
+mod = model(savgol; npoint, deriv, degree) 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
@@ -430,8 +424,7 @@ function transf!(object::Savgol, X::Matrix)
     out = similar(X, p)
     @inbounds for i = 1:n
         ## convolution with "replicate" padding
-        imfilter!(out, vrow(X, i),
-            reflect(zkern))
+        imfilter!(out, vrow(X, i),reflect(zkern))
         X[i, :] .= out
     end
     ## Not faster
@@ -441,7 +434,6 @@ function transf!(object::Savgol, X::Matrix)
 end
 
 """
-    snorm()
     snorm(X)
 Row-wise norming of X-data.
 * `X` : X-data (n, p).
@@ -464,7 +456,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-mod = snorm() 
+mod = model(snorm) 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
@@ -496,7 +488,6 @@ function transf!(object::Snorm, X::Matrix)
 end
 
 """
-    snv(; kwargs...)
     snv(X; kwargs...)
 Standard-normal-variate (SNV) transformation of each 
     row of X-data.
@@ -522,7 +513,7 @@ wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
 centr = true ; scal = true
-mod = snv(; centr, scal) 
+mod = model(snv; centr, scal) 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)

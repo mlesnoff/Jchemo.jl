@@ -1,10 +1,9 @@
 """
-    plskern(; kwargs...)
     plskern(X, Y; kwargs...)
     plskern(X, Y, weights::Weight; kwargs...)
     plskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-Partial least squares regression (PLSR) with the 
-    "improved kernel algorithm #1" (Dayal & McGegor, 1997).
+Partial least squares regression (PLSR) with the "improved kernel algorithm #1" 
+    (Dayal & McGegor, 1997).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
@@ -58,11 +57,11 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-mod = plskern(; nlv) ;
-#mod = plsnipals(; nlv) ;
-#mod = plswold(; nlv) ;
-#mod = plsrosa(; nlv) ;
-#mod = plssimp(; nlv) ;
+mod = model(plskern; nlv) ;
+#mod = model(plsnipals; nlv) ;
+#mod = model(plswold; nlv) ;
+#mod = model(plsrosa; nlv) ;
+#mod = model(plssimp; nlv) ;
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -77,20 +76,17 @@ coef(mod; nlv = 3)
 res = predict(mod, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
+    xlabel = "Prediction", ylabel = "Observed").f    
 
-res = predict(mod, Xtest; 
-    nlv = 1:2)
+res = predict(mod, Xtest; nlv = 1:2)
 @head res.pred[1]
 @head res.pred[2]
 
 res = summary(mod, Xtrain) ;
 pnames(res)
 z = res.explvarx
-plotgrid(z.nlv, z.cumpvar; 
-    step = 2, xlabel = "Nb. LVs", 
+plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", 
     ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
@@ -168,8 +164,8 @@ function plskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         C[:, a] .= c
         TT[a] = tt
     end
-    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
-        yscales, weights, nothing, kwargs, par)
+    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, 
+        nothing, kwargs, par)
 end
 
 """ 
