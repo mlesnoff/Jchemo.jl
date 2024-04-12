@@ -1,6 +1,6 @@
 """
-    plotsp(X, wl = 1:nco(X); size = (500, 300),
-        color = nothing, nsamp = nothing, kwargs...)
+    plotsp(X, wl = 1:nco(X); size = (500, 300), color = nothing, 
+        nsamp = nothing, kwargs...)
 Plotting spectra.
 * `X` : X-data (n, p).
 * `wl` : Column names of `X`. Must be numeric.
@@ -40,8 +40,8 @@ f
 ```
 
 """ 
-function plotsp(X, wl = 1:nco(X); size = (500, 300),
-        color = nothing, nsamp = nothing, kwargs...) 
+function plotsp(X, wl = 1:nco(X); size = (500, 300), color = nothing, 
+        nsamp = nothing, kwargs...) 
     X = ensure_mat(X)
     if !isnothing(nsamp)
         X = X[sample(1:nro(X), nsamp; replace = false), :]
@@ -67,8 +67,7 @@ function plotsp(X, wl = 1:nco(X); size = (500, 300),
             #colm = (:Paired_12, tp)
             #colm = (:seaborn_bright, tp)
             colm = (:Set1_9, tp)
-            lines!(ax, res[:, 1], res[:, 2]; colormap = colm, 
-                color = res[:, 3])
+            lines!(ax, res[:, 1], res[:, 2]; colormap = colm, color = res[:, 3])
         end
     else
         for i = 1:n
