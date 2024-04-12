@@ -1,10 +1,8 @@
 """
-    cglsr(; kwargs...)
     cglsr(X, y; kwargs...)
-    cglsr!(X::Matrix, y::Matrix; 
-        kwargs...)
-Conjugate gradient algorithm for the normal 
-    equations (CGLS; Björck 1996).
+    cglsr!(X::Matrix, y::Matrix; kwargs...)
+Conjugate gradient algorithm for the normal equations 
+    (CGLS; Björck 1996).
 * `X` : X-data  (n, p).
 * `y` : Univariate Y-data (n).
 Keyword arguments:
@@ -68,7 +66,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 5 ; scal = true
-mod = cglsr(; nlv, scal) ;
+mod = model(cglsr; nlv, scal) ;
 fit!(mod, Xtrain, ytrain)
 pnames(mod.fm) 
 @head mod.fm.B
@@ -77,16 +75,13 @@ coef(mod.fm).int
 
 pred = predict(mod, Xtest).pred
 @show rmsep(pred, ytest)
-plotxy(vec(pred), ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed").f   
+plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, 
+    xlabel = "Prediction", ylabel = "Observed").f   
 ```
 """ 
-cglsr(X, y; kwargs...) = cglsr!(copy(ensure_mat(X)), 
-    copy(ensure_mat(y)); kwargs...)
+cglsr(X, y; kwargs...) = cglsr!(copy(ensure_mat(X)), copy(ensure_mat(y)); kwargs...)
 
-function cglsr!(X::Matrix, y::Matrix; 
-        kwargs...)
+function cglsr!(X::Matrix, y::Matrix; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X)   
     n, p = size(X)
@@ -170,8 +165,7 @@ function cglsr!(X::Matrix, y::Matrix;
         end 
         # End
     end
-    Cglsr(B, gnew, xmeans, xscales, ymeans, yscales, F,
-        kwargs, par)
+    Cglsr(B, gnew, xmeans, xscales, ymeans, yscales, F, kwargs, par)
 end
 
 """
