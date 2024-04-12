@@ -1,5 +1,4 @@
 """
-    mbplsr(; kwargs...)
     mbplsr(Xbl, Y; kwargs...)
     mbplsr(Xbl, Y, weights::Weight; kwargs...)
     mbplsr!(Xbl::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -47,7 +46,7 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-mod = mbplsr(; nlv, bscal, scal)
+mod = model(mbplsr; nlv, bscal, scal)
 fit!(mod, Xbltrain, ytrain)
 pnames(mod) 
 pnames(mod.fm)
@@ -99,8 +98,7 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(Y, ymeans)
     end
     fm = plskern(X, Y, weights; nlv = par.nlv, scal = false)
-    Mbplsr(fm, fm.T, fm.R, fm.C, fmsc, ymeans, yscales, 
-        weights, kwargs, par)
+    Mbplsr(fm, fm.T, fm.R, fm.C, fmsc, ymeans, yscales, weights, kwargs, par)
 end
 
 """ 
@@ -172,8 +170,7 @@ function Base.summary(object::Mbplsr, Xbl)
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
-        pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Correlation between the original X-variables
     ## and the global scores 
     z = cor(X, sqrtw .* object.T)  
@@ -184,8 +181,7 @@ function Base.summary(object::Mbplsr, Xbl)
     @inbounds for k = 1:nbl
         z[k] = rd(zXbl[k], sqrtw .* object.T)
     end
-    rdx = DataFrame(reduce(vcat, z), 
-        string.("lv", 1:nlv))       
+    rdx = DataFrame(reduce(vcat, z), string.("lv", 1:nlv))       
     ## Outputs
     (explvarx = explvarx, corx2t, rdx)
 end
