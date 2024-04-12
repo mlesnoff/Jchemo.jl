@@ -1,5 +1,4 @@
 """
-    dkplsr(; kwargs...)
     dkplsr(X, Y; kwargs...)
     dkplsr(X, Y, weights::Weight; kwargs...)
     dkplsr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -53,7 +52,7 @@ ytest = rmrow(y, s)
 nlv = 20
 kern = :krbf ; gamma = 1e-1 ; scal = false
 #gamma = 1e-4 ; scal = true
-mod = dkplsr(; nlv, kern, gamma, scal) ;
+mod = model(dkplsr; nlv, kern, gamma, scal) ;
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -80,7 +79,7 @@ zy = sin.(abs.(x)) ./ abs.(x)
 y = zy + .2 * randn(n) 
 nlv = 2
 gamma = 1 / 3
-mod = dkplsr(; nlv, gamma) ;
+mod = model(dkplsr; nlv, gamma) ;
 fit!(mod, x, y)
 pred = predict(mod, x).pred 
 f, ax = scatter(x, y) 

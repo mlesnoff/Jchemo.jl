@@ -1,5 +1,4 @@
 """
-    dkplsqda(; kwargs...)
     dkplsqda(X, y; kwargs...)
     dkplsqda(X, y, weights::Weight; kwargs...)
 DKPLS-QDA.

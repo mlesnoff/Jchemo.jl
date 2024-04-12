@@ -41,7 +41,7 @@ y = dat.X[:, 5]
 n = nro(X)
 tab(y) 
 
-mod = fda(nlv = 2)
+mod = model(fda; nlv = 2)
 fit!(mod, X, y)
 @head T = mod.fm.T
 p = nco(T)
@@ -49,52 +49,58 @@ p = nco(T)
 #### Probability density in the FDA 
 #### score space (2D)
 
-fm = dmkern(T) ;
-pnames(fm)
-fm.H
+mod = model(dmkern)
+fit!(mod, T) 
+pnames(mod.fm)
+mod.fm.H
 u = [1; 4; 150]
-predict(fm, T[u, :]).pred
+predict(mod, T[u, :]).pred
 
 h_kde = .3
-fm = dmkern(T; h_kde) ;
-fm.H
+mod = model(dmkern; h_kde)
+fit!(mod, T) 
+mod.fm.H
 u = [1; 4; 150]
-predict(fm, T[u, :]).pred
+predict(mod, T[u, :]).pred
 
 h_kde = [.3; .1]
-fm = dmkern(T; h_kde) ;
-fm.H
+mod = model(dmkern; h_kde)
+fit!(mod, T) 
+mod.fm.H
 u = [1; 4; 150]
-predict(fm, T[u, :]).pred
+predict(mod, T[u, :]).pred
 
 ## Bivariate distribution
 npoints = 2^7
+nlv = 2
 lims = [(minimum(T[:, j]), maximum(T[:, j])) for j = 1:nlv]
 x1 = LinRange(lims[1][1], lims[1][2], npoints)
 x2 = LinRange(lims[2][1], lims[2][2], npoints)
 z = mpar(x1 = x1, x2 = x2)
 grid = reduce(hcat, z)
 m = nro(grid)
-fm = dmkern(T) ;
-#fm = dmkern(T; a_kde = .5) ;
-#fm = dmkern(T; h_kde = .3) ;
-res = predict(fm, grid) ;
+mod = model(dmkern) 
+#mod = model(dmkern; a_kde = .5) 
+#mod = model(dmkern; h_kde = .3) 
+fit!(mod, T) 
+
+res = predict(mod, grid) ;
 pred_grid = vec(res.pred)
 f = Figure(size = (600, 400))
 ax = Axis(f[1, 1];  title = "Density for FDA scores (Iris)", xlabel = "Score 1", 
     ylabel = "Score 2")
 co = contour!(ax, grid[:, 1], grid[:, 2], pred_grid; levels = 10, labels = true)
-scatter!(ax, T[:, 1], T[:, 2],
-    color = :red, markersize = 5)
+scatter!(ax, T[:, 1], T[:, 2], color = :red, markersize = 5)
 #xlims!(ax, -15, 15) ;ylims!(ax, -15, 15)
 f
 
 ## Univariate distribution
 x = T[:, 1]
-fm = dmkern(x) ;
-#fm = dmkern(x; a_kde = .5) ;
-#fm = dmkern(x; h_kde = .3) ;
-pred = predict(fm, x).pred 
+mod = model(dmkern) 
+#mod = model(dmkern; a_kde = .5) 
+#mod = model(dmkern; h_kde = .3) 
+fit!(mod, x) 
+pred = predict(mod, x).pred 
 f = Figure()
 ax = Axis(f[1, 1])
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
@@ -106,10 +112,11 @@ npoints = 2^8
 lims = [minimum(x), maximum(x)]
 #delta = 5 ; lims = [minimum(x) - delta, maximum(x) + delta]
 grid = LinRange(lims[1], lims[2], npoints)
-fm = dmkern(x) ;
-#fm = dmkern(x; a_kde = .5) ;
-#fm = dmkern(x; h_kde = .3) ;
-pred_grid = predict(fm, grid).pred 
+mod = model(dmkern) 
+#mod = model(dmkern; a_kde = .5) 
+#mod = model(dmkern; h_kde = .3) 
+fit!(mod, x) 
+pred_grid = predict(mod, grid).pred 
 f = Figure()
 ax = Axis(f[1, 1])
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
