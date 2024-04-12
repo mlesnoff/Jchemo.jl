@@ -1,6 +1,6 @@
 """
-    locw(Xtrain, Ytrain, X; listnn, listw = nothing, fun, 
-        verbose = false, kwargs...)
+    locw(Xtrain, Ytrain, X; listnn, listw = nothing, fun, verbose = false, 
+        kwargs...)
 Compute predictions for a given kNN model.
 * `Xtrain` : Training X-data.
 * `Ytrain` : Training Y-data.
@@ -12,16 +12,15 @@ Keyword arguments:
     the m neighborhoods.
 * `verbose` : Boolean. If `true`, fitting information
     are printed.
-* `kwargs` : Keywords arguments to pass in function fun. 
+* `kwargs` : Keywords arguments to pass in function `fun`.
+    Each argument must have length = 1 (not be a collection).
 
 Each component i of `listnn` and `listw` contains the indexes 
 and weights, respectively, of the nearest neighbors of x_i in Xtrain. 
 The sizes of the neighborhood for i = 1,...,m can be different.
-
-All the arguments in kwargs must have length = 1 (not collections).
 """
-function locw(Xtrain, Ytrain, X; listnn, listw = nothing, fun, 
-        verbose = false, kwargs...)
+function locw(Xtrain, Ytrain, X; listnn, listw = nothing, fun, verbose = false, 
+        kwargs...)
     m = nro(X)
     q = nco(Ytrain)
     pred = similar(Ytrain, m, q)
@@ -48,8 +47,5 @@ function locw(Xtrain, Ytrain, X; listnn, listw = nothing, fun,
     verbose ? println() : nothing    
     (pred = pred,)
 end
-
-
-
 
 
