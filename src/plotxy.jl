@@ -50,23 +50,19 @@ tab(year)
 lev = mlev(year)
 nlev = length(lev)
 
-mod = pcasvd(nlv = 5) ; 
+mod = model(pcasvd; nlv = 5)  
 fit!(mod, X) 
 @head T = mod.fm.T
 
-plotxy(T[:, 1], T[:, 2]; 
-    color = (:red, .5)).f
+plotxy(T[:, 1], T[:, 2]; color = (:red, .5)).f
 
-plotxy(T[:, 1], T[:, 2], year; 
-    ellipse = true,
-    xlabel = "PC1", ylabel = "PC2").f
+plotxy(T[:, 1], T[:, 2], year; ellipse = true, xlabel = "PC1", 
+    ylabel = "PC2").f
 
 i = 2
 colm = cgrad(:Dark2_5, nlev; categorical = true)
-plotxy(T[:, i], T[:, i + 1], year; 
-    color = colm,
-    xlabel = string("PC", i), ylabel = string("PC", i + 1),
-    zeros = true, ellipse = true).f
+plotxy(T[:, i], T[:, i + 1], year; color = colm, xlabel = string("PC", i), 
+    ylabel = string("PC", i + 1), zeros = true, ellipse = true).f
 
 plotxy(T[:, 1], T[:, 2], year).lev
 
@@ -78,11 +74,9 @@ plotxy(1:5, y).f
 ## Several layers can be added
 ## (same syntax as in Makie)
 A = rand(50, 2)
-f, ax = plotxy(A[:, 1], A[:, 2]; 
-    xlabel = "x1", ylabel = "x2")
+f, ax = plotxy(A[:, 1], A[:, 2]; xlabel = "x1", ylabel = "x2")
 ylims!(ax, -1, 2)
-hlines!(ax, 0.5; color = :red, 
-    linestyle = :dot)
+hlines!(ax, 0.5; color = :red, linestyle = :dot)
 f
 ```
 """ 
@@ -94,6 +88,7 @@ function plotxy(x, y; size = (500, 300),
     y = vec(y)
     f = Figure(size = size)
     ax = Axis(f; xlabel = xlabel, ylabel = ylabel, title = title)
+    lw = .8
     if isnothing(color)
         scatter!(ax, x, y; kwargs...)
     else
@@ -102,25 +97,24 @@ function plotxy(x, y; size = (500, 300),
     if ellipse
         X = hcat(x, y)
         xmeans = colmean(X)
-        radius = sqrt(quantile(Chi(2), prob))
-        res = Jchemo.ellipse(cov(X); 
-            mu = xmeans, radius)
+        radius = sqrt(quantile(Distributions.Chi(2), prob))
+        res = Jchemo.ellipse(cov(X); mu = xmeans, radius)
         if isnothing(color)
-            lines!(ax, res.X; color = :grey40)
+            lines!(ax, res.X; color = :grey40, linewidth = lw)
         else
-            lines!(ax, res.X; color = color)
+            lines!(ax, res.X; color = color, linewidth = lw)
         end 
     end
     if circle
         z = Jchemo.ellipse(diagm(ones(2))).X
-        lines!(ax, z; color = :grey60)
+        lines!(ax, z; color = :grey60, linewidth = lw)
     end
     if bisect
-        ablines!(ax, 0, 1; color = :grey, linewidth = 1)
+        ablines!(ax, 0, 1; color = :grey, linewidth = lw)
     end
     if zeros
-        hlines!(0; color = :grey60)
-        vlines!(0; color = :grey60)
+        hlines!(0; color = :grey60, linewidth = lw)
+        vlines!(0; color = :grey60, linewidth = lw)
     end
     f[1, 1] = ax
     (f = f, ax = ax)
@@ -138,6 +132,7 @@ function plotxy(x, y, group; size = (600, 350),
     lab = string.(lev)
     f = Figure(size = size)
     ax = Axis(f; xlabel = xlabel, ylabel = ylabel, title = title)
+    lw = .8
     @inbounds for i in eachindex(lev)
         s = group .== lev[i]
         zx = x[s]
@@ -153,22 +148,22 @@ function plotxy(x, y, group; size = (600, 350),
             radius = sqrt(quantile(Chi(2), prob))
             res = Jchemo.ellipse(cov(X); mu = xmeans, radius)
             if isnothing(color)
-                lines!(ax, res.X; color = :grey40)
+                lines!(ax, res.X; color = :grey40, linewidth = lw)
             else
-                lines!(ax, res.X; color = color[i])
+                lines!(ax, res.X; color = color[i], linewidth = lw)
             end 
         end
     end
     if circle
         res = Jchemo.ellipse(diagm(ones(2))).X
-        lines!(ax, res; color = :grey60)
+        lines!(ax, res; color = :grey60, linewidth = lw)
     end
     if bisect
-        ablines!(ax, 0, 1)
+        ablines!(ax, 0, 1; linewidth = lw)
     end
     if zeros
-        hlines!(0; color = :grey60)
-        vlines!(0; color = :grey60)
+        hlines!(0; color = :grey60, linewidth = lw)
+        vlines!(0; color = :grey60, linewidth = lw)
     end
     f[1, 1] = ax
     if leg

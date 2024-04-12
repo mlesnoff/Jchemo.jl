@@ -1,5 +1,4 @@
 """
-    fda(; kwargs...)
     fda(X, y; kwargs...)
     fda(X, y, weights; kwargs...)
     fda!(X::Matrix, y, weights; kwargs...)
@@ -62,8 +61,8 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 2 ; scal = false
-mod = fda(; nlv, scal)
-#mod = fdasvd(; nlv, scal)
+mod = model(fda; nlv, scal)
+#mod = model(fdasvd; nlv, scal)
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -91,7 +90,7 @@ summary(mod).explvarx
 ct = fm.Tcenters 
 f, ax = plotxy(fm.T[:, 1], fm.T[:, 2], ytrain; ellipse = true, title = "FDA",
     xlabel = "Score-1", ylabel = "Score-2")
-scatter!(ax, ct[:, 1], ct[:, 2], markersize = 15, color = :red)
+scatter!(ax, ct[:, 1], ct[:, 2], marker = :star5, markersize = 15, color = :red)  # see available_marker_symbols()
 f
 ```
 """ 
@@ -140,8 +139,8 @@ function fda!(X::Matrix, y, weights; kwargs...)
     fscale!(P, norm_P)
     T = X * P
     Tcenters = zres.ct * P
-    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, 
-        xscales, weights, lev, ni, kwargs, par)
+    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, 
+        lev, ni, kwargs, par)
 end
 
 """
@@ -155,8 +154,7 @@ function Base.summary(object::Fda)
     eig = object.eig[1:nlv]
     pvar =  eig ./ sum(object.eig)
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(lv = 1:nlv, var = eig, 
-        pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(lv = 1:nlv, var = eig, pvar = pvar, cumpvar = cumpvar)
     (explvarx = explvarx,)    
 end
 
