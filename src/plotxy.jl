@@ -1,14 +1,11 @@
 """
-    plotxy(x, y; size = (500, 300), 
-        color = nothing, ellipse::Bool = false, prob = .95, 
-        circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "",
+    plotxy(x, y; size = (500, 300), color = nothing, ellipse::Bool = false, 
+        prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
+        xlabel = "", ylabel = "", title = "", kwargs...)
+    plotxy(x, y, group; size = (600, 350), color = nothing, ellipse::Bool = false, 
+        prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
+        xlabel = "", ylabel = "", title = "", leg::Bool = true, leg_title = "Group", 
         kwargs...)
-    plotxy(x, y, group; size = (600, 350), 
-        color = nothing, ellipse::Bool = false, prob = .95, 
-        circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", leg::Bool = true,
-        leg_title = "Group", kwargs...)
 Scatter plot of (x, y) data
 * `x` : A x-vector (n).
 * `y` : A y-vector (n). 
@@ -80,9 +77,8 @@ hlines!(ax, 0.5; color = :red, linestyle = :dot)
 f
 ```
 """ 
-function plotxy(x, y; size = (500, 300), 
-        color = nothing, ellipse::Bool = false, prob = .95, 
-        circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
+function plotxy(x, y; size = (500, 300), color = nothing, ellipse::Bool = false, 
+        prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", kwargs...)
     x = vec(x)
     y = vec(y)
@@ -120,11 +116,10 @@ function plotxy(x, y; size = (500, 300),
     (f = f, ax = ax)
 end
 
-function plotxy(x, y, group; size = (600, 350), 
-        color = nothing, ellipse::Bool = false, prob = .95, 
-        circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", leg::Bool = true,
-        leg_title = "Group", kwargs...)
+function plotxy(x, y, group; size = (600, 350), color = nothing, ellipse::Bool = false, 
+        prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
+        xlabel = "", ylabel = "", title = "", leg::Bool = true, leg_title = "Group", 
+        kwargs...)
     x = vec(x)
     y = vec(y)
     group = vec(group)
