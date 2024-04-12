@@ -1,19 +1,18 @@
 """ 
     getknn(Xtrain, X; metric = :eucl, k = 1)
-Return the k nearest neighbors in `Xtrain` of each row 
-    of the query `X`.
+Return the k nearest neighbors in `Xtrain` of each row of the query `X`.
 * `Xtrain` : Training X-data.
 * `X` : Query X-data.
 Keyword arguments:
 * `metric` : Type of distance used for the query. 
     Possible values are ':eucl' (Euclidean),
-        ':mah' (Mahalanobis), ':sam' (spectral angular distance),
-        ':cor' (correlation distance).
+    ':mah' (Mahalanobis), ':sam' (spectral angular distance),
+    ':cor' (correlation distance).
 * `k` : Number of neighbors to return.
 
 The distances (not squared) are also returned.
 
-Let x and y be two vectors:
+Spectral angular and correlation distances between two vectors x and y:
 * Spectral angular distance (x, y) = acos(x'y / norm(x)norm(y)) / pi
 * Correlation distance (x, y) = sqrt((1 - cor(x, y)) / 2)
 Both distances are bounded within 0 (y = x) and 1 (y = -x).
