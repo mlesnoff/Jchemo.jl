@@ -1,5 +1,4 @@
 """
-    kplsqda(; kwargs...)
     kplsqda(X, y; kwargs...)
     kplsqda(X, y, weights::Weight; kwargs...)
 KPLS-QDA.

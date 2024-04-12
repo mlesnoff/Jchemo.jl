@@ -1,5 +1,4 @@
 """
-    kplsrda(; kwargs...)
     kplsrda(X, y; kwargs...)
     kplsrda(X, y, weights::Weight; kwargs...)
 Discrimination based on kernel partial least squares
@@ -49,7 +48,7 @@ tab(ytest)
 nlv = 15
 kern = :krbf ; gamma = .001 
 scal = true
-mod = kplsrda(; nlv, kern, gamma, scal) 
+mod = model(kplsrda; nlv, kern, gamma, scal) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)

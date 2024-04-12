@@ -1,8 +1,6 @@
 """
-    knnda(; kwargs...) 
     knnda(X, y; kwargs...) 
-k-Nearest-Neighbours weighted discrimination 
-    (KNN-DA).
+k-Nearest-Neighbours weighted discrimination (KNN-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 Keyword arguments:
@@ -54,8 +52,7 @@ tab(ytest)
 
 nlvdis = 25 ; metric = :mah
 h = 2 ; k = 10
-mod = knnda(; nlvdis, 
-    metric, h, k) 
+mod = model(knnda; nlvdis, metric, h, k) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)

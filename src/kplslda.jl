@@ -1,5 +1,4 @@
 """
-    kplslda(; kwargs...)
     kplslda(X, y; kwargs...)
     kplslda(X, y, weights::Weight; kwargs...)
 KPLS-LDA.
@@ -48,10 +47,10 @@ tab(ytest)
 
 nlv = 15
 gamma = .1
-mod = kplslda(; nlv, gamma) 
-#mod = kplslda(; nlv, gamma, prior = :prop) 
-#mod = kplsqda(; nlv, gamma, alpha = .5) 
-#mod = kplskdeda(; nlv, gamma, a_kde = .5) 
+mod = model(kplslda; nlv, gamma) 
+#mod = model(kplslda; nlv, gamma, prior = :prop) 
+#mod = model(kplsqda; nlv, gamma, alpha = .5) 
+#mod = model(kplskdeda; nlv, gamma, a_kde = .5) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
