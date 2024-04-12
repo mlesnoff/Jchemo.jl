@@ -134,6 +134,6 @@ function predict(object::Knnda, X)
         s = res.ind[i]
         pred[i, :] .= findmax_cla(object.y[s], mweight(listw[i]))
     end
-    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, listw)
 end
 

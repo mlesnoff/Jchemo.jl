@@ -1,8 +1,7 @@
 """
-    lwmlr(; kwargs...)
     lwmlr(X, Y; kwargs...)
-k-Nearest-Neighbours locally weighted multiple 
-    linear regression (kNN-LWMLR).
+k-Nearest-Neighbours locally weighted multiple linear 
+    regression (kNN-LWMLR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 Keyword arguments:
@@ -42,15 +41,14 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 20
-mod0 = pcasvd(; nlv) ;
+mod0 = model(pcasvd; nlv) ;
 fit!(mod0, Xtrain) 
 @head Ttrain = mod0.fm.T 
 @head Ttest = transf(mod0, Xtest)
 
 metric = :eucl 
 h = 2 ; k = 100 
-mod = lwmlr(; metric, 
-    h, k) ;
+mod = model(lwmlr; metric, h, k) 
 fit!(mod, Ttrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -62,9 +60,8 @@ res.listd
 res.listw
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
+    xlabel = "Prediction", ylabel = "Observed").f    
 
 ####### Example of fitting the function sinc(x)
 ####### described in Rosipal & Trejo 2001 p. 105-106 
@@ -73,8 +70,7 @@ x[x .== 0] .= 1e-5
 n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
-mod = lwmlr(; metric = :eucl, 
-    h = 1.5, k = 20) ;
+mod = model(lwmlr; metric = :eucl, h = 1.5, k = 20) ;
 fit!(mod, x, y)
 pred = predict(mod, x).pred 
 f, ax = scatter(x, y) 
@@ -116,8 +112,8 @@ function predict(object::Lwmlr, X)
         listw[i] = w
     end
     ## End
-    pred = locw(object.X, object.Y, X; listnn = res.ind, listw = listw, 
+    pred = locw(object.X, object.Y, X; listnn = res.ind, listw, 
         fun = mlr, verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, listw)
 end
 

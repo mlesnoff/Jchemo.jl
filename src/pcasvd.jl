@@ -95,8 +95,7 @@ function pcasvd!(X::Matrix, weights::Weight; kwargs...)
     sv = res.S   
     sv[sv .< 0] .= 0
     T = (1 ./ sqrtw) .* vcol(res.U, 1:nlv) * Diagonal(sv[1:nlv])
-    Pca(T, P, sv, xmeans, xscales, weights, 
-        nothing, kwargs, par) 
+    Pca(T, P, sv, xmeans, xscales, weights, nothing, kwargs, par) 
 end
 
 """ 
@@ -111,8 +110,7 @@ function transf(object::Union{Pca, Fda}, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    fcscale(X, object.xmeans, 
-        object.xscales) * vcol(object.P, 1:nlv)
+    fcscale(X, object.xmeans, object.xscales) * vcol(object.P, 1:nlv)
 end
 
 """

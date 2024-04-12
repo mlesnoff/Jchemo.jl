@@ -1,5 +1,4 @@
 """
-    lwplsrda(; kwargs...) 
     lwplsrda(X, y; kwargs...)
 kNN-LWPLSR-DA.
 * `X` : X-data (n, p).
@@ -55,7 +54,7 @@ tab(ytest)
 
 nlvdis = 25 ; metric = :mah
 h = 2 ; k = 100
-mod = lwplsrda(; nlvdis, metric, h, k) 
+mod = model(lwplsrda; nlvdis, metric, h, k) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -130,9 +129,8 @@ function predict(object::Lwplsrda, X; nlv = nothing)
         listw[i] = w
     end
     ## End
-    pred = locwlv(object.X, object.y, X; listnn = res.ind, listw = listw, 
-        fun = plsrda, nlv, scal = object.par.scal,
-        verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
+    pred = locwlv(object.X, object.y, X; listnn = res.ind, listw, fun = plsrda, 
+        nlv, scal = object.par.scal, verbose = object.par.verbose).pred
+    (pred = pred, listnn = res.ind, listd = res.d, listw)
 end
 
