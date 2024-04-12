@@ -1,9 +1,7 @@
 """
-    mlrda(; kwargs...)
     mlrda(X, y; kwargs...)
     mlrda(X, y, weights::Weight)
-Discrimination based on multple linear regression 
-    (MLR-DA).
+Discrimination based on multple linear regression (MLR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
