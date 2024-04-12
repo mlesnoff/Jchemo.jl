@@ -1,5 +1,4 @@
 """
-    pcanipals(; kwargs...)
     pcanipals(X; kwargs...)
     pcanipals(X, weights::Weight; kwargs...)
     pcanipals!(X::Matrix, weights::Weight; kwargs...)
@@ -57,8 +56,7 @@ function pcanipals(X; kwargs...)
 end
 
 function pcanipals(X, weights::Weight; kwargs...)
-    pcanipals!(copy(ensure_mat(X)), weights; 
-        kwargs...)
+    pcanipals!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
 function pcanipals!(X::Matrix, weights::Weight; kwargs...)
@@ -104,7 +102,6 @@ function pcanipals!(X::Matrix, weights::Weight; kwargs...)
     end    
     ## Could recompute the scores by
     ## X0 = copy(X) ; ... ; T = (1 ./ sqrtw) .* X0 * P 
-    Pca(T, P, sv, xmeans, xscales, weights, 
-        niter, kwargs, par) 
+    Pca(T, P, sv, xmeans, xscales, weights, niter, kwargs, par) 
 end
 

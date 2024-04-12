@@ -1,5 +1,4 @@
 """
-    pcasvd(; kwargs...)
     pcasvd(X; kwargs...)
     pcasvd(X, weights::Weight; kwargs...)
     pcasvd!(X::Matrix, weights::Weight; kwargs...)
@@ -40,10 +39,10 @@ s = samprand(n, ntest)
 @head Xtest = X[s.test, :]
 
 nlv = 3
-mod = pcasvd(; nlv)
-#mod = pcaeigen(; nlv)
-#mod = pcaeigenk(; nlv)
-#mod = pcanipals(; nlv)
+mod = model(pcasvd; nlv)
+#mod = model(pcaeigen; nlv)
+#mod = model(pcaeigenk; nlv)
+#mod = model(pcanipals; nlv)
 fit!(mod, Xtrain)
 pnames(mod)
 pnames(mod.fm)
@@ -134,18 +133,15 @@ function Base.summary(object::Pca, X)
     ## = object.sv[1:nlv].^2
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(nlv = 1:nlv, var = tt, 
-        pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(nlv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
     nam = string.("lv", 1:nlv)
     contr_ind = DataFrame(fscale(TT, tt), nam)
-    cor_circle = DataFrame(corm(X, object.T, 
-        object.weights), nam)
+    cor_circle = DataFrame(corm(X, object.T, object.weights), nam)
     C = X' * D * fscale(object.T, sqrt.(tt))
     coord_var = DataFrame(C, nam)
     CC = C .* C
     cc = sum(CC, dims = 1)
     contr_var = DataFrame(fscale(CC, cc), nam)
-    (explvarx = explvarx, contr_ind, contr_var, 
-        coord_var, cor_circle)
+    (explvarx = explvarx, contr_ind, contr_var, coord_var, cor_circle)
 end
 

@@ -1,5 +1,4 @@
 """
-    pcaeigenk(; kwargs...)
     pcaeigenk(X; kwargs...)
     pcaeigenk(X, weights::Weight; kwargs...)
     pcaeigenk!(X::Matrix, weights::Weight; kwargs...)
@@ -56,14 +55,12 @@ function pcaeigenk!(X::Matrix, weights::Weight; kwargs...)
     end
     sqrtw = sqrt.(weights.w)
     zX = Diagonal(sqrtw) * X
-    res = eigen!(Symmetric(zX * zX'); 
-        sortby = x -> -abs(x))
+    res = eigen!(Symmetric(zX * zX'); sortby = x -> -abs(x))
     eig = res.values[1:min(n, p)]
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
     P = zX' * fscale(res.vectors[:, 1:nlv], sv[1:nlv])
     T = X * P
-    Pca(T, P, sv, xmeans, xscales, weights, 
-        nothing, kwargs, par) 
+    Pca(T, P, sv, xmeans, xscales, weights, nothing, kwargs, par) 
 end
 
