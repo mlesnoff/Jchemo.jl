@@ -14,14 +14,15 @@ using NearestNeighbors
 using Random
 using SparseArrays 
 using Statistics
-using StatsBase          # sample
+using StatsBase          # countmap, ecdf, sample etc.
 
-## Keep the order below
+## The order below is required
 include("_structures_param.jl")
 include("_structures_fit.jl")      
 include("_structures_mod.jl")
 include("_structures_mod_fun.jl")
 include("_structures_mod_pipelines.jl")
+## End
 
 ######---- Misc
 
