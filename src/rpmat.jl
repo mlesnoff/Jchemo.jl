@@ -31,10 +31,8 @@ function rpmatgauss(p::Int, nlv::Int, Q = Float64)
 end
 
 """
-    rpmatli(p::Int, nlv::Int, Q = Float64; 
-        s_li)
-Build a sparse random projection matrix 
-    (Achlioptas 2001, Li et al. 2006).
+    rpmatli(p::Int, nlv::Int, Q = Float64; s_li)
+Build a sparse random projection matrix (Achlioptas 2001, Li et al. 2006).
 * `p` : Nb. variables (attributes) to project.
 * `nlv` : Nb. of simulated projection 
     dimensions.
@@ -79,8 +77,7 @@ p = 10 ; nlv = 3
 rpmatli(p, nlv)
 ```
 """ 
-function rpmatli(p::Int, nlv::Int, Q = Float64; 
-        s_li)
+function rpmatli(p::Int, nlv::Int, Q = Float64; s_li = sqrt(p))
     le = p * nlv
     k = Int(round(le / s_li))
     z = zeros(Q, le)

@@ -1,8 +1,7 @@
 """
     xfit(object)
     xfit(object, X; nlv = nothing)
-    xfit!(object, X::Matrix; 
-        nlv = nothing)
+    xfit!(object, X::Matrix; nlv = nothing)
 Matrix fitting from a bilinear model (e.g. PCA).
 * `object` : The fitted model.
 * `X` : New X-data to be approximated from the model.
@@ -29,12 +28,12 @@ Xnew = X[1:3, :]
 Ynew = Y[1:3, :]
 y = Y[:, 1]
 ynew = Ynew[:, 1]
-weights = mweight(collect(1:n))
+weights = mweight(rand(n))
 
 nlv = 2 
 scal = false
 #scal = true
-mod = pcasvd(; nlv, scal) ;
+mod = model(pcasvd; nlv, scal) ;
 fit!(mod, X)
 fm = mod.fm ;
 @head xfit(fm)
@@ -50,8 +49,7 @@ fm.xmeans
 @head Xnew
 @head xfit(fm, Xnew) + xresid(fm, Xnew)
 
-mod = pcasvd(; nlv = min(n, p), 
-    scal) ;
+mod = model(pcasvd; nlv = min(n, p), scal) 
 fit!(mod, X)
 fm = mod.fm ;
 @head xfit(fm) 
@@ -61,8 +59,9 @@ fm = mod.fm ;
 nlv = 3
 scal = false
 #scal = true
-fm = plskern(X, Y, weights; 
-    nlv, scal) ;
+mod = model(plskern; nlv, scal)
+fit!(mod, X, Y, weights) 
+fm = mod.fm ;
 @head xfit(fm)
 xfit(fm, Xnew)
 xfit(fm, Xnew, nlv = 0)
@@ -75,9 +74,9 @@ xfit(fm, Xnew, nlv = 1)
 @head Xnew
 @head xfit(fm, Xnew) + xresid(fm, Xnew)
 
-mod = plskern(; nlv = min(n, p), 
-    scal) ;
+mod = model(plskern; nlv = min(n, p), scal) 
 fit!(mod, X, Y, weights) 
+fm = mod.fm ;
 @head xfit(fm) 
 @head xfit(fm, Xnew)
 @head xresid(fm, Xnew)
@@ -92,12 +91,10 @@ function xfit(object)
 end
 
 function xfit(object, X; nlv = nothing)
-    xfit!(object, copy(ensure_mat(X)); 
-        nlv)
+    xfit!(object, copy(ensure_mat(X)); nlv)
 end
 
-function xfit!(object, X::Matrix; 
-        nlv = nothing)
+function xfit!(object, X::Matrix; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     if nlv == 0

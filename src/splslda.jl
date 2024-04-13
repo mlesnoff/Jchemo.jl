@@ -1,5 +1,4 @@
 """
-    splslda(; kwargs...)
     splslda(X, y; kwargs...)
     splslda(X, y, weights::Weight; kwargs...)
 Sparse PLS-LDA.
@@ -56,7 +55,9 @@ tab(ytest)
 
 nlv = 15
 msparse = :mix ; nvar = 10
-mod = splslda(; nlv, msparse, nvar) 
+mod = model(splslda; nlv, msparse, nvar) 
+#mod = model(splsqda; nlv, msparse, nvar, alpha = .1) 
+#mod = model(splskdeda; nlv, msparse, nvar, a_kde = .9) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -71,6 +72,7 @@ fmpls = fm.fm.fmpls ;
 @head transf(mod, Xtest; nlv = 3)
 
 coef(fmpls)
+summary(fmpls, Xtrain)
 
 res = predict(mod, Xtest) ;
 pnames(res)
@@ -80,7 +82,6 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
 predict(mod, Xtest; nlv = 1:2).pred
-summary(fm.fm, Xtrain)
 ```
 """ 
 function splslda(X, y; kwargs...)

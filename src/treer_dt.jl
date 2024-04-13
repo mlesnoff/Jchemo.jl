@@ -1,5 +1,4 @@
 """ 
-    treer_dt(; kwargs...)
     treer_dt(X, y; kwargs...)
 Regression tree (CART) with DecisionTree.jl.
 * `X` : X-data (n, p).
@@ -52,8 +51,7 @@ p = nco(X)
 
 n_subfeatures = p / 3 
 max_depth = 15
-mod = treer_dt(; n_subfeatures, 
-    max_depth) ;
+mod = model(treer_dt; n_subfeatures, max_depth) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -61,8 +59,7 @@ pnames(mod.fm)
 res = predict(mod, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 ```
 """ 

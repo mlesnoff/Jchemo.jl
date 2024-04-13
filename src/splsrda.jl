@@ -1,5 +1,4 @@
 """
-    splsrda(; kwargs...)
     splsrda(X, y; kwargs...)
     splsrda(X, y, weights::Weight; kwargs...)
 Sparse PLSR-DA.
@@ -57,7 +56,7 @@ tab(ytest)
 
 nlv = 15
 msparse = :mix ; nvar = 10
-mod = splsrda(; nlv, msparse, nvar) 
+mod = model(splsrda; nlv, msparse, nvar) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)

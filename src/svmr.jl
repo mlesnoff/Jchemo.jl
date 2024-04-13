@@ -1,5 +1,4 @@
 """
-    svmr(; kwargs...)
     svmr(X, y; kwargs...)
 Support vector machine for regression (Epsilon-SVR).
 * `X` : X-data (n, p).
@@ -64,8 +63,7 @@ p = nco(X)
 
 kern = :krbf ; gamma = .1
 cost = 1000 ; epsilon = 1
-mod = svmr(; kern, gamma,
-    cost, epsilon) ;
+mod = model(svmr; kern, gamma, cost, epsilon) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -73,8 +71,7 @@ pnames(mod.fm)
 res = predict(mod, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
 ####### Example of fitting the function sinc(x)
@@ -85,7 +82,7 @@ n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
 kern = :krbf ; gamma = .1
-mod = svmr(; kern, gamma) ;
+mod = model(svmr; kern, gamma) 
 fit!(mod, x, y)
 pred = predict(mod, x).pred 
 f, ax = scatter(x, y) 
@@ -140,8 +137,7 @@ Compute y-predictions from a fitted model.
 function predict(object::Svmr, X)
     X = ensure_mat(X)
     Q = eltype(X)
-    pred = svmpredict(object.fm, 
-        fscale(X, object.xscales)')[1]
+    pred = svmpredict(object.fm, fscale(X, object.xscales)')[1]
     m = length(pred)
     pred = reshape(convert.(Q, pred), m, 1)
     (pred = pred,)

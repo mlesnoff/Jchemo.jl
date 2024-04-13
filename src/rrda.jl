@@ -1,5 +1,4 @@
 """
-    rrda(; kwargs...)
     rrda(X, y; kwargs...)
     rrda(X, y, weights::Weight; kwargs...)
 Discrimination based on ridge regression (RR-DA).
@@ -55,7 +54,7 @@ tab(ytrain)
 tab(ytest)
 
 lb = 1e-5
-mod = rrda(; lb) 
+mod = model(rrda; lb) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -72,11 +71,7 @@ pnames(res)
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(mod, Xtest; nlv = 1:2).pred
-summary(fm.fm, Xtrain)
-
-predict(mod, Xtest; 
-    lb = [.1; .01]).pred
+predict(mod, Xtest; lb = [.1; .01]).pred
 ```
 """ 
 function rrda(X, y; kwargs...)
@@ -116,10 +111,8 @@ function predict(object::Rrda, X;
     @inbounds for i = 1:le_lb
         zp = predict(object.fm, X; 
             lb = lb[i]).pred
-        z =  mapslices(argmax, zp; 
-            dims = 2)  # if equal, argmax takes the first
-        pred[i] = reshape(replacebylev2(z, 
-            object.lev), m, 1)
+        z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
+        pred[i] = reshape(replacebylev2(z, object.lev), m, 1)
         posterior[i] = zp
     end 
     if le_lb == 1

@@ -41,9 +41,9 @@ y = dat.X[:, 5]
 n = nro(X)
 tab(y) 
 
-mod = model(fda; nlv = 2)
-fit!(mod, X, y)
-@head T = mod.fm.T
+mod0 = model(fda; nlv = 2)
+fit!(mod0, X, y)
+@head T = mod0.fm.T
 p = nco(T)
 
 #### Probability density in the FDA 

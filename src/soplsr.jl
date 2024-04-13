@@ -1,5 +1,4 @@
 """
-    soplsr(; kwargs...)
     soplsr(Xbl, Y; kwargs...)
     soplsr(Xbl, Y, weights::Weight; kwargs...)
     soplsr!(Xbl::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -53,7 +52,7 @@ nlv = 2
 #nlv = [2, 0, 1]
 scal = false
 #scal = true
-mod = soplsr(; nlv, scal)
+mod = model(soplsr; nlv, scal)
 fit!(mod, Xbltrain, ytrain)
 pnames(mod) 
 pnames(mod.fm)

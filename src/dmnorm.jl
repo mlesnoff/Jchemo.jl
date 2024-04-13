@@ -38,9 +38,9 @@ y = dat.X[:, 5]
 n = nro(X)
 tab(y) 
 
-mod = model(fda; nlv = 2)
-fit!(mod, X, y)
-@head T = mod.fm.T
+mod0 = model(fda; nlv = 2)
+fit!(mod0, X, y)
+@head T = mod0.fm.T
 n, p = size(T)
 
 #### Probability density in the FDA score space (2D)
@@ -49,15 +49,18 @@ s = y .== "setosa"
 zT = T[s, :]
 
 ## Bivariate distribution
-fm = dmnorm(zT)
+mod = model(dmnorm)
+fit!(mod, zT)
+fm = mod.fm
 pnames(fm)
 fm.Uinv 
 fm.detS
-pred = predict(fm, zT).pred
+pred = predict(mod, zT).pred
 @head pred
 
 mu = colmean(zT)
 S = covm(zT, mweight(ones(nro(zT))))
+## Direct syntax
 dmnorm(; mu = mu, S = S).Uinv
 dmnorm(; mu = mu, S = S).detS
 
@@ -67,8 +70,9 @@ x1 = LinRange(lims[1][1], lims[1][2], npoints)
 x2 = LinRange(lims[2][1], lims[2][2], npoints)
 z = mpar(x1 = x1, x2 = x2)
 grid = reduce(hcat, z)
-fm = dmnorm(zT) ;
-res = predict(fm, grid) ;
+mod = model(dmnorm)
+fit!(mod, zT)
+res = predict(mod, grid) ;
 pred_grid = vec(res.pred)
 f = Figure(size = (600, 400))
 ax = Axis(f[1, 1];  title = "Density for FDA scores (Iris - Setosa)", 
@@ -82,8 +86,9 @@ f
 ## Univariate distribution
 j = 1
 x = zT[:, j]
-fm = dmnorm(x) ;
-pred = predict(fm, x).pred 
+mod = model(dmnorm)
+fit!(mod, x)
+pred = predict(mod, x).pred 
 f = Figure()
 ax = Axis(f[1, 1]; xlabel = string("FDA-score ", j))
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
@@ -95,8 +100,9 @@ npoints = 2^8
 lims = [minimum(x), maximum(x)]
 #delta = 5 ; lims = [minimum(x) - delta, maximum(x) + delta]
 grid = LinRange(lims[1], lims[2], npoints)
-fm = dmnorm(x) ;
-pred_grid = predict(fm, grid).pred 
+mod = model(dmnorm)
+fit!(mod, x)
+pred_grid = predict(mod, grid).pred 
 f = Figure()
 ax = Axis(f[1, 1]; xlabel = string("FDA-score ", j))
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1

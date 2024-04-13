@@ -1,5 +1,4 @@
 """
-    rp(; kwargs...)
     rp(X; kwargs...)
     rp(X, weights::Weight; kwargs...)
     rp!(X::Matrix, weights::Weight; kwargs...)
@@ -23,7 +22,7 @@ X = rand(n, p)
 nlv = 3
 mrp = :li ; s_li = sqrt(p) 
 #mrp = :gauss
-mod = rp(; nlv, mrp, s_li)
+mod = model(rp; nlv, mrp, s_li)
 fit!(mod, X)
 pnames(mod)
 pnames(mod.fm)
@@ -39,8 +38,7 @@ function rp(X; kwargs...)
 end
 
 function rp(X, weights::Weight; kwargs...)
-    rp!(copy(ensure_mat(X)), weights; 
-        kwargs...)
+    rp!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
 function rp!(X::Matrix, weights::Weight; kwargs...)

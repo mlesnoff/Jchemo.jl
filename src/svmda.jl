@@ -1,5 +1,4 @@
 """
-    svmda(; kwargs...)
     svmda(X, y; kwargs...)
 Support vector machine for discrimination "C-SVC" (SVM-DA).
 * `X` : X-data (n, p).
@@ -67,8 +66,7 @@ tab(ytest)
 
 kern = :krbf ; gamma = 1e4
 cost = 1000 ; epsilon = .5
-mod = svmda(; kern, gamma,
-    cost, epsilon) ;
+mod = model(svmda; kern, gamma, cost, epsilon) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -119,8 +117,7 @@ function svmda(X, y; kwargs...)
         tolerance = 0.001,
         nt = 0,
         verbose = false) 
-    Svmda(fm, xscales, taby.keys, 
-        taby.vals)
+    Svmda(fm, xscales, taby.keys, taby.vals)
 end
 
 """
@@ -131,8 +128,7 @@ Compute y-predictions from a fitted model.
 """ 
 function predict(object::Svmda, X)
     X = ensure_mat(X)
-    pred = svmpredict(object.fm, 
-        fscale(X, object.xscales)')[1]
+    pred = svmpredict(object.fm, fscale(X, object.xscales)')[1]
     m = length(pred)
     pred = reshape(pred, m, 1)
     (pred = pred,)

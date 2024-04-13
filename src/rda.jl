@@ -1,5 +1,4 @@
 """
-    rda(; kwargs...)
     rda(X, y; kwargs...)
     rda(X, y, weights::Weight; kwargs...)
 Regularized discriminant analysis (RDA).
@@ -24,8 +23,8 @@ Let us note W the (corrected) pooled within-class
 covariance matrix and Wi the (corrected) within-class 
 covariance matrix of class i. The regularization is done 
 by the two following successive steps (for each class i):
-* Continuum between QDA and LDA: Wi(1) = (1 - `alpha`) * Wi + `alpha` * W       
-* Ridge regularization: Wi(2) = Wi(1) + `lb` * I
+1) Continuum between QDA and LDA: Wi(1) = (1 - `alpha`) * Wi + `alpha` * W       
+2) Ridge regularization: Wi(2) = Wi(1) + `lb` * I
 Then the QDA algorithm is run on matrices {Wi(2)}.
 
 Function `rda` is slightly different from the regularization 
@@ -80,7 +79,7 @@ tab(ytest)
 
 alpha = .5
 lb = 1e-8
-mod = rda(; alpha, lb)
+mod = model(rda; alpha, lb)
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)

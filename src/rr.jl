@@ -1,5 +1,4 @@
 """
-    rr(; kwargs...)
     rr(X, Y; kwargs...)
     rr(X, Y, weights::Weight; kwargs...)
     rr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -48,8 +47,8 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 lb = 1e-3
-mod = rr(; lb) ;
-#mod = rrchol(; lb) ;
+mod = model(rr; lb) 
+#mod = model(rrchol; lb) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -59,15 +58,12 @@ coef(mod)
 res = predict(mod, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-## Only for function 'rr'
-## (not 'rrchol')
+## Only for function 'rr' (not for 'rrchol')
 coef(mod; lb = 1e-1)
-res = predict(mod, Xtest; 
-    lb = [.1 ; .01])
+res = predict(mod, Xtest; lb = [.1 ; .01])
 @head res.pred[1]
 @head res.pred[2]
 ```
@@ -101,8 +97,7 @@ function rr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     res = LinearAlgebra.svd!(sqrtD * X)
     sv = res.S
     TtDY = Diagonal(sv) * res.U' * (sqrtD * Y)
-    Rr(res.V, TtDY, sv, xmeans, xscales, ymeans, weights, 
-        kwargs, par)
+    Rr(res.V, TtDY, sv, xmeans, xscales, ymeans, weights, kwargs, par)
 end
 
 """

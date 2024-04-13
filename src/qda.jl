@@ -1,5 +1,4 @@
 """
-    qda(; kwargs...)
     qda(X, y; kwargs...)
     qda(X, y, weights::Weight; kwargs...)
 Quadratic discriminant analysis (QDA, with continuum towards LDA).

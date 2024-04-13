@@ -1,5 +1,5 @@
 """
-    splskdeda(; kwargs...)
+
     splskdeda(X, y; kwargs...)
     splskdeda(X, y, weights::Weight; kwargs...)
 Sparse PLS-KDE-DA.

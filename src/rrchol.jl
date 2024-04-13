@@ -1,5 +1,4 @@
 """
-    rrchol(; kwargs...)
     rrchol(X, Y; kwargs...)
     rrchol(X, Y, weights::Weight; kwargs...)
     rrchol!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
