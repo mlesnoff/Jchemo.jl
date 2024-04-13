@@ -18,10 +18,11 @@ using StatsBase          # countmap, ecdf, sample etc.
 
 ## The order below is required
 include("_structures_param.jl")
-include("_structures_fit.jl")      
-include("_structures_mod.jl")
-include("_structures_mod_fun.jl")
-include("_structures_mod_pipelines.jl")
+include("_structures_fun.jl")      
+include("_model.jl")
+include("_model_work.jl")
+include("_pip.jl")
+include("_pip_work.jl")
 ## End
 
 ######---- Misc
@@ -234,8 +235,8 @@ include("kernels.jl")
 
 export 
     model,
+    modelx, modelxy, 
     Par,
-    Transformer, Predictor,
     fit!,
     transf!,
     pip,
