@@ -2,8 +2,7 @@
     qda(; kwargs...)
     qda(X, y; kwargs...)
     qda(X, y, weights::Weight; kwargs...)
-Quadratic discriminant analysis (QDA, with continuum 
-    towards LDA).
+Quadratic discriminant analysis (QDA, with continuum towards LDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
@@ -58,7 +57,7 @@ ntrain = n - ntest
 tab(ytrain)
 tab(ytest)
 
-mod = qda()
+mod = model(qda)
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -75,8 +74,8 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
 ## With regularization
-mod = qda(; alpha = .5)
-#mod = qda(; alpha = 1) # = LDA
+mod = model(qda; alpha = .5)
+#mod = model(qda; alpha = 1) # = LDA
 fit!(mod, Xtrain, ytrain)
 mod.fm.Wi
 res = predict(mod, Xtest) ;
