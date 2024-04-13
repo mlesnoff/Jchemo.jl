@@ -1,6 +1,5 @@
 """
-    gridcv_lv((X, Y; segm, fun, score, pars = nothing, nlv, 
-        verbose = false)
+    gridcv_lv((X, Y; segm, fun, score, pars = nothing, nlv, verbose = false)
 Working function for `gridcv`.
 
 Specific and faster than `gridcv_br` for models 
@@ -9,8 +8,7 @@ must not contain `nlv`.
 
 See function `gridcv` for examples.
 """
-function gridcv_lv(X, Y; segm, fun, score, pars = nothing, nlv, 
-        verbose = false)
+function gridcv_lv(X, Y; segm, fun, score, pars = nothing, nlv, verbose = false)
     p = nco(X)
     q = nco(Y)
     nrep = length(segm)
@@ -25,18 +23,15 @@ function gridcv_lv(X, Y; segm, fun, score, pars = nothing, nlv,
         @inbounds for j = 1:nsegm
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
-            zres[j] = gridscore_lv(rmrow(X, s), rmrow(Y, s), X[s, :], Y[s, :]; 
-                fun, score, nlv, pars)
+            zres[j] = gridscore_lv(rmrow(X, s), rmrow(Y, s), X[s, :], Y[s, :]; fun, score, nlv, pars)
         end
         zres = reduce(vcat, zres)
         ## Case where pars is empty
         if isnothing(pars) 
-            dat = DataFrame(rep = fill(i, nsegm * le_nlv), 
-                segm = repeat(1:nsegm, inner = le_nlv))
+            dat = DataFrame(rep = fill(i, nsegm * le_nlv), segm = repeat(1:nsegm, inner = le_nlv))
         else
             ncomb = length(pars[1]) # nb. combinations in pars
-            dat = DataFrame(rep = fill(i, nsegm * le_nlv * ncomb),
-                segm = repeat(1:nsegm, inner = le_nlv * ncomb))
+            dat = DataFrame(rep = fill(i, nsegm * le_nlv * ncomb), segm = repeat(1:nsegm, inner = le_nlv * ncomb))
         end
         zres = hcat(dat, zres)
         res_rep[i] = zres

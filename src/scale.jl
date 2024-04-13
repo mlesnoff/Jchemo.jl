@@ -1,5 +1,4 @@
 """
-    center()
     center(X)
     center(X, weights::Weight)
 Column-wise centering of X-data.
@@ -7,7 +6,7 @@ Column-wise centering of X-data.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -21,7 +20,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-mod = center() 
+mod = model(center) 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
@@ -58,7 +57,6 @@ function transf!(object::Center, X::Matrix)
 end
 
 """
-    scale()
     scale(X)
     scale(X, weights::Weight)
 Column-wise scaling of X-data.
@@ -66,7 +64,7 @@ Column-wise scaling of X-data.
 
 ## Examples
 ```julia 
-using JchemoData, JLD2
+using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -80,7 +78,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-mod = scale() 
+mod = model(scale) 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
@@ -125,7 +123,7 @@ Column-wise centering and scaling of X-data.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 
 db = joinpath(path_jdat, "data/cassav.jld2") 
@@ -140,7 +138,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-mod = cscale() 
+mod = model(cscale) 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)

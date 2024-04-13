@@ -1,8 +1,6 @@
 """
-    segmts(n::Int, m::Int; 
-        rep = 1, seed = nothing)
-    segmts(group::Vector, m::Int; 
-        rep = 1, seed = nothing)
+    segmts(n::Int, m::Int; rep = 1, seed = nothing)
+    segmts(group::Vector, m::Int; rep = 1, seed = nothing)
 Build segments of observations for "test-set" validation.
 * `n` : Total nb. of observations in the dataset. 
     The sampling  is implemented within 1:`n`.
@@ -38,8 +36,7 @@ segm[i]
 segm[i][1]
 
 n = 10 
-group = ["A", "B", "C", "D", "E", "A", 
-    "B", "C", "D", "E"]    # The blocks of the observations
+group = ["A", "B", "C", "D", "E", "A", "B", "C", "D", "E"]    # blocks of the observations
 tab(group)  
 m = 2 ; rep = 4 
 segm = segmts(group, m; rep)
@@ -56,12 +53,9 @@ function segmts(n::Int, m::Int;
     for i = 1:rep
         s[i] = list(Q, 1)
         if isnothing(seed)
-            s[i][1] = sample(1:n, m; 
-                replace = false, ordered = true)
+            s[i][1] = sample(1:n, m; replace = false, ordered = true)
         else
-            s[i][1] = sample(MersenneTwister(Int(seed[i])), 
-                1:n, m;
-                replace = false, ordered = true)
+            s[i][1] = sample(MersenneTwister(Int(seed[i])), 1:n, m; replace = false, ordered = true)
         end
     end
     s
@@ -78,11 +72,9 @@ function segmts(group::Vector, m::Int;
     @inbounds for i = 1:rep
         s[i] = list(Q, 1)
         if isnothing(seed)
-            s[i][1] = sample(1:nlev, m; replace = false, 
-                ordered = true)
+            s[i][1] = sample(1:nlev, m; replace = false, ordered = true)
         else
-            s[i][1] = sample(MersenneTwister(Int(seed[i])), 1:nlev, m; 
-                replace = false, ordered = true)
+            s[i][1] = sample(MersenneTwister(Int(seed[i])), 1:nlev, m; replace = false, ordered = true)
         end
     end
     zs = copy(s)

@@ -1,9 +1,7 @@
 """
-    selwold(indx, r; smooth = true, npoint = 5, alpha = .05, 
-        digits = 3, graph = true, step = 2, xlabel = "Index", 
-        ylabel = "Value", title = "Score")
-Wold's criterion to select dimensionality in LV models 
-    (e.g. PLSR).
+    selwold(indx, r; smooth = true, npoint = 5, alpha = .05, digits = 3, graph = true, 
+        step = 2, xlabel = "Index", ylabel = "Value", title = "Score")
+Wold's criterion to select dimensionality in LV models (e.g. PLSR).
 * `indx` : A variable representing the model parameter(s), e.g. nb. LVs if PLSR models.
 * `r` : A vector of error rates (n), e.g. RMSECV.
 Keyword arguments:
@@ -95,23 +93,19 @@ ytest = rmrow(y, s)
 n = nro(Xtrain)
 
 segm = segmts(n, 50; rep = 30)
-mod = plskern()
+mod = model(plskern)
 nlv = 0:20
-res = gridcv(mod, Xtrain, ytrain; segm, score = rmsep, 
-    nlv).res
+res = gridcv(mod, Xtrain, ytrain; segm, score = rmsep, nlv).res
 res[res.y1 .== minimum(res.y1), :]
-plotgrid(res.nlv, res.y1;
-    xlabel = "Nb. LVs", ylabel = "RMSEP").f
-zres = selwold(res.nlv, res.y1; smooth = true, 
-    graph = true) ;
+plotgrid(res.nlv, res.y1;xlabel = "Nb. LVs", ylabel = "RMSEP").f
+zres = selwold(res.nlv, res.y1; smooth = true, graph = true) ;
 @show zres.opt
 @show zres.sel
 zres.f
 ```
 """ 
-function selwold(indx, r; smooth = true, npoint = 5, alpha = .05, 
-        digits = 3, graph = true, step = 2, xlabel = "Index", 
-        ylabel = "Value", title = "Score")
+function selwold(indx, r; smooth = true, npoint = 5, alpha = .05, digits = 3, graph = true, 
+        step = 2, xlabel = "Index", ylabel = "Value", title = "Score")
     n = length(r)
     ## below, length = n - 1
     zdiff = -diff(r) 
@@ -130,8 +124,7 @@ function selwold(indx, r; smooth = true, npoint = 5, alpha = .05,
         sel = opt
     end
     sel = min(opt, sel)
-    res = DataFrame(:indx => indx, :r => r, 
-        :diff => [-zdiff; missing])
+    res = DataFrame(:indx => indx, :r => r, :diff => [-zdiff; missing])
     res.R = [round.(R, digits = digits); missing]
     res.Rs = [round.(Rs, digits = digits); missing]
     f = nothing
@@ -139,21 +132,17 @@ function selwold(indx, r; smooth = true, npoint = 5, alpha = .05,
         f = Figure(size = (900, 350))
         ax = list(2)
         xticks = collect(minimum(indx):step:maximum(indx))
-        ax[1] = Axis(f; xlabel, ylabel, 
-            title, xticks)
-        ax[2] = Axis(f; xlabel, ylabel, 
-            title = "Relative gain R", xticks)
+        ax[1] = Axis(f; xlabel, ylabel, title, xticks)
+        ax[2] = Axis(f; xlabel, ylabel, title = "Relative gain R", xticks)
         lines!(ax[1], indx, r)
         scatter!(ax[1], indx, r)
-        scatter!(ax[1], [opt], [minimum(r)]; 
-            color = :red)
+        scatter!(ax[1], [opt], [minimum(r)]; color = :red)
         scatter!(ax[1], [sel], r[indx .== sel]) #; color = :green2
         zindx = rmrow(indx, n)
         lines!(ax[2], zindx, R)
         scatter!(ax[2], zindx, R)
         lines!(ax[2], zindx, Rs) #; color = :red
-        hlines!(ax[2], alpha; 
-            linestyle = :dash)
+        hlines!(ax[2], alpha; linestyle = :dash)
         f[1, 1] = ax[1]
         f[1, 2] = ax[2]
     end

@@ -1,6 +1,5 @@
 """
-    sampcla(x, k::Union{Int, Vector{Int}}, 
-        y = nothing)
+    sampcla(x, k::Union{Int, Vector{Int}}, y = nothing)
 Build training vs. test sets by stratified sampling.  
 * `x` : Class membership (n) of the observations.
 * `k` : Nb. test observations to sample in each class. 
@@ -39,8 +38,7 @@ x[res.test]
 tab(x[res.test])
 ```
 """ 
-function sampcla(x, k::Union{Int, Vector{Int}}, 
-        y = nothing)
+function sampcla(x, k::Union{Int, Vector{Int}}, y = nothing)
     x = vec(x)
     n = length(x)
     tabx = tab(x)

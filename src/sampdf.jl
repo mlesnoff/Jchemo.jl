@@ -1,6 +1,5 @@
 """ 
-    sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, 
-        id = 1:nro(Y); msamp = :rand)
+    sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); msamp = :rand)
 Build training vs. test sets from each column of a dataframe. 
 * `Y` : DataFrame (n, p) whose each column can contain missing values.
 * `k` : Nb. of test observations selected for each `Y` column. 
@@ -51,8 +50,7 @@ ids[i].test[j]
 ids[i].nam[j]
 ```
 """
-function sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, 
-        id = 1:nro(Y); msamp = :rand)
+function sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); msamp = :rand)
     @assert in([:rand; :sys])(msamp) "Wrong value for argument 'msamp'."
     p = nco(Y)
     nam = names(Y)
