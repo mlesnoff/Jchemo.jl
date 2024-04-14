@@ -1,8 +1,7 @@
 """
     aov1(x, Y)
-    One-factor ANOVA test.
-* `x` : Univariate categorical (factor) 
-    data (n).
+One-factor ANOVA test.
+* `x` : Univariate categorical (factor) data (n).
 * `Y` : Y-data (n, q).
 
 ## Examples
@@ -37,7 +36,7 @@ function aov1(x, Y)
     Yc = fcenter(Y, colmean(Y))
     fm = mlr(Xdummy, Yc) ;
     pred = predict(fm, Xdummy).pred
-    SSF = sum((pred.^2), dims = 1)   # = colvar(pred) * n
+    SSF = sum((pred.^2); dims = 1)   # = colvar(pred) * n
     SSR = ssr(pred, Yc)
     df_fact = nlev - 1 
     df_res = n - nlev
@@ -46,6 +45,5 @@ function aov1(x, Y)
     F = MSF ./ MSR
     d = Distributions.FDist(df_fact, df_res)
     pval = Distributions.ccdf(d, F)
-    (SSF = SSF, SSR, df_fact, df_res, F, pval,
-        lev, ni)
+    (SSF = SSF, SSR, df_fact, df_res, F, pval, lev, ni)
 end

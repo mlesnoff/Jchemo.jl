@@ -1,8 +1,7 @@
 """
-    lwplsravg(; kwargs...)
     lwplsravg(X, Y; kwargs...)
-Averaging kNN-LWPLSR models with different numbers of 
-    latent variables (LVs).
+Averaging kNN-LWPLSR models with different numbers of latent variables 
+    (kNN-LWPLSR-AVG).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 Keyword arguments:
@@ -76,8 +75,7 @@ ytest = rmrow(y, s)
 
 nlvdis = 5 ; metric = :mah 
 h = 1 ; k = 200 ; nlv = 4:20
-mod = lwplsravg(; nlvdis, metric, 
-    h, k, nlv) ;
+mod = model(lwplsravg; nlvdis, metric, h, k, nlv) ;
 fit!(mod, Ttrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -89,9 +87,8 @@ res.listd
 res.listw
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed").f  
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
+    xlabel = "Prediction", ylabel = "Observed").f  
 ```
 """ 
 function lwplsravg(X, Y; kwargs...)
@@ -103,8 +100,7 @@ function lwplsravg(X, Y; kwargs...)
     if par.nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, Y; nlv = par.nlvdis, 
-            scal = par.scal)
+        fm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
     end
     xscales = ones(Q, p)
     if isnothing(fm) && par.scal
@@ -148,9 +144,7 @@ function predict(object::LwplsrAvg, X)
         listw[i] = w
     end
     ## End
-    pred = locw(object.X, object.Y, X; 
-        listnn = res.ind, listw = listw, fun = plsravg, 
-        nlv = object.par.nlv, scal = object.par.scal,
-        verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
+    pred = locw(object.X, object.Y, X; listnn = res.ind, listw, fun = plsravg, 
+        nlv = object.par.nlv, scal = object.par.scal, verbose = object.par.verbose).pred
+    (pred = pred, listnn = res.ind, listd = res.d, listw)
 end

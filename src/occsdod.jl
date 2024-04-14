@@ -1,5 +1,4 @@
 """
-    occsdod(; kwargs...)
     occsdod(object, X; kwargs...)
 One-class classification using a compromise between 
     PCA/PLS score (SD) and orthogonal (OD) distances.
@@ -59,6 +58,4 @@ function predict(object::Occsdod, X)
     pred = reshape(pred, m, 1)
     (pred = pred, d)
 end
-
-
 

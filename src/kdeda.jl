@@ -1,6 +1,5 @@
 """
-    kdeda(; kwargs...)
-    kde(X, y; kwargs...)
+    kdeda(X, y; kwargs...)
 Discriminant analysis using non-parametric kernel Gaussian 
     density estimation (KDE-DA).
 * `X` : X-data (n, p).
@@ -42,7 +41,7 @@ tab(ytest)
 
 prior = :unif
 #prior = :prop
-mod = kdeda(; prior)
+mod = model(kdeda; prior)
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -57,8 +56,8 @@ pnames(res)
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-mod = kdeda(; prior, a_kde = .5) ;
-#mod = kdeda(; prior, h_kde = .1) ;
+mod = model(kdeda; prior, a_kde = .5) 
+#mod = model(kdeda; prior, h_kde = .1) 
 fit!(mod, Xtrain, ytrain)
 mod.fm.fm[1].H
 ```

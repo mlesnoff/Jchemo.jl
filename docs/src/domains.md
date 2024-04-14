@@ -325,6 +325,11 @@
 - **plotgrid** Plot error/performance rates of a model
 - **plotconf** Plot conf matrix
 
+## MODELS AND PIPELINES
+
+- **model** Build a model
+- **pip** Build a pipeline of models
+
 ## UTILITIES
 
 - **aggstat** Compute column-wise statistics by class in a dataset

@@ -1,5 +1,4 @@
 """
-    mbplslda(; kwargs...)
     mbplslda(Xbl, y; kwargs...)
     mbplslda(Xbl, y, weights::Weight; kwargs...)
 Multiblock PLS-LDA.
@@ -55,13 +54,12 @@ scal = false
 #scal = true
 bscal = :none
 #bscal = :frob
-mod = mbplslda(; nlv, bscal, scal)
-#mod = mbplsqda(; nlv, bscal, alpha = .5, scal)
-#mod = mbplskdeda(; nlv, bscal, scal)
+mod = model(mbplslda; nlv, bscal, scal)
+#mod = model(mbplsqda; nlv, bscal, alpha = .5, scal)
+#mod = model(mbplskdeda; nlv, bscal, scal)
 fit!(mod, Xbltrain, ytrain) 
 pnames(mod) 
 
-@head mod.fm.fm.T 
 @head transf(mod, Xbltrain)
 @head transf(mod, Xbltest)
 

@@ -1,5 +1,4 @@
 """
-    krrda(; kwargs...)
     krrda(X, y; kwargs...)
     krrda(X, y, weights::Weight; kwargs...)
 Discrimination based on kernel ridge regression (KRR-DA).
@@ -48,7 +47,7 @@ tab(ytest)
 lb = 1e-5
 kern = :krbf ; gamma = .001 
 scal = true
-mod = krrda(; lb, kern, gamma, scal) 
+mod = model(krrda; lb, kern, gamma, scal) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)

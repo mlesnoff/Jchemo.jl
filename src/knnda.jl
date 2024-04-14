@@ -1,8 +1,6 @@
 """
-    knnda(; kwargs...) 
     knnda(X, y; kwargs...) 
-k-Nearest-Neighbours weighted discrimination 
-    (KNN-DA).
+k-Nearest-Neighbours weighted discrimination (KNN-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 Keyword arguments:
@@ -54,8 +52,7 @@ tab(ytest)
 
 nlvdis = 25 ; metric = :mah
 h = 2 ; k = 10
-mod = knnda(; nlvdis, 
-    metric, h, k) 
+mod = model(knnda; nlvdis, metric, h, k) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -137,6 +134,6 @@ function predict(object::Knnda, X)
         s = res.ind[i]
         pred[i, :] .= findmax_cla(object.y[s], mweight(listw[i]))
     end
-    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, listw)
 end
 

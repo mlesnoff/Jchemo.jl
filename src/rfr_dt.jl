@@ -1,5 +1,4 @@
 """ 
-    rfr_dt(; kwargs...)
     rfr_dt(X, y; kwargs...)
 Random forest regression with DecisionTree.jl.
 * `X` : X-data (n, p).
@@ -66,8 +65,7 @@ p = nco(X)
 n_trees = 200
 n_subfeatures = p / 3
 max_depth = 15
-mod = rfr_dt(; n_trees, 
-    n_subfeatures, max_depth) ;
+mod = model(rfr_dt; n_trees, n_subfeatures, max_depth) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -75,8 +73,7 @@ pnames(mod.fm)
 res = predict(mod, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 ```
 """ 

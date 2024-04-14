@@ -1,5 +1,4 @@
 """
-    plskdeda(; kwargs...)
     plskdeda(X, y; kwargs...)
     plskdeda(X, y, weights::Weight; kwargs...)
 KDE-DA on PLS latent variables (PLS-KDEDA).
@@ -46,8 +45,8 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-mod = plskdeda(; nlv) 
-#mod = plskdeda(; nlv, a_kde = .5)
+mod = model(plskdeda; nlv) 
+#mod = model(plskdeda; nlv, a_kde = .5)
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)

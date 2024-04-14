@@ -1,5 +1,4 @@
 """
-    pcasvd(; kwargs...)
     pcasvd(X; kwargs...)
     pcasvd(X, weights::Weight; kwargs...)
     pcasvd!(X::Matrix, weights::Weight; kwargs...)
@@ -40,10 +39,10 @@ s = samprand(n, ntest)
 @head Xtest = X[s.test, :]
 
 nlv = 3
-mod = pcasvd(; nlv)
-#mod = pcaeigen(; nlv)
-#mod = pcaeigenk(; nlv)
-#mod = pcanipals(; nlv)
+mod = model(pcasvd; nlv)
+#mod = model(pcaeigen; nlv)
+#mod = model(pcaeigenk; nlv)
+#mod = model(pcanipals; nlv)
 fit!(mod, Xtrain)
 pnames(mod)
 pnames(mod.fm)
@@ -95,8 +94,7 @@ function pcasvd!(X::Matrix, weights::Weight; kwargs...)
     sv = res.S   
     sv[sv .< 0] .= 0
     T = (1 ./ sqrtw) .* vcol(res.U, 1:nlv) * Diagonal(sv[1:nlv])
-    Pca(T, P, sv, xmeans, xscales, weights, 
-        nothing, kwargs, par) 
+    Pca(T, P, sv, xmeans, xscales, weights, nothing, kwargs, par) 
 end
 
 """ 
@@ -111,8 +109,7 @@ function transf(object::Union{Pca, Fda}, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    fcscale(X, object.xmeans, 
-        object.xscales) * vcol(object.P, 1:nlv)
+    fcscale(X, object.xmeans, object.xscales) * vcol(object.P, 1:nlv)
 end
 
 """
@@ -136,18 +133,15 @@ function Base.summary(object::Pca, X)
     ## = object.sv[1:nlv].^2
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(nlv = 1:nlv, var = tt, 
-        pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(nlv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
     nam = string.("lv", 1:nlv)
     contr_ind = DataFrame(fscale(TT, tt), nam)
-    cor_circle = DataFrame(corm(X, object.T, 
-        object.weights), nam)
+    cor_circle = DataFrame(corm(X, object.T, object.weights), nam)
     C = X' * D * fscale(object.T, sqrt.(tt))
     coord_var = DataFrame(C, nam)
     CC = C .* C
     cc = sum(CC, dims = 1)
     contr_var = DataFrame(fscale(CC, cc), nam)
-    (explvarx = explvarx, contr_ind, contr_var, 
-        coord_var, cor_circle)
+    (explvarx = explvarx, contr_ind, contr_var, coord_var, cor_circle)
 end
 

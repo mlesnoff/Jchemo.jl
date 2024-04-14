@@ -1,5 +1,4 @@
 """
-    splskern(; kwargs...)
     splskern(X, Y; kwargs...)
     splskern(X, Y, weights::Weight; kwargs...)
     splskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -87,8 +86,7 @@ ytest = rmrow(y, s)
 nlv = 15
 msparse = :mix ; nvar = 5
 #msparse = :hard ; nvar = 5
-mod = splskern(; nlv, msparse, 
-    nvar) ;
+mod = model(splskern; nlv, msparse, nvar) ;
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -104,15 +102,13 @@ coef(mod; nlv = 3)
 res = predict(mod, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
 res = summary(mod, Xtrain) ;
 pnames(res)
 z = res.explvarx
-plotgrid(z.nlv, z.cumpvar; 
-    step = 2, xlabel = "Nb. LVs", 
+plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", 
     ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
@@ -231,9 +227,8 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         sellv[a] = findall(abs.(w) .> 0)
      end
      sel = unique(reduce(vcat, sellv))
-     Splsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
-         yscales, weights, nothing, sellv, sel,
-         kwargs, par)
+     Splsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, 
+         sellv, sel, kwargs, par)
 end
 
 

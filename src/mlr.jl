@@ -1,10 +1,8 @@
 """
-    mlr(; kwargs...)
     mlr(X, Y; kwargs...)
     mlr(X, Y, weights::Weight; kwargs...)
     mlr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-Compute a mutiple linear regression model (MLR) by 
-    using the QR algorithm.
+Compute a mutiple linear regression model (MLR) by using the QR algorithm.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
@@ -33,10 +31,10 @@ ytrain = y[s.train]
 Xtest = X[s.test, :]
 ytest = y[s.test]
 
-mod = mlr() ;
-#mod = mlrchol() ;
-#mod = mlrpinv() ;
-#mod = mlrpinvn() ;
+mod = model(mlr)
+#mod = model(mlrchol)
+#mod = model(mlrpinv)
+#mod = model(mlrpinvn) 
 fit!(mod, Xtrain, ytrain) 
 pnames(mod)
 pnames(mod.fm)
@@ -46,11 +44,10 @@ fm.int
 coef(mod) 
 res = predict(mod, Xtest)
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
+    xlabel = "Prediction", ylabel = "Observed").f    
 
-mod = mlr(noint = true)
+mod = model(mlr; noint = true)
 fit!(mod, Xtrain, ytrain) 
 coef(mod) 
 ```
@@ -84,11 +81,9 @@ function mlr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 end
 
 """
-    mlrchol() 
     mlrchol(X, Y)
     mlrchol(X, Y, weights::Weight)
-    mlrchol!mlrchol!(X::Matrix, Y::Matrix, 
-        weights::Weight)
+    mlrchol!mlrchol!(X::Matrix, Y::Matrix, weights::Weight)
 Compute a mutiple linear regression model (MLR) 
 using the Normal equations and a Choleski factorization.
 * `X` : X-data, with nb. columns >= 2 (required by function cholesky).
@@ -109,12 +104,10 @@ function mlrchol(X, Y)
 end
 
 function mlrchol(X, Y, weights::Weight)
-    mlrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights)
+    mlrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights)
 end
 
-function mlrchol!(X::Matrix, Y::Matrix, 
-        weights::Weight)
+function mlrchol!(X::Matrix, Y::Matrix, weights::Weight)
     @assert nco(X) > 1 "The Method only works for X with nb. columns > 1."
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
@@ -203,12 +196,10 @@ function mlrpinvn(X, Y)
 end
 
 function mlrpinvn(X, Y, weights::Weight)
-    mlrpinvn!(copy(ensure_mat(X)), copy(ensure_mat(Y)), 
-        weights)
+    mlrpinvn!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights)
 end
 
-function mlrpinvn!(X::Matrix, Y::Matrix, 
-        weights::Weight)
+function mlrpinvn!(X::Matrix, Y::Matrix, weights::Weight)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)

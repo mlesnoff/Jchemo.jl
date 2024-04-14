@@ -53,7 +53,7 @@ X2cal = dat.X2cal
 X2val = dat.X2val
 
 ## Fitting the model
-mod = calpds(npoint = 2, fun = plskern, nlv = 2) 
+mod = model(calpds; npoint = 2, fun = plskern, nlv = 2) 
 fit!(mod, X1cal, X2cal)
 
 ## Transfer of new spectra X1val 

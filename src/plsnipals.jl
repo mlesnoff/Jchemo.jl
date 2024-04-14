@@ -1,10 +1,8 @@
 """
-    plsnipals(; kwargs...)
     plsnipals(X, Y; kwargs...)
     plsnipals(X, Y, weights::Weight; kwargs...)
     plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-Partial Least Squares Regression (PLSR) with the Nipals 
-    algorithm.
+Partial Least Squares Regression (PLSR) with the Nipals algorithm.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
@@ -100,7 +98,7 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         TT[a] = tt
     end
     R = W * inv(P' * W)
-    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
-        yscales, weights, nothing, kwargs, par)
+    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, 
+        nothing, kwargs, par)
 end
 

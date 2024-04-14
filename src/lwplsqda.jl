@@ -1,5 +1,4 @@
 """
-    lwplsqda(; kwargs...) 
     lwplsqda(X, y; kwargs...)
 kNN-LWPLS-QDA.
 * `X` : X-data (n, p).
@@ -67,7 +66,7 @@ tab(ytest)
 
 nlvdis = 25 ; metric = :mah
 h = 1 ; k = 200
-mod = lwplsqda(; nlvdis, metric, h, k, prior = :prop, alpha = .5) 
+mod = model(lwplsqda; nlvdis, metric, h, k, prior = :prop, alpha = .5) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -102,8 +101,7 @@ function lwplsqda(X, y; kwargs...)
     if isnothing(fm) && par.scal
         xscales .= colstd(X)
     end
-    Lwplsqda(X, y, fm, xscales, taby.keys, 
-        taby.vals, kwargs, par)
+    Lwplsqda(X, y, fm, xscales, taby.keys, taby.vals, kwargs, par)
 end
 
 """
@@ -142,10 +140,10 @@ function predict(object::Lwplsqda, X; nlv = nothing)
         listw[i] = w
     end
     ## End
-    pred = locwlv(object.X, object.y, X; listnn = res.ind, listw = listw, 
-        fun = plsqda, nlv = nlv, prior = object.par.prior, alpha = object.par.alpha, 
+    pred = locwlv(object.X, object.y, X; listnn = res.ind, listw, 
+        fun = plsqda, nlv, prior = object.par.prior, alpha = object.par.alpha, 
         scal = object.par.scal, verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, listw)
 end
 
 

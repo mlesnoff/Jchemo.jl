@@ -1,8 +1,6 @@
 """
-    vip(object::Union{Pcr, Plsr}; 
-        nlv = nothing)
-    vip(object::Union{Pcr, Plsr}, Y; 
-        nlv = nothing)
+    vip(object::Union{Pcr, Plsr}; nlv = nothing)
+    vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
 Variable importance on Projections (VIP).
 * `object` : The fitted model.
 * `Y` : The Y-data that was used to fit the model.
@@ -45,7 +43,7 @@ y = Y[:, 1]
 ycla = [1; 1; 1; 2; 2]
 
 nlv = 3
-mod = plskern(; nlv) ;
+mod = model(plskern; nlv)
 fit!(mod, X, y)
 res = vip(mod.fm)
 pnames(res)
@@ -55,7 +53,7 @@ fit!(mod, X, Y)
 vip(mod.fm).imp
 vip(mod.fm, Y).imp
 
-mod = plsrda(; nlv) ;
+mod = model(plsrda; nlv) 
 fit!(mod, X, ycla)
 pnames(mod.fm)
 fm = mod.fm.fm ;
@@ -63,7 +61,7 @@ vip(fm).imp
 Ydummy = dummy(ycla).Y
 vip(fm, Ydummy).imp
 
-mod = plslda(; nlv) ;
+mod = model(plslda; nlv) 
 fit!(mod, X, ycla)
 pnames(mod.fm.fm)
 fm = mod.fm.fm.fmpls ;
@@ -71,8 +69,7 @@ vip(fm).imp
 vip(fm, Ydummy).imp
 ```
 """ 
-function vip(object::Union{Pcr, Plsr}; 
-        nlv = nothing)
+function vip(object::Union{Pcr, Plsr}; nlv = nothing)
     if isa(object, Jchemo.Pcr)
         W = object.fmpca.P
     else
@@ -80,8 +77,7 @@ function vip(object::Union{Pcr, Plsr};
     end
     a = nco(object.T)
     p = nro(W)
-    isnothing(nlv) ? nlv = a : 
-        nlv = min(nlv, a)
+    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     sqrtw = sqrt.(object.weights.w)
     ## Type '::Plsr' contains algorithmns 
     ## where W is normed
@@ -103,8 +99,7 @@ function vip(object::Union{Pcr, Plsr};
     (imp = imp, W2, sst)
 end
 
-function vip(object::Union{Pcr, Plsr}, Y; 
-        nlv = nothing)
+function vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
     if isa(object, Jchemo.Pcr)
         W = object.fmpca.P
     else
@@ -112,11 +107,9 @@ function vip(object::Union{Pcr, Plsr}, Y;
     end
     a = nco(object.T)
     p = nro(W)
-    isnothing(nlv) ? nlv = a : 
-        nlv = min(nlv, a)
+    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     W2 = W[:, 1:nlv].^2
-    rdd = rd(Y, object.T[:, 1:nlv], 
-        object.weights)
+    rdd = rd(Y, object.T[:, 1:nlv], object.weights)
     A = rowsum(rdd .* W2)
     B = sum(rdd) * (1 / p)
     imp = sqrt.(A / B)

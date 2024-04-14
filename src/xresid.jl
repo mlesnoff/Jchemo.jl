@@ -1,7 +1,6 @@
 """
     xresid(object, X; nlv = nothing)
-    xresid!(object, X::Matrix; 
-        nlv = nothing)
+    xresid!(object, X::Matrix; nlv = nothing)
 Residual matrix from a bilinear model (e.g. PCA).
 * `object` : The fitted model.
 * `X` : New X-data to be approximated from the model.
@@ -19,12 +18,10 @@ where X_fit is the fitted X returned by function
 ```
 """ 
 function xresid(object, X; nlv = nothing)
-    xresid!(object, copy(ensure_mat(X)); 
-        nlv)
+    xresid!(object, copy(ensure_mat(X)); nlv)
 end
 
-function xresid!(object, X::Matrix; 
-        nlv = nothing)
+function xresid!(object, X::Matrix; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     X .-= xfit(object, X; nlv)

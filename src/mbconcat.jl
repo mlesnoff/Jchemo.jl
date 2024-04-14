@@ -1,7 +1,6 @@
 
 
 """
-    mbconcat()
     mbconcat(Xbl)
 Concatenate horizontaly multiblock X-data.
 * `Xbl` : List of blocks (vector of matrices) of X-data 
@@ -17,7 +16,7 @@ Xbl = mblock(X, listbl)
 Xblnew = mblock(Xnew, listbl) 
 @head Xbl[3]
 
-mod = mbconcat() 
+mod = model(mbconcat) 
 fit!(mod, Xbl)
 transf(mod, Xbl)
 transf(mod, Xblnew)

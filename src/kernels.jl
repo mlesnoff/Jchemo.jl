@@ -1,7 +1,6 @@
 """
     krbf(X, Y; kwargs...)
-Compute a Radial-Basis-Function (RBF) kernel 
-    Gram matrix. 
+Compute a Radial-Basis-Function (RBF) kernel Gram matrix. 
 * `X` : X-data (n, p).
 * `Y` : Y-data (m, p).
 Keyword arguments:
@@ -61,8 +60,7 @@ computation and machine learning. MIT Press, Cambridge, Mass.
 ```julia
 X = rand(5, 3)
 Y = rand(2, 3)
-kpol(X, Y; degree = 3,
-    gamma = .1, cost = 10)
+kpol(X, Y; degree = 3, gamma = .1, cost = 10)
 ```
 """ 
 function kpol(X, Y; kwargs...)

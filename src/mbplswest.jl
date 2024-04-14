@@ -1,5 +1,4 @@
 """
-    mbplswest(; kwargs...)
     mbplswest(Xbl, Y; kwargs...)
     mbplswest(Xbl, Y, weights::Weight; kwargs...)
     mbplswest!(Xbl::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -55,7 +54,7 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-mod = mbplswest(; nlv, bscal, scal)
+mod = model(mbplswest; nlv, bscal, scal)
 fit!(mod, Xbltrain, ytrain)
 pnames(mod) 
 pnames(mod.fm)
@@ -101,8 +100,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     q = nco(Y)
     nlv = par.nlv
     sqrtw = sqrt.(weights.w)
-    fmsc = blockscal(Xbl, weights; bscal = par.bscal, centr = true, 
-        scal = par.scal)
+    fmsc = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
     transf!(fmsc, Xbl)
     X = reduce(hcat, Xbl)
     ymeans = colmean(Y, weights)
@@ -194,9 +192,8 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     Tx .= (1 ./ sqrtw) .* Tx
     Rx = Wx * inv(Px' * Wx)
     lb = nothing
-    Mbplswest(Tx, Px, Rx, Wx, Wytild, Tbl, Tb, Pbl, TTx,    
-        fmsc, ymeans, yscales, weights, 
-        lb, niter, kwargs, par)
+    Mbplswest(Tx, Px, Rx, Wx, Wytild, Tbl, Tb, Pbl, TTx, fmsc, ymeans, yscales, 
+        weights, lb, niter, kwargs, par)
 end
 
 """
@@ -227,8 +224,7 @@ function Base.summary(object::Mbplswest, Xbl)
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
-        pvar = pvar, cumpvar = cumpvar)     
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)     
     ## Correlation between the original X-variables
     ## and the global scores
     z = cor(X, sqrtw .* object.T)  
@@ -239,16 +235,14 @@ function Base.summary(object::Mbplswest, Xbl)
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], sqrtw .* object.T[:, a])
     end
-    cortb2t = DataFrame(reduce(hcat, z), 
-        string.("lv", 1:nlv))
+    cortb2t = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
     ## Redundancies (Average correlations) Rd(X, t) 
     ## between each X-block and each global score
     z = list(Matrix{Q}, nbl)
     @inbounds for k = 1:nbl
         z[k] = rd(zXbl[k], sqrtw .* object.T)
     end
-    rdx = DataFrame(reduce(vcat, z), 
-        string.("lv", 1:nlv))         
+    rdx = DataFrame(reduce(vcat, z), string.("lv", 1:nlv))         
     ## Specific weights of each block on 
     ## each X-global score
     #sal2 = nothing
@@ -259,6 +253,5 @@ function Base.summary(object::Mbplswest, Xbl)
     #        string.("lv", 1:nlv))
     #end
     ## End
-    (explvarx = explvarx, corx2t, cortb2t, 
-        rdx)
+    (explvarx = explvarx, corx2t, cortb2t, rdx)
 end

@@ -1,10 +1,9 @@
 """
-    plskern(; kwargs...)
     plskern(X, Y; kwargs...)
     plskern(X, Y, weights::Weight; kwargs...)
     plskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-Partial least squares regression (PLSR) with the 
-    "improved kernel algorithm #1" (Dayal & McGegor, 1997).
+Partial least squares regression (PLSR) with the "improved kernel algorithm #1" 
+    (Dayal & McGegor, 1997).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
@@ -58,11 +57,11 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-mod = plskern(; nlv) ;
-#mod = plsnipals(; nlv) ;
-#mod = plswold(; nlv) ;
-#mod = plsrosa(; nlv) ;
-#mod = plssimp(; nlv) ;
+mod = model(plskern; nlv) ;
+#mod = model(plsnipals; nlv) ;
+#mod = model(plswold; nlv) ;
+#mod = model(plsrosa; nlv) ;
+#mod = model(plssimp; nlv) ;
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -77,20 +76,17 @@ coef(mod; nlv = 3)
 res = predict(mod, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
+    xlabel = "Prediction", ylabel = "Observed").f    
 
-res = predict(mod, Xtest; 
-    nlv = 1:2)
+res = predict(mod, Xtest; nlv = 1:2)
 @head res.pred[1]
 @head res.pred[2]
 
 res = summary(mod, Xtrain) ;
 pnames(res)
 z = res.explvarx
-plotgrid(z.nlv, z.cumpvar; 
-    step = 2, xlabel = "Nb. LVs", 
+plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", 
     ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
@@ -168,8 +164,8 @@ function plskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         C[:, a] .= c
         TT[a] = tt
     end
-    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, 
-        yscales, weights, nothing, kwargs, par)
+    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, 
+        nothing, kwargs, par)
 end
 
 """ 
@@ -186,16 +182,14 @@ function transf(object::Union{Plsr, Splsr},
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    T = fcscale(X, object.xmeans, 
-        object.xscales) * vcol(object.R, 1:nlv)
+    T = fcscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
     # Could be fcscale! but changes X
     # If too heavy ==> Makes summary!
     T
 end
 
 """
-    coef(object::Union{Plsr, Pcr, Splsr}; 
-        nlv = nothing)
+    coef(object::Union{Plsr, Pcr, Splsr}; nlv = nothing)
 Compute the b-coefficients of a LV model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
@@ -204,8 +198,7 @@ For a model fitted from X(n, p) and Y(n, q), the returned
 object `B` is a matrix (p, q). If `nlv` = 0, `B` is a matrix 
 of zeros. The returned object `int` is the intercept.
 """ 
-function coef(object::Union{Plsr, Pcr, Splsr}; 
-        nlv = nothing)
+function coef(object::Union{Plsr, Pcr, Splsr}; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     beta = vcol(object.C, 1:nlv)'
@@ -218,15 +211,13 @@ function coef(object::Union{Plsr, Pcr, Splsr};
 end
 
 """
-    predict(object::Union{Plsr, Pcr, Splsr}, 
-        X; nlv = nothing)
+    predict(object::Union{Plsr, Pcr, Splsr}, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{Plsr, Pcr, Splsr}, 
-        X; nlv = nothing)
+function predict(object::Union{Plsr, Pcr, Splsr}, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
@@ -241,15 +232,13 @@ function predict(object::Union{Plsr, Pcr, Splsr},
 end
 
 """
-    summary(object::Union{Plsr, Splsr}, 
-        X)
+    summary(object::Union{Plsr, Splsr}, X)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to 
     fit the model.
 """ 
-function Base.summary(object::Union{Plsr, Splsr}, 
-        X)
+function Base.summary(object::Union{Plsr, Splsr}, X)
     X = ensure_mat(X)
     n, nlv = size(object.T)
     X = fcscale(X, object.xmeans, object.xscales)
@@ -261,7 +250,6 @@ function Base.summary(object::Union{Plsr, Splsr},
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
-        pvar = pvar, cumpvar = cumpvar)     
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)     
     (explvarx = explvarx,)
 end

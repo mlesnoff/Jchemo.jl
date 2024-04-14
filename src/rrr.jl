@@ -1,5 +1,4 @@
 """
-    rrr(; kwargs...)
     rrr(X, Y; kwargs...)
     rrr(X, Y, weights::Weight; kwargs...)
     rr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -63,7 +62,7 @@ ytest = rmrow(y, s)
 
 nlv = 1
 tau = 1e-4
-mod = rrr(; nlv, tau) ;
+mod = model(rrr; nlv, tau) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -78,8 +77,7 @@ coef(mod; nlv = 3)
 res = predict(mod, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
 ```
 """
@@ -188,9 +186,8 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
      end
      Rx = Wx * inv(Px' * Wx)
      Tx .= (1 ./ sqrtw) .* Tx
-     Plsr(Tx, Px, Rx, Wx, Wytild, TTx, 
-         xmeans, xscales, ymeans, yscales, weights, niter,
-         kwargs, par)
+     Plsr(Tx, Px, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, 
+         niter, kwargs, par)
 end
 
 

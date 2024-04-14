@@ -1,5 +1,4 @@
 """
-    pcasph(; kwargs...)
     pcasph(X; kwargs...)
     pcasph(X, weights::Weight; kwargs...)
     pcasph!(X::Matrix, weights::Weight; kwargs...)
@@ -40,8 +39,8 @@ wl = parse.(Float64, wlst)
 n = nro(X)
 
 nlv = 6
-mod = pcasph(; nlv) ; 
-#mod = pcasvd(; nlv) ; 
+mod = model(pcasph; nlv)  
+#mod = model(pcasvd; nlv) 
 fit!(mod, X)
 pnames(mod)
 pnames(mod.fm)
@@ -50,8 +49,8 @@ pnames(mod.fm)
 transf(mod, X)
 
 i = 1
-plotxy(T[:, i], T[:, i + 1]; zeros = true,
-    xlabel = "PC1", ylabel = "PC2").f
+plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = "PC1", 
+    ylabel = "PC2").f
 ```
 """ 
 function pcasph(X; kwargs...)
@@ -61,8 +60,7 @@ function pcasph(X; kwargs...)
 end
 
 function pcasph(X, weights::Weight; kwargs...)
-    pcasph!(copy(ensure_mat(X)), weights; 
-        kwargs...)
+    pcasph!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
 function pcasph!(X::Matrix, weights::Weight; kwargs...)
@@ -95,6 +93,5 @@ function pcasph!(X::Matrix, weights::Weight; kwargs...)
     T .= T[:, s]
     P .= P[:, s]
     sv .= sv[s]
-    Pca(T, P, sv, xmeans, xscales, weights, 
-        nothing, kwargs, par) 
+    Pca(T, P, sv, xmeans, xscales, weights, nothing, kwargs, par) 
 end

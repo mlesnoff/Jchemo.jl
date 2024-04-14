@@ -1,9 +1,14 @@
 # New
 
-## *Version 0.3.8*
+## *Version 0.4.0*
+
+**Warning:** Major breaking changes with versions 0.3. The embedded syntax 
+has changed, with the use of the new function **model**:
+    - 'mod = plskern(; nlv = 15)' is now writen as 'mod = model(plskern; nlv = 15)'. 
 
 - Modifications
-    - Code cleaning. 
+    - Code cleaning. The examples in th the function help pages have 
+    been corrected from typing errors. 
 
 ## *Version 0.3.7*
 

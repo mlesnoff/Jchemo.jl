@@ -1,6 +1,5 @@
 """
-    gridcv_lb(X, Y; segm, fun, score, pars = nothing, lb, 
-        verbose = false)
+    gridcv_lb(X, Y; segm, fun, score, pars = nothing, lb, verbose = false)
 Working function for `gridcv`.
 
 Specific and faster than `gridcv_br` for models 
@@ -9,8 +8,7 @@ must not contain `nlv`.
 
 See function `gridcv` for examples.
 """
-function gridcv_lb(X, Y; segm, fun, score, pars = nothing, lb, 
-        verbose = false)
+function gridcv_lb(X, Y; segm, fun, score, pars = nothing, lb, verbose = false)
     q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
@@ -19,23 +17,20 @@ function gridcv_lb(X, Y; segm, fun, score, pars = nothing, lb,
     @inbounds for i in 1:nrep
         verbose ? print("/ rep=", i, " ") : nothing
         listsegm = segm[i]       # segments in the repetition
-        nsegm = length(listsegm) # segmts: 1; segmkf: K
+        nsegm = length(listsegm) # segmts: = 1; segmkf: = K
         zres = list(nsegm)       # results for the repetition
         @inbounds for j = 1:nsegm
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
-            zres[j] = gridscore_lb(rmrow(X, s), rmrow(Y, s), X[s, :], Y[s, :]; 
-                fun, score, lb, pars)
+            zres[j] = gridscore_lb(rmrow(X, s), rmrow(Y, s), X[s, :], Y[s, :]; fun, score, lb, pars)
         end
         zres = reduce(vcat, zres)
         ## Case where pars is empty
         if isnothing(pars) 
-            dat = DataFrame(rep = fill(i, nsegm * le_lb),
-                segm = repeat(1:nsegm, inner = le_lb))
+            dat = DataFrame(rep = fill(i, nsegm * le_lb), segm = repeat(1:nsegm, inner = le_lb))
         else
             ncomb = length(pars[1]) # nb. combinations in pars
-            dat = DataFrame(rep = fill(i, nsegm * le_lb * ncomb),
-                segm = repeat(1:nsegm, inner = le_lb * ncomb))
+            dat = DataFrame(rep = fill(i, nsegm * le_lb * ncomb), segm = repeat(1:nsegm, inner = le_lb * ncomb))
         end
         zres = hcat(dat, zres)
         res_rep[i] = zres

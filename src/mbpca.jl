@@ -1,5 +1,4 @@
 """
-    mbpca(; kwargs...)
     mbpca(Xbl; kwargs...)
     mbpca(Xbl, weights::Weight; kwargs...)
     mbpca!(Xbl::Matrix, weights::Weight; kwargs...)
@@ -79,7 +78,7 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-mod = mbpca(; nlv, bscal, scal)
+mod = model(mbpca; nlv, bscal, scal)
 fit!(mod, Xbl)
 pnames(mod) 
 pnames(mod.fm)
@@ -110,8 +109,7 @@ function mbpca(Xbl; kwargs...)
     mbpca(Xbl, weights; kwargs...)
 end
 
-function mbpca(Xbl, weights::Weight; 
-        kwargs...)
+function mbpca(Xbl, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
@@ -121,8 +119,7 @@ function mbpca(Xbl, weights::Weight;
     mbpca!(zXbl, weights; kwargs...)
 end
 
-function mbpca!(Xbl::Vector, weights::Weight; 
-        kwargs...)
+function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs) 
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
@@ -187,8 +184,7 @@ function mbpca!(Xbl::Vector, weights::Weight;
         end
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
-    Mbpca(T, U, W, Tbl, Tb, Wbl, lb, mu,
-        fmsc, weights, niter, kwargs, par)
+    Mbpca(T, U, W, Tbl, Tb, Wbl, lb, mu, fmsc, weights, niter, kwargs, par)
 end
 
 """ 
@@ -264,8 +260,7 @@ function Base.summary(object::Mbpca, Xbl)
     tt = colsum(object.lb)    
     pvar = tt / sum(sstot)
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(lv = 1:nlv, var = tt, 
-        pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
     ## Contribution of the blocks to global 
     ## scores = lb proportions (contrib)
     z = fscale(object.lb, colsum(object.lb))
@@ -285,8 +280,7 @@ function Base.summary(object::Mbpca, Xbl)
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], object.U[:, a])
     end
-    cortb2t = DataFrame(reduce(hcat, z), 
-        string.("lv", 1:nlv))
+    cortb2t = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
     ## RV 
     X = vcat(zXbl, [sqrtw .* object.T])
     nam = [string.("block", 1:nbl) ; "T"]
@@ -295,8 +289,7 @@ function Base.summary(object::Mbpca, Xbl)
     ## Lg
     res = lg(X)
     zlg = DataFrame(res, nam)
-    (explvarx = explvarx, contr_block, explX, 
-        corx2t, cortb2t, rv = zrv, lg = zlg)
+    (explvarx = explvarx, contr_block, explX, corx2t, cortb2t, rv = zrv, lg = zlg)
 end
 
 

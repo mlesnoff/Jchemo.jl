@@ -1,8 +1,6 @@
 """
-    dmnormlog(X = nothing; mu = nothing, S = nothing,
-        simpl::Bool = false)
-    dmnormlog!(X = nothing; mu = nothing, S = nothing,
-        simpl::Bool = false)
+    dmnormlog(X = nothing; mu = nothing, S = nothing, simpl::Bool = false)
+    dmnormlog!(X = nothing; mu = nothing, S = nothing, simpl::Bool = false)
 Logarithm of the normal probability density estimation.
 * `X` : X-data (n, p) used to estimate the mean and 
     the covariance matrix. If `nothing`, `mu` and `S` 
@@ -35,15 +33,18 @@ tab(y)
 s = y .== "setosa"
 zX = X[s, :]
 
-fm = dmnormlog(zX) ;
+mod = model(dmnormlog)
+fit!(mod, zX)
+fm = mod.fm
 pnames(fm)
 fm.Uinv 
 fm.logdetS
-pred = Jchemo.predict(fm, zX).pred
+pred = predict(mod, zX).pred
 @head pred 
 
-fm0 = dmnorm(zX) ;
-pred0 = Jchemo.predict(fm0, zX).pred
+mod0 = model(dmnorm)
+fit!(mod0, zX)
+pred0 = predict(mod0, zX).pred
 @head log.(pred0)
 ```
 """ 

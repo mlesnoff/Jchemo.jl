@@ -1,8 +1,7 @@
 """
-    splsqda(; kwargs...)
     splsqda(X, y; kwargs...)
     splsqda(X, y, weights::Weight; kwargs...)
-Sparse PLS-QDA.
+Sparse PLS-QDA (with continuum).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
@@ -26,6 +25,8 @@ Keyword arguments:
     `:prop` (proportional), or a vector (of length equal to 
     the number of classes) giving the prior weight for each class 
     (the vector must be sorted in the same order as `mlev(x)`).
+* `alpha` : Scalar (∈ [0, 1]) defining the continuum
+    between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 

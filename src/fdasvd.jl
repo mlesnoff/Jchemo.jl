@@ -1,5 +1,4 @@
 """
-    fdasvd(; kwargs...)
     fdasvd(X, y, weights; kwargs...)
     fdasvd!(X::Matrix, y, weights; kwargs...)
 Factorial discriminant analysis (FDA).
@@ -77,8 +76,8 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     P = Ut * Pz[:, 1:nlv]
     T = X * P
     Tcenters = ct * P
-    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, 
-        xscales, weights, lev, ni, kwargs, par)
+    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, 
+        lev, ni, kwargs, par)
 end
 
 

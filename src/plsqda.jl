@@ -1,8 +1,7 @@
 """
-    plsqda(; kwargs...)
     plsqda(X, y; kwargs...)
     plsqda(X, y, weights::Weight; kwargs...)
-PLS-QDA (with continuum).
+QDA on PLS latent variables (PLS-QDA) with continuum.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 

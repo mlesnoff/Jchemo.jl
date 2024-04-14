@@ -1,5 +1,4 @@
 """ 
-    rfda_dt(; kwargs...)
     rfda_dt(X, y; kwargs...)
 Random forest discrimination with DecisionTree.jl.
 * `X` : X-data (n, p).
@@ -69,8 +68,7 @@ tab(ytest)
 n_trees = 200
 n_subfeatures = p / 3 
 max_depth = 10
-mod = rfda_dt(; n_trees, 
-    n_subfeatures, max_depth) ;
+mod = model(rfda_dt; n_trees, n_subfeatures, max_depth) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -85,8 +83,7 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
-function rfda_dt(X, y::Union{Array{Int}, Array{String}};
-        kwargs...)
+function rfda_dt(X, y::Union{Array{Int}, Array{String}}; kwargs...)
     ## For DA in DecisionTree.jl, 
     ## y must be Int or String
     par = recovkwargs(Par, kwargs)
@@ -115,6 +112,5 @@ function rfda_dt(X, y::Union{Array{Int}, Array{String}};
         #rng = 3
         ) 
     featur = collect(1:p)
-    TreedaDt(fm, xscales, featur, taby.keys, 
-        taby.vals, kwargs, par)
+    TreedaDt(fm, xscales, featur, taby.keys, taby.vals, kwargs, par)
 end

@@ -1,5 +1,4 @@
 """
-    mbplskdeda(; kwargs...)
     mbplskdeda(Xbl, y; kwargs...)
     mbplskdeda(Xbl, y, weights::Weight; kwargs...)
 Multiblock PLS-KDEDA.
