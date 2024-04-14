@@ -1,5 +1,4 @@
 """
-    pcanipals(; kwargs...)
     pcanipals(X; kwargs...)
     pcanipals(X, weights::Weight; kwargs...)
     pcanipals!(X::Matrix, weights::Weight; kwargs...)
@@ -18,7 +17,6 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-
 ## References
 Wright, K., 2018. Package nipals: Principal Components Analysis 
 using NIPALS with Gram-Schmidt Orthogonalization. 
@@ -36,8 +34,7 @@ scal = false
 #scal = true
 gs = false
 #gs = true
-mod = pcanipalsmiss(; nlv, 
-    tol, gs, maxit = 500, scal) ;
+mod = model(pcanipalsmiss; nlv, tol, gs, maxit = 500, scal)
 fit!(mod, X)
 pnames(mod) 
 pnames(mod.fm)
@@ -52,8 +49,7 @@ fm.T' * fm.T
 fm.P' * fm.P
 
 ## Impute missing data in X
-mod = pcanipalsmiss(; nlv = 2, 
-    gs = true) ;
+mod = model(pcanipalsmiss; nlv = 2, gs = true) ;
 fit!(mod, X)
 Xfit = xfit(mod.fm)
 s = ismissing.(X)
@@ -71,8 +67,7 @@ function pcanipalsmiss(X; kwargs...)
 end
 
 function pcanipalsmiss(X, weights::Weight; kwargs...)
-    pcanipalsmiss!(copy(ensure_mat(X)), weights; 
-        kwargs...)
+    pcanipalsmiss!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
 function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
@@ -118,7 +113,6 @@ function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
             VVt .+= res.v * res.v'
         end
     end
-    Pca(T, P, sv, xmeans, xscales, weights, 
-        niter, kwargs, par) 
+    Pca(T, P, sv, xmeans, xscales, weights, niter, kwargs, par) 
 end
 

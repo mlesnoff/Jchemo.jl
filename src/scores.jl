@@ -5,8 +5,7 @@
 
 """
     bias(pred, Y)
-Compute the prediction bias, i.e. the opposite 
-    of the mean prediction error.
+Compute the prediction bias, i.e. the opposite of the mean prediction error.
 * `pred` : Predictions.
 * `Y` : Observed data.
 
@@ -19,12 +18,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, Ytrain)
 pred = predict(mod, Xtest).pred
 bias(pred, Ytest)
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 bias(pred, ytest)
@@ -37,8 +36,7 @@ end
 
 """
     cor2(pred, Y)
-Compute the squared linear correlation between 
-    data and predictions.
+Compute the squared linear correlation between data and predictions.
 * `pred` : Predictions.
 * `Y` : Observed data.
 
@@ -51,12 +49,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, Ytrain)
 pred = predict(mod, Xtest).pred
 cor2(pred, Ytest)
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 cor2(pred, ytest)
@@ -72,8 +70,7 @@ end
 
 """
     msep(pred, Y)
-Compute the mean of the squared prediction 
-    errors (MSEP).
+Compute the mean of the squared prediction errors (MSEP).
 * `pred` : Predictions.
 * `Y` : Observed data.
 
@@ -86,12 +83,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, Ytrain)
 pred = predict(mod, Xtest).pred
 msep(pred, Ytest)
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 msep(pred, ytest)
@@ -125,12 +122,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, Ytrain)
 pred = predict(mod, Xtest).pred
 r2(pred, Ytest)
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 r2(pred, ytest)
@@ -158,12 +155,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, Ytrain)
 pred = predict(mod, Xtest).pred
 residreg(pred, Ytest)
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 residreg(pred, ytest)
@@ -187,12 +184,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, Ytrain)
 pred = predict(mod, Xtest).pred
 rmsep(pred, Ytest)
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 rmsep(pred, ytest)
@@ -202,8 +199,7 @@ rmsep(pred, Y) = sqrt.(msep(pred, Y))
 
 """
     rmsepstand(pred, Y)
-Compute the standardized square root of the 
-    mean of the squared prediction errors 
+Compute the standardized square root of the mean of the squared prediction errors 
     (RMSEP_stand).
 * `pred` : Predictions.
 * `Y` : Observed data.
@@ -220,12 +216,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, Ytrain)
 pred = predict(mod, Xtest).pred
 rmsepstand(pred, Ytest)
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 rmsepstand(pred, ytest)
@@ -238,8 +234,7 @@ end
 
 """
     rpd(pred, Y)
-Compute the ratio "deviation to model performance" 
-    (RPD).
+Compute the ratio "deviation to model performance" (RPD).
 * `pred` : Predictions.
 * `Y` : Observed data.
 
@@ -261,12 +256,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, Ytrain)
 pred = predict(mod, Xtest).pred
 rpd(pred, Ytest)
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 rpd(pred, ytest)
@@ -292,12 +287,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, Ytrain)
 pred = predict(mod, Xtest).pred
 rpdr(pred, Ytest)
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 rpdr(pred, ytest)
@@ -314,8 +309,8 @@ end
 
 """
     sep(pred, Y)
-Compute the corrected SEP ("SEP_c"), i.e. the standard 
-    deviation of the prediction errors.
+Compute the corrected SEP ("SEP_c"), i.e. the standard deviation of 
+    the prediction errors.
 * `pred` : Predictions.
 * `Y` : Observed data.
 
@@ -337,12 +332,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, Ytrain)
 pred = predict(mod, Xtest).pred
 sep(pred, Ytest)
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 sep(pred, ytest)
@@ -365,12 +360,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, Ytrain)
 pred = predict(mod, Xtest).pred
 ssr(pred, Ytest)
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 ssr(pred, ytest)
@@ -396,12 +391,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, Ytrain)
 pred = predict(mod, Xtest).pred
 mse(pred, Ytest)
 
-mod = plskern(nlv = 2)
+mod = model(plskern; nlv = 2)
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 mse(pred, ytest)
@@ -434,8 +429,7 @@ end
 
 """
     residcla(pred, y) 
-Compute the discrimination residual vector 
-    (0 = no error, 1 = error).
+Compute the discrimination residual vector (0 = no error, 1 = error).
 * `pred` : Predictions.
 * `y` : Observed data (class membership).
 
@@ -446,7 +440,7 @@ ytrain = rand(["a" ; "b"], 10)
 Xtest = rand(4, 5) 
 ytest = rand(["a" ; "b"], 4)
 
-mod = plsrda(nlv = 2)
+mod = model(plsrda; nlv = 2)
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 residcla(pred, ytest)
@@ -456,7 +450,7 @@ residcla(pred, Y) = pred .!= ensure_mat(Y)
 
 """
     errp(pred, y)
-Compute the classification error rate (ERR).
+Compute the classification error rate (ERRP).
 * `pred` : Predictions.
 * `y` : Observed data (class membership).
 
@@ -467,7 +461,7 @@ ytrain = rand(["a" ; "b"], 10)
 Xtest = rand(4, 5) 
 ytest = rand(["a" ; "b"], 4)
 
-mod = plsrda(nlv = 2)
+mod = model(plsrda; nlv = 2)
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 errp(pred, ytest)
@@ -485,8 +479,8 @@ Compute the mean intra-class classification error rate.
 * `pred` : Predictions.
 * `y` : Observed data (class membership).
 
-ERR (see function `errp`) is computed for each class.
-Function `merrp` returns the average of these intra-class ERRs.   
+ERRP (see function `errp`) is computed for each class.
+Function `merrp` returns the average of these intra-class ERRPs.   
 
 ## Examples
 ```julia
@@ -495,7 +489,7 @@ ytrain = rand(["a" ; "b"], 10)
 Xtest = rand(4, 5) 
 ytest = rand(["a" ; "b"], 4)
 
-mod = plsrda(nlv = 2)
+mod = model(plsrda; nlv = 2)
 fit!(mod, Xtrain, ytrain)
 pred = predict(mod, Xtest).pred
 merrp(pred, ytest)

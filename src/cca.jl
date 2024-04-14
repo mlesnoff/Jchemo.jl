@@ -1,5 +1,4 @@
 """
-    cca(; kwargs...)
     cca(X, Y; kwargs...)
     cca(X, Y, weights::Weight; kwargs...)
     cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -74,8 +73,7 @@ q = nco(Y)
 
 nlv = 3
 bscal = :frob ; tau = 1e-8
-mod = cca(; nlv, bscal, 
-    tau)
+mod = model(cca; nlv, bscal, tau)
 fit!(mod, X, Y)
 pnames(mod)
 pnames(mod.fm)
@@ -167,8 +165,8 @@ function cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     d = d[1:nlv]
     Tx = (1 ./ sqrtw) .* X * Wx 
     Ty = (1 ./ sqrtw) .* Y * Wy
-    Cca(Tx, Ty, Wx, Wy, d, bscales, xmeans, xscales, 
-        ymeans, yscales, weights, kwargs, par)
+    Cca(Tx, Ty, Wx, Wy, d, bscales, xmeans, xscales, ymeans, yscales, 
+        weights, kwargs, par)
 end
 
 """ 
@@ -230,8 +228,7 @@ function Base.summary(object::Cca, X, Y)
     explvary = nothing
     ## Correlation between X- and 
     ## Y-block scores
-    z = diag(corm(object.Tx, object.Ty, 
-        object.weights))
+    z = diag(corm(object.Tx, object.Ty, object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)
     ## Redundancies (Average correlations) 
     ## Rd(X, tx) and Rd(Y, ty)
@@ -246,7 +243,6 @@ function Base.summary(object::Cca, X, Y)
     z = corm(Y, object.Ty, object.weights)
     cory2t = DataFrame(z, string.("lv", 1:nlv))
     ## End
-    (explvarx = explvarx, explvary, cort2t, 
-        rdx, rdy, corx2t, cory2t)
+    (explvarx = explvarx, explvary, cort2t, rdx, rdy, corx2t, cory2t)
 end
 

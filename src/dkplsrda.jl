@@ -1,9 +1,8 @@
 """
-    dkplsrda(; kwargs...)
     dkplsrda(X, y; kwargs...)
     dkplsrda(X, y, weights::Weight; kwargs...)
-Discrimination based on direct kernel partial least 
-    squares regression (KPLSR-DA).
+Discrimination based on direct kernel partial least squares 
+    regression (KPLSR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
@@ -49,7 +48,7 @@ tab(ytest)
 nlv = 15
 kern = :krbf ; gamma = .001 
 scal = true
-mod = dkplsrda(; nlv, kern, gamma, scal) 
+mod = model(dkplsrda; nlv, kern, gamma, scal) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)

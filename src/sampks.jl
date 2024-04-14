@@ -44,7 +44,7 @@ pnames(res)
 res.train 
 res.test
 
-mod = pcasvd(nlv = 15) ;
+mod = model(pcasvd; nlv = 15) 
 fit!(mod, X) 
 @head T = mod.fm.T
 res = sampks(T, k; metric = :mah)
@@ -58,9 +58,8 @@ X = Float64.(X)
 X .= X + .1 * randn(nro(X), nco(X))
 s = sampks(X, k).test
 f, ax = plotxy(X[:, 1], X[:, 2])
-scatter!(ax, X[s, 1], X[s, 2]; 
-    color = "red") 
-
+scatter!(ax, X[s, 1], X[s, 2]; color = "red") 
+f
 ```
 """ 
 function sampks(X, k::Int; metric = :eucl)

@@ -1,10 +1,8 @@
 """
-    krr(; kwargs...)
     krr(X, Y; kwargs...)
     krr(X, Y, weights::Weight; kwargs...)
     krr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-Kernel ridge regression (KRR) implemented by 
-    SVD factorization.
+Kernel ridge regression (KRR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
@@ -71,8 +69,7 @@ ytest = rmrow(y, s)
 
 lb = 1e-3
 kern = :krbf ; gamma = 1e-1
-mod = krr(; lb, kern, 
-    gamma) ;
+mod = model(krr; lb, kern, gamma) ;
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -82,20 +79,17 @@ coef(mod)
 res = predict(mod, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
+    xlabel = "Prediction", ylabel = "Observed").f    
 
 coef(mod; lb = 1e-1)
-res = predict(mod, Xtest; 
-    lb = [.1 ; .01])
+res = predict(mod, Xtest; lb = [.1 ; .01])
 @head res.pred[1]
 @head res.pred[2]
 
 lb = 1e-3
 kern = :kpol ; degree = 1
-mod = krr(; lb, kern, 
-    degree) ;
+mod = model(krr; lb, kern, degree) 
 fit!(mod, Xtrain, ytrain)
 res = predict(mod, Xtest)
 rmsep(res.pred, ytest)
@@ -109,7 +103,7 @@ zy = sin.(abs.(x)) ./ abs.(x)
 y = zy + .2 * randn(n) 
 lb = 1e-1
 kern = :krbf ; gamma = 1 / 3
-mod = krr(; lb, kern, gamma) ;
+mod = model(krr; lb, kern, gamma) 
 fit!(mod, x, y)
 pred = predict(mod, x).pred 
 f, ax = scatter(x, y) 
@@ -155,8 +149,7 @@ function krr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     sv = sqrt.(res.S)
     # UtDY = U' * D^(1/2) * Y
     UtDY = U' * sqrtD * Y
-    Krr(X, K, U, UtDY, sv, D, sqrtD, DKt, 
-        vtot, xscales, ymeans, weights, 
+    Krr(X, K, U, UtDY, sv, D, sqrtD, DKt, vtot, xscales, ymeans, weights, 
         kwargs, par)
 end
 
@@ -191,8 +184,7 @@ function predict(object::Krr, X; lb = nothing)
     X = ensure_mat(X)
     isnothing(lb) ? lb = object.par.lb : nothing
     fkern = eval(Meta.parse(String(object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; 
-        object.kwargs...)
+    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     DKt = object.D * K'
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')

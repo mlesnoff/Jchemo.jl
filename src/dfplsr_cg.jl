@@ -1,7 +1,6 @@
 """
     dfplsr_cg(X, y; kwargs...)
-Compute the model complexity (df) of PLSR models with 
-    the CGLS algorithm.
+Compute the model complexity (df) of PLSR models with the CGLS algorithm.
 * `X` : X-data (n, p).
 * `y` : Univariate Y-data.
 Keyword arguments:
@@ -54,11 +53,9 @@ df_kramer = [1.000000, 3.712373, 6.456417, 11.633565,
     12.156760, 11.715101, 12.349716,
     12.192682, 13.000000, 13.000000, 
     13.000000, 13.000000, 13.000000]
-f, ax = plotgrid(0:nlv, df_kramer; step = 2,
-    xlabel = "Nb. LVs", ylabel = "df")
+f, ax = plotgrid(0:nlv, df_kramer; step = 2, xlabel = "Nb. LVs", ylabel = "df")
 scatter!(ax, 0:nlv, res.df; color = "red")
-ablines!(ax, 1, 1; color = :grey, 
-    linestyle = :dot)
+ablines!(ax, 1, 1; color = :grey, linestyle = :dot)
 f
 ```
 """ 

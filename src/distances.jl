@@ -1,7 +1,6 @@
 """
     euclsq(X, Y)
-Squared Euclidean distances between 
-    the rows of `X` and `Y`.
+Squared Euclidean distances between the rows of `X` and `Y`.
 * `X` : Data (n, p).
 * `Y` : Data (m, p).
 
@@ -25,8 +24,7 @@ euclsq(1, 4)
 function euclsq(X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    Distances.pairwise(SqEuclidean(), X', 
-        Y', dims = 2)
+    Distances.pairwise(SqEuclidean(), X', Y', dims = 2)
 end
 
 """
@@ -67,17 +65,14 @@ function mahsq(X, Y)
     Y = ensure_mat(Y)
     S = Statistics.cov(X, corrected = false)
     LinearAlgebra.inv!(cholesky!(Hermitian(S)))
-    Distances.pairwise(SqMahalanobis(S), X', 
-        Y', dims = 2)
+    Distances.pairwise(SqMahalanobis(S), X', Y', dims = 2)
 end
 
 function mahsq(X, Y, Sinv)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     Sinv = ensure_mat(Sinv)
-    Distances.pairwise(
-        SqMahalanobis(Sinv; skipchecks = true), 
-        X', Y', dims = 2)
+    Distances.pairwise(SqMahalanobis(Sinv; skipchecks = true), X', Y', dims = 2)
 end
 
 """
@@ -123,8 +118,7 @@ function mahsqchol(X, Y)
     if p == 1
         Uinv = inv(sqrt(S)) 
     else
-        Uinv = LinearAlgebra.inv!(
-            cholesky!(Hermitian(S)).U)
+        Uinv = LinearAlgebra.inv!(cholesky!(Hermitian(S)).U)
     end
     zX = X * Uinv
     zY = Y * Uinv

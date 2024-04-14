@@ -1,5 +1,4 @@
 """
-    occod(; kwargs...)
     occod(fm, X; kwargs...)
 One-class classification using PCA/PLS orthognal distance (OD).
 * `fm` : The preliminary model that (e.g. PCA) was fitted 
@@ -43,8 +42,7 @@ db = joinpath(path_jdat, "data/challenge2018.jld2")
 pnames(dat)
 X = dat.X    
 Y = dat.Y
-mod = savgol(npoint = 21, 
-    deriv = 2, degree = 3)
+mod = model(savgol; npoint = 21, deriv = 2, degree = 3)
 fit!(mod, X) 
 Xp = transf(mod, X) 
 s = Bool.(Y.test)
@@ -68,27 +66,26 @@ ytrain = repeat(["in"], ntrain)
 ytest = repeat([cod], ntest)
 
 ## Group description
-mod = pcasvd(nlv = 10) 
+mod0 = model(pcasvd; nlv = 10) 
 fit!(mod, zXtrain) 
-Ttrain = mod.fm.T
-Ttest = transf(mod, zXtest)
+Ttrain = mod0.fm.T
+Ttest = transf(mod0, zXtest)
 T = vcat(Ttrain, Ttest)
 group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
 i = 1
-plotxy(T[:, i], T[:, i + 1], group; 
-    leg_title = "Class", 
+plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", 
     xlabel = string("PC", i), ylabel = string("PC", i + 1)).f
 
 #### Occ
 ## Preliminary PCA fitted model
-mod = pcasvd(nlv = 10) ;
-fit!(mod, zXtrain)
-fm0 = mod.fm ;  
+mod0 = model(pcasvd; nlv = 10) 
+fit!(mod0, zXtrain)
+fm0 = mod0.fm ;  
 ## Outlierness
-mod = occod()
-#mod = occod(mcut = :mad, cri = 4)
-#mod = occod(mcut = :q, risk = .01) ;
-#mod = occsdod()
+mod = model(occod)
+#mod = model(occod; mcut = :mad, cri = 4)
+#mod = model(occod; mcut = :q, risk = .01) ;
+#mod = model(occsdod)
 fit!(mod, fm0, zXtrain) 
 pnames(mod) 
 pnames(mod.fm) 
@@ -109,10 +106,8 @@ conf(res.pred, ytest).cnt
 d1 = mod.fm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
-f, ax = plotxy(1:length(d), d, group; 
-    size = (500, 300), leg_title = "Class", 
-    xlabel = "Obs. index", 
-    ylabel = "Standardized distance")
+f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", 
+    xlabel = "Obs. index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 ```

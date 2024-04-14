@@ -1,10 +1,8 @@
 """
-    plswold(; kwargs...)
     plswold(X, Y; kwargs...)
     plswold(X, Y, weights::Weight; kwargs...)
     plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-Partial Least Squares Regression (PLSR) with the 
-    Wold algorithm 
+Partial Least Squares Regression (PLSR) with the Wold algorithm 
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
@@ -113,6 +111,6 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     end
     Tx .= (1 ./ sqrtw) .* Tx
     Rx = Wx * inv(Px' * Wx)
-    Plsr(Tx, Px, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, 
-        yscales, weights, niter, kwargs, par)
+    Plsr(Tx, Px, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, 
+        niter, kwargs, par)
 end

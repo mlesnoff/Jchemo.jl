@@ -48,8 +48,7 @@ wl = parse.(Float64, wl_str)
 ntot, p = size(X)
 typ = Y.typ
 namy = names(Y)[1:3]
-plotsp(X, wl; xlabel = "Wavelength (nm)", 
-    ylabel = "Absorbance").f
+plotsp(X, wl; xlabel = "Wavelength (nm)", ylabel = "Absorbance").f
 s = typ .== "train"
 Xtrain = X[s, :]
 Ytrain = Y[s, namy]
@@ -60,26 +59,23 @@ ntest = nro(Xtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
 
-## Work on the j-th 
-## y-variable 
+## Work on the j-th y-variable 
 j = 2
 nam = namy[j]
 ytrain = Ytrain[:, nam]
 ytest = Ytest[:, nam]
 
-mod = plskern(nlv = 9)
+mod = model(plskern; nlv = 9)
 res = viperm(mod, Xtrain, ytrain; rep = 50, score = rmsep) ;
 z = vec(res.imp)
 f = Figure(size = (500, 400))
-ax = Axis(f[1, 1];
-    xlabel = "Wavelength (nm)", 
-    ylabel = "Importance")
+ax = Axis(f[1, 1]; xlabel = "Wavelength (nm)", ylabel = "Importance")
 scatter!(ax, wl, vec(z); color = (:red, .5))
 u = [910; 950]
 vlines!(ax, u; color = :grey, linewidth = 1)
 f
 
-mod = rfr_dt(n_trees = 10, max_depth = 2000, min_samples_leaf = 5)
+mod = model(rfr_dt; n_trees = 10, max_depth = 2000, min_samples_leaf = 5)
 res = viperm(mod, Xtrain, ytrain; rep = 50)
 z = vec(res.imp)
 f = Figure(size = (500, 400))

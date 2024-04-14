@@ -1,5 +1,4 @@
 """
-    mbplsqda(; kwargs...)
     mbplsqda(Xbl, y; kwargs...)
     mbplsqda(Xbl, y, weights::Weight; kwargs...)
 Multiblock PLS-QDA.

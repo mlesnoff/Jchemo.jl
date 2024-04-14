@@ -1,10 +1,8 @@
 """
-    rasvd(; kwargs...)
     rasvd(X, Y; kwargs...)
     rasvd(X, Y, weights::Weight; kwargs...)
     rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-Redundancy analysis (RA), *aka* PCA on instrumental 
-    variables (PCAIV)
+Redundancy analysis (RA), *aka* PCA on instrumental variables (PCAIV)
 * `X` : First block of data.
 * `Y` : Second block of data.
 * `weights` : Weights (n) of the observations. 
@@ -67,8 +65,7 @@ q = nco(Y)
 
 nlv = 2
 bscal = :frob ; tau = 1e-4
-mod = rasvd(; nlv, bscal, 
-    tau)
+mod = model(rasvd; nlv, bscal, tau)
 fit!(mod, X, Y)
 pnames(mod)
 pnames(mod.fm)
@@ -160,8 +157,7 @@ function rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     # End
     Tx .= (1 ./ sqrtw) .* Tx
     Ty .= (1 ./ sqrtw) .* Ty   
-    Rasvd(Tx, Ty, Bx, Wy, lambda, bscales, 
-        xmeans, xscales, ymeans, yscales, 
+    Rasvd(Tx, Ty, Bx, Wy, lambda, bscales, xmeans, xscales, ymeans, yscales, 
         weights, kwargs, par)
 end
 
@@ -210,8 +206,7 @@ function Base.summary(object::Rasvd, X, Y)
     pvar =  tt / sstot
     cumpvar = cumsum(pvar)
     xvar = tt / n
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
-        pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## To do: explvary 
     ## Y
     #T .= object.Ty
@@ -224,8 +219,7 @@ function Base.summary(object::Rasvd, X, Y)
     explvary = nothing 
     ## Correlation between X- and 
     ## Y-block scores
-    z = diag(corm(object.Tx, 
-        object.Ty, object.weights))
+    z = diag(corm(object.Tx, object.Ty, object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)
     ## Redundancies (Average correlations) 
     ## Rd(X, tx) and Rd(Y, ty)
@@ -240,6 +234,5 @@ function Base.summary(object::Rasvd, X, Y)
     z = corm(Y, object.Ty, object.weights)
     cory2t = DataFrame(z, string.("lv", 1:nlv))
     ## End 
-    (explvarx = explvarx, explvary, cort2t, 
-        rdx, rdy, corx2t, cory2t)
+    (explvarx = explvarx, explvary, cort2t, rdx, rdy, corx2t, cory2t)
 end

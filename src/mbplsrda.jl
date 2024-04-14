@@ -1,5 +1,4 @@
 """
-    mbplsrda(; kwargs...)
     mbplsrda(Xbl, y; kwargs...)
     mbplsrda(Xbl, y, weights::Weight; kwargs...)
 Discrimination based on multiblock partial least squares 
@@ -56,7 +55,7 @@ scal = false
 #scal = true
 bscal = :none
 #bscal = :frob
-mod = mbplsrda(; nlv, bscal, scal)
+mod = model(mbplsrda; nlv, bscal, scal)
 fit!(mod, Xbltrain, ytrain) 
 pnames(mod) 
 

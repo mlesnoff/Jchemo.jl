@@ -33,8 +33,7 @@ segm[i]
 segm[i][1]
 
 n = 10 
-group = ["A", "B", "C", "D", "E", "A", 
-    "B", "C", "D", "E"]    # The blocks of the observations
+group = ["A", "B", "C", "D", "E", "A", "B", "C", "D", "E"]    # blocks of the observations
 tab(group) 
 K = 3 ; rep = 4 
 segm = segmkf(group, K; rep)

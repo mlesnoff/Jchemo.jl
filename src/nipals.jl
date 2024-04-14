@@ -74,8 +74,7 @@ function nipals(X; kwargs...)
     (u = u, v, sv, niter)
 end
 
-function nipals(X, UUt, VVt; 
-        kwargs...)
+function nipals(X, UUt, VVt; kwargs...)
     par = recovkwargs(Par, kwargs)
     X = ensure_mat(X)
     n, p = size(X)

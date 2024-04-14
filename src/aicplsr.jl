@@ -1,12 +1,10 @@
 """
-    aicplsr(X, y; alpha = 2, 
-        kwargs...)
-Compute Akaike's (AIC) and Mallows's (Cp) criteria 
-    for univariate PLSR models.
+    aicplsr(X, y; alpha = 2, kwargs...)
+Compute Akaike's (AIC) and Mallows's (Cp) criteria for univariate PLSR models.
 * `X` : X-data (n, p).
 * `y` : Univariate Y-data.
 Keyword arguments:
-* Same as function `cglsr`.
+* Same arguments as those of function `cglsr`.
 * `alpha` : Coefficient multiplicating
     the model complexity (df) to compute AIC. 
 
@@ -47,23 +45,19 @@ res.opt
 res.delta
 
 zaic = res.crit.aic
-f, ax = plotgrid(0:nlv, zaic;
-    xlabel = "Nb. LVs", ylabel = "AIC")
+f, ax = plotgrid(0:nlv, zaic; xlabel = "Nb. LVs", ylabel = "AIC")
 scatter!(ax, 0:nlv, zaic)
 f
 ```
 """ 
-function aicplsr(X, y; alpha = 2, 
-        kwargs...)
+function aicplsr(X, y; alpha = 2, kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X[1, 1])
     X = ensure_mat(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
     pars = mpar(scal = par.scal)  
-    res = gridscore_lv(X, y, X, y;
-        fun = plskern, score = ssr, pars = pars, 
-        nlv = 0:nlv)
+    res = gridscore_lv(X, y, X, y; fun = plskern, score = ssr, pars, nlv = 0:nlv)
     zssr = res.y1
     df = dfplsr_cg(X, y; kwargs...).df
     df_ssr = n .- df
@@ -104,8 +98,7 @@ function aicplsr(X, y; alpha = 2,
     cp2 ./= n
     res = (aic = aic, cp1 = cp1, cp2 = cp2)
     znlv = 0:nlv
-    ztab = DataFrame(nlv = znlv, n = fill(n, nlv + 1), 
-        df = df, ct = ct, ssr = zssr)
+    ztab = DataFrame(nlv = znlv, n = fill(n, nlv + 1), df = df, ct = ct, ssr = zssr)
     crit = hcat(ztab, DataFrame(res))
     opt = map(x -> findmin(x[isnan.(x) .== 0])[2] - 1, res)
     delta = map(

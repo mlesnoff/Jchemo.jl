@@ -1,5 +1,4 @@
 """
-    knnr(; kwargs...) 
     knnr(X, Y; kwargs...) 
 k-Nearest-Neighbours weighted regression (KNNR).
 * `X` : X-data (n, p).
@@ -62,8 +61,7 @@ ytest = rmrow(y, s)
 nlvdis = 5 ; metric = :mah 
 #nlvdis = 0 ; metric = :eucl 
 h = 1 ; k = 5 
-mod = knnr(; nlvdis, metric, 
-    h, k) ;
+mod = model(knnr; nlvdis, metric, h, k) ;
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -75,9 +73,8 @@ res.listd
 res.listw
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
+    xlabel = "Prediction", ylabel = "Observed").f    
 
 ####### Example of fitting the function sinc(x)
 ####### described in Rosipal & Trejo 2001 p. 105-106 
@@ -86,7 +83,7 @@ x[x .== 0] .= 1e-5
 n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
-mod = knnr(; k = 15, h = 5) ;
+mod = model(knnr; k = 15, h = 5) 
 fit!(mod, x, y)
 pred = predict(mod, x).pred 
 f, ax = scatter(x, y) 
@@ -106,8 +103,7 @@ function knnr(X, Y; kwargs...)
     if par.nlvdis == 0
         fm = nothing
     else
-        fm = plskern(X, Y; nlv = par.nlvdis, 
-            scal = par.scal)
+        fm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
     end
     xscales = ones(Q, p)
     if par.scal && isnothing(fm)
@@ -143,8 +139,7 @@ function predict(object::Knnr, X)
             res = getknn(object.X, X; metric, k)
         end
     else
-        res = getknn(object.fm.T, 
-            transf(object.fm, X); metric, k) 
+        res = getknn(object.fm.T, transf(object.fm, X); metric, k) 
     end
     listw = copy(res.d)
     Threads.@threads for i = 1:m
@@ -158,6 +153,6 @@ function predict(object::Knnr, X)
         weights = mweight(listw[i])
         pred[i, :] .= colmean(vrow(object.Y, res.ind[i]), weights)
     end
-    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, listw)
 end
 

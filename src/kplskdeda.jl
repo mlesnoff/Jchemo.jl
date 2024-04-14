@@ -1,5 +1,4 @@
 """
-    kplskdeda(; kwargs...)
     kplskdeda(X, y; kwargs...)
     kplskdeda(X, y, weights::Weight; kwargs...)
 KPLS-KDEDA.

@@ -1,5 +1,4 @@
 """
-    rosaplsr(; kwargs...)
     rosaplsr(Xbl, Y; kwargs...)
     rosaplsr(Xbl, Y, weights::Weight; kwargs...)
     rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
@@ -54,7 +53,7 @@ ntot = ntrain + ntest
 nlv = 3
 scal = false
 #scal = true
-mod = rosaplsr(; nlv, scal)
+mod = model(rosaplsr; nlv, scal)
 fit!(mod, Xbltrain, ytrain)
 pnames(mod) 
 pnames(mod.fm)
@@ -92,8 +91,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     nlv = par.nlv
     nbl = length(Xbl)
     D = Diagonal(weights.w)
-    fmsc = blockscal(Xbl, weights; bscal = :none, centr = true, 
-        scal = par.scal)
+    fmsc = blockscal(Xbl, weights; bscal = :none, centr = true, scal = par.scal)
     transf!(fmsc, Xbl)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
@@ -197,8 +195,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         W[:, a] .= reduce(vcat, z .* wbl)
     end
     R = W * inv(P' * W)
-    Rosaplsr(T, P, R, W, C, TT, fmsc, 
-        ymeans, yscales, weights, bl, kwargs, par)
+    Rosaplsr(T, P, R, W, C, TT, fmsc, ymeans, yscales, weights, bl, kwargs, par)
 end
 
 """ 
@@ -256,7 +253,4 @@ function predict(object::Rosaplsr, Xbl; nlv = nothing)
     le_nlv == 1 ? pred = pred[1] : nothing
     (pred = pred,)
 end
-
-
-
 

@@ -1,5 +1,4 @@
 """ 
-    treeda_dt(; kwargs...)
     treeda_dt(X, y; kwargs...)
 Discrimination tree (CART) with DecisionTree.jl.
 * `X` : X-data (n, p).
@@ -55,8 +54,7 @@ tab(ytest)
 
 n_subfeatures = p / 3 
 max_depth = 10
-mod = treeda_dt(; 
-    n_subfeatures, max_depth) ;
+mod = model(treeda_dt; n_subfeatures, max_depth) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -99,8 +97,7 @@ function treeda_dt(X, y::Union{Array{Int}, Array{String}};
         #rng = 3
         )
     featur = collect(1:p)
-    TreedaDt(fm, xscales, featur, taby.keys, 
-        taby.vals, kwargs, par)
+    TreedaDt(fm, xscales, featur, taby.keys, taby.vals, kwargs, par)
 end
 
 """
@@ -114,12 +111,10 @@ function predict(object::TreedaDt, X)
     m = nro(X)
     ## Tree
     if pnames(object.fm)[1] == :node
-        pred = apply_tree(object.fm, 
-            fscale(X, object.xscales))
+        pred = apply_tree(object.fm, fscale(X, object.xscales))
     ## Forest 
     else
-        pred = apply_forest(object.fm, 
-            fscale(X, object.xscales); 
+        pred = apply_forest(object.fm, fscale(X, object.xscales); 
             use_multithreading = object.par.mth)
     end
     pred = reshape(pred, m, 1)

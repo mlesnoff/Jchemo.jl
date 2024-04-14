@@ -1,5 +1,4 @@
 """
-    plscan(; kwargs...)
     plscan(X, Y; kwargs...)
     plscan(X, Y, weights::Weight; kwargs...)
     plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -51,7 +50,7 @@ q = nco(Y)
 
 nlv = 2
 bscal = :frob
-mod = plscan(; nlv, bscal)
+mod = model(plscan; nlv, bscal)
 fit!(mod, X, Y)
 pnames(mod)
 pnames(mod.fm)
@@ -77,7 +76,7 @@ function plscan(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)
     weights = mweight(ones(Q, n))
-    plscan(X, y, weights; kwargs...)
+    plscan(X, Y, weights; kwargs...)
 end
 
 function plscan(X, Y, weights::Weight; kwargs...)
@@ -170,9 +169,8 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
      end
      Rx = Wx * inv(Px' * Wx)
      Ry = Wy * inv(Py' * Wy)
-     Plscan(Tx, Ty, Px, Py, Rx, Ry, Wx, Wy, TTx, TTy, delta, 
-         bscales, xmeans, xscales, ymeans, yscales, weights,
-         kwargs, par)
+     Plscan(Tx, Ty, Px, Py, Rx, Ry, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
+         ymeans, yscales, weights, kwargs, par)
 end
 
 """ 
@@ -216,16 +214,14 @@ function Base.summary(object::Plscan, X, Y)
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
-        pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Y
     sstot = frob(Y, object.weights)^2
     tt_adj = colsum(object.Py.^2) .* tty
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvary = DataFrame(nlv = 1:nlv, var = xvar, 
-        pvar = pvar, cumpvar = cumpvar)
+    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Correlation between X- and 
     ## Y-block scores
     z = diag(corm(object.Tx, object.Ty, object.weights))
@@ -243,7 +239,6 @@ function Base.summary(object::Plscan, X, Y)
     z = corm(Y, object.Ty, object.weights)
     cory2t = DataFrame(z, string.("lv", 1:nlv))
     ## End
-    (explvarx = explvarx, explvary, cort2t, 
-        rdx, rdy, corx2t, cory2t)
+    (explvarx = explvarx, explvary, cort2t, rdx, rdy, corx2t, cory2t)
 end
 

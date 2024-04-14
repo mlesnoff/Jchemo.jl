@@ -1,10 +1,9 @@
 """
-    kplsr(; kwargs...)
     kplsr(X, Y; kwargs...)
     kplsr(X, Y, weights::Weight; kwargs...)
     kplsr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-Kernel partial least squares regression (KPLSR) implemented 
-    with a Nipals algorithm (Rosipal & Trejo, 2001).
+Kernel partial least squares regression (KPLSR) implemented with a Nipals 
+    algorithm (Rosipal & Trejo, 2001).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
@@ -44,7 +43,7 @@ ytest = rmrow(y, s)
 
 nlv = 20
 kern = :krbf ; gamma = 1e-1
-mod = kplsr(; nlv, kern, gamma) ;
+mod = model(kplsr; nlv, kern, gamma) ;
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -71,7 +70,7 @@ zy = sin.(abs.(x)) ./ abs.(x)
 y = zy + .2 * randn(n) 
 nlv = 2
 kern = :krbf ; gamma = 1 / 3
-mod = kplsr(; nlv, kern, gamma) ;
+mod = model(kplsr; nlv, kern, gamma) 
 fit!(mod, x, y)
 pred = predict(mod, x).pred 
 f, ax = scatter(x, y) 

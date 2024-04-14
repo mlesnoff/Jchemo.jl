@@ -27,17 +27,22 @@ Ad'hoc **pipelines** can also be built. In **Jchemo**, a pipeline is a **chain o
 
 The pipelines are built with function `pip`.
 
-**Warning:** Major breaking changes were made between **version 0.2.4** and **version 0.3.0**. See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for some details on the changes. Mainly, a new **embedded syntax** was proposed. 
+**Warnings:** 
+- Major breaking changes were made between **version 0.2.4** and **version 0.3.0**. Mainly, a new **embedded syntax** was proposed.
+- A major breaking change has been made beteen **version 0.3.7** and **version 0.4.0** for the embedded syntax, with the use of the new function **model**. 
+    - For instance: **mod = plskern(; nlv = 15)** is now writen as **mod = model(plskern; nlv = 15)**. Other things have not changed.
+
+See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for details.  
 
 # <span style="color:green"> **Tips** </span> 
 
 ### Syntax
 
 Two syntaxes are allowed for **transformers** and **predictors**:
-- the direct syntax (almost the same as for versions <= 0.2.4),
-- and the **embedded** syntax. 
+- the direct syntax (the same as for versions <= 0.2.4),
+- and the **embedded** syntax, using function **model**. 
 
-The **embedded** syntax is intended to make easier the building of pipelines (chains) of models, and is now favored. Only this embbeded syntax is given in the **help pages** of the functions. 
+The **embedded** syntax is intended to make easier the building of ad'hoc pipelines (chains) of models, and is now favored. Only this embbeded syntax is given in the examples (**help pages** of the functions). 
 
 Most the **Jchemo** functions have **keyword arguments** (`kwargs`). The keyword arguments required by (or allowed in) a function can be found in the **Index of function section** of the documentation:
 - [Stable](https://mlesnoff.github.io/Jchemo.jl/stable/api/) 
@@ -67,7 +72,7 @@ The **datasets** used in the examples (help pages) are stored in the package [**
 
 ### Tuning predictive models
 
-**Generic grid-search functions** are available to tune the predictors: 
+Generic **grid-search functions** are available to tune the predictors: 
 - [`gridscore`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridscore-NTuple{5,%20Any}) (*test-set* validation)
 - [`gridcv`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridcv-Tuple{Any,%20Any,%20Any}) (cross-validation). 
 
@@ -81,7 +86,7 @@ of threads (e.g. from the *Settings* menu of the VsCode Julia extension and the 
 
 ### Plotting
 
-**Jchemo** uses **Makie** for plotting. To preliminary install and load one of the Makie's backends (e.g. **CairoMakie**) is required to display the plots. 
+**Jchemo** uses **Makie** for plotting. Displaying the plots requires to preliminary install and load one of the Makie's backends (e.g. **CairoMakie**). 
 
 ### News
 
@@ -100,7 +105,7 @@ or for a **specific version**:
 pkg> add Jchemo@0.1.18
 ```
 
-or for the **current developing version** (not stable):
+or for the **current developing version** (potentially not stable):
 ```julia
 pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ```
@@ -143,7 +148,7 @@ zY = Float32.(Y)
 ```julia
 ## Float64
 ## (NB.: multi-threading is not used in plskern) 
-mod = plskern(; nlv)
+mod = model(plskern; nlv)
 @benchmark fit!($mod, $X, $Y)
 
 BenchmarkTools.Trial: 1 sample with 1 evaluation.
@@ -202,7 +207,7 @@ The embedded syntax to fit the model is as follows:
 ## Model definition
 ## (below, the name 'mod' can be replaced by any other name)
 npoint = 11 ; deriv = 2 ; degree = 3
-mod = savgol(; npoint, deriv, degree)
+mod = model(savgol; npoint, deriv, degree)
 
 ## Fitting
 fit!(mod, Xtrain)
@@ -215,7 +220,7 @@ which is the strictly equivalent to:
 ## since the kwargs values are
 ## specified within the function
 
-mod = savgol(npoint = 11, deriv = 2, degree = 3)
+mod = model(savgol; npoint = 11, deriv = 2, degree = 3)
 fit!(mod, Xtrain)
 ```
 
@@ -226,14 +231,14 @@ pnames(mod)
 pnames(mod.fm)
 ```
 
-Once the model is fitted, the transformed (i.e. preprocessed) data are given by:
+Once the model is fitted, the transformed (i.e. here preprocessed) data are given by:
 
 ```julia
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
 ```
 
-Several preprocessing can be applied sequentially to the data: see the **Fitting a pipeline** section thereafter for examples.
+Several preprocessing can be applied sequentially to the data by building a **pipeline** (see section *Fitting a pipeline* thereafter for examples).
 
 #### **b) Example of a PCA**
 
@@ -242,7 +247,7 @@ Let us consider a principal component analysis (PCA), using function `pcasvd`.
 The embedded syntax to fit the model is as follows:
 ```julia
 nlv = 15  # nb. principal components
-mod = pcasvd(; nlv)
+mod = model(pcasvd; nlv)
 fit!(mod, Xtrain, ytrain)
 ```
 
@@ -250,7 +255,7 @@ For a preliminary scaling of the data before the PCA decomposition, the syntax i
 
 ```julia
 nlv = 15 ; scal = true
-mod = pcasvd(; nlv, scal)
+mod = model(pcasvd; nlv, scal)
 fit!(mod, Xtrain, ytrain)
 ```
 
@@ -282,7 +287,7 @@ The embedded syntax to fit the model is as follows:
 ```julia
 nlv = 15  # nb. latent variables
 kern = :krbf ; gamma = .001 
-mod = kplsr(; nlv, kern, gamma)
+mod = model(kplsr; nlv, kern, gamma)
 fit!(mod, Xtrain, ytrain)
 ```
 
@@ -319,9 +324,9 @@ The pipeline is fitted as follows:
 
 ```julia
 ## Models' definition
-mod1 = snv(centr = true, scal = true)
-mod2 = savgol(npoint = 5, deriv = 1, degree = 2)
-mod3 = detrend()
+mod1 = model(snv; centr = true, scal = true)
+mod2 = model(savgol; npoint = 5, deriv = 1, degree = 2)
+mod3 = model(detrend)  
 ## Pipeline building
 mod = pip(mod1, mod2, mod3)
 ## Fitting
@@ -343,8 +348,8 @@ The pipeline is fitted as follows:
 ```julia
 nlv = 15
 kern = :krbf ; gamma = .001 ; cost = 1000
-mod1 = pcasvd(; nlv)
-mod2 = svmr(; kern, gamma, cost)
+mod1 = model(pcasvd; nlv)
+mod2 = model(svmr; kern, gamma, cost)
 mod = pip(mod1, mod2)
 fit!(mod, Xtrain)
 ```
@@ -360,9 +365,9 @@ Any step(s) of data preprocessing can obviously be implemented before the modeli
 degree = 2    # de-trending with polynom degree 2
 nlv = 15
 kern = :krbf ; gamma = .001 ; cost = 1000
-mod1 = detrend(; degree)
-mod2 = pcasvd(; nlv)
-mod3 = svmr(; kern, gamma, cost)
+mod1 = model(detrend; degree)
+mod2 = model(pcasvd; nlv)
+mod3 = model(svmr; kern, gamma, cost)
 mod = pip(mod1, mod2, mod3)
 ```
 
@@ -375,8 +380,8 @@ The pipeline is defined by:
 ```julia
 nlv = 25
 metric = :eucl ; h = 2 ; k = 200
-mod1 = pcasvd(; nlv)
-mod2 = lwmlr(; metric, h, k)
+mod1 = model(pcasvd; nlv)
+mod2 = model(lwmlr; metric, h, k)
 mod = pip(mod1, mod2)
 ```
 
@@ -391,8 +396,8 @@ The pipeline is defined by:
 ```julia
 nlv = 25
 metric = :mah ; h = Inf ; k = 200
-mod1 = plskern(; nlv)
-mod2 = lwplsr(; metric, h, k)
+mod1 = model(plskern; nlv)
+mod2 = model(lwplsr; metric, h, k)
 mod = pip(mod1, mod2)
 ```
 

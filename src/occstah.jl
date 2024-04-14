@@ -1,5 +1,4 @@
 """
-    occstah(kwargs...)
     occstah(X; kwargs...)
 One-class classification using the Stahel-Donoho outlierness.
 * `X` : Training X-data (n, p).
@@ -26,8 +25,7 @@ db = joinpath(path_jdat, "data/challenge2018.jld2")
 pnames(dat)
 X = dat.X    
 Y = dat.Y
-mod = savgol(npoint = 21, 
-    deriv = 2, degree = 3)
+mod = model(savgol; npoint = 21, deriv = 2, degree = 3)
 fit!(mod, X) 
 Xp = transf(mod, X) 
 s = Bool.(Y.test)
@@ -51,38 +49,33 @@ ytrain = repeat(["in"], ntrain)
 ytest = repeat([cod], ntest)
 
 ## Group description
-mod = pcasvd(nlv = 10) 
+mod = model(pcasvd; nlv = 10) 
 fit!(mod, zXtrain) 
 Ttrain = mod.fm.T
 Ttest = transf(mod, zXtest)
 T = vcat(Ttrain, Ttest)
-group = vcat(repeat(["1"], ntrain), 
-    repeat(["2"], ntest))
+group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
 i = 1
-plotxy(T[:, i], T[:, i + 1], group;
-    leg_title = "Class", 
-    xlabel = string("PC", i), 
-    ylabel = string("PC", i + 1)).f
+plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", 
+    xlabel = string("PC", i), ylabel = string("PC", i + 1)).f
 
 #### Occ
 ## Preliminary dimension 
 ## Not required but often more 
 ## efficient
 nlv = 50
-mod = pcasvd(; nlv) ;
-fit!(mod, zXtrain)
-Ttrain = mod.fm.T
-Ttest = transf(mod, zXtest)
+mod0 = model(pcasvd; nlv) ;
+fit!(mod0, zXtrain)
+Ttrain = mod0.fm.T
+Ttest = transf(mod0, zXtest)
 ## Outlierness
-mod = occstah(; nlv,
-    scal = true)
+mod = model(occstah; nlv, scal = true)
 fit!(mod, Ttrain) 
 pnames(mod) 
 pnames(mod.fm) 
 @head d = mod.fm.d
 d = d.dstand
-f, ax = plotxy(1:length(d), d; 
-    size = (500, 300), xlabel = "Obs. index", 
+f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index", 
     ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
@@ -97,10 +90,8 @@ conf(res.pred, ytest).cnt
 d1 = mod.fm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
-f, ax = plotxy(1:length(d), d, group; 
-    size = (500, 300), leg_title = "Class", 
-    xlabel = "Obs. index", 
-    ylabel = "Standardized distance")
+f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", 
+    xlabel = "Obs. index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 ```
@@ -108,8 +99,7 @@ f
 function occstah(X; kwargs...) 
     par = recovkwargs(Par, kwargs) 
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
-    res = stah(X, par.nlv; 
-        scal = par.scal)
+    res = stah(X, par.nlv; scal = par.scal)
     d = res.d
     #d2 = d.^2 
     #mu = median(d2)
@@ -120,14 +110,11 @@ function occstah(X; kwargs...)
     #pval = Distributions.ccdf.(dist, d2 / g)
     #mcut == :par ? cutoff = sqrt(g * quantile(dist, 1 - risk)) : nothing
     #mcut == "npar" ? cutoff = median(d) + par.cri * mad(d) : nothing  
-    par.mcut == :mad ? cutoff = median(d) + 
-        par.cri * mad(d) : nothing
-    par.mcut == :q ? cutoff = quantile(d, 1 - par.risk) : 
-        nothing
+    par.mcut == :mad ? cutoff = median(d) + par.cri * mad(d) : nothing
+    par.mcut == :q ? cutoff = quantile(d, 1 - par.risk) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
-    d = DataFrame(d = d, dstand = d / cutoff, 
-        pval = p_val)
+    d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
     Occstah(d, res, e_cdf, cutoff)
 end
 
@@ -158,5 +145,4 @@ function predict(object::Occstah, X)
     pred = reshape(pred, m, 1)
     (pred = pred, d)
 end
-
 

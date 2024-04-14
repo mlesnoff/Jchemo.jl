@@ -1,10 +1,7 @@
 """
-    kpca(; kwargs...)
     kpca(X; kwargs...)
-    kpca(X, weights::Weight; 
-        kwargs...)
-Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, 
-    Tipping 2001).
+    kpca(X, weights::Weight; kwargs...)
+Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
 * `X` : X-data (n, p).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
@@ -54,8 +51,7 @@ Xtest = X[s.test, :]
 
 nlv = 3
 kern = :krbf ; gamma = 1e-4
-mod = kpca(; nlv, kern, 
-    gamma) ;
+mod = model(kpca; nlv, kern, gamma) ;
 fit!(mod, Xtrain)
 pnames(mod.fm)
 @head T = mod.fm.T

@@ -1,5 +1,4 @@
 """
-    ccawold(; kwargs...)
     ccawold(X, Y; kwargs...)
     ccawold(X, Y, weights::Weight; kwargs...)
     ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -78,8 +77,7 @@ q = nco(Y)
 
 nlv = 2
 bscal = :frob ; tau = 1e-4
-mod = ccawold(; nlv, bscal, 
-    tau, tol = 1e-10)
+mod = model(ccawold; nlv, bscal, tau, tol = 1e-10)
 fit!(mod, X, Y)
 pnames(mod)
 pnames(mod.fm)
@@ -230,9 +228,8 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     Ty .= (1 ./ sqrtw) .* Ty
     Rx = Wx * inv(Px' * Wx)
     Ry = Wy * inv(Py' * Wy)
-    Ccawold(Tx, Ty, Px, Py, Rx, Ry, Wx, Wy, TTx, TTy, 
-        bscales, xmeans, xscales, ymeans, yscales, weights, niter,
-        kwargs, par)
+    Ccawold(Tx, Ty, Px, Py, Rx, Ry, Wx, Wy, TTx, TTy, bscales, xmeans, xscales, 
+        ymeans, yscales, weights, niter, kwargs, par)
 end
 
 """ 
@@ -275,8 +272,8 @@ function Base.summary(object::Ccawold, X, Y)
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
-        pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
+        cumpvar = cumpvar)
     # Y
     tt = object.TTy 
     sstot = frob(Y, object.weights)^2
@@ -284,8 +281,8 @@ function Base.summary(object::Ccawold, X, Y)
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvary = DataFrame(nlv = 1:nlv, var = xvar, 
-        pvar = pvar, cumpvar = cumpvar)
+    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, 
+        cumpvar = cumpvar)
     ## Correlation between X- and 
     ## Y-block scores
     z = diag(corm(object.Tx, object.Ty, 
@@ -304,8 +301,7 @@ function Base.summary(object::Ccawold, X, Y)
     z = corm(Y, object.Ty, object.weights)
     cory2t = DataFrame(z, string.("lv", 1:nlv))
     ## End
-    (explvarx = explvarx, explvary, cort2t, 
-        rdx, rdy, corx2t, cory2t)
+    (explvarx = explvarx, explvary, cort2t, rdx, rdy, corx2t, cory2t)
 end
 
 

@@ -1,9 +1,7 @@
 """
-    plsrda(; kwargs...)
     plsrda(X, y; kwargs...)
     plsrda(X, y, weights::Weight; kwargs...)
-Discrimination based on partial least squares 
-    regression (PLSR-DA).
+Discrimination based on partial least squares regression (PLSR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. 
@@ -58,7 +56,7 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-mod = plsrda(; nlv) 
+mod = model(plsrda; nlv) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)

@@ -1,10 +1,8 @@
 """ 
-    plsravg(; kwargs...)
     plsravg(X, Y; kwargs...)
     plsravg(X, Y, weights::Weight; kwargs...)
     plsravg!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-Averaging PLSR models with different numbers of 
-    latent variables (LVs).
+Averaging PLSR models with different numbers of  latent variables (PLSR-AVG).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
@@ -58,16 +56,15 @@ ntest = nro(Xtest)
 nlv = 0:30
 #nlv = 5:20
 #nlv = 25
-mod = plsravg(; nlv) ;
+mod = model(plsravg; nlv) ;
 fit!(mod, Xtrain, ytrain)
 
 res = predict(mod, Xtest)
 @head res.pred
 res.predlv   # predictions for each nb. of LVs 
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-    bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
+    xlabel = "Prediction", ylabel = "Observed").f    
 ```
 """ 
 function plsravg(X, Y; kwargs...)

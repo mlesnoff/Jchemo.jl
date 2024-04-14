@@ -1,8 +1,6 @@
 """
-    lwmlrda(; kwargs...) 
     lwmlrda(X, y; kwargs...) 
-k-Nearest-Neighbours locally weighted MLR-based 
-    discrimination (kNN-LWMLR-DA).
+k-Nearest-Neighbours locally weighted MLR-based discrimination (kNN-LWMLR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 Keyword arguments:
@@ -50,8 +48,7 @@ tab(ytest)
 
 metric = :mah
 h = 2 ; k = 10
-mod = lwmlrda(; metric, 
-    h, k) 
+mod = model(lwmlrda; metric, h, k) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -74,8 +71,7 @@ function lwmlrda(X, y; kwargs...)
     X = ensure_mat(X)
     y = ensure_mat(y)
     taby = tab(y)
-    Lwmlrda(X, y, taby.keys, taby.vals, 
-        kwargs, par) 
+    Lwmlrda(X, y, taby.keys, taby.vals, kwargs, par) 
 end
 
 """
@@ -102,9 +98,8 @@ function predict(object::Lwmlrda, X)
         listw[i] = w
     end
     ## End
-    pred = locw(object.X, object.y, X; 
-        listnn = res.ind, listw = listw, 
+    pred = locw(object.X, object.y, X; listnn = res.ind, listw, 
         fun = mlrda, verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, listw = listw)
+    (pred = pred, listnn = res.ind, listd = res.d, listw)
 end
 

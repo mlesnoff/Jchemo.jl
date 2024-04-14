@@ -1,5 +1,4 @@
 """
-    comdim(; kwargs...)
     comdim(Xbl; kwargs...)
     comdim(Xbl, weights::Weight; kwargs...)
     comdim!(Xbl::Matrix, weights::Weight; kwargs...)
@@ -97,7 +96,7 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-mod = comdim(; nlv, bscal, scal)
+mod = model(comdim; nlv, bscal, scal)
 fit!(mod, Xbl)
 pnames(mod) 
 pnames(mod.fm)
@@ -140,8 +139,7 @@ function comdim(Xbl, weights::Weight; kwargs...)
     comdim!(zXbl, weights; kwargs...)
 end
 
-function comdim!(Xbl::Vector, weights::Weight; 
-        kwargs...)
+function comdim!(Xbl::Vector, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs) 
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
@@ -209,8 +207,8 @@ function comdim!(Xbl::Vector, weights::Weight;
         end
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
-    Comdim(T, U, W, Tbl, Tb, Wbl, lb, mu, 
-        fmsc, weights, niter, kwargs, par)
+    Comdim(T, U, W, Tbl, Tb, Wbl, lb, mu, fmsc, weights, niter, 
+        kwargs, par)
 end
 
 """ 
@@ -286,8 +284,8 @@ function Base.summary(object::Comdim, Xbl)
     tt = colsum(object.lb)    
     pvar = tt / sum(sstot)
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(lv = 1:nlv, var = tt, 
-        pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, 
+        cumpvar = cumpvar)
     ## Explained_XXt (indicator "V")
     S = list(Matrix{Q}, nbl)
     sstot_xx = 0 
@@ -298,8 +296,8 @@ function Base.summary(object::Comdim, Xbl)
     tt = object.mu
     pvar = tt / sstot_xx
     cumpvar = cumsum(pvar)
-    explvarxx = DataFrame(lv = 1:nlv, var = tt, 
-        pvar = pvar, cumpvar = cumpvar)
+    explvarxx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, 
+        cumpvar = cumpvar)
     ## Proportions of squared saliences
     sal2 = copy(object.lb)
     for a = 1:nlv
@@ -336,8 +334,8 @@ function Base.summary(object::Comdim, Xbl)
     ## Lg
     res = lg(X)
     zlg = DataFrame(res, nam)
-    (explvarx = explvarx, explvarxx, sal2, contr_block, 
-        explX, corx2t, cortb2t, rv = zrv, lg = zlg)
+    (explvarx = explvarx, explvarxx, sal2, contr_block, explX, corx2t, 
+        cortb2t, rv = zrv, lg = zlg)
 end
 
 

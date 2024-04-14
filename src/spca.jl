@@ -1,5 +1,4 @@
 """
-    spca(; kwargs...)
     spca(X; kwargs...)
     spca(X, weights::Weight; kwargs...)
     spca!(X::Matrix, weights::Weight; kwargs...)
@@ -96,8 +95,7 @@ nlv = 3
 msparse = :mix ; nvar = 2
 #msparse = :hard ; nvar = 2
 scal = false
-mod = spca(; nlv, msparse, 
-    nvar, scal) ;
+mod = model(spca; nlv, msparse, nvar, scal) ;
 fit!(mod, Xtrain) 
 fm = mod.fm ;
 pnames(fm)
@@ -117,8 +115,7 @@ res.explvarx_adj
 
 nlv = 3 
 msparse = :soft ; delta = .4 
-mod = spca(; nlv, msparse, 
-    delta) ;
+mod = model(spca; nlv, msparse, delta) ;
 fit!(mod, Xtrain) 
 mod.fm.P
 ```
@@ -184,8 +181,8 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
         sellv[a] = findall(abs.(res.v) .> 0)
     end    
     sel = unique(reduce(vcat, sellv))
-    Spca(T, P, sv, beta, xmeans, xscales, weights, niter,
-        sellv, sel, kwargs, par) 
+    Spca(T, P, sv, beta, xmeans, xscales, weights, niter, sellv, sel, 
+        kwargs, par) 
 end
 
 """ 
@@ -232,8 +229,7 @@ function Base.summary(object::Spca, X)
     pvar = ss / sstot 
     cumpvar = cumsum(pvar)
     zrd = vec(rd(X, object.T, object.weights))
-    explvarx = DataFrame(lv = 1:nlv, rd = zrd, 
-        pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(lv = 1:nlv, rd = zrd, pvar = pvar, cumpvar = cumpvar)
     ## Adjusted variance (Shen & Huang 2008 section 2.3)
     zX = sqrt.(D) * X
     ss = zeros(nlv)
@@ -244,8 +240,7 @@ function Base.summary(object::Spca, X)
     end
     cumpvar = ss / sstot
     pvar = [cumpvar[1]; diff(cumpvar)]
-    explvarx_adj = DataFrame(lv = 1:nlv, 
-        pvar = pvar, cumpvar = cumpvar)
+    explvarx_adj = DataFrame(lv = 1:nlv, pvar = pvar, cumpvar = cumpvar)
     ## End
     (explvarx = explvarx, explvarx_adj)
 end
