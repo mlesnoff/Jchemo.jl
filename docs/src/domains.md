@@ -328,7 +328,7 @@
 ## MODELS AND PIPELINES
 
 - **model** Build a model
-- **model** Build a pipeline of models
+- **pip** Build a pipeline of models
 
 ## UTILITIES
 
