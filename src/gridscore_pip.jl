@@ -52,7 +52,7 @@ ycal = ytrain[s.train]
 Xval = Xtrain[s.test, :]
 yval = ytrain[s.test]
 
-####-- Snv :> Savgol :> Plsr
+####-- Pipeline Snv :> Savgol :> Plsr
 ## Only the last model is validated
 ## mod1
 centr = true ; scal = false
@@ -78,7 +78,7 @@ rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
       ylabel = "Observed").f
 
-####-- Pca :> Svmr
+####-- Pipeline Pca :> Svmr
 ## Only the last model is validated
 ## mod1
 nlv = 15 ; scal = true
