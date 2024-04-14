@@ -1,8 +1,7 @@
 """
     gridscore(mod::Pipeline, Xtrain, Ytrain, X, Y; score, pars = nothing, 
         nlv = nothing, lb = nothing, verbose = false) 
-Test-set validation of a model pipeline over a grid 
-    of parameters.
+Test-set validation of a model pipeline over a grid of parameters.
 * `mod` : A pipeline of models to evaluate.
 * `Xtrain` : Training X-data (n, p).
 * `Ytrain` : Training Y-data (n, q).
@@ -57,61 +56,53 @@ yval = ytrain[s.test]
 ## Only the last model is validated
 ## mod1
 centr = true ; scal = false
-mod1 = snv(; centr, scal)
+mod1 = model(snv; centr, scal)
 ## mod2 
 npoint = 11 ; deriv = 2 ; degree = 3
-mod2 = savgol(; npoint, 
-    deriv, degree)
+mod2 = model(savgol; npoint, deriv, degree)
 ## mod3
 nlv = 0:30
-mod3 = plskern()
+mod3 = model(plskern)
 ##
 mod = pip(mod1, mod2, mod3)
-res = gridscore(mod, Xcal, ycal, 
-    Xval, yval; score = rmsep, nlv) ;
-plotgrid(res.nlv, res.y1; step = 2,
-    xlabel = "Nb. LVs", ylabel = "RMSEP").f
+res = gridscore(mod, Xcal, ycal, Xval, yval; score = rmsep, nlv) ;
+plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-mod3 = plskern(nlv = res.nlv[u])
+mod3 = model(plskern; nlv = res.nlv[u])
 mod = pip(mod1, mod2, mod3)
 fit!(mod, Xtrain, ytrain)
 res = predict(mod, Xtest) ; 
 @head res.pred 
 rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-      bisect = true, xlabel = "Prediction",
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
       ylabel = "Observed").f
 
 ####-- Pca :> Svmr
 ## Only the last model is validated
 ## mod1
 nlv = 15 ; scal = true
-mod1 = pcasvd(; nlv, scal)
+mod1 = model(pcasvd; nlv, scal)
 ## mod2
 kern = [:krbf]
 gamma = (10).^(-5:1.:5)
 cost = (10).^(1:3)
 epsilon = [.1, .2, .5]
-pars = mpar(kern = kern, gamma = gamma, 
-    cost = cost, epsilon = epsilon)
-mod2 = svmr()
+pars = mpar(kern = kern, gamma = gamma, cost = cost, epsilon = epsilon)
+mod2 = model(svmr)
 ##
 mod = pip(mod1, mod2)
-res = gridscore(mod, Xcal, ycal, 
-    Xval, yval; score = rmsep, pars)
+res = gridscore(mod, Xcal, ycal, Xval, yval; score = rmsep, pars)
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-mod2 = svmr(; kern = res.kern[u], 
-    gamma = res.gamma[u], cost = res.cost[u],
+mod2 = model(svmr; kern = res.kern[u], gamma = res.gamma[u], cost = res.cost[u],
     epsilon = res.epsilon[u])
 mod = pip(mod1, mod2) ;
 fit!(mod, Xtrain, ytrain)
 res = predict(mod, Xtest) ; 
 @head res.pred 
 rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5),
-      bisect = true, xlabel = "Prediction",
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
       ylabel = "Observed").f
 ```
 """
