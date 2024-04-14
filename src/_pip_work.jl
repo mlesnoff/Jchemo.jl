@@ -3,12 +3,20 @@
 function fit!(mod::Pipeline, X, Y = nothing)
     K = length(mod.mod)
     @assert K > 1 "Wrong pipeline: must contain at least 2 models."
-    typ = [mod.mod[i].typ for i in eachindex(mod.mod)]
+    typ = [mod.mod[i].fun() for i in eachindex(mod.mod)]
     @inbounds for i = 1:(K - 1)
-        isequal(typ[i], :x) ? fit!(mod.mod[i], X) : fit!(mod.mod[i], X, Y) 
+        if isa(typ[i], FunX)
+            fit!(mod.mod[i], X)
+        elseif isa(typ[i], FunXY)
+            fit!(mod.mod[i], X, Y)
+        end 
         X = transf(mod.mod[i], X)
     end
-    isequal(typ[K], :x) ? fit!(mod.mod[K], X) : fit!(mod.mod[K], X, Y) 
+    if isa(typ[K], FunX)
+        fit!(mod.mod[K], X)
+    elseif isa(typ[K], FunXY)
+        fit!(mod.mod[K], X, Y)
+    end 
 end
 
 ###### Transf

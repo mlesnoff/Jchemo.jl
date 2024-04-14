@@ -22,6 +22,7 @@ include("_structures_fun.jl")
 include("_model.jl")
 include("_model_work.jl")
 include("_pip.jl")
+include("_pip_typ_fun.jl")
 include("_pip_work.jl")
 ## End
 
