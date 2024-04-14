@@ -27,10 +27,10 @@ Ad'hoc **pipelines** can also be built. In **Jchemo**, a pipeline is a **chain o
 
 The pipelines are built with function `pip`.
 
-**Warnings:** 
-- Major breaking changes were made between **version 0.2.4** and **version 0.3.0**. Mainly, a new **embedded syntax** was proposed.
+**Warnings** 
 - A breaking change has been made between **version 0.3.7** and **version 0.4.0** for the embedded syntax, with the use of the new function **model**. For instance: 
-    - **mod = plskern(; nlv = 15)** is now writen as **mod = model(plskern; nlv = 15)**. Other things have not changed.
+    - *mod = plskern(; nlv = 15)* is now writen as *mod = model(plskern; nlv = 15)*. Other things have not changed.
+- Major breaking changes were made between **version 0.2.4** and **version 0.3.0**. Mainly, a new **embedded syntax** was proposed.
 
 See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for details.  
 
