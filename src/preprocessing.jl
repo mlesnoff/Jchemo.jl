@@ -10,7 +10,7 @@ and returns the residuals.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -82,7 +82,7 @@ The method reduces the column-dimension:
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -156,7 +156,7 @@ https://htmlpreview.github.io/?https://github.com/PumasAI/DataInterpolations.jl/
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -239,7 +239,7 @@ https://github.com/JuliaImages/ImageFiltering.jl
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -370,7 +370,7 @@ IEEE Signal Processing Magazine 28, 111–117. https://doi.org/10.1109/MSP.2011.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -441,7 +441,7 @@ Each row of `X` is divide by its norm.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -497,7 +497,7 @@ Keyword arguments:
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
