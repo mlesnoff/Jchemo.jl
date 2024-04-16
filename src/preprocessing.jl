@@ -70,8 +70,7 @@ end
 
 """
     fdif(X; kwargs...)
-Finite differences (discrete derivates) for each 
-    row of X-data. 
+Finite differences (discrete derivates) for each row of X-data. 
 * `X` : X-data (n, p).
 Keyword arguments:
 * `npoint` : Nb. points involved in the window for the 

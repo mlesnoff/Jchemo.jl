@@ -1,5 +1,10 @@
 # New
 
+## *Version 0.4.1*
+
+- Modifications
+    - Code cleaning.
+
 ## *Version 0.4.0*
 
 **Warning:** Major breaking changes with versions 0.3. The embedded syntax 
