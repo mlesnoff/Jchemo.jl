@@ -1,5 +1,4 @@
 """
-    rmgap(; kwargs...)
     rmgap(X; kwargs...)
 Remove vertical gaps in spectra (e.g. for ASD).  
 * `X` : X-data (n, p).
