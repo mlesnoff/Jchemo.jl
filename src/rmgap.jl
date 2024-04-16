@@ -24,8 +24,8 @@ db = joinpath(path_jdat, "data/asdgap.jld2")
 @load db dat
 pnames(dat)
 X = dat.X
-wlstr = names(dat.X)
-wl = parse.(Float64, wlstr)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
 
 wl_target = [1000 ; 1800] 
 indexcol = findall(in(wl_target).(wl))
@@ -35,7 +35,7 @@ vlines!(ax, wl_target; linestyle = :dot, color = (:grey, .8))
 f
 
 ## Corrected data
-mod = rmgap(; npoint = 5, indexcol)
+mod = model(rmgap; npoint = 5, indexcol)
 fit!(mod, X)
 Xc = transf(mod, X)
 f, ax = plotsp(Xc, wl)
