@@ -488,8 +488,7 @@ end
 
 """
     snv(X; kwargs...)
-Standard-normal-variate (SNV) transformation of each 
-    row of X-data.
+Standard-normal-variate (SNV) transformation of each row of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `centr` : Boolean indicating if the centering in done.
