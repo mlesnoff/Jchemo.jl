@@ -423,7 +423,7 @@ function transf!(object::Savgol, X::Matrix)
     out = similar(X, p)
     @inbounds for i = 1:n
         ## convolution with "replicate" padding
-        imfilter!(out, vrow(X, i),reflect(zkern))
+        imfilter!(out, vrow(X, i), reflect(zkern))
         X[i, :] .= out
     end
     ## Not faster
