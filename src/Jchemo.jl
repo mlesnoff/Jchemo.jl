@@ -5,7 +5,7 @@ using DecisionTree
 using Distributions
 using DataFrames
 using Distances
-using ImageFiltering      # convolutions in preprocessing (mavg, savgol)
+using ImageFiltering      # convolutions in preprocessing (mavg, savgol), alternative = DSP.jl
 using LIBSVM 
 using LinearAlgebra
 using Makie
