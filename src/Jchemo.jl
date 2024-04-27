@@ -1,12 +1,11 @@
 module Jchemo  # Start-Module
 
-using DataInterpolations
+using DataInterpolations  # 1D interpolations (interpl) 
 using DecisionTree
 using Distributions
 using DataFrames
 using Distances
-using ImageFiltering     # convolutions in preprocessing (mavg, savgol)
-using Interpolations
+using ImageFiltering      # convolutions in preprocessing (mavg, savgol)
 using LIBSVM 
 using LinearAlgebra
 using Makie
@@ -14,7 +13,7 @@ using NearestNeighbors
 using Random
 using SparseArrays 
 using Statistics
-using StatsBase          # countmap, ecdf, sample etc.
+using StatsBase           # countmap, ecdf, sample etc.
 
 ## The order below is required
 include("_structures_param.jl")
