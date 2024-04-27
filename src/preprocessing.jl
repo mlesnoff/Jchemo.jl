@@ -150,7 +150,7 @@ The function implements a cubic spline interpolation using
 package DataInterpolations.jl.
 
 ## References
-Package Interpolations.jl
+Package DAtaInterpolations.jl
 https://github.com/PumasAI/DataInterpolations.jl
 https://htmlpreview.github.io/?https://github.com/PumasAI/DataInterpolations.jl/blob/v2.0.0/example/DataInterpolations.html
 
@@ -285,7 +285,7 @@ function transf!(object::Mavg, X::Matrix)
     kern = ImageFiltering.centered(ones(npoint) / npoint) 
     out = similar(X, p) 
     @inbounds for i = 1:n
-        imfilter!(out, vrow(X, i), kern)
+        ImageFiltering.imfilter!(out, vrow(X, i), kern)
         X[i, :] .= out
     end
     # Not faster
@@ -423,7 +423,7 @@ function transf!(object::Savgol, X::Matrix)
     out = similar(X, p)
     @inbounds for i = 1:n
         ## convolution with "replicate" padding
-        imfilter!(out, vrow(X, i), reflect(zkern))
+        ImageFiltering.imfilter!(out, vrow(X, i), reflect(zkern))
         X[i, :] .= out
     end
     ## Not faster
