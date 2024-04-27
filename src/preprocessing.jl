@@ -517,7 +517,6 @@ Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
 plotsp(Xptrain).f
 plotsp(Xptest).f
-
 ```
 """ 
 function snv(X; kwargs...)
