@@ -295,12 +295,12 @@ function transf!(object::Mavg, X::Matrix)
 end
 
 """ 
-    savgk(nhwindow::Int, deriv::Int, degree::Int)
+    savgk(nhwindow::Int, degree::Int, deriv::Int)
 Compute the kernel of the Savitzky-Golay filter.
 * `nhwindow` : Nb. points (>= 1) of the half window.
-* `deriv` : Derivation order, where 0 <= `deriv` <= degree.
 * `degree` : Degree of the smoothing polynom, where
    1 <= `degree` <= 2 * nhwindow.
+* `deriv` : Derivation order, where 0 <= `deriv` <= degree.
 
 The size of the kernel is odd (npoint = 2 * nhwindow + 1): 
 * x[-nhwindow], x[-nhwindow+1], ..., x[0], ...., x[nhwindow-1], x[nhwindow].
@@ -324,18 +324,18 @@ res.G
 res.kern
 ```
 """ 
-function savgk(nhwindow::Int, deriv::Int, degree::Int)
+function savgk(nhwindow::Int, degree::Int, deriv::Int)
     @assert nhwindow >= 1 "Argument 'nhwindow' must be >= 1."
     @assert 1 <= degree <= 2 * nhwindow "Argument 'degree' must agree with: 1 <= 'degree' <= 2 * 'nhwindow'."
     @assert 0 <= deriv <= degree "Argument 'deriv' must agree with: 0 <= 'deriv' <= 'degree'."
     npoint = 2 * nhwindow + 1
-    S = zeros(Int(npoint), Int(degree) + 1) ;
+    S = zeros(Int, npoint, degree + 1) ;
     u = collect(-nhwindow:nhwindow)
     @inbounds for j in 0:degree
         S[:, j + 1] .= u.^j
     end
     G = S * inv(S' * S)
-    kern = factorial(deriv) * vcol(G, deriv + 1)
+    kern = (-1)^deriv * factorial(deriv) * vcol(G, deriv + 1) # = h_d in Luo et al. 2005 Eq.5
     (S = S, G = G, kern = kern)
 end
 
@@ -347,9 +347,9 @@ Keyword arguments:
 * `npoint` : Size of the filter (nb. points involved in 
     the kernel). Must be odd and >= 3. The half-window size is 
     nhwindow = (`npoint` - 1) / 2.
-* `deriv` : Derivation order. Must be: 0 <= `deriv` <= `degree`.
 * `degree` : Degree of the smoothing polynom.
     Must be: 1 <= `degree` <= `npoint` - 1.
+* `deriv` : Derivation order. Must be: 0 <= `deriv` <= `degree`.
 
 The smoothing is computed by convolution (with padding), using 
 function imfilter of package ImageFiltering.jl. Each returned point is 
@@ -384,8 +384,8 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-npoint = 11 ; deriv = 2 ; degree = 2
-mod = model(savgol; npoint, deriv, degree) 
+npoint = 11 ; degree = 2 ; deriv = 2
+mod = model(savgol; npoint, degree, deriv) 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
@@ -411,24 +411,27 @@ function transf(object::Savgol, X)
     X
 end
 
-function transf!(object::Savgol, X::Matrix)
+function transf2!(object::Jchemo.Savgol, X::Matrix)
     npoint = object.par.npoint 
     @assert isodd(npoint) && npoint >= 3 "Argument 'npoint' must be odd and >= 3."
     n, p = size(X)
-    deriv = object.par.deriv
     degree = object.par.degree
     nhwindow = Int((npoint - 1) / 2)
-    kern = savgk(nhwindow, deriv, degree).kern
-    zkern = ImageFiltering.centered(kern)
-    out = similar(X, p)
+    deriv = object.par.deriv
+    kern = savgk2(nhwindow, degree, deriv).kern
+    kernc = ImageFiltering.centered(kern)
+    x = similar(X, p)
     @inbounds for i = 1:n
-        ## convolution with "replicate" padding
-        ImageFiltering.imfilter!(out, vrow(X, i), reflect(zkern))
-        X[i, :] .= out
+        ## Convolution with "replicate" padding
+        ImageFiltering.imfilter!(x, vrow(X, i), reflect(kernc))
+        X[i, :] .= x
+        ## Alternatves not fasters (~ same)
+        #ImageFiltering.imfilter!(X[i, :], vrow(X, i), reflect(kernc))
+        #ImageFiltering.imfilter!(vrow(X, i), vrow(X, i), reflect(kernc))
     end
     ## Not faster
     #@Threads.threads for i = 1:n
-    #    X[i, :] .= imfilter(vrow(X, i), reflect(zkern))
+    #    X[i, :] .= imfilter(vrow(X, i), reflect(kernc))
     #end
 end
 
