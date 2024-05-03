@@ -317,7 +317,7 @@ https://doi.org/10.1016/j.sigpro.2005.02.002
 
 ## Examples
 ```julia
-res = savgk(21, 2, 3)
+res = savgk(21, 3, 2)
 pnames(res)
 res.S 
 res.G 

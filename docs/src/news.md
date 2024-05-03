@@ -2,6 +2,10 @@
 
 ## *Version 0.4.1*
 
+
+- Breaking
+    - **savgk**: order of arguments have changed. 
+
 - Modifications
     - Code cleaning.
 
@@ -18,7 +22,7 @@ has changed, with the use of the new function **model**:
 ## *Version 0.3.7*
 
 - News 
-    - **aggsum** Compute sub-total sums by class for a categorical variable.
+    - **aggsum**: Compute sub-total sums by class for a categorical variable.
     - **findindex**: Replace a vector containg levels by the indexes of a set of levels.
     - **getknn**: Add of angular and correlation distances.
     - **kplslda**, **kplsqda**, **kplskdeda**: Kernel PLS-LDA, PLS-QDA, PLS-KDEDA.
