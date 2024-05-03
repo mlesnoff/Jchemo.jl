@@ -411,14 +411,14 @@ function transf(object::Savgol, X)
     X
 end
 
-function transf2!(object::Jchemo.Savgol, X::Matrix)
+function transf!(object::Savgol, X::Matrix)
     npoint = object.par.npoint 
     @assert isodd(npoint) && npoint >= 3 "Argument 'npoint' must be odd and >= 3."
     n, p = size(X)
     degree = object.par.degree
     nhwindow = Int((npoint - 1) / 2)
     deriv = object.par.deriv
-    kern = savgk2(nhwindow, degree, deriv).kern
+    kern = savgk(nhwindow, degree, deriv).kern
     kernc = ImageFiltering.centered(kern)
     x = similar(X, p)
     @inbounds for i = 1:n
