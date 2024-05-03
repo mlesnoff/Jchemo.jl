@@ -391,6 +391,22 @@ Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
 plotsp(Xptrain).f
 plotsp(Xptest).f
+
+####### Gaussian signal 
+
+u = -15:.1:15
+n = length(u)
+x = exp.(-.5 * u.^2) / sqrt(2 * pi) + .03 * randn(n)
+M = 10  # half window
+N = 3   # degree
+deriv = 0
+#deriv = 1
+mod = model(savgol; npoint = 2M + 1, degree = N, deriv)
+fit!(mod, x')
+xp = transf(mod, x')
+f, ax = plotsp(x', u; color = :blue)
+lines!(ax, u, vec(xp); color = :red)
+f
 ```
 """ 
 function savgol(X; kwargs...)
