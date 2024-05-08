@@ -21,7 +21,7 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
 DataFrames = "1"
-DataInterpolations = "4"
+DataInterpolations = "4, 5"
 DecisionTree = "0.12"
 Distances = "0.10"
 Distributions = "0.25"
