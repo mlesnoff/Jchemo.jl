@@ -1,7 +1,12 @@
 # New
 
-## *Version 0.4.1*
+## *Version 0.4.2*
 
+- Modifications
+    - Code cleaning.
+
+
+## *Version 0.4.1*
 
 - Breaking
     - **savgk**: order of arguments have changed. 
