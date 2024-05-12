@@ -5,7 +5,6 @@
 - Modifications
     - Code cleaning.
 
-
 ## *Version 0.4.1*
 
 - Breaking
