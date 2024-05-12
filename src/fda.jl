@@ -60,9 +60,9 @@ ytest = y[s.test]
 tab(ytrain)
 tab(ytest)
 
-nlv = 2 ; scal = false
-mod = model(fda; nlv, scal)
-#mod = model(fdasvd; nlv, scal)
+nlv = 2
+mod = model(fda; nlv)
+#mod = model(fdasvd; nlv)
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -126,14 +126,12 @@ function fda!(X::Matrix, y, weights; kwargs...)
         res.W .+= lb .* I(p)    # @. does not work with I
     end
     zres = matB(X, y, weights)
-    Winv = LinearAlgebra.inv!(cholesky(Hermitian(res.W))) 
+    Winv = LinearAlgebra.inv!(cholesky(Hermitian(res.W)))
     ## Winv * B is not symmetric
     fm = eigen!(Winv * zres.B; sortby = x -> -abs(x))
     nlv = min(par.nlv, n, p, nlev - 1)
-    P = fm.vectors[:, 1:nlv]
-    eig = fm.values
-    P = real.(P)
-    eig = real.(eig)
+    P = real.(fm.vectors[:, 1:nlv])
+    eig = real.(fm.values)
     sstot = sum(eig)
     norm_P = sqrt.(diag(P' * res.W * P))
     fscale!(P, norm_P)
