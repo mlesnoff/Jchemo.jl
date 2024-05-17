@@ -1,8 +1,8 @@
 """
-    sampwsp(X, dcri; maxit = nro(X))
+    sampwsp(X, dmin; maxit = nro(X))
 Build training vs. test sets by WSP sampling.  
 * `X` : X-data (n, p).
-* `dcri` :
+* `dmin` : Distance "dmin" (Santiago et al. 2012).
 Keyword arguments: 
 * `maxit` : Maximum number of iterations.
 
@@ -29,14 +29,14 @@ Chimiométrie 2010 113, 26–31. https://doi.org/10.1016/j.chemolab.2011.06.003
 ```julia
 n = 600 ; p = 2
 X = rand(n, p)
-dcri = .5
-s = sampwsp(X, dcri)
+dmin = .5
+s = sampwsp(X, dmin)
 pnames(res)
 @show length(s.test)
 plotxy(X[s.test, 1], X[s.test, 2]).f
 ```
 """ 
-function sampwsp(X, dcri; maxit = nro(X))
+function sampwsp(X, dmin; maxit = nro(X))
     X = ensure_mat(X)
     n, p = size(X)
     indX = collect(1:n)
@@ -52,7 +52,7 @@ function sampwsp(X, dcri; maxit = nro(X))
     iter = 1
     while (n > 1) && (iter < maxit) 
         res = getknn(X, x; k = n)
-        s = res.d[1] .> dcri
+        s = res.d[1] .> dmin
         v = res.ind[1][s]  # new {reference point + candidates}
         if length(v) > 0
             s1 = v[1]
