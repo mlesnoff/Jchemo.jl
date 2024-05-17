@@ -2,6 +2,9 @@
 
 ## *Version 0.4.2*
 
+- News 
+    - **sampwsp**: Build training vs. test sets by WSP sampling.
+
 - Modifications
     - Code cleaning.
 
