@@ -317,6 +317,7 @@
 
 - **sampks** Kennard-Stone 
 - **sampdp** Duplex  
+- **sampwsp** WSP
 
 ## PLOTTING
 
