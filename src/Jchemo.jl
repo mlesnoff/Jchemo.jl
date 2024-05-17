@@ -223,6 +223,7 @@ include("eposvd.jl")
 
 include("sampks.jl")
 include("sampdp.jl")
+include("sampwsp.jl")
 include("samprand.jl")
 include("sampsys.jl")
 include("sampcla.jl")
@@ -411,7 +412,7 @@ export
     selwold,
     conf, 
     ######---- Sampling
-    sampks, sampdp, samprand, sampsys, sampcla, 
+    sampks, sampdp, sampwsp, samprand, sampsys, sampcla, 
     sampdf,
     ######---- Distances
     getknn, wdist, wdist!,
