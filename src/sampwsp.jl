@@ -11,8 +11,8 @@ Two outputs (= row indexes of the data) are returned:
 * `test` (k). 
 
 Output `test` is built from the "Wootton, Sergent, Phan-Tan-Luu" (WSP) 
-algorithm, assumed to generate samples uniformely distributed in the domain 
-space (Santiago et al. 2012).
+algorithm, assumed to generate samples uniformely distributed in the `X` domain 
+(Santiago et al. 2012).
 
 ## References
 
