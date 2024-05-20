@@ -119,11 +119,12 @@ function selwold(indx, r; smooth = true, npoint = 5, alpha = .05, digits = 3, gr
     end
     ## End
     opt = indx[r .== minimum(r)][1]
-    sel = rmrow(indx, n)[Rs .< alpha][1]
-    if ismissing(sel)
-        sel = opt
+    sbool = Rs .< alpha
+    if sum(sbool) == 0 
+        sel = copy(opt)
+    else 
+        sel = min(opt, rmrow(indx, n)[sbool][1])
     end
-    sel = min(opt, sel)
     res = DataFrame(:indx => indx, :r => r, :diff => [-zdiff; missing])
     res.R = [round.(R, digits = digits); missing]
     res.Rs = [round.(Rs, digits = digits); missing]
