@@ -171,8 +171,8 @@ function predict(object::Lwplsr, X; nlv = nothing)
         res = getknn(object.fm.T, transf(object.fm, X); metric, k) 
     end
     listw = copy(res.d)
-    Threads.@threads for i = 1:m
     #@inbounds for i = 1:m
+    Threads.@threads for i = 1:m
         w = wdist(res.d[i]; h, criw, squared)
         w[w .< tolw] .= tolw
         listw[i] = w
