@@ -24,8 +24,8 @@ function locw(Xtrain, Ytrain, X; listnn, listw = nothing, fun, verbose = false,
     m = nro(X)
     q = nco(Ytrain)
     pred = similar(Ytrain, m, q)
-    Threads.@threads for i = 1:m
     #@inbounds for i = 1:m
+    Threads.@threads for i = 1:m
         verbose ? print(i, " ") : nothing
         s = listnn[i]
         length(s) == 1 ? s = (s:s) : nothing
