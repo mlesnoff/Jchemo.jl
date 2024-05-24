@@ -103,8 +103,7 @@ function predict(object::Lwmlr, X)
     tolw = object.par.tolw
     criw = object.par.criw
     squared = object.par.squared
-    res = getknn(object.X, X; 
-        metric, k)
+    res = getknn(object.X, X; metric, k)
     listw = copy(res.d)
     Threads.@threads for i = 1:m
         w = wdist(res.d[i]; h, criw, squared)
