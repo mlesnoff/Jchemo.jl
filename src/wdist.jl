@@ -69,9 +69,8 @@ function wdist(d; h = 2, criw = 4, squared = false)
     w
 end
 
-function wdist!(d; h = 2, criw = 4, 
-        squared = false)
-    squared ? d = d.^2 : nothing
+function wdist!(d; h = 2, criw = 4, squared = false)
+    squared ? d .= d.^2 : nothing
     zmed =  Statistics.median(d)
     zmad = Jchemo.mad(d)
     cutoff = zmed + criw * zmad

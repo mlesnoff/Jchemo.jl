@@ -50,7 +50,8 @@ function sampwsp(X, dmin; recod = true, maxit = nro(X))
         xmeans = repeat([.5], p)
     else
         zX = copy(X)
-        xmeans = colmean(zX)
+        #xmeans = colmean(zX)
+        xmeans = repeat([.5], p)
     end
     s = getknn(zX, xmeans'; k = 1).ind[1][1]
     x .= vrow(zX, s:s)
