@@ -1,9 +1,11 @@
 """
-    sampwsp(X, dmin; maxit = nro(X))
+    sampwsp(X, dmin; recod = false, maxit = nro(X))
 Build training vs. test sets by WSP sampling.  
 * `X` : X-data (n, p).
 * `dmin` : Distance "dmin" (Santiago et al. 2012).
 Keyword arguments: 
+* `recod` : Boolean indicating if `X` is recoded or not 
+    before the sampling (see below).
 * `maxit` : Maximum number of iterations.
 
 Two outputs (= row indexes of the data) are returned: 
@@ -13,6 +15,13 @@ Two outputs (= row indexes of the data) are returned:
 Output `test` is built from the "Wootton, Sergent, Phan-Tan-Luu" (WSP) 
 algorithm, assumed to generate samples uniformely distributed in the `X` domain 
 (Santiago et al. 2012).
+
+If `recod = true`, each column x of `X` is recoded within [0, 1] and the center of 
+the domain is the vector `repeat([.5], p)`. Column x is recoded such as: 
+* vmin = minimum(x)
+* vmax = maximum(x)
+* vdiff = vmax - vmin
+* x .=  0.5 .+ (x .- (vdiff / 2 + vmin)) / vdiff
 
 ## References
 
@@ -36,7 +45,7 @@ pnames(res)
 plotxy(X[s.test, 1], X[s.test, 2]).f
 ```
 """ 
-function sampwsp(X, dmin; recod = true, maxit = nro(X))
+function sampwsp(X, dmin; recod = false, maxit = nro(X))
     X = ensure_mat(X)
     n, p = size(X)
     indX = collect(1:n)
@@ -50,8 +59,8 @@ function sampwsp(X, dmin; recod = true, maxit = nro(X))
         xmeans = repeat([.5], p)
     else
         zX = copy(X)
-        #xmeans = colmean(zX)
-        xmeans = repeat([.5], p)
+        xmeans = colmean(zX)
+        #xmeans = repeat([.5], p)
     end
     s = getknn(zX, xmeans'; k = 1).ind[1][1]
     x .= vrow(zX, s:s)
