@@ -229,16 +229,16 @@ Keyword arguments:
 See function `mlr` for examples.
 """ 
 function mlrvec(x, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    Q = eltype(x[1, 1])
+    weights = mweight(ones(Q, nro(x)))
     mlrvec(x, Y, weights; kwargs...)
 end
 
 function mlrvec(x, Y, weights::Weight; kwargs...)
-    mlrvec!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+    mlrvec!(copy(ensure_mat(x)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function mlrvec!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function mlrvec!(x::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs)
     @assert nco(x) == 1 "Method only working for univariate x."
     if par.noint
