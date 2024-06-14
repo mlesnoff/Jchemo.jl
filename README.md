@@ -39,8 +39,8 @@ See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for detai
 ### Syntax
 
 Two syntaxes are allowed for **transformers** and **predictors**:
-- the direct syntax (the same as for versions <= 0.2.4),
-- and the **embedded** syntax, using function `model`. 
+1. the direct syntax (the same as for versions <= 0.2.4),
+2. the **embedded** syntax, using function `model`. 
 
 The **embedded** syntax is intended to make easier the building of ad'hoc pipelines (chains) of models, and is now favored. Only this embbeded syntax is given in the examples (**help pages** of the functions). 
 
