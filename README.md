@@ -28,8 +28,8 @@ Ad'hoc **pipelines** can also be built. In **Jchemo**, a pipeline is a **chain o
 The pipelines are built with function `pip`.
 
 **Warnings** 
-- A breaking change has been made between **version 0.3.7** and **version 0.4.0** for the embedded syntax, with the use of the new function **model**. For instance: 
-    - *mod = plskern(; nlv = 15)* is now writen as *mod = model(plskern; nlv = 15)*. Other things have not changed.
+- A breaking change has been made between **version 0.3.7** and **version 0.4.0** for the embedded syntax, with the use of the new function `model`. For instance: 
+    - `mod = plskern(; nlv = 15)` is now writen as `mod = model(plskern; nlv = 15)`. Other things have not changed.
 - Major breaking changes were made between **version 0.2.4** and **version 0.3.0**. Mainly, a new **embedded syntax** was proposed.
 
 See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for details.  
@@ -40,7 +40,7 @@ See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for detai
 
 Two syntaxes are allowed for **transformers** and **predictors**:
 - the direct syntax (the same as for versions <= 0.2.4),
-- and the **embedded** syntax, using function **model**. 
+- and the **embedded** syntax, using function `model`. 
 
 The **embedded** syntax is intended to make easier the building of ad'hoc pipelines (chains) of models, and is now favored. Only this embbeded syntax is given in the examples (**help pages** of the functions). 
 
