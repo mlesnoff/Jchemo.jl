@@ -39,6 +39,7 @@ include("ellipse.jl")
 include("matW.jl")
 include("nipals.jl")
 include("nipalsmiss.jl")
+include("simpp.jl")
 include("snipals.jl")
 include("snipalsh.jl")
 include("snipalsmix.jl")
@@ -279,7 +280,8 @@ export
     replacedict, 
     rmcol, rmrow, 
     rowmean, rownorm, rowstd, rowsum, rowvar,
-    rowmeanskip, rowstdskip, rowsumskip, rowvarskip,   
+    rowmeanskip, rowstdskip, rowsumskip, rowvarskip,
+    simppbin, simpphub, simpplc, simppsph,   
     snipals, snipalsh, snipalsmix,
     soft,
     softmax,
