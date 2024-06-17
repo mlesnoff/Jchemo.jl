@@ -1,16 +1,17 @@
 """
     outstah(X, a; kwargs...)
+    outstah!(X::Matrix, P::Matrix; kwargs...)
 Compute the Stahel-Donoho outlierness.
 * `X` : X-data (n, p).
 * `a` : Nb. dimensions simulated for the 
     projection pursuit method.
 Keyword arguments:
-* `scal` : Boolean. If `true`, matrix `X` is centred 
+* `scal` : Boolean. If `true`, each column of `X` is centred 
     (by median) and scaled (by MAD) before computing 
     the outlierness.
 
-See Maronna and Yohai 1995 for details on the 
-outlierness measure. 
+See Maronna and Yohai 1995 for details on the outlierness 
+measure. 
 
 This outlierness measure is computed from a projection-pursuit 
 approach:
@@ -42,11 +43,14 @@ res.d
 plotxy(1:nro(X), res.d).f
 ```
 """ 
-function outstah(X, P; kwargs...) 
+function outstah(X, P; kwargs...)
+    outstah!(copy(ensure_mat(X)), ensure_mat(X); kwargs...)
+end
+
+function outstah!(X::Matrix, P::Matrix; kwargs...) 
     par = recovkwargs(Par, kwargs)
-    zX = copy(ensure_mat(X))  # for inplace if scal
-    Q = eltype(zX)
-    n, p = size(zX)
+    Q = eltype(X)
+    n, p = size(X)
     mu_scal = zeros(Q, p)
     s_scal = ones(Q, p) 
     if par.scal
@@ -54,8 +58,8 @@ function outstah(X, P; kwargs...)
         s_scal .= colmad(zX)
         fcscale!(zX, mu_scal, s_scal)
     end
-    #T = zX * P
-    T = zX * fscale(P, colnorm(P))
+    T = X * P  # scaling P by colnorm(P) has no effect on d and T
+    #T = X * fscale(P, colnorm(P))
     mu = colmed(T)
     s = colmad(T)
     fcscale!(T, mu, s)

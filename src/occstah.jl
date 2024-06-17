@@ -99,7 +99,9 @@ f
 function occstah(X; kwargs...) 
     par = recovkwargs(Par, kwargs) 
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
-    res = outstah(X, par.nlv; scal = par.scal)
+    p = nco(X)
+    P = rand(0:1, p, par.nlv)
+    res = outstah(X, P; scal = par.scal)
     d = res.d
     #d2 = d.^2 
     #mu = median(d2)
