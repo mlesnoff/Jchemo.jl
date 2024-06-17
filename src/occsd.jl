@@ -67,7 +67,7 @@ db = joinpath(path_jdat, "data/challenge2018.jld2")
 pnames(dat)
 X = dat.X    
 Y = dat.Y
-mod = savgol(npoint = 21, deriv = 2, degree = 3)
+mod = model(savgol; npoint = 21, deriv = 2, degree = 3)
 fit!(mod, X) 
 Xp = transf(mod, X) 
 s = Bool.(Y.test)
