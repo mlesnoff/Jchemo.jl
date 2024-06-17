@@ -1,21 +1,29 @@
-function pcapp(X, weights::Weight; kwargs...)
-    pcapp!(copy(ensure_mat(X)), weights; 
-        kwargs...)
+function pcapp(X, weights::Weight; rob = true, kwargs...)
+    pcapp!(copy(ensure_mat(X)), weights; rob, kwargs...)
 end
 
-function pcapp!(X::Matrix, weights::Weight; kwargs...)
+function pcapp!(X::Matrix, weights::Weight; rob = true, kwargs...)
     par = recovkwargs(Par, kwargs) 
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
-    xmeans = colmean(X, weights) 
+    if rob 
+        fcolmean = colmean
+        fcolsdt = colstd
+    else 
+        fcolmean = colmean
+        fcolstd = colmad
+    end
+    xmeans = fcolmean(X, weights) 
     xscales = ones(Q, p)
     if par.scal 
-        xscales .= colstd(X, weights)
+        xscales .= fcolstd(X, weights)
         fcscale!(X, xmeans, xscales)
     else
         fcenter!(X, xmeans)
     end
+
+
     sqrtw = sqrt.(weights.w)
     X .= Diagonal(sqrtw) * X
     res = eigen!(Symmetric(X' * X); sortby = x -> -abs(x)) 
