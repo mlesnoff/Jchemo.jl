@@ -9,10 +9,10 @@ Keyword arguments:
 * `cri` : When `mcut` = `:mad`, a constant. See thereafter.
 * `risk` : When `mcut` = `:q`, a risk-I level. See thereafter.
 * `scal` : Boolean. If `true`, each column of `X` 
-    is scaled such as in function `stah`.
+    is scaled such as in function `outstah`.
 
 In this method, the outlierness `d` of a given observation
-is the Stahel-Donoho outlierness (see `?stah`).
+is the Stahel-Donoho outlierness (see `?outstah`).
 
 See function `occsd` for details on outputs.
 
@@ -99,7 +99,7 @@ f
 function occstah(X; kwargs...) 
     par = recovkwargs(Par, kwargs) 
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
-    res = stah(X, par.nlv; scal = par.scal)
+    res = outstah(X, par.nlv; scal = par.scal)
     d = res.d
     #d2 = d.^2 
     #mu = median(d2)

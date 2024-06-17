@@ -2,6 +2,9 @@
 
 ## *Version 0.4.3*
 
+- Breaking
+    - **stah**: renamed to **outstah** and improved. 
+
 - Modifications
     - Code cleaning.
 

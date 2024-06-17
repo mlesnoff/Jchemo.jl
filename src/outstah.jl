@@ -1,5 +1,5 @@
 """
-    stah(X, a; kwargs...)
+    outstah(X, a; kwargs...)
 Compute the Stahel-Donoho outlierness.
 * `X` : X-data (n, p).
 * `a` : Nb. dimensions simulated for the 
@@ -36,13 +36,13 @@ X = vcat(X1, X2)
 a = 10
 scal = false
 #scal = true
-res = stah(X, a; scal) ;
+res = outstah(X, a; scal) ;
 pnames(res)
 res.d
 plotxy(1:nro(X), res.d).f
 ```
 """ 
-function stah(X, a; kwargs...) 
+function outstah(X, a; kwargs...) 
     par = recovkwargs(Par, kwargs)
     zX = copy(ensure_mat(X))  # for inplace if scal
     Q = eltype(zX)

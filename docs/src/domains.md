@@ -216,7 +216,7 @@
 - **occsdod** Compromise between SD and OD (*aka* Simca approach) 
 
 *Other methods*
-- **stah** Compute Stahel-Donoho outlierness
+- **outstah** Compute Stahel-Donoho outlierness
 - **occstah** Stahel-Donoho outlierness
 
 ## DISTRIBUTIONS

@@ -9,7 +9,7 @@ function pcapp!(X::Matrix, weights::Weight; rob = true, kwargs...)
     nlv = min(par.nlv, n, p)
     if rob 
         fcolmean = colmean
-        fcolsdt = colstd
+        fcolstd = colstd
     else 
         fcolmean = colmean
         fcolstd = colmad
