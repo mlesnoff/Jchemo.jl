@@ -3,22 +3,19 @@
     outstah!(X::Matrix, P::Matrix; kwargs...)
 Compute the Stahel-Donoho outlierness.
 * `X` : X-data (n, p).
-* `a` : Nb. dimensions simulated for the 
-    projection pursuit method.
+* `P` : A projection matrix (p, nlv) representing the directions 
+    of the projection pursuit.
 Keyword arguments:
-* `scal` : Boolean. If `true`, each column of `X` is centred 
-    (by median) and scaled (by MAD) before computing 
-    the outlierness.
+* `scal` : Boolean. If `true`, each column of `X` is scaled by MAD 
+    before computing the outlierness.
 
 See Maronna and Yohai 1995 for details on the outlierness 
 measure. 
 
-This outlierness measure is computed from a projection-pursuit 
-approach:
-* A projection matrix `P` (p,  `a `) is built randomly 
-    from binary (0/1) data, 
-* and the observations (rows of `X`) are projected on 
-    the  `a` directions.
+A projection-pursuit approach is used: given a projection matrix `P` (p, nlv) 
+(in general built randomly), the observations (rows of `X`) are projected on 
+the `nlv` directions and the outlierness is computed for each observation 
+from these projections.
 
 ## References
 Maronna, R.A., Yohai, V.J., 1995. The Behavior of the 
@@ -34,12 +31,13 @@ X1 = randn(n, p)
 X2 = randn(m, p) .+ rand(1:3, p)'
 X = vcat(X1, X2)
 
-a = 10
+nlv = 10
+P = rand(0:1, p, nlv)
 scal = false
 #scal = true
-res = outstah(X, a; scal) ;
+res = outstah(X, P; scal) ;
 pnames(res)
-res.d
+res.d  # outlierness 
 plotxy(1:nro(X), res.d).f
 ```
 """ 
