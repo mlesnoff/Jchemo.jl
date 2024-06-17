@@ -4,8 +4,8 @@ One-class classification using the Stahel-Donoho outlierness.
 * `X` : Training X-data (n, p).
 Keyword arguments:
 * `nlv` : Nb. dimensions on which `X` is projected. 
-* `mcut` : Type of cutoff. Possible values are: `:mad`, 
-    `:q`. See Thereafter.
+* `mcut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
+    See Thereafter.
 * `cri` : When `mcut` = `:mad`, a constant. See thereafter.
 * `risk` : When `mcut` = `:q`, a risk-I level. See thereafter.
 * `scal` : Boolean. If `true`, each column of `X` 
@@ -117,7 +117,7 @@ function occstah(X; kwargs...)
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
-    Occstah(d, res, e_cdf, cutoff)
+    Occstah(d, res, P, e_cdf, cutoff)
 end
 
 """
@@ -127,12 +127,11 @@ Compute predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Occstah, X)
-    zX = copy(ensure_mat(X))
+    zX = copy(ensure_mat(X))  # for fscale!
     m = nro(zX)
     res = object.res_stah
-    fcenter!(zX, res.mu_scal)
     fscale!(zX, res.s_scal)
-    T = zX * res.P
+    T = zX * object.P
     fcenter!(T, res.mu)
     fscale!(T, res.s)
     T .= abs.(T)
@@ -141,8 +140,7 @@ function predict(object::Occstah, X)
         d[i] = maximum(vrow(T, i))
     end
     p_val = pval(object.e_cdf, d)
-    d = DataFrame(d = d, 
-        dstand = d / object.cutoff, pval = p_val)
+    d = DataFrame(d = d, dstand = d / object.cutoff, pval = p_val)
     pred = [if d.dstand[i] <= 1 "in" else "out" end for i = 1:m]
     pred = reshape(pred, m, 1)
     (pred = pred, d)

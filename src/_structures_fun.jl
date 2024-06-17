@@ -656,6 +656,7 @@ end
 struct Occstah
     d::DataFrame
     res_stah::NamedTuple
+    P::Matrix
     e_cdf::ECDF
     cutoff::Real
 end

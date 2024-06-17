@@ -44,19 +44,17 @@ plotxy(1:nro(X), res.d).f
 ```
 """ 
 function outstah(X, P; kwargs...)
-    outstah!(copy(ensure_mat(X)), ensure_mat(X); kwargs...)
+    outstah!(copy(ensure_mat(X)), ensure_mat(P); kwargs...)
 end
 
 function outstah!(X::Matrix, P::Matrix; kwargs...) 
     par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     n, p = size(X)
-    mu_scal = zeros(Q, p)
     s_scal = ones(Q, p) 
     if par.scal
-        mu_scal .= colmed(zX)
-        s_scal .= colmad(zX)
-        fcscale!(zX, mu_scal, s_scal)
+        s_scal .= colmad(X)
+        fscale!(X, s_scal)
     end
     T = X * P  # scaling P by colnorm(P) has no effect on d and T
     #T = X * fscale(P, colnorm(P))
@@ -68,7 +66,7 @@ function outstah!(X::Matrix, P::Matrix; kwargs...)
     @inbounds for i = 1:n
         d[i] = maximum(vrow(T, i))
     end
-    (d = d, T, mu_scal, s_scal, mu, s)
+    (d = d, T, s_scal, mu, s)
 end
 
 

@@ -5,8 +5,8 @@ One-class classification using PCA/PLS score distance (SD).
     (object `fm`) on the training data assumed to represent 
     the training class.
 Keyword arguments:
-* `mcut` : Type of cutoff. Possible values are: `:mad`, 
-    `:q`. See Thereafter.
+* `mcut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
+    See Thereafter.
 * `cri` : When `mcut` = `:mad`, a constant. See thereafter.
 * `risk` : When `mcut` = `:q`, a risk-I level. See thereafter.
 
@@ -151,8 +151,7 @@ function occsd(fm; kwargs...)
         nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
-    d = DataFrame(d = d, dstand = d / cutoff, 
-        pval = p_val, gh = d2 / nlv)
+    d = DataFrame(d = d, dstand = d / cutoff, pval = p_val, gh = d2 / nlv)
     Occsd(d, fm, Uinv, e_cdf, cutoff)
 end
 

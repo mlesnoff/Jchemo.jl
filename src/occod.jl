@@ -7,8 +7,8 @@ One-class classification using PCA/PLS orthognal distance (OD).
 * `X` : Training X-data (n, p), on which was fitted 
     the model `fm`.
 Keyword arguments:
-* `mcut` : Type of cutoff. Possible values are: `:mad`, 
-    `:q`. See Thereafter.
+* `mcut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
+    See Thereafter.
 * `cri` : When `mcut` = `:mad`, a constant. See thereafter.
 * `risk` : When `mcut` = `:q`, a risk-I level. See thereafter.
 
@@ -124,8 +124,7 @@ function occod(fm, X; kwargs...)
         nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
-    d = DataFrame(d = d, dstand = d / cutoff, 
-        pval = p_val)
+    d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
     Occod(d, fm, e_cdf, cutoff)
 end
 
