@@ -25,8 +25,7 @@ function pcaeigen(X; kwargs...)
 end
 
 function pcaeigen(X, weights::Weight; kwargs...)
-    pcaeigen!(copy(ensure_mat(X)), weights; 
-        kwargs...)
+    pcaeigen!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
 function pcaeigen!(X::Matrix, weights::Weight; kwargs...)
