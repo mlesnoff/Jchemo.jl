@@ -42,21 +42,21 @@ res.d
 plotxy(1:nro(X), res.d).f
 ```
 """ 
-function outstah(X, a; kwargs...) 
+function outstah(X, P; kwargs...) 
     par = recovkwargs(Par, kwargs)
     zX = copy(ensure_mat(X))  # for inplace if scal
     Q = eltype(zX)
     n, p = size(zX)
-    P = rand(0:1, p, a)
     mu_scal = zeros(Q, p)
     s_scal = ones(Q, p) 
     if par.scal
-        mu_scal .= vec(median(zX, dims = 1))
+        mu_scal .= colmed(zX)
         s_scal .= colmad(zX)
         fcscale!(zX, mu_scal, s_scal)
     end
-    T = zX * P
-    mu = vec(median(T, dims = 1))
+    #T = zX * P
+    T = zX * fscale(P, colnorm(P))
+    mu = colmed(T)
     s = colmad(T)
     fcscale!(T, mu, s)
     T .= abs.(T)
@@ -64,7 +64,7 @@ function outstah(X, a; kwargs...)
     @inbounds for i = 1:n
         d[i] = maximum(vrow(T, i))
     end
-    (d = d, P, mu_scal, s_scal, mu, s)
+    (d = d, T, mu_scal, s_scal, mu, s)
 end
 
 

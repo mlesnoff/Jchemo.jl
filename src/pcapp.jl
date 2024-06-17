@@ -8,11 +8,11 @@ function pcapp!(X::Matrix, weights::Weight; rob = true, kwargs...)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
     if rob 
-        fcolmean = colmean
-        fcolstd = colstd
+        fcolmean = Jchemo.colmedspa
+        fcolstd = colmad
     else 
         fcolmean = colmean
-        fcolstd = colmad
+        fcolstd = colstd
     end
     xmeans = fcolmean(X, weights) 
     xscales = ones(Q, p)
