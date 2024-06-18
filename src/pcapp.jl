@@ -10,11 +10,11 @@ function pcapp!(X::Matrix; rob = true, nsim = 50, kwargs...)
     if rob 
         fcolmean = Jchemo.colmedspa
         fcolstd = colmad
-        fobj = colstd
+        fobj = colmad
     else 
         fcolmean = colmean
         fcolstd = colstd
-        fobj = colmad
+        fobj = colstd
     end
     xmeans = fcolmean(X) 
     xscales = ones(Q, p)
@@ -24,14 +24,24 @@ function pcapp!(X::Matrix; rob = true, nsim = 50, kwargs...)
     else
         fcenter!(X, xmeans)
     end
+    T = similar(X, n, nlv)
+    P = similar(X, p, nlv)
+    t = similar(X, n)
+    zp = similar(X, p)
+    sv = similar(X, nsim)
     fsimpp = simppbin 
+    #fsimpp = simpphub
     for a = 1:nlv
-        P = fsimpp(X; nsim)
-        zT = X * P 
+        zP = fsimpp(X; nsim)  # variable nb. columns for simpphub
+        zT = X * zP 
         zobj = colstd(zT)
         s = findall(zobj .== maximum(zobj))[1]
-        sv = zobj[s]
-        T[:, a] = vcol(T, a)
+        sv[a] = zobj[s]
+        t .= vcol(zT, s)
+        zp .= vcol(zP, s)
+        T[:, a] = t
+        P[:, a] = zp
+        X .-= t * zp'
     end
     (T = T, P, sv, xmeans, xscales, kwargs, par) 
 end
