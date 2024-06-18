@@ -30,10 +30,11 @@ function pcapp!(X::Matrix; rob = true, nsim = 2000, kwargs...)
     zp = similar(X, p)
     sv = similar(X, nlv)
     fsimpp = simpphub
-    #fsimpp = simppsph  # ~ same for large nsim (~ >= 2000)
+    ## ~ same for large nsim (~ >= 2000):
+    #fsimpp = simppsph  
     for a = 1:nlv
-        zP = fsimpp(X; nsim)  # for simpphub: the nb. columns of P is variable
-        #zP = zP[:, (n + 1):end] 
+        ## For simpphub: the nb. columns of zP can be variable (max = n + A(n, 2))
+        zP = fsimpp(X; nsim)  
         zT = X * zP 
         zobj = fobj(zT)
         zobj[isnan.(zobj)] .= 0
