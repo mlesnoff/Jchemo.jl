@@ -3,27 +3,39 @@
     pcapp!(X::Matrix; kwargs...)
 Robust PCA by projection pursuit.
 * `X` : X-data (n, p). 
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
+* `nsim` : Nb. of additional simulated directions (to X-rows) for the 
+    projection pursuit.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-Spherical PCA (Locantore et al. 1990, Maronna 2005, Daszykowski et al. 2007). 
-Matrix `X` is centered by the spatial median computed by function
-`Jchemo.colmedspa`.
+Croux & Ruiz-Gazen (C-R) PCA algorithm using projection pursuit (PP) method 
+(Croux & Ruiz-Gazen 2005). The observations are robustly centered, and projected 
+to specific "PP" directions (see below) of the space spaned by the variables (X columns). 
+The PCA loading vectors are the directions (within the PP directions) that maximize a 
+given "projection index", usually a robust spread measure such as MAD. The 1st loading 
+vector is choosen within the n directions corresponding the observations (rows of 
+X). The next loading vector is choosen in n directions corresponding the rows of the deflated matrix 
+X). And so on.
+
+A possible extension of the algorithm is to randomly simulate additionnal candidate 
+PP directions to the 
+n row observations. In function pca_cr, this is done when argument nsim > 0. In such a case, 
+the function simulates nsim additional PP directions to the n initial ones, as proposed in 
+Hubert et al. (2005): random couples of observations are sampled in X and, for each couple, 
+the direction passes through the two observations of the couple (see functions .simpp.hub 
+in file zfunctions.R).
 
 ## References
-Daszykowski, M., Kaczmarek, K., Vander Heyden, Y., Walczak, B., 2007. 
-Robust statistics in data analysis - A review. Chemometrics and Intelligent 
-Laboratory Systems 85, 203-219. https://doi.org/10.1016/j.chemolab.2006.06.016
+Croux, C., Ruiz-Gazen, A., 2005. High breakdown estimators for 
+principal components: the projection-pursuit approach revisited. 
+Journal of Multivariate Analysis 95, 206–226. 
+https://doi.org/10.1016/j.jmva.2004.08.002
 
-Locantore N., Marron J.S., Simpson D.G., Tripoli N., Zhang J.T., Cohen K.L.
-Robust principal component analysis for functional data, Test 8 (1999) 1–7
-
-Maronna, R., 2005. Principal components and orthogonal regression based on 
-robust scales, Technometrics, 47:3, 264-273, DOI: 10.1198/004017005000000166
+Hubert, M., Rousseeuw, P.J., Vanden Branden, K., 2005. ROBPCA: 
+A New Approach to Robust Principal Component Analysis. 
+Technometrics 47, 64-79. https://doi.org/10.1198/004017004000000563
 
 ## Examples
 ```julia
