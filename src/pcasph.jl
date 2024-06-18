@@ -80,12 +80,11 @@ function pcasph!(X::Matrix, weights::Weight; kwargs...)
     tX = Matrix(X')
     xnorms = colnorm(tX)
     fscale!(tX, xnorms)
-    Xs = tX'  # X-data projected on the sphere (each row has norm = 1)
-    res = LinearAlgebra.svd!(sqrtw .* Xs)
+    ## tX' = X-data projected on the sphere (each row has norm = 1)
+    res = LinearAlgebra.svd!(sqrtw .* tX') 
     P = res.V[:, 1:nlv]
-    T = Xs * P
-    sv = colmad(T)  # convention: computed from Xs (not X) [robust std estimates of the scores]
-    T .= X * P      # final scores
+    T = X * P      
+    sv = colmad(T)  # Maronna 2005 p.268 eq.20 [different than in rnirs/rchemo]
     s = sortperm(sv; rev = true)
     T .= T[:, s]
     P .= P[:, s]
