@@ -1,8 +1,8 @@
-function pcapp(X; rob = true, nsim = 50, kwargs...)
+function pcapp(X; rob = true, nsim = 2000, kwargs...)
     pcapp!(copy(ensure_mat(X)); rob, nsim, kwargs...)
 end
 
-function pcapp!(X::Matrix; rob = true, nsim = 50, kwargs...)
+function pcapp!(X::Matrix; rob = true, nsim = 2000, kwargs...)
     par = recovkwargs(Par, kwargs) 
     Q = eltype(X)
     n, p = size(X)
@@ -28,13 +28,15 @@ function pcapp!(X::Matrix; rob = true, nsim = 50, kwargs...)
     P = similar(X, p, nlv)
     t = similar(X, n)
     zp = similar(X, p)
-    sv = similar(X, nsim)
-    fsimpp = simppbin 
-    #fsimpp = simpphub
+    sv = similar(X, nlv)
+    fsimpp = simpphub
+    #fsimpp = simppsph  # ~ same for large nsim (~ >= 2000)
     for a = 1:nlv
-        zP = fsimpp(X; nsim)  # variable nb. columns for simpphub
+        zP = fsimpp(X; nsim)  # for simpphub: the nb. columns of P is variable
+        #zP = zP[:, (n + 1):end] 
         zT = X * zP 
-        zobj = colstd(zT)
+        zobj = fobj(zT)
+        zobj[isnan.(zobj)] .= 0
         s = findall(zobj .== maximum(zobj))[1]
         sv[a] = zobj[s]
         t .= vcol(zT, s)
@@ -47,6 +49,7 @@ function pcapp!(X::Matrix; rob = true, nsim = 50, kwargs...)
     T .= T[:, s]
     P .= P[:, s]
     sv .= sv[s]
-    (T = T, P, sv, xmeans, xscales, kwargs, par) 
+    weights = mweight(ones(n))
+    Pca(T, P, sv, xmeans, xscales, weights, nothing, kwargs, par)
 end
 

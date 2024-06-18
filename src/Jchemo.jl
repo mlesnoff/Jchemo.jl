@@ -282,7 +282,7 @@ export
     rmcol, rmrow, 
     rowmean, rownorm, rowstd, rowsum, rowvar,
     rowmeanskip, rowstdskip, rowsumskip, rowvarskip,
-    simppbin, simpphub, simpplc, simppsph,   
+    simpphub, simppsph,   
     snipals, snipalsh, snipalsmix,
     soft,
     softmax,
