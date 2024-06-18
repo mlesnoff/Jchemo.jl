@@ -74,6 +74,7 @@ include("pcaeigenk.jl")
 include("pcanipals.jl")
 include("pcanipalsmiss.jl")
 include("pcasph.jl") 
+include("pcapp.jl") 
 include("kpca.jl")
 include("rpmat.jl")
 include("rp.jl")
@@ -318,6 +319,7 @@ export
     pcanipals, pcanipals!,
     pcanipalsmiss, pcanipalsmiss!,
     pcasph, pcasph!,
+    pcapp, pcapp!,
     spca, spca!,
     kpca,
     rpmatgauss, rpmatli, rp, rp!,
