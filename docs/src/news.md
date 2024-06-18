@@ -2,8 +2,11 @@
 
 ## *Version 0.4.3*
 
+- News
+    - **pcapp**, **pcapp!**: Robust PCA by projection pursuit. 
+
 - Breaking
-    - **stah**: renamed to **outstah** and improved. 
+    - **stah**: Renamed to **outstah** and improved. 
 
 - Modifications
     - Code cleaning.
