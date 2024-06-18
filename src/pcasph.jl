@@ -84,7 +84,7 @@ function pcasph!(X::Matrix, weights::Weight; kwargs...)
     res = LinearAlgebra.svd!(sqrtw .* tX') 
     P = res.V[:, 1:nlv]
     T = X * P      
-    sv = colmad(T)  # Maronna 2005 p.268 eq.20 [different than in rnirs/rchemo]
+    sv = colmad(T)  # Maronna 2005 p.268 eq.20 [different than in rnirs/rchemo ==> to fix in rchemo]
     s = sortperm(sv; rev = true)
     T .= T[:, s]
     P .= P[:, s]
