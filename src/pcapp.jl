@@ -43,6 +43,10 @@ function pcapp!(X::Matrix; rob = true, nsim = 50, kwargs...)
         P[:, a] = zp
         X .-= t * zp'
     end
+    s = sortperm(sv; rev = true)
+    T .= T[:, s]
+    P .= P[:, s]
+    sv .= sv[s]
     (T = T, P, sv, xmeans, xscales, kwargs, par) 
 end
 

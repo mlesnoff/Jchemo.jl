@@ -68,11 +68,10 @@ function pcasph!(X::Matrix, weights::Weight; kwargs...)
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
-    xmeans = colmedspa(X; 
-        delta = convert(Q, 1e-6))
+    xmeans = colmedspa(X; delta = convert(Q, 1e-6))
     xscales = ones(Q, p)
     if par.scal 
-        xscales .= colstd(X, weights)
+        xscales .= colmad(X)
         fcscale!(X, xmeans, xscales)
     else
         fcenter!(X, xmeans)
@@ -81,14 +80,12 @@ function pcasph!(X::Matrix, weights::Weight; kwargs...)
     tX = Matrix(X')
     xnorms = colnorm(tX)
     fscale!(tX, xnorms)
-    zX = tX'
-    res = LinearAlgebra.svd!(sqrtw .* zX)
+    Xs = tX'  # X-data projected on the sphere (each row has norm = 1)
+    res = LinearAlgebra.svd!(sqrtw .* Xs)
     P = res.V[:, 1:nlv]
-    T = zX * P
-    sv = colmad(T)
-    #zT = zX * P
-    #sv = colmad(zT)
-    T .= X * P
+    T = Xs * P
+    sv = colmad(T)  # convention: computed from Xs (not X) [robust std estimates of the scores]
+    T .= X * P      # final scores
     s = sortperm(sv; rev = true)
     T .= T[:, s]
     P .= P[:, s]
