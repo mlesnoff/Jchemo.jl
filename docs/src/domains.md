@@ -15,6 +15,7 @@
 
 *Robust* 
 - **pcasph** Spherical (with spatial median)
+- **pcapp** Projection pursuit.
 
 *Sparse* 
 - **spca** sPCA *Shen & Huang 2008*
