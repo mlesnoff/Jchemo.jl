@@ -33,7 +33,6 @@ X = vcat(X1, X2)
 
 nlv = 10
 P = rand(0:1, p, nlv)
-#P = simpphub(X; nsim = 2000)
 scal = false
 #scal = true
 res = outstah(X, P; scal) ;
@@ -55,8 +54,9 @@ function outstah!(X::Matrix, P::Matrix; kwargs...)
         s_scal .= colmad(X)
         fscale!(X, s_scal)
     end
-    T = X * P  # scaling P by colnorm(P) has no effect on d and T
+    ## Scaling P by colnorm(P) has no effect on d and T
     #T = X * fscale(P, colnorm(P))
+    T = X * P  
     mu = colmed(T)
     s = colmad(T)
     fcscale!(T, mu, s)
