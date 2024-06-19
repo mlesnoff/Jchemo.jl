@@ -1,3 +1,10 @@
+## Simulation of PP directions (normed to 1) from X-data (n, p).
+## The first n directions are the rows of X. 
+
+## Hubert, M., Rousseeuw, P.J., Vanden Branden, K., 2005. ROBPCA: 
+## A New Approach to Robust Principal Component Analysis. 
+## Technometrics 47, 64-79. https://doi.org/10.1198/004017004000000563.
+## The directions go through the two points of pairs of observations.
 simpphub = function(X; nsim = 0, cst = 50)
     X = ensure_mat(X)
     n, p = size(X)
@@ -20,6 +27,7 @@ simpphub = function(X; nsim = 0, cst = 50)
     fscale!(P, colnorm(P))
 end
 
+## Sphere
 simppsph = function(X; nsim = 0)
     X = ensure_mat(X)
     n, p = size(X)
