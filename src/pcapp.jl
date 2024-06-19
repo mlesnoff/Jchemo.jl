@@ -5,27 +5,25 @@ Robust PCA by projection pursuit.
 * `X` : X-data (n, p). 
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
-* `nsim` : Nb. of additional simulated directions (to X-rows) for the 
+* `nsim` : Nb. of additional (to X-rows) simulated directions for the 
     projection pursuit.
 * `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+    is scaled by its MAD.
 
-Croux & Ruiz-Gazen (C-R) PCA algorithm using projection pursuit (PP) method 
-(Croux & Ruiz-Gazen 2005). The observations are robustly centered, and projected 
-to specific "PP" directions (see below) of the space spaned by the variables (X columns). 
-The PCA loading vectors are the directions (within the PP directions) that maximize a 
-given "projection index", usually a robust spread measure such as MAD. The 1st loading 
-vector is choosen within the n directions corresponding the observations (rows of 
-X). The next loading vector is choosen in n directions corresponding the rows of the deflated matrix 
-X). And so on.
+For `nsim = 0`, this is the Croux & Ruiz-Gazen (C-R, 2005) PCA algorithm using 
+a projection pursuit (PP) method. Data `X` are robustly centered by the 
+spatial median, and the observations are projected to specific "PP" directions 
+that are defined by the observations (rows of `X`) after they are normed. 
+The first PCA loading vector is the direction (within the PP directions) that 
+maximizes a given "projection index", here the median absolute deviation (MAD). 
+Then, `X` is deflated to this loading vector, and the process is re-run to define
+the next loading vector. And so on. 
 
 A possible extension of the algorithm is to randomly simulate additionnal candidate 
-PP directions to the 
-n row observations. In function pca_cr, this is done when argument nsim > 0. In such a case, 
-the function simulates nsim additional PP directions to the n initial ones, as proposed in 
-Hubert et al. (2005): random couples of observations are sampled in X and, for each couple, 
-the direction passes through the two observations of the couple (see functions .simpp.hub 
-in file zfunctions.R).
+PP directions to the n row observations. If `nsim > 0`, the function simulates `nsim` 
+additional PP directions to the n initial ones, as proposed in Hubert et al. (2005): 
+random couples of observations are sampled in `X` and, for each couple, the direction 
+passes through the two observations of the couple (see function `simpphub`).
 
 ## References
 Croux, C., Ruiz-Gazen, A., 2005. High breakdown estimators for 
