@@ -1,6 +1,7 @@
 Base.@kwdef mutable struct Par
     nlv::Union{Int, Vector{Int}, UnitRange} = 1     # nb LVs
     lb::Float64 = 1e-6                              # ridge parameter "lambda"
+    nsim::Int = 2000                                # nb additional simulated directions for PP
     ##
     centr::Bool = false                     # centering
     scal::Bool = false                      # scaling

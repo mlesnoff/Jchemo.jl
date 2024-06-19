@@ -10,8 +10,8 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its MAD.
 
-For `nsim = 0`, this is the Croux & Ruiz-Gazen (C-R, 2005) PCA algorithm using 
-a projection pursuit (PP) method. Data `X` are robustly centered by the 
+For `nsim = 0`, this is the Croux & Ruiz-Gazen (C-R, 2005) PCA algorithm that 
+uses a projection pursuit (PP) method. Data `X` are robustly centered by the 
 spatial median, and the observations are projected to specific "PP" directions 
 that are defined by the observations (rows of `X`) after they are normed. 
 The first PCA loading vector is the direction (within the PP directions) that 
@@ -47,15 +47,15 @@ wlst = names(X)
 wl = parse.(Float64, wlst)
 n = nro(X)
 
-nlv = 6
-mod = model(pcapp; nlv)  
+nlv = 3
+mod = model(pcapp; nlv, nsim = 2000)  
 #mod = model(pcasvd; nlv) 
 fit!(mod, X)
 pnames(mod)
 pnames(mod.fm)
 @head T = mod.fm.T
 ## Same as:
-transf(mod, X)
+@head transf(mod, X)
 
 i = 1
 plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = "PC1", 
@@ -63,15 +63,16 @@ plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = "PC1",
 ```
 """ 
 
-function pcapp(X; nsim = 2000, kwargs...)
-    pcapp!(copy(ensure_mat(X)); nsim, kwargs...)
+function pcapp(X; kwargs...)
+    pcapp!(copy(ensure_mat(X)); kwargs...)
 end
 
-function pcapp!(X::Matrix; nsim = 2000, kwargs...)
+function pcapp!(X::Matrix; kwargs...)
     par = recovkwargs(Par, kwargs) 
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
+    nsim = par.nsim
     xmeans = Jchemo.colmedspa(X) 
     xscales = ones(Q, p)
     if par.scal 
