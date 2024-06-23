@@ -1,27 +1,24 @@
 """
     outeucl(X, P; kwargs...)
     outeucl!(X::Matrix, P::Matrix; kwargs...)
-Compute the Stahel-Donoho outlierness.
+Compute an outlierness from Euclidean distances to center.
 * `X` : X-data (n, p).
-* `P` : A projection matrix (p, nlv) representing the directions 
-    of the projection pursuit.
 Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` is scaled by MAD 
     before computing the outlierness.
 
-See Maronna and Yohai 1995 for details on the outlierness 
-measure. 
-
-A projection-pursuit approach is used: given a projection matrix `P` (p, nlv) 
-(in general built randomly), the observations (rows of `X`) are projected on 
-the `nlv` directions and the outlierness is computed for each observation 
-from these projections.
+Outlyingness is calculated by the Euclidean distance between 
+the observation (rows of `X`) and a robust estimate of the center of the data 
+(the spatial median). The euclidean distance (`d`) is then 
+scaled by the median of the n calculated Euclidean distances (returning `dstand`). 
+Such outlyingness was for instance used in the robust PLSR algorithm 
+of Serneels et al. 2005 (PRM). 
 
 ## References
-Maronna, R.A., Yohai, V.J., 1995. The Behavior of the 
-Stahel-Donoho Robust Multivariate Estimator. Journal of the 
-American Statistical Association 90, 330–341. 
-https://doi.org/10.1080/01621459.1995.10476517
+Serneels, S., Croux, C., Filzmoser, P., Van Espen, P.J., 2005. 
+Partial robust M-regression. 
+Chemometrics and Intelligent Laboratory Systems 79, 55-64. 
+https://doi.org/10.1016/j.chemolab.2005.04.007
 
 ## Examples
 ```julia
@@ -32,13 +29,13 @@ X2 = randn(m, p) .+ rand(1:3, p)'
 X = vcat(X1, X2)
 
 nlv = 10
-P = rand(0:1, p, nlv)
 scal = false
 #scal = true
-res = outeucl(X, P; scal) ;
+res = outeucl(X; scal) ;
 pnames(res)
-res.d  # outlierness 
-plotxy(1:nro(X), res.d).f
+@head res.d        # outlierness 
+@head res.dstand   # standardized outlierness
+plotxy(1:ntot, res.dstand).f
 ```
 """ 
 function outeucl(X; kwargs...)
@@ -48,24 +45,16 @@ end
 function outeucl!(X::Matrix; kwargs...) 
     par = recovkwargs(Par, kwargs)
     Q = eltype(X)
-    n, p = size(X)
-    s_scal = ones(Q, p) 
+    p = nco(X)
+    xscales = ones(Q, p)
     if par.scal
-        s_scal .= colmad(X)
-        fscale!(X, s_scal)
+        xscales .= colmad(X)
+        fscale!(X, xscales)
     end
-    ## Scaling P by colnorm(P) has no effect on d and T
-    #T = X * fscale(P, colnorm(P))
-    T = X * P  
-    mu = colmed(T)
-    s = colmad(T)
-    fcscale!(T, mu, s)
-    T .= abs.(T)
-    d = similar(T, n)
-    @inbounds for i = 1:n
-        d[i] = maximum(vrow(T, i))
-    end
-    (d = d, T, s_scal, mu, s)
+    xmeans = Jchemo.colmedspa(X)
+    d = vec(sqrt.(euclsq(X, xmeans')))
+    dstand = d / median(d)
+    (d = d, dstand, xmeans, xscales)
 end
 
 

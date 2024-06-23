@@ -3,6 +3,7 @@
 ## *Version 0.4.3*
 
 - News
+    - **outeucl**: Outlierness from Euclidean distances to center.
     - **pcapp**, **pcapp!**: Robust PCA by projection pursuit. 
 
 - Breaking

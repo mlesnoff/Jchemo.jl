@@ -14,8 +14,10 @@ measure.
 
 A projection-pursuit approach is used: given a projection matrix `P` (p, nlv) 
 (in general built randomly), the observations (rows of `X`) are projected on 
-the `nlv` directions and the outlierness is computed for each observation 
+the `nlv` directions and the Stahel-Donoho outlierness is computed for each observation 
 from these projections.
+
+The outlierness (`d`) is then scaled by the median (returning `dstand`). 
 
 ## References
 Maronna, R.A., Yohai, V.J., 1995. The Behavior of the 
@@ -37,8 +39,9 @@ scal = false
 #scal = true
 res = outstah(X, P; scal) ;
 pnames(res)
-res.d  # outlierness 
-plotxy(1:nro(X), res.d).f
+@head res.d        # outlierness 
+@head res.dstand   # standardized outlierness
+plotxy(1:ntot, res.dstand).f
 ```
 """ 
 function outstah(X, P; kwargs...)
@@ -49,10 +52,10 @@ function outstah!(X::Matrix, P::Matrix; kwargs...)
     par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     n, p = size(X)
-    s_scal = ones(Q, p) 
+    xscales = ones(Q, p) 
     if par.scal
-        s_scal .= colmad(X)
-        fscale!(X, s_scal)
+        xscales .= colmad(X)
+        fscale!(X, xscales)
     end
     ## Scaling P by colnorm(P) has no effect on d and T
     #T = X * fscale(P, colnorm(P))
@@ -65,7 +68,8 @@ function outstah!(X::Matrix, P::Matrix; kwargs...)
     @inbounds for i = 1:n
         d[i] = maximum(vrow(T, i))
     end
-    (d = d, T, s_scal, mu, s)
+    dstand = d / median(d)
+    (d = d, dstand, T, mu, s, xscales)
 end
 
 

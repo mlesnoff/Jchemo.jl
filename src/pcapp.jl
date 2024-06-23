@@ -88,11 +88,12 @@ function pcapp!(X::Matrix; kwargs...)
     sv = similar(X, nlv)
     fsimpp = simpphub
     #fsimpp = simppsph   # ~ same for large nsim (~ >= 2000)
+    fobj = colmad
     for a = 1:nlv
         ## For simpphub: the nb. columns of zP can be variable (max = n + A(n, 2))
         zP = fsimpp(X; nsim)  
         zT = X * zP 
-        zobj = colmad(zT)
+        zobj = fobj(zT)
         zobj[isnan.(zobj)] .= 0
         s = findall(zobj .== maximum(zobj))[1]
         sv[a] = zobj[s]

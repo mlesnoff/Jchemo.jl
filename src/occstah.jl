@@ -130,7 +130,7 @@ function predict(object::Occstah, X)
     zX = copy(ensure_mat(X))  # for fscale!
     m = nro(zX)
     res = object.res_stah
-    fscale!(zX, res.s_scal)
+    fscale!(zX, res.xscales)
     T = zX * object.P
     fcenter!(T, res.mu)
     fscale!(T, res.s)
