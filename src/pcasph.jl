@@ -68,7 +68,7 @@ function pcasph!(X::Matrix, weights::Weight; kwargs...)
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
-    xmeans = colmedspa(X; delta = convert(Q, 1e-6))
+    xmeans = colmedspa(X)
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colmad(X)
