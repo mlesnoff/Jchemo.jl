@@ -201,6 +201,7 @@ include("occod.jl")
 include("occsdod.jl")
 include("occstah.jl")
 include("outstah.jl")
+include("outeucl.jl")
 
 ## Local
 include("lwmlrda.jl")
@@ -385,7 +386,7 @@ export
     dkplslda, dkplsqda, dkplskdeda, 
     svmda, 
     treeda_dt, rfda_dt,
-    outstah,
+    outstah, outeucl,
     occstah,
     occsd, occod, occsdod,
     ## Sparse 
