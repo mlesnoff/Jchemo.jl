@@ -1,6 +1,6 @@
 """
-    outstah(X, P; kwargs...)
-    outstah!(X::Matrix, P::Matrix; kwargs...)
+    outeucl(X, P; kwargs...)
+    outeucl!(X::Matrix, P::Matrix; kwargs...)
 Compute the Stahel-Donoho outlierness.
 * `X` : X-data (n, p).
 * `P` : A projection matrix (p, nlv) representing the directions 
@@ -35,17 +35,17 @@ nlv = 10
 P = rand(0:1, p, nlv)
 scal = false
 #scal = true
-res = outstah(X, P; scal) ;
+res = outeucl(X, P; scal) ;
 pnames(res)
 res.d  # outlierness 
 plotxy(1:nro(X), res.d).f
 ```
 """ 
-function outstah(X, P; kwargs...)
-    outstah!(copy(ensure_mat(X)), ensure_mat(P); kwargs...)
+function outeucl(X; kwargs...)
+    outeucl!(copy(ensure_mat(X)); kwargs...)
 end
 
-function outstah!(X::Matrix, P::Matrix; kwargs...) 
+function outeucl!(X::Matrix; kwargs...) 
     par = recovkwargs(Par, kwargs)
     Q = eltype(X)
     n, p = size(X)
