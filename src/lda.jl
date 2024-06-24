@@ -12,7 +12,7 @@ Keyword arguments:
     membership. Possible values are: `:unif` (uniform), 
     `:prop` (proportional), or a vector (of length equal to 
     the number of classes) giving the prior weight for each class 
-    (the vector must be sorted in the same order as `mlev(x)`).
+    (the vector must be sorted in the same order as `mlev(y)`).
 
 In these `lda` functions, observation weights (argument `weights`) are used 
 to compute the intra-class (= "within") covariance matrix. Argument `prior` 

@@ -13,7 +13,7 @@ Keyword arguments:
     membership. Possible values are: `:unif` (uniform), 
     `:prop` (proportional), or a vector (of length equal to 
     the number of classes) giving the prior weight for each class 
-    (the vector must be sorted in the same order as `mlev(x)`).
+    (the vector must be sorted in the same order as `mlev(y)`).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum
     between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `scal` : Boolean. If `true`, each column of `X` 
