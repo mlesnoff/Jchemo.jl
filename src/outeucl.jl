@@ -9,9 +9,8 @@ Keyword arguments:
 
 Outlyingness is calculated by the Euclidean distance between 
 the observation (rows of `X`) and a robust estimate of the center of the data 
-(the spatial median). 
-Such outlyingness was for instance used in the robust PLSR algorithm 
-of Serneels et al. 2005 (PRM). 
+(in the present function, the spatial median). Such outlyingness was for 
+instance used in the robust PLSR algorithm of Serneels et al. 2005 (PRM). 
 
 ## References
 Serneels, S., Croux, C., Filzmoser, P., Van Espen, P.J., 2005. 
