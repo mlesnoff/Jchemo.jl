@@ -66,10 +66,10 @@ ytrain = repeat(["in"], ntrain)
 ytest = repeat([cod], ntest)
 
 ## Group description
-mod0 = model(pcasvd; nlv = 10) 
+mod = model(pcasvd; nlv = 10) 
 fit!(mod, zXtrain) 
-Ttrain = mod0.fm.T
-Ttest = transf(mod0, zXtest)
+Ttrain = mod.fm.T
+Ttest = transf(mod, zXtest)
 T = vcat(Ttrain, Ttest)
 group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
 i = 1
