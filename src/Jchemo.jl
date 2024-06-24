@@ -260,7 +260,7 @@ export
     findmax_cla, 
     frob,
     fscale, fscale!,
-    fweight,
+    fweight, talworth, 
     head, @head,
     list, 
     matB, matW, 
