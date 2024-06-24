@@ -17,8 +17,6 @@ A projection-pursuit approach is used: given a projection matrix `P` (p, nlv)
 the `nlv` directions and the Stahel-Donoho outlierness is computed for each observation 
 from these projections.
 
-The outlierness (`d`) is then scaled by the median (returning `dstand`). 
-
 ## References
 Maronna, R.A., Yohai, V.J., 1995. The Behavior of the 
 Stahel-Donoho Robust Multivariate Estimator. Journal of the 
@@ -39,8 +37,7 @@ scal = false
 #scal = true
 res = outstah(X, P; scal) ;
 pnames(res)
-@head res.d        # outlierness 
-@head res.dstand   # standardized outlierness
+res.d    # outlierness 
 plotxy(1:ntot, res.dstand).f
 ```
 """ 
