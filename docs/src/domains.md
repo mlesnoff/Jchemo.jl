@@ -16,6 +16,7 @@
 *Robust* 
 - **pcasph** Spherical (with spatial median)
 - **pcapp** Projection pursuit.
+- **pcarob** Outlierness
 
 *Sparse* 
 - **spca** sPCA *Shen & Huang 2008*
