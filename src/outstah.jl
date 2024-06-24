@@ -68,8 +68,7 @@ function outstah!(X::Matrix, P::Matrix; kwargs...)
     @inbounds for i = 1:n
         d[i] = maximum(vrow(T, i))
     end
-    dstand = d / median(d)
-    (d = d, dstand, T, mu, s, xscales)
+    (d = d, T, mu, s, xscales)
 end
 
 
