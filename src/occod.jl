@@ -138,8 +138,7 @@ function predict(object::Occod, X)
     d2 = vec(sum(E .* E, dims = 2))
     d = sqrt.(d2)
     p_val = pval(object.e_cdf, d)
-    d = DataFrame(d = d, dstand = d / object.cutoff, 
-        pval = p_val)
+    d = DataFrame(d = d, dstand = d / object.cutoff, pval = p_val)
     pred = [if d.dstand[i] <= 1 "in" else "out" end for i = 1:m]
     pred = reshape(pred, m, 1)
     (pred = pred, d)
