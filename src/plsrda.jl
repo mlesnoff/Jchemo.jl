@@ -31,7 +31,7 @@ corresponding to the dummy variable for which the probability
 estimate is the highest.
 
 In the high-level version of the function, the observation weights used in 
-the PLS2-R are defined with argument `prior`. For other choices, use the 
+the PLSR2 are defined with argument `prior`. For other choices, use the 
 low-level version (argument `weights`).
 
 ## Examples
