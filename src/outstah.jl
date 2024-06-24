@@ -38,7 +38,7 @@ scal = false
 res = outstah(X, P; scal) ;
 pnames(res)
 res.d    # outlierness 
-plotxy(1:ntot, res.dstand).f
+plotxy(1:ntot, res.d).f
 ```
 """ 
 function outstah(X, P; kwargs...)
