@@ -32,7 +32,7 @@ scal = false
 #scal = true
 res = outeucl(X; scal) ;
 pnames(res)
-res.d        # outlierness 
+res.d    # outlierness 
 plotxy(1:ntot, res.dstand).f
 ```
 """ 
