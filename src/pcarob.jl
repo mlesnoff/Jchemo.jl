@@ -53,17 +53,17 @@ plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = "PC1",
     ylabel = "PC2").f
 ```
 """ 
-function pcarob(X; kwargs...)
+function pcarob(X; niter = 0, kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    pcarob(X, weights; kwargs...)
+    pcarob(X, weights; niter, kwargs...)
 end
 
-function pcarob(X, weights::Weight; kwargs...)
-    pcarob!(copy(ensure_mat(X)), weights; kwargs...)
+function pcarob(X, weights::Weight; niter = 0, kwargs...)
+    pcarob!(copy(ensure_mat(X)), weights; niter, kwargs...)
 end
 
-function pcarob!(X::Matrix, weights::Weight; kwargs...)
+function pcarob!(X::Matrix, weights::Weight; niter = 0, kwargs...)
     par = recovkwargs(Par, kwargs) 
     Q = eltype(X)
     n, p = size(X)
@@ -76,18 +76,16 @@ function pcarob!(X::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(X, xmeans)
     end
-    sqrtw = sqrt.(weights.w)
-    tX = Matrix(X')
-    xnorms = colnorm(tX)
-    fscale!(tX, xnorms)
-    ## tX' = X-data projected on the sphere (each row has norm = 1)
-    res = LinearAlgebra.svd!(sqrtw .* tX') 
-    P = res.V[:, 1:nlv]
-    T = X * P      
-    sv = colmad(T)  # Maronna 2005 p.268 eq.20 [different than in rnirs/rchemo ==> to fix in rchemo]
-    s = sortperm(sv; rev = true)
-    T .= T[:, s]
-    P .= P[:, s]
-    sv .= sv[s]
-    Pca(T, P, sv, xmeans, xscales, weights, nothing, kwargs, par) 
+    prm = .10
+    nlvout = 30
+    P = rand(0:1, p, nlvout)
+    res = outstah(X, P; scal = true)
+    w1 = talworth(res.d, quantile(res.d, 1 - prm))
+    res = outeucl(X; scal = true)
+    w2 = talworth(res.d, quantile(res.d, 1 - prm))
+    w = mweight(w1 .* w2)
+    fm = pcasvd(X, w; nlv)
+    if niter > 0
+    end
+    fm
 end

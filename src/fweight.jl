@@ -92,3 +92,11 @@ function fweight(d; typw = :bisquare, alpha = 0)
     w
 end
 
+function talworth(x; a = 1)
+    x = abs.(vec(x))
+    Q = eltype(x)
+    n = length(x)
+    w = zeros(Q, n)
+    w[x .<= a] .= 1
+    w
+end
