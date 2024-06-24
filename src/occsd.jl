@@ -145,10 +145,8 @@ function occsd(fm; kwargs...)
     Uinv = LinearAlgebra.inv!(cholesky!(Hermitian(S)).U)
     d2 = vec(mahsqchol(fm.T, zeros(Q, nlv)', Uinv))
     d = sqrt.(d2)
-    par.mcut == :mad ? cutoff = median(d) + 
-        par.cri * mad(d) : nothing
-    par.mcut == :q ? cutoff = quantile(d, 1 - par.risk) : 
-        nothing
+    par.mcut == :mad ? cutoff = median(d) + par.cri * mad(d) : nothing
+    par.mcut == :q ? cutoff = quantile(d, 1 - par.risk) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val, gh = d2 / nlv)
