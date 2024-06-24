@@ -167,8 +167,7 @@ function predict(object::Occsd, X)
         object.Uinv))
     d = sqrt.(d2)
     p_val = pval(object.e_cdf, d)
-    d = DataFrame(d = d, dstand = d / object.cutoff, 
-        pval = p_val, gh = d2 / nlv)
+    d = DataFrame(d = d, dstand = d / object.cutoff, pval = p_val, gh = d2 / nlv)
     pred = [if d.dstand[i] <= 1 "in" else "out" end for i = 1:m]
     pred = reshape(pred, m, 1)
     (pred = pred, d)
