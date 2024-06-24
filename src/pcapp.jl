@@ -58,8 +58,8 @@ pnames(mod.fm)
 @head transf(mod, X)
 
 i = 1
-plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = "PC1", 
-    ylabel = "PC2").f
+plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i), 
+    ylabel = string("PC", i + 1)).f
 ```
 """ 
 

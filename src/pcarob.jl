@@ -37,21 +37,21 @@ pnames(mod.fm)
 transf(mod, X)
 
 i = 1
-plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = "PC1", 
-    ylabel = "PC2").f
+plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i), 
+    ylabel = string("PC", i + 1)).f
 ```
 """ 
-function pcarob(X; niter = 0, kwargs...)
+function pcarob(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    pcarob(X, weights; niter, kwargs...)
+    pcarob(X, weights; kwargs...)
 end
 
-function pcarob(X, weights::Weight; niter = 0, kwargs...)
-    pcarob!(copy(ensure_mat(X)), weights; niter, kwargs...)
+function pcarob(X, weights::Weight; kwargs...)
+    pcarob!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
-function pcarob!(X::Matrix, weights::Weight; niter = 0, kwargs...)
+function pcarob!(X::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs) 
     Q = eltype(X)
     n, p = size(X)
@@ -64,16 +64,19 @@ function pcarob!(X::Matrix, weights::Weight; niter = 0, kwargs...)
     else
         fcenter!(X, xmeans)
     end
-    prm = .10
+    prm = .20
     nlvout = 30
     P = rand(0:1, p, nlvout)
     res = outstah(X, P; scal = true)
-    w1 = talworth(res.d, quantile(res.d, 1 - prm))
+    w = talworth(res.d; a = quantile(res.d, 1 - prm))
     res = outeucl(X; scal = true)
-    w2 = talworth(res.d, quantile(res.d, 1 - prm))
-    w = mweight(w1 .* w2)
-    fm = pcasvd(X, w; nlv)
-    if niter > 0
-    end
-    fm
+    w .*= talworth(res.d; a = quantile(res.d, 1 - prm))
+    w[isequal.(w, 0)] .= 1e-10
+    fm = pcasvd(X, mweight(w); nlv)
+    ## Final step
+    res = occsdod(fm, X)            
+    v = talworth(res.d.dstand; a = 1)
+    w .*= v
+    w[isequal.(w, 0)] .= 1e-10
+    pcasvd(X, mweight(weights.w .* w); nlv)
 end
