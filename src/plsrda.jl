@@ -21,7 +21,7 @@ by a PLS2 regression). The training variable `y`
 (univariate class membership) is transformed to a dummy table 
 (Ydummy) containing nlev columns, where nlev is the number of 
 classes present in `y`. Each column of Ydummy is a dummy (0/1) 
-variable. Then, a weighted PLSR2 (i.e. multivariate) is run on 
+variable. Then, a weighted multivariate PLSR ("PLSR2") is run on 
 {`X`, Ydummy}, returning predictions of the dummy 
 variables (= object `posterior` returned by fuction `predict`).  
 These predictions can be considered as unbounded estimates (i.e. 

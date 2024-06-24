@@ -21,13 +21,14 @@ LDA on PLS latent variables. The training variable `y`
 (univariate class membership) is transformed to a dummy table 
 (Ydummy) containing nlev columns, where nlev is the number of 
 classes present in `y`. Each column of Ydummy is a dummy (0/1) 
-variable. Then, a weighted PLSR2 (i.e. multivariate) is run on 
+variable. Then, a weighted multivariate PLSR ("PLSR2") is run on 
 {`X`, Ydummy}, returning a score matrix `T`. Finally, a LDA 
 is done on {`T`, `y`}. 
 
-In these `plslda` functions, observation weights (argument `weights`) are used 
-to compute the PLS scores and the LDA intra-class (= "within") covariance matrix. 
-Argument `prior` is used to define the usual LDA prior class probabilities. 
+In these `plslda` functions:
+- observation weights (argument `weights`) are used to compute the PLS scores 
+    and the LDA intra-class (= "within") covariance matrix, 
+- argument `prior` is used to define the usual LDA prior class probabilities. 
 
 In the high-level version, the observation weights are automatically 
 defined by the given priors: the sub-total weights by class are set 
