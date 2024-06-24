@@ -6,6 +6,7 @@
     - **outeucl**: Outlierness from Euclidean distances to center.
     - **talworth**: Weight function.
     - **pcapp**, **pcapp!**: Robust PCA by projection pursuit. 
+    - **pcarob**, **pcarob!**: Robust PCA using outlierness.
 
 - Breaking
     - **stah**: Renamed to **outstah** and improved. 
