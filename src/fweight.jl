@@ -13,15 +13,15 @@ The returned weight vector is:
     (Cleveland & Grosse 1991).
 
 Possible values for `typw` are: 
-* :bisquare: w = (1 - x^2)^2 
-* :cauchy: w = 1 / (1 + x^2) 
-* :epan: w = 1 - x^2 
-* :fair: w =  1 / (1 + x)^2 
-* :invexp: w = exp(-x) 
-* :invexp2: w = exp(-x / 2) 
-* :gauss: w = exp(-x^2)
-* :trian: w = 1 - x  
-* :tricube: w = (1 - x^3)^3  
+* :bisquare: w = (1 - d^2)^2 
+* :cauchy: w = 1 / (1 + d^2) 
+* :epan: w = 1 - d^2 
+* :fair: w =  1 / (1 + d)^2 
+* :invexp: w = exp(-d) 
+* :invexp2: w = exp(-d / 2) 
+* :gauss: w = exp(-d^2)
+* :trian: w = 1 - d  
+* :tricube: w = (1 - d^3)^3  
 
 ## References
 Cleveland, W.S., Grosse, E., 1991. Computational methods for local regression. 
@@ -92,11 +92,28 @@ function fweight(d; typw = :bisquare, alpha = 0)
     w
 end
 
-function talworth(x; a = 1)
-    x = abs.(vec(x))
-    Q = eltype(x)
-    n = length(x)
+""" 
+    talworth(d; a = 1)
+Computation of weights from distances.
+* `d` : Vector of distances.
+Keyword arguments:
+* `a` : Parameter of the weight function, 
+    see below.
+
+The returned weight vector w has component w[i] = 1 if `|d[i]| <= a`, 
+and w[i] = 0 if `|d[i]| > a`.
+
+## Examples
+```julia
+d = rand(10)
+talworth(d; a = .8)
+```
+""" 
+function talworth(d; a = 1)
+    d = abs.(vec(d))
+    Q = eltype(d)
+    n = length(d)
     w = zeros(Q, n)
-    w[x .<= a] .= 1
+    w[d .<= a] .= 1
     w
 end
