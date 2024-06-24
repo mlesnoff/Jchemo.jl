@@ -9,8 +9,7 @@ Keyword arguments:
 
 Outlyingness is calculated by the Euclidean distance between 
 the observation (rows of `X`) and a robust estimate of the center of the data 
-(the spatial median). The euclidean distance (`d`) is then 
-scaled by the median of the n calculated Euclidean distances (returning `dstand`). 
+(the spatial median). 
 Such outlyingness was for instance used in the robust PLSR algorithm 
 of Serneels et al. 2005 (PRM). 
 
@@ -33,8 +32,7 @@ scal = false
 #scal = true
 res = outeucl(X; scal) ;
 pnames(res)
-@head res.d        # outlierness 
-@head res.dstand   # standardized outlierness
+res.d        # outlierness 
 plotxy(1:ntot, res.dstand).f
 ```
 """ 
@@ -53,8 +51,7 @@ function outeucl!(X::Matrix; kwargs...)
     end
     xmeans = Jchemo.colmedspa(X)
     d = vec(sqrt.(euclsq(X, xmeans')))
-    dstand = d / median(d)
-    (d = d, dstand, xmeans, xscales)
+    (d = d, xmeans, xscales)
 end
 
 
