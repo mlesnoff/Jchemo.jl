@@ -10,8 +10,8 @@ Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `prm` : Proportion of the data removed (hard rejection of outliers) 
     for each outlierness measure.
-* `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+* `scal` : Boolean. If `true`, `X`-data are scaled in the 
+    functions computing the outlierness and the weighted PCA. 
 
 Robust PCA combining outlyingness measures and weighted PCA (WPCA). 
 
