@@ -7,6 +7,7 @@
     - **talworth**: Weight function.
     - **pcapp**, **pcapp!**: Robust PCA by projection pursuit. 
     - **pcaout**, **pcaout!**: Robust PCA using outlierness.
+    - **plsrout**, **plsrout!**: Robust PLSR using outlierness.
 
 - Breaking
     - **stah**: Renamed to **outstah** and improved. 
