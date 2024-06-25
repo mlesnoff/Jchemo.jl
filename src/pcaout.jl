@@ -54,9 +54,6 @@ end
 function pcaout!(X::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs) 
     n, p = size(X)
-    if par.scal 
-        fscale!(X, colmad(X))
-    end
     nlvout = 30
     P = rand(0:1, p, nlvout)
     d = similar(X, n)
@@ -66,5 +63,5 @@ function pcaout!(X::Matrix, weights::Weight; kwargs...)
     w .*= talworth(d; a = quantile(d, 1 - par.prm))
     w .*= weights.w
     w[isequal.(w, 0)] .= 1e-10
-    pcasvd!(X, mweight(w); kwargs...)
+    pcasvd(X, mweight(w); kwargs...)
 end
