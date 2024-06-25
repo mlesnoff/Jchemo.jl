@@ -2,6 +2,7 @@ Base.@kwdef mutable struct Par
     nlv::Union{Int, Vector{Int}, UnitRange} = 1     # nb LVs
     lb::Float64 = 1e-6                              # ridge parameter "lambda"
     nsim::Int = 2000                                # nb additional simulated directions for PP
+    prm::Float64 = .20                              # proportion of removed data in 'pcaout'
     ##
     centr::Bool = false                     # centering
     scal::Bool = false                      # scaling
@@ -12,7 +13,7 @@ Base.@kwdef mutable struct Par
     wl::Union{Vector, UnitRange, StepRangeLen} = range(1, 10; length = 3)
     wlfin::Union{Vector, UnitRange, StepRangeLen} = range(1, 10; length = 3)
     ##
-    indexcol::Union{Int, Vector{Int}} = 10  # index of columns in rmgap
+    indexcol::Union{Int, Vector{Int}} = 10  # index of columns in 'rmgap'
     fun::Function = plskern                 # model used in DS and PDS
     ##
     noint::Bool = false                     # intercept in MLR models
@@ -47,8 +48,8 @@ Base.@kwdef mutable struct Par
     verbose::Bool = false                   # print obs. indexes when prediction
     ##
     prior::Union{Symbol, Vector{Float64}} = :unif              # prior in DA
-    alpha::Float64 = 0.                     # regularization in qda and rda 
-    simpl::Bool = false                     # dmnorm-parameter in rda
+    alpha::Float64 = 0.                     # regularization in 'qda' and 'rda' 
+    simpl::Bool = false                     # dmnorm-parameter in 'rda'
     h_kde::Union{Nothing, Float64, Vector{Float64}} = nothing  # dmkern-parameter 'h' in kdeda
     a_kde::Float64 = 1.                     # dmkern-parameter 'a' in kdeda
     ##
@@ -58,7 +59,7 @@ Base.@kwdef mutable struct Par
     cri::Float64 = 3.                       # coefficient for cutoff in occ methods
     ##
     gs::Bool = true                         # Gram-Schmidt orthogonalization 
-    filt::Bool = true                       # cglsr
+    filt::Bool = true                       # 'cglsr'
     tol::Float64 = sqrt(eps(1.))            # tolerance in Nipals
     maxit::Int = 200                        # maximal nb. iterations in Nipals 
     ##
@@ -66,7 +67,7 @@ Base.@kwdef mutable struct Par
     delta::Float64 = 0.                     # threshold in sparse methods
     nvar::Union{Int, Vector{Int}} = 1       # threshold in sparse methods
     ##
-    mrp::Symbol = :gauss                    # rp projection method
-    s_li::Float64 = 1.                      # rpmatli sparsity parameter  
+    mrp::Symbol = :gauss                    # 'rp' projection method
+    s_li::Float64 = 1.                      # 'rpmatli' sparsity parameter  
 end 
 

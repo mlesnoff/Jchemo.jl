@@ -53,31 +53,18 @@ end
 
 function pcaout!(X::Matrix, weights::Weight; kwargs...)
     par = recovkwargs(Par, kwargs) 
-    Q = eltype(X)
     n, p = size(X)
-    nlv = min(par.nlv, n, p)
-    xmeans = colmedspa(X)
-    xscales = ones(Q, p)
     if par.scal 
-        xscales .= colmad(X)
-        fcscale!(X, xmeans, xscales)
-    else
-        fcenter!(X, xmeans)
+        fscale!(X, colmad(X))
     end
-    prm = .20
     nlvout = 30
     P = rand(0:1, p, nlvout)
-    res = outstah(X, P; scal = true)
-    w = talworth(res.d; a = quantile(res.d, 1 - prm))
-    res = outeucl(X; scal = true)
-    w .*= talworth(res.d; a = quantile(res.d, 1 - prm))
+    d = similar(X, n)
+    d .= outstah(X, P; scal = par.scal).d
+    w = talworth(d; a = quantile(d, 1 - par.prm))
+    d .= outeucl(X; scal = par.scal).d
+    w .*= talworth(d; a = quantile(d, 1 - par.prm))
     w .*= weights.w
     w[isequal.(w, 0)] .= 1e-10
-    pcasvd(X, mweight(w); nlv)
-    ## Final step
-    #res = occsdod(fm, X)            
-    #v = talworth(res.d.dstand; a = 1)
-    #w .*= v
-    #w[isequal.(w, 0)] .= 1e-10
-    #pcasvd(X, mweight(weights.w .* w); nlv)
+    pcasvd!(X, mweight(w); kwargs...)
 end
