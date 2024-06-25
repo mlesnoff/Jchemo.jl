@@ -97,6 +97,9 @@
 *Averaging PLSR models of different dimensionalities*
 - **plsravg** PLSR-AVG
 
+*Robust*
+- **plsrout** Outlierness
+
 *Non linear*
 - **kplsr** Non linear kernel (KPLSR) 
     *Rosipal & Trejo 2001*
