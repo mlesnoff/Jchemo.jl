@@ -38,7 +38,7 @@ wlst = names(X)
 wl = parse.(Float64, wlst)
 n = nro(X)
 
-nlv = 6
+nlv = 3
 mod = model(pcasph; nlv)  
 #mod = model(pcasvd; nlv) 
 fit!(mod, X)
