@@ -664,7 +664,7 @@ end
 struct Occsd
     d::DataFrame 
     fm
-    Uinv::Matrix
+    tscales::Vector
     e_cdf::ECDF
     cutoff::Real   
 end

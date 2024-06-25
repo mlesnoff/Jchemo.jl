@@ -60,9 +60,9 @@ plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class",
     xlabel = string("PC", i), ylabel = string("PC", i + 1)).f
 
 #### Occ
-## Preliminary dimension 
-## Not required but often more 
-## efficient
+## Preliminary dimension reduction 
+## (Not required but often more 
+## efficient)
 nlv = 50
 mod0 = model(pcasvd; nlv) ;
 fit!(mod0, zXtrain)
