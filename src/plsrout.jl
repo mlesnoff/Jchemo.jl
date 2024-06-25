@@ -20,6 +20,43 @@ the final step is a weighted PLSR instead of a weighted PCA.
 
 ## Examples
 ```julia
+using JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+pnames(dat)
+X = dat.X 
+y = dat.Y.tbc
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+nlv = 15
+mod = model(plsrout; nlv) ;
+fit!(mod, Xtrain, ytrain)
+pnames(mod)
+pnames(mod.fm)
+@head mod.fm.T
+
+coef(mod)
+coef(mod; nlv = 3)
+
+@head transf(mod, Xtest)
+@head transf(mod, Xtest; nlv = 3)
+
+res = predict(mod, Xtest)
+@head res.pred
+@show rmsep(res.pred, ytest)
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
+    xlabel = "Prediction", ylabel = "Observed").f    
+
+res = predict(mod, Xtest; nlv = 1:2)
+@head res.pred[1]
+@head res.pred[2]
 ```
 """ 
 function plsrout(X, Y; kwargs...)
