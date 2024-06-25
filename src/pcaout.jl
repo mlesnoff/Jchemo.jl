@@ -71,12 +71,13 @@ function pcarob!(X::Matrix, weights::Weight; kwargs...)
     w = talworth(res.d; a = quantile(res.d, 1 - prm))
     res = outeucl(X; scal = true)
     w .*= talworth(res.d; a = quantile(res.d, 1 - prm))
+    w .*= weights.w
     w[isequal.(w, 0)] .= 1e-10
-    fm = pcasvd(X, mweight(w); nlv)
+    pcasvd(X, mweight(w); nlv)
     ## Final step
-    res = occsdod(fm, X)            
-    v = talworth(res.d.dstand; a = 1)
-    w .*= v
-    w[isequal.(w, 0)] .= 1e-10
-    pcasvd(X, mweight(weights.w .* w); nlv)
+    #res = occsdod(fm, X)            
+    #v = talworth(res.d.dstand; a = 1)
+    #w .*= v
+    #w[isequal.(w, 0)] .= 1e-10
+    #pcasvd(X, mweight(weights.w .* w); nlv)
 end
