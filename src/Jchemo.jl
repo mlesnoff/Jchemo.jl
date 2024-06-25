@@ -106,9 +106,10 @@ include("plsnipals.jl")
 include("plswold.jl") 
 include("plsrosa.jl")
 include("plssimp.jl")
+include("cglsr.jl")
+include("plsrout.jl")
 include("plsravg.jl")
 include("plsravg_unif.jl")
-include("cglsr.jl")
 include("krr.jl")
 include("kplsr.jl")
 include("dkplsr.jl")
@@ -347,6 +348,7 @@ export
     plssimp, plssimp!,
     plswold, plswold!,
     cglsr, cglsr!,
+    plsrout, plsrout!,
     pcr,
     rr, rr!, rrchol, rrchol!,
     rrr, rrr!,   
