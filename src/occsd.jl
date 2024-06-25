@@ -139,18 +139,19 @@ f
 function occsd(fm; kwargs...)
     par = recovkwargs(Par, kwargs) 
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
-    Q = eltype(fm.T)
-    nlv = nco(fm.T)
-    S = Statistics.cov(fm.T; corrected = false)
-    Uinv = LinearAlgebra.inv!(cholesky!(Hermitian(S)).U)
-    d2 = vec(mahsqchol(fm.T, zeros(Q, nlv)', Uinv))
+    T = fm.T
+    Q = eltype(T)
+    nlv = nco(T)
+    tscales = colstd(T, fm.weights)
+    fscale!(T, tscales)
+    d2 = vec(euclsq(T, zeros(Q, nlv)'))
     d = sqrt.(d2)
     par.mcut == :mad ? cutoff = median(d) + par.cri * mad(d) : nothing
     par.mcut == :q ? cutoff = quantile(d, 1 - par.risk) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val, gh = d2 / nlv)
-    Occsd(d, fm, Uinv, e_cdf, cutoff)
+    Occsd(d, fm, tscales, e_cdf, cutoff)
 end
 
 """
@@ -163,8 +164,8 @@ function predict(object::Occsd, X)
     T = transf(object.fm, X)
     Q = eltype(T)
     m, nlv = size(T)
-    d2 = vec(mahsqchol(T, zeros(Q, nlv)', 
-        object.Uinv))
+    fscale!(T, object.tscales)
+    d2 = vec(euclsq(T, zeros(Q, nlv)'))
     d = sqrt.(d2)
     p_val = pval(object.e_cdf, d)
     d = DataFrame(d = d, dstand = d / object.cutoff, pval = p_val, gh = d2 / nlv)
