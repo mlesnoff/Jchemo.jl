@@ -3,6 +3,8 @@ Base.@kwdef mutable struct Par
     lb::Float64 = 1e-6                              # ridge parameter "lambda"
     nsim::Int = 2000                                # nb additional simulated directions for PP
     prm::Float64 = .3                               # proportion of removed data in 'pcaout'
+    n_neighbors::Int = 15 
+    min_dist::Float64 = .1
     ##
     centr::Bool = false                     # centering
     scal::Bool = false                      # scaling

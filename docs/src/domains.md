@@ -35,6 +35,11 @@
 - **rpmatgauss** Gaussian random projection matrix 
 - **rpmatli** Sparse random projection matrix 
 
+### UMAP -- with UMAP.jl
+
+- **umap**: Uniform manifold approximation and projection for 
+    dimension reduction
+
 ### Multiblock
 
 *2 blocks*
@@ -130,12 +135,12 @@
 *Averaging*
 - **lwplsravg** kNN-LWPLSR-AVG 
 
-### Wrappers to other packages
+### SVM -- with LIBSVM.jl
 
-*SVM regression -- with LIBSVM.jl*
 - **svmr** Epsilon-SVR (SVM-R)
 
-*Regression trees -- with DecisionTree.jl*
+### Trees -- with DecisionTree.jl
+
 - **treer_dt** Single tree
 - **rfr_dt** Random forest
 
@@ -177,12 +182,10 @@
     - **plsqda** PLS-QDA (with continuum)
     - **plskdeda**  PLS-KDEDA
 
-
 * *Sparse*
     - **splslda**: Sparse PLS-LDA
     - **splsqda**: Sparse PLS-QDA
     - **splskdeda**: Sparse PLS-KDEDA
-
 
 * *Non linear*
     - **kplslda** KPLS-LDA
@@ -205,12 +208,12 @@
 - **lwplslda** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
 - **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA, with continuum)
 
-### Wrappers to other packages
+### SVM -- with LIBSVM.jl
 
-*SVM classification -- with LIBSVM.jl*
 - **svmda** C-SVC (SVM-DA)
 
-*Classification trees -- with DecisionTree.jl*
+### Trees -- with DecisionTree.jl
+
 - **treeda_dt** Single tree
 - **rfda_dt** Random forest
 

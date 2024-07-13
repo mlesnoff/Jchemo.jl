@@ -30,6 +30,7 @@ pcasph() = FunX{Function}(pcasph)
 spca() = FunX{Function}(spca)
 kpca() = FunX{Function}(kpca)
 rp() = FunX{Function}(rp)
+umap() = FunX{Function}(umap)
 ##
 mbconcat() = FunX{Function}(mbconcat)
 mbpca() = FunX{Function}(mbpca)

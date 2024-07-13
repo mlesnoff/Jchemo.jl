@@ -14,6 +14,7 @@ using Random
 using SparseArrays 
 using Statistics
 using StatsBase           # countmap, ecdf, sample etc.
+using UMAP
 
 ## The order below is required
 include("_structures_param.jl")
@@ -79,6 +80,7 @@ include("pcaout.jl")
 include("kpca.jl")
 include("rpmat.jl")
 include("rp.jl")
+include("umap.jl")
 
 ## Sparse
 include("spca.jl")
@@ -327,6 +329,7 @@ export
     spca, spca!,
     kpca,
     rpmatgauss, rpmatli, rp, rp!,
+    umap,
     ## Multiblock
     rv, lg, rd, 
     mbconcat,

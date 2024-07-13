@@ -1,6 +1,10 @@
 # New
 
-## *Version 0.4.4*
+## *Version 0.5.0*
+
+- News
+    - **umap**: UMAP: Uniform manifold approximation and projection for 
+    dimension reduction (uses package **UMAP.jl** added as dependence).
 
 - Modifications
     - Code cleaning.
