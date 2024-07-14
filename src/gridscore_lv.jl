@@ -9,8 +9,7 @@ must not contain `nlv`.
 
 See function `gridscore` for examples.
 """
-function gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, pars = nothing, 
-        nlv, verbose = false)
+function gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, pars = nothing, nlv, verbose = false)
     ## Case where not multiblock
     if isa(Xtrain[1, 1], Number)
         p = nco(Xtrain)
