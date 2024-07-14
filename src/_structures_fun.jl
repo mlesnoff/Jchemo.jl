@@ -58,6 +58,12 @@ struct Rp
     par::Par
 end
 
+struct Umap 
+    T::Matrix
+    fm::UMAP.UMAP_
+    xscales::Vector
+end 
+    
 struct Fda
     T::Matrix
     P::Matrix
