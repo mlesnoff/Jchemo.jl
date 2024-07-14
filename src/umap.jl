@@ -1,9 +1,3 @@
-struct Umap 
-    T::Matrix
-    fm::UMAP_
-    xscales::Vector
-end 
-    
 """
     umap(X, Y; kwargs...)
 UMAP: Uniform manifold approximation and projection for 
