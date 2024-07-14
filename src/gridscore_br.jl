@@ -5,8 +5,7 @@ Working function for `gridscore`.
 
 See function `gridscore` for examples.
 """
-function gridscore_br(Xtrain, Ytrain, X, Y; fun, score, pars, 
-        verbose = false)
+function gridscore_br(Xtrain, Ytrain, X, Y; fun, score, pars, verbose = false)
     q = nco(Ytrain)
     ncomb = length(pars[1]) # nb. combinations in pars
     verbose ? println("-- Nb. combinations = ", ncomb) : nothing
