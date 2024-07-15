@@ -7,9 +7,19 @@ end
 
 Base.@kwdef mutable struct ParPlsr
     nlv::Union{Int, Vector{Int}, UnitRange} = 1     
-    scal::Bool = false 
     tol::Float64 = sqrt(eps(1.))            # plswold
-    maxit::Int = 200                        # plswold                     
+    maxit::Int = 200                        # plswold 
+    prm::Float64 = .3                       # plsrout                    
+    scal::Bool = false 
+end 
+
+Base.@kwdef mutable struct ParPcr
+    nlv::Union{Int, Vector{Int}, UnitRange} = 1     
+    scal::Bool = false                   
+end 
+
+Base.@kwdef mutable struct ParOut
+    scal::Bool = false                   
 end 
 
 

@@ -46,7 +46,7 @@ function outstah(X, P; kwargs...)
 end
 
 function outstah!(X::Matrix, P::Matrix; kwargs...) 
-    par = recovkwargs(Par, kwargs)
+    par = recovkwargs(ParOut, kwargs)
     Q = eltype(X)
     n, p = size(X)
     xscales = ones(Q, p) 

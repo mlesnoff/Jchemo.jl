@@ -70,7 +70,7 @@ function pcr(X, Y, weights::Weight; kwargs...)
 end
 
 function pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkwargs(ParPcr, kwargs)
     Q = eltype(X)
     q = nco(Y)
     ymeans = colmean(Y, weights)

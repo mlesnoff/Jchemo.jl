@@ -277,7 +277,7 @@ struct Pcr
     yscales::Vector
     weights::Weight
     kwargs::Base.Pairs
-    par::Par
+    par::ParPcr
 end
 
 struct Rr
@@ -347,7 +347,7 @@ end
 struct Plsravg
     fm::PlsravgUnif
     kwargs::Base.Pairs
-    par::Par
+    par::ParPlsr
 end
 
 struct Splsr

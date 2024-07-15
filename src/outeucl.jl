@@ -40,7 +40,7 @@ function outeucl(X; kwargs...)
 end
 
 function outeucl!(X::Matrix; kwargs...) 
-    par = recovkwargs(Par, kwargs)
+    par = recovkwargs(ParOut, kwargs)
     Q = eltype(X)
     p = nco(X)
     xscales = ones(Q, p)
