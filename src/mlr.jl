@@ -63,7 +63,7 @@ function mlr(X, Y, weights::Weight; kwargs...)
 end
 
 function mlr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkwargs(ParMlr, kwargs)
     sqrtD = Diagonal(sqrt.(weights.w))
     if par.noint
         q = nco(Y)
@@ -149,7 +149,7 @@ function mlrpinv(X, Y, weights::Weight; kwargs...)
 end
 
 function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkwargs(ParMlr, kwargs)
     sqrtD = Diagonal(sqrt.(weights.w))
     if par.noint
         q = nco(Y)
@@ -239,7 +239,7 @@ function mlrvec(x, Y, weights::Weight; kwargs...)
 end
 
 function mlrvec!(x::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkwargs(ParMlr, kwargs)
     @assert nco(x) == 1 "Method only working for univariate x."
     if par.noint
         q = nco(Y)

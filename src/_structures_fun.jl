@@ -228,7 +228,7 @@ struct Mlr
     int::Matrix
     weights::Weight
     kwargs::Base.Pairs
-    par::Par
+    par::ParMlr
 end
 
 struct MlrNoArg
