@@ -115,6 +115,7 @@ include("plsravg_unif.jl")
 include("krr.jl")
 include("kplsr.jl")
 include("dkplsr.jl")
+
 include("dfplsr_cg.jl")
 include("aicplsr.jl")
 include("vip.jl") 
@@ -245,6 +246,7 @@ export
     model,
     modelx, modelxy, 
     Par,
+    ParPlsr,
     fit!,
     transf!,
     pip,

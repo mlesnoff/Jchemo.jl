@@ -83,9 +83,9 @@ GLMakie.activate!()
 ztyp = recodcat2int(typtrain)
 colsh = :tab10
 f = Figure()
+i = 1
 ax = Axis3(f[1, 1], xlabel = string("LV", i), ylabel = string("LV", i + 1), 
         zlabel = string("LV", i + 2), title = "UMAP", perspectiveness = 0) 
-i = 1
 scatter!(ax, T[:, i], T[:, i + 1], T[:, i + 2]; markersize = 8, 
     color = ztyp, colormap = colsh) 
 scatter!(ax, Ttest[:, i], Ttest[:, i + 1], Ttest[:, i + 2], color = :black, 
@@ -101,7 +101,7 @@ f
 ```
 """ 
 function umap(X; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkwargs(ParUmap, kwargs)
     X = ensure_mat(X)
     Q = eltype(X)
     p = nco(X)
@@ -116,7 +116,7 @@ function umap(X; kwargs...)
         min_dist = par.min_dist
         )
     T = fm.embedding' 
-    Umap(T, fm, xscales)
+    Umap(T, fm, xscales, par)
 end
 
 """ 

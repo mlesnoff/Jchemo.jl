@@ -62,6 +62,7 @@ struct Umap
     T::Matrix
     fm::UMAP.UMAP_
     xscales::Vector
+    par::ParUmap
 end 
     
 struct Fda
@@ -262,7 +263,7 @@ struct Plsr
     weights::Weight
     niter::Union{Vector{Int}, Nothing}
     kwargs::Base.Pairs
-    par::Par
+    par::ParPlsr
 end
 
 struct Pcr

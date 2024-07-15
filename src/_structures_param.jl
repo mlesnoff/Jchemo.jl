@@ -1,3 +1,18 @@
+Base.@kwdef mutable struct ParUmap
+    nlv::Union{Int, Vector{Int}, UnitRange} = 1     
+    n_neighbors::Int = 15 
+    min_dist::Float64 = .1                 
+    scal::Bool = false 
+end 
+
+Base.@kwdef mutable struct ParPlsr
+    nlv::Union{Int, Vector{Int}, UnitRange} = 1     
+    scal::Bool = false 
+    tol::Float64 = sqrt(eps(1.))            # plswold
+    maxit::Int = 200                        # plswold                     
+end 
+
+
 Base.@kwdef mutable struct Par
     nlv::Union{Int, Vector{Int}, UnitRange} = 1     # nb LVs
     lb::Float64 = 1e-6                              # ridge parameter "lambda"
@@ -72,4 +87,5 @@ Base.@kwdef mutable struct Par
     mrp::Symbol = :gauss                    # 'rp' projection method
     s_li::Float64 = 1.                      # 'rpmatli' sparsity parameter  
 end 
+
 
