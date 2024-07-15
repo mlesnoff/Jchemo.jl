@@ -4,10 +4,6 @@ k-Nearest-Neighbours weighted regression (KNNR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 Keyword arguments:
-* `nlvdis` : Number of latent variables (LVs) to consider 
-    in the global PLS used for the dimension reduction 
-    before computing the dissimilarities. 
-    If `nlvdis = 0`, there is no dimension reduction.
 * `metric` : Type of dissimilarity used to select the 
     neighbors and to compute the weights. Possible values 
     are: `:eucl` (Euclidean distance), `:mah` (Mahalanobis 
@@ -35,11 +31,9 @@ are defined from the dissimilarities between the new
 observation and the neighborhood, and are computed from 
 function 'wdist'.
     
-In general, for high dimensional X-data, using the 
-Mahalanobis distance requires preliminary dimensionality 
-reduction of the data. In function `knnr', the 
-preliminary reduction (argument `nlvdis`) is done by PLS
-on {`X`, `Y`}.
+In general, for X-data with high dimensions, using the 
+Mahalanobis distance requires a preliminary dimensionality 
+reduction (see examples).
 
 ## Examples
 ```julia
@@ -58,14 +52,11 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-nlvdis = 5 ; metric = :mah 
-#nlvdis = 0 ; metric = :eucl 
-h = 1 ; k = 5 
-mod = model(knnr; nlvdis, metric, h, k) ;
+h = 1 ; k = 3 
+mod = model(knnr; h, k) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
-
 res = predict(mod, Xtest) ; 
 pnames(res) 
 res.listnn
@@ -73,8 +64,18 @@ res.listd
 res.listw
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
-    xlabel = "Prediction", ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
+
+## With dimension reduction
+mod1 = model(pcasvd; nlv = 15)
+metric = :eucl ; h = 1 ; k = 3 
+mod2 = model(knnr; metric, h, k) 
+mod = pip(mod1, mod2)
+fit!(mod, Xtrain, ytrain)
+res = predict(mod, Xtest) ; 
+@head res.pred
+@show rmsep(res.pred, ytest)
 
 ####### Example of fitting the function sinc(x)
 ####### described in Rosipal & Trejo 2001 p. 105-106 
@@ -94,22 +95,17 @@ f
 ```
 """ 
 function knnr(X, Y; kwargs...) 
-    par = recovkwargs(Par, kwargs)
+    par = recovkwargs(ParLwmlr, kwargs)
     @assert in([:eucl, :mah])(par.metric) "Wrong value for argument 'metric'."
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     Q = eltype(X)
     p = nco(X)
-    if par.nlvdis == 0
-        fm = nothing
-    else
-        fm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
-    end
     xscales = ones(Q, p)
-    if par.scal && isnothing(fm)
+    if par.scal
         xscales .= colstd(X)
     end
-    Knnr(X, Y, fm, xscales, kwargs, par)
+    Knnr(X, Y, xscales, kwargs, par) 
 end
 
 """
@@ -130,16 +126,12 @@ function predict(object::Knnr, X)
     tolw = object.par.tolw
     criw = object.par.criw
     squared = object.par.squared
-    if isnothing(object.fm)
-        if object.par.scal
-            zX1 = fscale(object.X, object.xscales)
-            zX2 = fscale(X, object.xscales)
-            res = getknn(zX1, zX2; metric, k)
-        else
-            res = getknn(object.X, X; metric, k)
-        end
+    if object.par.scal
+        zX1 = fscale(object.X, object.xscales)
+        zX2 = fscale(X, object.xscales)
+        res = getknn(zX1, zX2; metric, k)
     else
-        res = getknn(object.fm.T, transf(object.fm, X); metric, k) 
+        res = getknn(object.X, X; metric, k)
     end
     listw = copy(res.d)
     Threads.@threads for i = 1:m

@@ -81,7 +81,7 @@ f
 ```
 """ 
 function lwmlr(X, Y; kwargs...) 
-    par = recovkwargs(Par, kwargs)
+    par = recovkwargs(ParLwmlr, kwargs)
     X = ensure_mat(X)  
     Y = ensure_mat(Y)
     Lwmlr(X, Y, kwargs, par)

@@ -22,6 +22,34 @@ Base.@kwdef mutable struct ParOut
     scal::Bool = false                   
 end 
 
+Base.@kwdef mutable struct ParLwplsr
+    nlvdis::Int = 0                         
+    metric::Symbol = :eucl                  
+    h::Float64 = Inf                        
+    k::Int = 1                              
+    criw::Float64 = 4                       
+    squared::Bool = false                   
+    tolw::Float64 = 1e-4                    
+    nlv::Union{Int, Vector{Int}, UnitRange} = 1               
+    scal::Bool = false 
+    verbose::Bool = false                   
+end 
+
+Base.@kwdef mutable struct ParLwmlr                 
+    metric::Symbol = :eucl                  
+    h::Float64 = Inf                        
+    k::Int = 1                              
+    criw::Float64 = 4                       
+    squared::Bool = false                   
+    tolw::Float64 = 1e-4                               
+    scal::Bool = false 
+    verbose::Bool = false                   
+end 
+
+
+
+
+
 
 Base.@kwdef mutable struct Par
     nlv::Union{Int, Vector{Int}, UnitRange} = 1     # nb LVs

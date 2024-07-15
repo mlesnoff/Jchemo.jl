@@ -374,17 +374,16 @@ end
 struct Knnr
     X::Matrix
     Y::Matrix
-    fm::Union{Nothing, Plsr}
     xscales::Vector
     kwargs::Base.Pairs
-    par::Par
+    par::ParLwmlr
 end
 
 struct Lwmlr
     X::Matrix
     Y::Matrix
     kwargs::Base.Pairs
-    par::Par
+    par::ParLwmlr
 end
 
 struct Lwplsr
@@ -393,7 +392,7 @@ struct Lwplsr
     fm::Union{Nothing, Plsr}
     xscales::Vector
     kwargs::Base.Pairs
-    par::Par
+    par::ParLwplsr
 end
 
 struct LwplsrAvg
@@ -402,7 +401,7 @@ struct LwplsrAvg
     fm::Union{Nothing, Plsr}
     xscales::Vector
     kwargs::Base.Pairs
-    par::Par
+    par::ParLwplsr
 end
 
 ## Svm, Trees

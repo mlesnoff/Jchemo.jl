@@ -92,7 +92,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true,
 ```
 """ 
 function lwplsravg(X, Y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkwargs(ParLwplsr, kwargs)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     Q = eltype(X)
