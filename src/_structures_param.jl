@@ -19,8 +19,23 @@ Base.@kwdef mutable struct ParPlsr
     scal::Bool = false 
 end 
 
+Base.@kwdef mutable struct ParCglsr
+    nlv::Union{Int, Vector{Int}, UnitRange} = 1     
+    gs::Bool = true       
+    filt::Bool = true              
+    scal::Bool = false 
+end 
+
 Base.@kwdef mutable struct ParPcr
     nlv::Union{Int, Vector{Int}, UnitRange} = 1     
+    scal::Bool = false                   
+end 
+
+Base.@kwdef mutable struct ParRrr
+    nlv::Union{Int, Vector{Int}, UnitRange} = 1
+    tau::Float64 = 1e-8       
+    tol::Float64 = sqrt(eps(1.))   
+    maxit::Int = 200     
     scal::Bool = false                   
 end 
 

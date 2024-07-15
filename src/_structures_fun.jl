@@ -237,18 +237,6 @@ struct MlrNoArg
     weights::Weight
 end
 
-struct Cglsr
-    B::Matrix
-    g::Vector
-    xmeans::Vector
-    xscales::Vector
-    ymeans::Vector
-    yscales::Vector
-    F::Union{Matrix, Nothing}
-    kwargs::Base.Pairs
-    par::Par
-end
-
 struct Plsr
     T::Matrix
     P::Matrix
@@ -263,7 +251,19 @@ struct Plsr
     weights::Weight
     niter::Union{Vector{Int}, Nothing}
     kwargs::Base.Pairs
-    par::ParPlsr
+    par::Union{ParPlsr, ParRrr}
+end
+
+struct Cglsr
+    B::Matrix
+    g::Vector
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    yscales::Vector
+    F::Union{Matrix, Nothing}
+    kwargs::Base.Pairs
+    par::ParCglsr
 end
 
 struct Pcr

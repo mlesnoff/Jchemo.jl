@@ -1,8 +1,7 @@
 """
     cglsr(X, y; kwargs...)
     cglsr!(X::Matrix, y::Matrix; kwargs...)
-Conjugate gradient algorithm for the normal equations 
-    (CGLS; Björck 1996).
+Conjugate gradient algorithm for the normal equations (CGLS; Björck 1996).
 * `X` : X-data  (n, p).
 * `y` : Univariate Y-data (n).
 Keyword arguments:
@@ -50,7 +49,7 @@ Sciences, Montana State University, 1987.
 
 ## Examples
 ```julia
-using JchemoData
+using JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
@@ -82,7 +81,7 @@ plotxy(vec(pred), ytest; color = (:red, .5), bisect = true,
 cglsr(X, y; kwargs...) = cglsr!(copy(ensure_mat(X)), copy(ensure_mat(y)); kwargs...)
 
 function cglsr!(X::Matrix, y::Matrix; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkwargs(ParCglsr, kwargs)
     Q = eltype(X)   
     n, p = size(X)
     q = nco(y)

@@ -10,6 +10,8 @@ Reduced rank regression (RRR, *aka* RA).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `tau` : Regularization parameter (∊ [0, 1]).
+* `tol` : Tolerance for the Nipals algorithm.
+* `maxit` : Maximum number of iterations for the Nipals algorithm.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
  
@@ -92,7 +94,7 @@ function rrr(X, Y, weights::Weight; kwargs...)
 end
 
 function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkwargs(ParRrr, kwargs)
     @assert 0 <= par.tau <=1 "tau must be in [0, 1]"
     Q = eltype(X)
     n, p = size(X)
