@@ -781,16 +781,14 @@ function recovkw(ParStruct::DataType, kwargs)
         kwargs_new = kwargs
         par = ParStruct()
     else
+        args = sort(collect(kwargs))
         z1 = fieldnames(ParStruct)
-        z2 = keys(Dict(kwargs))
-        s = [i for i in in(z2).(z1)]
-        s = collect(1:length(z1))[s]
-        keys_new = [i for i in keys(Dict(kwargs))][s]
-        z = getindex(kwargs, keys_new)
-        kwargs_new = Tuple([pnames(z)[i] => z[i] for i in 1:length(z)])
+        z2 = sort(collect(keys(Dict(args))))
+        s = in(z1).(z2)
+        kwargs_new = args[s]
         par = [ParStruct(; Dict(kws)...) for kws in zip([[k => v] for (k, v) in kwargs_new]...)][1]
     end
-    (kwargs = kwargs_new, par = par)
+    (kwargs = kwargs_new, par)
 end
 
 recovkw(ParStruct::DataType) = (kwargs = nothing, par = ParStruct())

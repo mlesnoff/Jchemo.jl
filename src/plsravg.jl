@@ -79,9 +79,10 @@ end
 
 function plsravg!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParPlsr, kwargs).par
+    println(par)
     fun = plsravg_unif!
     fm = fun(X, Y, weights; kwargs...)
-    Plsravg(fm, par)
+    Plsravg(fm, par) 
 end
 
 """

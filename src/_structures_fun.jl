@@ -43,7 +43,6 @@ struct Kpca
     vtot::Matrix
     xscales::Vector 
     weights::Weight
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -52,7 +51,6 @@ struct Rp
     P::Union{Matrix, SparseArrays.SparseMatrixCSC}
     xmeans::Vector
     xscales::Vector
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -92,7 +90,6 @@ struct Cca
     ymeans::Vector
     yscales::Vector
     weights::Weight
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -135,7 +132,6 @@ struct Plscan
     ymeans::Vector
     yscales::Vector
     weights::Weight
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -153,7 +149,6 @@ struct Plstuck
     ymeans::Vector
     yscales::Vector
     weights::Weight
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -169,7 +164,6 @@ struct Rasvd
     ymeans::Vector
     yscales::Vector
     weights::Weight
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -220,7 +214,6 @@ struct Mlr
     B::Matrix   
     int::Matrix
     weights::Weight
-    kwargs::Base.Pairs
     par::ParMlr
 end
 
@@ -267,7 +260,6 @@ struct Pcr
     ymeans::Vector
     yscales::Vector
     weights::Weight
-    kwargs::Base.Pairs
     par::ParPcr
 end
 
@@ -296,7 +288,6 @@ end
 
 struct Plsravg
     fm::PlsravgUnif
-    kwargs::Base.Pairs
     par::ParPlsr
 end
 
@@ -325,7 +316,6 @@ struct Dkplsr
     T::Matrix
     xscales::Vector
     yscales::Vector
-    kwargs::Base.Pairs
     par::ParKplsr
 end
 
@@ -337,7 +327,6 @@ struct Rr
     xscales::Vector
     ymeans::Vector
     weights::Weight
-    kwargs::Base.Pairs
     par::ParRr
 end
 
@@ -354,7 +343,6 @@ struct Krr
     xscales::Vector
     ymeans::Vector
     weights::Weight
-    kwargs::Base.Pairs
     par::ParKrr
 end
 
@@ -364,14 +352,12 @@ struct Knnr
     X::Matrix
     Y::Matrix
     xscales::Vector
-    kwargs::Base.Pairs
     par::ParLwmlr
 end
 
 struct Lwmlr
     X::Matrix
     Y::Matrix
-    kwargs::Base.Pairs
     par::ParLwmlr
 end
 
@@ -380,7 +366,6 @@ struct Lwplsr
     Y::Matrix
     fm::Union{Nothing, Plsr}
     xscales::Vector
-    kwargs::Base.Pairs
     par::ParLwplsr
 end
 
@@ -389,7 +374,6 @@ struct LwplsrAvg
     Y::Matrix
     fm::Union{Nothing, Plsr}
     xscales::Vector
-    kwargs::Base.Pairs
     par::ParLwplsr
 end
 
@@ -418,7 +402,6 @@ struct Mbplsr
     ymeans::Vector
     yscales::Vector
     weights::Weight
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -463,7 +446,6 @@ struct Soplsr
     b::Vector
     fmsc::Blockscal    
     yscales::Vector
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -672,32 +654,26 @@ end
 ## Preprocessing
 
 struct Detrend
-    kwargs::Base.Pairs
     par::Par
 end
 
 struct Fdif
-    kwargs::Base.Pairs
     par::Par
 end
 
 struct Interpl
-    kwargs::Base.Pairs
     par::Par
 end
 
 struct Mavg
-    kwargs::Base.Pairs
     par::Par
 end
 
 struct Savgol
-    kwargs::Base.Pairs
     par::Par
 end
 
 struct Snv
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -718,7 +694,6 @@ struct Cscale
 end
 
 struct Rmgap
-    kwargs::Base.Pairs
     par::Par
 end
 
