@@ -774,16 +774,26 @@ function recodnum2int(x, q)
 end
 
 """
-    recovkwargs(ParamStruct, kwargs)
+    recovkw(ParStruct, kwargs)
 """
-function recovkwargs(ParamStruct::DataType, kwargs)
+function recovkw(ParStruct::DataType, kwargs)
     if length(Dict(kwargs)) == 0
-        par = ParamStruct()
+        kwargs_new = kwargs
+        par = ParStruct()
     else
-    par = [ParamStruct(; Dict(kws)...) for kws 
-        in zip([[k => v] for (k, v) in kwargs]...)][1]
+        z1 = fieldnames(ParStruct)
+        z2 = keys(Dict(kwargs))
+        s = [i for i in in(z2).(z1)]
+        s = collect(1:length(z1))[s]
+        keys_new = [i for i in keys(Dict(kwargs))][s]
+        z = getindex(kwargs, keys_new)
+        kwargs_new = Tuple([pnames(z)[i] => z[i] for i in 1:length(z)])
+        par = [ParStruct(; Dict(kws)...) for kws in zip([[k => v] for (k, v) in kwargs_new]...)][1]
     end
+    (kwargs = kwargs_new, par = par)
 end
+
+recovkw(ParStruct::DataType) = (kwargs = nothing, par = ParStruct())
 
 """
     replacebylev(x, lev)

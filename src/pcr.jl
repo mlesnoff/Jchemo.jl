@@ -14,7 +14,7 @@ Keyword arguments:
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -70,7 +70,7 @@ function pcr(X, Y, weights::Weight; kwargs...)
 end
 
 function pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(ParPcr, kwargs)
+    par = recovkw(ParPcr, kwargs).par
     Q = eltype(X)
     q = nco(Y)
     ymeans = colmean(Y, weights)

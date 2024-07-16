@@ -75,18 +75,18 @@ predict(mod, Xtest; lb = [.1; .01]).pred
 ```
 """ 
 function rrda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     rrda(X, y, weights; kwargs...)
 end
 
 function rrda(X, y, weights::Weight; kwargs...)    
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     res = dummy(y)
     ni = tab(y).vals 
     fm = rr(X, res.Y, weights; kwargs...)
-    Rrda(fm, res.lev, ni, kwargs, par)
+    Rrda(fm, res.lev, ni, par)
 end
 
 """

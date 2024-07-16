@@ -31,7 +31,7 @@ https://doi.org/10.1080/00401706.1970.10488634
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -79,7 +79,7 @@ function rr(X, Y, weights::Weight; kwargs...)
 end
 
 function rr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParRr, kwargs).par
     Q = eltype(X)
     p = nco(X)
     sqrtw = sqrt.(weights.w)
@@ -97,7 +97,7 @@ function rr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     res = LinearAlgebra.svd!(sqrtD * X)
     sv = res.S
     TtDY = Diagonal(sv) * res.U' * (sqrtD * Y)
-    Rr(res.V, TtDY, sv, xmeans, xscales, ymeans, weights, kwargs, par)
+    Rr(res.V, TtDY, sv, xmeans, xscales, ymeans, weights, par)
 end
 
 """

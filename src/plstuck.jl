@@ -71,7 +71,7 @@ function plstuck(X, Y, weights::Weight; kwargs...)
 end
 
 function plstuck!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(Par, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(X)
     p = nco(X)
@@ -109,7 +109,7 @@ function plstuck!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     TTx = colsum(D * Tx .* Tx)
     TTy = colsum(D * Ty .* Ty)
     Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
-        ymeans, yscales, weights, kwargs, par)
+        ymeans, yscales, weights, par)
 end
 
 """ 

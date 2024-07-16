@@ -9,7 +9,7 @@ function plsravg_unif(X, Y, weights::Weight; kwargs...)
 end
 
 function plsravg_unif!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
     nlv = (min(minimum(par.nlv), n, p):min(maximum(par.nlv), n, p))

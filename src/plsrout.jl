@@ -20,7 +20,7 @@ the final step is a weighted PLSR instead of a weighted PCA.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -70,7 +70,7 @@ function plsrout(X, Y, weights::Weight; kwargs...)
 end
 
 function plsrout!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParPlsrOut, kwargs).par 
     n, p = size(X)
     nlvout = 30
     P = rand(0:1, p, nlvout)

@@ -33,7 +33,7 @@ https://doi.org/10.1021/ac9906835
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/caltransfer.jld2")
 @load db dat
@@ -71,7 +71,7 @@ f
 ```
 """ 
 function calpds(X1, X2; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(Par, kwargs).par 
     npoint = par.npoint
     @assert npoint >= 1 "Argument 'npoint' must be >= 1."
     p = nco(X1)

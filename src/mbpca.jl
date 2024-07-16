@@ -120,7 +120,7 @@ function mbpca(Xbl, weights::Weight; kwargs...)
 end
 
 function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(Par, kwargs).par 
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     n = nro(Xbl[1])
@@ -184,7 +184,7 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
         end
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
-    Mbpca(T, U, W, Tbl, Tb, Wbl, lb, mu, fmsc, weights, niter, kwargs, par)
+    Mbpca(T, U, W, Tbl, Tb, Wbl, lb, mu, fmsc, weights, niter, par)
 end
 
 """ 

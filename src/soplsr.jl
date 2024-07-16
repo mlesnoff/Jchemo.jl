@@ -83,7 +83,7 @@ function soplsr(Xbl, Y, weights::Weight; kwargs...)
 end
 
 function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     Y = ensure_mat(Y)
     n = size(Xbl[1], 1)
@@ -120,7 +120,7 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
             fit .+= predict(fm[i], X).pred 
         end
     end
-    Soplsr(fm, T, fit, b, fmsc, yscales, kwargs, par)
+    Soplsr(fm, T, fit, b, fmsc, yscales, par)
 end
 
 """ 

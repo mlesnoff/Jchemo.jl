@@ -51,7 +51,7 @@ f
 ```
 """ 
 function aicplsr(X, y; alpha = 2, kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     Q = eltype(X[1, 1])
     X = ensure_mat(X)
     n, p = size(X)

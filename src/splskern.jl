@@ -68,7 +68,7 @@ Chem. Lab. Int. Syst. 106, 216-223.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -123,7 +123,7 @@ function splskern(X, Y, weights::Weight; kwargs...)
 end
 
 function splskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParSplsr, kwargs).par
     @assert in([:hard ; :soft ; :mix])(par.msparse) "Wrong value for argument 'msparse'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
     Q = eltype(X)
@@ -228,7 +228,7 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
      end
      sel = unique(reduce(vcat, sellv))
      Splsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, 
-         sellv, sel, kwargs, par)
+         sellv, sel, par)
 end
 
 

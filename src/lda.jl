@@ -63,7 +63,7 @@ conf(res.pred, ytest).cnt
 ```
 """ 
 function lda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     lda(X, y, weights; kwargs...)
@@ -71,7 +71,7 @@ end
 
 function lda(X, y, weights::Weight; kwargs...)  
     # Scaling X has no effect
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     X = ensure_mat(X)
     y = vec(y)    # for findall
     Q = eltype(X)

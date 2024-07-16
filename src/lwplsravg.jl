@@ -58,7 +58,7 @@ https://doi.org/10.1016/j.chemolab.2023.105031.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -92,7 +92,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true,
 ```
 """ 
 function lwplsravg(X, Y; kwargs...)
-    par = recovkwargs(ParLwplsr, kwargs)
+    par = recovkw(ParLwplsr, kwargs).par
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     Q = eltype(X)
@@ -106,7 +106,7 @@ function lwplsravg(X, Y; kwargs...)
     if isnothing(fm) && par.scal
         xscales .= colstd(X)
     end
-    LwplsrAvg(X, Y, fm, xscales, kwargs, par)
+    LwplsrAvg(X, Y, fm, xscales, par)
 end
 
 """

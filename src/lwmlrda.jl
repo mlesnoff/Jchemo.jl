@@ -67,11 +67,11 @@ conf(res.pred, ytest).cnt
 ```
 """ 
 function lwmlrda(X, y; kwargs...) 
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     X = ensure_mat(X)
     y = ensure_mat(y)
     taby = tab(y)
-    Lwmlrda(X, y, taby.keys, taby.vals, kwargs, par) 
+    Lwmlrda(X, y, taby.keys, taby.vals, par) 
 end
 
 """

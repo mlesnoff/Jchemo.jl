@@ -33,7 +33,7 @@ http://www.theses.fr/2002PA112245
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -64,7 +64,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 ```
 """ 
 function treer_dt(X, y; kwargs...) 
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)
@@ -86,7 +86,7 @@ function treer_dt(X, y; kwargs...)
         #rng = 3
         )
     featur = collect(1:p)
-    TreerDt(fm, xscales, featur, kwargs, par) 
+    TreerDt(fm, xscales, featur, par) 
 end
 
 """

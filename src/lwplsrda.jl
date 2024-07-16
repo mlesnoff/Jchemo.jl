@@ -73,7 +73,7 @@ conf(res.pred, ytest).cnt
 ```
 """ 
 function lwplsrda(X, y; kwargs...) 
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(Par, kwargs).par 
     X = ensure_mat(X)
     y = ensure_mat(y)
     Q = eltype(X)
@@ -89,7 +89,7 @@ function lwplsrda(X, y; kwargs...)
     if isnothing(fm) && par.scal
         xscales .= colstd(X)
     end
-    Lwplsrda(X, y, fm, xscales, taby.keys, taby.vals, kwargs, par)
+    Lwplsrda(X, y, fm, xscales, taby.keys, taby.vals, par)
 end
 
 """

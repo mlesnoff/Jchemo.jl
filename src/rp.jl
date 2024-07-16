@@ -42,7 +42,7 @@ function rp(X, weights::Weight; kwargs...)
 end
 
 function rp!(X::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(Par, kwargs).par 
     @assert in([:gauss, :li])(par.mrp) "Wrong value for argument 'mrp'."
     Q = eltype(X)
     p = nco(X)
@@ -61,7 +61,7 @@ function rp!(X::Matrix, weights::Weight; kwargs...)
             s_li = par.s_li)
     end 
     T = X * P
-    Rp(T, P, xmeans, xscales, kwargs, par)
+    Rp(T, P, xmeans, xscales, par)
 end
 
 """ 

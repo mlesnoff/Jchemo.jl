@@ -18,7 +18,7 @@ be `indexcol` = [651 ; 1425].
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/asdgap.jld2") 
 @load db dat
@@ -44,7 +44,7 @@ f
 ```
 """ 
 function rmgap(X; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     Rmgap(kwargs, par)
 end
 

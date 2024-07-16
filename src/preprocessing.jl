@@ -10,7 +10,7 @@ and returns the residuals.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -33,7 +33,7 @@ plotsp(Xptest, wl).f
 ```
 """ 
 function detrend(X; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     Detrend(kwargs, par)
 end
 
@@ -82,7 +82,7 @@ The method reduces the column-dimension:
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -105,7 +105,7 @@ plotsp(Xptest).f
 ```
 """ 
 function fdif(X; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     Fdif(kwargs, par)
 end
 
@@ -156,7 +156,7 @@ https://htmlpreview.github.io/?https://github.com/PumasAI/DataInterpolations.jl/
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -181,7 +181,7 @@ plotsp(Xptest).f
 ```
 """
 function interpl(X; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     Interpl(kwargs, par)
 end
 
@@ -239,7 +239,7 @@ https://github.com/JuliaImages/ImageFiltering.jl
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -262,7 +262,7 @@ plotsp(Xptest).f
 ```
 """ 
 function mavg(X; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     Mavg(kwargs, par)
 end
 
@@ -370,7 +370,7 @@ IEEE Signal Processing Magazine 28, 111–117. https://doi.org/10.1109/MSP.2011.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -410,7 +410,7 @@ f
 ```
 """ 
 function savgol(X; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     Savgol(kwargs, par)
 end
 
@@ -460,7 +460,7 @@ Each row of `X` is divide by its norm.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -515,7 +515,7 @@ Keyword arguments:
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -539,7 +539,7 @@ plotsp(Xptest).f
 ```
 """ 
 function snv(X; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     Snv(kwargs, par)
 end
 

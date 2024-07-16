@@ -86,7 +86,7 @@ conf(res.pred, ytest).cnt
 function rfda_dt(X, y::Union{Array{Int}, Array{String}}; kwargs...)
     ## For DA in DecisionTree.jl, 
     ## y must be Int or String
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)
@@ -112,5 +112,5 @@ function rfda_dt(X, y::Union{Array{Int}, Array{String}}; kwargs...)
         #rng = 3
         ) 
     featur = collect(1:p)
-    TreedaDt(fm, xscales, featur, taby.keys, taby.vals, kwargs, par)
+    TreedaDt(fm, xscales, featur, taby.keys, taby.vals, par)
 end

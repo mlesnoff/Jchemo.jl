@@ -14,7 +14,6 @@ struct Pca
     xscales::Vector
     weights::Weight
     niter::Union{Vector{Int}, Nothing} # for PCA Nipals
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -29,7 +28,6 @@ struct Spca
     niter::Union{Vector{Int}, Nothing}
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -77,7 +75,6 @@ struct Fda
     weights::Weight
     lev::Vector
     ni::Vector{Int}
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -117,7 +114,6 @@ struct Ccawold
     yscales::Vector
     weights::Weight
     niter::Vector{Int}
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -181,7 +177,6 @@ struct Blockscal
     bscales::Vector
     xmeans::Vector{Vector}
     xscales::Vector{Vector}
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -201,7 +196,6 @@ struct Mbpca
     fmsc::Blockscal
     weights::Weight
     niter::Vector{Int}
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -217,7 +211,6 @@ struct Comdim
     fmsc::Blockscal
     weights::Weight
     niter::Vector{Int}
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -250,7 +243,6 @@ struct Plsr
     yscales::Vector
     weights::Weight
     niter::Union{Vector{Int}, Nothing}
-    kwargs::Base.Pairs
     par::Union{ParPlsr, ParRrr}
 end
 
@@ -262,7 +254,6 @@ struct Cglsr
     ymeans::Vector
     yscales::Vector
     F::Union{Matrix, Nothing}
-    kwargs::Base.Pairs
     par::ParCglsr
 end
 
@@ -280,16 +271,33 @@ struct Pcr
     par::ParPcr
 end
 
-struct Rr
-    V::Matrix
-    TtDY::Matrix
-    sv::Vector
+struct Splsr
+    T::Matrix
+    P::Matrix
+    R::Matrix
+    W::Matrix
+    C::Matrix
+    TT::Vector
     xmeans::Vector
     xscales::Vector
     ymeans::Vector
+    yscales::Vector
     weights::Weight
+    niter::Union{Matrix, Nothing}
+    sellv::Vector{Vector{Int}}
+    sel::Vector{Int}
+    par::ParSplsr
+end
+
+struct PlsravgUnif
+    fm::Plsr
+    nlv::UnitRange
+end
+
+struct Plsravg
+    fm::PlsravgUnif
     kwargs::Base.Pairs
-    par::Par
+    par::ParPlsr
 end
 
 struct Kplsr
@@ -307,8 +315,7 @@ struct Kplsr
     yscales::Vector
     weights::Weight
     iter::Vector{Int}
-    kwargs::Base.Pairs
-    par::Par
+    par::ParKplsr
 end
 
 struct Dkplsr
@@ -319,7 +326,19 @@ struct Dkplsr
     xscales::Vector
     yscales::Vector
     kwargs::Base.Pairs
-    par::Par
+    par::ParKplsr
+end
+
+struct Rr
+    V::Matrix
+    TtDY::Matrix
+    sv::Vector
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    weights::Weight
+    kwargs::Base.Pairs
+    par::ParRr
 end
 
 struct Krr
@@ -336,37 +355,7 @@ struct Krr
     ymeans::Vector
     weights::Weight
     kwargs::Base.Pairs
-    par::Par
-end
-
-struct PlsravgUnif
-    fm::Plsr
-    nlv::UnitRange
-end
-
-struct Plsravg
-    fm::PlsravgUnif
-    kwargs::Base.Pairs
-    par::ParPlsr
-end
-
-struct Splsr
-    T::Matrix
-    P::Matrix
-    R::Matrix
-    W::Matrix
-    C::Matrix
-    TT::Vector
-    xmeans::Vector
-    xscales::Vector
-    ymeans::Vector
-    yscales::Vector
-    weights::Weight
-    niter::Union{Matrix, Nothing}
-    sellv::Vector{Vector{Int}}
-    sel::Vector{Int}
-    kwargs::Base.Pairs
-    par::Par
+    par::ParKrr
 end
 
 ## Local
@@ -415,7 +404,6 @@ struct TreerDt
     fm::Union{DecisionTree.Root, DecisionTree.Ensemble}
     xscales::Vector
     featur::Vector{Int}
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -450,7 +438,6 @@ struct Mbplswest            # Used for mbplswest, mbwcov
     weights::Weight
     lb::Union{Matrix, Nothing}
     niter::Union{Vector, Nothing}
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -466,7 +453,6 @@ struct Rosaplsr
     yscales::Vector
     weights::Weight
     bl::Vector{Int}
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -564,7 +550,6 @@ struct Rrda
     fm::Union{Rr, Krr}  
     lev::Vector
     ni::Vector{Int}
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -578,7 +563,6 @@ struct Knnda
     xscales::Vector
     lev::Vector
     ni::Vector{Int}
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -587,7 +571,6 @@ struct Lwmlrda
     y::AbstractMatrix
     lev::Vector
     ni::Vector{Int}
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -598,7 +581,6 @@ struct Lwplsrda
     xscales::Vector
     lev::Vector
     ni::Vector{Int}
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -609,7 +591,6 @@ struct Lwplslda
     xscales::Vector
     lev::Vector
     ni::Vector{Int}
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -620,7 +601,6 @@ struct Lwplsqda
     xscales::Vector
     lev::Vector
     ni::Vector{Int}
-    kwargs::Base.Pairs
     par::Par
 end
 
@@ -639,7 +619,6 @@ struct TreedaDt
     featur::Vector{Int}
     lev::Vector
     ni::Vector{Int}
-    kwargs::Base.Pairs
     par::Par
 end
 

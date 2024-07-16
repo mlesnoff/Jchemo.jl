@@ -31,7 +31,7 @@ https://doi.org/10.1016/S0169-7161(04)24009-3
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "iris.jld2") 
 @load db dat
@@ -125,7 +125,7 @@ f
 ```
 """ 
 function dmkern(X; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
     h_kde = par.h_kde

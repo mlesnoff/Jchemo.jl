@@ -71,7 +71,7 @@ conf(res.pred, ytest).cnt
 ```
 """ 
 function knnda(X, y; kwargs...) 
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     X = ensure_mat(X)
     y = ensure_mat(y)
     Q = eltype(X)
@@ -87,7 +87,7 @@ function knnda(X, y; kwargs...)
     if par.scal && isnothing(fm)
         xscales .= colstd(X)
     end
-    Knnda(X, y, fm, xscales, taby.keys, taby.vals, kwargs, par) 
+    Knnda(X, y, fm, xscales, taby.keys, taby.vals, par) 
 end
 
 """

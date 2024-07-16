@@ -82,7 +82,7 @@ errp(res.pred, ytest)
 ```
 """ 
 function qda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     qda(X, y, weights; kwargs...)
@@ -90,7 +90,7 @@ end
 
 function qda(X, y, weights::Weight; kwargs...)  
     # Scaling X has no effect
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     X = ensure_mat(X)
     y = vec(y)    # for findall

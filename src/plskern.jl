@@ -41,7 +41,7 @@ Data Anal., 51, 1393-1410.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -101,7 +101,7 @@ function plskern(X, Y, weights::Weight; kwargs...)
 end
 
 function plskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(ParPlsr, kwargs)
+    par = recovkw(ParPlsr, kwargs).par
     Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
@@ -164,8 +164,7 @@ function plskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         C[:, a] .= c
         TT[a] = tt
     end
-    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, 
-        nothing, kwargs, par)
+    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
 end
 
 """ 

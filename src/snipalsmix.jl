@@ -1,5 +1,5 @@
 function snipalsmix(X; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(Par, kwargs).par 
     X = ensure_mat(X)
     Q = eltype(X)
     n, p = size(X)

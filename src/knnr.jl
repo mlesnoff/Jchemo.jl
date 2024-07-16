@@ -37,7 +37,7 @@ reduction (see examples).
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -95,7 +95,7 @@ f
 ```
 """ 
 function knnr(X, Y; kwargs...) 
-    par = recovkwargs(ParLwmlr, kwargs)
+    par = recovkw(ParLwmlr, kwargs).par
     @assert in([:eucl, :mah])(par.metric) "Wrong value for argument 'metric'."
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -105,7 +105,7 @@ function knnr(X, Y; kwargs...)
     if par.scal
         xscales .= colstd(X)
     end
-    Knnr(X, Y, xscales, kwargs, par) 
+    Knnr(X, Y, xscales, par) 
 end
 
 """

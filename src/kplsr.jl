@@ -26,7 +26,7 @@ Journal of Machine Learning Research 2, 97-123.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -91,7 +91,7 @@ function kplsr(X, Y, weights::Weight; kwargs...)
 end
 
 function kplsr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParKplsr, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     Q = eltype(X)
     n, p = size(X)
@@ -164,7 +164,7 @@ function kplsr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     DU = D * U
     zR = DU * inv(T' * D * Kc * DU)
     Kplsr(X, Kt, T, C, U, zR, D, DKt, vtot, xscales, ymeans, yscales, 
-        weights, iter, kwargs, par)
+        weights, iter, par)
 end
 
 """ 

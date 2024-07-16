@@ -105,7 +105,7 @@ function cca(X, Y, weights::Weight; kwargs...)
 end
 
 function cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(Par, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
     Q = eltype(X)
@@ -166,7 +166,7 @@ function cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     Tx = (1 ./ sqrtw) .* X * Wx 
     Ty = (1 ./ sqrtw) .* Y * Wy
     Cca(Tx, Ty, Wx, Wy, d, bscales, xmeans, xscales, ymeans, yscales, 
-        weights, kwargs, par)
+        weights, par)
 end
 
 """ 

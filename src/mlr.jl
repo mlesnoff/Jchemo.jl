@@ -15,7 +15,7 @@ Safe but can be little slower than other methods.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie 
+using Jchemo, JchemoData, JLD2, CairoMakie 
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat
@@ -63,7 +63,7 @@ function mlr(X, Y, weights::Weight; kwargs...)
 end
 
 function mlr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(ParMlr, kwargs)
+    par = recovkw(ParMlr, kwargs).par
     sqrtD = Diagonal(sqrt.(weights.w))
     if par.noint
         q = nco(Y)
@@ -77,7 +77,7 @@ function mlr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         B = (sqrtD * X) \ (sqrtD * Y)
         int = ymeans' .- xmeans' * B
     end
-    Mlr(B, int, weights, kwargs, par)
+    Mlr(B, int, weights, par)
 end
 
 """
@@ -149,7 +149,7 @@ function mlrpinv(X, Y, weights::Weight; kwargs...)
 end
 
 function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(ParMlr, kwargs)
+    par = recovkw(ParMlr, kwargs).par
     sqrtD = Diagonal(sqrt.(weights.w))
     if par.noint
         q = nco(Y)
@@ -167,7 +167,7 @@ function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         B = pinv(sqrtDX, rtol = tol) * (sqrtD * Y)
         int = ymeans' .- xmeans' * B
     end
-    Mlr(B, int, weights, kwargs, par)
+    Mlr(B, int, weights, par)
 end
 
 """
@@ -239,7 +239,7 @@ function mlrvec(x, Y, weights::Weight; kwargs...)
 end
 
 function mlrvec!(x::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(ParMlr, kwargs)
+    par = recovkw(ParMlr, kwargs).par
     @assert nco(x) == 1 "Method only working for univariate x."
     if par.noint
         q = nco(Y)
@@ -255,7 +255,7 @@ function mlrvec!(x::Matrix, Y::Matrix, weights::Weight; kwargs...)
         B = (xtD * Y) ./ (xtD * x)
         int = ymeans' .- xmeans' * B
     end
-    Mlr(B, int, weights, kwargs, par)
+    Mlr(B, int, weights, par)
 end
 
 """

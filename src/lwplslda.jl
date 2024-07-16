@@ -76,7 +76,7 @@ conf(res.pred, ytest).cnt
 ```
 """ 
 function lwplslda(X, y; kwargs...) 
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(Par, kwargs).par 
     X = ensure_mat(X)
     y = ensure_mat(y)
     Q = eltype(X)
@@ -93,7 +93,7 @@ function lwplslda(X, y; kwargs...)
         xscales .= colstd(X)
     end
     Lwplslda(X, y, fm, xscales, taby.keys, 
-        taby.vals, kwargs, par)
+        taby.vals, par)
 end
 
 """

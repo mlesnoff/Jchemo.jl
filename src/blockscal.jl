@@ -60,7 +60,7 @@ function blockscal(Xbl; kwargs...)
 end
 
 function blockscal(Xbl, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     @assert in([:none, :frob, :mfa, :ncol, :sd])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
@@ -83,7 +83,7 @@ function blockscal(Xbl, weights::Weight; kwargs...)
             bscales[k] = sqrt(sum(colvar(zX, weights)))
         end
     end
-    Blockscal(bscales, xmeans, xscales, kwargs, par)
+    Blockscal(bscales, xmeans, xscales, par)
 end
 
 """ 

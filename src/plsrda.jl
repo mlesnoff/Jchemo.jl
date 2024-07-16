@@ -84,7 +84,7 @@ summary(fm.fm, Xtrain)
 ```
 """
 function plsrda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     plsrda(X, y, weights; kwargs...)

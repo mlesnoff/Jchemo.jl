@@ -25,7 +25,7 @@ PLSR models.  The neighborhoods are computed directly on `X`
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -81,10 +81,10 @@ f
 ```
 """ 
 function lwmlr(X, Y; kwargs...) 
-    par = recovkwargs(ParLwmlr, kwargs)
+    par = recovkw(ParLwmlr, kwargs).par
     X = ensure_mat(X)  
     Y = ensure_mat(Y)
-    Lwmlr(X, Y, kwargs, par)
+    Lwmlr(X, Y, par)
 end
 
 """

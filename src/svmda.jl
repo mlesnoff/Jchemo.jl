@@ -82,7 +82,7 @@ conf(res.pred, ytest).cnt
 ```
 """ 
 function svmda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     kern = par.kern 
     @assert in([:krbf, :kpol, :klin, :ktanh])(kern) "Wrong value for argument 'kern'." 
     X = ensure_mat(X)

@@ -36,7 +36,7 @@ function plsrosa(X, Y, weights::Weight; kwargs...)
 end
 
 function plsrosa!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(ParPlsr, kwargs)
+    par = recovkw(ParPlsr, kwargs).par
     Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
@@ -98,7 +98,6 @@ function plsrosa!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         TT[a] = tt
     end
     R = W * inv(P' * W)
-    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, 
-        nothing, kwargs, par)
+    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
 end
 

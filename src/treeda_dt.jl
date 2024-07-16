@@ -73,7 +73,7 @@ conf(res.pred, ytest).cnt
 ## y must be Int or String
 function treeda_dt(X, y::Union{Array{Int}, Array{String}}; 
         kwargs...) 
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)
@@ -97,7 +97,7 @@ function treeda_dt(X, y::Union{Array{Int}, Array{String}};
         #rng = 3
         )
     featur = collect(1:p)
-    TreedaDt(fm, xscales, featur, taby.keys, taby.vals, kwargs, par)
+    TreedaDt(fm, xscales, featur, taby.keys, taby.vals, par)
 end
 
 """

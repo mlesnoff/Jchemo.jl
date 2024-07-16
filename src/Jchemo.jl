@@ -283,7 +283,7 @@ export
     pmod, pnames, psize,
     pval,
     recodcat2int, recodnum2int, 
-    recovkwargs,
+    recovkw,
     replacebylev, replacebylev2, 
     replacedict, 
     rmcol, rmrow, 

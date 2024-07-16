@@ -25,7 +25,7 @@ Outputs are:
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie 
+using Jchemo, JchemoData, JLD2, CairoMakie 
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat
@@ -74,7 +74,7 @@ function pcasvd(X, weights::Weight; kwargs...)
 end
 
 function pcasvd!(X::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
@@ -94,7 +94,7 @@ function pcasvd!(X::Matrix, weights::Weight; kwargs...)
     sv = res.S   
     sv[sv .< 0] .= 0
     T = (1 ./ sqrtw) .* vcol(res.U, 1:nlv) * Diagonal(sv[1:nlv])
-    Pca(T, P, sv, xmeans, xscales, weights, nothing, kwargs, par) 
+    Pca(T, P, sv, xmeans, xscales, weights, nothing, par) 
 end
 
 """ 

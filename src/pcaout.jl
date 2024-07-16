@@ -49,7 +49,7 @@ https://doi.org/10.1080/01621459.1995.10476517
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie 
+using Jchemo, JchemoData, JLD2, CairoMakie 
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "octane.jld2") 
 @load db dat
@@ -85,7 +85,7 @@ function pcaout(X, weights::Weight; kwargs...)
 end
 
 function pcaout!(X::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(Par, kwargs).par 
     n, p = size(X)
     nlvout = 30
     P = rand(0:1, p, nlvout)

@@ -140,7 +140,7 @@ function comdim(Xbl, weights::Weight; kwargs...)
 end
 
 function comdim!(Xbl::Vector, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(Par, kwargs).par 
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     n = nro(Xbl[1])

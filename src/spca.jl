@@ -132,7 +132,7 @@ function spca(X, weights::Weight; kwargs...)
 end
 
 function spca!(X::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(Par, kwargs).par 
     @assert in([:hard ; :soft ; :mix])(par.msparse) "Wrong value for argument 'msparse'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]."
     Q = eltype(X)

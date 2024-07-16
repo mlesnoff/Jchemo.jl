@@ -101,7 +101,7 @@ f
 ```
 """ 
 function umap(X; kwargs...)
-    par = recovkwargs(ParUmap, kwargs)
+    par = recovkw(ParUmap, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     p = nco(X)
