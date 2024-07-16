@@ -153,7 +153,7 @@ function krr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     sv = sqrt.(res.S)
     # UtDY = U' * D^(1/2) * Y
     UtDY = U' * sqrtD * Y
-    Krr(X, K, U, UtDY, sv, D, sqrtD, DKt, vtot, xscales, ymeans, weights, par)
+    Krr(X, K, U, UtDY, sv, D, sqrtD, DKt, vtot, xscales, ymeans, weights, kwargs, par) 
 end
 
 """

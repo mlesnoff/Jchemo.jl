@@ -781,7 +781,7 @@ function recovkw(ParStruct::DataType, kwargs)
         kwargs_new = kwargs
         par = ParStruct()
     else
-        args = sort(collect(kwargs))
+        args = sort(collect(kwargs), by = x -> x[1])
         z1 = fieldnames(ParStruct)
         z2 = sort(collect(keys(Dict(args))))
         s = in(z1).(z2)

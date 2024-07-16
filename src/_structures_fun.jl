@@ -306,6 +306,7 @@ struct Kplsr
     yscales::Vector
     weights::Weight
     iter::Vector{Int}
+    kwargs::Base.Pairs
     par::ParKplsr
 end
 
@@ -316,6 +317,7 @@ struct Dkplsr
     T::Matrix
     xscales::Vector
     yscales::Vector
+    kwargs::Base.Pairs
     par::ParKplsr
 end
 
@@ -343,6 +345,7 @@ struct Krr
     xscales::Vector
     ymeans::Vector
     weights::Weight
+    kwargs::Base.Pairs
     par::ParKrr
 end
 

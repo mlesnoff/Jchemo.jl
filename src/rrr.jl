@@ -188,8 +188,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
      end
      Rx = Wx * inv(Px' * Wx)
      Tx .= (1 ./ sqrtw) .* Tx
-     Plsr(Tx, Px, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, 
-         niter, par)
+     Plsr(Tx, Px, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, niter, par)
 end
 
 

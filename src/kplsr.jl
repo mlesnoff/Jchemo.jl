@@ -163,8 +163,7 @@ function kplsr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     end
     DU = D * U
     zR = DU * inv(T' * D * Kc * DU)
-    Kplsr(X, Kt, T, C, U, zR, D, DKt, vtot, xscales, ymeans, yscales, 
-        weights, iter, par)
+    Kplsr(X, Kt, T, C, U, zR, D, DKt, vtot, xscales, ymeans, yscales, weights, iter, kwargs, par)
 end
 
 """ 
