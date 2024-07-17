@@ -385,13 +385,14 @@ end
 struct Svmr
     fm::LIBSVM.SVM
     xscales::Vector
+    par::ParSvmr
 end
 
 struct TreerDt
     fm::Union{DecisionTree.Root, DecisionTree.Ensemble}
     xscales::Vector
     featur::Vector{Int}
-    par::Par
+    par::Union{ParTreer, ParRfr}
 end
 
 ## Multiblock

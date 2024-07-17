@@ -8,8 +8,8 @@ Keyword arguments:
     Possible values are: `:krbf`, `:kpol`, `:klin`, 
     `:ktanh`. See below.  
 * `gamma` : `kern` parameter, see below.
-* `degree` : `kern` parameter, see below.
 * `coef0` : `kern` parameter, see below.
+* `degree` : `kern` parameter, see below.
 * `cost` : Cost of constraints violation C parameter.
 * `epsilon` : Epsilon parameter in the loss function.
 * `scal` : Boolean. If `true`, each column of `X` 
@@ -93,7 +93,7 @@ f
 ```
 """ 
 function svmr(X, y; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParSvmr, kwargs).par
     kern = par.kern 
     @assert in([:krbf, :kpol, :klin, :ktanh])(kern) "Wrong value for argument 'kern'." 
     X = ensure_mat(X)
@@ -125,7 +125,7 @@ function svmr(X, y; kwargs...)
         tolerance = 0.001,
         nt = 0,
         verbose = false) 
-    Svmr(fm, xscales)
+    Svmr(fm, xscales, par) 
 end
 
 """

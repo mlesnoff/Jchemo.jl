@@ -64,7 +64,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 ```
 """ 
 function treer_dt(X, y; kwargs...) 
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParTreer, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)

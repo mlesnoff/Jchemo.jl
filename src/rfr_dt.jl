@@ -19,8 +19,6 @@ Keyword arguments:
     done when new data are predicted with function `predict`.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
-* Do `dump(Par(), maxdepth = 1)` to print the default 
-    values of the keyword arguments. 
 
 The function fits a random forest regression model using 
 package `DecisionTree.jl'.
@@ -78,7 +76,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 ```
 """ 
 function rfr_dt(X, y; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParRfr, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)

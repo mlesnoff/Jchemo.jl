@@ -109,6 +109,40 @@ Base.@kwdef mutable struct ParLwplsr
     verbose::Bool = false                   
 end 
 
+Base.@kwdef mutable struct ParSvmr
+    kern::Symbol = :krbf    
+    gamma::Float64 = 1.  
+    coef0::Float64 = 0.   
+    degree::Int = 1    
+    cost::Float64 = 1.  
+    epsilon::Float64 = .1 
+    scal::Bool = false         
+end 
+
+Base.@kwdef mutable struct ParTreer
+    n_subfeatures::Float64 = 0  
+    max_depth::Int = -1   
+    min_samples_leaf::Int = 5       
+    min_samples_split::Int = 5
+    scal::Bool = false              
+end 
+
+Base.@kwdef mutable struct ParRfr
+    n_trees::Int = 10   
+    partial_sampling::Float64 = .7  
+    n_subfeatures::Float64 = 0   
+    max_depth::Int = -1    
+    min_samples_leaf::Int = 5  
+    min_samples_split::Int = 5    
+    mth::Bool = true  
+    scal::Bool = false         
+end 
+
+
+
+
+
+
 
 
 
