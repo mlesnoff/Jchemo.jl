@@ -33,6 +33,7 @@ Types of block scaling:
 
 ## Examples
 ```julia
+using Jchemo
 n = 5 ; m = 3 ; p = 10 
 X = rand(n, p) 
 Xnew = rand(m, p)
@@ -60,7 +61,7 @@ function blockscal(Xbl; kwargs...)
 end
 
 function blockscal(Xbl, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParBlock, kwargs).par
     @assert in([:none, :frob, :mfa, :ncol, :sd])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)

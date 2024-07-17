@@ -138,6 +138,26 @@ Base.@kwdef mutable struct ParRfr
     scal::Bool = false         
 end 
 
+Base.@kwdef mutable struct ParBlock
+    bscal::Symbol = :none   
+    centr::Bool = false   
+    scal::Bool = false  
+end 
+
+Base.@kwdef mutable struct ParMbplsr
+    nlv::Union{Int, Vector{Int}, UnitRange} = 1     
+    bscal::Symbol = :none   
+    tol::Float64 = sqrt(eps(1.))   # mbplswest
+    maxit::Int = 200               # mbplswest     
+    scal::Bool = false  
+end 
+
+Base.@kwdef mutable struct ParSoplsr
+    nlv::Union{Int, Vector{Int}, UnitRange} = 1     
+    scal::Bool = false  
+end 
+
+
 
 
 

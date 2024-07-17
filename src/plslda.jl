@@ -104,29 +104,29 @@ function plslda(X, y, weights::Weight; kwargs...)
         fmda[i] = lda(fmpls.T[:, 1:i], y, weights; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
-    Plslda(fm, res.lev, ni)
+    Plsprobda(fm, res.lev, ni)
 end
 
 """ 
-    transf(object::Plslda, X; nlv = nothing)
+    transf(object::Plsprobda, X; nlv = nothing)
 Compute latent variables (LVs = scores T) from 
     a fitted model.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Plslda, X; nlv = nothing)
+function transf(object::Plsprobda, X; nlv = nothing)
     transf(object.fm.fmpls, X; nlv)
 end
 
 """
-    predict(object::Plslda, X; nlv = nothing)
+    predict(object::Plsprobda, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Plslda, X; nlv = nothing)
+function predict(object::Plsprobda, X; nlv = nothing)
     X = ensure_mat(X)
     Q = eltype(X)
     Qy = eltype(object.lev)

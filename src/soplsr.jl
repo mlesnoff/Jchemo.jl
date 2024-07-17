@@ -83,7 +83,7 @@ function soplsr(Xbl, Y, weights::Weight; kwargs...)
 end
 
 function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParSoplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     Y = ensure_mat(Y)
     n = size(Xbl[1], 1)

@@ -94,7 +94,7 @@ function dkplslda(X, y, weights::Weight; kwargs...)
         fmda[i] = lda(fmpls.T[:, 1:i], y, weights; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
-    Plslda(fm, res.lev, ni)
+    Plsprobda(fm, res.lev, ni)
 end
 
 

@@ -171,7 +171,7 @@ struct Blockscal
     bscales::Vector
     xmeans::Vector{Vector}
     xscales::Vector{Vector}
-    par::Par
+    par::ParBlock
 end
 
 struct Mbconcat
@@ -406,7 +406,7 @@ struct Mbplsr
     ymeans::Vector
     yscales::Vector
     weights::Weight
-    par::Par
+    par::ParMbplsr
 end
 
 struct Mbplswest            # Used for mbplswest, mbwcov 
@@ -425,7 +425,7 @@ struct Mbplswest            # Used for mbplswest, mbwcov
     weights::Weight
     lb::Union{Matrix, Nothing}
     niter::Union{Vector, Nothing}
-    par::Par
+    par::ParMbplsr
 end
 
 struct Rosaplsr
@@ -440,7 +440,7 @@ struct Rosaplsr
     yscales::Vector
     weights::Weight
     bl::Vector{Int}
-    par::Par
+    par::ParSoplsr
 end
 
 struct Soplsr
@@ -450,7 +450,7 @@ struct Soplsr
     b::Vector
     fmsc::Blockscal    
     yscales::Vector
-    par::Par
+    par::ParSoplsr
 end
 
 ######---- Discrimination
@@ -526,7 +526,7 @@ struct Plsrda
     ni::Vector{Int}
 end
 
-struct Plslda    # for plslda and plsqda 
+struct Plsprobda    
     fm::NamedTuple  
     lev::Vector
     ni::Vector{Int}

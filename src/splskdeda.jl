@@ -55,7 +55,7 @@ function splskdeda(X, y, weights::Weight; kwargs...)
         fmda[i] = kdeda(vcol(fmpls.T, 1:i), y; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
-    Plslda(fm, res.lev, ni)
+    Plsprobda(fm, res.lev, ni)
 end
 
 

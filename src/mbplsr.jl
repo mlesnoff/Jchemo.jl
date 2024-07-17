@@ -83,7 +83,7 @@ function mbplsr(Xbl, Y, weights::Weight; kwargs...)
 end
 
 function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParMbplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     q = nco(Y)
     fmsc = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
