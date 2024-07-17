@@ -467,6 +467,7 @@ struct Dmnorm
     Uinv 
     detS
     cst
+    par::ParDmnorm
 end
 
 struct Dmnormlog

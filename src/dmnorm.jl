@@ -1,18 +1,16 @@
 """
-    dmnorm(X = nothing; mu = nothing, S = nothing, simpl::Bool = false)
-    dmnorm!(X = nothing; mu = nothing, S = nothing, simpl::Bool = false)
+    dmnorm(X; kwargs...)
+    dmnorm!(X::Matrix; kwargs...)
+    dmnorm(; kwargs...)
 Normal probability density estimation.
-* `X` : X-data (n, p) used to estimate the mean and 
-    the covariance matrix. If `nothing`, `mu` and `S` 
-    must be provided.
+* `X` : X-data (n, p) used to estimate the mean `mu` and 
+    the covariance matrix `S`. If `X` is not given, 
+    `mu` and `S` must be provided in `kwargs`.
 Keyword arguments:
 * `mu` : Mean vector of the normal distribution. 
-    If `nothing`, `mu` is computed by the column-means
-    of `X`.
-* `S` : Covariance matrix of the normal distribution.
-    If `nothing`, `S` is computed by cov(`X`; corrected = true).
+* `S` : Covariance matrix of the Normal distribution.
 * `simpl` : Boolean. If `true`, the constant term and 
-    the determinant in the density formula are set to 1.
+    the determinant in the Normal density formula are set to 1.
 
 Data `X` can be univariate (p = 1) or multivariate (p > 1). See examples.
 
@@ -20,10 +18,11 @@ When `simple` = `true`, the determinant of the covariance matrix
 (object `detS`) and the constant (2 * pi)^(-p / 2) (object `cst`) 
 in the density formula are set to 1. The function returns a pseudo 
 density that resumes to exp(-d / 2), where d is the squared Mahalanobis 
-distance to the fcenter. This can for instance be useful when the number 
-of columns (p) of `X` becomes too large and when consequently:
-* `detS` tends to 0 or, conversely, to infinity
-* `cst` tends to 0
+distance to the center `mu`. This can for instance be useful when the number 
+of columns (p) of `X` becomes too large, with the possible consequences
+that:
+* `detS` tends to 0 or, conversely, to infinity;
+* `cst` tends to 0,
 which makes impossible to compute the true density. 
 
 ## Examples
@@ -38,7 +37,8 @@ y = dat.X[:, 5]
 n = nro(X)
 tab(y) 
 
-mod0 = model(fda; nlv = 2)
+nlv = 2
+mod0 = model(fda; nlv)
 fit!(mod0, X, y)
 @head T = mod0.fm.T
 n, p = size(T)
@@ -47,8 +47,9 @@ n, p = size(T)
 #### Example of class Setosa 
 s = y .== "setosa"
 zT = T[s, :]
+m = nro(zT)
 
-## Bivariate distribution
+#### Bivariate distribution
 mod = model(dmnorm)
 fit!(mod, zT)
 fm = mod.fm
@@ -59,10 +60,12 @@ pred = predict(mod, zT).pred
 @head pred
 
 mu = colmean(zT)
-S = covm(zT, mweight(ones(nro(zT))))
+S = covm(zT, mweight(ones(m))) * m / (m - 1) # corrected cov. matrix
 ## Direct syntax
-dmnorm(; mu = mu, S = S).Uinv
-dmnorm(; mu = mu, S = S).detS
+fm = dmnorm(; mu, S) ; 
+pnames(fm)
+fm.Uinv
+fm.detS
 
 npoints = 2^7
 lims = [(minimum(zT[:, j]), maximum(zT[:, j])) for j = 1:nlv]
@@ -83,7 +86,7 @@ scatter!(ax, zT[:, 1], zT[:, 2], color = :blue, markersize = 5)
 #xlims!(ax, -12, 12) ;ylims!(ax, -12, 12)
 f
 
-## Univariate distribution
+#### Univariate distribution
 j = 1
 x = zT[:, j]
 mod = model(dmnorm)
@@ -109,22 +112,17 @@ hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
 lines!(ax, grid, vec(pred_grid); color = :red)
 f
 ```
-""" 
-function dmnorm(X = nothing; mu = nothing, S = nothing, simpl::Bool = false)
-    isnothing(S) ? zS = nothing : zS = copy(S)
-    dmnorm!(X; mu = mu, S = zS, simpl = simpl)
+"""
+function dmnorm(X; kwargs...)
+    dmnorm!(copy(ensure_mat(X)); kwargs...)
 end
 
-function dmnorm!(X = nothing; mu = nothing, S = nothing, simpl::Bool = false)
-    !isnothing(X) ? X = ensure_mat(X) : nothing
-    if isnothing(mu)
-        mu = vec(mean(X, dims = 1))
-    end
-    if isnothing(S)
-        S = cov(X; corrected = true)
-    end
-    U = cholesky!(Hermitian(S)).U # This modifies S only if S is provided
-    if simpl 
+function dmnorm!(X::Matrix; kwargs...)
+    par = recovkw(ParDmnorm, kwargs).par
+    mu = colmean(X) 
+    S = cov(X; corrected = true)
+    U = cholesky!(Hermitian(S)).U    # cholesky! modifies S
+    if par.simpl 
         cst = 1
         detS = 1
     else
@@ -136,7 +134,22 @@ function dmnorm!(X = nothing; mu = nothing, S = nothing, simpl::Bool = false)
     #cholesky!(S)
     #U = sqrt(diag(diag(S), nrow = p))
     #Uinv = solve(diag(diag(S), nrow = p))
-    Dmnorm(mu, U, detS, cst)
+    Dmnorm(mu, U, detS, cst, par)
+end
+
+function dmnorm(; kwargs...)
+    par = recovkw(ParDmnorm, kwargs).par
+    U = cholesky!(Hermitian(copy(par.S))).U   # cholesky! modifies S
+    if par.simpl 
+        cst = 1
+        detS = 1
+    else
+        p = nro(par.S)
+        cst = (2 * pi)^(-p / 2)
+        detS = det(U)^2  
+    end
+    LinearAlgebra.inv!(U)
+    Dmnorm(par.mu, U, detS, cst, par)
 end
 
 """

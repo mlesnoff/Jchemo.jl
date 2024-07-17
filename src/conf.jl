@@ -8,7 +8,7 @@ Keyword arguments:
 
 ## Examples
 ```julia
-using CairoMakie
+using Jchemo, CairoMakie
 
 y = ["d"; "c"; "b"; "c"; "a"; "d"; "b"; "d"; 
     "b"; "b"; "a"; "a"; "c"; "d"; "d"]

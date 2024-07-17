@@ -3,8 +3,8 @@
 Gaussian kernel density estimation (KDE).
 * `X` : X-data (n, p).
 Keyword arguments:
-* `h_kde` : Define the bandwith, see examples.
-* `a_kde` : Constant for the Scott's rule 
+* `h` : Define the bandwith, see examples.
+* `a` : Constant for the Scott's rule 
     (default bandwith), see thereafter.
 
 Estimation of the probability density of `X` (column space) by 
@@ -19,8 +19,8 @@ matrix `H` is diagonal (see the code).
 litterature (e.g. Wikipedia).
 
 The default bandwith is computed by:
-* `h_kde` = `a_kde` * n^(-1 / (p + 4)) * colstd(`X`)
-(`a_kde` = 1 in Scott & Sain 2005).
+* `h` = `a` * n^(-1 / (p + 4)) * colstd(`X`)
+(`a` = 1 in Scott & Sain 2005).
 
 ## References 
 Scott, D.W., Sain, S.R., 2005. 9 - Multidimensional Density 
@@ -56,15 +56,15 @@ mod.fm.H
 u = [1; 4; 150]
 predict(mod, T[u, :]).pred
 
-h_kde = .3
-mod = model(dmkern; h_kde)
+h = .3
+mod = model(dmkern; h)
 fit!(mod, T) 
 mod.fm.H
 u = [1; 4; 150]
 predict(mod, T[u, :]).pred
 
-h_kde = [.3; .1]
-mod = model(dmkern; h_kde)
+h = [.3; .1]
+mod = model(dmkern; h)
 fit!(mod, T) 
 mod.fm.H
 u = [1; 4; 150]
@@ -80,8 +80,8 @@ z = mpar(x1 = x1, x2 = x2)
 grid = reduce(hcat, z)
 m = nro(grid)
 mod = model(dmkern) 
-#mod = model(dmkern; a_kde = .5) 
-#mod = model(dmkern; h_kde = .3) 
+#mod = model(dmkern; a = .5) 
+#mod = model(dmkern; h = .3) 
 fit!(mod, T) 
 
 res = predict(mod, grid) ;
@@ -97,8 +97,8 @@ f
 ## Univariate distribution
 x = T[:, 1]
 mod = model(dmkern) 
-#mod = model(dmkern; a_kde = .5) 
-#mod = model(dmkern; h_kde = .3) 
+#mod = model(dmkern; a = .5) 
+#mod = model(dmkern; h = .3) 
 fit!(mod, x) 
 pred = predict(mod, x).pred 
 f = Figure()
@@ -113,8 +113,8 @@ lims = [minimum(x), maximum(x)]
 #delta = 5 ; lims = [minimum(x) - delta, maximum(x) + delta]
 grid = LinRange(lims[1], lims[2], npoints)
 mod = model(dmkern) 
-#mod = model(dmkern; a_kde = .5) 
-#mod = model(dmkern; h_kde = .3) 
+#mod = model(dmkern; a = .5) 
+#mod = model(dmkern; h = .3) 
 fit!(mod, x) 
 pred_grid = predict(mod, grid).pred 
 f = Figure()
@@ -128,19 +128,19 @@ function dmkern(X; kwargs...)
     par = recovkw(Par, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
-    h_kde = par.h_kde
-    a_kde = par.a_kde
+    h = par.h
+    a = par.a
     ## Particular case where n = 1
     ## (ad'hoc code for discrimination functions only)
     if n == 1
-        H = diagm(repeat([a_kde * n^(-1/(p + 4))], p))
+        H = diagm(repeat([a * n^(-1/(p + 4))], p))
     end
     ## End
-    if isnothing(h_kde)
-        h_kde = a_kde * n^(-1 / (p + 4)) * colstd(X)      # a_kde = .9, 1.06
-        H = diagm(h_kde)
+    if isnothing(h)
+        h = a * n^(-1 / (p + 4)) * colstd(X)      # a = .9, 1.06
+        H = diagm(h)
     else 
-        isa(h_kde, Real) ? H = diagm(repeat([h_kde], p)) : H = diagm(h_kde)
+        isa(h, Real) ? H = diagm(repeat([h], p)) : H = diagm(h)
     end
     Hinv = inv(H)
     detH = det(H)
@@ -150,7 +150,7 @@ end
 
 """
     predict(object::Dmkern, x)
-Compute predictions from a_kde fitted model.
+Compute predictions from a fitted model.
 * `object` : The fitted model.
 * `x` : Data (vector) for which predictions are computed.
 """ 
