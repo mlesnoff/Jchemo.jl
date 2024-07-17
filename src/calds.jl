@@ -1,11 +1,11 @@
 """
-    calds(X1, X2; kwargs...)
+    calds(X1, X2; fun = plskern, kwargs...)
 Direct standardization (DS) for calibration transfer of spectral data.
 * `X1` : Spectra (n, p) to transfer to the target.
 * `X2` : Target spectra (n, p).
 Keyword arguments:
 * `fun` : Function used as transfer model.  
-* Other optional arguments for function `fun`.
+* `kwargs` : Optional arguments for `fun`.
 
 `X1` and `X2` must represent the same n samples ("standards").
 
@@ -58,19 +58,18 @@ axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-function calds(X1, X2; kwargs...)
-    par = recovkw(Par, kwargs).par
-    fm = par.fun(X1, X2; kwargs...)
-    CalDs(fm)
+function calds(X1, X2; fun = plskern, kwargs...)
+    fm = fun(X1, X2; kwargs...)
+    Calds(fm)
 end
 
 """
-    predict(object::CalDs, X; kwargs...)
+    predict(object::Calds, X; kwargs...)
 Compute predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::CalDs, X)
+function predict(object::Calds, X)
     predict(object.fm, X)
 end
 

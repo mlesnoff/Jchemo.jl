@@ -157,6 +157,14 @@ Base.@kwdef mutable struct ParSoplsr
     scal::Bool = false  
 end 
 
+###### Preprocessing
+
+Base.@kwdef mutable struct ParCalds
+    nlv::Union{Int, Vector{Int}, UnitRange} = 1     
+    scal::Bool = false  
+end 
+
+
 
 
 

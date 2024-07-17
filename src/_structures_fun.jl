@@ -703,11 +703,11 @@ end
 
 ## Calibration transfer
 
-struct CalDs
+struct Calds
     fm
 end
 
-struct CalPds
+struct Calpds
     fm
     s
 end
