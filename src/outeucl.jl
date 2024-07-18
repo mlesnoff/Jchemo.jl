@@ -20,6 +20,7 @@ https://doi.org/10.1016/j.chemolab.2005.04.007
 
 ## Examples
 ```julia
+using Jchemo
 n = 300 ; p = 700 ; m = 80
 ntot = n + m
 X1 = randn(n, p)

@@ -1,3 +1,5 @@
+######## Dimension reduction
+
 Base.@kwdef mutable struct ParUmap
     nlv::Union{Int, Vector{Int}, UnitRange} = 1     
     n_neighbors::Int = 15 
@@ -5,7 +7,7 @@ Base.@kwdef mutable struct ParUmap
     scal::Bool = false 
 end 
 
-###### Regression
+######## Regression
 
 Base.@kwdef mutable struct ParMlr
     noint::Bool = false                      
@@ -40,10 +42,6 @@ Base.@kwdef mutable struct ParRrr
     tau::Float64 = 1e-8       
     tol::Float64 = sqrt(eps(1.))   
     maxit::Int = 200     
-    scal::Bool = false                   
-end 
-
-Base.@kwdef mutable struct ParOut
     scal::Bool = false                   
 end 
 
@@ -162,14 +160,14 @@ Base.@kwdef mutable struct ParSoplsr
     scal::Bool = false  
 end 
 
-###### Preprocessing
+######## Preprocessing
 
 Base.@kwdef mutable struct ParCalds
     nlv::Union{Int, Vector{Int}, UnitRange} = 1     
     scal::Bool = false  
 end 
 
-###### Densities
+######## Densities
 
 Base.@kwdef mutable struct ParDmnorm
     mu::Union{Nothing, Vector} = nothing 
@@ -181,6 +179,13 @@ Base.@kwdef mutable struct ParDmkern
     h::Union{Nothing, Float64, Vector{Float64}} = nothing  
     a::Float64 = 1. 
 end 
+
+######## Occ 
+
+Base.@kwdef mutable struct ParOut
+    scal::Bool = false                   
+end 
+
 
 
 
