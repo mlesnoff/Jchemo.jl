@@ -4,6 +4,65 @@ struct Weight{T <: AbstractFloat}
     w::Vector{T} 
 end
 
+######---- Data Processing 
+
+## Preprocessing
+
+struct Detrend
+    par::ParDetrend
+end
+
+struct Fdif
+    par::ParFdif
+end
+
+struct Interpl
+    par::ParInterpl
+end
+
+struct Mavg
+    par::ParMavg
+end
+
+struct Savgol
+    par::ParSavgol
+end
+
+struct Snv
+    par::ParSnv
+end
+
+struct Snorm
+end
+
+struct Center
+    xmeans::Vector
+end
+
+struct Scale
+    xscales::Vector
+end
+
+struct Cscale
+    xmeans::Vector
+    xscales::Vector
+end
+
+struct Rmgap
+    par::Par
+end
+
+## Calibration transfer
+
+struct Calds
+    fm
+end
+
+struct Calpds
+    fm
+    s
+end
+
 ######---- Dimension reduction
 
 struct Pca 
@@ -656,61 +715,4 @@ struct Occsdod
     fmod
 end
 
-######---- Data Processing 
 
-## Preprocessing
-
-struct Detrend
-    par::Par
-end
-
-struct Fdif
-    par::Par
-end
-
-struct Interpl
-    par::Par
-end
-
-struct Mavg
-    par::Par
-end
-
-struct Savgol
-    par::Par
-end
-
-struct Snv
-    par::Par
-end
-
-struct Snorm
-end
-
-struct Center
-    xmeans::Vector
-end
-
-struct Scale
-    xscales::Vector
-end
-
-struct Cscale
-    xmeans::Vector
-    xscales::Vector
-end
-
-struct Rmgap
-    par::Par
-end
-
-## Calibration transfer
-
-struct Calds
-    fm
-end
-
-struct Calpds
-    fm
-    s
-end

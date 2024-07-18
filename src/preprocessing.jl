@@ -33,8 +33,8 @@ plotsp(Xptest, wl).f
 ```
 """ 
 function detrend(X; kwargs...)
-    par = recovkw(Par, kwargs).par
-    Detrend(kwargs, par)
+    par = recovkw(ParDetrend, kwargs).par
+    Detrend(par)
 end
 
 """ 
@@ -105,8 +105,8 @@ plotsp(Xptest).f
 ```
 """ 
 function fdif(X; kwargs...)
-    par = recovkw(Par, kwargs).par
-    Fdif(kwargs, par)
+    par = recovkw(ParFdif, kwargs).par
+    Fdif(par)
 end
 
 """ 
@@ -181,8 +181,8 @@ plotsp(Xptest).f
 ```
 """
 function interpl(X; kwargs...)
-    par = recovkw(Par, kwargs).par
-    Interpl(kwargs, par)
+    par = recovkw(ParInterpl, kwargs).par
+    Interpl(par)
 end
 
 """ 
@@ -262,8 +262,8 @@ plotsp(Xptest).f
 ```
 """ 
 function mavg(X; kwargs...)
-    par = recovkw(Par, kwargs).par
-    Mavg(kwargs, par)
+    par = recovkw(ParMavg, kwargs).par
+    Mavg(par)
 end
 
 """ 
@@ -317,6 +317,7 @@ https://doi.org/10.1016/j.sigpro.2005.02.002
 
 ## Examples
 ```julia
+using Jchemo
 res = savgk(21, 3, 2)
 pnames(res)
 res.S 
@@ -410,8 +411,8 @@ f
 ```
 """ 
 function savgol(X; kwargs...)
-    par = recovkw(Par, kwargs).par
-    Savgol(kwargs, par)
+    par = recovkw(ParSavgol, kwargs).par
+    Savgol(par)
 end
 
 """ 
@@ -529,8 +530,8 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-centr = true ; scal = true
-mod = model(snv; centr, scal) 
+mod = model(snv) 
+#mod = model(snv; scal = false) 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
@@ -539,8 +540,8 @@ plotsp(Xptest).f
 ```
 """ 
 function snv(X; kwargs...)
-    par = recovkw(Par, kwargs).par
-    Snv(kwargs, par)
+    par = recovkw(ParSnv, kwargs).par
+    Snv(par)
 end
 
 """ 

@@ -1,3 +1,34 @@
+######## Preprocessing
+
+Base.@kwdef mutable struct ParDetrend
+    degree::Int = 1  
+end 
+
+Base.@kwdef mutable struct ParFdif
+    npoint::Int = 3  
+end 
+
+Base.@kwdef mutable struct ParInterpl
+    wl::Union{Vector, UnitRange, StepRangeLen} = range(1, 10; length = 3)
+    wlfin::Union{Vector, UnitRange, StepRangeLen} = range(1, 10; length = 3)
+end 
+
+Base.@kwdef mutable struct ParMavg
+    npoint::Int = 5  
+end 
+
+Base.@kwdef mutable struct ParSavgol
+    npoint::Int = 11  
+    degree::Int = 2  
+    deriv::Int = 1     
+end 
+
+Base.@kwdef mutable struct ParSnv
+    centr::Bool = true
+    scal::Bool = true  
+end 
+
+
 ######## Dimension reduction
 
 Base.@kwdef mutable struct ParUmap
@@ -160,13 +191,6 @@ Base.@kwdef mutable struct ParSoplsr
     scal::Bool = false  
 end 
 
-######## Preprocessing
-
-Base.@kwdef mutable struct ParCalds
-    nlv::Union{Int, Vector{Int}, UnitRange} = 1     
-    scal::Bool = false  
-end 
-
 ######## Densities
 
 Base.@kwdef mutable struct ParDmnorm
@@ -179,6 +203,8 @@ Base.@kwdef mutable struct ParDmkern
     h::Union{Nothing, Float64, Vector{Float64}} = nothing  
     a::Float64 = 1. 
 end 
+
+######## Discrimination
 
 ######## Occ 
 
