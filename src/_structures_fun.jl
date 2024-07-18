@@ -475,6 +475,7 @@ struct Dmnormlog
     Uinv 
     logdetS
     logcst
+    par::ParDmnorm
 end
 
 struct Mlrda

@@ -40,7 +40,7 @@ tab(y)
 nlv = 2
 mod0 = model(fda; nlv)
 fit!(mod0, X, y)
-@head T = mod0.fm.T
+@head T = transf(mod0, X)
 n, p = size(T)
 
 #### Probability density in the FDA score space (2D)

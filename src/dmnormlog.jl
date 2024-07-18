@@ -1,25 +1,22 @@
 """
-    dmnormlog(X = nothing; mu = nothing, S = nothing, simpl::Bool = false)
-    dmnormlog!(X = nothing; mu = nothing, S = nothing, simpl::Bool = false)
+    dmnormlog(X; kwargs...)
+    dmnormlog!(X::Matrix; kwargs...)
+    dmnormlog(; kwargs...)
 Logarithm of the normal probability density estimation.
-* `X` : X-data (n, p) used to estimate the mean and 
-    the covariance matrix. If `nothing`, `mu` and `S` 
-    must be provided.
+    * `X` : X-data (n, p) used to estimate the mean `mu` and 
+        the covariance matrix `S`. If `X` is not given, 
+        `mu` and `S` must be provided in `kwargs`.
 Keyword arguments:
     * `mu` : Mean vector of the normal distribution. 
-        If `nothing`, `mu` is computed by the column-means
-        of `X`.
-    * `S` : Covariance matrix of the normal distribution.
-        If `nothing`, `S` is computed by cov(`X`; corrected = true).
+    * `S` : Covariance matrix of the Normal distribution.
     * `simpl` : Boolean. If `true`, the constant term and 
-        the determinant in the density formula are set to 1.
+        the determinant in the Normal density formula are set to 1.
 
-See the help of function `dmnorm`.
+See the help page of function `dmnorm`.
 
 ## Examples
 ```julia
-using JLD2, CairoMakie
-using JchemoData
+using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "iris.jld2") 
 @load db dat
@@ -39,41 +36,49 @@ fm = mod.fm
 pnames(fm)
 fm.Uinv 
 fm.logdetS
-pred = predict(mod, zX).pred
-@head pred 
+@head pred = predict(mod, zX).pred
 
 mod0 = model(dmnorm)
 fit!(mod0, zX)
-pred0 = predict(mod0, zX).pred
+@head pred0 = predict(mod0, zX).pred
 @head log.(pred0)
 ```
 """ 
-function dmnormlog(X = nothing; mu = nothing, 
-        S = nothing, simpl = false)
-    isnothing(S) ? zS = nothing : zS = copy(S)
-    dmnormlog!(X; mu = mu, S = zS, simpl = simpl)
+function dmnormlog(X; kwargs...)
+    dmnormlog!(copy(ensure_mat(X)); kwargs...)
 end
 
-function dmnormlog!(X = nothing; mu = nothing, 
-        S = nothing, simpl = false)
-    !isnothing(X) ? X = ensure_mat(X) : nothing
-    if isnothing(mu)
-        mu = vec(mean(X, dims = 1))
-    end
-    if isnothing(S)
-        S = cov(X; corrected = true)
-    end
-    if simpl 
+function dmnormlog!(X::Matrix; kwargs...)
+    par = recovkw(ParDmnorm, kwargs).par
+    mu = colmean(X) 
+    S = cov(X; corrected = true)
+    
+    if par.simpl 
         logcst = 0
         logdetS = 0
     else
         p = nro(S)
         logcst = -p / 2 * log(2 * pi)
         logdetS = logdet(S)
-    end  
-    U = cholesky!(Hermitian(S)).U
+    end
+    U = cholesky!(Hermitian(S)).U    # cholesky! modifies S
     LinearAlgebra.inv!(U)
-    Dmnormlog(mu, U, logdetS, logcst)
+    Dmnormlog(mu, U, logdetS, logcst, par)
+end
+
+function dmnormlog(; kwargs...)
+    par = recovkw(ParDmnorm, kwargs).par
+    U = cholesky!(Hermitian(copy(par.S))).U   # cholesky! modifies S
+    if par.simpl 
+        logcst = 0
+        logdetS = 0
+    else
+        p = nro(S)
+        logcst = -p / 2 * log(2 * pi)
+        logdetS = logdet(S)
+    end
+    LinearAlgebra.inv!(U)
+    Dmnormlog(par.mu, U, logdetS, logcst, par)
 end
 
 function predict(object::Dmnormlog, X)
