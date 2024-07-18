@@ -61,7 +61,7 @@ res = predict(mod, Xtest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-## Only for function 'rr' (not for 'rrchol')
+## !! Only for function 'rr' (not for 'rrchol')
 coef(mod; lb = 1e-1)
 res = predict(mod, Xtest; lb = [.1 ; .01])
 @head res.pred[1]

@@ -19,6 +19,8 @@ maximum of `y`.
 
 ## Examples
 ```julia
+using Jchemo 
+
 y = rand(7)
 [y sort(y)]
 res = sampsys(y, 3)

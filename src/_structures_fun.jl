@@ -391,6 +391,13 @@ struct Rr
     par::ParRr
 end
 
+struct Rrchol
+    B::Matrix   
+    int::Matrix
+    weights::Weight
+    par::ParRr
+end
+
 struct Krr
     X::Matrix
     K::Matrix

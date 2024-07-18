@@ -35,7 +35,7 @@ vlines!(ax, wl_target; linestyle = :dot, color = (:grey, .8))
 f
 
 ## Corrected data
-mod = model(rmgap; npoint = 5, indexcol)
+mod = model(rmgap; indexcol, npoint = 5)
 fit!(mod, X)
 Xc = transf(mod, X)
 f, ax = plotsp(Xc, wl)
@@ -45,7 +45,7 @@ f
 """ 
 function rmgap(X; kwargs...)
     par = recovkw(Par, kwargs).par
-    Rmgap(kwargs, par)
+    Rmgap(par)
 end
 
 """ 

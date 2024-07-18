@@ -28,6 +28,8 @@ within 1:`n`) of the sampled observations.
 
 ## Examples
 ```julia
+using Jchemo 
+
 n = 10 ; m = 3
 rep = 4 
 segm = segmts(n, m; rep) 

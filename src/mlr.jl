@@ -263,7 +263,7 @@ end
 Compute the coefficients of the fitted model.
 * `object` : The fitted model.
 """ 
-function coef(object::Union{Mlr, MlrNoArg})
+function coef(object::Union{Mlr, MlrNoArg, Rrchol})
     (B = object.B, int = object.int)
 end
 
@@ -273,7 +273,7 @@ Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Union{Mlr, MlrNoArg}, X)
+function predict(object::Union{Mlr, MlrNoArg, Rrchol}, X)
     X = ensure_mat(X)
     z = coef(object)
     pred = z.int .+ X * z.B

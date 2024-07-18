@@ -43,7 +43,7 @@ function rrchol(X, Y, weights::Weight; kwargs...)
 end
 
 function rrchol!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParRr, kwargs).par
     @assert nco(X) > 1 "The method only works for X with nb columns > 1."
     Q = eltype(X)
     p = nco(X)
@@ -62,7 +62,7 @@ function rrchol!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     B = cholesky!(Hermitian(XtD * X + lb^2 * Diagonal(ones(Q, p)))) \ (XtD * Y)
     B .= Diagonal(1 ./ xscales) * B 
     int = ymeans' .- xmeans' * B
-    Mlr(B, int, weights, par)
+    Rrchol(B, int, weights, par)
 end
 
 

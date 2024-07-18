@@ -22,6 +22,7 @@ analysis by clustering. Journal of Chemometrics 1, 121-134.
 
 ## Examples
 ```julia
+using Jchemo
 x = string.(repeat(1:3, 5))
 n = length(x)
 tab(x)
