@@ -36,7 +36,7 @@ res.u
 ```
 """ 
 function nipalsmiss(X; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParNipals, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
     s = ismissing.(X)

@@ -34,7 +34,7 @@ Technometrics 21 (1979) 489–498.
 
 ## Examples
 ```julia
-using LinearAlgebra
+using Jchemo, LinearAlgebra
 
 X = rand(5, 3)
 
@@ -49,7 +49,7 @@ svd(X).U[:, 1]
 ```
 """ 
 function nipals(X; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParNipals, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
     u = X[:, argmax(colnorm(X))]

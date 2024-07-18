@@ -8,6 +8,7 @@ Concatenate horizontaly multiblock X-data.
 
 ## Examples
 ```julia
+using Jchemo
 n = 5 ; m = 3 ; p = 10 
 X = rand(n, p) 
 Xnew = rand(m, p)

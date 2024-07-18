@@ -11,6 +11,11 @@ Base.@kwdef mutable struct ParMlr
     noint::Bool = false                      
 end 
 
+Base.@kwdef mutable struct ParNipals
+    tol::Float64 = sqrt(eps(1.))  
+    maxit::Int = 200                    
+end 
+
 Base.@kwdef mutable struct ParPlsr
     nlv::Union{Int, Vector{Int}, UnitRange} = 1     
     tol::Float64 = sqrt(eps(1.))            # plswold
