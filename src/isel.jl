@@ -32,8 +32,7 @@ https://doi.org/10.1366/0003702001949500
 
 ## Examples
 ```julia
-using DataFrames, JLD2, CairoMakie
-using JchemoData
+using Jchemo, JchemoData, DataFrames, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "tecator.jld2") 
 @load db dat
@@ -57,8 +56,7 @@ ntest = nro(Xtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
 
-## Work on the j-th 
-## y-variable 
+## Work on the j-th y-variable 
 j = 2
 nam = namy[j]
 ytrain = Ytrain[:, nam]
