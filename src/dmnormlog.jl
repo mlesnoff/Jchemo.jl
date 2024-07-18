@@ -38,6 +38,7 @@ fm.Uinv
 fm.logdetS
 @head pred = predict(mod, zX).pred
 
+## Consistency with dmnorm
 mod0 = model(dmnorm)
 fit!(mod0, zX)
 @head pred0 = predict(mod0, zX).pred
