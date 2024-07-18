@@ -20,6 +20,7 @@ computation and machine learning. MIT Press, Cambridge, Mass.
 
 ## Examples
 ```julia
+using Jchemo
 X = rand(5, 3)
 Y = rand(2, 3)
 krbf(X, Y; gamma = .1)
@@ -58,6 +59,7 @@ computation and machine learning. MIT Press, Cambridge, Mass.
 
 ## Examples
 ```julia
+using Jchemo
 X = rand(5, 3)
 Y = rand(2, 3)
 kpol(X, Y; gamma = .1, coef0 = 10, degree = 3)

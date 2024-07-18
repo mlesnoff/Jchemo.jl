@@ -135,11 +135,7 @@ function krr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     end
     ymeans = colmean(Y, weights)
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
-    println(fkern)
-    println(typeof(kwargs))
-    #println(Dict(kwargs))
     K = fkern(X, X; kwargs...)
-    println(23)
     D = Diagonal(weights.w)    
     DKt = D * K'
     vtot = sum(DKt, dims = 1)

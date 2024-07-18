@@ -372,7 +372,7 @@ struct Lwplsr
     par::ParLwplsr
 end
 
-struct LwplsrAvg
+struct Lwplsravg
     X::Matrix
     Y::Matrix
     fm::Union{Nothing, Plsr}

@@ -106,16 +106,16 @@ function lwplsravg(X, Y; kwargs...)
     if isnothing(fm) && par.scal
         xscales .= colstd(X)
     end
-    LwplsrAvg(X, Y, fm, xscales, par)
+    Lwplsravg(X, Y, fm, xscales, par)
 end
 
 """
-    predict(object::LwplsrAvg, X)
+    predict(object::Lwplsravg, X)
 Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::LwplsrAvg, X) 
+function predict(object::Lwplsravg, X) 
     X = ensure_mat(X)
     m = nro(X)
     ## Getknn
