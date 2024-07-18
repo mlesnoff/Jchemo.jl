@@ -172,7 +172,10 @@ Base.@kwdef mutable struct ParDmnorm
     simpl::Bool = false 
 end 
 
-
+Base.@kwdef mutable struct ParDmkern
+    h::Union{Nothing, Float64, Vector{Float64}} = nothing  
+    a::Float64 = 1. 
+end 
 
 
 

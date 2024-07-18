@@ -455,13 +455,6 @@ end
 
 ######---- Discrimination
 
-struct Dmkern
-    X::Matrix
-    H::Matrix
-    Hinv::Matrix
-    detH::Float64
-end
-
 struct Dmnorm
     mu
     Uinv 
@@ -476,6 +469,14 @@ struct Dmnormlog
     logdetS
     logcst
     par::ParDmnorm
+end
+
+struct Dmkern
+    X::Matrix
+    H::Matrix
+    Hinv::Matrix
+    detH::Float64
+    par::ParDmkern
 end
 
 struct Mlrda

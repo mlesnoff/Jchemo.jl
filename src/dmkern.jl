@@ -4,8 +4,8 @@ Gaussian kernel density estimation (KDE).
 * `X` : X-data (n, p).
 Keyword arguments:
 * `h` : Define the bandwith, see examples.
-* `a` : Constant for the Scott's rule 
-    (default bandwith), see thereafter.
+* `a` : Constant for the Scott's rule (default bandwith), 
+    see thereafter.
 
 Estimation of the probability density of `X` (column space) by 
 non parametric Gaussian kernels. 
@@ -41,13 +41,13 @@ y = dat.X[:, 5]
 n = nro(X)
 tab(y) 
 
-mod0 = model(fda; nlv = 2)
+nlv = 2
+mod0 = model(fda; nlv)
 fit!(mod0, X, y)
-@head T = mod0.fm.T
-p = nco(T)
+@head T = transf(mod0, X)
+n, p = size(T)
 
-#### Probability density in the FDA 
-#### score space (2D)
+#### Probability density in the FDA score space (2D)
 
 mod = model(dmkern)
 fit!(mod, T) 
@@ -60,14 +60,12 @@ h = .3
 mod = model(dmkern; h)
 fit!(mod, T) 
 mod.fm.H
-u = [1; 4; 150]
 predict(mod, T[u, :]).pred
 
 h = [.3; .1]
 mod = model(dmkern; h)
 fit!(mod, T) 
 mod.fm.H
-u = [1; 4; 150]
 predict(mod, T[u, :]).pred
 
 ## Bivariate distribution
@@ -125,7 +123,7 @@ f
 ```
 """ 
 function dmkern(X; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParDmkern, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
     h = par.h
@@ -145,7 +143,7 @@ function dmkern(X; kwargs...)
     Hinv = inv(H)
     detH = det(H)
     detH == 0 ? detH = 1e-20 : nothing
-    Dmkern(X, H, Hinv, detH)
+    Dmkern(X, H, Hinv, detH, par)
 end
 
 """
