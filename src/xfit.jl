@@ -19,6 +19,7 @@ the model `object`.
 
 ## Examples 
 ```julia 
+using Jchemo
 X = [1. 2 3 4; 4 1 6 7; 12 5 6 13; 
     27 18 7 6; 12 11 28 7] 
 Y = [10. 11 13; 120 131 27; 8 12 4; 

@@ -30,8 +30,8 @@ https://pair-code.github.io/understanding-umap/
 
 ## Examples
 ```julia
+using Jchemo, JchemoData
 using JLD2, GLMakie, CairoMakie, FreqTables
-using JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "challenge2018.jld2") 
 @load db dat

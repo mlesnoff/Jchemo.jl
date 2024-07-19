@@ -44,13 +44,20 @@ end
 
 ######## Regression
 
-Base.@kwdef mutable struct ParMlr
-    noint::Bool = false                      
-end 
-
 Base.@kwdef mutable struct ParNipals
     tol::Float64 = sqrt(eps(1.))  
     maxit::Int = 200                    
+end 
+
+Base.@kwdef mutable struct ParSnipals
+    delta::Float64 = 0.   
+    nvar::Union{Int, Vector{Int}} = 1    
+    tol::Float64 = sqrt(eps(1.))  
+    maxit::Int = 200                    
+end 
+
+Base.@kwdef mutable struct ParMlr
+    noint::Bool = false                      
 end 
 
 Base.@kwdef mutable struct ParPlsr

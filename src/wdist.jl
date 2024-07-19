@@ -31,7 +31,7 @@ least squares and statistical wavelength selection. Int J Pharm. 2011;
 
 ## Examples
 ```julia
-using CairoMakie, Distributions
+using Jchemo, CairoMakie, Distributions
 
 x1 = rand(Chisq(10), 100) ;
 x2 = rand(Chisq(40), 10) ;

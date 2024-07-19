@@ -35,6 +35,7 @@ Editions Technip, Paris.
 
 ## Examples
 ```julia
+using Jchemo
 X = [1. 2 3 4; 4 1 6 7; 12 5 6 13; 
     27 18 7 6; 12 11 28 7] 
 Y = [10. 11 13; 120 131 27; 8 12 4; 
@@ -115,8 +116,5 @@ function vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
     imp = sqrt.(A / B)
     (imp = imp, W2, rdd)
 end
-
-
-
 
 
