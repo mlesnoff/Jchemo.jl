@@ -60,7 +60,7 @@ function pcanipals(X, weights::Weight; kwargs...)
 end
 
 function pcanipals!(X::Matrix, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParPcanipals, kwargs).par
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)

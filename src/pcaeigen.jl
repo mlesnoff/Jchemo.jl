@@ -29,7 +29,7 @@ function pcaeigen(X, weights::Weight; kwargs...)
 end
 
 function pcaeigen!(X::Matrix, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par 
+    par = recovkw(ParPca, kwargs).par 
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)

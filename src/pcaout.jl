@@ -85,7 +85,7 @@ function pcaout(X, weights::Weight; kwargs...)
 end
 
 function pcaout!(X::Matrix, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par 
+    par = recovkw(ParPcaout, kwargs).par 
     n, p = size(X)
     nlvout = 30
     P = rand(0:1, p, nlvout)
@@ -96,5 +96,6 @@ function pcaout!(X::Matrix, weights::Weight; kwargs...)
     w .*= talworth(d; a = quantile(d, 1 - par.prm))
     w .*= weights.w
     w[isequal.(w, 0)] .= 1e-10
-    pcasvd(X, mweight(w); kwargs...)
+    fm = pcasvd(X, mweight(w); kwargs...)
+    Pca(fm.T, fm.P, fm.sv, fm.xmeans, fm.xscales, fm.weights, nothing, par)
 end

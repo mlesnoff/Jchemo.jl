@@ -72,8 +72,8 @@ struct Pca
     xmeans::Vector
     xscales::Vector
     weights::Weight
-    niter::Union{Vector{Int}, Nothing} # for PCA Nipals
-    par::Par
+    niter::Union{Vector{Int}, Nothing}    # pcanipals, pcanipalsmiss
+    par::Union{ParPca, ParPcanipals, ParPcapp, ParPcaout}
 end
 
 struct Spca

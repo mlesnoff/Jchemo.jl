@@ -35,8 +35,33 @@ end
 
 ######## Dimension reduction
 
+Base.@kwdef mutable struct ParPca
+    nlv::Int = 1   
+    scal::Bool = false 
+end 
+
+Base.@kwdef mutable struct ParPcanipals
+    nlv::Int = 1     
+    gs::Bool = true   
+    tol::Float64 = sqrt(eps(1.))    
+    maxit::Int = 200     
+    scal::Bool = false 
+end 
+
+Base.@kwdef mutable struct ParPcapp
+    nlv::Int = 1
+    nsim::Int = 2000  
+    scal::Bool = false 
+end 
+
+Base.@kwdef mutable struct ParPcaout
+    nlv::Int = 1
+    prm::Float64 = .3  
+    scal::Bool = false 
+end 
+
 Base.@kwdef mutable struct ParUmap
-    nlv::Union{Int, Vector{Int}, UnitRange} = 1     
+    nlv::Int = 1     
     n_neighbors::Int = 15 
     min_dist::Float64 = .1                 
     scal::Bool = false 
@@ -68,19 +93,19 @@ Base.@kwdef mutable struct ParPlsr
 end 
 
 Base.@kwdef mutable struct ParCglsr
-    nlv::Union{Int, Vector{Int}, UnitRange} = 1     
+    nlv::Int = 1 
     gs::Bool = true       
     filt::Bool = true              
     scal::Bool = false 
 end 
 
 Base.@kwdef mutable struct ParPcr
-    nlv::Union{Int, Vector{Int}, UnitRange} = 1     
+    nlv::Int = 1    
     scal::Bool = false                   
 end 
 
 Base.@kwdef mutable struct ParRrr
-    nlv::Union{Int, Vector{Int}, UnitRange} = 1
+    nlv::Int = 1 
     tau::Float64 = 1e-8       
     tol::Float64 = sqrt(eps(1.))   
     maxit::Int = 200     
@@ -88,13 +113,13 @@ Base.@kwdef mutable struct ParRrr
 end 
 
 Base.@kwdef mutable struct ParPlsrOut
-    nlv::Union{Int, Vector{Int}, UnitRange} = 1      
+    nlv::Int = 1 
     prm::Float64 = .3                       # plsrout                    
     scal::Bool = false 
 end 
 
 Base.@kwdef mutable struct ParSplsr
-    nlv::Union{Int, Vector{Int}, UnitRange} = 1
+    nlv::Int = 1 
     msparse::Symbol = :soft 
     delta::Float64 = 0.   
     nvar::Union{Int, Vector{Int}} = 1  
@@ -108,7 +133,7 @@ Base.@kwdef mutable struct ParKern
 end 
 
 Base.@kwdef mutable struct ParKplsr
-    nlv::Union{Int, Vector{Int}, UnitRange} = 1
+    nlv::Int = 1 
     kern::Symbol = :krbf     
     gamma::Float64 = 1.  
     coef0::Float64 = 0.
@@ -149,7 +174,7 @@ Base.@kwdef mutable struct ParLwplsr
     criw::Float64 = 4                       
     squared::Bool = false                   
     tolw::Float64 = 1e-4                    
-    nlv::Union{Int, Vector{Int}, UnitRange} = 1               
+    nlv::Union{Int, Vector{Int}, UnitRange} = 1     
     scal::Bool = false 
     verbose::Bool = false                   
 end 
@@ -190,7 +215,7 @@ Base.@kwdef mutable struct ParBlock
 end 
 
 Base.@kwdef mutable struct ParMbplsr
-    nlv::Union{Int, Vector{Int}, UnitRange} = 1     
+    nlv::Int = 1 
     bscal::Symbol = :none   
     tol::Float64 = sqrt(eps(1.))   # mbplswest
     maxit::Int = 200               # mbplswest     
