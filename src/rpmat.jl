@@ -22,6 +22,7 @@ https://doi.org/10.1145/1150402.1150436
 
 ## Examples
 ```julia
+using Jchemo
 p = 10 ; nlv = 3
 rpmatgauss(p, nlv)
 ```
@@ -73,6 +74,7 @@ https://doi.org/10.1145/1150402.1150436
 
 ## Examples
 ```julia
+using Jchemo
 p = 10 ; nlv = 3
 rpmatli(p, nlv)
 ```

@@ -8,7 +8,7 @@ Make a random projection of X-data.
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. dimensions on which `X` is projected.
-* `mrp` : Method of random projection. Possible
+* `meth` : Method of random projection. Possible
     values are: `:gauss`, `:li`. See the respective 
     functions `rpmatgauss` and `rpmatli` for their 
     keyword arguments.
@@ -20,9 +20,9 @@ Keyword arguments:
 n, p = (5, 10)
 X = rand(n, p)
 nlv = 3
-mrp = :li ; s_li = sqrt(p) 
-#mrp = :gauss
-mod = model(rp; nlv, mrp, s_li)
+meth = :li ; s_li = sqrt(p) 
+#meth = :gauss
+mod = model(rp; nlv, meth, s_li)
 fit!(mod, X)
 pnames(mod)
 pnames(mod.fm)
@@ -42,8 +42,8 @@ function rp(X, weights::Weight; kwargs...)
 end
 
 function rp!(X::Matrix, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par 
-    @assert in([:gauss, :li])(par.mrp) "Wrong value for argument 'mrp'."
+    par = recovkw(ParRp, kwargs).par 
+    @assert in([:gauss, :li])(par.meth) "Wrong value for argument 'meth'."
     Q = eltype(X)
     p = nco(X)
     xmeans = colmean(X, weights)
@@ -54,7 +54,7 @@ function rp!(X::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(X, xmeans)
     end
-    if par.mrp == :gauss
+    if par.meth == :gauss
         P = rpmatgauss(p, par.nlv, Q)
     else
         P = rpmatli(p, par.nlv, Q; 

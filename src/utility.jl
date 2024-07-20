@@ -785,8 +785,13 @@ function recovkw(ParStruct::DataType, kwargs)
         z1 = fieldnames(ParStruct)
         z2 = sort(collect(keys(Dict(args))))
         s = in(z1).(z2)
-        kwargs_new = args[s]
-        par = [ParStruct(; Dict(kws)...) for kws in zip([[k => v] for (k, v) in kwargs_new]...)][1]
+        if sum(s) > 0
+            kwargs_new = args[s]
+            par = [ParStruct(; Dict(kws)...) for kws in zip([[k => v] for (k, v) in kwargs_new]...)][1]
+        else
+            kwargs_new = nothing
+            par = ParStruct()
+        end
     end
     (kwargs = kwargs_new, par)
 end

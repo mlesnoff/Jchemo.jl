@@ -1,5 +1,5 @@
 function snipalsh(X; kwargs...)
-    par = recovkw(Par, kwargs).par 
+    par = recovkw(ParSnipals, kwargs).par 
     X = ensure_mat(X)
     Q = eltype(X)
     n, p = size(X)

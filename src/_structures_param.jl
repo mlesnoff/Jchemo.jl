@@ -60,6 +60,35 @@ Base.@kwdef mutable struct ParPcaout
     scal::Bool = false 
 end 
 
+Base.@kwdef mutable struct ParSpca
+    nlv::Int = 1 
+    meth::Symbol = :soft 
+    delta::Float64 = 0.   
+    nvar::Union{Int, Vector{Int}} = 1  
+    scal::Bool = false                   
+end 
+
+Base.@kwdef mutable struct ParKern  
+    gamma::Float64 = 1.  
+    coef0::Float64 = 0.
+    degree::Int = 1                        
+end 
+
+Base.@kwdef mutable struct ParKpca
+    nlv::Int = 1 
+    kern::Symbol = :krbf     
+    gamma::Float64 = 1.  
+    coef0::Float64 = 0.
+    degree::Int = 1        
+    scal::Bool = false                   
+end 
+
+Base.@kwdef mutable struct ParRp
+    nlv::Int = 1    
+    meth::Symbol = :gauss  
+    scal::Bool = false 
+end 
+
 Base.@kwdef mutable struct ParUmap
     nlv::Int = 1     
     n_neighbors::Int = 15 
@@ -120,16 +149,10 @@ end
 
 Base.@kwdef mutable struct ParSplsr
     nlv::Int = 1 
-    msparse::Symbol = :soft 
+    meth::Symbol = :soft 
     delta::Float64 = 0.   
     nvar::Union{Int, Vector{Int}} = 1  
     scal::Bool = false                   
-end 
-
-Base.@kwdef mutable struct ParKern  
-    gamma::Float64 = 1.  
-    coef0::Float64 = 0.
-    degree::Int = 1                        
 end 
 
 Base.@kwdef mutable struct ParKplsr
@@ -326,11 +349,11 @@ Base.@kwdef mutable struct Par
     tol::Float64 = sqrt(eps(1.))            # tolerance in Nipals
     maxit::Int = 200                        # maximal nb. iterations in Nipals 
     ##
-    msparse::Symbol = :soft                 # threshold in sparse methods 
+    meth::Symbol = :soft                 # threshold in sparse methods 
     delta::Float64 = 0.                     # threshold in sparse methods
     nvar::Union{Int, Vector{Int}} = 1       # threshold in sparse methods
     ##
-    mrp::Symbol = :gauss                    # 'rp' projection method
+    meth2::Symbol = :gauss                    # 'rp' projection method
     s_li::Float64 = 1.                      # 'rpmatli' sparsity parameter  
 end 
 

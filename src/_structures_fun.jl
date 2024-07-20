@@ -87,7 +87,7 @@ struct Spca
     niter::Union{Vector{Int}, Nothing}
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
-    par::Par
+    par::ParSpca
 end
 
 struct Kpca
@@ -102,7 +102,7 @@ struct Kpca
     vtot::Matrix
     xscales::Vector 
     weights::Weight
-    par::Par
+    par::ParKpca
 end
 
 struct Rp

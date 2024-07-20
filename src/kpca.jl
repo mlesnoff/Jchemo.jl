@@ -72,9 +72,8 @@ function kpca(X; kwargs...)
     kpca(X, weights; kwargs...)
 end
 
-function kpca(X, weights::Weight; 
-        kwargs...)
-    par = recovkw(Par, kwargs).par
+function kpca(X, weights::Weight; kwargs...)
+    par = recovkw(ParKpca, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     X = ensure_mat(X)
     Q = eltype(X)
@@ -101,8 +100,7 @@ function kpca(X, weights::Weight;
     sv = sqrt.(eig)
     P = sqrtD * fscale(U, sv[1:nlv])     # In the future: fscale!
     T = Kc * P       # T = Kc * P = D^(-1/2) * U * Delta
-    Kpca(X, Kt, T, P, sv, eig, D, DKt, vtot, xscales, 
-        weights, par)
+    Kpca(X, Kt, T, P, sv, eig, D, DKt, vtot, xscales, weights, par)
 end
 
 """ 

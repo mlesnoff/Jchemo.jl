@@ -9,14 +9,14 @@ Sparse PLS-LDA.
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
     Must be >= 1.
-* `msparse` : Method used for the sparse thresholding. 
+* `meth` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:mix`, 
     `:hard`. See thereafter.
-* `delta` : Only used if `msparse = :soft`. Range for the 
+* `delta` : Only used if `meth = :soft`. Range for the 
     thresholding on the loadings (after they are standardized 
     to their maximal absolute value). Must ∈ [0, 1].
     Higher is `delta`, stronger is the thresholding. 
-* `nvar` : Only used if `msparse = :mix` or `msparse = :hard`.
+* `nvar` : Only used if `meth = :mix` or `meth = :hard`.
     Nb. variables (`X`-columns) selected for each principal
     component (PC). Can be a single integer (i.e. same nb. 
     of variables for each PC), or a vector of length `nlv`.   
@@ -54,10 +54,10 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-msparse = :mix ; nvar = 10
-mod = model(splslda; nlv, msparse, nvar) 
-#mod = model(splsqda; nlv, msparse, nvar, alpha = .1) 
-#mod = model(splskdeda; nlv, msparse, nvar, a_kde = .9) 
+meth = :mix ; nvar = 10
+mod = model(splslda; nlv, meth, nvar) 
+#mod = model(splsqda; nlv, meth, nvar, alpha = .1) 
+#mod = model(splskdeda; nlv, meth, nvar, a_kde = .9) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)

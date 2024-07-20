@@ -50,6 +50,7 @@ svd(X).U[:, 1]
 """ 
 function nipals(X; kwargs...)
     par = recovkw(ParNipals, kwargs).par
+    println(25)
     X = ensure_mat(X)
     n, p = size(X)
     u = X[:, argmax(colnorm(X))]

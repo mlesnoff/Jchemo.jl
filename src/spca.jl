@@ -8,14 +8,14 @@ Sparse PCA (Shen & Huang 2008).
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. principal components (PCs).
-* `msparse` : Method used for the sparse thresholding. 
+* `meth` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:mix`, 
     `:hard`. See thereafter.
-* `delta` : Only used if `msparse = :soft`. Range for the 
+* `delta` : Only used if `meth = :soft`. Range for the 
     thresholding on the loadings (after they are standardized 
     to their maximal absolute value). Must ∈ [0, 1].
     Higher is `delta`, stronger is the thresholding. 
-* `nvar` : Only used if `msparse = :mix` or `msparse = :hard`.
+* `nvar` : Only used if `meth = :mix` or `meth = :hard`.
     Nb. variables (`X`-columns) selected for each principal
     component (PC). Can be a single integer (i.e. same nb. 
     of variables for each PC), or a vector of length `nlv`.   
@@ -28,7 +28,7 @@ Sparse principal component analysis via regularized low rank
 matrix approximation (Shen & Huang 2008). A Nipals algorithm is used. 
 The Function provides three methods of thresholding to compute 
 the sparse loadings:
-* `msparse = :soft`: Soft thresholding of standardized loadings. 
+* `meth = :soft`: Soft thresholding of standardized loadings. 
     Let us note v a given loading vector before thresholding. 
     Vector abs(v) is then standardized to its maximal component 
     (= max{abs(v[i]), i = 1..p}). The soft-thresholding function 
@@ -37,7 +37,7 @@ the sparse loadings:
     vector `theta`. Vector v is multiplied term-by-term by this vector
     `theta`, which finally gives the sparse loadings.
 
-* `msparse = :mix`: Method used in function `spca` of the R 
+* `meth = :mix`: Method used in function `spca` of the R 
     package `mixOmics` (Lê Cao et al.). For each PC, the `nvar` 
     `X`-variables showing the largest values in vector abs(v) 
     are selected. Then a soft-thresholding is applied to the 
@@ -45,10 +45,10 @@ the sparse loadings:
     (internally) set equal to the maximal value of the components 
     of abs(v) corresponding to variables removed from the selection.  
 
-* `msparse = :hard`: For each PC, the `nvar` `X`-variables showing 
+* `meth = :hard`: For each PC, the `nvar` `X`-variables showing 
     the largest values in vector abs(v) are selected.
 
-The case `msparse = :mix` returns the same results as function 
+The case `meth = :mix` returns the same results as function 
 `spca` of the R package mixOmics.
 
 **Note:** The resulting sparse loadings vectors (`P`-columns) 
@@ -78,7 +78,7 @@ https://doi.org/10.1016/j.jmva.2007.06.007
 
 ## Examples
 ```julia
-using JchemoData, JLD2 
+using Jchemo, JchemoData, JLD2 
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat
@@ -92,10 +92,10 @@ Xtrain = X[s.train, :]
 Xtest = X[s.test, :]
 
 nlv = 3 
-msparse = :mix ; nvar = 2
-#msparse = :hard ; nvar = 2
+meth = :mix ; nvar = 2
+#meth = :hard ; nvar = 2
 scal = false
-mod = model(spca; nlv, msparse, nvar, scal) ;
+mod = model(spca; nlv, meth, nvar, scal) ;
 fit!(mod, Xtrain) 
 fm = mod.fm ;
 pnames(fm)
@@ -114,8 +114,8 @@ res.explvarx
 res.explvarx_adj
 
 nlv = 3 
-msparse = :soft ; delta = .4 
-mod = model(spca; nlv, msparse, delta) ;
+meth = :soft ; delta = .4 
+mod = model(spca; nlv, meth, delta) ;
 fit!(mod, Xtrain) 
 mod.fm.P
 ```
@@ -132,8 +132,8 @@ function spca(X, weights::Weight; kwargs...)
 end
 
 function spca!(X::Matrix, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par 
-    @assert in([:hard ; :soft ; :mix])(par.msparse) "Wrong value for argument 'msparse'."
+    par = recovkw(ParSpca, kwargs).par
+    @assert in([:hard ; :soft ; :mix])(par.meth) "Wrong value for argument 'meth'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]."
     Q = eltype(X)
     n, p = size(X)
@@ -159,14 +159,16 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     beta = similar(X, p, nlv)
     sellv = list(Vector{Int}, nlv)
     for a = 1:nlv
-        if par.msparse == :soft
+        if par.meth == :soft
             res = snipals(X; kwargs...)
         else
             par.nvar = nvar[a]
-            if par.msparse == :hard
+            if par.meth == :hard
                 res = snipalsh(X; kwargs...)
-            elseif par.msparse == :mix
+            elseif par.meth == :mix
+    println(22)
                 res = snipalsmix(X; kwargs...)
+                println(23)
             end
         end
         t .= res.t      
@@ -181,8 +183,7 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
         sellv[a] = findall(abs.(res.v) .> 0)
     end    
     sel = unique(reduce(vcat, sellv))
-    Spca(T, P, sv, beta, xmeans, xscales, weights, niter, sellv, sel, 
-        kwargs, par) 
+    Spca(T, P, sv, beta, xmeans, xscales, weights, niter, sellv, sel, par) 
 end
 
 """ 
