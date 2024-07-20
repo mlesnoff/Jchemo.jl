@@ -6,6 +6,11 @@
     - **umap**: UMAP: Uniform manifold approximation and projection for 
     dimension reduction (uses package **UMAP.jl** added as dependence).
 
+- Breaking 
+    - **rp** : argument 'mrp' renamed to 'meth'.
+    - **rpmatli**: argument 's_li' renamed to 's'.
+    - **spca**, **splskern** : argument 'msparse' renamed to 'meth'.
+
 - Modifications
     - Code cleaning.
 

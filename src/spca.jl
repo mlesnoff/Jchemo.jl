@@ -166,9 +166,7 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
             if par.meth == :hard
                 res = snipalsh(X; kwargs...)
             elseif par.meth == :mix
-    println(22)
                 res = snipalsmix(X; kwargs...)
-                println(23)
             end
         end
         t .= res.t      

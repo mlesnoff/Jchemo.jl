@@ -86,6 +86,7 @@ end
 Base.@kwdef mutable struct ParRp
     nlv::Int = 1    
     meth::Symbol = :gauss  
+    s::Float64 = 1. 
     scal::Bool = false 
 end 
 

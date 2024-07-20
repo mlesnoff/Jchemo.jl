@@ -36,7 +36,7 @@ http://papers.nips.cc/paper/1791-sparse-kernel-principal-component-analysis.pdf
 
 ## Examples
 ```julia
-using JchemoData, JLD2 
+using Jchemo, JchemoData, JLD2 
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat
@@ -100,7 +100,7 @@ function kpca(X, weights::Weight; kwargs...)
     sv = sqrt.(eig)
     P = sqrtD * fscale(U, sv[1:nlv])     # In the future: fscale!
     T = Kc * P       # T = Kc * P = D^(-1/2) * U * Delta
-    Kpca(X, Kt, T, P, sv, eig, D, DKt, vtot, xscales, weights, par)
+    Kpca(X, Kt, T, P, sv, eig, D, DKt, vtot, xscales, weights, kwargs, par)
 end
 
 """ 

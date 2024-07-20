@@ -102,6 +102,7 @@ struct Kpca
     vtot::Matrix
     xscales::Vector 
     weights::Weight
+    kwargs::Base.Pairs
     par::ParKpca
 end
 
@@ -110,7 +111,7 @@ struct Rp
     P::Union{Matrix, SparseArrays.SparseMatrixCSC}
     xmeans::Vector
     xscales::Vector
-    par::Par
+    par::ParRp
 end
 
 struct Umap 
@@ -136,6 +137,17 @@ struct Fda
 end
 
 ## Multiblock
+
+struct Blockscal
+    bscales::Vector
+    xmeans::Vector{Vector}
+    xscales::Vector{Vector}
+    par::ParBlock
+end
+
+struct Mbconcat
+    res::Nothing
+end
 
 struct Cca
     Tx::Matrix
@@ -224,17 +236,6 @@ struct Rasvd
     yscales::Vector
     weights::Weight
     par::Par
-end
-
-struct Blockscal
-    bscales::Vector
-    xmeans::Vector{Vector}
-    xscales::Vector{Vector}
-    par::ParBlock
-end
-
-struct Mbconcat
-    res::Nothing
 end
 
 struct Mbpca

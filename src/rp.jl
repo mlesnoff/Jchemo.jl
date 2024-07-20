@@ -17,12 +17,13 @@ Keyword arguments:
 
 ## Examples
 ```julia
+using Jchemo
 n, p = (5, 10)
 X = rand(n, p)
 nlv = 3
-meth = :li ; s_li = sqrt(p) 
+meth = :li ; s = sqrt(p) 
 #meth = :gauss
-mod = model(rp; nlv, meth, s_li)
+mod = model(rp; nlv, meth, s)
 fit!(mod, X)
 pnames(mod)
 pnames(mod.fm)
@@ -57,8 +58,7 @@ function rp!(X::Matrix, weights::Weight; kwargs...)
     if par.meth == :gauss
         P = rpmatgauss(p, par.nlv, Q)
     else
-        P = rpmatli(p, par.nlv, Q; 
-            s_li = par.s_li)
+        P = rpmatli(p, par.nlv, Q; s = par.s)
     end 
     T = X * P
     Rp(T, P, xmeans, xscales, par)
