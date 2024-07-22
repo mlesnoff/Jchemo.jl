@@ -133,7 +133,7 @@ struct Fda
     weights::Weight
     lev::Vector
     ni::Vector{Int}
-    par::Par
+    par::ParFda
 end
 
 ## Multiblock

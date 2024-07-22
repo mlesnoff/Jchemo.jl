@@ -104,7 +104,7 @@ end
 fda(X, y, weights; kwargs...) = fda!(copy(ensure_mat(X)), y, weights; kwargs...)
 
 function fda!(X::Matrix, y, weights; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParFda, kwargs).par
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     Q = eltype(X)
     n, p = size(X)

@@ -25,7 +25,7 @@ The function gives the same results as function `fda`.
 See function `fda` for details and examples.
 """ 
 function fdasvd(X, y; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParFda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     fdasvd(X, y, weights; kwargs...)

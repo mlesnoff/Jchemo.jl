@@ -97,6 +97,13 @@ Base.@kwdef mutable struct ParUmap
     scal::Bool = false 
 end 
 
+Base.@kwdef mutable struct ParFda
+    nlv::Int = 1     
+    lb::Float64 = 1e-6 
+    prior::Union{Symbol, Vector{Float64}} = :unif                  
+    scal::Bool = false 
+end 
+
 ######## Regression
 
 Base.@kwdef mutable struct ParNipals
