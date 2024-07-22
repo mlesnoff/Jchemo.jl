@@ -91,6 +91,7 @@ function plsrda(X, y; kwargs...)
 end
 
 function plsrda(X, y, weights::Weight; kwargs...)
+    par = recovkw(ParPlsrda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
     fm = plskern(X, res.Y, weights; kwargs...)

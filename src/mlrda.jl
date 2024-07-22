@@ -71,10 +71,11 @@ function mlrda(X, y; kwargs...)
     par = recovkw(ParMlrda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
-    mlrda(X, y, weights)
+    mlrda(X, y, weights; kwargs...)
 end
 
-function mlrda(X, y, weights::Weight)
+function mlrda(X, y, weights::Weight; kwargs...)
+    par = recovkw(ParMlrda, kwargs).par
     X = ensure_mat(X)
     y = ensure_mat(y)
     res = dummy(y)

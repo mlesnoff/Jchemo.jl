@@ -82,7 +82,7 @@ function rrda(X, y; kwargs...)
 end
 
 function rrda(X, y, weights::Weight; kwargs...)    
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParRrda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals 
     fm = rr(X, res.Y, weights; kwargs...)
