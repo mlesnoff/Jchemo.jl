@@ -65,7 +65,7 @@ SIAM Journal on Scientific and Statistical Computing 5,
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "linnerud.jld2") 
 @load db dat
@@ -111,7 +111,7 @@ function ccawold(X, Y, weights::Weight; kwargs...)
 end
 
 function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par 
+    par = recovkw(ParCcawold, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
     Q = eltype(X)

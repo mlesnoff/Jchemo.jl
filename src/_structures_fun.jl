@@ -161,7 +161,7 @@ struct Cca
     ymeans::Vector
     yscales::Vector
     weights::Weight
-    par::Par
+    par::ParCca
 end
 
 struct Ccawold
@@ -182,7 +182,7 @@ struct Ccawold
     yscales::Vector
     weights::Weight
     niter::Vector{Int}
-    par::Par
+    par::ParCcawold
 end
 
 struct Plscan
@@ -203,7 +203,7 @@ struct Plscan
     ymeans::Vector
     yscales::Vector
     weights::Weight
-    par::Par
+    par::ParPls2bl
 end
 
 struct Plstuck
@@ -220,7 +220,7 @@ struct Plstuck
     ymeans::Vector
     yscales::Vector
     weights::Weight
-    par::Par
+    par::ParPls2bl
 end
 
 struct Rasvd
@@ -235,7 +235,7 @@ struct Rasvd
     ymeans::Vector
     yscales::Vector
     weights::Weight
-    par::Par
+    par::ParRasvd
 end
 
 struct Mbpca

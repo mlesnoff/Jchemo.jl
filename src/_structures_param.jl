@@ -118,6 +118,37 @@ Base.@kwdef mutable struct ParMbpca
     scal::Bool = false  
 end 
 
+Base.@kwdef mutable struct ParCca
+    nlv::Int = 1     
+    bscal::Symbol = :none   
+    tau::Float64 = 1e-8
+    tol::Float64 = sqrt(eps(1.))    
+    maxit::Int = 200    
+    scal::Bool = false  
+end 
+
+Base.@kwdef mutable struct ParCcawold
+    nlv::Int = 1     
+    bscal::Symbol = :none   
+    tau::Float64 = 1e-8
+    tol::Float64 = sqrt(eps(1.))    
+    maxit::Int = 200    
+    scal::Bool = false  
+end 
+
+Base.@kwdef mutable struct ParPls2bl
+    nlv::Int = 1     
+    bscal::Symbol = :none   
+    scal::Bool = false  
+end 
+
+Base.@kwdef mutable struct ParRasvd
+    nlv::Int = 1     
+    bscal::Symbol = :none   
+    tau::Float64 = 1e-8
+    scal::Bool = false  
+end 
+
 ######## Regression
 
 Base.@kwdef mutable struct ParNipals

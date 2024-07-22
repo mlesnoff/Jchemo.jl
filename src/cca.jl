@@ -61,7 +61,7 @@ Phonetic Sciences, Univ. of Amsterdam, Proceedings 25, 81-99.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "linnerud.jld2") 
 @load db dat
@@ -105,7 +105,7 @@ function cca(X, Y, weights::Weight; kwargs...)
 end
 
 function cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par 
+    par = recovkw(ParCca, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
     Q = eltype(X)
@@ -165,8 +165,7 @@ function cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     d = d[1:nlv]
     Tx = (1 ./ sqrtw) .* X * Wx 
     Ty = (1 ./ sqrtw) .* Y * Wy
-    Cca(Tx, Ty, Wx, Wy, d, bscales, xmeans, xscales, ymeans, yscales, 
-        weights, par)
+    Cca(Tx, Ty, Wx, Wy, d, bscales, xmeans, xscales, ymeans, yscales, weights, par)
 end
 
 """ 
