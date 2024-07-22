@@ -215,7 +215,9 @@ Base.@kwdef mutable struct ParKplsr
     kern::Symbol = :krbf     
     gamma::Float64 = 1.  
     coef0::Float64 = 0.
-    degree::Int = 1        
+    degree::Int = 1 
+    tol::Float64 = sqrt(eps(1.))   
+    maxit::Int = 200            
     scal::Bool = false                   
 end 
 
@@ -328,6 +330,26 @@ end
 
 Base.@kwdef mutable struct ParRrda
     lb::Float64 = 1e-6
+    prior::Union{Symbol, Vector{Float64}} = :unif   
+    scal::Bool = false                    
+end 
+
+Base.@kwdef mutable struct ParKplsrda
+    nlv::Int = 1
+    kern::Symbol = :krbf     
+    gamma::Float64 = 1.  
+    coef0::Float64 = 0.
+    degree::Int = 1      
+    prior::Union{Symbol, Vector{Float64}} = :unif   
+    scal::Bool = false                    
+end 
+
+Base.@kwdef mutable struct ParKrrda
+    lb::Float64 = 1e-6
+    kern::Symbol = :krbf     
+    gamma::Float64 = 1.  
+    coef0::Float64 = 0.
+    degree::Int = 1      
     prior::Union{Symbol, Vector{Float64}} = :unif   
     scal::Bool = false                    
 end 

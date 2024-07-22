@@ -557,14 +557,14 @@ struct Plsrda
     fm::Union{Plsr, Splsr, Kplsr, Dkplsr}  
     lev::Vector
     ni::Vector{Int}
-    par::Union{ParPlsrda, ParSplsrda}
+    par::Union{ParPlsrda, ParSplsrda, ParKplsrda}
 end
 
 struct Rrda
     fm::Union{Rr, Krr}  
     lev::Vector
     ni::Vector{Int}
-    par::ParRrda
+    par::Union{ParRrda, ParKrrda}
 end
 
 struct Lda

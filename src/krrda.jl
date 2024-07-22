@@ -68,14 +68,14 @@ predict(mod, Xtest; lb = [.1, .001]).pred
 ```
 """ 
 function krrda(X, y; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParKrrda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     krrda(X, y, weights; kwargs...)
 end
 
 function krrda(X, y, weights::Weight; kwargs...)  
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParKrrda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
     fm = krr(X, res.Y, weights; kwargs...)
