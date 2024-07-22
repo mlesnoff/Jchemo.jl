@@ -250,7 +250,7 @@ struct Mbpca
     fmsc::Blockscal
     weights::Weight
     niter::Vector{Int}
-    par::Par
+    par::ParMbpca
 end
 
 struct Comdim
@@ -265,7 +265,7 @@ struct Comdim
     fmsc::Blockscal
     weights::Weight
     niter::Vector{Int}
-    par::Par
+    par::ParMbpca
 end
 
 ######---- Regression

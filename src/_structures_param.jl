@@ -110,6 +110,13 @@ Base.@kwdef mutable struct ParBlock
     scal::Bool = false  
 end 
 
+Base.@kwdef mutable struct ParMbpca
+    nlv::Int = 1     
+    bscal::Symbol = :none   
+    tol::Float64 = sqrt(eps(1.))    
+    maxit::Int = 200    
+    scal::Bool = false  
+end 
 
 ######## Regression
 

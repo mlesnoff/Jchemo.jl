@@ -80,7 +80,7 @@ https://doi.org/10.1016/S0950-3293(99)00069-5
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "ham.jld2") 
 @load db dat
@@ -140,7 +140,7 @@ function comdim(Xbl, weights::Weight; kwargs...)
 end
 
 function comdim!(Xbl::Vector, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par 
+    par = recovkw(ParMbpca, kwargs).par 
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     n = nro(Xbl[1])
@@ -207,8 +207,7 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
         end
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
-    Comdim(T, U, W, Tbl, Tb, Wbl, lb, mu, fmsc, weights, niter, 
-        kwargs, par)
+    Comdim(T, U, W, Tbl, Tb, Wbl, lb, mu, fmsc, weights, niter, par)
 end
 
 """ 
