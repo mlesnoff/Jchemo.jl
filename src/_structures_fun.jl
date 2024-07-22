@@ -452,14 +452,14 @@ end
 struct Svmr
     fm::LIBSVM.SVM
     xscales::Vector
-    par::ParSvmr
+    par::ParSvm
 end
 
-struct TreerDt
+struct Treer
     fm::Union{DecisionTree.Root, DecisionTree.Ensemble}
     xscales::Vector
     featur::Vector{Int}
-    par::Union{ParTreer, ParRfr}
+    par::Union{ParTree, ParRf}
 end
 
 ## Multiblock
@@ -550,6 +550,21 @@ struct Mlrda
     fm::Mlr 
     lev::Vector
     ni::Vector{Int}
+    par::ParMlrda
+end
+
+struct Plsrda
+    fm::Union{Plsr, Splsr, Kplsr, Dkplsr}  
+    lev::Vector
+    ni::Vector{Int}
+    par::ParPlsrda
+end
+
+struct Rrda
+    fm::Union{Rr, Krr}  
+    lev::Vector
+    ni::Vector{Int}
+    par::ParRrda
 end
 
 struct Lda
@@ -590,23 +605,10 @@ struct Rda
     weights::Weight
 end
 
-struct Plsrda
-    fm::Union{Plsr, Splsr, Kplsr, Dkplsr}  
-    lev::Vector
-    ni::Vector{Int}
-end
-
 struct Plsprobda    
     fm::NamedTuple  
     lev::Vector
     ni::Vector{Int}
-end
-
-struct Rrda
-    fm::Union{Rr, Krr}  
-    lev::Vector
-    ni::Vector{Int}
-    par::Par
 end
 
 ## Local
@@ -667,15 +669,16 @@ struct Svmda
     xscales::Vector
     lev::Vector
     ni::Vector{Int}
+    par::ParSvm
 end
 
-struct TreedaDt 
+struct Treeda 
     fm
     xscales::Vector
     featur::Vector{Int}
     lev::Vector
     ni::Vector{Int}
-    par::Par
+    par::ParTree
 end
 
 ## Multiblock

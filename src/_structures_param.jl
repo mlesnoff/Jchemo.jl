@@ -255,7 +255,7 @@ Base.@kwdef mutable struct ParLwplsr
     verbose::Bool = false                   
 end 
 
-Base.@kwdef mutable struct ParSvmr
+Base.@kwdef mutable struct ParSvm
     kern::Symbol = :krbf    
     gamma::Float64 = 1.  
     coef0::Float64 = 0.   
@@ -265,7 +265,7 @@ Base.@kwdef mutable struct ParSvmr
     scal::Bool = false         
 end 
 
-Base.@kwdef mutable struct ParTreer
+Base.@kwdef mutable struct ParTree
     n_subfeatures::Float64 = 0  
     max_depth::Int = -1   
     min_samples_leaf::Int = 5       
@@ -273,7 +273,7 @@ Base.@kwdef mutable struct ParTreer
     scal::Bool = false              
 end 
 
-Base.@kwdef mutable struct ParRfr
+Base.@kwdef mutable struct ParRf
     n_trees::Int = 10   
     partial_sampling::Float64 = .7  
     n_subfeatures::Float64 = 0   
@@ -312,7 +312,23 @@ end
 
 ######## Discrimination
 
-######## Occ 
+Base.@kwdef mutable struct ParMlrda
+    prior::Union{Symbol, Vector{Float64}} = :unif                     
+end 
+
+Base.@kwdef mutable struct ParPlsrda
+    nlv::Int = 1
+    prior::Union{Symbol, Vector{Float64}} = :unif   
+    scal::Bool = false                    
+end 
+
+Base.@kwdef mutable struct ParRrda
+    lb::Float64 = 1e-6
+    prior::Union{Symbol, Vector{Float64}} = :unif   
+    scal::Bool = false                    
+end 
+
+#### Occ 
 
 Base.@kwdef mutable struct ParOut
     scal::Bool = false                   

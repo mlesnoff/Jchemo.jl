@@ -1,5 +1,5 @@
 """ 
-    treeda_dt(X, y; kwargs...)
+    treeda(X, y; kwargs...)
 Discrimination tree (CART) with DecisionTree.jl.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
@@ -54,7 +54,7 @@ tab(ytest)
 
 n_subfeatures = p / 3 
 max_depth = 10
-mod = model(treeda_dt; n_subfeatures, max_depth) 
+mod = model(treeda; n_subfeatures, max_depth) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -71,9 +71,8 @@ conf(res.pred, ytest).cnt
 """ 
 ## For DA in DecisionTree.jl, 
 ## y must be Int or String
-function treeda_dt(X, y::Union{Array{Int}, Array{String}}; 
-        kwargs...) 
-    par = recovkw(Par, kwargs).par
+function treeda(X, y::Union{Array{Int}, Array{String}}; kwargs...) 
+    par = recovkw(ParTree, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)
@@ -97,16 +96,16 @@ function treeda_dt(X, y::Union{Array{Int}, Array{String}};
         #rng = 3
         )
     featur = collect(1:p)
-    TreedaDt(fm, xscales, featur, taby.keys, taby.vals, par)
+    Treeda(fm, xscales, featur, taby.keys, taby.vals, par)
 end
 
 """
-    predict(object::TreedaDt, X)
+    predict(object::Treeda, X)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::TreedaDt, X)
+function predict(object::Treeda, X)
     X = ensure_mat(X)
     m = nro(X)
     ## Tree

@@ -1,5 +1,5 @@
 """ 
-    rfda_dt(X, y; kwargs...)
+    rfda(X, y; kwargs...)
 Random forest discrimination with DecisionTree.jl.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
@@ -68,7 +68,7 @@ tab(ytest)
 n_trees = 200
 n_subfeatures = p / 3 
 max_depth = 10
-mod = model(rfda_dt; n_trees, n_subfeatures, max_depth) 
+mod = model(rfda; n_trees, n_subfeatures, max_depth) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -83,10 +83,10 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
-function rfda_dt(X, y::Union{Array{Int}, Array{String}}; kwargs...)
+function rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
     ## For DA in DecisionTree.jl, 
     ## y must be Int or String
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParRf, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)
@@ -112,5 +112,5 @@ function rfda_dt(X, y::Union{Array{Int}, Array{String}}; kwargs...)
         #rng = 3
         ) 
     featur = collect(1:p)
-    TreedaDt(fm, xscales, featur, taby.keys, taby.vals, par)
+    Treeda(fm, xscales, featur, taby.keys, taby.vals, par)
 end

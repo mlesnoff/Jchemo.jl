@@ -67,8 +67,8 @@ lwplsr() = FunXY{Function}(lwplsr)
 lwplsravg() = FunXY{Function}(lwplsravg)
 ##
 svmr() = FunXY{Function}(svmr)
-treer_dt() = FunXY{Function}(treer_dt)
-rfr_dt() = FunXY{Function}(rfr_dt)
+treer() = FunXY{Function}(treer)
+rfr() = FunXY{Function}(rfr)
 ##
 mbplsr() = FunXY{Function}(mbplsr)
 mbplswest() = FunXY{Function}(mbplswest)
@@ -108,8 +108,8 @@ lwplslda() = FunXY{Function}(lwplslda)
 lwplsqda() = FunXY{Function}(lwplsqda)
 ##
 svmda() = FunXY{Function}(svmda)
-treeda_dt() = FunXY{Function}(treeda_dt)
-rfda_dt() = FunXY{Function}(rfda_dt)
+treeda() = FunXY{Function}(treeda)
+rfda() = FunXY{Function}(rfda)
 ## 
 mbplsrda() = FunXY{Function}(mbplsrda)
 mbplslda() = FunXY{Function}(mbplslda)

@@ -93,7 +93,7 @@ f
 ```
 """ 
 function svmr(X, y; kwargs...)
-    par = recovkw(ParSvmr, kwargs).par
+    par = recovkw(ParSvm, kwargs).par
     kern = par.kern 
     @assert in([:krbf, :kpol, :klin, :ktanh])(kern) "Wrong value for argument 'kern'." 
     X = ensure_mat(X)

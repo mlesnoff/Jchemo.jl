@@ -161,8 +161,8 @@ include("viperm.jl")
 
 ## Svm, Trees
 include("svmr.jl")
-include("treer_dt.jl")
-include("rfr_dt.jl")
+include("treer.jl")
+include("rfr.jl")
 
 ######---- Discrimination 
 
@@ -215,8 +215,8 @@ include("knnda.jl")
 
 ## Svm, Trees
 include("svmda.jl")
-include("treeda_dt.jl")
-include("rfda_dt.jl")
+include("treeda.jl")
+include("rfda.jl")
 
 ######---- Calibration transfer
 
@@ -360,7 +360,7 @@ export
     plsravg, plsravg!,
     dfplsr_cg, aicplsr,
     svmr,
-    treer_dt, rfr_dt, 
+    treer, rfr, 
     ## Sparse 
     splskern, splskern!, 
     ## Multi-block
@@ -392,7 +392,7 @@ export
     dkplsrda,
     dkplslda, dkplsqda, dkplskdeda, 
     svmda, 
-    treeda_dt, rfda_dt,
+    treeda, rfda,
     outstah, outeucl,
     occstah,
     occsd, occod, occsdod,

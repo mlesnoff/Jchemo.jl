@@ -68,7 +68,7 @@ conf(res.pred, ytest).cnt
 ```
 """ 
 function mlrda(X, y; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParMlrda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     mlrda(X, y, weights)
@@ -80,7 +80,7 @@ function mlrda(X, y, weights::Weight)
     res = dummy(y)
     ni = tab(y).vals
     fm = mlr(X, res.Y, weights)
-    Mlrda(fm, res.lev, ni)
+    Mlrda(fm, res.lev, ni, par)
 end
 
 """

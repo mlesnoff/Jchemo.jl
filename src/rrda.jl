@@ -75,7 +75,7 @@ predict(mod, Xtest; lb = [.1; .01]).pred
 ```
 """ 
 function rrda(X, y; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParRrda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     rrda(X, y, weights; kwargs...)

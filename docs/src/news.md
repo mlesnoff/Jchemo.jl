@@ -6,7 +6,9 @@
     - **umap**: UMAP: Uniform manifold approximation and projection for 
     dimension reduction (uses package **UMAP.jl** added as dependence).
 
-- Breaking 
+- Breaking
+    - **treer_dt**, **treeda_dt**, **rfr_dt**, **rfda_dt**: renamed to **treer**, **treeda**,
+        **rfr**, **rfda**.   
     - **rp** : argument 'mrp' renamed to 'meth'.
     - **rpmatli**: argument 's_li' renamed to 's'.
     - **spca**, **splskern** : argument 'msparse' renamed to 'meth'.

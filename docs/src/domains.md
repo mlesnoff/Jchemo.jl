@@ -141,8 +141,8 @@
 
 ### Trees -- with DecisionTree.jl
 
-- **treer_dt** Single tree
-- **rfr_dt** Random forest
+- **treer** Single tree
+- **rfr** Random forest
 
 ## DISCRIMINATION ANALYSIS (DA)
 
@@ -214,8 +214,8 @@
 
 ### Trees -- with DecisionTree.jl
 
-- **treeda_dt** Single tree
-- **rfda_dt** Random forest
+- **treeda** Single tree
+- **rfda** Random forest
 
 ### One-Class Classification (OCC)
 
