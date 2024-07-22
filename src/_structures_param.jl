@@ -104,6 +104,13 @@ Base.@kwdef mutable struct ParFda
     scal::Bool = false 
 end 
 
+Base.@kwdef mutable struct ParBlock
+    bscal::Symbol = :none   
+    centr::Bool = false   
+    scal::Bool = false  
+end 
+
+
 ######## Regression
 
 Base.@kwdef mutable struct ParNipals
@@ -237,12 +244,6 @@ Base.@kwdef mutable struct ParRfr
     min_samples_split::Int = 5    
     mth::Bool = true  
     scal::Bool = false         
-end 
-
-Base.@kwdef mutable struct ParBlock
-    bscal::Symbol = :none   
-    centr::Bool = false   
-    scal::Bool = false  
 end 
 
 Base.@kwdef mutable struct ParMbplsr

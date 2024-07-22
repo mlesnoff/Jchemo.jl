@@ -40,6 +40,11 @@
 - **umap**: Uniform manifold approximation and projection for 
     dimension reduction
 
+### Factorial discrimination analysis (FDA)
+
+- **fda** Eigen decomposition of the compromise "inter/intra"
+- **fdasvd** Weighted SVD of the class centers
+
 ### Multiblock
 
 *2 blocks*
@@ -60,11 +65,6 @@
 - **rd** Redundancy coefficients between two matrices
 - **lg** Lg coefficient
 - **rv** RV correlation coefficient
-
-### Factorial discrimination analysis (FDA)
-
-- **fda** Eigen decomposition of the compromise "inter/intra"
-- **fdasvd** Weighted SVD of the class centers
 
 ## REGRESSION
 

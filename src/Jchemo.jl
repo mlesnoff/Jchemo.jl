@@ -32,7 +32,6 @@ include("utility.jl")
 include("utility_colwise.jl")
 include("utility_rowwise.jl")
 include("utility_scale.jl")
-include("utility_mb.jl")
 include("angles.jl")
 include("colmedspa.jl")
 include("fweight.jl") 
@@ -49,7 +48,6 @@ include("snipalsmix.jl")
 
 include("preprocessing.jl") 
 include("scale.jl") 
-include("blockscal.jl") 
 include("rmgap.jl")
 
 ######---- Graphics
@@ -86,7 +84,7 @@ include("umap.jl")
 include("spca.jl")
 
 ## Multiblock 
-include("mbconcat.jl")
+include("mbutil.jl")
 include("cca.jl")
 include("ccawold.jl")
 include("plscan.jl")
