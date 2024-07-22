@@ -50,7 +50,7 @@ gamma = .1
 mod = model(dkplslda; nlv, gamma) 
 #mod = model(dkplslda; nlv, gamma, prior = :prop) 
 #mod = model(dkplsqda; nlv, gamma, alpha = .5) 
-#mod = model(dkplskdeda; nlv, gamma, a_kde = .5) 
+#mod = model(dkplskdeda; nlv, gamma, a = .5) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)

@@ -63,7 +63,7 @@ conf(res.pred, ytest).cnt
 ```
 """ 
 function lda(X, y; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParLda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     lda(X, y, weights; kwargs...)

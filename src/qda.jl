@@ -82,7 +82,7 @@ errp(res.pred, ytest)
 ```
 """ 
 function qda(X, y; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParQda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     qda(X, y, weights; kwargs...)

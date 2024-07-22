@@ -57,7 +57,7 @@ nlv = 15
 meth = :mix ; nvar = 10
 mod = model(splslda; nlv, meth, nvar) 
 #mod = model(splsqda; nlv, meth, nvar, alpha = .1) 
-#mod = model(splskdeda; nlv, meth, nvar, a_kde = .9) 
+#mod = model(splskdeda; nlv, meth, nvar, a = .9) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -85,14 +85,14 @@ predict(mod, Xtest; nlv = 1:2).pred
 ```
 """ 
 function splslda(X, y; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParSplslda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     splslda(X, y, weights; kwargs...)
 end
 
 function splslda(X, y, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParSplslda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
@@ -102,7 +102,7 @@ function splslda(X, y, weights::Weight; kwargs...)
         fmda[i] = lda(fmpls.T[:, 1:i], y, weights; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
-    Plsprobda(fm, res.lev, ni)
+    Plsprobda(fm, res.lev, ni, par)
 end
 
 

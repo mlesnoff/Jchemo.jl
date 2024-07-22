@@ -96,7 +96,7 @@ conf(res.pred, ytest).cnt
 ```
 """ 
 function rda(X, y; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParRda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     rda(X, y, weights; kwargs...)

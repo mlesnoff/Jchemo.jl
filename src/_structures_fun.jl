@@ -557,7 +557,7 @@ struct Plsrda
     fm::Union{Plsr, Splsr, Kplsr, Dkplsr}  
     lev::Vector
     ni::Vector{Int}
-    par::ParPlsrda
+    par::Union{ParPlsrda, ParSplsrda}
 end
 
 struct Rrda
@@ -609,11 +609,11 @@ struct Kdeda
     par::ParKdeda
 end
 
-
 struct Plsprobda    
     fm::NamedTuple  
     lev::Vector
     ni::Vector{Int}
+    par::Union{ParPlslda, ParPlsqda, ParPlskdeda, ParSplslda, ParSplsqda, ParSplskdeda}
 end
 
 ## Local

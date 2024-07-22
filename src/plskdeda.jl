@@ -46,7 +46,7 @@ tab(ytest)
 
 nlv = 15
 mod = model(plskdeda; nlv) 
-#mod = model(plskdeda; nlv, a_kde = .5)
+#mod = model(plskdeda; nlv, a = .5)
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -74,14 +74,14 @@ summary(fmpls, Xtrain)
 ```
 """ 
 function plskdeda(X, y; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParPlskdeda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     plskdeda(X, y, weights; kwargs...)
 end
 
 function plskdeda(X, y, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParPlskdeda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
@@ -91,7 +91,7 @@ function plskdeda(X, y, weights::Weight; kwargs...)
         fmda[i] = kdeda(vcol(fmpls.T, 1:i), y; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
-    Plsprobda(fm, res.lev, ni)
+    Plsprobda(fm, res.lev, ni, par)
 end
 
 

@@ -345,14 +345,74 @@ Base.@kwdef mutable struct ParRda
     prior::Union{Symbol, Vector{Float64}} = :unif
     alpha::Float64 = 0.
     lb::Float64 = 1e-6
-    simpl::Bool = false      
-    scal::Bool = false                                    
+    simpl::Bool = false 
+    scal::Bool = false 
 end 
 
 Base.@kwdef mutable struct ParKdeda
     prior::Union{Symbol, Vector{Float64}} = :unif
     h::Union{Nothing, Float64, Vector{Float64}} = nothing  
     a::Float64 = 1. 
+end 
+
+Base.@kwdef mutable struct ParPlslda
+    nlv::Int = 1
+    prior::Union{Symbol, Vector{Float64}} = :unif 
+    scal::Bool = false                     
+end 
+
+Base.@kwdef mutable struct ParPlsqda
+    nlv::Int = 1
+    prior::Union{Symbol, Vector{Float64}} = :unif
+    alpha::Float64 = 0. 
+    scal::Bool = false                 
+end 
+
+Base.@kwdef mutable struct ParPlskdeda
+    nlv::Int = 1
+    prior::Union{Symbol, Vector{Float64}} = :unif
+    h::Union{Nothing, Float64, Vector{Float64}} = nothing  
+    a::Float64 = 1. 
+    scal::Bool = false 
+end 
+
+Base.@kwdef mutable struct ParSplsrda
+    nlv::Int = 1
+    meth::Symbol = :soft 
+    delta::Float64 = 0.   
+    nvar::Union{Int, Vector{Int}} = 1  
+    prior::Union{Symbol, Vector{Float64}} = :unif   
+    scal::Bool = false                    
+end 
+
+Base.@kwdef mutable struct ParSplslda
+    nlv::Int = 1
+    meth::Symbol = :soft 
+    delta::Float64 = 0.   
+    nvar::Union{Int, Vector{Int}} = 1  
+    prior::Union{Symbol, Vector{Float64}} = :unif   
+    scal::Bool = false                    
+end 
+
+Base.@kwdef mutable struct ParSplsqda
+    nlv::Int = 1
+    meth::Symbol = :soft 
+    delta::Float64 = 0.   
+    nvar::Union{Int, Vector{Int}} = 1  
+    prior::Union{Symbol, Vector{Float64}} = :unif
+    alpha::Float64 = 0.    
+    scal::Bool = false                    
+end 
+
+Base.@kwdef mutable struct ParSplskdeda
+    nlv::Int = 1
+    meth::Symbol = :soft 
+    delta::Float64 = 0.   
+    nvar::Union{Int, Vector{Int}} = 1  
+    prior::Union{Symbol, Vector{Float64}} = :unif
+    h::Union{Nothing, Float64, Vector{Float64}} = nothing  
+    a::Float64 = 1. 
+    scal::Bool = false 
 end 
 
 ## Occ 
