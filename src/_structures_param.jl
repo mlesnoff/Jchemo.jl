@@ -332,6 +332,23 @@ Base.@kwdef mutable struct ParRrda
     scal::Bool = false                    
 end 
 
+Base.@kwdef mutable struct ParLda
+    prior::Union{Symbol, Vector{Float64}} = :unif                     
+end 
+
+Base.@kwdef mutable struct ParQda
+    prior::Union{Symbol, Vector{Float64}} = :unif
+    alpha::Float64 = 0.                      
+end 
+
+Base.@kwdef mutable struct ParRda
+    prior::Union{Symbol, Vector{Float64}} = :unif
+    alpha::Float64 = 0.
+    lb::Float64 = 1e-6
+    simpl::Bool = false      
+    scal::Bool = false                                    
+end 
+
 ## Occ 
 
 Base.@kwdef mutable struct ParOut

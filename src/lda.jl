@@ -25,7 +25,7 @@ version.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2")
 @load db dat
@@ -45,7 +45,7 @@ ntrain = n - ntest
 tab(ytrain)
 tab(ytest)
 
-mod = lda()
+mod = model(lda)
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -71,7 +71,7 @@ end
 
 function lda(X, y, weights::Weight; kwargs...)  
     # Scaling X has no effect
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParLda, kwargs).par
     X = ensure_mat(X)
     y = vec(y)    # for findall
     Q = eltype(X)
@@ -97,16 +97,16 @@ function lda(X, y, weights::Weight; kwargs...)
         ct[i, :] = colmean(vrow(X, s), mweight(weights.w[s]))
         fm[i] = dmnorm(; mu = ct[i, :], S = res.W) 
     end
-    Lda(fm, res.W, ct, priors, ni, lev, weights)
+    Lda(fm, res.W, ct, priors, ni, lev, weights, par)
 end
 
 """
-    predict(object::Lda, X)
+    predict(object::Union{Lda, Qda}, X)
 Compute y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Lda, X)
+function predict(object::Union{Lda, Qda}, X)
     X = ensure_mat(X)
     m = nro(X)
     lev = object.lev

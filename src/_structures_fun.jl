@@ -575,6 +575,7 @@ struct Lda
     ni::Vector{Int}
     lev::Vector
     weights::Weight
+    par::ParLda
 end
 
 struct Qda
@@ -585,13 +586,7 @@ struct Qda
     ni::Vector{Int}
     lev::Vector
     weights::Weight
-end
-
-struct Kdeda
-    fm::Vector{Dmkern}
-    priors::AbstractVector
-    lev::Vector
-    ni::Vector{Int}
+    par::ParQda
 end
 
 struct Rda
@@ -603,7 +598,16 @@ struct Rda
     lev::Vector
     xscales::Vector
     weights::Weight
+    par::ParRda
 end
+
+struct Kdeda
+    fm::Vector{Dmkern}
+    priors::AbstractVector
+    lev::Vector
+    ni::Vector{Int}
+end
+
 
 struct Plsprobda    
     fm::NamedTuple  
