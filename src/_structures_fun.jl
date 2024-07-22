@@ -606,6 +606,7 @@ struct Kdeda
     priors::AbstractVector
     lev::Vector
     ni::Vector{Int}
+    par::ParKdeda
 end
 
 

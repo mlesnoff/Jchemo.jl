@@ -56,14 +56,14 @@ pnames(res)
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-mod = model(kdeda; prior, a_kde = .5) 
-#mod = model(kdeda; prior, h_kde = .1) 
+mod = model(kdeda; prior, a = .5) 
+#mod = model(kdeda; prior, h = .1) 
 fit!(mod, Xtrain, ytrain)
 mod.fm.fm[1].H
 ```
 """ 
 function kdeda(X, y; kwargs...) 
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParKdeda, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     lev = mlev(y)
@@ -81,9 +81,9 @@ function kdeda(X, y; kwargs...)
     fm = list(nlev)
     @inbounds for i in eachindex(lev)
         s = y .== lev[i]
-        fm[i] = dmkern(vrow(X, s); h_kde = par.h_kde, a_kde = par.a_kde)
+        fm[i] = dmkern(vrow(X, s); h = par.h, a = par.a)
     end
-    Kdeda(fm, priors, lev, ni)
+    Kdeda(fm, priors, lev, ni, par)
 end
 
 function predict(object::Kdeda, X)
