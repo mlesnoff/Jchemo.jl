@@ -1,4 +1,4 @@
-######## Preprocessing
+############ Preprocessing
 
 Base.@kwdef mutable struct ParDetrend
     degree::Int = 1  
@@ -33,7 +33,7 @@ Base.@kwdef mutable struct ParRmgap
     npoint::Int = 5  
 end 
 
-######## Dimension reduction
+############ Dimension reduction
 
 Base.@kwdef mutable struct ParPca
     nlv::Int = 1   
@@ -104,6 +104,8 @@ Base.@kwdef mutable struct ParFda
     scal::Bool = false 
 end 
 
+## Multiblock
+
 Base.@kwdef mutable struct ParBlock
     bscal::Symbol = :none   
     centr::Bool = false   
@@ -149,7 +151,7 @@ Base.@kwdef mutable struct ParRasvd
     scal::Bool = false  
 end 
 
-######## Regression
+############ Regression
 
 Base.@kwdef mutable struct ParNipals
     tol::Float64 = sqrt(eps(1.))  
@@ -284,6 +286,8 @@ Base.@kwdef mutable struct ParRf
     scal::Bool = false         
 end 
 
+## Multiblock
+
 Base.@kwdef mutable struct ParMbplsr
     nlv::Int = 1 
     bscal::Symbol = :none   
@@ -297,7 +301,7 @@ Base.@kwdef mutable struct ParSoplsr
     scal::Bool = false  
 end 
 
-######## Densities
+############ Densities
 
 Base.@kwdef mutable struct ParDmnorm
     mu::Union{Nothing, Vector} = nothing 
@@ -310,7 +314,7 @@ Base.@kwdef mutable struct ParDmkern
     a::Float64 = 1. 
 end 
 
-######## Discrimination
+############ Discrimination
 
 Base.@kwdef mutable struct ParMlrda
     prior::Union{Symbol, Vector{Float64}} = :unif                     
@@ -328,7 +332,7 @@ Base.@kwdef mutable struct ParRrda
     scal::Bool = false                    
 end 
 
-#### Occ 
+## Occ 
 
 Base.@kwdef mutable struct ParOut
     scal::Bool = false                   

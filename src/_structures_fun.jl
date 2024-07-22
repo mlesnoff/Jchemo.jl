@@ -678,7 +678,7 @@ struct Treeda
     featur::Vector{Int}
     lev::Vector
     ni::Vector{Int}
-    par::ParTree
+    par::Union{ParTree, ParRf}
 end
 
 ## Multiblock
