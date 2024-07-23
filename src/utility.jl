@@ -16,7 +16,7 @@ Return a matrix or, if only argument `X::DataFrame` is used, a dataframe.
 
 ## Examples
 ```julia
-using DataFrames, Statistics
+using Jchemo, DataFrames, Statistics
 
 n, p = 20, 5
 X = rand(n, p)
@@ -65,6 +65,8 @@ Return a vector.
 
 ## Examples
 ```julia
+using Jchemo
+
 x = rand(1000)
 y = vcat(rand(["a" ; "c"], 900), repeat(["b"], 100))
 aggsum(x, y)
@@ -96,6 +98,8 @@ Uncorrected correlation matrix
 
 ## Examples
 ```julia
+using Jchemo
+
 n, p = 5, 6
 X = rand(n, p)
 Y = rand(n, 3)
@@ -142,6 +146,8 @@ The function computes the cosinus matrix:
 
 ## Examples
 ```julia
+using Jchemo
+
 n, p = 5, 6
 X = rand(n, p)
 Y = rand(n, 3)
@@ -175,6 +181,8 @@ Compute cosinus between two vectors.
 
 ## Examples
 ```julia
+using Jchemo
+
 n = 5
 x = rand(n)
 y = rand(n)
@@ -202,6 +210,8 @@ matrix:
 
 ## Examples
 ```julia
+using Jchemo
+
 n, p = 5, 6
 X = rand(n, p)
 Y = rand(n, 3)
@@ -234,6 +244,8 @@ Compute dummy table from a categorical variable.
 
 ## Examples
 ```julia
+using Jchemo
+
 y = ["d", "a", "b", "c", "b", "c"]
 #y =  rand(1:3, 7)
 res = dummy(y)
@@ -274,6 +286,8 @@ Find duplicated rows in a dataset.
 
 ## Examples
 ```julia
+using Jchemo
+
 X = rand(5, 3)
 Z = vcat(X, X[1:3, :], X[1:1, :])
 dupl(X)
@@ -341,6 +355,8 @@ Replace a vector containg levels by the indexes of a set of levels.
 
 ## Examples
 ```julia
+using Jchemo
+
 lev = ["EHH" ; "FFS" ; "ANF" ; "CLZ" ; "CNG" ; "FRG" ; "MPW" ; "PEE" ; "SFG" ; "TTS"]
 x = ["EHH" ; "TTS" ; "FRG"]
 findindex(x, lev)
@@ -369,6 +385,8 @@ If ex-aequos, the function returns the first.
 
 ## Examples
 ```julia
+using Jchemo
+
 x = rand(1:3, 10)
 tab(x)
 findmax_cla(x)
@@ -410,6 +428,8 @@ Display the first rows of a dataset.
 
 ## Examples
 ```julia
+using Jchemo
+
 X = rand(100, 5)
 head(X)
 @head X
@@ -454,6 +474,8 @@ Create a Vector{Any}(nothing, n).
 
 ## Examples
 ```julia
+using Jchemo
+
 list(5)
 ```
 """  
@@ -467,6 +489,8 @@ Create a Vector{Q}(undef, n).
 
 ## Examples
 ```julia
+using Jchemo
+
 list(Float64, 5)
 list(Array{Float64}, 5)
 list(Matrix{Int}, 5)
@@ -481,6 +505,8 @@ adjusted by a factor (1.4826) for asymptotically normal consistency.
 
 ## Examples
 ```julia
+using Jchemo
+
 x = rand(100)
 mad(x)
 ```
@@ -495,6 +521,8 @@ Find rows with missing data in a dataset.
 
 ## Examples
 ```julia
+using Jchemo
+
 X = rand(5, 4)
 zX = hcat(rand(2, 3), fill(missing, 2))
 Z = vcat(X, zX)
@@ -515,6 +543,8 @@ Return the sorted levels of a vector or a dataset.
 
 ## Examples
 ```julia
+using Jchemo
+
 x = rand(["a";"b";"c"], 20)
 lev = mlev(x)
 nlev = length(lev)
@@ -536,6 +566,8 @@ Return an object of type `Weight` containing vector
 
 ## Examples
 ```julia
+using Jchemo
+
 x = rand(10)
 w = mweight(x)
 sum(w.w)
@@ -568,6 +600,8 @@ a vector `w` (n) that sums to 1.
 
 ## Examples
 ```julia
+using Jchemo
+
 x = vcat(rand(["a" ; "c"], 900), repeat(["b"], 100))
 tab(x)
 weights = mweightcla(x)
@@ -634,6 +668,8 @@ Return a BitVector.
 
 ## Examples
 ```julia
+using Jchemo
+
 x = [-200.; -100; -1; 0; 1; 200]
 out(x, [-1; .2; 1])
 out(x, (-1, 1))
@@ -691,7 +727,7 @@ ie. P(Q > `q`) where Q is the random variable.
 
 ## Examples
 ```julia
-using Distributions, StatsBase
+using Jchemo, Distributions, StatsBase
 
 d = Distributions.Normal(0, 1)
 q = 1.96
@@ -727,6 +763,8 @@ sorted levels (categories) of `x`.
 
 ## Examples
 ```julia
+using Jchemo
+
 x = ["b", "a", "b"]   
 [x recodcat2int(x)]
 recodcat2int(x; start = 0)
@@ -749,8 +787,9 @@ Recode a continuous variable to integer classes.
 
 ## Examples
 ```julia
-using Statistics
+using Jchemo, Statistics
 x = [collect(1:10); 8.1 ; 3.1] 
+
 q = [3; 8]
 zx = recodnum2int(x, q)  
 [x zx]
@@ -810,6 +849,8 @@ The ith sorted level in `x` is replaced by the ith sorted level of `lev`.
 
 ## Examples
 ```julia
+using Jchemo
+
 x = [10; 4; 3; 3; 4; 4]
 lev = ["B"; "C"; "AA"]
 sort(lev)
@@ -848,6 +889,8 @@ Each element `x`[i] (i = 1, ..., n) is replaced by sort(`lev`)[`x`[i]].
 
 ## Examples
 ```julia
+using Jchemo
+
 x = [2; 1; 2; 2]
 lev = ["B"; "C"; "AA"]
 sort(lev)
@@ -879,6 +922,8 @@ Replace the elements of a vector by levels defined in a dictionary.
 
 ## Examples
 ```julia
+using Jchemo
+
 dict = Dict("a" => 1000, "b" => 1, "c" => 2)
 
 x = ["c"; "c"; "a"; "a"; "a"]
@@ -902,6 +947,8 @@ having indexes `s`.
 
 ## Examples
 ```julia
+using Jchemo
+
 X = rand(5, 3) 
 rmcol(X, [1, 3])
 ```
@@ -927,6 +974,8 @@ having indexes `s`.
 
 ## Examples
 ```julia
+using Jchemo
+
 X = rand(5, 2) 
 rmrow(X, [1, 4])
 ```
@@ -955,7 +1004,7 @@ where delta >= 0.
 
 ## Examples
 ```julia
-using CairoMakie 
+using Jchemo, CairoMakie 
 
 delta = .2
 soft(3, delta)
@@ -982,6 +1031,8 @@ Let v be a vector:
 
 ## Examples
 ```julia
+using Jchemo
+
 x = 1:3
 softmax(x)
 
@@ -1024,6 +1075,8 @@ Sum of all the squared components of `X` (= `norm(X)^2`; Squared Frobenius norm)
 
 ## Examples
 ```julia
+using Jchemo
+
 X = rand(5, 2) 
 ssq(X)
 ```
@@ -1043,6 +1096,8 @@ Summarize a dataset (or a variable).
 
 ## Examples
 ```julia
+using Jchemo
+
 n = 50
 X = rand(n, 3) 
 y = rand(1:3, n)
@@ -1086,6 +1141,8 @@ The output cointains sorted levels.
 
 ## Examples
 ```julia
+using Jchemo
+
 x = rand(["a";"b";"c"], 20)
 res = tab(x)
 res.keys
@@ -1105,6 +1162,8 @@ The output (dataframe) contains sorted levels.
 
 ## Examples
 ```julia
+using Jchemo
+
 n = 20
 X =  hcat(rand(1:2, n), rand(["a", "b", "c"], n))
 tabdf(X)
@@ -1135,6 +1194,8 @@ Tabulate duplicated values in a vector.
 
 ## Examples
 ```julia
+using Jchemo
+
 x = ["a", "b", "c", "a", "b", "b"]
 tab(x)
 res = tabdupl(x)
@@ -1158,7 +1219,8 @@ Vertical concatenation of a list of dataframes.
 
 ## Examples
 ```julia
-using DataFrames
+using Jchemo, DataFrames
+
 dat1 = DataFrame(rand(5, 2), [:v3, :v1]) 
 dat2 = DataFrame(100 * rand(2, 2), [:v3, :v1])
 dat = (dat1, dat2)
@@ -1221,6 +1283,8 @@ https://stackoverflow.com/questions/38986764/save-variable-name-as-string-in-jul
 
 ## Examples
 ```julia
+using Jchemo
+
 z = 1:5
 Jchemo.@namvar(z)
 ```
