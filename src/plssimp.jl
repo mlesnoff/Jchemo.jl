@@ -34,7 +34,7 @@ function plssimp(X, Y, weights::Weight; kwargs...)
 end
 
 function plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParPlsr, kwargs).par
     Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
@@ -92,8 +92,7 @@ function plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     #B = R * inv(T' * D * T) * T' * D * Y
     # W does not exist in SIMPLS
     # Below it is filled by R (for vip)
-    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, 
-        nothing, kwargs, par)
+    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
 end
 
 

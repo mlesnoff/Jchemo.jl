@@ -62,7 +62,7 @@ https://doi.org/10.1002/(SICI)1099-128X(199809/10)12:5<301::AID-CEM515>3.0.CO;2-
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "ham.jld2") 
 @load db dat
@@ -120,7 +120,7 @@ function mbpca(Xbl, weights::Weight; kwargs...)
 end
 
 function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParMbpca, kwargs).par 
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     n = nro(Xbl[1])
@@ -184,7 +184,7 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
         end
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
-    Mbpca(T, U, W, Tbl, Tb, Wbl, lb, mu, fmsc, weights, niter, kwargs, par)
+    Mbpca(T, U, W, Tbl, Tb, Wbl, lb, mu, fmsc, weights, niter, par)
 end
 
 """ 

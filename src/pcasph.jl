@@ -28,7 +28,7 @@ robust scales, Technometrics, 47:3, 264-273, DOI: 10.1198/004017005000000166
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie 
+using Jchemo, JchemoData, JLD2, CairoMakie 
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "octane.jld2") 
 @load db dat
@@ -64,7 +64,7 @@ function pcasph(X, weights::Weight; kwargs...)
 end
 
 function pcasph!(X::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParPca, kwargs).par 
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
@@ -89,5 +89,5 @@ function pcasph!(X::Matrix, weights::Weight; kwargs...)
     T .= T[:, s]
     P .= P[:, s]
     sv .= sv[s]
-    Pca(T, P, sv, xmeans, xscales, weights, nothing, kwargs, par) 
+    Pca(T, P, sv, xmeans, xscales, weights, nothing, par) 
 end

@@ -30,7 +30,7 @@ https://doi.org/10.1002/(SICI)1099-128X(199809/10)12:5<301::AID-CEM515>3.0.CO;2-
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "ham.jld2") 
 @load db dat
@@ -92,7 +92,7 @@ function mbplswest(Xbl, Y, weights::Weight; kwargs...)
 end
 
 function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParMbplsr, kwargs).par
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
@@ -193,7 +193,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     Rx = Wx * inv(Px' * Wx)
     lb = nothing
     Mbplswest(Tx, Px, Rx, Wx, Wytild, Tbl, Tb, Pbl, TTx, fmsc, ymeans, yscales, 
-        weights, lb, niter, kwargs, par)
+        weights, lb, niter, par)
 end
 
 """

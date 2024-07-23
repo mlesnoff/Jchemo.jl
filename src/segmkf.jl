@@ -25,6 +25,8 @@ the sampled observations.
 
 ## Examples
 ```julia
+using Jchemo 
+
 n = 10 ; K = 3
 rep = 4 
 segm = segmkf(n, K; rep)

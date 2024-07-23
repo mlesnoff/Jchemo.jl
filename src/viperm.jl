@@ -36,7 +36,7 @@ https://doi.org/10.1366/0003702001949500
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "tecator.jld2") 
 @load db dat
@@ -75,7 +75,7 @@ u = [910; 950]
 vlines!(ax, u; color = :grey, linewidth = 1)
 f
 
-mod = model(rfr_dt; n_trees = 10, max_depth = 2000, min_samples_leaf = 5)
+mod = model(rfr; n_trees = 10, max_depth = 2000, min_samples_leaf = 5)
 res = viperm(mod, Xtrain, ytrain; rep = 50)
 z = vec(res.imp)
 f = Figure(size = (500, 400))

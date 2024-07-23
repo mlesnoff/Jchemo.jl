@@ -17,7 +17,7 @@ Keyword arguments:
 * Keyword arguments of function `dmkern` (bandwidth 
     definition) can also be specified here.
 * `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+    and Y_dummy is scaled by its uncorrected standard deviation.
 
 The principle is the same as functions `plslda` and 
 `plsqda` except that class densities are estimated from `dmkern` 
@@ -25,7 +25,7 @@ instead of `dmnorm`.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -46,7 +46,7 @@ tab(ytest)
 
 nlv = 15
 mod = model(plskdeda; nlv) 
-#mod = model(plskdeda; nlv, a_kde = .5)
+#mod = model(plskdeda; nlv, a = .5)
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -74,14 +74,14 @@ summary(fmpls, Xtrain)
 ```
 """ 
 function plskdeda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParPlskdeda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     plskdeda(X, y, weights; kwargs...)
 end
 
 function plskdeda(X, y, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParPlskdeda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
@@ -91,7 +91,7 @@ function plskdeda(X, y, weights::Weight; kwargs...)
         fmda[i] = kdeda(vcol(fmpls.T, 1:i), y; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
-    Plslda(fm, res.lev, ni)
+    Plsprobda(fm, res.lev, ni, par)
 end
 
 

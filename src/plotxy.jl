@@ -35,7 +35,7 @@ to be specified.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat

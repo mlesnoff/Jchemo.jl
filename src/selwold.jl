@@ -76,7 +76,7 @@ and Principal Components Models. Technometrics. 1978;20(4):397-405
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat

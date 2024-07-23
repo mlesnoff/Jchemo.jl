@@ -18,7 +18,7 @@ See function `occsd` for details on outputs.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/challenge2018.jld2") 
 @load db dat
@@ -61,8 +61,7 @@ plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class",
 
 #### Occ
 ## Preliminary dimension reduction 
-## (Not required but often more 
-## efficient)
+## (Not required but often more efficient)
 nlv = 50
 mod0 = model(pcasvd; nlv) ;
 fit!(mod0, zXtrain)
@@ -97,7 +96,7 @@ f
 ```
 """ 
 function occstah(X; kwargs...) 
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParOccstah, kwargs).par 
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
     p = nco(X)
     P = rand(0:1, p, par.nlv)
@@ -117,7 +116,7 @@ function occstah(X; kwargs...)
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
-    Occstah(d, res, P, e_cdf, cutoff)
+    Occstah(d, res, P, e_cdf, cutoff, par)
 end
 
 """

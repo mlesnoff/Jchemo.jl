@@ -11,6 +11,8 @@ Compute the prediction bias, i.e. the opposite of the mean prediction error.
 
 ## Examples
 ```julia
+using Jchemo
+
 Xtrain = rand(10, 5) 
 Ytrain = rand(10, 2)
 ytrain = Ytrain[:, 1]
@@ -42,6 +44,8 @@ Compute the squared linear correlation between data and predictions.
 
 ## Examples
 ```julia
+using Jchemo 
+
 Xtrain = rand(10, 5) 
 Ytrain = rand(10, 2)
 ytrain = Ytrain[:, 1]
@@ -76,6 +80,8 @@ Compute the mean of the squared prediction errors (MSEP).
 
 ## Examples
 ```julia
+using Jchemo 
+
 Xtrain = rand(10, 5) 
 Ytrain = rand(10, 2)
 ytrain = Ytrain[:, 1]
@@ -115,6 +121,8 @@ data and the predictions.
 
 ## Examples
 ```julia
+using Jchemo
+
 Xtrain = rand(10, 5) 
 Ytrain = rand(10, 2)
 ytrain = Ytrain[:, 1]
@@ -177,6 +185,8 @@ Compute the square root of the mean of the squared
 
 ## Examples
 ```julia
+using Jchemo 
+
 Xtrain = rand(10, 5) 
 Ytrain = rand(10, 2)
 ytrain = Ytrain[:, 1]
@@ -209,6 +219,8 @@ RMSEP is standardized to `Y`:
 
 ## Examples
 ```julia
+using Jchemo
+
 Xtrain = rand(10, 5) 
 Ytrain = rand(10, 2)
 ytrain = Ytrain[:, 1]
@@ -249,6 +261,8 @@ the simple average, this also gives:
 
 ## Examples
 ```julia
+using Jchemo
+
 Xtrain = rand(10, 5) 
 Ytrain = rand(10, 2)
 ytrain = Ytrain[:, 1]
@@ -280,6 +294,8 @@ Compute a robustified RPD.
 
 ## Examples
 ```julia
+using Jchemo
+
 Xtrain = rand(10, 5) 
 Ytrain = rand(10, 2)
 ytrain = Ytrain[:, 1]
@@ -325,6 +341,8 @@ https://doi.org/10.1016/j.trac.2010.05.006
 
 ## Examples
 ```julia
+using Jchemo
+
 Xtrain = rand(10, 5) 
 Ytrain = rand(10, 2)
 ytrain = Ytrain[:, 1]
@@ -353,6 +371,8 @@ Compute the sum of squared prediction errors (SSR).
 
 ## Examples
 ```julia
+using Jchemo
+
 Xtrain = rand(10, 5) 
 Ytrain = rand(10, 2)
 ytrain = Ytrain[:, 1]
@@ -384,6 +404,8 @@ Summary of model performance for regression.
 
 ## Examples
 ```julia
+using Jchemo
+
 Xtrain = rand(10, 5) 
 Ytrain = rand(10, 2)
 ytrain = Ytrain[:, 1]
@@ -435,6 +457,8 @@ Compute the discrimination residual vector (0 = no error, 1 = error).
 
 ## Examples
 ```julia
+using Jchemo
+
 Xtrain = rand(10, 5) 
 ytrain = rand(["a" ; "b"], 10)
 Xtest = rand(4, 5) 
@@ -456,6 +480,8 @@ Compute the classification error rate (ERRP).
 
 ## Examples
 ```julia
+using Jchemo
+
 Xtrain = rand(10, 5) 
 ytrain = rand(["a" ; "b"], 10)
 Xtest = rand(4, 5) 
@@ -484,6 +510,8 @@ Function `merrp` returns the average of these intra-class ERRPs.
 
 ## Examples
 ```julia
+using Jchemo
+
 Xtrain = rand(10, 5) 
 ytrain = rand(["a" ; "b"], 10)
 Xtest = rand(4, 5) 

@@ -64,7 +64,7 @@ https://doi.org/10.1016/j.chemolab.2005.06.011
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/caltransfer.jld2")
 @load db dat

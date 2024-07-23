@@ -10,7 +10,7 @@ and returns the residuals.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -33,8 +33,8 @@ plotsp(Xptest, wl).f
 ```
 """ 
 function detrend(X; kwargs...)
-    par = recovkwargs(Par, kwargs)
-    Detrend(kwargs, par)
+    par = recovkw(ParDetrend, kwargs).par
+    Detrend(par)
 end
 
 """ 
@@ -82,7 +82,7 @@ The method reduces the column-dimension:
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -105,8 +105,8 @@ plotsp(Xptest).f
 ```
 """ 
 function fdif(X; kwargs...)
-    par = recovkwargs(Par, kwargs)
-    Fdif(kwargs, par)
+    par = recovkw(ParFdif, kwargs).par
+    Fdif(par)
 end
 
 """ 
@@ -156,7 +156,7 @@ https://htmlpreview.github.io/?https://github.com/PumasAI/DataInterpolations.jl/
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -181,8 +181,8 @@ plotsp(Xptest).f
 ```
 """
 function interpl(X; kwargs...)
-    par = recovkwargs(Par, kwargs)
-    Interpl(kwargs, par)
+    par = recovkw(ParInterpl, kwargs).par
+    Interpl(par)
 end
 
 """ 
@@ -239,7 +239,7 @@ https://github.com/JuliaImages/ImageFiltering.jl
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -262,8 +262,8 @@ plotsp(Xptest).f
 ```
 """ 
 function mavg(X; kwargs...)
-    par = recovkwargs(Par, kwargs)
-    Mavg(kwargs, par)
+    par = recovkw(ParMavg, kwargs).par
+    Mavg(par)
 end
 
 """ 
@@ -317,6 +317,7 @@ https://doi.org/10.1016/j.sigpro.2005.02.002
 
 ## Examples
 ```julia
+using Jchemo
 res = savgk(21, 3, 2)
 pnames(res)
 res.S 
@@ -370,7 +371,7 @@ IEEE Signal Processing Magazine 28, 111–117. https://doi.org/10.1109/MSP.2011.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -410,8 +411,8 @@ f
 ```
 """ 
 function savgol(X; kwargs...)
-    par = recovkwargs(Par, kwargs)
-    Savgol(kwargs, par)
+    par = recovkw(ParSavgol, kwargs).par
+    Savgol(par)
 end
 
 """ 
@@ -460,7 +461,7 @@ Each row of `X` is divide by its norm.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -515,7 +516,7 @@ Keyword arguments:
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -529,8 +530,8 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(dat.X, wl; nsamp = 20).f
 
-centr = true ; scal = true
-mod = model(snv; centr, scal) 
+mod = model(snv) 
+#mod = model(snv; scal = false) 
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
@@ -539,8 +540,8 @@ plotsp(Xptest).f
 ```
 """ 
 function snv(X; kwargs...)
-    par = recovkwargs(Par, kwargs)
-    Snv(kwargs, par)
+    par = recovkw(ParSnv, kwargs).par
+    Snv(par)
 end
 
 """ 

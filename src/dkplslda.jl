@@ -26,7 +26,7 @@ PLSR (function `plskern`), is run on the Y-dummy table.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -50,7 +50,7 @@ gamma = .1
 mod = model(dkplslda; nlv, gamma) 
 #mod = model(dkplslda; nlv, gamma, prior = :prop) 
 #mod = model(dkplsqda; nlv, gamma, alpha = .5) 
-#mod = model(dkplskdeda; nlv, gamma, a_kde = .5) 
+#mod = model(dkplskdeda; nlv, gamma, a = .5) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -77,14 +77,14 @@ predict(mod, Xtest; nlv = 1:2).pred
 ```
 """ 
 function dkplslda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParKplsda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     dkplslda(X, y, weights; kwargs...)
 end
 
 function dkplslda(X, y, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParKplsda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
@@ -94,7 +94,7 @@ function dkplslda(X, y, weights::Weight; kwargs...)
         fmda[i] = lda(fmpls.T[:, 1:i], y, weights; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
-    Plslda(fm, res.lev, ni)
+    Plsprobda(fm, res.lev, ni, par)
 end
 
 

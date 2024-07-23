@@ -1,8 +1,8 @@
 """ 
-    treer_dt(X, y; kwargs...)
-Regression tree (CART) with DecisionTree.jl.
+    treeda(X, y; kwargs...)
+Discrimination tree (CART) with DecisionTree.jl.
 * `X` : X-data (n, p).
-* `y` : Univariate y-data (n).
+* `y` : Univariate class membership (n).
 Keyword arguments:
 * `n_subfeatures` : Nb. variables to select at random 
     at each split (default: 0 ==> keep all).
@@ -15,7 +15,7 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-The function fits a single regression tree (CART) using 
+The function fits a single discrimination tree (CART) using 
 package `DecisionTree.jl'.
 
 ## References
@@ -33,48 +33,58 @@ http://www.theses.fr/2002PA112245
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/cassav.jld2") 
+db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
 pnames(dat)
-X = dat.X 
-y = dat.Y.tbc
-year = dat.Y.year
-tab(year)
-s = year .<= 2012
-Xtrain = X[s, :]
-ytrain = y[s]
-Xtest = rmrow(X, s)
-ytest = rmrow(y, s)
-p = nco(X)
+X = dat.X
+Y = dat.Y
+n, p = size(X) 
+s = Bool.(Y.test)
+Xtrain = rmrow(X, s)
+ytrain = rmrow(Y.typ, s)
+Xtest = X[s, :]
+ytest = Y.typ[s]
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+(ntot = n, ntrain, ntest)
+tab(ytrain)
+tab(ytest)
 
 n_subfeatures = p / 3 
-max_depth = 15
-mod = model(treer_dt; n_subfeatures, max_depth) 
+max_depth = 10
+mod = model(treeda; n_subfeatures, max_depth) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
+fm = mod.fm ;
+fm.lev
+fm.ni
 
-res = predict(mod, Xtest)
+res = predict(mod, Xtest) ; 
+pnames(res) 
 @head res.pred
-@show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed").f    
+errp(res.pred, ytest)
+conf(res.pred, ytest).cnt
 ```
 """ 
-function treer_dt(X, y; kwargs...) 
-    par = recovkwargs(Par, kwargs)
+## For DA in DecisionTree.jl, 
+## y must be Int or String
+function treeda(X, y::Union{Array{Int}, Array{String}}; kwargs...) 
+    par = recovkw(ParTree, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)
     p = nco(X)
+    taby = tab(y)
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
         X = fscale(X, xscales)
     end
-    n_subfeatures = Int(round(par.n_subfeatures))
+    n_subfeatures = Int(
+        round(par.n_subfeatures))
     min_purity_increase = 0
     fm = build_tree(y, X,
         n_subfeatures,
@@ -86,16 +96,16 @@ function treer_dt(X, y; kwargs...)
         #rng = 3
         )
     featur = collect(1:p)
-    TreerDt(fm, xscales, featur, kwargs, par) 
+    Treeda(fm, xscales, featur, taby.keys, taby.vals, par)
 end
 
 """
-    predict(object::TreerDt, X)
+    predict(object::Treeda, X)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::TreerDt, X)
+function predict(object::Treeda, X)
     X = ensure_mat(X)
     m = nro(X)
     ## Tree
@@ -109,8 +119,4 @@ function predict(object::TreerDt, X)
     pred = reshape(pred, m, 1)
     (pred = pred,)
 end
-
-
-
-
 

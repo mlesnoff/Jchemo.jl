@@ -9,14 +9,14 @@ Sparse PLS-QDA (with continuum).
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
     Must be >= 1.
-* `msparse` : Method used for the sparse thresholding. 
+* `meth` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:mix`, 
     `:hard`. See thereafter.
-* `delta` : Only used if `msparse = :soft`. Range for the 
+* `delta` : Only used if `meth = :soft`. Range for the 
     thresholding on the loadings (after they are standardized 
     to their maximal absolute value). Must ∈ [0, 1].
     Higher is `delta`, stronger is the thresholding. 
-* `nvar` : Only used if `msparse = :mix` or `msparse = :hard`.
+* `nvar` : Only used if `meth = :mix` or `meth = :hard`.
     Nb. variables (`X`-columns) selected for each principal
     component (PC). Can be a single integer (i.e. same nb. 
     of variables for each PC), or a vector of length `nlv`.   
@@ -37,14 +37,14 @@ PLSR (function `plskern`), is run on the Y-dummy table.
 See function `splslda` for examples.
 """ 
 function splsqda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParSplsqda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     splsqda(X, y, weights; kwargs...)
 end
 
 function splsqda(X, y, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParSplsqda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
@@ -54,7 +54,7 @@ function splsqda(X, y, weights::Weight; kwargs...)
         fmda[i] = qda(vcol(fmpls.T, 1:i), y, weights; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
-    Plslda(fm, res.lev, ni)
+    Plsprobda(fm, res.lev, ni, par)
 end
 
 

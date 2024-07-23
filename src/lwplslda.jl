@@ -36,7 +36,7 @@ on the neighborhoods.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -71,12 +71,12 @@ res.listnn
 res.listd
 res.listw
 @head res.pred
-errp(res.pred, ytest)
+@show errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
 function lwplslda(X, y; kwargs...) 
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParLwplsda, kwargs).par 
     X = ensure_mat(X)
     y = ensure_mat(y)
     Q = eltype(X)
@@ -92,8 +92,7 @@ function lwplslda(X, y; kwargs...)
     if isnothing(fm) && par.scal
         xscales .= colstd(X)
     end
-    Lwplslda(X, y, fm, xscales, taby.keys, 
-        taby.vals, kwargs, par)
+    Lwplslda(X, y, fm, xscales, taby.keys, taby.vals, par)
 end
 
 """

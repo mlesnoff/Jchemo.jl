@@ -12,7 +12,7 @@ the weighted class centers.
 
 ## Examples
 ```julia
-using StatsBase
+using Jchemo, StatsBase
 
 n = 20 ; p = 3
 X = rand(n, p)

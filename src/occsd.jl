@@ -60,7 +60,7 @@ classification derived by projection methods. Journal of Chemometrics
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/challenge2018.jld2") 
 @load db dat
@@ -136,7 +136,7 @@ f
 ```
 """
 function occsd(fm; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParOcc, kwargs).par 
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
     T = fm.T
     Q = eltype(T)
@@ -150,7 +150,7 @@ function occsd(fm; kwargs...)
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val, gh = d2 / nlv)
-    Occsd(d, fm, tscales, e_cdf, cutoff)
+    Occsd(d, fm, tscales, e_cdf, cutoff, par)
 end
 
 """

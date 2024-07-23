@@ -9,14 +9,14 @@ Sparse partial least squares regression (Lê Cao et al. 2008)
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `msparse` : Method used for the sparse thresholding. 
+* `meth` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:mix`, 
     `:hard`. See thereafter.
-* `delta` : Only used if `msparse = :soft`. Range for the 
+* `delta` : Only used if `meth = :soft`. Range for the 
     thresholding on the loadings (after they are standardized 
     to their maximal absolute value). Must ∈ [0, 1].
     Higher is `delta`, stronger is the thresholding. 
-* `nvar` : Only used if `msparse = :mix` or `msparse = :hard`.
+* `nvar` : Only used if `meth = :mix` or `meth = :hard`.
     Nb. variables (`X`-columns) selected for each principal
     component (PC). Can be a single integer (i.e. same nb. 
     of variables for each PC), or a vector of length `nlv`.   
@@ -30,11 +30,11 @@ In the present version of `splskern`, the sparse correction
 only concerns `X`. The function provides three methods of 
 thresholding to compute the sparse `X`-loading weights w, 
 see function `spca` for description (same principles). The case 
-`msparse = :mix` returns the same results as function `spls` of 
+`meth = :mix` returns the same results as function `spls` of 
 the R package mixOmics with the regression mode (and without sparseness 
 on `Y`).
 
-The case `msparse = :hard` (or `msparse = :mix`) and `nvar = 1` correspond 
+The case `meth = :hard` (or `meth = :mix`) and `nvar = 1` correspond 
 to the COVSEL regression described in Roger et al 2011 (see also
 Höskuldsson 1992).
 
@@ -68,7 +68,7 @@ Chem. Lab. Int. Syst. 106, 216-223.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -84,9 +84,9 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-msparse = :mix ; nvar = 5
-#msparse = :hard ; nvar = 5
-mod = model(splskern; nlv, msparse, nvar) ;
+meth = :mix ; nvar = 5
+#meth = :hard ; nvar = 5
+mod = model(splskern; nlv, meth, nvar) ;
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -123,8 +123,8 @@ function splskern(X, Y, weights::Weight; kwargs...)
 end
 
 function splskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
-    @assert in([:hard ; :soft ; :mix])(par.msparse) "Wrong value for argument 'msparse'."
+    par = recovkw(ParSplsr, kwargs).par
+    @assert in([:hard ; :soft ; :mix])(par.meth) "Wrong value for argument 'meth'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
     Q = eltype(X)
     n, p = size(X)
@@ -170,17 +170,17 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         if q == 1
             w .= vcol(XtY, 1)
             absw .= abs.(w)
-            if par.msparse == :hard
+            if par.meth == :hard
                 sel = sortperm(absw; rev = true)[1:nvar[a]]
                 wmax = w[sel]
                 w .= zeros(Q, p)
                 w[sel] .= wmax
-            elseif par.msparse == :soft
+            elseif par.meth == :soft
                 absw_max = maximum(absw)
                 absw_stand .= absw / absw_max
                 theta .= max.(0, absw_stand .- par.delta) 
                 w .= sign.(w) .* theta * absw_max 
-            elseif par.msparse == :mix
+            elseif par.meth == :mix
                 nrm = p - nvar[a]
                 if nrm > 0
                     sel = sortperm(absw; rev = true)[1:nvar[a]]
@@ -194,14 +194,14 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
             ## End
             w ./= norm(w)
         else
-            if par.msparse == :soft
-                w .= snipals(XtY'; values(kwargs)...).v
+            if par.meth == :soft
+                w .= snipals(XtY'; kwargs...).v
             else
                 par.nvar = nvar[a]
-                if par.msparse == :mix
-                    w .= snipalsmix(XtY'; values(kwargs)...).v
+                if par.meth == :mix
+                    w .= snipalsmix(XtY'; kwargs...).v
                 else
-                    w .= snipalsh(XtY'; values(kwargs)...).v
+                    w .= snipalsh(XtY'; kwargs...).v
                 end
             end
         end                                  
@@ -228,7 +228,8 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
      end
      sel = unique(reduce(vcat, sellv))
      Splsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, 
-         sellv, sel, kwargs, par)
+         sellv, sel,  # add compared to ::Plsr
+         par)
 end
 
 

@@ -20,6 +20,7 @@ https://doi.org/10.1016/j.chemolab.2005.04.007
 
 ## Examples
 ```julia
+using Jchemo, CairoMakie
 n = 300 ; p = 700 ; m = 80
 ntot = n + m
 X1 = randn(n, p)
@@ -40,7 +41,7 @@ function outeucl(X; kwargs...)
 end
 
 function outeucl!(X::Matrix; kwargs...) 
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParOut, kwargs).par
     Q = eltype(X)
     p = nco(X)
     xscales = ones(Q, p)

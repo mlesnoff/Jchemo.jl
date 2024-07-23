@@ -19,7 +19,7 @@ to predict.
 
 ## Examples
 ```julia
-using DataFrames
+using Jchemo, DataFrames
 
 Y = hcat([rand(5); missing; rand(6)],
    [rand(2); missing; missing; rand(7); missing])

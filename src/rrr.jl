@@ -10,6 +10,8 @@ Reduced rank regression (RRR, *aka* RA).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `tau` : Regularization parameter (∊ [0, 1]).
+* `tol` : Tolerance for the Nipals algorithm.
+* `maxit` : Maximum number of iterations for the Nipals algorithm.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
  
@@ -45,7 +47,7 @@ https://doi.org/10.1016/j.chemolab.2021.104388
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -92,7 +94,7 @@ function rrr(X, Y, weights::Weight; kwargs...)
 end
 
 function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParRrr, kwargs).par
     @assert 0 <= par.tau <=1 "tau must be in [0, 1]"
     Q = eltype(X)
     n, p = size(X)
@@ -186,8 +188,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
      end
      Rx = Wx * inv(Px' * Wx)
      Tx .= (1 ./ sqrtw) .* Tx
-     Plsr(Tx, Px, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, 
-         niter, kwargs, par)
+     Plsr(Tx, Px, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, niter, par)
 end
 
 

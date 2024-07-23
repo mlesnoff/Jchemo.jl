@@ -36,6 +36,8 @@ Chimiométrie 2010 113, 26–31. https://doi.org/10.1016/j.chemolab.2011.06.003
 
 ## Examples
 ```julia
+using Jchemo
+
 n = 600 ; p = 2
 X = rand(n, p)
 dmin = .5

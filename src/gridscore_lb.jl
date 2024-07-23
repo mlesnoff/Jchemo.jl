@@ -9,8 +9,7 @@ must not contain `lb`.
 
 See function `gridscore` for examples.
 """
-function gridscore_lb(Xtrain, Ytrain, X, Y; fun, 
-        score, pars = nothing, lb, verbose = false)
+function gridscore_lb(Xtrain, Ytrain, X, Y; fun, score, pars = nothing, lb, verbose = false)
     q = nco(Ytrain)
     lb = mlev(lb)
     le_lb = length(lb)

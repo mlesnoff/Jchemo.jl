@@ -24,6 +24,7 @@ See functions:
 * and `occod` for examples.
 """ 
 function occsdod(fm, X; kwargs...) 
+    par = recovkw(ParOcc, kwargs).par 
     fmsd = occsd(fm; kwargs...)
     fmod = occod(fm, X; kwargs...)
     sd = fmsd.d
@@ -35,7 +36,7 @@ function occsdod(fm, X; kwargs...)
     rename!(od, nam)
     d = hcat(sd, od)
     d.dstand = z
-    Occsdod(d, fmsd, fmod)
+    Occsdod(d, fmsd, fmod, par)
 end
 
 """

@@ -6,7 +6,7 @@ Compute a Radial-Basis-Function (RBF) kernel Gram matrix.
 Keyword arguments:
 * `gamma` : Scale parameter.
 
-Given matrices `X` and `Y`of sizes (n, p) and (m, p), 
+Given matrices `X` and `Y` of sizes (n, p) and (m, p), 
 respectively, the function returns the (n, m) Gram matrix:
 * K(X, Y) = Phi(X) * Phi(Y)'.
 
@@ -20,13 +20,14 @@ computation and machine learning. MIT Press, Cambridge, Mass.
 
 ## Examples
 ```julia
+using Jchemo
 X = rand(5, 3)
 Y = rand(2, 3)
 krbf(X, Y; gamma = .1)
 ```
 """ 
 function krbf(X, Y; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParKern, kwargs).par 
     Q = eltype(X[1, 1])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -40,11 +41,11 @@ Compute a polynomial kernel Gram matrix.
 * `X` : X-data (n, p).
 * `Y` : Y-data (m, p).
 Keyword arguments:
-* `degree` : Degree of the polynom.
 * `gamma` : Scale of the polynom.
 * `coef0` : Offset of the polynom.
+* `degree` : Degree of the polynom.
 
-Given matrices `X` and `Y`of sizes (n, p) and (m, p), 
+Given matrices `X` and `Y` of sizes (n, p) and (m, p), 
 respectively, the function returns the (n, m) Gram matrix:
 *  K(X, Y) = Phi(X) * Phi(Y)'.
 
@@ -58,13 +59,14 @@ computation and machine learning. MIT Press, Cambridge, Mass.
 
 ## Examples
 ```julia
+using Jchemo
 X = rand(5, 3)
 Y = rand(2, 3)
-kpol(X, Y; degree = 3, gamma = .1, cost = 10)
+kpol(X, Y; gamma = .1, coef0 = 10, degree = 3)
 ```
 """ 
 function kpol(X, Y; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParKern, kwargs).par 
     Q = eltype(X[1, 1])
     X = ensure_mat(X)
     Y = ensure_mat(Y)

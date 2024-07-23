@@ -29,7 +29,7 @@ function pcaeigen(X, weights::Weight; kwargs...)
 end
 
 function pcaeigen!(X::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParPca, kwargs).par 
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
@@ -49,6 +49,6 @@ function pcaeigen!(X::Matrix, weights::Weight; kwargs...)
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
     T = Diagonal(1 ./ sqrtw) * X * P
-    Pca(T, P, sv, xmeans, xscales, weights, nothing, kwargs, par) 
+    Pca(T, P, sv, xmeans, xscales, weights, nothing, par) 
 end
 

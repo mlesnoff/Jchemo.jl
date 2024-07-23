@@ -35,7 +35,7 @@ statistical analysis in chemometrics. CRC Press, Boca Raton.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/challenge2018.jld2") 
 @load db dat
@@ -112,7 +112,7 @@ f
 ```
 """ 
 function occod(fm, X; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParOcc, kwargs).par 
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
     E = xresid(fm, X)
     d2 = vec(sum(E .* E, dims = 2))
@@ -122,7 +122,7 @@ function occod(fm, X; kwargs...)
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
-    Occod(d, fm, e_cdf, cutoff)
+    Occod(d, fm, e_cdf, cutoff, par)
 end
 
 """

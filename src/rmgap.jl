@@ -18,7 +18,7 @@ be `indexcol` = [651 ; 1425].
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/asdgap.jld2") 
 @load db dat
@@ -35,7 +35,7 @@ vlines!(ax, wl_target; linestyle = :dot, color = (:grey, .8))
 f
 
 ## Corrected data
-mod = model(rmgap; npoint = 5, indexcol)
+mod = model(rmgap; indexcol, npoint = 5)
 fit!(mod, X)
 Xc = transf(mod, X)
 f, ax = plotsp(Xc, wl)
@@ -44,8 +44,8 @@ f
 ```
 """ 
 function rmgap(X; kwargs...)
-    par = recovkwargs(Par, kwargs)
-    Rmgap(kwargs, par)
+    par = recovkw(Par, kwargs).par
+    Rmgap(par)
 end
 
 """ 

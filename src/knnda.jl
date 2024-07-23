@@ -4,10 +4,6 @@ k-Nearest-Neighbours weighted discrimination (KNN-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 Keyword arguments:
-* `nlvdis` : Number of latent variables (LVs) to consider 
-    in the global PLS used for the dimension reduction 
-    before computing the dissimilarities. 
-    If `nlvdis = 0`, there is no dimension reduction.
 * `metric` : Type of dissimilarity used to select the 
     neighbors and to compute the weights. Possible values 
     are: `:eucl` (Euclidean distance), `:mah` (Mahalanobis 
@@ -21,7 +17,7 @@ Keyword arguments:
     each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
 * `scal` : Boolean. If `true`, each column of `X` 
-    and `Y` is scaled by its uncorrected standard deviation
+    is scaled by its uncorrected standard deviation
     for the global dimension reduction.
 
 This function has the same principle as function 
@@ -31,7 +27,7 @@ and the prediction corresponds to the most frequent class.
  
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -50,9 +46,9 @@ ntest = nro(Xtest)
 tab(ytrain)
 tab(ytest)
 
-nlvdis = 25 ; metric = :mah
+metric = :eucl
 h = 2 ; k = 10
-mod = model(knnda; nlvdis, metric, h, k) 
+mod = model(knnda; metric, h, k) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -66,28 +62,31 @@ res.listnn
 res.listd
 res.listw
 @head res.pred
-errp(res.pred, ytest)
+@show errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
+
+## With dimension reduction
+mod1 = model(pcasvd; nlv = 15)
+metric = :mah ; h = 1 ; k = 3 
+mod2 = model(knnda; metric, h, k) 
+mod = pip(mod1, mod2)
+fit!(mod, Xtrain, ytrain)
+@head pred = predict(mod, Xtest).pred 
+errp(pred, ytest)
 ```
 """ 
 function knnda(X, y; kwargs...) 
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParKnn, kwargs).par
     X = ensure_mat(X)
     y = ensure_mat(y)
     Q = eltype(X)
     p = nco(X)
     taby = tab(y)    
-    if par.nlvdis == 0
-        fm = nothing
-    else
-        weights = mweightcla(vec(y); prior = par.prior)
-        fm = plskern(X, dummy(y).Y, weights; nlv = par.nlvdis, scal = par.scal)
-    end
     xscales = ones(Q, p)
     if par.scal && isnothing(fm)
         xscales .= colstd(X)
     end
-    Knnda(X, y, fm, xscales, taby.keys, taby.vals, kwargs, par) 
+    Knnda(X, y, xscales, taby.keys, taby.vals, par) 
 end
 
 """
@@ -106,16 +105,12 @@ function predict(object::Knnda, X)
     tolw = object.par.tolw
     criw = object.par.criw
     squared = object.par.squared
-    if isnothing(object.fm)
-        if object.par.scal
-            zX1 = fscale(object.X, object.xscales)
-            zX2 = fscale(X, object.xscales)
-            res = getknn(zX1, zX2; metric, k)
-        else
-            res = getknn(object.X, X; metric, k)
-        end
+    if object.par.scal
+        zX1 = fscale(object.X, object.xscales)
+        zX2 = fscale(X, object.xscales)
+        res = getknn(zX1, zX2; metric, k)
     else
-        res = getknn(object.fm.T, transf(object.fm, X); metric, k) 
+        res = getknn(object.X, X; metric, k)
     end
     listw = copy(res.d)
     Threads.@threads for i = 1:m

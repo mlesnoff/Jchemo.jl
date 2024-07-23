@@ -23,7 +23,7 @@ Journal of Chemometrics n/a, e3369. https://doi.org/10.1002/cem.3369
 
 ## Examples
 ```julia
-using JchemoData
+using Jchemo, JchemoData, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
@@ -51,7 +51,7 @@ f
 ```
 """ 
 function aicplsr(X, y; alpha = 2, kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParCglsr, kwargs).par
     Q = eltype(X[1, 1])
     X = ensure_mat(X)
     n, p = size(X)

@@ -25,7 +25,7 @@ The function gives the same results as function `fda`.
 See function `fda` for details and examples.
 """ 
 function fdasvd(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParFda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     fdasvd(X, y, weights; kwargs...)
@@ -34,7 +34,7 @@ end
 fdasvd(X, y, weights; kwargs...) = fda!(copy(ensure_mat(X)), y, weights; kwargs...)
 
 function fdasvd!(X::Matrix, y, weights; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     Q = eltype(X)
     n, p = size(X)
@@ -77,7 +77,7 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     T = X * P
     Tcenters = ct * P
     Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, 
-        lev, ni, kwargs, par)
+        lev, ni, par)
 end
 
 

@@ -52,7 +52,7 @@ https://www.ics.uci.edu/~welling/classnotes/papers_class/Kernel-Ridge.pdf
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -124,7 +124,7 @@ function krr(X, Y, weights::Weight; kwargs...)
 end
 
 function krr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParKrr, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     Q = eltype(X)
     p = nco(X)
@@ -134,7 +134,7 @@ function krr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         X = fscale(X, xscales)
     end
     ymeans = colmean(Y, weights)
-    fkern = eval(Meta.parse(string("Jchemo.", par.kern)))    
+    fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
     K = fkern(X, X; kwargs...)
     D = Diagonal(weights.w)    
     DKt = D * K'
@@ -149,8 +149,7 @@ function krr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     sv = sqrt.(res.S)
     # UtDY = U' * D^(1/2) * Y
     UtDY = U' * sqrtD * Y
-    Krr(X, K, U, UtDY, sv, D, sqrtD, DKt, vtot, xscales, ymeans, weights, 
-        kwargs, par)
+    Krr(X, K, U, UtDY, sv, D, sqrtD, DKt, vtot, xscales, ymeans, weights, kwargs, par) 
 end
 
 """

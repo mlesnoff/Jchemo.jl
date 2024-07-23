@@ -31,7 +31,7 @@ low-level version (argument `weights`).
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2")
 @load db dat
@@ -68,19 +68,20 @@ conf(res.pred, ytest).cnt
 ```
 """ 
 function mlrda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParMlrda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
-    mlrda(X, y, weights)
+    mlrda(X, y, weights; kwargs...)
 end
 
-function mlrda(X, y, weights::Weight)
+function mlrda(X, y, weights::Weight; kwargs...)
+    par = recovkw(ParMlrda, kwargs).par
     X = ensure_mat(X)
     y = ensure_mat(y)
     res = dummy(y)
     ni = tab(y).vals
     fm = mlr(X, res.Y, weights)
-    Mlrda(fm, res.lev, ni)
+    Mlrda(fm, res.lev, ni, par)
 end
 
 """

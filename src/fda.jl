@@ -42,7 +42,7 @@ use the low-level versions.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie 
+using Jchemo, JchemoData, JLD2, CairoMakie 
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat
@@ -95,7 +95,7 @@ f
 ```
 """ 
 function fda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(Par, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     fda(X, y, weights; kwargs...)
@@ -104,7 +104,7 @@ end
 fda(X, y, weights; kwargs...) = fda!(copy(ensure_mat(X)), y, weights; kwargs...)
 
 function fda!(X::Matrix, y, weights; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParFda, kwargs).par
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     Q = eltype(X)
     n, p = size(X)
@@ -138,7 +138,7 @@ function fda!(X::Matrix, y, weights; kwargs...)
     T = X * P
     Tcenters = zres.ct * P
     Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, 
-        lev, ni, kwargs, par)
+        lev, ni, par)
 end
 
 """

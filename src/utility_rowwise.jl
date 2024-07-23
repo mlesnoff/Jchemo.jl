@@ -7,6 +7,8 @@ Return a vector.
 
 ## Examples
 ```julia
+using Jchemo
+
 n, p = 5, 6
 X = rand(n, p)
 rowmean(X)
@@ -29,6 +31,8 @@ at https://discourse.julialang.org/t/orders-of-magnitude-runtime-difference-in-r
 
 ## Examples
 ```julia
+using Jchemo
+
 n, p = 5, 6
 X = rand(n, p)
 
@@ -46,6 +50,8 @@ Return a vector.
 
 ## Examples
 ```julia
+using Jchemo
+
 n, p = 5, 6
 X = rand(n, p)
 rowstd(X)
@@ -62,6 +68,8 @@ Return a vector.
 
 ## Examples
 ```julia
+using Jchemo
+ 
 X = rand(5, 2) 
 rowsum(X)
 ```
@@ -77,6 +85,8 @@ Return a vector.
 
 ## Examples
 ```julia
+using Jchemo
+
 n, p = 5, 6
 X = rand(n, p)
 rowvar(X)

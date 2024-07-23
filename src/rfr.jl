@@ -1,8 +1,8 @@
 """ 
-    rfda_dt(X, y; kwargs...)
-Random forest discrimination with DecisionTree.jl.
+    rfr(X, y; kwargs...)
+Random forest regression with DecisionTree.jl.
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate y-data (n).
 Keyword arguments:
 * `n_trees` : Nb. trees built for the forest. 
 * `partial_sampling` : Proportion of sampled 
@@ -19,10 +19,8 @@ Keyword arguments:
     done when new data are predicted with function `predict`.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
-* Do `dump(Par(), maxdepth = 1)` to print the default 
-    values of the keyword arguments. 
 
-The function fits a random forest discrimination² model using 
+The function fits a random forest regression model using 
 package `DecisionTree.jl'.
 
 ## References
@@ -46,59 +44,49 @@ http://www.theses.fr/2002PA112245
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/forages2.jld2")
+db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 pnames(dat)
-X = dat.X
-Y = dat.Y
-n, p = size(X) 
-s = Bool.(Y.test)
-Xtrain = rmrow(X, s)
-ytrain = rmrow(Y.typ, s)
-Xtest = X[s, :]
-ytest = Y.typ[s]
-ntrain = nro(Xtrain)
-ntest = nro(Xtest)
-(ntot = n, ntrain, ntest)
-tab(ytrain)
-tab(ytest)
+X = dat.X 
+y = dat.Y.tbc
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+p = nco(X)
 
 n_trees = 200
-n_subfeatures = p / 3 
-max_depth = 10
-mod = model(rfda_dt; n_trees, n_subfeatures, max_depth) 
+n_subfeatures = p / 3
+max_depth = 15
+mod = model(rfr; n_trees, n_subfeatures, max_depth) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
-fm = mod.fm ;
-fm.lev
-fm.ni
 
-res = predict(mod, Xtest) ; 
-pnames(res) 
+res = predict(mod, Xtest)
 @head res.pred
-errp(res.pred, ytest)
-conf(res.pred, ytest).cnt
+@show rmsep(res.pred, ytest)
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
 ```
 """ 
-function rfda_dt(X, y::Union{Array{Int}, Array{String}}; kwargs...)
-    ## For DA in DecisionTree.jl, 
-    ## y must be Int or String
-    par = recovkwargs(Par, kwargs)
+function rfr(X, y; kwargs...)
+    par = recovkw(ParRf, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)
     p = nco(X)
-    taby = tab(y)
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
         X = fscale(X, xscales)
     end
-    n_subfeatures = Int(
-        round(par.n_subfeatures))
+    n_subfeatures = Int(round(par.n_subfeatures))
     min_purity_increase = 0
     fm = build_forest(y, X, 
         n_subfeatures, 
@@ -112,5 +100,6 @@ function rfda_dt(X, y::Union{Array{Int}, Array{String}}; kwargs...)
         #rng = 3
         ) 
     featur = collect(1:p)
-    TreedaDt(fm, xscales, featur, taby.keys, taby.vals, kwargs, par)
+    Treer(fm, xscales, featur, par)
 end
+

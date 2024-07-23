@@ -7,6 +7,7 @@ Keyword arguments:
 
 ## Examples
 ```julia
+using Jchemo
 nlvdis = 25 ; metric = [:mah] 
 h = [1 ; 2 ; Inf] ; k = [500 ; 1000] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k) 

@@ -8,14 +8,14 @@ Sparse PLSR-DA.
     Must be of type `Weight` (see e.g. function `mweight`). 
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `msparse` : Method used for the sparse thresholding. 
+* `meth` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:mix`, 
     `:hard`. See thereafter.
-* `delta` : Only used if `msparse = :soft`. Range for the 
+* `delta` : Only used if `meth = :soft`. Range for the 
     thresholding on the loadings (after they are standardized 
     to their maximal absolute value). Must ∈ [0, 1].
     Higher is `delta`, stronger is the thresholding. 
-* `nvar` : Only used if `msparse = :mix` or `msparse = :hard`.
+* `nvar` : Only used if `meth = :mix` or `meth = :hard`.
     Nb. variables (`X`-columns) selected for each principal
     component (PC). Can be a single integer (i.e. same nb. 
     of variables for each PC), or a vector of length `nlv`.   
@@ -35,7 +35,7 @@ See function `plsrda` and `splskern` for details.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -55,8 +55,8 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-msparse = :mix ; nvar = 10
-mod = model(splsrda; nlv, msparse, nvar) 
+meth = :mix ; nvar = 10
+mod = model(splsrda; nlv, meth, nvar) 
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
@@ -83,17 +83,18 @@ summary(fm.fm, Xtrain)
 ```
 """ 
 function splsrda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParSplsda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     splsrda(X, y, weights; kwargs...)
 end
 
 function splsrda(X, y, weights::Weight; kwargs...)
+    par = recovkw(ParSplsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
     fm = splskern(X, res.Y, weights; kwargs...)
-    Plsrda(fm, res.lev, ni)
+    Plsrda(fm, res.lev, ni, par)
 end
 
 

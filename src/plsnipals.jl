@@ -40,7 +40,7 @@ function plsnipals(X, Y, weights::Weight; kwargs...)
 end
 
 function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParPlsr, kwargs).par
     Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
@@ -98,7 +98,6 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         TT[a] = tt
     end
     R = W * inv(P' * W)
-    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, 
-        nothing, kwargs, par)
+    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
 end
 

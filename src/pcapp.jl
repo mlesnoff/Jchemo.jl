@@ -37,7 +37,7 @@ Technometrics 47, 64-79. https://doi.org/10.1198/004017004000000563
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie 
+using Jchemo, JchemoData, JLD2, CairoMakie 
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "octane.jld2") 
 @load db dat
@@ -68,7 +68,7 @@ function pcapp(X; kwargs...)
 end
 
 function pcapp!(X::Matrix; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParPcapp, kwargs).par 
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
@@ -108,6 +108,6 @@ function pcapp!(X::Matrix; kwargs...)
     P .= P[:, s]
     sv .= sv[s]
     weights = mweight(ones(n))
-    Pca(T, P, sv, xmeans, xscales, weights, nothing, kwargs, par)
+    Pca(T, P, sv, xmeans, xscales, weights, nothing, par)
 end
 

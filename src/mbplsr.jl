@@ -22,7 +22,7 @@ same results as function `mbplswest`, but is much faster.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "ham.jld2") 
 @load db dat
@@ -83,7 +83,7 @@ function mbplsr(Xbl, Y, weights::Weight; kwargs...)
 end
 
 function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParMbplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     q = nco(Y)
     fmsc = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
@@ -98,7 +98,7 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(Y, ymeans)
     end
     fm = plskern(X, Y, weights; nlv = par.nlv, scal = false)
-    Mbplsr(fm, fm.T, fm.R, fm.C, fmsc, ymeans, yscales, weights, kwargs, par)
+    Mbplsr(fm, fm.T, fm.R, fm.C, fmsc, ymeans, yscales, weights, par)
 end
 
 """ 

@@ -25,7 +25,7 @@ This is the same principle as function `plsrda`, for multiblock X-data.
 
 ## Examples
 ```julia
-using JLD2, CairoMakie, JchemoData
+using Jchemo, JLD2, CairoMakie, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -72,17 +72,18 @@ predict(mod, Xbltest; nlv = 1:2).pred
 ```
 """
 function mbplsrda(Xbl, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParMbplsda, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     mbplsrda(Xbl, y, weights; kwargs...)
 end
 
 function mbplsrda(Xbl, y, weights::Weight; kwargs...)
+    par = recovkw(ParMbplsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
     fm = mbplsr(Xbl, res.Y, weights; kwargs...)
-    Mbplsrda(fm, res.lev, ni) 
+    Mbplsrda(fm, res.lev, ni, par) 
 end
 
 """ 

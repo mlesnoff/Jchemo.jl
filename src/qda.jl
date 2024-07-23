@@ -36,7 +36,7 @@ of the American Statistical Association. 1989;
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2")
 @load db dat
@@ -82,7 +82,7 @@ errp(res.pred, ytest)
 ```
 """ 
 function qda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParQda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     qda(X, y, weights; kwargs...)
@@ -90,7 +90,7 @@ end
 
 function qda(X, y, weights::Weight; kwargs...)  
     # Scaling X has no effect
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParQda, kwargs).par
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     X = ensure_mat(X)
     y = vec(y)    # for findall
@@ -121,29 +121,8 @@ function qda(X, y, weights::Weight; kwargs...)
         end
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
     end
-    Qda(fm, res.Wi, ct, priors, ni, lev, weights)
+    Qda(fm, res.Wi, ct, priors, ni, lev, weights, par)
 end
 
-"""
-    predict(object::Qda, X)
-Compute y-predictions from a fitted model.
-* `object` : The fitted model.
-* `X` : X-data for which predictions are computed.
-""" 
-function predict(object::Qda, X)
-    X = ensure_mat(X)
-    m = nro(X)
-    lev = object.lev
-    nlev = length(lev) 
-    dens = similar(X, m, nlev)
-    @inbounds for i in eachindex(lev)
-        dens[:, i] .= vec(Jchemo.predict(object.fm[i], X).pred)
-    end
-    A = object.priors' .* dens
-    v = sum(A, dims = 2)
-    posterior = fscale(A', v)'  # Could be replaced by similar as in fscale! 
-    z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
-    pred = reshape(replacebylev2(z, lev), m, 1)
-    (pred = pred, dens, posterior)
-end
+
     

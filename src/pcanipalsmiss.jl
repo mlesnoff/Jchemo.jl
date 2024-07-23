@@ -71,7 +71,7 @@ function pcanipalsmiss(X, weights::Weight; kwargs...)
 end
 
 function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParPca, kwargs).par 
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
@@ -113,6 +113,6 @@ function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
             VVt .+= res.v * res.v'
         end
     end
-    Pca(T, P, sv, xmeans, xscales, weights, niter, kwargs, par) 
+    Pca(T, P, sv, xmeans, xscales, weights, niter, par) 
 end
 

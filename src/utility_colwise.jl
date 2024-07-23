@@ -7,6 +7,8 @@ Return a vector.
 
 ## Examples
 ```julia
+using Jchemo
+
 n, p = 5, 6
 X = rand(n, p)
 
@@ -27,6 +29,8 @@ Return a vector.
 
 ## Examples
 ```julia
+using Jchemo
+
 n, p = 5, 6
 X = rand(n, p)
 w = mweight(rand(n))
@@ -48,6 +52,8 @@ Return a vector.
 
 ## Examples
 ```julia
+using Jchemo
+
 n, p = 5, 6
 X = rand(n, p)
 
@@ -74,6 +80,8 @@ Return a vector.
 
 ## Examples
 ```julia
+using Jchemo
+
 n, p = 5, 6
 X = rand(n, p)
 w = mweight(rand(n))
@@ -98,6 +106,8 @@ Return a vector.
 
 ## Examples
 ```julia
+using Jchemo
+
 n, p = 5, 6
 X = rand(n, p)
 w = mweight(rand(n))
@@ -122,6 +132,8 @@ Return a vector.
 
 ## Examples
 ```julia
+using Jchemo
+
 n, p = 5, 6
 X = rand(n, p)
 w = mweight(rand(n))
@@ -146,6 +158,8 @@ Return a vector.
 
 ## Examples
 ```julia
+using Jchemo
+
 n, p = 5, 6
 X = rand(n, p)
 w = mweight(rand(n))

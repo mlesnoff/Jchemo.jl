@@ -58,7 +58,7 @@ https://doi.org/10.1016/j.chemolab.2023.105031.
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -76,11 +76,11 @@ ytest = rmrow(y, s)
 nlvdis = 5 ; metric = :mah 
 h = 1 ; k = 200 ; nlv = 4:20
 mod = model(lwplsravg; nlvdis, metric, h, k, nlv) ;
-fit!(mod, Ttrain, ytrain)
+fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
 
-res = predict(mod, Ttest) ; 
+res = predict(mod, Xtest) ; 
 pnames(res) 
 res.listnn
 res.listd
@@ -92,7 +92,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true,
 ```
 """ 
 function lwplsravg(X, Y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParLwplsr, kwargs).par
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     Q = eltype(X)
@@ -106,16 +106,16 @@ function lwplsravg(X, Y; kwargs...)
     if isnothing(fm) && par.scal
         xscales .= colstd(X)
     end
-    LwplsrAvg(X, Y, fm, xscales, kwargs, par)
+    Lwplsravg(X, Y, fm, xscales, par)
 end
 
 """
-    predict(object::LwplsrAvg, X)
+    predict(object::Lwplsravg, X)
 Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::LwplsrAvg, X) 
+function predict(object::Lwplsravg, X) 
     X = ensure_mat(X)
     m = nro(X)
     ## Getknn

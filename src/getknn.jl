@@ -19,6 +19,7 @@ Both distances are bounded within 0 (y = x) and 1 (y = -x).
 
 ## Examples
 ```julia
+using Jchemo
 Xtrain = rand(5, 3)
 X = rand(2, 3)
 x = X[1:1, :]

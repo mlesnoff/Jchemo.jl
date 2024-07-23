@@ -30,7 +30,7 @@ https://doi.org/10.1002/cem.2824
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "ham.jld2") 
 @load db dat
@@ -84,7 +84,7 @@ function rosaplsr(Xbl, Y, weights::Weight; kwargs...)
 end
 
 function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParSoplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])   
     n = nro(Xbl[1])
     q = nco(Y)
@@ -195,7 +195,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         W[:, a] .= reduce(vcat, z .* wbl)
     end
     R = W * inv(P' * W)
-    Rosaplsr(T, P, R, W, C, TT, fmsc, ymeans, yscales, weights, bl, kwargs, par)
+    Rosaplsr(T, P, R, W, C, TT, fmsc, ymeans, yscales, weights, bl, par)
 end
 
 """ 

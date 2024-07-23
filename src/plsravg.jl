@@ -33,7 +33,7 @@ https://doi.org/10.3390/app12157850
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2") 
 @load db dat
@@ -78,10 +78,10 @@ function plsravg(X, Y, weights::Weight; kwargs...)
 end
 
 function plsravg!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParPlsr, kwargs).par
     fun = plsravg_unif!
     fm = fun(X, Y, weights; kwargs...)
-    Plsravg(fm, kwargs, par)
+    Plsravg(fm, par) 
 end
 
 """

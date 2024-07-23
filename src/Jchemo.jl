@@ -14,6 +14,7 @@ using Random
 using SparseArrays 
 using Statistics
 using StatsBase           # countmap, ecdf, sample etc.
+using UMAP
 
 ## The order below is required
 include("_structures_param.jl")
@@ -31,7 +32,6 @@ include("utility.jl")
 include("utility_colwise.jl")
 include("utility_rowwise.jl")
 include("utility_scale.jl")
-include("utility_mb.jl")
 include("angles.jl")
 include("colmedspa.jl")
 include("fweight.jl") 
@@ -48,7 +48,6 @@ include("snipalsmix.jl")
 
 include("preprocessing.jl") 
 include("scale.jl") 
-include("blockscal.jl") 
 include("rmgap.jl")
 
 ######---- Graphics
@@ -79,12 +78,13 @@ include("pcaout.jl")
 include("kpca.jl")
 include("rpmat.jl")
 include("rp.jl")
+include("umap.jl")
 
 ## Sparse
 include("spca.jl")
 
 ## Multiblock 
-include("mbconcat.jl")
+include("mbutil.jl")
 include("cca.jl")
 include("ccawold.jl")
 include("plscan.jl")
@@ -113,6 +113,7 @@ include("plsravg_unif.jl")
 include("krr.jl")
 include("kplsr.jl")
 include("dkplsr.jl")
+
 include("dfplsr_cg.jl")
 include("aicplsr.jl")
 include("vip.jl") 
@@ -160,8 +161,8 @@ include("viperm.jl")
 
 ## Svm, Trees
 include("svmr.jl")
-include("treer_dt.jl")
-include("rfr_dt.jl")
+include("treer.jl")
+include("rfr.jl")
 
 ######---- Discrimination 
 
@@ -214,8 +215,8 @@ include("knnda.jl")
 
 ## Svm, Trees
 include("svmda.jl")
-include("treeda_dt.jl")
-include("rfda_dt.jl")
+include("treeda.jl")
+include("rfda.jl")
 
 ######---- Calibration transfer
 
@@ -243,6 +244,7 @@ export
     model,
     modelx, modelxy, 
     Par,
+    ParPlsr,
     fit!,
     transf!,
     pip,
@@ -279,7 +281,7 @@ export
     pmod, pnames, psize,
     pval,
     recodcat2int, recodnum2int, 
-    recovkwargs,
+    recovkw,
     replacebylev, replacebylev2, 
     replacedict, 
     rmcol, rmrow, 
@@ -327,6 +329,7 @@ export
     spca, spca!,
     kpca,
     rpmatgauss, rpmatli, rp, rp!,
+    umap,
     ## Multiblock
     rv, lg, rd, 
     mbconcat,
@@ -357,7 +360,7 @@ export
     plsravg, plsravg!,
     dfplsr_cg, aicplsr,
     svmr,
-    treer_dt, rfr_dt, 
+    treer, rfr, 
     ## Sparse 
     splskern, splskern!, 
     ## Multi-block
@@ -389,7 +392,7 @@ export
     dkplsrda,
     dkplslda, dkplsqda, dkplskdeda, 
     svmda, 
-    treeda_dt, rfda_dt,
+    treeda, rfda,
     outstah, outeucl,
     occstah,
     occsd, occod, occsdod,

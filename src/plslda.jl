@@ -15,7 +15,7 @@ Keyword arguments:
     the number of classes) giving the prior weight for each class 
     (the vector must be sorted in the same order as `mlev(y)`).
 * `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+    and Y_dummy is scaled by its uncorrected standard deviation.
 
 LDA on PLS latent variables. The training variable `y` 
 (univariate class membership) is transformed to a dummy table 
@@ -37,7 +37,7 @@ version.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -87,14 +87,14 @@ summary(fmpls, Xtrain)
 ```
 """ 
 function plslda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParPlsda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     plslda(X, y, weights; kwargs...)
 end
 
 function plslda(X, y, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParPlsda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
@@ -104,29 +104,29 @@ function plslda(X, y, weights::Weight; kwargs...)
         fmda[i] = lda(fmpls.T[:, 1:i], y, weights; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
-    Plslda(fm, res.lev, ni)
+    Plsprobda(fm, res.lev, ni, par)
 end
 
 """ 
-    transf(object::Plslda, X; nlv = nothing)
+    transf(object::Plsprobda, X; nlv = nothing)
 Compute latent variables (LVs = scores T) from 
     a fitted model.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Plslda, X; nlv = nothing)
+function transf(object::Plsprobda, X; nlv = nothing)
     transf(object.fm.fmpls, X; nlv)
 end
 
 """
-    predict(object::Plslda, X; nlv = nothing)
+    predict(object::Plsprobda, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Plslda, X; nlv = nothing)
+function predict(object::Plsprobda, X; nlv = nothing)
     X = ensure_mat(X)
     Q = eltype(X)
     Qy = eltype(object.lev)

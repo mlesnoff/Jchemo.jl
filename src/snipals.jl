@@ -1,5 +1,5 @@
 function snipals(X; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParSnipals, kwargs).par 
     X = ensure_mat(X)
     n, p = size(X)
     res = nipals(X; kwargs...)

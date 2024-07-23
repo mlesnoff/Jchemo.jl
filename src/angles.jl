@@ -24,6 +24,7 @@ et Multiples : Objectifs, Méthodes et Interprétation. Dunod,
 
 ## Examples 
 ```julia 
+using Jchemo
 X = rand(5, 10)
 Y = rand(5, 3)
 lg(X, Y)
@@ -84,6 +85,7 @@ Editions Technip, Paris.
 
 ## Examples 
 ```julia 
+using Jchemo
 X = rand(5, 10)
 Y = rand(5, 3)
 rd(X, Y)
@@ -157,6 +159,7 @@ Series C (Applied Statistics) 25, 257–265. https://doi.org/10.2307/2347233
 
 ## Examples 
 ```julia 
+using Jchemo
 X = rand(5, 10)
 Y = rand(5, 3)
 rv(X, Y)

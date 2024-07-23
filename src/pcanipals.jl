@@ -60,7 +60,7 @@ function pcanipals(X, weights::Weight; kwargs...)
 end
 
 function pcanipals!(X::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParPcanipals, kwargs).par
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
@@ -102,6 +102,6 @@ function pcanipals!(X::Matrix, weights::Weight; kwargs...)
     end    
     ## Could recompute the scores by
     ## X0 = copy(X) ; ... ; T = (1 ./ sqrtw) .* X0 * P 
-    Pca(T, P, sv, xmeans, xscales, weights, niter, kwargs, par) 
+    Pca(T, P, sv, xmeans, xscales, weights, niter, par) 
 end
 

@@ -40,7 +40,7 @@ University of Washington, Seattle, Washington, USA.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/linnerud.jld2") 
 @load db dat
@@ -52,7 +52,7 @@ fm = plstuck(X, Y; nlv = 3)
 pnames(fm)
 
 fm.Tx
-transf(fm, X, Y).Tx
+transf(mod, X, Y).Tx
 fscale(fm.Tx, colnorm(fm.Tx))
 
 res = summary(fm, X, Y)
@@ -71,7 +71,7 @@ function plstuck(X, Y, weights::Weight; kwargs...)
 end
 
 function plstuck!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParPls2bl, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(X)
     p = nco(X)
@@ -109,7 +109,7 @@ function plstuck!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     TTx = colsum(D * Tx .* Tx)
     TTy = colsum(D * Ty .* Ty)
     Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
-        ymeans, yscales, weights, kwargs, par)
+        ymeans, yscales, weights, par)
 end
 
 """ 

@@ -53,7 +53,7 @@ https://cran.r-project.org/web/packages/RGCCA/index.html
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "linnerud.jld2") 
 @load db dat
@@ -98,7 +98,7 @@ function rasvd(X, Y, weights::Weight; kwargs...)
 end
 
 function rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParRasvd, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
     Q = eltype(X)
@@ -158,7 +158,7 @@ function rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     Tx .= (1 ./ sqrtw) .* Tx
     Ty .= (1 ./ sqrtw) .* Ty   
     Rasvd(Tx, Ty, Bx, Wy, lambda, bscales, xmeans, xscales, ymeans, yscales, 
-        weights, kwargs, par)
+        weights, par)
 end
 
 """ 

@@ -15,6 +15,8 @@ Output `test` is built by random sampling within `1:n`.
 
 ## Examples
 ```julia
+using Jchemo
+
 n = 10
 samprand(n, 4)
 ```

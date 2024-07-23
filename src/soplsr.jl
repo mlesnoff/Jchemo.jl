@@ -27,7 +27,7 @@ for path modelling. Food Quality and Preference, 36, 122-134.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "ham.jld2") 
 @load db dat
@@ -83,7 +83,7 @@ function soplsr(Xbl, Y, weights::Weight; kwargs...)
 end
 
 function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParSoplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     Y = ensure_mat(Y)
     n = size(Xbl[1], 1)
@@ -120,7 +120,7 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
             fit .+= predict(fm[i], X).pred 
         end
     end
-    Soplsr(fm, T, fit, b, fmsc, yscales, kwargs, par)
+    Soplsr(fm, T, fit, b, fmsc, yscales, par)
 end
 
 """ 

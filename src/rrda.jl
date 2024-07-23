@@ -34,7 +34,7 @@ low-level version (argument `weights`).
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -61,6 +61,8 @@ pnames(mod.fm)
 fm = mod.fm ;
 fm.lev
 fm.ni
+pnames(fm.fm)
+aggsum(fm.fm.weights.w, ytrain)
 
 coef(fm.fm)
 
@@ -75,18 +77,18 @@ predict(mod, Xtest; lb = [.1; .01]).pred
 ```
 """ 
 function rrda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParRrda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     rrda(X, y, weights; kwargs...)
 end
 
 function rrda(X, y, weights::Weight; kwargs...)    
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParRrda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals 
     fm = rr(X, res.Y, weights; kwargs...)
-    Rrda(fm, res.lev, ni, kwargs, par)
+    Rrda(fm, res.lev, ni, par)
 end
 
 """

@@ -17,7 +17,7 @@ Keyword arguments:
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum
     between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+    and Y_dummy is scaled by its uncorrected standard deviation.
 
 QDA on PLS latent variables. The training variable `y` 
 (univariate class membership) is transformed to a dummy table 
@@ -31,14 +31,14 @@ See functions `qda` and `plslda` for details (arguments `weights`, `prior`
 and `alpha`) and examples.
 """ 
 function plsqda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParPlsqda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     plsqda(X, y, weights; kwargs...)
 end
 
 function plsqda(X, y, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParPlsqda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
@@ -48,7 +48,7 @@ function plsqda(X, y, weights::Weight; kwargs...)
         fmda[i] = qda(vcol(fmpls.T, 1:i), y, weights; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
-    Plslda(fm, res.lev, ni)
+    Plsprobda(fm, res.lev, ni, par)
 end
 
 

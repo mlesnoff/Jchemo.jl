@@ -1,6 +1,22 @@
 # New
 
-## *Version 0.4.4*
+## *Version 0.5.0*
+
+- News
+    - **umap**: UMAP: Uniform manifold approximation and projection for 
+    dimension reduction (uses package **UMAP.jl** added as dependence).
+    - The management of the function arguments has been deeply modified. 
+    The unique container 'Par' has been removed, and replaced by independent 
+    containers between functions or groups of functions (eg. 'ParPca').
+
+- Breaking
+    - Argument 'nlvdis' removed from **knnr** and **knnda** (there is no possible dimension 
+        reduction anymore). 
+    - **treer_dt**, **treeda_dt**, **rfr_dt**, **rfda_dt**: renamed to **treer**, **treeda**,
+        **rfr**, **rfda**.   
+    - **rp** : argument 'mrp' renamed to 'meth'.
+    - **rpmatli**: argument 's_li' renamed to 's'.
+    - **spca**, **splskern** : argument 'msparse' renamed to 'meth'.
 
 - Modifications
     - Code cleaning.

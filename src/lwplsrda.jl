@@ -22,6 +22,9 @@ Keyword arguments:
 * `tolw` : For stabilization when very close neighbors.
 * `nlv` : Nb. latent variables (LVs) for the local (i.e. 
     inside each neighborhood) models.
+* `prior` : Type of prior probabilities for class 
+    membership. Possible values are: `:unif` (uniform), 
+    `:prop` (proportional).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation
     for the global dimension reduction and the local
@@ -33,7 +36,7 @@ on the neighborhoods.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -68,12 +71,12 @@ res.listnn
 res.listd
 res.listw
 @head res.pred
-errp(res.pred, ytest)
+@show errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
 function lwplsrda(X, y; kwargs...) 
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParLwplsda, kwargs).par 
     X = ensure_mat(X)
     y = ensure_mat(y)
     Q = eltype(X)
@@ -89,7 +92,7 @@ function lwplsrda(X, y; kwargs...)
     if isnothing(fm) && par.scal
         xscales .= colstd(X)
     end
-    Lwplsrda(X, y, fm, xscales, taby.keys, taby.vals, kwargs, par)
+    Lwplsrda(X, y, fm, xscales, taby.keys, taby.vals, par)
 end
 
 """

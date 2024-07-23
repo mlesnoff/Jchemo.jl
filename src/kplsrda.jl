@@ -26,7 +26,7 @@ PLSR (function `plskern`), is run on the Y-dummy table.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -74,16 +74,17 @@ predict(mod, Xtest; nlv = 1:2).pred
 ```
 """ 
 function kplsrda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParKplsda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     kplsrda(X, y, weights; kwargs...)
 end
 
 function kplsrda(X, y, weights::Weight; kwargs...)
+    par = recovkw(ParKplsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
     fm = kplsr(X, res.Y, weights; kwargs...)
-    Plsrda(fm, res.lev, ni)
+    Plsrda(fm, res.lev, ni, par)
 end
 

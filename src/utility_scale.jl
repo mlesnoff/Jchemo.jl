@@ -7,6 +7,8 @@ Center each column of `X`.
 
 ## examples
 ```julia
+using Jchemo
+
 n, p = 5, 6
 X = rand(n, p)
 xmeans = colmean(X)
@@ -26,6 +28,8 @@ Scale each column of `X`.
 
 ## Examples
 ```julia
+using Jchemo
+
 X = rand(5, 2) 
 fscale(X, colstd(X))
 ```
@@ -44,6 +48,8 @@ Center and fscale each column of `X`.
 
 ## examples
 ```julia
+using Jchemo
+
 n, p = 5, 6
 X = rand(n, p)
 xmeans = colmean(X)

@@ -14,7 +14,7 @@ Keyword arguments:
     the number of classes) giving the prior weight for each class 
     (the vector must be sorted in the same order as `mlev(y)`).
 * `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+    and Y_dummy is scaled by its uncorrected standard deviation.
 
 This is the usual "PLSDA" (prediction of the Y-dummy table 
 by a PLS2 regression). The training variable `y` 
@@ -36,7 +36,7 @@ low-level version (argument `weights`).
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -63,7 +63,8 @@ pnames(mod.fm)
 fm = mod.fm ;
 fm.lev
 fm.ni
-aggsum(fm.weights.w, ytrain)
+pnames(fm.fm)
+aggsum(fm.fm.weights.w, ytrain)
 
 @head fm.fm.T
 @head transf(mod, Xtrain)
@@ -84,17 +85,18 @@ summary(fm.fm, Xtrain)
 ```
 """
 function plsrda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParPlsda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     plsrda(X, y, weights; kwargs...)
 end
 
 function plsrda(X, y, weights::Weight; kwargs...)
+    par = recovkw(ParPlsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
     fm = plskern(X, res.Y, weights; kwargs...)
-    Plsrda(fm, res.lev, ni)
+    Plsrda(fm, res.lev, ni, par)
 end
 
 """ 

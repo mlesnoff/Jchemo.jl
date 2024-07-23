@@ -45,7 +45,7 @@ regularized QDA (`alpha > 0`).
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -80,12 +80,12 @@ res.listnn
 res.listd
 res.listw
 @head res.pred
-errp(res.pred, ytest)
+@show errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
 function lwplsqda(X, y; kwargs...) 
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParLwplsqda, kwargs).par 
     X = ensure_mat(X)
     y = ensure_mat(y)
     Q = eltype(X)
@@ -101,7 +101,7 @@ function lwplsqda(X, y; kwargs...)
     if isnothing(fm) && par.scal
         xscales .= colstd(X)
     end
-    Lwplsqda(X, y, fm, xscales, taby.keys, taby.vals, kwargs, par)
+    Lwplsqda(X, y, fm, xscales, taby.keys, taby.vals, par)
 end
 
 """

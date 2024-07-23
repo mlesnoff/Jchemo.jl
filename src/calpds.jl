@@ -33,7 +33,7 @@ https://doi.org/10.1021/ac9906835
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/caltransfer.jld2")
 @load db dat
@@ -70,9 +70,7 @@ axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-function calpds(X1, X2; kwargs...)
-    par = recovkwargs(Par, kwargs) 
-    npoint = par.npoint
+function calpds(X1, X2; npoint = 5, fun = plskern, kwargs...)
     @assert npoint >= 1 "Argument 'npoint' must be >= 1."
     p = nco(X1)
     fm = list(p)
@@ -82,18 +80,18 @@ function calpds(X1, X2; kwargs...)
     npo[(p - npoint + 1):p] .= collect(npoint:-1:1) .- 1
     @inbounds for i = 1:p
         s[i] = collect((i - npo[i]):(i + npo[i]))
-        fm[i] = par.fun(vcol(X1, s[i]), vcol(X2, i); kwargs...)
+        fm[i] = fun(vcol(X1, s[i]), vcol(X2, i); kwargs...)
     end
-    CalPds(fm, s)
+    Calpds(fm, s)
 end
 
 """
-    predict(object::CalPds, X; kwargs...)
+    predict(object::Calpds, X; kwargs...)
 Compute predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::CalPds, X)
+function predict(object::Calpds, X)
     X = ensure_mat(X)
     m, p = size(X)
     pred = similar(X, m, p)

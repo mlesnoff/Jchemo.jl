@@ -57,7 +57,7 @@ Discriminant Analysis. The Annals of Statistics 23, 73–102.
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2")
 @load db dat
@@ -96,14 +96,14 @@ conf(res.pred, ytest).cnt
 ```
 """ 
 function rda(X, y; kwargs...)
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParRda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     rda(X, y, weights; kwargs...)
 end
 
 function rda(X, y, weights::Weight; kwargs...)  
-    par = recovkwargs(Par, kwargs)
+    par = recovkw(ParRda, kwargs).par
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     @assert par.lb >= 0 "lb must be in >= 0"
     X = ensure_mat(X)
@@ -138,7 +138,7 @@ function rda(X, y, weights::Weight; kwargs...)
         @. res.Wi[i] = res.Wi[i] + A
         fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i], simpl = par.simpl) 
     end
-    Rda(fm, res.Wi, ct, priors, ni, lev, xscales, weights)
+    Rda(fm, res.Wi, ct, priors, ni, lev, xscales, weights, par)
 end
 
 """
@@ -155,7 +155,7 @@ function predict(object::Rda, X)
     nlev = length(lev) 
     dens = similar(X, m, nlev)
     @inbounds for i in eachindex(lev)
-        dens[:, i] .= vec(Jchemo.predict(object.fm[i], X).pred)
+        dens[:, i] .= vec(predict(object.fm[i], X).pred)
     end
     A = object.priors' .* dens
     v = sum(A, dims = 2)

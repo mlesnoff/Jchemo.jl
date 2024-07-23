@@ -38,7 +38,7 @@ SIAM Journal on Scientific and Statistical Computing 5,
 
 ## Examples
 ```julia
-using JchemoData, JLD2
+using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "linnerud.jld2") 
 @load db dat
@@ -84,7 +84,7 @@ function plscan(X, Y, weights::Weight; kwargs...)
 end
 
 function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkwargs(Par, kwargs) 
+    par = recovkw(ParPls2bl, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(X)
     n, p = size(X)
@@ -170,7 +170,7 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
      Rx = Wx * inv(Px' * Wx)
      Ry = Wy * inv(Py' * Wy)
      Plscan(Tx, Ty, Px, Py, Rx, Ry, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
-         ymeans, yscales, weights, kwargs, par)
+         ymeans, yscales, weights, par)
 end
 
 """ 
