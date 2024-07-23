@@ -80,12 +80,12 @@ res.listnn
 res.listd
 res.listw
 @head res.pred
-errp(res.pred, ytest)
+@show errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
 function lwplsqda(X, y; kwargs...) 
-    par = recovkw(Par, kwargs).par 
+    par = recovkw(ParLwplsqda, kwargs).par 
     X = ensure_mat(X)
     y = ensure_mat(y)
     Q = eltype(X)

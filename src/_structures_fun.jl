@@ -644,17 +644,17 @@ struct Lwplsrda
     xscales::Vector
     lev::Vector
     ni::Vector{Int}
-    par::Par
+    par::ParLwplsda
 end
 
-struct Lwplslda
+struct Lwplslda   
     X::Matrix
     y::AbstractMatrix
     fm
     xscales::Vector
     lev::Vector
     ni::Vector{Int}
-    par::Par
+    par::ParLwplsda
 end
 
 struct Lwplsqda
@@ -664,7 +664,7 @@ struct Lwplsqda
     xscales::Vector
     lev::Vector
     ni::Vector{Int}
-    par::Par
+    par::ParLwplsqda
 end
 
 ## Svm, Trees

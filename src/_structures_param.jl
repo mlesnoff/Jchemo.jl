@@ -169,7 +169,7 @@ Base.@kwdef mutable struct ParMlr
     noint::Bool = false                      
 end 
 
-Base.@kwdef mutable struct ParPlsr
+Base.@kwdef mutable struct ParPlsr    # plskern, ..., plsravg
     nlv::Union{Int, Vector{Int}, UnitRange} = 1     
     tol::Float64 = sqrt(eps(1.))            # plswold
     maxit::Int = 200                        # plswold                 
@@ -248,7 +248,7 @@ Base.@kwdef mutable struct ParKnn    # knnr, lwmlr, knnda, lwmlrda
     verbose::Bool = false                   
 end 
 
-Base.@kwdef mutable struct ParLwplsr
+Base.@kwdef mutable struct ParLwplsr    # lwplsr, lwplsravg
     nlvdis::Int = 0                         
     metric::Symbol = :eucl                  
     h::Float64 = Inf                        
@@ -303,7 +303,7 @@ Base.@kwdef mutable struct ParMbplsr
 end 
 
 Base.@kwdef mutable struct ParSoplsr
-    nlv::Union{Int, Vector{Int}, UnitRange} = 1     
+    nlv::Union{Int, Vector{Int}} = 1     
     scal::Bool = false  
 end 
 
@@ -449,6 +449,37 @@ Base.@kwdef mutable struct ParKrrda
     degree::Int = 1      
     prior::Union{Symbol, Vector{Float64}} = :unif   
     scal::Bool = false                    
+end 
+
+## 
+
+Base.@kwdef mutable struct ParLwplsda    # lwplsrda, lwplslda 
+    nlvdis::Int = 0                         
+    metric::Symbol = :eucl                  
+    h::Float64 = Inf                        
+    k::Int = 1                              
+    criw::Float64 = 4                       
+    squared::Bool = false                   
+    tolw::Float64 = 1e-4                    
+    nlv::Int = 1 
+    prior::Union{Symbol, Vector{Float64}} = :unif       
+    scal::Bool = false 
+    verbose::Bool = false                   
+end 
+
+Base.@kwdef mutable struct ParLwplsqda    
+    nlvdis::Int = 0                         
+    metric::Symbol = :eucl                  
+    h::Float64 = Inf                        
+    k::Int = 1                              
+    criw::Float64 = 4                       
+    squared::Bool = false                   
+    tolw::Float64 = 1e-4                    
+    nlv::Int = 1 
+    prior::Union{Symbol, Vector{Float64}} = :unif
+    alpha::Float64 = 0.        
+    scal::Bool = false 
+    verbose::Bool = false                   
 end 
 
 ## Multiblock

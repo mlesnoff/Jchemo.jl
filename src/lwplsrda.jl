@@ -22,6 +22,9 @@ Keyword arguments:
 * `tolw` : For stabilization when very close neighbors.
 * `nlv` : Nb. latent variables (LVs) for the local (i.e. 
     inside each neighborhood) models.
+* `prior` : Type of prior probabilities for class 
+    membership. Possible values are: `:unif` (uniform), 
+    `:prop` (proportional).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation
     for the global dimension reduction and the local
@@ -68,12 +71,12 @@ res.listnn
 res.listd
 res.listw
 @head res.pred
-errp(res.pred, ytest)
+@show errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
 function lwplsrda(X, y; kwargs...) 
-    par = recovkw(Par, kwargs).par 
+    par = recovkw(ParLwplsda, kwargs).par 
     X = ensure_mat(X)
     y = ensure_mat(y)
     Q = eltype(X)
