@@ -19,8 +19,6 @@ Keyword arguments:
     done when new data are predicted with function `predict`.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
-* Do `dump(Par(), maxdepth = 1)` to print the default 
-    values of the keyword arguments. 
 
 The function fits a random forest discrimination² model using 
 package `DecisionTree.jl'.

@@ -243,8 +243,6 @@ include("kernels.jl")
 export 
     model,
     modelx, modelxy, 
-    Par,
-    ParPlsr,
     fit!,
     transf!,
     pip,
