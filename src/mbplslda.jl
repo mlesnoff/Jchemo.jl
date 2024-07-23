@@ -72,14 +72,14 @@ predict(mod, Xbltest; nlv = 1:2).pred
 ```
 """ 
 function mbplslda(Xbl, y; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParMbplsda, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     mbplslda(Xbl, y, weights; kwargs...)
 end
 
 function mbplslda(Xbl, y, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParMbplsda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
@@ -89,11 +89,11 @@ function mbplslda(Xbl, y, weights::Weight; kwargs...)
         fmda[i] = lda(fmpls.T[:, 1:i], y, weights; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
-    Mbplslda(fm, res.lev, ni)
+    Mbplsprobda(fm, res.lev, ni, par)
 end
 
 """ 
-    transf(object::Mbplslda, Xbl; nlv = nothing)
+    transf(object::Mbplsprobda, Xbl; nlv = nothing)
 Compute latent variables (LVs = scores T) from 
     a fitted model.
 * `object` : The fitted model.
@@ -101,19 +101,19 @@ Compute latent variables (LVs = scores T) from
     of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Mbplslda, Xbl; nlv = nothing)
+function transf(object::Mbplsprobda, Xbl; nlv = nothing)
     transf(object.fm.fmpls, Xbl; nlv)
 end
 
 """
-    predict(object::Mbplslda, Xbl; nlv = nothing)
+    predict(object::Mbplsprobda, Xbl; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 
     of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Mbplslda, Xbl; nlv = nothing)
+function predict(object::Mbplsprobda, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     Qy = eltype(object.lev)
     m = nro(Xbl[1])

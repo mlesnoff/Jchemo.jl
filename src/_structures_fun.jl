@@ -1,10 +1,10 @@
-######---- Weights
+############---- Weights
 
 struct Weight{T <: AbstractFloat}
     w::Vector{T} 
 end
 
-######---- Data Processing 
+############---- Data Processing 
 
 ## Preprocessing
 
@@ -63,7 +63,7 @@ struct Calpds
     s
 end
 
-######---- Dimension reduction
+############---- Dimension reduction
 
 struct Pca 
     T::Matrix 
@@ -268,7 +268,7 @@ struct Comdim
     par::ParMbpca
 end
 
-######---- Regression
+############---- Regression
 
 struct Mlr
     B::Matrix   
@@ -476,7 +476,7 @@ struct Mbplsr
     par::ParMbplsr
 end
 
-struct Mbplswest            # Used for mbplswest, mbwcov 
+struct Mbplswest     # mbplswest, mbwcov 
     T::Matrix
     P::Matrix
     R::Matrix
@@ -520,28 +520,7 @@ struct Soplsr
     par::ParSoplsr
 end
 
-######---- Discrimination
-
-struct Mlrda
-    fm::Mlr 
-    lev::Vector
-    ni::Vector{Int}
-    par::ParMlrda
-end
-
-struct Plsrda
-    fm::Union{Plsr, Splsr, Kplsr, Dkplsr}  
-    lev::Vector
-    ni::Vector{Int}
-    par::Union{ParPlsda, ParSplsda, ParKplsda}
-end
-
-struct Rrda
-    fm::Union{Rr, Krr}  
-    lev::Vector
-    ni::Vector{Int}
-    par::Union{ParRrda, ParKrrda}
-end
+############---- Discrimination
 
 struct Dmnorm
     mu
@@ -609,7 +588,28 @@ struct Kdeda
     par::ParKdeda
 end
 
-struct Plsprobda    
+struct Mlrda
+    fm::Mlr 
+    lev::Vector
+    ni::Vector{Int}
+    par::ParMlrda
+end
+
+struct Plsrda
+    fm::Union{Plsr, Splsr, Kplsr, Dkplsr}  
+    lev::Vector
+    ni::Vector{Int}
+    par::Union{ParPlsda, ParSplsda, ParKplsda}
+end
+
+struct Rrda
+    fm::Union{Rr, Krr}  
+    lev::Vector
+    ni::Vector{Int}
+    par::Union{ParRrda, ParKrrda}
+end
+
+struct Plsprobda    # plslda, plsqda, plskdeda  
     fm::NamedTuple  
     lev::Vector
     ni::Vector{Int}
@@ -693,12 +693,14 @@ struct Mbplsrda
     fm::Mbplsr  
     lev::Vector
     ni::Vector{Int}
+    par::ParMbplsda
 end
 
-struct Mbplslda    # for Mbplslda and Mbplsqda 
+struct Mbplsprobda    # mbplslda, mbplsqda, mbplskdeda  
     fm::NamedTuple  
     lev::Vector
     ni::Vector{Int}
+    par::Union{ParMbplsda, ParMbplsqda, ParMbplskdeda}
 end
 
 ## Occ

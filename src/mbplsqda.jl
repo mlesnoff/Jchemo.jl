@@ -28,14 +28,14 @@ See function `mbplslda` for examples.
 
 """ 
 function mbplsqda(Xbl, y; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParMbplsqda, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     mbplsqda(Xbl, y, weights; kwargs...)
 end
 
 function mbplsqda(Xbl, y, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParMbplsqda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
@@ -45,6 +45,6 @@ function mbplsqda(Xbl, y, weights::Weight; kwargs...)
         fmda[i] = qda(fmpls.T[:, 1:i], y, weights; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
-    Mbplslda(fm, res.lev, ni)
+    Mbplsprobda(fm, res.lev, ni, par)
 end
 

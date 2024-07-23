@@ -228,7 +228,8 @@ function splskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
      end
      sel = unique(reduce(vcat, sellv))
      Splsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, 
-         sellv, sel, par)
+         sellv, sel,  # add compared to ::Plsr
+         par)
 end
 
 
