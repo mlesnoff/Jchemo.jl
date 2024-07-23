@@ -24,6 +24,8 @@ https://cran.r-project.org/
 
 ## Examples
 ```julia
+using Jchemo 
+
 X = [1. 2 missing 4 ; 4 missing 6 7 ; 
     missing 5 6 13 ; missing 18 7 6 ; 
     12 missing 28 7] 
@@ -75,7 +77,7 @@ function nipalsmiss(X; kwargs...)
 end
 
 function nipalsmiss(X, UUt, VVt; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParNipals, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
     s = ismissing.(X)

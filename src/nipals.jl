@@ -75,7 +75,7 @@ function nipals(X; kwargs...)
 end
 
 function nipals(X, UUt, VVt; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParNipals, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
     u = X[:, argmax(colnorm(X))]
