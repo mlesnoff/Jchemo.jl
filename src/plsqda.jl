@@ -17,7 +17,7 @@ Keyword arguments:
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum
     between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+    and Y_dummy is scaled by its uncorrected standard deviation.
 
 QDA on PLS latent variables. The training variable `y` 
 (univariate class membership) is transformed to a dummy table 

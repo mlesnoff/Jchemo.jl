@@ -95,7 +95,7 @@ f
 ```
 """ 
 function knnr(X, Y; kwargs...) 
-    par = recovkw(ParLwmlr, kwargs).par
+    par = recovkw(ParKnn, kwargs).par
     @assert in([:eucl, :mah])(par.metric) "Wrong value for argument 'metric'."
     X = ensure_mat(X)
     Y = ensure_mat(Y)

@@ -235,7 +235,9 @@ Base.@kwdef mutable struct ParKrr
     scal::Bool = false 
 end 
 
-Base.@kwdef mutable struct ParLwmlr                 
+##
+
+Base.@kwdef mutable struct ParKnn    # knnr, lwmlr, knnda, lwmlrda                
     metric::Symbol = :eucl                  
     h::Float64 = Inf                        
     k::Int = 1                              

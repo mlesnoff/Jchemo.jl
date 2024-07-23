@@ -14,7 +14,7 @@ Keyword arguments:
     the number of classes) giving the prior weight for each class 
     (the vector must be sorted in the same order as `mlev(y)`).
 * `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+    and Y_dummy is scaled by its uncorrected standard deviation.
 
 This is the usual "PLSDA" (prediction of the Y-dummy table 
 by a PLS2 regression). The training variable `y` 

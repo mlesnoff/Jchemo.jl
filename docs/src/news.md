@@ -7,6 +7,8 @@
     dimension reduction (uses package **UMAP.jl** added as dependence).
 
 - Breaking
+    - Argument 'nlvdis' removed from **knnr** and **knnda** (there is no possible dimension 
+        reduction anymore). 
     - **treer_dt**, **treeda_dt**, **rfr_dt**, **rfda_dt**: renamed to **treer**, **treeda**,
         **rfr**, **rfda**.   
     - **rp** : argument 'mrp' renamed to 'meth'.

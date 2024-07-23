@@ -422,13 +422,13 @@ struct Knnr
     X::Matrix
     Y::Matrix
     xscales::Vector
-    par::ParLwmlr
+    par::ParKnn
 end
 
 struct Lwmlr
     X::Matrix
     Y::Matrix
-    par::ParLwmlr
+    par::ParKnn
 end
 
 struct Lwplsr
@@ -623,11 +623,10 @@ end
 struct Knnda
     X::Matrix
     y::AbstractMatrix
-    fm
     xscales::Vector
     lev::Vector
     ni::Vector{Int}
-    par::Par
+    par::ParKnn
 end
 
 struct Lwmlrda
@@ -635,7 +634,7 @@ struct Lwmlrda
     y::AbstractMatrix
     lev::Vector
     ni::Vector{Int}
-    par::Par
+    par::ParKnn
 end
 
 struct Lwplsrda
