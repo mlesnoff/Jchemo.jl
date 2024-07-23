@@ -19,8 +19,6 @@ Keyword arguments:
     (the vector must be sorted in the same order as `mlev(y)`).
 * Keyword arguments of function `dmkern` (bandwidth 
     definition) can also be specified here.
-* `alpha` : Scalar (∈ [0, 1]) defining the continuum
-    between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
@@ -31,14 +29,14 @@ PLSR (function `plskern`), is run on the Y-dummy table.
 See function `dkplslda` for examples.
 """ 
 function dkplskdeda(X, y; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParKplskdeda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     dkplskdeda(X, y, weights; kwargs...)
 end
 
 function dkplskdeda(X, y, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParKplskdeda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
@@ -48,7 +46,7 @@ function dkplskdeda(X, y, weights::Weight; kwargs...)
         fmda[i] = kdeda(fmpls.T[:, 1:i], y; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
-    Plsprobda(fm, res.lev, ni)
+    Plsprobda(fm, res.lev, ni, par)
 end
 
 

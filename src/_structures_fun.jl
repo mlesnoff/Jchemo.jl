@@ -522,6 +522,27 @@ end
 
 ######---- Discrimination
 
+struct Mlrda
+    fm::Mlr 
+    lev::Vector
+    ni::Vector{Int}
+    par::ParMlrda
+end
+
+struct Plsrda
+    fm::Union{Plsr, Splsr, Kplsr, Dkplsr}  
+    lev::Vector
+    ni::Vector{Int}
+    par::Union{ParPlsda, ParSplsda, ParKplsda}
+end
+
+struct Rrda
+    fm::Union{Rr, Krr}  
+    lev::Vector
+    ni::Vector{Int}
+    par::Union{ParRrda, ParKrrda}
+end
+
 struct Dmnorm
     mu
     Uinv 
@@ -544,27 +565,6 @@ struct Dmkern
     Hinv::Matrix
     detH::Float64
     par::ParDmkern
-end
-
-struct Mlrda
-    fm::Mlr 
-    lev::Vector
-    ni::Vector{Int}
-    par::ParMlrda
-end
-
-struct Plsrda
-    fm::Union{Plsr, Splsr, Kplsr, Dkplsr}  
-    lev::Vector
-    ni::Vector{Int}
-    par::Union{ParPlsrda, ParSplsrda, ParKplsrda}
-end
-
-struct Rrda
-    fm::Union{Rr, Krr}  
-    lev::Vector
-    ni::Vector{Int}
-    par::Union{ParRrda, ParKrrda}
 end
 
 struct Lda
@@ -613,7 +613,8 @@ struct Plsprobda
     fm::NamedTuple  
     lev::Vector
     ni::Vector{Int}
-    par::Union{ParPlslda, ParPlsqda, ParPlskdeda, ParSplslda, ParSplsqda, ParSplskdeda}
+    par::Union{ParPlsda, ParPlsqda, ParPlskdeda, ParSplsda, ParSplsqda, ParSplskdeda,
+        ParKplsda, ParKplsqda, ParKplskdeda}
 end
 
 ## Local

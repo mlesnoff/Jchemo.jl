@@ -87,14 +87,14 @@ summary(fmpls, Xtrain)
 ```
 """ 
 function plslda(X, y; kwargs...)
-    par = recovkw(ParPlslda, kwargs).par
+    par = recovkw(ParPlsda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     plslda(X, y, weights; kwargs...)
 end
 
 function plslda(X, y, weights::Weight; kwargs...)
-    par = recovkw(ParPlslda, kwargs).par
+    par = recovkw(ParPlsda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals

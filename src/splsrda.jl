@@ -83,14 +83,14 @@ summary(fm.fm, Xtrain)
 ```
 """ 
 function splsrda(X, y; kwargs...)
-    par = recovkw(ParSplsrda, kwargs).par
+    par = recovkw(ParSplsda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     splsrda(X, y, weights; kwargs...)
 end
 
 function splsrda(X, y, weights::Weight; kwargs...)
-    par = recovkw(ParSplsrda, kwargs).par
+    par = recovkw(ParSplsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
     fm = splskern(X, res.Y, weights; kwargs...)

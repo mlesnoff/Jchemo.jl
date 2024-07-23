@@ -29,14 +29,14 @@ PLSR (function `plskern`), is run on the Y-dummy table.
 See function `dkplslda` for examples.
 """ 
 function dkplsqda(X, y; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParKplsqda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     dkplsqda(X, y, weights; kwargs...)
 end
 
 function dkplsqda(X, y, weights::Weight; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParKplsqda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
@@ -46,7 +46,7 @@ function dkplsqda(X, y, weights::Weight; kwargs...)
         fmda[i] = qda(fmpls.T[:, 1:i], y, weights; kwargs...)
     end
     fm = (fmpls = fmpls, fmda = fmda)
-    Plsprobda(fm, res.lev, ni)
+    Plsprobda(fm, res.lev, ni, par)
 end
 
 

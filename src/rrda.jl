@@ -61,6 +61,8 @@ pnames(mod.fm)
 fm = mod.fm ;
 fm.lev
 fm.ni
+pnames(fm.fm)
+aggsum(fm.fm.weights.w, ytrain)
 
 coef(fm.fm)
 

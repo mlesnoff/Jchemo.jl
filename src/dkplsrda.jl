@@ -74,14 +74,14 @@ predict(mod, Xtest; nlv = 1:2).pred
 ```
 """ 
 function dkplsrda(X, y; kwargs...)
-    par = recovkw(ParKplsrda, kwargs).par
+    par = recovkw(ParKplsda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     dkplsrda(X, y, weights; kwargs...)
 end
 
 function dkplsrda(X, y, weights::Weight; kwargs...)
-    par = recovkw(ParKplsrda, kwargs).par
+    par = recovkw(ParKplsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
     fm = dkplsr(X, res.Y, weights; kwargs...)

@@ -63,7 +63,8 @@ pnames(mod.fm)
 fm = mod.fm ;
 fm.lev
 fm.ni
-aggsum(fm.weights.w, ytrain)
+pnames(fm.fm)
+aggsum(fm.fm.weights.w, ytrain)
 
 @head fm.fm.T
 @head transf(mod, Xtrain)
@@ -84,14 +85,14 @@ summary(fm.fm, Xtrain)
 ```
 """
 function plsrda(X, y; kwargs...)
-    par = recovkw(ParPlsrda, kwargs).par
+    par = recovkw(ParPlsda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     plsrda(X, y, weights; kwargs...)
 end
 
 function plsrda(X, y, weights::Weight; kwargs...)
-    par = recovkw(ParPlsrda, kwargs).par
+    par = recovkw(ParPlsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
     fm = plskern(X, res.Y, weights; kwargs...)

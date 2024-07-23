@@ -322,7 +322,9 @@ Base.@kwdef mutable struct ParMlrda
     prior::Union{Symbol, Vector{Float64}} = :unif                     
 end 
 
-Base.@kwdef mutable struct ParPlsrda
+##
+
+Base.@kwdef mutable struct ParPlsda  # Plsrda, Plslda
     nlv::Int = 1
     prior::Union{Symbol, Vector{Float64}} = :unif   
     scal::Bool = false                    
@@ -334,7 +336,16 @@ Base.@kwdef mutable struct ParRrda
     scal::Bool = false                    
 end 
 
-Base.@kwdef mutable struct ParKplsrda
+Base.@kwdef mutable struct ParSplsda   # Splsrda, Splslda
+    nlv::Int = 1
+    meth::Symbol = :soft 
+    delta::Float64 = 0.   
+    nvar::Union{Int, Vector{Int}} = 1  
+    prior::Union{Symbol, Vector{Float64}} = :unif   
+    scal::Bool = false                    
+end 
+
+Base.@kwdef mutable struct ParKplsda  # Kplsrda, Kplslda
     nlv::Int = 1
     kern::Symbol = :krbf     
     gamma::Float64 = 1.  
@@ -353,6 +364,8 @@ Base.@kwdef mutable struct ParKrrda
     prior::Union{Symbol, Vector{Float64}} = :unif   
     scal::Bool = false                    
 end 
+
+##
 
 Base.@kwdef mutable struct ParLda
     prior::Union{Symbol, Vector{Float64}} = :unif                     
@@ -377,11 +390,7 @@ Base.@kwdef mutable struct ParKdeda
     a::Float64 = 1. 
 end 
 
-Base.@kwdef mutable struct ParPlslda
-    nlv::Int = 1
-    prior::Union{Symbol, Vector{Float64}} = :unif 
-    scal::Bool = false                     
-end 
+##
 
 Base.@kwdef mutable struct ParPlsqda
     nlv::Int = 1
@@ -396,24 +405,6 @@ Base.@kwdef mutable struct ParPlskdeda
     h::Union{Nothing, Float64, Vector{Float64}} = nothing  
     a::Float64 = 1. 
     scal::Bool = false 
-end 
-
-Base.@kwdef mutable struct ParSplsrda
-    nlv::Int = 1
-    meth::Symbol = :soft 
-    delta::Float64 = 0.   
-    nvar::Union{Int, Vector{Int}} = 1  
-    prior::Union{Symbol, Vector{Float64}} = :unif   
-    scal::Bool = false                    
-end 
-
-Base.@kwdef mutable struct ParSplslda
-    nlv::Int = 1
-    meth::Symbol = :soft 
-    delta::Float64 = 0.   
-    nvar::Union{Int, Vector{Int}} = 1  
-    prior::Union{Symbol, Vector{Float64}} = :unif   
-    scal::Bool = false                    
 end 
 
 Base.@kwdef mutable struct ParSplsqda
@@ -431,6 +422,29 @@ Base.@kwdef mutable struct ParSplskdeda
     meth::Symbol = :soft 
     delta::Float64 = 0.   
     nvar::Union{Int, Vector{Int}} = 1  
+    prior::Union{Symbol, Vector{Float64}} = :unif
+    h::Union{Nothing, Float64, Vector{Float64}} = nothing  
+    a::Float64 = 1. 
+    scal::Bool = false 
+end 
+
+Base.@kwdef mutable struct ParKplsqda
+    nlv::Int = 1
+    kern::Symbol = :krbf     
+    gamma::Float64 = 1.  
+    coef0::Float64 = 0.
+    degree::Int = 1 
+    prior::Union{Symbol, Vector{Float64}} = :unif
+    alpha::Float64 = 0.    
+    scal::Bool = false                    
+end 
+
+Base.@kwdef mutable struct ParKplskdeda
+    nlv::Int = 1
+    kern::Symbol = :krbf     
+    gamma::Float64 = 1.  
+    coef0::Float64 = 0.
+    degree::Int = 1 
     prior::Union{Symbol, Vector{Float64}} = :unif
     h::Union{Nothing, Float64, Vector{Float64}} = nothing  
     a::Float64 = 1. 
