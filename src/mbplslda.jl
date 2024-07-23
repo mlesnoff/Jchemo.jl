@@ -24,7 +24,7 @@ This is the same principle as function `plslda`, for multiblock X-data.
 
 ## Examples
 ```julia
-using JLD2, CairoMakie, JchemoData
+using Jchemo, JLD2, CairoMakie, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
