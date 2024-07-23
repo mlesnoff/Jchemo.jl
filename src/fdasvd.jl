@@ -31,10 +31,10 @@ function fdasvd(X, y; kwargs...)
     fdasvd(X, y, weights; kwargs...)
 end
 
-fdasvd(X, y, weights; kwargs...) = fda!(copy(ensure_mat(X)), y, weights; kwargs...)
+fdasvd(X, y, weights; kwargs...) = fdasvd!(copy(ensure_mat(X)), y, weights; kwargs...)
 
 function fdasvd!(X::Matrix, y, weights; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParFda, kwargs).par
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     Q = eltype(X)
     n, p = size(X)
@@ -66,9 +66,8 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     Ut = cholesky!(Hermitian(Winv)).U'
     Zct = ct * Ut
     nlv = min(par.nlv, n, p, nlev - 1)
-    par = Par(nlv = nlv, scal = false)
     zweights = mweight(convert.(Q, ni))
-    fm = pcasvd(Zct, zweights; kwargs...)
+    fm = pcasvd(Zct, zweights; nlv, scal = false)
     Pz = fm.P
     Tcenters = Zct * Pz
     eig = (fm.sv).^2 
@@ -76,8 +75,7 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     P = Ut * Pz[:, 1:nlv]
     T = X * P
     Tcenters = ct * P
-    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, 
-        lev, ni, par)
+    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, lev, ni, par)
 end
 
 

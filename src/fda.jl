@@ -95,7 +95,7 @@ f
 ```
 """ 
 function fda(X, y; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParFda, kwargs).par
     Q = eltype(X[1, 1])
     weights = mweightcla(Q, y; prior = par.prior)
     fda(X, y, weights; kwargs...)
@@ -137,8 +137,7 @@ function fda!(X::Matrix, y, weights; kwargs...)
     fscale!(P, norm_P)
     T = X * P
     Tcenters = zres.ct * P
-    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, 
-        lev, ni, par)
+    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, lev, ni, par)
 end
 
 """
