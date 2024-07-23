@@ -25,7 +25,7 @@ https://doi.org/10.1080/01621459.1995.10476517
 
 ## Examples
 ```julia
-using Jchemo
+using Jchemo, CairoMakie
 n = 300 ; p = 700 ; m = 80
 ntot = n + m
 X1 = randn(n, p)
