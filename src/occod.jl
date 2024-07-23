@@ -112,7 +112,7 @@ f
 ```
 """ 
 function occod(fm, X; kwargs...)
-    par = recovkw(Par, kwargs).par 
+    par = recovkw(ParOcc, kwargs).par 
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
     E = xresid(fm, X)
     d2 = vec(sum(E .* E, dims = 2))
@@ -122,7 +122,7 @@ function occod(fm, X; kwargs...)
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
-    Occod(d, fm, e_cdf, cutoff)
+    Occod(d, fm, e_cdf, cutoff, par)
 end
 
 """

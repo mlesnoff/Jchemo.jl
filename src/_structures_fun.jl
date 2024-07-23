@@ -704,20 +704,13 @@ end
 
 ## Occ
 
-struct Occstah
-    d::DataFrame
-    res_stah::NamedTuple
-    P::Matrix
-    e_cdf::ECDF
-    cutoff::Real
-end
-
 struct Occsd
     d::DataFrame 
     fm
     tscales::Vector
     e_cdf::ECDF
     cutoff::Real   
+    par::ParOcc
 end
 
 struct Occod
@@ -725,12 +718,23 @@ struct Occod
     fm
     e_cdf::ECDF
     cutoff::Real   
+    par::ParOcc
 end
 
 struct Occsdod
     d::DataFrame
     fmsd
     fmod
+    par::ParOcc
+end
+
+struct Occstah
+    d::DataFrame
+    res_stah::NamedTuple
+    P::Matrix
+    e_cdf::ECDF
+    cutoff::Real
+    par::ParOccstah
 end
 
 
