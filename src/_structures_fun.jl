@@ -49,7 +49,7 @@ struct Cscale
 end
 
 struct Rmgap
-    par::Par
+    par::ParRmgap
 end
 
 ## Calibration transfer

@@ -44,7 +44,7 @@ f
 ```
 """ 
 function rmgap(X; kwargs...)
-    par = recovkw(Par, kwargs).par
+    par = recovkw(ParRmgap, kwargs).par
     Rmgap(par)
 end
 
