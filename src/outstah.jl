@@ -6,7 +6,7 @@ Compute the Stahel-Donoho outlierness.
 * `P` : A projection matrix (p, nlv) representing the directions 
     of the projection pursuit.
 Keyword arguments:
-* `scal` : Boolean. If `true`, each column of `X` is scaled by MAD 
+* `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD 
     before computing the outlierness.
 
 See Maronna and Yohai 1995 for details on the outlierness 

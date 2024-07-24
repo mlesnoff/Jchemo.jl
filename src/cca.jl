@@ -12,7 +12,7 @@ Keyword arguments:
 * `bscal` : Type of block scaling. Possible values are:
     `:none`, `:frob`. See functions `blockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
-* `scal` : Boolean. If `true`, each column of blocks in `X` 
+* `scal` : Boolean. If `true`, each column of blocks `X` 
     and `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
 

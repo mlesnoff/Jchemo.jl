@@ -84,7 +84,7 @@ include("umap.jl")
 include("spca.jl")
 
 ## Multiblock 
-include("mbutil.jl")
+include("mbutils.jl")
 include("cca.jl")
 include("ccawold.jl")
 include("plscan.jl")

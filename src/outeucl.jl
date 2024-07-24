@@ -4,7 +4,7 @@
 Compute an outlierness from Euclidean distances to center.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `scal` : Boolean. If `true`, each column of `X` is scaled by MAD 
+* `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD 
     before computing the outlierness.
 
 Outlyingness is calculated by the Euclidean distance between 

@@ -15,7 +15,7 @@ Keyword arguments:
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
-* `scal` : Boolean. If `true`, each column of blocks in `X` 
+* `scal` : Boolean. If `true`, each column of blocks `X` 
     and `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
 

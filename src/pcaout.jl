@@ -10,24 +10,24 @@ Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `prm` : Proportion of the data removed (hard rejection of outliers) 
     for each outlierness measure.
-* `scal` : Boolean. If `true`, `X`-data are scaled in the 
-    functions computing the outlierness and the weighted PCA. 
+* `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD 
+    when computing the outlierness and by its uncorrected standard 
+    deviation when computing weighted PCA. 
 
 Robust PCA combining outlyingness measures and weighted PCA (WPCA). 
 
 Observations (`X`-rows) receive weights depending on outlyingness 
 with the objective to remove the effect of multivariate `X`-outliers 
 that have potentially bad leverages.
-* First, the Stahel-Donoho outlyingness (Maronna and Yohai, 1995) 
-    is computed (function `outstah`). The proportion `prm` of the 
-    observations with the highest outlyingness values receive a 
-    weight w1 = 0 (the other receive a weight w1 = 1).
-* Second, an outlyingness computed from the Euclidean distance to center 
+* 1) The Stahel-Donoho outlyingness (Maronna and Yohai, 1995) is computed 
+    (function `outstah`). The proportion `prm` of the observations with the 
+    highest outlyingness values receive a weight w1 = 0 (the other receive a weight w1 = 1).
+* 2) An outlyingness computed from the Euclidean distance to center 
     (function `outstah`) is computed. The proportion `prm` of the observations 
     with the highest outlyingness values receive a weight w2 = 0 
     (the other receive a weight w2 = 1).
-The final weights of the observations are computed by weights.w * w1 * w2,
-which is used in a weighted PCA.
+* 3) The final weights of the observations are computed by weights.w * w1 * w2
+    that is used in a weighted PCA.
 
 By default, the function uses `prm = .3` (such as in the ROBPCA algorithm 
 of Hubert et al. 2005, 2009). 
