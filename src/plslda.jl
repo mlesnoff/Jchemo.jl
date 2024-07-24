@@ -152,6 +152,3 @@ function predict(object::Plsprobda, X; nlv = nothing)
 end
 
 
-
-
-
