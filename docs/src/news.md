@@ -11,9 +11,18 @@
 
 - Breaking
     - Argument 'nlvdis' removed from **knnr** and **knnda** (there is no possible dimension 
-        reduction anymore). 
-    - **treer_dt**, **treeda_dt**, **rfr_dt**, **rfda_dt**: renamed to **treer**, **treeda**,
-        **rfr**, **rfda**.   
+        reduction anymore).
+    - Renaming of functions:  
+        - **findindex** to **recod_catbyind**.
+        - **recodcat2int** to **recod_catbyint**
+        - **recodnum2int** to **recod_numbyint**
+        - **replacebylev** to **recod_catbylev**
+        - **replacebylev2** to **recod_indbylev**
+        - **replacedict** to **recod_catbydict**
+
+
+        - **treer_dt**, **treeda_dt**, **rfr_dt**, **rfda_dt** to **treer**, **treeda**,
+            **rfr**, **rfda**.   
     - **rp** : argument 'mrp' renamed to 'meth'.
     - **rpmatli**: argument 's_li' renamed to 's'.
     - **spca**, **splskern** : argument 'msparse' renamed to 'meth'.

@@ -80,7 +80,7 @@ fit!(mod, Xtrain)
 
 GLMakie.activate!() 
 #CairoMakie.activate!()
-ztyp = recodcat2int(typtrain)
+ztyp = recod_catbyint(typtrain)
 colsh = :tab10
 f = Figure()
 i = 1

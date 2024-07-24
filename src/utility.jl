@@ -346,33 +346,6 @@ ensure_mat(X::LinearAlgebra.Adjoint) = Matrix(X)
 ensure_mat(X::DataFrame) = Matrix(X)
 
 """
-    findindex(x, lev)
-Replace a vector containg levels by the indexes of a set of levels.
-* `x` : Vector (n) of levels to replace.
-* `lev` : Vector (nlev) containing the levels.
-
-*Warning*: The levels in `x` must be contained in `lev`.
-
-## Examples
-```julia
-using Jchemo
-
-lev = ["EHH" ; "FFS" ; "ANF" ; "CLZ" ; "CNG" ; "FRG" ; "MPW" ; "PEE" ; "SFG" ; "TTS"]
-x = ["EHH" ; "TTS" ; "FRG"]
-findindex(x, lev)
-```
-"""
-function findindex(x, lev)
-    n = length(x)
-    lev = mlev(lev)
-    xindex = Vector{Int}(undef, n)
-    @inbounds for i = 1:n
-        xindex[i] = findall(lev .== x[i])[1]
-    end
-    xindex 
-end
-
-"""
     findmax_cla(x)
     findmax_cla(x, weights::Weight)
 Find the most occurent level in `x`.
@@ -753,37 +726,181 @@ pval(e_cdf::ECDF, q) = 1 .- e_cdf(q)
 pval(x::AbstractVector, q) = pval(StatsBase.ecdf(x), q)
 
 """
-    recodcat2int(x; start = 1)
-Recode a categorical variable to a integer variable.
-* `x` : Variable to recode.
-* `start` : Integer that will be set to the first category.
+    recod_catbydict(x, dict)
+Replace a categorical variable by dictionnary levels.
+* `x` : Categorical variable (n) to replace.
+* `dict` : Dictionary giving the correpondances between the old 
+    and new levels.
 
-The integers returned by the function correspond to the 
-sorted levels (categories) of `x`.
+See examples.
 
 ## Examples
 ```julia
 using Jchemo
 
-x = ["b", "a", "b"]   
-[x recodcat2int(x)]
-recodcat2int(x; start = 0)
-recodcat2int([25, 1, 25])
+dict = Dict("a" => 1000, "b" => 1, "c" => 2)
+x = ["c" ; "c" ; "a" ; "a" ; "a"]
+recod_catbydict(x, dict)
+
+x = ["c" ; "c" ; "a" ; "a" ; "a" ; "e"]
+recod_catbydict(x, dict)
 ```
 """
-function recodcat2int(x; start::Int = 1)
-    z = dummy(x).Y
-    nlev = nco(z)
-    u = z .* collect(start:(start + nlev - 1))'
-    u = sum(u; dims = 2)  
-    Int.(vec(u))
+function recod_catbydict(x, dict)
+    replace(x, dict...)
 end
 
 """
-    recodnum2int(x, q)
-Recode a continuous variable to integer classes.
-* `x` : Variable to recode.
-* `q` : Values separating the classes. 
+    recod_catbyind(x, lev)
+Replace a categorical variable by indexes of levels.
+* `x` : Categorical variable (n) to replace.
+* `lev` : Vector containing categorical levels.
+
+See examples.
+
+*Warning*: The levels in `x` must be contained in `lev`.
+
+## Examples
+```julia
+using Jchemo
+
+lev = ["EHH" ; "FFS" ; "ANF" ; "CLZ" ; "CNG" ; "FRG" ; "MPW" ; "PEE" ; "SFG" ; "SFG" ; "TTS"]
+slev = mlev(lev)
+[slev 1:length(slev)] 
+x = ["EHH" ; "TTS" ; "FRG" ; "EHH"]
+recod_catbyind(x, lev)
+```
+"""
+function recod_catbyind(x, lev)
+    lev = mlev(lev)
+    xindex = list(Int, length(x))
+    @inbounds for i in eachindex(x)
+        xindex[i] = findall(lev .== x[i])[1]
+    end
+    xindex 
+end
+
+"""
+    recod_catbyint(x; start = 1)
+Replace a categorical variable by integers.
+* `x` : Categorical variable (n) to replace.
+* `start` : Integer labelling the first categorical level in `x`.
+
+The integers returned by the function correspond to the sorted 
+levels of `x`, see examples.
+
+## Examples
+```julia
+using Jchemo
+
+x = ["b", "a", "b"]
+mlev(x)   
+[x recod_catbyint(x)]
+recod_catbyint(x; start = 0)
+
+recod_catbyint([25, 1, 25])
+```
+"""
+function recod_catbyint(x; start::Int = 1)
+    z = dummy(x).Y
+    nlev = nco(z)
+    u = z .* collect(start:(start + nlev - 1))'
+    u = rowsum(u)  
+    Int.(u)
+end
+
+"""
+    recod_catbylev(x, lev)
+Replace a categorical variable by levels.
+* `x` : Variable (n) to replace.
+* `lev` : Vector containing the categorical levels.
+
+The ith sorted level in `x` is replaced by the ith sorted level in `lev`, 
+see examples.
+
+*Warning*: `x` and `lev` must contain the same number of levels.
+
+## Examples
+```julia
+using Jchemo
+
+x = [10 ; 4 ; 3 ; 3 ; 4 ; 4]
+lev = ["B" ; "C" ; "AA" ; "AA"]
+mlev(x)
+mlev(lev)
+[x recod_catbylev(x, lev)]
+xstr = string.(x)
+[xstr recod_catbylev(xstr, lev)]
+
+lev = [3; 0; 0; -1]
+mlev(x)
+mlev(lev)
+[x recod_catbylev(x, lev)]
+```
+"""
+function recod_catbylev(x, lev)
+    n = length(x)
+    xlev = mlev(x)
+    lev = mlev(lev)
+    @assert length(xlev) == length(lev) "x and lev must contain the same number of levels."
+    z = similar(lev, n)
+    @inbounds for i in eachindex(lev)
+        s = findall(x .== xlev[i])
+        z[s] .= lev[i] 
+    end
+    z
+end
+
+"""
+    recod_indbylev(x::Union{Int, Array{Int}}, lev::Array)
+Replace an index variable by levels.
+* `x` : Index variable (n) to replace.
+* `lev` : Vector containing the categorical levels.
+
+Assuming slev = 'sort(unique(lev))', each element `x[i]` (i = 1, ..., n) is 
+replaced by `slev[x[i]]`, see examples.
+
+*Warning*: Vector `x` must contain integers between 1 and nlev,
+where nlev is the number of levels in `lev`. 
+
+## Examples
+```julia
+using Jchemo
+
+x = [2 ; 1 ; 2 ; 2]
+lev = ["B" ; "C" ; "AA" ; "AA"]
+mlev(x)
+mlev(lev)
+[x recod_indbylev(x, lev)]
+recod_indbylev([2], lev)
+recod_indbylev(2, lev)
+
+x = [2 ; 1 ; 2]
+lev = [3 ; 0 ; 0 ; -1]
+mlev(x)
+mlev(lev)
+recod_indbylev(x, lev)
+```
+"""
+function recod_indbylev(x::Union{Int, Array{Int}}, lev::Array)
+    n = length(x)
+    isa(x, Int) ? x = [x] : x = vec(x)
+    lev = mlev(lev)
+    v = similar(lev, n)
+    @inbounds for i in eachindex(x)
+        v[i] = lev[x[i]]
+    end
+    v
+end
+
+"""
+    recod_numbyint(x, q)
+Replace a continuous variable by integers.
+* `x` : Continuous variable (n) to replace.
+* `q` : Numerical values separating classes in `x`.
+    The first class is labelled to 1.  
+
+See examples.
 
 ## Examples
 ```julia
@@ -791,15 +908,15 @@ using Jchemo, Statistics
 x = [collect(1:10); 8.1 ; 3.1] 
 
 q = [3; 8]
-zx = recodnum2int(x, q)  
+zx = recod_numbyint(x, q)  
 [x zx]
 probs = [.33; .66]
 q = quantile(x, probs) 
-zx = recodnum2int(x, q)  
+zx = recod_numbyint(x, q)  
 [x zx]
 ```
 """
-function recodnum2int(x, q)
+function recod_numbyint(x, q)
     zx = similar(x)
     q = sort(q)
     @inbounds for i in eachindex(x)
@@ -836,107 +953,6 @@ function recovkw(ParStruct::DataType, kwargs)
 end
 
 recovkw(ParStruct::DataType) = (kwargs = nothing, par = ParStruct())
-
-"""
-    replacebylev(x, lev)
-Replace the elements of a vector by levels of corresponding order.
-* `x` : Vector (n) of values to replace.
-* `lev` : Vector (nlev) containing the levels.
-
-*Warning*: `x` and `lev` must contain the same number (nlev) of levels.
-
-The ith sorted level in `x` is replaced by the ith sorted level of `lev`.
-
-## Examples
-```julia
-using Jchemo
-
-x = [10; 4; 3; 3; 4; 4]
-lev = ["B"; "C"; "AA"]
-sort(lev)
-[x replacebylev(x, lev)]
-zx = string.(x)
-[zx replacebylev(zx, lev)]
-
-lev = [3; 0; -1]
-[x replacebylev(x, lev)]
-```
-"""
-function replacebylev(x, lev)
-    n = length(x)
-    lev = sort(lev)
-    nlev = length(lev)
-    @assert nlev == length(lev) "x and lev must contain the same number of levels."
-    xlev = mlev(x)
-    z = similar(lev, n)
-    @inbounds for i in eachindex(lev)
-        s = findall(x .== xlev[i])
-        z[s] .= lev[i] 
-    end
-    z
-end
-
-"""
-    replacebylev2(x::Union{Int, Array{Int}}, lev::Array)
-Replace the elements of an index-vector by levels.
-* `x` : Vector (n) of values to replace.
-* `lev` : Vector (nlev) containing the levels.
-
-*Warning*: Let us note nlev the number of levels in `lev`. 
-Vector `x` must contain integer values between 1 and nlev. 
-
-Each element `x`[i] (i = 1, ..., n) is replaced by sort(`lev`)[`x`[i]].
-
-## Examples
-```julia
-using Jchemo
-
-x = [2; 1; 2; 2]
-lev = ["B"; "C"; "AA"]
-sort(lev)
-[x replacebylev2(x, lev)]
-replacebylev2([2], lev)
-replacebylev2(2, lev)
-
-x = [2; 1; 2]
-lev = [3; 0; -1]
-replacebylev2(x, lev)
-```
-"""
-function replacebylev2(x::Union{Int, Array{Int}}, lev::Array)
-    n = length(x)
-    isa(x, Int) ? x = [x] : x = vec(x)
-    lev = vec(sort(lev))
-    v = similar(lev, n)
-    @inbounds for i in eachindex(x)
-        v[i] = lev[x[i]]
-    end
-    v
-end
-
-"""
-    replacedict(x, dict)
-Replace the elements of a vector by levels defined in a dictionary.
-* `x` : Vector (n) of values to replace.
-* `dict` : A dictionary of the correpondances betwwen the old and new values.
-
-## Examples
-```julia
-using Jchemo
-
-dict = Dict("a" => 1000, "b" => 1, "c" => 2)
-
-x = ["c"; "c"; "a"; "a"; "a"]
-replacedict(x, dict)
-
-x = ["c"; "c"; "a"; "a"; "a"; "e"]
-replacedict(x, dict)
-```
-"""
-function replacedict(x, dict)
-    replace(x, dict...)
-end
-
 
 """
     rmcol(X, s)

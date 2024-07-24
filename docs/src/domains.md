@@ -378,12 +378,15 @@
 - **plist** Print each element of a list
 - **pnames** Return the names of the elements of an object
 - **psize** Return the type and size of a dataset
-- **findindex** Replace a vector containg levels by the indexes of a set of levels
-- **recodcat2int** Recode a categorical variable to a integer variable
-- **recodnum2int** Recode a continuous variable to integer classes
-- **replacebylev** Replace the elements of a vector by levels of corresponding order
-- **replacebylev2** Replace the elements of an index-vector by levels
-- **replacedict** Replace the elements of a vector by levels defined in a dictionary
+- **pval** Compute p-value(s) for a distribution, an ECDF or vector
+
+- **recod_catbydict** Replace a categorical variable by dictionnary levels
+- **recod_catbyind** Replace a categorical variable by indexes of levels
+- **recod_catbyint** Replace a categorical variable by integers
+- **recod_catbylev** Replace a categorical variable by levels
+- **recod_indbylev** Replace an index variable by levels
+- **recod_numbyint** Replace a continuous variable by integers
+
 - **rmcol** Remove the columns of a matrix or the components of a vector having indexes s
 - **rmrow** Remove the rows of a matrix or the components of a vector having indexes s
 - **rowmean**, **rownorm**, **rowstd**, **rowsum**, **rowvar**: Row-wise operations

@@ -114,7 +114,7 @@ function predict(object::Rrda, X;
         zp = predict(object.fm, X; 
             lb = lb[i]).pred
         z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
-        pred[i] = reshape(replacebylev2(z, object.lev), m, 1)
+        pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)
         posterior[i] = zp
     end 
     if le_lb == 1

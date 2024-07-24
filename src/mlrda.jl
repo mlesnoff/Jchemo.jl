@@ -95,7 +95,7 @@ function predict(object::Mlrda, X)
     m = nro(X)
     zp = predict(object.fm, X).pred
     z =  mapslices(argmax, zp; dims = 2) 
-    pred = reshape(replacebylev2(z, object.lev), m, 1)
+    pred = reshape(recod_indbylev(z, object.lev), m, 1)
     (pred = pred, posterior = zp)
 end
     

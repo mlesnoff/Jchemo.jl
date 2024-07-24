@@ -161,7 +161,7 @@ function predict(object::Rda, X)
     v = sum(A, dims = 2)
     posterior = fscale(A', v)'  # Could be replaced by similar as in fscale! 
     z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
-    pred = reshape(replacebylev2(z, lev), m, 1)
+    pred = reshape(recod_indbylev(z, lev), m, 1)
     (pred = pred, dens, posterior)
 end
 

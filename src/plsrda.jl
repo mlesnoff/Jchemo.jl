@@ -137,7 +137,7 @@ function predict(object::Plsrda, X; nlv = nothing)
         #   end
         #end
         z =  mapslices(argmax, zpred; dims = 2)  # if equal, argmax takes the first
-        pred[i] = reshape(replacebylev2(z, object.lev), m, 1)     
+        pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)     
         posterior[i] = zpred
     end 
     if le_nlv == 1

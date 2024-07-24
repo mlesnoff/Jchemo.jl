@@ -118,7 +118,7 @@ function predict(object::Mbplsrda, Xbl; nlv = nothing)
     @inbounds for i = 1:le_nlv
         zpred = predict(object.fm, Xbl; nlv = nlv[i]).pred
         z =  mapslices(argmax, zpred; dims = 2)  # if equal, argmax takes the first
-        pred[i] = reshape(replacebylev2(z, object.lev), m, 1)     
+        pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)     
         posterior[i] = zpred
     end 
     if le_nlv == 1

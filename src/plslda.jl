@@ -141,7 +141,7 @@ function predict(object::Plsprobda, X; nlv = nothing)
         T = transf(object.fm.fmpls, X; nlv = znlv)
         zres = predict(object.fm.fmda[znlv], T)
         z =  mapslices(argmax, zres.posterior; dims = 2) 
-        pred[i] = reshape(replacebylev2(z, object.lev), m, 1)
+        pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)
         posterior[i] = zres.posterior
     end 
     if le_nlv == 1
