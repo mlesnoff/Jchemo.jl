@@ -12,16 +12,17 @@
 **Jchemo** was initially dedicated to **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
 and their extensions, in particular locally weighted PLS models (**LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). The package has then been expanded to various **dimension reduction** and **regression and discrimination** models ([see the list of functions here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
 
-Why the name **Jchemo**?: Since it is orientated to **chemometrics** (in brief, the use of biometrics for chemistry), but most of the provided methods are **generic to other application domains**. 
+Why the name **Jchemo**?: Since it is orientated to **chemometrics** , in brief the use of biometrics for chemistry). But most of the provided methods are **generic to other application domains**. 
 
 **Jchemo** is organized between 
 - **transformers** (that have a function `transf`),
 - **predictors** (that have a function `predict`), 
 - **utility functions**. 
 
-Some models, such as PLSR models, are both transformer and predictor.
+Some models, such as PLSR models, are both a transformer and a predictor.
 
-Ad'hoc **pipelines** can also be built. In **Jchemo**, a pipeline is a **chain of *K* modeling steps** containing
+Ad'hoc **pipelines** of operations can also be built by the user. 
+In **Jchemo**, a pipeline is a **chain of *K* modeling steps** containing
 - either ***K* transform steps**,
 - or ***K* - 1 transform steps** and **a final prediction step**. 
 
@@ -39,32 +40,23 @@ See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for detai
 ### Syntax
 
 Two syntaxes are allowed for **transformers** and **predictors**:
-1. the direct syntax (the same as for versions <= 0.2.4),
-2. the **embedded** syntax, using function `model`. 
+1. the **embedded** syntax, using function `model`. 
+2. the direct syntax (the same as for versions <= 0.2.4),
 
 The **embedded** syntax is intended to make easier the building of ad'hoc pipelines (chains) of models, and is now favored. Only this embbeded syntax is given in the examples (**help pages** of the functions). 
 
-Most the **Jchemo** functions have **keyword arguments** (`kwargs`). The keyword arguments required by (or allowed in) a function can be found in the **Index of function section** of the documentation:
+Most the **Jchemo** functions have **keyword arguments** (`kwargs`). The keyword arguments required/allowed in a function can be found in the **Index of function section** of the documentation:
 - [Stable](https://mlesnoff.github.io/Jchemo.jl/stable/api/) 
 - [Developping](https://mlesnoff.github.io/Jchemo.jl/dev/api/) 
 
-or in the REPL at the function's help page, for instance for function `plskern`:
+or by displaying the function's help page in the REPL, for instance for function `plskern`:
 
 ```julia
 julia> ?plskern
 ```
 
-The default `kwargs` values can be displayed by:
-
-```julia
-julia> dump(Par(); maxdepth = 1)
-```
-
-or for a given argument (e.g. `gamma`):
-
-```julia
-julia> Par().gamma
-```
+The default `kwargs` values are defined in containers depending of the functions, available 
+[**here**](https://github.com/mlesnoff/Jchemo.jl/blob/master/src/_structures_param.jl).
 
 The **datasets** used in the examples (help pages) are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets on chemometrics and other domains.
 
@@ -90,8 +82,7 @@ of threads (e.g. from the *Settings* menu of the VsCode Julia extension and the 
 
 ### News
 
-Before to update the package, it is recommended to have a look on [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) to avoid
- eventual problems when the new version contains breaking changes. 
+Before to update the package, it is recommended to have a look on [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) to avoid eventual problems when the new version contains breaking changes. 
 
 # <span style="color:green"> **Installation** </span> 
 
