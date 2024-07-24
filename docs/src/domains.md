@@ -68,7 +68,7 @@
 
 ## REGRESSION
 
-### **Ordinary least squares (OLS)**
+### Ordinary least squares (OLS)
 
 *Multiple linear regression (MLR)*
 - **mlr** QR algorithm
@@ -80,7 +80,7 @@
 *Anova*
 - **aov1** One-factor ANOVA
 
-### **Partial least squares (PLSR)**
+### Partial least squares (PLSR)
 
 *Usual (asymetric regression mode)*
 - **plskern** Fast "improved kernel #1" algorithm of *Dayal & McGregor 1997*
@@ -105,7 +105,6 @@
 *Averaging PLSR models of different dimensionalities*
 - **plsravg** PLSR-AVG
 
-
 *Non linear*
 - **kplsr** Non linear kernel (KPLSR) 
     *Rosipal & Trejo 2001*
@@ -117,7 +116,7 @@
 - **rosaplsr** ROSA *Liland et al. 2016*
 - **soplsr** Sequentially orthogonalized (SO-PLSR) 
 
-### **Ridge (RR, KRR)**
+### Ridge (RR, KRR)
 
 *RR*
 - **rr** SVD factorization
@@ -126,7 +125,7 @@
 *Non linear*
 - **krr** Non linear kernel (KRR), *aka* Least squares SVM (LS-SVMR)
 
-### **Local models**
+### Local models
 
 - **knnr** kNN weighted regression (kNNR)
 - **lwmlr** kNN locally weighted MLR (kNN-LWMLR)
@@ -135,7 +134,7 @@
 *Averaging*
 - **lwplsravg** kNN-LWPLSR-AVG 
 
-### SVM -- with LIBSVM.jl
+### Support vector machines -- with LIBSVM.jl
 
 - **svmr** Epsilon-SVR (SVM-R)
 
@@ -200,7 +199,7 @@
     - **mbplsqda** MBPLS-QDA
     - **mbplskdeda** MBPLS-KDEDA
 
-### **Local models**
+### Local models
 
 - **knnda** kNN-DA (Vote within neighbors)
 - **lwmlrda** kNN locally weighted MLR-DA (kNN-LWMLR-DA)
@@ -208,7 +207,7 @@
 - **lwplslda** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
 - **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA, with continuum)
 
-### SVM -- with LIBSVM.jl
+### Support vector machines -- with LIBSVM.jl
 
 - **svmda** C-SVC (SVM-DA)
 
@@ -217,17 +216,20 @@
 - **treeda** Single tree
 - **rfda** Random forest
 
-### One-Class Classification (OCC)
+## ONE-CLASS CLASSIFICATION (OCC)
 
-*From a PCA or PLS score space*
+### From a PCA or PLS score space
+
 - **occsd** Score distance (SD)
 - **occod** Orthogonal distance (OD) 
 - **occsdod** Compromise between SD and OD (*aka* Simca approach) 
 
-*Other methods*
+### Other methods
+
 - **occstah** Stahel-Donoho outlierness
 
-*Utilities*
+### Utilities
+
 - **outstah** Stahel-Donoho outlierness
 - **outeucl**: Outlierness from Euclidean distances to center
 
@@ -247,21 +249,21 @@
 
 ## TUNING MODELS
 
-### **Test-set validation**
+### Test-set validation
 
 - **gridscore** Compute an error rate over a grid of parameters
   
-### **Cross-validation (CV)**
+### Cross-validation (CV)
 
 - **gridcv** Compute an error rate over a grid of parameters
 
-### **Utilities**
+### Utilities
 
 - **mpar** Expand a grid of parameter values
 - **segmkf** Build segments for K-fold CV
 - **segmts** Build segments for test-set validation
 
-### **Performance scores**
+### Performance scores
 
 *Regression*
 - **ssr** SSR
@@ -285,13 +287,13 @@
 
 ## DATA PROCESSING
 
-### **Checking**
+### Checking
 
 - **dupl** Find replicated rows in a dataset
 - **tabdupl** Tabulate duplicated values in a vector
 - **miss** Find rows with missing data in a dataset
 
-### **Pre-processing**
+### Pre-processing
 
 - **detrend** Polynomial detrend
 - **snv** Standard-normal-deviation transformation
@@ -308,11 +310,11 @@
 
 - **blockscal** Scaling of multiblock data
 
-### **Interpolation**
+### Interpolation
 - **interpl** Sampling spectra by interpolation 
     -- From DataInterpolations.jl
 
-### **Calibration transfer**
+### Calibration transfer
 
 - **difmean** Compute a detrimental matrix (for calibration transfer) by difference of 
     two matrix-column means.
@@ -320,7 +322,7 @@
 - **calds** Direct standardization (DS)
 - **calpds** Piecewise direct standardization (PDS)
 
-### **Build training vs. test sets by sampling**
+### Build training vs. test sets by sampling
 
 - **samprand** Random (without replacement)
 - **sampsys** Systematic over a quantitative variable
