@@ -26,7 +26,7 @@ In **Jchemo**, a pipeline is a **chain of *K* modeling steps** containing
 - either ***K* transform steps**,
 - or ***K* - 1 transform steps** and **a final prediction step**. 
 
-The pipelines are built with function `pip`.
+The pipelines are built with function `pip`, see [**here**](https://github.com/mlesnoff/Jchemo.jl/tree/master?tab=readme-ov-file#fitting-a-pipeline).
 
 **Warnings** 
 - A breaking change has been made between **version 0.3.7** and **version 0.4.0** for the embedded syntax, with the use of the new function `model`. For instance: 
@@ -40,7 +40,7 @@ See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for detai
 ### Syntax
 
 Two syntaxes are allowed for **transformers** and **predictors**:
-1. the **embedded** syntax, using function `model`. 
+1. the **embedded** syntax, using function `model`, see [**here**](https://github.com/mlesnoff/Jchemo.jl/tree/master?tab=readme-ov-file#-examples-of-syntax-). 
 2. the direct syntax (the same as for versions <= 0.2.4),
 
 The **embedded** syntax is intended to make easier the building of ad'hoc pipelines (chains) of models, and is now favored. Only this embbeded syntax is given in the examples (**help pages** of the functions). 
@@ -56,7 +56,19 @@ julia> ?plskern
 ```
 
 The default `kwargs` values are defined in containers depending of the functions, available 
-[**here**](https://github.com/mlesnoff/Jchemo.jl/blob/master/src/_structures_param.jl).
+[**here**](https://github.com/mlesnoff/Jchemo.jl/blob/master/src/_structures_param.jl). For a given function, they also can be given from a fitted model without specifying arguments, e.g.:
+
+```julia
+julia> mod = model(plsnipals)
+julia> fit!(mod, X, y)
+julia> dump(mod.fm.par)
+
+Jchemo.ParPlsr
+  nlv: Int64 1
+  tol: Float64 1.4901161193847656e-8
+  maxit: Int64 200
+  scal: Bool false
+```
 
 The **datasets** used in the examples (help pages) are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets on chemometrics and other domains.
 
