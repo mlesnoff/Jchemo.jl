@@ -63,6 +63,7 @@ mod.fm.fm[1].H
 ```
 """ 
 function kdeda(X, y; kwargs...) 
+    ## To do: add scaling X (?)
     par = recovkw(ParKdeda, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
