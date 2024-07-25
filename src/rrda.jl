@@ -100,8 +100,7 @@ Compute Y-predictions from a fitted model.
     "lambda" to consider. If nothing, it is the parameter stored in the 
     fitted model.
 """ 
-function predict(object::Rrda, X; 
-        lb = nothing)
+function predict(object::Rrda, X; lb = nothing)
     X = ensure_mat(X)
     Q = eltype(X)
     Qy = eltype(object.lev)
@@ -111,8 +110,7 @@ function predict(object::Rrda, X;
     pred = list(Matrix{Qy}, le_lb)
     posterior = list(Matrix{Q}, le_lb)
     @inbounds for i = 1:le_lb
-        zp = predict(object.fm, X; 
-            lb = lb[i]).pred
+        zp = predict(object.fm, X; lb = lb[i]).pred
         z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
         pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)
         posterior[i] = zp
