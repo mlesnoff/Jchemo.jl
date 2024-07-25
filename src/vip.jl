@@ -37,12 +37,12 @@ Editions Technip, Paris.
 ```julia
 using Jchemo
 
-X = [1. 2 3 4; 4 1 6 7; 12 5 6 13; 
-    27 18 7 6; 12 11 28 7] 
-Y = [10. 11 13; 120 131 27; 8 12 4; 
-    1 200 8; 100 10 89] 
+X = [1. 2 3 4 ; 4 1 6 7; 12 5 6 13; 
+    27 18 7 6 ; 12 11 28 7] 
+Y = [10. 11 13 ; 120 131 27 ; 8 12 4; 
+    1 200 8 ; 100 10 89] 
 y = Y[:, 1] 
-ycla = [1; 1; 1; 2; 2]
+ycla = [1 ; 1 ; 1 ; 2 ; 2]
 
 nlv = 3
 mod = model(plskern; nlv)
@@ -54,6 +54,8 @@ res.imp
 fit!(mod, X, Y)
 vip(mod.fm).imp
 vip(mod.fm, Y).imp
+
+## For PLSDA
 
 mod = model(plsrda; nlv) 
 fit!(mod, X, ycla)
@@ -111,7 +113,7 @@ function vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
     p = nro(W)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     W2 = W[:, 1:nlv].^2
-    rdd = rd(Y, object.T[:, 1:nlv], object.weights)
+    rdd = rd(fscale(Y, object.yscales), object.T[:, 1:nlv], object.weights)
     A = rowsum(rdd .* W2)
     B = sum(rdd) * (1 / p)
     imp = sqrt.(A / B)
