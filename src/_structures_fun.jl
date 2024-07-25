@@ -428,6 +428,7 @@ end
 struct Lwmlr
     X::Matrix
     Y::Matrix
+    xscales::Vector
     par::ParKnn
 end
 

@@ -23,10 +23,13 @@ Keyword arguments:
 * `tolw` : For stabilization when very close neighbors.
 * `nlv` : Nb. latent variables (LVs) for the local (i.e. 
     inside each neighborhood) models.
-* `scal` : Boolean. If `true`, each column of `X` 
-    and `Y` is scaled by its uncorrected standard deviation
-    for the global dimension reduction and the local
-    models.
+* `scal` : Boolean. If `true`, (a) each column of the global `X` 
+    (and of the global `Y` if there is a preliminary PLS reduction dimension) 
+    is scaled by its uncorrected standard deviation before to compute 
+    the distances and the weights, and (b) the X and Y scaling is also done 
+    within each neighborhood (local level) for the weighted PLSR.
+* `verbose` : Boolean. If `true`, predicting information
+    are printed.
 
 Function `lwplsr` fits kNN-LWPLSR models such as in 
 Lesnoff et al. 2020. The general principle of the pipeline 
@@ -127,13 +130,13 @@ function lwplsr(X, Y; kwargs...)
     par = recovkw(ParLwplsr, kwargs).par 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    Q = eltype(X)
-    p = nco(X)
     if par.nlvdis == 0
         fm = nothing
     else
         fm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
     end
+    Q = eltype(X)
+    p = nco(X)
     xscales = ones(Q, p)
     if isnothing(fm) && par.scal
         xscales .= colstd(X)

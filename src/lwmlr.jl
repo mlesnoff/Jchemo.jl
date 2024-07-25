@@ -17,7 +17,12 @@ Keyword arguments:
 * `k` : The number of nearest neighbors to select for 
     each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-
+* `scal` : Boolean. If `true`, each column of the global `X` 
+    is scaled by its uncorrected standard deviation before 
+    to compute the distances and the weights.
+* `verbose` : Boolean. If `true`, predicting information
+    are printed.
+    
 This is the same principle as function `lwplsr` except 
 that MLR models are fitted on the neighborhoods, instead of 
 PLSR models.  The neighborhoods are computed directly on `X` 
@@ -52,6 +57,7 @@ mod = model(lwmlr; metric, h, k)
 fit!(mod, Ttrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
+dump(mod.fm.par)
 
 res = predict(mod, Ttest) ; 
 pnames(res) 
@@ -84,7 +90,13 @@ function lwmlr(X, Y; kwargs...)
     par = recovkw(ParKnn, kwargs).par
     X = ensure_mat(X)  
     Y = ensure_mat(Y)
-    Lwmlr(X, Y, par)
+    Q = eltype(X)
+    p = nco(X)
+    xscales = ones(Q, p)
+    if par.scal
+        xscales .= colstd(X)
+    end
+    Lwmlr(X, Y, xscales, par)
 end
 
 """
@@ -103,7 +115,13 @@ function predict(object::Lwmlr, X)
     tolw = object.par.tolw
     criw = object.par.criw
     squared = object.par.squared
-    res = getknn(object.X, X; metric, k)
+    if object.par.scal
+        zX1 = fscale(object.X, object.xscales)
+        zX2 = fscale(X, object.xscales)
+        res = getknn(zX1, zX2; metric, k)
+    else
+        res = getknn(object.X, X; metric, k)
+    end
     listw = copy(res.d)
     Threads.@threads for i = 1:m
         w = wdist(res.d[i]; h, criw, squared)
