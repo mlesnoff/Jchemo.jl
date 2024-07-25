@@ -24,10 +24,13 @@ Keyword arguments:
 * `nlv` : A range of nb. of latent variables (LVs) 
     to compute for the local (i.e. inside each neighborhood) 
     models.
-* `scal` : Boolean. If `true`, each column of `X` 
-    and `Y` is scaled by its uncorrected standard deviation
-    for the global dimension reduction and the local
-    models.
+* `scal` : Boolean. If `true`, (a) each column of the global `X` 
+    (and of the global `Y` if there is a preliminary PLS reduction dimension) 
+    is scaled by its uncorrected standard deviation before to compute 
+    the distances and the weights, and (b) the X and Y scaling is also done 
+    within each neighborhood (local level) for the weighted PLSR.
+* `verbose` : Boolean. If `true`, predicting information
+    are printed.
 
 Ensemblist method where the predictions are computed 
 by averaging the predictions of a set of models built 
