@@ -16,13 +16,12 @@ Keyword arguments:
 * `k` : The number of nearest neighbors to select for 
     each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Boolean. If `true`, each column of `X` 
-    and `Y` is scaled by its uncorrected standard deviation
-    for the global dimension reduction.
+* `scal` : Boolean. If `true`, each column of the global `X` 
+    is scaled by its uncorrected standard deviation before 
+    to compute the distances and the weights.
 
-The general principle of this function is as 
-follows (many other variants of kNNR pipelines 
-can be built):
+The general principle of this function is as follows (many other 
+variants of kNNR pipelines can be built):
 
 For each new observation to predict, the prediction is the 
 weighted mean over a selected neighborhood (in `X`) of 
@@ -57,6 +56,7 @@ mod = model(knnr; h, k)
 fit!(mod, Xtrain, ytrain)
 pnames(mod)
 pnames(mod.fm)
+dump(mod.fm.par)
 res = predict(mod, Xtest) ; 
 pnames(res) 
 res.listnn
