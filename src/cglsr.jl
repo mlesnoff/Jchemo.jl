@@ -12,13 +12,10 @@ Keyword arguments:
 * `filt` : Boolean. If `true`, CG filter factors 
     are computed (output `F`). Default = `false`.
 * `scal` : Boolean. If `true`, each column of `X` 
-    and `y` are scaled by its uncorrected standard 
-    deviation (default = `false`).
+    is scaled by its uncorrected standard deviation.
 
-`X` and `y` are internally centered. 
-
-CGLS algorithm "7.4.1" Bjorck 1996, p.289. The part of the 
-code computing the re-orthogonalization (Hansen 1998) and 
+CGLS algorithm "7.4.1" Bjorck 1996, p.289. In the present function, the 
+part of the code computing the re-orthogonalization (Hansen 1998) and 
 filter factors (Vogel 1987, Hansen 1998) is a transcription 
 (with few adaptations) of the Matlab function `cgls` (Saunders et al. 
 https://web.stanford.edu/group/SOL/software/cgls/; Hansen 2008).
@@ -89,16 +86,16 @@ function cglsr!(X::Matrix, y::Matrix; kwargs...)
     xmeans = colmean(X)
     ymeans = colmean(y)
     xscales = ones(Q, p)
+    ## No need to fscale y
+    ## below yscales is built only for consistency
     yscales = ones(Q, q)
     if par.scal 
         xscales .= colstd(X)
-        yscales .= colstd(y)
         fcscale!(X, xmeans, xscales)
-        fcscale!(y, ymeans, yscales)
     else
         fcenter!(X, xmeans)
-        fcenter!(y, ymeans)
     end
+    fcenter!(y, ymeans)
     ## Pre-allocation and initialization
     B = similar(X, p, nlv)
     b = zeros(Q, p) 
