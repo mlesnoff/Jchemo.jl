@@ -28,8 +28,8 @@ by the two following successive steps (for each class i):
 Then the QDA algorithm is run on matrices {Wi(2)}.
 
 Function `rda` is slightly different from the regularization 
-expression used by Friedman 1989 (Eq.18). It shrinks the 
-covariance matrices Wi(2) to the diagonal of the Idendity 
+expression used by Friedman 1989 (Eq.18): the choice is to shrink 
+the covariance matrices Wi(2) to the diagonal of the Idendity 
 matrix (ridge regularization; e.g. Guo et al. 2007).  
 
 Particular cases:
