@@ -86,8 +86,8 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParMbplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     q = nco(Y)
-    fmsc = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
-    transf!(fmsc, Xbl)
+    fmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
+    transf!(fmbl, Xbl)
     X = reduce(hcat, Xbl)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
@@ -98,7 +98,7 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(Y, ymeans)
     end
     fm = plskern(X, Y, weights; nlv = par.nlv, scal = false)
-    Mbplsr(fm, fm.T, fm.R, fm.C, fmsc, ymeans, yscales, weights, par)
+    Mbplsr(fm, fm.T, fm.R, fm.C, fmbl, ymeans, yscales, weights, par)
 end
 
 """ 
@@ -112,7 +112,7 @@ Compute latent variables (LVs = scores T) from a fitted model.
 function transf(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    zXbl = transf(object.fmsc, Xbl)    
+    zXbl = transf(object.fmbl, Xbl)    
     reduce(hcat, zXbl) * vcol(object.R, 1:nlv) 
 end
 
@@ -154,7 +154,7 @@ function Base.summary(object::Mbplsr, Xbl)
     n, nlv = size(object.T)
     nbl = length(Xbl)
     sqrtw = sqrt.(object.weights.w)
-    zXbl = transf(object.fmsc, Xbl)
+    zXbl = transf(object.fmbl, Xbl)
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end

@@ -93,9 +93,9 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     length(nlv) == 1 ? nlv = repeat([nlv], nbl) : nothing  
     D = Diagonal(weights.w)
     ## 'bscal = :none' since block-scaling has no effect on SOPLS  
-    fmsc = blockscal(Xbl, weights; bscal = :none, centr = false, scal = par.scal)
+    fmbl = blockscal(Xbl, weights; bscal = :none, centr = false, scal = par.scal)
     ## End
-    transf!(fmsc, Xbl)
+    transf!(fmbl, Xbl)
     yscales = ones(Q, q)
     if par.scal 
         yscales .= colstd(Y, weights)
@@ -120,7 +120,7 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
             fit .+= predict(fm[i], X).pred 
         end
     end
-    Soplsr(fm, T, fit, b, fmsc, yscales, par)
+    Soplsr(fm, T, fit, b, fmbl, yscales, par)
 end
 
 """ 
@@ -132,7 +132,7 @@ Compute latent variables (LVs = scores T) from a fitted model.
 """ 
 function transf(object::Soplsr, Xbl)
     nbl = length(Xbl)
-    zXbl = transf(object.fmsc, Xbl)   
+    zXbl = transf(object.fmbl, Xbl)   
     T = transf(object.fm[1], zXbl[1])
     if nbl > 1
         @inbounds for i = 2:nbl
@@ -152,7 +152,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Soplsr, Xbl)
     nbl = length(Xbl)
-    zXbl = transf(object.fmsc, Xbl)   
+    zXbl = transf(object.fmbl, Xbl)   
     T = transf(object.fm[1], zXbl[1])
     pred =  object.fm[1].ymeans' .+ T * object.fm[1].C'
     if nbl > 1

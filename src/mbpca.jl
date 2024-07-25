@@ -126,8 +126,8 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
     n = nro(Xbl[1])
     nlv = par.nlv
     sqrtw = sqrt.(weights.w)
-    fmsc = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
-    transf!(fmsc, Xbl)
+    fmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
+    transf!(fmbl, Xbl)
     # Row metric
     @inbounds for k = 1:nbl
         Xbl[k] = sqrtw .* Xbl[k]
@@ -184,7 +184,7 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
         end
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
-    Mbpca(T, U, W, Tbl, Tb, Wbl, lb, mu, fmsc, weights, niter, par)
+    Mbpca(T, U, W, Tbl, Tb, Wbl, lb, mu, fmbl, weights, niter, par)
 end
 
 """ 
@@ -211,7 +211,7 @@ function transf_all(object::Mbpca, Xbl; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
     m = size(Xbl[1], 1)
-    zXbl = transf(object.fmsc, Xbl)
+    zXbl = transf(object.fmbl, Xbl)
     U = similar(zXbl[1], m, nlv)
     TB = similar(zXbl[1], m, nbl)
     Tbl = list(Matrix{Q}, nbl)
@@ -247,7 +247,7 @@ function Base.summary(object::Mbpca, Xbl)
     nbl = length(Xbl)
     nlv = nco(object.T)
     sqrtw = sqrt.(object.weights.w)
-    zXbl = transf(object.fmsc, Xbl)
+    zXbl = transf(object.fmbl, Xbl)
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end
