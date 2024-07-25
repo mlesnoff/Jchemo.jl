@@ -87,7 +87,7 @@ function cglsr!(X::Matrix, y::Matrix; kwargs...)
     ymeans = colmean(y)
     xscales = ones(Q, p)
     ## No need to fscale y
-    ## below yscales is built only for consistency
+    ## below yscales is built only for consistency with PLSR
     yscales = ones(Q, q)
     if par.scal 
         xscales .= colstd(X)
