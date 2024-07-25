@@ -17,15 +17,17 @@ Keyword arguments:
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum
     between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `scal` : Boolean. If `true`, each column of `X` 
-    and Y_dummy is scaled by its uncorrected standard deviation.
+    and Ydummy is scaled by its uncorrected standard deviation
+    in the PLS computation.
 
-QDA on PLS latent variables. The training variable `y` 
-(univariate class membership) is transformed to a dummy table 
-(Ydummy) containing nlev columns, where nlev is the number of 
-classes present in `y`. Each column of Ydummy is a dummy (0/1) 
-variable. Then, a PLSR2 (i.e. multivariate) is run on 
-{`X`, Ydummy}, returning a score matrix `T`. Finally, a QDA 
-(possibly with continuum) is done on {`T`, `y`}. 
+QDA on PLS latent variables:
+1) The training variable `y` (univariate class membership) is 
+    transformed to a dummy table (Ydummy) containing nlev columns, where 
+    nlev is the number of classes present in `y`. Each column of Ydummy 
+    is a dummy (0/1) variable. 
+2) A weighted multivariate PLS ("PLS2") is run on {`X`, Ydummy}, returning 
+    a score matrix `T`.
+3) A QDA (possibly with continuum) is done on {`T`, `y`}. 
 
 See functions `qda` and `plslda` for details (arguments `weights`, `prior` 
 and `alpha`) and examples.

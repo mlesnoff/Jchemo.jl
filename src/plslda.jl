@@ -15,15 +15,17 @@ Keyword arguments:
     the number of classes) giving the prior weight for each class 
     (the vector must be sorted in the same order as `mlev(y)`).
 * `scal` : Boolean. If `true`, each column of `X` 
-    and Y_dummy is scaled by its uncorrected standard deviation.
+    and Ydummy is scaled by its uncorrected standard deviation
+    in the PLS computation.
 
-LDA on PLS latent variables. The training variable `y` 
-(univariate class membership) is transformed to a dummy table 
-(Ydummy) containing nlev columns, where nlev is the number of 
-classes present in `y`. Each column of Ydummy is a dummy (0/1) 
-variable. Then, a weighted multivariate PLSR ("PLSR2") is run on 
-{`X`, Ydummy}, returning a score matrix `T`. Finally, a LDA 
-is done on {`T`, `y`}. 
+LDA on PLS latent variables: 
+1) The training variable `y` (univariate class membership) is 
+    transformed to a dummy table (Ydummy) containing nlev columns, where 
+    nlev is the number of classes present in `y`. Each column of Ydummy 
+    is a dummy (0/1) variable. 
+2) A weighted multivariate PLS ("PLS2") is run on {`X`, Ydummy}, returning 
+    a score matrix `T`.
+3) A LDA is done on {`T`, `y`}. 
 
 In these `plslda` functions:
 - observation weights (argument `weights`) are used to compute the PLS scores 

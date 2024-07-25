@@ -17,11 +17,12 @@ Keyword arguments:
 * Keyword arguments of function `dmkern` (bandwidth 
     definition) can also be specified here.
 * `scal` : Boolean. If `true`, each column of `X` 
-    and Y_dummy is scaled by its uncorrected standard deviation.
+    and Ydummy is scaled by its uncorrected standard deviation
+    in the PLS computation.
 
 The principle is the same as functions `plslda` and 
-`plsqda` except that class densities are estimated from `dmkern` 
-instead of `dmnorm`.
+`plsqda` except that the class densities are estimated from 
+`dmkern` instead of `dmnorm`.
 
 ## Examples
 ```julia

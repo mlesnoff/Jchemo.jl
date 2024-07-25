@@ -20,7 +20,8 @@ Keyword arguments:
 * Keyword arguments of function `dmkern` (bandwidth 
     definition) can also be specified here.
 * `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+    and Ydummy is scaled by its uncorrected standard deviation
+    in the PLS computation.
 
 Same as function `plskdeda` (PLS-KDEDA) except that 
 a kernel PLSR (function `kplsr`), instead of a 

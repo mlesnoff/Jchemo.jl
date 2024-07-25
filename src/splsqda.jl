@@ -28,7 +28,8 @@ Keyword arguments:
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum
     between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+    and Ydummy is scaled by its uncorrected standard deviation
+    in the PLS computation.
 
 Same as function `plsqda` (PLS-LDA) except that 
 a sparse PLSR (function `splskern`), instead of a 

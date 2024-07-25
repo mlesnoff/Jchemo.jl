@@ -14,16 +14,17 @@ Keyword arguments:
     the number of classes) giving the prior weight for each class 
     (the vector must be sorted in the same order as `mlev(y)`).
 * `scal` : Boolean. If `true`, each column of `X` 
-    and Y_dummy is scaled by its uncorrected standard deviation.
+    and Ydummy is scaled by its uncorrected standard deviation.
 
-This is the usual "PLSDA" (prediction of the Y-dummy table 
-by a PLS2 regression). The training variable `y` 
-(univariate class membership) is transformed to a dummy table 
-(Ydummy) containing nlev columns, where nlev is the number of 
-classes present in `y`. Each column of Ydummy is a dummy (0/1) 
-variable. Then, a weighted multivariate PLSR ("PLSR2") is run on 
-{`X`, Ydummy}, returning predictions of the dummy 
-variables (= object `posterior` returned by fuction `predict`).  
+Usual "PLSDA" (prediction of the Y-dummy table by a PLS2 regression): 
+1) The training variable `y` (univariate class membership) is 
+    transformed to a dummy table (Ydummy) containing nlev columns, where 
+    nlev is the number of classes present in `y`. Each column of Ydummy 
+    is a dummy (0/1) variable. 
+2) A weighted multivariate PLSR ("PLSR2") is run on {`X`, Ydummy}, returning 
+    predictions of the dummy variables (= object `posterior` returned by 
+    fuction `predict`).  
+
 These predictions can be considered as unbounded estimates (i.e. 
 eventuall outside of [0, 1]) of the class membership probabilities. 
 For a given observation, the final prediction is the class 

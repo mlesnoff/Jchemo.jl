@@ -19,7 +19,7 @@ Keyword arguments:
 * `tolw` : For stabilization when very close neighbors.
 * `scal` : Boolean. If `true`, each column of the global `X` 
     is scaled by its uncorrected standard deviation before 
-    to compute the distances and the weights.
+    the distance and weight computations.
 * `verbose` : Boolean. If `true`, predicting information
     are printed.
     
@@ -129,8 +129,8 @@ function predict(object::Lwmlr, X)
         listw[i] = w
     end
     ## End
-    pred = locw(object.X, object.Y, X; listnn = res.ind, listw, 
-        fun = mlr, verbose = object.par.verbose).pred
+    pred = locw(object.X, object.Y, X; listnn = res.ind, listw, fun = mlr, 
+        verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end
 

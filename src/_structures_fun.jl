@@ -633,6 +633,7 @@ end
 struct Lwmlrda
     X::Matrix
     y::AbstractMatrix
+    xscales::Vector
     lev::Vector
     ni::Vector{Int}
     par::ParKnn

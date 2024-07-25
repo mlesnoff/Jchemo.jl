@@ -150,12 +150,11 @@ Compute y-predictions from a fitted model.
 function predict(object::Rda, X)
     X = ensure_mat(X)
     m = nro(X)
-    X = fscale(X, object.xscales)
     lev = object.lev
     nlev = length(lev) 
     dens = similar(X, m, nlev)
     @inbounds for i in eachindex(lev)
-        dens[:, i] .= vec(predict(object.fm[i], X).pred)
+        dens[:, i] .= vec(predict(object.fm[i], fscale(X, object.xscales)).pred)
     end
     A = object.priors' .* dens
     v = sum(A, dims = 2)

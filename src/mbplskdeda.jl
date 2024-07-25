@@ -19,8 +19,8 @@ Keyword arguments:
 * Keyword arguments of function `dmkern` (bandwidth 
     definition) can also be specified here.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
-    and `Y` is scaled by its uncorrected standard deviation 
-    (before the block scaling).
+    and Ydummy is scaled by its uncorrected standard deviation 
+    (before the block scaling) in the MBPLS computation.
 
 This is the same principle as function `plskdeda`, for multiblock X-data.
 

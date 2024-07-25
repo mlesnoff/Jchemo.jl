@@ -16,9 +16,11 @@ Keyword arguments:
 * `k` : The number of nearest neighbors to select for 
     each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Boolean. If `true`, each column of `X` 
-    and `Y` is scaled by its uncorrected standard deviation
-    for the global dimension reduction.
+* `scal` : Boolean. If `true`, each column of the global `X` 
+    is scaled by its uncorrected standard deviation before 
+    the distance and weight computations.
+* `verbose` : Boolean. If `true`, predicting information
+    are printed.
 
 This is the same principle as function `lwmlr` except 
 that MLR-DA models, instead of MLR models, are fitted 
@@ -71,7 +73,13 @@ function lwmlrda(X, y; kwargs...)
     X = ensure_mat(X)
     y = ensure_mat(y)
     taby = tab(y)
-    Lwmlrda(X, y, taby.keys, taby.vals, par) 
+    Q = eltype(X)
+    p = nco(X)
+    xscales = ones(Q, p)
+    if par.scal
+        xscales .= colstd(X)
+    end
+    Lwmlrda(X, y, xscales, taby.keys, taby.vals, par)  
 end
 
 """
@@ -90,7 +98,13 @@ function predict(object::Lwmlrda, X)
     tolw = object.par.tolw
     criw = object.par.criw
     squared = object.par.squared
-    res = getknn(object.X, X; metric, k)
+    if object.par.scal
+        zX1 = fscale(object.X, object.xscales)
+        zX2 = fscale(X, object.xscales)
+        res = getknn(zX1, zX2; metric, k)
+    else
+        res = getknn(object.X, X; metric, k)
+    end
     listw = copy(res.d)
     Threads.@threads for i = 1:m
         w = wdist(res.d[i]; h, criw, squared)
@@ -98,8 +112,8 @@ function predict(object::Lwmlrda, X)
         listw[i] = w
     end
     ## End
-    pred = locw(object.X, object.y, X; listnn = res.ind, listw, 
-        fun = mlrda, verbose = object.par.verbose).pred
+    pred = locw(object.X, object.y, X; listnn = res.ind, listw, fun = mlrda, 
+        verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end
 

@@ -25,14 +25,17 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class 
     membership. Possible values are: `:unif` (uniform), 
     `:prop` (proportional).
-* `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation
-    for the global dimension reduction and the local
-    models.
+* `scal` : Boolean. If `true`, (a) each column of the global `X` 
+    (and of the global Ydummy if there is a preliminary PLS reduction dimension) 
+    is scaled by its uncorrected standard deviation before to compute 
+    the distances and the weights, and (b) the X and Ydummy scaling is also done 
+    within each neighborhood (local level) for the weighted PLS.
+* `verbose` : Boolean. If `true`, predicting information
+    are printed.
 
 This is the same principle as function `lwplsr` except 
-that PLS-LDA models, instead of PLSR models, are fitted 
-on the neighborhoods.
+that a PLS-LDA model, instead of a PLSR model, is fitted 
+on each neighborhoods.
 
 ## Examples
 ```julia

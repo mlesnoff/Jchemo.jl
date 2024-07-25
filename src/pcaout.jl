@@ -19,14 +19,14 @@ Robust PCA combining outlyingness measures and weighted PCA (WPCA).
 Observations (`X`-rows) receive weights depending on outlyingness 
 with the objective to remove the effect of multivariate `X`-outliers 
 that have potentially bad leverages.
-* 1) The Stahel-Donoho outlyingness (Maronna and Yohai, 1995) is computed 
+1) The Stahel-Donoho outlyingness (Maronna and Yohai, 1995) is computed 
     (function `outstah`). The proportion `prm` of the observations with the 
     highest outlyingness values receive a weight w1 = 0 (the other receive a weight w1 = 1).
-* 2) An outlyingness computed from the Euclidean distance to center 
+2) An outlyingness computed from the Euclidean distance to center 
     (function `outstah`) is computed. The proportion `prm` of the observations 
     with the highest outlyingness values receive a weight w2 = 0 
     (the other receive a weight w2 = 1).
-* 3) The final weights of the observations are computed by weights.w * w1 * w2
+3) The final weights of the observations are computed by weights.w * w1 * w2
     that is used in a weighted PCA.
 
 By default, the function uses `prm = .3` (such as in the ROBPCA algorithm 

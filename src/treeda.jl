@@ -83,8 +83,7 @@ function treeda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
         xscales .= colstd(X)
         X = fscale(X, xscales)
     end
-    n_subfeatures = Int(
-        round(par.n_subfeatures))
+    n_subfeatures = Int(round(par.n_subfeatures))
     min_purity_increase = 0
     fm = build_tree(y, X,
         n_subfeatures,
@@ -113,8 +112,7 @@ function predict(object::Treeda, X)
         pred = apply_tree(object.fm, fscale(X, object.xscales))
     ## Forest 
     else
-        pred = apply_forest(object.fm, fscale(X, object.xscales); 
-            use_multithreading = object.par.mth)
+        pred = apply_forest(object.fm, fscale(X, object.xscales); use_multithreading = object.par.mth)
     end
     pred = reshape(pred, m, 1)
     (pred = pred,)

@@ -25,7 +25,7 @@ Keyword arguments:
     the number of classes) giving the prior weight for each class 
     (the vector must be sorted in the same order as `mlev(y)`).
 * `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+    and Ydummy is scaled by its uncorrected standard deviation.
 
 Same as function `plsrda` (PLSR-DA) except that 
 a sparse PLSR (function `splskern`), instead of a 

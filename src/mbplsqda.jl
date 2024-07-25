@@ -19,8 +19,8 @@ Keyword arguments:
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum
     between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
-    and `Y` is scaled by its uncorrected standard deviation 
-    (before the block scaling).
+    and Ydummy is scaled by its uncorrected standard deviation 
+    (before the block scaling) in the MBPLS computation.
 
 This is the same principle as function `plsqda`, for multiblock X-data.
 
