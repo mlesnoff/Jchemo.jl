@@ -3,7 +3,7 @@
 ## *Version 0.5.0*
 
 - News
-    - The management of the function arguments has been deeply modified. 
+    - The management of the arguments of the functions has been deeply modified. 
     The unique container 'Par' has been removed, and replaced by independent 
     containers between functions or groups of functions (eg. 'ParPca').
     - **umap**: UMAP: Uniform manifold approximation and projection for 
@@ -19,8 +19,6 @@
         - **replacebylev** to **recod_catbylev**
         - **replacebylev2** to **recod_indbylev**
         - **replacedict** to **recod_catbydict**
-
-
         - **treer_dt**, **treeda_dt**, **rfr_dt**, **rfda_dt** to **treer**, **treeda**,
             **rfr**, **rfda**.   
     - **rp** : argument 'mrp' renamed to 'meth'.
