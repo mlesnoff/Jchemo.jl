@@ -82,8 +82,7 @@ conf(res.pred, ytest).cnt
 ```
 """ 
 function rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
-    ## For DA in DecisionTree.jl, 
-    ## y must be Int or String
+    ## For DA in DecisionTree.jl, y must be Int or String
     par = recovkw(ParRf, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
