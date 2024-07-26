@@ -22,7 +22,8 @@ Keyword arguments:
     and Ydummy is scaled by its uncorrected standard deviation 
     (before the block scaling) in the MBPLS computation.
 
-This is the same principle as function `plskdeda`, for multiblock X-data.
+The principle is the same as function `mbplsqda` except that the 
+densities by class are estimated from `dmkern` instead of `dmnorm`.
 
 See function `mbplslda` for examples.
 

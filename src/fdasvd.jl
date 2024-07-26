@@ -18,9 +18,9 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-FDA by a weighted SVD factorization of the matrix of the 
-class centers (after spherical transformaton). 
-The function gives the same results as function `fda`.
+FDA by a weighted SVD factorization of the matrix of the class centers 
+(after spherical transformaton). The function gives the same results as 
+function `fda`.
 
 See function `fda` for details and examples.
 """ 

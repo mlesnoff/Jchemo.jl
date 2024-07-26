@@ -32,13 +32,11 @@ If `X` is ill-conditionned, a ridge regularization can be used:
 * If `lb` > 0, W is replaced by W + `lb` * I, 
     where I is the Idendity matrix.
 
-In these `fda` functions, observation weights (argument `weights`) are used 
-to compute matrices W and B. 
-
-In the high-level version, the observation weights are automatically 
-defined by the given priors (argument `prior`): the sub-total weights by 
-class are set equal to the prior probabilities. For other choices, 
-use the low-level versions.
+In the high-level version of the present functions, the observation 
+weights are automatically defined by the given priors (argument `prior`): 
+the sub-totals by class of the observation weights are set equal to the prior 
+probabilities. The low-level version (argument `weights`) allows to implement 
+other choices.
 
 ## Examples
 ```julia

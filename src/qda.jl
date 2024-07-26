@@ -15,9 +15,9 @@ Keyword arguments:
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum
     between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 
-In the high-level version of the present `qda` functions, the observation 
+In the high-level version of the present functions, the observation 
 weights are automatically defined by the given priors (argument `prior`): 
-the sub-total by class of the observation weights are set equal to the prior 
+the sub-totals by class of the observation weights are set equal to the prior 
 probabilities. The low-level version (argument `weights`) allows to implement 
 other choices.
 

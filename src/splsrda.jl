@@ -31,8 +31,6 @@ Same as function `plsrda` (PLSR-DA) except that
 a sparse PLSR (function `splskern`), instead of a 
 PLSR (function `plskern`), is run on the Y-dummy table. 
 
-See function `plsrda` and `splskern` for details.
-
 ## Examples
 ```julia
 using Jchemo, JchemoData, JLD2

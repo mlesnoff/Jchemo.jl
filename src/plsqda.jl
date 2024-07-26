@@ -20,17 +20,27 @@ Keyword arguments:
     and Ydummy is scaled by its uncorrected standard deviation
     in the PLS computation.
 
-QDA on PLS latent variables:
-1) The training variable `y` (univariate class membership) is 
-    transformed to a dummy table (Ydummy) containing nlev columns, where 
-    nlev is the number of classes present in `y`. Each column of Ydummy 
-    is a dummy (0/1) variable. 
-2) A weighted multivariate PLS ("PLS2") is run on {`X`, Ydummy}, returning 
-    a score matrix `T`.
-3) A QDA (possibly with continuum) is done on {`T`, `y`}. 
+QDA on PLS latent variables. The method is as follows:
 
-See functions `qda` and `plslda` for details (arguments `weights`, `prior` 
-and `alpha`) and examples.
+1) The training variable `y` (univariate class membership) is 
+    transformed to a dummy table (Ydummy) containing nlev columns, 
+    where nlev is the number of classes present in `y`. Each column of 
+    Ydummy is a dummy (0/1) variable. 
+2) A multivariate PLSR (PLSR2) is run on {`X`, Ydummy}, returning 
+    a score matrix `T`.
+3) A QDA (possibly with continuum) is done on {`T`, `y`}, returning estimates
+    of posterior probabilities (∊ [0, 1]) of class membership.
+4) For a given observation, the final prediction is the class 
+    corresponding to the dummy variable for which the probability 
+    estimate is the highest.
+
+In the high-level version of the present functions, the observation 
+weights are automatically defined by the given priors (argument `prior`): 
+the sub-totals by class of the observation weights are set equal to the prior 
+probabilities. The low-level version (argument `weights`) allows to implement 
+other choices.
+
+See function `plslda` for examples.
 """ 
 function plsqda(X, y; kwargs...)
     par = recovkw(ParPlsqda, kwargs).par

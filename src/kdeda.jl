@@ -13,9 +13,8 @@ Keyword arguments:
 * Keyword arguments of function `dmkern` (bandwidth 
     definition) can also be specified here.
 
-The principle is the same as functions `lda` and `qda` 
-except that densities are estimated from function `dmkern` 
-instead of function `dmnorm`. 
+The principle is the same as functions `qda` except that densities by class 
+are estimated from function `dmkern` instead of function `dmnorm`. 
 
 ## Examples
 ```julia

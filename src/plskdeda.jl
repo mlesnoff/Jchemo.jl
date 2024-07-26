@@ -20,9 +20,8 @@ Keyword arguments:
     and Ydummy is scaled by its uncorrected standard deviation
     in the PLS computation.
 
-The principle is the same as functions `plslda` and 
-`plsqda` except that the class densities are estimated from 
-`dmkern` instead of `dmnorm`.
+The principle is the same as function `plsqda` except that the 
+densities by class are estimated from `dmkern` instead of `dmnorm`.
 
 ## Examples
 ```julia

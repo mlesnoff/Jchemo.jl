@@ -16,21 +16,25 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
 
-The training variable `y` (univariate class membership) is 
-transformed to a dummy table (Ydummy) containing nlev columns, 
-where nlev is the number of classes present in `y`. Each column of 
-Ydummy is a dummy (0/1) variable. Then, a ridge regression 
-(RR) is run on {`X`, Ydummy}, returning predictions of the dummy 
-variables (= object `posterior` returned by fuction `predict`).  
-These predictions can be considered as unbounded estimates (i.e. 
-eventuall outside of [0, 1]) of the class membership probabilities. 
-For a given observation, the final prediction is the class 
-corresponding to the dummy variable for which the probability 
-estimate is the highest.
+The method is as follows:
 
-In the high-level version of the function, the observation weights used in 
-the RR are defined with argument `prior`. For other choices, use the 
-low-level version (argument `weights`).
+1) The training variable `y` (univariate class membership) is 
+    transformed to a dummy table (Ydummy) containing nlev columns, 
+    where nlev is the number of classes present in `y`. Each column of 
+    Ydummy is a dummy (0/1) variable. 
+2) Then, a ridge regression (RR) is run on {`X`, Ydummy}, returning 
+    predictions of the dummy variables (= object `posterior` returned by 
+    fuction `predict`).  These predictions can be considered as unbounded estimates 
+    (i.e. eventuall outside of [0, 1]) of the class membership probabilities.
+3) For a given observation, the final prediction is the class 
+    corresponding to the dummy variable for which the probability 
+    estimate is the highest.
+
+In the high-level version of the present functions, the observation 
+weights are automatically defined by the given priors (argument `prior`): 
+the sub-totals by class of the observation weights are set equal to the prior 
+probabilities. The low-level version (argument `weights`) allows to implement 
+other choices.
 
 ## Examples
 ```julia

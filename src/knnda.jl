@@ -21,9 +21,9 @@ Keyword arguments:
     the distance and weight computations.
 
 This function has the same principle as function 
-`knnr` except that a discrimination is done instead of a 
-regression. A weighted vote is done over the neighborhood, 
-and the prediction corresponds to the most frequent class.
+`knnr` except that a discrimination replaces the regression. 
+A weighted vote is done over the neighborhood, and the prediction 
+corresponds to the most frequent class.
  
 ## Examples
 ```julia

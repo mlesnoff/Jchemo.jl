@@ -14,9 +14,9 @@ Keyword arguments:
     the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 
-In the high-level version of the present `lda` functions, the observation 
+In the high-level version of the present functions, the observation 
 weights are automatically defined by the given priors (argument `prior`): 
-the sub-total by class of the observation weights are set equal to the prior 
+the sub-totals by class of the observation weights are set equal to the prior 
 probabilities. The low-level version (argument `weights`) allows to implement 
 other choices.
 
