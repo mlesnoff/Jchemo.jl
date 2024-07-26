@@ -11,23 +11,20 @@ Keyword arguments:
     membership. Possible values are: `:unif` (uniform), 
     `:prop` (proportional), or a vector (of length equal to 
     the number of classes) giving the prior weight for each class 
-    (the vector must be sorted in the same order as `mlev(y)`).
+    (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum
     between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 
-A value `alpha` > 0 shrinks the class-covariances by class 
-(Wi) toward a common LDA covariance ("within" W). This corresponds to 
-the "first regularization (Eqs.16)" described in Friedman 1989
-(where `alpha` is referred to as "lambda").
+In the high-level version of the present `qda` functions, the observation 
+weights are automatically defined by the given priors (argument `prior`): 
+the sub-total by class of the observation weights are set equal to the prior 
+probabilities. The low-level version (argument `weights`) allows to implement 
+other choices.
 
-In these `qda` functions, observation weights (argument `weights`) are used 
-to compute covariance matrices Wi and W. Argument `prior` is used to define 
-the usual prior class probabilities. 
-
-In the high-level version, the observation weights are automatically 
-defined by the given priors (`prior`): the sub-total weights by class are set 
-equal to the prior probabilities. For other choices, use the low-level 
-version.
+For the continuum approach, a value `alpha` > 0 shrinks the class-covariances 
+by class (Wi) toward a common LDA covariance ("within" W). This corresponds to 
+the "first regularization (Eqs.16)" described in Friedman 1989 (where `alpha` 
+is referred to as "lambda").
 
 ## References
 Friedman JH. Regularized Discriminant Analysis. Journal 
@@ -124,5 +121,3 @@ function qda(X, y, weights::Weight; kwargs...)
     Qda(fm, res.Wi, ct, priors, ni, lev, weights, par)
 end
 
-
-    

@@ -12,16 +12,13 @@ Keyword arguments:
     membership. Possible values are: `:unif` (uniform), 
     `:prop` (proportional), or a vector (of length equal to 
     the number of classes) giving the prior weight for each class 
-    (the vector must be sorted in the same order as `mlev(y)`).
+    (in case of vector, it must be sorted in the same order as `mlev(y)`).
 
-In these `lda` functions, observation weights (argument `weights`) are used 
-to compute the intra-class (= "within") covariance matrix. Argument `prior` 
-is used to define the usual prior class probabilities. 
-
-In the high-level version, the observation weights are automatically 
-defined by the given priors (`prior`): the sub-total weights by class are set 
-equal to the prior probabilities. For other choices, use the low-level 
-version.
+In the high-level version of the present `lda` functions, the observation 
+weights are automatically defined by the given priors (argument `prior`): 
+the sub-total by class of the observation weights are set equal to the prior 
+probabilities. The low-level version (argument `weights`) allows to implement 
+other choices.
 
 ## Examples
 ```julia

@@ -580,7 +580,8 @@ tab(x)
 weights = mweightcla(x)
 #weights = mweightcla(x; prior = :prop)
 #weights = mweightcla(x; prior = [.1, .7, .2])
-aggstat(weights.w, x; fun = sum).X
+res = aggstat(weights.w, x; fun = sum)
+[res.lev res.X]
 ```
 """
 function mweightcla(x::Vector; prior::Union{Symbol, Vector} = :unif)
