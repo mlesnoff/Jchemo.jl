@@ -6,6 +6,7 @@
     - The management of the arguments of the functions has been deeply modified. 
     The unique container 'Par' has been removed, and replaced by independent 
     containers between functions or groups of functions (eg. 'ParPca').
+    - **defpar** Display the keyword arguments (with their default values) of a function.
     - **umap**: UMAP: Uniform manifold approximation and projection for 
     dimension reduction (uses package **UMAP.jl** added as dependence).
 
