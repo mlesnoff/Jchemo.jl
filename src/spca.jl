@@ -127,8 +127,7 @@ function spca(X; kwargs...)
 end
 
 function spca(X, weights::Weight; kwargs...)
-    spca!(copy(ensure_mat(X)), weights; 
-        kwargs...)
+    spca!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
 function spca!(X::Matrix, weights::Weight; kwargs...)
