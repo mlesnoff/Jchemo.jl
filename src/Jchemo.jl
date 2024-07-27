@@ -25,6 +25,7 @@ include("_pip.jl")
 include("_pip_typ_fun.jl")
 include("_pip_work.jl")
 ## End
+include("defpar.jl")
 
 ######---- Misc
 
@@ -246,6 +247,7 @@ export
     fit!,
     transf!,
     pip,
+    defpar,
     ######---- Utilities
     aggstat, aggsum,
     colmad, colmean, colmed, colnorm, colstd, colsum, colvar,

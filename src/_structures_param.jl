@@ -196,7 +196,7 @@ Base.@kwdef mutable struct ParRrr
     scal::Bool = false                   
 end 
 
-Base.@kwdef mutable struct ParPlsrOut
+Base.@kwdef mutable struct ParPlsrout
     nlv::Int = 1 
     prm::Float64 = .3         
     scal::Bool = false 

@@ -71,7 +71,7 @@ function plsrout(X, Y, weights::Weight; kwargs...)
 end
 
 function plsrout!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkw(ParPlsrOut, kwargs).par 
+    par = recovkw(ParPlsrout, kwargs).par 
     n, p = size(X)
     nlvout = 30
     P = rand(0:1, p, nlvout)
