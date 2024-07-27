@@ -19,11 +19,11 @@ function defpar(fun::Function)
 
     in((mlr, mlrpinv, mlrvec)).(fun) ? dump(Jchemo.ParMlr()) : nothing
 
-    in((pcr)).(fun) ? dump(Jchemo.ParPcr()) : nothing
+    in((pcr,)).(fun) ? dump(Jchemo.ParPcr()) : nothing
 
     in((plskern, plsnipals, plswold, plsrosa, plssimp, plsravg, plsravg_unif)).(fun) ? dump(Jchemo.ParPlsr()) : nothing
     in((cglsr, aicplsr)).(fun) ? dump(Jchemo.ParCglsr()) : nothing
-    in((plsrout)).(fun) ? dump(Jchemo.ParPlsrout()) : nothing
+    in((plsrout,)).(fun) ? dump(Jchemo.ParPlsrout()) : nothing
 
     in((krr,)).(fun) ? dump(Jchemo.ParKrr()) : nothing
     in((kplsr, dkplsr)).(fun) ? dump(Jchemo.ParKplsr()) : nothing
@@ -37,7 +37,7 @@ function defpar(fun::Function)
     in((dmkern,)).(fun) ? dump(Jchemo.ParDmkern()) : nothing
 
     in((lda,)).(fun) ? dump(Jchemo.ParLda()) : nothing
-    in((kdeda)).(fun) ? dump(Jchemo.ParKdeda()) : nothing
+    in((kdeda,)).(fun) ? dump(Jchemo.ParKdeda()) : nothing
     
     in((mlrda,)).(fun) ? dump(Jchemo.ParMlrda()) : nothing
     in((plsrda, plslda)).(fun) ? dump(Jchemo.ParPlsda()) : nothing
