@@ -169,10 +169,15 @@ Base.@kwdef mutable struct ParMlr
     noint::Bool = false                      
 end 
 
-Base.@kwdef mutable struct ParPlsr    # plskern, ..., plsravg
+Base.@kwdef mutable struct ParPlsr    # {plskern, ..., plsravg} except plswold
+    nlv::Union{Int, Vector{Int}, UnitRange} = 1                    
+    scal::Bool = false 
+end 
+
+Base.@kwdef mutable struct ParPlswold    
     nlv::Union{Int, Vector{Int}, UnitRange} = 1     
-    tol::Float64 = sqrt(eps(1.))            # plswold
-    maxit::Int = 200                        # plswold                 
+    tol::Float64 = sqrt(eps(1.)) 
+    maxit::Int = 200  
     scal::Bool = false 
 end 
 

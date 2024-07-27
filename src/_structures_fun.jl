@@ -296,7 +296,7 @@ struct Plsr
     yscales::Vector
     weights::Weight
     niter::Union{Vector{Int}, Nothing}
-    par::Union{ParPlsr, ParRrr}
+    par::Union{ParPlsr, ParPlswold, ParRrr}
 end
 
 struct Cglsr

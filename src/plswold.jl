@@ -39,7 +39,7 @@ function plswold(X, Y, weights::Weight; kwargs...)
 end
 
 function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkw(ParPlsr, kwargs).par
+    par = recovkw(ParPlswold, kwargs).par
     Q = eltype(X)
     n, p = size(X)
     q = nco(Y)

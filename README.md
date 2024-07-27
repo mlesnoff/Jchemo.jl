@@ -55,20 +55,18 @@ or by displaying the function's help page in the REPL, for instance for function
 julia> ?plskern
 ```
 
-The default `kwargs` values are defined in containers depending of the functions, available 
-[**here**](https://github.com/mlesnoff/Jchemo.jl/blob/master/src/_structures_param.jl). For a given function, they also can be given from a fitted model without specifying arguments, e.g.:
+The `kwargs` arguments and their default values are defined in containers depending of the functions, available 
+[**here**](https://github.com/mlesnoff/Jchemo.jl/blob/master/src/_structures_param.jl). For a given function, they can be displayed in the REPL wit function `defpar`, e.g.:
 
 ```julia
-julia> mod = model(plsnipals)
-julia> fit!(mod, X, y)
-julia> dump(mod.fm.par)
+julia> defpar(plskern)
 
 Jchemo.ParPlsr
   nlv: Int64 1
-  tol: Float64 1.4901161193847656e-8
-  maxit: Int64 200
   scal: Bool false
 ```
+
+### Datasets
 
 The **datasets** used in the examples (help pages) are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets on chemometrics and other domains.
 
