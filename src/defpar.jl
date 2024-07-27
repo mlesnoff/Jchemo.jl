@@ -1,3 +1,15 @@
+"""
+    defpar(fun::Function)
+Display the keyword arguments (with their default values) of a function
+* `fun` : The name of the functions.
+
+## Examples
+```julia
+using Jchemo
+
+defpar(svmr)
+```
+"""
 function defpar(fun::Function)
 
     in((detrend,)).(fun) ? dump(Jchemo.ParDetrend()) : nothing
