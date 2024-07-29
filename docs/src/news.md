@@ -1,5 +1,10 @@
 # New
 
+## *Version 0.5.1*
+
+- Modifications
+    - Code cleaning.
+
 ## *Version 0.5.0*
 
 - News
