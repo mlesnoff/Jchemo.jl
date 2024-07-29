@@ -435,7 +435,7 @@ end
 struct Lwplsr
     X::Matrix
     Y::Matrix
-    fm::Union{Nothing, Plsr, Umap}
+    fm::Union{Nothing, Plsr}
     xscales::Vector
     par::ParLwplsr
 end
