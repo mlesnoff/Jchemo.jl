@@ -22,7 +22,7 @@ UMAP = "c4f8c510-2410-5be4-91d7-4fbaeb39457e"
 
 [compat]
 DataFrames = "1"
-DataInterpolations = "4, 5"
+DataInterpolations = "4, 5, 6"
 DecisionTree = "0.12"
 Distances = "0.10"
 Distributions = "0.25"
