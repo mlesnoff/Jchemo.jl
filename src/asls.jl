@@ -5,7 +5,7 @@ Baseline correction of each row of X-data by the asymmetric
 * `X` : X-data (n, p).
 Keyword arguments:
 * `lb` : Penalizing (smoothing) parameter "lambda".
-* `p` : Asymetry parameter (0 < `p` << 1).
+* `p` : Asymmetry parameter (0 < `p` << 1).
 * `maxit` : Maximum number of iterations.
 * `verbose` : If `true`, nb. iterations are printed.
 
