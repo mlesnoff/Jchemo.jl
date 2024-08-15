@@ -56,10 +56,10 @@ julia> ?plskern
 ```
 
 The `kwargs` arguments and their default values are defined in containers depending of the functions, available 
-[**here**](https://github.com/mlesnoff/Jchemo.jl/blob/master/src/_structures_param.jl). For a given function, they can be displayed in the REPL wit function `defpar`, e.g.:
+[**here**](https://github.com/mlesnoff/Jchemo.jl/blob/master/src/_structures_param.jl). For a given function, they can be displayed in the REPL wit function `default`, e.g.:
 
 ```julia
-julia> defpar(plskern)
+julia> default(plskern)
 
 Jchemo.ParPlsr
   nlv: Int64 1

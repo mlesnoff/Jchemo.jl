@@ -25,7 +25,7 @@ include("_pip.jl")
 include("_pip_typ_fun.jl")
 include("_pip_work.jl")
 ## End
-include("defpar.jl")
+include("default.jl")
 
 ######---- Misc
 
@@ -48,6 +48,7 @@ include("snipalsmix.jl")
 ######---- Preprocessing
 
 include("preprocessing.jl") 
+include("asls.jl") 
 include("scale.jl") 
 include("rmgap.jl")
 
@@ -247,7 +248,7 @@ export
     fit!,
     transf!,
     pip,
-    defpar,
+    default,
     ######---- Utilities
     aggstat, aggsum,
     colmad, colmean, colmed, colnorm, colstd, colsum, colvar,
@@ -302,8 +303,9 @@ export
     dmnormlog, dmnormlog!,
     dmkern,
     ## Pre-processing
-    detrend, detrend!, 
-    fdif, fdif!,
+    detrend, 
+    asls, 
+    fdif,
     interpl, 
     center, scale, cscale,
     blockscal,

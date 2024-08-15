@@ -2,6 +2,13 @@
 
 ## *Version 0.5.1*
 
+- News
+    - **asls** Baseline correction of each row of X-data by the asymmetric 
+    least squares algorithm (ASLS).
+
+- Breaking
+    - Function **defpar** renamed to **default**.
+
 - Modifications
     - Code cleaning.
 

@@ -22,7 +22,7 @@ Xtrain = X[s, :]
 Xtest = rmrow(X, s)
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
-plotsp(dat.X, wl; nsamp = 20).f
+plotsp(X, wl; nsamp = 20).f
 
 mod = model(detrend; degree = 2)
 fit!(mod, Xtrain)
@@ -94,7 +94,7 @@ Xtrain = X[s, :]
 Xtest = rmrow(X, s)
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
-plotsp(dat.X, wl; nsamp = 20).f
+plotsp(X, wl; nsamp = 20).f
 
 mod = model(fdif; npoint = 2) 
 fit!(mod, Xtrain)
@@ -168,7 +168,7 @@ Xtrain = X[s, :]
 Xtest = rmrow(X, s)
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
-plotsp(dat.X, wl; nsamp = 20).f
+plotsp(X, wl; nsamp = 20).f
 
 wlfin = range(500, 2400, length = 10)
 #wlfin = collect(range(500, 2400, length = 10))
@@ -251,7 +251,7 @@ Xtrain = X[s, :]
 Xtest = rmrow(X, s)
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
-plotsp(dat.X, wl; nsamp = 20).f
+plotsp(X, wl; nsamp = 20).f
 
 mod = model(mavg; npoint = 10) 
 fit!(mod, Xtrain)
@@ -383,7 +383,7 @@ Xtrain = X[s, :]
 Xtest = rmrow(X, s)
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
-plotsp(dat.X, wl; nsamp = 20).f
+plotsp(X, wl; nsamp = 20).f
 
 npoint = 11 ; degree = 2 ; deriv = 2
 mod = model(savgol; npoint, degree, deriv) 
@@ -473,7 +473,7 @@ Xtrain = X[s, :]
 Xtest = rmrow(X, s)
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
-plotsp(dat.X, wl; nsamp = 20).f
+plotsp(X, wl; nsamp = 20).f
 
 mod = model(snorm) 
 fit!(mod, Xtrain)
@@ -528,7 +528,7 @@ Xtrain = X[s, :]
 Xtest = rmrow(X, s)
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
-plotsp(dat.X, wl; nsamp = 20).f
+plotsp(X, wl; nsamp = 20).f
 
 mod = model(snv) 
 #mod = model(snv; scal = false) 

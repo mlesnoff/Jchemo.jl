@@ -1,5 +1,5 @@
 """
-    defpar(fun::Function)
+    default(fun::Function)
 Display the keyword arguments (with their default values) of a function
 * `fun` : The name of the functions.
 
@@ -7,10 +7,10 @@ Display the keyword arguments (with their default values) of a function
 ```julia
 using Jchemo
 
-defpar(svmr)
+default(svmr)
 ```
 """
-function defpar(fun::Function)
+function default(fun::Function)
 
     in((detrend,)).(fun) ? dump(Jchemo.ParDetrend()) : nothing
     in((fdif,)).(fun) ? dump(Jchemo.ParFdif()) : nothing

@@ -548,6 +548,8 @@ sum(w.w)
 """
 mweight(x::Vector) = Weight(x / sum(x))
 
+#mweight(x::AbstractVector) = Weight(x / sum(x))  # For CUDA
+
 #mweight(w::Vector{Q}) where {Q <: AbstractFloat} = mweight!(copy(w))
 #mweight!(w::Vector{Q}) where {Q <: AbstractFloat} = w ./= sum(w)
 

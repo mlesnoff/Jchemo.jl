@@ -18,7 +18,7 @@ Xtrain = X[s, :]
 Xtest = rmrow(X, s)
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
-plotsp(dat.X, wl; nsamp = 20).f
+plotsp(X, wl; nsamp = 20).f
 
 mod = model(center) 
 fit!(mod, Xtrain)
@@ -76,7 +76,7 @@ Xtrain = X[s, :]
 Xtest = rmrow(X, s)
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
-plotsp(dat.X, wl; nsamp = 20).f
+plotsp(X, wl; nsamp = 20).f
 
 mod = model(scale) 
 fit!(mod, Xtrain)
@@ -136,7 +136,7 @@ Xtrain = X[s, :]
 Xtest = rmrow(X, s)
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)
-plotsp(dat.X, wl; nsamp = 20).f
+plotsp(X, wl; nsamp = 20).f
 
 mod = model(cscale) 
 fit!(mod, Xtrain)

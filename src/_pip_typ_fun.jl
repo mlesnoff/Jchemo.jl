@@ -10,6 +10,7 @@ struct FunXY{FUN <: Function}
 end
 
 detrend() = FunX{Function}(detrend)
+asls() = FunX{Function}(asls)
 fdif() = FunX{Function}(fdif)
 interpl() = FunX{Function}(interpl)
 mavg() = FunX{Function}(mavg)

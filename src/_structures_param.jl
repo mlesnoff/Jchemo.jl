@@ -1,5 +1,13 @@
 ############---- Preprocessing
 
+Base.@kwdef mutable struct ParAsls
+    lb::Float64 = 10
+    p::Float64 = 1e-3 
+    tol::Float64 = sqrt(eps(1.))    
+    maxit::Int = 50 
+    verbose::Bool = false      
+end 
+
 Base.@kwdef mutable struct ParDetrend
     degree::Int = 1  
 end 

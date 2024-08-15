@@ -2,14 +2,21 @@
 
 struct Weight{T <: AbstractFloat}
     w::Vector{T} 
+    #w::Union{Vector{T}, CuArray}
+    #w::Union{AbstractVector}
 end
 
 ############---- Data Processing 
 
 ## Preprocessing
 
+
 struct Detrend
     par::ParDetrend
+end
+
+struct Asls
+    par::ParAsls
 end
 
 struct Fdif

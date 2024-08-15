@@ -296,6 +296,8 @@
 ### Pre-processing
 
 - **detrend** Polynomial detrend
+- **asls** Baseline correction of each row of X-data by the asymmetric 
+    least squares algorithm (ASLS)
 - **snv** Standard-normal-deviation transformation
 - **mavg** Smoothing by moving average
 - **fdif** Finite differences
@@ -355,7 +357,7 @@
     **colvarskip**: Column-wise operations allowing missing data
 - **covm**, **corm** Weighted covariance and correlation matrices
 - **cosv**, **cosm** Cosinus between vectors
-- **defpar** Display the keyword arguments (with their default values) of a function
+- **default** Display the keyword arguments (with their default values) of a function
 - **dummy** Build dummy table
 - **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
 - **fblockscal_col, _frob, _mfa, _sd** Scale blocks
