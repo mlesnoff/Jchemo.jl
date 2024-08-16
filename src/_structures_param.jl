@@ -8,6 +8,12 @@ Base.@kwdef mutable struct ParAsls
     verbose::Bool = false      
 end 
 
+Base.@kwdef mutable struct ParAirpls
+    lb::Float64 = 10
+    maxit::Int = 20 
+    verbose::Bool = false      
+end 
+
 Base.@kwdef mutable struct ParDetrend
     degree::Int = 1  
 end 

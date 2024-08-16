@@ -19,6 +19,10 @@ struct Asls
     par::ParAsls
 end
 
+struct Airpls
+    par::ParAirpls
+end
+
 struct Fdif
     par::ParFdif
 end

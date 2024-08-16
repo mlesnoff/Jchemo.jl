@@ -6,6 +6,7 @@ Baseline correction of each row of X-data by asymmetric
 Keyword arguments:
 * `lb` : Penalizing (smoothness) parameter "lambda".
 * `p` : Asymmetry parameter (0 < `p` << 1).
+* `tol` : Tolerance value for stopping the iterations.  
 * `maxit` : Maximum number of iterations.
 * `verbose` : If `true`, nb. iterations are printed.
 
@@ -95,7 +96,7 @@ function transf!(object::Asls, X::Matrix)
             W .= spdiagm(0 => w)    
             z .= cholesky!(Hermitian(W + lb * C)) \ (w .* x)
             ## Faster (but less safe) than:
-            ## z .= \(W + lb * C, w .* x)
+            #z .= \(W + lb * C, w .* x)
             ## = (W + lb * C) \ (w .* x)    
             ## End 
             w .= p * (x .> z) + (1 - p) * (x .<= z)  
