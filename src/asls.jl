@@ -89,7 +89,7 @@ function transf!(object::Asls, X::Matrix)
         while cont
             z0 .= copy(z)
             W .= spdiagm(0 => w)    
-            z .= cholesky(Hermitian(W + lb2 * C)) \ (w .* x)
+            z .= cholesky!(Hermitian(W + lb2 * C)) \ (w .* x)
             ## Faster (but less safe) than:
             ## z .= \(W + lb2 * C, w .* x)
             ## = (W + lb2 * C) \ (w .* x)    
