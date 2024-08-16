@@ -90,7 +90,8 @@ function transf!(object::Airpls, X::Matrix)
         while cont
             z0 .= copy(z)
             W .= spdiagm(0 => w)  
-            z .= \(W + lb * C, w .* x)  
+            z .= cholesky!(Hermitian(W + lb * C)) \ (w .* x)
+            #z .= \(W + lb * C, w .* x)  
             rho = norm((x - z) .* (x .< z))
             w .= (exp.(iter * (x - z) / rho)) .* (x .< z)  
             iter = iter + 1
