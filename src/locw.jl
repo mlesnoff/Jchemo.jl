@@ -19,8 +19,7 @@ Each component i of `listnn` and `listw` contains the indexes
 and weights, respectively, of the nearest neighbors of x_i in Xtrain. 
 The sizes of the neighborhood for i = 1,...,m can be different.
 """
-function locw(Xtrain, Ytrain, X; listnn, listw = nothing, fun, verbose = false, 
-        kwargs...)
+function locw(Xtrain, Ytrain, X; listnn, listw = nothing, fun, verbose = false, kwargs...)
     m = nro(X)
     q = nco(Ytrain)
     pred = similar(Ytrain, m, q)
