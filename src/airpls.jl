@@ -85,13 +85,12 @@ function transf!(object::Airpls, X::Matrix)
         iter = 1
         cont = true
         x = vrow(X, i)
-        normx = norm(x)
+        normx = sum(abs.(x))  # alternative: norm(x)
         while cont
             z0 .= copy(z)
             W .= spdiagm(0 => w)  
             z .= cholesky!(Hermitian(W + lb * C)) \ (w .* x)
-            #z .= \(W + lb * C, w .* x)  
-            rho = norm((x - z) .* (x .< z))
+            rho = sum(-(x - z) .* (x .< z))  # alternative: norm((x - z) .* (x .< z))
             w .= (exp.(iter * (x - z) / rho)) .* (x .< z)  
             iter = iter + 1
             if (rho < .001 * normx) || (iter > maxit)
