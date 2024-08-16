@@ -10,7 +10,7 @@
 # <span style="color:green"> **About** </span> 
 
 **Jchemo** was initially dedicated to **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
-and their extensions, in particular locally weighted PLS models (**LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). The package has then been expanded to various **dimension reduction** and **regression and discrimination** models ([see the list of functions here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
+and their extensions, in particular locally weighted PLS models (**LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). The package has then been expanded to various models for **dimension reduction** and **regression and discrimination** ([see the list of functions here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
 
 Why the name **Jchemo**?: Since it is orientated to **chemometrics** , in brief the use of biometrics for chemistry). But most of the provided methods are **generic to other application domains**. 
 
@@ -43,7 +43,7 @@ Two syntaxes are allowed for **transformers** and **predictors**:
 1. the **embedded** syntax, using function `model`, see [**here**](https://github.com/mlesnoff/Jchemo.jl/tree/master?tab=readme-ov-file#-examples-of-syntax-). 
 2. the direct syntax (the same as for versions <= 0.2.4),
 
-The **embedded** syntax is intended to make easier the building of ad'hoc pipelines (chains) of models, and is now favored. Only this embbeded syntax is given in the examples (**help pages** of the functions). 
+The **embedded** syntax makes easier the building of ad'hoc pipelines (chains) of models, and is now favored. Only this embbeded syntax is given in the examples (**help pages** of the functions). 
 
 Most the **Jchemo** functions have **keyword arguments** (`kwargs`). The keyword arguments required/allowed in a function can be found in the **Index of function section** of the documentation:
 - [Stable](https://mlesnoff.github.io/Jchemo.jl/stable/api/) 
@@ -56,7 +56,7 @@ julia> ?plskern
 ```
 
 The `kwargs` arguments and their default values are defined in containers depending of the functions, available 
-[**here**](https://github.com/mlesnoff/Jchemo.jl/blob/master/src/_structures_param.jl). For a given function, they can be displayed in the REPL wit function `default`, e.g.:
+[**here**](https://github.com/mlesnoff/Jchemo.jl/blob/master/src/_structures_param.jl). For a given function, they can be displayed in the REPL with function `default`, e.g.:
 
 ```julia
 julia> default(plskern)
