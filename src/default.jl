@@ -13,6 +13,7 @@ default(svmr)
 function default(fun::Function)
 
     in((detrend,)).(fun) ? dump(Jchemo.ParDetrend()) : nothing
+    in((asls,)).(fun) ? dump(Jchemo.ParAsls()) : nothing
     in((fdif,)).(fun) ? dump(Jchemo.ParFdif()) : nothing
     in((interpl,)).(fun) ? dump(Jchemo.ParInterpl()) : nothing
     in((mavg,)).(fun) ? dump(Jchemo.ParMavg()) : nothing

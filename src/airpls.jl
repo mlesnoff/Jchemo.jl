@@ -1,27 +1,23 @@
 """
-    asls(X; kwargs...)
-Baseline correction of each row of X-data by asymmetric 
-    least squares algorithm (ASLS).
+    airpls(X; kwargs...)
+Baseline correction of each row of X-data by adaptive iteratively 
+    reweighted penalized least squares algorithm (AIRPLS).
 * `X` : X-data (n, p).
 Keyword arguments:
-* `lb` : Penalizing (smoothness) parameter "lambda".
+* `lb` : Penalizing (smoothing) parameter "lambda".
 * `p` : Asymmetry parameter (0 < `p` << 1).
 * `maxit` : Maximum number of iterations.
 * `verbose` : If `true`, nb. iterations are printed.
 
-See Baek et al. 2015, section 2.
-
-Generally `0.001 ≤ p ≤ 0.1` is a good choice (for a signal with positive peaks) 
-and `1e2 ≤ lb ≤ 1e9`, but exceptions may occur (Eilers & Boelens 2005).
+See Andries & Nikzad-Langerodi 2024 Section 2.2.
 
 ## References
 
-Baek, S.-J., Park, A., Ahn, Y.-J., Choo, J., 2015. Baseline correction using 
-asymmetrically reweighted penalized least squares smoothing. Analyst 140, 250–257. 
-https://doi.org/10.1039/C4AN01061B
+Andries, E., Nikzad-Langerodi, R., 2024. Supervised and Penalized Baseline 
+Correction. https://doi.org/10.48550/arXiv.2310.18306
 
 Eilers, P. H., & Boelens, H. F. (2005). Baseline correction with asymmetric 
-least squares smoothing. Leiden University Medical Centre Report, 1(1).
+least squares smoothing. Leiden University Medical Centre Report, 1(1), p 5
 
 ## Examples
 ```julia
@@ -42,8 +38,8 @@ plotsp(X, wl; nsamp = 20).f
 ## Example on 1 spectrum
 i = 2
 zX = Matrix(X)[i:i, :]
-lb = 1e5 ; p = .001
-mod = model(asls; lb, p)
+lb = 200 ; p = .001
+mod = model(airpls; lb, p)
 fit!(mod, zX)
 zXc = transf(mod, zX)   # = corrected spectrum 
 B = zX - zXc            # = estimated baseline
@@ -53,7 +49,7 @@ lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
-function asls(X; kwargs...)
+function airpls(X; kwargs...)
     par = recovkw(ParAsls, kwargs).par
     Asls(par)
 end
@@ -80,8 +76,7 @@ function transf!(object::Asls, X::Matrix)
     D1 = sparse(diff(I(zp); dims = 1))
     D2 = diff(D1; dims = 1)
     C = D2' * D2
-    lb = object.par.lb
-    p = object.par.p
+    lb2 = object.par.lb^2
     tol = object.par.tol
     maxit = object.par.maxit
     verbose = object.par.verbose 
@@ -92,14 +87,12 @@ function transf!(object::Asls, X::Matrix)
         x = vrow(X, i)
         while cont
             z0 .= copy(z)
-            W .= spdiagm(0 => w)    
-            z .= cholesky!(Hermitian(W + lb * C)) \ (w .* x)
-            ## Faster (but less safe) than:
-            ## z .= \(W + lb * C, w .* x)
-            ## = (W + lb * C) \ (w .* x)    
-            ## End 
-            w .= p * (x .> z) + (1 - p) * (x .<= z)  
-            dif = sum((z .- z0).^2)
+            W .= spdiagm(0 => w)  
+            z .= \(W + lb2 * C, w .* x)  
+            #rho = sum((x - z) .* (x .< z))
+            rho = norm((x - z) .* (x .< z))
+            w .= (exp.(iter * (x - z) / rho)) .* (x .< z)  
+            @show dif = sum((z .- z0).^2)
             iter = iter + 1
             if (dif < tol) || (iter > maxit)
                 cont = false
