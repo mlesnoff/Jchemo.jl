@@ -3,7 +3,7 @@
 Base.@kwdef mutable struct ParAsls
     lb::Float64 = 10
     p::Float64 = 1e-3 
-    tol::Float64 = sqrt(eps(1.))    
+    tol::Float64 = 1e-6    
     maxit::Int = 50 
     verbose::Bool = false      
 end 
@@ -11,6 +11,13 @@ end
 Base.@kwdef mutable struct ParAirpls
     lb::Float64 = 10
     maxit::Int = 20 
+    verbose::Bool = false      
+end 
+
+Base.@kwdef mutable struct ParArpls
+    lb::Float64 = 10
+    tol::Float64 = 1e-6    
+    maxit::Int = 50 
     verbose::Bool = false      
 end 
 

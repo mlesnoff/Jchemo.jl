@@ -23,6 +23,10 @@ struct Airpls
     par::ParAirpls
 end
 
+struct Arpls
+    par::ParArpls
+end
+
 struct Fdif
     par::ParFdif
 end

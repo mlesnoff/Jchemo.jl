@@ -48,24 +48,24 @@ f
 ```
 """ 
 function arpls(X; kwargs...)
-    par = recovkw(ParAsls, kwargs).par
-    Asls(par)
+    par = recovkw(ParArpls, kwargs).par
+    Arpls(par)
 end
 
 """ 
-    transf(object::Asls, X)
-    transf!(object::Asls, X)
+    transf(object::Arpls, X)
+    transf!(object::Arpls, X)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 """ 
-function transf(object::Asls, X)
+function transf(object::Arpls, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::Asls, X::Matrix)
+function transf!(object::Arpls, X::Matrix)
     n, p = size(X)
     w = ones(p) 
     z = similar(X, p)
