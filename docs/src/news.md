@@ -1,5 +1,10 @@
 # New
 
+## *Version 0.5.2*
+
+- Modifications
+    - **airpls**: Correction of the termination criterion.
+
 ## *Version 0.5.1*
 
 - News
