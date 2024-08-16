@@ -41,7 +41,7 @@ plotsp(X, wl; nsamp = 20).f
 ## Example on 1 spectrum
 i = 2
 zX = Matrix(X)[i:i, :]
-lb = 1e4
+lb = 1e6
 mod = model(airpls; lb)
 fit!(mod, zX)
 zXc = transf(mod, zX)   # = corrected spectrum 
