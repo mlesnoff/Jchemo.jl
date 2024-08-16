@@ -20,6 +20,8 @@ Zhang, Z.-M., Chen, S., Liang, Y.-Z., 2010. Baseline correction using adaptive
 iteratively reweighted penalized least squares. Analyst 135, 1138–1146. 
 https://doi.org/10.1039/B922045C
 
+https://github.com/zmzhang/airPLS/tree/master 
+
 ## Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
