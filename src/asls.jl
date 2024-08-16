@@ -1,6 +1,6 @@
 """
     asls(X; kwargs...)
-Baseline correction of each row of X-data by the asymmetric 
+Baseline correction of each row of X-data by asymmetric 
     least squares algorithm (ASLS).
 * `X` : X-data (n, p).
 Keyword arguments:

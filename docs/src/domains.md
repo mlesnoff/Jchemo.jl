@@ -296,7 +296,7 @@
 ### Pre-processing
 
 - **detrend** Polynomial detrend
-- **asls** Baseline correction of each row of X-data by the asymmetric 
+- **asls** Baseline correction of each row of X-data by asymmetric 
     least squares algorithm (ASLS)
 - **snv** Standard-normal-deviation transformation
 - **mavg** Smoothing by moving average

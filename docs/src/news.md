@@ -3,7 +3,7 @@
 ## *Version 0.5.1*
 
 - News
-    - **asls** Baseline correction of each row of X-data by the asymmetric 
+    - **asls** Baseline correction of each row of X-data by asymmetric 
     least squares algorithm (ASLS).
 
 - Breaking
