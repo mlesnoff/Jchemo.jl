@@ -36,7 +36,7 @@ plotsp(X, wl; nsamp = 20).f
 ## Example on 1 spectrum
 i = 2
 zX = Matrix(X)[i:i, :]
-lb = 1e5 ; p = .001
+lb = 1e5
 mod = model(arpls; lb, p)
 fit!(mod, zX)
 zXc = transf(mod, zX)   # = corrected spectrum 
@@ -93,7 +93,6 @@ function transf!(object::Arpls, X::Matrix)
             mu = mean(v)
             sd = std(v)
             w .= 1 ./ (1 .+ exp.(2 * (d .- (-mu + 2 * sd)) / sd))
-
             dif = sum((z .- z0).^2)
             iter = iter + 1
             if (dif < tol) || (iter > maxit)
