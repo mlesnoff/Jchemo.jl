@@ -10,7 +10,7 @@ Keyword arguments:
 * `maxit` : Maximum number of iterations.
 * `verbose` : If `true`, nb. iterations are printed.
 
-See Baek et al. 2015, section 2.
+See Baek et al. 2015 section 2.
 
 Generally `0.001 ≤ p ≤ 0.1` is a good choice (for a signal with positive peaks) 
 and `1e2 ≤ lb ≤ 1e9`, but exceptions may occur (Eilers & Boelens 2005).
