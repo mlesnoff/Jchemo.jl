@@ -3,10 +3,10 @@
 ## *Version 0.5.1*
 
 - News
-    - **asls** Baseline correction of each row of X-data by asymmetric 
-        least squares algorithm (ASLS).
-    - **airpls** Baseline correction of each row of X-data by adaptive iteratively 
-        reweighted penalized least squares algorithm (AIRPLS).
+    - Baseline correction of each row of X-data by
+        - **asls**  asymmetric least squares algorithm (ASLS).
+        - **airpls** adaptive iteratively reweighted penalized least squares algorithm (AIRPLS).
+        - **arpls** asymmetrically reweighted penalized least squares smoothing (ARPLS).
 
 - Breaking
     - Function **defpar** renamed to **default**.

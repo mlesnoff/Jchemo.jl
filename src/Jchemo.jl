@@ -50,6 +50,7 @@ include("snipalsmix.jl")
 include("preprocessing.jl") 
 include("asls.jl") 
 include("airpls.jl") 
+include("arpls.jl") 
 include("scale.jl") 
 include("rmgap.jl")
 
@@ -305,7 +306,7 @@ export
     dmkern,
     ## Pre-processing
     detrend, 
-    asls, airpls,
+    asls, airpls, arpls,
     fdif,
     interpl, 
     center, scale, cscale,

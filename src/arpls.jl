@@ -1,25 +1,21 @@
 """
-    airpls(X; kwargs...)
-Baseline correction of each row of X-data by adaptive iteratively 
-    reweighted penalized least squares algorithm (AIRPLS).
+    arpls(X; kwargs...)
+Baseline correction of each row of X-data by asymmetrically
+    reweighted penalized least squares smoothing (ARPLS).
 * `X` : X-data (n, p).
 Keyword arguments:
-* `lb` : Penalizing (smoothing) parameter "lambda".
+* `lb` : Penalizing (smoothness) parameter "lambda".
+* `tol` : Tolerance value for stopping the iterations.  
 * `maxit` : Maximum number of iterations.
 * `verbose` : If `true`, nb. iterations are printed.
 
-See Zhang et al. 2010, and Baek et al. 2015, section 2.
+See Baek et al. 2015, section 3.
 
 ## References
 
 Baek, S.-J., Park, A., Ahn, Y.-J., Choo, J., 2015. Baseline correction using 
 asymmetrically reweighted penalized least squares smoothing. Analyst 140, 250–257. 
 https://doi.org/10.1039/C4AN01061B
-
-Zhang, Z.-M., Chen, S., Liang, Y.-Z., 2010. Baseline correction using adaptive 
-iteratively reweighted penalized least squares. Analyst 135, 1138–1146. 
-https://doi.org/10.1039/B922045C
-
 
 ## Examples
 ```julia
@@ -40,8 +36,8 @@ plotsp(X, wl; nsamp = 20).f
 ## Example on 1 spectrum
 i = 2
 zX = Matrix(X)[i:i, :]
-lb = 1e4
-mod = model(airpls; lb)
+lb = 1e5 ; p = .001
+mod = model(arpls; lb, p)
 fit!(mod, zX)
 zXc = transf(mod, zX)   # = corrected spectrum 
 B = zX - zXc            # = estimated baseline
@@ -51,34 +47,36 @@ lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
-function airpls(X; kwargs...)
-    par = recovkw(ParAirpls, kwargs).par
-    Airpls(par)
+function arpls(X; kwargs...)
+    par = recovkw(ParAsls, kwargs).par
+    Asls(par)
 end
 
 """ 
-    transf(object::Airpls, X)
-    transf!(object::Airpls, X)
+    transf(object::Asls, X)
+    transf!(object::Asls, X)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 """ 
-function transf(object::Airpls, X)
+function transf(object::Asls, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::Airpls, X::Matrix)
+function transf!(object::Asls, X::Matrix)
     n, p = size(X)
     w = ones(p) 
     z = similar(X, p)
     z0 = copy(z)
+    d = copy(z)
     W = similar(X, p, p)
     D1 = sparse(diff(I(p); dims = 1))
     D2 = diff(D1; dims = 1)
     C = D2' * D2
     lb = object.par.lb
+    tol = object.par.tol
     maxit = object.par.maxit
     verbose = object.par.verbose 
     verbose ? println("Nb. iterations:") : nothing
@@ -86,16 +84,19 @@ function transf!(object::Airpls, X::Matrix)
         iter = 1
         cont = true
         x = vrow(X, i)
-        normx = norm(x)
         while cont
             z0 .= copy(z)
-            W .= spdiagm(0 => w)  
+            W .= spdiagm(0 => w)    
             z .= cholesky!(Hermitian(W + lb * C)) \ (w .* x)
-            #z .= \(W + lb * C, w .* x)  
-            rho = norm((x - z) .* (x .< z))
-            w .= (exp.(iter * (x - z) / rho)) .* (x .< z)  
+            d .= (x - z)
+            v = d[x .< z]
+            mu = mean(v)
+            sd = std(v)
+            w .= 1 ./ (1 .+ exp.(2 * (d .- (-mu + 2 * sd)) / sd))
+
+            dif = sum((z .- z0).^2)
             iter = iter + 1
-            if (rho < .001 * normx) || (iter > maxit)
+            if (dif < tol) || (iter > maxit)
                 cont = false
             end
         end

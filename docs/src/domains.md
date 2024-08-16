@@ -300,6 +300,8 @@
     least squares algorithm (ASLS)
 - **airpls** Baseline correction of each row of X-data by adaptive iteratively 
     reweighted penalized least squares algorithm (AIRPLS)
+- **arpls** Baseline correction of each row of X-data by asymmetrically
+    reweighted penalized least squares smoothing (ARPLS)
 - **snv** Standard-normal-deviation transformation
 - **mavg** Smoothing by moving average
 - **fdif** Finite differences
