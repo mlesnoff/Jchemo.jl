@@ -9,7 +9,7 @@ Keyword arguments:
 * `maxit` : Maximum number of iterations.
 * `verbose` : If `true`, nb. iterations are printed.
 
-See Baek et al. 2015, section 3.
+See Baek et al. 2015 section 3.
 
 ## References
 
