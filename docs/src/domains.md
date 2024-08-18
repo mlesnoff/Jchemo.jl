@@ -315,6 +315,7 @@
 - **blockscal** Scaling of multiblock data
 
 ### Interpolation
+
 - **interpl** Sampling spectra by interpolation 
     -- From DataInterpolations.jl
 
