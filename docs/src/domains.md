@@ -301,8 +301,8 @@
     - **airpls** Adaptive iteratively reweighted penalized least squares (AIRPLS)
     - **arpls** Asymmetrically reweighted penalized least squares smoothing (ARPLS)
 - **snv** Standard-normal-deviation transformation
-- **mavg** Smoothing by moving average
 - **fdif** Finite differences
+- **mavg** Smoothing by moving average
 - **savgk**, **savgol** Savitsky-Golay filtering
 - **rmgap** Remove vertical gaps in spectra, e.g. for ASD NIR data
 
