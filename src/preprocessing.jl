@@ -1,12 +1,12 @@
 """
     detrend(X; kwargs...)
-De-trend transformation of each row of X-data. 
+Baseline correction of each row of X-data by polynomial linear regression.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `degree` : Polynom degree.
 
 The function fits a polynomial regression to each observation
-and returns the residuals.
+and returns the residuals (= signals corrected from the fitted baseline).
 
 ## Examples
 ```julia
