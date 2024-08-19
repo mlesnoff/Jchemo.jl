@@ -319,7 +319,7 @@ pred = predict(mod, Xtest).pred
 
 #### **a) Example of chained preprocessing**
 
-Let us consider a data preprocessing by standard-normal-variation transformation (SNV) followed by a Savitsky-Golay filter and a de-trending transformation. 
+Let us consider a data preprocessing by standard-normal-variation transformation (SNV) followed by a Savitsky-Golay filter and a polynomial de-trending transformation. 
 
 The pipeline is fitted as follows:
 

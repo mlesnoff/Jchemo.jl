@@ -296,8 +296,9 @@
 
 ### Pre-processing
 
-- Baseline correction
+- De-trend transformation (baseline correction)
     - **dtpol** Polynomial linear regression
+    - **dtlo** LOESS
     - **dtasls** Asymmetric least squares (ASLS)
     - **dtairpls** Adaptive iteratively reweighted penalized least squares (AIRPLS)
     - **dtarpls** Asymmetrically reweighted penalized least squares smoothing (ARPLS)
