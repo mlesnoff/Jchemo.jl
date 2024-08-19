@@ -297,10 +297,10 @@
 ### Pre-processing
 
 - Baseline correction
-    - **dt** Polynomial linear regression
-    - **asls** Asymmetric least squares (ASLS)
-    - **airpls** Adaptive iteratively reweighted penalized least squares (AIRPLS)
-    - **arpls** Asymmetrically reweighted penalized least squares smoothing (ARPLS)
+    - **dtpol** Polynomial linear regression
+    - **dtasls** Asymmetric least squares (ASLS)
+    - **dtairpls** Adaptive iteratively reweighted penalized least squares (AIRPLS)
+    - **dtarpls** Asymmetrically reweighted penalized least squares smoothing (ARPLS)
 - **snv** Standard-normal-deviation transformation
 - **fdif** Finite differences
 - **mavg** Smoothing by moving average

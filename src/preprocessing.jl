@@ -1,12 +1,12 @@
 """
-    dt(X; kwargs...)
+    dtpol(X; kwargs...)
 Baseline correction of each row of X-data by polynomial linear regression.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `degree` : Polynom degree.
 
-"De-trend" transformation: the function fits a baseline by polynomial regression for each observation
-and returns the residuals (= signals corrected from the baseline).
+De-trend transformation: the function fits a baseline by polynomial regression 
+for each observation and returns the residuals (= signals corrected from the baseline).
 
 ## Examples
 ```julia
@@ -24,33 +24,45 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-mod = model(dt; degree = 2)
+mod = model(dtpol; degree = 2)
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
 plotsp(Xptrain, wl).f
 plotsp(Xptest, wl).f
+
+## Example on 1 spectrum
+i = 2
+zX = Matrix(X)[i:i, :]
+mod = model(dtpol; degree = 1)
+fit!(mod, zX)
+zXc = transf(mod, zX)   # = corrected spectrum 
+B = zX - zXc            # = estimated baseline
+f, ax = plotsp(zX, wl)
+lines!(wl, vec(B); color = :blue)
+lines!(wl, vec(zXc); color = :black)
+f
 ```
 """ 
-function dt(X; kwargs...)
-    par = recovkw(ParDt, kwargs).par
-    Dt(par)
+function dtpol(X; kwargs...)
+    par = recovkw(ParDtpol, kwargs).par
+    Dtpol(par)
 end
 
 """ 
-    transf(object::Dt, X)
-    transf!(object::Dt, X)
+    transf(object::Dtpol, X)
+    transf!(object::Dtpol, X)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 """ 
-function transf(object::Dt, X)
+function transf(object::Dtpol, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::Dt, X::Matrix)
+function transf!(object::Dtpol, X::Matrix)
     n, p = size(X)
     degree = object.par.degree
     vX = similar(X, p, degree + 1)
@@ -69,17 +81,16 @@ function transf!(object::Dt, X::Matrix)
 end
 
 """
-    dtloess(X; kwargs...)
+    dtlo(X; kwargs...)
 Baseline correction of each row of X-data by LOESS regression.
 * `X` : X-data (n, p).
-Keyword arguments:
 Keyword arguments:
 * `span` : Window for neighborhood selection (level of smoothing)
     for the local fitting, typically in [0, 1] (proportion).
 * `degree` : Polynomial degree for the local fitting.
 
-The function fits a baseline by LOESS regression for each observation
-and returns the residuals (= signals corrected from the baseline).
+De-trend transformation: The function fits a baseline by LOESS regression 
+for each observation and returns the residuals (= signals corrected from the baseline).
 
 ## Examples
 ```julia
@@ -97,41 +108,54 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-mod = model(dtloess; degree = 2)
+mod = model(dtlo; span = .8)
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
 plotsp(Xptrain, wl).f
 plotsp(Xptest, wl).f
+
+## Example on 1 spectrum
+i = 2
+zX = Matrix(X)[i:i, :]
+mod = model(dtlo; span = .75)
+fit!(mod, zX)
+zXc = transf(mod, zX)   # = corrected spectrum 
+B = zX - zXc            # = estimated baseline
+f, ax = plotsp(zX, wl)
+lines!(wl, vec(B); color = :blue)
+lines!(wl, vec(zXc); color = :black)
+f
 ```
 """ 
-function dtloess(X; kwargs...)
-    par = recovkw(ParBsloess, kwargs).par
-    Bsloess(par)
+function dtlo(X; kwargs...)
+    par = recovkw(ParDtlo, kwargs).par
+    Dtlo(par)
 end
 
 """ 
-    transf(object::Bsloess, X)
-    transf!(object::Bsloess, X)
+    transf(object::Dtlo, X)
+    transf!(object::Dtlo, X)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 """ 
-function transf(object::Bsloess, X)
+function transf(object::Dtlo, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::Bsloess, X::Matrix)
+function transf!(object::Dtlo, X::Matrix)
+    Q = eltype(X)
     n, p = size(X)
     span = object.par.span
     degree = object.par.degree
-    x = collect(1:p)
+    x = convert.(Q, collect(1:p))
     @inbounds for i = 1:n
     ## Not faster: @Threads.threads
-        y = vrow(X, i)
-        fm = loess(x, y; span, degree)
+        y = vec(vrow(X, i))
+        fm = loessr(x, y; span, degree)
         X[i, :] .= y - vec(predict(fm, x).pred)
     end
 end

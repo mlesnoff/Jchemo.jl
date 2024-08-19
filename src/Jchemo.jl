@@ -49,9 +49,9 @@ include("snipalsmix.jl")
 ######---- Preprocessing
 
 include("preprocessing.jl") 
-include("asls.jl") 
-include("airpls.jl") 
-include("arpls.jl") 
+include("dtasls.jl") 
+include("dtairpls.jl") 
+include("dtarpls.jl") 
 include("scale.jl") 
 include("rmgap.jl")
 
@@ -307,8 +307,8 @@ export
     dmnormlog, dmnormlog!,
     dmkern,
     ## Pre-processing
-    dt, 
-    asls, airpls, arpls,
+    dtpol, dtlo,  
+    dtasls, dtairpls, dtarpls,
     fdif,
     interpl, 
     center, scale, cscale,

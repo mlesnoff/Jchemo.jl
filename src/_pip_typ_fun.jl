@@ -9,8 +9,8 @@ struct FunXY{FUN <: Function}
     fun::FUN   
 end
 
-dt() = FunX{Function}(dt)
-asls() = FunX{Function}(asls)
+dtpol() = FunX{Function}(dtpol)
+dtasls() = FunX{Function}(dtasls)
 fdif() = FunX{Function}(fdif)
 interpl() = FunX{Function}(interpl)
 mavg() = FunX{Function}(mavg)

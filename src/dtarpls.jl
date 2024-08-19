@@ -1,5 +1,5 @@
 """
-    arpls(X; kwargs...)
+    dtarpls(X; kwargs...)
 Baseline correction of each row of X-data by asymmetrically
     reweighted penalized least squares smoothing (ARPLS).
 * `X` : X-data (n, p).
@@ -9,7 +9,8 @@ Keyword arguments:
 * `maxit` : Maximum number of iterations.
 * `verbose` : If `true`, nb. iterations are printed.
 
-See Baek et al. 2015 section 3.
+De-trend transformation: the function fits a baseline by ARPLS (see Baek et al. 2015 section 3)
+for each observation and returns the residuals (= signals corrected from the baseline).
 
 ## References
 
@@ -37,7 +38,7 @@ plotsp(X, wl; nsamp = 20).f
 i = 2
 zX = Matrix(X)[i:i, :]
 lb = 1e4
-mod = model(arpls; lb, p)
+mod = model(dtarpls; lb, p)
 fit!(mod, zX)
 zXc = transf(mod, zX)   # = corrected spectrum 
 B = zX - zXc            # = estimated baseline
@@ -47,25 +48,25 @@ lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
-function arpls(X; kwargs...)
-    par = recovkw(ParArpls, kwargs).par
-    Arpls(par)
+function dtarpls(X; kwargs...)
+    par = recovkw(ParDtarpls, kwargs).par
+    Dtarpls(par)
 end
 
 """ 
-    transf(object::Arpls, X)
-    transf!(object::Arpls, X)
+    transf(object::Dtarpls, X)
+    transf!(object::Dtarpls, X)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 """ 
-function transf(object::Arpls, X)
+function transf(object::Dtarpls, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::Arpls, X::Matrix)
+function transf!(object::Dtarpls, X::Matrix)
     n, p = size(X)
     w = ones(p) 
     z = similar(X, p)

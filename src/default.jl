@@ -12,10 +12,11 @@ default(svmr)
 """
 function default(fun::Function)
 
-    in((dt,)).(fun) ? dump(Jchemo.ParDt()) : nothing
-    in((asls,)).(fun) ? dump(Jchemo.ParAsls()) : nothing
-    in((airpls,)).(fun) ? dump(Jchemo.ParAirpls()) : nothing
-    in((arpls,)).(fun) ? dump(Jchemo.ParArpls()) : nothing
+    in((dtpol,)).(fun) ? dump(Jchemo.ParDtpol()) : nothing
+    in((dtlo,)).(fun) ? dump(Jchemo.ParDtlo()) : nothing
+    in((dtasls,)).(fun) ? dump(Jchemo.ParDtasls()) : nothing
+    in((dtairpls,)).(fun) ? dump(Jchemo.ParDtairpls()) : nothing
+    in((dtarpls,)).(fun) ? dump(Jchemo.ParDtarpls()) : nothing
     in((fdif,)).(fun) ? dump(Jchemo.ParFdif()) : nothing
     in((interpl,)).(fun) ? dump(Jchemo.ParInterpl()) : nothing
     in((mavg,)).(fun) ? dump(Jchemo.ParMavg()) : nothing

@@ -1,5 +1,5 @@
 """
-    asls(X; kwargs...)
+    dtasls(X; kwargs...)
 Baseline correction of each row of X-data by asymmetric 
     least squares algorithm (ASLS).
 * `X` : X-data (n, p).
@@ -10,7 +10,8 @@ Keyword arguments:
 * `maxit` : Maximum number of iterations.
 * `verbose` : If `true`, nb. iterations are printed.
 
-See Baek et al. 2015 section 2.
+De-trend transformation: the function fits a baseline by ASLS (see Baek et al. 2015 section 2)
+for each observation and returns the residuals (= signals corrected from the baseline).
 
 Generally `0.001 ≤ p ≤ 0.1` is a good choice (for a signal with positive peaks) 
 and `1e2 ≤ lb ≤ 1e9`, but exceptions may occur (Eilers & Boelens 2005).
@@ -44,7 +45,7 @@ plotsp(X, wl; nsamp = 20).f
 i = 2
 zX = Matrix(X)[i:i, :]
 lb = 1e5 ; p = .001
-mod = model(asls; lb, p)
+mod = model(dtasls; lb, p)
 fit!(mod, zX)
 zXc = transf(mod, zX)   # = corrected spectrum 
 B = zX - zXc            # = estimated baseline
@@ -54,25 +55,25 @@ lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
-function asls(X; kwargs...)
-    par = recovkw(ParAsls, kwargs).par
-    Asls(par)
+function dtasls(X; kwargs...)
+    par = recovkw(ParDtasls, kwargs).par
+    Dtasls(par)
 end
 
 """ 
-    transf(object::Asls, X)
-    transf!(object::Asls, X)
+    transf(object::Dtasls, X)
+    transf!(object::Dtasls, X)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 """ 
-function transf(object::Asls, X)
+function transf(object::Dtasls, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::Asls, X::Matrix)
+function transf!(object::Dtasls, X::Matrix)
     n, zp = size(X)
     w = ones(zp) 
     z = similar(X, zp)

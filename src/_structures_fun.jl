@@ -11,20 +11,24 @@ end
 ## Preprocessing
 
 
-struct Dt
-    par::ParDt
+struct Dtpol
+    par::ParDtpol
 end
 
-struct Asls
-    par::ParAsls
+struct Dtlo
+    par::ParDtlo
 end
 
-struct Airpls
-    par::ParAirpls
+struct Dtasls
+    par::ParDtasls
 end
 
-struct Arpls
-    par::ParArpls
+struct Dtairpls
+    par::ParDtairpls
+end
+
+struct Dtarpls
+    par::ParDtarpls
 end
 
 struct Fdif
