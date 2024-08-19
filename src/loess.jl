@@ -4,8 +4,8 @@ Compute a locally weighted regression model (LOESS).
 * `X` : X-data (n, p).
 * `y` : Univariate y-data (n).
 Keyword arguments:
-* `span` : Window for neighborhood selection (level of smoothing) smoothing, 
-    typically in [0, 1] (proportion).
+* `span` : Window for neighborhood selection (level of smoothing)
+    for the local fitting, typically in [0, 1] (proportion).
 * `degree` : Polynomial degree for the local fitting.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled by its uncorrected standard deviation.
@@ -31,78 +31,29 @@ Statistics and computing, 1(1), 47-62. DOI: 10.1007/BF01890836
 
 ## Examples
 ```julia
-using Jchemo, JchemoData
-using JLD2, GLMakie, CairoMakie, FreqTables
-mypath = dirname(dirname(pathof(JchemoData)))
-db = joinpath(mypath, "data", "challenge2018.jld2") 
-@load db dat
-pnames(dat)
-X = dat.X 
-Y = dat.Y
-wlst = names(X)
-wl = parse.(Float64, wlst)
-ntot = nro(X)
-summ(Y)
-typ = Y.typ
-test = Y.test
-y = Y.conc
+using Jchemo, CairoMakie
 
-mod1 = model(snv; centr = true, scal = true) 
-mod2 = model(savgol; npoint = 21, deriv = 2, degree = 3)
-mod = pip(mod1, mod2)
-fit!(mod, X)
-@head Xp = transf(mod, X)
-plotsp(Xp, wl; xlabel = "Wavelength (nm)", ylabel = "Absorbance", nsamp = 20).f
-
-s = Bool.(test)
-Xtrain = rmrow(Xp, s)
-Ytrain = rmrow(Y, s)
-ytrain = rmrow(y, s)
-typtrain = rmrow(typ, s)
-Xtest = Xp[s, :]
-Ytest = Y[s, :]
-ytest = y[s]
-typtest = typ[s]
-ntrain = nro(Xtrain)
-ntest = nro(Xtest)
-(ntot = ntot, ntrain, ntest)
-
-freqtable(string.(typ, "-", Y.label))
-freqtable(typ, test)
-
-#################
-
-nlv = 3
-n_neighbors = 50 ; min_dist = .5 
-mod = model(loess; nlv, n_neighbors, min_dist)  
-fit!(mod, Xtrain)
-@head T = mod.fm.T
-@head Ttest = transf(mod, Xtest)
-
-GLMakie.activate!() 
-#CairoMakie.activate!()
-ztyp = recod_catbyint(typtrain)
-colsh = :tab10
-f = Figure()
-i = 1
-ax = Axis3(f[1, 1], xlabel = string("LV", i), ylabel = string("LV", i + 1), 
-        zlabel = string("LV", i + 2), title = "UMAP", perspectiveness = 0) 
-scatter!(ax, T[:, i], T[:, i + 1], T[:, i + 2]; markersize = 8, 
-    color = ztyp, colormap = colsh) 
-scatter!(ax, Ttest[:, i], Ttest[:, i + 1], Ttest[:, i + 2], color = :black, 
-    colormap = :tab20, markersize = 10)  
-lev = mlev(typtrain)
-nlev = length(lev)
-colm = cgrad(colsh, nlev; alpha = .7, categorical = true) 
-elt = [MarkerElement(color = colm[i], marker = '●', markersize = 10) for i in 1:nlev]
-#elt = [PolyElement(polycolor = colm[i]) for i in 1:nlev]
-title = "Group"
-Legend(f[1, 2], elt, lev, title; nbanks = 1, rowgap = 10, framevisible = false)
+####### Example of fitting the function sinc(x)
+####### described in Rosipal & Trejo 2001 p. 105-106 
+x = collect(-10:.2:10) 
+x[x .== 0] .= 1e-5
+n = length(x)
+zy = sin.(abs.(x)) ./ abs.(x) 
+y = zy + .2 * randn(n) 
+mod = model(loess; span = 1 / 3) 
+fit!(mod, x, y)
+pred = predict(mod, x).pred 
+f = Figure(size = (700, 300))
+ax = Axis(f[1, 1], xlabel = "x", ylabel = "y")
+scatter!(x, y) 
+lines!(ax, x, zy, label = "True model")
+lines!(ax, x, pred; label = "Loess")
+f[1, 2] = Legend(f, ax, framevisible = false)
 f
 ```
 """ 
 function loess(X, y; kwargs...)
-    par = recovkw(ParLoess, kwargs).par
+    par = recovkw(ParLoessr, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)
@@ -112,22 +63,22 @@ function loess(X, y; kwargs...)
         xscales .= colstd(X)
         X = fscale(X, xscales)
     end
-    fm = loess(X, y; span = par.span, degree = par.degree) 
-    Loess(fm, xscales, par) 
+    fm = Loess.loess(X, y; span = par.span, degree = par.degree) 
+    Loessr(fm, xscales, par) 
 end
 
 """
-    predict(object::Loess, X)
+    predict(object::Loessr, X)
 Compute y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Loess, X)
+function predict(object::Loessr, X)
     X = ensure_mat(X)
+    m = nro(X)
     Q = eltype(X)
     pred = Loess.predict(object.fm, fscale(X, object.xscales))
-    #m = length(pred)
-    #pred = reshape(convert.(Q, pred), m, 1)
+    pred = reshape(convert.(Q, pred), m, 1)
     (pred = pred,)
 end
 

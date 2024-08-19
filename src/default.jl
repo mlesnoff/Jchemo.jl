@@ -75,7 +75,7 @@ function default(fun::Function)
 
     in((knnr, lwmlr)).(fun) ? dump(Jchemo.ParKnn()) : nothing
     in((lwplsr, lwplsravg)).(fun) ? dump(Jchemo.ParLwplsr()) : nothing
-    in((loess,)).(fun) ? dump(Jchemo.ParLoess()) : nothing
+    in((loess,)).(fun) ? dump(Jchemo.ParLoessr()) : nothing
 
     in((mbplsr, mbplswest)).(fun) ? dump(Jchemo.ParMbplsr()) : nothing
     in((rosaplsr, soplsr)).(fun) ? dump(Jchemo.ParSoplsr()) : nothing

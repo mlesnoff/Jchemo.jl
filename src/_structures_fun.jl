@@ -463,10 +463,10 @@ struct Lwplsravg
     par::ParLwplsr
 end
 
-struct Loess
-    fm
+struct Loessr
+    fm::Loess.LoessModel
     xscales::Vector
-    par::Loess
+    par::ParLoessr
 end
 
 ## Svm, Trees
