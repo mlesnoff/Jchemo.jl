@@ -90,7 +90,8 @@ Keyword arguments:
 * `degree` : Polynomial degree for the local fitting.
 
 De-trend transformation: The function fits a baseline by LOESS regression 
-for each observation and returns the residuals (= signals corrected from the baseline).
+(function `loessr`) for each observation and returns the residuals (= signals corrected 
+from the baseline).
 
 ## Examples
 ```julia

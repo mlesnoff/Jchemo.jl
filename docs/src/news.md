@@ -5,6 +5,7 @@
 - New
     - **loessr** Compute a locally weighted regression model (LOESS)
         (with package Loess.jl).
+    - **dtlo** Baseline correction of each row of X-data by LOESS regression.
 
 - Modifications
     - Code cleaning.
