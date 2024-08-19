@@ -68,8 +68,6 @@ function transf!(object::Dt, X::Matrix)
     end
 end
 
-
-
 """
     dtloess(X; kwargs...)
 Baseline correction of each row of X-data by LOESS regression.
