@@ -7,6 +7,10 @@
         (with package Loess.jl).
     - **dtlo** Baseline correction of each row of X-data by LOESS regression.
 
+- Breaking
+    - **detrend**, **asls**, **airpls**, **arpls**: renamed to 
+        **dtpol**, **dtasls**, **dtairpls**, **dtarpls**.
+
 - Modifications
     - Code cleaning.
 
