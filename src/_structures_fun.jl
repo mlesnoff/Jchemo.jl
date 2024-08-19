@@ -463,6 +463,12 @@ struct Lwplsravg
     par::ParLwplsr
 end
 
+struct Loess
+    fm
+    xscales::Vector
+    par::Loess
+end
+
 ## Svm, Trees
 
 struct Svmr

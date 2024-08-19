@@ -287,6 +287,12 @@ Base.@kwdef mutable struct ParLwplsr    # lwplsr, lwplsravg
     verbose::Bool = false                   
 end 
 
+Base.@kwdef mutable struct ParLoess      
+    span::Float64 = 0.75
+    degree::Int = 2               
+    scal::Bool = false 
+end 
+
 ## Svm, Trees
 
 Base.@kwdef mutable struct ParSvm    # svmr, svmda

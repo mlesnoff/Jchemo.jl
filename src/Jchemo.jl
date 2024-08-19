@@ -8,6 +8,7 @@ using Distances
 using ImageFiltering      # convolutions in preprocessing (mavg, savgol), alternative = DSP.jl
 using LIBSVM 
 using LinearAlgebra
+using Loess
 using Makie
 using NearestNeighbors
 using Random
@@ -141,6 +142,7 @@ include("knnr.jl")
 include("lwmlr.jl")
 include("lwplsr.jl")
 include("lwplsravg.jl")
+include("loess.jl")
 
 ## Validation
 include("mpar.jl")
@@ -383,6 +385,7 @@ export
     knnr,
     lwmlr,
     lwplsr, lwplsravg,
+    loess,
     ######---- Discrimination
     fda, fda!, fdasvd, fdasvd!,
     mlrda,
