@@ -11,8 +11,8 @@ end
 ## Preprocessing
 
 
-struct Detrend
-    par::ParDetrend
+struct Dt
+    par::ParDt
 end
 
 struct Asls

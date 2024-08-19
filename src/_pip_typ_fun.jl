@@ -9,7 +9,7 @@ struct FunXY{FUN <: Function}
     fun::FUN   
 end
 
-detrend() = FunX{Function}(detrend)
+dt() = FunX{Function}(dt)
 asls() = FunX{Function}(asls)
 fdif() = FunX{Function}(fdif)
 interpl() = FunX{Function}(interpl)

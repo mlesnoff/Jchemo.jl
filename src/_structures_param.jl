@@ -21,7 +21,7 @@ Base.@kwdef mutable struct ParArpls
     verbose::Bool = false      
 end 
 
-Base.@kwdef mutable struct ParDetrend
+Base.@kwdef mutable struct ParDt
     degree::Int = 1  
 end 
 

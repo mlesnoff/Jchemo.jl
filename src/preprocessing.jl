@@ -1,11 +1,11 @@
 """
-    detrend(X; kwargs...)
+    dt(X; kwargs...)
 Baseline correction of each row of X-data by polynomial linear regression.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `degree` : Polynom degree.
 
-The function fits a baseline by polynomial regression for each observation
+"De-trend" transformation: the function fits a baseline by polynomial regression for each observation
 and returns the residuals (= signals corrected from the baseline).
 
 ## Examples
@@ -24,7 +24,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-mod = model(detrend; degree = 2)
+mod = model(dt; degree = 2)
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
@@ -32,25 +32,25 @@ plotsp(Xptrain, wl).f
 plotsp(Xptest, wl).f
 ```
 """ 
-function detrend(X; kwargs...)
-    par = recovkw(ParDetrend, kwargs).par
-    Detrend(par)
+function dt(X; kwargs...)
+    par = recovkw(ParDt, kwargs).par
+    Dt(par)
 end
 
 """ 
-    transf(object::Detrend, X)
-    transf!(object::Detrend, X)
+    transf(object::Dt, X)
+    transf!(object::Dt, X)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 """ 
-function transf(object::Detrend, X)
+function transf(object::Dt, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::Detrend, X::Matrix)
+function transf!(object::Dt, X::Matrix)
     n, p = size(X)
     degree = object.par.degree
     vX = similar(X, p, degree + 1)
@@ -61,8 +61,8 @@ function transf!(object::Detrend, X::Matrix)
     vXtvX = vXt * vX
     tol = sqrt(eps(real(float(one(eltype(vXtvX))))))
     A = pinv(vXtvX, rtol = tol) * vXt
-    ## Not faster: @Threads.threads
     @inbounds for i = 1:n
+    ## Not faster: @Threads.threads
         y = vrow(X, i)
         X[i, :] .= y - vX * A * y
     end
@@ -71,7 +71,7 @@ end
 
 
 """
-    bsloess(X; kwargs...)
+    dtloess(X; kwargs...)
 Baseline correction of each row of X-data by LOESS regression.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -99,7 +99,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-mod = model(bsloess; degree = 2)
+mod = model(dtloess; degree = 2)
 fit!(mod, Xtrain)
 Xptrain = transf(mod, Xtrain)
 Xptest = transf(mod, Xtest)
@@ -107,49 +107,36 @@ plotsp(Xptrain, wl).f
 plotsp(Xptest, wl).f
 ```
 """ 
-function bsloess(X; kwargs...)
-    par = recovkw(ParDetrend, kwargs).par
-    Detrend(par)
+function dtloess(X; kwargs...)
+    par = recovkw(ParBsloess, kwargs).par
+    Bsloess(par)
 end
 
 """ 
-    transf(object::Detrend, X)
-    transf!(object::Detrend, X)
+    transf(object::Bsloess, X)
+    transf!(object::Bsloess, X)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 """ 
-function transf(object::Detrend, X)
+function transf(object::Bsloess, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::Detrend, X::Matrix)
+function transf!(object::Bsloess, X::Matrix)
     n, p = size(X)
+    span = object.par.span
     degree = object.par.degree
-    vX = similar(X, p, degree + 1)
-    for j = 0:degree
-        vX[:, j + 1] .= collect(1:p).^j
-    end
-    vXt = vX'
-    vXtvX = vXt * vX
-    tol = sqrt(eps(real(float(one(eltype(vXtvX))))))
-    A = pinv(vXtvX, rtol = tol) * vXt
-    ## Not faster: @Threads.threads
+    x = collect(1:p)
     @inbounds for i = 1:n
+    ## Not faster: @Threads.threads
         y = vrow(X, i)
-        X[i, :] .= y - vX * A * y
+        fm = loess(x, y; span, degree)
+        X[i, :] .= y - vec(predict(fm, x).pred)
     end
 end
-
-
-
-
-
-
-
-
 
 """
     fdif(X; kwargs...)

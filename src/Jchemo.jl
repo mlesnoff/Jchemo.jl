@@ -307,7 +307,7 @@ export
     dmnormlog, dmnormlog!,
     dmkern,
     ## Pre-processing
-    detrend, 
+    dt, 
     asls, airpls, arpls,
     fdif,
     interpl, 

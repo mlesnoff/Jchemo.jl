@@ -12,7 +12,7 @@ default(svmr)
 """
 function default(fun::Function)
 
-    in((detrend,)).(fun) ? dump(Jchemo.ParDetrend()) : nothing
+    in((dt,)).(fun) ? dump(Jchemo.ParDt()) : nothing
     in((asls,)).(fun) ? dump(Jchemo.ParAsls()) : nothing
     in((airpls,)).(fun) ? dump(Jchemo.ParAirpls()) : nothing
     in((arpls,)).(fun) ? dump(Jchemo.ParArpls()) : nothing
