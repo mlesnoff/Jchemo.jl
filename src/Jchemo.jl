@@ -142,7 +142,7 @@ include("knnr.jl")
 include("lwmlr.jl")
 include("lwplsr.jl")
 include("lwplsravg.jl")
-include("loess.jl")
+include("loessr.jl")
 
 ## Validation
 include("mpar.jl")
@@ -385,7 +385,7 @@ export
     knnr,
     lwmlr,
     lwplsr, lwplsravg,
-    loess,
+    loessr,
     ######---- Discrimination
     fda, fda!, fdasvd, fdasvd!,
     mlrda,

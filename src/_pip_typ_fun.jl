@@ -66,7 +66,7 @@ knnr() = FunXY{Function}(knnr)
 lwmlr() = FunXY{Function}(lwmlr)
 lwplsr() = FunXY{Function}(lwplsr)
 lwplsravg() = FunXY{Function}(lwplsravg)
-loess() = FunX{Function}(loess)
+loessr() = FunX{Function}(loessr)
 ##
 svmr() = FunXY{Function}(svmr)
 treer() = FunXY{Function}(treer)
