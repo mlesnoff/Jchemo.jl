@@ -5,8 +5,8 @@ Baseline correction of each row of X-data by polynomial linear regression.
 Keyword arguments:
 * `degree` : Polynom degree.
 
-The function fits a polynomial regression to each observation
-and returns the residuals (= signals corrected from the fitted baseline).
+The function fits a baseline by polynomial regression for each observation
+and returns the residuals (= signals corrected from the baseline).
 
 ## Examples
 ```julia
@@ -67,6 +67,89 @@ function transf!(object::Detrend, X::Matrix)
         X[i, :] .= y - vX * A * y
     end
 end
+
+
+
+"""
+    bsloess(X; kwargs...)
+Baseline correction of each row of X-data by LOESS regression.
+* `X` : X-data (n, p).
+Keyword arguments:
+Keyword arguments:
+* `span` : Window for neighborhood selection (level of smoothing)
+    for the local fitting, typically in [0, 1] (proportion).
+* `degree` : Polynomial degree for the local fitting.
+
+The function fits a baseline by LOESS regression for each observation
+and returns the residuals (= signals corrected from the baseline).
+
+## Examples
+```julia
+using Jchemo, JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+pnames(dat)
+X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
+plotsp(X, wl; nsamp = 20).f
+
+mod = model(bsloess; degree = 2)
+fit!(mod, Xtrain)
+Xptrain = transf(mod, Xtrain)
+Xptest = transf(mod, Xtest)
+plotsp(Xptrain, wl).f
+plotsp(Xptest, wl).f
+```
+""" 
+function bsloess(X; kwargs...)
+    par = recovkw(ParDetrend, kwargs).par
+    Detrend(par)
+end
+
+""" 
+    transf(object::Detrend, X)
+    transf!(object::Detrend, X)
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+""" 
+function transf(object::Detrend, X)
+    X = copy(ensure_mat(X))
+    transf!(object, X)
+    X
+end
+
+function transf!(object::Detrend, X::Matrix)
+    n, p = size(X)
+    degree = object.par.degree
+    vX = similar(X, p, degree + 1)
+    for j = 0:degree
+        vX[:, j + 1] .= collect(1:p).^j
+    end
+    vXt = vX'
+    vXtvX = vXt * vX
+    tol = sqrt(eps(real(float(one(eltype(vXtvX))))))
+    A = pinv(vXtvX, rtol = tol) * vXt
+    ## Not faster: @Threads.threads
+    @inbounds for i = 1:n
+        y = vrow(X, i)
+        X[i, :] .= y - vX * A * y
+    end
+end
+
+
+
+
+
+
+
+
 
 """
     fdif(X; kwargs...)
