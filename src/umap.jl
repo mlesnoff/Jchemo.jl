@@ -78,21 +78,27 @@ fit!(mod, Xtrain)
 @head T = mod.fm.T
 @head Ttest = transf(mod, Xtest)
 
+nlv = 3
+n_neighbors = 50 ; min_dist = .5 
+mod = model(umap; nlv, n_neighbors, min_dist)  
+fit!(mod, Xtrain)
+@head T = mod.fm.T
+@head Ttest = transf(mod, Xtest)
 GLMakie.activate!() 
 #CairoMakie.activate!()
-ztyp = recod_catbyint(typtrain)
+lev = mlev(typtrain)
+nlev = length(lev)
 colsh = :tab10
+colm = cgrad(colsh, nlev; alpha = .7, categorical = true) 
+ztyp = recod_catbyint(typtrain)
 f = Figure()
 i = 1
 ax = Axis3(f[1, 1], xlabel = string("LV", i), ylabel = string("LV", i + 1), 
         zlabel = string("LV", i + 2), title = "UMAP", perspectiveness = 0) 
 scatter!(ax, T[:, i], T[:, i + 1], T[:, i + 2]; markersize = 8, 
-    color = ztyp, colormap = colsh) 
+    color = ztyp, colormap = colm) 
 scatter!(ax, Ttest[:, i], Ttest[:, i + 1], Ttest[:, i + 2], color = :black, 
-    colormap = :tab20, markersize = 10)  
-lev = mlev(typtrain)
-nlev = length(lev)
-colm = cgrad(colsh, nlev; alpha = .7, categorical = true) 
+    markersize = 10)  
 elt = [MarkerElement(color = colm[i], marker = '●', markersize = 10) for i in 1:nlev]
 #elt = [PolyElement(polycolor = colm[i]) for i in 1:nlev]
 title = "Group"
