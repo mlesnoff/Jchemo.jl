@@ -32,37 +32,37 @@ Stat Comput 1, 47–62. https://doi.org/10.1007/BF01890836
 using Jchemo, CairoMakie, Distributions
 
 d = sort(sqrt.(rand(Chi(1), 1000)))
-cols = cgrad(:tab10, collect(1:9)) ;
+colm = cgrad(:tab10, collect(1:9)) ;
 alpha = 0
 f = Figure(size = (600, 500))
 ax = Axis(f, xlabel = "d", ylabel = "Weight")
 typw = :bisquare
 w = fweight(d; typw, alpha)
-lines!(ax, d, w, label = String(typw), color = cols[1])
+lines!(ax, d, w, label = String(typw), color = colm[1])
 typw = :cauchy
 w = fweight(d; typw, alpha)
-lines!(ax, d, w, label = String(typw), color = cols[2])
+lines!(ax, d, w, label = String(typw), color = colm[2])
 typw = :epan
 w = fweight(d; typw, alpha)
-lines!(ax, d, w, label = String(typw), color = cols[3])
+lines!(ax, d, w, label = String(typw), color = colm[3])
 typw = :fair
 w = fweight(d; typw, alpha)
-lines!(ax, d, w, label = String(typw), color = cols[4])
+lines!(ax, d, w, label = String(typw), color = colm[4])
 typw = :gauss
 w = fweight(d; typw, alpha)
-lines!(ax, d, w, label = String(typw), color = cols[5])
+lines!(ax, d, w, label = String(typw), color = colm[5])
 typw = :trian
 w = fweight(d; typw, alpha)
-lines!(ax, d, w, label = String(typw), color = cols[6])
+lines!(ax, d, w, label = String(typw), color = colm[6])
 typw = :invexp
 w = fweight(d; typw, alpha)
-lines!(ax, d, w, label = String(typw), color = cols[7])
+lines!(ax, d, w, label = String(typw), color = colm[7])
 typw = :invexp2
 w = fweight(d; typw, alpha)
-lines!(ax, d, w, label = String(typw), color = cols[8])
+lines!(ax, d, w, label = String(typw), color = colm[8])
 typw = :tricube
 w = fweight(d; typw, alpha)
-lines!(ax, d, w, label = String(typw), color = cols[9])
+lines!(ax, d, w, label = String(typw), color = colm[9])
 axislegend("Function", position = :lb)
 f[1, 1] = ax
 f
