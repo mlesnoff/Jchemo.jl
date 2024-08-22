@@ -325,7 +325,7 @@ The pipeline is fitted as follows:
 
 ```julia
 ## Models' definition
-mod1 = model(snv; centr = true, scal = true)
+mod1 = model(snv)
 mod2 = model(savgol; npoint = 5, deriv = 1, degree = 2)
 mod3 = model(dtpol)  
 ## Pipeline building

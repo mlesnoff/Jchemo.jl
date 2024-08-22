@@ -31,7 +31,7 @@ ntot = ntrain + ntest
 
 ## Pipeline Snv :> Savgol :> Pls :> Svmr
 
-mod1 = model(snv; centr = true, scal = true)
+mod1 = model(snv)
 npoint = 11 ; deriv = 2 ; degree = 3
 mod2 = model(savgol; npoint, deriv, degree)
 mod3 = model(plskern; nlv = 15)
