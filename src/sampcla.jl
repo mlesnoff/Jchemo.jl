@@ -5,7 +5,7 @@ Build training vs. test sets by stratified sampling.
 * `k` : Nb. test observations to sample in each class. 
     If `k` is a single value, the nb. of sampled 
     observations is the same for each class. Alternatively, 
-    `k`can be a vector of length equal to the nb. of 
+    `k` can be a vector of length equal to the nb. of 
     classes in `x`.
 * `y` : Quantitative variable (n) used if systematic sampling.
 
@@ -14,7 +14,7 @@ Two outputs are returned (= row indexes of the data):
 * `test` (`k`). 
 
 If `y` = `nothing`, the sampling is random, else it is 
-systematic over the sorted `y`(see function `sampsys`).
+systematic over the sorted `y` (see function `sampsys`).
 
 ## References
 Naes, T., 1987. The design of calibration in near infra-red reflectance 
