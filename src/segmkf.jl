@@ -10,9 +10,9 @@ Keyword arguments:
 * `rep` : Nb. replications of the sampling.
 
 For each replication, the function splits the `n` observations 
-tp `K` segments  that can be used for K-fold cross-validation. 
+to `K` segments  that can be used for K-fold cross-validation. 
 
-If `group` is used (must be a vector of length n), the function 
+If `group` is used (must be a vector of length `n`), the function 
 samples entire groups (= blocks) of observations instead of observations. 
 Such a block-sampling is required when data is structured by blocks and 
 when the response to predict is correlated within blocks. 
