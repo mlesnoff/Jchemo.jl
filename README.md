@@ -10,7 +10,7 @@
 # <span style="color:green"> **About** </span> 
 
 **Jchemo** was initially dedicated to **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
-and their extensions, in particular locally weighted PLS models (**LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). The package has then been expanded to various models for **dimension reduction** and **regression and discrimination** ([see the list of functions here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
+and their extensions, in particular locally weighted PLS models (**LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). The package has then been expanded to **many other models** for **dimension reduction** and **regression and discrimination** ([see the list of functions here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
 
 Why the name **Jchemo**?: Since it is orientated to **chemometrics** , in brief the use of biometrics for chemistry). But most of the provided methods are **generic to other application domains**. 
 
