@@ -1,18 +1,17 @@
 """ 
-    sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); msamp = :rand)
+    sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); meth = :rand)
 Build training vs. test sets from each column of a dataframe. 
-* `Y` : DataFrame (n, p) whose each column can contain missing values.
-* `k` : Nb. of test observations selected for each `Y` column. 
+* `Y` : DataFrame (n, p). Can contain missing values.
+* `k` : Nb. of test observations selected for each `Y`-column. 
     The selection is done within the non-missing observations 
     of the considered column. If `k` is a single value, the same nb.  
     of observations are selected for each column. Alternatively, 
     `k` can be a vector of length p. 
 * `id` : Vector (n) of IDs.
 Keyword arguments:
-* `msamp` : Type of sampling for the test set.
-    Possible values are: `:rand` = random sampling, 
-    `:sys` = systematic sampling over each sorted 
-    `Y` column (see function `sampsys`).  
+* `meth` : Type of sampling for the test set. Possible values are: 
+    `:rand` = random sampling, `:sys` = systematic sampling over each 
+    sorted `Y`-column (see function `sampsys`).  
 
 Typically, dataframe `Y` contains a set of response variables 
 to predict.
@@ -50,8 +49,8 @@ ids[i].test[j]
 ids[i].nam[j]
 ```
 """
-function sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); msamp = :rand)
-    @assert in([:rand; :sys])(msamp) "Wrong value for argument 'msamp'."
+function sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); meth = :rand)
+    @assert in([:rand; :sys])(meth) "Wrong value for argument 'meth'."
     p = nco(Y)
     nam = names(Y)
     train = list(Vector, p)  
@@ -60,7 +59,7 @@ function sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); msamp =
     @inbounds for i = 1:p
         y = Y[:, nam[i]]
         s_all = findall(ismissing.(y) .== 0)
-        if msamp == :rand   
+        if meth == :rand   
             n = length(s_all)
             res = samprand(n, k[i])
         else
