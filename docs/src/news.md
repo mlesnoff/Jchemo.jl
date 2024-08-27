@@ -2,8 +2,12 @@
 
 ## *Version 0.5.4*
 
+- Breaking
+    - **sampdf**: argument 'msamp' renamed to 'meth'.
+
 - Modifications
     - Code cleaning.
+
 
 ## *Version 0.5.3*
 
