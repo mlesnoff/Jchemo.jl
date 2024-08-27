@@ -35,7 +35,9 @@
 - **rpmatgauss** Gaussian random projection matrix 
 - **rpmatli** Sparse random projection matrix 
 
-### UMAP -- with UMAP.jl
+### Manifold 
+
+*UMAP* -- with UMAP.jl
 
 - **umap**: Uniform manifold approximation and projection for 
     dimension reduction
