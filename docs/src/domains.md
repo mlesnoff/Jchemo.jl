@@ -347,7 +347,7 @@
 - **plotsp** Plot spectra
 - **plotxy** x-y scatter plot
 - **plotgrid** Plot error/performance rates of a model
-- **plotconf** Plot conf matrix
+- **plotconf** Plot confusion matrix
 
 ## MODELS AND PIPELINES
 
