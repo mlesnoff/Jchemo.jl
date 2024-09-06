@@ -1,7 +1,7 @@
 """
     plotconf(object; size = (500, 400), cnt = true, ptext = true, 
         fontsize = 15, coldiag = :red, )
-Plot a conf matrix.
+Plot a confusion matrix.
 * `object` : Output of function `conf`.
 Keyword arguments:
 * `size` : Size (horizontal, vertical) of the figure.
