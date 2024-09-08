@@ -68,7 +68,7 @@ vip(fm, Ydummy).imp
 mod = model(plslda; nlv) 
 fit!(mod, X, ycla)
 pnames(mod.fm.fm)
-fm = mod.fm.fm.fmpls ;
+fm = mod.fm.fm.fmemb ;
 vip(fm).imp
 vip(fm, Ydummy).imp
 ```

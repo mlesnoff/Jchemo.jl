@@ -640,7 +640,7 @@ struct Plsprobda    # plslda, plsqda, plskdeda
     lev::Vector
     ni::Vector{Int}
     par::Union{ParPlsda, ParPlsqda, ParPlskdeda, ParSplsda, ParSplsqda, ParSplskdeda,
-        ParKplsda, ParKplsqda, ParKplskdeda, ParUmap}
+        ParKplsda, ParKplsqda, ParKplskdeda}
 end
 
 ## Local

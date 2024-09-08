@@ -66,14 +66,14 @@ fm = mod.fm ;
 fm.lev
 fm.ni
 
-fmpls = fm.fm.fmpls ; 
-@head fmpls.T
+fmemb = fm.fm.fmemb ; 
+@head fmemb.T
 @head transf(mod, Xtrain)
 @head transf(mod, Xtest)
 @head transf(mod, Xtest; nlv = 3)
 
-coef(fmpls)
-summary(fmpls, Xtrain)
+coef(fmemb)
+summary(fmemb, Xtrain)
 
 res = predict(mod, Xtest) ;
 pnames(res)
@@ -97,12 +97,12 @@ function splslda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmpls = splskern(X, res.Y, weights; kwargs...)
+    fmemb = splskern(X, res.Y, weights; kwargs...)
     fmda = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = lda(fmpls.T[:, 1:i], y, weights; kwargs...)
+        fmda[i] = lda(fmemb.T[:, 1:i], y, weights; kwargs...)
     end
-    fm = (fmpls = fmpls, fmda = fmda)
+    fm = (fmemb = fmemb, fmda = fmda)
     Plsprobda(fm, res.lev, ni, par)
 end
 

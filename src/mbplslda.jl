@@ -101,12 +101,12 @@ function mbplslda(Xbl, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmpls = mbplsr(Xbl, res.Y, weights; kwargs...)
+    fmemb = mbplsr(Xbl, res.Y, weights; kwargs...)
     fmda = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = lda(fmpls.T[:, 1:i], y, weights; kwargs...)
+        fmda[i] = lda(fmemb.T[:, 1:i], y, weights; kwargs...)
     end
-    fm = (fmpls = fmpls, fmda = fmda)
+    fm = (fmemb = fmemb, fmda = fmda)
     Mbplsprobda(fm, res.lev, ni, par)
 end
 
@@ -120,7 +120,7 @@ Compute latent variables (LVs = scores T) from
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Mbplsprobda, Xbl; nlv = nothing)
-    transf(object.fm.fmpls, Xbl; nlv)
+    transf(object.fm.fmemb, Xbl; nlv)
 end
 
 """
@@ -135,14 +135,14 @@ function predict(object::Mbplsprobda, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     Qy = eltype(object.lev)
     m = nro(Xbl[1])
-    a = size(object.fm.fmpls.T, 2)
+    a = size(object.fm.fmemb.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
     @inbounds for i = 1:le_nlv
         znlv = nlv[i]
-        T = transf(object.fm.fmpls, Xbl; nlv = znlv)
+        T = transf(object.fm.fmemb, Xbl; nlv = znlv)
         zres = predict(object.fm.fmda[znlv], T)
         z =  mapslices(argmax, zres.posterior; dims = 2) 
         pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)

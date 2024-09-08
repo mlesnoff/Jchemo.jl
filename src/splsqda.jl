@@ -49,12 +49,12 @@ function splsqda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmpls = splskern(X, res.Y, weights; kwargs...)
+    fmemb = splskern(X, res.Y, weights; kwargs...)
     fmda = list(Qda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = qda(vcol(fmpls.T, 1:i), y, weights; kwargs...)
+        fmda[i] = qda(vcol(fmemb.T, 1:i), y, weights; kwargs...)
     end
-    fm = (fmpls = fmpls, fmda = fmda)
+    fm = (fmemb = fmemb, fmda = fmda)
     Plsprobda(fm, res.lev, ni, par)
 end
 

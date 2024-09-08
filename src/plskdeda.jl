@@ -54,13 +54,13 @@ fm = mod.fm ;
 fm.lev
 fm.ni
 
-fmpls = fm.fm.fmpls ;
-@head fmpls.T
+fmemb = fm.fm.fmemb ;
+@head fmemb.T
 @head transf(mod, Xtrain)
 @head transf(mod, Xtest)
 @head transf(mod, Xtest; nlv = 3)
 
-coef(fmpls)
+coef(fmemb)
 
 res = predict(mod, Xtest) ;
 pnames(res)
@@ -70,7 +70,7 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
 predict(mod, Xtest; nlv = 1:2).pred
-summary(fmpls, Xtrain)
+summary(fmemb, Xtrain)
 ```
 """ 
 function plskdeda(X, y; kwargs...)
@@ -85,12 +85,12 @@ function plskdeda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmpls = plskern(X, res.Y, weights; kwargs...)
+    fmemb = plskern(X, res.Y, weights; kwargs...)
     fmda = list(Kdeda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = kdeda(vcol(fmpls.T, 1:i), y; kwargs...)
+        fmda[i] = kdeda(vcol(fmemb.T, 1:i), y; kwargs...)
     end
-    fm = (fmpls = fmpls, fmda = fmda)
+    fm = (fmemb = fmemb, fmda = fmda)
     Plsprobda(fm, res.lev, ni, par)
 end
 
