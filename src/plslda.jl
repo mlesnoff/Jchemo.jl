@@ -139,10 +139,10 @@ function predict(object::Plsprobda, X; nlv = nothing)
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
+    T = transf(object.fm.fmemb, X)
     @inbounds for i = 1:le_nlv
         znlv = nlv[i]
-        T = transf(object.fm.fmemb, X; nlv = znlv)
-        zres = predict(object.fm.fmda[znlv], T)
+        zres = predict(object.fm.fmda[znlv], vcol(T, 1:znlv))
         z =  mapslices(argmax, zres.posterior; dims = 2) 
         pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)
         posterior[i] = zres.posterior
