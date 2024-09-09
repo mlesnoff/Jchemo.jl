@@ -236,7 +236,7 @@ Sampling spectra by interpolation.
 Keyword arguments:
 * `wl` : Values representing the column "names" of `X`. 
     Must be a numeric vector of length p, or an AbstractRange,
-    with growing values..
+    with growing values.
 * `wlfin` : Final values (within the range of `wl`) where to interpolate
     the spectrum. Must be a numeric vector, or an AbstractRange,
     with growing values.
