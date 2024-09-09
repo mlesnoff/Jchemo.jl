@@ -4,6 +4,7 @@
 
 - Breaking
     - **sampdf**: argument 'msamp' renamed to 'meth'.
+    - Output 'fmpls' renamed to 'fmemb' in PLSDA functions.
 
 - Modifications
     - Code cleaning.
