@@ -302,8 +302,6 @@ function transf!(object::Interpl, X::Matrix, M::Matrix)
     n = nro(X)
     wl = object.par.wl 
     wlfin = object.par.wlfin 
-    @show wl
-    @show wlfin
     fun = DataInterpolations.CubicSpline
     #fun = DataInterpolations.LinearInterpolation
     ## Not faster: @Threads.threads
