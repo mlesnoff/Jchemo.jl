@@ -17,7 +17,7 @@ Keyword arguments:
 
 The method builds kernel Gram matrices and then runs a usual 
 PLSR algorithm on them. This is faster (but not equivalent) to the 
-"true" Nipals KPLSR algorithm (function `kplsr`) described in 
+"true" KPLSR (Nipals) algorithm (function `kplsr`) described in 
 Rosipal & Trejo (2001).
 
 ## References 
