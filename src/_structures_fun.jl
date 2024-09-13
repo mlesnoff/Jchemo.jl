@@ -137,6 +137,7 @@ struct Umap
     T::Matrix
     fm::UMAP.UMAP_
     xscales::Vector
+    s::Vector{Int}
     par::ParUmap
 end 
     
