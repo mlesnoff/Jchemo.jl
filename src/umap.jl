@@ -110,19 +110,24 @@ function umap(X; kwargs...)
     par = recovkw(ParUmap, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
-    p = nco(X)
+    if par.psamp < 1
+        ns = Int(round(par.psamp * n))
+        res = nipals(fcenter(X, colmean(X)); maxit = 50)
+        s = sampsys(res.u, ns).test
+        X = vrow(X, s)
+    else
+        s = collect(1:n)
+    end
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
         X = fscale(X, xscales)
     end
-    fm = UMAP.UMAP_(X', par.nlv; 
-        n_neighbors = par.n_neighbors, 
-        metric = Distances.Euclidean(), 
-        min_dist = par.min_dist
-        )
+    metric = Distances.Euclidean()
+    fm = UMAP.UMAP_(X', par.nlv; n_neighbors = par.n_neighbors, metric, 
+        min_dist = par.min_dist)
     T = fm.embedding' 
-    Umap(T, fm, xscales, par)
+    Umap(T, fm, xscales, s, par)
 end
 
 """ 
