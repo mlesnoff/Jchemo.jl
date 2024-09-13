@@ -6,6 +6,7 @@ UMAP: Uniform manifold approximation and projection for
 * `Y` : Y-data (n, q).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
+* `psamp` : Proportion of sampling in `X` for training.
 * `n_neighbors` : Nb. approximate neighbors used to construct 
     the initial high-dimensional graph.
 * `min_dist` : Minimum distance between points in low-dimensional 
@@ -15,6 +16,11 @@ Keyword arguments:
     
 The function fits a UMAP dimension reducion using 
 package `UMAP.jl'. The used metric is the Euclidean distance. 
+
+If `psamp < 1`, only a proportion `psamp` of the observations (rows of `X`) 
+are used to build the model (systematic sampling over the first score of 
+the PCA of `X`). Can be used to decrease computation times when n
+is large.
 
 ## References
 
@@ -110,6 +116,7 @@ function umap(X; kwargs...)
     par = recovkw(ParUmap, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
+    n, p = size(X)
     if par.psamp < 1
         ns = Int(round(par.psamp * n))
         res = nipals(fcenter(X, colmean(X)); maxit = 50)
