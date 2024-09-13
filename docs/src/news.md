@@ -2,6 +2,9 @@
 
 ## *Version 0.5.4*
 
+- New
+    - **umap**: new argument 'psamp'.
+
 - Breaking
     - **sampdf**: argument 'msamp' renamed to 'meth'.
     - Output 'fmpls' renamed to 'fmemb' in PLSDA functions.
