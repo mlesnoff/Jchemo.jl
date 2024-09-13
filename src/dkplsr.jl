@@ -2,8 +2,7 @@
     dkplsr(X, Y; kwargs...)
     dkplsr(X, Y, weights::Weight; kwargs...)
     dkplsr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-Direct kernel partial least squares regression (DKPLSR) 
-    (Bennett & Embrechts 2003).
+Direct kernel partial least squares regression (DKPLSR) (Bennett & Embrechts 2003).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
