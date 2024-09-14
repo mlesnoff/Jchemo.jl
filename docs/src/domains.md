@@ -129,7 +129,7 @@
 
 ### Local models
 
-- **loessr** Locally weighted regression model (LOESS) -- With package Loess.jl
+- **loessr** LOESS regression model -- With package Loess.jl
 
 *kNN*
 - **knnr** kNN weighted regression (kNNR)
