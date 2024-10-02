@@ -131,8 +131,7 @@ function umap(X; kwargs...)
         X = fscale(X, xscales)
     end
     metric = Distances.Euclidean()
-    fm = UMAP.UMAP_(X', par.nlv; n_neighbors = par.n_neighbors, metric, 
-        min_dist = par.min_dist)
+    fm = UMAP.UMAP_(X', par.nlv; n_neighbors = par.n_neighbors, metric, min_dist = par.min_dist)
     T = fm.embedding' 
     Umap(T, fm, xscales, s, par)
 end
