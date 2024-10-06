@@ -7,7 +7,7 @@ end
 """
     model(fun::Function; kwargs...)
 Build a model.
-* `fun` : The function defining the the model.
+* `fun` : The algorthm (function) defining the model.
 * `kwargs...`: Keyword arguments of `fun`.
 
 ## Examples
