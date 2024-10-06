@@ -1,4 +1,5 @@
 """
+    plskern(; kwargs...)
     plskern(X, Y; kwargs...)
     plskern(X, Y, weights::Weight; kwargs...)
     plskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -57,11 +58,11 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-model = mod_(plskern; nlv) ;
-#model = mod_(plsnipals; nlv) ;
-#model = mod_(plswold; nlv) ;
-#model = mod_(plsrosa; nlv) ;
-#model = mod_(plssimp; nlv) ;
+model = plskern(; nlv) ;
+#model = plsnipals(; nlv) ;
+#model = plswold(; nlv) ;
+#model = plsrosa(; nlv) ;
+#model = plssimp(; nlv) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

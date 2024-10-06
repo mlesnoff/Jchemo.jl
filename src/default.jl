@@ -11,9 +11,7 @@ default(svmr)
 ```
 """
 function default(algo::Function)
-
-    in((Jchemo.plskern00,)).(algo) ? dump(Jchemo.ParPlsr()) : nothing
-
+    
     in((dtpol,)).(algo) ? dump(Jchemo.ParDtpol()) : nothing
     in((dtlo,)).(algo) ? dump(Jchemo.ParDtlo()) : nothing
     in((dtasls,)).(algo) ? dump(Jchemo.ParDtasls()) : nothing

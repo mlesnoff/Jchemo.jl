@@ -1,4 +1,5 @@
 """
+    plswold(; kwargs...)
     plswold(X, Y; kwargs...)
     plswold(X, Y, weights::Weight; kwargs...)
     plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -28,6 +29,8 @@ Squares (PLS). Approach to Generalized Inverses. SIAM Journal on
 Scientific and Statistical Computing 5, 735–743. 
 https://doi.org/10.1137/0905052
 """ 
+plswold(; kwargs...) = JchemoModel(plsnipals, nothing, kwargs)
+
 function plswold(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
