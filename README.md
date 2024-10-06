@@ -15,7 +15,7 @@ and their extensions, in particular locally weighted PLS models (**LWPLS-R** & *
 Why the name **Jchemo**?: Since it is orientated to **chemometrics** , in brief the use of biometrics for chemistry). But most of the provided methods are **generic to other application domains**. 
 
 **Jchemo** is organized between 
-- **transformers** (that have a function `transf`),
+- ***transformers*** (that have a function `transf`),
 - **predictors** (that have a function `predict`), 
 - **utility functions**. 
 
