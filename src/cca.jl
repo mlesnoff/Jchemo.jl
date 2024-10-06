@@ -73,18 +73,18 @@ q = nco(Y)
 
 nlv = 3
 bscal = :frob ; tau = 1e-8
-mod = model(cca; nlv, bscal, tau)
-fit!(mod, X, Y)
-pnames(mod)
-pnames(mod.fm)
+model = mod_(cca; nlv, bscal, tau)
+fit!(model, X, Y)
+pnames(model)
+pnames(model.fm)
 
-@head mod.fm.Tx
-@head transfbl(mod, X, Y).Tx
+@head model.fm.Tx
+@head transfbl(model, X, Y).Tx
 
-@head mod.fm.Ty
-@head transfbl(mod, X, Y).Ty
+@head model.fm.Ty
+@head transfbl(model, X, Y).Ty
 
-res = summary(mod, X, Y) ;
+res = summary(model, X, Y) ;
 pnames(res)
 res.cort2t 
 res.rdx

@@ -54,29 +54,29 @@ tab(ytest)
 
 nlv = 15
 meth = :mix ; nvar = 10
-mod = model(splsrda; nlv, meth, nvar) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+model = mod_(splsrda; nlv, meth, nvar) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
+fm = model.fm ;
 fm.lev
 fm.ni
 
 @head fm.fm.T
-@head transf(mod, Xtrain)
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
+@head transf(model, Xtrain)
+@head transf(model, Xtest)
+@head transf(model, Xtest; nlv = 3)
 
 coef(fm.fm)
 
-res = predict(mod, Xtest) ;
+res = predict(model, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(mod, Xtest; nlv = 1:2).pred
+predict(model, Xtest; nlv = 1:2).pred
 summary(fm.fm, Xtrain)
 ```
 """ 

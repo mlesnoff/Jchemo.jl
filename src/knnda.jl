@@ -48,15 +48,15 @@ tab(ytest)
 
 metric = :eucl
 h = 2 ; k = 10
-mod = model(knnda; metric, h, k) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+model = mod_(knnda; metric, h, k) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
+fm = model.fm ;
 fm.lev
 fm.ni
 
-res = predict(mod, Xtest) ; 
+res = predict(model, Xtest) ; 
 pnames(res) 
 res.listnn
 res.listd
@@ -66,12 +66,12 @@ res.listw
 conf(res.pred, ytest).cnt
 
 ## With dimension reduction
-mod1 = model(pcasvd; nlv = 15)
+model1 = mod_(pcasvd; nlv = 15)
 metric = :mah ; h = 1 ; k = 3 
-mod2 = model(knnda; metric, h, k) 
-mod = pip(mod1, mod2)
-fit!(mod, Xtrain, ytrain)
-@head pred = predict(mod, Xtest).pred 
+model2 = mod_(knnda; metric, h, k) 
+model = pip(model1, model2)
+fit!(model, Xtrain, ytrain)
+@head pred = predict(model, Xtest).pred 
 errp(pred, ytest)
 ```
 """ 

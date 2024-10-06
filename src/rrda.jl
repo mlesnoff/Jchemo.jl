@@ -58,11 +58,11 @@ tab(ytrain)
 tab(ytest)
 
 lb = 1e-5
-mod = model(rrda; lb) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+model = mod_(rrda; lb) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
+fm = model.fm ;
 fm.lev
 fm.ni
 pnames(fm.fm)
@@ -70,14 +70,14 @@ aggsum(fm.fm.weights.w, ytrain)
 
 coef(fm.fm)
 
-res = predict(mod, Xtest) ;
+res = predict(model, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(mod, Xtest; lb = [.1; .01]).pred
+predict(model, Xtest; lb = [.1; .01]).pred
 ```
 """ 
 function rrda(X, y; kwargs...)

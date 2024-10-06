@@ -1,5 +1,5 @@
 """
-    gridcv_lb(X, Y; segm, fun, score, pars = nothing, lb, verbose = false)
+    gridcv_lb(X, Y; segm, algo, score, pars = nothing, lb, verbose = false)
 Working function for `gridcv`.
 
 Specific and faster than `gridcv_br` for models 
@@ -8,7 +8,7 @@ must not contain `nlv`.
 
 See function `gridcv` for examples.
 """
-function gridcv_lb(X, Y; segm, fun, score, pars = nothing, lb, verbose = false)
+function gridcv_lb(X, Y; segm, algo, score, pars = nothing, lb, verbose = false)
     q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
@@ -22,7 +22,7 @@ function gridcv_lb(X, Y; segm, fun, score, pars = nothing, lb, verbose = false)
         @inbounds for j = 1:nsegm
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
-            zres[j] = gridscore_lb(rmrow(X, s), rmrow(Y, s), X[s, :], Y[s, :]; fun, score, lb, pars)
+            zres[j] = gridscore_lb(rmrow(X, s), rmrow(Y, s), X[s, :], Y[s, :]; algo, score, lb, pars)
         end
         zres = reduce(vcat, zres)
         ## Case where pars is empty

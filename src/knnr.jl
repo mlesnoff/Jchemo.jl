@@ -51,12 +51,12 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 h = 1 ; k = 3 
-mod = model(knnr; h, k) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-dump(mod.fm.par)
-res = predict(mod, Xtest) ; 
+model = mod_(knnr; h, k) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
+dump(model.fm.par)
+res = predict(model, Xtest) ; 
 pnames(res) 
 res.listnn
 res.listd
@@ -67,12 +67,12 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
     ylabel = "Observed").f    
 
 ## With dimension reduction
-mod1 = model(pcasvd; nlv = 15)
+model1 = mod_(pcasvd; nlv = 15)
 metric = :eucl ; h = 1 ; k = 3 
-mod2 = model(knnr; metric, h, k) 
-mod = pip(mod1, mod2)
-fit!(mod, Xtrain, ytrain)
-res = predict(mod, Xtest) ; 
+model2 = mod_(knnr; metric, h, k) 
+model = pip(model1, model2)
+fit!(model, Xtrain, ytrain)
+res = predict(model, Xtest) ; 
 @head res.pred
 @show rmsep(res.pred, ytest)
 
@@ -83,9 +83,9 @@ x[x .== 0] .= 1e-5
 n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
-mod = model(knnr; k = 15, h = 5) 
-fit!(mod, x, y)
-pred = predict(mod, x).pred 
+model = mod_(knnr; k = 15, h = 5) 
+fit!(model, x, y)
+pred = predict(model, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
 lines!(ax, x, vec(pred), label = "Fitted model")

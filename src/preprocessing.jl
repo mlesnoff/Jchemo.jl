@@ -24,19 +24,19 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-mod = model(dtpol; degree = 2)
-fit!(mod, Xtrain)
-Xptrain = transf(mod, Xtrain)
-Xptest = transf(mod, Xtest)
+model = mod_(dtpol; degree = 2)
+fit!(model, Xtrain)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
 plotsp(Xptrain, wl).f
 plotsp(Xptest, wl).f
 
 ## Example on 1 spectrum
 i = 2
 zX = Matrix(X)[i:i, :]
-mod = model(dtpol; degree = 1)
-fit!(mod, zX)
-zXc = transf(mod, zX)   # = corrected spectrum 
+model = mod_(dtpol; degree = 1)
+fit!(model, zX)
+zXc = transf(model, zX)   # = corrected spectrum 
 B = zX - zXc            # = estimated baseline
 f, ax = plotsp(zX, wl)
 lines!(wl, vec(B); color = :blue)
@@ -109,19 +109,19 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-mod = model(dtlo; span = .8)
-fit!(mod, Xtrain)
-Xptrain = transf(mod, Xtrain)
-Xptest = transf(mod, Xtest)
+model = mod_(dtlo; span = .8)
+fit!(model, Xtrain)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
 plotsp(Xptrain, wl).f
 plotsp(Xptest, wl).f
 
 ## Example on 1 spectrum
 i = 2
 zX = Matrix(X)[i:i, :]
-mod = model(dtlo; span = .75)
-fit!(mod, zX)
-zXc = transf(mod, zX)   # = corrected spectrum 
+model = mod_(dtlo; span = .75)
+fit!(model, zX)
+zXc = transf(model, zX)   # = corrected spectrum 
 B = zX - zXc            # = estimated baseline
 f, ax = plotsp(zX, wl)
 lines!(wl, vec(B); color = :blue)
@@ -189,10 +189,10 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-mod = model(fdif; npoint = 2) 
-fit!(mod, Xtrain)
-Xptrain = transf(mod, Xtrain)
-Xptest = transf(mod, Xtest)
+model = mod_(fdif; npoint = 2) 
+fit!(model, Xtrain)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
 plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
@@ -267,10 +267,10 @@ plotsp(X, wl; nsamp = 20).f
 
 wlfin = range(500, 2400, length = 10)
 #wlfin = collect(range(500, 2400, length = 10))
-mod = model(interpl; wl, wlfin)
-fit!(mod, Xtrain)
-Xptrain = transf(mod, Xtrain)
-Xptest = transf(mod, Xtest)
+model = mod_(interpl; wl, wlfin)
+fit!(model, Xtrain)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
 plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
@@ -302,11 +302,11 @@ function transf!(object::Interpl, X::Matrix, M::Matrix)
     n = nro(X)
     wl = object.par.wl 
     wlfin = object.par.wlfin 
-    fun = DataInterpolations.CubicSpline
-    #fun = DataInterpolations.LinearInterpolation
+    algo = DataInterpolations.CubicSpline
+    #algo = DataInterpolations.LinearInterpolation
     ## Not faster: @Threads.threads
     @inbounds for i = 1:n
-        itp = fun(vrow(X, i), wl; extrapolate = false)
+        itp = algo(vrow(X, i), wl; extrapolate = false)
         M[i, :] .= itp.(wlfin)
     end
 end
@@ -349,10 +349,10 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-mod = model(mavg; npoint = 10) 
-fit!(mod, Xtrain)
-Xptrain = transf(mod, Xtrain)
-Xptest = transf(mod, Xtest)
+model = mod_(mavg; npoint = 10) 
+fit!(model, Xtrain)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
 plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
@@ -482,10 +482,10 @@ wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
 npoint = 11 ; degree = 2 ; deriv = 2
-mod = model(savgol; npoint, degree, deriv) 
-fit!(mod, Xtrain)
-Xptrain = transf(mod, Xtrain)
-Xptest = transf(mod, Xtest)
+model = mod_(savgol; npoint, degree, deriv) 
+fit!(model, Xtrain)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
 plotsp(Xptrain).f
 plotsp(Xptest).f
 
@@ -498,9 +498,9 @@ M = 10  # half window
 N = 3   # degree
 deriv = 0
 #deriv = 1
-mod = model(savgol; npoint = 2M + 1, degree = N, deriv)
-fit!(mod, x')
-xp = transf(mod, x')
+model = mod_(savgol; npoint = 2M + 1, degree = N, deriv)
+fit!(model, x')
+xp = transf(model, x')
 f, ax = plotsp(x', u; color = :blue)
 lines!(ax, u, vec(xp); color = :red)
 f
@@ -571,10 +571,10 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-mod = model(snorm) 
-fit!(mod, Xtrain)
-Xptrain = transf(mod, Xtrain)
-Xptest = transf(mod, Xtest)
+model = mod_(snorm) 
+fit!(model, Xtrain)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
 plotsp(Xptrain).f
 plotsp(Xptest).f
 rownorm(Xptrain)
@@ -626,11 +626,11 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-mod = model(snv) 
-#mod = model(snv; scal = false) 
-fit!(mod, Xtrain)
-Xptrain = transf(mod, Xtrain)
-Xptest = transf(mod, Xtest)
+model = mod_(snv) 
+#model = mod_(snv; scal = false) 
+fit!(model, Xtrain)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
 plotsp(Xptrain).f
 plotsp(Xptest).f
 ```

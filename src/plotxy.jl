@@ -47,9 +47,9 @@ tab(year)
 lev = mlev(year)
 nlev = length(lev)
 
-mod = model(pcasvd; nlv = 5)  
-fit!(mod, X) 
-@head T = mod.fm.T
+model = mod_(pcasvd; nlv = 5)  
+fit!(model, X) 
+@head T = model.fm.T
 
 plotxy(T[:, 1], T[:, 2]; color = (:red, .5)).f
 

@@ -60,15 +60,15 @@ tab(ytest)
 
 nlvdis = 25 ; metric = :mah
 h = 2 ; k = 100
-mod = model(lwplsrda; nlvdis, metric, h, k) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+model = mod_(lwplsrda; nlvdis, metric, h, k) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
+fm = model.fm ;
 fm.lev
 fm.ni
 
-res = predict(mod, Xtest) ; 
+res = predict(model, Xtest) ; 
 pnames(res) 
 res.listnn
 res.listd
@@ -136,7 +136,7 @@ function predict(object::Lwplsrda, X; nlv = nothing)
     end
     ## End
     ## In each neighborhood, the observation weights in plsrda are given by listw, not by priors
-    pred = locwlv(object.X, object.y, X; listnn = res.ind, listw, fun = plsrda, 
+    pred = locwlv(object.X, object.y, X; listnn = res.ind, listw, algo = plsrda, 
         nlv, scal = object.par.scal, verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end

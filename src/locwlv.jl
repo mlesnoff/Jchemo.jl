@@ -1,5 +1,5 @@
 """
-    locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, fun, nlv, verbose = true, 
+    locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv, verbose = true, 
         kwargs...)
 Compute predictions for a given kNN model.
 * `Xtrain` : Training X-data.
@@ -8,18 +8,18 @@ Compute predictions for a given kNN model.
 Keyword arguments:
 * `listnn` : List (vector) of m vectors of indexes.
 * `listw` : List (vector) of m vectors of weights.
-* `fun` : Function computing the model on 
+* `algo` : Function computing the model on 
     the m neighborhoods.
 * `nlv` : Nb. or collection of nb. of latent variables (LVs).
 * `verbose` : Boolean. If `true`, predicting information 
     are printed.
-* `kwargs` : Keywords arguments to pass in function `fun`.
+* `kwargs` : Keywords arguments to pass in function `algo`.
     Each argument must have length = 1 (not be a collection).
 
 Same as [`locw`](@ref) but specific and much faster 
 for LV-based models (e.g. PLSR).
 """
-function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, fun, nlv, verbose = true, 
+function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv, verbose = true, 
         kwargs...)
     p = nco(Xtrain)
     m = nro(X)
@@ -42,9 +42,9 @@ function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, fun, nlv, verbose = 
         ## End 
         else
             if isnothing(listw)
-                fm = fun(Xtrain[s, :],  zYtrain; nlv = maximum(nlv), kwargs...)
+                fm = algo(Xtrain[s, :],  zYtrain; nlv = maximum(nlv), kwargs...)
             else
-                fm = fun(Xtrain[s, :], zYtrain, mweight(listw[i]); nlv = maximum(nlv), kwargs...)
+                fm = algo(Xtrain[s, :], zYtrain, mweight(listw[i]); nlv = maximum(nlv), kwargs...)
             end
             @inbounds for a = 1:le_nlv
                 zpred[i, :, a] = predict(fm, vrow(X, i:i); nlv = nlv[a]).pred

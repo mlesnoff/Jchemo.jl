@@ -69,15 +69,15 @@ tab(ytest)
 
 nlvdis = 25 ; metric = :mah
 h = 1 ; k = 200
-mod = model(lwplsqda; nlvdis, metric, h, k, prior = :prop, alpha = .5) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+model = mod_(lwplsqda; nlvdis, metric, h, k, prior = :prop, alpha = .5) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
+fm = model.fm ;
 fm.lev
 fm.ni
 
-res = predict(mod, Xtest) ; 
+res = predict(model, Xtest) ; 
 pnames(res) 
 res.listnn
 res.listd
@@ -145,7 +145,7 @@ function predict(object::Lwplsqda, X; nlv = nothing)
     ## End
     ## In each neighborhood, the observation weights in plsqda are given by listw, not by priors
     pred = locwlv(object.X, object.y, X; listnn = res.ind, listw, 
-        fun = plsqda, nlv, prior = object.par.prior, alpha = object.par.alpha, 
+        algo = plsqda, nlv, prior = object.par.prior, alpha = object.par.alpha, 
         scal = object.par.scal, verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end

@@ -34,11 +34,11 @@ scal = false
 #scal = true
 gs = false
 #gs = true
-mod = model(pcanipalsmiss; nlv, tol, gs, maxit = 500, scal)
-fit!(mod, X)
-pnames(mod) 
-pnames(mod.fm)
-fm = mod.fm ;
+model = mod_(pcanipalsmiss; nlv, tol, gs, maxit = 500, scal)
+fit!(model, X)
+pnames(model) 
+pnames(model.fm)
+fm = model.fm ;
 fm.niter
 fm.sv
 fm.P
@@ -49,9 +49,9 @@ fm.T' * fm.T
 fm.P' * fm.P
 
 ## Impute missing data in X
-mod = model(pcanipalsmiss; nlv = 2, gs = true) ;
-fit!(mod, X)
-Xfit = xfit(mod.fm)
+model = mod_(pcanipalsmiss; nlv = 2, gs = true) ;
+fit!(model, X)
+Xfit = xfit(model.fm)
 s = ismissing.(X)
 X_imput = copy(X)
 X_imput[s] .= Xfit[s]

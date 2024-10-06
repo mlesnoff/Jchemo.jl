@@ -45,30 +45,30 @@ y = Y[:, 1]
 ycla = [1 ; 1 ; 1 ; 2 ; 2]
 
 nlv = 3
-mod = model(plskern; nlv)
-fit!(mod, X, y)
-res = vip(mod.fm)
+model = mod_(plskern; nlv)
+fit!(model, X, y)
+res = vip(model.fm)
 pnames(res)
 res.imp
 
-fit!(mod, X, Y)
-vip(mod.fm).imp
-vip(mod.fm, Y).imp
+fit!(model, X, Y)
+vip(model.fm).imp
+vip(model.fm, Y).imp
 
 ## For PLSDA
 
-mod = model(plsrda; nlv) 
-fit!(mod, X, ycla)
-pnames(mod.fm)
-fm = mod.fm.fm ;
+model = mod_(plsrda; nlv) 
+fit!(model, X, ycla)
+pnames(model.fm)
+fm = model.fm.fm ;
 vip(fm).imp
 Ydummy = dummy(ycla).Y
 vip(fm, Ydummy).imp
 
-mod = model(plslda; nlv) 
-fit!(mod, X, ycla)
-pnames(mod.fm.fm)
-fm = mod.fm.fm.fmemb ;
+model = mod_(plslda; nlv) 
+fit!(model, X, ycla)
+pnames(model.fm.fm)
+fm = model.fm.fm.fmemb ;
 vip(fm).imp
 vip(fm, Ydummy).imp
 ```

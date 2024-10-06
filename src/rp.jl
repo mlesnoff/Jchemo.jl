@@ -23,13 +23,13 @@ X = rand(n, p)
 nlv = 3
 meth = :li ; s = sqrt(p) 
 #meth = :gauss
-mod = model(rp; nlv, meth, s)
-fit!(mod, X)
-pnames(mod)
-pnames(mod.fm)
-@head mod.fm.T 
-@head mod.fm.P 
-transf(mod, X[1:2, :])
+model = mod_(rp; nlv, meth, s)
+fit!(model, X)
+pnames(model)
+pnames(model.fm)
+@head model.fm.T 
+@head model.fm.P 
+transf(model, X[1:2, :])
 ```
 """
 function rp(X; kwargs...)

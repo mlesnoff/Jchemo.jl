@@ -30,7 +30,7 @@ The pipelines are built with function `pip`, see [**here**](https://github.com/m
 
 **Warnings** 
 - A breaking change has been made between **version 0.3.7** and **version 0.4.0** for the embedded syntax, with the use of the new function `model`. For instance: 
-    - `mod = plskern(; nlv = 15)` is now writen as `mod = model(plskern; nlv = 15)`. Other things have not changed.
+    - `model = plskern(; nlv = 15)` is now writen as `model = mod_(plskern; nlv = 15)`. Other things have not changed.
 - Major breaking changes were made between **version 0.2.4** and **version 0.3.0**. Mainly, a new **embedded syntax** was proposed.
 
 See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for details.  
@@ -149,8 +149,8 @@ zY = Float32.(Y)
 ```julia
 ## Float64
 ## (NB.: multi-threading is not used in plskern) 
-mod = model(plskern; nlv)
-@benchmark fit!($mod, $X, $Y)
+model = mod_(plskern; nlv)
+@benchmark fit!($model, $X, $Y)
 
 BenchmarkTools.Trial: 1 sample with 1 evaluation.
  Single result which took 7.532 s (1.07% GC) to evaluate,
@@ -159,7 +159,7 @@ BenchmarkTools.Trial: 1 sample with 1 evaluation.
 
 ```julia
 # Float32 
-@benchmark fit!($mod, $zX, $zY) 
+@benchmark fit!($model, $zX, $zY) 
 
 BenchmarkTools.Trial: 2 samples with 1 evaluation.
  Range (min … max):  3.956 s …    4.148 s  ┊ GC (min … max): 0.82% … 3.95%
@@ -206,12 +206,12 @@ The embedded syntax to fit the model is as follows:
 ## after character ";"
 
 ## Model definition
-## (below, the name 'mod' can be replaced by any other name)
+## (below, the name 'model' can be replaced by any other name)
 npoint = 11 ; deriv = 2 ; degree = 3
-mod = model(savgol; npoint, deriv, degree)
+model = mod_(savgol; npoint, deriv, degree)
 
 ## Fitting
-fit!(mod, Xtrain)
+fit!(model, Xtrain)
 ```
 
 which is the strictly equivalent to:
@@ -221,22 +221,22 @@ which is the strictly equivalent to:
 ## since the kwargs values are
 ## specified within the function
 
-mod = model(savgol; npoint = 11, deriv = 2, degree = 3)
-fit!(mod, Xtrain)
+model = mod_(savgol; npoint = 11, deriv = 2, degree = 3)
+fit!(model, Xtrain)
 ```
 
-Contents of objects `mod` and `fm` can be displayed by:
+Contents of objects `model` and `fm` can be displayed by:
 
 ```
-pnames(mod)
-pnames(mod.fm)
+pnames(model)
+pnames(model.fm)
 ```
 
 Once the model is fitted, the transformed (i.e. here preprocessed) data are given by:
 
 ```julia
-Xptrain = transf(mod, Xtrain)
-Xptest = transf(mod, Xtest)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
 ```
 
 Several preprocessing can be applied sequentially to the data by building a **pipeline** (see section *Fitting a pipeline* thereafter for examples).
@@ -248,34 +248,34 @@ Let us consider a principal component analysis (PCA), using function `pcasvd`.
 The embedded syntax to fit the model is as follows:
 ```julia
 nlv = 15  # nb. principal components
-mod = model(pcasvd; nlv)
-fit!(mod, Xtrain, ytrain)
+model = mod_(pcasvd; nlv)
+fit!(model, Xtrain, ytrain)
 ```
 
 For a preliminary scaling of the data before the PCA decomposition, the syntax is:
 
 ```julia
 nlv = 15 ; scal = true
-mod = model(pcasvd; nlv, scal)
-fit!(mod, Xtrain, ytrain)
+model = mod_(pcasvd; nlv, scal)
+fit!(model, Xtrain, ytrain)
 ```
 
 The PCA score matrices (i.e. the projections of the observations on the PCA directions) can be computed by:
 ```julia
-Ttrain = transf(mod, Xtrain)
-Ttest = transf(mod, Xtest)
+Ttrain = transf(model, Xtrain)
+Ttest = transf(model, Xtest)
 ```
 
 Object `Ttrain` above can also be obtained directly by:
 
 ```julia
-Ttrain = mod.fm.T
+Ttrain = model.fm.T
 ```
 
 Some model summary (% of explained variance, etc.) can be displayed by:
 
 ```julia
-summary(mod, Xtrain)
+summary(model, Xtrain)
 ```
 
 ### **Fitting a predictor**
@@ -288,25 +288,25 @@ The embedded syntax to fit the model is as follows:
 ```julia
 nlv = 15  # nb. latent variables
 kern = :krbf ; gamma = .001 
-mod = model(kplsr; nlv, kern, gamma)
-fit!(mod, Xtrain, ytrain)
+model = mod_(kplsr; nlv, kern, gamma)
+fit!(model, Xtrain, ytrain)
 ```
 
 As for PCA, the score matrices can be computed by:
 ```julia
-Ttrain = transf(mod, Xtrain)   # = mod.fm.T
-Ttest = transf(mod, Xtest)
+Ttrain = transf(model, Xtrain)   # = model.fm.T
+Ttest = transf(model, Xtest)
 ```
 
 and model summary by:
 
 ```julia
-summary(mod, Xtrain)
+summary(model, Xtrain)
 ```
 
 Y-Predictions are given by:
 ```julia
-pred = predict(mod, Xtest).pred
+pred = predict(model, Xtest).pred
 ```
 
 **Examples of tuning** of predictive models (test-set validation and cross-validation) are given in the help pages of functions `gridscore` and `gridcv`: 
@@ -325,20 +325,20 @@ The pipeline is fitted as follows:
 
 ```julia
 ## Models' definition
-mod1 = model(snv)
-mod2 = model(savgol; npoint = 5, deriv = 1, degree = 2)
-mod3 = model(dtpol)  
+model1 = mod_(snv)
+model2 = mod_(savgol; npoint = 5, deriv = 1, degree = 2)
+model3 = mod_(dtpol)  
 ## Pipeline building
-mod = pip(mod1, mod2, mod3)
+model = pip(model1, model2, model3)
 ## Fitting
-fit!(mod, Xtrain)
+fit!(model, Xtrain)
 ```
 
 The transformed data are given by:
 
 ```julia
-Xptrain = transf(mod, Xtrain)
-Xptest = transf(mod, Xtest)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
 ```
 #### **b) Example of PCA-SVMR**
 
@@ -349,15 +349,15 @@ The pipeline is fitted as follows:
 ```julia
 nlv = 15
 kern = :krbf ; gamma = .001 ; cost = 1000
-mod1 = model(pcasvd; nlv)
-mod2 = model(svmr; kern, gamma, cost)
-mod = pip(mod1, mod2)
-fit!(mod, Xtrain)
+model1 = mod_(pcasvd; nlv)
+model2 = mod_(svmr; kern, gamma, cost)
+model = pip(model1, model2)
+fit!(model, Xtrain)
 ```
 
 The Y-predictions are given by:
 ```julia
-pred = predict(mod, Xtest).pred
+pred = predict(model, Xtest).pred
 ```
 
 Any step(s) of data preprocessing can obviously be implemented before the modeling, either outside of the given predictive pipeline or being involded directlty in the pipeline, such as for instance:
@@ -366,10 +366,10 @@ Any step(s) of data preprocessing can obviously be implemented before the modeli
 degree = 2    # de-trending with polynom degree 2
 nlv = 15
 kern = :krbf ; gamma = .001 ; cost = 1000
-mod1 = model(dtpol; degree)
-mod2 = model(pcasvd; nlv)
-mod3 = model(svmr; kern, gamma, cost)
-mod = pip(mod1, mod2, mod3)
+model1 = mod_(dtpol; degree)
+model2 = mod_(pcasvd; nlv)
+model3 = mod_(svmr; kern, gamma, cost)
+model = pip(model1, model2, model3)
 ```
 
 #### **c) Example of LWR Naes et al. 1990**
@@ -381,9 +381,9 @@ The pipeline is defined by:
 ```julia
 nlv = 25
 metric = :eucl ; h = 2 ; k = 200
-mod1 = model(pcasvd; nlv)
-mod2 = model(lwmlr; metric, h, k)
-mod = pip(mod1, mod2)
+model1 = mod_(pcasvd; nlv)
+model2 = mod_(lwmlr; metric, h, k)
+model = pip(model1, model2)
 ```
 
 *Naes et al., 1990. Analytical Chemistry 664–673.*
@@ -397,9 +397,9 @@ The pipeline is defined by:
 ```julia
 nlv = 25
 metric = :mah ; h = Inf ; k = 200
-mod1 = model(plskern; nlv)
-mod2 = model(lwplsr; metric, h, k)
-mod = pip(mod1, mod2)
+model1 = mod_(plskern; nlv)
+model2 = mod_(lwplsr; metric, h, k)
+model = pip(model1, model2)
 ```
 
 *Shen et al., 2019. Journal of Chemometrics, 33(5) e3117.*

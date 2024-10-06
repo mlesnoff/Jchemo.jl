@@ -40,9 +40,9 @@ x[x .== 0] .= 1e-5
 n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
-mod = model(loessr; span = 1 / 3) 
-fit!(mod, x, y)
-pred = predict(mod, x).pred 
+model = mod_(loessr; span = 1 / 3) 
+fit!(model, x, y)
+pred = predict(model, x).pred 
 f = Figure(size = (700, 300))
 ax = Axis(f[1, 1], xlabel = "x", ylabel = "y")
 scatter!(x, y) 

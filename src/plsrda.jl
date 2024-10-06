@@ -58,31 +58,31 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-mod = model(plsrda; nlv) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+model = mod_(plsrda; nlv) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
+fm = model.fm ;
 fm.lev
 fm.ni
 pnames(fm.fm)
 aggsum(fm.fm.weights.w, ytrain)
 
 @head fm.fm.T
-@head transf(mod, Xtrain)
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
+@head transf(model, Xtrain)
+@head transf(model, Xtest)
+@head transf(model, Xtest; nlv = 3)
 
 coef(fm.fm)
 
-res = predict(mod, Xtest) ;
+res = predict(model, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(mod, Xtest; nlv = 1:2).pred
+predict(model, Xtest; nlv = 1:2).pred
 summary(fm.fm, Xtrain)
 ```
 """

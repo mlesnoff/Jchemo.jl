@@ -59,19 +59,19 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 2
-mod = model(fda; nlv)
-#mod = model(fdasvd; nlv)
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+model = mod_(fda; nlv)
+#model = mod_(fdasvd; nlv)
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
+fm = model.fm ;
 lev = fm.lev
 nlev = length(lev)
 aggsum(fm.weights.w, ytrain)
 
 @head fm.T 
-@head transf(mod, Xtrain)
-@head transf(mod, Xtest)
+@head transf(model, Xtrain)
+@head transf(model, Xtest)
 
 ## X-loadings matrix
 ## = coefficients of the linear discriminant function
@@ -81,7 +81,7 @@ fm.P' * fm.P
 
 ## Explained variance computed by weighted PCA 
 ## of the class centers in transformed scale
-summary(mod).explvarx
+summary(model).explvarx
 
 ## Projections of the class centers 
 ## to the score space

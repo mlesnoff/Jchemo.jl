@@ -52,11 +52,11 @@ typ = Y.typ
 test = Y.test
 y = Y.conc
 
-mod1 = model(snv) 
-mod2 = model(savgol; npoint = 21, deriv = 2, degree = 3)
-mod = pip(mod1, mod2)
-fit!(mod, X)
-@head Xp = transf(mod, X)
+model1 = mod_(snv) 
+model2 = mod_(savgol; npoint = 21, deriv = 2, degree = 3)
+model = pip(model1, model2)
+fit!(model, X)
+@head Xp = transf(model, X)
 plotsp(Xp, wl; xlabel = "Wavelength (nm)", ylabel = "Absorbance", nsamp = 20).f
 
 s = Bool.(test)
@@ -79,17 +79,17 @@ freqtable(typ, test)
 
 nlv = 3
 n_neighbors = 50 ; min_dist = .5 
-mod = model(umap; nlv, n_neighbors, min_dist)  
-fit!(mod, Xtrain)
-@head T = mod.fm.T
-@head Ttest = transf(mod, Xtest)
+model = mod_(umap; nlv, n_neighbors, min_dist)  
+fit!(model, Xtrain)
+@head T = model.fm.T
+@head Ttest = transf(model, Xtest)
 
 nlv = 3
 n_neighbors = 50 ; min_dist = .5 
-mod = model(umap; nlv, n_neighbors, min_dist)  
-fit!(mod, Xtrain)
-@head T = mod.fm.T
-@head Ttest = transf(mod, Xtest)
+model = mod_(umap; nlv, n_neighbors, min_dist)  
+fit!(model, Xtrain)
+@head T = model.fm.T
+@head Ttest = transf(model, Xtest)
 GLMakie.activate!() 
 #CairoMakie.activate!()
 lev = mlev(typtrain)

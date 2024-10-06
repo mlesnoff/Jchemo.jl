@@ -38,9 +38,9 @@ plotsp(X, wl; nsamp = 20).f
 i = 2
 zX = Matrix(X)[i:i, :]
 lb = 1e4
-mod = model(dtarpls; lb, p)
-fit!(mod, zX)
-zXc = transf(mod, zX)   # = corrected spectrum 
+model = mod_(dtarpls; lb, p)
+fit!(model, zX)
+zXc = transf(model, zX)   # = corrected spectrum 
 B = zX - zXc            # = estimated baseline
 f, ax = plotsp(zX, wl)
 lines!(wl, vec(B); color = :blue)

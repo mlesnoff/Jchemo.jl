@@ -1,6 +1,6 @@
 # New
 
-## *Version 0.5.4*
+## *Version 0.6.0*
 
 - New
     - **umap**: new argument 'psamp'.
@@ -110,7 +110,7 @@
 
 **Warning:** Major breaking changes with versions 0.3. The embedded syntax 
 has changed, with the use of the new function **model**:
-    - 'mod = plskern(; nlv = 15)' is now writen as 'mod = model(plskern; nlv = 15)'. 
+    - 'model = plskern(; nlv = 15)' is now writen as 'model = mod_(plskern; nlv = 15)'. 
 
 - Modifications
     - Code cleaning. The examples in th the function help pages have 

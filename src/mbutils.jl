@@ -44,12 +44,12 @@ Xblnew = mblock(Xnew, listbl)
 
 centr = true ; scal = true
 bscal = :frob
-mod = model(blockscal; centr, scal, bscal)
-fit!(mod, Xbl)
-zXbl = transf(mod, Xbl) ; 
+model = mod_(blockscal; centr, scal, bscal)
+fit!(model, Xbl)
+zXbl = transf(model, Xbl) ; 
 @head zXbl[3]
 
-zXblnew = transf(mod, Xblnew) ; 
+zXblnew = transf(model, Xblnew) ; 
 zXblnew[3]
 ```
 """
@@ -176,10 +176,10 @@ Xbl = mblock(X, listbl)
 Xblnew = mblock(Xnew, listbl) 
 @head Xbl[3]
 
-mod = model(mbconcat) 
-fit!(mod, Xbl)
-transf(mod, Xbl)
-transf(mod, Xblnew)
+model = mod_(mbconcat) 
+fit!(model, Xbl)
+transf(model, Xbl)
+transf(model, Xblnew)
 ```
 """
 function mbconcat(Xbl)

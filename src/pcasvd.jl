@@ -39,23 +39,23 @@ s = samprand(n, ntest)
 @head Xtest = X[s.test, :]
 
 nlv = 3
-mod = model(pcasvd; nlv)
-#mod = model(pcaeigen; nlv)
-#mod = model(pcaeigenk; nlv)
-#mod = model(pcanipals; nlv)
-fit!(mod, Xtrain)
-pnames(mod)
-pnames(mod.fm)
-@head T = mod.fm.T
+model = mod_(pcasvd; nlv)
+#model = mod_(pcaeigen; nlv)
+#model = mod_(pcaeigenk; nlv)
+#model = mod_(pcanipals; nlv)
+fit!(model, Xtrain)
+pnames(model)
+pnames(model.fm)
+@head T = model.fm.T
 ## Same as:
-@head transf(mod, X)
+@head transf(model, X)
 T' * T
-@head P = mod.fm.P
+@head P = model.fm.P
 P' * P
 
-@head Ttest = transf(mod, Xtest)
+@head Ttest = transf(model, Xtest)
 
-res = summary(mod, Xtrain) ;
+res = summary(model, Xtrain) ;
 pnames(res)
 res.explvarx
 res.contr_var

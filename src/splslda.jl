@@ -56,33 +56,33 @@ tab(ytest)
 
 nlv = 15
 meth = :mix ; nvar = 10
-mod = model(splslda; nlv, meth, nvar) 
-#mod = model(splsqda; nlv, meth, nvar, alpha = .1) 
-#mod = model(splskdeda; nlv, meth, nvar, a = .9) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+model = mod_(splslda; nlv, meth, nvar) 
+#model = mod_(splsqda; nlv, meth, nvar, alpha = .1) 
+#model = mod_(splskdeda; nlv, meth, nvar, a = .9) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
+fm = model.fm ;
 fm.lev
 fm.ni
 
 fmemb = fm.fm.fmemb ; 
 @head fmemb.T
-@head transf(mod, Xtrain)
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
+@head transf(model, Xtrain)
+@head transf(model, Xtest)
+@head transf(model, Xtest; nlv = 3)
 
 coef(fmemb)
 summary(fmemb, Xtrain)
 
-res = predict(mod, Xtest) ;
+res = predict(model, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(mod, Xtest; nlv = 1:2).pred
+predict(model, Xtest; nlv = 1:2).pred
 ```
 """ 
 function splslda(X, y; kwargs...)

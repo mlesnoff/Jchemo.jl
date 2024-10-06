@@ -42,31 +42,31 @@ n = nro(X)
 tab(y) 
 
 nlv = 2
-mod0 = model(fda; nlv)
+mod0 = mod_(fda; nlv)
 fit!(mod0, X, y)
 @head T = transf(mod0, X)
 n, p = size(T)
 
 #### Probability density in the FDA score space (2D)
 
-mod = model(dmkern)
-fit!(mod, T) 
-pnames(mod.fm)
-mod.fm.H
+model = mod_(dmkern)
+fit!(model, T) 
+pnames(model.fm)
+model.fm.H
 u = [1; 4; 150]
-predict(mod, T[u, :]).pred
+predict(model, T[u, :]).pred
 
 h = .3
-mod = model(dmkern; h)
-fit!(mod, T) 
-mod.fm.H
-predict(mod, T[u, :]).pred
+model = mod_(dmkern; h)
+fit!(model, T) 
+model.fm.H
+predict(model, T[u, :]).pred
 
 h = [.3; .1]
-mod = model(dmkern; h)
-fit!(mod, T) 
-mod.fm.H
-predict(mod, T[u, :]).pred
+model = mod_(dmkern; h)
+fit!(model, T) 
+model.fm.H
+predict(model, T[u, :]).pred
 
 ## Bivariate distribution
 npoints = 2^7
@@ -77,12 +77,12 @@ x2 = LinRange(lims[2][1], lims[2][2], npoints)
 z = mpar(x1 = x1, x2 = x2)
 grid = reduce(hcat, z)
 m = nro(grid)
-mod = model(dmkern) 
-#mod = model(dmkern; a = .5) 
-#mod = model(dmkern; h = .3) 
-fit!(mod, T) 
+model = mod_(dmkern) 
+#model = mod_(dmkern; a = .5) 
+#model = mod_(dmkern; h = .3) 
+fit!(model, T) 
 
-res = predict(mod, grid) ;
+res = predict(model, grid) ;
 pred_grid = vec(res.pred)
 f = Figure(size = (600, 400))
 ax = Axis(f[1, 1];  title = "Density for FDA scores (Iris)", xlabel = "Score 1", 
@@ -94,11 +94,11 @@ f
 
 ## Univariate distribution
 x = T[:, 1]
-mod = model(dmkern) 
-#mod = model(dmkern; a = .5) 
-#mod = model(dmkern; h = .3) 
-fit!(mod, x) 
-pred = predict(mod, x).pred 
+model = mod_(dmkern) 
+#model = mod_(dmkern; a = .5) 
+#model = mod_(dmkern; h = .3) 
+fit!(model, x) 
+pred = predict(model, x).pred 
 f = Figure()
 ax = Axis(f[1, 1])
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
@@ -110,11 +110,11 @@ npoints = 2^8
 lims = [minimum(x), maximum(x)]
 #delta = 5 ; lims = [minimum(x) - delta, maximum(x) + delta]
 grid = LinRange(lims[1], lims[2], npoints)
-mod = model(dmkern) 
-#mod = model(dmkern; a = .5) 
-#mod = model(dmkern; h = .3) 
-fit!(mod, x) 
-pred_grid = predict(mod, grid).pred 
+model = mod_(dmkern) 
+#model = mod_(dmkern; a = .5) 
+#model = mod_(dmkern; h = .3) 
+fit!(model, x) 
+pred_grid = predict(model, grid).pred 
 f = Figure()
 ax = Axis(f[1, 1])
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1

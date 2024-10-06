@@ -50,15 +50,15 @@ tab(ytest)
 
 metric = :mah
 h = 2 ; k = 10
-mod = model(lwmlrda; metric, h, k) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+model = mod_(lwmlrda; metric, h, k) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
+fm = model.fm ;
 fm.lev
 fm.ni
 
-res = predict(mod, Xtest) ; 
+res = predict(model, Xtest) ; 
 pnames(res) 
 res.listnn
 res.listd
@@ -112,7 +112,7 @@ function predict(object::Lwmlrda, X)
         listw[i] = w
     end
     ## End
-    pred = locw(object.X, object.y, X; listnn = res.ind, listw, fun = mlrda, 
+    pred = locw(object.X, object.y, X; listnn = res.ind, listw, algo = mlrda, 
         verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end

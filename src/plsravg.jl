@@ -56,10 +56,10 @@ ntest = nro(Xtest)
 nlv = 0:30
 #nlv = 5:20
 #nlv = 25
-mod = model(plsravg; nlv) ;
-fit!(mod, Xtrain, ytrain)
+model = mod_(plsravg; nlv) ;
+fit!(model, Xtrain, ytrain)
 
-res = predict(mod, Xtest)
+res = predict(model, Xtest)
 @head res.pred
 res.predlv   # predictions for each nb. of LVs 
 @show rmsep(res.pred, ytest)
@@ -79,8 +79,8 @@ end
 
 function plsravg!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParPlsr, kwargs).par
-    fun = plsravg_unif!
-    fm = fun(X, Y, weights; kwargs...)
+    algo = plsravg_unif!
+    fm = algo(X, Y, weights; kwargs...)
     Plsravg(fm, par) 
 end
 

@@ -39,14 +39,14 @@ wl = parse.(Float64, wlst)
 n = nro(X)
 
 nlv = 3
-mod = model(pcasph; nlv)  
-#mod = model(pcasvd; nlv) 
-fit!(mod, X)
-pnames(mod)
-pnames(mod.fm)
-@head T = mod.fm.T
+model = mod_(pcasph; nlv)  
+#model = mod_(pcasvd; nlv) 
+fit!(model, X)
+pnames(model)
+pnames(model.fm)
+@head T = model.fm.T
 ## Same as:
-transf(mod, X)
+transf(model, X)
 
 i = 1
 plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i), 

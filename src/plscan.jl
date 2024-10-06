@@ -50,18 +50,18 @@ q = nco(Y)
 
 nlv = 2
 bscal = :frob
-mod = model(plscan; nlv, bscal)
-fit!(mod, X, Y)
-pnames(mod)
-pnames(mod.fm)
+model = mod_(plscan; nlv, bscal)
+fit!(model, X, Y)
+pnames(model)
+pnames(model.fm)
 
-@head mod.fm.Tx
-@head transfbl(mod, X, Y).Tx
+@head model.fm.Tx
+@head transfbl(model, X, Y).Tx
 
-@head mod.fm.Ty
-@head transfbl(mod, X, Y).Ty
+@head model.fm.Ty
+@head transfbl(model, X, Y).Ty
 
-res = summary(mod, X, Y) ;
+res = summary(model, X, Y) ;
 pnames(res)
 res.explvarx
 res.explvary

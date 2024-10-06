@@ -64,19 +64,19 @@ ytest = rmrow(y, s)
 
 nlv = 1
 tau = 1e-4
-mod = model(rrr; nlv, tau) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-@head mod.fm.T
+model = mod_(rrr; nlv, tau) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
+@head model.fm.T
 
-coef(mod)
-coef(mod; nlv = 3)
+coef(model)
+coef(model; nlv = 3)
 
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
+@head transf(model, Xtest)
+@head transf(model, Xtest; nlv = 3)
 
-res = predict(mod, Xtest)
+res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 

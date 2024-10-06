@@ -72,21 +72,21 @@ scal = false
 #scal = true
 bscal = :none
 #bscal = :frob
-mod = model(mbplslda; nlv, bscal, scal)
-#mod = model(mbplsqda; nlv, bscal, alpha = .5, scal)
-#mod = model(mbplskdeda; nlv, bscal, scal)
-fit!(mod, Xbltrain, ytrain) 
-pnames(mod) 
+model = mod_(mbplslda; nlv, bscal, scal)
+#model = mod_(mbplsqda; nlv, bscal, alpha = .5, scal)
+#model = mod_(mbplskdeda; nlv, bscal, scal)
+fit!(model, Xbltrain, ytrain) 
+pnames(model) 
 
-@head transf(mod, Xbltrain)
-@head transf(mod, Xbltest)
+@head transf(model, Xbltrain)
+@head transf(model, Xbltest)
 
-res = predict(mod, Xbltest) ; 
+res = predict(model, Xbltest) ; 
 @head res.pred 
 @show errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(mod, Xbltest; nlv = 1:2).pred
+predict(model, Xbltest; nlv = 1:2).pred
 ```
 """ 
 function mbplslda(Xbl, y; kwargs...)

@@ -66,15 +66,15 @@ tab(ytest)
 n_trees = 200
 n_subfeatures = p / 3 
 max_depth = 10
-mod = model(rfda; n_trees, n_subfeatures, max_depth) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+model = mod_(rfda; n_trees, n_subfeatures, max_depth) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
+fm = model.fm ;
 fm.lev
 fm.ni
 
-res = predict(mod, Xtest) ; 
+res = predict(model, Xtest) ; 
 pnames(res) 
 @head res.pred
 errp(res.pred, ytest)

@@ -86,26 +86,26 @@ ytest = rmrow(y, s)
 nlv = 15
 meth = :mix ; nvar = 5
 #meth = :hard ; nvar = 5
-mod = model(splskern; nlv, meth, nvar) ;
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-@head mod.fm.T
-@head mod.fm.W
+model = mod_(splskern; nlv, meth, nvar) ;
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
+@head model.fm.T
+@head model.fm.W
 
-coef(mod)
-coef(mod; nlv = 3)
+coef(model)
+coef(model; nlv = 3)
 
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
+@head transf(model, Xtest)
+@head transf(model, Xtest; nlv = 3)
 
-res = predict(mod, Xtest)
+res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-res = summary(mod, Xtrain) ;
+res = summary(model, Xtrain) ;
 pnames(res)
 z = res.explvarx
 plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", 

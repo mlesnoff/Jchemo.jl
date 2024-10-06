@@ -31,25 +31,25 @@ ytrain = y[s.train]
 Xtest = X[s.test, :]
 ytest = y[s.test]
 
-mod = model(mlr)
-#mod = model(mlrchol)
-#mod = model(mlrpinv)
-#mod = model(mlrpinvn) 
-fit!(mod, Xtrain, ytrain) 
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+model = mod_(mlr)
+#model = mod_(mlrchol)
+#model = mod_(mlrpinv)
+#model = mod_(mlrpinvn) 
+fit!(model, Xtrain, ytrain) 
+pnames(model)
+pnames(model.fm)
+fm = model.fm ;
 fm.B
 fm.int 
-coef(mod) 
-res = predict(mod, Xtest)
+coef(model) 
+res = predict(model, Xtest)
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
     xlabel = "Prediction", ylabel = "Observed").f    
 
-mod = model(mlr; noint = true)
-fit!(mod, Xtrain, ytrain) 
-coef(mod) 
+model = mod_(mlr; noint = true)
+fit!(model, Xtrain, ytrain) 
+coef(model) 
 ```
 """ 
 function mlr(X, Y; kwargs...)

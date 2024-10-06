@@ -53,15 +53,15 @@ ntot = ntrain + ntest
 nlv = 3
 scal = false
 #scal = true
-mod = model(rosaplsr; nlv, scal)
-fit!(mod, Xbltrain, ytrain)
-pnames(mod) 
-pnames(mod.fm)
-@head mod.fm.T
-@head transf(mod, Xbltrain)
-transf(mod, Xbltest)
+model = mod_(rosaplsr; nlv, scal)
+fit!(model, Xbltrain, ytrain)
+pnames(model) 
+pnames(model.fm)
+@head model.fm.T
+@head transf(model, Xbltrain)
+transf(model, Xbltest)
 
-res = predict(mod, Xbltest)
+res = predict(model, Xbltest)
 res.pred 
 rmsep(res.pred, ytest)
 ```

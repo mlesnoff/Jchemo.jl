@@ -78,12 +78,12 @@ ytest = rmrow(y, s)
 
 nlvdis = 5 ; metric = :mah 
 h = 1 ; k = 200 ; nlv = 4:20
-mod = model(lwplsravg; nlvdis, metric, h, k, nlv) ;
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
+model = mod_(lwplsravg; nlvdis, metric, h, k, nlv) ;
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
 
-res = predict(mod, Xtest) ; 
+res = predict(model, Xtest) ; 
 pnames(res) 
 res.listnn
 res.listd
@@ -147,7 +147,7 @@ function predict(object::Lwplsravg, X)
         listw[i] = w
     end
     ## End
-    pred = locw(object.X, object.Y, X; listnn = res.ind, listw, fun = plsravg, 
+    pred = locw(object.X, object.Y, X; listnn = res.ind, listw, algo = plsravg, 
         nlv = object.par.nlv, scal = object.par.scal, verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end

@@ -46,20 +46,20 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 20
-mod0 = model(pcasvd; nlv) ;
+mod0 = mod_(pcasvd; nlv) ;
 fit!(mod0, Xtrain) 
 @head Ttrain = mod0.fm.T 
 @head Ttest = transf(mod0, Xtest)
 
 metric = :eucl 
 h = 2 ; k = 100 
-mod = model(lwmlr; metric, h, k) 
-fit!(mod, Ttrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-dump(mod.fm.par)
+model = mod_(lwmlr; metric, h, k) 
+fit!(model, Ttrain, ytrain)
+pnames(model)
+pnames(model.fm)
+dump(model.fm.par)
 
-res = predict(mod, Ttest) ; 
+res = predict(model, Ttest) ; 
 pnames(res) 
 res.listnn
 res.listd
@@ -76,9 +76,9 @@ x[x .== 0] .= 1e-5
 n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
-mod = model(lwmlr; metric = :eucl, h = 1.5, k = 20) ;
-fit!(mod, x, y)
-pred = predict(mod, x).pred 
+model = mod_(lwmlr; metric = :eucl, h = 1.5, k = 20) ;
+fit!(model, x, y)
+pred = predict(model, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
 lines!(ax, x, vec(pred), label = "Fitted model")
@@ -129,7 +129,7 @@ function predict(object::Lwmlr, X)
         listw[i] = w
     end
     ## End
-    pred = locw(object.X, object.Y, X; listnn = res.ind, listw, fun = mlr, 
+    pred = locw(object.X, object.Y, X; listnn = res.ind, listw, algo = mlr, 
         verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end

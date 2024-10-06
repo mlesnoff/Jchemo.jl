@@ -73,20 +73,20 @@ scal = false
 #scal = true
 bscal = :none
 #bscal = :frob
-mod = model(mbplsrda; nlv, bscal, scal)
-fit!(mod, Xbltrain, ytrain) 
-pnames(mod) 
+model = mod_(mbplsrda; nlv, bscal, scal)
+fit!(model, Xbltrain, ytrain) 
+pnames(model) 
 
-@head mod.fm.fm.T 
-@head transf(mod, Xbltrain)
-@head transf(mod, Xbltest)
+@head model.fm.fm.T 
+@head transf(model, Xbltrain)
+@head transf(model, Xbltest)
 
-res = predict(mod, Xbltest) ; 
+res = predict(model, Xbltest) ; 
 @head res.pred 
 @show errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(mod, Xbltest; nlv = 1:2).pred
+predict(model, Xbltest; nlv = 1:2).pred
 ```
 """
 function mbplsrda(Xbl, y; kwargs...)

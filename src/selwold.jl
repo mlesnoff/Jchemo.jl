@@ -93,9 +93,9 @@ ytest = rmrow(y, s)
 n = nro(Xtrain)
 
 segm = segmts(n, 50; rep = 30)
-mod = model(plskern)
+model = mod_(plskern)
 nlv = 0:20
-res = gridcv(mod, Xtrain, ytrain; segm, score = rmsep, nlv).res
+res = gridcv(model, Xtrain, ytrain; segm, score = rmsep, nlv).res
 res[res.y1 .== minimum(res.y1), :]
 plotgrid(res.nlv, res.y1;xlabel = "Nb. LVs", ylabel = "RMSEP").f
 zres = selwold(res.nlv, res.y1; smooth = true, graph = true) ;

@@ -40,25 +40,25 @@ tab(ytest)
 
 prior = :unif
 #prior = :prop
-mod = model(kdeda; prior)
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+model = mod_(kdeda; prior)
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
+fm = model.fm ;
 fm.lev
 fm.ni
 
-res = predict(mod, Xtest) ;
+res = predict(model, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-mod = model(kdeda; prior, a = .5) 
-#mod = model(kdeda; prior, h = .1) 
-fit!(mod, Xtrain, ytrain)
-mod.fm.fm[1].H
+model = mod_(kdeda; prior, a = .5) 
+#model = mod_(kdeda; prior, h = .1) 
+fit!(model, Xtrain, ytrain)
+model.fm.fm[1].H
 ```
 """ 
 function kdeda(X, y; kwargs...) 

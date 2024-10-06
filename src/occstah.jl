@@ -25,9 +25,9 @@ db = joinpath(path_jdat, "data/challenge2018.jld2")
 pnames(dat)
 X = dat.X    
 Y = dat.Y
-mod = model(savgol; npoint = 21, deriv = 2, degree = 3)
-fit!(mod, X) 
-Xp = transf(mod, X) 
+model = mod_(savgol; npoint = 21, deriv = 2, degree = 3)
+fit!(model, X) 
+Xp = transf(model, X) 
 s = Bool.(Y.test)
 Xtrain = rmrow(Xp, s)
 Ytrain = rmrow(Y, s)
@@ -49,10 +49,10 @@ ytrain = repeat(["in"], ntrain)
 ytest = repeat([cod], ntest)
 
 ## Group description
-mod = model(pcasvd; nlv = 10) 
-fit!(mod, zXtrain) 
-Ttrain = mod.fm.T
-Ttest = transf(mod, zXtest)
+model = mod_(pcasvd; nlv = 10) 
+fit!(model, zXtrain) 
+Ttrain = model.fm.T
+Ttest = transf(model, zXtest)
 T = vcat(Ttrain, Ttest)
 group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
 i = 1
@@ -63,30 +63,30 @@ plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class",
 ## Preliminary dimension reduction 
 ## (Not required but often more efficient)
 nlv = 50
-mod0 = model(pcasvd; nlv) ;
+mod0 = mod_(pcasvd; nlv) ;
 fit!(mod0, zXtrain)
 Ttrain = mod0.fm.T
 Ttest = transf(mod0, zXtest)
 ## Outlierness
-mod = model(occstah; nlv, scal = true)
-fit!(mod, Ttrain) 
-pnames(mod) 
-pnames(mod.fm) 
-@head d = mod.fm.d
+model = mod_(occstah; nlv, scal = true)
+fit!(model, Ttrain) 
+pnames(model) 
+pnames(model.fm) 
+@head d = model.fm.d
 d = d.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index", 
     ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 
-res = predict(mod, Ttest) ;
+res = predict(model, Ttest) ;
 pnames(res)
 @head res.d
 @head res.pred
 tab(res.pred)
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
-d1 = mod.fm.d.dstand
+d1 = model.fm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
 f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", 

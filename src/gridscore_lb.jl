@@ -1,5 +1,5 @@
 """
-    gridscore_lb(Xtrain, Ytrain, X, Y; fun, score, pars = nothing, 
+    gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, 
         lb, verbose = false)
 Working function for `gridscore`.
 
@@ -9,13 +9,13 @@ must not contain `lb`.
 
 See function `gridscore` for examples.
 """
-function gridscore_lb(Xtrain, Ytrain, X, Y; fun, score, pars = nothing, lb, verbose = false)
+function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, lb, verbose = false)
     q = nco(Ytrain)
     lb = mlev(lb)
     le_lb = length(lb)
     if isnothing(pars)    # e.g.: case of RR
         verbose ? println("-- Nb. combinations = 0.") : nothing
-        fm = fun(Xtrain, Ytrain, lb = maximum(lb))
+        fm = algo(Xtrain, Ytrain, lb = maximum(lb))
         pred = Jchemo.predict(fm, X; lb = lb).pred
         le_lb == 1 ? pred = [pred] : nothing
         res = zeros(le_lb, q)
@@ -28,7 +28,7 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; fun, score, pars = nothing, lb, verb
         verbose ? println("-- Nb. combinations = ", ncomb) : nothing
         res = map(values(pars)...) do v...
             verbose ? println(Pair.(keys(pars), v)...) : nothing
-            fm = fun(Xtrain, Ytrain ; lb = maximum(lb), Pair.(keys(pars), v)...)
+            fm = algo(Xtrain, Ytrain ; lb = maximum(lb), Pair.(keys(pars), v)...)
             pred = Jchemo.predict(fm, X; lb = lb).pred
             le_lb == 1 ? pred = [pred] : nothing
             zres = zeros(le_lb, q)

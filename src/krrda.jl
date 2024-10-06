@@ -47,24 +47,24 @@ tab(ytest)
 lb = 1e-5
 kern = :krbf ; gamma = .001 
 scal = true
-mod = model(krrda; lb, kern, gamma, scal) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+model = mod_(krrda; lb, kern, gamma, scal) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
+fm = model.fm ;
 fm.lev
 fm.ni
 
 coef(fm.fm)
 
-res = predict(mod, Xtest) ;
+res = predict(model, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(mod, Xtest; lb = [.1, .001]).pred
+predict(model, Xtest; lb = [.1, .001]).pred
 ```
 """ 
 function krrda(X, y; kwargs...)

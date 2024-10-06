@@ -53,16 +53,16 @@ ntrain = n - ntest
 tab(ytrain)
 tab(ytest)
 
-mod = model(qda)
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+model = mod_(qda)
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
+fm = model.fm ;
 fm.lev
 fm.ni
 aggsum(fm.weights.w, ytrain)
 
-res = predict(mod, Xtest) ;
+res = predict(model, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
@@ -70,11 +70,11 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
 ## With regularization
-mod = model(qda; alpha = .5)
-#mod = model(qda; alpha = 1) # = LDA
-fit!(mod, Xtrain, ytrain)
-mod.fm.Wi
-res = predict(mod, Xtest) ;
+model = mod_(qda; alpha = .5)
+#model = mod_(qda; alpha = 1) # = LDA
+fit!(model, Xtrain, ytrain)
+model.fm.Wi
+res = predict(model, Xtest) ;
 errp(res.pred, ytest)
 ```
 """ 

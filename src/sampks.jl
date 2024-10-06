@@ -44,9 +44,9 @@ pnames(res)
 res.train 
 res.test
 
-mod = model(pcasvd; nlv = 15) 
-fit!(mod, X) 
-@head T = mod.fm.T
+model = mod_(pcasvd; nlv = 15) 
+fit!(model, X) 
+@head T = model.fm.T
 res = sampks(T, k; metric = :mah)
 
 #####################

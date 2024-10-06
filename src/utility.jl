@@ -1,10 +1,10 @@
 """
-    aggstat(X, y; fun = mean)
-    aggstat(X::DataFrame; vars, groups, fun = mean)
+    aggstat(X, y; algo = mean)
+    aggstat(X::DataFrame; vars, groups, algo = mean)
 Compute column-wise statistics by class in a dataset.
 * `X` : Data (n, p).
 * `y` : A categorical variable (n) (class membership).
-* `fun` : Function to compute (default = mean).
+* `algo` : Function to compute (default = mean).
 Specific for dataframes:
 * `vars` : Vector of the ames of the variables to summarize.
 * `groups` : Vector of the names of the categorical variables to consider
@@ -22,9 +22,9 @@ n, p = 20, 5
 X = rand(n, p)
 df = DataFrame(X, :auto)
 y = rand(1:3, n)
-res = aggstat(X, y; fun = sum)
+res = aggstat(X, y; algo = sum)
 res.X
-aggstat(df, y; fun = sum).X
+aggstat(df, y; algo = sum).X
 
 n, p = 20, 5
 X = rand(n, p)
@@ -32,10 +32,10 @@ df = DataFrame(X, string.("v", 1:p))
 df.gr1 = rand(1:2, n)
 df.gr2 = rand(["a", "b", "c"], n)
 df
-aggstat(df; vars = [:v1, :v2], groups = [:gr1, :gr2], fun = var)
+aggstat(df; vars = [:v1, :v2], groups = [:gr1, :gr2], algo = var)
 ```
 """ 
-function aggstat(X, y; fun = mean)
+function aggstat(X, y; algo = mean)
     X = ensure_mat(X)
     y = vec(y)
     q = nco(X)
@@ -44,14 +44,14 @@ function aggstat(X, y; fun = mean)
     zX = similar(X, nlev, q)
     @inbounds for i in 1:nlev, j = 1:q
         s = y .== lev[i]
-        zX[i, j] = fun(X[s, j])
+        zX[i, j] = algo(X[s, j])
     end
     (X = zX, lev)
 end
 
-function aggstat(X::DataFrame; vars, groups, fun = mean)
+function aggstat(X::DataFrame; vars, groups, algo = mean)
     gdf = groupby(X, groups) 
-    res = combine(gdf, vars .=> fun, renamecols = false)
+    res = combine(gdf, vars .=> algo, renamecols = false)
     sort!(res, groups)
 end
 
@@ -367,12 +367,12 @@ findmax_cla(x)
 """
 function findmax_cla(x)
     n = length(x)
-    res = aggstat(ones(n), x; fun = sum)
+    res = aggstat(ones(n), x; algo = sum)
     res.lev[argmax(res.X)]   # if equal, argmax takes the first
 end
 
 function findmax_cla(x, weights::Weight)
-    res = aggstat(weights.w, x; fun = sum)
+    res = aggstat(weights.w, x; algo = sum)
     res.lev[argmax(res.X)]   
 end
 
@@ -582,7 +582,7 @@ tab(x)
 weights = mweightcla(x)
 #weights = mweightcla(x; prior = :prop)
 #weights = mweightcla(x; prior = [.1, .7, .2])
-res = aggstat(weights.w, x; fun = sum)
+res = aggstat(weights.w, x; algo = sum)
 [res.lev res.X]
 ```
 """
@@ -1201,7 +1201,7 @@ function tabdf(X; groups = nothing)
     isnothing(groups) ? groups = names(zX) : nothing
     zX.n = ones(nro(zX))
     res = aggstat(zX; vars = :n, groups = groups, 
-        fun = sum)
+        algo = sum)
     res.n = Int.(res.n)
     res
 end

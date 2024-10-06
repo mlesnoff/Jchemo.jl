@@ -20,14 +20,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, Ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, Ytrain)
+pred = predict(model, Xtest).pred
 bias(pred, Ytest)
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, ytrain)
+pred = predict(model, Xtest).pred
 bias(pred, ytest)
 ```
 """
@@ -53,14 +53,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, Ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, Ytrain)
+pred = predict(model, Xtest).pred
 cor2(pred, Ytest)
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, ytrain)
+pred = predict(model, Xtest).pred
 cor2(pred, ytest)
 ```
 """
@@ -89,14 +89,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, Ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, Ytrain)
+pred = predict(model, Xtest).pred
 msep(pred, Ytest)
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, ytrain)
+pred = predict(model, Xtest).pred
 msep(pred, ytest)
 ```
 """
@@ -130,14 +130,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, Ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, Ytrain)
+pred = predict(model, Xtest).pred
 r2(pred, Ytest)
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, ytrain)
+pred = predict(model, Xtest).pred
 r2(pred, ytest)
 ```
 """
@@ -163,14 +163,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, Ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, Ytrain)
+pred = predict(model, Xtest).pred
 residreg(pred, Ytest)
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, ytrain)
+pred = predict(model, Xtest).pred
 residreg(pred, ytest)
 ```
 """
@@ -194,14 +194,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, Ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, Ytrain)
+pred = predict(model, Xtest).pred
 rmsep(pred, Ytest)
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, ytrain)
+pred = predict(model, Xtest).pred
 rmsep(pred, ytest)
 ```
 """
@@ -228,14 +228,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, Ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, Ytrain)
+pred = predict(model, Xtest).pred
 rmsepstand(pred, Ytest)
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, ytrain)
+pred = predict(model, Xtest).pred
 rmsepstand(pred, ytest)
 ```
 """
@@ -270,14 +270,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, Ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, Ytrain)
+pred = predict(model, Xtest).pred
 rpd(pred, Ytest)
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, ytrain)
+pred = predict(model, Xtest).pred
 rpd(pred, ytest)
 ```
 """
@@ -303,14 +303,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, Ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, Ytrain)
+pred = predict(model, Xtest).pred
 rpdr(pred, Ytest)
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, ytrain)
+pred = predict(model, Xtest).pred
 rpdr(pred, ytest)
 ```
 """
@@ -350,14 +350,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, Ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, Ytrain)
+pred = predict(model, Xtest).pred
 sep(pred, Ytest)
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, ytrain)
+pred = predict(model, Xtest).pred
 sep(pred, ytest)
 ```
 """
@@ -380,14 +380,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, Ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, Ytrain)
+pred = predict(model, Xtest).pred
 ssr(pred, Ytest)
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, ytrain)
+pred = predict(model, Xtest).pred
 ssr(pred, ytest)
 ```
 """
@@ -413,14 +413,14 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, Ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, Ytrain)
+pred = predict(model, Xtest).pred
 mse(pred, Ytest)
 
-mod = model(plskern; nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plskern; nlv = 2)
+fit!(model, Xtrain, ytrain)
+pred = predict(model, Xtest).pred
 mse(pred, ytest)
 ```
 """
@@ -464,9 +464,9 @@ ytrain = rand(["a" ; "b"], 10)
 Xtest = rand(4, 5) 
 ytest = rand(["a" ; "b"], 4)
 
-mod = model(plsrda; nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plsrda; nlv = 2)
+fit!(model, Xtrain, ytrain)
+pred = predict(model, Xtest).pred
 residcla(pred, ytest)
 ```
 """
@@ -487,9 +487,9 @@ ytrain = rand(["a" ; "b"], 10)
 Xtest = rand(4, 5) 
 ytest = rand(["a" ; "b"], 4)
 
-mod = model(plsrda; nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plsrda; nlv = 2)
+fit!(model, Xtrain, ytrain)
+pred = predict(model, Xtest).pred
 errp(pred, ytest)
 ```
 """
@@ -517,9 +517,9 @@ ytrain = rand(["a" ; "b"], 10)
 Xtest = rand(4, 5) 
 ytest = rand(["a" ; "b"], 4)
 
-mod = model(plsrda; nlv = 2)
-fit!(mod, Xtrain, ytrain)
-pred = predict(mod, Xtest).pred
+model = mod_(plsrda; nlv = 2)
+fit!(model, Xtrain, ytrain)
+pred = predict(model, Xtest).pred
 merrp(pred, ytest)
 ```
 """

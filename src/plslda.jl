@@ -60,32 +60,32 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-mod = model(plslda; nlv) 
-#mod = model(plslda; nlv, prior = :prop) 
-#mod = model(plsqda; nlv, alpha = .1) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
+model = mod_(plslda; nlv) 
+#model = mod_(plslda; nlv, prior = :prop) 
+#model = mod_(plsqda; nlv, alpha = .1) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fm)
+fm = model.fm ;
 fm.lev
 fm.ni
 
 fmemb = fm.fm.fmemb ;
 @head fmemb.T
-@head transf(mod, Xtrain)
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
+@head transf(model, Xtrain)
+@head transf(model, Xtest)
+@head transf(model, Xtest; nlv = 3)
 
 coef(fmemb)
 
-res = predict(mod, Xtest) ;
+res = predict(model, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(mod, Xtest; nlv = 1:2).pred
+predict(model, Xtest; nlv = 1:2).pred
 summary(fmemb, Xtrain)
 ```
 """ 

@@ -62,7 +62,7 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(vrow(X, s), mweight(weights.w[s]))
     end
-    #ct = aggstat(X, y; fun = mean).X
+    #ct = aggstat(X, y; algo = mean).X
     Ut = cholesky!(Hermitian(Winv)).U'
     Zct = ct * Ut
     nlv = min(par.nlv, n, p, nlev - 1)

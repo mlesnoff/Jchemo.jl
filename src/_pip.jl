@@ -1,6 +1,6 @@
 
 struct Pipeline
-    mod::Tuple
+    model::Tuple
 end
 
 """
@@ -31,14 +31,14 @@ ntot = ntrain + ntest
 
 ## Pipeline Snv :> Savgol :> Pls :> Svmr
 
-mod1 = model(snv)
+model1 = mod_(snv)
 npoint = 11 ; deriv = 2 ; degree = 3
-mod2 = model(savgol; npoint, deriv, degree)
-mod3 = model(plskern; nlv = 15)
-mod4 = model(svmr; gamma = 1e3, cost = 100, epsilon = .9)
-mod = pip(mod1, mod2, mod3, mod4)
-fit!(mod, Xtrain, ytrain)
-res = predict(mod, Xtest) ; 
+model2 = mod_(savgol; npoint, deriv, degree)
+model3 = mod_(plskern; nlv = 15)
+mod4 = mod_(svmr; gamma = 1e3, cost = 100, epsilon = .9)
+model = pip(model1, model2, model3, mod4)
+fit!(model, Xtrain, ytrain)
+res = predict(model, Xtest) ; 
 @head res.pred 
 rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",

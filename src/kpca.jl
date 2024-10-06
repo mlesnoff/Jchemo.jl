@@ -51,16 +51,16 @@ Xtest = X[s.test, :]
 
 nlv = 3
 kern = :krbf ; gamma = 1e-4
-mod = model(kpca; nlv, kern, gamma) ;
-fit!(mod, Xtrain)
-pnames(mod.fm)
-@head T = mod.fm.T
+model = mod_(kpca; nlv, kern, gamma) ;
+fit!(model, Xtrain)
+pnames(model.fm)
+@head T = model.fm.T
 T' * T
-mod.fm.P' * mod.fm.P
+model.fm.P' * model.fm.P
 
-@head Ttest = transf(mod, Xtest)
+@head Ttest = transf(model, Xtest)
 
-res = summary(mod) ;
+res = summary(model) ;
 pnames(res)
 res.explvarx
 ```

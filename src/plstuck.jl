@@ -52,7 +52,7 @@ fm = plstuck(X, Y; nlv = 3)
 pnames(fm)
 
 fm.Tx
-transf(mod, X, Y).Tx
+transf(model, X, Y).Tx
 fscale(fm.Tx, colnorm(fm.Tx))
 
 res = summary(fm, X, Y)
