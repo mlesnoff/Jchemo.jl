@@ -37,51 +37,51 @@ scal = false
 #scal = true
 model = pcasvd; nlv, scal) ;
 fit!(model, X)
-fm = model.fm ;
-@head xfit(fm)
-xfit(fm, Xnew)
-xfit(fm, Xnew; nlv = 0)
-xfit(fm, Xnew; nlv = 1)
-fm.xmeans
+fitm = model.fitm ;
+@head xfit(fitm)
+xfit(fitm, Xnew)
+xfit(fitm, Xnew; nlv = 0)
+xfit(fitm, Xnew; nlv = 1)
+fitm.xmeans
 
 @head X
-@head xfit(fm) + xresid(fm, X)
-@head xfit(fm, X; nlv = 1) + xresid(fm, X; nlv = 1)
+@head xfit(fitm) + xresid(fitm, X)
+@head xfit(fitm, X; nlv = 1) + xresid(fitm, X; nlv = 1)
 
 @head Xnew
-@head xfit(fm, Xnew) + xresid(fm, Xnew)
+@head xfit(fitm, Xnew) + xresid(fitm, Xnew)
 
 model = pcasvd; nlv = min(n, p), scal) 
 fit!(model, X)
-fm = model.fm ;
-@head xfit(fm) 
-@head xfit(fm, X)
-@head xresid(fm, X)
+fitm = model.fitm ;
+@head xfit(fitm) 
+@head xfit(fitm, X)
+@head xresid(fitm, X)
 
 nlv = 3
 scal = false
 #scal = true
 model = plskern; nlv, scal)
 fit!(model, X, Y, weights) 
-fm = model.fm ;
-@head xfit(fm)
-xfit(fm, Xnew)
-xfit(fm, Xnew, nlv = 0)
-xfit(fm, Xnew, nlv = 1)
+fitm = model.fitm ;
+@head xfit(fitm)
+xfit(fitm, Xnew)
+xfit(fitm, Xnew, nlv = 0)
+xfit(fitm, Xnew, nlv = 1)
 
 @head X
-@head xfit(fm) + xresid(fm, X)
-@head xfit(fm, X; nlv = 1) + xresid(fm, X; nlv = 1)
+@head xfit(fitm) + xresid(fitm, X)
+@head xfit(fitm, X; nlv = 1) + xresid(fitm, X; nlv = 1)
 
 @head Xnew
-@head xfit(fm, Xnew) + xresid(fm, Xnew)
+@head xfit(fitm, Xnew) + xresid(fitm, Xnew)
 
 model = plskern; nlv = min(n, p), scal) 
 fit!(model, X, Y, weights) 
-fm = model.fm ;
-@head xfit(fm) 
-@head xfit(fm, Xnew)
-@head xresid(fm, Xnew)
+fitm = model.fitm ;
+@head xfit(fitm) 
+@head xfit(fitm, Xnew)
+@head xresid(fitm, Xnew)
 ```
 """ 
 function xfit(object)

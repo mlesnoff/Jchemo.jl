@@ -64,8 +64,8 @@ model = pcaout; nlv)
 #model = pcasvd; nlv) 
 fit!(model, X)
 pnames(model)
-pnames(model.fm)
-@head T = model.fm.T
+pnames(model.fitm)
+@head T = model.fitm.T
 ## Same as:
 transf(model, X)
 
@@ -96,6 +96,6 @@ function pcaout!(X::Matrix, weights::Weight; kwargs...)
     w .*= talworth(d; a = quantile(d, 1 - par.prm))
     w .*= weights.w
     w[isequal.(w, 0)] .= 1e-10
-    fm = pcasvd(X, mweight(w); kwargs...)
-    Pca(fm.T, fm.P, fm.sv, fm.xmeans, fm.xscales, fm.weights, nothing, par)
+    fitm = pcasvd(X, mweight(w); kwargs...)
+    Pca(fitm.T, fitm.P, fitm.sv, fitm.xmeans, fitm.xscales, fitm.weights, nothing, par)
 end

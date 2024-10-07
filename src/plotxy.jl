@@ -49,7 +49,7 @@ nlev = length(lev)
 
 model = pcasvd; nlv = 5)  
 fit!(model, X) 
-@head T = model.fm.T
+@head T = model.fitm.T
 
 plotxy(T[:, 1], T[:, 2]; color = (:red, .5)).f
 

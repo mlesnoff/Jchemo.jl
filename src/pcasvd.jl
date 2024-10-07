@@ -45,12 +45,12 @@ model = pcasvd; nlv)
 #model = pcanipals; nlv)
 fit!(model, Xtrain)
 pnames(model)
-pnames(model.fm)
-@head T = model.fm.T
+pnames(model.fitm)
+@head T = model.fitm.T
 ## Same as:
 @head transf(model, X)
 T' * T
-@head P = model.fm.P
+@head P = model.fitm.P
 P' * P
 
 @head Ttest = transf(model, Xtest)

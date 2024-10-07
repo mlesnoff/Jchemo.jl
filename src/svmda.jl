@@ -69,10 +69,10 @@ cost = 1000 ; epsilon = .5
 model = svmda; kern, gamma, cost, epsilon) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-fm = model.fm ;
-fm.lev
-fm.ni
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
 
 res = predict(model, Xtest) ; 
 pnames(res) 
@@ -106,7 +106,7 @@ function svmda(X, y; kwargs...)
     elseif kern == :ktanh
         fkern = LIBSVM.Kernel.Sigmoid
     end
-    fm = svmtrain(X', y;
+    fitm = svmtrain(X', y;
         svmtype = SVC, 
         kernel = fkern,
         gamma =  par.gamma,
@@ -117,7 +117,7 @@ function svmda(X, y; kwargs...)
         tolerance = 0.001,
         nt = 0,
         verbose = false) 
-    Svmda(fm, xscales, taby.keys, taby.vals, par)
+    Svmda(fitm, xscales, taby.keys, taby.vals, par)
 end
 
 """
@@ -128,7 +128,7 @@ Compute y-predictions from a fitted model.
 """ 
 function predict(object::Svmda, X)
     X = ensure_mat(X)
-    pred = svmpredict(object.fm, fscale(X, object.xscales)')[1]
+    pred = svmpredict(object.fitm, fscale(X, object.xscales)')[1]
     m = length(pred)
     pred = reshape(pred, m, 1)
     (pred = pred,)

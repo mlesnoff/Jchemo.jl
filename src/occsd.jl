@@ -1,8 +1,8 @@
 """
-    occsd(fm; kwargs...)
+    occsd(fitm; kwargs...)
 One-class classification using PCA/PLS score distance (SD).
-* `fm` : The preliminary model that (e.g. PCA) was fitted 
-    (object `fm`) on the training data assumed to represent 
+* `fitm` : The preliminary model that (e.g. PCA) was fitted 
+    (object `fitm`) on the training data assumed to represent 
     the training class.
 Keyword arguments:
 * `mcut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
@@ -93,7 +93,7 @@ ytest = repeat([cod], ntest)
 ## Group description
 model = pcasvd; nlv = 10) 
 fit!(model, zXtrain) 
-Ttrain = model.fm.T
+Ttrain = model.fitm.T
 Ttest = transf(model, zXtest)
 T = vcat(Ttrain, Ttest)
 group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
@@ -109,10 +109,10 @@ fit!(mod0, zXtrain)
 model = occsd)
 #model = occsd; mcut = :mad, cri = 4)
 #model = occsd; mcut = :q, risk = .01)
-fit!(model, mod0.fm) 
+fit!(model, mod0.fitm) 
 pnames(model) 
-pnames(model.fm) 
-@head d = model.fm.d
+pnames(model.fitm) 
+@head d = model.fitm.d
 d = d.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), 
     xlabel = "Obs. index", ylabel = "Standardized distance")
@@ -126,7 +126,7 @@ pnames(res)
 tab(res.pred)
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
-d1 = model.fm.d.dstand
+d1 = model.fitm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
 f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", 
@@ -135,13 +135,13 @@ hlines!(ax, 1; linestyle = :dot)
 f
 ```
 """
-function occsd(fm; kwargs...)
+function occsd(fitm; kwargs...)
     par = recovkw(ParOcc, kwargs).par 
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
-    T = fm.T
+    T = fitm.T
     Q = eltype(T)
     nlv = nco(T)
-    tscales = colstd(T, fm.weights)
+    tscales = colstd(T, fitm.weights)
     fscale!(T, tscales)
     d2 = vec(euclsq(T, zeros(Q, nlv)'))
     d = sqrt.(d2)
@@ -150,7 +150,7 @@ function occsd(fm; kwargs...)
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val, gh = d2 / nlv)
-    Occsd(d, fm, tscales, e_cdf, cutoff, par)
+    Occsd(d, fitm, tscales, e_cdf, cutoff, par)
 end
 
 """
@@ -160,7 +160,7 @@ Compute predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Occsd, X)
-    T = transf(object.fm, X)
+    T = transf(object.fitm, X)
     Q = eltype(T)
     m, nlv = size(T)
     fscale!(T, object.tscales)

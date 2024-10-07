@@ -36,11 +36,11 @@ function locw(Xtrain, Ytrain, X; listnn, listw = nothing, algo, verbose = false,
         ## End
         else
             if isnothing(listw)
-                fm = algo(Xtrain[s, :],  zYtrain; kwargs...)
+                fitm = algo(Xtrain[s, :],  zYtrain; kwargs...)
             else
-                fm = algo(Xtrain[s, :], zYtrain, mweight(listw[i]); kwargs...)
+                fitm = algo(Xtrain[s, :], zYtrain, mweight(listw[i]); kwargs...)
             end
-            pred[i, :] = predict(fm, vrow(X, i:i)).pred
+            pred[i, :] = predict(fitm, vrow(X, i:i)).pred
         end
     end
     verbose ? println() : nothing    

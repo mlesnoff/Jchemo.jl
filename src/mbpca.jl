@@ -81,21 +81,21 @@ scal = false
 model = mbpca; nlv, bscal, scal)
 fit!(model, Xbl)
 pnames(model) 
-pnames(model.fm)
+pnames(model.fitm)
 ## Global scores 
-@head model.fm.T
+@head model.fitm.T
 @head transf(model, Xbl)
 transf(model, Xblnew)
 ## Blocks scores
 i = 1
-@head model.fm.Tbl[i]
+@head model.fitm.Tbl[i]
 @head transfbl(model, Xbl)[i]
 
 res = summary(model, Xbl) ;
 pnames(res) 
 res.explvarx
 res.contr_block
-res.explX   # = model.fm.lb if bscal = :frob
+res.explX   # = model.fitm.lb if bscal = :frob
 rowsum(Matrix(res.explX))
 res.corx2t 
 res.cortb2t
@@ -126,8 +126,8 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
     n = nro(Xbl[1])
     nlv = par.nlv
     sqrtw = sqrt.(weights.w)
-    fmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
-    transf!(fmbl, Xbl)
+    fitmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
+    transf!(fitmbl, Xbl)
     # Row metric
     @inbounds for k = 1:nbl
         Xbl[k] = sqrtw .* Xbl[k]
@@ -184,7 +184,7 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
         end
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
-    Mbpca(T, U, W, Tbl, Tb, Wbl, lb, mu, fmbl, weights, niter, par)
+    Mbpca(T, U, W, Tbl, Tb, Wbl, lb, mu, fitmbl, weights, niter, par)
 end
 
 """ 
@@ -211,7 +211,7 @@ function transf_all(object::Mbpca, Xbl; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
     m = size(Xbl[1], 1)
-    zXbl = transf(object.fmbl, Xbl)
+    zXbl = transf(object.fitmbl, Xbl)
     U = similar(zXbl[1], m, nlv)
     TB = similar(zXbl[1], m, nbl)
     Tbl = list(Matrix{Q}, nbl)
@@ -247,7 +247,7 @@ function Base.summary(object::Mbpca, Xbl)
     nbl = length(Xbl)
     nlv = nco(object.T)
     sqrtw = sqrt.(object.weights.w)
-    zXbl = transf(object.fmbl, Xbl)
+    zXbl = transf(object.fitmbl, Xbl)
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end

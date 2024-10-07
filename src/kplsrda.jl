@@ -51,17 +51,17 @@ scal = true
 model = kplsrda; nlv, kern, gamma, scal) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-fm = model.fm ;
-fm.lev
-fm.ni
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
 
-@head fm.fm.T
+@head fitm.fitm.T
 @head transf(model, Xtrain)
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
 
-coef(fm.fm)
+coef(fitm.fitm)
 
 res = predict(model, Xtest) ;
 pnames(res)
@@ -84,7 +84,7 @@ function kplsrda(X, y, weights::Weight; kwargs...)
     par = recovkw(ParKplsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
-    fm = kplsr(X, res.Y, weights; kwargs...)
-    Plsrda(fm, res.lev, ni, par)
+    fitm = kplsr(X, res.Y, weights; kwargs...)
+    Plsrda(fitm, res.lev, ni, par)
 end
 

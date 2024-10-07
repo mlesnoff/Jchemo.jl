@@ -38,7 +38,7 @@ Support Vector Machine Classification. arXiv:1801.04929.
 Saunders, C., Gammerman, A., Vovk, V., 1998. Ridge Regression 
 Learning Algorithm in Dual Variables, in: In Proceedings of the 
 15th International Conference on Machine Learning. Morgan 
-Kaufmann, pp. 515-521.
+Kaufitmann, pp. 515-521.
 
 Suykens, J.A.K., Lukas, L., Vandewalle, J., 2000. Sparse 
 approximation using least squares support vector machines. 2000 IEEE 
@@ -72,7 +72,7 @@ kern = :krbf ; gamma = 1e-1
 model = krr; lb, kern, gamma) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
+pnames(model.fitm)
 
 coef(model)
 

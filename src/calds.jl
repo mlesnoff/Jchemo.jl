@@ -1,4 +1,5 @@
 """
+    calds(; algo = plskern, kwargs...)
     calds(X1, X2; algo = plskern, kwargs...)
 Direct standardization (DS) for calibration transfer of spectral data.
 * `X1` : Spectra (n, p) to transfer to the target.
@@ -40,8 +41,8 @@ X2cal = dat.X2cal
 X2val = dat.X2val
 
 ## Fitting the model
-model = calds; algo = plskern, nlv = 10) 
-#model = calds; algo = mlrpinv)   # less robust
+model = calds(algo = plskern, nlv = 10) 
+#model = calds(algo = mlrpinv)   # less robust
 fit!(model, X1cal, X2cal)
 
 ## Transfer of new spectra X1val 
@@ -58,9 +59,11 @@ axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
+calds(; algo = plskern, kwargs...) = JchemoModel(calds, nothing, kwargs)
+
 function calds(X1, X2; algo = plskern, kwargs...)
-    fm = algo(X1, X2; kwargs...)
-    Calds(fm)
+    fitm = algo(X1, X2; kwargs...)
+    Calds(fitm)
 end
 
 """
@@ -70,6 +73,6 @@ Compute predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Calds, X)
-    predict(object.fm, X)
+    predict(object.fitm, X)
 end
 

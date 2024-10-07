@@ -69,10 +69,10 @@ max_depth = 10
 model = rfda; n_trees, n_subfeatures, max_depth) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-fm = model.fm ;
-fm.lev
-fm.ni
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
 
 res = predict(model, Xtest) ; 
 pnames(res) 
@@ -96,7 +96,7 @@ function rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
     end
     n_subfeatures = Int(round(par.n_subfeatures))
     min_purity_increase = 0
-    fm = build_forest(y, X, 
+    fitm = build_forest(y, X, 
         n_subfeatures, 
         par.n_trees, 
         par.partial_sampling,
@@ -108,5 +108,5 @@ function rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
         #rng = 3
         ) 
     featur = collect(1:p)
-    Treeda(fm, xscales, featur, taby.keys, taby.vals, par)
+    Treeda(fitm, xscales, featur, taby.keys, taby.vals, par)
 end

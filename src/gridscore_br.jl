@@ -11,8 +11,8 @@ function gridscore_br(Xtrain, Ytrain, X, Y; algo, score, pars, verbose = false)
     verbose ? println("-- Nb. combinations = ", ncomb) : nothing
     res = map(values(pars)...) do v...
         verbose ? println(Pair.(keys(pars), v)...) : nothing
-        fm = algo(Xtrain, Ytrain; Pair.(keys(pars), v)...)
-        pred = Jchemo.predict(fm, X).pred
+        fitm = algo(Xtrain, Ytrain; Pair.(keys(pars), v)...)
+        pred = Jchemo.predict(fitm, X).pred
         score(pred, Y)
     end
     verbose ? println("-- End.") : nothing

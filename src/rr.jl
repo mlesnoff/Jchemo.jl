@@ -51,7 +51,7 @@ model = rr; lb)
 #model = rrchol; lb) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
+pnames(model.fitm)
 
 coef(model)
 

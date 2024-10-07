@@ -82,10 +82,10 @@ lb = 1e-8
 model = rda; alpha, lb)
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-fm = model.fm ;
-fm.lev
-fm.ni
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
 
 res = predict(model, Xtest) ;
 pnames(res)
@@ -125,10 +125,10 @@ function rda(X, y, weights::Weight; kwargs...)
     elseif isequal(par.prior, :prop)
         priors = convert.(Q, mweight(ni).w)
     end
-    fm = list(nlev)
+    fitm = list(nlev)
     ct = similar(X, nlev, p)
     Id = I(p)
-    fm = list(nlev)
+    fitm = list(nlev)
     res.W .*= n / (n - nlev)    # unbiased estimate
     A = par.lb * Id
     @inbounds for i in eachindex(lev)
@@ -136,9 +136,9 @@ function rda(X, y, weights::Weight; kwargs...)
         ct[i, :] = colmean(vrow(X, s), mweight(weights.w[s]))   
         @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
         @. res.Wi[i] = res.Wi[i] + A
-        fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i], simpl = par.simpl) 
+        fitm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i], simpl = par.simpl) 
     end
-    Rda(fm, res.Wi, ct, priors, ni, lev, xscales, weights, par)
+    Rda(fitm, res.Wi, ct, priors, ni, lev, xscales, weights, par)
 end
 
 """
@@ -154,7 +154,7 @@ function predict(object::Rda, X)
     nlev = length(lev) 
     dens = similar(X, m, nlev)
     @inbounds for i in eachindex(lev)
-        dens[:, i] .= vec(predict(object.fm[i], fscale(X, object.xscales)).pred)
+        dens[:, i] .= vec(predict(object.fitm[i], fscale(X, object.xscales)).pred)
     end
     A = object.priors' .* dens
     v = sum(A, dims = 2)

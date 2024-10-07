@@ -68,12 +68,12 @@ bscal = :frob ; tau = 1e-4
 model = rasvd; nlv, bscal, tau)
 fit!(model, X, Y)
 pnames(model)
-pnames(model.fm)
+pnames(model.fitm)
 
-@head model.fm.Tx
+@head model.fitm.Tx
 @head transfbl(model, X, Y).Tx
 
-@head model.fm.Ty
+@head model.fitm.Ty
 @head transfbl(model, X, Y).Ty
 
 res = summary(model, X, Y) ;

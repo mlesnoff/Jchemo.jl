@@ -52,8 +52,8 @@ model = pcapp; nlv, nsim = 2000)
 #model = pcasvd; nlv) 
 fit!(model, X)
 pnames(model)
-pnames(model.fm)
-@head T = model.fm.T
+pnames(model.fitm)
+@head T = model.fitm.T
 ## Same as:
 @head transf(model, X)
 

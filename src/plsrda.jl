@@ -61,19 +61,19 @@ nlv = 15
 model = plsrda; nlv) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-fm = model.fm ;
-fm.lev
-fm.ni
-pnames(fm.fm)
-aggsum(fm.fm.weights.w, ytrain)
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
+pnames(fitm.fitm)
+aggsum(fitm.fitm.weights.w, ytrain)
 
-@head fm.fm.T
+@head fitm.fitm.T
 @head transf(model, Xtrain)
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
 
-coef(fm.fm)
+coef(fitm.fitm)
 
 res = predict(model, Xtest) ;
 pnames(res)
@@ -83,7 +83,7 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
 predict(model, Xtest; nlv = 1:2).pred
-summary(fm.fm, Xtrain)
+summary(fitm.fitm, Xtrain)
 ```
 """
 function plsrda(X, y; kwargs...)
@@ -97,8 +97,8 @@ function plsrda(X, y, weights::Weight; kwargs...)
     par = recovkw(ParPlsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
-    fm = plskern(X, res.Y, weights; kwargs...)
-    Plsrda(fm, res.lev, ni, par)
+    fitm = plskern(X, res.Y, weights; kwargs...)
+    Plsrda(fitm, res.lev, ni, par)
 end
 
 """ 
@@ -110,7 +110,7 @@ Compute latent variables (LVs = scores T) from
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Plsrda, X; nlv = nothing)
-    transf(object.fm, X; nlv)
+    transf(object.fitm, X; nlv)
 end
 
 """
@@ -126,13 +126,13 @@ function predict(object::Plsrda, X; nlv = nothing)
     Q = eltype(X)
     Qy = eltype(object.lev)
     m = nro(X)
-    a = nco(object.fm.T)
+    a = nco(object.fitm.T)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
     @inbounds for i = 1:le_nlv
-        zpred = predict(object.fm, X; nlv = nlv[i]).pred
+        zpred = predict(object.fitm, X; nlv = nlv[i]).pred
         #if softmax
         #    @inbounds for j = 1:m
         #        zpred[j, :] .= mweight(exp.(zpred[j, :]))

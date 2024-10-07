@@ -32,10 +32,10 @@ zX = X[s, :]
 
 model = dmnormlog)
 fit!(model, zX)
-fm = model.fm
-pnames(fm)
-fm.Uinv 
-fm.logdetS
+fitm = model.fitm
+pnames(fitm)
+fitm.Uinv 
+fitm.logdetS
 @head pred = predict(model, zX).pred
 
 ## Consistency with dmnorm

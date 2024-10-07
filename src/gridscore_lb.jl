@@ -15,8 +15,8 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, lb, ver
     le_lb = length(lb)
     if isnothing(pars)    # e.g.: case of RR
         verbose ? println("-- Nb. combinations = 0.") : nothing
-        fm = algo(Xtrain, Ytrain, lb = maximum(lb))
-        pred = Jchemo.predict(fm, X; lb = lb).pred
+        fitm = algo(Xtrain, Ytrain, lb = maximum(lb))
+        pred = Jchemo.predict(fitm, X; lb = lb).pred
         le_lb == 1 ? pred = [pred] : nothing
         res = zeros(le_lb, q)
         @inbounds for i = 1:le_lb
@@ -28,8 +28,8 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, lb, ver
         verbose ? println("-- Nb. combinations = ", ncomb) : nothing
         res = map(values(pars)...) do v...
             verbose ? println(Pair.(keys(pars), v)...) : nothing
-            fm = algo(Xtrain, Ytrain ; lb = maximum(lb), Pair.(keys(pars), v)...)
-            pred = Jchemo.predict(fm, X; lb = lb).pred
+            fitm = algo(Xtrain, Ytrain ; lb = maximum(lb), Pair.(keys(pars), v)...)
+            pred = Jchemo.predict(fitm, X; lb = lb).pred
             le_lb == 1 ? pred = [pred] : nothing
             zres = zeros(le_lb, q)
             for i = 1:le_lb

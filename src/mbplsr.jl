@@ -49,8 +49,8 @@ scal = false
 model = mbplsr; nlv, bscal, scal)
 fit!(model, Xbltrain, ytrain)
 pnames(model) 
-pnames(model.fm)
-@head model.fm.T
+pnames(model.fitm)
+@head model.fitm.T
 @head transf(model, Xbltrain)
 transf(model, Xbltest)
 
@@ -86,8 +86,8 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParMbplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     q = nco(Y)
-    fmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
-    transf!(fmbl, Xbl)
+    fitmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
+    transf!(fitmbl, Xbl)
     X = reduce(hcat, Xbl)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
@@ -97,8 +97,8 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(Y, ymeans)
     end
-    fm = plskern(X, Y, weights; nlv = par.nlv, scal = false)
-    Mbplsr(fm, fm.T, fm.R, fm.C, fmbl, ymeans, yscales, weights, par)
+    fitm = plskern(X, Y, weights; nlv = par.nlv, scal = false)
+    Mbplsr(fitm, fitm.T, fitm.R, fitm.C, fitmbl, ymeans, yscales, weights, par)
 end
 
 """ 
@@ -112,7 +112,7 @@ Compute latent variables (LVs = scores T) from a fitted model.
 function transf(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    zXbl = transf(object.fmbl, Xbl)    
+    zXbl = transf(object.fitmbl, Xbl)    
     reduce(hcat, zXbl) * vcol(object.R, 1:nlv) 
 end
 
@@ -154,7 +154,7 @@ function Base.summary(object::Mbplsr, Xbl)
     n, nlv = size(object.T)
     nbl = length(Xbl)
     sqrtw = sqrt.(object.weights.w)
-    zXbl = transf(object.fmbl, Xbl)
+    zXbl = transf(object.fitmbl, Xbl)
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end
@@ -165,8 +165,8 @@ function Base.summary(object::Mbplsr, Xbl)
         ssk[k] = ssq(zXbl[k])
     end
     sstot = sum(ssk)
-    tt = object.fm.TT
-    tt_adj = vec(sum(object.fm.P.^2, dims = 1)) .* tt
+    tt = object.fitm.TT
+    tt_adj = vec(sum(object.fitm.P.^2, dims = 1)) .* tt
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    

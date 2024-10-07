@@ -1,5 +1,5 @@
 """
-    difmean(X1, X2; normx::Bool = false)
+    difitmean(X1, X2; normx::Bool = false)
 Compute a 1-D detrimental matrix by difference of 
     the column-means of two X-datas.
 * `X1` : Spectra (n1, p).
@@ -30,7 +30,7 @@ X2val = dat.X2val
 
 ## The objective is to remove a detrimental 
 ## information (here, D) from spaces X1 and X2
-D = difmean(X1cal, X2cal).D
+D = difitmean(X1cal, X2cal).D
 res = eposvd(D; nlv = 1)
 ## Corrected Val matrices
 X1val_c = X1val * res.M
@@ -49,7 +49,7 @@ axislegend(ax2, position = :cb, framevisible = false)
 f
 ```
 """
-function difmean(X1, X2; normx::Bool = false)
+function difitmean(X1, X2; normx::Bool = false)
     xmeans1 = colmean(X1)
     xmeans2 = colmean(X2)
     if normx

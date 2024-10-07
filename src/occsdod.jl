@@ -2,11 +2,11 @@
     occsdod(object, X; kwargs...)
 One-class classification using a compromise between 
     PCA/PLS score (SD) and orthogonal (OD) distances.
-* `fm` : The preliminary model that (e.g. PCA) was fitted 
-    (object `fm`) on the training data assumed to represent 
+* `fitm` : The preliminary model that (e.g. PCA) was fitted 
+    (object `fitm`) on the training data assumed to represent 
     the training class.
 * `X` : Training X-data (n, p), on which was fitted 
-    the model `fm`.
+    the model `fitm`.
 Keyword arguments:
 * `mcut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
     See Thereafter.
@@ -23,12 +23,12 @@ See functions:
 * `occsd` for details of the outputs,
 * and `occod` for examples.
 """ 
-function occsdod(fm, X; kwargs...) 
+function occsdod(fitm, X; kwargs...) 
     par = recovkw(ParOcc, kwargs).par 
-    fmsd = occsd(fm; kwargs...)
-    fmod = occod(fm, X; kwargs...)
-    sd = fmsd.d
-    od = fmod.d
+    fitmsd = occsd(fitm; kwargs...)
+    fitmod = occod(fitm, X; kwargs...)
+    sd = fitmsd.d
+    od = fitmod.d
     z = sqrt.(sd.dstand .* od.dstand)
     nam = string.(names(sd), "_sd")
     rename!(sd, nam)
@@ -36,7 +36,7 @@ function occsdod(fm, X; kwargs...)
     rename!(od, nam)
     d = hcat(sd, od)
     d.dstand = z
-    Occsdod(d, fmsd, fmod, par)
+    Occsdod(d, fitmsd, fitmod, par)
 end
 
 """
@@ -47,8 +47,8 @@ Compute predictions from a fitted model.
 """ 
 function predict(object::Occsdod, X)
     m = nro(X)
-    sd = predict(object.fmsd, X).d
-    od = predict(object.fmod, X).d
+    sd = predict(object.fitmsd, X).d
+    od = predict(object.fitmod, X).d
     nam = string.(names(sd), "_sd")
     rename!(sd, nam)
     nam = string.(names(od), "_od")

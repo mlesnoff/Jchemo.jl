@@ -37,21 +37,21 @@ gs = false
 model = pcanipalsmiss; nlv, tol, gs, maxit = 500, scal)
 fit!(model, X)
 pnames(model) 
-pnames(model.fm)
-fm = model.fm ;
-fm.niter
-fm.sv
-fm.P
-fm.T
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.niter
+fitm.sv
+fitm.P
+fitm.T
 ## Orthogonality 
 ## only if gs = true
-fm.T' * fm.T
-fm.P' * fm.P
+fitm.T' * fitm.T
+fitm.P' * fitm.P
 
 ## Impute missing data in X
 model = pcanipalsmiss; nlv = 2, gs = true) ;
 fit!(model, X)
-Xfit = xfit(model.fm)
+Xfit = xfit(model.fitm)
 s = ismissing.(X)
 X_imput = copy(X)
 X_imput[s] .= Xfit[s]

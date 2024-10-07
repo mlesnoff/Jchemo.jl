@@ -37,10 +37,10 @@ model = mlr)
 #model = mlrpinvn) 
 fit!(model, Xtrain, ytrain) 
 pnames(model)
-pnames(model.fm)
-fm = model.fm ;
-fm.B
-fm.int 
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.B
+fitm.int 
 coef(model) 
 res = predict(model, Xtest)
 @show rmsep(res.pred, ytest)

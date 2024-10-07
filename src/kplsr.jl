@@ -46,8 +46,8 @@ kern = :krbf ; gamma = 1e-1
 model = kplsr; nlv, kern, gamma) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-@head model.fm.T
+pnames(model.fitm)
+@head model.fitm.T
 
 coef(model)
 coef(model; nlv = 3)

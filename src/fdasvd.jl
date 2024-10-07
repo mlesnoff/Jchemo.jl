@@ -67,10 +67,10 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     Zct = ct * Ut
     nlv = min(par.nlv, n, p, nlev - 1)
     zweights = mweight(convert.(Q, ni))
-    fm = pcasvd(Zct, zweights; nlv, scal = false)
-    Pz = fm.P
+    fitm = pcasvd(Zct, zweights; nlv, scal = false)
+    Pz = fitm.P
     Tcenters = Zct * Pz
-    eig = (fm.sv).^2 
+    eig = (fitm.sv).^2 
     sstot = sum(eig)
     P = Ut * Pz[:, 1:nlv]
     T = X * P

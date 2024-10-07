@@ -57,12 +57,12 @@ function mbplsqda(Xbl, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmemb = mbplsr(Xbl, res.Y, weights; kwargs...)
-    fmda = list(Qda, par.nlv)
+    fitmemb = mbplsr(Xbl, res.Y, weights; kwargs...)
+    fitmda = list(Qda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = qda(fmemb.T[:, 1:i], y, weights; kwargs...)
+        fitmda[i] = qda(fitmemb.T[:, 1:i], y, weights; kwargs...)
     end
-    fm = (fmemb = fmemb, fmda = fmda)
-    Mbplsprobda(fm, res.lev, ni, par)
+    fitm = (fitmemb = fitmemb, fitmda = fitmda)
+    Mbplsprobda(fitm, res.lev, ni, par)
 end
 

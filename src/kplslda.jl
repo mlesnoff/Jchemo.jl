@@ -54,18 +54,18 @@ model = kplslda; nlv, gamma)
 #model = kplskdeda; nlv, gamma, a = .5) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-fm = model.fm ;
-fm.lev
-fm.ni
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
 
-fmemb = fm.fm.fmemb ;
-@head fmemb.T
+fitmemb = fitm.fitm.fitmemb ;
+@head fitmemb.T
 @head transf(model, Xtrain)
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
 
-coef(fmemb)
+coef(fitmemb)
 
 res = predict(model, Xtest) ;
 pnames(res)
@@ -89,13 +89,13 @@ function kplslda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmemb = kplsr(X, res.Y, weights; kwargs...)
-    fmda = list(Lda, par.nlv)
+    fitmemb = kplsr(X, res.Y, weights; kwargs...)
+    fitmda = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = lda(fmemb.T[:, 1:i], y, weights; kwargs...)
+        fitmda[i] = lda(fitmemb.T[:, 1:i], y, weights; kwargs...)
     end
-    fm = (fmemb = fmemb, fmda = fmda)
-    Plsprobda(fm, res.lev, ni, par)
+    fitm = (fitmemb = fitmemb, fitmda = fitmda)
+    Plsprobda(fitm, res.lev, ni, par)
 end
 
 

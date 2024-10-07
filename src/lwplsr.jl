@@ -113,7 +113,7 @@ h = 1 ; k = 200 ; nlv = 15
 model = lwplsr; nlvdis, metric, h, k, nlv) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
+pnames(model.fitm)
 
 res = predict(model, Xtest) ; 
 pnames(res) 
@@ -131,17 +131,17 @@ function lwplsr(X, Y; kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     if par.nlvdis == 0
-        fm = nothing
+        fitm = nothing
     else
-        fm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
+        fitm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
     end
     Q = eltype(X)
     p = nco(X)
     xscales = ones(Q, p)
-    if isnothing(fm) && par.scal
+    if isnothing(fitm) && par.scal
         xscales .= colstd(X)
     end
-    Lwplsr(X, Y, fm, xscales, par)
+    Lwplsr(X, Y, fitm, xscales, par)
 end
 
 """
@@ -162,7 +162,7 @@ function predict(object::Lwplsr, X; nlv = nothing)
     tolw = object.par.tolw
     criw = object.par.criw
     squared = object.par.squared
-    if isnothing(object.fm)
+    if isnothing(object.fitm)
         if object.par.scal
             zX1 = fscale(object.X, object.xscales)
             zX2 = fscale(X, object.xscales)
@@ -171,7 +171,7 @@ function predict(object::Lwplsr, X; nlv = nothing)
             res = getknn(object.X, X; metric, k)
         end
     else
-        res = getknn(object.fm.T, transf(object.fm, X); metric, k) 
+        res = getknn(object.fitm.T, transf(object.fitm, X); metric, k) 
     end
     listw = copy(res.d)
     #@inbounds for i = 1:m

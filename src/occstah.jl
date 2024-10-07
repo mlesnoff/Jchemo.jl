@@ -51,7 +51,7 @@ ytest = repeat([cod], ntest)
 ## Group description
 model = pcasvd; nlv = 10) 
 fit!(model, zXtrain) 
-Ttrain = model.fm.T
+Ttrain = model.fitm.T
 Ttest = transf(model, zXtest)
 T = vcat(Ttrain, Ttest)
 group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
@@ -65,14 +65,14 @@ plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class",
 nlv = 50
 mod0 = pcasvd; nlv) ;
 fit!(mod0, zXtrain)
-Ttrain = mod0.fm.T
+Ttrain = mod0.fitm.T
 Ttest = transf(mod0, zXtest)
 ## Outlierness
 model = occstah; nlv, scal = true)
 fit!(model, Ttrain) 
 pnames(model) 
-pnames(model.fm) 
-@head d = model.fm.d
+pnames(model.fitm) 
+@head d = model.fitm.d
 d = d.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index", 
     ylabel = "Standardized distance")
@@ -86,7 +86,7 @@ pnames(res)
 tab(res.pred)
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
-d1 = model.fm.d.dstand
+d1 = model.fitm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
 f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", 

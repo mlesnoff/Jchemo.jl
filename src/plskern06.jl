@@ -1,22 +1,22 @@
 Base.@kwdef mutable struct JchemoModel1{T <: Function, K <: Base.Pairs}
     algo::T   
-    fm
+    fitm
     kwargs::K
 end
 
 function fit!(model::Jchemo.JchemoModel1, X)
     kwargs = values(model.kwargs)
-    model.fm = model.algo(X; kwargs...)
+    model.fitm = model.algo(X; kwargs...)
     return
 end  
 function fit!(model::Jchemo.JchemoModel1, X, Y)
     kwargs = values(model.kwargs)
-    model.fm = model.algo(X, Y; kwargs...)
+    model.fitm = model.algo(X, Y; kwargs...)
     return
 end  
 function fit!(model::Jchemo.JchemoModel1, X, Y, weights::Weight)
     kwargs = values(model.kwargs)
-    model.fm = model.algo(X, Y, weights; kwargs...)
+    model.fitm = model.algo(X, Y, weights; kwargs...)
     return
 end
 

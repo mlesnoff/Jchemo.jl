@@ -48,7 +48,7 @@ ytest = rmrow(y, s)
 nlv = 20
 mod0 = pcasvd; nlv) ;
 fit!(mod0, Xtrain) 
-@head Ttrain = mod0.fm.T 
+@head Ttrain = mod0.fitm.T 
 @head Ttest = transf(mod0, Xtest)
 
 metric = :eucl 
@@ -56,8 +56,8 @@ h = 2 ; k = 100
 model = lwmlr; metric, h, k) 
 fit!(model, Ttrain, ytrain)
 pnames(model)
-pnames(model.fm)
-dump(model.fm.par)
+pnames(model.fitm)
+dump(model.fitm.par)
 
 res = predict(model, Ttest) ; 
 pnames(res) 

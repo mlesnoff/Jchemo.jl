@@ -80,8 +80,8 @@ end
 function plsravg!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParPlsr, kwargs).par
     algo = plsravg_unif!
-    fm = algo(X, Y, weights; kwargs...)
-    Plsravg(fm, par) 
+    fitm = algo(X, Y, weights; kwargs...)
+    Plsravg(fitm, par) 
 end
 
 """
@@ -91,7 +91,7 @@ Compute Y-predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Plsravg, X)
-    res = predict(object.fm, X)
+    res = predict(object.fitm, X)
     (pred = res.pred, predlv = res.predlv)
 end
 

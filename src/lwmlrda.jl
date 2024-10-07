@@ -53,10 +53,10 @@ h = 2 ; k = 10
 model = lwmlrda; metric, h, k) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-fm = model.fm ;
-fm.lev
-fm.ni
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
 
 res = predict(model, Xtest) ; 
 pnames(res) 

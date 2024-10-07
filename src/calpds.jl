@@ -73,16 +73,16 @@ f
 function calpds(X1, X2; npoint = 5, algo = plskern, kwargs...)
     @assert npoint >= 1 "Argument 'npoint' must be >= 1."
     p = nco(X1)
-    fm = list(p)
+    fitm = list(p)
     s = list(p)
     npo = repeat([npoint], p)
     npo[1:npoint] .= collect(1:npoint) .- 1
     npo[(p - npoint + 1):p] .= collect(npoint:-1:1) .- 1
     @inbounds for i = 1:p
         s[i] = collect((i - npo[i]):(i + npo[i]))
-        fm[i] = algo(vcol(X1, s[i]), vcol(X2, i); kwargs...)
+        fitm[i] = algo(vcol(X1, s[i]), vcol(X2, i); kwargs...)
     end
-    Calpds(fm, s)
+    Calpds(fitm, s)
 end
 
 """
@@ -96,7 +96,7 @@ function predict(object::Calpds, X)
     m, p = size(X)
     pred = similar(X, m, p)
     @inbounds for i = 1:p 
-        pred[:, i] .= predict(object.fm[i], vcol(X, object.s[i])).pred
+        pred[:, i] .= predict(object.fitm[i], vcol(X, object.s[i])).pred
     end
     (pred = pred,)
 end

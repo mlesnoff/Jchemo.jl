@@ -48,14 +48,14 @@ pnames(dat)
 X = dat.X 
 Y = dat.Y
 
-fm = plstuck(X, Y; nlv = 3)
-pnames(fm)
+fitm = plstuck(X, Y; nlv = 3)
+pnames(fitm)
 
-fm.Tx
+fitm.Tx
 transf(model, X, Y).Tx
-fscale(fm.Tx, colnorm(fm.Tx))
+fscale(fitm.Tx, colnorm(fitm.Tx))
 
-res = summary(fm, X, Y)
+res = summary(fitm, X, Y)
 pnames(res)
 ```
 """

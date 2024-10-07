@@ -56,11 +56,11 @@ tab(ytest)
 model = qda)
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-fm = model.fm ;
-fm.lev
-fm.ni
-aggsum(fm.weights.w, ytrain)
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
+aggsum(fitm.weights.w, ytrain)
 
 res = predict(model, Xtest) ;
 pnames(res)
@@ -73,7 +73,7 @@ conf(res.pred, ytest).cnt
 model = qda; alpha = .5)
 #model = qda; alpha = 1) # = LDA
 fit!(model, Xtrain, ytrain)
-model.fm.Wi
+model.fitm.Wi
 res = predict(model, Xtest) ;
 errp(res.pred, ytest)
 ```
@@ -108,7 +108,7 @@ function qda(X, y, weights::Weight; kwargs...)
         priors = mweight(par.prior).w
     end
     ## End
-    fm = list(nlev)
+    fitm = list(nlev)
     ct = similar(X, nlev, p)
     @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
@@ -116,8 +116,8 @@ function qda(X, y, weights::Weight; kwargs...)
         if alpha > 0
             @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
         end
-        fm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
+        fitm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
     end
-    Qda(fm, res.Wi, ct, priors, ni, lev, weights, par)
+    Qda(fitm, res.Wi, ct, priors, ni, lev, weights, par)
 end
 

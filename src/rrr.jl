@@ -67,8 +67,8 @@ tau = 1e-4
 model = rrr; nlv, tau) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-@head model.fm.T
+pnames(model.fitm)
+@head model.fitm.T
 
 coef(model)
 coef(model; nlv = 3)

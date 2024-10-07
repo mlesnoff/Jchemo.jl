@@ -97,17 +97,17 @@ meth = :mix ; nvar = 2
 scal = false
 model = spca; nlv, meth, nvar, scal) ;
 fit!(model, Xtrain) 
-fm = model.fm ;
-pnames(fm)
-fm.niter
-fm.sellv 
-fm.sel
-fm.P
-fm.P' * fm.P
-@head T = fm.T
+fitm = model.fitm ;
+pnames(fitm)
+fitm.niter
+fitm.sellv 
+fitm.sel
+fitm.P
+fitm.P' * fitm.P
+@head T = fitm.T
 @head transf(model, Xtrain)
 
-@head Ttest = transf(fm, Xtest)
+@head Ttest = transf(fitm, Xtest)
 
 res = summary(model, Xtrain) ;
 res.explvarx
@@ -117,7 +117,7 @@ nlv = 3
 meth = :soft ; delta = .4 
 model = spca; nlv, meth, delta) ;
 fit!(model, Xtrain) 
-model.fm.P
+model.fitm.P
 ```
 """ 
 function spca(X; kwargs...)

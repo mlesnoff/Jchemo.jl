@@ -53,10 +53,10 @@ nlv = 3
 kern = :krbf ; gamma = 1e-4
 model = kpca; nlv, kern, gamma) ;
 fit!(model, Xtrain)
-pnames(model.fm)
-@head T = model.fm.T
+pnames(model.fitm)
+@head T = model.fitm.T
 T' * T
-model.fm.P' * model.fm.P
+model.fitm.P' * model.fitm.P
 
 @head Ttest = transf(model, Xtest)
 

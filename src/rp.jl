@@ -26,9 +26,9 @@ meth = :li ; s = sqrt(p)
 model = rp; nlv, meth, s)
 fit!(model, X)
 pnames(model)
-pnames(model.fm)
-@head model.fm.T 
-@head model.fm.P 
+pnames(model.fitm)
+@head model.fitm.T 
+@head model.fitm.P 
 transf(model, X[1:2, :])
 ```
 """

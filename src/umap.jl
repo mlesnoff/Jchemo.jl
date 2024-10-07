@@ -81,14 +81,14 @@ nlv = 3
 n_neighbors = 50 ; min_dist = .5 
 model = umap; nlv, n_neighbors, min_dist)  
 fit!(model, Xtrain)
-@head T = model.fm.T
+@head T = model.fitm.T
 @head Ttest = transf(model, Xtest)
 
 nlv = 3
 n_neighbors = 50 ; min_dist = .5 
 model = umap; nlv, n_neighbors, min_dist)  
 fit!(model, Xtrain)
-@head T = model.fm.T
+@head T = model.fitm.T
 @head Ttest = transf(model, Xtest)
 GLMakie.activate!() 
 #CairoMakie.activate!()
@@ -131,9 +131,9 @@ function umap(X; kwargs...)
         X = fscale(X, xscales)
     end
     metric = Distances.Euclidean()
-    fm = UMAP.UMAP_(X', par.nlv; n_neighbors = par.n_neighbors, metric, min_dist = par.min_dist)
-    T = fm.embedding' 
-    Umap(T, fm, xscales, s, par)
+    fitm = UMAP.UMAP_(X', par.nlv; n_neighbors = par.n_neighbors, metric, min_dist = par.min_dist)
+    T = fitm.embedding' 
+    Umap(T, fitm, xscales, s, par)
 end
 
 """ 
@@ -144,6 +144,6 @@ Compute latent variables (LVs = scores T) from a fitted model.
 """
 function transf(object::Umap, X)
     X = ensure_mat(X)
-    UMAP.transform(object.fm, fscale(X, object.xscales)')'
+    UMAP.transform(object.fitm, fscale(X, object.xscales)')'
 end
 

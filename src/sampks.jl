@@ -46,7 +46,7 @@ res.test
 
 model = pcasvd; nlv = 15) 
 fit!(model, X) 
-@head T = model.fm.T
+@head T = model.fitm.T
 res = sampks(T, k; metric = :mah)
 
 #####################

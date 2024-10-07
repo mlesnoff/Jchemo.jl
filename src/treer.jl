@@ -54,7 +54,7 @@ max_depth = 15
 model = treer; n_subfeatures, max_depth) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
+pnames(model.fitm)
 
 res = predict(model, Xtest)
 @head res.pred
@@ -76,7 +76,7 @@ function treer(X, y; kwargs...)
     end
     n_subfeatures = Int(round(par.n_subfeatures))
     min_purity_increase = 0
-    fm = build_tree(y, X,
+    fitm = build_tree(y, X,
         n_subfeatures,
         par.max_depth,
         par.min_samples_leaf,
@@ -86,7 +86,7 @@ function treer(X, y; kwargs...)
         #rng = 3
         )
     featur = collect(1:p)
-    Treer(fm, xscales, featur, par) 
+    Treer(fitm, xscales, featur, par) 
 end
 
 """
@@ -99,11 +99,11 @@ function predict(object::Treer, X)
     X = ensure_mat(X)
     m = nro(X)
     ## Tree
-    if pnames(object.fm)[1] == :node
-        pred = apply_tree(object.fm, fscale(X, object.xscales))
+    if pnames(object.fitm)[1] == :node
+        pred = apply_tree(object.fitm, fscale(X, object.xscales))
     ## Forest 
     else
-        pred = apply_forest(object.fm, fscale(X, object.xscales); 
+        pred = apply_forest(object.fitm, fscale(X, object.xscales); 
             use_multithreading = object.par.mth)
     end
     pred = reshape(pred, m, 1)

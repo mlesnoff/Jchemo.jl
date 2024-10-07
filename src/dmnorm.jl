@@ -52,20 +52,20 @@ m = nro(zT)
 #### Bivariate distribution
 model = dmnorm)
 fit!(model, zT)
-fm = model.fm
-pnames(fm)
-fm.Uinv 
-fm.detS
+fitm = model.fitm
+pnames(fitm)
+fitm.Uinv 
+fitm.detS
 pred = predict(model, zT).pred
 @head pred
 
 mu = colmean(zT)
 S = covm(zT, mweight(ones(m))) * m / (m - 1) # corrected cov. matrix
 ## Direct syntax
-fm = dmnorm(; mu, S) ; 
-pnames(fm)
-fm.Uinv
-fm.detS
+fitm = dmnorm(; mu, S) ; 
+pnames(fitm)
+fitm.Uinv
+fitm.detS
 
 npoints = 2^7
 lims = [(minimum(zT[:, j]), maximum(zT[:, j])) for j = 1:nlv]

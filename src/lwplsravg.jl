@@ -81,7 +81,7 @@ h = 1 ; k = 200 ; nlv = 4:20
 model = lwplsravg; nlvdis, metric, h, k, nlv) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
+pnames(model.fitm)
 
 res = predict(model, Xtest) ; 
 pnames(res) 
@@ -101,15 +101,15 @@ function lwplsravg(X, Y; kwargs...)
     Q = eltype(X)
     p = nco(X)
     if par.nlvdis == 0
-        fm = nothing
+        fitm = nothing
     else
-        fm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
+        fitm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
     end
     xscales = ones(Q, p)
-    if isnothing(fm) && par.scal
+    if isnothing(fitm) && par.scal
         xscales .= colstd(X)
     end
-    Lwplsravg(X, Y, fm, xscales, par)
+    Lwplsravg(X, Y, fitm, xscales, par)
 end
 
 """
@@ -128,7 +128,7 @@ function predict(object::Lwplsravg, X)
     tolw = object.par.tolw
     criw = object.par.criw
     squared = object.par.squared
-    if isnothing(object.fm)
+    if isnothing(object.fitm)
         if object.par.scal
             zX1 = fscale(object.X, object.xscales)
             zX2 = fscale(X, object.xscales)
@@ -137,8 +137,8 @@ function predict(object::Lwplsravg, X)
             res = getknn(object.X, X; metric, k)
         end
     else
-        res = getknn(object.fm.T, 
-            transf(object.fm, X); metric, k) 
+        res = getknn(object.fitm.T, 
+            transf(object.fitm, X); metric, k) 
     end
     listw = copy(res.d)
     Threads.@threads for i = 1:m

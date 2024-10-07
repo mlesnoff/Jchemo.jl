@@ -57,8 +57,8 @@ scal = false
 model = mbplswest; nlv, bscal, scal)
 fit!(model, Xbltrain, ytrain)
 pnames(model) 
-pnames(model.fm)
-@head model.fm.T
+pnames(model.fitm)
+@head model.fitm.T
 @head transf(model, Xbltrain)
 transf(model, Xbltest)
 
@@ -100,8 +100,8 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     q = nco(Y)
     nlv = par.nlv
     sqrtw = sqrt.(weights.w)
-    fmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
-    transf!(fmbl, Xbl)
+    fitmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
+    transf!(fitmbl, Xbl)
     X = reduce(hcat, Xbl)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
@@ -192,7 +192,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     Tx .= (1 ./ sqrtw) .* Tx
     Rx = Wx * inv(Px' * Wx)
     lb = nothing
-    Mbplswest(Tx, Px, Rx, Wx, Wytild, Tbl, Tb, Pbl, TTx, fmbl, ymeans, yscales, 
+    Mbplswest(Tx, Px, Rx, Wx, Wytild, Tbl, Tb, Pbl, TTx, fitmbl, ymeans, yscales, 
         weights, lb, niter, par)
 end
 
@@ -208,7 +208,7 @@ function Base.summary(object::Mbplswest, Xbl)
     n, nlv = size(object.T)
     nbl = length(Xbl)
     sqrtw = sqrt.(object.weights.w)
-    zXbl = transf(object.fmbl, Xbl)
+    zXbl = transf(object.fitmbl, Xbl)
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end

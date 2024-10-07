@@ -66,7 +66,7 @@ max_depth = 15
 model = rfr; n_trees, n_subfeatures, max_depth) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
+pnames(model.fitm)
 
 res = predict(model, Xtest)
 @head res.pred
@@ -88,7 +88,7 @@ function rfr(X, y; kwargs...)
     end
     n_subfeatures = Int(round(par.n_subfeatures))
     min_purity_increase = 0
-    fm = build_forest(y, X, 
+    fitm = build_forest(y, X, 
         n_subfeatures, 
         par.n_trees, 
         par.partial_sampling,
@@ -100,6 +100,6 @@ function rfr(X, y; kwargs...)
         #rng = 3
         ) 
     featur = collect(1:p)
-    Treer(fm, xscales, featur, par)
+    Treer(fitm, xscales, featur, par)
 end
 

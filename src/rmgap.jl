@@ -72,8 +72,8 @@ function transf!(object::Rmgap, X::Matrix)
     @inbounds for i = 1:ngap
         ind = indexcol[i]
         wl = max(ind - npoint + 1, 1):ind
-        fm = mlr(convert.(Q, wl), X[:, wl]')
-        pred = Jchemo.predict(fm, ind + 1).pred
+        fitm = mlr(convert.(Q, wl), X[:, wl]')
+        pred = Jchemo.predict(fitm, ind + 1).pred
         bias = X[:, ind + 1] .- pred'
         X[:, (ind + 1):p] .= X[:, (ind + 1):p] .- bias
     end

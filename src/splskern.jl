@@ -89,9 +89,9 @@ meth = :mix ; nvar = 5
 model = splskern; nlv, meth, nvar) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-@head model.fm.T
-@head model.fm.W
+pnames(model.fitm)
+@head model.fitm.T
+@head model.fitm.W
 
 coef(model)
 coef(model; nlv = 3)

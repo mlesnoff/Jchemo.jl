@@ -50,12 +50,12 @@ scal = true
 model = krrda; lb, kern, gamma, scal) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-fm = model.fm ;
-fm.lev
-fm.ni
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
 
-coef(fm.fm)
+coef(fitm.fitm)
 
 res = predict(model, Xtest) ;
 pnames(res)
@@ -78,8 +78,8 @@ function krrda(X, y, weights::Weight; kwargs...)
     par = recovkw(ParKrrda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
-    fm = krr(X, res.Y, weights; kwargs...)
-    Rrda(fm, res.lev, ni, par)
+    fitm = krr(X, res.Y, weights; kwargs...)
+    Rrda(fitm, res.lev, ni, par)
 end
 
 

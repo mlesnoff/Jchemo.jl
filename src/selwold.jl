@@ -113,8 +113,8 @@ function selwold(indx, r; smooth = true, npoint = 5, alpha = .05, digits = 3, gr
     Rs = copy(R)
     if smooth
         Rt = R'
-        fm = mavg(Rt; npoint) 
-        Rs = vec(transf(fm, Rt)) 
+        fitm = mavg(Rt; npoint) 
+        Rs = vec(transf(fitm, Rt)) 
         #Rs = vec(mavg(R'; f = f))
     end
     ## End

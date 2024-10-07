@@ -54,8 +54,8 @@ h = 1 ; k = 3
 model = knnr; h, k) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-dump(model.fm.par)
+pnames(model.fitm)
+dump(model.fitm.par)
 res = predict(model, Xtest) ; 
 pnames(res) 
 res.listnn

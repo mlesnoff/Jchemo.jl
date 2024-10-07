@@ -13,14 +13,14 @@ function plsravg_unif!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     X = ensure_mat(X)
     n, p = size(X)
     nlv = (min(minimum(par.nlv), n, p):min(maximum(par.nlv), n, p))
-    fm = plskern!(X, Y, weights; kwargs...)
-    PlsravgUnif(fm, nlv)
+    fitm = plskern!(X, Y, weights; kwargs...)
+    PlsravgUnif(fitm, nlv)
 end
 
 function predict(object::PlsravgUnif, X)
     nlv = object.nlv
     le_nlv = length(nlv)
-    zpred = predict(object.fm, X; nlv).pred
+    zpred = predict(object.fitm, X; nlv).pred
     if(le_nlv == 1)
         pred = zpred
     else

@@ -66,7 +66,7 @@ cost = 1000 ; epsilon = 1
 model = svmr; kern, gamma, cost, epsilon) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
+pnames(model.fitm)
 
 res = predict(model, Xtest)
 @head res.pred
@@ -114,7 +114,7 @@ function svmr(X, y; kwargs...)
     elseif kern == :ktanh
         fkern = LIBSVM.Kernel.Sigmoid
     end
-    fm = svmtrain(X', y;
+    fitm = svmtrain(X', y;
         svmtype = EpsilonSVR, 
         kernel = fkern,
         gamma =  par.gamma,
@@ -125,7 +125,7 @@ function svmr(X, y; kwargs...)
         tolerance = 0.001,
         nt = 0,
         verbose = false) 
-    Svmr(fm, xscales, par) 
+    Svmr(fitm, xscales, par) 
 end
 
 """
@@ -138,7 +138,7 @@ function predict(object::Svmr, X)
     X = ensure_mat(X)
     m = nro(X)
     Q = eltype(X)
-    pred = svmpredict(object.fm, fscale(X, object.xscales)')[1]
+    pred = svmpredict(object.fitm, fscale(X, object.xscales)')[1]
     pred = reshape(convert.(Q, pred), m, 1)
     (pred = pred,)
 end

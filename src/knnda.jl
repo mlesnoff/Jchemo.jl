@@ -51,10 +51,10 @@ h = 2 ; k = 10
 model = knnda; metric, h, k) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-fm = model.fm ;
-fm.lev
-fm.ni
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
 
 res = predict(model, Xtest) ; 
 pnames(res) 
@@ -83,7 +83,7 @@ function knnda(X, y; kwargs...)
     p = nco(X)
     taby = tab(y)    
     xscales = ones(Q, p)
-    if par.scal && isnothing(fm)
+    if par.scal && isnothing(fitm)
         xscales .= colstd(X)
     end
     Knnda(X, y, xscales, taby.keys, taby.vals, par)

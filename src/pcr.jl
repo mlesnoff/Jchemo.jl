@@ -33,8 +33,8 @@ nlv = 15
 model = pcr; nlv) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-@head model.fm.T
+pnames(model.fitm)
+@head model.fitm.T
 
 coef(model)
 coef(model; nlv = 3)
@@ -78,12 +78,12 @@ function pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     ## below yscales is built only for consistency with coef::Plsr  
     yscales = ones(Q, q)
     ## End 
-    fm = pcasvd!(X, weights; kwargs...)
-    D = Diagonal(fm.weights.w)
-    ## Below, first term of the product = Diagonal(1 ./ fm.sv[1:nlv].^2) if T is D-orthogonal
+    fitm = pcasvd!(X, weights; kwargs...)
+    D = Diagonal(fitm.weights.w)
+    ## Below, first term of the product = Diagonal(1 ./ fitm.sv[1:nlv].^2) if T is D-orthogonal
     ## This is the case for the actual version (pcasvd)
-    beta = inv(fm.T' * D * fm.T) * fm.T' * D * Y
-    Pcr(fm, fm.T, fm.P, beta', fm.xmeans, fm.xscales, ymeans, yscales, weights, par)
+    beta = inv(fitm.T' * D * fitm.T) * fitm.T' * D * Y
+    Pcr(fitm, fitm.T, fitm.P, beta', fitm.xmeans, fitm.xscales, ymeans, yscales, weights, par)
 end
 
 """ 
@@ -94,7 +94,7 @@ Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Pcr, X; nlv = nothing)
-    transf(object.fmpca, X; nlv)
+    transf(object.fitmpca, X; nlv)
 end
 
 """
@@ -104,7 +104,7 @@ Summarize the fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Pcr, X)
-    summary(object.fmpca, X)
+    summary(object.fitmpca, X)
 end
 
 

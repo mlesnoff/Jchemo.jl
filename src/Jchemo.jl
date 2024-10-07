@@ -21,7 +21,7 @@ using UMAP
 include("_structures_param.jl")
 include("_structures_fun.jl")      
 include("_mod_.jl")
-include("_model.jl")
+include("_work_on_model.jl")
 include("_pip.jl")
 #include("_pip_typ_fun.jl")
 include("_pip_work.jl")
@@ -228,7 +228,7 @@ include("rfda.jl")
 
 include("calds.jl")
 include("calpds.jl")
-include("difmean.jl")
+include("difitmean.jl")
 include("eposvd.jl")
 
 ######---- Sampling
@@ -321,7 +321,7 @@ export
     snv, 
     ######---- Calibration ransfer
     calds, calpds,
-    difmean,
+    difitmean,
     eposvd,
     ######---- Exploratory
     pcasvd, pcasvd!, 

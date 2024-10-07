@@ -51,21 +51,21 @@ n, p = size(T)
 
 model = dmkern)
 fit!(model, T) 
-pnames(model.fm)
-model.fm.H
+pnames(model.fitm)
+model.fitm.H
 u = [1; 4; 150]
 predict(model, T[u, :]).pred
 
 h = .3
 model = dmkern; h)
 fit!(model, T) 
-model.fm.H
+model.fitm.H
 predict(model, T[u, :]).pred
 
 h = [.3; .1]
 model = dmkern; h)
 fit!(model, T) 
-model.fm.H
+model.fitm.H
 predict(model, T[u, :]).pred
 
 ## Bivariate distribution

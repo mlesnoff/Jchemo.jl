@@ -43,8 +43,8 @@ model = pcasph; nlv)
 #model = pcasvd; nlv) 
 fit!(model, X)
 pnames(model)
-pnames(model.fm)
-@head T = model.fm.T
+pnames(model.fitm)
+@head T = model.fitm.T
 ## Same as:
 transf(model, X)
 

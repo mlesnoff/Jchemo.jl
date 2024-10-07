@@ -61,14 +61,14 @@ lb = 1e-5
 model = rrda; lb) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-fm = model.fm ;
-fm.lev
-fm.ni
-pnames(fm.fm)
-aggsum(fm.fm.weights.w, ytrain)
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
+pnames(fitm.fitm)
+aggsum(fitm.fitm.weights.w, ytrain)
 
-coef(fm.fm)
+coef(fitm.fitm)
 
 res = predict(model, Xtest) ;
 pnames(res)
@@ -91,8 +91,8 @@ function rrda(X, y, weights::Weight; kwargs...)
     par = recovkw(ParRrda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals 
-    fm = rr(X, res.Y, weights; kwargs...)
-    Rrda(fm, res.lev, ni, par)
+    fitm = rr(X, res.Y, weights; kwargs...)
+    Rrda(fitm, res.lev, ni, par)
 end
 
 """
@@ -114,7 +114,7 @@ function predict(object::Rrda, X; lb = nothing)
     pred = list(Matrix{Qy}, le_lb)
     posterior = list(Matrix{Q}, le_lb)
     @inbounds for i = 1:le_lb
-        zp = predict(object.fm, X; lb = lb[i]).pred
+        zp = predict(object.fitm, X; lb = lb[i]).pred
         z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
         pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)
         posterior[i] = zp

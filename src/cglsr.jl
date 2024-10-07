@@ -64,10 +64,10 @@ ytest = rmrow(y, s)
 nlv = 5 ; scal = true
 model = cglsr; nlv, scal) ;
 fit!(model, Xtrain, ytrain)
-pnames(model.fm) 
-@head model.fm.B
-coef(model.fm).B
-coef(model.fm).int
+pnames(model.fitm) 
+@head model.fitm.B
+coef(model.fitm).B
+coef(model.fitm).int
 
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)

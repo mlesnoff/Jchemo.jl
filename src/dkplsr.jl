@@ -54,8 +54,8 @@ kern = :krbf ; gamma = 1e-1 ; scal = false
 model = dkplsr; nlv, kern, gamma, scal) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-@head model.fm.T
+pnames(model.fitm)
+@head model.fitm.T
 
 coef(model)
 coef(model; nlv = 3)
@@ -114,8 +114,8 @@ function dkplsr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
     K = fkern(X, X; kwargs...)     
-    fm = plskern!(K, Y, weights; kwargs...)
-    Dkplsr(X, fm, K, fm.T, xscales, yscales, kwargs, par) 
+    fitm = plskern!(K, Y, weights; kwargs...)
+    Dkplsr(X, fitm, K, fitm.T, xscales, yscales, kwargs, par) 
 end
 
 """ 
@@ -128,7 +128,7 @@ Compute latent variables (LVs = scores T) from a fitted model.
 function transf(object::Dkplsr, X; nlv = nothing)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; values(object.kwargs)...)
-    transf(object.fm, K; nlv)
+    transf(object.fitm, K; nlv)
 end
 
 """
@@ -139,7 +139,7 @@ Compute the b-coefficients of a fitted model.
    
 """ 
 function coef(object::Dkplsr; nlv = nothing)
-    coef(object.fm; nlv)
+    coef(object.fitm; nlv)
 end
 
 """
@@ -156,7 +156,7 @@ function predict(object::Dkplsr, X; nlv = nothing)
     le_nlv = length(nlv)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
-    pred = predict(object.fm, K; nlv).pred
+    pred = predict(object.fitm, K; nlv).pred
     if le_nlv == 1
         pred .= pred * Diagonal(object.yscales)
     else
