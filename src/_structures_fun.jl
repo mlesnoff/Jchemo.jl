@@ -74,11 +74,11 @@ end
 ## Calibration transfer
 
 struct Calds
-    fm
+    fitm
 end
 
 struct Calpds
-    fm
+    fitm
     s
 end
 
@@ -135,7 +135,7 @@ end
 
 struct Umap 
     T::Matrix
-    fm::UMAP.UMAP_
+    fitm::UMAP.UMAP_
     xscales::Vector
     s::Vector{Int}
     par::ParUmap
@@ -362,12 +362,12 @@ struct Splsr
 end
 
 struct PlsravgUnif
-    fm::Plsr
+    fitm::Plsr
     nlv::UnitRange
 end
 
 struct Plsravg
-    fm::PlsravgUnif
+    fitm::PlsravgUnif
     par::ParPlsr
 end
 
@@ -392,7 +392,7 @@ end
 
 struct Dkplsr
     X::Matrix
-    fm::Plsr
+    fitm::Plsr
     K::Matrix
     T::Matrix
     xscales::Vector
@@ -455,7 +455,7 @@ end
 struct Lwplsr
     X::Matrix
     Y::Matrix
-    fm::Union{Nothing, Plsr}
+    fitm::Union{Nothing, Plsr}
     xscales::Vector
     par::ParLwplsr
 end
@@ -463,13 +463,13 @@ end
 struct Lwplsravg
     X::Matrix
     Y::Matrix
-    fm::Union{Nothing, Plsr}
+    fitm::Union{Nothing, Plsr}
     xscales::Vector
     par::ParLwplsr
 end
 
 struct Loessr
-    fm::Loess.LoessModel
+    fitm::Loess.LoessModel
     xscales::Vector
     par::ParLoessr
 end
@@ -477,13 +477,13 @@ end
 ## Svm, Trees
 
 struct Svmr
-    fm::LIBSVM.SVM
+    fitm::LIBSVM.SVM
     xscales::Vector
     par::ParSvm
 end
 
 struct Treer
-    fm::Union{DecisionTree.Root, DecisionTree.Ensemble}
+    fitm::Union{DecisionTree.Root, DecisionTree.Ensemble}
     xscales::Vector
     featur::Vector{Int}
     par::Union{ParTree, ParRf}
@@ -492,7 +492,7 @@ end
 ## Multiblock
 
 struct Mbplsr
-    fm::Plsr
+    fitm::Plsr
     T::Matrix
     R::Matrix
     C::Matrix
@@ -538,7 +538,7 @@ struct Rosaplsr
 end
 
 struct Soplsr
-    fm::Vector
+    fitm::Vector
     T::Matrix
     fit::Matrix
     b::Vector
@@ -574,7 +574,7 @@ struct Dmkern
 end
 
 struct Lda
-    fm::Vector{Dmnorm}
+    fitm::Vector{Dmnorm}
     W::Matrix  
     ct::Matrix
     priors::Vector
@@ -585,7 +585,7 @@ struct Lda
 end
 
 struct Qda
-    fm::Vector{Dmnorm}
+    fitm::Vector{Dmnorm}
     Wi::AbstractVector  
     ct::Matrix
     priors::Vector
@@ -596,7 +596,7 @@ struct Qda
 end
 
 struct Rda
-    fm::Vector{Dmnorm}
+    fitm::Vector{Dmnorm}
     Wi::AbstractVector  
     ct::Matrix
     priors::Vector
@@ -608,7 +608,7 @@ struct Rda
 end
 
 struct Kdeda
-    fm::Vector{Dmkern}
+    fitm::Vector{Dmkern}
     priors::AbstractVector
     lev::Vector
     ni::Vector{Int}
@@ -616,28 +616,28 @@ struct Kdeda
 end
 
 struct Mlrda
-    fm::Mlr 
+    fitm::Mlr 
     lev::Vector
     ni::Vector{Int}
     par::ParMlrda
 end
 
 struct Plsrda
-    fm::Union{Plsr, Splsr, Kplsr, Dkplsr}  
+    fitm::Union{Plsr, Splsr, Kplsr, Dkplsr}  
     lev::Vector
     ni::Vector{Int}
     par::Union{ParPlsda, ParSplsda, ParKplsda}
 end
 
 struct Rrda
-    fm::Union{Rr, Krr}  
+    fitm::Union{Rr, Krr}  
     lev::Vector
     ni::Vector{Int}
     par::Union{ParRrda, ParKrrda}
 end
 
 struct Plsprobda    # plslda, plsqda, plskdeda  
-    fm::NamedTuple  
+    fitm::NamedTuple  
     lev::Vector
     ni::Vector{Int}
     par::Union{ParPlsda, ParPlsqda, ParPlskdeda, ParSplsda, ParSplsqda, ParSplskdeda,
@@ -645,7 +645,7 @@ struct Plsprobda    # plslda, plsqda, plskdeda
 end
 
 ## Local
-## (from below, fm not yet specified)
+## (from below, fitm not yet specified)
 
 struct Knnda
     X::Matrix
@@ -668,7 +668,7 @@ end
 struct Lwplsrda
     X::Matrix
     y::AbstractMatrix
-    fm
+    fitm
     xscales::Vector
     lev::Vector
     ni::Vector{Int}
@@ -678,7 +678,7 @@ end
 struct Lwplslda   
     X::Matrix
     y::AbstractMatrix
-    fm
+    fitm
     xscales::Vector
     lev::Vector
     ni::Vector{Int}
@@ -688,7 +688,7 @@ end
 struct Lwplsqda
     X::Matrix
     y::AbstractMatrix
-    fm
+    fitm
     xscales::Vector
     lev::Vector
     ni::Vector{Int}
@@ -698,7 +698,7 @@ end
 ## Svm, Trees
 
 struct Svmda
-    fm
+    fitm
     xscales::Vector
     lev::Vector
     ni::Vector{Int}
@@ -706,7 +706,7 @@ struct Svmda
 end
 
 struct Treeda 
-    fm
+    fitm
     xscales::Vector
     featur::Vector{Int}
     lev::Vector
@@ -717,14 +717,14 @@ end
 ## Multiblock
 
 struct Mbplsrda
-    fm::Mbplsr  
+    fitm::Mbplsr  
     lev::Vector
     ni::Vector{Int}
     par::ParMbplsda
 end
 
 struct Mbplsprobda    # mbplslda, mbplsqda, mbplskdeda  
-    fm::NamedTuple  
+    fitm::NamedTuple  
     lev::Vector
     ni::Vector{Int}
     par::Union{ParMbplsda, ParMbplsqda, ParMbplskdeda}
@@ -734,7 +734,7 @@ end
 
 struct Occsd
     d::DataFrame 
-    fm
+    fitm
     tscales::Vector
     e_cdf::ECDF
     cutoff::Real   
@@ -743,7 +743,7 @@ end
 
 struct Occod
     d::DataFrame
-    fm
+    fitm
     e_cdf::ECDF
     cutoff::Real   
     par::ParOcc

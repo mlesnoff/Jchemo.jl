@@ -1,6 +1,6 @@
 Base.@kwdef mutable struct JchemoModel{T <: Function, K <: Base.Pairs}
     algo::T   
-    fm
+    fitm
     kwargs::K
 end
 

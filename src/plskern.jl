@@ -65,8 +65,8 @@ model = plskern(; nlv) ;
 #model = plssimp(; nlv) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fm)
-@head model.fm.T
+pnames(model.fitm)
+@head model.fitm.T
 
 coef(model)
 coef(model; nlv = 3)

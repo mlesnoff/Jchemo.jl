@@ -225,11 +225,11 @@ model = mod_(savgol; npoint = 11, deriv = 2, degree = 3)
 fit!(model, Xtrain)
 ```
 
-Contents of objects `model` and `fm` can be displayed by:
+Contents of objects `model` and `fitm` can be displayed by:
 
 ```
 pnames(model)
-pnames(model.fm)
+pnames(model.fitm)
 ```
 
 Once the model is fitted, the transformed (i.e. here preprocessed) data are given by:
@@ -269,7 +269,7 @@ Ttest = transf(model, Xtest)
 Object `Ttrain` above can also be obtained directly by:
 
 ```julia
-Ttrain = model.fm.T
+Ttrain = model.fitm.T
 ```
 
 Some model summary (% of explained variance, etc.) can be displayed by:
@@ -294,7 +294,7 @@ fit!(model, Xtrain, ytrain)
 
 As for PCA, the score matrices can be computed by:
 ```julia
-Ttrain = transf(model, Xtrain)   # = model.fm.T
+Ttrain = transf(model, Xtrain)   # = model.fitm.T
 Ttest = transf(model, Xtest)
 ```
 

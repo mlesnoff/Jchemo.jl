@@ -74,8 +74,8 @@ function transf!(object::DetrendLo, X::Matrix)
     @inbounds for i = 1:n
     ## Not faster: @Threads.threads
         y = vec(vrow(X, i))
-        fm = loessr(x, y; span, degree)
-        X[i, :] .= y - vec(predict(fm, x).pred)
+        fitm = loessr(x, y; span, degree)
+        X[i, :] .= y - vec(predict(fitm, x).pred)
     end
 end
 
@@ -603,6 +603,7 @@ function transf!(object::Snorm, X::Matrix)
 end
 
 """
+    snv(; kwargs...)
     snv(X; kwargs...)
 Standard-normal-variate (SNV) transformation of each row of X-data.
 * `X` : X-data (n, p).
@@ -626,15 +627,21 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-model = mod_(snv) 
-#model = mod_(snv; scal = false) 
+model = snv() 
+#model = snv(scal = false) 
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
 plotsp(Xptrain).f
 plotsp(Xptest).f
+@head rowmean(Xptrain)
+@head rowstd(Xptrain)
+@head rowmean(Xptest)
+@head rowstd(Xptest)
 ```
 """ 
+snv(; kwargs...) = JchemoModel(snv, nothing, kwargs)
+
 function snv(X; kwargs...)
     par = recovkw(ParSnv, kwargs).par
     Snv(par)
