@@ -1,4 +1,5 @@
 """
+    ccawold(; kwargs...)
     ccawold(X, Y; kwargs...)
     ccawold(X, Y, weights::Weight; kwargs...)
     ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -77,7 +78,7 @@ q = nco(Y)
 
 nlv = 2
 bscal = :frob ; tau = 1e-4
-model = ccawold; nlv, bscal, tau, tol = 1e-10)
+model = ccawold(; nlv, bscal, tau, tol = 1e-10)
 fit!(model, X, Y)
 pnames(model)
 pnames(model.fitm)
@@ -99,6 +100,8 @@ res.corx2t
 res.cory2t 
 ```
 """
+ccawold(; kwargs...) = JchemoModel(ccawold, nothing, kwargs)
+
 function ccawold(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)

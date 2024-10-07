@@ -1,4 +1,5 @@
 """
+    cglsr(; kwargs...)
     cglsr(X, y; kwargs...)
     cglsr!(X::Matrix, y::Matrix; kwargs...)
 Conjugate gradient algorithm for the normal equations (CGLS; Björck 1996).
@@ -62,7 +63,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 5 ; scal = true
-model = cglsr; nlv, scal) ;
+model = cglsr(; nlv, scal)
 fit!(model, Xtrain, ytrain)
 pnames(model.fitm) 
 @head model.fitm.B
@@ -71,10 +72,12 @@ coef(model.fitm).int
 
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
-plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, 
-    xlabel = "Prediction", ylabel = "Observed").f   
+plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f   
 ```
 """ 
+cglsr(; kwargs...) = JchemoModel(cglsr, nothing, kwargs)
+
 cglsr(X, y; kwargs...) = cglsr!(copy(ensure_mat(X)), copy(ensure_mat(y)); kwargs...)
 
 function cglsr!(X::Matrix, y::Matrix; kwargs...)

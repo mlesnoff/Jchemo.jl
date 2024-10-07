@@ -1,4 +1,5 @@
 """
+    calpds(; npoint = 5, algo = plskern, kwargs...)
     calpds(X1, X2; npoint = 5, algo = plskern, kwargs...)
 Piecewise direct standardization (PDS) for calibration transfer of spectral data.
 * `X1` : Spectra (n, p) to transfer to the target.
@@ -53,7 +54,7 @@ X2cal = dat.X2cal
 X2val = dat.X2val
 
 ## Fitting the model
-model = calpds; npoint = 2, algo = plskern, nlv = 2) 
+model = calpds(npoint = 2, algo = plskern, nlv = 2) 
 fit!(model, X1cal, X2cal)
 
 ## Transfer of new spectra X1val 
@@ -70,6 +71,8 @@ axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
+calpds(; npoint = 5, algo = plskern, kwargs...) = JchemoModel(calpds, nothing, kwargs)
+
 function calpds(X1, X2; npoint = 5, algo = plskern, kwargs...)
     @assert npoint >= 1 "Argument 'npoint' must be >= 1."
     p = nco(X1)

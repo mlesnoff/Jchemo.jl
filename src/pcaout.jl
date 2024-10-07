@@ -1,4 +1,5 @@
 """
+    pcaout(; kwargs...)
     pcaout(X; kwargs...)
     pcaout(X, weights::Weight; kwargs...)
     pcaout!(X::Matrix, weights::Weight; kwargs...)
@@ -60,8 +61,8 @@ wl = parse.(Float64, wlst)
 n = nro(X)
 
 nlv = 3
-model = pcaout; nlv)  
-#model = pcasvd; nlv) 
+model = pcaout(; nlv)  
+#model = pcasvd(; nlv) 
 fit!(model, X)
 pnames(model)
 pnames(model.fitm)
@@ -74,6 +75,8 @@ plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i),
     ylabel = string("PC", i + 1)).f
 ```
 """ 
+pcaout(; kwargs...) = JchemoModel(pcaout, nothing, kwargs)
+
 function pcaout(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

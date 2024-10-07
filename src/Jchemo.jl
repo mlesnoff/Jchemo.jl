@@ -228,7 +228,7 @@ include("rfda.jl")
 
 include("calds.jl")
 include("calpds.jl")
-include("difitmean.jl")
+include("difmean.jl")
 include("eposvd.jl")
 
 ######---- Sampling
@@ -321,7 +321,7 @@ export
     snv, 
     ######---- Calibration ransfer
     calds, calpds,
-    difitmean,
+    difmean,
     eposvd,
     ######---- Exploratory
     pcasvd, pcasvd!, 

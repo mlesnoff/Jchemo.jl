@@ -1,4 +1,5 @@
 """
+    comdim(; kwargs...)
     comdim(Xbl; kwargs...)
     comdim(Xbl, weights::Weight; kwargs...)
     comdim!(Xbl::Matrix, weights::Weight; kwargs...)
@@ -96,7 +97,7 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-model = comdim; nlv, bscal, scal)
+model = comdim(; nlv, bscal, scal)
 fit!(model, Xbl)
 pnames(model) 
 pnames(model.fitm)
@@ -122,6 +123,8 @@ res.cortb2t
 res.rv
 ```
 """
+comdim(; kwargs...) = JchemoModel(comdim, nothing, kwargs)
+
 function comdim(Xbl; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])

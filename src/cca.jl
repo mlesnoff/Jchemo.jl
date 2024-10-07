@@ -1,4 +1,5 @@
 """
+    cca(; kwargs...)
     cca(X, Y; kwargs...)
     cca(X, Y, weights::Weight; kwargs...)
     cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -73,7 +74,7 @@ q = nco(Y)
 
 nlv = 3
 bscal = :frob ; tau = 1e-8
-model = cca; nlv, bscal, tau)
+model = cca(; nlv, bscal, tau)
 fit!(model, X, Y)
 pnames(model)
 pnames(model.fitm)
@@ -93,6 +94,8 @@ res.corx2t
 res.cory2t 
 ```
 """
+cca(; kwargs...) = JchemoModel(cca, nothing, kwargs)
+
 function cca(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)
