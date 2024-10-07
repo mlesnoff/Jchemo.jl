@@ -2,14 +2,15 @@
     dmnormlog(; kwargs...)
     dmnormlog(X; kwargs...)
     dmnormlog!(X::Matrix; kwargs...)
-    dmnormlog(; kwargs...)
+    dmnormlog(mu, S; kwargs...)
+    dmnormlog!(mu::Vector, S::Matrix; kwargs...)
 Logarithm of the normal probability density estimation.
     * `X` : X-data (n, p) used to estimate the mean `mu` and 
         the covariance matrix `S`. If `X` is not given, 
         `mu` and `S` must be provided in `kwargs`.
-Keyword arguments:
     * `mu` : Mean vector of the normal distribution. 
     * `S` : Covariance matrix of the Normal distribution.
+Keyword arguments:
     * `simpl` : Boolean. If `true`, the constant term and 
         the determinant in the Normal density formula are set to 1.
 
@@ -31,7 +32,7 @@ tab(y)
 s = y .== "setosa"
 zX = X[s, :]
 
-model = dmnormlog)
+model = dmnormlog()
 fit!(model, zX)
 fitm = model.fitm
 pnames(fitm)
@@ -40,7 +41,7 @@ fitm.logdetS
 @head pred = predict(model, zX).pred
 
 ## Consistency with dmnorm
-model0 = dmnorm)
+model0 = dmnorm()
 fit!(model0, zX)
 @head pred0 = predict(model0, zX).pred
 @head log.(pred0)
@@ -56,7 +57,6 @@ function dmnormlog!(X::Matrix; kwargs...)
     par = recovkw(ParDmnorm, kwargs).par
     mu = colmean(X) 
     S = cov(X; corrected = true)
-    
     if par.simpl 
         logcst = 0
         logdetS = 0
@@ -70,9 +70,13 @@ function dmnormlog!(X::Matrix; kwargs...)
     Dmnormlog(mu, U, logdetS, logcst, par)
 end
 
-function dmnormlog(; kwargs...)
+function dmnormlog(mu, S; kwargs...)
+    dmnormlog!(copy(vec(mu)), copy(ensure_mat(S)); kwargs...) 
+end
+
+function dmnormlog!(mu::Vector, S::Matrix; kwargs...)
     par = recovkw(ParDmnorm, kwargs).par
-    U = cholesky!(Hermitian(copy(par.S))).U   # cholesky! modifies S
+    U = cholesky!(Hermitian(copy(S))).U   # cholesky! modifies S
     if par.simpl 
         logcst = 0
         logdetS = 0
@@ -82,7 +86,7 @@ function dmnormlog(; kwargs...)
         logdetS = logdet(S)
     end
     LinearAlgebra.inv!(U)
-    Dmnormlog(par.mu, U, logdetS, logcst, par)
+    Dmnormlog(mu, U, logdetS, logcst, par)
 end
 
 function predict(object::Dmnormlog, X)

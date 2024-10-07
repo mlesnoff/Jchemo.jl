@@ -348,8 +348,6 @@ end
 ############---- Discrimination
 
 Base.@kwdef mutable struct ParDmnorm
-    mu::Union{Nothing, Vector} = nothing 
-    S::Union{Nothing, Matrix} = nothing     
     simpl::Bool = false 
 end 
 

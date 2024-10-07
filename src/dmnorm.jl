@@ -2,14 +2,15 @@
     dmnorm(; kwargs...)
     dmnorm(X; kwargs...)
     dmnorm!(X::Matrix; kwargs...)
-    dmnorm(; kwargs...)
+    dmnorm(mu, S; kwargs...)
+    dmnorm!(mu::Vector, S::Matrix; kwargs...)
 Normal probability density estimation.
 * `X` : X-data (n, p) used to estimate the mean `mu` and 
     the covariance matrix `S`. If `X` is not given, 
     `mu` and `S` must be provided in `kwargs`.
-Keyword arguments:
 * `mu` : Mean vector of the normal distribution. 
 * `S` : Covariance matrix of the Normal distribution.
+Keyword arguments:
 * `simpl` : Boolean. If `true`, the constant term and 
     the determinant in the Normal density formula are set to 1.
 
@@ -57,12 +58,11 @@ fitm = model.fitm
 pnames(fitm)
 fitm.Uinv 
 fitm.detS
-pred = predict(model, zT).pred
-@head pred
+@head pred = predict(model, zT).pred
 
+## Direct syntax
 mu = colmean(zT)
 S = covm(zT, mweight(ones(m))) * m / (m - 1) # corrected cov. matrix
-## Direct syntax
 fitm = dmnorm(mu, S) ; 
 pnames(fitm)
 fitm.Uinv
@@ -140,19 +140,23 @@ function dmnorm!(X::Matrix; kwargs...)
     Dmnorm(mu, U, detS, cst, par)
 end
 
-function dmnorm(; kwargs...)
+function dmnorm(mu, S; kwargs...)
+    dmnorm!(copy(vec(mu)), copy(ensure_mat(S)); kwargs...)
+end
+
+function dmnorm!(mu::Vector, S::Matrix; kwargs...)
     par = recovkw(ParDmnorm, kwargs).par
-    U = cholesky!(Hermitian(copy(par.S))).U   # cholesky! modifies S
+    U = cholesky!(Hermitian(copy(S))).U   # cholesky! modifies S
     if par.simpl 
         cst = 1
         detS = 1
     else
-        p = nro(par.S)
+        p = nro(S)
         cst = (2 * pi)^(-p / 2)
         detS = det(U)^2  
     end
     LinearAlgebra.inv!(U)
-    Dmnorm(par.mu, U, detS, cst, par)
+    Dmnorm(mu, U, detS, cst, par)
 end
 
 """
