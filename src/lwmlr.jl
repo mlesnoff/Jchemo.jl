@@ -46,10 +46,10 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 20
-mod0 = pcasvd; nlv) ;
-fit!(mod0, Xtrain) 
-@head Ttrain = mod0.fitm.T 
-@head Ttest = transf(mod0, Xtest)
+model0 = pcasvd; nlv) ;
+fit!(model0, Xtrain) 
+@head Ttrain = model0.fitm.T 
+@head Ttest = transf(model0, Xtest)
 
 metric = :eucl 
 h = 2 ; k = 100 

@@ -63,10 +63,10 @@ plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class",
 ## Preliminary dimension reduction 
 ## (Not required but often more efficient)
 nlv = 50
-mod0 = pcasvd; nlv) ;
-fit!(mod0, zXtrain)
-Ttrain = mod0.fitm.T
-Ttest = transf(mod0, zXtest)
+model0 = pcasvd; nlv) ;
+fit!(model0, zXtrain)
+Ttrain = model0.fitm.T
+Ttest = transf(model0, zXtest)
 ## Outlierness
 model = occstah; nlv, scal = true)
 fit!(model, Ttrain) 

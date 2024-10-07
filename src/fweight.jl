@@ -29,7 +29,7 @@ Stat Comput 1, 47–62. https://doi.org/10.1007/BF01890836
 
 ## Examples
 ```julia
-using Jchemo, CairoMakie, Distributions
+using CairoMakie, Distributions
 
 d = sort(sqrt.(rand(Chi(1), 1000)))
 colm = cgrad(:tab10, collect(1:9)) ;

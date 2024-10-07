@@ -1,4 +1,5 @@
 """
+    fdasvd(; kwargs...)
     fdasvd(X, y, weights; kwargs...)
     fdasvd!(X::Matrix, y, weights; kwargs...)
 Factorial discriminant analysis (FDA).
@@ -24,6 +25,8 @@ function `fda`.
 
 See function `fda` for details and examples.
 """ 
+fdasvd(; kwargs...) = JchemoModel(fdasvd, nothing, kwargs)
+
 function fdasvd(X, y; kwargs...)
     par = recovkw(ParFda, kwargs).par
     Q = eltype(X[1, 1])

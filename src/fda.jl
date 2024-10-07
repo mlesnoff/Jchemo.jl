@@ -1,4 +1,5 @@
 """
+    fda(; kwargs...)
     fda(X, y; kwargs...)
     fda(X, y, weights; kwargs...)
     fda!(X::Matrix, y, weights; kwargs...)
@@ -59,8 +60,8 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 2
-model = fda; nlv)
-#model = fdasvd; nlv)
+model = fda(; nlv)
+#model = fdasvd(; nlv)
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -92,6 +93,8 @@ scatter!(ax, ct[:, 1], ct[:, 2], marker = :star5, markersize = 15, color = :red)
 f
 ```
 """ 
+fda(; kwargs...) = JchemoModel(fda, nothing, kwargs)
+
 function fda(X, y; kwargs...)
     par = recovkw(ParFda, kwargs).par
     Q = eltype(X[1, 1])

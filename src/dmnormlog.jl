@@ -1,4 +1,5 @@
 """
+    dmnormlog(; kwargs...)
     dmnormlog(X; kwargs...)
     dmnormlog!(X::Matrix; kwargs...)
     dmnormlog(; kwargs...)
@@ -39,12 +40,14 @@ fitm.logdetS
 @head pred = predict(model, zX).pred
 
 ## Consistency with dmnorm
-mod0 = dmnorm)
-fit!(mod0, zX)
-@head pred0 = predict(mod0, zX).pred
+model0 = dmnorm)
+fit!(model0, zX)
+@head pred0 = predict(model0, zX).pred
 @head log.(pred0)
 ```
 """ 
+dmnormlog(; kwargs...) = JchemoModel(dmnormlog, nothing, kwargs)
+
 function dmnormlog(X; kwargs...)
     dmnormlog!(copy(ensure_mat(X)); kwargs...)
 end

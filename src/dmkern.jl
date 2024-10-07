@@ -1,4 +1,5 @@
 """
+    dmkern(; kwargs...)
     dmkern(X; kwargs...)
 Gaussian kernel density estimation (KDE).
 * `X` : X-data (n, p).
@@ -42,14 +43,14 @@ n = nro(X)
 tab(y) 
 
 nlv = 2
-mod0 = fda; nlv)
-fit!(mod0, X, y)
-@head T = transf(mod0, X)
+model0 = fda(; nlv)
+fit!(model0, X, y)
+@head T = transf(model0, X)
 n, p = size(T)
 
 #### Probability density in the FDA score space (2D)
 
-model = dmkern)
+model = dmkern()
 fit!(model, T) 
 pnames(model.fitm)
 model.fitm.H
@@ -57,13 +58,13 @@ u = [1; 4; 150]
 predict(model, T[u, :]).pred
 
 h = .3
-model = dmkern; h)
+model = dmkern(; h)
 fit!(model, T) 
 model.fitm.H
 predict(model, T[u, :]).pred
 
 h = [.3; .1]
-model = dmkern; h)
+model = dmkern(; h)
 fit!(model, T) 
 model.fitm.H
 predict(model, T[u, :]).pred
@@ -77,9 +78,9 @@ x2 = LinRange(lims[2][1], lims[2][2], npoints)
 z = mpar(x1 = x1, x2 = x2)
 grid = reduce(hcat, z)
 m = nro(grid)
-model = dmkern) 
-#model = dmkern; a = .5) 
-#model = dmkern; h = .3) 
+model = dmkern() 
+#model = dmkern(a = .5) 
+#model = dmkern(h = .3) 
 fit!(model, T) 
 
 res = predict(model, grid) ;
@@ -94,9 +95,9 @@ f
 
 ## Univariate distribution
 x = T[:, 1]
-model = dmkern) 
-#model = dmkern; a = .5) 
-#model = dmkern; h = .3) 
+model = dmkern() 
+#model = dmkern(a = .5) 
+#model = dmkern(h = .3) 
 fit!(model, x) 
 pred = predict(model, x).pred 
 f = Figure()
@@ -110,9 +111,9 @@ npoints = 2^8
 lims = [minimum(x), maximum(x)]
 #delta = 5 ; lims = [minimum(x) - delta, maximum(x) + delta]
 grid = LinRange(lims[1], lims[2], npoints)
-model = dmkern) 
-#model = dmkern; a = .5) 
-#model = dmkern; h = .3) 
+model = dmkern() 
+#model = dmkern(a = .5) 
+#model = dmkern(h = .3) 
 fit!(model, x) 
 pred_grid = predict(model, grid).pred 
 f = Figure()
@@ -122,6 +123,8 @@ lines!(ax, grid, vec(pred_grid); color = :red)
 f
 ```
 """ 
+dmkern(; kwargs...) = JchemoModel(dmkern, nothing, kwargs)
+
 function dmkern(X; kwargs...)
     par = recovkw(ParDmkern, kwargs).par
     X = ensure_mat(X)

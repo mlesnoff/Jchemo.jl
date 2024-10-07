@@ -1,4 +1,5 @@
 """
+    dmnorm(; kwargs...)
     dmnorm(X; kwargs...)
     dmnorm!(X::Matrix; kwargs...)
     dmnorm(; kwargs...)
@@ -38,9 +39,9 @@ n = nro(X)
 tab(y) 
 
 nlv = 2
-mod0 = fda; nlv)
-fit!(mod0, X, y)
-@head T = transf(mod0, X)
+model0 = fda(; nlv)
+fit!(model0, X, y)
+@head T = transf(model0, X)
 n, p = size(T)
 
 #### Probability density in the FDA score space (2D)
@@ -50,7 +51,7 @@ zT = T[s, :]
 m = nro(zT)
 
 #### Bivariate distribution
-model = dmnorm)
+model = dmnorm()
 fit!(model, zT)
 fitm = model.fitm
 pnames(fitm)
@@ -62,7 +63,7 @@ pred = predict(model, zT).pred
 mu = colmean(zT)
 S = covm(zT, mweight(ones(m))) * m / (m - 1) # corrected cov. matrix
 ## Direct syntax
-fitm = dmnorm(; mu, S) ; 
+fitm = dmnorm(mu, S) ; 
 pnames(fitm)
 fitm.Uinv
 fitm.detS
@@ -73,7 +74,7 @@ x1 = LinRange(lims[1][1], lims[1][2], npoints)
 x2 = LinRange(lims[2][1], lims[2][2], npoints)
 z = mpar(x1 = x1, x2 = x2)
 grid = reduce(hcat, z)
-model = dmnorm)
+model = dmnorm()
 fit!(model, zT)
 res = predict(model, grid) ;
 pred_grid = vec(res.pred)
@@ -89,7 +90,7 @@ f
 #### Univariate distribution
 j = 1
 x = zT[:, j]
-model = dmnorm)
+model = dmnorm()
 fit!(model, x)
 pred = predict(model, x).pred 
 f = Figure()
@@ -103,7 +104,7 @@ npoints = 2^8
 lims = [minimum(x), maximum(x)]
 #delta = 5 ; lims = [minimum(x) - delta, maximum(x) + delta]
 grid = LinRange(lims[1], lims[2], npoints)
-model = dmnorm)
+model = dmnorm()
 fit!(model, x)
 pred_grid = predict(model, grid).pred 
 f = Figure()
@@ -113,6 +114,8 @@ lines!(ax, grid, vec(pred_grid); color = :red)
 f
 ```
 """
+dmnorm(; kwargs...) = JchemoModel(dmnorm, nothing, kwargs)
+
 function dmnorm(X; kwargs...)
     dmnorm!(copy(ensure_mat(X)); kwargs...)
 end
