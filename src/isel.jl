@@ -62,7 +62,7 @@ nam = namy[j]
 ytrain = Ytrain[:, nam]
 ytest = Ytest[:, nam]
 
-model = plskern; nlv = 5)
+model = plskern(nlv = 5)
 nint = 10
 res = isel!(model, Xtrain, ytrain, wl; rep = 30, nint) ;
 res.res_rep
