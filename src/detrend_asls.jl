@@ -1,5 +1,5 @@
 """
-    dtasls(X; kwargs...)
+    detrend_asls(X; kwargs...)
 Baseline correction of each row of X-data by asymmetric 
     least squares algorithm (ASLS).
 * `X` : X-data (n, p).
@@ -45,7 +45,7 @@ plotsp(X, wl; nsamp = 20).f
 i = 2
 zX = Matrix(X)[i:i, :]
 lb = 1e5 ; p = .001
-model = mod_(dtasls; lb, p)
+model = mod_(detrend_asls; lb, p)
 fit!(model, zX)
 zXc = transf(model, zX)   # = corrected spectrum 
 B = zX - zXc            # = estimated baseline
@@ -55,25 +55,25 @@ lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
-function dtasls(X; kwargs...)
+function detrend_asls(X; kwargs...)
     par = recovkw(ParDtasls, kwargs).par
-    Dtasls(par)
+    DetrendAsls(par)
 end
 
 """ 
-    transf(object::Dtasls, X)
-    transf!(object::Dtasls, X)
+    transf(object::DetrendAsls, X)
+    transf!(object::DetrendAsls, X)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 """ 
-function transf(object::Dtasls, X)
+function transf(object::DetrendAsls, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::Dtasls, X::Matrix)
+function transf!(object::DetrendAsls, X::Matrix)
     n, zp = size(X)
     w = ones(zp) 
     z = similar(X, zp)

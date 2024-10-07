@@ -11,23 +11,23 @@ end
 ## Preprocessing
 
 
-struct Dtpol
+struct DetrendPol
     par::ParDtpol
 end
 
-struct Dtlo
+struct DetrendLo
     par::ParDtlo
 end
 
-struct Dtasls
+struct DetrendAsls
     par::ParDtasls
 end
 
-struct Dtairpls
+struct DetrendAirpls
     par::ParDtairpls
 end
 
-struct Dtarpls
+struct DetrendArpls
     par::ParDtarpls
 end
 

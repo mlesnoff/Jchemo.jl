@@ -327,7 +327,7 @@ The pipeline is fitted as follows:
 ## Models' definition
 model1 = mod_(snv)
 model2 = mod_(savgol; npoint = 5, deriv = 1, degree = 2)
-model3 = mod_(dtpol)  
+model3 = mod_(detrend_pol)  
 ## Pipeline building
 model = pip(model1, model2, model3)
 ## Fitting
@@ -366,7 +366,7 @@ Any step(s) of data preprocessing can obviously be implemented before the modeli
 degree = 2    # de-trending with polynom degree 2
 nlv = 15
 kern = :krbf ; gamma = .001 ; cost = 1000
-model1 = mod_(dtpol; degree)
+model1 = mod_(detrend_pol; degree)
 model2 = mod_(pcasvd; nlv)
 model3 = mod_(svmr; kern, gamma, cost)
 model = pip(model1, model2, model3)

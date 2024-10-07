@@ -1,87 +1,5 @@
 """
-    dtpol(X; kwargs...)
-Baseline correction of each row of X-data by polynomial linear regression.
-* `X` : X-data (n, p).
-Keyword arguments:
-* `degree` : Polynom degree.
-
-De-trend transformation: the function fits a baseline by polynomial regression 
-for each observation and returns the residuals (= signals corrected from the baseline).
-
-## Examples
-```julia
-using Jchemo, JchemoData, JLD2, CairoMakie
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/cassav.jld2") 
-@load db dat
-pnames(dat)
-X = dat.X
-year = dat.Y.year
-s = year .<= 2012
-Xtrain = X[s, :]
-Xtest = rmrow(X, s)
-wlst = names(dat.X)
-wl = parse.(Float64, wlst)
-plotsp(X, wl; nsamp = 20).f
-
-model = mod_(dtpol; degree = 2)
-fit!(model, Xtrain)
-Xptrain = transf(model, Xtrain)
-Xptest = transf(model, Xtest)
-plotsp(Xptrain, wl).f
-plotsp(Xptest, wl).f
-
-## Example on 1 spectrum
-i = 2
-zX = Matrix(X)[i:i, :]
-model = mod_(dtpol; degree = 1)
-fit!(model, zX)
-zXc = transf(model, zX)   # = corrected spectrum 
-B = zX - zXc            # = estimated baseline
-f, ax = plotsp(zX, wl)
-lines!(wl, vec(B); color = :blue)
-lines!(wl, vec(zXc); color = :black)
-f
-```
-""" 
-function dtpol(X; kwargs...)
-    par = recovkw(ParDtpol, kwargs).par
-    Dtpol(par)
-end
-
-""" 
-    transf(object::Dtpol, X)
-    transf!(object::Dtpol, X)
-Compute the preprocessed data from a model.
-* `object` : Model.
-* `X` : X-data to transform.
-""" 
-function transf(object::Dtpol, X)
-    X = copy(ensure_mat(X))
-    transf!(object, X)
-    X
-end
-
-function transf!(object::Dtpol, X::Matrix)
-    n, p = size(X)
-    degree = object.par.degree
-    vX = similar(X, p, degree + 1)
-    for j = 0:degree
-        vX[:, j + 1] .= collect(1:p).^j
-    end
-    vXt = vX'
-    vXtvX = vXt * vX
-    tol = sqrt(eps(real(float(one(eltype(vXtvX))))))
-    A = pinv(vXtvX, rtol = tol) * vXt
-    @inbounds for i = 1:n
-    ## Not faster: @Threads.threads
-        y = vrow(X, i)
-        X[i, :] .= y - vX * A * y
-    end
-end
-
-"""
-    dtlo(X; kwargs...)
+    detrend_lo(X; kwargs...)
 Baseline correction of each row of X-data by LOESS regression.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -109,7 +27,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-model = mod_(dtlo; span = .8)
+model = mod_(detrend_lo; span = .8)
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
@@ -119,7 +37,7 @@ plotsp(Xptest, wl).f
 ## Example on 1 spectrum
 i = 2
 zX = Matrix(X)[i:i, :]
-model = mod_(dtlo; span = .75)
+model = mod_(detrend_lo; span = .75)
 fit!(model, zX)
 zXc = transf(model, zX)   # = corrected spectrum 
 B = zX - zXc            # = estimated baseline
@@ -129,25 +47,107 @@ lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
-function dtlo(X; kwargs...)
+function detrend_lo(X; kwargs...)
     par = recovkw(ParDtlo, kwargs).par
-    Dtlo(par)
+    DetrendLo(par)
+end
+
+"""
+    detrend_pol(X; kwargs...)
+Baseline correction of each row of X-data by polynomial linear regression.
+* `X` : X-data (n, p).
+Keyword arguments:
+* `degree` : Polynom degree.
+
+De-trend transformation: the function fits a baseline by polynomial regression 
+for each observation and returns the residuals (= signals corrected from the baseline).
+
+## Examples
+```julia
+using Jchemo, JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+pnames(dat)
+X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
+plotsp(X, wl; nsamp = 20).f
+
+model = mod_(detrend_pol; degree = 2)
+fit!(model, Xtrain)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
+plotsp(Xptrain, wl).f
+plotsp(Xptest, wl).f
+
+## Example on 1 spectrum
+i = 2
+zX = Matrix(X)[i:i, :]
+model = mod_(detrend_pol; degree = 1)
+fit!(model, zX)
+zXc = transf(model, zX)   # = corrected spectrum 
+B = zX - zXc            # = estimated baseline
+f, ax = plotsp(zX, wl)
+lines!(wl, vec(B); color = :blue)
+lines!(wl, vec(zXc); color = :black)
+f
+```
+""" 
+function detrend_pol(X; kwargs...)
+    par = recovkw(ParDtpol, kwargs).par
+    DetrendPol(par)
 end
 
 """ 
-    transf(object::Dtlo, X)
-    transf!(object::Dtlo, X)
+    transf(object::DetrendPol, X)
+    transf!(object::DetrendPol, X)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 """ 
-function transf(object::Dtlo, X)
+function transf(object::DetrendPol, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::Dtlo, X::Matrix)
+function transf!(object::DetrendPol, X::Matrix)
+    n, p = size(X)
+    degree = object.par.degree
+    vX = similar(X, p, degree + 1)
+    for j = 0:degree
+        vX[:, j + 1] .= collect(1:p).^j
+    end
+    vXt = vX'
+    vXtvX = vXt * vX
+    tol = sqrt(eps(real(float(one(eltype(vXtvX))))))
+    A = pinv(vXtvX, rtol = tol) * vXt
+    @inbounds for i = 1:n
+    ## Not faster: @Threads.threads
+        y = vrow(X, i)
+        X[i, :] .= y - vX * A * y
+    end
+end
+
+""" 
+    transf(object::DetrendLo, X)
+    transf!(object::DetrendLo, X)
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+""" 
+function transf(object::DetrendLo, X)
+    X = copy(ensure_mat(X))
+    transf!(object, X)
+    X
+end
+
+function transf!(object::DetrendLo, X::Matrix)
     Q = eltype(X)
     n, p = size(X)
     span = object.par.span

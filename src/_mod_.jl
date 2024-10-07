@@ -15,8 +15,8 @@ Build a model.
 X = rand(5, 10)
 y = rand(5)
 
-model = mod_(dtpol)  # use the default arguments of 'dtpol'
-#model = dtpol(X; degree = 2)
+model = mod_(detrend_pol)  # use the default arguments of 'detrend_pol'
+#model = detrend_pol(X; degree = 2)
 pnames(model)
 fit!(model, X)
 Xp = transf(model, X)
