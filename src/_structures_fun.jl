@@ -11,24 +11,24 @@ end
 ## Preprocessing
 
 
-struct DetrendPol
-    par::ParDtpol
+struct DetrendLo
+    par::ParDetrendLo
 end
 
-struct DetrendLo
-    par::ParDtlo
+struct DetrendPol
+    par::ParDetrendPol
 end
 
 struct DetrendAsls
-    par::ParDtasls
+    par::ParDetrendAsls
 end
 
 struct DetrendAirpls
-    par::ParDtairpls
+    par::ParDetrendAirpls
 end
 
 struct DetrendArpls
-    par::ParDtarpls
+    par::ParDetrendArpls
 end
 
 struct Fdif

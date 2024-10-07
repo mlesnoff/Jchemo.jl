@@ -49,7 +49,7 @@ f
 ```
 """ 
 function detrend_arpls(X; kwargs...)
-    par = recovkw(ParDtarpls, kwargs).par
+    par = recovkw(ParDetrendArpls, kwargs).par
     DetrendArpls(par)
 end
 

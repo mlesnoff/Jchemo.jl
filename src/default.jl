@@ -12,11 +12,11 @@ default(svmr)
 """
 function default(algo::Function)
 
-    in((detrend_pol,)).(algo) ? dump(Jchemo.ParDtpol()) : nothing
-    in((detrend_lo,)).(algo) ? dump(Jchemo.ParDtlo()) : nothing
-    in((detrend_asls,)).(algo) ? dump(Jchemo.ParDtasls()) : nothing
-    in((detrend_airpls,)).(algo) ? dump(Jchemo.ParDtairpls()) : nothing
-    in((detrend_arpls,)).(algo) ? dump(Jchemo.ParDtarpls()) : nothing
+    in((detrend_pol,)).(algo) ? dump(Jchemo.ParDetrendPol()) : nothing
+    in((detrend_lo,)).(algo) ? dump(Jchemo.ParDetrendLo()) : nothing
+    in((detrend_asls,)).(algo) ? dump(Jchemo.ParDetrendAsls()) : nothing
+    in((detrend_airpls,)).(algo) ? dump(Jchemo.ParDetrendAirpls()) : nothing
+    in((detrend_arpls,)).(algo) ? dump(Jchemo.ParDetrendArpls()) : nothing
     in((fdif,)).(algo) ? dump(Jchemo.ParFdif()) : nothing
     in((interpl,)).(algo) ? dump(Jchemo.ParInterpl()) : nothing
     in((mavg,)).(algo) ? dump(Jchemo.ParMavg()) : nothing

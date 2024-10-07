@@ -56,7 +56,7 @@ f
 ```
 """ 
 function detrend_asls(X; kwargs...)
-    par = recovkw(ParDtasls, kwargs).par
+    par = recovkw(ParDetrendAsls, kwargs).par
     DetrendAsls(par)
 end
 

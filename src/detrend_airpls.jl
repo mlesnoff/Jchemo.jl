@@ -55,7 +55,7 @@ f
 ```
 """ 
 function detrend_airpls(X; kwargs...)
-    par = recovkw(ParDtairpls, kwargs).par
+    par = recovkw(ParDetrendAirpls, kwargs).par
     DetrendAirpls(par)
 end
 

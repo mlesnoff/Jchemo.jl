@@ -48,8 +48,35 @@ f
 ```
 """ 
 function detrend_lo(X; kwargs...)
-    par = recovkw(ParDtlo, kwargs).par
+    par = recovkw(ParDetrendLo, kwargs).par
     DetrendLo(par)
+end
+
+""" 
+    transf(object::DetrendLo, X)
+    transf!(object::DetrendLo, X)
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+""" 
+function transf(object::DetrendLo, X)
+    X = copy(ensure_mat(X))
+    transf!(object, X)
+    X
+end
+
+function transf!(object::DetrendLo, X::Matrix)
+    Q = eltype(X)
+    n, p = size(X)
+    span = object.par.span
+    degree = object.par.degree
+    x = convert.(Q, collect(1:p))
+    @inbounds for i = 1:n
+    ## Not faster: @Threads.threads
+        y = vec(vrow(X, i))
+        fm = loessr(x, y; span, degree)
+        X[i, :] .= y - vec(predict(fm, x).pred)
+    end
 end
 
 """
@@ -99,7 +126,7 @@ f
 ```
 """ 
 function detrend_pol(X; kwargs...)
-    par = recovkw(ParDtpol, kwargs).par
+    par = recovkw(ParDetrendPol, kwargs).par
     DetrendPol(par)
 end
 
@@ -131,33 +158,6 @@ function transf!(object::DetrendPol, X::Matrix)
     ## Not faster: @Threads.threads
         y = vrow(X, i)
         X[i, :] .= y - vX * A * y
-    end
-end
-
-""" 
-    transf(object::DetrendLo, X)
-    transf!(object::DetrendLo, X)
-Compute the preprocessed data from a model.
-* `object` : Model.
-* `X` : X-data to transform.
-""" 
-function transf(object::DetrendLo, X)
-    X = copy(ensure_mat(X))
-    transf!(object, X)
-    X
-end
-
-function transf!(object::DetrendLo, X::Matrix)
-    Q = eltype(X)
-    n, p = size(X)
-    span = object.par.span
-    degree = object.par.degree
-    x = convert.(Q, collect(1:p))
-    @inbounds for i = 1:n
-    ## Not faster: @Threads.threads
-        y = vec(vrow(X, i))
-        fm = loessr(x, y; span, degree)
-        X[i, :] .= y - vec(predict(fm, x).pred)
     end
 end
 

@@ -1,15 +1,15 @@
 ############---- Preprocessing
 
-Base.@kwdef mutable struct ParDtpol
+Base.@kwdef mutable struct ParDetrendPol
     degree::Int = 1  
 end 
 
-Base.@kwdef mutable struct ParDtlo      
+Base.@kwdef mutable struct ParDetrendLo      
     span::Float64 = 0.75
     degree::Int = 2               
 end 
 
-Base.@kwdef mutable struct ParDtasls
+Base.@kwdef mutable struct ParDetrendAsls
     lb::Float64 = 10
     p::Float64 = 1e-3 
     tol::Float64 = 1e-6    # Baeck et al 2015 p.253 
@@ -17,13 +17,13 @@ Base.@kwdef mutable struct ParDtasls
     verbose::Bool = false      
 end 
 
-Base.@kwdef mutable struct ParDtairpls
+Base.@kwdef mutable struct ParDetrendAirpls
     lb::Float64 = 10
     maxit::Int = 20 
     verbose::Bool = false      
 end 
 
-Base.@kwdef mutable struct ParDtarpls
+Base.@kwdef mutable struct ParDetrendArpls
     lb::Float64 = 10
     tol::Float64 = 1e-6    # Baeck et al 2015 p.253  
     maxit::Int = 50 

@@ -8,6 +8,9 @@
 - Breaking
     - **sampdf**: argument 'msamp' renamed to 'meth'.
     - Output 'fmpls' renamed to 'fmemb' in PLSDA functions.
+    - Functions **dtlo**, **dtpol**, **dtasls**, **dtarpls*, **dtairpls** 
+        renamed to **detrend_lo**, **detrend_pol**, **detrend_asls**, **detrend_arpls**, 
+        **detrend_airpls**.
 
 - Modifications
     - Code cleaning.
