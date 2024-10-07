@@ -46,7 +46,7 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-model = mod_(mbplsr; nlv, bscal, scal)
+model = mbplsr; nlv, bscal, scal)
 fit!(model, Xbltrain, ytrain)
 pnames(model) 
 pnames(model.fm)

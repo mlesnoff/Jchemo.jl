@@ -48,10 +48,10 @@ tab(ytest)
 
 nlv = 15
 gamma = .1
-model = mod_(kplslda; nlv, gamma) 
-#model = mod_(kplslda; nlv, gamma, prior = :prop) 
-#model = mod_(kplsqda; nlv, gamma, alpha = .5) 
-#model = mod_(kplskdeda; nlv, gamma, a = .5) 
+model = kplslda; nlv, gamma) 
+#model = kplslda; nlv, gamma, prior = :prop) 
+#model = kplsqda; nlv, gamma, alpha = .5) 
+#model = kplskdeda; nlv, gamma, a = .5) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

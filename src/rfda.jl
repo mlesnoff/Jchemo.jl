@@ -66,7 +66,7 @@ tab(ytest)
 n_trees = 200
 n_subfeatures = p / 3 
 max_depth = 10
-model = mod_(rfda; n_trees, n_subfeatures, max_depth) 
+model = rfda; n_trees, n_subfeatures, max_depth) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

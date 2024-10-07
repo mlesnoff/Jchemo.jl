@@ -25,7 +25,7 @@ db = joinpath(path_jdat, "data/challenge2018.jld2")
 pnames(dat)
 X = dat.X    
 Y = dat.Y
-model = mod_(savgol; npoint = 21, deriv = 2, degree = 3)
+model = savgol; npoint = 21, deriv = 2, degree = 3)
 fit!(model, X) 
 Xp = transf(model, X) 
 s = Bool.(Y.test)
@@ -49,7 +49,7 @@ ytrain = repeat(["in"], ntrain)
 ytest = repeat([cod], ntest)
 
 ## Group description
-model = mod_(pcasvd; nlv = 10) 
+model = pcasvd; nlv = 10) 
 fit!(model, zXtrain) 
 Ttrain = model.fm.T
 Ttest = transf(model, zXtest)
@@ -63,12 +63,12 @@ plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class",
 ## Preliminary dimension reduction 
 ## (Not required but often more efficient)
 nlv = 50
-mod0 = mod_(pcasvd; nlv) ;
+mod0 = pcasvd; nlv) ;
 fit!(mod0, zXtrain)
 Ttrain = mod0.fm.T
 Ttest = transf(mod0, zXtest)
 ## Outlierness
-model = mod_(occstah; nlv, scal = true)
+model = occstah; nlv, scal = true)
 fit!(model, Ttrain) 
 pnames(model) 
 pnames(model.fm) 

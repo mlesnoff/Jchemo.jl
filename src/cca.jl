@@ -73,7 +73,7 @@ q = nco(Y)
 
 nlv = 3
 bscal = :frob ; tau = 1e-8
-model = mod_(cca; nlv, bscal, tau)
+model = cca; nlv, bscal, tau)
 fit!(model, X, Y)
 pnames(model)
 pnames(model.fm)

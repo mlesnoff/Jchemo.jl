@@ -42,7 +42,7 @@ ntrain = n - ntest
 tab(ytrain)
 tab(ytest)
 
-model = mod_(lda)
+model = lda)
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

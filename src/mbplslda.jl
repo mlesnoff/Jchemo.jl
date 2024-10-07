@@ -72,9 +72,9 @@ scal = false
 #scal = true
 bscal = :none
 #bscal = :frob
-model = mod_(mbplslda; nlv, bscal, scal)
-#model = mod_(mbplsqda; nlv, bscal, alpha = .5, scal)
-#model = mod_(mbplskdeda; nlv, bscal, scal)
+model = mbplslda; nlv, bscal, scal)
+#model = mbplsqda; nlv, bscal, alpha = .5, scal)
+#model = mbplskdeda; nlv, bscal, scal)
 fit!(model, Xbltrain, ytrain) 
 pnames(model) 
 

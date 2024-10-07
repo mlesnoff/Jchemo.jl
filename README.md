@@ -30,7 +30,7 @@ The pipelines are built with function `pip`, see [**here**](https://github.com/m
 
 **Warnings** 
 - A breaking change has been made between **version 0.3.7** and **version 0.4.0** for the embedded syntax, with the use of the new function `model`. For instance: 
-    - `model = plskern(; nlv = 15)` is now writen as `model = mod_(plskern; nlv = 15)`. Other things have not changed.
+    - `model = plskern(; nlv = 15)` is now writen as `model = plskern; nlv = 15)`. Other things have not changed.
 - Major breaking changes were made between **version 0.2.4** and **version 0.3.0**. Mainly, a new **embedded syntax** was proposed.
 
 See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for details.  
@@ -149,7 +149,7 @@ zY = Float32.(Y)
 ```julia
 ## Float64
 ## (NB.: multi-threading is not used in plskern) 
-model = mod_(plskern; nlv)
+model = plskern; nlv)
 @benchmark fit!($model, $X, $Y)
 
 BenchmarkTools.Trial: 1 sample with 1 evaluation.
@@ -208,7 +208,7 @@ The embedded syntax to fit the model is as follows:
 ## Model definition
 ## (below, the name 'model' can be replaced by any other name)
 npoint = 11 ; deriv = 2 ; degree = 3
-model = mod_(savgol; npoint, deriv, degree)
+model = savgol; npoint, deriv, degree)
 
 ## Fitting
 fit!(model, Xtrain)
@@ -221,7 +221,7 @@ which is the strictly equivalent to:
 ## since the kwargs values are
 ## specified within the function
 
-model = mod_(savgol; npoint = 11, deriv = 2, degree = 3)
+model = savgol; npoint = 11, deriv = 2, degree = 3)
 fit!(model, Xtrain)
 ```
 
@@ -248,7 +248,7 @@ Let us consider a principal component analysis (PCA), using function `pcasvd`.
 The embedded syntax to fit the model is as follows:
 ```julia
 nlv = 15  # nb. principal components
-model = mod_(pcasvd; nlv)
+model = pcasvd; nlv)
 fit!(model, Xtrain, ytrain)
 ```
 
@@ -256,7 +256,7 @@ For a preliminary scaling of the data before the PCA decomposition, the syntax i
 
 ```julia
 nlv = 15 ; scal = true
-model = mod_(pcasvd; nlv, scal)
+model = pcasvd; nlv, scal)
 fit!(model, Xtrain, ytrain)
 ```
 
@@ -288,7 +288,7 @@ The embedded syntax to fit the model is as follows:
 ```julia
 nlv = 15  # nb. latent variables
 kern = :krbf ; gamma = .001 
-model = mod_(kplsr; nlv, kern, gamma)
+model = kplsr; nlv, kern, gamma)
 fit!(model, Xtrain, ytrain)
 ```
 
@@ -325,9 +325,9 @@ The pipeline is fitted as follows:
 
 ```julia
 ## Models' definition
-model1 = mod_(snv)
-model2 = mod_(savgol; npoint = 5, deriv = 1, degree = 2)
-model3 = mod_(detrend_pol)  
+model1 = snv)
+model2 = savgol; npoint = 5, deriv = 1, degree = 2)
+model3 = detrend_pol)  
 ## Pipeline building
 model = pip(model1, model2, model3)
 ## Fitting
@@ -349,8 +349,8 @@ The pipeline is fitted as follows:
 ```julia
 nlv = 15
 kern = :krbf ; gamma = .001 ; cost = 1000
-model1 = mod_(pcasvd; nlv)
-model2 = mod_(svmr; kern, gamma, cost)
+model1 = pcasvd; nlv)
+model2 = svmr; kern, gamma, cost)
 model = pip(model1, model2)
 fit!(model, Xtrain)
 ```
@@ -366,9 +366,9 @@ Any step(s) of data preprocessing can obviously be implemented before the modeli
 degree = 2    # de-trending with polynom degree 2
 nlv = 15
 kern = :krbf ; gamma = .001 ; cost = 1000
-model1 = mod_(detrend_pol; degree)
-model2 = mod_(pcasvd; nlv)
-model3 = mod_(svmr; kern, gamma, cost)
+model1 = detrend_pol; degree)
+model2 = pcasvd; nlv)
+model3 = svmr; kern, gamma, cost)
 model = pip(model1, model2, model3)
 ```
 
@@ -381,8 +381,8 @@ The pipeline is defined by:
 ```julia
 nlv = 25
 metric = :eucl ; h = 2 ; k = 200
-model1 = mod_(pcasvd; nlv)
-model2 = mod_(lwmlr; metric, h, k)
+model1 = pcasvd; nlv)
+model2 = lwmlr; metric, h, k)
 model = pip(model1, model2)
 ```
 
@@ -397,8 +397,8 @@ The pipeline is defined by:
 ```julia
 nlv = 25
 metric = :mah ; h = Inf ; k = 200
-model1 = mod_(plskern; nlv)
-model2 = mod_(lwplsr; metric, h, k)
+model1 = plskern; nlv)
+model2 = lwplsr; metric, h, k)
 model = pip(model1, model2)
 ```
 

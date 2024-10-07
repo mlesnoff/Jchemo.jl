@@ -50,7 +50,7 @@ q = nco(Y)
 
 nlv = 2
 bscal = :frob
-model = mod_(plscan; nlv, bscal)
+model = plscan; nlv, bscal)
 fit!(model, X, Y)
 pnames(model)
 pnames(model.fm)

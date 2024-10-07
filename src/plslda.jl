@@ -60,9 +60,9 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-model = mod_(plslda; nlv) 
-#model = mod_(plslda; nlv, prior = :prop) 
-#model = mod_(plsqda; nlv, alpha = .1) 
+model = plslda; nlv) 
+#model = plslda; nlv, prior = :prop) 
+#model = plsqda; nlv, alpha = .1) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

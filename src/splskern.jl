@@ -86,7 +86,7 @@ ytest = rmrow(y, s)
 nlv = 15
 meth = :mix ; nvar = 5
 #meth = :hard ; nvar = 5
-model = mod_(splskern; nlv, meth, nvar) ;
+model = splskern; nlv, meth, nvar) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

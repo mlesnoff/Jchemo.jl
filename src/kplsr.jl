@@ -43,7 +43,7 @@ ytest = rmrow(y, s)
 
 nlv = 20
 kern = :krbf ; gamma = 1e-1
-model = mod_(kplsr; nlv, kern, gamma) ;
+model = kplsr; nlv, kern, gamma) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)
@@ -70,7 +70,7 @@ zy = sin.(abs.(x)) ./ abs.(x)
 y = zy + .2 * randn(n) 
 nlv = 2
 kern = :krbf ; gamma = 1 / 3
-model = mod_(kplsr; nlv, kern, gamma) 
+model = kplsr; nlv, kern, gamma) 
 fit!(model, x, y)
 pred = predict(model, x).pred 
 f, ax = scatter(x, y) 

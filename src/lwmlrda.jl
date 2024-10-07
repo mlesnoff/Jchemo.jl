@@ -50,7 +50,7 @@ tab(ytest)
 
 metric = :mah
 h = 2 ; k = 10
-model = mod_(lwmlrda; metric, h, k) 
+model = lwmlrda; metric, h, k) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

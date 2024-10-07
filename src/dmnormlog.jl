@@ -30,7 +30,7 @@ tab(y)
 s = y .== "setosa"
 zX = X[s, :]
 
-model = mod_(dmnormlog)
+model = dmnormlog)
 fit!(model, zX)
 fm = model.fm
 pnames(fm)
@@ -39,7 +39,7 @@ fm.logdetS
 @head pred = predict(model, zX).pred
 
 ## Consistency with dmnorm
-mod0 = mod_(dmnorm)
+mod0 = dmnorm)
 fit!(mod0, zX)
 @head pred0 = predict(mod0, zX).pred
 @head log.(pred0)

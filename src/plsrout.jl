@@ -37,7 +37,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-model = mod_(plsrout; nlv) ;
+model = plsrout; nlv) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

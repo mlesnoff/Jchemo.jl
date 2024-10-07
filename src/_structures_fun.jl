@@ -267,7 +267,7 @@ struct Mbpca
     Wbl::Vector{Matrix}
     lb::Matrix
     mu::Vector
-    fmbl::Blockscal
+    fitmbl::Blockscal
     weights::Weight
     niter::Vector{Int}
     par::ParMbpca
@@ -282,7 +282,7 @@ struct Comdim
     Wbl::Vector{Matrix}
     lb::Matrix
     mu::Vector
-    fmbl::Blockscal
+    fitmbl::Blockscal
     weights::Weight
     niter::Vector{Int}
     par::ParMbpca
@@ -331,7 +331,7 @@ struct Cglsr
 end
 
 struct Pcr
-    fmpca::Pca
+    fitmpca::Pca
     T::Matrix
     R::Matrix
     C::Matrix
@@ -496,7 +496,7 @@ struct Mbplsr
     T::Matrix
     R::Matrix
     C::Matrix
-    fmbl::Blockscal
+    fitmbl::Blockscal
     ymeans::Vector
     yscales::Vector
     weights::Weight
@@ -513,7 +513,7 @@ struct Mbplswest     # mbplswest, mbwcov
     Tb::Vector{Matrix}
     Pbl::Vector{Matrix}
     TT::Vector
-    fmbl::Blockscal
+    fitmbl::Blockscal
     ymeans::Vector
     yscales::Vector
     weights::Weight
@@ -529,7 +529,7 @@ struct Rosaplsr
     W::Matrix
     C::Matrix
     TT::Vector
-    fmbl::Blockscal
+    fitmbl::Blockscal
     ymeans::Vector
     yscales::Vector
     weights::Weight
@@ -542,7 +542,7 @@ struct Soplsr
     T::Matrix
     fit::Matrix
     b::Vector
-    fmbl::Blockscal    
+    fitmbl::Blockscal    
     yscales::Vector
     par::ParSoplsr
 end
@@ -751,8 +751,8 @@ end
 
 struct Occsdod
     d::DataFrame
-    fmsd
-    fmod
+    fitmsd
+    fitmod
     par::ParOcc
 end
 

@@ -51,7 +51,7 @@ Xtest = X[s.test, :]
 
 nlv = 3
 kern = :krbf ; gamma = 1e-4
-model = mod_(kpca; nlv, kern, gamma) ;
+model = kpca; nlv, kern, gamma) ;
 fit!(model, Xtrain)
 pnames(model.fm)
 @head T = model.fm.T

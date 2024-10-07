@@ -40,8 +40,8 @@ X2cal = dat.X2cal
 X2val = dat.X2val
 
 ## Fitting the model
-model = mod_(calds; algo = plskern, nlv = 10) 
-#model = mod_(calds; algo = mlrpinv)   # less robust
+model = calds; algo = plskern, nlv = 10) 
+#model = calds; algo = mlrpinv)   # less robust
 fit!(model, X1cal, X2cal)
 
 ## Transfer of new spectra X1val 

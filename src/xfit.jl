@@ -35,7 +35,7 @@ weights = mweight(rand(n))
 nlv = 2 
 scal = false
 #scal = true
-model = mod_(pcasvd; nlv, scal) ;
+model = pcasvd; nlv, scal) ;
 fit!(model, X)
 fm = model.fm ;
 @head xfit(fm)
@@ -51,7 +51,7 @@ fm.xmeans
 @head Xnew
 @head xfit(fm, Xnew) + xresid(fm, Xnew)
 
-model = mod_(pcasvd; nlv = min(n, p), scal) 
+model = pcasvd; nlv = min(n, p), scal) 
 fit!(model, X)
 fm = model.fm ;
 @head xfit(fm) 
@@ -61,7 +61,7 @@ fm = model.fm ;
 nlv = 3
 scal = false
 #scal = true
-model = mod_(plskern; nlv, scal)
+model = plskern; nlv, scal)
 fit!(model, X, Y, weights) 
 fm = model.fm ;
 @head xfit(fm)
@@ -76,7 +76,7 @@ xfit(fm, Xnew, nlv = 1)
 @head Xnew
 @head xfit(fm, Xnew) + xresid(fm, Xnew)
 
-model = mod_(plskern; nlv = min(n, p), scal) 
+model = plskern; nlv = min(n, p), scal) 
 fit!(model, X, Y, weights) 
 fm = model.fm ;
 @head xfit(fm) 

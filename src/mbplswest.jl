@@ -54,7 +54,7 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-model = mod_(mbplswest; nlv, bscal, scal)
+model = mbplswest; nlv, bscal, scal)
 fit!(model, Xbltrain, ytrain)
 pnames(model) 
 pnames(model.fm)

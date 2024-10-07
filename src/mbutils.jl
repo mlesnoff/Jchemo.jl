@@ -44,7 +44,7 @@ Xblnew = mblock(Xnew, listbl)
 
 centr = true ; scal = true
 bscal = :frob
-model = mod_(blockscal; centr, scal, bscal)
+model = blockscal; centr, scal, bscal)
 fit!(model, Xbl)
 zXbl = transf(model, Xbl) ; 
 @head zXbl[3]
@@ -176,7 +176,7 @@ Xbl = mblock(X, listbl)
 Xblnew = mblock(Xnew, listbl) 
 @head Xbl[3]
 
-model = mod_(mbconcat) 
+model = mbconcat) 
 fit!(model, Xbl)
 transf(model, Xbl)
 transf(model, Xblnew)

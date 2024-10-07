@@ -45,8 +45,8 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-model = mod_(plskdeda; nlv) 
-#model = mod_(plskdeda; nlv, a = .5)
+model = plskdeda; nlv) 
+#model = plskdeda; nlv, a = .5)
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

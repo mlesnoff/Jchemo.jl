@@ -20,7 +20,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-model = mod_(center) 
+model = center) 
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
@@ -78,7 +78,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-model = mod_(scale) 
+model = scale) 
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
@@ -138,7 +138,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-model = mod_(cscale) 
+model = cscale) 
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)

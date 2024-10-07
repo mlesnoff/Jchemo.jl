@@ -59,8 +59,8 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 2
-model = mod_(fda; nlv)
-#model = mod_(fdasvd; nlv)
+model = fda; nlv)
+#model = fdasvd; nlv)
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

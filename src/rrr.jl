@@ -64,7 +64,7 @@ ytest = rmrow(y, s)
 
 nlv = 1
 tau = 1e-4
-model = mod_(rrr; nlv, tau) 
+model = rrr; nlv, tau) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

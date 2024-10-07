@@ -1,4 +1,5 @@
 """
+    detrend_arpls(; kwargs...)
     detrend_arpls(X; kwargs...)
 Baseline correction of each row of X-data by asymmetrically
     reweighted penalized least squares smoothing (ARPLS).
@@ -38,16 +39,18 @@ plotsp(X, wl; nsamp = 20).f
 i = 2
 zX = Matrix(X)[i:i, :]
 lb = 1e4
-model = mod_(detrend_arpls; lb, p)
+model = detrend_arpls(; lb, p)
 fit!(model, zX)
 zXc = transf(model, zX)   # = corrected spectrum 
-B = zX - zXc            # = estimated baseline
+B = zX - zXc              # = estimated baseline
 f, ax = plotsp(zX, wl)
 lines!(wl, vec(B); color = :blue)
 lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
+detrend_arpls(; kwargs...) = JchemoModel(detrend_arpls, nothing, kwargs)
+
 function detrend_arpls(X; kwargs...)
     par = recovkw(ParDetrendArpls, kwargs).par
     DetrendArpls(par)

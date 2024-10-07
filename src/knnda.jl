@@ -48,7 +48,7 @@ tab(ytest)
 
 metric = :eucl
 h = 2 ; k = 10
-model = mod_(knnda; metric, h, k) 
+model = knnda; metric, h, k) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)
@@ -66,9 +66,9 @@ res.listw
 conf(res.pred, ytest).cnt
 
 ## With dimension reduction
-model1 = mod_(pcasvd; nlv = 15)
+model1 = pcasvd; nlv = 15)
 metric = :mah ; h = 1 ; k = 3 
-model2 = mod_(knnda; metric, h, k) 
+model2 = knnda; metric, h, k) 
 model = pip(model1, model2)
 fit!(model, Xtrain, ytrain)
 @head pred = predict(model, Xtest).pred 

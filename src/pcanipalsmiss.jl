@@ -34,7 +34,7 @@ scal = false
 #scal = true
 gs = false
 #gs = true
-model = mod_(pcanipalsmiss; nlv, tol, gs, maxit = 500, scal)
+model = pcanipalsmiss; nlv, tol, gs, maxit = 500, scal)
 fit!(model, X)
 pnames(model) 
 pnames(model.fm)
@@ -49,7 +49,7 @@ fm.T' * fm.T
 fm.P' * fm.P
 
 ## Impute missing data in X
-model = mod_(pcanipalsmiss; nlv = 2, gs = true) ;
+model = pcanipalsmiss; nlv = 2, gs = true) ;
 fit!(model, X)
 Xfit = xfit(model.fm)
 s = ismissing.(X)

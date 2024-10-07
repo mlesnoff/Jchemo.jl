@@ -69,7 +69,7 @@ tab(ytest)
 
 nlvdis = 25 ; metric = :mah
 h = 1 ; k = 200
-model = mod_(lwplsqda; nlvdis, metric, h, k, prior = :prop, alpha = .5) 
+model = lwplsqda; nlvdis, metric, h, k, prior = :prop, alpha = .5) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

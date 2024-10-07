@@ -69,7 +69,7 @@ ytest = rmrow(y, s)
 
 lb = 1e-3
 kern = :krbf ; gamma = 1e-1
-model = mod_(krr; lb, kern, gamma) ;
+model = krr; lb, kern, gamma) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)
@@ -89,7 +89,7 @@ res = predict(model, Xtest; lb = [.1 ; .01])
 
 lb = 1e-3
 kern = :kpol ; degree = 1
-model = mod_(krr; lb, kern, degree) 
+model = krr; lb, kern, degree) 
 fit!(model, Xtrain, ytrain)
 res = predict(model, Xtest)
 rmsep(res.pred, ytest)
@@ -103,7 +103,7 @@ zy = sin.(abs.(x)) ./ abs.(x)
 y = zy + .2 * randn(n) 
 lb = 1e-1
 kern = :krbf ; gamma = 1 / 3
-model = mod_(krr; lb, kern, gamma) 
+model = krr; lb, kern, gamma) 
 fit!(model, x, y)
 pred = predict(model, x).pred 
 f, ax = scatter(x, y) 

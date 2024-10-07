@@ -46,14 +46,14 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 20
-mod0 = mod_(pcasvd; nlv) ;
+mod0 = pcasvd; nlv) ;
 fit!(mod0, Xtrain) 
 @head Ttrain = mod0.fm.T 
 @head Ttest = transf(mod0, Xtest)
 
 metric = :eucl 
 h = 2 ; k = 100 
-model = mod_(lwmlr; metric, h, k) 
+model = lwmlr; metric, h, k) 
 fit!(model, Ttrain, ytrain)
 pnames(model)
 pnames(model.fm)
@@ -76,7 +76,7 @@ x[x .== 0] .= 1e-5
 n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
-model = mod_(lwmlr; metric = :eucl, h = 1.5, k = 20) ;
+model = lwmlr; metric = :eucl, h = 1.5, k = 20) ;
 fit!(model, x, y)
 pred = predict(model, x).pred 
 f, ax = scatter(x, y) 

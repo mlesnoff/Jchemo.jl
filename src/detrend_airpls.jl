@@ -1,4 +1,5 @@
 """
+    detrend_airpls(; kwargs...)
     detrend_airpls(X; kwargs...)
 Baseline correction of each row of X-data by adaptive iteratively 
     reweighted penalized least squares algorithm (AIRPLS).
@@ -44,16 +45,18 @@ plotsp(X, wl; nsamp = 20).f
 i = 2
 zX = Matrix(X)[i:i, :]
 lb = 1e6
-model = mod_(detrend_airpls; lb)
+model = detrend_airpls(; lb)
 fit!(model, zX)
 zXc = transf(model, zX)   # = corrected spectrum 
-B = zX - zXc            # = estimated baseline
+B = zX - zXc              # = estimated baseline
 f, ax = plotsp(zX, wl)
 lines!(wl, vec(B); color = :blue)
 lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
+detrend_airpls(; kwargs...) = JchemoModel(detrend_airpls, nothing, kwargs)
+
 function detrend_airpls(X; kwargs...)
     par = recovkw(ParDetrendAirpls, kwargs).par
     DetrendAirpls(par)

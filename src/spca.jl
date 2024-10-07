@@ -95,7 +95,7 @@ nlv = 3
 meth = :mix ; nvar = 2
 #meth = :hard ; nvar = 2
 scal = false
-model = mod_(spca; nlv, meth, nvar, scal) ;
+model = spca; nlv, meth, nvar, scal) ;
 fit!(model, Xtrain) 
 fm = model.fm ;
 pnames(fm)
@@ -115,7 +115,7 @@ res.explvarx_adj
 
 nlv = 3 
 meth = :soft ; delta = .4 
-model = mod_(spca; nlv, meth, delta) ;
+model = spca; nlv, meth, delta) ;
 fit!(model, Xtrain) 
 model.fm.P
 ```

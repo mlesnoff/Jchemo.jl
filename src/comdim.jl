@@ -96,7 +96,7 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-model = mod_(comdim; nlv, bscal, scal)
+model = comdim; nlv, bscal, scal)
 fit!(model, Xbl)
 pnames(model) 
 pnames(model.fm)

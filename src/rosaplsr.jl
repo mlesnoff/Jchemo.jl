@@ -53,7 +53,7 @@ ntot = ntrain + ntest
 nlv = 3
 scal = false
 #scal = true
-model = mod_(rosaplsr; nlv, scal)
+model = rosaplsr; nlv, scal)
 fit!(model, Xbltrain, ytrain)
 pnames(model) 
 pnames(model.fm)

@@ -39,10 +39,10 @@ s = samprand(n, ntest)
 @head Xtest = X[s.test, :]
 
 nlv = 3
-model = mod_(pcasvd; nlv)
-#model = mod_(pcaeigen; nlv)
-#model = mod_(pcaeigenk; nlv)
-#model = mod_(pcanipals; nlv)
+model = pcasvd; nlv)
+#model = pcaeigen; nlv)
+#model = pcaeigenk; nlv)
+#model = pcanipals; nlv)
 fit!(model, Xtrain)
 pnames(model)
 pnames(model.fm)

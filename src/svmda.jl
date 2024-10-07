@@ -66,7 +66,7 @@ tab(ytest)
 
 kern = :krbf ; gamma = 1e4
 cost = 1000 ; epsilon = .5
-model = mod_(svmda; kern, gamma, cost, epsilon) 
+model = svmda; kern, gamma, cost, epsilon) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

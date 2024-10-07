@@ -67,7 +67,7 @@ db = joinpath(path_jdat, "data/challenge2018.jld2")
 pnames(dat)
 X = dat.X    
 Y = dat.Y
-model = mod_(savgol; npoint = 21, deriv = 2, degree = 3)
+model = savgol; npoint = 21, deriv = 2, degree = 3)
 fit!(model, X) 
 Xp = transf(model, X) 
 s = Bool.(Y.test)
@@ -91,7 +91,7 @@ ytrain = repeat(["in"], ntrain)
 ytest = repeat([cod], ntest)
 
 ## Group description
-model = mod_(pcasvd; nlv = 10) 
+model = pcasvd; nlv = 10) 
 fit!(model, zXtrain) 
 Ttrain = model.fm.T
 Ttest = transf(model, zXtest)
@@ -103,12 +103,12 @@ plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class",
 
 #### Occ
 ## Preliminary PCA fitted model
-mod0 = mod_(pcasvd; nlv = 30) 
+mod0 = pcasvd; nlv = 30) 
 fit!(mod0, zXtrain)
 ## Outlierness
-model = mod_(occsd)
-#model = mod_(occsd; mcut = :mad, cri = 4)
-#model = mod_(occsd; mcut = :q, risk = .01)
+model = occsd)
+#model = occsd; mcut = :mad, cri = 4)
+#model = occsd; mcut = :q, risk = .01)
 fit!(model, mod0.fm) 
 pnames(model) 
 pnames(model.fm) 

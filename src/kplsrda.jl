@@ -48,7 +48,7 @@ tab(ytest)
 nlv = 15
 kern = :krbf ; gamma = .001 
 scal = true
-model = mod_(kplsrda; nlv, kern, gamma, scal) 
+model = kplsrda; nlv, kern, gamma, scal) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

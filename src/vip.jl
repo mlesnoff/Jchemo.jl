@@ -45,7 +45,7 @@ y = Y[:, 1]
 ycla = [1 ; 1 ; 1 ; 2 ; 2]
 
 nlv = 3
-model = mod_(plskern; nlv)
+model = plskern; nlv)
 fit!(model, X, y)
 res = vip(model.fm)
 pnames(res)
@@ -57,7 +57,7 @@ vip(model.fm, Y).imp
 
 ## For PLSDA
 
-model = mod_(plsrda; nlv) 
+model = plsrda; nlv) 
 fit!(model, X, ycla)
 pnames(model.fm)
 fm = model.fm.fm ;
@@ -65,7 +65,7 @@ vip(fm).imp
 Ydummy = dummy(ycla).Y
 vip(fm, Ydummy).imp
 
-model = mod_(plslda; nlv) 
+model = plslda; nlv) 
 fit!(model, X, ycla)
 pnames(model.fm.fm)
 fm = model.fm.fm.fmemb ;

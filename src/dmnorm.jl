@@ -38,7 +38,7 @@ n = nro(X)
 tab(y) 
 
 nlv = 2
-mod0 = mod_(fda; nlv)
+mod0 = fda; nlv)
 fit!(mod0, X, y)
 @head T = transf(mod0, X)
 n, p = size(T)
@@ -50,7 +50,7 @@ zT = T[s, :]
 m = nro(zT)
 
 #### Bivariate distribution
-model = mod_(dmnorm)
+model = dmnorm)
 fit!(model, zT)
 fm = model.fm
 pnames(fm)
@@ -73,7 +73,7 @@ x1 = LinRange(lims[1][1], lims[1][2], npoints)
 x2 = LinRange(lims[2][1], lims[2][2], npoints)
 z = mpar(x1 = x1, x2 = x2)
 grid = reduce(hcat, z)
-model = mod_(dmnorm)
+model = dmnorm)
 fit!(model, zT)
 res = predict(model, grid) ;
 pred_grid = vec(res.pred)
@@ -89,7 +89,7 @@ f
 #### Univariate distribution
 j = 1
 x = zT[:, j]
-model = mod_(dmnorm)
+model = dmnorm)
 fit!(model, x)
 pred = predict(model, x).pred 
 f = Figure()
@@ -103,7 +103,7 @@ npoints = 2^8
 lims = [minimum(x), maximum(x)]
 #delta = 5 ; lims = [minimum(x) - delta, maximum(x) + delta]
 grid = LinRange(lims[1], lims[2], npoints)
-model = mod_(dmnorm)
+model = dmnorm)
 fit!(model, x)
 pred_grid = predict(model, grid).pred 
 f = Figure()

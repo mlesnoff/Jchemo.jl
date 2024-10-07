@@ -1,4 +1,5 @@
 """
+    detrend_lo(; kwargs...)
     detrend_lo(X; kwargs...)
 Baseline correction of each row of X-data by LOESS regression.
 * `X` : X-data (n, p).
@@ -27,7 +28,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-model = mod_(detrend_lo; span = .8)
+model = detrend_lo(span = .8)
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
@@ -37,7 +38,7 @@ plotsp(Xptest, wl).f
 ## Example on 1 spectrum
 i = 2
 zX = Matrix(X)[i:i, :]
-model = mod_(detrend_lo; span = .75)
+model = detrend_lo(span = .75)
 fit!(model, zX)
 zXc = transf(model, zX)   # = corrected spectrum 
 B = zX - zXc            # = estimated baseline
@@ -47,6 +48,8 @@ lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
+detrend_lo(; kwargs...) = JchemoModel(detrend_lo, nothing, kwargs)
+
 function detrend_lo(X; kwargs...)
     par = recovkw(ParDetrendLo, kwargs).par
     DetrendLo(par)
@@ -80,6 +83,7 @@ function transf!(object::DetrendLo, X::Matrix)
 end
 
 """
+    detrend_pol(; kwargs...)
     detrend_pol(X; kwargs...)
 Baseline correction of each row of X-data by polynomial linear regression.
 * `X` : X-data (n, p).
@@ -105,7 +109,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-model = mod_(detrend_pol; degree = 2)
+model = detrend_pol(degree = 2)
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
@@ -115,7 +119,7 @@ plotsp(Xptest, wl).f
 ## Example on 1 spectrum
 i = 2
 zX = Matrix(X)[i:i, :]
-model = mod_(detrend_pol; degree = 1)
+model = detrend_pol(degree = 1)
 fit!(model, zX)
 zXc = transf(model, zX)   # = corrected spectrum 
 B = zX - zXc            # = estimated baseline
@@ -125,6 +129,8 @@ lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
+detrend_pol(; kwargs...) = JchemoModel(detrend_pol, nothing, kwargs)
+
 function detrend_pol(X; kwargs...)
     par = recovkw(ParDetrendPol, kwargs).par
     DetrendPol(par)
@@ -162,6 +168,7 @@ function transf!(object::DetrendPol, X::Matrix)
 end
 
 """
+    fdif(; kwargs...)
     fdif(X; kwargs...)
 Finite differences (discrete derivates) for each row of X-data. 
 * `X` : X-data (n, p).
@@ -189,7 +196,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-model = mod_(fdif; npoint = 2) 
+model = fdif(npoint = 2) 
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
@@ -197,6 +204,8 @@ plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
 """ 
+fdif(; kwargs...) = JchemoModel(fdif, nothing, kwargs)
+
 function fdif(X; kwargs...)
     par = recovkw(ParFdif, kwargs).par
     Fdif(par)
@@ -230,6 +239,7 @@ function transf!(object::Fdif, X::Matrix, M::Matrix)
 end
 
 """ 
+    interpl(; kwargs...)
     interpl(X; kwargs...)
 Sampling spectra by interpolation.
 * `X` : Matrix (n, p) of spectra (rows).
@@ -267,7 +277,7 @@ plotsp(X, wl; nsamp = 20).f
 
 wlfin = range(500, 2400, length = 10)
 #wlfin = collect(range(500, 2400, length = 10))
-model = mod_(interpl; wl, wlfin)
+model = interpl(; wl, wlfin)
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
@@ -275,6 +285,8 @@ plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
 """
+interpl(; kwargs...) = JchemoModel(interpl, nothing, kwargs)
+
 function interpl(X; kwargs...)
     par = recovkw(ParInterpl, kwargs).par
     Interpl(par)
@@ -316,6 +328,7 @@ end
 #quadratic_spline(y, x) = DataInterpolations.QuadraticSpline(y, x)
 
 """
+    mavg(; kwargs...)
     mavg(X; kwargs...)
 Smoothing by moving averages of each row of X-data.
 * `X` : X-data (n, p).
@@ -349,7 +362,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-model = mod_(mavg; npoint = 10) 
+model = mavg(npoint = 10) 
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
@@ -357,6 +370,8 @@ plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
 """ 
+mavg(; kwargs...) = JchemoModel(mavg, nothing, kwargs)
+
 function mavg(X; kwargs...)
     par = recovkw(ParMavg, kwargs).par
     Mavg(par)
@@ -437,6 +452,7 @@ function savgk(nhwindow::Int, degree::Int, deriv::Int)
 end
 
 """
+    savgol(; kwargs...)
     savgol(X; kwargs...)
 Savitzky-Golay derivation and smoothing of each row of X-data.
 * `X` : X-data (n, p).
@@ -482,7 +498,7 @@ wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
 npoint = 11 ; degree = 2 ; deriv = 2
-model = mod_(savgol; npoint, degree, deriv) 
+model = savgol(; npoint, degree, deriv) 
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
@@ -498,7 +514,7 @@ M = 10  # half window
 N = 3   # degree
 deriv = 0
 #deriv = 1
-model = mod_(savgol; npoint = 2M + 1, degree = N, deriv)
+model = savgol(; npoint = 2M + 1, degree = N, deriv)
 fit!(model, x')
 xp = transf(model, x')
 f, ax = plotsp(x', u; color = :blue)
@@ -506,6 +522,8 @@ lines!(ax, u, vec(xp); color = :red)
 f
 ```
 """ 
+savgol(; kwargs...) = JchemoModel(savgol, nothing, kwargs)
+
 function savgol(X; kwargs...)
     par = recovkw(ParSavgol, kwargs).par
     Savgol(par)
@@ -549,6 +567,7 @@ function transf!(object::Savgol, X::Matrix)
 end
 
 """
+    snorm()
     snorm(X)
 Row-wise norming of X-data.
 * `X` : X-data (n, p).
@@ -571,16 +590,18 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-model = mod_(snorm) 
+model = snorm()
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
 plotsp(Xptrain).f
 plotsp(Xptest).f
-rownorm(Xptrain)
-rownorm(Xptest)
+@head rownorm(Xptrain)
+@head rownorm(Xptest)
 ```
 """ 
+snorm(; kwargs...) = JchemoModel(snorm, nothing, kwargs)
+
 function snorm(X)
     Snorm()
 end

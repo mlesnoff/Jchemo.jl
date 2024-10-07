@@ -56,9 +56,9 @@ tab(ytest)
 
 nlv = 15
 meth = :mix ; nvar = 10
-model = mod_(splslda; nlv, meth, nvar) 
-#model = mod_(splsqda; nlv, meth, nvar, alpha = .1) 
-#model = mod_(splskdeda; nlv, meth, nvar, a = .9) 
+model = splslda; nlv, meth, nvar) 
+#model = splsqda; nlv, meth, nvar, alpha = .1) 
+#model = splskdeda; nlv, meth, nvar, a = .9) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

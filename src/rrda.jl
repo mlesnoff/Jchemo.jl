@@ -58,7 +58,7 @@ tab(ytrain)
 tab(ytest)
 
 lb = 1e-5
-model = mod_(rrda; lb) 
+model = rrda; lb) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

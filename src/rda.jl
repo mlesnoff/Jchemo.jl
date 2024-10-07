@@ -79,7 +79,7 @@ tab(ytest)
 
 alpha = .5
 lb = 1e-8
-model = mod_(rda; alpha, lb)
+model = rda; alpha, lb)
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

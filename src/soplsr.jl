@@ -52,7 +52,7 @@ nlv = 2
 #nlv = [2, 0, 1]
 scal = false
 #scal = true
-model = mod_(soplsr; nlv, scal)
+model = soplsr; nlv, scal)
 fit!(model, Xbltrain, ytrain)
 pnames(model) 
 pnames(model.fm)

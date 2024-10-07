@@ -30,7 +30,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-model = mod_(pcr; nlv) ;
+model = pcr; nlv) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

@@ -93,7 +93,7 @@ ytest = rmrow(y, s)
 n = nro(Xtrain)
 
 segm = segmts(n, 50; rep = 30)
-model = mod_(plskern)
+model = plskern)
 nlv = 0:20
 res = gridcv(model, Xtrain, ytrain; segm, score = rmsep, nlv).res
 res[res.y1 .== minimum(res.y1), :]

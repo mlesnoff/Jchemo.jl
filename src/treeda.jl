@@ -54,7 +54,7 @@ tab(ytest)
 
 n_subfeatures = p / 3 
 max_depth = 10
-model = mod_(treeda; n_subfeatures, max_depth) 
+model = treeda; n_subfeatures, max_depth) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

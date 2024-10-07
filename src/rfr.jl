@@ -63,7 +63,7 @@ p = nco(X)
 n_trees = 200
 n_subfeatures = p / 3
 max_depth = 15
-model = mod_(rfr; n_trees, n_subfeatures, max_depth) 
+model = rfr; n_trees, n_subfeatures, max_depth) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

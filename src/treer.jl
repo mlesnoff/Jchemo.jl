@@ -51,7 +51,7 @@ p = nco(X)
 
 n_subfeatures = p / 3 
 max_depth = 15
-model = mod_(treer; n_subfeatures, max_depth) 
+model = treer; n_subfeatures, max_depth) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

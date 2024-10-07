@@ -1,4 +1,5 @@
 """
+    detrend_asls(; kwargs...)
     detrend_asls(X; kwargs...)
 Baseline correction of each row of X-data by asymmetric 
     least squares algorithm (ASLS).
@@ -45,16 +46,18 @@ plotsp(X, wl; nsamp = 20).f
 i = 2
 zX = Matrix(X)[i:i, :]
 lb = 1e5 ; p = .001
-model = mod_(detrend_asls; lb, p)
+model = detrend_asls(; lb, p)
 fit!(model, zX)
 zXc = transf(model, zX)   # = corrected spectrum 
-B = zX - zXc            # = estimated baseline
+B = zX - zXc              # = estimated baseline
 f, ax = plotsp(zX, wl)
 lines!(wl, vec(B); color = :blue)
 lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
+detrend_asls(; kwargs...) = JchemoModel(detrend_asls, nothing, kwargs)
+
 function detrend_asls(X; kwargs...)
     par = recovkw(ParDetrendAsls, kwargs).par
     DetrendAsls(par)

@@ -60,8 +60,8 @@ wl = parse.(Float64, wlst)
 n = nro(X)
 
 nlv = 3
-model = mod_(pcaout; nlv)  
-#model = mod_(pcasvd; nlv) 
+model = pcaout; nlv)  
+#model = pcasvd; nlv) 
 fit!(model, X)
 pnames(model)
 pnames(model.fm)

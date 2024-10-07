@@ -40,7 +40,7 @@ tab(ytest)
 
 prior = :unif
 #prior = :prop
-model = mod_(kdeda; prior)
+model = kdeda; prior)
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)
@@ -55,8 +55,8 @@ pnames(res)
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-model = mod_(kdeda; prior, a = .5) 
-#model = mod_(kdeda; prior, h = .1) 
+model = kdeda; prior, a = .5) 
+#model = kdeda; prior, h = .1) 
 fit!(model, Xtrain, ytrain)
 model.fm.fm[1].H
 ```

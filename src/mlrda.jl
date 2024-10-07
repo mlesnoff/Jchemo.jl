@@ -55,7 +55,7 @@ ntrain = n - ntest
 tab(ytrain)
 tab(ytest)
 
-model = mod_(mlrda)
+model = mlrda)
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

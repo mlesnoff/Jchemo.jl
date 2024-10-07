@@ -56,7 +56,7 @@ ntest = nro(Xtest)
 nlv = 0:30
 #nlv = 5:20
 #nlv = 25
-model = mod_(plsravg; nlv) ;
+model = plsravg; nlv) ;
 fit!(model, Xtrain, ytrain)
 
 res = predict(model, Xtest)

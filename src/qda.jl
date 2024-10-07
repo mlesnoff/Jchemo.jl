@@ -53,7 +53,7 @@ ntrain = n - ntest
 tab(ytrain)
 tab(ytest)
 
-model = mod_(qda)
+model = qda)
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)
@@ -70,8 +70,8 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
 ## With regularization
-model = mod_(qda; alpha = .5)
-#model = mod_(qda; alpha = 1) # = LDA
+model = qda; alpha = .5)
+#model = qda; alpha = 1) # = LDA
 fit!(model, Xtrain, ytrain)
 model.fm.Wi
 res = predict(model, Xtest) ;

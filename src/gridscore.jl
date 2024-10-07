@@ -39,7 +39,7 @@ X = dat.X
 y = dat.Y.tbc
 year = dat.Y.year
 tab(year)
-model = mod_(savgol; npoint = 21, deriv = 2, degree = 2)
+model = savgol; npoint = 21, deriv = 2, degree = 2)
 fit!(model, X)
 Xp = transf(model, X)
 s = year .<= 2012
@@ -61,13 +61,13 @@ Xval = Xtrain[s.test, :]
 yval = ytrain[s.test]
 
 ####-- Plsr
-model = mod_(plskern)
+model = plskern)
 nlv = 0:30
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, nlv)
 plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model = mod_(plskern; nlv = res.nlv[u])
+model = plskern; nlv = res.nlv[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
@@ -81,7 +81,7 @@ typ = res.scal
 plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model = mod_(plskern; nlv = res.nlv[u], scal = res.scal[u])
+model = plskern; nlv = res.nlv[u], scal = res.scal[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
@@ -90,13 +90,13 @@ plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction
 
 ####-- Rr 
 lb = (10).^(-8:.1:3)
-model = mod_(rr) 
+model = rr) 
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, lb)
 loglb = log.(10, res.lb)
 plotgrid(loglb, res.y1; step = 2, xlabel = "log(lambda)", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model = mod_(rr; lb = res.lb[u])
+model = rr; lb = res.lb[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
@@ -111,7 +111,7 @@ typ = string.(res.scal)
 plotgrid(loglb, res.y1, typ; step = 2, xlabel = "log(lambda)", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model = mod_(rr; lb = res.lb[u], scal = res.scal[u])
+model = rr; lb = res.lb[u], scal = res.scal[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
@@ -119,7 +119,7 @@ plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction
     ylabel = "Observed").f    
 
 ####-- Kplsr 
-model = mod_(kplsr)
+model = kplsr)
 nlv = 0:30
 gamma = (10).^(-5:1.:5)
 pars = mpar(gamma = gamma)
@@ -129,7 +129,7 @@ plotgrid(res.nlv, res.y1, loggamma; step = 2, xlabel = "Nb. LVs", ylabel = "RMSE
     leg_title = "Log(gamma)").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model = mod_(kplsr; nlv = res.nlv[u], gamma = res.gamma[u])
+model = kplsr; nlv = res.nlv[u], gamma = res.gamma[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
@@ -142,11 +142,11 @@ h = [1, 2.5, 5]
 k = [1, 5, 10, 20, 50, 100] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
 length(pars[1]) 
-model = mod_(knnr)
+model = knnr)
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, verbose = true)
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model = mod_(knnr; nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], 
+model = knnr; nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], 
     k = res.k[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
@@ -160,13 +160,13 @@ h = [1, 2.5, 5] ; k = [50, 100]
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
 length(pars[1]) 
 nlv = 0:20
-model = mod_(lwplsr)
+model = lwplsr)
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, nlv, verbose = true)
 group = string.("h=", res.h, " k=", res.k)
 plotgrid(res.nlv, res.y1, group; xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model = mod_(lwplsr; nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], 
+model = lwplsr; nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], 
     k = res.k[u], nlv = res.nlv[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
@@ -180,11 +180,11 @@ h = [1, 2.5, 5] ; k = [50, 100]
 nlv = [0:15, 0:20, 5:20] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k, nlv = nlv)
 length(pars[1]) 
-model = mod_(lwplsravg)
+model = lwplsravg)
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, verbose = true)
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model = mod_(lwplsravg; nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], 
+model = lwplsravg; nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], 
     k = res.k[u], nlv = res.nlv[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
@@ -199,7 +199,7 @@ Xbltest = mblock(Xtest, listbl)
 Xbl_cal = mblock(Xcal, listbl) 
 Xbl_val = mblock(Xval, listbl) 
 
-model = mod_(mbplsr)
+model = mbplsr)
 bscal = [:none, :frob]
 pars = mpar(bscal = bscal) 
 nlv = 0:30
@@ -208,7 +208,7 @@ group = res.bscal
 plotgrid(res.nlv, res.y1, group; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model = mod_(mbplsr; bscal = res.bscal[u], nlv = res.nlv[u])
+model = mbplsr; bscal = res.bscal[u], nlv = res.nlv[u])
 fit!(model, Xbltrain, ytrain)
 pred = predict(model, Xbltest).pred
 @show rmsep(pred, ytest)
@@ -245,7 +245,7 @@ Xval = Xtrain[s.test, :]
 yval = ytrain[s.test]
 
 ####-- Plslda
-model = mod_(plslda)
+model = plslda)
 nlv = 1:30
 prior = [:unif, :prop]
 pars = mpar(prior = prior)
@@ -254,7 +254,7 @@ typ = res.prior
 plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model = mod_(plslda; nlv = res.nlv[u], prior = res.prior[u])
+model = plslda; nlv = res.nlv[u], prior = res.prior[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show errp(pred, ytest)

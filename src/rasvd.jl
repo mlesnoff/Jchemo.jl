@@ -65,7 +65,7 @@ q = nco(Y)
 
 nlv = 2
 bscal = :frob ; tau = 1e-4
-model = mod_(rasvd; nlv, bscal, tau)
+model = rasvd; nlv, bscal, tau)
 fit!(model, X, Y)
 pnames(model)
 pnames(model.fm)

@@ -62,7 +62,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 5 ; scal = true
-model = mod_(cglsr; nlv, scal) ;
+model = cglsr; nlv, scal) ;
 fit!(model, Xtrain, ytrain)
 pnames(model.fm) 
 @head model.fm.B

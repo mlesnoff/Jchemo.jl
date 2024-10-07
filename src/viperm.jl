@@ -65,7 +65,7 @@ nam = namy[j]
 ytrain = Ytrain[:, nam]
 ytest = Ytest[:, nam]
 
-model = mod_(plskern; nlv = 9)
+model = plskern; nlv = 9)
 res = viperm(model, Xtrain, ytrain; rep = 50, score = rmsep) ;
 z = vec(res.imp)
 f = Figure(size = (500, 400))
@@ -75,7 +75,7 @@ u = [910; 950]
 vlines!(ax, u; color = :grey, linewidth = 1)
 f
 
-model = mod_(rfr; n_trees = 10, max_depth = 2000, min_samples_leaf = 5)
+model = rfr; n_trees = 10, max_depth = 2000, min_samples_leaf = 5)
 res = viperm(model, Xtrain, ytrain; rep = 50)
 z = vec(res.imp)
 f = Figure(size = (500, 400))

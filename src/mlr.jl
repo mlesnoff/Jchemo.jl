@@ -31,10 +31,10 @@ ytrain = y[s.train]
 Xtest = X[s.test, :]
 ytest = y[s.test]
 
-model = mod_(mlr)
-#model = mod_(mlrchol)
-#model = mod_(mlrpinv)
-#model = mod_(mlrpinvn) 
+model = mlr)
+#model = mlrchol)
+#model = mlrpinv)
+#model = mlrpinvn) 
 fit!(model, Xtrain, ytrain) 
 pnames(model)
 pnames(model.fm)
@@ -47,7 +47,7 @@ res = predict(model, Xtest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
     xlabel = "Prediction", ylabel = "Observed").f    
 
-model = mod_(mlr; noint = true)
+model = mlr; noint = true)
 fit!(model, Xtrain, ytrain) 
 coef(model) 
 ```

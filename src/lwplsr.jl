@@ -110,7 +110,7 @@ ytest = rmrow(y, s)
 
 nlvdis = 5 ; metric = :mah 
 h = 1 ; k = 200 ; nlv = 15
-model = mod_(lwplsr; nlvdis, metric, h, k, nlv) 
+model = lwplsr; nlvdis, metric, h, k, nlv) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

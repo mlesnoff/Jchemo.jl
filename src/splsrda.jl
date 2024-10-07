@@ -54,7 +54,7 @@ tab(ytest)
 
 nlv = 15
 meth = :mix ; nvar = 10
-model = mod_(splsrda; nlv, meth, nvar) 
+model = splsrda; nlv, meth, nvar) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)

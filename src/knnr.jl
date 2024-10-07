@@ -51,7 +51,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 h = 1 ; k = 3 
-model = mod_(knnr; h, k) 
+model = knnr; h, k) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fm)
@@ -67,9 +67,9 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
     ylabel = "Observed").f    
 
 ## With dimension reduction
-model1 = mod_(pcasvd; nlv = 15)
+model1 = pcasvd; nlv = 15)
 metric = :eucl ; h = 1 ; k = 3 
-model2 = mod_(knnr; metric, h, k) 
+model2 = knnr; metric, h, k) 
 model = pip(model1, model2)
 fit!(model, Xtrain, ytrain)
 res = predict(model, Xtest) ; 
@@ -83,7 +83,7 @@ x[x .== 0] .= 1e-5
 n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
-model = mod_(knnr; k = 15, h = 5) 
+model = knnr; k = 15, h = 5) 
 fit!(model, x, y)
 pred = predict(model, x).pred 
 f, ax = scatter(x, y) 

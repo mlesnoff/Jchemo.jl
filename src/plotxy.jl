@@ -47,7 +47,7 @@ tab(year)
 lev = mlev(year)
 nlev = length(lev)
 
-model = mod_(pcasvd; nlv = 5)  
+model = pcasvd; nlv = 5)  
 fit!(model, X) 
 @head T = model.fm.T
 
