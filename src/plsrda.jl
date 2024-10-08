@@ -1,4 +1,5 @@
 """
+    plsrda(; kwargs...)
     plsrda(X, y; kwargs...)
     plsrda(X, y, weights::Weight; kwargs...)
 Discrimination based on partial least squares regression (PLSR-DA).
@@ -58,7 +59,7 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-model = plsrda; nlv) 
+model = plsrda(; nlv) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -86,6 +87,8 @@ predict(model, Xtest; nlv = 1:2).pred
 summary(fitm.fitm, Xtrain)
 ```
 """
+plsrda(; kwargs...) = JchemoModel(plsrda, nothing, kwargs)
+
 function plsrda(X, y; kwargs...)
     par = recovkw(ParPlsda, kwargs).par
     Q = eltype(X[1, 1])

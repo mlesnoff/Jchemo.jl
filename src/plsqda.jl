@@ -1,4 +1,5 @@
 """
+    plsqda(; kwargs...)
     plsqda(X, y; kwargs...)
     plsqda(X, y, weights::Weight; kwargs...)
 QDA on PLS latent variables (PLS-QDA) with continuum.
@@ -42,6 +43,8 @@ other choices.
 
 See function `plslda` for examples.
 """ 
+plsqda(; kwargs...) = JchemoModel(plsqda, nothing, kwargs)
+
 function plsqda(X, y; kwargs...)
     par = recovkw(ParPlsqda, kwargs).par
     Q = eltype(X[1, 1])
@@ -54,12 +57,12 @@ function plsqda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fitmemb = plskern(X, res.Y, weights; kwargs...)
-    fitmda = list(Qda, par.nlv)
+    fitm_emb = plskern(X, res.Y, weights; kwargs...)
+    fitm_da = list(Qda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fitmda[i] = qda(vcol(fitmemb.T, 1:i), y, weights; kwargs...)
+        fitm_da[i] = qda(vcol(fitm_emb.T, 1:i), y, weights; kwargs...)
     end
-    fitm = (fitmemb = fitmemb, fitmda = fitmda)
+    fitm = (fitm_emb = fitm_emb, fitm_da = fitm_da)
     Plsprobda(fitm, res.lev, ni, par)
 end
 

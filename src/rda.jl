@@ -1,4 +1,5 @@
 """
+    rda(; kwargs...)
     rda(X, y; kwargs...)
     rda(X, y, weights::Weight; kwargs...)
 Regularized discriminant analysis (RDA).
@@ -79,7 +80,7 @@ tab(ytest)
 
 alpha = .5
 lb = 1e-8
-model = rda; alpha, lb)
+model = rda(; alpha, lb)
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -95,6 +96,8 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
+rda(; kwargs...) = JchemoModel(rda, nothing, kwargs)
+
 function rda(X, y; kwargs...)
     par = recovkw(ParRda, kwargs).par
     Q = eltype(X[1, 1])
@@ -136,7 +139,7 @@ function rda(X, y, weights::Weight; kwargs...)
         ct[i, :] = colmean(vrow(X, s), mweight(weights.w[s]))   
         @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
         @. res.Wi[i] = res.Wi[i] + A
-        fitm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i], simpl = par.simpl) 
+        fitm[i] = dmnorm(ct[i, :], res.Wi[i]; simpl = par.simpl) 
     end
     Rda(fitm, res.Wi, ct, priors, ni, lev, xscales, weights, par)
 end

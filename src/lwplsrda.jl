@@ -60,7 +60,7 @@ tab(ytest)
 
 nlvdis = 25 ; metric = :mah
 h = 2 ; k = 100
-model = lwplsrda; nlvdis, metric, h, k) 
+model = lwplsrda(; nlvdis, metric, h, k) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)

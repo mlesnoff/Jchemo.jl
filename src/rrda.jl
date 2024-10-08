@@ -1,4 +1,5 @@
 """
+    rrda(; kwargs...)
     rrda(X, y; kwargs...)
     rrda(X, y, weights::Weight; kwargs...)
 Discrimination based on ridge regression (RR-DA).
@@ -58,7 +59,7 @@ tab(ytrain)
 tab(ytest)
 
 lb = 1e-5
-model = rrda; lb) 
+model = rrda(; lb) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -80,6 +81,8 @@ conf(res.pred, ytest).cnt
 predict(model, Xtest; lb = [.1; .01]).pred
 ```
 """ 
+rrda(; kwargs...) = JchemoModel(rrda, nothing, kwargs)
+
 function rrda(X, y; kwargs...)
     par = recovkw(ParRrda, kwargs).par
     Q = eltype(X[1, 1])

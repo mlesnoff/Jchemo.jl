@@ -1,4 +1,5 @@
 """
+    kplslda(; kwargs...)
     kplslda(X, y; kwargs...)
     kplslda(X, y, weights::Weight; kwargs...)
 KPLS-LDA.
@@ -48,10 +49,10 @@ tab(ytest)
 
 nlv = 15
 gamma = .1
-model = kplslda; nlv, gamma) 
-#model = kplslda; nlv, gamma, prior = :prop) 
-#model = kplsqda; nlv, gamma, alpha = .5) 
-#model = kplskdeda; nlv, gamma, a = .5) 
+model = kplslda(; nlv, gamma) 
+#model = kplslda(; nlv, gamma, prior = :prop) 
+#model = kplsqda(; nlv, gamma, alpha = .5) 
+#model = kplskdeda(; nlv, gamma, a = .5) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -59,13 +60,13 @@ fitm = model.fitm ;
 fitm.lev
 fitm.ni
 
-fitmemb = fitm.fitm.fitmemb ;
-@head fitmemb.T
+fitm_emb = fitm.fitm.fitm_emb ;
+@head fitm_emb.T
 @head transf(model, Xtrain)
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
 
-coef(fitmemb)
+coef(fitm_emb)
 
 res = predict(model, Xtest) ;
 pnames(res)
@@ -77,6 +78,8 @@ conf(res.pred, ytest).cnt
 predict(model, Xtest; nlv = 1:2).pred
 ```
 """ 
+kplslda(; kwargs...) = JchemoModel(kplslda, nothing, kwargs)
+
 function kplslda(X, y; kwargs...)
     par = recovkw(ParKplsda, kwargs).par
     Q = eltype(X[1, 1])
@@ -89,12 +92,12 @@ function kplslda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fitmemb = kplsr(X, res.Y, weights; kwargs...)
-    fitmda = list(Lda, par.nlv)
+    fitm_emb = kplsr(X, res.Y, weights; kwargs...)
+    fitm_da = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fitmda[i] = lda(fitmemb.T[:, 1:i], y, weights; kwargs...)
+        fitm_da[i] = lda(fitm_emb.T[:, 1:i], y, weights; kwargs...)
     end
-    fitm = (fitmemb = fitmemb, fitmda = fitmda)
+    fitm = (fitm_emb = fitm_emb, fitm_da = fitm_da)
     Plsprobda(fitm, res.lev, ni, par)
 end
 

@@ -464,7 +464,7 @@ ytrain = rand(["a" ; "b"], 10)
 Xtest = rand(4, 5) 
 ytest = rand(["a" ; "b"], 4)
 
-model = plsrda; nlv = 2)
+model = plsrda(; nlv = 2)
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 residcla(pred, ytest)
@@ -487,7 +487,7 @@ ytrain = rand(["a" ; "b"], 10)
 Xtest = rand(4, 5) 
 ytest = rand(["a" ; "b"], 4)
 
-model = plsrda; nlv = 2)
+model = plsrda(; nlv = 2)
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 errp(pred, ytest)
@@ -517,7 +517,7 @@ ytrain = rand(["a" ; "b"], 10)
 Xtest = rand(4, 5) 
 ytest = rand(["a" ; "b"], 4)
 
-model = plsrda; nlv = 2)
+model = plsrda(; nlv = 2)
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 merrp(pred, ytest)

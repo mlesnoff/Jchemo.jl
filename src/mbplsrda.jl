@@ -1,4 +1,5 @@
 """
+    mbplsrda(; kwargs...)
     mbplsrda(Xbl, y; kwargs...)
     mbplsrda(Xbl, y, weights::Weight; kwargs...)
 Discrimination based on multiblock partial least squares 
@@ -73,7 +74,7 @@ scal = false
 #scal = true
 bscal = :none
 #bscal = :frob
-model = mbplsrda; nlv, bscal, scal)
+model = mbplsrda(; nlv, bscal, scal)
 fit!(model, Xbltrain, ytrain) 
 pnames(model) 
 
@@ -89,6 +90,8 @@ conf(res.pred, ytest).cnt
 predict(model, Xbltest; nlv = 1:2).pred
 ```
 """
+mbplsrda(; kwargs...) = JchemoModel(mbplsrda, nothing, kwargs)
+
 function mbplsrda(Xbl, y; kwargs...)
     par = recovkw(ParMbplsda, kwargs).par
     Q = eltype(Xbl[1][1, 1])

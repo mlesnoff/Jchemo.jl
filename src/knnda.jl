@@ -1,4 +1,5 @@
 """
+    knnda(; kwargs...)
     knnda(X, y; kwargs...) 
 k-Nearest-Neighbours weighted discrimination (KNN-DA).
 * `X` : X-data (n, p).
@@ -48,7 +49,7 @@ tab(ytest)
 
 metric = :eucl
 h = 2 ; k = 10
-model = knnda; metric, h, k) 
+model = knnda(; metric, h, k) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -66,15 +67,17 @@ res.listw
 conf(res.pred, ytest).cnt
 
 ## With dimension reduction
-model1 = pcasvd; nlv = 15)
+model1 = pcasvd(; nlv = 15)
 metric = :mah ; h = 1 ; k = 3 
-model2 = knnda; metric, h, k) 
+model2 = knnda(; metric, h, k) 
 model = pip(model1, model2)
 fit!(model, Xtrain, ytrain)
 @head pred = predict(model, Xtest).pred 
 errp(pred, ytest)
 ```
 """ 
+knnda(; kwargs...) = JchemoModel(knnda, nothing, kwargs)
+
 function knnda(X, y; kwargs...) 
     par = recovkw(ParKnn, kwargs).par
     X = ensure_mat(X)

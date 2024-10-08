@@ -1,4 +1,5 @@
 """ 
+    rfda(; kwargs...)
     rfda(X, y; kwargs...)
 Random forest discrimination with DecisionTree.jl.
 * `X` : X-data (n, p).
@@ -66,7 +67,7 @@ tab(ytest)
 n_trees = 200
 n_subfeatures = p / 3 
 max_depth = 10
-model = rfda; n_trees, n_subfeatures, max_depth) 
+model = rfda(; n_trees, n_subfeatures, max_depth) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -81,6 +82,8 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
+rfda(; kwargs...) = JchemoModel(rfda, nothing, kwargs)
+
 function rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
     ## For DA in DecisionTree.jl, y must be Int or String
     par = recovkw(ParRf, kwargs).par

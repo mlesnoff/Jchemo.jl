@@ -1,5 +1,6 @@
 """
     lda(; kwargs...)
+    lda(; kwargs...)
     lda(X, y; kwargs...)
     lda(X, y, weights::Weight; kwargs...)
 Linear discriminant analysis (LDA).
@@ -42,7 +43,7 @@ ntrain = n - ntest
 tab(ytrain)
 tab(ytest)
 
-model = lda)
+model = lda()
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -59,6 +60,8 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
+lda(; kwargs...) = JchemoModel(lda, nothing, kwargs)
+
 function lda(X, y; kwargs...)
     par = recovkw(ParLda, kwargs).par
     Q = eltype(X[1, 1])
@@ -92,7 +95,7 @@ function lda(X, y, weights::Weight; kwargs...)
     @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(vrow(X, s), mweight(weights.w[s]))
-        fitm[i] = dmnorm(; mu = ct[i, :], S = res.W) 
+        fitm[i] = dmnorm(ct[i, :], res.W)
     end
     Lda(fitm, res.W, ct, priors, ni, lev, weights, par)
 end

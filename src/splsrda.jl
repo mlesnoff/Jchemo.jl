@@ -1,4 +1,5 @@
 """
+    splsrda(; kwargs...)
     splsrda(X, y; kwargs...)
     splsrda(X, y, weights::Weight; kwargs...)
 Sparse PLSR-DA.
@@ -54,7 +55,7 @@ tab(ytest)
 
 nlv = 15
 meth = :mix ; nvar = 10
-model = splsrda; nlv, meth, nvar) 
+model = splsrda(; nlv, meth, nvar) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -80,6 +81,8 @@ predict(model, Xtest; nlv = 1:2).pred
 summary(fitm.fitm, Xtrain)
 ```
 """ 
+splsrda(; kwargs...) = JchemoModel(splsrda, nothing, kwargs)
+
 function splsrda(X, y; kwargs...)
     par = recovkw(ParSplsda, kwargs).par
     Q = eltype(X[1, 1])

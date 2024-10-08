@@ -244,7 +244,7 @@ typ = res.prior
 plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "ERR").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model = plslda; nlv = res.nlv[u], prior = res.prior[u])
+model = plslda(; nlv = res.nlv[u], prior = res.prior[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show errp(pred, ytest)

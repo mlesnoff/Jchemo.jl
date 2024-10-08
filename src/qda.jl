@@ -1,4 +1,5 @@
 """
+    qda(; kwargs...)
     qda(X, y; kwargs...)
     qda(X, y, weights::Weight; kwargs...)
 Quadratic discriminant analysis (QDA, with continuum towards LDA).
@@ -53,7 +54,7 @@ ntrain = n - ntest
 tab(ytrain)
 tab(ytest)
 
-model = qda)
+model = qda()
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -70,14 +71,16 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
 ## With regularization
-model = qda; alpha = .5)
-#model = qda; alpha = 1) # = LDA
+model = qda(alpha = .5)
+#model = qda(alpha = 1) # = LDA
 fit!(model, Xtrain, ytrain)
 model.fitm.Wi
 res = predict(model, Xtest) ;
 errp(res.pred, ytest)
 ```
 """ 
+qda(; kwargs...) = JchemoModel(qda, nothing, kwargs)
+
 function qda(X, y; kwargs...)
     par = recovkw(ParQda, kwargs).par
     Q = eltype(X[1, 1])
@@ -116,7 +119,7 @@ function qda(X, y, weights::Weight; kwargs...)
         if alpha > 0
             @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
         end
-        fitm[i] = dmnorm(; mu = ct[i, :], S = res.Wi[i]) 
+        fitm[i] = dmnorm(ct[i, :], res.Wi[i]) 
     end
     Qda(fitm, res.Wi, ct, priors, ni, lev, weights, par)
 end

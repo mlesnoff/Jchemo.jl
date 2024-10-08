@@ -1,4 +1,5 @@
 """
+    mlrda(; kwargs...)
     mlrda(X, y; kwargs...)
     mlrda(X, y, weights::Weight)
 Discrimination based on multple linear regression (MLR-DA).
@@ -55,7 +56,7 @@ ntrain = n - ntest
 tab(ytrain)
 tab(ytest)
 
-model = mlrda)
+model = mlrda()
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -71,6 +72,8 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
+mlrda(; kwargs...) = JchemoModel(mlrda, nothing, kwargs)
+
 function mlrda(X, y; kwargs...)
     par = recovkw(ParMlrda, kwargs).par
     Q = eltype(X[1, 1])

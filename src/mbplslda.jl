@@ -1,4 +1,5 @@
 """
+    mbplslda(; kwargs...)
     mbplslda(Xbl, y; kwargs...)
     mbplslda(Xbl, y, weights::Weight; kwargs...)
 Multiblock PLS-LDA.
@@ -72,9 +73,9 @@ scal = false
 #scal = true
 bscal = :none
 #bscal = :frob
-model = mbplslda; nlv, bscal, scal)
-#model = mbplsqda; nlv, bscal, alpha = .5, scal)
-#model = mbplskdeda; nlv, bscal, scal)
+model = mbplslda(; nlv, bscal, scal)
+#model = mbplsqda(; nlv, bscal, alpha = .5, scal)
+#model = mbplskdeda(; nlv, bscal, scal)
 fit!(model, Xbltrain, ytrain) 
 pnames(model) 
 
@@ -89,6 +90,8 @@ conf(res.pred, ytest).cnt
 predict(model, Xbltest; nlv = 1:2).pred
 ```
 """ 
+mbplslda(; kwargs...) = JchemoModel(mbplslda, nothing, kwargs)
+
 function mbplslda(Xbl, y; kwargs...)
     par = recovkw(ParMbplsda, kwargs).par
     Q = eltype(Xbl[1][1, 1])
@@ -101,12 +104,12 @@ function mbplslda(Xbl, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fitmemb = mbplsr(Xbl, res.Y, weights; kwargs...)
-    fitmda = list(Lda, par.nlv)
+    fitm_emb = mbplsr(Xbl, res.Y, weights; kwargs...)
+    fitm_da = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fitmda[i] = lda(fitmemb.T[:, 1:i], y, weights; kwargs...)
+        fitm_da[i] = lda(fitm_emb.T[:, 1:i], y, weights; kwargs...)
     end
-    fitm = (fitmemb = fitmemb, fitmda = fitmda)
+    fitm = (fitm_emb = fitm_emb, fitm_da = fitm_da)
     Mbplsprobda(fitm, res.lev, ni, par)
 end
 
@@ -120,7 +123,7 @@ Compute latent variables (LVs = scores T) from
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Mbplsprobda, Xbl; nlv = nothing)
-    transf(object.fitm.fitmemb, Xbl; nlv)
+    transf(object.fitm.fitm_emb, Xbl; nlv)
 end
 
 """
@@ -135,15 +138,15 @@ function predict(object::Mbplsprobda, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     Qy = eltype(object.lev)
     m = nro(Xbl[1])
-    a = size(object.fitm.fitmemb.T, 2)
+    a = size(object.fitm.fitm_emb.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
     @inbounds for i = 1:le_nlv
         znlv = nlv[i]
-        T = transf(object.fitm.fitmemb, Xbl; nlv = znlv)
-        zres = predict(object.fitm.fitmda[znlv], T)
+        T = transf(object.fitm.fitm_emb, Xbl; nlv = znlv)
+        zres = predict(object.fitm.fitm_da[znlv], T)
         z =  mapslices(argmax, zres.posterior; dims = 2) 
         pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)
         posterior[i] = zres.posterior

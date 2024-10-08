@@ -1,4 +1,5 @@
 """ 
+    treeda(; kwargs...)
     treeda(X, y; kwargs...)
 Discrimination tree (CART) with DecisionTree.jl.
 * `X` : X-data (n, p).
@@ -54,7 +55,7 @@ tab(ytest)
 
 n_subfeatures = p / 3 
 max_depth = 10
-model = treeda; n_subfeatures, max_depth) 
+model = treeda(; n_subfeatures, max_depth) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -69,8 +70,9 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
-## For DA in DecisionTree.jl, 
-## y must be Int or String
+treeda(; kwargs...) = JchemoModel(treeda, nothing, kwargs)
+
+## For DA in DecisionTree.jl, y must be Int or String
 function treeda(X, y::Union{Array{Int}, Array{String}}; kwargs...) 
     par = recovkw(ParTree, kwargs).par
     X = ensure_mat(X)

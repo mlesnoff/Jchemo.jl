@@ -1,5 +1,5 @@
 """
-
+    splskdeda(; kwargs...)
     splskdeda(X, y; kwargs...)
     splskdeda(X, y, weights::Weight; kwargs...)
 Sparse PLS-KDE-DA.
@@ -38,6 +38,8 @@ PLSR (function `plskern`), is run on the Y-dummy table.
 
 See function `splslda` for examples.
 """ 
+splskdeda(; kwargs...) = JchemoModel(splskdeda, nothing, kwargs)
+
 function splskdeda(X, y; kwargs...)
     par = recovkw(ParSplskdeda, kwargs).par
     Q = eltype(X[1, 1])
@@ -50,12 +52,12 @@ function splskdeda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fitmemb = splskern(X, res.Y, weights; kwargs...)
-    fitmda = list(Kdeda, par.nlv)
+    fitm_emb = splskern(X, res.Y, weights; kwargs...)
+    fitm_da = list(Kdeda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fitmda[i] = kdeda(vcol(fitmemb.T, 1:i), y; kwargs...)
+        fitm_da[i] = kdeda(vcol(fitm_emb.T, 1:i), y; kwargs...)
     end
-    fitm = (fitmemb = fitmemb, fitmda = fitmda)
+    fitm = (fitm_emb = fitm_emb, fitm_da = fitm_da)
     Plsprobda(fitm, res.lev, ni, par)
 end
 

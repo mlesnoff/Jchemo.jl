@@ -68,7 +68,7 @@ vip(fitm, Ydummy).imp
 model = plslda(; nlv) 
 fit!(model, X, ycla)
 pnames(model.fitm.fitm)
-fitm = model.fitm.fitm.fitmemb ;
+fitm = model.fitm.fitm.fitm_emb ;
 vip(fitm).imp
 vip(fitm, Ydummy).imp
 ```

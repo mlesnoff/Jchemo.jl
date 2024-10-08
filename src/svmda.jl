@@ -1,4 +1,5 @@
 """
+    svmda(; kwargs...)
     svmda(X, y; kwargs...)
 Support vector machine for discrimination "C-SVC" (SVM-DA).
 * `X` : X-data (n, p).
@@ -66,7 +67,7 @@ tab(ytest)
 
 kern = :krbf ; gamma = 1e4
 cost = 1000 ; epsilon = .5
-model = svmda; kern, gamma, cost, epsilon) 
+model = svmda(; kern, gamma, cost, epsilon) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -81,6 +82,8 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
+svmda(; kwargs...) = JchemoModel(svmda, nothing, kwargs)
+
 function svmda(X, y; kwargs...)
     par = recovkw(ParSvm, kwargs).par
     kern = par.kern 

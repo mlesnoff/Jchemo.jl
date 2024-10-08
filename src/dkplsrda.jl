@@ -1,4 +1,5 @@
 """
+    dkplsrda(; kwargs...)
     dkplsrda(X, y; kwargs...)
     dkplsrda(X, y, weights::Weight; kwargs...)
 Discrimination based on direct kernel partial least squares 
@@ -48,7 +49,7 @@ tab(ytest)
 nlv = 15
 kern = :krbf ; gamma = .001 
 scal = true
-model = dkplsrda; nlv, kern, gamma, scal) 
+model = dkplsrda(; nlv, kern, gamma, scal) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -73,6 +74,8 @@ conf(res.pred, ytest).cnt
 predict(model, Xtest; nlv = 1:2).pred
 ```
 """ 
+dkplsrda(; kwargs...) = JchemoModel(dkplsrda, nothing, kwargs)
+
 function dkplsrda(X, y; kwargs...)
     par = recovkw(ParKplsda, kwargs).par
     Q = eltype(X[1, 1])

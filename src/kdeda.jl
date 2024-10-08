@@ -1,4 +1,5 @@
 """
+    kdeda(; kwargs...)
     kdeda(X, y; kwargs...)
 Discriminant analysis using non-parametric kernel Gaussian 
     density estimation (KDE-DA).
@@ -40,7 +41,7 @@ tab(ytest)
 
 prior = :unif
 #prior = :prop
-model = kdeda; prior)
+model = kdeda(; prior)
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -55,12 +56,14 @@ pnames(res)
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-model = kdeda; prior, a = .5) 
-#model = kdeda; prior, h = .1) 
+model = kdeda(; prior, a = .5) 
+#model = kdeda(; prior, h = .1) 
 fit!(model, Xtrain, ytrain)
 model.fitm.fitm[1].H
 ```
 """ 
+kdeda(; kwargs...) = JchemoModel(kdeda, nothing, kwargs)
+
 function kdeda(X, y; kwargs...) 
     ## To do: add scaling X (?)
     par = recovkw(ParKdeda, kwargs).par
