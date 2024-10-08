@@ -1,4 +1,5 @@
 """
+    loessr(; kwargs...)
     loessr(X, y; kwargs...)
 Compute a locally weighted regression model (LOESS).
 * `X` : X-data (n, p).
@@ -40,7 +41,7 @@ x[x .== 0] .= 1e-5
 n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
-model = loessr; span = 1 / 3) 
+model = loessr(span = 1 / 3) 
 fit!(model, x, y)
 pred = predict(model, x).pred 
 f = Figure(size = (700, 300))
@@ -52,6 +53,8 @@ f[1, 2] = Legend(f, ax, framevisible = false)
 f
 ```
 """ 
+loessr(; kwargs...) = JchemoModel(loessr, nothing, kwargs)
+
 function loessr(X, y; kwargs...)
     par = recovkw(ParLoessr, kwargs).par
     X = ensure_mat(X)

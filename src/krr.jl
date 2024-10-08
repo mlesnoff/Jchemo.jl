@@ -1,4 +1,5 @@
 """
+    krr(; kwargs...)
     krr(X, Y; kwargs...)
     krr(X, Y, weights::Weight; kwargs...)
     krr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -69,7 +70,7 @@ ytest = rmrow(y, s)
 
 lb = 1e-3
 kern = :krbf ; gamma = 1e-1
-model = krr; lb, kern, gamma) ;
+model = krr(; lb, kern, gamma) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -79,8 +80,8 @@ coef(model)
 res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
-    xlabel = "Prediction", ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
+   ylabel = "Observed").f    
 
 coef(model; lb = 1e-1)
 res = predict(model, Xtest; lb = [.1 ; .01])
@@ -89,7 +90,7 @@ res = predict(model, Xtest; lb = [.1 ; .01])
 
 lb = 1e-3
 kern = :kpol ; degree = 1
-model = krr; lb, kern, degree) 
+model = krr(; lb, kern, degree) 
 fit!(model, Xtrain, ytrain)
 res = predict(model, Xtest)
 rmsep(res.pred, ytest)
@@ -103,7 +104,7 @@ zy = sin.(abs.(x)) ./ abs.(x)
 y = zy + .2 * randn(n) 
 lb = 1e-1
 kern = :krbf ; gamma = 1 / 3
-model = krr; lb, kern, gamma) 
+model = krr(; lb, kern, gamma) 
 fit!(model, x, y)
 pred = predict(model, x).pred 
 f, ax = scatter(x, y) 
@@ -113,6 +114,8 @@ axislegend("Method")
 f
 ```
 """ 
+krr(; kwargs...) = JchemoModel(krr, nothing, kwargs)
+
 function krr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

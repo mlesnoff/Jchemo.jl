@@ -45,8 +45,8 @@ coef(model; nlv = 3)
 res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
-    xlabel = "Prediction", ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
+    ylabel = "Observed").f    
 
 res = predict(model, Xtest; nlv = 1:2)
 @head res.pred[1]

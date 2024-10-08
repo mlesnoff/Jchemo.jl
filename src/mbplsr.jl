@@ -1,4 +1,5 @@
 """
+    mbplsr(; kwargs...)
     mbplsr(Xbl, Y; kwargs...)
     mbplsr(Xbl, Y, weights::Weight; kwargs...)
     mbplsr!(Xbl::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -46,7 +47,7 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-model = mbplsr; nlv, bscal, scal)
+model = mbplsr(; nlv, bscal, scal)
 fit!(model, Xbltrain, ytrain)
 pnames(model) 
 pnames(model.fitm)

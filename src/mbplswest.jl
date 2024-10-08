@@ -1,4 +1,5 @@
 """
+    mbplswest(; kwargs...)
     mbplswest(Xbl, Y; kwargs...)
     mbplswest(Xbl, Y, weights::Weight; kwargs...)
     mbplswest!(Xbl::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -54,7 +55,7 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-model = mbplswest; nlv, bscal, scal)
+model = mbplswest(; nlv, bscal, scal)
 fit!(model, Xbltrain, ytrain)
 pnames(model) 
 pnames(model.fitm)

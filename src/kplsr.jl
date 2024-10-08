@@ -1,4 +1,5 @@
 """
+    kplsr(; kwargs...)
     kplsr(X, Y; kwargs...)
     kplsr(X, Y, weights::Weight; kwargs...)
     kplsr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -43,7 +44,7 @@ ytest = rmrow(y, s)
 
 nlv = 20
 kern = :krbf ; gamma = 1e-1
-model = kplsr; nlv, kern, gamma) ;
+model = kplsr(; nlv, kern, gamma) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -58,8 +59,8 @@ coef(model; nlv = 3)
 res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
-    xlabel = "Prediction", ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f    
 
 ####### Example of fitting the function sinc(x)
 ####### described in Rosipal & Trejo 2001 p. 105-106 
@@ -70,7 +71,7 @@ zy = sin.(abs.(x)) ./ abs.(x)
 y = zy + .2 * randn(n) 
 nlv = 2
 kern = :krbf ; gamma = 1 / 3
-model = kplsr; nlv, kern, gamma) 
+model = kplsr(; nlv, kern, gamma) 
 fit!(model, x, y)
 pred = predict(model, x).pred 
 f, ax = scatter(x, y) 
@@ -80,6 +81,8 @@ axislegend("Method")
 f
 ```
 """ 
+kplsr(; kwargs...) = JchemoModel(kplsr, nothing, kwargs)
+
 function kplsr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

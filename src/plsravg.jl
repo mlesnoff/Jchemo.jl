@@ -63,8 +63,8 @@ res = predict(model, Xtest)
 @head res.pred
 res.predlv   # predictions for each nb. of LVs 
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
-    xlabel = "Prediction", ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
+    ylabel = "Observed").f    
 ```
 """ 
 function plsravg(X, Y; kwargs...)

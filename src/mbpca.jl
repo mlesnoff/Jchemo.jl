@@ -1,4 +1,5 @@
 """
+    mbpca(; kwargs...)
     mbpca(Xbl; kwargs...)
     mbpca(Xbl, weights::Weight; kwargs...)
     mbpca!(Xbl::Matrix, weights::Weight; kwargs...)
@@ -78,7 +79,7 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-model = mbpca; nlv, bscal, scal)
+model = mbpca(; nlv, bscal, scal)
 fit!(model, Xbl)
 pnames(model) 
 pnames(model.fitm)

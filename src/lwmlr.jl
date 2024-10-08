@@ -66,8 +66,8 @@ res.listd
 res.listw
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
-    xlabel = "Prediction", ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
+    ylabel = "Observed").f    
 
 ####### Example of fitting the function sinc(x)
 ####### described in Rosipal & Trejo 2001 p. 105-106 

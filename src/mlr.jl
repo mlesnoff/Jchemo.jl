@@ -1,4 +1,5 @@
 """
+    mlr(; kwargs...)
     mlr(X, Y; kwargs...)
     mlr(X, Y, weights::Weight; kwargs...)
     mlr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -31,10 +32,10 @@ ytrain = y[s.train]
 Xtest = X[s.test, :]
 ytest = y[s.test]
 
-model = mlr)
-#model = mlrchol)
-#model = mlrpinv)
-#model = mlrpinvn) 
+model = mlr()
+#model = mlrchol()
+#model = mlrpinv()
+#model = mlrpinvn() 
 fit!(model, Xtrain, ytrain) 
 pnames(model)
 pnames(model.fitm)
@@ -44,8 +45,8 @@ fitm.int
 coef(model) 
 res = predict(model, Xtest)
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
-    xlabel = "Prediction", ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
+    ylabel = "Observed").f    
 
 model = mlr; noint = true)
 fit!(model, Xtrain, ytrain) 
@@ -81,6 +82,7 @@ function mlr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 end
 
 """
+    mlr()
     mlrchol(X, Y)
     mlrchol(X, Y, weights::Weight)
     mlrchol!mlrchol!(X::Matrix, Y::Matrix, weights::Weight)

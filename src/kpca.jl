@@ -1,4 +1,5 @@
 """
+    kpca(; kwargs...)
     kpca(X; kwargs...)
     kpca(X, weights::Weight; kwargs...)
 Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
@@ -51,7 +52,7 @@ Xtest = X[s.test, :]
 
 nlv = 3
 kern = :krbf ; gamma = 1e-4
-model = kpca; nlv, kern, gamma) ;
+model = kpca(; nlv, kern, gamma) ;
 fit!(model, Xtrain)
 pnames(model.fitm)
 @head T = model.fitm.T
@@ -65,6 +66,8 @@ pnames(res)
 res.explvarx
 ```
 """ 
+kpca(; kwargs...) = JchemoModel(kpca, nothing, kwargs)
+
 function kpca(X; kwargs...)
     X = ensure_mat(X)
     Q = eltype(X)
