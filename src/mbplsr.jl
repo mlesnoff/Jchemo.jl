@@ -66,6 +66,8 @@ res.corx2t
 res.rdx
 ```
 """
+mbplsr(; kwargs...) = JchemoModel(mbplsr, nothing, kwargs)
+
 function mbplsr(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])

@@ -75,6 +75,8 @@ res.cortb2t
 res.rdx
 ```
 """
+mbplswest(; kwargs...) = JchemoModel(mbplswest, nothing, kwargs)
+
 function mbplswest(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])

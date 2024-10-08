@@ -77,7 +77,7 @@
 - **mlrchol** Normal equations and Choleski factorization
 - **mlrpinv** Pseudo-inverse
 - **mlrpinvn** Normal equations and pseudo-inverse
-- **mlrvec** Simple linear regression (Univariate x)
+- **mlrvec** Simple (Univariate x) linear regression
 
 *Anova*
 - **aov1** One-factor ANOVA

@@ -1,9 +1,9 @@
 """
+    occod(; kwargs...)
     occod(fitm, X; kwargs...)
 One-class classification using PCA/PLS orthognal distance (OD).
-* `fitm` : The preliminary model that (e.g. PCA) was fitted 
-    (object `fitm`) on the training data assumed to represent 
-    the training class.
+* `fitm` : The preliminary model (e.g. PCA; object `fitm`) that was fitted 
+    on the training data assumed to represent the training class.
 * `X` : Training X-data (n, p), on which was fitted 
     the model `fitm`.
 Keyword arguments:
@@ -42,7 +42,7 @@ db = joinpath(path_jdat, "data/challenge2018.jld2")
 pnames(dat)
 X = dat.X    
 Y = dat.Y
-model = savgol; npoint = 21, deriv = 2, degree = 3)
+model = savgol(npoint = 21, deriv = 2, degree = 3)
 fit!(model, X) 
 Xp = transf(model, X) 
 s = Bool.(Y.test)
@@ -66,25 +66,25 @@ ytrain = repeat(["in"], ntrain)
 ytest = repeat([cod], ntest)
 
 ## Group description
-model = pcasvd; nlv = 10) 
+model = pcasvd(nlv = 10) 
 fit!(model, zXtrain) 
 Ttrain = model.fitm.T
 Ttest = transf(model, zXtest)
 T = vcat(Ttrain, Ttest)
 group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
 i = 1
-plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", 
-    xlabel = string("PC", i), ylabel = string("PC", i + 1)).f
+plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", xlabel = string("PC", i), 
+    ylabel = string("PC", i + 1)).f
 
 #### Occ
 ## Preliminary PCA fitted model
-model0 = pcasvd; nlv = 10) 
+model0 = pcasvd(nlv = 10) 
 fit!(model0, zXtrain)
 ## Outlierness
-model = occod)
-#model = occod; mcut = :mad, cri = 4)
-#model = occod; mcut = :q, risk = .01) ;
-#model = occsdod)
+model = occod()
+#model = occod(mcut = :mad, cri = 4)
+#model = occod(mcut = :q, risk = .01)
+#model = occsdod()
 fit!(model, model0.fitm, zXtrain) 
 pnames(model) 
 pnames(model.fitm) 
@@ -111,6 +111,8 @@ hlines!(ax, 1; linestyle = :dot)
 f
 ```
 """ 
+occod(; kwargs...) = JchemoModel(occod, nothing, kwargs)
+
 function occod(fitm, X; kwargs...)
     par = recovkw(ParOcc, kwargs).par 
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."

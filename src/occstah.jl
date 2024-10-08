@@ -1,4 +1,5 @@
 """
+    occstah(; kwargs...)
     occstah(X; kwargs...)
 One-class classification using the Stahel-Donoho outlierness.
 * `X` : Training X-data (n, p).
@@ -25,7 +26,7 @@ db = joinpath(path_jdat, "data/challenge2018.jld2")
 pnames(dat)
 X = dat.X    
 Y = dat.Y
-model = savgol; npoint = 21, deriv = 2, degree = 3)
+model = savgol(npoint = 21, deriv = 2, degree = 3)
 fit!(model, X) 
 Xp = transf(model, X) 
 s = Bool.(Y.test)
@@ -49,26 +50,26 @@ ytrain = repeat(["in"], ntrain)
 ytest = repeat([cod], ntest)
 
 ## Group description
-model = pcasvd; nlv = 10) 
+model = pcasvd(nlv = 10) 
 fit!(model, zXtrain) 
 Ttrain = model.fitm.T
 Ttest = transf(model, zXtest)
 T = vcat(Ttrain, Ttest)
 group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
 i = 1
-plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", 
-    xlabel = string("PC", i), ylabel = string("PC", i + 1)).f
+plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", xlabel = string("PC", i),  
+    ylabel = string("PC", i + 1)).f
 
 #### Occ
 ## Preliminary dimension reduction 
 ## (Not required but often more efficient)
 nlv = 50
-model0 = pcasvd; nlv) ;
+model0 = pcasvd(; nlv)
 fit!(model0, zXtrain)
 Ttrain = model0.fitm.T
 Ttest = transf(model0, zXtest)
 ## Outlierness
-model = occstah; nlv, scal = true)
+model = occstah(; nlv, scal = true)
 fit!(model, Ttrain) 
 pnames(model) 
 pnames(model.fitm) 
@@ -95,6 +96,8 @@ hlines!(ax, 1; linestyle = :dot)
 f
 ```
 """ 
+occstah(; kwargs...) = JchemoModel(occstah, nothing, kwargs)
+
 function occstah(X; kwargs...) 
     par = recovkw(ParOccstah, kwargs).par 
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."

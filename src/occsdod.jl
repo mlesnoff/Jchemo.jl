@@ -1,10 +1,10 @@
 """
+    occsdod(; kwargs...)
     occsdod(object, X; kwargs...)
 One-class classification using a compromise between 
     PCA/PLS score (SD) and orthogonal (OD) distances.
-* `fitm` : The preliminary model that (e.g. PCA) was fitted 
-    (object `fitm`) on the training data assumed to represent 
-    the training class.
+* `fitm` : The preliminary model (e.g. PCA; object `fitm`) that was fitted 
+    on the training data assumed to represent the training class.
 * `X` : Training X-data (n, p), on which was fitted 
     the model `fitm`.
 Keyword arguments:
@@ -23,6 +23,8 @@ See functions:
 * `occsd` for details of the outputs,
 * and `occod` for examples.
 """ 
+occsdod(; kwargs...) = JchemoModel(occsdod, nothing, kwargs)
+
 function occsdod(fitm, X; kwargs...) 
     par = recovkw(ParOcc, kwargs).par 
     fitmsd = occsd(fitm; kwargs...)

@@ -1,9 +1,9 @@
 """
+    occsd(; kwargs...)
     occsd(fitm; kwargs...)
 One-class classification using PCA/PLS score distance (SD).
-* `fitm` : The preliminary model that (e.g. PCA) was fitted 
-    (object `fitm`) on the training data assumed to represent 
-    the training class.
+* `fitm` : The preliminary model (e.g. PCA; object `fitm`) that was fitted 
+    on the training data assumed to represent the training class.
 Keyword arguments:
 * `mcut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
     See Thereafter.
@@ -67,7 +67,7 @@ db = joinpath(path_jdat, "data/challenge2018.jld2")
 pnames(dat)
 X = dat.X    
 Y = dat.Y
-model = savgol; npoint = 21, deriv = 2, degree = 3)
+model = savgol(npoint = 21, deriv = 2, degree = 3)
 fit!(model, X) 
 Xp = transf(model, X) 
 s = Bool.(Y.test)
@@ -91,31 +91,31 @@ ytrain = repeat(["in"], ntrain)
 ytest = repeat([cod], ntest)
 
 ## Group description
-model = pcasvd; nlv = 10) 
+model = pcasvd(nlv = 10) 
 fit!(model, zXtrain) 
 Ttrain = model.fitm.T
 Ttest = transf(model, zXtest)
 T = vcat(Ttrain, Ttest)
 group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
 i = 1
-plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", 
-    xlabel = string("PC", i), ylabel = string("PC", i + 1)).f
+plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", xlabel = string("PC", i),  
+    ylabel = string("PC", i + 1)).f
 
 #### Occ
 ## Preliminary PCA fitted model
-model0 = pcasvd; nlv = 30) 
+model0 = pcasvd(nlv = 30) 
 fit!(model0, zXtrain)
 ## Outlierness
-model = occsd)
-#model = occsd; mcut = :mad, cri = 4)
-#model = occsd; mcut = :q, risk = .01)
+model = occsd()
+#model = occsd(mcut = :mad, cri = 4)
+#model = occsd(mcut = :q, risk = .01)
 fit!(model, model0.fitm) 
 pnames(model) 
 pnames(model.fitm) 
 @head d = model.fitm.d
 d = d.dstand
-f, ax = plotxy(1:length(d), d; size = (500, 300), 
-    xlabel = "Obs. index", ylabel = "Standardized distance")
+f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index", 
+    ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 
@@ -129,16 +129,18 @@ conf(res.pred, ytest).cnt
 d1 = model.fitm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
-f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", 
-    xlabel = "Obs. index", ylabel = "Standardized distance")
+f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", xlabel = "Obs. index", 
+    ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 ```
 """
+occsd(; kwargs...) = JchemoModel(occsd, nothing, kwargs)
+
 function occsd(fitm; kwargs...)
     par = recovkw(ParOcc, kwargs).par 
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
-    T = fitm.T
+    T = copy(fitm.T) # remove side effect of fscale!
     Q = eltype(T)
     nlv = nco(T)
     tscales = colstd(T, fitm.weights)

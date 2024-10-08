@@ -103,6 +103,8 @@ res.cortb2t
 res.rv
 ```
 """
+mbpca(; kwargs...) = JchemoModel(mbpca, nothing, kwargs)
+
 function mbpca(Xbl; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])

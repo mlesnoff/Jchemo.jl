@@ -48,11 +48,17 @@ res = predict(model, Xtest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
     ylabel = "Observed").f    
 
-model = mlr; noint = true)
+model = mlr(noint = true)
 fit!(model, Xtrain, ytrain) 
+coef(model) 
+
+model = mlrvec()
+fit!(model, Xtrain[:, 1], ytrain) 
 coef(model) 
 ```
 """ 
+mlr(; kwargs...) = JchemoModel(mlr, nothing, kwargs)
+
 function mlr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
@@ -93,12 +99,14 @@ Compute a mutiple linear regression model (MLR) using the Normal equations
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`). 
 
-Compute a model with intercept.
+Compute only a model with intercept.
 
 Faster but can be less accurate (based on squared element X'X).
 
 See function `mlr` for examples.
 """ 
+mlrchol(; kwargs...) = JchemoModel(mlrchol, nothing, kwargs)
+
 function mlrchol(X, Y)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
@@ -140,6 +148,8 @@ Safe but can be slower.
 
 See function `mlr` for examples.
 """ 
+mlrpinv(; kwargs...) = JchemoModel(mlrpinv, nothing, kwargs)
+
 function mlrpinv(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
@@ -187,10 +197,12 @@ Compute a mutiple linear regression model (MLR)
 
 Safe and fast for p not too large.
 
-Compute a model with intercept.
+Compute only a model with intercept.
 
 See function `mlr` for examples.
 """ 
+mlrpinvn(; kwargs...) = JchemoModel(mlrpinvn, nothing, kwargs)
+
 function mlrpinvn(X, Y)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
@@ -219,7 +231,7 @@ end
     mlrvec(X, Y; kwargs...)
     mlrvec(X, Y, weights::Weight; kwargs...)
     mlrvec!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-Compute a simple linear regression model (univariate x).
+Compute a simple (univariate x) linear regression model.
 * `x` : Univariate X-data (n).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
@@ -230,6 +242,8 @@ Keyword arguments:
 
 See function `mlr` for examples.
 """ 
+mlrvec(; kwargs...) = JchemoModel(mlrvec, nothing, kwargs)
+
 function mlrvec(x, Y; kwargs...)
     Q = eltype(x[1, 1])
     weights = mweight(ones(Q, nro(x)))
