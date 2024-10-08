@@ -1,7 +1,7 @@
 """
+    lwplsr(; kwargs...)
     lwplsr(X, Y; kwargs...)
-k-Nearest-Neighbours locally weighted partial least squares regression 
-    (kNN-LWPLSR).
+k-Nearest-Neighbours locally weighted partial least squares regression (kNN-LWPLSR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 Keyword arguments:
@@ -108,9 +108,9 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-nlvdis = 5 ; metric = :mah 
-h = 1 ; k = 200 ; nlv = 15
-model = lwplsr; nlvdis, metric, h, k, nlv) 
+nlvdis = 15 ; metric = :mah 
+h = 1 ; k = 500 ; nlv = 10
+model = lwplsr(; nlvdis, metric, h, k, nlv) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -126,6 +126,8 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
     ylabel = "Observed").f    
 ```
 """ 
+lwplsr(; kwargs...) = JchemoModel(lwplsr, nothing, kwargs)
+
 function lwplsr(X, Y; kwargs...)
     par = recovkw(ParLwplsr, kwargs).par 
     X = ensure_mat(X)

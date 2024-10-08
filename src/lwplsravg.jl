@@ -1,7 +1,7 @@
 """
+    lwplsravg(; kwargs...)
     lwplsravg(X, Y; kwargs...)
-Averaging kNN-LWPLSR models with different numbers of latent variables 
-    (kNN-LWPLSR-AVG).
+Averaging kNN-LWPLSR models with different numbers of latent variables (kNN-LWPLSR-AVG).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 Keyword arguments:
@@ -78,7 +78,7 @@ ytest = rmrow(y, s)
 
 nlvdis = 5 ; metric = :mah 
 h = 1 ; k = 200 ; nlv = 4:20
-model = lwplsravg; nlvdis, metric, h, k, nlv) ;
+model = lwplsravg(; nlvdis, metric, h, k, nlv) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -94,6 +94,8 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
     ylabel = "Observed").f  
 ```
 """ 
+lwplsravg(; kwargs...) = JchemoModel(lwplsravg, nothing, kwargs)
+
 function lwplsravg(X, Y; kwargs...)
     par = recovkw(ParLwplsr, kwargs).par
     X = ensure_mat(X)

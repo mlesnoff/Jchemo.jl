@@ -1,6 +1,5 @@
 """
-    locw(Xtrain, Ytrain, X; listnn, listw = nothing, algo, verbose = false, 
-        kwargs...)
+    locw(Xtrain, Ytrain, X; listnn, listw = nothing, algo, verbose = false, kwargs...)
 Compute predictions for a given kNN model.
 * `Xtrain` : Training X-data.
 * `Ytrain` : Training Y-data.
@@ -28,7 +27,8 @@ function locw(Xtrain, Ytrain, X; listnn, listw = nothing, algo, verbose = false,
         verbose ? print(i, " ") : nothing
         s = listnn[i]
         length(s) == 1 ? s = (s:s) : nothing
-        zYtrain = Ytrain[s, :]
+        zXtrain = vrow(Xtrain, s)
+        zYtrain = Ytrain[s, :]   # vrow makes pb in aggsum (e.g. lda) when Ytrain is a vector
         ## For discrimination, 
         ## case where all the neighbors have the same class
         if q == 1 && length(unique(zYtrain)) == 1
@@ -36,9 +36,9 @@ function locw(Xtrain, Ytrain, X; listnn, listw = nothing, algo, verbose = false,
         ## End
         else
             if isnothing(listw)
-                fitm = algo(Xtrain[s, :],  zYtrain; kwargs...)
+                fitm = algo(zXtrain,  zYtrain; kwargs...)
             else
-                fitm = algo(Xtrain[s, :], zYtrain, mweight(listw[i]); kwargs...)
+                fitm = algo(zXtrain, zYtrain, mweight(listw[i]); kwargs...)
             end
             pred[i, :] = predict(fitm, vrow(X, i:i)).pred
         end

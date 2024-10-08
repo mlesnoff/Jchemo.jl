@@ -1,4 +1,5 @@
 """
+    lwplslda(; kwargs...)
     lwplslda(X, y; kwargs...)
 kNN-LWPLS-LDA.
 * `X` : X-data (n, p).
@@ -59,8 +60,9 @@ tab(ytrain)
 tab(ytest)
 
 nlvdis = 25 ; metric = :mah
-h = 1 ; k = 100
-model = lwplslda(; nlvdis, metric, h, k, prior = :prop) 
+h = 2 ; k = 200
+nlv = 10
+model = lwplslda(; nlvdis, metric, h, k, nlv, prior = :prop) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -78,6 +80,8 @@ res.listw
 conf(res.pred, ytest).cnt
 ```
 """ 
+lwplslda(; kwargs...) = JchemoModel(lwplslda, nothing, kwargs)
+
 function lwplslda(X, y; kwargs...) 
     par = recovkw(ParLwplsda, kwargs).par 
     X = ensure_mat(X)

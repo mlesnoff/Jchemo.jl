@@ -1,7 +1,7 @@
 """
+    lwmlr(; kwargs...)
     lwmlr(X, Y; kwargs...)
-k-Nearest-Neighbours locally weighted multiple linear 
-    regression (kNN-LWMLR).
+k-Nearest-Neighbours locally weighted multiple linear regression (kNN-LWMLR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 Keyword arguments:
@@ -46,14 +46,14 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 20
-model0 = pcasvd; nlv) ;
+model0 = pcasvd(; nlv) ;
 fit!(model0, Xtrain) 
 @head Ttrain = model0.fitm.T 
 @head Ttest = transf(model0, Xtest)
 
 metric = :eucl 
 h = 2 ; k = 100 
-model = lwmlr; metric, h, k) 
+model = lwmlr(; metric, h, k) 
 fit!(model, Ttrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -76,7 +76,7 @@ x[x .== 0] .= 1e-5
 n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
-model = lwmlr; metric = :eucl, h = 1.5, k = 20) ;
+model = lwmlr(metric = :eucl, h = 1.5, k = 20) ;
 fit!(model, x, y)
 pred = predict(model, x).pred 
 f, ax = scatter(x, y) 
@@ -86,6 +86,8 @@ axislegend("Method")
 f
 ```
 """ 
+lwmlr(; kwargs...) = JchemoModel(lwmlr, nothing, kwargs)
+
 function lwmlr(X, Y; kwargs...) 
     par = recovkw(ParKnn, kwargs).par
     X = ensure_mat(X)  
