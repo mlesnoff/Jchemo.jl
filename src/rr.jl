@@ -48,8 +48,8 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 lb = 1e-3
-model = rr; lb) 
-#model = rrchol; lb) 
+model = rr(; lb) 
+#model = rrchol(; lb) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)

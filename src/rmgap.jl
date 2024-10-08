@@ -36,7 +36,7 @@ vlines!(ax, wl_target; linestyle = :dot, color = (:grey, .8))
 f
 
 ## Corrected data
-model = rmgap; indexcol, npoint = 5)
+model = rmgap(; indexcol, npoint = 5)
 fit!(model, X)
 Xc = transf(model, X)
 f, ax = plotsp(Xc, wl)

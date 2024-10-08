@@ -21,7 +21,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-model = center) 
+model = center() 
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
@@ -84,7 +84,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-model = scale) 
+model = scale() 
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)

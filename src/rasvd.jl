@@ -66,7 +66,7 @@ q = nco(Y)
 
 nlv = 2
 bscal = :frob ; tau = 1e-4
-model = rasvd; nlv, bscal, tau)
+model = rasvd(; nlv, bscal, tau)
 fit!(model, X, Y)
 pnames(model)
 pnames(model.fitm)
@@ -87,7 +87,7 @@ res.corx2t
 res.cory2t 
 ```
 """
-(rasvd; kwargs...) = JchemoModel(rasvd, nothing, kwargs)
+rasvd(; kwargs...) = JchemoModel(rasvd, nothing, kwargs)
 
 function rasvd(X, Y; kwargs...)
     Q = eltype(X[1, 1])

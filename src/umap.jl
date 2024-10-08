@@ -52,7 +52,7 @@ typ = Y.typ
 test = Y.test
 y = Y.conc
 
-model1 = snv) 
+model1 = snv() 
 model2 = savgol(npoint = 21, deriv = 2, degree = 3)
 model = pip(model1, model2)
 fit!(model, X)
@@ -79,14 +79,14 @@ freqtable(typ, test)
 
 nlv = 3
 n_neighbors = 50 ; min_dist = .5 
-model = umap; nlv, n_neighbors, min_dist)  
+model = umap(; nlv, n_neighbors, min_dist)  
 fit!(model, Xtrain)
 @head T = model.fitm.T
 @head Ttest = transf(model, Xtest)
 
 nlv = 3
 n_neighbors = 50 ; min_dist = .5 
-model = umap; nlv, n_neighbors, min_dist)  
+model = umap(; nlv, n_neighbors, min_dist)  
 fit!(model, Xtrain)
 @head T = model.fitm.T
 @head Ttest = transf(model, Xtest)

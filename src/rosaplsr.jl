@@ -54,7 +54,7 @@ ntot = ntrain + ntest
 nlv = 3
 scal = false
 #scal = true
-model = rosaplsr; nlv, scal)
+model = rosaplsr(; nlv, scal)
 fit!(model, Xbltrain, ytrain)
 pnames(model) 
 pnames(model.fitm)

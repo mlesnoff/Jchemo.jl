@@ -96,7 +96,7 @@ nlv = 3
 meth = :mix ; nvar = 2
 #meth = :hard ; nvar = 2
 scal = false
-model = spca; nlv, meth, nvar, scal) ;
+model = spca(; nlv, meth, nvar, scal) ;
 fit!(model, Xtrain) 
 fitm = model.fitm ;
 pnames(fitm)
@@ -116,7 +116,7 @@ res.explvarx_adj
 
 nlv = 3 
 meth = :soft ; delta = .4 
-model = spca; nlv, meth, delta) ;
+model = spca(; nlv, meth, delta) ;
 fit!(model, Xtrain) 
 model.fitm.P
 ```

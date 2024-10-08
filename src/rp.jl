@@ -24,7 +24,7 @@ X = rand(n, p)
 nlv = 3
 meth = :li ; s = sqrt(p) 
 #meth = :gauss
-model = rp; nlv, meth, s)
+model = rp(; nlv, meth, s)
 fit!(model, X)
 pnames(model)
 pnames(model.fitm)

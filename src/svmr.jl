@@ -64,7 +64,7 @@ p = nco(X)
 
 kern = :krbf ; gamma = .1
 cost = 1000 ; epsilon = 1
-model = svmr; kern, gamma, cost, epsilon) 
+model = svmr(; kern, gamma, cost, epsilon) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -83,7 +83,7 @@ n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
 kern = :krbf ; gamma = .1
-model = svmr; kern, gamma) 
+model = svmr(; kern, gamma) 
 fit!(model, x, y)
 pred = predict(model, x).pred 
 f, ax = scatter(x, y) 
