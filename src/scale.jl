@@ -1,4 +1,5 @@
 """
+    center()
     center(X)
     center(X, weights::Weight)
 Column-wise centering of X-data.
@@ -31,10 +32,13 @@ plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
 """
+center(; kwargs...) = JchemoModel(center, nothing, kwargs)
+
 function center(X)
     xmeans = colmean(X)
     Center(xmeans)
 end
+
 function center(X, weights::Weight)
     xmeans = colmean(X, weights)
     Center(xmeans)
@@ -52,11 +56,13 @@ function transf(object::Center, X)
     transf!(object, X)
     X
 end
+
 function transf!(object::Center, X::Matrix)
     fcenter!(X, object.xmeans)
 end
 
 """
+    scale()
     scale(X)
     scale(X, weights::Weight)
 Column-wise scaling of X-data.
@@ -89,10 +95,13 @@ plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
 """
+scale(; kwargs...) = JchemoModel(scale, nothing, kwargs)
+
 function scale(X)
     xscales = colstd(X)
     Scale(xscales)
 end
+
 function scale(X, weights::Weight)
     xscales = colstd(X, weights)
     Scale(xscales)
@@ -110,6 +119,7 @@ function transf(object::Scale, X)
     transf!(object, X)
     X
 end
+
 function transf!(object::Scale, X::Matrix)
     fscale!(X, object.xscales)
 end
@@ -138,7 +148,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-model = cscale) 
+model = cscale() 
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
@@ -150,11 +160,14 @@ plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
 """
+cscale(; kwargs...) = JchemoModel(cscale, nothing, kwargs)
+
 function cscale(X)
     xmeans = colmean(X)
     xscales = colstd(X)
     Cscale(xmeans, xscales)
 end
+
 function cscale(X, weights::Weight)
     xmeans = colmean(X, weights)
     xscales = colstd(X, weights)
@@ -173,6 +186,7 @@ function transf(object::Cscale, X)
     transf!(object, X)
     X
 end
+
 function transf!(object::Cscale, X::Matrix)
     fcscale!(X, object.xmeans, object.xscales)
 end

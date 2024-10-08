@@ -1,4 +1,5 @@
 """
+    rasvd(; kwargs...)
     rasvd(X, Y; kwargs...)
     rasvd(X, Y, weights::Weight; kwargs...)
     rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -86,6 +87,8 @@ res.corx2t
 res.cory2t 
 ```
 """
+(rasvd; kwargs...) = JchemoModel(rasvd, nothing, kwargs)
+
 function rasvd(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)

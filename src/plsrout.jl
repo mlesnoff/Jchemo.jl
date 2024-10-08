@@ -1,4 +1,5 @@
 """
+    plsrout(; kwargs...)
     plsrout(X, Y; kwargs...)
     plsrout(X, Y, weights::Weight; kwargs...)
     pcaout!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -37,7 +38,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-model = plsrout; nlv) ;
+model = plsrout(; nlv)
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -60,6 +61,8 @@ res = predict(model, Xtest; nlv = 1:2)
 @head res.pred[2]
 ```
 """ 
+plsrout(; kwargs...) = JchemoModel(plsrout, nothing, kwargs)
+
 function plsrout(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

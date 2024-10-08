@@ -20,12 +20,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-model = plskern; nlv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, Ytrain)
 pred = predict(model, Xtest).pred
 bias(pred, Ytest)
 
-model = plskern; nlv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 bias(pred, ytest)

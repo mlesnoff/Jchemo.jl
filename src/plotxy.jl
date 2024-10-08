@@ -47,14 +47,13 @@ tab(year)
 lev = mlev(year)
 nlev = length(lev)
 
-model = pcasvd; nlv = 5)  
+model = pcasvd(nlv = 5)  
 fit!(model, X) 
 @head T = model.fitm.T
 
 plotxy(T[:, 1], T[:, 2]; color = (:red, .5)).f
 
-plotxy(T[:, 1], T[:, 2], year; ellipse = true, xlabel = "PC1", 
-    ylabel = "PC2").f
+plotxy(T[:, 1], T[:, 2], year; ellipse = true, xlabel = "PC1", ylabel = "PC2").f
 
 i = 2
 colm = cgrad(:Dark2_5, nlev; categorical = true)

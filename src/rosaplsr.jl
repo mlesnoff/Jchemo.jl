@@ -1,4 +1,5 @@
 """
+    rosaplsr(; kwargs...)
     rosaplsr(Xbl, Y; kwargs...)
     rosaplsr(Xbl, Y, weights::Weight; kwargs...)
     rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
@@ -66,6 +67,8 @@ res.pred
 rmsep(res.pred, ytest)
 ```
 """ 
+rosaplsr(; kwargs...) = JchemoModel(rosaplsr, nothing, kwargs)
+
 function rosaplsr(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])

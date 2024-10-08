@@ -1,9 +1,9 @@
 """
-    umap(X, Y; kwargs...)
+    umap(; kwargs...)
+    umap(X; kwargs...)
 UMAP: Uniform manifold approximation and projection for 
     dimension reduction
 * `X` : X-data (n, p).
-* `Y` : Y-data (n, q).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `psamp` : Proportion of sampling in `X` for training.
@@ -112,6 +112,8 @@ Legend(f[1, 2], elt, lev, title; nbanks = 1, rowgap = 10, framevisible = false)
 f
 ```
 """ 
+umap(; kwargs...) = JchemoModel(umap, nothing, kwargs)
+
 function umap(X; kwargs...)
     par = recovkw(ParUmap, kwargs).par
     X = ensure_mat(X)

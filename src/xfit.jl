@@ -35,7 +35,7 @@ weights = mweight(rand(n))
 nlv = 2 
 scal = false
 #scal = true
-model = pcasvd; nlv, scal) ;
+model = pcasvd(; nlv, scal) ;
 fit!(model, X)
 fitm = model.fitm ;
 @head xfit(fitm)
@@ -51,7 +51,7 @@ fitm.xmeans
 @head Xnew
 @head xfit(fitm, Xnew) + xresid(fitm, Xnew)
 
-model = pcasvd; nlv = min(n, p), scal) 
+model = pcasvd(; nlv = min(n, p), scal) 
 fit!(model, X)
 fitm = model.fitm ;
 @head xfit(fitm) 
@@ -61,7 +61,7 @@ fitm = model.fitm ;
 nlv = 3
 scal = false
 #scal = true
-model = plskern; nlv, scal)
+model = plskern(; nlv, scal)
 fit!(model, X, Y, weights) 
 fitm = model.fitm ;
 @head xfit(fitm)
@@ -76,7 +76,7 @@ xfit(fitm, Xnew, nlv = 1)
 @head Xnew
 @head xfit(fitm, Xnew) + xresid(fitm, Xnew)
 
-model = plskern; nlv = min(n, p), scal) 
+model = plskern(; nlv = min(n, p), scal) 
 fit!(model, X, Y, weights) 
 fitm = model.fitm ;
 @head xfit(fitm) 

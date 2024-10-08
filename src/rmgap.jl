@@ -1,4 +1,5 @@
 """
+    rmgap(; kwargs...)
     rmgap(X; kwargs...)
 Remove vertical gaps in spectra (e.g. for ASD).  
 * `X` : X-data (n, p).
@@ -43,6 +44,8 @@ vlines!(ax, wl_target; linestyle = :dot, color = (:grey, .8))
 f
 ```
 """ 
+rmgap(; kwargs...) = JchemoModel(rmgap, nothing, kwargs)
+
 function rmgap(X; kwargs...)
     par = recovkw(ParRmgap, kwargs).par
     Rmgap(par)

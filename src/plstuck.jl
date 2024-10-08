@@ -1,4 +1,5 @@
 """
+    plstuck(; kwargs...)
     plstuck(X, Y; kwargs...)
     plstuck(X, Y, weights::Weight; kwargs...)
     plstuck!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -48,17 +49,24 @@ pnames(dat)
 X = dat.X 
 Y = dat.Y
 
-fitm = plstuck(X, Y; nlv = 3)
-pnames(fitm)
+model = plstuck(nlv = 3)
+fit!(model, X, Y) 
+pnames(model)
+pnames(model.fitm)
 
-fitm.Tx
-transf(model, X, Y).Tx
-fscale(fitm.Tx, colnorm(fitm.Tx))
+fitm = model.fitm
+@head fitm.Tx
+@head transfbl(model, X, Y).Tx
+
+@head fitm.Ty
+@head transfbl(model, X, Y).Ty
 
 res = summary(fitm, X, Y)
 pnames(res)
 ```
 """
+plstuck(; kwargs...) = JchemoModel(plstuck, nothing, kwargs)
+
 function plstuck(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)

@@ -1,4 +1,5 @@
 """
+    rr(; kwargs...)
     rr(X, Y; kwargs...)
     rr(X, Y, weights::Weight; kwargs...)
     rr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -68,6 +69,8 @@ res = predict(model, Xtest; lb = [.1 ; .01])
 @head res.pred[2]
 ```
 """ 
+rr(; kwargs...) = JchemoModel(rr, nothing, kwargs)
+
 function rr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

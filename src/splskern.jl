@@ -1,4 +1,5 @@
 """
+    splskern(; kwargs...)
     splskern(X, Y; kwargs...)
     splskern(X, Y, weights::Weight; kwargs...)
     splskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -112,6 +113,8 @@ plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs",
     ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
+splskern(; kwargs...) = JchemoModel(splskern, nothing, kwargs)
+
 function splskern(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

@@ -1,4 +1,5 @@
 """
+    pcr(; kwargs...)
     pcr(X, Y; kwargs...)
     pcr(X, Y, weights::Weight; kwargs...)
     pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -30,7 +31,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-model = pcr; nlv) ;
+model = pcr(; nlv) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -55,10 +56,11 @@ res = predict(model, Xtest; nlv = 1:2)
 res = summary(model, Xtrain) ;
 pnames(res)
 z = res.explvarx
-plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", 
-    ylabel = "Prop. Explained X-Variance").f
+plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
+pcr(; kwargs...) = JchemoModel(pcr, nothing, kwargs)
+
 function pcr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

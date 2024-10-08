@@ -1,4 +1,5 @@
 """
+    svmr(; kwargs...)
     svmr(X, y; kwargs...)
 Support vector machine for regression (Epsilon-SVR).
 * `X` : X-data (n, p).
@@ -91,7 +92,9 @@ lines!(ax, x, vec(pred), label = "Fitted model")
 axislegend("Method")
 f
 ```
-""" 
+"""
+svmr(; kwargs...) = JchemoModel(svmr, nothing, kwargs)
+
 function svmr(X, y; kwargs...)
     par = recovkw(ParSvm, kwargs).par
     kern = par.kern 

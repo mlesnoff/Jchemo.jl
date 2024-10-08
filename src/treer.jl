@@ -1,4 +1,5 @@
 """ 
+    treer(; kwargs...)
     treer(X, y; kwargs...)
 Regression tree (CART) with DecisionTree.jl.
 * `X` : X-data (n, p).
@@ -63,6 +64,8 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
     ylabel = "Observed").f    
 ```
 """ 
+treer(; kwargs...) = JchemoModel(treer, nothing, kwargs)
+
 function treer(X, y; kwargs...) 
     par = recovkw(ParTree, kwargs).par
     X = ensure_mat(X)

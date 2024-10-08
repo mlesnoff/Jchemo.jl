@@ -1,4 +1,5 @@
 """ 
+    rfr(; kwargs...)
     rfr(X, y; kwargs...)
 Random forest regression with DecisionTree.jl.
 * `X` : X-data (n, p).
@@ -75,6 +76,8 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
     ylabel = "Observed").f    
 ```
 """ 
+rfr(; kwargs...) = JchemoModel(rfr, nothing, kwargs)
+
 function rfr(X, y; kwargs...)
     par = recovkw(ParRf, kwargs).par
     X = ensure_mat(X)

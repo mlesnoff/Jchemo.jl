@@ -1,4 +1,5 @@
 """
+    rp(; kwargs...)
     rp(X; kwargs...)
     rp(X, weights::Weight; kwargs...)
     rp!(X::Matrix, weights::Weight; kwargs...)
@@ -32,6 +33,8 @@ pnames(model.fitm)
 transf(model, X[1:2, :])
 ```
 """
+rp(; kwargs...) = JchemoModel(rp, nothing, kwargs)
+
 function rp(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

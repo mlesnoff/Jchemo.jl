@@ -1,4 +1,5 @@
 """ 
+    plsravg(; kwargs...)
     plsravg(X, Y; kwargs...)
     plsravg(X, Y, weights::Weight; kwargs...)
     plsravg!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -56,7 +57,7 @@ ntest = nro(Xtest)
 nlv = 0:30
 #nlv = 5:20
 #nlv = 25
-model = plsravg; nlv) ;
+model = plsravg(; nlv) ;
 fit!(model, Xtrain, ytrain)
 
 res = predict(model, Xtest)
@@ -67,6 +68,8 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
     ylabel = "Observed").f    
 ```
 """ 
+plsravg(; kwargs...) = JchemoModel(plsravg, nothing, kwargs)
+
 function plsravg(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

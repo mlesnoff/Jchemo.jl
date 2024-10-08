@@ -1,4 +1,5 @@
 """
+    soplsr(; kwargs...)
     soplsr(Xbl, Y; kwargs...)
     soplsr(Xbl, Y, weights::Weight; kwargs...)
     soplsr!(Xbl::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -65,6 +66,8 @@ res.pred
 rmsep(res.pred, ytest)
 ```
 """
+soplsr(; kwargs...) = JchemoModel(soplsr, nothing, kwargs)
+
 function soplsr(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])

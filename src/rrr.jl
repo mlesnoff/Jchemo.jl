@@ -1,4 +1,5 @@
 """
+    rrr(; kwargs...)
     rrr(X, Y; kwargs...)
     rrr(X, Y, weights::Weight; kwargs...)
     rr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -83,6 +84,8 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
     ylabel = "Observed").f   
 ```
 """
+rrr(; kwargs...) = JchemoModel(rrr, nothing, kwargs)
+
 function rrr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
