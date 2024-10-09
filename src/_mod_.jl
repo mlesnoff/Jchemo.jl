@@ -1,3 +1,5 @@
+## This function still works but is not used anymore for >= 0.6.0
+## (previous syntax)
 Base.@kwdef mutable struct JchemoModel{T <: Function, K <: Base.Pairs}
     algo::T   
     fitm

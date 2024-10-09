@@ -60,13 +60,13 @@ fitm = model.fitm ;
 fitm.lev
 fitm.ni
 
-fitm_emb = fitm.fitm.fitm_emb ;
-@head fitm_emb.T
+embfitm = fitm.fitm.embfitm ;
+@head embfitm.T
 @head transf(model, Xtrain)
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
 
-coef(fitm_emb)
+coef(embfitm)
 
 res = predict(model, Xtest) ;
 pnames(res)
@@ -92,12 +92,12 @@ function kplslda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fitm_emb = kplsr(X, res.Y, weights; kwargs...)
-    fitm_da = list(Lda, par.nlv)
+    embfitm = kplsr(X, res.Y, weights; kwargs...)
+    dafitm = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fitm_da[i] = lda(fitm_emb.T[:, 1:i], y, weights; kwargs...)
+        dafitm[i] = lda(embfitm.T[:, 1:i], y, weights; kwargs...)
     end
-    fitm = (fitm_emb = fitm_emb, fitm_da = fitm_da)
+    fitm = (embfitm = embfitm, dafitm = dafitm)
     Plsprobda(fitm, res.lev, ni, par)
 end
 

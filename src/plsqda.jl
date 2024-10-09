@@ -57,12 +57,12 @@ function plsqda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fitm_emb = plskern(X, res.Y, weights; kwargs...)
-    fitm_da = list(Qda, par.nlv)
+    embfitm = plskern(X, res.Y, weights; kwargs...)
+    dafitm = list(Qda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fitm_da[i] = qda(vcol(fitm_emb.T, 1:i), y, weights; kwargs...)
+        dafitm[i] = qda(vcol(embfitm.T, 1:i), y, weights; kwargs...)
     end
-    fitm = (fitm_emb = fitm_emb, fitm_da = fitm_da)
+    fitm = (embfitm = embfitm, dafitm = dafitm)
     Plsprobda(fitm, res.lev, ni, par)
 end
 

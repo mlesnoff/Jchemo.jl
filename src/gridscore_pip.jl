@@ -55,21 +55,20 @@ yval = ytrain[s.test]
 ####-- Pipeline Snv :> Savgol :> Plsr
 ## Only the last model is validated
 ## model1
-centr = true ; scal = false
-model1 = snv; centr, scal)
+model1 = snv()
 ## model2 
 npoint = 11 ; deriv = 2 ; degree = 3
-model2 = savgol; npoint, deriv, degree)
+model2 = savgol(; npoint, deriv, degree)
 ## model3
 nlv = 0:30
-model3 = plskern)
+model3 = plskern()
 ##
 model = pip(model1, model2, model3)
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, nlv) ;
 plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model3 = plskern; nlv = res.nlv[u])
+model3 = plskern(nlv = res.nlv[u])
 model = pip(model1, model2, model3)
 fit!(model, Xtrain, ytrain)
 res = predict(model, Xtest) ; 
@@ -82,22 +81,21 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 ## Only the last model is validated
 ## model1
 nlv = 15 ; scal = true
-model1 = pcasvd; nlv, scal)
+model1 = pcasvd(; nlv, scal)
 ## model2
 kern = [:krbf]
 gamma = (10).^(-5:1.:5)
 cost = (10).^(1:3)
 epsilon = [.1, .2, .5]
 pars = mpar(kern = kern, gamma = gamma, cost = cost, epsilon = epsilon)
-model2 = svmr)
+model2 = svmr()
 ##
 model = pip(model1, model2)
-res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars)
+res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, verbose = true)
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model2 = svmr; kern = res.kern[u], gamma = res.gamma[u], cost = res.cost[u],
-    epsilon = res.epsilon[u])
-model = pip(model1, model2) ;
+model2 = svmr(kern = res.kern[u], gamma = res.gamma[u], cost = res.cost[u], epsilon = res.epsilon[u])
+model = pip(model1, model2) 
 fit!(model, Xtrain, ytrain)
 res = predict(model, Xtest) ; 
 @head res.pred 
