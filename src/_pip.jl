@@ -49,7 +49,6 @@ pip(args...) = Pipeline(values(args))
 function fit!(model::Pipeline, X, Y = nothing; verbose = :false)
     K = length(model.model)
     @assert K > 1 "A pipeline must contain at least 2 models."
-    #typ = [model.model[i].algo() for i in eachindex(model.model)]
     typ = list(Symbol, K)
     for i = 1:K
         meth = methods(model.model[i].algo)
