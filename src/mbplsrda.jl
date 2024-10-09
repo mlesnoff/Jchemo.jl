@@ -1,4 +1,5 @@
 """
+    mbplsrda(; kwargs...)
     mbplsrda(Xbl, y; kwargs...)
     mbplsrda(Xbl, y, weights::Weight; kwargs...)
 Discrimination based on multiblock partial least squares 
@@ -73,22 +74,24 @@ scal = false
 #scal = true
 bscal = :none
 #bscal = :frob
-mod = model(mbplsrda; nlv, bscal, scal)
-fit!(mod, Xbltrain, ytrain) 
-pnames(mod) 
+model = mbplsrda(; nlv, bscal, scal)
+fit!(model, Xbltrain, ytrain) 
+pnames(model) 
 
-@head mod.fm.fm.T 
-@head transf(mod, Xbltrain)
-@head transf(mod, Xbltest)
+@head model.fitm.fitm.T 
+@head transf(model, Xbltrain)
+@head transf(model, Xbltest)
 
-res = predict(mod, Xbltest) ; 
+res = predict(model, Xbltest) ; 
 @head res.pred 
 @show errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(mod, Xbltest; nlv = 1:2).pred
+predict(model, Xbltest; nlv = 1:2).pred
 ```
 """
+mbplsrda(; kwargs...) = JchemoModel(mbplsrda, nothing, kwargs)
+
 function mbplsrda(Xbl, y; kwargs...)
     par = recovkw(ParMbplsda, kwargs).par
     Q = eltype(Xbl[1][1, 1])
@@ -100,8 +103,8 @@ function mbplsrda(Xbl, y, weights::Weight; kwargs...)
     par = recovkw(ParMbplsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
-    fm = mbplsr(Xbl, res.Y, weights; kwargs...)
-    Mbplsrda(fm, res.lev, ni, par) 
+    fitm = mbplsr(Xbl, res.Y, weights; kwargs...)
+    Mbplsrda(fitm, res.lev, ni, par) 
 end
 
 """ 
@@ -113,7 +116,7 @@ Compute latent variables (LVs = scores T) from a fitted model.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transf(object::Mbplsrda, Xbl; nlv = nothing)
-    transf(object.fm, Xbl; nlv)
+    transf(object.fitm, Xbl; nlv)
 end
 
 """
@@ -128,13 +131,13 @@ function predict(object::Mbplsrda, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     Qy = eltype(object.lev)
     m = nro(Xbl[1])
-    a = nco(object.fm.T)
+    a = nco(object.fitm.T)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
     @inbounds for i = 1:le_nlv
-        zpred = predict(object.fm, Xbl; nlv = nlv[i]).pred
+        zpred = predict(object.fitm, Xbl; nlv = nlv[i]).pred
         z =  mapslices(argmax, zpred; dims = 2)  # if equal, argmax takes the first
         pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)     
         posterior[i] = zpred

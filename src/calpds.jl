@@ -1,19 +1,20 @@
 """
-    calpds(X1, X2; npoint = 5, fun = plskern, kwargs...)
+    calpds(; npoint = 5, algo = plskern, kwargs...)
+    calpds(X1, X2; npoint = 5, algo = plskern, kwargs...)
 Piecewise direct standardization (PDS) for calibration transfer of spectral data.
 * `X1` : Spectra (n, p) to transfer to the target.
 * `X2` : Target spectra (n, p).
 Keyword arguments:
 * `npoint` : Half-window size (nb. points left or right 
     to the given wavelength). 
-* `fun` : Function used as transfer model.  
-* `kwargs` : Optional arguments for `fun`.
+* `algo` : Function used as transfer model.  
+* `kwargs` : Optional arguments for `algo`.
 
 `X1` and `X2` must represent the same n standard samples.
 
 The objective is to transform spectra `X1` to new spectra as close 
 as possible as the target `X2`. Method PDS fits models 
-(defined in `fun`) that predict `X2` from `X1`.
+(defined in `algo`) that predict `X2` from `X1`.
 
 The window used in `X1` to predict wavelength "i" in `X2` is:
 
@@ -53,12 +54,12 @@ X2cal = dat.X2cal
 X2val = dat.X2val
 
 ## Fitting the model
-mod = model(calpds; npoint = 2, fun = plskern, nlv = 2) 
-fit!(mod, X1cal, X2cal)
+model = calpds(npoint = 2, algo = plskern, nlv = 2) 
+fit!(model, X1cal, X2cal)
 
 ## Transfer of new spectra X1val 
 ## expected to be close to X2val
-pred = predict(mod, X1val).pred
+pred = predict(model, X1val).pred
 
 i = 1
 f = Figure(size = (500, 300))
@@ -70,19 +71,21 @@ axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-function calpds(X1, X2; npoint = 5, fun = plskern, kwargs...)
+calpds(; npoint = 5, algo = plskern, kwargs...) = JchemoModel(calpds, nothing, kwargs)
+
+function calpds(X1, X2; npoint = 5, algo = plskern, kwargs...)
     @assert npoint >= 1 "Argument 'npoint' must be >= 1."
     p = nco(X1)
-    fm = list(p)
+    fitm = list(p)
     s = list(p)
     npo = repeat([npoint], p)
     npo[1:npoint] .= collect(1:npoint) .- 1
     npo[(p - npoint + 1):p] .= collect(npoint:-1:1) .- 1
     @inbounds for i = 1:p
         s[i] = collect((i - npo[i]):(i + npo[i]))
-        fm[i] = fun(vcol(X1, s[i]), vcol(X2, i); kwargs...)
+        fitm[i] = algo(vcol(X1, s[i]), vcol(X2, i); kwargs...)
     end
-    Calpds(fm, s)
+    Calpds(fitm, s)
 end
 
 """
@@ -96,7 +99,7 @@ function predict(object::Calpds, X)
     m, p = size(X)
     pred = similar(X, m, p)
     @inbounds for i = 1:p 
-        pred[:, i] .= predict(object.fm[i], vcol(X, object.s[i])).pred
+        pred[:, i] .= predict(object.fitm[i], vcol(X, object.s[i])).pred
     end
     (pred = pred,)
 end

@@ -1,4 +1,5 @@
 """
+    splsrda(; kwargs...)
     splsrda(X, y; kwargs...)
     splsrda(X, y, weights::Weight; kwargs...)
 Sparse PLSR-DA.
@@ -54,32 +55,34 @@ tab(ytest)
 
 nlv = 15
 meth = :mix ; nvar = 10
-mod = model(splsrda; nlv, meth, nvar) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
-fm.lev
-fm.ni
+model = splsrda(; nlv, meth, nvar) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
 
-@head fm.fm.T
-@head transf(mod, Xtrain)
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
+@head fitm.fitm.T
+@head transf(model, Xtrain)
+@head transf(model, Xtest)
+@head transf(model, Xtest; nlv = 3)
 
-coef(fm.fm)
+coef(fitm.fitm)
 
-res = predict(mod, Xtest) ;
+res = predict(model, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(mod, Xtest; nlv = 1:2).pred
-summary(fm.fm, Xtrain)
+predict(model, Xtest; nlv = 1:2).pred
+summary(fitm.fitm, Xtrain)
 ```
 """ 
+splsrda(; kwargs...) = JchemoModel(splsrda, nothing, kwargs)
+
 function splsrda(X, y; kwargs...)
     par = recovkw(ParSplsda, kwargs).par
     Q = eltype(X[1, 1])
@@ -91,8 +94,8 @@ function splsrda(X, y, weights::Weight; kwargs...)
     par = recovkw(ParSplsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
-    fm = splskern(X, res.Y, weights; kwargs...)
-    Plsrda(fm, res.lev, ni, par)
+    fitm = splskern(X, res.Y, weights; kwargs...)
+    Plsrda(fitm, res.lev, ni, par)
 end
 
 

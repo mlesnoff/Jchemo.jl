@@ -1,4 +1,5 @@
 """
+    pcaout(; kwargs...)
     pcaout(X; kwargs...)
     pcaout(X, weights::Weight; kwargs...)
     pcaout!(X::Matrix, weights::Weight; kwargs...)
@@ -60,20 +61,22 @@ wl = parse.(Float64, wlst)
 n = nro(X)
 
 nlv = 3
-mod = model(pcaout; nlv)  
-#mod = model(pcasvd; nlv) 
-fit!(mod, X)
-pnames(mod)
-pnames(mod.fm)
-@head T = mod.fm.T
+model = pcaout(; nlv)  
+#model = pcasvd(; nlv) 
+fit!(model, X)
+pnames(model)
+pnames(model.fitm)
+@head T = model.fitm.T
 ## Same as:
-transf(mod, X)
+transf(model, X)
 
 i = 1
 plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i), 
     ylabel = string("PC", i + 1)).f
 ```
 """ 
+pcaout(; kwargs...) = JchemoModel(pcaout, nothing, kwargs)
+
 function pcaout(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
@@ -96,6 +99,6 @@ function pcaout!(X::Matrix, weights::Weight; kwargs...)
     w .*= talworth(d; a = quantile(d, 1 - par.prm))
     w .*= weights.w
     w[isequal.(w, 0)] .= 1e-10
-    fm = pcasvd(X, mweight(w); kwargs...)
-    Pca(fm.T, fm.P, fm.sv, fm.xmeans, fm.xscales, fm.weights, nothing, par)
+    fitm = pcasvd(X, mweight(w); kwargs...)
+    Pca(fitm.T, fitm.P, fitm.sv, fitm.xmeans, fitm.xscales, fitm.weights, nothing, par)
 end

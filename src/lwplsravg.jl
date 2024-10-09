@@ -1,7 +1,7 @@
 """
+    lwplsravg(; kwargs...)
     lwplsravg(X, Y; kwargs...)
-Averaging kNN-LWPLSR models with different numbers of latent variables 
-    (kNN-LWPLSR-AVG).
+Averaging kNN-LWPLSR models with different numbers of latent variables (kNN-LWPLSR-AVG).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 Keyword arguments:
@@ -78,22 +78,24 @@ ytest = rmrow(y, s)
 
 nlvdis = 5 ; metric = :mah 
 h = 1 ; k = 200 ; nlv = 4:20
-mod = model(lwplsravg; nlvdis, metric, h, k, nlv) ;
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
+model = lwplsravg(; nlvdis, metric, h, k, nlv) ;
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
 
-res = predict(mod, Xtest) ; 
+res = predict(model, Xtest) ; 
 pnames(res) 
 res.listnn
 res.listd
 res.listw
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
-    xlabel = "Prediction", ylabel = "Observed").f  
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
+    ylabel = "Observed").f  
 ```
 """ 
+lwplsravg(; kwargs...) = JchemoModel(lwplsravg, nothing, kwargs)
+
 function lwplsravg(X, Y; kwargs...)
     par = recovkw(ParLwplsr, kwargs).par
     X = ensure_mat(X)
@@ -101,15 +103,15 @@ function lwplsravg(X, Y; kwargs...)
     Q = eltype(X)
     p = nco(X)
     if par.nlvdis == 0
-        fm = nothing
+        fitm = nothing
     else
-        fm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
+        fitm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
     end
     xscales = ones(Q, p)
-    if isnothing(fm) && par.scal
+    if isnothing(fitm) && par.scal
         xscales .= colstd(X)
     end
-    Lwplsravg(X, Y, fm, xscales, par)
+    Lwplsravg(X, Y, fitm, xscales, par)
 end
 
 """
@@ -128,7 +130,7 @@ function predict(object::Lwplsravg, X)
     tolw = object.par.tolw
     criw = object.par.criw
     squared = object.par.squared
-    if isnothing(object.fm)
+    if isnothing(object.fitm)
         if object.par.scal
             zX1 = fscale(object.X, object.xscales)
             zX2 = fscale(X, object.xscales)
@@ -137,8 +139,8 @@ function predict(object::Lwplsravg, X)
             res = getknn(object.X, X; metric, k)
         end
     else
-        res = getknn(object.fm.T, 
-            transf(object.fm, X); metric, k) 
+        res = getknn(object.fitm.T, 
+            transf(object.fitm, X); metric, k) 
     end
     listw = copy(res.d)
     Threads.@threads for i = 1:m
@@ -147,7 +149,7 @@ function predict(object::Lwplsravg, X)
         listw[i] = w
     end
     ## End
-    pred = locw(object.X, object.Y, X; listnn = res.ind, listw, fun = plsravg, 
+    pred = locw(object.X, object.Y, X; listnn = res.ind, listw, algo = plsravg, 
         nlv = object.par.nlv, scal = object.par.scal, verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end

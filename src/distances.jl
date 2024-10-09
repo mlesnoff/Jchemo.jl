@@ -93,7 +93,7 @@ an object (n, m) with:
 
 ## Examples
 ```julia
-using LinearAlgebra
+using LinearAlgebra, StatsBase
 
 X = rand(5, 3)
 Y = rand(2, 3)

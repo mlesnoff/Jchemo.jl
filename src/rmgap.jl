@@ -1,4 +1,5 @@
 """
+    rmgap(; kwargs...)
     rmgap(X; kwargs...)
 Remove vertical gaps in spectra (e.g. for ASD).  
 * `X` : X-data (n, p).
@@ -35,14 +36,16 @@ vlines!(ax, wl_target; linestyle = :dot, color = (:grey, .8))
 f
 
 ## Corrected data
-mod = model(rmgap; indexcol, npoint = 5)
-fit!(mod, X)
-Xc = transf(mod, X)
+model = rmgap(; indexcol, npoint = 5)
+fit!(model, X)
+Xc = transf(model, X)
 f, ax = plotsp(Xc, wl)
 vlines!(ax, wl_target; linestyle = :dot, color = (:grey, .8))
 f
 ```
 """ 
+rmgap(; kwargs...) = JchemoModel(rmgap, nothing, kwargs)
+
 function rmgap(X; kwargs...)
     par = recovkw(ParRmgap, kwargs).par
     Rmgap(par)
@@ -72,8 +75,8 @@ function transf!(object::Rmgap, X::Matrix)
     @inbounds for i = 1:ngap
         ind = indexcol[i]
         wl = max(ind - npoint + 1, 1):ind
-        fm = mlr(convert.(Q, wl), X[:, wl]')
-        pred = Jchemo.predict(fm, ind + 1).pred
+        fitm = mlr(convert.(Q, wl), X[:, wl]')
+        pred = Jchemo.predict(fitm, ind + 1).pred
         bias = X[:, ind + 1] .- pred'
         X[:, (ind + 1):p] .= X[:, (ind + 1):p] .- bias
     end

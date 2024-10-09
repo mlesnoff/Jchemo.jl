@@ -1,5 +1,6 @@
 """
     lda(; kwargs...)
+    lda(; kwargs...)
     lda(X, y; kwargs...)
     lda(X, y, weights::Weight; kwargs...)
 Linear discriminant analysis (LDA).
@@ -42,16 +43,16 @@ ntrain = n - ntest
 tab(ytrain)
 tab(ytest)
 
-mod = model(lda)
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
-fm.lev
-fm.ni
-aggsum(fm.weights.w, ytrain)
+model = lda()
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
+aggsum(fitm.weights.w, ytrain)
 
-res = predict(mod, Xtest) ;
+res = predict(model, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
@@ -59,6 +60,8 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
+lda(; kwargs...) = JchemoModel(lda, nothing, kwargs)
+
 function lda(X, y; kwargs...)
     par = recovkw(ParLda, kwargs).par
     Q = eltype(X[1, 1])
@@ -87,14 +90,14 @@ function lda(X, y, weights::Weight; kwargs...)
         priors = mweight(par.prior).w
     end
     ## End
-    fm = list(nlev)
+    fitm = list(nlev)
     ct = similar(X, nlev, p)
     @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(vrow(X, s), mweight(weights.w[s]))
-        fm[i] = dmnorm(; mu = ct[i, :], S = res.W) 
+        fitm[i] = dmnorm(ct[i, :], res.W)
     end
-    Lda(fm, res.W, ct, priors, ni, lev, weights, par)
+    Lda(fitm, res.W, ct, priors, ni, lev, weights, par)
 end
 
 """
@@ -110,7 +113,7 @@ function predict(object::Union{Lda, Qda}, X)
     nlev = length(lev) 
     dens = similar(X, m, nlev)
     @inbounds for i in eachindex(lev)
-        dens[:, i] .= vec(predict(object.fm[i], X).pred)
+        dens[:, i] .= vec(predict(object.fitm[i], X).pred)
     end
     A = object.priors' .* dens
     v = sum(A, dims = 2)

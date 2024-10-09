@@ -1,4 +1,5 @@
 """
+    rp(; kwargs...)
     rp(X; kwargs...)
     rp(X, weights::Weight; kwargs...)
     rp!(X::Matrix, weights::Weight; kwargs...)
@@ -23,15 +24,17 @@ X = rand(n, p)
 nlv = 3
 meth = :li ; s = sqrt(p) 
 #meth = :gauss
-mod = model(rp; nlv, meth, s)
-fit!(mod, X)
-pnames(mod)
-pnames(mod.fm)
-@head mod.fm.T 
-@head mod.fm.P 
-transf(mod, X[1:2, :])
+model = rp(; nlv, meth, s)
+fit!(model, X)
+pnames(model)
+pnames(model.fitm)
+@head model.fitm.T 
+@head model.fitm.P 
+transf(model, X[1:2, :])
 ```
 """
+rp(; kwargs...) = JchemoModel(rp, nothing, kwargs)
+
 function rp(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

@@ -1,18 +1,18 @@
 """
-    gridscore_br(Xtrain, Ytrain, X, Y; fun, score, pars, 
+    gridscore_br(Xtrain, Ytrain, X, Y; algo, score, pars, 
         verbose = false)
 Working function for `gridscore`.
 
 See function `gridscore` for examples.
 """
-function gridscore_br(Xtrain, Ytrain, X, Y; fun, score, pars, verbose = false)
+function gridscore_br(Xtrain, Ytrain, X, Y; algo, score, pars, verbose = false)
     q = nco(Ytrain)
     ncomb = length(pars[1]) # nb. combinations in pars
     verbose ? println("-- Nb. combinations = ", ncomb) : nothing
     res = map(values(pars)...) do v...
         verbose ? println(Pair.(keys(pars), v)...) : nothing
-        fm = fun(Xtrain, Ytrain; Pair.(keys(pars), v)...)
-        pred = Jchemo.predict(fm, X).pred
+        fitm = algo(Xtrain, Ytrain; Pair.(keys(pars), v)...)
+        pred = Jchemo.predict(fitm, X).pred
         score(pred, Y)
     end
     verbose ? println("-- End.") : nothing

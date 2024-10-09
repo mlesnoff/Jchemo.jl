@@ -1,4 +1,5 @@
 """
+    svmda(; kwargs...)
     svmda(X, y; kwargs...)
 Support vector machine for discrimination "C-SVC" (SVM-DA).
 * `X` : X-data (n, p).
@@ -66,21 +67,23 @@ tab(ytest)
 
 kern = :krbf ; gamma = 1e4
 cost = 1000 ; epsilon = .5
-mod = model(svmda; kern, gamma, cost, epsilon) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
-fm.lev
-fm.ni
+model = svmda(; kern, gamma, cost, epsilon) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
 
-res = predict(mod, Xtest) ; 
+res = predict(model, Xtest) ; 
 pnames(res) 
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
+svmda(; kwargs...) = JchemoModel(svmda, nothing, kwargs)
+
 function svmda(X, y; kwargs...)
     par = recovkw(ParSvm, kwargs).par
     kern = par.kern 
@@ -106,7 +109,7 @@ function svmda(X, y; kwargs...)
     elseif kern == :ktanh
         fkern = LIBSVM.Kernel.Sigmoid
     end
-    fm = svmtrain(X', y;
+    fitm = svmtrain(X', y;
         svmtype = SVC, 
         kernel = fkern,
         gamma =  par.gamma,
@@ -117,7 +120,7 @@ function svmda(X, y; kwargs...)
         tolerance = 0.001,
         nt = 0,
         verbose = false) 
-    Svmda(fm, xscales, taby.keys, taby.vals, par)
+    Svmda(fitm, xscales, taby.keys, taby.vals, par)
 end
 
 """
@@ -128,7 +131,7 @@ Compute y-predictions from a fitted model.
 """ 
 function predict(object::Svmda, X)
     X = ensure_mat(X)
-    pred = svmpredict(object.fm, fscale(X, object.xscales)')[1]
+    pred = svmpredict(object.fitm, fscale(X, object.xscales)')[1]
     m = length(pred)
     pred = reshape(pred, m, 1)
     (pred = pred,)

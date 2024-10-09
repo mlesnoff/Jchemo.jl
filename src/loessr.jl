@@ -1,4 +1,5 @@
 """
+    loessr(; kwargs...)
     loessr(X, y; kwargs...)
 Compute a locally weighted regression model (LOESS).
 * `X` : X-data (n, p).
@@ -40,9 +41,9 @@ x[x .== 0] .= 1e-5
 n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
-mod = model(loessr; span = 1 / 3) 
-fit!(mod, x, y)
-pred = predict(mod, x).pred 
+model = loessr(span = 1 / 3) 
+fit!(model, x, y)
+pred = predict(model, x).pred 
 f = Figure(size = (700, 300))
 ax = Axis(f[1, 1], xlabel = "x", ylabel = "y")
 scatter!(x, y) 
@@ -52,6 +53,8 @@ f[1, 2] = Legend(f, ax, framevisible = false)
 f
 ```
 """ 
+loessr(; kwargs...) = JchemoModel(loessr, nothing, kwargs)
+
 function loessr(X, y; kwargs...)
     par = recovkw(ParLoessr, kwargs).par
     X = ensure_mat(X)
@@ -63,8 +66,8 @@ function loessr(X, y; kwargs...)
         xscales .= colstd(X)
         X = fscale(X, xscales)
     end
-    fm = Loess.loess(X, y; span = par.span, degree = par.degree) 
-    Loessr(fm, xscales, par) 
+    fitm = Loess.loess(X, y; span = par.span, degree = par.degree) 
+    Loessr(fitm, xscales, par) 
 end
 
 """
@@ -77,7 +80,7 @@ function predict(object::Loessr, X)
     X = ensure_mat(X)
     m = nro(X)
     Q = eltype(X)
-    pred = Loess.predict(object.fm, fscale(X, object.xscales))
+    pred = Loess.predict(object.fitm, fscale(X, object.xscales))
     pred = reshape(convert.(Q, pred), m, 1)
     (pred = pred,)
 end

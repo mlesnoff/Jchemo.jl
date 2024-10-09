@@ -1,4 +1,5 @@
 """
+    mbplslda(; kwargs...)
     mbplslda(Xbl, y; kwargs...)
     mbplslda(Xbl, y, weights::Weight; kwargs...)
 Multiblock PLS-LDA.
@@ -72,23 +73,25 @@ scal = false
 #scal = true
 bscal = :none
 #bscal = :frob
-mod = model(mbplslda; nlv, bscal, scal)
-#mod = model(mbplsqda; nlv, bscal, alpha = .5, scal)
-#mod = model(mbplskdeda; nlv, bscal, scal)
-fit!(mod, Xbltrain, ytrain) 
-pnames(mod) 
+model = mbplslda(; nlv, bscal, scal)
+#model = mbplsqda(; nlv, bscal, alpha = .5, scal)
+#model = mbplskdeda(; nlv, bscal, scal)
+fit!(model, Xbltrain, ytrain) 
+pnames(model) 
 
-@head transf(mod, Xbltrain)
-@head transf(mod, Xbltest)
+@head transf(model, Xbltrain)
+@head transf(model, Xbltest)
 
-res = predict(mod, Xbltest) ; 
+res = predict(model, Xbltest) ; 
 @head res.pred 
 @show errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(mod, Xbltest; nlv = 1:2).pred
+predict(model, Xbltest; nlv = 1:2).pred
 ```
 """ 
+mbplslda(; kwargs...) = JchemoModel(mbplslda, nothing, kwargs)
+
 function mbplslda(Xbl, y; kwargs...)
     par = recovkw(ParMbplsda, kwargs).par
     Q = eltype(Xbl[1][1, 1])
@@ -101,13 +104,13 @@ function mbplslda(Xbl, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmemb = mbplsr(Xbl, res.Y, weights; kwargs...)
-    fmda = list(Lda, par.nlv)
+    embfitm = mbplsr(Xbl, res.Y, weights; kwargs...)
+    dafitm = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = lda(fmemb.T[:, 1:i], y, weights; kwargs...)
+        dafitm[i] = lda(embfitm.T[:, 1:i], y, weights; kwargs...)
     end
-    fm = (fmemb = fmemb, fmda = fmda)
-    Mbplsprobda(fm, res.lev, ni, par)
+    fitm = (embfitm = embfitm, dafitm = dafitm)
+    Mbplsprobda(fitm, res.lev, ni, par)
 end
 
 """ 
@@ -120,7 +123,7 @@ Compute latent variables (LVs = scores T) from
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Mbplsprobda, Xbl; nlv = nothing)
-    transf(object.fm.fmemb, Xbl; nlv)
+    transf(object.fitm.embfitm, Xbl; nlv)
 end
 
 """
@@ -135,15 +138,15 @@ function predict(object::Mbplsprobda, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     Qy = eltype(object.lev)
     m = nro(Xbl[1])
-    a = size(object.fm.fmemb.T, 2)
+    a = size(object.fitm.embfitm.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
     @inbounds for i = 1:le_nlv
         znlv = nlv[i]
-        T = transf(object.fm.fmemb, Xbl; nlv = znlv)
-        zres = predict(object.fm.fmda[znlv], T)
+        T = transf(object.fitm.embfitm, Xbl; nlv = znlv)
+        zres = predict(object.fitm.dafitm[znlv], T)
         z =  mapslices(argmax, zres.posterior; dims = 2) 
         pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)
         posterior[i] = zres.posterior

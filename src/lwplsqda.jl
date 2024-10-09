@@ -1,4 +1,5 @@
 """
+    lwplsqda(; kwargs...)
     lwplsqda(X, y; kwargs...)
 kNN-LWPLS-QDA.
 * `X` : X-data (n, p).
@@ -68,16 +69,17 @@ tab(ytrain)
 tab(ytest)
 
 nlvdis = 25 ; metric = :mah
-h = 1 ; k = 200
-mod = model(lwplsqda; nlvdis, metric, h, k, prior = :prop, alpha = .5) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
-fm.lev
-fm.ni
+h = 2 ; k = 200
+nlv = 10
+model = lwplsqda(; nlvdis, metric, h, k, nlv, prior = :prop, alpha = .5) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
 
-res = predict(mod, Xtest) ; 
+res = predict(model, Xtest) ; 
 pnames(res) 
 res.listnn
 res.listd
@@ -87,6 +89,8 @@ res.listw
 conf(res.pred, ytest).cnt
 ```
 """ 
+lwplsqda(; kwargs...) = JchemoModel(lwplsqda, nothing, kwargs)
+
 function lwplsqda(X, y; kwargs...) 
     par = recovkw(ParLwplsqda, kwargs).par 
     X = ensure_mat(X)
@@ -95,16 +99,16 @@ function lwplsqda(X, y; kwargs...)
     taby = tab(y)    
     p = nco(X)
     if par.nlvdis == 0
-        fm = nothing
+        fitm = nothing
     else
         weights = mweightcla(vec(y); prior = par.prior)
-        fm = plskern(X, dummy(y).Y, weights; nlv = par.nlvdis, scal = par.scal)
+        fitm = plskern(X, dummy(y).Y, weights; nlv = par.nlvdis, scal = par.scal)
     end
     xscales = ones(Q, p)
-    if isnothing(fm) && par.scal
+    if isnothing(fitm) && par.scal
         xscales .= colstd(X)
     end
-    Lwplsqda(X, y, fm, xscales, taby.keys, taby.vals, par)
+    Lwplsqda(X, y, fitm, xscales, taby.keys, taby.vals, par)
 end
 
 """
@@ -125,7 +129,7 @@ function predict(object::Lwplsqda, X; nlv = nothing)
     tolw = object.par.tolw
     criw = object.par.criw
     squared = object.par.squared
-    if isnothing(object.fm)
+    if isnothing(object.fitm)
         if object.par.scal
             zX1 = fscale(object.X, object.xscales)
             zX2 = fscale(X, object.xscales)
@@ -134,7 +138,7 @@ function predict(object::Lwplsqda, X; nlv = nothing)
             res = getknn(object.X, X; metric, k)
         end
     else
-        res = getknn(object.fm.T, transf(object.fm, X); metric, k) 
+        res = getknn(object.fitm.T, transf(object.fitm, X); metric, k) 
     end
     listw = copy(res.d)
     Threads.@threads for i = 1:m
@@ -145,7 +149,7 @@ function predict(object::Lwplsqda, X; nlv = nothing)
     ## End
     ## In each neighborhood, the observation weights in plsqda are given by listw, not by priors
     pred = locwlv(object.X, object.y, X; listnn = res.ind, listw, 
-        fun = plsqda, nlv, prior = object.par.prior, alpha = object.par.alpha, 
+        algo = plsqda, nlv, prior = object.par.prior, alpha = object.par.alpha, 
         scal = object.par.scal, verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end

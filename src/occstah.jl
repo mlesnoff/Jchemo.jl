@@ -1,4 +1,5 @@
 """
+    occstah(; kwargs...)
     occstah(X; kwargs...)
 One-class classification using the Stahel-Donoho outlierness.
 * `X` : Training X-data (n, p).
@@ -25,9 +26,9 @@ db = joinpath(path_jdat, "data/challenge2018.jld2")
 pnames(dat)
 X = dat.X    
 Y = dat.Y
-mod = model(savgol; npoint = 21, deriv = 2, degree = 3)
-fit!(mod, X) 
-Xp = transf(mod, X) 
+model = savgol(npoint = 21, deriv = 2, degree = 3)
+fit!(model, X) 
+Xp = transf(model, X) 
 s = Bool.(Y.test)
 Xtrain = rmrow(Xp, s)
 Ytrain = rmrow(Y, s)
@@ -49,44 +50,44 @@ ytrain = repeat(["in"], ntrain)
 ytest = repeat([cod], ntest)
 
 ## Group description
-mod = model(pcasvd; nlv = 10) 
-fit!(mod, zXtrain) 
-Ttrain = mod.fm.T
-Ttest = transf(mod, zXtest)
+model = pcasvd(nlv = 10) 
+fit!(model, zXtrain) 
+Ttrain = model.fitm.T
+Ttest = transf(model, zXtest)
 T = vcat(Ttrain, Ttest)
 group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
 i = 1
-plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", 
-    xlabel = string("PC", i), ylabel = string("PC", i + 1)).f
+plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", xlabel = string("PC", i),  
+    ylabel = string("PC", i + 1)).f
 
 #### Occ
 ## Preliminary dimension reduction 
 ## (Not required but often more efficient)
 nlv = 50
-mod0 = model(pcasvd; nlv) ;
-fit!(mod0, zXtrain)
-Ttrain = mod0.fm.T
-Ttest = transf(mod0, zXtest)
+model0 = pcasvd(; nlv)
+fit!(model0, zXtrain)
+Ttrain = model0.fitm.T
+Ttest = transf(model0, zXtest)
 ## Outlierness
-mod = model(occstah; nlv, scal = true)
-fit!(mod, Ttrain) 
-pnames(mod) 
-pnames(mod.fm) 
-@head d = mod.fm.d
+model = occstah(; nlv, scal = true)
+fit!(model, Ttrain) 
+pnames(model) 
+pnames(model.fitm) 
+@head d = model.fitm.d
 d = d.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index", 
     ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 
-res = predict(mod, Ttest) ;
+res = predict(model, Ttest) ;
 pnames(res)
 @head res.d
 @head res.pred
 tab(res.pred)
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
-d1 = mod.fm.d.dstand
+d1 = model.fitm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
 f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", 
@@ -95,6 +96,8 @@ hlines!(ax, 1; linestyle = :dot)
 f
 ```
 """ 
+occstah(; kwargs...) = JchemoModel(occstah, nothing, kwargs)
+
 function occstah(X; kwargs...) 
     par = recovkw(ParOccstah, kwargs).par 
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."

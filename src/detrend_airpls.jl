@@ -1,5 +1,6 @@
 """
-    dtairpls(X; kwargs...)
+    detrend_airpls(; kwargs...)
+    detrend_airpls(X; kwargs...)
 Baseline correction of each row of X-data by adaptive iteratively 
     reweighted penalized least squares algorithm (AIRPLS).
 * `X` : X-data (n, p).
@@ -44,35 +45,37 @@ plotsp(X, wl; nsamp = 20).f
 i = 2
 zX = Matrix(X)[i:i, :]
 lb = 1e6
-mod = model(dtairpls; lb)
-fit!(mod, zX)
-zXc = transf(mod, zX)   # = corrected spectrum 
-B = zX - zXc            # = estimated baseline
+model = detrend_airpls(; lb)
+fit!(model, zX)
+zXc = transf(model, zX)   # = corrected spectrum 
+B = zX - zXc              # = estimated baseline
 f, ax = plotsp(zX, wl)
 lines!(wl, vec(B); color = :blue)
 lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
-function dtairpls(X; kwargs...)
-    par = recovkw(ParDtairpls, kwargs).par
-    Dtairpls(par)
+detrend_airpls(; kwargs...) = JchemoModel(detrend_airpls, nothing, kwargs)
+
+function detrend_airpls(X; kwargs...)
+    par = recovkw(ParDetrendAirpls, kwargs).par
+    DetrendAirpls(par)
 end
 
 """ 
-    transf(object::Dtairpls, X)
-    transf!(object::Dtairpls, X)
+    transf(object::DetrendAirpls, X)
+    transf!(object::DetrendAirpls, X)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 """ 
-function transf(object::Dtairpls, X)
+function transf(object::DetrendAirpls, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::Dtairpls, X::Matrix)
+function transf!(object::DetrendAirpls, X::Matrix)
     n, p = size(X)
     w = ones(p) 
     z = similar(X, p)

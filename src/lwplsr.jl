@@ -1,7 +1,7 @@
 """
+    lwplsr(; kwargs...)
     lwplsr(X, Y; kwargs...)
-k-Nearest-Neighbours locally weighted partial least squares regression 
-    (kNN-LWPLSR).
+k-Nearest-Neighbours locally weighted partial least squares regression (kNN-LWPLSR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 Keyword arguments:
@@ -108,40 +108,42 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-nlvdis = 5 ; metric = :mah 
-h = 1 ; k = 200 ; nlv = 15
-mod = model(lwplsr; nlvdis, metric, h, k, nlv) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
+nlvdis = 15 ; metric = :mah 
+h = 1 ; k = 500 ; nlv = 10
+model = lwplsr(; nlvdis, metric, h, k, nlv) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
 
-res = predict(mod, Xtest) ; 
+res = predict(model, Xtest) ; 
 pnames(res) 
 res.listnn
 res.listd
 res.listw
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
-    xlabel = "Prediction", ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
+    ylabel = "Observed").f    
 ```
 """ 
+lwplsr(; kwargs...) = JchemoModel(lwplsr, nothing, kwargs)
+
 function lwplsr(X, Y; kwargs...)
     par = recovkw(ParLwplsr, kwargs).par 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     if par.nlvdis == 0
-        fm = nothing
+        fitm = nothing
     else
-        fm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
+        fitm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
     end
     Q = eltype(X)
     p = nco(X)
     xscales = ones(Q, p)
-    if isnothing(fm) && par.scal
+    if isnothing(fitm) && par.scal
         xscales .= colstd(X)
     end
-    Lwplsr(X, Y, fm, xscales, par)
+    Lwplsr(X, Y, fitm, xscales, par)
 end
 
 """
@@ -162,7 +164,7 @@ function predict(object::Lwplsr, X; nlv = nothing)
     tolw = object.par.tolw
     criw = object.par.criw
     squared = object.par.squared
-    if isnothing(object.fm)
+    if isnothing(object.fitm)
         if object.par.scal
             zX1 = fscale(object.X, object.xscales)
             zX2 = fscale(X, object.xscales)
@@ -171,7 +173,7 @@ function predict(object::Lwplsr, X; nlv = nothing)
             res = getknn(object.X, X; metric, k)
         end
     else
-        res = getknn(object.fm.T, transf(object.fm, X); metric, k) 
+        res = getknn(object.fitm.T, transf(object.fitm, X); metric, k) 
     end
     listw = copy(res.d)
     #@inbounds for i = 1:m
@@ -181,7 +183,7 @@ function predict(object::Lwplsr, X; nlv = nothing)
         listw[i] = w
     end
     ## End
-    pred = locwlv(object.X, object.Y, X; listnn = res.ind, listw, fun = plskern, 
+    pred = locwlv(object.X, object.Y, X; listnn = res.ind, listw, algo = plskern, 
         nlv, scal = object.par.scal, verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end

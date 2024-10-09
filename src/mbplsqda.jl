@@ -1,4 +1,5 @@
 """
+    mbplsqda(; kwargs...)
     mbplsqda(Xbl, y; kwargs...)
     mbplsqda(Xbl, y, weights::Weight; kwargs...)
 Multiblock PLS-QDA.
@@ -45,6 +46,8 @@ other choices.
 See function `mbplslda` for examples.
 
 """ 
+mbplsqda(; kwargs...) = JchemoModel(mbplsqda, nothing, kwargs)
+
 function mbplsqda(Xbl, y; kwargs...)
     par = recovkw(ParMbplsqda, kwargs).par
     Q = eltype(Xbl[1][1, 1])
@@ -57,12 +60,12 @@ function mbplsqda(Xbl, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmemb = mbplsr(Xbl, res.Y, weights; kwargs...)
-    fmda = list(Qda, par.nlv)
+    embfitm = mbplsr(Xbl, res.Y, weights; kwargs...)
+    dafitm = list(Qda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = qda(fmemb.T[:, 1:i], y, weights; kwargs...)
+        dafitm[i] = qda(embfitm.T[:, 1:i], y, weights; kwargs...)
     end
-    fm = (fmemb = fmemb, fmda = fmda)
-    Mbplsprobda(fm, res.lev, ni, par)
+    fitm = (embfitm = embfitm, dafitm = dafitm)
+    Mbplsprobda(fitm, res.lev, ni, par)
 end
 

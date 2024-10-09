@@ -1,6 +1,31 @@
 # New
 
-## *Version 0.5.4*
+## *Version 0.6.0*
+
+**Warning:** Major breaking changes.
+The function **model** of the embedded syntax has been removed. The reason is: this function was frequently entering in conflict with the variable-name 'model' used 
+in many scripts built from other machine learning packages (Flux.jl, LearnAPI.jl, etc.).
+Sorry for any inconvenience.
+
+The previous syntax (<= 0.5.3):
+
+*mod = model(plskern; nlv = 10)*
+
+*fit!(mod, X, Y)*
+
+is now written (see README):
+
+*model = plskern(nlv = 10)*  # 'model' is now a variable (object) whose name can be changed 
+
+*fit!(model, X, Y)*
+
+or equivalently
+
+*nlv = 10*
+
+*model = plskern(; nlv)*
+
+*fit!(model, X, Y)*
 
 - New
     - **umap**: new argument 'psamp'.
@@ -8,6 +33,12 @@
 - Breaking
     - **sampdf**: argument 'msamp' renamed to 'meth'.
     - Output 'fmpls' renamed to 'fmemb' in PLSDA functions.
+    - Functions **dtlo**, **dtpol**, **dtasls**, **dtarpls*, **dtairpls** 
+        renamed to **detrend_lo**, **detrend_pol**, **detrend_asls**, **detrend_arpls**, 
+        **detrend_airpls**.
+    - **dmnorm**: one of the methods has been modified.
+    - Argument and object 'fun' has been renamed 'algo' everywhere.
+    - Object 'fm' has been renamed 'fitm' (fitted model) everywhere.
 
 - Modifications
     - Code cleaning.
@@ -110,7 +141,7 @@
 
 **Warning:** Major breaking changes with versions 0.3. The embedded syntax 
 has changed, with the use of the new function **model**:
-    - 'mod = plskern(; nlv = 15)' is now writen as 'mod = model(plskern; nlv = 15)'. 
+    - 'model = plskern(; nlv = 15)' is now writen as 'model = mod_(plskern; nlv = 15)'. 
 
 - Modifications
     - Code cleaning. The examples in th the function help pages have 

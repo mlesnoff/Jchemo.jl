@@ -1,4 +1,5 @@
 """ 
+    rfr(; kwargs...)
     rfr(X, y; kwargs...)
 Random forest regression with DecisionTree.jl.
 * `X` : X-data (n, p).
@@ -63,18 +64,20 @@ p = nco(X)
 n_trees = 200
 n_subfeatures = p / 3
 max_depth = 15
-mod = model(rfr; n_trees, n_subfeatures, max_depth) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
+model = rfr(; n_trees, n_subfeatures, max_depth) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
 
-res = predict(mod, Xtest)
+res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 ```
 """ 
+rfr(; kwargs...) = JchemoModel(rfr, nothing, kwargs)
+
 function rfr(X, y; kwargs...)
     par = recovkw(ParRf, kwargs).par
     X = ensure_mat(X)
@@ -88,7 +91,7 @@ function rfr(X, y; kwargs...)
     end
     n_subfeatures = Int(round(par.n_subfeatures))
     min_purity_increase = 0
-    fm = build_forest(y, X, 
+    fitm = build_forest(y, X, 
         n_subfeatures, 
         par.n_trees, 
         par.partial_sampling,
@@ -100,6 +103,6 @@ function rfr(X, y; kwargs...)
         #rng = 3
         ) 
     featur = collect(1:p)
-    Treer(fm, xscales, featur, par)
+    Treer(fitm, xscales, featur, par)
 end
 

@@ -1,11 +1,11 @@
 """
-    occod(fm, X; kwargs...)
+    occod(; kwargs...)
+    occod(fitm, X; kwargs...)
 One-class classification using PCA/PLS orthognal distance (OD).
-* `fm` : The preliminary model that (e.g. PCA) was fitted 
-    (object `fm`) on the training data assumed to represent 
-    the training class.
+* `fitm` : The preliminary model (e.g. PCA; object `fitm`) that was fitted 
+    on the training data assumed to represent the training class.
 * `X` : Training X-data (n, p), on which was fitted 
-    the model `fm`.
+    the model `fitm`.
 Keyword arguments:
 * `mcut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
     See Thereafter.
@@ -42,9 +42,9 @@ db = joinpath(path_jdat, "data/challenge2018.jld2")
 pnames(dat)
 X = dat.X    
 Y = dat.Y
-mod = model(savgol; npoint = 21, deriv = 2, degree = 3)
-fit!(mod, X) 
-Xp = transf(mod, X) 
+model = savgol(npoint = 21, deriv = 2, degree = 3)
+fit!(model, X) 
+Xp = transf(model, X) 
 s = Bool.(Y.test)
 Xtrain = rmrow(Xp, s)
 Ytrain = rmrow(Y, s)
@@ -66,43 +66,43 @@ ytrain = repeat(["in"], ntrain)
 ytest = repeat([cod], ntest)
 
 ## Group description
-mod = model(pcasvd; nlv = 10) 
-fit!(mod, zXtrain) 
-Ttrain = mod.fm.T
-Ttest = transf(mod, zXtest)
+model = pcasvd(nlv = 10) 
+fit!(model, zXtrain) 
+Ttrain = model.fitm.T
+Ttest = transf(model, zXtest)
 T = vcat(Ttrain, Ttest)
 group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
 i = 1
-plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", 
-    xlabel = string("PC", i), ylabel = string("PC", i + 1)).f
+plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", xlabel = string("PC", i), 
+    ylabel = string("PC", i + 1)).f
 
 #### Occ
 ## Preliminary PCA fitted model
-mod0 = model(pcasvd; nlv = 10) 
-fit!(mod0, zXtrain)
+model0 = pcasvd(nlv = 10) 
+fit!(model0, zXtrain)
 ## Outlierness
-mod = model(occod)
-#mod = model(occod; mcut = :mad, cri = 4)
-#mod = model(occod; mcut = :q, risk = .01) ;
-#mod = model(occsdod)
-fit!(mod, mod0.fm, zXtrain) 
-pnames(mod) 
-pnames(mod.fm) 
-@head d = mod.fm.d
+model = occod()
+#model = occod(mcut = :mad, cri = 4)
+#model = occod(mcut = :q, risk = .01)
+#model = occsdod()
+fit!(model, model0.fitm, zXtrain) 
+pnames(model) 
+pnames(model.fitm) 
+@head d = model.fitm.d
 d = d.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), 
     xlabel = "Obs. index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 
-res = predict(mod, zXtest) ;
+res = predict(model, zXtest) ;
 pnames(res)
 @head res.d
 @head res.pred
 tab(res.pred)
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
-d1 = mod.fm.d.dstand
+d1 = model.fitm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
 f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", 
@@ -111,10 +111,12 @@ hlines!(ax, 1; linestyle = :dot)
 f
 ```
 """ 
-function occod(fm, X; kwargs...)
+occod(; kwargs...) = JchemoModel(occod, nothing, kwargs)
+
+function occod(fitm, X; kwargs...)
     par = recovkw(ParOcc, kwargs).par 
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
-    E = xresid(fm, X)
+    E = xresid(fitm, X)
     d2 = vec(sum(E .* E, dims = 2))
     d = sqrt.(d2)
     par.mcut == :mad ? cutoff = median(d) + par.cri * mad(d) : nothing
@@ -122,7 +124,7 @@ function occod(fm, X; kwargs...)
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
-    Occod(d, fm, e_cdf, cutoff, par)
+    Occod(d, fitm, e_cdf, cutoff, par)
 end
 
 """
@@ -132,7 +134,7 @@ Compute predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Occod, X)
-    E = xresid(object.fm, X)
+    E = xresid(object.fitm, X)
     m = nro(E)
     d2 = vec(sum(E .* E, dims = 2))
     d = sqrt.(d2)

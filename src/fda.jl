@@ -1,4 +1,5 @@
 """
+    fda(; kwargs...)
     fda(X, y; kwargs...)
     fda(X, y, weights; kwargs...)
     fda!(X::Matrix, y, weights; kwargs...)
@@ -59,39 +60,41 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 2
-mod = model(fda; nlv)
-#mod = model(fdasvd; nlv)
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
-lev = fm.lev
+model = fda(; nlv)
+#model = fdasvd(; nlv)
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+fitm = model.fitm ;
+lev = fitm.lev
 nlev = length(lev)
-aggsum(fm.weights.w, ytrain)
+aggsum(fitm.weights.w, ytrain)
 
-@head fm.T 
-@head transf(mod, Xtrain)
-@head transf(mod, Xtest)
+@head fitm.T 
+@head transf(model, Xtrain)
+@head transf(model, Xtest)
 
 ## X-loadings matrix
 ## = coefficients of the linear discriminant function
 ## = "LD" of function lda of the R package MASS
-fm.P
-fm.P' * fm.P
+fitm.P
+fitm.P' * fitm.P
 
 ## Explained variance computed by weighted PCA 
 ## of the class centers in transformed scale
-summary(mod).explvarx
+summary(model).explvarx
 
 ## Projections of the class centers 
 ## to the score space
-ct = fm.Tcenters 
-f, ax = plotxy(fm.T[:, 1], fm.T[:, 2], ytrain; ellipse = true, title = "FDA",
+ct = fitm.Tcenters 
+f, ax = plotxy(fitm.T[:, 1], fitm.T[:, 2], ytrain; ellipse = true, title = "FDA",
     xlabel = "Score-1", ylabel = "Score-2")
 scatter!(ax, ct[:, 1], ct[:, 2], marker = :star5, markersize = 15, color = :red)  # see available_marker_symbols()
 f
 ```
 """ 
+fda(; kwargs...) = JchemoModel(fda, nothing, kwargs)
+
 function fda(X, y; kwargs...)
     par = recovkw(ParFda, kwargs).par
     Q = eltype(X[1, 1])
@@ -126,10 +129,10 @@ function fda!(X::Matrix, y, weights; kwargs...)
     zres = matB(X, y, weights)
     Winv = LinearAlgebra.inv!(cholesky(Hermitian(res.W)))
     ## Winv * B is not symmetric
-    fm = eigen!(Winv * zres.B; sortby = x -> -abs(x))
+    fitm = eigen!(Winv * zres.B; sortby = x -> -abs(x))
     nlv = min(par.nlv, n, p, nlev - 1)
-    P = real.(fm.vectors[:, 1:nlv])
-    eig = real.(fm.values)
+    P = real.(fitm.vectors[:, 1:nlv])
+    eig = real.(fitm.values)
     sstot = sum(eig)
     norm_P = sqrt.(diag(P' * res.W * P))
     fscale!(P, norm_P)

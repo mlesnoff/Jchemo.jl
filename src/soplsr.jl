@@ -1,4 +1,5 @@
 """
+    soplsr(; kwargs...)
     soplsr(Xbl, Y; kwargs...)
     soplsr(Xbl, Y, weights::Weight; kwargs...)
     soplsr!(Xbl::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -52,19 +53,21 @@ nlv = 2
 #nlv = [2, 0, 1]
 scal = false
 #scal = true
-mod = model(soplsr; nlv, scal)
-fit!(mod, Xbltrain, ytrain)
-pnames(mod) 
-pnames(mod.fm)
-@head mod.fm.T
-@head transf(mod, Xbltrain)
-transf(mod, Xbltest)
+model = soplsr(; nlv, scal)
+fit!(model, Xbltrain, ytrain)
+pnames(model) 
+pnames(model.fitm)
+@head model.fitm.T
+@head transf(model, Xbltrain)
+transf(model, Xbltest)
 
-res = predict(mod, Xbltest)
+res = predict(model, Xbltest)
 res.pred 
 rmsep(res.pred, ytest)
 ```
 """
+soplsr(; kwargs...) = JchemoModel(soplsr, nothing, kwargs)
+
 function soplsr(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
@@ -93,34 +96,34 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     length(nlv) == 1 ? nlv = repeat([nlv], nbl) : nothing  
     D = Diagonal(weights.w)
     ## 'bscal = :none' since block-scaling has no effect on SOPLS  
-    fmbl = blockscal(Xbl, weights; bscal = :none, centr = false, scal = par.scal)
+    fitmbl = blockscal(Xbl, weights; bscal = :none, centr = false, scal = par.scal)
     ## End
-    transf!(fmbl, Xbl)
+    transf!(fitmbl, Xbl)
     yscales = ones(Q, q)
     if par.scal 
         yscales .= colstd(Y, weights)
         fscale!(Y, yscales)
     end
-    fm = list(nbl)
+    fitm = list(nbl)
     fit = similar(Xbl[1], n, q)
     b = list(nbl)
     ## Below, if 'scal' = true, 'fit' is in scale 'scaled-Y' 
     ## First block
-    fm[1] = plskern(Xbl[1], Y, weights; nlv = nlv[1], scal = false)  
-    T = fm[1].T
-    fit .= predict(fm[1], Xbl[1]).pred
+    fitm[1] = plskern(Xbl[1], Y, weights; nlv = nlv[1], scal = false)  
+    T = fitm[1].T
+    fit .= predict(fitm[1], Xbl[1]).pred
     b[1] = nothing
     ## Other blocks
     if nbl > 1
         for i = 2:nbl
             b[i] = inv(T' * (D * T)) * T' * (D * Xbl[i])
             X = Xbl[i] - T * b[i]
-            fm[i] = plskern(X, Y - fit, weights; nlv = nlv[i], scal = false)  
-            T = hcat(T, fm[i].T)
-            fit .+= predict(fm[i], X).pred 
+            fitm[i] = plskern(X, Y - fit, weights; nlv = nlv[i], scal = false)  
+            T = hcat(T, fitm[i].T)
+            fit .+= predict(fitm[i], X).pred 
         end
     end
-    Soplsr(fm, T, fit, b, fmbl, yscales, par)
+    Soplsr(fitm, T, fit, b, fitmbl, yscales, par)
 end
 
 """ 
@@ -132,12 +135,12 @@ Compute latent variables (LVs = scores T) from a fitted model.
 """ 
 function transf(object::Soplsr, Xbl)
     nbl = length(Xbl)
-    zXbl = transf(object.fmbl, Xbl)   
-    T = transf(object.fm[1], zXbl[1])
+    zXbl = transf(object.fitmbl, Xbl)   
+    T = transf(object.fitm[1], zXbl[1])
     if nbl > 1
         @inbounds for i = 2:nbl
             X = zXbl[i] - T * object.b[i]
-            T = hcat(T, transf(object.fm[i], X))
+            T = hcat(T, transf(object.fitm[i], X))
         end
     end
     T
@@ -152,15 +155,15 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Soplsr, Xbl)
     nbl = length(Xbl)
-    zXbl = transf(object.fmbl, Xbl)   
-    T = transf(object.fm[1], zXbl[1])
-    pred =  object.fm[1].ymeans' .+ T * object.fm[1].C'
+    zXbl = transf(object.fitmbl, Xbl)   
+    T = transf(object.fitm[1], zXbl[1])
+    pred =  object.fitm[1].ymeans' .+ T * object.fitm[1].C'
     if nbl > 1
         @inbounds for i = 2:nbl
             X = zXbl[i] - T * object.b[i]
-            zT = transf(object.fm[i], X)
-            pred .+= object.fm[i].ymeans' .+ zT * object.fm[i].C'
-            T = hcat(T, transf(object.fm[i], X))
+            zT = transf(object.fitm[i], X)
+            pred .+= object.fitm[i].ymeans' .+ zT * object.fitm[i].C'
+            T = hcat(T, transf(object.fitm[i], X))
         end
     end
     pred .= pred .* object.yscales' 

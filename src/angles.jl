@@ -109,8 +109,8 @@ function rd(X, Y, weights::Weight; typ = :cor)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)
-    typ == :cor ? fun = corm : fun = covm
-    A = fun(X, Y, weights).^2
+    typ == :cor ? algo = corm : algo = covm
+    A = algo(X, Y, weights).^2
     sum(A; dims = 1) / p
 end
 

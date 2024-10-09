@@ -1,5 +1,5 @@
 """
-    gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, pars = nothing, 
+    gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, 
         nlv, verbose = false)
 Working function for `gridscore`.
 
@@ -9,7 +9,7 @@ must not contain `nlv`.
 
 See function `gridscore` for examples.
 """
-function gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, pars = nothing, nlv, verbose = false)
+function gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, nlv, verbose = false)
     ## Case where not multiblock
     if isa(Xtrain[1, 1], Number)
         p = nco(Xtrain)
@@ -20,8 +20,8 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, pars = nothing, nlv, ver
     le_nlv = length(nlv)
     if isnothing(pars)   # e.g.: case of PLSR
         verbose ? println("-- Nb. combinations = 0.") : nothing
-        fm = fun(Xtrain, Ytrain; nlv = maximum(nlv))
-        pred = predict(fm, X; nlv).pred
+        fitm = algo(Xtrain, Ytrain; nlv = maximum(nlv))
+        pred = predict(fitm, X; nlv).pred
         le_nlv == 1 ? pred = [pred] : nothing
         res = zeros(le_nlv, q)
         @inbounds for i = 1:le_nlv
@@ -33,8 +33,8 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; fun, score, pars = nothing, nlv, ver
         verbose ? println("-- Nb. combinations = ", ncomb) : nothing
         res = map(values(pars)...) do v...    
             verbose ? println(Pair.(keys(pars), v)...) : nothing
-            fm = fun(Xtrain, Ytrain ; nlv = maximum(nlv), Pair.(keys(pars), v)...)
-            pred = Jchemo.predict(fm, X; nlv).pred
+            fitm = algo(Xtrain, Ytrain ; nlv = maximum(nlv), Pair.(keys(pars), v)...)
+            pred = Jchemo.predict(fitm, X; nlv).pred
             le_nlv == 1 ? pred = [pred] : nothing
             zres = zeros(le_nlv, q)
             @inbounds for i = 1:le_nlv

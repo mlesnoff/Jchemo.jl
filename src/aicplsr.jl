@@ -57,7 +57,7 @@ function aicplsr(X, y; alpha = 2, kwargs...)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
     pars = mpar(scal = par.scal)  
-    res = gridscore_lv(X, y, X, y; fun = plskern, score = ssr, pars, nlv = 0:nlv)
+    res = gridscore_lv(X, y, X, y; algo = plskern, score = ssr, pars, nlv = 0:nlv)
     zssr = res.y1
     df = dfplsr_cg(X, y; kwargs...).df
     df_ssr = n .- df

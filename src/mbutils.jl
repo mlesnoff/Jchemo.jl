@@ -1,4 +1,5 @@
 """
+    blockscal(; kwargs...)
     blockscal(Xbl; kwargs...)
     blockscal(Xbl, weights::Weight; kwargs...)
 Scale multiblock X-data.
@@ -44,15 +45,17 @@ Xblnew = mblock(Xnew, listbl)
 
 centr = true ; scal = true
 bscal = :frob
-mod = model(blockscal; centr, scal, bscal)
-fit!(mod, Xbl)
-zXbl = transf(mod, Xbl) ; 
+model = blockscal(; centr, scal, bscal)
+fit!(model, Xbl)
+zXbl = transf(model, Xbl) ; 
 @head zXbl[3]
 
-zXblnew = transf(mod, Xblnew) ; 
+zXblnew = transf(model, Xblnew) ; 
 zXblnew[3]
 ```
 """
+blockscal(; kwargs...) = JchemoModel(blockscal, nothing, kwargs)
+
 function blockscal(Xbl; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
@@ -160,6 +163,7 @@ function fblockscal!(Xbl::Vector, bscales::Vector)
 end 
 
 """
+    mbconcat()
     mbconcat(Xbl)
 Concatenate horizontaly multiblock X-data.
 * `Xbl` : List of blocks (vector of matrices) of X-data 
@@ -176,12 +180,14 @@ Xbl = mblock(X, listbl)
 Xblnew = mblock(Xnew, listbl) 
 @head Xbl[3]
 
-mod = model(mbconcat) 
-fit!(mod, Xbl)
-transf(mod, Xbl)
-transf(mod, Xblnew)
+model = mbconcat() 
+fit!(model, Xbl)
+transf(model, Xbl)
+transf(model, Xblnew)
 ```
 """
+mbconcat(; kwargs...) = JchemoModel(mbconcat, nothing, kwargs)
+
 function mbconcat(Xbl)
     Mbconcat(nothing)
 end

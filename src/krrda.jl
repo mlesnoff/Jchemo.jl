@@ -1,4 +1,5 @@
 """
+    krrda(; kwargs...)
     krrda(X, y; kwargs...)
     krrda(X, y, weights::Weight; kwargs...)
 Discrimination based on kernel ridge regression (KRR-DA).
@@ -47,26 +48,28 @@ tab(ytest)
 lb = 1e-5
 kern = :krbf ; gamma = .001 
 scal = true
-mod = model(krrda; lb, kern, gamma, scal) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
-fm.lev
-fm.ni
+model = krrda(; lb, kern, gamma, scal) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
 
-coef(fm.fm)
+coef(fitm.fitm)
 
-res = predict(mod, Xtest) ;
+res = predict(model, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(mod, Xtest; lb = [.1, .001]).pred
+predict(model, Xtest; lb = [.1, .001]).pred
 ```
 """ 
+krrda(; kwargs...) = JchemoModel(krrda, nothing, kwargs)
+
 function krrda(X, y; kwargs...)
     par = recovkw(ParKrrda, kwargs).par
     Q = eltype(X[1, 1])
@@ -78,8 +81,8 @@ function krrda(X, y, weights::Weight; kwargs...)
     par = recovkw(ParKrrda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
-    fm = krr(X, res.Y, weights; kwargs...)
-    Rrda(fm, res.lev, ni, par)
+    fitm = krr(X, res.Y, weights; kwargs...)
+    Rrda(fitm, res.lev, ni, par)
 end
 
 

@@ -1,4 +1,5 @@
 """
+    pcr(; kwargs...)
     pcr(X, Y; kwargs...)
     pcr(X, Y, weights::Weight; kwargs...)
     pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -30,35 +31,36 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-mod = model(pcr; nlv) ;
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-@head mod.fm.T
+model = pcr(; nlv) ;
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+@head model.fitm.T
 
-coef(mod)
-coef(mod; nlv = 3)
+coef(model)
+coef(model; nlv = 3)
 
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
+@head transf(model, Xtest)
+@head transf(model, Xtest; nlv = 3)
 
-res = predict(mod, Xtest)
+res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
-    xlabel = "Prediction", ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
+    ylabel = "Observed").f    
 
-res = predict(mod, Xtest; nlv = 1:2)
+res = predict(model, Xtest; nlv = 1:2)
 @head res.pred[1]
 @head res.pred[2]
 
-res = summary(mod, Xtrain) ;
+res = summary(model, Xtrain) ;
 pnames(res)
 z = res.explvarx
-plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", 
-    ylabel = "Prop. Explained X-Variance").f
+plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
+pcr(; kwargs...) = JchemoModel(pcr, nothing, kwargs)
+
 function pcr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
@@ -78,12 +80,12 @@ function pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     ## below yscales is built only for consistency with coef::Plsr  
     yscales = ones(Q, q)
     ## End 
-    fm = pcasvd!(X, weights; kwargs...)
-    D = Diagonal(fm.weights.w)
-    ## Below, first term of the product = Diagonal(1 ./ fm.sv[1:nlv].^2) if T is D-orthogonal
+    fitm = pcasvd!(X, weights; kwargs...)
+    D = Diagonal(fitm.weights.w)
+    ## Below, first term of the product = Diagonal(1 ./ fitm.sv[1:nlv].^2) if T is D-orthogonal
     ## This is the case for the actual version (pcasvd)
-    beta = inv(fm.T' * D * fm.T) * fm.T' * D * Y
-    Pcr(fm, fm.T, fm.P, beta', fm.xmeans, fm.xscales, ymeans, yscales, weights, par)
+    beta = inv(fitm.T' * D * fitm.T) * fitm.T' * D * Y
+    Pcr(fitm, fitm.T, fitm.P, beta', fitm.xmeans, fitm.xscales, ymeans, yscales, weights, par)
 end
 
 """ 
@@ -94,7 +96,7 @@ Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Pcr, X; nlv = nothing)
-    transf(object.fmpca, X; nlv)
+    transf(object.fitmpca, X; nlv)
 end
 
 """
@@ -104,7 +106,7 @@ Summarize the fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Pcr, X)
-    summary(object.fmpca, X)
+    summary(object.fitmpca, X)
 end
 
 

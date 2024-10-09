@@ -1,4 +1,5 @@
 """
+    mbplswest(; kwargs...)
     mbplswest(Xbl, Y; kwargs...)
     mbplswest(Xbl, Y, weights::Weight; kwargs...)
     mbplswest!(Xbl::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -54,19 +55,19 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-mod = model(mbplswest; nlv, bscal, scal)
-fit!(mod, Xbltrain, ytrain)
-pnames(mod) 
-pnames(mod.fm)
-@head mod.fm.T
-@head transf(mod, Xbltrain)
-transf(mod, Xbltest)
+model = mbplswest(; nlv, bscal, scal)
+fit!(model, Xbltrain, ytrain)
+pnames(model) 
+pnames(model.fitm)
+@head model.fitm.T
+@head transf(model, Xbltrain)
+transf(model, Xbltest)
 
-res = predict(mod, Xbltest)
+res = predict(model, Xbltest)
 res.pred 
 rmsep(res.pred, ytest)
 
-res = summary(mod, Xbltrain) ;
+res = summary(model, Xbltrain) ;
 pnames(res) 
 res.explvarx
 res.corx2t 
@@ -74,6 +75,8 @@ res.cortb2t
 res.rdx
 ```
 """
+mbplswest(; kwargs...) = JchemoModel(mbplswest, nothing, kwargs)
+
 function mbplswest(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
@@ -100,8 +103,8 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     q = nco(Y)
     nlv = par.nlv
     sqrtw = sqrt.(weights.w)
-    fmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
-    transf!(fmbl, Xbl)
+    fitmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
+    transf!(fitmbl, Xbl)
     X = reduce(hcat, Xbl)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
@@ -192,7 +195,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     Tx .= (1 ./ sqrtw) .* Tx
     Rx = Wx * inv(Px' * Wx)
     lb = nothing
-    Mbplswest(Tx, Px, Rx, Wx, Wytild, Tbl, Tb, Pbl, TTx, fmbl, ymeans, yscales, 
+    Mbplswest(Tx, Px, Rx, Wx, Wytild, Tbl, Tb, Pbl, TTx, fitmbl, ymeans, yscales, 
         weights, lb, niter, par)
 end
 
@@ -208,7 +211,7 @@ function Base.summary(object::Mbplswest, Xbl)
     n, nlv = size(object.T)
     nbl = length(Xbl)
     sqrtw = sqrt.(object.weights.w)
-    zXbl = transf(object.fmbl, Xbl)
+    zXbl = transf(object.fitmbl, Xbl)
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end

@@ -1,4 +1,5 @@
 """
+    splsqda(; kwargs...)
     splsqda(X, y; kwargs...)
     splsqda(X, y, weights::Weight; kwargs...)
 Sparse PLS-QDA (with continuum).
@@ -37,6 +38,8 @@ PLSR (function `plskern`), is run on the Y-dummy table.
 
 See function `splslda` for examples.
 """ 
+splsqda(; kwargs...) = JchemoModel(splsqda, nothing, kwargs)
+
 function splsqda(X, y; kwargs...)
     par = recovkw(ParSplsqda, kwargs).par
     Q = eltype(X[1, 1])
@@ -49,13 +52,13 @@ function splsqda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmemb = splskern(X, res.Y, weights; kwargs...)
-    fmda = list(Qda, par.nlv)
+    embfitm = splskern(X, res.Y, weights; kwargs...)
+    dafitm = list(Qda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = qda(vcol(fmemb.T, 1:i), y, weights; kwargs...)
+        dafitm[i] = qda(vcol(embfitm.T, 1:i), y, weights; kwargs...)
     end
-    fm = (fmemb = fmemb, fmda = fmda)
-    Plsprobda(fm, res.lev, ni, par)
+    fitm = (embfitm = embfitm, dafitm = dafitm)
+    Plsprobda(fitm, res.lev, ni, par)
 end
 
 

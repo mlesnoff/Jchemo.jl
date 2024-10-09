@@ -77,7 +77,7 @@
 - **mlrchol** Normal equations and Choleski factorization
 - **mlrpinv** Pseudo-inverse
 - **mlrpinvn** Normal equations and pseudo-inverse
-- **mlrvec** Simple linear regression (Univariate x)
+- **mlrvec** Simple (Univariate x) linear regression
 
 *Anova*
 - **aov1** One-factor ANOVA
@@ -301,11 +301,11 @@
 ### Pre-processing
 
 - De-trend transformation (baseline correction)
-    - **dtpol** Polynomial linear regression
-    - **dtlo** LOESS
-    - **dtasls** Asymmetric least squares (ASLS)
-    - **dtairpls** Adaptive iteratively reweighted penalized least squares (AIRPLS)
-    - **dtarpls** Asymmetrically reweighted penalized least squares smoothing (ARPLS)
+    - **detrend_pol** Polynomial linear regression
+    - **detrend_lo** LOESS
+    - **detrend_asls** Asymmetric least squares (ASLS)
+    - **detrend_airpls** Adaptive iteratively reweighted penalized least squares (AIRPLS)
+    - **detrend_arpls** Asymmetrically reweighted penalized least squares smoothing (ARPLS)
 - **snv** Standard-normal-deviation transformation
 - **fdif** Finite differences
 - **mavg** Smoothing by moving average

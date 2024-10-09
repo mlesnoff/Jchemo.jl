@@ -1,4 +1,5 @@
 """ 
+    treer(; kwargs...)
     treer(X, y; kwargs...)
 Regression tree (CART) with DecisionTree.jl.
 * `X` : X-data (n, p).
@@ -51,18 +52,20 @@ p = nco(X)
 
 n_subfeatures = p / 3 
 max_depth = 15
-mod = model(treer; n_subfeatures, max_depth) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
+model = treer(; n_subfeatures, max_depth) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
 
-res = predict(mod, Xtest)
+res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 ```
 """ 
+treer(; kwargs...) = JchemoModel(treer, nothing, kwargs)
+
 function treer(X, y; kwargs...) 
     par = recovkw(ParTree, kwargs).par
     X = ensure_mat(X)
@@ -76,7 +79,7 @@ function treer(X, y; kwargs...)
     end
     n_subfeatures = Int(round(par.n_subfeatures))
     min_purity_increase = 0
-    fm = build_tree(y, X,
+    fitm = build_tree(y, X,
         n_subfeatures,
         par.max_depth,
         par.min_samples_leaf,
@@ -86,7 +89,7 @@ function treer(X, y; kwargs...)
         #rng = 3
         )
     featur = collect(1:p)
-    Treer(fm, xscales, featur, par) 
+    Treer(fitm, xscales, featur, par) 
 end
 
 """
@@ -99,11 +102,11 @@ function predict(object::Treer, X)
     X = ensure_mat(X)
     m = nro(X)
     ## Tree
-    if pnames(object.fm)[1] == :node
-        pred = apply_tree(object.fm, fscale(X, object.xscales))
+    if pnames(object.fitm)[1] == :node
+        pred = apply_tree(object.fitm, fscale(X, object.xscales))
     ## Forest 
     else
-        pred = apply_forest(object.fm, fscale(X, object.xscales); 
+        pred = apply_forest(object.fitm, fscale(X, object.xscales); 
             use_multithreading = object.par.mth)
     end
     pred = reshape(pred, m, 1)

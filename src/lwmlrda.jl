@@ -1,4 +1,5 @@
 """
+    lwmlrda(; kwargs...)
     lwmlrda(X, y; kwargs...) 
 k-Nearest-Neighbours locally weighted MLR-based discrimination (kNN-LWMLR-DA).
 * `X` : X-data (n, p).
@@ -50,15 +51,15 @@ tab(ytest)
 
 metric = :mah
 h = 2 ; k = 10
-mod = model(lwmlrda; metric, h, k) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
-fm.lev
-fm.ni
+model = lwmlrda(; metric, h, k) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
 
-res = predict(mod, Xtest) ; 
+res = predict(model, Xtest) ; 
 pnames(res) 
 res.listnn
 res.listd
@@ -68,6 +69,8 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
+lwmlrda(; kwargs...) = JchemoModel(lwmlrda, nothing, kwargs)
+
 function lwmlrda(X, y; kwargs...) 
     par = recovkw(ParKnn, kwargs).par
     X = ensure_mat(X)
@@ -112,7 +115,7 @@ function predict(object::Lwmlrda, X)
         listw[i] = w
     end
     ## End
-    pred = locw(object.X, object.y, X; listnn = res.ind, listw, fun = mlrda, 
+    pred = locw(object.X, object.y, X; listnn = res.ind, listw, algo = mlrda, 
         verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end

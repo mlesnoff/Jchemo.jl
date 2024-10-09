@@ -1,5 +1,6 @@
 """
-    dtarpls(X; kwargs...)
+    detrend_arpls(; kwargs...)
+    detrend_arpls(X; kwargs...)
 Baseline correction of each row of X-data by asymmetrically
     reweighted penalized least squares smoothing (ARPLS).
 * `X` : X-data (n, p).
@@ -38,35 +39,37 @@ plotsp(X, wl; nsamp = 20).f
 i = 2
 zX = Matrix(X)[i:i, :]
 lb = 1e4
-mod = model(dtarpls; lb, p)
-fit!(mod, zX)
-zXc = transf(mod, zX)   # = corrected spectrum 
-B = zX - zXc            # = estimated baseline
+model = detrend_arpls(; lb, p)
+fit!(model, zX)
+zXc = transf(model, zX)   # = corrected spectrum 
+B = zX - zXc              # = estimated baseline
 f, ax = plotsp(zX, wl)
 lines!(wl, vec(B); color = :blue)
 lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
-function dtarpls(X; kwargs...)
-    par = recovkw(ParDtarpls, kwargs).par
-    Dtarpls(par)
+detrend_arpls(; kwargs...) = JchemoModel(detrend_arpls, nothing, kwargs)
+
+function detrend_arpls(X; kwargs...)
+    par = recovkw(ParDetrendArpls, kwargs).par
+    DetrendArpls(par)
 end
 
 """ 
-    transf(object::Dtarpls, X)
-    transf!(object::Dtarpls, X)
+    transf(object::DetrendArpls, X)
+    transf!(object::DetrendArpls, X)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 """ 
-function transf(object::Dtarpls, X)
+function transf(object::DetrendArpls, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::Dtarpls, X::Matrix)
+function transf!(object::DetrendArpls, X::Matrix)
     n, p = size(X)
     w = ones(p) 
     z = similar(X, p)

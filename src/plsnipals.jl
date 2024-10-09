@@ -1,4 +1,5 @@
 """
+    plsnipals(; kwargs...)
     plsnipals(X, Y; kwargs...)
     plsnipals(X, Y, weights::Weight; kwargs...)
     plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -29,6 +30,8 @@ Editions Technip, Paris, France.
 Wold, S., Sjostrom, M., Eriksson, l., 2001. PLS-regression: 
 a basic tool for chemometrics. Chem. Int. Lab. Syst., 58, 109-130.
 """ 
+plsnipals(; kwargs...) = JchemoModel(plsnipals, nothing, kwargs)
+
 function plsnipals(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

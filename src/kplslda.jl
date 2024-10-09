@@ -1,4 +1,5 @@
 """
+    kplslda(; kwargs...)
     kplslda(X, y; kwargs...)
     kplslda(X, y, weights::Weight; kwargs...)
 KPLS-LDA.
@@ -48,35 +49,37 @@ tab(ytest)
 
 nlv = 15
 gamma = .1
-mod = model(kplslda; nlv, gamma) 
-#mod = model(kplslda; nlv, gamma, prior = :prop) 
-#mod = model(kplsqda; nlv, gamma, alpha = .5) 
-#mod = model(kplskdeda; nlv, gamma, a = .5) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
-fm.lev
-fm.ni
+model = kplslda(; nlv, gamma) 
+#model = kplslda(; nlv, gamma, prior = :prop) 
+#model = kplsqda(; nlv, gamma, alpha = .5) 
+#model = kplskdeda(; nlv, gamma, a = .5) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
 
-fmemb = fm.fm.fmemb ;
-@head fmemb.T
-@head transf(mod, Xtrain)
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
+embfitm = fitm.fitm.embfitm ;
+@head embfitm.T
+@head transf(model, Xtrain)
+@head transf(model, Xtest)
+@head transf(model, Xtest; nlv = 3)
 
-coef(fmemb)
+coef(embfitm)
 
-res = predict(mod, Xtest) ;
+res = predict(model, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(mod, Xtest; nlv = 1:2).pred
+predict(model, Xtest; nlv = 1:2).pred
 ```
 """ 
+kplslda(; kwargs...) = JchemoModel(kplslda, nothing, kwargs)
+
 function kplslda(X, y; kwargs...)
     par = recovkw(ParKplsda, kwargs).par
     Q = eltype(X[1, 1])
@@ -89,13 +92,13 @@ function kplslda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmemb = kplsr(X, res.Y, weights; kwargs...)
-    fmda = list(Lda, par.nlv)
+    embfitm = kplsr(X, res.Y, weights; kwargs...)
+    dafitm = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = lda(fmemb.T[:, 1:i], y, weights; kwargs...)
+        dafitm[i] = lda(embfitm.T[:, 1:i], y, weights; kwargs...)
     end
-    fm = (fmemb = fmemb, fmda = fmda)
-    Plsprobda(fm, res.lev, ni, par)
+    fitm = (embfitm = embfitm, dafitm = dafitm)
+    Plsprobda(fitm, res.lev, ni, par)
 end
 
 

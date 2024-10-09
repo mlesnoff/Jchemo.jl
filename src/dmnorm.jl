@@ -1,14 +1,16 @@
 """
+    dmnorm(; kwargs...)
     dmnorm(X; kwargs...)
     dmnorm!(X::Matrix; kwargs...)
-    dmnorm(; kwargs...)
+    dmnorm(mu, S; kwargs...)
+    dmnorm!(mu::Vector, S::Matrix; kwargs...)
 Normal probability density estimation.
 * `X` : X-data (n, p) used to estimate the mean `mu` and 
     the covariance matrix `S`. If `X` is not given, 
     `mu` and `S` must be provided in `kwargs`.
-Keyword arguments:
 * `mu` : Mean vector of the normal distribution. 
 * `S` : Covariance matrix of the Normal distribution.
+Keyword arguments:
 * `simpl` : Boolean. If `true`, the constant term and 
     the determinant in the Normal density formula are set to 1.
 
@@ -38,9 +40,9 @@ n = nro(X)
 tab(y) 
 
 nlv = 2
-mod0 = model(fda; nlv)
-fit!(mod0, X, y)
-@head T = transf(mod0, X)
+model0 = fda(; nlv)
+fit!(model0, X, y)
+@head T = transf(model0, X)
 n, p = size(T)
 
 #### Probability density in the FDA score space (2D)
@@ -50,22 +52,21 @@ zT = T[s, :]
 m = nro(zT)
 
 #### Bivariate distribution
-mod = model(dmnorm)
-fit!(mod, zT)
-fm = mod.fm
-pnames(fm)
-fm.Uinv 
-fm.detS
-pred = predict(mod, zT).pred
-@head pred
+model = dmnorm()
+fit!(model, zT)
+fitm = model.fitm
+pnames(fitm)
+fitm.Uinv 
+fitm.detS
+@head pred = predict(model, zT).pred
 
+## Direct syntax
 mu = colmean(zT)
 S = covm(zT, mweight(ones(m))) * m / (m - 1) # corrected cov. matrix
-## Direct syntax
-fm = dmnorm(; mu, S) ; 
-pnames(fm)
-fm.Uinv
-fm.detS
+fitm = dmnorm(mu, S) ; 
+pnames(fitm)
+fitm.Uinv
+fitm.detS
 
 npoints = 2^7
 lims = [(minimum(zT[:, j]), maximum(zT[:, j])) for j = 1:nlv]
@@ -73,9 +74,9 @@ x1 = LinRange(lims[1][1], lims[1][2], npoints)
 x2 = LinRange(lims[2][1], lims[2][2], npoints)
 z = mpar(x1 = x1, x2 = x2)
 grid = reduce(hcat, z)
-mod = model(dmnorm)
-fit!(mod, zT)
-res = predict(mod, grid) ;
+model = dmnorm()
+fit!(model, zT)
+res = predict(model, grid) ;
 pred_grid = vec(res.pred)
 f = Figure(size = (600, 400))
 ax = Axis(f[1, 1];  title = "Density for FDA scores (Iris - Setosa)", 
@@ -89,9 +90,9 @@ f
 #### Univariate distribution
 j = 1
 x = zT[:, j]
-mod = model(dmnorm)
-fit!(mod, x)
-pred = predict(mod, x).pred 
+model = dmnorm()
+fit!(model, x)
+pred = predict(model, x).pred 
 f = Figure()
 ax = Axis(f[1, 1]; xlabel = string("FDA-score ", j))
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
@@ -103,9 +104,9 @@ npoints = 2^8
 lims = [minimum(x), maximum(x)]
 #delta = 5 ; lims = [minimum(x) - delta, maximum(x) + delta]
 grid = LinRange(lims[1], lims[2], npoints)
-mod = model(dmnorm)
-fit!(mod, x)
-pred_grid = predict(mod, grid).pred 
+model = dmnorm()
+fit!(model, x)
+pred_grid = predict(model, grid).pred 
 f = Figure()
 ax = Axis(f[1, 1]; xlabel = string("FDA-score ", j))
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
@@ -113,6 +114,8 @@ lines!(ax, grid, vec(pred_grid); color = :red)
 f
 ```
 """
+dmnorm(; kwargs...) = JchemoModel(dmnorm, nothing, kwargs)
+
 function dmnorm(X; kwargs...)
     dmnorm!(copy(ensure_mat(X)); kwargs...)
 end
@@ -137,19 +140,23 @@ function dmnorm!(X::Matrix; kwargs...)
     Dmnorm(mu, U, detS, cst, par)
 end
 
-function dmnorm(; kwargs...)
+function dmnorm(mu, S; kwargs...)
+    dmnorm!(copy(vec(mu)), copy(ensure_mat(S)); kwargs...)
+end
+
+function dmnorm!(mu::Vector, S::Matrix; kwargs...)
     par = recovkw(ParDmnorm, kwargs).par
-    U = cholesky!(Hermitian(copy(par.S))).U   # cholesky! modifies S
+    U = cholesky!(Hermitian(copy(S))).U   # cholesky! modifies S
     if par.simpl 
         cst = 1
         detS = 1
     else
-        p = nro(par.S)
+        p = nro(S)
         cst = (2 * pi)^(-p / 2)
         detS = det(U)^2  
     end
     LinearAlgebra.inv!(U)
-    Dmnorm(par.mu, U, detS, cst, par)
+    Dmnorm(mu, U, detS, cst, par)
 end
 
 """

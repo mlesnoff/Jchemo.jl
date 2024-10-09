@@ -1,9 +1,9 @@
 """
-    umap(X, Y; kwargs...)
+    umap(; kwargs...)
+    umap(X; kwargs...)
 UMAP: Uniform manifold approximation and projection for 
     dimension reduction
 * `X` : X-data (n, p).
-* `Y` : Y-data (n, q).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `psamp` : Proportion of sampling in `X` for training.
@@ -52,11 +52,11 @@ typ = Y.typ
 test = Y.test
 y = Y.conc
 
-mod1 = model(snv) 
-mod2 = model(savgol; npoint = 21, deriv = 2, degree = 3)
-mod = pip(mod1, mod2)
-fit!(mod, X)
-@head Xp = transf(mod, X)
+model1 = snv() 
+model2 = savgol(npoint = 21, deriv = 2, degree = 3)
+model = pip(model1, model2)
+fit!(model, X)
+@head Xp = transf(model, X)
 plotsp(Xp, wl; xlabel = "Wavelength (nm)", ylabel = "Absorbance", nsamp = 20).f
 
 s = Bool.(test)
@@ -79,17 +79,17 @@ freqtable(typ, test)
 
 nlv = 3
 n_neighbors = 50 ; min_dist = .5 
-mod = model(umap; nlv, n_neighbors, min_dist)  
-fit!(mod, Xtrain)
-@head T = mod.fm.T
-@head Ttest = transf(mod, Xtest)
+model = umap(; nlv, n_neighbors, min_dist)  
+fit!(model, Xtrain)
+@head T = model.fitm.T
+@head Ttest = transf(model, Xtest)
 
 nlv = 3
 n_neighbors = 50 ; min_dist = .5 
-mod = model(umap; nlv, n_neighbors, min_dist)  
-fit!(mod, Xtrain)
-@head T = mod.fm.T
-@head Ttest = transf(mod, Xtest)
+model = umap(; nlv, n_neighbors, min_dist)  
+fit!(model, Xtrain)
+@head T = model.fitm.T
+@head Ttest = transf(model, Xtest)
 GLMakie.activate!() 
 #CairoMakie.activate!()
 lev = mlev(typtrain)
@@ -112,6 +112,8 @@ Legend(f[1, 2], elt, lev, title; nbanks = 1, rowgap = 10, framevisible = false)
 f
 ```
 """ 
+umap(; kwargs...) = JchemoModel(umap, nothing, kwargs)
+
 function umap(X; kwargs...)
     par = recovkw(ParUmap, kwargs).par
     X = ensure_mat(X)
@@ -131,9 +133,9 @@ function umap(X; kwargs...)
         X = fscale(X, xscales)
     end
     metric = Distances.Euclidean()
-    fm = UMAP.UMAP_(X', par.nlv; n_neighbors = par.n_neighbors, metric, min_dist = par.min_dist)
-    T = fm.embedding' 
-    Umap(T, fm, xscales, s, par)
+    fitm = UMAP.UMAP_(X', par.nlv; n_neighbors = par.n_neighbors, metric, min_dist = par.min_dist)
+    T = fitm.embedding' 
+    Umap(T, fitm, xscales, s, par)
 end
 
 """ 
@@ -144,6 +146,6 @@ Compute latent variables (LVs = scores T) from a fitted model.
 """
 function transf(object::Umap, X)
     X = ensure_mat(X)
-    UMAP.transform(object.fm, fscale(X, object.xscales)')'
+    UMAP.transform(object.fitm, fscale(X, object.xscales)')'
 end
 

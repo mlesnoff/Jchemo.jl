@@ -35,53 +35,53 @@ weights = mweight(rand(n))
 nlv = 2 
 scal = false
 #scal = true
-mod = model(pcasvd; nlv, scal) ;
-fit!(mod, X)
-fm = mod.fm ;
-@head xfit(fm)
-xfit(fm, Xnew)
-xfit(fm, Xnew; nlv = 0)
-xfit(fm, Xnew; nlv = 1)
-fm.xmeans
+model = pcasvd(; nlv, scal) ;
+fit!(model, X)
+fitm = model.fitm ;
+@head xfit(fitm)
+xfit(fitm, Xnew)
+xfit(fitm, Xnew; nlv = 0)
+xfit(fitm, Xnew; nlv = 1)
+fitm.xmeans
 
 @head X
-@head xfit(fm) + xresid(fm, X)
-@head xfit(fm, X; nlv = 1) + xresid(fm, X; nlv = 1)
+@head xfit(fitm) + xresid(fitm, X)
+@head xfit(fitm, X; nlv = 1) + xresid(fitm, X; nlv = 1)
 
 @head Xnew
-@head xfit(fm, Xnew) + xresid(fm, Xnew)
+@head xfit(fitm, Xnew) + xresid(fitm, Xnew)
 
-mod = model(pcasvd; nlv = min(n, p), scal) 
-fit!(mod, X)
-fm = mod.fm ;
-@head xfit(fm) 
-@head xfit(fm, X)
-@head xresid(fm, X)
+model = pcasvd(; nlv = min(n, p), scal) 
+fit!(model, X)
+fitm = model.fitm ;
+@head xfit(fitm) 
+@head xfit(fitm, X)
+@head xresid(fitm, X)
 
 nlv = 3
 scal = false
 #scal = true
-mod = model(plskern; nlv, scal)
-fit!(mod, X, Y, weights) 
-fm = mod.fm ;
-@head xfit(fm)
-xfit(fm, Xnew)
-xfit(fm, Xnew, nlv = 0)
-xfit(fm, Xnew, nlv = 1)
+model = plskern(; nlv, scal)
+fit!(model, X, Y, weights) 
+fitm = model.fitm ;
+@head xfit(fitm)
+xfit(fitm, Xnew)
+xfit(fitm, Xnew, nlv = 0)
+xfit(fitm, Xnew, nlv = 1)
 
 @head X
-@head xfit(fm) + xresid(fm, X)
-@head xfit(fm, X; nlv = 1) + xresid(fm, X; nlv = 1)
+@head xfit(fitm) + xresid(fitm, X)
+@head xfit(fitm, X; nlv = 1) + xresid(fitm, X; nlv = 1)
 
 @head Xnew
-@head xfit(fm, Xnew) + xresid(fm, Xnew)
+@head xfit(fitm, Xnew) + xresid(fitm, Xnew)
 
-mod = model(plskern; nlv = min(n, p), scal) 
-fit!(mod, X, Y, weights) 
-fm = mod.fm ;
-@head xfit(fm) 
-@head xfit(fm, Xnew)
-@head xresid(fm, Xnew)
+model = plskern(; nlv = min(n, p), scal) 
+fit!(model, X, Y, weights) 
+fitm = model.fitm ;
+@head xfit(fitm) 
+@head xfit(fitm, Xnew)
+@head xresid(fitm, Xnew)
 ```
 """ 
 function xfit(object)

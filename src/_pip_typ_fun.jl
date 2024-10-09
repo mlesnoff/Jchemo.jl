@@ -2,15 +2,15 @@
 ######## Only functions that potentially enters in a pipeline 
 
 struct FunX{FUN <: Function}
-    fun::FUN   
+    algo::FUN   
 end
 
 struct FunXY{FUN <: Function}
-    fun::FUN   
+    algo::FUN   
 end
 
-dtpol() = FunX{Function}(dtpol)
-dtasls() = FunX{Function}(dtasls)
+detrend_pol() = FunX{Function}(detrend_pol)
+detrend_asls() = FunX{Function}(detrend_asls)
 fdif() = FunX{Function}(fdif)
 interpl() = FunX{Function}(interpl)
 mavg() = FunX{Function}(mavg)

@@ -1,4 +1,5 @@
 """
+    mbplsr(; kwargs...)
     mbplsr(Xbl, Y; kwargs...)
     mbplsr(Xbl, Y, weights::Weight; kwargs...)
     mbplsr!(Xbl::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -46,25 +47,27 @@ nlv = 3
 bscal = :frob
 scal = false
 #scal = true
-mod = model(mbplsr; nlv, bscal, scal)
-fit!(mod, Xbltrain, ytrain)
-pnames(mod) 
-pnames(mod.fm)
-@head mod.fm.T
-@head transf(mod, Xbltrain)
-transf(mod, Xbltest)
+model = mbplsr(; nlv, bscal, scal)
+fit!(model, Xbltrain, ytrain)
+pnames(model) 
+pnames(model.fitm)
+@head model.fitm.T
+@head transf(model, Xbltrain)
+transf(model, Xbltest)
 
-res = predict(mod, Xbltest)
+res = predict(model, Xbltest)
 res.pred 
 rmsep(res.pred, ytest)
 
-res = summary(mod, Xbltrain) ;
+res = summary(model, Xbltrain) ;
 pnames(res) 
 res.explvarx
 res.corx2t 
 res.rdx
 ```
 """
+mbplsr(; kwargs...) = JchemoModel(mbplsr, nothing, kwargs)
+
 function mbplsr(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
@@ -86,8 +89,8 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParMbplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     q = nco(Y)
-    fmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
-    transf!(fmbl, Xbl)
+    fitmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
+    transf!(fitmbl, Xbl)
     X = reduce(hcat, Xbl)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
@@ -97,8 +100,8 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(Y, ymeans)
     end
-    fm = plskern(X, Y, weights; nlv = par.nlv, scal = false)
-    Mbplsr(fm, fm.T, fm.R, fm.C, fmbl, ymeans, yscales, weights, par)
+    fitm = plskern(X, Y, weights; nlv = par.nlv, scal = false)
+    Mbplsr(fitm, fitm.T, fitm.R, fitm.C, fitmbl, ymeans, yscales, weights, par)
 end
 
 """ 
@@ -112,7 +115,7 @@ Compute latent variables (LVs = scores T) from a fitted model.
 function transf(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    zXbl = transf(object.fmbl, Xbl)    
+    zXbl = transf(object.fitmbl, Xbl)    
     reduce(hcat, zXbl) * vcol(object.R, 1:nlv) 
 end
 
@@ -154,7 +157,7 @@ function Base.summary(object::Mbplsr, Xbl)
     n, nlv = size(object.T)
     nbl = length(Xbl)
     sqrtw = sqrt.(object.weights.w)
-    zXbl = transf(object.fmbl, Xbl)
+    zXbl = transf(object.fitmbl, Xbl)
     @inbounds for k = 1:nbl
         zXbl[k] .= sqrtw .* zXbl[k]
     end
@@ -165,8 +168,8 @@ function Base.summary(object::Mbplsr, Xbl)
         ssk[k] = ssq(zXbl[k])
     end
     sstot = sum(ssk)
-    tt = object.fm.TT
-    tt_adj = vec(sum(object.fm.P.^2, dims = 1)) .* tt
+    tt = object.fitm.TT
+    tt_adj = vec(sum(object.fitm.P.^2, dims = 1)) .* tt
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    

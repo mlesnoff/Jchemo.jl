@@ -1,4 +1,5 @@
 """
+    fdasvd(; kwargs...)
     fdasvd(X, y, weights; kwargs...)
     fdasvd!(X::Matrix, y, weights; kwargs...)
 Factorial discriminant analysis (FDA).
@@ -24,6 +25,8 @@ function `fda`.
 
 See function `fda` for details and examples.
 """ 
+fdasvd(; kwargs...) = JchemoModel(fdasvd, nothing, kwargs)
+
 function fdasvd(X, y; kwargs...)
     par = recovkw(ParFda, kwargs).par
     Q = eltype(X[1, 1])
@@ -62,15 +65,15 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(vrow(X, s), mweight(weights.w[s]))
     end
-    #ct = aggstat(X, y; fun = mean).X
+    #ct = aggstat(X, y; algo = mean).X
     Ut = cholesky!(Hermitian(Winv)).U'
     Zct = ct * Ut
     nlv = min(par.nlv, n, p, nlev - 1)
     zweights = mweight(convert.(Q, ni))
-    fm = pcasvd(Zct, zweights; nlv, scal = false)
-    Pz = fm.P
+    fitm = pcasvd(Zct, zweights; nlv, scal = false)
+    Pz = fitm.P
     Tcenters = Zct * Pz
-    eig = (fm.sv).^2 
+    eig = (fitm.sv).^2 
     sstot = sum(eig)
     P = Ut * Pz[:, 1:nlv]
     T = X * P

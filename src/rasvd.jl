@@ -1,4 +1,5 @@
 """
+    rasvd(; kwargs...)
     rasvd(X, Y; kwargs...)
     rasvd(X, Y, weights::Weight; kwargs...)
     rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -65,18 +66,18 @@ q = nco(Y)
 
 nlv = 2
 bscal = :frob ; tau = 1e-4
-mod = model(rasvd; nlv, bscal, tau)
-fit!(mod, X, Y)
-pnames(mod)
-pnames(mod.fm)
+model = rasvd(; nlv, bscal, tau)
+fit!(model, X, Y)
+pnames(model)
+pnames(model.fitm)
 
-@head mod.fm.Tx
-@head transfbl(mod, X, Y).Tx
+@head model.fitm.Tx
+@head transfbl(model, X, Y).Tx
 
-@head mod.fm.Ty
-@head transfbl(mod, X, Y).Ty
+@head model.fitm.Ty
+@head transfbl(model, X, Y).Ty
 
-res = summary(mod, X, Y) ;
+res = summary(model, X, Y) ;
 pnames(res)
 res.explvarx
 res.cort2t 
@@ -86,6 +87,8 @@ res.corx2t
 res.cory2t 
 ```
 """
+rasvd(; kwargs...) = JchemoModel(rasvd, nothing, kwargs)
+
 function rasvd(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)

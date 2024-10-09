@@ -1,4 +1,5 @@
 """
+    mlrda(; kwargs...)
     mlrda(X, y; kwargs...)
     mlrda(X, y, weights::Weight)
 Discrimination based on multple linear regression (MLR-DA).
@@ -55,15 +56,15 @@ ntrain = n - ntest
 tab(ytrain)
 tab(ytest)
 
-mod = model(mlrda)
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
-fm.lev
-fm.ni
+model = mlrda()
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
 
-res = predict(mod, Xtest) ;
+res = predict(model, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
@@ -71,6 +72,8 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
+mlrda(; kwargs...) = JchemoModel(mlrda, nothing, kwargs)
+
 function mlrda(X, y; kwargs...)
     par = recovkw(ParMlrda, kwargs).par
     Q = eltype(X[1, 1])
@@ -84,8 +87,8 @@ function mlrda(X, y, weights::Weight; kwargs...)
     y = ensure_mat(y)
     res = dummy(y)
     ni = tab(y).vals
-    fm = mlr(X, res.Y, weights)
-    Mlrda(fm, res.lev, ni, par)
+    fitm = mlr(X, res.Y, weights)
+    Mlrda(fitm, res.lev, ni, par)
 end
 
 """
@@ -97,7 +100,7 @@ Compute y-predictions from a fitted model.
 function predict(object::Mlrda, X)
     X = ensure_mat(X)
     m = nro(X)
-    zp = predict(object.fm, X).pred
+    zp = predict(object.fitm, X).pred
     z =  mapslices(argmax, zp; dims = 2) 
     pred = reshape(recod_indbylev(z, object.lev), m, 1)
     (pred = pred, posterior = zp)

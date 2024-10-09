@@ -1,7 +1,7 @@
 """
-    isel!(mod, X, Y, wl = 1:nco(X); rep = 1, nint = 5, psamp = .3, score = rmsep)
+    isel!(model, X, Y, wl = 1:nco(X); rep = 1, nint = 5, psamp = .3, score = rmsep)
 Interval variable selection.
-* `mod` : Model to evaluate.
+* `model` : Model to evaluate.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `wl` : Optional numeric labels (p, 1) of the X-columns.
@@ -62,9 +62,9 @@ nam = namy[j]
 ytrain = Ytrain[:, nam]
 ytest = Ytest[:, nam]
 
-mod = model(plskern; nlv = 5)
+model = plskern(nlv = 5)
 nint = 10
-res = isel!(mod, Xtrain, ytrain, wl; rep = 30, nint) ;
+res = isel!(model, Xtrain, ytrain, wl; rep = 30, nint) ;
 res.res_rep
 res.res0_rep
 zres = res.res
@@ -78,7 +78,7 @@ hlines!(ax, zres0.y1, linestyle = :dash)
 f
 ```
 """
-function isel!(mod, X, Y, wl = 1:nco(X); rep = 1, nint = 5, psamp = .3, score = rmsep)
+function isel!(model, X, Y, wl = 1:nco(X); rep = 1, nint = 5, psamp = .3, score = rmsep)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)
@@ -105,14 +105,14 @@ function isel!(mod, X, Y, wl = 1:nco(X); rep = 1, nint = 5, psamp = .3, score = 
         Xval .= X[s.test, :]
         Yval .= Y[s.test, :]
         ## All variables ('res0')
-        fit!(mod, Xcal, Ycal)
-        pred = predict(mod, Xval).pred
+        fit!(model, Xcal, Ycal)
+        pred = predict(model, Xval).pred
         res0_rep[:, :, i] = score(pred, Yval)
         ## Intervals
         @inbounds for j = 1:nint
             u = int[j, 1]:int[j, 2]
-            fit!(mod, vcol(Xcal, u), Ycal)
-            pred = predict(mod, vcol(Xval, u)).pred
+            fit!(model, vcol(Xcal, u), Ycal)
+            pred = predict(model, vcol(Xval, u)).pred
             zres[j] = score(pred, Yval)
         end
         ## End

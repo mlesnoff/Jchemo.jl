@@ -1,4 +1,5 @@
 """
+    dkplskdeda(; kwargs...)
     dkplskdeda(X, y; kwargs...)
     dkplskdeda(X, y, weights::Weight; kwargs...)
 DKPLS-KDEDA.
@@ -29,6 +30,8 @@ PLSR (function `plskern`), is run on the Y-dummy table.
 
 See function `dkplslda` for examples.
 """ 
+dkplskdeda(; kwargs...) = JchemoModel(dkplskdeda, nothing, kwargs)
+
 function dkplskdeda(X, y; kwargs...)
     par = recovkw(ParKplskdeda, kwargs).par
     Q = eltype(X[1, 1])
@@ -41,13 +44,13 @@ function dkplskdeda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmemb = dkplsr(X, res.Y, weights; kwargs...)
-    fmda = list(Kdeda, par.nlv)
+    embfitm = dkplsr(X, res.Y, weights; kwargs...)
+    dafitm = list(Kdeda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = kdeda(fmemb.T[:, 1:i], y; kwargs...)
+        dafitm[i] = kdeda(embfitm.T[:, 1:i], y; kwargs...)
     end
-    fm = (fmemb = fmemb, fmda = fmda)
-    Plsprobda(fm, res.lev, ni, par)
+    fitm = (embfitm = embfitm, dafitm = dafitm)
+    Plsprobda(fitm, res.lev, ni, par)
 end
 
 

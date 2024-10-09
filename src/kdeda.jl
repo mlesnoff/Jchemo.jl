@@ -1,4 +1,5 @@
 """
+    kdeda(; kwargs...)
     kdeda(X, y; kwargs...)
 Discriminant analysis using non-parametric kernel Gaussian 
     density estimation (KDE-DA).
@@ -40,27 +41,29 @@ tab(ytest)
 
 prior = :unif
 #prior = :prop
-mod = model(kdeda; prior)
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
-fm.lev
-fm.ni
+model = kdeda(; prior)
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
 
-res = predict(mod, Xtest) ;
+res = predict(model, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-mod = model(kdeda; prior, a = .5) 
-#mod = model(kdeda; prior, h = .1) 
-fit!(mod, Xtrain, ytrain)
-mod.fm.fm[1].H
+model = kdeda(; prior, a = .5) 
+#model = kdeda(; prior, h = .1) 
+fit!(model, Xtrain, ytrain)
+model.fitm.fitm[1].H
 ```
 """ 
+kdeda(; kwargs...) = JchemoModel(kdeda, nothing, kwargs)
+
 function kdeda(X, y; kwargs...) 
     ## To do: add scaling X (?)
     par = recovkw(ParKdeda, kwargs).par
@@ -78,12 +81,12 @@ function kdeda(X, y; kwargs...)
         priors = mweight(par.prior).w
     end
     ## End
-    fm = list(nlev)
+    fitm = list(nlev)
     @inbounds for i in eachindex(lev)
         s = y .== lev[i]
-        fm[i] = dmkern(vrow(X, s); h = par.h, a = par.a)
+        fitm[i] = dmkern(vrow(X, s); h = par.h, a = par.a)
     end
-    Kdeda(fm, priors, lev, ni, par)
+    Kdeda(fitm, priors, lev, ni, par)
 end
 
 function predict(object::Kdeda, X)
@@ -93,7 +96,7 @@ function predict(object::Kdeda, X)
     nlev = length(lev) 
     dens = similar(X, m, nlev)
     @inbounds for i in eachindex(lev)
-        dens[:, i] .= vec(predict(object.fm[i], X).pred)
+        dens[:, i] .= vec(predict(object.fitm[i], X).pred)
     end
     A = object.priors' .* dens
     v = sum(A, dims = 2)

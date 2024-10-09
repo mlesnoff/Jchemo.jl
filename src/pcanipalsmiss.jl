@@ -1,4 +1,5 @@
 """
+    pcanipalsmiss(; kwargs...)
     pcanipals(X; kwargs...)
     pcanipals(X, weights::Weight; kwargs...)
     pcanipals!(X::Matrix, weights::Weight; kwargs...)
@@ -34,30 +35,32 @@ scal = false
 #scal = true
 gs = false
 #gs = true
-mod = model(pcanipalsmiss; nlv, tol, gs, maxit = 500, scal)
-fit!(mod, X)
-pnames(mod) 
-pnames(mod.fm)
-fm = mod.fm ;
-fm.niter
-fm.sv
-fm.P
-fm.T
+model = pcanipalsmiss(; nlv, tol, gs, maxit = 500, scal)
+fit!(model, X)
+pnames(model) 
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.niter
+fitm.sv
+fitm.P
+fitm.T
 ## Orthogonality 
 ## only if gs = true
-fm.T' * fm.T
-fm.P' * fm.P
+fitm.T' * fitm.T
+fitm.P' * fitm.P
 
 ## Impute missing data in X
-mod = model(pcanipalsmiss; nlv = 2, gs = true) ;
-fit!(mod, X)
-Xfit = xfit(mod.fm)
+model = pcanipalsmiss(; nlv = 2, gs = true) ;
+fit!(model, X)
+Xfit = xfit(model.fitm)
 s = ismissing.(X)
-X_imput = copy(X)
-X_imput[s] .= Xfit[s]
-X_imput
+X_imp = copy(X)
+X_imp[s] .= Xfit[s]
+X_imp
 ```
 """ 
+pcanipalsmiss(; kwargs...) = JchemoModel(pcanipalsmiss, nothing, kwargs)
+
 function pcanipalsmiss(X; kwargs...)
     z = vec(Matrix(X))
     s = ismissing.(z) .== 0

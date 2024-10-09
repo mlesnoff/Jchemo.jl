@@ -1,4 +1,5 @@
 """
+    plsrda(; kwargs...)
     plsrda(X, y; kwargs...)
     plsrda(X, y, weights::Weight; kwargs...)
 Discrimination based on partial least squares regression (PLSR-DA).
@@ -58,34 +59,36 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-mod = model(plsrda; nlv) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
-fm.lev
-fm.ni
-pnames(fm.fm)
-aggsum(fm.fm.weights.w, ytrain)
+model = plsrda(; nlv) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
+pnames(fitm.fitm)
+aggsum(fitm.fitm.weights.w, ytrain)
 
-@head fm.fm.T
-@head transf(mod, Xtrain)
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
+@head fitm.fitm.T
+@head transf(model, Xtrain)
+@head transf(model, Xtest)
+@head transf(model, Xtest; nlv = 3)
 
-coef(fm.fm)
+coef(fitm.fitm)
 
-res = predict(mod, Xtest) ;
+res = predict(model, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(mod, Xtest; nlv = 1:2).pred
-summary(fm.fm, Xtrain)
+predict(model, Xtest; nlv = 1:2).pred
+summary(fitm.fitm, Xtrain)
 ```
 """
+plsrda(; kwargs...) = JchemoModel(plsrda, nothing, kwargs)
+
 function plsrda(X, y; kwargs...)
     par = recovkw(ParPlsda, kwargs).par
     Q = eltype(X[1, 1])
@@ -97,8 +100,8 @@ function plsrda(X, y, weights::Weight; kwargs...)
     par = recovkw(ParPlsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
-    fm = plskern(X, res.Y, weights; kwargs...)
-    Plsrda(fm, res.lev, ni, par)
+    fitm = plskern(X, res.Y, weights; kwargs...)
+    Plsrda(fitm, res.lev, ni, par)
 end
 
 """ 
@@ -110,7 +113,7 @@ Compute latent variables (LVs = scores T) from
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Plsrda, X; nlv = nothing)
-    transf(object.fm, X; nlv)
+    transf(object.fitm, X; nlv)
 end
 
 """
@@ -126,13 +129,13 @@ function predict(object::Plsrda, X; nlv = nothing)
     Q = eltype(X)
     Qy = eltype(object.lev)
     m = nro(X)
-    a = nco(object.fm.T)
+    a = nco(object.fitm.T)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
     @inbounds for i = 1:le_nlv
-        zpred = predict(object.fm, X; nlv = nlv[i]).pred
+        zpred = predict(object.fitm, X; nlv = nlv[i]).pred
         #if softmax
         #    @inbounds for j = 1:m
         #        zpred[j, :] .= mweight(exp.(zpred[j, :]))

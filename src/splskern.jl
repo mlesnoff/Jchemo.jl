@@ -1,4 +1,5 @@
 """
+    splskern(; kwargs...)
     splskern(X, Y; kwargs...)
     splskern(X, Y, weights::Weight; kwargs...)
     splskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -86,32 +87,34 @@ ytest = rmrow(y, s)
 nlv = 15
 meth = :mix ; nvar = 5
 #meth = :hard ; nvar = 5
-mod = model(splskern; nlv, meth, nvar) ;
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-@head mod.fm.T
-@head mod.fm.W
+model = splskern(; nlv, meth, nvar) ;
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+@head model.fitm.T
+@head model.fitm.W
 
-coef(mod)
-coef(mod; nlv = 3)
+coef(model)
+coef(model; nlv = 3)
 
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
+@head transf(model, Xtest)
+@head transf(model, Xtest; nlv = 3)
 
-res = predict(mod, Xtest)
+res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-res = summary(mod, Xtrain) ;
+res = summary(model, Xtrain) ;
 pnames(res)
 z = res.explvarx
 plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", 
     ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
+splskern(; kwargs...) = JchemoModel(splskern, nothing, kwargs)
+
 function splskern(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

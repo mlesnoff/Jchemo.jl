@@ -34,8 +34,8 @@ function aov1(x, Y)
     nlev = length(lev)
     Xdummy = dummy(x, Q).Y
     Yc = fcenter(Y, colmean(Y))
-    fm = mlr(Xdummy, Yc) ;
-    pred = predict(fm, Xdummy).pred
+    fitm = mlr(Xdummy, Yc)
+    pred = predict(fitm, Xdummy).pred
     SSF = sum((pred.^2); dims = 1)   # = colvar(pred) * n
     SSR = ssr(pred, Yc)
     df_fact = nlev - 1 

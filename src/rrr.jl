@@ -1,4 +1,5 @@
 """
+    rrr(; kwargs...)
     rrr(X, Y; kwargs...)
     rrr(X, Y, weights::Weight; kwargs...)
     rr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -64,25 +65,27 @@ ytest = rmrow(y, s)
 
 nlv = 1
 tau = 1e-4
-mod = model(rrr; nlv, tau) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-@head mod.fm.T
+model = rrr(; nlv, tau) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+@head model.fitm.T
 
-coef(mod)
-coef(mod; nlv = 3)
+coef(model)
+coef(model; nlv = 3)
 
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
+@head transf(model, Xtest)
+@head transf(model, Xtest; nlv = 3)
 
-res = predict(mod, Xtest)
+res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
 ```
 """
+rrr(; kwargs...) = JchemoModel(rrr, nothing, kwargs)
+
 function rrr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

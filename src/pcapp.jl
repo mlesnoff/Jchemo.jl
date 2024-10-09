@@ -1,4 +1,5 @@
 """
+    pcapp(; kwargs...)
     pcapp(X; kwargs...)
     pcapp!(X::Matrix; kwargs...)
 Robust PCA by projection pursuit.
@@ -48,20 +49,21 @@ wl = parse.(Float64, wlst)
 n = nro(X)
 
 nlv = 3
-mod = model(pcapp; nlv, nsim = 2000)  
-#mod = model(pcasvd; nlv) 
-fit!(mod, X)
-pnames(mod)
-pnames(mod.fm)
-@head T = mod.fm.T
+model = pcapp(; nlv, nsim = 2000)  
+#model = pcasvd(; nlv) 
+fit!(model, X)
+pnames(model)
+pnames(model.fitm)
+@head T = model.fitm.T
 ## Same as:
-@head transf(mod, X)
+@head transf(model, X)
 
 i = 1
 plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i), 
     ylabel = string("PC", i + 1)).f
 ```
 """ 
+pcapp(; kwargs...) = JchemoModel(pcapp, nothing, kwargs)
 
 function pcapp(X; kwargs...)
     pcapp!(copy(ensure_mat(X)); kwargs...)

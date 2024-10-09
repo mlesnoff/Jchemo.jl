@@ -1,4 +1,5 @@
 """
+    mbplskdeda(; kwargs...)
     mbplskdeda(Xbl, y; kwargs...)
     mbplskdeda(Xbl, y, weights::Weight; kwargs...)
 Multiblock PLS-KDEDA.
@@ -28,6 +29,8 @@ densities by class are estimated from `dmkern` instead of `dmnorm`.
 See function `mbplslda` for examples.
 
 """ 
+mbplskdeda(; kwargs...) = JchemoModel(mbplskdeda, nothing, kwargs)
+
 function mbplskdeda(Xbl, y; kwargs...)
     par = recovkw(ParMbplskdeda, kwargs).par
     Q = eltype(Xbl[1][1, 1])
@@ -40,12 +43,12 @@ function mbplskdeda(Xbl, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    fmemb = mbplsr(Xbl, res.Y, weights; kwargs...)
-    fmda = list(Kdeda, par.nlv)
+    embfitm = mbplsr(Xbl, res.Y, weights; kwargs...)
+    dafitm = list(Kdeda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fmda[i] = kdeda(fmemb.T[:, 1:i], y; kwargs...)
+        dafitm[i] = kdeda(embfitm.T[:, 1:i], y; kwargs...)
     end
-    fm = (fmemb = fmemb, fmda = fmda)
-    Mbplsprobda(fm, res.lev, ni, par)
+    fitm = (embfitm = embfitm, dafitm = dafitm)
+    Mbplsprobda(fitm, res.lev, ni, par)
 end
 

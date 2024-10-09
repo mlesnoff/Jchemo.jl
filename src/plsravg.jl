@@ -1,4 +1,5 @@
 """ 
+    plsravg(; kwargs...)
     plsravg(X, Y; kwargs...)
     plsravg(X, Y, weights::Weight; kwargs...)
     plsravg!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -56,17 +57,19 @@ ntest = nro(Xtest)
 nlv = 0:30
 #nlv = 5:20
 #nlv = 25
-mod = model(plsravg; nlv) ;
-fit!(mod, Xtrain, ytrain)
+model = plsravg(; nlv) ;
+fit!(model, Xtrain, ytrain)
 
-res = predict(mod, Xtest)
+res = predict(model, Xtest)
 @head res.pred
 res.predlv   # predictions for each nb. of LVs 
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
-    xlabel = "Prediction", ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
+    ylabel = "Observed").f    
 ```
 """ 
+plsravg(; kwargs...) = JchemoModel(plsravg, nothing, kwargs)
+
 function plsravg(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
@@ -79,9 +82,9 @@ end
 
 function plsravg!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParPlsr, kwargs).par
-    fun = plsravg_unif!
-    fm = fun(X, Y, weights; kwargs...)
-    Plsravg(fm, par) 
+    algo = plsravg_unif!
+    fitm = algo(X, Y, weights; kwargs...)
+    Plsravg(fitm, par) 
 end
 
 """
@@ -91,7 +94,7 @@ Compute Y-predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Plsravg, X)
-    res = predict(object.fm, X)
+    res = predict(object.fitm, X)
     (pred = res.pred, predlv = res.predlv)
 end
 

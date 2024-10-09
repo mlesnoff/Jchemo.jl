@@ -1,7 +1,6 @@
 """
     difmean(X1, X2; normx::Bool = false)
-Compute a 1-D detrimental matrix by difference of 
-    the column-means of two X-datas.
+Compute a 1-D detrimental matrix by difference of the column-means of two X-datas.
 * `X1` : Spectra (n1, p).
 * `X2` : Spectra (n2, p).
 Keyword arguments:

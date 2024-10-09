@@ -1,4 +1,5 @@
 """
+    rrda(; kwargs...)
     rrda(X, y; kwargs...)
     rrda(X, y, weights::Weight; kwargs...)
 Discrimination based on ridge regression (RR-DA).
@@ -58,28 +59,30 @@ tab(ytrain)
 tab(ytest)
 
 lb = 1e-5
-mod = model(rrda; lb) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
-fm.lev
-fm.ni
-pnames(fm.fm)
-aggsum(fm.fm.weights.w, ytrain)
+model = rrda(; lb) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
+pnames(fitm.fitm)
+aggsum(fitm.fitm.weights.w, ytrain)
 
-coef(fm.fm)
+coef(fitm.fitm)
 
-res = predict(mod, Xtest) ;
+res = predict(model, Xtest) ;
 pnames(res)
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(mod, Xtest; lb = [.1; .01]).pred
+predict(model, Xtest; lb = [.1; .01]).pred
 ```
 """ 
+rrda(; kwargs...) = JchemoModel(rrda, nothing, kwargs)
+
 function rrda(X, y; kwargs...)
     par = recovkw(ParRrda, kwargs).par
     Q = eltype(X[1, 1])
@@ -91,8 +94,8 @@ function rrda(X, y, weights::Weight; kwargs...)
     par = recovkw(ParRrda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals 
-    fm = rr(X, res.Y, weights; kwargs...)
-    Rrda(fm, res.lev, ni, par)
+    fitm = rr(X, res.Y, weights; kwargs...)
+    Rrda(fitm, res.lev, ni, par)
 end
 
 """
@@ -114,7 +117,7 @@ function predict(object::Rrda, X; lb = nothing)
     pred = list(Matrix{Qy}, le_lb)
     posterior = list(Matrix{Q}, le_lb)
     @inbounds for i = 1:le_lb
-        zp = predict(object.fm, X; lb = lb[i]).pred
+        zp = predict(object.fitm, X; lb = lb[i]).pred
         z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
         pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)
         posterior[i] = zp

@@ -1,4 +1,5 @@
 """
+    krr(; kwargs...)
     krr(X, Y; kwargs...)
     krr(X, Y, weights::Weight; kwargs...)
     krr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -38,7 +39,7 @@ Support Vector Machine Classification. arXiv:1801.04929.
 Saunders, C., Gammerman, A., Vovk, V., 1998. Ridge Regression 
 Learning Algorithm in Dual Variables, in: In Proceedings of the 
 15th International Conference on Machine Learning. Morgan 
-Kaufmann, pp. 515-521.
+Kaufitmann, pp. 515-521.
 
 Suykens, J.A.K., Lukas, L., Vandewalle, J., 2000. Sparse 
 approximation using least squares support vector machines. 2000 IEEE 
@@ -69,29 +70,29 @@ ytest = rmrow(y, s)
 
 lb = 1e-3
 kern = :krbf ; gamma = 1e-1
-mod = model(krr; lb, kern, gamma) ;
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
+model = krr(; lb, kern, gamma) ;
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
 
-coef(mod)
+coef(model)
 
-res = predict(mod, Xtest)
+res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
-    xlabel = "Prediction", ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
+   ylabel = "Observed").f    
 
-coef(mod; lb = 1e-1)
-res = predict(mod, Xtest; lb = [.1 ; .01])
+coef(model; lb = 1e-1)
+res = predict(model, Xtest; lb = [.1 ; .01])
 @head res.pred[1]
 @head res.pred[2]
 
 lb = 1e-3
 kern = :kpol ; degree = 1
-mod = model(krr; lb, kern, degree) 
-fit!(mod, Xtrain, ytrain)
-res = predict(mod, Xtest)
+model = krr(; lb, kern, degree) 
+fit!(model, Xtrain, ytrain)
+res = predict(model, Xtest)
 rmsep(res.pred, ytest)
 
 ####### Example of fitting the function sinc(x)
@@ -103,9 +104,9 @@ zy = sin.(abs.(x)) ./ abs.(x)
 y = zy + .2 * randn(n) 
 lb = 1e-1
 kern = :krbf ; gamma = 1 / 3
-mod = model(krr; lb, kern, gamma) 
-fit!(mod, x, y)
-pred = predict(mod, x).pred 
+model = krr(; lb, kern, gamma) 
+fit!(model, x, y)
+pred = predict(model, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
 lines!(ax, x, vec(pred), label = "Fitted model")
@@ -113,6 +114,8 @@ axislegend("Method")
 f
 ```
 """ 
+krr(; kwargs...) = JchemoModel(krr, nothing, kwargs)
+
 function krr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

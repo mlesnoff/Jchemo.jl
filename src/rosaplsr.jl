@@ -1,4 +1,5 @@
 """
+    rosaplsr(; kwargs...)
     rosaplsr(Xbl, Y; kwargs...)
     rosaplsr(Xbl, Y, weights::Weight; kwargs...)
     rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
@@ -53,19 +54,21 @@ ntot = ntrain + ntest
 nlv = 3
 scal = false
 #scal = true
-mod = model(rosaplsr; nlv, scal)
-fit!(mod, Xbltrain, ytrain)
-pnames(mod) 
-pnames(mod.fm)
-@head mod.fm.T
-@head transf(mod, Xbltrain)
-transf(mod, Xbltest)
+model = rosaplsr(; nlv, scal)
+fit!(model, Xbltrain, ytrain)
+pnames(model) 
+pnames(model.fitm)
+@head model.fitm.T
+@head transf(model, Xbltrain)
+transf(model, Xbltest)
 
-res = predict(mod, Xbltest)
+res = predict(model, Xbltest)
 res.pred 
 rmsep(res.pred, ytest)
 ```
 """ 
+rosaplsr(; kwargs...) = JchemoModel(rosaplsr, nothing, kwargs)
+
 function rosaplsr(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
@@ -91,8 +94,8 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     nlv = par.nlv
     nbl = length(Xbl)
     D = Diagonal(weights.w)
-    fmbl = blockscal(Xbl, weights; bscal = :none, centr = true, scal = par.scal)
-    transf!(fmbl, Xbl)
+    fitmbl = blockscal(Xbl, weights; bscal = :none, centr = true, scal = par.scal)
+    transf!(fitmbl, Xbl)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
     if par.scal 
@@ -195,7 +198,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         W[:, a] .= reduce(vcat, z .* wbl)
     end
     R = W * inv(P' * W)
-    Rosaplsr(T, P, R, W, C, TT, fmbl, ymeans, yscales, weights, bl, par)
+    Rosaplsr(T, P, R, W, C, TT, fitmbl, ymeans, yscales, weights, bl, par)
 end
 
 """ 
@@ -209,7 +212,7 @@ Compute latent variables (LVs = scores T) from a fitted model.
 function transf(object::Rosaplsr, Xbl; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    zXbl = transf(object.fmbl, Xbl)
+    zXbl = transf(object.fitmbl, Xbl)
     reduce(hcat, zXbl) * vcol(object.R, 1:nlv)
 end
 
@@ -222,9 +225,9 @@ Compute the X b-coefficients of a model fitted with `nlv` LVs.
 function coef(object::Rosaplsr; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    zxmeans = reduce(vcat, object.fmbl.xmeans)
+    zxmeans = reduce(vcat, object.fitmbl.xmeans)
     beta = object.C[:, 1:nlv]'
-    xscales = reduce(vcat, object.fmbl.xscales)
+    xscales = reduce(vcat, object.fitmbl.xscales)
     W = Diagonal(object.yscales)
     B = Diagonal(1 ./ xscales) * vcol(object.R, 1:nlv) * beta * W
     int = object.ymeans' .- zxmeans' * B

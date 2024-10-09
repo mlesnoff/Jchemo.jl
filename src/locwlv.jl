@@ -1,6 +1,5 @@
 """
-    locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, fun, nlv, verbose = true, 
-        kwargs...)
+    locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv, verbose = true, kwargs...)
 Compute predictions for a given kNN model.
 * `Xtrain` : Training X-data.
 * `Ytrain` : Training Y-data.
@@ -8,19 +7,18 @@ Compute predictions for a given kNN model.
 Keyword arguments:
 * `listnn` : List (vector) of m vectors of indexes.
 * `listw` : List (vector) of m vectors of weights.
-* `fun` : Function computing the model on 
+* `algo` : Function computing the model on 
     the m neighborhoods.
 * `nlv` : Nb. or collection of nb. of latent variables (LVs).
 * `verbose` : Boolean. If `true`, predicting information 
     are printed.
-* `kwargs` : Keywords arguments to pass in function `fun`.
+* `kwargs` : Keywords arguments to pass in function `algo`.
     Each argument must have length = 1 (not be a collection).
 
 Same as [`locw`](@ref) but specific and much faster 
 for LV-based models (e.g. PLSR).
 """
-function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, fun, nlv, verbose = true, 
-        kwargs...)
+function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv, verbose = true, kwargs...)
     p = nco(Xtrain)
     m = nro(X)
     q = nco(Ytrain)
@@ -32,7 +30,8 @@ function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, fun, nlv, verbose = 
         verbose ? print(i, " ") : nothing
         s = listnn[i]
         length(s) == 1 ? s = (s:s) : nothing
-        zYtrain = Ytrain[s, :]
+        zXtrain = vrow(Xtrain, s)
+        zYtrain = Ytrain[s, :]   # vrow makes pb in aggsum (e.g. lda) when Ytrain is a vector
         ## For discrimination,
         ## case where all the neighbors have the same class
         if q == 1 && length(unique(zYtrain)) == 1
@@ -42,12 +41,12 @@ function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, fun, nlv, verbose = 
         ## End 
         else
             if isnothing(listw)
-                fm = fun(Xtrain[s, :],  zYtrain; nlv = maximum(nlv), kwargs...)
+                fitm = algo(zXtrain,  zYtrain; nlv = maximum(nlv), kwargs...)
             else
-                fm = fun(Xtrain[s, :], zYtrain, mweight(listw[i]); nlv = maximum(nlv), kwargs...)
+                fitm = algo(zXtrain, zYtrain, mweight(listw[i]); nlv = maximum(nlv), kwargs...)
             end
             @inbounds for a = 1:le_nlv
-                zpred[i, :, a] = predict(fm, vrow(X, i:i); nlv = nlv[a]).pred
+                zpred[i, :, a] = predict(fitm, vrow(X, i:i); nlv = nlv[a]).pred
             end
         end
     end 

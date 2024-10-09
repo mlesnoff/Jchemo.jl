@@ -1,4 +1,5 @@
 """
+    spca(; kwargs...)
     spca(X; kwargs...)
     spca(X, weights::Weight; kwargs...)
     spca!(X::Matrix, weights::Weight; kwargs...)
@@ -95,31 +96,33 @@ nlv = 3
 meth = :mix ; nvar = 2
 #meth = :hard ; nvar = 2
 scal = false
-mod = model(spca; nlv, meth, nvar, scal) ;
-fit!(mod, Xtrain) 
-fm = mod.fm ;
-pnames(fm)
-fm.niter
-fm.sellv 
-fm.sel
-fm.P
-fm.P' * fm.P
-@head T = fm.T
-@head transf(mod, Xtrain)
+model = spca(; nlv, meth, nvar, scal) ;
+fit!(model, Xtrain) 
+fitm = model.fitm ;
+pnames(fitm)
+fitm.niter
+fitm.sellv 
+fitm.sel
+fitm.P
+fitm.P' * fitm.P
+@head T = fitm.T
+@head transf(model, Xtrain)
 
-@head Ttest = transf(fm, Xtest)
+@head Ttest = transf(fitm, Xtest)
 
-res = summary(mod, Xtrain) ;
+res = summary(model, Xtrain) ;
 res.explvarx
 res.explvarx_adj
 
 nlv = 3 
 meth = :soft ; delta = .4 
-mod = model(spca; nlv, meth, delta) ;
-fit!(mod, Xtrain) 
-mod.fm.P
+model = spca(; nlv, meth, delta) ;
+fit!(model, Xtrain) 
+model.fitm.P
 ```
-""" 
+"""
+spca(; kwargs...) = JchemoModel(spca, nothing, kwargs)
+
 function spca(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

@@ -1,4 +1,5 @@
 """
+    pcasvd(; kwargs...)
     pcasvd(X; kwargs...)
     pcasvd(X, weights::Weight; kwargs...)
     pcasvd!(X::Matrix, weights::Weight; kwargs...)
@@ -39,23 +40,23 @@ s = samprand(n, ntest)
 @head Xtest = X[s.test, :]
 
 nlv = 3
-mod = model(pcasvd; nlv)
-#mod = model(pcaeigen; nlv)
-#mod = model(pcaeigenk; nlv)
-#mod = model(pcanipals; nlv)
-fit!(mod, Xtrain)
-pnames(mod)
-pnames(mod.fm)
-@head T = mod.fm.T
+model = pcasvd(; nlv)
+#model = pcaeigen(; nlv)
+#model = pcaeigenk(; nlv)
+#model = pcanipals(; nlv)
+fit!(model, Xtrain)
+pnames(model)
+pnames(model.fitm)
+@head T = model.fitm.T
 ## Same as:
-@head transf(mod, X)
+@head transf(model, X)
 T' * T
-@head P = mod.fm.P
+@head P = model.fitm.P
 P' * P
 
-@head Ttest = transf(mod, Xtest)
+@head Ttest = transf(model, Xtest)
 
-res = summary(mod, Xtrain) ;
+res = summary(model, Xtrain) ;
 pnames(res)
 res.explvarx
 res.contr_var
@@ -63,6 +64,8 @@ res.coord_var
 res.cor_circle
 ```
 """ 
+pcasvd(; kwargs...) = JchemoModel(pcasvd, nothing, kwargs)
+
 function pcasvd(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

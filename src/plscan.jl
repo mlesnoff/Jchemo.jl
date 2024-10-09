@@ -1,4 +1,5 @@
 """
+    plscan(; kwargs...)
     plscan(X, Y; kwargs...)
     plscan(X, Y, weights::Weight; kwargs...)
     plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -50,18 +51,19 @@ q = nco(Y)
 
 nlv = 2
 bscal = :frob
-mod = model(plscan; nlv, bscal)
-fit!(mod, X, Y)
-pnames(mod)
-pnames(mod.fm)
+model = plscan(; nlv, bscal)
+fit!(model, X, Y)
+pnames(model)
+pnames(model.fitm)
 
-@head mod.fm.Tx
-@head transfbl(mod, X, Y).Tx
+fitm = model.fitm
+@head fitm.Tx
+@head transfbl(model, X, Y).Tx
 
-@head mod.fm.Ty
-@head transfbl(mod, X, Y).Ty
+@head fitm.Ty
+@head transfbl(model, X, Y).Ty
 
-res = summary(mod, X, Y) ;
+res = summary(model, X, Y) ;
 pnames(res)
 res.explvarx
 res.explvary
@@ -72,6 +74,8 @@ res.corx2t
 res.cory2t 
 ```
 """
+plscan(; kwargs...) = JchemoModel(plscan, nothing, kwargs)
+
 function plscan(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)

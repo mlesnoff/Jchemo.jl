@@ -1,4 +1,5 @@
 """
+    plskern(; kwargs...)
     plskern(X, Y; kwargs...)
     plskern(X, Y, weights::Weight; kwargs...)
     plskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -57,39 +58,41 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-mod = model(plskern; nlv) ;
-#mod = model(plsnipals; nlv) ;
-#mod = model(plswold; nlv) ;
-#mod = model(plsrosa; nlv) ;
-#mod = model(plssimp; nlv) ;
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-@head mod.fm.T
+model = plskern(; nlv) ;
+#model = plsnipals(; nlv) ;
+#model = plswold(; nlv) ;
+#model = plsrosa(; nlv) ;
+#model = plssimp(; nlv) ;
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+@head model.fitm.T
 
-coef(mod)
-coef(mod; nlv = 3)
+coef(model)
+coef(model; nlv = 3)
 
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
+@head transf(model, Xtest)
+@head transf(model, Xtest; nlv = 3)
 
-res = predict(mod, Xtest)
+res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
-    xlabel = "Prediction", ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
+    ylabel = "Observed").f    
 
-res = predict(mod, Xtest; nlv = 1:2)
+res = predict(model, Xtest; nlv = 1:2)
 @head res.pred[1]
 @head res.pred[2]
 
-res = summary(mod, Xtrain) ;
+res = summary(model, Xtrain) ;
 pnames(res)
 z = res.explvarx
 plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", 
     ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
+plskern(; kwargs...) = JchemoModel(plskern, nothing, kwargs)
+
 function plskern(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
@@ -168,8 +171,7 @@ function plskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 end
 
 """ 
-    transf(object::Union{Plsr, Splsr}, 
-        X; nlv = nothing)
+    transf(object::Union{Plsr, Splsr}, X; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.

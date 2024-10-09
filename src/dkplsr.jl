@@ -1,4 +1,5 @@
 """
+    dkplsr(; kwargs...)
     dkplsr(X, Y; kwargs...)
     dkplsr(X, Y, weights::Weight; kwargs...)
     dkplsr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
@@ -51,23 +52,23 @@ ytest = rmrow(y, s)
 nlv = 20
 kern = :krbf ; gamma = 1e-1 ; scal = false
 #gamma = 1e-4 ; scal = true
-mod = model(dkplsr; nlv, kern, gamma, scal) ;
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-@head mod.fm.T
+model = dkplsr(; nlv, kern, gamma, scal) ;
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+@head model.fitm.T
 
-coef(mod)
-coef(mod; nlv = 3)
+coef(model)
+coef(model; nlv = 3)
 
-@head transf(mod, Xtest)
-@head transf(mod, Xtest; nlv = 3)
+@head transf(model, Xtest)
+@head transf(model, Xtest; nlv = 3)
 
-res = predict(mod, Xtest)
+res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, 
-    xlabel = "Prediction", ylabel = "Observed").f  
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
+    ylabel = "Observed").f  
 
 ####### Example of fitting the function sinc(x)
 ####### described in Rosipal & Trejo 2001 p. 105-106 
@@ -78,9 +79,9 @@ zy = sin.(abs.(x)) ./ abs.(x)
 y = zy + .2 * randn(n) 
 nlv = 2
 gamma = 1 / 3
-mod = model(dkplsr; nlv, gamma) ;
-fit!(mod, x, y)
-pred = predict(mod, x).pred 
+model = dkplsr(; nlv, gamma) ;
+fit!(model, x, y)
+pred = predict(model, x).pred 
 f, ax = scatter(x, y) 
 lines!(ax, x, zy, label = "True model")
 lines!(ax, x, vec(pred), label = "Fitted model")
@@ -88,6 +89,8 @@ axislegend("Method")
 f
 ```
 """ 
+dkplsr(; kwargs...) = JchemoModel(dkplsr, nothing, kwargs)
+
 function dkplsr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
@@ -114,8 +117,8 @@ function dkplsr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
     K = fkern(X, X; kwargs...)     
-    fm = plskern!(K, Y, weights; kwargs...)
-    Dkplsr(X, fm, K, fm.T, xscales, yscales, kwargs, par) 
+    fitm = plskern!(K, Y, weights; kwargs...)
+    Dkplsr(X, fitm, K, fitm.T, xscales, yscales, kwargs, par) 
 end
 
 """ 
@@ -128,7 +131,7 @@ Compute latent variables (LVs = scores T) from a fitted model.
 function transf(object::Dkplsr, X; nlv = nothing)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; values(object.kwargs)...)
-    transf(object.fm, K; nlv)
+    transf(object.fitm, K; nlv)
 end
 
 """
@@ -139,7 +142,7 @@ Compute the b-coefficients of a fitted model.
    
 """ 
 function coef(object::Dkplsr; nlv = nothing)
-    coef(object.fm; nlv)
+    coef(object.fitm; nlv)
 end
 
 """
@@ -156,7 +159,7 @@ function predict(object::Dkplsr, X; nlv = nothing)
     le_nlv = length(nlv)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
-    pred = predict(object.fm, K; nlv).pred
+    pred = predict(object.fitm, K; nlv).pred
     if le_nlv == 1
         pred .= pred * Diagonal(object.yscales)
     else

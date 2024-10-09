@@ -1,4 +1,5 @@
 """ 
+    rfda(; kwargs...)
     rfda(X, y; kwargs...)
 Random forest discrimination with DecisionTree.jl.
 * `X` : X-data (n, p).
@@ -66,21 +67,23 @@ tab(ytest)
 n_trees = 200
 n_subfeatures = p / 3 
 max_depth = 10
-mod = model(rfda; n_trees, n_subfeatures, max_depth) 
-fit!(mod, Xtrain, ytrain)
-pnames(mod)
-pnames(mod.fm)
-fm = mod.fm ;
-fm.lev
-fm.ni
+model = rfda(; n_trees, n_subfeatures, max_depth) 
+fit!(model, Xtrain, ytrain)
+pnames(model)
+pnames(model.fitm)
+fitm = model.fitm ;
+fitm.lev
+fitm.ni
 
-res = predict(mod, Xtest) ; 
+res = predict(model, Xtest) ; 
 pnames(res) 
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 ```
 """ 
+rfda(; kwargs...) = JchemoModel(rfda, nothing, kwargs)
+
 function rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
     ## For DA in DecisionTree.jl, y must be Int or String
     par = recovkw(ParRf, kwargs).par
@@ -96,7 +99,7 @@ function rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
     end
     n_subfeatures = Int(round(par.n_subfeatures))
     min_purity_increase = 0
-    fm = build_forest(y, X, 
+    fitm = build_forest(y, X, 
         n_subfeatures, 
         par.n_trees, 
         par.partial_sampling,
@@ -108,5 +111,5 @@ function rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
         #rng = 3
         ) 
     featur = collect(1:p)
-    Treeda(fm, xscales, featur, taby.keys, taby.vals, par)
+    Treeda(fitm, xscales, featur, taby.keys, taby.vals, par)
 end

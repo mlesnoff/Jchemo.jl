@@ -9,17 +9,17 @@
 
 # <span style="color:green"> **About** </span> 
 
-**Jchemo** was initially dedicated to **partial least squares regression (PLSR) and discrimination (PLSDA) models** 
-and their extensions, in particular locally weighted PLS models (**LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). The package has then been expanded to **many other models** for **dimension reduction** and **regression and discrimination** ([see the list of functions here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
+**Jchemo** was initially dedicated to **partial least squares regression (PLSR) and discrimination (PLSDA)** 
+and their extensions, in particular locally weighted PLS models (**LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). In a second phase, the package has expand to many other models for **dimension reduction** and **regression and discrimination** ([see the list of functions here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
 
-Why the name **Jchemo**?: Since it is orientated to **chemometrics** , in brief the use of biometrics for chemistry). But most of the provided methods are **generic to other application domains**. 
+Why the name **Jchemo**?: Since it is orientated to **chemometrics** , in brief the use of biometrics for chemistry. But most of the provided methods are **generic** to other application domains. 
 
 **Jchemo** is organized between 
-- ***transformers*** (that have a function `transf`),
+- **transform operators** (that have a function `transf`),
 - **predictors** (that have a function `predict`), 
 - **utility functions**. 
 
-Some models, such as PLSR models, are both a transformer and a predictor.
+Some models, such as PLSR models, are both a transform operators and a predictor.
 
 Ad'hoc **pipelines** of operations can also be built by the user. 
 In **Jchemo**, a pipeline is a **chain of *K* modeling steps** containing
@@ -28,28 +28,37 @@ In **Jchemo**, a pipeline is a **chain of *K* modeling steps** containing
 
 The pipelines are built with function `pip`, see [**here**](https://github.com/mlesnoff/Jchemo.jl/tree/master?tab=readme-ov-file#fitting-a-pipeline).
 
-**Warnings** 
-- A breaking change has been made between **version 0.3.7** and **version 0.4.0** for the embedded syntax, with the use of the new function `model`. For instance: 
-    - `mod = plskern(; nlv = 15)` is now writen as `mod = model(plskern; nlv = 15)`. Other things have not changed.
-- Major breaking changes were made between **version 0.2.4** and **version 0.3.0**. Mainly, a new **embedded syntax** was proposed.
+# <span style="color:green"> **Installation** </span> 
 
-See [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for details.  
+To install **Jchemo** 
+
+* From the official Julia repo, run in the Pkg REPL:
+```julia
+pkg> add Jchemo
+```
+
+or for a **specific version**: 
+```julia
+pkg> add Jchemo@0.1.18
+```
+
+* For the **current developing version** (potentially not stable):
+```julia
+pkg> add https://github.com/mlesnoff/Jchemo.jl.git
+```
+### Warning
+
+Before to update the package, it is recommended to have a look on [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) to avoid eventual problems due to breaking changes. 
 
 # <span style="color:green"> **Tips** </span> 
 
 ### Syntax
 
-Two syntaxes are allowed for **transformers** and **predictors**:
-1. the **embedded** syntax, using function `model`, see [**here**](https://github.com/mlesnoff/Jchemo.jl/tree/master?tab=readme-ov-file#-examples-of-syntax-). 
-2. the direct syntax (the same as for versions <= 0.2.4),
-
-The **embedded** syntax makes easier the building of ad'hoc pipelines (chains) of models, and is now favored. Only this embbeded syntax is given in the examples (**help pages** of the functions). 
-
 Most the **Jchemo** functions have **keyword arguments** (`kwargs`). The keyword arguments required/allowed in a function can be found in the **Index of function section** of the documentation:
 - [Stable](https://mlesnoff.github.io/Jchemo.jl/stable/api/) 
 - [Developping](https://mlesnoff.github.io/Jchemo.jl/dev/api/) 
 
-or by displaying the function's help page in the REPL, for instance for function `plskern`:
+or in the REPL by displaying the function's help page, for instance for function `plskern`:
 
 ```julia
 julia> ?plskern
@@ -66,15 +75,15 @@ Jchemo.ParPlsr
   scal: Bool false
 ```
 
+**Examples of syntax** are given at the end of this README, and in the help pages of the functions.
+
 ### Datasets
 
-The **datasets** used in the examples (help pages) are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets on chemometrics and other domains.
-
-**Examples of scripts** demonstrating the **Jchemo** syntax are also available in the project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo). 
+The **datasets** used in the help pages' examples are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets on chemometrics and other domains. **Examples of scripts** demonstrating **Jchemo** are also available in the pedagogical project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo). 
 
 ### Tuning predictive models
 
-Generic **grid-search functions** are available to tune the predictors: 
+Two generic **grid-search** functions are available to tune the predictors: 
 - [`gridscore`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridscore-NTuple{5,%20Any}) (*test-set* validation)
 - [`gridcv`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridcv-Tuple{Any,%20Any,%20Any}) (cross-validation). 
 
@@ -90,26 +99,6 @@ of threads (e.g. from the *Settings* menu of the VsCode Julia extension and the 
 
 **Jchemo** uses **Makie** for plotting. Displaying the plots requires to preliminary install and load one of the Makie's backends (e.g. **CairoMakie**). 
 
-### News
-
-Before to update the package, it is recommended to have a look on [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) to avoid eventual problems when the new version contains breaking changes. 
-
-# <span style="color:green"> **Installation** </span> 
-
-In order to install **Jchemo**, run in the Pkg REPL:
-```julia
-pkg> add Jchemo
-```
-
-or for a **specific version**: 
-```julia
-pkg> add Jchemo@0.1.18
-```
-
-or for the **current developing version** (potentially not stable):
-```julia
-pkg> add https://github.com/mlesnoff/Jchemo.jl.git
-```
 # <span style="color:green">  **Benchmark**  </span>
 
 ```julia
@@ -149,8 +138,8 @@ zY = Float32.(Y)
 ```julia
 ## Float64
 ## (NB.: multi-threading is not used in plskern) 
-mod = model(plskern; nlv)
-@benchmark fit!($mod, $X, $Y)
+model = plskern(; nlv)
+@benchmark fit!($model, $X, $Y)
 
 BenchmarkTools.Trial: 1 sample with 1 evaluation.
  Single result which took 7.532 s (1.07% GC) to evaluate,
@@ -159,7 +148,7 @@ BenchmarkTools.Trial: 1 sample with 1 evaluation.
 
 ```julia
 # Float32 
-@benchmark fit!($mod, $zX, $zY) 
+@benchmark fit!($model, $zX, $zY) 
 
 BenchmarkTools.Trial: 2 samples with 1 evaluation.
  Range (min … max):  3.956 s …    4.148 s  ┊ GC (min … max): 0.82% … 3.95%
@@ -196,7 +185,7 @@ Let us consider a signal preprocessing with the Savitsky-Golay filter, using fun
 julia> ?savgol
 ```
 
-The embedded syntax to fit the model is as follows:
+The syntax to fit the model is as follows:
 
 ```julia
 ## Below, the order of the kwargs is not 
@@ -206,37 +195,39 @@ The embedded syntax to fit the model is as follows:
 ## after character ";"
 
 ## Model definition
-## (below, the name 'mod' can be replaced by any other name)
+## (below, the name 'model' can be replaced by any other name)
 npoint = 11 ; deriv = 2 ; degree = 3
-mod = model(savgol; npoint, deriv, degree)
+model = savgol(; npoint, deriv, degree)
 
 ## Fitting
-fit!(mod, Xtrain)
+fit!(model, Xtrain)
 ```
 
 which is the strictly equivalent to:
 
 ```julia
-## Below, ";" is not required
-## since the kwargs values are
+## Below, ";" is not required since the kwargs values are
 ## specified within the function
 
-mod = model(savgol; npoint = 11, deriv = 2, degree = 3)
-fit!(mod, Xtrain)
+model = savgol(npoint = 11, deriv = 2, degree = 3)
+fit!(model, Xtrain)
 ```
 
-Contents of objects `mod` and `fm` can be displayed by:
+Contents of objects `model` can be displayed by:
 
+``` julia
+julia> pnames(model)
+
+(:algo, :fitm, :kwargs)
 ```
-pnames(mod)
-pnames(mod.fm)
-```
+
+Objects `algo`, `fitm` and `kwargs` contain the used algorithm (function), the model fitted on the data and the kwargs arguments, respectively.
 
 Once the model is fitted, the transformed (i.e. here preprocessed) data are given by:
 
 ```julia
-Xptrain = transf(mod, Xtrain)
-Xptest = transf(mod, Xtest)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
 ```
 
 Several preprocessing can be applied sequentially to the data by building a **pipeline** (see section *Fitting a pipeline* thereafter for examples).
@@ -248,34 +239,34 @@ Let us consider a principal component analysis (PCA), using function `pcasvd`.
 The embedded syntax to fit the model is as follows:
 ```julia
 nlv = 15  # nb. principal components
-mod = model(pcasvd; nlv)
-fit!(mod, Xtrain, ytrain)
+model = pcasvd(; nlv)
+fit!(model, Xtrain, ytrain)
 ```
 
 For a preliminary scaling of the data before the PCA decomposition, the syntax is:
 
 ```julia
 nlv = 15 ; scal = true
-mod = model(pcasvd; nlv, scal)
-fit!(mod, Xtrain, ytrain)
+model = pcasvd(; nlv, scal)
+fit!(model, Xtrain, ytrain)
 ```
 
 The PCA score matrices (i.e. the projections of the observations on the PCA directions) can be computed by:
 ```julia
-Ttrain = transf(mod, Xtrain)
-Ttest = transf(mod, Xtest)
+Ttrain = transf(model, Xtrain)
+Ttest = transf(model, Xtest)
 ```
 
 Object `Ttrain` above can also be obtained directly by:
 
 ```julia
-Ttrain = mod.fm.T
+Ttrain = model.fitm.T
 ```
 
 Some model summary (% of explained variance, etc.) can be displayed by:
 
 ```julia
-summary(mod, Xtrain)
+summary(model, Xtrain)
 ```
 
 ### **Fitting a predictor**
@@ -288,25 +279,25 @@ The embedded syntax to fit the model is as follows:
 ```julia
 nlv = 15  # nb. latent variables
 kern = :krbf ; gamma = .001 
-mod = model(kplsr; nlv, kern, gamma)
-fit!(mod, Xtrain, ytrain)
+model = kplsr(; nlv, kern, gamma)
+fit!(model, Xtrain, ytrain)
 ```
 
 As for PCA, the score matrices can be computed by:
 ```julia
-Ttrain = transf(mod, Xtrain)   # = mod.fm.T
-Ttest = transf(mod, Xtest)
+Ttrain = transf(model, Xtrain)   # = model.fitm.T
+Ttest = transf(model, Xtest)
 ```
 
 and model summary by:
 
 ```julia
-summary(mod, Xtrain)
+summary(model, Xtrain)
 ```
 
 Y-Predictions are given by:
 ```julia
-pred = predict(mod, Xtest).pred
+pred = predict(model, Xtest).pred
 ```
 
 **Examples of tuning** of predictive models (test-set validation and cross-validation) are given in the help pages of functions `gridscore` and `gridcv`: 
@@ -325,20 +316,20 @@ The pipeline is fitted as follows:
 
 ```julia
 ## Models' definition
-mod1 = model(snv)
-mod2 = model(savgol; npoint = 5, deriv = 1, degree = 2)
-mod3 = model(dtpol)  
+model1 = snv()
+model2 = savgol(npoint = 5, deriv = 1, degree = 2)
+model3 = detrend_pol()  
 ## Pipeline building
-mod = pip(mod1, mod2, mod3)
+model = pip(model1, model2, model3)
 ## Fitting
-fit!(mod, Xtrain)
+fit!(model, Xtrain)
 ```
 
 The transformed data are given by:
 
 ```julia
-Xptrain = transf(mod, Xtrain)
-Xptest = transf(mod, Xtest)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
 ```
 #### **b) Example of PCA-SVMR**
 
@@ -349,15 +340,15 @@ The pipeline is fitted as follows:
 ```julia
 nlv = 15
 kern = :krbf ; gamma = .001 ; cost = 1000
-mod1 = model(pcasvd; nlv)
-mod2 = model(svmr; kern, gamma, cost)
-mod = pip(mod1, mod2)
-fit!(mod, Xtrain)
+model1 = pcasvd(; nlv)
+model2 = svmr(; kern, gamma, cost)
+model = pip(model1, model2)
+fit!(model, Xtrain)
 ```
 
 The Y-predictions are given by:
 ```julia
-pred = predict(mod, Xtest).pred
+pred = predict(model, Xtest).pred
 ```
 
 Any step(s) of data preprocessing can obviously be implemented before the modeling, either outside of the given predictive pipeline or being involded directlty in the pipeline, such as for instance:
@@ -366,10 +357,10 @@ Any step(s) of data preprocessing can obviously be implemented before the modeli
 degree = 2    # de-trending with polynom degree 2
 nlv = 15
 kern = :krbf ; gamma = .001 ; cost = 1000
-mod1 = model(dtpol; degree)
-mod2 = model(pcasvd; nlv)
-mod3 = model(svmr; kern, gamma, cost)
-mod = pip(mod1, mod2, mod3)
+model1 = detrend_pol(; degree)
+model2 = pcasvd(; nlv)
+model3 = svmr(; kern, gamma, cost)
+model = pip(model1, model2, model3)
 ```
 
 #### **c) Example of LWR Naes et al. 1990**
@@ -381,9 +372,9 @@ The pipeline is defined by:
 ```julia
 nlv = 25
 metric = :eucl ; h = 2 ; k = 200
-mod1 = model(pcasvd; nlv)
-mod2 = model(lwmlr; metric, h, k)
-mod = pip(mod1, mod2)
+model1 = pcasvd(; nlv)
+model2 = lwmlr(; metric, h, k)
+model = pip(model1, model2)
 ```
 
 *Naes et al., 1990. Analytical Chemistry 664–673.*
@@ -397,9 +388,9 @@ The pipeline is defined by:
 ```julia
 nlv = 25
 metric = :mah ; h = Inf ; k = 200
-mod1 = model(plskern; nlv)
-mod2 = model(lwplsr; metric, h, k)
-mod = pip(mod1, mod2)
+model1 = plskern(; nlv)
+model2 = lwplsr(; metric, h, k)
+model = pip(model1, model2)
 ```
 
 *Shen et al., 2019. Journal of Chemometrics, 33(5) e3117.*

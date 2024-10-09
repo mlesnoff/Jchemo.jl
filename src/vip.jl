@@ -45,37 +45,37 @@ y = Y[:, 1]
 ycla = [1 ; 1 ; 1 ; 2 ; 2]
 
 nlv = 3
-mod = model(plskern; nlv)
-fit!(mod, X, y)
-res = vip(mod.fm)
+model = plskern(; nlv)
+fit!(model, X, y)
+res = vip(model.fitm)
 pnames(res)
 res.imp
 
-fit!(mod, X, Y)
-vip(mod.fm).imp
-vip(mod.fm, Y).imp
+fit!(model, X, Y)
+vip(model.fitm).imp
+vip(model.fitm, Y).imp
 
 ## For PLSDA
 
-mod = model(plsrda; nlv) 
-fit!(mod, X, ycla)
-pnames(mod.fm)
-fm = mod.fm.fm ;
-vip(fm).imp
+model = plsrda(; nlv) 
+fit!(model, X, ycla)
+pnames(model.fitm)
+fitm = model.fitm.fitm ;
+vip(fitm).imp
 Ydummy = dummy(ycla).Y
-vip(fm, Ydummy).imp
+vip(fitm, Ydummy).imp
 
-mod = model(plslda; nlv) 
-fit!(mod, X, ycla)
-pnames(mod.fm.fm)
-fm = mod.fm.fm.fmemb ;
-vip(fm).imp
-vip(fm, Ydummy).imp
+model = plslda(; nlv) 
+fit!(model, X, ycla)
+pnames(model.fitm.fitm)
+fitm = model.fitm.fitm.embfitm ;
+vip(fitm).imp
+vip(fitm, Ydummy).imp
 ```
 """ 
 function vip(object::Union{Pcr, Plsr}; nlv = nothing)
     if isa(object, Jchemo.Pcr)
-        W = object.fmpca.P
+        W = object.fitmpca.P
     else
         W = object.W
     end
@@ -105,7 +105,7 @@ end
 
 function vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
     if isa(object, Jchemo.Pcr)
-        W = object.fmpca.P
+        W = object.fitmpca.P
     else
         W = object.W
     end
