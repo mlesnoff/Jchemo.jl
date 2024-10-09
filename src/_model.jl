@@ -1,3 +1,9 @@
+Base.@kwdef mutable struct JchemoModel{T <: Function, K <: Base.Pairs}
+    algo::T   
+    fitm
+    kwargs::K
+end
+
 ###### Fit
 
 function fit!(model::Jchemo.JchemoModel, X)
