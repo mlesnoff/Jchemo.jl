@@ -236,7 +236,7 @@ Several preprocessing can be applied sequentially to the data by building a **pi
 
 Let us consider a principal component analysis (PCA), using function `pcasvd`. 
 
-The embedded syntax to fit the model is as follows:
+The syntax to fit the model is as follows:
 ```julia
 nlv = 15  # nb. principal components
 model = pcasvd(; nlv)
@@ -275,7 +275,7 @@ summary(model, Xtrain)
 
 Let us consider a Gaussian kernel partial least squares regression (KPLSR), using function `kplsr`. 
 
-The embedded syntax to fit the model is as follows:
+The syntax to fit the model is as follows:
 ```julia
 nlv = 15  # nb. latent variables
 kern = :krbf ; gamma = .001 
