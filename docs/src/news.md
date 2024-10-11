@@ -1,4 +1,10 @@
-# New
+# News
+
+## *Version 0.6.1*
+
+- Modifications
+    - Code cleaning.
+    
 
 ## *Version 0.6.0*
 
