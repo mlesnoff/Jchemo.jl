@@ -174,26 +174,13 @@ colvar(X, weights::Weight) = colstd(X, weights).^2
 
 ####### Functions skipping missing data
 
-function colmeanskip(X)
-    X = ensure_mat(X)
-    [mean(skipmissing(vcol(X, j))) for j in 1:nco(X)]
-end
+colmeanskip(X) = [mean(skipmissing(x)) for x in eachcol(ensure_mat(X))]
 
-function colstdskip(X)
-    X = ensure_mat(X)
-    [std(skipmissing(vcol(X, j)); corrected = false) 
-        for j in 1:nco(X)]
-end
+colstdskip(X) = [std(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
 
-function colsumskip(X)
-    X = ensure_mat(X)
-    [sum(skipmissing(vcol(X, j))) for j in 1:nco(X)]
-end
+colsumskip(X) = [sum(skipmissing(x)) for x in eachcol(ensure_mat(X))]
 
-function colvarskip(X)
-    X = ensure_mat(X)
-    [var(skipmissing(vcol(X, j)); corrected = false) for j in 1:nco(X)]
-end
+colvarskip(X) = [var(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
 
 ## With weights
 function colmeanskip(X, weights::Weight)
