@@ -192,8 +192,7 @@ end
 
 function colvarskip(X)
     X = ensure_mat(X)
-    [var(skipmissing(vcol(X, j)); corrected = false) 
-        for j in 1:nco(X)]
+    [var(skipmissing(vcol(X, j)); corrected = false) for j in 1:nco(X)]
 end
 
 ## With weights
