@@ -12,16 +12,16 @@
 **Jchemo** was initially dedicated to **partial least squares regression (PLSR) and discrimination (PLSDA)** 
 and their extensions, in particular locally weighted PLS models (**LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). In a second phase, the package has expand to many other models for **dimension reduction** and **regression and discrimination** ([see the list of functions here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
 
-Why the name **Jchemo**?: Since it is orientated to **chemometrics** , in brief the use of biometrics for chemistry. But most of the provided methods are **generic** to other application domains. 
+Why the name **Jchemo**?: Since it is orientated to **chemometrics** , in brief the use of biometrics for chemistry. But most of the provided methods are generic to other application domains. 
 
 **Jchemo** is organized between 
 - **transform operators** (that have a function `transf`),
 - **predictors** (that have a function `predict`), 
 - **utility functions**. 
 
-Some models, such as PLSR models, are both a transform operators and a predictor.
+Some models, such as PLSR models, are both a transform operator and a predictor.
 
-Ad'hoc **pipelines** of operations can also be built by the user. 
+Ad'hoc **pipelines** of operations can also be built. 
 In **Jchemo**, a pipeline is a **chain of *K* modeling steps** containing
 - either ***K* transform steps**,
 - or ***K* - 1 transform steps** and **a final prediction step**. 
@@ -79,7 +79,7 @@ Jchemo.ParPlsr
 
 ### Datasets
 
-The **datasets** used in the help pages' examples are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets on chemometrics and other domains. **Examples of scripts** demonstrating **Jchemo** are also available in the pedagogical project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo). 
+The **datasets** used in the help page examples are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets on chemometrics and other domains. **Examples of scripts** demonstrating **Jchemo** are also available in the pedagogical project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo). 
 
 ### Tuning predictive models
 
@@ -91,13 +91,13 @@ Highly accelerated versions of these tuning tools have been implemented for mode
 
 ### Multi-threading
 
-Some **Jchemo** functions (in particular those using kNN selections) use **multi-threading** 
+Some **Jchemo** functions (e.g. those using kNN selections) use **multi-threading** 
 to speed the computations. Taking advantage of this requires to specify a relevant number 
-of threads (e.g. from the *Settings* menu of the VsCode Julia extension and the file *settings.json*).
+of threads (for instance from the *Settings* menu of the VsCode Julia extension and the file *settings.json*).
 
 ### Plotting
 
-**Jchemo** uses **Makie** for plotting. Displaying the plots requires to preliminary install and load one of the Makie's backends (e.g. **CairoMakie**). 
+**Jchemo** uses **Makie** for plotting. Displaying the plots requires to install and load one of the Makie's backends (e.g. **CairoMakie**). 
 
 # <span style="color:green">  **Benchmark**  </span>
 
@@ -175,7 +175,7 @@ Xtest = rand(m, p)
 Ytest = rand(m, q) 
 ```
 
-### **Fitting a transformer**
+### **Fitting a transform model**
 
 #### **a) Example of a signal preprocessing**
 
@@ -213,7 +213,7 @@ model = savgol(npoint = 11, deriv = 2, degree = 3)
 fit!(model, Xtrain)
 ```
 
-Contents of objects `model` can be displayed by:
+Contents of object `model` can be displayed by:
 
 ``` julia
 julia> pnames(model)
@@ -221,12 +221,12 @@ julia> pnames(model)
 (:algo, :fitm, :kwargs)
 ```
 
-Objects `algo`, `fitm` and `kwargs` contain the used algorithm (function), the model fitted on the data and the kwargs arguments, respectively.
+Sub-objects `algo`, `fitm` and `kwargs` contain the used algorithm (a function), the model fitted on the data, and the kwargs arguments, respectively.
 
-Once the model is fitted, the transformed (i.e. here preprocessed) data are given by:
+Once the model is fitted, the transformed data are given by:
 
 ```julia
-Xptrain = transf(model, Xtrain)
+Xptrain = transf(model, Xtrain)   # preprocessed data
 Xptest = transf(model, Xtest)
 ```
 
@@ -236,18 +236,10 @@ Several preprocessing can be applied sequentially to the data by building a **pi
 
 Let us consider a principal component analysis (PCA), using function `pcasvd`. 
 
-The syntax to fit the model is as follows:
+The syntax to fit the model using a SVD decomposition is as follows:
 ```julia
 nlv = 15  # nb. principal components
 model = pcasvd(; nlv)
-fit!(model, Xtrain, ytrain)
-```
-
-For a preliminary scaling of the data before the PCA decomposition, the syntax is:
-
-```julia
-nlv = 15 ; scal = true
-model = pcasvd(; nlv, scal)
 fit!(model, Xtrain, ytrain)
 ```
 
@@ -269,7 +261,15 @@ Some model summary (% of explained variance, etc.) can be displayed by:
 summary(model, Xtrain)
 ```
 
-### **Fitting a predictor**
+For a preliminary scaling of the data before the PCA decomposition, the syntax is:
+
+```julia
+nlv = 15 ; scal = true
+model = pcasvd(; nlv, scal)
+fit!(model, Xtrain, ytrain)
+```
+
+### **Fitting a prediction model**
 
 #### **a) Example of a KPLSR**
 
@@ -300,7 +300,7 @@ Y-Predictions are given by:
 pred = predict(model, Xtest).pred
 ```
 
-**Examples of tuning** of predictive models (test-set validation and cross-validation) are given in the help pages of functions `gridscore` and `gridcv`: 
+**Examples of tuning** of predictive models (test-set validation and K-fold cross-validation) are given in the help pages of functions `gridscore` and `gridcv`: 
 
 ```julia
 ?gridscore
