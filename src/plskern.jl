@@ -177,8 +177,7 @@ Compute latent variables (LVs = scores T) from a fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Union{Plsr, Splsr}, 
-        X; nlv = nothing)
+function transf(object::Union{Plsr, Splsr}, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
