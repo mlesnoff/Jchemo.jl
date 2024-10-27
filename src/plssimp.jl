@@ -24,8 +24,6 @@ partial least squares regression. Chemometrics and Intelligent
 Laboratory Systems 18, 251–263. 
 https://doi.org/10.1016/0169-7439(93)85002-X
 """ 
-plssimp(; kwargs...) = JchemoModel(plsnipals, nothing, kwargs)
-
 function plssimp(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

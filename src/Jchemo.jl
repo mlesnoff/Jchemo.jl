@@ -20,7 +20,8 @@ using UMAP
 ## The order below is required
 include("_structures_param.jl")
 include("_structures_fun.jl")      
-include("_model.jl")
+include("_model_fun.jl") 
+include("_model_work.jl")
 include("_pip.jl")
 ## End
 include("default.jl")

@@ -91,8 +91,6 @@ plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs",
     ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
-plskern(; kwargs...) = JchemoModel(plskern, nothing, kwargs)
-
 function plskern(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
