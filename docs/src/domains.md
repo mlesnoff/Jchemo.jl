@@ -296,7 +296,7 @@
 
 - **dupl** Find replicated rows in a dataset
 - **tabdupl** Tabulate duplicated values in a vector
-- **miss** Find rows with missing data in a dataset
+- **findmiss** Find rows with missing data in a dataset
 
 ### Pre-processing
 

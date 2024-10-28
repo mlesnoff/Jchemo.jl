@@ -2,10 +2,12 @@
 
 ## *Version 0.6.1*
 
-- Modifications
-    - Code cleaning.
-    
+- Breaking
+    - **miss** renamed to **findmiss**.
 
+- Modifications
+    - Code cleaning.    
+    
 ## *Version 0.6.0*
 
 **Warning:** Major breaking changes.

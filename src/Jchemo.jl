@@ -258,7 +258,7 @@ export
     corm, covm,
     cosm, cosv,
     dummy,
-    dupl, miss,
+    dupl, findmiss,
     ensure_df, ensure_mat,
     fblockscal, fblockscal!,
     fcenter, fcenter!, 

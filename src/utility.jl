@@ -376,6 +376,29 @@ function findmax_cla(x, weights::Weight)
     res.lev[argmax(res.X)]   
 end
 
+"""
+    findmiss(X)
+Find rows with missing data in a dataset.
+* `X` : A dataset.
+
+## Examples
+```julia
+using Jchemo
+
+X = rand(5, 4)
+zX = hcat(rand(2, 3), fill(missing, 2))
+Z = vcat(X, zX)
+findmiss(X)
+findmiss(Z)
+```
+"""
+function findmiss(X)
+    X = ensure_mat(X)
+    z = vec(sum(ismissing.(X); dims = 2))
+    u = findall(z .> 0) 
+    DataFrame((rownum = u, nmissing = z[u]))
+end
+
 """ 
     frob(X)
     frob(X, weights::Weight)
@@ -488,26 +511,25 @@ mad(x)
 mad(x) = 1.4826 * median(abs.(x .- median(x)))
 
 """
-    miss(X)
-Find rows with missing data in a dataset.
-* `X` : A dataset.
+    missdf!(df; miss = nothing)
+Recode the missing data in a data frame.
+* `df` : Continuous variable (n) to replace.
+* `miss` : The code used to identify the missing data in `df`.
+    These data are recoded as `missing` (of type `Missing`).  
+
+See examples.
 
 ## Examples
 ```julia
-using Jchemo
-
-X = rand(5, 4)
-zX = hcat(rand(2, 3), fill(missing, 2))
-Z = vcat(X, zX)
-miss(X)
-miss(Z)
 ```
 """
-function miss(X)
-    X = ensure_mat(X)
-    z = vec(sum(ismissing.(X); dims = 2))
-    u = findall(z .> 0) 
-    DataFrame((rownum = u, nmissing = z[u]))
+function missdf!(df::DataFrame; miss = nothing)
+    allowmissing!(df)
+    if !isnothing(miss) 
+        for col in eachcol(df)
+            replace!(col, miss => missing)
+        end
+    end
 end
 
 """ 
@@ -525,8 +547,7 @@ nlev = length(lev)
 X = reshape(x, 5, 4)
 mlev(X)
 
-df = DataFrame(g1 = rand(1:2, n), 
-    g2 = rand(["a"; "c"], n))
+df = DataFrame(g1 = rand(1:2, n), g2 = rand(["a"; "c"], n))
 mlev(df)
 ```
 """
@@ -1184,7 +1205,7 @@ The output (dataframe) contains sorted levels.
 using Jchemo
 
 n = 20
-X =  hcat(rand(1:2, n), rand(["a", "b", "c"], n))
+X = hcat(rand(1:2, n), rand(["a", "b", "c"], n))
 tabdf(X)
 tabdf(X[:, 2])
 
