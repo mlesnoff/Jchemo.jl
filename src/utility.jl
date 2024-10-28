@@ -1133,7 +1133,7 @@ function summ(X; digits = 3)
     insertcols!(res, 6, :n => nro(X) .- res.nmissing)
     for i = 2:4
         z = vcol(res, i)
-        s = findall(isa.(z, Float64))
+        s = findall(isa.(z, Real))
         res[s, i] .= round.(res[s, i], digits = digits)
     end
     (res = res, ntot = nro(X))
