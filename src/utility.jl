@@ -82,6 +82,42 @@ function aggsum(x::Vector, y::Vector)
     v
 end
 
+""" 
+    convertdf(df::DataFrame; miss = nothing, typs)
+Convert the columns of a dataframe to given types.
+* `df` : A dataframe.
+* `miss` : The code used in `df` to identify the data 
+    to be declared as `missing` (of type `Missing`).
+    See function `recod_miss`.
+* `typs` : A vector of the targeted types for the
+    columns of the new dataframe.  
+
+## Examples
+```julia
+using Jchemo, DataFrames
+```
+"""
+function convertdf(df::DataFrame; miss = nothing, typs)
+    df = string.(df)
+    df = recod_miss(df; miss = string(miss))
+    res = DataFrame()
+    for i in eachindex(typs)
+        z = df[:, i]
+        if typs[i] == String
+            sum(ismissing.(z)) == 0 ? z = string.(z) : nothing
+        else
+            if sum(ismissing.(z)) == 0
+                z = parse.(typs[i], z)
+            else
+                z = parsemiss(typs[i], z)
+            end
+        end
+        res = hcat(res, z; makeunique = true)
+    end
+    rename!(res, names(df))
+    res
+end
+
 """
     corm(X, weights::Weight)
     corm(X, Y, weights::Weight)
@@ -381,7 +417,7 @@ end
 Find rows with missing data in a dataset.
 * `X` : A dataset.
 
-For data frames, see also `DataFrames.completecases` and `DataFrames.dropmissing`.
+For dataframes, see also `DataFrames.completecases` and `DataFrames.dropmissing`.
 
 ## Examples
 ```julia
@@ -652,6 +688,31 @@ out(x, (-1, 1))
 ```
 """
 out(x, y) = (x .< minimum(y)) .| (x .> maximum(y))
+
+""" 
+    parsemiss(Q, x::Vector{Union{String, Missing}})
+Parsing a string vector allowing missing data.
+* `Q` : Type that results from the parsing of type `String'. 
+* `x` : A string vector containing `missing` (of type `Missing`) 
+    observations.
+
+See examples.
+
+## Examples
+```julia
+using Jchemo
+
+x = ["1"; "3.2"; missing]
+x_p = parsemiss(Float64, x)
+```
+"""
+function parsemiss(Q, x::Vector{Union{String, Missing}})
+    v = missings(Q, length(x))
+    for i in eachindex(x)
+        ismissing(x[i]) ? nothing : v[i] = parse(Q, x[i])
+    end
+    v
+end
 
 """ 
     plist(x)
@@ -1274,7 +1335,7 @@ end
     vcatdf(dat; cols = :intersect) 
 Vertical concatenation of a list of dataframes.
 * `dat` : List (vector) of dataframes.
-* `cols` : Determines the columns of the returned data frame.
+* `cols` : Determines the columns of the returned dataframe.
     See ?DataFrames.vcat.
 
 ## Examples

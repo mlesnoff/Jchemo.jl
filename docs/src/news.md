@@ -2,10 +2,14 @@
 
 ## *Version 0.6.1*
 
+- New
+    - **convertdf** Convert the columns of a dataframe to given types.
+    - **parsemiss** Parsing a string vector allowing missing data.
+    - **recod_miss** Declare data as missing in a data set.
+
 - Breaking
     - **miss**: renamed to **findmiss**.
     - **tabdf**: renamed to **tabd**.
-    - **recod_miss** Declare data as missing in a data set.
 
 - Modifications
     - Code cleaning.    

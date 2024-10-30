@@ -364,6 +364,7 @@
     **colstd**, **colsum**, **colvar**  Column-wise operations
 - **colmeanskip**, **colstdskip**, **colsumskip**, 
     **colvarskip**: Column-wise operations allowing missing data
+- **convertdf** Convert the columns of a dataframe to given types
 - **covm**, **corm** Weighted covariance and correlation matrices
 - **cosv**, **cosm** Cosinus between vectors
 - **default** Display the keyword arguments (with their default values) of a function
@@ -387,6 +388,7 @@
     given specified sub-total weights for the classes
 - **nco**, **nro**, Nb. rows and columns of an object
 - **normw** Weighted norm of a vector
+- **parsemiss** Parsing a string vector allowing missing data
 - **plist** Print each element of a list
 - **pnames** Return the names of the elements of an object
 - **psize** Return the type and size of a dataset
