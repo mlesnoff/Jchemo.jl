@@ -511,46 +511,6 @@ mad(x)
 ## Not exported
 mad(x) = 1.4826 * median(abs.(x .- median(x)))
 
-"""
-    declaremiss!(df; miss = nothing)
-Declare data as missing in a data frame.
-* `df` : A data frame.
-* `miss` : The code used in `df` to identify the data 
-    to be declared as `missing` (of type `Missing`).
-
-The case `miss = nothing` only passes `allowmissing!(df)`. 
-
-See examples.
-
-## Examples
-```julia
-using Jchemo
-
-df = DataFrame(i = 1:5, x = [0, 0, 7., 10, 1.2])
-declaremiss!(df; miss = 0)
-df
-
-df = DataFrame(i = 1:5, x = ["0", "0", "c", "d", "e"])
-declaremiss!(df; miss = "0")
-df
-```
-"""
-function declaremiss!(X::AbstractArray; miss = nothing)
-    X = convert(Matrix{Union{Missing, eltype(X)}}, X)
-    if !isnothing(miss)
-        replace!(X, miss => missing)
-    end
-end
-
-function declaremiss!(df::DataFrame; miss = nothing)
-    allowmissing!(df)
-    if !isnothing(miss) 
-        for col in eachcol(df)
-            replace!(col, miss => missing)
-        end
-    end
-end
-
 """ 
     mlev(x)
 Return the sorted levels of a vector or a dataset. 
@@ -934,6 +894,50 @@ function recod_indbylev(x::Union{Int, Array{Int}}, lev::Array)
         v[i] = lev[x[i]]
     end
     v
+end
+
+"""
+    recod_miss(X; miss = nothing)
+    recod_miss(df; miss = nothing)
+Declare data as missing in a data frame.
+* `X` : A dataset (array).
+* `df` : A dataset (dataframe).
+* `miss` : The code used in the dataset to identify the data 
+    to be declared as `missing` (of type `Missing`).
+
+The case `miss = nothing` has the only action to allow `missing` in `X` or `df`. 
+
+See examples.
+
+## Examples
+```julia
+using Jchemo, DataFrames
+
+X = hcat(1:5, [0, 0, 7., 10, 1.2])
+X_miss = recod_miss(X; miss = 0)
+
+df = DataFrame(i = 1:5, x = [0, 0, 7., 10, 1.2])
+df_miss = recod_miss(df; miss = 0)
+
+df = DataFrame(i = 1:5, x = ["0", "0", "c", "d", "e"])
+df_miss = recod_miss(df; miss = "0")
+```
+"""
+function recod_miss(X::AbstractArray; miss = nothing)
+    X = convert(Matrix{Union{Missing, eltype(X)}}, X)
+    if !isnothing(miss)
+        replace!(X, miss => missing)
+    end
+end
+
+function recod_miss(df::DataFrame; miss = nothing)
+    df = allowmissing(df)
+    if !isnothing(miss)
+        for col in eachcol(df)
+            replace!(col, miss => missing)
+        end
+    end
+    df
 end
 
 """

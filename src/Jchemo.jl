@@ -287,6 +287,7 @@ export
     recovkw,
     recod_catbylev, recod_indbylev, 
     recod_catbydict, 
+    recod_miss, 
     rmcol, rmrow, 
     rowmean, rownorm, rowstd, rowsum, rowvar,
     rowmeanskip, rowstdskip, rowsumskip, rowvarskip,
@@ -298,10 +299,8 @@ export
     ssq,
     summ,
     tab, tabdf, tabdupl,
-    vcol, vrow,
-    ## For data frames
-    declaremiss!, 
     vcatdf,
+    vcol, vrow,
     ######---- Distributions
     dmnorm, dmnorm!,
     dmnormlog, dmnormlog!,
