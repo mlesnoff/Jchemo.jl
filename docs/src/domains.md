@@ -392,12 +392,12 @@
 - **psize** Return the type and size of a dataset
 - **pval** Compute p-value(s) for a distribution, an ECDF or vector
 
-- **recod_catbydict** Replace a categorical variable by dictionnary levels
-- **recod_catbyind** Replace a categorical variable by indexes of levels
-- **recod_catbyint** Replace a categorical variable by integers
-- **recod_catbylev** Replace a categorical variable by levels
-- **recod_indbylev** Replace an index variable by levels
-- **recod_numbyint** Replace a continuous variable by integers
+- **recod_catbydict**  Recode a categorical variable to dictionnary levels
+- **recod_catbyind**  Recode a categorical variable to indexes of levels
+- **recod_catbyint**  Recode a categorical variable to integers
+- **recod_catbylev**  Recode a categorical variable to levels
+- **recod_indbylev**  Recode an index variable to levels
+- **recod_numbyint**  Recode a continuous variable to integers
 
 - **rmcol** Remove the columns of a matrix or the components of a vector having indexes s
 - **rmrow** Remove the rows of a matrix or the components of a vector having indexes s
@@ -410,11 +410,11 @@
 - **ssq** Total inertia of a matrix
 - **summ** Summarize the columns of a dataset
 - **tab**, **tabdf**, **tabdupl** Tabulations for categorical variables
-- **vcatdf** Vertical concatenation of a list of dataframes
 - **wdist** Compute weights from distances
 - Other **utility functions** in file `utility.jl`
 
 *Specific to data frames*
 
 - **missdf** Declare data as missing in a data frame
+- **vcatdf** Vertical concatenation of a list of dataframes
 

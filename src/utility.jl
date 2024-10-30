@@ -522,6 +522,12 @@ See examples.
 
 ## Examples
 ```julia
+using Jchemo
+
+df = DataFrame(i = 1:5, x = ["0", "0", "c", "d", "e"])
+missdf!(df; miss = "0")
+
+
 ```
 """
 function missdf!(df::DataFrame; miss = nothing)
@@ -752,7 +758,7 @@ pval(x::AbstractVector, q) = pval(StatsBase.ecdf(x), q)
 
 """
     recod_catbydict(x, dict)
-Replace a categorical variable by dictionnary levels.
+ Recode a categorical variable to dictionnary levels.
 * `x` : Categorical variable (n) to replace.
 * `dict` : Dictionary giving the correpondances between the old 
     and new levels.
@@ -777,7 +783,7 @@ end
 
 """
     recod_catbyind(x, lev)
-Replace a categorical variable by indexes of levels.
+ Recode a categorical variable to indexes of levels.
 * `x` : Categorical variable (n) to replace.
 * `lev` : Vector containing categorical levels.
 
@@ -807,7 +813,7 @@ end
 
 """
     recod_catbyint(x; start = 1)
-Replace a categorical variable by integers.
+ Recode a categorical variable to integers.
 * `x` : Categorical variable (n) to replace.
 * `start` : Integer labelling the first categorical level in `x`.
 
@@ -836,7 +842,7 @@ end
 
 """
     recod_catbylev(x, lev)
-Replace a categorical variable by levels.
+ Recode a categorical variable to levels.
 * `x` : Variable (n) to replace.
 * `lev` : Vector containing the categorical levels.
 
@@ -878,7 +884,7 @@ end
 
 """
     recod_indbylev(x::Union{Int, Array{Int}}, lev::Array)
-Replace an index variable by levels.
+ Recode an index variable to levels.
 * `x` : Index variable (n) to replace.
 * `lev` : Vector containing the categorical levels.
 
@@ -920,7 +926,7 @@ end
 
 """
     recod_numbyint(x, q)
-Replace a continuous variable by integers.
+ Recode a continuous variable to integers.
 * `x` : Continuous variable (n) to replace.
 * `q` : Numerical values separating classes in `x`.
     The first class is labelled to 1.  
