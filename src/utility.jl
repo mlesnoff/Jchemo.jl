@@ -511,10 +511,10 @@ mad(x) = 1.4826 * median(abs.(x .- median(x)))
 
 """
     missdf!(df; miss = nothing)
-Recode the missing data in a data frame.
+Declare missing data in a data frame.
 * `df` : Continuous variable (n) to replace.
-* `miss` : The code used to identify the missing data in `df`.
-    These data are recoded as `missing` (of type `Missing`).  
+* `miss` : The code used to identify the data to be 
+    declared as `missing` (of type `Missing`) in `df`.
 
 See examples.
 
