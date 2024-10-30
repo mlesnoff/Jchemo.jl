@@ -300,7 +300,7 @@ export
     tab, tabdf, tabdupl,
     vcol, vrow,
     ## For data frames
-    missdf!, 
+    declaremiss!, 
     vcatdf,
     ######---- Distributions
     dmnorm, dmnorm!,

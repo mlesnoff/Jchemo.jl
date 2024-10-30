@@ -512,7 +512,7 @@ mad(x)
 mad(x) = 1.4826 * median(abs.(x .- median(x)))
 
 """
-    missdf!(df; miss = nothing)
+    declaremiss!(df; miss = nothing)
 Declare data as missing in a data frame.
 * `df` : A data frame.
 * `miss` : The code used in `df` to identify the data 
@@ -527,15 +527,22 @@ See examples.
 using Jchemo
 
 df = DataFrame(i = 1:5, x = [0, 0, 7., 10, 1.2])
-missdf!(df; miss = 0)
+declaremiss!(df; miss = 0)
 df
 
 df = DataFrame(i = 1:5, x = ["0", "0", "c", "d", "e"])
-missdf!(df; miss = "0")
+declaremiss!(df; miss = "0")
 df
 ```
 """
-function missdf!(df::DataFrame; miss = nothing)
+function declaremiss!(X::AbstractArray; miss = nothing)
+    X = convert(Matrix{Union{Missing, eltype(X)}}, X)
+    if !isnothing(miss)
+        replace!(X, miss => missing)
+    end
+end
+
+function declaremiss!(df::DataFrame; miss = nothing)
     allowmissing!(df)
     if !isnothing(miss) 
         for col in eachcol(df)
