@@ -414,4 +414,7 @@
 - **wdist** Compute weights from distances
 - Other **utility functions** in file `utility.jl`
 
+*Specific to data frames*
+
+- **missdf** Declare data as missing in a data frame
 

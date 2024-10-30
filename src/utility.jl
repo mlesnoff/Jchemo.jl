@@ -381,6 +381,8 @@ end
 Find rows with missing data in a dataset.
 * `X` : A dataset.
 
+For data frames, see also `DataFrames.completecases` and `DataFrames.dropmissing`.
+
 ## Examples
 ```julia
 using Jchemo
@@ -511,10 +513,10 @@ mad(x) = 1.4826 * median(abs.(x .- median(x)))
 
 """
     missdf!(df; miss = nothing)
-Declare missing data in a data frame.
-* `df` : Continuous variable (n) to replace.
-* `miss` : The code used to identify the data to be 
-    declared as `missing` (of type `Missing`) in `df`.
+Declare data as missing in a data frame.
+* `df` : A data frame.
+* `miss` : The code used in `df` to identify the data 
+    to be declared as `missing` (of type `Missing`).
 
 See examples.
 

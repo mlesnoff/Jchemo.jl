@@ -3,7 +3,8 @@
 ## *Version 0.6.1*
 
 - Breaking
-    - **miss** renamed to **findmiss**.
+    - **miss**: renamed to **findmiss**.
+    - **missdf** Declare data as missing in a data frame.
 
 - Modifications
     - Code cleaning.    
