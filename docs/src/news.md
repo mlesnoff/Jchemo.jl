@@ -5,7 +5,7 @@
 - Breaking
     - **miss**: renamed to **findmiss**.
     - **tabdf**: renamed to **tabd**.
-    - **recod_miss** Declare data as missing in a data frame.
+    - **recod_miss** Declare data as missing in a data set.
 
 - Modifications
     - Code cleaning.    

@@ -899,7 +899,7 @@ end
 """
     recod_miss(X; miss = nothing)
     recod_miss(df; miss = nothing)
-Declare data as missing in a data frame.
+Declare data as missing in a data set.
 * `X` : A dataset (array).
 * `df` : A dataset (dataframe).
 * `miss` : The code used in the dataset to identify the data 

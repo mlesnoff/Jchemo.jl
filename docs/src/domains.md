@@ -399,7 +399,7 @@
 - **recod_indbylev**  Recode an index variable to levels
 - **recod_numbyint**  Recode a continuous variable to integers
 
-- **recod_miss** Declare data as missing in a data frame
+- **recod_miss** Declare data as missing in a data set
 
 - **rmcol** Remove the columns of a matrix or the components of a vector having indexes s
 - **rmrow** Remove the rows of a matrix or the components of a vector having indexes s
