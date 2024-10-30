@@ -1211,30 +1211,31 @@ res.vals
 tab(x) = sort(StatsBase.countmap(vec(x)))
 
 """
-    tabdf(X; groups = nothing)
+    tabd(X; groups = nothing)
 Compute the nb. occurences in categorical variables of a dataset.
-* `X` : Data.
+* `X` : Data set.
 * `groups` : Vector of the names of the group variables to consider 
     in `X` (by default: all the columns of `X`).
 
-The output (dataframe) contains sorted levels.
+The output is a dataframe containing the nb. of observations by combination 
+of the levels of the considered variables, with sorted levels.
 
 ## Examples
 ```julia
-using Jchemo
+using Jchemo, DataFrames
 
 n = 20
 X = hcat(rand(1:2, n), rand(["a", "b", "c"], n))
-tabdf(X)
-tabdf(X[:, 2])
+tabd(X)
+tabd(X[:, 2])
 
 df = DataFrame(X, [:v1, :v2])
-tabdf(df)
-tabdf(df; groups = [:v1, :v2])
-tabdf(df; groups = :v2)
+tabd(df)
+tabd(df; groups = [:v1, :v2])
+tabd(df; groups = :v2)
 ```
 """ 
-function tabdf(X; groups = nothing)
+function tabd(X; groups = nothing)
     zX = copy(X)
     isa(zX, Vector) ? zX = DataFrame(x1 = zX) : nothing
     isa(zX, DataFrame) ? nothing : zX = DataFrame(zX, :auto)

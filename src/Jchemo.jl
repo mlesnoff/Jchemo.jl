@@ -298,7 +298,7 @@ export
     sourcedir,
     ssq,
     summ,
-    tab, tabdf, tabdupl,
+    tab, tabd, tabdupl,
     vcatdf,
     vcol, vrow,
     ######---- Distributions
