@@ -518,16 +518,21 @@ Declare data as missing in a data frame.
 * `miss` : The code used in `df` to identify the data 
     to be declared as `missing` (of type `Missing`).
 
+The case `miss = nothing` only passes `allowmissing!(df)`. 
+
 See examples.
 
 ## Examples
 ```julia
 using Jchemo
 
+df = DataFrame(i = 1:5, x = [0, 0, 7., 10, 1.2])
+missdf!(df; miss = 0)
+df
+
 df = DataFrame(i = 1:5, x = ["0", "0", "c", "d", "e"])
 missdf!(df; miss = "0")
-
-
+df
 ```
 """
 function missdf!(df::DataFrame; miss = nothing)
@@ -1000,14 +1005,12 @@ X = rand(5, 3)
 rmcol(X, [1, 3])
 ```
 """
-function rmcol(X::Union{AbstractMatrix, DataFrame}, 
-        s::Union{Vector, BitVector, UnitRange, Number})
+function rmcol(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, UnitRange, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
     X[:, setdiff(1:end, Int.(s))]
 end
 
-function rmcol(X::Vector, 
-        s::Union{Vector, BitVector, UnitRange, Number})
+function rmcol(X::Vector, s::Union{Vector, BitVector, UnitRange, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
     X[setdiff(1:end, Int.(s))]
 end
@@ -1027,14 +1030,12 @@ X = rand(5, 2)
 rmrow(X, [1, 4])
 ```
 """
-function rmrow(X::Union{AbstractMatrix, DataFrame}, 
-        s::Union{Vector, BitVector, UnitRange, Number})
+function rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, UnitRange, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
     X[setdiff(1:end, Int.(s)), :]
 end
 
-function rmrow(X::Vector, 
-        s::Union{Vector, BitVector, UnitRange, Number})
+function rmrow(X::Vector, s::Union{Vector, BitVector, UnitRange, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
     X[setdiff(1:end, Int.(s))]
 end

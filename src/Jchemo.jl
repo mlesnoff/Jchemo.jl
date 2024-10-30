@@ -298,8 +298,10 @@ export
     ssq,
     summ,
     tab, tabdf, tabdupl,
-    vcatdf,
     vcol, vrow,
+    ## For data frames
+    missdf!, 
+    vcatdf,
     ######---- Distributions
     dmnorm, dmnorm!,
     dmnormlog, dmnormlog!,
