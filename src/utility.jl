@@ -1,16 +1,16 @@
 """
     aggstat(X, y; algo = mean)
-    aggstat(X::DataFrame; vars, groups, algo = mean)
+    aggstat(X::DataFrame; vary, vargroup, algo = mean)
 Compute column-wise statistics by class in a dataset.
 * `X` : Data (n, p).
 * `y` : A categorical variable (n) (class membership).
 * `algo` : Function to compute (default = mean).
 Specific for dataframes:
-* `vars` : Vector of the ames of the variables to summarize.
-* `groups` : Vector of the names of the categorical variables to consider
+* `vary` : Vector of the names of the variables to summarize.
+* `vargroup` : Vector of the names of the categorical variables to consider
     for computations by class.
 
-Variables defined in `vars` and `groups` must be columns of `X`.
+Variables defined in `vary` and `vargroup` must be columns of `X`.
 
 Return a matrix or, if only argument `X::DataFrame` is used, a dataframe.
 
@@ -32,7 +32,7 @@ df = DataFrame(X, string.("v", 1:p))
 df.gr1 = rand(1:2, n)
 df.gr2 = rand(["a", "b", "c"], n)
 df
-aggstat(df; vars = [:v1, :v2], groups = [:gr1, :gr2], algo = var)
+aggstat(df; vary = [:v1, :v2], vargroup = [:gr1, :gr2], algo = var)
 ```
 """ 
 function aggstat(X, y; algo = mean)
@@ -49,10 +49,10 @@ function aggstat(X, y; algo = mean)
     (X = zX, lev)
 end
 
-function aggstat(X::DataFrame; vars, groups, algo = mean)
-    gdf = groupby(X, groups) 
-    res = combine(gdf, vars .=> algo, renamecols = false)
-    sort!(res, groups)
+function aggstat(X::DataFrame; vary, vargroup, algo = mean)
+    gdf = groupby(X, vargroup) 
+    res = combine(gdf, vary .=> algo, renamecols = false)
+    sort!(res, vargroup)
 end
 
 """ 
@@ -962,9 +962,10 @@ end
     recod_miss(df; miss = nothing)
 Declare data as missing in a data set.
 * `X` : A dataset (array).
-* `df` : A dataset (dataframe).
 * `miss` : The code used in the dataset to identify the data 
     to be declared as `missing` (of type `Missing`).
+Specific for dataframes:
+* `df` : A dataset (dataframe).
 
 The case `miss = nothing` has the only action to allow `missing` in `X` or `df`. 
 
@@ -1272,10 +1273,10 @@ res.vals
 tab(x) = sort(StatsBase.countmap(vec(x)))
 
 """
-    tabd(X; groups = nothing)
+    tabd(X; vargroup = nothing)
 Compute the nb. occurences in categorical variables of a dataset.
 * `X` : Data set.
-* `groups` : Vector of the names of the group variables to consider 
+* `vargroup` : Vector of the names of the group variables to consider 
     in `X` (by default: all the columns of `X`).
 
 The output is a dataframe containing the nb. of observations by combination 
@@ -1292,17 +1293,17 @@ tabd(X[:, 2])
 
 df = DataFrame(X, [:v1, :v2])
 tabd(df)
-tabd(df; groups = [:v1, :v2])
-tabd(df; groups = :v2)
+tabd(df; vargroup = [:v1, :v2])
+tabd(df; vargroup = :v2)
 ```
 """ 
-function tabd(X; groups = nothing)
+function tabd(X; vargroup = nothing)
     zX = copy(X)
     isa(zX, Vector) ? zX = DataFrame(x1 = zX) : nothing
     isa(zX, DataFrame) ? nothing : zX = DataFrame(zX, :auto)
-    isnothing(groups) ? groups = names(zX) : nothing
+    isnothing(vargroup) ? vargroup = names(zX) : nothing
     zX.n = ones(nro(zX))
-    res = aggstat(zX; vars = :n, groups = groups, 
+    res = aggstat(zX; vary = :n, vargroup = vargroup, 
         algo = sum)
     res.n = Int.(res.n)
     res
