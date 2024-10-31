@@ -55,8 +55,6 @@ lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
-detrend_airpls(; kwargs...) = JchemoModel(detrend_airpls, nothing, kwargs)
-
 function detrend_airpls(X; kwargs...)
     par = recovkw(ParDetrendAirpls, kwargs).par
     DetrendAirpls(par)
