@@ -57,7 +57,7 @@ Ttest = transf(model, zXtest)
 T = vcat(Ttrain, Ttest)
 group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
 i = 1
-plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", xlabel = string("PC", i),  
+plotxy(T[:, i], T[:, i + 1], group; title_leg = "Class", xlabel = string("PC", i),  
     ylabel = string("PC", i + 1)).f
 
 #### Occ
@@ -90,7 +90,7 @@ conf(res.pred, ytest).cnt
 d1 = model.fitm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
-f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", 
+f, ax = plotxy(1:length(d), d, group; size = (500, 300), title_leg = "Class", 
     xlabel = "Obs. index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f

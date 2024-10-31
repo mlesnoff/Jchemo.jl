@@ -2,7 +2,7 @@
     plotgrid(indx::AbstractVector, r; size = (500, 300), step = 5, 
         color = nothing, kwargs...)
     plotgrid(indx::AbstractVector, r, group; size = (700, 350), 
-        step = 5, color = nothing, leg = true, leg_title = "Group", kwargs...)
+        step = 5, color = nothing, leg = true, title_leg = "Group", kwargs...)
 Plot error/performance rates of a model.
 * `indx` : A numeric variable representing the grid of 
     model parameters, e.g. the nb. LVs if PLSR models.
@@ -15,7 +15,7 @@ Keyword arguments:
 * `color` : Set color. If `group` if used, must be a vector 
     of same length as the number of levels in `group`.
 * `leg` : Boolean. If `group` is used, display a legend or not.
-* `leg_title` : Title of the legend.
+* `title_leg` : Title of the legend.
 * `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.
 
 To use `plotgrid`, a backend (e.g. CairoMakie) has to 
@@ -73,7 +73,7 @@ function plotgrid(indx::AbstractVector, r; size = (500, 300), step = 5,
 end
 
 function plotgrid(indx::AbstractVector, r, group; size = (700, 350), 
-        step = 5, color = nothing, leg = true, leg_title = "Group", kwargs...)
+        step = 5, color = nothing, leg = true, title_leg = "Group", kwargs...)
     isa(indx, Vector{Any}) ? indx = Float64.(indx) : nothing
     r = Float64.(vec(r))
     group = vec(group)
@@ -94,7 +94,7 @@ function plotgrid(indx::AbstractVector, r, group; size = (700, 350),
     end
     f[1, 1] = ax
     if leg
-        f[1, 2] = Legend(f, ax, leg_title, framevisible = false)
+        f[1, 2] = Legend(f, ax, title_leg, framevisible = false)
     end
     (f = f, ax = ax)
 end
