@@ -83,13 +83,13 @@ function aggsum(x::Vector, y::Vector)
 end
 
 """ 
-    convertdf(df::DataFrame; miss = nothing, typs)
+    convertdf(df::DataFrame; miss = nothing, typ)
 Convert the columns of a dataframe to given types.
 * `df` : A dataframe.
 * `miss` : The code used in `df` to identify the data 
     to be declared as `missing` (of type `Missing`).
     See function `recod_miss`.
-* `typs` : A vector of the targeted types for the
+* `typ` : A vector of the targeted types for the
     columns of the new dataframe.  
 
 ## Examples
@@ -97,19 +97,19 @@ Convert the columns of a dataframe to given types.
 using Jchemo, DataFrames
 ```
 """
-function convertdf(df::DataFrame; miss = nothing, typs)
+function convertdf(df::DataFrame; miss = nothing, typ)
     df = string.(df)
     df = recod_miss(df; miss = string(miss))
     res = DataFrame()
-    for i in eachindex(typs)
+    for i in eachindex(typ)
         z = df[:, i]
-        if typs[i] == String
+        if typ[i] == String
             sum(ismissing.(z)) == 0 ? z = string.(z) : nothing
         else
             if sum(ismissing.(z)) == 0
-                z = parse.(typs[i], z)
+                z = parse.(typ[i], z)
             else
-                z = parsemiss(typs[i], z)
+                z = parsemiss(typ[i], z)
             end
         end
         res = hcat(res, z; makeunique = true)
