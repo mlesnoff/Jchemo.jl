@@ -10,6 +10,7 @@
 - Breaking
     - **miss**: renamed to **findmiss**.
     - **tabdf**: renamed to **tabd**.
+    - **aggstat**, **tabdf**: arguments 'groups' and 'vars' renamed to 'vargroup' and 'vary'.
 
 - Modifications
     - Code cleaning.    
