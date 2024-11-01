@@ -1108,7 +1108,7 @@ function rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, 
     X[setdiff(1:end, Int.(s)), :]
 end
 
-function rmrow(X::Vector, s::Union{Vector, BitVector, UnitRange, Number})
+function rmrow(X::Union{Vector, BitVector}, s::Union{Vector, BitVector, UnitRange, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
     X[setdiff(1:end, Int.(s))]
 end
