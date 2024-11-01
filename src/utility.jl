@@ -56,7 +56,7 @@ function aggstat(X::DataFrame; vary, vargroup, algo = mean)
 end
 
 """ 
-    aggsum(x::Vector, y::Vector)
+    aggsum(x::Vector, y::Union{Vector, BitVector})
 Compute sub-total sums by class of a categorical variable.
 * `x` : A quantitative variable to sum (n) 
 * `y` : A categorical variable (n) (class membership).
@@ -72,7 +72,7 @@ y = vcat(rand(["a" ; "c"], 900), repeat(["b"], 100))
 aggsum(x, y)
 ```
 """
-function aggsum(x::Vector, y::Vector)
+function aggsum(x::Vector, y::Union{Vector, BitVector})
     lev = mlev(y)
     v = similar(x, length(lev)) 
     @inbounds for i in eachindex(lev) 
@@ -593,7 +593,7 @@ mweight(x::Vector) = Weight(x / sum(x))
 #mweight!(w::Union{Vector{Float32}, Vector{Float64}}) = w ./= sum(w)
 
 """ 
-    mweightcla(x::Vector; prior::Union{Symbol, Vector} = :unif)
+    mweightcla(x::AbstractVector; prior::Union{Symbol, Vector} = :unif)
     mweightcla(Q::DataType, x::Vector; prior::Union{Symbol, Vector} = :unif)
 Compute observation weights for a categorical variable, 
     given specified sub-total weights for the classes.
@@ -1064,7 +1064,8 @@ end
 recovkw(ParStruct::DataType) = (kwargs = nothing, par = ParStruct())
 
 """
-    rmcol(X, s)
+    rmcol(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, UnitRange, Number})
+    rmcol(X::Vector, s::Union{Vector, BitVector, UnitRange, Number})
 Remove the columns of a matrix or the components of a vector 
 having indexes `s`.
 * `X` : Matrix or vector.
@@ -1089,7 +1090,8 @@ function rmcol(X::Vector, s::Union{Vector, BitVector, UnitRange, Number})
 end
 
 """
-    rmrow(X, s)
+    rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, UnitRange, Number})
+    rmrow(X::Union{Vector, BitVector}, s::Union{Vector, BitVector, UnitRange, Number})
 Remove the rows of a matrix or the components of a vector 
 having indexes `s`.
 * `X` : Matrix or vector.
