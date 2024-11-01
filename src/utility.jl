@@ -622,7 +622,7 @@ res = aggstat(weights.w, x; algo = sum)
 [res.lev res.X]
 ```
 """
-function mweightcla(x::Vector; prior::Union{Symbol, Vector} = :unif)
+function mweightcla(x::AbstractVector; prior::Union{Symbol, Vector} = :unif)
     n = length(x)
     res = tab(x)
     lev = res.keys
@@ -642,7 +642,7 @@ function mweightcla(x::Vector; prior::Union{Symbol, Vector} = :unif)
     mweight(w)
 end
 
-function mweightcla(Q::DataType, x::Vector; prior::Union{Symbol, Vector} = :unif)
+function mweightcla(Q::DataType, x::AbstractVector; prior::Union{Symbol, Vector} = :unif)
     mweight(convert.(Q, mweightcla(x; prior).w))
 end
 
