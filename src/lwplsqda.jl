@@ -40,12 +40,11 @@ This is the same principle as function `lwplsr` except
 that a PLS-QDA model, instead of a PLSR model, is fitted 
 on each neighborhoods.
 
-* **Warning:** The present version of this function suffers from 
-frequent stops due to non positive definite matrices when doing QDA
-on neighborhoods, since some classes within the neighborhood can 
-have very few observations. It is recommended to select 
-a sufficiantly large number of neighbors or/and to use a 
-regularized QDA (`alpha > 0`).
+* **Warning:** The present version of this function can suffer from 
+    stops due to non positive definite matrices when doing QDA
+    on neighborhoods. This is due to that some classes within the neighborhood can 
+    have very few observations. It is recommended to select a sufficiantly large number 
+    of neighbors or/and to use a regularized QDA (`alpha > 0`).
 
 ## Examples
 ```julia
