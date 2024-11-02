@@ -15,11 +15,11 @@ Keyword arguments:
     `:prop` (proportional), or a vector (of length equal to 
     the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* Keyword arguments of function `dmkern` (bandwidth 
-    definition) can also be specified here.
 * `scal` : Boolean. If `true`, each column of `X` 
     and Ydummy is scaled by its uncorrected standard deviation
     in the PLS computation.
+* Keyword arguments of function `dmkern` (bandwidth 
+    definition) can also be specified here.
 
 The principle is the same as function `plsqda` except that the 
 densities by class are estimated from `dmkern` instead of `dmnorm`.
