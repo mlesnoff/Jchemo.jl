@@ -1,6 +1,6 @@
 """ 
     rfda(; kwargs...)
-    rfda(X, y; kwargs...)
+    rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
 Random forest discrimination with DecisionTree.jl.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
@@ -23,6 +23,8 @@ Keyword arguments:
 
 The function fits a random forest discrimination² model using 
 package `DecisionTree.jl'.
+
+For DA in DecisionTree.jl, 'y' components must be Int or String
 
 ## References
 Breiman, L., 1996. Bagging predictors. Mach Learn 24, 
