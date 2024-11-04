@@ -960,7 +960,7 @@ end
 """
     recod_miss(X; miss = nothing)
     recod_miss(df; miss = nothing)
-Declare data as missing in a data set.
+Declare data as missing in a dataset.
 * `X` : A dataset (array).
 * `miss` : The code used in the dataset to identify the data 
     to be declared as `missing` (of type `Missing`).
@@ -1256,57 +1256,46 @@ function summ(X, y; digits = 3)
 end
 
 """
-    tab(x)
-Univariate tabulation.
-* `x` : Categorical variable.
+    tab(X::AbstractVector)
+    tab(X::Union{AbstractMatrix, DataFrame}; vargroup = nothing)
+Tabulation of categorical variables.
+* `x` : Categorical variable or dataset containing categorical variable(s).
+Specific for a dataset:
+* `vargroup` : Vector of the names of the group variables to consider 
+    in `X` (by default: all the columns of `X`).
 
 The output cointains sorted levels.
 
 ## Examples
 ```julia
-using Jchemo
+using Jchemo, DataFrame
 
-x = rand(["a";"b";"c"], 20)
+x = rand(["a"; "b"; "c"], 20)
 res = tab(x)
 res.keys
 res.vals
-```
-"""
-tab(x) = sort(StatsBase.countmap(vec(x)))
-
-"""
-    tabd(X; vargroup = nothing)
-Compute the nb. occurences in categorical variables of a dataset.
-* `X` : Data set.
-* `vargroup` : Vector of the names of the group variables to consider 
-    in `X` (by default: all the columns of `X`).
-
-The output is a dataframe containing the nb. of observations by combination 
-of the levels of the considered variables, with sorted levels.
-
-## Examples
-```julia
-using Jchemo, DataFrames
 
 n = 20
 X = hcat(rand(1:2, n), rand(["a", "b", "c"], n))
-tabd(X)
-tabd(X[:, 2])
-
 df = DataFrame(X, [:v1, :v2])
-tabd(df)
-tabd(df; vargroup = [:v1, :v2])
-tabd(df; vargroup = :v2)
+
+tab(X)
+tab(X[:, 2])
+
+tab(df)
+tab(df; vargroup = [:v1, :v2])
+tab(df; vargroup = :v2)
 ```
-""" 
-function tabd(X; vargroup = nothing)
+"""
+tab(X::AbstractVector) = sort(StatsBase.countmap(vec(X)))
+
+function tab(X::Union{AbstractMatrix, DataFrame}; vargroup = nothing)
     zX = copy(X)
     isa(zX, Vector) ? zX = DataFrame(x1 = zX) : nothing
     isa(zX, DataFrame) ? nothing : zX = DataFrame(zX, :auto)
     isnothing(vargroup) ? vargroup = names(zX) : nothing
     zX.n = ones(nro(zX))
-    res = aggstat(zX; vary = :n, vargroup = vargroup, 
-        algo = sum)
+    res = aggstat(zX; vary = :n, vargroup = vargroup, algo = sum)
     res.n = Int.(res.n)
     res
 end

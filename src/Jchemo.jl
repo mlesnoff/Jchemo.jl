@@ -300,7 +300,7 @@ export
     sourcedir,
     ssq,
     summ,
-    tab, tabd, tabdupl,
+    tab, tab, tabdupl,
     vcatdf,
     vcol, vrow,
     ######---- Distributions

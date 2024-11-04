@@ -5,11 +5,11 @@
 - New
     - **convertdf** Convert the columns of a dataframe to given types.
     - **parsemiss** Parsing a string vector allowing missing data.
-    - **recod_miss** Declare data as missing in a data set.
+    - **recod_miss** Declare data as missing in a dataset.
 
 - Breaking
     - **miss**: renamed to **findmiss**.
-    - **tabdf**: renamed to **tabd**.
+    - **tabdf**: renamed to **tab**.
     - **aggstat**, **tabdf**: arguments 'groups' and 'vars' renamed to 'vargroup' and 'vary'.
 
 - Modifications

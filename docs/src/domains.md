@@ -401,7 +401,7 @@
 - **recod_indbylev**  Recode an index variable to levels
 - **recod_numbyint**  Recode a continuous variable to integers
 
-- **recod_miss** Declare data as missing in a data set
+- **recod_miss** Declare data as missing in a dataset
 
 - **rmcol** Remove the columns of a matrix or the components of a vector having indexes s
 - **rmrow** Remove the rows of a matrix or the components of a vector having indexes s
@@ -413,7 +413,7 @@
 - **sourcedir** Include all the files contained in a directory
 - **ssq** Total inertia of a matrix
 - **summ** Summarize the columns of a dataset
-- **tab**, **tabd**, **tabdupl** Tabulations for categorical variables
+- **tab**, **tabdupl** Tabulations for categorical variables
 - **vcatdf** Vertical concatenation of a list of dataframes
 - **wdist** Compute weights from distances
 - Other **utility functions** in file `utility.jl`
