@@ -3,6 +3,8 @@
 ## *Version 0.6.2*
 
 - Modifications
+    - Correction of a bug in function **tab**  introduced in 0.6.1
+    (unfortunate changes in the mutiple dispatch, that impacted DA functions). 
     - Code cleaning.  
 
 ## *Version 0.6.1*

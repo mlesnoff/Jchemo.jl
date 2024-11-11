@@ -1256,8 +1256,8 @@ function summ(X, y; digits = 3)
 end
 
 """
-    tab(X::AbstractVector)
-    tab(X::Union{AbstractMatrix, DataFrame}; vargroup = nothing)
+    tab(X::AbstractArray)
+    tab(X::DataFrame; vargroup = nothing)
 Tabulation of categorical variables.
 * `x` : Categorical variable or dataset containing categorical variable(s).
 Specific for a dataset:
@@ -1268,7 +1268,7 @@ The output cointains sorted levels.
 
 ## Examples
 ```julia
-using Jchemo, DataFrame
+using Jchemo, DataFrames
 
 x = rand(["a"; "b"; "c"], 20)
 res = tab(x)
@@ -1279,17 +1279,17 @@ n = 20
 X = hcat(rand(1:2, n), rand(["a", "b", "c"], n))
 df = DataFrame(X, [:v1, :v2])
 
-tab(X)
 tab(X[:, 2])
+tab(string.(X))
 
 tab(df)
 tab(df; vargroup = [:v1, :v2])
 tab(df; vargroup = :v2)
 ```
 """
-tab(X::AbstractVector) = sort(StatsBase.countmap(vec(X)))
+tab(X::AbstractArray) = sort(StatsBase.countmap(vec(X)))
 
-function tab(X::Union{AbstractMatrix, DataFrame}; vargroup = nothing)
+function tab(X::DataFrame; vargroup = nothing)
     zX = copy(X)
     isa(zX, Vector) ? zX = DataFrame(x1 = zX) : nothing
     isa(zX, DataFrame) ? nothing : zX = DataFrame(zX, :auto)
