@@ -23,11 +23,11 @@ Types of block scaling:
     of vector `weights.w`. Each block X is divided by 
     its Frobenius norm  = sqrt(tr(X' * D * X)). After 
     this scaling, tr(X' * D * X) = 1.
-* `mfa` : Each block X is divided by sv, where sv is the 
+* `:mfa` : Each block X is divided by sv, where sv is the 
     dominant singular value of X (this is the "MFA" approach).
-* `ncol` : Each block X is divided by the nb. 
+* `:ncol` : Each block X is divided by the nb. 
     of columns of the block.
-* `sd` : Each block X is divided by 
+* `:sd` : Each block X is divided by 
     sqrt(sum(weighted variances of the block-columns)). After 
     this scaling, sum(weighted variances of the block-columns) 
     = 1.
