@@ -289,7 +289,7 @@ pnames(res)
 res.Y
 ```
 """
-function dummy(y, T = Float64)
+function dummy(y, Q = Float64)
     n = length(y)
     lev = mlev(y)
     nlev = length(lev)
@@ -297,7 +297,7 @@ function dummy(y, T = Float64)
     @inbounds for i in eachindex(lev)
         Y[:, i] = y .== lev[i]
     end
-    Y = convert.(T, Y)
+    Y = convert.(Q, Y)
     (Y = Y, lev)
 end
 
