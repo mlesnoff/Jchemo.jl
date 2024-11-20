@@ -26,15 +26,14 @@ res.pval
 """ 
 function aov1(x, Y)
     Y = ensure_mat(Y)
-    Q = eltype(Y)
     n = length(x)
     tabx = tab(x)
     lev = tabx.keys
     ni = tabx.vals
     nlev = length(lev)
-    Xdummy = dummy(x, Q).Y
+    Xdummy = dummy(x).Y
     Yc = fcenter(Y, colmean(Y))
-    fitm = mlr(Xdummy, Yc)
+    fitm = mlr(convert.(Float64, Xdummy), Yc)
     pred = predict(fitm, Xdummy).pred
     SSF = sum((pred.^2); dims = 1)   # = colvar(pred) * n
     SSR = ssr(pred, Yc)

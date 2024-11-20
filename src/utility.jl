@@ -273,10 +273,11 @@ function covm(X, Y, weights::Weight)
 end
 
 """
-    dummy(y, T = Float64)
+    dummy(y)
 Compute dummy table from a categorical variable.
 * `y` : A categorical variable.
-* `T` : Type of the output dummy table `Y`.
+
+The output `Y` (dummy table) is a BitMatrix.
 
 ## Examples
 ```julia
@@ -289,27 +290,11 @@ pnames(res)
 res.Y
 ```
 """
-function dummy(y, Q = Float64)
-    n = length(y)
+function dummy(y)
     lev = mlev(y)
-    nlev = length(lev)
-    Y = BitArray(undef, n, nlev)  # Type = BitMatrix
-    @inbounds for i in eachindex(lev)
-        Y[:, i] = y .== lev[i]
-    end
-    Y = convert.(Q, Y)
-    (Y = Y, lev)
-end
-
-## Not exported (slower)
-function dummy2(y)
-    lev = mlev(y)
-    nlev = length(lev)
-    res = list(BitVector, nlev)
-    @inbounds for i in eachindex(lev)
-        res[i] = y .== lev[i]
-    end
-    Y = reduce(hcat, res)
+    ## Thanks to the idea in this post (@Mattriks):
+    ## https://discourse.julialang.org/t/all-the-ways-to-do-one-hot-encoding/64807/4
+    Y = y .== permutedims(lev)
     (Y = Y, lev)
 end
 
@@ -317,8 +302,7 @@ end
     dupl(X; digits = 3)
 Find duplicated rows in a dataset.
 * `X` : A dataset.
-* `digits` : Nb. digits used to round `X`
-    before checking.
+* `digits` : Nb. digits used to round `X` before checking.
 
 ## Examples
 ```julia
@@ -866,9 +850,9 @@ recod_catbyint([25, 1, 25])
 ```
 """
 function recod_catbyint(x; start::Int = 1)
-    z = dummy(x).Y
-    nlev = nco(z)
-    u = z .* collect(start:(start + nlev - 1))'
+    res = dummy(x)
+    nlev = length(res.lev)
+    u = res.Y .* collect(start:(start + nlev - 1))'
     u = rowsum(u)  
     Int.(u)
 end

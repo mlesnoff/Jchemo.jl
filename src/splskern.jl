@@ -2,7 +2,7 @@
     splskern(; kwargs...)
     splskern(X, Y; kwargs...)
     splskern(X, Y, weights::Weight; kwargs...)
-    splskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    splskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
 Sparse partial least squares regression (Lê Cao et al. 2008)
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -125,11 +125,12 @@ function splskern(X, Y, weights::Weight; kwargs...)
     splskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function splskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function splskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
     par = recovkw(ParSplsr, kwargs).par
     @assert in([:hard ; :soft ; :mix])(par.meth) "Wrong value for argument 'meth'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
     Q = eltype(X)
+    isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)

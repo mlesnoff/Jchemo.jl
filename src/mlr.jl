@@ -2,7 +2,7 @@
     mlr(; kwargs...)
     mlr(X, Y; kwargs...)
     mlr(X, Y, weights::Weight; kwargs...)
-    mlr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    mlr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
 Compute a mutiple linear regression model (MLR) by using the QR algorithm.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -69,8 +69,10 @@ function mlr(X, Y, weights::Weight; kwargs...)
     mlr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function mlr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function mlr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
     par = recovkw(ParMlr, kwargs).par
+    Q = eltype(X)
+    isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
     sqrtD = Diagonal(sqrt.(weights.w))
     if par.noint
         q = nco(Y)
@@ -88,7 +90,7 @@ function mlr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 end
 
 """
-    mlr()
+    mlrchol()
     mlrchol(X, Y)
     mlrchol(X, Y, weights::Weight)
     mlrchol!mlrchol!(X::Matrix, Y::Matrix, weights::Weight)
@@ -130,7 +132,7 @@ function mlrchol!(X::Matrix, Y::Matrix, weights::Weight)
 end
 
 """
-    mlrpinv(; kwargs...)
+    mlrpinv()
     mlrpinv(X, Y; kwargs...)
     mlrpinv(X, Y, weights::Weight; kwargs...)
     mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)

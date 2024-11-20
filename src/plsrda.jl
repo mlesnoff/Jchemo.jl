@@ -98,6 +98,7 @@ end
 
 function plsrda(X, y, weights::Weight; kwargs...)
     par = recovkw(ParPlsda, kwargs).par
+    Q = eltype(X[1, 1])
     res = dummy(y)
     ni = tab(y).vals
     fitm = plskern(X, res.Y, weights; kwargs...)

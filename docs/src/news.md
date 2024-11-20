@@ -2,6 +2,9 @@
 
 ## *Version 0.6.3*
 
+- Breaking
+    - **dummy**: To improve time computations, the output 'Y' is now a BitMatrix.
+
 - Modifications
     - Code cleaning.  
 

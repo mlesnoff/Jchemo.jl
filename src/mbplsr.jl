@@ -2,7 +2,7 @@
     mbplsr(; kwargs...)
     mbplsr(Xbl, Y; kwargs...)
     mbplsr(Xbl, Y, weights::Weight; kwargs...)
-    mbplsr!(Xbl::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    mbplsr!(Xbl::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
 Multiblock PLSR (MBPLSR).
 * `Xbl` : List of blocks (vector of matrices) of X-data 
     Typically, output of function `mblock` from (n, p) data.  
@@ -85,9 +85,10 @@ function mbplsr(Xbl, Y, weights::Weight; kwargs...)
     mbplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function mbplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
+function mbplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
     par = recovkw(ParMbplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
+    isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
     q = nco(Y)
     fitmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
     transf!(fitmbl, Xbl)

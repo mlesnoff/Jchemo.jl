@@ -2,7 +2,7 @@
     rr(; kwargs...)
     rr(X, Y; kwargs...)
     rr(X, Y, weights::Weight; kwargs...)
-    rr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    rr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
 Ridge regression (RR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -81,9 +81,10 @@ function rr(X, Y, weights::Weight; kwargs...)
     rr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function rr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function rr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
     par = recovkw(ParRr, kwargs).par
     Q = eltype(X)
+    isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
     p = nco(X)
     sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 

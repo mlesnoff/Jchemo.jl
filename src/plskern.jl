@@ -2,7 +2,7 @@
     plskern(; kwargs...)
     plskern(X, Y; kwargs...)
     plskern(X, Y, weights::Weight; kwargs...)
-    plskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
 Partial least squares regression (PLSR) with the "improved kernel algorithm #1" 
     (Dayal & McGegor, 1997).
 * `X` : X-data (n, p).
@@ -101,9 +101,10 @@ function plskern(X, Y, weights::Weight; kwargs...)
     plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plskern!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
     par = recovkw(ParPlsr, kwargs).par
     Q = eltype(X)
+    isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, maximum(par.nlv)) # 'maximum' required for plsravg 
