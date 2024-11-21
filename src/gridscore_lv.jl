@@ -10,6 +10,7 @@ must not contain `nlv`.
 See function `gridscore` for examples.
 """
 function gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, nlv, verbose = false)
+    Q = eltype(Xtrain[1, 1])
     ## Case where not multiblock
     if isa(Xtrain[1, 1], Number)
         p = nco(Xtrain)
@@ -23,7 +24,7 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, nlv, ve
         fitm = algo(Xtrain, Ytrain; nlv = maximum(nlv))
         pred = predict(fitm, X; nlv).pred
         le_nlv == 1 ? pred = [pred] : nothing
-        res = zeros(le_nlv, q)
+        res = zeros(Q, le_nlv, q)
         @inbounds for i = 1:le_nlv
             res[i, :] = score(pred[i], Y)
         end
@@ -36,7 +37,7 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, nlv, ve
             fitm = algo(Xtrain, Ytrain ; nlv = maximum(nlv), Pair.(keys(pars), v)...)
             pred = Jchemo.predict(fitm, X; nlv).pred
             le_nlv == 1 ? pred = [pred] : nothing
-            zres = zeros(le_nlv, q)
+            zres = zeros(Q, le_nlv, q)
             @inbounds for i = 1:le_nlv
                 zres[i, :] = score(pred[i], Y)
             end
