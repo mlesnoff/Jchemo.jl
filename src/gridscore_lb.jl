@@ -10,6 +10,7 @@ must not contain `lb`.
 See function `gridscore` for examples.
 """
 function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, lb, verbose = false)
+    Q = eltype(Xtrain[1, 1])
     q = nco(Ytrain)
     lb = mlev(lb)
     le_lb = length(lb)
@@ -18,7 +19,7 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, lb, ver
         fitm = algo(Xtrain, Ytrain, lb = maximum(lb))
         pred = Jchemo.predict(fitm, X; lb = lb).pred
         le_lb == 1 ? pred = [pred] : nothing
-        res = zeros(le_lb, q)
+        res = zeros(Q, le_lb, q)
         @inbounds for i = 1:le_lb
             res[i, :] = score(pred[i], Y)
         end
@@ -31,7 +32,7 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, lb, ver
             fitm = algo(Xtrain, Ytrain ; lb = maximum(lb), Pair.(keys(pars), v)...)
             pred = Jchemo.predict(fitm, X; lb = lb).pred
             le_lb == 1 ? pred = [pred] : nothing
-            zres = zeros(le_lb, q)
+            zres = zeros(Q, le_lb, q)
             for i = 1:le_lb
                 zres[i, :] = score(pred[i], Y)
             end
