@@ -10,7 +10,6 @@ end
 
 ## Preprocessing
 
-
 struct DetrendLo
     par::ParDetrendLo
 end
