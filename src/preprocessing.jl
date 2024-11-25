@@ -325,14 +325,29 @@ end
 Smoothing by moving averages of each row of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `npoint` : Nb. points involved in the window. 
+* `npoint` : Nb. points involved in the window.
+ 
+The function returns a matrix (n, p).
 
 The smoothing is computed by convolution with padding, 
-using function imfilter of package ImageFiltering.jl. 
-The centered kernel is ones(`npoint`) / `npoint`. 
+using function `imfilter` of package ImageFiltering.jl. 
+The centered kernel is `ones(npoint) / npoint`. 
 Each returned point is located on the center of the kernel.
+Assume a signal x of length p (row of `X`) correponding to 
+a vector wl of p wavelengths (or other indexes). 
 
-The function returns a matrix (n, p).
+If `npoint = 3`, the  kernel is kern = [.33, .33, .33], and: 
+- The output value at index i = 4 is: dot(kern, [x[3], x[4], x[5]]).
+    The output wavelength is: wl[4]
+- The output value at index i = 1 is: dot(kern, [x[1], x[1], x[2]]) 
+    (padding). The corresponding wavelength is: wl[1].
+
+If `npoint = 4`, the  kernel is kern = [.25, .25, .25, .25], and: 
+- The output value at index i = 4 is: dot(kern, [x[3], x[4], x[5], x[6]]).
+    The corresponding wavelength is: (wl[4] + wl[5]) / 2.
+- The output value at index i = 1 is: dot(kern, x[1], x[1], x[2], x[3]) 
+    (padding). The corresponding wavelength is: (wl[1] + wl[2]) / 2.
+
 
 ## References
 Package ImageFiltering.jl
