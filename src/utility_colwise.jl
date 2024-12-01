@@ -39,8 +39,9 @@ colmean(X)
 colmean(X, w)
 ```
 """ 
-colmean(X) = map(Statistics.mean, eachcol(ensure_mat(X)))
+colmean(X) = colsum(X) / nro(X)
 
+## Equal to colsum 
 colmean(X, weights::Weight) = vec(weights.w' * ensure_mat(X))
 
 """
@@ -90,7 +91,7 @@ colnorm(X)
 colnorm(X, w)
 ```
 """ 
-colnorm(X) = map(norm, eachcol(ensure_mat(X)))
+colnorm(X) = map(LinearAlgebra.norm, eachcol(ensure_mat(X)))
 
 colnorm(X, weights::Weight) = sqrt.(vec(weights.w' * ensure_mat(X).^2))
 
@@ -177,15 +178,15 @@ colvar(X) = map(v -> Statistics.var(v ; corrected = false), eachcol(ensure_mat(X
 
 colvar(X, weights::Weight) = colstd(X, weights).^2
 
-####### Functions skipping missing data
+###### Functions skipping missing data
 
-colmeanskip(X) = [mean(skipmissing(x)) for x in eachcol(ensure_mat(X))]
+colmeanskip(X) = [Statistics.mean(skipmissing(x)) for x in eachcol(ensure_mat(X))]
 
-colstdskip(X) = [std(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
+colstdskip(X) = [Statistics.std(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
 
-colsumskip(X) = [sum(skipmissing(x)) for x in eachcol(ensure_mat(X))]
+colsumskip(X) = [Base.sum(skipmissing(x)) for x in eachcol(ensure_mat(X))]
 
-colvarskip(X) = [var(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
+colvarskip(X) = [Statistics.var(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
 
 ## With weights
 function colmeanskip(X, weights::Weight)
