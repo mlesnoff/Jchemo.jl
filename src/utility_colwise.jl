@@ -142,7 +142,12 @@ colsum(X)
 colsum(X, w)
 ```
 """ 
-colsum(X) = vec(sum(X; dims = 1))
+function colsum(X)
+    Q = eltype(X[1, 1])
+    n = nro(X)
+    w = ones(Q, n)
+    vec(w' * ensure_mat(X))
+end
 
 colsum(X, weights::Weight) = vec(weights.w' * ensure_mat(X))
 
