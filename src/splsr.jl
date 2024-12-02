@@ -1,8 +1,8 @@
 """
-    splskern(; kwargs...)
-    splskern(X, Y; kwargs...)
-    splskern(X, Y, weights::Weight; kwargs...)
-    splskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
+    splsr(; kwargs...)
+    splsr(X, Y; kwargs...)
+    splsr(X, Y, weights::Weight; kwargs...)
+    splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
 Sparse partial least squares regression (Lê Cao et al. 2008)
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -27,7 +27,7 @@ Keyword arguments:
 Sparse partial least squares regression (Lê Cao et al. 2008), with 
 the fast "improved kernel algorithm #1" of Dayal & McGregor (1997). 
 
-In the present version of `splskern`, the sparse correction 
+In the present version of `splsr`, the sparse correction 
 only concerns `X`. The function provides three methods of 
 thresholding to compute the sparse `X`-loading weights w, 
 see function `spca` for description (same principles). The case 
@@ -87,7 +87,7 @@ ytest = rmrow(y, s)
 nlv = 15
 meth = :mix ; nvar = 5
 #meth = :hard ; nvar = 5
-model = splskern(; nlv, meth, nvar) ;
+model = splsr(; nlv, meth, nvar) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
@@ -113,19 +113,19 @@ plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs",
     ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
-splskern(; kwargs...) = JchemoModel(splskern, nothing, kwargs)
+splsr(; kwargs...) = JchemoModel(splsr, nothing, kwargs)
 
-function splskern(X, Y; kwargs...)
+function splsr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    splskern(X, Y, weights; kwargs...)
+    splsr(X, Y, weights; kwargs...)
 end
 
-function splskern(X, Y, weights::Weight; kwargs...)
-    splskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function splsr(X, Y, weights::Weight; kwargs...)
+    splsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function splskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
+function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
     par = recovkw(ParSplsr, kwargs).par
     @assert in([:hard ; :soft ; :mix])(par.meth) "Wrong value for argument 'meth'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]." 

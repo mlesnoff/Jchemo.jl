@@ -100,7 +100,7 @@
 - **plsrout** Outlierness
 
 *Sparse*
-- **splskern** 
+- **splsr** 
     - sPLSR *Lê Cao et al. 2008*
     - Covsel regression *Roger et al. 2011*
 

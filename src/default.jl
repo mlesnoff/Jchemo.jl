@@ -64,7 +64,7 @@ function default(algo::Function)
     in((cglsr, aicplsr)).(algo) ? dump(Jchemo.ParCglsr()) : nothing
     in((plsrout,)).(algo) ? dump(Jchemo.ParPlsrout()) : nothing
 
-    in((splskern,)).(algo) ? dump(Jchemo.ParSplsr()) : nothing
+    in((splsr,)).(algo) ? dump(Jchemo.ParSplsr()) : nothing
 
     in((krr,)).(algo) ? dump(Jchemo.ParKrr()) : nothing
     in((kplsr, dkplsr)).(algo) ? dump(Jchemo.ParKplsr()) : nothing

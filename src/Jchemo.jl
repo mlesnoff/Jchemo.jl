@@ -125,7 +125,7 @@ include("xfit.jl")
 include("xresid.jl")
 
 ## Sparse
-include("splskern.jl")
+include("splsr.jl")
 
 ## Multiblock
 include("mbplsr.jl") 
@@ -369,7 +369,7 @@ export
     svmr,
     treer, rfr, 
     ## Sparse 
-    splskern, splskern!, 
+    splsr, splsr!, 
     ## Multi-block
     mbplsr, mbplsr!,
     mbplswest, mbplswest!,

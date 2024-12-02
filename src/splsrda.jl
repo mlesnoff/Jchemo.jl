@@ -29,7 +29,7 @@ Keyword arguments:
     and Ydummy is scaled by its uncorrected standard deviation.
 
 Same as function `plsrda` (PLSR-DA) except that 
-a sparse PLSR (function `splskern`), instead of a 
+a sparse PLSR (function `splsr`), instead of a 
 PLSR (function `plskern`), is run on the Y-dummy table. 
 
 ## Examples
@@ -94,7 +94,7 @@ function splsrda(X, y, weights::Weight; kwargs...)
     par = recovkw(ParSplsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
-    fitm = splskern(X, res.Y, weights; kwargs...)
+    fitm = splsr(X, res.Y, weights; kwargs...)
     Plsrda(fitm, res.lev, ni, par)
 end
 

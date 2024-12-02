@@ -33,7 +33,7 @@ Keyword arguments:
     in the PLS computation.
 
 Same as function `plskdeda` (PLS-LDA) except that 
-a sparse PLSR (function `splskern`), instead of a 
+a sparse PLSR (function `splsr`), instead of a 
 PLSR (function `plskern`), is run on the Y-dummy table. 
 
 See function `splslda` for examples.
@@ -52,7 +52,7 @@ function splskdeda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    embfitm = splskern(X, res.Y, weights; kwargs...)
+    embfitm = splsr(X, res.Y, weights; kwargs...)
     dafitm = list(Kdeda, par.nlv)
     @inbounds for i = 1:par.nlv
         dafitm[i] = kdeda(vcol(embfitm.T, 1:i), y; kwargs...)

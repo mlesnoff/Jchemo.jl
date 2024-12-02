@@ -4,6 +4,7 @@
 
 - Breaking
     - **dummy**: To improve time computations, the output 'Y' is now a BitMatrix.
+    - **splskern**: renamed to **splsr**.
 
 - Modifications
     - Code cleaning.  
