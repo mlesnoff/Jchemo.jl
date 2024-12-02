@@ -75,7 +75,8 @@ The norm computed for a column x of `X` is:
 * sqrt(x' * x)
 
 The weighted norm is:
-* sqrt(x' * D * x), where D is the diagonal matrix of `weights.w`.
+* sqrt(x' * D * x), where D is the diagonal matrix of `weights.w`
+* Warning: `colnorm(X, mweight(ones(n))) = colnorm(X) / sqrt(n)`
 
 Return a vector.
 
