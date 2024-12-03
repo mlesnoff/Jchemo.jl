@@ -158,7 +158,7 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwarg
         mul!(c, XtY', r)
         c ./= tt                      # c = XtY' * r / tt
         mul!(zp, X', dt)              # zp = (D * X)' * t = X' * (D * t)
-        XtY .-= mul!(tmpXtY, zp, c')     # XtY = XtY - zp * c' ; deflation of the kernel matrix 
+        XtY .-= mul!(tmpXtY, zp, c')  # XtY = XtY - zp * c' ; deflation of the kernel matrix 
         P[:, a] .= zp ./ tt           # ==> the metric applied to covariance is applied outside the loop,
         T[:, a] .= t                  # conversely to other algorithms such as nipals
         W[:, a] .= w
