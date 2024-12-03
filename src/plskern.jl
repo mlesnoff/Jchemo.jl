@@ -223,7 +223,7 @@ function predict(object::Union{Plsr, Pcr, Splsr}, X; nlv = nothing)
     pred = list(Matrix{eltype(X)}, le_nlv)
     @inbounds  for i = 1:le_nlv
         z = coef(object; nlv = nlv[i])
-        pred[i] = z.int .+ X * z.B
+        pred[i] = z.int .+ X * z.B  # try muladd(X, z.B, z.int)
     end 
     le_nlv == 1 ? pred = pred[1] : nothing
     (pred = pred,)
