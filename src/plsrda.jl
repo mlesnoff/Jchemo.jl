@@ -33,8 +33,9 @@ This is the usual "PLSDA". The method is as follows:
 
 In the high-level version of the present functions, the observation 
 weights are automatically defined by the given priors (argument `prior`): 
-the sub-totals by class of the observation weights are set equal to the prior 
-probabilities. The low-level version (argument `weights`) allows to implement 
+* the sub-totals by class of the observation weights are set equal to the 
+    prior probabilities.
+The low-level version (argument `weights`) allows to implement 
 other choices.
 
 ## Examples

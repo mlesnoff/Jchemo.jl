@@ -434,10 +434,23 @@ The Frobenius norm of `X` is:
 
 The Frobenius weighted norm is:
 * sqrt(tr(X' * D * X)), where D is the diagonal matrix of vector `w`.
-"""
-frob(X) = LinearAlgebra.norm(X)
 
-frob(X, weights::Weight) = sqrt(sum(weights.w' * (X.^2))) 
+## References
+@Stevengj, 
+https://discourse.julialang.org/t/interesting-post-about-simd-dot-product-and-cosine-similarity/123282.
+"""
+frob(X) = sqrt(sum([dot(x, x) for x in eachcol(X)]))
+
+function frob(X, weights::Weight) 
+    n, p = size(X) 
+    s = zero(X[begin])
+    @inbounds for j = 1:p
+        @simd for i = 1:n 
+            s += weights.w[i] * X[i, j]^2
+        end
+    end
+    sqrt(s)
+end
 
 """
     head(X)
