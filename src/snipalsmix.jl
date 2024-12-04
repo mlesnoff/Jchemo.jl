@@ -25,7 +25,7 @@ function snipalsmix(X; kwargs...)
             v .= soft.(v, zdelta)
         end
         ## End
-        v ./= norm(v)
+        v ./= normv(v)
         mul!(t, X, v)
         dif = sum((t .- t0).^2)
         iter = iter + 1

@@ -142,7 +142,7 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwarg
     @inbounds for a = 1:nlv
         if q == 1
             w .= vcol(XtY, 1)
-            w ./= norm(w)
+            w ./= normv(w)
         else
             w .= svd(XtY).U[:, 1]
         end                                  

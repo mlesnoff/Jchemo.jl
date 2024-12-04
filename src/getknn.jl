@@ -13,7 +13,7 @@ Keyword arguments:
 The distances (not squared) are also returned.
 
 Spectral angular and correlation distances between two vectors x and y:
-* Spectral angular distance (x, y) = acos(x'y / norm(x)norm(y)) / pi
+* Spectral angular distance (x, y) = acos(x'y / normv(x)normv(y)) / pi
 * Correlation distance (x, y) = sqrt((1 - cor(x, y)) / 2)
 Both distances are bounded within 0 (y = x) and 1 (y = -x).
 

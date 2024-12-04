@@ -144,7 +144,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         cont = true
         iter = 1
         wy .= ones(Q, q)
-        wy ./= norm(q)
+        wy ./= normv(q)
         if tau == 0       
             invCx = inv(X' * X)
         else
@@ -160,7 +160,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
             ty .= Y * wy
             tx .= X * invCx * X' * ty
             wy .= Y' * tx
-            wy ./= norm(wy)
+            wy ./= normv(wy)
             dif = sum((wy .- w0).^2)
             iter = iter + 1
             if (dif < par.tol) || (iter[a] > par.maxit)
@@ -178,7 +178,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         # For Rx
         tty = dot(ty, ty)
         wx .= invCx * X' * ty / tty
-        wx .= wx / norm(wx)
+        wx .= wx / normv(wx)
         # Deflation
         X .-= tx * px'
         Y .-= tx * wytild'

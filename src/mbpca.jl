@@ -161,7 +161,7 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
             u0 = copy(u)
             for k = 1:nbl
                 wk = Xbl[k]' * u    # = wktild
-                dk = norm(wk)
+                dk = normv(wk)
                 wk ./= dk           # = wk (= normed)
                 tk .= Xbl[k] * wk 
                 Tb[a][:, k] .= tk

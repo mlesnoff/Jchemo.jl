@@ -175,7 +175,7 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
         tt = dot(t, t)
         b .= t' * X / tt           
         X .-= t * b        
-        sv[a] = norm(t)
+        sv[a] = normv(t)
         T[:, a] .= t ./ sqrtw
         P[:, a] .= res.v
         beta[:, a] .= vec(b)

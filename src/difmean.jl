@@ -52,8 +52,8 @@ function difmean(X1, X2; normx::Bool = false)
     xmeans1 = colmean(X1)
     xmeans2 = colmean(X2)
     if normx
-        xmeans1 ./= norm(xmeans1)
-        xmeans2 ./= norm(xmeans2)
+        xmeans1 ./= normv(xmeans1)
+        xmeans2 ./= normv(xmeans2)
     end
     D = (xmeans1 - xmeans2)'
     (D = D, xmeans1, xmeans2)

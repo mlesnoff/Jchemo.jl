@@ -387,7 +387,7 @@
 - **mweightcla** Compute observation weights for a categorical variable, 
     given specified sub-total weights for the classes
 - **nco**, **nro**, Nb. rows and columns of an object
-- **normw** Weighted norm of a vector
+- **normv** Norm of a vector
 - **parsemiss** Parsing a string vector allowing missing data
 - **plist** Print each element of a list
 - **pnames** Return the names of the elements of an object

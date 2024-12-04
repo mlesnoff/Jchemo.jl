@@ -196,7 +196,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
                 end
             end
             ## End
-            w ./= norm(w)
+            w ./= normv(w)
         else
             if par.meth == :soft
                 w .= snipals(XtY'; kwargs...).v

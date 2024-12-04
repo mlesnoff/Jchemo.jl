@@ -106,7 +106,7 @@ function eposvd(D; nlv = 1)
     Id = Diagonal(I, p)
     P = svd(D).V[:, 1:nlv]
     ## If n = 1, this is the same as:
-    ## zp = vec(D) ; zp ./= norm(zp) ; P = reshape(zp, p, 1)
+    ## zp = vec(D) ; zp ./= normv(zp) ; P = reshape(zp, p, 1)
     ## End 
     M = Id - P * P'
     (M = M, P)

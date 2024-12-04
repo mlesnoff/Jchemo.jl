@@ -20,7 +20,7 @@ function snipalsh(X; kwargs...)
         v .= zeros(Q, p)
         v[sel] .= vmax
         ## End
-        v ./= norm(v)
+        v ./= normv(v)
         mul!(t, X, v)
         dif = sum((t .- t0).^2)
         iter = iter + 1

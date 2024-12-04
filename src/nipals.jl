@@ -60,7 +60,7 @@ function nipals(X; kwargs...)
     while cont
         u0 .= copy(u)      
         mul!(v, X', u)
-        v ./= norm(v)
+        v ./= normv(v)
         mul!(u, X, v)
         dif = sum((u .- u0).^2)
         iter = iter + 1
@@ -68,7 +68,7 @@ function nipals(X; kwargs...)
             cont = false
         end
     end
-    sv = norm(u)
+    sv = normv(u)
     u ./= sv
     niter = iter - 1
     (u = u, v, sv, niter)
@@ -87,7 +87,7 @@ function nipals(X, UUt, VVt; kwargs...)
         u0 .= copy(u)      
         mul!(v, X', u)
         v .= v .- VVt * v
-        v ./= norm(v)
+        v ./= normv(v)
         mul!(u, X, v)
         u .= u .- UUt * u
         dif = sum((u .- u0).^2)
@@ -96,7 +96,7 @@ function nipals(X, UUt, VVt; kwargs...)
             cont = false
         end
     end
-    sv = norm(u)
+    sv = normv(u)
     u ./= sv
     niter = iter - 1
     (u = u, v, sv, niter)

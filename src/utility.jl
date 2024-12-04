@@ -214,6 +214,10 @@ Compute cosinus between two vectors.
 * `x` : vector (n).
 * `y` : vector (n).
 
+## References
+@Stevengj, 
+https://discourse.julialang.org/t/interesting-post-about-simd-dot-product-and-cosine-similarity/123282.
+
 ## Examples
 ```julia
 using Jchemo
@@ -225,8 +229,7 @@ y = rand(n)
 cosv(x, y)
 ```
 """
-cosv(x, y) = dot(x, y) / (norm(x) * norm(y))
-
+cosv(x, y) = dot(x, y) / sqrt(dot(x, x) * dot(y, y))
 
 """
     covm(X, weights::Weight)
@@ -432,7 +435,7 @@ The Frobenius norm of `X` is:
 The Frobenius weighted norm is:
 * sqrt(tr(X' * D * X)), where D is the diagonal matrix of vector `w`.
 """
-frob(X) = LinearAlgebra.norm(X)
+frob(X) = LinearAlgebra.normv(X)
 
 frob(X, weights::Weight) = sqrt(sum(weights.w' * (X.^2))) 
 
@@ -634,16 +637,42 @@ Return the nb. columns of `X`.
 nco(X) = size(X, 2)
 
 """ 
-    normw(x, weights::Weight)
-Compute the weighted norm of a vector.
+    normv(x)
+    normv(x, weights::Weight)
+Compute the norm of a vector.
 * `x` : A vector (n).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 
 The weighted norm of vector `x` is computed by:
 * sqrt(x' * D * x), where D is the diagonal matrix of vector `weights.w`.
+
+## References
+@Stevengj, 
+https://discourse.julialang.org/t/interesting-post-about-simd-dot-product-and-cosine-similarity/123282.
+
+## Examples
+```julia
+using Jchemo
+
+n = 1000
+x = rand(n)
+w = mweight(ones(n))
+
+normv(x)
+sqrt(n) * normv(x, w)
+```
+
 """
-normw(x, weights::Weight) = sqrt(sum(x .* weights.w .* x))
+normv(x) = sqrt(dot(x, x)) 
+
+function normv(x, weights::Jchemo.Weight) 
+    s = zero(x[begin])
+    @simd for i in eachindex(x)
+        s = muladd(x[i] * weights.w[i], x[i], s)
+    end
+    sqrt(s)
+end
 
 """ 
     nro(X)
@@ -1175,7 +1204,7 @@ end
 Compute the total inertia of a matrix.
 * `X` : Matrix.
 
-Sum of all the squared components of `X` (= `norm(X)^2`; Squared Frobenius norm). 
+Sum of all the squared components of `X` (= `normv(X)^2`; Squared Frobenius norm). 
 
 ## Examples
 ```julia

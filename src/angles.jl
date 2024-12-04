@@ -185,8 +185,8 @@ function rv(X, Y; centr = true)
         YYt = Y * Y'
         zx = vec(XXt)
         zy = vec(YYt)
-        a = zx / norm(zx)
-        b = zy / norm(zy)
+        a = zx / normv(zx)
+        b = zy / normv(zy)
         rv = a' * b
     else
         XtY = X' * Y    

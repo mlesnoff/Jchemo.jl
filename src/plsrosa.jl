@@ -73,7 +73,7 @@ function plsrosa!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         XtY .= X' * (D * Y)
         if q == 1
             w .= vec(XtY)
-            w ./= norm(w)
+            w ./= normv(w)
         else
             w .= svd!(XtY).U[:, 1]
         end

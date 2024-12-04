@@ -59,7 +59,7 @@ function nipalsmiss(X; kwargs...)
         zU[s] .= 0
         mul!(v, X0t, u)
         v ./= colsum(zU)
-        v ./= norm(v)
+        v ./= normv(v)
         zV .= reshape(repeat(v.^2, n), p, n)
         zV[st] .= 0
         mul!(u, X0, v)
@@ -70,7 +70,7 @@ function nipalsmiss(X; kwargs...)
             cont = false
         end
     end
-    sv = norm(u)
+    sv = normv(u)
     u ./= sv
     niter = iter - 1
     (u = u, v, sv, niter)
@@ -99,7 +99,7 @@ function nipalsmiss(X, UUt, VVt; kwargs...)
         mul!(v, X0t, u)
         v ./= colsum(zU)
         v .= v .- VVt * v
-        v ./= norm(v)
+        v ./= normv(v)
         zV .= reshape(repeat(v.^2, n), p, n)
         zV[st] .= 0
         mul!(u, X0, v)
@@ -111,7 +111,7 @@ function nipalsmiss(X, UUt, VVt; kwargs...)
             cont = false
         end
     end
-    sv = norm(u)
+    sv = normv(u)
     u ./= sv
     niter = iter - 1
     (u = u, v, sv, niter)

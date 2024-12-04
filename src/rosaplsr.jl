@@ -132,7 +132,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
             if q == 1
                 wbl[k] = vec(XtY)
                 #wbl[k] = vec(cor(Xbl[k], Y))
-                wbl[k] ./= norm(wbl[k])
+                wbl[k] ./= normv(wbl[k])
             else
                 wbl[k] = svd!(XtY).U[:, 1]
             end
@@ -186,7 +186,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
             zW = Wbl[opt]
             zw .= zw .- zW * (zW' * zw)
         end
-        zw ./= norm(zw)
+        zw ./= normv(zw)
         if !isassigned(Wbl, opt) 
             Wbl[opt] = reshape(zw, :, 1)
         else

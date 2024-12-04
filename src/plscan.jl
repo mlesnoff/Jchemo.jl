@@ -151,7 +151,7 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         wy .= V[:, 1]
         # Same as:                        
         # mul!(wy, Y', dtx)
-        # wy ./= norm(wy)
+        # wy ./= normv(wy)
         # End
         mul!(ty, Y, wy)
         dty .= weights.w .* ty

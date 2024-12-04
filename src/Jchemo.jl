@@ -278,7 +278,7 @@ export
     nco,
     nipals,
     nipalsmiss,
-    normw,  
+    normv,  
     nro,
     out,
     parsemiss,

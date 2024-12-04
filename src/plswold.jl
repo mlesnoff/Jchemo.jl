@@ -85,10 +85,10 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         while cont
             w0 = copy(wx)
             wx .= X' * ty / dot(ty, ty)    
-            wx ./= norm(wx)
+            wx ./= normv(wx)
             tx .= X * wx
             wytild = Y' * tx / dot(tx, tx)    # = ctild ==> output "C"
-            wy .= wytild / norm(wytild)
+            wy .= wytild / normv(wytild)
             ty .= Y * wy
             dif = sum((wx .- w0).^2)
             iter = iter + 1

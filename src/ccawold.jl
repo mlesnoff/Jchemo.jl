@@ -192,11 +192,11 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
             w0 = copy(wx)
             tty = dot(ty, ty)
             wxtild .= invCx * X' * ty / tty
-            wx .= wxtild / norm(wxtild)
+            wx .= wxtild / normv(wxtild)
             mul!(tx, X, wx)
             ttx = dot(tx, tx)
             wytild .= invCy * Y' * tx / ttx
-            wy .= wytild / norm(wytild)
+            wy .= wytild / normv(wytild)
             mul!(ty, Y, wy)
             dif = sum((wx .- w0).^2)
             iter = iter + 1

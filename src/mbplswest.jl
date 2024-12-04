@@ -151,7 +151,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
             t0 = copy(ty)
             for k = 1:nbl
                 wktild = Xbl[k]' * ty / dot(ty, ty)
-                dk = norm(wktild)
+                dk = normv(wktild)
                 wk = wktild / dk
                 tk = Xbl[k] * wk
                 pk =  Xbl[k]' * tk
@@ -161,10 +161,10 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
                 Tbl[k][:, a] .= (1 ./ sqrtw) .* tk  
             end
             w = Tb[a]' * ty / dot(ty, ty) 
-            w ./= norm(w)
+            w ./= normv(w)
             tx .= Tb[a] * w
             wy .= Y' * tx
-            wy ./= norm(wy)
+            wy ./= normv(wy)
             ty .= Y * wy
             dif = sum((ty .- t0).^2)
             iter = iter + 1
@@ -177,7 +177,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         ttx = dot(tx, tx)
         X .= reduce(hcat, Xbl)
         wx .= X' * ty / dot(ty, ty)    
-        wx ./= norm(wx)
+        wx ./= normv(wx)
         mul!(px, X', tx)
         px ./= ttx
         wytild .= Y' * tx / ttx
