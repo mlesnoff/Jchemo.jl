@@ -435,7 +435,7 @@ The Frobenius norm of `X` is:
 The Frobenius weighted norm is:
 * sqrt(tr(X' * D * X)), where D is the diagonal matrix of vector `w`.
 """
-frob(X) = LinearAlgebra.normv(X)
+frob(X) = LinearAlgebra.norm(X)
 
 frob(X, weights::Weight) = sqrt(sum(weights.w' * (X.^2))) 
 
@@ -668,7 +668,7 @@ normv(x) = sqrt(dot(x, x))
 
 function normv(x, weights::Jchemo.Weight) 
     s = zero(x[begin])
-    @simd for i in eachindex(x)
+    @inbounds for i in eachindex(x)
         s = muladd(x[i] * weights.w[i], x[i], s)
     end
     sqrt(s)
