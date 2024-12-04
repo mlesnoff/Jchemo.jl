@@ -661,6 +661,10 @@ The weighted norm of vector `x` is computed by:
 * sqrt(x' * D * x), where D is the diagonal matrix of vector `weights.w`.
 
 ## References
+
+@gdkrmr,
+https://discourse.julialang.org/t/julian-way-to-write-this-code/119348/17
+
 @Stevengj, 
 https://discourse.julialang.org/t/interesting-post-about-simd-dot-product-and-cosine-similarity/123282.
 
@@ -679,13 +683,7 @@ sqrt(n) * normv(x, w)
 """
 normv(x) = sqrt(dot(x, x)) 
 
-function normv(x, weights::Jchemo.Weight) 
-    s = zero(x[begin])
-    @inbounds for i in eachindex(x)
-        s = muladd(x[i] * weights.w[i], x[i], s)
-    end
-    sqrt(s)
-end
+normv(x, weights::Jchemo.Weight) = sqrt(sum(i -> x[i] * x[i] * weights.w[i], 1:length(x)))
 
 """ 
     nro(X)
