@@ -91,9 +91,17 @@ colnorm(X)
 colnorm(X, w)
 ```
 """ 
-colnorm(X) = map(normv, eachcol(ensure_mat(X)))
+colnorm(X) = normv.(eachcol(ensure_mat(X))) 
 
-colnorm(X, weights::Weight) = sqrt.(vec(weights.w' * ensure_mat(X).^2))
+function colnorm(X, weights::Jchemo.Weight)
+    X = ensure_mat(X) 
+    p = nco(X)
+    r = similar(X, p)
+    Threads.@threads for j = 1:p
+        r[j] = normv(vcol(X, j), weights)
+    end
+    r
+end
 
 """
     colstd(X)
