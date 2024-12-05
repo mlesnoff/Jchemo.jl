@@ -41,8 +41,7 @@ colmean(X, w)
 """ 
 colmean(X) = colsum(X) / nro(X)
 
-## Equal to colsum 
-colmean(X, weights::Weight) = vec(weights.w' * ensure_mat(X))
+colmean(X, weights::Weight) = vec(weights.w' * ensure_mat(X))  # = colsum
 
 """
     colmed(X)
@@ -92,7 +91,7 @@ colnorm(X)
 colnorm(X, w)
 ```
 """ 
-colnorm(X) = map(LinearAlgebra.norm, eachcol(ensure_mat(X)))
+colnorm(X) = map(normv, eachcol(ensure_mat(X)))
 
 colnorm(X, weights::Weight) = sqrt.(vec(weights.w' * ensure_mat(X).^2))
 
@@ -145,10 +144,13 @@ colsum(X, w)
 ```
 """ 
 function colsum(X)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    w = ones(Q, n)
-    vec(w' * ensure_mat(X))
+    X = ensure_mat(X)
+    p = nco(X)
+    r = similar(X, p)
+    Threads.@threads for j = 1:p
+        r[j] = sum(vcol(X, j))
+    end
+    r
 end
 
 colsum(X, weights::Weight) = vec(weights.w' * ensure_mat(X))
