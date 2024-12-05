@@ -15,7 +15,7 @@ X = rand(n, p)
 colmad(X)
 ```
 """
-colmad(X) = map(Jchemo.mad, eachcol(ensure_mat(X)))
+colmad(X) = Jchemo.mad.(eachcol(ensure_mat(X))) 
 
 """
     colmean(X)
@@ -60,7 +60,7 @@ X = rand(n, p)
 colmed(X)
 ```
 """ 
-colmed(X) = map(Statistics.median, eachcol(ensure_mat(X)))
+colmed(X) = Statistics.median.(eachcol(ensure_mat(X))) 
 
 """
     colnorm(X)
@@ -75,7 +75,7 @@ The norm computed for a column x of `X` is:
 
 The weighted norm is:
 * sqrt(x' * D * x), where D is the diagonal matrix of `weights.w`
-* Warning: `colnorm(X, mweight(ones(n))) = colnorm(X) / sqrt(n)`
+**Warning:** `colnorm(X, mweight(ones(n)))` = `colnorm(X) / sqrt(n)`.
 
 Return a vector.
 
