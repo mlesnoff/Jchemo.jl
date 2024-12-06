@@ -72,7 +72,7 @@ end
 function wdist!(d; h = 2, criw = 4, squared = false)
     squared ? d .= d.^2 : nothing
     zmed =  Statistics.median(d)
-    zmad = Jchemo.mad(d)
+    zmad = madv(d)
     cutoff = zmed + criw * zmad
     d .= map(x -> ifelse(x <= cutoff, exp(-x / (h * zmad)), zero(eltype(d))), d)
     ## Alternative, e.g.: 

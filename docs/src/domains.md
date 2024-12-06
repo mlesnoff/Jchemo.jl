@@ -360,10 +360,11 @@
 
 - **aggstat** Compute column-wise statistics by class in a dataset
 - **aggsum** Compute sub-total sums by class of a categorical variable
+- **sumv**, **meanv**, **stdv**, **normv**, **madv**, **iqrv** Vector operations 
 - **colmad**, **colmean**, **colmed**, **colnorm**, 
     **colstd**, **colsum**, **colvar**  Column-wise operations
 - **colmeanskip**, **colstdskip**, **colsumskip**, 
-    **colvarskip**: Column-wise operations allowing missing data
+    **colvarskip** Column-wise operations allowing missing data
 - **convertdf** Convert the columns of a dataframe to given types
 - **covm**, **corm** Weighted covariance and correlation matrices
 - **cosv**, **cosm** Cosinus between vectors
@@ -377,7 +378,7 @@
 - **fweight** Compute weights from distances
 - **getknn** Find nearest neighbours between rows of matrices
 - **head**, **@head** Display the first rows of a dataset
-- **iqr** Interval inter-quartiles
+- **iqrv** Interval inter-quartiles
 - **krbf, kpol** Build kernel Gram matrices
 - **locw** Working function for local (kNN) models
 - **mad** Median absolute deviation (not exported)

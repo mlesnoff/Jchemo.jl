@@ -253,6 +253,7 @@ export
     default,
     ######---- Utilities
     aggstat, aggsum,
+    sumv, meanv, stdv, normv, madv, iqrv, 
     colmad, colmean, colmed, colnorm, colstd, colsum, colvar,
     colmeanskip, colstdskip, colsumskip, colvarskip,
     convertdf,
@@ -278,7 +279,6 @@ export
     nco,
     nipals,
     nipalsmiss,
-    normv,  
     nro,
     out,
     parsemiss,

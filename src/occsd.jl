@@ -20,7 +20,7 @@ If a new observation has `d` higher than a given `cutoff`, the
 observation is assumed to not belong to the training (= reference) 
 class. The `cutoff` is computed with non-parametric heuristics. 
 Noting [d] the vector of outliernesses computed on the training class:
-* If `mcut` = `:mad`, then `cutoff` = median([d]) + `cri` * mad([d]). 
+* If `mcut` = `:mad`, then `cutoff` = median([d]) + `cri` * madv([d]). 
 * If `mcut` = `:q`, then `cutoff` is estimated from the empirical 
     cumulative density function computed on [d], for a given 
     risk-I (`risk`). 
@@ -147,7 +147,7 @@ function occsd(fitm; kwargs...)
     fscale!(T, tscales)
     d2 = vec(euclsq(T, zeros(Q, nlv)'))
     d = sqrt.(d2)
-    par.mcut == :mad ? cutoff = median(d) + par.cri * mad(d) : nothing
+    par.mcut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
     par.mcut == :q ? cutoff = quantile(d, 1 - par.risk) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)

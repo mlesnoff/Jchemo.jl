@@ -144,6 +144,8 @@ corm(X, w)
 corm(X, Y, w)
 ```
 """
+corm(X) = cor(X)
+
 function corm(X, weights::Weight)
     zX = copy(ensure_mat(X))
     xmeans = colmean(zX, weights)
@@ -153,6 +155,8 @@ function corm(X, weights::Weight)
     z = Diagonal(sqrt.(weights.w)) * zX
     z' * z
 end
+
+corm(X, Y) = cor(X, Y)
 
 function corm(X, Y, weights::Weight)
     zX = copy(ensure_mat(X))
@@ -232,7 +236,9 @@ cosv(x, y)
 cosv(x, y) = dot(x, y) / sqrt(dot(x, x) * dot(y, y))
 
 """
+    covm(X)
     covm(X, weights::Weight)
+    covm(X, Y) 
     covm(X, Y, weights::Weight)
 Compute a weighted covariance matrix.
 * `X` : Data (n, p).
@@ -258,12 +264,16 @@ covm(X, w)
 covm(X, Y, w)
 ```
 """
+covm(X) = cov(X; corrected = false)
+
 function covm(X, weights::Weight)
     zX = copy(ensure_mat(X))
     fcenter!(zX, colmean(zX, weights))
     zX = Diagonal(sqrt.(weights.w)) * zX
     zX' * zX
 end
+
+covm(X, Y) = cov(X, Y; corrected = false)
 
 function covm(X, Y, weights::Weight)
     zX = copy(ensure_mat(X))
@@ -484,17 +494,17 @@ macro head(X)
 end
 
 """
-    iqr(x)
-Compute the interquartile interval (IQR).
+    iqrv(x)
+Compute the interquartile interval (IQR) of a vector.
+* `x` : A vector (n).
 
 ## Examples
 ```julia
 x = rand(100)
-iqr(x)
+iqrv(x)
 ```
 """
-## Not exported
-iqr(x) = quantile(x, .75) - quantile(x, .25)
+iqrv(x) = quantile(x, .75) - quantile(x, .25)
 
 """
     list(n::Integer)
@@ -513,7 +523,7 @@ list(n::Integer) = Vector{Any}(nothing, n)
 
 """
     list(Q, n::Integer)
-Create a Vector{Q}(undef, n).
+Create a Vector `{Q}(undef, n)`.
 
 `isassigned(object, i)` can be used to check if cell i is empty.
 
@@ -529,20 +539,47 @@ list(Matrix{Int}, 5)
 list(Q, n::Integer) = Vector{Q}(undef, n)
 
 """ 
-    mad(x)
-Compute the median absolute deviation (MAD),
-adjusted by a factor (1.4826) for asymptotically normal consistency. 
+    madv(x)
+
+Compute the median absolute deviation (MAD) of a vector. 
+* `x` : A vector (n).
+
+This is the MAD adjusted by a factor (1.4826) for asymptotically 
+normal consistency.
 
 ## Examples
 ```julia
 using Jchemo
 
 x = rand(100)
-mad(x)
+madv(x)
 ```
 """
-## Not exported
-mad(x) = 1.4826 * median(abs.(x .- median(x)))
+madv(x) = 1.4826 * median(abs.(x .- median(x)))
+
+""" 
+    meanv(x)
+    meanv(x, weights::Weight)
+Compute the mean of a vector. 
+* `x` : A vector (n).
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
+
+## Examples
+```julia
+using Jchemo
+
+n = 100
+x = rand(n)
+w = mweight(rand(n)) 
+
+meanv(x)
+meanv(x, w)
+```
+"""
+meanv(x) = Statistics.mean(x)
+
+meanv(x, weights::Weight) = sumv(x, weights::Weight)
 
 """ 
     mlev(x)
@@ -679,7 +716,6 @@ w = mweight(ones(n))
 normv(x)
 sqrt(n) * normv(x, w)
 ```
-
 """
 normv(x) = sqrt(dot(x, x)) 
 
@@ -1213,7 +1249,7 @@ end
 """
     ssq(X)
 Compute the total inertia of a matrix.
-* `X` : Matrix.
+* `X` : Matrix (n, p).
 
 Sum of all the squared components of `X` (= `normv(X)^2`; Squared Frobenius norm). 
 
@@ -1228,6 +1264,35 @@ ssq(X)
 function ssq(X)
     v = vec(ensure_mat(X))
     dot(v, v)
+end
+
+""" 
+    stdv(x)
+    stdv(x, weights::Weight)
+Compute the uncorrected standard deviation of a vector.
+* `x` : A vector (n).
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
+
+## Examples
+```julia
+using Jchemo
+
+n = 1000
+x = rand(n)
+w = mweight(rand(n))
+
+stdv(x)
+stdv(x, w)
+```
+
+"""
+stdv(x) = Statistics.std(x; corrected = false) 
+
+function stdv(x, weight::Weight)
+    n = length(x)
+    mu = meanv(x, weight)
+    sqrt(sum(i -> (x[i] - mu)^2 * weight.w[i], 1:n))
 end
 
 """
@@ -1274,6 +1339,36 @@ function summ(X, y; digits = 3)
         println(res)
         println("") ; println("") 
     end
+end
+
+""" 
+    sumv(x)
+    sumv(x, weights::Weight)
+Compute the sum of a vector. 
+* `x` : A vector (n).
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
+
+## Examples
+```julia
+using Jchemo
+
+n = 100
+x = rand(n)
+w = mweight(rand(n)) 
+
+sumv(x)
+sumv(x, w)
+```
+"""
+sumv(x) = Base.sum(x)
+
+function sumv(x, weights::Weight)
+    s = zero(x[begin])
+    @simd for i in eachindex(x)
+        s = muladd(x[i],  weights.w[i], s)
+    end
+    s
 end
 
 """

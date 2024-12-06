@@ -119,7 +119,7 @@ function occod(fitm, X; kwargs...)
     E = xresid(fitm, X)
     d2 = vec(sum(E .* E, dims = 2))
     d = sqrt.(d2)
-    par.mcut == :mad ? cutoff = median(d) + par.cri * mad(d) : nothing
+    par.mcut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
     par.mcut == :q ? cutoff = quantile(d, 1 - par.risk) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)

@@ -4,8 +4,13 @@
 
 - Breaking
     - **dummy**: To improve time computations, the output 'Y' is now a BitMatrix.
+    - **iqr**: renamed to **iqrv**.
+    - **mad**: renamed to **madv**.
     - **normw**: renamed to **normv**.
     - **splskern**: renamed to **splsr**.
+
+- New
+    - **sumv**, **meanv**, **stdv**: Vector operations.
 
 - Modifications
     - Code cleaning.  

@@ -107,14 +107,14 @@ function occstah(X; kwargs...)
     d = res.d
     #d2 = d.^2 
     #mu = median(d2)
-    #s2 = mad(d2)^2
+    #s2 = madv(d2)^2
     #nu = 2 * mu^2 / s2
     #g = mu / nu
     #dist = Distributions.Chisq(nu)
     #pval = Distributions.ccdf.(dist, d2 / g)
     #mcut == :par ? cutoff = sqrt(g * quantile(dist, 1 - risk)) : nothing
-    #mcut == "npar" ? cutoff = median(d) + par.cri * mad(d) : nothing  
-    par.mcut == :mad ? cutoff = median(d) + par.cri * mad(d) : nothing
+    #mcut == "npar" ? cutoff = median(d) + par.cri * madv(d) : nothing  
+    par.mcut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
     par.mcut == :q ? cutoff = quantile(d, 1 - par.risk) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
