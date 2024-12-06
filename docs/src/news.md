@@ -10,7 +10,7 @@
     - **splskern**: renamed to **splsr**.
 
 - New
-    - **sumv**, **meanv**, **stdv**: Vector operations.
+    - **sumv**, **meanv**, **stdv**, **varv**: Vector operations.
 
 - Modifications
     - Code cleaning.  

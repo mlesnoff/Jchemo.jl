@@ -253,9 +253,9 @@ export
     default,
     ######---- Utilities
     aggstat, aggsum,
-    sumv, meanv, stdv, normv, madv, iqrv, 
-    colmad, colmean, colmed, colnorm, colstd, colsum, colvar,
-    colmeanskip, colstdskip, colsumskip, colvarskip,
+    sumv, meanv, normv, stdv, varv, madv, iqrv, 
+    colsum, colmean, colnorm, colstd, colvar, colmed, colmad, 
+    colsumskip, colmeanskip, colstdskip, colvarskip,
     convertdf,
     corm, covm,
     cosm, cosv,

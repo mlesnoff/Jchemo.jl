@@ -1285,7 +1285,6 @@ w = mweight(rand(n))
 stdv(x)
 stdv(x, w)
 ```
-
 """
 stdv(x) = Statistics.std(x; corrected = false) 
 
@@ -1437,6 +1436,34 @@ function tabdupl(x)
     s = z.vals .> 1
     u = z.keys[s]
     tab(x[in(u).(x)])
+end
+
+""" 
+    varv(x)
+    varv(x, weights::Weight)
+Compute the uncorrected variance of a vector.
+* `x` : A vector (n).
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
+
+## Examples
+```julia
+using Jchemo
+
+n = 1000
+x = rand(n)
+w = mweight(rand(n))
+
+varv(x)
+varv(x, w)
+```
+"""
+varv(x) = Statistics.var(x; corrected = false) 
+
+function varv(x, weight::Weight)
+    n = length(x)
+    mu = meanv(x, weight)
+    sum(i -> (x[i] - mu)^2 * weight.w[i], 1:n)
 end
 
 """

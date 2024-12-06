@@ -360,7 +360,7 @@
 
 - **aggstat** Compute column-wise statistics by class in a dataset
 - **aggsum** Compute sub-total sums by class of a categorical variable
-- **sumv**, **meanv**, **stdv**, **normv**, **madv**, **iqrv** Vector operations 
+- **sumv**, **meanv**, **normv**, **stdv**, **varv**, **madv**, **iqrv** Vector operations 
 - **colmad**, **colmean**, **colmed**, **colnorm**, 
     **colstd**, **colsum**, **colvar**  Column-wise operations
 - **colmeanskip**, **colstdskip**, **colsumskip**, 

@@ -1,7 +1,10 @@
 """
-    colmad(X)
-Compute column-wise median absolute deviations (MAD) of a matrix.
+    colsum(X)
+    colsum(X, weights::Weight)
+Compute column-wise sums of a matrix.
 * `X` : Data (n, p).
+* `weights` : Weights (n) of the observations. 
+    Must be of type `Weight` (see e.g. function `mweight`).
 
 Return a vector.
 
@@ -11,11 +14,31 @@ using Jchemo
 
 n, p = 5, 6
 X = rand(n, p)
+w = mweight(rand(n))
 
-colmad(X)
+colsum(X)
+colsum(X, w)
 ```
-"""
-colmad(X) = Jchemo.mad.(eachcol(ensure_mat(X))) 
+""" 
+function colsum(X)
+    X = ensure_mat(X)
+    p = nco(X)
+    s = similar(X, p)
+    Threads.@threads for j = 1:p
+        s[j] = sumv(vcol(X, j))
+    end
+    s
+end
+
+function colsum(X, weights::Weight)
+    X = ensure_mat(X) 
+    p = nco(X)
+    s = similar(X, p)
+    Threads.@threads for j = 1:p
+        s[j] = sumv(vcol(X, j), weights)
+    end
+    s
+end
 
 """
     colmean(X)
@@ -41,26 +64,7 @@ colmean(X, w)
 """ 
 colmean(X) = colsum(X) / nro(X)
 
-colmean(X, weights::Weight) = vec(weights.w' * ensure_mat(X))  # = colsum
-
-"""
-    colmed(X)
-Compute column-wise medians of a matrix.
-* `X` : Data (n, p).
-
-Return a vector.
-
-## Examples
-```julia
-using Jchemo
-
-n, p = 5, 6
-X = rand(n, p)
-
-colmed(X)
-```
-""" 
-colmed(X) = Statistics.median.(eachcol(ensure_mat(X))) 
+colmean(X, weights::Weight) = colsum(X, weights)
 
 """
     colnorm(X)
@@ -91,9 +95,17 @@ colnorm(X)
 colnorm(X, w)
 ```
 """ 
-colnorm(X) = normv.(eachcol(ensure_mat(X))) 
+function colnorm(X)
+    X = ensure_mat(X)
+    p = nco(X)
+    s = similar(X, p)
+    Threads.@threads for j = 1:p
+        s[j] = normv(vcol(X, j))
+    end
+    s
+end
 
-function colnorm(X, weights::Jchemo.Weight)
+function colnorm(X, weights::Weight)
     X = ensure_mat(X) 
     p = nco(X)
     s = similar(X, p)
@@ -125,48 +137,22 @@ colstd(X)
 colstd(X, w)
 ```
 """ 
-colstd(X) = map(v -> Statistics.std(v ; corrected = false), eachcol(ensure_mat(X)))
-
-colstd(X, weights::Weight) = colnorm(X .- colmean(ensure_mat(X), weights)', weights)
-
-"""
-    colsum(X)
-    colsum(X, weights::Weight)
-Compute column-wise sums of a matrix.
-* `X` : Data (n, p).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
-
-Return a vector.
-
-## Examples
-```julia
-using Jchemo
-
-n, p = 5, 6
-X = rand(n, p)
-w = mweight(rand(n))
-
-colsum(X)
-colsum(X, w)
-```
-""" 
-function colsum(X)
+function colstd(X)
     X = ensure_mat(X)
     p = nco(X)
     s = similar(X, p)
     Threads.@threads for j = 1:p
-        s[j] = sum(vcol(X, j))
+        s[j] = stdv(vcol(X, j))
     end
     s
 end
 
-function colsum(X, weights::Weight)
+function colstd(X, weights::Weight)
     X = ensure_mat(X) 
     p = nco(X)
     s = similar(X, p)
     Threads.@threads for j = 1:p
-        s[j] = dot(vcol(X, j), weights.w)
+        s[j] = stdv(vcol(X, j), weights)
     end
     s
 end
@@ -193,35 +179,99 @@ colvar(X)
 colvar(X, w)
 ```
 """ 
-colvar(X) = map(v -> Statistics.var(v ; corrected = false), eachcol(ensure_mat(X)))
+function colvar(X)
+    X = ensure_mat(X)
+    p = nco(X)
+    s = similar(X, p)
+    Threads.@threads for j = 1:p
+        s[j] = varv(vcol(X, j))
+    end
+    s
+end
 
-colvar(X, weights::Weight) = colstd(X, weights).^2
+function colvar(X, weights::Weight)
+    X = ensure_mat(X) 
+    p = nco(X)
+    s = similar(X, p)
+    Threads.@threads for j = 1:p
+        s[j] = varv(vcol(X, j), weights)
+    end
+    s
+end
 
-###### Functions skipping missing data
+"""
+    colmed(X)
+Compute column-wise medians of a matrix.
+* `X` : Data (n, p).
 
-colmeanskip(X) = [Statistics.mean(skipmissing(x)) for x in eachcol(ensure_mat(X))]
+Return a vector.
 
-colstdskip(X) = [Statistics.std(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
+## Examples
+```julia
+using Jchemo
 
+n, p = 5, 6
+X = rand(n, p)
+
+colmed(X)
+```
+""" 
+function colmed(X)
+    X = ensure_mat(X)
+    p = nco(X)
+    s = similar(X, p)
+    Threads.@threads for j = 1:p
+        s[j] = Statistics.median(vcol(X, j))
+    end
+    s
+end
+
+"""
+    colmad(X)
+Compute column-wise median absolute deviations (MAD) of a matrix.
+* `X` : Data (n, p).
+
+Return a vector.
+
+## Examples
+```julia
+using Jchemo
+
+n, p = 5, 6
+X = rand(n, p)
+
+colmad(X)
+```
+"""
+function colmad(X)
+    X = ensure_mat(X)
+    p = nco(X)
+    s = similar(X, p)
+    Threads.@threads for j = 1:p
+        s[j] = madv(vcol(X, j))
+    end
+    s
+end
+
+##### Functions skipping missing data
 colsumskip(X) = [Base.sum(skipmissing(x)) for x in eachcol(ensure_mat(X))]
-
+colmeanskip(X) = [Statistics.mean(skipmissing(x)) for x in eachcol(ensure_mat(X))]
+colstdskip(X) = [Statistics.std(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
 colvarskip(X) = [Statistics.var(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
-
 ## With weights
-function colmeanskip(X, weights::Weight)
+function colsumskip(X, weights::Weight)
     X = ensure_mat(X)
     p = nco(X)
     z = zeros(p)
-    for j = 1:p
+    @inbounds for j = 1:p
         s = ismissing.(vcol(X, j))
         zw = mweight(rmrow(weights.w, s)).w
         z[j] = sum(zw .* rmrow(X[:, j], s))
     end
     z
 end
-
-colsumskip(X, weights::Weight) = colmeanskip(X, weights)
-
+colmeanskip(X, weights::Weight) = colsumskip(X, weights)
+colstdskip(X, weights::Weight) = sqrt.(colvarskip(X, weights))
 function colvarskip(X, weights::Weight)
     X = ensure_mat(X)
     p = nco(X)
@@ -233,6 +283,4 @@ function colvarskip(X, weights::Weight)
     end
     z 
 end
-
-colstdskip(X, weights::Weight) = sqrt.(colvarskip(X, weights))
 
