@@ -96,11 +96,11 @@ colnorm(X) = normv.(eachcol(ensure_mat(X)))
 function colnorm(X, weights::Jchemo.Weight)
     X = ensure_mat(X) 
     p = nco(X)
-    r = similar(X, p)
+    s = similar(X, p)
     Threads.@threads for j = 1:p
-        r[j] = normv(vcol(X, j), weights)
+        s[j] = normv(vcol(X, j), weights)
     end
-    r
+    s
 end
 
 """
@@ -154,14 +154,22 @@ colsum(X, w)
 function colsum(X)
     X = ensure_mat(X)
     p = nco(X)
-    r = similar(X, p)
+    s = similar(X, p)
     Threads.@threads for j = 1:p
-        r[j] = sum(vcol(X, j))
+        s[j] = sum(vcol(X, j))
     end
-    r
+    s
 end
 
-colsum(X, weights::Weight) = vec(weights.w' * ensure_mat(X))
+function colsum(X, weights::Weight)
+    X = ensure_mat(X) 
+    p = nco(X)
+    s = similar(X, p)
+    Threads.@threads for j = 1:p
+        s[j] = dot(vcol(X, j), weights.w)
+    end
+    s
+end
 
 """
     colvar(X)

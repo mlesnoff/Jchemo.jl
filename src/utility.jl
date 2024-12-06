@@ -719,7 +719,7 @@ sqrt(n) * normv(x, w)
 """
 normv(x) = sqrt(dot(x, x)) 
 
-normv(x, weights::Jchemo.Weight) = sqrt(sum(i -> x[i] * x[i] * weights.w[i], 1:length(x)))
+normv(x, weights::Jchemo.Weight) = sqrt(sum(i -> x[i]^2 * weights.w[i], 1:length(x)))
 
 """ 
     nro(X)
