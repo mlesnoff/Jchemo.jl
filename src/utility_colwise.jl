@@ -30,15 +30,7 @@ function colsum(X)
     s
 end
 
-function colsum(X, weights::Weight)
-    X = ensure_mat(X) 
-    p = nco(X)
-    s = similar(X, p)
-    Threads.@threads for j = 1:p
-        s[j] = sumv(vcol(X, j), weights)
-    end
-    s
-end
+colsum(X, weights::Weight) = vec(weights.w' * ensure_mat(X))
 
 """
     colmean(X)
