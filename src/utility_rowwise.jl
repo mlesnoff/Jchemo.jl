@@ -94,13 +94,9 @@ rowvar(X)
 """ 
 rowvar(X) = rowvar(ensure_mat(X)')
 
-####### Functions skipping missing data
-
+##### Functions skipping missing data
 rowmeanskip(X) = colmeanskip(ensure_mat(X)')
-
 rowstdskip(X) = colstdskip(ensure_mat(X)')
-
 rowsumskip(X) = colsumskip(ensure_mat(X)')
-
 rowvarskip(X) = colvarskip(ensure_mat(X)')
 
