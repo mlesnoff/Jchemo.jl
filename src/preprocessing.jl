@@ -465,9 +465,9 @@ Keyword arguments:
 * `npoint` : Size of the filter (nb. points involved in 
     the kernel). Must be odd and >= 3. The half-window size is 
     nhwindow = (`npoint` - 1) / 2.
+* `deriv` : Derivation order. Must be: 0 <= `deriv` <= `degree`.
 * `degree` : Degree of the smoothing polynom.
     Must be: 1 <= `degree` <= `npoint` - 1.
-* `deriv` : Derivation order. Must be: 0 <= `deriv` <= `degree`.
 
 The smoothing is computed by convolution (with padding), using 
 function imfilter of package ImageFiltering.jl. Each returned point is 
@@ -502,8 +502,8 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-npoint = 11 ; degree = 2 ; deriv = 2
-model = savgol(; npoint, degree, deriv) 
+npoint = 11 ; deriv = 2 ; degree = 2
+model = savgol(; npoint, deriv, degree) 
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
