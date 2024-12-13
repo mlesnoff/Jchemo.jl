@@ -50,8 +50,8 @@ end
 
 Base.@kwdef mutable struct ParSavgol
     npoint::Int = 11  
-    degree::Int = 2  
     deriv::Int = 1     
+    degree::Int = 2  
 end 
 
 Base.@kwdef mutable struct ParSnv
