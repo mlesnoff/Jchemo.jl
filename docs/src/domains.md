@@ -375,7 +375,7 @@
 - **fcenter**, **fscale**, **fcscale** Column-wise centering and scaling of a matrix
 - **findmax_cla** Find the most occurent level in a categorical variable
 - **frob** Frobenius norm of a matrix
-- **fweight** Compute weights from distances
+- **fweightdis** Compute weights from distances
 - **getknn** Find nearest neighbours between rows of matrices
 - **head**, **@head** Display the first rows of a dataset
 - **iqrv** Interval inter-quartiles

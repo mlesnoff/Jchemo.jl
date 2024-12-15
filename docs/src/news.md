@@ -4,6 +4,7 @@
 
 - Breaking
     - **dummy**: To improve time computations, the output 'Y' is now a BitMatrix.
+    - **fweight**: remaned to **fweightdis**
     - **iqr**: renamed to **iqrv**.
     - **mad**: renamed to **madv**.
     - **normw**: renamed to **normv**.

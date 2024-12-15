@@ -76,7 +76,7 @@ function wdist!(d; h = 2, criw = 4, squared = false)
     cutoff = zmed + criw * zmad
     d .= map(x -> ifelse(x <= cutoff, exp(-x / (h * zmad)), zero(eltype(d))), d)
     ## Alternative, e.g.: 
-    ## d .= fweight(d; typw = :bisquare)
+    ## d .= fweightdis(d; typw = :bisquare)
     d .= d / maximum(d)
     d[isnan.(d)] .= 1
     return

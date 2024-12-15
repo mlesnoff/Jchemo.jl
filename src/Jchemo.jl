@@ -34,7 +34,7 @@ include("utility_rowwise.jl")
 include("utility_center_scale.jl")
 include("angles.jl")
 include("colmedspa.jl")
-include("fweight.jl") 
+include("fweightdis.jl") 
 include("ellipse.jl")
 include("matW.jl")
 include("nipals.jl")
@@ -269,7 +269,7 @@ export
     findmax_cla, 
     frob,
     fscale, fscale!,
-    fweight, talworth, 
+    fweightdis, talworth, 
     head, @head,
     list, 
     matB, matW, 

@@ -1,5 +1,5 @@
 """ 
-    fweight(d; typw = :bisquare, alpha = 0)
+    fweightdis(d; typw = :bisquare, alpha = 0)
 Computation of weights from distances.
 * `d` : Vector of distances.
 Keyword arguments:
@@ -37,38 +37,38 @@ alpha = 0
 f = Figure(size = (600, 500))
 ax = Axis(f, xlabel = "d", ylabel = "Weight")
 typw = :bisquare
-w = fweight(d; typw, alpha)
+w = fweightdis(d; typw, alpha)
 lines!(ax, d, w, label = String(typw), color = colm[1])
 typw = :cauchy
-w = fweight(d; typw, alpha)
+w = fweightdis(d; typw, alpha)
 lines!(ax, d, w, label = String(typw), color = colm[2])
 typw = :epan
-w = fweight(d; typw, alpha)
+w = fweightdis(d; typw, alpha)
 lines!(ax, d, w, label = String(typw), color = colm[3])
 typw = :fair
-w = fweight(d; typw, alpha)
+w = fweightdis(d; typw, alpha)
 lines!(ax, d, w, label = String(typw), color = colm[4])
 typw = :gauss
-w = fweight(d; typw, alpha)
+w = fweightdis(d; typw, alpha)
 lines!(ax, d, w, label = String(typw), color = colm[5])
 typw = :trian
-w = fweight(d; typw, alpha)
+w = fweightdis(d; typw, alpha)
 lines!(ax, d, w, label = String(typw), color = colm[6])
 typw = :invexp
-w = fweight(d; typw, alpha)
+w = fweightdis(d; typw, alpha)
 lines!(ax, d, w, label = String(typw), color = colm[7])
 typw = :invexp2
-w = fweight(d; typw, alpha)
+w = fweightdis(d; typw, alpha)
 lines!(ax, d, w, label = String(typw), color = colm[8])
 typw = :tricube
-w = fweight(d; typw, alpha)
+w = fweightdis(d; typw, alpha)
 lines!(ax, d, w, label = String(typw), color = colm[9])
 axislegend("Function", position = :lb)
 f[1, 1] = ax
 f
 ```
 """ 
-function fweight(d; typw = :bisquare, alpha = 0)
+function fweightdis(d; typw = :bisquare, alpha = 0)
     d = vec(abs.(d))
     alpha = max(0, min(1, alpha))
     zd = d[isnan.(d) .== 0]
