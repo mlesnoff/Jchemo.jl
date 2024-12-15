@@ -1,6 +1,6 @@
 """
-    wdist(d; h = 2, criw = 4, squared = false)
-    wdist!(d; h = 2, criw = 4, squared = false)
+    wdis(d; h = 2, criw = 4, squared = false)
+    wdis!(d; h = 2, criw = 4, squared = false)
 Compute weights from distances using a decreasing exponential function.
 * `d` : A vector of distances.
 Keyword arguments:
@@ -37,7 +37,7 @@ x1 = rand(Chisq(10), 100) ;
 x2 = rand(Chisq(40), 10) ;
 d = [sqrt.(x1) ; sqrt.(x2)]
 h = 2 ; criw = 3
-w = wdist(d; h, criw) ;
+w = wdis(d; h, criw) ;
 f = Figure(size = (600, 300))
 ax1 = Axis(f, xlabel = "Distance", ylabel = "Nb. observations")
 hist!(ax1, d, bins = 30)
@@ -50,12 +50,12 @@ f
 d = collect(0:.5:15) ;
 h = [.5, 1, 1.5, 2.5, 5, 10, Inf] 
 #h = [1, 2, 5, Inf] 
-w = wdist(d; h = h[1]) 
+w = wdis(d; h = h[1]) 
 f = Figure(size = (500, 400))
 ax = Axis(f, xlabel = "Distance", ylabel = "Weight")
 lines!(ax, d, w, label = string("h = ", h[1]))
 for i = 2:length(h)
-    w = wdist(d; h = h[i])
+    w = wdis(d; h = h[i])
     lines!(ax, d, w, label = string("h = ", h[i]))
 end
 axislegend("Values of h"; position = :lb)
@@ -63,13 +63,13 @@ f[1, 1] = ax
 f
 ```
 """  
-function wdist(d; h = 2, criw = 4, squared = false)
+function wdis(d; h = 2, criw = 4, squared = false)
     w = copy(d)
-    wdist!(w; h, criw, squared = squared)
+    wdis!(w; h, criw, squared = squared)
     w
 end
 
-function wdist!(d; h = 2, criw = 4, squared = false)
+function wdis!(d; h = 2, criw = 4, squared = false)
     squared ? d .= d.^2 : nothing
     zmed =  Statistics.median(d)
     zmad = madv(d)

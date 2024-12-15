@@ -416,6 +416,6 @@
 - **summ** Summarize the columns of a dataset
 - **tab**, **tabdupl** Tabulations for categorical variables
 - **vcatdf** Vertical concatenation of a list of dataframes
-- **wdist** Compute weights from distances
+- **wdis** Compute weights from distances
 - Other **utility functions** in file `utility.jl`
 

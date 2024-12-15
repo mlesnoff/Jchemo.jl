@@ -14,10 +14,10 @@ Keyword arguments:
     are: `:eucl` (Euclidean distance), `:mah` (Mahalanobis 
     distance).
 * `h` : A scalar defining the shape of the weight 
-    function computed by function `wdist`. Lower is h, 
-    sharper is the function. See function `wdist` for 
+    function computed by function `wdis`. Lower is h, 
+    sharper is the function. See function `wdis` for 
     details (keyword arguments `criw` and `squared` of 
-    `wdist` can also be specified here).
+    `wdis` can also be specified here).
 * `k` : The number of nearest neighbors to select for 
     each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
@@ -134,7 +134,7 @@ function predict(object::Lwplsrda, X; nlv = nothing)
     listw = copy(res.d)
     Threads.@threads for i = 1:m
     #@inbounds for i = 1:m
-        w = wdist(res.d[i]; h, criw, squared)
+        w = wdis(res.d[i]; h, criw, squared)
         w[w .< tolw] .= tolw
         listw[i] = w
     end

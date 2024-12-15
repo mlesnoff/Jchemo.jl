@@ -241,7 +241,7 @@ include("sampdf.jl")
 
 include("distances.jl")
 include("getknn.jl")
-include("wdist.jl")
+include("wdis.jl")
 include("kernels.jl")
 
 export 
@@ -435,7 +435,7 @@ export
     sampks, sampdp, sampwsp, samprand, sampsys, sampcla, 
     sampdf,
     ######---- Distances
-    getknn, wdist, wdist!,
+    getknn, wdis, wdis!,
     euclsq, mahsq, mahsqchol,
     krbf, kpol,
     ######---- Graphics

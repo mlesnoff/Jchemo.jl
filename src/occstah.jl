@@ -110,9 +110,9 @@ function occstah(X; kwargs...)
     #s2 = madv(d2)^2
     #nu = 2 * mu^2 / s2
     #g = mu / nu
-    #dist = Distributions.Chisq(nu)
-    #pval = Distributions.ccdf.(dist, d2 / g)
-    #mcut == :par ? cutoff = sqrt(g * quantile(dist, 1 - risk)) : nothing
+    #dis = Distributions.Chisq(nu)
+    #pval = Distributions.ccdf.(dis, d2 / g)
+    #mcut == :par ? cutoff = sqrt(g * quantile(dis, 1 - risk)) : nothing
     #mcut == "npar" ? cutoff = median(d) + par.cri * madv(d) : nothing  
     par.mcut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
     par.mcut == :q ? cutoff = quantile(d, 1 - par.risk) : nothing
