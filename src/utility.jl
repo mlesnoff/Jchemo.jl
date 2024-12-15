@@ -149,9 +149,9 @@ corm(X) = cor(X)
 function corm(X, weights::Weight)
     zX = copy(ensure_mat(X))
     xmeans = colmean(zX, weights)
-    xstds = colstd(zX, weights)
+    xscales = colstd(zX, weights)
     fcenter!(zX, xmeans)
-    fscale!(zX, xstds)
+    fscale!(zX, xscales)
     z = Diagonal(sqrt.(weights.w)) * zX
     z' * z
 end
@@ -163,11 +163,11 @@ function corm(X, Y, weights::Weight)
     zY = copy(ensure_mat(Y))
     xmeans = colmean(zX, weights)
     ymeans = colmean(zY, weights)
-    xstds = colstd(zX, weights)
+    xscales = colstd(zX, weights)
     ystds = colstd(zY, weights)
     fcenter!(zX, xmeans)
     fcenter!(zY, ymeans)
-    fscale!(zX, xstds)
+    fscale!(zX, xscales)
     fscale!(zY, ystds)
     zX' * Diagonal(weights.w) * zY
 end

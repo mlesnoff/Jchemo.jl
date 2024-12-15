@@ -15,9 +15,22 @@ xmeans = colmean(X)
 fcenter(X, xmeans)
 ```
 """ 
-fcenter(X, v) = X .- vec(v)'
+function fcenter(X, v)
+    X = ensure_mat(X)
+    p = nco(X)
+    zX = similar(X)
+    @Threads.threads for j = 1:p
+        zX[:, j] .= vcol(X, j) .- v[j]
+    end
+    zX
+end
 
-fcenter!(X::AbstractMatrix, v) = X .-= vec(v)'
+function fcenter!(X::AbstractMatrix, v)
+    p = nco(X)
+    @inbounds for j = 1:p
+        X[:, j] .= vcol(X, j) .- v[j]
+    end
+end
 
 """
     fscale(X, v)
@@ -34,9 +47,22 @@ X = rand(5, 2)
 fscale(X, colstd(X))
 ```
 """ 
-fscale(X, v) = X ./ vec(v)'
+function fscale(X, v)
+    X = ensure_mat(X)
+    p = nco(X)
+    zX = similar(X)
+    @Threads.threads for j = 1:p
+        zX[:, j] .= vcol(X, j) ./ v[j]
+    end
+    zX
+end
 
-fscale!(X::AbstractMatrix, v) = X ./= vec(v)'
+function fscale!(X::AbstractMatrix, v)
+    p = nco(X)
+    @Threads.threads for j = 1:p
+        X[:, j] .= vcol(X, j) ./ v[j]
+    end
+end
 
 """
     fcscale(X, u, v)
@@ -53,14 +79,23 @@ using Jchemo
 n, p = 5, 6
 X = rand(n, p)
 xmeans = colmean(X)
-xstds = colstd(X)
-fcscale(X, xmeans, xstds)
+xscales = colstd(X)
+fcscale(X, xmeans, xscales)
 ```
 """ 
 function fcscale(X, u, v)
-    zX = copy(ensure_mat(X))
-    fcscale!(zX, u, v)
+    X = ensure_mat(X)
+    p = nco(X)
+    zX = similar(X)
+    @Threads.threads for j = 1:p
+        zX[:, j] .= (vcol(X, j) .- u[j]) ./ v[j]
+    end
     zX
 end
 
-fcscale!(X::AbstractMatrix, u, v) = fscale!(fcenter!(X, u), v)
+function fcscale!(X::AbstractMatrix, u, v)
+    p = nco(X)
+    @Threads.threads for j = 1:p
+        X[:, j] .= (vcol(X, j) .- u[j]) ./ v[j]
+    end
+end

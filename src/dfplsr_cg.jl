@@ -42,8 +42,8 @@ dropmissing!(X)
 zX = rmcol(Matrix(X), 4) 
 y = X[:, 4] 
 ## For consistency with plsdof
-xstds = colstd(zX)
-zXs = fscale(zX, xstds)
+xscales = colstd(zX)
+zXs = fscale(zX, xscales)
 ## End
 
 nlv = 12 ; gs = true
