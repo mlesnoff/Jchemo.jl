@@ -376,6 +376,7 @@
 - **findmax_cla** Find the most occurent level in a categorical variable
 - **frob** Frobenius norm of a matrix
 - **fweightdis** Compute weights from distances
+- **fweightm** Weight each row of a matrix
 - **getknn** Find nearest neighbours between rows of matrices
 - **head**, **@head** Display the first rows of a dataset
 - **iqrv** Interval inter-quartiles

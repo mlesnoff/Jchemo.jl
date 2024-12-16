@@ -32,6 +32,7 @@ include("utility.jl")
 include("utility_colwise.jl")
 include("utility_rowwise.jl")
 include("utility_center_scale.jl")
+include("fweightm.jl")
 include("angles.jl")
 include("colmedspa.jl")
 include("fweightdis.jl") 
@@ -265,6 +266,7 @@ export
     fblockscal, fblockscal!,
     fcenter, fcenter!, 
     fcscale, fcscale!, 
+    fweightm, fweightm!,
     recod_catbyind,
     findmax_cla, 
     frob,

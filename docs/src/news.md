@@ -12,6 +12,7 @@
     - **wdist**: renamed to **wdis**.
 
 - New
+    - **fweightm**: Weight each row of a matrix.
     - **sumv**, **meanv**, **stdv**, **varv**: Vector operations.
 
 - Modifications
