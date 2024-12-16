@@ -13,6 +13,9 @@ X = rand(5, 2)
 w = rand(5) 
 fweightm(X, w)
 diagm(w) * X
+
+fweightm!(X, w)
+X
 ```
 """ 
 function fweightm(X, v)
