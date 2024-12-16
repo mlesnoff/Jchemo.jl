@@ -26,10 +26,11 @@ function fcenter(X, v)
 end
 
 function fcenter!(X::AbstractMatrix, v)
-    p = nco(X)
-    @inbounds for j = 1:p
-        X[:, j] .= vcol(X, j) .- v[j]
-    end
+    X = ensure_mat(X)
+    n, p = size(X)
+    @inbounds for j = 1:p, i = 1:n
+        X[i, j] -= v[j]
+    end  
 end
 
 """
@@ -58,10 +59,11 @@ function fscale(X, v)
 end
 
 function fscale!(X::AbstractMatrix, v)
-    p = nco(X)
-    @Threads.threads for j = 1:p
-        X[:, j] .= vcol(X, j) ./ v[j]
-    end
+    X = ensure_mat(X)
+    n, p = size(X)
+    @inbounds for j = 1:p, i = 1:n
+        X[i, j] /= v[j]
+    end  
 end
 
 """
