@@ -96,8 +96,10 @@ function fcscale(X, u, v)
 end
 
 function fcscale!(X::AbstractMatrix, u, v)
-    p = nco(X)
-    @Threads.threads for j = 1:p
-        X[:, j] .= (vcol(X, j) .- u[j]) ./ v[j]
-    end
+    X = ensure_mat(X)
+    n, p = size(X)
+    @inbounds for j = 1:p, i = 1:n
+        X[i, j] = (X[i, j] - u[j]) / v[j]
+    end  
 end
+
