@@ -45,7 +45,7 @@ function pcaeigen!(X::Matrix, weights::Weight; kwargs...)
         fcenter!(X, xmeans)
     end
     sqrtw = sqrt.(weights.w)
-    X .= Diagonal(sqrtw) * X
+    fweight!(X, sqrtw)
     res = eigen!(Symmetric(X' * X); sortby = x -> -abs(x)) 
     P = res.vectors[:, 1:nlv]
     eig = res.values[1:min(n, p)]

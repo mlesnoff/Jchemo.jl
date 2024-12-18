@@ -87,7 +87,7 @@ function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
         fcenter!(X, xmeans)
     end
     sqrtw = sqrt.(weights.w)
-    X .= Diagonal(sqrtw) * X
+    fweight!(X, sqrtw)
     t = similar(X, n)
     T = similar(X, n, nlv)
     P = similar(X, p, nlv)
