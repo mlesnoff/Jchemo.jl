@@ -21,8 +21,8 @@ function snipalsmix(X; kwargs...)
             vmax = v[sel]
             v .= zeros(Q, p)
             v[sel] .= vmax
-            zdelta = maximum(sort(absv)[1:nrm])
-            v .= soft.(v, zdelta)
+            delta = maximum(sort(absv)[1:nrm])
+            v .= soft.(v, delta)
         end
         ## End
         v ./= normv(v)
