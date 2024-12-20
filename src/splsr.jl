@@ -11,11 +11,11 @@ Sparse partial least squares regression (Lê Cao et al. 2008)
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `meth` : Method used for the sparse thresholding. 
-    Possible values are: `:soft2`, `:soft`, 
+    Possible values are: `:soft`, `:soft2`, 
     `:hard`. See thereafter.
-* `delta` : Only used if `meth = :soft2`. Range for the 
-    thresholding on the loadings (after they are standardized 
-    to their maximal absolute value). Must ∈ [0, 1].
+* `delta` : Only used if `meth = :soft2`. Constant used in function 
+   `soft` for the thresholding on the loadings (after they are 
+    standardized to their maximal absolute value). Must ∈ [0, 1].
     Higher is `delta`, stronger is the thresholding. 
 * `nvar` : Only used if `meth = :soft` or `meth = :hard`.
     Nb. variables (`X`-columns) selected for each principal
@@ -24,20 +24,22 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
 
-Sparse partial least squares regression (Lê Cao et al. 2008), with 
-the fast "improved kernel algorithm #1" of Dayal & McGregor (1997). 
+Adaptation of the sparse partial least squares regression algorihm of 
+Lê Cao et al. 2008. The fast "improved kernel algorithm #1" of 
+Dayal & McGregor (1997) is used instead Nipals. 
 
 In the present version of `splsr`, the sparse correction 
 only concerns `X`. The function provides three methods of 
 thresholding to compute the sparse `X`-loading weights w, 
-see function `spca` for description (same principles). The case 
-`meth = :soft` returns the same results as function `spls` of 
-the R package mixOmics with the regression mode (and without sparseness 
-on `Y`).
+see function `spca` for description (same principles). 
+    
+The case `meth = :soft` returns the same results as function `spls` of 
+the R package mixOmics (Lê Cao et al.) with the regression mode (and without 
+sparseness on `Y`).
 
-The COVSEL regression described in Roger et al 2011 (see also
-Höskuldsson 1992) can be implemented by setting `meth = :hard` (or `meth = :soft`) 
-and `nvar = 1`.
+The COVSEL regression method described in Roger et al 2011 (see also
+Höskuldsson 1992) can be implemented by setting `meth = :hard` 
+(or `meth = :soft`) and `nvar = 1`.
 
 ## References
 

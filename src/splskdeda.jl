@@ -11,12 +11,12 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
     Must be >= 1.
 * `meth` : Method used for the sparse thresholding. 
-    Possible values are: `:soft2`, `:soft`, 
+    Possible values are: `:soft`, `:soft2`, 
     `:hard`. See thereafter.
-* `delta` : Only used if `meth = :soft2`. Range for the 
-    thresholding on the loadings (after they are standardized 
-    to their maximal absolute value). Must ∈ [0, 1].
-    Higher is `delta`, stronger is the thresholding. 
+* `delta` : Only used if `meth = :soft2`. Constant used in function 
+   `soft` for the thresholding on the loadings (after they are 
+    standardized to their maximal absolute value). Must ∈ [0, 1].
+    Higher is `delta`, stronger is the thresholding.  
 * `nvar` : Only used if `meth = :soft` or `meth = :hard`.
     Nb. variables (`X`-columns) selected for each principal
     component (PC). Can be a single integer (i.e. same nb. 
