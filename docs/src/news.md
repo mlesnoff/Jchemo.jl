@@ -9,6 +9,7 @@
     - **mad**: renamed to **madv**.
     - **normw**: renamed to **normv**.
     - **splskern**: renamed to **splsr**.
+    - Sparse methods: argument'meth' has changed.
     - **wdist**: renamed to **wdis**.
 
 - New
