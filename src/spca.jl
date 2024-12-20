@@ -10,47 +10,48 @@ Sparse PCA (Shen & Huang 2008).
 Keyword arguments:
 * `nlv` : Nb. principal components (PCs).
 * `meth` : Method used for the sparse thresholding. 
-    Possible values are: `:soft`, `:mix`, 
+    Possible values are: `:soft`, `:soft2`, 
     `:hard`. See thereafter.
-* `delta` : Only used if `meth = :soft`. Range for the 
-    thresholding on the loadings (after they are standardized 
-    to their maximal absolute value). Must ∈ [0, 1].
+* `delta` : Only used if `meth = :soft2`. Constant used in function 
+   `soft` for the thresholding on the loadings (after they are 
+    standardized to their maximal absolute value). Must ∈ [0, 1].
     Higher is `delta`, stronger is the thresholding. 
-* `nvar` : Only used if `meth = :mix` or `meth = :hard`.
+* `nvar` : Only used if `meth = :soft` or `meth = :hard`.
     Nb. variables (`X`-columns) selected for each principal
     component (PC). Can be a single integer (i.e. same nb. 
     of variables for each PC), or a vector of length `nlv`.   
-* `tol` : Tolerance value for stopping the iterations.
+* `tol` : Tolerance value for stopping the Nipals iterations.
 * `maxit` : Maximum nb. of Nipals iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
-Sparse principal component analysis via regularized low rank 
-matrix approximation (Shen & Huang 2008). A Nipals algorithm is used. 
-The Function provides three methods of thresholding to compute 
-the sparse loadings:
-* `meth = :soft`: Soft thresholding of standardized loadings. 
+sPCA-rSVD algorithm of Shen & Huang 2008 (regularized low rank 
+matrix approximation). 
+
+The algorithm computes the loadings iteratively by alternating LS 
+regression (Nipals) including a step of thresholding. The function provides 
+three methods of thresholding:
+* `meth = :soft`: Soft thresholding "1" (Lemma 2) of Shen & Huang 2008. 
+    For each PC, the `nvar` `X`-variables showing the largest values 
+    in vector abs(v) are selected. Then the soft-thresholding function 
+    `soft` is applied to the selected loadings. Constant `delta` in `soft`
+    is automatically set equal to the maximal value of the components of abs(v) 
+    corresponding to variables removed from the selection.  
+
+* `meth = :soft2`: Soft thresholding of standardized loadings. 
     Let us note v a given loading vector before thresholding. 
     Vector abs(v) is then standardized to its maximal component 
-    (= max{abs(v[i]), i = 1..p}). The soft-thresholding function 
+    (i.e. to max{abs(v[i]), i = 1..p}). The soft-thresholding function 
     (see function `soft`) is applied to this standardized vector, 
     with the constant `delta` ∈ [0, 1]. This returns the sparse 
     vector `theta`. Vector v is multiplied term-by-term by this vector
     `theta`, which finally gives the sparse loadings.
 
-* `meth = :mix`: Method used in function `spca` of the R 
-    package `mixOmics` (Lê Cao et al.). For each PC, the `nvar` 
-    `X`-variables showing the largest values in vector abs(v) 
-    are selected. Then a soft-thresholding is applied to the 
-    corresponding selected loadings. Range `delta` is automatically
-    (internally) set equal to the maximal value of the components 
-    of abs(v) corresponding to variables removed from the selection.  
-
 * `meth = :hard`: For each PC, the `nvar` `X`-variables showing 
     the largest values in vector abs(v) are selected.
 
-The case `meth = :mix` returns the same results as function 
-`spca` of the R package mixOmics.
+The case `meth = :soft` returns the same results as function 
+`spca` of the R package mixOmics (Lê Cao et al.).
 
 **Note:** The resulting sparse loadings vectors (`P`-columns) 
 are in general non orthogonal. Therefore, there is no a unique 
@@ -93,7 +94,7 @@ Xtrain = X[s.train, :]
 Xtest = X[s.test, :]
 
 nlv = 3 
-meth = :mix ; nvar = 2
+meth = :soft ; nvar = 2
 #meth = :hard ; nvar = 2
 scal = false
 model = spca(; nlv, meth, nvar, scal) ;
@@ -115,7 +116,7 @@ res.explvarx
 res.explvarx_adj
 
 nlv = 3 
-meth = :soft ; delta = .4 
+meth = :soft2 ; delta = .4 
 model = spca(; nlv, meth, delta) ;
 fit!(model, Xtrain) 
 model.fitm.P
@@ -135,7 +136,7 @@ end
 
 function spca!(X::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParSpca, kwargs).par
-    @assert in([:hard ; :soft ; :mix])(par.meth) "Wrong value for argument 'meth'."
+    @assert in([:hard ; :soft2 ; :soft])(par.meth) "Wrong value for argument 'meth'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]."
     Q = eltype(X)
     n, p = size(X)
@@ -161,14 +162,14 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     beta = similar(X, p, nlv)
     sellv = list(Vector{Int}, nlv)
     for a = 1:nlv
-        if par.meth == :soft
-            res = snipals(X; kwargs...)
+        if par.meth == :soft2
+            res = snipals_soft2(X; kwargs...)
         else
             par.nvar = nvar[a]
             if par.meth == :hard
-                res = snipalsh(X; kwargs...)
-            elseif par.meth == :mix
-                res = snipalsmix(X; kwargs...)
+                res = snipals_h(X; kwargs...)
+            elseif par.meth == :soft
+                res = snipals_soft(X; kwargs...)
             end
         end
         t .= res.t      

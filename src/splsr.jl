@@ -11,13 +11,13 @@ Sparse partial least squares regression (Lê Cao et al. 2008)
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `meth` : Method used for the sparse thresholding. 
-    Possible values are: `:soft`, `:mix`, 
+    Possible values are: `:soft2`, `:soft`, 
     `:hard`. See thereafter.
-* `delta` : Only used if `meth = :soft`. Range for the 
+* `delta` : Only used if `meth = :soft2`. Range for the 
     thresholding on the loadings (after they are standardized 
     to their maximal absolute value). Must ∈ [0, 1].
     Higher is `delta`, stronger is the thresholding. 
-* `nvar` : Only used if `meth = :mix` or `meth = :hard`.
+* `nvar` : Only used if `meth = :soft` or `meth = :hard`.
     Nb. variables (`X`-columns) selected for each principal
     component (PC). Can be a single integer (i.e. same nb. 
     of variables for each PC), or a vector of length `nlv`.   
@@ -31,13 +31,13 @@ In the present version of `splsr`, the sparse correction
 only concerns `X`. The function provides three methods of 
 thresholding to compute the sparse `X`-loading weights w, 
 see function `spca` for description (same principles). The case 
-`meth = :mix` returns the same results as function `spls` of 
+`meth = :soft` returns the same results as function `spls` of 
 the R package mixOmics with the regression mode (and without sparseness 
 on `Y`).
 
-The case `meth = :hard` (or `meth = :mix`) and `nvar = 1` correspond 
-to the COVSEL regression described in Roger et al 2011 (see also
-Höskuldsson 1992).
+The COVSEL regression described in Roger et al 2011 (see also
+Höskuldsson 1992) can be implemented by setting `meth = :hard` (or `meth = :soft`) 
+and `nvar = 1`.
 
 ## References
 
@@ -85,7 +85,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-meth = :mix ; nvar = 5
+meth = :soft ; nvar = 5
 #meth = :hard ; nvar = 5
 model = splsr(; nlv, meth, nvar) ;
 fit!(model, Xtrain, ytrain)
@@ -127,7 +127,7 @@ end
 
 function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
     par = recovkw(ParSplsr, kwargs).par
-    @assert in([:hard ; :soft ; :mix])(par.meth) "Wrong value for argument 'meth'."
+    @assert in([:hard ; :soft2 ; :soft])(par.meth) "Wrong value for argument 'meth'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
     Q = eltype(X)
     isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
@@ -179,12 +179,12 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
                 wmax = w[sel]
                 w .= zeros(Q, p)
                 w[sel] .= wmax
-            elseif par.meth == :soft
+            elseif par.meth == :soft2
                 absw_max = maximum(absw)
                 absw_stand .= absw / absw_max
                 theta .= max.(0, absw_stand .- par.delta) 
                 w .= sign.(w) .* theta * absw_max 
-            elseif par.meth == :mix
+            elseif par.meth == :soft
                 nrm = p - nvar[a]
                 if nrm > 0
                     sel = sortperm(absw; rev = true)[1:nvar[a]]
@@ -198,14 +198,14 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
             ## End
             w ./= normv(w)
         else
-            if par.meth == :soft
-                w .= snipals(XtY'; kwargs...).v
+            if par.meth == :soft2
+                w .= snipals_soft2(XtY'; kwargs...).v
             else
                 par.nvar = nvar[a]
-                if par.meth == :mix
-                    w .= snipalsmix(XtY'; kwargs...).v
+                if par.meth == :soft
+                    w .= snipals_soft(XtY'; kwargs...).v
                 else
-                    w .= snipalsh(XtY'; kwargs...).v
+                    w .= snipals_h(XtY'; kwargs...).v
                 end
             end
         end                                  

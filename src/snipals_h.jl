@@ -1,4 +1,4 @@
-function snipalsmix(X; kwargs...)
+function snipals_h(X; kwargs...)
     par = recovkw(ParSnipals, kwargs).par 
     X = ensure_mat(X)
     Q = eltype(X)
@@ -10,20 +10,15 @@ function snipalsmix(X; kwargs...)
     absv = copy(v)
     cont = true
     iter = 1
-    nrm = p - par.nvar
     while cont
         t0 .= copy(t)
         mul!(v, X', t)
         ## Sparsity
-        if nrm > 0
-            absv .= abs.(v)
-            sel = sortperm(absv; rev = true)[1:par.nvar]
-            vmax = v[sel]
-            v .= zeros(Q, p)
-            v[sel] .= vmax
-            delta = maximum(sort(absv)[1:nrm])
-            v .= soft.(v, delta)
-        end
+        absv .= abs.(v)
+        sel = sortperm(absv; rev = true)[1:par.nvar]
+        vmax = v[sel]
+        v .= zeros(Q, p)
+        v[sel] .= vmax
         ## End
         v ./= normv(v)
         mul!(t, X, v)

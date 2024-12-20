@@ -10,13 +10,13 @@ Sparse PLSR-DA.
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `meth` : Method used for the sparse thresholding. 
-    Possible values are: `:soft`, `:mix`, 
+    Possible values are: `:soft2`, `:soft`, 
     `:hard`. See thereafter.
-* `delta` : Only used if `meth = :soft`. Range for the 
+* `delta` : Only used if `meth = :soft2`. Range for the 
     thresholding on the loadings (after they are standardized 
     to their maximal absolute value). Must ∈ [0, 1].
     Higher is `delta`, stronger is the thresholding. 
-* `nvar` : Only used if `meth = :mix` or `meth = :hard`.
+* `nvar` : Only used if `meth = :soft` or `meth = :hard`.
     Nb. variables (`X`-columns) selected for each principal
     component (PC). Can be a single integer (i.e. same nb. 
     of variables for each PC), or a vector of length `nlv`.   
@@ -54,7 +54,7 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-meth = :mix ; nvar = 10
+meth = :soft ; nvar = 10
 model = splsrda(; nlv, meth, nvar) 
 fit!(model, Xtrain, ytrain)
 pnames(model)

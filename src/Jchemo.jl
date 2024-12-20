@@ -41,9 +41,9 @@ include("matW.jl")
 include("nipals.jl")
 include("nipalsmiss.jl")
 include("simpp.jl")
-include("snipals.jl")
-include("snipalsh.jl")
-include("snipalsmix.jl")
+include("snipals_soft2.jl")
+include("snipals_h.jl")
+include("snipals_soft.jl")
 
 ######---- Preprocessing
 
@@ -296,7 +296,7 @@ export
     rowmean, rownorm, rowstd, rowsum, rowvar,
     rowmeanskip, rowstdskip, rowsumskip, rowvarskip,
     simpphub, simppsph,   
-    snipals, snipalsh, snipalsmix,
+    snipals_soft2, snipals_h, snipals_soft,
     soft,
     softmax,
     sourcedir,
