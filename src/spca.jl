@@ -10,16 +10,16 @@ Sparse PCA (Shen & Huang 2008).
 Keyword arguments:
 * `nlv` : Nb. principal components (PCs).
 * `meth` : Method used for the sparse thresholding. 
-    Possible values are: `:soft`, `:soft2`, 
+    Possible values are: `:soft`, `:softs`, 
     `:hard`. See thereafter.
-* `delta` : Only used if `meth = :soft2`. Constant used in function 
-   `soft` for the thresholding on the loadings (after they are 
-    standardized to their maximal absolute value). Must ∈ [0, 1].
-    Higher is `delta`, stronger is the thresholding. 
 * `nvar` : Only used if `meth = :soft` or `meth = :hard`.
     Nb. variables (`X`-columns) selected for each principal
     component (PC). Can be a single integer (i.e. same nb. 
     of variables for each PC), or a vector of length `nlv`.   
+* `delta` : Only used if `meth = :softs`. Constant used in function 
+   `soft` for the thresholding on the loadings (after they are 
+    standardized to their maximal absolute value). Must ∈ [0, 1].
+    Higher is `delta`, stronger is the thresholding. 
 * `tol` : Tolerance value for stopping the Nipals iterations.
 * `maxit` : Maximum nb. of Nipals iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
@@ -38,7 +38,7 @@ three methods of thresholding:
     is automatically set equal to the maximal value of the components of abs(v) 
     corresponding to variables removed from the selection.  
 
-* `meth = :soft2`: Soft thresholding of standardized loadings. 
+* `meth = :softs`: Soft thresholding of standardized loadings. 
     Let us note v a given loading vector before thresholding. 
     Vector abs(v) is then standardized to its maximal component 
     (i.e. to max{abs(v[i]), i = 1..p}). The soft-thresholding function 
@@ -116,7 +116,7 @@ res.explvarx
 res.explvarx_adj
 
 nlv = 3 
-meth = :soft2 ; delta = .4 
+meth = :softs ; delta = .4 
 model = spca(; nlv, meth, delta) ;
 fit!(model, Xtrain) 
 model.fitm.P
@@ -136,7 +136,7 @@ end
 
 function spca!(X::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParSpca, kwargs).par
-    @assert in([:hard ; :soft2 ; :soft])(par.meth) "Wrong value for argument 'meth'."
+    @assert in([:hard ; :softs ; :soft])(par.meth) "Wrong value for argument 'meth'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]."
     Q = eltype(X)
     n, p = size(X)
@@ -162,8 +162,8 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     beta = similar(X, p, nlv)
     sellv = list(Vector{Int}, nlv)
     for a = 1:nlv
-        if par.meth == :soft2
-            res = snipals_soft2(X; kwargs...)
+        if par.meth == :softs
+            res = snipals_softs(X; kwargs...)
         else
             par.nvar = nvar[a]
             if par.meth == :hard
@@ -204,7 +204,7 @@ function transf(object::Spca, X; nlv = nothing)
     T = similar(X, m, nlv)
     t = similar(X, m)
     for a = 1:nlv
-        t .= zX * object.P[:, a]
+        t .= zX * vcol(object.P, a)
         T[:, a] .= t
         zX .-= t * vcol(object.beta, a)' 
     end

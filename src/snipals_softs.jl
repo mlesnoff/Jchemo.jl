@@ -1,4 +1,4 @@
-function snipals_soft2(X; kwargs...)
+function snipals_softs(X; kwargs...)
     par = recovkw(ParSnipals, kwargs).par 
     X = ensure_mat(X)
     n, p = size(X)

@@ -40,7 +40,7 @@ include("matW.jl")
 include("nipals.jl")
 include("nipalsmiss.jl")
 include("simpp.jl")
-include("snipals_soft2.jl")
+include("snipals_softs.jl")
 include("snipals_h.jl")
 include("snipals_soft.jl")
 
@@ -270,7 +270,7 @@ export
     fweight, fweight!,
     recod_catbyind,
     findmax_cla, 
-    frob,
+    frob, frob2, 
     fscale, fscale!,
     wdis, wtal, 
     head, @head,
@@ -297,7 +297,7 @@ export
     rowmean, rownorm, rowstd, rowsum, rowvar,
     rowmeanskip, rowstdskip, rowsumskip, rowvarskip,
     simpphub, simppsph,   
-    snipals_soft2, snipals_h, snipals_soft,
+    snipals_softs, snipals_h, snipals_soft,
     soft,
     softmax,
     sourcedir,

@@ -434,6 +434,8 @@ end
 """ 
     frob(X)
     frob(X, weights::Weight)
+    frob2(X)
+    frob2(X, weights::Weight)
 Frobenius norm of a matrix.
 * `X` : A matrix (n, p).
 * `weights` : Weights (n) of the observations. Object of type 
@@ -445,13 +447,19 @@ The Frobenius norm of `X` is:
 The Frobenius weighted norm is:
 * sqrt(tr(X' * D * X)), where D is the diagonal matrix of vector `w`.
 
+Functions `frob2` are the squared versions of `frob`.
+
 ## References
 @Stevengj, 
 https://discourse.julialang.org/t/interesting-post-about-simd-dot-product-and-cosine-similarity/123282.
 """
-frob(X) = sqrt(sum([dot(x, x) for x in eachcol(X)]))
+frob(X) = sqrt(frob2(X))
 
-function frob(X, weights::Weight) 
+frob(X, weights::Weight) = sqrt(frob2(X, weights)) 
+
+frob2(X) = sum([dot(x, x) for x in eachcol(X)])
+
+function frob2(X, weights::Weight) 
     n, p = size(X) 
     s = zero(X[begin])
     @inbounds for j = 1:p
@@ -459,8 +467,9 @@ function frob(X, weights::Weight)
             s += weights.w[i] * X[i, j]^2
         end
     end
-    sqrt(s)
+    s
 end
+
 
 """
     head(X)

@@ -374,7 +374,7 @@
 - **fblockscal_col, _frob, _mfa, _sd** Scale blocks
 - **fcenter**, **fscale**, **fcscale** Column-wise centering and scaling of a matrix
 - **findmax_cla** Find the most occurent level in a categorical variable
-- **frob** Frobenius norm of a matrix
+- **frob**, **frob2** Frobenius norm of a matrix
 - **fweight** Weight each row of a matrix
 - **getknn** Find nearest neighbours between rows of matrices
 - **head**, **@head** Display the first rows of a dataset

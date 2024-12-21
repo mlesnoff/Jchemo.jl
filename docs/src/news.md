@@ -17,6 +17,7 @@
 - New
     - **fweight**: Weight each row of a matrix.
     - **sumv**, **meanv**, **stdv**, **varv**: Vector operations.
+    - **frob2** Square of the Frobenius norm of a matrix
 
 - Modifications
     - Code cleaning.  

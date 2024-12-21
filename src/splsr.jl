@@ -11,9 +11,9 @@ Sparse partial least squares regression (Lê Cao et al. 2008)
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `meth` : Method used for the sparse thresholding. 
-    Possible values are: `:soft`, `:soft2`, 
+    Possible values are: `:soft`, `:softs`, 
     `:hard`. See thereafter.
-* `delta` : Only used if `meth = :soft2`. Constant used in function 
+* `delta` : Only used if `meth = :softs`. Constant used in function 
    `soft` for the thresholding on the loadings (after they are 
     standardized to their maximal absolute value). Must ∈ [0, 1].
     Higher is `delta`, stronger is the thresholding. 
@@ -129,7 +129,7 @@ end
 
 function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
     par = recovkw(ParSplsr, kwargs).par
-    @assert in([:hard ; :soft2 ; :soft])(par.meth) "Wrong value for argument 'meth'."
+    @assert in([:hard ; :softs ; :soft])(par.meth) "Wrong value for argument 'meth'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
     Q = eltype(X)
     isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
@@ -181,7 +181,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
                 wmax = w[sel]
                 w .= zeros(Q, p)
                 w[sel] .= wmax
-            elseif par.meth == :soft2
+            elseif par.meth == :softs
                 absw_max = maximum(absw)
                 absw_stand .= absw / absw_max
                 theta .= max.(0, absw_stand .- par.delta) 
@@ -200,8 +200,8 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
             ## End
             w ./= normv(w)
         else
-            if par.meth == :soft2
-                w .= snipals_soft2(XtY'; kwargs...).v
+            if par.meth == :softs
+                w .= snipals_softs(XtY'; kwargs...).v
             else
                 par.nvar = nvar[a]
                 if par.meth == :soft
