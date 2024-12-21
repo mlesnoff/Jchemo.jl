@@ -35,7 +35,6 @@ include("utility_center_scale.jl")
 include("fweight.jl")
 include("angles.jl")
 include("colmedspa.jl")
-include("fweightdis.jl") 
 include("ellipse.jl")
 include("matW.jl")
 include("nipals.jl")
@@ -242,7 +241,9 @@ include("sampdf.jl")
 
 include("distances.jl")
 include("getknn.jl")
-include("wdis.jl")
+include("wdis.jl") 
+include("wtal.jl") 
+include("winvs.jl")
 include("kernels.jl")
 
 export 
@@ -271,7 +272,7 @@ export
     findmax_cla, 
     frob,
     fscale, fscale!,
-    fweightdis, talworth, 
+    wdis, wtal, 
     head, @head,
     list, 
     matB, matW, 
@@ -437,7 +438,7 @@ export
     sampks, sampdp, sampwsp, samprand, sampsys, sampcla, 
     sampdf,
     ######---- Distances
-    getknn, wdis, wdis!,
+    getknn, wdis, wtal, winvs, winvs!,
     euclsq, mahsq, mahsqchol,
     krbf, kpol,
     ######---- Graphics

@@ -80,9 +80,9 @@ function plsrout!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     P = rand(0:1, p, nlvout)
     d = similar(X, n)
     d .= outstah(X, P; scal = par.scal).d
-    w = talworth(d; a = quantile(d, 1 - par.prm))
+    w = wtal(d; a = quantile(d, 1 - par.prm))
     d .= outeucl(X; scal = par.scal).d
-    w .*= talworth(d; a = quantile(d, 1 - par.prm))
+    w .*= wtal(d; a = quantile(d, 1 - par.prm))
     w .*= weights.w
     w[isequal.(w, 0)] .= 1e-10
     plskern(X, Y, mweight(w); kwargs...)

@@ -4,13 +4,15 @@
 
 - Breaking
     - **dummy**: To improve time computations, the output 'Y' is now a BitMatrix.
-    - **fweight**: remaned to **fweightdis**.
+    - **fweight**: remaned to **wdis**.
     - **iqr**: renamed to **iqrv**.
     - **mad**: renamed to **madv**.
     - **normw**: renamed to **normv**.
     - **splskern**: renamed to **splsr**.
+    - **fweightdis**: renamed to **wdis**.
+    - **talworth**: renamed to **wtal**.
+    - **wdist**: renamed to **winvs**.
     - Sparse methods: argument'meth' has changed.
-    - **wdist**: renamed to **wdis**.
 
 - New
     - **fweight**: Weight each row of a matrix.

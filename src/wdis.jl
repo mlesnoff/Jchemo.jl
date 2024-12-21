@@ -1,83 +1,94 @@
-"""
-    wdis(d; h = 2, criw = 4, squared = false)
-    wdis!(d; h = 2, criw = 4, squared = false)
-Compute weights from distances using a decreasing exponential function.
-* `d` : A vector of distances.
+""" 
+    wdis(d; typw = :bisquare, alpha = 0)
+Different functions to compute weights from distances.
+* `d` : Vector of distances.
 Keyword arguments:
-* `h` : A scaling positive scalar defining the shape 
-    of the weight function. 
-* `criw` : A positive scalar defining outliers in the 
-    distances vector `d`.
-* `squared`: If `true`, distances are replaced by the squared 
-    distances; the weight function is then a Gaussian (RBF) 
-    kernel function.
+* `typw` : Define the weight function.
+* `alpha` : Parameter of the weight function, 
+    see below.
 
-Weights are computed by: 
-* exp(-`d` / (`h` * MAD(`d`)))
-or are set to 0 for  distances > Median(`d`) + criw * MAD(`d`). 
-This is an adaptation of the weight function presented in 
-Kim et al. 2011.
+The returned weight vector is: 
+* w = f(`d` / q) where f is the weight function 
+    and q the 1-`alpha` quantile of `d` 
+    (Cleveland & Grosse 1991).
 
-The weights decrease with increasing distances. Lower is h, sharper 
-is the decreasing function. Weights are set to 0 for outliers 
-(extreme distances).
+Possible values for `typw` are: 
+* :bisquare: w = (1 - d^2)^2 
+* :cauchy: w = 1 / (1 + d^2) 
+* :epan: w = 1 - d^2 
+* :fair: w =  1 / (1 + d)^2 
+* :invexp: w = exp(-d) 
+* :invexp2: w = exp(-d / 2) 
+* :gauss: w = exp(-d^2)
+* :trian: w = 1 - d  
+* :tricube: w = (1 - d^3)^3  
 
-## References 
-
-Kim S, Kano M, Nakagawa H, Hasebe S. Estimation of active 
-pharmaceutical ingredients content using locally weighted partial 
-least squares and statistical wavelength selection. Int J Pharm. 2011;
-421(2):269-274. https://doi.org/10.1016/j.ijpharm.2011.10.007
+## References
+Cleveland, W.S., Grosse, E., 1991. Computational methods for local regression. 
+Stat Comput 1, 47–62. https://doi.org/10.1007/BF01890836
 
 ## Examples
 ```julia
 using Jchemo, CairoMakie, Distributions
 
-x1 = rand(Chisq(10), 100) ;
-x2 = rand(Chisq(40), 10) ;
-d = [sqrt.(x1) ; sqrt.(x2)]
-h = 2 ; criw = 3
-w = wdis(d; h, criw) ;
-f = Figure(size = (600, 300))
-ax1 = Axis(f, xlabel = "Distance", ylabel = "Nb. observations")
-hist!(ax1, d, bins = 30)
-ax2 = Axis(f, xlabel = "Distance", ylabel = "Weight")
-scatter!(ax2, d, w)
-f[1, 1] = ax1 
-f[1, 2] = ax2 
-f
-
-d = collect(0:.5:15) ;
-h = [.5, 1, 1.5, 2.5, 5, 10, Inf] 
-#h = [1, 2, 5, Inf] 
-w = wdis(d; h = h[1]) 
-f = Figure(size = (500, 400))
-ax = Axis(f, xlabel = "Distance", ylabel = "Weight")
-lines!(ax, d, w, label = string("h = ", h[1]))
-for i = 2:length(h)
-    w = wdis(d; h = h[i])
-    lines!(ax, d, w, label = string("h = ", h[i]))
-end
-axislegend("Values of h"; position = :lb)
+d = sort(sqrt.(rand(Chi(1), 1000)))
+colm = cgrad(:tab10, collect(1:9)) ;
+alpha = 0
+f = Figure(size = (600, 500))
+ax = Axis(f, xlabel = "d", ylabel = "Weight")
+typw = :bisquare
+w = wdis(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), color = colm[1])
+typw = :cauchy
+w = wdis(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), color = colm[2])
+typw = :epan
+w = wdis(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), color = colm[3])
+typw = :fair
+w = wdis(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), color = colm[4])
+typw = :gauss
+w = wdis(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), color = colm[5])
+typw = :trian
+w = wdis(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), color = colm[6])
+typw = :invexp
+w = wdis(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), color = colm[7])
+typw = :invexp2
+w = wdis(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), color = colm[8])
+typw = :tricube
+w = wdis(d; typw, alpha)
+lines!(ax, d, w, label = String(typw), color = colm[9])
+axislegend("Function", position = :lb)
 f[1, 1] = ax
 f
 ```
-"""  
-function wdis(d; h = 2, criw = 4, squared = false)
-    w = copy(d)
-    wdis!(w; h, criw, squared = squared)
+""" 
+function wdis(d; typw = :bisquare, alpha = 0)
+    d = vec(abs.(d))
+    alpha = max(0, min(1, alpha))
+    zd = d[isnan.(d) .== 0]
+    q = quantile(zd, 1 - alpha)  # = max when alpha = 0
+    d ./= q                      # normalization (d = 1 for max when alpha = 0 ==> w = 0)
+    typw == :bisquare ? w = (1 .- d.^2).^2 : nothing 
+    typw == :cauchy ? w = 1 ./ (1 .+ d.^2) : nothing 
+    typw == :epan ? w = 1 .- d.^2 : nothing 
+    typw == :fair ? w =  1 ./ (1 .+ d).^2 : nothing 
+    #if typw == :inv
+    #    w = 1 ./ d
+    #    w ./= maximum(w[isnan.(w) .== 0])
+    #end 
+    typw == :invexp ? w = exp.(-d) : nothing
+    typw == :invexp2 ? w = exp.(-d / 2) : nothing  
+    typw == :gauss ? w = exp.(-d.^2) : nothing
+    typw == :trian ? w = 1 .- d : nothing  
+    typw == :tricube ? w = (1 .- d.^3).^3 : nothing  
+    w[d .> 1] .= 0
+    w[isnan.(w)] .= 0 
     w
 end
 
-function wdis!(d; h = 2, criw = 4, squared = false)
-    squared ? d .= d.^2 : nothing
-    zmed =  Statistics.median(d)
-    zmad = madv(d)
-    cutoff = zmed + criw * zmad
-    d .= map(x -> ifelse(x <= cutoff, exp(-x / (h * zmad)), zero(eltype(d))), d)
-    ## Alternative, e.g.: 
-    ## d .= fweightdis(d; typw = :bisquare)
-    d .= d / maximum(d)
-    d[isnan.(d)] .= 1
-    return
-end

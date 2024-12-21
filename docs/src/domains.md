@@ -375,7 +375,6 @@
 - **fcenter**, **fscale**, **fcscale** Column-wise centering and scaling of a matrix
 - **findmax_cla** Find the most occurent level in a categorical variable
 - **frob** Frobenius norm of a matrix
-- **fweightdis** Compute weights from distances
 - **fweight** Weight each row of a matrix
 - **getknn** Find nearest neighbours between rows of matrices
 - **head**, **@head** Display the first rows of a dataset
@@ -417,6 +416,8 @@
 - **summ** Summarize the columns of a dataset
 - **tab**, **tabdupl** Tabulations for categorical variables
 - **vcatdf** Vertical concatenation of a list of dataframes
-- **wdis** Compute weights from distances
+- **wdis** Different functions to compute weights from distances
+- **wtal** Compute weights from distances using the 'talworth' distribution
+- **winvs** Compute weights from distances using an inverse scaled exponential function
 - Other **utility functions** in file `utility.jl`
 
