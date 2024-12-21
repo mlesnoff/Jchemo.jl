@@ -25,11 +25,11 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
-sPCA-rSVD algorithm of Shen & Huang 2008 (regularized low rank 
-matrix approximation). 
+sPCA-rSVD algorithm of Shen & Huang 2008: regularized low rank 
+matrix approximation. 
 
 The algorithm computes the loadings iteratively by alternating LS 
-regression (Nipals) including a step of thresholding. The function provides 
+regression (Nipals) including a step of thresholding. Function `spca` provides 
 three methods of thresholding:
 * `meth = :soft`: Soft thresholding "1" (Lemma 2) of Shen & Huang 2008. 
     For each PC, the `nvar` `X`-variables showing the largest values 
@@ -222,8 +222,8 @@ function Base.summary(object::Spca, X)
     nlv = nco(object.T)
     D = Diagonal(object.weights.w)
     X = fcscale(X, object.xmeans, object.xscales)
-    ## (||X||_D)^2 = tr(X' * D * X) = frob(X, weights)^2
-    sstot = sum(colnorm(X, object.weights).^2)    
+    ## (||X||_D)^2 = tr(X' * D * X) = frob(X, weights)^2 = sum(colnorm(X, object.weights).^2)  
+    sstot = frob2(X, object.weights)
     ## Proportion of variance of X explained by each column of T
     ## ss = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
     A = X' * D * object.T    
@@ -236,7 +236,7 @@ function Base.summary(object::Spca, X)
     zX = sqrt.(D) * X
     ss = zeros(nlv)
     for a = 1:nlv
-        P = object.P[:, 1:a]
+        P = vcol(object.P, 1:a)
         Xadj = zX * P * inv(P' * P) * P'
         ss[a] = sum(Xadj.^2)
     end
