@@ -45,7 +45,6 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     n, p = size(X)
     q = nco(Y)
     nlv = min(par.nlv, n, p)
-    sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     xscales = ones(Q, p)
@@ -60,8 +59,9 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(Y, ymeans)
     end
     # Row metric
-    X .= sqrtw .* X
-    Y .= sqrtw .* Y
+    sqrtw = sqrt.(weights.w)
+    fweight!(X, sqrtw)
+    fweight!(Y, sqrtw)
     ## Pre-allocation
     Tx = similar(X, n, nlv)
     Wx = similar(X, p, nlv)
@@ -76,9 +76,9 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     px   = copy(wx)
     niter = zeros(nlv)
     # End
-    @inbounds for a = 1:nlv
-        tx .= X[:, 1]
-        ty .= Y[:, 1]
+    @inbounds for a = 1:nlv       
+        tx .= vcol(X, 1)
+        ty .= vcol(Y, 1)
         cont = true
         iter = 1
         wx .= rand(p)
@@ -110,7 +110,7 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         Wytild[:, a] .= wytild
         TTx[a] = ttx
     end
-    Tx .= (1 ./ sqrtw) .* Tx
+    fweight!(Tx, 1 ./ sqrtw) 
     Rx = Wx * inv(Px' * Wx)
     Plsr(Tx, Px, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, niter, par)
 end

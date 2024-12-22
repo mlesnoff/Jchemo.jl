@@ -88,7 +88,7 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         zp ./= tt
         mul!(c, Y', dt)
         c ./= tt                      
-        # deflation with respect to t (asymetric PLS)
+        # deflation with respect to t: asymetric PLS
         X .-= t * zp'
         Y .-= t * c'
         # end

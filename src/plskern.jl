@@ -103,8 +103,10 @@ end
 
 function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
     par = recovkw(ParPlsr, kwargs).par
+    ## Specific for Plsda functions
     Q = eltype(X)
     isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
+    ## End
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, maximum(par.nlv)) # 'maximum' required for plsravg 
@@ -121,9 +123,12 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwarg
         fcenter!(X, xmeans)
         fcenter!(Y, ymeans)
     end
-    D = Diagonal(weights.w)
-    XtY = X' * (D * Y)                   # = Xd' * Y = X' * D * Y  (Xd = D * X   Very costly!!)
-    #XtY = X' * (weights.w .* Y)         # Can create OutOfMemory errors for very large matrices
+    ## XtY 
+    fweight!(Y, weights.w)
+    XtY = X' * Y
+    ## Old
+    ## D = Diagonal(weights.w)
+    ## XtY = X' * (D * Y)    # Xd = D * X   Very costly!!
     ## Pre-allocation
     T = similar(X, n, nlv)
     W = similar(X, p, nlv)

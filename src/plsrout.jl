@@ -85,5 +85,5 @@ function plsrout!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     w .*= wtal(d; a = quantile(d, 1 - par.prm))
     w .*= weights.w
     w[isequal.(w, 0)] .= 1e-10
-    plskern(X, Y, mweight(w); kwargs...)
+    plskern!(X, Y, mweight(w); kwargs...)
 end

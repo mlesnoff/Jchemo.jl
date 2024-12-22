@@ -53,8 +53,9 @@ function plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(X, xmeans)
         fcenter!(Y, ymeans)
     end
-    D = Diagonal(weights.w)
-    XtY = X' * (D * Y)   
+    ## XtY 
+    fweight!(Y, weights.w)
+    XtY = X' * Y
     ## Pre-allocation
     T = similar(X, n, nlv)
     W = similar(X, p, nlv)
