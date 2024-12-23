@@ -101,12 +101,10 @@ function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
         if par.gs == false
             res = nipalsmiss(X; kwargs...)
         else
-            res = nipalsmiss(X, UUt, VVt; 
-                kwargs...)
+            res = nipalsmiss(X, UUt, VVt; kwargs...)
         end
         t .= res.u * res.sv
         T[:, a] .= t
-        #T[:, a] .= t
         P[:, a] .= res.v           
         sv[a] = res.sv
         niter[a] = res.niter
