@@ -80,11 +80,13 @@ function pcasph!(X::Matrix, weights::Weight; kwargs...)
         fcenter!(X, xmeans)
     end
     sqrtw = sqrt.(weights.w)
-    tX = Matrix(X')
-    xnorms = colnorm(tX)
-    fscale!(tX, xnorms)
-    ## tX' = X-data projected on the sphere (each row has norm = 1)
-    res = LinearAlgebra.svd!(sqrtw .* tX') 
+    Xt = X'
+    xnorms = colnorm(Xt)
+    fscale!(Xt, xnorms)
+    ## Xt' = X-data projected on the sphere (each row has norm = 1)
+    Xtt = Xt'
+    fweight(Xtt, sqrtw)
+    res = LinearAlgebra.svd!(Xtt) 
     P = res.V[:, 1:nlv]
     T = X * P      
     sv = colmad(T)  # Maronna 2005 p.268 eq.20 [different than in rnirs/rchemo ==> to fix in rchemo]

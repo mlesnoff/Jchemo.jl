@@ -58,8 +58,7 @@ function plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     XtY = X' * Y
     ## Pre-allocation
     T = similar(X, n, nlv)
-    W = similar(X, p, nlv)
-    P = copy(W)
+    P = similar(X, p, nlv)
     R = copy(P)
     C = similar(X, q, nlv)
     TT = similar(X, nlv)
@@ -68,17 +67,17 @@ function plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     zp  = similar(X, p)
     r   = similar(X, p)
     c   = similar(X, q)
-    tmpXtY = similar(XtY)
+    zXtY = similar(XtY)
     # End
     # de Jong Chemolab 1993 Table 1 (as fast as Appendix) 
     @inbounds for a = 1:nlv
         if a == 1
-            tmpXtY .= XtY
+            zXtY .= XtY
         else
             Pa = vcol(P, 1:(a - 1))
-            tmpXtY .= XtY .- Pa * inv(Pa' * Pa) * Pa' * XtY
+            zXtY .= XtY .- Pa * inv(Pa' * Pa) * Pa' * XtY
         end
-        r .= svd!(tmpXtY).U[:, 1] 
+        r .= svd!(zXtY).U[:, 1] 
         mul!(t, X, r)                 
         dt .= weights.w .* t            
         tt = dot(t, dt)
@@ -91,10 +90,9 @@ function plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         C[:, a] .= c
         TT[a] = tt
     end
-    #B = R * inv(T' * D * T) * T' * D * Y
-    # W does not exist in SIMPLS
-    # Below it is filled by R (for vip)
-    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
+    ## B = R * inv(T' * D * T) * T' * D * Y
+    ## W does not exist in SIMPLS ==> below it is filled by R (for 'vip')
+    Plsr(T, P, R, R, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
 end
 
 

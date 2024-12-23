@@ -94,7 +94,6 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     n, p = size(X)
     q = nco(Y)
     nlv = min(par.nlv, p, q)
-    D = Diagonal(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     xscales = ones(Q, p)
@@ -137,7 +136,7 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     delta = copy(TTx)
     # End
     @inbounds for a = 1:nlv
-        XtY .= X' * D * Y
+        XtY .= X' * fweight(Y, weights.w)
         U, d, V = svd!(XtY) 
         delta[a] = d[1]
         # X

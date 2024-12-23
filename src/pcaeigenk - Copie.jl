@@ -56,14 +56,13 @@ function pcaeigenk!(X::Matrix, weights::Weight; kwargs...)
         fcenter!(X, xmeans)
     end
     sqrtw = sqrt.(weights.w)
-    fweight!(X, sqrtw)
-    res = eigen!(Symmetric(X * X'); sortby = x -> -abs(x))
+    zX = Diagonal(sqrtw) * X
+    res = eigen!(Symmetric(zX * zX'); sortby = x -> -abs(x))
     eig = res.values[1:min(n, p)]
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
-    P = X' * fscale(vcol(res.vectors, 1:nlv), sv[1:nlv])
+    P = zX' * fscale(res.vectors[:, 1:nlv], sv[1:nlv])
     T = X * P
-    fweight!(T, 1 ./ sqrtw) 
     Pca(T, P, sv, xmeans, xscales, weights, nothing, par) 
 end
 

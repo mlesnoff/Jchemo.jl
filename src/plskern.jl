@@ -205,11 +205,13 @@ function coef(object::Union{Plsr, Pcr, Splsr}; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     beta = vcol(object.C, 1:nlv)'
-    W = Diagonal(object.yscales)
-    B = Diagonal(1 ./ object.xscales) * vcol(object.R, 1:nlv) * beta * W
-    ## 'int': No correction is needed, since 
+    Wx = Diagonal(1 ./ object.xscales)
+    Wy = Diagonal(object.yscales)
+    B =  Wx * vcol(object.R, 1:nlv) * beta * Wy
+    ## In 'int': No correction is needed, since 
     ## ymeans, xmeans and B are in the original scale 
     int = object.ymeans' .- object.xmeans' * B
+    ## End
     (B = B, int = int)
 end
 
@@ -227,8 +229,8 @@ function predict(object::Union{Plsr, Pcr, Splsr}, X; nlv = nothing)
     le_nlv = length(nlv)
     pred = list(Matrix{eltype(X)}, le_nlv)
     @inbounds  for i = 1:le_nlv
-        z = coef(object; nlv = nlv[i])
-        pred[i] = z.int .+ X * z.B  # try muladd(X, z.B, z.int)
+        coefs = coef(object; nlv = nlv[i])
+        pred[i] = coefs.int .+ X * coefs.B  # try muladd(X, coefs.B, coefs.int)
     end 
     le_nlv == 1 ? pred = pred[1] : nothing
     (pred = pred,)

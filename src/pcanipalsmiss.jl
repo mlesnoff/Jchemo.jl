@@ -105,7 +105,7 @@ function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
                 kwargs...)
         end
         t .= res.u * res.sv
-        T[:, a] .= t ./ sqrtw
+        T[:, a] .= t
         #T[:, a] .= t
         P[:, a] .= res.v           
         sv[a] = res.sv
@@ -116,6 +116,7 @@ function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
             VVt .+= res.v * res.v'
         end
     end
+    fweight!(T, 1 ./ sqrtw)
     Pca(T, P, sv, xmeans, xscales, weights, niter, par) 
 end
 

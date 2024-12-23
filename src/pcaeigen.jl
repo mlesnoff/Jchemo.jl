@@ -51,7 +51,8 @@ function pcaeigen!(X::Matrix, weights::Weight; kwargs...)
     eig = res.values[1:min(n, p)]
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
-    T = Diagonal(1 ./ sqrtw) * X * P
+    T = X * P
+    fweight!(T, 1 ./ sqrtw)
     Pca(T, P, sv, xmeans, xscales, weights, nothing, par) 
 end
 

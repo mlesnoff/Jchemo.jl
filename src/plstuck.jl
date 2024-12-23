@@ -106,16 +106,15 @@ function plstuck!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         Y ./= normy
         bscales = [normx ; normy]
     end
-    D = Diagonal(weights.w)
-    XtY = X' * D * Y
+    XtY = X' * fweight(Y, weights.w)
     U, delta, V = svd(XtY)
     delta = delta[1:nlv]
     Wx = U[:, 1:nlv]
     Wy = V[:, 1:nlv]
     Tx = X * Wx
     Ty = Y * Wy
-    TTx = colsum(D * Tx .* Tx)
-    TTy = colsum(D * Ty .* Ty)
+    TTx = colsum(fweight(Tx, weights.w) .* Tx)
+    TTy = colsum(fweight(Ty, weights.w) .* Ty)
     Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
         ymeans, yscales, weights, par)
 end

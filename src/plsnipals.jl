@@ -46,7 +46,6 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     n, p = size(X)
     q = nco(Y)
     nlv = min(par.nlv, n, p)
-    D = Diagonal(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     xscales = ones(Q, p)
@@ -74,7 +73,7 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     c   = similar(X, q)
     # End
     @inbounds for a = 1:nlv
-        XtY .= X' * D * Y
+        XtY .= X' * fweight(Y, weights.w)
         if q == 1
             w .= vec(XtY)
             w ./= normv(w)

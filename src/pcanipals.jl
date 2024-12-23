@@ -93,7 +93,7 @@ function pcanipals!(X::Matrix, weights::Weight; kwargs...)
             res = nipals(X; kwargs...)
         end
         t .= res.u * res.sv
-        T[:, a] .= t ./ sqrtw
+        T[:, a] .= t 
         P[:, a] .= res.v           
         sv[a] = res.sv
         niter[a] = res.niter
@@ -102,7 +102,8 @@ function pcanipals!(X::Matrix, weights::Weight; kwargs...)
             UUt .+= res.u * res.u' 
             VVt .+= res.v * res.v'
         end
-    end    
+    end
+    fweight!(T, 1 ./ sqrtw)    
     ## Could recompute the scores by
     ## X0 = copy(X) ; ... ; T = (1 ./ sqrtw) .* X0 * P 
     Pca(T, P, sv, xmeans, xscales, weights, niter, par) 
