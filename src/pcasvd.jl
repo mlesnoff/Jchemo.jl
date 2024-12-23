@@ -128,7 +128,7 @@ function Base.summary(object::Pca, X)
     D = Diagonal(object.weights.w)
     X = fcscale(X, object.xmeans, object.xscales)
     ## (||X||_D)^2 = tr(X' * D * X) = frob(X, weights)^2
-    sstot = sum(colnorm(X, object.weights).^2)
+    sstot = frob2(X, object.weights) 
     ## End
     TT = D * object.T.^2
     tt = colsum(TT) 
