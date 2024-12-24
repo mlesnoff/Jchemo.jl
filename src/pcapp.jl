@@ -63,8 +63,6 @@ plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i),
     ylabel = string("PC", i + 1)).f
 ```
 """ 
-pcapp(; kwargs...) = JchemoModel(pcapp, nothing, kwargs)
-
 function pcapp(X; kwargs...)
     pcapp!(copy(ensure_mat(X)); kwargs...)
 end

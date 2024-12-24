@@ -59,8 +59,6 @@ X_imp[s] .= Xfit[s]
 X_imp
 ```
 """ 
-pcanipalsmiss(; kwargs...) = JchemoModel(pcanipalsmiss, nothing, kwargs)
-
 function pcanipalsmiss(X; kwargs...)
     z = vec(Matrix(X))
     s = ismissing.(z) .== 0

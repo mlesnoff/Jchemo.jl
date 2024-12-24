@@ -64,8 +64,6 @@ res.coord_var
 res.cor_circle
 ```
 """ 
-pcasvd(; kwargs...) = JchemoModel(pcasvd, nothing, kwargs)
-
 function pcasvd(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

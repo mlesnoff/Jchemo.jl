@@ -54,8 +54,6 @@ plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i),
     ylabel = string("PC", i + 1)).f
 ```
 """ 
-pcasph(; kwargs...) = JchemoModel(pcasph, nothing, kwargs)
-
 function pcasph(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
@@ -79,13 +77,13 @@ function pcasph!(X::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(X, xmeans)
     end
-    sqrtw = sqrt.(weights.w)
     Xt = X'
     xnorms = colnorm(Xt)
     fscale!(Xt, xnorms)
     ## Xt' = X-data projected on the sphere (each row has norm = 1)
     Xtt = Xt'
-    fweight(Xtt, sqrtw)
+    sqrtw = sqrt.(weights.w)
+    fweight!(Xtt, sqrtw)
     res = LinearAlgebra.svd!(Xtt) 
     P = res.V[:, 1:nlv]
     T = X * P      

@@ -75,8 +75,6 @@ plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i),
     ylabel = string("PC", i + 1)).f
 ```
 """ 
-pcaout(; kwargs...) = JchemoModel(pcaout, nothing, kwargs)
-
 function pcaout(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

@@ -19,8 +19,6 @@ computing an Eigen factorization of X' * D * X.
 
 See function `pcasvd` for examples.
 """ 
-pcaeigen(; kwargs...) = JchemoModel(pcaeigen, nothing, kwargs)
-
 function pcaeigen(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

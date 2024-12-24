@@ -122,8 +122,6 @@ fit!(model, Xtrain)
 model.fitm.P
 ```
 """
-spca(; kwargs...) = JchemoModel(spca, nothing, kwargs)
-
 function spca(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

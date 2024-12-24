@@ -50,8 +50,6 @@ Wright, K., 2018. Package nipals: Principal Components Analysis
 using NIPALS with Gram-Schmidt Orthogonalization. 
 https://cran.r-project.org/
 """ 
-pcanipals(; kwargs...) = JchemoModel(pcanipals, nothing, kwargs)
-
 function pcanipals(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
