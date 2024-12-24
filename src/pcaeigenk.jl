@@ -30,6 +30,8 @@ algorithms for wide data. Part I: Theory and algorithms.
 Chemometrics and Intelligent Laboratory Systems 36, 165-172.
 https://doi.org/10.1016/S0169-7439(97)00010-5
 """ 
+pcaeigenk(; kwargs...) = JchemoModel(pcaeigenk, nothing, kwargs)
+
 function pcaeigenk(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))

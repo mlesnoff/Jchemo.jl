@@ -63,7 +63,7 @@ function fscale!(X::AbstractMatrix, v)
     n, p = size(X)
     @inbounds for j = 1:p, i = 1:n
         X[i, j] /= v[j]
-    end  
+    end 
 end
 
 """

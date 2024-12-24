@@ -54,6 +54,8 @@ plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i),
     ylabel = string("PC", i + 1)).f
 ```
 """ 
+pcasph(; kwargs...) = JchemoModel(pcasph, nothing, kwargs)
+
 function pcasph(X; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
@@ -69,7 +71,7 @@ function pcasph!(X::Matrix, weights::Weight; kwargs...)
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
-    xmeans = colmedspa(X)
+    xmeans = Jchemo.colmedspa(X, delta = 0.001)
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colmad(X)
@@ -77,15 +79,14 @@ function pcasph!(X::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(X, xmeans)
     end
-    Xt = X'
-    xnorms = colnorm(Xt)
-    fscale!(Xt, xnorms)
-    ## Xt' = X-data projected on the sphere (each row has norm = 1)
-    Xtt = Xt'
-    sqrtw = sqrt.(weights.w)
-    fweight!(Xtt, sqrtw)
-    res = LinearAlgebra.svd!(Xtt) 
+    ## Sphere
+    Xt = X'  
+    v = colnorm(Xt)
+    Xtt = fscale(Xt, v)'    # X-data projected on the sphere (each row has norm = 1)
+    fweight!(Xtt, sqrt.(weights.w))
+    res = LinearAlgebra.svd!(Matrix(Xtt)) 
     P = res.V[:, 1:nlv]
+    ## End
     T = X * P      
     sv = colmad(T)  # Maronna 2005 p.268 eq.20 [different than in rnirs/rchemo ==> to fix in rchemo]
     s = sortperm(sv; rev = true)
@@ -94,3 +95,4 @@ function pcasph!(X::Matrix, weights::Weight; kwargs...)
     sv .= sv[s]
     Pca(T, P, sv, xmeans, xscales, weights, nothing, par) 
 end
+
