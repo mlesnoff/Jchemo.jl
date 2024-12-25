@@ -13,18 +13,19 @@ Keyword arguments:
 
 For `nsim = 0`, this is the Croux & Ruiz-Gazen (C-R, 2005) PCA algorithm that 
 uses a projection pursuit (PP) method. Data `X` are robustly centered by the 
-spatial median, and the observations are projected to specific "PP" directions 
-that are defined by the observations (rows of `X`) after they are normed. 
+spatial median, and the observations are projected to the "PP" directions 
+defined by the observations (rows of `X`) after they are normed. 
 The first PCA loading vector is the direction (within the PP directions) that 
-maximizes a given "projection index", here the median absolute deviation (MAD). 
+maximizes a given 'projection index', here the median absolute deviation (MAD). 
 Then, `X` is deflated to this loading vector, and the process is re-run to define
 the next loading vector. And so on. 
 
-A possible extension of the algorithm is to randomly simulate additionnal candidate 
-PP directions to the n row observations. If `nsim > 0`, the function simulates `nsim` 
-additional PP directions to the n initial ones, as proposed in Hubert et al. (2005): 
-random couples of observations are sampled in `X` and, for each couple, the direction 
-passes through the two observations of the couple (see function `simpphub`).
+A possible extension of this algorithm is to randomly simulate additionnal 
+candidate PP directions to the n row observations. If `nsim > 0`, the function 
+simulates `nsim` additional PP directions to the n initial ones, as proposed 
+in Hubert et al. (2005): random couples of observations are sampled in `X` and, 
+for each couple, the direction passes through the two observations of the 
+    couple (see function `simpphub`).
 
 ## References
 Croux, C., Ruiz-Gazen, A., 2005. High breakdown estimators for 
@@ -64,7 +65,7 @@ plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i),
 ```
 """
 pcapp(; kwargs...) = JchemoModel(pcapp, nothing, kwargs)
- 
+
 function pcapp(X; kwargs...)
     pcapp!(copy(ensure_mat(X)); kwargs...)
 end
@@ -91,9 +92,10 @@ function pcapp!(X::Matrix; kwargs...)
     fsimpp = simpphub
     #fsimpp = simppsph   # ~ same for large nsim (~ >= 2000)
     fobj = colmad
+    #fobj = colstd
     for a = 1:nlv
         ## For simpphub: the nb. columns of zP can be variable (max = n + A(n, 2))
-        zP = fsimpp(X; nsim)  
+        zP = fsimpp(X; nsim) 
         zT = X * zP 
         zobj = fobj(zT)
         zobj[isnan.(zobj)] .= 0

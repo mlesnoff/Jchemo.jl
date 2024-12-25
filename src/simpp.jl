@@ -25,6 +25,7 @@ simpphub = function(X; nsim = 0, cst = 50)
         P = P[:, 1:(n + znsim)]
     end
     fscale!(P, colnorm(P))
+    P
 end
 
 ## Sphere
@@ -41,6 +42,7 @@ simppsph = function(X; nsim = 0)
         end
     end
     fscale!(P, colnorm(P))
+    P
 end
 
 
