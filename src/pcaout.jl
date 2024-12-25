@@ -17,18 +17,18 @@ Keyword arguments:
 
 Robust PCA combining outlyingness measures and weighted PCA (WPCA). 
 
-Observations (`X`-rows) receive weights depending on outlyingness 
-with the objective to remove the effect of multivariate `X`-outliers 
-that have potentially bad leverages.
+The objective is to remove the effect of multivariate `X`-outliers 
+that have potentially bad leverages. Observations (`X`-rows) receive 
+weights depending on two outlyingness indicators:
 1) The Stahel-Donoho outlyingness (Maronna and Yohai, 1995) is computed 
-    (function `outstah`). The proportion `prm` of the observations with the 
+    (function `outstah`) on `X`. The proportion `prm` of the observations with the 
     highest outlyingness values receive a weight w1 = 0 (the other receive a weight w1 = 1).
-2) An outlyingness computed from the Euclidean distance to center 
+2) An outlyingness based on the Euclidean distance to center 
     (function `outstah`) is computed. The proportion `prm` of the observations 
     with the highest outlyingness values receive a weight w2 = 0 
     (the other receive a weight w2 = 1).
-3) The final weights of the observations are computed by weights.w * w1 * w2
-    that is used in a weighted PCA.
+The final weights of the observations are computed by weights.w * w1 * w2
+that is used in a weighted PCA.
 
 By default, the function uses `prm = .3` (such as in the ROBPCA algorithm 
 of Hubert et al. 2005, 2009). 
@@ -92,8 +92,7 @@ function pcaout!(X::Matrix, weights::Weight; kwargs...)
     n, p = size(X)
     nlvout = 30
     P = rand(0:1, p, nlvout)
-    d = similar(X, n)
-    d .= outstah(X, P; scal = par.scal).d
+    d = outstah(X, P; scal = par.scal).d
     w = wtal(d; a = quantile(d, 1 - par.prm))
     d .= outeucl(X; scal = par.scal).d
     w .*= wtal(d; a = quantile(d, 1 - par.prm))

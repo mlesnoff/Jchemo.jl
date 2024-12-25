@@ -703,7 +703,7 @@ the Makie's backend (e.g. CairoMakie).
 
 - New 
     - **colmad**: Median absolute deviation (MAD) of each column of a matrix.
-    - **occsdod**: One-class classification using a compromise between PCA/PLS score (SD) and orthogonal (OD) distances.
+    - **occsdod**: One-class classification using a consensus between PCA/PLS score (SD) and orthogonal (OD) distances.
     - **replacedict**: Replace the elements of a vector by levels defined in a dictionary.
     - **stah**: Stahel-Donoho outlierness measure.
 

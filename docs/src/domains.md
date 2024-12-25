@@ -44,7 +44,7 @@
 
 ### Factorial discrimination analysis (FDA)
 
-- **fda** Eigen decomposition of the compromise "inter/intra"
+- **fda** Eigen decomposition of the consensus "inter/intra"
 - **fdasvd** Weighted SVD of the class centers
 
 ### Multiblock

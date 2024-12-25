@@ -1,12 +1,12 @@
 """
     occsdod(; kwargs...)
     occsdod(object, X; kwargs...)
-One-class classification using a compromise between 
-    PCA/PLS score (SD) and orthogonal (OD) distances.
-* `fitm` : The preliminary model (e.g. PCA; object `fitm`) that was fitted 
-    on the training data assumed to represent the training class.
-* `X` : Training X-data (n, p), on which was fitted 
-    the model `fitm`.
+One-class classification using a consensus between 
+    PCA/PLS score and orthogonal (SD and OD) distances.
+* `fitm` : The preliminary model (e.g. object `fitm` returned by function 
+    `pcasvd`) that was fitted on the training data assumed to represent 
+    the training class.
+* `X` : Training X-data (n, p), on which was fitted the model `fitm`.
 Keyword arguments:
 * `mcut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
     See Thereafter.
@@ -14,8 +14,8 @@ Keyword arguments:
 * `risk` : When `mcut` = `:q`, a risk-I level. See thereafter.
 
 In this method, the outlierness `d` of a given observation
-is a compromise between the score distance (SD) and the
-orthogonal distance (OD). The compromise is computed from the 
+is a consensus between the score distance (SD) and the
+orthogonal distance (OD). The consensus is computed from the 
 standardized distances by: 
 * `dstand` = sqrt(`dstand_sd` * `dstand_od`).
 
@@ -31,7 +31,7 @@ function occsdod(fitm, X; kwargs...)
     fitmod = occod(fitm, X; kwargs...)
     sd = fitmsd.d
     od = fitmod.d
-    z = sqrt.(sd.dstand .* od.dstand)
+    z = [sqrt(sd.dstand[i] * od.dstand[i]) for i in eachindex(sd.dstand)]
     nam = string.(names(sd), "_sd")
     rename!(sd, nam)
     nam = string.(names(od), "_od")
@@ -56,7 +56,7 @@ function predict(object::Occsdod, X)
     nam = string.(names(od), "_od")
     rename!(od, nam)
     d = hcat(sd, od)
-    d.dstand = sqrt.(sd.dstand_sd .* od.dstand_od)
+    d.dstand = [sqrt(sd.dstand_sd[i] * od.dstand_od[i]) for i in eachindex(sd.dstand_sd)]
     pred = [if d.dstand[i] <= 1 "in" else "out" end for i = 1:m]
     pred = reshape(pred, m, 1)
     (pred = pred, d)

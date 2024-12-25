@@ -2,10 +2,10 @@
     occod(; kwargs...)
     occod(fitm, X; kwargs...)
 One-class classification using PCA/PLS orthognal distance (OD).
-* `fitm` : The preliminary model (e.g. PCA; object `fitm`) that was fitted 
-    on the training data assumed to represent the training class.
-* `X` : Training X-data (n, p), on which was fitted 
-    the model `fitm`.
+* `fitm` : The preliminary model (e.g. object `fitm` returned by function 
+    `pcasvd`) that was fitted on the training data assumed to represent 
+    the training class.
+* `X` : Training X-data (n, p), on which was fitted the model `fitm`.
 Keyword arguments:
 * `mcut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
     See Thereafter.
@@ -13,7 +13,7 @@ Keyword arguments:
 * `risk` : When `mcut` = `:q`, a risk-I level. See thereafter.
 
 In this method, the outlierness `d` of an observation
-is the orthogonal distance (OD =  "X-residuals") of this 
+is the orthogonal distance (=  'X-residuals') of this 
 observation, ie. the Euclidean distance between the observation 
 and its projection on the  score plan defined by the fitted 
 (e.g. PCA) model (e.g. Hubert et al. 2005, Van Branden & Hubert 
@@ -117,8 +117,7 @@ function occod(fitm, X; kwargs...)
     par = recovkw(ParOcc, kwargs).par 
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
     E = xresid(fitm, X)
-    d2 = vec(sum(E .* E, dims = 2))
-    d = sqrt.(d2)
+    d = rownorm(E)
     par.mcut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
     par.mcut == :q ? cutoff = quantile(d, 1 - par.risk) : nothing
     e_cdf = StatsBase.ecdf(d)
@@ -136,8 +135,7 @@ Compute predictions from a fitted model.
 function predict(object::Occod, X)
     E = xresid(object.fitm, X)
     m = nro(E)
-    d2 = vec(sum(E .* E, dims = 2))
-    d = sqrt.(d2)
+    d = rownorm(E)
     p_val = pval(object.e_cdf, d)
     d = DataFrame(d = d, dstand = d / object.cutoff, pval = p_val)
     pred = [if d.dstand[i] <= 1 "in" else "out" end for i = 1:m]

@@ -24,7 +24,7 @@ FDA by eigen factorization of Inverse(W) * B, where W is
 the "Within"-covariance matrix (pooled over the classes), 
 and B the "Between"-covariance matrix.
 
-The function maximizes the compromise:
+The function maximizes the consensus:
 * p'Bp / p'Wp 
 i.e. max p'Bp with constraint p'Wp = 1. Vectors p (columns of `P`) 
 are the linear discrimant coefficients often referred to as "LD".
