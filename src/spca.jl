@@ -136,7 +136,7 @@ end
 
 function spca!(X::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParSpca, kwargs).par
-    @assert in([:hard ; :softs ; :soft])(par.meth) "Wrong value for argument 'meth'."
+    @assert in([:soft ; :softs ; :hard])(par.meth) "Wrong value for argument 'meth'."
     @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]."
     Q = eltype(X)
     n, p = size(X)
