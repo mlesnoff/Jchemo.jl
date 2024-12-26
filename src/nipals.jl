@@ -89,7 +89,7 @@ function nipals(X, UUt, VVt; kwargs...)
         v .= v .- VVt * v
         v ./= normv(v)
         mul!(u, X, v)
-        u .= u .- UUt * u
+        u .-= UUt * u
         dif = sum((u .- u0).^2)
         iter = iter + 1
         if (dif < par.tol) || (iter > par.maxit)

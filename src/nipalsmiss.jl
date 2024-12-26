@@ -98,7 +98,7 @@ function nipalsmiss(X, UUt, VVt; kwargs...)
         zU[s] .= 0
         mul!(v, X0t, u)
         v ./= colsum(zU)
-        v .= v .- VVt * v
+        v .-= VVt * v
         v ./= normv(v)
         zV .= reshape(repeat(v.^2, n), p, n)
         zV[st] .= 0
