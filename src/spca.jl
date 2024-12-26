@@ -221,12 +221,15 @@ function Base.summary(object::Spca, X)
     nlv = nco(object.T)
     D = Diagonal(object.weights.w)
     X = fcscale(X, object.xmeans, object.xscales)
-    ## (||X||_D)^2 = tr(X' * D * X) = frob(X, weights)^2 = sum(colnorm(X, object.weights).^2)  
     sstot = frob2(X, object.weights)
+    ## = (||X||_D)^2 
+    ## = tr(X' * D * X) 
+    ## = sum(colnorm(X, object.weights).^2)  
     ## Proportion of variance of X explained by each column of T
-    ## ss = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
     A = X' * D * object.T    
-    ss = diag(A' * A) ./ diag(object.T' * D * object.T)
+    ss = colnorm(A).^2 ./ colnorm(object.T, object.weights).^2
+    ## = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
+    ## = diag(A' * A) ./ diag(object.T' * D * object.T)
     pvar = ss / sstot 
     cumpvar = cumsum(pvar)
     zrd = vec(rd(X, object.T, object.weights))
