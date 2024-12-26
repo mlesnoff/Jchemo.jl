@@ -130,10 +130,10 @@ function Base.summary(object::Pca, X)
     ## (||X||_D)^2 = tr(X' * D * X) = frob(X, weights)^2
     sstot = frob2(X, object.weights) 
     ## End
-    TT = D * object.T.^2
+    TT = D * object.T.^2  # required for 'contr_ind'
     tt = colsum(TT) 
-    ## = diag(T' * D * T) 
     ## = colnorm(object.T, object.weights).^2 
+    ## = diag(T' * D * T) 
     ## = object.sv[1:nlv].^2
     pvar = tt / sstot
     cumpvar = cumsum(pvar)

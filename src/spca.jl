@@ -42,10 +42,10 @@ three methods of thresholding:
     Let us note v a given loading vector before thresholding. 
     Vector abs(v) is then standardized to its maximal component 
     (i.e. to max{abs(v[i]), i = 1..p}). The soft-thresholding function 
-    (see function `soft`) is applied to this standardized vector, 
-    with the constant `delta` ∈ [0, 1]. This returns the sparse 
-    vector `theta`. Vector v is multiplied term-by-term by this vector
-    `theta`, which finally gives the sparse loadings.
+    (see function `soft`) is applied, with the constant `delta` ∈ [0, 1],
+    to this standardized vector. This returns the sparse vector `theta`. 
+    Vector v is multiplied term-by-term by this vector `theta`, which 
+    finally gives the sparse loadings.
 
 * `meth = :hard`: For each PC, the `nvar` `X`-variables showing 
     the largest values in vector abs(v) are selected.
@@ -166,10 +166,10 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
             res = snipals_softs(X; kwargs...)
         else
             par.nvar = nvar[a]
-            if par.meth == :hard
-                res = snipals_h(X; kwargs...)
-            elseif par.meth == :soft
+            if par.meth == :soft
                 res = snipals_soft(X; kwargs...)
+            elseif par.meth == :hard
+                res = snipals_h(X; kwargs...)
             end
         end
         t .= res.t      
@@ -204,9 +204,8 @@ function transf(object::Spca, X; nlv = nothing)
     T = similar(X, m, nlv)
     t = similar(X, m)
     for a = 1:nlv
-        t .= zX * vcol(object.P, a)
-        T[:, a] .= t
-        zX .-= t * vcol(object.beta, a)' 
+        T[:, a] .= zX * vcol(object.P, a)
+        zX .-= vcol(T, a) * vcol(object.beta, a)' 
     end
     T 
 end
