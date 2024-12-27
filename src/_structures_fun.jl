@@ -360,6 +360,21 @@ struct Splsr
     par::ParSplsr
 end
 
+struct Spcr
+    fitmpca::Pca
+    T::Matrix
+    R::Matrix
+    C::Matrix
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    yscales::Vector
+    weights::Weight
+    sellv::Vector{Vector{Int}}
+    sel::Vector{Int}
+    par::ParPcr
+end
+
 struct PlsravgUnif
     fitm::Plsr
     nlv::UnitRange

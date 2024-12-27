@@ -71,6 +71,7 @@ and Benoit Liquet. (2016). mixOmics: Omics Data Integration
 Project. R package version 6.1.1. 
 https://CRAN.R-project.org/package=mixOmics
 
+Package mixOmics on Bioconductor:
 https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html
 
 Shen, H., Huang, J.Z., 2008. Sparse principal component 

@@ -62,6 +62,7 @@ from Pierre Monget, Jeff Coquery, FangZou Yao and Benoit Liquet.
 (2016). mixOmics: Omics Data Integration Project. R package 
 version 6.1.1. https://CRAN.R-project.org/package=mixOmics
 
+Package mixOmics on Bioconductor:
 https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html
 
 Roger, J.M., Palagos, B., Bertrand, D., Fernandez-Ahumada, E., 2011. 
