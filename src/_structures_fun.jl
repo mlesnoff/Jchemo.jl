@@ -361,7 +361,7 @@ struct Splsr
 end
 
 struct Spcr
-    fitmpca::Pca
+    fitmpca::Spca
     T::Matrix
     R::Matrix
     C::Matrix
@@ -372,7 +372,7 @@ struct Spcr
     weights::Weight
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
-    par::ParPcr
+    par::ParSpcr
 end
 
 struct PlsravgUnif

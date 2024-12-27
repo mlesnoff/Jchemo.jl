@@ -127,9 +127,8 @@ function Base.summary(object::Pca, X)
     nlv = nco(object.T)
     D = Diagonal(object.weights.w)
     X = fcscale(X, object.xmeans, object.xscales)
-    ## (||X||_D)^2 = tr(X' * D * X) = frob(X, weights)^2
     sstot = frob2(X, object.weights) 
-    ## End
+    ## = (||X||_D)^2 = tr(X' * D * X)
     TT = D * object.T.^2  # required for 'contr_ind'
     tt = colsum(TT) 
     ## = colnorm(object.T, object.weights).^2 
@@ -143,8 +142,8 @@ function Base.summary(object::Pca, X)
     cor_circle = DataFrame(corm(X, object.T, object.weights), nam)
     C = X' * D * fscale(object.T, sqrt.(tt))
     coord_var = DataFrame(C, nam)
-    CC = C .* C
-    cc = sum(CC, dims = 1)
+    CC = C.^2
+    cc = colsum(CC)
     contr_var = DataFrame(fscale(CC, cc), nam)
     (explvarx = explvarx, contr_ind, contr_var, coord_var, cor_circle)
 end

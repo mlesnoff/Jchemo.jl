@@ -95,7 +95,7 @@ Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Pcr, X; nlv = nothing)
+function transf(object::Union{Pcr, Spcr}, X; nlv = nothing)
     transf(object.fitmpca, X; nlv)
 end
 
@@ -105,7 +105,7 @@ Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
-function Base.summary(object::Pcr, X)
+function Base.summary(object::Union{Pcr, Spcr}, X)
     summary(object.fitmpca, X)
 end
 

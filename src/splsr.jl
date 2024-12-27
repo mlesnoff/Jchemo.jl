@@ -218,15 +218,15 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
                 r .-= dot(w, vcol(P, j)) .* vcol(R, j)    
             end
         end                   
-        mul!(t, X, r)                 # t = X * r
-        dt .= weights.w .* t          # dt = D * t
-        tt = dot(t, dt)               # tt = t' * dt = t' * D * t 
+        mul!(t, X, r)                 
+        dt .= weights.w .* t          
+        tt = dot(t, dt)               
         mul!(c, XtY', r)
-        c ./= tt                      # c = XtY' * r / tt
-        mul!(zp, X', dt)              # zp = (D * X)' * t = X' * (D * t)
-        XtY .-= mul!(tmp, zp, c')     # XtY = XtY - zp * c' ; deflation of the kernel matrix 
-        P[:, a] .= zp ./ tt           # ==> the metric applied to covariance is applied outside the loop,
-        T[:, a] .= t                  # conversely to other algorithms such as nipals
+        c ./= tt                      
+        mul!(zp, X', dt)              
+        XtY .-= mul!(tmp, zp, c')     
+        P[:, a] .= zp ./ tt           
+        T[:, a] .= t                  
         W[:, a] .= w
         R[:, a] .= r
         C[:, a] .= c

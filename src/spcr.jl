@@ -3,15 +3,35 @@
     spcr(X, Y; kwargs...)
     spcr(X, Y, weights::Weight; kwargs...)
     pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-Principal component regression (PCR) with a SVD factorization.
+Sparse principal component regression (sPCR). 
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Boolean. If `true`, each column of `X` 
+* `meth` : Method used for the sparse thresholding. 
+    Possible values are: `:soft`, `:softs`, 
+    `:hard`. See thereafter.
+* `delta` : Only used if `meth = :softs`. Constant used in function 
+   `soft` for the thresholding on the loadings (after they are 
+    standardized to their maximal absolute value). Must ∈ [0, 1].
+    Higher is `delta`, stronger is the thresholding. 
+* `nvar` : Only used if `meth = :soft` or `meth = :hard`.
+    Nb. variables (`X`-columns) selected for each principal
+    component (PC). Can be a single integer (i.e. same nb. 
+    of variables for each PC), or a vector of length `nlv`.   
+* `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
+
+Regression on scores computed with the sPCA-rSVD algorithm of Shen 
+& Huang 2008 (regularized low rank matrix approximation). 
+
+## References
+Shen, H., Huang, J.Z., 2008. Sparse principal component 
+analysis via regularized low rank matrix approximation. 
+Journal of Multivariate Analysis 99, 1015–1034. 
+https://doi.org/10.1016/j.jmva.2007.06.007
 
 ## Examples
 ```julia
@@ -31,11 +51,14 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-model = spcr(; nlv) ;
+meth = :soft ; nvar = 5
+#meth = :hard ; nvar = 5
+model = spcr(; nlv, meth, nvar) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
 @head model.fitm.T
+@head model.fitm.W
 
 coef(model)
 coef(model; nlv = 3)
@@ -46,17 +69,14 @@ coef(model; nlv = 3)
 res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
-
-res = predict(model, Xtest; nlv = 1:2)
-@head res.pred[1]
-@head res.pred[2]
 
 res = summary(model, Xtrain) ;
 pnames(res)
 z = res.explvarx
-plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance").f
+plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", 
+    ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
 spcr(; kwargs...) = JchemoModel(spcr, nothing, kwargs)
@@ -72,7 +92,7 @@ function spcr(X, Y, weights::Weight; kwargs...)
 end
 
 function spcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkw(ParPcr, kwargs).par
+    par = recovkw(ParSpcr, kwargs).par
     Q = eltype(X)
     q = nco(Y)
     ymeans = colmean(Y, weights)
@@ -84,32 +104,14 @@ function spcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     D = Diagonal(fitm.weights.w)
     ## Below, first term of the product = Diagonal(1 ./ fitm.sv[1:nlv].^2) if T is D-orthogonal
     ## This is the case for the actual version (pcasvd)
-    beta = inv(fitm.T' * D * fitm.T) * fitm.T' * D * Y
+    K = fitm.T' * D 
+    beta = inv(K * fitm.T) * K * Y
+    #beta = inv(fitm.T' * D * fitm.T) * fitm.T' * D * Y
     Spcr(fitm, fitm.T, fitm.P, beta', fitm.xmeans, fitm.xscales, ymeans, yscales, weights,
-        sellv, sel,  # add compared to ::Pcr
+        fitm.sellv, fitm.sel,  # add compared to ::Pcr
         par)
 end
 
-""" 
-    transf(object::Spcr, X; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
-* `object` : The fitted model.
-* `X` : Matrix (m, p) for which LVs are computed.
-* `nlv` : Nb. LVs to consider.
-""" 
-function transf(object::Spcr, X; nlv = nothing)
-    transf(object.fitmpca, X; nlv)
-end
-
-"""
-    summary(object::Spcr, X)
-Summarize the fitted model.
-* `object` : The fitted model.
-* `X` : The X-data that was used to fit the model.
-""" 
-function Base.summary(object::Spcr, X)
-    summary(object.fitmpca, X)
-end
 
 
 

@@ -242,6 +242,14 @@ Base.@kwdef mutable struct ParSplsr
     scal::Bool = false                   
 end 
 
+Base.@kwdef mutable struct ParSpcr
+    nlv::Int = 1 
+    meth::Symbol = :softs 
+    delta::Float64 = 0.   
+    nvar::Union{Int, Vector{Int}} = 1  
+    scal::Bool = false                   
+end 
+
 Base.@kwdef mutable struct ParKplsr
     nlv::Int = 1 
     kern::Symbol = :krbf     
