@@ -25,7 +25,7 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, nlv, ve
         pred = predict(fitm, X; nlv).pred
         le_nlv == 1 ? pred = [pred] : nothing
         res = zeros(Q, le_nlv, q)
-        @inbounds for i = 1:le_nlv
+        @inbounds for i in eachindex(nlv)
             res[i, :] = score(pred[i], Y)
         end
         dat = DataFrame(nlv = nlv)
@@ -38,7 +38,7 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, nlv, ve
             pred = Jchemo.predict(fitm, X; nlv).pred
             le_nlv == 1 ? pred = [pred] : nothing
             zres = zeros(Q, le_nlv, q)
-            @inbounds for i = 1:le_nlv
+            @inbounds for i in eachindex(nlv)
                 zres[i, :] = score(pred[i], Y)
             end
             zres

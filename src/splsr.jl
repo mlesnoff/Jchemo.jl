@@ -13,16 +13,14 @@ Keyword arguments:
 * `meth` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:softs`, 
     `:hard`. See thereafter.
+* `nvar` : Only used if `meth = :soft` or `meth = :hard`.
+    Nb. variables (`X`-columns) selected for each latent
+    variable (LV). Can be a single integer (i.e. same nb. 
+    of variables for each PC), or a vector of length `nlv`.   
 * `delta` : Only used if `meth = :softs`. Constant used in function 
    `soft` for the thresholding on the loadings (after they are 
     standardized to their maximal absolute value). Must ∈ [0, 1].
     Higher is `delta`, stronger is the thresholding. 
-* `nvar` : Only used if `meth = :soft` or `meth = :hard`.
-    Nb. variables (`X`-columns) selected for each principal
-    component (PC). Can be a single integer (i.e. same nb. 
-    of variables for each PC), or a vector of length `nlv`.   
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
-    is scaled by its uncorrected standard deviation.
 
 Adaptation of the sparse partial least squares regression algorihm of 
 Lê Cao et al. 2008. The fast "improved kernel algorithm #1" of 
@@ -88,8 +86,8 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-meth = :soft ; nvar = 5
-#meth = :hard ; nvar = 5
+meth = :soft ; nvar = 20
+#meth = :hard ; nvar = 20
 model = splsr(; nlv, meth, nvar) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
@@ -177,17 +175,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
         if q == 1
             w .= vcol(XtY, 1)
             absw .= abs.(w)
-            if par.meth == :hard
-                sel = sortperm(absw; rev = true)[1:nvar[a]]
-                wmax = w[sel]
-                w .= zeros(Q, p)
-                w[sel] .= wmax
-            elseif par.meth == :softs
-                absw_max = maximum(absw)
-                absw_stand .= absw / absw_max
-                theta .= max.(0, absw_stand .- par.delta) 
-                w .= sign.(w) .* theta * absw_max 
-            elseif par.meth == :soft
+            if par.meth == :soft
                 nrm = p - nvar[a]
                 if nrm > 0
                     sel = sortperm(absw; rev = true)[1:nvar[a]]
@@ -197,6 +185,16 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
                     zdelta = maximum(sort(absw)[1:nrm])
                     w .= soft.(w, zdelta)
                 end
+            elseif par.meth == :softs
+                absw_max = maximum(absw)
+                absw_stand .= absw / absw_max
+                theta .= max.(0, absw_stand .- par.delta) 
+                w .= sign.(w) .* theta * absw_max 
+            elseif par.meth == :hard
+                sel = sortperm(absw; rev = true)[1:nvar[a]]
+                wmax = w[sel]
+                w .= zeros(Q, p)
+                w[sel] .= wmax
             end
             ## End
             w ./= normv(w)

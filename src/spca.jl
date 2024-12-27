@@ -234,7 +234,7 @@ function Base.summary(object::Spca, X)
     pvar = ss / sstot 
     cumpvar = cumsum(pvar)
     zrd = vec(rd(X, object.T, object.weights))
-    explvarx = DataFrame(lv = 1:nlv, rd = zrd, pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(nlv = 1:nlv, rd = zrd, pvar = pvar, cumpvar = cumpvar)
     ## Adjusted variance and CPEV (cumulative percentage of explained variance)
     ## of Shen & Huang 2008 section 2.3
     zX = sqrt.(D) * X
@@ -246,7 +246,7 @@ function Base.summary(object::Spca, X)
     end
     cumpvar = ss / sstot
     pvar = [cumpvar[1]; diff(cumpvar)]
-    explvarx_adj = DataFrame(lv = 1:nlv, pvar = pvar, cumpvar = cumpvar)
+    explvarx_adj = DataFrame(nlv = 1:nlv, pvar = pvar, cumpvar = cumpvar)
     ## End
     (explvarx = explvarx, explvarx_adj)
 end

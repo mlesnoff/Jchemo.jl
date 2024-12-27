@@ -136,7 +136,7 @@ function predict(object::Plsrda, X; nlv = nothing)
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
-    @inbounds for i = 1:le_nlv
+    @inbounds for i in eachindex(nlv)
         zpred = predict(object.fitm, X; nlv = nlv[i]).pred
         #if softmax
         #    @inbounds for j = 1:m

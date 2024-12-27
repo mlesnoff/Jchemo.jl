@@ -194,7 +194,7 @@ function transf(object::Union{Plsr, Splsr}, X; nlv = nothing)
 end
 
 """
-    coef(object::Union{Plsr, Pcr, Splsr, Spcr}; nlv = nothing)
+    coef(object::Union{Plsr, Pcr, Splsr}; nlv = nothing)
 Compute the b-coefficients of a LV model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
@@ -203,13 +203,13 @@ For a model fitted from X(n, p) and Y(n, q), the returned
 object `B` is a matrix (p, q). If `nlv` = 0, `B` is a matrix 
 of zeros. The returned object `int` is the intercept.
 """ 
-function coef(object::Union{Plsr, Pcr, Splsr, Spcr}; nlv = nothing)
+function coef(object::Union{Plsr, Pcr, Splsr}; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     beta = vcol(object.C, 1:nlv)'
-    Wx = Diagonal(1 ./ object.xscales)
     Wy = Diagonal(object.yscales)
-    B =  Wx * vcol(object.R, 1:nlv) * beta * Wy
+    ## To not use for Spcr (R not computed; while for Pcr, R = P)
+    B =  fweight(vcol(object.R, 1:nlv), 1 ./ object.xscales) * beta * Wy
     ## In 'int': No correction is needed, since 
     ## ymeans, xmeans and B are in the original scale 
     int = object.ymeans' .- object.xmeans' * B
@@ -218,19 +218,19 @@ function coef(object::Union{Plsr, Pcr, Splsr, Spcr}; nlv = nothing)
 end
 
 """
-    predict(object::Union{Plsr, Pcr, Splsr, Spcr}, X; nlv = nothing)
+    predict(object::Union{Plsr, Pcr, Splsr}, X; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{Plsr, Pcr, Splsr, Spcr}, X; nlv = nothing)
+function predict(object::Union{Plsr, Pcr, Splsr}, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     pred = list(Matrix{eltype(X)}, le_nlv)
-    @inbounds  for i = 1:le_nlv
+    @inbounds for i in eachindex(nlv)
         coefs = coef(object; nlv = nlv[i])
         pred[i] = coefs.int .+ X * coefs.B  # try muladd(X, coefs.B, coefs.int)
     end 

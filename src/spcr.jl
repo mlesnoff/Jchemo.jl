@@ -13,16 +13,14 @@ Keyword arguments:
 * `meth` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:softs`, 
     `:hard`. See thereafter.
-* `delta` : Only used if `meth = :softs`. Constant used in function 
-   `soft` for the thresholding on the loadings (after they are 
-    standardized to their maximal absolute value). Must ∈ [0, 1].
-    Higher is `delta`, stronger is the thresholding. 
 * `nvar` : Only used if `meth = :soft` or `meth = :hard`.
     Nb. variables (`X`-columns) selected for each principal
     component (PC). Can be a single integer (i.e. same nb. 
     of variables for each PC), or a vector of length `nlv`.   
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
-    is scaled by its uncorrected standard deviation.
+* `delta` : Only used if `meth = :softs`. Constant used in function 
+   `soft` for the thresholding on the loadings (after they are 
+    standardized to their maximal absolute value). Must ∈ [0, 1].
+    Higher is `delta`, stronger is the thresholding. 
 
 Regression on scores computed with the sPCA-rSVD algorithm of Shen 
 & Huang 2008 (regularized low rank matrix approximation). 
@@ -51,17 +49,14 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-meth = :soft ; nvar = 5
-#meth = :hard ; nvar = 5
+meth = :soft ; nvar = 20
+#meth = :hard ; nvar = 20
 model = spcr(; nlv, meth, nvar) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
 @head model.fitm.T
-@head model.fitm.W
-
-coef(model)
-coef(model; nlv = 3)
+@head model.fitm.P
 
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
@@ -97,22 +92,37 @@ function spcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     q = nco(Y)
     ymeans = colmean(Y, weights)
     ## No need to fscale Y
-    ## below yscales is built only for consistency with coef::Plsr  
     yscales = ones(Q, q)
     ## End 
     fitm = spca!(X, weights; kwargs...)
-    D = Diagonal(fitm.weights.w)
-    ## Below, first term of the product = Diagonal(1 ./ fitm.sv[1:nlv].^2) if T is D-orthogonal
-    ## This is the case for the actual version (pcasvd)
-    K = fitm.T' * D 
-    beta = inv(K * fitm.T) * K * Y
-    #beta = inv(fitm.T' * D * fitm.T) * fitm.T' * D * Y
+    K = fweight(fitm.T, weights.w)'
+    beta = inv(K * fitm.T) * K * fcenter(Y, ymeans)
     Spcr(fitm, fitm.T, fitm.P, beta', fitm.xmeans, fitm.xscales, ymeans, yscales, weights,
         fitm.sellv, fitm.sel,  # add compared to ::Pcr
         par)
 end
 
-
+"""
+    predict(object::Spcr, X; nlv = nothing)
+Compute Y-predictions from a fitted model.
+* `object` : The fitted model.
+* `X` : X-data for which predictions are computed.
+* `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
+""" 
+function predict(object::Spcr, X; nlv = nothing)
+    X = ensure_mat(X)
+    a = nco(object.T)
+    isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
+    le_nlv = length(nlv)
+    T = transf(object, X)
+    pred = list(Matrix{eltype(X)}, le_nlv)
+    @inbounds for i in eachindex(nlv)
+        beta = vcol(object.C, 1:nlv[i])'
+        pred[i] = vcol(T, 1:nlv[i]) * beta .+ object.ymeans'
+    end 
+    le_nlv == 1 ? pred = pred[1] : nothing
+    (pred = pred,)
+end
 
 
 

@@ -143,7 +143,7 @@ function predict(object::Mbplsprobda, Xbl; nlv = nothing)
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
-    @inbounds for i = 1:le_nlv
+    @inbounds for i in eachindex(nlv)
         znlv = nlv[i]
         T = transf(object.fitm.embfitm, Xbl; nlv = znlv)
         zres = predict(object.fitm.dafitm[znlv], T)

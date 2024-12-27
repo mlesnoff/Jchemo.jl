@@ -136,7 +136,7 @@ function predict(object::Mbplsrda, Xbl; nlv = nothing)
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
-    @inbounds for i = 1:le_nlv
+    @inbounds for i in eachindex(nlv)
         zpred = predict(object.fitm, Xbl; nlv = nlv[i]).pred
         z =  mapslices(argmax, zpred; dims = 2)  # if equal, argmax takes the first
         pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)     

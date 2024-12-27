@@ -363,7 +363,7 @@ end
 struct Spcr
     fitmpca::Spca
     T::Matrix
-    R::Matrix
+    P::Matrix
     C::Matrix
     xmeans::Vector
     xscales::Vector

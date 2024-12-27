@@ -143,7 +143,7 @@ function predict(object::Plsprobda, X; nlv = nothing)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
     T = transf(object.fitm.embfitm, X)
-    @inbounds for i = 1:le_nlv
+    @inbounds for i in eachindex(nlv)
         znlv = nlv[i]
         zres = predict(object.fitm.dafitm[znlv], vcol(T, 1:znlv))
         z =  mapslices(argmax, zres.posterior; dims = 2) 

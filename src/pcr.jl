@@ -84,12 +84,13 @@ function pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     D = Diagonal(fitm.weights.w)
     ## Below, first term of the product = Diagonal(1 ./ fitm.sv[1:nlv].^2) if T is D-orthogonal
     ## This is the case for the actual version (pcasvd)
-    beta = inv(fitm.T' * D * fitm.T) * fitm.T' * D * Y
+    K = fitm.T' * D 
+    beta = inv(K * fitm.T) * K * Y
     Pcr(fitm, fitm.T, fitm.P, beta', fitm.xmeans, fitm.xscales, ymeans, yscales, weights, par)
 end
 
 """ 
-    transf(object::Pcr, X; nlv = nothing)
+    transf(object::Union{Pcr, Spcr}, X; nlv = nothing)
 Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
@@ -100,7 +101,7 @@ function transf(object::Union{Pcr, Spcr}, X; nlv = nothing)
 end
 
 """
-    summary(object::Pcr, X)
+    summary(object::Union{Pcr, Spcr}, X)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.

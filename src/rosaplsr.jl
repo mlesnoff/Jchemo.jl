@@ -249,7 +249,7 @@ function predict(object::Rosaplsr, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     X = reduce(hcat, Xbl)
     pred = list(Matrix{Q}, le_nlv)
-    @inbounds for i = 1:le_nlv
+    @inbounds for i in eachindex(nlv)
         z = coef(object; nlv = nlv[i])
         pred[i] = z.int .+ X * z.B
     end 
