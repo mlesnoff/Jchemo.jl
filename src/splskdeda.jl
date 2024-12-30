@@ -11,16 +11,10 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
     Must be >= 1.
 * `meth` : Method used for the sparse thresholding. 
-    Possible values are: `:soft`, `:softs`, 
-    `:hard`. See thereafter.
-* `nvar` : Only used if `meth = :soft` or `meth = :hard`.
-    Nb. variables (`X`-columns) selected for each latent
-    variable (LV). Can be a single integer (i.e. same nb. 
-    of variables for each PC), or a vector of length `nlv`.   
-* `delta` : Only used if `meth = :softs`. Constant used in function 
-   `soft` for the thresholding on the loadings (after they are 
-    standardized to their maximal absolute value). Must ∈ [0, 1].
-    Higher is `delta`, stronger is the thresholding.   
+    Possible values are: `:soft`, `:hard`. See thereafter.
+* `nvar` : Nb. variables (`X`-columns) selected for each latent 
+    variable (LV). Can be a single integer (i.e. same nb. of variables 
+    for each LV), or a vector of length `nlv`.     
 * `prior` : Type of prior probabilities for class 
     membership. Possible values are: `:unif` (uniform), 
     `:prop` (proportional), or a vector (of length equal to 

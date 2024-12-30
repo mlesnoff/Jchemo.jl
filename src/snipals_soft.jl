@@ -25,9 +25,8 @@ function snipals_soft(X; kwargs...)
             v .= zeros(Q, p)
             v[sel] .= vhigh
             @show v
-            #delta = maximum(sort(absv)[1:nzeros])
-            delta = maximum(absv[absv .< minimum(abs.(vhigh))])
-
+            qt = minimum(abs.(vhigh))
+            delta = maximum(absv[absv .< qt])
             @show delta
             v .= soft.(v, delta)
             @show v

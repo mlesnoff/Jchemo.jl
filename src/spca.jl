@@ -10,10 +10,8 @@ Sparse PCA (Shen & Huang 2008).
 Keyword arguments:
 * `nlv` : Nb. principal components (PCs).
 * `meth` : Method used for the sparse thresholding. 
-    Possible values are: `:soft`, `:softs`, 
-    `:hard`. See thereafter.
-* `nvar` : Only used if `meth = :soft` or `meth = :hard`.
-    Nb. variables (`X`-columns) selected for each principal
+    Possible values are: `:soft`, `:hard`. See thereafter.
+* `nvar` : Nb. variables (`X`-columns) selected for each principal
     component (PC). Can be a single integer (i.e. same nb. 
     of variables for each PC), or a vector of length `nlv`.   
 * `tol` : Tolerance value for stopping the Nipals iterations.
@@ -27,15 +25,16 @@ matrix approximation.
 The algorithm computes the loadings iteratively by alternating LS 
 regression (Nipals) including a step of thresholding. Function `spca` provides 
 two thresholding methods:
-* `meth = :soft`: Soft thresholding "1" (Lemma 2) of Shen & Huang 2008. 
+* `meth = :soft`: Thresholding "1" (Lemma 2) of Shen & Huang 2008. 
     For each PC, the `nvar` `X`-variables showing the largest values 
     in vector abs(v) are selected. Then the soft-thresholding function 
     `soft` is applied to the selected loadings. Constant `delta` in `soft`
     is automatically set equal to the maximal value of the components of abs(v) 
     corresponding to variables removed from the selection.  
 
-* `meth = :hard`: For each PC, the `nvar` `X`-variables showing 
-    the largest values in vector abs(v) are selected.
+* `meth = :hard`: Thresholding "2" (Lemma 2) of Shen & Huang 2008. 
+    For each PC, the `nvar` `X`-variables showing the largest values 
+    in vector abs(v) are selected.
 
 The case `meth = :soft` returns the same results as function 
 `spca` of the R package mixOmics (Lê Cao et al.).
@@ -82,8 +81,9 @@ Xtrain = X[s.train, :]
 Xtest = X[s.test, :]
 
 nlv = 3 
-meth = :soft ; nvar = 2
-#meth = :hard ; nvar = 2
+meth = :soft
+#meth = :hard
+nvar = 2
 scal = false
 model = spca(; nlv, meth, nvar, scal) ;
 fit!(model, Xtrain) 
@@ -102,12 +102,6 @@ fitm.P' * fitm.P
 res = summary(model, Xtrain) ;
 res.explvarx
 res.explvarx_adj
-
-nlv = 3 
-meth = :softs ; delta = .4 
-model = spca(; nlv, meth, delta) ;
-fit!(model, Xtrain) 
-model.fitm.P
 ```
 """
 spca(; kwargs...) = JchemoModel(spca, nothing, kwargs)
@@ -130,6 +124,7 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     nlv = min(par.nlv, n, p)
     nvar = par.nvar
     length(nvar) == 1 ? nvar = repeat([nvar], nlv) : nothing
+    @show nvar
     xmeans = colmean(X, weights) 
     xscales = ones(Q, p)
     if par.scal 
@@ -149,11 +144,10 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     beta = similar(X, p, nlv)
     sellv = list(Vector{Int}, nlv)
     for a = 1:nlv
-        par.nvar = nvar[a]
         if par.meth == :soft
-            res = snipals_soft(X; kwargs...)
+            res = snipals_soft(X; nvar = nvar[a])  # Could add 'tol', 'maxit' in ParSpca, ParsSplsr etc.
         elseif par.meth == :hard
-            res = snipals_hard(X; kwargs...)
+            res = snipals_hard(X; nvar = nvar[a])
         end
         t .= res.t      
         tt = dot(t, t)

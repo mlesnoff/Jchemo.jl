@@ -11,33 +11,29 @@ Sparse partial least squares regression (Lê Cao et al. 2008)
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `meth` : Method used for the sparse thresholding. 
-    Possible values are: `:soft`, `:softs`, 
-    `:hard`. See thereafter.
+    Possible values are: `:soft`, `:hard`. See thereafter.
 * `nvar` : Only used if `meth = :soft` or `meth = :hard`.
     Nb. variables (`X`-columns) selected for each latent
     variable (LV). Can be a single integer (i.e. same nb. 
-    of variables for each PC), or a vector of length `nlv`.   
-* `delta` : Only used if `meth = :softs`. Constant used in function 
-   `soft` for the thresholding on the loadings (after they are 
-    standardized to their maximal absolute value). Must ∈ [0, 1].
-    Higher is `delta`, stronger is the thresholding. 
+    of variables for each LV), or a vector of length `nlv`.   
+* `nvar` : Nb. variables (`X`-columns) selected for each latent 
+    variable (LV). Can be a single integer (i.e. same nb. of variables 
+    for each LV), or a vector of length `nlv`.  
 
 Adaptation of the sparse partial least squares regression algorihm of 
 Lê Cao et al. 2008. The fast "improved kernel algorithm #1" of 
 Dayal & McGregor (1997) is used instead Nipals. 
 
-In the present version of `splsr`, the sparse correction 
-only concerns `X`. The function provides three methods of 
-thresholding to compute the sparse `X`-loading weights w, 
-see function `spca` for description (same principles). 
+In the present version of `splsr`, the sparse correction only concerns 
+`X`. The function provides two thresholding methods to compute the sparse 
+`X`-loading weights w: see function `spca` for description. 
     
 The case `meth = :soft` returns the same results as function `spls` of 
 the R package mixOmics (Lê Cao et al.) with the regression mode (and without 
 sparseness on `Y`).
 
 The COVSEL regression method described in Roger et al 2011 (see also
-Höskuldsson 1992) can be implemented by setting `meth = :hard` 
-(or `meth = :soft`) and `nvar = 1`.
+Höskuldsson 1992) is implemented by setting `nvar = 1`.
 
 ## References
 

@@ -11,16 +11,10 @@ Sparse principal component regression (sPCR).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `meth` : Method used for the sparse thresholding. 
-    Possible values are: `:soft`, `:softs`, 
-    `:hard`. See thereafter.
-* `nvar` : Only used if `meth = :soft` or `meth = :hard`.
-    Nb. variables (`X`-columns) selected for each principal
+    Possible values are: `:soft`, `:hard`. See thereafter.
+* `nvar` : Nb. variables (`X`-columns) selected for each principal
     component (PC). Can be a single integer (i.e. same nb. 
     of variables for each PC), or a vector of length `nlv`.   
-* `delta` : Only used if `meth = :softs`. Constant used in function 
-   `soft` for the thresholding on the loadings (after they are 
-    standardized to their maximal absolute value). Must ∈ [0, 1].
-    Higher is `delta`, stronger is the thresholding. 
 
 Regression on scores computed with the sPCA-rSVD algorithm of Shen 
 & Huang 2008 (regularized low rank matrix approximation). 
