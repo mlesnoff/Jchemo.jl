@@ -1,14 +1,13 @@
-function snipals_softs(X; kwargs...)
+function snipals_hard(X; kwargs...)
     par = recovkw(ParSnipals, kwargs).par 
     X = ensure_mat(X)
+    Q = eltype(X)
     n, p = size(X)
     res = nipals(X; kwargs...)
     t = res.u * res.sv
     t0 = similar(X, n)
     v = similar(X, p)
     absv = copy(v)
-    absv_stand = copy(v)
-    theta = copy(v)
     cont = true
     iter = 1
     while cont
@@ -16,10 +15,10 @@ function snipals_softs(X; kwargs...)
         mul!(v, X', t)
         ## Sparsity
         absv .= abs.(v)
-        absv_max = maximum(absv)
-        absv_stand .= absv / absv_max
-        theta .= max.(0, absv_stand .- par.delta) 
-        v .= sign.(v) .* theta * absv_max 
+        sel = sortperm(absv; rev = true)[1:par.nvar]
+        vmax = v[sel]
+        v .= zeros(Q, p)
+        v[sel] .= vmax
         ## End
         v ./= normv(v)
         mul!(t, X, v)

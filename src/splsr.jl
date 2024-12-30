@@ -128,8 +128,7 @@ end
 
 function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
     par = recovkw(ParSplsr, kwargs).par
-    @assert in([:hard ; :softs ; :soft])(par.meth) "Wrong value for argument 'meth'."
-    @assert 0 <= par.delta <= 1 "Argument 'delta' must ∈ [0, 1]." 
+    @assert in([:soft; :hard])(par.meth) "Wrong value for argument 'meth'."
     Q = eltype(X)
     isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
     n, p = size(X)
@@ -165,8 +164,6 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
     zp  = similar(X, p)
     w   = copy(zp)
     absw = copy(zp)
-    absw_stand = copy(zp)
-    theta = copy(zp)
     r   = copy(zp)
     c   = similar(X, q)
     tmp = similar(XtY) # = XtY_approx
@@ -176,38 +173,28 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
             w .= vcol(XtY, 1)
             absw .= abs.(w)
             if par.meth == :soft
-                nrm = p - nvar[a]
-                if nrm > 0
+                nzeros = p - nvar[a]
+                if nzeros > 0
                     sel = sortperm(absw; rev = true)[1:nvar[a]]
                     wmax = w[sel]
                     w .= zeros(Q, p)
                     w[sel] .= wmax
-                    zdelta = maximum(sort(absw)[1:nrm])
+                    zdelta = maximum(sort(absw)[1:nzeros])
                     w .= soft.(w, zdelta)
                 end
-            elseif par.meth == :softs
-                absw_max = maximum(absw)
-                absw_stand .= absw / absw_max
-                theta .= max.(0, absw_stand .- par.delta) 
-                w .= sign.(w) .* theta * absw_max 
-            elseif par.meth == :hard
+            else  # par.meth == :hard
                 sel = sortperm(absw; rev = true)[1:nvar[a]]
                 wmax = w[sel]
                 w .= zeros(Q, p)
                 w[sel] .= wmax
             end
-            ## End
             w ./= normv(w)
         else
-            if par.meth == :softs
-                w .= snipals_softs(XtY'; kwargs...).v
+            par.nvar = nvar[a]
+            if par.meth == :soft
+                w .= snipals_soft(XtY'; kwargs...).v
             else
-                par.nvar = nvar[a]
-                if par.meth == :soft
-                    w .= snipals_soft(XtY'; kwargs...).v
-                else
-                    w .= snipals_h(XtY'; kwargs...).v
-                end
+                w .= snipals_hard(XtY'; kwargs...).v
             end
         end                                  
         r .= w

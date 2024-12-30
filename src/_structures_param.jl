@@ -90,7 +90,6 @@ Base.@kwdef mutable struct ParSpca
     nlv::Int = 1 
     meth::Symbol = :soft 
     nvar::Union{Int, Vector{Int}} = 1  
-    delta::Float64 = 0.   
     scal::Bool = false                   
 end 
 
@@ -186,7 +185,6 @@ Base.@kwdef mutable struct ParNipals
 end 
 
 Base.@kwdef mutable struct ParSnipals
-    delta::Float64 = 0.   
     nvar::Union{Int, Vector{Int}} = 1    
     tol::Float64 = sqrt(eps(1.))  
     maxit::Int = 200                    
@@ -236,16 +234,14 @@ end
 
 Base.@kwdef mutable struct ParSplsr
     nlv::Int = 1 
-    meth::Symbol = :softs 
-    delta::Float64 = 0.   
+    meth::Symbol = :soft 
     nvar::Union{Int, Vector{Int}} = 1  
     scal::Bool = false                   
 end 
 
 Base.@kwdef mutable struct ParSpcr
     nlv::Int = 1 
-    meth::Symbol = :softs 
-    delta::Float64 = 0.   
+    meth::Symbol = :soft 
     nvar::Union{Int, Vector{Int}} = 1  
     scal::Bool = false                   
 end 
@@ -424,8 +420,7 @@ end
 
 Base.@kwdef mutable struct ParSplsda    # splsrda, splslda
     nlv::Int = 1
-    meth::Symbol = :softs 
-    delta::Float64 = 0.   
+    meth::Symbol = :soft 
     nvar::Union{Int, Vector{Int}} = 1  
     prior::Union{Symbol, Vector{Float64}} = :unif   
     scal::Bool = false                    
@@ -433,8 +428,7 @@ end
 
 Base.@kwdef mutable struct ParSplsqda
     nlv::Int = 1
-    meth::Symbol = :softs 
-    delta::Float64 = 0.   
+    meth::Symbol = :soft 
     nvar::Union{Int, Vector{Int}} = 1  
     prior::Union{Symbol, Vector{Float64}} = :unif
     alpha::Float64 = 0.    
@@ -443,8 +437,7 @@ end
 
 Base.@kwdef mutable struct ParSplskdeda
     nlv::Int = 1
-    meth::Symbol = :softs 
-    delta::Float64 = 0.   
+    meth::Symbol = :soft 
     nvar::Union{Int, Vector{Int}} = 1  
     prior::Union{Symbol, Vector{Float64}} = :unif
     h::Union{Nothing, Float64, Vector{Float64}} = nothing  

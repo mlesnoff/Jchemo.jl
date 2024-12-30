@@ -10,19 +10,27 @@ function snipals_soft(X; kwargs...)
     absv = copy(v)
     cont = true
     iter = 1
-    nrm = p - par.nvar
+    nzeros = p - par.nvar
     while cont
         t0 .= copy(t)
         mul!(v, X', t)
         ## Sparsity
-        if nrm > 0
+        if nzeros > 0
             absv .= abs.(v)
+            println("--- iter=", iter)
+            @show absv
             sel = sortperm(absv; rev = true)[1:par.nvar]
-            vmax = v[sel]
+            @show sel
+            vhigh = v[sel]
             v .= zeros(Q, p)
-            v[sel] .= vmax
-            delta = maximum(sort(absv)[1:nrm])
+            v[sel] .= vhigh
+            @show v
+            #delta = maximum(sort(absv)[1:nzeros])
+            delta = maximum(absv[absv .< minimum(abs.(vhigh))])
+
+            @show delta
             v .= soft.(v, delta)
+            @show v
         end
         ## End
         v ./= normv(v)
