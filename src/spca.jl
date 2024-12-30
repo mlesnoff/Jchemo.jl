@@ -124,7 +124,6 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     nlv = min(par.nlv, n, p)
     nvar = par.nvar
     length(nvar) == 1 ? nvar = repeat([nvar], nlv) : nothing
-    @show nvar
     xmeans = colmean(X, weights) 
     xscales = ones(Q, p)
     if par.scal 
