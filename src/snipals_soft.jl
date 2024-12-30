@@ -17,10 +17,14 @@ function snipals_soft(X; kwargs...)
         ## Sparsity
         if nzeros > 0
             absv .= abs.(v)
-            sel = sortperm(absv; rev = true)[1:par.nvar]
+            u = sortperm(absv; rev = true)
+            sel = u[1:par.nvar]
             vhigh = v[sel]
-            v .= zeros(Q, p)
-            v[sel] .= vhigh
+            #v .= zeros(Q, p)
+            #v[sel] .= vhigh
+            #qt = minimum(abs.(vhigh))
+            #delta = maximum(absv[absv .< qt])
+            #v .= soft.(v, delta)
             qt = minimum(abs.(vhigh))
             delta = maximum(absv[absv .< qt])
             v .= soft.(v, delta)

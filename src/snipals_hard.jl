@@ -15,7 +15,8 @@ function snipals_hard(X; kwargs...)
         mul!(v, X', t)
         ## Sparsity
         absv .= abs.(v)
-        sel = sortperm(absv; rev = true)[1:par.nvar]
+        u = sortperm(absv; rev = true)
+        sel = u[1:par.nvar]
         vmax = v[sel]
         v .= zeros(Q, p)
         v[sel] .= vmax
