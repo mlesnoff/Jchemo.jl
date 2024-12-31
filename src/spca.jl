@@ -19,25 +19,22 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` is scaled
     by its uncorrected standard deviation.
 
-sPCA-rSVD algorithm of Shen & Huang 2008: regularized low rank 
-matrix approximation. 
+sPCA-rSVD algorithm (regularized low rank matrix approximation) of 
+Shen & Huang 2008. 
 
-The algorithm computes the loadings iteratively by alternating LS 
+The algorithm computes the loadings iteratively, by an alternating LS 
 regression (Nipals) including a step of thresholding. Function `spca` provides 
-two thresholding methods:
-* `meth = :soft`: Thresholding "1" (Lemma 2) of Shen & Huang 2008. 
-    For each PC, the `nvar` `X`-variables showing the largest values 
-    in vector abs(v) are selected. Then the soft-thresholding function 
-    `soft` is applied to the selected loadings. Constant `delta` in `soft`
-    is automatically set equal to the maximal value of the components of abs(v) 
-    corresponding to variables removed from the selection.  
-
-* `meth = :hard`: Thresholding "2" (Lemma 2) of Shen & Huang 2008. 
-    For each PC, the `nvar` `X`-variables showing the largest values 
-    in vector abs(v) are selected.
+two thresholding methods reported in Shen & Huang 2008 Lemma 2:
+* `:soft`: Thresholding 1.  
+* `:hard`: Thresholding 2. 
+See the code of function `snipals` for details on how is computed 
+the cutoff 'lambda'  (Shen & Huang 2008) used inside the thresholding. 
 
 The case `meth = :soft` returns the same results as function 
-`spca` of the R package mixOmics (Lê Cao et al.).
+`spca` of the R package `mixOmics` (Lê Cao et al.) [except potentially 
+when the loadings vector contain a large number of tied values, which
+should rarely happen but may generate some difference in the 
+computed thresholding cutoff].
 
 **Note:** The resulting sparse loadings vectors (`P`-columns) 
 are in general non orthogonal. Therefore, there is no a unique 
@@ -143,11 +140,8 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     beta = similar(X, p, nlv)
     sellv = list(Vector{Int}, nlv)
     for a = 1:nlv
-        if par.meth == :soft
-            res = snipals_soft(X; nvar = nvar[a])  # Could add 'tol', 'maxit' in ParSpca, ParsSplsr etc.
-        elseif par.meth == :hard
-            res = snipals_hard(X; nvar = nvar[a])
-        end
+        res = snipals(X; meth = par.meth, nvar = nvar[a], tol = par.tol, 
+            maxit = par.maxit)
         t .= res.t      
         tt = dot(t, t)
         b .= t' * X / tt           

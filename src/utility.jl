@@ -1182,33 +1182,6 @@ function rmrow(X::Union{Vector, BitVector}, s::Union{Vector, BitVector, UnitRang
 end
 
 """
-    soft(x::Real, delta)
-Soft thresholding function.
-* `x` : Value to transform.
-* `delta` : Range for the thresholding.
-
-The returned value is:
-* sign(x) * max(0, abs(x) - delta)
-where delta >= 0.
-
-## Examples
-```julia
-using Jchemo, CairoMakie 
-
-delta = .2
-soft(3, delta)
-
-x = LinRange(-2, 2, 100)
-y = soft.(x, delta)
-lines(x, y)
-```
-"""
-function soft(x, delta)
-    @assert delta >= 0 "delta must be >= 0."
-    sign(x) * max(0, abs(x) - delta)
-end
-
-"""
     softmax(x::AbstractVector)
     softmax(X::Union{Matrix, DataFrame})
 Softmax function.
@@ -1445,6 +1418,62 @@ function tabdupl(x)
     s = z.vals .> 1
     u = z.keys[s]
     tab(x[in(u).(x)])
+end
+
+"""
+    thresh_hard(x::Real, delta)
+Hard thresholding function.
+* `x` : Value to transform.
+* `delta` : Range for the thresholding.
+
+The returned value is:
+* abs(`x`) > `delta` ? `x` : 0
+where delta >= 0.
+
+## Examples
+```julia
+using Jchemo, CairoMakie 
+
+delta = .7
+thresh_hard(3, delta)
+
+x = LinRange(-2, 2, 500)
+y = thresh_hard.(x, delta)
+lines(x, y; axis = (xlabel = "x", ylabel = "f(x)"))
+```
+"""
+function thresh_hard(x, delta)
+    @assert delta >= 0 "delta must be >= 0."
+    abs(x) > delta ? x : zero(eltype(x))
+end
+
+
+"""
+    thresh_soft(x::Real, delta)
+Soft thresholding function.
+* `x` : Value to transform.
+* `delta` : Range for the thresholding.
+
+The returned value is:
+* sign(`x`) * max(0, abs(`x`) - `delta`)
+where delta >= 0.
+
+## Examples
+```julia
+using Jchemo, CairoMakie 
+
+delta = .7
+thresh_soft(3, delta)
+
+x = LinRange(-2, 2, 100)
+y = thresh_soft.(x, delta)
+lines(x, y; axis = (xlabel = "x", ylabel = "f(x)"))
+```
+"""
+function thresh_soft(x, delta)
+    @assert delta >= 0 "delta must be >= 0."
+    ## same as: abs(x) > delta ? sign(x) * (abs(x) - delta) : zero(eltype(x))
+    sign(x) * max(0, abs(x) - delta)  # type consistent
 end
 
 """ 

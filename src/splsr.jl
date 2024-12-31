@@ -176,7 +176,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
                     w .= zeros(Q, p)
                     w[sel] .= wmax
                     zdelta = maximum(sort(absw)[1:nzeros])
-                    w .= soft.(w, zdelta)
+                    w .= thresh_soft.(w, zdelta)
                 end
             else  # par.meth == :hard
                 sel = sortperm(absw; rev = true)[1:nvar[a]]
@@ -188,7 +188,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
         else
             par.nvar = nvar[a]
             if par.meth == :soft
-                w .= snipals_soft(XtY'; kwargs...).v
+                w .= snipals(XtY'; kwargs...).v
             else
                 w .= snipals_hard(XtY'; kwargs...).v
             end

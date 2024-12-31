@@ -411,7 +411,7 @@
 - **rowmean**, **rownorm**, **rowstd**, **rowsum**, **rowvar**: Row-wise operations
 - **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations 
     allowing missing data
-- **soft** Soft thresholding
+- **thresh_soft**, **thresh_hard** Thresholding functions
 - **softmax** Softmax function
 - **sourcedir** Include all the files contained in a directory
 - **ssq** Total inertia of a matrix
