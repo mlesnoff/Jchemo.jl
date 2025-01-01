@@ -12,13 +12,13 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `meth` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:hard`. See thereafter.
-* `nvar` : Only used if `meth = :soft` or `meth = :hard`.
-    Nb. variables (`X`-columns) selected for each latent
-    variable (LV). Can be a single integer (i.e. same nb. 
-    of variables for each LV), or a vector of length `nlv`.   
-* `nvar` : Nb. variables (`X`-columns) selected for each latent 
-    variable (LV). Can be a single integer (i.e. same nb. of variables 
-    for each LV), or a vector of length `nlv`.  
+* `nvar` : Nb. variables (`X`-columns) selected for each principal
+    component (PC). Can be a single integer (i.e. same nb. 
+    of variables for each PC), or a vector of length `nlv`.   
+* `tol` : Tolerance value for stopping the Nipals iterations.
+* `maxit` : Maximum nb. of Nipals iterations.
+* `scal` : Boolean. If `true`, each column of `X` is scaled
+    by its uncorrected standard deviation.    
 
 Adaptation of the sparse partial least squares regression algorihm of 
 Lê Cao et al. 2008. The fast "improved kernel algorithm #1" of 
