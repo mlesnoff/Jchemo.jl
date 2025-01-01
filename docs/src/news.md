@@ -1,6 +1,6 @@
 # News
 
-## *Version 0.6.3*
+## *Version 0.7.0*
 
 - Breaking
     - **dummy**: To improve time computations, the output 'Y' is now a BitMatrix.
@@ -8,11 +8,13 @@
     - **iqr**: renamed to **iqrv**.
     - **mad**: renamed to **madv**.
     - **normw**: renamed to **normv**.
-    - **splskern**: renamed to **splsr**.
     - **fweightdis**: renamed to **wdis**.
     - **talworth**: renamed to **wtal**.
     - **wdist**: renamed to **winvs**.
-    - Sparse methods: argument'meth' has changed.
+    - Sparse Pca/Pls regression & discrimination:
+        - **splskern**: renamed to **splsr**.
+        - Argument'meth' has changed.
+
 
 - New
     - **fweight**: Weight each row of a matrix.
