@@ -22,18 +22,19 @@ Keyword arguments:
 sPCA-rSVD algorithm (regularized low rank matrix approximation) of 
 Shen & Huang 2008. 
 
-The algorithm computes the loadings iteratively, by an alternating LS 
-regression (Nipals) including a step of thresholding. Function `spca` provides 
-two thresholding methods reported in Shen & Huang 2008 Lemma 2:
-* `:soft`: Thresholding 1.  
-* `:hard`: Thresholding 2. 
-See the code of function `snipals` for details on how is computed 
-the cutoff 'lambda'  (Shen & Huang 2008) used inside the thresholding. 
+The algorithm computes each loadings vector iteratively, by an alternating 
+LS regression (Nipals) including a step of thresholding. Function `spca` provides 
+the thresholding methods '1' and '2' (`:soft` and `:hard`) reported in Shen & Huang 
+2008 Lemma 2:
+* See the code of function `snipals` for details on how is computed 
+    the cutoff 'lambda'  (Shen & Huang 2008) used inside the thresholding. 
+* The degree of sparsity used as tuninng parameter by Shen & Huang 2008 
+    (number of null elements in the loadings vector) is equal to p - `nvar`.
 
 The case `meth = :soft` returns the same results as function 
 `spca` of the R package `mixOmics` (Lê Cao et al.) [except potentially 
 when the loadings vector contain a large number of tied values, which
-should rarely happen but may generate some difference in the 
+should rarely happen in practice but may generate some difference in the 
 computed thresholding cutoff].
 
 **Note:** The resulting sparse loadings vectors (`P`-columns) 
