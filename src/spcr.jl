@@ -47,8 +47,9 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-meth = :soft ; nvar = 20
-#meth = :hard ; nvar = 20
+meth = :soft
+#meth = :hard
+nvar = 20 
 model = spcr(; nlv, meth, nvar) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
