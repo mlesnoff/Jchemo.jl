@@ -9,12 +9,12 @@ Sparse principal component regression (sPCR).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `nlv` : Nb. principal components (PCs).
+* `nlv` : Nb. principal components (PCs) to compute.
 * `meth` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:hard`. See thereafter.
-* `nvar` : Nb. variables (`X`-columns) selected for each principal
-    component (PC). Can be a single integer (i.e. same nb. 
-    of variables for each PC), or a vector of length `nlv`.   
+* `nvar` : Nb. variables (`X`-columns) selected for each PC. 
+    Can be a single integer (i.e. same nb. of variables for each PC), 
+    or a vector of length `nlv`.   
 * `tol` : Tolerance value for stopping the Nipals iterations.
 * `maxit` : Maximum nb. of Nipals iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled

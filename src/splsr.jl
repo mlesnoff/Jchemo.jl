@@ -12,19 +12,17 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `meth` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:hard`. See thereafter.
-* `nvar` : Nb. variables (`X`-columns) selected for each principal
-    component (PC). Can be a single integer (i.e. same nb. 
-    of variables for each PC), or a vector of length `nlv`.   
-* `tol` : Tolerance value for stopping the Nipals iterations.
-* `maxit` : Maximum nb. of Nipals iterations.
-* `scal` : Boolean. If `true`, each column of `X` is scaled
-    by its uncorrected standard deviation.    
+* `nvar` : Nb. variables (`X`-columns) selected for each LV. 
+    Can be a single integer (i.e. same nb. of variables for each LV), 
+    or a vector of length `nlv`.   
+* `scal` : Boolean. If `true`, each column of `X` and `Y` is 
+    scaled by its uncorrected standard deviation.    
 
 Adaptation of the sparse partial least squares regression algorihm of 
 Lê Cao et al. 2008. The fast "improved kernel algorithm #1" of 
 Dayal & McGregor (1997) is used instead Nipals. 
 
-In the present version of `splsr`, the sparse correction only concerns 
+In the present version of `splsr`, the sparse thresholding only concerns 
 `X`. The function provides two thresholding methods to compute the sparse 
 `X`-loading weights w: see function `spca` for description. 
     
@@ -132,6 +130,11 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
     nlv = min(n, p, par.nlv)
     nvar = par.nvar
     length(nvar) == 1 ? nvar = repeat([nvar], nlv) : nothing
+    if par.meth == :soft 
+        fthresh = thresh_soft
+    elseif par.meth == :hard 
+        fthresh = thresh_hard
+    end
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
     xscales = ones(Q, p)
@@ -145,9 +148,12 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
         fcenter!(X, xmeans)
         fcenter!(Y, ymeans)
     end
-    D = Diagonal(weights.w)
-    XtY = X' * (D * Y)                   # = Xd' * Y = X' * D * Y  (Xd = D * X   Very costly!!)
-    #XtY = X' * (weights .* Y)           # Can create OutOfMemory errors for very large matrices
+    ## XtY 
+    fweight!(Y, weights.w)
+    XtY = X' * Y
+    ## Old
+    ## D = Diagonal(weights.w)
+    ## XtY = X' * (D * Y)    # Xd = D * X   Very costly!!
     ## Pre-allocation
     T = similar(X, n, nlv)
     W = similar(X, p, nlv)
@@ -162,36 +168,42 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
     absw = copy(zp)
     r   = copy(zp)
     c   = similar(X, q)
-    tmp = similar(XtY) # = XtY_approx
+    tmpXtY = similar(XtY)
     sellv = list(Vector{Int}, nlv)
     @inbounds for a = 1:nlv
         if q == 1
             w .= vcol(XtY, 1)
-            absw .= abs.(w)
-            if par.meth == :soft
-                nzeros = p - nvar[a]
-                if nzeros > 0
-                    sel = sortperm(absw; rev = true)[1:nvar[a]]
-                    wmax = w[sel]
-                    w .= zeros(Q, p)
-                    w[sel] .= wmax
-                    zdelta = maximum(sort(absw)[1:nzeros])
-                    w .= thresh_soft.(w, zdelta)
-                end
-            else  # par.meth == :hard
-                sel = sortperm(absw; rev = true)[1:nvar[a]]
-                wmax = w[sel]
-                w .= zeros(Q, p)
-                w[sel] .= wmax
+            ## Sparsity
+            nzeros = p - nvar[a]
+            if nzeros > 0
+                absw .= abs.(w)
+                u .= sortperm(absw; rev = true)
+                sel .= u[1:nvar[a]]
+                qt = minimum(absw[sel])
+                lambda = maximum(absw[absw .< qt])
+                w .= fthresh.(w, lambda)
             end
+            ## End
+            #if par.meth == :soft
+            #    nzeros = p - nvar[a]
+            #    if nzeros > 0
+            #        sel = sortperm(absw; rev = true)[1:nvar[a]]
+            #        wmax = w[sel]
+            #        w .= zeros(Q, p)
+            #        w[sel] .= wmax
+            #        zdelta = maximum(sort(absw)[1:nzeros])
+            #        w .= thresh_soft.(w, zdelta)
+            #    end
+            #else  # par.meth == :hard
+            #    sel = sortperm(absw; rev = true)[1:nvar[a]]
+            #    wmax = w[sel]
+            #    w .= zeros(Q, p)
+            #    w[sel] .= wmax
+            #end
             w ./= normv(w)
         else
-            par.nvar = nvar[a]
-            if par.meth == :soft
-                w .= snipals(XtY'; kwargs...).v
-            else
-                w .= snipals_hard(XtY'; kwargs...).v
-            end
+            w .= snipals(XtY'; meth = par.meth, nvar = nvar[a], tol = par.tol, 
+                maxit = par.maxit).v
         end                                  
         r .= w
         if a > 1
@@ -205,7 +217,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
         mul!(c, XtY', r)
         c ./= tt                      
         mul!(zp, X', dt)              
-        XtY .-= mul!(tmp, zp, c')     
+        XtY .-= mul!(tmpXtY, zp, c')     
         P[:, a] .= zp ./ tt           
         T[:, a] .= t                  
         W[:, a] .= w

@@ -238,9 +238,9 @@ end
 Base.@kwdef mutable struct ParSplsr
     nlv::Int = 1 
     meth::Symbol = :soft 
-    nvar::Union{Int, Vector{Int}} = 1 
-    tol::Float64 = sqrt(eps(1.))  
-    maxit::Int = 200    
+    nvar::Union{Int, Vector{Int}} = 1
+    tol::Float64 = sqrt(eps(1.))  # used when Y (n, q) (snipals)
+    maxit::Int = 200              # used when Y (n, q) (snipals)
     scal::Bool = false                   
 end 
 

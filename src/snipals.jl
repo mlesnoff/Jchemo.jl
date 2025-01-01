@@ -4,9 +4,9 @@ function snipals(X; kwargs...)
     p = nco(X)
     nvar = par.nvar
     if par.meth == :soft 
-        fun = thresh_soft
+        fthresh = thresh_soft
     elseif par.meth == :hard 
-        fun = thresh_hard
+        fthresh = thresh_hard
     end 
     res = nipals(X; kwargs...)
     t = res.u * res.sv
@@ -30,7 +30,7 @@ function snipals(X; kwargs...)
             sel .= u[1:nvar]
             qt = minimum(absv[sel])
             lambda = maximum(absv[absv .< qt])
-            v .= fun.(v, lambda)
+            v .= fthresh.(v, lambda)
         end
         ## End
         v ./= normv(v)
