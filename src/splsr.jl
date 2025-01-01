@@ -27,8 +27,8 @@ In the present version of `splsr`, the sparse thresholding only concerns
 `X`-loading weights w: see function `spca` for description. 
     
 The case `meth = :soft` returns the same results as function `spls` of 
-the R package mixOmics (Lê Cao et al.) with the regression mode (and without 
-sparseness on `Y`).
+the R package mixOmics (Lê Cao et al.) with the regression mode and without 
+sparseness on `Y`.
 
 The COVSEL regression method described in Roger et al 2011 (see also
 Höskuldsson 1992) is implemented by setting `nvar = 1`.
@@ -80,8 +80,9 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 15
-meth = :soft ; nvar = 20
-#meth = :hard ; nvar = 20
+meth = :soft
+#meth = :hard
+nvar = 20
 model = splsr(; nlv, meth, nvar) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
@@ -151,9 +152,6 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
     ## XtY 
     fweight!(Y, weights.w)
     XtY = X' * Y
-    ## Old
-    ## D = Diagonal(weights.w)
-    ## XtY = X' * (D * Y)    # Xd = D * X   Very costly!!
     ## Pre-allocation
     T = similar(X, n, nlv)
     W = similar(X, p, nlv)
@@ -185,22 +183,6 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
                 w .= fthresh.(w, lambda)
             end
             ## End
-            #if par.meth == :soft
-            #    nzeros = p - nvar[a]
-            #    if nzeros > 0
-            #        sel = sortperm(absw; rev = true)[1:nvar[a]]
-            #        wmax = w[sel]
-            #        w .= zeros(Q, p)
-            #        w[sel] .= wmax
-            #        zdelta = maximum(sort(absw)[1:nzeros])
-            #        w .= thresh_soft.(w, zdelta)
-            #    end
-            #else  # par.meth == :hard
-            #    sel = sortperm(absw; rev = true)[1:nvar[a]]
-            #    wmax = w[sel]
-            #    w .= zeros(Q, p)
-            #    w[sel] .= wmax
-            #end
             w ./= normv(w)
         else
             w .= snipals(XtY'; meth = par.meth, nvar = nvar[a], tol = par.tol, 

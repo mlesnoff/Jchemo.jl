@@ -12,9 +12,9 @@ Keyword arguments:
     Must be >= 1.
 * `meth` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:hard`. See thereafter.
-* `nvar` : Nb. variables (`X`-columns) selected for each latent 
-    variable (LV). Can be a single integer (i.e. same nb. of variables 
-    for each LV), or a vector of length `nlv`.      
+* `nvar` : Nb. variables (`X`-columns) selected for each LV. 
+    Can be a single integer (i.e. same nb. of variables for each LV), 
+    or a vector of length `nlv`.        
 * `prior` : Type of prior probabilities for class 
     membership. Possible values are: `:unif` (uniform), 
     `:prop` (proportional), or a vector (of length equal to 
@@ -26,9 +26,9 @@ Keyword arguments:
     and Ydummy is scaled by its uncorrected standard deviation
     in the PLS computation.
 
-Same as function `plsqda` (PLS-LDA) except that 
-a sparse PLSR (function `splsr`), instead of a 
-PLSR (function `plskern`), is run on the Y-dummy table. 
+Same as function `plsqda` (PLSR-QDA) except that a sparse PLSR 
+(function `splsr`), instead of a PLSR (function `plskern`), is run on the 
+Y-dummy table.
 
 See function `splslda` for examples.
 """ 

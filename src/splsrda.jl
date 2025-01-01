@@ -11,9 +11,9 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `meth` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:hard`. See thereafter.
-* `nvar` : Nb. variables (`X`-columns) selected for each latent 
-    variable (LV). Can be a single integer (i.e. same nb. of variables 
-    for each LV), or a vector of length `nlv`.      
+* `nvar` : Nb. variables (`X`-columns) selected for each LV. 
+    Can be a single integer (i.e. same nb. of variables for each LV), 
+    or a vector of length `nlv`.       
 * `prior` : Type of prior probabilities for class 
     membership. Possible values are: `:unif` (uniform), 
     `:prop` (proportional), or a vector (of length equal to 
@@ -22,9 +22,9 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` 
     and Ydummy is scaled by its uncorrected standard deviation.
 
-Same as function `plsrda` (PLSR-DA) except that 
-a sparse PLSR (function `splsr`), instead of a 
-PLSR (function `plskern`), is run on the Y-dummy table. 
+Same as function `plsrda` (PLSR-DA) except that a sparse PLSR 
+(function `splsr`), instead of a PLSR (function `plskern`), is run on the 
+Y-dummy table. 
 
 ## Examples
 ```julia
@@ -48,7 +48,8 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-meth = :soft ; nvar = 10
+meth = :soft
+nvar = 10
 model = splsrda(; nlv, meth, nvar) 
 fit!(model, Xtrain, ytrain)
 pnames(model)
