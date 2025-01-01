@@ -169,6 +169,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
     r   = copy(zp)
     c   = similar(X, q)
     tmpXtY = similar(XtY)
+    u = list(Int64, p)
     sellv = list(Vector{Int}, nlv)
     @inbounds for a = 1:nlv
         if q == 1
@@ -178,7 +179,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
             if nzeros > 0
                 absw .= abs.(w)
                 u .= sortperm(absw; rev = true)
-                sel .= u[1:nvar[a]]
+                sel = u[1:nvar[a]]
                 qt = minimum(absw[sel])
                 lambda = maximum(absw[absw .< qt])
                 w .= fthresh.(w, lambda)
