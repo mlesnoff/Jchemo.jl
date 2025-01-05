@@ -10,7 +10,6 @@ function snipals(X; kwargs...)
     end 
     res = nipals(X; kwargs...)
     t = res.u * res.sv
-    t0 = similar(t)
     v = similar(res.v)
     v0 = similar(v)
     absv = copy(v)
@@ -21,7 +20,6 @@ function snipals(X; kwargs...)
     nzeros = p - nvar  # degree of sparsity
     while cont
         v0 .= copy(v)
-        t0 .= copy(t)
         mul!(v, X', t)
         ## Sparsity
         if nzeros > 0
@@ -35,11 +33,10 @@ function snipals(X; kwargs...)
         ## End
         v ./= normv(v)
         mul!(t, X, v)
-        difv = sum((v .- v0).^2)
-        dift = sum((t .- t0).^2)
+        dif = sum((v .- v0).^2)
         iter = iter + 1
-        if (difv < par.tol) || (dift < par.tol) || (iter > par.maxit)
-            cont = false
+        if (dif < par.tol) || (iter > par.maxit)
+                cont = false
         end
     end
     niter = iter - 1
