@@ -16,7 +16,6 @@
         - **splskern**: renamed to **splsr**.
         - Argument'meth' has changed.
 
-
 - New
     - **fweight**: Weight each row of a matrix.
     - **sumv**, **meanv**, **stdv**, **varv**: Vector operations.
