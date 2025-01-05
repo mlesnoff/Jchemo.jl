@@ -4,7 +4,7 @@
         xlabel = "", ylabel = "", title = "", kwargs...)
     plotxy(x, y, group; size = (600, 350), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", leg::Bool = true, title_leg = "Group", 
+        xlabel = "", ylabel = "", title = "", leg::Bool = true, leg_title = "Group", 
         kwargs...)
 Scatter plot of (x, y) data
 * `x` : A x-vector (n).
@@ -26,7 +26,7 @@ Keyword arguments:
 *  `title` : Title of the graphic.
 * `leg` : Boolean. If `group` is used, display a legend 
     or not.
-* `title_leg` : Title of the legend.
+* `leg_title` : Title of the legend.
 * `kwargs` : Optional arguments to pass in function `scatter` 
     of Makie.
 
@@ -117,7 +117,7 @@ end
 
 function plotxy(x, y, group; size = (600, 350), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", leg::Bool = true, title_leg = "Group", 
+        xlabel = "", ylabel = "", title = "", leg::Bool = true, leg_title = "Group", 
         kwargs...)
     x = vec(x)
     y = vec(y)
@@ -161,7 +161,7 @@ function plotxy(x, y, group; size = (600, 350), color = nothing, ellipse::Bool =
     end
     f[1, 1] = ax
     if leg
-        f[1, 2] = Legend(f, ax, title_leg, framevisible = false)
+        f[1, 2] = Legend(f, ax, leg_title, framevisible = false)
     end
     (f = f, ax = ax, lev = lev)
 end

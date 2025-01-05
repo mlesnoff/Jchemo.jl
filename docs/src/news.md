@@ -9,6 +9,7 @@
     - **mad**: renamed to **madv**.
     - **normw**: renamed to **normv**.
     - **fweightdis**: renamed to **wdis**.
+    - **plotgrid**: argument 'title_leg' renamed to 'leg_title'.
     - **talworth**: renamed to **wtal**.
     - **wdist**: renamed to **winvs**.
     - Sparse Pca/Pls regression & discrimination:

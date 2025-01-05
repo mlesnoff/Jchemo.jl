@@ -136,7 +136,7 @@ rescv = gridcv(model, Xtrain, ytrain; segm,  score = rmsep, pars, nlv) ;
 res = rescv.res 
 loggamma = round.(log.(10, res.gamma), digits = 1)
 plotgrid(res.nlv, res.y1, loggamma; step = 2, xlabel = "Nb. LVs",  ylabel = "RMSEP", 
-    title_leg = "Log(gamma)").f
+    leg_title = "Log(gamma)").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
 model = kplsr(nlv = res.nlv[u], gamma = res.gamma[u])
