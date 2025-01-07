@@ -26,7 +26,7 @@ The algorithm computes each loadings vector iteratively, by an alternating
 LS regression (Nipals) including a step of thresholding. Function `spca` provides 
 the thresholding methods '1' and '2' (`:soft` and `:hard`) reported in Shen & Huang 
 2008 Lemma 2:
-* See the code of function `snipals` for details on how is computed 
+* See the code of function `snipals_mix` for details on how is computed 
     the cutoff 'lambda'  (Shen & Huang 2008) used inside the thresholding. 
 * The degree of sparsity used as tuninng parameter by Shen & Huang 2008 
     (number of null elements in the loadings vector) is equal to p - `nvar`.
@@ -141,7 +141,7 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     beta = similar(X, p, nlv)
     sellv = list(Vector{Int}, nlv)
     for a = 1:nlv
-        res = snipals(X; meth = par.meth, nvar = nvar[a], tol = par.tol, 
+        res = snipals_mix(X; meth = par.meth, nvar = nvar[a], tol = par.tol, 
             maxit = par.maxit)
         t .= res.t      
         tt = dot(t, t)

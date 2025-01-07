@@ -1,4 +1,4 @@
-function snipals(X; kwargs...)
+function snipals_mix(X; kwargs...)
     par = recovkw(ParSnipals, kwargs).par 
     X = ensure_mat(X)
     p = nco(X)
@@ -24,8 +24,8 @@ function snipals(X; kwargs...)
         ## Sparsity
         if nzeros > 0
             absv .= abs.(v)
-            u .= sortperm(absv; rev = true)
-            sel .= u[1:nvar]
+            ind .= sortperm(absv; rev = true)
+            sel .= ind[1:nvar]
             qt = minimum(absv[sel])
             lambda = maximum(absv[absv .< qt])
             v .= fthresh.(v, lambda)

@@ -185,7 +185,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
             ## End
             w ./= normv(w)
         else
-            w .= snipals(XtY'; meth = par.meth, nvar = nvar[a], tol = par.tol, 
+            w .= snipals_mix(XtY'; meth = par.meth, nvar = nvar[a], tol = par.tol, 
                 maxit = par.maxit).v
         end                                  
         r .= w
