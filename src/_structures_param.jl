@@ -88,6 +88,7 @@ end
 
 Base.@kwdef mutable struct ParSpca
     nlv::Int = 1 
+    algo::Symbol = :shen
     meth::Symbol = :soft 
     nvar::Union{Int, Vector{Int}} = 1  
     tol::Float64 = sqrt(eps(1.))  
@@ -246,6 +247,7 @@ end
 
 Base.@kwdef mutable struct ParSpcr
     nlv::Int = 1 
+    algo::Symbol = :shen
     meth::Symbol = :soft 
     nvar::Union{Int, Vector{Int}} = 1  
     tol::Float64 = sqrt(eps(1.))  
