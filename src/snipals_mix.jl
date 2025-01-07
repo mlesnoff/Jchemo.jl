@@ -13,7 +13,7 @@ function snipals_mix(X; kwargs...)
     v = similar(res.v)
     v0 = similar(v)
     absv = copy(v)
-    u = list(Int64, p)
+    ind = list(Int64, p)
     sel = list(Int64, nvar)
     cont = true
     iter = 1
