@@ -116,10 +116,16 @@ end
 
 function spca!(X::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParSpca, kwargs).par
+    @assert in([:shen; :mix])(par.algo) "Wrong value for argument 'algo'."
     @assert in([:soft; :hard])(par.meth) "Wrong value for argument 'meth'."
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
+    if par.algo == :shen 
+        fnipals = snipals_shen
+    elseif par.algo == :mix 
+        fnipals = snipals_mix
+    end
     nvar = par.nvar
     length(nvar) == 1 ? nvar = repeat([nvar], nlv) : nothing
     xmeans = colmean(X, weights) 
@@ -141,12 +147,15 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     beta = similar(X, p, nlv)
     sellv = list(Vector{Int}, nlv)
     for a = 1:nlv
-        res = snipals_mix(X; meth = par.meth, nvar = nvar[a], tol = par.tol, 
+        res = fnipals(X; meth = par.meth, nvar = nvar[a], tol = par.tol, 
             maxit = par.maxit)
-        t .= res.t      
+        t .= res.t
+        ## Deflation with respect to t
+        ## same as in plsnipals (since non orthogonal loadings P)      
         tt = dot(t, t)
         b .= t' * X / tt           
-        X .-= t * b        
+        X .-= t * b   #  ... - t * t' X / tt
+        ## End        
         sv[a] = normv(t)
         T[:, a] .= t ./ sqrtw
         P[:, a] .= res.v

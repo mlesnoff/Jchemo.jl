@@ -7,6 +7,7 @@ function snipals_shen(X; kwargs...)
     elseif par.meth == :hard 
         fthresh = thresh_hard
     end 
+    nvar = par.nvar
     res = nipals(X; kwargs...)
     u = res.u
     v = res.v * res.sv  # = 'v_tild' in Shen et al. 2008

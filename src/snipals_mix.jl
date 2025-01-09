@@ -2,12 +2,12 @@ function snipals_mix(X; kwargs...)
     par = recovkw(ParSnipals, kwargs).par 
     X = ensure_mat(X)
     p = nco(X)
-    nvar = par.nvar
     if par.meth == :soft 
         fthresh = thresh_soft
     elseif par.meth == :hard 
         fthresh = thresh_hard
     end 
+    nvar = par.nvar
     res = nipals(X; kwargs...)
     t = res.u * res.sv
     v = similar(res.v)

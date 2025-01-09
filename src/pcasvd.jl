@@ -125,11 +125,11 @@ Summarize the fitted model.
 function Base.summary(object::Pca, X)
     X = ensure_mat(X)
     nlv = nco(object.T)
-    D = Diagonal(object.weights.w)
+    weights = object.weights.w
     X = fcscale(X, object.xmeans, object.xscales)
     sstot = frob2(X, object.weights) 
     ## = (||X||_D)^2 = tr(X' * D * X)
-    TT = D * object.T.^2  # required for 'contr_ind'
+    TT = fweight(object.T.^2, weights)  # matrix required for 'contr_ind'
     tt = colsum(TT) 
     ## = colnorm(object.T, object.weights).^2 
     ## = diag(T' * D * T) 
@@ -140,7 +140,7 @@ function Base.summary(object::Pca, X)
     nam = string.("lv", 1:nlv)
     contr_ind = DataFrame(fscale(TT, tt), nam)
     cor_circle = DataFrame(corm(X, object.T, object.weights), nam)
-    C = X' * D * fscale(object.T, sqrt.(tt))
+    C = X' * fweight(fscale(object.T, sqrt.(tt)), weights)
     coord_var = DataFrame(C, nam)
     CC = C.^2
     cc = colsum(CC)
