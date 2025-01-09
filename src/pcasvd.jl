@@ -140,11 +140,9 @@ function Base.summary(object::Pca, X)
     nam = string.("lv", 1:nlv)
     contr_ind = DataFrame(fscale(TT, tt), nam)
     cor_circle = DataFrame(corm(X, object.T, object.weights), nam)
-    C = X' * fweight(fscale(object.T, sqrt.(tt)), weights)
+    C = X' * fweight(fscale(object.T, sqrt.(tt)), weights)  # = X' * D * T_normed
     coord_var = DataFrame(C, nam)
-    CC = C.^2
-    cc = colsum(CC)
-    contr_var = DataFrame(fscale(CC, cc), nam)
+    contr_var = DataFrame(object.P.^2, nam)
     (explvarx = explvarx, contr_ind, contr_var, coord_var, cor_circle)
 end
 
