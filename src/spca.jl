@@ -199,24 +199,28 @@ Summarize the fitted model.
 function Base.summary(object::Spca, X)
     X = ensure_mat(X)
     nlv = nco(object.T)
-    D = Diagonal(object.weights.w)
+    weights = object.weights
+    sqrtw = sqrt.(weights.w)
+    #D = Diagonal(object.weights.w)
     X = fcscale(X, object.xmeans, object.xscales)
-    sstot = frob2(X, object.weights)
+    sstot = frob2(X, weights)
+    TT = fweight(object.T.^2, weights.w) 
+    tt = colsum(TT) 
     ## = (||X||_D)^2 
     ## = tr(X' * D * X) 
     ## = sum(colnorm(X, object.weights).^2)  
     ## Proportion of variance of X explained by each column of T
-    A = X' * D * object.T    
+    A = X' * fweight(object.T, weights.w)
     ss = colnorm(A).^2 ./ colnorm(object.T, object.weights).^2
     ## = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
     ## = diag(A' * A) ./ diag(object.T' * D * object.T)
     pvar = ss / sstot 
     cumpvar = cumsum(pvar)
-    zrd = vec(rd(X, object.T, object.weights))
+    zrd = vec(rd(X, object.T, weights))
     explvarx = DataFrame(nlv = 1:nlv, rd = zrd, pvar = pvar, cumpvar = cumpvar)
     ## Adjusted variance and CPEV (cumulative percentage of explained variance)
     ## of Shen & Huang 2008 section 2.3
-    zX = sqrt.(D) * X
+    zX = fweight(X, sqrtw)
     ss = zeros(nlv)
     for a = 1:nlv
         P = vcol(object.P, 1:a)
@@ -227,8 +231,14 @@ function Base.summary(object::Spca, X)
     pvar = [cumpvar[1]; diff(cumpvar)]
     explvarx_adj = DataFrame(nlv = 1:nlv, pvar = pvar, cumpvar = cumpvar)
     ## End
-    cor_circle = DataFrame(corm(X, object.T, object.weights), nam)
+    nam = string.("lv", 1:nlv)
+    contr_ind = DataFrame(fscale(TT, tt), nam)
+    ## Should be ok 
+    C = X' * fweight(fscale(object.T, sqrt.(tt)), weights.w)  # V_tild = X' * D * T_normed
+    coord_var = DataFrame(C, nam)
+    ## End
     contr_var = DataFrame(object.P.^2, nam)
-    (explvarx = explvarx, explvarx_adj, cor_circle, contr_var)
+    cor_circle = DataFrame(corm(X, object.T, weights), nam)
+    (explvarx = explvarx, explvarx_adj, contr_ind, contr_var, coord_var, cor_circle)
 end
 
