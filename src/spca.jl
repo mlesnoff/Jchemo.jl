@@ -227,6 +227,8 @@ function Base.summary(object::Spca, X)
     pvar = [cumpvar[1]; diff(cumpvar)]
     explvarx_adj = DataFrame(nlv = 1:nlv, pvar = pvar, cumpvar = cumpvar)
     ## End
-    (explvarx = explvarx, explvarx_adj)
+    cor_circle = DataFrame(corm(X, object.T, object.weights), nam)
+    contr_var = DataFrame(object.P.^2, nam)
+    (explvarx = explvarx, explvarx_adj, cor_circle, contr_var)
 end
 

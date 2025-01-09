@@ -125,13 +125,12 @@ Summarize the fitted model.
 function Base.summary(object::Pca, X)
     X = ensure_mat(X)
     nlv = nco(object.T)
-    weights = object.weights.w
+    weights = object.weights
     X = fcscale(X, object.xmeans, object.xscales)
-    sstot = frob2(X, object.weights) 
-    ## = (||X||_D)^2 = tr(X' * D * X)
-    TT = fweight(object.T.^2, weights)  # matrix required for 'contr_ind'
+    sstot = frob2(X, weights)  # = (||X||_D)^2 = tr(X' * D * X)
+    TT = fweight(object.T.^2, weights.w)  # matrix required for 'contr_ind'
     tt = colsum(TT) 
-    ## = colnorm(object.T, object.weights).^2 
+    ## = colnorm(object.T, weights).^2 
     ## = diag(T' * D * T) 
     ## = object.sv[1:nlv].^2
     pvar = tt / sstot
@@ -139,10 +138,11 @@ function Base.summary(object::Pca, X)
     explvarx = DataFrame(nlv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
     nam = string.("lv", 1:nlv)
     contr_ind = DataFrame(fscale(TT, tt), nam)
-    cor_circle = DataFrame(corm(X, object.T, object.weights), nam)
-    C = X' * fweight(fscale(object.T, sqrt.(tt)), weights)  # = X' * D * T_normed
+    cor_circle = DataFrame(corm(X, object.T, weights), nam)
+    C = X' * fweight(fscale(object.T, sqrt.(tt)), weights.w)  # V_tild = X' * D * T_normed
     coord_var = DataFrame(C, nam)
     contr_var = DataFrame(object.P.^2, nam)
     (explvarx = explvarx, contr_ind, contr_var, coord_var, cor_circle)
 end
+
 
