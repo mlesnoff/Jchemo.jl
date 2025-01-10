@@ -28,7 +28,7 @@ In general, this method returns similar results as the out-of-bag permutation
 method used in random forests (Breiman, 2001).
 
 ## References
-- Nørgaard, L., Saudland, A., Wagner, J., Nielsen, J.P., Munck, L., 
+- Nørgaard, L., Saudland, A., Wagner, J., Nielsen, J.V., Munck, L., 
 Engelsen, S.B., 2000. Interval Partial Least-Squares Regression (iPLS): 
 A Comparative Chemometric Study with an Example from Near-Infrared 
 Spectroscopy. Appl Spectrosc 54, 413–419. 

@@ -85,10 +85,11 @@ fitm = model.fitm ;
 ```
 """ 
 function xfit(object)
-    X = object.T * object.P'
+    X = object.T * object.V'
     ## Coming back to the original scale
     fscale!(X, 1 ./ object.xscales)    
     fcenter!(X, -object.xmeans)
+    ## End
     X
 end
 
@@ -105,8 +106,8 @@ function xfit!(object, X::Matrix; nlv = nothing)
             X[i, :] .= object.xmeans
         end
     else
-        P = vcol(object.P, 1:nlv)
-        mul!(X, transf(object, X; nlv), P')
+        V = vcol(object.V, 1:nlv)
+        mul!(X, transf(object, X; nlv), V')
         ## Coming back to the original scale
         fscale!(X, 1 ./ object.xscales)    
         fcenter!(X, -object.xmeans)

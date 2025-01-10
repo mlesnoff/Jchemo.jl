@@ -60,13 +60,13 @@ function plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     XtY = X' * Y
     ## Pre-allocation
     T = similar(X, n, nlv)
-    P = similar(X, p, nlv)
-    R = copy(P)
+    V = similar(X, p, nlv)
+    R = copy(V)
     C = similar(X, q, nlv)
     TT = similar(X, nlv)
     t   = similar(X, n)
     dt  = similar(X, n)   
-    zp  = similar(X, p)
+    v  = similar(X, p)
     r   = similar(X, p)
     c   = similar(X, q)
     zXtY = similar(XtY)
@@ -76,7 +76,7 @@ function plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         if a == 1
             zXtY .= XtY
         else
-            Pa = vcol(P, 1:(a - 1))
+            Pa = vcol(V, 1:(a - 1))
             zXtY .= XtY .- Pa * inv(Pa' * Pa) * Pa' * XtY
         end
         r .= svd!(zXtY).U[:, 1] 
@@ -85,8 +85,8 @@ function plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         tt = dot(t, dt)
         mul!(c, XtY', r)
         c ./= tt                      
-        mul!(zp, X', dt)
-        P[:, a] .= zp ./ tt
+        mul!(v, X', dt)
+        V[:, a] .= v ./ tt
         T[:, a] .= t
         R[:, a] .= r
         C[:, a] .= c
@@ -94,7 +94,7 @@ function plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     end
     ## B = R * inv(T' * D * T) * T' * D * Y
     ## W does not exist in SIMPLS ==> below it is filled by R (for 'vip')
-    Plsr(T, P, R, R, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
+    Plsr(T, V, R, R, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
 end
 
 

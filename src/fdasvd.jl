@@ -71,14 +71,14 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     nlv = min(par.nlv, n, p, nlev - 1)
     zweights = mweight(convert.(Q, ni))
     fitm = pcasvd(Zct, zweights; nlv, scal = false)
-    Pz = fitm.P
+    Pz = fitm.V
     Tcenters = Zct * Pz
     eig = (fitm.sv).^2 
     sstot = sum(eig)
-    P = Ut * Pz[:, 1:nlv]
-    T = X * P
-    Tcenters = ct * P
-    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, lev, ni, par)
+    V = Ut * Pz[:, 1:nlv]
+    T = X * V
+    Tcenters = ct * V
+    Fda(T, V, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, lev, ni, par)
 end
 
 

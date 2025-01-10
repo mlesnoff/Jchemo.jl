@@ -37,7 +37,7 @@ when the loadings vector contain a large number of tied values, which
 should rarely happen in practice but may generate some difference in the 
 computed thresholding cutoff].
 
-**Note:** The resulting sparse loadings vectors (`P`-columns) 
+**Note:** The resulting sparse loadings vectors (`V`-columns) 
 are in general non orthogonal. Therefore, there is no a unique 
 decomposition of the variance of `X` such as in PCA. 
 Function `summary` returns the following objects:
@@ -90,8 +90,8 @@ pnames(fitm)
 fitm.niter
 fitm.sellv 
 fitm.sel
-fitm.P
-fitm.P' * fitm.P
+fitm.V
+fitm.V' * fitm.V
 @head T = fitm.T
 @head transf(model, Xtrain)
 
@@ -140,7 +140,7 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     fweight!(X, sqrtw)
     t = similar(X, n)
     T = similar(X, n, nlv)
-    P = similar(X, p, nlv)
+    V = similar(X, p, nlv)
     sv = similar(X, nlv)
     niter = list(Int, nlv)
     b = similar(X, 1, p)
@@ -151,20 +151,20 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
             maxit = par.maxit)
         t .= res.t
         ## Deflation with respect to t
-        ## same as in plsnipals (since non orthogonal loadings P)      
+        ## same as in plsnipals (since non orthogonal loadings V)      
         tt = dot(t, t)
         b .= t' * X / tt           
         X .-= t * b   #  ... - t * t' X / tt
         ## End        
         sv[a] = normv(t)
         T[:, a] .= t ./ sqrtw
-        P[:, a] .= res.v
+        V[:, a] .= res.v
         beta[:, a] .= vec(b)
         niter[a] = res.niter
         sellv[a] = findall(abs.(res.v) .> 0)
     end    
     sel = unique(reduce(vcat, sellv))
-    Spca(T, P, sv, beta, xmeans, xscales, weights, niter, sellv, sel, par) 
+    Spca(T, V, sv, beta, xmeans, xscales, weights, niter, sellv, sel, par) 
 end
 
 """ 
@@ -184,7 +184,7 @@ function transf(object::Spca, X; nlv = nothing)
     T = similar(X, m, nlv)
     t = similar(X, m)
     for a = 1:nlv
-        T[:, a] .= zX * vcol(object.P, a)
+        T[:, a] .= zX * vcol(object.V, a)
         zX .-= vcol(T, a) * vcol(object.beta, a)' 
     end
     T 
@@ -201,14 +201,10 @@ function Base.summary(object::Spca, X)
     nlv = nco(object.T)
     weights = object.weights
     sqrtw = sqrt.(weights.w)
-    #D = Diagonal(object.weights.w)
     X = fcscale(X, object.xmeans, object.xscales)
     sstot = frob2(X, weights)
     TT = fweight(object.T.^2, weights.w) 
     tt = colsum(TT) 
-    ## = (||X||_D)^2 
-    ## = tr(X' * D * X) 
-    ## = sum(colnorm(X, object.weights).^2)  
     ## Proportion of variance of X explained by each column of T
     A = X' * fweight(object.T, weights.w)
     ss = colnorm(A).^2 ./ colnorm(object.T, object.weights).^2
@@ -223,8 +219,8 @@ function Base.summary(object::Spca, X)
     zX = fweight(X, sqrtw)
     ss = zeros(nlv)
     for a = 1:nlv
-        P = vcol(object.P, 1:a)
-        Xadj = zX * P * inv(P' * P) * P'
+        V = vcol(object.V, 1:a)
+        Xadj = zX * V * inv(V' * V) * V'
         ss[a] = sum(Xadj.^2)
     end
     cumpvar = ss / sstot
@@ -234,10 +230,10 @@ function Base.summary(object::Spca, X)
     nam = string.("lv", 1:nlv)
     contr_ind = DataFrame(fscale(TT, tt), nam)
     ## Should be ok 
-    C = X' * fweight(fscale(object.T, sqrt.(tt)), weights.w)  # V_tild = X' * D * T_normed
+    C = X' * fweight(fscale(object.T, sqrt.(tt)), weights.w) 
     coord_var = DataFrame(C, nam)
     ## End
-    contr_var = DataFrame(object.P.^2, nam)
+    contr_var = DataFrame(object.V.^2, nam)
     cor_circle = DataFrame(corm(X, object.T, weights), nam)
     (explvarx = explvarx, explvarx_adj, contr_ind, contr_var, coord_var, cor_circle)
 end

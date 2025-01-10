@@ -65,13 +65,13 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     XtY = similar(X, p, q)
     T = similar(X, n, nlv)
     W = similar(X, p, nlv)
-    P = copy(W)
+    V = copy(W)
     C = similar(X, q, nlv)
     TT = similar(X, nlv)
     t   = similar(X, n)
     dt  = similar(X, n)   
     w = similar(X, p)
-    zp  = copy(w)
+    v  = copy(w)
     c   = similar(X, q)
     # End
     @inbounds for a = 1:nlv
@@ -85,21 +85,21 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         mul!(t, X, w)
         dt .= weights.w .* t
         tt = dot(t, dt)
-        mul!(zp, X', dt)
-        zp ./= tt
+        mul!(v, X', dt)
+        v ./= tt
         mul!(c, Y', dt)
         c ./= tt                      
         # deflation with respect to t: asymetric PLS
-        X .-= t * zp'
+        X .-= t * v'
         Y .-= t * c'
         # end
-        P[:, a] .= zp  
+        V[:, a] .= v  
         T[:, a] .= t
         W[:, a] .= w
         C[:, a] .= c
         TT[a] = tt
     end
-    R = W * inv(P' * W)
-    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
+    R = W * inv(V' * W)
+    Plsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
 end
 

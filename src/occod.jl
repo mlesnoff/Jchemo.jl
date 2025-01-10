@@ -22,7 +22,7 @@ and its projection on the  score plan defined by the fitted
 See function `occsd` for details on outputs.
 
 ## References
-M. Hubert, P. J. Rousseeuw, K. Vanden Branden (2005). 
+M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). 
 ROBPCA: a new approach to robust principal components 
 analysis. Technometrics, 47, 64-79.
 
@@ -30,7 +30,7 @@ K. Vanden Branden, M. Hubert (2005). Robuts classification
 in high dimension based on the SIMCA method. Chem. Lab. Int. 
 Syst, 79, 10-21.
 
-K. Varmuza, P. Filzmoser (2009). Introduction to multivariate 
+K. Varmuza, V. Filzmoser (2009). Introduction to multivariate 
 statistical analysis in chemometrics. CRC Press, Boca Raton.
 
 ## Examples

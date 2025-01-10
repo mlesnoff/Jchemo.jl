@@ -24,7 +24,7 @@ The principle is as follows:
     in the outputs, as well the results per replication. 
 
 ## References
-- Nørgaard, L., Saudland, A., Wagner, J., Nielsen, J.P., Munck, L., 
+- Nørgaard, L., Saudland, A., Wagner, J., Nielsen, J.V., Munck, L., 
 Engelsen, S.B., 2000. Interval Partial Least-Squares Regression (iPLS): 
 A Comparative Chemometric Study with an Example from Near-Infrared 
 Spectroscopy. Appl Spectrosc 54, 413–419. 

@@ -102,8 +102,8 @@ function occstah(X; kwargs...)
     par = recovkw(ParOccstah, kwargs).par 
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
     p = nco(X)
-    P = rand(0:1, p, par.nlv)
-    res = outstah(X, P; scal = par.scal)
+    V = rand(0:1, p, par.nlv)
+    res = outstah(X, V; scal = par.scal)
     d = res.d
     #d2 = d.^2 
     #mu = median(d2)
@@ -119,7 +119,7 @@ function occstah(X; kwargs...)
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
-    Occstah(d, res, P, e_cdf, cutoff, par)
+    Occstah(d, res, V, e_cdf, cutoff, par)
 end
 
 """
@@ -133,7 +133,7 @@ function predict(object::Occstah, X)
     m = nro(zX)
     res = object.res_stah
     fscale!(zX, res.xscales)
-    T = zX * object.P
+    T = zX * object.V
     fcenter!(T, res.mu)
     fscale!(T, res.s)
     T .= abs.(T)

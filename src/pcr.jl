@@ -86,7 +86,7 @@ function pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     ## This is the case for the actual version (pcasvd)
     K = fitm.T' * D 
     beta = inv(K * fitm.T) * K * Y
-    Pcr(fitm, fitm.T, fitm.P, beta', fitm.xmeans, fitm.xscales, ymeans, yscales, weights, par)
+    Pcr(fitm, fitm.T, fitm.V, beta', fitm.xmeans, fitm.xscales, ymeans, yscales, weights, par)
 end
 
 """ 

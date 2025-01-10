@@ -14,14 +14,14 @@ Keyword arguments:
 
 Let us note D the (n, n) diagonal matrix of weights
 (`weights.w`) and X the centered matrix in metric D.
-The function minimizes ||X - T * P'||^2  in metric D, by 
+The function minimizes ||X - T * V'||^2  in metric D, by 
 computing a SVD factorization of sqrt(D) * X:
 
 * sqrt(D) * X ~ U * S * V'
 
 Outputs are:
 * `T` = D^(-1/2) * U * S
-* `P` = V
+* `V` = V
 * The diagonal of S   
 
 ## Examples
@@ -51,8 +51,8 @@ pnames(model.fitm)
 ## Same as:
 @head transf(model, X)
 T' * T
-@head P = model.fitm.P
-P' * P
+@head V = model.fitm.V
+V' * V
 
 @head Ttest = transf(model, Xtest)
 
@@ -93,12 +93,12 @@ function pcasvd!(X::Matrix, weights::Weight; kwargs...)
     sqrtw = sqrt.(weights.w)
     fweight!(X, sqrtw)
     res = LinearAlgebra.svd!(X)
-    P = res.V[:, 1:nlv]
+    V = res.V[:, 1:nlv]
     sv = res.S   
     sv[sv .< 0] .= 0
     T = vcol(res.U, 1:nlv) * Diagonal(sv[1:nlv])
     fweight!(T, 1 ./ sqrtw)
-    Pca(T, P, sv, xmeans, xscales, weights, nothing, par) 
+    Pca(T, V, sv, xmeans, xscales, weights, nothing, par) 
 end
 
 """ 
@@ -113,7 +113,7 @@ function transf(object::Union{Pca, Fda}, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    fcscale(X, object.xmeans, object.xscales) * vcol(object.P, 1:nlv)
+    fcscale(X, object.xmeans, object.xscales) * vcol(object.V, 1:nlv)
 end
 
 """
@@ -140,7 +140,7 @@ function Base.summary(object::Pca, X)
     contr_ind = DataFrame(fscale(TT, tt), nam)
     C = X' * fweight(fscale(object.T, sqrt.(tt)), weights.w)  # V_tild = X' * D * T_normed
     coord_var = DataFrame(C, nam)
-    contr_var = DataFrame(object.P.^2, nam)
+    contr_var = DataFrame(object.V.^2, nam)
     cor_circle = DataFrame(corm(X, object.T, weights), nam)
     (explvarx = explvarx, contr_ind, contr_var, coord_var, cor_circle)
 end

@@ -170,7 +170,7 @@ function Base.summary(object::Mbplsr, Xbl)
     end
     sstot = sum(ssk)
     tt = object.fitm.TT
-    tt_adj = vec(sum(object.fitm.P.^2, dims = 1)) .* tt
+    tt_adj = vec(sum(object.fitm.V.^2, dims = 1)) .* tt
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    

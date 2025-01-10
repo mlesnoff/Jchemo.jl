@@ -107,7 +107,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     p = [nco(Xbl[k]) for k = 1:nbl]
     ## Pre-allocation
     W = similar(Xbl[1], sum(p), nlv)
-    P = copy(W)
+    V = copy(W)
     T = similar(Xbl[1], n, nlv)
     TT = similar(Xbl[1], nlv)    
     C = similar(Xbl[1], q, nlv)
@@ -178,7 +178,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
             zp_bl[k] = Xbl[k]' * dt
         end
         zp .= reduce(vcat, zp_bl)
-        P[:, a] .= zp / tt
+        V[:, a] .= zp / tt
         ## Orthogonalization of the weights "w" 
         ## by block
         zw = wbl[opt]
@@ -197,8 +197,8 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         z = zeros(Q, nbl) ; z[opt] = 1
         W[:, a] .= reduce(vcat, z .* wbl)
     end
-    R = W * inv(P' * W)
-    Rosaplsr(T, P, R, W, C, TT, fitmbl, ymeans, yscales, weights, bl, par)
+    R = W * inv(V' * W)
+    Rosaplsr(T, V, R, W, C, TT, fitmbl, ymeans, yscales, weights, bl, par)
 end
 
 """ 

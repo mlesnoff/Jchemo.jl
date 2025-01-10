@@ -155,8 +155,8 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
     ## Pre-allocation
     T = similar(X, n, nlv)
     W = similar(X, p, nlv)
-    P = copy(W)
-    R = copy(P)
+    V = copy(W)
+    R = copy(V)
     C = similar(X, q, nlv)
     TT = similar(X, nlv)
     t   = similar(X, n)
@@ -191,7 +191,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
         r .= w
         if a > 1
             @inbounds for j = 1:(a - 1)
-                r .-= dot(w, vcol(P, j)) .* vcol(R, j)    
+                r .-= dot(w, vcol(V, j)) .* vcol(R, j)    
             end
         end                   
         mul!(t, X, r)                 
@@ -201,7 +201,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
         c ./= tt                      
         mul!(zp, X', dt)              
         XtY .-= mul!(tmpXtY, zp, c')     
-        P[:, a] .= zp ./ tt           
+        V[:, a] .= zp ./ tt           
         T[:, a] .= t                  
         W[:, a] .= w
         R[:, a] .= r
@@ -210,7 +210,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
         sellv[a] = findall(abs.(w) .> 0)
      end
      sel = unique(reduce(vcat, sellv))
-     Splsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, 
+     Splsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, 
          sellv, sel,  # add compared to ::Plsr
          par)
 end

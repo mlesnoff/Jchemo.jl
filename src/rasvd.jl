@@ -44,7 +44,7 @@ redundancy analysis: interpretation tools and application
 in epidemiology. Journal of Chemometrics 25, 
 467-475. https://doi.org/10.1002/cem.1392
 
-Legendre, P., Legendre, L., 2012. Numerical Ecology. 
+Legendre, V., Legendre, L., 2012. Numerical Ecology. 
 Elsevier, Amsterdam, The Netherlands.
 
 Tenenhaus, A., Guillemot, V. 2017. RGCCA: Regularized 

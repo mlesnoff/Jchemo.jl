@@ -134,13 +134,13 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwarg
     ## Pre-allocation
     T = similar(X, n, nlv)
     W = similar(X, p, nlv)
-    P = copy(W)
-    R = copy(P)
+    V = copy(W)
+    R = copy(V)
     C = similar(X, q, nlv)
     TT = similar(X, nlv)
     t   = similar(X, n)
     dt  = similar(X, n)   
-    zp  = similar(X, p)
+    v  = similar(X, p)
     w   = similar(X, p)
     r   = similar(X, p)
     c   = similar(X, q)
@@ -156,7 +156,7 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwarg
         r .= w
         if a > 1
             @inbounds for j = 1:(a - 1)
-                r .-= dot(w, vcol(P, j)) .* vcol(R, j)    
+                r .-= dot(w, vcol(V, j)) .* vcol(R, j)    
             end
         end                   
         mul!(t, X, r)                 # t = X * r
@@ -164,16 +164,16 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwarg
         tt = dot(t, dt)               # tt = t' * dt = t' * D * t 
         mul!(c, XtY', r)
         c ./= tt                      # c = XtY' * r / tt
-        mul!(zp, X', dt)              # zp = (D * X)' * t = X' * (D * t)
-        XtY .-= mul!(tmpXtY, zp, c')  # XtY = XtY - zp * c' ; deflation of the kernel matrix 
-        P[:, a] .= zp ./ tt           # ==> the metric applied to covariance is applied outside the loop,
+        mul!(v, X', dt)               # v = (D * X)' * t = X' * (D * t)
+        XtY .-= mul!(tmpXtY, v, c')   # XtY = XtY - v * c' ; deflation of the kernel matrix 
+        V[:, a] .= v ./ tt            # ==> the metric applied to covariance is applied outside the loop,
         T[:, a] .= t                  # conversely to other algorithms such as nipals
         W[:, a] .= w
         R[:, a] .= r
         C[:, a] .= c
         TT[a] = tt
     end
-    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
+    Plsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
 end
 
 """ 
@@ -187,10 +187,9 @@ function transf(object::Union{Plsr, Splsr}, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    T = fcscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
     # Could be fcscale! but changes X
     # If too heavy ==> Makes summary!
-    T
+    fcscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
 end
 
 """
@@ -207,9 +206,9 @@ function coef(object::Union{Plsr, Pcr, Splsr}; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     beta = vcol(object.C, 1:nlv)'
-    Wy = Diagonal(object.yscales)
-    ## To not use for Spcr (R not computed; while for Pcr, R = P)
-    B =  fweight(vcol(object.R, 1:nlv), 1 ./ object.xscales) * beta * Wy
+    Dy = Diagonal(object.yscales)
+    ## To not use for Spcr (R not computed; while for Pcr, R = V)
+    B =  fweight(vcol(object.R, 1:nlv), 1 ./ object.xscales) * beta * Dy
     ## In 'int': No correction is needed, since 
     ## ymeans, xmeans and B are in the original scale 
     int = object.ymeans' .- object.xmeans' * B
@@ -253,10 +252,10 @@ function Base.summary(object::Union{Plsr, Splsr}, X)
     ## If too heavy ==> Makes summary!
     sstot = frob2(X, object.weights)       # = sum(object.weights.w' * X.^2)
     tt = object.TT
-    tt_adj = (colnorm(object.P).^2) .* tt  # tt_adj[a] = p[a]'p[a] * tt[a]
+    tt_adj = (colnorm(object.V).^2) .* tt  # tt_adj[a] = p[a]'p[a] * tt[a]
+    xvar = tt_adj / n    
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
-    xvar = tt_adj / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)     
     (explvarx = explvarx,)
 end

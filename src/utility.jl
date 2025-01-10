@@ -826,7 +826,7 @@ Compute p-value(s) for a distribution, an ECDF or vector.
 * `q` : Value(s) for which to compute the p-value(s).
 
 Compute or estimate the p-value of quantile `q`,
-ie. P(Q > `q`) where Q is the random variable.
+ie. V(Q > `q`) where Q is the random variable.
 
 ## Examples
 ```julia
@@ -1209,12 +1209,12 @@ end
 
 function softmax(X::Union{Matrix, DataFrame})
     X = ensure_mat(X)
-    P = similar(X)
-    n = nro(P)
+    V = similar(X)
+    n = nro(V)
     @inbounds for i = 1:n
-        P[i, :] .= softmax(vrow(X, i))
+        V[i, :] .= softmax(vrow(X, i))
     end
-    P
+    V
 end
 
 """

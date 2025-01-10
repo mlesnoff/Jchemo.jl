@@ -61,12 +61,12 @@ function plsrosa!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     XtY = similar(X, p, q)
     T = similar(X, n, nlv)
     W = similar(X, p, nlv)
-    P = copy(W)
+    V = copy(W)
     C = similar(X, q, nlv)
     TT = similar(X, nlv)
     t = similar(X, n)
     dt = similar(X, n)   
-    zp = similar(X, p)
+    v = similar(X, p)
     w = similar(X, p)
     c = similar(X, q)
     # End
@@ -91,16 +91,16 @@ function plsrosa!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         tt = dot(t, dt)
         mul!(c, Y', dt)
         c ./= tt                      
-        mul!(zp, X', dt)
-        zp ./= tt
+        mul!(v, X', dt)
+        v ./= tt
         Y .-= t * c'
-        P[:, a] .= zp  
+        V[:, a] .= v  
         T[:, a] .= t
         W[:, a] .= w
         C[:, a] .= c
         TT[a] = tt
     end
-    R = W * inv(P' * W)
-    Plsr(T, P, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
+    R = W * inv(V' * W)
+    Plsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
 end
 

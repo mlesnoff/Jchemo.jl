@@ -24,8 +24,8 @@ of the predictions returned by the models with 5 LVs, 6 LVs,
 ... 10 LVs, respectively.
 
 ## References
-Lesnoff, M., Andueza, D., Barotin, C., Barre, P., Bonnal, L., 
-Fernández Pierna, J.A., Picard, F., Vermeulen, P., Roger, 
+Lesnoff, M., Andueza, D., Barotin, C., Barre, V., Bonnal, L., 
+Fernández Pierna, J.A., Picard, F., Vermeulen, V., Roger, 
 J.-M., 2022. Averaging and Stacking Partial Least Squares 
 Regression Models to Predict the Chemical Compositions and 
 the Nutritive Values of Forages from Spectral Near Infrared 

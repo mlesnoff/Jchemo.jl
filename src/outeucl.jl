@@ -1,6 +1,6 @@
 """
-    outeucl(X, P; kwargs...)
-    outeucl!(X::Matrix, P::Matrix; kwargs...)
+    outeucl(X, V; kwargs...)
+    outeucl!(X::Matrix, V::Matrix; kwargs...)
 Compute an outlierness from Euclidean distances to center.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -13,7 +13,7 @@ the observation (rows of `X`) and a robust estimate of the center of the data
 instance used in the robust PLSR algorithm of Serneels et al. 2005 (PRM). 
 
 ## References
-Serneels, S., Croux, C., Filzmoser, P., Van Espen, P.J., 2005. 
+Serneels, S., Croux, C., Filzmoser, V., Van Espen, V.J., 2005. 
 Partial robust M-regression. 
 Chemometrics and Intelligent Laboratory Systems 79, 55-64. 
 https://doi.org/10.1016/j.chemolab.2005.04.007

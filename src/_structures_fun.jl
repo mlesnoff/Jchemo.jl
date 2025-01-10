@@ -85,7 +85,7 @@ end
 
 struct Pca 
     T::Matrix 
-    P::Matrix
+    V::Matrix
     sv::Vector
     xmeans::Vector
     xscales::Vector
@@ -96,7 +96,7 @@ end
 
 struct Spca
     T::Matrix 
-    P::Matrix
+    V::Matrix
     sv::Vector
     beta::Matrix
     xmeans::Vector
@@ -112,7 +112,7 @@ struct Kpca
     X::Matrix
     Kt::Adjoint
     T::Matrix
-    P::Matrix
+    V::Matrix
     sv::Vector  
     eig::Vector    
     D::Diagonal
@@ -126,7 +126,7 @@ end
 
 struct Rp
     T::Matrix
-    P::Union{Matrix, SparseArrays.SparseMatrixCSC}
+    V::Union{Matrix, SparseArrays.SparseMatrixCSC}
     xmeans::Vector
     xscales::Vector
     par::ParRp
@@ -142,7 +142,7 @@ end
     
 struct Fda
     T::Matrix
-    P::Matrix
+    V::Matrix
     Tcenters::Matrix
     eig::Vector
     sstot::AbstractFloat
@@ -304,7 +304,7 @@ end
 
 struct Plsr
     T::Matrix
-    P::Matrix
+    V::Matrix
     R::Matrix
     W::Matrix
     C::Matrix
@@ -344,7 +344,7 @@ end
 
 struct Splsr
     T::Matrix
-    P::Matrix
+    V::Matrix
     R::Matrix
     W::Matrix
     C::Matrix
@@ -363,7 +363,7 @@ end
 struct Spcr
     fitmpca::Spca
     T::Matrix
-    P::Matrix
+    V::Matrix
     C::Matrix
     xmeans::Vector
     xscales::Vector
@@ -519,7 +519,7 @@ end
 
 struct Mbplswest     # mbplswest, mbwcov 
     T::Matrix
-    P::Matrix
+    V::Matrix
     R::Matrix
     W::Matrix
     C::Matrix
@@ -538,7 +538,7 @@ end
 
 struct Rosaplsr
     T::Matrix
-    P::Matrix
+    V::Matrix
     R::Matrix
     W::Matrix
     C::Matrix
@@ -773,7 +773,7 @@ end
 struct Occstah
     d::DataFrame
     res_stah::NamedTuple
-    P::Matrix
+    V::Matrix
     e_cdf::ECDF
     cutoff::Real
     par::ParOccstah

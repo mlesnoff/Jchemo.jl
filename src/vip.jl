@@ -73,7 +73,7 @@ vip(fitm, Ydummy).imp
 """ 
 function vip(object::Union{Pcr, Plsr}; nlv = nothing)
     if isa(object, Jchemo.Pcr)
-        W = object.fitmpca.P
+        W = object.fitmpca.V
     else
         W = object.W
     end
@@ -103,7 +103,7 @@ end
 
 function vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
     if isa(object, Jchemo.Pcr)
-        W = object.fitmpca.P
+        W = object.fitmpca.V
     else
         W = object.W
     end

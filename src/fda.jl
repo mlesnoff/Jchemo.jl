@@ -26,7 +26,7 @@ and B the "Between"-covariance matrix.
 
 The function maximizes the consensus:
 * p'Bp / p'Wp 
-i.e. max p'Bp with constraint p'Wp = 1. Vectors p (columns of `P`) 
+i.e. max p'Bp with constraint p'Wp = 1. Vectors p (columns of `V`) 
 are the linear discrimant coefficients often referred to as "LD".
 
 If `X` is ill-conditionned, a ridge regularization can be used:
@@ -77,8 +77,8 @@ aggsum(fitm.weights.w, ytrain)
 ## X-loadings matrix
 ## = coefficients of the linear discriminant function
 ## = "LD" of function lda of the R package MASS
-fitm.P
-fitm.P' * fitm.P
+fitm.V
+fitm.V' * fitm.V
 
 ## Explained variance computed by weighted PCA 
 ## of the class centers in transformed scale
@@ -131,14 +131,14 @@ function fda!(X::Matrix, y, weights; kwargs...)
     ## Winv * B is not symmetric
     fitm = eigen!(Winv * zres.B; sortby = x -> -abs(x))
     nlv = min(par.nlv, n, p, nlev - 1)
-    P = real.(fitm.vectors[:, 1:nlv])
+    V = real.(fitm.vectors[:, 1:nlv])
     eig = real.(fitm.values)
     sstot = sum(eig)
-    norm_P = sqrt.(diag(P' * res.W * P))
-    fscale!(P, norm_P)
-    T = X * P
-    Tcenters = zres.ct * P
-    Fda(T, P, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, lev, ni, par)
+    norm_P = sqrt.(diag(V' * res.W * V))
+    fscale!(V, norm_P)
+    T = X * V
+    Tcenters = zres.ct * V
+    Fda(T, V, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, lev, ni, par)
 end
 
 """

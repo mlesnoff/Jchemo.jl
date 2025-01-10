@@ -42,12 +42,12 @@ pnames(model.fitm)
 fitm = model.fitm ;
 fitm.niter
 fitm.sv
-fitm.P
+fitm.V
 fitm.T
 ## Orthogonality 
 ## only if gs = true
 fitm.T' * fitm.T
-fitm.P' * fitm.P
+fitm.V' * fitm.V
 
 ## Impute missing data in X
 model = pcanipalsmiss(; nlv = 2, gs = true) ;
@@ -90,7 +90,7 @@ function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
     fweight!(X, sqrtw)
     t = similar(X, n)
     T = similar(X, n, nlv)
-    P = similar(X, p, nlv)
+    V = similar(X, p, nlv)
     sv = similar(X, nlv)
     niter = list(Int, nlv)
     if par.gs
@@ -105,7 +105,7 @@ function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
         end
         t .= res.u * res.sv
         T[:, a] .= t
-        P[:, a] .= res.v           
+        V[:, a] .= res.v           
         sv[a] = res.sv
         niter[a] = res.niter
         X .-= t * res.v'
@@ -115,6 +115,6 @@ function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
         end
     end
     fweight!(T, 1 ./ sqrtw)
-    Pca(T, P, sv, xmeans, xscales, weights, niter, par) 
+    Pca(T, V, sv, xmeans, xscales, weights, niter, par) 
 end
 

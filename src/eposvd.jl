@@ -15,12 +15,12 @@ from a X-dataset (n, p).  The detrimental information is defined
 by the main row-directions computed from a matrix `D` (m, p). 
 
 Function `eposvd` returns two objects:
-* `P` (p, `nlv`) : The matrix of the `nlv` first 
+* `V` (p, `nlv`) : The matrix of the `nlv` first 
     loading vectors of the SVD decomposition (non centered PCA) 
     of `D`. 
 * `M` (p, p) : The orthogonalization matrix, used 
     to orthogonolize a given matrix X to directions 
-    contained in `P`.
+    contained in `V`.
 
 Any matrix X can then be corrected from `D` by:
 * X_corrected = X * `M`.
@@ -80,7 +80,7 @@ D = X1cal - X2cal
 nlv = 2
 res = eposvd(D; nlv)
 res.M # orthogonalization matrix
-res.P # detrimental directions (columns of matrix P = loadings of D)
+res.V # detrimental directions (columns of matrix V = loadings of D)
 
 ## Corrected Val matrices
 X1val_c = X1val * res.M
@@ -104,11 +104,11 @@ function eposvd(D; nlv = 1)
     n, p = size(D)
     nlv = min(nlv, n, p)
     Id = Diagonal(I, p)
-    P = svd(D).V[:, 1:nlv]
+    V = svd(D).V[:, 1:nlv]
     ## If n = 1, this is the same as:
-    ## zp = vec(D) ; zp ./= normv(zp) ; P = reshape(zp, p, 1)
+    ## zp = vec(D) ; zp ./= normv(zp) ; V = reshape(zp, p, 1)
     ## End 
-    M = Id - P * P'
-    (M = M, P)
+    M = Id - V * V'
+    (M = M, V)
 end
 

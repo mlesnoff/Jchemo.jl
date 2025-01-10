@@ -55,7 +55,7 @@ fit!(model, Xtrain, ytrain)
 pnames(model)
 pnames(model.fitm)
 @head model.fitm.T
-@head model.fitm.P
+@head model.fitm.V
 
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
@@ -96,7 +96,7 @@ function spcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     fitm = spca!(X, weights; kwargs...)
     K = fweight(fitm.T, weights.w)'
     beta = inv(K * fitm.T) * K * fcenter(Y, ymeans)
-    Spcr(fitm, fitm.T, fitm.P, beta', fitm.xmeans, fitm.xscales, ymeans, yscales, weights,
+    Spcr(fitm, fitm.T, fitm.V, beta', fitm.xmeans, fitm.xscales, ymeans, yscales, weights,
         fitm.sellv, fitm.sel,  # add compared to ::Pcr
         par)
 end

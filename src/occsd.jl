@@ -47,11 +47,11 @@ Specific for function `predict`:
         belonging to the same class as the training. 
 
 ## References
-M. Hubert, P. J. Rousseeuw, K. Vanden Branden (2005). 
+M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). 
 ROBPCA: a new approach to robust principal components 
 analysis. Technometrics, 47, 64-79.
 
-Nomikos, P., MacGregor, J.F., 1995. Multivariate SPC Charts for 
+Nomikos, V., MacGregor, J.F., 1995. Multivariate SPC Charts for 
 Monitoring Batch Processes. null 37, 41-59. 
 https://doi.org/10.1080/00401706.1995.10485888
 

@@ -19,7 +19,7 @@ can be much faster than the others.
 
 Let us note D the (n, n) diagonal matrix of weights
 (`weights.w`) and X the centered matrix in metric D.
-The function minimizes ||X - T * P'||^2  in metric D, by 
+The function minimizes ||X - T * V'||^2  in metric D, by 
 computing an Eigen factorization of D^(1/2) * X * X' D^(1/2).
 
 See function `pcasvd` for examples.
@@ -61,9 +61,9 @@ function pcaeigenk!(X::Matrix, weights::Weight; kwargs...)
     eig = res.values[1:min(n, p)]
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
-    P = X' * fscale(vcol(res.vectors, 1:nlv), sv[1:nlv])
-    T = X * P
+    V = X' * fscale(vcol(res.vectors, 1:nlv), sv[1:nlv])
+    T = X * V
     fweight!(T, 1 ./ sqrtw) 
-    Pca(T, P, sv, xmeans, xscales, weights, nothing, par) 
+    Pca(T, V, sv, xmeans, xscales, weights, nothing, par) 
 end
 

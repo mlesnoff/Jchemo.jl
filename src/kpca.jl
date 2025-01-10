@@ -57,7 +57,7 @@ fit!(model, Xtrain)
 pnames(model.fitm)
 @head T = model.fitm.T
 T' * T
-model.fitm.P' * model.fitm.P
+model.fitm.V' * model.fitm.V
 
 @head Ttest = transf(model, Xtest)
 
@@ -101,9 +101,9 @@ function kpca(X, weights::Weight; kwargs...)
     eig = res.S
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
-    P = sqrtD * fscale(U, sv[1:nlv])     # In the future: fscale!
-    T = Kc * P       # T = Kc * P = D^(-1/2) * U * Delta
-    Kpca(X, Kt, T, P, sv, eig, D, DKt, vtot, xscales, weights, kwargs, par)
+    V = sqrtD * fscale(U, sv[1:nlv])     # In the future: fscale!
+    T = Kc * V       # T = Kc * V = D^(-1/2) * U * Delta
+    Kpca(X, Kt, T, V, sv, eig, D, DKt, vtot, xscales, weights, kwargs, par)
 end
 
 """ 
@@ -121,7 +121,7 @@ function transf(object::Kpca, X; nlv = nothing)
     DKt = object.D * K'
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')
-    T = Kc * @view(object.P[:, 1:nlv])
+    T = Kc * @view(object.V[:, 1:nlv])
     T
 end
 

@@ -20,7 +20,7 @@ Keyword arguments:
 
 Let us note D the (n, n) diagonal matrix of weights
 (`weights.w`) and X the centered matrix in metric D.
-The function minimizes ||X - T * P'||^2  in metric D 
+The function minimizes ||X - T * V'||^2  in metric D 
 by NIPALS. 
 
 See function `pcasvd` for examples.
@@ -79,7 +79,7 @@ function pcanipals!(X::Matrix, weights::Weight; kwargs...)
     fweight!(X, sqrtw)
     t = similar(X, n)
     T = similar(X, n, nlv)
-    P = similar(X, p, nlv)
+    V = similar(X, p, nlv)
     sv = similar(X, nlv)
     niter = list(Int, nlv)
     if par.gs
@@ -94,7 +94,7 @@ function pcanipals!(X::Matrix, weights::Weight; kwargs...)
         end
         t .= res.u * res.sv
         T[:, a] .= t 
-        P[:, a] .= res.v           
+        V[:, a] .= res.v           
         sv[a] = res.sv
         niter[a] = res.niter
         X .-= t * res.v'
@@ -105,7 +105,7 @@ function pcanipals!(X::Matrix, weights::Weight; kwargs...)
     end
     fweight!(T, 1 ./ sqrtw)    
     ## Could recompute the scores by
-    ## X0 = copy(X) ; ... ; T = (1 ./ sqrtw) .* X0 * P 
-    Pca(T, P, sv, xmeans, xscales, weights, niter, par) 
+    ## X0 = copy(X) ; ... ; T = (1 ./ sqrtw) .* X0 * V 
+    Pca(T, V, sv, xmeans, xscales, weights, niter, par) 
 end
 

@@ -35,11 +35,11 @@ of Hubert et al. 2005, 2009).
 
 ## References
 
-Hubert, M., Rousseeuw, P.J., Vanden Branden, K., 2005. ROBPCA: A New Approach 
+Hubert, M., Rousseeuw, V.J., Vanden Branden, K., 2005. ROBPCA: A New Approach 
 to Robust Principal Component Analysis. Technometrics 47, 64-79. 
 https://doi.org/10.1198/004017004000000563
 
-Hubert, M., Rousseeuw, P., Verdonck, T., 2009. Robust PCA for skewed data and its 
+Hubert, M., Rousseeuw, V., Verdonck, T., 2009. Robust PCA for skewed data and its 
 outlier map. Computational Statistics & Data Analysis 53, 2264-2274. 
 https://doi.org/10.1016/j.csda.2008.05.027
 
@@ -91,13 +91,13 @@ function pcaout!(X::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParPcaout, kwargs).par 
     n, p = size(X)
     nlvout = 30
-    P = rand(0:1, p, nlvout)
-    d = outstah(X, P; scal = par.scal).d
+    V = rand(0:1, p, nlvout)
+    d = outstah(X, V; scal = par.scal).d
     w = wtal(d; a = quantile(d, 1 - par.prm))
     d .= outeucl(X; scal = par.scal).d
     w .*= wtal(d; a = quantile(d, 1 - par.prm))
     w .*= weights.w
     w[isequal.(w, 0)] .= 1e-10
     fitm = pcasvd(X, mweight(w); kwargs...)
-    Pca(fitm.T, fitm.P, fitm.sv, fitm.xmeans, fitm.xscales, fitm.weights, nothing, par)
+    Pca(fitm.T, fitm.V, fitm.sv, fitm.xmeans, fitm.xscales, fitm.weights, nothing, par)
 end

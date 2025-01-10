@@ -33,7 +33,7 @@ principal components: the projection-pursuit approach revisited.
 Journal of Multivariate Analysis 95, 206–226. 
 https://doi.org/10.1016/j.jmva.2004.08.002
 
-Hubert, M., Rousseeuw, P.J., Vanden Branden, K., 2005. ROBPCA: 
+Hubert, M., Rousseeuw, V.J., Vanden Branden, K., 2005. ROBPCA: 
 A New Approach to Robust Principal Component Analysis. 
 Technometrics 47, 64-79. https://doi.org/10.1198/004017004000000563
 
@@ -85,7 +85,7 @@ function pcapp!(X::Matrix; kwargs...)
         fcenter!(X, xmeans)
     end
     T = similar(X, n, nlv)
-    P = similar(X, p, nlv)
+    V = similar(X, p, nlv)
     t = similar(X, n)
     zp = similar(X, p)
     sv = similar(X, nlv)
@@ -104,14 +104,14 @@ function pcapp!(X::Matrix; kwargs...)
         t .= vcol(zT, s)
         zp .= vcol(zP, s)
         T[:, a] = t
-        P[:, a] = zp
+        V[:, a] = zp
         X .-= t * zp'
     end
     s = sortperm(sv; rev = true)
     T .= T[:, s]
-    P .= P[:, s]
+    V .= V[:, s]
     sv .= sv[s]
     weights = mweight(ones(n))
-    Pca(T, P, sv, xmeans, xscales, weights, nothing, par)
+    Pca(T, V, sv, xmeans, xscales, weights, nothing, par)
 end
 

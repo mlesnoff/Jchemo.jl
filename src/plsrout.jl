@@ -77,9 +77,9 @@ function plsrout!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParPlsrout, kwargs).par 
     n, p = size(X)
     nlvout = 30
-    P = rand(0:1, p, nlvout)
+    V = rand(0:1, p, nlvout)
     d = similar(X, n)
-    d .= outstah(X, P; scal = par.scal).d
+    d .= outstah(X, V; scal = par.scal).d
     w = wtal(d; a = quantile(d, 1 - par.prm))
     d .= outeucl(X; scal = par.scal).d
     w .*= wtal(d; a = quantile(d, 1 - par.prm))

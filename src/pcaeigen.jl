@@ -14,7 +14,7 @@ Keyword arguments:
 
 Let us note D the (n, n) diagonal matrix of weights
 (`weights.w`) and X the centered matrix in metric D.
-The function minimizes ||X - T * P'||^2  in metric D, by 
+The function minimizes ||X - T * V'||^2  in metric D, by 
 computing an Eigen factorization of X' * D * X. 
 
 See function `pcasvd` for examples.
@@ -47,12 +47,12 @@ function pcaeigen!(X::Matrix, weights::Weight; kwargs...)
     sqrtw = sqrt.(weights.w)
     fweight!(X, sqrtw)
     res = eigen!(Symmetric(X' * X); sortby = x -> -abs(x)) 
-    P = res.vectors[:, 1:nlv]
+    V = res.vectors[:, 1:nlv]
     eig = res.values[1:min(n, p)]
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
-    T = X * P
+    T = X * V
     fweight!(T, 1 ./ sqrtw)
-    Pca(T, P, sv, xmeans, xscales, weights, nothing, par) 
+    Pca(T, V, sv, xmeans, xscales, weights, nothing, par) 
 end
 

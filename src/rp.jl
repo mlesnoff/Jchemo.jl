@@ -29,7 +29,7 @@ fit!(model, X)
 pnames(model)
 pnames(model.fitm)
 @head model.fitm.T 
-@head model.fitm.P 
+@head model.fitm.V 
 transf(model, X[1:2, :])
 ```
 """
@@ -59,12 +59,12 @@ function rp!(X::Matrix, weights::Weight; kwargs...)
         fcenter!(X, xmeans)
     end
     if par.meth == :gauss
-        P = rpmatgauss(p, par.nlv, Q)
+        V = rpmatgauss(p, par.nlv, Q)
     else
-        P = rpmatli(p, par.nlv, Q; s = par.s)
+        V = rpmatli(p, par.nlv, Q; s = par.s)
     end 
-    T = X * P
-    Rp(T, P, xmeans, xscales, par)
+    T = X * V
+    Rp(T, V, xmeans, xscales, par)
 end
 
 """ 
@@ -78,6 +78,6 @@ function transf(object::Rp, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    fcscale(X, object.xmeans, object.xscales) * vcol(object.P, 1:nlv)
+    fcscale(X, object.xmeans, object.xscales) * vcol(object.V, 1:nlv)
 end
 

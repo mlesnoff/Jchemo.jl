@@ -53,7 +53,7 @@ The function returns two outputs (in addition to eventual plots):
 
 ## References
 
-Andries, J.P.M., Vander Heyden, Y., Buydens, L.M.C., 2011. Improved 
+Andries, J.V.M., Vander Heyden, Y., Buydens, L.M.C., 2011. Improved 
 variable reduction in partial least squares modelling based on 
 Predictive-Property-Ranked Variables and adaptation of partial least 
 squares complexity. Analytica Chimica Acta 705, 292-305. 

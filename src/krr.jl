@@ -23,7 +23,7 @@ observations (epsilon coefficient set to zero). The difference
 is that a L2-norm optimization is done, instead of L1 in SVM.
 
 ## References 
-Bennett, K.P., Embrechts, M.J., 2003. An optimization 
+Bennett, K.V., Embrechts, M.J., 2003. An optimization 
 perspective on kernel partial least squares regression, 
 in: Advances in Learning Theory: Methods, Models and 
 Applications, NATO Science Series III: Computer & Systems 
