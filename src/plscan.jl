@@ -121,8 +121,8 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     Ty = copy(Tx)
     Wx = similar(X, p, nlv)
     Wy = similar(X, q, nlv) 
-    Px = copy(Wx)
-    Py = copy(Wy)
+    Vx = copy(Wx)
+    Vy = copy(Wy)
     TTx = similar(X, nlv)
     TTy = copy(TTx)
     tx   = similar(X, n)
@@ -131,8 +131,8 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     dty = copy(tx)   
     wx  = similar(X, p)
     wy  = similar(X, q)
-    px   = copy(wx)
-    py   = copy(wy)
+    vx   = copy(wx)
+    vy   = copy(wy)
     delta = copy(TTx)
     # End
     @inbounds for a = 1:nlv
@@ -144,8 +144,8 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         mul!(tx, X, wx)
         dtx .= weights.w .* tx
         ttx = dot(tx, dtx)
-        mul!(px, X', dtx)
-        px ./= ttx
+        mul!(vx, X', dtx)
+        vx ./= ttx
         # Y
         wy .= V[:, 1]
         # Same as:                        
@@ -155,14 +155,14 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         mul!(ty, Y, wy)
         dty .= weights.w .* ty
         tty = dot(ty, dty)
-        mul!(py, Y', dty)
-        py ./= tty
+        mul!(vy, Y', dty)
+        vy ./= tty
         # Deflation
-        X .-= tx * px'
-        Y .-= ty * py'
+        X .-= tx * vx'
+        Y .-= ty * vy'
         # End
-        Px[:, a] .= px
-        Py[:, a] .= py
+        Vx[:, a] .= vx
+        Vy[:, a] .= vy
         Tx[:, a] .= tx
         Ty[:, a] .= ty
         Wx[:, a] .= wx
@@ -170,9 +170,9 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         TTx[a] = ttx
         TTy[a] = tty
      end
-     Rx = Wx * inv(Px' * Wx)
-     Ry = Wy * inv(Py' * Wy)
-     Plscan(Tx, Ty, Px, Py, Rx, Ry, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
+     Rx = Wx * inv(Vx' * Wx)
+     Ry = Wy * inv(Vy' * Wy)
+     Plscan(Tx, Ty, Vx, Vy, Rx, Ry, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
          ymeans, yscales, weights, par)
 end
 
@@ -213,14 +213,14 @@ function Base.summary(object::Plscan, X, Y)
     tty = object.TTy 
     ## X
     sstot = frob(X, object.weights)^2
-    tt_adj = colsum(object.Px.^2) .* ttx
+    tt_adj = colsum(object.Vx.^2) .* ttx
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Y
     sstot = frob(Y, object.weights)^2
-    tt_adj = colsum(object.Py.^2) .* tty
+    tt_adj = colsum(object.Vy.^2) .* tty
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    

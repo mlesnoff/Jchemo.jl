@@ -230,8 +230,8 @@ function transf_all(object::Mbpca, Xbl; nlv = nothing)
         u .= 1 / sqrt(object.mu[a]) * TB * object.W[:, a]
         U[:, a] .= u
         @inbounds for k = 1:nbl
-            Px = sqrt(object.lb[k, a]) * object.Wbl[k][:, a]'
-            zXbl[k] -= u * Px
+            Vx = sqrt(object.lb[k, a]) * object.Wbl[k][:, a]'
+            zXbl[k] -= u * Vx
         end
     end
     T = sqrt.(object.mu[1:nlv])' .* U

@@ -205,8 +205,8 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
         @inbounds for k = 1:nbl
             Xbl[k] .-= u * (u' * Xbl[k])
             # Same as:
-            #Px = sqrt(lb[k, a]) * Wbl[k][:, a]'
-            #Xbl[k] .-= u * Px
+            #Vx = sqrt(lb[k, a]) * Wbl[k][:, a]'
+            #Xbl[k] .-= u * Vx
         end
     end
     T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
@@ -254,8 +254,8 @@ function transf_all(object::Comdim, Xbl; nlv = nothing)
         u .= 1 / sqrt(object.mu[a]) * TB * object.W[:, a]
         U[:, a] .= u
         @inbounds for k = 1:nbl
-            Px = sqrt(object.lb[k, a]) * object.Wbl[k][:, a]'
-            zXbl[k] .-= u * Px
+            Vx = sqrt(object.lb[k, a]) * object.Wbl[k][:, a]'
+            zXbl[k] .-= u * Vx
         end
     end
     T = sqrt.(object.mu[1:nlv])' .* U

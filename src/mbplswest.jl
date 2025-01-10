@@ -132,12 +132,12 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     Tx = similar(Xbl[1], n, nlv)
     Wx = similar(Xbl[1], sum(p), nlv)
     Wytild = similar(Xbl[1], q, nlv)
-    Px = copy(Wx)
+    Vx = copy(Wx)
     tk  = similar(Xbl[1], n)
     tx = copy(tk)
     ty  = copy(tk)
     wx = similar(Xbl[1], sum(p))
-    px = copy(wx)
+    vx = copy(wx)
     wy  = similar(Xbl[1], q)
     wytild = copy(wy)
     TTx = similar(Xbl[1], nlv)
@@ -178,13 +178,13 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         X .= reduce(hcat, Xbl)
         wx .= X' * ty / dot(ty, ty)    
         wx ./= normv(wx)
-        mul!(px, X', tx)
-        px ./= ttx
+        mul!(vx, X', tx)
+        vx ./= ttx
         wytild .= Y' * tx / ttx
         # End           
         Tx[:, a] .= tx   
         Wx[:, a] .= wx
-        Px[:, a] .= px
+        Vx[:, a] .= vx
         Wytild[:, a] .= wytild
         TTx[a] = ttx
         @inbounds for k = 1:nbl
@@ -193,9 +193,9 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         Y .-= tx * wytild'
     end
     Tx .= (1 ./ sqrtw) .* Tx
-    Rx = Wx * inv(Px' * Wx)
+    Rx = Wx * inv(Vx' * Wx)
     lb = nothing
-    Mbplswest(Tx, Px, Rx, Wx, Wytild, Tbl, Tb, Pbl, TTx, fitmbl, ymeans, yscales, 
+    Mbplswest(Tx, Vx, Rx, Wx, Wytild, Tbl, Tb, Pbl, TTx, fitmbl, ymeans, yscales, 
         weights, lb, niter, par)
 end
 

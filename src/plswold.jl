@@ -68,14 +68,14 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     Tx = similar(X, n, nlv)
     Wx = similar(X, p, nlv)
     Wytild = similar(X, q, nlv)
-    Px = copy(Wx)
+    Vx = copy(Wx)
     TTx = similar(X, nlv)
     tx   = similar(X, n)
     ty = copy(tx)
     wx  = similar(X, p)
     wy  = similar(X, q)
     wytild = copy(wy)     
-    px   = copy(wx)
+    vx   = copy(wx)
     niter = zeros(nlv)
     # End
     @inbounds for a = 1:nlv       
@@ -100,19 +100,19 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         end
         niter[a] = iter - 1
         ttx = dot(tx, tx)
-        mul!(px, X', tx)
-        px ./= ttx
+        mul!(vx, X', tx)
+        vx ./= ttx
         # Deflation
-        X .-= tx * px'
+        X .-= tx * vx'
         Y .-= tx * wytild'
         # End         
         Tx[:, a] .= tx
         Wx[:, a] .= wx
-        Px[:, a] .= px
+        Vx[:, a] .= vx
         Wytild[:, a] .= wytild
         TTx[a] = ttx
     end
     fweight!(Tx, 1 ./ sqrtw) 
-    Rx = Wx * inv(Px' * Wx)
-    Plsr(Tx, Px, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, niter, par)
+    Rx = Wx * inv(Vx' * Wx)
+    Plsr(Tx, Vx, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, niter, par)
 end

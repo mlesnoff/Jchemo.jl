@@ -125,7 +125,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     Wx  = similar(X, p, nlv)
     Wy  = similar(X, q, nlv)
     Wytild  = copy(Wy)
-    Px  = similar(X, p, nlv)
+    Vx  = similar(X, p, nlv)
     Cx = similar(X, p, p)
     invCx = copy(Cx)
     Ix = Diagonal(ones(Q, p))
@@ -135,7 +135,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     wx  = similar(X, p)
     wy  = similar(X, q)
     wytild = copy(wy)
-    px = similar(X, p)
+    vx = similar(X, p)
     lambda = copy(TTx)
     covtot = copy(TTx)
     niter = Int.(ones(nlv))
@@ -171,8 +171,8 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         lambda[a] = ty' * X * invCx * X' * ty
         covtot[a] = tr(Y' * X * invCx * X' * Y)
         ttx = dot(tx, tx)
-        mul!(px, X', tx)
-        px ./= ttx
+        mul!(vx, X', tx)
+        vx ./= ttx
         mul!(wytild, Y', tx)
         wytild ./= ttx
         # For Rx
@@ -180,18 +180,18 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         wx .= invCx * X' * ty / tty
         wx .= wx / normv(wx)
         # Deflation
-        X .-= tx * px'
+        X .-= tx * vx'
         Y .-= tx * wytild'
         # End
         Tx[:, a] .= tx   
-        Px[:, a] .= px
+        Vx[:, a] .= vx
         Wx[:, a] .= wx
         Wytild[:, a] .= wytild
         TTx[a] = ttx
      end
-     Rx = Wx * inv(Px' * Wx)
+     Rx = Wx * inv(Vx' * Wx)
      Tx .= (1 ./ sqrtw) .* Tx
-     Plsr(Tx, Px, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, niter, par)
+     Plsr(Tx, Vx, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, niter, par)
 end
 
 

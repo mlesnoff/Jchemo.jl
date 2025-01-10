@@ -152,8 +152,8 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     Ty = copy(Tx)
     Wx = similar(X, p, nlv)
     Wy = similar(X, q, nlv)
-    Px = copy(Wx)
-    Py = copy(Wy)
+    Vx = copy(Wx)
+    Vy = copy(Wy)
     TTx = similar(X, nlv)
     TTy = copy(TTx)
     tx   = similar(X, n)
@@ -162,8 +162,8 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     wxtild = copy(wx)    
     wy  = similar(X, q)
     wytild = copy(wy)
-    px   = copy(wx)
-    py   = copy(wy)
+    vx   = copy(wx)
+    vy   = copy(wy)
     niter = zeros(nlv)
     # End
     @inbounds for a = 1:nlv
@@ -205,13 +205,13 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
             end
         end
         niter[a] = iter - 1
-        mul!(px, X', tx)
-        px ./= ttx
-        mul!(py, Y', ty)
-        py ./= tty
+        mul!(vx, X', tx)
+        vx ./= ttx
+        mul!(vy, Y', ty)
+        vy ./= tty
         # Deflation
-        X .-= tx * px'
-        Y .-= ty * py'
+        X .-= tx * vx'
+        Y .-= ty * vy'
         # Same as:
         #b = tx' * X / ttx
         #X .-= tx * b
@@ -222,16 +222,16 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         Ty[:, a] .= ty
         Wx[:, a] .= wx
         Wy[:, a] .= wy
-        Px[:, a] .= px
-        Py[:, a] .= py
+        Vx[:, a] .= vx
+        Vy[:, a] .= vy
         TTx[a] = ttx
         TTy[a] = tty
     end
     Tx .= (1 ./ sqrtw) .* Tx
     Ty .= (1 ./ sqrtw) .* Ty
-    Rx = Wx * inv(Px' * Wx)
-    Ry = Wy * inv(Py' * Wy)
-    Ccawold(Tx, Ty, Px, Py, Rx, Ry, Wx, Wy, TTx, TTy, bscales, xmeans, xscales, 
+    Rx = Wx * inv(Vx' * Wx)
+    Ry = Wy * inv(Vy' * Wy)
+    Ccawold(Tx, Ty, Vx, Vy, Rx, Ry, Wx, Wy, TTx, TTy, bscales, xmeans, xscales, 
         ymeans, yscales, weights, niter, par)
 end
 
@@ -271,7 +271,7 @@ function Base.summary(object::Ccawold, X, Y)
     # X
     tt = object.TTx 
     sstot = frob(X, object.weights)^2
-    tt_adj = colsum(object.Px.^2) .* tt
+    tt_adj = colsum(object.Vx.^2) .* tt
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
@@ -280,7 +280,7 @@ function Base.summary(object::Ccawold, X, Y)
     # Y
     tt = object.TTy 
     sstot = frob(Y, object.weights)^2
-    tt_adj = colsum(object.Py.^2) .* tt
+    tt_adj = colsum(object.Vy.^2) .* tt
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    

@@ -1,8 +1,10 @@
 # News
 
-## *Version 0.7.1*
+## *Version 0.8.0*
 
-
+- Breaking
+   - Object 'P' in the code and outputs (matrix of laodings in Pca, 
+       Pls etc.): renamed to 'V'.
 
 ## *Version 0.7.0*
 

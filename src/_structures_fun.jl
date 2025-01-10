@@ -186,8 +186,8 @@ end
 struct Ccawold
     Tx::Matrix
     Ty::Matrix
-    Px::Matrix
-    Py::Matrix
+    Vx::Matrix
+    Vy::Matrix
     Rx::Matrix
     Ry::Matrix    
     Wx::Matrix
@@ -207,8 +207,8 @@ end
 struct Plscan
     Tx::Matrix
     Ty::Matrix
-    Px::Matrix
-    Py::Matrix
+    Vx::Matrix
+    Vy::Matrix
     Rx::Matrix
     Ry::Matrix    
     Wx::Matrix
