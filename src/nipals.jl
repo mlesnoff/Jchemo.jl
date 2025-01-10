@@ -51,18 +51,18 @@ svd(X).U[:, 1]
 function nipals(X; kwargs...)
     par = recovkw(ParNipals, kwargs).par
     X = ensure_mat(X)
-    n, p = size(X)
+    p = nco(X)
     u = X[:, argmax(colnorm(X))]
-    u0 = similar(X, n)
     v = similar(X, p)   
+    v0 = similar(X, p)
     cont = true
     iter = 1
     while cont
-        u0 .= copy(u)      
+        v0 .= copy(v)      
         mul!(v, X', u)
         v ./= normv(v)
         mul!(u, X, v)
-        dif = sum((u .- u0).^2)
+        dif = sum((v .- v0).^2)
         iter = iter + 1
         if (dif < par.tol) || (iter > par.maxit)
             cont = false
@@ -77,20 +77,20 @@ end
 function nipals(X, UUt, VVt; kwargs...)
     par = recovkw(ParNipals, kwargs).par
     X = ensure_mat(X)
-    n, p = size(X)
+    p = nco(X)
     u = X[:, argmax(colnorm(X))]
-    u0 = similar(X, n)
     v = similar(X, p)   
+    v0 = similar(X, p) 
     cont = true
     iter = 1
     while cont
-        u0 .= copy(u)      
+        v0 .= copy(v)       
         mul!(v, X', u)
         v .= v .- VVt * v
         v ./= normv(v)
         mul!(u, X, v)
         u .-= UUt * u
-        dif = sum((u .- u0).^2)
+        dif = sum((v .- v0).^2)
         iter = iter + 1
         if (dif < par.tol) || (iter > par.maxit)
             cont = false

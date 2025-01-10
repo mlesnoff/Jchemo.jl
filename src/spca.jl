@@ -122,9 +122,9 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
     if par.algo == :shen 
-        fnipals = snipals_shen
+        snipals = snipals_shen
     elseif par.algo == :mix 
-        fnipals = snipals_mix
+        snipals = snipals_mix
     end
     nvar = par.nvar
     length(nvar) == 1 ? nvar = repeat([nvar], nlv) : nothing
@@ -147,7 +147,7 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     beta = similar(X, p, nlv)
     sellv = list(Vector{Int}, nlv)
     for a = 1:nlv
-        res = fnipals(X; meth = par.meth, nvar = nvar[a], tol = par.tol, 
+        res = snipals(X; meth = par.meth, nvar = nvar[a], tol = par.tol, 
             maxit = par.maxit)
         t .= res.t
         ## Deflation with respect to t
