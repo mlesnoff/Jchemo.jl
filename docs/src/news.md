@@ -3,8 +3,8 @@
 ## *Version 0.8.0*
 
 - Breaking
-   - Object 'P' in the code and outputs (matrix of laodings in Pca, 
-       Pls etc.): renamed to 'V'.
+   - Object 'P' when representing matrix of laodings in Pca, Pls etc.:
+   renamed to 'V'  in the code of functions and their outputs.
 
 ## *Version 0.7.0*
 
