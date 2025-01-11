@@ -52,7 +52,7 @@ Kim-Anh Lê Cao, Florian Rohart, Ignacio Gonzalez, Sebastien Dejean
 with key contributors Benoit Gautier, Francois Bartolo, contributions 
 from Pierre Monget, Jeff Coquery, FangZou Yao and Benoit Liquet. 
 (2016). mixOmics: Omics Data Integration Project. R package 
-version 6.1.1. https://CRAN.R-project.org/package=mixOmics
+version 6.1.1. https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html
 
 Package mixOmics on Bioconductor:
 https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html

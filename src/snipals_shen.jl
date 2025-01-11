@@ -17,7 +17,7 @@ function snipals_shen(X; kwargs...)
     sel = list(Int64, nvar)
     cont = true
     iter = 1
-    nzeros = p - par.nvar  # = degree of sparsity in Shen et al. (2013)
+    nzeros = p - par.nvar  # = degree of sparsity 
     while cont
         u0 .= copy(u)
         ## Sparsity
@@ -39,7 +39,7 @@ function snipals_shen(X; kwargs...)
         end
     end
     niter = iter - 1
-    v ./= normv(v)
+    v ./= normv(v)  # final unitary vector 'v'
     t = X * v 
     (t = t, v, niter)
 end

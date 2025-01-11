@@ -24,28 +24,40 @@ Shen & Huang 2008.
 
 The algorithm computes each loadings vector iteratively, by an alternating 
 LS regression (Nipals) including a step of thresholding. Function `spca` provides 
-the thresholding methods '1' and '2' (`:soft` and `:hard`) reported in Shen & Huang 
+thresholding methods '1' and '2' (`:soft` and `:hard`) reported in Shen & Huang 
 2008 Lemma 2:
-* See the code of function `snipals_mix` for details on how is computed 
-    the cutoff 'lambda'  (Shen & Huang 2008) used inside the thresholding. 
-* The degree of sparsity used as tuninng parameter by Shen & Huang 2008 
-    (number of null elements in the loadings vector) is equal to p - `nvar`.
+* The tuning parameter used by Shen & Huang 2008 is the number of null elements 
+    in the loadings vector, referred to as degree of sparsity. The present 
+    function `spca` uses the number of non-zero elements (`nvar`), equal to 
+    p - degree of sparsity.
+* See the code of function `snipals_shen` for details on how is computed 
+    the cutoff 'lambda'  (Shen & Huang 2008) used inside the thresholding
+    function, given a value for `nvar`. It follows the strategy given in 
+    Shen & Huang 2008 section 2. Differences from other softwares may occur 
+    when there are tied values in the loadings vector (depending on the choices 
+    made when computing the quantiles).
 
-The case `meth = :soft` returns the same results as function 
-`spca` of the R package `mixOmics` (Lê Cao et al.) [except potentially 
-when the loadings vector contain a large number of tied values, which
-should rarely happen in practice but may generate some difference in the 
-computed thresholding cutoff].
+Shen & Huang 2008 do not decsribe how they deflate matrix `X` after a given PC 
+is computed. The present function `spca` does a regression of the `X`-columns 
+on the score vector `t`, as it is done in function `spca` of the R Package 
+`mixOmics` (note however that the `mixOmics` function uses a variant of the Nipals
+proposed by Shen & Hunag, that gives different results).
 
-**Note:** The resulting sparse loadings vectors (`V`-columns) 
-are in general non orthogonal. Therefore, there is no a unique 
-decomposition of the variance of `X` such as in PCA. 
+For the first PC (and when there are not tied values in the loadings vector), 
+the present function `spca` gives the same result as function `sPCA_rSVD` of 
+the R package `ltsspca`. However, the `ltsspca` fonction deflates matrix `X` by 
+regressing the `X`-rows on the loadings vector `v`. Therefore, results differ 
+from the second PC. 
+
+The computed sparse loadings vectors (`V`-columns) are in general non orthogonal. 
+Therefore, there is no a unique decomposition of the variance of `X` such as in PCA. 
 Function `summary` returns the following objects:
 * `explvarx`: The proportion of variance of `X` explained 
-    by each column t of `T`, computed by regressing `X` 
-    on t (such as what is done in PLS).
-* `explvarx_adj`: Adjusted explained variance proposed by 
-    Shen & Huang 2008 section 2.3.    
+    by each column `t` of `T`, computed by regressing `X` 
+    on `t` (such as what is usually done in PLS).
+* `explvarx_v`: Adjusted explained variance proposed by 
+    Shen & Huang 2008 section 2.3, that uses regressions 
+    of the `X`-rows on the loadings spaces `V`.     
 
 ## References
 Kim-Anh Lê Cao, Florian Rohart, Ignacio Gonzalez, Sebastien 
@@ -53,15 +65,16 @@ Dejean with key contributors Benoit Gautier, Francois Bartolo,
 contributions from Pierre Monget, Jeff Coquery, FangZou Yao 
 and Benoit Liquet. (2016). mixOmics: Omics Data Integration 
 Project. R package version 6.1.1. 
-https://CRAN.R-project.org/package=mixOmics
-
-Package mixOmics on Bioconductor:
 https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html
 
 Shen, H., Huang, J.Z., 2008. Sparse principal component 
 analysis via regularized low rank matrix approximation. 
 Journal of Multivariate Analysis 99, 1015–1034. 
 https://doi.org/10.1016/j.jmva.2007.06.007
+
+Wang Y. , Van Aelst S., Cevallos Valdiviezo H., Reynkens T. 2019.
+ltsspca: Sparse Principal Component Based on Least Trimmed Squares.
+Version 0.1.0. https://cran.r-project.org/web/packages/ltsspca
 
 ## Examples
 ```julia
@@ -82,24 +95,24 @@ nlv = 3
 meth = :soft
 #meth = :hard
 nvar = 2
-scal = false
-model = spca(; nlv, meth, nvar, scal) ;
+model = spca(; nlv, meth, nvar) ;
 fit!(model, Xtrain) 
 fitm = model.fitm ;
 pnames(fitm)
 fitm.niter
 fitm.sellv 
 fitm.sel
-fitm.V
-fitm.V' * fitm.V
+V = fitm.V
+V' * V
 @head T = fitm.T
+T' * T
 @head transf(model, Xtrain)
 
 @head Ttest = transf(fitm, Xtest)
 
 res = summary(model, Xtrain) ;
 res.explvarx
-res.explvarx_adj
+res.explvarx_v
 ```
 """
 spca(; kwargs...) = JchemoModel(spca, nothing, kwargs)
@@ -138,7 +151,6 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     end
     sqrtw = sqrt.(weights.w)
     fweight!(X, sqrtw)
-    t = similar(X, n)
     T = similar(X, n, nlv)
     V = similar(X, p, nlv)
     sv = similar(X, nlv)
@@ -149,15 +161,14 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     for a = 1:nlv
         res = snipals(X; meth = par.meth, nvar = nvar[a], tol = par.tol, 
             maxit = par.maxit)
-        t .= res.t
-        ## Deflation with respect to t
-        ## same as in plsnipals (since non orthogonal loadings V)      
-        tt = dot(t, t)
-        b .= t' * X / tt           
-        X .-= t * b   #  ... - t * t' X / tt
+        ## Deflation by regression of X-columns on t
+        ## same as in plsnipals      
+        tt = dot(res.t, res.t)
+        b .= res.t' * X / tt           
+        X .-= res.t * b   #  = X - t * t' X / tt
         ## End        
-        sv[a] = normv(t)
-        T[:, a] .= t ./ sqrtw
+        sv[a] = normv(res.t)
+        T[:, a] .= res.t ./ sqrtw
         V[:, a] .= res.v
         beta[:, a] .= vec(b)
         niter[a] = res.niter
@@ -182,7 +193,6 @@ function transf(object::Spca, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     zX = fcscale(X, object.xmeans, object.xscales)
     T = similar(X, m, nlv)
-    t = similar(X, m)
     for a = 1:nlv
         T[:, a] .= zX * vcol(object.V, a)
         zX .-= vcol(T, a) * vcol(object.beta, a)' 
@@ -225,7 +235,7 @@ function Base.summary(object::Spca, X)
     end
     cumpvar = ss / sstot
     pvar = [cumpvar[1]; diff(cumpvar)]
-    explvarx_adj = DataFrame(nlv = 1:nlv, pvar = pvar, cumpvar = cumpvar)
+    explvarx_v = DataFrame(nlv = 1:nlv, pvar = pvar, cumpvar = cumpvar)
     ## End
     nam = string.("lv", 1:nlv)
     contr_ind = DataFrame(fscale(TT, tt), nam)
@@ -235,6 +245,6 @@ function Base.summary(object::Spca, X)
     ## End
     contr_var = DataFrame(object.V.^2, nam)
     cor_circle = DataFrame(corm(X, object.T, weights), nam)
-    (explvarx = explvarx, explvarx_adj, contr_ind, contr_var, coord_var, cor_circle)
+    (explvarx = explvarx, explvarx_v, contr_ind, contr_var, coord_var, cor_circle)
 end
 
