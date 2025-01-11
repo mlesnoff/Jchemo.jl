@@ -6,6 +6,12 @@
    - Object 'P' when representing matrix of laodings in Pca, Pls etc.:
    renamed to 'V'  in the code of functions and their outputs.
 
+- New
+   - 'spca' and 'spcr' were improved.
+
+- Modifications
+    - Code cleaning.  
+
 ## *Version 0.7.0*
 
 - Breaking
