@@ -11,7 +11,7 @@ function snipals_shen(X; kwargs...)
     res = nipals(X; kwargs...)
     u = res.u
     u0 = similar(u)
-    v = res.v * res.sv  # = 'v_tild' in Shen et al. 2008
+    v = similar(X, p) #res.v * res.sv  # = 'v_tild' in Shen et al. 2008
     absv = similar(v)
     ind = list(Int64, p)
     sel = list(Int64, nvar)
@@ -20,6 +20,7 @@ function snipals_shen(X; kwargs...)
     nzeros = p - par.nvar  # = degree of sparsity 
     while cont
         u0 .= copy(u)
+        mul!(v, X', u)
         ## Sparsity
         if nzeros > 0
             absv .= abs.(v)
