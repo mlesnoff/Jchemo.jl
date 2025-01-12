@@ -1,7 +1,7 @@
 function snipals_shen(X; kwargs...)
     par = recovkw(Jchemo.ParSnipals, kwargs).par 
     X = ensure_mat(X)
-    n, p = size(X)
+    p = nco(X)
     if par.meth == :soft 
         fthresh = thresh_soft
     elseif par.meth == :hard 
@@ -10,9 +10,9 @@ function snipals_shen(X; kwargs...)
     nvar = par.nvar
     res = nipals(X; kwargs...)
     u = res.u
+    u0 = similar(u)
     v = res.v * res.sv  # = 'v_tild' in Shen et al. 2008
-    u0 = similar(X, n)
-    absv = copy(v)
+    absv = similar(v)
     ind = list(Int64, p)
     sel = list(Int64, nvar)
     cont = true
