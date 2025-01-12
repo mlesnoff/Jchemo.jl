@@ -54,7 +54,7 @@ function nipals(X; kwargs...)
     p = nco(X)
     u = X[:, argmax(colnorm(X))]  # here 'u' represents both t and u (to save allocation),
     v = similar(X, p)   
-    v0 = similar(X, p)
+    v0 = similar(v)
     cont = true
     iter = 1
     while cont
@@ -80,7 +80,7 @@ function nipals(X, UUt, VVt; kwargs...)
     p = nco(X)
     u = X[:, argmax(colnorm(X))]
     v = similar(X, p)   
-    v0 = similar(X, p) 
+    v0 = similar(v) 
     cont = true
     iter = 1
     while cont
@@ -96,9 +96,9 @@ function nipals(X, UUt, VVt; kwargs...)
             cont = false
         end
     end
+    niter = iter - 1
     sv = normv(u)
     u ./= sv
-    niter = iter - 1
     (u = u, v, sv, niter)
 end
 
