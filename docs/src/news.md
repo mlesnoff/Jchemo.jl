@@ -1,5 +1,11 @@
 # News
 
+## *Version 0.8.1*
+
+- Modifications
+    - A bug was inserted in 'spca' incidentally between v0.7.0 and v0.8.0. 
+    Corrected now.  
+
 ## *Version 0.8.0*
 
 - Breaking
