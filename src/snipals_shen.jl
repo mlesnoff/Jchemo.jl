@@ -11,7 +11,7 @@ function snipals_shen(X; kwargs...)
     res = nipals(X; kwargs...)
     u = res.u
     u0 = similar(u)
-    v = similar(X, p) #res.v * res.sv  # = 'v_tild' in Shen et al. 2008
+    v = similar(X, p) # = 'v_tild' in Shen et al. 2008
     absv = similar(v)
     ind = list(Int64, p)
     sel = list(Int64, nvar)

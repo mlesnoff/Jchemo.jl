@@ -22,32 +22,25 @@ Keyword arguments:
 sPCA-rSVD algorithm (regularized low rank matrix approximation) of 
 Shen & Huang 2008. 
 
-The algorithm computes each loadings vector iteratively, by an alternating 
-LS regression (Nipals) including a step of thresholding. Function `spca` provides 
-thresholding methods '1' and '2' (`:soft` and `:hard`) reported in Shen & Huang 
-2008 Lemma 2:
+The algorithm computes each loadings vector iteratively, by alternating 
+least squares regressions (Nipals) including a step of thresholding. Function 
+`spca` provides thresholding methods '1' and '2' (`:soft` and `:hard`) reported 
+in Shen & Huang 2008 Lemma 2:
 * The tuning parameter used by Shen & Huang 2008 is the number of null elements 
-    in the loadings vector, referred to as degree of sparsity. The present 
-    function `spca` uses the number of non-zero elements (`nvar`), equal to 
-    p - degree of sparsity.
+    in the loadings vector, referred to as degree of sparsity. Conversely, the 
+    present function `spca` uses the number of non-zero elements (`nvar`), 
+    equal to p - degree of sparsity.
 * See the code of function `snipals_shen` for details on how is computed 
-    the cutoff 'lambda'  (Shen & Huang 2008) used inside the thresholding
-    function, given a value for `nvar`. It follows the strategy given in 
-    Shen & Huang 2008 section 2. Differences from other softwares may occur 
+    the cutoff 'lambda' used inside the thresholding function (Shen & Huang 2008), 
+    given a value for `nvar`. Differences from other softwares may occur 
     when there are tied values in the loadings vector (depending on the choices 
-    made when computing the quantiles).
+    of method used to compute quantiles).
 
 Shen & Huang 2008 do not decsribe how they deflate matrix `X` after a given PC 
 is computed. The present function `spca` does a regression of the `X`-columns 
-on the score vector `t`, as it is done in function `spca` of the R Package 
-`mixOmics` (note however that the `mixOmics` function uses a variant of the Nipals
-proposed by Shen & Hunag, that gives different results).
-
-For the first PC (and when there are not tied values in the loadings vector), 
-the present function `spca` gives the same result as function `sPCA_rSVD` of 
-the R package `ltsspca`. However, the `ltsspca` fonction deflates matrix `X` by 
-regressing the `X`-rows on the loadings vector `v`. Therefore, results differ 
-from the second PC. 
+on the score vector `t`. When `meth = :soft`, the function gives the same result as 
+function `spca` of the R package `mixOmics` (except possibly when there are many tied 
+values in the loadings vectors). 
 
 The computed sparse loadings vectors (`V`-columns) are in general non orthogonal. 
 Therefore, there is no a unique decomposition of the variance of `X` such as in PCA. 
@@ -71,10 +64,6 @@ Shen, H., Huang, J.Z., 2008. Sparse principal component
 analysis via regularized low rank matrix approximation. 
 Journal of Multivariate Analysis 99, 1015–1034. 
 https://doi.org/10.1016/j.jmva.2007.06.007
-
-Wang Y. , Van Aelst S., Cevallos Valdiviezo H., Reynkens T. 2019.
-ltsspca: Sparse Principal Component Based on Least Trimmed Squares.
-Version 0.1.0. https://cran.r-project.org/web/packages/ltsspca
 
 ## Examples
 ```julia
