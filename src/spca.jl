@@ -118,7 +118,7 @@ end
 
 function spca!(X::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParSpca, kwargs).par
-    @assert in([:shen; :mix])(par.algo) "Wrong value for argument 'algo'."
+    @assert in([:shen; :mix; :dir])(par.algo) "Wrong value for argument 'algo'."
     @assert in([:soft; :hard])(par.meth) "Wrong value for argument 'meth'."
     Q = eltype(X)
     n, p = size(X)
@@ -126,7 +126,9 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     if par.algo == :shen 
         snipals = snipals_shen
     elseif par.algo == :mix 
-        snipals = snipals_mix
+        snipals = Jchemo.snipals_mix
+    elseif par.algo == :dir 
+        snipals = Jchemo.snipals_dir
     end
     nvar = par.nvar
     length(nvar) == 1 ? nvar = repeat([nvar], nlv) : nothing
