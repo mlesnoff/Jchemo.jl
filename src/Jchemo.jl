@@ -42,6 +42,7 @@ include("nipalsmiss.jl")
 include("simpp.jl")
 include("snipals_shen.jl")
 include("snipals_mix.jl")
+include("snipals_dir.jl")
 
 ######---- Preprocessing
 
@@ -297,7 +298,7 @@ export
     rowmean, rownorm, rowstd, rowsum, rowvar,
     rowmeanskip, rowstdskip, rowsumskip, rowvarskip,
     simpphub, simppsph,   
-    snipals_shen, snipals_mix,
+    snipals_shen,
     thresh_soft, thresh_hard, 
     softmax,
     sourcedir,
