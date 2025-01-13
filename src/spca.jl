@@ -36,11 +36,10 @@ in Shen & Huang 2008 Lemma 2:
     when there are tied values in the loadings vector (depending on the choices 
     of method used to compute quantiles).
 
-Shen & Huang 2008 do not decsribe how they deflate matrix `X` after a given PC 
-is computed. The present function `spca` does a regression of the `X`-columns 
-on the score vector `t`. When `meth = :soft`, the function gives the same result as 
-function `spca` of the R package `mixOmics` (except possibly when there are many tied 
-values in the loadings vectors). 
+To deflate matrix `X` after a given PC, the present function `spca` does a 
+regression of the `X`-columns on the score vector `t`. When `meth = :soft`, the function 
+gives the same result as function `spca` of the R package `mixOmics` (except possibly 
+when there are many tied values in the loadings vectors, which is not usual). 
 
 The computed sparse loadings vectors (`V`-columns) are in general non orthogonal. 
 Therefore, there is no a unique decomposition of the variance of `X` such as in PCA. 
