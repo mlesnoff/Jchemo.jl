@@ -117,7 +117,7 @@ end
 
 function spca!(X::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParSpca, kwargs).par
-    @assert in([:shen; :mix; :dir])(par.algo) "Wrong value for argument 'algo'."
+    @assert in([:shen; :dir])(par.algo) "Wrong value for argument 'algo'."
     @assert in([:soft; :hard])(par.meth) "Wrong value for argument 'meth'."
     Q = eltype(X)
     n, p = size(X)
