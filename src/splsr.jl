@@ -24,7 +24,7 @@ Dayal & McGregor (1997) is used instead Nipals.
 
 In the present version of `splsr`, the sparse thresholding only concerns 
 `X`. The function provides two thresholding methods to compute the sparse 
-`X`-loading weights w: see function `spca` for description. 
+`X`-loading weights w (`:soft` and `:hard`), see function `spca` for description. 
     
 The case `meth = :soft` returns the same results as function `spls` of 
 the R package mixOmics (Lê Cao et al.) with the regression mode and without 
@@ -185,7 +185,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
             ## End
             w ./= normv(w)
         else
-            w .= snipals_mix(XtY'; meth = par.meth, nvar = nvar[a], tol = par.tol, 
+            w .= Jchemo.snipals_mix(XtY'; meth = par.meth, nvar = nvar[a], tol = par.tol, 
                 maxit = par.maxit).v
         end                                  
         r .= w
