@@ -229,11 +229,11 @@ function Base.summary(object::Spca, X)
     ## End
     nam = string.("lv", 1:nlv)
     contr_ind = DataFrame(fscale(TT, tt), nam)
+    contr_var = DataFrame(object.V.^2, nam)
     ## Should be ok 
     C = X' * fweight(fscale(object.T, sqrt.(tt)), weights.w) 
     coord_var = DataFrame(C, nam)
     ## End
-    contr_var = DataFrame(object.V.^2, nam)
     cor_circle = DataFrame(corm(X, object.T, weights), nam)
     (explvarx = explvarx, explvarx_v, contr_ind, contr_var, coord_var, cor_circle)
 end
