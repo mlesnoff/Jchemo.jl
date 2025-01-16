@@ -40,10 +40,8 @@ function lg(X, Y; centr = true)
     Y = ensure_mat(Y)
     n = nro(X)
     if centr
-        xmeans = colmean(X)
-        ymeans = colmean(Y)
-        X = fcenter(X, xmeans)
-        Y = fcenter(Y, ymeans)
+        X = fcenter(X, colmean(X))
+        Y = fcenter(Y, colmean(Y))
     end
     ## Same as: sum(cov(X, Y; corrected = false).^2)
     ssq(X' * Y) / n^2 
@@ -52,10 +50,8 @@ end
 function lg(Xbl::Vector; centr = true)
     nbl = length(Xbl)
     mat = zeros(eltype(Xbl[1]), nbl, nbl)
-    for i = 1:nbl
-        for j = 1:nbl
-            mat[i, j] = lg(Xbl[i], Xbl[j]; centr)
-        end
+    for i = 1:nbl, j = 1:nbl
+        mat[i, j] = lg(Xbl[i], Xbl[j]; centr)
     end
     mat
 end
@@ -175,10 +171,8 @@ function rv(X, Y; centr = true)
     Y = ensure_mat(Y)
     n, p = size(X)
     if centr
-        xmeans = colmean(X)
-        ymeans = colmean(Y)
-        X = fcenter(X, xmeans)
-        Y = fcenter(Y, ymeans)
+        X = fcenter(X, colmean(X))
+        Y = fcenter(Y, colmean(Y))
     end
     if n < p
         XXt = X * X'
@@ -203,10 +197,8 @@ end
 function rv(Xbl::Vector; centr = true)
     nbl = length(Xbl)
     mat = zeros(eltype(Xbl[1]), nbl, nbl)
-    for i = 1:nbl
-        for j = 1:nbl
-            mat[i, j] = rv(Xbl[i], Xbl[j]; centr)
-        end
+    for i = 1:nbl, j = 1:nbl
+        mat[i, j] = rv(Xbl[i], Xbl[j]; centr)
     end
     mat
 end
