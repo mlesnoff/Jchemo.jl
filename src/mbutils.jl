@@ -63,24 +63,33 @@ function blockscal(Xbl; kwargs...)
     blockscal(Xbl, weights; kwargs...)
 end
 
-function blockscal(Xbl, weights::Weight; kwargs...)
+function blockscal(Xbl, weights::Weight; kwargs...)   # to do: specify the type of Xbl
     par = recovkw(ParBlock, kwargs).par
     @assert in([:none, :frob, :mfa, :ncol, :sd])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
+    bscal = par.bscal
     xmeans = list(Vector{Q}, nbl)
     xscales = list(Vector{Q}, nbl)
     bscales = ones(Q, nbl)
-    bscal = par.bscal
     for k = 1:nbl
-        par.centr ? xmeans[k] = colmean(Xbl[k], weights) : xmeans[k] = zeros(Q, nco(Xbl[k]))
-        par.scal ? xscales[k] = colstd(Xbl[k], weights) : xscales[k] = ones(Q, nco(Xbl[k]))
-        zX = fcscale(Xbl[k], xmeans[k], xscales[k])
+        zX = copy(Xbl[k])
+        pbl = nco(zX)
+        xmeans[k] = zeros(Q, pbl)
+        xscales[k] = ones(Q, pbl)
+        if par.centr
+            xmeans[k] .= colmean(Xbl[k], weights)
+            fcenter!(zX, xmeans[k])
+        end
+        if par.scal 
+            xscales[k] = colstd(Xbl[k], weights)
+            fscale!(zX, xscales[k])
+        end
         if bscal == :frob
             bscales[k] = frob(zX, weights)
         elseif bscal == :mfa
-            sqrtD = Diagonal(sqrt.(weights.w))
-            bscales[k] = nipals(sqrtD * zX).sv
+            fweight!(zX, sqrt.(weights.w))
+            bscales[k] = nipals(zX).sv
         elseif bscal == :ncol
             bscales[k] = nco(zX)
         elseif bscal == :sd
