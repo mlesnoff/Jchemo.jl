@@ -129,11 +129,12 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
     n = nro(Xbl[1])
     nlv = par.nlv
     sqrtw = sqrt.(weights.w)
+    invsqrtw = 1 ./ sqrtw
     fitmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
     transf!(fitmbl, Xbl)
     # Row metric
     @inbounds for k = 1:nbl
-        Xbl[k] = sqrtw .* Xbl[k]
+        fweight!(Xbl[k], sqrtw)
     end
     ## Pre-allocation
     U = similar(Xbl[1], n, nlv)
@@ -165,7 +166,7 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
                 wk ./= dk           # = wk (= normed)
                 tk .= Xbl[k] * wk 
                 Tb[a][:, k] .= tk
-                Tbl[k][:, a] .= (1 ./ sqrtw) .* Tb[a][:, k]
+                Tbl[k][:, a] .= fweight(Tb[a][:, k], invsqrtw)
                 Wbl[k][:, a] .= wk
                 lb[k, a] = dk^2
             end
@@ -186,7 +187,7 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
             Xbl[k] .-= u * (u' * Xbl[k])
         end
     end
-    T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
+    T = fweight(sqrt.(mu)' .* U, invsqrtw)
     Mbpca(T, U, W, Tbl, Tb, Wbl, lb, mu, fitmbl, weights, niter, par)
 end
 
@@ -267,25 +268,26 @@ function Base.summary(object::Mbpca, Xbl)
     ## Contribution of the blocks to global 
     ## scores = lb proportions (contrib)
     z = fscale(object.lb, colsum(object.lb))
-    contr_block = DataFrame(z, string.("lv", 1:nlv))
+    nam = string.("lv", 1:nlv)
+    contr_block = DataFrame(z, nam)
     ## Proportion of inertia explained for 
     ## each block (explained.X)
     ## = object.lb if bscal = :frob 
     z = fscale((object.lb)', sstot)'
-    explX = DataFrame(z, string.("lv", 1:nlv))
+    explX = DataFrame(z, nam)
     ## Correlation between the original variables 
     ## and the global scores (globalcor)
     z = cor(X, object.U)  
-    corx2t = DataFrame(z, string.("lv", 1:nlv))  
+    corx2t = DataFrame(z, nam)  
     ## Correlation between the block scores 
     ## and the global scores (cor.g.b)
     z = list(Matrix{Q}, nlv)
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], object.U[:, a])
     end
-    cortb2t = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
+    cortb2t = DataFrame(reduce(hcat, z), nam)
     ## RV 
-    X = vcat(zXbl, [sqrtw .* object.T])
+    X = vcat(zXbl, [fweight(object.T, sqrtw)])
     nam = [string.("block", 1:nbl) ; "T"]
     res = rv(X)
     zrv = DataFrame(res, nam)

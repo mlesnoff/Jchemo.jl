@@ -63,7 +63,7 @@ function blockscal(Xbl; kwargs...)
     blockscal(Xbl, weights; kwargs...)
 end
 
-function blockscal(Xbl, weights::Weight; kwargs...)   # to do: specify the type of Xbl
+function blockscal(Xbl::Vector, weights::Weight; kwargs...)   # to do: specify the type of Xbl
     par = recovkw(ParBlock, kwargs).par
     @assert in([:none, :frob, :mfa, :ncol, :sd])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
