@@ -56,6 +56,7 @@ pnames(model)
 fitm = model.fitm ;
 pnames(fitm)
 @head fitm.fitm.T
+@head transf(model, X)
 @head fitm.fitm.V
 
 @head transf(model, Xtest)
