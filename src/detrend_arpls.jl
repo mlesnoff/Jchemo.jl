@@ -49,6 +49,8 @@ lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
+detrend_arpls(; kwargs...) = JchemoModel(detrend_arpls, nothing, kwargs)
+
 function detrend_arpls(X; kwargs...)
     par = recovkw(ParDetrendArpls, kwargs).par
     DetrendArpls(par)

@@ -56,6 +56,8 @@ lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
+detrend_asls(; kwargs...) = JchemoModel(detrend_asls, nothing, kwargs)
+
 function detrend_asls(X; kwargs...)
     par = recovkw(ParDetrendAsls, kwargs).par
     DetrendAsls(par)

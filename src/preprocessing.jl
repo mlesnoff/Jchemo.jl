@@ -48,6 +48,8 @@ lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
+detrend_lo(; kwargs...) = JchemoModel(detrend_lo, nothing, kwargs)
+
 function detrend_lo(X; kwargs...)
     par = recovkw(ParDetrendLo, kwargs).par
     DetrendLo(par)
@@ -127,6 +129,8 @@ lines!(wl, vec(zXc); color = :black)
 f
 ```
 """ 
+detrend_pol(; kwargs...) = JchemoModel(detrend_pol, nothing, kwargs)
+
 function detrend_pol(X; kwargs...)
     par = recovkw(ParDetrendPol, kwargs).par
     DetrendPol(par)
@@ -200,6 +204,8 @@ plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
 """ 
+fdif(; kwargs...) = JchemoModel(fdif, nothing, kwargs)
+
 function fdif(X; kwargs...)
     par = recovkw(ParFdif, kwargs).par
     Fdif(par)
@@ -279,6 +285,8 @@ plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
 """
+interpl(; kwargs...) = JchemoModel(interpl, nothing, kwargs)
+
 function interpl(X; kwargs...)
     par = recovkw(ParInterpl, kwargs).par
     Interpl(par)
@@ -377,6 +385,8 @@ plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
 """ 
+mavg(; kwargs...) = JchemoModel(mavg, nothing, kwargs)
+
 function mavg(X; kwargs...)
     par = recovkw(ParMavg, kwargs).par
     Mavg(par)
@@ -527,6 +537,8 @@ lines!(ax, u, vec(xp); color = :red)
 f
 ```
 """ 
+savgol(; kwargs...) = JchemoModel(savgol, nothing, kwargs)
+
 function savgol(X; kwargs...)
     par = recovkw(ParSavgol, kwargs).par
     Savgol(par)
@@ -664,6 +676,8 @@ plotsp(Xptest).f
 @head rowstd(Xptest)
 ```
 """ 
+snv(; kwargs...) = JchemoModel(snv, nothing, kwargs)
+
 function snv(X; kwargs...)
     par = recovkw(ParSnv, kwargs).par
     Snv(par)
