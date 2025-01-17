@@ -53,9 +53,10 @@ nvar = 20
 model = spcr(; nlv, meth, nvar) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fitm)
-@head model.fitm.T
-@head model.fitm.V
+fitm = model.fitm ;
+pnames(fitm)
+@head fitm.fitm.T
+@head fitm.fitm.V
 
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
@@ -90,15 +91,10 @@ function spcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     Q = eltype(X)
     q = nco(Y)
     ymeans = colmean(Y, weights)
-    ## No need to fscale Y
-    yscales = ones(Q, q)
-    ## End 
+    yscales = ones(Q, q) 
     fitm = spca!(X, weights; kwargs...)
-    K = fweight(fitm.T, weights.w)'
-    beta = inv(K * fitm.T) * K * fcenter(Y, ymeans)
-    Spcr(fitm, fitm.T, fitm.V, beta', fitm.xmeans, fitm.xscales, ymeans, yscales, weights,
-        fitm.sellv, fitm.sel,  # add compared to ::Pcr
-        par)
+    theta = inv(fitm.T' * fweight(fitm.T, fitm.weights.w)) * fitm.T' * fweight(Y, fitm.weights.w)
+    Spcr(fitm, theta', ymeans, yscales, fitm.sellv, fitm.sel, par)
 end
 
 """
@@ -110,14 +106,14 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Spcr, X; nlv = nothing)
     X = ensure_mat(X)
-    a = nco(object.T)
+    a = nco(object.fitm.T)
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     T = transf(object, X)
     pred = list(Matrix{eltype(X)}, le_nlv)
     @inbounds for i in eachindex(nlv)
-        beta = vcol(object.C, 1:nlv[i])'
-        pred[i] = vcol(T, 1:nlv[i]) * beta .+ object.ymeans'
+        theta = vcol(object.C, 1:nlv[i])'
+        pred[i] = vcol(T, 1:nlv[i]) * theta .+ object.ymeans'
     end 
     le_nlv == 1 ? pred = pred[1] : nothing
     (pred = pred,)

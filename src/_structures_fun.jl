@@ -357,14 +357,9 @@ end
 
 struct Spcr
     fitm::Spca
-    T::Matrix
-    V::Matrix
     C::Matrix
-    xmeans::Vector
-    xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Weight
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
     par::ParSpcr

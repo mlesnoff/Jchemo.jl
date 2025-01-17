@@ -80,14 +80,12 @@ function pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     Q = eltype(X)
     q = nco(Y)
     ymeans = colmean(Y, weights)
-    ## No need to fscale Y
-    ## below yscales is built only for consistency with coef::Plsr  
-    yscales = ones(Q, q)
-    ## End 
+    yscales = ones(Q, q)  # built only for consistency with coef::Plsr
     fitm = pcasvd!(X, weights; kwargs...)
     ## Below, first term of the product is equal to Diagonal(1 ./ fitm.sv[1:nlv].^2) 
     ## if T is D-orthogonal. This is the case for the actual version (pcasvd)
-    ## theta: coeffs regression of Y on T (= C')
+    ## theta: coefs regression of Y on T (= C')
+    ## not needed (same theta): fcenter!(Y, ymeans)
     theta = inv(fitm.T' * fweight(fitm.T, fitm.weights.w)) * fitm.T' * fweight(Y, fitm.weights.w)
     Pcr(fitm, theta', ymeans, yscales, par) 
 end
@@ -118,7 +116,7 @@ function coef(object::Pcr; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     theta = vcol(object.C, 1:nlv)'
     Dy = Diagonal(object.yscales)
-    ## To not use for Spcr (R not computed; while for Pcr, R = V)
+    ## Not used for Spcr (since R not computed; while for Pcr, R = V)
     B = fweight(vcol(object.fitm.V, 1:nlv), 1 ./ object.fitm.xscales) * theta * Dy
     ## In 'int': No correction is needed, since 
     ## ymeans, xmeans and B are in the original scale 

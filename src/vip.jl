@@ -104,7 +104,7 @@ function vip(object::Union{Pcr, Plsr, Spcr}; nlv = nothing)
     (imp = imp, W2, sst)
 end
 
-function vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
+function vip(object::Union{Pcr, Plsr, Spcr}, Y; nlv = nothing)
     if isa(object, Jchemo.Plsr)
         W = object.W
         T = object.T
