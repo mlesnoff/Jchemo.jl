@@ -128,11 +128,11 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
     nbl = length(Xbl)
     n = nro(Xbl[1])
     nlv = par.nlv
-    sqrtw = sqrt.(weights.w)
-    invsqrtw = 1 ./ sqrtw
     fitmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
     transf!(fitmbl, Xbl)
     # Row metric
+    sqrtw = sqrt.(weights.w)
+    invsqrtw = 1 ./ sqrtw
     @inbounds for k = 1:nbl
         fweight!(Xbl[k], sqrtw)
     end
