@@ -202,13 +202,13 @@ For a model fitted from X(n, p) and Y(n, q), the returned
 object `B` is a matrix (p, q). If `nlv` = 0, `B` is a matrix 
 of zeros. The returned object `int` is the intercept.
 """ 
-function coef(object::Union{Plsr, Pcr, Splsr}; nlv = nothing)
+function coef(object::Union{Plsr, Splsr}; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    beta = vcol(object.C, 1:nlv)'
+    theta = vcol(object.C, 1:nlv)'  # coeffs regression of Y on T
     Dy = Diagonal(object.yscales)
     ## To not use for Spcr (R not computed; while for Pcr, R = V)
-    B =  fweight(vcol(object.R, 1:nlv), 1 ./ object.xscales) * beta * Dy
+    B =  fweight(vcol(object.R, 1:nlv), 1 ./ object.xscales) * theta * Dy
     ## In 'int': No correction is needed, since 
     ## ymeans, xmeans and B are in the original scale 
     int = object.ymeans' .- object.xmeans' * B
@@ -223,7 +223,7 @@ Compute Y-predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{Plsr, Pcr, Splsr}, X; nlv = nothing)
+function predict(object::Union{Plsr, Splsr}, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))

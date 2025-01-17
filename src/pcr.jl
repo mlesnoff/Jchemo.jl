@@ -34,8 +34,12 @@ nlv = 15
 model = pcr(; nlv) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
-pnames(model.fitm)
-@head model.fitm.T
+fitm = model.fitm ;
+pnames(fitm)
+pnames(fitm.fitm)
+
+@head fitm.fitm.T
+@head transf(model, X)
 
 coef(model)
 coef(model; nlv = 3)
@@ -81,12 +85,11 @@ function pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     yscales = ones(Q, q)
     ## End 
     fitm = pcasvd!(X, weights; kwargs...)
-    D = Diagonal(fitm.weights.w)
-    ## Below, first term of the product = Diagonal(1 ./ fitm.sv[1:nlv].^2) if T is D-orthogonal
-    ## This is the case for the actual version (pcasvd)
-    K = fitm.T' * D 
-    beta = inv(K * fitm.T) * K * Y
-    Pcr(fitm, fitm.T, fitm.V, beta', fitm.xmeans, fitm.xscales, ymeans, yscales, weights, par)
+    ## Below, first term of the product is equal to Diagonal(1 ./ fitm.sv[1:nlv].^2) 
+    ## if T is D-orthogonal. This is the case for the actual version (pcasvd)
+    ## theta: coeffs regression of Y on T
+    theta = inv(fitm.T' * fweight(fitm.T, fitm.weights.w)) * fitm.T' * fweight(Y, fitm.weights.w)
+    Pcr(fitm, theta', ymeans, yscales, par) 
 end
 
 """ 
@@ -98,6 +101,51 @@ Compute latent variables (LVs = scores T) from a fitted model and a matrix X.
 """ 
 function transf(object::Union{Pcr, Spcr}, X; nlv = nothing)
     transf(object.fitm, X; nlv)
+end
+
+"""
+    coef(object::Pcr; nlv = nothing)
+Compute the b-coefficients of a LV model.
+* `object` : The fitted model.
+* `nlv` : Nb. LVs to consider.
+
+For a model fitted from X(n, p) and Y(n, q), the returned 
+object `B` is a matrix (p, q). If `nlv` = 0, `B` is a matrix 
+of zeros. The returned object `int` is the intercept.
+""" 
+function coef(object::Pcr; nlv = nothing)
+    a = nco(object.fitm.T)
+    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    theta = vcol(object.C, 1:nlv)'
+    Dy = Diagonal(object.yscales)
+    ## To not use for Spcr (R not computed; while for Pcr, R = V)
+    B = fweight(vcol(object.fitm.V, 1:nlv), 1 ./ object.fitm.xscales) * theta * Dy
+    ## In 'int': No correction is needed, since 
+    ## ymeans, xmeans and B are in the original scale 
+    int = object.ymeans' .- object.fitm.xmeans' * B
+    ## End
+    (B = B, int = int)
+end
+
+"""
+    predict(object::Pcr, X; nlv = nothing)
+Compute Y-predictions from a fitted model.
+* `object` : The fitted model.
+* `X` : X-data for which predictions are computed.
+* `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
+""" 
+function predict(object::Pcr, X; nlv = nothing)
+    X = ensure_mat(X)
+    a = nco(object.fitm.T)
+    isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
+    le_nlv = length(nlv)
+    pred = list(Matrix{eltype(X)}, le_nlv)
+    @inbounds for i in eachindex(nlv)
+        coefs = coef(object; nlv = nlv[i])
+        pred[i] = coefs.int .+ X * coefs.B  # try muladd(X, coefs.B, coefs.int)
+    end 
+    le_nlv == 1 ? pred = pred[1] : nothing
+    (pred = pred,)
 end
 
 """

@@ -331,14 +331,14 @@ end
 
 struct Pcr
     fitm::Pca
-    T::Matrix
-    R::Matrix
+    #T::Matrix
+    #R::Matrix
     C::Matrix
-    xmeans::Vector
-    xscales::Vector
+    #xmeans::Vector
+    #xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Weight
+    #weights::Weight
     par::ParPcr
 end
 
