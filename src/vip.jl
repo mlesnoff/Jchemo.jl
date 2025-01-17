@@ -58,7 +58,7 @@ vip(model.fitm, Y).imp
 model = plsrda(; nlv) 
 fit!(model, X, ycla)
 pnames(model.fitm)
-fitm = model.fitm.fitm ;
+fitm = model.fitm.fitm ;  # fitted PLS model
 vip(fitm).imp
 Ydummy = dummy(ycla).Y
 vip(fitm, Ydummy).imp
@@ -66,34 +66,37 @@ vip(fitm, Ydummy).imp
 model = plslda(; nlv) 
 fit!(model, X, ycla)
 pnames(model.fitm.fitm)
-fitm = model.fitm.fitm.embfitm ;
+fitm = model.fitm.fitm.embfitm ;  # fitted PLS model
 vip(fitm).imp
 vip(fitm, Ydummy).imp
 ```
 """ 
 function vip(object::Union{Pcr, Plsr, Spcr}; nlv = nothing)
-    if isa(object, Jchemo.Pcr) || isa(object, Jchemo.Spcr)
-        W = object.fitm.V
-    elseif isa(object, Jchemo.Plsr)
+    if isa(object, Jchemo.Plsr)
         W = object.W
+        T = object.T
+        a = nco(object.T)
+        sqrtw = sqrt.(object.weights.w)
+    elseif isa(object, Jchemo.Pcr) || isa(object, Jchemo.Spcr)
+        W = object.fitm.V
+        T = object.fitm.T
+        a = nco(object.fitm.T)
+        sqrtw = sqrt.(object.fitm.weights.w)
     end
-    a = nco(object.T)
     p = nro(W)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    sqrtw = sqrt.(object.weights.w)
-    ## Type '::Plsr' contains algorithmns 
-    ## where W is normed
+    ## Type 'Plsr' contains algorithmns where W is normed
     ## ==> No need to do the following: 
     ## wnorms = colnorm(W)
     ## W2 = fscale(W, wnorms).^2
     ## End
-    W2 = W[:, 1:nlv].^2
+    W2 = vcol(W, 1:nlv).^2
     sst = zeros(nlv)
     @inbounds for a = 1:nlv
-        t = sqrtw .* object.T[:, a]
+        t = sqrtw .* vcol(T, a)
         tt = dot(t, t)
-        beta = object.C[:, a]'
-        sst[a] = tr(beta' * beta * tt)
+        theta = vcol(object.C, a)'
+        sst[a] = tr(theta' * theta * tt)
     end 
     A = rowsum(sst' .* W2)
     B = sum(sst) * (1 / p)
@@ -102,16 +105,22 @@ function vip(object::Union{Pcr, Plsr, Spcr}; nlv = nothing)
 end
 
 function vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
-    if isa(object, Jchemo.Pcr)
-        W = object.fitm.V
-    else
+    if isa(object, Jchemo.Plsr)
         W = object.W
+        T = object.T
+        a = nco(object.T)
+        weights = object.weights
+    elseif isa(object, Jchemo.Pcr) || isa(object, Jchemo.Spcr)
+        W = object.fitm.V
+        T = object.fitm.T
+        a = nco(object.fitm.T)
+        weights = object.fitm.weights
     end
-    a = nco(object.T)
+    isa(Y, BitMatrix) ? Y = convert.(eltype(W), Y) : nothing
     p = nro(W)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    W2 = W[:, 1:nlv].^2
-    rdd = rd(fscale(Y, object.yscales), object.T[:, 1:nlv], object.weights)
+    W2 = vcol(W, 1:nlv).^2
+    rdd = rd(fscale(Y, object.yscales), vcol(T, 1:nlv), weights)
     A = rowsum(rdd .* W2)
     B = sum(rdd) * (1 / p)
     imp = sqrt.(A / B)
