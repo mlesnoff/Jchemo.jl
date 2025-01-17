@@ -71,10 +71,10 @@ vip(fitm).imp
 vip(fitm, Ydummy).imp
 ```
 """ 
-function vip(object::Union{Pcr, Plsr}; nlv = nothing)
-    if isa(object, Jchemo.Pcr)
-        W = object.fitmpca.V
-    else
+function vip(object::Union{Pcr, Plsr, Spcr}; nlv = nothing)
+    if isa(object, Jchemo.Pcr) || isa(object, Jchemo.Spcr)
+        W = object.fitm.V
+    elseif isa(object, Jchemo.Plsr)
         W = object.W
     end
     a = nco(object.T)
@@ -103,7 +103,7 @@ end
 
 function vip(object::Union{Pcr, Plsr}, Y; nlv = nothing)
     if isa(object, Jchemo.Pcr)
-        W = object.fitmpca.V
+        W = object.fitm.V
     else
         W = object.W
     end

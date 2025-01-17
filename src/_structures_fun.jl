@@ -330,7 +330,7 @@ struct Cglsr
 end
 
 struct Pcr
-    fitmpca::Pca
+    fitm::Pca
     T::Matrix
     R::Matrix
     C::Matrix
@@ -361,7 +361,7 @@ struct Splsr
 end
 
 struct Spcr
-    fitmpca::Spca
+    fitm::Spca
     T::Matrix
     V::Matrix
     C::Matrix
