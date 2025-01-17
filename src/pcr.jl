@@ -87,7 +87,7 @@ function pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     fitm = pcasvd!(X, weights; kwargs...)
     ## Below, first term of the product is equal to Diagonal(1 ./ fitm.sv[1:nlv].^2) 
     ## if T is D-orthogonal. This is the case for the actual version (pcasvd)
-    ## theta: coeffs regression of Y on T
+    ## theta: coeffs regression of Y on T (= C')
     theta = inv(fitm.T' * fweight(fitm.T, fitm.weights.w)) * fitm.T' * fweight(Y, fitm.weights.w)
     Pcr(fitm, theta', ymeans, yscales, par) 
 end
