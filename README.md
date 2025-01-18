@@ -10,9 +10,9 @@
 # <span style="color:green"> **About** </span> 
 
 **Jchemo** was initially dedicated to **partial least squares regression (PLSR) and discrimination (PLSDA)** 
-and their extensions, in particular locally weighted PLS models (**LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). In a second phase, the package has expand to many other models for **dimension reduction** and **regression and discrimination** ([see the list of functions here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
+and their extensions, in particular locally weighted PLS models (**KNN-LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). In a second phase, the package has expand to many other models for **dimension reduction** and **regression and discrimination** ([see the list of functions here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
 
-Why the name **Jchemo**?: Since it is orientated to **chemometrics** , in brief the use of biometrics for chemistry. But most of the provided methods are generic to other application domains. 
+Why the name **Jchemo**?: Since it is orientated to **chemometrics** , in brief the use of biometrics for chemistry. But most of the provided methods are generic to other types of data than chemistry. 
 
 **Jchemo** is organized between 
 - **transform operators** (that have a function `transf`),
@@ -37,7 +37,7 @@ To install **Jchemo**
 pkg> add Jchemo
 ```
 
-or for a **specific version**: 
+or for a **specific version**, for instance: 
 ```julia
 pkg> add Jchemo@0.1.18
 ```
