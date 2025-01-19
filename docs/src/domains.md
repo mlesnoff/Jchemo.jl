@@ -103,7 +103,7 @@
 - **splsr** 
     - sPLSR *Lê Cao et al. 2008*
     - Covsel regression *Roger et al. 2011*
-- **splsr** 
+- **spcr** 
     - sPCR *Shen & Huang 2008*
 
 *Averaging PLSR models of different dimensionalities*
