@@ -41,7 +41,7 @@ include("nipalsmiss.jl")
 include("simpp.jl")
 include("snipals_shen.jl")
 include("snipals_mix.jl")
-include("snipals_dir.jl")
+include("snipals_post.jl")
 
 ######---- Preprocessing
 

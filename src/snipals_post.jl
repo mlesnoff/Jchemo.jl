@@ -1,5 +1,5 @@
 ## Direct
-function snipals_dir(X; kwargs...)
+function snipals_post(X; kwargs...)
     par = recovkw(Jchemo.ParSnipals, kwargs).par 
     X = ensure_mat(X)
     p = nco(X)
