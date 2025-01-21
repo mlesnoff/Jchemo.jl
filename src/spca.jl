@@ -25,8 +25,8 @@ Shen & Huang 2008.
 
 The algorithm computes each loadings vector iteratively, by alternating 
 least squares regressions (Nipals) including a step of thresholding. Function 
-`spca` provides thresholding methods '1' and '2' (`:soft` and `:hard`) reported 
-in Shen & Huang 2008 Lemma 2:
+`spca` provides thresholding methods '1' and '2' reported in Shen & Huang 2008 
+Lemma 2 (`:soft` and `:hard`):
 * The tuning parameter used by Shen & Huang 2008 is the number of null elements 
     in the loadings vector, referred to as degree of sparsity. Conversely, the 
     present function `spca` uses the number of non-zero elements (`nvar`), 
@@ -43,8 +43,8 @@ Matrix `X` can be deflated in two ways:
   (see in Theorem A.2 p.1033).
 * `defl = :t` : Matrix `X` is deflated by regression of the `X`-columns on 
   the score vector `t`. This is the method used in function `spca` of the 
-  R package `mixOmics`.
-The method of computation of the % variance explainedin X by each PC (returned 
+  R package `mixOmics` (Le Cao et al. 2016).
+The method of computation of the % variance explained in X by each PC (returned 
 by function `summary`) depends on the type of deflation chosen (see the code).    
 
 ## References
