@@ -3,6 +3,7 @@
 ## *Version 0.8.3*
 
 - Modifications
+    - 'spca' and 'spcr' were improved.
     - Code cleaning.  
 
 ## *Version 0.8.2*
@@ -22,10 +23,8 @@
    - Object 'P' when representing matrix of laodings in Pca, Pls etc.:
    renamed to 'V'  in the code of functions and their outputs.
 
-- New
-   - 'spca' and 'spcr' were improved.
-
 - Modifications
+   - 'spca' and 'spcr' were improved.
     - Code cleaning.  
 
 ## *Version 0.7.0*
