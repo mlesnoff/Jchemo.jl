@@ -41,7 +41,7 @@ nlv = 15
 meth = :soft
 #meth = :hard
 nvar = 20 
-model = spcr(; nlv, meth, nvar) ;
+model = spcr(; nlv, meth, nvar, defl = :t) ;
 fit!(model, Xtrain, ytrain)
 pnames(model)
 fitm = model.fitm ;
