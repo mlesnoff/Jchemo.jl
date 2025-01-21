@@ -14,6 +14,7 @@ Keyword arguments:
 * `nvar` : Nb. variables (`X`-columns) selected for each principal
     component (PC). Can be a single integer (i.e. same nb. 
     of variables for each PC), or a vector of length `nlv`.   
+* `defl` : Type of `X`-matrix deflation, see below.
 * `tol` : Tolerance value for stopping the Nipals iterations.
 * `maxit` : Maximum nb. of Nipals iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled
@@ -36,20 +37,15 @@ in Shen & Huang 2008 Lemma 2:
     when there are tied values in the loadings vector (depending on the choices 
     of method used to compute quantiles).
 
-To deflate matrix `X` after a given PC, the present function `spca` does a 
-regression of the `X`-columns on the score vector `t`. When `meth = :soft`, the function 
-gives the same result as function `spca` of the R package `mixOmics` (except possibly 
-when there are many tied values in the loadings vectors, which is not usual). 
-
-The computed sparse loadings vectors (`V`-columns) are in general non orthogonal. 
-Therefore, there is no a unique decomposition of the variance of `X` such as in PCA. 
-Function `summary` returns the following objects:
-* `explvarx`: The proportion of variance of `X` explained 
-    by each column `t` of `T`, computed by regressing `X` 
-    on `t` (such as what is usually done in PLS).
-* `explvarx_v`: Adjusted explained variance proposed by 
-    Shen & Huang 2008 section 2.3, that uses regressions 
-    of the `X`-rows on the loadings spaces `V`.     
+Matrix `X` can be deflated in two ways:
+* `defl = :v` : Matrix `X` is deflated by regression of the `X'`-columns on 
+  the loadings vector `v`. This is the method proposed by Shen & Huang 2008 
+  (see in Theorem A.2 p.1033).
+* `defl = :t` : Matrix `X` is deflated by regression of the `X`-columns on 
+  the score vector `t`. This is the method used in function `spca` of the 
+  R package `mixOmics`.
+The method of computation of the % variance explainedin X by each PC (returned 
+by function `summary`) depends on the type of deflation chosen (see the code).    
 
 ## References
 Kim-Anh Lê Cao, Florian Rohart, Ignacio Gonzalez, Sebastien 
@@ -100,7 +96,6 @@ T' * T
 
 res = summary(model, Xtrain) ;
 res.explvarx
-res.explvarx_v
 ```
 """
 spca(; kwargs...) = JchemoModel(spca, nothing, kwargs)
