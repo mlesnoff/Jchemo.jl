@@ -88,9 +88,10 @@ end
 
 Base.@kwdef mutable struct ParSpca
     nlv::Int = 1 
-    algo::Symbol = :shen
+    algo::Symbol = :shen  # masked
     meth::Symbol = :soft 
     nvar::Union{Int, Vector{Int}} = 1  
+    defl::Symbol = :v
     tol::Float64 = sqrt(eps(1.))  
     maxit::Int = 200   
     scal::Bool = false                   
@@ -238,21 +239,14 @@ end
 
 Base.@kwdef mutable struct ParSplsr
     nlv::Int = 1 
-    meth::Symbol = :soft 
+    meth::Symbol = :soft
     nvar::Union{Int, Vector{Int}} = 1
     tol::Float64 = sqrt(eps(1.))  # used when Y (n, q) (snipals)
     maxit::Int = 200              # used when Y (n, q) (snipals)
     scal::Bool = false                   
 end 
 
-Base.@kwdef mutable struct ParSpcr
-    nlv::Int = 1 
-    algo::Symbol = :shen
-    meth::Symbol = :soft 
-    nvar::Union{Int, Vector{Int}} = 1  
-    tol::Float64 = sqrt(eps(1.))  
-    maxit::Int = 200   
-    scal::Bool = false                   
+Base.@kwdef mutable struct ParSpcr  # same ParSpca
 end 
 
 Base.@kwdef mutable struct ParKplsr

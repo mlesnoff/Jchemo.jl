@@ -2,7 +2,7 @@
     spcr(; kwargs...)
     spcr(X, Y; kwargs...)
     spcr(X, Y, weights::Weight; kwargs...)
-    pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    spcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
 Sparse principal component regression (sPCR). 
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -88,7 +88,7 @@ function spcr(X, Y, weights::Weight; kwargs...)
 end
 
 function spcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkw(ParSpcr, kwargs).par
+    par = recovkw(ParSpca, kwargs).par
     Q = eltype(X)
     q = nco(Y)
     ymeans = colmean(Y, weights)

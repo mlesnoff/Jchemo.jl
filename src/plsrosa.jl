@@ -26,7 +26,7 @@ extension of partial least squares regression for multiblock
 data analysis. Journal of Chemometrics 30, 651–662. 
 https://doi.org/10.1002/cem.2824
 """ 
-plsrosa(; kwargs...) = JchemoModel(plsnipals, nothing, kwargs)
+plsrosa(; kwargs...) = JchemoModel(plsrosa, nothing, kwargs)
 
 function plsrosa(X, Y; kwargs...)
     Q = eltype(X[1, 1])

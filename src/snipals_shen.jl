@@ -40,8 +40,9 @@ function snipals_shen(X; kwargs...)
         end
     end
     niter = iter - 1
+    vtild = copy(v)
     v ./= normv(v)  # final unitary vector 'v'
     t = X * v 
-    (t = t, v, niter)
+    (t = t, v, vtild, niter)
 end
 

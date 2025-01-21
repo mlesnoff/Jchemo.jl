@@ -29,7 +29,7 @@ Squares (PLS). Approach to Generalized Inverses. SIAM Journal on
 Scientific and Statistical Computing 5, 735–743. 
 https://doi.org/10.1137/0905052
 """ 
-plswold(; kwargs...) = JchemoModel(plsnipals, nothing, kwargs)
+plswold(; kwargs...) = JchemoModel(plswold, nothing, kwargs)
 
 function plswold(X, Y; kwargs...)
     Q = eltype(X[1, 1])
@@ -86,7 +86,7 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         wx .= rand(p)
         while cont
             w0 = copy(wx)
-            wx .= X' * ty / dot(ty, ty)    
+            wx .= X' * ty   # .../ dot(ty, ty) [not needed here since normalization]   
             wx ./= normv(wx)
             tx .= X * wx
             wytild = Y' * tx / dot(tx, tx)    # = ctild ==> output "C"

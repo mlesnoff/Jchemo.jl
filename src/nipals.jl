@@ -60,7 +60,8 @@ function nipals(X; kwargs...)
     while cont
         v0 .= copy(v)      
         mul!(v, X', u)  
-        v ./= normv(v)  # v = X' * t / norm(X' * t)
+        v ./= normv(v)  # v = X't / norm(X't) = X't / t't [norm(X't) = t't]
+        ## same as: v ./= dot(u, u)
         mul!(u, X, v)   # t = X * v
         dif = sum((v .- v0).^2)
         iter = iter + 1
