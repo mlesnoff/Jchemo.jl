@@ -334,7 +334,7 @@ struct Pcr
     C::Matrix
     ymeans::Vector
     yscales::Vector
-    par::ParPcr
+    par::ParPca
 end
 
 struct Splsr
@@ -362,7 +362,7 @@ struct Spcr
     yscales::Vector
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
-    par::ParSpcr
+    par::ParSpca
 end
 
 struct PlsravgUnif

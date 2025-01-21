@@ -9,9 +9,7 @@ Principal component regression (PCR) with a SVD factorization.
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+* Same as function `pcasvd`
 
 ## Examples
 ```julia
@@ -76,7 +74,7 @@ function pcr(X, Y, weights::Weight; kwargs...)
 end
 
 function pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-    par = recovkw(ParPcr, kwargs).par
+    par = recovkw(ParPca, kwargs).par
     Q = eltype(X)
     q = nco(Y)
     ymeans = colmean(Y, weights)
