@@ -1,9 +1,15 @@
 # News
 
+## *Version 0.8.4*
+
+- Modifications
+    - **interpl**: update to be consistent with DataInterpolation.jl.
+    - Code cleaning.  
+
 ## *Version 0.8.3*
 
 - Modifications
-    - 'spca' and 'spcr' were improved.
+    - **spca** and **spcr** were improved.
     - Code cleaning.  
 
 ## *Version 0.8.2*
@@ -14,7 +20,7 @@
 ## *Version 0.8.1*
 
 - Modifications
-    - A bug was inserted in 'spca' incidentally between v0.7.0 and v0.8.0. 
+    - A bug was inserted in **spca** incidentally between v0.7.0 and v0.8.0. 
     Corrected now.  
 
 ## *Version 0.8.0*
@@ -24,7 +30,7 @@
    renamed to 'V'  in the code of functions and their outputs.
 
 - Modifications
-   - 'spca' and 'spcr' were improved.
+   - **spca**  and **spcr** were improved.
     - Code cleaning.  
 
 ## *Version 0.7.0*

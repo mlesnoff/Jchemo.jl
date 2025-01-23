@@ -248,7 +248,7 @@ Keyword arguments:
     Must be a numeric vector of length p, or an AbstractRange,
     with growing values.
 * `wlfin` : Final values (within the range of `wl`) where to interpolate
-    the spectrum. Must be a numeric vector, or an AbstractRange,
+    each spectrum. Must be a numeric vector, or an AbstractRange,
     with growing values.
 
 The function implements a cubic spline interpolation using 
@@ -318,7 +318,9 @@ function transf!(object::Interpl, X::Matrix, M::Matrix)
     #algo = DataInterpolations.LinearInterpolation
     ## Not faster: @Threads.threads
     @inbounds for i = 1:n
-        itp = algo(vrow(X, i), wl; extrapolate = false)
+        ## argument 'extrapolate' has been removed for CubicSpline
+        ## ==> removed from 'interpl' since Jchemo_0.8.4
+        itp = algo(vrow(X, i), wl)
         M[i, :] .= itp.(wlfin)
     end
 end
