@@ -120,7 +120,7 @@ Compute the RV coefficient between matrices.
 * `centr` : Boolean indicating if the matrices 
     will be internally centered or not.
 
-RV is bounded in [0, 1]. 
+RV is bounded within [0, 1]. 
 
 A dissimilarty measure between `X` and `Y` can be computed
 by d = sqrt(2 * (1 - RV)).

@@ -44,7 +44,7 @@ function aggstat(X, y; algo = mean)
     zX = similar(X, nlev, q)
     @inbounds for i in 1:nlev, j = 1:q
         s = y .== lev[i]
-        zX[i, j] = algo(X[s, j])
+        zX[i, j] = algo(view(X, s, j))
     end
     (X = zX, lev)
 end
@@ -148,11 +148,9 @@ corm(X) = cor(X)
 
 function corm(X, weights::Weight)
     zX = copy(ensure_mat(X))
-    xmeans = colmean(zX, weights)
-    xscales = colstd(zX, weights)
-    fcenter!(zX, xmeans)
-    fscale!(zX, xscales)
-    z = Diagonal(sqrt.(weights.w)) * zX
+    fcenter!(zX, colmean(zX, weights))
+    fscale!(zX, colstd(zX, weights))
+    z = fweight(zX, sqrt.(weights.w))
     z' * z
 end
 
@@ -161,15 +159,11 @@ corm(X, Y) = cor(X, Y)
 function corm(X, Y, weights::Weight)
     zX = copy(ensure_mat(X))
     zY = copy(ensure_mat(Y))
-    xmeans = colmean(zX, weights)
-    ymeans = colmean(zY, weights)
-    xscales = colstd(zX, weights)
-    ystds = colstd(zY, weights)
-    fcenter!(zX, xmeans)
-    fcenter!(zY, ymeans)
-    fscale!(zX, xscales)
-    fscale!(zY, ystds)
-    zX' * Diagonal(weights.w) * zY
+    fcenter!(zX, colmean(zX, weights))
+    fcenter!(zY, colmean(zY, weights))
+    fscale!(zX, colstd(zX, weights))
+    fscale!(zY, colstd(zY, weights))
+    zX' * fweight(zY, weights.w)
 end
 
 """
@@ -205,10 +199,8 @@ end
 function cosm(X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    xnorms = colnorm(X)
-    ynorms = colnorm(Y)
-    zX = fscale(X, xnorms)
-    zY = fscale(Y, ynorms)
+    zX = fscale(X, colnorm(X))
+    zY = fscale(Y, colnorm(Y))
     zX' * zY 
 end
 
@@ -269,7 +261,7 @@ covm(X) = cov(X; corrected = false)
 function covm(X, weights::Weight)
     zX = copy(ensure_mat(X))
     fcenter!(zX, colmean(zX, weights))
-    zX = Diagonal(sqrt.(weights.w)) * zX
+    fweight!(zX, sqrt.(weights.w))
     zX' * zX
 end
 
@@ -280,7 +272,7 @@ function covm(X, Y, weights::Weight)
     zY = copy(ensure_mat(Y))
     fcenter!(zX, colmean(zX, weights))
     fcenter!(zY, colmean(zY, weights))
-    zX' * Diagonal(weights.w) * zY
+    zX' * fweight(zY, weights.w)
 end
 
 """
@@ -303,7 +295,7 @@ res.Y
 """
 function dummy(y)
     lev = mlev(y)
-    ## Thanks to the idea in this post (@Mattriks):
+    ## Thanks to the idea given in this post (@Mattriks):
     ## https://discourse.julialang.org/t/all-the-ways-to-do-one-hot-encoding/64807/4
     Y = y .== permutedims(lev)
     (Y = Y, lev)
@@ -332,10 +324,9 @@ dupl(Z)
 """
 function dupl(X; digits = 3)
     X = ensure_mat(X)
-    # round, etc. does not
-    # accept missing values
+    ## round, etc. does not accept missing values
     X[ismissing.(X)] .= -1e5
-    # End
+    ## End
     X = round.(X, digits = digits)
     n = nro(X)
     rownum1 = []
@@ -350,8 +341,7 @@ function dupl(X; digits = 3)
         end
     end
     u = findall(rownum1 .!= rownum2)
-    res = DataFrame((rownum1 = rownum1[u], 
-        rownum2 = rownum2[u]))
+    res = DataFrame((rownum1 = rownum1[u], rownum2 = rownum2[u]))
     Int.(res)
 end
 
@@ -368,7 +358,7 @@ ensure_df(X::AbstractMatrix) = DataFrame(X, :auto)
 Reshape `X` to a matrix if necessary.
 """
 ensure_mat(X::AbstractMatrix) = X
-## Tentative to work with CUDA
+## Tentative to allow the use of CUDA
 ## Old was: ensure_mat(X::AbstractVector) = Matrix(reshape(X, :, 1))
 ensure_mat(X::AbstractVector) = reshape(X, :, 1)
 ## End
@@ -469,7 +459,6 @@ function frob2(X, weights::Weight)
     end
     s
 end
-
 
 """
     head(X)
@@ -1209,8 +1198,8 @@ end
 
 function softmax(X::Union{Matrix, DataFrame})
     X = ensure_mat(X)
-    V = similar(X)
     n = nro(V)
+    V = similar(X)
     @inbounds for i = 1:n
         V[i, :] .= softmax(vrow(X, i))
     end
