@@ -55,8 +55,7 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
                 Uinv = LinearAlgebra.inv!(cholesky!(Hermitian(S)).U)
             end
         end
-        ## Below, since tree = BruteTree(Xtrain', Mahalanobis(Sinv))
-        ## is very slow:
+        ## Below: since tree = BruteTree(Xtrain', Mahalanobis(Sinv)) is very slow:
         Xtrain = Xtrain * Uinv
         X = X * Uinv
         tree = NearestNeighbors.BruteTree(Xtrain', Distances.Euclidean())
@@ -66,7 +65,7 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
         tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.CorDist())
     end
     ind, d = NearestNeighbors.knn(tree, X', k, true)     # 'ind' and 'd' are lists  
-    #ind = reduce(hcat, ind)'
+    ## Alternative: ind = reduce(hcat, ind)'
     (ind = ind, d)
 end
 

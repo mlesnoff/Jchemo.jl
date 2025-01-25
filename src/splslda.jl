@@ -98,7 +98,7 @@ function splslda(X, y, weights::Weight; kwargs...)
     embfitm = splsr(X, res.Y, weights; kwargs...)
     dafitm = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
-        dafitm[i] = lda(embfitm.T[:, 1:i], y, weights; kwargs...)
+        dafitm[i] = lda(vcol(embfitm.T, 1:i), y, weights; kwargs...)
     end
     fitm = (embfitm = embfitm, dafitm = dafitm)
     Plsprobda(fitm, res.lev, ni, par)

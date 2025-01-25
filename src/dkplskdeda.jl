@@ -47,7 +47,7 @@ function dkplskdeda(X, y, weights::Weight; kwargs...)
     embfitm = dkplsr(X, res.Y, weights; kwargs...)
     dafitm = list(Kdeda, par.nlv)
     @inbounds for i = 1:par.nlv
-        dafitm[i] = kdeda(embfitm.T[:, 1:i], y; kwargs...)
+        dafitm[i] = kdeda(vcol(embfitm.T, 1:i), y; kwargs...)
     end
     fitm = (embfitm = embfitm, dafitm = dafitm)
     Plsprobda(fitm, res.lev, ni, par)

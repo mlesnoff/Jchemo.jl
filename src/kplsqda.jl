@@ -47,7 +47,7 @@ function kplsqda(X, y, weights::Weight; kwargs...)
     embfitm = kplsr(X, res.Y, weights; kwargs...)
     dafitm = list(Qda, par.nlv)
     @inbounds for i = 1:par.nlv
-        dafitm[i] = qda(embfitm.T[:, 1:i], y, weights; kwargs...)
+        dafitm[i] = qda(vcol(embfitm.T, 1:i), y, weights; kwargs...)
     end
     fitm = (embfitm = embfitm, dafitm = dafitm)
     Plsprobda(fitm, res.lev, ni, par)

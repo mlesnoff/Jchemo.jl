@@ -89,9 +89,7 @@ function cglsr!(X::Matrix, y::Matrix; kwargs...)
     xmeans = colmean(X)
     ymeans = colmean(y)
     xscales = ones(Q, p)
-    ## No need to fscale y
-    ## below yscales is built only for consistency with PLSR
-    yscales = ones(Q, q)
+    yscales = ones(Q, q)  # no need to fscale y; only for consistency with Plsr
     if par.scal 
         xscales .= colstd(X)
         fcscale!(X, xmeans, xscales)
@@ -116,7 +114,7 @@ function cglsr!(X::Matrix, y::Matrix; kwargs...)
     if par.filt
         eig = svd(X).S.^2
         if(n < p)
-            eig = [eig ; zeros(p - n)]
+            eig = [eig; zeros(p - n)]
         end
         F = similar(X, p, nlv) 
         Fd = similar(X, p) 
@@ -175,8 +173,8 @@ Compute the b-coefficients of a fitted model.
 function coef(object::Cglsr; nlv = nothing)
     a = nco(object.B)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    W = Diagonal(object.yscales)
-    B = Diagonal(1 ./ object.xscales) * object.B[:, nlv:nlv] *  W
+    W = Diagonal(object.yscales)    
+    B = fweight(vcol(object.B, nlv), 1 ./ object.xscales) *  W
     int = object.ymeans' .- object.xmeans' * B
     (B = B, int = int)
 end

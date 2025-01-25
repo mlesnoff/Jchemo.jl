@@ -35,8 +35,8 @@ function aov1(x, Y)
     Yc = fcenter(Y, colmean(Y))
     fitm = mlr(convert.(Float64, Xdummy), Yc)
     pred = predict(fitm, Xdummy).pred
-    SSF = sum((pred.^2); dims = 1)   # = colvar(pred) * n
-    SSR = ssr(pred, Yc)
+    SSF = sum((pred.^2); dims = 1)   # matrix
+    SSR = ssr(pred, Yc)              # matrix
     df_fact = nlev - 1 
     df_res = n - nlev
     MSF = SSF / df_fact
