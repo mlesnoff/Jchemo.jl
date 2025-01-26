@@ -100,10 +100,10 @@ function isel!(model, X, Y, wl = 1:nco(X); rep = 1, nint = 5, psamp = .3, score 
     res_rep = zeros(nint, q, rep)
     @inbounds for i = 1:rep
         s = samprand(n, nval)
-        Xcal .= X[s.train, :]
-        Ycal .= Y[s.train, :]
-        Xval .= X[s.test, :]
-        Yval .= Y[s.test, :]
+        Xcal .= vrow(X, s.train)
+        Ycal .= vrow(Y, s.train)
+        Xval .= vrow(X, s.test)
+        Xval .= vrow(X, s.test)
         ## All variables ('res0')
         fit!(model, Xcal, Ycal)
         pred = predict(model, Xval).pred

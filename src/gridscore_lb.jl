@@ -17,10 +17,10 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, lb, ver
     if isnothing(pars)    # e.g.: case of RR
         verbose ? println("-- Nb. combinations = 0.") : nothing
         fitm = algo(Xtrain, Ytrain, lb = maximum(lb))
-        pred = Jchemo.predict(fitm, X; lb = lb).pred
+        pred = predict(fitm, X; lb = lb).pred
         le_lb == 1 ? pred = [pred] : nothing
         res = zeros(Q, le_lb, q)
-        @inbounds for i = 1:le_lb
+        @inbounds for i in eachindex(lb) 
             res[i, :] = score(pred[i], Y)
         end
         dat = DataFrame(lb = lb)
@@ -30,10 +30,10 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, lb, ver
         res = map(values(pars)...) do v...
             verbose ? println(Pair.(keys(pars), v)...) : nothing
             fitm = algo(Xtrain, Ytrain ; lb = maximum(lb), Pair.(keys(pars), v)...)
-            pred = Jchemo.predict(fitm, X; lb = lb).pred
+            pred = predict(fitm, X; lb = lb).pred
             le_lb == 1 ? pred = [pred] : nothing
             zres = zeros(Q, le_lb, q)
-            for i = 1:le_lb
+            @inbounds for i in eachindex(lb)
                 zres[i, :] = score(pred[i], Y)
             end
             zres
@@ -45,7 +45,7 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, lb, ver
         else
             zdat = DataFrame(pars)
             dat = list(ncomb)
-            @inbounds for i = 1:ncomb
+            @inbounds for i in eachindex(dat) 
                 dat[i] = reduce(vcat, fill(zdat[i:i, :], le_lb))
             end
             dat = reduce(vcat, dat)

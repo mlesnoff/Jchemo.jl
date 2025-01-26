@@ -19,7 +19,7 @@ function gridcv_lb(X, Y; segm, algo, score, pars = nothing, lb, verbose = false)
         listsegm = segm[i]       # segments in the repetition
         nsegm = length(listsegm) # segmts: = 1; segmkf: = K
         zres = list(nsegm)       # results for the repetition
-        @inbounds for j = 1:nsegm
+        @inbounds for j in eachindex(listsegm) # = 1:nsegm
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
             zres[j] = gridscore_lb(rmrow(X, s), rmrow(Y, s), X[s, :], Y[s, :]; algo, score, lb, pars)

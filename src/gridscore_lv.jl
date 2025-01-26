@@ -35,7 +35,7 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, nlv, ve
         res = map(values(pars)...) do v...    
             verbose ? println(Pair.(keys(pars), v)...) : nothing
             fitm = algo(Xtrain, Ytrain ; nlv = maximum(nlv), Pair.(keys(pars), v)...)
-            pred = Jchemo.predict(fitm, X; nlv).pred
+            pred = predict(fitm, X; nlv).pred
             le_nlv == 1 ? pred = [pred] : nothing
             zres = zeros(Q, le_nlv, q)
             @inbounds for i in eachindex(nlv)
@@ -51,9 +51,8 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, nlv, ve
         else
             zdat = DataFrame(pars)
             dat = list(ncomb)
-            @inbounds for i = 1:ncomb
-                dat[i] = reduce(vcat, 
-                    fill(zdat[i:i, :], le_nlv))
+            @inbounds for i in eachindex(dat) 
+                dat[i] = reduce(vcat, fill(zdat[i:i, :], le_nlv))
             end
             dat = reduce(vcat, dat)
         end
