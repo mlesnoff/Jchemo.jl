@@ -119,6 +119,8 @@ function convertdf(df::DataFrame; miss = nothing, typ)
 end
 
 """
+    corm(X) 
+    corm(X, Y) 
     corm(X, weights::Weight)
     corm(X, Y, weights::Weight)
 Compute a weighted correlation matrix.
@@ -146,6 +148,8 @@ corm(X, Y, w)
 """
 corm(X) = cor(X)
 
+corm(X, Y) = cor(X, Y)
+
 function corm(X, weights::Weight)
     zX = copy(ensure_mat(X))
     fcenter!(zX, colmean(zX, weights))
@@ -153,8 +157,6 @@ function corm(X, weights::Weight)
     z = fweight(zX, sqrt.(weights.w))
     z' * z
 end
-
-corm(X, Y) = cor(X, Y)
 
 function corm(X, Y, weights::Weight)
     zX = copy(ensure_mat(X))
