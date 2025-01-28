@@ -41,13 +41,12 @@ X2cal = dat.X2cal
 X2val = dat.X2val
 
 ## Fitting the model
-model = calds(algo = plskern, nlv = 10) 
-#model = calds(algo = mlrpinv)   # less robust
-fit!(model, X1cal, X2cal)
+fitm = calds(X1cal, X2cal; algo = plskern, nlv = 10) 
+#fitm = calds(X1cal, X2cal; algo = mlrpinv)   # less robust 
 
 ## Transfer of new spectra X1val 
 ## expected to be close to X2val
-pred = predict(model, X1val).pred
+pred = predict(fitm, X1val).pred
 
 i = 1
 f = Figure(size = (500, 300))
@@ -59,8 +58,6 @@ axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-calds(; algo = plskern, kwargs...) = JchemoModel(calds, nothing, kwargs)
-
 function calds(X1, X2; algo = plskern, kwargs...)
     fitm = algo(X1, X2; kwargs...)
     Calds(fitm)

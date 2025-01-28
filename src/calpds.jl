@@ -54,12 +54,11 @@ X2cal = dat.X2cal
 X2val = dat.X2val
 
 ## Fitting the model
-model = calpds(npoint = 2, algo = plskern, nlv = 2) 
-fit!(model, X1cal, X2cal)
+fitm = calpds(X1cal, X2cal; npoint = 2, algo = plskern, nlv = 2) 
 
 ## Transfer of new spectra X1val 
 ## expected to be close to X2val
-pred = predict(model, X1val).pred
+pred = predict(fitm, X1val).pred
 
 i = 1
 f = Figure(size = (500, 300))
@@ -71,8 +70,6 @@ axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-calpds(; npoint = 5, algo = plskern, kwargs...) = JchemoModel(calpds, nothing, kwargs)
-
 function calpds(X1, X2; npoint = 5, algo = plskern, kwargs...)
     @assert npoint >= 1 "Argument 'npoint' must be >= 1."
     p = nco(X1)
