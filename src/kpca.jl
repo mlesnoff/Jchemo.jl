@@ -137,8 +137,7 @@ function Base.summary(object::Kpca)
     sstot = sum(object.eig)
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(lv = 1:nlv, var = tt, 
-        pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
     (explvarx = explvarx,)
 end
 
