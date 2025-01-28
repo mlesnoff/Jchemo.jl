@@ -115,7 +115,6 @@ struct Kpca
     V::Matrix
     sv::Vector  
     eig::Vector    
-    D::Diagonal
     DKt::Matrix
     vtot::Matrix
     xscales::Vector 

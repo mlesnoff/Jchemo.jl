@@ -89,21 +89,21 @@ function kpca(X, weights::Weight; kwargs...)
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
     K = fkern(X, X; kwargs...)  # in the future?: fkern!(K, X, X; kwargs...)
-    D = Diagonal(weights.w)
+    sqrtD = sqrt.(Diagonal(weights.w))
+    sqrtw = sqrt.(weights.w)
     Kt = K'    
-    DKt = D * Kt
+    DKt = fweight(Kt, weights.w)
     vtot = sum(DKt, dims = 1)
-    Kc = K .- vtot' .- vtot .+ sum(D * DKt')
-    sqrtD = sqrt.(D)
-    Kd = sqrtD * Kc * sqrtD
+    Kc = K .- vtot' .- vtot .+ sum(fweight(DKt', weights.w))    # = K .- vtot' .- vtot .+ sum(D * DKt')
+    Kd = fweight(Kc, sqrtw) * sqrtD    # = sqrtD * Kc * sqrtD
     res = LinearAlgebra.svd(Kd)
     U = res.V[:, 1:nlv]
     eig = res.S
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
-    V = sqrtD * fscale(U, sv[1:nlv])     # In the future: fscale!
+    V = fweight(fscale(U, sv[1:nlv]), sqrtw)   # In the future: fscale!
     T = Kc * V       # T = Kc * V = D^(-1/2) * U * Delta
-    Kpca(X, Kt, T, V, sv, eig, D, DKt, vtot, xscales, weights, kwargs, par)
+    Kpca(X, Kt, T, V, sv, eig, DKt, vtot, xscales, weights, kwargs, par)
 end
 
 """ 
@@ -118,9 +118,10 @@ function transf(object::Kpca, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
-    DKt = object.D * K'
+    w = object.weights.w
+    DKt = fweight(K', w)
     vtot = sum(DKt, dims = 1)
-    Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')
+    Kc = K .- vtot' .- object.vtot .+ sum(fweight(object.DKt', w))
     T = Kc * @view(object.V[:, 1:nlv])
     T
 end
@@ -132,8 +133,7 @@ Summarize the fitted model.
 """ 
 function Base.summary(object::Kpca)
     nlv = nco(object.T)
-    TT = object.D * (object.T).^2
-    tt = vec(sum(TT, dims = 1))
+    tt = colnorm(object.T, object.weights).^2
     sstot = sum(object.eig)
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
