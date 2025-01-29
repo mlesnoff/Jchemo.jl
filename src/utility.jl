@@ -1224,7 +1224,7 @@ end
 Compute the total inertia of a matrix.
 * `X` : Matrix (n, p).
 
-Sum of all the squared components of `X` (= `normv(X)^2`; Squared Frobenius norm). 
+Sum of all the squared components of `X` (= `frob2(X)`; Squared Frobenius norm). 
 
 ## Examples
 ```julia
