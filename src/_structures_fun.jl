@@ -381,7 +381,6 @@ struct Kplsr
     C::Matrix
     U::Matrix
     R::Matrix
-    D::Diagonal 
     DKt::Matrix
     vtot::Matrix   
     xscales::Vector

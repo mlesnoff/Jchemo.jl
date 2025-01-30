@@ -114,11 +114,10 @@ function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
     K = fkern(X, X; kwargs...)     # In the future?: fkern!(K, X, X; values(kwargs)...)
-    D = Diagonal(weights.w)
     Kt = K'    
-    DKt = D * Kt
+    DKt = fweight(Kt, weights.w)
     vtot = sum(DKt, dims = 1)
-    Kc = K .- vtot' .- vtot .+ sum(D * DKt')
+    Kc = K .- vtot' .- vtot .+ sum(fweight(DKt', weights.w)) 
     ## Pre-allocation
     K = copy(Kc)
     T = similar(X, n, nlv)
@@ -135,23 +134,23 @@ function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
     # End
     for a in 1:nlv
         if q == 1      
-            mul!(t, K, D * vec(Y))   # t = K * D * Y
+            mul!(t, K, vec(fweight(Y, weights.w)))  # t = K * D * Y
             t ./= sqrt(dot(t, weights.w .* t))
             dt .= weights.w .* t
             mul!(c, Y', dt)
             u .= Y * c 
-            u ./= sqrt(dot(u, u))
+            u ./= normv(u) 
         else
             u .= Y[:, 1]
             ztol = 1.
             ziter = 1
             while ztol > par.tol && ziter <= par.maxit
                 mul!(t, K, weights.w .* u)
-                t ./= sqrt(dot(t, weights.w .* t))
+                t ./= normv(t, weights) 
                 dt .= weights.w .* t                
                 mul!(c, Y', dt)
                 zu .= Y * c 
-                zu ./= sqrt(dot(zu, zu))
+                zu ./= normv(zu) 
                 ztol = sqrt(sum((u - zu).^2))
                 u .= zu
                 ziter = ziter + 1
@@ -165,9 +164,9 @@ function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
         C[:, a] .= c
         U[:, a] .= u
     end
-    DU = D * U
-    zR = DU * inv(T' * D * Kc * DU)
-    Kplsr(X, Kt, T, C, U, zR, D, DKt, vtot, xscales, ymeans, yscales, weights, iter, kwargs, par)
+    DU = fweight(U, weights.w)
+    zR = DU * inv(T' * fweight(Kc, weights.w) * DU)   # = DU * inv(T' * D * Kc * DU)
+    Kplsr(X, Kt, T, C, U, zR, DKt, vtot, xscales, ymeans, yscales, weights, iter, kwargs, par)
 end
 
 """ 
@@ -182,9 +181,9 @@ function transf(object::Kplsr, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
-    DKt = object.D * K'
+    DKt = fweight(K', object.weights.w) 
     vtot = sum(DKt, dims = 1)
-    Kc = K .- vtot' .- object.vtot .+ sum(object.D * object.DKt')
+    Kc = K .- vtot' .- object.vtot .+ sum(fweight(object.DKt', object.weights.w))  
     Kc * @view(object.R[:, 1:nlv])
 end
 

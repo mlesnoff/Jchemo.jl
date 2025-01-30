@@ -89,13 +89,12 @@ function kpca(X, weights::Weight; kwargs...)
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
     K = fkern(X, X; kwargs...)  # in the future?: fkern!(K, X, X; kwargs...)
-    sqrtD = sqrt.(Diagonal(weights.w))
     sqrtw = sqrt.(weights.w)
     Kt = K'    
     DKt = fweight(Kt, weights.w)
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- vtot .+ sum(fweight(DKt', weights.w))    # = K .- vtot' .- vtot .+ sum(D * DKt')
-    Kd = fweight(Kc, sqrtw) * sqrtD    # = sqrtD * Kc * sqrtD
+    Kd = fweight(Kc, sqrtw) * Diagonal(sqrtw)    # = sqrtD * Kc * sqrtD
     res = LinearAlgebra.svd(Kd)
     U = res.V[:, 1:nlv]
     eig = res.S
