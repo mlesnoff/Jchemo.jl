@@ -166,7 +166,7 @@ function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
     end
     DU = fweight(U, weights.w)
     zR = DU * inv(T' * fweight(Kc, weights.w) * DU)   # = DU * inv(T' * D * Kc * DU)
-    Kplsr(X, Kt, T, C, U, zR, DKt, vtot, xscales, ymeans, yscales, weights, iter, kwargs, par)
+    Kplsr(X, Kt, T, C, U, zR, DKt, vtot, xscales, ymeans, yscales, weights, iter, kwargs, par) 
 end
 
 """ 

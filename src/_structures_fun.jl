@@ -427,8 +427,6 @@ struct Krr
     U::Matrix
     UtDY::Matrix
     sv::Vector
-    D::Diagonal
-    sqrtD::Diagonal
     DKt::Matrix
     vtot::Matrix
     xscales::Vector
