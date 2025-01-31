@@ -21,8 +21,7 @@ n = 10
 samprand(n, 4)
 ```
 """ 
-function samprand(n::Int, k::Int; 
-        replace = false)
+function samprand(n::Int, k::Int; replace = false)
     zn = collect(1:n)
     s = sample(zn, k; replace = replace)
     sort!(s)
