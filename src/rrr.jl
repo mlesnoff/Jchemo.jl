@@ -118,8 +118,8 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(Y, ymeans)
     end
     # Row metric
-    X .= sqrtw .* X
-    Y .= sqrtw .* Y
+    X .= fweight(X, sqrtw)
+    Y .= fweight(Y, sqrtw)
     ## Pre-allocation
     Tx  = similar(X, n, nlv)
     Wx  = similar(X, p, nlv)

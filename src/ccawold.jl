@@ -145,8 +145,8 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         bscales = [normx ; normy]
     end
     # Row metric
-    X .= sqrtw .* X
-    Y .= sqrtw .* Y
+    X .= fweight(X, sqrtw)
+    Y .= fweight(Y, sqrtw)
     ## Pre-allocation
     Tx = similar(X, n, nlv)
     Ty = copy(Tx)

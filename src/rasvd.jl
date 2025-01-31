@@ -132,8 +132,8 @@ function rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         bscales = [normx ; normy]
     end
     # Row metric
-    X .= sqrtw .* X
-    Y .= sqrtw .* Y
+    X .= fweight(X, sqrtw)
+    Y .= fweight(Y, sqrtw)
     # End
     if tau == 0       
         invCx = inv(X' * X)

@@ -120,7 +120,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         p[k] = nco(Xbl[k])
         Xbl[k] .= sqrtw .* Xbl[k]
     end
-    Y .= sqrtw .* Y
+    Y .= fweight(Y, sqrtw)
     ## Pre-allocation
     X = similar(Xbl[1], n, sum(p))
     Tbl = list(Matrix{Q}, nbl)
