@@ -48,8 +48,7 @@ segm[i][1]
 group[segm[i][1]]
 ```
 """ 
-function segmts(n::Int, m::Int; 
-        rep = 1, seed = nothing)
+function segmts(n::Int, m::Int; rep = 1, seed = nothing)
     Q = Vector{Int}
     s = list(Vector{Q}, rep)
     for i = 1:rep
@@ -63,8 +62,7 @@ function segmts(n::Int, m::Int;
     s
 end
 
-function segmts(group::Vector, m::Int; 
-        rep = 1, seed = nothing)
+function segmts(group::Vector, m::Int; rep = 1, seed = nothing)
     group = vec(group)
     Q = Vector{Int}
     s = list(Vector{Q}, rep)
