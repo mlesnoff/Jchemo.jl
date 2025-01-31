@@ -117,7 +117,7 @@ function predict(object::Union{Lda, Qda}, X)
     end
     A = object.priors' .* dens
     v = sum(A, dims = 2)
-    posterior = fscale(A', v)'  # Could be replaced by similar as in fscale! 
+    posterior = fscale(A', v)'                    # Could be replaced by similar as in fscale! 
     z =  mapslices(argmax, posterior; dims = 2)   # if equal, argmax takes the first
     pred = reshape(recod_indbylev(z, lev), m, 1)
     (pred = pred, dens, posterior)
