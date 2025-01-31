@@ -213,7 +213,7 @@ function Base.summary(object::Rasvd, X, Y)
     ## To do: explvary 
     ## Y
     #T .= object.Ty
-    #sstot = frob(Y, object.weights)^2
+    #sstot = frob2(Y, object.weights)
     #tt = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)
     #pvar =  tt / sstot
     #cumpvar = cumsum(pvar)

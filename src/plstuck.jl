@@ -113,8 +113,8 @@ function plstuck!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     Wy = V[:, 1:nlv]
     Tx = X * Wx
     Ty = Y * Wy
-    TTx = colsum(fweight(Tx, weights.w) .* Tx)
-    TTy = colsum(fweight(Ty, weights.w) .* Ty)
+    TTx = colnorm(Tx, weights.w).^2
+    TTy = colnorm(Ty, weights.w).^2
     Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
         ymeans, yscales, weights, par)
 end
@@ -154,14 +154,14 @@ function Base.summary(object::Plstuck, X, Y)
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     ## X
     tt = object.TTx
-    sstot = frob(X, object.weights)^2
+    sstot = frob2(X, object.weights)
     pvar = tt / sstot
     cumpvar = cumsum(pvar) 
     xvar = tt / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Y
     tt = object.TTy
-    sstot = frob(Y, object.weights)^2
+    sstot = frob2(Y, object.weights)
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
     xvar = tt / n    

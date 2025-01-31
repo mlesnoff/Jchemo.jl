@@ -125,14 +125,14 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     Vy = copy(Wy)
     TTx = similar(X, nlv)
     TTy = copy(TTx)
-    tx   = similar(X, n)
+    tx = similar(X, n)
     ty = copy(tx)
     dtx  = copy(tx)
     dty = copy(tx)   
-    wx  = similar(X, p)
-    wy  = similar(X, q)
-    vx   = copy(wx)
-    vy   = copy(wy)
+    wx = similar(X, p)
+    wy = similar(X, q)
+    vx = copy(wx)
+    vy = copy(wy)
     delta = copy(TTx)
     # End
     @inbounds for a = 1:nlv
@@ -212,14 +212,14 @@ function Base.summary(object::Plscan, X, Y)
     ttx = object.TTx 
     tty = object.TTy 
     ## X
-    sstot = frob(X, object.weights)^2
+    sstot = frob2(X, object.weights)
     tt_adj = colsum(object.Vx.^2) .* ttx
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Y
-    sstot = frob(Y, object.weights)^2
+    sstot = frob2(Y, object.weights)
     tt_adj = colsum(object.Vy.^2) .* tty
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)

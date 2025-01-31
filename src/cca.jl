@@ -219,7 +219,7 @@ function Base.summary(object::Cca, X, Y)
     explvarx = nothing 
     ## Y
     #T = object.Ty
-    #sstot = frob(Y, object.weights)^2
+    #sstot = frob2(Y, object.weights)
     #tt = diag(T' * D * Y * Y' * D * T) ./ diag(T' * D * T)
     ##tt = colsum(D * T .* T)  # = [1]
     #pvar =  tt / sstot

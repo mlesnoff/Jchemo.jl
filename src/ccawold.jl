@@ -279,7 +279,7 @@ function Base.summary(object::Ccawold, X, Y)
         cumpvar = cumpvar)
     # Y
     tt = object.TTy 
-    sstot = frob(Y, object.weights)^2
+    sstot = frob2(Y, object.weights)
     tt_adj = colsum(object.Vy.^2) .* tt
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)

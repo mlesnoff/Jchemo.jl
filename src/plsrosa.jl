@@ -70,7 +70,6 @@ function plsrosa!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     w = similar(X, p)
     c = similar(X, q)
     # End
-    D = Diagonal(weights.w)
     @inbounds for a = 1:nlv
         XtY .= X' * fweight(Y, weights.w)
         if q == 1
@@ -82,7 +81,7 @@ function plsrosa!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         mul!(t, X, w)
         if a > 1
             z = vcol(T, 1:(a - 1))
-            t .= t .- z * inv(z' * D * z) * z' * (D * t)
+            t .= t .- z * inv(z' * fweight(z, weights.w)) * z' * fweight(t, weights.w)
             z = vcol(W, 1:(a - 1))
             w = w .- z * (z' * w)
             w ./= normv(w)
