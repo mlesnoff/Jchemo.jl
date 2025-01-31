@@ -73,17 +73,17 @@ function mlr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...
     par = recovkw(ParMlr, kwargs).par
     Q = eltype(X)
     isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
-    sqrtD = Diagonal(sqrt.(weights.w))
+    sqrtw = sqrt.(weights.w)
     if par.noint
         q = nco(Y)
-        B = (sqrtD * X) \ (sqrtD * Y)
+        B = fweight(X, sqrtw) \ fweight(Y, sqrtw)
         int = zeros(q)'
     else
         xmeans = colmean(X, weights) 
         ymeans = colmean(Y, weights)   
         fcenter!(X, xmeans)
         fcenter!(Y, ymeans)
-        B = (sqrtD * X) \ (sqrtD * Y)
+        B = fweight(X, sqrtw) \ fweight(Y, sqrtw)
         int = ymeans' .- xmeans' * B
     end
     Mlr(B, int, weights, par)
@@ -125,8 +125,7 @@ function mlrchol!(X::Matrix, Y::Matrix, weights::Weight)
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)
-    XtD = X' * Diagonal(weights.w)
-    B = cholesky!(Hermitian(XtD * X)) \ (XtD * Y)
+    B = cholesky!(Hermitian(X' * fweight(X, weights.w))) \ (X' * fweight(Y, weights.w))
     int = ymeans' .- xmeans' * B
     MlrNoArg(B, int, weights)
 end
@@ -164,21 +163,21 @@ end
 
 function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParMlr, kwargs).par
-    sqrtD = Diagonal(sqrt.(weights.w))
+    sqrtw = sqrt.(weights.w)
     if par.noint
         q = nco(Y)
-        sqrtDX = sqrtD * X
+        sqrtDX = fweight(X, sqrtw)
         tol = sqrt(eps(real(float(one(eltype(sqrtDX))))))      # see ?pinv
-        B = pinv(sqrtDX, rtol = tol) * (sqrtD * Y)
+        B = pinv(sqrtDX, rtol = tol) * fweight(Y, sqrtw)
         int = zeros(q)'
     else
         xmeans = colmean(X, weights) 
         ymeans = colmean(Y, weights)   
         fcenter!(X, xmeans)
         fcenter!(Y, ymeans)
-        sqrtDX = sqrtD * X
+        sqrtDX = fweight(X, sqrtw)
         tol = sqrt(eps(real(float(one(eltype(sqrtDX))))))      # see ?pinv
-        B = pinv(sqrtDX, rtol = tol) * (sqrtD * Y)
+        B = pinv(sqrtDX, rtol = tol) * fweight(Y, sqrtw)
         int = ymeans' .- xmeans' * B
     end
     Mlr(B, int, weights, par)
@@ -220,10 +219,9 @@ function mlrpinvn!(X::Matrix, Y::Matrix, weights::Weight)
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)
-    XtD = X' * Diagonal(weights.w)
-    XtDX = XtD * X
+    XtDX = X' * fweight(X, weights.w)
     tol = sqrt(eps(real(float(one(eltype(XtDX))))))
-    B = pinv(XtD * X, rtol = tol) * (XtD * Y)
+    B = pinv(XtDX, rtol = tol) * (X' * fweight(Y, weights.w))
     int = ymeans' .- xmeans' * B
     MlrNoArg(B, int, weights)
 end
@@ -261,16 +259,14 @@ function mlrvec!(x::Matrix, Y::Matrix, weights::Weight; kwargs...)
     @assert nco(x) == 1 "Method only working for univariate x."
     if par.noint
         q = nco(Y)
-        xtD = x' * Diagonal(weights.w)
-        B = (xtD * Y) ./ (xtD * x)
+        B = x' * fweight(Y, weights.w) / normv(x, weights)^2
         int = zeros(q)'
     else
         xmeans = colmean(x, weights) 
         ymeans = colmean(Y, weights)   
         fcenter!(x, xmeans)
         fcenter!(Y, ymeans)
-        xtD = x' * Diagonal(weights.w)
-        B = (xtD * Y) ./ (xtD * x)
+        B = x' * fweight(Y, weights.w) / normv(x, weights)^2
         int = ymeans' .- xmeans' * B
     end
     Mlr(B, int, weights, par)
