@@ -19,10 +19,10 @@ simpphub = function(X; nsim = 0, cst = 50)
         znsim = min(nsim, nro(S))
         k = 1
         for j = (n + 1):(n + znsim)
-            V[:, j] .= X[S[k, 1], :] - X[S[k, 2], :]
+            V[:, j] .= vrow(X, S[k, 1]) - vrow(X, S[k, 2])
             k += 1
         end
-        V = V[:, 1:(n + znsim)]
+        V = vcol(V, 1:(n + znsim))
     end
     fscale!(V, colnorm(V))
     V
