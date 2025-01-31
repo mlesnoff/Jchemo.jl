@@ -61,9 +61,10 @@ function rrchol!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(X, xmeans)
     end
     fcenter!(Y, ymeans)  
-    XtD = X' * Diagonal(weights.w)
-    B = cholesky!(Hermitian(XtD * X + lb^2 * Diagonal(ones(Q, p)))) \ (XtD * Y)
-    B .= Diagonal(1 ./ xscales) * B 
+    DX = fweight(X, weights.w)
+    DY = fweight(Y, weights.w)
+    B = cholesky!(Hermitian(X' * DX + lb^2 * Diagonal(ones(Q, p)))) \ (X' * DY)
+    B .= fweight(B, 1 ./ xscales)
     int = ymeans' .- xmeans' * B
     Rrchol(B, int, weights, par)
 end

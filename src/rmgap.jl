@@ -77,7 +77,7 @@ function transf!(object::Rmgap, X::Matrix)
         wl = max(ind - npoint + 1, 1):ind
         fitm = mlr(convert.(Q, wl), X[:, wl]')
         pred = predict(fitm, ind + 1).pred
-        bias = X[:, ind + 1] .- pred'
-        X[:, (ind + 1):p] .= X[:, (ind + 1):p] .- bias
+        bias = X[:, ind + 1] .- pred'                   # check with vcol
+        X[:, (ind + 1):p] .= X[:, (ind + 1):p] .- bias  # check with vcol
     end
 end

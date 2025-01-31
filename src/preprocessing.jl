@@ -232,8 +232,8 @@ end
 function transf!(object::Fdif, X::Matrix, M::Matrix)
     p = nco(X)
     npoint = object.par.npoint
-    zp = p - npoint + 1
-    @Threads.threads for j = 1:zp
+    pc = p - npoint + 1
+    @Threads.threads for j = 1:pc
         M[:, j] .= vcol(X, j + npoint - 1) .- vcol(X, j)
     end
 end
