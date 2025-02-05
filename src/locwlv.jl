@@ -22,7 +22,8 @@ function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv, verbose =
     p = nco(Xtrain)
     m = nro(X)
     q = nco(Ytrain)
-    nlv = max(0, minimum(nlv)):min(p, maximum(nlv))
+    nlv = min(p, minimum(nlv)):min(p, maximum(nlv))
+    println(nlv)
     le_nlv = length(nlv)
     zpred = similar(Ytrain, m, q, le_nlv)
     #@inbounds for i = 1:m

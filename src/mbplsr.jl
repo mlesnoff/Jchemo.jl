@@ -131,7 +131,7 @@ Compute Y-predictions from a fitted model.
 function predict(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = nco(object.T)
-    isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
+    isnothing(nlv) ? nlv = a : nlv = (min(a, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     T = transf(object, Xbl)
     pred = list(Matrix{Q}, le_nlv)

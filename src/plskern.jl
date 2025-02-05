@@ -111,7 +111,7 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwarg
     ## End
     n, p = size(X)
     q = nco(Y)
-    nlv = min(n, p, maximum(par.nlv)) # 'maximum' required for plsravg 
+    nlv = min(n, p, maximum(par.nlv)) # the use of 'maximum' is required for plsravg 
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
     xscales = ones(Q, p)
@@ -226,7 +226,8 @@ Compute Y-predictions from a fitted model.
 function predict(object::Union{Plsr, Splsr}, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
-    isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
+    #isnothing(nlv) ? nlv = a : nlv = (min(a, minimum(nlv)):min(a, maximum(nlv)))
+    isnothing(nlv) ? nlv = a : nlv = min(a, minimum(nlv)):min(a, maximum(nlv))
     le_nlv = length(nlv)
     pred = list(Matrix{eltype(X)}, le_nlv)
     @inbounds for i in eachindex(nlv)

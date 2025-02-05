@@ -13,7 +13,7 @@ function gridcv_lv(X, Y; segm, algo, score, pars = nothing, nlv, verbose = false
     q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
-    nlv = max(0, minimum(nlv)):min(p, maximum(nlv))
+    nlv = min(p, minimum(nlv)):min(p, maximum(nlv))
     le_nlv = length(nlv)
     @inbounds for i in 1:nrep
         verbose ? print("/ rep=", i, " ") : nothing

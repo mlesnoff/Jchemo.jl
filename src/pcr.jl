@@ -133,7 +133,7 @@ Compute Y-predictions from a fitted model.
 function predict(object::Pcr, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.fitm.T)
-    isnothing(nlv) ? nlv = a : nlv = (max(0, minimum(nlv)):min(a, maximum(nlv)))
+    isnothing(nlv) ? nlv = a : nlv = (min(a, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     pred = list(Matrix{eltype(X)}, le_nlv)
     @inbounds for i in eachindex(nlv)

@@ -14,7 +14,7 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, nlv, ve
     ## Case where not multiblock
     if isa(Xtrain[1, 1], Number)
         p = nco(Xtrain)
-        nlv = max(0, minimum(nlv)):min(p, maximum(nlv))
+        nlv = min(p, minimum(nlv)):min(p, maximum(nlv))
     end
     ## End
     q = nco(Ytrain)
