@@ -260,9 +260,9 @@ struct Mbpca
     T::Matrix 
     U::Matrix
     W::Matrix
-    Tbl::Vector{Matrix}
     Tb::Vector{Matrix}
-    Wbl::Vector{Matrix}
+    Tbl::Vector{Matrix}
+    Vbl::Vector{Matrix}
     lb::Matrix
     mu::Vector
     fitmbl::Blockscal
@@ -274,10 +274,10 @@ end
 struct Comdim
     T::Matrix 
     U::Matrix
-    W::Matrix
+    V::Matrix
     Tbl::Vector{Matrix}
     Tb::Vector{Matrix}
-    Wbl::Vector{Matrix}
+    Vbl::Vector{Matrix}
     lb::Matrix
     mu::Vector
     fitmbl::Blockscal

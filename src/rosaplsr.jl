@@ -80,7 +80,7 @@ function rosaplsr(Xbl, Y, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     rosaplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
@@ -104,7 +104,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(Y, ymeans)
     end
-    p = [nco(Xbl[k]) for k = 1:nbl]
+    p = [nco(Xbl[k]) for k in eachindex(Xbl)]
     ## Pre-allocation
     W = similar(Xbl[1], sum(p), nlv)
     V = copy(W)
@@ -127,7 +127,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     ## Start 
     @inbounds for a = 1:nlv
         DY .= D * Y  # apply the metric on covariance
-        @inbounds for k = 1:nbl
+        @inbounds for k in eachindex(Xbl)
             XtY = Xbl[k]' * DY
             if q == 1
                 wbl[k] = vec(XtY)
@@ -144,14 +144,14 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
             zT .= zT .- z * inv(z' * (D * z)) * z' * (D * zT)
         end
         ## Selection of the winner block (opt)
-        @inbounds for k = 1:nbl
+        @inbounds for k in eachindex(Xbl)
             t = vcol(zT, k)
             corr[k] = sum(corm(Y, t, weights).^2)
         end
         opt = argmax(corr)
         ## Faster than:
         ## Old
-        #@inbounds for k = 1:nbl
+        #@inbounds for k in eachindex(Xbl)
         #    t = vcol(zT, k)
         #    dt .= weights.w .* t
         #    tt = dot(t, dt)
@@ -174,7 +174,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         #Y .= Res[:, :, opt]
         ## End
         Y .-= (t * t') * DY / tt
-        for k = 1:nbl
+        for k in eachindex(Xbl)
             zp_bl[k] = Xbl[k]' * dt
         end
         zp .= reduce(vcat, zp_bl)

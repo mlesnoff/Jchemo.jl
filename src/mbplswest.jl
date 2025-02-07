@@ -88,7 +88,7 @@ function mbplswest(Xbl, Y, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     mbplswest!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
@@ -116,7 +116,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     end
     # Row metric
     p = list(Int, nbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         p[k] = nco(Xbl[k])
         Xbl[k] .= sqrtw .* Xbl[k]
     end
@@ -124,11 +124,11 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     ## Pre-allocation
     X = similar(Xbl[1], n, sum(p))
     Tbl = list(Matrix{Q}, nbl)
-    for k = 1:nbl ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
+    for k in eachindex(Xbl) ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
     Tb = list(Matrix{Q}, nlv)
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
     Pbl = list(Matrix{Q}, nbl)
-    for k = 1:nbl ; Pbl[k] = similar(Xbl[1], nco(Xbl[k]), nlv) ; end
+    for k in eachindex(Xbl) ; Pbl[k] = similar(Xbl[1], nco(Xbl[k]), nlv) ; end
     Tx = similar(Xbl[1], n, nlv)
     Wx = similar(Xbl[1], sum(p), nlv)
     Wytild = similar(Xbl[1], q, nlv)
@@ -149,7 +149,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         iter = 1
         while cont
             t0 = copy(ty)
-            for k = 1:nbl
+            for k in eachindex(Xbl)
                 wktild = Xbl[k]' * ty / dot(ty, ty)
                 dk = normv(wktild)
                 wk = wktild / dk
@@ -187,7 +187,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         Vx[:, a] .= vx
         Wytild[:, a] .= wytild
         TTx[a] = ttx
-        @inbounds for k = 1:nbl
+        @inbounds for k in eachindex(Xbl)
             Xbl[k] .-= tx * tx' * Xbl[k] / ttx
         end
         Y .-= tx * wytild'
@@ -212,13 +212,13 @@ function Base.summary(object::Mbplswest, Xbl)
     nbl = length(Xbl)
     sqrtw = sqrt.(object.weights.w)
     zXbl = transf(object.fitmbl, Xbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         zXbl[k] .= sqrtw .* zXbl[k]
     end
     X = reduce(hcat, zXbl)
     # Explained_X
     ssk = zeros(Q, nbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         ssk[k] = ssq(zXbl[k])
     end
     sstot = sum(ssk)
@@ -242,7 +242,7 @@ function Base.summary(object::Mbplswest, Xbl)
     ## Redundancies (Average correlations) Rd(X, t) 
     ## between each X-block and each global score
     z = list(Matrix{Q}, nbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         z[k] = rd(zXbl[k], sqrtw .* object.T)
     end
     rdx = DataFrame(reduce(vcat, z), string.("lv", 1:nlv))         

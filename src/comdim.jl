@@ -136,7 +136,7 @@ function comdim(Xbl, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     comdim!(zXbl, weights; kwargs...)
@@ -152,7 +152,7 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
     fitmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
     transf!(fitmbl, Xbl)
     # Row metric
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         Xbl[k] .= sqrtw .* Xbl[k]
     end
     ## Pre-allocation
@@ -160,11 +160,11 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
     U = similar(Xbl[1], n, nlv)
     tk = copy(u)
     Tbl = list(Matrix{Q}, nbl)
-    for k = 1:nbl ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
+    for k in eachindex(Xbl) ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
     Tb = list(Matrix{Q}, nlv)
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
     Wbl = list(Matrix{Q}, nbl)
-    for k = 1:nbl ; Wbl[k] = similar(Xbl[1], nco(Xbl[k]), nlv) ; end
+    for k in eachindex(Xbl) ; Wbl[k] = similar(Xbl[1], nco(Xbl[k]), nlv) ; end
     lb = similar(Xbl[1], nbl, nlv)
     mu = similar(Xbl[1], nlv)
     TB = similar(Xbl[1], n, nbl)
@@ -179,7 +179,7 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
         cont = true
         while cont
             u0 = copy(u)
-            for k = 1:nbl
+            for k in eachindex(Xbl)
                 wk = Xbl[k]' * u      # = wktild
                 dk = normv(wk)         # = alphak = abs.(dot(tk, u))
                 wk ./= dk             # = wk (= normed)
@@ -202,7 +202,7 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
         U[:, a] .= u
         W[:, a] .= res.v
         mu[a] = res.sv^2   # = sum(lb.^2)   
-        @inbounds for k = 1:nbl
+        @inbounds for k in eachindex(Xbl)
             Xbl[k] .-= u * (u' * Xbl[k])
             # Same as:
             #Vx = sqrt(lb[k, a]) * Wbl[k][:, a]'
@@ -241,11 +241,11 @@ function transf_all(object::Comdim, Xbl; nlv = nothing)
     U = similar(zXbl[1], m, nlv)
     TB = similar(zXbl[1], m, nbl)
     Tbl = list(Matrix{Q}, nbl)
-    for k = 1:nbl ; Tbl[k] = similar(zXbl[1], m, nlv) ; end
+    for k in eachindex(Xbl) ; Tbl[k] = similar(zXbl[1], m, nlv) ; end
     u = similar(zXbl[1], m)
     tk = copy(u)
     for a = 1:nlv
-        for k = 1:nbl
+        for k in eachindex(Xbl)
             tk .= zXbl[k] * object.Wbl[k][:, a]
             TB[:, k] .= tk
             Tbl[k][:, a] .= tk
@@ -253,7 +253,7 @@ function transf_all(object::Comdim, Xbl; nlv = nothing)
         TB .= sqrt.(object.lb[:, a])' .* TB
         u .= 1 / sqrt(object.mu[a]) * TB * object.W[:, a]
         U[:, a] .= u
-        @inbounds for k = 1:nbl
+        @inbounds for k in eachindex(Xbl)
             Vx = sqrt(object.lb[k, a]) * object.Wbl[k][:, a]'
             zXbl[k] .-= u * Vx
         end
@@ -275,12 +275,12 @@ function Base.summary(object::Comdim, Xbl)
     nlv = nco(object.T)
     sqrtw = sqrt.(object.weights.w)
     zXbl = transf(object.fitmbl, Xbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         zXbl[k] .= sqrtw .* zXbl[k]
     end
     ## Explained_X by global scores
     sstot = zeros(Q, nbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         sstot[k] = ssq(zXbl[k])
     end
     tt = colsum(object.lb)    
@@ -291,7 +291,7 @@ function Base.summary(object::Comdim, Xbl)
     ## Explained_XXt (indicator "V")
     S = list(Matrix{Q}, nbl)
     sstot_xx = 0 
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         S[k] = zXbl[k] * zXbl[k]'
         sstot_xx += ssq(S[k])
     end

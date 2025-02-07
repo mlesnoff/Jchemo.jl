@@ -79,7 +79,7 @@ function mbplsr(Xbl, Y, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     mbplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
@@ -159,13 +159,13 @@ function Base.summary(object::Mbplsr, Xbl)
     nbl = length(Xbl)
     sqrtw = sqrt.(object.weights.w)
     zXbl = transf(object.fitmbl, Xbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         zXbl[k] .= sqrtw .* zXbl[k]
     end
     X = reduce(hcat, zXbl)
     # Explained_X
     ssk = zeros(Q, nbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         ssk[k] = ssq(zXbl[k])
     end
     sstot = sum(ssk)
@@ -182,7 +182,7 @@ function Base.summary(object::Mbplsr, Xbl)
     ## Redundancies (Average correlations) Rd(X, t) 
     ## between each X-block and each global score
     z = list(Matrix{Q}, nbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         z[k] = rd(zXbl[k], sqrtw .* object.T)
     end
     rdx = DataFrame(reduce(vcat, z), string.("lv", 1:nlv))       

@@ -59,8 +59,7 @@ blockscal(; kwargs...) = JchemoModel(blockscal, nothing, kwargs)
 function blockscal(Xbl; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
-    weights = mweight(ones(Q, n))
-    blockscal(Xbl, weights; kwargs...)
+    blockscal(Xbl, mweight(ones(Q, n)); kwargs...)
 end
 
 function blockscal(Xbl::Vector, weights::Weight; kwargs...)   # to do: specify the type of Xbl
@@ -72,7 +71,7 @@ function blockscal(Xbl::Vector, weights::Weight; kwargs...)   # to do: specify t
     xmeans = list(Vector{Q}, nbl)
     xscales = list(Vector{Q}, nbl)
     bscales = ones(Q, nbl)
-    for k = 1:nbl
+    for k in eachindex(Xbl)
         zX = copy(Xbl[k])
         pbl = nco(zX)
         xmeans[k] = zeros(Q, pbl)
@@ -111,7 +110,7 @@ function transf(object::Blockscal, Xbl)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     transf!(object, zXbl)
@@ -119,8 +118,7 @@ function transf(object::Blockscal, Xbl)
 end
 
 function transf!(object::Blockscal, Xbl)
-    nbl = length(Xbl)  
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         fcscale!(Xbl[k], object.xmeans[k], object.xscales[k])
         Xbl[k] ./= object.bscales[k]
     end
@@ -156,16 +154,15 @@ function fblockscal(Xbl, bscales)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     fblockscal!(zXbl, bscales)
 end
 
 function fblockscal!(Xbl::Vector, bscales::Vector)
-    nbl = length(Xbl)
     #Threads not faster
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         Xbl[k] ./= bscales[k]
     end
     Xbl
@@ -237,8 +234,8 @@ function mblock(X, listbl)
     Q = eltype(X[1, 1])
     nbl = length(listbl)
     Xbl = list(Matrix{Q}, nbl)
-    @inbounds for i = 1:nbl
-        Xbl[i] = ensure_mat(X[:, listbl[i]])
+    @inbounds for k in eachindex(Xbl)
+        Xbl[k] = ensure_mat(X[:, listbl[k]])
     end
     Xbl
 end 

@@ -22,30 +22,22 @@ The MBPCA global scores are equal to the scores of the PCA
 of the horizontal concatenation X = [X1 X2 ... Xk].
 
 The function returns several objects, in particular:
-* `T` : The non normed global scores.
+* `T` : The non-normed global scores.
 * `U` : The normed global scores.
 * `W` : The global loadings.
-* `Tbl` : The block scores (grouped by blocks, in 
-    original scale).
-* `Tb` : The block scores (grouped by LV, in 
-    the metric scale).
-* `Wbl` : The block loadings.
+* `Tb` : The block scores in the metric scale, **grouped by LV**.
+* `Tbl` : The block scores in original scale, **grouped by block**.
+* `Vbl` : The block loadings.
 * `lb` : The specific weights "lambda".
-* `mu` : The sum of the specific weights (= eigen value
-    of the global PCA).
+* `mu` : The sum of the specific weights (= eigen value of the global PCA).
 
 Function `summary` returns: 
 * `explvarx` : Proportion of the total inertia of X 
-    (sum of the squared norms of the 
-    blocks) explained by each global score.
-* `contr_block` : Contribution of each block 
-    to the global scores. 
-* `explX` : Proportion of the inertia of the blocks 
-    explained by each global score.
-* `corx2t` : Correlation between the global scores 
-    and the original variables.  
-* `cortb2t` : Correlation between the global scores 
-    and the block scores.
+    (sum of the squared norms of the blocks) explained by each global score.
+* `contr_block` : Contribution of each block to the global scores. 
+* `explX` : Proportion of the inertia of the blocks explained by each global score.
+* `corx2t` : Correlation between the global scores and the original variables.  
+* `cortb2t` : Correlation between the global scores and the block scores.
 * `rv` : RV coefficient. 
 * `lg` : Lg coefficient. 
 
@@ -108,15 +100,14 @@ mbpca(; kwargs...) = JchemoModel(mbpca, nothing, kwargs)
 function mbpca(Xbl; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
-    weights = mweight(ones(Q, n))
-    mbpca(Xbl, weights; kwargs...)
+    mbpca(Xbl, mweight(ones(Q, n)); kwargs...)
 end
 
 function mbpca(Xbl, weights::Weight; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
     mbpca!(zXbl, weights; kwargs...)
@@ -133,18 +124,18 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
     # Row metric
     sqrtw = sqrt.(weights.w)
     invsqrtw = 1 ./ sqrtw
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl) 
         fweight!(Xbl[k], sqrtw)
     end
     ## Pre-allocation
     U = similar(Xbl[1], n, nlv)
     W = similar(Xbl[1], nbl, nlv)
     Tbl = list(Matrix{Q}, nbl)
-    for k = 1:nbl ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
+    for k in eachindex(Xbl) ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
     Tb = list(Matrix{Q}, nlv)
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
-    Wbl = list(Matrix{Q}, nbl)
-    for k = 1:nbl ; Wbl[k] = similar(Xbl[1], nco(Xbl[k]), nlv) ; end
+    Vbl = list(Matrix{Q}, nbl)
+    for k in eachindex(Xbl) ; Vbl[k] = similar(Xbl[1], nco(Xbl[k]), nlv) ; end
     u = similar(Xbl[1], n)
     tk = copy(u)
     w = similar(Xbl[1], nbl)
@@ -160,14 +151,14 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
         cont = true
         while cont
             u0 = copy(u)
-            for k = 1:nbl
-                wk = Xbl[k]' * u    # = wktild
-                dk = normv(wk)
-                wk ./= dk           # = wk (= normed)
-                tk .= Xbl[k] * wk 
+            for k in eachindex(Xbl)
+                vk = Xbl[k]' * u    # = vktild
+                dk = normv(vk)
+                vk ./= dk           # = vk (= normed)
+                tk .= Xbl[k] * vk 
                 Tb[a][:, k] .= tk
                 Tbl[k][:, a] .= fweight(Tb[a][:, k], invsqrtw)
-                Wbl[k][:, a] .= wk
+                Vbl[k][:, a] .= vk
                 lb[k, a] = dk^2
             end
             res = nipals(Tb[a])
@@ -180,15 +171,17 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
             end
         end
         niter[a] = iter - 1
-        U[:, a] .= u
+        #U[:, a] .= u  # old
+        U[:, a] .= u .* invsqrtw
         W[:, a] .= w
         mu[a] = res.sv^2  # = sum(lb)
-        for k = 1:nbl
+        for k in eachindex(Xbl)
             Xbl[k] .-= u * (u' * Xbl[k])
         end
     end
-    T = fweight(sqrt.(mu)' .* U, invsqrtw)
-    Mbpca(T, U, W, Tbl, Tb, Wbl, lb, mu, fitmbl, weights, niter, par)
+    #T = fweight(sqrt.(mu)' .* U, invsqrtw)  # old
+    T = sqrt.(mu)' .* U    
+    Mbpca(T, U, W, Tb, Tbl, Vbl, lb, mu, fitmbl, weights, niter, par)
 end
 
 """ 
@@ -219,19 +212,19 @@ function transf_all(object::Mbpca, Xbl; nlv = nothing)
     U = similar(zXbl[1], m, nlv)
     TB = similar(zXbl[1], m, nbl)
     Tbl = list(Matrix{Q}, nbl)
-    for k = 1:nbl ; Tbl[k] = similar(zXbl[1], m, nlv) ; end
+    for k in eachindex(Xbl) ; Tbl[k] = similar(zXbl[1], m, nlv) ; end
     u = similar(zXbl[1], m)
     tk = copy(u)
     for a = 1:nlv
-        for k = 1:nbl
-            tk .= zXbl[k] * object.Wbl[k][:, a]
+        for k in eachindex(Xbl)
+            tk .= zXbl[k] * object.Vbl[k][:, a]
             TB[:, k] .= tk
             Tbl[k][:, a] .= tk
         end
         u .= 1 / sqrt(object.mu[a]) * TB * object.W[:, a]
         U[:, a] .= u
-        @inbounds for k = 1:nbl
-            Vx = sqrt(object.lb[k, a]) * object.Wbl[k][:, a]'
+        @inbounds for k in eachindex(Xbl)
+            Vx = sqrt(object.lb[k, a]) * object.Vbl[k][:, a]'
             zXbl[k] -= u * Vx
         end
     end
@@ -252,13 +245,13 @@ function Base.summary(object::Mbpca, Xbl)
     nlv = nco(object.T)
     sqrtw = sqrt.(object.weights.w)
     zXbl = transf(object.fitmbl, Xbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         zXbl[k] .= sqrtw .* zXbl[k]
     end
     X = reduce(hcat, zXbl)
     ## Explained_X
     sstot = zeros(Q, nbl)
-    @inbounds for k = 1:nbl
+    @inbounds for k in eachindex(Xbl)
         sstot[k] = ssq(zXbl[k])
     end
     tt = colsum(object.lb)    
