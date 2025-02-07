@@ -32,10 +32,10 @@ The function returns several objects, in particular:
 * `mu` : The sum of the specific weights (= eigen value of the global PCA).
 
 Function `summary` returns: 
-* `explvarx` : Proportion of the total inertia of X 
-    (sum of the squared norms of the blocks) explained by each global score.
+* `explvarx` : Proportion of the total inertia of X (sum of the squared norms of the blocks) 
+    explained by each global score.
+* `explX` : Proportion of the inertia of each block explained by each global score.
 * `contr_block` : Contribution of each block to the global scores. 
-* `explX` : Proportion of the inertia of the blocks explained by each global score.
 * `corx2t` : Correlation between the global scores and the original variables.  
 * `cortb2t` : Correlation between the global scores and the block scores.
 * `rv` : RV coefficient. 
@@ -87,9 +87,9 @@ i = 1
 res = summary(model, Xbl) ;
 pnames(res) 
 res.explvarx
-res.contr_block
 res.explX   # = model.fitm.lb if bscal = :frob
 rowsum(Matrix(res.explX))
+res.contr_block
 res.corx2t 
 res.cortb2t
 res.rv
@@ -249,7 +249,7 @@ function Base.summary(object::Mbpca, Xbl)
         zXbl[k] .= sqrtw .* zXbl[k]
     end
     X = reduce(hcat, zXbl)
-    ## Explained_X
+    ## Proportion of global X-inertia explained by each global LV
     sstot = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
         sstot[k] = ssq(zXbl[k])
@@ -258,22 +258,19 @@ function Base.summary(object::Mbpca, Xbl)
     pvar = tt / sum(sstot)
     cumpvar = cumsum(pvar)
     explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
-    ## Contribution of the blocks to global 
-    ## scores = lb proportions (contrib)
-    z = fscale(object.lb, colsum(object.lb))
-    nam = string.("lv", 1:nlv)
-    contr_block = DataFrame(z, nam)
-    ## Proportion of inertia explained for 
-    ## each block (explained.X)
+    ## Within each block, proportion of block-inertia explained by global LV
     ## = object.lb if bscal = :frob 
     z = fscale((object.lb)', sstot)'
+    nam = string.("lv", 1:nlv)
     explX = DataFrame(z, nam)
-    ## Correlation between the original variables 
-    ## and the global scores (globalcor)
+    ## Contribution of the blocks to global LVs
+    # = lb proportions (contrib)
+    z = fscale(object.lb, colsum(object.lb))
+    contr_block = DataFrame(z, nam)
+    ## Correlation between the original variables and the global LVs 
     z = cor(X, object.U)  
     corx2t = DataFrame(z, nam)  
-    ## Correlation between the block scores 
-    ## and the global scores (cor.g.b)
+    ## Correlation between the block LVs and the global LVs
     z = list(Matrix{Q}, nlv)
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], object.U[:, a])
@@ -287,7 +284,7 @@ function Base.summary(object::Mbpca, Xbl)
     ## Lg
     res = lg(X)
     zlg = DataFrame(res, nam)
-    (explvarx = explvarx, contr_block, explX, corx2t, cortb2t, rv = zrv, lg = zlg)
+    (explvarx = explvarx, explX, contr_block, corx2t, cortb2t, rv = zrv, lg = zlg)
 end
 
 
