@@ -9,28 +9,29 @@ Scale multiblock X-data.
     of the blocks). Must be of type `Weight` (see e.g. 
     function `mweight`).
 Keyword arguments:
-* `bscal` : Type of block scaling. Possible values are:
-    `:none`, `:frob`, `:mfa`, `:ncol`, `:sd`. See thereafter.
 * `centr` : Boolean. If `true`, each column of blocks in `Xbl` 
     is centered (before the block scaling).
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
+* `bscal` : Type of block scaling. Possible values are:
+    `:none`, `:frob`, `:mfa`, `:ncol`, `:sd`. See thereafter.
 
 Types of block scaling:
 * `:none` : No block scaling. 
-* `:frob` : Let D be the diagonal matrix 
-    of vector `weights.w`. Each block X is divided by 
-    its Frobenius norm  = sqrt(tr(X' * D * X)). After 
-    this scaling, tr(X' * D * X) = 1.
-* `:mfa` : Each block X is divided by sv, where sv is the 
-    dominant singular value of X (this is the "MFA" approach).
-* `:ncol` : Each block X is divided by the nb. 
-    of columns of the block.
-* `:sd` : Each block X is divided by 
-    sqrt(sum(weighted variances of the block-columns)). After 
-    this scaling, sum(weighted variances of the block-columns) 
-    = 1.
+* `:frob` : Let D be the diagonal matrix of vector `weights.w`. 
+    Each block X is divided by its Frobenius norm  = sqrt(tr(X' * D * X)). 
+    After this scaling, tr(X' * D * X) = 1.
+* `:mfa` : Each block X is divided by sv, where sv is the dominant singular 
+    value of X (this is the "MFA" approach; "AFM "in French).
+* `:ncol` : Each block X is divided by the nb. of columns of the block.
+* `:sd` : Each block X is divided by sqrt(sum(weighted variances of the block-columns)). 
+    After this scaling, sum(weighted variances of the block-columns) = 1.
+
+The order of the eventual data transformations is as follows:
+* Column centering, 
+* Column scaling,
+* Block scaling. 
 
 ## Examples
 ```julia
@@ -47,6 +48,7 @@ centr = true ; scal = true
 bscal = :frob
 model = blockscal(; centr, scal, bscal)
 fit!(model, Xbl)
+## Data transformation
 zXbl = transf(model, Xbl) ; 
 @head zXbl[3]
 

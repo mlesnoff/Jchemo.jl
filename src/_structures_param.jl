@@ -137,9 +137,9 @@ end
 ## Multiblock
 
 Base.@kwdef mutable struct ParBlock
-    bscal::Symbol = :none   
     centr::Bool = false   
     scal::Bool = false  
+    bscal::Symbol = :none   
 end 
 
 Base.@kwdef mutable struct ParMbpca
