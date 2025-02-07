@@ -72,6 +72,8 @@ function blockscal(Xbl::Vector, weights::Weight; kwargs...)   # to do: specify t
     xscales = list(Vector{Q}, nbl)
     bscales = ones(Q, nbl)
     for k in eachindex(Xbl)
+        ## Computes:
+        ## xmeans for column centering
         zX = copy(Xbl[k])
         pbl = nco(zX)
         xmeans[k] = zeros(Q, pbl)
@@ -80,10 +82,12 @@ function blockscal(Xbl::Vector, weights::Weight; kwargs...)   # to do: specify t
             xmeans[k] .= colmean(Xbl[k], weights)
             fcenter!(zX, xmeans[k])
         end
+        ## xscales for column scaling
         if par.scal 
             xscales[k] = colstd(Xbl[k], weights)
             fscale!(zX, xscales[k])
         end
+        ## bscales for block scaling
         if bscal == :frob
             bscales[k] = frob(zX, weights)
         elseif bscal == :mfa
@@ -150,6 +154,8 @@ fblockscal!(Xbl, bscales) ;
 @head Xbl[3]
 ```
 """
+## This function is not commonly used. 
+## See blockscal instead
 function fblockscal(Xbl, bscales)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  

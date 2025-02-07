@@ -37,7 +37,7 @@ Function `summary` returns:
 * `explX` : Proportion of the inertia of each block explained by each global score.
 * `contr_block` : Contribution of each block to the global scores. 
 * `corx2t` : Correlation between the global scores and the original variables.  
-* `cortb2t` : Correlation between the global scores and the block scores.
+* `cortb2t` : Correlation between the global scores and the block scores in the metric scale.
 * `rv` : RV coefficient. 
 * `lg` : Lg coefficient. 
 
@@ -249,7 +249,7 @@ function Base.summary(object::Mbpca, Xbl)
         zXbl[k] .= sqrtw .* zXbl[k]
     end
     X = reduce(hcat, zXbl)
-    ## Proportion of global X-inertia explained by each global LV
+    ## Proportion of the X-inertia explained by each global LV
     sstot = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
         sstot[k] = ssq(zXbl[k])
@@ -258,7 +258,7 @@ function Base.summary(object::Mbpca, Xbl)
     pvar = tt / sum(sstot)
     cumpvar = cumsum(pvar)
     explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
-    ## Within each block, proportion of block-inertia explained by global LV
+    ## Within each block, proportion of the block-inertia explained by each global LV
     ## = object.lb if bscal = :frob 
     z = fscale((object.lb)', sstot)'
     nam = string.("lv", 1:nlv)
@@ -271,9 +271,10 @@ function Base.summary(object::Mbpca, Xbl)
     z = cor(X, object.U)  
     corx2t = DataFrame(z, nam)  
     ## Correlation between the block LVs and the global LVs
+    ## in the metric scale
     z = list(Matrix{Q}, nlv)
     @inbounds for a = 1:nlv
-        z[a] = cor(object.Tb[a], object.U[:, a])
+        z[a] = cor(object.Tb[a], fweight(object.U[:, a], sqrtw))
     end
     cortb2t = DataFrame(reduce(hcat, z), nam)
     ## RV 
