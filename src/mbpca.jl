@@ -144,7 +144,7 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
     niter = zeros(nlv)
     # End
     res = 0
-    for a = 1:nlv
+    @inbounds for a = 1:nlv
         X = reduce(hcat, Xbl)
         u .= nipals(X).u
         iter = 1
@@ -154,7 +154,7 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
             for k in eachindex(Xbl)
                 vk = Xbl[k]' * u    # = vktild
                 dk = normv(vk)
-                vk ./= dk           # = vk (= normed)
+                vk ./= dk           # vk is normed
                 tk .= Xbl[k] * vk 
                 Tb[a][:, k] .= tk
                 Tbl[k][:, a] .= fweight(Tb[a][:, k], invsqrtw)
@@ -171,16 +171,16 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
             end
         end
         niter[a] = iter - 1
-        #U[:, a] .= u  # old
         U[:, a] .= u .* invsqrtw
+        #U[:, a] .= u  # old
         W[:, a] .= w
         mu[a] = res.sv^2  # = sum(lb)
         for k in eachindex(Xbl)
             Xbl[k] .-= u * (u' * Xbl[k])
         end
     end
-    #T = fweight(sqrt.(mu)' .* U, invsqrtw)  # old
     T = sqrt.(mu)' .* U    
+    #T = fweight(sqrt.(mu)' .* U, invsqrtw)  # old
     Mbpca(T, U, W, Tb, Tbl, Vbl, lb, mu, fitmbl, weights, niter, par)
 end
 
