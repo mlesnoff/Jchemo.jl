@@ -25,17 +25,17 @@ Apart eventual block scaling, the MBPCA is equivalent to the PCA of the
 horizontally concatenated matrix X = [X1 X2 ... Xk] (SUM-PCA in Smilde et al 2003).
 
 The function returns several objects, in particular:
-* `T` : The  global scores (not-normed).
+* `T` : The global scores (not-normed).
 * `U` : The normed global scores.
-* `W` : The block weights.
-* `Tb` : The block scores in the metric scale, **grouped by LV**.
-* `Tbl` : The block scores in original scale, **grouped by block**.
-* `Vbl` : The block loadings.
-* `lb` : The specific weights "lambda".
-* `mu` : The sum of the specific weights (= eigen value of the global PCA).
+* `W` : The normed block weights.
+* `Tb` : The block scores (in the metric scale), returned **grouped by LV**.
+* `Tbl` : The block scores (in original scale), returned **grouped by block**.
+* `Vbl` : The normed block loadings.
+* `lb` : The block specific weights "lambda".
+* `mu` : The sum of the specific weights (= eigen values of the global PCA).
 
 Function `summary` returns: 
-* `explvarx` : Proportion of the total inertia of X (sum of the squared norms of the blocks) 
+* `explvarx` : Proportion of the total inertia of X (squared Frobenious norm) 
     explained by each global score.
 * `explX` : Proportion of the inertia of each block explained by each global score.
 * `contr_block` : Contribution of each block to the global scores. 
@@ -153,7 +153,8 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
     res = 0
     @inbounds for a = 1:nlv
         X = reduce(hcat, Xbl)
-        u .= nipals(X).u
+        u .= nipals(X).u  # makes niter = 1
+        #u .= X[:, 1]
         iter = 1
         cont = true
         while cont
@@ -259,7 +260,7 @@ function Base.summary(object::Mbpca, Xbl)
     ## Proportion of the X-inertia explained by each global LV
     sstot = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
-        sstot[k] = ssq(zXbl[k])
+        sstot[k] = frob2(zXbl[k])
     end
     tt = colsum(object.lb)    
     pvar = tt / sum(sstot)

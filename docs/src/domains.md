@@ -421,5 +421,5 @@
 - **wdis** Different functions to compute weights from distances
 - **wtal** Compute weights from distances using the 'talworth' distribution
 - **winvs** Compute weights from distances using an inverse scaled exponential function
-- Other **utility functions** in file `utility.jl`
+- Other **utility functions** in files `_util.jl`
 

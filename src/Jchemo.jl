@@ -18,8 +18,8 @@ using StatsBase           # countmap, ecdf, sample etc.
 using UMAP
 
 ## The order below is required
-include("_structures_param.jl")
-include("_structures_fun.jl")      
+include("_struct_param.jl")
+include("_struct_fun.jl")      
 include("_model_work.jl")
 include("_pip.jl")
 ## End
@@ -27,10 +27,10 @@ include("default.jl")
 
 ######---- Misc
 
-include("utility.jl")
-include("utility_colwise.jl")
-include("utility_rowwise.jl")
-include("utility_center_scale.jl")
+include("_util.jl")
+include("_util_colwise.jl")
+include("_util_rowwise.jl")
+include("_util_center_scale.jl")
 include("fweight.jl")
 include("angles.jl")
 include("colmedspa.jl")
@@ -86,7 +86,7 @@ include("umap.jl")
 include("spca.jl")
 
 ## Multiblock 
-include("mbutils.jl")
+include("_util_mb.jl")
 include("cca.jl")
 include("ccawold.jl")
 include("plscan.jl")
