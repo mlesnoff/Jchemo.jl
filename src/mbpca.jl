@@ -267,7 +267,7 @@ function Base.summary(object::Mbpca, Xbl)
     explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
     ## Within each block, proportion of the block-inertia explained by each global LV
     ## = object.lb if bscal = :frob 
-    z = fscale((object.lb)', sstot)'
+    z = fscale(object.lb', sstot)'
     nam = string.("lv", 1:nlv)
     explX = DataFrame(z, nam)
     ## Contribution of the blocks to global LVs
@@ -284,8 +284,8 @@ function Base.summary(object::Mbpca, Xbl)
     end
     cortb2t = DataFrame(reduce(hcat, z), nam)
     ## RV 
-    X = vcat(zXbl, [fweight(object.T, sqrtw)])
     nam = [string.("block", 1:nbl) ; "T"]
+    X = vcat(zXbl, [fweight(object.T, sqrtw)])
     res = rv(X)
     zrv = DataFrame(res, nam)
     ## Lg

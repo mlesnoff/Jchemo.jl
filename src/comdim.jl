@@ -281,12 +281,12 @@ function Base.summary(object::Comdim, Xbl)
     pvar = tt / sum(sstot)
     cumpvar = cumsum(pvar)
     explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
-    ## Explained_XXt (indicator "V")
+    ## Explained XXt (indicator "V")
     S = list(Matrix{Q}, nbl)
     sstot_xx = 0 
     @inbounds for k in eachindex(Xbl)
         S[k] = zXbl[k] * zXbl[k]'
-        sstot_xx += ssq(S[k])
+        sstot_xx += frob2(S[k])
     end
     tt = object.mu
     pvar = tt / sstot_xx
@@ -294,10 +294,10 @@ function Base.summary(object::Comdim, Xbl)
     explvarxx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
     ## Within each block, proportion of the block-inertia explained by each global LV
     ## = object.lb if bscal = :frob 
-    z = fscale((object.lb)', sstot)'
+    z = fscale(object.lb', sstot)'
     nam = string.("lv", 1:nlv)
     explX = DataFrame(z, nam)
-    ## Poportions of squared saliences
+    ## Poportion of squared saliences
     psal2 = copy(object.lb)
     @inbounds for a = 1:nlv
         psal2[:, a] .= object.lb[:, a].^2 / object.mu[a]
@@ -317,8 +317,8 @@ function Base.summary(object::Comdim, Xbl)
     end
     cortb2t = DataFrame(reduce(hcat, z), nam)
     ## RV 
-    X = vcat(zXbl, [fweight(object.T, sqrtw)])
     nam = [string.("block", 1:nbl) ; "T"]
+    X = vcat(zXbl, [fweight(object.T, sqrtw)])
     res = rv(X)
     zrv = DataFrame(res, nam)
     ## Lg
