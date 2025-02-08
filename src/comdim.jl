@@ -172,7 +172,7 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
             u0 = copy(u)
             for k in eachindex(Xbl)
                 vk = Xbl[k]' * u      # = wktild
-                dk = normv(vk)         # = alphak = abs.(dot(tk, u))
+                dk = normv(vk)        # = alphak = abs.(dot(tk, u))
                 vk ./= dk             # = vk (= normed)
                 mul!(tk, Xbl[k], vk) 
                 Tb[a][:, k] .= tk
