@@ -3,7 +3,7 @@
     mbpca(Xbl; kwargs...)
     mbpca(Xbl, weights::Weight; kwargs...)
     mbpca!(Xbl::Matrix, weights::Weight; kwargs...)
-Consensus principal components analysis (CPCA = MBPCA).
+Consensus principal components analysis (CPCA, a.k.a MBPCA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. 
     Typically, output of function `mblock`.  
 * `weights` : Weights (n) of the observations. 
@@ -18,7 +18,7 @@ Keyword arguments:
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-CPCA algorithm (Westerhuis et a; 1998), AKA MBPCA, and reffered to as CPCA-W in 
+CPCA algorithm (Westerhuis et a; 1998), a.k.a MBPCA, and reffered to as CPCA-W in 
 Smilde et al. 2003. 
 
 Apart eventual block scaling, the MBPCA is equivalent to the PCA of the 
