@@ -49,7 +49,7 @@ include("preprocessing.jl")
 include("detrend_asls.jl") 
 include("detrend_airpls.jl") 
 include("detrend_arpls.jl") 
-include("scale.jl") 
+include("center_scale.jl") 
 include("rmgap.jl")
 
 ######---- Graphics

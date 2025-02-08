@@ -184,10 +184,10 @@ Concatenate horizontaly multiblock X-data.
 ## Examples
 ```julia
 using Jchemo
-n = 5 ; m = 3 ; p = 10 
+n = 5 ; m = 3 ; p = 9 
 X = rand(n, p) 
 Xnew = rand(m, p)
-listbl = [3:4, 1, [6; 8:10]]
+listbl = [3:4, 1, [6; 8:9]]
 Xbl = mblock(X, listbl) 
 Xblnew = mblock(Xnew, listbl) 
 @head Xbl[3]
