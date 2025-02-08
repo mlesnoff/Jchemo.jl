@@ -271,7 +271,7 @@ function Base.summary(object::Comdim, Xbl)
     @inbounds for k in eachindex(Xbl)
         fweight!(zXbl[k], sqrtw)
     end
-    X = reduce(hcat, zXbl)
+    X = fconcat(zXbl)
     ## Proportion of the X-inertia explained by each global LV
     sstot = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)

@@ -213,7 +213,7 @@ function transf(object::Rosaplsr, Xbl; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     zXbl = transf(object.fitmbl, Xbl)
-    reduce(hcat, zXbl) * vcol(object.R, 1:nlv)
+    fconcat(zXbl) * vcol(object.R, 1:nlv)
 end
 
 """

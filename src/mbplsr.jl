@@ -117,7 +117,7 @@ function transf(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     zXbl = transf(object.fitmbl, Xbl)    
-    reduce(hcat, zXbl) * vcol(object.R, 1:nlv) 
+    fconcat(zXbl) * vcol(object.R, 1:nlv) 
 end
 
 """
@@ -162,7 +162,7 @@ function Base.summary(object::Mbplsr, Xbl)
     @inbounds for k in eachindex(Xbl)
         zXbl[k] .= sqrtw .* zXbl[k]
     end
-    X = reduce(hcat, zXbl)
+    X = fconcat(zXbl)
     # Explained_X
     ssk = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)

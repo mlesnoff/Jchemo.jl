@@ -215,7 +215,7 @@ function Base.summary(object::Mbplswest, Xbl)
     @inbounds for k in eachindex(Xbl)
         zXbl[k] .= sqrtw .* zXbl[k]
     end
-    X = reduce(hcat, zXbl)
+    X = fconcat(zXbl)
     # Explained_X
     ssk = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
