@@ -275,8 +275,8 @@ struct Comdim
     T::Matrix 
     U::Matrix
     V::Matrix
-    Tbl::Vector{Matrix}
     Tb::Vector{Matrix}
+    Tbl::Vector{Matrix}
     Vbl::Vector{Matrix}
     lb::Matrix
     mu::Vector

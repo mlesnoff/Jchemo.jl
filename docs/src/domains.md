@@ -54,13 +54,13 @@
 - **ccawold** CCA and RCCA - Wold (1984) Nipals algorithm  
 - **plscan** Canonical partial least squares regression (Symmetric PLS)
 - **plstuck** Tucker's inter-battery method of factor analysis (PLS-SVD)
-- **rasvd** Redundancy analysis (RA), *aka* PCA on 
+- **rasvd** Redundancy analysis (RA), a.k.a PCA on 
     instrumental variables (PCAIV)
 
 *2 or more blocks* 
-- **mbconcat** Transformer concatenating multi-block X-data
-- **mbpca** Multiblock PCA (MBPCA), *aka* Consensus principal component analysis (CPCA)
-- **comdim** Common components and specific weights analysis (ComDim), *aka* CCSWA or HPCA
+- **mbconcat** Concatenation of multi-block X-data
+- **mbpca** Multiblock PCA (MBPCA), a.k.a Consensus principal component analysis (CPCA)
+- **comdim** Common components and specific weights analysis (ComDim), a.k.a CCSWA or HPCA
 
 *Utilities*
 - **mblock** Make blocks from a matrix
@@ -94,7 +94,7 @@
 *Variants of regularization using latent variables* 
 - **cglsr** Conjugate gradient for the least squares normal equations (CGLS)
 - **pcr** Principal components regression (SVD factorization)
-- **rrr** Reduced rank regression (RRR), *aka*  Redundancy analysis regression 
+- **rrr** Reduced rank regression (RRR), a.k.a  Redundancy analysis regression 
 
 *Robust*
 - **plsrout** Outlierness
@@ -127,7 +127,7 @@
 - **rrchol** Choleski factorization
 
 *Non linear*
-- **krr** Non linear kernel (KRR), *aka* Least squares SVM (LS-SVMR)
+- **krr** Non linear kernel (KRR), a.k.a Least squares SVM (LS-SVMR)
 
 ### Local models
 
@@ -156,7 +156,7 @@
 
 *Linear*
 - **mlrda** MLR-DA
-- **plsrda** PLSR-DA, *aka* usual PLSDA
+- **plsrda** PLSR-DA, a.k.a usual PLSDA
 - **rrda** RR-DA
 
 *Sparse*
@@ -229,7 +229,7 @@
 
 - **occsd** Score distance (SD)
 - **occod** Orthogonal distance (OD) 
-- **occsdod** Compromise between SD and OD (*aka* Simca approach) 
+- **occsdod** Compromise between SD and OD (a.k.a Simca approach) 
 
 ### Other methods
 
@@ -375,6 +375,7 @@
 - **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
 - **fblockscal_col, _frob, _mfa, _sd** Scale blocks
 - **fcenter**, **fscale**, **fcscale** Column-wise centering and scaling of a matrix
+- **fconcat** Concatenate multiblock data
 - **findmax_cla** Find the most occurent level in a categorical variable
 - **frob**, **frob2** Frobenius norm of a matrix
 - **fweight** Weight each row of a matrix

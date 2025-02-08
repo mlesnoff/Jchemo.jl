@@ -10,8 +10,7 @@ Consensus principal components analysis (CPCA, a.k.a MBPCA).
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-* `bscal` : Type of block scaling. See function `blockscal`
-        for possible values.
+* `bscal` : Type of block scaling. See function `blockscal` for possible values.
 * `tol` : Tolerance value for Nipals convergence.
 * `maxit` : Maximum number of iterations (Nipals).
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
@@ -254,7 +253,7 @@ function Base.summary(object::Mbpca, Xbl)
     sqrtw = sqrt.(object.weights.w)
     zXbl = transf(object.fitmbl, Xbl)
     @inbounds for k in eachindex(Xbl)
-        zXbl[k] .= sqrtw .* zXbl[k]
+        fweight!(zXbl[k], sqrtw)
     end
     X = reduce(hcat, zXbl)
     ## Proportion of the X-inertia explained by each global LV
@@ -272,14 +271,13 @@ function Base.summary(object::Mbpca, Xbl)
     nam = string.("lv", 1:nlv)
     explX = DataFrame(z, nam)
     ## Contribution of the blocks to global LVs
-    # = lb proportions (contrib)
+    # = lb proportions
     z = fscale(object.lb, colsum(object.lb))
     contr_block = DataFrame(z, nam)
     ## Correlation between the original variables and the global LVs 
     z = cor(X, object.U)  
     corx2t = DataFrame(z, nam)  
-    ## Correlation between the block LVs and the global LVs
-    ## in the metric scale
+    ## Correlation between the block LVs and the global LVs in the metric scale
     z = list(Matrix{Q}, nlv)
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], fweight(object.U[:, a], sqrtw))

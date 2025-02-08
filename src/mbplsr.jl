@@ -90,7 +90,7 @@ function mbplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::Weight; kwar
     Q = eltype(Xbl[1][1, 1])
     isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
     q = nco(Y)
-    fitmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
+    fitmbl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitmbl, Xbl)
     X = reduce(hcat, Xbl)
     ymeans = colmean(Y, weights)

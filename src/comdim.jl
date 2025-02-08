@@ -3,15 +3,14 @@
     comdim(Xbl; kwargs...)
     comdim(Xbl, weights::Weight; kwargs...)
     comdim!(Xbl::Matrix, weights::Weight; kwargs...)
-Common components and specific weights analysis (ComDim, *aka* CCSWA).
+Common components and specific weights analysis (CCSWA, a.k.a ComDim).
 * `Xbl` : List of blocks (vector of matrices) of X-data. 
     Typically, output of function `mblock`.  
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores T) to compute.
-* `bscal` : Type of block scaling. See function `blockscal`
-        for possible values.
+* `bscal` : Type of block scaling. See function `blockscal` for possible values.
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
@@ -21,34 +20,26 @@ Keyword arguments:
 "SVD" algorithm of Hannafi & Qannari 2008 p.84.
 
 The function returns several objects, in particular:
-* `T` : The non normed global scores.
+* `T` : The global scores (not-normed).
 * `U` : The normed global scores.
-* `W` : The global loadings.
-* `Tbl` : The block scores (grouped by blocks, in the original scale).
-* `Tb` : The block scores (grouped by LV, in the metric scale).
-* `Wbl` : The block loadings.
-* `lb` : The specific weights (saliences) "lambda".
+* `W` : The normed block weights.
+* `Tb` : The block scores (in the metric scale), returned **grouped by LV**.
+* `Tbl` : The block scores (in original scale), returned **grouped by block**.
+* `Vbl` : The normed block loadings.
+* `lb` : The block specific weights (saliences) "lambda".
 * `mu` : The sum of the squared saliences.
 
 Function `summary` returns: 
-* `explvarx` : Proportion of the total inertia of X 
-    (sum of the squared norms of the 
-    blocks) explained by each global score.
-* `explvarxx` : Proportion of the XX' total inertia 
-    (sum of the squared norms of the products X_k * X_k') 
-    explained by each global score (= indicator "V" in Qannari 
-    et al. 2000, Hanafi et al. 2008).
-* `sal2` : Proportion of the squared saliences
-    of each block within each global score. 
-* `contr_block` : Contribution of each block 
-    to the global scores (= proportions of the saliences 
-    "lambda" within each score).
-    * `explX` : Proportion of the inertia of the blocks 
+
+* `explvarx` : Proportion of the total inertia of X (squared Frobenious norm) 
     explained by each global score.
-* `corx2t` : Correlation between the global scores 
-    and the original variables.  
-* `cortb2t` : Correlation between the global scores 
-    and the block scores.
+* `explvarxx` : Proportion of the XX' total inertia explained by each global 
+    score (= indicator "V" in Qannari et al. 2000, Hanafi et al. 2008).
+* `explX` : Proportion of the inertia of each block explained by each global score.
+* `psal2` : Proportion of the squared saliences of each block within each global score. 
+* `contr_block` : Contribution of each block to the global scores. 
+* `corx2t` : Correlation between the global scores and the original variables.  
+* `cortb2t` : Correlation between the global scores and the block scores in the metric scale.
 * `rv` : RV coefficient. 
 * `lg` : Lg coefficient. 
 
@@ -114,7 +105,7 @@ res = summary(model, Xbl) ;
 pnames(res) 
 res.explvarx
 res.explvarxx
-res.sal2 
+res.psal2 
 res.contr_block
 res.explX   # = model.fitm.lb if bscal = :frob
 rowsum(Matrix(res.explX))
@@ -149,7 +140,7 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
     n = nro(Xbl[1])
     nlv = par.nlv
     sqrtw = sqrt.(weights.w)
-    fitmbl = blockscal(Xbl, weights; bscal = par.bscal, centr = true, scal = par.scal)
+    fitmbl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitmbl, Xbl)
     # Row metric
     @inbounds for k in eachindex(Xbl)
@@ -163,8 +154,8 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
     for k in eachindex(Xbl) ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
     Tb = list(Matrix{Q}, nlv)
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
-    Wbl = list(Matrix{Q}, nbl)
-    for k in eachindex(Xbl) ; Wbl[k] = similar(Xbl[1], nco(Xbl[k]), nlv) ; end
+    Vbl = list(Matrix{Q}, nbl)
+    for k in eachindex(Xbl) ; Vbl[k] = similar(Xbl[1], nco(Xbl[k]), nlv) ; end
     lb = similar(Xbl[1], nbl, nlv)
     mu = similar(Xbl[1], nlv)
     TB = similar(Xbl[1], n, nbl)
@@ -180,14 +171,14 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
         while cont
             u0 = copy(u)
             for k in eachindex(Xbl)
-                wk = Xbl[k]' * u      # = wktild
-                dk = normv(wk)         # = alphak = abs.(dot(tk, u))
-                wk ./= dk             # = wk (= normed)
-                mul!(tk, Xbl[k], wk) 
+                vk = Xbl[k]' * u      # = wktild
+                dk = normv(vk)         # = alphak = abs.(dot(tk, u))
+                vk ./= dk             # = vk (= normed)
+                mul!(tk, Xbl[k], vk) 
                 Tb[a][:, k] .= tk
                 Tbl[k][:, a] .= (1 ./ sqrtw) .* tk
                 TB[:, k] = dk * tk    # = Qb (qk = dk * tk)
-                Wbl[k][:, a] .= wk
+                Vbl[k][:, a] .= vk
                 lb[k, a] = dk^2
             end
             res = nipals(TB)
@@ -199,18 +190,20 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
             end
         end
         niter[a] = iter - 1
-        U[:, a] .= u
+        U[:, a] .= u .* invsqrtw
+        #U[:, a] .= u  # old
         W[:, a] .= res.v
         mu[a] = res.sv^2   # = sum(lb.^2)   
         @inbounds for k in eachindex(Xbl)
             Xbl[k] .-= u * (u' * Xbl[k])
             # Same as:
-            #Vx = sqrt(lb[k, a]) * Wbl[k][:, a]'
+            #Vx = sqrt(lb[k, a]) * Vbl[k][:, a]'
             #Xbl[k] .-= u * Vx
         end
     end
-    T = Diagonal(1 ./ sqrtw) * (sqrt.(mu)' .* U)
-    Comdim(T, U, W, Tbl, Tb, Wbl, lb, mu, fitmbl, weights, niter, par)
+    T = sqrt.(mu)' .* U    
+    #T = fweight(sqrt.(mu)' .* U, invsqrtw)  # old
+    Comdim(T, U, W, Tb, Tbl, Vbl, lb, mu, fitmbl, weights, niter, par)
 end
 
 """ 
@@ -246,7 +239,7 @@ function transf_all(object::Comdim, Xbl; nlv = nothing)
     tk = copy(u)
     for a = 1:nlv
         for k in eachindex(Xbl)
-            tk .= zXbl[k] * object.Wbl[k][:, a]
+            tk .= zXbl[k] * object.Vbl[k][:, a]
             TB[:, k] .= tk
             Tbl[k][:, a] .= tk
         end
@@ -254,7 +247,7 @@ function transf_all(object::Comdim, Xbl; nlv = nothing)
         u .= 1 / sqrt(object.mu[a]) * TB * object.W[:, a]
         U[:, a] .= u
         @inbounds for k in eachindex(Xbl)
-            Vx = sqrt(object.lb[k, a]) * object.Wbl[k][:, a]'
+            Vx = sqrt(object.lb[k, a]) * object.Vbl[k][:, a]'
             zXbl[k] .-= u * Vx
         end
     end
@@ -276,18 +269,18 @@ function Base.summary(object::Comdim, Xbl)
     sqrtw = sqrt.(object.weights.w)
     zXbl = transf(object.fitmbl, Xbl)
     @inbounds for k in eachindex(Xbl)
-        zXbl[k] .= sqrtw .* zXbl[k]
+        fweight!(zXbl[k], sqrtw)
     end
-    ## Explained_X by global scores
+    X = reduce(hcat, zXbl)
+    ## Proportion of the X-inertia explained by each global LV
     sstot = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
-        sstot[k] = ssq(zXbl[k])
+        sstot[k] = frob2(zXbl[k])
     end
     tt = colsum(object.lb)    
     pvar = tt / sum(sstot)
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, 
-        cumpvar = cumpvar)
+    explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
     ## Explained_XXt (indicator "V")
     S = list(Matrix{Q}, nbl)
     sstot_xx = 0 
@@ -298,46 +291,41 @@ function Base.summary(object::Comdim, Xbl)
     tt = object.mu
     pvar = tt / sstot_xx
     cumpvar = cumsum(pvar)
-    explvarxx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, 
-        cumpvar = cumpvar)
-    ## Proportions of squared saliences
-    sal2 = copy(object.lb)
-    for a = 1:nlv
-        sal2[:, a] .= object.lb[:, a].^2 / object.mu[a]
-    end
-    sal2 = DataFrame(sal2, string.("lv", 1:nlv))
-    ## Contribution of the blocks to global 
-    ## scores = lb proportions (contrib)
-    z = fscale(object.lb, colsum(object.lb))
-    contr_block = DataFrame(z, string.("lv", 1:nlv))
-    ## Proportion of inertia explained for 
-    ## each block (explained.X)
-    # = object.lb if bscal = :frob 
+    explvarxx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
+    ## Within each block, proportion of the block-inertia explained by each global LV
+    ## = object.lb if bscal = :frob 
     z = fscale((object.lb)', sstot)'
-    explX = DataFrame(z, string.("lv", 1:nlv))
-    ## Correlation between the original variables and 
-    ## the global scores (globalcor)
-    X = reduce(hcat, zXbl)
+    nam = string.("lv", 1:nlv)
+    explX = DataFrame(z, nam)
+    ## Poportions of squared saliences
+    psal2 = copy(object.lb)
+    @inbounds for a = 1:nlv
+        psal2[:, a] .= object.lb[:, a].^2 / object.mu[a]
+    end
+    psal2 = DataFrame(psal2, nam)
+    ## Contribution of the blocks to global LVs
+    # = lb proportions
+    z = fscale(object.lb, colsum(object.lb))
+    contr_block = DataFrame(z, nam)
+    ## Correlation between the original variables and the global LVs 
     z = cor(X, object.U)  
-    corx2t = DataFrame(z, string.("lv", 1:nlv))  
-    ## Correlation between the block scores and 
-    ## the global scores (cor.g.b)
+    corx2t = DataFrame(z, nam)  
+    ## Correlation between the block LVs and the global LVs in the metric scale
     z = list(Matrix{Q}, nlv)
     @inbounds for a = 1:nlv
-        z[a] = cor(object.Tb[a], object.U[:, a])
+        z[a] = cor(object.Tb[a], fweight(object.U[:, a], sqrtw))
     end
-    cortb2t = DataFrame(reduce(hcat, z), 
-        string.("lv", 1:nlv))
+    cortb2t = DataFrame(reduce(hcat, z), nam)
     ## RV 
-    X = vcat(zXbl, [sqrtw .* object.T])
+    X = vcat(zXbl, [fweight(object.T, sqrtw)])
     nam = [string.("block", 1:nbl) ; "T"]
     res = rv(X)
     zrv = DataFrame(res, nam)
     ## Lg
     res = lg(X)
     zlg = DataFrame(res, nam)
-    (explvarx = explvarx, explvarxx, sal2, contr_block, explX, corx2t, 
-        cortb2t, rv = zrv, lg = zlg)
+    (explvarx = explvarx, explvarxx, explX, psal2, contr_block, corx2t, cortb2t, 
+        rv = zrv, lg = zlg)
 end
 
 

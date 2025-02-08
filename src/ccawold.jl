@@ -3,8 +3,7 @@
     ccawold(X, Y; kwargs...)
     ccawold(X, Y, weights::Weight; kwargs...)
     ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-Canonical correlation analysis (CCA, RCCA) - Wold 
-    Nipals algorithm.
+Canonical correlation analysis (CCA, RCCA) - Wold Nipals algorithm.
 * `X` : First block of data.
 * `Y` : Second block of data.
 * `weights` : Weights (n) of the observations. 

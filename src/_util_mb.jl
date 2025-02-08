@@ -1,4 +1,37 @@
 """
+    mblock(X, listbl)
+Make blocks from a matrix.
+* `X` : X-data (n, p).
+* `listbl` : A vector whose each component defines 
+    the colum numbers defining a block in `X`.
+    The length of `listbl` is the number of blocks.
+
+The function returns a list (vector) of blocks.
+
+## Examples
+```julia
+using Jchemo
+n = 5 ; p = 10 
+X = rand(n, p) 
+listbl = [3:4, 1, [6; 8:10]]
+
+Xbl = mblock(X, listbl)
+Xbl[1]
+Xbl[2]
+Xbl[3]
+```
+"""
+function mblock(X, listbl)
+    Q = eltype(X[1, 1])
+    nbl = length(listbl)
+    Xbl = list(Matrix{Q}, nbl)
+    @inbounds for k in eachindex(Xbl)
+        Xbl[k] = ensure_mat(X[:, listbl[k]])
+    end
+    Xbl
+end 
+
+"""
     blockscal(; kwargs...)
     blockscal(Xbl; kwargs...)
     blockscal(Xbl, weights::Weight; kwargs...)
@@ -214,35 +247,24 @@ Compute the preprocessed data from a model.
 transf(object::Mbconcat, Xbl) = reduce(hcat, Xbl)
 
 """
-    mblock(X, listbl)
-Make blocks from a matrix.
-* `X` : X-data (n, p).
-* `listbl` : A vector whose each component defines 
-    the colum numbers defining a block in `X`.
-    The length of `listbl` is the number of blocks.
-
-The function returns a list (vector) of blocks.
+    fconcat()
+Concatenate horizontaly multiblock X-data.
+* `Xbl` : List of blocks (vector of matrices) of X-data 
+    Typically, output of function `mblock` from (n, p) data.  
 
 ## Examples
 ```julia
 using Jchemo
-n = 5 ; p = 10 
+n = 5 ; m = 3 ; p = 9 
 X = rand(n, p) 
-listbl = [3:4, 1, [6; 8:10]]
+Xnew = rand(m, p)
+listbl = [3:4, 1, [6; 8:9]]
+Xbl = mblock(X, listbl) 
+Xblnew = mblock(Xnew, listbl) 
+@head Xbl[3]
 
-Xbl = mblock(X, listbl)
-Xbl[1]
-Xbl[2]
-Xbl[3]
+fconcat(Xbl)
 ```
 """
-function mblock(X, listbl)
-    Q = eltype(X[1, 1])
-    nbl = length(listbl)
-    Xbl = list(Matrix{Q}, nbl)
-    @inbounds for k in eachindex(Xbl)
-        Xbl[k] = ensure_mat(X[:, listbl[k]])
-    end
-    Xbl
-end 
+fconcat(Xbl) = reduce(hcat, Xbl)
 

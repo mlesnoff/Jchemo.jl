@@ -3,7 +3,7 @@
     rasvd(X, Y; kwargs...)
     rasvd(X, Y, weights::Weight; kwargs...)
     rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-Redundancy analysis (RA), *aka* PCA on instrumental variables (PCAIV)
+Redundancy analysis (RA), a.k.a PCA on instrumental variables (PCAIV)
 * `X` : First block of data.
 * `Y` : Second block of data.
 * `weights` : Weights (n) of the observations. 

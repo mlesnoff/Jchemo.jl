@@ -342,7 +342,7 @@ export
     umap,
     ## Multiblock
     rv, lg, rd, 
-    mbconcat,
+    mbconcat, fconcat,
     cca, cca!,
     ccawold, ccawold!,
     plscan, plscan!,

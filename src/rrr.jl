@@ -3,7 +3,7 @@
     rrr(X, Y; kwargs...)
     rrr(X, Y, weights::Weight; kwargs...)
     rr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
-Reduced rank regression (RRR, *aka* RA).
+Reduced rank regression (RRR, a.k.a RA).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. 
