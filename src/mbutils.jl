@@ -17,6 +17,9 @@ Keyword arguments:
 * `bscal` : Type of block scaling. Possible values are:
     `:none`, `:frob`, `:mfa`, `:ncol`, `:sd`. See thereafter.
 
+If implemented, the data transformations follow the order: column centering, column scaling 
+and finally block scaling. 
+
 Types of block scaling:
 * `:none` : No block scaling. 
 * `:frob` : Let D be the diagonal matrix of vector `weights.w`. 
@@ -27,11 +30,6 @@ Types of block scaling:
 * `:ncol` : Each block X is divided by the nb. of columns of the block.
 * `:sd` : Each block X is divided by sqrt(sum(weighted variances of the block-columns)). 
     After this scaling, sum(weighted variances of the block-columns) = 1.
-
-The order of the eventual data transformations is as follows:
-* Column centering, 
-* Column scaling,
-* Block scaling. 
 
 ## Examples
 ```julia
