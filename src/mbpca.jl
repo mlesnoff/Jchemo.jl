@@ -18,13 +18,16 @@ Keyword arguments:
     is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-The MBPCA global scores are equal to the scores of the PCA 
-of the horizontal concatenation X = [X1 X2 ... Xk].
+CPCA algorithm (Westerhuis et a; 1998), AKA MBPCA, and reffered to as CPCA-W in 
+Smilde et al. 2003. 
+
+Apart eventual block scaling, the MBPCA is equivalent to the PCA of the 
+horizontally concatenated matrix X = [X1 X2 ... Xk] (SUM-PCA in Smilde et al 2003).
 
 The function returns several objects, in particular:
-* `T` : The non-normed global scores.
+* `T` : The  global scores (not-normed).
 * `U` : The normed global scores.
-* `W` : The global loadings.
+* `W` : The block weights.
 * `Tb` : The block scores in the metric scale, **grouped by LV**.
 * `Tbl` : The block scores in original scale, **grouped by block**.
 * `Vbl` : The block loadings.
@@ -47,6 +50,10 @@ Qannari, E.M., 2019. Unsupervised multiblock data
 analysis: A unified approach and extensions. Chemometrics and 
 Intelligent Laboratory Systems 194, 103856. 
 https://doi.org/10.1016/j.chemolab.2019.103856
+
+Smilde, A.K., Westerhuis, J.A., de Jong, S., 2003. A framework for sequential 
+multiblock component methods. Journal of Chemometrics 17, 323–337.
+ https://doi.org/10.1002/cem.811
 
 Westerhuis, J.A., Kourti, T., MacGregor, J.F., 1998. Analysis 
 of multiblock and hierarchical PCA and PLS models. Journal 
