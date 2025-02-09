@@ -274,7 +274,7 @@ end
 struct Comdim
     T::Matrix 
     U::Matrix
-    V::Matrix
+    W::Matrix
     Tb::Vector{Matrix}
     Tbl::Vector{Matrix}
     Vbl::Vector{Matrix}
