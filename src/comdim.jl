@@ -266,7 +266,9 @@ function Base.summary(object::Comdim, Xbl)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     nlv = nco(object.T)
+    ## Block scaling
     zXbl = transf(object.fitmbl, Xbl)
+    ## Metric
     sqrtw = sqrt.(object.weights.w)
     @inbounds for k in eachindex(Xbl)
         fweight!(zXbl[k], sqrtw)
