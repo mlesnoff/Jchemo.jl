@@ -139,6 +139,7 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
     nbl = length(Xbl)
     n = nro(Xbl[1])
     nlv = par.nlv
+    ## Block scaling
     fitmbl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitmbl, Xbl)
     # Row metric
