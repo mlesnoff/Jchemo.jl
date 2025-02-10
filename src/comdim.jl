@@ -139,11 +139,11 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
     nbl = length(Xbl)
     n = nro(Xbl[1])
     nlv = par.nlv
-    sqrtw = sqrt.(weights.w)
-    invsqrtw = 1 ./ sqrtw
     fitmbl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitmbl, Xbl)
     # Row metric
+    sqrtw = sqrt.(weights.w)
+    invsqrtw = 1 ./ sqrtw
     @inbounds for k in eachindex(Xbl)
         Xbl[k] .= sqrtw .* Xbl[k]
     end
@@ -265,8 +265,8 @@ function Base.summary(object::Comdim, Xbl)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     nlv = nco(object.T)
-    sqrtw = sqrt.(object.weights.w)
     zXbl = transf(object.fitmbl, Xbl)
+    sqrtw = sqrt.(object.weights.w)
     @inbounds for k in eachindex(Xbl)
         fweight!(zXbl[k], sqrtw)
     end
