@@ -219,7 +219,7 @@ function Base.summary(object::Mbplswest, Xbl)
     # Explained_X
     ssk = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
-        ssk[k] = ssq(zXbl[k])
+        ssk[k] = frob2(zXbl[k])
     end
     sstot = sum(ssk)
     tt = object.TT

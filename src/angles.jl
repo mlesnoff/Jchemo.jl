@@ -44,7 +44,7 @@ function lg(X, Y; centr = true)
         Y = fcenter(Y, colmean(Y))
     end
     ## Same as: sum(cov(X, Y; corrected = false).^2)
-    ssq(X' * Y) / n^2 
+    frob2(X' * Y) / n^2 
 end
 
 function lg(Xbl::Vector; centr = true)
@@ -186,9 +186,9 @@ function rv(X, Y; centr = true)
         XtY = X' * Y    
         XtX = X' * X
         YtY = Y' * Y
-        a = ssq(XtY)
-        b = ssq(XtX)
-        c = ssq(YtY)
+        a = frob2(XtY)
+        b = frob2(XtX)
+        c = frob2(YtY)
         rv = a / sqrt(b * c)
     end
     rv

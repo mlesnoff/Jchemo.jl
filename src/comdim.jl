@@ -26,8 +26,8 @@ The function returns several objects, in particular:
 * `Tb` : The block scores (in the metric scale), returned **grouped by LV**.
 * `Tbl` : The block scores (in original scale), returned **grouped by block**.
 * `Vbl` : The normed block loadings.
-* `lb` : The block specific weights (saliences) "lambda".
-* `mu` : The sum of the squared saliences.
+* `lb` : The block specific weights (saliences) 'lambda'.
+* `mu` : The sum of the squared saliences per LV.
 
 Function `summary` returns: 
 
@@ -192,7 +192,6 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
         end
         niter[a] = iter - 1
         U[:, a] .= u .* invsqrtw
-        #U[:, a] .= u  # old
         W[:, a] .= res.v
         mu[a] = res.sv^2   # = sum(lb.^2)   
         @inbounds for k in eachindex(Xbl)
@@ -203,7 +202,6 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
         end
     end
     T = sqrt.(mu)' .* U    
-    #T = fweight(sqrt.(mu)' .* U, invsqrtw)  # old
     Comdim(T, U, W, Tb, Tbl, Vbl, lb, mu, fitmbl, weights, niter, par)
 end
 
@@ -273,16 +271,17 @@ function Base.summary(object::Comdim, Xbl)
         fweight!(zXbl[k], sqrtw)
     end
     X = fconcat(zXbl)
-    ## Proportion of the X-inertia explained by each global LV
+    ## Proportion of the X-inertia explained per global LV
     sstot = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
         sstot[k] = frob2(zXbl[k])
     end
     tt = colsum(object.lb)    
+    #tt = colnorm(object.T, object.weights).^2 
     pvar = tt / sum(sstot)
     cumpvar = cumsum(pvar)
     explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
-    ## Explained XXt (indicator "V")
+    ## Explained XXt (indicator 'V') per global LV
     S = list(Matrix{Q}, nbl)
     sstot_xx = 0 
     @inbounds for k in eachindex(Xbl)

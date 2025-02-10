@@ -362,14 +362,14 @@
 
 - **aggstat** Compute column-wise statistics by class in a dataset
 - **aggsum** Compute sub-total sums by class of a categorical variable
-- **sumv**, **meanv**, **normv**, **stdv**, **varv**, **madv**, **iqrv** Vector operations 
+- **sumv**, **meanv**, **stdv**, **varv**, **madv**, **iqrv**, **normv** Vector operations 
+- **covv**, **covm**, **corv**, **corm** Weighted covariances and correlations 
+- **cosv**, **cosm** Cosinus 
 - **colmad**, **colmean**, **colmed**, **colnorm**, 
     **colstd**, **colsum**, **colvar**  Column-wise operations
 - **colmeanskip**, **colstdskip**, **colsumskip**, 
     **colvarskip** Column-wise operations allowing missing data
 - **convertdf** Convert the columns of a dataframe to given types
-- **covm**, **corm** Weighted covariance and correlation matrices
-- **cosv**, **cosm** Cosinus between vectors
 - **default** Display the keyword arguments (with their default values) of a function
 - **dummy** Build dummy table
 - **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
@@ -415,7 +415,6 @@
 - **thresh_soft**, **thresh_hard** Thresholding functions
 - **softmax** Softmax function
 - **sourcedir** Include all the files contained in a directory
-- **ssq** Total inertia of a matrix
 - **summ** Summarize the columns of a dataset
 - **tab**, **tabdupl** Tabulations for categorical variables
 - **vcatdf** Vertical concatenation of a list of dataframes

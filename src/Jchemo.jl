@@ -28,6 +28,7 @@ include("default.jl")
 ######---- Misc
 
 include("_util.jl")
+include("_util_statistics.jl")
 include("_util_colwise.jl")
 include("_util_rowwise.jl")
 include("_util_center_scale.jl")
@@ -255,12 +256,13 @@ export
     default,
     ######---- Utilities
     aggstat, aggsum,
-    sumv, meanv, normv, stdv, varv, madv, iqrv, 
+    sumv, meanv, stdv, varv, madv, iqrv, normv, 
     colsum, colmean, colnorm, colstd, colvar, colmed, colmad, 
     colsumskip, colmeanskip, colstdskip, colvarskip,
     convertdf,
-    corm, covm,
-    cosm, cosv,
+    covv, covm, 
+    corv, corm,
+    cosv, cosm, 
     dummy,
     dupl, findmiss,
     ensure_df, ensure_mat,
@@ -301,7 +303,6 @@ export
     thresh_soft, thresh_hard, 
     softmax,
     sourcedir,
-    ssq,
     summ,
     tab, tab, tabdupl,
     vcatdf,
