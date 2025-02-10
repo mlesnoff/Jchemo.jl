@@ -28,7 +28,7 @@ include("default.jl")
 ######---- Misc
 
 include("_util.jl")
-include("_util_statistics.jl")
+include("_util_stat.jl")
 include("_util_colwise.jl")
 include("_util_rowwise.jl")
 include("_util_center_scale.jl")
