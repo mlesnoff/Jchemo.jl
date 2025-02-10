@@ -152,8 +152,8 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
     res = 0
     @inbounds for a = 1:nlv
         X = reduce(hcat, Xbl)
-        u .= nipals(X).u  # makes niter = 1
-        #u .= X[:, 1]
+        u .= X[:, 1]
+        #u .= nipals(X).u  # makes niter = 1
         iter = 1
         cont = true
         while cont
@@ -179,7 +179,6 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
         end
         niter[a] = iter - 1
         U[:, a] .= u .* invsqrtw
-        #U[:, a] .= u  # old
         W[:, a] .= w
         mu[a] = res.sv^2  # = sum(lb)
         for k in eachindex(Xbl)
@@ -187,7 +186,6 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
         end
     end
     T = sqrt.(mu)' .* U    
-    #T = fweight(sqrt.(mu)' .* U, invsqrtw)  # old
     Mbpca(T, U, W, Tb, Tbl, Vbl, lb, mu, fitmbl, weights, niter, par)
 end
 
