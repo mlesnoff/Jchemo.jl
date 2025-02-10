@@ -28,7 +28,7 @@ The function returns several objects, in particular:
 * `U` : The normed global scores.
 * `W` : The normed block weights.
 * `Tb` : The block scores (in the metric scale), returned **grouped by LV**.
-* `Tbl` : The block scores (in original scale), returned **grouped by block**.
+* `Tbl` : The block scores (in the original scale), returned **grouped by block**.
 * `Vbl` : The normed block loadings.
 * `lb` : The block specific weights "lambda".
 * `mu` : The sum of the specific weights (= eigen values of the global PCA).
@@ -38,8 +38,8 @@ Function `summary` returns:
     explained by each global score.
 * `explX` : Proportion of the inertia of each block explained by each global score.
 * `contr_block` : Contribution of each block to the global scores. 
-* `corx2t` : Correlation between the global scores and the original variables.  
-* `cortb2t` : Correlation between the global scores and the block scores in the metric scale.
+* `cortbl2t` : Correlation between the block scores and the global scores.
+* `corx2t` : Correlation between the original variables and the global scores.  
 * `rv` : RV coefficient. 
 * `lg` : Lg coefficient. 
 
@@ -96,8 +96,8 @@ res.explvarx
 res.explX   # = model.fitm.lb if bscal = :frob
 rowsum(Matrix(res.explX))
 res.contr_block
+res.cortbl2t
 res.corx2t 
-res.cortb2t
 res.rv
 ```
 """
@@ -272,15 +272,15 @@ function Base.summary(object::Mbpca, Xbl)
     # = lb proportions
     z = fscale(object.lb, colsum(object.lb))
     contr_block = DataFrame(z, nam)
+    ## Correlation between the block LVs and the global LVs
+    z = zeros(Q, nbl, nlv)
+    for k in eachindex(Xbl), a = 1:nlv 
+        z[k, a] = corv(object.Tbl[k][:, a], object.T[:, a], object.weights) 
+    end
+    cortbl2t = DataFrame(z, nam)
     ## Correlation between the original variables and the global LVs 
     z = cor(X, object.U)  
     corx2t = DataFrame(z, nam)  
-    ## Correlation between the block LVs and the global LVs in the metric scale
-    z = list(Matrix{Q}, nlv)
-    @inbounds for a = 1:nlv
-        z[a] = cor(object.Tb[a], fweight(object.U[:, a], sqrtw))
-    end
-    cortb2t = DataFrame(reduce(hcat, z), nam)
     ## RV 
     nam = [string.("block", 1:nbl) ; "T"]
     X = vcat(zXbl, [fweight(object.T, sqrtw)])
@@ -289,7 +289,7 @@ function Base.summary(object::Mbpca, Xbl)
     ## Lg
     res = lg(X)
     zlg = DataFrame(res, nam)
-    (explvarx = explvarx, explX, contr_block, corx2t, cortb2t, rv = zrv, lg = zlg)
+    (explvarx = explvarx, explX, contr_block, cortbl2t, corx2t, rv = zrv, lg = zlg)
 end
 
 
