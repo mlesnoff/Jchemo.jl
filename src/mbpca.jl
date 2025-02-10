@@ -125,6 +125,7 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
     nbl = length(Xbl)
     n = nro(Xbl[1])
     nlv = par.nlv
+    ## Block scaling
     fitmbl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitmbl, Xbl)
     # Row metric
@@ -248,8 +249,10 @@ function Base.summary(object::Mbpca, Xbl)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     nlv = nco(object.T)
-    sqrtw = sqrt.(object.weights.w)
+    ## Block scaling
     zXbl = transf(object.fitmbl, Xbl)
+    ## Metric
+    sqrtw = sqrt.(object.weights.w)
     @inbounds for k in eachindex(Xbl)
         fweight!(zXbl[k], sqrtw)
     end
