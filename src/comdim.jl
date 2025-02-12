@@ -174,14 +174,14 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
             u0 = copy(u)
             for k in eachindex(Xbl)
                 vk = Xbl[k]' * u      # = wktild
-                dk = normv(vk)        # = alphak = abs.(dot(tk, u))
-                vk ./= dk             # = vk (= normed)
+                alphak = normv(vk)        # = abs.(dot(tk, u))
+                vk ./= alphak             # = vk (= normed)
                 mul!(tk, Xbl[k], vk) 
                 Tb[a][:, k] .= tk
                 Tbl[k][:, a] .= (1 ./ sqrtw) .* tk
-                TB[:, k] = dk * tk    # = Qb (qk = dk * tk)
+                TB[:, k] = alphak * tk    # = Qb (qk = alphak * tk)
                 Vbl[k][:, a] .= vk
-                lb[k, a] = dk^2
+                lb[k, a] = alphak^2
             end
             res = nipals(TB)
             u .= res.u
