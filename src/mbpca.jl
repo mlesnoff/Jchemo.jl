@@ -153,7 +153,7 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
     @inbounds for a = 1:nlv
         X = reduce(hcat, Xbl)
         u .= X[:, 1]
-        #u .= nipals(X).u  # makes niter = 1
+        #u .= nipals(X).u  # forces niter = 1
         iter = 1
         cont = true
         while cont
