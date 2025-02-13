@@ -35,11 +35,12 @@ The function returns several objects, in particular:
 Function `summary` returns: 
 * `explvarx` : Proportion of the total inertia of X (squared Frobenious norm) 
     explained by the global LVs.
-* `explX` : Proportion of the inertia of each block explained by the global LVs.
+* `explX` : Proportion of the inertia of each block (= Xbl[k]) explained by the global LVs.
 * `contr_block` : Contribution of each block to the global LVs. 
-* `cortbl2t` : Correlation between the block LVs and the global LVs.
-* `corx2t` : Correlation between the original variables and the global LVs.  
-* `rv` : RV coefficients. 
+* `rdx2t` : Rd coefficients between each block and the global LVs.
+* `rvx2t` : RV coefficients between each block and the global LVs.
+* `cortbl2t` : Correlations between the block LVs (= Tbl[k]) and the global LVs.
+* `corx2t` : Correlation between the X-variables and the global LVs.  
 
 ## References
 Mangamana, E.T., Cariou, V., Vigneau, E., Glèlè Kakaï, R.L., 
@@ -268,21 +269,28 @@ function Base.summary(object::Mbpca, Xbl)
     # = lb proportions
     z = fscale(object.lb, colsum(object.lb))
     contr_block = DataFrame(z, nam)
+    ## Rd between each Xk and the global LVs
+    z = zeros(Q, nbl, nlv)
+    for k in eachindex(Xbl) 
+        z[k, :] = rd(zXbl[k], object.T, object.weights) 
+    end
+    rdx2t = DataFrame(z, nam)
+    ## RV between each Xk and the global LVs
+    z = zeros(Q, nbl, nlv)
+    for k in eachindex(Xbl), a = 1:nlv
+        z[k, a] = rv(zXbl[k], object.T[:, a], object.weights) 
+    end
+    rvx2t = DataFrame(z, nam)
     ## Correlation between the block LVs and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv 
         z[k, a] = corv(object.Tbl[k][:, a], object.T[:, a], object.weights) 
     end
     cortbl2t = DataFrame(z, nam)
-    ## Correlation between the original variables and the global LVs 
-    z = cor(X, object.T)  
+    ## Correlation between the X-variables and the global LVs 
+    z = corm(X, object.T, object.weights)  
     corx2t = DataFrame(z, nam)  
-    ## RV 
-    nam = [string.("block", 1:nbl) ; "T"]
-    #X = vcat(zXbl, object.T) # [fweight(object.T, sqrtw)])
-    #res = rv(X)
-    #zrv = DataFrame(res, nam)
-    (explvarx = explvarx, explX, contr_block, cortbl2t, corx2t) #, rv = zrv
+    (explvarx = explvarx, explX, contr_block, rdx2t, rvx2t, cortbl2t, corx2t) 
 end
 
 
