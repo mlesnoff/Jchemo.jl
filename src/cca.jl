@@ -9,7 +9,7 @@ Canonical correlation Analysis (CCA, RCCA).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `nlv` : Nb. latent variables (LVs = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are:
     `:none`, `:frob`. See functions `blockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
@@ -22,7 +22,7 @@ presented in Weenink 2003 section 2.
 
 A continuum regularization is available (parameter `tau`). 
 After block centering and scaling, the function returns 
-block scores (Tx and Ty) that are proportionnal to the 
+block LVs (Tx and Ty) that are proportionnal to the 
 eigenvectors of Projx * Projy and Projy * Projx, respectively, 
 defined as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
@@ -173,7 +173,7 @@ end
 
 """ 
     transfbl(object::Cca, X, Y; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model.
+Compute latent variables (LVs = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
 * `Y` : Y-data for which components (LVs) are computed.
@@ -229,7 +229,7 @@ function Base.summary(object::Cca, X, Y)
     #    pvar = pvar, cumpvar = cumpvar)
     explvary = nothing
     ## Correlation between X- and 
-    ## Y-block scores
+    ## Y-block LVs
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)
     ## Redundancies (Average correlations) 
@@ -239,7 +239,7 @@ function Base.summary(object::Cca, X, Y)
     z = rd(Y, object.Ty, object.weights)
     rdy = DataFrame(lv = 1:nlv, rd = vec(z))
     ## Correlation between block variables 
-    ## and their block scores
+    ## and their block LVs
     z = corm(X, object.Tx, object.weights)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)

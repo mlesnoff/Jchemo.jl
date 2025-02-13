@@ -65,7 +65,6 @@
 *Utilities*
 - **mblock** Make blocks from a matrix
 - **rd** Redundancy coefficients between two matrices
-- **lg** Lg coefficient
 - **rv** RV correlation coefficient
 
 ## REGRESSION

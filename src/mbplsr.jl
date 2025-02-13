@@ -10,7 +10,7 @@ Multiblock PLSR (MBPLSR).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `nlv` : Nb. global latent variables (LVs = scores) to compute.
 * `bscal` : Type of block scaling. See function `blockscal`
     for possible values.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
@@ -19,7 +19,7 @@ Keyword arguments:
 
 This function runs a PLSR on {X, `Y`} where X is the horizontal 
 concatenation of the blocks in `Xbl`. The function gives the 
-same results as function `mbplswest`, but is much faster.
+same global LVs and predictions as function `mbplswest`, but is much faster.
 
 ## Examples
 ```julia
@@ -107,7 +107,7 @@ end
 
 """ 
     transf(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model.
+Compute latent variables (LVs = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 
     of X-data for which LVs are computed.
@@ -159,31 +159,33 @@ function Base.summary(object::Mbplsr, Xbl)
     nbl = length(Xbl)
     sqrtw = sqrt.(object.weights.w)
     zXbl = transf(object.fitmbl, Xbl)
+    ## Metric
+    sqrtw = sqrt.(object.weights.w)
     @inbounds for k in eachindex(Xbl)
-        zXbl[k] .= sqrtw .* zXbl[k]
+        #fweight!(zXbl[k], sqrtw)
     end
     X = fconcat(zXbl)
-    # Explained_X
+    ## Proportion of the X-inertia explained per global LV
     ssk = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
-        ssk[k] = frob2(zXbl[k])
+        #ssk[k] = frob2(zXbl[k])
+        ssk[k] = frob2(zXbl[k], object.weights)
     end
-    sstot = sum(ssk)
     tt = object.fitm.TT
-    tt_adj = vec(sum(object.fitm.V.^2, dims = 1)) .* tt
-    pvar = tt_adj / sstot
+    tt_adj = (colnorm(object.fitm.V).^2) .* tt  # tt_adj[a] = p[a]'p[a] * tt[a]
+    pvar = tt_adj / sum(ssk)
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
-    ## Correlation between the original X-variables
-    ## and the global scores 
-    z = cor(X, sqrtw .* object.T)  
+    ## Correlation between the original X-variables and the global LVs 
+    #z = cor(X, fweight(object.T, sqrtw))
+    z = corm(X, object.T, object.weights)  
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     ## Redundancies (Average correlations) Rd(X, t) 
     ## between each X-block and each global score
     z = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
-        z[k] = rd(zXbl[k], sqrtw .* object.T)
+        z[k] = rd(zXbl[k], fweight(object.T, sqrtw))
     end
     rdx = DataFrame(reduce(vcat, z), string.("lv", 1:nlv))       
     ## Outputs

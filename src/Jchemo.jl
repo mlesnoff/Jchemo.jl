@@ -342,7 +342,7 @@ export
     rpmatgauss, rpmatli, rp, rp!,
     umap,
     ## Multiblock
-    rv, lg, rd, 
+    rd, rv, 
     mbconcat, fconcat,
     cca, cca!,
     ccawold, ccawold!,

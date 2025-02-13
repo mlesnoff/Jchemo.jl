@@ -1,65 +1,7 @@
 """
-    lg(X, Y; centr = true)
-    lg(Xbl; centr = true)
-Compute the Lg coefficient between matrices.
-* `X` : Matrix (n, p).
-* `Y` : Matrix (n, q).
-* `Xbl` : A list (vector) of matrices.
-Keyword arguments:
-* `centr` : Boolean indicating if the matrices will 
-    be internally centered or not.
-
-Lg(X, Y) = Sum.(j=1..p) Sum.(k= 1..q) cov(xj, yk)^2
-
-RV(X, Y) = Lg(X, Y) / sqrt(Lg(X, X), Lg(Y, Y))
-
-## References
-Escofier, B. & Pagès, J. 1984. L’analyse factorielle multiple. 
-Cahiers du Bureau universitaire de recherche opérationnelle. 
-Série Recherche, tome 42, p. 3-68
-
-Escofier, B. & Pagès, J. (2008). Analyses Factorielles Simples 
-et Multiples : Objectifs, Méthodes et Interprétation. Dunod, 
-4e édition.
-
-## Examples 
-```julia 
-using Jchemo
-X = rand(5, 10)
-Y = rand(5, 3)
-lg(X, Y)
-
-X = rand(5, 15) 
-listbl = [3:4, 1, [6; 8:10]]
-Xbl = mblock(X, listbl)
-lg(Xbl)
-```
-""" 
-function lg(X, Y; centr = true)
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
-    n = nro(X)
-    if centr
-        X = fcenter(X, colmean(X))
-        Y = fcenter(Y, colmean(Y))
-    end
-    ## Same as: sum(cov(X, Y; corrected = false).^2)
-    frob2(X' * Y) / n^2 
-end
-
-function lg(Xbl::Vector; centr = true)
-    nbl = length(Xbl)
-    mat = zeros(eltype(Xbl[1]), nbl, nbl)
-    for i = 1:nbl, j = 1:nbl
-        mat[i, j] = lg(Xbl[i], Xbl[j]; centr)
-    end
-    mat
-end
-
-"""
     rd(X, Y; typ = :cor)
     rd(X, Y, weights::Weight; typ = :cor)
-Compute redundancy coefficients between two matrices.
+Compute redundancy coefficients (Rd).
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
 * `weights` : Weights (n) of the observations. 
@@ -69,9 +11,12 @@ Keyword arguments:
     `:cov` (uncorrected covariance). 
 
 Returns the redundancy coefficient between `X` and each column
-of `Y`, i.e.: 
+of `Y`, i.e. for each k = 1,...,q: 
 
-(1 / p) * [Sum.(j=1, .., p) cor(xj, y1)^2 ; ... ; Sum.(j=1, .., p) cor(xj, yq)^2] 
+* Mean {cor(xj, yk)^2 ;  j = 1, ..., p }
+    
+Depending argument `typ`, the correlation can be replaced by the (not corrected) 
+covariance.
 
 See Tenenhaus 1998 section 2.2.1 p.10-11.
 
@@ -88,32 +33,25 @@ rd(X, Y)
 ```
 """ 
 function rd(X, Y; typ = :cor)
-    @assert in([:cor, :cov])(typ) "Wrong value for argument 'typ'." 
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
-    p = nco(X)
-    if typ == :cor
-        A = cor(X, Y).^2
-    elseif typ == :cov
-        A = cov(X, Y; corrected = false).^2
-    end    
-    sum(A; dims = 1) / p
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    rd(X, Y, weights; typ)
 end
 
 function rd(X, Y, weights::Weight; typ = :cor)
     @assert in([:cor, :cov])(typ) "Wrong value for argument 'typ'." 
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
-    p = nco(X)
-    typ == :cor ? algo = corm : algo = covm
-    A = algo(X, Y, weights).^2
-    sum(A; dims = 1) / p
+    if typ == :cor
+        A = corm(X, Y, weights).^2
+    elseif typ == :cov
+        A = covm(X, Y, weights).^2
+    end    
+    mean(A; dims = 1)  # keep matrix format
 end
 
 """
     rv(X, Y; centr = true)
     rv(Xbl::Vector; centr = true)
-Compute the RV coefficient between matrices.
+Compute RV coefficients.
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
 * `Xbl` : A list (vector) of matrices.
@@ -167,13 +105,22 @@ rv(Xbl)
 ```
 """ 
 function rv(X, Y; centr = true)
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
+    Q = eltype(X[1, 1])
+    weights = mweight(ones(Q, nro(X)))
+    rv(X, Y, weights; centr)
+end
+
+function rv(X, Y, weights::Weight; centr = true)
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
     n, p = size(X)
     if centr
-        X = fcenter(X, colmean(X))
-        Y = fcenter(Y, colmean(Y))
+        fcenter!(X, colmean(X, weights))
+        fcenter!(Y, colmean(Y, weights))
     end
+    sqrtw = sqrt.(weights.w)
+    fweight!(X, sqrtw)
+    fweight!(Y, sqrtw)
     if n < p
         XXt = X * X'
         YYt = Y * Y'
@@ -198,8 +145,10 @@ function rv(Xbl::Vector; centr = true)
     nbl = length(Xbl)
     mat = zeros(eltype(Xbl[1]), nbl, nbl)
     for i = 1:nbl, j = 1:nbl
-        mat[i, j] = rv(Xbl[i], Xbl[j]; centr)
+        mat[i, j] = rv(Xbl[i], Xbl[j]; centr) 
     end
     mat
 end
+
+
 

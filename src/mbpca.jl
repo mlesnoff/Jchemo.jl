@@ -9,13 +9,12 @@ Consensus principal components analysis (CPCA, a.k.a MBPCA).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `nlv` : Nb. global latent variables (LVs = scores) to compute.
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 * `tol` : Tolerance value for Nipals convergence.
 * `maxit` : Maximum number of iterations (Nipals).
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
-    is scaled by its uncorrected standard deviation 
-    (before the block scaling).
+    is scaled by its uncorrected standard deviation (before the block scaling).
 
 CPCA algorithm (Westerhuis et a; 1998), a.k.a MBPCA, and reffered to as CPCA-W in 
 Smilde et al. 2003. 
@@ -24,24 +23,23 @@ Apart eventual block scaling, the MBPCA is equivalent to the PCA of the
 horizontally concatenated matrix X = [X1 X2 ... Xk] (SUM-PCA in Smilde et al 2003).
 
 The function returns several objects, in particular:
-* `T` : The global scores (not-normed).
-* `U` : The normed global scores.
-* `W` : The normed block weights.
-* `Tb` : The block scores (in the metric scale), returned **grouped by LV**.
-* `Tbl` : The block scores (in the original scale), returned **grouped by block**.
-* `Vbl` : The normed block loadings.
-* `lb` : The block specific weights "lambda".
-* `mu` : The sum of the specific weights (= eigen values of the global PCA).
+* `T` : The global LVs (not-normed).
+* `U` : The normed global LVs.
+* `W` : The block weights (normed).
+* `Tb` : The block LVs (in the metric scale), returned **grouped by LV**.
+* `Tbl` : The block LVs (in the original scale), returned **grouped by block**.
+* `Vbl` : The block loadings (normed).
+* `lb` : The block specific weights ('lambda') for the global LVs.
+* `mu` : The sum of the block specific weights (= eigen values of the global PCA).
 
 Function `summary` returns: 
 * `explvarx` : Proportion of the total inertia of X (squared Frobenious norm) 
-    explained by each global score.
-* `explX` : Proportion of the inertia of each block explained by each global score.
-* `contr_block` : Contribution of each block to the global scores. 
-* `cortbl2t` : Correlation between the block scores and the global scores.
-* `corx2t` : Correlation between the original variables and the global scores.  
-* `rv` : RV coefficient. 
-* `lg` : Lg coefficient. 
+    explained by the global LVs.
+* `explX` : Proportion of the inertia of each block explained by the global LVs.
+* `contr_block` : Contribution of each block to the global LVs. 
+* `cortbl2t` : Correlation between the block LVs and the global LVs.
+* `corx2t` : Correlation between the original variables and the global LVs.  
+* `rv` : RV coefficients. 
 
 ## References
 Mangamana, E.T., Cariou, V., Vigneau, E., Glèlè Kakaï, R.L., 
@@ -193,7 +191,7 @@ end
 """ 
     transf(object::Mbpca, Xbl; nlv = nothing)
     transfbl(object::Mbpca, Xbl; nlv = nothing)
-Compute latent variables (LVs = scores T) from 
+Compute latent variables (LVs = scores) from 
     a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 
@@ -251,27 +249,22 @@ function Base.summary(object::Mbpca, Xbl)
     nlv = nco(object.T)
     ## Block scaling
     zXbl = transf(object.fitmbl, Xbl)
-    ## Metric
-    sqrtw = sqrt.(object.weights.w)
-    @inbounds for k in eachindex(Xbl)
-        fweight!(zXbl[k], sqrtw)
-    end
     X = fconcat(zXbl)
-    ## Proportion of the X-inertia explained by each global LV
-    sstot = zeros(Q, nbl)
+    ## Proportion of the total X-inertia explained by each global LV
+    ssk = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
-        sstot[k] = frob2(zXbl[k])
+        ssk[k] = frob2(zXbl[k], object.weights)
     end
     tt = colsum(object.lb)    
-    pvar = tt / sum(sstot)
+    pvar = tt / sum(ssk)
     cumpvar = cumsum(pvar)
     explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
-    ## Within each block, proportion of the block-inertia explained by each global LV
+    ## Within each block k, proportion of the Xk-inertia explained by the global LVs
     ## = object.lb if bscal = :frob 
-    z = fscale(object.lb', sstot)'
+    z = fscale(object.lb', ssk)'
     nam = string.("lv", 1:nlv)
     explX = DataFrame(z, nam)
-    ## Contribution of the blocks to global LVs
+    ## Contribution of each block Xk to the global LVs
     # = lb proportions
     z = fscale(object.lb, colsum(object.lb))
     contr_block = DataFrame(z, nam)
@@ -282,17 +275,14 @@ function Base.summary(object::Mbpca, Xbl)
     end
     cortbl2t = DataFrame(z, nam)
     ## Correlation between the original variables and the global LVs 
-    z = cor(X, object.U)  
+    z = cor(X, object.T)  
     corx2t = DataFrame(z, nam)  
     ## RV 
     nam = [string.("block", 1:nbl) ; "T"]
-    X = vcat(zXbl, [fweight(object.T, sqrtw)])
-    res = rv(X)
-    zrv = DataFrame(res, nam)
-    ## Lg
-    res = lg(X)
-    zlg = DataFrame(res, nam)
-    (explvarx = explvarx, explX, contr_block, cortbl2t, corx2t, rv = zrv, lg = zlg)
+    #X = vcat(zXbl, object.T) # [fweight(object.T, sqrtw)])
+    #res = rv(X)
+    #zrv = DataFrame(res, nam)
+    (explvarx = explvarx, explX, contr_block, cortbl2t, corx2t) #, rv = zrv
 end
 
 

@@ -10,7 +10,7 @@ Multiblock PLSR (MBPLSR) - Nipals algorithm.
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `nlv` : Nb. global latent variables (LVs = scores) to compute.
 * `bscal` : Type of block scaling. See function `blockscal`
     for possible values.
 * `tol` : Tolerance value for convergence (Nipals).
@@ -213,7 +213,7 @@ function Base.summary(object::Mbplswest, Xbl)
     sqrtw = sqrt.(object.weights.w)
     zXbl = transf(object.fitmbl, Xbl)
     @inbounds for k in eachindex(Xbl)
-        zXbl[k] .= sqrtw .* zXbl[k]
+        fweight!(zXbl[k], sqrtw)
     end
     X = fconcat(zXbl)
     # Explained_X
@@ -229,11 +229,11 @@ function Base.summary(object::Mbplswest, Xbl)
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)     
     ## Correlation between the original X-variables
-    ## and the global scores
+    ## and the global LVs
     z = cor(X, sqrtw .* object.T)  
     corx2t = DataFrame(z, string.("lv", 1:nlv))
-    ## Correlation between the X-block scores 
-    ## and the global scores 
+    ## Correlation between the X-block LVs 
+    ## and the global LVs 
     z = list(Matrix{Q}, nlv)
     @inbounds for a = 1:nlv
         z[a] = cor(object.Tb[a], sqrtw .* object.T[:, a])

@@ -9,7 +9,7 @@ Common components and specific weights analysis (CCSWA, a.k.a ComDim).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `nlv` : Nb. global latent variables (LVs = scores) to compute.
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
@@ -20,12 +20,12 @@ Keyword arguments:
 "SVD" algorithm of Hannafi & Qannari 2008 p.84.
 
 The function returns several objects, in particular:
-* `T` : The global scores (not-normed).
-* `U` : The normed global scores.
-* `W` : The normed block weights.
-* `Tb` : The block scores (in the metric scale), returned **grouped by LV**.
-* `Tbl` : The block scores (in the original scale), returned **grouped by block**.
-* `Vbl` : The normed block loadings.
+* `T` : The global LVs (not-normed).
+* `U` : The normed global LVs.
+* `W` : The block weights (normed).
+* `Tb` : The block LVs (in the metric scale), returned **grouped by LV**.
+* `Tbl` : The block LVs (in the original scale), returned **grouped by block**.
+* `Vbl` : The block loadings (normed).
 * `lb` : The block specific weights (saliences) 'lambda'.
 * `mu` : The sum of the squared saliences per LV.
 
@@ -37,11 +37,10 @@ Function `summary` returns:
     score (= indicator "V" in Qannari et al. 2000, Hanafi et al. 2008).
 * `explX` : Proportion of the inertia of each block explained by each global score.
 * `psal2` : Proportion of the squared saliences of each block within each global score. 
-* `contr_block` : Contribution of each block to the global scores. 
-* `cortbl2t` : Correlation between the block scores and the global scores.
-* `corx2t` : Correlation between the original variables and the global scores.  
+* `contr_block` : Contribution of each block to the global LVs. 
+* `cortbl2t` : Correlation between the block LVs and the global LVs.
+* `corx2t` : Correlation between the original variables and the global LVs.  
 * `rv` : RV coefficient. 
-* `lg` : Lg coefficient. 
 
 ## References
 Cariou, V., Qannari, E.M., Rutledge, D.N., Vigneau, E., 2018. 
@@ -209,7 +208,7 @@ end
 """ 
     transf(object::Comdim, Xbl; nlv = nothing)
     transfbl(object::Comdim, Xbl; nlv = nothing)
-Compute latent variables (LVs = scores T) from 
+Compute latent variables (LVs = scores) from 
     a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 
@@ -275,13 +274,13 @@ function Base.summary(object::Comdim, Xbl)
     end
     X = fconcat(zXbl)
     ## Proportion of the X-inertia explained per global LV
-    sstot = zeros(Q, nbl)
+    ssk = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
-        sstot[k] = frob2(zXbl[k])
+        ssk[k] = frob2(zXbl[k])
     end
     tt = colsum(object.lb)    
     #tt = colnorm(object.T, object.weights).^2 
-    pvar = tt / sum(sstot)
+    pvar = tt / sum(ssk)
     cumpvar = cumsum(pvar)
     explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
     ## Explained XXt (indicator 'V') per global LV
@@ -297,7 +296,7 @@ function Base.summary(object::Comdim, Xbl)
     explvarxx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
     ## Within each block, proportion of the block-inertia explained by each global LV
     ## = object.lb if bscal = :frob 
-    z = fscale(object.lb', sstot)'
+    z = fscale(object.lb', ssk)'
     nam = string.("lv", 1:nlv)
     explX = DataFrame(z, nam)
     ## Poportion of squared saliences
@@ -324,11 +323,7 @@ function Base.summary(object::Comdim, Xbl)
     X = vcat(zXbl, [fweight(object.T, sqrtw)])
     res = rv(X)
     zrv = DataFrame(res, nam)
-    ## Lg
-    res = lg(X)
-    zlg = DataFrame(res, nam)
-    (explvarx = explvarx, explvarxx, explX, psal2, contr_block, cortbl2t, corx2t, 
-        rv = zrv, lg = zlg)
+    (explvarx = explvarx, explvarxx, explX, psal2, contr_block, cortbl2t, corx2t, rv = zrv)
 end
 
 

@@ -9,7 +9,7 @@ Tucker's inter-battery method of factor analysis
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `nlv` : Nb. latent variables (LVs = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are:
     `:none`, `:frob`. See functions `blockscal`.
 * `scal` : Boolean. If `true`, each column of blocks `X` 
@@ -121,7 +121,7 @@ end
 
 """ 
     transfbl(object::Plstuck, X, Y; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model.
+Compute latent variables (LVs = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
 * `Y` : Y-data for which components (LVs) are computed.
@@ -167,7 +167,7 @@ function Base.summary(object::Plstuck, X, Y)
     xvar = tt / n    
     explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Correlation between X- and 
-    ## Y-block scores
+    ## Y-block LVs
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)
     ## Redundancies (Average correlations) 
@@ -177,7 +177,7 @@ function Base.summary(object::Plstuck, X, Y)
     z = rd(Y, object.Ty, object.weights)
     rdy = DataFrame(lv = 1:nlv, rd = vec(z))
     ## Correlation between block variables 
-    ## and their block scores
+    ## and their block LVs
     z = corm(X, object.Tx, object.weights)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)

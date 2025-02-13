@@ -9,7 +9,7 @@ Redundancy analysis (RA), a.k.a PCA on instrumental variables (PCAIV)
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `nlv` : Nb. latent variables (LVs = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are:
     `:none`, `:frob`. See functions `blockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
@@ -166,7 +166,7 @@ end
 
 """ 
     transfbl(object::Rasvd, X, Y; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model.
+Compute latent variables (LVs = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
 * `Y` : Y-data for which components (LVs) are computed.
@@ -221,7 +221,7 @@ function Base.summary(object::Rasvd, X, Y)
     #    pvar = pvar, cumpvar = cumpvar)
     explvary = nothing 
     ## Correlation between X- and 
-    ## Y-block scores
+    ## Y-block LVs
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)
     ## Redundancies (Average correlations) 
@@ -231,7 +231,7 @@ function Base.summary(object::Rasvd, X, Y)
     z = rd(Y, object.Ty, object.weights)
     rdy = DataFrame(lv = 1:nlv, rd = vec(z))
     ## Correlation between block variables 
-    ## and their block scores
+    ## and their block LVs
     z = corm(X, object.Tx, object.weights)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)

@@ -10,7 +10,7 @@ Multiblock ROSA PLSR (Liland et al. 2016).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `nlv` : Nb. latent variables (LVs = scores) to compute.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
     and `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
@@ -203,7 +203,7 @@ end
 
 """ 
     transf(object::Rosaplsr, Xbl; nlv = nothing)
-Compute latent variables (LVs = scores T) from a fitted model.
+Compute latent variables (LVs = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 
     of X-data for which LVs are computed.

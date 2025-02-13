@@ -9,7 +9,7 @@ Multiblock PLS-LDA.
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs = scores T) to compute.
+* `nlv` : Nb. latent variables (LVs = scores) to compute.
 * `bscal` : Type of block scaling. See function `blockscal`
     for possible values.
 * `prior` : Type of prior probabilities for class 
@@ -115,7 +115,7 @@ end
 
 """ 
     transf(object::Mbplsprobda, Xbl; nlv = nothing)
-Compute latent variables (LVs = scores T) from 
+Compute latent variables (LVs = scores) from 
     a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 

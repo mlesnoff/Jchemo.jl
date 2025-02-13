@@ -270,6 +270,12 @@ cosv(x, y)
 """
 cosv(x, y) = dot(x, y) / sqrt(dot(x, x) * dot(y, y))
 
+function cosv(x, y, weights::Weight)
+    w = weights.w
+    zy = fweight(y, w)
+    dot(x, zy) / sqrt(dot(x, fweight(x, w)) * dot(y, zy))
+end
+
 #### Matrices
 
 """
