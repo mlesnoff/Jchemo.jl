@@ -30,17 +30,17 @@ The function returns several objects, in particular:
 * `mu` : The sum of the squared saliences per LV.
 
 Function `summary` returns: 
-
-* `explvarx` : Proportion of the total inertia of X (squared Frobenious norm) 
-    explained by each global score.
-* `explvarxx` : Proportion of the XX' total inertia explained by each global 
+* `explvarx` : Proportion of the total X inertia (squared Frobenious norm) 
+    explained by the global LVs.
+* `explvarxx` : Proportion of the total XX' inertia explained by each global 
     score (= indicator "V" in Qannari et al. 2000, Hanafi et al. 2008).
-* `explX` : Proportion of the inertia of each block explained by each global score.
+* `explX` : Proportion of the inertia of each block (= Xbl[k]) explained by the global LVs.
 * `psal2` : Proportion of the squared saliences of each block within each global score. 
 * `contr_block` : Contribution of each block to the global LVs. 
-* `cortbl2t` : Correlation between the block LVs and the global LVs.
-* `corx2t` : Correlation between the original variables and the global LVs.  
-* `rv` : RV coefficient. 
+* `rdx2t` : Rd coefficients between each block and the global LVs.
+* `rvx2t` : RV coefficients between each block and the global LVs.
+* `cortbl2t` : Correlations between the block LVs (= Tbl[k]) and the global LVs.
+* `corx2t` : Correlation between the X-variables and the global LVs.  
 
 ## References
 Cariou, V., Qannari, E.M., Rutledge, D.N., Vigneau, E., 2018. 
