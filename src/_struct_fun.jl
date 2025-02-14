@@ -509,8 +509,8 @@ struct Mbplswest     # mbplswest, mbwcov
     R::Matrix
     W::Matrix
     C::Matrix
-    Tbl::Vector{Matrix}
     Tb::Vector{Matrix}
+    Tbl::Vector{Matrix}
     Pbl::Vector{Matrix}
     TT::Vector
     fitmbl::Blockscal

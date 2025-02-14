@@ -35,10 +35,10 @@ The function returns several objects, in particular:
 Function `summary` returns: 
 * `explvarx` : Proportion of the total X inertia (squared Frobenious norm) 
     explained by the global LVs.
-* `explX` : Proportion of the inertia of each block (= Xbl[k]) explained by the global LVs.
-* `contr_block` : Contribution of each block to the global LVs. 
-* `rdx2t` : Rd coefficients between each block and the global LVs.
-* `rvx2t` : RV coefficients between each block and the global LVs.
+* `explxbl` : Proportion of the inertia of each block (= Xbl[k]) explained by the global LVs.
+* `contrxbl2t` : Contribution of each block to the global LVs. 
+* `rdxbl2t` : Rd coefficients between each block and the global LVs.
+* `rvxbl2t` : RV coefficients between each block and the global LVs.
 * `cortbl2t` : Correlations between the block LVs (= Tbl[k]) and the global LVs.
 * `corx2t` : Correlation between the X-variables and the global LVs.  
 
@@ -92,10 +92,10 @@ i = 1
 res = summary(model, Xbl) ;
 pnames(res) 
 res.explvarx
-res.explX   # = model.fitm.lb if bscal = :frob
-rowsum(Matrix(res.explX))
-res.contr_block
-res.rdx2t
+res.explxbl   # = model.fitm.lb if bscal = :frob
+rowsum(Matrix(res.explxbl))
+res.contrxbl2t
+res.rdxbl2t
 res.cortbl2t
 res.corx2t 
 
@@ -262,24 +262,24 @@ function Base.summary(object::Mbpca, Xbl)
     explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
     ## Within each block k, proportion of the Xk-inertia explained by the global LVs
     ## = object.lb if bscal = :frob 
-    z = fscale(object.lb', ssk)'
     nam = string.("lv", 1:nlv)
-    explX = DataFrame(z, nam)
+    z = fscale(object.lb', ssk)'
+    explxbl = DataFrame(z, nam)
     ## Contribution of each block Xk to the global LVs = lb proportions
     z = fscale(object.lb, colsum(object.lb))
-    contr_block = DataFrame(z, nam)
+    contrxbl2t = DataFrame(z, nam)
     ## Rd between each Xk and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl) 
         z[k, :] = rd(zXbl[k], object.T, object.weights) 
     end
-    rdx2t = DataFrame(z, nam)
+    rdxbl2t = DataFrame(z, nam)
     ## RV between each Xk and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv
         z[k, a] = rv(zXbl[k], object.T[:, a], object.weights) 
     end
-    rvx2t = DataFrame(z, nam)
+    rvxbl2t = DataFrame(z, nam)
     ## Correlation between the block LVs and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv 
@@ -289,7 +289,7 @@ function Base.summary(object::Mbpca, Xbl)
     ## Correlation between the X-variables and the global LVs 
     z = corm(X, object.T, object.weights)  
     corx2t = DataFrame(z, nam)  
-    (explvarx = explvarx, explX, contr_block, rdx2t, rvx2t, cortbl2t, corx2t) 
+    (explvarx = explvarx, explxbl, contrxbl2t, rdxbl2t, rvxbl2t, cortbl2t, corx2t) 
 end
 
 

@@ -102,10 +102,11 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     n = nro(Xbl[1])
     q = nco(Y)
     nlv = par.nlv
-    sqrtw = sqrt.(weights.w)
+    ## Block scaling
     fitmbl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitmbl, Xbl)
     X = reduce(hcat, Xbl)
+    ## Y centering/scaling
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
     if par.scal 
@@ -115,12 +116,14 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(Y, ymeans)
     end
     # Row metric
-    p = list(Int, nbl)
-    @inbounds for k in eachindex(Xbl)
+    sqrtw = sqrt.(weights.w)
+    invsqrtw = 1 ./ sqrtw
+    p = zeros(Int, nbl)
+    @inbounds for k in eachindex(Xbl) 
         p[k] = nco(Xbl[k])
-        Xbl[k] .= sqrtw .* Xbl[k]
+        fweight!(Xbl[k], sqrtw)
     end
-    Y .= fweight(Y, sqrtw)
+    fweight!(Y, sqrtw)
     ## Pre-allocation
     X = similar(Xbl[1], n, sum(p))
     Tbl = list(Matrix{Q}, nbl)
@@ -158,7 +161,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
                 pk ./= dot(tk, tk)
                 Pbl[k][:, a] .= pk
                 Tb[a][:, k] .= tk
-                Tbl[k][:, a] .= (1 ./ sqrtw) .* tk  
+                Tbl[k][:, a] .= invsqrtw .* tk  
             end
             w = Tb[a]' * ty / dot(ty, ty) 
             w ./= normv(w)
@@ -175,7 +178,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         niter[a] = iter - 1
         # For global
         ttx = dot(tx, tx)
-        X .= reduce(hcat, Xbl)
+        X .= fconcat(Xbl)
         wx .= X' * ty / dot(ty, ty)    
         wx ./= normv(wx)
         mul!(vx, X', tx)
@@ -192,10 +195,10 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         end
         Y .-= tx * wytild'
     end
-    Tx .= (1 ./ sqrtw) .* Tx
+    fweight!(Tx, invsqrtw)
     Rx = Wx * inv(Vx' * Wx)
     lb = nothing
-    Mbplswest(Tx, Vx, Rx, Wx, Wytild, Tbl, Tb, Pbl, TTx, fitmbl, ymeans, yscales, 
+    Mbplswest(Tx, Vx, Rx, Wx, Wytild, Tb, Tbl, Pbl, TTx, fitmbl, ymeans, yscales, 
         weights, lb, niter, par)
 end
 
@@ -210,51 +213,41 @@ function Base.summary(object::Mbplswest, Xbl)
     Q = eltype(Xbl[1][1, 1])
     n, nlv = size(object.T)
     nbl = length(Xbl)
-    sqrtw = sqrt.(object.weights.w)
+    ## Block scaling
     zXbl = transf(object.fitmbl, Xbl)
-    @inbounds for k in eachindex(Xbl)
-        fweight!(zXbl[k], sqrtw)
-    end
     X = fconcat(zXbl)
-    # Explained_X
+    ## Proportion of the total X-inertia explained by each global LV
     ssk = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
-        ssk[k] = frob2(zXbl[k])
+        ssk[k] = frob2(zXbl[k], object.weights)
     end
-    sstot = sum(ssk)
     tt = object.TT
-    tt_adj = colsum(object.V.^2) .* tt
-    pvar = tt_adj / sstot
+    tt_adj = (colnorm(object.V).^2) .* tt  # tt_adj[a] = p[a]'p[a] * tt[a]
+    pvar = tt_adj / sum(ssk)
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)     
-    ## Correlation between the original X-variables
-    ## and the global LVs
-    z = cor(X, sqrtw .* object.T)  
-    corx2t = DataFrame(z, string.("lv", 1:nlv))
-    ## Correlation between the X-block LVs 
-    ## and the global LVs 
-    z = list(Matrix{Q}, nlv)
-    @inbounds for a = 1:nlv
-        z[a] = cor(object.Tb[a], sqrtw .* object.T[:, a])
+    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    ## Rd between each Xk and the global LVs
+    nam = string.("lv", 1:nlv)
+    z = zeros(Q, nbl, nlv)
+    for k in eachindex(Xbl) 
+        z[k, :] = rd(zXbl[k], object.T, object.weights) 
     end
-    cortb2t = DataFrame(reduce(hcat, z), string.("lv", 1:nlv))
-    ## Redundancies (Average correlations) Rd(X, t) 
-    ## between each X-block and each global score
-    z = list(Matrix{Q}, nbl)
-    @inbounds for k in eachindex(Xbl)
-        z[k] = rd(zXbl[k], sqrtw .* object.T)
+    rdxbl2t = DataFrame(z, nam)
+    ## RV between each Xk and the global LVs
+    z = zeros(Q, nbl, nlv)
+    for k in eachindex(Xbl), a = 1:nlv
+        z[k, a] = rv(zXbl[k], object.T[:, a], object.weights) 
     end
-    rdx = DataFrame(reduce(vcat, z), string.("lv", 1:nlv))         
-    ## Specific weights of each block on 
-    ## each X-global score
-    #sal2 = nothing
-    #if !isnothing(object.lb)
-    #    lb2 = colsum(object.lb.^2)
-    #    sal2 = fscale(object.lb.^2, lb2)
-    #    sal2 = DataFrame(sal2, 
-    #        string.("lv", 1:nlv))
-    #end
-    ## End
-    (explvarx = explvarx, corx2t, cortb2t, rdx)
+    rvxbl2t = DataFrame(z, nam)
+    ## Correlation between the block LVs and the global LVs
+    z = zeros(Q, nbl, nlv)
+    for k in eachindex(Xbl), a = 1:nlv 
+        z[k, a] = corv(object.Tbl[k][:, a], object.T[:, a], object.weights) 
+    end
+    cortbl2t = DataFrame(z, nam)
+    ## Correlation between the X-variables and the global LVs 
+    z = corm(X, object.T, object.weights)  
+    corx2t = DataFrame(z, nam)  
+    (explvarx = explvarx, rdxbl2t, rvxbl2t, cortbl2t, corx2t)
 end

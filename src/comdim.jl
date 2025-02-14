@@ -34,11 +34,11 @@ Function `summary` returns:
     explained by the global LVs.
 * `explvarxx` : Proportion of the total XX' inertia explained by each global 
     score (= indicator "V" in Qannari et al. 2000, Hanafi et al. 2008).
-* `explX` : Proportion of the inertia of each block (= Xbl[k]) explained by the global LVs.
+* `explxbl` : Proportion of the inertia of each block (= Xbl[k]) explained by the global LVs.
 * `psal2` : Proportion of the squared saliences of each block within each global score. 
-* `contr_block` : Contribution of each block to the global LVs. 
-* `rdx2t` : Rd coefficients between each block and the global LVs.
-* `rvx2t` : RV coefficients between each block and the global LVs.
+* `contrxbl2t` : Contribution of each block to the global LVs. 
+* `rdxbl2t` : Rd coefficients between each block and the global LVs.
+* `rvxbl2t` : RV coefficients between each block and the global LVs.
 * `cortbl2t` : Correlations between the block LVs (= Tbl[k]) and the global LVs.
 * `corx2t` : Correlation between the X-variables and the global LVs.  
 
@@ -105,10 +105,10 @@ pnames(res)
 res.explvarx
 res.explvarxx
 res.psal2 
-res.contr_block
-res.explX   # = model.fitm.lb if bscal = :frob
-rowsum(Matrix(res.explX))
-res.rdx2t
+res.contrxbl2t
+res.explxbl   # = model.fitm.lb if bscal = :frob
+rowsum(Matrix(res.explxbl))
+res.rdxbl2t
 res.cortbl2t
 res.corx2t 
 ```
@@ -144,8 +144,8 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
     # Row metric
     sqrtw = sqrt.(weights.w)
     invsqrtw = 1 ./ sqrtw
-    @inbounds for k in eachindex(Xbl)
-        Xbl[k] .= sqrtw .* Xbl[k]
+    @inbounds for k in eachindex(Xbl) 
+        fweight!(Xbl[k], sqrtw)
     end
     ## Pre-allocation
     u = similar(Xbl[1], n)
@@ -290,9 +290,9 @@ function Base.summary(object::Comdim, Xbl)
     explvarxx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
     ## Within each block k, proportion of the Xk-inertia explained by the global LVs
     ## = object.lb if bscal = :frob  
-    z = fscale(object.lb', ssk)'
     nam = string.("lv", 1:nlv)
-    explX = DataFrame(z, nam)
+    z = fscale(object.lb', ssk)'
+    explxbl = DataFrame(z, nam)
     ## Poportion of squared saliences
     psal2 = copy(object.lb)
     @inbounds for a = 1:nlv
@@ -301,19 +301,19 @@ function Base.summary(object::Comdim, Xbl)
     psal2 = DataFrame(psal2, nam)
     ## Contribution of each block Xk to the global LVs = lb proportions
     z = fscale(object.lb, colsum(object.lb))
-    contr_block = DataFrame(z, nam)
+    contrxbl2t = DataFrame(z, nam)
     ## Rd between each Xk and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl) 
         z[k, :] = rd(zXbl[k], object.T, object.weights) 
     end
-    rdx2t = DataFrame(z, nam)
+    rdxbl2t = DataFrame(z, nam)
     ## RV between each Xk and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv
         z[k, a] = rv(zXbl[k], object.T[:, a], object.weights) 
     end
-    rvx2t = DataFrame(z, nam)
+    rvxbl2t = DataFrame(z, nam)
     ## Correlation between the block LVs and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv 
@@ -323,7 +323,7 @@ function Base.summary(object::Comdim, Xbl)
     ## Correlation between the X-variables and the global LVs 
     z = corm(X, object.T, object.weights)  
     corx2t = DataFrame(z, nam)  
-    (explvarx = explvarx, explvarxx, explX, psal2, contr_block, rdx2t, rvx2t, cortbl2t, corx2t)
+    (explvarx = explvarx, explvarxx, explxbl, psal2, contrxbl2t, rdxbl2t, rvxbl2t, cortbl2t, corx2t)
 end
 
 

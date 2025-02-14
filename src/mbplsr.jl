@@ -62,8 +62,10 @@ rmsep(res.pred, ytest)
 res = summary(model, Xbltrain) ;
 pnames(res) 
 res.explvarx
+res.rdxbl2t
+res.rvxbl2t
+res.cortbl2t
 res.corx2t 
-res.rdx
 ```
 """
 mbplsr(; kwargs...) = JchemoModel(mbplsr, nothing, kwargs)
@@ -157,18 +159,12 @@ function Base.summary(object::Mbplsr, Xbl)
     Q = eltype(Xbl[1][1, 1])
     n, nlv = size(object.T)
     nbl = length(Xbl)
-    sqrtw = sqrt.(object.weights.w)
+    ## Block scaling
     zXbl = transf(object.fitmbl, Xbl)
-    ## Metric
-    sqrtw = sqrt.(object.weights.w)
-    @inbounds for k in eachindex(Xbl)
-        #fweight!(zXbl[k], sqrtw)
-    end
     X = fconcat(zXbl)
-    ## Proportion of the X-inertia explained per global LV
+    ## Proportion of the total X-inertia explained by each global LV
     ssk = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
-        #ssk[k] = frob2(zXbl[k])
         ssk[k] = frob2(zXbl[k], object.weights)
     end
     tt = object.fitm.TT
@@ -177,17 +173,21 @@ function Base.summary(object::Mbplsr, Xbl)
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
-    ## Correlation between the original X-variables and the global LVs 
-    #z = cor(X, fweight(object.T, sqrtw))
-    z = corm(X, object.T, object.weights)  
-    corx2t = DataFrame(z, string.("lv", 1:nlv))
-    ## Redundancies (Average correlations) Rd(X, t) 
-    ## between each X-block and each global score
-    z = list(Matrix{Q}, nbl)
-    @inbounds for k in eachindex(Xbl)
-        z[k] = rd(zXbl[k], fweight(object.T, sqrtw))
+    ## Rd between each Xk and the global LVs
+    nam = string.("lv", 1:nlv)
+    z = zeros(Q, nbl, nlv)
+    for k in eachindex(Xbl) 
+        z[k, :] = rd(zXbl[k], object.T, object.weights) 
     end
-    rdx = DataFrame(reduce(vcat, z), string.("lv", 1:nlv))       
-    ## Outputs
-    (explvarx = explvarx, corx2t, rdx)
+    rdxbl2t = DataFrame(z, nam)
+    ## RV between each Xk and the global LVs
+    z = zeros(Q, nbl, nlv)
+    for k in eachindex(Xbl), a = 1:nlv
+        z[k, a] = rv(zXbl[k], object.T[:, a], object.weights) 
+    end
+    rvxbl2t = DataFrame(z, nam)
+    ## Correlation between the X-variables and the global LVs 
+    z = corm(X, object.T, object.weights)  
+    corx2t = DataFrame(z, nam)      
+    (explvarx = explvarx, rdxbl2t, rvxbl2t, corx2t)
 end
