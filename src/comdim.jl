@@ -27,7 +27,7 @@ The function returns several objects, in particular:
 * `Tbl` : The block LVs (in the original scale), returned **grouped by block**.
 * `Vbl` : The block loadings (normed).
 * `lb` : The block specific weights (saliences) 'lambda'.
-* `mu` : The sum of the squared saliences per LV.
+* `mu` : The sum of the block specific weights.
 
 Function `summary` returns: 
 * `explvarx` : Proportion of the total X inertia (squared Frobenious norm) 
@@ -108,9 +108,9 @@ res.psal2
 res.contr_block
 res.explX   # = model.fitm.lb if bscal = :frob
 rowsum(Matrix(res.explX))
+res.rdx2t
 res.cortbl2t
 res.corx2t 
-res.rv
 ```
 """
 comdim(; kwargs...) = JchemoModel(comdim, nothing, kwargs)
@@ -177,7 +177,7 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
                 vk ./= alphak             # = vk (= normed)
                 mul!(tk, Xbl[k], vk) 
                 Tb[a][:, k] .= tk
-                Tbl[k][:, a] .= (1 ./ sqrtw) .* tk
+                Tbl[k][:, a] .= tk .* invsqrtw
                 TB[:, k] = alphak * tk    # = Qb (qk = alphak * tk)
                 Vbl[k][:, a] .= vk
                 lb[k, a] = alphak^2
@@ -208,8 +208,7 @@ end
 """ 
     transf(object::Comdim, Xbl; nlv = nothing)
     transfbl(object::Comdim, Xbl; nlv = nothing)
-Compute latent variables (LVs = scores) from 
-    a fitted model.
+Compute latent variables (LVs = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 
     of X-data for which LVs are computed.
@@ -267,35 +266,32 @@ function Base.summary(object::Comdim, Xbl)
     nlv = nco(object.T)
     ## Block scaling
     zXbl = transf(object.fitmbl, Xbl)
-    ## Metric
-    sqrtw = sqrt.(object.weights.w)
-    @inbounds for k in eachindex(Xbl)
-        fweight!(zXbl[k], sqrtw)
-    end
     X = fconcat(zXbl)
-    ## Proportion of the X-inertia explained per global LV
+    ## Proportion of the total X-inertia explained by each global LV
     ssk = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
-        ssk[k] = frob2(zXbl[k])
+        ssk[k] = frob2(zXbl[k], object.weights)
     end
     tt = colsum(object.lb)    
     #tt = colnorm(object.T, object.weights).^2 
     pvar = tt / sum(ssk)
     cumpvar = cumsum(pvar)
     explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
-    ## Explained XXt (indicator 'V') per global LV
+    ## Explained XXt inertia by each global LV (indicator 'V')
+    sqrtw = sqrt.(object.weights.w)
     S = list(Matrix{Q}, nbl)
     sstot_xx = 0 
     @inbounds for k in eachindex(Xbl)
-        S[k] = zXbl[k] * zXbl[k]'
+        zX = fweight(zXbl[k], sqrw)
+        S[k] = zX * zX'
         sstot_xx += frob2(S[k])
     end
     tt = object.mu
     pvar = tt / sstot_xx
     cumpvar = cumsum(pvar)
     explvarxx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
-    ## Within each block, proportion of the block-inertia explained by each global LV
-    ## = object.lb if bscal = :frob 
+    ## Within each block k, proportion of the Xk-inertia explained by the global LVs
+    ## = object.lb if bscal = :frob  
     z = fscale(object.lb', ssk)'
     nam = string.("lv", 1:nlv)
     explX = DataFrame(z, nam)
@@ -305,25 +301,32 @@ function Base.summary(object::Comdim, Xbl)
         psal2[:, a] .= object.lb[:, a].^2 / object.mu[a]
     end
     psal2 = DataFrame(psal2, nam)
-    ## Contribution of the blocks to global LVs
+    ## Contribution of each block Xk to the global LVs
     # = lb proportions
     z = fscale(object.lb, colsum(object.lb))
     contr_block = DataFrame(z, nam)
+    ## Rd between each Xk and the global LVs
+    z = zeros(Q, nbl, nlv)
+    for k in eachindex(Xbl) 
+        z[k, :] = rd(zXbl[k], object.T, object.weights) 
+    end
+    rdx2t = DataFrame(z, nam)
+    ## RV between each Xk and the global LVs
+    z = zeros(Q, nbl, nlv)
+    for k in eachindex(Xbl), a = 1:nlv
+        z[k, a] = rv(zXbl[k], object.T[:, a], object.weights) 
+    end
+    rvx2t = DataFrame(z, nam)
     ## Correlation between the block LVs and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv 
         z[k, a] = corv(object.Tbl[k][:, a], object.T[:, a], object.weights) 
     end
     cortbl2t = DataFrame(z, nam)
-    ## Correlation between the original variables and the global LVs 
-    z = cor(X, object.U)  
+    ## Correlation between the X-variables and the global LVs 
+    z = corm(X, object.T, object.weights)  
     corx2t = DataFrame(z, nam)  
-    ## RV 
-    nam = [string.("block", 1:nbl) ; "T"]
-    X = vcat(zXbl, [fweight(object.T, sqrtw)])
-    res = rv(X)
-    zrv = DataFrame(res, nam)
-    (explvarx = explvarx, explvarxx, explX, psal2, contr_block, cortbl2t, corx2t, rv = zrv)
+    (explvarx = explvarx, explvarxx, explX, psal2, contr_block, rdx2t, rvx2t, cortbl2t, corx2t)
 end
 
 

@@ -33,7 +33,7 @@ The function returns several objects, in particular:
 * `mu` : The sum of the block specific weights (= eigen values of the global PCA).
 
 Function `summary` returns: 
-* `explvarx` : Proportion of the total inertia of X (squared Frobenious norm) 
+* `explvarx` : Proportion of the total X inertia (squared Frobenious norm) 
     explained by the global LVs.
 * `explX` : Proportion of the inertia of each block (= Xbl[k]) explained by the global LVs.
 * `contr_block` : Contribution of each block to the global LVs. 
@@ -193,8 +193,7 @@ end
 """ 
     transf(object::Mbpca, Xbl; nlv = nothing)
     transfbl(object::Mbpca, Xbl; nlv = nothing)
-Compute latent variables (LVs = scores) from 
-    a fitted model.
+Compute latent variables (LVs = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 
     of X-data for which LVs are computed.
