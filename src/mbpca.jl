@@ -24,7 +24,7 @@ horizontally concatenated matrix X = [X1 X2 ... Xk] (SUM-PCA in Smilde et al 200
 
 The function returns several objects, in particular:
 * `T` : The global LVs (not-normed).
-* `U` : The normed global LVs.
+* `U` : The global LVs (normed).
 * `W` : The block weights (normed).
 * `Tb` : The block LVs (in the metric scale), returned **grouped by LV**.
 * `Tbl` : The block LVs (in the original scale), returned **grouped by block**.
@@ -265,8 +265,7 @@ function Base.summary(object::Mbpca, Xbl)
     z = fscale(object.lb', ssk)'
     nam = string.("lv", 1:nlv)
     explX = DataFrame(z, nam)
-    ## Contribution of each block Xk to the global LVs
-    # = lb proportions
+    ## Contribution of each block Xk to the global LVs = lb proportions
     z = fscale(object.lb, colsum(object.lb))
     contr_block = DataFrame(z, nam)
     ## Rd between each Xk and the global LVs

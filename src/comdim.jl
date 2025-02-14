@@ -21,7 +21,7 @@ Keyword arguments:
 
 The function returns several objects, in particular:
 * `T` : The global LVs (not-normed).
-* `U` : The normed global LVs.
+* `U` : The global LVs (normed).
 * `W` : The block weights (normed).
 * `Tb` : The block LVs (in the metric scale), returned **grouped by LV**.
 * `Tbl` : The block LVs (in the original scale), returned **grouped by block**.
@@ -279,12 +279,10 @@ function Base.summary(object::Comdim, Xbl)
     explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
     ## Explained XXt inertia by each global LV (indicator 'V')
     sqrtw = sqrt.(object.weights.w)
-    S = list(Matrix{Q}, nbl)
     sstot_xx = 0 
     @inbounds for k in eachindex(Xbl)
-        zX = fweight(zXbl[k], sqrw)
-        S[k] = zX * zX'
-        sstot_xx += frob2(S[k])
+        zX = fweight(zXbl[k], sqrtw)
+        sstot_xx += frob2(zX * zX')
     end
     tt = object.mu
     pvar = tt / sstot_xx
@@ -301,8 +299,7 @@ function Base.summary(object::Comdim, Xbl)
         psal2[:, a] .= object.lb[:, a].^2 / object.mu[a]
     end
     psal2 = DataFrame(psal2, nam)
-    ## Contribution of each block Xk to the global LVs
-    # = lb proportions
+    ## Contribution of each block Xk to the global LVs = lb proportions
     z = fscale(object.lb, colsum(object.lb))
     contr_block = DataFrame(z, nam)
     ## Rd between each Xk and the global LVs
