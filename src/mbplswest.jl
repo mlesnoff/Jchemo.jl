@@ -21,7 +21,15 @@ Keyword arguments:
 
 This functions implements the MBPLSR Nipals algorithm such 
 as in Westerhuis et al. 1998. The function gives the same 
-results as function `mbplsr`.
+global scores and predictions as function `mbplsr`.
+
+Function `summary` returns: 
+* `explvarx` : Proportion of the total X inertia (squared Frobenious norm) 
+    explained by the global LVs.
+* `rdxbl2t` : Rd coefficients between each block (= Xbl[k]) and the global LVs.
+* `rvxbl2t` : RV coefficients between each block and the global LVs.
+* `cortbl2t` : Correlations between the block LVs (= Tbl[k]) and the global LVs.
+* `corx2t` : Correlation between the X-variables and the global LVs.  
 
 ## References 
 Westerhuis, J.A., Kourti, T., MacGregor, J.F., 1998. Analysis 
@@ -70,9 +78,10 @@ rmsep(res.pred, ytest)
 res = summary(model, Xbltrain) ;
 pnames(res) 
 res.explvarx
+res.rdxbl2t
+res.rvxbl2t
+res.cortbl2t
 res.corx2t 
-res.cortb2t 
-res.rdx
 ```
 """
 mbplswest(; kwargs...) = JchemoModel(mbplswest, nothing, kwargs)

@@ -21,6 +21,13 @@ This function runs a PLSR on {X, `Y`} where X is the horizontal
 concatenation of the blocks in `Xbl`. The function gives the 
 same global LVs and predictions as function `mbplswest`, but is much faster.
 
+Function `summary` returns: 
+* `explvarx` : Proportion of the total X inertia (squared Frobenious norm) 
+    explained by the global LVs.
+* `rdxbl2t` : Rd coefficients between each block (= Xbl[k]) and the global LVs.
+* `rvxbl2t` : RV coefficients between each block and the global LVs.
+* `corx2t` : Correlation between the X-variables and the global LVs.  
+
 ## Examples
 ```julia
 using Jchemo, JchemoData, JLD2
@@ -191,3 +198,5 @@ function Base.summary(object::Mbplsr, Xbl)
     corx2t = DataFrame(z, nam)      
     (explvarx = explvarx, rdxbl2t, rvxbl2t, corx2t)
 end
+
+
