@@ -95,9 +95,10 @@ res.explvarx
 res.explX   # = model.fitm.lb if bscal = :frob
 rowsum(Matrix(res.explX))
 res.contr_block
+res.rdx2t
 res.cortbl2t
 res.corx2t 
-res.rv
+
 ```
 """
 mbpca(; kwargs...) = JchemoModel(mbpca, nothing, kwargs)
