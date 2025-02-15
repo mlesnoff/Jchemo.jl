@@ -99,7 +99,6 @@ res.rdxbl2t
 res.rvxbl2t
 res.cortbl2t
 res.corx2t 
-
 ```
 """
 mbpca(; kwargs...) = JchemoModel(mbpca, nothing, kwargs)
