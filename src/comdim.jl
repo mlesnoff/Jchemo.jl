@@ -109,6 +109,7 @@ res.contrxbl2t
 res.explxbl   # = model.fitm.lb if bscal = :frob
 rowsum(Matrix(res.explxbl))
 res.rdxbl2t
+res.rvxbl2t
 res.cortbl2t
 res.corx2t 
 ```
