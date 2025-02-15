@@ -244,7 +244,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Rosaplsr, Xbl; nlv = nothing)
     a = nco(object.T)
-    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 0):min(maximum(nlv), a))
+    isnothing(nlv) ? nlv = a : nlv = min(a, minimum(nlv)):min(a, maximum(nlv))
     le_nlv = length(nlv)
     Q = eltype(Xbl[1][1, 1])
     X = reduce(hcat, Xbl)

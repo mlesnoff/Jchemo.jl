@@ -94,7 +94,6 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     nbl = length(Xbl)
     nlv = par.nlv
     length(nlv) == 1 ? nlv = repeat([nlv], nbl) : nothing  
-    D = Diagonal(weights.w)
     ## 'bscal = :none' since block-scaling has no effect on SOPLS  
     fitmbl = blockscal(Xbl, weights; bscal = :none, centr = false, scal = par.scal)
     ## End
@@ -104,19 +103,19 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         yscales .= colstd(Y, weights)
         fscale!(Y, yscales)
     end
-    fitm = list(nbl)
+    fitm = list(Jchemo.Plsr, nbl)
     fit = similar(Xbl[1], n, q)
-    b = list(nbl)
-    ## Below, if 'scal' = true, 'fit' is in scale 'scaled-Y' 
+    ## Below, if 'scal' = true, object 'fit' is in scale 'scaled-Y' 
     ## First block
     fitm[1] = plskern(Xbl[1], Y, weights; nlv = nlv[1], scal = false)  
     T = fitm[1].T
     fit .= predict(fitm[1], Xbl[1]).pred
-    b[1] = nothing
     ## Other blocks
+    b = list(Array{Q}, nbl) 
     if nbl > 1
         for i = 2:nbl
-            b[i] = inv(T' * (D * T)) * T' * (D * Xbl[i])
+            DT = fweight(T, weights.w)
+            b[i] = inv(T' * DT) * DT' * Xbl[i]
             X = Xbl[i] - T * b[i]
             fitm[i] = plskern(X, Y - fit, weights; nlv = nlv[i], scal = false)  
             T = hcat(T, fitm[i].T)
