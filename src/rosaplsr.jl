@@ -161,7 +161,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         #opt = findmin(ssr)[2][1]
         ## End
         bl[a] = opt
-        ## Outputs for winner
+        ## Outputs for winner block
         t .= zT[:, opt]
         dt .= weights.w .* t
         tt = dot(t, dt)
