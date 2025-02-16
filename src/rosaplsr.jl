@@ -15,13 +15,12 @@ Keyword arguments:
     and `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-The function has the following differences with the 
-original algorithm of Liland et al. (2016):
-* Scores T are not normed to 1.
-* Multivariate `Y` is allowed. In such a case, 
-    the squared residuals are summed over the columns 
-    for finding the winning block for each global LV 
-    (therefore Y-columns should have the same fscale).
+The function has the following differences with the original algorithm 
+of Liland et al. (2016):
+* Scores T (latent variables LVs) are not normed to 1.
+* Multivariate `Y` is allowed. In such a case, the squared residuals are 
+    summed over the columns to find the winning block for each global LV 
+    (therefore, Y-columns should have the same scale).
 
 ## References
 Liland, K.H., Næs, T., Indahl, U.G., 2016. ROSA — a fast 
@@ -90,6 +89,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParSoplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])   
     n = nro(Xbl[1])
+    pbl = [nco(Xbl[k]) for k in eachindex(Xbl)]
     q = nco(Y)
     nlv = par.nlv
     nbl = length(Xbl)
@@ -104,9 +104,8 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(Y, ymeans)
     end
-    p = [nco(Xbl[k]) for k in eachindex(Xbl)]
     ## Pre-allocation
-    W = similar(Xbl[1], sum(p), nlv)
+    W = similar(Xbl[1], sum(pbl), nlv)
     V = copy(W)
     T = similar(Xbl[1], n, nlv)
     TT = similar(Xbl[1], nlv)    
@@ -115,18 +114,19 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     t   = similar(Xbl[1], n)
     dt  = similar(Xbl[1], n)   
     c   = similar(Xbl[1], q)
-    zp_bl = list(Vector{Q}, nbl)
-    zp = similar(Xbl[1], sum(p))
-    #ssr = similar(Xbl[1], nbl)
+    vbl = list(Vector{Q}, nbl)
+    v = similar(Xbl[1], sum(pbl))
     corr = similar(Xbl[1], nbl)
-    Wbl = list(Array, nbl)
+    Wbl = list(Array{Q}, nbl)
     wbl = list(Vector{Q}, nbl)      # List of the weights "w" by block for a given "a"
     zT = similar(Xbl[1], n, nbl)    # Matrix gathering the nbl scores for a given "a"
     bl = fill(0, nlv)
+    ## Old
+    #ssr = similar(Xbl[1], nbl)
     #Res = zeros(n, q, nbl)
     ## Start 
     @inbounds for a = 1:nlv
-        DY .= D * Y  # apply the metric on covariance
+        DY .= fweight(Y, weights.w)  # apply the metric to the covariance
         @inbounds for k in eachindex(Xbl)
             XtY = Xbl[k]' * DY
             if q == 1
@@ -141,7 +141,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         ## GS Orthogonalization of the scores
         if a > 1
             z = vcol(T, 1:(a - 1))
-            zT .= zT .- z * inv(z' * (D * z)) * z' * (D * zT)
+            zT .= zT .- z * inv(z' * fweight(z, weights.w)) * z' * fweight(zT, weights.w)
         end
         ## Selection of the winner block (opt)
         @inbounds for k in eachindex(Xbl)
@@ -175,12 +175,11 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         ## End
         Y .-= (t * t') * DY / tt
         for k in eachindex(Xbl)
-            zp_bl[k] = Xbl[k]' * dt
+            vbl[k] = Xbl[k]' * dt
         end
-        zp .= reduce(vcat, zp_bl)
-        V[:, a] .= zp / tt
-        ## Orthogonalization of the weights "w" 
-        ## by block
+        v .= reduce(vcat, vbl)
+        V[:, a] .= v / tt
+        ## Orthogonalization of the weights "w" by block
         zw = wbl[opt]
         if (a > 1) && isassigned(Wbl, opt)       
             zW = Wbl[opt]
@@ -192,9 +191,9 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         else
             Wbl[opt] = hcat(Wbl[opt], zw)
         end
-        ## Build the weights over the overall 
-        ## matrix
-        z = zeros(Q, nbl) ; z[opt] = 1
+        ## Build the weights over the overall matrix
+        z = zeros(Q, nbl)
+        z[opt] = 1
         W[:, a] .= reduce(vcat, z .* wbl)
     end
     R = W * inv(V' * W)
@@ -225,12 +224,12 @@ Compute the X b-coefficients of a model fitted with `nlv` LVs.
 function coef(object::Rosaplsr; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    zxmeans = reduce(vcat, object.fitmbl.xmeans)
-    beta = object.C[:, 1:nlv]'
+    xmeans = reduce(vcat, object.fitmbl.xmeans)
     xscales = reduce(vcat, object.fitmbl.xscales)
-    W = Diagonal(object.yscales)
-    B = Diagonal(1 ./ xscales) * vcol(object.R, 1:nlv) * beta * W
-    int = object.ymeans' .- zxmeans' * B
+    theta = vcol(object.C, 1:nlv)'  # coefs regression of Y on T
+    Dy = Diagonal(object.yscales)
+    B = fweight(vcol(object.R, 1:nlv), 1 ./ xscales) * theta * Dy
+    int = object.ymeans' .- xmeans' * B
     (B = B, int = int)
 end
 
