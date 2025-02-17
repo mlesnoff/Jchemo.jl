@@ -3,9 +3,8 @@
 ## *Version 0.8.5*
 
 - Modifications
-    - Multiblock functions: Improvement of the internal code and summary.
+    - Multiblock functions: Improvement of the internal code and **summary**.
     - Code cleaning.  
-
 
 ## *Version 0.8.4*
 
