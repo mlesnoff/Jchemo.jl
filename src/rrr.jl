@@ -96,7 +96,6 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     n, p = size(X)
     q = nco(Y)
     nlv = min(par.nlv, p, q)
-    sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)    
     xscales = ones(Q, p)
@@ -111,8 +110,10 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(Y, ymeans)
     end
     # Row metric
-    fweight!(X, sqrtw)
-    fweight!(Y, sqrtw)
+    sqrtw = sqrt.(weights.w)
+    invsqrtw = 1 ./ sqrtw
+    X .= sqrtw .* X
+    Y .= sqrtw .* Y
     ## Pre-allocation
     Tx  = similar(X, n, nlv)
     Wx  = similar(X, p, nlv)
