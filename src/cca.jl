@@ -17,48 +17,39 @@ Keyword arguments:
     and `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-This function implements a CCA algorithm using SVD decompositions and 
-presented in Weenink 2003 section 2. 
+This function implements a CCA algorithm using SVD decompositions and presented in Weenink 2003 section 2. 
 
-A continuum regularization is available (parameter `tau`). 
-After block centering and scaling, the function returns 
-block LVs (Tx and Ty) that are proportionnal to the 
-eigenvectors of Projx * Projy and Projy * Projx, respectively, 
-defined as follows: 
+A continuum regularization is available (parameter `tau`). After block centering and scaling, 
+the function returns block LVs (Tx and Ty) that are proportionnal to the eigenvectors of Projx * Projy 
+and Projy * Projx, respectively, defined as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
 * Cy = (1 - `tau`) * Y'DY + `tau` * Iy
 * Cxy = X'DY 
 * Projx = sqrt(D) * X * invCx * X' * sqrt(D)
 * Projy = sqrt(D) * Y * invCx * Y' * sqrt(D)
-where D is the observation (row) metric. 
-Value `tau` = 0 can generate unstability when inverting 
-the covariance matrices. Often, a better alternative is 
-to use an epsilon value (e.g. `tau` = 1e-8) to get similar 
-results as with pseudo-inverses.  
+where D is the observation (row) metric. Value `tau` = 0 can generate unstability when inverting 
+the covariance matrices. Often, a better alternative is to use an epsilon value (e.g. `tau` = 1e-8) 
+to get similar results as with pseudo-inverses.  
 
-The normed scores returned by the function are expected 
-(using uniform `weights`) to be the same as those 
-returned by functions `rcc` of the R packages `CCA` (González et al.) 
-and `mixOmics` (Lê Cao et al.) whith their parameters lambda1 
-and lambda2 set to:
-* lambda1 = lambda2 = `tau` / (1 - `tau`) * n / (n - 1) 
+After normalized (and using uniform `weights`), the scores returned by the function are expected to be 
+the same as those returned by functions `rcc` of the R packages `CCA` (González et al.) and `mixOmics` 
+(Lê Cao et al.) whith their parameters lambda1 and lambda2 set to:
+* lambda1 = lambda2 = `tau` / (1 - `tau`) * n / (n - 1)
+
+See function `plscan` for the details on the `summary` outputs.
 
 ## References
-González, I., Déjean, S., Martin, P.G.P., Baccini, A., 2008. 
-CCA: An R Package to Extend Canonical Correlation Analysis. 
-Journal of Statistical Software 23, 1-14. 
-https://doi.org/10.18637/jss.v023.i12
+González, I., Déjean, S., Martin, P.G.P., Baccini, A., 2008. CCA: An R Package to Extend Canonical
+Correlation Analysis. Journal of Statistical Software 23, 1-14. https://doi.org/10.18637/jss.v023.i12
 
-Hotelling, H. (1936): “Relations between two sets of variates”, 
-Biometrika 28: pp. 321–377.
+Hotelling, H. (1936): “Relations between two sets of variates”, Biometrika 28: pp. 321–377.
 
-Lê Cao, K.-A., Rohart, F., Gonzalez, I., Dejean, S., Abadi, A.J., 
-Gautier, B., Bartolo, F., Monget, P., Coquery, J., Yao, F., 
-Liquet, B., 2022. mixOmics: Omics Data Integration Project. 
+Lê Cao, K.-A., Rohart, F., Gonzalez, I., Dejean, S., Abadi, A.J., Gautier, B., Bartolo, F., Monget, P., 
+Coquery, J., Yao, F., Liquet, B., 2022. mixOmics: Omics Data Integration Project. 
 https://doi.org/10.18129/B9.bioc.mixOmics
 
-Weenink, D. 2003. Canonical Correlation Analysis, Institute of 
-Phonetic Sciences, Univ. of Amsterdam, Proceedings 25, 81-99.
+Weenink, D. 2003. Canonical Correlation Analysis, Institute of Phonetic Sciences, Univ. of Amsterdam, 
+Proceedings 25, 81-99.
 
 ## Examples
 ```julia
@@ -87,11 +78,13 @@ pnames(model.fitm)
 
 res = summary(model, X, Y) ;
 pnames(res)
-res.cort2t 
-res.rdx
-res.rdy
-res.corx2t 
-res.cory2t 
+res.cortx2ty
+res.rvx2tx
+res.rvy2ty
+res.rdx2tx
+res.rdy2ty
+res.corx2tx 
+res.cory2ty 
 ```
 """
 cca(; kwargs...) = JchemoModel(cca, nothing, kwargs)
@@ -230,23 +223,32 @@ function Base.summary(object::Cca, X, Y)
     #explvary = DataFrame(nlv = 1:nlv, var = xvar, 
     #    pvar = pvar, cumpvar = cumpvar)
     explvary = nothing
-    ## Correlation between X- and 
-    ## Y-block LVs
+    ## Correlation between X- and Y-block LVs
     z = diag(corm(object.Tx, object.Ty, object.weights))
-    cort2t = DataFrame(lv = 1:nlv, cor = z)
-    ## Redundancies (Average correlations) 
-    ## Rd(X, tx) and Rd(Y, ty)
-    z = rd(X, object.Tx, object.weights)
-    rdx = DataFrame(lv = 1:nlv, rd = vec(z))
-    z = rd(Y, object.Ty, object.weights)
-    rdy = DataFrame(lv = 1:nlv, rd = vec(z))
-    ## Correlation between block variables 
-    ## and their block LVs
+    cortx2ty = DataFrame(lv = 1:nlv, cor = z)
+    ## RV(X, tx) and RV(Y, ty)
+    nam = string.("lv", 1:nlv)
+    z = zeros(Q, 1, nlv)
+    for a = 1:nlv
+        z[1, a] = rv(X, object.Tx[:, a], object.weights) 
+    end
+    rvx2tx = DataFrame(z, nam)
+    for a = 1:nlv
+        z[1, a] = rv(Y, object.Ty[:, a], object.weights) 
+    end
+    rvy2ty = DataFrame(z, nam)
+    ## Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
+    z[1, :] = rd(X, object.Tx, object.weights) 
+    rdx2tx = DataFrame(z, nam)
+    z[1, :] = rd(Y, object.Ty, object.weights) 
+    rdy2ty = DataFrame(z, nam)
+    ## Correlation between block variables and their block LVs
     z = corm(X, object.Tx, object.weights)
-    corx2t = DataFrame(z, string.("lv", 1:nlv))
+    corx2tx = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)
-    cory2t = DataFrame(z, string.("lv", 1:nlv))
+    cory2ty = DataFrame(z, string.("lv", 1:nlv))
     ## End
-    (explvarx = explvarx, explvary, cort2t, rdx, rdy, corx2t, cory2t)
+    (explvarx = explvarx, explvary, cortx2ty, rvx2tx, rvy2ty, rdx2tx, rdy2ty, 
+        corx2tx, cory2ty)
 end
 
