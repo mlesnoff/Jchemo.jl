@@ -21,6 +21,16 @@ referred to as PLS-W2A (i.e. Wold PLS mode A) in Wegelin 2000. The two blocks
 `X` and `Y` play a symmetric role.  After each step of scores computation, 
 X and Y are deflated by the x- and y-scores, respectively. 
 
+Function `summary` returns:
+* `cortx2ty`: Correlations between the X- and Y-LVs.
+and for block `X`: 
+* `explvarx` : Proportion of the block inertia (squared Frobenious norm) 
+    explained by the block LVs (`Tx`).
+* `rvx2tx` : RV coefficients between the block and the block LVs.
+* `rdx2tx` : Rd coefficients between the block and the block LVs.
+* `corx2tx` : Correlation between the block variables and the block LVs.
+The same is returned for block `Y`.  
+
 ## References
 Tenenhaus, M., 1998. La régression PLS: théorie et pratique. Editions Technip, Paris.
 
@@ -61,11 +71,13 @@ res = summary(model, X, Y) ;
 pnames(res)
 res.explvarx
 res.explvary
-res.cort2t 
-res.rdx
-res.rdy
-res.corx2t 
-res.cory2t 
+res.cortx2ty
+res.rvx2tx
+res.rvy2ty
+res.rdx2tx
+res.rdy2ty
+res.corx2tx 
+res.cory2ty 
 ```
 """
 plscan(; kwargs...) = JchemoModel(plscan, nothing, kwargs)
@@ -198,6 +210,7 @@ Summarize the fitted model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
 function Base.summary(object::Plscan, X, Y)
+    Q = eltype(X[1, 1])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, nlv = size(object.Tx)
@@ -221,18 +234,30 @@ function Base.summary(object::Plscan, X, Y)
     explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Correlation between X- and Y-block LVs
     z = diag(corm(object.Tx, object.Ty, object.weights))
-    cort2t = DataFrame(lv = 1:nlv, cor = z)
+    cortx2ty = DataFrame(lv = 1:nlv, cor = z)
+    ## RV(X, tx) and RV(Y, ty)
+    nam = string.("lv", 1:nlv)
+    z = zeros(Q, 1, nlv)
+    for a = 1:nlv
+        z[1, a] = rv(X, object.Tx[:, a], object.weights) 
+    end
+    rvx2tx = DataFrame(z, nam)
+    for a = 1:nlv
+        z[1, a] = rv(Y, object.Ty[:, a], object.weights) 
+    end
+    rvy2ty = DataFrame(z, nam)
     ## Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
-    z = rd(X, object.Tx, object.weights)
-    rdx = DataFrame(lv = 1:nlv, rd = vec(z))
-    z = rd(Y, object.Ty, object.weights)
-    rdy = DataFrame(lv = 1:nlv, rd = vec(z))
+    z[1, :] = rd(X, object.Tx, object.weights) 
+    rdx2tx = DataFrame(z, nam)
+    z[1, :] = rd(Y, object.Ty, object.weights) 
+    rdy2ty = DataFrame(z, nam)
     ## Correlation between block variables and their block LVs
     z = corm(X, object.Tx, object.weights)
-    corx2t = DataFrame(z, string.("lv", 1:nlv))
+    corx2tx = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)
-    cory2t = DataFrame(z, string.("lv", 1:nlv))
+    cory2ty = DataFrame(z, string.("lv", 1:nlv))
     ## End
-    (explvarx = explvarx, explvary, cort2t, rdx, rdy, corx2t, cory2t)
+    (explvarx = explvarx, explvary, cortx2ty, rvx2tx, rvy2ty, rdx2tx, rdy2ty, 
+        corx2tx, cory2ty)
 end
 
