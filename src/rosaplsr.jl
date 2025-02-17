@@ -93,7 +93,6 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     q = nco(Y)
     nlv = par.nlv
     nbl = length(Xbl)
-    D = Diagonal(weights.w)
     fitmbl = blockscal(Xbl, weights; bscal = :none, centr = true, scal = par.scal)
     transf!(fitmbl, Xbl)
     ymeans = colmean(Y, weights)

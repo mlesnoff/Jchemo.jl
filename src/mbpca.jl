@@ -37,8 +37,8 @@ Function `summary` returns:
     explained by the global LVs.
 * `explxbl` : Proportion of the inertia of each block (= Xbl[k]) explained by the global LVs.
 * `contrxbl2t` : Contribution of each block to the global LVs. 
-* `rdxbl2t` : Rd coefficients between each block and the global LVs.
 * `rvxbl2t` : RV coefficients between each block and the global LVs.
+* `rdxbl2t` : Rd coefficients between each block and the global LVs.
 * `cortbl2t` : Correlations between the block LVs (= Tbl[k]) and the global LVs.
 * `corx2t` : Correlation between the X-variables and the global LVs.  
 
@@ -95,8 +95,8 @@ res.explvarx
 res.explxbl   # = model.fitm.lb if bscal = :frob
 rowsum(Matrix(res.explxbl))
 res.contrxbl2t
-res.rdxbl2t
 res.rvxbl2t
+res.rdxbl2t
 res.cortbl2t
 res.corx2t 
 ```
@@ -268,18 +268,18 @@ function Base.summary(object::Mbpca, Xbl)
     ## Contribution of each block Xk to the global LVs = lb proportions
     z = fscale(object.lb, colsum(object.lb))
     contrxbl2t = DataFrame(z, nam)
-    ## Rd between each Xk and the global LVs
-    z = zeros(Q, nbl, nlv)
-    for k in eachindex(Xbl) 
-        z[k, :] = rd(zXbl[k], object.T, object.weights) 
-    end
-    rdxbl2t = DataFrame(z, nam)
     ## RV between each Xk and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv
         z[k, a] = rv(zXbl[k], object.T[:, a], object.weights) 
     end
     rvxbl2t = DataFrame(z, nam)
+    ## Rd between each Xk and the global LVs
+    z = zeros(Q, nbl, nlv)
+    for k in eachindex(Xbl) 
+        z[k, :] = rd(zXbl[k], object.T, object.weights) 
+    end
+    rdxbl2t = DataFrame(z, nam)
     ## Correlation between the block LVs and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv 
@@ -289,7 +289,7 @@ function Base.summary(object::Mbpca, Xbl)
     ## Correlation between the X-variables and the global LVs 
     z = corm(X, object.T, object.weights)  
     corx2t = DataFrame(z, nam)  
-    (explvarx = explvarx, explxbl, contrxbl2t, rdxbl2t, rvxbl2t, cortbl2t, corx2t) 
+    (explvarx = explvarx, explxbl, contrxbl2t, rvxbl2t, rdxbl2t, cortbl2t, corx2t) 
 end
 
 

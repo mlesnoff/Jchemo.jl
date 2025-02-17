@@ -24,8 +24,8 @@ same global LVs and predictions as function `mbplswest`, but is much faster.
 Function `summary` returns: 
 * `explvarx` : Proportion of the total X inertia (squared Frobenious norm) 
     explained by the global LVs.
-* `rdxbl2t` : Rd coefficients between each block (= Xbl[k]) and the global LVs.
 * `rvxbl2t` : RV coefficients between each block and the global LVs.
+* `rdxbl2t` : Rd coefficients between each block (= Xbl[k]) and the global LVs.
 * `corx2t` : Correlation between the X-variables and the global LVs.  
 
 ## Examples
@@ -69,8 +69,8 @@ rmsep(res.pred, ytest)
 res = summary(model, Xbltrain) ;
 pnames(res) 
 res.explvarx
-res.rdxbl2t
 res.rvxbl2t
+res.rdxbl2t
 res.cortbl2t
 res.corx2t 
 ```
@@ -180,23 +180,23 @@ function Base.summary(object::Mbplsr, Xbl)
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
-    ## Rd between each Xk and the global LVs
-    nam = string.("lv", 1:nlv)
-    z = zeros(Q, nbl, nlv)
-    for k in eachindex(Xbl) 
-        z[k, :] = rd(zXbl[k], object.T, object.weights) 
-    end
-    rdxbl2t = DataFrame(z, nam)
     ## RV between each Xk and the global LVs
+    nam = string.("lv", 1:nlv)
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv
         z[k, a] = rv(zXbl[k], object.T[:, a], object.weights) 
     end
     rvxbl2t = DataFrame(z, nam)
+    ## Rd between each Xk and the global LVs
+    z = zeros(Q, nbl, nlv)
+    for k in eachindex(Xbl) 
+        z[k, :] = rd(zXbl[k], object.T, object.weights) 
+    end
+    rdxbl2t = DataFrame(z, nam)
     ## Correlation between the X-variables and the global LVs 
     z = corm(X, object.T, object.weights)  
     corx2t = DataFrame(z, nam)      
-    (explvarx = explvarx, rdxbl2t, rvxbl2t, corx2t)
+    (explvarx = explvarx, rvxbl2t, rdxbl2t, corx2t)
 end
 
 

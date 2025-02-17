@@ -16,26 +16,20 @@ Keyword arguments:
     and `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-Canonical PLS with the Nipals algorithm (Wold 1984, 
-Tenenhaus 1998 chap.11), referred to as PLS-W2A (i.e. Wold 
-PLS mode A) in Wegelin 2000. The two blocks `X` and `X` 
-play a symmetric role.  After each step of scores computation, 
+Canonical PLS with the Nipals algorithm (Wold 1984, Tenenhaus 1998 chap.11), 
+referred to as PLS-W2A (i.e. Wold PLS mode A) in Wegelin 2000. The two blocks 
+`X` and `Y` play a symmetric role.  After each step of scores computation, 
 X and Y are deflated by the x- and y-scores, respectively. 
 
 ## References
-Tenenhaus, M., 1998. La régression PLS: théorie 
-et pratique. Editions Technip, Paris.
+Tenenhaus, M., 1998. La régression PLS: théorie et pratique. Editions Technip, Paris.
 
-Wegelin, J.A., 2000. A Survey of Partial Least 
-Squares (PLS) Methods, with Emphasis on the Two-Block 
-Case (No. 371). University of Washington, Seattle, 
-Washington, USA.
+Wegelin, J.A., 2000. A Survey of Partial Least Squares (PLS) Methods, with Emphasis on 
+the Two-Block Case (No. 371). University of Washington, Seattle, Washington, USA.
 
-Wold, S., Ruhe, A., Wold, H., Dunn, III, W.J., 1984. 
-The Collinearity Problem in Linear Regression. The Partial 
-Least Squares (PLS) Approach to Generalized Inverses. 
-SIAM Journal on Scientific and Statistical Computing 5, 
-735–743. https://doi.org/10.1137/0905052
+Wold, S., Ruhe, A., Wold, H., Dunn, III, W.J., 1984. The Collinearity Problem in Linear 
+Regression. The Partial Least Squares (PLS) Approach to Generalized Inverses. 
+SIAM Journal on Scientific and Statistical Computing 5, 735–743. https://doi.org/10.1137/0905052
 
 ## Examples
 ```julia
@@ -213,30 +207,27 @@ function Base.summary(object::Plscan, X, Y)
     tty = object.TTy 
     ## X
     sstot = frob2(X, object.weights)
-    tt_adj = colsum(object.Vx.^2) .* ttx
+    tt_adj = (colnorm(object.Vx).^2) .* ttx  
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Y
     sstot = frob2(Y, object.weights)
-    tt_adj = colsum(object.Vy.^2) .* tty
+    tt_adj = (colnorm(object.Vy).^2) .* tty  
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
-    ## Correlation between X- and 
-    ## Y-block LVs
+    ## Correlation between X- and Y-block LVs
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cort2t = DataFrame(lv = 1:nlv, cor = z)
-    ## Redundancies (Average correlations) 
-    ## Rd(X, tx) and Rd(Y, ty)
+    ## Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
     z = rd(X, object.Tx, object.weights)
     rdx = DataFrame(lv = 1:nlv, rd = vec(z))
     z = rd(Y, object.Ty, object.weights)
     rdy = DataFrame(lv = 1:nlv, rd = vec(z))
-    ## Correlation between block variables 
-    ## and their block LVs
+    ## Correlation between block variables and their block LVs
     z = corm(X, object.Tx, object.weights)
     corx2t = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)
