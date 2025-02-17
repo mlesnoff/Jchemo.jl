@@ -118,8 +118,8 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(Y, ymeans)
     end
     # Row metric
-    X .= fweight(X, sqrtw)
-    Y .= fweight(Y, sqrtw)
+    fweight!(X, sqrtw)
+    fweight!(Y, sqrtw)
     ## Pre-allocation
     Tx  = similar(X, n, nlv)
     Wx  = similar(X, p, nlv)
@@ -190,7 +190,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         TTx[a] = ttx
      end
      Rx = Wx * inv(Vx' * Wx)
-     Tx .= (1 ./ sqrtw) .* Tx
+     fweight!(Tx, invsqrtw)
      Plsr(Tx, Vx, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, niter, par)
 end
 

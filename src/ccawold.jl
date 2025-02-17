@@ -121,7 +121,6 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     q = nco(Y)
     nlv = min(par.nlv, p, q)
     tau = convert(Q, par.tau) 
-    sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     xscales = ones(Q, p)
@@ -144,8 +143,10 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         bscales = [normx ; normy]
     end
     # Row metric
-    X .= fweight(X, sqrtw)
-    Y .= fweight(Y, sqrtw)
+    sqrtw = sqrt.(weights.w)
+    invsqrtw = 1 ./ sqrtw
+    fweight!(X, sqrtw)
+    fweight!(Y, sqrtw)
     ## Pre-allocation
     Tx = similar(X, n, nlv)
     Ty = copy(Tx)
@@ -226,8 +227,8 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         TTx[a] = ttx
         TTy[a] = tty
     end
-    Tx .= (1 ./ sqrtw) .* Tx
-    Ty .= (1 ./ sqrtw) .* Ty
+    fweight!(Tx, invsqrtw)
+    fweight!(Ty, invsqrtw)
     Rx = Wx * inv(Vx' * Wx)
     Ry = Wy * inv(Vy' * Wy)
     Ccawold(Tx, Ty, Vx, Vy, Rx, Ry, Wx, Wy, TTx, TTy, bscales, xmeans, xscales, 
@@ -262,6 +263,7 @@ Summarize the fitted model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
 function Base.summary(object::Ccawold, X, Y)
+    Q = eltype(X[1, 1])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, nlv = size(object.Tx)

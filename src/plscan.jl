@@ -218,17 +218,17 @@ function Base.summary(object::Plscan, X, Y)
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     ttx = object.TTx 
     tty = object.TTy 
-    ## X
-    sstot = frob2(X, object.weights)
+    ## Block X
+    ss = frob2(X, object.weights)
     tt_adj = (colnorm(object.Vx).^2) .* ttx  
-    pvar = tt_adj / sstot
+    pvar = tt_adj / ss
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
-    ## Y
-    sstot = frob2(Y, object.weights)
+    ## Block Y
+    ss = frob2(Y, object.weights)
     tt_adj = (colnorm(object.Vy).^2) .* tty  
-    pvar = tt_adj / sstot
+    pvar = tt_adj / ss
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)

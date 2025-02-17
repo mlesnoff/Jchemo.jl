@@ -116,7 +116,6 @@ function cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     q = nco(Y)
     nlv = min(par.nlv, p, q)
     tau = convert(Q, par.tau) 
-    sqrtw = sqrt.(weights.w)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     xscales = ones(Q, p)
@@ -139,8 +138,10 @@ function cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         bscales = [normx ; normy]
     end
     # Row metric
-    X .= fweight(X, sqrtw)
-    Y .= fweight(Y, sqrtw) 
+    sqrtw = sqrt.(weights.w)
+    invsqrtw = 1 ./ sqrtw
+    fweight!(X, sqrtw)
+    fweight!(Y, sqrtw) 
     # End
     if tau == 0
         Cx = Symmetric(X' * X)
@@ -166,8 +167,8 @@ function cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     Wx = invUx * U[:, 1:nlv]
     Wy = invUy * V[:, 1:nlv]
     d = d[1:nlv]
-    Tx = (1 ./ sqrtw) .* X * Wx 
-    Ty = (1 ./ sqrtw) .* Y * Wy
+    Tx = fweight(X * Wx, invsqrtw) 
+    Ty = fweight(Y * Wy, invsqrtw)
     Cca(Tx, Ty, Wx, Wy, d, bscales, xmeans, xscales, ymeans, yscales, weights, par)
 end
 
@@ -199,6 +200,7 @@ Summarize the fitted model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
 function Base.summary(object::Cca, X, Y)
+    Q = eltype(X[1, 1])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, nlv = size(object.Tx)

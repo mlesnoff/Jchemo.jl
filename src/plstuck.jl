@@ -16,28 +16,24 @@ Keyword arguments:
     and `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-Inter-battery method of factor analysis (Tucker 1958, 
-Tenenhaus 1998 chap.3). The two blocks `X` and `X` play 
-a symmetric role.  This method is referred to as PLS-SVD 
-in Wegelin 2000. The basis of the method is to factorize 
-the covariance matrix X'Y by SVD. 
+Inter-battery method of factor analysis (Tucker 1958, Tenenhaus 1998 chap.3). The two blocks 
+`X` and `X` play a symmetric role.  This method is referred to as PLS-SVD in Wegelin 2000. The method 
+factorizes the covariance matrix X'Y by SVD. 
+
+See function `plscan` for the details on the `summary` outputs.
 
 ## References
-Tenenhaus, M., 1998. La régression PLS: théorie 
-et pratique. Editions Technip, Paris.
+Tenenhaus, M., 1998. La régression PLS: théorie et pratique. Editions Technip, Paris.
 
-Tishler, A., Lipovetsky, S., 2000. Modelling and forecasting 
-with robust canonical analysis: method and application. 
-Computers & Operations Research 27, 217–232. 
+Tishler, A., Lipovetsky, S., 2000. Modelling and forecasting with robust canonical 
+analysis: method and application. Computers & Operations Research 27, 217–232. 
 https://doi.org/10.1016/S0305-0548(99)00014-3
 
-Tucker, L.R., 1958. An inter-battery method of factor 
-analysis. Psychometrika 23, 111–136.
+Tucker, L.R., 1958. An inter-battery method of factor analysis. Psychometrika 23, 111–136.
 https://doi.org/10.1007/BF02289009
 
-Wegelin, J.A., 2000. A Survey of Partial Least Squares (PLS) 
-Methods, with Emphasis on the Two-Block Case (No. 371). 
-University of Washington, Seattle, Washington, USA.
+Wegelin, J.A., 2000. A Survey of Partial Least Squares (PLS) Methods, with Emphasis 
+on the Two-Block Case (No. 371). University of Washington, Seattle, Washington, USA.
 
 ## Examples
 ```julia
@@ -61,8 +57,17 @@ fitm = model.fitm
 @head fitm.Ty
 @head transfbl(model, X, Y).Ty
 
-res = summary(fitm, X, Y)
+res = summary(model, X, Y) ;
 pnames(res)
+res.explvarx
+res.explvary
+res.cortx2ty
+res.rvx2tx
+res.rvy2ty
+res.rdx2tx
+res.rdy2ty
+res.corx2tx 
+res.cory2ty 
 ```
 """
 plstuck(; kwargs...) = JchemoModel(plstuck, nothing, kwargs)
@@ -113,10 +118,10 @@ function plstuck!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     Wy = V[:, 1:nlv]
     Tx = X * Wx
     Ty = Y * Wy
-    TTx = colnorm(Tx, weights.w).^2
-    TTy = colnorm(Ty, weights.w).^2
-    Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
-        ymeans, yscales, weights, par)
+    TTx = colnorm(Tx, weights).^2
+    TTy = colnorm(Ty, weights).^2
+    Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, ymeans, yscales, 
+        weights, par)
 end
 
 """ 
@@ -147,41 +152,51 @@ Summarize the fitted model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
 function Base.summary(object::Plstuck, X, Y)
+    Q = eltype(X[1, 1])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, nlv = size(object.Tx)
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
-    ## X
+    ## Block X
     tt = object.TTx
-    sstot = frob2(X, object.weights)
-    pvar = tt / sstot
+    ss = frob2(X, object.weights)
+    pvar = tt / ss
     cumpvar = cumsum(pvar) 
     xvar = tt / n    
     explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
-    ## Y
+    ## Block Y
     tt = object.TTy
-    sstot = frob2(Y, object.weights)
-    pvar = tt / sstot
+    ss = frob2(Y, object.weights)
+    pvar = tt / ss
     cumpvar = cumsum(pvar)
     xvar = tt / n    
     explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
-    ## Correlation between X- and 
-    ## Y-block LVs
+    ## Correlation between X- and Y-block LVs
     z = diag(corm(object.Tx, object.Ty, object.weights))
-    cort2t = DataFrame(lv = 1:nlv, cor = z)
-    ## Redundancies (Average correlations) 
-    ## Rd(X, tx) and Rd(Y, ty)
-    z = rd(X, object.Tx, object.weights)
-    rdx = DataFrame(lv = 1:nlv, rd = vec(z))
-    z = rd(Y, object.Ty, object.weights)
-    rdy = DataFrame(lv = 1:nlv, rd = vec(z))
-    ## Correlation between block variables 
-    ## and their block LVs
+    cortx2ty = DataFrame(lv = 1:nlv, cor = z)
+    ## RV(X, tx) and RV(Y, ty)
+    nam = string.("lv", 1:nlv)
+    z = zeros(Q, 1, nlv)
+    for a = 1:nlv
+        z[1, a] = rv(X, object.Tx[:, a], object.weights) 
+    end
+    rvx2tx = DataFrame(z, nam)
+    for a = 1:nlv
+        z[1, a] = rv(Y, object.Ty[:, a], object.weights) 
+    end
+    rvy2ty = DataFrame(z, nam)
+    ## Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
+    z[1, :] = rd(X, object.Tx, object.weights) 
+    rdx2tx = DataFrame(z, nam)
+    z[1, :] = rd(Y, object.Ty, object.weights) 
+    rdy2ty = DataFrame(z, nam)
+    ## Correlation between block variables and their block LVs
     z = corm(X, object.Tx, object.weights)
-    corx2t = DataFrame(z, string.("lv", 1:nlv))
+    corx2tx = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)
-    cory2t = DataFrame(z, string.("lv", 1:nlv))
+    cory2ty = DataFrame(z, string.("lv", 1:nlv))
     ## End
-    (explvarx = explvarx, explvary, cort2t, rdx, rdy, corx2t, cory2t)
+    (explvarx = explvarx, explvary, cortx2ty, rvx2tx, rvy2ty, rdx2tx, rdy2ty, 
+        corx2tx, cory2ty)
 end
