@@ -24,9 +24,9 @@ the fitted values of the regression of `Ty` on `X`.
 A continuum regularization is available.  After block centering and scaling, the covariances 
 matrices are computed as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
-where D is the observation (row) metric. Value `tau` = 0 can generate unstability when inverting 
-the covariance matrices. Often, a better alternative is to use an epsilon value (e.g. `tau` = 1e-8) to 
-get similar results as with pseudo-inverses.    
+where D is the observation (row) metric. Value `tau` = 0 can generate unstability when 
+inverting the covariance matrices. A better alternative is generally to use an epsilon value 
+(e.g. `tau` = 1e-8) to get similar results as with pseudo-inverses.  
 
 ## References
 Bougeard, S., Qannari, E.M., Lupo, C., Chauvin, C., 2011-a. Multiblock redundancy analysis from a user's 
@@ -71,11 +71,14 @@ pnames(model.fitm)
 res = summary(model, X, Y) ;
 pnames(res)
 res.explvarx
-res.cort2t 
-res.rdx
-res.rdy
-res.corx2t 
-res.cory2t 
+res.explvary
+res.cortx2ty
+res.rvx2tx
+res.rvy2ty
+res.rdx2tx
+res.rdy2ty
+res.corx2tx 
+res.cory2ty 
 ```
 """
 rasvd(; kwargs...) = JchemoModel(rasvd, nothing, kwargs)

@@ -16,34 +16,27 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` and `Y` 
     is scaled by its uncorrected standard deviation.
  
-Reduced rank regression, also referred to as redundancy 
-analysis (RA) regression. In this function, the RA uses 
-the Nipals algorithm presented in Mangamana et al 2021, 
+Reduced rank regression, also referred to as redundancy analysis (RA) regression. 
+In this function, the RA uses the Nipals algorithm presented in Mangamana et al 2021, 
 section 2.1.1.
 
-A continuum regularization is available. After block centering 
-and scaling, the covariances matrices are computed as follows: 
+A continuum regularization is available. After block centering and scaling, the covariances 
+matrices are computed as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
-where D is the observation (row) metric. Value `tau` = 0 
-can generate unstability when inverting the covariance matrices. 
-A better alternative is generally to use an epsilon value 
+where D is the observation (row) metric. Value `tau` = 0 can generate unstability when 
+inverting the covariance matrices. A better alternative is generally to use an epsilon value 
 (e.g. `tau` = 1e-8) to get similar results as with pseudo-inverses.  
 
 ## References
-Bougeard, S., Qannari, E.M., Lupo, C., Chauvin, C., 2011. 
-Multiblock redundancy analysis from a user’s perspective. 
-Application in veterinary epidemiology. Electronic Journal of 
-Applied Statistical Analysis 4, 203-214–214. 
-https://doi.org/10.1285/i20705948v4n2p203
+Bougeard, S., Qannari, E.M., Lupo, C., Chauvin, C., 2011. Multiblock redundancy analysis from 
+a user’s perspective. Application in veterinary epidemiology. Electronic Journal of 
+Applied Statistical Analysis 4, 203-214–214. https://doi.org/10.1285/i20705948v4n2p203
 
-Bougeard, S., Qannari, E.M., Rose, N., 2011. Multiblock redundancy 
-analysis: interpretation tools and application in epidemiology. 
-Journal of Chemometrics 25, 467–475. https://doi.org/10.1002/cem.1392 
+Bougeard, S., Qannari, E.M., Rose, N., 2011. Multiblock redundancy analysis: interpretation tools 
+and application in epidemiology. Journal of Chemometrics 25, 467–475. https://doi.org/10.1002/cem.1392 
 
-Tchandao Mangamana, E., Glèlè Kakaï, R., Qannari, E.M., 2021. 
-A general strategy for setting up supervised methods of multiblock 
-data analysis. Chemometrics and Intelligent Laboratory Systems 
-217, 104388. 
+Tchandao Mangamana, E., Glèlè Kakaï, R., Qannari, E.M., 2021. A general strategy for setting up supervised 
+methods of multiblock data analysis. Chemometrics and Intelligent Laboratory Systems 217, 104388. 
 https://doi.org/10.1016/j.chemolab.2021.104388
 
 ## Examples
