@@ -3,20 +3,13 @@
         nlv, verbose = false)
 Working function for `gridscore`.
 
-Specific and faster than `gridscore_br` for models 
-using latent variables (e.g. PLSR). Argument `pars` 
-must not contain `nlv`.
+Specific and faster than `gridscore_br` for models using latent variables (e.g. PLSR). 
+Argument `pars` must not contain `nlv`.
 
 See function `gridscore` for examples.
 """
 function gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, nlv, verbose = false)
     Q = eltype(Xtrain[1, 1])
-    ## Case where not multiblock
-    if isa(Xtrain[1, 1], Number)
-        p = nco(Xtrain)
-        nlv = min(p, minimum(nlv)):min(p, maximum(nlv))
-    end
-    ## End
     q = nco(Ytrain)
     le_nlv = length(nlv)
     if isnothing(pars)   # e.g.: case of PLSR

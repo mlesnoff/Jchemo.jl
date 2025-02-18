@@ -6,26 +6,20 @@ Cross-validation (CV) of a model over a grid of parameters.
 * `X` : Training X-data (n, p).
 * `Y` : Training Y-data (n, q).
 Keyword arguments: 
-* `segm` : Segments of observations used for 
-    the CV (output of functions [`segmts`](@ref), 
-    [`segmkf`](@ref), etc.).
-* `score` : Function computing the prediction 
-    score (e.g. `rmsep`).
-* `pars` : tuple of named vectors of same length defining 
-    the parameter combinations (e.g. output of function `mpar`).
+* `segm` : Segments of observations used for the CV (output of functions 
+    [`segmts`](@ref), [`segmkf`](@ref), etc.).
+* `score` : Function computing the prediction score (e.g. `rmsep`).
+* `pars` : tuple of named vectors of same length defining the parameter combinations 
+    (e.g. output of function `mpar`).
 * `verbose` : If `true`, predicting information are printed.
-* `nlv` : Value, or vector of values, of the nb. of latent
-    variables (LVs).
-* `lb` : Value, or vector of values, of the ridge 
-    regularization parameter "lambda".
+* `nlv` : Value, or vector of values, of the nb. of latent variables (LVs).
+* `lb` : Value, or vector of values, of the ridge regularization parameter "lambda".
 
-The function is used for grid-search: it computed a prediction score 
-(= error rate) for model `model` over the combinations of parameters 
-defined in `pars`. 
+The function is used for grid-search: it computed a prediction score (= error rate) for the 
+specified `model` over the combinations of parameters defined in `pars`. 
     
-For models based on LV or ridge regularization, using arguments `nlv` 
-and `lb` allow faster computations than including these parameters in 
-argument `pars. See the examples.   
+For models based on LV or ridge regularization, using arguments `nlv` and `lb` allow faster 
+computations than including these parameters in argument `pars. See the examples.   
 
 The function returns two outputs: 
 * `res` : mean results
@@ -203,7 +197,31 @@ fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed").f     
+    ylabel = "Observed").f   
+    
+##---- Mbplsr
+listbl = [1:525, 526:1050]
+Xbltrain = mblock(Xtrain, listbl)
+Xbltest = mblock(Xtest, listbl) 
+Xblcal = mblock(Xcal, listbl) 
+Xblval = mblock(Xval, listbl) 
+
+model = mbplsr()
+bscal = [:none, :frob]
+pars = mpar(bscal = bscal) 
+nlv = 0:30
+rescv = gridcv(model, Xbltrain, ytrain; segm,  score = rmsep, pars, nlv) ;
+res = rescv.res 
+group = res.bscal 
+plotgrid(res.nlv, res.y1, group; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+model = mbplsr(bscal = res.bscal[u], nlv = res.nlv[u])
+fit!(model, Xbltrain, ytrain)
+pred = predict(model, Xbltest).pred
+@show rmsep(pred, ytest)
+plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f   
 
 ######## Discrimination
 ## The principle is the same as for regression

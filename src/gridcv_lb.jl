@@ -2,9 +2,8 @@
     gridcv_lb(X, Y; segm, algo, score, pars = nothing, lb, verbose = false)
 Working function for `gridcv`.
 
-Specific and faster than `gridcv_br` for models 
-using ridge regularization (e.g. RR). Argument `pars` 
-must not contain `nlv`.
+Specific and faster than `gridcv_br` for models using ridge regularization (e.g. RR). 
+Argument `pars` must not contain `nlv`.
 
 See function `gridcv` for examples.
 """
@@ -22,7 +21,18 @@ function gridcv_lb(X, Y; segm, algo, score, pars = nothing, lb, verbose = false)
         @inbounds for j in eachindex(listsegm) # = 1:nsegm
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
-            zres[j] = gridscore_lb(rmrow(X, s), rmrow(Y, s), X[s, :], Y[s, :]; algo, score, lb, pars)
+
+            if isa(X[1, 1], Number)  # monoblock
+                zres[j] = gridscore_lb(rmrow(X, s), rmrow(Y, s), X[s, :], Y[s, :]; algo, score, pars, lb)
+            else                     # multiblock
+                Xcal = similar(X)
+                Xval = similar(X)
+                @inbounds for k in eachindex(X) 
+                    Xcal[k] = rmrow(X[k], s)
+                    Xval[k] = X[k][s, :]
+                end
+                zres[j] = gridscore_lb(Xcal, rmrow(Y, s), Xval, Y[s, :]; algo, score, pars, lb)
+            end
         end
         zres = reduce(vcat, zres)
         ## Case where pars is empty

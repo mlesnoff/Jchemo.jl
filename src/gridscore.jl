@@ -8,23 +8,20 @@ Test-set validation of a model over a grid of parameters.
 * `X` : Validation X-data (m, p).
 * `Y` : Validation Y-data (m, q).
 Keyword arguments: 
-* `score` : Function computing the prediction 
-    score (e.g. `rmsep`).
+* `score` : Function computing the prediction score (e.g. `rmsep`).
 * `pars` : tuple of named vectors of same length defining 
     the parameter combinations (e.g. output of function `mpar`).
 * `verbose` : If `true`, predicting information are printed.
-* `nlv` : Value, or vector of values, of the nb. of latent
-    variables (LVs).
-* `lb` : Value, or vector of values, of the ridge 
-    regularization parameter "lambda".
+* `nlv` : Value, or vector of values, of the nb. of latent variables (LVs).
+* `lb` : Value, or vector of values, of the ridge regularization 
+    parameter "lambda".
 
-The function is used for grid-search: it computed a prediction score 
-(= error rate) for model `model` over the combinations of parameters 
-defined in `pars`. The score is computed over sets {`X, `Y`}. 
+The function is used for grid-search: it computed a prediction score (= error rate) for 
+model `model` over the combinations of parameters defined in `pars`. The score is computed 
+over sets {`X, `Y`}. 
     
-For models based on LV or ridge regularization, using arguments `nlv` 
-and `lb` allow faster computations than including these parameters in 
-argument `pars. See the examples.   
+For models based on LV or ridge regularization, using arguments `nlv` and `lb` allow faster 
+computations than including these parameters in argument `pars. See the examples.   
 
 ## Examples
 ```julia
@@ -51,8 +48,7 @@ ntrain = nro(Xtrain)
 ntest = nro(Xtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
-## Building Cal and Val 
-## within Train
+## Train ==> Cal + Val 
 nval = Int(round(.3 * ntrain))
 s = samprand(ntrain, nval)
 Xcal = Xtrain[s.train, :]
@@ -60,7 +56,7 @@ ycal = ytrain[s.train]
 Xval = Xtrain[s.test, :]
 yval = ytrain[s.test]
 
-####-- Plsr
+##---- Plsr
 model = plskern()
 nlv = 0:30
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, nlv)
@@ -88,7 +84,7 @@ pred = predict(model, Xtest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-####-- Rr 
+##---- Rr 
 lb = (10).^(-8:.1:3)
 model = rr() 
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, lb)
@@ -118,7 +114,7 @@ pred = predict(model, Xtest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-####-- Kplsr 
+##---- Kplsr 
 model = kplsr()
 nlv = 0:30
 gamma = (10).^(-5:1.:5)
@@ -136,7 +132,7 @@ pred = predict(model, Xtest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-####-- Knnr 
+##---- Knnr 
 nlvdis = [15; 25] ; metric = [:mah]
 h = [1, 2.5, 5]
 k = [1, 5, 10, 20, 50, 100] 
@@ -154,7 +150,7 @@ pred = predict(model, Xtest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-####-- Lwplsr 
+##---- Lwplsr 
 nlvdis = 15 ; metric = [:mah]
 h = [1, 2, 5] ; k = [200, 350, 500] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
@@ -174,7 +170,7 @@ pred = predict(model, Xtest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-####-- LwplsrAvg 
+##---- LwplsrAvg 
 nlvdis = 15 ; metric = [:mah]
 h = [1, 2, 5] ; k = [200, 350, 500] 
 nlv = [0:20, 5:20] 
@@ -192,18 +188,18 @@ pred = predict(model, Xtest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
 
-####-- Mbplsr
+##---- Mbplsr
 listbl = [1:525, 526:1050]
 Xbltrain = mblock(Xtrain, listbl)
 Xbltest = mblock(Xtest, listbl) 
-Xbl_cal = mblock(Xcal, listbl) 
-Xbl_val = mblock(Xval, listbl) 
+Xblcal = mblock(Xcal, listbl) 
+Xblval = mblock(Xval, listbl) 
 
 model = mbplsr()
 bscal = [:none, :frob]
 pars = mpar(bscal = bscal) 
 nlv = 0:30
-res = gridscore(model, Xbl_cal, ycal, Xbl_val, yval; score = rmsep, pars, nlv)
+res = gridscore(model, Xblcal, ycal, Xblval, yval; score = rmsep, pars, nlv)
 group = res.bscal 
 plotgrid(res.nlv, res.y1, group; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
@@ -235,8 +231,7 @@ ntrain = nro(Xtrain)
 ntest = nro(Xtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
-## Building Cal and Val 
-## within Train
+## Train ==> Cal + Val 
 nval = Int(round(.3 * ntrain))
 s = samprand(ntrain, nval)
 Xcal = Xtrain[s.train, :]
@@ -244,7 +239,7 @@ ycal = ytrain[s.train]
 Xval = Xtrain[s.test, :]
 yval = ytrain[s.test]
 
-####-- Plslda
+##---- Plslda
 model = plslda()
 nlv = 1:30
 prior = [:unif, :prop]
