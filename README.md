@@ -9,10 +9,42 @@
 
 # <span style="color:green"> **About** </span> 
 
-**Jchemo** was initially dedicated to **partial least squares regression (PLSR) and discrimination (PLSDA)** 
-and their extensions, in particular locally weighted PLS models (**KNN-LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). In a second phase, the package has expand to many other models for **dimension reduction** and **regression and discrimination** ([see the list of functions here](https://mlesnoff.github.io/Jchemo.jl/dev/domains/)). 
+**Jchemo** was initially dedicated to **partial least squares regression (PLSR) and discrimination (PLSDA) 
+methods** and their extensions, in particular locally weighted PLS models (**KNN-LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). Then, the package has been expanded with many other dimension-reduction/regression/discrimination [methods](https://mlesnoff.github.io/Jchemo.jl/dev/domains/). 
 
-Why the name **Jchemo**?: Since it is orientated to **chemometrics** , in brief the use of biometrics for chemistry. But most of the provided methods are generic to other types of data than chemistry. 
+Why the name **Jchemo**?: Since it is oriented towards **chemometrics** , in brief the use of biometrics for chemistry. But most of the provided methods are generic to other types of data than chemistry. 
+
+# <span style="color:green"> **Sample workflow** </span> 
+
+Suppose some training data `(X, Y)` and that predictions are expected from new data `Xnew` using a PLSR model with 15 latent variables (LVs). The workflow is has follows 
+1) An object, e.g. `model` (or any other name), is built from the given learning model and its eventual parameters.
+    This object contains three sub-objects: 
+    * `algo` (the learning algorithm), 
+    * `fitm` (the fitted model, empty at this stage), 
+    * and `kwargs` (the specified keyword arguments).
+2) Function `fit!` fits the model on the data, which fills sub-object `fitm` above.
+3) Function `predict` runs the predictions.   
+
+```julia
+model = plskern(nlv = 15, scal = true)
+fit!(model, X, Y)
+pred = predict(model Xnew).pred
+```
+
+Another possible syntax to build object `model` is 
+```julia
+nlv = 15 ; scal = true
+model = plskern(; nlv, scal)
+```
+
+After model fitting, the matrices of the PLS scores can be obtained from function `transf`
+```julia
+T = transf(model, X)   # can also be obtained directly by: model.fitm.T
+Tnew = transf(model, Xnew)
+```
+Other sample workflows are given at the end of this README.
+
+# <span style="color:green"> **Package structure** </span> 
 
 **Jchemo** is organized between 
 - **transform operators** (that have a function `transf`),
@@ -28,44 +60,15 @@ In **Jchemo**, a pipeline is a **chain of *K* modeling steps** containing
 
 The pipelines are built with function `pip`, see [**here**](https://github.com/mlesnoff/Jchemo.jl/tree/master?tab=readme-ov-file#fitting-a-pipeline).
 
-# <span style="color:green"> **Installation** </span> 
+*Keyword arguments*
 
-To install **Jchemo** 
-
-* From the official Julia repo, run in the Pkg REPL:
-```julia
-pkg> add Jchemo
-```
-
-or for a **specific version**, for instance: 
-```julia
-pkg> add Jchemo@0.1.18
-```
-
-* For the **current developing version** (potentially not stable):
-```julia
-pkg> add https://github.com/mlesnoff/Jchemo.jl.git
-```
-### Warning
-
-Before to update the package, it is recommended to have a look on [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) to avoid eventual problems due to breaking changes. 
-
-# <span style="color:green"> **Tips** </span> 
-
-### Syntax
-
-Most the **Jchemo** functions have **keyword arguments** (`kwargs`). The keyword arguments required/allowed in a function can be found in the **Index of function section** of the documentation:
-- [Stable](https://mlesnoff.github.io/Jchemo.jl/stable/api/) 
-- [Developping](https://mlesnoff.github.io/Jchemo.jl/dev/api/) 
-
-or in the REPL by displaying the function's help page, for instance for function `plskern`:
+The keyword arguments required/allowed in a function can be found in the [Index of function section](https://mlesnoff.github.io/Jchemo.jl/stable/api/) of the documentation, or in the REPL by displaying the function's help page, for instance for function [`plskern`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.plskern-Tuple{})
 
 ```julia
 julia> ?plskern
 ```
 
-The `kwargs` arguments and their default values are defined in containers depending of the functions, available 
-[**here**](https://github.com/mlesnoff/Jchemo.jl/blob/master/src/_structures_param.jl). For a given function, they can be displayed in the REPL with macro `@pars`, e.g.:
+Default values can be displayed in the REPL with macro `@pars`
 
 ```julia
 julia> @pars plskern
@@ -75,29 +78,25 @@ Jchemo.ParPlsr
   scal: Bool false
 ```
 
-**Examples of syntax** are given at the end of this README, and in the help pages of the functions.
+*Multi-threading*
 
-### Datasets
+Some functions (e.g. those using kNN selections) use **multi-threading** to speed the computations. Taking advantage of this requires to specify a relevant number of threads (for instance from the *Settings* menu of the VsCode Julia extension and the file *settings.json*).
 
-The **datasets** used in the help page examples are stored in the package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets on chemometrics and other domains. **Examples of scripts** demonstrating **Jchemo** are also available in the pedagogical project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo). 
+*Plotting*
 
-### Tuning predictive models
+**Jchemo** uses **Makie** for plotting. Displaying the plots requires to install and load one of the Makie's backends (**CairoMakie** or **GLMakie**). 
 
-Two generic **grid-search** functions are available to tune the predictors: 
+*Datasets*
+
+The **datasets** used as examples in the function help pages are stored in package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets on chemometrics and other domains. **Examples of scripts** demonstrating **Jchemo** are also available in the pedagogical project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo). 
+
+# <span style="color:green"> **Tuning predictive models** </span> 
+
+Two **grid-search** functions are available to tune the predictors 
 - [`gridscore`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridscore-NTuple{5,%20Any}) (*test-set* validation)
 - [`gridcv`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridcv-Tuple{Any,%20Any,%20Any}) (cross-validation). 
 
-Highly accelerated versions of these tuning tools have been implemented for models based on latent variables (LVs) and ridge regularization.
-
-### Multi-threading
-
-Some **Jchemo** functions (e.g. those using kNN selections) use **multi-threading** 
-to speed the computations. Taking advantage of this requires to specify a relevant number 
-of threads (for instance from the *Settings* menu of the VsCode Julia extension and the file *settings.json*).
-
-### Plotting
-
-**Jchemo** uses **Makie** for plotting. Displaying the plots requires to install and load one of the Makie's backends (e.g. **CairoMakie**). 
+The syntax is generic for all the functions (see the respective help pages above for sample workflows). These tuning tools have been specically accelerated for models based on latent variables and ridge regularization.
 
 # <span style="color:green">  **Benchmark**  </span>
 
@@ -161,6 +160,29 @@ BenchmarkTools.Trial: 2 samples with 1 evaluation.
 
  Memory estimate: 2.05 GiB, allocs estimate: 2677.
 ```
+
+# <span style="color:green"> **Installation** </span> 
+
+To install **Jchemo** 
+
+* From the official Julia repo, run in the Pkg REPL
+```julia
+pkg> add Jchemo
+```
+
+or for a **specific version**, for instance 
+```julia
+pkg> add Jchemo@0.1.18
+```
+
+* For the **current developing version** (potentially not stable)
+```julia
+pkg> add https://github.com/mlesnoff/Jchemo.jl.git
+```
+
+*Warning*
+
+Before to update the package, it is recommended to have a look on [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) to avoid eventual problems due to breaking changes. 
 
 # <span style="color:green"> **Examples of syntax** </span> 
 
