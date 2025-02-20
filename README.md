@@ -16,12 +16,12 @@ Why the name **Jchemo**?: Since it is oriented towards **chemometrics** , in bri
 
 # <span style="color:green"> **Sample workflow** </span> 
 
-Suppose some training data `(X, Y)` and that predictions are expected from new data `Xnew` using a PLSR model with 15 latent variables (LVs). The workflow is has follows 
+Suppose training data `(X, Y)` and predictions expected from new data `Xnew` using a PLSR model with 15 latent variables (LVs). The workflow is has follows 
 1) An object, e.g. `model` (or any other name), is built from the given learning model and its eventual parameters.
-    This object contains three sub-objects: 
-    * `algo` (the learning algorithm), 
-    * `fitm` (the fitted model, empty at this stage), 
-    * and `kwargs` (the specified keyword arguments).
+    This object contains three sub-objects 
+    * `algo` (the learning algorithm) 
+    * `fitm` (the fitted model, empty at this stage) 
+    * and `kwargs` (the specified keyword arguments)
 2) Function `fit!` fits the model on the data, which fills sub-object `fitm` above.
 3) Function `predict` runs the predictions.   
 
@@ -31,17 +31,28 @@ fit!(model, X, Y)
 pred = predict(model Xnew).pred
 ```
 
+We can check the contents of object `model`
+
+``` julia
+@names model
+
+(:algo, :fitm, :kwargs)
+```
+
 Another possible syntax to build object `model` is 
+
 ```julia
 nlv = 15 ; scal = true
 model = plskern(; nlv, scal)
 ```
 
 After model fitting, the matrices of the PLS scores can be obtained from function `transf`
+
 ```julia
 T = transf(model, X)   # can also be obtained directly by: model.fitm.T
 Tnew = transf(model, Xnew)
 ```
+
 Other sample workflows are given at the end of this README.
 
 # <span style="color:green"> **Package structure** </span> 
@@ -93,7 +104,7 @@ The **datasets** used as examples in the function help pages are stored in packa
 # <span style="color:green"> **Tuning predictive models** </span> 
 
 Two **grid-search** functions are available to tune the predictors 
-- [`gridscore`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridscore-NTuple{5,%20Any}) (*test-set* validation)
+- [`gridscore`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridscore-NTuple{5,%20Any}) (test-set validation)
 - [`gridcv`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridcv-Tuple{Any,%20Any,%20Any}) (cross-validation). 
 
 The syntax is generic for all the functions (see the respective help pages above for sample workflows). These tuning tools have been specically accelerated for models based on latent variables and ridge regularization.
@@ -166,16 +177,19 @@ BenchmarkTools.Trial: 2 samples with 1 evaluation.
 To install **Jchemo** 
 
 * From the official Julia repo, run in the Pkg REPL
+
 ```julia
 pkg> add Jchemo
 ```
 
 or for a **specific version**, for instance 
+
 ```julia
 pkg> add Jchemo@0.1.18
 ```
 
 * For the **current developing version** (potentially not stable)
+
 ```julia
 pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ```
@@ -197,24 +211,15 @@ Xtest = rand(m, p)
 Ytest = rand(m, q) 
 ```
 
-### **Fitting a transform model**
+### **Transform operations**
 
 #### **a) Example of a signal preprocessing**
 
-Let us consider a signal preprocessing with the Savitsky-Golay filter, using function `savgol`. The keyword arguments of `savgol` are `npoint`, `deriv` and `degree`. See for instance in the REPL:
+Consider a signal preprocessing with the Savitsky-Golay filter, using function `savgol`
 
 ```julia
-julia> ?savgol
-```
-
-The syntax to fit the model is as follows:
-
-```julia
-## Below, the order of the kwargs is not 
-## important but the argument names have 
-## to be correct.
-## Keywords arguments are specified
-## after character ";"
+## Below, the order of the kwargs is not important but the argument 
+## names have to be correct.
 
 ## Model definition
 ## (below, the name 'model' can be replaced by any other name)
@@ -223,67 +228,32 @@ model = savgol(; npoint, deriv, degree)
 
 ## Fitting
 fit!(model, Xtrain)
-```
 
-which is the strictly equivalent to:
-
-```julia
-## Below, ";" is not required since the kwargs values are
-## specified within the function
-
-model = savgol(npoint = 11, deriv = 2, degree = 3)
-fit!(model, Xtrain)
-```
-
-Contents of object `model` can be displayed by:
-
-``` julia
-julia> @names model
-
-(:algo, :fitm, :kwargs)
-```
-
-Sub-objects `algo`, `fitm` and `kwargs` contain the used algorithm (a function), the model fitted on the data, and the kwargs arguments, respectively.
-
-Once the model is fitted, the transformed data are given by:
-
-```julia
-Xptrain = transf(model, Xtrain)   # preprocessed data
+## Transformed (= preprocessed) data
+Xptrain = transf(model, Xtrain)  
 Xptest = transf(model, Xtest)
 ```
 
-Several preprocessing can be applied sequentially to the data by building a **pipeline** (see section *Fitting a pipeline* thereafter for examples).
+Several preprocessing can be applied sequentially to the data by building a [pipeline](https://github.com/mlesnoff/Jchemo.jl/tree/master?tab=readme-ov-file#fitting-a-pipeline).
 
 #### **b) Example of a PCA**
 
-Let us consider a principal component analysis (PCA), using function `pcasvd`. 
+Consider a principal component analysis, using SVD and function `pcasvd` 
 
-The syntax to fit the model using a SVD decomposition is as follows:
 ```julia
 nlv = 15  # nb. principal components
 model = pcasvd(; nlv)
 fit!(model, Xtrain, ytrain)
-```
 
-The PCA score matrices (i.e. the projections of the observations on the PCA directions) can be computed by:
-```julia
-Ttrain = transf(model, Xtrain)
+## Score matrices
+Ttrain = transf(model, Xtrain) # same as:  model.fitm.T
 Ttest = transf(model, Xtest)
-```
 
-Object `Ttrain` above can also be obtained directly by:
-
-```julia
-Ttrain = model.fitm.T
-```
-
-Some model summary (% of explained variance, etc.) can be displayed by:
-
-```julia
+## Model summary (% of explained variance, etc.)
 summary(model, Xtrain)
 ```
 
-For a preliminary scaling of the data before the PCA decomposition, the syntax is:
+For a preliminary scaling of the data before the PCA
 
 ```julia
 nlv = 15 ; scal = true
@@ -291,73 +261,52 @@ model = pcasvd(; nlv, scal)
 fit!(model, Xtrain, ytrain)
 ```
 
-### **Fitting a prediction model**
+### **Prediction models**
 
 #### **a) Example of a KPLSR**
 
-Let us consider a Gaussian kernel partial least squares regression (KPLSR), using function `kplsr`. 
+Consider a (Gaussian) kernel partial least squares regression (KPLSR), using function `kplsr` 
 
-The syntax to fit the model is as follows:
 ```julia
 nlv = 15  # nb. latent variables
 kern = :krbf ; gamma = .001 
 model = kplsr(; nlv, kern, gamma)
 fit!(model, Xtrain, ytrain)
-```
 
-As for PCA, the score matrices can be computed by:
-```julia
+## PLS score matrices can be computed by:
 Ttrain = transf(model, Xtrain)   # = model.fitm.T
 Ttest = transf(model, Xtest)
-```
 
-and model summary by:
-
-```julia
+## Model summary
 summary(model, Xtrain)
-```
 
-Y-Predictions are given by:
-```julia
+## Y-Predictions
 pred = predict(model, Xtest).pred
 ```
 
-**Examples of tuning** of predictive models (test-set validation and K-fold cross-validation) are given in the help pages of functions `gridscore` and `gridcv`: 
-
-```julia
-?gridscore
-?gridcv
-```
-### **Fitting a pipeline**
+### **Pipelines**
 
 #### **a) Example of chained preprocessing**
 
-Let us consider a data preprocessing by standard-normal-variation transformation (SNV) followed by a Savitsky-Golay filter and a polynomial de-trending transformation. 
-
-The pipeline is fitted as follows:
+Consider a data preprocessing by standard-normal-variation transformation (SNV) followed by a Savitsky-Golay filter and a polynomial de-trending transformation
 
 ```julia
-## Models' definition
+## Model definitions
 model1 = snv()
 model2 = savgol(npoint = 5, deriv = 1, degree = 2)
 model3 = detrend_pol()  
-## Pipeline building
+
+## Pipeline building and fitting
 model = pip(model1, model2, model3)
-## Fitting
 fit!(model, Xtrain)
-```
 
-The transformed data are given by:
-
-```julia
+## Transformed data
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
 ```
 #### **b) Example of PCA-SVMR**
 
-Let us consider a support vector machine regression model implemented on preliminary computed PCA scores (PCA-SVMR). 
-
-The pipeline is fitted as follows:
+Consider a support vector machine regression model implemented on preliminary computed PCA scores (PCA-SVMR) 
 
 ```julia
 nlv = 15
@@ -366,30 +315,25 @@ model1 = pcasvd(; nlv)
 model2 = svmr(; kern, gamma, cost)
 model = pip(model1, model2)
 fit!(model, Xtrain)
-```
 
-The Y-predictions are given by:
-```julia
+## Y-predictions
 pred = predict(model, Xtest).pred
 ```
 
-Any step(s) of data preprocessing can obviously be implemented before the modeling, either outside of the given predictive pipeline or being involded directlty in the pipeline, such as for instance:
+Step(s) of data preprocessing can obviously be implemented before the model(s)
 
 ```julia
-degree = 2    # de-trending with polynom degree 2
 nlv = 15
 kern = :krbf ; gamma = .001 ; cost = 1000
-model1 = detrend_pol(; degree)
+model1 = detrend_pol(degree = 2)   # polynomial de-trending with polynom degree 2
 model2 = pcasvd(; nlv)
 model3 = svmr(; kern, gamma, cost)
 model = pip(model1, model2, model3)
 ```
 
-#### **c) Example of LWR Naes et al. 1990**
+#### **c) Example of LWR (Naes et al. 1990)**
 
-The LWR algorithm of Naes et al (1990) consists in implementing a preliminary global PCA on the data and then a kNN locally weighted multiple linear regression (kNN-LWMLR) on the global PCA scores.
-
-The pipeline is defined by:
+The LWR algorithm of Naes et al (1990) consists in implementing a preliminary global PCA on the data and then a kNN locally weighted multiple linear regression (kNN-LWMLR) on the global PCA scores
 
 ```julia
 nlv = 25
@@ -403,9 +347,7 @@ model = pip(model1, model2)
 
 #### **d) Example of Shen et al. 2019**
 
-The pipeline of Shen et al. (2019) consists in implementing a preliminary global PLSR on the data and then a kNN-PLSR on the global PLSR scores.
-
-The pipeline is defined by:
+The pipeline of Shen et al. (2019) consists in implementing a preliminary global PLSR on the data and then a kNN-PLSR on the global PLSR scores
 
 ```julia
 nlv = 25
