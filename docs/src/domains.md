@@ -37,7 +37,7 @@
 
 ### Manifold 
 
-*UMAP* -- with UMAP.jl
+*Wrapper to UMAP.jl**
 
 - **umap**: Uniform manifold approximation and projection for 
     dimension reduction
@@ -140,11 +140,15 @@
 *Averaging*
 - **lwplsravg** kNN-LWPLSR-AVG 
 
-### Support vector machines -- with LIBSVM.jl
+### Support vector machines
+
+*Wrapper to LIBSVM.jl*
 
 - **svmr** Epsilon-SVR (SVM-R)
 
-### Trees -- with DecisionTree.jl
+### Trees 
+
+*Wrapper to DecisionTree.jl*
 
 - **treer** Single tree
 - **rfr** Random forest
@@ -213,11 +217,15 @@
 - **lwplslda** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
 - **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA, with continuum)
 
-### Support vector machines -- with LIBSVM.jl
+### Support vector machines 
+
+*Wrapper to LIBSVM.jl*
 
 - **svmda** C-SVC (SVM-DA)
 
-### Trees -- with DecisionTree.jl
+### Trees 
+
+*Wrapper to DecisionTree.jl*
 
 - **treeda** Single tree
 - **rfda** Random forest
