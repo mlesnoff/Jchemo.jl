@@ -53,7 +53,7 @@ T = transf(model, X)   # can also be obtained directly by: model.fitm.T
 Tnew = transf(model, Xnew)
 ```
 
-Other sample workflows are given at the end of this README.
+Other sample workflows are given at the [end](https://github.com/mlesnoff/Jchemo.jl?tab=readme-ov-file#-examples-of-syntax-) of this README.
 
 # <span style="color:green"> **Package structure** </span> 
 
@@ -69,7 +69,7 @@ In **Jchemo**, a pipeline is a **chain of *K* modeling steps** containing
 - either ***K* transform steps**,
 - or ***K* - 1 transform steps** and **a final prediction step**. 
 
-The pipelines are built with function `pip`, see [**here**](https://github.com/mlesnoff/Jchemo.jl/tree/master?tab=readme-ov-file#fitting-a-pipeline).
+The pipelines are built with function [`pip`](https://github.com/mlesnoff/Jchemo.jl/tree/master?tab=readme-ov-file#pipelines).
 
 *Keyword arguments*
 
@@ -196,7 +196,7 @@ pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 
 *Warning*
 
-Before to update the package, it is recommended to have a look on [**What changed**](https://mlesnoff.github.io/Jchemo.jl/dev/news/) to avoid eventual problems due to breaking changes. 
+Before to update the package, it is recommended to have a look on [What changed](https://mlesnoff.github.io/Jchemo.jl/dev/news/) to avoid eventual problems due to breaking changes. 
 
 # <span style="color:green"> **Examples of syntax** </span> 
 
