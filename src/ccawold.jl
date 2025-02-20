@@ -63,7 +63,7 @@ using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "linnerud.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X
 Y = dat.Y
 n, p = size(X)
@@ -73,8 +73,8 @@ nlv = 2
 bscal = :frob ; tau = 1e-4
 model = ccawold(; nlv, bscal, tau, tol = 1e-10)
 fit!(model, X, Y)
-pnames(model)
-pnames(model.fitm)
+@names model
+@names model.fitm
 
 @head model.fitm.Tx
 @head transfbl(model, X, Y).Tx
@@ -83,7 +83,7 @@ pnames(model.fitm)
 @head transfbl(model, X, Y).Ty
 
 res = summary(model, X, Y) ;
-pnames(res)
+@names res
 res.explvarx
 res.explvary
 res.cortx2ty

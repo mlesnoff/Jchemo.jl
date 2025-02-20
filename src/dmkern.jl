@@ -36,7 +36,7 @@ using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "iris.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X[:, 1:4] 
 y = dat.X[:, 5]
 n = nro(X)
@@ -52,7 +52,7 @@ n, p = size(T)
 
 model = dmkern()
 fit!(model, T) 
-pnames(model.fitm)
+@names model.fitm
 model.fitm.H
 u = [1; 4; 150]
 predict(model, T[u, :]).pred

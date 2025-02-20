@@ -31,7 +31,7 @@ nlv = 10
 scal = false
 #scal = true
 res = outeucl(X; scal) ;
-pnames(res)
+@names res
 res.d    # outlierness 
 plotxy(1:ntot, res.d).f
 ```

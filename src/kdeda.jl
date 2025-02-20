@@ -23,7 +23,7 @@ using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2")
 @load db dat
-pnames(dat)
+@names dat
 @head dat.X
 X = dat.X[:, 1:4]
 y = dat.X[:, 5]
@@ -43,14 +43,14 @@ prior = :unif
 #prior = :prop
 model = kdeda(; prior)
 fit!(model, Xtrain, ytrain)
-pnames(model)
-pnames(model.fitm)
+@names model
+@names model.fitm
 fitm = model.fitm ;
 fitm.lev
 fitm.ni
 
 res = predict(model, Xtest) ;
-pnames(res)
+@names res
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)

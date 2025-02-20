@@ -46,7 +46,7 @@ nlv = 3
 model = plskern(; nlv)
 fit!(model, X, y)
 res = vip(model.fitm)
-pnames(res)
+@names res
 res.imp
 
 fit!(model, X, Y)
@@ -57,7 +57,7 @@ vip(model.fitm, Y).imp
 
 model = plsrda(; nlv) 
 fit!(model, X, ycla)
-pnames(model.fitm)
+@names model.fitm
 fitm = model.fitm.fitm ;  # fitted PLS model
 vip(fitm).imp
 Ydummy = dummy(ycla).Y
@@ -65,7 +65,7 @@ vip(fitm, Ydummy).imp
 
 model = plslda(; nlv) 
 fit!(model, X, ycla)
-pnames(model.fitm.fitm)
+@names model.fitm.fitm
 fitm = model.fitm.fitm.embfitm ;  # fitted PLS model
 vip(fitm).imp
 vip(fitm, Ydummy).imp

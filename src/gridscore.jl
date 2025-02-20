@@ -31,7 +31,7 @@ using JLD2, CairoMakie, JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -218,7 +218,7 @@ using JLD2, CairoMakie, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X
 Y = dat.Y
 tab(Y.typ)

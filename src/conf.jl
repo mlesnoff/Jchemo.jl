@@ -17,7 +17,7 @@ pred = ["a"; "d"; "b"; "d"; "b"; "d"; "b"; "d";
 #y = rand(1:10, 200); pred = rand(1:10, 200)
 
 res = conf(pred, y) ;
-pnames(res)
+@names res
 res.cnt       # Counts (dataframe built from `A`) 
 res.pct       # Row %  (dataframe built from `Apct`))
 res.A         

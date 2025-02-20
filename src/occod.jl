@@ -39,7 +39,7 @@ using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/challenge2018.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X    
 Y = dat.Y
 model = savgol(npoint = 21, deriv = 2, degree = 3)
@@ -86,8 +86,8 @@ model = occod()
 #model = occod(mcut = :q, risk = .01)
 #model = occsdod()
 fit!(model, model0.fitm, zXtrain) 
-pnames(model) 
-pnames(model.fitm) 
+@names model 
+@names model.fitm 
 @head d = model.fitm.d
 d = d.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), 
@@ -96,7 +96,7 @@ hlines!(ax, 1; linestyle = :dot)
 f
 
 res = predict(model, zXtest) ;
-pnames(res)
+@names res
 @head res.d
 @head res.pred
 tab(res.pred)

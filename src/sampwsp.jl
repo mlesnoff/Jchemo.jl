@@ -42,7 +42,7 @@ n = 600 ; p = 2
 X = rand(n, p)
 dmin = .5
 s = sampwsp(X, dmin)
-pnames(res)
+@names res
 @show length(s.test)
 plotxy(X[s.test, 1], X[s.test, 2]).f
 ```

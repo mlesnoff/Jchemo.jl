@@ -51,7 +51,7 @@ using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -65,7 +65,7 @@ ytest = rmrow(y, s)
 nlv = 5 ; scal = true
 model = cglsr(; nlv, scal)
 fit!(model, Xtrain, ytrain)
-pnames(model.fitm) 
+@names model.fitm 
 @head model.fitm.B
 coef(model.fitm).B
 coef(model.fitm).int

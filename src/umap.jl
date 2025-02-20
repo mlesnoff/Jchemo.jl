@@ -41,7 +41,7 @@ using JLD2, GLMakie, CairoMakie, FreqTables
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "challenge2018.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X 
 Y = dat.Y
 wlst = names(X)

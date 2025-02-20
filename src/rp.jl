@@ -26,8 +26,8 @@ meth = :li ; s = sqrt(p)
 #meth = :gauss
 model = rp(; nlv, meth, s)
 fit!(model, X)
-pnames(model)
-pnames(model.fitm)
+@names model
+@names model.fitm
 @head model.fitm.T 
 @head model.fitm.V 
 transf(model, X[1:2, :])

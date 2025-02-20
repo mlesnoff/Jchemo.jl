@@ -54,7 +54,7 @@ using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "octane.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X 
 wlst = names(X)
 wl = parse.(Float64, wlst)
@@ -64,8 +64,8 @@ nlv = 3
 model = pcaout(; nlv)  
 #model = pcasvd(; nlv) 
 fit!(model, X)
-pnames(model)
-pnames(model.fitm)
+@names model
+@names model.fitm
 @head T = model.fitm.T
 ## Same as:
 transf(model, X)

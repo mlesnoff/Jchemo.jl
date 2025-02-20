@@ -57,7 +57,7 @@ using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -72,8 +72,8 @@ lb = 1e-3
 kern = :krbf ; gamma = 1e-1
 model = krr(; lb, kern, gamma) ;
 fit!(model, Xtrain, ytrain)
-pnames(model)
-pnames(model.fitm)
+@names model
+@names model.fitm
 
 coef(model)
 

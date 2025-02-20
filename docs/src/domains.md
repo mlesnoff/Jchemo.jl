@@ -359,6 +359,15 @@
 
 ## UTILITIES
 
+*Macros*
+- **@head** Display the first rows of a dataset
+- **@mod** Shortcut for function **parentmodule**
+- **@names** Return the names of the sub-objects contained in a object
+- **@pars** Display the keyword arguments (with their default values) of a function
+- **@plist** Display each element of a list
+- **@type** Display the type and size of a dataset
+
+*Others*
 - **aggstat** Compute column-wise statistics by class in a dataset
 - **aggsum** Compute sub-total sums by class of a categorical variable
 - **sumv**, **meanv**, **stdv**, **varv**, **madv**, **iqrv**, **normv** Vector operations 
@@ -369,7 +378,6 @@
 - **colmeanskip**, **colstdskip**, **colsumskip**, 
     **colvarskip** Column-wise operations allowing missing data
 - **convertdf** Convert the columns of a dataframe to given types
-- **default** Display the keyword arguments (with their default values) of a function
 - **dummy** Build dummy table
 - **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
 - **fblockscal_col, _frob, _mfa, _sd** Scale blocks
@@ -379,7 +387,6 @@
 - **frob**, **frob2** Frobenius norm of a matrix
 - **fweight** Weight each row of a matrix
 - **getknn** Find nearest neighbours between rows of matrices
-- **head**, **@head** Display the first rows of a dataset
 - **iqrv** Interval inter-quartiles
 - **krbf, kpol** Build kernel Gram matrices
 - **locw** Working function for local (kNN) models
@@ -392,9 +399,6 @@
 - **nco**, **nro**, Nb. rows and columns of an object
 - **normv** Norm of a vector
 - **parsemiss** Parsing a string vector allowing missing data
-- **plist** Print each element of a list
-- **pnames** Return the names of the elements of an object
-- **psize** Return the type and size of a dataset
 - **pval** Compute p-value(s) for a distribution, an ECDF or vector
 
 - **recod_catbydict**  Recode a categorical variable to dictionnary levels

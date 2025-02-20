@@ -33,7 +33,7 @@ using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "iris.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X[:, 1:4] 
 y = dat.X[:, 5]
 n = nro(X)
@@ -55,7 +55,7 @@ m = nro(zT)
 model = dmnorm()
 fit!(model, zT)
 fitm = model.fitm
-pnames(fitm)
+@names fitm
 fitm.Uinv 
 fitm.detS
 @head pred = predict(model, zT).pred
@@ -64,7 +64,7 @@ fitm.detS
 mu = colmean(zT)
 S = covm(zT, mweight(ones(m))) * m / (m - 1) # corrected cov. matrix
 fitm = dmnorm(mu, S) ; 
-pnames(fitm)
+@names fitm
 fitm.Uinv
 fitm.detS
 

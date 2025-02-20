@@ -64,7 +64,7 @@ using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "ham.jld2") 
 @load db dat
-pnames(dat) 
+@names dat 
 X = dat.X
 group = dat.group
 listbl = [1:11, 12:19, 20:25]
@@ -78,8 +78,8 @@ scal = false
 #scal = true
 model = mbpca(; nlv, bscal, scal)
 fit!(model, Xbl)
-pnames(model) 
-pnames(model.fitm)
+@names model 
+@names model.fitm
 ## Global scores 
 @head model.fitm.T
 @head transf(model, Xbl)
@@ -90,7 +90,7 @@ i = 1
 @head transfbl(model, Xbl)[i]
 
 res = summary(model, Xbl) ;
-pnames(res) 
+@names res 
 res.explvarx
 res.explxbl   # = model.fitm.lb if bscal = :frob
 rowsum(Matrix(res.explxbl))

@@ -33,7 +33,7 @@ using JLD2, CairoMakie, JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -62,7 +62,7 @@ segm = segmkf(ntrain, K; rep)
 model = plskern()
 nlv = 0:30
 rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, nlv) ;
-pnames(rescv)
+@names rescv
 res = rescv.res 
 plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
@@ -230,7 +230,7 @@ using JLD2, CairoMakie, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X
 Y = dat.Y
 tab(Y.typ)

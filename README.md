@@ -65,10 +65,10 @@ julia> ?plskern
 ```
 
 The `kwargs` arguments and their default values are defined in containers depending of the functions, available 
-[**here**](https://github.com/mlesnoff/Jchemo.jl/blob/master/src/_structures_param.jl). For a given function, they can be displayed in the REPL with function `default`, e.g.:
+[**here**](https://github.com/mlesnoff/Jchemo.jl/blob/master/src/_structures_param.jl). For a given function, they can be displayed in the REPL with macro `@pars`, e.g.:
 
 ```julia
-julia> default(plskern)
+julia> @pars plskern
 
 Jchemo.ParPlsr
   nlv: Int64 1
@@ -216,7 +216,7 @@ fit!(model, Xtrain)
 Contents of object `model` can be displayed by:
 
 ``` julia
-julia> pnames(model)
+julia> @names model
 
 (:algo, :fitm, :kwargs)
 ```

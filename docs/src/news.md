@@ -1,5 +1,14 @@
 # News
 
+## *Version 0.8.6*
+
+- News
+    - Functions **@mod**, **@names**, **@pars**, 
+        **@plist**, **@type**.
+
+- Modifications
+    - Code cleaning.  
+
 ## *Version 0.8.5*
 
 - Modifications

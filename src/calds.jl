@@ -25,7 +25,7 @@ using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/caltransfer.jld2")
 @load db dat
-pnames(dat)
+@names dat
 ## Objects X1 and X2 are spectra collected 
 ## on the same samples. 
 ## X2 represents the target space. 

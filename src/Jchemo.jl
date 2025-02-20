@@ -23,7 +23,7 @@ include("_struct_fun.jl")
 include("_model_work.jl")
 include("_pip.jl")
 ## End
-include("default.jl")
+include("defaults.jl")
 
 ######---- Misc
 
@@ -253,8 +253,9 @@ export
     fit!,
     transf!,
     pip,
-    default,
     ######---- Utilities
+    @head, @mod, @names, @pars, @plist, @type,
+    ##
     aggstat, aggsum,
     sumv, meanv, stdv, varv, madv, iqrv, normv, 
     colsum, colmean, colnorm, colstd, colvar, colmed, colmad, 
@@ -275,20 +276,16 @@ export
     frob, frob2, 
     fscale, fscale!,
     wdis, wtal, 
-    head, @head,
     list, 
     matB, matW, 
     mblock,
     mlev,
     mweight, mweightcla,
-    nco,
     nipals,
     nipalsmiss,
-    nro,
+    nro, nco, 
     out,
     parsemiss,
-    plist, 
-    pmod, pnames, psize,
     pval,
     recod_catbyint, recod_numbyint, 
     recovkw,

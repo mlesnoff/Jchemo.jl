@@ -41,7 +41,7 @@ using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 @head dat.X
 X = dat.X[:, 1:4]
 n = nro(X)
@@ -54,7 +54,7 @@ nlv = 3
 kern = :krbf ; gamma = 1e-4
 model = kpca(; nlv, kern, gamma) ;
 fit!(model, Xtrain)
-pnames(model.fitm)
+@names model.fitm
 @head T = model.fitm.T
 T' * T
 model.fitm.V' * model.fitm.V
@@ -62,7 +62,7 @@ model.fitm.V' * model.fitm.V
 @head Ttest = transf(model, Xtest)
 
 res = summary(model) ;
-pnames(res)
+@names res
 res.explvarx
 ```
 """ 

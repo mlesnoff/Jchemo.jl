@@ -13,7 +13,7 @@ y = rand(5)
 
 model = mod_(detrend_pol)  # use the default arguments of 'detrend_pol'
 #model = detrend_pol(X; degree = 2)
-pnames(model)
+@names model
 fit!(model, X)
 Xp = transf(model, X)
 

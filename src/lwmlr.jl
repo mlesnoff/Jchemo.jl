@@ -34,7 +34,7 @@ using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -55,12 +55,12 @@ metric = :eucl
 h = 2 ; k = 100 
 model = lwmlr(; metric, h, k) 
 fit!(model, Ttrain, ytrain)
-pnames(model)
-pnames(model.fitm)
+@names model
+@names model.fitm
 dump(model.fitm.par)
 
 res = predict(model, Ttest) ; 
-pnames(res) 
+@names res 
 res.listnn
 res.listd
 res.listw

@@ -50,7 +50,7 @@ using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -66,8 +66,8 @@ kern = :krbf ; gamma = .1
 cost = 1000 ; epsilon = 1
 model = svmr(; kern, gamma, cost, epsilon) 
 fit!(model, Xtrain, ytrain)
-pnames(model)
-pnames(model.fitm)
+@names model
+@names model.fitm
 
 res = predict(model, Xtest)
 @head res.pred

@@ -52,7 +52,7 @@ using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X
 Y = dat.Y
 n = nro(X) 
@@ -72,14 +72,14 @@ h = 2 ; k = 200
 nlv = 10
 model = lwplsqda(; nlvdis, metric, h, k, nlv, prior = :prop, alpha = .5) 
 fit!(model, Xtrain, ytrain)
-pnames(model)
-pnames(model.fitm)
+@names model
+@names model.fitm
 fitm = model.fitm ;
 fitm.lev
 fitm.ni
 
 res = predict(model, Xtest) ; 
-pnames(res) 
+@names res 
 res.listnn
 res.listd
 res.listw

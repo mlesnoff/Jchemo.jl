@@ -30,7 +30,7 @@ using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 @head dat.X
 X = dat.X[:, 1:4]
 n = nro(X)
@@ -45,8 +45,8 @@ model = pcasvd(; nlv)
 #model = pcaeigenk(; nlv)
 #model = pcanipals(; nlv)
 fit!(model, Xtrain)
-pnames(model)
-pnames(model.fitm)
+@names model
+@names model.fitm
 @head T = model.fitm.T
 ## Same as:
 @head transf(model, X)
@@ -57,7 +57,7 @@ V' * V
 @head Ttest = transf(model, Xtest)
 
 res = summary(model, Xtrain) ;
-pnames(res)
+@names res
 res.explvarx
 res.contr_var
 res.coord_var

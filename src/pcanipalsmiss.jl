@@ -37,8 +37,8 @@ gs = false
 #gs = true
 model = pcanipalsmiss(; nlv, tol, gs, maxit = 500, scal)
 fit!(model, X)
-pnames(model) 
-pnames(model.fitm)
+@names model 
+@names model.fitm
 fitm = model.fitm ;
 fitm.niter
 fitm.sv

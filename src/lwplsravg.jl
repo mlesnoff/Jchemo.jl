@@ -65,7 +65,7 @@ using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -80,11 +80,11 @@ nlvdis = 5 ; metric = :mah
 h = 1 ; k = 200 ; nlv = 4:20
 model = lwplsravg(; nlvdis, metric, h, k, nlv) ;
 fit!(model, Xtrain, ytrain)
-pnames(model)
-pnames(model.fitm)
+@names model
+@names model.fitm
 
 res = predict(model, Xtest) ; 
-pnames(res) 
+@names res 
 res.listnn
 res.listd
 res.listw

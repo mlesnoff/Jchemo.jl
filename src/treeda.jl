@@ -38,7 +38,7 @@ using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X
 Y = dat.Y
 n, p = size(X) 
@@ -57,14 +57,14 @@ n_subfeatures = p / 3
 max_depth = 10
 model = treeda(; n_subfeatures, max_depth) 
 fit!(model, Xtrain, ytrain)
-pnames(model)
-pnames(model.fitm)
+@names model
+@names model.fitm
 fitm = model.fitm ;
 fitm.lev
 fitm.ni
 
 res = predict(model, Xtest) ; 
-pnames(res) 
+@names res 
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
@@ -110,7 +110,7 @@ function predict(object::Treeda, X)
     X = ensure_mat(X)
     m = nro(X)
     ## Tree
-    if pnames(object.fitm)[1] == :node
+    if (@names object.fitm)[1] == :node
         pred = apply_tree(object.fitm, fscale(X, object.xscales))
     ## Forest 
     else

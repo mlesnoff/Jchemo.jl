@@ -23,7 +23,7 @@ using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/asdgap.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X
 wlst = names(dat.X)
 wl = parse.(Float64, wlst)

@@ -36,7 +36,7 @@ using Jchemo, JchemoData, JLD2, DataFrames, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "ozone.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X
 dropmissing!(X) 
 zX = rmcol(Matrix(X), 4) 

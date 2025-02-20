@@ -66,7 +66,7 @@ using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 @head dat.X
 X = dat.X[:, 1:4]
 n = nro(X)
@@ -82,7 +82,7 @@ nvar = 2
 model = spca(; nlv, meth, nvar) ;
 fit!(model, Xtrain) 
 fitm = model.fitm ;
-pnames(fitm)
+@names fitm
 fitm.niter
 fitm.sellv 
 fitm.sel

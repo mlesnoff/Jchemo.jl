@@ -34,7 +34,7 @@ using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "ham.jld2") 
 @load db dat
-pnames(dat) 
+@names dat 
 X = dat.X
 Y = dat.Y
 y = Y.c1
@@ -55,8 +55,8 @@ scal = false
 #scal = true
 model = rosaplsr(; nlv, scal)
 fit!(model, Xbltrain, ytrain)
-pnames(model) 
-pnames(model.fitm)
+@names model 
+@names model.fitm
 @head model.fitm.T
 @head transf(model, Xbltrain)
 transf(model, Xbltest)

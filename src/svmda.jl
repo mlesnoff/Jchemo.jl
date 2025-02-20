@@ -50,7 +50,7 @@ using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X
 Y = dat.Y
 n = nro(X) 
@@ -69,14 +69,14 @@ kern = :krbf ; gamma = 1e4
 cost = 1000 ; epsilon = .5
 model = svmda(; kern, gamma, cost, epsilon) 
 fit!(model, Xtrain, ytrain)
-pnames(model)
-pnames(model.fitm)
+@names model
+@names model.fitm
 fitm = model.fitm ;
 fitm.lev
 fitm.ni
 
 res = predict(model, Xtest) ; 
-pnames(res) 
+@names res 
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt

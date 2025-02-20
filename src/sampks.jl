@@ -33,14 +33,14 @@ using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 
 X = dat.X 
 y = dat.Y.tbc
 
 k = 80
 res = sampks(X, k)
-pnames(res)
+@names res
 res.train 
 res.test
 

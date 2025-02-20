@@ -28,7 +28,7 @@ n = nro(Y)
 k = 3
 res = sampdf(Y, k) 
 #res = sampdf(Y, k, string.(1:n))
-pnames(res)
+@names res
 res.nam
 length(res.test)
 res.train

@@ -21,7 +21,7 @@ using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/caltransfer.jld2")
 @load db dat
-pnames(dat)
+@names dat
 X1cal = dat.X1cal
 X1val = dat.X1val
 X2cal = dat.X2cal

@@ -17,7 +17,7 @@ using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
@@ -31,10 +31,10 @@ ytest = rmrow(y, s)
 nlv = 15
 model = pcr(; nlv) ;
 fit!(model, Xtrain, ytrain)
-pnames(model)
+@names model
 fitm = model.fitm ;
-pnames(fitm)
-pnames(fitm.fitm)
+@names fitm
+@names fitm.fitm
 
 @head fitm.fitm.T
 @head transf(model, X)
@@ -56,7 +56,7 @@ res = predict(model, Xtest; nlv = 1:2)
 @head res.pred[2]
 
 res = summary(model, Xtrain) ;
-pnames(res)
+@names res
 z = res.explvarx
 plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance").f
 ```

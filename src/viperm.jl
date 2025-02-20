@@ -40,7 +40,7 @@ using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "tecator.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X
 Y = dat.Y 
 wl_str = names(X)

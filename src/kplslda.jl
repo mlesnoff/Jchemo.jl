@@ -32,7 +32,7 @@ using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X
 Y = dat.Y
 n = nro(X) 
@@ -54,8 +54,8 @@ model = kplslda(; nlv, gamma)
 #model = kplsqda(; nlv, gamma, alpha = .5) 
 #model = kplskdeda(; nlv, gamma, a = .5) 
 fit!(model, Xtrain, ytrain)
-pnames(model)
-pnames(model.fitm)
+@names model
+@names model.fitm
 fitm = model.fitm ;
 fitm.lev
 fitm.ni
@@ -69,7 +69,7 @@ embfitm = fitm.fitm.embfitm ;
 coef(embfitm)
 
 res = predict(model, Xtest) ;
-pnames(res)
+@names res
 @head res.posterior
 @head res.pred
 errp(res.pred, ytest)

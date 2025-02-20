@@ -47,7 +47,7 @@ using Jchemo, JLD2, CairoMakie, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X
 Y = dat.Y
 tab(Y.typ)
@@ -77,7 +77,7 @@ model = mbplslda(; nlv, bscal, scal)
 #model = mbplsqda(; nlv, bscal, alpha = .5, scal)
 #model = mbplskdeda(; nlv, bscal, scal)
 fit!(model, Xbltrain, ytrain) 
-pnames(model) 
+@names model 
 
 @head transf(model, Xbltrain)
 @head transf(model, Xbltest)

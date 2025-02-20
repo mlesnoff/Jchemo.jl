@@ -1,16 +1,4 @@
-"""
-    default(algo::Function)
-Display the keyword arguments (with their default values) of a function
-* `algo` : The name of the functions.
-
-## Examples
-```julia
-using Jchemo
-
-default(svmr)
-```
-"""
-function default(algo::Function)
+function defaults(algo::Function)
 
     in((detrend_pol,)).(algo) ? dump(Jchemo.ParDetrendPol()) : nothing
     in((detrend_lo,)).(algo) ? dump(Jchemo.ParDetrendLo()) : nothing
@@ -122,4 +110,3 @@ function default(algo::Function)
     in((occstah,)).(algo) ? dump(Jchemo.ParOut()) : nothing
 
 end
-

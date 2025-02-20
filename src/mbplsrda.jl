@@ -48,7 +48,7 @@ using Jchemo, JLD2, CairoMakie, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
-pnames(dat)
+@names dat
 X = dat.X
 Y = dat.Y
 tab(Y.typ)
@@ -76,7 +76,7 @@ bscal = :none
 #bscal = :frob
 model = mbplsrda(; nlv, bscal, scal)
 fit!(model, Xbltrain, ytrain) 
-pnames(model) 
+@names model 
 
 @head model.fitm.fitm.T 
 @head transf(model, Xbltrain)

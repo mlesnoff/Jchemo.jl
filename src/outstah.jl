@@ -38,7 +38,7 @@ V = rand(0:1, p, nlv)
 scal = false
 #scal = true
 res = outstah(X, V; scal) ;
-pnames(res)
+@names res
 res.d    # outlierness 
 plotxy(1:ntot, res.d).f
 ```

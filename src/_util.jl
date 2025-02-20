@@ -132,7 +132,7 @@ using Jchemo
 y = ["d", "a", "b", "c", "b", "c"]
 #y =  rand(1:3, 7)
 res = dummy(y)
-pnames(res)
+@names res
 res.Y
 ```
 """
@@ -265,7 +265,7 @@ function findmiss(X)
 end
 
 """
-    head(X)
+    @head X
 Display the first rows of a dataset.
 
 ## Examples
@@ -273,7 +273,6 @@ Display the first rows of a dataset.
 using Jchemo
 
 X = rand(100, 5)
-head(X)
 @head X
 ```
 """
@@ -292,7 +291,7 @@ function head(X)
 end
 
 macro head(X)
-    esc( :( head($X) ))
+    esc( :( Jchemo.head($X) ))
 end
 
 """
@@ -426,6 +425,30 @@ function mweightcla(Q::DataType, x::AbstractVector; prior::Union{Symbol, Vector}
     mweight(convert.(Q, mweightcla(x; prior).w))
 end
 
+"""
+    @namvar x
+Return the name of a variable.
+* `x` : A variable or function.
+
+Thanks to: 
+https://stackoverflow.com/questions/38986764/save-variable-name-as-string-in-julia
+
+## Examples
+```julia
+using Jchemo
+
+z = 1:5
+Jchemo.@namvar z
+```
+"""
+macro namvar(arg)
+    x = string(arg)
+    quote
+        $x
+    end
+end
+
+
 """ 
     nco(X)
 Return the nb. columns of `X`.
@@ -480,41 +503,6 @@ function parsemiss(Q, x::Vector{Union{String, Missing}})
         ismissing(x[i]) ? nothing : v[i] = parse(Q, x[i])
     end
     v
-end
-
-""" 
-    plist(x)
-Print each element of a list.
-"""
-function plist(x)
-    nam = pnames(x)
-    for i in eachindex(nam)
-        println("--- ", nam[i])        
-        println("")
-        println(x[i])
-        println("")
-    end
-end
-
-""" 
-    pmod(foo)
-Shortcut for function `parentmodule`.
-"""
-pmod(foo) = parentmodule(foo)
-
-""" 
-    pnames(x)
-Return the names of the elements of `x`.
-"""
-pnames(x) = propertynames(x)
-
-""" 
-    psize(x)
-Print the type and size of `x`.
-"""
-function  psize(x)
-    println(typeof(x))
-    println(size(x))
 end
 
 """
@@ -946,7 +934,7 @@ n = 50
 X = rand(n, 3) 
 y = rand(1:3, n)
 res = summ(X)
-pnames(res)
+@names res
 summ(X[:, 2]).res
 
 summ(X, y)
@@ -1143,8 +1131,8 @@ end
     vcol(X::AbstractMatrix, j)
     vcol(X::DataFrame, j)
     vcol(x::Vector, j)
-View of the j-th column(s) of a matrix `X`,
-or of the j-th element(s) of vector `x`.
+View of the j-th column(s) of a matrix `X`, or of the j-th element(s) 
+    of vector `x`.
 """ 
 vcol(X, j) = view(X, :, j)
 vcol(x::Vector, i) = view(x, i)
@@ -1154,36 +1142,85 @@ vcol(X::DataFrame, j) = view(Matrix(X), :, j)
     vrow(X::AbstractMatrix, i)
     vrow(X::DataFrame, i)
     vrow(x::Vector, i)
-View of the i-th row(s) of a matrix `X`,
-or of the i-th element(s) of vector `x`.
+View of the i-th row(s) of a matrix `X`, or of the i-th element(s) 
+    of vector `x`.
 """ 
 vrow(X, i) = view(X, i, :) 
 vrow(X::DataFrame, i) = view(Matrix(X), i, :)
 vrow(x::Vector, i) = view(x, i)
 
-##################### MACROS 
+########### Macros 
+
+""" 
+    @mod fun
+Shortcut for function `parentmodule`.
+* `fun` : The name of a function.
+
+## Examples
+```julia
+@mod rand
+```
+"""
+macro mod(fun)
+    esc( :( parentmodule($fun) ))
+end
+
+""" 
+    @names x
+Return the names of the sub-objects contained in a object.
+* `x`: An object.
+Shortcut for function `propertynames`.
+"""
+macro names(x)
+    esc( :( propertynames($x) ))
+end
 
 """
-    @namvar(x)
-Return the name of a variable.
-* `x` : A variable or function.
-
-Thanks to: 
-https://stackoverflow.com/questions/38986764/save-variable-name-as-string-in-julia
+    @pars fun
+Display the keyword arguments (with their default values) of a function
+* `fun` : The name of a function.
 
 ## Examples
 ```julia
 using Jchemo
 
-z = 1:5
-Jchemo.@namvar(z)
+@pars krr
 ```
 """
-macro namvar(arg)
-    x = string(arg)
-    quote
-        $x
+macro pars(fun)
+    esc( :( Jchemo.defaults($fun) ))
+end
+
+""" 
+    @plist x
+Display each element of a named list.
+* `x` : A list.
+"""
+macro plist(x)
+    esc( :( Jchemo.plist($x) ))
+end
+
+function plist(x)
+    nam = propertynames(x)
+    for i in eachindex(nam)
+        println("--- ", nam[i])        
+        println("")
+        println(x[i])
+        println("")
     end
 end
 
+""" 
+    @type x
+Display the type and size of a dataset.
+* `x` : A dataset.
+"""
+macro type(x)
+    esc( :( Jchemo.ptype($x) ))
+end
+
+function  ptype(x)
+    println(typeof(x))
+    println(size(x))
+end
 
