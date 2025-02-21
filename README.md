@@ -22,7 +22,7 @@ Suppose training data `(X, Y)` and predictions expected from new data `Xnew` usi
     * `algo` (the learning algorithm) 
     * `fitm` (the fitted model, empty at this stage) 
     * and `kwargs` (the specified keyword arguments)
-2) Function `fit!` fits the model on the data, which fills sub-object `fitm` above.
+2) Function `fit!` fits the model to the data, which fills sub-object `fitm` above.
 3) Function `predict` runs the predictions.   
 
 ```julia
@@ -39,7 +39,7 @@ We can check the contents of object `model`
 (:algo, :fitm, :kwargs)
 ```
 
-Another possible syntax to build object `model` is 
+An alternative syntax for building object `model` is 
 
 ```julia
 nlv = 15 ; scal = true
@@ -64,8 +64,7 @@ Other sample workflows are given at the [end](https://github.com/mlesnoff/Jchemo
 
 Some models, such as PLSR models, are both a transform operator and a predictor.
 
-Ad'hoc **pipelines** of operations can also be built. 
-In **Jchemo**, a pipeline is a **chain of *K* modeling steps** containing
+Ad'hoc **pipelines** of operations can also be built. In Jchemo, a pipeline is a **chain of *K* modeling steps** containing
 - either ***K* transform steps**,
 - or ***K* - 1 transform steps** and **a final prediction step**. 
 
@@ -107,7 +106,7 @@ Two **grid-search** functions are available to tune the predictors
 - [`gridscore`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridscore-NTuple{5,%20Any}) (test-set validation)
 - [`gridcv`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridcv-Tuple{Any,%20Any,%20Any}) (cross-validation). 
 
-The syntax is generic for all the functions (see the respective help pages above for sample workflows). These tuning tools have been specically accelerated for models based on latent variables and ridge regularization.
+The syntax is generic for all the functions (see the respective help pages above for sample workflows). These tuning tools have been specifically accelerated for models based on latent variables and ridge regularization.
 
 # <span style="color:green">  **Benchmark**  </span>
 
@@ -147,7 +146,6 @@ zY = Float32.(Y)
 
 ```julia
 ## Float64
-## (NB.: multi-threading is not used in plskern) 
 model = plskern(; nlv)
 @benchmark fit!($model, $X, $Y)
 
@@ -157,7 +155,7 @@ BenchmarkTools.Trial: 1 sample with 1 evaluation.
 ```
 
 ```julia
-# Float32 
+## Float32 
 @benchmark fit!($model, $zX, $zY) 
 
 BenchmarkTools.Trial: 2 samples with 1 evaluation.
@@ -170,6 +168,8 @@ BenchmarkTools.Trial: 2 samples with 1 evaluation.
   3.96 s         Histogram: frequency by time         4.15 s <
 
  Memory estimate: 2.05 GiB, allocs estimate: 2677.
+
+## (NB.: multi-threading is not used in plskern) 
 ```
 
 # <span style="color:green"> **Installation** </span> 
@@ -185,7 +185,7 @@ pkg> add Jchemo
 or for a **specific version**, for instance 
 
 ```julia
-pkg> add Jchemo@0.1.18
+pkg> add Jchemo@0.8.5
 ```
 
 * For the **current developing version** (potentially not stable)
