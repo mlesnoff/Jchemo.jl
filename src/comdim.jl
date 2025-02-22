@@ -32,8 +32,8 @@ The function returns several objects, in particular:
 Function `summary` returns: 
 * `explvarx` : Proportion of the total X inertia (squared Frobenious norm) 
     explained by the global LVs.
-* `explvarxx` : Proportion of the total XX' inertia explained by each global 
-    score (= indicator "V" in Qannari et al. 2000, Hanafi et al. 2008).
+* `explvarxx` : Proportion of the total XX' inertia explained by the global 
+    LVs (= indicator "V" in Qannari et al. 2000, Hanafi et al. 2008).
 * `explxbl` : Proportion of the inertia of each block (= Xbl[k]) explained by the global LVs.
 * `psal2` : Proportion of the squared saliences of each block within each global score. 
 * `contrxbl2t` : Contribution of each block to the global LVs (= lb proportions). 
