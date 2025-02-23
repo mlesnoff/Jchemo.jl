@@ -39,7 +39,7 @@ We can check the contents of object `model`
 (:algo, :fitm, :kwargs)
 ```
 
-An alternative syntax for building object `model` is 
+An alternative syntax for the keyword arguments is 
 
 ```julia
 nlv = 15 ; scal = true
