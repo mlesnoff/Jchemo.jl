@@ -213,7 +213,7 @@ Ytest = rand(m, q)
 
 ### **Transform operations**
 
-#### **a) Example of a signal preprocessing**
+#### **a) Example of signal preprocessing**
 
 Consider a signal preprocessing with the Savitsky-Golay filter, using function `savgol`
 
@@ -236,7 +236,7 @@ Xptest = transf(model, Xtest)
 
 Several preprocessing can be applied sequentially to the data by building a [pipeline](https://github.com/mlesnoff/Jchemo.jl/tree/master?tab=readme-ov-file#fitting-a-pipeline).
 
-#### **b) Example of a PCA**
+#### **b) Example of PCA**
 
 Consider a principal component analysis, using SVD and function `pcasvd` 
 
@@ -263,7 +263,7 @@ fit!(model, Xtrain, ytrain)
 
 ### **Prediction models**
 
-#### **a) Example of a KPLSR**
+#### **a) Example of KPLSR**
 
 Consider a (Gaussian) kernel partial least squares regression (KPLSR), using function `kplsr` 
 
