@@ -47,7 +47,7 @@ function plotsp(X, wl = 1:nco(X); size = (500, 300), color = nothing, nsamp = no
         kwargs...) 
     X = ensure_mat(X)
     if !isnothing(nsamp)
-        X = X[sample(1:nro(X), nsamp; replace = false), :]
+        X = X[StatsBase.sample(1:nro(X), nsamp; replace = false), :]
     end
     ## For not using function Size
     ## (conflict with argiment size of Makie)

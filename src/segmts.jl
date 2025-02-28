@@ -54,9 +54,9 @@ function segmts(n::Int, m::Int; rep = 1, seed = nothing)
     for i = 1:rep
         s[i] = list(Q, 1)
         if isnothing(seed)
-            s[i][1] = sample(1:n, m; replace = false, ordered = true)
+            s[i][1] = StatsBase.sample(1:n, m; replace = false, ordered = true)
         else
-            s[i][1] = sample(MersenneTwister(Int(seed[i])), 1:n, m; replace = false, ordered = true)
+            s[i][1] = StatsBase.sample(MersenneTwister(Int(seed[i])), 1:n, m; replace = false, ordered = true)
         end
     end
     s
@@ -72,9 +72,9 @@ function segmts(group::Vector, m::Int; rep = 1, seed = nothing)
     @inbounds for i = 1:rep
         s[i] = list(Q, 1)
         if isnothing(seed)
-            s[i][1] = sample(1:nlev, m; replace = false, ordered = true)
+            s[i][1] = StatsBase.sample(1:nlev, m; replace = false, ordered = true)
         else
-            s[i][1] = sample(MersenneTwister(Int(seed[i])), 1:nlev, m; replace = false, ordered = true)
+            s[i][1] = StatsBase.sample(MersenneTwister(Int(seed[i])), 1:nlev, m; replace = false, ordered = true)
         end
     end
     zs = copy(s)

@@ -23,7 +23,7 @@ samprand(n, 4)
 """ 
 function samprand(n::Int, k::Int; replace = false)
     zn = collect(1:n)
-    s = sample(zn, k; replace = replace)
+    s = StatsBase.sample(zn, k; replace = replace)
     sort!(s)
     train = zn[setdiff(1:end, s)]
     (train = train, test = s)

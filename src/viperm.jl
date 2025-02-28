@@ -114,7 +114,7 @@ function viperm(model, X, Y; rep = 50, psamp = .3, score = rmsep)
         @inbounds for j = 1:p
             zXval .= copy(Xval)
             ## Permutation variable j
-            zs = sample(1:nval, nval, replace = false)
+            zs = StatsBase.sample(1:nval, nval, replace = false)
             ## End  
             zXval[:, j] .= zXval[zs, j]
             pred .= predict(model, zXval).pred

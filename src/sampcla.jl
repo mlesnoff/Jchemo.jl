@@ -52,7 +52,7 @@ function sampcla(x, k::Union{Int, Vector{Int}}, y = nothing)
         k[i] = min(k[i], ni[i])
         zs = findall(x .== lev[i])
         if isnothing(y)
-            s[i] = sample(zs, k[i]; replace = false)
+            s[i] = StatsBase.sample(zs, k[i]; replace = false)
         else
             y = vec(y)
             u = sampsys(y[zs], k[i]).test
