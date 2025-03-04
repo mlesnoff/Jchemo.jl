@@ -14,18 +14,16 @@ Keyword arguments:
 
 Weights are computed by: 
 * exp(-`d` / (`h` * MAD(`d`)))
-or are set to 0 for extreme (potentially outlier) distances such 
-as `d` > Median(`d`) + criw * MAD(`d`). This is an adaptation of the weight 
-function presented in Kim et al. 2011.
+or are set to 0 for extreme (potentially outlier) distances such as `d` > Median(`d`) + criw * MAD(`d`). 
+Finally, weights are standardized to their maximal value. This is an adaptation of the weight function 
+presented in Kim et al. 2011.
 
-The weights decrease when distances increase. Lower is h, sharper 
-is the decreasing function.
+The weights decrease when distances increase. Lower is h, sharper is the decreasing function.
 
 ## References 
 
-Kim S, Kano M, Nakagawa H, Hasebe S. Estimation of active 
-pharmaceutical ingredients content using locally weighted partial 
-least squares and statistical wavelength selection. Int J Pharm. 2011;
+Kim S, Kano M, Nakagawa H, Hasebe S. Estimation of active pharmaceutical ingredients content using locally 
+weighted partial least squares and statistical wavelength selection. Int J Pharm. 2011;
 421(2):269-274. https://doi.org/10.1016/j.ijpharm.2011.10.007
 
 ## Examples
