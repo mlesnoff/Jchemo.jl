@@ -13,14 +13,12 @@ Keyword arguments:
     `winvs` can also be specified here).
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Boolean. If `true`, each column of the global `X` 
-    is scaled by its uncorrected standard deviation before 
-    the distance and weight computations.
+* `scal` : Boolean. If `true`, each column of the global `X` is scaled by its uncorrected standard 
+    deviation before the distance and weight computations.
 
-This function has the same principle as function 
-`knnr` except that a discrimination replaces the regression. 
-A weighted vote is done over the neighborhood, and the prediction 
-corresponds to the most frequent class.
+This function has the same principle as function `knnr` except that a discrimination replaces the 
+regression. A weighted vote is done over the neighborhood, and the prediction corresponds to the most 
+frequent class.
  
 ## Examples
 ```julia

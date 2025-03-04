@@ -13,9 +13,8 @@ Keyword arguments:
     `winvs` can also be specified here).
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Boolean. If `true`, each column of the global `X` 
-    is scaled by its uncorrected standard deviation before 
-    the distance and weight computations.
+* `scal` : Boolean. If `true`, each column of the global `X` is scaled by its uncorrected standard 
+    deviation before the distance and weight computations.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
 This is the same principle as function `lwmlr` except 

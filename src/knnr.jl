@@ -13,12 +13,10 @@ Keyword arguments:
     `winvs` can also be specified here).
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Boolean. If `true`, each column of the global `X` 
-    is scaled by its uncorrected standard deviation before 
-    the distance and weight computations.
+* `scal` : Boolean. If `true`, each column of the global `X` is scaled by its uncorrected standard 
+    deviation before the distance and weight computations.
 
-The general principle of this function is as follows (many other 
-variants of kNNR pipelines can be built):
+The general principle of this function is as follows (many other variants of kNNR pipelines can be built):
 a) For each new observation to predict, the prediction is the 
     weighted mean of `y` over a selected neighborhood (in `X`) of 
     size `k`. 
@@ -26,9 +24,8 @@ b) Within the selected neighborhood, the weights  are defined from
     the dissimilarities between the new observation and the neighborhood, 
     and are computed from function 'winvs'.
     
-In general, for X-data with high dimensions, using the 
-Mahalanobis distance requires a preliminary dimensionality 
-reduction (see examples).
+In general, for X-data with high dimensions, using the Mahalanobis distance requires a preliminary 
+dimensionality reduction (see examples).
 
 ## Examples
 ```julia
