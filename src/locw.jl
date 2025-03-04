@@ -9,8 +9,7 @@ Keyword arguments:
 * `listw` : List (vector) of m vectors of weights.
 * `algo` : Function computing the model on 
     the m neighborhoods.
-* `verbose` : Boolean. If `true`, predicting information
-    are printed.
+* `verbose` : Boolean. If `true`, predicting information are printed.
 * `kwargs` : Keywords arguments to pass in function `algo`.
     Each argument must have length = 1 (not be a collection).
 

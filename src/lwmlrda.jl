@@ -5,23 +5,18 @@ k-Nearest-Neighbours locally weighted MLR-based discrimination (kNN-LWMLR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 Keyword arguments:
-* `metric` : Type of dissimilarity used to select the 
-    neighbors and to compute the weights. Possible values 
-    are: `:eucl` (Euclidean distance), `:mah` (Mahalanobis 
-    distance).
-* `h` : A scalar defining the shape of the weight 
-    function computed by function `winvs`. Lower is h, 
-    sharper is the function. See function `winvs` for 
-    details (keyword arguments `criw` and `squared` of 
+* `metric` : Type of dissimilarity used to select the neighbors and to compute the weights 
+    (see function `getknn`). Possible values are: `:eucl` (Euclidean), `:mah` (Mahalanobis), 
+    `:sam` (spectral angular distance), `:cor` (correlation distance).
+* `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
+    sharper is the function. See function `winvs` for details (keyword arguments `criw` and `squared` of 
     `winvs` can also be specified here).
-* `k` : The number of nearest neighbors to select for 
-    each observation to predict.
+* `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
 * `scal` : Boolean. If `true`, each column of the global `X` 
     is scaled by its uncorrected standard deviation before 
     the distance and weight computations.
-* `verbose` : Boolean. If `true`, predicting information
-    are printed.
+* `verbose` : Boolean. If `true`, predicting information are printed.
 
 This is the same principle as function `lwmlr` except 
 that MLR-DA models, instead of MLR models, are fitted 
