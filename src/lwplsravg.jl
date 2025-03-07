@@ -52,7 +52,6 @@ and feed from spectral near infrared data, Chemometrics and
 Intelligent Laboratory Systems. 244 (2023) 105031. 
 https://doi.org/10.1016/j.chemolab.2023.105031.
 
-
 ## Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
