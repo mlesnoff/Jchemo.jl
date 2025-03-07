@@ -845,6 +845,33 @@ function rmcol(X::Vector, s::Union{Vector, BitVector, UnitRange, Number})
     X[setdiff(1:end, Int.(s))]
 end
 
+
+"""
+    rmduplid(id)
+Remove the indexes of duplicated IDs.
+* `id` : A vector of IDs.
+
+## Examples
+```julia
+using Jchemo
+
+id = ["a", "b", "c", "a", "d", "d", "a"]
+
+rmduplid(id)
+```
+"""
+function rmduplid(id)
+    n = length(id)
+    res = tabdupl(id)
+    idd = res.keys
+    s = list(Int, 0) 
+    for i in eachindex(idd)
+        zs = findall(id .== idd[i])
+        append!(s, zs[2:end])
+    end
+    rmrow(collect(1:n), s)
+end
+
 """
     rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, UnitRange, Number})
     rmrow(X::Union{Vector, BitVector}, s::Union{Vector, BitVector, UnitRange, Number})

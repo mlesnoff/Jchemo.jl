@@ -2,6 +2,9 @@
 
 ## *Version 0.8.7*
 
+- News
+    - Function **rmduplid**: Remove the indexes of duplicated IDs.
+
 - Modifications
     - Code cleaning.  
 
