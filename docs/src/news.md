@@ -3,7 +3,7 @@
 ## *Version 0.8.7*
 
 - News
-    - Function **rmduplid**: Remove the indexes of duplicated IDs.
+    - Function **iduniq**: Select indexes to remove duplicates in a vector of IDs.
 
 - Modifications
     - Code cleaning.  

@@ -847,20 +847,21 @@ end
 
 
 """
-    rmduplid(id)
-Remove the indexes of duplicated IDs.
+    iduniq(id)
+Select indexes to remove duplicates in a vector of IDs.
 * `id` : A vector of IDs.
 
 ## Examples
 ```julia
 using Jchemo
 
-id = ["a", "b", "c", "a", "d", "d", "a"]
+id = ["a", "d", "c", "b", "a", "d", "a"]
 
-rmduplid(id)
+s = iduniq(id)
+id[s]  # unique IDs
 ```
 """
-function rmduplid(id)
+function iduniq(id)
     n = length(id)
     res = tabdupl(id)
     idd = res.keys

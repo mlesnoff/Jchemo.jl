@@ -303,7 +303,7 @@
 
 ### Checking
 
-- **rmduplid** Remove the indexes of duplicated IDs
+- **iduniq** Select indexes to remove duplicates in a vector of IDs
 - **dupl** Find replicated rows in a dataset
 - **tabdupl** Tabulate duplicated values in a vector
 - **findmiss** Find rows with missing data in a dataset
