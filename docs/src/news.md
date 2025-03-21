@@ -4,6 +4,7 @@
 
 - News
     - Function **iduniq**: Select indexes to remove duplicates in a vector of IDs.
+    - Function **rrmsep**: Compute the relative RMSEP.
 
 - Modifications
     - Code cleaning.  

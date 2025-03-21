@@ -283,6 +283,7 @@
 - **ssr** SSR
 - **msep** MSEP
 - **rmsep**, **rmsepstand** RMSEP
+- **rrmsep** Relative RMSEP
 - **sep** SEP
 - **bias** Bias
 - **cor2** Squared correlation coefficient
