@@ -265,6 +265,35 @@ function findmiss(X)
 end
 
 """
+    finduniq(id)
+Find the indexes making unique the IDs in a ID vector.
+* `id` : A vector of IDs.
+
+Can be used to remove duplicated rows in a dataset, identified by a single ID variable.
+
+## Examples
+```julia
+using Jchemo
+
+v = ["a", "d", "c", "b", "a", "d", "a"]  # a vector of IDs
+
+s = finduniq(v)  # indexes of the IDs without duplicates
+v[s]  
+```
+"""
+function finduniq(id)
+    n = length(id)
+    res = tabdupl(id)
+    idd = res.keys
+    s = list(Int, 0) 
+    for i in eachindex(idd)
+        zs = findall(id .== idd[i])
+        append!(s, zs[2:end])
+    end
+    rmrow(collect(1:n), s)
+end
+
+"""
     @head X
 Display the first rows of a dataset.
 
@@ -843,34 +872,6 @@ end
 function rmcol(X::Vector, s::Union{Vector, BitVector, UnitRange, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
     X[setdiff(1:end, Int.(s))]
-end
-
-
-"""
-    finduniq(id)
-Select indexes to make unique the IDs in a ID vector.
-* `id` : A vector of IDs.
-
-## Examples
-```julia
-using Jchemo
-
-id = ["a", "d", "c", "b", "a", "d", "a"]
-
-s = finduniq(id)
-id[s]  # unique IDs
-```
-"""
-function finduniq(id)
-    n = length(id)
-    res = tabdupl(id)
-    idd = res.keys
-    s = list(Int, 0) 
-    for i in eachindex(idd)
-        zs = findall(id .== idd[i])
-        append!(s, zs[2:end])
-    end
-    rmrow(collect(1:n), s)
 end
 
 """
