@@ -847,8 +847,8 @@ end
 
 
 """
-    iduniq(id)
-Select indexes to remove duplicates in a vector of IDs.
+    finduniq(id)
+Select indexes to make unique the IDs in a ID vector.
 * `id` : A vector of IDs.
 
 ## Examples
@@ -857,11 +857,11 @@ using Jchemo
 
 id = ["a", "d", "c", "b", "a", "d", "a"]
 
-s = iduniq(id)
+s = finduniq(id)
 id[s]  # unique IDs
 ```
 """
-function iduniq(id)
+function finduniq(id)
     n = length(id)
     res = tabdupl(id)
     idd = res.keys

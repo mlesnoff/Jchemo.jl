@@ -3,7 +3,7 @@
 ## *Version 0.8.7*
 
 - News
-    - Function **iduniq**: Select indexes to remove duplicates in a vector of IDs.
+    - Function **finduniq**: Select indexes to make unique the IDs in a ID vector.
     - Function **rrmsep**: Compute the relative RMSEP.
 
 - Modifications

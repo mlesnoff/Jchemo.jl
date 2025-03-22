@@ -304,7 +304,7 @@
 
 ### Checking
 
-- **iduniq** Select indexes to remove duplicates in a vector of IDs
+- **finduniq** Select indexes to make unique the IDs in a ID vector
 - **dupl** Find replicated rows in a dataset
 - **tabdupl** Tabulate duplicated values in a vector
 - **findmiss** Find rows with missing data in a dataset

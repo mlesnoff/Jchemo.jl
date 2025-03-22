@@ -293,7 +293,7 @@ export
     recod_catbydict, 
     recod_miss, 
     rmcol, rmrow, 
-    iduniq,
+    finduniq,
     rowmean, rownorm, rowstd, rowsum, rowvar,
     rowmeanskip, rowstdskip, rowsumskip, rowvarskip,
     simpphub, simppsph,   
