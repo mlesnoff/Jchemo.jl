@@ -38,11 +38,11 @@ aggstat(df; vary = [:v1, :v2], vargroup = [:gr1, :gr2], algo = var)
 function aggstat(X, y; algo = mean)
     X = ensure_mat(X)
     y = vec(y)
-    q = nco(X)
+    p = nco(X)
     lev = mlev(y)
     nlev = length(lev)
-    zX = similar(X, nlev, q)
-    @inbounds for i in 1:nlev, j = 1:q
+    zX = similar(X, nlev, p)
+    @inbounds for i in 1:nlev, j = 1:p
         s = y .== lev[i]
         zX[i, j] = algo(view(X, s, j))
     end
