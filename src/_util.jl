@@ -38,12 +38,13 @@ aggstat(df; vary = [:v1, :v2], vargroup = [:gr1, :gr2], algo = var)
 function aggstat(X, y; algo = mean)
     X = ensure_mat(X)
     y = vec(y)
-    p = nco(X)
+    n, p = size(X)
     lev = mlev(y)
     nlev = length(lev)
     zX = similar(X, nlev, p)
-    @inbounds for i in 1:nlev, j = 1:p
-        s = y .== lev[i]
+    s = BitVector(list(Bool, n))
+    @inbounds for i in eachindex(lev), j = 1:p
+        s .= y .== lev[i]
         zX[i, j] = algo(view(X, s, j))
     end
     (X = zX, lev)
