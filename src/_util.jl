@@ -1,3 +1,17 @@
+function aggmean(X, y) 
+    X = ensure_mat(X)
+    y = vec(y)
+    p = nco(X)
+    lev = mlev(y)
+    nlev = length(lev)
+    zX = similar(X, nlev, p)
+    @inbounds for i in eachindex(lev)
+    #Threads.@threads for i in eachindex(lev)
+        zX[i, :] .= colmean(vrow(X, y .== lev[i]))
+    end
+    (X = zX, lev)
+end
+
 """
     aggstat(X, y; algo = mean)
     aggstat(X::DataFrame; vary, vargroup, algo = mean)
