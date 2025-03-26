@@ -378,6 +378,7 @@
 - **@type** Display the type and size of a dataset
 
 *Others*
+- **aggmean** Compute column-wise means by class in a dataset
 - **aggstat** Compute column-wise statistics by class in a dataset
 - **aggsumv** Compute sub-total sums by class of a categorical variable
 - **sumv**, **meanv**, **stdv**, **varv**, **madv**, **iqrv**, **normv** Vector operations 
