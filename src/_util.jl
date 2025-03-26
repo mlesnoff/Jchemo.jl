@@ -4,6 +4,8 @@ Compute column-wise mean by class in a dataset.
 * `X` : Data (n, p).
 * `y` : A categorical variable (n) (class membership).
 
+Faster than `aggstat`. 
+
 ## Examples
 ```julia
 using Jchemo
