@@ -68,7 +68,7 @@ fitm = model.fitm ;
 fitm.lev
 fitm.ni
 @names fitm.fitm
-aggsum(fitm.fitm.weights.w, ytrain)
+aggsumv(fitm.fitm.weights.w, ytrain)
 
 @head fitm.fitm.T
 @head transf(model, Xtrain)

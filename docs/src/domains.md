@@ -379,7 +379,7 @@
 
 *Others*
 - **aggstat** Compute column-wise statistics by class in a dataset
-- **aggsum** Compute sub-total sums by class of a categorical variable
+- **aggsumv** Compute sub-total sums by class of a categorical variable
 - **sumv**, **meanv**, **stdv**, **varv**, **madv**, **iqrv**, **normv** Vector operations 
 - **covv**, **covm**, **corv**, **corm** Weighted covariances and correlations 
 - **cosv**, **cosm** Cosinus 

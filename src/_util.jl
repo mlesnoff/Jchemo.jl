@@ -46,8 +46,6 @@ Specific for dataframes:
 
 Variables defined in `vary` and `vargroup` must be columns of `X`.
 
-Return a matrix or, if only argument `X::DataFrame` is used, a dataframe.
-
 ## Examples
 ```julia
 using Jchemo, DataFrames, Statistics
@@ -57,6 +55,8 @@ X = rand(n, p)
 df = DataFrame(X, :auto)
 y = rand(1:3, n)
 res = aggstat(X, y; algo = sum)
+@names res
+res.lev 
 res.X
 aggstat(df, y; algo = sum).X
 
@@ -66,7 +66,7 @@ df = DataFrame(X, string.("v", 1:p))
 df.gr1 = rand(1:2, n)
 df.gr2 = rand(["a", "b", "c"], n)
 df
-aggstat(df; vary = [:v1, :v2], vargroup = [:gr1, :gr2], algo = var)
+aggstat(df; vary = [:v1, :v2], vargroup = [:gr1, :gr2], algo = var)  # return a dataframe 
 ```
 """ 
 function aggstat(X, y; algo = mean)
@@ -91,7 +91,7 @@ function aggstat(X::DataFrame; vary, vargroup, algo = mean)
 end
 
 """ 
-    aggsum(x::Vector, y::Union{Vector, BitVector})
+    aggsumv(x::Vector, y::Union{Vector, BitVector})
 Compute sub-total sums by class of a categorical variable.
 * `x` : A quantitative variable to sum (n) 
 * `y` : A categorical variable (n) (class membership).
@@ -104,10 +104,10 @@ using Jchemo
 
 x = rand(1000)
 y = vcat(rand(["a" ; "c"], 900), repeat(["b"], 100))
-aggsum(x, y)
+aggsumv(x, y)
 ```
 """
-function aggsum(x::Vector, y::Union{Vector, BitVector})
+function aggsumv(x::Vector, y::Union{Vector, BitVector})
     lev = mlev(y)
     v = similar(x, length(lev)) 
     @inbounds for i in eachindex(lev) 

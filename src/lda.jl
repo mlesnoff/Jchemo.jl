@@ -50,7 +50,7 @@ fit!(model, Xtrain, ytrain)
 fitm = model.fitm ;
 fitm.lev
 fitm.ni
-aggsum(fitm.weights.w, ytrain)
+aggsumv(fitm.weights.w, ytrain)
 
 res = predict(model, Xtest) ;
 @names res

@@ -68,7 +68,7 @@ fit!(model, Xtrain, ytrain)
 fitm = model.fitm ;
 lev = fitm.lev
 nlev = length(lev)
-aggsum(fitm.weights.w, ytrain)
+aggsumv(fitm.weights.w, ytrain)
 
 @head fitm.T 
 @head transf(model, Xtrain)

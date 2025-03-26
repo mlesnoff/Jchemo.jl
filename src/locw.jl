@@ -27,7 +27,7 @@ function locw(Xtrain, Ytrain, X; listnn, listw = nothing, algo, verbose = false,
         s = listnn[i]
         length(s) == 1 ? s = (s:s) : nothing
         zXtrain = vrow(Xtrain, s)
-        zYtrain = Ytrain[s, :]   # vrow makes pb in aggsum (e.g. lda) when Ytrain is a vector
+        zYtrain = Ytrain[s, :]   # vrow makes pb in aggsumv (e.g. lda) when Ytrain is a vector
         ## For discrimination, 
         ## case where all the neighbors have the same class
         if q == 1 && length(unique(zYtrain)) == 1
