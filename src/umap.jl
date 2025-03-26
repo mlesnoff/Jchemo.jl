@@ -105,8 +105,8 @@ scatter!(ax, T[:, i], T[:, i + 1], T[:, i + 2]; markersize = 8,
     color = ztyp, colormap = colm) 
 scatter!(ax, Ttest[:, i], Ttest[:, i + 1], Ttest[:, i + 2], color = :black, 
     markersize = 10)  
-elt = [MarkerElement(color = colm[i], marker = '●', markersize = 10) for i in 1:nlev]
-#elt = [PolyElement(polycolor = colm[i]) for i in 1:nlev]
+elt = [MarkerElement(color = colm[i], marker = '●', markersize = 10) for i in eachindex(lev)]
+#elt = [PolyElement(polycolor = colm[i]) for i in eachindex(lev)]
 title = "Group"
 Legend(f[1, 2], elt, lev, title; nbanks = 1, rowgap = 10, framevisible = false)
 f

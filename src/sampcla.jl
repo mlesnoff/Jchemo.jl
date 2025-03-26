@@ -48,7 +48,7 @@ function sampcla(x, k::Union{Int, Vector{Int}}, y = nothing)
     nlev = length(lev)
     length(k) == 1 ? k = repeat([k], nlev) : nothing
     s = list(Vector{Int}, nlev)
-    @inbounds for i in 1:nlev
+    @inbounds for i in eachindex(lev)
         k[i] = min(k[i], ni[i])
         zs = findall(x .== lev[i])
         if isnothing(y)

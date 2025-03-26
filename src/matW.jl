@@ -92,7 +92,7 @@ matW = function(X, y, weights::Weight)
     ## End
     Wi = list(Matrix, nlev)
     W = zeros(eltype(X), p, p)
-    @inbounds for i in 1:nlev 
+    @inbounds for i in eachindex(lev) 
         if ni[i] == 1
             Wi[i] = Wi_1obs
         else

@@ -161,7 +161,7 @@ function plotxy(x, y, group; size = (600, 350), color = nothing, ellipse::Bool =
     end
     f[1, 1] = ax
     if leg
-        f[1, 2] = Legend(f, ax, leg_title, framevisible = false)
+        f[1, 2] = Legend(f, ax, leg_title; framevisible = false)
     end
     (f = f, ax = ax, lev = lev)
 end
