@@ -3,6 +3,7 @@
 ## *Version 0.8.7*
 
 - News
+    - Function **aggmean**: Compute column-wise means by class in a dataset.
     - Function **finduniq**: Find the indexes making unique the IDs in a ID vector.
     - Function **rrmsep**: Compute the relative RMSEP.
 
