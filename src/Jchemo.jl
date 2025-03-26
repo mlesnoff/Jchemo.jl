@@ -256,7 +256,7 @@ export
     ######---- Utilities
     @head, @mod, @names, @pars, @plist, @type,
     ##
-    aggstat, aggsum,
+    aggstat, aggsum, aggmean, 
     sumv, meanv, stdv, varv, madv, iqrv, normv, 
     colsum, colmean, colnorm, colstd, colvar, colmed, colmad, 
     colsumskip, colmeanskip, colstdskip, colvarskip,
