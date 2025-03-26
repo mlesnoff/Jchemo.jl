@@ -96,8 +96,6 @@ Compute sub-total sums by class of a categorical variable.
 * `x` : A quantitative variable to sum (n) 
 * `y` : A categorical variable (n) (class membership).
 
-Return a vector.
-
 ## Examples
 ```julia
 using Jchemo
