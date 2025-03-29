@@ -107,6 +107,6 @@ function defaults(algo::Function)
 
     in((outeucl, outstah,)).(algo) ? dump(Jchemo.ParOut()) : nothing
     in((occsd, occod, occsdod)).(algo) ? dump(Jchemo.ParOcc()) : nothing
-    in((occstah,)).(algo) ? dump(Jchemo.ParOut()) : nothing
+    in((occstah,)).(algo) ? dump(Jchemo.ParOccstah()) : nothing
 
 end
