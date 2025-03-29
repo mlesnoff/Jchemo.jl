@@ -4,7 +4,7 @@
 One-class classification using the Stahel-Donoho outlierness.
 * `X` : Training X-data (n, p).
 Keyword arguments:
-* `nlv` : Nb. dimensions on which `X` is projected. 
+* `nlv` : Nb. random directions on which `X` is projected. 
 * `mcut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
     See Thereafter.
 * `cri` : When `mcut` = `:mad`, a constant. See thereafter.
@@ -69,10 +69,11 @@ fit!(model, zXtrain)
 Ttrain = model.fitm.T
 Ttest = transf(model, zXtest)
 ## Outlierness
-model_occ = occstah(; nlv, scal = true)
+model_occ = occstah(; scal = true)
 fit!(model_occ, Ttrain) 
 @names model_occ 
 @names model_occ.fitm 
+@head model_occ.fitm.V  # random directions 
 @head d = model_occ.fitm.d
 d = d.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index", 
