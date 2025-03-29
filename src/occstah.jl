@@ -64,30 +64,30 @@ plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", xlabel = string("PC", i
 ## Preliminary dimension reduction 
 ## (Not required but often more efficient)
 nlv = 50
-model0 = pcasvd(; nlv)
-fit!(model0, zXtrain)
-Ttrain = model0.fitm.T
-Ttest = transf(model0, zXtest)
+model = pcasvd(; nlv)
+fit!(model, zXtrain)
+Ttrain = model.fitm.T
+Ttest = transf(model, zXtest)
 ## Outlierness
-model = occstah(; nlv, scal = true)
-fit!(model, Ttrain) 
-@names model 
-@names model.fitm 
-@head d = model.fitm.d
+model_occ = occstah(; nlv, scal = true)
+fit!(model_occ, Ttrain) 
+@names model_occ 
+@names model_occ.fitm 
+@head d = model_occ.fitm.d
 d = d.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index", 
     ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 
-res = predict(model, Ttest) ;
+res = predict(model_occ, Ttest) ;
 @names res
 @head res.d
 @head res.pred
 tab(res.pred)
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
-d1 = model.fitm.d.dstand
+d1 = model_occ.fitm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
 f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", 

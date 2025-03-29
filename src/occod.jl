@@ -78,31 +78,31 @@ plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", xlabel = string("PC", i
 
 #### Occ
 ## Preliminary PCA fitted model
-model0 = pcasvd(nlv = 10) 
-fit!(model0, zXtrain)
+model = pcasvd(nlv = 10) 
+fit!(model, zXtrain)
 ## Outlierness
-model = occod()
-#model = occod(mcut = :mad, cri = 4)
-#model = occod(mcut = :q, risk = .01)
-#model = occsdod()
-fit!(model, model0.fitm, zXtrain) 
-@names model 
-@names model.fitm 
-@head d = model.fitm.d
+model_occ = occod()
+#model_occ = occod(mcut = :mad, cri = 4)
+#model_occ = occod(mcut = :q, risk = .01)
+#model_occ = occsdod()
+fit!(model_occ, model.fitm, zXtrain) 
+@names model_occ 
+@names model_occ.fitm 
+@head d = model_occ.fitm.d
 d = d.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), 
     xlabel = "Obs. index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 
-res = predict(model, zXtest) ;
+res = predict(model_occ, zXtest) ;
 @names res
 @head res.d
 @head res.pred
 tab(res.pred)
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
-d1 = model.fitm.d.dstand
+d1 = model_occ.fitm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
 f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", 
