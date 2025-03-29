@@ -61,16 +61,8 @@ plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", xlabel = string("PC", i
     ylabel = string("PC", i + 1)).f
 
 #### Occ
-## Preliminary dimension reduction 
-## (Not required but often more efficient)
-nlv = 50
-model = pcasvd(; nlv)
-fit!(model, zXtrain)
-Ttrain = model.fitm.T
-Ttest = transf(model, zXtest)
-## Outlierness
-model_occ = occstah(; scal = true)
-fit!(model_occ, Ttrain) 
+model_occ = occstah(; nlv = 5000, scal = true)
+fit!(model_occ, zXtrain) 
 @names model_occ 
 @names model_occ.fitm 
 @head model_occ.fitm.V  # random directions 
@@ -81,7 +73,7 @@ f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index",
 hlines!(ax, 1; linestyle = :dot)
 f
 
-res = predict(model_occ, Ttest) ;
+res = predict(model_occ, zXtest) ;
 @names res
 @head res.d
 @head res.pred

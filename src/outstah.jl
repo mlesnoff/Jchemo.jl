@@ -9,13 +9,14 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD 
     before computing the outlierness.
 
-See Maronna and Yohai 1995 for details on the outlierness 
-measure. 
+See Maronna and Yohai 1995 for details on the outlierness measure. 
 
 A projection-pursuit approach is used: given a projection matrix `V` (p, nlv) 
 (in general built randomly), the observations (rows of `X`) are projected on 
 the `nlv` directions and the Stahel-Donoho outlierness is computed for each observation 
 from these projections.
+
+Warning: `V` should not contain colums proportional to `ones(p)`.
 
 ## References
 Maronna, R.A., Yohai, V.J., 1995. The Behavior of the 
@@ -60,7 +61,7 @@ function outstah!(X::Matrix, V::Matrix; kwargs...)
     #T = X * fscale(V, colnorm(V))
     T = X * V  
     mu = colmed(T)
-    s = colmad(T)
+    s = colmad(T)  
     fcscale!(T, mu, s)
     T .= abs.(T)
     d = similar(T, n)
