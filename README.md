@@ -372,7 +372,7 @@ contact: **matthieu.lesnoff@cirad.fr**
 
 ### **How to cite**
 
-Lesnoff, M. 2021. Jchemo: Chemometrics and machine learning on high-dimensional data with Julia. https://github.com/mlesnoff/Jchemo. 
+Lesnoff, M. 2021. Jchemo: Chemometrics and machine learning on high-dimensional data with Julia. https://github.com/mlesnoff/Jchemo.jl. 
 UMR SELMET, Univ Montpellier, CIRAD, INRA, Institut Agro, Montpellier, France
 
 ###  **Acknowledgments**
