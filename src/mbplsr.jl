@@ -42,8 +42,8 @@ group = dat.group
 listbl = [1:11, 12:19, 20:25]
 s = 1:6
 Xbltrain = mblock(X[s, :], listbl)
-Xbltest = mblock(rmrow(X, s), listbl)
 ytrain = y[s]
+Xbltest = mblock(rmrow(X, s), listbl)
 ytest = rmrow(y, s) 
 ntrain = nro(ytrain) 
 ntest = nro(ytest) 
@@ -52,9 +52,7 @@ ntot = ntrain + ntest
 
 nlv = 3
 bscal = :frob
-scal = false
-#scal = true
-model = mbplsr(; nlv, bscal, scal)
+model = mbplsr(; nlv, bscal)
 fit!(model, Xbltrain, ytrain)
 @names model 
 @names model.fitm
@@ -73,6 +71,17 @@ res.rvxbl2t
 res.rdxbl2t
 res.cortbl2t
 res.corx2t 
+
+## This MBPLSR can also be implemented with function pip
+
+model1 = blockscal(; bscal, centr = true) ;
+model2 = mbconcat()
+model3 = plskern(; nlv, scal = false) ;
+model = pip(model1, model2, model3)
+fit!(model, Xbltrain, ytrain)
+@head T =  model.model[3].fitm.T  # = transf(model, Xbltrain)
+transf(model, Xbltest)
+predict(model, Xbltest).pred 
 ```
 """
 mbplsr(; kwargs...) = JchemoModel(mbplsr, nothing, kwargs)
