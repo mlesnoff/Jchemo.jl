@@ -120,7 +120,7 @@ function umap(X; kwargs...)
     Q = eltype(X)
     n, p = size(X)
     if par.psamp < 1
-        ns = Int(round(par.psamp * n))
+        ns = round(Int, par.psamp * n)
         res = nipals(fcenter(X, colmean(X)); maxit = 50)
         s = sampsys(res.u, ns).test
         X = vrow(X, s)

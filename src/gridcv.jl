@@ -55,7 +55,7 @@ ntot = ntrain + ntest
 K = 3 ; rep = 10
 segm = segmkf(ntrain, K; rep)
 ## Replicated test-set validation
-#m = Int(round(ntrain / 3)) ; rep = 30
+#m = round(Int, ntrain / 3) ; rep = 30
 #segm = segmts(ntrain, m; rep)
 
 ####-- Plsr
@@ -248,7 +248,7 @@ ntot = ntrain + ntest
 K = 3 ; rep = 10
 segm = segmkf(ntrain, K; rep)
 ## Replicated test-set validation
-#m = Int(round(ntrain / 3)) ; rep = 30
+#m = round(Int, ntrain / 3) ; rep = 30
 #segm = segmts(ntrain, m; rep)
 
 ####-- Plslda
@@ -267,6 +267,25 @@ fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show errp(pred, ytest)
 conf(pred, ytest).pct
+
+## Computation of the confusion matrix for the best model, within CV
+matpred = Vector{Matrix{String}}(undef, rep * K)
+k = 1
+for i = 1:rep
+    listsegm = segm[i]
+    for j = 1:K
+        s = listsegm[j]
+        model = plsrda(nlv = res.nlv[u], scal = res.scal[u])
+        fit!(model, rmrow(Xtrain, s), rmrow(ytrain, s))
+        pred = predict(model, Xtrain[s, :]).pred
+        matpred[k] = hcat(pred, ytrain[s])
+        k = k + 1
+    end
+end
+respred = reduce(vcat, matpred)
+conf(respred[:, 1], respred[:, 2]).pct
+
+
 ```
 """
 function gridcv(model, X, Y; segm, score, pars = nothing, nlv = nothing, lb = nothing, 

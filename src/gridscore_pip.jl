@@ -45,7 +45,7 @@ ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
 ## Building Cal and Val 
 ## within Train
-nval = Int(round(.3 * ntrain))
+nval = round(Int, .3 * ntrain)
 s = samprand(ntrain, nval)
 Xcal = Xtrain[s.train, :]
 ycal = ytrain[s.train]

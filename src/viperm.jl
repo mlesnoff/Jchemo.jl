@@ -93,7 +93,7 @@ function viperm(model, X, Y; rep = 50, psamp = .3, score = rmsep)
     Y = ensure_mat(Y) 
     n, p = size(X)
     q = nco(Y)
-    nval = Int(round(psamp * n))
+    nval = round(Int, psamp * n)
     ncal = n - nval
     Xcal = similar(X, ncal, p)
     Ycal = similar(X, ncal, q)

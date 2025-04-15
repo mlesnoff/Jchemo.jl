@@ -49,7 +49,7 @@ ntest = nro(Xtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
 ## Train ==> Cal + Val 
-nval = Int(round(.3 * ntrain))
+nval = round(Int, .3 * ntrain)
 s = samprand(ntrain, nval)
 Xcal = Xtrain[s.train, :]
 ycal = ytrain[s.train]
@@ -232,7 +232,7 @@ ntest = nro(Xtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
 ## Train ==> Cal + Val 
-nval = Int(round(.3 * ntrain))
+nval = round(Int, .3 * ntrain)
 s = samprand(ntrain, nval)
 Xcal = Xtrain[s.train, :]
 ycal = ytrain[s.train]

@@ -88,7 +88,7 @@ function isel!(model, X, Y, wl = 1:nco(X); rep = 1, nint = 5, psamp = .3, score 
     int = [z[1:nint] z[2:(nint + 1)] .- 1]
     int = hcat(int, round.(rowmean(int)))
     int = Int.(int)
-    nval = Int(round(psamp * n))
+    nval = round(Int, psamp * n)
     ncal = n - nval
     Xcal = similar(X, ncal, p)
     Ycal = similar(X, ncal, q)
