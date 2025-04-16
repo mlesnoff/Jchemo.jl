@@ -71,13 +71,13 @@ vip(fitm).imp
 vip(fitm, Ydummy).imp
 ```
 """ 
-function vip(object::Union{Plsr, Pcr, Splsr, Spcr}; nlv = nothing)
-    if isa(object, Jchemo.Plsr)  || isa(object, Jchemo.Splsr)
+function vip(object::Union{Plsr, Pcr, Mbplsr, Splsr, Spcr}; nlv = nothing)
+    if isa(object, Plsr)  || isa(object, Splsr)
         W = object.W
         T = object.T
         a = nco(object.T)
         sqrtw = sqrt.(object.weights.w)
-    elseif isa(object, Jchemo.Pcr) || isa(object, Jchemo.Spcr)
+    elseif isa(object, Mbplsr) || isa(object, Pcr) || isa(object, Spcr)
         W = object.fitm.V
         T = object.fitm.T
         a = nco(object.fitm.T)
@@ -104,13 +104,13 @@ function vip(object::Union{Plsr, Pcr, Splsr, Spcr}; nlv = nothing)
     (imp = imp, W2, sst)
 end
 
-function vip(object::Union{Plsr, Pcr, Splsr, Spcr}, Y; nlv = nothing)
-    if isa(object, Jchemo.Plsr)
+function vip(object::Union{Plsr, Splsr, Mbplsr, Pcr, Spcr}, Y; nlv = nothing)
+    if isa(object, Plsr)
         W = object.W
         T = object.T
         a = nco(object.T)
         weights = object.weights
-    elseif isa(object, Jchemo.Pcr) || isa(object, Jchemo.Spcr)
+    elseif isa(object, Mbplsr) || isa(object, Pcr) || isa(object, Spcr)
         W = object.fitm.V
         T = object.fitm.T
         a = nco(object.fitm.T)

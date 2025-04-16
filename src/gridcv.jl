@@ -254,28 +254,27 @@ segm = segmkf(ntrain, K; rep)
 ####-- Plslda
 model = plslda()
 nlv = 1:30
-prior = [:unif; :prop]
-pars = mpar(prior = prior)
+pars = mpar(scal = [false; true])
 rescv = gridcv(model, Xtrain, ytrain; segm, score = errp, pars, nlv)
 res = rescv.res
-typ = res.prior
+typ = res.scal
 plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "ERR").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model = plslda(nlv = res.nlv[u], prior = res.prior[u])
+model = plslda(nlv = res.nlv[u], scal = res.scal[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show errp(pred, ytest)
 conf(pred, ytest).pct
 
-## Computation of the confusion matrix for the best model, within CV
+## Computation of the confusion matrix within CV, for the best model 
 matpred = Vector{Matrix{String}}(undef, rep * K)
 k = 1
 for i = 1:rep
     listsegm = segm[i]
     for j = 1:K
         s = listsegm[j]
-        model = plsrda(nlv = res.nlv[u], scal = res.scal[u])
+        model = plslda(nlv = res.nlv[u], scal = res.scal[u])
         fit!(model, rmrow(Xtrain, s), rmrow(ytrain, s))
         pred = predict(model, Xtrain[s, :]).pred
         matpred[k] = hcat(pred, ytrain[s])
@@ -284,8 +283,6 @@ for i = 1:rep
 end
 respred = reduce(vcat, matpred)
 conf(respred[:, 1], respred[:, 2]).pct
-
-
 ```
 """
 function gridcv(model, X, Y; segm, score, pars = nothing, nlv = nothing, lb = nothing, 
