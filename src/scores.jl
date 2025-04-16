@@ -18,12 +18,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, Ytrain)
 pred = predict(model, Xtest).pred
 residreg(pred, Ytest)
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 residreg(pred, ytest)
@@ -48,12 +48,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, Ytrain)
 pred = predict(model, Xtest).pred
 ssr(pred, Ytest)
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 ssr(pred, ytest)
@@ -81,12 +81,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, Ytrain)
 pred = predict(model, Xtest).pred
 msep(pred, Ytest)
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 msep(pred, ytest)
@@ -115,12 +115,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, Ytrain)
 pred = predict(model, Xtest).pred
 rmsep(pred, Ytest)
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 rmsep(pred, ytest)
@@ -149,12 +149,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, Ytrain)
 pred = predict(model, Xtest).pred
 rmsepstand(pred, Ytest)
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 rmsepstand(pred, ytest)
@@ -200,6 +200,39 @@ function rrmsep(pred, Y)
 end
 
 """
+    mae(pred, Y)
+Compute the median absolute error (MAE).
+* `pred` : Predictions.
+* `Y` : Observed data.
+
+## Examples
+```julia
+using Jchemo 
+
+Xtrain = rand(10, 5) 
+Ytrain = rand(10, 2)
+ytrain = Ytrain[:, 1]
+Xtest = rand(4, 5) 
+Ytest = rand(4, 2)
+ytest = Ytest[:, 1]
+
+model = plskern(nlv = 2)
+fit!(model, Xtrain, Ytrain)
+pred = predict(model, Xtest).pred
+mae(pred, Ytest)
+
+model = plskern(nlv = 2)
+fit!(model, Xtrain, ytrain)
+pred = predict(model, Xtest).pred
+mae(pred, ytest)
+```
+"""
+function mae(pred, Y)
+    r = residreg(pred, Y)
+    reshape(colmed(abs.(r)), 1, :)
+end
+
+"""
     sep(pred, Y)
 Compute the corrected SEP ("SEP_c"), i.e. the standard deviation of 
     the prediction errors.
@@ -226,12 +259,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, Ytrain)
 pred = predict(model, Xtest).pred
 sep(pred, Ytest)
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 sep(pred, ytest)
@@ -289,12 +322,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, Ytrain)
 pred = predict(model, Xtest).pred
 cor2(pred, Ytest)
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 cor2(pred, ytest)
@@ -333,12 +366,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, Ytrain)
 pred = predict(model, Xtest).pred
 r2(pred, Ytest)
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 r2(pred, ytest)
@@ -377,12 +410,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, Ytrain)
 pred = predict(model, Xtest).pred
 rpd(pred, Ytest)
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 rpd(pred, ytest)
@@ -410,12 +443,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, Ytrain)
 pred = predict(model, Xtest).pred
 rpdr(pred, Ytest)
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 rpdr(pred, ytest)
@@ -447,12 +480,12 @@ Xtest = rand(4, 5)
 Ytest = rand(4, 2)
 ytest = Ytest[:, 1]
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, Ytrain)
 pred = predict(model, Xtest).pred
 mse(pred, Ytest)
 
-model = plskern(nkv = 2)
+model = plskern(nlv = 2)
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 mse(pred, ytest)
