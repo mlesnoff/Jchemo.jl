@@ -5,13 +5,10 @@
 Regularized discriminant analysis (RDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `prior` : Type of prior probabilities for class 
-    membership. Possible values are: `:unif` (uniform), 
-    `:prop` (proportional), or a vector (of length equal to 
-    the number of classes) giving the prior weight for each class 
+* `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
+    `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum
     between QDA (`alpha = 0`) and LDA (`alpha = 1`).

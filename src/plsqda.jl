@@ -5,15 +5,12 @@
 QDA on PLS latent variables (PLS-QDA) with continuum.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
     Must be >= 1.
-* `prior` : Type of prior probabilities for class 
-    membership. Possible values are: `:unif` (uniform), 
-    `:prop` (proportional), or a vector (of length equal to 
-    the number of classes) giving the prior weight for each class 
+* `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
+    `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum
     between QDA (`alpha = 0`) and LDA (`alpha = 1`).
@@ -35,11 +32,10 @@ QDA on PLS latent variables. The method is as follows:
     corresponding to the dummy variable for which the probability 
     estimate is the highest.
 
-In the high-level version of the present functions, the observation 
-weights are automatically defined by the given priors (argument `prior`): 
-the sub-totals by class of the observation weights are set equal to the prior 
-probabilities. The low-level version (argument `weights`) allows to implement 
-other choices.
+The low-level method (i.e. having argument `weights`) of the function allows to set any vector of observation weights 
+to be used in the intermediate computations. In the high-level methods (no argument `weights`), they are automatically 
+computed from the argument `prior` value: for each class, the total of the observation weights is set equal to 
+the prior probability corresponding to the class.
 
 See function `plslda` for examples.
 """ 

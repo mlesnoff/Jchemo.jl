@@ -6,20 +6,16 @@
 Linear discriminant analysis (LDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `prior` : Type of prior probabilities for class 
-    membership. Possible values are: `:unif` (uniform), 
-    `:prop` (proportional), or a vector (of length equal to 
-    the number of classes) giving the prior weight for each class 
+* `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
+    `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 
-In the high-level version of the present functions, the observation 
-weights are automatically defined by the given priors (argument `prior`): 
-the sub-totals by class of the observation weights are set equal to the prior 
-probabilities. The low-level version (argument `weights`) allows to implement 
-other choices.
+The low-level method (i.e. having argument `weights`) of the function allows to set any vector of observation weights 
+to be used in the intermediate computations. In the high-level methods (no argument `weights`), they are automatically 
+computed from the argument `prior` value: for each class, the total of the observation weights is set equal to 
+the prior probability corresponding to the class.
 
 ## Examples
 ```julia
@@ -81,11 +77,10 @@ function lda(X, y, weights::Weight; kwargs...)
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate
-    ## Priors
-    if isequal(par.prior, :unif)
-        priors = ones(Q, nlev) / nlev
-    elseif isequal(par.prior, :prop)
+    if isequal(par.prior, :prop)
         priors = convert.(Q, mweight(ni).w)
+    elseif isequal(par.prior, :unif)
+        priors = ones(Q, nlev) / nlev
     else
         priors = mweight(par.prior).w
     end
@@ -117,7 +112,7 @@ function predict(object::Union{Lda, Qda}, X)
     end
     A = object.priors' .* dens
     v = sum(A, dims = 2)
-    posterior = fscale(A', v)'                    # Could be replaced by similar as in fscale! 
+    posterior = fscale(A', v)'                    # could be replaced by similar as in fscale! 
     z =  mapslices(argmax, posterior; dims = 2)   # if equal, argmax takes the first
     pred = reshape(recod_indbylev(z, lev), m, 1)
     (pred = pred, dens, posterior)

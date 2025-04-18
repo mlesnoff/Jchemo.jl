@@ -6,10 +6,8 @@ Discriminant analysis using non-parametric kernel Gaussian
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 Keyword arguments:
-* `prior` : Type of prior probabilities for class 
-    membership. Possible values are: `:unif` (uniform), 
-    `:prop` (proportional), or a vector (of length equal to 
-    the number of classes) giving the prior weight for each class 
+* `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
+    `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * Keyword arguments of function `dmkern` (bandwidth 
     definition) can also be specified here.
@@ -72,11 +70,10 @@ function kdeda(X, y; kwargs...)
     lev = mlev(y)
     nlev = length(lev)
     ni = tab(y).vals
-    ## Priors
-    if isequal(par.prior, :unif)
-        priors = ones(Q, nlev) / nlev
-    elseif isequal(par.prior, :prop)
+    if isequal(par.prior, :prop)
         priors = convert.(Q, mweight(ni).w)
+    elseif isequal(par.prior, :unif)
+        priors = ones(Q, nlev) / nlev
     else
         priors = mweight(par.prior).w
     end
