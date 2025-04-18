@@ -25,8 +25,7 @@ Keyword arguments:
     for the weighted PLSR.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
-This is the same principle as function `lwplsr` except 
-that PLSR-DA models, instead of PLSR models, are fitted 
+This is the same principle as function `lwplsr` except that PLSR-DA models, instead of PLSR models, are fitted 
 on the neighborhoods.
 
 ## Examples
