@@ -130,7 +130,7 @@ end
 Base.@kwdef mutable struct ParFda
     nlv::Int = 1     
     lb::Float64 = 1e-6 
-    prior::Union{Symbol, Vector{Float64}} = :unif                  
+    prior::Union{Symbol, Vector{Float64}} = :prop                  
     scal::Bool = false 
 end 
 
@@ -364,16 +364,16 @@ Base.@kwdef mutable struct ParDmkern
 end 
 
 Base.@kwdef mutable struct ParLda
-    prior::Union{Symbol, Vector{Float64}} = :unif                     
+    prior::Union{Symbol, Vector{Float64}} = :prop                     
 end 
 
 Base.@kwdef mutable struct ParQda
-    prior::Union{Symbol, Vector{Float64}} = :unif
+    prior::Union{Symbol, Vector{Float64}} = :prop
     alpha::Float64 = 0.                      
 end 
 
 Base.@kwdef mutable struct ParRda
-    prior::Union{Symbol, Vector{Float64}} = :unif
+    prior::Union{Symbol, Vector{Float64}} = :prop
     alpha::Float64 = 0.
     lb::Float64 = 1e-6
     simpl::Bool = false 
@@ -381,7 +381,7 @@ Base.@kwdef mutable struct ParRda
 end 
 
 Base.@kwdef mutable struct ParKdeda
-    prior::Union{Symbol, Vector{Float64}} = :unif
+    prior::Union{Symbol, Vector{Float64}} = :prop
     h::Union{Nothing, Float64, Vector{Float64}} = nothing  
     a::Float64 = 1. 
 end 
@@ -389,27 +389,27 @@ end
 ##
 
 Base.@kwdef mutable struct ParMlrda
-    prior::Union{Symbol, Vector{Float64}} = :unif                     
+    prior::Union{Symbol, Vector{Float64}} = :prop                     
 end 
 
 ##
 
 Base.@kwdef mutable struct ParPlsda    # plsrda, plslda
     nlv::Int = 1
-    prior::Union{Symbol, Vector{Float64}} = :unif   
+    prior::Union{Symbol, Vector{Float64}} = :prop   
     scal::Bool = false                    
 end 
 
 Base.@kwdef mutable struct ParPlsqda
     nlv::Int = 1
-    prior::Union{Symbol, Vector{Float64}} = :unif
+    prior::Union{Symbol, Vector{Float64}} = :prop
     alpha::Float64 = 0. 
     scal::Bool = false                 
 end 
 
 Base.@kwdef mutable struct ParPlskdeda
     nlv::Int = 1
-    prior::Union{Symbol, Vector{Float64}} = :unif
+    prior::Union{Symbol, Vector{Float64}} = :prop
     h::Union{Nothing, Float64, Vector{Float64}} = nothing  
     a::Float64 = 1. 
     scal::Bool = false 
@@ -417,7 +417,7 @@ end
 
 Base.@kwdef mutable struct ParRrda
     lb::Float64 = 1e-6
-    prior::Union{Symbol, Vector{Float64}} = :unif   
+    prior::Union{Symbol, Vector{Float64}} = :prop   
     scal::Bool = false                    
 end 
 
@@ -425,7 +425,7 @@ Base.@kwdef mutable struct ParSplsda    # splsrda, splslda
     nlv::Int = 1
     meth::Symbol = :soft 
     nvar::Union{Int, Vector{Int}} = 1  
-    prior::Union{Symbol, Vector{Float64}} = :unif   
+    prior::Union{Symbol, Vector{Float64}} = :prop   
     tol::Float64 = sqrt(eps(1.))  
     maxit::Int = 200   
     scal::Bool = false                    
@@ -435,7 +435,7 @@ Base.@kwdef mutable struct ParSplsqda
     nlv::Int = 1
     meth::Symbol = :soft 
     nvar::Union{Int, Vector{Int}} = 1  
-    prior::Union{Symbol, Vector{Float64}} = :unif
+    prior::Union{Symbol, Vector{Float64}} = :prop
     alpha::Float64 = 0.   
     tol::Float64 = sqrt(eps(1.))  
     maxit::Int = 200    
@@ -446,7 +446,7 @@ Base.@kwdef mutable struct ParSplskdeda
     nlv::Int = 1
     meth::Symbol = :soft 
     nvar::Union{Int, Vector{Int}} = 1  
-    prior::Union{Symbol, Vector{Float64}} = :unif
+    prior::Union{Symbol, Vector{Float64}} = :prop
     h::Union{Nothing, Float64, Vector{Float64}} = nothing  
     a::Float64 = 1. 
     tol::Float64 = sqrt(eps(1.))  
@@ -460,7 +460,7 @@ Base.@kwdef mutable struct ParKplsda    # kplsrda, kplslda
     gamma::Float64 = 1.  
     coef0::Float64 = 0.
     degree::Int = 1      
-    prior::Union{Symbol, Vector{Float64}} = :unif   
+    prior::Union{Symbol, Vector{Float64}} = :prop   
     scal::Bool = false                    
 end 
 
@@ -470,7 +470,7 @@ Base.@kwdef mutable struct ParKplsqda
     gamma::Float64 = 1.  
     coef0::Float64 = 0.
     degree::Int = 1 
-    prior::Union{Symbol, Vector{Float64}} = :unif
+    prior::Union{Symbol, Vector{Float64}} = :prop
     alpha::Float64 = 0.    
     scal::Bool = false                    
 end 
@@ -481,7 +481,7 @@ Base.@kwdef mutable struct ParKplskdeda
     gamma::Float64 = 1.  
     coef0::Float64 = 0.
     degree::Int = 1 
-    prior::Union{Symbol, Vector{Float64}} = :unif
+    prior::Union{Symbol, Vector{Float64}} = :prop
     h::Union{Nothing, Float64, Vector{Float64}} = nothing  
     a::Float64 = 1. 
     scal::Bool = false 
@@ -493,7 +493,7 @@ Base.@kwdef mutable struct ParKrrda
     gamma::Float64 = 1.  
     coef0::Float64 = 0.
     degree::Int = 1      
-    prior::Union{Symbol, Vector{Float64}} = :unif   
+    prior::Union{Symbol, Vector{Float64}} = :prop   
     scal::Bool = false                    
 end 
 
@@ -508,7 +508,7 @@ Base.@kwdef mutable struct ParLwplsda    # lwplsrda, lwplslda
     squared::Bool = false                   
     tolw::Float64 = 1e-4                    
     nlv::Int = 1 
-    prior::Union{Symbol, Vector{Float64}} = :unif       
+    prior::Union{Symbol, Vector{Float64}} = :prop       
     scal::Bool = false 
     verbose::Bool = false                   
 end 
@@ -522,7 +522,7 @@ Base.@kwdef mutable struct ParLwplsqda
     squared::Bool = false                   
     tolw::Float64 = 1e-4                    
     nlv::Int = 1 
-    prior::Union{Symbol, Vector{Float64}} = :unif
+    prior::Union{Symbol, Vector{Float64}} = :prop
     alpha::Float64 = 0.        
     scal::Bool = false 
     verbose::Bool = false                   
@@ -533,14 +533,14 @@ end
 Base.@kwdef mutable struct ParMbplsda  # mbplsrda, mbplslda
     nlv::Int = 1
     bscal::Symbol = :none   
-    prior::Union{Symbol, Vector{Float64}} = :unif   
+    prior::Union{Symbol, Vector{Float64}} = :prop   
     scal::Bool = false                    
 end 
 
 Base.@kwdef mutable struct ParMbplsqda  
     nlv::Int = 1
     bscal::Symbol = :none   
-    prior::Union{Symbol, Vector{Float64}} = :unif 
+    prior::Union{Symbol, Vector{Float64}} = :prop 
     alpha::Float64 = 0.   
     scal::Bool = false                    
 end 
@@ -548,7 +548,7 @@ end
 Base.@kwdef mutable struct ParMbplskdeda  
     nlv::Int = 1
     bscal::Symbol = :none   
-    prior::Union{Symbol, Vector{Float64}} = :unif 
+    prior::Union{Symbol, Vector{Float64}} = :prop 
     h::Union{Nothing, Float64, Vector{Float64}} = nothing  
     a::Float64 = 1.  
     scal::Bool = false                    
