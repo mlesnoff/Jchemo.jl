@@ -80,8 +80,7 @@ lb = 1e-8
 model = rda(; alpha, lb)
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
-fitm = model.fitm ;
+@names fitm = model.fitm
 fitm.lev
 fitm.ni
 

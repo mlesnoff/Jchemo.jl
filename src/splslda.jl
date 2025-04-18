@@ -54,8 +54,7 @@ model = splslda(; nlv, meth, nvar)
 #model = splskdeda(; nlv, meth, nvar, a = .9) 
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
-fitm = model.fitm ;
+@names fitm = model.fitm
 fitm.lev
 fitm.ni
 

@@ -68,6 +68,7 @@ fit!(model, Xtrain, ytrain)
 fitm = model.fitm ;
 lev = fitm.lev
 nlev = length(lev)
+fitm.priors
 aggsumv(fitm.weights.w, ytrain)
 
 @head fitm.T 

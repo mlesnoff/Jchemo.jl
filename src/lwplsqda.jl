@@ -64,8 +64,7 @@ nlv = 10
 model = lwplsqda(; nlvdis, metric, h, k, nlv, prior = :prop, alpha = .5) 
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
-fitm = model.fitm ;
+@names fitm = model.fitm
 fitm.lev
 fitm.ni
 

@@ -45,10 +45,10 @@ tab(ytest)
 model = lda()
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
-fitm = model.fitm ;
+@names fitm = model.fitm
 fitm.lev
 fitm.ni
+fitm.priors
 aggsumv(fitm.weights.w, ytrain)
 
 res = predict(model, Xtest) ;

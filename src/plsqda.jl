@@ -18,11 +18,10 @@ Keyword arguments:
     and Ydummy is scaled by its uncorrected standard deviation
     in the PLS computation.
 
-QDA on PLS latent variables. The method is as follows:
+QDA on PLS latent variables. The approach is as follows:
 
-1) The training variable `y` (univariate class membership) is 
-    transformed to a dummy table (Ydummy) containing nlev columns, 
-    where nlev is the number of classes present in `y`. Each column of 
+1) The training variable `y` (univariate class membership) is transformed to a dummy table (Ydummy) 
+    containing nlev columns, where nlev is the number of classes present in `y`. Each column of 
     Ydummy is a dummy (0/1) variable. 
 2) A multivariate PLSR (PLSR2) is run on {`X`, Ydummy}, returning 
     a score matrix `T`.

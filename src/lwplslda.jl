@@ -56,8 +56,7 @@ nlv = 10
 model = lwplslda(; nlvdis, metric, h, k, nlv, prior = :prop) 
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
-fitm = model.fitm ;
+@names fitm = model.fitm
 fitm.lev
 fitm.ni
 

@@ -47,8 +47,7 @@ model = plskdeda(; nlv)
 #model = plskdeda(; nlv, a = .5)
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
-fitm = model.fitm ;
+@names fitm = model.fitm
 fitm.lev
 fitm.ni
 

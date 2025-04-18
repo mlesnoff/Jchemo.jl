@@ -21,14 +21,12 @@ the prior probability corresponding to the class.
 **Note:** For highly unbalanced classes, it may be recommended to set 'prior = :unif' when using the function
 (and to use a score such as `merrp` instead of `errp` when evaluating the perfomance).
 
-For the continuum approach, a value `alpha` > 0 shrinks the class-covariances 
-by class (Wi) toward a common LDA covariance ("within" W). This corresponds to 
-the "first regularization (Eqs.16)" described in Friedman 1989 (where `alpha` 
-is referred to as "lambda").
+For the continuum approach, a value `alpha` > 0 shrinks the class-covariances (Wi) toward a common LDA 
+covariance ('within-W'). This corresponds to the 'first regularization (Eqs.16)' approach described in 
+Friedman 1989 (in which the present parameter `alpha` is referred to as 'lambda').
 
 ## References
-Friedman JH. Regularized Discriminant Analysis. Journal 
-of the American Statistical Association. 1989; 
+Friedman JH. Regularized Discriminant Analysis. Journal of the American Statistical Association. 1989; 
 84(405):165-175. doi:10.1080/01621459.1989.10478752.
 
 ## Examples
@@ -56,10 +54,10 @@ tab(ytest)
 model = qda()
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
-fitm = model.fitm ;
+@names fitm = model.fitm
 fitm.lev
 fitm.ni
+fitm.priors
 aggsumv(fitm.weights.w, ytrain)
 
 res = predict(model, Xtest) ;

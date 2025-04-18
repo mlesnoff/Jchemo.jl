@@ -12,8 +12,8 @@ Keyword arguments:
 * Keyword arguments of function `dmkern` (bandwidth 
     definition) can also be specified here.
 
-The principle is the same as functions `qda` except that densities by class 
-are estimated from function `dmkern` instead of function `dmnorm`. 
+The principle is the same as functions `qda` except that class densities are estimated from function `dmkern` 
+instead of function `dmnorm`. 
 
 ## Examples
 ```julia
@@ -42,8 +42,7 @@ prior = :unif
 model = kdeda(; prior)
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
-fitm = model.fitm ;
+@names fitm = model.fitm
 fitm.lev
 fitm.ni
 

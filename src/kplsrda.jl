@@ -49,8 +49,7 @@ scal = true
 model = kplsrda(; nlv, kern, gamma, scal) 
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
-fitm = model.fitm ;
+@names fitm = model.fitm
 fitm.lev
 fitm.ni
 

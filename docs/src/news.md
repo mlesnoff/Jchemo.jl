@@ -7,7 +7,7 @@
         (instead to ':unif'). For highly unbalanced classes, it may be recommended to set 
         'prior = :unif' when using the functions. 
     - Code cleaning.  
-
+    
 
 ## *Version 0.8.7*
 
