@@ -3,11 +3,11 @@
 ## *Version 0.8.8*
 
 - Modifications
-    - In DA functions, the default value of argument 'prior' has been set to 'prop'
+    - In DA functions, the default value of argument 'prior' has been set to ':prop'
         (instead to ':unif'). For highly unbalanced classes, it may be recommended to set 
         'prior = :unif' when using the functions. 
     - Code cleaning.  
-    
+
 
 ## *Version 0.8.7*
 
