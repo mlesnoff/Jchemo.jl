@@ -53,7 +53,7 @@ tab(ytest)
 nlvdis = 25 ; metric = :mah
 h = 2 ; k = 200
 nlv = 10
-model = lwplslda(; nlvdis, metric, h, k, nlv, prior = :prop) 
+model = lwplslda(; nlvdis, metric, h, k, nlv, prior = :unif) 
 fit!(model, Xtrain, ytrain)
 @names model
 @names fitm = model.fitm

@@ -15,8 +15,7 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* `scal` : Boolean. If `true`, each column of `X` 
-    and Ydummy is scaled by its uncorrected standard deviation
+* `scal` : Boolean. If `true`, each column of `X` and Ydummy is scaled by its uncorrected standard deviation
     in the PLS computation.
 
 Same as function `plslda` (PLS-LDA) except that 
@@ -47,7 +46,7 @@ tab(ytest)
 nlv = 15
 gamma = .1
 model = kplslda(; nlv, gamma) 
-#model = kplslda(; nlv, gamma, prior = :prop) 
+#model = kplslda(; nlv, gamma, prior = :unif) 
 #model = kplsqda(; nlv, gamma, alpha = .5) 
 #model = kplskdeda(; nlv, gamma, a = .5) 
 fit!(model, Xtrain, ytrain)

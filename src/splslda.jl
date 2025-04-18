@@ -7,8 +7,7 @@ Sparse PLS-LDA.
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`). 
 Keyword arguments: 
-* `nlv` : Nb. latent variables (LVs) to compute.
-    Must be >= 1.
+* `nlv` : Nb. latent variables (LVs) to compute. Must be >= 1.
 * `meth` : Method used for the sparse thresholding. 
     Possible values are: `:soft`, `:hard`. See thereafter.
 * `nvar` : Nb. variables (`X`-columns) selected for each LV. 
@@ -17,8 +16,7 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* `scal` : Boolean. If `true`, each column of `X` 
-    and Ydummy is scaled by its uncorrected standard deviation
+* `scal` : Boolean. If `true`, each column of `X` and Ydummy is scaled by its uncorrected standard deviation
     in the PLS computation.
 
 Same as function `plslda` (PLSR-LDA) except that a sparse PLSR 

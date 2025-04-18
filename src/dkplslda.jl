@@ -7,8 +7,7 @@ DKPLS-LDA.
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs) to compute.
-    Must be >= 1.
+* `nlv` : Nb. latent variables (LVs) to compute. Must be >= 1.
 * `kern` : Type of kernel used to compute the Gram matrices.
     Possible values are: `:krbf`, `:kpol`. See respective 
     functions `krbf` and `kpol` for their keyword arguments.
@@ -46,7 +45,7 @@ tab(ytest)
 nlv = 15
 gamma = .1
 model = dkplslda(; nlv, gamma) 
-#model = dkplslda(; nlv, gamma, prior = :prop) 
+#model = dkplslda(; nlv, gamma, prior = :unif) 
 #model = dkplsqda(; nlv, gamma, alpha = .5) 
 #model = dkplskdeda(; nlv, gamma, a = .5) 
 fit!(model, Xtrain, ytrain)

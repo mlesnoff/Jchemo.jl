@@ -25,12 +25,13 @@ This is the usual "PLSDA". The approach is as follows:
 3) For a given observation, the final prediction is the class corresponding to the dummy variable for which 
     the probability estimate is the highest.
 
-In the high-level version of the present functions, the observation 
-weights are automatically defined by the given priors (argument `prior`): 
-* the sub-totals by class of the observation weights are set equal to the 
-    prior probabilities.
-The low-level version (argument `weights`) allows to implement 
-other choices.
+The low-level method (i.e. having argument `weights`) of the function allows to set any vector of observation weights 
+to be used in the intermediate computations. In the high-level methods (no argument `weights`), they are automatically 
+computed from the argument `prior` value: for each class, the total of the observation weights is set equal to 
+the prior probability corresponding to the class.
+
+**Note:** For highly unbalanced classes, it may be recommended to set 'prior = :unif' when using the function
+(and to use a score such as `merrp` instead of `errp` when evaluating the perfomance).
 
 ## Examples
 ```julia
@@ -55,6 +56,7 @@ tab(ytest)
 
 nlv = 15
 model = plsrda(; nlv) 
+#model = plsrda(; nlv, prior = :unif) 
 fit!(model, Xtrain, ytrain)
 @names model
 @names fitm = model.fitm

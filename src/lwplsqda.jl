@@ -61,7 +61,7 @@ tab(ytest)
 nlvdis = 25 ; metric = :mah
 h = 2 ; k = 200
 nlv = 10
-model = lwplsqda(; nlvdis, metric, h, k, nlv, prior = :prop, alpha = .5) 
+model = lwplsqda(; nlvdis, metric, h, k, nlv, prior = :unif, alpha = .5) 
 fit!(model, Xtrain, ytrain)
 @names model
 @names fitm = model.fitm

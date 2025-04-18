@@ -27,9 +27,8 @@ The approach is as follows:
     a score matrix `T`.
 3) A LDA is done on {`T`, `y`}, returning estimates of posterior probabilities
     (∊ [0, 1]) of class membership.
-4) For a given observation, the final prediction is the class 
-    corresponding to the dummy variable for which the probability 
-    estimate is the highest.
+4) For a given observation, the final prediction is the class corresponding to the dummy variable for which 
+    the probability estimate is the highest.
 
 The low-level method (i.e. having argument `weights`) of the function allows to set any vector of observation weights 
 to be used in the intermediate computations. In the high-level methods (no argument `weights`), they are automatically 
