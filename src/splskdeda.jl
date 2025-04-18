@@ -21,9 +21,8 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` and Ydummy is scaled by its uncorrected standard deviation
     in the PLS computation.
 
-Same as function `plskdeda` (PLS-KDEDA) except that a sparse PLSR 
-(function `splsr`), instead of a PLSR (function `plskern`), is run on the 
-Y-dummy table. 
+Same as function `plskdeda` (PLS-KDEDA) except that a sparse PLSR (function `splsr`), instead of a PLSR (function `plskern`), 
+is run on the Y-dummy table. 
 
 See function `splslda` for examples.
 """ 

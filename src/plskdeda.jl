@@ -15,8 +15,7 @@ Keyword arguments:
     in the PLS computation.
 * Keyword arguments of function `dmkern` (bandwidth definition) can also be specified here.
 
-The principle is the same as function `plsqda` except that the  densities by class are estimated from `dmkern` 
-instead of `dmnorm`.
+Same as function `plsqda` except that the class densities are estimated from `dmkern` instead of `dmnorm`.
 
 ## Examples
 ```julia

@@ -10,8 +10,7 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* `alpha` : Scalar (∈ [0, 1]) defining the continuum
-    between QDA (`alpha = 0`) and LDA (`alpha = 1`).
+* `alpha` : Scalar (∈ [0, 1]) defining the continuum between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 
 The low-level method (i.e. having argument `weights`) of the function allows to set any vector of observation weights 
 to be used in the intermediate computations. In the high-level methods (no argument `weights`), they are automatically 

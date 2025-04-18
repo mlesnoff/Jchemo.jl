@@ -2,8 +2,7 @@
     mbplsrda(; kwargs...)
     mbplsrda(Xbl, y; kwargs...)
     mbplsrda(Xbl, y, weights::Weight; kwargs...)
-Discrimination based on multiblock partial least squares 
-    regression (MBPLSR-DA).
+Discrimination based on multiblock partial least squares regression (MBPLSR-DA).
 * `Xbl` : List of blocks (vector of matrices) of X-data 
     Typically, output of function `mblock` from (n, p) data.  
 * `y` : Univariate class membership (n).

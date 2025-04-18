@@ -11,18 +11,16 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
 The approach is as follows:
 
 1) The training variable `y` (univariate class membership) is transformed to a dummy table (Ydummy) 
     containing nlev columns, where nlev is the number of classes present in `y`. Each column of 
     Ydummy is a dummy (0/1) variable. 
-2) Then, a ridge regression (RR) is run on {`X`, Ydummy}, returning 
-    predictions of the dummy variables (= object `posterior` returned by 
-    fuction `predict`).  These predictions can be considered as unbounded estimates 
-    (i.e. eventually outside of [0, 1]) of the class membership probabilities.
+2) Then, a ridge regression (RR) is run on {`X`, Ydummy}, returning predictions of the dummy variables 
+    (= object `posterior` returned by fuction `predict`).  These predictions can be considered as unbounded
+    estimates (i.e. eventually outside of [0, 1]) of the class membership probabilities.
 3) For a given observation, the final prediction is the class corresponding to the dummy variable for which 
     the probability estimate is the highest.
 

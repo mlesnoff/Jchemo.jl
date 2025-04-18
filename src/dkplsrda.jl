@@ -2,25 +2,21 @@
     dkplsrda(; kwargs...)
     dkplsrda(X, y; kwargs...)
     dkplsrda(X, y, weights::Weight; kwargs...)
-Discrimination based on direct kernel partial least squares 
-    regression (KPLSR-DA).
+Discrimination based on direct kernel partial least squares regression (KPLSR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`). 
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `kern` : Type of kernel used to compute the Gram matrices.
-    Possible values are: `:krbf`, `:kpol`. See respective 
+* `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective 
     functions `krbf` and `kpol` for their keyword arguments.
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* `scal` : Boolean. If `true`, each column of `X` 
-    and Ydummy is scaled by its uncorrected standard deviation.
+* `scal` : Boolean. If `true`, each column of `X` and Ydummy is scaled by its uncorrected standard deviation.
 
-Same as function `plsrda` (PLSR-DA) except that 
-a direct kernel PLSR (function `dkplsr`), instead of a 
-PLSR (function `plskern`), is run on the Y-dummy table. 
+Same as function `plsrda` (PLSR-DA) except that a direct kernel PLSR (function `dkplsr`), instead of a PLSR 
+(function `plskern`), is run on the Y-dummy table. 
 
 ## Examples
 ```julia
