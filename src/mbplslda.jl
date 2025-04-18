@@ -37,6 +37,9 @@ to be used in the intermediate computations. In the high-level methods (no argum
 computed from the argument `prior` value: for each class, the total of the observation weights is set equal to 
 the prior probability corresponding to the class.
 
+**Note:** For highly unbalanced classes, it may be recommended to set 'prior = :unif' when using the function
+(and to use a score such as `merrp` instead of `errp` when evaluating the perfomance).
+
 ## Examples
 ```julia
 using Jchemo, JLD2, CairoMakie, JchemoData

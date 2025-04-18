@@ -18,6 +18,9 @@ to be used in the intermediate computations. In the high-level methods (no argum
 computed from the argument `prior` value: for each class, the total of the observation weights is set equal to 
 the prior probability corresponding to the class.
 
+**Note:** For highly unbalanced classes, it may be recommended to set 'prior = :unif' when using the function
+(and to use a score such as `merrp` instead of `errp` when evaluating the perfomance).
+
 For the continuum approach, a value `alpha` > 0 shrinks the class-covariances 
 by class (Wi) toward a common LDA covariance ("within" W). This corresponds to 
 the "first regularization (Eqs.16)" described in Friedman 1989 (where `alpha` 
