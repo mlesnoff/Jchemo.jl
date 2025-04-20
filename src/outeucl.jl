@@ -1,5 +1,5 @@
 """
-    outeucl(X, V; kwargs...)
+    outeucl(X; kwargs...)
     outeucl!(X::Matrix; kwargs...)
 Compute an outlierness from Euclidean distances to center.
 * `X` : X-data (n, p).
