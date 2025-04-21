@@ -11,8 +11,9 @@ Keyword arguments:
 * `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
 
 In this method, the outlierness `d` of an observation is the orthogonal distance (=  'X-residuals') of this 
-observation, ie. the Euclidean distance between the observation and its projection on the  score plan defined by the fitted 
-(e.g. PCA) model (e.g. Hubert et al. 2005, Van Branden & Hubert 2005 p. 66, Varmuza & Filzmoser 2009 p. 79).
+observation, ie. the Euclidean distance between the observation and its projection on the  score plan defined by 
+the fitted (e.g. PCA) model (e.g. Hubert et al. 2005, Van Branden & Hubert 2005 p. 66, Varmuza & Filzmoser 
+2009 p. 79).
 
 See function `occsd` for details on outputs.
 
