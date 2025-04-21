@@ -11,7 +11,7 @@ Keyword arguments:
 
 In this method, the outlierness `d` of an observation is defined by its score distance (SD), ie. the Mahalanobis 
 distance between the projection of the observation on the score plan defined by the fitted (e.g. PCA) model and the 
-"center" (defined by zero) of the score plan.
+"center" (always defined by zero) of the score plan.
 
 If a new observation has `d` higher than a given `cutoff`, the observation is assumed to not belong to the training 
 (= reference) class. The `cutoff` is computed with non-parametric heuristics. Noting [d] the vector of outliernesses 
@@ -131,8 +131,7 @@ function occsd(fitm; kwargs...)
     nlv = nco(T)
     tscales = colstd(T, fitm.weights)
     fscale!(T, tscales)
-    ## The center is assumed to be 0
-    d2 = vec(euclsq(T, zeros(Q, nlv)'))
+    d2 = vec(euclsq(T, zeros(Q, nlv)'))   # the center is defined as 0
     d = sqrt.(d2)
     if par.cut == :mad
         cutoff = median(d) + par.cri * madv(d)
