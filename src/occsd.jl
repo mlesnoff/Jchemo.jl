@@ -2,62 +2,46 @@
     occsd(; kwargs...)
     occsd(fitm; kwargs...)
 One-class classification using PCA/PLS score distance (SD).
-* `fitm` : The preliminary model (e.g. object `fitm` returned by function 
-    `pcasvd`) that was fitted on the training data assumed to represent 
-    the training class.
+* `fitm` : The preliminary model (e.g. object `fitm` returned by function `pcasvd`) that was fitted on the 
+    training data assumed to represent the training class.
 Keyword arguments:
-* `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
-    See Thereafter.
+* `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `cut` = `:mad`, a constant. See thereafter.
 * `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
 
-In this method, the outlierness `d` of an observation is 
-defined by its score distance (SD), ie. the Mahalanobis distance 
-between the projection of the observation on the score plan 
-defined by the fitted (e.g. PCA) model and the center of the 
-score plan.
+In this method, the outlierness `d` of an observation is defined by its score distance (SD), ie. the Mahalanobis 
+distance between the projection of the observation on the score plan defined by the fitted (e.g. PCA) model and the 
+"center" (defined by zero) of the score plan.
 
-If a new observation has `d` higher than a given `cutoff`, the 
-observation is assumed to not belong to the training (= reference) 
-class. The `cutoff` is computed with non-parametric heuristics. 
-Noting [d] the vector of outliernesses computed on the training class:
+If a new observation has `d` higher than a given `cutoff`, the observation is assumed to not belong to the training 
+(= reference) class. The `cutoff` is computed with non-parametric heuristics. Noting [d] the vector of outliernesses 
+computed on the training class:
 * If `cut` = `:mad`, then `cutoff` = median([d]) + `cri` * madv([d]). 
-* If `cut` = `:q`, then `cutoff` is estimated from the empirical 
-    cumulative density function computed on [d], for a given 
-    risk-I (`risk`). 
-Alternative approximate cutoffs have been proposed in the 
-literature (e.g.: Nomikos & MacGregor 1995, Hubert et al. 2005,
-Pomerantsev 2008). Typically, and whatever the approximation method 
-used to compute the cutoff, it is recommended to tune this cutoff 
-depending on the detection objectives. 
+* If `cut` = `:q`, then `cutoff` is estimated from the empirical cumulative density function computed on [d], for a 
+    given risk-I (`risk`). 
+Alternative approximate cutoffs have been proposed in the literature (e.g.: Nomikos & MacGregor 1995, Hubert et al. 2005,
+Pomerantsev 2008). Typically, and whatever the approximation method used to compute the cutoff, it is recommended to tune 
+this cutoff depending on the detection objectives. 
 
 **Outputs**
-* `pval`: Estimate of p-value (see functions `pval`) computed 
-    from the training distribution [d]. 
-* `dstand`: standardized distance defined as `d` / `cutoff`. 
-    A value `dstand` > 1 may be considered as extreme compared to 
-    the distribution of the training data.  
-* `gh` is the Winisi "GH" (usually, GH > 3 is considered as 
-    extreme).
+* `pval`: Estimate of p-value (see functions `pval`) computed from the training distribution [d]. 
+* `dstand`: standardized distance defined as `d` / `cutoff`. A value `dstand` > 1 may be considered as extreme 
+    compared to the distribution of the training data.  
+* `gh` is the Winisi "GH" (usually, GH > 3 is considered as extreme).
 Specific for function `predict`:
 * `pred`: class prediction
-    * `dstand` <= 1 ==> `in`: the observation is expected to 
-        belong to the training class, 
-    * `dstand` > 1  ==> `out`: extreme value, possibly not 
-        belonging to the same class as the training. 
+    * `dstand` <= 1 ==> `in`: the observation is expected to belong to the training class, 
+    * `dstand` > 1  ==> `out`: extreme value, possibly not belonging to the same class as the training. 
 
 ## References
-M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). 
-ROBPCA: a new approach to robust principal components 
+M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components 
 analysis. Technometrics, 47, 64-79.
 
-Nomikos, V., MacGregor, J.F., 1995. Multivariate SPC Charts for 
-Monitoring Batch Processes. null 37, 41-59. 
+Nomikos, V., MacGregor, J.F., 1995. Multivariate SPC Charts for Monitoring Batch Processes. null 37, 41-59. 
 https://doi.org/10.1080/00401706.1995.10485888
 
-Pomerantsev, A.L., 2008. Acceptance areas for multivariate 
-classification derived by projection methods. Journal of Chemometrics 
-22, 601-609. https://doi.org/10.1002/cem.1147
+Pomerantsev, A.L., 2008. Acceptance areas for multivariate classification derived by projection methods. 
+Journal of Chemometrics 22, 601-609. https://doi.org/10.1002/cem.1147
 
 ## Examples
 ```julia
