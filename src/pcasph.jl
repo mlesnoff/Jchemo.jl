@@ -80,9 +80,7 @@ function pcasph!(X::Matrix, weights::Weight; kwargs...)
         fcenter!(X, xmeans)
     end
     ## Sphere
-    Xt = X'  
-    v = colnorm(Xt)
-    Xtt = fscale(Xt, v)'    # X-data projected on the sphere (each row has norm = 1)
+    Xtt = fscale(X', rownorm(X))'    # X-data projected on the sphere (each row has norm = 1)
     fweight!(Xtt, sqrt.(weights.w))
     res = LinearAlgebra.svd!(Matrix(Xtt)) 
     V = res.V[:, 1:nlv]

@@ -104,13 +104,13 @@ plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", xlabel = string("PC", i
 
 #### Occ
 ## Preliminary PCA fitted model
-model0 = pcasvd(nlv = 30) 
-fit!(model0, zXtrain)
+model_pca = pcasvd(nlv = 30) 
+fit!(model_pca, zXtrain)
 ## Outlierness
 model = occsd()
 #model = occsd(cut = :mad, cri = 4)
 #model = occsd(cut = :q, risk = .01)
-fit!(model, model0.fitm) 
+fit!(model, model_pca.fitm) 
 @names model 
 @names model.fitm 
 @head d = model.fitm.d
