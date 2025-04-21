@@ -2,8 +2,8 @@
     occsd(; kwargs...)
     occsd(fitm; kwargs...)
 One-class classification using PCA/PLS score distance (SD).
-* `fitm` : The preliminary model (e.g. object `fitm` returned by function `pcasvd`) that was fitted on the 
-    training data assumed to represent the training class.
+* `fitm` : The preliminary model (e.g. object `fitm` returned by function `pcasvd`) that was fitted on 
+    the training data assumed to represent the training class.
 Keyword arguments:
 * `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `cut` = `:mad`, a constant. See thereafter.
@@ -61,59 +61,61 @@ Ytrain = rmrow(Y, s)
 Xtest = Xp[s, :]
 Ytest = Y[s, :]
 
-## Below, the reference class is "EEH"
-cla1 = "EHH" ; cla2 = "PEE" ; cod = "out"   # here cla2 should be detected
-#cla1 = "EHH" ; cla2 = "EHH" ; cod = "in"   # here cla2 should not be detected
-s1 = Ytrain.typ .== cla1
-s2 = Ytest.typ .== cla2
-zXtrain = Xtrain[s1, :]    
-zXtest = Xtest[s2, :] 
+## Build the example data
+## - cla_train is the reference class ('in')
+## - cla_test contains the observations to be predicted (to be 'in' or 'out' of cla_train) 
+## Below, cla_train = "EEH", and two example situations for cla_test:
+cla_train = "EHH" ; cla_test = "PEE" ; typtest = "out"   # here cla_test should be detected 'out'
+#cla_train = "EHH" ; cla_test = "EHH" ; typtest = "in"   # here cla_test should not be detected 'out'
+s = Ytrain.typ .== cla_train
+zXtrain = Xtrain[s, :]    
+s = Ytest.typ .== cla_test
+zXtest = Xtest[s, :] 
 ntrain = nro(zXtrain)
 ntest = nro(zXtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
 ytrain = repeat(["in"], ntrain)
-ytest = repeat([cod], ntest)
+ytest = repeat([typtest], ntest)
+## End
 
-## Group description
-model = pcasvd(nlv = 10) 
-fit!(model, zXtrain) 
-Ttrain = model.fitm.T
-Ttest = transf(model, zXtest)
+#### Preliminary PCA fitted model
+nlv = 20
+model_lv = pcasvd(; nlv) 
+fit!(model_lv, zXtrain) 
+res = summary(model_lv, zXtrain).explvarx 
+plotgrid(res.nlv, res.pvar; step = 2, xlabel = "Nb. LVs", ylabel = "% Variance explained").f
+Ttrain = model_lv.fitm.T
+Ttest = transf(model_lv, zXtest)
 T = vcat(Ttrain, Ttest)
-group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
 i = 1
-plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", xlabel = string("PC", i),  
-    ylabel = string("PC", i + 1)).f
+group = vcat(repeat(["Train"], ntrain), repeat(["Test"], ntest))
+plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", xlabel = string("LV", i), 
+    ylabel = string("LV", i + 1)).f
 
 #### Occ
-## Preliminary PCA fitted model
-model_pca = pcasvd(nlv = 30) 
-fit!(model_pca, zXtrain)
-## Outlierness
 model = occsd()
 #model = occsd(cut = :mad, cri = 4)
 #model = occsd(cut = :q, risk = .01)
-fit!(model, model_pca.fitm) 
+fit!(model, model_lv.fitm) 
 @names model 
 @names model.fitm 
-@head d = model.fitm.d
-d = d.dstand
+@head dtrain = model.fitm.d
+d = dtrain.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index", 
     ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
-
-res = predict(model, zXtest) ;
+## Predictions
+res = predict(model, zXtest) 
 @names res
-@head res.d
-@head res.pred
-tab(res.pred)
-errp(res.pred, ytest)
-conf(res.pred, ytest).cnt
-d1 = model.fitm.d.dstand
-d2 = res.d.dstand
-d = vcat(d1, d2)
+@head pred = res.pred
+@head dtest = res.d
+tab(pred)
+errp(pred, ytest)
+conf(pred, ytest).cnt
+##
+d = vcat(dtrain.dstand, dtest.dstand)
 f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", xlabel = "Obs. index", 
     ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
