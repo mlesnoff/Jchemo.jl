@@ -5,10 +5,10 @@ One-class classification using the Stahel-Donoho outlierness.
 * `X` : Training X-data (n, p).
 Keyword arguments:
 * `nlv` : Nb. random directions on which `X` is projected. 
-* `mcut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
+* `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
     See Thereafter.
-* `cri` : When `mcut` = `:mad`, a constant. See thereafter.
-* `risk` : When `mcut` = `:q`, a risk-I level. See thereafter.
+* `cri` : When `cut` = `:mad`, a constant. See thereafter.
+* `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
 * `scal` : Boolean. If `true`, each column of `X` 
     is scaled such as in function `outstah`.
 
@@ -105,10 +105,10 @@ function occstah(X; kwargs...)
     #g = mu / nu
     #dis = Distributions.Chisq(nu)
     #pval = Distributions.ccdf.(dis, d2 / g)
-    #mcut == :par ? cutoff = sqrt(g * quantile(dis, 1 - risk)) : nothing
-    #mcut == "npar" ? cutoff = median(d) + par.cri * madv(d) : nothing  
-    par.mcut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
-    par.mcut == :q ? cutoff = quantile(d, 1 - par.risk) : nothing
+    #cut == :par ? cutoff = sqrt(g * quantile(dis, 1 - risk)) : nothing
+    #cut == "npar" ? cutoff = median(d) + par.cri * madv(d) : nothing  
+    par.cut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
+    par.cut == :q ? cutoff = quantile(d, 1 - par.risk) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)

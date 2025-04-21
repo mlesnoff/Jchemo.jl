@@ -6,10 +6,10 @@ One-class classification using PCA/PLS score distance (SD).
     `pcasvd`) that was fitted on the training data assumed to represent 
     the training class.
 Keyword arguments:
-* `mcut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
+* `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
     See Thereafter.
-* `cri` : When `mcut` = `:mad`, a constant. See thereafter.
-* `risk` : When `mcut` = `:q`, a risk-I level. See thereafter.
+* `cri` : When `cut` = `:mad`, a constant. See thereafter.
+* `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
 
 In this method, the outlierness `d` of an observation is 
 defined by its score distance (SD), ie. the Mahalanobis distance 
@@ -21,8 +21,8 @@ If a new observation has `d` higher than a given `cutoff`, the
 observation is assumed to not belong to the training (= reference) 
 class. The `cutoff` is computed with non-parametric heuristics. 
 Noting [d] the vector of outliernesses computed on the training class:
-* If `mcut` = `:mad`, then `cutoff` = median([d]) + `cri` * madv([d]). 
-* If `mcut` = `:q`, then `cutoff` is estimated from the empirical 
+* If `cut` = `:mad`, then `cutoff` = median([d]) + `cri` * madv([d]). 
+* If `cut` = `:q`, then `cutoff` is estimated from the empirical 
     cumulative density function computed on [d], for a given 
     risk-I (`risk`). 
 Alternative approximate cutoffs have been proposed in the 
@@ -108,8 +108,8 @@ model0 = pcasvd(nlv = 30)
 fit!(model0, zXtrain)
 ## Outlierness
 model = occsd()
-#model = occsd(mcut = :mad, cri = 4)
-#model = occsd(mcut = :q, risk = .01)
+#model = occsd(cut = :mad, cri = 4)
+#model = occsd(cut = :q, risk = .01)
 fit!(model, model0.fitm) 
 @names model 
 @names model.fitm 
@@ -139,17 +139,22 @@ f
 occsd(; kwargs...) = JchemoModel(occsd, nothing, kwargs)
 
 function occsd(fitm; kwargs...)
-    par = recovkw(ParOcc, kwargs).par 
+    par = recovkw(ParOcc, kwargs).par
+    @assert in(par.cut, [:mad, :q]) "Argument 'cut' must be :mad or :q."
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
     T = copy(fitm.T) # remove side effect of fscale!
     Q = eltype(T)
     nlv = nco(T)
     tscales = colstd(T, fitm.weights)
     fscale!(T, tscales)
+    ## The center is assumed to be 0
     d2 = vec(euclsq(T, zeros(Q, nlv)'))
     d = sqrt.(d2)
-    par.mcut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
-    par.mcut == :q ? cutoff = quantile(d, 1 - par.risk) : nothing
+    if par.cut == :mad
+        cutoff = median(d) + par.cri * madv(d)
+    elseif par.cut == :q
+        cutoff = quantile(d, 1 - par.risk)
+    end
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val, gh = d2 / nlv)

@@ -8,10 +8,10 @@ One-class classification using a consensus between
     the training class.
 * `X` : Training X-data (n, p), on which was fitted the model `fitm`.
 Keyword arguments:
-* `mcut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
+* `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
     See Thereafter.
-* `cri` : When `mcut` = `:mad`, a constant. See thereafter.
-* `risk` : When `mcut` = `:q`, a risk-I level. See thereafter.
+* `cri` : When `cut` = `:mad`, a constant. See thereafter.
+* `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
 
 In this method, the outlierness `d` of a given observation
 is a consensus between the score distance (SD) and the

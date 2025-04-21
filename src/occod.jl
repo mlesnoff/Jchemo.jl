@@ -7,10 +7,10 @@ One-class classification using PCA/PLS orthognal distance (OD).
     the training class.
 * `X` : Training X-data (n, p), on which was fitted the model `fitm`.
 Keyword arguments:
-* `mcut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
+* `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
     See Thereafter.
-* `cri` : When `mcut` = `:mad`, a constant. See thereafter.
-* `risk` : When `mcut` = `:q`, a risk-I level. See thereafter.
+* `cri` : When `cut` = `:mad`, a constant. See thereafter.
+* `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
 
 In this method, the outlierness `d` of an observation
 is the orthogonal distance (=  'X-residuals') of this 
@@ -82,8 +82,8 @@ model = pcasvd(nlv = 10)
 fit!(model, zXtrain)
 ## Outlierness
 model_occ = occod()
-#model_occ = occod(mcut = :mad, cri = 4)
-#model_occ = occod(mcut = :q, risk = .01)
+#model_occ = occod(cut = :mad, cri = 4)
+#model_occ = occod(cut = :q, risk = .01)
 #model_occ = occsdod()
 fit!(model_occ, model.fitm, zXtrain) 
 @names model_occ 
@@ -118,8 +118,8 @@ function occod(fitm, X; kwargs...)
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
     E = xresid(fitm, X)
     d = rownorm(E)
-    par.mcut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
-    par.mcut == :q ? cutoff = quantile(d, 1 - par.risk) : nothing
+    par.cut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
+    par.cut == :q ? cutoff = quantile(d, 1 - par.risk) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
