@@ -79,9 +79,10 @@ end
 function pcaout!(X::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParPcaout, kwargs).par 
     n, p = size(X)
-    nlvout = 30
+    nlvout = 500
     V = rand(0:1, p, nlvout)
     d = outstah(X, V; scal = par.scal).d
+    println(d)
     w = wtal(d; a = quantile(d, 1 - par.prm))
     d .= outeucl(X; scal = par.scal).d
     w .*= wtal(d; a = quantile(d, 1 - par.prm))

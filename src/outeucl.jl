@@ -24,7 +24,6 @@ X1 = randn(n, p)
 X2 = randn(m, p) .+ rand(1:3, p)'
 X = vcat(X1, X2)
 
-nlv = 10
 scal = false
 #scal = true
 res = outeucl(X; scal) ;

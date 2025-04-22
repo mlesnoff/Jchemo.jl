@@ -13,8 +13,6 @@ A projection-pursuit approach is used: given a projection matrix `V` (p, nlv) (i
 the observations (rows of `X`) are projected on the `nlv` directions and the Stahel-Donoho outlierness is computed 
 for each observation from these projections.
 
-Warning: `V` should not contain colums proportional to `ones(p)`.
-
 ## References
 Maronna, R.A., Yohai, V.J., 1995. The Behavior of the Stahel-Donoho Robust Multivariate 
 Estimator. Journal of the American Statistical Association 90, 330–341. 
@@ -30,7 +28,7 @@ X1 = randn(n, p)
 X2 = randn(m, p) .+ rand(1:3, p)'
 X = vcat(X1, X2)
 
-nlv = 10
+nlv = 100
 V = rand(0:1, p, nlv)
 scal = false
 #scal = true
@@ -59,6 +57,7 @@ function outstah!(X::Matrix, V::Matrix; kwargs...)
     mu = colmed(T)
     s = colmad(T)  
     fcscale!(T, mu, s)
+    T[isnan.(T)] .= convert(Q, 0)
     T .= abs.(T)
     d = similar(T, n)
     @inbounds for i in axes(X, 1)
