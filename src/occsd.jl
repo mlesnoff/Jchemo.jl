@@ -82,6 +82,7 @@ ytest = repeat([typtest], ntest)
 #### Preliminary PCA fitted model
 nlv = 20
 model_lv = pcasvd(; nlv) 
+#model_lv = pcaout(; nlv) 
 fit!(model_lv, zXtrain) 
 res = summary(model_lv, zXtrain).explvarx 
 plotgrid(res.nlv, res.pvar; step = 2, xlabel = "Nb. LVs", ylabel = "% Variance explained").f
