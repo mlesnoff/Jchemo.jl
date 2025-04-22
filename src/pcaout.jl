@@ -82,7 +82,6 @@ function pcaout!(X::Matrix, weights::Weight; kwargs...)
     nlvstah = 500
     V = rand(0:1, p, nlvstah)
     d = outstah(X, V; scal = par.scal).d
-    println(d)
     w = wtal(d; a = quantile(d, 1 - par.prm))
     d .= outeucl(X; scal = par.scal).d
     w .*= wtal(d; a = quantile(d, 1 - par.prm))
