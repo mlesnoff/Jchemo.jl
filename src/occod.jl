@@ -45,62 +45,65 @@ Ytrain = rmrow(Y, s)
 Xtest = Xp[s, :]
 Ytest = Y[s, :]
 
-## Below, the reference class is "EEH"
-cla1 = "EHH" ; cla2 = "PEE" ; cod = "out"   # here cla2 should be detected
-#cla1 = "EHH" ; cla2 = "EHH" ; cod = "in"   # here cla2 should not be detected
-s1 = Ytrain.typ .== cla1
-s2 = Ytest.typ .== cla2
-zXtrain = Xtrain[s1, :]    
-zXtest = Xtest[s2, :] 
+## Build the example data
+## - cla_train is the reference class ('in')
+## - cla_test contains the observations to be predicted (to be 'in' or 'out' of cla_train) 
+## Below, cla_train = "EEH", and two example situations for cla_test:
+cla_train = "EHH" ; cla_test = "PEE" ; typtest = "out"   # here cla_test should be detected 'out'
+#cla_train = "EHH" ; cla_test = "EHH" ; typtest = "in"   # here cla_test should not be detected 'out'
+s = Ytrain.typ .== cla_train
+zXtrain = Xtrain[s, :]    
+s = Ytest.typ .== cla_test
+zXtest = Xtest[s, :] 
 ntrain = nro(zXtrain)
 ntest = nro(zXtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
 ytrain = repeat(["in"], ntrain)
-ytest = repeat([cod], ntest)
+ytest = repeat([typtest], ntest)
+## End
 
-## Group description
-model = pcasvd(nlv = 10) 
-fit!(model, zXtrain) 
-Ttrain = model.fitm.T
-Ttest = transf(model, zXtest)
+#### Preliminary PCA fitted model
+nlv = 20
+model_lv = pcasvd(; nlv) 
+#model_lv = pcaout(; nlv) 
+fit!(model_lv, zXtrain) 
+res = summary(model_lv, zXtrain).explvarx 
+plotgrid(res.nlv, res.pvar; step = 2, xlabel = "Nb. LVs", ylabel = "% Variance explained").f
+Ttrain = model_lv.fitm.T
+Ttest = transf(model_lv, zXtest)
 T = vcat(Ttrain, Ttest)
-group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
 i = 1
-plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", xlabel = string("PC", i), 
-    ylabel = string("PC", i + 1)).f
+group = vcat(repeat(["Train"], ntrain), repeat(["Test"], ntest))
+plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", xlabel = string("LV", i), 
+    ylabel = string("LV", i + 1)).f
 
 #### Occ
-## Preliminary PCA fitted model
-model = pcasvd(nlv = 10) 
-fit!(model, zXtrain)
-## Outlierness
-model_occ = occod()
-#model_occ = occod(cut = :mad, cri = 4)
-#model_occ = occod(cut = :q, risk = .01)
-#model_occ = occsdod()
-fit!(model_occ, model.fitm, zXtrain) 
-@names model_occ 
-@names model_occ.fitm 
-@head d = model_occ.fitm.d
-d = d.dstand
-f, ax = plotxy(1:length(d), d; size = (500, 300), 
-    xlabel = "Obs. index", ylabel = "Standardized distance")
+model = occod()
+#model = occod(cut = :mad, cri = 4)
+#model = occod(cut = :q, risk = .01)
+#model = occsdod()
+fit!(model, model_lv.fitm, zXtrain) 
+@names model 
+@names model.fitm 
+@head dtrain = model.fitm.d
+d = dtrain.dstand
+f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index", 
+    ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
-
-res = predict(model_occ, zXtest) ;
+## Predictions
+res = predict(model, zXtest) 
 @names res
-@head res.d
-@head res.pred
-tab(res.pred)
-errp(res.pred, ytest)
-conf(res.pred, ytest).cnt
-d1 = model_occ.fitm.d.dstand
-d2 = res.d.dstand
-d = vcat(d1, d2)
-f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", 
-    xlabel = "Obs. index", ylabel = "Standardized distance")
+@head pred = res.pred
+@head dtest = res.d
+tab(pred)
+errp(pred, ytest)
+conf(pred, ytest).cnt
+##
+d = vcat(dtrain.dstand, dtest.dstand)
+f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", xlabel = "Obs. index", 
+    ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 ```
