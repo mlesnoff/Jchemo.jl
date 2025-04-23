@@ -210,6 +210,8 @@ include("occsdod.jl")
 include("occstah.jl")
 include("outstah.jl")
 include("outeucl.jl")
+include("outknn.jl")
+include("outlknn.jl")
 
 ## Local
 include("lwmlrda.jl")
