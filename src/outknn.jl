@@ -57,7 +57,7 @@ model = pcasph(; nlv)
 fit!(model, X)
 T = model.fitm.T
 metric = :eucl 
-k = 5
+k = 15
 res = outknn(T; metric, k, scal)
 plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness").f
 ```
