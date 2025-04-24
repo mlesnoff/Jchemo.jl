@@ -2,6 +2,9 @@
 
 ## *Version 0.8.9*
 
+- News 
+    - Function **outknn**: Compute a KNN distance-based outlierness.
+
 - Modifications
     - Code cleaning.  
 
