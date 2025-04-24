@@ -10,6 +10,7 @@ function outknn!(X::Matrix; metric = :eucl, k, algo = median, scal::Bool = false
         xscales .= colstd(X)
         fscale!(X, xscales)
     end
+    k > n - 1 ? k = n - 1 : nothing
     res = getknn(X, X; k = k + 1, metric)
     d = zeros(n)
     @inbounds for i in eachindex(d)
