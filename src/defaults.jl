@@ -20,7 +20,7 @@ function defaults(algo::Function)
     in((pcasvd, pcaeigen, pcaeigenk, pcasph)).(algo) ? dump(Jchemo.ParPca()) : nothing
     in((pcanipals, pcanipalsmiss)).(algo) ? dump(Jchemo.ParPcanipals()) : nothing
     in((pcapp,)).(algo) ? dump(Jchemo.ParPcapp()) : nothing
-    in((pcaout,)).(algo) ? dump(Jchemo.ParOut()) : nothing
+    in((pcaout,)).(algo) ? dump(Jchemo.ParPcaout()) : nothing
 
     in((rp,)).(algo) ? dump(Jchemo.ParRp()) : nothing
 
