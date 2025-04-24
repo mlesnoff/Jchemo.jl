@@ -9,14 +9,29 @@ Keyword arguments:
 * `algo` : Function summarizing the `k` distances to the neighbors.
 * `scal` : Boolean. If `true`, each column of `X` is scaled before computing the outlierness.
 
-For each observation (row of `X`), the outlierness is defined by the summary  (e.g. by median) of the distances 
-between the observation and its `k` nearest neighbors. Higher is this outlierness, more the observation is considered 
-as isolated from the others.
+The idea is to compare the KNN-outlierness of the observation to the KNN-outlierness of its neighbors, giving a local 
+measure of outlierness. For each observation (row of `X`), the outlierness is defined as folloxs:
+
+* A summary (e.g. by median) of the distances between the observation and its `k` nearest neighbors
+    is computed, say out1.
+* The same summary is computed for each of the `k` nearest neighbors of the observation. The `k` 
+    returned values are then themself summarized, giving a new value (synthetic outlierness of the 
+    neighborhood), say out2.
+* The outlierness of the observation is finally defined as the ratio out1 / out2.
+
+The approach can be seen as a simplification of the local outlier factor (LOF) method (Breunig et al. 2000),
+such as the Simplified-LOF method (Schubert et al 2014 p.206, Campos et al. 2016 p.896) where local density 
+is estimated by the inverse of the k-distance.
 
 ## References
 Campos, G.O., Zimek, A., Sander, J., Campello, R.J.G.B., Micenková, B., Schubert, E., Assent, I., Houle, M.E., 
 2016. On the evaluation of unsupervised outlier detection: measures, datasets, and an empirical study. Data Min Knowl 
 Disc 30, 891–927. https://doi.org/10.1007/s10618-015-0444-8
+
+Schubert, E., Zimek, A., Kriegel, H.-P., 2014. Local outlier detection reconsidered: a generalized view on 
+locality with applications to spatial, video, and network outlier detection. Data Min Knowl Disc 28, 190–237. 
+https://doi.org/10.1007/s10618-012-0300-z
+
 
 ## Examples
 ```julia

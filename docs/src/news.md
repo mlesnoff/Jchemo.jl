@@ -4,6 +4,7 @@
 
 - News 
     - Function **outknn**: Compute a kNN distance-based outlierness.
+    - Function **outlknn**: Compute a local kNN distance-based outlierness.
 
 - Modifications
     - Code cleaning.  

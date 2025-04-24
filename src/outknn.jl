@@ -9,9 +9,8 @@ Keyword arguments:
 * `algo` : Function summarizing the `k` distances to the neighbors.
 * `scal` : Boolean. If `true`, each column of `X` is scaled before computing the outlierness.
 
-For each observation (row of `X`), the outlierness is defined by the summary  (e.g. by median) of the distances 
-between the observation and its `k` nearest neighbors. Higher is this outlierness, more the observation is considered 
-as isolated from the others.
+For each observation (row of `X`), the outlierness is defined by a summary  (e.g. by median) of the distances 
+between the observation and its `k` nearest neighbors. 
 
 ## References
 Angiulli, F., Pizzuti, C., 2005. Outlier mining in large high-dimensional data sets. IEEE Transactions on Knowledge 

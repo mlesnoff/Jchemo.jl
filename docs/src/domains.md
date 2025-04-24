@@ -247,6 +247,7 @@
 - **outstah** Stahel-Donoho outlierness
 - **outeucl**: Outlierness from Euclidean distances to center
 - **outknn**: kNN distance-based outlierness
+- **outlknn**: Local kNN distance-based outlierness
 
 ## DISTRIBUTIONS
 
