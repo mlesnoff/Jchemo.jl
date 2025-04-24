@@ -1,7 +1,7 @@
 """
     outknn(X; metric = :eucl, k, algo = median, scal::Bool = false)
     outknn!(X::Matrix; metric = :eucl, k, algo = median, scal::Bool = false)
-Compute a KNN distance-based outlierness.
+Compute a kNN distance-based outlierness.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `metric` : Metric used to compute the dustances. See function `getknn`.

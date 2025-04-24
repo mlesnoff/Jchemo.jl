@@ -1,7 +1,7 @@
 """
     knnda(; kwargs...)
     knnda(X, y; kwargs...) 
-k-Nearest-Neighbours weighted discrimination (KNN-DA).
+k-Nearest-Neighbours weighted discrimination (kNN-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 Keyword arguments:
