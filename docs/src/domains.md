@@ -399,7 +399,7 @@
 - **findmax_cla** Find the most occurent level in a categorical variable
 - **frob**, **frob2** Frobenius norm of a matrix
 - **fweight** Weight each row of a matrix
-- **getknn** Find nearest neighbours between rows of matrices
+- **getknn** Find nearest neighbors between rows of matrices
 - **iqrv** Interval inter-quartiles
 - **krbf, kpol** Build kernel Gram matrices
 - **locw** Working function for local (kNN) models

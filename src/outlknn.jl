@@ -1,12 +1,12 @@
 """
     outlknn(X; metric = :eucl, k, algo = median, scal::Bool = false)
     outlknn!(X::Matrix; metric = :eucl, k, algo = median, scal::Bool = false)
-Compute a kNN distance-based outlierness.
+Compute a local kNN distance-based outlierness.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `metric` : Metric used to compute the dustances. See function `getknn`.
 * `k` : Nb. nearest neighbors to consider.
-* `algo` : Function summarizing the `k` distances to the neighbours.
+* `algo` : Function summarizing the `k` distances to the neighbors.
 * `scal` : Boolean. If `true`, each column of `X` is scaled before computing the outlierness.
 
 For each observation (row of `X`), the outlierness is defined by the summary  (e.g. by median) of the distances 

@@ -574,7 +574,7 @@ Some specific modified points are:
 - New
     - **cosm** Cosinus between the columns of a matrix
     - **cosv** Cosinus between two vectors
-    - **lwmlr**: k-Nearest-neighbours locally weighted multiple linear regression (kNN-LWMLR)
+    - **lwmlr**: k-Nearest-neighbors locally weighted multiple linear regression (kNN-LWMLR)
     - **lwmlr_s**: kNN-LWMLR after preliminary (linear or non-linear) dimension reduction
     - **pmod** Short-cut for function 'Base.parentmodule'
     - **tabdupl** Tabulate duplicated values in a vector
