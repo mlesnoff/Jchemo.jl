@@ -408,6 +408,7 @@ export
     svmda, 
     treeda, rfda,
     outstah, outeucl,
+    outknn, outlknn,
     occstah,
     occsd, occod, occsdod,
     ## Sparse 
