@@ -9,30 +9,57 @@ Keyword arguments:
 * `algo` : Function summarizing the `k` distances to the neighbours.
 * `scal` : Boolean. If `true`, each column of `X` is scaled before computing the outlierness.
 
-For each observation (row of `X`), the outlierness is defined by the summary  (e.g. by median) of the distances between 
-the observation and its `k` nearest neighbors.
+For each observation (row of `X`), the outlierness is defined by the summary  (e.g. by median) of the distances 
+between the observation and its `k` nearest neighbors. Higher is this outlierness, more the observation is considered 
+as isolated from the others.
 
 ## References
-Maronna, R.A., Yohai, V.J., 1995. The Behavior of the Stahel-Donoho Robust Multivariate 
-Estimator. Journal of the American Statistical Association 90, 330–341. 
-https://doi.org/10.1080/01621459.1995.10476517
+Angiulli, F., Pizzuti, C., 2005. Outlier mining in large high-dimensional data sets. IEEE Transactions on Knowledge 
+and Data Engineering 17, 203–215. https://doi.org/10.1109/TKDE.2005.31
+
+Angiulli, F., Basta, S., Pizzuti, C., 2006. Distance-based detection and prediction of outliers. IEEE Transactions 
+on Knowledge and Data Engineering 18, 145–160. https://doi.org/10.1109/TKDE.2006.29
+
+Campos, G.O., Zimek, A., Sander, J., Campello, R.J.G.B., Micenková, B., Schubert, E., Assent, I., Houle, M.E., 
+2016. On the evaluation of unsupervised outlier detection: measures, datasets, and an empirical study. Data Min Knowl 
+Disc 30, 891–927. https://doi.org/10.1007/s10618-015-0444-8
+
+Ramaswamy, S., Rastogi, R., Shim, K., 2000. Efficient algorithms for mining outliers from large data sets, 
+in: Proceedings of the 2000 ACM SIGMOD International Conference on Management of Data, SIGMOD ’00. 
+Association for Computing Machinery, New York, NY, USA, pp. 427–438. https://doi.org/10.1145/342009.335437
 
 ## Examples
 ```julia
-using Jchemo, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "octane.jld2")
+@load db dat
+X = dat.X
+wlst = names(X)
+wl = parse.(Float64, wlst)
+n, p = size(X)
+## Six of the samples (25, 26, and 36-39) contain added alcohol.
+s = [25; 26; 36:39]
+typ = zeros(Int, n)
+typ[s] .= 1
+#plotsp(X, wl; xlabel = "Wavelength (nm)", ylabel = "Absorbance").f
 
-n = 300 ; p = 700 ; m = 80
-ntot = n + m
-X1 = randn(n, p)
-X2 = randn(m, p) .+ rand(1:3, p)'
-X = vcat(X1, X2)
-
-metric = :sam ; k = 20 ; algo = median
-#algo = maximum
-res = outknn(X, V; scal) ;
+metric = :eucl ; k = 15 ; algo = median
+#algo = :maximum
+res = outknn(X; metric, k, algo) ;
 @names res
-res.d    # outlierness 
-plotxy(1:ntot, res.d).f
+f, ax = plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness")
+text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
+f
+
+nlv = 3
+model = pcasph(; nlv)
+fit!(model, X)
+T = model.fitm.T
+metric = :eucl 
+k = 5
+res = outknn(T; metric, k, scal)
+plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness").f
 ```
 """ 
 
