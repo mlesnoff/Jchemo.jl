@@ -19,8 +19,8 @@ and Data Engineering 17, 203–215. https://doi.org/10.1109/TKDE.2005.31
 Angiulli, F., Basta, S., Pizzuti, C., 2006. Distance-based detection and prediction of outliers. IEEE Transactions 
 on Knowledge and Data Engineering 18, 145–160. https://doi.org/10.1109/TKDE.2006.29
 
-Campos, G.O., Zimek, A., Sander, J., Campello, R.J.G.B., Micenková, B., Schubert, E., Assent, I., Houle, M.E., 
-2016. On the evaluation of unsupervised outlier detection: measures, datasets, and an empirical study. Data Min Knowl 
+Campos, G.O., Zimek, A., Sander, J., Campello, R.J.G.B., Micenková, B., Schubert, E., Assent, I., Houle, M.E., 2016. 
+On the evaluation of unsupervised outlier detection: measures, datasets, and an empirical study. Data Min Knowl 
 Disc 30, 891–927. https://doi.org/10.1007/s10618-015-0444-8
 
 Ramaswamy, S., Rastogi, R., Shim, K., 2000. Efficient algorithms for mining outliers from large data sets, 
