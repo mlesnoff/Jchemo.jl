@@ -6,7 +6,7 @@ Compute a local kNN distance-based outlierness.
 Keyword arguments:
 * `metric` : Metric used to compute the dustances. See function `getknn`.
 * `k` : Nb. nearest neighbors to consider.
-* `algo` : Function summarizing the `k` distances to the neighbors.
+* `algo` : Function summarizing the distances to the neighbors.
 * `scal` : Boolean. If `true`, each column of `X` is scaled before computing the outlierness.
 
 The idea is to compare the KNN-outlierness of the observation to the KNN-outlierness of its neighbors, giving a local 
