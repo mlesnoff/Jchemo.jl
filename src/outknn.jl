@@ -61,7 +61,6 @@ res = outknn(T; metric, k, scal)
 plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness").f
 ```
 """ 
-
 function outknn(X; metric = :eucl, k, algo = sum, scal::Bool = false)
     outknn!(copy(ensure_mat(X)); k, metric, algo, scal)
 end
