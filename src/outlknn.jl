@@ -1,6 +1,6 @@
 """
-    outlknn(X; metric = :eucl, k, algo = median, scal::Bool = false)
-    outlknn!(X::Matrix; metric = :eucl, k, algo = median, scal::Bool = false)
+    outlknn(X; metric = :eucl, k, algo = sum, scal::Bool = false)
+    outlknn!(X::Matrix; metric = :eucl, k, algo = sum, scal::Bool = false)
 Compute a local kNN distance-based outlierness.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -12,7 +12,7 @@ Keyword arguments:
 The idea is to compare the KNN-outlierness of the observation to the KNN-outlierness of its neighbors, giving a local 
 measure of outlierness. For each observation (row of `X`), the outlierness is defined as folloxs:
 
-* A summary (e.g. by median) of the distances between the observation and its `k` nearest neighbors
+* A summary (e.g. by sum or maximum) of the distances between the observation and its `k` nearest neighbors
     is computed, say out1.
 * The same summary is computed for each of the `k` nearest neighbors of the observation. The `k` 
     returned values are then themself summarized, giving a new value (synthetic outlierness of the 
@@ -49,7 +49,7 @@ typ = zeros(Int, n)
 typ[s] .= 1
 #plotsp(X, wl; xlabel = "Wavelength (nm)", ylabel = "Absorbance").f
 
-metric = :eucl ; k = 15 ; algo = median
+metric = :eucl ; k = 15 ; algo = maximum
 #algo = :maximum
 res = outlknn(X; metric, k, algo) ;
 @names res
@@ -67,11 +67,11 @@ res = outlknn(T; metric, k, scal)
 plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness").f
 ```
 """ 
-function outlknn(X; metric = :eucl, k, algo = median, scal::Bool = false)
+function outlknn(X; metric = :eucl, k, algo = sum, scal::Bool = false)
     outlknn!(copy(ensure_mat(X)); k, metric, algo, scal)
 end
 
-function outlknn!(X::Matrix; metric = :eucl, k, algo = median, scal::Bool = false)
+function outlknn!(X::Matrix; metric = :eucl, k, algo = sum, scal::Bool = false)
     Q = eltype(X)
     n, p = size(X)
     xscales = ones(Q, p)
@@ -89,9 +89,9 @@ function outlknn!(X::Matrix; metric = :eucl, k, algo = median, scal::Bool = fals
         res_nn = getknn(X, vrow(X, nn); k = k + 1, metric)
         d_nn = zeros(Q, k) 
         for j in eachindex(nn)
-            d_nn[j] = median(res_nn.d[j][2:end])
+            d_nn[j] = algo(res_nn.d[j][2:end])
         end
-        d[i] /= median(d_nn)
+        d[i] /= algo(d_nn)
     end
     (d = d, xscales)
 end
