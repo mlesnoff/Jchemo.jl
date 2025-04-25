@@ -1,6 +1,6 @@
 """
-    outknn(X; metric = :eucl, k, algo = median, scal::Bool = false)
-    outknn!(X::Matrix; metric = :eucl, k, algo = median, scal::Bool = false)
+    outknn(X; metric = :eucl, k, algo = sum, scal::Bool = false)
+    outknn!(X::Matrix; metric = :eucl, k, algo = sum, scal::Bool = false)
 Compute a kNN distance-based outlierness.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -9,7 +9,7 @@ Keyword arguments:
 * `algo` : Function summarizing the `k` distances to the neighbors.
 * `scal` : Boolean. If `true`, each column of `X` is scaled before computing the outlierness.
 
-For each observation (row of `X`), the outlierness is defined by a summary  (e.g. by median) of the distances 
+For each observation (row of `X`), the outlierness is defined by a summary (e.g. by sum or maximum) of the distances 
 between the observation and its `k` nearest neighbors. 
 
 ## References
@@ -43,7 +43,7 @@ typ = zeros(Int, n)
 typ[s] .= 1
 #plotsp(X, wl; xlabel = "Wavelength (nm)", ylabel = "Absorbance").f
 
-metric = :eucl ; k = 15 ; algo = median
+metric = :eucl ; k = 15 ; algo = maximum
 #algo = :maximum
 res = outknn(X; metric, k, algo) ;
 @names res
@@ -62,11 +62,11 @@ plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness").f
 ```
 """ 
 
-function outknn(X; metric = :eucl, k, algo = median, scal::Bool = false)
+function outknn(X; metric = :eucl, k, algo = sum, scal::Bool = false)
     outknn!(copy(ensure_mat(X)); k, metric, algo, scal)
 end
 
-function outknn!(X::Matrix; metric = :eucl, k, algo = median, scal::Bool = false)
+function outknn!(X::Matrix; metric = :eucl, k, algo = sum, scal::Bool = false)
     Q = eltype(X)
     n, p = size(X)
     xscales = ones(Q, p)
