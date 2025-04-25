@@ -12,11 +12,10 @@ Keyword arguments:
 The idea is to compare the KNN-outlierness of the observation to the KNN-outlierness of its neighbors, giving a local 
 measure of outlierness. For each observation (row of `X`), the outlierness is defined as folloxs:
 
-* A summary (e.g. by sum or maximum) of the distances between the observation and its `k` nearest neighbors
+* A summary (e.g. by sum) of the distances between the observation and its `k` nearest neighbors
     is computed, say out1.
-* The same summary is computed for each of the `k` nearest neighbors of the observation. The `k` 
-    returned values are then themself summarized, giving a new value (synthetic outlierness of the 
-    neighborhood), say out2.
+* The same summary is computed for each of the `k` nearest neighbors of the observation, and the average of 
+    the `k` returned values is computed, say out2.
 * The outlierness of the observation is finally defined as the ratio out1 / out2.
 
 The approach can be seen as a simplification of the local outlier factor (LOF) method (Breunig et al. 2000),
@@ -91,7 +90,7 @@ function outlknn!(X::Matrix; metric = :eucl, k, algo = sum, scal::Bool = false)
         for j in eachindex(nn)
             d_nn[j] = algo(res_nn.d[j][2:end])
         end
-        d[i] /= algo(d_nn)
+        d[i] /= mean(d_nn)
     end
     (d = d, xscales)
 end
