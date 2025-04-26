@@ -23,8 +23,8 @@ such as the Simplified-LOF method (Schubert et al 2014 p.206, Campos et al. 2016
 is estimated by the inverse of the k-distance.
 
 ## References
-Campos, G.O., Zimek, A., Sander, J., Campello, R.J.G.B., Micenková, B., Schubert, E., Assent, I., Houle, M.E., 
-2016. On the evaluation of unsupervised outlier detection: measures, datasets, and an empirical study. Data Min Knowl 
+Campos, G.O., Zimek, A., Sander, J., Campello, R.J.G.B., Micenková, B., Schubert, E., Assent, I., Houle, M.E., 2016. 
+On the evaluation of unsupervised outlier detection: measures, datasets, and an empirical study. Data Min Knowl 
 Disc 30, 891–927. https://doi.org/10.1007/s10618-015-0444-8
 
 Schubert, E., Zimek, A., Kriegel, H.-P., 2014. Local outlier detection reconsidered: a generalized view on 
