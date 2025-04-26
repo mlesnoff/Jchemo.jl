@@ -14,7 +14,7 @@ measure of outlierness. For each observation (row of `X`), the outlierness is de
 
 * A summary (e.g. by sum) of the distances between the observation and its `k` nearest neighbors
     is computed, say out1.
-* The same summary is computed for each of the `k` nearest neighbors of the observation, and the average of 
+* The same summary is computed for each of the `k` nearest neighbors of the observation, and the median of 
     the `k` returned values is computed, say out2.
 * The outlierness of the observation is finally defined as the ratio out1 / out2.
 
@@ -90,7 +90,7 @@ function outlknn!(X::Matrix; metric = :eucl, k, algo = sum, scal::Bool = false)
         for j in eachindex(nn)
             d_nn[j] = algo(res_nn.d[j][2:end])
         end
-        d[i] /= mean(d_nn)
+        d[i] /= median(d_nn)
     end
     (d = d, xscales)
 end
