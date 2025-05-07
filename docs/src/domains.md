@@ -246,6 +246,8 @@
 
 - **outstah** Stahel-Donoho outlierness
 - **outeucl**: Outlierness from Euclidean distances to center
+- **outsd**: Outlierness from scored distance (SD)
+- **outod**: Outlierness from orthogonal distance (OD)
 - **outknn**: kNN distance-based outlierness
 - **outlknn**: Local kNN distance-based outlierness
 
