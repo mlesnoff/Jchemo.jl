@@ -5,13 +5,20 @@ Compute an outlierness from PCA/PLS orthogonal distance (OD).
     the data.
 * `X` : Training X-data (n, p), on which was fitted the model `fitm`.
 
-In this method, the outlierness `d` of an observation is defined by its score distance (SD), ie. the Mahalanobis 
-distance between the projection of the observation on the score plan defined by the fitted (e.g. PCA) model and the 
-"center" (always defined by zero) of the score plan.
+In this method, the outlierness `d` of an observation is the orthogonal distance (=  'X-residuals') of this 
+observation, ie. the Euclidean distance between the observation and its projection on the  score plan defined by 
+the fitted (e.g. PCA) model (e.g. Hubert et al. 2005, Van Branden & Hubert 2005 p. 66, Varmuza & Filzmoser 
+2009 p. 79).
 
 ## References
 M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components 
 analysis. Technometrics, 47, 64-79.
+
+K. Vanden Branden, M. Hubert (2005). Robuts classification in high dimension based on the SIMCA method. 
+Chem. Lab. Int. Syst, 79, 10-21.
+
+K. Varmuza, V. Filzmoser (2009). Introduction to multivariate statistical analysis in chemometrics. 
+CRC Press, Boca Raton.
 
 ## Examples
 ```julia
