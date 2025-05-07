@@ -1,5 +1,14 @@
 # News
 
+## *Version 0.8.10*
+
+- News 
+    - Function **outsd**: Compute a SD outlierness.
+
+- Modifications
+    - Code cleaning.  
+
+
 ## *Version 0.8.9*
 
 - News 
