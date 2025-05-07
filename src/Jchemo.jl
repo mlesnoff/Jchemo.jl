@@ -204,14 +204,15 @@ include("mbplsqda.jl")
 include("mbplskdeda.jl") 
 
 ## One-class
+include("outstah.jl")
+include("outeucl.jl")
+include("outsd.jl")
+include("outknn.jl")
+include("outlknn.jl")
 include("occsd.jl")
 include("occod.jl") 
 include("occsdod.jl")
 include("occstah.jl")
-include("outstah.jl")
-include("outeucl.jl")
-include("outknn.jl")
-include("outlknn.jl")
 
 ## Local
 include("lwmlrda.jl")
@@ -408,6 +409,7 @@ export
     svmda, 
     treeda, rfda,
     outstah, outeucl,
+    outsd, 
     outknn, outlknn,
     occstah,
     occsd, occod, occsdod,
