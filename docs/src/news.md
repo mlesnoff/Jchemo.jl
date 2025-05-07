@@ -4,6 +4,7 @@
 
 - News 
     - Function **outsd**: Compute a SD outlierness.
+    - Function **outod**: Compute a OD outlierness.
 
 - Modifications
     - Code cleaning.  
