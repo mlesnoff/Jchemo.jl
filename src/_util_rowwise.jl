@@ -21,7 +21,7 @@ rowmean(X) = colmean(ensure_mat(X)')
 Compute row-wise norms of a matrix.
 * `X` : Data (n, p).
 
-The norm computed for a row x of `X` is:
+The norm of each row x of `X` is computed as:
 * sqrt(x' * x)
 
 Return a vector.

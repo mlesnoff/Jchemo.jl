@@ -46,12 +46,8 @@ text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
 ```
 """
-function outsd(fitm)
-    Q = eltype(fitm.T)
-    nlv = nco(fitm.T)
-    tscales = colstd(fitm.T, fitm.weights)
-    T = fscale(fitm.T, tscales)
-    d2 = vec(euclsq(T, zeros(Q, nlv)'))   # the center is defined as 0
-    d = sqrt.(d2)
+function outod(fitm, X)
+    E = xresid(fitm, X)
+    d = rownorm(E)
     (d = d,)
 end
