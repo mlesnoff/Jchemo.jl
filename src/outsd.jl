@@ -2,7 +2,7 @@
     outsd(fitm)
 Compute an outlierness from PCA/PLS score distance (SD).
 * `fitm` : The preliminary model (e.g. object `fitm` returned by function `pcasvd`) that was fitted on 
-    the training data assumed to represent the training class.
+    the data.
 
 In this method, the outlierness `d` of an observation is defined by its score distance (SD), ie. the Mahalanobis 
 distance between the projection of the observation on the score plan defined by the fitted (e.g. PCA) model and the 
