@@ -150,6 +150,9 @@ Compute the norm of a vector.
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 
+The norm of vector `x` is computed by:
+* sqrt(x' * x)
+
 The weighted norm of vector `x` is computed by:
 * sqrt(x' * D * x), where D is the diagonal matrix of vector `weights.w`.
 
