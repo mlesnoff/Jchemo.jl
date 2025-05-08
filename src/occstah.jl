@@ -78,8 +78,8 @@ fit!(model, Xtrain_fin)
 @names model 
 @names model.fitm 
 @head model.fitm.V  # random projection directions 
-@head res = model.fitm.d
-d = res.dstand
+@head dtrain = model.fitm.d
+d = dtrain.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index", 
     ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
@@ -87,16 +87,15 @@ f
 ## Prediction of Test
 res = predict(model, Xtest_fin) ;
 @names res
-@head res.d
+@head dtest = res.d
 @head res.pred
 tab(res.pred)
 errp(res.pred, ytest_fin)
 conf(res.pred, ytest_fin).cnt
-d1 = model.fitm.d.dstand
-d2 = res.d.dstand
-d = vcat(d1, d2)
-f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", 
-    xlabel = "Obs. index", ylabel = "Standardized distance")
+##
+d = vcat(dtrain.dstand, dtest.dstand)
+f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", xlabel = "Obs. index", 
+    ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 ```
