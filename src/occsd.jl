@@ -3,7 +3,7 @@
     occsd(fitm; kwargs...)
 One-class classification using PCA/PLS score distance (SD).
 * `fitm` : The preliminary model (e.g. object `fitm` returned by function `pcasvd`) that was fitted on 
-    the training data assumed to represent the training class.
+    the data assumed to represent the training class.
 Keyword arguments:
 * `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `cut` = `:mad`, a constant. See thereafter.
@@ -18,7 +18,7 @@ If a new observation has `d` higher than a given `cutoff`, the observation is as
 computed on the training class:
 * If `cut` = `:mad`, then `cutoff` = MED([d]) + `cri` * MAD([d]). 
 * If `cut` = `:q`, then `cutoff` is estimated from the empirical cumulative density function 
-  computed on [d], for a given risk-I (`risk`).
+    computed on [d], for a given risk-I (`risk`).
 Alternative approximate cutoffs have been proposed in the literature (e.g.: Nomikos & MacGregor 1995, Hubert et al. 2005,
 Pomerantsev 2008). Typically, and whatever the approximation method used to compute the cutoff, it is recommended to tune 
 this cutoff depending on the detection objectives. 
@@ -62,43 +62,51 @@ Xtest = Xp[s, :]
 Ytest = Y[s, :]
 
 ## Build the example data
-## - cla_train is the reference class ('in')
+## - cla_train is the reference class (= 'in')
 ## - cla_test contains the observations to be predicted (i.e. to be 'in' or 'out' of cla_train) 
-## Below, cla_train = "EEH", and two situations are considered as example for cla_test:
-cla_train = "EHH" ; cla_test = "PEE" ; typtest = "out"   # here cla_test should be classified 'out'
-#cla_train = "EHH" ; cla_test = "EHH" ; typtest = "in"   # here cla_test should be classified 'in'
+## Below, cla_train = "EEH", and two situations are considered as examples for cla_test:
+cla_train = "EHH"
 s = Ytrain.typ .== cla_train
-zXtrain = Xtrain[s, :]    
+Xtrain_fin = Xtrain[s, :]    
+ntrain = nro(Xtrain_fin)
+## Two situations
+cla_test = "PEE"    # here test obs. should be classified 'out'
+#cla_test = "EHH"   # here test obs. should be classified 'in'
 s = Ytest.typ .== cla_test
-zXtest = Xtest[s, :] 
-ntrain = nro(zXtrain)
-ntest = nro(zXtest)
+Xtest_fin = Xtest[s, :] 
+ntest = nro(Xtest_fin)
+## Only used to compute error rates
+ytrain_fin = repeat(["in"], ntrain)
+if cla_test == cla_train
+    ytest_fin = repeat(["in"], ntest)
+else
+    ytest_fin = repeat(["out"], ntest)
+end
+y_fin = vcat(ytrain_fin, ytest_fin)
+## 
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
-ytrain = repeat(["in"], ntrain)
-ytest = repeat([typtest], ntest)
-## End
 
 #### Preliminary PCA fitted model
-nlv = 20
-model_lv = pcasvd(; nlv) 
-#model_lv = pcaout(; nlv) 
-fit!(model_lv, zXtrain) 
-res = summary(model_lv, zXtrain).explvarx 
+nlv = 15
+model0 = pcasvd(; nlv) 
+#model0 = pcaout(; nlv) 
+fit!(model0, Xtrain_fin) 
+res = summary(model0, Xtrain_fin).explvarx 
 plotgrid(res.nlv, res.pvar; step = 2, xlabel = "Nb. LVs", ylabel = "% Variance explained").f
-Ttrain = model_lv.fitm.T
-Ttest = transf(model_lv, zXtest)
+Ttrain = model0.fitm.T
+Ttest = transf(model0, Xtest_fin)
 T = vcat(Ttrain, Ttest)
 i = 1
 group = vcat(repeat(["Train"], ntrain), repeat(["Test"], ntest))
-plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", xlabel = string("LV", i), 
-    ylabel = string("LV", i + 1)).f
+plotxy(T[:, i], T[:, i + 1], group; leg_title = "Type of obs.", xlabel = string("PC", i), 
+    ylabel = string("PC", i + 1), title = string(cla_train, "-", cla_test)).f
 
 #### Occ
 model = occsd()
 #model = occsd(cut = :mad, cri = 4)
 #model = occsd(cut = :q, risk = .01)
-fit!(model, model_lv.fitm) 
+fit!(model, model0.fitm) 
 @names model 
 @names model.fitm 
 @head dtrain = model.fitm.d
@@ -108,13 +116,13 @@ f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index",
 hlines!(ax, 1; linestyle = :dot)
 f
 ## Predictions
-res = predict(model, zXtest) 
+res = predict(model, Xtest_fin) 
 @names res
 @head pred = res.pred
 @head dtest = res.d
 tab(pred)
-errp(pred, ytest)
-conf(pred, ytest).cnt
+errp(pred, ytest_fin)
+conf(pred, ytest_fin).cnt
 ##
 d = vcat(dtrain.dstand, dtest.dstand)
 f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", xlabel = "Obs. index", 
