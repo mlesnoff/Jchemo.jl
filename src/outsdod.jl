@@ -21,12 +21,23 @@ The cutoff is computed with non-parametric heuristics. Noting [d] the SD- or OD-
 * If `cut` = `:q`, then `cutoff` is estimated from the empirical cumulative density function 
   computed on [d], for a given risk-I (`risk`).
 
+See function `occod` for examples.
+    
+## References
+M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components 
+analysis. Technometrics, 47, 64-79.
+
+K. Vanden Branden, M. Hubert (2005). Robuts classification in high dimension based on the SIMCA method. 
+Chem. Lab. Int. Syst, 79, 10-21.
+
+K. Varmuza, V. Filzmoser (2009). Introduction to multivariate statistical analysis in chemometrics. 
+CRC Press, Boca Raton.
 """ 
 function outsdod(fitm, X; cut = :mad, cri = 3, risk = .025)
     @assert in(cut, [:mad, :q]) "Argument 'cut' must be :mad or :q."
     @assert 0 <= risk <= 1 "Argument 'risk' must ∈ [0, 1]."
-    d_sd = outsd(fitm)
-    d_od = outod(fitm, X)
+    d_sd = outsd(fitm).d
+    d_od = outod(fitm, X).d
     if cut == :mad
         cutoff_sd = median(d_sd) + cri * madv(d_sd)
         cutoff_od = median(d_od) + cri * madv(d_od)
@@ -36,7 +47,7 @@ function outsdod(fitm, X; cut = :mad, cri = 3, risk = .025)
     end
     d_sd ./= cutoff_sd
     d_od ./= cutoff_od
-    d = [sqrt(d_sd[i] * d_od[i]) for i in eachindex(sd.dstand)]
+    d = [sqrt(d_sd[i] * d_od[i]) for i in eachindex(d_sd)]
     (d = d,)
 end
 
