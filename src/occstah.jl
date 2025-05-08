@@ -5,15 +5,13 @@ One-class classification using the Stahel-Donoho outlierness.
 * `X` : Training X-data (n, p).
 Keyword arguments:
 * `nlv` : Nb. random directions on which `X` is projected. 
-* `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. 
-    See Thereafter.
+* `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `cut` = `:mad`, a constant. See thereafter.
 * `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
-* `scal` : Boolean. If `true`, each column of `X` 
-    is scaled such as in function `outstah`.
+* `scal` : Boolean. If `true`, each column of `X` is scaled such as in function `outstah`.
 
-In this method, the outlierness `d` of a given observation
-is the Stahel-Donoho outlierness (see `?outstah`).
+In this method, the outlierness `d` of a given observation is the Stahel-Donoho outlierness 
+(see function `outstah`).
 
 See function `occsd` for details on the outputs.
 
@@ -35,52 +33,66 @@ Ytrain = rmrow(Y, s)
 Xtest = Xp[s, :]
 Ytest = Y[s, :]
 
-## Below, the reference class is "EEH"
-cla1 = "EHH" ; cla2 = "PEE" ; cod = "out"   # here cla2 should be detected
-#cla1 = "EHH" ; cla2 = "EHH" ; cod = "in"   # here cla2 should not be detected
-s1 = Ytrain.typ .== cla1
-s2 = Ytest.typ .== cla2
-zXtrain = Xtrain[s1, :]    
-zXtest = Xtest[s2, :] 
-ntrain = nro(zXtrain)
-ntest = nro(zXtest)
+## Build the example data
+## - cla_train is the reference class (= 'in')
+## - cla_test contains the observations to be predicted (i.e. to be 'in' or 'out' of cla_train) 
+## Below, cla_train = "EEH", and two situations are considered as examples for cla_test:
+cla_train = "EHH"
+s = Ytrain.typ .== cla_train
+Xtrain_fin = Xtrain[s, :]    
+ntrain = nro(Xtrain_fin)
+## Two situations
+cla_test = "PEE"    # here test obs. should be classified 'out'
+#cla_test = "EHH"   # here test obs. should be classified 'in'
+s = Ytest.typ .== cla_test
+Xtest_fin = Xtest[s, :] 
+ntest = nro(Xtest_fin)
+## Only used to compute error rates
+ytrain_fin = repeat(["in"], ntrain)
+if cla_test == cla_train
+    ytest_fin = repeat(["in"], ntest)
+else
+    ytest_fin = repeat(["out"], ntest)
+end
+y_fin = vcat(ytrain_fin, ytest_fin)
+## 
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
-ytrain = repeat(["in"], ntrain)
-ytest = repeat([cod], ntest)
 
-## Group description
-model = pcasvd(nlv = 10) 
-fit!(model, zXtrain) 
+## Data description
+nlv = 10
+model = pcasvd(; nlv) 
+fit!(model, Xtrain_fin) 
 Ttrain = model.fitm.T
-Ttest = transf(model, zXtest)
+Ttest = transf(model, Xtest_fin)
 T = vcat(Ttrain, Ttest)
-group = vcat(repeat(["1"], ntrain), repeat(["2"], ntest))
 i = 1
-plotxy(T[:, i], T[:, i + 1], group; leg_title = "Class", xlabel = string("PC", i),  
-    ylabel = string("PC", i + 1)).f
+group = vcat(repeat(["Train"], ntrain), repeat(["Test"], ntest))
+plotxy(T[:, i], T[:, i + 1], group; leg_title = "Type of obs.", xlabel = string("PC", i), 
+    ylabel = string("PC", i + 1), title = string(cla_train, "-", cla_test)).f
 
 #### Occ
-model_occ = occstah(; nlv = 5000, scal = true)
-fit!(model_occ, zXtrain) 
-@names model_occ 
-@names model_occ.fitm 
-@head model_occ.fitm.V  # random directions 
-@head d = model_occ.fitm.d
-d = d.dstand
+## Training
+model = occstah(; nlv = 5000, scal = true)
+fit!(model, Xtrain_fin) 
+@names model 
+@names model.fitm 
+@head model.fitm.V  # random projection directions 
+@head res = model.fitm.d
+d = res.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index", 
     ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
-
-res = predict(model_occ, zXtest) ;
+## Prediction of Test
+res = predict(model, Xtest_fin) ;
 @names res
 @head res.d
 @head res.pred
 tab(res.pred)
-errp(res.pred, ytest)
-conf(res.pred, ytest).cnt
-d1 = model_occ.fitm.d.dstand
+errp(res.pred, ytest_fin)
+conf(res.pred, ytest_fin).cnt
+d1 = model.fitm.d.dstand
 d2 = res.d.dstand
 d = vcat(d1, d2)
 f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", 
@@ -93,11 +105,13 @@ occstah(; kwargs...) = JchemoModel(occstah, nothing, kwargs)
 
 function occstah(X; kwargs...) 
     par = recovkw(ParOccstah, kwargs).par 
+    @assert in(par.cut, [:mad, :q]) "Argument 'cut' must be :mad or :q."
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
     p = nco(X)
     V = rand(0:1, p, par.nlv)
     res = outstah(X, V; scal = par.scal)
     d = res.d
+    ## Old parametric, not used anymore
     #d2 = d.^2 
     #mu = median(d2)
     #s2 = madv(d2)^2
@@ -106,7 +120,8 @@ function occstah(X; kwargs...)
     #dis = Distributions.Chisq(nu)
     #pval = Distributions.ccdf.(dis, d2 / g)
     #cut == :par ? cutoff = sqrt(g * quantile(dis, 1 - risk)) : nothing
-    #cut == "npar" ? cutoff = median(d) + par.cri * madv(d) : nothing  
+    #cut == "npar" ? cutoff = median(d) + par.cri * madv(d) : nothing
+    ## End 
     par.cut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
     par.cut == :q ? cutoff = quantile(d, 1 - par.risk) : nothing
     e_cdf = StatsBase.ecdf(d)

@@ -47,10 +47,10 @@ Ytest = Y[s, :]
 
 ## Build the example data
 ## - cla_train is the reference class ('in')
-## - cla_test contains the observations to be predicted (to be 'in' or 'out' of cla_train) 
-## Below, cla_train = "EEH", and two example situations for cla_test:
-cla_train = "EHH" ; cla_test = "PEE" ; typtest = "out"   # here cla_test should be detected 'out'
-#cla_train = "EHH" ; cla_test = "EHH" ; typtest = "in"   # here cla_test should not be detected 'out'
+## - cla_test contains the observations to be predicted (i.e. to be 'in' or 'out' of cla_train) 
+## Below, cla_train = "EEH", and two situations are considered as example for cla_test:
+cla_train = "EHH" ; cla_test = "PEE" ; typtest = "out"   # here cla_test should be classified 'out'
+#cla_train = "EHH" ; cla_test = "EHH" ; typtest = "in"   # here cla_test should be classified 'in'
 s = Ytrain.typ .== cla_train
 zXtrain = Xtrain[s, :]    
 s = Ytest.typ .== cla_test

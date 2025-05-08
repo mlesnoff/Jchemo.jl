@@ -232,15 +232,19 @@
 
 ## ONE-CLASS CLASSIFICATION (OCC)
 
+### Stahel-Donoho
+
+- **occstah** Stahel-Donoho outlierness
+
 ### From a PCA or PLS score space
 
 - **occsd** Score distance (SD)
 - **occod** Orthogonal distance (OD) 
 - **occsdod** Compromise between SD and OD (a.k.a Simca approach) 
 
-### Other methods
+### kNN-Distance 
 
-- **occstah** Stahel-Donoho outlierness
+
 
 ### Utilities (unsupervised)
 
