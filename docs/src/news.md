@@ -3,8 +3,7 @@
 ## *Version 0.8.10*
 
 - News 
-    - Function **outsd**: Compute a SD outlierness.
-    - Function **outod**: Compute a OD outlierness.
+    - Functions **outsd**, **outod** and **outsdod**: Compute a SD, OD and SD-OD outlierness.
 
 - Modifications
     - Code cleaning.  
