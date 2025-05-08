@@ -21,8 +21,8 @@ The cutoff is computed with non-parametric heuristics. Noting [d] the SD- or OD-
 * If `cut` = `:q`, then `cutoff` is estimated from the empirical cumulative density function 
   computed on [d], for a given risk-I (`risk`).
 
-See function `occod` for examples.
-    
+See function `outod` for examples.
+
 ## References
 M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components 
 analysis. Technometrics, 47, 64-79.
