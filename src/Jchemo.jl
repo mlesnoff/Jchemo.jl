@@ -208,6 +208,7 @@ include("outstah.jl")
 include("outeucl.jl")
 include("outsd.jl")
 include("outod.jl")
+include("outsdod.jl")
 include("outknn.jl")
 include("outlknn.jl")
 include("occsd.jl")
@@ -410,7 +411,7 @@ export
     svmda, 
     treeda, rfda,
     outstah, outeucl,
-    outsd, outod, 
+    outsd, outod, outsdod,
     outknn, outlknn,
     occstah,
     occsd, occod, occsdod,

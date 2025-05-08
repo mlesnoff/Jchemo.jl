@@ -18,10 +18,19 @@ where:
 
 """ 
 function outsdod(fitm, X; cut = :mad, cri = 3, risk = .025)
+    @assert in(cut, [:mad, :q]) "Argument 'cut' must be :mad or :q."
+    @assert 0 <= risk <= 1 "Argument 'risk' must ∈ [0, 1]."
     d_sd = outsd(fitm)
     d_od = outod(fitm, X)
-    dstand_sd = d_sd / cutoff_sd
-    dstand_od = d_od / cutoff_od
+    if cut == :mad
+        cutoff_sd = median(d_sd) + cri * madv(d_sd)
+        cutoff_od = median(d_od) + cri * madv(d_od)
+    elseif cut == :q
+        cutoff_sd = quantile(d_sd, 1 - risk)
+        cutoff_od = quantile(d_od, 1 - risk)
+    end
+    d_sd ./= cutoff_sd
+    d_od ./= cutoff_od
     d = [sqrt(d_sd[i] * d_od[i]) for i in eachindex(sd.dstand)]
     (d = d,)
 end
