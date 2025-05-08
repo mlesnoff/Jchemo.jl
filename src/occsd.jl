@@ -132,10 +132,12 @@ function occsd(fitm; kwargs...)
     T = copy(fitm.T) # remove side effect of fscale!
     Q = eltype(T)
     nlv = nco(T)
+    ## Mahalanobis distance
     tscales = colstd(T, fitm.weights)
     fscale!(T, tscales)
     d2 = vec(euclsq(T, zeros(Q, nlv)'))   # the center is defined as 0
     d = sqrt.(d2)
+    ## End
     if par.cut == :mad
         cutoff = median(d) + par.cri * madv(d)
     elseif par.cut == :q
@@ -157,9 +159,11 @@ function predict(object::Occsd, X)
     T = transf(object.fitm, X)
     Q = eltype(T)
     m, nlv = size(T)
+    ## Mahalanobis distance
     fscale!(T, object.tscales)
     d2 = vec(euclsq(T, zeros(Q, nlv)'))
     d = sqrt.(d2)
+    ## End
     p_val = pval(object.e_cdf, d)
     d = DataFrame(d = d, dstand = d / object.cutoff, pval = p_val, gh = d2 / nlv)
     pred = [if d.dstand[i] <= 1 "in" else "out" end for i = 1:m]
