@@ -556,10 +556,6 @@ end
 
 ## Occ 
 
-Base.@kwdef mutable struct ParOut
-    scal::Bool = false                   
-end 
-
 Base.@kwdef mutable struct ParOcc    # occsd, occod, occsdod
     cut::Symbol = :mad   
     risk::Float64 = .025  

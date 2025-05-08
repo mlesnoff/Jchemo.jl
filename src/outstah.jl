@@ -1,6 +1,6 @@
 """
-    outstah(X, V; kwargs...)
-    outstah!(X::Matrix, V::Matrix; kwargs...)
+    outstah(X, V; scal = false)
+    outstah!(X::Matrix, V::Matrix; scal = false)
 Compute the Stahel-Donoho outlierness.
 * `X` : X-data (n, p).
 * `V` : A projection matrix (p, nlv) representing the directions of the projection pursuit.
@@ -38,16 +38,15 @@ res.d    # outlierness
 plotxy(1:ntot, res.d).f
 ```
 """ 
-function outstah(X, V; kwargs...)
-    outstah!(copy(ensure_mat(X)), ensure_mat(V); kwargs...)
+function outstah(X, V; scal = false)
+    outstah!(copy(ensure_mat(X)), ensure_mat(V); scal)
 end
 
-function outstah!(X::Matrix, V::Matrix; kwargs...) 
-    par = recovkw(ParOut, kwargs).par
+function outstah!(X::Matrix, V::Matrix; scal = false) 
     Q = eltype(X)
     n, p = size(X)
     xscales = ones(Q, p) 
-    if par.scal
+    if scal
         xscales .= colmad(X)
         fscale!(X, xscales)
     end

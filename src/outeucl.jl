@@ -1,6 +1,6 @@
 """
-    outeucl(X; kwargs...)
-    outeucl!(X::Matrix; kwargs...)
+    outeucl(X; scal = false)
+    outeucl!(X::Matrix; scal = false)
 Compute outlierness from Euclidean distances to center.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -32,16 +32,15 @@ res.d    # outlierness
 plotxy(1:ntot, res.d).f
 ```
 """ 
-function outeucl(X; kwargs...)
-    outeucl!(copy(ensure_mat(X)); kwargs...)
+function outeucl(X; scal = false)
+    outeucl!(copy(ensure_mat(X)); scal)
 end
 
-function outeucl!(X::Matrix; kwargs...) 
-    par = recovkw(ParOut, kwargs).par
+function outeucl!(X::Matrix; scal = false) 
     Q = eltype(X)
     p = nco(X)
     xscales = ones(Q, p)
-    if par.scal
+    if scal
         xscales .= colmad(X)
         fscale!(X, xscales)
     end
