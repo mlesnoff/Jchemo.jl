@@ -78,7 +78,7 @@ end
 
 function pcaout!(X::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParPcaout, kwargs).par 
-    n, p = size(X)
+    p = nco(X)
     nlvstah = 500
     V = rand(0:1, p, nlvstah)
     d = outstah(X, V; scal = par.scal).d
