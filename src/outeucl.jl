@@ -1,7 +1,7 @@
 """
     outeucl(X; kwargs...)
     outeucl!(X::Matrix; kwargs...)
-Compute an outlierness from Euclidean distances to center.
+Compute outlierness from Euclidean distances to center.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD before computing the outlierness.

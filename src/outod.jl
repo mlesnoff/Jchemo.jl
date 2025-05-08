@@ -1,9 +1,9 @@
 """
     outod(fitm, X)
-Compute an outlierness from PCA/PLS orthogonal distance (OD).
+Compute outlierness from PCA/PLS orthogonal distance (OD).
 * `fitm` : The preliminary model (e.g. object `fitm` returned by function `pcasvd`) that was fitted on 
     the data.
-* `X` : Training X-data (n, p), on which was fitted the model `fitm`.
+* `X` : X-data (n, p) on which was fitted the model `fitm`.
 
 In this method, the outlierness `d` of an observation is the orthogonal distance (=  'X-residuals') of this 
 observation, ie. the Euclidean distance between the observation and its projection on the score plan defined by 

@@ -1,6 +1,6 @@
 """
     outsd(fitm)
-Compute an outlierness from PCA/PLS score distance (SD).
+Compute outlierness from PCA/PLS score distance (SD).
 * `fitm` : The preliminary model (e.g. object `fitm` returned by function `pcasvd`) that was fitted on 
     the data.
 
