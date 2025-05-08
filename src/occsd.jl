@@ -16,9 +16,9 @@ distance between the projection of the observation on the score plan defined by 
 If a new observation has `d` higher than a given `cutoff`, the observation is assumed to not belong to the training 
 (= reference) class. The `cutoff` is computed with non-parametric heuristics. Noting [d] the vector of outliernesses 
 computed on the training class:
-* If `cut` = `:mad`, then `cutoff` = median([d]) + `cri` * madv([d]). 
-* If `cut` = `:q`, then `cutoff` is estimated from the empirical cumulative density function computed on [d], for a 
-    given risk-I (`risk`). 
+* If `cut` = `:mad`, then `cutoff` = MED([d]) + `cri` * MAD([d]). 
+* If `cut` = `:q`, then `cutoff` is estimated from the empirical cumulative density function 
+  computed on [d], for a given risk-I (`risk`).
 Alternative approximate cutoffs have been proposed in the literature (e.g.: Nomikos & MacGregor 1995, Hubert et al. 2005,
 Pomerantsev 2008). Typically, and whatever the approximation method used to compute the cutoff, it is recommended to tune 
 this cutoff depending on the detection objectives. 

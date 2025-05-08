@@ -16,6 +16,11 @@ where:
 * SD_stand = SD / cutoff_SD
 * OD_stand = OD / cutoff_OD
 
+The cutoff is computed with non-parametric heuristics. Noting [d] the SD- or OD-vector:
+* If `cut` = `:mad`, then `cutoff` = MED([d]) + `cri` * MAD([d]). 
+* If `cut` = `:q`, then `cutoff` is estimated from the empirical cumulative density function 
+  computed on [d], for a given risk-I (`risk`).
+
 """ 
 function outsdod(fitm, X; cut = :mad, cri = 3, risk = .025)
     @assert in(cut, [:mad, :q]) "Argument 'cut' must be :mad or :q."

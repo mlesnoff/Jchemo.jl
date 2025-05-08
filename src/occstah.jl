@@ -15,7 +15,7 @@ Keyword arguments:
 In this method, the outlierness `d` of a given observation
 is the Stahel-Donoho outlierness (see `?outstah`).
 
-See function `occsd` for details on outputs.
+See function `occsd` for details on the outputs.
 
 ## Examples
 ```julia
