@@ -242,12 +242,11 @@
 
 - **occstah** Stahel-Donoho outlierness
 
-### Utilities
+### Utilities (unsupervised)
 
 - **outstah** Stahel-Donoho outlierness
 - **outeucl**: Outlierness from Euclidean distances to center
-- **outsd**: Outlierness from scored distance (SD)
-- **outod**: Outlierness from orthogonal distance (OD)
+- **outsd**, **outod**, **outsdod**: Outlierness from PCA/PLS SD, OD and SD-OD distances
 - **outknn**: kNN distance-based outlierness
 - **outlknn**: Local kNN distance-based outlierness
 
