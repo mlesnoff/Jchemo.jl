@@ -103,6 +103,7 @@ plotxy(T[:, i], T[:, i + 1], group; leg_title = "Type of obs.", xlabel = string(
     ylabel = string("PC", i + 1), title = string(cla_train, "-", cla_test)).f
 
 #### Occ
+## Training
 model = occsd()
 #model = occsd(cut = :mad, cri = 4)
 #model = occsd(cut = :q, risk = .01)
@@ -115,7 +116,7 @@ f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index",
     ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
-## Predictions
+## Prediction of Test
 res = predict(model, Xtest_fin) 
 @names res
 @head pred = res.pred
