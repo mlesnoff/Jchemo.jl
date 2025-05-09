@@ -114,8 +114,10 @@ function occod(fitm, X; kwargs...)
     par = recovkw(ParOcc, kwargs).par 
     @assert in(par.cut, [:mad, :q]) "Argument 'cut' must be :mad or :q."
     @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
+    ## Orthogonal distance
     E = xresid(fitm, X)
     d = rownorm(E)
+    ## End
     if par.cut == :mad
         cutoff = median(d) + par.cri * madv(d)
     elseif par.cut == :q
@@ -134,9 +136,11 @@ Compute predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Occod, X)
+    m = nro(X)
+    ## Orthogonal distance
     E = xresid(object.fitm, X)
-    m = nro(E)
     d = rownorm(E)
+    ## End
     p_val = pval(object.e_cdf, d)
     d = DataFrame(d = d, dstand = d / object.cutoff, pval = p_val)
     pred = [if d.dstand[i] <= 1 "in" else "out" end for i = 1:m]
