@@ -6,7 +6,7 @@ Compute outlierness from PCA/PLS orthogonal distance (OD).
 * `X` : X-data (n, p) on which was fitted the model `fitm`.
 
 In this method, the outlierness `d` of an observation is the orthogonal distance (=  'X-residuals') of this 
-observation, ie. the Euclidean distance between the observation and its projection on the score plan defined by 
+observation, ie. the Euclidean distance between the observation and its projection to the score plan defined by 
 the fitted (e.g. PCA) model (e.g. Hubert et al. 2005, Van Branden & Hubert 2005 p. 66, Varmuza & Filzmoser 
 2009 p. 79).
 
