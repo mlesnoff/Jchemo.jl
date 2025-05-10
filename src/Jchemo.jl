@@ -211,10 +211,11 @@ include("outod.jl")
 include("outsdod.jl")
 include("outknn.jl")
 include("outlknn.jl")
+include("occstah.jl")
 include("occsd.jl")
 include("occod.jl") 
 include("occsdod.jl")
-include("occstah.jl")
+include("occknn.jl")
 
 ## Local
 include("lwmlrda.jl")
@@ -410,11 +411,13 @@ export
     dkplslda, dkplsqda, dkplskdeda, 
     svmda, 
     treeda, rfda,
+    ## One-class
     outstah, outeucl,
     outsd, outod, outsdod,
     outknn, outlknn,
     occstah,
     occsd, occod, occsdod,
+    occknn,
     ## Sparse 
     splsrda,
     splslda, splsqda, splskdeda,

@@ -22,24 +22,31 @@ struct Occlknn1
     par::Nothing #Par
 end
 
-function occknndis(X; nsamp, 
-        metric = :eucl, k, algo = sum, scal::Bool = false, 
-        typc = :mad, cri = 3, alpha = .025, 
-        kwargs...
-        )
+Base.@kwdef mutable struct ParOccknn1
+    nsamp::Int = 100
+    metric::Symbol = :eucl                                       
+    k::Int = 1     
+    algo::Function = sum
+    cut::Symbol = :mad   
+    risk::Float64 = .025  
+    cri::Float64 = 3. 
+    scal::Bool = false                    
+end 
+
+function occknn(X; kwargs...)
+    par = recovkw(ParOccknn1, kwargs).par
     X = ensure_mat(X)
     n = nro(X)
-    zX = 
-    
-    
-    
-
-    typc == :mad ? cutoff = median(d) + par.cri * mad(d) : nothing
-    typc == :q ? cutoff = quantile(d, 1 - alpha) : nothing
+    nsamp = min(par.nsamp, n)
+    s = sample(1:n, nsamp, replace = false)
+    vX = vrow(X, s)
+    d = outknn(vX; metric = par.metric, k = par.k, algo = par.algo, scal = par.scal).d
+    par.cut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
+    par.cut == :q ? cutoff = quantile(d, 1 - par.risk) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
-    Occknn1(d, fm, fm.T, tscales, k, e_cdf, cutoff)
+    (d = d, k, e_cdf, cutoff)
 end
 
 
