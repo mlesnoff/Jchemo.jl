@@ -109,8 +109,10 @@ model = occsd()
 #model = occsd(cut = :q, risk = .01)
 fit!(model, model0.fitm) 
 @names model 
-@names model.fitm 
-@head dtrain = model.fitm.d
+fitm = model.fitm ;
+@names fitm 
+@head dtrain = fitm.d
+fitm.cutoff
 d = dtrain.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index", 
     ylabel = "Standardized distance")

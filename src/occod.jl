@@ -94,8 +94,10 @@ model = occod()
 #model = occsdod()
 fit!(model, model0.fitm, Xtrain_fin) 
 @names model 
-@names model.fitm 
-@head dtrain = model.fitm.d
+fitm = model.fitm ;
+@names fitm 
+@head dtrain = fitm.d
+fitm.cutoff
 d = dtrain.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index", 
     ylabel = "Standardized distance")

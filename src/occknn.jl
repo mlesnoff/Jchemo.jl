@@ -33,12 +33,18 @@ Base.@kwdef mutable struct ParOccknn1
     scal::Bool = false                    
 end 
 
+occknn(; kwargs...) = JchemoModel(occknn, nothing, kwargs)
+
 function occknn(X; kwargs...)
     par = recovkw(ParOccknn1, kwargs).par
     X = ensure_mat(X)
     n = nro(X)
     nsamp = min(par.nsamp, n)
-    s = sample(1:n, nsamp, replace = false)
+    if nsamp == n
+        s = 1:n
+    else
+        s = sample(1:n, nsamp, replace = false)
+    end
     vX = vrow(X, s)
     d = outknn(vX; metric = par.metric, k = par.k, algo = par.algo, scal = par.scal).d
     par.cut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
@@ -46,7 +52,7 @@ function occknn(X; kwargs...)
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
-    (d = d, k, e_cdf, cutoff)
+    (d = d, k = par.k, e_cdf, cutoff)
 end
 
 

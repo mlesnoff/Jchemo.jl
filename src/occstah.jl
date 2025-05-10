@@ -76,9 +76,10 @@ plotxy(T[:, i], T[:, i + 1], group; leg_title = "Type of obs.", xlabel = string(
 model = occstah(; nlv = 5000, scal = true)
 fit!(model, Xtrain_fin) 
 @names model 
-@names model.fitm 
-@head model.fitm.V  # random projection directions 
-@head dtrain = model.fitm.d
+fitm = model.fitm ;
+@names fitm 
+@head fitm.V  # random projection directions 
+@head dtrain = fitm.d
 d = dtrain.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index", 
     ylabel = "Standardized distance")
