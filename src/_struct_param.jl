@@ -556,12 +556,6 @@ end
 
 ## Occ 
 
-Base.@kwdef mutable struct ParOcc    # occsd, occod, occsdod
-    cut::Symbol = :mad   
-    cri::Float64 = 3.
-    risk::Float64 = .025 
-end 
-
 Base.@kwdef mutable struct ParOccstah 
     nlv::Int = 500
     cut::Symbol = :mad   
@@ -569,4 +563,22 @@ Base.@kwdef mutable struct ParOccstah
     risk::Float64 = .025 
     scal::Bool = false                    
 end 
+
+Base.@kwdef mutable struct ParOcc    # occsd, occod, occsdod
+    cut::Symbol = :mad   
+    cri::Float64 = 3.
+    risk::Float64 = .025 
+end 
+
+Base.@kwdef mutable struct ParOccknn
+    nsamp::Int = 100
+    metric::Symbol = :eucl                                       
+    k::Int = 1     
+    algo::Function = sum
+    cut::Symbol = :mad   
+    cri::Float64 = 3.
+    risk::Float64 = .025 
+    scal::Bool = false                
+end 
+
 

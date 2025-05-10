@@ -749,13 +749,6 @@ struct Occod
     par::ParOcc
 end
 
-struct Occsdod
-    d::DataFrame
-    fitmsd
-    fitmod
-    par::ParOcc
-end
-
 struct Occstah
     d::DataFrame
     res_stah::NamedTuple
@@ -765,4 +758,18 @@ struct Occstah
     par::ParOccstah
 end
 
+struct Occsdod
+    d::DataFrame
+    fitmsd
+    fitmod
+    par::ParOcc
+end
 
+struct Occknn
+    d::DataFrame
+    X::Matrix
+    e_cdf::ECDF
+    cutoff::Real
+    xscales::Vector
+    par::ParOccknn
+end
