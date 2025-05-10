@@ -1,7 +1,7 @@
 """
-    occknn(; kwargs...)
-    occknn(X; kwargs...)
-One-class classification using kNN distance-based outlierness.
+    occlknn(; kwargs...)
+    occlknn(X; kwargs...)
+One-class classification using local kNN distance-based outlierness.
 * `X` : Training X-data (n, p) assumed to represent the reference class.
 Keyword arguments:
 * `nsamp` : Nb. of observations (`X`-rows) sampled in the training data and for which are computed 
@@ -80,7 +80,7 @@ plotxy(T[:, i], T[:, i + 1], group; leg_title = "Type of obs.", xlabel = string(
 #### Occ
 ## Training
 nsamp = 150 ; k = 5 ; cri = 2.5
-model = occknn(; nsamp, k, cri)
+model = occlknn(; nsamp, k, cri)
 fit!(model, Xtrain_fin) 
 @names model 
 fitm = model.fitm ;
@@ -109,9 +109,9 @@ hlines!(ax, 1; linestyle = :dot)
 f
 ```
 """ 
-occknn(; kwargs...) = JchemoModel(occknn, nothing, kwargs)
+occlknn(; kwargs...) = JchemoModel(occlknn, nothing, kwargs)
 
-function occknn(X; kwargs...)
+function occlknn(X; kwargs...)
     par = recovkw(ParOccknn, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)

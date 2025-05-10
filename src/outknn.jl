@@ -4,7 +4,7 @@
 Compute a kNN distance-based outlierness.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `metric` : Metric used to compute the dustances. See function `getknn`.
+* `metric` : Metric used to compute the distances. See function `getknn`.
 * `k` : Nb. nearest neighbors to consider.
 * `algo` : Function summarizing the `k` distances to the neighbors.
 * `scal` : Boolean. If `true`, each column of `X` is scaled before computing the outlierness.
