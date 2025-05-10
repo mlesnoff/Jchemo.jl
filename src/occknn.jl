@@ -18,8 +18,8 @@ See functions:
 * `outknn` for details on the outlierness computation,
 * and `occsd` for details on the the cutoff computation and the outputs.
 
-When **predictions** are done, the outlierness of each new observation is compared to the estimated 
-(from the `nsamp` computed distances) training outlierness distribution. 
+When **predictions** are done, the outlierness of each new observation is compared to the outlierness 
+distribution estimated from the `nsamp` sampled observations. 
 
 ## Examples
 ```julia
