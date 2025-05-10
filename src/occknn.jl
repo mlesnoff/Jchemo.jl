@@ -22,22 +22,18 @@ struct Occlknn1
     par::Nothing #Par
 end
 
-function occknndis(X; nlv, nsamp, k, typc = :mad, cri = 3, alpha = .025,
-        scal::Bool = false, kwargs...)
+function occknndis(X; nsamp, 
+        metric = :eucl, k, algo = sum, scal::Bool = false, 
+        typc = :mad, cri = 3, alpha = .025, 
+        kwargs...
+        )
     X = ensure_mat(X)
     n = nro(X)
-    k = Int(k)
-    fm = pcasvd(X; nlv = nlv, scal = scal)
-    # For the Mahalanobis distance
-    tscales = colstd(fm.T)
-    fscale!(fm.T, tscales)
-    # End
-    sp = sample(1:n, nsamp; replace = false)
-    res = getknn(fm.T, fm.T[sp, :]; k = k + 1, metric = :eucl)
-    d = zeros(nsamp)
-    @inbounds for i = 1:nsamp
-        d[i] = median(res.d[i][2:end])
-    end
+    zX = 
+    
+    
+    
+
     typc == :mad ? cutoff = median(d) + par.cri * mad(d) : nothing
     typc == :q ? cutoff = quantile(d, 1 - alpha) : nothing
     e_cdf = StatsBase.ecdf(d)
