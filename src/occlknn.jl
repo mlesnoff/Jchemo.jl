@@ -128,12 +128,22 @@ function occlknn(X; kwargs...)
         s = sample(1:n, nsamp, replace = false)
     end
     vX = vrow(X, s)
-    ## kNN distance
     par.k > n - 1 ? k = n - 1 : k = par.k
-    res = getknn(X, vX; k = k + 1, metric = par.metric)
-    d = zeros(nsamp)
+    metric = par.metric
+    algo = par.algo
+    ## kNN distance
+    res = getknn(X, vX; k = k + 1, metric)
+    d = similar(X, nsamp)
+    nn = zeros(Int, k)
     @inbounds for i in eachindex(d)
-        d[i] = par.algo(res.d[i][2:end])
+        d[i] = algo(res.d[i][2:end])
+        nn .= res.ind[i][2:end]
+        res_nn = getknn(X, vrow(X, nn); k = k + 1, metric)
+        d_nn = similar(X, k) 
+        for j in eachindex(nn)
+            d_nn[j] = algo(res_nn.d[j][2:end])
+        end
+        d[i] /= median(d_nn)
     end
     ## End 
     par.cut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
@@ -141,17 +151,28 @@ function occlknn(X; kwargs...)
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
-    Occknn(d, X, e_cdf, cutoff, xscales, par)
+    Occlknn(d, X, e_cdf, cutoff, xscales, par)
 end
 
-function predict(object::Occknn, X)
+function predict(object::Occlknn, X)
     X = ensure_mat(X)
     m = nro(X)
+    k = object.par.k
+    metric = object.par.metric
+    algo = object.par.algo
     ## kNN distance
-    res = getknn(object.X, fscale(X, object.xscales); k = object.par.k + 1, metric = object.par.metric) 
+    res = getknn(object.X, fscale(X, object.xscales); k = k + 1, metric)
     d = similar(X, m)
+    nn = zeros(Int, k)
     @inbounds for i in eachindex(d)
-        d[i] = object.par.algo(res.d[i][2:end])
+        d[i] = algo(res.d[i][2:end])
+        nn .= res.ind[i][2:end]
+        res_nn = getknn(object.X, vrow(object.X, nn); k = k + 1, metric)
+        d_nn = similar(X, k) 
+        for j in eachindex(nn)
+            d_nn[j] = algo(res_nn.d[j][2:end])
+        end
+        d[i] /= median(d_nn)
     end
     ## End
     p_val = pval(object.e_cdf, d)

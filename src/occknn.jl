@@ -128,10 +128,10 @@ function occknn(X; kwargs...)
         s = sample(1:n, nsamp, replace = false)
     end
     vX = vrow(X, s)
-    ## kNN distance
     par.k > n - 1 ? k = n - 1 : k = par.k
+    ## kNN distance
     res = getknn(X, vX; k = k + 1, metric = par.metric)
-    d = zeros(nsamp)
+    d = similar(X, nsamp)
     @inbounds for i in eachindex(d)
         d[i] = par.algo(res.d[i][2:end])
     end
@@ -148,7 +148,8 @@ function predict(object::Occknn, X)
     X = ensure_mat(X)
     m = nro(X)
     ## kNN distance
-    res = getknn(object.X, fscale(X, object.xscales); k = object.par.k + 1, metric = object.par.metric) 
+    res = getknn(object.X, fscale(X, object.xscales); k = object.par.k + 1, 
+        metric = object.par.metric) 
     d = similar(X, m)
     @inbounds for i in eachindex(d)
         d[i] = object.par.algo(res.d[i][2:end])

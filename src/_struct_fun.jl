@@ -773,3 +773,13 @@ struct Occknn
     xscales::Vector
     par::ParOccknn
 end
+
+struct Occlknn
+    d::DataFrame
+    X::Matrix
+    e_cdf::ECDF
+    cutoff::Real
+    xscales::Vector
+    par::ParOccknn
+end
+

@@ -48,21 +48,22 @@ typ = zeros(Int, n)
 typ[s] .= 1
 #plotsp(X, wl; xlabel = "Wavelength (nm)", ylabel = "Absorbance").f
 
-metric = :eucl ; k = 15 ; algo = maximum
-#algo = :maximum
+metric = :eucl ; k = 15 ; algo = sum
+#algo = maximum
 res = outlknn(X; metric, k, algo) ;
 @names res
 f, ax = plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness")
 text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
 
+## With a preliminary PCA
 nlv = 3
 model = pcasph(; nlv)
 fit!(model, X)
 T = model.fitm.T
 metric = :eucl 
 k = 15
-res = outlknn(T; metric, k, scal)
+res = outlknn(T; metric, k, scal = true)
 plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness").f
 ```
 """ 
@@ -80,13 +81,13 @@ function outlknn!(X::Matrix; metric = :eucl, k, algo = sum, scal::Bool = false)
     end
     k > n - 1 ? k = n - 1 : nothing
     res = getknn(X, X; k = k + 1, metric)
-    d = zeros(n)
+    d = similar(X, n)
     nn = zeros(Int, k)
     @inbounds for i in eachindex(d)
         d[i] = algo(res.d[i][2:end])
         nn .= res.ind[i][2:end]
         res_nn = getknn(X, vrow(X, nn); k = k + 1, metric)
-        d_nn = zeros(Q, k) 
+        d_nn = similar(X, k) 
         for j in eachindex(nn)
             d_nn[j] = algo(res_nn.d[j][2:end])
         end
