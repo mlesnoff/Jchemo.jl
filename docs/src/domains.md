@@ -232,7 +232,7 @@
 
 ## ONE-CLASS CLASSIFICATION (OCC)
 
-### Stahel-Donoho
+### From Stahel-Donoho
 
 - **occstah** Stahel-Donoho outlierness
 
@@ -242,9 +242,10 @@
 - **occod** Orthogonal distance (OD) 
 - **occsdod** Compromise between SD and OD (a.k.a Simca approach) 
 
-### kNN-Distance 
+### From kNN distance 
 
-
+- **occknn**: kNN distance-based outlierness
+- **occlknn**: Local kNN distance-based outlierness
 
 ### Utilities (unsupervised)
 
