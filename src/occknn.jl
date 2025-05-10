@@ -2,7 +2,7 @@
     occknn(; kwargs...)
     occknn(X; kwargs...)
 One-class classification using kNN distance-based outlierness.
-* `X` : Training X-data (n, p).
+* `X` : Training X-data (n, p) assumed to represent the reference class.
 Keyword arguments:
 * `nsamp` : Nb. of observations (`X`-rows) for which are computed the kNN outlierness
     within the training (= reference) class.
@@ -65,15 +65,12 @@ y_fin = vcat(ytrain_fin, ytest_fin)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
 
-#### Preliminary PCA fitted model
-nlv = 15
-model0 = pcasvd(; nlv) 
-#model0 = pcaout(; nlv) 
-fit!(model0, Xtrain_fin) 
-res = summary(model0, Xtrain_fin).explvarx 
-plotgrid(res.nlv, res.pvar; step = 2, xlabel = "Nb. LVs", ylabel = "% Variance explained").f
-Ttrain = model0.fitm.T
-Ttest = transf(model0, Xtest_fin)
+## Data description
+nlv = 10
+model = pcasvd(; nlv) 
+fit!(model, Xtrain_fin) 
+Ttrain = model.fitm.T
+Ttest = transf(model, Xtest_fin)
 T = vcat(Ttrain, Ttest)
 i = 1
 group = vcat(repeat(["Train"], ntrain), repeat(["Test"], ntest))
@@ -82,16 +79,14 @@ plotxy(T[:, i], T[:, i + 1], group; leg_title = "Type of obs.", xlabel = string(
 
 #### Occ
 ## Training
-model = occknn()
-#model = occknn(cut = :mad, cri = 4)
-#model = occknn(cut = :q, risk = .01)
-#model = occsdod()
-fit!(model, model0.fitm, Xtrain_fin) 
+nsamp = 150 ; k = 5 ; cri = 2.5
+model = occknn(; nsamp, k, cri)
+fit!(model, Xtrain_fin) 
 @names model 
 fitm = model.fitm ;
 @names fitm 
 @head dtrain = fitm.d
-#fitm.cutoff
+fitm.cutoff
 d = dtrain.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index", 
     ylabel = "Standardized distance")
@@ -107,6 +102,7 @@ errp(pred, ytest_fin)
 conf(pred, ytest_fin).cnt
 ##
 d = vcat(dtrain.dstand, dtest.dstand)
+group = vcat(repeat(["Train"], nsamp), repeat(["Test"], ntest))
 f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", xlabel = "Obs. index", 
     ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)

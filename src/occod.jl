@@ -3,7 +3,7 @@
     occod(fitm, X; kwargs...)
 One-class classification using PCA/PLS orthognal distance (OD).
 * `fitm` : The preliminary model (e.g. object `fitm` returned by function `pcasvd`) that was fitted on 
-    the data assumed to represent the training class.
+    the training data assumed to represent the reference class.
 * `X` : Training X-data (n, p), on which was fitted the model `fitm`.
 Keyword arguments:
 * `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
