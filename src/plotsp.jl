@@ -1,5 +1,5 @@
 """
-    plotsp(X, wl = 1:nco(X); size = (500, 300), nsamp = nothing, color = nothing, 
+    plotsp(X, wl = 1:nco(X); size = (500, 300), nsamp = nro(X), color = nothing, 
         kwargs...)
 Plotting spectra.
 * `X` : X-data (n, p).
@@ -43,41 +43,37 @@ f
 ```
 
 """ 
-function plotsp(X, wl = 1:nco(X); size = (500, 300), color = nothing, nsamp = nothing, 
+function plotsp(X, wl = 1:nco(X); size = (500, 300), nsamp = nro(X), color = nothing, 
         kwargs...) 
     X = ensure_mat(X)
-    if !isnothing(nsamp)
-        X = X[StatsBase.sample(1:nro(X), nsamp; replace = false), :]
-    end
-    ## For not using function Size
-    ## (conflict with argiment size of Makie)
-    n = nro(X)
-    p = nco(X)
-    ## End
+    n, p = Base.size(X)    # conflict with Makie.size
+    s = StatsBase.sample(1:n, nsamp; replace = false)
+    vX = vrow(X, s)
+    m = nro(vX)
     f = Figure(size = size)
     ax = Axis(f; kwargs...)
-    res = list(Matrix{Float64}, n)
+    res = list(Matrix{Float64}, m)
     if isnothing(color)
-        s = randperm(n)
-        for i = 1:n
-            res[i] = hcat([wl ; NaN], [X[i, :] ; NaN], s[i] * ones(p + 1))
+        s = randperm(m)
+        for i in eachindex(res)
+            res[i] = hcat([wl ; NaN], [vX[i, :] ; NaN], s[i] * ones(p + 1))
         end
         res = reduce(vcat, res)
-        tp = .9
-        if n == 1
+        transp = .9
+        if m == 1
             lines!(ax, res[:, 1], res[:, 2]; color = "red3")
         else
-            #colm = (:Paired_12, tp)
-            #colm = (:seaborn_bright, tp)
-            colm = (:Set1_9, tp)
+            #colm = (:Paired_12, transp)
+            #colm = (:seaborn_bright, transp)
+            colm = (:Set1_9, transp)
             lines!(ax, res[:, 1], res[:, 2]; colormap = colm, color = res[:, 3])
         end
     else
-        for i = 1:n
-            res[i] = hcat([wl ; NaN], [X[i, :] ; NaN])
+        for i in eachindex(res)
+            res[i] = hcat([wl ; NaN], [vX[i, :] ; NaN])
         end
         ## Same as:
-        ## res = [hcat([wl ; NaN], [X[i, :] ; NaN]) for i = 1:n]
+        ## res = [hcat([wl ; NaN], [vX[i, :] ; NaN]) for i in eachindex(res)]
         ## End
         res = reduce(vcat, res)
         lines!(ax, res[:, 1], res[:, 2]; color = color)
