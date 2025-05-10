@@ -146,7 +146,7 @@ function predict(object::Occstah, X)
     fscale!(T, res.s)
     T .= abs.(T)
     d = similar(T, m)
-    @inbounds for i in axes(zX, 1)
+    @inbounds for i in eachindex(d)
         d[i] = maximum(vrow(T, i))
     end
     p_val = pval(object.e_cdf, d)

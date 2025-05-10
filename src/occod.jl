@@ -97,7 +97,7 @@ fit!(model, model0.fitm, Xtrain_fin)
 fitm = model.fitm ;
 @names fitm 
 @head dtrain = fitm.d
-fitm.cutoff
+#fitm.cutoff
 d = dtrain.dstand
 f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index", 
     ylabel = "Standardized distance")

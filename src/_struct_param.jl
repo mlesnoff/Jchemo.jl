@@ -558,15 +558,15 @@ end
 
 Base.@kwdef mutable struct ParOcc    # occsd, occod, occsdod
     cut::Symbol = :mad   
-    risk::Float64 = .025  
-    cri::Float64 = 3. 
+    cri::Float64 = 3.
+    risk::Float64 = .025 
 end 
 
 Base.@kwdef mutable struct ParOccstah 
     nlv::Int = 500
     cut::Symbol = :mad   
-    risk::Float64 = .025  
-    cri::Float64 = 3. 
+    cri::Float64 = 3.
+    risk::Float64 = .025 
     scal::Bool = false                    
 end 
 
