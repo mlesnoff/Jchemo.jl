@@ -1,31 +1,25 @@
 """
     occknn(; kwargs...)
-    occknn(fitm, X; kwargs...)
-One-class classification using PCA/PLS orthognal distance (OD).
-* `fitm` : The preliminary model (e.g. object `fitm` returned by function `pcasvd`) that was fitted on 
-    the data assumed to represent the training class.
-* `X` : Training X-data (n, p), on which was fitted the model `fitm`.
+    occknn(X; kwargs...)
+One-class classification using kNN distance-based outlierness.
+* `X` : Training X-data (n, p).
 Keyword arguments:
+* `nsamp` : Nb. of observations (`X`-rows) for which are computed the kNN outlierness
+    within the training (= reference) class.
+* `metric` : Metric used to compute the dustances. See function `getknn`.
+* `k` : Nb. nearest neighbors to consider.
+* `algo` : Function summarizing the `k` distances to the neighbors.
 * `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `cut` = `:mad`, a constant. See thereafter.
 * `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
+* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
-In this method, the outlierness `d` of an observation is the orthogonal distance (=  'X-residuals') of this 
-observation, ie. the Euclidean distance between the observation and its projection to the score plan defined by 
-the fitted (e.g. PCA) model (e.g. Hubert et al. 2005, Van Branden & Hubert 2005 p. 66, Varmuza & Filzmoser 
-2009 p. 79).
+See functions:
+* `outknn` for details on the outlierness computation,
+* and `occsd` for details on the the cutoff computation and the outputs.
 
-See function `occsd` for details on the outputs.
-
-## References
-M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components 
-analysis. Technometrics, 47, 64-79.
-
-K. Vanden Branden, M. Hubert (2005). Robuts classification in high dimension based on the SIMCA method. 
-Chem. Lab. Int. Syst, 79, 10-21.
-
-K. Varmuza, V. Filzmoser (2009). Introduction to multivariate statistical analysis in chemometrics. 
-CRC Press, Boca Raton.
+When **predictions** are done, the outlierness of each new observation is compared to the estimated 
+(from the `nsamp` computed distances) training outlierness distribution. 
 
 ## Examples
 ```julia

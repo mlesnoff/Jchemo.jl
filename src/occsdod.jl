@@ -16,8 +16,8 @@ orthogonal distance (OD). The consensus is computed from the standardized distan
 * `dstand` = sqrt(`dstand_sd` * `dstand_od`).
 
 See functions:
-* `occsd` for details on the outputs
-* `occod` for examples.
+* `occsd` for details on the cutoff computation and the outputs,
+* and `occod` for examples.
 """ 
 occsdod(; kwargs...) = JchemoModel(occsdod, nothing, kwargs)
 

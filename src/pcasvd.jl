@@ -5,12 +5,10 @@
     pcasvd!(X::Matrix, weights::Weight; kwargs...)
 PCA by SVD factorization.
 * `X` : X-data (n, p). 
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
-* `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
 Let us note D the (n, n) diagonal matrix of weights
 (`weights.w`) and X the centered matrix in metric D.

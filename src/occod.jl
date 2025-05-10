@@ -15,7 +15,7 @@ observation, ie. the Euclidean distance between the observation and its projecti
 the fitted (e.g. PCA) model (e.g. Hubert et al. 2005, Van Branden & Hubert 2005 p. 66, Varmuza & Filzmoser 
 2009 p. 79).
 
-See function `occsd` for details on the outputs.
+See function `occsd` for details on the cutoff computation and the outputs.
 
 ## References
 M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components 
