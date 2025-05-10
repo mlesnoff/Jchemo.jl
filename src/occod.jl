@@ -46,30 +46,31 @@ Xtest = Xp[s, :]
 Ytest = Y[s, :]
 
 ## Build the example data
-## - cla_train is the reference class (= 'in')
-## - cla_test contains the observations to be predicted (i.e. to be 'in' or 'out' of cla_train) 
-## Below, cla_train = "EEH", and two situations are considered as examples for cla_test:
+## - cla_train is the reference class (= 'in'), "EHH" 
 cla_train = "EHH"
 s = Ytrain.typ .== cla_train
 Xtrain_fin = Xtrain[s, :]    
 ntrain = nro(Xtrain_fin)
-## Two situations
-cla_test = "PEE"    # here test obs. should be classified 'out'
-#cla_test = "EHH"   # here test obs. should be classified 'in'
-s = Ytest.typ .== cla_test
-Xtest_fin = Xtest[s, :] 
-ntest = nro(Xtest_fin)
+## cla_test contains the observations to be predicted (i.e. to be 'in' or 'out' of cla_train), 
+## a mix of "EEH" and "PEE" 
+cla_test1 = "EHH"   # should be predicted 'in'
+s = Ytest.typ .== cla_test1
+Xtest_fin1 = Xtest[s, :] 
+ntest1 = nro(Xtest_fin1)
+##
+cla_test2 = "PEE"   # should be predicted 'out'
+s = Ytest.typ .== cla_test2
+Xtest_fin2 = Xtest[s, :] 
+ntest2 = nro(Xtest_fin2)
+##
+Xtest_fin = vcat(Xtest_fin1, Xtest_fin2)
 ## Only used to compute error rates
 ytrain_fin = repeat(["in"], ntrain)
-if cla_test == cla_train
-    ytest_fin = repeat(["in"], ntest)
-else
-    ytest_fin = repeat(["out"], ntest)
-end
+ytest_fin = [repeat(["in"], ntest1); repeat(["out"], ntest2)]
 y_fin = vcat(ytrain_fin, ytest_fin)
 ## 
-ntot = ntrain + ntest
-(ntot = ntot, ntrain, ntest)
+ntot = ntrain + ntest1 + ntest2
+(ntot = ntot, ntrain, ntest1, ntest2)
 
 #### Preliminary PCA fitted model
 nlv = 15
@@ -82,16 +83,17 @@ Ttrain = model0.fitm.T
 Ttest = transf(model0, Xtest_fin)
 T = vcat(Ttrain, Ttest)
 i = 1
-group = vcat(repeat(["Train"], ntrain), repeat(["Test"], ntest))
-plotxy(T[:, i], T[:, i + 1], group; leg_title = "Type of obs.", xlabel = string("PC", i), 
-    ylabel = string("PC", i + 1), title = string(cla_train, "-", cla_test)).f
+group = vcat(repeat(["Train-EHH"], ntrain), repeat(["Test-EHH"], ntest1), repeat(["Test-PEE"], ntest2))
+color = [:red, :blue, (:green, .5)]
+plotxy(T[:, i], T[:, i + 1], group; color = color, leg_title = "Type of obs.", xlabel = string("PC", i), 
+    ylabel = string("PC", i + 1)).f
 
 #### Occ
 ## Training
-model = occod()
+model = occod(; cri = 2.5)
 #model = occod(cut = :mad, cri = 4)
 #model = occod(cut = :q, risk = .01)
-#model = occsdod()
+#model = occsdod(; cri = 2.5)
 fit!(model, model0.fitm, Xtrain_fin) 
 @names model 
 fitm = model.fitm ;
@@ -99,7 +101,7 @@ fitm = model.fitm ;
 @head dtrain = fitm.d
 #fitm.cutoff
 d = dtrain.dstand
-f, ax = plotxy(1:length(d), d; size = (500, 300), xlabel = "Obs. index", 
+f, ax = plotxy(1:length(d), d; color = (:green, .5), size = (500, 300), xlabel = "Obs. index", 
     ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
@@ -113,8 +115,9 @@ errp(pred, ytest_fin)
 conf(pred, ytest_fin).cnt
 ##
 d = vcat(dtrain.dstand, dtest.dstand)
-f, ax = plotxy(1:length(d), d, group; size = (500, 300), leg_title = "Class", xlabel = "Obs. index", 
-    ylabel = "Standardized distance")
+color = [:red, :blue, (:green, .5)]
+f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
+    xlabel = "Obs. index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 ```

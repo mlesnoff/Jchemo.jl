@@ -41,7 +41,7 @@ Ytest = Y[s, :]
 
 ## Build the example data
 ## - cla_train is the reference class (= 'in')
-## - cla_test contains the observations to be predicted (i.e. to be 'in' or 'out' of cla_train) 
+## cla_test contains the observations to be predicted (i.e. to be 'in' or 'out' of cla_train) 
 ## Below, cla_train = "EEH", and two situations are considered as examples for cla_test:
 cla_train = "EHH"
 s = Ytrain.typ .== cla_train

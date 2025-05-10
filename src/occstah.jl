@@ -39,7 +39,7 @@ cla_train = "EHH"
 s = Ytrain.typ .== cla_train
 Xtrain_fin = Xtrain[s, :]    
 ntrain = nro(Xtrain_fin)
-## - cla_test contains the observations to be predicted (i.e. to be 'in' or 'out' of cla_train), 
+## cla_test contains the observations to be predicted (i.e. to be 'in' or 'out' of cla_train), 
 ## a mix of "EEH" and "PEE" 
 cla_test1 = "EHH"   # should be predicted 'in'
 s = Ytest.typ .== cla_test1
