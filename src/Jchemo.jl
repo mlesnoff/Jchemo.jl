@@ -58,6 +58,7 @@ include("rmgap.jl")
 include("plotsp.jl")
 include("plotgrid.jl")
 include("plotxy.jl")
+include("plotxyz.jl")
 include("plotconf.jl")
 
 ######---- Distributions
@@ -457,7 +458,7 @@ export
     plotconf,
     plotgrid, 
     plotsp,
-    plotxy
+    plotxy, plotxyz
     ## Not exported since surcharge:
     ## - summary => Base.summary
 
