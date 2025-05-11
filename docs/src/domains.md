@@ -368,6 +368,7 @@
 
 - **plotsp** Plot spectra
 - **plotxy** x-y scatter plot
+- **plotxyz**: 3D scatter plot
 - **plotgrid** Plot error/performance rates of a model
 - **plotconf** Plot confusion matrix
 
