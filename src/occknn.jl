@@ -15,10 +15,10 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
 See functions:
-* `outknn` for details on the outlierness computation,
+* `outknn` for details on the outlierness computation method,
 * and `occsd` for details on the the cutoff computation and the outputs.
 
-When **predictions** are done, the outlierness of each new observation is compared to the outlierness 
+For **predictions** (`predict`), the outlierness of each new observation is compared to the outlierness 
 distribution estimated from the `nsamp` sampled observations. 
 
 ## Examples
@@ -83,6 +83,7 @@ plotxy(T[:, i], T[:, i + 1], group; color = color, leg_title = "Type of obs.", x
 ## Training
 nsamp = 150 ; k = 5 ; cri = 2.5
 model = occknn(; nsamp, k, cri)
+#model = occknn(; nsamp, k, cri)
 fit!(model, Xtrain_fin) 
 @names model 
 fitm = model.fitm ;
