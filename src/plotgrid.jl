@@ -61,7 +61,7 @@ function plotgrid(indx::AbstractVector, r; size = (500, 300), step = 5,
     isa(indx, Vector{Any}) ? indx = Float64.(indx) : nothing
     r = Float64.(vec(r))
     xticks = collect(minimum(indx):step:maximum(indx))
-    f = Figure(size = size)
+    f = Figure(; size)
     ax = Axis(f; xticks = (xticks, string.(xticks)), kwargs...)
     if isnothing(color)
         lines!(ax, indx, r)
@@ -79,7 +79,7 @@ function plotgrid(indx::AbstractVector, r, group; size = (700, 350),
     group = vec(group)
     xticks = collect(minimum(indx):step:maximum(indx))
     lev = mlev(group)
-    f = Figure(size = size)
+    f = Figure(; size)
     ax = Axis(f; xticks = (xticks, string.(xticks)), kwargs...)
     @inbounds for i in eachindex(lev)
         s = group .== lev[i]

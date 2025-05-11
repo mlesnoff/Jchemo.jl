@@ -50,7 +50,7 @@ function plotsp(X, wl = 1:nco(X); size = (500, 300), nsamp = nro(X), color = not
     s = StatsBase.sample(1:n, nsamp; replace = false)
     vX = vrow(X, s)
     m = nro(vX)
-    f = Figure(size = size)
+    f = Figure(; size)
     ax = Axis(f; kwargs...)
     res = list(Matrix{Float64}, m)
     if isnothing(color)
