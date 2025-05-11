@@ -15,7 +15,7 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
 See functions:
-* `outknn` for examples,
+* `occknn` for examples,
 * `outlknn` for details on the outlierness computation method,
 * and `occsd` for details on the the cutoff computation and the outputs.
 
