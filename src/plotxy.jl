@@ -83,12 +83,12 @@ function plotxy(x, y; size = (500, 300), color = nothing, ellipse::Bool = false,
     y = vec(y)
     f = Figure(size = size)
     ax = Axis(f; xlabel = xlabel, ylabel = ylabel, title = title)
-    lw = .8
     if isnothing(color)
         scatter!(ax, x, y; kwargs...)
     else
         scatter!(ax, x, y; color = color, kwargs...)
     end
+    lw = .8
     if ellipse
         X = hcat(x, y)
         xmeans = colmean(X)
