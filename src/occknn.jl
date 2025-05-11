@@ -83,7 +83,7 @@ plotxy(T[:, i], T[:, i + 1], group; color = color, leg_title = "Type of obs.", x
 ## Training
 nsamp = 150 ; k = 5 ; cri = 2.5
 model = occknn(; nsamp, k, cri)
-#model = occknn(; nsamp, k, cri)
+#model = occlknn(; nsamp, k = 10, cri)
 fit!(model, Xtrain_fin) 
 @names model 
 fitm = model.fitm ;
