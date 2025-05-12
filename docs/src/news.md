@@ -5,7 +5,7 @@
 - News 
     - Functions **outsd**, **outod** and **outsdod**: Compute a SD, OD and SD-OD outlierness.
     - Functions **occknn**, **occlknn**: One-class classification using kNN and local kNN distance-based outlierness.
-    - Functions **plotxyz**: 3D scatter plot.
+    - Functions **plotxyz**: 3D x-y-z scatter plot.
 
 - Modifications
     - Code cleaning.  

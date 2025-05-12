@@ -6,7 +6,7 @@
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", leg::Bool = true, leg_title = "Group", 
         kwargs...)
-Scatter plot of (x, y) data
+Scatter plot of x-y data
 * `x` : A x-vector (n).
 * `y` : A y-vector (n). 
 * `group` : Categorical variable defining groups (n). 
@@ -24,14 +24,11 @@ Keyword arguments:
 *  `xlabel` : Label for the x-axis.
 *  `ylabel` : Label for the y-axis.
 *  `title` : Title of the graphic.
-* `leg` : Boolean. If `group` is used, display a legend 
-    or not.
+* `leg` : Boolean. If `group` is used, display a legend or not.
 * `leg_title` : Title of the legend.
-* `kwargs` : Optional arguments to pass in function `scatter` 
-    of Makie.
+* `kwargs` : Optional arguments to pass in function `scatter` of Makie.
 
-To use `plotxy`, a backend (e.g. CairoMakie) has 
-to be specified.
+To use `plotxy`, a backend (e.g. CairoMakie) has to be specified.
 
 ## Examples
 ```julia
