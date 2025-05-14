@@ -38,6 +38,5 @@ function plotlv(T, group; size = (700, 350), shape, start = 1,
         #ellipse::Bool = false, prob = .95, circle::Bool = false
         zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", kwargs...)
-
 end
 

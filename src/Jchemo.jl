@@ -457,10 +457,10 @@ export
     krbf, kpol,
     ######---- Graphics
     plotsp,
-    plotxy, plotxyz
+    plotxy, plotxyz,
     plotlv,
     plotgrid, 
-    plotconf,
+    plotconf
     ## Not exported since surcharge:
     ## - summary => Base.summary
 
