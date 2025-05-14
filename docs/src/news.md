@@ -6,6 +6,7 @@
     - Functions **outsd**, **outod** and **outsdod**: Compute a SD, OD and SD-OD outlierness.
     - Functions **occknn**, **occlknn**: One-class classification using kNN and local kNN distance-based outlierness.
     - Functions **plotxyz**: 3D x-y-z scatter plot.
+    - Function **plotlv**: 2D plots of successive LV scores (PCA, PLS, etc.).
 
 - Modifications
     - Code cleaning.  

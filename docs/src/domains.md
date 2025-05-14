@@ -367,8 +367,9 @@
 ## PLOTTING
 
 - **plotsp** Plot spectra
-- **plotxy** Scatter plot of x-y data
+- **plotxy** 2D scatter plot of x-y data
 - **plotxyz**: 3D scatter plot of x-y-z data
+- **plotlv** 2D plots of successive LV scores (PCA, PLS, etc.)
 - **plotgrid** Plot error/performance rates of a model
 - **plotconf** Plot confusion matrix
 
