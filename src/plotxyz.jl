@@ -61,7 +61,7 @@ function plotxyz(x, y, z; size = (500, 300), color = nothing, perspectiveness = 
     isnothing(color) ? color = (:blue, .3) : nothing
     scatter!(ax, x, y, z; color = color, kwargs...)
     f[1, 1] = ax
-    (f = f, ax = ax)
+    (f = f, ax)
 end
 
 function plotxyz(x, y, z, group; size = (500, 300), color = nothing, perspectiveness = .1, 

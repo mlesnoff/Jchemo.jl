@@ -109,7 +109,7 @@ function plotxy(x, y; size = (500, 300), color = nothing, ellipse::Bool = false,
         vlines!(0; color = :grey60, linewidth = lw)
     end
     f[1, 1] = ax
-    (f = f, ax = ax)
+    (f = f, ax)
 end
 
 function plotxy(x, y, group; size = (600, 350), color = nothing, ellipse::Bool = false, 

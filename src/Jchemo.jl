@@ -56,9 +56,10 @@ include("rmgap.jl")
 ######---- Graphics
 
 include("plotsp.jl")
-include("plotgrid.jl")
 include("plotxy.jl")
 include("plotxyz.jl")
+include("plotlv.jl")
+include("plotgrid.jl")
 include("plotconf.jl")
 
 ######---- Distributions
@@ -455,10 +456,11 @@ export
     euclsq, mahsq, mahsqchol,
     krbf, kpol,
     ######---- Graphics
-    plotconf,
-    plotgrid, 
     plotsp,
     plotxy, plotxyz
+    plotlv,
+    plotgrid, 
+    plotconf,
     ## Not exported since surcharge:
     ## - summary => Base.summary
 

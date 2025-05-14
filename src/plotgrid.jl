@@ -69,7 +69,7 @@ function plotgrid(indx::AbstractVector, r; size = (500, 300), step = 5,
         lines!(ax, indx, r; color = color)
     end
     f[1, 1] = ax
-    (f = f, ax = ax)
+    (f = f, ax)
 end
 
 function plotgrid(indx::AbstractVector, r, group; size = (700, 350), 
@@ -96,6 +96,6 @@ function plotgrid(indx::AbstractVector, r, group; size = (700, 350),
     if leg
         f[1, 2] = Legend(f, ax, leg_title, framevisible = false)
     end
-    (f = f, ax = ax)
+    (f = f, ax)
 end
 

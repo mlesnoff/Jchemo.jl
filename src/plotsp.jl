@@ -79,7 +79,7 @@ function plotsp(X, wl = 1:nco(X); size = (500, 300), nsamp = nro(X), color = not
         lines!(ax, res[:, 1], res[:, 2]; color = color)
     end
     f[1, 1] = ax
-    (f = f, ax = ax)
+    (f = f, ax)
 end
 
 
