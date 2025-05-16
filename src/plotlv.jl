@@ -4,7 +4,7 @@
     plotlv(T, group; size = (700, 350), shape, start = 1, color = nothing, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", leg::Bool = true, leg_title = "Group", 
         kwargs...)
-Matrix of plots of successive (PCA, PLS, etc.) latent variables.
+Matrix of 2-D plots of successive latent variables (PCA, PLS, etc.).
 * `T` : A matrix of (PCA, PLS, ec.) latent variables (LVs) to plot (n, A).
 * `group` : Categorical variable defining groups (n). 
 Keyword arguments:
