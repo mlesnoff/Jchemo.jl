@@ -12,10 +12,9 @@ Keyword arguments:
     to the spectra.
 * `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.
 
-The function plots the rows of `X`.
+Plot of the rows (e.g. spectrum) of `X`.
 
-To use `plotxy`, a backend (e.g. CairoMakie) has 
-to be specified.
+To use the function, a backend (e.g. CairoMakie) has to be specified.
 
 ## Examples
 ```julia
