@@ -28,7 +28,47 @@ To use the function, a backend (e.g. CairoMakie) has to be specified.
 
 ## Examples
 ```julia
+using Jchemo, JchemoData, JLD2
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/forages2.jld2")
+@load db dat
+@names dat
+X = dat.X
+Y = dat.Y
+n = nro(X) 
+s = Bool.(Y.test)
+Xtrain = rmrow(X, s)
+ytrain = rmrow(Y.typ, s)
+Xtest = X[s, :]
+ytest = Y.typ[s]
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+(ntot = n, ntrain, ntest)
+tab(ytrain)
+tab(ytest)
 
+nlv = 15
+model = pcasvd(; nlv) 
+fit!(model, Xtrain)
+@head Ttrain = model.fitm.T
+@head Ttest = transf(model, Xtest)
+T = vcat(Ttrain, Ttest)
+
+CairoMakie.activate!()
+#GLMakie.activate!()
+
+plotlv(Ttrain[:, 1:6]; shape = (2, 3), color = (:blue, .5), zeros = true, xlabel = "PC", ylabel = "PC").f
+plotlv(Ttrain[:, 3:8]; shape = (2, 3), start = 3, color = (:blue, .5), zeros = true, xlabel = "PC", ylabel = "PC").f
+
+group = vcat(repeat(["Train"], ntrain), repeat(["Test"], ntest))
+plotlv(T[:, 1:6], group; shape = (2, 3), color = nothing, zeros = true, xlabel = "PC", ylabel = "PC",
+    leg = true).f
+
+group = vcat(repeat(["Train"], ntrain), repeat(["Test"], ntest))
+color = [(:red, .3); (:blue, .3)]
+#color = cgrad(:Dark2_5; categorical = true, alpha = .3)[1:nlev]
+plotlv(1000 * T[:, 1:6], group; shape = (2, 3), color = color, zeros = true, xlabel = "PC", ylabel = "PC",
+    leg = true).f
 ```
 """ 
 function plotlv(T; size = (700, 350), shape, start = 1, color = nothing, zeros::Bool = false,
