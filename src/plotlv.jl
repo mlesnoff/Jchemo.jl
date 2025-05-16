@@ -1,3 +1,36 @@
+"""
+    plotlv(T; size = (700, 350), shape, start = 1, color = nothing, zeros::Bool = false,
+        xlabel = "", ylabel = "", title = "", kwargs...)
+    plotlv(T, group; size = (700, 350), shape, start = 1, color = nothing, zeros::Bool = false,
+        xlabel = "", ylabel = "", title = "", leg::Bool = true, leg_title = "Group", 
+        kwargs...)
+Matrix of plots of successive (PCA, PLS, etc.) latent variables.
+* `T` : A matrix of (PCA, PLS, ec.) latent variables (LVs) to plot (n, A).
+* `group` : Categorical variable defining groups (n). 
+Keyword arguments:
+* `size` : Size (horizontal, vertical) of the figure.
+* `shape` : A tuple of length = 2 defining the shape of the figure: nb. rows and columns of 
+    the matriice of plots. 
+* `start` : Start of the numbering of the LVs in the plots.
+* `color` : Set color(s). If `group` if used, `color` must be 
+    a vector of same length as the number of levels in `group`.
+*  `zeros` : Boolean. Draw horizontal and vertical axes passing 
+    through origin (0, 0).
+*  `xlabel` : Label for the x-axis.
+*  `ylabel` : Label for the y-axis.
+*  `zlabel` : Label for the z-axis.
+*  `title` : Title of the graphic.
+* `leg` : Boolean. If `group` is used, display a legend or not.
+* `leg_title` : Title of the legend.
+* `kwargs` : Optional arguments to pass in function `scatter` of Makie.
+
+To use `plotlv`, a backend (e.g. CairoMakie) has to be specified.
+
+## Examples
+```julia
+
+```
+""" 
 function plotlv(T; size = (700, 350), shape, start = 1, color = nothing, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", kwargs...)
     n, p = shape
