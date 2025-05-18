@@ -66,7 +66,7 @@ plotlv(T[:, 1:6], group; shape = (2, 3), color = nothing, zeros = true, xlabel =
 
 group = vcat(repeat(["Train"], ntrain), repeat(["Test"], ntest))
 color = [(:red, .3); (:blue, .3)]
-#color = cgrad(:Dark2_5; categorical = true, alpha = .3)[1:nlev]
+#color = cgrad(:Dark2_5, 2; categorical = true, alpha = .5)
 plotlv(1000 * T[:, 1:6], group; shape = (2, 3), color = color, zeros = true, xlabel = "PC", ylabel = "PC",
     leg = true).f
 ```
@@ -106,7 +106,7 @@ end
 function plotlv(T, group; size = (700, 350), shape, start = 1, color = nothing, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", leg::Bool = true, leg_title = "Group", 
         kwargs...)
-    group = vec(group)
+    group = string.(vec(group))
     lev = mlev(group)
     nlev = length(lev)
     lab = string.(lev)
@@ -138,7 +138,7 @@ function plotlv(T, group; size = (700, 350), shape, start = 1, color = nothing, 
                     end
                     if leg && k == 1
                         elt = [MarkerElement(color = color[i], marker = '●', markersize = 10) for i in 1:nlev]
-                        f[posleg, 0] = Legend(f, elt, lev, leg_title; nbanks = 1, rowgap = 10, framevisible = false) 
+                        f[posleg, 0] = Legend(f, elt, lev, leg_title; nbanks = 1, rowgap = 2, framevisible = false) 
                     end
                 end
                 if zeros
