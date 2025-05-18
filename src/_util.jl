@@ -1213,16 +1213,16 @@ vrow(x::Vector, i) = view(x, i)
 ########### Macros 
 
 """ 
-    @mod fun
+    @pmod fun
 Shortcut for function `parentmodule`.
 * `fun` : The name of a function.
 
 ## Examples
 ```julia
-@mod rand
+@pmod rand
 ```
 """
-macro mod(fun)
+macro pmod(fun)
     esc( :( parentmodule($fun) ))
 end
 
@@ -1280,7 +1280,7 @@ macro type(x)
     esc( :( Jchemo.ptype($x) ))
 end
 
-function  ptype(x)
+function ptype(x)
     println(typeof(x))
     println(size(x))
 end

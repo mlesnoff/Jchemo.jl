@@ -382,7 +382,7 @@
 
 *Macros*
 - **@head** Display the first rows of a dataset
-- **@mod** Shortcut for function **parentmodule**
+- **@pmod** Shortcut for function **parentmodule**
 - **@names** Return the names of the sub-objects contained in a object
 - **@pars** Display the keyword arguments (with their default values) of a function
 - **@plist** Display each element of a list

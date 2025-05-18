@@ -46,7 +46,7 @@
 ## *Version 0.8.6*
 
 - News
-    - Functions **@mod**, **@names**, **@pars**, 
+    - Functions **@pmod**, **@names**, **@pars**, 
         **@plist**, **@type**.
 
 - Modifications

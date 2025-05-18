@@ -263,7 +263,7 @@ export
     transf!,
     pip,
     ######---- Utilities
-    @head, @mod, @names, @pars, @plist, @type,
+    @head, @pmod, @names, @pars, @plist, @type,
     ##
     aggmean, aggstat, 
     aggsumv,  
