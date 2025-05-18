@@ -70,7 +70,7 @@ function plotxyz(x, y, z, group; size = (500, 300), color = nothing, perspective
     x = vec(x)
     y = vec(y)
     z = vec(z)
-    group = vec(group)
+    group = string.(vec(group))
     lev = mlev(group)
     nlev = length(lev)
     lab = string.(lev)    
