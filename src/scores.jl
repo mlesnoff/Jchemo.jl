@@ -506,8 +506,8 @@ function mse(pred, Y; digits = 3)
     zn = reshape(repeat([n], q), 1, :)
     nam = map(string, repeat(["y"], q), 1:q)
     nam = reshape(nam, 1, :)
-    res = (nam = nam, msep = zmsep, rmsep = zrmsep, sep = zsep, bias = zbias, 
-        cor2 = zcor2, r2 = zr2, rpd = zrpd, rpdr = zrpdr, mean = zmean, n = zn) 
+    res = (nam = nam, rmsep = zrmsep, sep = zsep, bias = zbias, cor2 = zcor2, r2 = zr2, 
+        rpd = zrpd, rpdr = zrpdr, mean = zmean, n = zn) 
     res = map(vec, res)
     res = DataFrame(res)  
     res[:, 2:end] = round.(res[:, 2:end], digits = digits)
