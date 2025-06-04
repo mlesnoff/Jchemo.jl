@@ -14,6 +14,8 @@ methods** and their extensions, in particular locally weighted PLS models (**kNN
 
 Why the name **Jchemo**? Since it is oriented towards **chemometrics** , in brief the use of biometrics for chemistry. But most of the provided methods are generic to other types of data than chemistry. 
 
+Related projects:  [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl) and [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo).
+
 # <span style="color:green"> **Sample workflow** </span> 
 
 Suppose training data `(X, Y)` and predictions expected from new data `Xnew` using a PLSR model with 15 latent variables (LVs). The workflow is has follows 
