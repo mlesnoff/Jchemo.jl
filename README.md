@@ -14,7 +14,7 @@ methods** and their extensions, in particular locally weighted PLS models (**kNN
 
 Why the name **Jchemo**? Since it is oriented towards **chemometrics** , in brief the use of biometrics for chemistry. But most of the provided methods are generic to other types of data than chemistry. 
 
-Related projects:  [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl) and [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo).
+Related projects:  [JchemoData.jl](https://github.com/mlesnoff/JchemoData.jl) and [JchemoDemo](https://github.com/mlesnoff/JchemoDemo).
 
 # <span style="color:green"> **Sample workflow** </span> 
 
@@ -100,7 +100,7 @@ Some functions (e.g. those using kNN selections) use **multi-threading** to spee
 
 *Datasets*
 
-The **datasets** used as examples in the function help pages are stored in package [**JchemoData.jl**](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets on chemometrics and other domains. **Examples of scripts** demonstrating **Jchemo** are also available in the pedagogical project [**JchemoDemo**](https://github.com/mlesnoff/JchemoDemo). 
+The **datasets** used as examples in the function help pages are stored in package [JchemoData.jl](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets on chemometrics and other domains. **Examples of scripts** demonstrating **Jchemo** are also available in the pedagogical project [JchemoDemo](https://github.com/mlesnoff/JchemoDemo). 
 
 # <span style="color:green"> **Tuning predictive models** </span> 
 
