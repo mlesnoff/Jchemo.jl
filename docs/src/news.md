@@ -3,6 +3,9 @@
 ## *Version 0.8.11*
 
 - Modifications
+    - Functions **aggstat**, **tab**: keyword argument 'vary' renamed to 'vargroup',
+        - Argument 'vars' renamed to 'varx'.
+        - Argument 'groups' renamed to 'vary'.
     - Code cleaning.  
 
 

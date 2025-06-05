@@ -390,7 +390,7 @@
 
 *Others*
 - **aggmean** Compute column-wise means by class in a dataset
-- **aggstat** Compute column-wise statistics by class in a dataset
+- **aggstat** Compute column-wise statistics by group in a dataset
 - **aggsumv** Compute sub-total sums by class of a categorical variable
 - **sumv**, **meanv**, **stdv**, **varv**, **madv**, **iqrv**, **normv** Vector operations 
 - **covv**, **covm**, **corv**, **corm** Weighted covariances and correlations 

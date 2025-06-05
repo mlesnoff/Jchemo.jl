@@ -36,17 +36,16 @@ end
 
 """
     aggstat(X, y; algo = mean)
-    aggstat(X::DataFrame; varx, vary, algo = mean)
-Compute column-wise statistics by class in a dataset.
+    aggstat(X::DataFrame; varx, vargroup, algo = mean)
+Compute column-wise statistics by group in a dataset.
 * `X` : Data (n, p).
-* `y` : A categorical variable (n) (class membership).
+* `y` : A categorical variable (n) defining the groups.
 * `algo` : Function to compute (default = mean).
-Specific for dataframes:
+Specific for `X::dataframe`:
 * `varx` : Names (vector) of the variables to summarize.
-* `vary` : Names (vector) of the the categorical variables to consider
-    for computations by class.
+* `vargroup` : Names (vector) of the categorical variables defining the groups.
 
-Variables defined in `varx` and `vary` must be columns of `X`.
+Variables defined in `varx` and `vargroup` must be columns of `X`.
 
 ## Examples
 ```julia
@@ -68,7 +67,7 @@ df = DataFrame(X, string.("v", 1:p))
 df.y1 = rand(1:2, n)
 df.y2 = rand(["a", "b", "c"], n)
 df
-aggstat(df; varx = [:v1, :v2], vary = [:y1, :y2], algo = var)  # return a dataframe 
+aggstat(df; varx = [:v1, :v2] , vargroup = [:y1, :y2], algo = var)  # return a dataframe 
 ```
 """ 
 function aggstat(X, y; algo = mean)
@@ -86,10 +85,10 @@ function aggstat(X, y; algo = mean)
     (X = zX, lev)
 end
 
-function aggstat(X::DataFrame; varx, vary, algo = mean)
-    gdf = groupby(X, vary) 
+function aggstat(X::DataFrame; vargroup, varx, algo = mean)
+    gdf = groupby(X, vargroup) 
     res = combine(gdf, varx .=> algo, renamecols = false)
-    sort!(res, vary)
+    sort!(res, vargroup)
 end
 
 """ 
@@ -1027,11 +1026,11 @@ end
 
 """
     tab(X::AbstractArray)
-    tab(X::DataFrame; vary = nothing)
+    tab(X::DataFrame; vargroup = nothing)
 Tabulation of categorical variables.
 * `x` : Categorical variable or dataset containing categorical variable(s).
 Specific for a dataset:
-* `vary` : Vector of the names of the group variables to consider 
+* `vargroup` : Vector of the names of the group variables to consider 
     in `X` (by default: all the columns of `X`).
 
 The output cointains sorted levels.
@@ -1053,19 +1052,19 @@ tab(X[:, 2])
 tab(string.(X))
 
 tab(df)
-tab(df; vary = [:v1, :v2])
-tab(df; vary = :v2)
+tab(df; vargroup = [:v1, :v2])
+tab(df; vargroup = :v2)
 ```
 """
 tab(X::AbstractArray) = sort(StatsBase.countmap(vec(X)))
 
-function tab(X::DataFrame; vary = nothing)
+function tab(X::DataFrame; vargroup = nothing)
     zX = copy(X)
     isa(zX, Vector) ? zX = DataFrame(x1 = zX) : nothing
     isa(zX, DataFrame) ? nothing : zX = DataFrame(zX, :auto)
-    isnothing(vary) ? vary = names(zX) : nothing
+    isnothing(vargroup) ? vargroup = names(zX) : nothing
     zX.n = ones(nro(zX))
-    res = aggstat(zX; varx = :n, vary = vary, algo = sum)
+    res = aggstat(zX; varx = :n, vargroup = vargroup, algo = sum)
     res.n = Int.(res.n)
     res
 end
