@@ -3,9 +3,8 @@
 ## *Version 0.8.11*
 
 - Modifications
-    - Functions **aggstat**, **tab**: keyword argument 'vary' renamed to 'vargroup',
-        - Argument 'vars' renamed to 'varx'.
-        - Argument 'groups' renamed to 'vary'.
+    - Functions **aggstat**: keyword argument 'varx' renamed to 'sel'.
+    - Functions **aggstat**, **tab**: keyword argument 'vary' renamed to 'groupby'.
     - Code cleaning.  
 
 
@@ -143,7 +142,7 @@
 - Breaking
     - **miss**: renamed to **findmiss**.
     - **tabdf**: renamed to **tab**.
-    - **aggstat**, **tabdf**: arguments 'groups' and 'vars' renamed to 'vary' and 'varx'.
+    - **aggstat**, **tabdf**: arguments 'groups' and 'vars' renamed to 'vary' and 'sel'.
 
 - Modifications
     - Code cleaning.    
