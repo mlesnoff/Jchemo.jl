@@ -4,13 +4,12 @@
 Baseline correction of each row of X-data by LOESS regression.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `span` : Window for neighborhood selection (level of smoothing)
-    for the local fitting, typically in [0, 1] (proportion).
+* `span` : Window for neighborhood selection (level of smoothing) for the local fitting, typically 
+    in [0, 1] (proportion).
 * `degree` : Polynomial degree for the local fitting.
 
-De-trend transformation: The function fits a baseline by LOESS regression 
-(function `loessr`) for each observation and returns the residuals (= signals corrected 
-from the baseline).
+De-trend transformation: The function fits a baseline by LOESS regression (function `loessr`) for each 
+observation and returns the residuals (= signals corrected from the baseline).
 
 ## Examples
 ```julia
@@ -90,8 +89,8 @@ Baseline correction of each row of X-data by polynomial linear regression.
 Keyword arguments:
 * `degree` : Polynom degree.
 
-De-trend transformation: the function fits a baseline by polynomial regression 
-for each observation and returns the residuals (= signals corrected from the baseline).
+De-trend transformation: the function fits a baseline by polynomial regression for each observation 
+and returns the residuals (= signals corrected from the baseline).
 
 ## Examples
 ```julia
@@ -173,9 +172,8 @@ end
 Finite differences (discrete derivates) for each row of X-data. 
 * `X` : X-data (n, p).
 Keyword arguments:
-* `npoint` : Nb. points involved in the window for the 
-    finite differences. The range of the window 
-    (= nb. intervals of two successive colums) is npoint - 1.
+* `npoint` : Nb. points involved in the window for the finite differences. The range of 
+    the window (= nb. intervals of two successive colums) is npoint - 1.
 
 The method reduces the column-dimension: 
 * (n, p) --> (n, p - npoint + 1). 
@@ -244,20 +242,17 @@ end
 Sampling spectra by interpolation.
 * `X` : Matrix (n, p) of spectra (rows).
 Keyword arguments:
-* `wl` : Values representing the column "names" of `X`. 
-    Must be a numeric vector of length p, or an AbstractRange,
-    with growing values.
+* `wl` : Values representing the column "names" of `X`. Must be a numeric vector of length p, 
+    or an AbstractRange, with increasing values.
 * `wlfin` : Final values (within the range of `wl`) where to interpolate
-    each spectrum. Must be a numeric vector, or an AbstractRange,
-    with growing values.
+    each spectrum. Must be a numeric vector, or an AbstractRange, with increasing values.
 
-The function implements a cubic spline interpolation using 
-package DataInterpolations.jl.
+The function implements a cubic spline interpolation using package DataInterpolations.jl.
 
 ## References
-Package DAtaInterpolations.jl
-https://github.com/PumasAI/DataInterpolations.jl
-https://htmlpreview.github.io/?https://github.com/PumasAI/DataInterpolations.jl/blob/v2.0.0/example/DataInterpolations.html
+http://github.com/SciML/DataInterpolations.jl
+
+Bhagavan et al. 2024, https://doi.org/10.21105/joss.06917
 
 ## Examples
 ```julia
@@ -339,12 +334,9 @@ Keyword arguments:
  
 The function returns a matrix (n, p).
 
-The smoothing is computed by convolution with padding, 
-using function `imfilter` of package ImageFiltering.jl. 
-The centered kernel is `ones(npoint) / npoint`. 
-Each returned point is located on the center of the kernel.
-Assume a signal x of length p (row of `X`) correponding to 
-a vector wl of p wavelengths (or other indexes). 
+The smoothing is computed by convolution with padding, using function `imfilter` of package ImageFiltering.jl. 
+The centered kernel is `ones(npoint) / npoint`. Each returned point is located on the center of the kernel.
+Assume a signal x of length p (row of `X`) correponding to a vector wl of p wavelengths (or other indexes). 
 
 If `npoint = 3`, the  kernel is kern = [.33, .33, .33], and: 
 - The output value at index i = 4 is: dot(kern, [x[3], x[4], x[5]]).
@@ -353,14 +345,12 @@ If `npoint = 3`, the  kernel is kern = [.33, .33, .33], and:
     (padding). The corresponding wavelength is: wl[1].
 
 If `npoint = 4`, the  kernel is kern = [.25, .25, .25, .25], and: 
-- The output value at index i = 4 is: dot(kern, [x[3], x[4], x[5], x[6]]).
-    The corresponding wavelength is: (wl[4] + wl[5]) / 2.
-- The output value at index i = 1 is: dot(kern, x[1], x[1], x[2], x[3]) 
-    (padding). The corresponding wavelength is: (wl[1] + wl[2]) / 2.
-
+- The output value at index i = 4 is: dot(kern, [x[3], x[4], x[5], x[6]]). The corresponding wavelength 
+    is: (wl[4] + wl[5]) / 2.
+- The output value at index i = 1 is: dot(kern, x[1], x[1], x[2], x[3]) (padding). The corresponding 
+    wavelength is: (wl[1] + wl[2]) / 2.
 
 ## References
-Package ImageFiltering.jl
 https://github.com/JuliaImages/ImageFiltering.jl
 
 ## Examples
@@ -426,8 +416,7 @@ end
     savgk(nhwindow::Int, degree::Int, deriv::Int)
 Compute the kernel of the Savitzky-Golay filter.
 * `nhwindow` : Nb. points (>= 1) of the half window.
-* `degree` : Degree of the smoothing polynom, where
-   1 <= `degree` <= 2 * nhwindow.
+* `degree` : Degree of the smoothing polynom, where 1 <= `degree` <= 2 * nhwindow.
 * `deriv` : Derivation order, where 0 <= `deriv` <= degree.
 
 The size of the kernel is odd (npoint = 2 * nhwindow + 1): 
@@ -435,8 +424,7 @@ The size of the kernel is odd (npoint = 2 * nhwindow + 1):
 
 If `deriv` = 0, there is no derivation (only polynomial smoothing).
 
-The case `degree` = 0 (i.e. simple moving average) is not 
-allowed by the funtion.
+The case `degree` = 0 (i.e. simple moving average) is not allowed by the funtion.
 
 ## References
 Luo, J., Ying, K., Bai, J., 2005. Savitzky–Golay smoothing and differentiation 
@@ -474,12 +462,10 @@ end
 Savitzky-Golay derivation and smoothing of each row of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `npoint` : Size of the filter (nb. points involved in 
-    the kernel). Must be odd and >= 3. The half-window size is 
-    nhwindow = (`npoint` - 1) / 2.
+* `npoint` : Size of the filter (nb. points involved in the kernel). Must be odd 
+    and >= 3. The half-window size is nhwindow = (`npoint` - 1) / 2.
 * `deriv` : Derivation order. Must be: 0 <= `deriv` <= `degree`.
-* `degree` : Degree of the smoothing polynom.
-    Must be: 1 <= `degree` <= `npoint` - 1.
+* `degree` : Degree of the smoothing polynom. Must be: 1 <= `degree` <= `npoint` - 1.
 
 The smoothing is computed by convolution (with padding), using 
 function imfilter of package ImageFiltering.jl. Each returned point is 
