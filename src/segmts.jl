@@ -1,6 +1,6 @@
 """
-    segmts(n::Int, m::Int; rep = 1, seed = nothing)
-    segmts(group::Vector, m::Int; rep = 1, seed = nothing)
+    segmts(n::Int, m::Int; rep = 1, seed::Union{Nothing, Int, Vector{Int}} = nothing)
+    segmts(group::Vector, m::Int; rep = 1, seed::Union{Nothing, Int, Vector{Int}} = nothing)
 Build segments of observations for "test-set" validation.
 * `n` : Total nb. of observations in the dataset. The sampling is implemented within 1:`n`.
 * `group` : A vector (`n`) defining blocks of observations.
@@ -42,7 +42,7 @@ segm[i][1]
 group[segm[i][1]]
 ```
 """ 
-function segmts(n::Int, m::Int; rep = 1, seed = nothing)
+function segmts(n::Int, m::Int; rep = 1, seed::Union{Nothing, Int, Vector{Int}} = nothing)
     Q = Vector{Int}
     s = list(Vector{Q}, rep)
     for i = 1:rep
@@ -50,13 +50,13 @@ function segmts(n::Int, m::Int; rep = 1, seed = nothing)
         if isnothing(seed)
             s[i][1] = StatsBase.sample(1:n, m; replace = false, ordered = true)
         else
-            s[i][1] = StatsBase.sample(MersenneTwister(Int(seed[i])), 1:n, m; replace = false, ordered = true)
+            s[i][1] = StatsBase.sample(MersenneTwister(seed[i]), 1:n, m; replace = false, ordered = true)
         end
     end
     s
 end
 
-function segmts(group::Vector, m::Int; rep = 1, seed = nothing)
+function segmts(group::Vector, m::Int; rep = 1, seed::Union{Nothing, Int, Vector{Int}} = nothing)
     group = vec(group)
     Q = Vector{Int}
     s = list(Vector{Q}, rep)
@@ -68,7 +68,7 @@ function segmts(group::Vector, m::Int; rep = 1, seed = nothing)
         if isnothing(seed)
             s[i][1] = StatsBase.sample(1:nlev, m; replace = false, ordered = true)
         else
-            s[i][1] = StatsBase.sample(MersenneTwister(Int(seed[i])), 1:nlev, m; replace = false, ordered = true)
+            s[i][1] = StatsBase.sample(MersenneTwister(seed[i]), 1:nlev, m; replace = false, ordered = true)
         end
     end
     zs = copy(s)

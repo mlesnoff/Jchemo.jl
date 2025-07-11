@@ -1,6 +1,6 @@
 """
-    segmkf(n::Int, K::Int; rep = 1, seed = nothing)
-    segmkf(group::Vector, K::Int; rep = 1, seed = nothing)
+    segmkf(n::Int, K::Int; rep = 1, seed::Union{Nothing, Int, Vector{Int}} = nothing)
+    segmkf(group::Vector, K::Int; rep = 1, seed::Union{Nothing, Int, Vector{Int}} = nothing)
 Build segments of observations for K-fold cross-validation.  
 * `n` : Total nb. of observations in the dataset. The sampling is implemented with 1:`n`.
 * `group` : A vector (`n`) defining blocks of observations.
@@ -45,7 +45,7 @@ group[segm[i][2]]
 group[segm[i][3]]
 ```
 """ 
-function segmkf(n::Int, K::Int; rep = 1, seed = nothing)
+function segmkf(n::Int, K::Int; rep = 1, seed::Union{Nothing, Int, Vector{Int}} = nothing)
     Q = Vector{Int}
     m = K - n % K ;
     s = list(Vector{Q}, rep)
@@ -54,7 +54,7 @@ function segmkf(n::Int, K::Int; rep = 1, seed = nothing)
         if isnothing(seed)
             v = [Random.randperm(n) ; repeat([0], outer = m)]
         else 
-            v = [Random.randperm(MersenneTwister(Int(seed[i])), n) ; repeat([0], outer = m)] 
+            v = [Random.randperm(MersenneTwister(seed[i]), n) ; repeat([0], outer = m)] 
         end 
         v = reshape(v, K, :)
         @inbounds for j = 1:K 
@@ -64,7 +64,7 @@ function segmkf(n::Int, K::Int; rep = 1, seed = nothing)
     s
 end
 
-function segmkf(group::Vector, K::Int; rep = 1, seed = nothing)
+function segmkf(group::Vector, K::Int; rep = 1, seed::Union{Nothing, Int, Vector{Int}} = nothing)
     Q = Vector{Int}
     yagg = unique(group)
     nlev = length(yagg)
@@ -76,7 +76,7 @@ function segmkf(group::Vector, K::Int; rep = 1, seed = nothing)
         if isnothing(seed)
             v = [Random.randperm(nlev) ; repeat([0], outer = m)]
         else 
-            v = [Random.randperm(MersenneTwister(Int(seed[i])), nlev) ; repeat([0], outer = m)] 
+            v = [Random.randperm(MersenneTwister(seed[i]), nlev) ; repeat([0], outer = m)] 
         end 
         v = reshape(v, K, :)
         @inbounds for j = 1:K 
