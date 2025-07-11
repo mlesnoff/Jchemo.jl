@@ -32,6 +32,9 @@ i = 1
 segm[i]
 segm[i][1]
 
+segmkf(n, K; seed = 123)
+segmkf(n, K; rep, seed = collect(1:rep))
+
 n = 10 
 group = ["A", "B", "C", "D", "E", "A", "B", "C", "D", "E"]    # blocks of the observations
 tab(group) 

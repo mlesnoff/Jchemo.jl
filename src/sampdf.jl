@@ -1,16 +1,17 @@
 """ 
-    sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); meth = :rand)
+    sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); meth = :rand,
+        seed::Union{Nothing, Int} = nothing)
 Build training vs. test sets from each column of a dataframe. 
-* `Y` : DataFrame (n, p). Can contain missing values.
+* `Y` : DataFrame (n, p). Typivally, contains a set of response variables to predict.
+    Can contain missing values.
 * `k` : Nb. of test observations selected for each `Y`-column. The selection is done within the 
-    non-missing observations of the considered column. If `k` is a single value, the same nb.  of 
+    non-missing observations of the considered column. If `k` is a single value, the same nb. of 
     observations are selected for each column. Alternatively, `k` can be a vector of length p. 
 * `id` : Vector (n) of IDs.
 Keyword arguments:
 * `meth` : Type of sampling for the test set. Possible values are: `:rand` = random sampling, 
-    `:sys` = systematic sampling over each sorted `Y`-column (see function `sampsys`).  
-
-Typically, dataframe `Y` contains a set of response variables to predict.
+    `:sys` = systematic sampling over each sorted `Y`-column (see the principle in function `sampsys`).  
+* `seed` : When `meth = :rand`, eventual seed for the `Random.MersenneTwister` generator.
 
 ## Examples
 ```julia
@@ -29,6 +30,8 @@ length(res.test)
 res.train
 res.test
 
+sampdf(Y, k; seed = 123) 
+
 ## Replicated splitting Train/Test
 rep = 10
 k = 3
@@ -44,7 +47,8 @@ ids[i].test[j]
 ids[i].nam[j]
 ```
 """
-function sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); meth = :rand)
+function sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); meth = :rand,
+        seed::Union{Nothing, Int} = nothing)
     @assert in([:rand; :sys])(meth) "Wrong value for argument 'meth'."
     p = nco(Y)
     nam = names(Y)
@@ -56,7 +60,11 @@ function sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); meth = 
         s_all = findall(ismissing.(y) .== 0)
         if meth == :rand   
             n = length(s_all)
-            res = samprand(n, k[i])
+            if isnothing(seed)
+                res = samprand(n, k[i])
+            else
+                res = samprand(n, k[i]; seed)
+            end
         else
             res = sampsys(y[s_all], k[i])
         end 
