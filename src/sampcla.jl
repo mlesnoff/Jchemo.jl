@@ -7,7 +7,7 @@ Build training vs. test sets using a stratified sampling.
     the nb. of classes in `x`.
 * `y` : Quantitative variable (n) used if systematic sampling.
 Keyword arguments:
-* `seed` : Eventual seed for the `Random.MersenneTwister` generator. 
+* `seed` : Eventual seed for the `Random.MersenneTwister` generator.  
 
 Two outputs are returned (= row indexes of the data): 
 * `train` (n - `k`),

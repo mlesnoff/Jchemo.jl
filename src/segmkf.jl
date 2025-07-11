@@ -8,7 +8,6 @@ Build segments of observations for K-fold cross-validation.
 Keyword arguments:
 * `rep` : Nb. replications of the sampling.
 * `seed` : Eventual seed for the `Random.MersenneTwister` generator. Must be of length = `rep`. 
-    When `nothing`, the seed is random at each replication.
 
 For each replication, the function splits the `n` observations to `K` segments  that can be used 
 for K-fold cross-validation. 
