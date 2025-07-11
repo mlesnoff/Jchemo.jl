@@ -11,8 +11,8 @@ Two outputs are returned (= row indexes of the data):
 * `train` (n - `k`),
 * `test` (`k`). 
 
-If `y` = `nothing`, the sampling is random, else it is systematic (within each class) over 
-the sorted `y` (see function `sampsys`).
+If `y` = `nothing`, the sampling within each class is random, else it is systematic over 
+the sorted `y` (see the principle in function `sampsys`).
 
 ## References
 Naes, T., 1987. The design of calibration in near infra-red reflectance analysis by clustering. 
