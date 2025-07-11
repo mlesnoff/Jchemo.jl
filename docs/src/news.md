@@ -3,6 +3,7 @@
 ## *Version 0.8.12*
 
 - Modifications
+    - Argument 'seed' added to function **segmkf**.
     - Code cleaning.  
 
 
