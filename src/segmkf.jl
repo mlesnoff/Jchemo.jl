@@ -1,5 +1,5 @@
 """
-    segmkf(n::Int, K::Int; rep = 1)
+    segmkf(n::Int, K::Int; rep = 1, seed = nothing)
     segmkf(group::Vector, K::Int; rep = 1)
 Build segments of observations for K-fold cross-validation.  
 * `n` : Total nb. of observations in the dataset. The sampling is implemented with 1:`n`.
@@ -7,6 +7,8 @@ Build segments of observations for K-fold cross-validation.
 * `K` : Nb. folds (segments) splitting the `n` observations. 
 Keyword arguments:
 * `rep` : Nb. replications of the sampling.
+* `seed` : Eventual seed for the `Random.MersenneTwister` generator. Must be of length = `rep`. 
+    When `nothing`, the seed is random at each replication.
 
 For each replication, the function splits the `n` observations to `K` segments  that can be used 
 for K-fold cross-validation. 
@@ -43,13 +45,17 @@ group[segm[i][2]]
 group[segm[i][3]]
 ```
 """ 
-function segmkf(n::Int, K::Int; rep = 1)
+function segmkf(n::Int, K::Int; rep = 1, seed = nothing)
     Q = Vector{Int}
     m = K - n % K ;
     s = list(Vector{Q}, rep)
     @inbounds for i = 1:rep
         s[i] = list(Q, K)
-        v = [randperm(n) ; repeat([0], outer = m)] 
+        if isnothing(seed)
+            v = [Random.randperm(n) ; repeat([0], outer = m)]
+        else 
+            v = [Random.randperm(MersenneTwister(Int(seed[i])), n) ; repeat([0], outer = m)] 
+        end 
         v = reshape(v, K, :)
         @inbounds for j = 1:K 
             s[i][j] = sort(filter(x -> x > 0, v[j, :]))
@@ -67,7 +73,7 @@ function segmkf(group::Vector, K::Int; rep = 1)
     s = list(Vector{Q}, rep)
     @inbounds for i = 1:rep
         s[i] = list(Q, K)
-        v = [randperm(nlev) ; repeat([0], outer = m)] 
+        v = [Random.randperm(nlev) ; repeat([0], outer = m)] 
         v = reshape(v, K, :)
         @inbounds for j = 1:K 
             s[i][j] = sort(filter(x -> x > 0, v[j, :]))
