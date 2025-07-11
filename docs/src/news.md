@@ -3,7 +3,8 @@
 ## *Version 0.8.12*
 
 - Modifications
-    - Argument 'seed' added to function **segmkf**.
+    - Argument 'seed' added to the sampling functions.
+    - Function **samprand**: now allows sampling of groups of observations.
     - Code cleaning.  
 
 
