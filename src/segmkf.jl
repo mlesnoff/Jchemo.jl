@@ -1,6 +1,6 @@
 """
     segmkf(n::Int, K::Int; rep = 1, seed = nothing)
-    segmkf(group::Vector, K::Int; rep = 1)
+    segmkf(group::Vector, K::Int; rep = 1, seed = nothing)
 Build segments of observations for K-fold cross-validation.  
 * `n` : Total nb. of observations in the dataset. The sampling is implemented with 1:`n`.
 * `group` : A vector (`n`) defining blocks of observations.
@@ -64,7 +64,7 @@ function segmkf(n::Int, K::Int; rep = 1, seed = nothing)
     s
 end
 
-function segmkf(group::Vector, K::Int; rep = 1)
+function segmkf(group::Vector, K::Int; rep = 1, seed = nothing)
     Q = Vector{Int}
     yagg = unique(group)
     nlev = length(yagg)
@@ -73,7 +73,11 @@ function segmkf(group::Vector, K::Int; rep = 1)
     s = list(Vector{Q}, rep)
     @inbounds for i = 1:rep
         s[i] = list(Q, K)
-        v = [Random.randperm(nlev) ; repeat([0], outer = m)] 
+        if isnothing(seed)
+            v = [Random.randperm(nlev) ; repeat([0], outer = m)]
+        else 
+            v = [Random.randperm(MersenneTwister(Int(seed[i])), nlev) ; repeat([0], outer = m)] 
+        end 
         v = reshape(v, K, :)
         @inbounds for j = 1:K 
             s[i][j] = sort(filter(x -> x > 0, v[j, :]))
