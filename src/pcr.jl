@@ -116,8 +116,7 @@ function coef(object::Pcr; nlv = nothing)
     Dy = Diagonal(object.yscales)
     ## Not used for Spcr (since R not computed; while for Pcr, R = V)
     B = fweight(vcol(object.fitm.V, 1:nlv), 1 ./ object.fitm.xscales) * theta * Dy
-    ## In 'int': No correction is needed, since 
-    ## ymeans, xmeans and B are in the original scale 
+    ## In 'int': No correction is needed, since ymeans, xmeans and B are in the original scale 
     int = object.ymeans' .- object.fitm.xmeans' * B
     ## End
     (B = B, int = int)
