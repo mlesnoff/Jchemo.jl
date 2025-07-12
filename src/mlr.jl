@@ -6,11 +6,9 @@
 Compute a mutiple linear regression model (MLR) by using the QR algorithm.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `noint` : Boolean. Define if the model is computed 
-    with an intercept or not.
+* `noint` : Boolean. Define if the model is computed with an intercept or not.
 
 Safe but can be little slower than other methods.
 
@@ -76,14 +74,18 @@ function mlr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...
     sqrtw = sqrt.(weights.w)
     if par.noint
         q = nco(Y)
-        B = fweight(X, sqrtw) \ fweight(Y, sqrtw)
+        fweight!(X, sqrtw)
+        fweight!(Y, sqrtw)
+        B = X \ Y
         int = zeros(q)'
     else
         xmeans = colmean(X, weights) 
         ymeans = colmean(Y, weights)   
         fcenter!(X, xmeans)
         fcenter!(Y, ymeans)
-        B = fweight(X, sqrtw) \ fweight(Y, sqrtw)
+        fweight!(X, sqrtw)
+        fweight!(Y, sqrtw)
+        B = X \ Y
         int = ymeans' .- xmeans' * B
     end
     Mlr(B, int, weights, par)
@@ -94,14 +96,13 @@ end
     mlrchol(X, Y)
     mlrchol(X, Y, weights::Weight)
     mlrchol!mlrchol!(X::Matrix, Y::Matrix, weights::Weight)
-Compute a mutiple linear regression model (MLR) using the Normal equations 
-    and a Choleski factorization.
+Compute a mutiple linear regression model (MLR) using the Normal equations and 
+    a Choleski factorization.
 * `X` : X-data, with nb. columns >= 2 (required by function cholesky).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`). 
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`). 
 
-Compute only a model with intercept.
+Only compute a model with intercept.
 
 Faster but can be less accurate (based on squared element X'X).
 
@@ -125,7 +126,8 @@ function mlrchol!(X::Matrix, Y::Matrix, weights::Weight)
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)
-    B = cholesky!(Hermitian(X' * fweight(X, weights.w))) \ (X' * fweight(Y, weights.w))
+    fweight!(Y, weights.w)
+    B = cholesky!(Hermitian(X' * fweight(X, weights.w))) \ (X' * Y)
     int = ymeans' .- xmeans' * B
     MlrNoArg(B, int, weights)
 end
@@ -139,11 +141,9 @@ Compute a mutiple linear regression model (MLR)  by using
     a pseudo-inverse. 
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`). 
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`). 
 Keyword arguments:
-* `noint` : Boolean. Define if the model is computed 
-    with an intercept or not.
+* `noint` : Boolean. Define if the model is computed with an intercept or not.
 
 Safe but can be slower.  
 
@@ -166,18 +166,20 @@ function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     sqrtw = sqrt.(weights.w)
     if par.noint
         q = nco(Y)
-        sqrtDX = fweight(X, sqrtw)
-        tol = sqrt(eps(real(float(one(eltype(sqrtDX))))))      # see ?pinv
-        B = pinv(sqrtDX, rtol = tol) * fweight(Y, sqrtw)
+        fweight!(X, sqrtw)
+        fweight!(Y, sqrtw)
+        tol = sqrt(eps(real(float(one(eltype(X))))))      # see ?pinv
+        B = pinv(X, rtol = tol) * Y
         int = zeros(q)'
     else
         xmeans = colmean(X, weights) 
         ymeans = colmean(Y, weights)   
         fcenter!(X, xmeans)
         fcenter!(Y, ymeans)
-        sqrtDX = fweight(X, sqrtw)
-        tol = sqrt(eps(real(float(one(eltype(sqrtDX))))))      # see ?pinv
-        B = pinv(sqrtDX, rtol = tol) * fweight(Y, sqrtw)
+        fweight!(X, sqrtw)
+        fweight!(Y, sqrtw)
+        tol = sqrt(eps(real(float(one(eltype(X))))))      # see ?pinv
+        B = pinv(X, rtol = tol) * Y
         int = ymeans' .- xmeans' * B
     end
     Mlr(B, int, weights, par)
@@ -187,18 +189,15 @@ end
     mlrpinvn() 
     mlrpinvn(X, Y)
     mlrpinvn(X, Y, weights::Weight)
-    mlrpinvn!mlrchol!(X::Matrix, Y::Matrix, 
-        weights::Weight)
-Compute a mutiple linear regression model (MLR) 
-    by using the Normal equations and a pseudo-inverse.
+    mlrpinvn!mlrchol!(X::Matrix, Y::Matrix, weights::Weight)
+Compute a mutiple linear regression model (MLR) by using the Normal equations and a pseudo-inverse.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`). 
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`). 
 
 Safe and fast for p not too large.
 
-Compute only a model with intercept.
+Only compute a model with intercept.
 
 See function `mlr` for examples.
 """ 
@@ -219,9 +218,10 @@ function mlrpinvn!(X::Matrix, Y::Matrix, weights::Weight)
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)
+    fweight!(Y, weights.w)
     XtDX = X' * fweight(X, weights.w)
     tol = sqrt(eps(real(float(one(eltype(XtDX))))))
-    B = pinv(XtDX, rtol = tol) * (X' * fweight(Y, weights.w))
+    B = pinv(XtDX, rtol = tol) * (X' * Y)
     int = ymeans' .- xmeans' * B
     MlrNoArg(B, int, weights)
 end
@@ -234,11 +234,9 @@ end
 Compute a simple (univariate x) linear regression model.
 * `x` : Univariate X-data (n).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`). 
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`). 
 Keyword arguments:
-* `noint` : Boolean. Define if the model is computed 
-    with an intercept or not.
+* `noint` : Boolean. Define if the model is computed with an intercept or not.
 
 See function `mlr` for examples.
 """ 
@@ -259,14 +257,16 @@ function mlrvec!(x::Matrix, Y::Matrix, weights::Weight; kwargs...)
     @assert nco(x) == 1 "Method only working for univariate x."
     if par.noint
         q = nco(Y)
-        B = x' * fweight(Y, weights.w) / normv(x, weights)^2
+        fweight!(Y, weights.w)
+        B = x' * Y / normv(x, weights)^2
         int = zeros(q)'
     else
         xmeans = colmean(x, weights) 
         ymeans = colmean(Y, weights)   
         fcenter!(x, xmeans)
         fcenter!(Y, ymeans)
-        B = x' * fweight(Y, weights.w) / normv(x, weights)^2
+        fweight!(Y, weights.w)
+        B = x' * Y / normv(x, weights)^2
         int = ymeans' .- xmeans' * B
     end
     Mlr(B, int, weights, par)
