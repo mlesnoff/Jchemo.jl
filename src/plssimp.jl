@@ -6,15 +6,14 @@
 Partial Least Squares Regression (PLSR) with the SIMPLS algorithm (de Jong 1993).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
-    is scaled by its uncorrected standard deviation.
+* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected 
+    standard deviation.
 
-**Note:** In this function, scores T (LVs) are not normed, 
-conversely to the original algorithm of de Jong (2013).
+**Note:** In this function, scores T (LVs) are not normed, conversely to the original algorithm of 
+de Jong (2013).
 
 See function `plskern` for examples.
 
@@ -70,8 +69,8 @@ function plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     r = similar(X, p)
     c = similar(X, q)
     zXtY = similar(XtY)
-    # End
-    # de Jong Chemolab 1993 Table 1 (as fast as Appendix) 
+    ## End
+    ## de Jong Chemolab 1993 Table 1 (as fast as Appendix) 
     @inbounds for a = 1:nlv
         if a == 1
             zXtY .= XtY

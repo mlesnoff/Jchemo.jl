@@ -6,19 +6,16 @@
 Robust PLSR using outlierness.
 * `X` : X-data (n, p). 
 * `Y` : Y-data (n, q). 
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. of latent variables (LVs).
 * `prm` : Proportion of the data removed (hard rejection of outliers) 
     for each outlierness measure.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD 
-    when computing the outlierness and by its uncorrected standard 
-    deviation when computing weighted PCA. 
+* `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD when computing the outlierness 
+    and by its uncorrected standard deviation when computing weighted PCA. 
 
-Robust PLSR combining outlyingness measures and weighted PLSR (WPLSR).
-This is the same principle as function `pcaout` (see the help page) but
-the final step is a weighted PLSR instead of a weighted PCA.  
+Robust PLSR combining outlyingness measures and weighted PLSR (WPLSR). This is the same principle as function 
+`pcaout` (see the help page) but the final step is a weighted PLSR instead of a weighted PCA.  
 
 ## Examples
 ```julia

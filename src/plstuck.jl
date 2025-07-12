@@ -6,15 +6,13 @@
 Tucker's inter-battery method of factor analysis
 * `X` : First block of data.
 * `Y` : Second block of data.
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are:
     `:none`, `:frob`. See functions `blockscal`.
-* `scal` : Boolean. If `true`, each column of blocks `X` 
-    and `Y` is scaled by its uncorrected standard deviation 
-    (before the block scaling).
+* `scal` : Boolean. If `true`, each column of blocks `X` and `Y` is scaled by its uncorrected 
+    standard deviation (before the block scaling).
 
 Inter-battery method of factor analysis (Tucker 1958, Tenenhaus 1998 chap.3). The two blocks 
 `X` and `X` play a symmetric role.  This method is referred to as PLS-SVD in Wegelin 2000. The method 

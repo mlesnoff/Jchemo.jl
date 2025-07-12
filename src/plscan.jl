@@ -6,30 +6,24 @@
 Canonical partial least squares regression (Canonical PLS).
 * `X` : First block of data.
 * `Y` : Second block of data.
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores) to compute.
-* `bscal` : Type of block scaling. Possible values are:
-    `:none`, `:frob`. See functions `blockscal`.
-* `scal` : Boolean. If `true`, each column of blocks `X` 
-    and `Y` is scaled by its uncorrected standard deviation 
-    (before the block scaling).
+* `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`. See functions `blockscal`.
+* `scal` : Boolean. If `true`, each column of blocks `X` and `Y` is scaled by its uncorrected 
+    standard deviation (before the block scaling).
 
-Canonical PLS with the Nipals algorithm (Wold 1984, Tenenhaus 1998 chap.11), 
-referred to as PLS-W2A (i.e. Wold PLS mode A) in Wegelin 2000. The two blocks 
-`X` and `Y` play a symmetric role.  After each step of scores computation, 
-X and Y are deflated by the x- and y-scores, respectively. 
+Canonical PLS with the Nipals algorithm (Wold 1984, Tenenhaus 1998 chap.11), referred to as PLS-W2A 
+(i.e. Wold PLS mode A) in Wegelin 2000. The two blocks `X` and `Y` play a symmetric role.  After each 
+step of scores computation, X and Y are deflated by the x- and y-scores, respectively. 
 
 Function `summary` returns:
-* `cortx2ty`: Correlations between the X- and Y-LVs.
+* `cortx2ty`: Correlations between the X- and Y-LVs
 and for block `X`: 
-* `explvarx` : Proportion of the block inertia (squared Frobenious norm) 
-    explained by the block LVs (`Tx`).
+* `explvarx` : Proportion of the block inertia (squared Frobenious norm) explained by the block LVs (`Tx`).
 * `rvx2tx` : RV coefficients between the block and the block LVs.
 * `rdx2tx` : Rd coefficients between the block and the block LVs.
-* `corx2tx` : Correlation between the block variables and the block LVs.
-The same is returned for block `Y`.  
+* `corx2tx` : Correlation between the block variables and the block LVs. The same is returned for block `Y`.  
 
 ## References
 Tenenhaus, M., 1998. La régression PLS: théorie et pratique. Editions Technip, Paris.

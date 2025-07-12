@@ -6,29 +6,25 @@
 Partial Least Squares Regression (PLSR) with the Nipals algorithm.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
-    is scaled by its uncorrected standard deviation.
+* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected 
+    standard deviation.
 
-In this function, for PLS2 (multivariate Y), the Nipals 
-iterations are replaced by a direct computation of the 
-PLS weights (w) by SVD decomposition of matrix X'Y 
-(Hoskuldsson 1988 p.213).
+In this function, for PLS2 (multivariate Y), the Nipals iterations are replaced by a direct computation of the 
+PLS weights (w) by SVD decomposition of matrix X'Y (Hoskuldsson 1988 p.213).
 
 See function `plskern` for examples.
 
 ## References
-Hoskuldsson, A., 1988. PLS regression methods. Journal of 
-Chemometrics 2, 211-228.https://doi.org/10.1002/cem.1180020306
+Hoskuldsson, A., 1988. PLS regression methods. Journal of Chemometrics 2, 211-228.
+https://doi.org/10.1002/cem.1180020306
 
-Tenenhaus, M., 1998. La régression PLS: thÃ©orie et pratique. 
-Editions Technip, Paris, France.
+Tenenhaus, M., 1998. La régression PLS: thÃ©orie et pratique. Editions Technip, Paris, France.
 
-Wold, S., Sjostrom, M., Eriksson, l., 2001. PLS-regression: 
-a basic tool for chemometrics. Chem. Int. Lab. Syst., 58, 109-130.
+Wold, S., Sjostrom, M., Eriksson, l., 2001. PLS-regression: a basic tool for chemometrics. 
+Chem. Int. Lab. Syst., 58, 109-130.
 """ 
 plsnipals(; kwargs...) = JchemoModel(plsnipals, nothing, kwargs)
 
@@ -73,7 +69,7 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     w = similar(X, p)
     v  = copy(w)
     c   = similar(X, q)
-    # End
+    ## End
     @inbounds for a = 1:nlv
         XtY .= X' * fweight(Y, weights.w)
         if q == 1
@@ -89,10 +85,10 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         v ./= tt
         mul!(c, Y', dt)
         c ./= tt                      
-        # deflation with respect to t: asymetric PLS
+        ## Deflation with respect to t: asymetric PLS
         X .-= t * v'
         Y .-= t * c'
-        # end
+        ## End
         V[:, a] .= v  
         T[:, a] .= t
         W[:, a] .= w
