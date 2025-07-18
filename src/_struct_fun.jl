@@ -135,13 +135,8 @@ struct Covsel
     ymeans::Vector
     yscales::Vector
     weights::Weight
-    niter::Union{Vector{Int}, Nothing}    # pcanipals, pcanipalsmiss
     par::ParCovsel
 end
-
-
-(sel, sel_c, xss, yss, xsstot, ysstot, xmeans, xscales, ymeans, yscales, weights)
-
 
 struct Rp
     T::Matrix
