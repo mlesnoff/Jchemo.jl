@@ -1,6 +1,6 @@
 # Available methods
 
-## MULTIVARIATE EXPLORATORY DATA ANALYSES
+## DIMENSION REDUCTION AND MULTIVARIATE EXPLORATORY DATA ANALYSES
 
 ### Principal component analysis (PCA) 
 
@@ -28,6 +28,10 @@
 *Utilities (PCA and PLS)* 
 - **xfit** X-matrix fitting 
 - **xresid** X-residual matrix 
+
+### Partial covariances/correlations
+
+- **covsel** Covsel method for variable selection
 
 ### Random projections
 

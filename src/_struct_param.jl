@@ -112,6 +112,12 @@ Base.@kwdef mutable struct ParKpca
     scal::Bool = false                   
 end 
 
+Base.@kwdef mutable struct ParCovsel
+    nlv::Int = 1    
+    meth::Symbol = :cov  
+    scal::Bool = false
+end 
+
 Base.@kwdef mutable struct ParRp
     nlv::Int = 1    
     meth::Symbol = :gauss  

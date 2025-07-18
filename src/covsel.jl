@@ -1,3 +1,5 @@
+covsel(; kwargs...) = JchemoModel(plskern, nothing, kwargs)
+
 function covsel(X, Y; nlv = nothing, meth::Symbol = :cov, scal::Bool = false)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
@@ -8,9 +10,8 @@ function covsel(X, Y, weights::Jchemo.Weight; nlv = nothing, meth::Symbol = :cov
     covsel!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv, meth, scal)
 end
 
-function covsel!(X::Matrix, Y::Matrix, weights::Jchemo.Weight; nlv = nothing, meth::Symbol = :cov, 
-        scal::Bool = false)
-    par = (nlv = nlv, meth, scal) # to be replaced by recovkw in the future
+function covsel!(X::Matrix, Y::Matrix, weights::Jchemo.Weight; nlv = nothing, meth::Symbol = :cov, scal::Bool = false)
+    par = recovkw(ParCovsel, kwargs).par
     ## Specific for Da functions
     Q = eltype(X)
     isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
@@ -28,7 +29,7 @@ function covsel!(X::Matrix, Y::Matrix, weights::Jchemo.Weight; nlv = nothing, me
         xscales .= colstd(X, weights)
         yscales .= colstd(Y, weights)
         fcscale!(X, xmeans, xscales)
-        #fcscale!(Y, ymeans, yscales)
+        fcscale!(Y, ymeans, yscales)
         fcenter!(Y, ymeans)
     else
         fcenter!(X, xmeans)
@@ -40,14 +41,11 @@ function covsel!(X::Matrix, Y::Matrix, weights::Jchemo.Weight; nlv = nothing, me
     xsstot = Jchemo.frob2(X)
     ysstot = Jchemo.frob2(Y)
     ##
-    zX = copy(X)
-    zY = copy(Y)
     sel = zeros(Int, nlv)
     sel_c = similar(X, nlv)
     x = similar(X, n, 1)
     XtY = similar(X, p, q)
     c = similar(X, p)
-    B = similar(X, nlv, q)
     xss = copy(sel_c)
     yss = copy(sel_c)
     for i = 1:nlv
@@ -74,14 +72,28 @@ function covsel!(X::Matrix, Y::Matrix, weights::Jchemo.Weight; nlv = nothing, me
         xss[i] = Jchemo.frob2(X)
         yss[i] = Jchemo.frob2(Y)
     end
-    (sel = sel, sel_c, xss, yss, xsstot, ysstot, xmeans, xscales, ymeans, yscales, weights)
+    Covsel(sel, sel_c, xss, yss, xsstot, ysstot, xmeans, xscales, ymeans, yscales, weights, par)
 end
 
-function transf_covsel(object, X)
-    X[:, object.sel]
+""" 
+    transf(object::Covsel, X; nlv = nothing)
+Compute selected variables from a fitted model and X-data.
+* `object` : The fitted model.
+* `X` : X-data for which the selected variables are computed.
+* `nlv` : Nb. variables to compute.
+""" 
+function transf(object::Covsel, X; nlv = nothing)
+    a = length(object.sel)
+    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    X[:, object.sel[1:nlv]]
 end
 
-function summary_covsel(object)
+"""
+    summary(object::Covsel)
+Summarize the fitted model.
+* `object` : The fitted model.
+""" 
+function summary(object::Covsel)
     nlv = length(object.sel)
     xsstot = object.xsstot
     ysstot = object.ysstot

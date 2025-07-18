@@ -1,5 +1,13 @@
 # News
 
+## *Version 0.8.13*
+
+- News
+    - **covsel** Covsel method for variable selection.
+
+- Modifications
+    - Code cleaning.
+
 ## *Version 0.8.12*
 
 - Modifications

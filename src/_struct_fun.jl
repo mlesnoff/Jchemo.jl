@@ -123,6 +123,26 @@ struct Kpca
     par::ParKpca
 end
 
+struct Covsel
+    sel::Vector{Int}
+    sel_c::Vector
+    xss::Vector
+    yss::Vector
+    xsstot::Real
+    ysstot::Real 
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    yscales::Vector
+    weights::Weight
+    niter::Union{Vector{Int}, Nothing}    # pcanipals, pcanipalsmiss
+    par::ParCovsel
+end
+
+
+(sel, sel_c, xss, yss, xsstot, ysstot, xmeans, xscales, ymeans, yscales, weights)
+
+
 struct Rp
     T::Matrix
     V::Union{Matrix, SparseArrays.SparseMatrixCSC}

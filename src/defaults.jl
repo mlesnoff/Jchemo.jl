@@ -22,6 +22,8 @@ function defaults(algo::Function)
     in((pcapp,)).(algo) ? dump(Jchemo.ParPcapp()) : nothing
     in((pcaout,)).(algo) ? dump(Jchemo.ParPcaout()) : nothing
 
+    in((covsel,)).(algo) ? dump(Jchemo.ParCovsel()) : nothing
+    
     in((rp,)).(algo) ? dump(Jchemo.ParRp()) : nothing
 
     in((spca,)).(algo) ? dump(Jchemo.ParSpca()) : nothing
