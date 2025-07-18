@@ -1,16 +1,16 @@
-covsel(; kwargs...) = JchemoModel(plskern, nothing, kwargs)
+covsel(; kwargs...) = JchemoModel(covsel, nothing, kwargs)
 
-function covsel(X, Y; nlv = nothing, meth::Symbol = :cov, scal::Bool = false)
+function covsel(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     weights = mweight(ones(Q, nro(X)))
-    covsel(X, Y, weights; nlv, meth, scal)
+    covsel(X, Y, weights; kwargs...)
 end
 
-function covsel(X, Y, weights::Jchemo.Weight; nlv = nothing, meth::Symbol = :cov, scal::Bool = false)
-    covsel!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; nlv, meth, scal)
+function covsel(X, Y, weights::Jchemo.Weight; kwargs...)
+    covsel!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function covsel!(X::Matrix, Y::Matrix, weights::Jchemo.Weight; nlv = nothing, meth::Symbol = :cov, scal::Bool = false)
+function covsel!(X::Matrix, Y::Matrix, weights::Jchemo.Weight; kwargs...)
     par = recovkw(ParCovsel, kwargs).par
     ## Specific for Da functions
     Q = eltype(X)

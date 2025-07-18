@@ -81,6 +81,7 @@ include("pcasph.jl")
 include("pcapp.jl") 
 include("pcaout.jl") 
 include("kpca.jl")
+include("covsel.jl")
 include("rpmat.jl")
 include("rp.jl")
 include("umap.jl")
@@ -347,6 +348,7 @@ export
     pcaout, pcaout!,
     spca, spca!,
     kpca,
+    covsel,
     rpmatgauss, rpmatli, rp, rp!,
     umap,
     ## Multiblock
