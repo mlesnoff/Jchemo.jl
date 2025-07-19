@@ -111,20 +111,7 @@ function covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs
     xss = copy(selc)
     yss = copy(selc)
     for i = 1:nlv
-        if par.meth == :cov
-            XtY .= X' * Y   # (p, q)
-        else
-            zX .= copy(X)
-            zY .= copy(Y)
-            xscales .= colnorm(zX)
-            yscales .= colnorm(zY)
-            if i > 1
-                xscales[sel[1:(i - 1)]] .= 1  # remove divisions by zeros
-            end
-            fscale!(zX, xscales)
-            fscale!(zY, yscales)
-            XtY .= zX' * zY
-        end              
+        XtY .= X' * Y   # (p, q)             
         if q == 1
             c .= XtY.^2
         else
