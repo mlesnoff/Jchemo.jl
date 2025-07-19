@@ -125,7 +125,7 @@ end
 
 struct Covsel
     sel::Vector{Int}
-    sel_c::Vector
+    selc::Vector
     xss::Vector
     yss::Vector
     xsstot::Real

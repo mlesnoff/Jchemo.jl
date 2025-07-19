@@ -12,12 +12,10 @@ end
 
 function covsel!(X::Matrix, Y::Matrix, weights::Jchemo.Weight; kwargs...)
     par = recovkw(ParCovsel, kwargs).par
-    ## Specific for Da functions
     Q = eltype(X)
+    ## Specific for Da functions
     isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
     ## End 
-    n, p = size(X)
-    q = nco(Y)
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)  
@@ -30,7 +28,6 @@ function covsel!(X::Matrix, Y::Matrix, weights::Jchemo.Weight; kwargs...)
         yscales .= colstd(Y, weights)
         fcscale!(X, xmeans, xscales)
         fcscale!(Y, ymeans, yscales)
-        fcenter!(Y, ymeans)
     else
         fcenter!(X, xmeans)
         fcenter!(Y, ymeans)
@@ -38,41 +35,43 @@ function covsel!(X::Matrix, Y::Matrix, weights::Jchemo.Weight; kwargs...)
     sqrtw = sqrt.(weights.w)
     fweight!(X, sqrtw)
     fweight!(Y, sqrtw)
-    xsstot = Jchemo.frob2(X)
-    ysstot = Jchemo.frob2(Y)
+    xsstot = frob2(X)
+    ysstot = frob2(Y)
     ##
     sel = zeros(Int, nlv)
-    sel_c = similar(X, nlv)
+    selc = similar(X, nlv)
     x = similar(X, n, 1)
     XtY = similar(X, p, q)
     c = similar(X, p)
-    xss = copy(sel_c)
-    yss = copy(sel_c)
+    xss = copy(selc)
+    yss = copy(selc)
     for i = 1:nlv
-        XtY .= X' * Y    # (p, q) 
+        if par.meth == :cor
+            xscales .= colnorm(X)
+            yscales .= colnorm(Y)
+            if i > 1
+                xscales[sel[1:(i - 1)]] .= 1  # remove divisions by zeros
+            end
+            fscale!(X, xscales)
+            fscale!(Y, yscales)
+        end             
+        XtY .= X' * Y   # (p, q) 
         if q == 1
             c .= XtY.^2
         else
             c .= rowsum(XtY.^2)
         end
-        if par.meth == :cor
-            xscales .= colnorm(X).^2
-            if i > 1
-                xscales[sel[1:(i - 1)]] .= 1  # remove divisions by zeros
-            end
-            c ./= xscales
-        end
         sel[i] = argmax(c)
-        sel_c[i] = c[sel[i]]
+        selc[i] = c[sel[i]]
         x .= vcol(X, sel[i])
         dotx = dot(x, x) 
         ## Projecion matrix on x (n, n) = x * inv(x' * x) * x' = x * x' / dot(x, x)
         X .-= x * x' * X / dotx   
         Y .-= x * x' * Y / dotx 
-        xss[i] = Jchemo.frob2(X)
-        yss[i] = Jchemo.frob2(Y)
+        xss[i] = frob2(X)
+        yss[i] = frob2(Y)
     end
-    Covsel(sel, sel_c, xss, yss, xsstot, ysstot, xmeans, xscales, ymeans, yscales, weights, par)
+    Covsel(sel, selc, xss, yss, xsstot, ysstot, xmeans, xscales, ymeans, yscales, weights, par)
 end
 
 """ 
