@@ -6,8 +6,7 @@
 Partial least squares regression (PLSR) with the "improved kernel algorithm #1" (Dayal & McGegor, 1997).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. 
-    function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected 

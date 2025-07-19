@@ -31,7 +31,7 @@
 
 ### Partial covariances/correlations
 
-- **covsel** Variable (feature) selection from partial covariance/correlation (Covsel)
+- **covsel** Variable (feature) selection from partial covariance (Covsel)
 
 ### Random projections
 

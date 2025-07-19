@@ -3,7 +3,7 @@
 ## *Version 0.8.13*
 
 - News
-    - **covsel** Variable (feature) selection from partial covariance/correlation (Covsel).
+    - **covsel** Variable (feature) selection from partial covariance (Covsel).
 
 - Modifications
     - Code cleaning.

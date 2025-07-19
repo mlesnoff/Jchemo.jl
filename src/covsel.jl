@@ -3,37 +3,39 @@
     covsel(X, Y; kwargs...)
     covsel(X, Y, weights::Weight; kwargs...)
     covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
-Variable (feature) selection from partial covariance/correlation (Covsel).
+Variable (feature) selection from partial covariance (Covsel).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
+Keyword arguments:
 * `nlv` : Nb. variables to select.
-* `scalx` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
-* `scaly` : Boolean. If `true`, each column of `Y` is scaled by its uncorrected standard deviation.
+* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected 
+    standard deviation.
 
-This is the Covsel algorithm described in Roger et al. 2011 for variable selection. Function `covsel` also 
-proposes an option not present in the original algorithm: correlation can be used instead of covariance to 
-compute the selection criterion.
+This is the Covsel algorithm described in Roger et al. 2011 for variable selection (see also 
+Höskuldsson, A., 1992).
 
-The selection is sequential and based on the *partial* covariance/correlation principle. One first variable is 
-selected (the variable maximizing the selection criterion: squared partail covariance/correlation), `X` and `Y` 
-are orthogonolized (deflated) to this variable, the selection criterion is recomputed and the next variable 
-is selected. And so on.
+The selection is sequential and based on the *partial* covariance principle. One first variable (that 
+maximizes the selection criterion: squared partial covariance) is selected, `X` and `Y` are orthogonolized 
+(deflated) to this variable, the selection criterion is recomputed and the next variable is selected, 
+and so on.
 
-The prelimianry scaling of `X` is optional. In contrast, `Y` is automatically internally scaled by its 
-uncorrected standard deviation. For the covariance This has the advantage to give the same importance to each `Y`-variable
-when `Y`is  multivariate (q > 1). This has no effect when `Y` is 
-univariate.
+When `Y`is multivariate (q > 1), it is recommended to use scaling to give the same importance to the 
+variables when computing covariances.
+
+**Note:** A faster alternative to function `covsel` is function `splsr` (with `nlv = 1`) that implements 
+the kernel PLS algorithm of Dayal&McGregor 1997. Another faster algorithm is described in Mishra 2022.   
 
 ## References
-Höskuldsson, A., 1992. The H-principle in modelling with applications 
-to chemometrics. Chemometrics and Intelligent Laboratory Systems, 
-Proceedings of the 2nd Scandinavian Symposium on Chemometrics 14, 
+Höskuldsson, A., 1992. The H-principle in modelling with applications to chemometrics. Chemometrics 
+and Intelligent Laboratory Systems, Proceedings of the 2nd Scandinavian Symposium on Chemometrics 14, 
 139–153. https://doi.org/10.1016/0169-7439(92)80099-P
 
-Roger, J.M., Palagos, B., Bertrand, D., Fernandez-Ahumada, E., 2011. 
-covsel: Variable selection for highly multivariate and multi-response 
-calibration: Application to IR spectroscopy. 
+Mishra, P., 2022. A brief note on a new faster covariate’s selection (fCovSel) algorithm. 
+Journal of Chemometrics 36, e3397. https://doi.org/10.1002/cem.3397
+
+Roger, J.M., Palagos, B., Bertrand, D., Fernandez-Ahumada, E., 2011. covsel: Variable selection for highly 
+multivariate and multi-response calibration: Application to IR spectroscopy. 
 Chem. Lab. Int. Syst. 106, 216-223.
 
 Wikipedia
@@ -45,17 +47,25 @@ using JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
-pnames(dat)
+@names dat
 
 X = dat.X
 y = dat.Y.tbc
 
-fm = covsel(X, y; nlv = 10) ;
-fm.sel
-fm.cov2
+nlv = 10
+model = covsel(; nlv)
+fit!(model, X, y)
+fitm = model.fitm ;
+fitm.sel
+fitm.selc
 
-scatter(sqrt.(fm.cov2), 
-    axis = (xlabel = "Variable", ylabel = "Importance"))
+@head transf(model, X; nlv = 3)
+
+res = summary(model)
+res.explvarx 
+res.explvary
+
+plotxy(1:nlv, fitm.selc; xlabel = "Variable", ylabel = "Importance").f
 ```
 """ 
 covsel(; kwargs...) = JchemoModel(covsel, nothing, kwargs)
@@ -66,7 +76,7 @@ function covsel(X, Y; kwargs...)
     covsel(X, Y, weights; kwargs...)
 end
 
-function covsel(X, Y, weights::Jchemo.Weight; kwargs...)
+function covsel(X, Y, weights::Weight; kwargs...)
     covsel!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
@@ -83,16 +93,13 @@ function covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs
     ymeans = colmean(Y, weights)  
     xscales = ones(Q, p)
     yscales = ones(Q, q)
-    if par.scalx
+    if par.scal 
         xscales .= colstd(X, weights)
-        fcscale!(X, xmeans, xscales)
-    else
-        fcenter!(X, xmeans)
-    end
-    if par.scaly
         yscales .= colstd(Y, weights)
+        fcscale!(X, xmeans, xscales)
         fcscale!(Y, ymeans, yscales)
     else
+        fcenter!(X, xmeans)
         fcenter!(Y, ymeans)
     end
     sqrtw = sqrt.(weights.w)
@@ -101,30 +108,15 @@ function covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs
     xsstot = frob2(X)
     ysstot = frob2(Y)
     ##
-    zX = similar(X)
-    zY = similar(Y)
     sel = zeros(Int, nlv)
     selc = similar(X, nlv)
     x = similar(X, n, 1)
     XtY = similar(X, p, q)
     c = similar(X, p)
-    xss = copy(selc)
-    yss = copy(selc)
+    xss = similar(selc)
+    yss = similar(selc)
     for i = 1:nlv
-        if par.meth == :cov
-            XtY .= X' * Y   # (p, q)
-        else
-            zX .= copy(X)
-            zY .= copy(Y)
-            xscales .= colnorm(zX)
-            yscales .= colnorm(zY)
-            if i > 1
-                xscales[sel[1:(i - 1)]] .= 1  # remove divisions by zeros
-            end
-            fscale!(zX, xscales)
-            fscale!(zY, yscales)
-            XtY .= zX' * zY
-        end              
+        XtY .= X' * Y   # (p, q)             
         if q == 1
             c .= XtY.^2
         else
