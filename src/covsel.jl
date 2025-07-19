@@ -1,3 +1,63 @@
+"""
+    covsel(; kwargs...)
+    covsel(X, Y; kwargs...)
+    covsel(X, Y, weights::Weight; kwargs...)
+    covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
+Variable (feature) selection from partial covariance/correlation (Covsel).
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, q).
+* `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
+* `nlv` : Nb. variables to select.
+* `scalx` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scaly` : Boolean. If `true`, each column of `Y` is scaled by its uncorrected standard deviation.
+
+This is the Covsel algorithm described in Roger et al. 2011 for variable selection. Function `covsel` also 
+proposes an option not present in the original algorithm: correlation can be used instead of covariance to 
+compute the selection criterion.
+
+The selection is sequential and based on the *partial* covariance/correlation principle. One first variable is 
+selected (the variable maximizing the selection criterion: squared partail covariance/correlation), `X` and `Y` 
+are orthogonolized (deflated) to this variable, the selection criterion is recomputed and the next variable 
+is selected. And so on.
+
+The prelimianry scaling of `X` is optional. In contrast, `Y` is automatically internally scaled by its 
+uncorrected standard deviation. For the covariance This has the advantage to give the same importance to each `Y`-variable
+when `Y`is  multivariate (q > 1). This has no effect when `Y` is 
+univariate.
+
+## References
+Höskuldsson, A., 1992. The H-principle in modelling with applications 
+to chemometrics. Chemometrics and Intelligent Laboratory Systems, 
+Proceedings of the 2nd Scandinavian Symposium on Chemometrics 14, 
+139–153. https://doi.org/10.1016/0169-7439(92)80099-P
+
+Roger, J.M., Palagos, B., Bertrand, D., Fernandez-Ahumada, E., 2011. 
+covsel: Variable selection for highly multivariate and multi-response 
+calibration: Application to IR spectroscopy. 
+Chem. Lab. Int. Syst. 106, 216-223.
+
+Wikipedia
+https://en.wikipedia.org/wiki/Partial_correlation
+
+## Examples
+```julia
+using JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+pnames(dat)
+
+X = dat.X
+y = dat.Y.tbc
+
+fm = covsel(X, y; nlv = 10) ;
+fm.sel
+fm.cov2
+
+scatter(sqrt.(fm.cov2), 
+    axis = (xlabel = "Variable", ylabel = "Importance"))
+```
+""" 
 covsel(; kwargs...) = JchemoModel(covsel, nothing, kwargs)
 
 function covsel(X, Y; kwargs...)
@@ -10,7 +70,7 @@ function covsel(X, Y, weights::Jchemo.Weight; kwargs...)
     covsel!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function covsel!(X::Matrix, Y::Matrix, weights::Jchemo.Weight; kwargs...)
+function covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
     par = recovkw(ParCovsel, kwargs).par
     Q = eltype(X)
     ## Specific for Da functions
@@ -23,13 +83,16 @@ function covsel!(X::Matrix, Y::Matrix, weights::Jchemo.Weight; kwargs...)
     ymeans = colmean(Y, weights)  
     xscales = ones(Q, p)
     yscales = ones(Q, q)
-    if par.scal 
+    if par.scalx
         xscales .= colstd(X, weights)
-        yscales .= colstd(Y, weights)
         fcscale!(X, xmeans, xscales)
-        fcscale!(Y, ymeans, yscales)
     else
         fcenter!(X, xmeans)
+    end
+    if par.scaly
+        yscales .= colstd(Y, weights)
+        fcscale!(Y, ymeans, yscales)
+    else
         fcenter!(Y, ymeans)
     end
     sqrtw = sqrt.(weights.w)
@@ -92,7 +155,7 @@ end
 Summarize the fitted model.
 * `object` : The fitted model.
 """ 
-function summary(object::Covsel)
+function Base.summary(object::Covsel)
     nlv = length(object.sel)
     xsstot = object.xsstot
     ysstot = object.ysstot

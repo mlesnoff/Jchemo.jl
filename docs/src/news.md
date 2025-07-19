@@ -3,7 +3,7 @@
 ## *Version 0.8.13*
 
 - News
-    - **covsel** Covsel method for variable selection.
+    - **covsel** Variable (feature) selection from partial covariance/correlation (Covsel).
 
 - Modifications
     - Code cleaning.

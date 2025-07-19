@@ -115,7 +115,8 @@ end
 Base.@kwdef mutable struct ParCovsel
     nlv::Int = 1    
     meth::Symbol = :cov  
-    scal::Bool = false
+    scalx::Bool = false
+    scaly::Bool = false
 end 
 
 Base.@kwdef mutable struct ParRp

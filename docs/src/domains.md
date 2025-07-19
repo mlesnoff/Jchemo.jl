@@ -31,7 +31,7 @@
 
 ### Partial covariances/correlations
 
-- **covsel** Covsel method for variable selection
+- **covsel** Variable (feature) selection from partial covariance/correlation (Covsel)
 
 ### Random projections
 

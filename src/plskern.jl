@@ -3,8 +3,7 @@
     plskern(X, Y; kwargs...)
     plskern(X, Y, weights::Weight; kwargs...)
     plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
-Partial least squares regression (PLSR) with the "improved kernel algorithm #1" 
-    (Dayal & McGegor, 1997).
+Partial least squares regression (PLSR) with the "improved kernel algorithm #1" (Dayal & McGegor, 1997).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. 
