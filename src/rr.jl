@@ -6,29 +6,23 @@
 Ridge regression (RR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `lb` : Ridge regularization parameter "lambda".
-* `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
 ## References 
-Cule, E., De Iorio, M., 2012. A semi-automatic method 
-to guide the choice of ridge parameter in ridge regression. 
-arXiv:1205.0686.
+Cule, E., De Iorio, M., 2012. A semi-automatic method to guide the choice of ridge parameter 
+in ridge regression. arXiv:1205.0686.
 
-Hastie, T., Tibshirani, R., 2004. Efficient quadratic 
-regularization for expression arrays. Biostatistics 5, 329-340. 
-https://doi.org/10.1093/biostatistics/kxh010
+Hastie, T., Tibshirani, R., 2004. Efficient quadratic regularization for expression arrays. 
+Biostatistics 5, 329-340. https://doi.org/10.1093/biostatistics/kxh010
 
-Hastie, T., Tibshirani, R., Friedman, J., 2009. The 
-elements of statistical learning: data mining, 
+Hastie, T., Tibshirani, R., Friedman, J., 2009. The elements of statistical learning: data mining, 
 inference, and prediction, 2nd ed. Springer, New York.
 
-Hoerl, A.E., Kennard, R.W., 1970. Ridge Regression: Biased 
-Estimation for Nonorthogonal Problems. Technometrics 12, 55-67. 
-https://doi.org/10.1080/00401706.1970.10488634
+Hoerl, A.E., Kennard, R.W., 1970. Ridge Regression: Biased Estimation for Nonorthogonal Problems. 
+Technometrics 12, 55-67. https://doi.org/10.1080/00401706.1970.10488634
 
 ## Examples
 ```julia
@@ -128,8 +122,8 @@ end
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
-* `lb` : Regularization parameter, or collection of 
-    regularization parameters, "lambda" to consider.
+* `lb` : Regularization parameter, or collection of regularization parameters, 
+    "lambda" to consider.
 """ 
 function predict(object::Rr, X; lb = nothing)
     X = ensure_mat(X)
