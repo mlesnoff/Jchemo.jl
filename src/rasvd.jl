@@ -6,16 +6,13 @@
 Redundancy analysis (RA), a.k.a PCA on instrumental variables (PCAIV)
 * `X` : First block of data.
 * `Y` : Second block of data.
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs = scores) to compute.
-* `bscal` : Type of block scaling. Possible values are:
-    `:none`, `:frob`. See functions `blockscal`.
+* `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`. See functions `blockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
-* `scal` : Boolean. If `true`, each column of blocks `X` 
-    and `Y` is scaled by its uncorrected standard deviation 
-    (before the block scaling).
+* `scal` : Boolean. If `true`, each column of blocks `X` and `Y` is scaled by its uncorrected standard 
+    deviation (before the block scaling).
  
 See e.g. Bougeard et al. 2011a,b and Legendre & Legendre 2012. Let Y_hat be the fitted values 
 of the regression of `Y` on `X`. The scores `Ty` are the PCA scores of Y_hat. The scores `Tx` are 

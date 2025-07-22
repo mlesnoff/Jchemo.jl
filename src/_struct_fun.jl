@@ -420,7 +420,7 @@ end
 
 struct Rr
     V::Matrix
-    TtDY::Matrix
+    TtY::Matrix
     sv::Vector
     xmeans::Vector
     xscales::Vector

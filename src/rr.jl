@@ -11,6 +11,11 @@ Keyword arguments:
 * `lb` : Ridge regularization parameter "lambda".
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
+The function computes a model with intercept. After `X` and y (a given column of `Y`) have been
+centered (an `X` eventually scaled) and weighted by sqrtw = sqrt.(`weights.w`). The function find b (q, 1) 
+(the corresponding column of output `B` (p, q)) that minimizes 
+* ||y - X * b||2^2 + `lb`^2 * ||b||2^2 
+
 ## References 
 Cule, E., De Iorio, M., 2012. A semi-automatic method to guide the choice of ridge parameter 
 in ridge regression. arXiv:1205.0686.
@@ -90,27 +95,27 @@ function rr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
     else
         fcenter!(X, xmeans)
     end
-    fcenter!(Y, ymeans)  
-    sqrtw = sqrt.(weights.w)
-    res = LinearAlgebra.svd!(fweight(X, sqrtw))
+    fcenter!(Y, ymeans)
+    fweight!(X, sqrtw)
+    fweight!(Y, sqrtw)
+    res = LinearAlgebra.svd!(X)
     sv = res.S
-    TtDY = Diagonal(sv) * res.U' * fweight(Y, sqrtw)
-    Rr(res.V, TtDY, sv, xmeans, xscales, ymeans, weights, par)
+    TtY = Diagonal(sv) * res.U' * Y
+    Rr(res.V, TtY, sv, xmeans, xscales, ymeans, weights, par)
 end
 
 """
     coef(object::Rr; lb = nothing)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
-* `lb` : Ridge regularization parameter 
-    "lambda".
+* `lb` : Ridge regularization parameter "lambda".
 """ 
 function coef(object::Rr; lb = nothing)
     isnothing(lb) ? lb = object.par.lb : nothing
     lb = convert(eltype(object.sv), lb)
     eig = object.sv.^2
     z = 1 ./ (eig .+ lb^2)
-    beta = Diagonal(z) * object.TtDY
+    beta = Diagonal(z) * object.TtY
     B = fweight(object.V, 1 ./ object.xscales) * beta
     int = object.ymeans' .- object.xmeans' * B
     tr = sum(eig .* z)
