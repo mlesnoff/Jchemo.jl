@@ -57,7 +57,7 @@ function rrchol!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     DX = fweight(X, weights.w)
     DY = fweight(Y, weights.w)
     B = cholesky!(Hermitian(X' * DX + lb^2 * Diagonal(ones(Q, p)))) \ (X' * DY)
-    B .= fweight(B, 1 ./ xscales)
+    fweight!(B, 1 ./ xscales)
     int = ymeans' .- xmeans' * B
     Rrchol(B, int, weights, par)
 end
