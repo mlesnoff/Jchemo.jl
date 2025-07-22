@@ -279,7 +279,7 @@ function mlrvec!(x::Matrix, Y::Matrix, weights::Weight; kwargs...)
 end
 
 """
-    coef(object::Mlr)
+    coef(object::Union{Mlr, MlrNoArg, Rrchol})
 Compute the coefficients of the fitted model.
 * `object` : The fitted model.
 """ 
@@ -288,7 +288,7 @@ function coef(object::Union{Mlr, MlrNoArg, Rrchol})
 end
 
 """
-    predict(object::Mlr, X)
+    predict(object::Union{Mlr, MlrNoArg, Rrchol}, X)
 Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
