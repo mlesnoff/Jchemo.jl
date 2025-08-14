@@ -14,7 +14,8 @@ Keyword arguments:
 The function computes a model with intercept. After `X` and y (a given column of `Y`) have been
 centered (an `X` eventually scaled) and weighted by sqrtw = sqrt.(`weights.w`), the function finds 
 b (q, 1) (the corresponding column of output `B` (p, q)) that minimizes 
-* ||y - X * b||2^2 + `lb`^2 * ||b||2^2 
+* ||y - X * b||^2 + `lb`^2 * ||b||^2 
+where ||.|| is the Euclidean norm.
 
 ## References 
 Cule, E., De Iorio, M., 2012. A semi-automatic method to guide the choice of ridge parameter 
