@@ -29,10 +29,6 @@
 - **xfit** X-matrix fitting 
 - **xresid** X-residual matrix 
 
-### Partial covariances/correlations
-
-- **covsel** Variable (feature) selection from partial covariance (Covsel)
-
 ### Random projections
 
 - **rp** Random projection
@@ -50,6 +46,10 @@
 
 - **fda** Eigen decomposition of the consensus "inter/intra"
 - **fdasvd** Weighted SVD of the class centers
+
+### Partial covariances
+
+- **covsel** Variable (feature) selection from partial covariance (Covsel) *Roger et al. 2011*
 
 ### Multiblock
 
@@ -103,11 +103,8 @@
 - **plsrout** Outlierness
 
 *Sparse*
-- **splsr** 
-    - sPLSR *Lê Cao et al. 2008*
-    - Covsel regression *Roger et al. 2011*
-- **spcr**  
-    - sPCR *Shen & Huang 2008*
+- **splsr** sPLSR *Lê Cao et al. 2008*
+- **spcr**  sPCR *Shen & Huang 2008*
 
 *Averaging PLSR models of different dimensionalities*
 - **plsravg** PLSR-AVG
