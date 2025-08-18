@@ -5,8 +5,7 @@
     sumv(x, weights::Weight)
 Compute the sum of a vector. 
 * `x` : A vector (n).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 
 ## Examples
 ```julia
@@ -35,8 +34,7 @@ end
     meanv(x, weights::Weight)
 Compute the mean of a vector. 
 * `x` : A vector (n).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 
 ## Examples
 ```julia
@@ -59,8 +57,7 @@ meanv(x, weights::Weight) = sumv(x, weights::Weight)
     stdv(x, weights::Weight)
 Compute the uncorrected standard deviation of a vector.
 * `x` : A vector (n).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 
 ## Examples
 ```julia
@@ -87,8 +84,7 @@ end
     varv(x, weights::Weight)
 Compute the uncorrected variance of a vector.
 * `x` : A vector (n).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 
 ## Examples
 ```julia
@@ -147,8 +143,7 @@ madv(x) = 1.4826 * median(abs.(x .- median(x)))
     normv(x, weights::Weight)
 Compute the norm of a vector.
 * `x` : A vector (n).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 
 The norm of vector `x` is computed by:
 * sqrt(x' * x)

@@ -3,8 +3,7 @@
     colsum(X, weights::Weight)
 Compute column-wise sums of a matrix.
 * `X` : Data (n, p).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 
 Return a vector.
 
@@ -37,8 +36,7 @@ colsum(X, weights::Weight) = vec(weights.w' * ensure_mat(X))
     colmean(X, weights::Weight)
 Compute column-wise means of a matrix.
 * `X` : Data (n, p).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 
 Return a vector.
 
@@ -63,8 +61,7 @@ colmean(X, weights::Weight) = colsum(X, weights)
     colnorm(X, weights::Weight)
 Compute column-wise norms of a matrix.
 * `X` : Data (n, p).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 
 The norm of each column x of `X` is computed by:
 * sqrt(x' * x)
@@ -113,8 +110,7 @@ end
     colstd(X, weights::Weight)
 Compute column-wise standard deviations (uncorrected) of a matrix.
 * `X` : Data (n, p).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 
 Return a vector.
 
@@ -155,8 +151,7 @@ end
     colvar(X, weights::Weight)
 Compute column-wise variances (uncorrected) of a matrix.
 * `X` : Data (n, p).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 
 Return a vector.
 
