@@ -19,42 +19,35 @@ Keyword arguments:
 
 sPCA-rSVD algorithm (regularized low rank matrix approximation) of Shen & Huang 2008. 
 
-The algorithm computes each loadings vector iteratively, by alternating 
-least squares regressions (Nipals) including a step of thresholding. Function 
-`spca` provides thresholding methods '1' and '2' reported in Shen & Huang 2008 
-Lemma 2 (`:soft` and `:hard`):
-* The tuning parameter used by Shen & Huang 2008 is the number of null elements 
-    in the loadings vector, referred to as degree of sparsity. Conversely, the 
-    present function `spca` uses the number of non-zero elements (`nvar`), 
+The algorithm extracts the components one by one (deflation approach). Each loadings vector is computed iteratively, 
+by alternating least squares regressions (Nipals) including a step of thresholding. Function `spca` provides thresholding 
+methods '1' and '2' reported in Shen & Huang 2008 Lemma 2 (`:soft` and `:hard`):
+* The tuning parameter used by Shen & Huang 2008 is the number of null elements in the loadings vector (cardinality constraint), 
+    referred to as degree of sparsity. Conversely, the present function `spca` uses the number of non-zero elements (`nvar`), 
     equal to p - degree of sparsity.
-* See the code of function `snipals_shen` for details on how is computed 
-    the cutoff 'lambda' used inside the thresholding function (Shen & Huang 2008), 
-    given a value for `nvar`. Differences from other softwares may occur 
-    when there are tied values in the loadings vector (depending on the choices 
-    of method used to compute quantiles).
+* Given a value `nvar`, see the code of function `snipals_shen` for details on how is computed the cutoff 'lambda' used 
+    inside the thresholding function (Shen & Huang 2008), . Differences from other softwares may occur when there are tied values 
+    in the loadings vector (that can depend on the choices of method used to compute quantiles).
 
-Matrix `X` can be deflated in two ways:
-* `defl = :v` : Matrix `X` is deflated by regression of the `X'`-columns on 
-  the loadings vector `v`. This is the method proposed by Shen & Huang 2008 
-  (see in Theorem A.2 p.1033).
-* `defl = :t` : Matrix `X` is deflated by regression of the `X`-columns on 
-  the score vector `t`. This is the method used in function `spca` of the 
-  R package `mixOmics` (Le Cao et al. 2016).
-The method of computation of the % variance explained in X by each PC (returned 
-by function `summary`) depends on the type of deflation chosen (see the code).    
+Function `spca` allows to deflate matrix `X` in two ways:
+* `defl = :v` : Matrix `X` is deflated by regression of the `X'`-columns on the loadings vector `v`. This is the method proposed by 
+    Shen & Huang 2008 (see in Theorem A.2 p.1033).
+* `defl = :t` : Matrix `X` is deflated by regression of the `X`-columns on the score vector `t`. This is the method used in function 
+    `spca` of the R package `mixOmics` (Le Cao et al. 2016).
+The computation of the % variance explained in `X` by each PC (returned by function `summary`) depends on the type of deflation 
+chosen (see the code).    
 
 ## References
-Kim-Anh Lê Cao, Florian Rohart, Ignacio Gonzalez, Sebastien 
-Dejean with key contributors Benoit Gautier, Francois Bartolo, 
-contributions from Pierre Monget, Jeff Coquery, FangZou Yao 
-and Benoit Liquet. (2016). mixOmics: Omics Data Integration 
-Project. R package version 6.1.1. 
-https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html
 
-Shen, H., Huang, J.Z., 2008. Sparse principal component 
-analysis via regularized low rank matrix approximation. 
-Journal of Multivariate Analysis 99, 1015–1034. 
-https://doi.org/10.1016/j.jmva.2007.06.007
+Guerra-Urzola, R., Van Deun, K., Vera, J.C., Sijtsma, K., 2021. A Guide for Sparse PCA: Model Comparison and Applications. 
+Psychometrika 86, 893–919. https://doi.org/10.1007/s11336-021-09773-2
+
+Kim-Anh Lê Cao, Florian Rohart, Ignacio Gonzalez, Sebastien Dejean with key contributors Benoit Gautier, Francois Bartolo, 
+contributions from Pierre Monget, Jeff Coquery, FangZou Yao and Benoit Liquet. (2016). mixOmics: Omics Data Integration 
+Project. R package version 6.1.1. https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html
+
+Shen, H., Huang, J.Z., 2008. Sparse principal component analysis via regularized low rank matrix approximation. 
+Journal of Multivariate Analysis 99, 1015–1034. https://doi.org/10.1016/j.jmva.2007.06.007
 
 ## Examples
 ```julia

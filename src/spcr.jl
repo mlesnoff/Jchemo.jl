@@ -6,19 +6,15 @@
 Sparse principal component regression (sPCR). 
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * Same as function `spca`.
 
-Regression on scores computed from a sparse PCA (sPCA-rSVD algorithm of 
-Shen & Huang 2008 ). See function `spca` for details.
+Regression on scores computed from a sparse PCA (sPCA-rSVD algorithm of Shen & Huang 2008 ). See function `spca` for details.
 
 ## References
-Shen, H., Huang, J.Z., 2008. Sparse principal component 
-analysis via regularized low rank matrix approximation. 
-Journal of Multivariate Analysis 99, 1015–1034. 
-https://doi.org/10.1016/j.jmva.2007.06.007
+Shen, H., Huang, J.Z., 2008. Sparse principal component analysis via regularized low rank matrix approximation. 
+Journal of Multivariate Analysis 99, 1015–1034. https://doi.org/10.1016/j.jmva.2007.06.007
 
 ## Examples
 ```julia
