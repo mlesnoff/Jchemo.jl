@@ -19,7 +19,7 @@
 - **pcaout** Outlierness
 
 *Sparse* 
-- **spca** sPCA *Shen & Huang 2008*
+- **spca** Sparse PCA by regularized low rank matrix approximation (sPCA-rSVD) *Shen & Huang 2008*
 
 *Non linear*
 
