@@ -1095,7 +1095,7 @@ end
 """
     thresh_hard(x::Real, delta)
 Hard thresholding function.
-* `x` : Value to transform.
+* `x` : Value (scalar) to transform.
 * `delta` : Range for the thresholding.
 
 The returned value is:
@@ -1123,7 +1123,7 @@ end
 """
     thresh_soft(x::Real, delta)
 Soft thresholding function.
-* `x` : Value to transform.
+* `x` : Value (scalar) to transform.
 * `delta` : Range for the thresholding.
 
 The returned value is:
