@@ -52,28 +52,26 @@ function nipals(X; kwargs...)
     par = recovkw(ParNipals, kwargs).par
     X = ensure_mat(X)
     p = nco(X)
-    u = X[:, argmax(colnorm(X))]  # here 'u' represents both t and u (to save allocation)
+    t = X[:, argmax(colnorm(X))]
     v = similar(X, p)   
     v0 = similar(v)
     cont = true
     iter = 1
     while cont
         v0 .= copy(v)      
-        mul!(v, X', u)  
-        v ./= normv(v)  # v = X't / norm(X't) = X't / t't [norm(X't) = t't]
-        ## Same as: v ./= dot(u, u)
-        mul!(u, X, v)   # t = X * v
-        ## End
+        mul!(v, X', t)  
+        v ./= normv(v) 
+        mul!(t, X, v)
         dif = sum((v .- v0).^2)
         iter = iter + 1
         if (dif < par.tol) || (iter > par.maxit)
             cont = false
         end
     end
-    sv = normv(u)  # = norm(t)
-    u ./= sv       # final unitary vector: u = t / sv
+    sv = normv(t)
+    u = t / sv 
     niter = iter - 1
-    (u = u, v, sv, niter)
+    (t = t, u, v, sv, niter)
 end
 
 function nipals(X, UUt, VVt; kwargs...)
