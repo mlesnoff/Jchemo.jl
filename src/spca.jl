@@ -3,25 +3,21 @@
     spca(X; kwargs...)
     spca(X, weights::Weight; kwargs...)
     spca!(X::Matrix, weights::Weight; kwargs...)
-Sparse PCA (Shen & Huang 2008).
+Sparse PCA by regularized low rank matrix approximation (sPCA-rSVD, Shen & Huang 2008).
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. principal components (PCs).
-* `meth` : Method used for the sparse thresholding. 
-    Possible values are: `:soft`, `:hard`. See thereafter.
-* `nvar` : Nb. variables (`X`-columns) selected for each principal
-    component (PC). Can be a single integer (i.e. same nb. 
-    of variables for each PC), or a vector of length `nlv`.   
+* `meth` : Method used for the sparse thresholding. Possible values are: `:soft`, `:hard`. See thereafter.
+* `nvar` : Nb. variables (`X`-columns) selected for each principal component (PC). Can be a single integer 
+    (i.e. same nb. of variables for each PC), or a vector of length `nlv`.   
 * `defl` : Type of `X`-matrix deflation, see below.
 * `tol` : Tolerance value for stopping the Nipals iterations.
 * `maxit` : Maximum nb. of Nipals iterations.
-* `scal` : Boolean. If `true`, each column of `X` is scaled
-    by its uncorrected standard deviation.
+* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
-sPCA-rSVD algorithm (regularized low rank matrix approximation) of 
-Shen & Huang 2008. 
+sPCA-rSVD algorithm (regularized low rank matrix approximation) of Shen & Huang 2008. 
 
 The algorithm computes each loadings vector iteratively, by alternating 
 least squares regressions (Nipals) including a step of thresholding. Function 
