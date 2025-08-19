@@ -9,7 +9,7 @@ function snipals_mix(X; kwargs...)
     end 
     nvar = par.nvar
     res = nipals(X; kwargs...)
-    t = res.u * res.sv
+    t = res.t
     v = similar(res.v)
     v0 = similar(v)
     absv = copy(v)
