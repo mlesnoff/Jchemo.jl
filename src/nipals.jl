@@ -74,32 +74,33 @@ function nipals(X; kwargs...)
     (t = t, u, v, sv, niter)
 end
 
+## Used when GS in sequential Nipals 
 function nipals(X, UUt, VVt; kwargs...)
     par = recovkw(ParNipals, kwargs).par
     X = ensure_mat(X)
     p = nco(X)
-    u = X[:, argmax(colnorm(X))]
+    t = X[:, argmax(colnorm(X))]
     v = similar(X, p)   
     v0 = similar(v) 
     cont = true
     iter = 1
     while cont
         v0 .= copy(v)       
-        mul!(v, X', u)
+        mul!(v, X', t)
         v .= v .- VVt * v
         v ./= normv(v)
-        mul!(u, X, v)
-        u .-= UUt * u
+        mul!(t, X, v)
+        t .-= UUt * t
         dif = sum((v .- v0).^2)
         iter = iter + 1
         if (dif < par.tol) || (iter > par.maxit)
             cont = false
         end
     end
+    sv = normv(t)
+    u = t / sv 
     niter = iter - 1
-    sv = normv(u)
-    u ./= sv
-    (u = u, v, sv, niter)
+    (t = t, u, v, sv, niter)
 end
 
 
