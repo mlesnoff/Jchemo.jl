@@ -1,3 +1,4 @@
+## Returns the same results as snipals_shen
 function snipals_mix(X; kwargs...)
     par = recovkw(ParSnipals, kwargs).par 
     X = ensure_mat(X)
