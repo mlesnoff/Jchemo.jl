@@ -88,7 +88,6 @@ function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
     end
     sqrtw = sqrt.(weights.w)
     fweight!(X, sqrtw)
-    t = similar(X, n)
     T = similar(X, n, nlv)
     V = similar(X, p, nlv)
     sv = similar(X, nlv)
@@ -103,12 +102,11 @@ function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
         else
             res = nipalsmiss(X, UUt, VVt; kwargs...)
         end
-        t .= res.t
-        T[:, a] .= t
+        T[:, a] .= res.t
         V[:, a] .= res.v           
         sv[a] = res.sv
         niter[a] = res.niter
-        X .-= t * res.v'
+        X .-= res.t * res.v'
         if par.gs
             UUt .+= res.u * res.u' 
             VVt .+= res.v * res.v'
