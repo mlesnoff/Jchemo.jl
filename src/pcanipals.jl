@@ -92,7 +92,7 @@ function pcanipals!(X::Matrix, weights::Weight; kwargs...)
         else
             res = nipals(X; kwargs...)
         end
-        t .= res.u * res.sv
+        t .= res.t
         T[:, a] .= t 
         V[:, a] .= res.v           
         sv[a] = res.sv
