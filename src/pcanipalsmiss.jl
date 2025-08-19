@@ -103,7 +103,7 @@ function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
         else
             res = nipalsmiss(X, UUt, VVt; kwargs...)
         end
-        t .= res.u * res.sv
+        t .= res.t
         T[:, a] .= t
         V[:, a] .= res.v           
         sv[a] = res.sv
