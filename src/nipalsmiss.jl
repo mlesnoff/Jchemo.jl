@@ -85,35 +85,35 @@ function nipalsmiss(X, UUt, VVt; kwargs...)
     X0 = copy(X)
     X0[s] .= 0
     X0t = X0'
-    zU = similar(X0, n, p)
+    zT = similar(X0, n, p)
     zV = similar(X0, p, n)
-    u = X0[:, argmax(colsumskip(abs.(X)))]
+    t = X0[:, argmax(colsumskip(abs.(X)))]
     v = similar(X0, p) 
     v0 = similar(v)
     cont = true
     iter = 1
     while cont
         v0 .= copy(v)
-        zU .= reshape(repeat(u.^2, p), n, p)
-        zU[s] .= 0
-        mul!(v, X0t, u)
-        v ./= colsum(zU)
+        zT .= reshape(repeat(t.^2, p), n, p)
+        zT[s] .= 0
+        mul!(v, X0t, t)
+        v ./= colsum(zT)
         v .-= VVt * v
         v ./= normv(v)
         zV .= reshape(repeat(v.^2, n), p, n)
         zV[st] .= 0
-        mul!(u, X0, v)
-        u ./= colsum(zV)
-        u .= u .- UUt * u
+        mul!(t, X0, v)
+        t ./= colsum(zV)
+        t .= t .- UUt * t
         dif = sum((v .- v0).^2)
         iter = iter + 1
         if (dif < par.tol) || (iter > par.maxit)
             cont = false
         end
     end
-    sv = normv(u)
-    u ./= sv
+    sv = normv(t)
+    u = t / sv 
     niter = iter - 1
-    (u = u, v, sv, niter)
+    (t = t, u, v, sv, niter)
 end
 
