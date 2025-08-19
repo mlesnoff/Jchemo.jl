@@ -74,7 +74,7 @@ function nipals(X; kwargs...)
     (t = t, u, v, sv, niter)
 end
 
-## Used when GS in sequential Nipals 
+## Used when GS in sequential extraction 
 function nipals(X, UUt, VVt; kwargs...)
     par = recovkw(ParNipals, kwargs).par
     X = ensure_mat(X)
