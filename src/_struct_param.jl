@@ -88,10 +88,10 @@ end
 
 Base.@kwdef mutable struct ParSpca
     nlv::Int = 1 
-    algo::Symbol = :shen  # masked
     meth::Symbol = :soft 
-    nvar::Union{Int, Vector{Int}} = 1  
+    algo::Symbol = :shen  # masked in the API
     defl::Symbol = :v
+    nvar::Union{Int, Vector{Int}} = 1  
     tol::Float64 = sqrt(eps(1.))  
     maxit::Int = 200   
     scal::Bool = false                   
