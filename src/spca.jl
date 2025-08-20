@@ -158,8 +158,7 @@ end
 
 """ 
     transf(object::Spca, X; nlv = nothing)
-    Compute principal components (PCs = scores T) from a 
-        fitted model and X-data.
+    Compute principal components (PCs = scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
 * `nlv` : Nb. PCs to compute.
@@ -209,7 +208,7 @@ function Base.summary(object::Spca, X)
         for a = 1:nlv
             V = vcol(object.V, 1:a)
             Xadj = zX * V * inv(V' * V) * V'
-            ss[a] = sum(Xadj.^2)
+            ss[a] = frob2(Xadj)
         end
         cumpvar = ss / sstot
         pvar = [cumpvar[1]; diff(cumpvar)]
