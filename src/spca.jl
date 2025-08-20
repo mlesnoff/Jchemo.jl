@@ -140,8 +140,8 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
             X .-= res.t * res.v'
         elseif par.defl == :t   # Regression X on t (e.g. R mixOmics::spca)
             tt = dot(res.t, res.t)
-            b .= res.t' * X / tt           
-            X .-= res.t * b   #  = X - t * t' X / tt
+            b .= res.t' * X / tt   # = inv(t' * t) * t' * X  =  t' X / tt       
+            X .-= res.t * b        #  = X - t * t' X / tt
         end
         ## End        
         sv[a] = normv(res.t)
