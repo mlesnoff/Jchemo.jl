@@ -201,8 +201,9 @@ function Base.summary(object::Spca, X)
     tt = colsum(TT)
     defl = object.par.defl 
     if defl == :v      
-        ## Adjusted variance and CPEV (cumulative percentage of explained variance)
-        ## of Shen & Huang 2008 section 2.3
+        ## Adjusted variance and CPEV (cumulative percentage of explained variance) of Shen & Huang 2008
+        ## section 2.3: based on the orthogonal projection of the rows of the deflated X[a] on the space 
+        ## spanned by the columns of matrix V[a] = [v1 v2 ... va]  
         zX = fweight(X, sqrtw)
         ss = zeros(nlv)
         for a = 1:nlv
