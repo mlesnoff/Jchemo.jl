@@ -16,21 +16,22 @@ Keyword arguments:
 * `maxit` : Maximum nb. of Nipals iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
-sPCA-rSVD algorithm (regularized low rank matrix approximation) of Shen & Huang 2008. The method approximates 
-matrix `X` by T * V', where T is a matrix of scores (PCs) and V is a matrix of normed regularized loadings. 
+sPCA-rSVD algorithm (regularized low rank matrix approximation) of Shen & Huang 2008. 
+The method approximates matrix `X` by T * V', where T is a matrix of scores (PCs) and V is a matrix of 
+normed regularized loadings. 
 
 The algorithm extracts the PCs one by one (deflation approach). Each loadings vector is computed iteratively, 
-by alternating least squares regressions (Nipals) that includes a thresholding of the computed values (saprsity step). 
+by alternating least squares regressions (Nipals) that includes a thresholding of the computed values (sparsity step). 
 Function `spca` provides the thresholding methods '1' and '2' reported in Shen & Huang 2008 Lemma 2 (`:soft` and `:hard`):
-* The tuning parameter used by Shen & Huang 2008 (see p.2020) is a cardinality constraint defined by the number of null elements 
-    in the loadings vector, referred to as degree of sparsity. Conversely, the present function `spca` uses the number of 
-    non-zero elements (`nvar`), equal to p - degree of sparsity.
-* Given a value `nvar`, see the code of function `snipals_shen` for the details on how is computed the cutoff 'lambda' used 
-    inside the soft thresholding function (Shen & Huang 2008). Differences from other softwares may occur when the loadings vector
-    contains tied values (results can depend on the method used to compute quantiles).
+* The tuning parameter used by Shen & Huang 2008 (see p.2020) is a cardinality constraint defined by the number of zero 
+    elements in the loadings vector, referred to as degree of sparsity. Conversely, the present function `spca` uses the 
+    number of non-zero elements (`nvar`, that is equal to p - degree of sparsity).
+* See the code of function `snipals_shen` for the details on how is computed (given a `nvar` value) the cutoff 'lambda' used 
+    inside the soft thresholding function (Shen & Huang 2008). Discrepancies with other softwares may occur when the 
+    loadings vector contains tied values (in such cas, results can depend on the method used to compute quantiles).
 
-Function `spca` allows to deflate matrix `X` in two ways:
-* `defl = :v` : Matrix `X` is deflated by regression of the `X'`-columns on the loadings vector `v`. This is the method proposed by 
+Function `spca` allows two types of matrix deflation (`X`):
+* `defl = :v` : Matrix `X` is deflated by regression of the `X'`-columns on the loadings vector `v`. This is the method used by 
     Shen & Huang 2008 (see p.1033 in Theorem A.2).
 * `defl = :t` : Matrix `X` is deflated by regression of the `X`-columns on the score vector `t`. This is the method used in function 
     `spca` of the R package `mixOmics` (Le Cao et al. 2016).
@@ -136,12 +137,12 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     for a = 1:nlv
         res = snipals(X; meth = par.meth, nvar = nvar[a], tol = par.tol, maxit = par.maxit)
         ## Deflation
-        if par.defl == :v       # regression X' on v (Shen & Huang 2008 p.1033 in Th.A.2)
-            X .-= res.t * res.v'
-        elseif par.defl == :t   # Regression X on t (e.g. R mixOmics::spca)
+        if par.defl == :v       # regression of X' on v (Shen & Huang 2008 p.1033 in Th.A.2)
+            X .-= res.t * res.v'   # = X - X * v * v' = X - t * v'
+        elseif par.defl == :t   # Regression of X on t (e.g. used in R mixOmics::spca)
             tt = dot(res.t, res.t)
             b .= res.t' * X / tt   # = inv(t' * t) * t' * X  =  t' X / tt       
-            X .-= res.t * b        #  = X - t * t' X / tt
+            X .-= res.t * b        # = X - t * t' X / tt
         end
         ## End        
         sv[a] = normv(res.t)
