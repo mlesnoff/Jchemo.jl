@@ -30,7 +30,7 @@ Function `spca` provides the thresholding methods '1' and '2' reported in Shen &
     inside the soft thresholding function (Shen & Huang 2008). Discrepancies with other softwares may occur when the 
     loadings vector contains tied values (in such cas, results can depend on the method used to compute quantiles).
 
-Function `spca` allows two types of matrix deflation (`X`):
+Function `spca` allows two types of deflation of matrix `X`:
 * `defl = :v` : Matrix `X` is deflated by regression of the `X'`-columns on the loadings vector `v`. This is the method used by 
     Shen & Huang 2008 (see p.1033 in Theorem A.2).
 * `defl = :t` : Matrix `X` is deflated by regression of the `X`-columns on the score vector `t`. This is the method used in function 
