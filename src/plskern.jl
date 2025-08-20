@@ -12,8 +12,8 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected 
     standard deviation.
     
-About the row-weighting in PLS algorithms (`weights`): see in particular Schaal et al. 2002, 
-Siccard & Sabatier 2006, Kim et al. 2011, and Lesnoff et al. 2020. 
+About the row-weighting in PLS algorithms (`weights`): see in particular Schaal et al. 2002, Siccard & Sabatier 
+2006, Kim et al. 2011, and Lesnoff et al. 2020. 
 
 ## References
 Dayal, B.S., MacGregor, J.F., 1997. Improved PLS algorithms. Journal of Chemometrics 11, 73-85.

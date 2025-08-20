@@ -10,10 +10,8 @@ Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
-Let us note D the (n, n) diagonal matrix of weights
-(`weights.w`) and X the centered matrix in metric D.
-The function minimizes ||X - T * V'||^2  in metric D, by 
-computing a SVD factorization of sqrt(D) * X:
+Let us note D the (n, n) diagonal matrix of weights (`weights.w`) and X the centered matrix in metric D.
+The function minimizes ||X - T * V'||^2  in metric D, by computing a SVD factorization of sqrt(D) * X:
 
 * sqrt(D) * X ~ U * S * V'
 
