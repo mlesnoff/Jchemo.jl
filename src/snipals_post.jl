@@ -1,4 +1,4 @@
-## Direct
+## Here, sparseness is applied after convergence of Nipals
 function snipals_post(X; kwargs...)
     par = recovkw(Jchemo.ParSnipals, kwargs).par 
     X = ensure_mat(X)
