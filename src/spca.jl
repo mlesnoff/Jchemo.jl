@@ -103,18 +103,18 @@ end
 function spca!(X::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParSpca, kwargs).par
     @assert in([:soft; :hard])(par.meth) "Wrong value for argument 'meth'."
-    @assert in([:shen; :mix; :post])(par.algo) "Wrong value for argument 'algo'."
     @assert in([:v; :t])(par.defl) "Wrong value for argument 'defl'."
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
+    ## Masked
+    @assert in([:shen; :post])(par.algo) "Wrong value for argument 'algo'." 
     if par.algo == :shen 
         snipals = snipals_shen
-    elseif par.algo == :mix 
-        snipals = Jchemo.snipals_mix
     elseif par.algo == :post 
-        snipals = Jchemo.snipals_post
+        snipals = Jchemo.snipals_post  # not exported
     end
+    ## End 
     nvar = par.nvar
     length(nvar) == 1 ? nvar = repeat([nvar], nlv) : nothing
     xmeans = colmean(X, weights) 
