@@ -10,7 +10,8 @@ Sparse principal component regression (sPCR).
 Keyword arguments:
 * Same as function `spca`.
 
-Regression (MLR) on scores computed from a sparse PCA (sPCA-rSVD algorithm of Shen & Huang 2008 ). See function `spca` for details.
+Regression (MLR) on scores computed from a sparse PCA (sPCA-rSVD algorithm of Shen & Huang 2008 ). 
+See function `spca` for details.
 
 ## References
 Shen, H., Huang, J.Z., 2008. Sparse principal component analysis via regularized low rank matrix approximation. 
