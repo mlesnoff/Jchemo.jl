@@ -75,7 +75,6 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     niter = zeros(nlv)
     ## End
     @inbounds for a = 1:nlv       
-        tx .= vcol(X, 1)
         ty .= vcol(Y, 1)
         cont = true
         iter = 1
@@ -98,7 +97,7 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         ttx = dot(tx, tx)
         mul!(vx, X', tx)
         vx ./= ttx
-        ## Deflation
+        ## Deflation with respect to tx (asymetric PLS)
         X .-= tx * vx'
         Y .-= tx * wytild'
         ## End         
