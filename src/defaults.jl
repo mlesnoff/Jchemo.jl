@@ -15,7 +15,7 @@ function defaults(algo::Function)
     ##
 
     in((nipals, nipalsmiss)).(algo) ? dump(Jchemo.ParNipals()) : nothing
-    in((snipals_shen)).(algo) ? dump(Jchemo.ParSnipals()) : nothing
+    in((snipals_shen,)).(algo) ? dump(Jchemo.ParSnipals()) : nothing
 
     in((pcasvd, pcaeigen, pcaeigenk, pcasph)).(algo) ? dump(Jchemo.ParPca()) : nothing
     in((pcanipals, pcanipalsmiss)).(algo) ? dump(Jchemo.ParPcanipals()) : nothing
