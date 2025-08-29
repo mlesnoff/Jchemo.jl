@@ -59,8 +59,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 res = summary(model, Xtrain) ;
 @names res
 z = res.explvarx
-plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", 
-    ylabel = "Prop. Explained X-Variance").f
+plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
 spcr(; kwargs...) = JchemoModel(spcr, nothing, kwargs)
