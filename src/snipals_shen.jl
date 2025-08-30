@@ -11,8 +11,8 @@ function snipals_shen(X; kwargs...)
     res = nipals(X; kwargs...)
     u = res.u
     u0 = similar(u)
-    v = similar(X, p) # = 'v_tild' in Shen et al. 2008
-    absv = similar(v)
+    vtild = similar(X, p)
+    absv = similar(vtild)
     ind = list(Int64, p)
     sel = list(Int64, nvar)
     cont = true
@@ -20,18 +20,18 @@ function snipals_shen(X; kwargs...)
     nzeros = p - par.nvar  # = degree of sparsity 
     while cont
         u0 .= copy(u)
-        mul!(v, X', u)
+        mul!(vtild, X', u)
         ## Sparsity
         if nzeros > 0
-            absv .= abs.(v)
+            absv .= abs.(vtild)
             ind .= sortperm(absv; rev = true)
             sel .= ind[1:nvar]
             qt = minimum(absv[sel])
             lambda = maximum(absv[absv .< qt])
-            v .= fthresh.(v, lambda)
+            vtild .= fthresh.(vtild, lambda)
         end
         ## End
-        mul!(u, X, v)
+        mul!(u, X, vtild)
         u ./= normv(u)
         dif = sum((u .- u0).^2)
         iter = iter + 1
@@ -40,8 +40,7 @@ function snipals_shen(X; kwargs...)
         end
     end
     niter = iter - 1
-    vtild = copy(v)
-    v ./= normv(v)  # final unitary vector 'v'
+    v = vtild / normv(vtild)
     t = X * v 
     (t = t, v, vtild, niter)
 end
