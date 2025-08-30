@@ -10,8 +10,8 @@ Keyword arguments:
 * `nlv` : Nb. principal components (PCs).
 * `meth` : Method used for the thresholding of the loadings. Possible values are: `:soft`, `:hard`. See thereafter.
 * `defl` : Type of `X`-matrix deflation, see below.
-* `nvar` : Nb. variables (`X`-columns) kept to build the PCs (non-zero loadings). Can be a single integer (i.e. same nb. 
-    of variables for each PC), or a vector of length `nlv`.   
+* `nvar` : Nb. variables (`X`-columns) kept to build the PCs (non-zero loadings). Can be a single integer 
+    (i.e. same nb. of variables for each PC), or a vector of length `nlv`.   
 * `tol` : Tolerance value for stopping the Nipals iterations.
 * `maxit` : Maximum nb. of Nipals iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
@@ -21,31 +21,34 @@ The method approximates matrix `X` by T * V', where T is a matrix of scores (PCs
 normed regularized loadings. 
 
 The algorithm extracts the PCs one by one (deflation approach). Each loadings vector is computed iteratively, 
-by alternating least squares regressions (Nipals) that includes a thresholding of the computed values (sparsity step). 
-Function `spca` provides the thresholding methods '1' and '2' reported in Shen & Huang 2008 Lemma 2 (`:soft` and `:hard`):
-* The tuning parameter used by Shen & Huang 2008 (see p.2020) is a cardinality constraint defined by the number of zero 
-    elements in the loadings vector, referred to as degree of sparsity. Conversely, the present function `spca` uses the 
-    number of non-zero elements (`nvar`, that is equal to p - degree of sparsity).
-* See the code of function `snipals_shen` for the details on how is computed (given a `nvar` value) the cutoff 'lambda' used 
-    inside the soft thresholding function (Shen & Huang 2008). Discrepancies with other softwares may occur when the 
-    loadings vector contains tied values (in such cas, results can depend on the method used to compute quantiles).
+by alternating least squares regressions (Nipals) that includes a thresholding of the computed values 
+(sparsity step). Function `spca` provides the thresholding methods '1' and '2' reported in Shen & Huang 2008 
+Lemma 2 (`:soft` and `:hard`):
+* The tuning parameter used by Shen & Huang 2008 (see p.2020) is a cardinality constraint defined by the 
+    number of zero elements in the loadings vector, referred to as degree of sparsity. Conversely, the present 
+    function `spca` uses the number of non-zero elements (`nvar`, that is equal to p - degree of sparsity).
+* See the code of function `snipals_shen` for the details on how is computed (given a `nvar` value) the cutoff 
+    'lambda' used inside the soft thresholding function (Shen & Huang 2008). Discrepancies with other softwares 
+    may occur when the loadings vector contains tied values (in such cas, results can depend on the method used 
+    to compute quantiles).
 
 Function `spca` allows two types of deflation of matrix `X`:
-* `defl = :v` : Matrix `X` is deflated by regression of the `X'`-columns on the loadings vector `v`. This is the method used by 
-    Shen & Huang 2008 (see p.1033 in Theorem A.2).
-* `defl = :t` : Matrix `X` is deflated by regression of the `X`-columns on the score vector `t`. This is the method used in function 
-    `spca` of the R package `mixOmics` (Le Cao et al. 2016).
-The computation of the % of variance explained in `X` by each PC (returned by function `summary`) depends on the type of deflation 
-chosen (see the code).    
+* `defl = :v` : Matrix `X` is deflated by regression of the `X'`-columns on the loadings vector `v`. This is 
+    the method used by Shen & Huang 2008 (see p.1033 in Theorem A.2).
+* `defl = :t` : Matrix `X` is deflated by regression of the `X`-columns on the score vector `t`. This is the method 
+    used in function `spca` of the R package `mixOmics` (Le Cao et al. 2016).
+The computation of the % of variance explained in `X` by each PC (returned by function `summary`) depends on 
+    the type of deflation chosen (see the code).    
 
 ## References
 
-Guerra-Urzola, R., Van Deun, K., Vera, J.C., Sijtsma, K., 2021. A Guide for Sparse PCA: Model Comparison and Applications. 
-Psychometrika 86, 893–919. https://doi.org/10.1007/s11336-021-09773-2
+Guerra-Urzola, R., Van Deun, K., Vera, J.C., Sijtsma, K., 2021. A Guide for Sparse PCA: Model Comparison 
+and Applications. Psychometrika 86, 893–919. https://doi.org/10.1007/s11336-021-09773-2
 
-Kim-Anh Lê Cao, Florian Rohart, Ignacio Gonzalez, Sebastien Dejean with key contributors Benoit Gautier, Francois Bartolo, 
-contributions from Pierre Monget, Jeff Coquery, FangZou Yao and Benoit Liquet. (2016). mixOmics: Omics Data Integration 
-Project. R package version 6.1.1. https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html
+Kim-Anh Lê Cao, Florian Rohart, Ignacio Gonzalez, Sebastien Dejean with key contributors Benoit Gautier, 
+Francois Bartolo, contributions from Pierre Monget, Jeff Coquery, FangZou Yao and Benoit Liquet. (2016). 
+mixOmics: Omics Data Integration Project. R package version 6.1.1. 
+https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html
 
 Shen, H., Huang, J.Z., 2008. Sparse principal component analysis via regularized low rank matrix approximation. 
 Journal of Multivariate Analysis 99, 1015–1034. https://doi.org/10.1016/j.jmva.2007.06.007
@@ -107,7 +110,7 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
-    ## Masked
+    ## Masked argument 'algo'
     @assert in([:shen; :post])(par.algo) "Wrong value for argument 'algo'." 
     if par.algo == :shen 
         snipals = snipals_shen
