@@ -139,14 +139,12 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         XtY .= X' * fweight(Y, weights.w)
         U, d, V = svd!(XtY) 
         delta[a] = d[1]
-        # X
         wx .= U[:, 1]
         mul!(tx, X, wx)
         dtx .= weights.w .* tx
         ttx = dot(tx, dtx)
         mul!(vx, X', dtx)
         vx ./= ttx
-        # Y
         wy .= V[:, 1]
         # Same as:                        
         # mul!(wy, Y', dtx)
@@ -157,7 +155,7 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         tty = dot(ty, dty)
         mul!(vy, Y', dty)
         vy ./= tty
-        # Deflation
+        # Symmetric deflation
         X .-= tx * vx'
         Y .-= ty * vy'
         # End
