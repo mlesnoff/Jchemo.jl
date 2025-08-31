@@ -14,15 +14,17 @@ Keyword arguments:
     of variables for each LV), or a vector of length `nlv`.   
 * `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.    
 
-Adaptation of the sparse partial least squares regression algorihm of Lê Cao et al. 2008. The fast 
-"improved kernel algorithm #1" of Dayal & McGregor (1997) is used instead Nipals. 
+Sparse partial least squares regression algorihm of Lê Cao et al. 2008, but with the fast 
+"improved kernel algorithm #1" of Dayal & McGregor (1997) used instead Nipals (results are the same). 
 
-In the present version of `splsr`, the sparse thresholding only concerns `X`. The function provides 
-two thresholding methods to compute the sparse `X`-loading weights w (`:soft` and `:hard`), see 
-function `spca` for description. 
-    
-The case `meth = :soft` returns the same results as function `spls` of the R package mixOmics (Lê Cao et al.) 
-with the regression mode and without sparseness on `Y`.
+In the present version of `splsr`, only the `X`-loading weigths are penalized (not the `X`-loading weigths). 
+The function provides two thresholding methods: `:soft` and `:hard`, see function `spca` for description. 
+
+In brief, the trick of Lê Cao et al. 2008 algorithm to penalize the `X`-loading weigths is to apply the 
+sPCA-rSVD algorithm (Shen & Huang 2008) on matrix `Y'X` (instead of `X` in sparse PCA).
+
+When `meth = :soft` the function returns the same results as function `spls` of the R package mixOmics 
+(Lê Cao et al.) when regression mode and no sparseness on `Y` are specified.
 
 The case `nvar = 1` corresponds to the Covsel regression method described in Roger et al 2011 (see also 
 Höskuldsson 1992).
@@ -141,6 +143,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
     ## XtY 
     fweight!(Y, weights.w)
     XtY = X' * Y
+    YtX = XtY'
     ## Pre-allocation
     T = similar(X, n, nlv)
     W = similar(X, p, nlv)
@@ -174,8 +177,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
             ## End
             w ./= normv(w)
         else
-            w .= snipals_shen(XtY'; meth = par.meth, nvar = nvar[a], tol = par.tol, 
-                maxit = par.maxit).v
+            w .= snipals_shen(YtX; meth = par.meth, nvar = nvar[a], tol = par.tol, maxit = par.maxit).v
         end                                  
         r .= w
         if a > 1
@@ -186,10 +188,11 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
         mul!(t, X, r)                 
         dt .= weights.w .* t          
         tt = dot(t, dt)               
-        mul!(c, XtY', r)
+        mul!(c, YtX, r)
         c ./= tt                      
         mul!(zp, X', dt)              
-        XtY .-= mul!(tmpXtY, zp, c')     
+        XtY .-= mul!(tmpXtY, zp, c')
+        YtX .= XtY'     
         V[:, a] .= zp ./ tt           
         T[:, a] .= t                  
         W[:, a] .= w

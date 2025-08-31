@@ -8,17 +8,15 @@ Sparse PLSR-DA.
 * `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`). 
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `meth` : Method used for the sparse thresholding. 
-    Possible values are: `:soft`, `:hard`. See thereafter.
-* `nvar` : Nb. variables (`X`-columns) selected for each LV. 
-    Can be a single integer (i.e. same nb. of variables for each LV), 
-    or a vector of length `nlv`.       
+* `meth` : Method used for the sparse thresholding. Possible values are: `:soft`, `:hard`. See thereafter.
+* `nvar` : Nb. variables (`X`-columns) selected for each LV. Can be a single integer (i.e. same nb. 
+    of variables for each LV), or a vector of length `nlv`.        
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * `scal` : Boolean. If `true`, each column of `X` and Ydummy is scaled by its uncorrected standard deviation.
 
-Same as function `plsrda` (PLSR-DA) except that a sparse PLSR (function `splsr`), instead of a PLSR (function `plskern`), 
+Same as function `plsrda` (PLSR-DA) except that a sparse PLSR (function `splsr`), instead of a PLSR, 
 is run on the Y-dummy table. 
 
 ## Examples
