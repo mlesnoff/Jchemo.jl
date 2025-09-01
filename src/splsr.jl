@@ -17,10 +17,10 @@ Keyword arguments:
 Sparse partial least squares regression algorihm of Lê Cao et al. 2008, but with the fast 
 "improved kernel algorithm #1" of Dayal & McGregor (1997) used instead Nipals (results are the same). 
 
-In the present version of `splsr`, only the `X`-loading weigths are penalized (not the `X`-loading weigths). 
+In the present version of `splsr`, only the `X`-loading weights (not the `Y`-loading weights) are penalized. 
 The function provides two thresholding methods: `:soft` and `:hard`, see function `spca` for description. 
 
-In brief, the trick of Lê Cao et al. 2008 algorithm to penalize the `X`-loading weigths is to apply the 
+In brief, to penalize the `X`-loading weights, the trick of Lê Cao et al. 2008 algorithm is to apply the 
 sPCA-rSVD algorithm (Shen & Huang 2008) on matrix `Y'X` (instead of `X` in sparse PCA).
 
 When `meth = :soft` the function returns the same results as function `spls` of the R package mixOmics 
