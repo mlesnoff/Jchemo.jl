@@ -24,7 +24,7 @@ makedocs(;
     pages = [
         "Home" => "index.md",
         "Available methods" => "domains.md",
-        #"Index of functions" => "api.md",
+        "Index of functions" => "api.md",
         "News" => "news.md"
         #"Examples" => "see_jchemodemo.md",
         #"Datasets" => "see_jchemodata.md"
