@@ -6,10 +6,8 @@ For more details, click on the link and you'll be directed to the function help.
 
 ```@index
 Modules = [Jchemo]
-Order   = [:function, :type]
 ```
 
 ```@autodocs
 Modules = [Jchemo]
-Order   = [:function, :type]
 ```
