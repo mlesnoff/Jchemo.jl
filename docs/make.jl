@@ -15,7 +15,10 @@ makedocs(;
         prettyurls = get(ENV, "CI", "false") == "true",
         canonical = "https://mlesnoff.github.io/Jchemo.jl",
         edit_link = "main",
-        assets = String[]
+        assets = String[],
+        example_size_threshold = 500000,
+        size_threshold = 2_500_000,
+        size_threshold_warn = 2_500_000,
         ),
     #format = Documenter.HTML(; prettyurls = get(ENV, "CI", nothing) == "true"),
     pages = [
