@@ -4,8 +4,8 @@
 Baseline correction of each row of X-data by LOESS regression.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `span` : Window for neighborhood selection (level of smoothing) for the local fitting, typically 
-    in [0, 1] (proportion).
+* `span` : Window for neighborhood selection (level of smoothing) for the local fitting, typically proportion 
+    within [0, 1].
 * `degree` : Polynomial degree for the local fitting.
 
 De-trend transformation: The function fits a baseline by LOESS regression (function `loessr`) for each 

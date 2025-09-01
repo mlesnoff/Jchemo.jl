@@ -5,11 +5,10 @@ Compute a locally weighted regression model (LOESS).
 * `X` : X-data (n, p).
 * `y` : Univariate y-data (n).
 Keyword arguments:
-* `span` : Window for neighborhood selection (level of smoothing)
-    for the local fitting, typically in [0, 1] (proportion).
+* `span` : Window for neighborhood selection (level of smoothing) for the local fitting, typically proportion 
+    within [0, 1].
 * `degree` : Polynomial degree for the local fitting.
-* `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
     
 The function fits a LOESS model using package `Loess.jl'. 
 

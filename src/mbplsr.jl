@@ -4,26 +4,20 @@
     mbplsr(Xbl, Y, weights::Weight; kwargs...)
     mbplsr!(Xbl::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
 Multiblock PLSR (MBPLSR).
-* `Xbl` : List of blocks (vector of matrices) of X-data 
-    Typically, output of function `mblock` from (n, p) data.  
+* `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from (n, p) data.  
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. global latent variables (LVs = scores) to compute.
-* `bscal` : Type of block scaling. See function `blockscal`
-    for possible values.
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
-    and `Y` is scaled by its uncorrected standard deviation 
+* `bscal` : Type of block scaling. See function `blockscal` for possible values.
+* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-This function runs a PLSR on {X, `Y`} where X is the horizontal 
-concatenation of the blocks in `Xbl`. The function gives the 
-same global LVs and predictions as function `mbplswest`, but is much faster.
+This function runs a PLSR on {X, `Y`} where X is the horizontal concatenation of the blocks in `Xbl`. The function 
+    gives the same global LVs and predictions as function `mbplswest`, but is much faster.
 
 Function `summary` returns: 
-* `explvarx` : Proportion of the total X inertia (squared Frobenious norm) 
-    explained by the global LVs.
+* `explvarx` : Proportion of the total X inertia (squared Frobenious norm) explained by the global LVs.
 * `rvxbl2t` : RV coefficients between each block and the global LVs.
 * `rdxbl2t` : Rd coefficients between each block (= Xbl[k]) and the global LVs.
 * `corx2t` : Correlation between the X-variables and the global LVs.  
