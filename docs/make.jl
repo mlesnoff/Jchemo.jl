@@ -3,14 +3,14 @@
 using Documenter
 using Jchemo
 
-DocMeta.setdocmeta!(Jchemo, :DocTestSetup, :(using Jchemo); recursive = true)
+#DocMeta.setdocmeta!(Jchemo, :DocTestSetup, :(using Jchemo); recursive = true)
 
 makedocs(;
     modules = [Jchemo],
     authors = "Matthieu Lesnoff",
     sitename = "Jchemo.jl",
-    repo = Documenter.Remotes.GitHub("mlesnoff", "Jchemo.jl"),
-    #repo = "https://github.com/mlesnoff/Jchemo.jl/blob/{commit}{path}#L{line}",
+    #repo = Documenter.Remotes.GitHub("mlesnoff", "Jchemo.jl"),
+    repo = "https://github.com/mlesnoff/Jchemo.jl/blob/{commit}{path}#L{line}",
     format = Documenter.HTML(;
         prettyurls = get(ENV, "CI", "false") == "true",
         canonical = "https://mlesnoff.github.io/Jchemo.jl",
