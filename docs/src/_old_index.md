@@ -14,4 +14,8 @@ See also the related projects:
 
 [Return to [Jchemo.jl](https://github.com/mlesnoff/Jchemo.jl)]
 
+```@autodocs
+Modules = [Jchemo]
+Order   = [:function, :type]
+```
 
