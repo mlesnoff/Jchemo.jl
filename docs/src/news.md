@@ -1,5 +1,12 @@
 # News
 
+## *Version 0.8.14*
+
+- Modifications
+    - Compat extension to 0.33 for StatsBase (for compatibility with some external packages 
+        such as ManifoldLearning).
+
+
 ## *Version 0.8.13*
 
 - News
