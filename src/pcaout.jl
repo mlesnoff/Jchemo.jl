@@ -19,7 +19,7 @@ Observations (`X`-rows) receive weights depending on two outlyingness indicators
 1) The Stahel-Donoho outlyingness (Maronna and Yohai, 1995) is computed (function `outstah`) on `X`. 
     The proportion `prm` of the observations with the highest outlyingness values receive a weight w1 = 0 
     (the other receive a weight w1 = 1).
-2) An outlyingness based on the Euclidean distance to center (function `outstah`) is computed. The proportion `prm` 
+2) An outlyingness based on the Euclidean distance to center (function `outeucl`) is computed. The proportion `prm` 
     of the observations with the highest outlyingness values receive a weight w2 = 0 (the other receive a weight w2 = 1).
 The final weights of the observations are computed by weights.w * w1 * w2 that is used in a weighted PCA.
 
