@@ -5,32 +5,22 @@ Regression tree (CART) with DecisionTree.jl.
 * `X` : X-data (n, p).
 * `y` : Univariate y-data (n).
 Keyword arguments:
-* `n_subfeatures` : Nb. variables to select at random 
-    at each split (default: 0 ==> keep all).
-* `max_depth` : Maximum depth of the 
-    decision tree (default: -1 ==> no maximum).
-* `min_sample_leaf` : Minimum number of samples 
-    each leaf needs to have.
-* `min_sample_split` : Minimum number of observations 
-    in needed for a split.
-* `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+* `n_subfeatures` : Nb. variables to select at random at each split (default: 0 ==> keep all).
+* `max_depth` : Maximum depth of the decision tree (default: -1 ==> no maximum).
+* `min_sample_leaf` : Minimum number of samples each leaf needs to have.
+* `min_sample_split` : Minimum number of observations in needed for a split.
+* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
-The function fits a single regression tree (CART) using 
-package `DecisionTree.jl'.
+The function is a wrapper of package `DecisionTree.jl' to fit a single regression tree (CART).
 
 ## References
-Breiman, L., Friedman, J. H., Olshen, R. A., and 
-Stone, C. J. Classification And Regression Trees. 
+Breiman, L., Friedman, J. H., Olshen, R. A., and Stone, C. J. Classification And Regression Trees. 
 Chapman & Hall, 1984.
 
-DecisionTree.jl
-https://github.com/JuliaAI/DecisionTree.jl
+DecisionTree.jl https://github.com/JuliaAI/DecisionTree.jl
 
-Gey, S., 2002. Bornes de risque, détection de ruptures, 
-boosting : trois thèmes statistiques autour de CART en
-régression (These de doctorat). Paris 11. 
-http://www.theses.fr/2002PA112245
+Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : trois thèmes statistiques autour de CART 
+en régression (These de doctorat). Paris 11. http://www.theses.fr/2002PA112245
 
 ## Examples
 ```julia

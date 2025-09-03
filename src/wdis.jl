@@ -4,13 +4,10 @@ Different functions to compute weights from distances.
 * `d` : Vector of distances.
 Keyword arguments:
 * `typw` : Define the weight function.
-* `alpha` : Parameter of the weight function, 
-    see below.
+* `alpha` : Parameter of the weight function, see below.
 
 The returned weight vector is: 
-* w = f(`d` / q) where f is the weight function 
-    and q the 1-`alpha` quantile of `d` 
-    (Cleveland & Grosse 1991).
+* w = f(`d` / q) where f is the weight function and q the 1-`alpha` quantile of `d` (Cleveland & Grosse 1991).
 
 Possible values for `typw` are: 
 * :bisquare: w = (1 - d^2)^2 
@@ -24,8 +21,8 @@ Possible values for `typw` are:
 * :tricube: w = (1 - d^3)^3  
 
 ## References
-Cleveland, W.S., Grosse, E., 1991. Computational methods for local regression. 
-Stat Comput 1, 47–62. https://doi.org/10.1007/BF01890836
+Cleveland, W.S., Grosse, E., 1991. Computational methods for local regression. Stat Comput 1, 47–62. 
+https://doi.org/10.1007/BF01890836
 
 ## Examples
 ```julia

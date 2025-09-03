@@ -14,9 +14,8 @@ Keyword arguments:
 * `mth` : Boolean indicating if a multi-threading is done when new data are predicted with function `predict`.
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
-The function fits a random forest discrimination² model using package `DecisionTree.jl'.
-
-For DA in DecisionTree.jl, 'y' components must be Int or String
+The function is a wrapper of package `DecisionTree.jl' to fit a random forest discrimnation model.
+In DecisionTree.jl, 'y' component must have type `Int` or `String`.
 
 ## References
 Breiman, L., 1996. Bagging predictors. Mach Learn 24, 123–140. https://doi.org/10.1007/BF00058655

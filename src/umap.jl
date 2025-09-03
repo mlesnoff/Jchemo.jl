@@ -7,28 +7,23 @@ UMAP: Uniform manifold approximation and projection for
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `psamp` : Proportion of sampling in `X` for training.
-* `n_neighbors` : Nb. approximate neighbors used to construct 
-    the initial high-dimensional graph.
-* `min_dist` : Minimum distance between points in low-dimensional 
-    space.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
-    is scaled by its uncorrected standard deviation.
+* `n_neighbors` : Nb. approximate neighbors used to construct the initial high-dimensional graph.
+* `min_dist` : Minimum distance between points in low-dimensional space.
+* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
     
-The function fits a UMAP dimension reducion using 
-package `UMAP.jl'. The used metric is the Euclidean distance. 
+The function fits a UMAP dimension reducion using package `UMAP.jl'. The used metric is the Euclidean 
+distance. 
 
-If `psamp < 1`, only a proportion `psamp` of the observations (rows of `X`) 
-are used to build the model (systematic sampling over the first score of 
-the PCA of `X`). Can be used to decrease computation times when n
-is large.
+If `psamp < 1`, only a proportion `psamp` of the observations (rows of `X`) are used to build the model 
+(systematic sampling over the first score of the PCA of `X`). Can be used to decrease computation times 
+when n is large.
 
 ## References
 
 https://github.com/dillondaudert/UMAP.jl
 
-McInnes, L, Healy, J, Melville, J, UMAP: Uniform Manifold Approximation 
-and Projection for Dimension Reduction. ArXiV 1802.03426, 2018
-https://arxiv.org/abs/1802.03426
+McInnes, L, Healy, J, Melville, J, UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction. 
+ArXiV 1802.03426, 2018. https://arxiv.org/abs/1802.03426
 
 https://umap-learn.readthedocs.io/en/latest/how_umap_works.html
 

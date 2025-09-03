@@ -5,16 +5,14 @@ Support vector machine for regression (Epsilon-SVR).
 * `X` : X-data (n, p).
 * `y` : Univariate y-data (n).
 Keyword arguments:
-* `kern` : Type of kernel used to compute the Gram matrices.
-    Possible values are: `:krbf`, `:kpol`, `:klin`, 
-    `:ktanh`. See below.  
+* `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`, 
+    `:klin`, `:ktanh`. See below.  
 * `gamma` : `kern` parameter, see below.
 * `coef0` : `kern` parameter, see below.
 * `degree` : `kern` parameter, see below.
 * `cost` : Cost of constraints violation C parameter.
 * `epsilon` : Epsilon parameter in the loss function.
-* `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
 Kernel types: 
 * :krbf -- radial basis function: exp(-gamma * ||x - y||^2)
@@ -22,27 +20,21 @@ Kernel types:
 * "klin -- linear: x' * y
 * :ktan -- sigmoid: tanh(gamma * x' * y + coef0)
 
-The function uses LIBSVM.jl (https://github.com/JuliaML/LIBSVM.jl) 
-that is an interface to library LIBSVM (Chang & Li 2001).
+The function is a wrapper to package LIBSVM.jl (that is an interface to library LIBSVM of Chang & Li 2001)
+to fit a SVM regression model.
 
 ## References 
-Julia package LIBSVM.jl: https://github.com/JuliaML/LIBSVM.jl
+Chang, C.-C. & Lin, C.-J. (2001). LIBSVM: a library for support vector machines. Software available
+at http://www.csie.ntu.edu.tw/~cjlin/libsvm. Detailed documentation (algorithms, formulae, ...) can be found 
+in http://www.csie.ntu.edu.tw/~cjlin/papers/libsvm.ps.gz
 
-Chang, C.-C. & Lin, C.-J. (2001). LIBSVM: a library for support 
-vector machines. Software available at 
-http://www.csie.ntu.edu.tw/~cjlin/libsvm. Detailed documentation 
-(algorithms, formulae, ...) can be found in
-http://www.csie.ntu.edu.tw/~cjlin/papers/libsvm.ps.gz
+Chih-Chung Chang and Chih-Jen Lin, LIBSVM: a library for support vector machines. ACM Transactions on Intelligent 
+Systems and Technology, 2:27:1--27:27, 2011. Software available at http://www.csie.ntu.edu.tw/~cjlin/libsvm
 
-Chih-Chung Chang and Chih-Jen Lin, LIBSVM: a library for support 
-vector machines. ACM Transactions on Intelligent Systems and 
-Technology, 2:27:1--27:27, 2011. Software available at 
-http://www.csie.ntu.edu.tw/~cjlin/libsvm
+LIBSVM.jl: https://github.com/JuliaML/LIBSVM.jl
 
-Schölkopf, B., Smola, A.J., 2002. Learning with kernels: 
-support vector machines, regularization, optimization, and 
-beyond. Adaptive computation and machine learning. MIT Press, 
-Cambridge, Mass.
+Schölkopf, B., Smola, A.J., 2002. Learning with kernels: support vector machines, regularization, optimization, 
+and beyond. Adaptive computation and machine learning. MIT Press, Cambridge, Mass.
 
 ## Examples
 ```julia

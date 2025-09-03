@@ -4,13 +4,10 @@
 Compute weights from distances using an inverse scaled exponential function.
 * `d` : A vector of distances.
 Keyword arguments:
-* `h` : A scaling positive scalar defining the shape 
-    of the weight function. 
-* `criw` : A positive scalar defining outliers in the 
-    distances vector `d`.
-* `squared`: If `true`, distances are replaced by the squared 
-    distances; the weight function is then a Gaussian (RBF) 
-    kernel function.
+* `h` : A scaling positive scalar defining the shape of the weight function. 
+* `criw` : A positive scalar defining outliers in the distances vector `d`.
+* `squared`: If `true`, distances are replaced by the squared distances; the weight function 
+    is then a Gaussian (RBF) kernel function.
 
 Weights are computed by: 
 * exp(-`d` / (`h` * MAD(`d`)))

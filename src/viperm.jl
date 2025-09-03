@@ -5,34 +5,27 @@ Variable importance by direct permutations.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).  
 Keyword arguments:
-* `rep` : Number of replications of the splitting
-    training/test. 
-* `psamp` : Proportion of data used as test set 
-    to compute the `score`.
+* `rep` : Number of replications of the splitting training/test. 
+* `psamp` : Proportion of data used as test set to compute the `score`.
 * `score` : Function computing the prediction score.
 
 The principle is as follows:
 * Data (X, Y) are splitted randomly to a training and a test set.
-* The model is fitted on Xtrain, and the score (error rate) 
-    is computed on Xtest. This gives the reference error rate.
-* Rows of a given variable (feature) j in Xtest are randomly 
-    permutated (the rest of Xtest is unchanged). The score is computed 
-    on the Xtest_perm_j (i.e. Xtest after thta the rows of variable j 
-    were permuted). The importance of variable j is computed by the 
-    difference between this score and the reference score.
-* This process is run for each variable j separately and replicated 
-    `rep` times. Average results are provided in the outputs, as well 
-    as the results per replication. 
+* The model is fitted on Xtrain, and the score (error rate) is computed on Xtest. 
+    This gives the reference error rate.
+* Rows of a given variable (feature) j in Xtest are randomly permutated (the rest of Xtest is unchanged). 
+    The score is computed on the Xtest_perm_j (i.e. Xtest after thta the rows of variable j were permuted). 
+    The importance of variable j is computed by the difference between this score and the reference score.
+* This process is run for each variable j separately and replicated `rep` times. Average results are provided 
+    in the outputs, as well as the results per replication. 
 
-In general, this method returns similar results as the out-of-bag permutation 
-method used in random forests (Breiman, 2001).
+In general, this method returns similar results as the out-of-bag permutation method used in random forests 
+(Breiman, 2001).
 
 ## References
-- Nørgaard, L., Saudland, A., Wagner, J., Nielsen, J.V., Munck, L., 
-Engelsen, S.B., 2000. Interval Partial Least-Squares Regression (iPLS): 
-A Comparative Chemometric Study with an Example from Near-Infrared 
-Spectroscopy. Appl Spectrosc 54, 413–419. 
-https://doi.org/10.1366/0003702001949500
+Nørgaard, L., Saudland, A., Wagner, J., Nielsen, J.V., Munck, L., Engelsen, S.B., 2000. Interval Partial 
+Least-Squares Regression (iPLS): A Comparative Chemometric Study with an Example from Near-Infrared 
+Spectroscopy. Appl Spectrosc 54, 413–419. https://doi.org/10.1366/0003702001949500
 
 ## Examples
 ```julia
