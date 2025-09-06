@@ -328,6 +328,7 @@
     - **detrend_airpls** Adaptive iteratively reweighted penalized least squares (AIRPLS)
     - **detrend_arpls** Asymmetrically reweighted penalized least squares smoothing (ARPLS)
 - **snv** Standard-normal-deviation transformation
+- **snorm** Row-wise norming
 - **fdif** Finite differences
 - **mavg** Smoothing by moving average
 - **savgk**, **savgol** Savitsky-Golay filtering
