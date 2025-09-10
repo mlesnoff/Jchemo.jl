@@ -4,10 +4,8 @@ Return the k nearest neighbors in `Xtrain` of each row of the query `X`.
 * `Xtrain` : Training X-data.
 * `X` : Query X-data.
 Keyword arguments:
-* `metric` : Type of distance used for the query. 
-    Possible values are `:eucl` (Euclidean),
-    `:mah` (Mahalanobis), `:sam` (spectral angular distance),
-    `:cor` (correlation distance).
+* `metric` : Type of distance used for the query. Possible values are `:eucl` (Euclidean), `:mah` (Mahalanobis), 
+    `:sam` (spectral angular distance), `:cor` (correlation distance).
 * `k` : Number of neighbors to return.
 
 The distances (not squared) are also returned.
