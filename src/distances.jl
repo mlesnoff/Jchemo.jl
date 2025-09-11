@@ -145,6 +145,6 @@ struct SamDist <: Distances.Metric end
 (::SamDist)(a, b) = acos(1 - Distances.CosineDist()(a, b)) / pi
 
 struct CorDist <: Distances.Metric end
-(::CorDist)(a, b) = sqrt(max(0, .5 * Distances.CorrDist()(a, b)))
+(::CorDist)(a, b) = sqrt(max(0, Distances.CorrDist()(a, b) / 2))
 
 
