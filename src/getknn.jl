@@ -5,15 +5,18 @@ Return the k nearest neighbors in `Xtrain` of each row of the query `X`.
 * `X` : Query X-data.
 Keyword arguments:
 * `metric` : Type of distance used for the query. Possible values are `:eucl` (Euclidean), `:mah` (Mahalanobis), 
-    `:sam` (spectral angular distance), `:cor` (correlation distance).
+    `:sam` (a spectral angular distance), `:cos` (cosine distance), `:cor` (a correlation distance).
 * `k` : Number of neighbors to return.
 
-The distances (not squared) are also returned.
+In addition to neighbors, the function also returns the distances (not squared). 
 
-Spectral angular and correlation distances between two vectors x and y:
-* Spectral angular distance (x, y) = acos(x'y / normv(x)normv(y)) / pi
-* Correlation distance (x, y) = sqrt((1 - cor(x, y)) / 2)
-Both distances are bounded within 0 (y = x) and 1 (y = -x).
+Consider two vectors x and y, and costheta = x'y / (||x|| ||y||) (theta is the angle between x and y, in radiants). 
+In this function, the angular distances between x and y are computed as:
+* Spectral angular distance (x, y) = acos(costheta) / pi    ==> [0, 1] 
+* Cosine distance (x, y) = 1 - costheta                     ==> [0, 2]
+* Correlation distance (x, y) = sqrt((1 - corr(x, y)) / 2)  ==> [0, 1]
+
+Note: If x and y are centered, corr(x, y) = costheta.
 
 ## Examples
 ```julia
@@ -35,7 +38,7 @@ res.ind
 ```
 """ 
 function getknn(Xtrain, X; metric = :eucl, k = 1)
-    @assert in([:eucl, :mah, :sam, :cor])(metric) "Wrong value for argument 'metric'."
+    @assert in([:eucl, :mah, :cos, :sam, :cor])(metric) "Wrong value for argument 'metric'."
     Xtrain = ensure_mat(Xtrain)
     X = ensure_mat(X)
     n, p = size(Xtrain)
@@ -57,6 +60,8 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
         Xtrain = Xtrain * Uinv
         X = X * Uinv
         tree = NearestNeighbors.BruteTree(Xtrain', Distances.Euclidean())
+    elseif metric == :cos
+        tree = NearestNeighbors.BruteTree(Xtrain', Distances.CosineDist())
     elseif metric == :sam
         tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.SamDist())
     elseif metric == :cor

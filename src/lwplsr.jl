@@ -9,7 +9,7 @@ Keyword arguments:
     reduction before computing the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.
 * `metric` : Type of dissimilarity used to select the neighbors and to compute the weights 
     (see function `getknn`). Possible values are: `:eucl` (Euclidean), `:mah` (Mahalanobis), 
-    `:sam` (spectral angular distance), `:cor` (correlation distance).
+    `:sam` (a spectral angular distance), `:cos` (cosine distance), `:cor` (a correlation distance).
 * `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
     sharper is the function. See function `winvs` for details (keyword arguments `criw` and `squared` of 
     `winvs` can also be specified here).
@@ -39,12 +39,12 @@ in the training set, a number of `k` nearest neighbors to the observation to pre
 LWPLSR only to this pre-selected neighborhood (= "weighting 2"). This strategy corresponds to kNN-LWPLSR implemented in 
 function `lwplsr`.
 
-In `lwplsr`, the dissimilarities used for weightings 1 and 2 are computed directely from the raw X-data, or after a dimension reduction,
-depending on argument `nlvdis`. In the last case, global PLS2 scores (LVs) are computed from {`X`, `Y`} and the dissimilarities 
-are computed over these scores. 
+In `lwplsr`, the dissimilarities used for weightings 1 and 2 are computed directely from the raw X-data, or after a dimension 
+reduction,depending on argument `nlvdis`. In the last case, global PLS2 scores (LVs) are computed from {`X`, `Y`} and the 
+dissimilarities are computed over these scores. 
 
-In general, for high dimensional X-data, using the Mahalanobis distance requires preliminary dimensionality 
-reduction of the data.
+In general, for high dimensional X-data, using the Mahalanobis distance requires preliminary dimensionality reduction of 
+the data.
 
 ## References
 Kim, S., Kano, M., Nakagawa, H., Hasebe, S., 2011. Estimation of active pharmaceutical ingredients content using 

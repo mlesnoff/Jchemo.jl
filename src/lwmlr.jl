@@ -7,7 +7,7 @@ k-Nearest-Neighbours locally weighted multiple linear regression (kNN-LWMLR).
 Keyword arguments:
 * `metric` : Type of dissimilarity used to select the neighbors and to compute the weights 
     (see function `getknn`). Possible values are: `:eucl` (Euclidean), `:mah` (Mahalanobis), 
-    `:sam` (spectral angular distance), `:cor` (correlation distance).
+    `:sam` (a spectral angular distance), `:cos` (cosine distance), `:cor` (a correlation distance).
 * `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
     sharper is the function. See function `winvs` for details (keyword arguments `criw` and `squared` of 
     `winvs` can also be specified here).
@@ -17,10 +17,8 @@ Keyword arguments:
     deviation before the distance and weight computations.
 * `verbose` : Boolean. If `true`, predicting information are printed.
     
-This is the same principle as function `lwplsr` except 
-that MLR models are fitted on the neighborhoods, instead of 
-PLSR models.  The neighborhoods are computed directly on `X` 
-(there is no preliminary dimension reduction).
+This is the same principle as function `lwplsr` except that MLR models are fitted on the neighborhoods, instead of 
+PLSR models.  The neighborhoods are computed directly on `X` (there is no preliminary dimension reduction).
 
 ## Examples
 ```julia

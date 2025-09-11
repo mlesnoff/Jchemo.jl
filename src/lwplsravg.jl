@@ -10,28 +10,24 @@ Keyword arguments:
     If `nlvdis = 0`, there is no dimension reduction.
 * `metric` : Type of dissimilarity used to select the neighbors and to compute the weights 
     (see function `getknn`). Possible values are: `:eucl` (Euclidean), `:mah` (Mahalanobis), 
-    `:sam` (spectral angular distance), `:cor` (correlation distance).
+    `:sam` (a spectral angular distance), `:cos` (cosine distance), `:cor` (a correlation distance).
 * `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
     sharper is the function. See function `winvs` for details (keyword arguments `criw` and `squared` of 
     `winvs` can also be specified here).
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `nlv` : A range of nb. of latent variables (LVs) 
-    to compute for the local (i.e. inside each neighborhood) 
-    models.
-* `scal` : Boolean. If `true`, (a) each column of the global `X` 
-    (and of the global `Y` if there is a preliminary PLS reduction dimension) 
-    is scaled by its uncorrected standard deviation before to compute 
-    the distances and the weights, and (b) the X and Y scaling is also done 
-    within each neighborhood (local level) for the weighted PLSR.
+* `nlv` : A range of nb. of latent variables (LVs) to compute for the local (i.e. inside each neighborhood) models.
+* `scal` : Boolean. If `true`, (a) each column of the global `X` (and of the global `Y` if there is a preliminary PLS 
+    reduction dimension) is scaled by its uncorrected standard deviation before to compute the distances and the weights, 
+    and (b) the X and Y scaling is also done within each neighborhood (local level) for the weighted PLSR.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
-Ensemblist method where the predictions are computed by averaging the predictions of a set of 
-models built with different numbers of LVs, such as in Lesnoff 2023. On each neighborhood, a 
-PLSR-averaging (Lesnoff et al. 2022) is done instead of a PLSR.
+Ensemblist method where the predictions are computed by averaging the predictions of a set of models built with 
+different numbers of LVs, such as in Lesnoff 2023. On each neighborhood, a PLSR-averaging (Lesnoff et al. 2022) is done 
+instead of a PLSR.
 
-For instance, if argument `nlv` is set to `nlv` = `5:10`, the prediction for a new observation is the 
-simple average of the predictions returned by the models with 5 LVs, 6 LVs, ... 10 LVs, respectively.
+For instance, if argument `nlv` is set to `nlv` = `5:10`, the prediction for a new observation is the simple average of 
+the predictions returned by the models with 5 LVs, 6 LVs, ... 10 LVs, respectively.
 
 ## References
 Lesnoff, M., Andueza, D., Barotin, C., Barre, V., Bonnal, L., Fernández Pierna, J.A., Picard, F., 

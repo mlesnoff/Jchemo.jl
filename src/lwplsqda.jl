@@ -10,7 +10,7 @@ Keyword arguments:
     If `nlvdis = 0`, there is no dimension reduction.
 * `metric` : Type of dissimilarity used to select the neighbors and to compute the weights 
     (see function `getknn`). Possible values are: `:eucl` (Euclidean), `:mah` (Mahalanobis), 
-    `:sam` (spectral angular distance), `:cor` (correlation distance).
+    `:sam` (a spectral angular distance), `:cos` (cosine distance), `:cor` (a correlation distance).
 * `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
     sharper is the function. See function `winvs` for details (keyword arguments `criw` and `squared` of 
     `winvs` can also be specified here).
@@ -29,11 +29,10 @@ Keyword arguments:
 This is the same principle as function `lwplsr` except that a PLS-QDA model, instead of a PLSR model, is fitted 
 on each neighborhoods.
 
-* **Warning:** The present version of this function can suffer from 
-    stops due to non positive definite matrices when doing QDA
-    on neighborhoods. This is due to that some classes within the neighborhood can 
-    have very few observations. It is recommended to select a sufficiantly large number 
-    of neighbors or/and to use a regularized QDA (`alpha > 0`).
+* **Warning:** The present version of this function can suffer from stops due to non positive definite matrices 
+    when doing QDA on neighborhoods. This is due to that some classes within the neighborhood can have very few 
+    observations. It is recommended to select a sufficiantly large number of neighbors or/and to use a regularized 
+    QDA (`alpha > 0`).
 
 ## Examples
 ```julia

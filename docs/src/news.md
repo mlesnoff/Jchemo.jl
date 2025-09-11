@@ -2,6 +2,9 @@
 
 ## *Version 0.8.15*
 
+- News
+    - **getknn** Cosine distance was added.
+    
 - Modifications
     - Code cleaning.
 
