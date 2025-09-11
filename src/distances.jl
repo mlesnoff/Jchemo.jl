@@ -144,8 +144,8 @@ end
 struct SamDist <: Distances.Metric end
 (::SamDist)(a, b) = acos(1 - Distances.CosineDist()(a, b)) / pi  # scaled to [0, 1]
 
-struct CorDist2 <: Distances.Metric end
-(::CorDist2)(a, b) = 1 - corv(a, b)     # = Distances.CorrDist    
+struct CorDist2 <: Distances.Metric end     # = Distances.CorrDist    
+(::CorDist2)(a, b) = 1 - corv(a, b)
 
 struct CorDist <: Distances.Metric end
 (::CorDist)(a, b) = sqrt((1 - corv(a, b)) / 2)   # scaled to [0, 1]
