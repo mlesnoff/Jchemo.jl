@@ -124,7 +124,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
             XtY = Xbl[k]' * DY
             if q == 1
                 wbl[k] = vec(XtY)
-                #wbl[k] = vec(cor(Xbl[k], Y))
+                #wbl[k] = vec(Statistics.cor(Xbl[k], Y))
                 wbl[k] ./= normv(wbl[k])
             else
                 wbl[k] = svd!(XtY).U[:, 1]
