@@ -62,10 +62,10 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
         Xtrain = Xtrain * Uinv
         X = X * Uinv
         tree = NearestNeighbors.BruteTree(Xtrain', Distances.Euclidean())
-    elseif metric == :cos
-        tree = NearestNeighbors.BruteTree(Xtrain', Distances.CosineDist())
     elseif metric == :sam
         tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.SamDist())
+    elseif metric == :cos
+        tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.CosDist())
     elseif metric == :cor
         tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.CorDist())
     end
