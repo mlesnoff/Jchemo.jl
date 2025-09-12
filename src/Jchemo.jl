@@ -31,7 +31,6 @@ include("_util.jl")
 include("_util_stat.jl")
 include("_util_colwise.jl")
 include("_util_rowwise.jl")
-include("_util_center_scale.jl")
 include("fweight.jl")
 include("angles.jl")
 include("colmedspa.jl")
@@ -45,11 +44,11 @@ include("snipals_post.jl")
 
 ######---- Preprocessing
 
+include("center_scale.jl") 
 include("preprocessing.jl") 
 include("detrend_asls.jl") 
 include("detrend_airpls.jl") 
 include("detrend_arpls.jl") 
-include("center_scale.jl") 
 include("rmgap.jl")
 
 ######---- Graphics

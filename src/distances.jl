@@ -44,14 +44,14 @@ an object (n, m) with:
 
 ## Examples
 ```julia
-using StatsBase 
+using Jchemo 
 
 X = rand(5, 3)
 Y = rand(2, 3)
 
 mahsq(X, Y)
 
-S = cov(X, corrected = false)
+S = covm(X)
 Sinv = inv(S)
 mahsq(X, Y, Sinv)
 mahsq(X[1:1, :], Y[1:1, :], Sinv)
