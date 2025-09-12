@@ -156,5 +156,5 @@ struct CorDist_b <: Distances.Metric end
 ## Square-root correlation distance
 ## max is used since possible negative zeros (floating point issues)
 struct CorDist_sqr <: Distances.Metric end                                
-(::CorDist_sqr)(a, b) = sqrt(max(0, Distances.CorrDist()(a, b))) / 2  
+(::CorDist_sqr)(a, b) = sqrt(max(0, Distances.CorrDist()(a, b)) / 2)  
 
