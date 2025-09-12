@@ -135,21 +135,26 @@ function mahsqchol(X, Y, Uinv)
 end
 
 #### Angular and correlation distances (not exported)
-
+## All the distances below are scaled to [0, 1]
 ## Usage:
 ## n = 1000
 ## x = rand(n)
 ## y = rand(n)
 ## Jchemo.SamDist()(x, y)
 struct SamDist <: Distances.Metric end
-(::SamDist)(a, b) = acos(1 - Distances.CosineDist()(a, b)) / pi  # scaled to [0, 1]
+(::SamDist)(a, b) = acos(1 - Distances.CosineDist()(a, b)) / pi
 
-struct CorDist2 <: Distances.Metric end     # = Distances.CorrDist    
-(::CorDist2)(a, b) = 1 - corv(a, b)
+struct CosDist <: Distances.Metric end                      
+(::CosDist)(a, b) = Distances.CosineDist()(a, b) / 2
 
-struct CorDist <: Distances.Metric end
-(::CorDist)(a, b) = sqrt((1 - corv(a, b)) / 2)   # scaled to [0, 1]
+struct CorDist <: Distances.Metric end                      
+(::CorDist)(a, b) = Distances.CorrDist()(a, b) / 2
 
+struct CorDist_b <: Distances.Metric end                            
+(::CorDist_b)(a, b) = (1 - corv(a, b)) / 2
 
-
+## Square-root correlation distance
+## max is used since possible negative zeros (floating point issues)
+struct CorDist_sqr <: Distances.Metric end                                
+(::CorDist_sqr)(a, b) = sqrt(max(0, Distances.CorrDist()(a, b))) / 2  
 

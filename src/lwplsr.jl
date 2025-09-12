@@ -9,7 +9,7 @@ Keyword arguments:
     reduction before computing the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.
 * `metric` : Type of dissimilarity used to select the neighbors and to compute the weights 
     (see function `getknn`). Possible values are: `:eucl` (Euclidean), `:mah` (Mahalanobis), 
-    `:sam` (a spectral angular distance), `:cos` (cosine distance), `:cor` (a correlation distance).
+    `:sam` (spectral angular distance), `:cos` (cosine distance), `:cor` (correlation distance).
 * `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
     sharper is the function. See function `winvs` for details (keyword arguments `criw` and `squared` of 
     `winvs` can also be specified here).

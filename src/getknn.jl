@@ -5,18 +5,20 @@ Return the k nearest neighbors in `Xtrain` of each row of the query `X`.
 * `X` : Query X-data.
 Keyword arguments:
 * `metric` : Type of distance used for the query. Possible values are `:eucl` (Euclidean), `:mah` (Mahalanobis), 
-    `:sam` (a spectral angular distance), `:cos` (cosine distance), `:cor` (a correlation distance).
+    `:sam` (spectral angular distance), `:cos` (cosine distance), `:cor` (correlation distance).
 * `k` : Number of neighbors to return.
 
-In addition to neighbors, the function also returns the distances (not squared). 
+In addition to neighbors, the function also returns the distances. 
 
-Consider two vectors x and y, and costheta = x'y / (||x|| ||y||) (theta is the angle between x and y, in radiants). 
-In this function, the angular distances between x and y are computed as:
-* Spectral angular distance (x, y) = acos(costheta) / pi    ==> [0, 1] 
-* Cosine distance (x, y) = 1 - costheta                     ==> [0, 2]
-* Correlation distance (x, y) = sqrt((1 - corr(x, y)) / 2)  ==> [0, 1]
+The angular distances used in this function are scaled to [0, 1]. Consider two vectors x and y, theta the (unknown) 
+angle between x and y in radiants, and costheta = cosinus(x, y). Then, costheta is computed as:
+* costheta = x'y / (||x|| ||y||) 
+and distances as (see file distances.jl):
+* Spectral angular distance (x, y) = acos(costheta) / pi    
+* Cosine distance (x, y) = (1 - costheta) / 2                     
+* Correlation distance (x, y) = (1 - corr(x, y)) / 2  
 
-Note: If x and y are centered, corr(x, y) = costheta.
+Note: If x and y are centered, costheta = corr(x, y).
 
 ## Examples
 ```julia

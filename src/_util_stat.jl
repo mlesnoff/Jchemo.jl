@@ -245,6 +245,23 @@ function corv(x, y, weights::Weight)
     s / (sdx * sdy)
 end 
 
+function corv_2(x, y)
+    w = 1 / length(x)
+    mux = meanv(x) 
+    muy = meanv(y)
+    sdx = stdv(x)
+    sdy = stdv(y)
+    s = zero(x[begin])
+    @simd for i in eachindex(x)
+        s = muladd((x[i] - mux) * (y[i] - muy),  w, s)
+    end
+    s / (sdx * sdy)
+end 
+
+function corv_3(x, y)
+    cosv(fcenter(x, meanv(x)), fcenter(y, meanv(y)))
+end 
+
 """
     cosv(x, y)
 Compute cosinus between two vectors.
@@ -269,9 +286,8 @@ cosv(x, y)
 cosv(x, y) = dot(x, y) / sqrt(dot(x, x) * dot(y, y))
 
 function cosv(x, y, weights::Weight)
-    w = weights.w
-    zy = fweight(y, w)
-    dot(x, zy) / sqrt(dot(x, fweight(x, w)) * dot(y, zy))
+    zy = fweight(y, weights.w)
+    dot(x, zy) / sqrt(dot(x, fweight(x, weights.w)) * dot(y, zy))
 end
 
 #### Matrices
