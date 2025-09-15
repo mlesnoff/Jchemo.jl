@@ -6,29 +6,23 @@ Interval variable selection.
 * `Y` : Y-data (n, q).
 * `wl` : Optional numeric labels (p, 1) of the X-columns.
 Keyword arguments:  
-* `rep` : Number of replications of the splitting
-    training/test. 
+* `rep` : Number of replications of the splitting training/test. 
 * `nint` : Nb. intervals. 
-* `psamp` : Proportion of data used as test set 
-    to compute the `score`.
+* `psamp` : Proportion of data used as test set to compute the `score`.
 * `score` : Function computing the prediction score.
 
 The principle is as follows:
 * Data (X, Y) are splitted randomly to a training and a test set.
-* Range 1:p in `X` is segmented to `nint` intervals, when possible 
-    of equal size. 
-* The model is fitted on the training set and the score (error rate) 
-    on the test set, firtsly accounting for all the p variables 
-    (reference) and secondly for each of the `nint` intervals. 
-* This process is replicated `rep` times. Average results are provided 
-    in the outputs, as well the results per replication. 
+* Range 1:p in `X` is segmented to `nint` intervals, when possible of equal size. 
+* The model is fitted on the training set and the score (error rate) on the test set, firtsly accounting 
+    for all the p variables (reference) and secondly for each of the `nint` intervals. 
+* This process is replicated `rep` times. Average results are provided in the outputs, as well the results 
+    per replication. 
 
 ## References
-- Nørgaard, L., Saudland, A., Wagner, J., Nielsen, J.V., Munck, L., 
-Engelsen, S.B., 2000. Interval Partial Least-Squares Regression (iPLS): 
-A Comparative Chemometric Study with an Example from Near-Infrared 
-Spectroscopy. Appl Spectrosc 54, 413–419. 
-https://doi.org/10.1366/0003702001949500
+- Nørgaard, L., Saudland, A., Wagner, J., Nielsen, J.V., Munck, L., Engelsen, S.B., 2000. Interval Partial 
+Least-Squares Regression (iPLS): A Comparative Chemometric Study with an Example from Near-Infrared 
+Spectroscopy. Appl Spectrosc 54, 413–419. https://doi.org/10.1366/0003702001949500
 
 ## Examples
 ```julia
@@ -70,8 +64,7 @@ res.res0_rep
 zres = res.res
 zres0 = res.res0
 f = Figure(size = (650, 300))
-ax = Axis(f[1, 1], xlabel = "Wawelength (nm)", ylabel = "RMSEP_Val",
-    xticks = zres.lo)
+ax = Axis(f[1, 1], xlabel = "Wawelength (nm)", ylabel = "RMSEP_Val", xticks = zres.lo)
 scatter!(ax, zres.mid, zres.y1; color = (:red, .5))
 vlines!(ax, zres.lo; color = :grey, linestyle = :dash, linewidth = 1)
 hlines!(ax, zres0.y1, linestyle = :dash)
