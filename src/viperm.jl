@@ -21,8 +21,8 @@ The principle is as follows:
         the reference error rate.
 * This process is run for each variable j, separately.
 
-The overall process above is replicated `rep` times. The output provided by the function contains the average 
-results (i.e. over the `rep` replications) and the results per replication.
+The overall process above is replicated `rep` times. The outputs provided by the function are the average 
+results (i.e. over the `rep` replications;`imp`) and the results per replication (`res`).
 
 In general, this method returns similar results as the out-of-bag permutation method (such as the one used in random 
 forests; Breiman, 2001).
@@ -109,10 +109,11 @@ function viperm(model, X, Y; rep = 50, psamp = .3, score = rmsep)
         pred = predict(model, Xval).pred
         score0 = score(pred, Yval)
         zXval = similar(Xval)
+        zs = list(Int, nval)
         @inbounds for j = 1:p
             zXval .= copy(Xval)
             ## Permutation variable j
-            zs = StatsBase.sample(1:nval, nval, replace = false)
+            zs .= StatsBase.sample(1:nval, nval, replace = false)
             ## End  
             zXval[:, j] .= zXval[zs, j]
             pred .= predict(model, zXval).pred
