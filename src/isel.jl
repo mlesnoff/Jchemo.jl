@@ -1,20 +1,20 @@
 """
-    isel!(model, X, Y, wl = 1:nco(X); rep = 1, nint = 5, psamp = .3, score = rmsep)
+    isel!(model, X, Y, wl = 1:nco(X); score = rmsep, psamp = .3, nint = 5, rep = 1)
 Interval variable selection.
 * `model` : Model to evaluate.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `wl` : Optional numeric labels (p, 1) of the X-columns.
+* `wl` : Optional numeric labels (p) of the X-columns.
 Keyword arguments:  
-* `rep` : Number of replications of the splitting training/test. 
+* `score` : Function computing the prediction score (an error rate).
+* `psamp` : Proportion of data used as validation set to compute the `score`.
 * `nint` : Nb. intervals. 
-* `psamp` : Proportion of data used as test set to compute the `score`.
-* `score` : Function computing the prediction score.
+* `rep` : Number of replications of the splitting calibration/validation (see below). 
 
 The principle is as follows:
-* Data (X, Y) are splitted randomly to a training and a test set.
+* Data (X, Y) are splitted randomly to a calibrationand a validation set.
 * Range 1:p in `X` is segmented to `nint` intervals, when possible of equal size. 
-* The model is fitted on the training set and the score (error rate) on the test set, firtsly accounting 
+* The model is fitted on the calibrationset and the score (error rate) on the validation set, firtsly accounting 
     for all the p variables (reference) and secondly for each of the `nint` intervals. 
 * This process is replicated `rep` times. Average results are provided in the outputs, as well the results 
     per replication. 
@@ -58,7 +58,7 @@ ytest = Ytest[:, nam]
 
 model = plskern(nlv = 5)
 nint = 10
-res = isel!(model, Xtrain, ytrain, wl; rep = 30, nint) ;
+res = isel!(model, Xtrain, ytrain, wl; nint, rep = 30) ;
 res.res_rep
 res.res0_rep
 zres = res.res
@@ -71,7 +71,7 @@ hlines!(ax, zres0.y1, linestyle = :dash)
 f
 ```
 """
-function isel!(model, X, Y, wl = 1:nco(X); rep = 1, nint = 5, psamp = .3, score = rmsep)
+function isel!(model, X, Y, wl = 1:nco(X); score = rmsep, psamp = .3, nint = 5, rep = 1)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)

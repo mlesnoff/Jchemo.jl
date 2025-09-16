@@ -1,13 +1,13 @@
 """
-    viperm(model, X, Y; rep = 50, psamp = .3, score = rmsep)
+    viperm(model, X, Y; score = rmsep, psamp = .3, rep = 50)
 Variable importance by direct permutations.
 * `model` : Model to evaluate.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).  
 Keyword arguments:
-* `rep` : Number of replications of the splitting training/test. 
-* `psamp` : Proportion of data used as test set to compute the `score`.
 * `score` : Function computing the prediction score (an error rate).
+* `psamp` : Proportion of data used as validation set to compute the `score`.
+* `rep` : Number of replications of the splitting calibration/validation. 
 
 The principle is as follows:
 * Data (X, Y) are splitted randomly to a calibration set (Xcal, Ycal) and a validation set (Xval, Yval).
@@ -66,7 +66,7 @@ ytrain = Ytrain[:, nam]
 ytest = Ytest[:, nam]
 
 model = plskern(nlv = 9)
-res = viperm(model, Xtrain, ytrain; rep = 50, score = rmsep) ;
+res = viperm(model, Xtrain, ytrain; score = rmsep, rep = 50) ;
 z = vec(res.imp)
 f = Figure(size = (500, 400))
 ax = Axis(f[1, 1]; xlabel = "Wavelength (nm)", ylabel = "Importance")
@@ -86,7 +86,7 @@ vlines!(ax, u; color = :grey, linewidth = 1)
 f
 ```
 """
-function viperm(model, X, Y; rep = 50, psamp = .3, score = rmsep)
+function viperm(model, X, Y; score = rmsep, rep = 50, psamp = .3)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)
