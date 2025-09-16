@@ -1,5 +1,5 @@
 """
-    viperm(model, X, Y; score = rmsep, psamp = .3, rep = 50)
+    viperm!(model, X, Y; score = rmsep, psamp = .3, rep = 50)
 Variable importance by direct permutations.
 * `model` : Model to evaluate.
 * `X` : X-data (n, p).
@@ -66,7 +66,7 @@ ytrain = Ytrain[:, nam]
 ytest = Ytest[:, nam]
 
 model = plskern(nlv = 9)
-res = viperm(model, Xtrain, ytrain; score = rmsep, rep = 50) ;
+res = viperm!(model, Xtrain, ytrain; score = rmsep, rep = 50) ;
 z = vec(res.imp)
 f = Figure(size = (500, 400))
 ax = Axis(f[1, 1]; xlabel = "Wavelength (nm)", ylabel = "Importance")
@@ -76,7 +76,7 @@ vlines!(ax, u; color = :grey, linewidth = 1)
 f
 
 model = rfr(n_trees = 10, max_depth = 2000, min_samples_leaf = 5)
-res = viperm(model, Xtrain, ytrain; rep = 50)
+res = viperm!(model, Xtrain, ytrain; rep = 50)
 z = vec(res.imp)
 f = Figure(size = (500, 400))
 ax = Axis(f[1, 1]; xlabel = "Wavelength (nm)", ylabel = "Importance")
@@ -86,7 +86,7 @@ vlines!(ax, u; color = :grey, linewidth = 1)
 f
 ```
 """
-function viperm(model, X, Y; score = rmsep, rep = 50, psamp = .3)
+function viperm!(model, X, Y; score = rmsep, rep = 50, psamp = .3)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)

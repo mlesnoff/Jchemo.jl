@@ -22,7 +22,7 @@ The principle is as follows:
 The overall process above is replicated `rep` times. The outputs provided by the function are the average 
 results (i.e. over the `rep` replications;`imp`) and the results per replication (`res_rep`).
 
-Note: the function is inplace (modifies object `model`)
+Note: the function is inplace (modifies object `model`).
 
 ## References
 - Nørgaard, L., Saudland, A., Wagner, J., Nielsen, J.V., Munck, L., Engelsen, S.B., 2000. Interval Partial 
