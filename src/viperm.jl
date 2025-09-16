@@ -116,7 +116,7 @@ function viperm(model, X, Y; score = rmsep, rep = 50, psamp = .3)
             zXval[:, j] .= zXval[zs, j]
             ## End  
             pred .= predict(model, zXval).pred
-            @. res_rep[j, :, i] = score(pred, Yval) - scoreref
+            res_rep[j, :, i] = score(pred, Yval) - scoreref
         end
     end
     imp = reshape(mean(res_rep, dims = 3), p, q)

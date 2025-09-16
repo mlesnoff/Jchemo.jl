@@ -15,10 +15,14 @@ The principle is as follows:
 * Data (X, Y) are splitted randomly to a calibration set (Xcal, Ycal) and a validation set (Xval, Yval).
 * The range 1:p in `X` is segmented to `nint` intervals of equal size (when possible). 
 * The model is fitted on the calibration set and used to compute the predictions from Xval, firtsly accounting 
-    for all the p variables (reference) and secondly for each of the `nint` intervals. 
+    for all the p variables (reference) and secondly for each (separately) of the `nint` intervals. The error 
+    rates are computed by comparing the predictions to Yval. The interval-variable importance is the difference between 
+    the reference error rate and the error rate computed for each intefval.
 
 The overall process above is replicated `rep` times. The outputs provided by the function are the average 
-results (i.e. over the `rep` replications) and the results per replication.
+results (i.e. over the `rep` replications;`imp`) and the results per replication (`res_rep`).
+
+Note: the function is inplace (modifies object `model`)
 
 ## References
 - Nørgaard, L., Saudland, A., Wagner, J., Nielsen, J.V., Munck, L., Engelsen, S.B., 2000. Interval Partial 
@@ -59,21 +63,23 @@ ytest = Ytest[:, nam]
 
 model = plskern(nlv = 5)
 nint = 10
-res = isel!(model, Xtrain, ytrain, wl; nint, rep = 30) ;
+res = isel!(model, Xtrain, ytrain, wl; nint, rep = 50) ;
+dat = res.dat
+res.imp 
 res.res_rep
-res.resref
-zres = res.res
-zres0 = res.res0
+
+imp = res.imp[:, 1]
+imp[imp .< 0] .= 0  # option: negative values are set to 0
+lo = round.(dat.lo)
 f = Figure(size = (650, 300))
-ax = Axis(f[1, 1], xlabel = "Wawelength (nm)", ylabel = "RMSEP_Val", xticks = zres.lo)
-scatter!(ax, zres.mid, zres.y1; color = (:red, .5))
-vlines!(ax, zres.lo; color = :grey, linestyle = :dash, linewidth = 1)
-hlines!(ax, zres0.y1, linestyle = :dash)
+ax = Axis(f[1, 1], xlabel = "Wawelength (nm)", ylabel = "Importance", xticks = lo)
+scatter!(ax, dat.avg, imp; color = (:red, .5))
+vlines!(ax, lo; color = :grey, linestyle = :dash, linewidth = 1)
+hlines!(ax, [0]; color = :grey)
 f
 ```
 """
 function isel!(model, X, Y, wl = 1:nco(X); score = rmsep, psamp = .3, nint = 5, rep = 1)
-    #'!' since object model is modified
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)
@@ -90,7 +96,6 @@ function isel!(model, X, Y, wl = 1:nco(X); score = rmsep, psamp = .3, nint = 5, 
     Xval = similar(X, nval, p)
     Yval = similar(X, nval, q)
     pred = similar(Yval)
-    s = list(Int, nval)
     resref = zeros(1, q)   
     vres = list(Matrix{Float64}, nint)
     res_rep = zeros(nint, q, rep)

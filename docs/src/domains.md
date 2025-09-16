@@ -266,9 +266,9 @@
 
 ## VARIABLE IMPORTANCE
 
-- **isel!** Interval variable selection (e.g. Interval PLSR).
 - **vip** Variable importance on projections (VIP)
 - **viperm!** Variable importance by direct permutations
+- **isel!** Interval variable selection (e.g. Interval PLSR).
 
 ## TUNING MODELS
 
