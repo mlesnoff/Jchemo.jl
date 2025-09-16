@@ -12,12 +12,13 @@ Keyword arguments:
 * `rep` : Number of replications of the splitting calibration/validation (see below). 
 
 The principle is as follows:
-* Data (X, Y) are splitted randomly to a calibrationand a validation set.
-* Range 1:p in `X` is segmented to `nint` intervals, when possible of equal size. 
-* The model is fitted on the calibrationset and the score (error rate) on the validation set, firtsly accounting 
+* Data (X, Y) are splitted randomly to a calibration set (Xcal, Ycal) and a validation set (Xval, Yval).
+* The range 1:p in `X` is segmented to `nint` intervals of equal size (when possible). 
+* The model is fitted on the calibration set and used to compute the predictions from Xval, firtsly accounting 
     for all the p variables (reference) and secondly for each of the `nint` intervals. 
-* This process is replicated `rep` times. Average results are provided in the outputs, as well the results 
-    per replication. 
+
+The overall process above is replicated `rep` times. The outputs provided by the function are the average 
+results (i.e. over the `rep` replications) and the results per replication.
 
 ## References
 - Nørgaard, L., Saudland, A., Wagner, J., Nielsen, J.V., Munck, L., Engelsen, S.B., 2000. Interval Partial 
@@ -60,7 +61,7 @@ model = plskern(nlv = 5)
 nint = 10
 res = isel!(model, Xtrain, ytrain, wl; nint, rep = 30) ;
 res.res_rep
-res.res0_rep
+res.resref
 zres = res.res
 zres0 = res.res0
 f = Figure(size = (650, 300))
@@ -72,24 +73,26 @@ f
 ```
 """
 function isel!(model, X, Y, wl = 1:nco(X); score = rmsep, psamp = .3, nint = 5, rep = 1)
+    #'!' since object model is modified
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)
     q = nco(Y)
     nint = Int(nint)
     z = collect(round.(range(1, p + 1; length = nint + 1)))
-    int = [z[1:nint] z[2:(nint + 1)] .- 1]
-    int = hcat(int, round.(rowmean(int)))
-    int = Int.(int)
+    itv = [z[1:nint] z[2:(nint + 1)] .- 1]
+    itv = hcat(itv, round.(rowmean(itv)))
+    itv = Int.(itv)
     nval = round(Int, psamp * n)
     ncal = n - nval
     Xcal = similar(X, ncal, p)
     Ycal = similar(X, ncal, q)
     Xval = similar(X, nval, p)
     Yval = similar(X, nval, q)
+    pred = similar(Yval)
     s = list(Int, nval)
-    res0_rep = zeros(1, q, rep)   
-    zres = list(Matrix{Float64}, nint)
+    resref = zeros(1, q)   
+    vres = list(Matrix{Float64}, nint)
     res_rep = zeros(nint, q, rep)
     @inbounds for i = 1:rep
         s = samprand(n, nval)
@@ -97,31 +100,27 @@ function isel!(model, X, Y, wl = 1:nco(X); score = rmsep, psamp = .3, nint = 5, 
         Ycal .= vrow(Y, s.train)
         Xval .= vrow(X, s.test)
         Xval .= vrow(X, s.test)
-        ## All variables ('res0')
+        ## Reference
         fit!(model, Xcal, Ycal)
-        pred = predict(model, Xval).pred
-        res0_rep[:, :, i] = score(pred, Yval)
+        pred .= predict(model, Xval).pred
+        resref .= score(pred, Yval)
         ## Intervals
         @inbounds for j = 1:nint
-            u = int[j, 1]:int[j, 2]
+            u = itv[j, 1]:itv[j, 2]
             fit!(model, vcol(Xcal, u), Ycal)
-            pred = predict(model, vcol(Xval, u)).pred
-            zres[j] = score(pred, Yval)
+            pred .= predict(model, vcol(Xval, u)).pred
+            vres[j] = resref - score(pred, Yval)
         end
         ## End
-        res_rep[:, :, i] .= reduce(vcat, zres)
+        res_rep[:, :, i] .= reduce(vcat, vres)
     end
-    dat = DataFrame(int, [:lo, :up, :mid])
-    dat.lo = wl[dat.lo]
-    dat.up = wl[dat.up]
-    dat.mid = wl[dat.mid]
-    namy = map(string, repeat(["y"], q), 1:q)
-    res = mean(res_rep, dims = 3)[:, :, 1]
-    res = DataFrame(res, Symbol.(namy))
-    res = hcat(dat, res)
-    res0 = mean(res0_rep, dims = 3)[:, :, 1]
-    res0 = DataFrame(res0, Symbol.(namy))
-    (res = res, res0, res_rep, res0_rep, int)
+    imp = mean(res_rep, dims = 3)[:, :, 1]
+    dat = hcat(itv, )
+    dat = DataFrame(itv, [:start, :end, :mid])
+    dat.lo = wl[dat.start]
+    dat.up = wl[dat.end]
+    dat.avg = wl[dat.mid]
+    (imp = imp, res_rep, dat)
 end
 
 

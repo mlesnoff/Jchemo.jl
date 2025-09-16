@@ -22,7 +22,7 @@ The principle is as follows:
 * This process is run for each variable j, separately.
 
 The overall process above is replicated `rep` times. The outputs provided by the function are the average 
-results (i.e. over the `rep` replications;`imp`) and the results per replication (`res`).
+results (i.e. over the `rep` replications;`imp`) and the results per replication (`res_rep`).
 
 In general, this method returns similar results as the out-of-bag permutation method (such as the one used in random 
 forests; Breiman, 2001).
@@ -97,8 +97,8 @@ function viperm(model, X, Y; score = rmsep, rep = 50, psamp = .3)
     Ycal = similar(X, ncal, q)
     Xval = similar(X, nval, p)
     Yval = similar(X, nval, q)
-    s = list(Int, nval)
-    res = similar(X, p, q, rep)
+    zs = list(Int, nval)
+    res_rep = similar(X, p, q, rep)
     @inbounds for i = 1:rep
         s = samprand(n, nval)
         Xcal .= X[s.train, :]
@@ -107,20 +107,18 @@ function viperm(model, X, Y; score = rmsep, rep = 50, psamp = .3)
         Yval .= Y[s.test, :]
         fit!(model, Xcal, Ycal)
         pred = predict(model, Xval).pred
-        score0 = score(pred, Yval)
+        scoreref = score(pred, Yval)
         zXval = similar(Xval)
-        zs = list(Int, nval)
         @inbounds for j = 1:p
             zXval .= copy(Xval)
-            ## Permutation variable j
+            ## Permutation of variable j
             zs .= StatsBase.sample(1:nval, nval, replace = false)
-            ## End  
             zXval[:, j] .= zXval[zs, j]
+            ## End  
             pred .= predict(model, zXval).pred
-            zscore = score(pred, Yval)
-            res[j, :, i] = zscore .- score0
+            @. res_rep[j, :, i] = score(pred, Yval) - scoreref
         end
     end
-    imp = reshape(mean(res, dims = 3), p, q)
-    (imp = imp, res)
+    imp = reshape(mean(res_rep, dims = 3), p, q)
+    (imp = imp, res_rep)
 end 
