@@ -17,14 +17,14 @@ Keyword arguments:
 ComDim "SVD" algorithm of Hannafi & Qannari 2008 p.84.
 
 The function returns several objects, in particular:
-* `T` : The global LVs (not-normed).
-* `U` : The global LVs (normed).
-* `W` : The block weights (normed).
-* `Tb` : The block LVs (in the metric scale), returned **grouped by LV**.
-* `Tbl` : The block LVs (in the original scale), returned **grouped by block**.
-* `Vbl` : The block loadings (normed).
-* `lb` : The block specific weights (saliences) 'lambda'.
-* `mu` : The sum of the block specific weights.
+* `T` : Global LVs (not-normed).
+* `U` : Global LVs (normed).
+* `W` : Block weights (normed).
+* `Tb` : Block LVs (in the metric scale), **grouped by LV**.
+* `Tbl` : Block LVs (in the original scale), **grouped by block**.
+* `Vbl` : Block loadings (normed).
+* `lb` : Block specific weights (saliences) 'lambda'.
+* `mu` : Sum of the block specific weights.
 
 Function `summary` returns: 
 * `explvarx` : Proportion of the total X inertia (squared Frobenious norm) 
