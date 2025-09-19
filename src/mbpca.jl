@@ -30,8 +30,7 @@ The function returns several objects, in particular:
 * `mu` : The sum of the block specific weights (= eigen values of the global PCA).
 
 Function `summary` returns: 
-* `explvarx` : Proportion of the total X inertia (squared Frobenious norm) 
-    explained by the global LVs.
+* `explvarx` : Proportion of the total X inertia (squared Frobenious norm) explained by the global LVs.
 * `explxbl` : Proportion of the inertia of each block (= Xbl[k]) explained by the global LVs.
 * `contrxbl2t` : Contribution of each block to the global LVs (= lb proportions).  
 * `rvxbl2t` : RV coefficients between each block and the global LVs.

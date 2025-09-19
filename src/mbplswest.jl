@@ -13,26 +13,22 @@ Keyword arguments:
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
-    and `Y` is scaled by its uncorrected standard deviation 
+* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
 
-This functions implements the MBPLSR Nipals algorithm such 
-as in Westerhuis et al. 1998. The function gives the same 
+This functions implements the MBPLSR Nipals algorithm such as in Westerhuis et al. 1998. The function gives the same 
 global scores and predictions as function `mbplsr`.
 
 Function `summary` returns: 
-* `explvarx` : Proportion of the total X inertia (squared Frobenious norm) 
-    explained by the global LVs.
+* `explvarx` : Proportion of the total X inertia (squared Frobenious norm) explained by the global LVs.
 * `rvxbl2t` : RV coefficients between each block and the global LVs.
 * `rdxbl2t` : Rd coefficients between each block (= Xbl[k]) and the global LVs.
 * `cortbl2t` : Correlations between the block LVs (= Tbl[k]) and the global LVs.
 * `corx2t` : Correlation between the X-variables and the global LVs.  
 
 ## References 
-Westerhuis, J.A., Kourti, T., MacGregor, J.F., 1998. Analysis 
-of multiblock and hierarchical PCA and PLS models. Journal of 
-Chemometrics 12, 301–321. 
+Westerhuis, J.A., Kourti, T., MacGregor, J.F., 1998. Analysis of multiblock and hierarchical PCA and PLS models. 
+Journal of Chemometrics 12, 301–321. 
 https://doi.org/10.1002/(SICI)1099-128X(199809/10)12:5<301::AID-CEM515>3.0.CO;2-S
 
 ## Examples
