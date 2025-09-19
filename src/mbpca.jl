@@ -20,14 +20,14 @@ Apart eventual block scaling, the MBPCA is equivalent to the PCA of the horizont
 (SUM-PCA in Smilde et al 2003).
 
 The function returns several objects, in particular:
-* `T` : The global LVs (not-normed).
-* `U` : The global LVs (normed).
-* `W` : The block weights (normed).
-* `Tb` : The block LVs (in the metric scale), returned **grouped by LV**.
-* `Tbl` : The block LVs (in the original scale), returned **grouped by block**.
-* `Vbl` : The block loadings (normed).
-* `lb` : The block specific weights ('lambda') for the global LVs.
-* `mu` : The sum of the block specific weights (= eigen values of the global PCA).
+* `T` : Global LVs (not-normed).
+* `U` : Global LVs (normed).
+* `W` : Block weights (normed).
+* `Tb` : Block LVs (in the metric scale), returned **grouped by LV**.
+* `Tbl` : Block LVs (in the original scale), returned **grouped by block**.
+* `Vbl` : Block loadings (normed).
+* `lb` : Block specific weights ('lambda') for the global LVs.
+* `mu` : Sum of the block specific weights (= eigen values of the global PCA).
 
 Function `summary` returns: 
 * `explvarx` : Proportion of the total X inertia (squared Frobenious norm) explained by the global LVs.
