@@ -31,14 +31,12 @@ perspective. Application in veterinary epidemiology. Electronic Journal of Appli
 4, 203-214. https://doi.org/10.1285/i20705948v4n2p203
 
 Bougeard, S., Qannari, E.M., Rose, N., 2011-b. Multiblock redundancy analysis: interpretation tools 
-and application in epidemiology. Journal of Chemometrics 25, 467-475. 
-https://doi.org/10.1002/cem.1392
+and application in epidemiology. Journal of Chemometrics 25, 467-475. https://doi.org/10.1002/cem.1392
 
 Legendre, V., Legendre, L., 2012. Numerical Ecology. Elsevier, Amsterdam, The Netherlands.
 
 Tenenhaus, A., Guillemot, V. 2017. RGCCA: Regularized and Sparse Generalized Canonical Correlation 
-Analysis for Multiblock Data Multiblock data analysis. 
-https://cran.r-project.org/web/packages/RGCCA/index.html 
+Analysis for Multiblock Data Multiblock data analysis. https://cran.r-project.org/web/packages/RGCCA/index.html 
 
 ## Examples
 ```julia

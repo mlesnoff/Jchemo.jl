@@ -28,12 +28,12 @@ and for block `X`:
 ## References
 Tenenhaus, M., 1998. La régression PLS: théorie et pratique. Editions Technip, Paris.
 
-Wegelin, J.A., 2000. A Survey of Partial Least Squares (PLS) Methods, with Emphasis on 
-the Two-Block Case (No. 371). University of Washington, Seattle, Washington, USA.
+Wegelin, J.A., 2000. A Survey of Partial Least Squares (PLS) Methods, with Emphasis on the Two-Block Case 
+(No. 371). University of Washington, Seattle, Washington, USA.
 
-Wold, S., Ruhe, A., Wold, H., Dunn, III, W.J., 1984. The Collinearity Problem in Linear 
-Regression. The Partial Least Squares (PLS) Approach to Generalized Inverses. 
-SIAM Journal on Scientific and Statistical Computing 5, 735–743. https://doi.org/10.1137/0905052
+Wold, S., Ruhe, A., Wold, H., Dunn, III, W.J., 1984. The Collinearity Problem in Linear Regression. The Partial 
+Least Squares (PLS) Approach to Generalized Inverses. SIAM Journal on Scientific and Statistical Computing 5, 735–743. 
+https://doi.org/10.1137/0905052
 
 ## Examples
 ```julia
