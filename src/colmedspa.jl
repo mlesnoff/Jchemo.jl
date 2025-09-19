@@ -1,7 +1,6 @@
 ## Not exported
-## Transcription of function 'spatial.median' available in the 
-## script "PcaLocantore.R" of package rrcov v.1.4-3 on R CRAN 
-## (Thanks to V. Todorov, 2016)
+## Transcription of function 'spatial.median' available in the script "PcaLocantore.R" of package rrcov v.1.4-3 
+## on R CRAN (Thanks to V. Todorov, 2016)
 function colmedspa(X; delta = 1e-6) 
     X = ensure_mat(X)
     n, p = size(X)
