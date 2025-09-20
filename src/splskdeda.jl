@@ -11,7 +11,7 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* Eventua keyword arguments of function `dmkern` (bandwidth definition).
+* Eventual keyword arguments of function `dmkern` (bandwidth definition).
 
 Same as function `plskdeda` (PLS-KDEDA) except that a sparse PLSR (function `splsr`), instead of a PLSR, 
 is run on the Y-dummy table. 

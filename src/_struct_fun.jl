@@ -572,7 +572,7 @@ struct Smbplsr
     weights::Weight
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
-    par::ParSmplsr
+    par::ParSmbplsr
 end
 
 ############---- Discrimination
