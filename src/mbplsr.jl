@@ -4,7 +4,7 @@
     mbplsr(Xbl, Y, weights::Weight; kwargs...)
     mbplsr!(Xbl::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
 Multiblock PLSR (MBPLSR).
-* `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from (n, p) data.  
+* `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
@@ -14,7 +14,7 @@ Keyword arguments:
     (before the block scaling).
 
 This function runs a PLSR on {X, `Y`} where X is the horizontal concatenation of the blocks in `Xbl`. The function 
-    gives the same global LVs and predictions as function `mbplswest`, but is much faster.
+returns the same global LVs and predictions as function `mbplswest`, but is much faster.
 
 Function `summary` returns: 
 * `explvarx` : Proportion of the total X inertia (squared Frobenious norm) explained by the global LVs.
@@ -121,8 +121,7 @@ end
     transf(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
-* `Xbl` : A list of blocks (vector of matrices) 
-    of X-data for which LVs are computed.
+* `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transf(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
@@ -136,8 +135,7 @@ end
     predict(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
-* `Xbl` : A list of blocks (vector of matrices) 
-    of X-data for which predictions are computed.
+* `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
 function predict(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
@@ -162,8 +160,7 @@ end
     summary(object::Mbplsr, Xbl)
 Summarize the fitted model.
 * `object` : The fitted model.
-* `Xbl` : The X-data that was used to 
-    fit the model.
+* `Xbl` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Mbplsr, Xbl)
     Q = eltype(Xbl[1][1, 1])

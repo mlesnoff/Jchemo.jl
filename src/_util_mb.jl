@@ -37,7 +37,7 @@ end
     blockscal(Xbl, weights::Weight; kwargs...)
 Scale multiblock X-data.
 * `Xbl` : List of blocks (vector of matrices) of X-data 
-    Typically, output of function `mblock` from (n, p) data.  
+    Typically, output of function `mblock` from data (n, p).  
 * `weights` : Weights (n) of the observations (rows 
     of the blocks). Must be of type `Weight` (see e.g. 
     function `mweight`).
@@ -166,7 +166,7 @@ end
     fblockscal!(Xbl::Vector, bscales::Vector)
 Scale multiblock X-data.
 * `Xbl` : List of blocks (vector of matrices) of X-data 
-    Typically, output of function `mblock` from (n, p) data.  
+    Typically, output of function `mblock` from data (n, p).  
 * `bscales` : A vector (of length equal to the nb. 
     of blocks) of the scalars diving the blocks.
 
@@ -212,7 +212,7 @@ end
     mbconcat(Xbl)
 Concatenate horizontaly multiblock X-data.
 * `Xbl` : List of blocks (vector of matrices) of X-data 
-    Typically, output of function `mblock` from (n, p) data.  
+    Typically, output of function `mblock` from data (n, p).  
 
 ## Examples
 ```julia
@@ -250,7 +250,7 @@ transf(object::Mbconcat, Xbl) = reduce(hcat, Xbl)
     fconcat()
 Concatenate horizontaly multiblock X-data.
 * `Xbl` : List of blocks (vector of matrices) of X-data 
-    Typically, output of function `mblock` from (n, p) data.  
+    Typically, output of function `mblock` from data (n, p).  
 
 ## Examples
 ```julia

@@ -185,8 +185,7 @@ end
     transfbl(object::Mbpca, Xbl; nlv = nothing)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
-* `Xbl` : A list of blocks (vector of matrices) 
-    of X-data for which LVs are computed.
+* `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transf(object::Mbpca, Xbl; nlv = nothing)
@@ -231,8 +230,7 @@ end
     summary(object::Mbpca, Xbl)
 Summarize the fitted model.
 * `object` : The fitted model.
-* `Xbl` : The X-data that was used to 
-    fit the model.
+* `Xbl` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Mbpca, Xbl)
     Q = eltype(Xbl[1][1, 1])
