@@ -62,12 +62,12 @@
     instrumental variables (PCAIV)
 
 *2 or more blocks* 
-- **mbconcat** Concatenation of multi-block X-data
-- **mbpca** Multiblock PCA (MBPCA), a.k.a Consensus principal component analysis (CPCA)
-- **comdim** Common components and specific weights analysis (ComDim), a.k.a CCSWA or HPCA
+- **mbpca** Consensus principal components analysis (CPCA, a.k.a MBPCA) by Nipals.
+- **comdim** Common components and specific weights analysis (CCSWA, a.k.a ComDim or HPCA)
 
 *Utilities*
 - **mblock** Make blocks from a matrix
+- **mbconcat** Concatenation of multi-block X-data
 - **rd** Redundancy coefficients between two matrices
 - **rv** RV correlation coefficient
 
