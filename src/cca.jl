@@ -9,7 +9,7 @@ Canonical correlation Analysis (CCA, RCCA).
 * `weights` : Weights (n) of the observations. 
     Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs = scores) to compute.
+* `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are:
     `:none`, `:frob`. See functions `blockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
@@ -167,7 +167,7 @@ end
 
 """ 
     transfbl(object::Cca, X, Y; nlv = nothing)
-Compute latent variables (LVs = scores) from a fitted model.
+Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
 * `Y` : Y-data for which components (LVs) are computed.

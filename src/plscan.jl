@@ -8,7 +8,7 @@ Canonical partial least squares regression (Canonical PLS).
 * `Y` : Second block of data.
 * `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs = scores) to compute.
+* `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`. See functions `blockscal`.
 * `scal` : Boolean. If `true`, each column of blocks `X` and `Y` is scaled by its uncorrected 
     standard deviation (before the block scaling).
@@ -176,7 +176,7 @@ end
 
 """ 
     transfbl(object::Plscan, X, Y; nlv = nothing)
-Compute latent variables (LVs = scores) from a fitted model.
+Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
 * `Y` : Y-data for which components (LVs) are computed.

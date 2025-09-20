@@ -8,7 +8,7 @@ Multiblock PLSR (MBPLSR).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* `nlv` : Nb. global latent variables (LVs = scores) to compute.
+* `nlv` : Nb. global latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` and `Y` is scaled by its uncorrected standard deviation 
     (before the block scaling).
@@ -119,7 +119,7 @@ end
 
 """ 
     transf(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
-Compute latent variables (LVs = scores) from a fitted model.
+Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 
     of X-data for which LVs are computed.

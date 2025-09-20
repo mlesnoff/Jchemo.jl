@@ -3,7 +3,7 @@
     comdim(Xbl; kwargs...)
     comdim(Xbl, weights::Weight; kwargs...)
     comdim!(Xbl::Matrix, weights::Weight; kwargs...)
-Common components and specific weights analysis (CCSWA, a.k.a ComDim).
+Common components and specific weights analysis (CCSWA, a.k.a ComDim and HPCA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock`.  
 * `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
@@ -27,10 +27,9 @@ The function returns several objects, in particular:
 * `mu` : Sum of the block specific weights.
 
 Function `summary` returns: 
-* `explvarx` : Proportion of the total X inertia (squared Frobenious norm) 
-    explained by the global LVs.
-* `explvarxx` : Proportion of the total XX' inertia explained by the global 
-    LVs (= indicator "V" in Qannari et al. 2000, Hanafi et al. 2008).
+* `explvarx` : Proportion of the total X inertia (squared Frobenious norm) explained by the global LVs.
+* `explvarxx` : Proportion of the total XX' inertia explained by the global LVs (= indicator "V" in Qannari 
+    et al. 2000, Hanafi et al. 2008).
 * `explxbl` : Proportion of the inertia of each block (= Xbl[k]) explained by the global LVs.
 * `psal2` : Proportion of the squared saliences of each block within each global score. 
 * `contrxbl2t` : Contribution of each block to the global LVs (= lb proportions). 
@@ -199,7 +198,7 @@ end
 """ 
     transf(object::Comdim, Xbl; nlv = nothing)
     transfbl(object::Comdim, Xbl; nlv = nothing)
-Compute latent variables (LVs = scores) from a fitted model.
+Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 
     of X-data for which LVs are computed.
