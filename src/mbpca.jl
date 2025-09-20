@@ -3,7 +3,7 @@
     mbpca(Xbl; kwargs...)
     mbpca(Xbl, weights::Weight; kwargs...)
     mbpca!(Xbl::Matrix, weights::Weight; kwargs...)
-Consensus principal components analysis (CPCA, a.k.a MBPCA).
+Consensus principal components analysis (CPCA, a.k.a MBPCA) by Nipals.
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock`.  
 * `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
@@ -14,10 +14,9 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` is scaled by its uncorrected standard 
     deviation (before the block scaling).
 
-CPCA algorithm (Westerhuis et a; 1998), a.k.a MBPCA, and reffered to as CPCA-W in Smilde et al. 2003. 
-
-Apart eventual block scaling, the MBPCA is equivalent to the PCA of the horizontally concatenated matrix X = [X1 X2 ... Xk], 
-(SUM-PCA in Smilde et al 2003).
+CPCA Nipals algorithm (Westerhuis et a; 1998). CPCA is also known as MBPCA, and was referred to as CPCA-W in Smilde 
+et al. 2003. Besides eventual block scaling, MBPCA is equivalent to a PCA on the horizontally concatenated matrix 
+X = [X1 X2 ... Xk] (referred to as SUM-PCA in Smilde et al 2003).
 
 The function returns several objects, in particular:
 * `T` : Global LVs (not-normed).
