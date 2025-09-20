@@ -12,6 +12,8 @@ Keyword arguments:
 * `meth` : Method used for the sparse thresholding. Possible values are: `:soft`, `:hard`. See thereafter.
 * `nvar` : Nb. variables (`X`-columns) selected for each LV. Can be a single integer (i.e. same nb. 
     of variables for each LV), or a vector of length `nlv`.   
+* `tol` : Only when q > 1; tolerance used in function `snipals_shen`. 
+* `maxit` : Only when q > 1; maximum nb. of iterations used in function `snipals_shen`.    
 * `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.    
 
 Sparse partial least squares regression algorihm of Lê Cao et al. 2008, but with the fast 
@@ -202,8 +204,8 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
         sellv[a] = findall(abs.(w) .> 0)
      end
      sel = unique(reduce(vcat, sellv))
-     Splsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, 
-         sellv, sel,  # add compared to ::Plsr
+     Splsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, 
+         sellv, sel, # add compared to ::Plsr
          par)
 end
 

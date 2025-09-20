@@ -71,6 +71,7 @@ function defaults(algo::Function)
 
     in((mbplsr, mbplswest)).(algo) ? dump(Jchemo.ParMbplsr()) : nothing
     in((rosaplsr, soplsr)).(algo) ? dump(Jchemo.ParSoplsr()) : nothing
+    in((smbplsr,)).(algo) ? dump(Jchemo.ParSmbplsr()) : nothing
 
     ##
 

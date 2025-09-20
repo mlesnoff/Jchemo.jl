@@ -23,7 +23,7 @@ include("_struct_fun.jl")
 include("_model_work.jl")
 include("_pip.jl")
 ## End
-include("defaults.jl")
+include("_defaults.jl")
 
 ######---- Misc
 
@@ -134,6 +134,7 @@ include("mbplsr.jl")
 include("mbplswest.jl")
 include("rosaplsr.jl") 
 include("soplsr.jl") 
+include("smbplsr.jl")
 
 ## Local
 include("locw.jl")
@@ -364,6 +365,8 @@ export
     mlr, mlr!, mlrchol, mlrchol!, 
     mlrpinv, mlrpinv!, mlrpinvn, mlrpinvn!,
     mlrvec, mlrvec!,
+    rr, rr!, rrchol, rrchol!,
+    pcr,
     plskern, plskern!, 
     plsnipals, plsnipals!, 
     plsrosa, plsrosa!, 
@@ -371,8 +374,6 @@ export
     plswold, plswold!,
     cglsr, cglsr!,
     plsrout, plsrout!,
-    pcr,
-    rr, rr!, rrchol, rrchol!,
     rrr, rrr!,   
     krr, krr!, kplsr, kplsr!, 
     dkplsr, dkplsr!,
@@ -381,13 +382,14 @@ export
     svmr,
     treer, rfr, 
     ## Sparse 
-    splsr, splsr!, 
     spcr, spcr!,
+    splsr, splsr!, 
     ## Multi-block
     mbplsr, mbplsr!,
     mbplswest, mbplswest!,
     rosaplsr, rosaplsr!,
     soplsr,
+    smbplsr, smbplsr!,
     ## Variable selection/importance (direct methods) 
     vip, 
     viperm!,

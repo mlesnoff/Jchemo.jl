@@ -316,6 +316,14 @@ struct MlrNoArg
     weights::Weight
 end
 
+struct Pcr
+    fitm::Pca
+    C::Matrix
+    ymeans::Vector
+    yscales::Vector
+    par::ParPca
+end
+
 struct Plsr
     T::Matrix
     V::Matrix
@@ -343,12 +351,14 @@ struct Cglsr
     par::ParCglsr
 end
 
-struct Pcr
-    fitm::Pca
+struct Spcr
+    fitm::Spca
     C::Matrix
     ymeans::Vector
     yscales::Vector
-    par::ParPca
+    sellv::Vector{Vector{Int}}
+    sel::Vector{Int}
+    par::ParSpca
 end
 
 struct Splsr
@@ -363,20 +373,9 @@ struct Splsr
     ymeans::Vector
     yscales::Vector
     weights::Weight
-    niter::Union{Matrix, Nothing}
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
     par::ParSplsr
-end
-
-struct Spcr
-    fitm::Spca
-    C::Matrix
-    ymeans::Vector
-    yscales::Vector
-    sellv::Vector{Vector{Int}}
-    sel::Vector{Int}
-    par::ParSpca
 end
 
 struct PlsravgUnif
@@ -560,6 +559,20 @@ struct Soplsr
     fitmbl::Blockscal    
     yscales::Vector
     par::ParSoplsr
+end
+
+struct Smbplsr
+    fitm::Splsr
+    T::Matrix
+    R::Matrix
+    C::Matrix
+    fitmbl::Blockscal
+    ymeans::Vector
+    yscales::Vector
+    weights::Weight
+    sellv::Vector{Vector{Int}}
+    sel::Vector{Int}
+    par::ParSmplsr
 end
 
 ############---- Discrimination
