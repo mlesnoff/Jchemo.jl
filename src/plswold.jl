@@ -72,7 +72,7 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     wy  = similar(X, q)
     wytild = copy(wy)     
     vx   = copy(wx)
-    niter = zeros(nlv)
+    niter = zeros(Int, nlv)
     ## End
     @inbounds for a = 1:nlv       
         ty .= vcol(Y, 1)

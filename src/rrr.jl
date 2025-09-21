@@ -129,7 +129,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     vx = similar(X, p)
     lambda = copy(TTx)
     covtot = copy(TTx)
-    niter = Int.(ones(nlv))
+    niter = ones(Int, nlv)
     tau = par.tau
     @inbounds for a = 1:nlv
         cont = true

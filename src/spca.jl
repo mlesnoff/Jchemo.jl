@@ -20,34 +20,34 @@ sPCA-rSVD algorithm (regularized low rank matrix approximation) of Shen & Huang 
 The method approximates matrix `X` by T * V', where T is a matrix of scores (PCs) and V is a matrix of 
 normed regularized loadings. 
 
-The algorithm extracts the PCs one by one (deflation approach). Each loadings vector is computed iteratively, 
+The algorithm extracts the PCs one by one (deflation approach). Each loadings vector v is computed iteratively, 
 by alternating least squares regressions (Nipals) that includes a thresholding of the computed values 
 (sparsity step). Function `spca` provides the thresholding methods '1' and '2' reported in Shen & Huang 2008 
 Lemma 2 (`:soft` and `:hard`):
-* The tuning parameter used by Shen & Huang 2008 (see p.2020) is a cardinality constraint defined by the 
+* In Shen & Huang 2008 (see p.2020) the tuning parameter is a cardinality constraint defined by the 
     number of zero elements in the loadings vector, referred to as degree of sparsity. Conversely, the present 
-    function `spca` uses the number of non-zero elements (`nvar`, that is equal to p - degree of sparsity).
+    function `spca` uses the number of non-zero elements `nvar` (equal to p - degree of sparsity).
 * See the code of function `snipals_shen` for the details on how is computed (given a `nvar` value) the cutoff 
     'lambda' used inside the soft thresholding function (Shen & Huang 2008). Discrepancies with other softwares 
-    may occur when the loadings vector contains tied values (in such cas, results can depend on the method used 
-    to compute quantiles).
+    may occur when the loadings vector contains tied values (in such cases, results can depend on the method 
+    that computes the quantiles).
 
 Function `spca` allows two types of deflation of matrix `X`:
-* `defl = :v` : Matrix `X` is deflated by regression of the `X'`-columns on the loadings vector `v`. This is 
+* `defl = :v` : Matrix `X` is deflated by regression of the `X'`-columns on the loadings vector v. This is 
     the method used by Shen & Huang 2008 (see p.1033 in Theorem A.2).
-* `defl = :t` : Matrix `X` is deflated by regression of the `X`-columns on the score vector `t`. This is the method 
+* `defl = :t` : Matrix `X` is deflated by regression of the `X`-columns on the score vector t. This is the method 
     used in function `spca` of the R package `mixOmics` (Le Cao et al. 2016).
 The computation of the % of variance explained in `X` by each PC (returned by function `summary`) depends on 
-    the type of deflation chosen (see the code).    
+the type of deflation chosen (see the code).    
 
 ## References
 
 Guerra-Urzola, R., Van Deun, K., Vera, J.C., Sijtsma, K., 2021. A Guide for Sparse PCA: Model Comparison 
 and Applications. Psychometrika 86, 893–919. https://doi.org/10.1007/s11336-021-09773-2
 
-Kim-Anh Lê Cao, Florian Rohart, Ignacio Gonzalez, Sebastien Dejean with key contributors Benoit Gautier, 
-Francois Bartolo, contributions from Pierre Monget, Jeff Coquery, FangZou Yao and Benoit Liquet. (2016). 
-mixOmics: Omics Data Integration Project. R package version 6.1.1. 
+Kim-Anh Lê Cao, Florian Rohart, Ignacio Gonzalez, Sebastien Dejean with key contributors Benoit Gautier, Francois 
+Bartolo, contributions from Pierre Monget, Jeff Coquery, FangZou Yao and Benoit Liquet. (2016). mixOmics: Omics Data 
+Integration Project. R package version 6.1.1. 
 https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html
 
 Shen, H., Huang, J.Z., 2008. Sparse principal component analysis via regularized low rank matrix approximation. 
@@ -110,12 +110,12 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n, p)
-    ## Masked argument 'algo'
+    ## Argument 'algo' is volontary masked (not recommended)
     @assert in([:shen; :post])(par.algo) "Wrong value for argument 'algo'." 
     if par.algo == :shen 
-        snipals = snipals_shen
+        fnipals = snipals_shen
     elseif par.algo == :post 
-        snipals = Jchemo.snipals_post  # not exported
+        fnipals = Jchemo.snipals_post  # not exported
     end
     ## End 
     nvar = par.nvar
@@ -138,11 +138,11 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     beta = similar(X, p, nlv)
     sellv = list(Vector{Int}, nlv)
     for a = 1:nlv
-        res = snipals(X; meth = par.meth, nvar = nvar[a], tol = par.tol, maxit = par.maxit)
+        res = fnipals(X; meth = par.meth, nvar = nvar[a], tol = par.tol, maxit = par.maxit)
         ## Deflation
-        if par.defl == :v       # regression of X' on v (Shen & Huang 2008 p.1033 in Th.A.2)
+        if par.defl == :v          # regression of X' on v (Shen & Huang 2008 p.1033 in Th.A.2)
             X .-= res.t * res.v'   # = X - X * v * v' = X - t * v'
-        elseif par.defl == :t   # Regression of X on t (e.g. used in R mixOmics::spca)
+        elseif par.defl == :t      # Regression of X on t (e.g. used in R mixOmics::spca)
             tt = dot(res.t, res.t)
             b .= res.t' * X / tt   # = inv(t' * t) * t' * X  =  t' X / tt       
             X .-= res.t * b        # = X - t * t' X / tt

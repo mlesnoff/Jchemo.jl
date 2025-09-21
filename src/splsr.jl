@@ -43,10 +43,10 @@ Lê Cao, K.-A., Rossouw, D., Robert-Granié, C., Besse, P., 2008. A Sparse PLS f
 when Integrating Omics Data. Statistical Applications in Genetics and Molecular Biology 7. 
 https://doi.org/10.2202/1544-6115.1390
 
-Kim-Anh Lê Cao, Florian Rohart, Ignacio Gonzalez, Sebastien Dejean with key contributors Benoit Gautier, 
-Francois Bartolo, contributions from Pierre Monget, Jeff Coquery, FangZou Yao and Benoit Liquet. 
-(2016). mixOmics: Omics Data Integration Project. R package 
-version 6.1.1. https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html
+Kim-Anh Lê Cao, Florian Rohart, Ignacio Gonzalez, Sebastien Dejean with key contributors Benoit Gautier, Francois 
+Bartolo, contributions from Pierre Monget, Jeff Coquery, FangZou Yao and Benoit Liquet. (2016). mixOmics: Omics Data 
+Integration Project. R package version 6.1.1. 
+https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html
 
 Package mixOmics on Bioconductor:
 https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html
@@ -162,6 +162,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
     c   = similar(X, q)
     tmpXtY = similar(XtY)
     u = list(Int64, p)
+    niter = ones(Int, nlv)
     sellv = list(Vector{Int}, nlv)
     @inbounds for a = 1:nlv
         if q == 1
@@ -179,7 +180,9 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
             ## End
             w ./= normv(w)
         else
-            w .= snipals_shen(YtX; meth = par.meth, nvar = nvar[a], tol = par.tol, maxit = par.maxit).v
+            res = snipals_shen(YtX; meth = par.meth, nvar = nvar[a], tol = par.tol, maxit = par.maxit)
+            w .= res.v
+            niter[a] = res.niter
         end                                  
         r .= w
         if a > 1
@@ -205,6 +208,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
      end
      sel = unique(reduce(vcat, sellv))
      Splsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, 
+         niter,      # related to sparseness: q = 1 ==> 1 (no iteration), q > 1 ==> output of snipals_shen
          sellv, sel, # add compared to ::Plsr
          par)
 end

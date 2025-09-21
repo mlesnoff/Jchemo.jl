@@ -336,7 +336,7 @@ struct Plsr
     ymeans::Vector
     yscales::Vector
     weights::Weight
-    niter::Union{Vector{Int}, Nothing}
+    niter::Union{Vector{Int}, Nothing}   # plswold
     par::Union{ParPlsr, ParPlswold, ParRrr}
 end
 
@@ -373,6 +373,7 @@ struct Splsr
     ymeans::Vector
     yscales::Vector
     weights::Weight
+    niter::Union{Vector{Int}, Nothing}   # snipals_shen when Y with q > 1
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
     par::ParSplsr
