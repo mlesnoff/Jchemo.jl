@@ -16,7 +16,7 @@ Keyword arguments:
 
 CPCA Nipals algorithm (Westerhuis et a; 1998). CPCA is also known as MBPCA, and was referred to as CPCA-W in Smilde 
 et al. 2003. Besides eventual block scaling, MBPCA is equivalent to a PCA on the horizontally concatenated matrix 
-X = [X1 X2 ... Xk] (referred to as SUM-PCA in Smilde et al 2003).
+X = [X1 X2 ... Xk] and is referred to as SUM-PCA in Smilde et al 2003.
 
 The function returns several objects, in particular:
 * `T` : Global LVs (not-normed).
