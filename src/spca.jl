@@ -155,7 +155,7 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
         niter[a] = res.niter
         sellv[a] = findall(abs.(res.v) .> 0)
     end    
-    sel = unique(reduce(vcat, sellv))
+    sel = sort(unique(reduce(vcat, sellv)))
     Spca(T, V, sv, beta, xmeans, xscales, weights, niter, sellv, sel, par) 
 end
 

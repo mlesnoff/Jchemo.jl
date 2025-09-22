@@ -62,8 +62,11 @@ cost = 1000 ; epsilon = .5
 model = svmda(; kern, gamma, cost, epsilon) 
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
 fitm = model.fitm ;
+typeof(fitm)
+@names fitm
+typeof(fitm.fitm) 
+@names fitm.fitm
 fitm.lev
 fitm.ni
 

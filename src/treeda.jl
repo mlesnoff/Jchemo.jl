@@ -48,8 +48,11 @@ max_depth = 10
 model = treeda(; n_subfeatures, max_depth) 
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
 fitm = model.fitm ;
+typeof(fitm)
+@names fitm
+typeof(fitm.fitm) 
+@names fitm.fitm
 fitm.lev
 fitm.ni
 

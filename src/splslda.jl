@@ -17,14 +17,14 @@ is run on the Y-dummy table.
 
 ## Examples
 ```julia
-using Jchemo, JchemoData, JLD2
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
 @names dat
 X = dat.X
 Y = dat.Y
-n = nro(X)
+n = nro(X) 
 s = Bool.(Y.test)
 Xtrain = rmrow(X, s)
 ytrain = rmrow(Y.typ, s)
@@ -37,25 +37,28 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-meth = :soft
-nvar = 10
+meth = :soft ; nvar = 10
 model = splslda(; nlv, meth, nvar) 
 #model = splsqda(; nlv, meth, nvar, alpha = .1) 
-#model = splskdeda(; nlv, meth, nvar, a = .9) 
+#model = splskdeda(; nlv, meth, nvar) 
+#model = splskdeda(; nlv, meth, nvar, a = .8) 
 fit!(model, Xtrain, ytrain)
 @names model
 @names fitm = model.fitm
 fitm.lev
 fitm.ni
 
-fitm_emb = fitm.fitm_emb ; 
+fitm_emb = fitm.fitm_emb ;
+typeof(fitm_emb)
+@names fitm_emb  
+fitm_emb.sellv
+fitm_emb.sel
 @head fitm_emb.T
 @head transf(model, Xtrain)
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
 
 coef(fitm_emb)
-summary(fitm_emb, Xtrain)
 
 res = predict(model, Xtest) ;
 @names res
@@ -65,6 +68,7 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
 predict(model, Xtest; nlv = 1:2).pred
+summary(fitm_emb, Xtrain)
 ```
 """ 
 splslda(; kwargs...) = JchemoModel(splslda, nothing, kwargs)

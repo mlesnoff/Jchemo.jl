@@ -46,8 +46,9 @@ h = 2 ; k = 10
 model = knnda(; metric, h, k) 
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
 fitm = model.fitm ;
+typeof(fitm)
+@names fitm
 fitm.lev
 fitm.ni
 

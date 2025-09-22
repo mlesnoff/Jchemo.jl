@@ -206,7 +206,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
         TT[a] = tt
         sellv[a] = findall(abs.(w) .> 0)
      end
-     sel = unique(reduce(vcat, sellv))
+     sel = sort(unique(reduce(vcat, sellv)))
      Splsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, 
          niter,      # related to sparseness: q = 1 ==> 1 (no iteration), q > 1 ==> output of snipals_shen
          sellv, sel, # add compared to ::Plsr

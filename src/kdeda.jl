@@ -41,7 +41,10 @@ prior = :unif
 model = kdeda(; prior)
 fit!(model, Xtrain, ytrain)
 @names model
-@names fitm = model.fitm
+fitm = model.fitm ;
+typeof(fitm)
+@names fitm
+typeof(fitm.fitm) 
 fitm.lev
 fitm.ni
 

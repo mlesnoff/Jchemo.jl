@@ -17,7 +17,7 @@ is run on the Y-dummy table.
 
 ## Examples
 ```julia
-using Jchemo, JchemoData, JLD2
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -37,14 +37,21 @@ tab(ytrain)
 tab(ytest)
 
 nlv = 15
-meth = :soft
-nvar = 10
+meth = :soft ; nvar = 10
+#meth = :soft ; nvar = 1
 model = splsrda(; nlv, meth, nvar) 
 fit!(model, Xtrain, ytrain)
 @names model
-@names fitm = model.fitm
+fitm = model.fitm ;
+typeof(fitm)
+@names fitm
+typeof(fitm.fitm) 
+@names fitm.fitm
 fitm.lev
 fitm.ni
+
+fitm.fitm.sellv
+fitm.fitm.sel
 
 @head fitm.fitm.T
 @head transf(model, Xtrain)
