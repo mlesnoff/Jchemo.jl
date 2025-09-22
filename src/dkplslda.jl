@@ -20,7 +20,7 @@ Same as function `plslda` (PLS-LDA) except that a direct kernel PLSR (function `
 
 ## Examples
 ```julia
-using Jchemo, JchemoData, JLD2
+using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -52,6 +52,8 @@ fitm.lev
 fitm.ni
 
 fitm_emb = fitm.fitm_emb ;
+typeof(fitm_emb)
+@names fitm_emb 
 @head fitm_emb.T
 @head transf(model, Xtrain)
 @head transf(model, Xtest)

@@ -45,7 +45,11 @@ scal = true
 model = dkplsrda(; nlv, kern, gamma, scal) 
 fit!(model, Xtrain, ytrain)
 @names model
-@names fitm = model.fitm
+fitm = model.fitm ;
+typeof(fitm)
+@names fitm
+typeof(fitm.fitm) 
+@names fitm.fitm
 fitm.lev
 fitm.ni
 
