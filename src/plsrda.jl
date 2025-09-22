@@ -58,10 +58,12 @@ model = plsrda(; nlv)
 #model = plsrda(; nlv, prior = :unif) 
 fit!(model, Xtrain, ytrain)
 @names model
-@names fitm = model.fitm
+fitm = model.fitm ;
+@names fitm
+typeof(fitm.fitm) 
+@names fitm.fitm
 fitm.lev
 fitm.ni
-@names fitm.fitm
 aggsumv(fitm.fitm.weights.w, ytrain)
 
 @head fitm.fitm.T
