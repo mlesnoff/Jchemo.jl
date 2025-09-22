@@ -128,8 +128,8 @@ function predict(object::Lwplslda, X; nlv = nothing)
     end
     ## End
     ## In each neighborhood, the observation weights in plslda are given by listw, not by priors
-    pred = locwlv(object.X, object.y, X; listnn = res.ind, listw, algo = plslda, 
-        nlv, prior = object.par.prior, scal = object.par.scal, verbose = object.par.verbose).pred
+    pred = locwlv(object.X, object.y, X; listnn = res.ind, listw, algo = plslda, nlv, prior = object.par.prior, 
+        scal = object.par.scal, verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end
 

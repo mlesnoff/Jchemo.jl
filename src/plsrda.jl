@@ -117,8 +117,7 @@ end
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
-* `nlv` : Nb. LVs, or collection of nb. LVs, 
-    to consider. 
+* `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
 function predict(object::Plsrda, X; nlv = nothing)
     X = ensure_mat(X)

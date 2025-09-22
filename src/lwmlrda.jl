@@ -107,8 +107,7 @@ function predict(object::Lwmlrda, X)
         listw[i] = w
     end
     ## End
-    pred = locw(object.X, object.y, X; listnn = res.ind, listw, algo = mlrda, 
-        verbose = object.par.verbose).pred
+    pred = locw(object.X, object.y, X; listnn = res.ind, listw, algo = mlrda, verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end
 

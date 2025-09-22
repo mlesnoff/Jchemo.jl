@@ -63,13 +63,13 @@ fit!(model, Xtrain, ytrain)
 fitm.lev
 fitm.ni
 
-embfitm = fitm.fitm.embfitm ;
-@head embfitm.T
+fitm_emb = fitm.fitm.fitm_emb ;
+@head fitm_emb.T
 @head transf(model, Xtrain)
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
 
-coef(embfitm)
+coef(fitm_emb)
 
 res = predict(model, Xtest) ;
 @names res
@@ -79,7 +79,7 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
 predict(model, Xtest; nlv = 1:2).pred
-summary(embfitm, Xtrain)
+summary(fitm_emb, Xtrain)
 ```
 """ 
 plslda(; kwargs...) = JchemoModel(plslda, nothing, kwargs)
@@ -96,12 +96,12 @@ function plslda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    embfitm = plskern(X, res.Y, weights; kwargs...)
-    dafitm = list(Lda, par.nlv)
+    fitm_emb = plskern(X, res.Y, weights; kwargs...)
+    fitm_da = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
-        dafitm[i] = lda(vcol(embfitm.T, 1:i), y, weights; kwargs...)
+        fitm_da[i] = lda(vcol(fitm_emb.T, 1:i), y, weights; kwargs...)
     end
-    fitm = (embfitm = embfitm, dafitm = dafitm)
+    fitm = (fitm_emb = fitm_emb, fitm_da = fitm_da)
     Plsprobda(fitm, res.lev, ni, par)
 end
 
@@ -114,7 +114,7 @@ Compute latent variables (LVs; = scores) from
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Plsprobda, X; nlv = nothing)
-    transf(object.fitm.embfitm, X; nlv)
+    transf(object.fitm.fitm_emb, X; nlv)
 end
 
 """
@@ -129,15 +129,15 @@ function predict(object::Plsprobda, X; nlv = nothing)
     Q = eltype(X)
     Qy = eltype(object.lev)
     m = nro(X)
-    a = size(object.fitm.embfitm.T, 2)
+    a = size(object.fitm.fitm_emb.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 1):min(maximum(nlv), a))
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
-    T = transf(object.fitm.embfitm, X)
+    T = transf(object.fitm.fitm_emb, X)
     @inbounds for i in eachindex(nlv)
         znlv = nlv[i]
-        zres = predict(object.fitm.dafitm[znlv], vcol(T, 1:znlv))
+        zres = predict(object.fitm.fitm_da[znlv], vcol(T, 1:znlv))
         z =  mapslices(argmax, zres.posterior; dims = 2) 
         pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)
         posterior[i] = zres.posterior

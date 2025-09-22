@@ -37,12 +37,12 @@ function kplskdeda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    embfitm = kplsr(X, res.Y, weights; kwargs...)
-    dafitm = list(Kdeda, par.nlv)
+    fitm_emb = kplsr(X, res.Y, weights; kwargs...)
+    fitm_da = list(Kdeda, par.nlv)
     @inbounds for a = 1:par.nlv
-        dafitm[a] = kdeda(vcol(embfitm.T, 1:a), y; kwargs...)
+        fitm_da[a] = kdeda(vcol(fitm_emb.T, 1:a), y; kwargs...)
     end
-    fitm = (embfitm = embfitm, dafitm = dafitm)
+    fitm = (fitm_emb = fitm_emb, fitm_da = fitm_da)
     Plsprobda(fitm, res.lev, ni, par)
 end
 
