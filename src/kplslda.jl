@@ -52,7 +52,7 @@ fit!(model, Xtrain, ytrain)
 fitm.lev
 fitm.ni
 
-fitm_emb = fitm.fitm.fitm_emb ;
+fitm_emb = fitm.fitm_emb ;
 @head fitm_emb.T
 @head transf(model, Xtrain)
 @head transf(model, Xtest)
@@ -89,8 +89,7 @@ function kplslda(X, y, weights::Weight; kwargs...)
     @inbounds for a = 1:par.nlv
         fitm_da[a] = lda(vcol(fitm_emb.T, 1:a), y, weights; kwargs...)
     end
-    fitm = (fitm_emb = fitm_emb, fitm_da = fitm_da)
-    Plsprobda(fitm, res.lev, ni, par)
+    Plsprobda(fitm_emb, fitm_da, res.lev, ni, par) 
 end
 
 

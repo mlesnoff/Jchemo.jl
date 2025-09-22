@@ -666,11 +666,12 @@ struct Rrda
 end
 
 struct Plsprobda    # plslda, plsqda, plskdeda  
-    fitm::NamedTuple  
+    fitm_emb::Union{Plsr, Kplsr, Dkplsr, Splsr}
+    fitm_da::Vector{Union{Lda, Qda, Kdeda}}  
     lev::Vector
     ni::Vector{Int}
-    par::Union{ParPlsda, ParPlsqda, ParPlskdeda, ParSplsda, ParSplsqda, ParSplskdeda,
-        ParKplsda, ParKplsqda, ParKplskdeda}
+    par::Union{ParPlsda, ParPlsqda, ParPlskdeda, ParKplsda, ParKplsqda, ParKplskdeda, 
+        ParSplsda, ParSplsqda, ParSplskdeda}
 end
 
 ## Local

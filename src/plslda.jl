@@ -63,7 +63,8 @@ fit!(model, Xtrain, ytrain)
 fitm.lev
 fitm.ni
 
-fitm_emb = fitm.fitm.fitm_emb ;
+fitm_emb = fitm.fitm_emb ;
+@names fitm_emb 
 @head fitm_emb.T
 @head transf(model, Xtrain)
 @head transf(model, Xtest)
@@ -101,8 +102,7 @@ function plslda(X, y, weights::Weight; kwargs...)
     @inbounds for i = 1:par.nlv
         fitm_da[i] = lda(vcol(fitm_emb.T, 1:i), y, weights; kwargs...)
     end
-    fitm = (fitm_emb = fitm_emb, fitm_da = fitm_da)
-    Plsprobda(fitm, res.lev, ni, par)
+    Plsprobda(fitm_emb, fitm_da, res.lev, ni, par) 
 end
 
 """ 
@@ -114,7 +114,7 @@ Compute latent variables (LVs; = scores) from
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Plsprobda, X; nlv = nothing)
-    transf(object.fitm.fitm_emb, X; nlv)
+    transf(object.fitm_emb, X; nlv)
 end
 
 """
@@ -129,15 +129,15 @@ function predict(object::Plsprobda, X; nlv = nothing)
     Q = eltype(X)
     Qy = eltype(object.lev)
     m = nro(X)
-    a = size(object.fitm.fitm_emb.T, 2)
+    a = size(object.fitm_emb.T, 2)
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 1):min(maximum(nlv), a))
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
-    T = transf(object.fitm.fitm_emb, X)
+    T = transf(object.fitm_emb, X)
     @inbounds for i in eachindex(nlv)
         znlv = nlv[i]
-        zres = predict(object.fitm.fitm_da[znlv], vcol(T, 1:znlv))
+        zres = predict(object.fitm_da[znlv], vcol(T, 1:znlv))
         z =  mapslices(argmax, zres.posterior; dims = 2) 
         pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)
         posterior[i] = zres.posterior

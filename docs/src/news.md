@@ -1,6 +1,11 @@
 # News
 
-## *Version 0.8.15*
+## *Version 0.9.O*
+
+- Breaking changes
+    - All the PLS-based DA methods: output 'fitm' has been split into 
+        'fitm_emb' (the embedding model) and 'fitm_da' (the DA models for 
+        each number of latent variables). This was done to simplify the code.
 
 - News
     - **getknn** Cosine distance was added.
@@ -212,13 +217,13 @@ or equivalently
 
 - Breaking
     - **sampdf**: argument 'msamp' renamed to 'meth'.
-    - Output 'fmpls' renamed to 'fmemb' in PLSDA functions.
+    - Output 'fmpls' renamed to 'fitm_emb' in PLSDA functions.
     - Functions **dtlo**, **dtpol**, **dtasls**, **dtarpls*, **dtairpls** 
         renamed to **detrend_lo**, **detrend_pol**, **detrend_asls**, **detrend_arpls**, 
         **detrend_airpls**.
     - **dmnorm**: one of the methods has been modified.
     - Argument and object 'fun' has been renamed 'algo' everywhere.
-    - Object 'fm' has been renamed 'fitm' (fitted model) everywhere.
+    - Object 'fitm' has been renamed 'fitm' (fitted model) everywhere.
 
 - Modifications
     - Code cleaning.
