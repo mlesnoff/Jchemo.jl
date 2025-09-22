@@ -59,6 +59,7 @@ model = plsrda(; nlv)
 fit!(model, Xtrain, ytrain)
 @names model
 fitm = model.fitm ;
+typeof(fitm)
 @names fitm
 typeof(fitm.fitm) 
 @names fitm.fitm
