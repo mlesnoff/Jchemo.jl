@@ -67,12 +67,22 @@ scal = false
 bscal = :none
 #bscal = :frob
 model = mbplsrda(; nlv, bscal, scal)
-fit!(model, Xbltrain, ytrain) 
-@names model 
+fit!(model, Xbltrain, ytrain)
 
-@head model.fitm.fitm.T 
+@names model
+fitm = model.fitm ;
+typeof(fitm)
+@names fitm
+typeof(fitm.fitm) 
+@names fitm.fitm
+fitm.lev
+fitm.ni
+aggsumv(fitm.fitm.weights.w, ytrain)
+
+@head fitm.fitm.T
 @head transf(model, Xbltrain)
 @head transf(model, Xbltest)
+@head transf(model, Xbltest; nlv = 3)
 
 res = predict(model, Xbltest) ; 
 @head res.pred 
@@ -80,6 +90,7 @@ res = predict(model, Xbltest) ;
 conf(res.pred, ytest).cnt
 
 predict(model, Xbltest; nlv = 1:2).pred
+summary(fitm.fitm, Xbltrain)
 ```
 """
 mbplsrda(; kwargs...) = JchemoModel(mbplsrda, nothing, kwargs)
