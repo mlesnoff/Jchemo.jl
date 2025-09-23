@@ -74,11 +74,37 @@ res.corx2t
 
 model1 = blockscal(; bscal, centr = true) ;
 model2 = mbconcat()
-model3 = plskern(; nlv, scal = false) ;
+model3 = plskern(; nlv) ;
 model = pip(model1, model2, model3)
 fit!(model, Xbltrain, ytrain)
-@head T =  model.model[3].fitm.T  # = transf(model, Xbltrain)
+
+mod3 = model.model[3] ;
+
+@head transf(model, Xbltrain)
+@head mod3.fitm.T 
+
 transf(model, Xbltest)
+
+predict(model, Xbltest).pred 
+
+## And a MB sparse PLSR as follows
+
+model1 = blockscal(; bscal, centr = true) ;
+model2 = mbconcat()
+model3 = splsr(; nlv, meth, nvar) ;
+model = pip(model1, model2, model3)
+fit!(model, Xbltrain, ytrain)
+
+mod3 = model.model[3] ;
+
+mod3.fitm.sellv
+mod3.fitm.sel
+
+@head transf(model, Xbltrain)
+@head mod3.fitm.T 
+
+transf(model, Xbltest)
+
 predict(model, Xbltest).pred 
 ```
 """

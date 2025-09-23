@@ -556,20 +556,6 @@ struct Soplsr
     par::ParSoplsr
 end
 
-struct Smbplsr
-    fitm::Splsr
-    T::Matrix
-    R::Matrix
-    C::Matrix
-    fitm_bl::Blockscal
-    ymeans::Vector
-    yscales::Vector
-    weights::Weight
-    sellv::Vector{Vector{Int}}
-    sel::Vector{Int}
-    par::ParSmbplsr
-end
-
 ############---- Discrimination
 
 struct Dmnorm

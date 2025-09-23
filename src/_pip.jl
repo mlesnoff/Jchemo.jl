@@ -52,7 +52,7 @@ function fit!(model::Pipeline, X, Y = nothing; verbose = :false)
     typ = list(Symbol, K)
     for i = 1:K
         meth = methods(model.model[i].algo)
-        res = Base.method_argnames.(meth)[2]  # assume here that the working method of the function starts from the 2nd
+        res = Base.method_argnames.(meth)[2]  # assume here that the working methods of the function start from the 2nd
         z = uppercase.(String.(res))
         (in("X", z) || in("XBL", z)) && in("Y", z) ? typ[i] = :XY : typ[i] = :X
     end
@@ -89,9 +89,5 @@ function predict(model::Pipeline, X)
     end
     predict(model.model[K], X)
 end
-
-
-
-
 
 

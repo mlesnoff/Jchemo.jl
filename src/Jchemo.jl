@@ -134,7 +134,6 @@ include("mbplsr.jl")
 include("mbplswest.jl")
 include("rosaplsr.jl") 
 include("soplsr.jl") 
-include("smbplsr.jl")
 
 ## Local
 include("locw.jl")
@@ -389,7 +388,6 @@ export
     mbplswest, mbplswest!,
     rosaplsr, rosaplsr!,
     soplsr,
-    smbplsr, smbplsr!,
     ## Variable selection/importance (direct methods) 
     vip, 
     viperm!,
