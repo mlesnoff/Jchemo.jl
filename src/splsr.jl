@@ -84,6 +84,8 @@ fitm = model.fitm ;
 @head fitm.T
 @head fitm.W
 
+fitm.niter
+
 fitm.sellv
 fitm.sel
 

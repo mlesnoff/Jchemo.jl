@@ -374,9 +374,17 @@ struct Spcr
     C::Matrix
     ymeans::Vector
     yscales::Vector
-    sellv::Vector{Vector{Int}}
-    sel::Vector{Int}
     par::ParSpca
+end
+
+struct PlsravgUnif
+    fitm::Plsr
+    nlv::UnitRange
+end
+
+struct Plsravg
+    fitm::PlsravgUnif
+    par::ParPlsr
 end
 
 struct Splsr
@@ -395,16 +403,6 @@ struct Splsr
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
     par::ParSplsr
-end
-
-struct PlsravgUnif
-    fitm::Plsr
-    nlv::UnitRange
-end
-
-struct Plsravg
-    fitm::PlsravgUnif
-    par::ParPlsr
 end
 
 struct Krr

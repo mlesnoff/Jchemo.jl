@@ -37,14 +37,23 @@ ytest = rmrow(y, s)
 nlv = 15
 meth = :soft
 #meth = :hard
-nvar = 20 
+nvar = 10 
 model = spcr(; nlv, meth, nvar, defl = :t) ;
 fit!(model, Xtrain, ytrain)
 @names model
 fitm = model.fitm ;
 @names fitm
+typeof(fitm.fitm)
+@names fitm.fitm
+
+fitm.fitm.niter
+
+fitm.fitm.sellv
+fitm.fitm.sel
+
+@head transf(model, Xtrain)
 @head fitm.fitm.T
-@head transf(model, X)
+
 @head fitm.fitm.V
 
 @head transf(model, Xtest)
@@ -82,7 +91,7 @@ function spcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     yscales = ones(Q, q) 
     fitm = spca!(X, weights; kwargs...)
     theta = inv(fitm.T' * fweight(fitm.T, fitm.weights.w)) * fitm.T' * fweight(Y, fitm.weights.w)  # = C'
-    Spcr(fitm, theta', ymeans, yscales, fitm.sellv, fitm.sel, par)
+    Spcr(fitm, theta', ymeans, yscales, par) 
 end
 
 """
