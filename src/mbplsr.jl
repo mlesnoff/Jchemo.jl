@@ -49,9 +49,14 @@ bscal = :frob
 model = mbplsr(; nlv, bscal)
 fit!(model, Xbltrain, ytrain)
 @names model 
-@names model.fitm
-@head model.fitm.T
+fitm = model.fitm ;
+@names fitm 
+typeof(fitm.fitm)
+@names fitm.fitm
+
 @head transf(model, Xbltrain)
+@head fitm.fitm.T
+
 transf(model, Xbltest)
 
 res = predict(model, Xbltest)
@@ -113,33 +118,33 @@ function mbplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::Weight; kwar
         fcenter!(Y, ymeans)
     end
     fitm = plskern(X, Y, weights; nlv = par.nlv, scal = false)
-    Mbplsr(fitm, fitm.T, fitm.R, fitm.C, fitm_bl, ymeans, yscales, weights, par)
+    Mbplsr(fitm_bl, fitm, ymeans, yscales, weights, par)
 end
 
 """ 
-    transf(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
+    transf(object::Mbplsr, Xbl; nlv = nothing)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transf(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
-    a = nco(object.T)
+function transf(object::Mbplsr, Xbl; nlv = nothing)
+    a = nco(object.fitm.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     zXbl = transf(object.fitm_bl, Xbl)    
-    fconcat(zXbl) * vcol(object.R, 1:nlv) 
+    fconcat(zXbl) * vcol(object.fitm.R, 1:nlv) 
 end
 
 """
-    predict(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
+    predict(object::Mbplsr, Xbl; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
+function predict(object::Mbplsr, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
-    a = nco(object.T)
+    a = nco(object.fitm.T)
     isnothing(nlv) ? nlv = a : nlv = (min(a, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     T = transf(object, Xbl)
@@ -147,7 +152,7 @@ function predict(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
     @inbounds  for i = 1:le_nlv
         znlv = nlv[i]
         W = Diagonal(object.yscales)
-        beta = object.C[:, 1:znlv]'
+        beta = object.fitm.C[:, 1:znlv]'
         int = object.ymeans'
         pred[i] = int .+ vcol(T, 1:znlv) * beta * W 
     end 
@@ -163,7 +168,7 @@ Summarize the fitted model.
 """ 
 function Base.summary(object::Mbplsr, Xbl)
     Q = eltype(Xbl[1][1, 1])
-    n, nlv = size(object.T)
+    n, nlv = size(object.fitm.T)
     nbl = length(Xbl)
     ## Block scaling
     zXbl = transf(object.fitm_bl, Xbl)
@@ -183,17 +188,17 @@ function Base.summary(object::Mbplsr, Xbl)
     nam = string.("lv", 1:nlv)
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv
-        z[k, a] = rv(zXbl[k], object.T[:, a], object.weights) 
+        z[k, a] = rv(zXbl[k], object.fitm.T[:, a], object.weights) 
     end
     rvxbl2t = DataFrame(z, nam)
     ## Rd between each Xk and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl) 
-        z[k, :] = rd(zXbl[k], object.T, object.weights) 
+        z[k, :] = rd(zXbl[k], object.fitm.T, object.weights) 
     end
     rdxbl2t = DataFrame(z, nam)
     ## Correlation between the X-variables and the global LVs 
-    z = corm(X, object.T, object.weights)  
+    z = corm(X, object.fitm.T, object.weights)  
     corx2t = DataFrame(z, nam)      
     (explvarx = explvarx, rvxbl2t, rdxbl2t, corx2t)
 end

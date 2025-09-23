@@ -44,8 +44,8 @@ group = dat.group
 listbl = [1:11, 12:19, 20:25]
 s = 1:6
 Xbltrain = mblock(X[s, :], listbl)
-Xbltest = mblock(rmrow(X, s), listbl)
 ytrain = y[s]
+Xbltest = mblock(rmrow(X, s), listbl)
 ytest = rmrow(y, s) 
 ntrain = nro(ytrain) 
 ntest = nro(ytest) 
@@ -54,14 +54,15 @@ ntot = ntrain + ntest
 
 nlv = 3
 bscal = :frob
-scal = false
-#scal = true
-model = mbplswest(; nlv, bscal, scal)
+model = mbplswest(; nlv, bscal)
 fit!(model, Xbltrain, ytrain)
 @names model 
-@names model.fitm
-@head model.fitm.T
+fitm = model.fitm ;
+@names fitm 
+
 @head transf(model, Xbltrain)
+@head fitm.T
+
 transf(model, Xbltest)
 
 res = predict(model, Xbltest)
@@ -73,7 +74,6 @@ res = summary(model, Xbltrain) ;
 res.explvarx
 res.rvxbl2t
 res.rdxbl2t
-res.cortbl2t
 res.corx2t 
 ```
 """
@@ -202,6 +202,45 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     lb = nothing
     Mbplswest(Tx, Vx, Rx, Wx, Wytild, Tb, Tbl, Pbl, TTx, fitm_bl, ymeans, yscales, 
         weights, lb, niter, par)
+end
+
+""" 
+    transf(object::Mbplswest, Xbl; nlv = nothing)
+Compute latent variables (LVs; = scores) from a fitted model.
+* `object` : The fitted model.
+* `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
+* `nlv` : Nb. LVs to compute.
+""" 
+function transf(object::Mbplswest, Xbl; nlv = nothing)
+    a = nco(object.T)
+    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    zXbl = transf(object.fitm_bl, Xbl)    
+    fconcat(zXbl) * vcol(object.R, 1:nlv) 
+end
+
+"""
+    predict(object::Mbplswest, Xbl; nlv = nothing)
+Compute Y-predictions from a fitted model.
+* `object` : The fitted model.
+* `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
+* `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
+""" 
+function predict(object::Mbplswest, Xbl; nlv = nothing)
+    Q = eltype(Xbl[1][1, 1])
+    a = nco(object.T)
+    isnothing(nlv) ? nlv = a : nlv = (min(a, minimum(nlv)):min(a, maximum(nlv)))
+    le_nlv = length(nlv)
+    T = transf(object, Xbl)
+    pred = list(Matrix{Q}, le_nlv)
+    @inbounds  for i = 1:le_nlv
+        znlv = nlv[i]
+        W = Diagonal(object.yscales)
+        beta = object.C[:, 1:znlv]'
+        int = object.ymeans'
+        pred[i] = int .+ vcol(T, 1:znlv) * beta * W 
+    end 
+    le_nlv == 1 ? pred = pred[1] : nothing
+    (pred = pred,)
 end
 
 """

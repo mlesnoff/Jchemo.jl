@@ -506,11 +506,8 @@ end
 ## Multiblock
 
 struct Mbplsr
-    fitm::Plsr
-    T::Matrix
-    R::Matrix
-    C::Matrix
     fitm_bl::Blockscal
+    fitm::Plsr
     ymeans::Vector
     yscales::Vector
     weights::Weight
