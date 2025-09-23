@@ -6,49 +6,36 @@
 Kernel ridge regression (KRR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `lb` : Ridge regularization parameter "lambda".
-* `kern` : Type of kernel used to compute the Gram matrices.
-    Possible values are: `:krbf`, `:kpol`. See respective 
-    functions `krbf` and `kpol` for their keyword arguments.
+* `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective functions 
+    `krbf` and `kpol` for their keyword arguments.
 * `scal` : Boolean. If `true`, each column of `X 
     is scaled by its uncorrected standard deviation.
 
-KRR is also referred to as least squared SVM regression 
-(LS-SVMR). The method is close to the particular case of 
-SVM regression where there is no marge excluding the 
-observations (epsilon coefficient set to zero). The difference 
+KRR is also referred to as least squared SVM regression (LS-SVMR). The method is close to the particular case of 
+SVM regression where there is no marge excluding the observations (epsilon coefficient set to zero). The difference 
 is that a L2-norm optimization is done, instead of L1 in SVM.
 
 ## References 
-Bennett, K.V., Embrechts, M.J., 2003. An optimization 
-perspective on kernel partial least squares regression, 
-in: Advances in Learning Theory: Methods, Models and 
-Applications, NATO Science Series III: Computer & Systems 
+Bennett, K.V., Embrechts, M.J., 2003. An optimization perspective on kernel partial least squares regression, 
+in: Advances in Learning Theory: Methods, Models and Applications, NATO Science Series III: Computer & Systems 
 Sciences. IOS Press Amsterdam, pp. 227-250.
 
-Cawley, G.C., Talbot, N.L.C., 2002. Reduced Rank Kernel 
-Ridge Regression. Neural Processing Letters 16, 293-302. 
+Cawley, G.C., Talbot, N.L.C., 2002. Reduced Rank Kernel Ridge Regression. Neural Processing Letters 16, 293-302. 
 https://doi.org/10.1023/A:1021798002258
 
-Krell, M.M., 2018. Generalizing, Decoding, and Optimizing 
-Support Vector Machine Classification. arXiv:1801.04929.
+Krell, M.M., 2018. Generalizing, Decoding, and Optimizing Support Vector Machine Classification. arXiv:1801.04929.
 
-Saunders, C., Gammerman, A., Vovk, V., 1998. Ridge Regression 
-Learning Algorithm in Dual Variables, in: In Proceedings of the 
-15th International Conference on Machine Learning. Morgan 
-Kaufitmann, pp. 515-521.
+Saunders, C., Gammerman, A., Vovk, V., 1998. Ridge Regression Learning Algorithm in Dual Variables, in: In Proceedings of the 
+15th International Conference on Machine Learning. Morgan Kaufitmann, pp. 515-521.
 
-Suykens, J.A.K., Lukas, L., Vandewalle, J., 2000. Sparse 
-approximation using least squares support vector machines. 2000 IEEE 
-International Symposium on Circuits and Systems. Emerging Technologies 
-for the 21st Century. Proceedings (IEEE Cat No.00CH36353).
+Suykens, J.A.K., Lukas, L., Vandewalle, J., 2000. Sparse approximation using least squares support vector machines. 2000 IEEE 
+International Symposium on Circuits and Systems. Emerging Technologies for the 21st Century. Proceedings (IEEE Cat No.00CH36353).
 https://doi.org/10.1109/ISCAS.2000.856439
 
-Welling, M., n.d. Kernel ridge regression. Department of 
-Computer Science, University of Toronto, Toronto, Canada. 
+Welling, M., n.d. Kernel ridge regression. Department of Computer Science, University of Toronto, Toronto, Canada. 
 https://www.ics.uci.edu/~welling/classnotes/papers_class/Kernel-Ridge.pdf
 
 ## Examples
@@ -159,8 +146,7 @@ end
     coef(object::Krr; lb = nothing)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
-* `lb` : Ridge regularization parameter 
-    "lambda".
+* `lb` : Ridge regularization parameter 'lambda'.
 """ 
 function coef(object::Krr; lb = nothing)
     isnothing(lb) ? lb = object.par.lb : nothing
@@ -179,8 +165,7 @@ end
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
-* `lb` : Regularization parameter, or collection of 
-    regularization parameters, "lambda" to consider. 
+* `lb` : Regularization parameter, or collection of regularization parameters, 'lambda' to consider. 
 """ 
 function predict(object::Krr, X; lb = nothing)
     X = ensure_mat(X)

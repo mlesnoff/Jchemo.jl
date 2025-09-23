@@ -6,8 +6,7 @@
 Principal component regression (PCR) with a SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * Same as function `pcasvd`
 
@@ -34,21 +33,22 @@ fit!(model, Xtrain, ytrain)
 @names model
 fitm = model.fitm ;
 @names fitm
+typeof(fitm.fitm)
 @names fitm.fitm
 
+@head transf(model, Xtrain)
 @head fitm.fitm.T
-@head transf(model, X)
-
-coef(model)
-coef(model; nlv = 3)
 
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
 
+coef(model)
+coef(model; nlv = 3)
+
 res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
 res = predict(model, Xtest; nlv = 1:2)
@@ -84,7 +84,7 @@ function pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     ## if T is D-orthogonal. This is the case for the actual version (pcasvd)
     ## theta: coefs regression of Y on T (= C')
     ## not needed (same theta): fcenter!(Y, ymeans)
-    theta = inv(fitm.T' * fweight(fitm.T, fitm.weights.w)) * fitm.T' * fweight(Y, fitm.weights.w)
+    theta = inv(fitm.T' * fweight(fitm.T, fitm.weights.w)) * fitm.T' * fweight(Y, fitm.weights.w)  # = C'
     Pcr(fitm, theta', ymeans, yscales, par) 
 end
 
@@ -105,8 +105,7 @@ Compute the b-coefficients of a LV model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
 
-For a model fitted from X(n, p) and Y(n, q), the returned 
-object `B` is a matrix (p, q). If `nlv` = 0, `B` is a matrix 
+For a model fitted from X (n, p) and Y (n, q), the returned object `B` is a matrix (p, q). If `nlv` = 0, `B` is a matrix 
 of zeros. The returned object `int` is the intercept.
 """ 
 function coef(object::Pcr; nlv = nothing)

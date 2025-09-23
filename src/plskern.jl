@@ -9,8 +9,7 @@ Partial least squares regression (PLSR) with the "improved kernel algorithm #1" 
 * `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected 
-    standard deviation.
+* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
     
 About the row-weighting in PLS algorithms (`weights`): see in particular Schaal et al. 2002, Siccard & Sabatier 
 2006, Kim et al. 2011, and Lesnoff et al. 2020. 
@@ -57,19 +56,22 @@ model = plskern(; nlv) ;
 #model = plssimp(; nlv) ;
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
-@head model.fitm.T
+fitm = model.fitm ;
+@names fitm
 
-coef(model)
-coef(model; nlv = 3)
+@head transf(model, Xtrain)
+@head fitm.T
 
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
 
+coef(model)
+coef(model; nlv = 3)
+
 res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
 res = predict(model, Xtest; nlv = 1:2)
@@ -178,7 +180,7 @@ function transf(object::Union{Plsr, Splsr}, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    ## Could be fcscale! but changes X. If too heavy ==> Makes summary!
+    ## Could be fcscale! but would change X. If too heavy ==> Makes summary!
     fcscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
 end
 
@@ -188,8 +190,7 @@ Compute the b-coefficients of a LV model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
 
-For a model fitted from X(n, p) and Y(n, q), the returned 
-object `B` is a matrix (p, q). If `nlv` = 0, `B` is a matrix 
+For a model fitted from X (n, p) and Y (n, q), the returned object `B` is a matrix (p, q). If `nlv` = 0, `B` is a matrix 
 of zeros. The returned object `int` is the intercept.
 """ 
 function coef(object::Union{Plsr, Splsr}; nlv = nothing)
@@ -230,8 +231,7 @@ end
     summary(object::Union{Plsr, Splsr}, X)
 Summarize the fitted model.
 * `object` : The fitted model.
-* `X` : The X-data that was used to 
-    fit the model.
+* `X` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Union{Plsr, Splsr}, X)
     X = ensure_mat(X)

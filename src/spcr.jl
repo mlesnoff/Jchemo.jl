@@ -81,7 +81,7 @@ function spcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q) 
     fitm = spca!(X, weights; kwargs...)
-    theta = inv(fitm.T' * fweight(fitm.T, fitm.weights.w)) * fitm.T' * fweight(Y, fitm.weights.w)
+    theta = inv(fitm.T' * fweight(fitm.T, fitm.weights.w)) * fitm.T' * fweight(Y, fitm.weights.w)  # = C'
     Spcr(fitm, theta', ymeans, yscales, fitm.sellv, fitm.sel, par)
 end
 
@@ -92,6 +92,7 @@ Compute Y-predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
+## Function 'coef' not yet implemented for Spcr, therefore 'predict' uses directely C (regression coefs on the scores) 
 function predict(object::Spcr, X; nlv = nothing)
     X = ensure_mat(X)
     a = nco(object.fitm.T)
@@ -106,6 +107,5 @@ function predict(object::Spcr, X; nlv = nothing)
     le_nlv == 1 ? pred = pred[1] : nothing
     (pred = pred,)
 end
-
 
 

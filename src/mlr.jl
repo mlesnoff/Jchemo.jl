@@ -36,11 +36,13 @@ model = mlr()
 #model = mlrpinvn() 
 fit!(model, Xtrain, ytrain) 
 @names model
-@names model.fitm
 fitm = model.fitm ;
+@names fitm
+
+coef(model) 
 fitm.B
 fitm.int 
-coef(model) 
+
 res = predict(model, Xtest)
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
@@ -52,7 +54,7 @@ coef(model)
 
 model = mlrvec()
 fit!(model, Xtrain[:, 1], ytrain) 
-coef(model) 
+coef(model)
 ```
 """ 
 mlr(; kwargs...) = JchemoModel(mlr, nothing, kwargs)

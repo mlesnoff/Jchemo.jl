@@ -20,9 +20,10 @@ the RA uses the Nipals algorithm presented in Mangamana et al 2021, section 2.1.
 A continuum regularization is available. After block centering and scaling, the covariances matrices 
 are computed as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
-where D is the observation (row) metric. Value `tau` = 0 can generate unstability when inverting 
-the covariance matrices. A better alternative is generally to use an epsilon value (e.g. `tau` = 1e-8) 
-to get similar results as with pseudo-inverses.  
+where D is the observation (row) metric. 
+
+**Note:** Value `tau = 0` can generate unstability when inverting the covariance matrices. A better alternative is generally to 
+use an epsilon value (e.g. `tau = 1e-8`) to get similar results as with pseudo-inverses.  
 
 ## References
 Bougeard, S., Qannari, E.M., Lupo, C., Chauvin, C., 2011. Multiblock redundancy analysis from 

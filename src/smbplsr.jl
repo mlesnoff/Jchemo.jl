@@ -87,7 +87,7 @@ function smbplsr(Xbl, Y, weights::Weight; kwargs...)
     @inbounds for k in eachindex(Xbl)
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    mbplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
+    smbplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function smbplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)

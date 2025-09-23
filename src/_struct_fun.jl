@@ -316,6 +316,24 @@ struct MlrNoArg
     weights::Weight
 end
 
+struct Rr
+    V::Matrix
+    TtY::Matrix
+    sv::Vector
+    xmeans::Vector
+    xscales::Vector
+    ymeans::Vector
+    weights::Weight
+    par::ParRr
+end
+
+struct Rrchol
+    B::Matrix   
+    int::Matrix
+    weights::Weight
+    par::ParRr
+end
+
 struct Pcr
     fitm::Pca
     C::Matrix
@@ -389,6 +407,21 @@ struct Plsravg
     par::ParPlsr
 end
 
+struct Krr
+    X::Matrix
+    K::Matrix
+    U::Matrix
+    UtDY::Matrix
+    sv::Vector
+    DKt::Matrix
+    vtot::Matrix
+    xscales::Vector
+    ymeans::Vector
+    weights::Weight
+    kwargs::Base.Pairs
+    par::ParKrr
+end
+
 struct Kplsr
     X::Matrix
     Kt::Adjoint
@@ -408,47 +441,13 @@ struct Kplsr
 end
 
 struct Dkplsr
-    X::Matrix
     fitm::Plsr
+    X::Matrix
     K::Matrix
-    T::Matrix
     xscales::Vector
     yscales::Vector
     kwargs::Base.Pairs
     par::ParKplsr
-end
-
-struct Rr
-    V::Matrix
-    TtY::Matrix
-    sv::Vector
-    xmeans::Vector
-    xscales::Vector
-    ymeans::Vector
-    weights::Weight
-    par::ParRr
-end
-
-struct Rrchol
-    B::Matrix   
-    int::Matrix
-    weights::Weight
-    par::ParRr
-end
-
-struct Krr
-    X::Matrix
-    K::Matrix
-    U::Matrix
-    UtDY::Matrix
-    sv::Vector
-    DKt::Matrix
-    vtot::Matrix
-    xscales::Vector
-    ymeans::Vector
-    weights::Weight
-    kwargs::Base.Pairs
-    par::ParKrr
 end
 
 ## Local

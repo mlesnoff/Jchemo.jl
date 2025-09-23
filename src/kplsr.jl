@@ -3,26 +3,20 @@
     kplsr(X, Y; kwargs...)
     kplsr(X, Y, weights::Weight; kwargs...)
     kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
-Kernel partial least squares regression (KPLSR) implemented with a Nipals 
-    algorithm (Rosipal & Trejo, 2001).
+Kernel partial least squares regression (KPLSR) implemented with a Nipals algorithm (Rosipal & Trejo, 2001).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. 
-* `kern` : Type of kernel used to compute the Gram matrices.
-    Possible values are: `:krbf`, `:kpol`. See respective 
-    functions `krbf` and `kpol` for their keyword arguments.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
-    is scaled by its uncorrected standard deviation.
+* `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective functions 
+    `krbf` and `kpol` for their keyword arguments.
+* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
 
-This algorithm becomes slow for n > 1000. 
-Use function `dkplsr` instead.
+This algorithm becomes slow for n > 1000. Use function `dkplsr` instead.
 
 ## References 
-Rosipal, R., Trejo, L.J., 2001. Kernel Partial Least 
-Squares Regression in Reproducing Kernel Hilbert Space. 
+Rosipal, R., Trejo, L.J., 2001. Kernel Partial Least Squares Regression in Reproducing Kernel Hilbert Space. 
 Journal of Machine Learning Research 2, 97-123.
 
 ## Examples

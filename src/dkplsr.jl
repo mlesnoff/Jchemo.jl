@@ -6,30 +6,22 @@
 Direct kernel partial least squares regression (DKPLSR) (Bennett & Embrechts 2003).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. 
-* `kern` : Type of kernel used to compute the Gram matrices.
-    Possible values are: `:krbf`, `:kpol`. See respective 
-    functions `krbf` and `kpol` for their keyword arguments.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` 
-    is scaled by its uncorrected standard deviation.
+* `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective functions 
+    `krbf` and `kpol` for their keyword arguments.
+* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
 
-The method builds kernel Gram matrices and then runs a usual 
-PLSR algorithm on them. This is faster (but not equivalent) to the 
-"true" KPLSR (Nipals) algorithm (function `kplsr`) described in 
-Rosipal & Trejo (2001).
+The method builds kernel Gram matrices and then runs a usual PLSR algorithm on them. This is faster (but not equivalent) to the 
+"true" KPLSR (Nipals) algorithm (function `kplsr`) described in Rosipal & Trejo (2001).
 
 ## References 
-Bennett, K.P., Embrechts, M.J., 2003. An optimization 
-perspective on kernel partial least squares regression, 
-in: Advances in Learning Theory: Methods, Models and Applications, 
-NATO Science Series III: Computer & Systems Sciences. 
+Bennett, K.P., Embrechts, M.J., 2003. An optimization perspective on kernel partial least squares regression, 
+in: Advances in Learning Theory: Methods, Models and Applications, NATO Science Series III: Computer & Systems Sciences. 
 IOS Press Amsterdam, pp. 227-250.
 
-Rosipal, R., Trejo, L.J., 2001. Kernel Partial Least 
-Squares Regression in Reproducing Kernel Hilbert Space. 
+Rosipal, R., Trejo, L.J., 2001. Kernel Partial Least Squares Regression in Reproducing Kernel Hilbert Space. 
 Journal of Machine Learning Research 2, 97-123.
 
 ## Examples
@@ -55,14 +47,20 @@ kern = :krbf ; gamma = 1e-1 ; scal = false
 model = dkplsr(; nlv, kern, gamma, scal) ;
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
-@head model.fitm.T
+fitm = model.fitm ;
+typeof(fitm)
+@names fitm
+typeof(fitm.fitm)
+@names fitm.fitm
 
-coef(model)
-coef(model; nlv = 3)
+@head transf(model, Xtrain)
+@head fitm.fitm.T
 
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
+
+coef(model)
+coef(model; nlv = 3)
 
 res = predict(model, Xtest)
 @head res.pred
@@ -119,7 +117,7 @@ function dkplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
     K = fkern(X, X; kwargs...)     
     fitm = plskern!(K, Y, weights; kwargs...)
-    Dkplsr(X, fitm, K, fitm.T, xscales, yscales, kwargs, par) 
+    Dkplsr(fitm, X, K, xscales, yscales, kwargs, par) 
 end
 
 """ 
@@ -140,7 +138,6 @@ end
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
-   
 """ 
 function coef(object::Dkplsr; nlv = nothing)
     coef(object.fitm; nlv)
@@ -155,7 +152,7 @@ Compute Y-predictions from a fitted model.
    
 """ 
 function predict(object::Dkplsr, X; nlv = nothing)
-    a = nco(object.T)
+    a = nco(object.fitm.T)
     isnothing(nlv) ? nlv = a : nlv = (min(a, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     fkern = eval(Meta.parse(String(object.par.kern)))
