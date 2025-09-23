@@ -190,7 +190,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         W[:, a] .= reduce(vcat, z .* wbl)
     end
     R = W * inv(V' * W)
-    Rosaplsr(T, V, R, W, C, TT, fitm_bl, ymeans, yscales, weights, bl, par)
+    Rosaplsr(fitm_bl, T, V, R, W, C, TT, ymeans, yscales, weights, bl, par)
 end
 
 """ 
@@ -230,8 +230,7 @@ end
     predict(object::Rosaplsr, Xbl; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
-* `Xbl` : A list of blocks (vector of matrices) 
-    of X-data for which predictions are computed.
+* `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
 function predict(object::Rosaplsr, Xbl; nlv = nothing)

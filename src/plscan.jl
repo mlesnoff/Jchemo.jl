@@ -10,8 +10,8 @@ Canonical partial least squares regression (Canonical PLS).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`. See functions `blockscal`.
-* `scal` : Boolean. If `true`, each column of blocks `X` and `Y` is scaled by its uncorrected 
-    standard deviation (before the block scaling).
+* `scal` : Boolean. If `true`, each column of blocks `X` and `Y` is scaled by its uncorrected standard 
+    deviation (before the block scaling).
 
 Canonical PLS with the Nipals algorithm (Wold 1984, Tenenhaus 1998 chap.11), referred to as PLS-W2A 
 (i.e. Wold PLS mode A) in Wegelin 2000. The two blocks `X` and `Y` play a symmetric role.  After each 
@@ -170,8 +170,8 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
      end
      Rx = Wx * inv(Vx' * Wx)
      Ry = Wy * inv(Vy' * Wy)
-     Plscan(Tx, Ty, Vx, Vy, Rx, Ry, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, 
-         ymeans, yscales, weights, par)
+     Plscan(Tx, Ty, Vx, Vy, Rx, Ry, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, ymeans, 
+         yscales, weights, par)
 end
 
 """ 
@@ -249,7 +249,6 @@ function Base.summary(object::Plscan, X, Y)
     z = corm(Y, object.Ty, object.weights)
     cory2ty = DataFrame(z, string.("lv", 1:nlv))
     ## End
-    (explvarx = explvarx, explvary, cortx2ty, rvx2tx, rvy2ty, rdx2tx, rdy2ty, 
-        corx2tx, cory2ty)
+    (explvarx = explvarx, explvary, cortx2ty, rvx2tx, rvy2ty, rdx2tx, rdy2ty, corx2tx, cory2ty)
 end
 

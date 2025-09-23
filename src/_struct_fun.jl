@@ -532,13 +532,13 @@ struct Mbplswest     # mbplswest, mbwcov
 end
 
 struct Rosaplsr
+    fitm_bl::Blockscal
     T::Matrix
     V::Matrix
     R::Matrix
     W::Matrix
     C::Matrix
     TT::Vector
-    fitm_bl::Blockscal
     ymeans::Vector
     yscales::Vector
     weights::Weight
@@ -547,11 +547,11 @@ struct Rosaplsr
 end
 
 struct Soplsr
+    fitm_bl::Blockscal    
     fitm::Vector
     T::Matrix
     fit::Matrix
     b::Vector
-    fitm_bl::Blockscal    
     yscales::Vector
     par::ParSoplsr
 end

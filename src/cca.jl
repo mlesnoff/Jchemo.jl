@@ -6,16 +6,13 @@
 Canonical correlation Analysis (CCA, RCCA).
 * `X` : First block of data.
 * `Y` : Second block of data.
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
-* `bscal` : Type of block scaling. Possible values are:
-    `:none`, `:frob`. See functions `blockscal`.
+* `bscal` : Type of block scaling. Possible values are:`:none`, `:frob`. See functions `blockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
-* `scal` : Boolean. If `true`, each column of blocks `X` 
-    and `Y` is scaled by its uncorrected standard deviation 
-    (before the block scaling).
+* `scal` : Boolean. If `true`, each column of blocks `X` and `Y` is scaled by its uncorrected standard 
+    deviation (before the block scaling).
 
 This function implements a CCA algorithm using SVD decompositions and presented in Weenink 2003 section 2. 
 
@@ -27,13 +24,13 @@ and Projy * Projx, respectively, defined as follows:
 * Cxy = X'DY 
 * Projx = sqrt(D) * X * invCx * X' * sqrt(D)
 * Projy = sqrt(D) * Y * invCx * Y' * sqrt(D)
-where D is the observation (row) metric. Value `tau` = 0 can generate unstability when inverting 
-the covariance matrices. Often, a better alternative is to use an epsilon value (e.g. `tau` = 1e-8) 
-to get similar results as with pseudo-inverses.  
+where D is the observation (row) metric. Value `tau` = 0 can generate unstability when inverting the covariance 
+matrices. Often, a better alternative is to use an epsilon value (e.g. `tau` = 1e-8) to get similar results as 
+with pseudo-inverses.  
 
-After normalized (and using uniform `weights`), the scores returned by the function are expected to be 
-the same as those returned by functions `rcc` of the R packages `CCA` (González et al.) and `mixOmics` 
-(Lê Cao et al.) whith their parameters lambda1 and lambda2 set to:
+After normalized (and using uniform `weights`), the scores returned by the function are expected to be the same as 
+those returned by functions `rcc` of the R packages `CCA` (González et al.) and `mixOmics` (Lê Cao et al.) whith their 
+parameters lambda1 and lambda2 set to:
 * lambda1 = lambda2 = `tau` / (1 - `tau`) * n / (n - 1)
 
 See function `plscan` for the details on the `summary` outputs.
@@ -248,7 +245,6 @@ function Base.summary(object::Cca, X, Y)
     z = corm(Y, object.Ty, object.weights)
     cory2ty = DataFrame(z, string.("lv", 1:nlv))
     ## End
-    (explvarx = explvarx, explvary, cortx2ty, rvx2tx, rvy2ty, rdx2tx, rdy2ty, 
-        corx2tx, cory2ty)
+    (explvarx = explvarx, explvary, cortx2ty, rvx2tx, rvy2ty, rdx2tx, rdy2ty, corx2tx, cory2ty)
 end
 

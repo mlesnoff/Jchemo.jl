@@ -9,8 +9,7 @@ Robust PLSR using outlierness.
 * `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. of latent variables (LVs).
-* `prm` : Proportion of the data removed (hard rejection of outliers) 
-    for each outlierness measure.
+* `prm` : Proportion of the data removed (hard rejection of outliers) for each outlierness measure.
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD when computing the outlierness 
     and by its uncorrected standard deviation when computing weighted PCA. 
 

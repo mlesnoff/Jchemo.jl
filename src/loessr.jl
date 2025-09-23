@@ -18,16 +18,14 @@ Smaller values of `span` result in smaller local context in fitting (less smooth
 
 https://github.com/JuliaStats/Loess.jl
 
-Cleveland, W. S. (1979). Robust locally weighted regression and smoothing 
-scatterplots. Journal of the American statistical association, 74(368), 829-836. 
-DOI: 10.1080/01621459.1979.10481038
+Cleveland, W. S. (1979). Robust locally weighted regression and smoothing scatterplots. Journal of the 
+American statistical association, 74(368), 829-836. DOI: 10.1080/01621459.1979.10481038
 
-Cleveland, W. S., & Devlin, S. J. (1988). Locally weighted regression: an approach 
-to regression analysis by local fitting. Journal of the American statistical association, 
-83(403), 596-610. DOI: 10.1080/01621459.1988.10478639
+Cleveland, W. S., & Devlin, S. J. (1988). Locally weighted regression: an approach to regression analysis by 
+local fitting. Journal of the American statistical association, 83(403), 596-610. DOI: 10.1080/01621459.1988.10478639
 
-Cleveland, W. S., & Grosse, E. (1991). Computational methods for local regression. 
-Statistics and computing, 1(1), 47-62. DOI: 10.1007/BF01890836
+Cleveland, W. S., & Grosse, E. (1991). Computational methods for local regression. Statistics and computing, 
+1(1), 47-62. DOI: 10.1007/BF01890836
 
 ## Examples
 ```julia

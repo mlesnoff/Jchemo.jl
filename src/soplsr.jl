@@ -117,7 +117,7 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
             fit .+= predict(fitm[i], X).pred 
         end
     end
-    Soplsr(fitm, T, fit, b, fitm_bl, yscales, par)
+    Soplsr(fitm_bl, fitm, T, fit, b, yscales, par)
 end
 
 """ 

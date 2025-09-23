@@ -18,10 +18,8 @@ de Jong (2013).
 See function `plskern` for examples.
 
 ## References
-de Jong, S., 1993. SIMPLS: An alternative approach to 
-partial least squares regression. Chemometrics and Intelligent 
-Laboratory Systems 18, 251–263. 
-https://doi.org/10.1016/0169-7439(93)85002-X
+de Jong, S., 1993. SIMPLS: An alternative approach to partial least squares regression. Chemometrics and Intelligent 
+Laboratory Systems 18, 251–263. https://doi.org/10.1016/0169-7439(93)85002-X
 """ 
 plssimp(; kwargs...) = JchemoModel(plssimp, nothing, kwargs)
 
