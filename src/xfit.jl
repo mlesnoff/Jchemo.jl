@@ -9,10 +9,8 @@ Matrix fitting from a bilinear model (e.g. PCA).
 Keyword arguments:
 * `nlv` : Nb. components (PCs or LVs) to consider. If `nothing`, it is the maximum nb. of components.
 
-Compute an approximate of matrix `X` from a bilinear 
-model (e.g. PCA or PLS) fitted on `X`. The fitted X is 
-returned in the original scale of the X-data used to fit 
-the model `object`.
+Compute an approximate of matrix `X` from a bilinear model (e.g. PCA or PLS) fitted on `X`. The fitted X is 
+returned in the original scale of the X-data used to fit the model `object`.
 
 ## Examples 
 ```julia 

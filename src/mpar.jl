@@ -1,7 +1,6 @@
 """
     mpar(; kwargs...)
-Return a tuple with all the combinations of the parameter 
-    values defined in kwargs.
+Return a tuple with all the combinations of the parameter values defined in kwargs.
 Keyword arguments:
 * `kwargs` : Vector(s) of the parameter(s) values.
 

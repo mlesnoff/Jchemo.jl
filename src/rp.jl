@@ -8,8 +8,8 @@ Make a random projection of X-data.
 * `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. dimensions on which `X` is projected.
-* `meth` : Method of random projection. Possible values are: `:gauss`, `:li`. See the respective 
-    functions `rpmatgauss` and `rpmatli` for their keyword arguments.
+* `meth` : Method of random projection. Possible values are: `:gauss`, `:li`. See the respective functions 
+    `rpmatgauss` and `rpmatli` for their keyword arguments.
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
 ## Examples

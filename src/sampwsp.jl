@@ -11,8 +11,8 @@ Two outputs (= row indexes of the data) are returned:
 * `train` (`n` - k),
 * `test` (k). 
 
-Output `test` is built from the "Wootton, Sergent, Phan-Tan-Luu" (WSP) algorithm, assumed to generate 
-samples uniformely distributed in the `X` domain (Santiago et al. 2012).
+Output `test` is built from the "Wootton, Sergent, Phan-Tan-Luu" (WSP) algorithm, assumed to generate samples 
+uniformely distributed in the `X` domain (Santiago et al. 2012).
 
 If `recod = true`, each column x of `X` is recoded within [0, 1] and the center of the domain is the vector 
 `repeat([.5], p)`. Column x is recoded such as: 

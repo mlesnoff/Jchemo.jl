@@ -1,6 +1,6 @@
 """
-    gridscore(model::Pipeline, Xtrain, Ytrain, X, Y; score, pars = nothing, 
-        nlv = nothing, lb = nothing, verbose = false) 
+    gridscore(model::Pipeline, Xtrain, Ytrain, X, Y; score, pars = nothing, nlv = nothing, lb = nothing, 
+        verbose = false) 
 Test-set validation of a model pipeline over a grid of parameters.
 * `model` : A pipeline of models to evaluate.
 * `Xtrain` : Training X-data (n, p).
@@ -8,18 +8,13 @@ Test-set validation of a model pipeline over a grid of parameters.
 * `X` : Validation X-data (m, p).
 * `Y` : Validation Y-data (m, q).
 Keyword arguments: 
-* `score` : Function computing the prediction 
-    score (e.g. `rmsep`).
-* `pars` : tuple of named vectors of same length defining 
-    the parameter combinations (e.g. output of function `mpar`).
+* `score` : Function computing the prediction score (e.g. `rmsep`).
+* `pars` : tuple of named vectors of same length defining the parameter combinations (e.g. output of function `mpar`).
 * `verbose` : If `true`, predicting information are printed.
-* `nlv` : Value, or vector of values, of the nb. of latent
-    variables (LVs).
-* `lb` : Value, or vector of values, of the ridge 
-    regularization parameter "lambda".
+* `nlv` : Value, or vector of values, of the nb. of latent variables (LVs).
+* `lb` : Value, or vector of values, of the ridge regularization parameter "lambda".
 
-In the present version of the function, only the last model 
-of the pipeline (= the final predictor) is validated.
+In the present version of the function, only the last model of the pipeline (= the final predictor) is validated.
 
 For other details, see function `gridscore` for simple models. 
 

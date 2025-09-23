@@ -9,13 +9,10 @@ Matrix of 2-D plots of successive latent variables (PCA, PLS, etc.).
 * `group` : Categorical variable defining groups (n). 
 Keyword arguments:
 * `size` : Size (horizontal, vertical) of the figure.
-* `shape` : A tuple of length = 2 defining the shape of the figure: nb. rows and columns of 
-    the matriice of plots. 
+* `shape` : A tuple of length = 2 defining the shape of the figure: nb. rows and columns of the matrice of plots. 
 * `start` : Start of the numbering of the LVs in the plots.
-* `color` : Set color(s). If `group` if used, `color` must be 
-    a vector of same length as the number of levels in `group`.
-*  `zeros` : Boolean. Draw horizontal and vertical axes passing 
-    through origin (0, 0).
+* `color` : Set color(s). If `group` if used, `color` must be a vector of same length as the number of levels in `group`.
+*  `zeros` : Boolean. Draw horizontal and vertical axes passing through origin (0, 0).
 *  `xlabel` : Label for the x-axis.
 *  `ylabel` : Label for the y-axis.
 *  `zlabel` : Label for the z-axis.

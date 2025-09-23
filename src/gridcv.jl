@@ -1,25 +1,22 @@
 """
-    gridcv(model, X, Y; segm, score, pars = nothing, nlv = nothing, lb = nothing, 
-        verbose = false)
+    gridcv(model, X, Y; segm, score, pars = nothing, nlv = nothing, lb = nothing, verbose = false)
 Cross-validation (CV) of a model over a grid of parameters.
 * `model` : Model to evaluate.
 * `X` : Training X-data (n, p).
 * `Y` : Training Y-data (n, q).
 Keyword arguments: 
-* `segm` : Segments of observations used for the CV (output of functions 
-    [`segmts`](@ref), [`segmkf`](@ref), etc.).
+* `segm` : Segments of observations used for the CV (output of functions [`segmts`](@ref), [`segmkf`](@ref), etc.).
 * `score` : Function computing the prediction score (e.g. `rmsep`).
-* `pars` : tuple of named vectors of same length defining the parameter combinations 
-    (e.g. output of function `mpar`).
+* `pars` : tuple of named vectors of same length defining the parameter combinations (e.g. output of function `mpar`).
 * `verbose` : If `true`, predicting information are printed.
 * `nlv` : Value, or vector of values, of the nb. of latent variables (LVs).
 * `lb` : Value, or vector of values, of the ridge regularization parameter "lambda".
 
-The function is used for grid-search: it computed a prediction score (= error rate) for the 
-specified `model` over the combinations of parameters defined in `pars`. 
+The function is used for grid-search: it computed a prediction score (= error rate) for the specified `model` over 
+the combinations of parameters defined in `pars`. 
     
-For models based on LV or ridge regularization, using arguments `nlv` and `lb` allow faster 
-computations than including these parameters in argument `pars. See the examples.   
+For models based on LV or ridge regularization, using arguments `nlv` and `lb` allow faster computations than including 
+these parameters in argument `pars. See the examples.   
 
 The function returns two outputs: 
 * `res` : mean results

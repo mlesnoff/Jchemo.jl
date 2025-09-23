@@ -18,8 +18,8 @@ where:
 
 The cutoff is computed with non-parametric heuristics. Noting [d] the SD- or OD-vector:
 * If `cut` = `:mad`, then cutoff = MED([d]) + `cri` * MAD([d]). 
-* If `cut` = `:q`, then cutoff is estimated from the empirical cumulative density function 
-  computed on [d], for a given risk-I (`risk`).
+* If `cut` = `:q`, then cutoff is estimated from the empirical cumulative density function computed on [d], 
+    for a given risk-I (`risk`).
 
 See function `outod` for examples.
 

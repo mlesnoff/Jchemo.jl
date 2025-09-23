@@ -14,16 +14,16 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of blocks `X` and `Y` is scaled by its uncorrected standard 
     deviation (before the block scaling).
  
-See e.g. Bougeard et al. 2011a,b and Legendre & Legendre 2012. Let Y_hat be the fitted values 
-of the regression of `Y` on `X`. The scores `Ty` are the PCA scores of Y_hat. The scores `Tx` are 
-the fitted values of the regression of `Ty` on `X`.
+See e.g. Bougeard et al. 2011a,b and Legendre & Legendre 2012. Let Y_hat be the fitted values of the regression 
+of `Y` on `X`. The scores `Ty` are the PCA scores of Y_hat. The scores `Tx` are the fitted values of the 
+regression of `Ty` on `X`.
 
 A continuum regularization is available.  After block centering and scaling, the covariances 
 matrices are computed as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
-where D is the observation (row) metric. Value `tau` = 0 can generate unstability when 
-inverting the covariance matrices. A better alternative is generally to use an epsilon value 
-(e.g. `tau` = 1e-8) to get similar results as with pseudo-inverses.  
+where D is the observation (row) metric. Value `tau` = 0 can generate unstability when inverting the covariance 
+matrices. A better alternative is generally to use an epsilon value (e.g. `tau` = 1e-8) to get similar results 
+as with pseudo-inverses.  
 
 ## References
 Bougeard, S., Qannari, E.M., Lupo, C., Chauvin, C., 2011-a. Multiblock redundancy analysis from a user's 
@@ -150,8 +150,7 @@ function rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     # End
     fweight!(Tx, invsqrtw)
     fweight!(Ty, invsqrtw)   
-    Rasvd(Tx, Ty, Bx, Wy, lambda, bscales, xmeans, xscales, ymeans, yscales, 
-        weights, par)
+    Rasvd(Tx, Ty, Bx, Wy, lambda, bscales, xmeans, xscales, ymeans, yscales, weights, par)
 end
 
 """ 
@@ -235,6 +234,5 @@ function Base.summary(object::Rasvd, X, Y)
     z = corm(Y, object.Ty, object.weights)
     cory2ty = DataFrame(z, string.("lv", 1:nlv))
     ## End
-    (explvarx = explvarx, explvary, cortx2ty, rvx2tx, rvy2ty, rdx2tx, rdy2ty, 
-        corx2tx, cory2ty)
+    (explvarx = explvarx, explvary, cortx2ty, rvx2tx, rvy2ty, rdx2tx, rdy2ty, corx2tx, cory2ty)
 end

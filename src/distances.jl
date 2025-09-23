@@ -4,8 +4,7 @@ Squared Euclidean distances between the rows of `X` and `Y`.
 * `X` : Data (n, p).
 * `Y` : Data (m, p).
 
-For `X`(n, p) and `Y` (m, p), the function returns 
-an object (n, m) with:
+For `X`(n, p) and `Y` (m, p), the function returns an object (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
 
 ## Examples
@@ -34,12 +33,10 @@ Squared Mahalanobis distances between
     the rows of `X` and `Y`.
 * `X` : Data (n, p).
 * `Y` : Data (m, p).
-* `Sinv` : Inverse of a covariance matrix S.
-    If not given, S is computed as the uncorrected 
+* `Sinv` : Inverse of a covariance matrix S. If not given, S is computed as the uncorrected 
     covariance matrix of `X`.
 
-When `X` and `Y` are (n, p) and (m, p), repectively, it returns 
-an object (n, m) with:
+When `X` and `Y` are (n, p) and (m, p), repectively, it returns an object (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
 
 ## Examples
@@ -78,17 +75,14 @@ end
 """
     mahsqchol(X, Y)
     mahsqchol(X, Y, Uinv)
-Compute the squared Mahalanobis distances (with a Cholesky factorization)
-between the observations (rows) of `X` and `Y`.
+Compute the squared Mahalanobis distances (with a Cholesky factorization) between the 
+    observations (rows) of `X` and `Y`.
 * `X` : Data (n, p).
 * `Y` : Data (m, p).
-* `Uinv` : Inverse of the upper matrix of a Cholesky factorization 
-    of a covariance matrix S.
-    If not given, the factorization is done on S, 
-    the uncorrected covariance matrix of `X`.
+* `Uinv` : Inverse of the upper matrix of a Cholesky factorization of a covariance matrix S.
+    If not given, the factorization is done on S, the uncorrected covariance matrix of `X`.
 
-When `X` and `Y` are (n, p) and (m, p), repectively, it returns 
-an object (n, m) with:
+When `X` and `Y` are (n, p) and (m, p), repectively, it returns an object (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
 
 ## Examples

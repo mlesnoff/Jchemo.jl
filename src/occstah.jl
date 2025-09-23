@@ -10,8 +10,7 @@ Keyword arguments:
 * `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
 * `scal` : Boolean. If `true`, each column of `X` is scaled such as in function `outstah`.
 
-In this method, the outlierness `d` of a given observation is the Stahel-Donoho outlierness 
-(see function `outstah`).
+In this method, the outlierness `d` of a given observation is the Stahel-Donoho outlierness (see function `outstah`).
 
 See function `occsd` for details on the outputs.
 

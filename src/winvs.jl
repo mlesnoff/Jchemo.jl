@@ -6,22 +6,21 @@ Compute weights from distances using an inverse scaled exponential function.
 Keyword arguments:
 * `h` : A scaling positive scalar defining the shape of the weight function. 
 * `criw` : A positive scalar defining outliers in the distances vector `d`.
-* `squared`: If `true`, distances are replaced by the squared distances; the weight function 
-    is then a Gaussian (RBF) kernel function.
+* `squared`: If `true`, distances are replaced by the squared distances; the weight function is then a Gaussian 
+    (RBF) kernel function.
 
 Weights are computed by: 
 * exp(-`d` / (`h` * MAD(`d`)))
-or are set to 0 for extreme (potentially outlier) distances such as `d` > Median(`d`) + criw * MAD(`d`). 
-Finally, weights are standardized to their maximal value. This is an adaptation of the weight function 
-presented in Kim et al. 2011.
+or are set to 0 for extreme (potentially outlier) distances such as `d` > Median(`d`) + criw * MAD(`d`). Finally, 
+weights are standardized to their maximal value. This is an adaptation of the weight function presented in Kim et al. 2011.
 
 The weights decrease when distances increase. Lower is h, sharper is the decreasing function.
 
 ## References 
 
-Kim S, Kano M, Nakagawa H, Hasebe S. Estimation of active pharmaceutical ingredients content using locally 
-weighted partial least squares and statistical wavelength selection. Int J Pharm. 2011;
-421(2):269-274. https://doi.org/10.1016/j.ijpharm.2011.10.007
+Kim S, Kano M, Nakagawa H, Hasebe S. Estimation of active pharmaceutical ingredients content using locally weighted 
+partial least squares and statistical wavelength selection. Int J Pharm. 2011; 421(2):269-274. 
+https://doi.org/10.1016/j.ijpharm.2011.10.007
 
 ## Examples
 ```julia

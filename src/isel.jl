@@ -17,10 +17,10 @@ The principle is as follows:
 * The model is fitted on the calibration set and used to compute the predictions from Xval, firtsly accounting 
     for all the p variables (reference) and secondly for each (separately) of the `nint` intervals. The error 
     rates are computed by comparing the predictions to Yval. The interval-variable importance is the difference between 
-    the reference error rate and the error rate computed for each intefval.
+    the reference error rate and the error rate computed for each interval.
 
-The overall process above is replicated `rep` times. The outputs provided by the function are the average 
-results (i.e. over the `rep` replications;`imp`) and the results per replication (`res_rep`).
+The overall process above is replicated `rep` times. The outputs provided by the function are the average results 
+(i.e. over the `rep` replications;`imp`) and the results per replication (`res_rep`).
 
 Note: the function is inplace (modifies object `model`).
 

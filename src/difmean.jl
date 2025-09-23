@@ -4,16 +4,14 @@ Compute a 1-D detrimental matrix by difference of the column-means of two X-data
 * `X1` : Spectra (n1, p).
 * `X2` : Spectra (n2, p).
 Keyword arguments:
-* `normx` : Boolean. If `true`, the column-means vectors 
-    of `X1` and `X2` are normed before computing their difference.
+* `normx` : Boolean. If `true`, the column-means vectors of `X1` and `X2` are normed before computing 
+    their difference.
 
-The function returns a matrix `D` (1, p) computed by the difference 
-between two mean-spectra, i.e. the column-means of `X1` and `X2`. 
+The function returns a matrix `D` (1, p) computed by the difference between two mean-spectra, i.e. the 
+column-means of `X1` and `X2`. 
 
-`D` is assumed to contain the detrimental information that can 
-be removed (by orthogonalization) from `X1` and `X2`  for 
-calibration transfer. For instance, `D` can be used as input of 
-function `eposvd`. 
+`D` is assumed to contain the detrimental information that can be removed (by orthogonalization) 
+from `X1` and `X2` for calibration transfer. For instance, `D` can be used as input of function `eposvd`. 
 
 ## Examples
 ```julia

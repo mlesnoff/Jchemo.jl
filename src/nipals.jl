@@ -14,22 +14,18 @@ The function finds:
 * {u, v, sv} = argmin(||X - u * sv * v'||)
 with the constraints:
 * ||u|| = ||v|| = 1
-using the alternating least squares algorithm to compute 
-SVD (Gabriel & Zalir 1979).
+using the alternating least squares algorithm to compute SVD (Gabriel & Zalir 1979).
 
 At the end, X ~ u * sv * v', where:
 * u : left singular vector (u * sv = scores)
 * v : right singular vector (loadings)
 * sv : singular value.
 
-When NIPALS is used on sequentially deflated matrices, 
-vectors u and v can loose orthogonality due to accumulation 
-of rounding errors. Orthogonality can be rebuilt from the 
-Gram-Schmidt method (arguments `UUt` and `VVt`). 
+When NIPALS is used on sequentially deflated matrices, vectors u and v can loose orthogonality due to accumulation 
+of rounding errors. Orthogonality can be rebuilt from the Gram-Schmidt method (arguments `UUt` and `VVt`). 
 
 ## References
-K.R. Gabriel, S. Zamir, Lower rank approximation of matrices
-by least squares with any choice of weights, 
+K.R. Gabriel, S. Zamir, Lower rank approximation of matrices by least squares with any choice of weights, 
 Technometrics 21 (1979) 489–498.
 
 ## Examples

@@ -1,8 +1,8 @@
 """
     detrend_arpls(; kwargs...)
     detrend_arpls(X; kwargs...)
-Baseline correction of each row of X-data by asymmetrically
-    reweighted penalized least squares smoothing (ARPLS).
+Baseline correction of each row of X-data by asymmetrically reweighted penalized least 
+    squares smoothing (ARPLS).
 * `X` : X-data (n, p).
 Keyword arguments:
 * `lb` : Penalizing (smoothness) parameter "lambda".
@@ -10,14 +10,13 @@ Keyword arguments:
 * `maxit` : Maximum number of iterations.
 * `verbose` : If `true`, nb. iterations are printed.
 
-De-trend transformation: the function fits a baseline by ARPLS (see Baek et al. 2015 section 3)
-for each observation and returns the residuals (= signals corrected from the baseline).
+De-trend transformation: the function fits a baseline by ARPLS (see Baek et al. 2015 section 3) for each observation 
+and returns the residuals (= signals corrected from the baseline).
 
 ## References
 
-Baek, S.-J., Park, A., Ahn, Y.-J., Choo, J., 2015. Baseline correction using 
-asymmetrically reweighted penalized least squares smoothing. Analyst 140, 250–257. 
-https://doi.org/10.1039/C4AN01061B
+Baek, S.-J., Park, A., Ahn, Y.-J., Choo, J., 2015. Baseline correction using asymmetrically reweighted penalized 
+least squares smoothing. Analyst 140, 250–257. https://doi.org/10.1039/C4AN01061B
 
 ## Examples
 ```julia

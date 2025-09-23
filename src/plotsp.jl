@@ -1,15 +1,12 @@
 """
-    plotsp(X, wl = 1:nco(X); size = (500, 300), nsamp = nro(X), color = nothing, 
-        kwargs...)
+    plotsp(X, wl = 1:nco(X); size = (500, 300), nsamp = nro(X), color = nothing, kwargs...)
 Plotting spectra.
 * `X` : X-data (n, p).
 * `wl` : Column names of `X`. Must be numeric.
 Keyword arguments:
 * `size` : Size (horizontal, vertical) of the figure.
-* `nsamp` : Nb. spectra (X-rows) to plot. If `nothing`, 
-    all spectra are plotted.
-* `color` : Set a unique color (and eventually transparency) 
-    to the spectra.
+* `nsamp` : Nb. spectra (X-rows) to plot. If `nothing`, all spectra are plotted.
+* `color` : Set a unique color (and eventually transparency) to the spectra.
 * `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.
 
 Plot of the rows (e.g. spectrum) of `X`.

@@ -1,19 +1,15 @@
 """
-    plotgrid(indx::AbstractVector, r; size = (500, 300), step = 5, 
-        color = nothing, kwargs...)
-    plotgrid(indx::AbstractVector, r, group; size = (700, 350), 
-        step = 5, color = nothing, leg = true, leg_title = "Group", kwargs...)
+    plotgrid(indx::AbstractVector, r; size = (500, 300), step = 5, color = nothing, kwargs...)
+    plotgrid(indx::AbstractVector, r, group; size = (700, 350), step = 5, color = nothing, leg = true, 
+        leg_title = "Group", kwargs...)
 Plot error/performance rates of a model.
-* `indx` : A numeric variable representing the grid of 
-    model parameters, e.g. the nb. LVs if PLSR models.
+* `indx` : A numeric variable representing the grid of model parameters, e.g. the nb. LVs if PLSR models.
 * `r` : The error/performance rate.
 Keyword arguments: 
-* `group` : Categorical variable defining groups. 
-    A separate line is plotted for each level of `group`.
+* `group` : Categorical variable defining groups. A separate line is plotted for each level of `group`.
 * `size` : Size (horizontal, vertical) of the figure.
 * `step` : Step used for defining the xticks.
-* `color` : Set color. If `group` if used, must be a vector 
-    of same length as the number of levels in `group`.
+* `color` : Set color. If `group` if used, must be a vector of same length as the number of levels in `group`.
 * `leg` : Boolean. If `group` is used, display a legend or not.
 * `leg_title` : Title of the legend.
 * `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.

@@ -5,24 +5,20 @@
     dmnorm(mu, S; kwargs...)
     dmnorm!(mu::Vector, S::Matrix; kwargs...)
 Normal probability density estimation.
-* `X` : X-data (n, p) used to estimate the mean `mu` and 
-    the covariance matrix `S`. If `X` is not given, 
+* `X` : X-data (n, p) used to estimate the mean `mu` and the covariance matrix `S`. If `X` is not given, 
     `mu` and `S` must be provided in `kwargs`.
 * `mu` : Mean vector of the normal distribution. 
 * `S` : Covariance matrix of the Normal distribution.
 Keyword arguments:
-* `simpl` : Boolean. If `true`, the constant term and 
-    the determinant in the Normal density formula are set to 1.
+* `simpl` : Boolean. If `true`, the constant term and the determinant in the Normal density formula 
+    are set to 1.
 
 Data `X` can be univariate (p = 1) or multivariate (p > 1). See examples.
 
-When `simple` = `true`, the determinant of the covariance matrix 
-(object `detS`) and the constant (2 * pi)^(-p / 2) (object `cst`) 
-in the density formula are set to 1. The function returns a pseudo 
-density that resumes to exp(-d / 2), where d is the squared Mahalanobis 
-distance to the center `mu`. This can for instance be useful when the number 
-of columns (p) of `X` becomes too large, with the possible consequences
-that:
+When `simple` = `true`, the determinant of the covariance matrix (object `detS`) and the constant 
+(2 * pi)^(-p / 2) (object `cst`) in the density formula are set to 1. The function returns a pseudo density 
+that resumes to exp(-d / 2), where d is the squared Mahalanobis distance to the center `mu`. This can for instance 
+be useful when the number of columns (p) of `X` becomes too large, with the possible consequences that:
 * `detS` tends to 0 or, conversely, to infinity;
 * `cst` tends to 0,
 which makes impossible to compute the true density. 

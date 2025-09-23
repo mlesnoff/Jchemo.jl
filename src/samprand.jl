@@ -4,8 +4,7 @@
 Build training vs. test sets by random sampling.  
 * `n` : Total nb. of observations.
 * `group` : A vector (`n`) defining groups of observations.
-* `k` : Nb. test observations, or nb. test groups if `group` is used, returned in each 
-    validation segment.
+* `k` : Nb. test observations, or nb. test groups if `group` is used, returned in each validation segment.
 Keyword arguments:
 * `seed` : Eventual seed for the `Random.MersenneTwister` generator. 
 
@@ -13,10 +12,9 @@ Two outputs are returned (= row indexes of the data):
 * `train` (`n` - `k`),
 * `test` (`k`). 
 
-If `group` is used (must be a vector of length `n`), the function samples groups of observations instead 
-of single observations. Such a group-sampling is required when the data are structured by groups 
-and when the response to predict is correlated within groups. This prevents underestimation of the 
-generalization error.
+If `group` is used (must be a vector of length `n`), the function samples groups of observations instead of single 
+observations. Such a group-sampling is required when the data are structured by groups and when the response to predict 
+is correlated within groups. This prevents underestimation of the generalization error.
 
 ## Examples
 ```julia

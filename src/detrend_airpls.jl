@@ -1,27 +1,24 @@
 """
     detrend_airpls(; kwargs...)
     detrend_airpls(X; kwargs...)
-Baseline correction of each row of X-data by adaptive iteratively 
-    reweighted penalized least squares algorithm (AIRPLS).
+Baseline correction of each row of X-data by adaptive iteratively reweighted penalized least 
+    squares algorithm (AIRPLS).
 * `X` : X-data (n, p).
 Keyword arguments:
 * `lb` : Penalizing (smoothing) parameter "lambda".
 * `maxit` : Maximum number of iterations.
 * `verbose` : If `true`, nb. iterations are printed.
 
-De-trend transformation: the function fits a baseline by AIRPLS (see Zhang et al. 2010, 
-and Baek et al. 2015 section 2) for each observation and returns the residuals 
-(= signals corrected from the baseline).
+De-trend transformation: the function fits a baseline by AIRPLS (see Zhang et al. 2010, and Baek et al. 2015 
+section 2) for each observation and returns the residuals (= signals corrected from the baseline).
 
 ## References
 
-Baek, S.-J., Park, A., Ahn, Y.-J., Choo, J., 2015. Baseline correction using 
-asymmetrically reweighted penalized least squares smoothing. Analyst 140, 250–257. 
-https://doi.org/10.1039/C4AN01061B
+Baek, S.-J., Park, A., Ahn, Y.-J., Choo, J., 2015. Baseline correction using asymmetrically reweighted penalized 
+least squares smoothing. Analyst 140, 250–257. https://doi.org/10.1039/C4AN01061B
 
-Zhang, Z.-M., Chen, S., Liang, Y.-Z., 2010. Baseline correction using adaptive 
-iteratively reweighted penalized least squares. Analyst 135, 1138–1146. 
-https://doi.org/10.1039/B922045C
+Zhang, Z.-M., Chen, S., Liang, Y.-Z., 2010. Baseline correction using adaptive iteratively reweighted penalized 
+least squares. Analyst 135, 1138–1146. https://doi.org/10.1039/B922045C
 
 https://github.com/zmzhang/airPLS/tree/master 
 

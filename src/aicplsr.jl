@@ -5,8 +5,7 @@ Compute Akaike's (AIC) and Mallows's (Cp) criteria for univariate PLSR models.
 * `y` : Univariate Y-data.
 Keyword arguments:
 * Same arguments as those of function `cglsr`.
-* `alpha` : Coefficient multiplicating
-    the model complexity (df) to compute AIC. 
+* `alpha` : Coefficient multiplicating the model complexity (df) to compute AIC. 
 
 The function uses function `dfplsr_cg`. 
 
@@ -14,12 +13,12 @@ The function uses function `dfplsr_cg`.
 Hansen, P.C., 1998. Rank-Deficient and Discrete Ill-Posed Problems, Mathematical Modeling and Computation. 
 Society for Industrial and Applied Mathematics. https://doi.org/10.1137/1.9780898719697
 
-Hansen, P.C., 2008. Regularization Tools version 4.0 for Matlab 7.3. 
-Numer Algor 46, 189–194. https://doi.org/10.1007/s11075-007-9136-9
+Hansen, P.C., 2008. Regularization Tools version 4.0 for Matlab 7.3. Numer Algor 46, 189–194. 
+https://doi.org/10.1007/s11075-007-9136-9
 
-Lesnoff, M., Roger, J.-M., Rutledge, D.N., 2021. Monte Carlo methods for estimating 
-Mallows’s Cp and AIC criteria for PLSR models. Illustration on agronomic spectroscopic NIR data. 
-Journal of Chemometrics n/a, e3369. https://doi.org/10.1002/cem.3369
+Lesnoff, M., Roger, J.-M., Rutledge, D.N., 2021. Monte Carlo methods for estimating Mallows’s Cp and AIC criteria 
+for PLSR models. Illustration on agronomic spectroscopic NIR data. Journal of Chemometrics n/a, e3369. 
+https://doi.org/10.1002/cem.3369
 
 ## Examples
 ```julia

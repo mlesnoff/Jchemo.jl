@@ -10,13 +10,13 @@ Multiblock ROSA PLSR (Liland et al. 2016).
 * `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and `Y` is scaled by its uncorrected 
-    standard deviation (before the block scaling).
+* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and `Y` is scaled by its uncorrected standard 
+    deviation (before the block scaling).
 
 The function has the following differences with the original algorithm of Liland et al. (2016):
 * Scores T (latent variables LVs) are not normed to 1.
-* Multivariate `Y` is allowed. In such a case, the squared residuals are summed over the columns 
-    to find the winning block for each global LV (therefore, Y-columns should have the same scale).
+* Multivariate `Y` is allowed. In such a case, the squared residuals are summed over the columns to find the 
+    winning block for each global LV (therefore, Y-columns should have the same scale).
 
 ## References
 Liland, K.H., Næs, T., Indahl, U.G., 2016. ROSA — a fast extension of partial least squares regression 

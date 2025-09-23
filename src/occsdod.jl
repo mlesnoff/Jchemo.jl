@@ -1,8 +1,7 @@
 """
     occsdod(; kwargs...)
     occsdod(object, X; kwargs...)
-One-class classification using a consensus between PCA/PLS score and orthogonal 
-    distances (SD and OD).
+One-class classification using a consensus between PCA/PLS score and orthogonal distances (SD and OD).
 * `fitm` : The preliminary model (e.g. object `fitm` returned by function `pcasvd`) that was fitted on 
     the training data assumed to represent the reference class.
 * `X` : Training X-data (n, p), on which was fitted the model `fitm`.

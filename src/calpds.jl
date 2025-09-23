@@ -5,16 +5,14 @@ Piecewise direct standardization (PDS) for calibration transfer of spectral data
 * `X1` : Spectra (n, p) to transfer to the target.
 * `X2` : Target spectra (n, p).
 Keyword arguments:
-* `npoint` : Half-window size (nb. points left or right 
-    to the given wavelength). 
+* `npoint` : Half-window size (nb. points left or right to the given wavelength). 
 * `algo` : Function used as transfer model.  
 * `kwargs` : Optional arguments for `algo`.
 
 `X1` and `X2` must represent the same n standard samples.
 
-The objective is to transform spectra `X1` to new spectra as close 
-as possible as the target `X2`. Method PDS fits models 
-(defined in `algo`) that predict `X2` from `X1`.
+The objective is to transform spectra `X1` to new spectra as close as possible as the target `X2`. 
+Method PDS fits models (defined in `algo`) that predict `X2` from `X1`.
 
 The window used in `X1` to predict wavelength "i" in `X2` is:
 

@@ -10,14 +10,13 @@ Keyword arguments:
 
 `X1` and `X2` must represent the same n samples ("standards").
 
-The objective is to transform spectra `X1` to new spectra as close 
-as possible as the target `X2`. Method DS fits a model 
-(defined in `algo`) that predicts `X2` from `X1`.
+The objective is to transform spectra `X1` to new spectra as close as possible as the target `X2`. 
+Method DS fits a model (defined in `algo`) that predicts `X2` from `X1`.
 
 ## References
 
-Y. Wang, D. J. Veltkamp, and B. R. Kowalski, “Multivariate Instrument Standardization,” 
-Anal. Chem., vol. 63, no. 23, pp. 2750–2756, 1991, doi: 10.1021/ac00023a016.
+Y. Wang, D. J. Veltkamp, and B. R. Kowalski, “Multivariate Instrument Standardization,” Anal. Chem., vol. 63, 
+no. 23, pp. 2750–2756, 1991, doi: 10.1021/ac00023a016.
 
 ## Examples
 ```julia

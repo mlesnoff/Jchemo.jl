@@ -99,8 +99,7 @@ end
 
 """
     rmsep(pred, Y)
-Compute the square root of the mean of the squared 
-    prediction errors (RMSEP).
+Compute the square root of the mean of the squared prediction errors (RMSEP).
 * `pred` : Predictions.
 * `Y` : Observed data.
 
@@ -130,8 +129,7 @@ rmsep(pred, Y) = sqrt.(msep(pred, Y))
 
 """
     rmsepstand(pred, Y)
-Compute the standardized square root of the mean of the squared prediction errors 
-    (RMSEP_stand).
+Compute the standardized square root of the mean of the squared prediction errors (RMSEP_stand).
 * `pred` : Predictions.
 * `Y` : Observed data.
 
@@ -234,19 +232,14 @@ end
 
 """
     sep(pred, Y)
-Compute the corrected SEP ("SEP_c"), i.e. the standard deviation of 
-    the prediction errors.
+Compute the corrected SEP ("SEP_c"), i.e. the standard deviation of the prediction errors.
 * `pred` : Predictions.
 * `Y` : Observed data.
 
 ## References
-Bellon-Maurel, V., Fernandez-Ahumada, E., Palagos, B., 
-Roger, J.-M., McBratney, A., 2010. Critical review of 
-chemometric indicators commonly used for assessing the 
-quality of the prediction of soil attributes by NIR 
-spectroscopy. TrAC Trends in Analytical Chemistry 29, 
-1073–1081. 
-https://doi.org/10.1016/j.trac.2010.05.006
+Bellon-Maurel, V., Fernandez-Ahumada, E., Palagos, B., Roger, J.-M., McBratney, A., 2010. Critical review of 
+chemometric indicators commonly used for assessing the quality of the prediction of soil attributes by NIR 
+spectroscopy. TrAC Trends in Analytical Chemistry 29, 1073–1081. https://doi.org/10.1016/j.trac.2010.05.006
 
 ## Examples
 ```julia
@@ -349,11 +342,8 @@ Compute the R2 coefficient.
 
 The rate R2 is calculated by:
 * R2 = 1 - MSEP(current model) / MSEP(null model) 
-where the "null model" is the overall mean. 
-For predictions over CV or test sets, and/or for 
-non linear models, it can be different from the square 
-of the correlation coefficient (`cor2`) between the true 
-data and the predictions. 
+where the "null model" is the overall mean. For predictions over CV or test sets, and/or for non linear models, 
+it can be different from the square of the correlation coefficient (`cor2`) between the true data and the predictions. 
 
 ## Examples
 ```julia
@@ -390,13 +380,11 @@ Compute the ratio "deviation to model performance" (RPD).
 * `pred` : Predictions.
 * `Y` : Observed data.
 
-This is the ratio of the deviation to the model performance 
-to the deviation, defined by:
+This is the ratio of the deviation to the model performance to the deviation, defined by:
 * RPD = Std(Y) / RMSEP
 where Std(Y) is the standard deviation. 
 
-Since Std(Y) = RMSEP(null model) where the null model is 
-the simple average, this also gives:
+Since Std(Y) = RMSEP(null model) where the null model is the simple average, this also gives:
 * RPD = RMSEP(null model) / RMSEP 
 
 ## Examples

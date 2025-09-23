@@ -172,8 +172,8 @@ end
 Finite differences (discrete derivates) for each row of X-data. 
 * `X` : X-data (n, p).
 Keyword arguments:
-* `npoint` : Nb. points involved in the window for the finite differences. The range of 
-    the window (= nb. intervals of two successive colums) is npoint - 1.
+* `npoint` : Nb. points involved in the window for the finite differences. The range of the window (= nb. intervals 
+of two successive colums) is npoint - 1.
 
 The method reduces the column-dimension: 
 * (n, p) --> (n, p - npoint + 1). 
@@ -242,10 +242,10 @@ end
 Sampling spectra by interpolation.
 * `X` : Matrix (n, p) of spectra (rows).
 Keyword arguments:
-* `wl` : Values representing the column "names" of `X`. Must be a numeric vector of length p, 
+* `wl` : Values representing the column "names" of `X`. Must be a numeric vector of length p, or an AbstractRange, 
+    with increasing values.
+* `wlfin` : Final values (within the range of `wl`) where to interpolate each spectrum. Must be a numeric vector, 
     or an AbstractRange, with increasing values.
-* `wlfin` : Final values (within the range of `wl`) where to interpolate
-    each spectrum. Must be a numeric vector, or an AbstractRange, with increasing values.
 
 The function implements a cubic spline interpolation using package DataInterpolations.jl.
 
@@ -339,10 +339,9 @@ The centered kernel is `ones(npoint) / npoint`. Each returned point is located o
 Assume a signal x of length p (row of `X`) correponding to a vector wl of p wavelengths (or other indexes). 
 
 If `npoint = 3`, the  kernel is kern = [.33, .33, .33], and: 
-- The output value at index i = 4 is: dot(kern, [x[3], x[4], x[5]]).
-    The output wavelength is: wl[4]
-- The output value at index i = 1 is: dot(kern, [x[1], x[1], x[2]]) 
-    (padding). The corresponding wavelength is: wl[1].
+- The output value at index i = 4 is: dot(kern, [x[3], x[4], x[5]]). The output wavelength is: wl[4]
+- The output value at index i = 1 is: dot(kern, [x[1], x[1], x[2]]) (padding). The corresponding wavelength 
+    is: wl[1].
 
 If `npoint = 4`, the  kernel is kern = [.25, .25, .25, .25], and: 
 - The output value at index i = 4 is: dot(kern, [x[3], x[4], x[5], x[6]]). The corresponding wavelength 
@@ -427,9 +426,8 @@ If `deriv` = 0, there is no derivation (only polynomial smoothing).
 The case `degree` = 0 (i.e. simple moving average) is not allowed by the funtion.
 
 ## References
-Luo, J., Ying, K., Bai, J., 2005. Savitzky–Golay smoothing and differentiation 
-filter for even number data. Signal Processing 85, 1429–1434.
-https://doi.org/10.1016/j.sigpro.2005.02.002
+Luo, J., Ying, K., Bai, J., 2005. Savitzky–Golay smoothing and differentiation filter for even number data. Signal 
+Processing 85, 1429–1434. https://doi.org/10.1016/j.sigpro.2005.02.002
 
 ## Examples
 ```julia
@@ -462,15 +460,13 @@ end
 Savitzky-Golay derivation and smoothing of each row of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `npoint` : Size of the filter (nb. points involved in the kernel). Must be odd 
-    and >= 3. The half-window size is nhwindow = (`npoint` - 1) / 2.
+* `npoint` : Size of the filter (nb. points involved in the kernel). Must be odd and >= 3. The half-window size 
+    is nhwindow = (`npoint` - 1) / 2.
 * `deriv` : Derivation order. Must be: 0 <= `deriv` <= `degree`.
 * `degree` : Degree of the smoothing polynom. Must be: 1 <= `degree` <= `npoint` - 1.
 
-The smoothing is computed by convolution (with padding), using 
-function imfilter of package ImageFiltering.jl. Each returned point is 
-located on the center of the kernel. The kernel is computed with 
-function `savgk`.
+The smoothing is computed by convolution (with padding), using function imfilter of package ImageFiltering.jl. 
+Each returned point is located on the center of the kernel. The kernel is computed with function `savgk`.
 
 The function returns a matrix (n, p).
 
@@ -478,11 +474,11 @@ The function returns a matrix (n, p).
 Luo, J., Ying, K., Bai, J., 2005. Savitzky–Golay smoothing and differentiation filter for 
 even number data. Signal Processing 85, 1429–1434. https://doi.org/10.1016/j.sigpro.2005.02.002
 
-Savitzky, A., Golay, M.J.E., 2002. Smoothing and Differentiation of Data by Simplified Least 
-Squares Procedures. [WWW Document]. https://doi.org/10.1021/ac60214a047
+Savitzky, A., Golay, M.J.E., 2002. Smoothing and Differentiation of Data by Simplified Least Squares Procedures. 
+[WWW Document]. https://doi.org/10.1021/ac60214a047
 
-Schafer, R.W., 2011. What Is a Savitzky-Golay Filter? [Lecture Notes]. 
-IEEE Signal Processing Magazine 28, 111–117. https://doi.org/10.1109/MSP.2011.941097
+Schafer, R.W., 2011. What Is a Savitzky-Golay Filter? [Lecture Notes]. IEEE Signal Processing Magazine 28, 111–117.
+https://doi.org/10.1109/MSP.2011.941097
 
 ## Examples
 ```julia

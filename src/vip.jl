@@ -1,11 +1,11 @@
 """
-    vip(object::Union{Plsr, Pcr, Splsr, Spcr}; nlv = nothing)
-    vip(object::Union{Plsr, Pcr, Splsr, Spcr}, Y; nlv = nothing)
+    vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}; nlv = nothing)
+    vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y; nlv = nothing)
 Variable importance on Projections (VIP).
 * `object` : The fitted model.
 * `Y` : The Y-data that was used to fit the model.
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs) to consider.bIf `nothing`, the maximal model is considered.
+* `nlv` : Nb. latent variables (LVs) to consider. If `nothing`, the maximal model is considered.
 
 For a PLS model  (or PCR, etc.) fitted on (X, Y) with a number of A latent variables, and for variable 
 xj (column j of X): 
@@ -67,7 +67,7 @@ vip(fitm).imp
 vip(fitm, Ydummy).imp
 ```
 """ 
-function vip(object::Union{Plsr, Pcr, Mbplsr, Splsr, Spcr}; nlv = nothing)
+function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}; nlv = nothing)
     if isa(object, Plsr)  || isa(object, Splsr)
         W = object.W
         T = object.T
@@ -100,7 +100,7 @@ function vip(object::Union{Plsr, Pcr, Mbplsr, Splsr, Spcr}; nlv = nothing)
     (imp = imp, W2, sst)
 end
 
-function vip(object::Union{Plsr, Splsr, Mbplsr, Pcr, Spcr}, Y; nlv = nothing)
+function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y; nlv = nothing)
     if isa(object, Plsr)
         W = object.W
         T = object.T

@@ -15,8 +15,8 @@ Three outputs (= row indexes of the data) are returned:
 Outputs `train` and `test` are built from the DUPLEX algorithm (Snee, 1977 p.421). They are expected 
 to cover approximately the same X-space region and have similar statistical properties. 
 
-In practice, when output `remain` is not empty (i.e. when there are remaining observations), one common 
-strategy is to add it to output `train`.
+In practice, when output `remain` is not empty (i.e. when there are remaining observations), one common strategy 
+is to add it to output `train`.
 
 ## References
 Kennard, R.W., Stone, L.A., 1969. Computer aided design of experiments. Technometrics, 11(1), 137-148.

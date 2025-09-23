@@ -1,8 +1,7 @@
 """
     umap(; kwargs...)
     umap(X; kwargs...)
-UMAP: Uniform manifold approximation and projection for 
-    dimension reduction
+UMAP: Uniform manifold approximation and projection for dimension reduction
 * `X` : X-data (n, p).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
@@ -11,12 +10,10 @@ Keyword arguments:
 * `min_dist` : Minimum distance between points in low-dimensional space.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
     
-The function fits a UMAP dimension reducion using package `UMAP.jl'. The used metric is the Euclidean 
-distance. 
+The function fits a UMAP dimension reducion using package `UMAP.jl'. The used metric is the Euclidean distance. 
 
-If `psamp < 1`, only a proportion `psamp` of the observations (rows of `X`) are used to build the model 
-(systematic sampling over the first score of the PCA of `X`). Can be used to decrease computation times 
-when n is large.
+If `psamp < 1`, only a proportion `psamp` of the observations (rows of `X`) are used to build the model (systematic 
+sampling over the first score of the PCA of `X`). Can be used to decrease computation times when n is large.
 
 ## References
 
@@ -95,7 +92,7 @@ ztyp = recod_catbyint(typtrain)
 f = Figure()
 i = 1
 ax = Axis3(f[1, 1], xlabel = string("LV", i), ylabel = string("LV", i + 1), 
-        zlabel = string("LV", i + 2), title = "UMAP", perspectiveness = 0) 
+    zlabel = string("LV", i + 2), title = "UMAP", perspectiveness = 0) 
 scatter!(ax, T[:, i], T[:, i + 1], T[:, i + 2]; markersize = 8, 
     color = ztyp, colormap = colm) 
 scatter!(ax, Ttest[:, i], Ttest[:, i + 1], Ttest[:, i + 2], color = :black, 
@@ -130,7 +127,7 @@ function umap(X; kwargs...)
     metric = Distances.Euclidean()
     fitm = UMAP.UMAP_(X', par.nlv; n_neighbors = par.n_neighbors, metric, min_dist = par.min_dist)
     T = fitm.embedding' 
-    Umap(T, fitm, xscales, s, par)
+    Umap(fitm, T, xscales, s, par)
 end
 
 """ 

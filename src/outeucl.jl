@@ -12,8 +12,7 @@ PLSR algorithm of Serneels et al. 2005 (PRM).
 
 ## References
 Serneels, S., Croux, C., Filzmoser, V., Van Espen, V.J., 2005. Partial robust M-regression. 
-Chemometrics and Intelligent Laboratory Systems 79, 55-64. 
-https://doi.org/10.1016/j.chemolab.2005.04.007
+Chemometrics and Intelligent Laboratory Systems 79, 55-64. https://doi.org/10.1016/j.chemolab.2005.04.007
 
 ## Examples
 ```julia

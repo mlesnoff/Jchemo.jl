@@ -5,14 +5,13 @@
     dmnormlog(mu, S; kwargs...)
     dmnormlog!(mu::Vector, S::Matrix; kwargs...)
 Logarithm of the normal probability density estimation.
-    * `X` : X-data (n, p) used to estimate the mean `mu` and 
-        the covariance matrix `S`. If `X` is not given, 
+    * `X` : X-data (n, p) used to estimate the mean `mu` and the covariance matrix `S`. If `X` is not given, 
         `mu` and `S` must be provided in `kwargs`.
     * `mu` : Mean vector of the normal distribution. 
     * `S` : Covariance matrix of the Normal distribution.
 Keyword arguments:
-    * `simpl` : Boolean. If `true`, the constant term and 
-        the determinant in the Normal density formula are set to 1.
+    * `simpl` : Boolean. If `true`, the constant term and the determinant in the Normal density formula 
+        are set to 1.
 
 See the help page of function `dmnorm`.
 

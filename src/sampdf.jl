@@ -2,15 +2,14 @@
     sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); meth = :rand,
         seed::Union{Nothing, Int} = nothing)
 Build training vs. test sets from each column of a dataframe. 
-* `Y` : DataFrame (n, p). Typivally, contains a set of response variables to predict.
-    Can contain missing values.
-* `k` : Nb. of test observations selected for each `Y`-column. The selection is done within the 
-    non-missing observations of the considered column. If `k` is a single value, the same nb. of 
-    observations are selected for each column. Alternatively, `k` can be a vector of length p. 
+* `Y` : DataFrame (n, p). Typivally, contains a set of response variables to predict. Can contain missing values.
+* `k` : Nb. of test observations selected for each `Y`-column. The selection is done within the non-missing observations 
+    of the considered column. If `k` is a single value, the same nb. of     observations are selected for each column. 
+    Alternatively, `k` can be a vector of length p. 
 * `id` : Vector (n) of IDs.
 Keyword arguments:
-* `meth` : Type of sampling for the test set. Possible values are: `:rand` = random sampling, 
-    `:sys` = systematic sampling over each sorted `Y`-column (see the principle in function `sampsys`).  
+* `meth` : Type of sampling for the test set. Possible values are: `:rand` = random sampling, `:sys` = systematic 
+    sampling over each sorted `Y`-column (see the principle in function `sampsys`).  
 * `seed` : When `meth = :rand`, eventual seed for the `Random.MersenneTwister` generator.
 
 ## Examples

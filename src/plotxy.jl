@@ -12,10 +12,8 @@
 * `group` : Categorical variable defining groups (n). 
 Keyword arguments:
 * `size` : Size (horizontal, vertical) of the figure.
-* `color` : Set color(s). If `group` if used, `color` must be 
-    a vector of same length as the number of levels in `group`.
-* `ellipse` : Boolean. Draw an ellipse of confidence, 
-    assuming a Ch-square distribution with df = 2. If `group` 
+* `color` : Set color(s). If `group` if used, `color` must be a vector of same length as the number of levels in `group`.
+* `ellipse` : Boolean. Draw an ellipse of confidence, assuming a Ch-square distribution with df = 2. If `group` 
     is used, one ellipse is drawn per group.
 * `prob` : Probability for the ellipse of confidence.
 *  `bisect` : Boolean. Draw a bisector.

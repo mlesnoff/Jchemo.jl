@@ -11,8 +11,7 @@
 * `group` : Categorical variable defining groups (n). 
 Keyword arguments:
 * `size` : Size (horizontal, vertical) of the figure.
-* `color` : Set color(s). If `group` if used, `color` must be 
-    a vector of same length as the number of levels in `group`.
+* `color` : Set color(s). If `group` if used, `color` must be a vector of same length as the number of levels in `group`.
 *  `xlabel` : Label for the x-axis.
 *  `ylabel` : Label for the y-axis.
 *  `zlabel` : Label for the z-axis.

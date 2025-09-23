@@ -1,8 +1,7 @@
 """
     detrend_asls(; kwargs...)
     detrend_asls(X; kwargs...)
-Baseline correction of each row of X-data by asymmetric 
-    least squares algorithm (ASLS).
+Baseline correction of each row of X-data by asymmetric least squares algorithm (ASLS).
 * `X` : X-data (n, p).
 Keyword arguments:
 * `lb` : Penalizing (smoothness) parameter "lambda".
@@ -11,20 +10,19 @@ Keyword arguments:
 * `maxit` : Maximum number of iterations.
 * `verbose` : If `true`, nb. iterations are printed.
 
-De-trend transformation: the function fits a baseline by ASLS (see Baek et al. 2015 section 2)
-for each observation and returns the residuals (= signals corrected from the baseline).
+De-trend transformation: the function fits a baseline by ASLS (see Baek et al. 2015 section 2) for each observation 
+and returns the residuals (= signals corrected from the baseline).
 
-Generally `0.001 ≤ p ≤ 0.1` is a good choice (for a signal with positive peaks) 
-and `1e2 ≤ lb ≤ 1e9`, but exceptions may occur (Eilers & Boelens 2005).
+Generally `0.001 ≤ p ≤ 0.1` is a good choice (for a signal with positive peaks) and `1e2 ≤ lb ≤ 1e9`, but exceptions
+may occur (Eilers & Boelens 2005).
 
 ## References
 
-Baek, S.-J., Park, A., Ahn, Y.-J., Choo, J., 2015. Baseline correction using 
-asymmetrically reweighted penalized least squares smoothing. Analyst 140, 250–257. 
-https://doi.org/10.1039/C4AN01061B
+Baek, S.-J., Park, A., Ahn, Y.-J., Choo, J., 2015. Baseline correction using asymmetrically reweighted penalized 
+least squares smoothing. Analyst 140, 250–257. https://doi.org/10.1039/C4AN01061B
 
-Eilers, P. H., & Boelens, H. F. (2005). Baseline correction with asymmetric 
-least squares smoothing. Leiden University Medical Centre Report, 1(1).
+Eilers, P. H., & Boelens, H. F. (2005). Baseline correction with asymmetric least squares smoothing. Leiden 
+University Medical Centre Report, 1(1).
 
 ## Examples
 ```julia
@@ -114,5 +112,4 @@ function transf!(object::DetrendAsls, X::Matrix)
         X[i, :] .= x .- z
     end
 end
-
 

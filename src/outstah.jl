@@ -14,9 +14,8 @@ the observations (rows of `X`) are projected on the `nlv` directions and the Sta
 for each observation from these projections.
 
 ## References
-Maronna, R.A., Yohai, V.J., 1995. The Behavior of the Stahel-Donoho Robust Multivariate 
-Estimator. Journal of the American Statistical Association 90, 330–341. 
-https://doi.org/10.1080/01621459.1995.10476517
+Maronna, R.A., Yohai, V.J., 1995. The Behavior of the Stahel-Donoho Robust Multivariate Estimator. 
+Journal of the American Statistical Association 90, 330–341. https://doi.org/10.1080/01621459.1995.10476517
 
 ## Examples
 ```julia

@@ -4,21 +4,19 @@
 Build segments of observations for "test-set" validation.
 * `n` : Total nb. of observations in the dataset. The sampling is implemented within 1:`n`.
 * `group` : A vector (`n`) defining groups of observations.
-* `k` : Nb. test observations, or nb. test groups if `group` is used, returned in each 
-    validation segment.
+* `k` : Nb. test observations, or nb. test groups if `group` is used, returned in each validation segment.
 Keyword arguments: 
 * `rep` : Nb. replications of the sampling.
 * `seed` : Eventual seed for the `Random.MersenneTwister` generator. Must be of length = `rep`. 
     
 For each replication, the function builds a test set that can be used to validate a model. 
 
-If `group` is used (must be a vector of length `n`), the function samples groups of observations instead 
-of single observations. Such a group-sampling is required when the data are structured by groups 
-and when the response to predict is correlated within groups. This prevents underestimation of the 
-generalization error.
+If `group` is used (must be a vector of length `n`), the function samples groups of observations instead of single 
+observations. Such a group-sampling is required when the data are structured by groups and when the response to 
+predict is correlated within groups. This prevents underestimation of the generalization error.
 
-The function returns a list (vector) of `rep` elements. Each element of the list is a vector of the 
-indexes (positions within 1:`n`) of the sampled observations.  
+The function returns a list (vector) of `rep` elements. Each element of the list is a vector of the indexes 
+(positions within 1:`n`) of the sampled observations.  
 
 ## Examples
 ```julia
