@@ -15,8 +15,8 @@ Keyword arguments:
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
-FDA by eigen factorization of Inverse(W) * B, where W is the "Within"-covariance matrix (pooled over 
-the classes), and B the "Between"-covariance matrix.
+FDA by eigen factorization of Inverse(W) * B, where W is the "Within"-covariance matrix (pooled over the classes), 
+and B the "Between"-covariance matrix.
 
 The function maximizes the consensus:
 * p'Bp / p'Wp 

@@ -9,8 +9,8 @@ Robust PCA using outlierness.
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `prm` : Proportion of the data removed (hard rejection of outliers) for each outlierness measure.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD when computing the outlierness 
-    and by its uncorrected standard deviation when computing weighted PCA. 
+* `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD when computing the outlierness and by 
+    its uncorrected standard deviation when computing weighted PCA. 
 
 Robust PCA combining outlyingness measures and weighted PCA (WPCA). 
 
@@ -27,15 +27,14 @@ By default, the function uses `prm = .3` (such as in the ROBPCA algorithm of Hub
 
 ## References
 
-Hubert, M., Rousseeuw, V.J., Vanden Branden, K., 2005. ROBPCA: A New Approach to Robust Principal 
-Component Analysis. Technometrics 47, 64-79. https://doi.org/10.1198/004017004000000563
+Hubert, M., Rousseeuw, V.J., Vanden Branden, K., 2005. ROBPCA: A New Approach to Robust Principal Component 
+Analysis. Technometrics 47, 64-79. https://doi.org/10.1198/004017004000000563
 
 Hubert, M., Rousseeuw, V., Verdonck, T., 2009. Robust PCA for skewed data and its outlier map. Computational 
 Statistics & Data Analysis 53, 2264-2274. https://doi.org/10.1016/j.csda.2008.05.027
 
-Maronna, R.A., Yohai, V.J., 1995. The Behavior of the Stahel-Donoho Robust Multivariate Estimator. 
-Journal of the American Statistical Association 90, 330–341. 
-https://doi.org/10.1080/01621459.1995.10476517
+Maronna, R.A., Yohai, V.J., 1995. The Behavior of the Stahel-Donoho Robust Multivariate Estimator. Journal of the 
+American Statistical Association 90, 330–341. https://doi.org/10.1080/01621459.1995.10476517
 
 ## Examples
 ```julia

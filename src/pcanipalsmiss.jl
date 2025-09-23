@@ -5,22 +5,17 @@
     pcanipals!(X::Matrix, weights::Weight; kwargs...)
 PCA by NIPALS algorithm allowing missing data.
 * `X` : X-data (n, p). 
-* `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
-* `gs` : Boolean. If `true` (default), a Gram-Schmidt 
-    orthogonalization of the scores and loadings is done
+* `gs` : Boolean. If `true` (default), a Gram-Schmidt orthogonalization of the scores and loadings is done
     before each X-deflation. 
-* `tol` : Tolerance value for stopping 
-    the iterations.
+* `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. of iterations.
-* `scal` : Boolean. If `true`, each column of `X` 
-    is scaled by its uncorrected standard deviation.
+* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
 ## References
-Wright, K., 2018. Package nipals: Principal Components Analysis 
-using NIPALS with Gram-Schmidt Orthogonalization. 
+Wright, K., 2018. Package nipals: Principal Components Analysis using NIPALS with Gram-Schmidt Orthogonalization. 
 https://cran.r-project.org/
 
 ## Examples

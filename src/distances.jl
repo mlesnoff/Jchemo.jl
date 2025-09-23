@@ -29,12 +29,10 @@ end
 """
     mahsq(X, Y)
     mahsq(X, Y, Sinv)
-Squared Mahalanobis distances between 
-    the rows of `X` and `Y`.
+Squared Mahalanobis distances between the rows of `X` and `Y`.
 * `X` : Data (n, p).
 * `Y` : Data (m, p).
-* `Sinv` : Inverse of a covariance matrix S. If not given, S is computed as the uncorrected 
-    covariance matrix of `X`.
+* `Sinv` : Inverse of a covariance matrix S. If not given, S is computed as the uncorrected covariance matrix of `X`.
 
 When `X` and `Y` are (n, p) and (m, p), repectively, it returns an object (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
@@ -75,12 +73,12 @@ end
 """
     mahsqchol(X, Y)
     mahsqchol(X, Y, Uinv)
-Compute the squared Mahalanobis distances (with a Cholesky factorization) between the 
-    observations (rows) of `X` and `Y`.
+Compute the squared Mahalanobis distances (with a Cholesky factorization) between the observations (rows) 
+    of `X` and `Y`.
 * `X` : Data (n, p).
 * `Y` : Data (m, p).
-* `Uinv` : Inverse of the upper matrix of a Cholesky factorization of a covariance matrix S.
-    If not given, the factorization is done on S, the uncorrected covariance matrix of `X`.
+* `Uinv` : Inverse of the upper matrix of a Cholesky factorization of a covariance matrix S. If not given, 
+    the factorization is done on S, the uncorrected covariance matrix of `X`.
 
 When `X` and `Y` are (n, p) and (m, p), repectively, it returns an object (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
