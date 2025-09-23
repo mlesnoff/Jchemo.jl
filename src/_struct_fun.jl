@@ -754,7 +754,7 @@ struct Mbplsrda
 end
 
 struct Mbplsprobda    # mbplslda, mbplsqda, mbplskdeda  
-    fitm_emb::Union{Plsr, Kplsr, Dkplsr, Splsr}
+    fitm_emb::Mbplsr
     fitm_da::Vector{Union{Lda, Qda, Kdeda}}   
     lev::Vector
     ni::Vector{Int}

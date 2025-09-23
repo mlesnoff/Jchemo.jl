@@ -70,18 +70,29 @@ bscal = :none
 model = mbplslda(; nlv, bscal, scal)
 #model = mbplsqda(; nlv, bscal, alpha = .5, scal)
 #model = mbplskdeda(; nlv, bscal, scal)
-fit!(model, Xbltrain, ytrain) 
-@names model 
+fit!(model, Xbltrain, ytrain)
+@names model
+@names fitm = model.fitm
+fitm.lev
+fitm.ni
 
+fitm_emb = fitm.fitm_emb ;
+typeof(fitm_emb)
+@names fitm_emb  
+@head fitm_emb.T
 @head transf(model, Xbltrain)
 @head transf(model, Xbltest)
+@head transf(model, Xbltest; nlv = 3)
 
-res = predict(model, Xbltest) ; 
-@head res.pred 
-@show errp(res.pred, ytest)
+res = predict(model, Xbltest) ;
+@names res
+@head res.posterior
+@head res.pred
+errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
 predict(model, Xbltest; nlv = 1:2).pred
+summary(fitm_emb, Xbltrain)
 ```
 """ 
 mbplslda(; kwargs...) = JchemoModel(mbplslda, nothing, kwargs)
@@ -103,7 +114,7 @@ function mbplslda(Xbl, y, weights::Weight; kwargs...)
     @inbounds for i = 1:par.nlv
         fitm_da[i] = lda(vcol(fitm_emb.T, 1:i), y, weights; kwargs...)
     end
-    Mbplsprobda(fitm_emb, fitm_da, res.lev, ni, par)
+    Mbplsprobda(fitm_emb, fitm_da, res.lev, ni, par) 
 end
 
 """ 
