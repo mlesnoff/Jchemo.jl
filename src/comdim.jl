@@ -129,8 +129,8 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
     n = nro(Xbl[1])
     nlv = par.nlv
     ## Block scaling
-    fitmbl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
-    transf!(fitmbl, Xbl)
+    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
+    transf!(fitm_bl, Xbl)
     # Row metric
     sqrtw = sqrt.(weights.w)
     invsqrtw = 1 ./ sqrtw
@@ -192,7 +192,7 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
         end
     end
     T = sqrt.(mu)' .* U    
-    Comdim(T, U, W, Tb, Tbl, Vbl, lb, mu, fitmbl, weights, niter, par)
+    Comdim(T, U, W, Tb, Tbl, Vbl, lb, mu, fitm_bl, weights, niter, par)
 end
 
 """ 
@@ -217,7 +217,7 @@ function transf_all(object::Comdim, Xbl; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
     m = size(Xbl[1], 1)
-    zXbl = transf(object.fitmbl, Xbl)    
+    zXbl = transf(object.fitm_bl, Xbl)    
     U = similar(zXbl[1], m, nlv)
     TB = similar(zXbl[1], m, nbl)
     Tbl = list(Matrix{Q}, nbl)
@@ -253,7 +253,7 @@ function Base.summary(object::Comdim, Xbl)
     nbl = length(Xbl)
     nlv = nco(object.T)
     ## Block scaling
-    zXbl = transf(object.fitmbl, Xbl)
+    zXbl = transf(object.fitm_bl, Xbl)
     X = fconcat(zXbl)
     ## Proportion of the total X-inertia explained by each global LV
     ssk = zeros(Q, nbl)

@@ -90,9 +90,9 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     nlv = par.nlv
     length(nlv) == 1 ? nlv = repeat([nlv], nbl) : nothing  
     ## 'bscal = :none' since block-scaling has no effect on SOPLS  
-    fitmbl = blockscal(Xbl, weights; bscal = :none, centr = false, scal = par.scal)
+    fitm_bl = blockscal(Xbl, weights; bscal = :none, centr = false, scal = par.scal)
     ## End
-    transf!(fitmbl, Xbl)
+    transf!(fitm_bl, Xbl)
     yscales = ones(Q, q)
     if par.scal 
         yscales .= colstd(Y, weights)
@@ -117,7 +117,7 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
             fit .+= predict(fitm[i], X).pred 
         end
     end
-    Soplsr(fitm, T, fit, b, fitmbl, yscales, par)
+    Soplsr(fitm, T, fit, b, fitm_bl, yscales, par)
 end
 
 """ 
@@ -128,7 +128,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 """ 
 function transf(object::Soplsr, Xbl)
     nbl = length(Xbl)
-    zXbl = transf(object.fitmbl, Xbl)   
+    zXbl = transf(object.fitm_bl, Xbl)   
     T = transf(object.fitm[1], zXbl[1])
     if nbl > 1
         @inbounds for i = 2:nbl
@@ -147,7 +147,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Soplsr, Xbl)
     nbl = length(Xbl)
-    zXbl = transf(object.fitmbl, Xbl)   
+    zXbl = transf(object.fitm_bl, Xbl)   
     T = transf(object.fitm[1], zXbl[1])
     pred =  object.fitm[1].ymeans' .+ T * object.fitm[1].C'
     if nbl > 1

@@ -63,7 +63,6 @@ res = summary(model, Xbltrain) ;
 res.explvarx
 res.rvxbl2t
 res.rdxbl2t
-res.cortbl2t
 res.corx2t 
 
 ## This MBPLSR can also be implemented with function pip
@@ -102,8 +101,8 @@ function mbplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::Weight; kwar
     Q = eltype(Xbl[1][1, 1])
     isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
     q = nco(Y)
-    fitmbl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
-    transf!(fitmbl, Xbl)
+    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
+    transf!(fitm_bl, Xbl)
     X = reduce(hcat, Xbl)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
@@ -114,7 +113,7 @@ function mbplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::Weight; kwar
         fcenter!(Y, ymeans)
     end
     fitm = plskern(X, Y, weights; nlv = par.nlv, scal = false)
-    Mbplsr(fitm, fitm.T, fitm.R, fitm.C, fitmbl, ymeans, yscales, weights, par)
+    Mbplsr(fitm, fitm.T, fitm.R, fitm.C, fitm_bl, ymeans, yscales, weights, par)
 end
 
 """ 
@@ -127,7 +126,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 function transf(object::Union{Mbplsr, Mbplswest}, Xbl; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    zXbl = transf(object.fitmbl, Xbl)    
+    zXbl = transf(object.fitm_bl, Xbl)    
     fconcat(zXbl) * vcol(object.R, 1:nlv) 
 end
 
@@ -167,7 +166,7 @@ function Base.summary(object::Mbplsr, Xbl)
     n, nlv = size(object.T)
     nbl = length(Xbl)
     ## Block scaling
-    zXbl = transf(object.fitmbl, Xbl)
+    zXbl = transf(object.fitm_bl, Xbl)
     X = fconcat(zXbl)
     ## Proportion of the total X-inertia explained by each global LV
     ssk = zeros(Q, nbl)

@@ -79,9 +79,13 @@ nvar = 20
 model = splsr(; nlv, meth, nvar) ;
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
-@head model.fitm.T
-@head model.fitm.W
+fitm = model.fitm ;
+@names fitm
+@head fitm.T
+@head fitm.W
+
+fitm.sellv
+fitm.sel
 
 coef(model)
 coef(model; nlv = 3)
@@ -92,14 +96,12 @@ coef(model; nlv = 3)
 res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed").f    
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", ylabel = "Observed").f    
 
 res = summary(model, Xtrain) ;
 @names res
 z = res.explvarx
-plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", 
-    ylabel = "Prop. Explained X-Variance").f
+plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
 splsr(; kwargs...) = JchemoModel(splsr, nothing, kwargs)

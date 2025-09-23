@@ -105,8 +105,8 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     q = nco(Y)
     nlv = par.nlv
     ## Block scaling
-    fitmbl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
-    transf!(fitmbl, Xbl)
+    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
+    transf!(fitm_bl, Xbl)
     X = reduce(hcat, Xbl)
     ## Y centering/scaling
     ymeans = colmean(Y, weights)
@@ -200,7 +200,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     fweight!(Tx, invsqrtw)
     Rx = Wx * inv(Vx' * Wx)
     lb = nothing
-    Mbplswest(Tx, Vx, Rx, Wx, Wytild, Tb, Tbl, Pbl, TTx, fitmbl, ymeans, yscales, 
+    Mbplswest(Tx, Vx, Rx, Wx, Wytild, Tb, Tbl, Pbl, TTx, fitm_bl, ymeans, yscales, 
         weights, lb, niter, par)
 end
 
@@ -216,7 +216,7 @@ function Base.summary(object::Mbplswest, Xbl)
     n, nlv = size(object.T)
     nbl = length(Xbl)
     ## Block scaling
-    zXbl = transf(object.fitmbl, Xbl)
+    zXbl = transf(object.fitm_bl, Xbl)
     X = fconcat(zXbl)
     ## Proportion of the total X-inertia explained by each global LV
     ssk = zeros(Q, nbl)

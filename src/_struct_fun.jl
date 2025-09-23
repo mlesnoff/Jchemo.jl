@@ -280,7 +280,7 @@ struct Mbpca
     Vbl::Vector{Matrix}
     lb::Matrix
     mu::Vector
-    fitmbl::Blockscal
+    fitm_bl::Blockscal
     weights::Weight
     niter::Vector{Int}
     par::ParMbpca
@@ -295,7 +295,7 @@ struct Comdim
     Vbl::Vector{Matrix}
     lb::Matrix
     mu::Vector
-    fitmbl::Blockscal
+    fitm_bl::Blockscal
     weights::Weight
     niter::Vector{Int}
     par::ParMbpca
@@ -511,7 +511,7 @@ struct Mbplsr
     T::Matrix
     R::Matrix
     C::Matrix
-    fitmbl::Blockscal
+    fitm_bl::Blockscal
     ymeans::Vector
     yscales::Vector
     weights::Weight
@@ -528,7 +528,7 @@ struct Mbplswest     # mbplswest, mbwcov
     Tbl::Vector{Matrix}
     Pbl::Vector{Matrix}
     TT::Vector
-    fitmbl::Blockscal
+    fitm_bl::Blockscal
     ymeans::Vector
     yscales::Vector
     weights::Weight
@@ -544,7 +544,7 @@ struct Rosaplsr
     W::Matrix
     C::Matrix
     TT::Vector
-    fitmbl::Blockscal
+    fitm_bl::Blockscal
     ymeans::Vector
     yscales::Vector
     weights::Weight
@@ -557,7 +557,7 @@ struct Soplsr
     T::Matrix
     fit::Matrix
     b::Vector
-    fitmbl::Blockscal    
+    fitm_bl::Blockscal    
     yscales::Vector
     par::ParSoplsr
 end
@@ -567,7 +567,7 @@ struct Smbplsr
     T::Matrix
     R::Matrix
     C::Matrix
-    fitmbl::Blockscal
+    fitm_bl::Blockscal
     ymeans::Vector
     yscales::Vector
     weights::Weight

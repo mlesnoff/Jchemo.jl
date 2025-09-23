@@ -87,8 +87,8 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     q = nco(Y)
     nlv = par.nlv
     nbl = length(Xbl)
-    fitmbl = blockscal(Xbl, weights; bscal = :none, centr = true, scal = par.scal)
-    transf!(fitmbl, Xbl)
+    fitm_bl = blockscal(Xbl, weights; bscal = :none, centr = true, scal = par.scal)
+    transf!(fitm_bl, Xbl)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
     if par.scal 
@@ -190,7 +190,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         W[:, a] .= reduce(vcat, z .* wbl)
     end
     R = W * inv(V' * W)
-    Rosaplsr(T, V, R, W, C, TT, fitmbl, ymeans, yscales, weights, bl, par)
+    Rosaplsr(T, V, R, W, C, TT, fitm_bl, ymeans, yscales, weights, bl, par)
 end
 
 """ 
@@ -204,7 +204,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 function transf(object::Rosaplsr, Xbl; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    zXbl = transf(object.fitmbl, Xbl)
+    zXbl = transf(object.fitm_bl, Xbl)
     fconcat(zXbl) * vcol(object.R, 1:nlv)
 end
 
@@ -217,8 +217,8 @@ Compute the X b-coefficients of a model fitted with `nlv` LVs.
 function coef(object::Rosaplsr; nlv = nothing)
     a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    xmeans = reduce(vcat, object.fitmbl.xmeans)
-    xscales = reduce(vcat, object.fitmbl.xscales)
+    xmeans = reduce(vcat, object.fitm_bl.xmeans)
+    xscales = reduce(vcat, object.fitm_bl.xscales)
     theta = vcol(object.C, 1:nlv)'  # coefs regression of Y on T
     Dy = Diagonal(object.yscales)
     B = fweight(vcol(object.R, 1:nlv), 1 ./ xscales) * theta * Dy

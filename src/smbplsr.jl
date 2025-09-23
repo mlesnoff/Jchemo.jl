@@ -95,8 +95,8 @@ function smbplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::Weight; kwa
     Q = eltype(Xbl[1][1, 1])
     isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
     q = nco(Y)
-    fitmbl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
-    transf!(fitmbl, Xbl)
+    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
+    transf!(fitm_bl, Xbl)
     X = reduce(hcat, Xbl)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
@@ -106,9 +106,6 @@ function smbplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::Weight; kwa
     else
         fcenter!(Y, ymeans)
     end
-    fitm = splsr(X, Y, weights; nlv = par.nlv, meth = par.meth, nvar = par.nvar, tol = par.tol,
-        maxit = par.maxit, scal = false)
-    Smbplsr(fitm, fitm.T, fitm.R, fitm.C, fitmbl, ymeans, yscales, weights, 
-        fitm.sellv, fitm.sel, 
-        par)
+    fitm = splsr(X, Y, weights; nlv = par.nlv, meth = par.meth, nvar = par.nvar, tol = par.tol, maxit = par.maxit, scal = false)
+    Smbplsr(fitm, fitm.T, fitm.R, fitm.C, fitm_bl, ymeans, yscales, weights, fitm.sellv, fitm.sel, par)
 end
