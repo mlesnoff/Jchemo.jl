@@ -62,9 +62,9 @@ typeof(fitm)
 @names fitm
 typeof(fitm.fitm) 
 @names fitm.fitm
+
 fitm.lev
 fitm.ni
-aggsumv(fitm.fitm.weights.w, ytrain)
 
 coef(fitm.fitm)
 
