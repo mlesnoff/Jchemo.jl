@@ -64,31 +64,77 @@ n = nro(Xbl[1])
 
 nlv = 3
 bscal = :frob
+#bscal = :none
 scal = false
 #scal = true
-model = mbpca(; nlv, bscal, scal)
+model = mbpca(; nlv, bscal, scal, tol = 1e-15)
 fit!(model, Xbl)
 @names model 
-@names model.fitm
+fitm = model.fitm ;
+@names fitm
+
 ## Global scores 
-@head model.fitm.T
 @head transf(model, Xbl)
+@head fitm.T
+
 transf(model, Xblnew)
+
 ## Blocks scores
 i = 1
-@head model.fitm.Tbl[i]
 @head transfbl(model, Xbl)[i]
+@head fitm.Tbl[i]
 
+## Summary
 res = summary(model, Xbl) ;
 @names res 
 res.explvarx
-res.explxbl   # = model.fitm.lb if bscal = :frob
+res.explxbl   # = fitm.lb if bscal = :frob
 rowsum(Matrix(res.explxbl))
 res.contrxbl2t
 res.rvxbl2t
 res.rdxbl2t
 res.cortbl2t
 res.corx2t 
+
+#### This MBPCA can also be implemented with function pip
+
+model1 = blockscal(; bscal, centr = true) ;
+model2 = mbconcat()
+model3 = pcasvd(; nlv) ;
+model = pip(model1, model2, model3)
+fit!(model, Xbl)
+
+mod3 = model.model[3] ;
+typeof(mod3) 
+@names mod3 
+@names mod3.fitm
+
+@head transf(model, Xbl)
+@head mod3.fitm.T 
+
+transf(model, Xblnew)
+
+#### And a MB sparse PCA as follows
+
+meth = :soft ; nvar = 2
+model1 = blockscal(; bscal, centr = true) ;
+model2 = mbconcat()
+model3 = spca(; nlv, meth, nvar) ;
+model = pip(model1, model2, model3)
+fit!(model, Xbl)
+
+mod3 = model.model[3] ;
+@names mod3 
+typeof(mod3) 
+@names mod3.fitm
+
+mod3.fitm.sellv
+mod3.fitm.sel
+
+@head transf(model, Xbl)
+@head mod3.fitm.T 
+
+transf(model, Xblnew)
 ```
 """
 mbpca(; kwargs...) = JchemoModel(mbpca, nothing, kwargs)

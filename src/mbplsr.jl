@@ -79,6 +79,9 @@ model = pip(model1, model2, model3)
 fit!(model, Xbltrain, ytrain)
 
 mod3 = model.model[3] ;
+typeof(mod3) 
+@names mod3 
+@names mod3.fitm
 
 @head transf(model, Xbltrain)
 @head mod3.fitm.T 
@@ -89,6 +92,7 @@ predict(model, Xbltest).pred
 
 ## And a MB sparse PLSR as follows
 
+meth = :soft ; nvar = 2
 model1 = blockscal(; bscal, centr = true) ;
 model2 = mbconcat()
 model3 = splsr(; nlv, meth, nvar) ;
@@ -96,6 +100,9 @@ model = pip(model1, model2, model3)
 fit!(model, Xbltrain, ytrain)
 
 mod3 = model.model[3] ;
+typeof(mod3) 
+@names mod3 
+@names mod3.fitm
 
 mod3.fitm.sellv
 mod3.fitm.sel
