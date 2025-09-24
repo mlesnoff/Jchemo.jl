@@ -25,8 +25,8 @@ covariance ('within-W'). This corresponds to the 'first regularization (Eqs.16)'
 Friedman 1989 (in which the present parameter `alpha` is referred to as 'lambda').
 
 ## References
-Friedman JH. Regularized Discriminant Analysis. Journal of the American Statistical Association. 1989; 
-84(405):165-175. doi:10.1080/01621459.1989.10478752.
+Friedman JH. Regularized Discriminant Analysis. Journal of the American Statistical Association. 1989; 84(405):165-175. 
+doi:10.1080/01621459.1989.10478752.
 
 ## Examples
 ```julia
@@ -53,9 +53,13 @@ tab(ytest)
 model = qda()
 fit!(model, Xtrain, ytrain)
 @names model
-@names fitm = model.fitm
+fitm = model.fitm ;
+@names fitm
+typeof(fitm.fitm)
+
 fitm.lev
 fitm.ni
+
 fitm.priors
 aggsumv(fitm.weights.w, ytrain)
 
@@ -67,8 +71,9 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
 ## With regularization
-model = qda(alpha = .5)
-#model = qda(alpha = 1) # = LDA
+alpha = 0.5
+#alpha = 1 # = LDA
+model = qda(; alpha)
 fit!(model, Xtrain, ytrain)
 model.fitm.Wi
 res = predict(model, Xtest) ;

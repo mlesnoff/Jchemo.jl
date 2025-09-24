@@ -3,7 +3,7 @@
 """
     mod_(algo::Function; kwargs...)
 Build a model.
-* `algo` : The algorthm (function) defining the model.
+* `algo` : The algorithm (function) defining the model.
 * `kwargs...`: Keyword arguments of `algo`.
 
 ## Examples

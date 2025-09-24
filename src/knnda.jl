@@ -5,20 +5,17 @@ k-Nearest-Neighbours weighted discrimination (kNN-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 Keyword arguments:
-* `metric` : Type of dissimilarity used to select the neighbors and to compute the weights 
-    (see function `getknn`). Possible values are: `:eucl` (Euclidean), `:mah` (Mahalanobis), 
-    `:sam` (spectral angular distance), `:cos` (cosine distance), `:cor` (correlation distance).
-* `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
-    sharper is the function. See function `winvs` for details (keyword arguments `criw` and `squared` of 
-    `winvs` can also be specified here).
+* `metric` : Type of dissimilarity used to select the neighbors and to compute the weights (see function `getknn`). Possible values are: 
+    `:eucl` (Euclidean), `:mah` (Mahalanobis), `:sam` (spectral angular distance), `:cos` (cosine distance), `:cor` (correlation distance).
+* `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, sharper is the function. See function 
+    `winvs` for details (keyword arguments `criw` and `squared` of `winvs` can also be specified here).
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Boolean. If `true`, each column of the global `X` is scaled by its uncorrected standard 
-    deviation before the distance and weight computations.
+* `scal` : Boolean. If `true`, each column of the global `X` is scaled by its uncorrected standard deviation before the distance 
+     and weight computations.
 
-This function has the same principle as function `knnr` except that a discrimination replaces the 
-regression. A weighted vote is done over the neighborhood, and the prediction corresponds to the most 
-frequent class.
+This function has the same principle as function `knnr` except that a discrimination replaces the regression. A weighted vote is done over 
+the neighborhood, and the prediction corresponds to the most frequent class.
  
 ## Examples
 ```julia

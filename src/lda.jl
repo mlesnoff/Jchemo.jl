@@ -45,9 +45,13 @@ tab(ytest)
 model = lda()
 fit!(model, Xtrain, ytrain)
 @names model
-@names fitm = model.fitm
+fitm = model.fitm ;
+@names fitm
+typeof(fitm.fitm) 
+
 fitm.lev
 fitm.ni
+
 fitm.priors
 aggsumv(fitm.weights.w, ytrain)
 
