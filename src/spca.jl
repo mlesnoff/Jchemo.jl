@@ -72,22 +72,27 @@ nlv = 3
 meth = :soft
 #meth = :hard
 nvar = 2
-model = spca(; nlv, meth, nvar) ;
+model = spca(; nlv, meth, nvar, defl = :t) ;
 fit!(model, Xtrain) 
+@names model
 fitm = model.fitm ;
+typeof(fitm) 
 @names fitm
+
 fitm.niter
+
 fitm.sellv 
 fitm.sel
-V = fitm.V
-V' * V
-@head T = fitm.T
-T' * T
-@head transf(model, Xtrain)
 
-@head Ttest = transf(fitm, Xtest)
+V = fitm.V
+
+@head transf(model, Xtrain)
+@head fitm.T
+
+@head transf(fitm, Xtest)
 
 res = summary(model, Xtrain) ;
+@names res 
 res.explvarx
 ```
 """

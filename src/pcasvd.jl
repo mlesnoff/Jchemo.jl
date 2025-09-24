@@ -129,7 +129,8 @@ function Base.summary(object::Pca, X)
     ## = object.sv[1:nlv].^2
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(nlv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
+    zrd = vec(rd(X, object.T, weights))
+    explvarx = DataFrame(nlv = 1:nlv, rd = zrd, var = tt, pvar = pvar, cumpvar = cumpvar)
     nam = string.("lv", 1:nlv)
     contr_ind = DataFrame(fscale(TT, tt), nam)
     contr_var = DataFrame(object.V.^2, nam)
