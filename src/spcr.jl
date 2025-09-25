@@ -8,7 +8,14 @@ Sparse principal component regression (sPCR).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* Same as function `spca`.
+* `nlv` : Nb. principal components (PCs).
+* `meth` : Method used for the thresholding of the loadings. Possible values are: `:soft`, `:hard`. See thereafter.
+* `defl` : Type of `X`-matrix deflation, see below.
+* `nvar` : Nb. variables (`X`-columns) kept to build the PCs (non-zero loadings). Can be a single integer 
+    (i.e. same nb. of variables for each PC), or a vector of length `nlv`.   
+* `tol` : Tolerance value for stopping the Nipals iterations.
+* `maxit` : Maximum nb. of Nipals iterations.
+* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
 Regression (MLR) on scores computed from a sparse PCA (sPCA-rSVD algorithm of Shen & Huang 2008 ). 
 See function `spca` for details.

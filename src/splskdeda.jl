@@ -7,11 +7,17 @@ Sparse PLS-KDE-DA.
 * `y` : Univariate class membership (n).
 * `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`). 
 Keyword arguments: 
-* Same as function `splsr`, and the following:         
+* `nlv` : Nb. latent variables (LVs) to compute.
+* `meth` : Method used for the sparse thresholding. Possible values are: `:soft`, `:hard`. See thereafter.
+* `nvar` : Nb. variables (`X`-columns) selected for each LV. Can be a single integer (i.e. same nb. 
+    of variables for each LV), or a vector of length `nlv`.   
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * Eventual keyword arguments of function `dmkern` for bandwidth definition.
+* `tol` : Only when q > 1; tolerance used in function `snipals_shen`. 
+* `maxit` : Only when q > 1; maximum nb. of iterations used in function `snipals_shen`.    
+* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation. 
 
 Same as function `plskdeda` (PLS-KDEDA) except that a sparse PLSR (function `splsr`), instead of a PLSR, 
 is run on the Y-dummy table. 

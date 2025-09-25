@@ -8,7 +8,8 @@ Principal component regression (PCR) with a SVD factorization.
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
 Keyword arguments:
-* Same as function `pcasvd`
+* `nlv` : Nb. of principal components (PCs).
+* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
 ## Examples
 ```julia
