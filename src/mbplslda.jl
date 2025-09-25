@@ -119,11 +119,9 @@ end
 
 """ 
     transf(object::Mbplsprobda, Xbl; nlv = nothing)
-Compute latent variables (LVs; = scores) from 
-    a fitted model.
+Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
-* `Xbl` : A list of blocks (vector of matrices) 
-    of X-data for which LVs are computed.
+* `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Mbplsprobda, Xbl; nlv = nothing)
@@ -134,8 +132,7 @@ end
     predict(object::Mbplsprobda, Xbl; nlv = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
-* `Xbl` : A list of blocks (vector of matrices) 
-    of X-data for which predictions are computed.
+* `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
 function predict(object::Mbplsprobda, Xbl; nlv = nothing)
