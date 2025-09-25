@@ -202,7 +202,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transf(object::Rosaplsr, Xbl; nlv = nothing)
-    a = nco(object.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     zXbl = transf(object.fitm_bl, Xbl)
     fconcat(zXbl) * vcol(object.R, 1:nlv)
@@ -215,7 +215,7 @@ Compute the X b-coefficients of a model fitted with `nlv` LVs.
 * `nlv` : Nb. LVs to consider.
 """ 
 function coef(object::Rosaplsr; nlv = nothing)
-    a = nco(object.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     xmeans = reduce(vcat, object.fitm_bl.xmeans)
     xscales = reduce(vcat, object.fitm_bl.xscales)
@@ -234,11 +234,11 @@ Compute Y-predictions from a fitted model.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
 function predict(object::Rosaplsr, Xbl; nlv = nothing)
-    a = nco(object.T)
-    isnothing(nlv) ? nlv = a : nlv = min(a, minimum(nlv)):min(a, maximum(nlv))
+    a = object.par.nlv
+    isnothing(nlv) ? nlv = a : nlv = min(minimum(nlv), a):min(maximum(nlv), a)
     le_nlv = length(nlv)
     Q = eltype(Xbl[1][1, 1])
-    X = reduce(hcat, Xbl)
+    X = fconcat(Xbl)
     pred = list(Matrix{Q}, le_nlv)
     @inbounds for i in eachindex(nlv)
         z = coef(object; nlv = nlv[i])

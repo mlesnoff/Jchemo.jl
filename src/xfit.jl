@@ -93,7 +93,7 @@ function xfit(object, X; nlv = nothing)
 end
 
 function xfit!(object, X::Matrix; nlv = nothing)
-    a = nco(object.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     if nlv == 0
         m = nro(X)

@@ -141,7 +141,7 @@ function mbplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::Weight; kwar
     q = nco(Y)
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
-    X = reduce(hcat, Xbl)
+    X = fconcat(Xbl)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
     if par.scal 
@@ -162,7 +162,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transf(object::Mbplsr, Xbl; nlv = nothing)
-    a = nco(object.fitm.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     zXbl = transf(object.fitm_bl, Xbl)    
     fconcat(zXbl) * vcol(object.fitm.R, 1:nlv) 
@@ -177,7 +177,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Mbplsr, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
-    a = nco(object.fitm.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = (min(a, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     T = transf(object, Xbl)

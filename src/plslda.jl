@@ -59,19 +59,24 @@ model = plslda(; nlv)
 #model = plsqda(; nlv, alpha = .1) 
 fit!(model, Xtrain, ytrain)
 @names model
-@names fitm = model.fitm
+fitm = model.fitm ;
+typeof(fitm)
+@names fitm
+
 fitm.lev
 fitm.ni
 
 fitm_emb = fitm.fitm_emb ;
 typeof(fitm_emb)
 @names fitm_emb 
-@head fitm_emb.T
 @head transf(model, Xtrain)
+@head fitm_emb.T
+
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
 
-coef(fitm_emb)
+fitm_da = fitm.fitm_da ;
+typeof(fitm_da)
 
 res = predict(model, Xtest) ;
 @names res
@@ -108,8 +113,7 @@ end
 
 """ 
     transf(object::Plsprobda, X; nlv = nothing)
-Compute latent variables (LVs; = scores) from 
-    a fitted model.
+Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
@@ -130,7 +134,7 @@ function predict(object::Plsprobda, X; nlv = nothing)
     Q = eltype(X)
     Qy = eltype(object.lev)
     m = nro(X)
-    a = size(object.fitm_emb.T, 2)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 1):min(maximum(nlv), a))
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)

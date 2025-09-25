@@ -63,12 +63,14 @@ typeof(fitm)
 @names fitm
 typeof(fitm.fitm) 
 @names fitm.fitm
+
 fitm.lev
 fitm.ni
 aggsumv(fitm.fitm.weights.w, ytrain)
 
-@head fitm.fitm.T
 @head transf(model, Xtrain)
+@head fitm.fitm.T
+
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
 
@@ -82,6 +84,7 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
 predict(model, Xtest; nlv = 1:2).pred
+
 summary(fitm.fitm, Xtrain)
 ```
 """
@@ -127,8 +130,8 @@ function predict(object::Plsrda, X; nlv = nothing)
     Q = eltype(X)
     Qy = eltype(object.lev)
     m = nro(X)
-    a = nco(object.fitm.T)
-    isnothing(nlv) ? nlv = a : nlv = min(a, minimum(nlv)):min(a, maximum(nlv))
+    a = object.par.nlv
+    isnothing(nlv) ? nlv = a : nlv = min(minimum(nlv), a):min(maximum(nlv), a)
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)

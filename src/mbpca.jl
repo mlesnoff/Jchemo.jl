@@ -188,7 +188,7 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
     # End
     res = 0
     @inbounds for a = 1:nlv
-        X = reduce(hcat, Xbl)
+        X = fconcat(Xbl)
         u .= X[:, 1]
         #u .= nipals(X).u  # forces niter = 1
         iter = 1
@@ -244,7 +244,7 @@ end
 
 function transf_all(object::Mbpca, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
-    a = nco(object.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
     m = size(Xbl[1], 1)

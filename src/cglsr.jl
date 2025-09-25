@@ -161,7 +161,7 @@ Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 """ 
 function coef(object::Cglsr; nlv = nothing)
-    a = nco(object.B)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     W = Diagonal(object.yscales)    
     B = fweight(vcol(object.B, nlv), 1 ./ object.xscales) *  W
@@ -178,8 +178,8 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Cglsr, X; nlv = nothing)
     X = ensure_mat(X)
-    a = nco(object.B)
-    isnothing(nlv) ? nlv = a : nlv = min(a, minimum(nlv)):min(a, maximum(nlv))
+    a = object.par.nlv
+    isnothing(nlv) ? nlv = a : nlv = min(minimum(nlv), a):min(maximum(nlv), a)
     le_nlv = length(nlv)
     pred = list(Matrix{eltype(X)}, le_nlv)
     @inbounds for i in eachindex(nlv)

@@ -107,7 +107,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     ## Block scaling
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
-    X = reduce(hcat, Xbl)
+    X = fconcat(Xbl)
     ## Y centering/scaling
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)
@@ -212,7 +212,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transf(object::Mbplswest, Xbl; nlv = nothing)
-    a = nco(object.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     zXbl = transf(object.fitm_bl, Xbl)    
     fconcat(zXbl) * vcol(object.R, 1:nlv) 
@@ -227,7 +227,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Mbplswest, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
-    a = nco(object.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = (min(a, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     T = transf(object, Xbl)

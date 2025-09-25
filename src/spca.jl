@@ -174,7 +174,7 @@ end
 function transf(object::Spca, X; nlv = nothing)
     X = ensure_mat(X)
     m = nro(X)
-    a = nco(object.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     zX = fcscale(X, object.xmeans, object.xscales)
     T = similar(X, m, nlv)

@@ -18,7 +18,7 @@ function xresid(object, X; nlv = nothing)
 end
 
 function xresid!(object, X::Matrix; nlv = nothing)
-    a = nco(object.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     X .-= xfit(object, X; nlv)
     X

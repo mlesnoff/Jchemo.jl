@@ -48,18 +48,20 @@ model = dkplslda(; nlv, gamma)
 fit!(model, Xtrain, ytrain)
 @names model
 @names fitm = model.fitm
+
 fitm.lev
 fitm.ni
 
 fitm_emb = fitm.fitm_emb ;
 typeof(fitm_emb)
 @names fitm_emb 
-@head fitm_emb.T
+typeof(fitm_emb.fitm)
+
 @head transf(model, Xtrain)
+@head fitm_emb.fitm.T
+
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
-
-coef(fitm_emb)
 
 res = predict(model, Xtest) ;
 @names res
@@ -88,7 +90,7 @@ function dkplslda(X, y, weights::Weight; kwargs...)
     fitm_emb = dkplsr(X, res.Y, weights; kwargs...)
     fitm_da = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fitm_da[i] = lda(vcol(fitm_emb.T, 1:i), y, weights; kwargs...)
+        fitm_da[i] = lda(vcol(fitm_emb.fitm.T, 1:i), y, weights; kwargs...)
     end
     Plsprobda(fitm_emb, fitm_da, res.lev, ni, par) 
 end

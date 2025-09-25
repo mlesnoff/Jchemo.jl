@@ -152,7 +152,7 @@ Compute Y-predictions from a fitted model.
    
 """ 
 function predict(object::Dkplsr, X; nlv = nothing)
-    a = nco(object.fitm.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = (min(a, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     fkern = eval(Meta.parse(String(object.par.kern)))

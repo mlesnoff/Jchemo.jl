@@ -155,7 +155,7 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
     # End
     res = 0
     @inbounds for a = 1:nlv
-        X = reduce(hcat, Xbl)
+        X = fconcat(Xbl)
         u .= nipals(X).u
         iter = 1
         cont = true
@@ -213,7 +213,7 @@ end
 
 function transf_all(object::Comdim, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
-    a = nco(object.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     nbl = length(Xbl)
     m = size(Xbl[1], 1)

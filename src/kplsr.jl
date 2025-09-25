@@ -171,7 +171,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Kplsr, X; nlv = nothing)
-    a = nco(object.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
@@ -189,7 +189,7 @@ Compute the b-coefficients of a fitted model.
    
 """ 
 function coef(object::Kplsr; nlv = nothing)
-    a = nco(object.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     beta = object.C[:, 1:nlv]'
     q = length(object.ymeans)
@@ -207,8 +207,8 @@ If nothing, it is the maximum nb. LVs.
 """ 
 function predict(object::Kplsr, X; nlv = nothing)
     X = ensure_mat(X)
-    a = nco(object.T)
-    isnothing(nlv) ? nlv = a : nlv = min(a, minimum(nlv)):min(a, maximum(nlv))
+    a = object.par.nlv
+    isnothing(nlv) ? nlv = a : nlv = min(minimum(nlv), a):min(maximum(nlv), a)
     le_nlv = length(nlv)
     T = transf(object, X)
     pred = list(Matrix{eltype(X)}, le_nlv)

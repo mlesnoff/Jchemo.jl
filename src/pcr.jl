@@ -109,7 +109,7 @@ For a model fitted from X (n, p) and Y (n, q), the returned object `B` is a matr
 of zeros. The returned object `int` is the intercept.
 """ 
 function coef(object::Pcr; nlv = nothing)
-    a = nco(object.fitm.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     theta = vcol(object.C, 1:nlv)'
     Dy = Diagonal(object.yscales)
@@ -130,7 +130,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Pcr, X; nlv = nothing)
     X = ensure_mat(X)
-    a = nco(object.fitm.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = (min(a, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     pred = list(Matrix{eltype(X)}, le_nlv)

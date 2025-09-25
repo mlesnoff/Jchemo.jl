@@ -50,15 +50,15 @@ typeof(fitm)
 @names fitm
 typeof(fitm.fitm) 
 @names fitm.fitm
+
 fitm.lev
 fitm.ni
 
-@head fitm.fitm.T
 @head transf(model, Xtrain)
+@head fitm.fitm.T
+
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
-
-coef(fitm.fitm)
 
 res = predict(model, Xtest) ;
 @names res

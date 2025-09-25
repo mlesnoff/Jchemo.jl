@@ -44,19 +44,23 @@ model = plskdeda(; nlv)
 #model = plskdeda(; nlv, a = .5)
 fit!(model, Xtrain, ytrain)
 @names model
-@names fitm = model.fitm
+fitm = model.fitm ;
+typeof(fitm)
+@names fitm
+
 fitm.lev
 fitm.ni
 
 fitm_emb = fitm.fitm_emb ;
 typeof(fitm_emb)
-@names fitm_emb
-@head fitm_emb.T
+@names fitm_emb 
 @head transf(model, Xtrain)
+@head fitm_emb.T
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
 
-coef(fitm_emb)
+fitm_da = fitm.fitm_da ;
+typeof(fitm_da)
 
 res = predict(model, Xtest) ;
 @names res

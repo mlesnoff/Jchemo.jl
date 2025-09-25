@@ -631,13 +631,6 @@ struct Mlrda
     par::ParMlrda
 end
 
-struct Plsrda
-    fitm::Union{Plsr, Splsr, Kplsr, Dkplsr}  
-    lev::Vector
-    ni::Vector{Int}
-    par::Union{ParPlsda, ParSplsda, ParKplsda}
-end
-
 struct Rrda
     fitm::Union{Rr, Krr}  
     lev::Vector
@@ -645,13 +638,20 @@ struct Rrda
     par::Union{ParRrda, ParKrrda}
 end
 
+struct Plsrda
+    fitm::Union{Plsr, Splsr, Kplsr, Dkplsr}  
+    lev::Vector
+    ni::Vector{Int}
+    par::Union{ParPlsda, ParSplsda, ParKplsda}
+end
+
 struct Plsprobda    # plslda, plsqda, plskdeda  
-    fitm_emb::Union{Plsr, Kplsr, Dkplsr, Splsr}
+    fitm_emb::Union{Plsr, Splsr, Kplsr, Dkplsr}
     fitm_da::Vector{Union{Lda, Qda, Kdeda}}  
     lev::Vector
     ni::Vector{Int}
-    par::Union{ParPlsda, ParPlsqda, ParPlskdeda, ParKplsda, ParKplsqda, ParKplskdeda, 
-        ParSplsda, ParSplsqda, ParSplskdeda}
+    par::Union{ParPlsda, ParPlsqda, ParPlskdeda, ParSplsda, ParSplsqda, ParSplskdeda,
+        ParKplsda, ParKplsqda, ParKplskdeda}
 end
 
 ## Local

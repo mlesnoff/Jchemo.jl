@@ -39,7 +39,7 @@ function dkplsqda(X, y, weights::Weight; kwargs...)
     fitm_emb = dkplsr(X, res.Y, weights; kwargs...)
     fitm_da = list(Qda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fitm_da[i] = qda(vcol(fitm_emb.T, 1:i), y, weights; kwargs...)
+        fitm_da[i] = qda(vcol(fitm_emb.fitm.T, 1:i), y, weights; kwargs...)
     end
     Plsprobda(fitm_emb, fitm_da, res.lev, ni, par) 
 end

@@ -104,7 +104,7 @@ Compute Y-predictions from a fitted model.
 ## Function 'coef' not yet implemented for Spcr, therefore 'predict' uses directely C (regression coefs on the scores) 
 function predict(object::Spcr, X; nlv = nothing)
     X = ensure_mat(X)
-    a = nco(object.fitm.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = (min(a, minimum(nlv)):min(a, maximum(nlv)))
     le_nlv = length(nlv)
     T = transf(object, X)

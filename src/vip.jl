@@ -71,12 +71,12 @@ function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}; nlv = nothing)
     if isa(object, Plsr)  || isa(object, Splsr)
         W = object.W
         T = object.T
-        a = nco(object.T)
+        a = object.par.nlv
         sqrtw = sqrt.(object.weights.w)
     elseif isa(object, Mbplsr) || isa(object, Pcr) || isa(object, Spcr)
         W = object.fitm.V
         T = object.fitm.T
-        a = nco(object.fitm.T)
+        a = object.par.nlv
         sqrtw = sqrt.(object.fitm.weights.w)
     end
     p = nro(W)
@@ -104,12 +104,12 @@ function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y; nlv = nothing)
     if isa(object, Plsr)
         W = object.W
         T = object.T
-        a = nco(object.T)
+        a = object.par.nlv
         weights = object.weights
     elseif isa(object, Mbplsr) || isa(object, Pcr) || isa(object, Spcr)
         W = object.fitm.V
         T = object.fitm.T
-        a = nco(object.fitm.T)
+        a = object.par.nlv
         weights = object.fitm.weights
     end
     isa(Y, BitMatrix) ? Y = convert.(eltype(W), Y) : nothing

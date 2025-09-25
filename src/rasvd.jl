@@ -164,7 +164,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 function transfbl(object::Rasvd, X, Y; nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
-    a = nco(object.Tx)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]

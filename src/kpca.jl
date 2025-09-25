@@ -105,7 +105,7 @@ Compute PCs (scores T) from a fitted model.
 * `nlv` : Nb. PCs to compute.
 """ 
 function transf(object::Kpca, X; nlv = nothing)
-    a = nco(object.T)
+    a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)

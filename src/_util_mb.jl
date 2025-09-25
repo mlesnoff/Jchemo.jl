@@ -227,7 +227,7 @@ Compute the preprocessed data from a model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 """ 
-transf(object::Mbconcat, Xbl) = reduce(hcat, Xbl)
+transf(object::Mbconcat, Xbl) = fconcat(Xbl)
 
 """
     fconcat()
@@ -248,5 +248,5 @@ Xblnew = mblock(Xnew, listbl)
 fconcat(Xbl)
 ```
 """
-fconcat(Xbl) = reduce(hcat, Xbl)
+fconcat(Xbl) = fconcat(Xbl)
 
