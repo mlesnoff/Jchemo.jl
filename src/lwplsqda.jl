@@ -34,46 +34,8 @@ on each neighborhoods.
     observations. It is recommended to select a sufficiantly large number of neighbors or/and to use a regularized 
     QDA (`alpha > 0`).
 
-## Examples
-```julia
-using Jchemo, JchemoData, JLD2
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/forages2.jld2")
-@load db dat
-@names dat
-X = dat.X
-Y = dat.Y
-n = nro(X) 
-s = Bool.(Y.test)
-Xtrain = rmrow(X, s)
-ytrain = rmrow(Y.typ, s)
-Xtest = X[s, :]
-ytest = Y.typ[s]
-ntrain = nro(Xtrain)
-ntest = nro(Xtest)
-(ntot = n, ntrain, ntest)
-tab(ytrain)
-tab(ytest)
+See function `lwplslda` for examples. 
 
-nlvdis = 25 ; metric = :mah
-h = 2 ; k = 200
-nlv = 10
-model = lwplsqda(; nlvdis, metric, h, k, nlv, prior = :unif, alpha = .5) 
-fit!(model, Xtrain, ytrain)
-@names model
-@names fitm = model.fitm
-fitm.lev
-fitm.ni
-
-res = predict(model, Xtest) ; 
-@names res 
-res.listnn
-res.listd
-res.listw
-@head res.pred
-@show errp(res.pred, ytest)
-conf(res.pred, ytest).cnt
-```
 """ 
 lwplsqda(; kwargs...) = JchemoModel(lwplsqda, nothing, kwargs)
 

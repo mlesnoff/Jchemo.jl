@@ -53,6 +53,7 @@ nlvdis = 25 ; metric = :mah
 h = 2 ; k = 200
 nlv = 10
 model = lwplslda(; nlvdis, metric, h, k, nlv, prior = :unif) 
+#model = lwplsqda(; nlvdis, metric, h, k, nlv, alpha = .5) 
 fit!(model, Xtrain, ytrain)
 @names model
 @names fitm = model.fitm
