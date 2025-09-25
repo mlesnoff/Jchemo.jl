@@ -69,6 +69,7 @@ fitm.ni
 fitm_emb = fitm.fitm_emb ;
 typeof(fitm_emb)
 @names fitm_emb 
+
 @head transf(model, Xtrain)
 @head fitm_emb.T
 

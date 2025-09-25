@@ -250,8 +250,3 @@ fconcat(Xbl)
 """
 fconcat(Xbl) = reduce(hcat, Xbl)
 
-""" 
-    plsrda(; kwargs...)
-    plsrda(X, y; kwargs...)
-    plsrda(X, y, weights::Weight; kwargs...)
-

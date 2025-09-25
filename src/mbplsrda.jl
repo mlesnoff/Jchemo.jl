@@ -68,19 +68,20 @@ bscal = :none
 #bscal = :frob
 model = mbplsrda(; nlv, bscal, scal)
 fit!(model, Xbltrain, ytrain)
-
 @names model
 fitm = model.fitm ;
 typeof(fitm)
 @names fitm
 typeof(fitm.fitm) 
 @names fitm.fitm
+
 fitm.lev
 fitm.ni
 aggsumv(fitm.fitm.weights.w, ytrain)
 
-@head fitm.fitm.T
 @head transf(model, Xbltrain)
+@head fitm.fitm.fitm.T
+
 @head transf(model, Xbltest)
 @head transf(model, Xbltest; nlv = 3)
 
@@ -90,6 +91,7 @@ res = predict(model, Xbltest) ;
 conf(res.pred, ytest).cnt
 
 predict(model, Xbltest; nlv = 1:2).pred
+
 summary(fitm.fitm, Xbltrain)
 ```
 """

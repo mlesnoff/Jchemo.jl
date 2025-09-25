@@ -72,17 +72,25 @@ model = mbplslda(; nlv, bscal, scal)
 #model = mbplskdeda(; nlv, bscal, scal)
 fit!(model, Xbltrain, ytrain)
 @names model
-@names fitm = model.fitm
+fitm = model.fitm ;
+typeof(fitm)
+@names fitm
+
 fitm.lev
 fitm.ni
 
 fitm_emb = fitm.fitm_emb ;
 typeof(fitm_emb)
-@names fitm_emb  
-@head fitm_emb.T
+@names fitm_emb 
+
 @head transf(model, Xbltrain)
+@head fitm_emb.fitm.T
+
 @head transf(model, Xbltest)
 @head transf(model, Xbltest; nlv = 3)
+
+fitm_da = fitm.fitm_da ;
+typeof(fitm_da)
 
 res = predict(model, Xbltest) ;
 @names res
@@ -92,6 +100,7 @@ errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
 predict(model, Xbltest; nlv = 1:2).pred
+
 summary(fitm_emb, Xbltrain)
 ```
 """ 
@@ -112,7 +121,7 @@ function mbplslda(Xbl, y, weights::Weight; kwargs...)
     fitm_emb = mbplsr(Xbl, res.Y, weights; kwargs...)
     fitm_da = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fitm_da[i] = lda(vcol(fitm_emb.T, 1:i), y, weights; kwargs...)
+        fitm_da[i] = lda(vcol(fitm_emb.fitm.T, 1:i), y, weights; kwargs...)
     end
     Mbplsprobda(fitm_emb, fitm_da, res.lev, ni, par) 
 end
@@ -144,10 +153,13 @@ function predict(object::Mbplsprobda, Xbl; nlv = nothing)
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
+
+    T = transf(object.fitm_emb, Xbl)
     @inbounds for i in eachindex(nlv)
         znlv = nlv[i]
-        T = transf(object.fitm_emb, Xbl; nlv = znlv)
-        zres = predict(object.fitm_da[znlv], T)
+        #T = transf(object.fitm_emb, Xbl; nlv = znlv)
+        #zres = predict(object.fitm_da[znlv], T)
+        zres = predict(object.fitm_da[znlv], vcol(T, 1:znlv))
         z =  mapslices(argmax, zres.posterior; dims = 2) 
         pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)
         posterior[i] = zres.posterior
