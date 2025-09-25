@@ -111,7 +111,7 @@ function lwplsr(X, Y; kwargs...)
     if isnothing(fitm) && par.scal
         xscales .= colstd(X)
     end
-    Lwplsr(X, Y, fitm, xscales, par)
+    Lwplsr(fitm, X, Y, xscales, par)
 end
 
 """

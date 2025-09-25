@@ -56,7 +56,7 @@ res = predict(model, Xtest)
 res.predlv   # predictions for each nb. of LVs 
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
-    ylabel = "Observed").f    
+    ylabel = "Observed").f   
 ```
 """ 
 plsravg(; kwargs...) = JchemoModel(plsravg, nothing, kwargs)
@@ -89,4 +89,5 @@ function predict(object::Plsravg, X)
     (pred = res.pred, predlv = res.predlv)
 end
 
+## Note: There is no 'transf' nor 'coef' functions for Plsravg.
 

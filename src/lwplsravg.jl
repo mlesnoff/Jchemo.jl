@@ -91,7 +91,7 @@ function lwplsravg(X, Y; kwargs...)
     if isnothing(fitm) && par.scal
         xscales .= colstd(X)
     end
-    Lwplsravg(X, Y, fitm, xscales, par)
+    Lwplsravg(fitm, X, Y, xscales, par)
 end
 
 """
@@ -119,8 +119,7 @@ function predict(object::Lwplsravg, X)
             res = getknn(object.X, X; metric, k)
         end
     else
-        res = getknn(object.fitm.T, 
-            transf(object.fitm, X); metric, k) 
+        res = getknn(object.fitm.T, transf(object.fitm, X); metric, k) 
     end
     listw = copy(res.d)
     Threads.@threads for i = 1:m
@@ -133,3 +132,5 @@ function predict(object::Lwplsravg, X)
         nlv = object.par.nlv, scal = object.par.scal, verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end
+
+

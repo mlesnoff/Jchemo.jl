@@ -94,7 +94,7 @@ function lwplsqda(X, y; kwargs...)
     if isnothing(fitm) && par.scal
         xscales .= colstd(X)
     end
-    Lwplsqda(X, y, fitm, xscales, taby.keys, taby.vals, par)
+    Lwplsqda(fitm, X, y, xscales, taby.keys, taby.vals, par)
 end
 
 """

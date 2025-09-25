@@ -465,17 +465,17 @@ struct Lwmlr
 end
 
 struct Lwplsr
+    fitm::Union{Nothing, Plsr}
     X::Matrix
     Y::Matrix
-    fitm::Union{Nothing, Plsr}
     xscales::Vector
     par::ParLwplsr
 end
 
 struct Lwplsravg
+    fitm::Union{Nothing, Plsr}
     X::Matrix
     Y::Matrix
-    fitm::Union{Nothing, Plsr}
     xscales::Vector
     par::ParLwplsr
 end
@@ -676,9 +676,9 @@ struct Lwmlrda
 end
 
 struct Lwplsrda
+    fitm
     X::Matrix
     y::AbstractMatrix
-    fitm
     xscales::Vector
     lev::Vector
     ni::Vector{Int}
@@ -686,9 +686,9 @@ struct Lwplsrda
 end
 
 struct Lwplslda   
+    fitm
     X::Matrix
     y::AbstractMatrix
-    fitm
     xscales::Vector
     lev::Vector
     ni::Vector{Int}
@@ -696,9 +696,9 @@ struct Lwplslda
 end
 
 struct Lwplsqda
+    fitm
     X::Matrix
     y::AbstractMatrix
-    fitm
     xscales::Vector
     lev::Vector
     ni::Vector{Int}
