@@ -49,7 +49,6 @@ model = lwmlr(; metric, h, k)
 fit!(model, Ttrain, ytrain)
 @names model
 @names model.fitm
-dump(model.fitm.par)
 
 res = predict(model, Ttest) ; 
 @names res 
@@ -60,6 +59,18 @@ res.listw
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
     ylabel = "Observed").f    
+
+## Same but with function 'pip'
+nlv = 20
+metric = :eucl 
+h = 2 ; k = 100 
+model1 = pcasvd(; nlv) ;
+model2 = lwmlr(; metric, h, k) 
+model = pip(model1, model2)
+fit!(model, Xtrain, ytrain)
+res = predict(model, Xtest) ;
+@head res.pred
+rmsep(res.pred, ytest)
 
 ####### Example of fitting the function sinc(x)
 ####### described in Rosipal & Trejo 2001 p. 105-106 

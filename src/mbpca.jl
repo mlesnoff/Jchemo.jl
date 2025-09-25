@@ -96,7 +96,7 @@ res.rdxbl2t
 res.cortbl2t
 res.corx2t 
 
-#### This MBPCA can also be implemented with function pip
+#### This MBPCA can also be implemented with function 'pip'
 
 model1 = blockscal(; bscal, centr = true) ;
 model2 = mbconcat()

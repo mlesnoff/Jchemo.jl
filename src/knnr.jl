@@ -58,7 +58,7 @@ res.listw
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-## With dimension reduction
+## With preliminary dimension reduction
 model1 = pcasvd(nlv = 15)
 metric = :eucl ; h = 1 ; k = 3 
 model2 = knnr(; metric, h, k) 

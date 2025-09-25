@@ -70,7 +70,7 @@ res.rvxbl2t
 res.rdxbl2t
 res.corx2t 
 
-## This MBPLSR can also be implemented with function pip
+## This MBPLSR can also be implemented with function 'pip'
 
 model1 = blockscal(; bscal, centr = true) ;
 model2 = mbconcat()
