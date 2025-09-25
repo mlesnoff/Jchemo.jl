@@ -20,9 +20,9 @@ function gridcv_lv(X, Y; segm, algo, score, pars = nothing, nlv, verbose = false
         @inbounds for j in eachindex(listsegm)
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
-            if isa(X[1, 1], Number)  # monoblock
+            if isa(X[1, 1], Number) # monoblock
                 zres[j] = gridscore_lv(rmrow(X, s), rmrow(Y, s), X[s, :], Y[s, :]; algo, score, pars, nlv)
-            else                     # multiblock
+            else                    # multiblock
                 Xcal = similar(X)
                 Xval = similar(X)
                 @inbounds for k in eachindex(X) 
@@ -30,8 +30,8 @@ function gridcv_lv(X, Y; segm, algo, score, pars = nothing, nlv, verbose = false
                     Xval[k] = X[k][s, :]
                 end
                 zres[j] = gridscore_lv(Xcal, rmrow(Y, s), Xval, Y[s, :]; algo, score, pars, nlv)
-            end
-        end
+            end                     # end
+        end                
         zres = reduce(vcat, zres)
         ## Case where pars is empty
         if isnothing(pars) 

@@ -38,7 +38,7 @@ sampdp(X, k)
 ```
 """ 
 function sampdp(X, k::Int; metric = :eucl)
-    @assert in([:eucl, :mah])(metric) "Wrong value for argument 'metric'."
+    @assert in([:eucl, :mah, :sam, :cos, :cor])(metric) "Wrong value for argument 'metric'."
     if metric == :eucl
         D = euclsq(X, X)
     else

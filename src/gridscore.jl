@@ -16,7 +16,7 @@ Keyword arguments:
 * `lb` : Value, or vector of values, of the ridge regularization 
     parameter "lambda".
 
-The function is used for grid-search: it computed a prediction score (= error rate) for model `model` over the 
+The function is used for grid-search: it computes a prediction score (= error rate) for model `model` over the 
 combinations of parameters defined in `pars`. The score is computed over sets {`X, `Y`}. 
     
 For models based on LV or ridge regularization, using arguments `nlv` and `lb` allow faster computations than including 
@@ -24,7 +24,7 @@ these parameters in argument `pars. See the examples.
 
 ## Examples
 ```julia
-######## Regression 
+####### Regression 
 
 using JLD2, CairoMakie, JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -55,7 +55,7 @@ ycal = ytrain[s.train]
 Xval = Xtrain[s.test, :]
 yval = ytrain[s.test]
 
-##---- Plsr
+####---- Plsr
 model = plskern()
 nlv = 0:30
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, nlv)
@@ -83,7 +83,7 @@ pred = predict(model, Xtest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-##---- Rr 
+####---- Rr 
 lb = (10).^(-8:.1:3)
 model = rr() 
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, lb)
@@ -113,7 +113,7 @@ pred = predict(model, Xtest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-##---- Kplsr 
+####---- Kplsr 
 model = kplsr()
 nlv = 0:30
 gamma = (10).^(-5:1.:5)
@@ -131,8 +131,8 @@ pred = predict(model, Xtest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-##---- Knnr 
-nlvdis = [15; 25] ; metric = [:mah]
+####---- Knnr 
+nlvdis = [0; 15; 25] ; metric = [:cos]
 h = [1, 2.5, 5]
 k = [1, 5, 10, 20, 50, 100] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
@@ -141,15 +141,14 @@ model = knnr()
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, verbose = true)
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model = knnr(nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], 
-    k = res.k[u])
+model = knnr(nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], k = res.k[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-##---- Lwplsr 
+####---- Lwplsr 
 nlvdis = 15 ; metric = [:mah]
 h = [1, 2, 5] ; k = [200, 350, 500] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
@@ -169,7 +168,7 @@ pred = predict(model, Xtest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-##---- LwplsrAvg 
+####---- LwplsrAvg 
 nlvdis = 15 ; metric = [:mah]
 h = [1, 2, 5] ; k = [200, 350, 500] 
 nlv = [0:20, 5:20] 
@@ -187,7 +186,7 @@ pred = predict(model, Xtest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
 
-##---- Mbplsr
+####---- Mbplsr
 listbl = [1:525, 526:1050]
 Xbltrain = mblock(Xtrain, listbl)
 Xbltest = mblock(Xtest, listbl) 
@@ -210,7 +209,7 @@ pred = predict(model, Xbltest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
     
-######## Discrimination
+####### Discrimination
 ## The principle is the same as for regression
 
 using JLD2, CairoMakie, JchemoData
@@ -238,13 +237,14 @@ ycal = ytrain[s.train]
 Xval = Xtrain[s.test, :]
 yval = ytrain[s.test]
 
-##---- Plslda
+####---- Plslda
 model = plslda()
 nlv = 1:30
-prior = [:unif, :prop]
-pars = mpar(prior = prior)
+prior = [:unif]
+scal = [false; true]
+pars = mpar(prior = prior, scal = scal)
 res = gridscore(model, Xcal, ycal, Xval, yval; score = errp, pars, nlv)
-typ = res.prior
+typ = string.(res.prior, "-", res.scal)
 plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]

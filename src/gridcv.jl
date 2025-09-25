@@ -12,7 +12,7 @@ Keyword arguments:
 * `nlv` : Value, or vector of values, of the nb. of latent variables (LVs).
 * `lb` : Value, or vector of values, of the ridge regularization parameter "lambda".
 
-The function is used for grid-search: it computed a prediction score (= error rate) for the specified `model` over 
+The function is used for grid-search: it computes a prediction score (= error rate) for the specified `model` over 
 the combinations of parameters defined in `pars`. 
     
 For models based on LV or ridge regularization, using arguments `nlv` and `lb` allow faster computations than including 
@@ -24,7 +24,7 @@ The function returns two outputs:
 
 ## Examples
 ```julia
-######## Regression
+####### Regression
 
 using JLD2, CairoMakie, JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -48,14 +48,14 @@ ntest = nro(Xtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
 
-## Replicated K-fold CV 
+## a) Replicated K-fold CV 
 K = 3 ; rep = 10
 segm = segmkf(ntrain, K; rep)
-## Replicated test-set validation
+## b) Replicated test-set validation
 #m = round(Int, ntrain / 3) ; rep = 30
 #segm = segmts(ntrain, m; rep)
 
-####-- Plsr
+####---- Plsr
 model = plskern()
 nlv = 0:30
 rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, nlv) ;
@@ -86,7 +86,7 @@ pred = predict(model, Xtest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
 
-####-- Rr 
+####---- Rr 
 lb = (10).^(-8:.1:3)
 model = rr() 
 rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, lb) ;
@@ -118,7 +118,7 @@ pred = predict(model, Xtest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
 
-####-- Kplsr 
+####---- Kplsr 
 model = kplsr()
 nlv = 0:30
 gamma = (10).^(-5:1.:5)
@@ -137,8 +137,8 @@ pred = predict(model, Xtest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
 
-####-- Knnr 
-nlvdis = [15, 25] ; metric = [:mah]
+####---- Knnr 
+nlvdis = [0; 15; 25] ; metric = [:sam]
 h = [1, 2.5, 5]
 k = [1; 5; 10; 20; 50 ; 100] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
@@ -148,15 +148,14 @@ rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, verbose = true)
 res = rescv.res 
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model = knnr(nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], 
-    k = res.k[u])
+model = knnr(nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], k = res.k[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
 
-####-- Lwplsr 
+####---- Lwplsr 
 nlvdis = 15 ; metric = [:mah]
 h = [1, 2, 5] ; k = [200, 350, 500] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
@@ -169,15 +168,15 @@ group = string.("h=", res.h, " k=", res.k)
 plotgrid(res.nlv, res.y1, group; xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model = lwplsr(nlvdis = res.nlvdis[u], metric = res.metric[u], 
-    h = res.h[u], k = res.k[u], nlv = res.nlv[u])
+model = lwplsr(nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], k = res.k[u], 
+    nlv = res.nlv[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
 
-####-- LwplsrAvg 
+####---- LwplsrAvg 
 nlvdis = 15 ; metric = [:mah]
 h = [1, 2, 5] ; k = [200, 350, 500] 
 nlv = [0:20, 5:20] 
@@ -188,15 +187,15 @@ rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, verbose = true)
 res = rescv.res 
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
-model = lwplsravg(nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], 
-    k = res.k[u], nlv = res.nlv[u])
+model = lwplsravg(nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], k = res.k[u], 
+  nlv = res.nlv[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
     
-##---- Mbplsr
+####------ Mbplsr
 listbl = [1:525, 526:1050]
 Xbltrain = mblock(Xtrain, listbl)
 Xbltest = mblock(Xtest, listbl) 
@@ -220,7 +219,7 @@ pred = predict(model, Xbltest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
 
-######## Discrimination
+####### Discrimination
 ## The principle is the same as for regression
 
 using JLD2, CairoMakie, JchemoData
@@ -241,14 +240,14 @@ ntest = nro(Xtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
 
-## Replicated K-fold CV 
+## a) Replicated K-fold CV 
 K = 3 ; rep = 10
 segm = segmkf(ntrain, K; rep)
-## Replicated test-set validation
+## b) Replicated test-set validation
 #m = round(Int, ntrain / 3) ; rep = 30
 #segm = segmts(ntrain, m; rep)
 
-####-- Plslda
+####---- Plslda
 model = plslda()
 nlv = 1:30
 pars = mpar(scal = [false; true])
