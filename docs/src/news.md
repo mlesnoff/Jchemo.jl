@@ -1,6 +1,6 @@
 # News
 
-## *Version 0.9.O*
+## *Version 0.9.0*
 
 - Breaking changes
     - All the PLS-based DA methods: output 'fitm' has been split into 
