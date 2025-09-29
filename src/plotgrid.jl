@@ -48,8 +48,7 @@ group = string.("h=", res.h, " k=", res.k)
 plotgrid(res.nlv, res.y1, group; xlabel = "Nb. LVs", ylabel = "RMSECV").f
 ```
 """ 
-function plotgrid(indx::AbstractVector, r; size = (500, 300), step = 5, 
-        color = nothing, kwargs...)
+function plotgrid(indx::AbstractVector, r; size = (500, 300), step = 5, color = nothing, kwargs...)
     isa(indx, Vector{Any}) ? indx = Float64.(indx) : nothing
     r = Float64.(vec(r))
     xticks = collect(minimum(indx):step:maximum(indx))
@@ -64,8 +63,8 @@ function plotgrid(indx::AbstractVector, r; size = (500, 300), step = 5,
     (f = f, ax)
 end
 
-function plotgrid(indx::AbstractVector, r, group; size = (700, 350), 
-        step = 5, color = nothing, leg = true, leg_title = "Group", kwargs...)
+function plotgrid(indx::AbstractVector, r, group; size = (700, 350), step = 5, color = nothing, leg = true, 
+        leg_title = "Group", kwargs...)
     isa(indx, Vector{Any}) ? indx = Float64.(indx) : nothing
     r = Float64.(vec(r))
     group = vec(group)
