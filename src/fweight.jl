@@ -21,7 +21,7 @@ X
 function fweight(X, v)
     X = ensure_mat(X)
     n, p = size(X)
-    zX = similar(X)
+    zX = similar(v, n, p)
     @inbounds for j = 1:p, i = 1:n
         zX[i, j] = X[i, j] * v[i]
     end  
