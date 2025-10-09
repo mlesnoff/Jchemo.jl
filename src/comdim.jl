@@ -135,7 +135,7 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
     sqrtw = sqrt.(weights.w)
     invsqrtw = 1 ./ sqrtw
     @inbounds for k in eachindex(Xbl) 
-        fweight!(Xbl[k], sqrtw)
+        rweight!(Xbl[k], sqrtw)
     end
     ## Pre-allocation
     u = similar(Xbl[1], n)
@@ -269,7 +269,7 @@ function Base.summary(object::Comdim, Xbl)
     sqrtw = sqrt.(object.weights.w)
     sstot_xx = 0 
     @inbounds for k in eachindex(Xbl)
-        zX = fweight(zXbl[k], sqrtw)
+        zX = rweight(zXbl[k], sqrtw)
         sstot_xx += frob2(zX * zX')
     end
     tt = object.mu

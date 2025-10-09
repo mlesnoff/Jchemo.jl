@@ -103,8 +103,8 @@ function covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs
         fcenter!(Y, ymeans)
     end
     sqrtw = sqrt.(weights.w)
-    fweight!(X, sqrtw)
-    fweight!(Y, sqrtw)
+    rweight!(X, sqrtw)
+    rweight!(Y, sqrtw)
     xsstot = frob2(X)
     ysstot = frob2(Y)
     ##

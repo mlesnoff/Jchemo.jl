@@ -123,9 +123,9 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     p = zeros(Int, nbl)
     @inbounds for k in eachindex(Xbl) 
         p[k] = nco(Xbl[k])
-        fweight!(Xbl[k], sqrtw)
+        rweight!(Xbl[k], sqrtw)
     end
-    fweight!(Y, sqrtw)
+    rweight!(Y, sqrtw)
     ## Pre-allocation
     X = similar(Xbl[1], n, sum(p))
     Tbl = list(Matrix{Q}, nbl)
@@ -197,7 +197,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         end
         Y .-= tx * wytild'
     end
-    fweight!(Tx, invsqrtw)
+    rweight!(Tx, invsqrtw)
     Rx = Wx * inv(Vx' * Wx)
     lb = nothing
     Mbplswest(Tx, Vx, Rx, Wx, Wytild, Tb, Tbl, Pbl, TTx, fitm_bl, ymeans, yscales, 

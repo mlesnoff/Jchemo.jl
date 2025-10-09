@@ -109,7 +109,7 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     b = list(Array{Q}, nbl) 
     if nbl > 1
         for i = 2:nbl
-            DT = fweight(T, weights.w)
+            DT = rweight(T, weights.w)
             b[i] = inv(T' * DT) * DT' * Xbl[i]
             X = Xbl[i] - T * b[i]
             fitm[i] = plskern(X, Y - fit, weights; nlv = nlv[i], scal = false)  

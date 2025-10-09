@@ -53,7 +53,7 @@ function plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(Y, ymeans)
     end
     ## XtY 
-    fweight!(Y, weights.w)
+    rweight!(Y, weights.w)
     XtY = X' * Y
     ## Pre-allocation
     T = similar(X, n, nlv)

@@ -130,8 +130,8 @@ function cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     # Row metric
     sqrtw = sqrt.(weights.w)
     invsqrtw = 1 ./ sqrtw
-    fweight!(X, sqrtw)
-    fweight!(Y, sqrtw) 
+    rweight!(X, sqrtw)
+    rweight!(Y, sqrtw) 
     # End
     if tau == 0
         Cx = Symmetric(X' * X)
@@ -157,8 +157,8 @@ function cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     Wx = invUx * U[:, 1:nlv]
     Wy = invUy * V[:, 1:nlv]
     d = d[1:nlv]
-    Tx = fweight(X * Wx, invsqrtw) 
-    Ty = fweight(Y * Wy, invsqrtw)
+    Tx = rweight(X * Wx, invsqrtw) 
+    Ty = rweight(Y * Wy, invsqrtw)
     Cca(Tx, Ty, Wx, Wy, d, bscales, xmeans, xscales, ymeans, yscales, weights, par)
 end
 

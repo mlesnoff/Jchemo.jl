@@ -136,7 +136,7 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     delta = copy(TTx)
     # End
     @inbounds for a = 1:nlv
-        XtY .= X' * fweight(Y, weights.w)
+        XtY .= X' * rweight(Y, weights.w)
         U, d, V = svd!(XtY) 
         delta[a] = d[1]
         wx .= U[:, 1]

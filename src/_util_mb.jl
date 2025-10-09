@@ -113,7 +113,7 @@ function blockscal(Xbl::Vector, weights::Weight; kwargs...)   # to do: specify t
         if bscal == :frob
             bscales[k] = frob(zX, weights)
         elseif bscal == :mfa
-            fweight!(zX, sqrt.(weights.w))
+            rweight!(zX, sqrt.(weights.w))
             bscales[k] = nipals(zX).sv
         elseif bscal == :ncol
             bscales[k] = nco(zX)

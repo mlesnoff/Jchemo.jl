@@ -57,8 +57,8 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     end
     # Row metric
     sqrtw = sqrt.(weights.w)
-    fweight!(X, sqrtw)
-    fweight!(Y, sqrtw)
+    rweight!(X, sqrtw)
+    rweight!(Y, sqrtw)
     ## Pre-allocation
     Tx = similar(X, n, nlv)
     Wx = similar(X, p, nlv)
@@ -106,7 +106,7 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         Wytild[:, a] .= wytild
         TTx[a] = ttx
     end
-    fweight!(Tx, 1 ./ sqrtw) 
+    rweight!(Tx, 1 ./ sqrtw) 
     Rx = Wx * inv(Vx' * Wx)
     Plsr(Tx, Vx, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, niter, par)
 end

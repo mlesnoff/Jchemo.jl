@@ -119,7 +119,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     #Res = zeros(n, q, nbl)
     ## Start 
     @inbounds for a = 1:nlv
-        DY .= fweight(Y, weights.w)  # apply the metric to the covariance
+        DY .= rweight(Y, weights.w)  # apply the metric to the covariance
         @inbounds for k in eachindex(Xbl)
             XtY = Xbl[k]' * DY
             if q == 1
@@ -134,7 +134,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         ## GS Orthogonalization of the scores
         if a > 1
             z = vcol(T, 1:(a - 1))
-            zT .= zT .- z * inv(z' * fweight(z, weights.w)) * z' * fweight(zT, weights.w)
+            zT .= zT .- z * inv(z' * rweight(z, weights.w)) * z' * rweight(zT, weights.w)
         end
         ## Selection of the winner block (opt)
         @inbounds for k in eachindex(Xbl)
@@ -221,7 +221,7 @@ function coef(object::Rosaplsr; nlv = nothing)
     xscales = reduce(vcat, object.fitm_bl.xscales)
     theta = vcol(object.C, 1:nlv)'  # coefs regression of Y on T
     Dy = Diagonal(object.yscales)
-    B = fweight(vcol(object.R, 1:nlv), 1 ./ xscales) * theta * Dy
+    B = rweight(vcol(object.R, 1:nlv), 1 ./ xscales) * theta * Dy
     int = object.ymeans' .- xmeans' * B
     (B = B, int = int)
 end

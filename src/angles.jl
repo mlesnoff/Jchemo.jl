@@ -107,8 +107,8 @@ function rv(X, Y, weights::Weight; centr = true)
         fcenter!(Y, colmean(Y, weights))
     end
     sqrtw = sqrt.(weights.w)
-    fweight!(X, sqrtw)
-    fweight!(Y, sqrtw)
+    rweight!(X, sqrtw)
+    rweight!(Y, sqrtw)
     if n < p
         XXt = X * X'
         YYt = Y * Y'

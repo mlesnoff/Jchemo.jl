@@ -285,8 +285,8 @@ cosv(x, y)
 cosv(x, y) = dot(x, y) / sqrt(dot(x, x) * dot(y, y))
 
 function cosv(x, y, weights::Weight)
-    zy = fweight(y, weights.w)
-    dot(x, zy) / sqrt(dot(x, fweight(x, weights.w)) * dot(y, zy))
+    zy = rweight(y, weights.w)
+    dot(x, zy) / sqrt(dot(x, rweight(x, weights.w)) * dot(y, zy))
 end
 
 #### Matrices
@@ -323,7 +323,7 @@ covm(X) = Statistics.cov(X; corrected = false)
 function covm(X, weights::Weight)
     zX = copy(ensure_mat(X))
     fcenter!(zX, colmean(zX, weights))
-    fweight!(zX, sqrt.(weights.w))
+    rweight!(zX, sqrt.(weights.w))
     zX' * zX
 end
 
@@ -334,7 +334,7 @@ function covm(X, Y, weights::Weight)
     zY = copy(ensure_mat(Y))
     fcenter!(zX, colmean(zX, weights))
     fcenter!(zY, colmean(zY, weights))
-    zX' * fweight(zY, weights.w)
+    zX' * rweight(zY, weights.w)
 end
 
 """
@@ -370,7 +370,7 @@ function corm(X, weights::Weight)
     zX = copy(ensure_mat(X))
     fcenter!(zX, colmean(zX, weights))
     fscale!(zX, colstd(zX, weights))
-    z = fweight(zX, sqrt.(weights.w))
+    z = rweight(zX, sqrt.(weights.w))
     z' * z
 end
 
@@ -383,7 +383,7 @@ function corm(X, Y, weights::Weight)
     fcenter!(zY, colmean(zY, weights))
     fscale!(zX, colstd(zX, weights))
     fscale!(zY, colstd(zY, weights))
-    zX' * fweight(zY, weights.w)
+    zX' * rweight(zY, weights.w)
 end
 
 """

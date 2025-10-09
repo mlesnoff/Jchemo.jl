@@ -122,8 +122,8 @@ function rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     # Row metric
     sqrtw = sqrt.(weights.w)
     invsqrtw = 1 ./ sqrtw
-    fweight!(X, sqrtw)
-    fweight!(Y, sqrtw)
+    rweight!(X, sqrtw)
+    rweight!(Y, sqrtw)
     # End
     if tau == 0       
         invCx = inv(X' * X)
@@ -148,8 +148,8 @@ function rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     # PCA(Yfit) ==> Wy, Ty
     # Tx = Projx * Ty
     # End
-    fweight!(Tx, invsqrtw)
-    fweight!(Ty, invsqrtw)   
+    rweight!(Tx, invsqrtw)
+    rweight!(Ty, invsqrtw)   
     Rasvd(Tx, Ty, Bx, Wy, lambda, bscales, xmeans, xscales, ymeans, yscales, weights, par)
 end
 
@@ -193,7 +193,7 @@ function Base.summary(object::Rasvd, X, Y)
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     ## Block X
     T = object.Tx
-    DT = fweight(T, object.weights.w)
+    DT = rweight(T, object.weights.w)
     ss = frob(X, object.weights)^2
     tt = diag(DT'* X * X' * DT) ./ diag(T' * DT)
     pvar =  tt / ss

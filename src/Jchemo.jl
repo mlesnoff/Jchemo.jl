@@ -28,11 +28,13 @@ include("_defaults.jl")
 ######---- Misc
 
 include("_util.jl")
-include("_util_recod.jl")
-include("_util_stat.jl")
 include("_util_colwise.jl")
+include("_util_mb.jl")
+include("_util_recod.jl")
 include("_util_rowwise.jl")
-include("fweight.jl")
+include("_util_stat.jl")
+include("_util_weighting.jl")
+##
 include("angles.jl")
 include("colmedspa.jl")
 include("ellipse.jl")
@@ -40,8 +42,8 @@ include("matW.jl")
 include("nipals.jl")
 include("nipalsmiss.jl")
 include("simpp.jl")
-include("snipals_shen.jl")
 include("snipals_post.jl")
+include("snipals_shen.jl")
 
 ######---- Preprocessing
 
@@ -89,7 +91,6 @@ include("umap.jl")
 include("spca.jl")
 
 ## Multiblock 
-include("_util_mb.jl")
 include("cca.jl")
 include("ccawold.jl")
 include("plscan.jl")
@@ -280,7 +281,8 @@ export
     fblockscal, fblockscal!,
     fcenter, fcenter!, 
     fcscale, fcscale!, 
-    fweight, fweight!,
+    rweight, rweight!,
+    cweight, cweight!,
     recod_catbyind,
     findmax_cla, 
     frob, frob2, 

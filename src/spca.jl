@@ -134,7 +134,7 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
         fcenter!(X, xmeans)
     end
     sqrtw = sqrt.(weights.w)
-    fweight!(X, sqrtw)
+    rweight!(X, sqrtw)
     T = similar(X, n, nlv)
     V = similar(X, p, nlv)
     sv = similar(X, nlv)
@@ -205,14 +205,14 @@ function Base.summary(object::Spca, X)
     sqrtw = sqrt.(weights.w)
     X = fcscale(X, object.xmeans, object.xscales)
     sstot = frob2(X, weights)
-    TT = fweight(object.T.^2, weights.w)
+    TT = rweight(object.T.^2, weights.w)
     tt = colsum(TT)
     defl = object.par.defl 
     if defl == :v      
         ## Adjusted variance and CPEV (cumulative percentage of explained variance) of Shen & Huang 2008
         ## section 2.3: based on the orthogonal projection of the rows of the deflated X[a] on the space 
         ## spanned by the columns of matrix V[a] = [v1 v2 ... va]  
-        zX = fweight(X, sqrtw)
+        zX = rweight(X, sqrtw)
         ss = zeros(nlv)
         for a = 1:nlv
             V = vcol(object.V, 1:a)
@@ -224,7 +224,7 @@ function Base.summary(object::Spca, X)
         explvarx = DataFrame(nlv = 1:nlv, pvar = pvar, cumpvar = cumpvar)
     elseif defl == :t
         ## Proportion of variance of X explained by each column of T 
-        A = X' * fweight(object.T, weights.w)
+        A = X' * rweight(object.T, weights.w)
         ss = colnorm(A).^2 ./ colnorm(object.T, object.weights).^2
         ## = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
         ## = diag(A' * A) ./ diag(object.T' * D * object.T)
@@ -237,7 +237,7 @@ function Base.summary(object::Spca, X)
     contr_ind = DataFrame(fscale(TT, tt), nam)
     contr_var = DataFrame(object.V.^2, nam)
     ## Should be ok 
-    C = X' * fweight(fscale(object.T, sqrt.(tt)), weights.w) 
+    C = X' * rweight(fscale(object.T, sqrt.(tt)), weights.w) 
     coord_var = DataFrame(C, nam)
     ## End
     cor_circle = DataFrame(corm(X, object.T, weights), nam)

@@ -97,8 +97,8 @@ function rr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
         fcenter!(X, xmeans)
     end
     fcenter!(Y, ymeans)
-    fweight!(X, sqrtw)
-    fweight!(Y, sqrtw)
+    rweight!(X, sqrtw)
+    rweight!(Y, sqrtw)
     res = LinearAlgebra.svd!(X)
     sv = res.S
     TtY = Diagonal(sv) * res.U' * Y
@@ -117,7 +117,7 @@ function coef(object::Rr; lb = nothing)
     eig = object.sv.^2
     z = 1 ./ (eig .+ lb^2)
     beta = Diagonal(z) * object.TtY
-    B = fweight(object.V, 1 ./ object.xscales) * beta
+    B = rweight(object.V, 1 ./ object.xscales) * beta
     int = object.ymeans' .- object.xmeans' * B
     tr = sum(eig .* z)
     (B = B, int = int, df = 1 + tr)

@@ -131,8 +131,8 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     # Row metric
     sqrtw = sqrt.(weights.w)
     invsqrtw = 1 ./ sqrtw
-    fweight!(X, sqrtw)
-    fweight!(Y, sqrtw)
+    rweight!(X, sqrtw)
+    rweight!(Y, sqrtw)
     ## Pre-allocation
     Tx = similar(X, n, nlv)
     Ty = copy(Tx)
@@ -215,8 +215,8 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         TTx[a] = ttx
         TTy[a] = tty
     end
-    fweight!(Tx, invsqrtw)
-    fweight!(Ty, invsqrtw)
+    rweight!(Tx, invsqrtw)
+    rweight!(Ty, invsqrtw)
     Rx = Wx * inv(Vx' * Wx)
     Ry = Wy * inv(Vy' * Wy)
     Ccawold(Tx, Ty, Vx, Vy, Rx, Ry, Wx, Wy, TTx, TTy, bscales, xmeans, xscales, ymeans, yscales, 

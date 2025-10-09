@@ -182,7 +182,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         TTx[a] = ttx
      end
      Rx = Wx * inv(Vx' * Wx)
-     fweight!(Tx, invsqrtw)
+     rweight!(Tx, invsqrtw)
      Plsr(Tx, Vx, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, niter, par)
 end
 

@@ -82,7 +82,7 @@ function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
         fcenter!(X, xmeans)
     end
     sqrtw = sqrt.(weights.w)
-    fweight!(X, sqrtw)
+    rweight!(X, sqrtw)
     T = similar(X, n, nlv)
     V = similar(X, p, nlv)
     sv = similar(X, nlv)
@@ -107,7 +107,7 @@ function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
             VVt .+= res.v * res.v'
         end
     end
-    fweight!(T, 1 ./ sqrtw)
+    rweight!(T, 1 ./ sqrtw)
     Pca(T, V, sv, xmeans, xscales, weights, niter, par) 
 end
 

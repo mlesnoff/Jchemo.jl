@@ -147,7 +147,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
         fcenter!(Y, ymeans)
     end
     ## XtY 
-    fweight!(Y, weights.w)
+    rweight!(Y, weights.w)
     XtY = X' * Y
     YtX = XtY'
     ## Pre-allocation

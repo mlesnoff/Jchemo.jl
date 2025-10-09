@@ -128,17 +128,17 @@ function krr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
     K = fkern(X, X; kwargs...)
     sqrtw = sqrt.(weights.w)
-    DKt = fweight(K', weights.w)
+    DKt = rweight(K', weights.w)
     vtot = sum(DKt, dims = 1)
-    Kc = K .- vtot' .- vtot .+ sum(fweight(DKt', weights.w))
+    Kc = K .- vtot' .- vtot .+ sum(rweight(DKt', weights.w))
     # Kd = D^(1/2) * Kc * D^(1/2) 
     #    = U * Delta^2 * U'    
-    Kd = fweight(Kc, sqrtw) * Diagonal(sqrtw) 
+    Kd = rweight(Kc, sqrtw) * Diagonal(sqrtw) 
     res = LinearAlgebra.svd(Kd)
     U = Matrix(res.V)
     sv = sqrt.(res.S)
     # UtDY = U' * D^(1/2) * Y
-    UtDY = U' * fweight(Y, sqrtw)
+    UtDY = U' * rweight(Y, sqrtw)
     Krr(X, K, U, UtDY, sv, DKt, vtot, xscales, ymeans, weights, kwargs, par) 
 end
 
@@ -172,15 +172,15 @@ function predict(object::Krr, X; lb = nothing)
     isnothing(lb) ? lb = object.par.lb : nothing
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
-    DKt = fweight(K', object.weights.w)
+    DKt = rweight(K', object.weights.w)
     vtot = sum(DKt, dims = 1)
     w = object.weights.w
-    Kc = K .- vtot' .- object.vtot .+ sum(fweight(object.DKt', w))
+    Kc = K .- vtot' .- object.vtot .+ sum(rweight(object.DKt', w))
     le_lb = length(lb)
     pred = list(Matrix{eltype(X)}, le_lb)
     @inbounds for i = 1:le_lb
         z = coef(object; lb = lb[i])
-        pred[i] = z.int .+ Kc * (fweight(z.A, sqrt.(w)))
+        pred[i] = z.int .+ Kc * (rweight(z.A, sqrt.(w)))
     end 
     le_lb == 1 ? pred = pred[1] : nothing
     (pred = pred,)

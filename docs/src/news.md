@@ -1,7 +1,11 @@
 # News
 
 ## *Version 0.9.1*
-    
+
+- News
+    - **rweight**, **cweight**: Weight each row or column of a matrix (**rweight** replaces the previous 
+        working function **fweight**)).
+
 - Modifications
     - Code cleaning.
 

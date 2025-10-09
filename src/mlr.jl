@@ -76,8 +76,8 @@ function mlr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...
     sqrtw = sqrt.(weights.w)
     if par.noint
         q = nco(Y)
-        fweight!(X, sqrtw)
-        fweight!(Y, sqrtw)
+        rweight!(X, sqrtw)
+        rweight!(Y, sqrtw)
         B = X \ Y
         int = zeros(q)'
     else
@@ -85,8 +85,8 @@ function mlr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...
         ymeans = colmean(Y, weights)   
         fcenter!(X, xmeans)
         fcenter!(Y, ymeans)
-        fweight!(X, sqrtw)
-        fweight!(Y, sqrtw)
+        rweight!(X, sqrtw)
+        rweight!(Y, sqrtw)
         B = X \ Y
         int = ymeans' .- xmeans' * B
     end
@@ -128,8 +128,8 @@ function mlrchol!(X::Matrix, Y::Matrix, weights::Weight)
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)
-    fweight!(X, sqrtw)
-    fweight!(Y, sqrtw)
+    rweight!(X, sqrtw)
+    rweight!(Y, sqrtw)
     B = cholesky!(Hermitian(X' * X)) \ (X' * Y)
     int = ymeans' .- xmeans' * B
     MlrNoArg(B, int, weights)
@@ -169,8 +169,8 @@ function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     sqrtw = sqrt.(weights.w)
     if par.noint
         q = nco(Y)
-        fweight!(X, sqrtw)
-        fweight!(Y, sqrtw)
+        rweight!(X, sqrtw)
+        rweight!(Y, sqrtw)
         tol = sqrt(eps(real(float(one(eltype(X))))))      # see ?pinv
         B = pinv(X, rtol = tol) * Y
         int = zeros(q)'
@@ -179,8 +179,8 @@ function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         ymeans = colmean(Y, weights)   
         fcenter!(X, xmeans)
         fcenter!(Y, ymeans)
-        fweight!(X, sqrtw)
-        fweight!(Y, sqrtw)
+        rweight!(X, sqrtw)
+        rweight!(Y, sqrtw)
         tol = sqrt(eps(real(float(one(eltype(X))))))      # see ?pinv
         B = pinv(X, rtol = tol) * Y
         int = ymeans' .- xmeans' * B
@@ -222,8 +222,8 @@ function mlrpinvn!(X::Matrix, Y::Matrix, weights::Weight)
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)
-    fweight!(X, sqrtw)
-    fweight!(Y, sqrtw)
+    rweight!(X, sqrtw)
+    rweight!(Y, sqrtw)
     XtX = X' * X
     tol = sqrt(eps(real(float(one(eltype(XtX))))))
     B = pinv(XtX, rtol = tol) * (X' * Y)
@@ -263,8 +263,8 @@ function mlrvec!(x::Matrix, Y::Matrix, weights::Weight; kwargs...)
     sqrtw = sqrt.(weights.w)
     if par.noint
         q = nco(Y)
-        fweight!(x, sqrtw)
-        fweight!(Y, sqrtw)
+        rweight!(x, sqrtw)
+        rweight!(Y, sqrtw)
         B = x' * Y / dot(x, x)
         int = zeros(q)'
     else
@@ -272,8 +272,8 @@ function mlrvec!(x::Matrix, Y::Matrix, weights::Weight; kwargs...)
         ymeans = colmean(Y, weights)   
         fcenter!(x, xmeans)
         fcenter!(Y, ymeans)
-        fweight!(x, sqrtw)
-        fweight!(Y, sqrtw)
+        rweight!(x, sqrtw)
+        rweight!(Y, sqrtw)
         B = x' * Y / dot(x, x)
         int = ymeans' .- xmeans' * B
     end
