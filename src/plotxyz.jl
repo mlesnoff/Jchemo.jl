@@ -4,7 +4,7 @@
     plotxy(x, y, z, group; size = (500, 300), color = nothing, perspectiveness = .1, 
         xlabel = "", ylabel = "", zlabel = "", title = "", leg::Bool = true, leg_title = "Group", 
         kwargs...)
-3D scatter plot of x-y-z data.
+3-D scatter plot of x-y-z data.
 * `x` : A x-vector (n).
 * `y` : A y-vector (n). 
 * `z` : A y-vector (n). 

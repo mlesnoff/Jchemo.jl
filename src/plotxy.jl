@@ -6,7 +6,7 @@
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xlabel = "", ylabel = "", title = "", leg::Bool = true, leg_title = "Group", 
         kwargs...)
-2D scatter plot of x-y data
+2-D scatter plot of x-y data
 * `x` : A x-vector (n).
 * `y` : A y-vector (n). 
 * `group` : Categorical variable defining groups (n). 

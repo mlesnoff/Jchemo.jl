@@ -6,6 +6,8 @@
     - **rweight**, **cweight**: Weight each row or column of a matrix (**rweight** replaces the previous 
         working function **fweight**)).
 
+    - **recod_contbycat**: Recode a contingency table (2-D) in a dataframe of two categorical variables.
+
 - Modifications
     - Code cleaning.
 
@@ -61,7 +63,7 @@
 - News 
     - Functions **outsd**, **outod** and **outsdod**: Compute a SD, OD and SD-OD outlierness.
     - Functions **occknn**, **occlknn**: One-class classification using kNN and local kNN distance-based outlierness.
-    - Functions **plotxyz**: 3D x-y-z scatter plot.
+    - Functions **plotxyz**: 3-D x-y-z scatter plot.
     - Function **plotlv**: Matrix of 2-D plots of successive latent variables (PCA, PLS, etc.).
 
 - Modifications

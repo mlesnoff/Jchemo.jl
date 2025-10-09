@@ -369,8 +369,8 @@
 ## PLOTTING
 
 - **plotsp** Plot spectra
-- **plotxy** 2D scatter plot of x-y data
-- **plotxyz** 3D scatter plot of x-y-z data
+- **plotxy** 2-D scatter plot of x-y data
+- **plotxyz** 3-D scatter plot of x-y-z data
 - **plotlv** Matrix of 2-D plots of successive latent variables (PCA, PLS, etc.)
 - **plotgrid** Plot error/performance rates of a model
 - **plotconf** Plot confusion matrix
@@ -430,6 +430,7 @@
 - **recod_catbyind**  Recode a categorical variable to indexes of levels
 - **recod_catbyint**  Recode a categorical variable to integers
 - **recod_catbylev**  Recode a categorical variable to levels
+- **recod_contbycat** Recode a contingency table (2-D) in a dataframe of two categorical variables
 - **recod_indbylev**  Recode an index variable to levels
 - **recod_numbyint**  Recode a continuous variable to integers
 

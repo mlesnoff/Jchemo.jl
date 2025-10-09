@@ -41,7 +41,7 @@ fit!(model0, X, y)
 @head T = transf(model0, X)
 n, p = size(T)
 
-#### Probability density in the FDA score space (2D)
+#### Probability density in the FDA score space (2-D)
 #### Example of class Setosa 
 s = y .== "setosa"
 zT = T[s, :]
