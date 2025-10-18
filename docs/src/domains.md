@@ -430,7 +430,7 @@
 - **recod_catbyind**  Recode a categorical variable to indexes of levels
 - **recod_catbyint**  Recode a categorical variable to integers
 - **recod_catbylev**  Recode a categorical variable to levels
-- **recod_contbycat** Recode a contingency table (2-D) in a dataframe of two categorical variables
+- **expand_tab2d** Recode a contingency table (2-D) in a dataframe of two categorical variables
 - **recod_indbylev**  Recode an index variable to levels
 - **recod_numbyint**  Recode a continuous variable to integers
 

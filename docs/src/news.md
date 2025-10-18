@@ -6,7 +6,7 @@
     - **rweight**, **cweight**: Weight each row or column of a matrix (**rweight** replaces the previous 
         working function **fweight**)).
 
-    - **recod_contbycat**: Recode a contingency table (2-D) in a dataframe of two categorical variables.
+    - **expand_tab2d**: Recode a contingency table (2-D) in a dataframe of two categorical variables.
 
 - Modifications
     - Code cleaning.

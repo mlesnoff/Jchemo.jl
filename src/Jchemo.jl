@@ -302,7 +302,7 @@ export
     recod_catbydict, 
     recod_catbyint, 
     recod_catbylev, 
-    recod_contbycat,
+    expand_tab2d,
     recod_indbylev, 
     recod_miss, 
     recod_numbyint, 

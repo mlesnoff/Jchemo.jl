@@ -117,45 +117,6 @@ function recod_catbylev(x, lev)
 end
 
 """
-    recod_cont(X; namr = nothing, namc = nothing, namv = nothing)
-Recode a contingency table (2-D) in a dataframe of two categorical variables.
-* `X` : 2-D contincency table (m, p).
-Keyword arguments:
-* `namr` : Vector (m) of names of the `X`-rows. 
-* `namc` : Vector (p) of names of the `X-columns.
-* `namv` : Vector (2) of the names of the output categorical variables.
-
-Names in `namr` (`namc`) must be in the same order as the rows (columns) of `X`.  
-
-## Examples
-```julia
-using Jchemo
-
-X = [5 3 4 ; 1 2 3]
-
-recod_contbycat(X)
-
-res = recod_contbycat(X; namr = [:B1, :AA], namc = collect('a':'c'))
-tab(string.(res.v1, "-", res.v2))
-```
-"""
-function recod_contbycat(X; namr = nothing, namc = nothing, namv = nothing)
-    X = ensure_mat(X) 
-    m, p = size(X)
-    isnothing(namr) ? namr = collect(1:m) : nothing
-    isnothing(namc) ? namc = collect(1:p) : nothing
-    isnothing(namv) ? namv = ["v1"; "v2"] : nothing
-    res = list(Matrix, m * p)
-    k = 1
-    for j = 1:p, i = 1:m 
-        n = X[i, j]
-        res[k] = hcat(repeat([namr[i]], n), repeat([namc[j]], n))
-        k += 1
-    end
-    DataFrame(string.(reduce(vcat, res)), namv)
-end
-
-"""
     recod_indbylev(x::Union{Int, Array{Int}}, lev::Array)
  Recode an index variable to levels.
 * `x` : Index variable (n) to replace.
@@ -274,3 +235,43 @@ function recod_numbyint(x, q)
     end
     Int.(zx)
 end
+
+"""
+    expand_tab2d(X; namr = nothing, namc = nothing, namv = nothing)
+Expand a 2-D contingency table in a dataframe of two categorical variables.
+* `X` : 2-D contincency table (m, p).
+Keyword arguments:
+* `namr` : Vector (m) of names of the `X`-rows. 
+* `namc` : Vector (p) of names of the `X-columns.
+* `namv` : Vector (2) of the names of the output categorical variables.
+
+The eventual names in `namr` (`namc`) must have the same length and be in the same order as the rows (columns) of `X`.  
+
+## Examples 
+```julia
+using Jchemo
+
+X = [5 3 4 ; 1 2 3]
+
+expand_tab2d(X)
+
+res = expand_tab2d(X; namr = [:B1, :AA], namc = collect('a':'c'))
+tab(string.(res.v1, "-", res.v2))
+```
+"""
+function expand_tab2d(X; namr = nothing, namc = nothing, namv = nothing)
+    X = ensure_mat(X) 
+    m, p = size(X)
+    isnothing(namr) ? namr = collect(1:m) : nothing
+    isnothing(namc) ? namc = collect(1:p) : nothing
+    isnothing(namv) ? namv = ["v1"; "v2"] : nothing
+    res = list(Matrix, m * p)
+    k = 1
+    for j = 1:p, i = 1:m 
+        n = X[i, j]
+        res[k] = hcat(repeat([namr[i]], n), repeat([namc[j]], n))
+        k += 1
+    end
+    DataFrame(string.(reduce(vcat, res)), namv)
+end
+
