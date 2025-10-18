@@ -101,7 +101,7 @@ Compute sub-total sums by class of a categorical variable.
 ```julia
 using Jchemo
 
-x = rand(1000)
+x = ones(1000)
 y = vcat(rand(["a" ; "c"], 900), repeat(["b"], 100))
 aggsumv(x, y)
 ```
@@ -113,7 +113,7 @@ function aggsumv(x::Vector, y::Union{Vector, BitVector})
         s = y .== lev[i]
         v[i] = sum(vrow(x, s))
     end
-    v
+    (val = v, lev)
 end
 
 """ 
