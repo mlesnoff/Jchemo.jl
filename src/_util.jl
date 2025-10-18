@@ -55,10 +55,12 @@ n, p = 20, 5
 X = rand(n, p)
 df = DataFrame(X, :auto)
 y = rand(1:3, n)
+
 res = aggstat(X, y; algo = sum)
 @names res
 res.lev 
 res.X
+
 aggstat(df, y; algo = sum).X
 
 n, p = 20, 5
@@ -67,6 +69,7 @@ df = DataFrame(X, string.("v", 1:p))
 df.y1 = rand(1:2, n)
 df.y2 = rand(["a", "b", "c"], n)
 df
+
 aggstat(df; sel = [:v1, :v2] , group = [:y1, :y2], algo = var)  # return a dataframe 
 ```
 """ 
@@ -708,10 +711,12 @@ The function returns sorted levels. It does not support inputs of type `Any`.
 ```julia
 using Jchemo, DataFrames
 
-x = rand(["a"; "b"; "c"], 20)
+x = rand(1:3, 20)
+
 res = tab(x)
 res.keys
 res.vals
+Jchemo.tabn(x)
 
 n = 20
 X = hcat(rand(["1"; "2"], n), rand(["a", "b", "c"], n))
