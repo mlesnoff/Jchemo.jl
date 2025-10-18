@@ -117,6 +117,41 @@ function recod_catbylev(x, lev)
 end
 
 """
+    recod_contbyint(x, q)
+ Recode a continuous variable to integers.
+* `x` : Continuous variable (n) to replace.
+* `q` : Numerical values separating classes in `x`. The first class is labelled to 1.  
+
+See examples.
+
+## Examples
+```julia
+using Jchemo, Statistics
+x = [collect(1:10); 8.1 ; 3.1] 
+
+q = [3; 8]
+zx = recod_contbyint(x, q)  
+[x zx]
+probs = [.33; .66]
+q = quantile(x, probs) 
+zx = recod_contbyint(x, q)  
+[x zx]
+```
+"""
+function recod_contbyint(x, q)
+    zx = similar(x)
+    q = sort(q)
+    @inbounds for i in eachindex(x)
+        k = 1
+        @inbounds for j in eachindex(q)
+            x[i] > q[j] ? k = k + 1 : nothing
+        end
+        zx[i] = k
+    end
+    Int.(zx)
+end
+
+"""
     recod_indbylev(x::Union{Int, Array{Int}}, lev::Array)
  Recode an index variable to levels.
 * `x` : Index variable (n) to replace.
@@ -199,41 +234,6 @@ function recod_miss(df::DataFrame; miss = nothing)
         end
     end
     df
-end
-
-"""
-    recod_numbyint(x, q)
- Recode a continuous variable to integers.
-* `x` : Continuous variable (n) to replace.
-* `q` : Numerical values separating classes in `x`. The first class is labelled to 1.  
-
-See examples.
-
-## Examples
-```julia
-using Jchemo, Statistics
-x = [collect(1:10); 8.1 ; 3.1] 
-
-q = [3; 8]
-zx = recod_numbyint(x, q)  
-[x zx]
-probs = [.33; .66]
-q = quantile(x, probs) 
-zx = recod_numbyint(x, q)  
-[x zx]
-```
-"""
-function recod_numbyint(x, q)
-    zx = similar(x)
-    q = sort(q)
-    @inbounds for i in eachindex(x)
-        k = 1
-        @inbounds for j in eachindex(q)
-            x[i] > q[j] ? k = k + 1 : nothing
-        end
-        zx[i] = k
-    end
-    Int.(zx)
 end
 
 """

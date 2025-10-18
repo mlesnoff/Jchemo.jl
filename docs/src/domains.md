@@ -58,8 +58,7 @@
 - **ccawold** CCA and RCCA - Wold (1984) Nipals algorithm  
 - **plscan** Canonical partial least squares regression (Symmetric PLS)
 - **plstuck** Tucker's inter-battery method of factor analysis (PLS-SVD)
-- **rasvd** Redundancy analysis (RA), a.k.a PCA on 
-    instrumental variables (PCAIV)
+- **rasvd** Redundancy analysis (RA), a.k.a PCA on instrumental variables (PCAIV)
 
 *2 or more blocks* 
 - **mbpca** Consensus principal components analysis (CPCA, a.k.a MBPCA) by Nipals.
@@ -110,8 +109,7 @@
 - **plsravg** PLSR-AVG
 
 *Non linear*
-- **kplsr** Non linear kernel (KPLSR) 
-    *Rosipal & Trejo 2001*
+- **kplsr** Non linear kernel (KPLSR) *Rosipal & Trejo 2001*
 - **dkplsr** Direct non linear kernel (DKPLSR) *Bennett & Embrechts 2003*
 
 *Multiblock*
@@ -397,10 +395,8 @@
 - **sumv**, **meanv**, **stdv**, **varv**, **madv**, **iqrv**, **normv** Vector operations 
 - **covv**, **covm**, **corv**, **corm** Weighted covariances and correlations 
 - **cosv**, **cosm** Cosinus 
-- **colmad**, **colmean**, **colmed**, **colnorm**, 
-    **colstd**, **colsum**, **colvar**  Column-wise operations
-- **colmeanskip**, **colstdskip**, **colsumskip**, 
-    **colvarskip** Column-wise operations allowing missing data
+- **colmad**, **colmean**, **colmed**, **colnorm**, **colstd**, **colsum**, **colvar**  Column-wise operations
+- **colmeanskip**, **colstdskip**, **colsumskip**, **colvarskip** Column-wise operations allowing missing data
 - **convertdf** Convert the columns of a dataframe to given types
 - **dummy** Build dummy table
 - **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
@@ -419,8 +415,7 @@
 - **matB**, **matW** Between- and within-class covariance matrices
 - **mlev** Return the sorted levels of a vecor or a dataset 
 - **mweight** Normalize a vector to sum to 1
-- **mweightcla** Compute observation weights for a categorical variable, 
-    given specified sub-total weights for the classes
+- **mweightcla** Compute observation weights for a categorical variable, given specified sub-total weights for the classes
 - **nco**, **nro**, Nb. rows and columns of an object
 - **normv** Norm of a vector
 - **parsemiss** Parsing a string vector allowing missing data
@@ -430,17 +425,17 @@
 - **recod_catbyind**  Recode a categorical variable to indexes of levels
 - **recod_catbyint**  Recode a categorical variable to integers
 - **recod_catbylev**  Recode a categorical variable to levels
-- **expand_tab2d** Recode a contingency table (2-D) in a dataframe of two categorical variables
+- **recod_contbyint**  Recode a continuous variable to integers
 - **recod_indbylev**  Recode an index variable to levels
-- **recod_numbyint**  Recode a continuous variable to integers
 
 - **recod_miss** Declare data as missing in a dataset
+
+- **expand_tab2d** Expand a 2-D contingency table in a dataframe of two categorical variables
 
 - **rmcol** Remove the columns of a matrix or the components of a vector having indexes s
 - **rmrow** Remove the rows of a matrix or the components of a vector having indexes s
 - **rowmean**, **rownorm**, **rowstd**, **rowsum**, **rowvar**: Row-wise operations
-- **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations 
-    allowing missing data
+- **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations allowing missing data
 - **thresh_soft**, **thresh_hard** Thresholding functions
 - **softmax** Softmax function
 - **sourcedir** Include all the files contained in a directory
