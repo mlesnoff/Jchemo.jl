@@ -122,6 +122,14 @@ end
 * `x` : Continuous variable (n) to replace.
 * `q` : Numerical values separating classes in `x`. The first class is labelled to 1.  
 
+For a given value x of vector `x`, with `q` being of length K: 
+* x <= q[1]             : ==> 1
+* q[1] < x <= q[2]      : ==> 2
+* q[2] < x <= q[3]      : ==> 3
+* etc.
+* q[K - 1] < x <= q[K]  : ==> K
+* q[K] < x              : ==> K + 1 
+
 See examples.
 
 ## Examples
