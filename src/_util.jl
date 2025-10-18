@@ -36,16 +36,16 @@ end
 
 """
     aggstat(X, y; algo = mean)
-    aggstat(X::DataFrame; sel, groupby, algo = mean)
+    aggstat(X::DataFrame; sel, group, algo = mean)
 Compute column-wise statistics by group in a dataset.
 * `X` : Data (n, p).
 * `y` : A categorical variable (n) defining the groups.
 * `algo` : Function to compute (default = mean).
 Specific for `X::dataframe`:
 * `sel` : Names (vector) of the variables to summarize.
-* `groupby` : Names (vector) of the categorical variables defining the groups.
+* `group` : Names (vector) of the categorical variables defining the groups.
 
-Variables defined in `sel` and `groupby` must be columns of `X`.
+Variables defined in `sel` and `group` must be columns of `X`.
 
 ## Examples
 ```julia
@@ -67,7 +67,7 @@ df = DataFrame(X, string.("v", 1:p))
 df.y1 = rand(1:2, n)
 df.y2 = rand(["a", "b", "c"], n)
 df
-aggstat(df; sel = [:v1, :v2] , groupby = [:y1, :y2], algo = var)  # return a dataframe 
+aggstat(df; sel = [:v1, :v2] , group = [:y1, :y2], algo = var)  # return a dataframe 
 ```
 """ 
 function aggstat(X, y; algo = mean)
@@ -85,10 +85,10 @@ function aggstat(X, y; algo = mean)
     (X = zX, lev)
 end
 
-function aggstat(X::DataFrame; sel, groupby, algo = mean)
-    gdf = groupby(X, groupby) 
+function aggstat(X::DataFrame; sel, group, algo = mean)
+    gdf = groupby(X, group) 
     res = combine(gdf, sel .=> algo, renamecols = false)
-    sort!(res, groupby)
+    sort!(res, group)
 end
 
 """ 
@@ -696,13 +696,13 @@ end
 
 """
     tab(X::AbstractArray)
-    tab(X::DataFrame; groupby = nothing)
+    tab(X::DataFrame; group = nothing)
 Tabulation of categorical variables.
 * `x` : Categorical variable or dataset containing categorical variable(s).
 Specific for a dataset:
-* `groupby` : Vector of the names of the group variables to consider in `X` (by default: all the columns of `X`).
+* `group` : Vector of the names of the group variables to consider in `X` (by default: all the columns of `X`).
 
-The output cointains sorted levels.
+The function returns sorted levels. It does not support inputs of type `Any`.
 
 ## Examples
 ```julia
@@ -714,26 +714,26 @@ res.keys
 res.vals
 
 n = 20
-X = hcat(rand(1:2, n), rand(["a", "b", "c"], n))
+X = hcat(rand(["1"; "2"], n), rand(["a", "b", "c"], n))
 df = DataFrame(X, [:v1, :v2])
 
 tab(X[:, 2])
-tab(string.(X))
+tab(X)
 
 tab(df)
-tab(df; groupby = [:v1, :v2])
-tab(df; groupby = :v2)
+tab(df; group = [:v1, :v2])
+tab(df; group = :v2)
 ```
 """
 tab(X::AbstractArray) = sort(StatsBase.countmap(vec(X)))
 
-function tab(X::DataFrame; groupby = nothing)
+function tab(X::DataFrame; group = nothing)
     zX = copy(X)
     isa(zX, Vector) ? zX = DataFrame(x1 = zX) : nothing
     isa(zX, DataFrame) ? nothing : zX = DataFrame(zX, :auto)
-    isnothing(groupby) ? groupby = names(zX) : nothing
+    isnothing(group) ? group = names(zX) : nothing
     zX.n = ones(nro(zX))
-    res = aggstat(zX; sel = :n, groupby = groupby, algo = sum)
+    res = aggstat(zX; sel = :n, group, algo = sum)
     res.n = Int.(res.n)
     res
 end
