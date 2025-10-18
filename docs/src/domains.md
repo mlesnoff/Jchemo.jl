@@ -416,7 +416,7 @@
 - **mlev** Return the sorted levels of a vecor or a dataset 
 - **mweight** Normalize a vector to sum to 1
 - **mweightcla** Compute observation weights for a categorical variable, given specified sub-total weights for the classes
-- **nco**, **nro**, Nb. rows and columns of an object
+- **nro**, **nco** Nb. rows and columns of an object
 - **normv** Norm of a vector
 - **parsemiss** Parsing a string vector allowing missing data
 - **pval** Compute p-value(s) for a distribution, an ECDF or vector
