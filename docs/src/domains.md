@@ -15,7 +15,7 @@
 
 *Robust* 
 - **pcasph** Spherical (with spatial median)
-- **pcapp** Projection pursuit.
+- **pcapp** Projection pursuit
 - **pcaout** Outlierness
 
 *Sparse* 
@@ -61,7 +61,7 @@
 - **rasvd** Redundancy analysis (RA), a.k.a PCA on instrumental variables (PCAIV)
 
 *2 or more blocks* 
-- **mbpca** Consensus principal components analysis (CPCA, a.k.a MBPCA) by Nipals.
+- **mbpca** Consensus principal components analysis (CPCA, a.k.a MBPCA) by Nipals
 - **comdim** Common components and specific weights analysis (CCSWA, a.k.a ComDim or HPCA)
 
 *Utilities*
@@ -266,7 +266,7 @@
 
 - **vip** Variable importance on projections (VIP)
 - **viperm!** Variable importance by direct permutations
-- **isel!** Interval variable selection (e.g. Interval PLSR).
+- **isel!** Interval variable selection (e.g. Interval PLSR)
 
 ## TUNING MODELS
 
@@ -333,22 +333,20 @@
 - **rmgap** Remove vertical gaps in spectra, e.g. for ASD NIR data
 
 *Scaling*
-
 - **center** Column centering
 - **scale** Column scaling
 - **cscale** Column centering and scaling
 
 - **blockscal** Scaling of multiblock data
+- **fblockscal_col, _frob, _mfa, _sd** Scale blocks
 
 ### Interpolation
 
-- **interpl** Sampling spectra by interpolation 
-    -- From DataInterpolations.jl
+- **interpl** Sampling spectra by interpolation -- From DataInterpolations.jl
 
 ### Calibration transfer
 
-- **difmean** Compute a detrimental matrix (for calibration transfer) by difference of 
-    two matrix-column means.
+- **difmean** Compute a detrimental matrix (for calibration transfer) by difference of two matrix-column means
 - **eposvd** Compute an orthogonalization matrix for calibration transfer
 - **calds** Direct standardization (DS)
 - **calpds** Piecewise direct standardization (PDS)
@@ -399,8 +397,18 @@
 - **tabcont** Tabulate a continuous variable
 - **mbin** Build histogram-bin intervals
 
-*Recoding*
+*Removing rows and columns of a dataset*
+- **rmcol** Remove columns
+- **rmrow** Remove rows
 
+*Computing weights*
+- **mweight** Normalize a vector to sum to 1
+- **mweightcla** Compute observation weights for a categorical variable, given specified sub-total weights for the classes
+- **wdis** Different functions to compute weights from distances
+- **wtal** Compute weights from distances using the 'talworth' distribution
+- **winvs** Compute weights from distances using an inverse scaled exponential function
+
+*Recoding*
 - **recod_catbydict**  Recode a categorical variable to dictionnary levels
 - **recod_catbyind**  Recode a categorical variable to indexes of levels
 - **recod_catbyint**  Recode a categorical variable to integers
@@ -413,14 +421,34 @@
 - **dummy** Build dummy table
 - **expand_tab2d** Expand a 2-D contingency table in a dataframe of two categorical variables
 
-*Others*
-- **sumv**, **meanv**, **stdv**, **varv**, **madv**, **iqrv**, **normv** Vector operations 
-- **covv**, **covm**, **corv**, **corm** Weighted covariances and correlations 
+*Operations on a vector*
+- **sumv**, **meanv**, **stdv**, **varv**, **madv**, **iqrv**, **normv** 
+
+*Operations on two vectors*
+- **covv**, **covm** Covariances
+- **corv**, **corm** Correlations 
 - **cosv**, **cosm** Cosinus 
-- **colmad**, **colmean**, **colmed**, **colnorm**, **colstd**, **colsum**, **colvar**  Column-wise operations
-- **colmeanskip**, **colstdskip**, **colsumskip**, **colvarskip** Column-wise operations allowing missing data
+
+*Column-wise operations on a dataset*
+- **colmad** Median absolute deviation (MAD)
+- **colmean** Mean
+- **colmed** Median
+- **colnorm** Norm
+- **colstd** Standard deviation (uncorrected)
+- **colsum** Sum
+- **colvar** Variance (uncorrected)
+- **colmeanskip**, **colstdskip**, **colsumskip**, **colvarskip** Allow missing data
+
+*Row-wise operations on a dataset*
+- **rowmean** Mean
+- **rownorm** Median
+- **rowstd** Standard deviation (uncorrected)
+- **rowsum** Sum
+- **rowvar** Variance (uncorrected)
+- **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip** Allow missing data
+
+*Others*
 - **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
-- **fblockscal_col, _frob, _mfa, _sd** Scale blocks
 - **fcenter**, **fscale**, **fcscale** Column-wise centering and scaling of a matrix
 - **fconcat** Concatenate multiblock data
 - **findmax_cla** Find the most occurent level in a categorical variable
@@ -434,23 +462,14 @@
 - **mad** Median absolute deviation (not exported)
 - **matB**, **matW** Between- and within-class covariance matrices
 - **mlev** Return the sorted levels of a vector or a dataset 
-- **mweight** Normalize a vector to sum to 1
-- **mweightcla** Compute observation weights for a categorical variable, given specified sub-total weights for the classes
 - **nro**, **nco** Nb. rows and columns of an object
 - **normv** Norm of a vector
 - **parsemiss** Parsing a string vector allowing missing data
 - **pval** Compute p-value(s) for a distribution, an ECDF or vector
 
-- **rmcol** Remove the columns of a matrix or the components of a vector having indexes s
-- **rmrow** Remove the rows of a matrix or the components of a vector having indexes s
-- **rowmean**, **rownorm**, **rowstd**, **rowsum**, **rowvar**: Row-wise operations
-- **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations allowing missing data
 - **thresh_soft**, **thresh_hard** Thresholding functions
 - **softmax** Softmax function
 - **sourcedir** Include all the files contained in a directory
 - **vcatdf** Vertical concatenation of a list of dataframes
-- **wdis** Different functions to compute weights from distances
-- **wtal** Compute weights from distances using the 'talworth' distribution
-- **winvs** Compute weights from distances using an inverse scaled exponential function
 - Other **utility functions** in files `_util.jl`
 
