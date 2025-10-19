@@ -5,8 +5,9 @@
 - News
     - **rweight**, **cweight**: Weight each row or column of a matrix (**rweight** replaces the previous 
         working function **fweight**)).
-
     - **expand_tab2d**: Recode a contingency table (2-D) in a dataframe of two categorical variables.
+    - **mbin** Build histogram-bin intervals.
+    - **tabcont** Tabulate a continuous variable.
 
 - Modifications
     - Code cleaning.

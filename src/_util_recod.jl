@@ -24,7 +24,7 @@ end
 
 """
     recod_catbyind(x, lev)
- Recode a categorical variable to indexes of sorted levels.
+Recode a categorical variable to indexes of sorted levels.
 * `x` : Categorical variable (n) to replace.
 * `lev` : Vector containing categorical levels. 
 
@@ -120,17 +120,16 @@ end
     recod_contbyint(x, q)
  Recode a continuous variable to integers.
 * `x` : Continuous variable (n) to replace.
-* `q` : Numerical values separating classes in `x`. The first class is labelled to 1.  
+* `q` : Numerical values (K) separating the class levels from `x`.  
 
-For a given value x of vector `x`, with `q` being of length K: 
+The function potentially returns K + 1 levels. For a given value x of vector `x` and `q` a vector 
+of length K: 
 * x <= q[1]             : ==> 1
 * q[1] < x <= q[2]      : ==> 2
 * q[2] < x <= q[3]      : ==> 3
 * etc.
 * q[K - 1] < x <= q[K]  : ==> K
 * q[K] < x              : ==> K + 1 
-
-See examples.
 
 ## Examples
 ```julia
@@ -147,16 +146,16 @@ zx = recod_contbyint(x, q)
 ```
 """
 function recod_contbyint(x, q)
-    zx = similar(x)
+    v = zeros(Int, length(x))
     q = sort(q)
     @inbounds for i in eachindex(x)
         k = 1
         @inbounds for j in eachindex(q)
             x[i] > q[j] ? k = k + 1 : nothing
         end
-        zx[i] = k
+        v[i] = k
     end
-    Int.(zx)
+    v
 end
 
 """
@@ -242,6 +241,68 @@ function recod_miss(df::DataFrame; miss = nothing)
         end
     end
     df
+end
+
+################ Other recoding
+
+""" 
+    convertdf(df::DataFrame; miss = nothing, typ)
+Convert the columns of a dataframe to given types.
+* `df` : A dataframe.
+* `miss` : The code used in `df` to identify the data to be declared as `missing` (of type `Missing`).
+    See function `recod_miss`.
+* `typ` : A vector of the targeted types for the columns of the new dataframe.  
+
+## Examples
+```julia
+using Jchemo, DataFrames
+```
+"""
+function convertdf(df::DataFrame; miss = nothing, typ)
+    df = string.(df)
+    df = recod_miss(df; miss = string(miss))
+    res = DataFrame()
+    for i in eachindex(typ)
+        z = df[:, i]
+        if typ[i] == String
+            sum(ismissing.(z)) == 0 ? z = string.(z) : nothing
+        else
+            if sum(ismissing.(z)) == 0
+                z = parse.(typ[i], z)
+            else
+                z = parsemiss(typ[i], z)
+            end
+        end
+        res = hcat(res, z; makeunique = true)
+    end
+    rename!(res, names(df))
+    res
+end
+
+"""
+    dummy(y)
+Compute dummy table from a categorical variable.
+* `y` : A categorical variable.
+
+The output `Y` (dummy table) is a BitMatrix.
+
+## Examples
+```julia
+using Jchemo
+
+y = ["d", "a", "b", "c", "b", "c"]
+#y =  rand(1:3, 7)
+res = dummy(y)
+@names res
+res.Y
+```
+"""
+function dummy(y)
+    lev = mlev(y)
+    ## Thanks to the idea given in this post (@Mattriks):
+    ## https://discourse.julialang.org/t/all-the-ways-to-do-one-hot-encoding/64807/4
+    Y = y .== permutedims(lev)
+    (Y = Y, lev)
 end
 
 """

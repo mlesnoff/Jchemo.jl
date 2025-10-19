@@ -1,40 +1,4 @@
 """
-    aggmean(X, y)
-Compute column-wise mean by class in a dataset.
-* `X` : Data (n, p).
-* `y` : A categorical variable (n) (class membership).
-
-Faster than `aggstat`. 
-
-## Examples
-```julia
-using Jchemo
-
-n, p = 20, 5
-X = rand(n, p)
-y = rand(1:3, n)
-df = DataFrame(X, :auto) 
-res = aggmean(X, y)
-res.X
-res.lev 
-aggmean(df, y).X
-```
-""" 
-function aggmean(X, y) 
-    X = ensure_mat(X)
-    y = vec(y)
-    p = nco(X)
-    lev = mlev(y)
-    nlev = length(lev)
-    zX = similar(X, nlev, p)
-    @inbounds for i in eachindex(lev)
-    #Threads.@threads for i in eachindex(lev)
-        zX[i, :] .= colmean(vrow(X, y .== lev[i]))
-    end
-    (X = zX, lev)
-end
-
-"""
     aggstat(X, y; algo = mean)
     aggstat(X::DataFrame; sel, group, algo = mean)
 Compute column-wise statistics by group in a dataset.
@@ -42,8 +6,8 @@ Compute column-wise statistics by group in a dataset.
 * `y` : A categorical variable (n) defining the groups.
 * `algo` : Function to compute (default = mean).
 Specific for `X::dataframe`:
-* `sel` : Names (vector) of the variables to summarize.
-* `group` : Names (vector) of the categorical variables defining the groups.
+* `sel` : Vector of the names of the variables to summarize.
+* `group` : Vector of the names of the categorical variables defining the groups.
 
 Variables defined in `sel` and `group` must be columns of `X`.
 
@@ -94,6 +58,42 @@ function aggstat(X::DataFrame; sel, group, algo = mean)
     sort!(res, group)
 end
 
+"""
+    aggmean(X, y)
+Compute column-wise mean by class in a dataset.
+* `X` : Data (n, p).
+* `y` : A categorical variable (n) (class membership).
+
+This is a (faster) particular case of `aggstat`. 
+
+## Examples
+```julia
+using Jchemo
+
+n, p = 20, 5
+X = rand(n, p)
+y = rand(1:3, n)
+df = DataFrame(X, :auto) 
+res = aggmean(X, y)
+res.X
+res.lev 
+aggmean(df, y).X
+```
+""" 
+function aggmean(X, y) 
+    X = ensure_mat(X)
+    y = vec(y)
+    p = nco(X)
+    lev = mlev(y)
+    nlev = length(lev)
+    zX = similar(X, nlev, p)
+    @inbounds for i in eachindex(lev)
+    #Threads.@threads for i in eachindex(lev)
+        zX[i, :] .= colmean(vrow(X, y .== lev[i]))
+    end
+    (X = zX, lev)
+end
+
 """ 
     aggsumv(x::Vector, y::Union{Vector, BitVector})
 Compute sub-total sums by class of a categorical variable.
@@ -117,66 +117,6 @@ function aggsumv(x::Vector, y::Union{Vector, BitVector})
         v[i] = sum(vrow(x, s))
     end
     (val = v, lev)
-end
-
-""" 
-    convertdf(df::DataFrame; miss = nothing, typ)
-Convert the columns of a dataframe to given types.
-* `df` : A dataframe.
-* `miss` : The code used in `df` to identify the data to be declared as `missing` (of type `Missing`).
-    See function `recod_miss`.
-* `typ` : A vector of the targeted types for the columns of the new dataframe.  
-
-## Examples
-```julia
-using Jchemo, DataFrames
-```
-"""
-function convertdf(df::DataFrame; miss = nothing, typ)
-    df = string.(df)
-    df = recod_miss(df; miss = string(miss))
-    res = DataFrame()
-    for i in eachindex(typ)
-        z = df[:, i]
-        if typ[i] == String
-            sum(ismissing.(z)) == 0 ? z = string.(z) : nothing
-        else
-            if sum(ismissing.(z)) == 0
-                z = parse.(typ[i], z)
-            else
-                z = parsemiss(typ[i], z)
-            end
-        end
-        res = hcat(res, z; makeunique = true)
-    end
-    rename!(res, names(df))
-    res
-end
-
-"""
-    dummy(y)
-Compute dummy table from a categorical variable.
-* `y` : A categorical variable.
-
-The output `Y` (dummy table) is a BitMatrix.
-
-## Examples
-```julia
-using Jchemo
-
-y = ["d", "a", "b", "c", "b", "c"]
-#y =  rand(1:3, 7)
-res = dummy(y)
-@names res
-res.Y
-```
-"""
-function dummy(y)
-    lev = mlev(y)
-    ## Thanks to the idea given in this post (@Mattriks):
-    ## https://discourse.julialang.org/t/all-the-ways-to-do-one-hot-encoding/64807/4
-    Y = y .== permutedims(lev)
-    (Y = Y, lev)
 end
 
 """
@@ -695,75 +635,6 @@ function summ(X, y; digits = 3)
         println(res)
         println("") ; println("") 
     end
-end
-
-"""
-    tab(X::AbstractArray)
-    tab(X::DataFrame; group = nothing)
-Tabulation of categorical variables.
-* `x` : Categorical variable or dataset containing categorical variable(s).
-Specific for a dataset:
-* `group` : Vector of the names of the group variables to consider in `X` (by default: all the columns of `X`).
-
-The function returns sorted levels. It does not support inputs of type `Any`.
-
-## Examples
-```julia
-using Jchemo, DataFrames
-
-x = rand(1:3, 20)
-
-res = tab(x)
-res.keys
-res.vals
-Jchemo.tabn(x)
-
-n = 20
-X = hcat(rand(["1"; "2"], n), rand(["a", "b", "c"], n))
-df = DataFrame(X, [:v1, :v2])
-
-tab(X[:, 2])
-tab(X)
-
-tab(df)
-tab(df; group = [:v1, :v2])
-tab(df; group = :v2)
-```
-"""
-tab(X::AbstractArray) = sort(StatsBase.countmap(vec(X)))
-
-function tab(X::DataFrame; group = nothing)
-    zX = copy(X)
-    isa(zX, Vector) ? zX = DataFrame(x1 = zX) : nothing
-    isa(zX, DataFrame) ? nothing : zX = DataFrame(zX, :auto)
-    isnothing(group) ? group = names(zX) : nothing
-    zX.n = ones(nro(zX))
-    res = aggstat(zX; sel = :n, group, algo = sum)
-    res.n = Int.(res.n)
-    res
-end
-
-"""
-    tabdupl(x)
-Tabulate duplicated values in a vector.
-* `x` : Categorical variable.
-
-## Examples
-```julia
-using Jchemo
-
-x = ["a", "b", "c", "a", "b", "b"]
-tab(x)
-res = tabdupl(x)
-res.keys
-res.vals
-```
-"""
-function tabdupl(x)
-    z = tab(x)
-    s = z.vals .> 1
-    u = z.keys[s]
-    tab(x[in(u).(x)])
 end
 
 """

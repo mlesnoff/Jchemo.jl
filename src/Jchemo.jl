@@ -33,6 +33,7 @@ include("_util_mb.jl")
 include("_util_recod.jl")
 include("_util_rowwise.jl")
 include("_util_stat.jl")
+include("_util_table.jl")
 include("_util_weighting.jl")
 ##
 include("angles.jl")
@@ -316,7 +317,8 @@ export
     softmax,
     sourcedir,
     summ,
-    tab, tab, tabdupl,
+    mbin,
+    tab, tabcont, tabdupl,
     vcatdf,
     vcol, vrow,
     ######---- Distributions

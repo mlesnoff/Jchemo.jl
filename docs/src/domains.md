@@ -388,17 +388,37 @@
 - **@plist** Display each element of a list
 - **@type** Display the type and size of a dataset
 
-*Others*
-- **aggmean** Compute column-wise means by class in a dataset
+*Summary*
+- **summ** Summarize the columns of a dataset
 - **aggstat** Compute column-wise statistics by group in a dataset
+- **aggmean** Compute column-wise means by class in a dataset
 - **aggsumv** Compute sub-total sums by class of a categorical variable
+
+*Tables*
+- **tab**, **tabdupl** Tabulations for categorical variables
+- **tabcont** Tabulate a continuous variable
+- **mbin** Build histogram-bin intervals
+
+*Recoding*
+
+- **recod_catbydict**  Recode a categorical variable to dictionnary levels
+- **recod_catbyind**  Recode a categorical variable to indexes of levels
+- **recod_catbyint**  Recode a categorical variable to integers
+- **recod_catbylev**  Recode a categorical variable to levels
+- **recod_contbyint**  Recode a continuous variable to integers
+- **recod_indbylev**  Recode an index variable to levels
+- **recod_miss** Declare data as missing in a dataset
+
+- **convertdf** Convert the columns of a dataframe to given types
+- **dummy** Build dummy table
+- **expand_tab2d** Expand a 2-D contingency table in a dataframe of two categorical variables
+
+*Others*
 - **sumv**, **meanv**, **stdv**, **varv**, **madv**, **iqrv**, **normv** Vector operations 
 - **covv**, **covm**, **corv**, **corm** Weighted covariances and correlations 
 - **cosv**, **cosm** Cosinus 
 - **colmad**, **colmean**, **colmed**, **colnorm**, **colstd**, **colsum**, **colvar**  Column-wise operations
 - **colmeanskip**, **colstdskip**, **colsumskip**, **colvarskip** Column-wise operations allowing missing data
-- **convertdf** Convert the columns of a dataframe to given types
-- **dummy** Build dummy table
 - **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
 - **fblockscal_col, _frob, _mfa, _sd** Scale blocks
 - **fcenter**, **fscale**, **fcscale** Column-wise centering and scaling of a matrix
@@ -413,24 +433,13 @@
 - **locw** Working function for local (kNN) models
 - **mad** Median absolute deviation (not exported)
 - **matB**, **matW** Between- and within-class covariance matrices
-- **mlev** Return the sorted levels of a vecor or a dataset 
+- **mlev** Return the sorted levels of a vector or a dataset 
 - **mweight** Normalize a vector to sum to 1
 - **mweightcla** Compute observation weights for a categorical variable, given specified sub-total weights for the classes
 - **nro**, **nco** Nb. rows and columns of an object
 - **normv** Norm of a vector
 - **parsemiss** Parsing a string vector allowing missing data
 - **pval** Compute p-value(s) for a distribution, an ECDF or vector
-
-- **recod_catbydict**  Recode a categorical variable to dictionnary levels
-- **recod_catbyind**  Recode a categorical variable to indexes of levels
-- **recod_catbyint**  Recode a categorical variable to integers
-- **recod_catbylev**  Recode a categorical variable to levels
-- **recod_contbyint**  Recode a continuous variable to integers
-- **recod_indbylev**  Recode an index variable to levels
-
-- **recod_miss** Declare data as missing in a dataset
-
-- **expand_tab2d** Expand a 2-D contingency table in a dataframe of two categorical variables
 
 - **rmcol** Remove the columns of a matrix or the components of a vector having indexes s
 - **rmrow** Remove the rows of a matrix or the components of a vector having indexes s
@@ -439,8 +448,6 @@
 - **thresh_soft**, **thresh_hard** Thresholding functions
 - **softmax** Softmax function
 - **sourcedir** Include all the files contained in a directory
-- **summ** Summarize the columns of a dataset
-- **tab**, **tabdupl** Tabulations for categorical variables
 - **vcatdf** Vertical concatenation of a list of dataframes
 - **wdis** Different functions to compute weights from distances
 - **wtal** Compute weights from distances using the 'talworth' distribution
