@@ -40,6 +40,9 @@ db = joinpath(path_jdat, "data/forages2.jld2")
 X = dat.X
 Y = dat.Y
 n, p = size(X) 
+wlst = names(X)
+wl = parse.(Float64, wlst)
+
 s = Bool.(Y.test)
 Xtrain = rmrow(X, s)
 ytrain = rmrow(Y.typ, s)
@@ -71,6 +74,9 @@ res = predict(model, Xtest) ;
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
+
+imp = fitm.fitm.featim  # variable importances
+plotsp(imp', wl; xlabel = "Wavelength (nm)", ylabel = "Importance").f
 ```
 """ 
 rfda(; kwargs...) = JchemoModel(rfda, nothing, kwargs)
