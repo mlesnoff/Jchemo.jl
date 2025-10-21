@@ -45,6 +45,8 @@ Xtrain = X[s, :]
 ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
+wlst = names(X)
+wl = parse.(Float64, wlst)
 p = nco(X)
 
 n_trees = 200
@@ -53,13 +55,17 @@ max_depth = 15
 model = rfr(; n_trees, n_subfeatures, max_depth) 
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
+@names fitm = model.fitm
 
 res = predict(model, Xtest)
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
-    ylabel = "Observed").f    
+    ylabel = "Observed").f  
+    
+@names fitm.fitm
+imp = fitm.fitm.featim  # variable importances
+plotsp(imp', wl; xlabel = "Wavelength (nm)", ylabel = "Importance").f
 ```
 """ 
 rfr(; kwargs...) = JchemoModel(rfr, nothing, kwargs)
