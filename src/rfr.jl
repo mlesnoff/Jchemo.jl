@@ -40,13 +40,14 @@ X = dat.X
 y = dat.Y.tbc
 year = dat.Y.year
 tab(year)
+wlst = names(X)
+wl = parse.(Float64, wlst)
+
 s = year .<= 2012
 Xtrain = X[s, :]
 ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
-wlst = names(X)
-wl = parse.(Float64, wlst)
 p = nco(X)
 
 n_trees = 200
