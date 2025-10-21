@@ -4,7 +4,7 @@
 
 - News
     - **rweight**, **cweight**: Weight each row or column of a matrix (**rweight** replaces the previous 
-        working function **fweight**)).
+        working function **fweight**).
     - **expand_tab2d**: Recode a contingency table (2-D) in a dataframe of two categorical variables.
     - **mbin** Build histogram-bin intervals.
     - **tabcont** Tabulate a continuous variable.
@@ -16,9 +16,8 @@
 ## *Version 0.9.0*
 
 - Breaking changes
-    - All the PLS-based DA methods: output 'fitm' has been split into 
-        'fitm_emb' (the embedding model) and 'fitm_da' (the DA models for 
-        each number of latent variables). This was done to simplify the code.
+    - All the PLS-based DA methods: output 'fitm' has been split into 'fitm_emb' (the embedding model) and 
+        'fitm_da' (the DA models for each number of latent variables). This was done to simplify the code.
 
 - News
     - **getknn** Cosine distance was added.
@@ -30,8 +29,8 @@
 ## *Version 0.8.14*
 
 - Modifications
-    - Compat extension to 0.33 for StatsBase (for compatibility with some external packages 
-        such as ManifoldLearning).
+    - Compat extension to 0.33 for StatsBase (for compatibility with some external packages such as 
+        ManifoldLearning).
 
 
 ## *Version 0.8.13*
