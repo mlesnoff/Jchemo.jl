@@ -39,9 +39,9 @@ db = joinpath(path_jdat, "data/forages2.jld2")
 @names dat
 X = dat.X
 Y = dat.Y
-n, p = size(X) 
 wlst = names(X)
 wl = parse.(Float64, wlst)
+n, p = size(X) 
 
 s = Bool.(Y.test)
 Xtrain = rmrow(X, s)
