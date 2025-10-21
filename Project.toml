@@ -1,7 +1,7 @@
 name = "Jchemo"
 uuid = "fbca9394-dd0a-4d1c-b066-ae75f6ef1ad5"
 authors = ["Matthieu Lesnoff <matthieu.lesnoff@gmail.com>"]
-version = "0.9.1"
+version = "0.9.2"
 
 [deps]
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
