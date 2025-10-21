@@ -39,16 +39,16 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
-tab(year)
+p = nco(X)
 wlst = names(X)
 wl = parse.(Float64, wlst)
 
+tab(year)
 s = year .<= 2012
 Xtrain = X[s, :]
 ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
-p = nco(X)
 
 n_trees = 200
 n_subfeatures = p / 3
