@@ -39,9 +39,9 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 X = dat.X 
 y = dat.Y.tbc
 year = dat.Y.year
-p = nco(X)
 wlst = names(X)
 wl = parse.(Float64, wlst)
+p = nco(X)
 
 tab(year)
 s = year .<= 2012
