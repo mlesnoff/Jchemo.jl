@@ -5,7 +5,7 @@ Compute column-wise statistics by group in a dataset.
 * `X` : Data (n, p).
 * `y` : A categorical variable (n) defining the groups.
 * `algo` : Function to compute (default = mean).
-Specific for `X::dataframe`:
+Specific for `X::DataFrame`:
 * `sel` : Vector of the names of the variables to summarize.
 * `group` : Vector of the names of the categorical variables defining the groups.
 
@@ -60,11 +60,11 @@ end
 
 """
     aggmean(X, y)
-Compute column-wise mean by class in a dataset.
+Compute column-wise mean by group in a dataset.
 * `X` : Data (n, p).
-* `y` : A categorical variable (n) (class membership).
+* `y` : A group variable (n).
 
-This is a (faster) particular case of `aggstat`. 
+This is a (faster) particular case of `aggstat` that computes means over an univariate group variable. 
 
 ## Examples
 ```julia
@@ -72,11 +72,13 @@ using Jchemo
 
 n, p = 20, 5
 X = rand(n, p)
-y = rand(1:3, n)
 df = DataFrame(X, :auto) 
+y = rand(1:3, n)
+
 res = aggmean(X, y)
 res.X
 res.lev 
+
 aggmean(df, y).X
 ```
 """ 
@@ -96,9 +98,9 @@ end
 
 """ 
     aggsumv(x::Vector, y::Union{Vector, BitVector})
-Compute sub-total sums by class of a categorical variable.
+Compute sub-total sums by group over a categorical variable.
 * `x` : A quantitative variable to sum (n) 
-* `y` : A categorical variable (n) (class membership).
+* `y` : A group variable (n).
 
 ## Examples
 ```julia
@@ -106,6 +108,7 @@ using Jchemo
 
 x = ones(1000)
 y = vcat(rand(["a" ; "c"], 900), repeat(["b"], 100))
+
 aggsumv(x, y)
 ```
 """
