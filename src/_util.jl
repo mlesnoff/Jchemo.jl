@@ -60,11 +60,11 @@ end
 
 """
     aggmean(X, y)
-Compute column-wise mean by group in a dataset.
+Compute column-wise means by group in a dataset.
 * `X` : Data (n, p).
 * `y` : A group variable (n).
 
-This is a (faster) particular case of `aggstat` that computes means over an univariate group variable. 
+This is a (faster) particular case of `aggstat`: computes means from a single group variable. 
 
 ## Examples
 ```julia
@@ -98,7 +98,7 @@ end
 
 """ 
     aggsumv(x::Vector, y::Union{Vector, BitVector})
-Compute sub-total sums by group over a categorical variable.
+Compute the sum by group over a categorical variable.
 * `x` : A quantitative variable to sum (n) 
 * `y` : A group variable (n).
 
