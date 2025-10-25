@@ -389,8 +389,8 @@
 *Summary*
 - **summ** Summarize the columns of a dataset
 - **aggstat** Compute column-wise statistics by group in a dataset
-- **aggmean** Compute column-wise means by class in a dataset
-- **aggsumv** Compute sub-total sums by class of a categorical variable
+- **aggmean** Compute column-wise means by group in a dataset
+- **aggsumv** Compute the sum by group of a categorical variable
 
 *Tables*
 - **tab**, **tabdupl** Tabulations for categorical variables
