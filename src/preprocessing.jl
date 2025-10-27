@@ -346,10 +346,10 @@ If `npoint = 3`, the  kernel is kern = [.33, .33, .33], and:
 - The output value at index i = 4 is: dot(kern, [x[3], x[4], x[5]]). The corresponding wavelength is: wl[4]
 
 If `npoint = 4`, the  kernel is kern = [.25, .25, .25, .25], and: 
-- The output value at index i = 4 is: dot(kern, [x[3], x[4], x[5], x[6]]). The corresponding wavelength 
-    is: (wl[4] + wl[5]) / 2.
 - The output value at index i = 1 is: dot(kern, x[1], x[1], x[2], x[3]) (padding). The corresponding 
     wavelength is: (wl[1] + wl[2]) / 2.
+- The output value at index i = 4 is: dot(kern, [x[3], x[4], x[5], x[6]]). The corresponding wavelength 
+    is: (wl[4] + wl[5]) / 2.
 
 ## References
 https://github.com/JuliaImages/ImageFiltering.jl
