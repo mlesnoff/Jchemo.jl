@@ -49,8 +49,6 @@ function sampwsp(X, dmin; recod = false, maxit = nro(X))
     indX = collect(1:n)
     indXtot = copy(indX)
     x = similar(X, 1, p)
-    ## First reference point: set as the closest 
-    ## from the domain center
     if recod
         zX = recodwsp(X) 
         xmeans = repeat([.5], p)
@@ -59,6 +57,7 @@ function sampwsp(X, dmin; recod = false, maxit = nro(X))
         xmeans = colmean(zX)
         #xmeans = repeat([.5], p)
     end
+    ## First reference point is set as the closest from the domain center
     s = getknn(zX, xmeans'; k = 1).ind[1][1]
     x .= vrow(zX, s:s)
     ind = [indX[s]]
@@ -100,9 +99,4 @@ function recodwsp(X)
     end
     zX
 end
-
-    
-    
-
-
 
