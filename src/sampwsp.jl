@@ -53,7 +53,6 @@ function sampwsp(X, dmin; recod = false, maxit = nro(X))
     ## from the domain center
     if recod
         zX = recodwsp(X) 
-        zX = copy(X)
         xmeans = repeat([.5], p)
     else
         zX = copy(X)
