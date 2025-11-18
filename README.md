@@ -9,28 +9,28 @@
 
 # <span style="color:green"> **About** </span> 
 
-**Jchemo** was initially dedicated to **partial least squares regression (PLSR) and discrimination (PLSDA) 
-methods** and their extensions, in particular locally weighted PLS models (**kNN-LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). Then, the package has been expanded with many other dimension-reduction/regression/discrimination [methods](https://mlesnoff.github.io/Jchemo.jl/dev/domains/), as well as preprocessing methods for signal data. 
+**Jchemo** was initially built around **partial least squares regression (PLSR) and discrimination (PLSDA) 
+methods** and their non-linear extensions, in particular locally weighted PLS models (**kNN-LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). Then, the package has been expanded with many other methods of [dimension reduction, regression, discrimination, and signal (e.g. spectra) preprocessing](https://mlesnoff.github.io/Jchemo.jl/dev/domains/). 
 
-Why the name **Jchemo**? Since it is oriented towards **chemometrics** , in brief the use of biometrics for chemistry. But most of the provided methods are generic to other types of data than chemistry. 
+Why the name **Jchemo**? Since it is oriented towards **chemometrics**, in brief the use of biometrics for chemistry data. But most of the provided methods are generic and can be applied to other types of data. 
 
-Related projects:  [JchemoData.jl](https://github.com/mlesnoff/JchemoData.jl) and [JchemoDemo](https://github.com/mlesnoff/JchemoDemo).
+Related projects:  [JchemoData.jl](https://github.com/mlesnoff/JchemoData.jl) (a container package of data sets used in the examples) and [JchemoDemo](https://github.com/mlesnoff/JchemoDemo) (a pedagogical environment).
 
 # <span style="color:green"> **Sample workflow** </span> 
 
-Suppose training data `(X, Y)` and predictions expected from new data `Xnew` using a PLSR model with 15 latent variables (LVs). The workflow is has follows 
-1) An object, e.g. `model` (or any other name), is built from the given learning model and its eventual parameters.
+Let us assume training data `(X, Y)`, and new data `Xnew` for which predictions are expected from a PLSR model with 15 latent variables (LVs). The workflow is has follows 
+1) An object, e.g. `model` (or any other name can be chosen), is built from the given learning model and its eventual parameters.
     This object contains three sub-objects 
     * `algo` (the learning algorithm) 
     * `fitm` (the fitted model, empty at this stage) 
     * and `kwargs` (the specified keyword arguments)
-2) Function `fit!` fits the model to the data, which fills sub-object `fitm` above.
-3) Function `predict` runs the predictions.   
+2) Function `fit!` fits the model to the training data, which fills sub-object `fitm` above.
+3) Function `predict` computes the predictions.   
 
 ```julia
 model = plskern(nlv = 15, scal = true)
 fit!(model, X, Y)
-pred = predict(model Xnew).pred
+pred = predict(model Xnew).pred  # '.pred' is specified here since functio 'predict' can return several objects for some models 
 ```
 
 We can check the contents of object `model`
@@ -41,11 +41,21 @@ We can check the contents of object `model`
 (:algo, :fitm, :kwargs)
 ```
 
-An alternative syntax for the keyword arguments is 
+An alternative syntax to specify the keyword arguments is 
 
 ```julia
 nlv = 15 ; scal = true
 model = plskern(; nlv, scal)
+```
+
+The default values of the keyword arguments of the model function can be displayed using macro `@pars`
+
+```julia
+@pars plskern
+
+Jchemo.ParPlsr
+  nlv: Int64 1
+  scal: Bool false
 ```
 
 After model fitting, the matrices of the PLS scores can be obtained from function `transf`
@@ -66,15 +76,13 @@ Other sample workflows are given at the [end](https://github.com/mlesnoff/Jchemo
 
 Some models, such as PLSR models, are both a transform operator and a predictor.
 
-Ad'hoc **pipelines** of operations can also be built. In Jchemo, a pipeline is a **chain of *K* modeling steps** containing
+**Ad'hoc pipelines** of operations can also be built, using function [`pip`](https://github.com/mlesnoff/Jchemo.jl/tree/master?tab=readme-ov-file#pipelines). In Jchemo, a pipeline is a **chain of *K* modeling steps** containing
 - either ***K* transform steps**,
 - or ***K* - 1 transform steps** and **a final prediction step**. 
 
-The pipelines are built with function [`pip`](https://github.com/mlesnoff/Jchemo.jl/tree/master?tab=readme-ov-file#pipelines).
-
 *Keyword arguments*
 
-The keyword arguments required/allowed in a function can be found in the [Index of function section](https://mlesnoff.github.io/Jchemo.jl/stable/api/) of the documentation, or in the REPL by displaying the function's help page, for instance for function [`plskern`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.plskern-Tuple{})
+The keyword arguments required or allowed in a given function can be found in the [here](https://mlesnoff.github.io/Jchemo.jl/stable/api/) or in the REPL by displaying the function's help page. For instance for function [`plskern`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.plskern-Tuple{})
 
 ```julia
 julia> ?plskern
@@ -108,7 +116,7 @@ Two **grid-search** functions are available to tune the predictors
 - [`gridscore`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridscore-NTuple{5,%20Any}) (test-set validation)
 - [`gridcv`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridcv-Tuple{Any,%20Any,%20Any}) (cross-validation). 
 
-The syntax is generic for all the functions (see the respective help pages above for sample workflows). These tuning tools have been specifically accelerated for models based on latent variables and ridge regularization.
+The syntax is generic for all the predictors (see the help pages of the two functions above for sample workflows). The two functions have been specifically accelerated (using computation tricks) for models based on latent variables and ridge regularization.
 
 # <span style="color:green">  **Benchmark**  </span>
 
@@ -240,7 +248,7 @@ Several preprocessing can be applied sequentially to the data by building a [pip
 
 #### **b) Example of PCA**
 
-Consider a principal component analysis, using SVD and function `pcasvd` 
+Consider a SVD principal component analysis 
 
 ```julia
 nlv = 15  # nb. principal components
@@ -267,7 +275,7 @@ fit!(model, Xtrain, ytrain)
 
 #### **a) Example of KPLSR**
 
-Consider a (Gaussian) kernel partial least squares regression (KPLSR), using function `kplsr` 
+Consider a Gaussian kernel partial least squares regression (KPLSR), using function `kplsr` 
 
 ```julia
 nlv = 15  # nb. latent variables
