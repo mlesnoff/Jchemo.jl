@@ -34,11 +34,7 @@ group[res.test]
 """ 
 function samprand(n::Int, k::Int; seed::Union{Nothing, Int} = nothing)
     zn = collect(1:n)
-    if isnothing(seed)
-        s = StatsBase.sample(zn, k; replace = false)
-    else
-        s = StatsBase.sample(MersenneTwister(seed), zn, k; replace = false) 
-    end 
+    s = StatsBase.sample(MersenneTwister(seed), zn, k; replace = false)
     sort!(s)
     train = zn[setdiff(1:end, s)]
     (train = train, test = s)
