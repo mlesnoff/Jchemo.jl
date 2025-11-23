@@ -59,11 +59,7 @@ function sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); meth = 
         s_all = findall(ismissing.(y) .== 0)
         if meth == :rand   
             n = length(s_all)
-            if isnothing(seed)
-                res = samprand(n, k[i])
-            else
-                res = samprand(n, k[i]; seed)
-            end
+            res = samprand(n, k[i]; seed)
         else
             res = sampsys(y[s_all], k[i])
         end 
