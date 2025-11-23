@@ -68,14 +68,14 @@ function sampks(X, k::Int; metric = :eucl)
     s = findall(D .== maximum(D))
     s = [s[1][1] ; s[1][2]]
     ## Candidates
-    can = zn[setdiff(1:end, s)]
+    cand = zn[setdiff(1:end, s)]
     @inbounds for i = 1:(k - 2)
-        u = vec(minimum(D[s, can], dims = 1))
-        zs = can[findall(u .== maximum(u))[1]]
+        u = vec(minimum(D[s, cand], dims = 1))
+        zs = cand[findall(u .== maximum(u))[1]]
         s = [s ; zs]
-        can = zn[setdiff(1:end, s)]
+        cand = zn[setdiff(1:end, s)]
     end
     sort!(s)
-    (train = can, test = s)
+    (train = cand, test = s)
 end
 
