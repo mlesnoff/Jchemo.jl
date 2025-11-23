@@ -33,18 +33,18 @@ group[res.test]
 ```
 """ 
 function samprand(n::Int, k::Int; seed::Union{Nothing, Int} = nothing)
-    zn = collect(1:n)
-    s = StatsBase.sample(MersenneTwister(seed), zn, k; replace = false)
+    vn = collect(1:n)
+    s = StatsBase.sample(MersenneTwister(seed), vn, k; replace = false)
     sort!(s)
-    train = zn[setdiff(1:end, s)]
+    train = vn[setdiff(1:end, s)]
     (train = train, test = s)
 end
 
 function samprand(group::Vector, k::Int; seed::Union{Nothing, Int} = nothing)
     s = segmts(group, k; rep = 1, seed)[1][1]
-    zn = collect(1:length(group))
-    train = rmrow(zn, s)  
-    test = zn[s]
+    vn = collect(1:length(group))
+    train = rmrow(vn, s)  
+    test = vn[s]
     (train = train, test)
 end
 
