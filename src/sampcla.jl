@@ -53,11 +53,7 @@ function sampcla(x, k::Union{Int, Vector{Int}}, y = nothing; seed::Union{Nothing
         k[i] = min(k[i], ni[i])
         zs = findall(x .== lev[i])
         if isnothing(y)
-            if isnothing(seed)
-                s[i] = StatsBase.sample(zs, k[i]; replace = false)
-            else
-                s[i] = StatsBase.sample(MersenneTwister(seed), zs, k[i]; replace = false)
-            end
+            s[i] = StatsBase.sample(MersenneTwister(seed), zs, k[i]; replace = false)
         else
             y = vec(y)
             u = sampsys(y[zs], k[i]).test
