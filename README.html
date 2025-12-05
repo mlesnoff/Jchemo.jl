@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>readme</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="README_files/libs/clipboard/clipboard.min.js"></script>
+<script src="README_files/libs/quarto-html/quarto.js"></script>
+<script src="README_files/libs/quarto-html/popper.min.js"></script>
+<script src="README_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="README_files/libs/quarto-html/anchor.min.js"></script>
+<link href="README_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="README_files/libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="README_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="README_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="README_files/libs/bootstrap/bootstrap-8a79a254b8e706d3c925cde0a310d4f0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+
+<section id="jchemo.jl" class="level1">
+<h1>Jchemo.jl</h1>
+<section id="chemometrics-and-machine-learning-on-high-dimensional-data-with-julia" class="level3">
+<h3 class="anchored" data-anchor-id="chemometrics-and-machine-learning-on-high-dimensional-data-with-julia">Chemometrics and machine learning on high-dimensional data with Julia</h3>
+<p><a href="https://mlesnoff.github.io/Jchemo.jl/stable"><img src="https://img.shields.io/badge/docs-stable-blue.svg" class="img-fluid" alt="Stable"></a> <a href="https://mlesnoff.github.io/Jchemo.jl/dev"><img src="https://img.shields.io/badge/docs-dev-blue.svg" class="img-fluid" alt="Dev"></a> <a href="https://github.com/mlesnoff/Jchemo.jl/actions"><img src="https://github.com/mlesnoff/Jchemo.jl/workflows/CI/badge.svg" class="img-fluid" alt="Build Status"></a> <a href="http://www.repostatus.org/#active"><img src="http://www.repostatus.org/badges/latest/active.svg" class="img-fluid" alt="Project Status: Active - The project has reached a stable, usable state and is being actively developed."></a></p>
+</section>
+</section>
+<section id="about" class="level1">
+<h1><span style="color:green"> <strong>About</strong> </span></h1>
+<p><strong>Jchemo</strong> was built initially around <strong>partial least squares regression (PLSR) and discrimination (PLSDA) methods</strong> and their non-linear extensions, in particular locally weighted PLS models (<strong>kNN-LWPLS-R</strong> &amp; <strong>-DA</strong>; e.g.&nbsp;https://doi.org/10.1002/cem.3209). The package has then been expanded with many other methods of <a href="https://mlesnoff.github.io/Jchemo.jl/dev/domains/">dimension reduction, regression, discrimination, and signal (e.g.&nbsp;spectra) preprocessing</a>.</p>
+<p>Why the name <strong>Jchemo</strong>? Since it is oriented towards <strong>chemometrics</strong>, in brief the use of biometrics for chemistry data. But most of the provided methods are generic and can be applied to other types of data.</p>
+<p>Related projects: <a href="https://github.com/mlesnoff/JchemoData.jl">JchemoData.jl</a> (a container package of data sets used in the examples) and <a href="https://github.com/mlesnoff/JchemoDemo">JchemoDemo</a> (a pedagogical environment).</p>
+</section>
+<section id="sample-workflow" class="level1">
+<h1><span style="color:green"> <strong>Sample workflow</strong> </span></h1>
+<p>Let us assume training data <code>(X, Y)</code>, and new data <code>Xnew</code> for which predictions are expected from a PLSR model with 15 latent variables (LVs). The workflow is has follows 1) An object, e.g.&nbsp;<code>model</code> (or any other name can be chosen), is built from the given learning model and its eventual parameters. This object contains three sub-objects * <code>algo</code> (the learning algorithm) * <code>fitm</code> (the fitted model, empty at this stage) * and <code>kwargs</code> (the specified keyword arguments) 2) Function <code>fit!</code> fits the model to the training data, which fills sub-object <code>fitm</code> above. 3) Function <code>predict</code> computes the predictions.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">plskern</span>(nlv <span class="op">=</span> <span class="fl">15</span>, scal <span class="op">=</span> <span class="cn">true</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fit!</span>(model, X, Y)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> <span class="fu">predict</span>(model Xnew).pred  <span class="co"># '.pred' is specified here since functio 'predict' can return several objects for some models </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can check the contents of object <code>model</code></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@names</span> model</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>(<span class="op">:</span>algo, <span class="op">:</span>fitm, <span class="op">:</span>kwargs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>An alternative syntax to specify the keyword arguments is</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nlv <span class="op">=</span> <span class="fl">15</span> ; scal <span class="op">=</span> <span class="cn">true</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">plskern</span>(; nlv, scal)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The default values of the keyword arguments of the model function can be displayed using macro <code>@pars</code></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@pars</span> plskern</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>Jchemo.ParPlsr</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  nlv<span class="op">:</span> <span class="dt">Int64</span> <span class="fl">1</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  scal<span class="op">:</span> <span class="dt">Bool</span> <span class="cn">false</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>After model fitting, the matrices of the PLS scores can be obtained from function <code>transf</code></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="fu">transf</span>(model, X)   <span class="co"># can also be obtained directly by: model.fitm.T</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>Tnew <span class="op">=</span> <span class="fu">transf</span>(model, Xnew)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Other sample workflows are given at the <a href="https://github.com/mlesnoff/Jchemo.jl?tab=readme-ov-file#-examples-of-syntax-">end</a> of this README.</p>
+</section>
+<section id="package-structure" class="level1">
+<h1><span style="color:green"> <strong>Package structure</strong> </span></h1>
+<p><strong>Jchemo</strong> is organized between - <strong>transform operators</strong> (that have a function <code>transf</code>), - <strong>predictors</strong> (that have a function <code>predict</code>), - <strong>utility functions</strong>.</p>
+<p>Some models, such as PLSR models, are both a transform operator and a predictor.</p>
+<p><strong>Ad’hoc pipelines</strong> of operations can also be built, using function <a href="https://github.com/mlesnoff/Jchemo.jl/tree/master?tab=readme-ov-file#pipelines"><code>pip</code></a>. In Jchemo, a pipeline is a <strong>chain of <em>K</em> modeling steps</strong> containing - either <strong><em>K</em> transform steps</strong>, - or <strong><em>K</em> - 1 transform steps</strong> and <strong>a final prediction step</strong>.</p>
+<p><em>Keyword arguments</em></p>
+<p>The keyword arguments required or allowed in a given function can be found in the <a href="https://mlesnoff.github.io/Jchemo.jl/stable/api/">here</a> or in the REPL by displaying the function’s help page. For instance for function <a href="https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.plskern-Tuple%7B%7D"><code>plskern</code></a></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> ?plskern</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Default values can be displayed in the REPL with macro <code>@pars</code></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="pp">@pars</span> plskern</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>Jchemo.ParPlsr</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  nlv<span class="op">:</span> <span class="dt">Int64</span> <span class="fl">1</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  scal<span class="op">:</span> <span class="dt">Bool</span> <span class="cn">false</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><em>Multi-threading</em></p>
+<p>Some functions (e.g.&nbsp;those using kNN selections) use <strong>multi-threading</strong> to speed the computations. Taking advantage of this requires to specify a relevant number of threads (for instance from the <em>Settings</em> menu of the VsCode Julia extension and the file <em>settings.json</em>).</p>
+<p><em>Plotting</em></p>
+<p><strong>Jchemo</strong> uses <strong>Makie</strong> for plotting. Displaying the plots requires to install and load one of the Makie’s backends (<strong>CairoMakie</strong> or <strong>GLMakie</strong>).</p>
+<p><em>Datasets</em></p>
+<p>The <strong>datasets</strong> used as examples in the function help pages are stored in package <a href="https://github.com/mlesnoff/JchemoData.jl">JchemoData.jl</a>, a repository of datasets on chemometrics and other domains. <strong>Examples of scripts</strong> demonstrating <strong>Jchemo</strong> are also available in the pedagogical project <a href="https://github.com/mlesnoff/JchemoDemo">JchemoDemo</a>.</p>
+</section>
+<section id="tuning-predictive-models" class="level1">
+<h1><span style="color:green"> <strong>Tuning predictive models</strong> </span></h1>
+<p>Two <strong>grid-search</strong> functions are available to tune the predictors - <a href="https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridscore-NTuple%7B5,%20Any%7D"><code>gridscore</code></a> (test-set validation) - <a href="https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridcv-Tuple%7BAny,%20Any,%20Any%7D"><code>gridcv</code></a> (cross-validation).</p>
+<p>The syntax is generic for all the predictors (see the help pages of the two functions above for sample workflows). The two functions have been specifically accelerated (using computation tricks) for models based on latent variables and ridge regularization.</p>
+</section>
+<section id="benchmark" class="level1">
+<h1><span style="color:green"> <strong>Benchmark</strong> </span></h1>
+<div class="sourceCode" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Jchemo</span>, <span class="bu">BenchmarkTools</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">versioninfo</span>()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>Julia Version <span class="fl">1.10.0</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>Commit <span class="fl">3120989f39</span> (<span class="fl">2023</span><span class="op">-</span><span class="fl">12</span><span class="op">-</span><span class="fl">25</span> <span class="fl">18</span><span class="op">:</span><span class="fl">01</span> UTC)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>Build Info<span class="op">:</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  Official https<span class="op">://</span>julialang.org<span class="op">/</span> release</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>Platform Info<span class="op">:</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  OS<span class="op">:</span> Windows (x86_64<span class="op">-</span>w64<span class="op">-</span>mingw32)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  CPU<span class="op">:</span> <span class="fl">16</span> <span class="op">×</span> <span class="fu">Intel</span>(R) <span class="fu">Core</span>(TM) i9<span class="op">-</span><span class="fl">10885</span>H CPU @ <span class="fl">2.40</span>GHz</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="cn">WORD_SIZE</span><span class="op">:</span> <span class="fl">64</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  LIBM<span class="op">:</span> libopenlibm</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  LLVM<span class="op">:</span> libLLVM<span class="op">-</span><span class="fl">15.0.7</span> (ORCJIT, skylake)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="bu">Threads</span><span class="op">:</span> <span class="fl">23</span> on <span class="fl">16</span> virtual cores</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>Environment<span class="op">:</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  JULIA_EDITOR <span class="op">=</span> code</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="multi-variate-plsr-with-n-1e6-observations" class="level3">
+<h3 class="anchored" data-anchor-id="multi-variate-plsr-with-n-1e6-observations">Multi-variate PLSR with n = 1e6 observations</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fl">6</span>  <span class="co"># nb. observations (samples)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fl">500</span>   <span class="co"># nb. X-variables (features)</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> <span class="fl">10</span>    <span class="co"># nb. Y-variables to predict</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>nlv <span class="op">=</span> <span class="fl">25</span>  <span class="co"># nb. PLS latent variables</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> <span class="fu">rand</span>(n, p)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> <span class="fu">rand</span>(n, q)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>zX <span class="op">=</span> <span class="fu">Float32</span>.(X)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>zY <span class="op">=</span> <span class="fu">Float32</span>.(Y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Float64</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">plskern</span>(; nlv)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="pp">@benchmark</span> <span class="fu">fit!</span>(<span class="op">$</span>model, <span class="op">$</span>X, <span class="op">$</span>Y)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>BenchmarkTools.Trial<span class="op">:</span> <span class="fl">1</span> sample with <span class="fl">1</span> evaluation.</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a> Single result which took <span class="fl">7.532</span> s (<span class="fl">1.07</span><span class="op">%</span> GC) to evaluate,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a> with a memory estimate of <span class="fl">4.09</span> GiB, over <span class="fl">2677</span> allocations.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Float32 </span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@benchmark</span> <span class="fu">fit!</span>(<span class="op">$</span>model, <span class="op">$</span>zX, <span class="op">$</span>zY) </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>BenchmarkTools.Trial<span class="op">:</span> <span class="fl">2</span> samples with <span class="fl">1</span> evaluation.</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a> <span class="dt">Range</span> (min <span class="op">…</span> max)<span class="op">:</span>  <span class="fl">3.956</span> s <span class="op">…</span>    <span class="fl">4.148</span> s  ┊ GC (min <span class="op">…</span> max)<span class="op">:</span> <span class="fl">0.82</span><span class="op">%</span> <span class="op">…</span> <span class="fl">3.95</span><span class="op">%</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a> <span class="dt">Time</span>  (median)<span class="op">:</span>     <span class="fl">4.052</span> s               ┊ GC (median)<span class="op">:</span>    <span class="fl">2.42</span><span class="op">%</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a> <span class="dt">Time</span>  (mean <span class="op">±</span> σ)<span class="op">:</span>   <span class="fl">4.052</span> s <span class="op">±</span> <span class="fl">135.259</span> ms  ┊ GC (mean <span class="op">±</span> σ)<span class="op">:</span>  <span class="fl">2.42</span><span class="op">%</span> <span class="op">±</span> <span class="fl">2.21</span><span class="op">%</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  █                                                        █  </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  █▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█ ▁</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fl">3.96</span> s         Histogram<span class="op">:</span> frequency by time         <span class="fl">4.15</span> s <span class="op">&lt;</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a> Memory estimate<span class="op">:</span> <span class="fl">2.05</span> GiB, allocs estimate<span class="op">:</span> <span class="fl">2677</span>.</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co">## (NB.: multi-threading is not used in plskern) </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="installation" class="level1">
+<h1><span style="color:green"> <strong>Installation</strong> </span></h1>
+<p>To install <strong>Jchemo</strong></p>
+<ul>
+<li>From the official Julia repo, run in the Pkg REPL</li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pkg<span class="op">&gt;</span> add Jchemo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>or for a <strong>specific version</strong>, for instance</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pkg<span class="op">&gt;</span> add Jchemo@<span class="fl">0.8.5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>For the <strong>current developing version</strong> (potentially not stable)</li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pkg<span class="op">&gt;</span> add https<span class="op">://</span>github.com<span class="op">/</span>mlesnoff<span class="op">/</span>Jchemo.jl.git</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><em>Warning</em></p>
+<p>Before to update the package, it is recommended to have a look on <a href="https://mlesnoff.github.io/Jchemo.jl/dev/news/">What changed</a> to avoid eventual problems due to breaking changes.</p>
+</section>
+<section id="examples-of-syntax" class="level1">
+<h1><span style="color:green"> <strong>Examples of syntax</strong> </span></h1>
+<section id="some-fictive-data" class="level3">
+<h3 class="anchored" data-anchor-id="some-fictive-data">Some fictive data</h3>
+<div class="sourceCode" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="fl">150</span> ; p <span class="op">=</span> <span class="fl">200</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> <span class="fl">2</span> ; m <span class="op">=</span> <span class="fl">50</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>Xtrain <span class="op">=</span> <span class="fu">rand</span>(n, p)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>Ytrain <span class="op">=</span> <span class="fu">rand</span>(n, q) </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>Xtest <span class="op">=</span> <span class="fu">rand</span>(m, p)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>Ytest <span class="op">=</span> <span class="fu">rand</span>(m, q) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="transform-operations" class="level3">
+<h3 class="anchored" data-anchor-id="transform-operations"><strong>Transform operations</strong></h3>
+<section id="a-example-of-signal-preprocessing" class="level4">
+<h4 class="anchored" data-anchor-id="a-example-of-signal-preprocessing"><strong>a) Example of signal preprocessing</strong></h4>
+<p>Consider a signal preprocessing with the Savitsky-Golay filter, using function <code>savgol</code></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Below, the order of the kwargs is not important but the argument </span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co">## names have to be correct.</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">## Model definition</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">## (below, the name 'model' can be replaced by any other name)</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>npoint <span class="op">=</span> <span class="fl">11</span> ; deriv <span class="op">=</span> <span class="fl">2</span> ; degree <span class="op">=</span> <span class="fl">3</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">savgol</span>(; npoint, deriv, degree)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">## Fitting</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="fu">fit!</span>(model, Xtrain)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co">## Transformed (= preprocessed) data</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>Xptrain <span class="op">=</span> <span class="fu">transf</span>(model, Xtrain)  </span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>Xptest <span class="op">=</span> <span class="fu">transf</span>(model, Xtest)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Several preprocessing can be applied sequentially to the data by building a <a href="https://github.com/mlesnoff/Jchemo.jl/tree/master?tab=readme-ov-file#fitting-a-pipeline">pipeline</a>.</p>
+</section>
+<section id="b-example-of-pca" class="level4">
+<h4 class="anchored" data-anchor-id="b-example-of-pca"><strong>b) Example of PCA</strong></h4>
+<p>Consider a SVD principal component analysis</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>nlv <span class="op">=</span> <span class="fl">15</span>  <span class="co"># nb. principal components</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">pcasvd</span>(; nlv)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">fit!</span>(model, Xtrain, ytrain)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">## Score matrices</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>Ttrain <span class="op">=</span> <span class="fu">transf</span>(model, Xtrain) <span class="co"># same as:  model.fitm.T</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>Ttest <span class="op">=</span> <span class="fu">transf</span>(model, Xtest)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co">## Model summary (% of explained variance, etc.)</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model, Xtrain)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For a preliminary scaling of the data before the PCA</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>nlv <span class="op">=</span> <span class="fl">15</span> ; scal <span class="op">=</span> <span class="cn">true</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">pcasvd</span>(; nlv, scal)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">fit!</span>(model, Xtrain, ytrain)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="prediction-models" class="level3">
+<h3 class="anchored" data-anchor-id="prediction-models"><strong>Prediction models</strong></h3>
+<section id="a-example-of-kplsr" class="level4">
+<h4 class="anchored" data-anchor-id="a-example-of-kplsr"><strong>a) Example of KPLSR</strong></h4>
+<p>Consider a Gaussian kernel partial least squares regression (KPLSR), using function <code>kplsr</code></p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>nlv <span class="op">=</span> <span class="fl">15</span>  <span class="co"># nb. latent variables</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>kern <span class="op">=</span> <span class="op">:</span>krbf ; gamma <span class="op">=</span> <span class="fl">.001</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">kplsr</span>(; nlv, kern, gamma)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">fit!</span>(model, Xtrain, ytrain)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">## PLS score matrices can be computed by:</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>Ttrain <span class="op">=</span> <span class="fu">transf</span>(model, Xtrain)   <span class="co"># = model.fitm.T</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>Ttest <span class="op">=</span> <span class="fu">transf</span>(model, Xtest)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co">## Model summary</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model, Xtrain)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co">## Y-Predictions</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> <span class="fu">predict</span>(model, Xtest).pred</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="pipelines" class="level3">
+<h3 class="anchored" data-anchor-id="pipelines"><strong>Pipelines</strong></h3>
+<section id="a-example-of-chained-preprocessing" class="level4">
+<h4 class="anchored" data-anchor-id="a-example-of-chained-preprocessing"><strong>a) Example of chained preprocessing</strong></h4>
+<p>Consider a data preprocessing by standard-normal-variation transformation (SNV) followed by a Savitsky-Golay filter and a polynomial de-trending transformation</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Model definitions</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>model1 <span class="op">=</span> <span class="fu">snv</span>()</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>model2 <span class="op">=</span> <span class="fu">savgol</span>(npoint <span class="op">=</span> <span class="fl">5</span>, deriv <span class="op">=</span> <span class="fl">1</span>, degree <span class="op">=</span> <span class="fl">2</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>model3 <span class="op">=</span> <span class="fu">detrend_pol</span>()  </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">## Pipeline building and fitting</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">pip</span>(model1, model2, model3)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="fu">fit!</span>(model, Xtrain)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co">## Transformed data</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>Xptrain <span class="op">=</span> <span class="fu">transf</span>(model, Xtrain)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>Xptest <span class="op">=</span> <span class="fu">transf</span>(model, Xtest)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="b-example-of-pca-svmr" class="level4">
+<h4 class="anchored" data-anchor-id="b-example-of-pca-svmr"><strong>b) Example of PCA-SVMR</strong></h4>
+<p>Consider a support vector machine regression model implemented on preliminary computed PCA scores (PCA-SVMR)</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>nlv <span class="op">=</span> <span class="fl">15</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>kern <span class="op">=</span> <span class="op">:</span>krbf ; gamma <span class="op">=</span> <span class="fl">.001</span> ; cost <span class="op">=</span> <span class="fl">1000</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>model1 <span class="op">=</span> <span class="fu">pcasvd</span>(; nlv)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>model2 <span class="op">=</span> <span class="fu">svmr</span>(; kern, gamma, cost)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">pip</span>(model1, model2)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="fu">fit!</span>(model, Xtrain)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co">## Y-predictions</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> <span class="fu">predict</span>(model, Xtest).pred</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Step(s) of data preprocessing can obviously be implemented before the model(s)</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>nlv <span class="op">=</span> <span class="fl">15</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>kern <span class="op">=</span> <span class="op">:</span>krbf ; gamma <span class="op">=</span> <span class="fl">.001</span> ; cost <span class="op">=</span> <span class="fl">1000</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>model1 <span class="op">=</span> <span class="fu">detrend_pol</span>(degree <span class="op">=</span> <span class="fl">2</span>)   <span class="co"># polynomial de-trending with polynom degree 2</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>model2 <span class="op">=</span> <span class="fu">pcasvd</span>(; nlv)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>model3 <span class="op">=</span> <span class="fu">svmr</span>(; kern, gamma, cost)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">pip</span>(model1, model2, model3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="c-example-of-lwr-naes-et-al.-1990" class="level4">
+<h4 class="anchored" data-anchor-id="c-example-of-lwr-naes-et-al.-1990"><strong>c) Example of LWR (Naes et al.&nbsp;1990)</strong></h4>
+<p>The LWR algorithm of Naes et al (1990) consists in implementing a preliminary global PCA on the data and then a kNN locally weighted multiple linear regression (kNN-LWMLR) on the global PCA scores</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>nlv <span class="op">=</span> <span class="fl">25</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>metric <span class="op">=</span> <span class="op">:</span>eucl ; h <span class="op">=</span> <span class="fl">2</span> ; k <span class="op">=</span> <span class="fl">200</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>model1 <span class="op">=</span> <span class="fu">pcasvd</span>(; nlv)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>model2 <span class="op">=</span> <span class="fu">lwmlr</span>(; metric, h, k)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">pip</span>(model1, model2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><em>Naes et al., 1990. Analytical Chemistry 664–673.</em></p>
+</section>
+<section id="d-example-of-shen-et-al.-2019" class="level4">
+<h4 class="anchored" data-anchor-id="d-example-of-shen-et-al.-2019"><strong>d) Example of Shen et al.&nbsp;2019</strong></h4>
+<p>The pipeline of Shen et al.&nbsp;(2019) consists in implementing a preliminary global PLSR on the data and then a kNN-PLSR on the global PLSR scores</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>nlv <span class="op">=</span> <span class="fl">25</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>metric <span class="op">=</span> <span class="op">:</span>mah ; h <span class="op">=</span> <span class="cn">Inf</span> ; k <span class="op">=</span> <span class="fl">200</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>model1 <span class="op">=</span> <span class="fu">plskern</span>(; nlv)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>model2 <span class="op">=</span> <span class="fu">lwplsr</span>(; metric, h, k)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">pip</span>(model1, model2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><em>Shen et al., 2019. Journal of Chemometrics, 33(5) e3117.</em></p>
+</section>
+</section>
+</section>
+<section id="credit" class="level1">
+<h1><span style="color:green"> <strong>Credit</strong> </span></h1>
+<section id="author" class="level3">
+<h3 class="anchored" data-anchor-id="author"><strong>Author</strong></h3>
+<p>Matthieu Lesnoff<br>
+contact: <strong>matthieu.lesnoff@cirad.fr</strong></p>
+<ul>
+<li><p>Cirad, <a href="https://umr-selmet.cirad.fr/en"><strong>UMR Selmet</strong></a>, Montpellier, France</p></li>
+<li><p><a href="https://www.chemproject.org/ChemHouse"><strong>ChemHouse</strong></a>, Montpellier</p></li>
+</ul>
+</section>
+<section id="how-to-cite" class="level3">
+<h3 class="anchored" data-anchor-id="how-to-cite"><strong>How to cite</strong></h3>
+<p>Lesnoff, M. 2021. Jchemo: Chemometrics and machine learning on high-dimensional data with Julia. https://github.com/mlesnoff/Jchemo.jl. UMR SELMET, Univ Montpellier, CIRAD, INRA, Institut Agro, Montpellier, France</p>
+</section>
+<section id="acknowledgments" class="level3">
+<h3 class="anchored" data-anchor-id="acknowledgments"><strong>Acknowledgments</strong></h3>
+<ul>
+<li>G. Cornu (Cirad) https://ur-forets-societes.cirad.fr/en/l-unite/l-equipe</li>
+<li>M. Metz (Pellenc ST, Pertuis, France)</li>
+<li>L. Plagne, F. Févotte (Triscale.innov) https://www.triscale-innov.com</li>
+<li>R. Vezy (Cirad) https://www.youtube.com/channel/UCxArXLI-gxlTmWGGgec5D7w</li>
+</ul>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
