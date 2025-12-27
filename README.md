@@ -1,6 +1,6 @@
 # Jchemo.jl
 
-### Chemometrics and machine learning on high-dimensional data with Julia
+### Chemometrics and machine learning for high-dimensional data with Julia
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/dev)
@@ -9,12 +9,12 @@
 
 # <span style="color:green"> **About** </span> 
 
-**Jchemo** was built initially around **partial least squares regression (PLSR) and discrimination (PLSDA) 
+At the start of the project, **Jchemo** was built around **partial least squares regression (PLSR) and discrimination (PLSDA) 
 methods** and their non-linear extensions, in particular locally weighted PLS models (**kNN-LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). The package has then been expanded with many other methods of [dimension reduction, regression, discrimination, and signal (e.g. spectra) preprocessing](https://mlesnoff.github.io/Jchemo.jl/dev/domains/). 
 
 Why the name **Jchemo**? Since it is oriented towards **chemometrics**, in brief the use of biometrics for chemistry data. But most of the provided methods are generic and can be applied to other types of data. 
 
-Related projects:  [JchemoData.jl](https://github.com/mlesnoff/JchemoData.jl) (a container package of data sets used in the examples) and [JchemoDemo](https://github.com/mlesnoff/JchemoDemo) (a pedagogical environment).
+Related projects:  [JchemoData.jl](https://github.com/mlesnoff/JchemoData.jl) (a "container" package gathering selected data sets used in the examples) and [JchemoDemo](https://github.com/mlesnoff/JchemoDemo) (a pedagogical environment).
 
 # <span style="color:green"> **Sample workflow** </span> 
 
@@ -382,7 +382,7 @@ contact: **matthieu.lesnoff@cirad.fr**
 
 ### **How to cite**
 
-Lesnoff, M. 2021. Jchemo: Chemometrics and machine learning on high-dimensional data with Julia. https://github.com/mlesnoff/Jchemo.jl. 
+Lesnoff, M. 2021. Jchemo: Chemometrics and machine learning for high-dimensional data with Julia. https://github.com/mlesnoff/Jchemo.jl. 
 UMR SELMET, Univ Montpellier, CIRAD, INRA, Institut Agro, Montpellier, France
 
 ###  **Acknowledgments**
