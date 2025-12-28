@@ -10,10 +10,10 @@ Keyword arguments:
 * `metric` : Type of dissimilarity used to select the neighbors and to compute the weights 
     (see function `getknn`). Possible values are: `:eucl` (Euclidean), `:mah` (Mahalanobis), 
     `:sam` (spectral angular distance), `:cos` (cosine distance), `:cor` (correlation distance).
+* `k` : The number of nearest neighbors to select for each observation to predict.
 * `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
     sharper is the function. See function `winvs` for details (keyword arguments `criw` and `squared` of 
     `winvs` can also be specified here).
-* `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
 * `nlv` : Nb. latent variables (LVs) for the local (i.e. inside each neighborhood) models.
 * `scal` : Boolean. If `true`, (a) each column of the global `X` (and of the global `Y` if there 
@@ -77,7 +77,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlvdis = 15 ; metric = :mah 
-h = 1 ; k = 500 ; nlv = 10
+k = 500 ; h = 1 ; nlv = 10
 model = lwplsr(; nlvdis, metric, h, k, nlv) 
 fit!(model, Xtrain, ytrain)
 @names model
@@ -127,11 +127,11 @@ function predict(object::Lwplsr, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(minimum(nlv), a):min(maximum(nlv), a)
     ## Getknn
     metric = object.par.metric
-    h = object.par.h
     k = object.par.k
-    tolw = object.par.tolw
+    h = object.par.h
     criw = object.par.criw
     squared = object.par.squared
+    tolw = object.par.tolw
     if isnothing(object.fitm)
         if object.par.scal
             zX1 = fscale(object.X, object.xscales)

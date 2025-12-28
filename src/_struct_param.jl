@@ -295,8 +295,8 @@ end
 Base.@kwdef mutable struct ParLwplsr    # lwplsr, lwplsravg
     nlvdis::Int = 0                         
     metric::Symbol = :eucl                  
-    h::Float64 = Inf                        
     k::Int = 1                              
+    h::Float64 = Inf                        
     criw::Float64 = 4                       
     squared::Bool = false                   
     tolw::Float64 = 1e-4                    
