@@ -2,6 +2,10 @@
 
 ## *Version 0.9.2*
 
+- News
+    - Function **lwplsr**: Argument 'store' was added to possibly return the local models fitted 
+        on each neighborhoods.
+
 - Modifications
     - Code cleaning.
     
