@@ -151,8 +151,8 @@ function predict(object::Lwplsr, X; nlv = nothing)
         listw[i] = w
     end
     ## End
-    pred = locwlv(object.X, object.Y, X; listnn = res.ind, listw, algo = plskern, nlv, 
-        scal = object.par.scal, verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, listw)
+    reslocw = locwlv(object.X, object.Y, X; listnn = res.ind, listw, algo = plskern, nlv, 
+        scal = object.par.scal, store = object.par.store, verbose = object.par.verbose)
+    (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw)
 end
 

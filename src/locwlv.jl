@@ -9,19 +9,21 @@ Keyword arguments:
 * `listw` : List (vector) of m vectors of weights.
 * `algo` : Function computing the model on the m neighborhoods.
 * `nlv` : Nb. or collection of nb. of latent variables (LVs).
+* `store` : Boolean. If `true`, the local models fitted on each neighborhood are stored and returned.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 * `kwargs` : Keywords arguments to pass in function `algo`. Each argument must have length = 1 
     (not be a collection).
 
 Same as [`locw`](@ref) but specific and much faster for LV-based models (e.g. PLSR).
 """
-function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv, verbose = true, kwargs...)
+function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv, store = false, verbose = true, kwargs...)
     p = nco(Xtrain)
     m = nro(X)
     q = nco(Ytrain)
     nlv = min(p, minimum(nlv)):min(p, maximum(nlv))
     le_nlv = length(nlv)
     zpred = similar(Ytrain, m, q, le_nlv)
+    fitm = list(m)
     #@inbounds for i = 1:m
     Threads.@threads for i = 1:m
         verbose ? print(i, " ") : nothing
@@ -38,12 +40,12 @@ function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv, verbose =
         ## End 
         else
             if isnothing(listw)
-                fitm = algo(zXtrain,  zYtrain; nlv = maximum(nlv), kwargs...)
+                fitm[i] = algo(zXtrain,  zYtrain; nlv = maximum(nlv), kwargs...)
             else
-                fitm = algo(zXtrain, zYtrain, mweight(listw[i]); nlv = maximum(nlv), kwargs...)
+                fitm[i] = algo(zXtrain, zYtrain, mweight(listw[i]); nlv = maximum(nlv), kwargs...)
             end
             @inbounds for a = 1:le_nlv
-                zpred[i, :, a] = predict(fitm, vrow(X, i:i); nlv = nlv[a]).pred
+                zpred[i, :, a] = predict(fitm[i], vrow(X, i:i); nlv = nlv[a]).pred
             end
         end
     end 
@@ -53,6 +55,7 @@ function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv, verbose =
         pred[a] = zpred[:, :, a]
     end
     le_nlv == 1 ? pred = pred[1] : nothing
-    (pred = pred, )
+    if !store ; fitm = nothing ; end
+    (pred = pred, fitm)
 end
 

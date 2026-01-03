@@ -301,7 +301,8 @@ Base.@kwdef mutable struct ParLwplsr    # lwplsr, lwplsravg
     squared::Bool = false                   
     tolw::Float64 = 1e-4                    
     nlv::Union{Int, Vector{Int}, UnitRange} = 1     
-    scal::Bool = false 
+    scal::Bool = false
+    store::Bool = false 
     verbose::Bool = false                   
 end 
 
