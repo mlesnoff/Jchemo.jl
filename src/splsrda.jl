@@ -53,8 +53,10 @@ typeof(fitm)
 @names fitm
 typeof(fitm.fitm) 
 @names fitm.fitm
+
 fitm.lev
 fitm.ni
+fitm.priors
 
 fitm.fitm.sellv
 fitm.fitm.sel
@@ -92,7 +94,7 @@ function splsrda(X, y, weights::Weight; kwargs...)
     ni = tab(y).vals
     priors = aggsumv(weights.w, y).val  # output not used, only for information
     fitm = splsr(X, res.Y, weights; kwargs...)
-    Plsrda(fitm, priors, ni, res.lev, par)
+    Plsrda(fitm, ni, priors, res.lev, par)
 end
 
 

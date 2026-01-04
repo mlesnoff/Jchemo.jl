@@ -67,6 +67,7 @@ typeof(fitm.fitm)
 
 fitm.lev
 fitm.ni
+fitm.priors
 
 coef(fitm.fitm)
 
@@ -95,7 +96,7 @@ function rrda(X, y, weights::Weight; kwargs...)
     ni = tab(y).vals 
     priors = aggsumv(weights.w, y).val  # output not used, only for information
     fitm = rr(X, res.Y, weights; kwargs...)
-    Rrda(fitm, priors, ni, res.lev, par)
+    Rrda(fitm, ni, priors, res.lev, par)
 end
 
 """

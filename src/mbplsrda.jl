@@ -79,6 +79,7 @@ typeof(fitm.fitm)
 
 fitm.lev
 fitm.ni
+fitm.priors
 aggsumv(fitm.fitm.weights.w, ytrain)
 
 @head transf(model, Xbltrain)
@@ -112,7 +113,7 @@ function mbplsrda(Xbl, y, weights::Weight; kwargs...)
     ni = tab(y).vals
     priors = aggsumv(weights.w, y).val  # output not used, only for information
     fitm = mbplsr(Xbl, res.Y, weights; kwargs...)
-    Mbplsrda(fitm, priors, ni, res.lev, par) 
+    Mbplsrda(fitm, ni, priors, res.lev, par) 
 end
 
 """ 

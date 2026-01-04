@@ -48,6 +48,7 @@ typeof(fitm)
 @names fitm
 fitm.lev
 fitm.ni
+fitm.priors
 
 res = predict(model, Xtest) ; 
 @names res 

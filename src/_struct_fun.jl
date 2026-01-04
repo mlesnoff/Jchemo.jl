@@ -161,11 +161,12 @@ struct Fda
     eig::Vector
     sstot::AbstractFloat
     W::Matrix
+    ni::Vector{Int}
+    priors::Vector
+    lev::Vector
     xmeans::Vector
     xscales::Vector
     weights::Weight
-    ni::Vector{Int}
-    lev::Vector
     par::ParFda
 end
 
@@ -586,8 +587,8 @@ struct Lda
     fitm::Vector{Dmnorm}
     W::Matrix  
     ct::Matrix
-    priors::Vector
     ni::Vector{Int}
+    priors::Vector
     lev::Vector
     weights::Weight
     par::ParLda
@@ -597,8 +598,8 @@ struct Qda
     fitm::Vector{Dmnorm}
     Wi::AbstractVector  
     ct::Matrix
-    priors::Vector
     ni::Vector{Int}
+    priors::Vector
     lev::Vector
     weights::Weight
     par::ParQda
@@ -608,8 +609,8 @@ struct Rda
     fitm::Vector{Dmnorm}
     Wi::AbstractVector  
     ct::Matrix
-    priors::Vector
     ni::Vector{Int}
+    priors::Vector
     lev::Vector
     xscales::Vector
     weights::Weight
@@ -626,24 +627,24 @@ end
 
 struct Mlrda
     fitm::Mlr 
-    priors::Vector
     ni::Vector{Int}
+    priors::Vector
     lev::Vector
     par::ParMlrda
 end
 
 struct Rrda
     fitm::Union{Rr, Krr}  
-    priors::Vector
     ni::Vector{Int}
+    priors::Vector
     lev::Vector
     par::Union{ParRrda, ParKrrda}
 end
 
 struct Plsrda
     fitm::Union{Plsr, Splsr, Kplsr, Dkplsr} 
-    priors::Vector
     ni::Vector{Int}
+    priors::Vector
     lev::Vector
     par::Union{ParPlsda, ParSplsda, ParKplsda}
 end
@@ -651,8 +652,8 @@ end
 struct Plsprobda    # plslda, plsqda, plskdeda  
     fitm_emb::Union{Plsr, Splsr, Kplsr, Dkplsr}
     fitm_da::Vector{Union{Lda, Qda, Kdeda}}  
-    priors::Vector
     ni::Vector{Int}
+    priors::Vector
     lev::Vector
     par::Union{ParPlsda, ParPlsqda, ParPlskdeda, ParSplsda, ParSplsqda, ParSplskdeda,
         ParKplsda, ParKplsqda, ParKplskdeda}
@@ -732,8 +733,8 @@ end
 
 struct Mbplsrda
     fitm::Mbplsr 
-    priors::Vector
     ni::Vector{Int}
+    priors::Vector
     lev::Vector
     par::ParMbplsda
 end
@@ -741,8 +742,8 @@ end
 struct Mbplsprobda    # mbplslda, mbplsqda, mbplskdeda  
     fitm_emb::Mbplsr
     fitm_da::Vector{Union{Lda, Qda, Kdeda}}   
-    priors::Vector
     ni::Vector{Int}
+    priors::Vector
     lev::Vector
     par::Union{ParMbplsda, ParMbplsqda, ParMbplskdeda}
 end

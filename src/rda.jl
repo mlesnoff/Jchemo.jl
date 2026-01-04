@@ -71,6 +71,7 @@ fit!(model, Xtrain, ytrain)
 @names fitm = model.fitm
 fitm.lev
 fitm.ni
+fitm.priors
 
 res = predict(model, Xtest) ;
 @names res
@@ -107,11 +108,7 @@ function rda(X, y, weights::Weight; kwargs...)
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
-    if isequal(par.prior, :unif)
-        priors = ones(Q, nlev) / nlev
-    elseif isequal(par.prior, :prop)
-        priors = convert.(Q, mweight(ni).w)
-    end
+    priors = aggsumv(weights.w, y).val 
     fitm = list(nlev)
     ct = similar(X, nlev, p)
     Id = I(p)
@@ -125,7 +122,7 @@ function rda(X, y, weights::Weight; kwargs...)
         @. res.Wi[i] = res.Wi[i] + A
         fitm[i] = dmnorm(ct[i, :], res.Wi[i]; simpl = par.simpl) 
     end
-    Rda(fitm, res.Wi, ct, priors, ni, lev, xscales, weights, par)
+    Rda(fitm, res.Wi, ct, ni, priors, lev, xscales, weights, par)
 end
 
 """

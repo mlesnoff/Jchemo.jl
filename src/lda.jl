@@ -53,7 +53,6 @@ typeof(fitm.fitm)
 
 fitm.lev
 fitm.ni
-
 fitm.priors
 aggsumv(fitm.weights.w, ytrain)
 
@@ -82,10 +81,10 @@ function lda(X, y, weights::Weight; kwargs...)
     n, p = size(X)
     res = matW(X, y, weights)
     ni = res.ni
+    priors = aggsumv(weights.w, y).val
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate
-    priors = aggsumv(weights.w, y).val
     ## End
     ct = similar(X, nlev, p)
     fitm = list(nlev)
@@ -94,7 +93,7 @@ function lda(X, y, weights::Weight; kwargs...)
         ct[i, :] = colmean(vrow(X, s), mweight(weights.w[s]))
         fitm[i] = dmnorm(ct[i, :], res.W)
     end
-    Lda(fitm, res.W, ct, priors, ni, lev, weights, par)
+    Lda(fitm, res.W, ct, ni, priors, lev, weights, par)
 end
 
 """

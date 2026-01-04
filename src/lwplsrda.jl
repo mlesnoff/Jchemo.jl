@@ -59,6 +59,7 @@ fit!(model, Xtrain, ytrain)
 @names fitm = model.fitm
 fitm.lev
 fitm.ni
+fitm.priors
 
 res = predict(model, Xtest) ; 
 @names res 

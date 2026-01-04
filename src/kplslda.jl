@@ -54,6 +54,7 @@ typeof(fitm)
 
 fitm.lev
 fitm.ni
+fitm.priors
 
 fitm_emb = fitm.fitm_emb ;
 typeof(fitm_emb)
@@ -97,7 +98,7 @@ function kplslda(X, y, weights::Weight; kwargs...)
     @inbounds for a = 1:par.nlv
         fitm_da[a] = lda(vcol(fitm_emb.T, 1:a), y, weights; kwargs...)
     end
-    Plsprobda(fitm_emb, fitm_da, priors, ni, res.lev, par) 
+    Plsprobda(fitm_emb, fitm_da, ni, priors, res.lev, par) 
 end
 
 

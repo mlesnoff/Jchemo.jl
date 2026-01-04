@@ -65,6 +65,7 @@ typeof(fitm.fitm)
 
 fitm.lev
 fitm.ni
+fitm.priors
 
 res = predict(model, Xtest) ;
 @names res
@@ -91,7 +92,7 @@ function mlrda(X, y, weights::Weight; kwargs...)
     ni = tab(y).vals
     priors = aggsumv(weights.w, y).val  # output not used, only for information
     fitm = mlr(X, res.Y, weights)
-    Mlrda(fitm, priors, ni, res.lev, par)
+    Mlrda(fitm, ni, priors, res.lev, par)
 end
 
 """

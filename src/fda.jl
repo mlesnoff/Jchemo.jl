@@ -26,9 +26,14 @@ often referred to as "LD".
 If `X` is ill-conditionned, a ridge regularization can be used:
 * If `lb` > 0, W is replaced by W + `lb` * I, where I is the Idendity matrix.
 
-In the high-level version of the present functions, the observation weights are automatically defined by the 
-given priors (argument `prior`): the sub-totals by class of the observation weights are set equal to the prior 
-probabilities. The low-level version (argument `weights`) allows to implement other choices.
+The low-level function method (i.e. having argument `weights`) requires to set as input a vector of observation 
+weights. In that case, argument `prior` has no effect: the class prior probabilities (output `priors`) are always 
+computed by summing the observation weights by class.
+
+In the high-level methods (no argument `weights`), argument `prior` defines how are preliminary computed the 
+observation weights (see function `mweightcla`) that are then given as input in the hidden low level method.
+
+**Note:** For highly unbalanced classes, it may be recommended to define equal class weights ('prior = :unif').
 
 ## Examples
 ```julia
@@ -57,6 +62,7 @@ fit!(model, Xtrain, ytrain)
 @names model
 @names model.fitm
 fitm = model.fitm ;
+
 lev = fitm.lev
 nlev = length(lev)
 fitm.priors
@@ -110,9 +116,10 @@ function fda!(X::Matrix, y, weights; kwargs...)
         fcenter!(X, xmeans)
     end
     res = matW(X, y, weights)
+    ni = res.ni
+    priors = aggsumv(weights.w, y).val  # output not used, only for information    
     lev = res.lev
     nlev = length(lev)
-    ni = res.ni
     res.W .*= n / (n - nlev)    # unbiased estimate
     if lb > 0
         res.W .+= lb .* I(p)    # @. does not work with I
@@ -129,7 +136,7 @@ function fda!(X::Matrix, y, weights; kwargs...)
     fscale!(V, norm_P)
     T = X * V
     Tcenters = zres.ct * V
-    Fda(T, V, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, ni, lev, par)
+    Fda(T, V, Tcenters, eig, sstot, res.W, ni, priors, lev, xmeans, xscales, weights, par)
 end
 
 """

@@ -61,7 +61,6 @@ typeof(fitm.fitm)
 
 fitm.lev
 fitm.ni
-
 fitm.priors
 aggsumv(fitm.weights.w, ytrain)
 
@@ -102,10 +101,10 @@ function qda(X, y, weights::Weight; kwargs...)
     alpha = convert(Q, par.alpha)
     res = matW(X, y, weights)
     ni = res.ni
+    priors = aggsumv(weights.w, y).val
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate
-    priors = aggsumv(weights.w, y).val
     ## End
     ct = similar(X, nlev, p)
     fitm = list(nlev)
@@ -117,6 +116,6 @@ function qda(X, y, weights::Weight; kwargs...)
         end
         fitm[i] = dmnorm(ct[i, :], res.Wi[i]) 
     end
-    Qda(fitm, res.Wi, ct, priors, ni, lev, weights, par)
+    Qda(fitm, res.Wi, ct, ni, priors, lev, weights, par)
 end
 

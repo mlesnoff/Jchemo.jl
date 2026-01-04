@@ -47,6 +47,7 @@ typeof(fitm)
 typeof(fitm.fitm) 
 fitm.lev
 fitm.ni
+fitm.priors
 
 res = predict(model, Xtest) ;
 @names res
@@ -84,7 +85,7 @@ function kdeda(X, y; kwargs...)
         s = y .== lev[i]
         fitm[i] = dmkern(vrow(X, s); h = par.h, a = par.a)
     end
-    Kdeda(fitm, priors, ni, lev, par)
+    Kdeda(fitm, ni, priors, lev, par)
 end
 
 function predict(object::Kdeda, X)

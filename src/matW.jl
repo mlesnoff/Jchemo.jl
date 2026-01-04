@@ -55,7 +55,7 @@ matB = function(X, y, weights::Weight)
         ct[i, :] = colmean(vrow(X, s), mweight(weights.w[s]))
     end
     B = covm(ct, mweight(priors))
-    (B = B, ct, priors, ni, lev, weights)
+    (B = B, ct, ni, priors, lev, weights)
 end
 
 """
@@ -102,7 +102,7 @@ matW = function(X, y, weights::Weight)
         @. W = W + priors[i] * Wi[i]
         ## Alternative: give weight = 0 to the class(es) with 1 obs
     end
-    (W = W, Wi, priors, ni, lev, weights)
+    (W = W, Wi, ni, priors, lev, weights)
 end
 
 

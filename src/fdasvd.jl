@@ -46,9 +46,10 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
         fcenter!(X, xmeans)
     end
     res = matW(X, y, weights)
+    ni = res.ni
     lev = res.lev
     nlev = length(lev)
-    ni = res.ni
+    priors = aggsumv(weights.w, y).val  # output not used, only for information 
     res.W .*= n / (n - nlev)
     if lb > 0
         res.W .+= lb .* I(p) # @. does not work with I
@@ -73,7 +74,7 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     V = Ut * Pz[:, 1:nlv]
     T = X * V
     Tcenters = ct * V
-    Fda(T, V, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, ni, lev, par)
+    Fda(T, V, Tcenters, eig, sstot, res.W, ni, priors, lev, xmeans, xscales, weights, par)
 end
 
 
