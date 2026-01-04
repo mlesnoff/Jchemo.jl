@@ -23,6 +23,7 @@ Keyword arguments:
     is a preliminary PLS reduction dimension) is scaled by its uncorrected standard deviation before to compute 
     the distances and the weights, and (b) the X and Y scaling is also done within each neighborhood (local level) 
     for the weighted PLSR.
+* `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
 This is the same principle as function `lwplsr` except that a PLS-LDA model, instead of a PLSR model, is fitted 
@@ -129,9 +130,9 @@ function predict(object::Lwplslda, X; nlv = nothing)
     end
     ## End
     ## In each neighborhood, the observation weights in plslda are given by listw, not by priors
-    pred = locwlv(object.X, object.y, X; listnn = res.ind, listw, algo = plslda, nlv, prior = object.par.prior, 
-        scal = object.par.scal, verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, listw)
+    reslocw = locwlv(object.X, object.y, X; listnn = res.ind, listw, algo = plsrda, nlv, scal = object.par.scal, 
+        store = object.par.store, verbose = object.par.verbose, prior = object.par.prior)
+    (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw)
 end
 
 

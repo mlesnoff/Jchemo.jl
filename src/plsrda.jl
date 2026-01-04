@@ -13,24 +13,26 @@ Keyword arguments:
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * `scal` : Boolean. If `true`, each column of `X` and Ydummy is scaled by its uncorrected standard deviation.
 
-This is the usual "PLSDA". The approach is as follows:
+This is the usual and simplest "PLSDA". The approach is as follows:
 
 1) The training variable `y` (univariate class membership) is transformed to a dummy table (Ydummy) 
     containing nlev columns, where nlev is the number of classes present in `y`. Each column of 
     Ydummy is a dummy (0/1) variable. 
-2) Then, a multivariate PLSR (PLSR2) is run on {`X`, Ydummy}, returning predictions of the dummy variables 
+2) Then, a multivariate PLSR (PLSR2) is run on the data {`X`, Ydummy}, returning predictions of the dummy variables 
     (= object `posterior` returned by fuction `predict`).  These predictions can be considered as unbounded 
     estimates (i.e. eventually outside of [0, 1]) of the class membership probabilities.
 3) For a given observation, the final prediction is the class corresponding to the dummy variable for which 
     the probability estimate is the highest.
 
-The low-level method (i.e. having argument `weights`) of the function allows to set any vector of observation weights 
-to be used in the intermediate computations. In the high-level methods (no argument `weights`), they are automatically 
-computed from the argument `prior` value: for each class, the total of the observation weights is set equal to 
-the prior probability corresponding to the class.
+The low-level function method (i.e. having argument `weights`) allows to set any vector of observation weights 
+to be used in the intermediate computations. 
 
-**Note:** For highly unbalanced classes, it may be recommended to set 'prior = :unif' when using the function
-(and to use a score such as `merrp` instead of `errp` when evaluating the perfomance).
+In the high-level methods (no argument `weights`), the observation weights are automatically computed from the 
+argument `prior` value: for each class, the total observation weight is set equal to the prior probability 
+corresponding to the class.
+
+**Note:** For highly unbalanced classes, it may be recommended to set 'prior = :unif' (and to use a score such as 
+`merrp` instead of `errp` when evaluating the model perfomance).
 
 ## Examples
 ```julia

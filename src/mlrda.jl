@@ -16,13 +16,13 @@ The approach is as follows:
 1) The training variable `y` (univariate class membership) is transformed to a dummy table (Ydummy) 
     containing nlev columns, where nlev is the number of classes present in `y`. Each column of 
     Ydummy is a dummy (0/1) variable. 
-2) Then, a multiple linear regression (MLR) is run on {`X`, Ydummy}, returning predictions of the dummy variables 
+2) Then, a multiple linear regression (MLR) is run on the data {`X`, Ydummy}, returning predictions of the dummy variables 
     (= object `posterior` returned by fuction `predict`).  These predictions can be considered as unbounded 
     estimates (i.e. eventually outside of [0, 1]) of the class membership probabilities.
 3) For a given observation, the final prediction is the class corresponding to the dummy variable for which 
     the probability estimate is the highest.
 
-The low-level method (i.e. having argument `weights`) of the function allows to set any vector of observation weights 
+The low-level function method (i.e. having argument `weights`) allows to set any vector of observation weights 
 to be used in the intermediate computations. In the high-level methods (no argument `weights`), they are automatically 
 computed from the argument `prior` value: for each class, the total of the observation weights is set equal to 
 the prior probability corresponding to the class.

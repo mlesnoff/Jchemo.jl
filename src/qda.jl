@@ -12,15 +12,14 @@ Keyword arguments:
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 
-The low-level method (i.e. having argument `weights`) of the function allows to set any vector of observation weights 
-to be used in the intermediate computations. In the high-level methods (no argument `weights`), they are automatically 
-computed from the argument `prior` value: for each class, the total of the observation weights is set equal to 
-the prior probability corresponding to the class.
+The low-level function method (i.e. having argument `weights`) requires to set as input a vector of observation 
+weights. In that case, argument `prior` has no effect: the class prior probabilities (output `priors`) are always 
+computed by summing the observation weights by class.
 
-**Note:** For highly unbalanced classes, it may be recommended to set 'prior = :unif' when using the function
-(and to use a score such as `merrp` instead of `errp` when evaluating the perfomance).
+In the high-level methods (no argument `weights`), argument `prior` defines how are preliminary computed the 
+observation weights (see function `mweightcla`) that are then given as input in the hidden low level method.
 
-For the continuum approach, a value `alpha` > 0 shrinks the class-covariances (Wi) toward a common LDA 
+For the continuum approach, a value `alpha` > 0 shrinks the QDA class covariances (Wi) toward a common LDA 
 covariance ('within-W'). This corresponds to the 'first regularization (Eqs.16)' approach described in 
 Friedman 1989 (in which the present parameter `alpha` is referred to as 'lambda').
 
@@ -103,13 +102,7 @@ function qda(X, y, weights::Weight; kwargs...)
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate
-    if isequal(par.prior, :prop)
-        priors = convert.(Q, mweight(ni).w)
-    elseif isequal(par.prior, :unif)
-        priors = ones(Q, nlev) / nlev
-    else
-        priors = mweight(par.prior).w
-    end
+    priors = aggsumv(weights.w, y).val
     ## End
     fitm = list(nlev)
     ct = similar(X, nlev, p)
