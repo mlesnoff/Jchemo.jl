@@ -83,7 +83,8 @@ function kplsrda(X, y, weights::Weight; kwargs...)
     par = recovkw(ParKplsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
+    priors = aggsumv(weights.w, y).val  # output not used, only for information
     fitm = kplsr(X, res.Y, weights; kwargs...)
-    Plsrda(fitm, ni, res.lev, par)
+    Plsrda(fitm, priors, ni, res.lev, par)
 end
 

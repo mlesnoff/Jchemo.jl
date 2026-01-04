@@ -27,13 +27,15 @@ The approach is as follows:
 4) For a given observation, the final prediction is the class corresponding to the dummy variable for which 
     the probability estimate is the highest.
 
-The low-level function method (i.e. having argument `weights`) allows to set any vector of observation weights 
-to be used in the intermediate computations. In the high-level methods (no argument `weights`), they are automatically 
-computed from the argument `prior` value: for each class, the total of the observation weights is set equal to 
-the prior probability corresponding to the class.
+The low-level function method (i.e. having argument `weights`) requires to set as input a vector of observation 
+weights. In that case, argument `prior` has no effect: the class prior probabilities (output `priors`) are always 
+computed by summing the observation weights by class.
 
-**Note:** For highly unbalanced classes, it may be recommended to set 'prior = :unif' when using the function
-(and to use a score such as `merrp` instead of `errp` when evaluating the perfomance).
+In the high-level methods (no argument `weights`), argument `prior` defines how are preliminary computed the 
+observation weights (see function `mweightcla`) that are then given as input in the hidden low level method.
+
+**Note:** For highly unbalanced classes, it may be recommended to define equal class weights ('prior = :unif'),
+and to use a performance score such as `merrp`, instead of `errp`.
 
 ## Examples
 ```julia
@@ -118,12 +120,13 @@ function mbplslda(Xbl, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
+    priors = aggsumv(weights.w, y).val  # output not used, only for information
     fitm_emb = mbplsr(Xbl, res.Y, weights; kwargs...)
     fitm_da = list(Lda, par.nlv)
     @inbounds for i = 1:par.nlv
         fitm_da[i] = lda(vcol(fitm_emb.fitm.T, 1:i), y, weights; kwargs...)
     end
-    Mbplsprobda(fitm_emb, fitm_da, ni, res.lev, par) 
+    Mbplsprobda(fitm_emb, fitm_da, priors, ni, res.lev, par) 
 end
 
 """ 

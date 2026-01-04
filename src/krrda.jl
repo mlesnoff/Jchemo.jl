@@ -78,8 +78,9 @@ function krrda(X, y, weights::Weight; kwargs...)
     par = recovkw(ParKrrda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
+    priors = aggsumv(weights.w, y).val  # output not used, only for information
     fitm = krr(X, res.Y, weights; kwargs...)
-    Rrda(fitm, ni, res.lev, par)
+    Rrda(fitm, priors, ni, res.lev, par)
 end
 
 

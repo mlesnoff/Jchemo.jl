@@ -68,6 +68,7 @@ typeof(fitm.fitm)
 
 fitm.lev
 fitm.ni
+fitm.priors
 aggsumv(fitm.fitm.weights.w, ytrain)
 
 @head transf(model, Xtrain)
@@ -101,11 +102,11 @@ end
 
 function plsrda(X, y, weights::Weight; kwargs...)
     par = recovkw(ParPlsda, kwargs).par
-    Q = eltype(X[1, 1])
     res = dummy(y)
     ni = tab(y).vals
+    priors = aggsumv(weights.w, y).val  # output not used, only for information
     fitm = plskern(X, res.Y, weights; kwargs...)
-    Plsrda(fitm, ni, res.lev, par)
+    Plsrda(fitm, priors, ni, res.lev, par)
 end
 
 """ 

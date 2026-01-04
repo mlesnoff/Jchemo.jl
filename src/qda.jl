@@ -19,6 +19,9 @@ computed by summing the observation weights by class.
 In the high-level methods (no argument `weights`), argument `prior` defines how are preliminary computed the 
 observation weights (see function `mweightcla`) that are then given as input in the hidden low level method.
 
+**Note:** For highly unbalanced classes, it may be recommended to define equal class weights ('prior = :unif'),
+and to use a performance score such as `merrp`, instead of `errp`.
+
 For the continuum approach, a value `alpha` > 0 shrinks the QDA class covariances (Wi) toward a common LDA 
 covariance ('within-W'). This corresponds to the 'first regularization (Eqs.16)' approach described in 
 Friedman 1989 (in which the present parameter `alpha` is referred to as 'lambda').
@@ -104,8 +107,8 @@ function qda(X, y, weights::Weight; kwargs...)
     res.W .*= n / (n - nlev)    # unbiased estimate
     priors = aggsumv(weights.w, y).val
     ## End
-    fitm = list(nlev)
     ct = similar(X, nlev, p)
+    fitm = list(nlev)
     @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(vrow(X, s), mweight(weights.w[s]))

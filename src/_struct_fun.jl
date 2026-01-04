@@ -626,6 +626,7 @@ end
 
 struct Mlrda
     fitm::Mlr 
+    priors::Vector
     ni::Vector{Int}
     lev::Vector
     par::ParMlrda
@@ -633,13 +634,15 @@ end
 
 struct Rrda
     fitm::Union{Rr, Krr}  
+    priors::Vector
     ni::Vector{Int}
     lev::Vector
     par::Union{ParRrda, ParKrrda}
 end
 
 struct Plsrda
-    fitm::Union{Plsr, Splsr, Kplsr, Dkplsr}  
+    fitm::Union{Plsr, Splsr, Kplsr, Dkplsr} 
+    priors::Vector
     ni::Vector{Int}
     lev::Vector
     par::Union{ParPlsda, ParSplsda, ParKplsda}
@@ -648,6 +651,7 @@ end
 struct Plsprobda    # plslda, plsqda, plskdeda  
     fitm_emb::Union{Plsr, Splsr, Kplsr, Dkplsr}
     fitm_da::Vector{Union{Lda, Qda, Kdeda}}  
+    priors::Vector
     ni::Vector{Int}
     lev::Vector
     par::Union{ParPlsda, ParPlsqda, ParPlskdeda, ParSplsda, ParSplsqda, ParSplskdeda,
@@ -727,7 +731,8 @@ end
 ## Multiblock
 
 struct Mbplsrda
-    fitm::Mbplsr  
+    fitm::Mbplsr 
+    priors::Vector
     ni::Vector{Int}
     lev::Vector
     par::ParMbplsda
@@ -736,6 +741,7 @@ end
 struct Mbplsprobda    # mbplslda, mbplsqda, mbplskdeda  
     fitm_emb::Mbplsr
     fitm_da::Vector{Union{Lda, Qda, Kdeda}}   
+    priors::Vector
     ni::Vector{Int}
     lev::Vector
     par::Union{ParMbplsda, ParMbplsqda, ParMbplskdeda}
