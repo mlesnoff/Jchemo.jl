@@ -515,6 +515,7 @@ Base.@kwdef mutable struct ParLwplsda    # lwplsrda, lwplslda
     nlv::Int = 1 
     prior::Union{Symbol, Vector{Float64}} = :prop       
     scal::Bool = false 
+    store::Bool = false 
     verbose::Bool = false                   
 end 
 
@@ -530,6 +531,7 @@ Base.@kwdef mutable struct ParLwplsqda
     prior::Union{Symbol, Vector{Float64}} = :prop
     alpha::Float64 = 0.        
     scal::Bool = false 
+    store::Bool = false 
     verbose::Bool = false                   
 end 
 

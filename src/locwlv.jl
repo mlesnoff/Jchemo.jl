@@ -9,7 +9,7 @@ Keyword arguments:
 * `listw` : List (vector) of m vectors of weights.
 * `algo` : Function computing the model on the m neighborhoods.
 * `nlv` : Nb. or collection of nb. of latent variables (LVs).
-* `store` : Boolean. If `true`, the local models fitted on each neighborhood are stored and returned.
+* `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 * `kwargs` : Keywords arguments to pass in function `algo`. Each argument must have length = 1 
     (not be a collection).

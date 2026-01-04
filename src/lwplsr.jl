@@ -20,7 +20,7 @@ Keyword arguments:
     is a preliminary PLS reduction dimension) is scaled by its uncorrected standard deviation before to compute 
     the distances and the weights, and (b) the X and Y scaling is also done within each neighborhood (local level) 
     for the weighted PLSR.
-* `store` : Boolean. If `true`, the local models fitted on each neighborhood are stored and returned.
+* `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
 Function `lwplsr` fits kNN-LWPLSR models such as in Lesnoff et al. 2020. The general principle of 
@@ -94,7 +94,7 @@ res.listw
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
     ylabel = "Observed").f    
 
-## Storage of the local models fitted on each neighborhoods
+## Storage of the local models fitted on the neighborhoods
 model = lwplsr(; nlvdis, metric, h, k, nlv, store = true) 
 fit!(model, Xtrain, ytrain)
 res = predict(model, Xtest) ; 
@@ -162,8 +162,8 @@ function predict(object::Lwplsr, X; nlv = nothing)
         listw[i] = w
     end
     ## End
-    reslocw = locwlv(object.X, object.Y, X; listnn = res.ind, listw, algo = plskern, nlv, 
-        scal = object.par.scal, store = object.par.store, verbose = object.par.verbose)
+    reslocw = locwlv(object.X, object.Y, X; listnn = res.ind, listw, algo = plskern, nlv, scal = object.par.scal, 
+        store = object.par.store, verbose = object.par.verbose)
     (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw)
 end
 

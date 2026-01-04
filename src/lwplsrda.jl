@@ -23,6 +23,7 @@ Keyword arguments:
     is a preliminary PLS reduction dimension) is scaled by its uncorrected standard deviation before to compute 
     the distances and the weights, and (b) the X and Y scaling is also done within each neighborhood (local level) 
     for the weighted PLSR.
+* `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
 This is the same principle as function `lwplsr` except that PLSR-DA models, instead of PLSR models, are fitted 
@@ -67,6 +68,17 @@ res.listw
 @head res.pred
 @show errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
+
+## Storage of the local models fitted on the neighborhoods
+model = lwplsrda(; nlvdis, metric, h, k, nlv, prior = :unif, store = true) 
+fit!(model, Xtrain, ytrain)
+res = predict(model, Xtest) ; 
+@show errp(res.pred, ytest)
+@names res
+length(res.fitm)
+typeof(res.fitm[1]) 
+@names res.fitm[1]
+@names res.fitm[1].fitm
 ```
 """ 
 lwplsrda(; kwargs...) = JchemoModel(lwplsrda, nothing, kwargs)
@@ -129,8 +141,8 @@ function predict(object::Lwplsrda, X; nlv = nothing)
     end
     ## End
     ## In each neighborhood, the observation weights in plsrda are given by listw, not by priors
-    pred = locwlv(object.X, object.y, X; listnn = res.ind, listw, algo = plsrda, nlv, scal = object.par.scal, 
-        verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, listw)
+    reslocw = locwlv(object.X, object.y, X; listnn = res.ind, listw, algo = plsrda, nlv, scal = object.par.scal, 
+        store = object.par.store, verbose = object.par.verbose)
+    (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw)
 end
 
