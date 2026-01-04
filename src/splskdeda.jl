@@ -43,7 +43,7 @@ function splskdeda(X, y, weights::Weight; kwargs...)
     @inbounds for i = 1:par.nlv
         fitm_da[i] = kdeda(vcol(fitm_emb.T, 1:i), y; kwargs...)
     end
-    Plsprobda(fitm_emb, fitm_da, res.lev, ni, par) 
+    Plsprobda(fitm_emb, fitm_da, ni, res.lev, par) 
 end
 
 

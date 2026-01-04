@@ -91,7 +91,7 @@ function splsrda(X, y, weights::Weight; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     fitm = splsr(X, res.Y, weights; kwargs...)
-    Plsrda(fitm, res.lev, ni, par)
+    Plsrda(fitm, ni, res.lev, par)
 end
 
 

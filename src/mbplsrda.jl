@@ -109,7 +109,7 @@ function mbplsrda(Xbl, y, weights::Weight; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     fitm = mbplsr(Xbl, res.Y, weights; kwargs...)
-    Mbplsrda(fitm, res.lev, ni, par) 
+    Mbplsrda(fitm, ni, res.lev, par) 
 end
 
 """ 

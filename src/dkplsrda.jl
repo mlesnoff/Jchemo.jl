@@ -86,6 +86,6 @@ function dkplsrda(X, y, weights::Weight; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     fitm = dkplsr(X, res.Y, weights; kwargs...)
-    Plsrda(fitm, res.lev, ni, par)
+    Plsrda(fitm, ni, res.lev, par)
 end
 

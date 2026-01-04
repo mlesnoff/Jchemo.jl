@@ -73,7 +73,7 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     V = Ut * Pz[:, 1:nlv]
     T = X * V
     Tcenters = ct * V
-    Fda(T, V, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, lev, ni, par)
+    Fda(T, V, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, ni, lev, par)
 end
 
 

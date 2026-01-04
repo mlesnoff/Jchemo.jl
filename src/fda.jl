@@ -129,7 +129,7 @@ function fda!(X::Matrix, y, weights; kwargs...)
     fscale!(V, norm_P)
     T = X * V
     Tcenters = zres.ct * V
-    Fda(T, V, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, lev, ni, par)
+    Fda(T, V, Tcenters, eig, sstot, res.W, xmeans, xscales, weights, ni, lev, par)
 end
 
 """

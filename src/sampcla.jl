@@ -63,7 +63,7 @@ function sampcla(x, k::Union{Int, Vector{Int}}, y = nothing; seed::Union{Nothing
     s = reduce(vcat, s)
     zn = collect(1:n)
     train = zn[setdiff(1:end, s)]
-    (train = train, test = s, lev, ni, k)
+    (train = train, test = s, ni, lev, k)
 end
 
 

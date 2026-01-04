@@ -84,7 +84,7 @@ function kdeda(X, y; kwargs...)
         s = y .== lev[i]
         fitm[i] = dmkern(vrow(X, s); h = par.h, a = par.a)
     end
-    Kdeda(fitm, priors, lev, ni, par)
+    Kdeda(fitm, priors, ni, lev, par)
 end
 
 function predict(object::Kdeda, X)

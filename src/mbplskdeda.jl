@@ -40,6 +40,6 @@ function mbplskdeda(Xbl, y, weights::Weight; kwargs...)
     @inbounds for i = 1:par.nlv
         fitm_da[i] = kdeda(vcol(fitm_emb.fitm.T, 1:i), y; kwargs...)
     end
-    Mbplsprobda(fitm_emb, fitm_da, res.lev, ni, par)
+    Mbplsprobda(fitm_emb, fitm_da, ni, res.lev, par)
 end
 

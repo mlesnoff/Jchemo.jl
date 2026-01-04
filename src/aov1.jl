@@ -44,5 +44,5 @@ function aov1(x, Y)
     F = MSF ./ MSR
     d = Distributions.FDist(df_fact, df_res)
     pval = Distributions.ccdf(d, F)
-    (SSF = SSF, SSR, df_fact, df_res, F, pval, lev, ni)
+    (SSF = SSF, SSR, df_fact, df_res, F, pval, ni, lev)
 end

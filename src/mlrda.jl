@@ -88,7 +88,7 @@ function mlrda(X, y, weights::Weight; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     fitm = mlr(X, res.Y, weights)
-    Mlrda(fitm, res.lev, ni, par)
+    Mlrda(fitm, ni, res.lev, par)
 end
 
 """

@@ -79,7 +79,7 @@ function krrda(X, y, weights::Weight; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     fitm = krr(X, res.Y, weights; kwargs...)
-    Rrda(fitm, res.lev, ni, par)
+    Rrda(fitm, ni, res.lev, par)
 end
 
 

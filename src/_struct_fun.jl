@@ -164,8 +164,8 @@ struct Fda
     xmeans::Vector
     xscales::Vector
     weights::Weight
-    lev::Vector
     ni::Vector{Int}
+    lev::Vector
     par::ParFda
 end
 
@@ -619,37 +619,37 @@ end
 struct Kdeda
     fitm::Vector{Dmkern}
     priors::AbstractVector
-    lev::Vector
     ni::Vector{Int}
+    lev::Vector
     par::ParKdeda
 end
 
 struct Mlrda
     fitm::Mlr 
-    lev::Vector
     ni::Vector{Int}
+    lev::Vector
     par::ParMlrda
 end
 
 struct Rrda
     fitm::Union{Rr, Krr}  
-    lev::Vector
     ni::Vector{Int}
+    lev::Vector
     par::Union{ParRrda, ParKrrda}
 end
 
 struct Plsrda
     fitm::Union{Plsr, Splsr, Kplsr, Dkplsr}  
-    lev::Vector
     ni::Vector{Int}
+    lev::Vector
     par::Union{ParPlsda, ParSplsda, ParKplsda}
 end
 
 struct Plsprobda    # plslda, plsqda, plskdeda  
     fitm_emb::Union{Plsr, Splsr, Kplsr, Dkplsr}
     fitm_da::Vector{Union{Lda, Qda, Kdeda}}  
-    lev::Vector
     ni::Vector{Int}
+    lev::Vector
     par::Union{ParPlsda, ParPlsqda, ParPlskdeda, ParSplsda, ParSplsqda, ParSplskdeda,
         ParKplsda, ParKplsqda, ParKplskdeda}
 end
@@ -661,8 +661,8 @@ struct Knnda
     X::Matrix
     y::AbstractMatrix
     xscales::Vector
-    lev::Vector
     ni::Vector{Int}
+    lev::Vector
     par::ParKnn
 end
 
@@ -670,8 +670,8 @@ struct Lwmlrda
     X::Matrix
     y::AbstractMatrix
     xscales::Vector
-    lev::Vector
     ni::Vector{Int}
+    lev::Vector
     par::ParKnn
 end
 
@@ -680,8 +680,8 @@ struct Lwplsrda
     X::Matrix
     y::AbstractMatrix
     xscales::Vector
-    lev::Vector
     ni::Vector{Int}
+    lev::Vector
     par::ParLwplsda
 end
 
@@ -690,8 +690,8 @@ struct Lwplslda
     X::Matrix
     y::AbstractMatrix
     xscales::Vector
-    lev::Vector
     ni::Vector{Int}
+    lev::Vector
     par::ParLwplsda
 end
 
@@ -700,8 +700,8 @@ struct Lwplsqda
     X::Matrix
     y::AbstractMatrix
     xscales::Vector
-    lev::Vector
     ni::Vector{Int}
+    lev::Vector
     par::ParLwplsqda
 end
 
@@ -710,8 +710,8 @@ end
 struct Svmda
     fitm
     xscales::Vector
-    lev::Vector
     ni::Vector{Int}
+    lev::Vector
     par::ParSvm
 end
 
@@ -719,8 +719,8 @@ struct Treeda
     fitm
     xscales::Vector
     featur::Vector{Int}
-    lev::Vector
     ni::Vector{Int}
+    lev::Vector
     par::Union{ParTree, ParRf}
 end
 
@@ -728,16 +728,16 @@ end
 
 struct Mbplsrda
     fitm::Mbplsr  
-    lev::Vector
     ni::Vector{Int}
+    lev::Vector
     par::ParMbplsda
 end
 
 struct Mbplsprobda    # mbplslda, mbplsqda, mbplskdeda  
     fitm_emb::Mbplsr
     fitm_da::Vector{Union{Lda, Qda, Kdeda}}   
-    lev::Vector
     ni::Vector{Int}
+    lev::Vector
     par::Union{ParMbplsda, ParMbplsqda, ParMbplskdeda}
 end
 
