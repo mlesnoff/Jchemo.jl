@@ -33,6 +33,7 @@ régression (These de doctorat). Paris 11. http://www.theses.fr/2002PA112245
 ## Examples
 ```julia
 using Jchemo, JchemoData, JLD2
+using CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -87,8 +88,9 @@ function rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)
-    p = nco(X)
+    n, p = size(X)
     taby = tab(y)
+    priors = taby.vals / n  # output not used, only for information  
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
@@ -108,5 +110,5 @@ function rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
         #rng = 3
         ) 
     featur = collect(1:p)
-    Treeda(fitm, xscales, featur, taby.keys, taby.vals, par)
+    Treeda(fitm, xscales, featur, taby.vals, priors, taby.keys, par)
 end

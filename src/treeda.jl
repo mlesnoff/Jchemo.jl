@@ -56,6 +56,7 @@ typeof(fitm.fitm)
 
 fitm.lev
 fitm.ni
+fitm.priors
 
 res = predict(model, Xtest) ; 
 @names res 
@@ -72,8 +73,9 @@ function treeda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)
-    p = nco(X)
+    n, p = size(X)
     taby = tab(y)
+    priors = taby.vals / n  # output not used, only for information  
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X)
@@ -91,7 +93,7 @@ function treeda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
         #rng = 3
         )
     featur = collect(1:p)
-    Treeda(fitm, xscales, featur, taby.keys, taby.vals, par)
+    Treeda(fitm, xscales, featur, taby.vals, priors, taby.keys, par)
 end
 
 """

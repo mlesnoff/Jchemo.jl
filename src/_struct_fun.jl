@@ -716,6 +716,7 @@ struct Svmda
     fitm
     xscales::Vector
     ni::Vector{Int}
+    priors::Vector
     lev::Vector
     par::ParSvm
 end
@@ -725,6 +726,7 @@ struct Treeda
     xscales::Vector
     featur::Vector{Int}
     ni::Vector{Int}
+    priors::Vector
     lev::Vector
     par::Union{ParTree, ParRf}
 end
