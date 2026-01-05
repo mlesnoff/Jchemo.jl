@@ -1,16 +1,15 @@
 """
     kdeda(; kwargs...)
     kdeda(X, y; kwargs...)
-Discriminant analysis using non-parametric kernel Gaussian 
-    density estimation (KDE-DA).
+    kdeda(X, y, weights::Weight; kwargs...)
+Discriminant analysis using non-parametric kernel Gaussian density estimation (KDE-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
 Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* Keyword arguments of function `dmkern` (bandwidth 
-    definition) can also be specified here.
+* Keyword arguments of function `dmkern` (bandwidth definition) can also be specified here.
 
 Same as function `qda` except that class densities are estimated from function `dmkern` instead of function `dmnorm`. 
 
@@ -45,6 +44,7 @@ fitm = model.fitm ;
 typeof(fitm)
 @names fitm
 typeof(fitm.fitm) 
+
 fitm.lev
 fitm.ni
 fitm.priors
@@ -64,21 +64,21 @@ model.fitm.fitm[1].H
 """ 
 kdeda(; kwargs...) = JchemoModel(kdeda, nothing, kwargs)
 
-function kdeda(X, y; kwargs...) 
-    ## To do: add scaling X (?)
+function kdeda(X, y; kwargs...)
+    par = recovkw(ParLda, kwargs).par
+    Q = eltype(X[1, 1])
+    weights = mweightcla(Q, y; prior = par.prior)
+    kdeda(X, y, weights; kwargs...) 
+end
+
+function kdeda(X, y, weights::Weight; kwargs...) 
+    ## To do: add scaling X?
     par = recovkw(ParKdeda, kwargs).par
     X = ensure_mat(X)
-    Q = eltype(X)
+    ni = tab(y).vals
+    priors = aggsumv(weights.w, vec(y)).val
     lev = mlev(y)
     nlev = length(lev)
-    ni = tab(y).vals
-    if isequal(par.prior, :prop)
-        priors = convert.(Q, mweight(ni).w)
-    elseif isequal(par.prior, :unif)
-        priors = ones(Q, nlev) / nlev
-    else
-        priors = mweight(par.prior).w
-    end
     ## End
     fitm = list(nlev)
     @inbounds for i in eachindex(lev)

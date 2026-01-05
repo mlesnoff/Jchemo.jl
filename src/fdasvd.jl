@@ -49,7 +49,7 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
-    priors = aggsumv(weights.w, y).val  # output not used, only for information 
+    priors = aggsumv(weights.w, vec(y)).val  # output not used, only for information 
     res.W .*= n / (n - nlev)
     if lb > 0
         res.W .+= lb .* I(p) # @. does not work with I

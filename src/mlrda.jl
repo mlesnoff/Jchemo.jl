@@ -90,7 +90,7 @@ function mlrda(X, y, weights::Weight; kwargs...)
     y = ensure_mat(y)
     res = dummy(y)
     ni = tab(y).vals
-    priors = aggsumv(weights.w, y).val  # output not used, only for information
+    priors = aggsumv(weights.w, vec(y)).val  # output not used, only for information
     fitm = mlr(X, res.Y, weights)
     Mlrda(fitm, ni, priors, res.lev, par)
 end

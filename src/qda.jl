@@ -101,7 +101,7 @@ function qda(X, y, weights::Weight; kwargs...)
     alpha = convert(Q, par.alpha)
     res = matW(X, y, weights)
     ni = res.ni
-    priors = aggsumv(weights.w, y).val
+    priors = aggsumv(weights.w, vec(y)).val
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate

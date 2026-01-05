@@ -81,7 +81,7 @@ function lda(X, y, weights::Weight; kwargs...)
     n, p = size(X)
     res = matW(X, y, weights)
     ni = res.ni
-    priors = aggsumv(weights.w, y).val
+    priors = aggsumv(weights.w, vec(y)).val
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate

@@ -117,7 +117,7 @@ function fda!(X::Matrix, y, weights; kwargs...)
     end
     res = matW(X, y, weights)
     ni = res.ni
-    priors = aggsumv(weights.w, y).val  # output not used, only for information    
+    priors = aggsumv(weights.w, vec(y)).val  # output not used, only for information    
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate

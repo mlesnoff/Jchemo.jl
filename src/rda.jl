@@ -108,7 +108,7 @@ function rda(X, y, weights::Weight; kwargs...)
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
-    priors = aggsumv(weights.w, y).val 
+    priors = aggsumv(weights.w, vec(y)).val 
     fitm = list(nlev)
     ct = similar(X, nlev, p)
     Id = I(p)

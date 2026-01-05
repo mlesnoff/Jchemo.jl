@@ -99,8 +99,8 @@ end
 """ 
     aggsumv(x::Vector, y::Union{Vector, BitVector})
 Compute the sum by group over a categorical variable.
-* `x` : A quantitative variable to sum (n) 
-* `y` : A group variable (n).
+* `x` : A vector representing the quantitative variable to sum (n) 
+* `y` : A vector representing the group variable (n).
 
 ## Examples
 ```julia

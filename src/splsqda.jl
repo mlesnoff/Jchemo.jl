@@ -38,7 +38,7 @@ function splsqda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    priors = aggsumv(weights.w, y).val  # output not used, only for information
+    priors = aggsumv(weights.w, vec(y)).val  # output not used, only for information
     fitm_emb = splsr(X, res.Y, weights; kwargs...)
     fitm_da = list(Qda, par.nlv)
     @inbounds for i = 1:par.nlv

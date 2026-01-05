@@ -619,8 +619,8 @@ end
 
 struct Kdeda
     fitm::Vector{Dmkern}
-    priors::AbstractVector
     ni::Vector{Int}
+    priors::Vector
     lev::Vector
     par::ParKdeda
 end

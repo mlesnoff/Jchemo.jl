@@ -5,30 +5,22 @@ Gaussian kernel density estimation (KDE).
 * `X` : X-data (n, p).
 Keyword arguments:
 * `h` : Define the bandwith, see examples.
-* `a` : Constant for the Scott's rule (default bandwith), 
-    see thereafter.
+* `a` : Constant for the Scott's rule (default bandwith), see thereafter.
 
-Estimation of the probability density of `X` (column space) by 
-non parametric Gaussian kernels. 
+Estimation of the probability density of `X` (column space) by non parametric Gaussian kernels. 
 
-Data `X` can be univariate (p = 1) or multivariate (p > 1). 
-In the last case, function `dmkern` computes a multiplicative 
-kernel such as in Scott & Sain 2005 Eq.19, and the internal bandwidth 
-matrix `H` is diagonal (see the code). 
+Data `X` can be univariate (p = 1) or multivariate (p > 1). In the last case, function `dmkern` computes a multiplicative 
+kernel such as in Scott & Sain 2005 Eq.19, and the internal bandwidth matrix `H` is diagonal (see the code). 
 
-**Note:**  `H` in the `dmkern` code is often noted "H^(1/2)" in the 
-litterature (e.g. Wikipedia).
+**Note:**  `H` in the `dmkern` code is often noted "H^(1/2)" in the litterature (e.g. Wikipedia).
 
 The default bandwith is computed by:
 * `h` = `a` * n^(-1 / (p + 4)) * colstd(`X`)
 (`a` = 1 in Scott & Sain 2005).
 
 ## References 
-Scott, D.W., Sain, S.R., 2005. 9 - Multidimensional Density 
-Estimation, in: Rao, C.R., Wegman, E.J., Solka, J.L. (Eds.), 
-Handbook of Statistics, Data Mining and Data Visualization. 
-Elsevier, pp. 229–261. 
-https://doi.org/10.1016/S0169-7161(04)24009-3
+Scott, D.W., Sain, S.R., 2005. 9 - Multidimensional Density Estimation, in: Rao, C.R., Wegman, E.J., Solka, J.L. (Eds.), 
+Handbook of Statistics, Data Mining and Data Visualization. Elsevier, pp. 229–261. https://doi.org/10.1016/S0169-7161(04)24009-3
 
 ## Examples
 ```julia

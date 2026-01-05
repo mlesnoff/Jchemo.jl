@@ -37,11 +37,11 @@ function dkplskdeda(X, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    priors = aggsumv(weights.w, y).val  # output not used, only for information
+    priors = aggsumv(weights.w, vec(y)).val  # output not used, only for information
     fitm_emb = dkplsr(X, res.Y, weights; kwargs...)
     fitm_da = list(Kdeda, par.nlv)
     @inbounds for i = 1:par.nlv
-        fitm_da[i] = kdeda(vcol(fitm_emb.fitm.T, 1:i), y; kwargs...)
+        fitm_da[i] = kdeda(vcol(fitm_emb.fitm.T, 1:i), y, weights; kwargs...)
     end
     Plsprobda(fitm_emb, fitm_da, ni, priors, res.lev, par) 
 end
