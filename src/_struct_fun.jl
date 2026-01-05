@@ -686,6 +686,7 @@ struct Lwplsrda
     y::AbstractMatrix
     xscales::Vector
     ni::Vector{Int}
+    priors::Vector
     lev::Vector
     par::ParLwplsda
 end
@@ -696,6 +697,7 @@ struct Lwplslda
     y::AbstractMatrix
     xscales::Vector
     ni::Vector{Int}
+    priors::Vector
     lev::Vector
     par::ParLwplsda
 end
@@ -706,6 +708,7 @@ struct Lwplsqda
     y::AbstractMatrix
     xscales::Vector
     ni::Vector{Int}
+    priors::Vector
     lev::Vector
     par::ParLwplsqda
 end

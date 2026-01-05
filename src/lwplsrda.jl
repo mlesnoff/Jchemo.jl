@@ -16,9 +16,11 @@ Keyword arguments:
     `winvs` can also be specified here).
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `nlv` : Nb. latent variables (LVs) for the local (i.e. inside each neighborhood) models.
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:unif` (uniform), 
-    `:prop` (proportional).
+    `:prop` (proportional). This argument only concerns the preliminary global PLS dimension reduction (if any)
+    used to compute the distances. In the local models, the priors are not used since the weights are given by the 
+    distance-based decreasing weight function.
+* `nlv` : Nb. latent variables (LVs) for the local (i.e. inside each neighborhood) models.
 * `scal` : Boolean. If `true`, (a) each column of the global `X` (and of the global `Y` if there 
     is a preliminary PLS reduction dimension) is scaled by its uncorrected standard deviation before to compute 
     the distances and the weights, and (b) the X and Y scaling is also done within each neighborhood (local level) 
@@ -53,10 +55,11 @@ tab(ytest)
 nlvdis = 25 ; metric = :mah
 h = 2 ; k = 200
 nlv = 10
-model = lwplsrda(; nlvdis, metric, h, k, nlv, prior = :unif) 
+model = lwplsrda(; nlvdis, metric, h, k, prior = :unif, nlv) 
 fit!(model, Xtrain, ytrain)
 @names model
 @names fitm = model.fitm
+
 fitm.lev
 fitm.ni
 fitm.priors
@@ -71,7 +74,7 @@ res.listw
 conf(res.pred, ytest).cnt
 
 ## Storage of the local models fitted on the neighborhoods
-model = lwplsrda(; nlvdis, metric, h, k, nlv, prior = :unif, store = true) 
+model = lwplsrda(; nlvdis, metric, h, k, prior = :unif, nlv, store = true) 
 fit!(model, Xtrain, ytrain)
 res = predict(model, Xtest) ; 
 @show errp(res.pred, ytest)
@@ -92,16 +95,18 @@ function lwplsrda(X, y; kwargs...)
     taby = tab(y)    
     p = nco(X)
     if par.nlvdis == 0
+        priors = nothing
         fitm = nothing
     else
         weights = mweightcla(vec(y); prior = par.prior)
+        priors = aggsumv(weights.w, vec(y)).val
         fitm = plskern(X, dummy(y).Y, weights; nlv = par.nlvdis, scal = par.scal)
     end
     xscales = ones(Q, p)
     if isnothing(fitm) && par.scal
         xscales .= colstd(X)
     end
-    Lwplsrda(fitm, X, y, xscales, taby.keys, taby.vals, par)
+    Lwplsrda(fitm, X, y, xscales, taby.vals, priors, taby.keys, par)
 end
 
 """
@@ -141,7 +146,7 @@ function predict(object::Lwplsrda, X; nlv = nothing)
         listw[i] = w
     end
     ## End
-    ## In each neighborhood, the observation weights in plsrda are given by listw, not by priors
+    ## In each neighborhood, the observation weights used in 'algo' are given by listw, not by priors
     reslocw = locwlv(object.X, object.y, X; listnn = res.ind, listw, algo = plsrda, nlv, scal = object.par.scal, 
         store = object.par.store, verbose = object.par.verbose)
     (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw)

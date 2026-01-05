@@ -524,8 +524,8 @@ Base.@kwdef mutable struct ParLwplsda    # lwplsrda, lwplslda
     criw::Float64 = 4                       
     squared::Bool = false                   
     tolw::Float64 = 1e-4                    
-    nlv::Int = 1 
-    prior::Union{Symbol, Vector{Float64}} = :prop       
+    prior::Union{Symbol, Vector{Float64}} = :prop
+    nlv::Int = 1      
     scal::Bool = false 
     store::Bool = false 
     verbose::Bool = false                   
@@ -539,8 +539,8 @@ Base.@kwdef mutable struct ParLwplsqda
     criw::Float64 = 4                       
     squared::Bool = false                   
     tolw::Float64 = 1e-4                    
-    nlv::Int = 1 
     prior::Union{Symbol, Vector{Float64}} = :prop
+    nlv::Int = 1 
     alpha::Float64 = 0.        
     scal::Bool = false 
     store::Bool = false 

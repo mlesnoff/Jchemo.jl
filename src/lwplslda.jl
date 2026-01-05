@@ -16,9 +16,11 @@ Keyword arguments:
     `winvs` can also be specified here).
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `nlv` : Nb. latent variables (LVs) for the local (i.e. inside each neighborhood) models.
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:unif` (uniform), 
-    `:prop` (proportional).
+    `:prop` (proportional). This argument only concerns the preliminary global PLS dimension reduction (if any)
+    used to compute the distances. In the local models, the priors are not used since the weights are given by the 
+    distance-based decreasing weight function.
+* `nlv` : Nb. latent variables (LVs) for the local (i.e. inside each neighborhood) models.
 * `scal` : Boolean. If `true`, (a) each column of the global `X` (and of the global `Y` if there 
     is a preliminary PLS reduction dimension) is scaled by its uncorrected standard deviation before to compute 
     the distances and the weights, and (b) the X and Y scaling is also done within each neighborhood (local level) 
@@ -53,7 +55,7 @@ tab(ytest)
 nlvdis = 25 ; metric = :mah
 h = 2 ; k = 200
 nlv = 10
-model = lwplslda(; nlvdis, metric, h, k, nlv, prior = :unif) 
+model = lwplslda(; nlvdis, metric, h, k, prior = :unif, nlv) 
 #model = lwplsqda(; nlvdis, metric, h, k, nlv, alpha = .5) 
 fit!(model, Xtrain, ytrain)
 @names model
@@ -82,16 +84,18 @@ function lwplslda(X, y; kwargs...)
     taby = tab(y)    
     p = nco(X)
     if par.nlvdis == 0
+        priors = nothing
         fitm = nothing
     else
         weights = mweightcla(vec(y); prior = par.prior)
+        priors = aggsumv(weights.w, vec(y)).val
         fitm = plskern(X, dummy(y).Y, weights; nlv = par.nlvdis, scal = par.scal)
     end
     xscales = ones(Q, p)
     if isnothing(fitm) && par.scal
         xscales .= colstd(X)
     end
-    Lwplslda(fitm, X, y, xscales, taby.keys, taby.vals, par)
+    Lwplslda(fitm, X, y, xscales, taby.vals, priors, taby.keys, par)
 end
 
 """
@@ -130,7 +134,7 @@ function predict(object::Lwplslda, X; nlv = nothing)
         listw[i] = w
     end
     ## End
-    ## In each neighborhood, the observation weights in plslda are given by listw, not by priors
+    ## In each neighborhood, the observation weights used in 'algo' are given by listw, not by priors
     reslocw = locwlv(object.X, object.y, X; listnn = res.ind, listw, algo = plsrda, nlv, scal = object.par.scal, 
         store = object.par.store, verbose = object.par.verbose, prior = object.par.prior)
     (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw)

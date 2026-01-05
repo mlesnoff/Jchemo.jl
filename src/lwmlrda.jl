@@ -108,6 +108,7 @@ function predict(object::Lwmlrda, X)
         listw[i] = w
     end
     ## End
+    ## In each neighborhood, the observation weights used in 'algo' are given by listw
     reslocw = locw(object.X, object.y, X; listnn = res.ind, listw, algo = mlrda, store = object.par.store, 
         verbose = object.par.verbose)
     (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw)
