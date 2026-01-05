@@ -65,7 +65,8 @@ function defaults(algo::Function)
     in((treer, treeda)).(algo) ? dump(Jchemo.ParTree()) : nothing
     in((rfr, rfda)).(algo) ? dump(Jchemo.ParRf()) : nothing
 
-    in((knnr, lwmlr)).(algo) ? dump(Jchemo.ParKnn()) : nothing
+    in((knnr,)).(algo) ? dump(Jchemo.ParKnn()) : nothing
+    in((lwmlr,)).(algo) ? dump(Jchemo.ParLwmlr()) : nothing
     in((lwplsr, lwplsravg)).(algo) ? dump(Jchemo.ParLwplsr()) : nothing
     in((loessr,)).(algo) ? dump(Jchemo.ParLoessr()) : nothing
 
@@ -97,7 +98,8 @@ function defaults(algo::Function)
     in((kplsqda, dkplsqda)).(algo) ? dump(Jchemo.ParKplsqda()) : nothing
     in((kplskdeda, dkplskdeda)).(algo) ? dump(Jchemo.ParKplskdeda()) : nothing
 
-    in((knnda, lwmlrda)).(algo) ? dump(Jchemo.ParKnn()) : nothing
+    in((knnda,)).(algo) ? dump(Jchemo.ParKnn()) : nothing
+    in((lwmlrda,)).(algo) ? dump(Jchemo.ParLwmlr()) : nothing
     in((lwplsrda, lwplslda)).(algo) ? dump(Jchemo.ParLwplsda()) : nothing
     in((lwplsqda,)).(algo) ? dump(Jchemo.ParLwplsqda()) : nothing
 

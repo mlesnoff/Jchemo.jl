@@ -281,7 +281,7 @@ end
 
 ##
 
-Base.@kwdef mutable struct ParKnn    # knnr, lwmlr, knnda, lwmlrda                
+Base.@kwdef mutable struct ParKnn    # knnr, knnda                
     metric::Symbol = :eucl                  
     h::Float64 = Inf                        
     k::Int = 1                              
@@ -289,6 +289,18 @@ Base.@kwdef mutable struct ParKnn    # knnr, lwmlr, knnda, lwmlrda
     squared::Bool = false                   
     tolw::Float64 = 1e-4                               
     scal::Bool = false 
+    verbose::Bool = false                   
+end 
+
+Base.@kwdef mutable struct ParLwmlr    # lwmlr, lwmlrda                
+    metric::Symbol = :eucl                  
+    h::Float64 = Inf                        
+    k::Int = 1                              
+    criw::Float64 = 4                       
+    squared::Bool = false                   
+    tolw::Float64 = 1e-4                               
+    scal::Bool = false 
+    store::Bool = false 
     verbose::Bool = false                   
 end 
 

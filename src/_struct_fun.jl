@@ -462,7 +462,7 @@ struct Lwmlr
     X::Matrix
     Y::Matrix
     xscales::Vector
-    par::ParKnn
+    par::ParLwmlr
 end
 
 struct Lwplsr
@@ -677,7 +677,7 @@ struct Lwmlrda
     xscales::Vector
     ni::Vector{Int}
     lev::Vector
-    par::ParKnn
+    par::ParLwplsr
 end
 
 struct Lwplsrda

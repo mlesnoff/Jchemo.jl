@@ -13,8 +13,9 @@ Keyword arguments:
     `winvs` can also be specified here).
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Boolean. If `true`, each column of the global `X` is scaled by its uncorrected standard 
-    deviation before the distance and weight computations.
+* `scal` : Boolean. If `true`, each column of the global `X` is scaled by its uncorrected standard deviation before 
+    the distance and weight computations.
+* `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned.
 * `verbose` : Boolean. If `true`, predicting information are printed.
     
 This is the same principle as function `lwplsr` except that MLR models are fitted on the neighborhoods, instead of 
@@ -92,7 +93,7 @@ f
 lwmlr(; kwargs...) = JchemoModel(lwmlr, nothing, kwargs)
 
 function lwmlr(X, Y; kwargs...) 
-    par = recovkw(ParKnn, kwargs).par
+    par = recovkw(ParLwmlr, kwargs).par
     X = ensure_mat(X)  
     Y = ensure_mat(Y)
     Q = eltype(X)
@@ -134,8 +135,8 @@ function predict(object::Lwmlr, X)
         listw[i] = w
     end
     ## End
-    pred = locw(object.X, object.Y, X; listnn = res.ind, listw, algo = mlr, 
-        verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, listw)
+    reslocw = locw(object.X, object.Y, X; listnn = res.ind, listw, algo = mlr, store = object.par.store, 
+        verbose = object.par.verbose)
+    (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw)
 end
 

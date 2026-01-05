@@ -8,16 +8,18 @@ Keyword arguments:
 * `listnn` : List (vector) of m vectors of indexes.
 * `listw` : List (vector) of m vectors of weights.
 * `algo` : Function computing the model on the m neighborhoods.
+* `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 * `kwargs` : Keywords arguments to pass in function `algo`. Each argument must have length = 1 (not be a collection).
 
 Each component i of `listnn` and `listw` contains the indexes and weights, respectively, of the nearest neighbors 
 of x_i in Xtrain. The sizes of the neighborhood for i = 1,...,m can be different.
 """
-function locw(Xtrain, Ytrain, X; listnn, listw = nothing, algo, verbose = false, kwargs...)
+function locw(Xtrain, Ytrain, X; listnn, listw = nothing, algo, store = false, verbose = false, kwargs...)
     m = nro(X)
     q = nco(Ytrain)
     pred = similar(Ytrain, m, q)
+    fitm = list(m)
     #@inbounds for i = 1:m
     Threads.@threads for i = 1:m
         verbose ? print(i, " ") : nothing
@@ -28,19 +30,21 @@ function locw(Xtrain, Ytrain, X; listnn, listw = nothing, algo, verbose = false,
         ## For discrimination, 
         ## case where all the neighbors have the same class
         if q == 1 && length(unique(zYtrain)) == 1
+            fitm[i] = nothing
             pred[i, :] .= zYtrain[1]
         ## End
         else
             if isnothing(listw)
-                fitm = algo(zXtrain,  zYtrain; kwargs...)
+                fitm[i] = algo(zXtrain,  zYtrain; kwargs...)
             else
-                fitm = algo(zXtrain, zYtrain, mweight(listw[i]); kwargs...)
+                fitm[i] = algo(zXtrain, zYtrain, mweight(listw[i]); kwargs...)
             end
-            pred[i, :] = predict(fitm, vrow(X, i:i)).pred
+            pred[i, :] = predict(fitm[i], vrow(X, i:i)).pred
         end
     end
+    if !store ; fitm = nothing ; end
     verbose ? println() : nothing    
-    (pred = pred,)
+    (pred = pred, fitm)
 end
 
 
