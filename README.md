@@ -16,6 +16,10 @@ Why the name **Jchemo**? Since it is oriented towards **chemometrics**, in brief
 
 Related projects:  [JchemoData.jl](https://github.com/mlesnoff/JchemoData.jl) (a "container" package gathering selected data sets used in the examples) and [JchemoDemo](https://github.com/mlesnoff/JchemoDemo) (a pedagogical environment).
 
+*Warning*
+
+Before to update the package, it is recommended to have a look on [What changed](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for eventual breaking changes. 
+
 # <span style="color:green"> **Sample workflow** </span> 
 
 Let us assume training data `(X, Y)`, and new data `Xnew` for which predictions are expected from a PLSR model with 15 latent variables (LVs). The workflow is has follows 
@@ -203,10 +207,6 @@ pkg> add Jchemo@0.8.5
 ```julia
 pkg> add https://github.com/mlesnoff/Jchemo.jl.git
 ```
-
-*Warning*
-
-Before to update the package, it is recommended to have a look on [What changed](https://mlesnoff.github.io/Jchemo.jl/dev/news/) to avoid eventual problems due to breaking changes. 
 
 # <span style="color:green"> **Examples of syntax** </span> 
 
