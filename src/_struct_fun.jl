@@ -677,7 +677,7 @@ struct Lwmlrda
     xscales::Vector
     ni::Vector{Int}
     lev::Vector
-    par::ParLwplsr
+    par::ParLwmlr
 end
 
 struct Lwplsrda

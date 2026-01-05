@@ -48,9 +48,9 @@ model = lwmlrda(; metric, h, k)
 fit!(model, Xtrain, ytrain)
 @names model
 @names fitm = model.fitm
+
 fitm.lev
 fitm.ni
-fitm.priors
 
 res = predict(model, Xtest) ; 
 @names res 
@@ -75,7 +75,7 @@ function lwmlrda(X, y; kwargs...)
     if par.scal
         xscales .= colstd(X)
     end
-    Lwmlrda(X, y, xscales, taby.keys, taby.vals, par)  
+    Lwmlrda(X, y, xscales, taby.vals, taby.keys, par)  
 end
 
 """
@@ -108,7 +108,8 @@ function predict(object::Lwmlrda, X)
         listw[i] = w
     end
     ## End
-    pred = locw(object.X, object.y, X; listnn = res.ind, listw, algo = mlrda, verbose = object.par.verbose).pred
-    (pred = pred, listnn = res.ind, listd = res.d, listw)
+    reslocw = locw(object.X, object.y, X; listnn = res.ind, listw, algo = mlrda, store = object.par.store, 
+        verbose = object.par.verbose)
+    (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw)
 end
 

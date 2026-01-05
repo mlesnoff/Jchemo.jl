@@ -46,9 +46,9 @@ fit!(model, Xtrain, ytrain)
 fitm = model.fitm ;
 typeof(fitm)
 @names fitm
+
 fitm.lev
 fitm.ni
-fitm.priors
 
 res = predict(model, Xtest) ; 
 @names res 
@@ -83,7 +83,7 @@ function knnda(X, y; kwargs...)
     if par.scal && isnothing(fitm)
         xscales .= colstd(X)
     end
-    Knnda(X, y, xscales, taby.keys, taby.vals, par)
+    Knnda(X, y, xscales, taby.vals, taby.keys, par)
 end
 
 """
