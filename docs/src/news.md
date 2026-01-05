@@ -3,11 +3,12 @@
 ## *Version 0.9.2*
 
 - News
-    - Function **lwplsr**: Argument 'store' was added, allowing to return the local models fitted
-        on the neighborhoods.
+    - Functions of distance-based local models (e.g. **lwplsr**): Argument 'store' was added, allowing to return the local 
+        models fitted on the neighborhoods.
 
 - Modifications
     - Code cleaning.
+    - DA functions: the effect of argument 'prior' was homogenized.
     
 
 ## *Version 0.9.1*
