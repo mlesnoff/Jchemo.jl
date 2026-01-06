@@ -10,7 +10,7 @@
 # <span style="color:green"> **About** </span> 
 
 At the start of the project, **Jchemo** was built around **partial least squares regression (PLSR) and discrimination (PLSDA) 
-methods** and their non-linear extensions, in particular locally weighted PLS models (**kNN-LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). The package has then been expanded with many other methods of [dimension reduction, regression, discrimination, and signal (e.g. spectra) preprocessing](https://mlesnoff.github.io/Jchemo.jl/dev/domains/). 
+methods** and their non-linear extensions, in particular locally weighted PLS models (**kNN-LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). The package has then been expanded with [many other methods](https://mlesnoff.github.io/Jchemo.jl/dev/domains/) of dimension reduction, regression, discrimination, and signal (e.g. spectra) preprocessing. 
 
 Why the name **Jchemo**? Since it is oriented towards **chemometrics**, in brief the use of biometrics for chemistry data. But most of the provided methods are generic and can be applied to other types of data. 
 
@@ -22,12 +22,12 @@ Before to update the package, it is recommended to have a look on [What changed]
 
 # <span style="color:green"> **Sample workflow** </span> 
 
-Let us assume training data `(X, Y)`, and new data `Xnew` for which predictions are expected from a PLSR model with 15 latent variables (LVs). The workflow is has follows 
-1) An object, e.g. `model` (or any other name can be chosen), is built from the given learning model and its eventual parameters.
+Let us assume training data `(X, Y)`, and new data `Xnew` for which we want predictions from a PLSR model with 15 latent variables (LVs). The workflow is has follows 
+1) An object, e.g. `model` (any other name can be chosen), is built from the given learning model and its eventual parameters.
     This object contains three sub-objects 
     * `algo` (the learning algorithm) 
     * `fitm` (the fitted model, empty at this stage) 
-    * and `kwargs` (the specified keyword arguments)
+    * and `kwargs` (the specified keyword arguments).
 2) Function `fit!` fits the model to the training data, which fills sub-object `fitm` above.
 3) Function `predict` computes the predictions.   
 
@@ -69,19 +69,19 @@ T = transf(model, X)   # can also be obtained directly by: model.fitm.T
 Tnew = transf(model, Xnew)
 ```
 
-Other sample workflows are given at the [end](https://github.com/mlesnoff/Jchemo.jl?tab=readme-ov-file#-examples-of-syntax-) of this README.
+Other examples of workflows are given at the [end](https://github.com/mlesnoff/Jchemo.jl?tab=readme-ov-file#-examples-of-syntax-) of this README.
 
 # <span style="color:green"> **Package structure** </span> 
 
 **Jchemo** is organized between 
-- **transform operators** (that have a function `transf`),
-- **predictors** (that have a function `predict`), 
+- **transform operators** (that have a function `transf`)
+- **predictors** (that have a function `predict`) 
 - **utility functions**. 
 
 Some models, such as PLSR models, are both a transform operator and a predictor.
 
 **Ad'hoc pipelines** of operations can also be built, using function [`pip`](https://github.com/mlesnoff/Jchemo.jl/tree/master?tab=readme-ov-file#pipelines). In Jchemo, a pipeline is a **chain of *K* modeling steps** containing
-- either ***K* transform steps**,
+- either ***K* transform steps**
 - or ***K* - 1 transform steps** and **a final prediction step**. 
 
 *Keyword arguments*
@@ -117,10 +117,10 @@ The **datasets** used as examples in the function help pages are stored in packa
 # <span style="color:green"> **Tuning predictive models** </span> 
 
 Two **grid-search** functions are available to tune the predictors 
-- [`gridscore`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridscore-NTuple{5,%20Any}) (test-set validation)
-- [`gridcv`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridcv-Tuple{Any,%20Any,%20Any}) (cross-validation). 
+- [`gridscore`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridscore-NTuple{5,%20Any}): tuning using a partition calibration/validation
+- [`gridcv`](https://mlesnoff.github.io/Jchemo.jl/stable/api/#Jchemo.gridcv-Tuple{Any,%20Any,%20Any}): tuning using a cross-validation (e.g., K-fold) process. 
 
-The syntax is generic for all the predictors (see the help pages of the two functions above for sample workflows). The two functions have been specifically accelerated (using computation tricks) for models based on latent variables and ridge regularization.
+The syntax is generic for all the predictors (see the help pages of the two functions above for sample workflows). The two functions have been specifically accelerated (using computation tricks) for models based either on latent variables or ridge regularization.
 
 # <span style="color:green">  **Benchmark**  </span>
 
@@ -199,7 +199,7 @@ pkg> add Jchemo
 or for a **specific version**, for instance 
 
 ```julia
-pkg> add Jchemo@0.8.5
+pkg> add Jchemo@0.9.1
 ```
 
 * For the **current developing version** (potentially not stable)
