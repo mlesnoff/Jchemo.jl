@@ -2,7 +2,7 @@
 #push!(LOAD_PATH,"../src/")
 using Documenter
 using Jchemo
-using UMAP
+#using UMAP
 
 DocMeta.setdocmeta!(Jchemo, :DocTestSetup, :(using Jchemo); recursive = true)
 
