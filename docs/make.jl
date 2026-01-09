@@ -32,6 +32,6 @@ makedocs(;
     )
 
 deploydocs(;
-    repo = "github.com/mlesnoff/Jchemo.jl.git",
-    devbranch = "main"
+    repo = "github.com/mlesnoff/Jchemo.jl.git" #,
+    #devbranch = "main"
     )
