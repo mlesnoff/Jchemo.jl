@@ -147,7 +147,7 @@ struct Rp
 end
 
 struct Umap 
-    fitm    #::UMAP.UMAP_
+    fitm::UMAPResult    #::UMAP.UMAP_
     T::Matrix
     xscales::Vector
     s::Vector{Int}
