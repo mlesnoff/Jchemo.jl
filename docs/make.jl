@@ -2,6 +2,7 @@
 #push!(LOAD_PATH,"../src/")
 using Documenter
 using Jchemo
+using UMAP
 
 DocMeta.setdocmeta!(Jchemo, :DocTestSetup, :(using Jchemo); recursive = true)
 
@@ -32,6 +33,5 @@ makedocs(;
 
 deploydocs(;
     repo = "github.com/mlesnoff/Jchemo.jl.git"
-    #repo = "github.com/mlesnoff/Jchemo.jl",
-    #devbranch = "main"
+    devbranch = "main"
     )
