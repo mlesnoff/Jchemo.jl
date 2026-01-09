@@ -1,5 +1,10 @@
 # News
 
+## *Version 0.9.3*
+
+- Modifications:
+    - ↑ UMAP v0.1.11 ⇒ v0.2.0
+
 ## *Version 0.9.2*
 
 - News
