@@ -6,11 +6,13 @@ UMAP: Uniform manifold approximation and projection for dimension reduction
 Keyword arguments:
 * `psamp` : Proportion of sampling in `X` for training.
 * `nlv` : Nb. latent variables (LVs) to compute.
+* `metric` : Distance metric used. This can be any subtype of the `SemiMetric` type from 
+    the `Distances.jl` package, including user-defined types. Default is `Distances.Euclidean()`.
 * `n_neighbors` : Nb. approximate neighbors used to construct the initial high-dimensional graph.
 * `min_dist` : Minimum distance between points in low-dimensional space.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
     
-The function fits a UMAP dimension reducion using package `UMAP.jl'. The used metric is the Euclidean distance. 
+The function fits a UMAP dimension reduction using package `UMAP.jl'.
 
 If `psamp < 1`, only a proportion `psamp` of the observations (rows of `X`) are used to build the model (systematic 
 sampling over the first score of the PCA of `X`). Can be used to decrease computation times when n is large.
@@ -28,6 +30,69 @@ https://pair-code.github.io/understanding-umap/
 
 ## Examples
 ```julia
+using Jchemo, JLD2, DataFrames, GLMakie
+using Distances
+
+using JchemoData
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "challenge2018.jld2") 
+@load db dat
+@names dat
+X = dat.X 
+Y = dat.Y
+wlst = names(X)
+wl = parse.(Float64, wlst)
+ntot = nro(X)
+summ(Y)
+y = Y.conc
+ycla = Y.typ
+test = Y.test
+## Preprocessing
+model1 = snv() 
+model2 = savgol(npoint = 21, deriv = 2, degree = 3)
+model = pip(model1, model2)
+fit!(model, X)
+@head Xp = transf(model, X)
+plotsp(Xp, wl; xlabel = "Wavelength (nm)", ylabel = "Absorbance", nsamp = 20).f
+## Tot => Train + Test
+s = Bool.(test)
+Xtrain = rmrow(Xp, s)
+ytrain = rmrow(y, s)
+yclatrain = rmrow(ycla, s)
+Xtest = Xp[s, :]
+ytest = y[s]
+yclatest = ycla[s]
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+(ntot = ntot, ntrain, ntest)
+tab(string.(ycla, "-", Y.label))
+##### End
+
+psamp = .2  # to decrease the computation time for the example
+#psamp = 1  # all samples
+nlv = 3
+metric = Distances.Euclidean()
+#metric = Distances.CosineDist()
+#metric = Jchemo.SamDist()
+n_neighbors = 20 ; min_dist = .4 
+model = umap(; psamp, nlv, metric, n_neighbors, min_dist)  
+fit!(model, Xtrain)
+fitm = model.fitm ;
+@names fitm 
+@head T = fitm.T
+@head T_all = transf(model, Xtrain)   # full training scores after refitting 
+@head Ttest = transf(model, Xtest)
+
+s = fitm.s
+zycla = yclatrain[s]
+lev = mlev(zycla)
+nlev = length(lev)
+colm = cgrad(:tab10, nlev; categorical = true, alpha = .5)
+i = 1
+f, ax = plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], zycla; size = (700, 500), color = colm, markersize = 10, 
+    title = "Umap score space", xlabel = string("LV", i), ylabel = string("LV", i + 1), zlabel = string("LV", i + 2))
+scatter!(ax, Ttest[:, i], Ttest[:, i + 1], Ttest[:, i + 2], color = :black, colormap = :tab20, markersize = 7)
+f
 ```
 """ 
 umap(; kwargs...) = JchemoModel(umap, nothing, kwargs)
