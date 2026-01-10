@@ -18,7 +18,7 @@ Related projects:  [JchemoData.jl](https://github.com/mlesnoff/JchemoData.jl) (a
 
 *Warning*
 
-Before to update the package, it is recommended to have a look on [What changed](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for eventual breaking changes. 
+Before to [update](https://github.com/mlesnoff/Jchemo.jl?tab=readme-ov-file#-installation-) the package, it is recommended to have a look on [What changed](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for eventual breaking changes. 
 
 # <span style="color:green"> **Sample workflow** </span> 
 
