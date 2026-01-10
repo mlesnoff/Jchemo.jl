@@ -125,8 +125,9 @@ Base.@kwdef mutable struct ParRp
 end 
 
 Base.@kwdef mutable struct ParUmap
-    nlv::Int = 1
     psamp::Float64 = 1.     
+    nlv::Int = 1
+    metric = Distances.Euclidean()
     n_neighbors::Int = 15 
     min_dist::Float64 = .1                 
     scal::Bool = false 

@@ -4,8 +4,8 @@
 UMAP: Uniform manifold approximation and projection for dimension reduction
 * `X` : X-data (n, p).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs) to compute.
 * `psamp` : Proportion of sampling in `X` for training.
+* `nlv` : Nb. latent variables (LVs) to compute.
 * `n_neighbors` : Nb. approximate neighbors used to construct the initial high-dimensional graph.
 * `min_dist` : Minimum distance between points in low-dimensional space.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
@@ -84,6 +84,19 @@ fit!(model, Xtrain)
 @head Ttest = transf(model, Xtest)
 GLMakie.activate!() 
 #CairoMakie.activate!()
+
+
+res = UMAP.transform(fitm, Xnew') ;
+@head Tnew = reduce(vcat, transpose.(res.embedding)) 
+colm = cgrad(:tab10, nlev; categorical = true, alpha = .5)
+i = 1
+f, ax = plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], zycla; size = (700, 500), color = colm, 
+    markersize = 10, xlabel = string("LV", i), 
+    ylabel = string("LV", i + 1), zlabel = string("LV", i + 2), title = "Umap score space")
+scatter!(ax, Tnew[:, 1], Tnew[:, 2], Tnew[:, 3], color = :black, colormap = :tab20, markersize = 5)
+f
+
+
 lev = mlev(typtrain)
 nlev = length(lev)
 colsh = :tab10
@@ -124,9 +137,9 @@ function umap(X; kwargs...)
         xscales .= colstd(X)
         X = fscale(X, xscales)
     end
-    metric = Distances.Euclidean()
-    fitm = UMAP.fit(X', par.nlv; n_neighbors = par.n_neighbors, metric, min_dist = par.min_dist)
-    T = fitm.embedding' 
+    ## Note: UMAP.jl ==> the type of new_data must match the original data exactly ==> force to Matrix
+    fitm = UMAP.fit(Matrix(X'), par.nlv; metric = par.metric, n_neighbors = par.n_neighbors, min_dist = par.min_dist)
+    T = reduce(vcat, transpose.(fitm.embedding))
     Umap(fitm, T, xscales, s, par)
 end
 
@@ -137,7 +150,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 """
 function transf(object::Umap, X)
-    X = ensure_mat(X)
-    UMAP.transform(object.fitm, fscale(X, object.xscales)')'
+    res = UMAP.transform(object.fitm, Matrix(fscale(X, object.xscales)'))
+    reduce(vcat, transpose.(res.embedding)) 
 end
 
