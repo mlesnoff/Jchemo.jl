@@ -1,10 +1,17 @@
 # News
 
+## *Version 0.9.4*
+
+- Modifications
+    - Code cleaning.
+
+
 ## *Version 0.9.3*
 
 - Modifications:
     - ↑ UMAP v0.1.11 ⇒ v0.2.0.
     - Code cleaning.
+
 
 ## *Version 0.9.2*
 
