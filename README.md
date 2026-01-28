@@ -316,15 +316,16 @@ Xptest = transf(model, Xtest)
 ```
 #### **b) Example of PCA-SVMR**
 
-Consider a support vector machine regression model implemented on preliminary computed PCA scores (PCA-SVMR) 
+Consider a support vector machine regression model implemented on preliminary computed PLS scores (PLS-SVMR) 
 
 ```julia
-nlv = 15
-kern = :krbf ; gamma = .001 ; cost = 1000
-model1 = pcasvd(; nlv)
-model2 = svmr(; kern, gamma, cost)
+nlv = 20
+kern = :krbf
+gamma = 1e4 ; cost = 1000 ; epsilon = .7
+model1 = plskern(; nlv)
+model2 = svmr(; kern, gamma, cost, epsilon)
 model = pip(model1, model2)
-fit!(model, Xtrain)
+fit!(model, Xtrain, ytrain)
 
 ## Y-predictions
 pred = predict(model, Xtest).pred
@@ -333,11 +334,12 @@ pred = predict(model, Xtest).pred
 Step(s) of data preprocessing can obviously be implemented before the model(s)
 
 ```julia
-nlv = 15
-kern = :krbf ; gamma = .001 ; cost = 1000
-model1 = detrend_pol(degree = 2)   # polynomial de-trending with polynom degree 2
-model2 = pcasvd(; nlv)
-model3 = svmr(; kern, gamma, cost)
+nlv = 20
+kern = :krbf
+gamma = 1e4 ; cost = 1000 ; epsilon = .7
+model1 = detrend_pol(degree = 2)   # polynomial de-trending with polynom degree = 2
+model2 = plskern(; nlv)
+model3 = svmr(; kern, gamma, cost, epsilon)
 model = pip(model1, model2, model3)
 ```
 
