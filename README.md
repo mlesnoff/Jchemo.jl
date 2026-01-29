@@ -365,7 +365,7 @@ The pipeline of Shen et al. (2019) consists in implementing a preliminary global
 nlv = 25
 metric = :mah ; h = Inf ; k = 200
 model1 = plskern(; nlv)
-model2 = lwplsr(; metric, h, k)
+model2 = lwplsr(; metric, h, k, nlv = 10)
 model = pip(model1, model2)
 ```
 
