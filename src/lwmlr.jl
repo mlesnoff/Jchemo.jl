@@ -15,7 +15,7 @@ Keyword arguments:
 * `tolw` : For stabilization when very close neighbors.
 * `scal` : Boolean. If `true`, each column of the global `X` is scaled by its uncorrected standard deviation before 
     the distance and weight computations.
-* `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned.
+* `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned by function `predict`.
 * `verbose` : Boolean. If `true`, predicting information are printed.
     
 This is the same principle as function `lwplsr` except that MLR models are fitted on the neighborhoods, instead of 

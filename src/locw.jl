@@ -8,7 +8,7 @@ Keyword arguments:
 * `listnn` : List (vector) of m vectors of indexes.
 * `listw` : List (vector) of m vectors of weights.
 * `algo` : Function computing the model on the m neighborhoods.
-* `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned.
+* `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned by function `predict`.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 * `kwargs` : Keywords arguments to pass in function `algo`. Each argument must have length = 1 (not be a collection).
 

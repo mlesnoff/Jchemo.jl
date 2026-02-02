@@ -20,7 +20,7 @@ Keyword arguments:
     is a preliminary PLS reduction dimension) is scaled by its uncorrected standard deviation before to compute 
     the distances and the weights, and (b) the X and Y scaling is also done within each neighborhood (local level) 
     for the weighted PLSR.
-* `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned.
+* `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned by function `predict`.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
 Function `lwplsr` fits kNN-LWPLSR models such as in Lesnoff et al. 2020. The general principle of 
