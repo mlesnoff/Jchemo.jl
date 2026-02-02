@@ -273,7 +273,7 @@ pred = predict(model, Xtest).pred
 @show errp(pred, ytest)
 conf(pred, ytest).pct
 
-## Computation of the confusion matrix within CV, for the best model 
+## Computation of the confusion matrix within CV (average over the replications), for the best model 
 matpred = Vector{Matrix{String}}(undef, rep * K)
 k = 1
 for i = 1:rep
