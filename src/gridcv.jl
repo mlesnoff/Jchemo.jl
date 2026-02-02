@@ -61,7 +61,7 @@ nlv = 0:30
 rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, nlv) ;
 @names rescv
 res = rescv.res 
-plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
+plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP-CV").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
 model = plskern(; nlv = res.nlv[u])
@@ -71,12 +71,22 @@ pred = predict(model, Xtest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
+## Example of plot showing replications
+res_rep = rescv.res_rep
+f, ax = plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP-CV")
+for i = 1:rep, j = 1:K
+    zres = res_rep[res_rep.rep .== i .&& res_rep.segm .== j, :]
+    lines!(ax, zres.nlv, zres.y1; color = (:grey, .2))
+end
+lines!(ax, res.nlv, res.y1; color = :red, linewidth = 1)
+f
+
 ## Adding pars 
 pars = mpar(scal = [false; true])
 rescv = gridcv(model, Xtrain, ytrain; segm,  score = rmsep, pars, nlv) ;
 res = rescv.res 
 typ = res.scal
-plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
+plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP-CV").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
 model = plskern(nlv = res.nlv[u], scal = res.scal[u])
@@ -92,7 +102,7 @@ model = rr()
 rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, lb) ;
 res = rescv.res 
 loglb = log.(10, res.lb)
-plotgrid(loglb, res.y1; step = 2, xlabel = "log(lambda)", ylabel = "RMSEP").f
+plotgrid(loglb, res.y1; step = 2, xlabel = "log(lambda)", ylabel = "RMSEP-CV").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
 model = rr(lb = res.lb[u])
@@ -108,7 +118,7 @@ rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, lb) ;
 res = rescv.res 
 loglb = log.(10, res.lb)
 typ = string.(res.scal)
-plotgrid(loglb, res.y1, typ; step = 2, xlabel = "log(lambda)", ylabel = "RMSEP").f
+plotgrid(loglb, res.y1, typ; step = 2, xlabel = "log(lambda)", ylabel = "RMSEP-CV").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
 model = rr(lb = res.lb[u], scal = res.scal[u])
@@ -126,7 +136,7 @@ pars = mpar(gamma = gamma)
 rescv = gridcv(model, Xtrain, ytrain; segm,  score = rmsep, pars, nlv) ;
 res = rescv.res 
 loggamma = round.(log.(10, res.gamma), digits = 1)
-plotgrid(res.nlv, res.y1, loggamma; step = 2, xlabel = "Nb. LVs",  ylabel = "RMSEP", 
+plotgrid(res.nlv, res.y1, loggamma; step = 2, xlabel = "Nb. LVs",  ylabel = "RMSEP-CV", 
     leg_title = "Log(gamma)").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
@@ -165,7 +175,7 @@ model = lwplsr()
 rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, nlv, verbose = true) ;
 res = rescv.res 
 group = string.("h=", res.h, " k=", res.k)
-plotgrid(res.nlv, res.y1, group; xlabel = "Nb. LVs", ylabel = "RMSEP").f
+plotgrid(res.nlv, res.y1, group; xlabel = "Nb. LVs", ylabel = "RMSEP-CV").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
 model = lwplsr(nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], k = res.k[u], 
@@ -209,7 +219,7 @@ nlv = 0:30
 rescv = gridcv(model, Xbltrain, ytrain; segm,  score = rmsep, pars, nlv) ;
 res = rescv.res 
 group = res.bscal 
-plotgrid(res.nlv, res.y1, group; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
+plotgrid(res.nlv, res.y1, group; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP-CV").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
 model = mbplsr(bscal = res.bscal[u], nlv = res.nlv[u])
