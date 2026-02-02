@@ -16,8 +16,8 @@ Keyword arguments:
 * `lb` : Value, or vector of values, of the ridge regularization 
     parameter "lambda".
 
-The function is used for grid-search: it computes a prediction score (= error rate) for model `model` over the 
-combinations of parameters defined in `pars`. The score is computed over sets {`X, `Y`}. 
+The function is used for grid-search: it computes a prediction score (= error rate) for the specified `model` 
+for each parameter combination defined in `pars`. The score is computed over sets {`X, `Y`}. 
     
 For models based on LV or ridge regularization, using arguments `nlv` and `lb` allow faster computations than including 
 these parameters in argument `pars. See the examples.   
