@@ -199,14 +199,40 @@ function recod_indbylev(x::Union{Int, Array{Int}}, lev::Array)
     v
 end
 
+################ Missing data  
+
+""" 
+    parsemiss(Q, x::Vector{Union{String, Missing}})
+Parsing a string vector containing missing data.
+* `Q` : Type that results from the parsing of type `String'. 
+* `x` : A string vector containing observations `missing` (of type `Missing`).
+
+See examples.
+
+## Examples
+```julia
+using Jchemo
+
+x = ["1"; "3.2"; missing]
+x_p = parsemiss(Float64, x)
+```
+"""
+function parsemiss(Q, x::Vector{Union{String, Missing}})
+    v = missings(Q, length(x))
+    for i in eachindex(x)
+        ismissing(x[i]) ? nothing : v[i] = parse(Q, x[i])
+    end
+    v
+end
+
 """
     recod_miss(X; miss = nothing)
     recod_miss(df; miss = nothing)
 Declare data as missing in a dataset.
-* `X` : A dataset (array).
-* `miss` : The code used in the dataset to identify the data to be declared as `missing` (of type `Missing`).
-Specific for dataframes:
-* `df` : A dataset (dataframe).
+* `X` : An array-dataset.
+* `df` : A dataframe dataset.
+* `miss` : The code used in the dataset to identify the cells to be replaced by value `missing` 
+    of type `Missing`.
 
 The case `miss = nothing` has the only action to allow `missing` in `X` or `df`. 
 
@@ -231,6 +257,7 @@ function recod_miss(X::AbstractArray; miss = nothing)
     if !isnothing(miss)
         replace!(X, miss => missing)
     end
+    X
 end
 
 function recod_miss(df::DataFrame; miss = nothing)

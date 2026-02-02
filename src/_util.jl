@@ -408,30 +408,6 @@ out(x, (-1, 1))
 """
 out(x, y) = (x .< minimum(y)) .| (x .> maximum(y))
 
-""" 
-    parsemiss(Q, x::Vector{Union{String, Missing}})
-Parsing a string vector allowing missing data.
-* `Q` : Type that results from the parsing of type `String'. 
-* `x` : A string vector containing `missing` (of type `Missing`) observations.
-
-See examples.
-
-## Examples
-```julia
-using Jchemo
-
-x = ["1"; "3.2"; missing]
-x_p = parsemiss(Float64, x)
-```
-"""
-function parsemiss(Q, x::Vector{Union{String, Missing}})
-    v = missings(Q, length(x))
-    for i in eachindex(x)
-        ismissing(x[i]) ? nothing : v[i] = parse(Q, x[i])
-    end
-    v
-end
-
 """
     pval(d::Distribution, q)
     pval(x::Array, q)
