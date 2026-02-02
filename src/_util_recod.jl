@@ -230,9 +230,10 @@ end
     recod_miss(df; miss = nothing)
 Declare data as missing in a dataset.
 * `X` : An array-dataset.
-* `df` : A dataframe dataset.
-* `miss` : The code used in the dataset to identify the cells to be replaced by value `missing` 
-    of type `Missing`.
+* `df` : A dataframe-dataset.
+* `miss` : The value used in the dataset to identify the missing data. 
+
+Each cell of `X` or `df` having the value `miss` is replaced by value `missing` of type `Missing`.
 
 The case `miss = nothing` has the only action to allow `missing` in `X` or `df`. 
 
@@ -273,19 +274,19 @@ end
 ################ Other recoding
 
 """ 
-    convertdf(df::DataFrame; miss = nothing, typ)
+    convertdf(df::DataFrame; typ, miss = nothing)
 Convert the columns of a dataframe to given types.
 * `df` : A dataframe.
+* `typ` : A vector of the targeted types for the columns of the new dataframe.  
 * `miss` : The code used in `df` to identify the data to be declared as `missing` (of type `Missing`).
     See function `recod_miss`.
-* `typ` : A vector of the targeted types for the columns of the new dataframe.  
 
 ## Examples
 ```julia
 using Jchemo, DataFrames
 ```
 """
-function convertdf(df::DataFrame; miss = nothing, typ)
+function convertdf(df::DataFrame; typ, miss = nothing)
     df = string.(df)
     df = recod_miss(df; miss = string(miss))
     res = DataFrame()
