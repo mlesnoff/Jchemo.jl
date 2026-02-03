@@ -119,7 +119,7 @@
     - Function **aggmean**: Compute column-wise means by class in a dataset.
     - Function **finduniq**: Find the indexes making unique the IDs in a ID vector.
     - Function **mae**: Compute the mean absolute error.
-    - Function **rrmsep**: Compute the relative RMSEP.
+    - Function **rmseprel**: Compute the relative RMSEP.
 
 - Modifications
     - Code cleaning.  

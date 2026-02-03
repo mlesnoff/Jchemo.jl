@@ -289,14 +289,13 @@
 *Regression*
 - **ssr** SSR
 - **msep** MSEP
-- **rmsep**, **rmsepstand** RMSEP
-- **rrmsep** Relative RMSEP
+- **rmsep**, **rmseprel**, **rmsepstand** RMSEPs
 - **mae** MAE
 - **sep** SEP
 - **bias** Bias
 - **cor2** Squared correlation coefficient
 - **r2** R2
-- **rpd**, **rpdr** Ratio of performance to deviation
+- **rpd**, **rpdr** Ratios of performance to deviation
 - **mse** Summary for regression
 - **conf** Confusion matrix
 

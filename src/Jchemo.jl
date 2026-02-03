@@ -444,7 +444,7 @@ export
     transfbl, 
     ## Validation
     residreg, residcla, 
-    ssr, msep, rmsep, rmsepstand, rrmsep, mae,
+    ssr, msep, rmsep, rmsepstand, rmseprel, mae,
     bias, sep, cor2, r2, rpd, rpdr, mse, 
     errp, merrp,
     mpar,

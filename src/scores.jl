@@ -1,7 +1,6 @@
 ## scores:
 ## - Must return a matrix
-## - In particular for errp, create multiple 
-## dispatches Y::AbstractVector, Y::AbstractMatrix
+## - In particular for errp, create multiple dispatches Y::AbstractVector, Y::AbstractMatrix
 
 """
     residreg(pred, Y) 
@@ -29,7 +28,7 @@ pred = predict(model, Xtest).pred
 residreg(pred, ytest)
 ```
 """
-residreg(pred, Y) = ensure_mat(Y) - pred
+residreg(pred, Y) = ensure_mat(Y) - ensure_mat(pred)
 
 """
     ssr(pred, Y)
@@ -128,13 +127,46 @@ rmsep(pred, ytest)
 rmsep(pred, Y) = sqrt.(msep(pred, Y))
 
 """
-    rmsepstand(pred, Y)
-Compute the standardized square root of the mean of the squared prediction errors (RMSEP_stand).
+    rmseprel(pred, Y)
+Compute a version of relative RMSEP.
 * `pred` : Predictions.
 * `Y` : Observed data.
 
-RMSEP is standardized to `Y`: 
-* RMSEP_stand = RMSEP ./ `Y`.
+RMSEP_rel = RMSEP(`pred` - `Y`) ./ colmean(`Y`)'
+
+## Examples
+```julia
+using Jchemo
+
+Xtrain = rand(10, 5) 
+Ytrain = rand(10, 2)
+ytrain = Ytrain[:, 1]
+Xtest = rand(4, 5) 
+Ytest = rand(4, 2)
+ytest = Ytest[:, 1]
+
+model = plskern(nlv = 2)
+fit!(model, Xtrain, Ytrain)
+pred = predict(model, Xtest).pred
+rmseprel(pred, Ytest)
+
+fit!(model, Xtrain, ytrain)
+pred = predict(model, Xtest).pred
+rmseprel(pred, ytest)
+```
+"""
+function rmseprel(pred, Y)
+    Y = ensure_mat(Y)
+    rmsep(ensure_mat(pred), Y) ./ colmean(Y)'
+end
+
+"""
+    rmsepstand(pred, Y)
+Compute a version of relative RMSEP.
+* `pred` : Predictions.
+* `Y` : Observed data.
+
+RMSEP_stand = RMSEP((`pred` - `Y`) ./ `Y`).
 
 ## Examples
 ```julia
@@ -160,41 +192,7 @@ rmsepstand(pred, ytest)
 """
 function rmsepstand(pred, Y)
     Y = ensure_mat(Y)
-    rmsep(pred ./ Y, ones(size(Y)))
-end
-
-"""
-    rrmsep(pred, Y)
-Compute the relative RMSEP.
-* `pred` : Predictions.
-* `Y` : Observed data.
-
-For each variable y in `Y`, RRMSEP = RMSEP / mean(y)
-
-## Examples
-```julia
-using Jchemo
-
-Xtrain = rand(10, 5) 
-Ytrain = rand(10, 2)
-ytrain = Ytrain[:, 1]
-Xtest = rand(4, 5) 
-Ytest = rand(4, 2)
-ytest = Ytest[:, 1]
-
-model = plskern(nlv = 2)
-fit!(model, Xtrain, Ytrain)
-pred = predict(model, Xtest).pred
-rrmsep(pred, Ytest)
-
-fit!(model, Xtrain, ytrain)
-pred = predict(model, Xtest).pred
-rrmsep(pred, ytest)
-
-"""
-function rrmsep(pred, Y)
-    Y = ensure_mat(Y)
-    rmsep(pred, Y) ./ colmean(Y)'
+    rmsep(ensure_mat(pred) ./ Y, ones(size(Y)))
 end
 
 """
@@ -525,7 +523,7 @@ pred = predict(model, Xtest).pred
 residcla(pred, ytest)
 ```
 """
-residcla(pred, Y) = pred .!= ensure_mat(Y)
+residcla(pred, Y) = ensure_mat(pred) .!= ensure_mat(Y)
 
 """
     errp(pred, y)
