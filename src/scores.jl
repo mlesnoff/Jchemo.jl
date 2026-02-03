@@ -230,7 +230,7 @@ end
 
 """
     sep(pred, Y)
-Compute the corrected SEP ("SEP_c"), i.e. the standard deviation of the prediction errors.
+Compute the "corrected SEP" (SEP_c), i.e. the standard deviation of the prediction errors.
 * `pred` : Predictions.
 * `Y` : Observed data.
 
