@@ -199,7 +199,9 @@ function recod_indbylev(x::Union{Int, Array{Int}}, lev::Array)
     v
 end
 
-################ Missing data  
+############ Other recoding
+
+### Missing data  
 
 """ 
     parsemiss(Q, x::Vector{Union{String, Missing}})
@@ -271,7 +273,8 @@ function recod_miss(df::DataFrame; miss = nothing)
     df
 end
 
-################ Other recoding
+
+### Convertdf
 
 """ 
     convertdf(df::DataFrame; typ, miss = nothing)
@@ -288,12 +291,19 @@ using Jchemo, DataFrames
 """
 function convertdf(df::DataFrame; typ, miss = nothing)
     df = string.(df)
-    df = recod_miss(df; miss = string(miss))
+    df = recod_miss(df; miss = string(miss)) 
     res = DataFrame()
     for i in eachindex(typ)
         z = df[:, i]
         if typ[i] == String
             sum(ismissing.(z)) == 0 ? z = string.(z) : nothing
+        elseif in(typ[i], [Integer, Int32, Int64]) 
+            if sum(ismissing.(z)) == 0
+                z = convert.(typ[i], parse.(Float64, z))
+            else
+                ## this case does not work to change floats "1." to int (to do) 
+                z = parsemiss(typ[i], z)
+            end
         else
             if sum(ismissing.(z)) == 0
                 z = parse.(typ[i], z)
@@ -306,6 +316,8 @@ function convertdf(df::DataFrame; typ, miss = nothing)
     rename!(res, names(df))
     res
 end
+
+### Make dummy table
 
 """
     dummy(y)
@@ -332,6 +344,8 @@ function dummy(y)
     Y = y .== permutedims(lev)
     (Y = Y, lev)
 end
+
+### Expand 2D contingency table
 
 """
     expand_tab2d(X; namr = nothing, namc = nothing, namv = nothing)
