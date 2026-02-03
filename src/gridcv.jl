@@ -68,7 +68,7 @@ model = plskern(; nlv = res.nlv[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
-plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
+plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
 ## Example of plot showing replications
@@ -93,7 +93,7 @@ model = plskern(nlv = res.nlv[u], scal = res.scal[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
-plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
+plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
 
 ####---- Rr 
@@ -109,7 +109,7 @@ model = rr(lb = res.lb[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
-plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
+plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f     
     
 ## Adding pars 
@@ -125,7 +125,7 @@ model = rr(lb = res.lb[u], scal = res.scal[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
-plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
+plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
 
 ####---- Kplsr 
@@ -144,7 +144,7 @@ model = kplsr(nlv = res.nlv[u], gamma = res.gamma[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
-plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
+plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
 
 ####---- Knnr 
@@ -162,7 +162,7 @@ model = knnr(nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], k = r
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
-plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
+plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
 
 ####---- Lwplsr 
@@ -183,7 +183,7 @@ model = lwplsr(nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], k =
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
-plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
+plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
 
 ####---- LwplsrAvg 
@@ -202,7 +202,7 @@ model = lwplsravg(nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], 
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
-plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
+plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
     
 ####------ Mbplsr
@@ -226,7 +226,7 @@ model = mbplsr(bscal = res.bscal[u], nlv = res.nlv[u])
 fit!(model, Xbltrain, ytrain)
 pred = predict(model, Xbltest).pred
 @show rmsep(pred, ytest)
-plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
+plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
 
 ####### Discrimination
