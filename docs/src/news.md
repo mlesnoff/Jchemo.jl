@@ -2,6 +2,9 @@
 
 ## *Version 0.9.4*
 
+- News
+    - Function **predictcv**: Return the data and predictions from a cross-validated model.
+
 - Modifications
     - Code cleaning.
 

@@ -453,6 +453,7 @@ export
     segmts, segmkf,
     gridcv, 
     gridcv_br, gridcv_lv, gridcv_lb, 
+    predictcv,
     selwold,
     conf, 
     ######---- Sampling

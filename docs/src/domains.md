@@ -277,6 +277,7 @@
 ### Cross-validation (CV)
 
 - **gridcv** Compute an error rate over a grid of parameters
+- **predictcv**: Return the data and predictions from a cross-validated model
 
 ### Utilities
 
@@ -291,7 +292,7 @@
 - **msep** MSEP
 - **rmsep**, **rmseprel**, **rmsepstand** RMSEPs
 - **mae** MAE
-- **sep** SEP
+- **sep** SEP_c
 - **bias** Bias
 - **cor2** Squared correlation coefficient
 - **r2** R2
