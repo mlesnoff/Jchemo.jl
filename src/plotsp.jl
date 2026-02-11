@@ -29,7 +29,7 @@ plotsp(X; color = (:red, .2)).f
 plotsp(X, wl; xlabel = "Wavelength (nm)", ylabel = "Absorbance").f
 
 tck = collect(wl[1]:200:wl[end]) ;
-plotsp(X, wl; xlabel = "Wavelength (nm)", ylabel = "Absorbance", xticks = tck).f
+plotsp(X, wl; xticks = tck, xlabel = "Wavelength (nm)", ylabel = "Absorbance").f
 
 f, ax = plotsp(X, wl; color = (:red, .2))
 xmeans = colmean(X)
