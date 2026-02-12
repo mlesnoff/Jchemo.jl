@@ -3,6 +3,7 @@
 ## *Version 0.9.5*
 
 - Modifications
+    - **plotsp**: Argument 'label' was added (see example).
     - Code cleaning.
 
 ## *Version 0.9.4*
