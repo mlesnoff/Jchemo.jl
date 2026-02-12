@@ -26,7 +26,7 @@ Keyword arguments:
 * `leg_title` : Title of the legend.
 * `kwargs` : Optional arguments to pass in function `scatter` of Makie.
 
-To use the function, a backend (e.g. CairoMakie) has to be specified.
+To use the function, a backend (e.g., CairoMakie) has to be specified.
 
 ## Examples
 ```julia

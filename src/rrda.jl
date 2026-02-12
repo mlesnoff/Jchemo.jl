@@ -5,7 +5,7 @@
 Discrimination based on ridge regression (RR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`). 
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`). 
 Keyword arguments: 
 * `lb` : Ridge regularization parameter "lambda".
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 

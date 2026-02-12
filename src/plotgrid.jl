@@ -3,7 +3,7 @@
     plotgrid(indx::AbstractVector, r, group; size = (700, 350), step = 5, color = nothing, leg = true, 
         leg_title = "Group", kwargs...)
 Plot error/performance rates of a model.
-* `indx` : A numeric variable representing the grid of model parameters, e.g. the nb. LVs if PLSR models.
+* `indx` : A numeric variable representing the grid of model parameters, e.g., the nb. LVs if PLSR models.
 * `r` : The error/performance rate.
 Keyword arguments: 
 * `group` : Categorical variable defining groups. A separate line is plotted for each level of `group`.
@@ -14,7 +14,7 @@ Keyword arguments:
 * `leg_title` : Title of the legend.
 * `kwargs` : Optional arguments to pass in `Axis` of CairoMakie.
 
-To use the function, a backend (e.g. CairoMakie) has to be specified.
+To use the function, a backend (e.g., CairoMakie) has to be specified.
 
 ## Examples
 ```julia

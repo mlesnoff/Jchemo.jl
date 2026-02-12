@@ -5,12 +5,12 @@
     pcaeigenk!(X::Matrix, weights::Weight; kwargs...)
 PCA by Eigen factorization of the kernel matrix XX'.
 * `X` : X-data (n, p). 
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
-This is the "kernel cross-product" version of the PCA algorithm (e.g. Wu et al. 1997). For wide matrices (n << p, 
+This is the "kernel cross-product" version of the PCA algorithm (e.g., Wu et al. 1997). For wide matrices (n << p, 
 where p is the nb. columns) and n not too large, this algorithm can be much faster than the others.
 
 Let us note D the (n, n) diagonal matrix of weights (`weights.w`) and X the centered matrix in metric D.

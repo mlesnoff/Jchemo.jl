@@ -11,7 +11,7 @@ Keyword arguments:
 
 See examples in help page of function `conf`.
 
-To use the function, a backend (e.g. CairoMakie) has to be specified.
+To use the function, a backend (e.g., CairoMakie) has to be specified.
 ```
 """
 function plotconf(object; size = (500, 400), cnt = true, ptext = true, 

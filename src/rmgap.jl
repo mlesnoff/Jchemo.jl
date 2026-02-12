@@ -1,7 +1,7 @@
 """
     rmgap(; kwargs...)
     rmgap(X; kwargs...)
-Remove vertical gaps in spectra (e.g. for ASD).  
+Remove vertical gaps in spectra (e.g., for ASD).  
 * `X` : X-data (n, p).
 Keyword arguments:
 * `indexcol` : Indexes (∈ [1, p]) of the `X`-columns where are located the gaps to remove. 

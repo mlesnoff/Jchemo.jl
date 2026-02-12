@@ -6,7 +6,7 @@
 Redundancy analysis (RA), a.k.a PCA on instrumental variables (PCAIV)
 * `X` : First block of data.
 * `Y` : Second block of data.
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`. See functions `blockscal`.
@@ -14,7 +14,7 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of blocks `X` and `Y` is scaled by its uncorrected standard 
     deviation (before the block scaling).
  
-See e.g. Bougeard et al. 2011a,b and Legendre & Legendre 2012. Let Y_hat be the fitted values of the regression 
+See e.g., Bougeard et al. 2011a,b and Legendre & Legendre 2012. Let Y_hat be the fitted values of the regression 
 of `Y` on `X`. The scores `Ty` are the PCA scores of Y_hat. The scores `Tx` are the fitted values of the 
 regression of `Ty` on `X`.
 
@@ -22,7 +22,7 @@ A continuum regularization is available.  After block centering and scaling, the
 matrices are computed as follows: 
 * Cx = (1 - `tau`) * X'DX + `tau` * Ix
 where D is the observation (row) metric. Value `tau` = 0 can generate unstability when inverting the covariance 
-matrices. A better alternative is generally to use an epsilon value (e.g. `tau` = 1e-8) to get similar results 
+matrices. A better alternative is generally to use an epsilon value (e.g., `tau` = 1e-8) to get similar results 
 as with pseudo-inverses.  
 
 ## References

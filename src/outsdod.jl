@@ -1,7 +1,7 @@
 """
     outsdod(fitm, X; cut = :mad, cri = 3, risk = .025)
 Compute outlierness from PCA/PLS score and orthogonal distances (SD and OD).
-* `fitm` : The preliminary model (e.g. object `fitm` returned by function `pcasvd`) that was fitted on 
+* `fitm` : The preliminary model (e.g., object `fitm` returned by function `pcasvd`) that was fitted on 
     the data.
 * `X` : X-data (n, p) on which was fitted the model `fitm`.
 Keyword arguments:

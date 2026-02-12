@@ -6,7 +6,7 @@
 Reduced rank regression (RRR, a.k.a RA).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `tau` : Regularization parameter (∊ [0, 1]).
@@ -23,7 +23,7 @@ are computed as follows:
 where D is the observation (row) metric. 
 
 **Note:** Value `tau = 0` can generate unstability when inverting the covariance matrices. A better alternative is generally to 
-use an epsilon value (e.g. `tau = 1e-8`) to get similar results as with pseudo-inverses.  
+use an epsilon value (e.g., `tau = 1e-8`) to get similar results as with pseudo-inverses.  
 
 ## References
 Bougeard, S., Qannari, E.M., Lupo, C., Chauvin, C., 2011. Multiblock redundancy analysis from 

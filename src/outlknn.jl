@@ -12,7 +12,7 @@ Keyword arguments:
 The idea is to compare the KNN-outlierness of the observation to the KNN-outlierness of its neighbors, giving a local 
 measure of outlierness. For each observation (row of `X`), the outlierness is defined as folloxs:
 
-* A summary (e.g. by sum) of the distances between the observation and its `k` nearest neighbors
+* A summary (e.g., by sum) of the distances between the observation and its `k` nearest neighbors
     is computed, say out1.
 * The same summary is computed for each of the `k` nearest neighbors of the observation, and the median of 
     the `k` returned values is computed, say out2.

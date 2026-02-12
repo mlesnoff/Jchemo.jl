@@ -24,7 +24,7 @@
 ## *Version 0.9.2*
 
 - News
-    - Functions of distance-based local models (e.g. **lwplsr**): Argument 'store' was added, allowing to return the local 
+    - Functions of distance-based local models (e.g., **lwplsr**): Argument 'store' was added, allowing to return the local 
         models fitted on the neighborhoods.
 
 - Modifications
@@ -463,7 +463,7 @@ restructuration. They will be corrected in versions > 0.3.0.
 
 Some specific modified points are:
 
-- In the arguments, all String types have been replaced by Type Symbol (e.g. "unif" is replaced by :unif)
+- In the arguments, all String types have been replaced by Type Symbol (e.g., "unif" is replaced by :unif)
 - The 'weights' (row weighting in some functions, such as pcasvd etc.) argument must now be of type 'Weight', built from function 'mweight'. 
 - Sampling functions 'samp...' have changed. 
 - Function 'mtest' renamed to 'sampdf'.
@@ -752,7 +752,7 @@ Some specific modified points are:
 
 - Breaking changes
     - All the functions **..._avg** and **..._stack** renamed 
-        to **...avg** and **...stack** (e.g. **plsr_avg** to 
+        to **...avg** and **...stack** (e.g., **plsr_avg** to 
         **plsravg**).
     - **caltransf_ds** and **caltransf_pds** remaned
         to **calds** and **calpds**.
@@ -778,7 +778,7 @@ Some specific modified points are:
 
 - CairoMakie.jl was removed from the dependances, and replaced by Makie.jl.
 To display the plots, the user has to install and load one of
-the Makie's backend (e.g. CairoMakie).
+the Makie's backend (e.g., CairoMakie).
 
 - New
     - **rcca**: Canonical correlation analysis. (RCCA).
@@ -919,7 +919,7 @@ the Makie's backend (e.g. CairoMakie).
 ## *Version 0.0.19* 
 
 - New 
-    - **selwold** : Wold's criterion to select dimensionality in LV (e.g. PLSR) models.
+    - **selwold** : Wold's criterion to select dimensionality in LV (e.g., PLSR) models.
     - **plotxy** : Scatter plot (x, y) data.
 
 - Modifications 
@@ -1011,7 +1011,7 @@ the Makie's backend (e.g. CairoMakie).
 
 - Modifications
     - All the functions terminating with a "s" have been renamed without "s"
-    (e.g. **colmeans** was renamed to **colmean**)
+    (e.g., **colmeans** was renamed to **colmean**)
 
 ## *Version 0.0.10*
 

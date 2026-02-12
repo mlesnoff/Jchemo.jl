@@ -4,7 +4,7 @@ Between-class covariance matrix.
 * `X` : X-data (n, p).
 * `y` : A vector (n) defining the class membership.
 * `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+    Must be of type `Weight` (see e.g., function `mweight`).
 
 Compute the between-class covariance matrix (output `B`) 
 of `X`. This is the (non-corrected) covariance matrix of 
@@ -64,7 +64,7 @@ Within-class covariance matrices.
 * `X` : X-data (n, p).
 * `y` : A vector (n) defing the class membership.
 * `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g. function `mweight`).
+    Must be of type `Weight` (see e.g., function `mweight`).
 
 Compute the (non-corrected) within-class and pooled covariance 
 matrices  (outputs `Wi` and `W`, respectively) of `X`. 

@@ -28,7 +28,7 @@ mweight(x::Vector) = Weight(x / sum(x))
     mweightcla(Q::DataType, y::Vector; prior::Union{Symbol, Vector} = :prop)
 Compute observation weights for a categorical variable, given specified sub-total weights for the classes.
 * `y` : A categorical variable (n) (class membership).
-* `Q` : A data type (e.g. `Float32`).
+* `Q` : A data type (e.g., `Float32`).
 Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 

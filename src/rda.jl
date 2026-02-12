@@ -5,7 +5,7 @@
 Regularized discriminant analysis (RDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
 Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
@@ -22,7 +22,7 @@ covariance matrix of class i. The regularization is done by the two following su
 Then the QDA algorithm is run on matrices {Wi(2)}.
 
 Function `rda` is slightly different from the regularization expression used by Friedman 1989 (Eq.18): the choice is 
-to shrink the covariance matrices Wi(2) to the diagonal of the Idendity matrix (ridge regularization; e.g. Guo 
+to shrink the covariance matrices Wi(2) to the diagonal of the Idendity matrix (ridge regularization; e.g., Guo 
 et al. 2007).  
 
 Particular cases:

@@ -5,7 +5,7 @@
     pcanipals!(X::Matrix, weights::Weight; kwargs...)
 PCA by NIPALS algorithm allowing missing data.
 * `X` : X-data (n, p). 
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `gs` : Boolean. If `true` (default), a Gram-Schmidt orthogonalization of the scores and loadings is done

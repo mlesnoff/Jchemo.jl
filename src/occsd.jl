@@ -2,7 +2,7 @@
     occsd(; kwargs...)
     occsd(fitm; kwargs...)
 One-class classification using PCA/PLS score distance (SD).
-* `fitm` : The preliminary model (e.g. object `fitm` returned by function `pcasvd`) that was fitted on 
+* `fitm` : The preliminary model (e.g., object `fitm` returned by function `pcasvd`) that was fitted on 
     the training data assumed to represent the reference class.
 Keyword arguments:
 * `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
@@ -10,7 +10,7 @@ Keyword arguments:
 * `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
 
 In this method, the outlierness `d` of an observation is defined by its score distance (SD), ie. the Mahalanobis 
-distance between the projection of the observation on the score plan defined by the fitted (e.g. PCA) model and the 
+distance between the projection of the observation on the score plan defined by the fitted (e.g., PCA) model and the 
 "center" (always defined by zero) of the score plan.
 
 If a new observation has `d` higher than a given `cutoff`, the observation is assumed to not belong to the training 

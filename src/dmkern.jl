@@ -12,7 +12,7 @@ Estimation of the probability density of `X` (column space) by non parametric Ga
 Data `X` can be univariate (p = 1) or multivariate (p > 1). In the last case, function `dmkern` computes a multiplicative 
 kernel such as in Scott & Sain 2005 Eq.19, and the internal bandwidth matrix `H` is diagonal (see the code). 
 
-**Note:**  `H` in the `dmkern` code is often noted "H^(1/2)" in the litterature (e.g. Wikipedia).
+**Note:**  `H` in the `dmkern` code is often noted "H^(1/2)" in the litterature (e.g., Wikipedia).
 
 The default bandwith is computed by:
 * `h` = `a` * n^(-1 / (p + 4)) * colstd(`X`)

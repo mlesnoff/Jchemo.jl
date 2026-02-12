@@ -26,15 +26,15 @@ Keyword arguments:
 Function `lwplsr` fits kNN-LWPLSR models such as in Lesnoff et al. 2020. The general principle of 
 the pipeline is as follows (many other variants of pipelines can be built):
 
-LWPLSR is a particular case of weighted PLSR (WPLSR) (e.g. Schaal et al. 2002). In WPLSR, a priori weights, 
+LWPLSR is a particular case of weighted PLSR (WPLSR) (e.g., Schaal et al. 2002). In WPLSR, a priori weights, 
 different from the usual 1/n (standard PLSR), are given to the n training observations. These weights are used
 to calculate (i) the scores and loadings of the WPLS and (ii) the regression model that fits (by weighted least 
 squares) the Y-response(s) to the WPLS scores. The specificity of LWPLSR (compared to WPLSR) is that the weights 
-are computed from dissimilarities (e.g. distances) between the new observation to predict and the training 
+are computed from dissimilarities (e.g., distances) between the new observation to predict and the training 
 observations ("L" in LWPLSR comes from "localized"). Note that in LWPLSR the weights, and therefore the fitted 
 WPLSR model, change for each new observation to predict (there are no a 'unique' fitted model).
 
-In the original LWPLSR, all the n training observations are used for each observation to predict (e.g. Sicard
+In the original LWPLSR, all the n training observations are used for each observation to predict (e.g., Sicard
 & Sabatier 2006, Kim et al 2011). This can be very time consuming when n is large. A faster (and often more efficient) 
 strategy is to preliminary select, in the training set, a number of `k` nearest neighbors to the observation 
 to predict (= "weighting 1") and then to apply LWPLSR only to this pre-selected neighborhood (= "weighting 2").

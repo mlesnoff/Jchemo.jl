@@ -6,7 +6,7 @@ Return the data and predictions from a cross-validated model.
 * `Y` : Training Y-data (n, q).
 Keyword arguments: 
 * `segm` : Segments of observations used for the CV (output of functions [`segmts`](@ref), [`segmkf`](@ref), etc.).
-* `score` : Function computing the prediction score (e.g. `rmsep`).
+* `score` : Function computing the prediction score (e.g., `rmsep`).
 
 ## Examples
 ```julia

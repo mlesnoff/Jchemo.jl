@@ -7,7 +7,7 @@ Multiblock ROSA PLSR (Liland et al. 2016).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` 
     from data (n, p).  
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` and `Y` is scaled by its uncorrected standard 

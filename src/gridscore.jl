@@ -8,9 +8,9 @@ Test-set validation of a model over a grid of parameters.
 * `X` : Validation X-data (m, p).
 * `Y` : Validation Y-data (m, q).
 Keyword arguments: 
-* `score` : Function computing the prediction score (e.g. `rmsep`).
+* `score` : Function computing the prediction score (e.g., `rmsep`).
 * `pars` : tuple of named vectors of same length defining 
-    the parameter combinations (e.g. output of function `mpar`).
+    the parameter combinations (e.g., output of function `mpar`).
 * `verbose` : If `true`, predicting information are printed.
 * `nlv` : Value, or vector of values, of the nb. of latent variables (LVs).
 * `lb` : Value, or vector of values, of the ridge regularization 

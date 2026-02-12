@@ -10,7 +10,7 @@
 # <span style="color:green"> **About** </span> 
 
 At the start of the project, **Jchemo** was built around **partial least squares regression (PLSR) and discrimination (PLSDA) 
-methods** and their non-linear extensions, in particular locally weighted PLS models (**kNN-LWPLS-R** & **-DA**; e.g. https://doi.org/10.1002/cem.3209). The package has then been expanded with [many other methods](https://mlesnoff.github.io/Jchemo.jl/dev/domains/) of dimension reduction, regression, discrimination, and signal (e.g. spectra) preprocessing. 
+methods** and their non-linear extensions, in particular locally weighted PLS models (**kNN-LWPLS-R** & **-DA**; e.g., https://doi.org/10.1002/cem.3209). The package has then been expanded with [many other methods](https://mlesnoff.github.io/Jchemo.jl/dev/domains/) of dimension reduction, regression, discrimination, and signal (e.g., spectra) preprocessing. 
 
 Why the name **Jchemo**? Since it is oriented towards **chemometrics**, in brief the use of biometrics for chemistry data. But most of the provided methods are generic and can be applied to other types of data. 
 
@@ -23,7 +23,7 @@ Before to [update](https://github.com/mlesnoff/Jchemo.jl?tab=readme-ov-file#-ins
 # <span style="color:green"> **Sample workflow** </span> 
 
 Let us assume training data `(X, Y)`, and new data `Xnew` for which we want predictions from a PLSR model with 15 latent variables (LVs). The workflow is has follows 
-1) An object, e.g. `model` (any other name can be chosen), is built from the given learning model and its eventual parameters.
+1) An object, e.g., `model` (any other name can be chosen), is built from the given learning model and its eventual parameters.
     This object contains three sub-objects 
     * `algo` (the learning algorithm) 
     * `fitm` (the fitted model, empty at this stage) 
@@ -104,7 +104,7 @@ Jchemo.ParPlsr
 
 *Multi-threading*
 
-Some functions (e.g. those using kNN selections) use **multi-threading** to speed the computations. Taking advantage of this requires to specify a relevant number of threads (for instance from the *Settings* menu of the VsCode Julia extension and the file *settings.json*).
+Some functions (e.g., those using kNN selections) use **multi-threading** to speed the computations. Taking advantage of this requires to specify a relevant number of threads (for instance from the *Settings* menu of the VsCode Julia extension and the file *settings.json*).
 
 *Plotting*
 

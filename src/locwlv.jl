@@ -13,7 +13,7 @@ Keyword arguments:
 * `verbose` : Boolean. If `true`, predicting information are printed.
 * `kwargs` : Keywords arguments to pass in function `algo`. Each argument must have length = 1 (not be a collection).
 
-Same as [`locw`](@ref) but specific and much faster for LV-based models (e.g. PLSR).
+Same as [`locw`](@ref) but specific and much faster for LV-based models (e.g., PLSR).
 """
 function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv, store = false, verbose = true, kwargs...)
     p = nco(Xtrain)
@@ -29,7 +29,7 @@ function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv, store = f
         s = listnn[i]
         length(s) == 1 ? s = (s:s) : nothing
         zXtrain = vrow(Xtrain, s)
-        zYtrain = Ytrain[s, :]   # vrow makes pb in aggsumv (e.g. lda) when Ytrain is a vector
+        zYtrain = Ytrain[s, :]   # vrow makes pb in aggsumv (e.g., lda) when Ytrain is a vector
         ## For discrimination,
         ## case where all the neighbors have the same class
         if q == 1 && length(unique(zYtrain)) == 1

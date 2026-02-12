@@ -7,7 +7,7 @@ Compute an orthogonalization matrix for calibration transfer of spectral data.
 Keyword arguments:
 * `nlv` : Nb. of first loadings vectors of `D` considered for the orthogonalization.
 
-The objective is to remove some detrimental information (e.g. humidity patterns in signals, multiple spectrometers, 
+The objective is to remove some detrimental information (e.g., humidity patterns in signals, multiple spectrometers, 
 etc.) from a X-dataset (n, p).  The detrimental information is defined by the main row-directions computed from a 
 matrix `D` (m, p). 
 
@@ -26,7 +26,7 @@ Matrix `D` can be built from many methods. For instance, two common methods are:
 * TOP (Andrew & Fearn 2004): Each row of `D` is the mean spectrum computed for a given spectrometer instrument.
 
 A particular situation is the following. Assume that `D` is built from some differences between matrices X1 and X2, 
-and that a bilinear model (e.g. PLSR) is fitted on the data {X1_corrected, Y} where X1_corrected = X1 * `M`. 
+and that a bilinear model (e.g., PLSR) is fitted on the data {X1_corrected, Y} where X1_corrected = X1 * `M`. 
 To predict new data X2_new with the fitted model, there is no need to correct X2_new.
 
 # References

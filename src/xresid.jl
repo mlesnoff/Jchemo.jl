@@ -1,7 +1,7 @@
 """
     xresid(object, X; nlv = nothing)
     xresid!(object, X::Matrix; nlv = nothing)
-Residual matrix from a bilinear model (e.g. PCA).
+Residual matrix from a bilinear model (e.g., PCA).
 * `object` : The fitted model.
 * `X` : New X-data to be approximated from the model.Must be in the same scale as the X-data used to fit
     the model `object`, i.e. before centering and eventual scaling.

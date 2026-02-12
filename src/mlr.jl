@@ -6,7 +6,7 @@
 Compute a mutiple linear regression model (MLR) by using the QR algorithm.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
 Keyword arguments:
 * `noint` : Boolean. Define if the model is computed with an intercept or not.
 
@@ -101,7 +101,7 @@ end
 Compute a mutiple linear regression model (MLR) using the Normal equations and a Choleski factorization.
 * `X` : X-data, with nb. columns >= 2 (required by function cholesky).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`). 
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`). 
 
 Only compute a model with intercept.
 
@@ -144,7 +144,7 @@ Compute a mutiple linear regression model (MLR)  by using
     a pseudo-inverse. 
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`). 
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`). 
 Keyword arguments:
 * `noint` : Boolean. Define if the model is computed with an intercept or not.
 
@@ -196,7 +196,7 @@ end
 Compute a mutiple linear regression model (MLR) by using the Normal equations and a pseudo-inverse.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`). 
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`). 
 
 Safe and fast for p not too large.
 
@@ -239,7 +239,7 @@ end
 Compute a simple (univariate x) linear regression model.
 * `x` : Univariate X-data (n).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`). 
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`). 
 Keyword arguments:
 * `noint` : Boolean. Define if the model is computed with an intercept or not.
 

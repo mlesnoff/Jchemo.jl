@@ -1,9 +1,9 @@
 """
     selwold(indx, r; smooth = true, npoint = 5, alpha = .05, digits = 3, graph = true, 
         step = 2, xlabel = "Index", ylabel = "Value", title = "Score")
-Wold's criterion to select dimensionality in LV models (e.g. PLSR).
-* `indx` : A variable representing the model parameter(s), e.g. nb. LVs if PLSR models.
-* `r` : A vector of error rates (n), e.g. RMSECV.
+Wold's criterion to select dimensionality in LV models (e.g., PLSR).
+* `indx` : A variable representing the model parameter(s), e.g., nb. LVs if PLSR models.
+* `r` : A vector of error rates (n), e.g., RMSECV.
 Keyword arguments:
 * `smooth` : Boolean. If `true`,  the selection is done after a moving-average smoothing of rate R (see function `mavg`).
 * `npoint` : Window of the moving-average used to smooth rate R.
@@ -17,7 +17,7 @@ Keyword arguments:
 
 The slection criterion is the "precision gain ratio": 
 * R = 1 - `r`(a+1) / `r`(a)
-where `r` is an observed error rate quantifying the model performance (e.g. RMSEP, classification error rate, etc.) 
+where `r` is an observed error rate quantifying the model performance (e.g., RMSEP, classification error rate, etc.) 
 and a the model dimensionnality (= nb. LVs). `r` can also represent other indicators such as the eigenvalues of a PCA.
 
 R is the relative gain in perforamnce efficiency after a new LV is added to the model. The iterations continue until 

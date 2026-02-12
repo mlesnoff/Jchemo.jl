@@ -266,7 +266,7 @@
 
 - **vip** Variable importance on projections (VIP)
 - **viperm!** Variable importance by direct permutations
-- **isel!** Interval variable selection (e.g. Interval PLSR)
+- **isel!** Interval variable selection (e.g., Interval PLSR)
 
 ## TUNING MODELS
 
@@ -306,7 +306,7 @@
 
 *Model dimensionality*
 - **aicplsr** AIC and Cp for PLSR
-- **selwold** Wold's criterion to select dimensionality in LV models (e.g. PLSR)
+- **selwold** Wold's criterion to select dimensionality in LV models (e.g., PLSR)
 
 ## DATA PROCESSING
 
@@ -330,7 +330,7 @@
 - **fdif** Finite differences
 - **mavg** Smoothing by moving average
 - **savgk**, **savgol** Savitsky-Golay filtering
-- **rmgap** Remove vertical gaps in spectra, e.g. for ASD NIR data
+- **rmgap** Remove vertical gaps in spectra, e.g., for ASD NIR data
 
 *Scaling*
 - **center** Column centering

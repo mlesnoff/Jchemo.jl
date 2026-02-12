@@ -36,7 +36,7 @@ end
     blockscal(Xbl, weights::Weight; kwargs...)
 Scale multiblock X-data.
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
-* `weights` : Weights (n) of the observations (rows of the blocks). Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations (rows of the blocks). Must be of type `Weight` (see e.g., function `mweight`).
 Keyword arguments:
 * `centr` : Boolean. If `true`, each column of blocks in `Xbl` is centered (before the block scaling).
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` is scaled by its uncorrected standard deviation (before the block scaling).

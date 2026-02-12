@@ -6,8 +6,8 @@ Cross-validation (CV) of a model over a grid of parameters.
 * `Y` : Training Y-data (n, q).
 Keyword arguments: 
 * `segm` : Segments of observations used for the CV (output of functions [`segmts`](@ref), [`segmkf`](@ref), etc.).
-* `score` : Function computing the prediction score (e.g. `rmsep`).
-* `pars` : tuple of named vectors of same length defining the parameter combinations (e.g. output of function `mpar`).
+* `score` : Function computing the prediction score (e.g., `rmsep`).
+* `pars` : tuple of named vectors of same length defining the parameter combinations (e.g., output of function `mpar`).
 * `verbose` : If `true`, predicting information are printed.
 * `nlv` : Value, or vector of values, of the nb. of latent variables (LVs).
 * `lb` : Value, or vector of values, of the ridge regularization parameter "lambda".

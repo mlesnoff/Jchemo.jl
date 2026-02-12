@@ -6,7 +6,7 @@
 Canonical correlation Analysis (CCA, RCCA).
 * `X` : First block of data.
 * `Y` : Second block of data.
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are:`:none`, `:frob`. See functions `blockscal`.
@@ -25,7 +25,7 @@ and Projy * Projx, respectively, defined as follows:
 * Projx = sqrt(D) * X * invCx * X' * sqrt(D)
 * Projy = sqrt(D) * Y * invCx * Y' * sqrt(D)
 where D is the observation (row) metric. Value `tau` = 0 can generate unstability when inverting the covariance 
-matrices. Often, a better alternative is to use an epsilon value (e.g. `tau` = 1e-8) to get similar results as 
+matrices. Often, a better alternative is to use an epsilon value (e.g., `tau` = 1e-8) to get similar results as 
 with pseudo-inverses.  
 
 After normalized (and using uniform `weights`), the scores returned by the function are expected to be the same as 

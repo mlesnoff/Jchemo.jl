@@ -5,7 +5,7 @@
     comdim!(Xbl::Matrix, weights::Weight; kwargs...)
 Common components and specific weights analysis (CCSWA, a.k.a ComDim and HPCA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock`.  
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. global latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.

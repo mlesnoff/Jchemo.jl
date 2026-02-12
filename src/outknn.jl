@@ -9,7 +9,7 @@ Keyword arguments:
 * `algo` : Function summarizing the `k` distances to the neighbors.
 * `scal` : Boolean. If `true`, each column of `X` is scaled before computing the outlierness.
 
-For each observation (row of `X`), the outlierness is defined by a summary (e.g. by sum or maximum) of the distances 
+For each observation (row of `X`), the outlierness is defined by a summary (e.g., by sum or maximum) of the distances 
 between the observation and its `k` nearest neighbors. 
 
 ## References

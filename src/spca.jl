@@ -5,7 +5,7 @@
     spca!(X::Matrix, weights::Weight; kwargs...)
 Sparse PCA by regularized low rank matrix approximation (sPCA-rSVD, Shen & Huang 2008).
 * `X` : X-data (n, p). 
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. principal components (PCs).
 * `meth` : Method used for the thresholding of the loadings. Possible values are: `:soft`, `:hard`. See thereafter.
@@ -147,7 +147,7 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
         ## Deflation
         if par.defl == :v          # regression of X' on v (Shen & Huang 2008 p.1033 in Th.A.2)
             X .-= res.t * res.v'   # = X - X * v * v' = X - t * v'
-        elseif par.defl == :t      # Regression of X on t (e.g. used in R mixOmics::spca)
+        elseif par.defl == :t      # Regression of X on t (e.g., used in R mixOmics::spca)
             tt = dot(res.t, res.t)
             b .= res.t' * X / tt   # = inv(t' * t) * t' * X  =  t' X / tt       
             X .-= res.t * b        # = X - t * t' X / tt

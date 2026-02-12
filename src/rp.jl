@@ -5,7 +5,7 @@
     rp!(X::Matrix, weights::Weight; kwargs...)
 Make a random projection of X-data.
 * `X` : X-data (n, p).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g. function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
 Keyword arguments:
 * `nlv` : Nb. dimensions on which `X` is projected.
 * `meth` : Method of random projection. Possible values are: `:gauss`, `:li`. See the respective functions 
