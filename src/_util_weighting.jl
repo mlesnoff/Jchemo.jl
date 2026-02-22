@@ -2,7 +2,7 @@
 
 """ 
     mweight(x::Vector)
-Return an object of type `Weight` containing vector `w = x / sum(x)` (if ad'hoc building, `w` must sum to 1).
+Return an object of type `Weight`, containing vector `v = x / sum(x)`.
 
 ## Examples
 ```julia
