@@ -1,12 +1,12 @@
 """
     pcr(; kwargs...)
     pcr(X, Y; kwargs...)
-    pcr(X, Y, weights::Weight; kwargs...)
-    pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    pcr(X, Y, weights::ProbabilityWeights; kwargs...)
+    pcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Principal component regression (PCR) with a SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
@@ -66,15 +66,16 @@ pcr(; kwargs...) = JchemoModel(pcr, nothing, kwargs)
 
 function pcr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     pcr(X, Y, weights; kwargs...)
 end
 
-function pcr(X, Y, weights::Weight; kwargs...)
+function pcr(X, Y, weights::ProbabilityWeights; kwargs...)
     pcr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function pcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPca, kwargs).par
     Q = eltype(X)
     q = nco(Y)
@@ -85,7 +86,7 @@ function pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     ## if T is D-orthogonal. This is the case for the actual version (pcasvd)
     ## theta: coefs regression of Y on T (= C')
     ## not needed (same theta): fcenter!(Y, ymeans)
-    theta = inv(fitm.T' * rweight(fitm.T, fitm.weights.v)) * fitm.T' * rweight(Y, fitm.weights.v)  # = C'
+    theta = inv(fitm.T' * rweight(fitm.T, fitm.weights.values)) * fitm.T' * rweight(Y, fitm.weights.values)  # = C'
     Pcr(fitm, theta', ymeans, yscales, par) 
 end
 

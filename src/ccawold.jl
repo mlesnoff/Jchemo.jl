@@ -1,12 +1,12 @@
 """
     ccawold(; kwargs...)
     ccawold(X, Y; kwargs...)
-    ccawold(X, Y, weights::Weight; kwargs...)
-    ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    ccawold(X, Y, weights::ProbabilityWeights; kwargs...)
+    ccawold!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Canonical correlation analysis (CCA, RCCA) - Wold Nipals algorithm.
 * `X` : First block of data.
 * `Y` : Second block of data.
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are:`:none`, `:frob`. See functions `blockscal`.
@@ -90,15 +90,15 @@ ccawold(; kwargs...) = JchemoModel(ccawold, nothing, kwargs)
 function ccawold(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)
-    weights = mweight(ones(Q, n))
+    weights = pweight(ones(Q, n))
     ccawold(X, Y, weights; kwargs...)
 end
 
-function ccawold(X, Y, weights::Weight; kwargs...)
+function ccawold(X, Y, weights::ProbabilityWeights; kwargs...)
     ccawold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function ccawold!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParCcawold, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
@@ -129,7 +129,7 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         bscales = [normx ; normy]
     end
     # Row metric
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     invsqrtw = 1 ./ sqrtw
     rweight!(X, sqrtw)
     rweight!(Y, sqrtw)

@@ -1,12 +1,12 @@
 """
     krr(; kwargs...)
     krr(X, Y; kwargs...)
-    krr(X, Y, weights::Weight; kwargs...)
-    krr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
+    krr(X, Y, weights::ProbabilityWeights; kwargs...)
+    krr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
 Kernel ridge regression (KRR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `lb` : Ridge regularization parameter "lambda".
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective functions 
@@ -105,15 +105,16 @@ krr(; kwargs...) = JchemoModel(krr, nothing, kwargs)
 
 function krr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     krr(X, Y, weights; kwargs...)
 end
 
-function krr(X, Y, weights::Weight; kwargs...)
+function krr(X, Y, weights::ProbabilityWeights; kwargs...)
     krr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function krr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
+function krr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParKrr, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     Q = eltype(X)
@@ -127,10 +128,10 @@ function krr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...
     ymeans = colmean(Y, weights)
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
     K = fkern(X, X; kwargs...)
-    sqrtw = sqrt.(weights.v)
-    DKt = rweight(K', weights.v)
+    sqrtw = sqrt.(weights.values)
+    DKt = rweight(K', weights.values)
     vtot = sum(DKt, dims = 1)
-    Kc = K .- vtot' .- vtot .+ sum(rweight(DKt', weights.v))
+    Kc = K .- vtot' .- vtot .+ sum(rweight(DKt', weights.values))
     # Kd = D^(1/2) * Kc * D^(1/2) 
     #    = U * Delta^2 * U'    
     Kd = rweight(Kc, sqrtw) * Diagonal(sqrtw) 
@@ -172,9 +173,9 @@ function predict(object::Krr, X; lb = nothing)
     isnothing(lb) ? lb = object.par.lb : nothing
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
-    DKt = rweight(K', object.weights.v)
+    DKt = rweight(K', object.weights.values)
     vtot = sum(DKt, dims = 1)
-    w = object.weights.v
+    w = object.weights.values
     Kc = K .- vtot' .- object.vtot .+ sum(rweight(object.DKt', w))
     le_lb = length(lb)
     pred = list(Matrix{eltype(X)}, le_lb)

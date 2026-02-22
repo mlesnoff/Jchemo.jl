@@ -1,12 +1,12 @@
 """
     plsrout(; kwargs...)
     plsrout(X, Y; kwargs...)
-    plsrout(X, Y, weights::Weight; kwargs...)
-    pcaout!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    plsrout(X, Y, weights::ProbabilityWeights; kwargs...)
+    pcaout!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Robust PLSR using outlierness.
 * `X` : X-data (n, p). 
 * `Y` : Y-data (n, q). 
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of latent variables (LVs).
 * `prm` : Proportion of the data removed (hard rejection of outliers) for each outlierness measure.
@@ -61,15 +61,16 @@ plsrout(; kwargs...) = JchemoModel(plsrout, nothing, kwargs)
 
 function plsrout(X, Y; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     plsrout(X, Y, weights; kwargs...)
 end
 
-function plsrout(X, Y, weights::Weight; kwargs...)
+function plsrout(X, Y, weights::ProbabilityWeights; kwargs...)
     plsrout!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plsrout!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function plsrout!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPlsrout, kwargs).par 
     n, p = size(X)
     nlvout = 30
@@ -79,7 +80,7 @@ function plsrout!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     w = wtal(d; a = quantile(d, 1 - par.prm))
     d .= outeucl(X; scal = par.scal).d
     w .*= wtal(d; a = quantile(d, 1 - par.prm))
-    w .*= weights.v
+    w .*= weights.values
     w[isequal.(w, 0)] .= 1e-10
-    plskern!(X, Y, mweight(w); kwargs...)
+    plskern!(X, Y, pweight(w); kwargs...)
 end

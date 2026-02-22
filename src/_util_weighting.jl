@@ -1,31 +1,14 @@
 ###### Building weights
 
-""" 
-    mweight(x::Vector)
-Return an object of type `Weight`, containing vector `v = x / sum(x)`.
-
-## Examples
-```julia
-using Jchemo
-
-x = rand(10)
-w = mweight(x)
-sum(w.v)
-```
-"""
-mweight(x::Vector) = Weight(x / sum(x))
-
-#mweight(x::AbstractVector) = Weight(x / sum(x))  # For CUDA
-
-#mweight(w::Vector{Q}) where {Q <: AbstractFloat} = mweight!(copy(w))
-#mweight!(w::Vector{Q}) where {Q <: AbstractFloat} = w ./= sum(w)
-
-#mweight(w::Union{Vector{Float32}, Vector{Float64}}) = mweight!(copy(w))
-#mweight!(w::Union{Vector{Float32}, Vector{Float64}}) = w ./= sum(w)
+function pweight(x)
+    tot = sum(x) 
+    ProbabilityWeights(x / tot, tot)
+end
+#pweight(x) = pweights(x / sum(x))
 
 """ 
-    mweightcla(y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
-    mweightcla(Q::DataType, y::Vector; prior::Union{Symbol, Vector} = :prop)
+    pweightcla(y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
+    pweightcla(Q::DataType, y::Vector; prior::Union{Symbol, Vector} = :prop)
 Compute observation weights for a categorical variable, given specified sub-total weights for the classes.
 * `y` : A categorical variable (n) (class membership).
 * `Q` : A data type (e.g., `Float32`).
@@ -34,7 +17,7 @@ Keyword arguments:
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 
-Return an object of type `Weight` (see function `mweight`) containing a vector `w` (n) that sums to 1.
+Return an object of type `ProbabilityWeights` (see function `pweight`) containing a vector `w` (n) that sums to 1.
 
 ## Examples
 ```julia
@@ -42,14 +25,14 @@ using Jchemo
 
 y = vcat(rand(["a" ; "c"], 900), repeat(["b"], 100))
 tab(y)
-weights = mweightcla(y)
-#weights = mweightcla(y; prior = :prop)
-#weights = mweightcla(y; prior = [.1, .7, .2])
-res = aggstat(weights.v, y; algo = sum)
+weights = pweightcla(y)
+#weights = pweightcla(y; prior = :prop)
+#weights = pweightcla(y; prior = [.1, .7, .2])
+res = aggstat(weights.values, y; algo = sum)
 [res.lev res.X]
 ```
 """
-function mweightcla(y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
+function pweightcla(y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
     n = length(y)
     res = tab(y)
     lev = res.keys
@@ -59,18 +42,18 @@ function mweightcla(y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
     elseif isequal(prior, :prop)
         priors = res.vals / n
     else
-        priors = mweight(prior).v  # could be '= prior', but mweight not costly 
+        priors = pweight(prior).values  # could be '= prior', but pweight not costly 
     end
     w = zeros(n)
     @inbounds for i in eachindex(lev)
         s = y .== lev[i]
         w[s] .= priors[i] / res.vals[i]
     end
-    mweight(w)
+    pweight(w)
 end
 
-function mweightcla(Q::DataType, y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
-    mweight(convert.(Q, mweightcla(y; prior).v))
+function pweightcla(Q::DataType, y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
+    pweight(convert.(Q, pweightcla(y; prior).values))
 end
 
 ##### Weighting entire rows or columns

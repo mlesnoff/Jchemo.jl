@@ -1,12 +1,12 @@
 """
     plsrosa(; kwargs...)
     plsrosa(X, Y; kwargs...)
-    plsrosa(X, Y, weights::Weight; kwargs...)
-    plsrosa!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    plsrosa(X, Y, weights::ProbabilityWeights; kwargs...)
+    plsrosa!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Partial Least Squares Regression (PLSR) with the  ROSA algorithm (Liland et al. 2016).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
@@ -25,15 +25,16 @@ plsrosa(; kwargs...) = JchemoModel(plsrosa, nothing, kwargs)
 
 function plsrosa(X, Y; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     plsrosa(X, Y, weights; kwargs...)
 end
 
-function plsrosa(X, Y, weights::Weight; kwargs...)
+function plsrosa(X, Y, weights::ProbabilityWeights; kwargs...)
     plsrosa!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plsrosa!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function plsrosa!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPlsr, kwargs).par
     Q = eltype(X)
     n, p = size(X)
@@ -66,7 +67,7 @@ function plsrosa!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     c = similar(X, q)
     ## End
     @inbounds for a = 1:nlv
-        XtY .= X' * rweight(Y, weights.v)
+        XtY .= X' * rweight(Y, weights.values)
         if q == 1
             w .= vec(XtY)
             w ./= normv(w)
@@ -76,12 +77,12 @@ function plsrosa!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         mul!(t, X, w)
         if a > 1
             z = vcol(T, 1:(a - 1))
-            t .= t .- z * inv(z' * rweight(z, weights.v)) * z' * rweight(t, weights.v)
+            t .= t .- z * inv(z' * rweight(z, weights.values)) * z' * rweight(t, weights.values)
             z = vcol(W, 1:(a - 1))
             w = w .- z * (z' * w)
             w ./= normv(w)
         end
-        dt .= weights.v .* t
+        dt .= weights.values .* t
         tt = dot(t, dt)
         mul!(c, Y', dt)
         c ./= tt                      

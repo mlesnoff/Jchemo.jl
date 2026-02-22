@@ -1,11 +1,11 @@
 """
     splsrda(; kwargs...)
     splsrda(X, y; kwargs...)
-    splsrda(X, y, weights::Weight; kwargs...)
+    splsrda(X, y, weights::ProbabilityWeights; kwargs...)
 Sparse PLSR-DA.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`). 
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `meth` : Method used for the sparse thresholding. Possible values are: `:soft`, `:hard`. See thereafter.
@@ -84,15 +84,15 @@ splsrda(; kwargs...) = JchemoModel(splsrda, nothing, kwargs)
 function splsrda(X, y; kwargs...)
     par = recovkw(ParSplsda, kwargs).par
     Q = eltype(X[1, 1])
-    weights = mweightcla(Q, y; prior = par.prior)
+    weights = pweightcla(Q, y; prior = par.prior)
     splsrda(X, y, weights; kwargs...)
 end
 
-function splsrda(X, y, weights::Weight; kwargs...)
+function splsrda(X, y, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParSplsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
-    priors = aggsumv(weights.v, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm = splsr(X, res.Y, weights; kwargs...)
     Plsrda(fitm, ni, priors, res.lev, par)
 end

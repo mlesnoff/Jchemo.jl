@@ -1,11 +1,11 @@
 """
     splsqda(; kwargs...)
     splsqda(X, y; kwargs...)
-    splsqda(X, y, weights::Weight; kwargs...)
+    splsqda(X, y, weights::ProbabilityWeights; kwargs...)
 Sparse PLS-QDA (with continuum).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`). 
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `meth` : Method used for the sparse thresholding. Possible values are: `:soft`, `:hard`. See thereafter.
@@ -29,16 +29,16 @@ splsqda(; kwargs...) = JchemoModel(splsqda, nothing, kwargs)
 function splsqda(X, y; kwargs...)
     par = recovkw(ParSplsqda, kwargs).par
     Q = eltype(X[1, 1])
-    weights = mweightcla(Q, y; prior = par.prior)
+    weights = pweightcla(Q, y; prior = par.prior)
     splsqda(X, y, weights; kwargs...)
 end
 
-function splsqda(X, y, weights::Weight; kwargs...)
+function splsqda(X, y, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParSplsqda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    priors = aggsumv(weights.v, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm_emb = splsr(X, res.Y, weights; kwargs...)
     fitm_da = list(Qda, par.nlv)
     @inbounds for i = 1:par.nlv

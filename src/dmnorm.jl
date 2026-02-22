@@ -58,7 +58,7 @@ fitm.detS
 
 ## Direct syntax
 mu = colmean(zT)
-S = covm(zT, mweight(ones(m))) * m / (m - 1) # corrected cov. matrix
+S = covm(zT, pweight(ones(m))) * m / (m - 1) # corrected cov. matrix
 fitm = dmnorm(mu, S) ; 
 @names fitm
 fitm.Uinv

@@ -41,7 +41,7 @@ function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv, store = f
             if isnothing(listw)
                 fitm[i] = algo(zXtrain,  zYtrain; nlv = maximum(nlv), kwargs...)
             else
-                fitm[i] = algo(zXtrain, zYtrain, mweight(listw[i]); nlv = maximum(nlv), kwargs...)
+                fitm[i] = algo(zXtrain, zYtrain, pweight(listw[i]); nlv = maximum(nlv), kwargs...)
             end
             @inbounds for a = 1:le_nlv
                 zpred[i, :, a] = predict(fitm[i], vrow(X, i:i); nlv = nlv[a]).pred

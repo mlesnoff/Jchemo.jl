@@ -1,8 +1,8 @@
 """
     covsel(; kwargs...)
     covsel(X, Y; kwargs...)
-    covsel(X, Y, weights::Weight; kwargs...)
-    covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
+    covsel(X, Y, weights::ProbabilityWeights; kwargs...)
+    covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
 Variable (feature) selection from partial covariance (Covsel).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -72,15 +72,16 @@ covsel(; kwargs...) = JchemoModel(covsel, nothing, kwargs)
 
 function covsel(X, Y; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     covsel(X, Y, weights; kwargs...)
 end
 
-function covsel(X, Y, weights::Weight; kwargs...)
+function covsel(X, Y, weights::ProbabilityWeights; kwargs...)
     covsel!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
+function covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParCovsel, kwargs).par
     Q = eltype(X)
     ## Specific for Da functions
@@ -102,7 +103,7 @@ function covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs
         fcenter!(X, xmeans)
         fcenter!(Y, ymeans)
     end
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     rweight!(X, sqrtw)
     rweight!(Y, sqrtw)
     xsstot = frob2(X)

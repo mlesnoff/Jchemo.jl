@@ -1,10 +1,10 @@
 """
     kpca(; kwargs...)
     kpca(X; kwargs...)
-    kpca(X, weights::Weight; kwargs...)
+    kpca(X, weights::ProbabilityWeights; kwargs...)
 Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
 * `X` : X-data (n, p).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. principal components (PCs) to consider. 
 * `kern` : Type of kernel used to compute the Gram matrices.Possible values are: `:krbf`, `:kpol`. See respective functions `krbf` 
@@ -13,7 +13,7 @@ Keyword arguments:
 
 The method is implemented by SVD factorization of the weighted Gram matrix: 
 * D^(1/2) * Phi(X) * Phi(X)' * D^(1/2)
-where X is the cenetred matrix and D is a diagonal matrix of weights (`weights.v`) of the observations (rows of X).
+where X is the cenetred matrix and D is a diagonal matrix of weights (`weights.values`) of the observations (rows of X).
 
 ## References 
 Scholkopf, B., Smola, A., MÃ¼ller, K.-R., 1997. Kernel principal component analysis, in: Gerstner, W., Germond, A., Hasler, 
@@ -63,11 +63,12 @@ kpca(; kwargs...) = JchemoModel(kpca, nothing, kwargs)
 function kpca(X; kwargs...)
     X = ensure_mat(X)
     Q = eltype(X)
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     kpca(X, weights; kwargs...)
 end
 
-function kpca(X, weights::Weight; kwargs...)
+function kpca(X, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParKpca, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     X = ensure_mat(X)
@@ -81,11 +82,11 @@ function kpca(X, weights::Weight; kwargs...)
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
     K = fkern(X, X; kwargs...)  # in the future?: fkern!(K, X, X; kwargs...)
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     Kt = K'    
-    DKt = rweight(Kt, weights.v)
+    DKt = rweight(Kt, weights.values)
     vtot = sum(DKt, dims = 1)
-    Kc = K .- vtot' .- vtot .+ sum(rweight(DKt', weights.v))    # = K .- vtot' .- vtot .+ sum(D * DKt')
+    Kc = K .- vtot' .- vtot .+ sum(rweight(DKt', weights.values))    # = K .- vtot' .- vtot .+ sum(D * DKt')
     Kd = rweight(Kc, sqrtw) * Diagonal(sqrtw)    # = sqrtD * Kc * sqrtD
     res = LinearAlgebra.svd(Kd)
     U = res.V[:, 1:nlv]
@@ -109,7 +110,7 @@ function transf(object::Kpca, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
-    w = object.weights.v
+    w = object.weights.values
     DKt = rweight(K', w)
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(rweight(object.DKt', w))

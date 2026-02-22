@@ -1,12 +1,12 @@
 """
     rasvd(; kwargs...)
     rasvd(X, Y; kwargs...)
-    rasvd(X, Y, weights::Weight; kwargs...)
-    rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    rasvd(X, Y, weights::ProbabilityWeights; kwargs...)
+    rasvd!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Redundancy analysis (RA), a.k.a PCA on instrumental variables (PCAIV)
 * `X` : First block of data.
 * `Y` : Second block of data.
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`. See functions `blockscal`.
@@ -81,15 +81,15 @@ rasvd(; kwargs...) = JchemoModel(rasvd, nothing, kwargs)
 function rasvd(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)
-    weights = mweight(ones(Q, n))
+    weights = pweight(ones(Q, n))
     rasvd(X, Y, weights; kwargs...)
 end
 
-function rasvd(X, Y, weights::Weight; kwargs...)
+function rasvd(X, Y, weights::ProbabilityWeights; kwargs...)
     rasvd!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function rasvd!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParRasvd, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
@@ -120,7 +120,7 @@ function rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         bscales = [normx ; normy]
     end
     # Row metric
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     invsqrtw = 1 ./ sqrtw
     rweight!(X, sqrtw)
     rweight!(Y, sqrtw)
@@ -193,7 +193,7 @@ function Base.summary(object::Rasvd, X, Y)
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     ## Block X
     T = object.Tx
-    DT = rweight(T, object.weights.v)
+    DT = rweight(T, object.weights.values)
     ss = frob(X, object.weights)^2
     tt = diag(DT'* X * X' * DT) ./ diag(T' * DT)
     pvar =  tt / ss

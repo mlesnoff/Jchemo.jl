@@ -1,11 +1,11 @@
 """
     mbplsrda(; kwargs...)
     mbplsrda(Xbl, y; kwargs...)
-    mbplsrda(Xbl, y, weights::Weight; kwargs...)
+    mbplsrda(Xbl, y, weights::ProbabilityWeights; kwargs...)
 Discrimination based on multiblock partial least squares regression (MBPLSR-DA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
@@ -31,7 +31,7 @@ weights. In that case, argument `prior` has no effect: the class prior probabili
 computed by summing the observation weights by class.
 
 In the high-level methods (no argument `weights`), argument `prior` defines how are preliminary computed the 
-observation weights (see function `mweightcla`) that are then given as input in the hidden low level method.
+observation weights (see function `pweightcla`) that are then given as input in the hidden low level method.
 
 **Note:** For highly unbalanced classes, it may be recommended to define equal class weights ('prior = :unif'),
 and to use a performance score such as `merrp`, instead of `errp`.
@@ -80,7 +80,7 @@ typeof(fitm.fitm)
 fitm.lev
 fitm.ni
 fitm.priors
-aggsumv(fitm.fitm.weights.v, ytrain)
+aggsumv(fitm.fitm.weights.values, ytrain)
 
 @head transf(model, Xbltrain)
 @head fitm.fitm.fitm.T
@@ -103,15 +103,15 @@ mbplsrda(; kwargs...) = JchemoModel(mbplsrda, nothing, kwargs)
 function mbplsrda(Xbl, y; kwargs...)
     par = recovkw(ParMbplsda, kwargs).par
     Q = eltype(Xbl[1][1, 1])
-    weights = mweightcla(Q, y; prior = par.prior)
+    weights = pweightcla(Q, y; prior = par.prior)
     mbplsrda(Xbl, y, weights; kwargs...)
 end
 
-function mbplsrda(Xbl, y, weights::Weight; kwargs...)
+function mbplsrda(Xbl, y, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParMbplsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
-    priors = aggsumv(weights.v, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm = mbplsr(Xbl, res.Y, weights; kwargs...)
     Mbplsrda(fitm, ni, priors, res.lev, par) 
 end

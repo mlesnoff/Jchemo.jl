@@ -38,7 +38,7 @@ simppsph = function(X; nsim = 0)
         w = similar(X, n)
         for j = (n + 1):(n + nsim)
             w .= rand(Uniform(-1, 1), n)
-            V[:, j] .= colsum(X, mweight(w))
+            V[:, j] .= colsum(X, pweight(w))
         end
     end
     fscale!(V, colnorm(V))

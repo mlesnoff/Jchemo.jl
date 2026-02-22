@@ -1,11 +1,11 @@
 """
     dkplsrda(; kwargs...)
     dkplsrda(X, y; kwargs...)
-    dkplsrda(X, y, weights::Weight; kwargs...)
+    dkplsrda(X, y, weights::ProbabilityWeights; kwargs...)
 Discrimination based on direct kernel partial least squares regression (KPLSR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`). 
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective 
@@ -78,15 +78,15 @@ dkplsrda(; kwargs...) = JchemoModel(dkplsrda, nothing, kwargs)
 function dkplsrda(X, y; kwargs...)
     par = recovkw(ParKplsda, kwargs).par
     Q = eltype(X[1, 1])
-    weights = mweightcla(Q, y; prior = par.prior)
+    weights = pweightcla(Q, y; prior = par.prior)
     dkplsrda(X, y, weights; kwargs...)
 end
 
-function dkplsrda(X, y, weights::Weight; kwargs...)
+function dkplsrda(X, y, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParKplsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
-    priors = aggsumv(weights.v, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm = dkplsr(X, res.Y, weights; kwargs...)
     Plsrda(fitm, ni, priors, res.lev, par)
 end

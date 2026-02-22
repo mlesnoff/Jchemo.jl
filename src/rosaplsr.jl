@@ -1,13 +1,13 @@
 """
     rosaplsr(; kwargs...)
     rosaplsr(Xbl, Y; kwargs...)
-    rosaplsr(Xbl, Y, weights::Weight; kwargs...)
-    rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
+    rosaplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
+    rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Multiblock ROSA PLSR (Liland et al. 2016).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` 
     from data (n, p).  
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` and `Y` is scaled by its uncorrected standard 
@@ -65,11 +65,11 @@ rosaplsr(; kwargs...) = JchemoModel(rosaplsr, nothing, kwargs)
 function rosaplsr(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
-    weights = mweight(ones(Q, n))
+    weights = pweight(ones(Q, n))
     rosaplsr(Xbl, Y, weights; kwargs...)
 end
 
-function rosaplsr(Xbl, Y, weights::Weight; kwargs...)
+function rosaplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
@@ -79,7 +79,7 @@ function rosaplsr(Xbl, Y, weights::Weight; kwargs...)
     rosaplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
+function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParSoplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])   
     n = nro(Xbl[1])
@@ -119,7 +119,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     #Res = zeros(n, q, nbl)
     ## Start 
     @inbounds for a = 1:nlv
-        DY .= rweight(Y, weights.v)  # apply the metric to the covariance
+        DY .= rweight(Y, weights.values)  # apply the metric to the covariance
         @inbounds for k in eachindex(Xbl)
             XtY = Xbl[k]' * DY
             if q == 1
@@ -134,7 +134,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         ## GS Orthogonalization of the scores
         if a > 1
             z = vcol(T, 1:(a - 1))
-            zT .= zT .- z * inv(z' * rweight(z, weights.v)) * z' * rweight(zT, weights.v)
+            zT .= zT .- z * inv(z' * rweight(z, weights.values)) * z' * rweight(zT, weights.values)
         end
         ## Selection of the winner block (opt)
         @inbounds for k in eachindex(Xbl)
@@ -146,7 +146,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         ## Old
         #@inbounds for k in eachindex(Xbl)
         #    t = vcol(zT, k)
-        #    dt .= weights.v .* t
+        #    dt .= weights.values .* t
         #    tt = dot(t, dt)
         #    Res[:, :, k] .= Y .- (t * t') * DY / tt
         #end
@@ -156,7 +156,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         bl[a] = opt
         ## Outputs for winner block
         t .= zT[:, opt]
-        dt .= weights.v .* t
+        dt .= weights.values .* t
         tt = dot(t, dt)
         mul!(c, Y', dt)
         c ./= tt     

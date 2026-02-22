@@ -1,12 +1,12 @@
 """
     plstuck(; kwargs...)
     plstuck(X, Y; kwargs...)
-    plstuck(X, Y, weights::Weight; kwargs...)
-    plstuck!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    plstuck(X, Y, weights::ProbabilityWeights; kwargs...)
+    plstuck!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Tucker's inter-battery method of factor analysis
 * `X` : First block of data.
 * `Y` : Second block of data.
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are:
@@ -73,15 +73,15 @@ plstuck(; kwargs...) = JchemoModel(plstuck, nothing, kwargs)
 function plstuck(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)
-    weights = mweight(ones(Q, n))
+    weights = pweight(ones(Q, n))
     plstuck(X, Y, weights; kwargs...)
 end
 
-function plstuck(X, Y, weights::Weight; kwargs...)
+function plstuck(X, Y, weights::ProbabilityWeights; kwargs...)
     plstuck!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plstuck!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function plstuck!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPls2bl, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(X)
@@ -109,7 +109,7 @@ function plstuck!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         Y ./= normy
         bscales = [normx ; normy]
     end
-    XtY = X' * rweight(Y, weights.v)
+    XtY = X' * rweight(Y, weights.values)
     U, delta, V = svd(XtY)
     delta = delta[1:nlv]
     Wx = U[:, 1:nlv]

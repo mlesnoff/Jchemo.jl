@@ -1,11 +1,11 @@
 """
     pcasph(; kwargs...)
     pcasph(X; kwargs...)
-    pcasph(X, weights::Weight; kwargs...)
-    pcasph!(X::Matrix, weights::Weight; kwargs...)
+    pcasph(X, weights::ProbabilityWeights; kwargs...)
+    pcasph!(X::Matrix, weights::ProbabilityWeights; kwargs...)
 Spherical PCA.
 * `X` : X-data (n, p). 
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
@@ -53,15 +53,16 @@ pcasph(; kwargs...) = JchemoModel(pcasph, nothing, kwargs)
 
 function pcasph(X; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     pcasph(X, weights; kwargs...)
 end
 
-function pcasph(X, weights::Weight; kwargs...)
+function pcasph(X, weights::ProbabilityWeights; kwargs...)
     pcasph!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
-function pcasph!(X::Matrix, weights::Weight; kwargs...)
+function pcasph!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPca, kwargs).par 
     Q = eltype(X)
     n, p = size(X)
@@ -76,7 +77,7 @@ function pcasph!(X::Matrix, weights::Weight; kwargs...)
     end
     ## Sphere
     Xtt = fscale(X', rownorm(X))'    # X-data projected on the sphere (each row has norm = 1)
-    rweight!(Xtt, sqrt.(weights.v))
+    rweight!(Xtt, sqrt.(weights.values))
     res = LinearAlgebra.svd!(Matrix(Xtt)) 
     V = res.V[:, 1:nlv]
     ## End

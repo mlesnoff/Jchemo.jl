@@ -2,10 +2,10 @@
 
 """ 
     sumv(x)
-    sumv(x, weights::Weight)
+    sumv(x, weights::ProbabilityWeights)
 Compute the sum of a vector. 
 * `x` : A vector (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 ## Examples
 ```julia
@@ -13,7 +13,7 @@ using Jchemo
 
 n = 100
 x = rand(n)
-w = mweight(rand(n)) 
+w = pweight(rand(n))
 
 sumv(x)
 sumv(x, w)
@@ -21,20 +21,20 @@ sumv(x, w)
 """
 sumv(x) = Base.sum(x)
 
-function sumv(x, weights::Weight)
+function sumv(x, weights::ProbabilityWeights)
     s = zero(x[begin])
     @simd for i in eachindex(x)
-        s = muladd(x[i],  weights.v[i], s)
+        s = muladd(x[i],  weights.values[i], s)
     end
     s
 end
 
 """ 
     meanv(x)
-    meanv(x, weights::Weight)
+    meanv(x, weights::ProbabilityWeights)
 Compute the mean of a vector. 
 * `x` : A vector (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 ## Examples
 ```julia
@@ -42,7 +42,7 @@ using Jchemo
 
 n = 100
 x = rand(n)
-w = mweight(rand(n)) 
+w = pweight(rand(n))
 
 meanv(x)
 meanv(x, w)
@@ -50,14 +50,14 @@ meanv(x, w)
 """
 meanv(x) = Statistics.mean(x)
 
-meanv(x, weights::Weight) = sumv(x, weights::Weight)
+meanv(x, weights::ProbabilityWeights) = sumv(x, weights::ProbabilityWeights)
 
 """ 
     stdv(x)
-    stdv(x, weights::Weight)
+    stdv(x, weights::ProbabilityWeights)
 Compute the uncorrected standard deviation of a vector.
 * `x` : A vector (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 ## Examples
 ```julia
@@ -65,7 +65,7 @@ using Jchemo
 
 n = 1000
 x = rand(n)
-w = mweight(rand(n))
+w = pweight(rand(n))
 
 stdv(x)
 stdv(x, w)
@@ -73,18 +73,18 @@ stdv(x, w)
 """
 stdv(x) = Statistics.std(x; corrected = false) 
 
-function stdv(x, weights::Weight)
+function stdv(x, weights::ProbabilityWeights)
     n = length(x)
     mu = meanv(x, weights)
-    sqrt(sum(i -> (x[i] - mu)^2 * weights.v[i], 1:n))
+    sqrt(sum(i -> (x[i] - mu)^2 * weights.values[i], 1:n))
 end
 
 """ 
     varv(x)
-    varv(x, weights::Weight)
+    varv(x, weights::ProbabilityWeights)
 Compute the uncorrected variance of a vector.
 * `x` : A vector (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 ## Examples
 ```julia
@@ -92,7 +92,7 @@ using Jchemo
 
 n = 1000
 x = rand(n)
-w = mweight(rand(n))
+w = pweight(rand(n))
 
 varv(x)
 varv(x, w)
@@ -100,10 +100,10 @@ varv(x, w)
 """
 varv(x) = Statistics.var(x; corrected = false) 
 
-function varv(x, weights::Weight)
+function varv(x, weights::ProbabilityWeights)
     n = length(x)
     mu = meanv(x, weights)
-    sum(i -> (x[i] - mu)^2 * weights.v[i], 1:n)
+    sum(i -> (x[i] - mu)^2 * weights.values[i], 1:n)
 end
 
 """
@@ -139,16 +139,16 @@ madv(x) = 1.4826 * median(abs.(x .- median(x)))
 
 """ 
     normv(x)
-    normv(x, weights::Weight)
+    normv(x, weights::ProbabilityWeights)
 Compute the norm of a vector.
 * `x` : A vector (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 The norm of vector `x` is computed by:
 * sqrt(x' * x)
 
 The weighted norm of vector `x` is computed by:
-* sqrt(x' * D * x), where D is the diagonal matrix of vector `weights.v`.
+* sqrt(x' * D * x), where D is the diagonal matrix of vector `weights.values`.
 
 ## References
 
@@ -164,7 +164,7 @@ using Jchemo
 
 n = 1000
 x = rand(n)
-w = mweight(ones(n))
+w = pweight(ones(n))
 
 normv(x)
 sqrt(n) * normv(x, w)
@@ -172,7 +172,7 @@ sqrt(n) * normv(x, w)
 """
 normv(x) = sqrt(dot(x, x)) 
 
-normv(x, weights::Weight) = sqrt(sum(i -> x[i]^2 * weights.v[i], 1:length(x)))
+normv(x, weights::ProbabilityWeights) = sqrt(sum(i -> x[i]^2 * weights.values[i], 1:length(x)))
 
 ###### Two vectors
 
@@ -199,12 +199,12 @@ covv(x, y)
 """
 covv(x, y) = Statistics.cov(x, y; corrected = false)
 
-function covv(x, y, weights::Weight)
+function covv(x, y, weights::ProbabilityWeights)
     mux = meanv(x, weights) 
     muy = meanv(y, weights)
     s = zero(x[begin])
     @simd for i in eachindex(x)
-        s = muladd((x[i] - mux) * (y[i] - muy),  weights.v[i], s)
+        s = muladd((x[i] - mux) * (y[i] - muy),  weights.values[i], s)
     end
     s
 end 
@@ -232,14 +232,14 @@ corv(x, y)
 """
 corv(x, y) = Statistics.cor(x, y)
 
-function corv(x, y, weights::Weight)
+function corv(x, y, weights::ProbabilityWeights)
     mux = meanv(x, weights) 
     muy = meanv(y, weights)
     sdx = stdv(x, weights)
     sdy = stdv(y, weights)
     s = zero(x[begin])
     @simd for i in eachindex(x)
-        s = muladd((x[i] - mux) * (y[i] - muy),  weights.v[i], s)
+        s = muladd((x[i] - mux) * (y[i] - muy),  weights.values[i], s)
     end
     s / (sdx * sdy)
 end 
@@ -284,22 +284,22 @@ cosv(x, y)
 """
 cosv(x, y) = dot(x, y) / sqrt(dot(x, x) * dot(y, y))
 
-function cosv(x, y, weights::Weight)
-    zy = rweight(y, weights.v)
-    dot(x, zy) / sqrt(dot(x, rweight(x, weights.v)) * dot(y, zy))
+function cosv(x, y, weights::ProbabilityWeights)
+    zy = rweight(y, weights.values)
+    dot(x, zy) / sqrt(dot(x, rweight(x, weights.values)) * dot(y, zy))
 end
 
 ###### Matrices
 
 """
     covm(X)
-    covm(X, weights::Weight)
+    covm(X, weights::ProbabilityWeights)
     covm(X, Y) 
-    covm(X, Y, weights::Weight)
+    covm(X, Y, weights::ProbabilityWeights)
 Compute a weighted covariance matrix.
 * `X` : Data (n, p).
 * `Y` : Data (n, q).
-* `weights` : Weights (n) of the observations. Object of type `Weight` (e.g., generated by function `mweight`).
+* `weights` : Weights (n) of the observations. Object of type `ProbabilityWeights` (e.g., generated by function `pweight`).
 
 The function computes the uncorrected covariance matrix: 
 * of the columns of `X`:  return a matrix (p, p),
@@ -312,7 +312,7 @@ using Jchemo
 n, p = 5, 6
 X = rand(n, p)
 Y = rand(n, 3)
-w = mweight(rand(n))
+w = pweight(rand(n))
 
 covm(X, w)
 covm(X, Y, w)
@@ -320,32 +320,32 @@ covm(X, Y, w)
 """
 covm(X) = Statistics.cov(X; corrected = false)
 
-function covm(X, weights::Weight)
+function covm(X, weights::ProbabilityWeights)
     zX = copy(ensure_mat(X))
     fcenter!(zX, colmean(zX, weights))
-    rweight!(zX, sqrt.(weights.v))
+    rweight!(zX, sqrt.(weights.values))
     zX' * zX
 end
 
 covm(X, Y) = Statistics.cov(X, Y; corrected = false)
 
-function covm(X, Y, weights::Weight)
+function covm(X, Y, weights::ProbabilityWeights)
     zX = copy(ensure_mat(X))
     zY = copy(ensure_mat(Y))
     fcenter!(zX, colmean(zX, weights))
     fcenter!(zY, colmean(zY, weights))
-    zX' * rweight(zY, weights.v)
+    zX' * rweight(zY, weights.values)
 end
 
 """
     corm(X) 
     corm(X, Y) 
-    corm(X, weights::Weight)
-    corm(X, Y, weights::Weight)
+    corm(X, weights::ProbabilityWeights)
+    corm(X, Y, weights::ProbabilityWeights)
 Compute a weighted correlation matrix.
 * `X` : Data (n, p).
 * `Y` : Data (n, q).
-* `weights` : Weights (n) of the observations. Object of type `Weight` (e.g., generated by function `mweight`).
+* `weights` : Weights (n) of the observations. Object of type `ProbabilityWeights` (e.g., generated by function `pweight`).
 
 Uncorrected correlation matrix 
 * of the `X`-columns :  return a (p, p) matrix, 
@@ -358,7 +358,7 @@ using Jchemo
 n, p = 5, 6
 X = rand(n, p)
 Y = rand(n, 3)
-w = mweight(rand(n))
+w = pweight(rand(n))
 
 corm(X, w)
 corm(X, Y, w)
@@ -366,24 +366,24 @@ corm(X, Y, w)
 """
 corm(X) = Statistics.cor(X)
 
-function corm(X, weights::Weight)
+function corm(X, weights::ProbabilityWeights)
     zX = copy(ensure_mat(X))
     fcenter!(zX, colmean(zX, weights))
     fscale!(zX, colstd(zX, weights))
-    z = rweight(zX, sqrt.(weights.v))
+    z = rweight(zX, sqrt.(weights.values))
     z' * z
 end
 
 corm(X, Y) = Statistics.cor(X, Y)
 
-function corm(X, Y, weights::Weight)
+function corm(X, Y, weights::ProbabilityWeights)
     zX = copy(ensure_mat(X))
     zY = copy(ensure_mat(Y))
     fcenter!(zX, colmean(zX, weights))
     fcenter!(zY, colmean(zY, weights))
     fscale!(zX, colstd(zX, weights))
     fscale!(zY, colstd(zY, weights))
-    zX' * rweight(zY, weights.v)
+    zX' * rweight(zY, weights.values)
 end
 
 """
@@ -426,12 +426,12 @@ end
 
 """ 
     frob(X)
-    frob(X, weights::Weight)
+    frob(X, weights::ProbabilityWeights)
     frob2(X)
-    frob2(X, weights::Weight)
+    frob2(X, weights::ProbabilityWeights)
 Frobenius norm of a matrix.
 * `X` : A matrix (n, p).
-* `weights` : Weights (n) of the observations. Object of type `Weight` (e.g., generated by function `mweight`).
+* `weights` : Weights (n) of the observations. Object of type `ProbabilityWeights` (e.g., generated by function `pweight`).
 
 The Frobenius norm of `X` is:
 * sqrt(tr(X' * X)).
@@ -447,19 +447,19 @@ https://discourse.julialang.org/t/interesting-post-about-simd-dot-product-and-co
 """
 frob(X) = sqrt(frob2(X))
 
-frob(X, weights::Weight) = sqrt(frob2(X, weights)) 
+frob(X, weights::ProbabilityWeights) = sqrt(frob2(X, weights)) 
 
 function frob2(X)
     v = vec(ensure_mat(X))
     dot(v, v)
 end
 
-function frob2(X, weights::Weight) 
+function frob2(X, weights::ProbabilityWeights) 
     n, p = size(X) 
     s = zero(X[begin])
     @inbounds for j = 1:p
         @simd for i = 1:n 
-            s += weights.v[i] * X[i, j]^2
+            s += weights.values[i] * X[i, j]^2
         end
     end
     s

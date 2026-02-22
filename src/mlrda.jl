@@ -1,11 +1,11 @@
 """
     mlrda(; kwargs...)
     mlrda(X, y; kwargs...)
-    mlrda(X, y, weights::Weight)
+    mlrda(X, y, weights::ProbabilityWeights)
 Discrimination based on multple linear regression (MLR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`). 
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
 Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
@@ -27,7 +27,7 @@ weights. In that case, argument `prior` has no effect: the class prior probabili
 computed by summing the observation weights by class.
 
 In the high-level methods (no argument `weights`), argument `prior` defines how are preliminary computed the 
-observation weights (see function `mweightcla`) that are then given as input in the hidden low level method.
+observation weights (see function `pweightcla`) that are then given as input in the hidden low level method.
 
 **Note:** For highly unbalanced classes, it may be recommended to define equal class weights ('prior = :unif'),
 and to use a performance score such as `merrp`, instead of `errp`.
@@ -80,17 +80,17 @@ mlrda(; kwargs...) = JchemoModel(mlrda, nothing, kwargs)
 function mlrda(X, y; kwargs...)
     par = recovkw(ParMlrda, kwargs).par
     Q = eltype(X[1, 1])
-    weights = mweightcla(Q, y; prior = par.prior)
+    weights = pweightcla(Q, y; prior = par.prior)
     mlrda(X, y, weights; kwargs...)
 end
 
-function mlrda(X, y, weights::Weight; kwargs...)
+function mlrda(X, y, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParMlrda, kwargs).par
     X = ensure_mat(X)
     y = ensure_mat(y)
     res = dummy(y)
     ni = tab(y).vals
-    priors = aggsumv(weights.v, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm = mlr(X, res.Y, weights)
     Mlrda(fitm, ni, priors, res.lev, par)
 end

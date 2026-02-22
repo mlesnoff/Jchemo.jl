@@ -6,7 +6,7 @@ Factorial discriminant analysis (FDA).
 * `X` : X-data (n, p).
 * `y` : y-data (n) (class membership).
 * `weights` : Weights (n) of the observations. 
-    Must be of type `Weight` (see e.g., function `mweight`).
+    Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of discriminant components.
 * `lb` : Ridge regularization parameter "lambda". Can be used when `X` has collinearities. 
@@ -25,7 +25,7 @@ fdasvd(; kwargs...) = JchemoModel(fdasvd, nothing, kwargs)
 function fdasvd(X, y; kwargs...)
     par = recovkw(ParFda, kwargs).par
     Q = eltype(X[1, 1])
-    weights = mweightcla(Q, y; prior = par.prior)
+    weights = pweightcla(Q, y; prior = par.prior)
     fdasvd(X, y, weights; kwargs...)
 end
 
@@ -49,7 +49,7 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
-    priors = aggsumv(weights.v, vec(y)).val  # output not used, only for information 
+    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information 
     res.W .*= n / (n - nlev)
     if lb > 0
         res.W .+= lb .* I(p) # @. does not work with I
@@ -59,13 +59,13 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     ct = similar(X, nlev, p)
     @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(vrow(X, s), mweight(weights.v[s]))
+        ct[i, :] = colmean(vrow(X, s), pweight(weights.values[s]))
     end
     #ct = aggstat(X, y; algo = mean).X
     Ut = cholesky!(Hermitian(Winv)).U'
     Zct = ct * Ut
     nlv = min(par.nlv, n, p, nlev - 1)
-    zweights = mweight(convert.(Q, ni))
+    zweights = pweight(convert.(Q, ni))
     fitm = pcasvd(Zct, zweights; nlv, scal = false)
     Pz = fitm.V
     Tcenters = Zct * Pz

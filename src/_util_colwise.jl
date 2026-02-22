@@ -1,9 +1,9 @@
 """
     colsum(X)
-    colsum(X, weights::Weight)
+    colsum(X, weights::ProbabilityWeights)
 Compute column-wise sums of a matrix.
 * `X` : Data (n, p).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 Return a vector.
 
@@ -13,7 +13,7 @@ using Jchemo
 
 n, p = 5, 6
 X = rand(n, p)
-w = mweight(rand(n))
+w = pweight(rand(n))
 
 colsum(X)
 colsum(X, w)
@@ -29,14 +29,14 @@ function colsum(X)
     s
 end
 
-colsum(X, weights::Weight) = vec(weights.v' * ensure_mat(X))
+colsum(X, weights::ProbabilityWeights) = vec(weights.values' * ensure_mat(X))
 
 """
     colmean(X)
-    colmean(X, weights::Weight)
+    colmean(X, weights::ProbabilityWeights)
 Compute column-wise means of a matrix.
 * `X` : Data (n, p).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 Return a vector.
 
@@ -46,7 +46,7 @@ using Jchemo
 
 n, p = 5, 6
 X = rand(n, p)
-w = mweight(rand(n))
+w = pweight(rand(n))
 
 colmean(X)
 colmean(X, w)
@@ -54,22 +54,22 @@ colmean(X, w)
 """ 
 colmean(X) = colsum(X) / nro(X)
 
-colmean(X, weights::Weight) = colsum(X, weights)
+colmean(X, weights::ProbabilityWeights) = colsum(X, weights)
 
 """
     colnorm(X)
-    colnorm(X, weights::Weight)
+    colnorm(X, weights::ProbabilityWeights)
 Compute column-wise norms of a matrix.
 * `X` : Data (n, p).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 The norm of each column x of `X` is computed by:
 * sqrt(x' * x)
 
 The weighted norm is:
-* sqrt(x' * D * x), where D is the diagonal matrix of `weights.v`
+* sqrt(x' * D * x), where D is the diagonal matrix of `weights.values`
 
-**Warning:** `colnorm(X, mweight(ones(n)))` = `colnorm(X) / sqrt(n)`.
+**Warning:** `colnorm(X, pweight(ones(n)))` = `colnorm(X) / sqrt(n)`.
 
 Return a vector.
 
@@ -79,7 +79,7 @@ using Jchemo
 
 n, p = 5, 6
 X = rand(n, p)
-w = mweight(rand(n))
+w = pweight(rand(n))
 
 colnorm(X)
 colnorm(X, w)
@@ -95,7 +95,7 @@ function colnorm(X)
     s
 end
 
-function colnorm(X, weights::Weight)
+function colnorm(X, weights::ProbabilityWeights)
     X = ensure_mat(X) 
     p = nco(X)
     s = similar(X, p)
@@ -118,10 +118,10 @@ end
 
 """
     colstd(X)
-    colstd(X, weights::Weight)
+    colstd(X, weights::ProbabilityWeights)
 Compute column-wise standard deviations (uncorrected) of a matrix.
 * `X` : Data (n, p).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 Return a vector.
 
@@ -131,7 +131,7 @@ using Jchemo
 
 n, p = 5, 6
 X = rand(n, p)
-w = mweight(rand(n))
+w = pweight(rand(n))
 
 colstd(X)
 colstd(X, w)
@@ -147,7 +147,7 @@ function colstd(X)
     s
 end
 
-function colstd(X, weights::Weight)
+function colstd(X, weights::ProbabilityWeights)
     X = ensure_mat(X) 
     p = nco(X)
     s = similar(X, p)
@@ -159,10 +159,10 @@ end
 
 """
     colvar(X)
-    colvar(X, weights::Weight)
+    colvar(X, weights::ProbabilityWeights)
 Compute column-wise variances (uncorrected) of a matrix.
 * `X` : Data (n, p).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 Return a vector.
 
@@ -172,7 +172,7 @@ using Jchemo
 
 n, p = 5, 6
 X = rand(n, p)
-w = mweight(rand(n))
+w = pweight(rand(n))
 
 colvar(X)
 colvar(X, w)
@@ -188,7 +188,7 @@ function colvar(X)
     s
 end
 
-function colvar(X, weights::Weight)
+function colvar(X, weights::ProbabilityWeights)
     X = ensure_mat(X) 
     p = nco(X)
     s = similar(X, p)
@@ -258,26 +258,26 @@ colmeanskip(X) = [Statistics.mean(skipmissing(x)) for x in eachcol(ensure_mat(X)
 colstdskip(X) = [Statistics.std(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
 colvarskip(X) = [Statistics.var(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
 ## With weights
-function colsumskip(X, weights::Weight)
+function colsumskip(X, weights::ProbabilityWeights)
     X = ensure_mat(X)
     p = nco(X)
     z = zeros(p)
     @inbounds for j = 1:p
         s = ismissing.(vcol(X, j))
-        zw = mweight(rmrow(weights.v, s)).v
+        zw = pweight(rmrow(weights.values, s)).values
         z[j] = sum(zw .* rmrow(X[:, j], s))
     end
     z
 end
-colmeanskip(X, weights::Weight) = colsumskip(X, weights)
-colstdskip(X, weights::Weight) = sqrt.(colvarskip(X, weights))
-function colvarskip(X, weights::Weight)
+colmeanskip(X, weights::ProbabilityWeights) = colsumskip(X, weights)
+colstdskip(X, weights::ProbabilityWeights) = sqrt.(colvarskip(X, weights))
+function colvarskip(X, weights::ProbabilityWeights)
     X = ensure_mat(X)
     p = nco(X)
     z = colmeanskip(X, weights)
     @inbounds for j = 1:p
         s = ismissing.(vcol(X, j))
-        zw = mweight(rmrow(weights.v, s)).v
+        zw = pweight(rmrow(weights.values, s)).values
         z[j] = dot(zw, (rmrow(X[:, j], s) .- z[j]).^2)        
     end
     z 

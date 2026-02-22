@@ -1,12 +1,12 @@
 """
     splsr(; kwargs...)
     splsr(X, Y; kwargs...)
-    splsr(X, Y, weights::Weight; kwargs...)
-    splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
+    splsr(X, Y, weights::ProbabilityWeights; kwargs...)
+    splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
 Sparse partial least squares regression (Lê Cao et al. 2008)
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `meth` : Method used for the sparse thresholding. Possible values are: `:soft`, `:hard`. See thereafter.
@@ -110,15 +110,16 @@ splsr(; kwargs...) = JchemoModel(splsr, nothing, kwargs)
 
 function splsr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     splsr(X, Y, weights; kwargs...)
 end
 
-function splsr(X, Y, weights::Weight; kwargs...)
+function splsr(X, Y, weights::ProbabilityWeights; kwargs...)
     splsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
+function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParSplsr, kwargs).par
     @assert in([:soft; :hard])(par.meth) "Wrong value for argument 'meth'."
     Q = eltype(X)
@@ -147,7 +148,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
         fcenter!(Y, ymeans)
     end
     ## XtY 
-    rweight!(Y, weights.v)
+    rweight!(Y, weights.values)
     XtY = X' * Y
     YtX = XtY'
     ## Pre-allocation
@@ -195,7 +196,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
             end
         end                   
         mul!(t, X, r)                 
-        dt .= weights.v .* t          
+        dt .= weights.values .* t          
         tt = dot(t, dt)               
         mul!(c, YtX, r)
         c ./= tt                      

@@ -1,12 +1,12 @@
 """
     plssimp(; kwargs...)
     plssimp(X, Y; kwargs...)
-    plssimp(X, Y, weights::Weight; kwargs...)
-    plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    plssimp(X, Y, weights::ProbabilityWeights; kwargs...)
+    plssimp!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Partial Least Squares Regression (PLSR) with the SIMPLS algorithm (de Jong 1993).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected 
@@ -25,15 +25,16 @@ plssimp(; kwargs...) = JchemoModel(plssimp, nothing, kwargs)
 
 function plssimp(X, Y; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     plssimp(X, Y, weights; kwargs...)
 end
 
-function plssimp(X, Y, weights::Weight; kwargs...)
+function plssimp(X, Y, weights::ProbabilityWeights; kwargs...)
     plssimp!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function plssimp!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPlsr, kwargs).par
     Q = eltype(X)
     n, p = size(X)
@@ -53,7 +54,7 @@ function plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(Y, ymeans)
     end
     ## XtY 
-    rweight!(Y, weights.v)
+    rweight!(Y, weights.values)
     XtY = X' * Y
     ## Pre-allocation
     T = similar(X, n, nlv)
@@ -78,7 +79,7 @@ function plssimp!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         end
         r .= svd!(zXtY).U[:, 1] 
         mul!(t, X, r)                 
-        dt .= weights.v .* t            
+        dt .= weights.values .* t            
         tt = dot(t, dt)
         mul!(c, XtY', r)
         c ./= tt                      

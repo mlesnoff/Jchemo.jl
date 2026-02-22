@@ -1,12 +1,12 @@
 """
     rrr(; kwargs...)
     rrr(X, Y; kwargs...)
-    rrr(X, Y, weights::Weight; kwargs...)
-    rr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    rrr(X, Y, weights::ProbabilityWeights; kwargs...)
+    rr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Reduced rank regression (RRR, a.k.a RA).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `tau` : Regularization parameter (∊ [0, 1]).
@@ -79,15 +79,16 @@ rrr(; kwargs...) = JchemoModel(rrr, nothing, kwargs)
 
 function rrr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     rrr(X, Y, weights; kwargs...)
 end
 
-function rrr(X, Y, weights::Weight; kwargs...)
+function rrr(X, Y, weights::ProbabilityWeights; kwargs...)
     rrr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function rrr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParRrr, kwargs).par
     @assert 0 <= par.tau <=1 "tau must be in [0, 1]"
     Q = eltype(X)
@@ -108,7 +109,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(Y, ymeans)
     end
     # Row metric
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     invsqrtw = 1 ./ sqrtw
     X .= sqrtw .* X
     Y .= sqrtw .* Y

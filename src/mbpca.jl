@@ -1,11 +1,11 @@
 """
     mbpca(; kwargs...)
     mbpca(Xbl; kwargs...)
-    mbpca(Xbl, weights::Weight; kwargs...)
-    mbpca!(Xbl::Matrix, weights::Weight; kwargs...)
+    mbpca(Xbl, weights::ProbabilityWeights; kwargs...)
+    mbpca!(Xbl::Matrix, weights::ProbabilityWeights; kwargs...)
 Consensus principal components analysis (CPCA, a.k.a MBPCA) by Nipals.
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock`.  
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. global latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
@@ -142,10 +142,10 @@ mbpca(; kwargs...) = JchemoModel(mbpca, nothing, kwargs)
 function mbpca(Xbl; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
-    mbpca(Xbl, mweight(ones(Q, n)); kwargs...)
+    mbpca(Xbl, pweight(ones(Q, n)); kwargs...)
 end
 
-function mbpca(Xbl, weights::Weight; kwargs...)
+function mbpca(Xbl, weights::ProbabilityWeights; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
@@ -155,7 +155,7 @@ function mbpca(Xbl, weights::Weight; kwargs...)
     mbpca!(zXbl, weights; kwargs...)
 end
 
-function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
+function mbpca!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParMbpca, kwargs).par 
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
@@ -165,7 +165,7 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     # Row metric
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     invsqrtw = 1 ./ sqrtw
     @inbounds for k in eachindex(Xbl) 
         rweight!(Xbl[k], sqrtw)

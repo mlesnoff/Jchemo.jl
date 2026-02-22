@@ -1,7 +1,7 @@
 """
     kdeda(; kwargs...)
     kdeda(X, y; kwargs...)
-    kdeda(X, y, weights::Weight; kwargs...)
+    kdeda(X, y, weights::ProbabilityWeights; kwargs...)
 Discriminant analysis using non-parametric kernel Gaussian density estimation (KDE-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
@@ -67,16 +67,16 @@ kdeda(; kwargs...) = JchemoModel(kdeda, nothing, kwargs)
 function kdeda(X, y; kwargs...)
     par = recovkw(ParLda, kwargs).par
     Q = eltype(X[1, 1])
-    weights = mweightcla(Q, y; prior = par.prior)
+    weights = pweightcla(Q, y; prior = par.prior)
     kdeda(X, y, weights; kwargs...) 
 end
 
-function kdeda(X, y, weights::Weight; kwargs...) 
+function kdeda(X, y, weights::ProbabilityWeights; kwargs...) 
     ## To do: add scaling X?
     par = recovkw(ParKdeda, kwargs).par
     X = ensure_mat(X)
     ni = tab(y).vals
-    priors = aggsumv(weights.v, vec(y)).val
+    priors = aggsumv(weights.values, vec(y)).val
     lev = mlev(y)
     nlev = length(lev)
     ## End

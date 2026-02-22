@@ -1,11 +1,11 @@
 """
     krrda(; kwargs...)
     krrda(X, y; kwargs...)
-    krrda(X, y, weights::Weight; kwargs...)
+    krrda(X, y, weights::ProbabilityWeights; kwargs...)
 Discrimination based on kernel ridge regression (KRR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments: 
 * `lb` : Ridge regularization parameter "lambda".
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective 
@@ -72,15 +72,15 @@ krrda(; kwargs...) = JchemoModel(krrda, nothing, kwargs)
 function krrda(X, y; kwargs...)
     par = recovkw(ParKrrda, kwargs).par
     Q = eltype(X[1, 1])
-    weights = mweightcla(Q, y; prior = par.prior)
+    weights = pweightcla(Q, y; prior = par.prior)
     krrda(X, y, weights; kwargs...)
 end
 
-function krrda(X, y, weights::Weight; kwargs...)  
+function krrda(X, y, weights::ProbabilityWeights; kwargs...)  
     par = recovkw(ParKrrda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
-    priors = aggsumv(weights.v, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm = krr(X, res.Y, weights; kwargs...)
     Rrda(fitm, ni, priors, res.lev, par)
 end

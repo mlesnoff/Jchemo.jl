@@ -1,12 +1,12 @@
 """
     plscan(; kwargs...)
     plscan(X, Y; kwargs...)
-    plscan(X, Y, weights::Weight; kwargs...)
-    plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    plscan(X, Y, weights::ProbabilityWeights; kwargs...)
+    plscan!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Canonical partial least squares regression (Canonical PLS).
 * `X` : First block of data.
 * `Y` : Second block of data.
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`. See functions `blockscal`.
@@ -79,15 +79,15 @@ plscan(; kwargs...) = JchemoModel(plscan, nothing, kwargs)
 function plscan(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)
-    weights = mweight(ones(Q, n))
+    weights = pweight(ones(Q, n))
     plscan(X, Y, weights; kwargs...)
 end
 
-function plscan(X, Y, weights::Weight; kwargs...)
+function plscan(X, Y, weights::ProbabilityWeights; kwargs...)
     plscan!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function plscan!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPls2bl, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(X)
@@ -136,12 +136,12 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     delta = copy(TTx)
     # End
     @inbounds for a = 1:nlv
-        XtY .= X' * rweight(Y, weights.v)
+        XtY .= X' * rweight(Y, weights.values)
         U, d, V = svd!(XtY) 
         delta[a] = d[1]
         wx .= U[:, 1]
         mul!(tx, X, wx)
-        dtx .= weights.v .* tx
+        dtx .= weights.values .* tx
         ttx = dot(tx, dtx)
         mul!(vx, X', dtx)
         vx ./= ttx
@@ -151,7 +151,7 @@ function plscan!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         # wy ./= normv(wy)
         # End
         mul!(ty, Y, wy)
-        dty .= weights.v .* ty
+        dty .= weights.values .* ty
         tty = dot(ty, dty)
         mul!(vy, Y', dty)
         vy ./= tty

@@ -1,11 +1,11 @@
 """
     kplsqda(; kwargs...)
     kplsqda(X, y; kwargs...)
-    kplsqda(X, y, weights::Weight; kwargs...)
+    kplsqda(X, y, weights::ProbabilityWeights; kwargs...)
 KPLS-QDA.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute. Must be >= 1
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective 
@@ -27,16 +27,16 @@ kplsqda(; kwargs...) = JchemoModel(kplsqda, nothing, kwargs)
 function kplsqda(X, y; kwargs...)
     par = recovkw(ParKplsqda, kwargs).par
     Q = eltype(X[1, 1])
-    weights = mweightcla(Q, y; prior = par.prior)
+    weights = pweightcla(Q, y; prior = par.prior)
     kplsqda(X, y, weights; kwargs...)
 end
 
-function kplsqda(X, y, weights::Weight; kwargs...)
+function kplsqda(X, y, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParKplsqda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    priors = aggsumv(weights.v, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm_emb = kplsr(X, res.Y, weights; kwargs...)
     fitm_da = list(Qda, par.nlv)
     @inbounds for a = 1:par.nlv

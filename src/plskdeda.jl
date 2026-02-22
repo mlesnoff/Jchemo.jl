@@ -1,11 +1,11 @@
 """
     plskdeda(; kwargs...)
     plskdeda(X, y; kwargs...)
-    plskdeda(X, y, weights::Weight; kwargs...)
+    plskdeda(X, y, weights::ProbabilityWeights; kwargs...)
 KDE-DA on PLS latent variables (PLS-KDEDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute. Must be >= 1.
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
@@ -79,16 +79,16 @@ plskdeda(; kwargs...) = JchemoModel(plskdeda, nothing, kwargs)
 function plskdeda(X, y; kwargs...)
     par = recovkw(ParPlskdeda, kwargs).par
     Q = eltype(X[1, 1])
-    weights = mweightcla(Q, y; prior = par.prior)
+    weights = pweightcla(Q, y; prior = par.prior)
     plskdeda(X, y, weights; kwargs...)
 end
 
-function plskdeda(X, y, weights::Weight; kwargs...)
+function plskdeda(X, y, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPlskdeda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    priors = aggsumv(weights.v, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm_emb = plskern(X, res.Y, weights; kwargs...)
     fitm_da = list(Kdeda, par.nlv)
     @inbounds for i = 1:par.nlv

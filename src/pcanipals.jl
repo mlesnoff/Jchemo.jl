@@ -1,11 +1,11 @@
 """
     pcanipals(; kwargs...)
     pcanipals(X; kwargs...)
-    pcanipals(X, weights::Weight; kwargs...)
-    pcanipals!(X::Matrix, weights::Weight; kwargs...)
+    pcanipals(X, weights::ProbabilityWeights; kwargs...)
+    pcanipals!(X::Matrix, weights::ProbabilityWeights; kwargs...)
 PCA by NIPALS algorithm.
 * `X` : X-data (n, p). 
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `gs` : Boolean. If `true` (default), a Gram-Schmidt orthogonalization of the scores and loadings is done
@@ -14,7 +14,7 @@ Keyword arguments:
 * `maxit` : Maximum nb. of iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
-Let us note D the (n, n) diagonal matrix of weights (`weights.v`) and X the centered matrix in metric D.
+Let us note D the (n, n) diagonal matrix of weights (`weights.values`) and X the centered matrix in metric D.
 The function minimizes ||X - T * V'||^2  in metric D by NIPALS. 
 
 See function `pcasvd` for examples.
@@ -41,15 +41,16 @@ pcanipals(; kwargs...) = JchemoModel(pcanipals, nothing, kwargs)
 
 function pcanipals(X; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     pcanipals(X, weights; kwargs...)
 end
 
-function pcanipals(X, weights::Weight; kwargs...)
+function pcanipals(X, weights::ProbabilityWeights; kwargs...)
     pcanipals!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
-function pcanipals!(X::Matrix, weights::Weight; kwargs...)
+function pcanipals!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPcanipals, kwargs).par
     Q = eltype(X)
     n, p = size(X)
@@ -62,7 +63,7 @@ function pcanipals!(X::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(X, xmeans)
     end
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     rweight!(X, sqrtw)
     T = similar(X, n, nlv)
     V = similar(X, p, nlv)

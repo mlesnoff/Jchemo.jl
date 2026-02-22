@@ -1,11 +1,11 @@
 """
     plsqda(; kwargs...)
     plsqda(X, y; kwargs...)
-    plsqda(X, y, weights::Weight; kwargs...)
+    plsqda(X, y, weights::ProbabilityWeights; kwargs...)
 QDA on PLS latent variables (PLS-QDA) with continuum.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute. Must be >= 1.
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
@@ -31,7 +31,7 @@ weights. In that case, argument `prior` has no effect: the class prior probabili
 computed by summing the observation weights by class.
 
 In the high-level methods (no argument `weights`), argument `prior` defines how are preliminary computed the 
-observation weights (see function `mweightcla`) that are then given as input in the hidden low level method.
+observation weights (see function `pweightcla`) that are then given as input in the hidden low level method.
 
 **Note:** For highly unbalanced classes, it may be recommended to define equal class weights ('prior = :unif'),
 and to use a performance score such as `merrp`, instead of `errp`.
@@ -43,16 +43,16 @@ plsqda(; kwargs...) = JchemoModel(plsqda, nothing, kwargs)
 function plsqda(X, y; kwargs...)
     par = recovkw(ParPlsqda, kwargs).par
     Q = eltype(X[1, 1])
-    weights = mweightcla(Q, y; prior = par.prior)
+    weights = pweightcla(Q, y; prior = par.prior)
     plsqda(X, y, weights; kwargs...)
 end
 
-function plsqda(X, y, weights::Weight; kwargs...)
+function plsqda(X, y, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPlsqda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    priors = aggsumv(weights.v, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm_emb = plskern(X, res.Y, weights; kwargs...)
     fitm_da = list(Qda, par.nlv)
     @inbounds for i = 1:par.nlv

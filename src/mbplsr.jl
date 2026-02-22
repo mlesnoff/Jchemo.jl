@@ -1,12 +1,12 @@
 """
     mbplsr(; kwargs...)
     mbplsr(Xbl, Y; kwargs...)
-    mbplsr(Xbl, Y, weights::Weight; kwargs...)
-    mbplsr!(Xbl::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
+    mbplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
+    mbplsr!(Xbl::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
 Multiblock PLSR (MBPLSR).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. global latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
@@ -120,11 +120,11 @@ mbplsr(; kwargs...) = JchemoModel(mbplsr, nothing, kwargs)
 function mbplsr(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
-    weights = mweight(ones(Q, n))
+    weights = pweight(ones(Q, n))
     mbplsr(Xbl, Y, weights; kwargs...)
 end
 
-function mbplsr(Xbl, Y, weights::Weight; kwargs...)
+function mbplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
@@ -134,7 +134,7 @@ function mbplsr(Xbl, Y, weights::Weight; kwargs...)
     mbplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function mbplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
+function mbplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParMbplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing

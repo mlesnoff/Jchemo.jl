@@ -1,11 +1,11 @@
 """
     pcaeigenk(; kwargs...)
     pcaeigenk(X; kwargs...)
-    pcaeigenk(X, weights::Weight; kwargs...)
-    pcaeigenk!(X::Matrix, weights::Weight; kwargs...)
+    pcaeigenk(X, weights::ProbabilityWeights; kwargs...)
+    pcaeigenk!(X::Matrix, weights::ProbabilityWeights; kwargs...)
 PCA by Eigen factorization of the kernel matrix XX'.
 * `X` : X-data (n, p). 
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
@@ -13,7 +13,7 @@ Keyword arguments:
 This is the "kernel cross-product" version of the PCA algorithm (e.g., Wu et al. 1997). For wide matrices (n << p, 
 where p is the nb. columns) and n not too large, this algorithm can be much faster than the others.
 
-Let us note D the (n, n) diagonal matrix of weights (`weights.v`) and X the centered matrix in metric D.
+Let us note D the (n, n) diagonal matrix of weights (`weights.values`) and X the centered matrix in metric D.
 The function minimizes ||X - T * V'||^2  in metric D, by computing an Eigen factorization of D^(1/2) * X * X' D^(1/2).
 
 See function `pcasvd` for examples.
@@ -26,15 +26,16 @@ pcaeigenk(; kwargs...) = JchemoModel(pcaeigenk, nothing, kwargs)
 
 function pcaeigenk(X; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     pcaeigenk(X, weights; kwargs...)
 end
 
-function pcaeigenk(X, weights::Weight; kwargs...)
+function pcaeigenk(X, weights::ProbabilityWeights; kwargs...)
     pcaeigenk!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
-function pcaeigenk!(X::Matrix, weights::Weight; kwargs...)
+function pcaeigenk!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPca, kwargs).par 
     Q = eltype(X)
     n, p = size(X)
@@ -47,7 +48,7 @@ function pcaeigenk!(X::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(X, xmeans)
     end
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     rweight!(X, sqrtw)
     res = eigen!(Symmetric(X * X'); sortby = x -> -abs(x))
     eig = res.values[1:min(n, p)]

@@ -2,11 +2,11 @@
     lda(; kwargs...)
     lda(; kwargs...)
     lda(X, y; kwargs...)
-    lda(X, y, weights::Weight; kwargs...)
+    lda(X, y, weights::ProbabilityWeights; kwargs...)
 Linear discriminant analysis (LDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
@@ -17,7 +17,7 @@ weights. In that case, argument `prior` has no effect: the class prior probabili
 computed by summing the observation weights by class.
 
 In the high-level methods (no argument `weights`), argument `prior` defines how are preliminary computed the 
-observation weights (see function `mweightcla`) that are then given as input in the hidden low level method.
+observation weights (see function `pweightcla`) that are then given as input in the hidden low level method.
 
 **Note:** For highly unbalanced classes, it may be recommended to define equal class weights ('prior = :unif'),
 and to use a performance score such as `merrp`, instead of `errp`.
@@ -54,7 +54,7 @@ typeof(fitm.fitm)
 fitm.lev
 fitm.ni
 fitm.priors
-aggsumv(fitm.weights.v, ytrain)
+aggsumv(fitm.weights.values, ytrain)
 
 res = predict(model, Xtest) ;
 @names res
@@ -69,11 +69,11 @@ lda(; kwargs...) = JchemoModel(lda, nothing, kwargs)
 function lda(X, y; kwargs...)
     par = recovkw(ParLda, kwargs).par
     Q = eltype(X[1, 1])
-    weights = mweightcla(Q, y; prior = par.prior)
+    weights = pweightcla(Q, y; prior = par.prior)
     lda(X, y, weights; kwargs...)
 end
 
-function lda(X, y, weights::Weight; kwargs...)  
+function lda(X, y, weights::ProbabilityWeights; kwargs...)  
     # Scaling X has no effect
     par = recovkw(ParLda, kwargs).par
     X = ensure_mat(X)
@@ -81,7 +81,7 @@ function lda(X, y, weights::Weight; kwargs...)
     n, p = size(X)
     res = matW(X, y, weights)
     ni = res.ni
-    priors = aggsumv(weights.v, vec(y)).val
+    priors = aggsumv(weights.values, vec(y)).val
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate
@@ -90,7 +90,7 @@ function lda(X, y, weights::Weight; kwargs...)
     fitm = list(nlev)
     @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(vrow(X, s), mweight(weights.v[s]))
+        ct[i, :] = colmean(vrow(X, s), pweight(weights.values[s]))
         fitm[i] = dmnorm(ct[i, :], res.W)
     end
     Lda(fitm, res.W, ct, ni, priors, lev, weights, par)

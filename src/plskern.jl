@@ -1,12 +1,12 @@
 """
     plskern(; kwargs...)
     plskern(X, Y; kwargs...)
-    plskern(X, Y, weights::Weight; kwargs...)
-    plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
+    plskern(X, Y, weights::ProbabilityWeights; kwargs...)
+    plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
 Partial least squares regression (PLSR) with the "improved kernel algorithm #1" (Dayal & McGegor, 1997).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
@@ -88,15 +88,15 @@ plskern(; kwargs...) = JchemoModel(plskern, nothing, kwargs)
 
 function plskern(X, Y; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    weights = pweight(ones(Q, nro(X)))
     plskern(X, Y, weights; kwargs...)
 end
 
-function plskern(X, Y, weights::Weight; kwargs...)
+function plskern(X, Y, weights::ProbabilityWeights; kwargs...)
     plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
+function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPlsr, kwargs).par
     ## Specific for Plsda functions
     Q = eltype(X)
@@ -119,10 +119,10 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwarg
         fcenter!(Y, ymeans)
     end
     ## XtY 
-    rweight!(Y, weights.v)
+    rweight!(Y, weights.values)
     XtY = X' * Y
     ## Old
-    ## D = Diagonal(weights.v)
+    ## D = Diagonal(weights.values)
     ## XtY = X' * (D * Y)    # Xd = D * X   Very costly!!
     ## Pre-allocation
     T = similar(X, n, nlv)
@@ -153,7 +153,7 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwarg
             end
         end                   
         mul!(t, X, r)                 # t = X * r
-        dt .= weights.v .* t          # dt = D * t
+        dt .= weights.values .* t          # dt = D * t
         tt = dot(t, dt)               # tt = t' * dt = t' * D * t 
         mul!(c, XtY', r)
         c ./= tt                      # c = XtY' * r / tt
@@ -238,7 +238,7 @@ function Base.summary(object::Union{Plsr, Splsr}, X)
     n, nlv = size(object.T)
     X = fcscale(X, object.xmeans, object.xscales)
     ## Could be fcscale! but changes X. If too heavy ==> Makes summary!
-    sstot = frob2(X, object.weights)       # = sum(object.weights.v' * X.^2)
+    sstot = frob2(X, object.weights)       # = sum(object.weights.values' * X.^2)
     tt = object.TT
     tt_adj = (colnorm(object.V).^2) .* tt  # tt_adj[a] = p[a]'p[a] * tt[a]
     xvar = tt_adj / n    

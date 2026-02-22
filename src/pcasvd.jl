@@ -1,16 +1,16 @@
 """
     pcasvd(; kwargs...)
     pcasvd(X; kwargs...)
-    pcasvd(X, weights::Weight; kwargs...)
-    pcasvd!(X::Matrix, weights::Weight; kwargs...)
+    pcasvd(X, weights::ProbabilityWeights; kwargs...)
+    pcasvd!(X::Matrix, weights::ProbabilityWeights; kwargs...)
 PCA by SVD factorization.
 * `X` : X-data (n, p). 
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
-Let us note D the (n, n) diagonal matrix of weights (`weights.v`) and X the centered matrix in metric D.
+Let us note D the (n, n) diagonal matrix of weights (`weights.values`) and X the centered matrix in metric D.
 The function minimizes ||X - T * V'||^2  in metric D, by computing a SVD factorization of sqrt(D) * X:
 * sqrt(D) * X ~ U * S * V'
 
@@ -63,15 +63,16 @@ pcasvd(; kwargs...) = JchemoModel(pcasvd, nothing, kwargs)
 
 function pcasvd(X; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     pcasvd(X, weights; kwargs...)
 end
 
-function pcasvd(X, weights::Weight; kwargs...)
+function pcasvd(X, weights::ProbabilityWeights; kwargs...)
     pcasvd!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
-function pcasvd!(X::Matrix, weights::Weight; kwargs...)
+function pcasvd!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPca, kwargs).par
     Q = eltype(X)
     n, p = size(X)
@@ -85,7 +86,7 @@ function pcasvd!(X::Matrix, weights::Weight; kwargs...)
         fcenter!(X, xmeans)
     end
     ## by default in LinearAlgebra.svd, "full = false" ==> [1:min(n, p)]
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     rweight!(X, sqrtw)
     res = LinearAlgebra.svd!(X)
     V = res.V[:, 1:nlv]
@@ -122,7 +123,7 @@ function Base.summary(object::Pca, X)
     weights = object.weights
     X = fcscale(X, object.xmeans, object.xscales)
     sstot = frob2(X, weights)  # = (||X||_D)^2 = tr(X' * D * X)
-    TT = rweight(object.T.^2, weights.v)  # matrix required for 'contr_ind'
+    TT = rweight(object.T.^2, weights.values)  # matrix required for 'contr_ind'
     tt = colsum(TT) 
     ## = colnorm(object.T, weights).^2 
     ## = diag(T' * D * T) 
@@ -134,7 +135,7 @@ function Base.summary(object::Pca, X)
     nam = string.("lv", 1:nlv)
     contr_ind = DataFrame(fscale(TT, tt), nam)
     contr_var = DataFrame(object.V.^2, nam)
-    C = X' * rweight(fscale(object.T, sqrt.(tt)), weights.v)  # V_tild = X' * D * T_normed
+    C = X' * rweight(fscale(object.T, sqrt.(tt)), weights.values)  # V_tild = X' * D * T_normed
     coord_var = DataFrame(C, nam)
     cor_circle = DataFrame(corm(X, object.T, weights), nam)
     (explvarx = explvarx, contr_ind, contr_var, coord_var, cor_circle)

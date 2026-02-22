@@ -1,12 +1,12 @@
 """
     kplsr(; kwargs...)
     kplsr(X, Y; kwargs...)
-    kplsr(X, Y, weights::Weight; kwargs...)
-    kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
+    kplsr(X, Y, weights::ProbabilityWeights; kwargs...)
+    kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
 Kernel partial least squares regression (KPLSR) implemented with a Nipals algorithm (Rosipal & Trejo, 2001).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective functions 
@@ -79,15 +79,16 @@ kplsr(; kwargs...) = JchemoModel(kplsr, nothing, kwargs)
 
 function kplsr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     kplsr(X, Y, weights; kwargs...)
 end
 
-function kplsr(X, Y, weights::Weight; kwargs...)
+function kplsr(X, Y, weights::ProbabilityWeights; kwargs...)
     kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
+function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParKplsr, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     Q = eltype(X)
@@ -109,15 +110,15 @@ function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
     K = fkern(X, X; kwargs...)     # In the future?: fkern!(K, X, X; values(kwargs)...)
     Kt = K'    
-    DKt = rweight(Kt, weights.v)
+    DKt = rweight(Kt, weights.values)
     vtot = sum(DKt, dims = 1)
-    Kc = K .- vtot' .- vtot .+ sum(rweight(DKt', weights.v)) 
+    Kc = K .- vtot' .- vtot .+ sum(rweight(DKt', weights.values)) 
     ## Pre-allocation
     K = copy(Kc)
     T = similar(X, n, nlv)
     U = copy(T)
     C = similar(X, q, nlv)
-    I = Diagonal(ones(n))
+    I = Diagonal(ones(Q, n))
     iter = Int.(zeros(nlv))
     # temporary results
     t  = similar(X, n)
@@ -128,9 +129,9 @@ function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
     # End
     for a in 1:nlv
         if q == 1      
-            mul!(t, K, vec(rweight(Y, weights.v)))  # t = K * D * Y
-            t ./= sqrt(dot(t, weights.v .* t))
-            dt .= weights.v .* t
+            mul!(t, K, vec(rweight(Y, weights.values)))  # t = K * D * Y
+            t ./= sqrt(dot(t, weights.values .* t))
+            dt .= weights.values .* t
             mul!(c, Y', dt)
             u .= Y * c 
             u ./= normv(u) 
@@ -139,9 +140,9 @@ function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
             ztol = 1.
             ziter = 1
             while ztol > par.tol && ziter <= par.maxit
-                mul!(t, K, weights.v .* u)
+                mul!(t, K, weights.values .* u)
                 t ./= normv(t, weights) 
-                dt .= weights.v .* t                
+                dt .= weights.values .* t                
                 mul!(c, Y', dt)
                 zu .= Y * c 
                 zu ./= normv(zu) 
@@ -158,8 +159,8 @@ function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs.
         C[:, a] .= c
         U[:, a] .= u
     end
-    DU = rweight(U, weights.v)
-    zR = DU * inv(T' * rweight(Kc, weights.v) * DU)   # = DU * inv(T' * D * Kc * DU)
+    DU = rweight(U, weights.values)
+    zR = DU * inv(T' * rweight(Kc, weights.values) * DU)   # = DU * inv(T' * D * Kc * DU)
     Kplsr(X, Kt, T, C, U, zR, DKt, vtot, xscales, ymeans, yscales, weights, iter, kwargs, par) 
 end
 
@@ -175,9 +176,9 @@ function transf(object::Kplsr, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
-    DKt = rweight(K', object.weights.v) 
+    DKt = rweight(K', object.weights.values) 
     vtot = sum(DKt, dims = 1)
-    Kc = K .- vtot' .- object.vtot .+ sum(rweight(object.DKt', object.weights.v))  
+    Kc = K .- vtot' .- object.vtot .+ sum(rweight(object.DKt', object.weights.values))  
     Kc * @view(object.R[:, 1:nlv])
 end
 

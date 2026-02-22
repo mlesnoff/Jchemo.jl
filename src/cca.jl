@@ -1,12 +1,12 @@
 """
     cca(; kwargs...)
     cca(X, Y; kwargs...)
-    cca(X, Y, weights::Weight; kwargs...)
-    cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    cca(X, Y, weights::ProbabilityWeights; kwargs...)
+    cca!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Canonical correlation Analysis (CCA, RCCA).
 * `X` : First block of data.
 * `Y` : Second block of data.
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are:`:none`, `:frob`. See functions `blockscal`.
@@ -89,15 +89,15 @@ cca(; kwargs...) = JchemoModel(cca, nothing, kwargs)
 function cca(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     n = nro(X)
-    weights = mweight(ones(Q, n))
+    weights = pweight(ones(Q, n))
     cca(X, Y, weights; kwargs...)
 end
 
-function cca(X, Y, weights::Weight; kwargs...)
+function cca(X, Y, weights::ProbabilityWeights; kwargs...)
     cca!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function cca!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParCca, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
@@ -128,7 +128,7 @@ function cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         bscales = [normx ; normy]
     end
     # Row metric
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     invsqrtw = 1 ./ sqrtw
     rweight!(X, sqrtw)
     rweight!(Y, sqrtw) 
@@ -197,7 +197,7 @@ function Base.summary(object::Cca, X, Y)
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     ## To do: explvarx, explvary 
-    #D = Diagonal(object.weights.v)   
+    #D = Diagonal(object.weights.values)   
     ## X
     #T = object.Tx 
     #sstot = frob(X, object.weights)^2

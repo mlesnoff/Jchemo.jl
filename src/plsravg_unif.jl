@@ -1,14 +1,15 @@
 function plsravg_unif(X, Y; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     plsravg_unif(X, Y, weights; kwargs...)
 end
 
-function plsravg_unif(X, Y, weights::Weight; kwargs...)
+function plsravg_unif(X, Y, weights::ProbabilityWeights; kwargs...)
     plsravg_unif!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plsravg_unif!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function plsravg_unif!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPlsr, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)

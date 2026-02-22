@@ -1,16 +1,16 @@
 """
     pcaeigen(; kwargs...)
     pcaeigen(X; kwargs...)
-    pcaeigen(X, weights::Weight; kwargs...)
-    pcaeigen!(X::Matrix, weights::Weight; kwargs...)
+    pcaeigen(X, weights::ProbabilityWeights; kwargs...)
+    pcaeigen!(X::Matrix, weights::ProbabilityWeights; kwargs...)
 PCA by Eigen factorization.
 * `X` : X-data (n, p). 
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
-Let us note D the (n, n) diagonal matrix of weights (`weights.v`) and X the centered matrix in metric D.
+Let us note D the (n, n) diagonal matrix of weights (`weights.values`) and X the centered matrix in metric D.
 The function minimizes ||X - T * V'||^2  in metric D, by computing an Eigen factorization of X' * D * X. 
 
 See function `pcasvd` for examples.
@@ -19,15 +19,16 @@ pcaeigen(; kwargs...) = JchemoModel(pcaeigen, nothing, kwargs)
 
 function pcaeigen(X; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     pcaeigen(X, weights; kwargs...)
 end
 
-function pcaeigen(X, weights::Weight; kwargs...)
+function pcaeigen(X, weights::ProbabilityWeights; kwargs...)
     pcaeigen!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
-function pcaeigen!(X::Matrix, weights::Weight; kwargs...)
+function pcaeigen!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPca, kwargs).par 
     Q = eltype(X)
     n, p = size(X)
@@ -40,7 +41,7 @@ function pcaeigen!(X::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(X, xmeans)
     end
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     rweight!(X, sqrtw)
     res = eigen!(Symmetric(X' * X); sortby = x -> -abs(x)) 
     V = res.vectors[:, 1:nlv]

@@ -389,7 +389,7 @@ has changed, with the use of the new function **model**:
     - **dkplslda**, **dkplsqda**, **dkplskdeda**: Direct kernel PLS-LDA, PLS-QDA, PLS-KDEDA.
     - **mbplslda**, **mbplsqda**, **mbplskdeda**: Multiblock PLS-LDA, PLS-QDA, PLS-KDEDA.
     - **merrp**: Mean intra-class classification error rate.
-    - **mweightcla**: Compute observation weights for a categorical variable, 
+    - **pweightcla**: Compute observation weights for a categorical variable, 
         given specified sub-total weights for the classes.
     - **rownorm**: Row-wise norms.
     - **snorm**: Row-wise norming of X-data.

@@ -1,11 +1,11 @@
 """
     rda(; kwargs...)
     rda(X, y; kwargs...)
-    rda(X, y, weights::Weight; kwargs...)
+    rda(X, y, weights::ProbabilityWeights; kwargs...)
 Regularized discriminant analysis (RDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
@@ -86,11 +86,11 @@ rda(; kwargs...) = JchemoModel(rda, nothing, kwargs)
 function rda(X, y; kwargs...)
     par = recovkw(ParRda, kwargs).par
     Q = eltype(X[1, 1])
-    weights = mweightcla(Q, y; prior = par.prior)
+    weights = pweightcla(Q, y; prior = par.prior)
     rda(X, y, weights; kwargs...)
 end
 
-function rda(X, y, weights::Weight; kwargs...)  
+function rda(X, y, weights::ProbabilityWeights; kwargs...)  
     par = recovkw(ParRda, kwargs).par
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     @assert par.lb >= 0 "lb must be in >= 0"
@@ -108,7 +108,7 @@ function rda(X, y, weights::Weight; kwargs...)
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
-    priors = aggsumv(weights.v, vec(y)).val 
+    priors = aggsumv(weights.values, vec(y)).val 
     fitm = list(nlev)
     ct = similar(X, nlev, p)
     Id = I(p)
@@ -117,7 +117,7 @@ function rda(X, y, weights::Weight; kwargs...)
     A = par.lb * Id
     @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(vrow(X, s), mweight(weights.v[s]))   
+        ct[i, :] = colmean(vrow(X, s), pweight(weights.values[s]))   
         @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
         @. res.Wi[i] = res.Wi[i] + A
         fitm[i] = dmnorm(ct[i, :], res.Wi[i]; simpl = par.simpl) 

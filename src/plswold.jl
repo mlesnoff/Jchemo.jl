@@ -1,12 +1,12 @@
 """
     plswold(; kwargs...)
     plswold(X, Y; kwargs...)
-    plswold(X, Y, weights::Weight; kwargs...)
-    plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    plswold(X, Y, weights::ProbabilityWeights; kwargs...)
+    plswold!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Partial Least Squares Regression (PLSR) with the Wold algorithm 
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `tol` : Tolerance for the Nipals algorithm.
@@ -28,15 +28,16 @@ plswold(; kwargs...) = JchemoModel(plswold, nothing, kwargs)
 
 function plswold(X, Y; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     plswold(X, Y, weights; kwargs...)
 end
 
-function plswold(X, Y, weights::Weight; kwargs...)
+function plswold(X, Y, weights::ProbabilityWeights; kwargs...)
     plswold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function plswold!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPlswold, kwargs).par
     Q = eltype(X)
     n, p = size(X)
@@ -56,7 +57,7 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(Y, ymeans)
     end
     # Row metric
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     rweight!(X, sqrtw)
     rweight!(Y, sqrtw)
     ## Pre-allocation

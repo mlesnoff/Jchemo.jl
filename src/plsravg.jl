@@ -1,12 +1,12 @@
 """ 
     plsravg(; kwargs...)
     plsravg(X, Y; kwargs...)
-    plsravg(X, Y, weights::Weight; kwargs...)
-    plsravg!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    plsravg(X, Y, weights::ProbabilityWeights; kwargs...)
+    plsravg!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Averaging PLSR models with different numbers of  latent variables (PLSR-AVG).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : A range of nb. of latent variables (LVs) to compute.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
@@ -63,15 +63,16 @@ plsravg(; kwargs...) = JchemoModel(plsravg, nothing, kwargs)
 
 function plsravg(X, Y; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     plsravg(X, Y, weights; kwargs...)
 end
 
-function plsravg(X, Y, weights::Weight; kwargs...)
+function plsravg(X, Y, weights::ProbabilityWeights; kwargs...)
     plsravg!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plsravg!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function plsravg!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPlsr, kwargs).par
     algo = plsravg_unif!
     fitm = algo(X, Y, weights; kwargs...)

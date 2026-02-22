@@ -115,7 +115,7 @@ function predict(object::Knnda, X)
         w[w .< tolw] .= tolw
         listw[i] = w
         ## New
-        #wpr = mweightcla(object.y[res.ind[i]]; prior = object.par.prior).v 
+        #wpr = pweightcla(object.y[res.ind[i]]; prior = object.par.prior).values 
         #listw[i] = wpr
         #listw[i] = sqrt.(w .* wpr)
         ## End
@@ -124,7 +124,7 @@ function predict(object::Knnda, X)
     pred = similar(object.y, m, 1)
     @inbounds for i = 1:m
         s = res.ind[i]
-        pred[i, :] .= findmax_cla(object.y[s], mweight(listw[i]))
+        pred[i, :] .= findmax_cla(object.y[s], pweight(listw[i]))
     end
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end

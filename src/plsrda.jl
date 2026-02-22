@@ -1,11 +1,11 @@
 """
     plsrda(; kwargs...)
     plsrda(X, y; kwargs...)
-    plsrda(X, y, weights::Weight; kwargs...)
+    plsrda(X, y, weights::ProbabilityWeights; kwargs...)
 Discrimination based on partial least squares regression (PLSR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`). 
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
@@ -29,7 +29,7 @@ weights. In that case, argument `prior` has no effect: the class prior probabili
 computed by summing the observation weights by class.
 
 In the high-level methods (no argument `weights`), argument `prior` defines how are preliminary computed the 
-observation weights (see function `mweightcla`) that are then given as input in the hidden low level method.
+observation weights (see function `pweightcla`) that are then given as input in the hidden low level method.
 
 **Note:** For highly unbalanced classes, it may be recommended to define equal class weights ('prior = :unif'),
 and to use a performance score such as `merrp`, instead of `errp`.
@@ -69,7 +69,7 @@ typeof(fitm.fitm)
 fitm.lev
 fitm.ni
 fitm.priors
-aggsumv(fitm.fitm.weights.v, ytrain)
+aggsumv(fitm.fitm.weights.values, ytrain)
 
 @head transf(model, Xtrain)
 @head fitm.fitm.T
@@ -96,15 +96,15 @@ plsrda(; kwargs...) = JchemoModel(plsrda, nothing, kwargs)
 function plsrda(X, y; kwargs...)
     par = recovkw(ParPlsda, kwargs).par
     Q = eltype(X[1, 1])
-    weights = mweightcla(Q, y; prior = par.prior)
+    weights = pweightcla(Q, y; prior = par.prior)
     plsrda(X, y, weights; kwargs...)
 end
 
-function plsrda(X, y, weights::Weight; kwargs...)
+function plsrda(X, y, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPlsda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals
-    priors = aggsumv(weights.v, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm = plskern(X, res.Y, weights; kwargs...)
     Plsrda(fitm, ni, priors, res.lev, par)
 end
@@ -141,7 +141,7 @@ function predict(object::Plsrda, X; nlv = nothing)
         zpred = predict(object.fitm, X; nlv = nlv[i]).pred
         #if softmax
         #    @inbounds for j = 1:m
-        #        zpred[j, :] .= mweight(exp.(zpred[j, :]))
+        #        zpred[j, :] .= pweight(exp.(zpred[j, :]))
         #   end
         #end
         z =  mapslices(argmax, zpred; dims = 2)  # if equal, argmax takes the first

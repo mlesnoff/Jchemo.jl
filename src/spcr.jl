@@ -1,12 +1,12 @@
 """
     spcr(; kwargs...)
     spcr(X, Y; kwargs...)
-    spcr(X, Y, weights::Weight; kwargs...)
-    spcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    spcr(X, Y, weights::ProbabilityWeights; kwargs...)
+    spcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Sparse principal component regression (sPCR). 
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. principal components (PCs).
 * `meth` : Method used for the thresholding of the loadings. Possible values are: `:soft`, `:hard`. See thereafter.
@@ -82,22 +82,23 @@ spcr(; kwargs...) = JchemoModel(spcr, nothing, kwargs)
 
 function spcr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     spcr(X, Y, weights; kwargs...)
 end
 
-function spcr(X, Y, weights::Weight; kwargs...)
+function spcr(X, Y, weights::ProbabilityWeights; kwargs...)
     spcr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function spcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function spcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParSpca, kwargs).par
     Q = eltype(X)
     q = nco(Y)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q) 
     fitm = spca!(X, weights; kwargs...)
-    theta = inv(fitm.T' * rweight(fitm.T, fitm.weights.v)) * fitm.T' * rweight(Y, fitm.weights.v)  # = C'
+    theta = inv(fitm.T' * rweight(fitm.T, fitm.weights.values)) * fitm.T' * rweight(Y, fitm.weights.values)  # = C'
     Spcr(fitm, theta', ymeans, yscales, par) 
 end
 

@@ -1,12 +1,12 @@
 """
     mbplswest(; kwargs...)
     mbplswest(Xbl, Y; kwargs...)
-    mbplswest(Xbl, Y, weights::Weight; kwargs...)
-    mbplswest!(Xbl::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    mbplswest(Xbl, Y, weights::ProbabilityWeights; kwargs...)
+    mbplswest!(Xbl::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Multiblock PLSR (MBPLSR) - Nipals algorithm.
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. global latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
@@ -82,11 +82,11 @@ mbplswest(; kwargs...) = JchemoModel(mbplswest, nothing, kwargs)
 function mbplswest(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
-    weights = mweight(ones(Q, n))
+    weights = pweight(ones(Q, n))
     mbplswest(Xbl, Y, weights; kwargs...)
 end
 
-function mbplswest(Xbl, Y, weights::Weight; kwargs...)
+function mbplswest(Xbl, Y, weights::ProbabilityWeights; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
@@ -96,7 +96,7 @@ function mbplswest(Xbl, Y, weights::Weight; kwargs...)
     mbplswest!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
+function mbplswest!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParMbplsr, kwargs).par
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
@@ -118,7 +118,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(Y, ymeans)
     end
     # Row metric
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     invsqrtw = 1 ./ sqrtw
     p = zeros(Int, nbl)
     @inbounds for k in eachindex(Xbl) 

@@ -89,7 +89,7 @@ struct Pca
     sv::Vector
     xmeans::Vector
     xscales::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     niter::Union{Vector{Int}, Nothing}    # pcanipals, pcanipalsmiss
     par::Union{ParPca, ParPcanipals, ParPcapp, ParPcaout}
 end
@@ -101,7 +101,7 @@ struct Spca
     beta::Matrix
     xmeans::Vector
     xscales::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     niter::Union{Vector{Int}, Nothing}
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
@@ -118,7 +118,7 @@ struct Kpca
     DKt::Matrix
     vtot::Matrix
     xscales::Vector 
-    weights::Weight
+    weights::ProbabilityWeights
     kwargs::Base.Pairs
     par::ParKpca
 end
@@ -134,7 +134,7 @@ struct Covsel
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     par::ParCovsel
 end
 
@@ -166,7 +166,7 @@ struct Fda
     lev::Vector
     xmeans::Vector
     xscales::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     par::ParFda
 end
 
@@ -194,7 +194,7 @@ struct Cca
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     par::ParCca
 end
 
@@ -214,7 +214,7 @@ struct Ccawold
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     niter::Vector{Int}
     par::ParCcawold
 end
@@ -236,7 +236,7 @@ struct Plscan
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     par::ParPls2bl
 end
 
@@ -253,7 +253,7 @@ struct Plstuck
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     par::ParPls2bl
 end
 
@@ -268,7 +268,7 @@ struct Rasvd
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     par::ParRasvd
 end
 
@@ -282,7 +282,7 @@ struct Mbpca
     lb::Matrix
     mu::Vector
     fitm_bl::Blockscal
-    weights::Weight
+    weights::ProbabilityWeights
     niter::Vector{Int}
     par::ParMbpca
 end
@@ -297,7 +297,7 @@ struct Comdim
     lb::Matrix
     mu::Vector
     fitm_bl::Blockscal
-    weights::Weight
+    weights::ProbabilityWeights
     niter::Vector{Int}
     par::ParMbpca
 end
@@ -307,14 +307,14 @@ end
 struct Mlr
     B::Matrix   
     int::Matrix
-    weights::Weight
+    weights::ProbabilityWeights
     par::ParMlr
 end
 
 struct MlrNoArg
     B::Matrix   
     int::Matrix
-    weights::Weight
+    weights::ProbabilityWeights
 end
 
 struct Rr
@@ -324,14 +324,14 @@ struct Rr
     xmeans::Vector
     xscales::Vector
     ymeans::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     par::ParRr
 end
 
 struct Rrchol
     B::Matrix   
     int::Matrix
-    weights::Weight
+    weights::ProbabilityWeights
     par::ParRr
 end
 
@@ -354,7 +354,7 @@ struct Plsr
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     niter::Union{Vector{Int}, Nothing}   # plswold
     par::Union{ParPlsr, ParPlswold, ParRrr}
 end
@@ -399,7 +399,7 @@ struct Splsr
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     niter::Union{Vector{Int}, Nothing}   # snipals_shen when Y with q > 1
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
@@ -416,7 +416,7 @@ struct Krr
     vtot::Matrix
     xscales::Vector
     ymeans::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     kwargs::Base.Pairs
     par::ParKrr
 end
@@ -433,7 +433,7 @@ struct Kplsr
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     iter::Vector{Int}
     kwargs::Base.Pairs
     par::ParKplsr
@@ -509,7 +509,7 @@ struct Mbplsr
     fitm::Plsr
     ymeans::Vector
     yscales::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     par::ParMbplsr
 end
 
@@ -526,7 +526,7 @@ struct Mbplswest     # mbplswest, mbwcov
     fitm_bl::Blockscal
     ymeans::Vector
     yscales::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     lb::Union{Matrix, Nothing}
     niter::Union{Vector, Nothing}
     par::ParMbplsr
@@ -542,7 +542,7 @@ struct Rosaplsr
     TT::Vector
     ymeans::Vector
     yscales::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     bl::Vector{Int}
     par::ParSoplsr
 end
@@ -590,7 +590,7 @@ struct Lda
     ni::Vector{Int}
     priors::Vector
     lev::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     par::ParLda
 end
 
@@ -601,7 +601,7 @@ struct Qda
     ni::Vector{Int}
     priors::Vector
     lev::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     par::ParQda
 end
 
@@ -613,7 +613,7 @@ struct Rda
     priors::Vector
     lev::Vector
     xscales::Vector
-    weights::Weight
+    weights::ProbabilityWeights
     par::ParRda
 end
 

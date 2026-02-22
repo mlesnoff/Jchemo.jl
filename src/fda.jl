@@ -6,7 +6,7 @@
 Factorial discriminant analysis (FDA).
 * `X` : X-data (n, p).
 * `y` : y-data (n) (class membership).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of discriminant components.
 * `lb` : Ridge regularization parameter "lambda". Can be used when `X` has collinearities. 
@@ -31,7 +31,7 @@ weights. In that case, argument `prior` has no effect: the class prior probabili
 computed by summing the observation weights by class.
 
 In the high-level methods (no argument `weights`), argument `prior` defines how are preliminary computed the 
-observation weights (see function `mweightcla`) that are then given as input in the hidden low level method.
+observation weights (see function `pweightcla`) that are then given as input in the hidden low level method.
 
 **Note:** For highly unbalanced classes, it may be recommended to define equal class weights ('prior = :unif').
 
@@ -66,7 +66,7 @@ fitm = model.fitm ;
 lev = fitm.lev
 nlev = length(lev)
 fitm.priors
-aggsumv(fitm.weights.v, ytrain)
+aggsumv(fitm.weights.values, ytrain)
 
 @head fitm.T 
 @head transf(model, Xtrain)
@@ -95,7 +95,7 @@ fda(; kwargs...) = JchemoModel(fda, nothing, kwargs)
 function fda(X, y; kwargs...)
     par = recovkw(ParFda, kwargs).par
     Q = eltype(X[1, 1])
-    weights = mweightcla(Q, y; prior = par.prior)
+    weights = pweightcla(Q, y; prior = par.prior)
     fda(X, y, weights; kwargs...)
 end
 
@@ -117,7 +117,7 @@ function fda!(X::Matrix, y, weights; kwargs...)
     end
     res = matW(X, y, weights)
     ni = res.ni
-    priors = aggsumv(weights.v, vec(y)).val  # output not used, only for information    
+    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information    
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate

@@ -1,12 +1,12 @@
 """
     plsnipals(; kwargs...)
     plsnipals(X, Y; kwargs...)
-    plsnipals(X, Y, weights::Weight; kwargs...)
-    plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    plsnipals(X, Y, weights::ProbabilityWeights; kwargs...)
+    plsnipals!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Partial Least Squares Regression (PLSR) with the Nipals algorithm.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
@@ -29,15 +29,16 @@ plsnipals(; kwargs...) = JchemoModel(plsnipals, nothing, kwargs)
 
 function plsnipals(X, Y; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     plsnipals(X, Y, weights; kwargs...)
 end
 
-function plsnipals(X, Y, weights::Weight; kwargs...)
+function plsnipals(X, Y, weights::ProbabilityWeights; kwargs...)
     plsnipals!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
+function plsnipals!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPlsr, kwargs).par
     Q = eltype(X)
     n, p = size(X)
@@ -70,7 +71,7 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     c   = similar(X, q)
     ## End
     @inbounds for a = 1:nlv
-        XtY .= X' * rweight(Y, weights.v)
+        XtY .= X' * rweight(Y, weights.values)
         if q == 1
             w .= vec(XtY)
             w ./= normv(w)
@@ -78,7 +79,7 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
             w .= svd!(XtY).U[:, 1]
         end
         mul!(t, X, w)
-        dt .= weights.v .* t
+        dt .= weights.values .* t
         tt = dot(t, dt)
         mul!(v, X', dt)
         v ./= tt

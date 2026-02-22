@@ -106,7 +106,7 @@ end
 """
     center()
     center(X)
-    center(X, weights::Weight)
+    center(X, weights::ProbabilityWeights)
 Column-wise centering of X-data.
 * `X` : X-data (n, p).
 
@@ -144,7 +144,7 @@ function center(X)
     Center(xmeans)
 end
 
-function center(X, weights::Weight)
+function center(X, weights::ProbabilityWeights)
     xmeans = colmean(X, weights)
     Center(xmeans)
 end
@@ -169,7 +169,7 @@ end
 """
     scale()
     scale(X)
-    scale(X, weights::Weight)
+    scale(X, weights::ProbabilityWeights)
 Column-wise scaling of X-data.
 * `X` : X-data (n, p).
 
@@ -207,7 +207,7 @@ function scale(X)
     Scale(xscales)
 end
 
-function scale(X, weights::Weight)
+function scale(X, weights::ProbabilityWeights)
     xscales = colstd(X, weights)
     Scale(xscales)
 end
@@ -232,7 +232,7 @@ end
 """
     cscale()
     cscale(X)
-    cscale(X, weights::Weight)
+    cscale(X, weights::ProbabilityWeights)
 Column-wise centering and scaling of X-data.
 * `X` : X-data (n, p).
 
@@ -273,7 +273,7 @@ function cscale(X)
     Cscale(xmeans, xscales)
 end
 
-function cscale(X, weights::Weight)
+function cscale(X, weights::ProbabilityWeights)
     xmeans = colmean(X, weights)
     xscales = colstd(X, weights)
     Cscale(xmeans, xscales)

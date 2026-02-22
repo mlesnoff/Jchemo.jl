@@ -1,11 +1,11 @@
 """
     rrda(; kwargs...)
     rrda(X, y; kwargs...)
-    rrda(X, y, weights::Weight; kwargs...)
+    rrda(X, y, weights::ProbabilityWeights; kwargs...)
 Discrimination based on ridge regression (RR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`). 
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
 Keyword arguments: 
 * `lb` : Ridge regularization parameter "lambda".
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
@@ -29,7 +29,7 @@ weights. In that case, argument `prior` has no effect: the class prior probabili
 computed by summing the observation weights by class.
 
 In the high-level methods (no argument `weights`), argument `prior` defines how are preliminary computed the 
-observation weights (see function `mweightcla`) that are then given as input in the hidden low level method.
+observation weights (see function `pweightcla`) that are then given as input in the hidden low level method.
 
 **Note:** For highly unbalanced classes, it may be recommended to define equal class weights ('prior = :unif'),
 and to use a performance score such as `merrp`, instead of `errp`.
@@ -86,15 +86,15 @@ rrda(; kwargs...) = JchemoModel(rrda, nothing, kwargs)
 function rrda(X, y; kwargs...)
     par = recovkw(ParRrda, kwargs).par
     Q = eltype(X[1, 1])
-    weights = mweightcla(Q, y; prior = par.prior)
+    weights = pweightcla(Q, y; prior = par.prior)
     rrda(X, y, weights; kwargs...)
 end
 
-function rrda(X, y, weights::Weight; kwargs...)    
+function rrda(X, y, weights::ProbabilityWeights; kwargs...)    
     par = recovkw(ParRrda, kwargs).par
     res = dummy(y)
     ni = tab(y).vals 
-    priors = aggsumv(weights.v, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm = rr(X, res.Y, weights; kwargs...)
     Rrda(fitm, ni, priors, res.lev, par)
 end

@@ -25,7 +25,7 @@ Xnew = X[1:3, :]
 Ynew = Y[1:3, :]
 y = Y[:, 1]
 ynew = Ynew[:, 1]
-weights = mweight(rand(n))
+weights = pweight(rand(n))
 
 nlv = 2 
 scal = false

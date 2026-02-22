@@ -101,7 +101,7 @@ function pcapp!(X::Matrix; kwargs...)
     T .= T[:, s]
     V .= V[:, s]
     sv .= sv[s]
-    weights = mweight(ones(n))
+    weights = pweight(ones(Q, n))
     Pca(T, V, sv, xmeans, xscales, weights, nothing, par)
 end
 

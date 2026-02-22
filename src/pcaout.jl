@@ -1,11 +1,11 @@
 """
     pcaout(; kwargs...)
     pcaout(X; kwargs...)
-    pcaout(X, weights::Weight; kwargs...)
-    pcaout!(X::Matrix, weights::Weight; kwargs...)
+    pcaout(X, weights::ProbabilityWeights; kwargs...)
+    pcaout!(X::Matrix, weights::ProbabilityWeights; kwargs...)
 Robust PCA using outlierness.
 * `X` : X-data (n, p). 
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `prm` : Proportion of the data removed (hard rejection of outliers) for each outlierness measure.
@@ -21,7 +21,7 @@ Observations (`X`-rows) receive weights depending on two outlyingness indicators
     (the other receive a weight w1 = 1).
 2) An outlyingness based on the Euclidean distance to center (function `outeucl`) is computed. The proportion `prm` 
     of the observations with the highest outlyingness values receive a weight w2 = 0 (the other receive a weight w2 = 1).
-The final weights of the observations are computed by weights.v * w1 * w2 that is used in a weighted PCA.
+The final weights of the observations are computed by weights.values * w1 * w2 that is used in a weighted PCA.
 
 By default, the function uses `prm = .3` (such as in the ROBPCA algorithm of Hubert et al. 2005, 2009). 
 
@@ -67,15 +67,16 @@ pcaout(; kwargs...) = JchemoModel(pcaout, nothing, kwargs)
 
 function pcaout(X; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     pcaout(X, weights; kwargs...)
 end
 
-function pcaout(X, weights::Weight; kwargs...)
+function pcaout(X, weights::ProbabilityWeights; kwargs...)
     pcaout!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
-function pcaout!(X::Matrix, weights::Weight; kwargs...)
+function pcaout!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPcaout, kwargs).par 
     p = nco(X)
     nlvstah = 500
@@ -84,8 +85,8 @@ function pcaout!(X::Matrix, weights::Weight; kwargs...)
     w = wtal(d; a = quantile(d, 1 - par.prm))
     d .= outeucl(X; scal = par.scal).d
     w .*= wtal(d; a = quantile(d, 1 - par.prm))
-    w .*= weights.v
+    w .*= weights.values
     w[isequal.(w, 0)] .= 1e-10
-    fitm = pcasvd(X, mweight(w); kwargs...)
+    fitm = pcasvd(X, pweight(w); kwargs...)
     Pca(fitm.T, fitm.V, fitm.sv, fitm.xmeans, fitm.xscales, fitm.weights, nothing, par)
 end

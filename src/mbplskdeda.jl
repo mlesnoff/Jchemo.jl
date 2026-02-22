@@ -1,11 +1,11 @@
 """
     mbplskdeda(; kwargs...)
     mbplskdeda(Xbl, y; kwargs...)
-    mbplskdeda(Xbl, y, weights::Weight; kwargs...)
+    mbplskdeda(Xbl, y, weights::ProbabilityWeights; kwargs...)
 Multiblock PLS-KDEDA.
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 * `y` : Univariate class membership (n).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
@@ -26,16 +26,16 @@ mbplskdeda(; kwargs...) = JchemoModel(mbplskdeda, nothing, kwargs)
 function mbplskdeda(Xbl, y; kwargs...)
     par = recovkw(ParMbplskdeda, kwargs).par
     Q = eltype(Xbl[1][1, 1])
-    weights = mweightcla(Q, y; prior = par.prior)
+    weights = pweightcla(Q, y; prior = par.prior)
     mbplskdeda(Xbl, y, weights; kwargs...)
 end
 
-function mbplskdeda(Xbl, y, weights::Weight; kwargs...)
+function mbplskdeda(Xbl, y, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParMbplskdeda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    priors = aggsumv(weights.v, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm_emb = mbplsr(Xbl, res.Y, weights; kwargs...)
     fitm_da = list(Kdeda, par.nlv)
     @inbounds for i = 1:par.nlv

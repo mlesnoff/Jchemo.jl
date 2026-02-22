@@ -72,12 +72,12 @@ function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}; nlv = nothing)
         W = object.W
         T = object.T
         a = object.par.nlv
-        sqrtw = sqrt.(object.weights.v)
+        sqrtw = sqrt.(object.weights.values)
     elseif isa(object, Mbplsr) || isa(object, Pcr) || isa(object, Spcr)
         W = object.fitm.V
         T = object.fitm.T
         a = object.par.nlv
-        sqrtw = sqrt.(object.fitm.weights.v)
+        sqrtw = sqrt.(object.fitm.weights.values)
     end
     p = nro(W)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)

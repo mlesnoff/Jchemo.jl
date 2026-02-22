@@ -1,18 +1,18 @@
 """
     rr(; kwargs...)
     rr(X, Y; kwargs...)
-    rr(X, Y, weights::Weight; kwargs...)
-    rr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
+    rr(X, Y, weights::ProbabilityWeights; kwargs...)
+    rr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
 Ridge regression (RR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `lb` : Ridge regularization parameter 'lambda'.
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
 The function computes a model with intercept. After `X` and y (a given column of `Y`) have been
-centered (an `X` eventually scaled) and weighted by sqrtw = sqrt.(`weights.v`), the function finds 
+centered (an `X` eventually scaled) and weighted by sqrtw = sqrt.(`weights.values`), the function finds 
 b (q, 1) (the corresponding column of output `B` (p, q)) that minimizes 
 * ||y - X * b||^2 + `lb`^2 * ||b||^2 
 where ||.|| is the Euclidean norm.
@@ -73,20 +73,21 @@ rr(; kwargs...) = JchemoModel(rr, nothing, kwargs)
 
 function rr(X, Y; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     rr(X, Y, weights; kwargs...)
 end
 
-function rr(X, Y, weights::Weight; kwargs...)
+function rr(X, Y, weights::ProbabilityWeights; kwargs...)
     rr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function rr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
+function rr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParRr, kwargs).par
     Q = eltype(X)
     isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
     p = nco(X)
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)
     xscales = ones(Q, p)

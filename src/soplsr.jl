@@ -1,12 +1,12 @@
 """
     soplsr(; kwargs...)
     soplsr(Xbl, Y; kwargs...)
-    soplsr(Xbl, Y, weights::Weight; kwargs...)
-    soplsr!(Xbl::Matrix, Y::Matrix, weights::Weight; kwargs...)
+    soplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
+    soplsr!(Xbl::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Multiblock sequentially orthogonalized PLSR (SO-PLSR).
 * `Xbl` : List of blocks (vector of matrices) of X-data Typically, output of function `mblock` from data (n, p).  
 * `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` and `Y` is scaled by its uncorrected 
@@ -66,11 +66,11 @@ soplsr(; kwargs...) = JchemoModel(soplsr, nothing, kwargs)
 function soplsr(Xbl, Y; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
-    weights = mweight(ones(Q, n))
+    weights = pweight(ones(Q, n))
     soplsr(Xbl, Y, weights; kwargs...)
 end
 
-function soplsr(Xbl, Y, weights::Weight; kwargs...)
+function soplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
@@ -80,7 +80,7 @@ function soplsr(Xbl, Y, weights::Weight; kwargs...)
     soplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
+function soplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParSoplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     Y = ensure_mat(Y)
@@ -109,7 +109,7 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     b = list(Array{Q}, nbl) 
     if nbl > 1
         for i = 2:nbl
-            DT = rweight(T, weights.v)
+            DT = rweight(T, weights.values)
             b[i] = inv(T' * DT) * DT' * Xbl[i]
             X = Xbl[i] - T * b[i]
             fitm[i] = plskern(X, Y - fit, weights; nlv = nlv[i], scal = false)  

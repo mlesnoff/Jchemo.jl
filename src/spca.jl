@@ -1,11 +1,11 @@
 """
     spca(; kwargs...)
     spca(X; kwargs...)
-    spca(X, weights::Weight; kwargs...)
-    spca!(X::Matrix, weights::Weight; kwargs...)
+    spca(X, weights::ProbabilityWeights; kwargs...)
+    spca!(X::Matrix, weights::ProbabilityWeights; kwargs...)
 Sparse PCA by regularized low rank matrix approximation (sPCA-rSVD, Shen & Huang 2008).
 * `X` : X-data (n, p). 
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. principal components (PCs).
 * `meth` : Method used for the thresholding of the loadings. Possible values are: `:soft`, `:hard`. See thereafter.
@@ -100,15 +100,16 @@ spca(; kwargs...) = JchemoModel(spca, nothing, kwargs)
 
 function spca(X; kwargs...)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     spca(X, weights; kwargs...)
 end
 
-function spca(X, weights::Weight; kwargs...)
+function spca(X, weights::ProbabilityWeights; kwargs...)
     spca!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
-function spca!(X::Matrix, weights::Weight; kwargs...)
+function spca!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParSpca, kwargs).par
     @assert in([:soft; :hard])(par.meth) "Wrong value for argument 'meth'."
     @assert in([:v; :t])(par.defl) "Wrong value for argument 'defl'."
@@ -133,7 +134,7 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(X, xmeans)
     end
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     rweight!(X, sqrtw)
     T = similar(X, n, nlv)
     V = similar(X, p, nlv)
@@ -202,10 +203,10 @@ function Base.summary(object::Spca, X)
     X = ensure_mat(X)
     nlv = nco(object.T)
     weights = object.weights
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     X = fcscale(X, object.xmeans, object.xscales)
     sstot = frob2(X, weights)
-    TT = rweight(object.T.^2, weights.v)
+    TT = rweight(object.T.^2, weights.values)
     tt = colsum(TT)
     defl = object.par.defl 
     if defl == :v      
@@ -224,7 +225,7 @@ function Base.summary(object::Spca, X)
         explvarx = DataFrame(nlv = 1:nlv, pvar = pvar, cumpvar = cumpvar)
     elseif defl == :t
         ## Proportion of variance of X explained by each column of T 
-        A = X' * rweight(object.T, weights.v)
+        A = X' * rweight(object.T, weights.values)
         ss = colnorm(A).^2 ./ colnorm(object.T, object.weights).^2
         ## = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
         ## = diag(A' * A) ./ diag(object.T' * D * object.T)
@@ -237,7 +238,7 @@ function Base.summary(object::Spca, X)
     contr_ind = DataFrame(fscale(TT, tt), nam)
     contr_var = DataFrame(object.V.^2, nam)
     ## Should be ok 
-    C = X' * rweight(fscale(object.T, sqrt.(tt)), weights.v) 
+    C = X' * rweight(fscale(object.T, sqrt.(tt)), weights.values) 
     coord_var = DataFrame(C, nam)
     ## End
     cor_circle = DataFrame(corm(X, object.T, weights), nam)

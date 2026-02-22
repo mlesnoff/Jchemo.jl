@@ -402,8 +402,7 @@
 - **rmrow** Remove rows
 
 *Computing weights*
-- **mweight** Normalize a vector to sum to 1
-- **mweightcla** Compute observation weights for a categorical variable, given specified sub-total weights for the classes
+- **pweightcla** Compute observation weights for a categorical variable, given specified sub-total weights for the classes
 - **wdis** Different functions to compute weights from distances
 - **wtal** Compute weights from distances using the 'talworth' distribution
 - **winvs** Compute weights from distances using an inverse scaled exponential function

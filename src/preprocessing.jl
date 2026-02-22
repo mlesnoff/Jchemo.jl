@@ -683,11 +683,12 @@ function transf(object::Snv, X)
 end
 
 function transf!(object::Snv, X::Matrix)
+    Q = eltype(X)
     n, p = size(X)
     centr = object.par.centr 
     scal = object.par.scal
-    centr ? mu = rowmean(X) : mu = zeros(n)
-    scal ? s = rowstd(X) : s = ones(n)
+    centr ? mu = rowmean(X) : mu = zeros(Q, n)
+    scal ? s = rowstd(X) : s = ones(Q, n)
     # Not faster: @Threads.threads
     @inbounds for j = 1:p
         X[:, j] .= (vcol(X, j) .- mu) ./ s

@@ -33,10 +33,10 @@ end
 """
     blockscal(; kwargs...)
     blockscal(Xbl; kwargs...)
-    blockscal(Xbl, weights::Weight; kwargs...)
+    blockscal(Xbl, weights::ProbabilityWeights; kwargs...)
 Scale multiblock X-data.
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
-* `weights` : Weights (n) of the observations (rows of the blocks). Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations (rows of the blocks). Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `centr` : Boolean. If `true`, each column of blocks in `Xbl` is centered (before the block scaling).
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` is scaled by its uncorrected standard deviation (before the block scaling).
@@ -46,7 +46,7 @@ If implemented, the data transformations follow the order: column centering, col
 
 Types of block scaling:
 * `:none` : No block scaling. 
-* `:frob` : Let D be the diagonal matrix of vector `weights.v`. Each block X is divided by its Frobenius norm  = sqrt(tr(X' * D * X)). 
+* `:frob` : Let D be the diagonal matrix of vector `weights.values`. Each block X is divided by its Frobenius norm  = sqrt(tr(X' * D * X)). 
     After this scaling, tr(X' * D * X) = 1.
 * `:mfa` : Each block X is divided by sv, where sv is the dominant singular value of X (this is the "MFA" approach; "AFM "in French).
 * `:ncol` : Each block X is divided by the nb. of columns of the block.
@@ -81,10 +81,10 @@ blockscal(; kwargs...) = JchemoModel(blockscal, nothing, kwargs)
 function blockscal(Xbl; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
-    blockscal(Xbl, mweight(ones(Q, n)); kwargs...)
+    blockscal(Xbl, pweight(ones(Q, n)); kwargs...)
 end
 
-function blockscal(Xbl::Vector, weights::Weight; kwargs...)   # to do: specify the type of Xbl
+function blockscal(Xbl::Vector, weights::ProbabilityWeights; kwargs...)   # to do: specify the type of Xbl
     par = recovkw(ParBlock, kwargs).par
     @assert in([:none, :frob, :mfa, :ncol, :sd])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
@@ -113,7 +113,7 @@ function blockscal(Xbl::Vector, weights::Weight; kwargs...)   # to do: specify t
         if bscal == :frob
             bscales[k] = frob(zX, weights)
         elseif bscal == :mfa
-            rweight!(zX, sqrt.(weights.v))
+            rweight!(zX, sqrt.(weights.values))
             bscales[k] = nipals(zX).sv
         elseif bscal == :ncol
             bscales[k] = nco(zX)

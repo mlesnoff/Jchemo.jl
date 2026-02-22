@@ -1,10 +1,10 @@
 """
     rd(X, Y; typ = :cor)
-    rd(X, Y, weights::Weight; typ = :cor)
+    rd(X, Y, weights::ProbabilityWeights; typ = :cor)
 Compute redundancy coefficients (Rd).
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `typ` : Possibles values are: `:cor` (correlation), `:cov` (uncorrected covariance). 
 
@@ -29,11 +29,12 @@ rd(X, Y)
 """ 
 function rd(X, Y; typ = :cor)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     rd(X, Y, weights; typ)
 end
 
-function rd(X, Y, weights::Weight; typ = :cor)
+function rd(X, Y, weights::ProbabilityWeights; typ = :cor)
     @assert in([:cor, :cov])(typ) "Wrong value for argument 'typ'." 
     if typ == :cor
         A = corm(X, Y, weights).^2
@@ -94,11 +95,12 @@ rv(Xbl)
 """ 
 function rv(X, Y; centr = true)
     Q = eltype(X[1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     rv(X, Y, weights; centr)
 end
 
-function rv(X, Y, weights::Weight; centr = true)
+function rv(X, Y, weights::ProbabilityWeights; centr = true)
     X = copy(ensure_mat(X))
     Y = copy(ensure_mat(Y))
     n, p = size(X)
@@ -106,7 +108,7 @@ function rv(X, Y, weights::Weight; centr = true)
         fcenter!(X, colmean(X, weights))
         fcenter!(Y, colmean(Y, weights))
     end
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     rweight!(X, sqrtw)
     rweight!(Y, sqrtw)
     if n < p

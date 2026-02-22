@@ -1,11 +1,11 @@
 """
     comdim(; kwargs...)
     comdim(Xbl; kwargs...)
-    comdim(Xbl, weights::Weight; kwargs...)
-    comdim!(Xbl::Matrix, weights::Weight; kwargs...)
+    comdim(Xbl, weights::ProbabilityWeights; kwargs...)
+    comdim!(Xbl::Matrix, weights::ProbabilityWeights; kwargs...)
 Common components and specific weights analysis (CCSWA, a.k.a ComDim and HPCA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock`.  
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. global latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
@@ -108,11 +108,11 @@ comdim(; kwargs...) = JchemoModel(comdim, nothing, kwargs)
 function comdim(Xbl; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
-    weights = mweight(ones(Q, n))
+    weights = pweight(ones(Q, n))
     comdim(Xbl, weights; kwargs...)
 end
 
-function comdim(Xbl, weights::Weight; kwargs...)
+function comdim(Xbl, weights::ProbabilityWeights; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
@@ -122,7 +122,7 @@ function comdim(Xbl, weights::Weight; kwargs...)
     comdim!(zXbl, weights; kwargs...)
 end
 
-function comdim!(Xbl::Vector, weights::Weight; kwargs...)
+function comdim!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParMbpca, kwargs).par 
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
@@ -132,7 +132,7 @@ function comdim!(Xbl::Vector, weights::Weight; kwargs...)
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     # Row metric
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     invsqrtw = 1 ./ sqrtw
     @inbounds for k in eachindex(Xbl) 
         rweight!(Xbl[k], sqrtw)
@@ -266,7 +266,7 @@ function Base.summary(object::Comdim, Xbl)
     cumpvar = cumsum(pvar)
     explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
     ## Explained XXt inertia by each global LV (indicator 'V')
-    sqrtw = sqrt.(object.weights.v)
+    sqrtw = sqrt.(object.weights.values)
     sstot_xx = 0 
     @inbounds for k in eachindex(Xbl)
         zX = rweight(zXbl[k], sqrtw)

@@ -1,11 +1,11 @@
 """
     pcanipalsmiss(; kwargs...)
     pcanipals(X; kwargs...)
-    pcanipals(X, weights::Weight; kwargs...)
-    pcanipals!(X::Matrix, weights::Weight; kwargs...)
+    pcanipals(X, weights::ProbabilityWeights; kwargs...)
+    pcanipals!(X::Matrix, weights::ProbabilityWeights; kwargs...)
 PCA by NIPALS algorithm allowing missing data.
 * `X` : X-data (n, p). 
-* `weights` : Weights (n) of the observations. Must be of type `Weight` (see e.g., function `mweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `gs` : Boolean. If `true` (default), a Gram-Schmidt orthogonalization of the scores and loadings is done
@@ -60,15 +60,16 @@ function pcanipalsmiss(X; kwargs...)
     z = vec(Matrix(X))
     s = ismissing.(z) .== 0
     Q = eltype(z[s][1, 1])
-    weights = mweight(ones(Q, nro(X)))
+    n = nro(X)
+    weights = pweight(ones(Q, n))
     pcanipalsmiss(X, weights; kwargs...)
 end
 
-function pcanipalsmiss(X, weights::Weight; kwargs...)
+function pcanipalsmiss(X, weights::ProbabilityWeights; kwargs...)
     pcanipalsmiss!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
-function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
+function pcanipalsmiss!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPcanipals, kwargs).par 
     Q = eltype(X)
     n, p = size(X)
@@ -81,7 +82,7 @@ function pcanipalsmiss!(X::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(X, xmeans)
     end
-    sqrtw = sqrt.(weights.v)
+    sqrtw = sqrt.(weights.values)
     rweight!(X, sqrtw)
     T = similar(X, n, nlv)
     V = similar(X, p, nlv)
