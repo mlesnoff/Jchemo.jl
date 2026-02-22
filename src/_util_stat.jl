@@ -19,15 +19,9 @@ sumv(x)
 sumv(x, w)
 ```
 """
-sumv(x) = Base.sum(x)
+sumv(x) = sum(x)
 
-function sumv(x, weights::ProbabilityWeights)
-    s = zero(x[begin])
-    @simd for i in eachindex(x)
-        s = muladd(x[i],  weights.values[i], s)
-    end
-    s
-end
+sumv(x, weights::ProbabilityWeights) = sum(x, weights)
 
 """ 
     meanv(x)

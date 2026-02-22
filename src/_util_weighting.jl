@@ -2,9 +2,10 @@
 
 """ 
     pweight(x::Vector)
-Return an object of type `StatsBase.ProbabilityWeights`.
+Wrapper of function `StatsBase.pweights` returning an object of type `StatsBase.ProbabilityWeights`.
 
-* The returned object `values' is equal to `x / sum(x)`.
+The wrapper forces the probability weights to sum to 1:
+* The returned object `values` is equal to `x / sum(x)`.
 
 ## Examples
 ```julia
