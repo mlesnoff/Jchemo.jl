@@ -12,11 +12,11 @@ The wrapper forces the probability weights to sum to 1:
 using Jchemo
 
 x = rand(10)
-w = pweight(x)
-@names w 
-w.values 
-sum(w.values) 
-w.sum
+weights = pweight(x)
+@names weights 
+weights.values 
+sum(weights.values) 
+weights.sum
 ```
 """
 pweight(x) = pweights(x / sum(x))
@@ -76,7 +76,7 @@ function pweightcla(Q::DataType, y::AbstractVector; prior::Union{Symbol, Vector}
     pweight(convert.(Q, pweightcla(y; prior).values))
 end
 
-##### Weighting entire rows or columns
+##### Weighting of entire rows or columns
 
 """
     rweight(X, v)
@@ -90,11 +90,11 @@ Weight each row of a matrix.
 using Jchemo, LinearAlgebra
 
 X = rand(5, 2) 
-w = rand(5) 
-rweight(X, w)
-diagm(w) * X
+v = rand(5) 
+rweight(X, v)
+diagm(v) * X
 
-rweight!(X, w)
+rweight!(X, v)
 X
 ```
 """ 
@@ -127,11 +127,11 @@ Weight each column of a matrix.
 using Jchemo, LinearAlgebra
 
 X = rand(5, 2) 
-w = rand(2) 
-cweight(X, w)
-X * diagm(w)
+v = rand(2) 
+cweight(X, v)
+X * diagm(v)
 
-cweight!(X, w)
+cweight!(X, v)
 X
 ```
 """ 
