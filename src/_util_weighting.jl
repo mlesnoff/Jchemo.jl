@@ -1,10 +1,28 @@
 ###### Building weights
 
-function pweight(x)
-    tot = sum(x) 
-    ProbabilityWeights(x / tot, tot)
-end
-#pweight(x) = pweights(x / sum(x))
+""" 
+    pweight(x::Vector)
+Return an object of type `StatsBase.ProbabilityWeights`.
+
+* The returned object `values' is equal to `x / sum(x)`.
+
+## Examples
+```julia
+using Jchemo
+
+x = rand(10)
+w = pweight(x)
+@names w 
+w.values 
+sum(w.values) 
+w.sum
+```
+"""
+pweight(x) = pweights(x / sum(x))
+#function pweight(x)
+#    tot = sum(x) 
+#    ProbabilityWeights(x / tot, 1.)
+#end
 
 """ 
     pweightcla(y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
@@ -17,7 +35,8 @@ Keyword arguments:
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 
-Return an object of type `ProbabilityWeights` (see function `pweight`) containing a vector `w` (n) that sums to 1.
+Return an object of type `ProbabilityWeights` (see function `pweight`) containing a vector `weights.values` (n) 
+that sums to 1.
 
 ## Examples
 ```julia

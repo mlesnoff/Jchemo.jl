@@ -436,8 +436,8 @@ Frobenius norm of a matrix.
 The Frobenius norm of `X` is:
 * sqrt(tr(X' * X)).
 
-The Frobenius weighted norm is:
-* sqrt(tr(X' * D * X)), where D is the diagonal matrix of vector `w`.
+The weighted Frobenius norm is:
+* sqrt(tr(X' * D * X)), where D is the diagonal matrix of vector `weights.values`.
 
 Functions `frob2` are the squared versions of `frob`.
 

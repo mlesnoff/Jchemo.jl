@@ -1,11 +1,3 @@
-############---- Weights
-
-struct Weight{T <: AbstractFloat}
-    v::Vector{T} 
-    #v::Union{Vector{T}, CuArray}
-    #v::Union{AbstractVector}
-end
-
 ############---- Data Processing 
 
 ## Preprocessing
