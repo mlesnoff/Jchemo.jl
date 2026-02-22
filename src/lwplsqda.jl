@@ -54,7 +54,7 @@ function lwplsqda(X, y; kwargs...)
         fitm = nothing
     else
         weights = mweightcla(vec(y); prior = par.prior)
-        priors = aggsumv(weights.w, vec(y)).val
+        priors = aggsumv(weights.v, vec(y)).val
         fitm = plskern(X, dummy(y).Y, weights; nlv = par.nlvdis, scal = par.scal)
     end
     xscales = ones(Q, p)

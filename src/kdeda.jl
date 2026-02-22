@@ -76,7 +76,7 @@ function kdeda(X, y, weights::Weight; kwargs...)
     par = recovkw(ParKdeda, kwargs).par
     X = ensure_mat(X)
     ni = tab(y).vals
-    priors = aggsumv(weights.w, vec(y)).val
+    priors = aggsumv(weights.v, vec(y)).val
     lev = mlev(y)
     nlev = length(lev)
     ## End

@@ -66,7 +66,7 @@ fitm = model.fitm ;
 lev = fitm.lev
 nlev = length(lev)
 fitm.priors
-aggsumv(fitm.weights.w, ytrain)
+aggsumv(fitm.weights.v, ytrain)
 
 @head fitm.T 
 @head transf(model, Xtrain)
@@ -117,7 +117,7 @@ function fda!(X::Matrix, y, weights; kwargs...)
     end
     res = matW(X, y, weights)
     ni = res.ni
-    priors = aggsumv(weights.w, vec(y)).val  # output not used, only for information    
+    priors = aggsumv(weights.v, vec(y)).val  # output not used, only for information    
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate

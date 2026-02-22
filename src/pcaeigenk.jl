@@ -13,7 +13,7 @@ Keyword arguments:
 This is the "kernel cross-product" version of the PCA algorithm (e.g., Wu et al. 1997). For wide matrices (n << p, 
 where p is the nb. columns) and n not too large, this algorithm can be much faster than the others.
 
-Let us note D the (n, n) diagonal matrix of weights (`weights.w`) and X the centered matrix in metric D.
+Let us note D the (n, n) diagonal matrix of weights (`weights.v`) and X the centered matrix in metric D.
 The function minimizes ||X - T * V'||^2  in metric D, by computing an Eigen factorization of D^(1/2) * X * X' D^(1/2).
 
 See function `pcasvd` for examples.
@@ -47,7 +47,7 @@ function pcaeigenk!(X::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(X, xmeans)
     end
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     rweight!(X, sqrtw)
     res = eigen!(Symmetric(X * X'); sortby = x -> -abs(x))
     eig = res.values[1:min(n, p)]

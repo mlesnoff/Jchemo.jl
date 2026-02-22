@@ -13,7 +13,7 @@ Keyword arguments:
 
 The method is implemented by SVD factorization of the weighted Gram matrix: 
 * D^(1/2) * Phi(X) * Phi(X)' * D^(1/2)
-where X is the cenetred matrix and D is a diagonal matrix of weights (`weights.w`) of the observations (rows of X).
+where X is the cenetred matrix and D is a diagonal matrix of weights (`weights.v`) of the observations (rows of X).
 
 ## References 
 Scholkopf, B., Smola, A., MÃ¼ller, K.-R., 1997. Kernel principal component analysis, in: Gerstner, W., Germond, A., Hasler, 
@@ -81,11 +81,11 @@ function kpca(X, weights::Weight; kwargs...)
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
     K = fkern(X, X; kwargs...)  # in the future?: fkern!(K, X, X; kwargs...)
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     Kt = K'    
-    DKt = rweight(Kt, weights.w)
+    DKt = rweight(Kt, weights.v)
     vtot = sum(DKt, dims = 1)
-    Kc = K .- vtot' .- vtot .+ sum(rweight(DKt', weights.w))    # = K .- vtot' .- vtot .+ sum(D * DKt')
+    Kc = K .- vtot' .- vtot .+ sum(rweight(DKt', weights.v))    # = K .- vtot' .- vtot .+ sum(D * DKt')
     Kd = rweight(Kc, sqrtw) * Diagonal(sqrtw)    # = sqrtD * Kc * sqrtD
     res = LinearAlgebra.svd(Kd)
     U = res.V[:, 1:nlv]
@@ -109,7 +109,7 @@ function transf(object::Kpca, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
-    w = object.weights.w
+    w = object.weights.v
     DKt = rweight(K', w)
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- object.vtot .+ sum(rweight(object.DKt', w))

@@ -46,7 +46,7 @@ If implemented, the data transformations follow the order: column centering, col
 
 Types of block scaling:
 * `:none` : No block scaling. 
-* `:frob` : Let D be the diagonal matrix of vector `weights.w`. Each block X is divided by its Frobenius norm  = sqrt(tr(X' * D * X)). 
+* `:frob` : Let D be the diagonal matrix of vector `weights.v`. Each block X is divided by its Frobenius norm  = sqrt(tr(X' * D * X)). 
     After this scaling, tr(X' * D * X) = 1.
 * `:mfa` : Each block X is divided by sv, where sv is the dominant singular value of X (this is the "MFA" approach; "AFM "in French).
 * `:ncol` : Each block X is divided by the nb. of columns of the block.
@@ -113,7 +113,7 @@ function blockscal(Xbl::Vector, weights::Weight; kwargs...)   # to do: specify t
         if bscal == :frob
             bscales[k] = frob(zX, weights)
         elseif bscal == :mfa
-            rweight!(zX, sqrt.(weights.w))
+            rweight!(zX, sqrt.(weights.v))
             bscales[k] = nipals(zX).sv
         elseif bscal == :ncol
             bscales[k] = nco(zX)

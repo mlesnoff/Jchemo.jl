@@ -118,7 +118,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(Y, ymeans)
     end
     # Row metric
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     invsqrtw = 1 ./ sqrtw
     p = zeros(Int, nbl)
     @inbounds for k in eachindex(Xbl) 

@@ -120,7 +120,7 @@ function rasvd!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         bscales = [normx ; normy]
     end
     # Row metric
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     invsqrtw = 1 ./ sqrtw
     rweight!(X, sqrtw)
     rweight!(Y, sqrtw)
@@ -193,7 +193,7 @@ function Base.summary(object::Rasvd, X, Y)
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     ## Block X
     T = object.Tx
-    DT = rweight(T, object.weights.w)
+    DT = rweight(T, object.weights.v)
     ss = frob(X, object.weights)^2
     tt = diag(DT'* X * X' * DT) ./ diag(T' * DT)
     pvar =  tt / ss

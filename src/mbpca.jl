@@ -165,7 +165,7 @@ function mbpca!(Xbl::Vector, weights::Weight; kwargs...)
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     # Row metric
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     invsqrtw = 1 ./ sqrtw
     @inbounds for k in eachindex(Xbl) 
         rweight!(Xbl[k], sqrtw)

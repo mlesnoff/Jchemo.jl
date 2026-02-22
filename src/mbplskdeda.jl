@@ -35,7 +35,7 @@ function mbplskdeda(Xbl, y, weights::Weight; kwargs...)
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(y)
     ni = tab(y).vals
-    priors = aggsumv(weights.w, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.v, vec(y)).val  # output not used, only for information
     fitm_emb = mbplsr(Xbl, res.Y, weights; kwargs...)
     fitm_da = list(Kdeda, par.nlv)
     @inbounds for i = 1:par.nlv

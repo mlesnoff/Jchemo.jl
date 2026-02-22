@@ -24,7 +24,7 @@ sumv(x) = Base.sum(x)
 function sumv(x, weights::Weight)
     s = zero(x[begin])
     @simd for i in eachindex(x)
-        s = muladd(x[i],  weights.w[i], s)
+        s = muladd(x[i],  weights.v[i], s)
     end
     s
 end
@@ -73,10 +73,10 @@ stdv(x, w)
 """
 stdv(x) = Statistics.std(x; corrected = false) 
 
-function stdv(x, weight::Weight)
+function stdv(x, weights::Weight)
     n = length(x)
-    mu = meanv(x, weight)
-    sqrt(sum(i -> (x[i] - mu)^2 * weight.w[i], 1:n))
+    mu = meanv(x, weights)
+    sqrt(sum(i -> (x[i] - mu)^2 * weights.v[i], 1:n))
 end
 
 """ 
@@ -100,10 +100,10 @@ varv(x, w)
 """
 varv(x) = Statistics.var(x; corrected = false) 
 
-function varv(x, weight::Weight)
+function varv(x, weights::Weight)
     n = length(x)
-    mu = meanv(x, weight)
-    sum(i -> (x[i] - mu)^2 * weight.w[i], 1:n)
+    mu = meanv(x, weights)
+    sum(i -> (x[i] - mu)^2 * weights.v[i], 1:n)
 end
 
 """
@@ -148,7 +148,7 @@ The norm of vector `x` is computed by:
 * sqrt(x' * x)
 
 The weighted norm of vector `x` is computed by:
-* sqrt(x' * D * x), where D is the diagonal matrix of vector `weights.w`.
+* sqrt(x' * D * x), where D is the diagonal matrix of vector `weights.v`.
 
 ## References
 
@@ -172,7 +172,7 @@ sqrt(n) * normv(x, w)
 """
 normv(x) = sqrt(dot(x, x)) 
 
-normv(x, weights::Weight) = sqrt(sum(i -> x[i]^2 * weights.w[i], 1:length(x)))
+normv(x, weights::Weight) = sqrt(sum(i -> x[i]^2 * weights.v[i], 1:length(x)))
 
 ###### Two vectors
 
@@ -204,7 +204,7 @@ function covv(x, y, weights::Weight)
     muy = meanv(y, weights)
     s = zero(x[begin])
     @simd for i in eachindex(x)
-        s = muladd((x[i] - mux) * (y[i] - muy),  weights.w[i], s)
+        s = muladd((x[i] - mux) * (y[i] - muy),  weights.v[i], s)
     end
     s
 end 
@@ -239,7 +239,7 @@ function corv(x, y, weights::Weight)
     sdy = stdv(y, weights)
     s = zero(x[begin])
     @simd for i in eachindex(x)
-        s = muladd((x[i] - mux) * (y[i] - muy),  weights.w[i], s)
+        s = muladd((x[i] - mux) * (y[i] - muy),  weights.v[i], s)
     end
     s / (sdx * sdy)
 end 
@@ -285,8 +285,8 @@ cosv(x, y)
 cosv(x, y) = dot(x, y) / sqrt(dot(x, x) * dot(y, y))
 
 function cosv(x, y, weights::Weight)
-    zy = rweight(y, weights.w)
-    dot(x, zy) / sqrt(dot(x, rweight(x, weights.w)) * dot(y, zy))
+    zy = rweight(y, weights.v)
+    dot(x, zy) / sqrt(dot(x, rweight(x, weights.v)) * dot(y, zy))
 end
 
 ###### Matrices
@@ -323,7 +323,7 @@ covm(X) = Statistics.cov(X; corrected = false)
 function covm(X, weights::Weight)
     zX = copy(ensure_mat(X))
     fcenter!(zX, colmean(zX, weights))
-    rweight!(zX, sqrt.(weights.w))
+    rweight!(zX, sqrt.(weights.v))
     zX' * zX
 end
 
@@ -334,7 +334,7 @@ function covm(X, Y, weights::Weight)
     zY = copy(ensure_mat(Y))
     fcenter!(zX, colmean(zX, weights))
     fcenter!(zY, colmean(zY, weights))
-    zX' * rweight(zY, weights.w)
+    zX' * rweight(zY, weights.v)
 end
 
 """
@@ -370,7 +370,7 @@ function corm(X, weights::Weight)
     zX = copy(ensure_mat(X))
     fcenter!(zX, colmean(zX, weights))
     fscale!(zX, colstd(zX, weights))
-    z = rweight(zX, sqrt.(weights.w))
+    z = rweight(zX, sqrt.(weights.v))
     z' * z
 end
 
@@ -383,7 +383,7 @@ function corm(X, Y, weights::Weight)
     fcenter!(zY, colmean(zY, weights))
     fscale!(zX, colstd(zX, weights))
     fscale!(zY, colstd(zY, weights))
-    zX' * rweight(zY, weights.w)
+    zX' * rweight(zY, weights.v)
 end
 
 """
@@ -459,7 +459,7 @@ function frob2(X, weights::Weight)
     s = zero(X[begin])
     @inbounds for j = 1:p
         @simd for i = 1:n 
-            s += weights.w[i] * X[i, j]^2
+            s += weights.v[i] * X[i, j]^2
         end
     end
     s

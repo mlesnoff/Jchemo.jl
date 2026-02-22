@@ -14,7 +14,7 @@ Keyword arguments:
 * `maxit` : Maximum nb. of iterations.
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
-Let us note D the (n, n) diagonal matrix of weights (`weights.w`) and X the centered matrix in metric D.
+Let us note D the (n, n) diagonal matrix of weights (`weights.v`) and X the centered matrix in metric D.
 The function minimizes ||X - T * V'||^2  in metric D by NIPALS. 
 
 See function `pcasvd` for examples.
@@ -62,7 +62,7 @@ function pcanipals!(X::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(X, xmeans)
     end
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     rweight!(X, sqrtw)
     T = similar(X, n, nlv)
     V = similar(X, p, nlv)

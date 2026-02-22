@@ -49,7 +49,7 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
-    priors = aggsumv(weights.w, vec(y)).val  # output not used, only for information 
+    priors = aggsumv(weights.v, vec(y)).val  # output not used, only for information 
     res.W .*= n / (n - nlev)
     if lb > 0
         res.W .+= lb .* I(p) # @. does not work with I
@@ -59,7 +59,7 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     ct = similar(X, nlev, p)
     @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(vrow(X, s), mweight(weights.w[s]))
+        ct[i, :] = colmean(vrow(X, s), mweight(weights.v[s]))
     end
     #ct = aggstat(X, y; algo = mean).X
     Ut = cholesky!(Hermitian(Winv)).U'

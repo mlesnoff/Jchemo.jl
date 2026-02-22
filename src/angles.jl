@@ -106,7 +106,7 @@ function rv(X, Y, weights::Weight; centr = true)
         fcenter!(X, colmean(X, weights))
         fcenter!(Y, colmean(Y, weights))
     end
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     rweight!(X, sqrtw)
     rweight!(Y, sqrtw)
     if n < p

@@ -12,7 +12,7 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
 The function computes a model with intercept. After `X` and y (a given column of `Y`) have been
-centered (an `X` eventually scaled) and weighted by sqrtw = sqrt.(`weights.w`), the function finds 
+centered (an `X` eventually scaled) and weighted by sqrtw = sqrt.(`weights.v`), the function finds 
 b (q, 1) (the corresponding column of output `B` (p, q)) that minimizes 
 * ||y - X * b||^2 + `lb`^2 * ||b||^2 
 where ||.|| is the Euclidean norm.
@@ -86,7 +86,7 @@ function rr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...)
     Q = eltype(X)
     isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
     p = nco(X)
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)
     xscales = ones(Q, p)

@@ -29,7 +29,7 @@ function colsum(X)
     s
 end
 
-colsum(X, weights::Weight) = vec(weights.w' * ensure_mat(X))
+colsum(X, weights::Weight) = vec(weights.v' * ensure_mat(X))
 
 """
     colmean(X)
@@ -67,7 +67,7 @@ The norm of each column x of `X` is computed by:
 * sqrt(x' * x)
 
 The weighted norm is:
-* sqrt(x' * D * x), where D is the diagonal matrix of `weights.w`
+* sqrt(x' * D * x), where D is the diagonal matrix of `weights.v`
 
 **Warning:** `colnorm(X, mweight(ones(n)))` = `colnorm(X) / sqrt(n)`.
 
@@ -264,7 +264,7 @@ function colsumskip(X, weights::Weight)
     z = zeros(p)
     @inbounds for j = 1:p
         s = ismissing.(vcol(X, j))
-        zw = mweight(rmrow(weights.w, s)).w
+        zw = mweight(rmrow(weights.v, s)).v
         z[j] = sum(zw .* rmrow(X[:, j], s))
     end
     z
@@ -277,7 +277,7 @@ function colvarskip(X, weights::Weight)
     z = colmeanskip(X, weights)
     @inbounds for j = 1:p
         s = ismissing.(vcol(X, j))
-        zw = mweight(rmrow(weights.w, s)).w
+        zw = mweight(rmrow(weights.v, s)).v
         z[j] = dot(zw, (rmrow(X[:, j], s) .- z[j]).^2)        
     end
     z 

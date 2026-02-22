@@ -85,7 +85,7 @@ function pcr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     ## if T is D-orthogonal. This is the case for the actual version (pcasvd)
     ## theta: coefs regression of Y on T (= C')
     ## not needed (same theta): fcenter!(Y, ymeans)
-    theta = inv(fitm.T' * rweight(fitm.T, fitm.weights.w)) * fitm.T' * rweight(Y, fitm.weights.w)  # = C'
+    theta = inv(fitm.T' * rweight(fitm.T, fitm.weights.v)) * fitm.T' * rweight(Y, fitm.weights.v)  # = C'
     Pcr(fitm, theta', ymeans, yscales, par) 
 end
 

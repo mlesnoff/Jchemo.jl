@@ -73,7 +73,7 @@ function mlr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...
     par = recovkw(ParMlr, kwargs).par
     Q = eltype(X)
     isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     if par.noint
         q = nco(Y)
         rweight!(X, sqrtw)
@@ -123,7 +123,7 @@ end
 
 function mlrchol!(X::Matrix, Y::Matrix, weights::Weight)
     @assert nco(X) > 1 "The Method only works for X with nb. columns > 1."
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
@@ -166,7 +166,7 @@ end
 
 function mlrpinv!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParMlr, kwargs).par
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     if par.noint
         q = nco(Y)
         rweight!(X, sqrtw)
@@ -217,7 +217,7 @@ function mlrpinvn(X, Y, weights::Weight)
 end
 
 function mlrpinvn!(X::Matrix, Y::Matrix, weights::Weight)
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
@@ -260,7 +260,7 @@ end
 function mlrvec!(x::Matrix, Y::Matrix, weights::Weight; kwargs...)
     par = recovkw(ParMlr, kwargs).par
     @assert nco(x) == 1 "Method only working for univariate x."
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     if par.noint
         q = nco(Y)
         rweight!(x, sqrtw)

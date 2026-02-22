@@ -21,7 +21,7 @@ Observations (`X`-rows) receive weights depending on two outlyingness indicators
     (the other receive a weight w1 = 1).
 2) An outlyingness based on the Euclidean distance to center (function `outeucl`) is computed. The proportion `prm` 
     of the observations with the highest outlyingness values receive a weight w2 = 0 (the other receive a weight w2 = 1).
-The final weights of the observations are computed by weights.w * w1 * w2 that is used in a weighted PCA.
+The final weights of the observations are computed by weights.v * w1 * w2 that is used in a weighted PCA.
 
 By default, the function uses `prm = .3` (such as in the ROBPCA algorithm of Hubert et al. 2005, 2009). 
 
@@ -84,7 +84,7 @@ function pcaout!(X::Matrix, weights::Weight; kwargs...)
     w = wtal(d; a = quantile(d, 1 - par.prm))
     d .= outeucl(X; scal = par.scal).d
     w .*= wtal(d; a = quantile(d, 1 - par.prm))
-    w .*= weights.w
+    w .*= weights.v
     w[isequal.(w, 0)] .= 1e-10
     fitm = pcasvd(X, mweight(w); kwargs...)
     Pca(fitm.T, fitm.V, fitm.sv, fitm.xmeans, fitm.xscales, fitm.weights, nothing, par)

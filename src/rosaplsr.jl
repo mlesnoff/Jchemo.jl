@@ -119,7 +119,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
     #Res = zeros(n, q, nbl)
     ## Start 
     @inbounds for a = 1:nlv
-        DY .= rweight(Y, weights.w)  # apply the metric to the covariance
+        DY .= rweight(Y, weights.v)  # apply the metric to the covariance
         @inbounds for k in eachindex(Xbl)
             XtY = Xbl[k]' * DY
             if q == 1
@@ -134,7 +134,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         ## GS Orthogonalization of the scores
         if a > 1
             z = vcol(T, 1:(a - 1))
-            zT .= zT .- z * inv(z' * rweight(z, weights.w)) * z' * rweight(zT, weights.w)
+            zT .= zT .- z * inv(z' * rweight(z, weights.v)) * z' * rweight(zT, weights.v)
         end
         ## Selection of the winner block (opt)
         @inbounds for k in eachindex(Xbl)
@@ -146,7 +146,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         ## Old
         #@inbounds for k in eachindex(Xbl)
         #    t = vcol(zT, k)
-        #    dt .= weights.w .* t
+        #    dt .= weights.v .* t
         #    tt = dot(t, dt)
         #    Res[:, :, k] .= Y .- (t * t') * DY / tt
         #end
@@ -156,7 +156,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::Weight; kwargs...)
         bl[a] = opt
         ## Outputs for winner block
         t .= zT[:, opt]
-        dt .= weights.w .* t
+        dt .= weights.v .* t
         tt = dot(t, dt)
         mul!(c, Y', dt)
         c ./= tt     

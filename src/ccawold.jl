@@ -129,7 +129,7 @@ function ccawold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         bscales = [normx ; normy]
     end
     # Row metric
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     invsqrtw = 1 ./ sqrtw
     rweight!(X, sqrtw)
     rweight!(Y, sqrtw)

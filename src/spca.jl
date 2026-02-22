@@ -133,7 +133,7 @@ function spca!(X::Matrix, weights::Weight; kwargs...)
     else
         fcenter!(X, xmeans)
     end
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     rweight!(X, sqrtw)
     T = similar(X, n, nlv)
     V = similar(X, p, nlv)
@@ -202,10 +202,10 @@ function Base.summary(object::Spca, X)
     X = ensure_mat(X)
     nlv = nco(object.T)
     weights = object.weights
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     X = fcscale(X, object.xmeans, object.xscales)
     sstot = frob2(X, weights)
-    TT = rweight(object.T.^2, weights.w)
+    TT = rweight(object.T.^2, weights.v)
     tt = colsum(TT)
     defl = object.par.defl 
     if defl == :v      
@@ -224,7 +224,7 @@ function Base.summary(object::Spca, X)
         explvarx = DataFrame(nlv = 1:nlv, pvar = pvar, cumpvar = cumpvar)
     elseif defl == :t
         ## Proportion of variance of X explained by each column of T 
-        A = X' * rweight(object.T, weights.w)
+        A = X' * rweight(object.T, weights.v)
         ss = colnorm(A).^2 ./ colnorm(object.T, object.weights).^2
         ## = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
         ## = diag(A' * A) ./ diag(object.T' * D * object.T)
@@ -237,7 +237,7 @@ function Base.summary(object::Spca, X)
     contr_ind = DataFrame(fscale(TT, tt), nam)
     contr_var = DataFrame(object.V.^2, nam)
     ## Should be ok 
-    C = X' * rweight(fscale(object.T, sqrt.(tt)), weights.w) 
+    C = X' * rweight(fscale(object.T, sqrt.(tt)), weights.v) 
     coord_var = DataFrame(C, nam)
     ## End
     cor_circle = DataFrame(corm(X, object.T, weights), nam)

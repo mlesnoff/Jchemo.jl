@@ -127,10 +127,10 @@ function krr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwargs...
     ymeans = colmean(Y, weights)
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
     K = fkern(X, X; kwargs...)
-    sqrtw = sqrt.(weights.w)
-    DKt = rweight(K', weights.w)
+    sqrtw = sqrt.(weights.v)
+    DKt = rweight(K', weights.v)
     vtot = sum(DKt, dims = 1)
-    Kc = K .- vtot' .- vtot .+ sum(rweight(DKt', weights.w))
+    Kc = K .- vtot' .- vtot .+ sum(rweight(DKt', weights.v))
     # Kd = D^(1/2) * Kc * D^(1/2) 
     #    = U * Delta^2 * U'    
     Kd = rweight(Kc, sqrtw) * Diagonal(sqrtw) 
@@ -172,9 +172,9 @@ function predict(object::Krr, X; lb = nothing)
     isnothing(lb) ? lb = object.par.lb : nothing
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
-    DKt = rweight(K', object.weights.w)
+    DKt = rweight(K', object.weights.v)
     vtot = sum(DKt, dims = 1)
-    w = object.weights.w
+    w = object.weights.v
     Kc = K .- vtot' .- object.vtot .+ sum(rweight(object.DKt', w))
     le_lb = length(lb)
     pred = list(Matrix{eltype(X)}, le_lb)

@@ -56,7 +56,7 @@ function plswold!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(Y, ymeans)
     end
     # Row metric
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     rweight!(X, sqrtw)
     rweight!(Y, sqrtw)
     ## Pre-allocation

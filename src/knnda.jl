@@ -115,7 +115,7 @@ function predict(object::Knnda, X)
         w[w .< tolw] .= tolw
         listw[i] = w
         ## New
-        #wpr = mweightcla(object.y[res.ind[i]]; prior = object.par.prior).w 
+        #wpr = mweightcla(object.y[res.ind[i]]; prior = object.par.prior).v 
         #listw[i] = wpr
         #listw[i] = sqrt.(w .* wpr)
         ## End

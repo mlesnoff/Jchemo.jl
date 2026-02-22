@@ -128,7 +128,7 @@ function cca!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         bscales = [normx ; normy]
     end
     # Row metric
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     invsqrtw = 1 ./ sqrtw
     rweight!(X, sqrtw)
     rweight!(Y, sqrtw) 
@@ -197,7 +197,7 @@ function Base.summary(object::Cca, X, Y)
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     ## To do: explvarx, explvary 
-    #D = Diagonal(object.weights.w)   
+    #D = Diagonal(object.weights.v)   
     ## X
     #T = object.Tx 
     #sstot = frob(X, object.weights)^2

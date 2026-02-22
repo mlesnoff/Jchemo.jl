@@ -108,7 +108,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
         fcenter!(Y, ymeans)
     end
     # Row metric
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     invsqrtw = 1 ./ sqrtw
     X .= sqrtw .* X
     Y .= sqrtw .* Y

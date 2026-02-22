@@ -70,7 +70,7 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     c   = similar(X, q)
     ## End
     @inbounds for a = 1:nlv
-        XtY .= X' * rweight(Y, weights.w)
+        XtY .= X' * rweight(Y, weights.v)
         if q == 1
             w .= vec(XtY)
             w ./= normv(w)
@@ -78,7 +78,7 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
             w .= svd!(XtY).U[:, 1]
         end
         mul!(t, X, w)
-        dt .= weights.w .* t
+        dt .= weights.v .* t
         tt = dot(t, dt)
         mul!(v, X', dt)
         v ./= tt

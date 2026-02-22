@@ -30,7 +30,7 @@ function rrchol!(X::Matrix, Y::Matrix, weights::Weight; kwargs...)
     @assert nco(X) > 1 "The method only works for X with nb columns > 1."
     Q = eltype(X)
     p = nco(X)
-    sqrtw = sqrt.(weights.w)
+    sqrtw = sqrt.(weights.v)
     lb = convert(Q, par.lb)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)

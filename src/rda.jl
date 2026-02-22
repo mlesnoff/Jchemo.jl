@@ -108,7 +108,7 @@ function rda(X, y, weights::Weight; kwargs...)
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
-    priors = aggsumv(weights.w, vec(y)).val 
+    priors = aggsumv(weights.v, vec(y)).val 
     fitm = list(nlev)
     ct = similar(X, nlev, p)
     Id = I(p)
@@ -117,7 +117,7 @@ function rda(X, y, weights::Weight; kwargs...)
     A = par.lb * Id
     @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(vrow(X, s), mweight(weights.w[s]))   
+        ct[i, :] = colmean(vrow(X, s), mweight(weights.v[s]))   
         @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
         @. res.Wi[i] = res.Wi[i] + A
         fitm[i] = dmnorm(ct[i, :], res.Wi[i]; simpl = par.simpl) 

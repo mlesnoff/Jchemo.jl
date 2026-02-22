@@ -119,10 +119,10 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwarg
         fcenter!(Y, ymeans)
     end
     ## XtY 
-    rweight!(Y, weights.w)
+    rweight!(Y, weights.v)
     XtY = X' * Y
     ## Old
-    ## D = Diagonal(weights.w)
+    ## D = Diagonal(weights.v)
     ## XtY = X' * (D * Y)    # Xd = D * X   Very costly!!
     ## Pre-allocation
     T = similar(X, n, nlv)
@@ -153,7 +153,7 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::Weight; kwarg
             end
         end                   
         mul!(t, X, r)                 # t = X * r
-        dt .= weights.w .* t          # dt = D * t
+        dt .= weights.v .* t          # dt = D * t
         tt = dot(t, dt)               # tt = t' * dt = t' * D * t 
         mul!(c, XtY', r)
         c ./= tt                      # c = XtY' * r / tt
@@ -238,7 +238,7 @@ function Base.summary(object::Union{Plsr, Splsr}, X)
     n, nlv = size(object.T)
     X = fcscale(X, object.xmeans, object.xscales)
     ## Could be fcscale! but changes X. If too heavy ==> Makes summary!
-    sstot = frob2(X, object.weights)       # = sum(object.weights.w' * X.^2)
+    sstot = frob2(X, object.weights)       # = sum(object.weights.v' * X.^2)
     tt = object.TT
     tt_adj = (colnorm(object.V).^2) .* tt  # tt_adj[a] = p[a]'p[a] * tt[a]
     xvar = tt_adj / n    

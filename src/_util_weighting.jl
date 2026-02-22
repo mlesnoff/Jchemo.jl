@@ -10,7 +10,7 @@ using Jchemo
 
 x = rand(10)
 w = mweight(x)
-sum(w.w)
+sum(w.v)
 ```
 """
 mweight(x::Vector) = Weight(x / sum(x))
@@ -45,7 +45,7 @@ tab(y)
 weights = mweightcla(y)
 #weights = mweightcla(y; prior = :prop)
 #weights = mweightcla(y; prior = [.1, .7, .2])
-res = aggstat(weights.w, y; algo = sum)
+res = aggstat(weights.v, y; algo = sum)
 [res.lev res.X]
 ```
 """
@@ -59,7 +59,7 @@ function mweightcla(y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
     elseif isequal(prior, :prop)
         priors = res.vals / n
     else
-        priors = mweight(prior).w  # could be '= prior', but mweight not costly 
+        priors = mweight(prior).v  # could be '= prior', but mweight not costly 
     end
     w = zeros(n)
     @inbounds for i in eachindex(lev)
@@ -70,7 +70,7 @@ function mweightcla(y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
 end
 
 function mweightcla(Q::DataType, y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
-    mweight(convert.(Q, mweightcla(y; prior).w))
+    mweight(convert.(Q, mweightcla(y; prior).v))
 end
 
 ##### Weighting entire rows or columns
