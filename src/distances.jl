@@ -4,7 +4,7 @@ Squared Euclidean distances between the rows of `X` and `Y`.
 * `X` : Data (n, p).
 * `Y` : Data (m, p).
 
-For `X`(n, p) and `Y` (m, p), the function returns an object (n, m) with:
+The function returns a matrix (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
 
 ## Examples
@@ -23,7 +23,7 @@ euclsq(1, 4)
 function euclsq(X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    Distances.pairwise(SqEuclidean(), X', Y', dims = 2)
+    Distances.pairwise(SqEuclidean(), X', Y'; dims = 2)   # pairwise also exportef by StatsBase
 end
 
 """
@@ -32,9 +32,10 @@ end
 Squared Mahalanobis distances between the rows of `X` and `Y`.
 * `X` : Data (n, p).
 * `Y` : Data (m, p).
-* `Sinv` : Inverse of a covariance matrix S. If not given, S is computed as the uncorrected covariance matrix of `X`.
+* `Sinv` : Inverse of a covariance matrix (S). If not given, S is computed as the uncorrected covariance 
+    matrix of `X`.
 
-When `X` and `Y` are (n, p) and (m, p), repectively, it returns an object (n, m) with:
+The function returns a matrix (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
 
 ## Examples
@@ -58,29 +59,28 @@ mahsq(1, 4, 2.1)
 function mahsq(X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    S = Statistics.cov(X, corrected = false)
+    S = covm(X)
     LinearAlgebra.inv!(cholesky!(Hermitian(S)))
-    Distances.pairwise(SqMahalanobis(S), X', Y', dims = 2)
+    Distances.pairwise(SqMahalanobis(S), X', Y'; dims = 2)
 end
 
 function mahsq(X, Y, Sinv)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     Sinv = ensure_mat(Sinv)
-    Distances.pairwise(SqMahalanobis(Sinv; skipchecks = true), X', Y', dims = 2)
+    Distances.pairwise(SqMahalanobis(Sinv; skipchecks = true), X', Y'; dims = 2)
 end
 
 """
     mahsqchol(X, Y)
     mahsqchol(X, Y, Uinv)
-Compute the squared Mahalanobis distances (with a Cholesky factorization) between the observations (rows) 
-    of `X` and `Y`.
+Compute the squared Mahalanobis distances (with a Cholesky factorization) between the rows of `X` and `Y`.
 * `X` : Data (n, p).
 * `Y` : Data (m, p).
-* `Uinv` : Inverse of the upper matrix of a Cholesky factorization of a covariance matrix S. If not given, 
-    the factorization is done on S, the uncorrected covariance matrix of `X`.
+* `Uinv` : Inverse of the upper matrix of a Cholesky factorization of a covariance matrix (S). 
+   If not given, S is computed as the uncorrected covariance matrix of `X`.
 
-When `X` and `Y` are (n, p) and (m, p), repectively, it returns an object (n, m) with:
+The function returns a matrix (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
 
 ## Examples
@@ -92,7 +92,7 @@ Y = rand(2, 3)
 
 mahsqchol(X, Y)
 
-S = cov(X, corrected = false)
+S = covm(X)
 U = cholesky(Hermitian(S)).U 
 Uinv = inv(U)
 mahsqchol(X, Y, Uinv)
@@ -105,8 +105,7 @@ function mahsqchol(X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)    
     p = nco(X)
-    S = Statistics.cov(X, 
-        corrected = false)
+    S = covm(X)
     if p == 1
         Uinv = inv(sqrt(S)) 
     else
@@ -134,19 +133,19 @@ end
 ## y = rand(n)
 ## Jchemo.SamDist()(x, y)
 struct SamDist <: Distances.Metric end
-(::SamDist)(a, b) = acos(1 - Distances.CosineDist()(a, b)) / pi
+(::SamDist)(x, y) = acos(1 - Distances.CosineDist()(x, y)) / pi
 
 struct CosDist <: Distances.Metric end                      
-(::CosDist)(a, b) = Distances.CosineDist()(a, b) / 2
+(::CosDist)(x, y) = Distances.CosineDist()(x, y) / 2
 
 struct CorDist <: Distances.Metric end                      
-(::CorDist)(a, b) = Distances.CorrDist()(a, b) / 2
+(::CorDist)(x, y) = Distances.CorrDist()(x, y) / 2
 
 struct CorDist_b <: Distances.Metric end                            
-(::CorDist_b)(a, b) = (1 - corv(a, b)) / 2
+(::CorDist_b)(x, y) = (1 - corv(x, y)) / 2
 
 ## Square-root correlation distance
 ## max is used since possible negative zeros (floating point issues)
 struct CorDist_sqr <: Distances.Metric end                                
-(::CorDist_sqr)(a, b) = sqrt(max(0, Distances.CorrDist()(a, b)) / 2)  
+(::CorDist_sqr)(x, y) = sqrt(max(0, Distances.CorrDist()(x, y)) / 2)  
 

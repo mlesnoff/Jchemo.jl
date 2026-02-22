@@ -105,6 +105,17 @@ function colnorm(X, weights::Weight)
     s
 end
 
+## Not exported
+function colnorm2(X)
+    X = ensure_mat(X)
+    p = nco(X)
+    s = similar(X, p)
+    Threads.@threads for j = 1:p
+        s[j] = dot(vcol(X, j), vcol(X, j))
+    end
+    s
+end
+
 """
     colstd(X)
     colstd(X, weights::Weight)

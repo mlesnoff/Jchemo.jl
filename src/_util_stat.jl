@@ -1,4 +1,4 @@
-######### One vector 
+###### One vector 
 
 """ 
     sumv(x)
@@ -174,7 +174,7 @@ normv(x) = sqrt(dot(x, x))
 
 normv(x, weights::Weight) = sqrt(sum(i -> x[i]^2 * weights.w[i], 1:length(x)))
 
-######### Two vectors
+###### Two vectors
 
 """
     covv(x, y)
@@ -289,7 +289,7 @@ function cosv(x, y, weights::Weight)
     dot(x, zy) / sqrt(dot(x, rweight(x, weights.w)) * dot(y, zy))
 end
 
-######### Matrices
+###### Matrices
 
 """
     covm(X)
