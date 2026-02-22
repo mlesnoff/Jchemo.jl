@@ -22,7 +22,7 @@ w.sum
 pweight(x) = pweights(x / sum(x))
 #function pweight(x)
 #    tot = sum(x) 
-#    ProbabilityWeights(x / tot, 1.)
+#    ProbabilityWeights(x / tot, one(eltype(x)))
 #end
 
 """ 
