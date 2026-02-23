@@ -421,12 +421,12 @@
 - **expand_tab2d** Expand a 2-D contingency table in a dataframe of two categorical variables
 
 *Operations on a vector*
-- **sumv**, **meanv**, **stdv**, **varv**, **madv**, **iqrv**, **normv** 
+- **sumv**, **meanv**, **stdv**, **varv**, **madv**, **iqrv**, **normv**, **norm2v**
 
 *Operations on two vectors*
+- **cosv**, **cosm** Cosinus 
 - **covv**, **covm** Covariances
 - **corv**, **corm** Correlations 
-- **cosv**, **cosm** Cosinus 
 
 *Column-wise operations on a dataset*
 - **colmad** Median absolute deviation (MAD)

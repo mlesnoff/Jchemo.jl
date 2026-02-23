@@ -238,11 +238,27 @@ y = rand(n)
 cosv(x, y)
 ```
 """
-cosv(x, y) = dot(x, y) / sqrt(dot(x, x) * dot(y, y))
+function cosv(x, y)
+    s = zero(x[begin]) * zero(y[begin])
+    nx = ny = s
+    @simd for i in eachindex(x, y)
+        s = muladd(x[i], y[i], s)
+        nx = muladd(x[i], x[i], nx)
+        ny = muladd(y[i], y[i], ny)
+    end
+    s / sqrt(nx * ny)
+end
 
-function cosv(x, y, weights::ProbabilityWeights)
-    zy = rweight(y, weights.values)
-    dot(x, zy) / sqrt(dot(x, rweight(x, weights.values)) * dot(y, zy))
+function cosv(x, y, weights::Jchemo.ProbabilityWeights)
+    s = zero(x[begin]) * zero(y[begin])
+    nx = zero(x[begin]) * zero(y[begin])
+    ny = zero(x[begin]) * zero(y[begin])
+    @simd for i in eachindex(x, y)
+        s = muladd(x[i] * weights.values[i], y[i], s)
+        nx = muladd(x[i] * weights.values[i], x[i], nx)
+        ny = muladd(y[i] * weights.values[i], y[i], ny)
+    end
+    s / sqrt(nx * ny)
 end
 
 """

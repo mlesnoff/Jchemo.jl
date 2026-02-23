@@ -3,9 +3,12 @@
 ## *Version 0.9.5*
 
 - News:
-    - Function **plotsp**: Argument 'label' was added (see example).
+    - Fonction **norm2v**: Squared norm of a vector. 
 
 - Modifications
+    - Function **plotsp**: Argument 'label' was added (see example).
+    - Hidden function **mweight** replaced by function **pweight**, and type 'Weight' replaced by type
+        'StatsBase.ProbabilityWeights'. 
     - Code cleaning.
 
 ## *Version 0.9.4*
