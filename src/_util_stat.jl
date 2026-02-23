@@ -21,7 +21,7 @@ sumv(x, w)
 """
 sumv(x) = sum(x)
 
-sumv(x, weights::ProbabilityWeights) = sum(x, weights)
+sumv(x, weights::ProbabilityWeights) = sum(x, weights::ProbabilityWeights)
 
 """ 
     meanv(x)
@@ -44,92 +44,7 @@ meanv(x, w)
 """
 meanv(x) = Statistics.mean(x)
 
-meanv(x, weights::ProbabilityWeights) = sumv(x, weights::ProbabilityWeights)
-
-""" 
-    stdv(x)
-    stdv(x, weights::ProbabilityWeights)
-Compute the uncorrected standard deviation of a vector.
-* `x` : A vector (n).
-* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
-
-## Examples
-```julia
-using Jchemo
-
-n = 1000
-x = rand(n)
-w = pweight(rand(n))
-
-stdv(x)
-stdv(x, w)
-```
-"""
-stdv(x) = Statistics.std(x; corrected = false) 
-
-function stdv(x, weights::ProbabilityWeights)
-    n = length(x)
-    mu = meanv(x, weights)
-    sqrt(sum(i -> (x[i] - mu)^2 * weights.values[i], 1:n))
-end
-
-""" 
-    varv(x)
-    varv(x, weights::ProbabilityWeights)
-Compute the uncorrected variance of a vector.
-* `x` : A vector (n).
-* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
-
-## Examples
-```julia
-using Jchemo
-
-n = 1000
-x = rand(n)
-w = pweight(rand(n))
-
-varv(x)
-varv(x, w)
-```
-"""
-varv(x) = Statistics.var(x; corrected = false) 
-
-function varv(x, weights::ProbabilityWeights)
-    n = length(x)
-    mu = meanv(x, weights)
-    sum(i -> (x[i] - mu)^2 * weights.values[i], 1:n)
-end
-
-"""
-    iqrv(x)
-Compute the interquartile interval (IQR) of a vector.
-* `x` : A vector (n).
-
-## Examples
-```julia
-x = rand(100)
-iqrv(x)
-```
-"""
-iqrv(x) = quantile(x, .75) - quantile(x, .25)
-
-""" 
-    madv(x)
-
-Compute the median absolute deviation (MAD) of a vector. 
-* `x` : A vector (n).
-
-This is the MAD adjusted by a factor (1.4826) for asymptotically normal consistency.
-
-## Examples
-```julia
-using Jchemo
-
-x = rand(100)
-madv(x)
-```
-"""
-madv(x) = 1.4826 * median(abs.(x .- median(x)))
+meanv(x, weights::ProbabilityWeights) = sum(x, weights::ProbabilityWeights)
 
 """ 
     normv(x)
@@ -164,15 +79,147 @@ normv(x)
 sqrt(n) * normv(x, w)
 ```
 """
-normv(x) = sqrt(dot(x, x)) 
+normv(x) = sqrt(norm2v(x)) 
 
-normv(x, weights::ProbabilityWeights) = sqrt(sum(i -> x[i]^2 * weights.values[i], 1:length(x)))
+normv(x, weights::ProbabilityWeights) = sqrt(norm2v(x, weights))
+
+""" 
+    norm2v(x)
+    norm2v(x, weights::ProbabilityWeights)
+Compute the squared norm of a vector.
+* `x` : A vector (n).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+
+See function `normv`.
+
+## Examples
+```julia
+using Jchemo
+
+n = 1000
+x = rand(n)
+w = pweight(ones(n))
+
+norm2v(x)
+n * norm2v(x, w)
+```
+"""
+norm2v(x) = dot(x, x) 
+
+norm2v(x, weights::ProbabilityWeights) = sum(i -> x[i]^2 * weights.values[i], 1:length(x))
+
+""" 
+    stdv(x)
+    stdv(x, weights::ProbabilityWeights)
+Compute the uncorrected standard deviation of a vector.
+* `x` : A vector (n).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+
+## Examples
+```julia
+using Jchemo
+
+n = 1000
+x = rand(n)
+w = pweight(rand(n))
+
+stdv(x)
+stdv(x, w)
+```
+"""
+stdv(x) = Statistics.std(x; corrected = false) 
+
+stdv(x, weights::Jchemo.ProbabilityWeights) = Statistics.std(x, weights; corrected = false)
+
+""" 
+    varv(x)
+    varv(x, weights::ProbabilityWeights)
+Compute the uncorrected variance of a vector.
+* `x` : A vector (n).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+
+## Examples
+```julia
+using Jchemo
+
+n = 1000
+x = rand(n)
+w = pweight(rand(n))
+
+varv(x)
+varv(x, w)
+```
+"""
+varv(x) = Statistics.var(x; corrected = false) 
+
+varv(x, weights::Jchemo.ProbabilityWeights) = Statistics.var(x, weights; corrected = false)
+
+"""
+    iqrv(x)
+Compute the interquartile interval (IQR) of a vector.
+* `x` : A vector (n).
+
+## Examples
+```julia
+x = rand(100)
+iqrv(x)
+```
+"""
+iqrv(x) = quantile(x, .75) - quantile(x, .25)
+
+""" 
+    madv(x)
+
+Compute the median absolute deviation (MAD) of a vector. 
+* `x` : A vector (n).
+
+This is the MAD adjusted by factor 1.4826 for asymptotically normal consistency.
+
+## Examples
+```julia
+using Jchemo
+
+x = rand(100)
+madv(x)
+```
+"""
+madv(x) = 1.4826 * median(abs.(x .- median(x)))
 
 ###### Two vectors
 
 """
     covv(x, y)
 Compute uncorrected covariance between two vectors.
+* `x` : vector (n).
+* `y` : vector (n).
+
+## Examples
+```julia
+using Jchemo
+
+n = 5
+x = rand(n)
+y = rand(n)
+
+covv(x, y)
+```
+"""
+function covv(x, y)
+    mux = meanv(x) 
+    muy = meanv(y)
+    n = length(x)
+    sum(i -> (x[i] - mux) * (y[i] - muy), 1:n) / n
+end 
+
+function covv(x, y, weights::ProbabilityWeights)
+    mux = meanv(x, weights) 
+    muy = meanv(y, weights)
+    sum(i -> (x[i] - mux) * (y[i] - muy) * weights.values[i], 1:length(x))
+end 
+
+"""
+    cosv(x, y)
+Compute cosinus between two vectors.
 * `x` : vector (n).
 * `y` : vector (n).
 
@@ -188,20 +235,15 @@ n = 5
 x = rand(n)
 y = rand(n)
 
-covv(x, y)
+cosv(x, y)
 ```
 """
-covv(x, y) = Statistics.cov(x, y; corrected = false)
+cosv(x, y) = dot(x, y) / sqrt(dot(x, x) * dot(y, y))
 
-function covv(x, y, weights::ProbabilityWeights)
-    mux = meanv(x, weights) 
-    muy = meanv(y, weights)
-    s = zero(x[begin])
-    @simd for i in eachindex(x)
-        s = muladd((x[i] - mux) * (y[i] - muy),  weights.values[i], s)
-    end
-    s
-end 
+function cosv(x, y, weights::ProbabilityWeights)
+    zy = rweight(y, weights.values)
+    dot(x, zy) / sqrt(dot(x, rweight(x, weights.values)) * dot(y, zy))
+end
 
 """
     corv(x, y)
@@ -254,34 +296,6 @@ end
 function corv_3(x, y)
     cosv(fcenter(x, meanv(x)), fcenter(y, meanv(y)))
 end 
-
-"""
-    cosv(x, y)
-Compute cosinus between two vectors.
-* `x` : vector (n).
-* `y` : vector (n).
-
-## References
-@Stevengj, 
-https://discourse.julialang.org/t/interesting-post-about-simd-dot-product-and-cosine-similarity/123282.
-
-## Examples
-```julia
-using Jchemo
-
-n = 5
-x = rand(n)
-y = rand(n)
-
-cosv(x, y)
-```
-"""
-cosv(x, y) = dot(x, y) / sqrt(dot(x, x) * dot(y, y))
-
-function cosv(x, y, weights::ProbabilityWeights)
-    zy = rweight(y, weights.values)
-    dot(x, zy) / sqrt(dot(x, rweight(x, weights.values)) * dot(y, zy))
-end
 
 ###### Matrices
 
