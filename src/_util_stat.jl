@@ -284,34 +284,7 @@ corv(x, y)
 """
 corv(x, y) = Statistics.cor(x, y)
 
-function corv(x, y, weights::ProbabilityWeights)
-    mux = meanv(x, weights) 
-    muy = meanv(y, weights)
-    sdx = stdv(x, weights)
-    sdy = stdv(y, weights)
-    s = zero(x[begin])
-    @simd for i in eachindex(x)
-        s = muladd((x[i] - mux) * (y[i] - muy),  weights.values[i], s)
-    end
-    s / (sdx * sdy)
-end 
-
-function corv_2(x, y)
-    w = 1 / length(x)
-    mux = meanv(x) 
-    muy = meanv(y)
-    sdx = stdv(x)
-    sdy = stdv(y)
-    s = zero(x[begin])
-    @simd for i in eachindex(x)
-        s = muladd((x[i] - mux) * (y[i] - muy),  w, s)
-    end
-    s / (sdx * sdy)
-end 
-
-function corv_3(x, y)
-    cosv(fcenter(x, meanv(x)), fcenter(y, meanv(y)))
-end 
+corv(x, y, weights::Jchemo.ProbabilityWeights) = covv(x, y, weights) / (stdv(x, weights) * stdv(y, weights))
 
 ###### Matrices
 
@@ -347,7 +320,7 @@ covm(X) = Statistics.cov(X; corrected = false)
 function covm(X, weights::ProbabilityWeights)
     zX = copy(ensure_mat(X))
     fcenter!(zX, colmean(zX, weights))
-    rweight!(zX, sqrt.(weights.values))
+    fweightr!(zX, sqrt.(weights.values))
     zX' * zX
 end
 
@@ -358,7 +331,7 @@ function covm(X, Y, weights::ProbabilityWeights)
     zY = copy(ensure_mat(Y))
     fcenter!(zX, colmean(zX, weights))
     fcenter!(zY, colmean(zY, weights))
-    zX' * rweight(zY, weights.values)
+    zX' * fweightr(zY, weights.values)
 end
 
 """
@@ -394,7 +367,7 @@ function corm(X, weights::ProbabilityWeights)
     zX = copy(ensure_mat(X))
     fcenter!(zX, colmean(zX, weights))
     fscale!(zX, colstd(zX, weights))
-    z = rweight(zX, sqrt.(weights.values))
+    z = fweightr(zX, sqrt.(weights.values))
     z' * z
 end
 
@@ -407,7 +380,7 @@ function corm(X, Y, weights::ProbabilityWeights)
     fcenter!(zY, colmean(zY, weights))
     fscale!(zX, colstd(zX, weights))
     fscale!(zY, colstd(zY, weights))
-    zX' * rweight(zY, weights.values)
+    zX' * fweightr(zY, weights.values)
 end
 
 """

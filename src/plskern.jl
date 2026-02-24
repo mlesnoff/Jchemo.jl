@@ -119,7 +119,7 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWe
         fcenter!(Y, ymeans)
     end
     ## XtY 
-    rweight!(Y, weights.values)
+    fweightr!(Y, weights.values)
     XtY = X' * Y
     ## Old
     ## D = Diagonal(weights.values)
@@ -199,7 +199,7 @@ function coef(object::Union{Plsr, Splsr}; nlv = nothing)
     theta = vcol(object.C, 1:nlv)'  # coeffs regression of Y on T
     Dy = Diagonal(object.yscales)
     ## To not use for Spcr (R not computed; while for Pcr, R = V)
-    B = rweight(vcol(object.R, 1:nlv), 1 ./ object.xscales) * theta * Dy
+    B = fweightr(vcol(object.R, 1:nlv), 1 ./ object.xscales) * theta * Dy
     ## In 'int': No correction is needed, since ymeans, xmeans and B are in the original scale 
     int = object.ymeans' .- object.xmeans' * B
     ## End

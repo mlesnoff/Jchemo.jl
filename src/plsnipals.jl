@@ -71,7 +71,7 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...
     c   = similar(X, q)
     ## End
     @inbounds for a = 1:nlv
-        XtY .= X' * rweight(Y, weights.values)
+        XtY .= X' * fweightr(Y, weights.values)
         if q == 1
             w .= vec(XtY)
             w ./= normv(w)

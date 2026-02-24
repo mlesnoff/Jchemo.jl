@@ -452,8 +452,8 @@
 - **fconcat** Concatenate multiblock data
 - **findmax_cla** Find the most occurent level in a categorical variable
 - **frob**, **frob2** Frobenius norm of a matrix
-- **rweight** Weight each row of a matrix
-- **cweight** Weight each column of a matrix
+- **fweightr** Weight each row of a matrix
+- **fweightc** Weight each column of a matrix
 - **getknn** Find nearest neighbors between rows of matrices
 - **iqrv** Interval inter-quartiles
 - **krbf, kpol** Build kernel Gram matrices

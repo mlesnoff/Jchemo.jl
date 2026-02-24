@@ -84,16 +84,16 @@ function kpca(X, weights::ProbabilityWeights; kwargs...)
     K = fkern(X, X; kwargs...)  # in the future?: fkern!(K, X, X; kwargs...)
     sqrtw = sqrt.(weights.values)
     Kt = K'    
-    DKt = rweight(Kt, weights.values)
+    DKt = fweightr(Kt, weights.values)
     vtot = sum(DKt, dims = 1)
-    Kc = K .- vtot' .- vtot .+ sum(rweight(DKt', weights.values))    # = K .- vtot' .- vtot .+ sum(D * DKt')
-    Kd = rweight(Kc, sqrtw) * Diagonal(sqrtw)    # = sqrtD * Kc * sqrtD
+    Kc = K .- vtot' .- vtot .+ sum(fweightr(DKt', weights.values))    # = K .- vtot' .- vtot .+ sum(D * DKt')
+    Kd = fweightr(Kc, sqrtw) * Diagonal(sqrtw)    # = sqrtD * Kc * sqrtD
     res = LinearAlgebra.svd(Kd)
     U = res.V[:, 1:nlv]
     eig = res.S
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
-    V = rweight(fscale(U, sv[1:nlv]), sqrtw)   # In the future: fscale!
+    V = fweightr(fscale(U, sv[1:nlv]), sqrtw)   # In the future: fscale!
     T = Kc * V       # T = Kc * V = D^(-1/2) * U * Delta
     Kpca(X, Kt, T, V, sv, eig, DKt, vtot, xscales, weights, kwargs, par)
 end
@@ -111,9 +111,9 @@ function transf(object::Kpca, X; nlv = nothing)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     w = object.weights.values
-    DKt = rweight(K', w)
+    DKt = fweightr(K', w)
     vtot = sum(DKt, dims = 1)
-    Kc = K .- vtot' .- object.vtot .+ sum(rweight(object.DKt', w))
+    Kc = K .- vtot' .- object.vtot .+ sum(fweightr(object.DKt', w))
     T = Kc * @view(object.V[:, 1:nlv])
     T
 end

@@ -87,13 +87,13 @@ function pcasvd!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     end
     ## by default in LinearAlgebra.svd, "full = false" ==> [1:min(n, p)]
     sqrtw = sqrt.(weights.values)
-    rweight!(X, sqrtw)
+    fweightr!(X, sqrtw)
     res = LinearAlgebra.svd!(X)
     V = res.V[:, 1:nlv]
     sv = res.S   
     sv[sv .< 0] .= 0
     T = vcol(res.U, 1:nlv) * Diagonal(sv[1:nlv])
-    rweight!(T, 1 ./ sqrtw)
+    fweightr!(T, 1 ./ sqrtw)
     Pca(T, V, sv, xmeans, xscales, weights, nothing, par) 
 end
 
@@ -123,7 +123,7 @@ function Base.summary(object::Pca, X)
     weights = object.weights
     X = fcscale(X, object.xmeans, object.xscales)
     sstot = frob2(X, weights)  # = (||X||_D)^2 = tr(X' * D * X)
-    TT = rweight(object.T.^2, weights.values)  # matrix required for 'contr_ind'
+    TT = fweightr(object.T.^2, weights.values)  # matrix required for 'contr_ind'
     tt = colsum(TT) 
     ## = colnorm(object.T, weights).^2 
     ## = diag(T' * D * T) 
@@ -135,7 +135,7 @@ function Base.summary(object::Pca, X)
     nam = string.("lv", 1:nlv)
     contr_ind = DataFrame(fscale(TT, tt), nam)
     contr_var = DataFrame(object.V.^2, nam)
-    C = X' * rweight(fscale(object.T, sqrt.(tt)), weights.values)  # V_tild = X' * D * T_normed
+    C = X' * fweightr(fscale(object.T, sqrt.(tt)), weights.values)  # V_tild = X' * D * T_normed
     coord_var = DataFrame(C, nam)
     cor_circle = DataFrame(corm(X, object.T, weights), nam)
     (explvarx = explvarx, contr_ind, contr_var, coord_var, cor_circle)

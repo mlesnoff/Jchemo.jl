@@ -98,7 +98,7 @@ function spcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q) 
     fitm = spca!(X, weights; kwargs...)
-    theta = inv(fitm.T' * rweight(fitm.T, fitm.weights.values)) * fitm.T' * rweight(Y, fitm.weights.values)  # = C'
+    theta = inv(fitm.T' * fweightr(fitm.T, fitm.weights.values)) * fitm.T' * fweightr(Y, fitm.weights.values)  # = C'
     Spcr(fitm, theta', ymeans, yscales, par) 
 end
 

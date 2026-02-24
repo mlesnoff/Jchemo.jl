@@ -43,10 +43,10 @@ function rrchol!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
         fcenter!(X, xmeans)
     end
     fcenter!(Y, ymeans)  
-    rweight!(X, sqrtw)
-    rweight!(Y, sqrtw)
+    fweightr!(X, sqrtw)
+    fweightr!(Y, sqrtw)
     B = cholesky!(Hermitian(X' * X + lb^2 * Diagonal(ones(Q, p)))) \ (X' * Y)
-    rweight!(B, 1 ./ xscales)
+    fweightr!(B, 1 ./ xscales)
     int = ymeans' .- xmeans' * B
     Rrchol(B, int, weights, par)
 end

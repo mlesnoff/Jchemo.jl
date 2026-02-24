@@ -79,8 +79,8 @@ end
 ##### Weighting of entire rows or columns
 
 """
-    rweight(X, v)
-    rweight!(X::AbstractMatrix, v)
+    fweightr(X, v)
+    fweightr!(X::AbstractMatrix, v)
 Weight each row of a matrix.
 * `X` : Data (n, p).
 * `v` : A weighting vector (n).
@@ -91,14 +91,14 @@ using Jchemo, LinearAlgebra
 
 X = rand(5, 2) 
 v = rand(5) 
-rweight(X, v)
+fweightr(X, v)
 diagm(v) * X
 
-rweight!(X, v)
+fweightr!(X, v)
 X
 ```
 """ 
-function rweight(X, v)
+function fweightr(X, v)
     X = ensure_mat(X)
     n, p = size(X)
     zX = similar(v, n, p)
@@ -108,7 +108,7 @@ function rweight(X, v)
     zX
 end
 
-function rweight!(X::AbstractMatrix, v)
+function fweightr!(X::AbstractMatrix, v)
     n, p = size(X)
     @inbounds for j = 1:p, i = 1:n
         X[i, j] *= v[i]
@@ -116,8 +116,8 @@ function rweight!(X::AbstractMatrix, v)
 end
 
 """
-    cweight(X, v)
-    cweight!(X::AbstractMatrix, v)
+    fweightc(X, v)
+    fweightc!(X::AbstractMatrix, v)
 Weight each column of a matrix.
 * `X` : Data (n, p).
 * `v` : A weighting vector (p).
@@ -128,14 +128,14 @@ using Jchemo, LinearAlgebra
 
 X = rand(5, 2) 
 v = rand(2) 
-cweight(X, v)
+fweightc(X, v)
 X * diagm(v)
 
-cweight!(X, v)
+fweightc!(X, v)
 X
 ```
 """ 
-function cweight(X, v)
+function fweightc(X, v)
     X = ensure_mat(X)
     n, p = size(X)
     zX = similar(v, n, p)
@@ -145,7 +145,7 @@ function cweight(X, v)
     zX
 end
 
-function cweight!(X::AbstractMatrix, v)
+function fweightc!(X::AbstractMatrix, v)
     n, p = size(X)
     @inbounds for j = 1:p, i = 1:n
         X[i, j] *= v[j]

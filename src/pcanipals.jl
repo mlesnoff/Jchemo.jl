@@ -64,7 +64,7 @@ function pcanipals!(X::Matrix, weights::ProbabilityWeights; kwargs...)
         fcenter!(X, xmeans)
     end
     sqrtw = sqrt.(weights.values)
-    rweight!(X, sqrtw)
+    fweightr!(X, sqrtw)
     T = similar(X, n, nlv)
     V = similar(X, p, nlv)
     sv = similar(X, nlv)
@@ -89,7 +89,7 @@ function pcanipals!(X::Matrix, weights::ProbabilityWeights; kwargs...)
             VVt .+= res.v * res.v'
         end
     end
-    rweight!(T, 1 ./ sqrtw)    
+    fweightr!(T, 1 ./ sqrtw)    
     ## Could recompute the scores by
     ## X0 = copy(X) ; ... ; T = (1 ./ sqrtw) .* X0 * V 
     Pca(T, V, sv, xmeans, xscales, weights, niter, par) 

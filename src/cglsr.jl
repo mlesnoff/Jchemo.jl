@@ -164,7 +164,7 @@ function coef(object::Cglsr; nlv = nothing)
     a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     W = Diagonal(object.yscales)    
-    B = rweight(vcol(object.B, nlv), 1 ./ object.xscales) *  W
+    B = fweightr(vcol(object.B, nlv), 1 ./ object.xscales) *  W
     int = object.ymeans' .- object.xmeans' * B
     (B = B, int = int)
 end

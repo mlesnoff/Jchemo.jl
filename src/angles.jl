@@ -109,8 +109,8 @@ function rv(X, Y, weights::ProbabilityWeights; centr = true)
         fcenter!(Y, colmean(Y, weights))
     end
     sqrtw = sqrt.(weights.values)
-    rweight!(X, sqrtw)
-    rweight!(Y, sqrtw)
+    fweightr!(X, sqrtw)
+    fweightr!(Y, sqrtw)
     if n < p
         XXt = X * X'
         YYt = Y * Y'

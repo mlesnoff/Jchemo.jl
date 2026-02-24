@@ -130,8 +130,8 @@ function cca!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     # Row metric
     sqrtw = sqrt.(weights.values)
     invsqrtw = 1 ./ sqrtw
-    rweight!(X, sqrtw)
-    rweight!(Y, sqrtw) 
+    fweightr!(X, sqrtw)
+    fweightr!(Y, sqrtw) 
     # End
     if tau == 0
         Cx = Symmetric(X' * X)
@@ -157,8 +157,8 @@ function cca!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     Wx = invUx * U[:, 1:nlv]
     Wy = invUy * V[:, 1:nlv]
     d = d[1:nlv]
-    Tx = rweight(X * Wx, invsqrtw) 
-    Ty = rweight(Y * Wy, invsqrtw)
+    Tx = fweightr(X * Wx, invsqrtw) 
+    Ty = fweightr(Y * Wy, invsqrtw)
     Cca(Tx, Ty, Wx, Wy, d, bscales, xmeans, xscales, ymeans, yscales, weights, par)
 end
 

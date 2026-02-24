@@ -54,7 +54,7 @@ function plssimp!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
         fcenter!(Y, ymeans)
     end
     ## XtY 
-    rweight!(Y, weights.values)
+    fweightr!(Y, weights.values)
     XtY = X' * Y
     ## Pre-allocation
     T = similar(X, n, nlv)

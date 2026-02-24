@@ -168,7 +168,7 @@ function mbpca!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
     sqrtw = sqrt.(weights.values)
     invsqrtw = 1 ./ sqrtw
     @inbounds for k in eachindex(Xbl) 
-        rweight!(Xbl[k], sqrtw)
+        fweightr!(Xbl[k], sqrtw)
     end
     ## Pre-allocation
     U = similar(Xbl[1], n, nlv)
@@ -201,7 +201,7 @@ function mbpca!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
                 vk ./= dk           # vk is normed
                 tk .= Xbl[k] * vk 
                 Tb[a][:, k] .= tk
-                Tbl[k][:, a] .= rweight(Tb[a][:, k], invsqrtw)
+                Tbl[k][:, a] .= fweightr(Tb[a][:, k], invsqrtw)
                 Vbl[k][:, a] .= vk
                 lb[k, a] = dk^2
             end

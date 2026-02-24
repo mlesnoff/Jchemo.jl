@@ -42,14 +42,14 @@ function pcaeigen!(X::Matrix, weights::ProbabilityWeights; kwargs...)
         fcenter!(X, xmeans)
     end
     sqrtw = sqrt.(weights.values)
-    rweight!(X, sqrtw)
+    fweightr!(X, sqrtw)
     res = eigen!(Symmetric(X' * X); sortby = x -> -abs(x)) 
     V = res.vectors[:, 1:nlv]
     eig = res.values[1:min(n, p)]
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
     T = X * V
-    rweight!(T, 1 ./ sqrtw)
+    fweightr!(T, 1 ./ sqrtw)
     Pca(T, V, sv, xmeans, xscales, weights, nothing, par) 
 end
 

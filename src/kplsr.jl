@@ -110,9 +110,9 @@ function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeig
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
     K = fkern(X, X; kwargs...)     # In the future?: fkern!(K, X, X; values(kwargs)...)
     Kt = K'    
-    DKt = rweight(Kt, weights.values)
+    DKt = fweightr(Kt, weights.values)
     vtot = sum(DKt, dims = 1)
-    Kc = K .- vtot' .- vtot .+ sum(rweight(DKt', weights.values)) 
+    Kc = K .- vtot' .- vtot .+ sum(fweightr(DKt', weights.values)) 
     ## Pre-allocation
     K = copy(Kc)
     T = similar(X, n, nlv)
@@ -129,7 +129,7 @@ function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeig
     # End
     for a in 1:nlv
         if q == 1      
-            mul!(t, K, vec(rweight(Y, weights.values)))  # t = K * D * Y
+            mul!(t, K, vec(fweightr(Y, weights.values)))  # t = K * D * Y
             t ./= sqrt(dot(t, weights.values .* t))
             dt .= weights.values .* t
             mul!(c, Y', dt)
@@ -159,8 +159,8 @@ function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeig
         C[:, a] .= c
         U[:, a] .= u
     end
-    DU = rweight(U, weights.values)
-    zR = DU * inv(T' * rweight(Kc, weights.values) * DU)   # = DU * inv(T' * D * Kc * DU)
+    DU = fweightr(U, weights.values)
+    zR = DU * inv(T' * fweightr(Kc, weights.values) * DU)   # = DU * inv(T' * D * Kc * DU)
     Kplsr(X, Kt, T, C, U, zR, DKt, vtot, xscales, ymeans, yscales, weights, iter, kwargs, par) 
 end
 
@@ -176,9 +176,9 @@ function transf(object::Kplsr, X; nlv = nothing)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
-    DKt = rweight(K', object.weights.values) 
+    DKt = fweightr(K', object.weights.values) 
     vtot = sum(DKt, dims = 1)
-    Kc = K .- vtot' .- object.vtot .+ sum(rweight(object.DKt', object.weights.values))  
+    Kc = K .- vtot' .- object.vtot .+ sum(fweightr(object.DKt', object.weights.values))  
     Kc * @view(object.R[:, 1:nlv])
 end
 

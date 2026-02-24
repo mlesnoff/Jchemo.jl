@@ -104,8 +104,8 @@ function covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWei
         fcenter!(Y, ymeans)
     end
     sqrtw = sqrt.(weights.values)
-    rweight!(X, sqrtw)
-    rweight!(Y, sqrtw)
+    fweightr!(X, sqrtw)
+    fweightr!(Y, sqrtw)
     xsstot = frob2(X)
     ysstot = frob2(Y)
     ##

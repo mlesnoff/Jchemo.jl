@@ -109,7 +109,7 @@ function plstuck!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
         Y ./= normy
         bscales = [normx ; normy]
     end
-    XtY = X' * rweight(Y, weights.values)
+    XtY = X' * fweightr(Y, weights.values)
     U, delta, V = svd(XtY)
     delta = delta[1:nlv]
     Wx = U[:, 1:nlv]

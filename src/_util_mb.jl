@@ -113,7 +113,7 @@ function blockscal(Xbl::Vector, weights::ProbabilityWeights; kwargs...)   # to d
         if bscal == :frob
             bscales[k] = frob(zX, weights)
         elseif bscal == :mfa
-            rweight!(zX, sqrt.(weights.values))
+            fweightr!(zX, sqrt.(weights.values))
             bscales[k] = nipals(zX).sv
         elseif bscal == :ncol
             bscales[k] = nco(zX)
