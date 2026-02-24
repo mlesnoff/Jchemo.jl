@@ -98,22 +98,9 @@ fweightr!(X, v)
 X
 ```
 """ 
-function fweightr(X, v)
-    X = ensure_mat(X)
-    n, p = size(X)
-    zX = similar(v, n, p)
-    @inbounds for j = 1:p, i = 1:n
-        zX[i, j] = X[i, j] * v[i]
-    end  
-    zX
-end
+fweightr(X, v) = v .* X
 
-function fweightr!(X::AbstractMatrix, v)
-    n, p = size(X)
-    @inbounds for j = 1:p, i = 1:n
-        X[i, j] *= v[i]
-    end
-end
+fweightr!(X::AbstractMatrix, v) = X .= v .* X
 
 """
     fweightc(X, v)
@@ -135,20 +122,6 @@ fweightc!(X, v)
 X
 ```
 """ 
-function fweightc(X, v)
-    X = ensure_mat(X)
-    n, p = size(X)
-    zX = similar(v, n, p)
-    @inbounds for j = 1:p, i = 1:n
-        zX[i, j] = X[i, j] * v[j]
-    end  
-    zX
-end
+fweightc(X, v) = v' .* X
 
-function fweightc!(X::AbstractMatrix, v)
-    n, p = size(X)
-    @inbounds for j = 1:p, i = 1:n
-        X[i, j] *= v[j]
-    end
-end
-
+fweightc!(X::AbstractMatrix, v) = X .= v' .* X
