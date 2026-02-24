@@ -9,6 +9,7 @@
     - Function **plotsp**: Argument 'label' was added (see example).
     - Hidden function **mweight** replaced by function **pweight**, and type 'Weight' replaced by type
         'StatsBase.ProbabilityWeights'. 
+    - Hidden functions **rweight** and **cweight** replaced by functions **fweightr** and **fweightc**. 
     - Code cleaning.
 
 ## *Version 0.9.4*
