@@ -402,6 +402,7 @@
 - **rmrow** Remove rows
 
 *Computing weights*
+- **pweight** Build an object of type 'StatsBase.ProbabilityWeights', with values summing to 1
 - **pweightcla** Compute observation weights for a categorical variable, given specified sub-total weights for the classes
 - **wdis** Different functions to compute weights from distances
 - **wtal** Compute weights from distances using the 'talworth' distribution
@@ -421,7 +422,7 @@
 - **expand_tab2d** Expand a 2-D contingency table in a dataframe of two categorical variables
 
 *Operations on a vector*
-- **sumv**, **meanv**, **stdv**, **varv**, **madv**, **iqrv**, **normv**, **norm2v**
+- **sumv**, **meanv**, **normv**, **norm2v**, **stdv**, **varv**, **madv**, **iqrv**
 
 *Operations on two vectors*
 - **cosv**, **cosm** Cosinus 
@@ -429,22 +430,26 @@
 - **corv**, **corm** Correlations 
 
 *Column-wise operations on a dataset*
-- **colmad** Median absolute deviation (MAD)
-- **colmean** Mean
-- **colmed** Median
-- **colnorm** Norm
-- **colstd** Standard deviation (uncorrected)
 - **colsum** Sum
+- **colmean** Mean
+- **colnorm** Norm
+- **colnorm2** Squared norm
+- **colstd** Standard deviation (uncorrected)
 - **colvar** Variance (uncorrected)
-- **colmeanskip**, **colstdskip**, **colsumskip**, **colvarskip** Allow missing data
+- **colmed** Median
+- **colmad** Median absolute deviation (MAD)
+
+- **colsumskip**, **colmeanskip**, **colstdskip**, **colvarskip** Allow missing data
 
 *Row-wise operations on a dataset*
-- **rowmean** Mean
-- **rownorm** Median
-- **rowstd** Standard deviation (uncorrected)
 - **rowsum** Sum
+- **rowmean** Mean
+- **rownorm** Norm
+- **rownorm2** Squared norm
+- **rowstd** Standard deviation (uncorrected)
 - **rowvar** Variance (uncorrected)
-- **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip** Allow missing data
+
+- **rowsumskip**, **rowmeanskip**, **rowstdskip**, **rowvarskip** Allow missing data
 
 *Others*
 - **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices

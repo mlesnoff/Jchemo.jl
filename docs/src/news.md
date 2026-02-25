@@ -3,7 +3,7 @@
 ## *Version 0.9.5*
 
 - News:
-    - Fonction **norm2v**: Squared norm of a vector. 
+    - Fonctions **norm2v**, **colnorm2**, **rownorm2**. 
 
 - Modifications
     - Function **plotsp**: Argument 'label' was added (see example).

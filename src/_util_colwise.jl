@@ -1,11 +1,11 @@
 """
     colsum(X)
     colsum(X, weights::ProbabilityWeights)
-Compute column-wise sums of a matrix.
+Column-wise sums of a matrix.
 * `X` : Data (n, p).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
-Return a vector.
+Return a vector (p).
 
 ## Examples
 ```julia
@@ -21,24 +21,38 @@ colsum(X, w)
 """ 
 function colsum(X)
     X = ensure_mat(X)
-    p = nco(X)
-    s = similar(X, p)
+    Q = eltype(X)
+    n, p = size(X)
+    s = zeros(Q, p)
     Threads.@threads for j = 1:p
-        s[j] = sumv(vcol(X, j))
+        @inbounds for i in 1:n
+            s[j] += X[i, j]
+        end
     end
     s
 end
 
-colsum(X, weights::ProbabilityWeights) = vec(weights.values' * ensure_mat(X))
+function colsum(X, weights::ProbabilityWeights)
+    X = ensure_mat(X)
+    Q = eltype(X)
+    n, p = size(X)
+    s = zeros(Q, p)
+    Threads.@threads for j = 1:p
+        @inbounds for i in 1:n
+            s[j] += X[i, j] * weights.values[i]
+        end
+    end
+    s
+end
 
 """
     colmean(X)
     colmean(X, weights::ProbabilityWeights)
-Compute column-wise means of a matrix.
+Column-wise means of a matrix.
 * `X` : Data (n, p).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
-Return a vector.
+Return a vector (p).
 
 ## Examples
 ```julia
@@ -59,9 +73,11 @@ colmean(X, weights::ProbabilityWeights) = colsum(X, weights)
 """
     colnorm(X)
     colnorm(X, weights::ProbabilityWeights)
-Compute column-wise norms of a matrix.
+Column-wise norms of a matrix.
 * `X` : Data (n, p).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+
+Return a vector (p).
 
 The norm of each column x of `X` is computed by:
 * sqrt(x' * x)
@@ -70,8 +86,6 @@ The weighted norm is:
 * sqrt(x' * D * x), where D is the diagonal matrix of `weights.values`
 
 **Warning:** `colnorm(X, pweight(ones(n)))` = `colnorm(X) / sqrt(n)`.
-
-Return a vector.
 
 ## Examples
 ```julia
@@ -85,33 +99,53 @@ colnorm(X)
 colnorm(X, w)
 ```
 """ 
-function colnorm(X)
-    X = ensure_mat(X)
-    p = nco(X)
-    s = similar(X, p)
-    Threads.@threads for j = 1:p
-        s[j] = normv(vcol(X, j))
-    end
-    s
-end
+colnorm(X) = sqrt.(colnorm2(X))
 
-function colnorm(X, weights::ProbabilityWeights)
-    X = ensure_mat(X) 
-    p = nco(X)
-    s = similar(X, p)
-    Threads.@threads for j = 1:p
-        s[j] = normv(vcol(X, j), weights)
-    end
-    s
-end
+colnorm(X, weights::ProbabilityWeights) = sqrt.(colnorm2(X, weights))
 
-## Not exported
+"""
+    colnorm2(X)
+    colnorm2(X, weights::ProbabilityWeights)
+Column-wise squared norms of a matrix.
+* `X` : Data (n, p).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+
+See function `colnorm`.
+
+## Examples
+```julia
+using Jchemo
+
+n, p = 5, 6
+X = rand(n, p)
+w = pweight(rand(n))
+
+colnorm2(X)
+colnorm2(X, w)
+```
+"""
 function colnorm2(X)
     X = ensure_mat(X)
-    p = nco(X)
-    s = similar(X, p)
+    Q = eltype(X)
+    n, p = size(X)
+    s = zeros(Q, p)
     Threads.@threads for j = 1:p
-        s[j] = dot(vcol(X, j), vcol(X, j))
+        @inbounds for i in 1:n
+            s[j] += X[i, j]^2
+        end
+    end
+    s
+end
+
+function colnorm2(X, weights::ProbabilityWeights)
+    X = ensure_mat(X)
+    Q = eltype(X)
+    n, p = size(X)
+    s = zeros(Q, p)
+    Threads.@threads for j = 1:p
+        @inbounds for i in 1:n
+            s[j] += X[i, j]^2 * weights.values[i]
+        end
     end
     s
 end
@@ -119,11 +153,11 @@ end
 """
     colstd(X)
     colstd(X, weights::ProbabilityWeights)
-Compute column-wise standard deviations (uncorrected) of a matrix.
+Column-wise (uncorrected) standard deviations of a matrix.
 * `X` : Data (n, p).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
-Return a vector.
+Return a vector (p).
 
 ## Examples
 ```julia
@@ -137,34 +171,18 @@ colstd(X)
 colstd(X, w)
 ```
 """ 
-function colstd(X)
-    X = ensure_mat(X)
-    p = nco(X)
-    s = similar(X, p)
-    Threads.@threads for j = 1:p
-        s[j] = stdv(vcol(X, j))
-    end
-    s
-end
+colstd(X) = sqrt.(colvar(X))
 
-function colstd(X, weights::ProbabilityWeights)
-    X = ensure_mat(X) 
-    p = nco(X)
-    s = similar(X, p)
-    Threads.@threads for j = 1:p
-        s[j] = stdv(vcol(X, j), weights)
-    end
-    s
-end
+colstd(X, weights::ProbabilityWeights) = sqrt.(colvar(X, weights))
 
 """
     colvar(X)
     colvar(X, weights::ProbabilityWeights)
-Compute column-wise variances (uncorrected) of a matrix.
+Column-wise (uncorrected) variances of a matrix.
 * `X` : Data (n, p).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
-Return a vector.
+Return a vector (p).
 
 ## Examples
 ```julia
@@ -200,10 +218,10 @@ end
 
 """
     colmed(X)
-Compute column-wise medians of a matrix.
+Column-wise medians of a matrix.
 * `X` : Data (n, p).
 
-Return a vector.
+Return a vector (p).
 
 ## Examples
 ```julia
@@ -227,10 +245,10 @@ end
 
 """
     colmad(X)
-Compute column-wise median absolute deviations (MAD) of a matrix.
+Column-wise median absolute deviations (MAD) of a matrix.
 * `X` : Data (n, p).
 
-Return a vector.
+Return a vector (p).
 
 ## Examples
 ```julia
@@ -254,32 +272,31 @@ end
 
 ##### Functions skipping missing data
 colsumskip(X) = [Base.sum(skipmissing(x)) for x in eachcol(ensure_mat(X))]
-colmeanskip(X) = [Statistics.mean(skipmissing(x)) for x in eachcol(ensure_mat(X))]
-colstdskip(X) = [Statistics.std(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
-colvarskip(X) = [Statistics.var(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
-## With weights
 function colsumskip(X, weights::ProbabilityWeights)
     X = ensure_mat(X)
     p = nco(X)
-    z = zeros(p)
+    v = zeros(p)
     @inbounds for j = 1:p
         s = ismissing.(vcol(X, j))
-        zw = pweight(rmrow(weights.values, s)).values
-        z[j] = sum(zw .* rmrow(X[:, j], s))
+        w = pweight(rmrow(weights.values, s))
+        v[j] = sum(w.values .* rmrow(X[:, j], s))
     end
-    z
+    v
 end
+colmeanskip(X) = [Statistics.mean(skipmissing(x)) for x in eachcol(ensure_mat(X))]
 colmeanskip(X, weights::ProbabilityWeights) = colsumskip(X, weights)
+colstdskip(X) = [Statistics.std(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
 colstdskip(X, weights::ProbabilityWeights) = sqrt.(colvarskip(X, weights))
+colvarskip(X) = [Statistics.var(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
 function colvarskip(X, weights::ProbabilityWeights)
     X = ensure_mat(X)
     p = nco(X)
-    z = colmeanskip(X, weights)
+    v = colmeanskip(X, weights)
     @inbounds for j = 1:p
         s = ismissing.(vcol(X, j))
-        zw = pweight(rmrow(weights.values, s)).values
-        z[j] = dot(zw, (rmrow(X[:, j], s) .- z[j]).^2)        
+        w = pweight(rmrow(weights.values, s))
+        v[j] = dot(w.values, (rmrow(X[:, j], s) .- v[j]).^2)        
     end
-    z 
+    v 
 end
 
