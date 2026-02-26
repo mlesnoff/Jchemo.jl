@@ -91,7 +91,7 @@ end
 function predict(object::Dmnormlog, X)
     X = ensure_mat(X)
     mu = reshape(object.mu, 1, length(object.mu))
-    d = mahsqchol(X, mu, object.Uinv)
+    d = mah2chol(X, mu, object.Uinv)
     @. d = object.logcst - object.logdetS / 2 - d / 2
     (pred = d,)
 end

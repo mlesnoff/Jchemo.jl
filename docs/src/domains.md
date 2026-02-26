@@ -466,7 +466,7 @@
 - **fconcat** Concatenate multiblock data
 
 *Others*
-- **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
+- **eucl2**, **mah2**, **mah2chol** Distances (Euclidean, Mahalanobis) between rows of matrices
 - **findmax_cla** Find the most occurent level in a categorical variable
 - **getknn** Find nearest neighbors between rows of matrices
 - **krbf, kpol** Build kernel Gram matrices

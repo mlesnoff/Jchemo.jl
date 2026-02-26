@@ -48,7 +48,7 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
     if metric == :eucl
         tree = NearestNeighbors.BruteTree(Xtrain', Distances.Euclidean())
     elseif metric == :mah
-        S = Statistics.cov(Xtrain, corrected = false)
+        S = covm(Xtrain)
         if p == 1
             Uinv = inv(sqrt(S)) 
         else
@@ -70,7 +70,7 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
         tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.CorDist())
     end
     ind, d = NearestNeighbors.knn(tree, X', k, true)     # 'ind' and 'd' are lists  
-    ## Alternative: ind = reduce(hcat, ind)'
+    ## Possible alternative for output 'ind': ind = reduce(hcat, ind)'
     (ind = ind, d)
 end
 

@@ -164,7 +164,7 @@ Compute predictions from a fitted model.
 function predict(object::Dmnorm, X)
     X = ensure_mat(X)
     mu = reshape(object.mu, 1, length(object.mu))
-    d = mahsqchol(X, mu, object.Uinv)
+    d = mah2chol(X, mu, object.Uinv)
     @. d = object.cst / sqrt(object.detS) * exp(-d / 2)  # = density
     (pred = d,)
 end

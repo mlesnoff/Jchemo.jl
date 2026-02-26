@@ -462,7 +462,7 @@ export
     sampdf,
     ######---- Distances
     getknn, wdis, wtal, winvs, winvs!,
-    euclsq, mahsq, mahsqchol,
+    eucl2, mah2, mah2chol,
     krbf, kpol,
     ######---- Graphics
     plotsp,

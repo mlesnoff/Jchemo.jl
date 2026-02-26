@@ -44,7 +44,7 @@ function outeucl!(X::Matrix; scal = false)
         fscale!(X, xscales)
     end
     xmeans = Jchemo.colmedspa(X)
-    d = vec(sqrt.(euclsq(X, xmeans')))
+    d = vec(sqrt.(eucl2(X, xmeans')))
     (d = d, xmeans, xscales)
 end
 

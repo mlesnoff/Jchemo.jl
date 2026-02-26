@@ -29,7 +29,7 @@ function krbf(X, Y; kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     gamma = convert(Q, par.gamma)
-    exp.(-gamma * euclsq(X, Y))
+    exp.(-gamma * eucl2(X, Y))
 end
 
 """

@@ -149,7 +149,7 @@ function occsd(fitm; kwargs...)
     ## Mahalanobis distance
     tscales = colstd(T, fitm.weights)
     fscale!(T, tscales)
-    d2 = vec(euclsq(T, zeros(Q, nlv)'))   # the center is defined as 0
+    d2 = vec(eucl2(T, zeros(Q, nlv)'))   # the center is defined as 0
     d = sqrt.(d2)
     ## End
     if par.cut == :mad
@@ -175,7 +175,7 @@ function predict(object::Occsd, X)
     m, nlv = size(T)
     ## Mahalanobis distance
     fscale!(T, object.tscales)
-    d2 = vec(euclsq(T, zeros(Q, nlv)'))
+    d2 = vec(eucl2(T, zeros(Q, nlv)'))
     d = sqrt.(d2)
     ## End
     p_val = pval(object.e_cdf, d)

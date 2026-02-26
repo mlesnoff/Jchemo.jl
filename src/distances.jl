@@ -1,5 +1,5 @@
 """
-    euclsq(X, Y)
+    eucl2(X, Y)
 Squared Euclidean distances between the rows of `X` and `Y`.
 * `X` : Data (n, p).
 * `Y` : Data (m, p).
@@ -12,23 +12,23 @@ The function returns a matrix (n, m) with:
 X = rand(5, 3)
 Y = rand(2, 3)
 
-euclsq(X, Y)
+eucl2(X, Y)
 
-euclsq(X[1:1, :], Y[1:1, :])
+eucl2(X[1:1, :], Y[1:1, :])
 
-euclsq(X[:, 1], 4)
-euclsq(1, 4)
+eucl2(X[:, 1], 4)
+eucl2(1, 4)
 ```
 """
-function euclsq(X, Y)
+function eucl2(X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     Distances.pairwise(SqEuclidean(), X', Y'; dims = 2)   # pairwise also exportef by StatsBase
 end
 
 """
-    mahsq(X, Y)
-    mahsq(X, Y, Sinv)
+    mah2(X, Y)
+    mah2(X, Y, Sinv)
 Squared Mahalanobis distances between the rows of `X` and `Y`.
 * `X` : Data (n, p).
 * `Y` : Data (m, p).
@@ -45,18 +45,18 @@ using Jchemo
 X = rand(5, 3)
 Y = rand(2, 3)
 
-mahsq(X, Y)
+mah2(X, Y)
 
 S = covm(X)
 Sinv = inv(S)
-mahsq(X, Y, Sinv)
-mahsq(X[1:1, :], Y[1:1, :], Sinv)
+mah2(X, Y, Sinv)
+mah2(X[1:1, :], Y[1:1, :], Sinv)
 
-mahsq(X[:, 1], 4)
-mahsq(1, 4, 2.1)
+mah2(X[:, 1], 4)
+mah2(1, 4, 2.1)
 ```
 """
-function mahsq(X, Y)
+function mah2(X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     S = covm(X)
@@ -64,7 +64,7 @@ function mahsq(X, Y)
     Distances.pairwise(SqMahalanobis(S), X', Y'; dims = 2)
 end
 
-function mahsq(X, Y, Sinv)
+function mah2(X, Y, Sinv)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     Sinv = ensure_mat(Sinv)
@@ -72,8 +72,8 @@ function mahsq(X, Y, Sinv)
 end
 
 """
-    mahsqchol(X, Y)
-    mahsqchol(X, Y, Uinv)
+    mah2chol(X, Y)
+    mah2chol(X, Y, Uinv)
 Compute the squared Mahalanobis distances (with a Cholesky factorization) between the rows of `X` and `Y`.
 * `X` : Data (n, p).
 * `Y` : Data (m, p).
@@ -90,18 +90,18 @@ using LinearAlgebra, StatsBase
 X = rand(5, 3)
 Y = rand(2, 3)
 
-mahsqchol(X, Y)
+mah2chol(X, Y)
 
 S = covm(X)
 U = cholesky(Hermitian(S)).U 
 Uinv = inv(U)
-mahsqchol(X, Y, Uinv)
+mah2chol(X, Y, Uinv)
 
-mahsqchol(X[:, 1], 4)
-mahsqchol(1, 4, sqrt(2.1))
+mah2chol(X[:, 1], 4)
+mah2chol(1, 4, sqrt(2.1))
 ```
 """
-function mahsqchol(X, Y)
+function mah2chol(X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)    
     p = nco(X)
@@ -113,16 +113,16 @@ function mahsqchol(X, Y)
     end
     zX = X * Uinv
     zY = Y * Uinv
-    euclsq(zX, zY)
+    eucl2(zX, zY)
 end
 
-function mahsqchol(X, Y, Uinv)
+function mah2chol(X, Y, Uinv)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     Uinv = ensure_mat(Uinv)
     zX = X * Uinv
     zY = Y * Uinv
-    euclsq(zX, zY)
+    eucl2(zX, zY)
 end
 
 #### Angular and correlation distances (not exported)

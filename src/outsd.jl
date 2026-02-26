@@ -43,7 +43,7 @@ function outsd(fitm)
     nlv = nco(fitm.T)
     tscales = colstd(fitm.T, fitm.weights)
     T = fscale(fitm.T, tscales)
-    d2 = vec(euclsq(T, zeros(Q, nlv)'))   # the center is defined as 0
+    d2 = vec(eucl2(T, zeros(Q, nlv)'))   # the center is defined as 0
     d = sqrt.(d2)
     (d = d,)
 end
