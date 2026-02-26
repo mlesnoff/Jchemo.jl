@@ -10,6 +10,7 @@
     - Internal function **mweight** replaced by function **pweight**, and type 'Weight' replaced by type
         'StatsBase.ProbabilityWeights'. 
     - Internal functions **rweight** and **cweight** replaced by functions **fweightr** and **fweightc**. 
+    - Internal functions **euclsq**, **mahsq** and **mahsqchol** replaced by functions **eucl2**, **mah2** and **mah2chol**.
     - Code cleaning.
 
 ## *Version 0.9.4*
