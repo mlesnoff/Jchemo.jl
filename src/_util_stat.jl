@@ -399,10 +399,9 @@ corm(X) = Statistics.cor(X)
 
 function corm(X, weights::ProbabilityWeights)
     zX = copy(ensure_mat(X))
-    fcenter!(zX, colmean(zX, weights))
-    fscale!(zX, colstd(zX, weights))
-    z = fweightr(zX, sqrt.(weights.values))
-    z' * z
+    fcscale!(zX, colmean(zX, weights), colstd(zX, weights))
+    fweightr!(zX, sqrt.(weights.values))
+    zX' * zX
 end
 
 corm(X, Y) = Statistics.cor(X, Y)
@@ -410,11 +409,10 @@ corm(X, Y) = Statistics.cor(X, Y)
 function corm(X, Y, weights::ProbabilityWeights)
     zX = copy(ensure_mat(X))
     zY = copy(ensure_mat(Y))
-    fcenter!(zX, colmean(zX, weights))
-    fcenter!(zY, colmean(zY, weights))
-    fscale!(zX, colstd(zX, weights))
-    fscale!(zY, colstd(zY, weights))
-    zX' * fweightr(zY, weights.values)
+    fcscale!(zX, colmean(zX, weights), colstd(zX, weights))
+    fcscale!(zY, colmean(zY, weights), colstd(zY, weights))
+    fweightr!(zY, weights.values)
+    zX' * zY
 end
 
 """ 
