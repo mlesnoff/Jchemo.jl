@@ -349,7 +349,7 @@ end
 
 """
     expand_tab2d(X; namr = nothing, namc = nothing, namv = nothing)
-Expand a 2-D contingency table in a dataframe of two categorical variables.
+Expand a 2-D contingency table to a dataframe of two categorical variables.
 * `X` : 2-D contincency table (m, p).
 Keyword arguments:
 * `namr` : Vector (m) of names of the `X`-rows. 

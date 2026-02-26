@@ -386,91 +386,95 @@
 - **@plist** Display each element of a list
 - **@type** Display the type and size of a dataset
 
-*Summary*
-- **summ** Summarize the columns of a dataset
-- **aggstat** Compute column-wise statistics by group in a dataset
-- **aggmean** Compute column-wise means by group in a dataset
-- **aggsumv** Compute the sum by group of a categorical variable
+*Summarize a datase*
+- **summ** Summarize the columns
+- **aggstat** Column-wise statistics by group 
+- **aggmean** Column-wise means by group
+- **aggsumv** Sum by group of a categorical variable
 
 *Tables*
 - **tab**, **tabdupl** Tabulations for categorical variables
 - **tabcont** Tabulate a continuous variable
 - **mbin** Build histogram-bin intervals
 
-*Removing rows and columns of a dataset*
-- **rmcol** Remove columns
-- **rmrow** Remove rows
-
-*Computing weights*
+*Weights*
 - **pweight** Build an object of type 'StatsBase.ProbabilityWeights', with values summing to 1
 - **pweightcla** Compute observation weights for a categorical variable, given specified sub-total weights for the classes
-- **wdis** Different functions to compute weights from distances
-- **wtal** Compute weights from distances using the 'talworth' distribution
-- **winvs** Compute weights from distances using an inverse scaled exponential function
+- Weights from distances
+    - **wdis** Different functions to compute weights from distances
+    - **wtal** Compute weights from distances using the 'talworth' distribution
+    - **winvs** Compute weights from distances using an inverse scaled exponential function
 
 *Recoding*
-- **recod_catbydict**  Recode a categorical variable to dictionnary levels
-- **recod_catbyind**  Recode a categorical variable to indexes of levels
-- **recod_catbyint**  Recode a categorical variable to integers
-- **recod_catbylev**  Recode a categorical variable to levels
-- **recod_contbyint**  Recode a continuous variable to integers
-- **recod_indbylev**  Recode an index variable to levels
-- **recod_miss** Declare data as missing in a dataset
-
-- **convertdf** Convert the columns of a dataframe to given types
-- **dummy** Build dummy table
-- **expand_tab2d** Expand a 2-D contingency table in a dataframe of two categorical variables
+- Vector
+    - **recod_catbydict**  Recode a categorical variable to dictionnary levels
+    - **recod_catbyind**  Recode a categorical variable to indexes of levels
+    - **recod_catbyint**  Recode a categorical variable to integers
+    - **recod_catbylev**  Recode a categorical variable to levels
+    - **recod_contbyint**  Recode a continuous variable to integers
+    - **recod_indbylev**  Recode an index variable to levels
+    - **recod_miss** Declare data as missing in a dataset
+- Data
+    - **convertdf** Convert the columns of a dataframe to given types
+    - **dummy** Build dummy table for a categorical variable
+    - **expand_tab2d** Expand a 2-D contingency table to a dataframe of two categorical variables
 
 *Operations on a vector*
 - **sumv**, **meanv**, **normv**, **norm2v**, **stdv**, **varv**, **madv**, **iqrv**
 
 *Operations on two vectors*
-- **cosv**, **cosm** Cosinus 
-- **covv**, **covm** Covariances
-- **corv**, **corm** Correlations 
+- **cosv** Cosinus 
+- **covv** Covariances
+- **corv** Correlations
 
-*Column-wise operations on a dataset*
-- **colsum** Sum
-- **colmean** Mean
-- **colnorm** Norm
-- **colnorm2** Squared norm
-- **colstd** Standard deviation (uncorrected)
-- **colvar** Variance (uncorrected)
-- **colmed** Median
-- **colmad** Median absolute deviation (MAD)
+*Operations on a matrix*
+- **cosm** Cosinus matrix
+- **covm** Covariances matrix
+- **corm** Correlations matrix
+- **frob**, **frob2** Frobenius norm
+- **matB**, **matW** Between- and within-class covariance matrices
 
-- **colsumskip**, **colmeanskip**, **colstdskip**, **colvarskip** Allow missing data
+- Column-wise
+    - **nco** Nb. columns 
+    - **colsum** Sum
+    - **colmean** Mean
+    - **colnorm** Norm
+    - **colnorm2** Squared norm
+    - **colstd** Standard deviation (uncorrected)
+    - **colvar** Variance (uncorrected)
+    - **colmed** Median
+    - **colmad** Median absolute deviation (MAD)
+    - Allow missing data
+        - **colsumskip**, **colmeanskip**, **colstdskip**, **colvarskip** 
 
-*Row-wise operations on a dataset*
-- **rowsum** Sum
-- **rowmean** Mean
-- **rownorm** Norm
-- **rownorm2** Squared norm
-- **rowstd** Standard deviation (uncorrected)
-- **rowvar** Variance (uncorrected)
+ - Row-wise
+    - **nro** Nb. rows 
+    - **rowsum** Sum
+    - **rowmean** Mean
+    - **rownorm** Norm
+    - **rownorm2** Squared norm
+    - **rowstd** Standard deviation (uncorrected)
+    - **rowvar** Variance (uncorrected)
+    - Allow missing data
+        - **rowsumskip**, **rowmeanskip**, **rowstdskip**, **rowvarskip** 
 
-- **rowsumskip**, **rowmeanskip**, **rowstdskip**, **rowvarskip** Allow missing data
+*Transformation of a amatrix*
+- **fweightr** Weight each row
+- **fweightc** Weight each column
+- **fcenter**, **fscale**, **fcscale** Column-wise centering and scaling
+- **rmcol**, **rmrow** Remove columns and rows
+- **fconcat** Concatenate multiblock data
 
 *Others*
 - **euclsq**, **mahsq**, **mahsqchol** Distances (Euclidean, Mahalanobis) between rows of matrices
-- **fcenter**, **fscale**, **fcscale** Column-wise centering and scaling of a matrix
-- **fconcat** Concatenate multiblock data
 - **findmax_cla** Find the most occurent level in a categorical variable
-- **frob**, **frob2** Frobenius norm of a matrix
-- **fweightr** Weight each row of a matrix
-- **fweightc** Weight each column of a matrix
 - **getknn** Find nearest neighbors between rows of matrices
-- **iqrv** Interval inter-quartiles
 - **krbf, kpol** Build kernel Gram matrices
 - **locw** Working function for local (kNN) models
 - **mad** Median absolute deviation (not exported)
-- **matB**, **matW** Between- and within-class covariance matrices
 - **mlev** Return the sorted levels of a vector or a dataset 
-- **nro**, **nco** Nb. rows and columns of an object
-- **normv** Norm of a vector
 - **parsemiss** Parsing a string vector allowing missing data
 - **pval** Compute p-value(s) for a distribution, an ECDF or vector
-
 - **thresh_soft**, **thresh_hard** Thresholding functions
 - **softmax** Softmax function
 - **sourcedir** Include all the files contained in a directory
