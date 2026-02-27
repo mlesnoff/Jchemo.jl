@@ -5,7 +5,7 @@ Return the k nearest neighbors in `Xtrain` of each row of the query `X`.
 * `X` : Query X-data.
 Keyword arguments:
 * `metric` : Type of distance used for the query. Possible values are `:eucl` (Euclidean), `:mah` (Mahalanobis), 
-    `:sam` (spectral angular distance), `:cos` (cosine distance), `:cor` (correlation distance).
+    `:cos` (cosine distance), `:sam` (spectral angular distance), `:cor` (correlation distance).
 * `k` : Number of neighbors to return.
 
 In addition to neighbors, the function also returns the distances. 
@@ -13,9 +13,9 @@ In addition to neighbors, the function also returns the distances.
 The angular distances used in this function are scaled to [0, 1]. Consider two vectors x and y, theta the (unknown) 
 angle between x and y in radiants, and costheta = cosinus(x, y). Then, costheta is computed as:
 * costheta = x'y / (||x|| ||y||) 
-and distances as (see file distances.jl):
-* Spectral angular distance (x, y) = acos(costheta) / pi    
+and distances as (see script file 'distances.jl'):
 * Cosine distance (x, y) = (1 - costheta) / 2                     
+* Spectral angular distance (x, y) = acos(costheta) / pi    
 * Correlation distance (x, y) = (1 - corr(x, y)) / 2  
 
 Note: If x and y are centered, costheta = corr(x, y).
@@ -63,10 +63,10 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
         X = X * Uinv
         tree = NearestNeighbors.BruteTree(Xtrain', Distances.Euclidean())
     ## End :mah
-    elseif metric == :sam
-        tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.SamDist())
     elseif metric == :cos
         tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.CosDist())
+    elseif metric == :sam
+        tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.SamDist())
     elseif metric == :cor
         tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.CorDist())
     end

@@ -134,11 +134,11 @@ end
 ## y = rand(n)
 ## Jchemo.SamDist()(x, y)
 ## ```julia
-struct SamDist <: Distances.Metric end
-(::SamDist)(x, y) = acos(1 - Distances.CosineDist()(x, y)) / pi
-
 struct CosDist <: Distances.Metric end                      
 (::CosDist)(x, y) = Distances.CosineDist()(x, y) / 2
+
+struct SamDist <: Distances.Metric end
+(::SamDist)(x, y) = acos(1 - Distances.CosineDist()(x, y)) / pi
 
 struct CorDist <: Distances.Metric end                      
 (::CorDist)(x, y) = Distances.CorrDist()(x, y) / 2
@@ -148,6 +148,6 @@ struct CorDist_b <: Distances.Metric end
 
 ## Square-root correlation distance
 ## max is used since possible negative zeros (floating point issues)
-struct CorDist2 <: Distances.Metric end                                
-(::CorDist2)(x, y) = sqrt(max(0, Distances.CorrDist()(x, y)) / 2)  
+struct sqrCorDist <: Distances.Metric end                                
+(::sqrCorDist)(x, y) = sqrt(max(0, Distances.CorrDist()(x, y)) / 2)  
 
