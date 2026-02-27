@@ -32,8 +32,8 @@ end
 Squared Mahalanobis distances between the rows of `X` and `Y`.
 * `X` : Data (n, p).
 * `Y` : Data (m, p).
-* `Sinv` : Inverse of a covariance matrix (S). If not given, S is computed as the uncorrected covariance 
-    matrix of `X`.
+* `Sinv` : Inverse of a covariance matrix S. If `Sinv` is not given, S is computed as the uncorrected 
+    covariance matrix of `X`.
 
 The function returns a matrix (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
@@ -61,24 +61,24 @@ function mah2(X, Y)
     Y = ensure_mat(Y)
     S = covm(X)
     LinearAlgebra.inv!(cholesky!(Hermitian(S)))
-    Distances.pairwise(SqMahalanobis(S), X', Y'; dims = 2)
+    Distances.pairwise(SqMahalanobis(S; skipchecks = true), X', Y'; dims = 2)
 end
 
 function mah2(X, Y, Sinv)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    Sinv = ensure_mat(Sinv)
+    Sinv = Hermitian(ensure_mat(Sinv))
     Distances.pairwise(SqMahalanobis(Sinv; skipchecks = true), X', Y'; dims = 2)
 end
 
 """
     mah2chol(X, Y)
     mah2chol(X, Y, Uinv)
-Compute the squared Mahalanobis distances (with a Cholesky factorization) between the rows of `X` and `Y`.
+Squared Mahalanobis distances (with a Cholesky factorization) between the rows of `X` and `Y`.
 * `X` : Data (n, p).
 * `Y` : Data (m, p).
-* `Uinv` : Inverse of the upper matrix of a Cholesky factorization of a covariance matrix (S). 
-   If not given, S is computed as the uncorrected covariance matrix of `X`.
+* `Uinv` : Inverse of the upper matrix of a Cholesky factorization of a covariance matrix S. 
+   If `Uinv` is not given, S is computed as the uncorrected covariance matrix of `X`.
 
 The function returns a matrix (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
@@ -104,8 +104,8 @@ mah2chol(1, 4, sqrt(2.1))
 function mah2chol(X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)    
-    p = nco(X)
     S = covm(X)
+    p = nco(S)
     if p == 1
         Uinv = inv(sqrt(S)) 
     else
@@ -125,13 +125,15 @@ function mah2chol(X, Y, Uinv)
     eucl2(zX, zY)
 end
 
-#### Angular and correlation distances (not exported)
+#### Angular and correlation distances (functions not exported)
 ## All the distances below are scaled to [0, 1]
 ## Usage:
+## ```julia
 ## n = 1000
 ## x = rand(n)
 ## y = rand(n)
 ## Jchemo.SamDist()(x, y)
+## ```julia
 struct SamDist <: Distances.Metric end
 (::SamDist)(x, y) = acos(1 - Distances.CosineDist()(x, y)) / pi
 
@@ -146,6 +148,6 @@ struct CorDist_b <: Distances.Metric end
 
 ## Square-root correlation distance
 ## max is used since possible negative zeros (floating point issues)
-struct CorDist_sqr <: Distances.Metric end                                
-(::CorDist_sqr)(x, y) = sqrt(max(0, Distances.CorrDist()(x, y)) / 2)  
+struct CorDist2 <: Distances.Metric end                                
+(::CorDist2)(x, y) = sqrt(max(0, Distances.CorrDist()(x, y)) / 2)  
 
