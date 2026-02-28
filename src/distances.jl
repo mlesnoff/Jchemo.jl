@@ -151,3 +151,28 @@ struct CorDist_b <: Distances.Metric end
 struct sqrCorDist <: Distances.Metric end                                
 (::sqrCorDist)(x, y) = sqrt(max(0, Distances.CorrDist()(x, y)) / 2)  
 
+## Tentative
+function wass1d(x::Vector, y::Vector)
+    Q = eltype(x)
+    sum_x = sum(x)
+    sum_y = sum(y)
+    x_norm = x ./ sum_x
+    y_norm = y ./ sum_y
+    x_sorted = sort!(copy(x_norm))
+    y_sorted = sort!(copy(y_norm))
+    cum_x = zero(Q)
+    cum_y = zero(Q)
+    d = zero(Q)
+    @inbounds for i in eachindex(x_sorted)
+        cum_x += x_sorted[i]
+        cum_y += y_sorted[i]
+        d += abs(cum_x - cum_y)
+    end
+    d
+end
+struct WassDist <: Distances.Metric end                            
+(::WassDist)(x, y) = Jchemo.wass1d(x, y)
+## End
+
+
+
