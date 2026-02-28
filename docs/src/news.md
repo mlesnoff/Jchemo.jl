@@ -1,5 +1,11 @@
 # News
 
+## *Version 0.9.6*
+
+- Modifications
+    - Code cleaning.
+
+
 ## *Version 0.9.5*
 
 - News:
