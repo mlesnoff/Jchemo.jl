@@ -170,8 +170,8 @@ function wass1d(x::Vector, y::Vector)
     end
     d
 end
-struct WassDist <: Distances.Metric end                            
-(::WassDist)(x, y) = Jchemo.wass1d(x, y)
+struct WasDist <: Distances.Metric end                            
+(::WasDist)(x, y) = Jchemo.wass1d(x, y)
 ## End
 
 

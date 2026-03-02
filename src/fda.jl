@@ -121,12 +121,14 @@ function fda!(X::Matrix, y, weights; kwargs...)
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate
+    ## Regularization
     if lb > 0
         res.W .+= lb .* I(p)    # @. does not work with I
     end
+    ## End
     zres = matB(X, y, weights)
     Winv = LinearAlgebra.inv!(cholesky(Hermitian(res.W)))
-    ## Winv * B is not symmetric
+    ## Winv * B (p, p) is not symmetric
     fitm = eigen!(Winv * zres.B; sortby = x -> -abs(x))
     nlv = min(par.nlv, n, p, nlev - 1)
     V = real.(fitm.vectors[:, 1:nlv])

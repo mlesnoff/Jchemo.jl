@@ -174,6 +174,11 @@ include("svmr.jl")
 include("treer.jl")
 include("rfr.jl")
 
+## Bagging 
+
+include("sampcla.jl")
+include("baggr.jl")
+
 ######---- Discrimination 
 
 include("lda.jl")

@@ -5,8 +5,7 @@
 Factorial discriminant analysis (FDA).
 * `X` : X-data (n, p).
 * `y` : y-data (n) (class membership).
-* `weights` : Weights (n) of the observations. 
-    Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of discriminant components.
 * `lb` : Ridge regularization parameter "lambda". Can be used when `X` has collinearities. 
@@ -51,9 +50,11 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     nlev = length(lev)
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information 
     res.W .*= n / (n - nlev)
+    ## Regularization
     if lb > 0
-        res.W .+= lb .* I(p) # @. does not work with I
+        res.W .+= lb .* I(p)    # @. does not work with I
     end
+    ## End
     #Winv = inv(res.W)
     Winv = LinearAlgebra.inv!(cholesky(Hermitian(res.W))) 
     ct = similar(X, nlev, p)

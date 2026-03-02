@@ -40,7 +40,7 @@ res.ind
 ```
 """ 
 function getknn(Xtrain, X; metric = :eucl, k = 1)
-    @assert in([:eucl, :mah, :cos, :sam, :cor])(metric) "Wrong value for argument 'metric'."
+    #@assert in([:eucl, :mah, :cos, :sam, :cor])(metric) "Wrong value for argument 'metric'."
     Xtrain = ensure_mat(Xtrain)
     X = ensure_mat(X)
     n, p = size(Xtrain)
@@ -69,6 +69,10 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
         tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.SamDist())
     elseif metric == :cor
         tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.CorDist())
+    ## Tentative
+    elseif metric == :was
+        tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.WasDist())
+    ## End
     end
     ind, d = NearestNeighbors.knn(tree, X', k, true)     # 'ind' and 'd' are lists  
     ## Possible alternative for output 'ind': ind = reduce(hcat, ind)'
