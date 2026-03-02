@@ -2,6 +2,9 @@
 
 ## *Version 0.9.6*
 
+- News:
+    - Fonctions **sampbag**, **baggr**: bagging regression.
+
 - Modifications
     - Code cleaning.
 
