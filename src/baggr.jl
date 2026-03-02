@@ -70,7 +70,10 @@ struct Baggr
 end
 
 function baggr(X, Y; fun::Function, rep = 50, rowsamp = .7, replace = false, colsamp = 1, seed = nothing, kwargs...) 
-    res_samp = Jchemo.sampbag(X; rep, rowsamp, replace, colsamp)
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    n, p = size(X)
+    res_samp = Jchemo.sampbag(n, p; rep, rowsamp, replace, colsamp)
     srow = res_samp.srow
     scol = res_samp.scol
     fitm = list(rep)
@@ -83,7 +86,10 @@ end
 
 function baggr(X, Y, weights::Jchemo.ProbabilityWeights; fun::Function, rep = 50, rowsamp = .7, replace = false, 
         colsamp = 1, seed = nothing, kwargs...) 
-    res_samp = Jchemo.sampbag(X; rep, rowsamp, replace, colsamp)
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    n, p = size(X)
+    res_samp = Jchemo.sampbag(n, p; rep, rowsamp, replace, colsamp)
     srow = res_samp.srow
     scol = res_samp.scol
     fitm = list(rep)

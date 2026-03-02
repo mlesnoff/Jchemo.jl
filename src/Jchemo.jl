@@ -176,7 +176,7 @@ include("rfr.jl")
 
 ## Bagging 
 
-include("sampcla.jl")
+include("sampbag.jl")
 include("baggr.jl")
 
 ######---- Discrimination 
