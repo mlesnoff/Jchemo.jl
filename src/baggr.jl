@@ -77,9 +77,9 @@ function baggr(X, Y; fun::Function, rep = 50, rowsamp = .7, replace = false, col
     srow = res_samp.srow
     scol = res_samp.scol
     fitm = list(rep)
-    @inbounds for i = 1:rep
-    #Threads.@threads for i = 1:rep
-        fitm[i] = fun(X[srow[i], scol[i]], Y[srow[i], :]; kwargs...)
+    #@inbounds for i = 1:rep
+    Threads.@threads for i = 1:rep
+        fitm[i] = fun(view(X, srow[i], scol[i]), vrow(Y, srow[i]); kwargs...)
     end
     Baggr(fitm, res_samp, nco(Y))
 end
@@ -93,10 +93,10 @@ function baggr(X, Y, weights::Jchemo.ProbabilityWeights; fun::Function, rep = 50
     srow = res_samp.srow
     scol = res_samp.scol
     fitm = list(rep)
-    @inbounds for i = 1:rep
-    #Threads.@threads for i = 1:rep
+    #@inbounds for i = 1:rep
+    Threads.@threads for i = 1:rep
         w = pweight(weights.values[srow[i]])
-        fitm[i] = fun(X[srow[i], scol[i]], Y[srow[i], :], w)
+        fitm[i] = fun(view(X, srow[i], scol[i]), vrow(Y, srow[i]), w; kwargs...)
     end
     Baggr(fitm, res_samp, nco(Y))
 end
@@ -107,9 +107,9 @@ function predict(object::Baggr, X)
     m = nro(X)
     res = similar(X, m, object.q, length(object.fitm))
     pred = similar(X, m, object.q)
-    @inbounds for k in eachindex(object.fitm)
-    #Threads.@threads for k in eachindex(object.fitm)
-        res[:, :, k] .= predict(object.fitm[k], X[:, object.res_samp.scol[k]]).pred
+    #@inbounds for k in eachindex(object.fitm)
+    Threads.@threads for k in eachindex(object.fitm)
+        res[:, :, k] .= predict(object.fitm[k], vcol(X, object.res_samp.scol[k])).pred   # warning: @view is not accepted by XGBoost.predict
     end
     pred .= mean(res; dims = 3)
     (pred = pred,)
@@ -117,8 +117,6 @@ end
 
 #function predict(object::Baggr, X)
 #    rep = length(object.fitm)
-#    ## @view is not accepted by XGBoost.predict
-#    ## @view(X[:, object.scol[i])
 #    pred = predict(object.fitm[1], X[:, object.scol[1]]).pred
 #    @inbounds for i = 2:rep
 #        pred .+= predict(object.fitm[i], X[:, object.scol[i]).pred
