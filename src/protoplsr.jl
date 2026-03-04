@@ -1,7 +1,7 @@
 """
     protoplsr(; kwargs...)
     protoplsr(X, Y; kwargs...)
-k-Nearest-Neighbours averaging of prototype PLSR models.
+Averaging of prototype PLSR models (neighborhood approach).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 Keyword arguments:
@@ -23,7 +23,7 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, ecah column of matrices X and Y of the prototype neighborhood is 
     scaled by its uncorrected standard deviation.
 
-Function `protoplsr` implements a kNN-averaging of prototype PLSR models.
+Function `protoplsr` implements a kNN-averaging of prototype-PLSR models.
 
 *Model fitting*
 * A number of `nproto` observations (x, y), referred to as 'prototypes', are sampled in the training data. 

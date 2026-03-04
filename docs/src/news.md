@@ -3,6 +3,7 @@
 ## *Version 0.9.6*
 
 - News:
+    - Fonction **protoplsr**: Averaging of prototype PLSR models (neighborhood approach).
     - Fonctions **sampbag**, **baggr**: bagging regression.
 
 - Modifications

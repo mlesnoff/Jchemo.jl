@@ -127,7 +127,7 @@
 *Non linear*
 - **krr** Non linear kernel (KRR), a.k.a Least squares SVM (LS-SVMR)
 
-### Local models
+### Locally weighted models
 
 - **loessr** LOESS regression model -- With package Loess.jl
 
@@ -138,6 +138,9 @@
 
 *Averaging*
 - **lwplsravg** kNN-LWPLSR-AVG 
+
+*Prototype models*
+- **protoplsr** Averaging of prototype PLSR models (neighborhood approach)
 
 ### Support vector machines
 
@@ -151,6 +154,11 @@
 
 - **treer** Single tree
 - **rfr** Random forest
+
+### Bagging
+
+- **baggr** Generic function for bagging regression model
+- **sampbag** Utility function for bagging (sampling)
 
 ## DISCRIMINATION ANALYSIS (DA)
 
@@ -208,7 +216,7 @@
     - **mbplsqda** MBPLS-QDA
     - **mbplskdeda** MBPLS-KDEDA
 
-### Local models
+### Locally weighted models
 
 - **knnda** kNN-DA (Vote within neighbors)
 - **lwmlrda** kNN locally weighted MLR-DA (kNN-LWMLR-DA)
