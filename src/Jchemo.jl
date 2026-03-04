@@ -179,6 +179,10 @@ include("rfr.jl")
 include("sampbag.jl")
 include("baggr.jl")
 
+## Prototypes
+
+include("protoplsr.jl")
+
 ######---- Discrimination 
 
 include("lda.jl")
@@ -401,18 +405,22 @@ export
     mbplswest, mbplswest!,
     rosaplsr, rosaplsr!,
     soplsr,
-    ## Variable selection/importance (direct methods) 
-    vip, 
-    viperm!,
-    isel!,
-    ## Utils
-    xfit, xfit!, xresid, xresid!,
     ## Local
     locw, locwlv,
     knnr,
     lwmlr,
     lwplsr, lwplsravg,
     loessr,
+    ## Bagging
+    baggr,
+    ## Prototype
+    protoplsr,
+    ## Variable selection/importance (direct methods) 
+    vip, 
+    viperm!,
+    isel!,
+    ## Utils
+    xfit, xfit!, xresid, xresid!,
     ######---- Discrimination
     fda, fda!, fdasvd, fdasvd!,
     mlrda,
@@ -465,6 +473,7 @@ export
     ######---- Sampling
     sampks, sampdp, sampwsp, samprand, sampsys, sampcla, 
     sampdf,
+    sampbag, 
     ######---- Distances
     getknn, wdis, wtal, winvs, winvs!,
     eucl2, mah2, mah2chol,
