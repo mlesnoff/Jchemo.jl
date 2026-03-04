@@ -3,7 +3,7 @@
     cglsr(X, y; kwargs...)
     cglsr!(X::Matrix, y::Matrix; kwargs...)
 Conjugate gradient algorithm for the normal equations (CGLS; Björck 1996).
-* `X` : X-data  (n, p).
+* `X` : X-data (n, p).
 * `y` : Univariate Y-data (n).
 Keyword arguments:
 * `nlv` : Nb. CG iterations.

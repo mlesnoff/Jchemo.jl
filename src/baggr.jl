@@ -1,68 +1,3 @@
-#""" 
-#    baggr(X, Y, weights = nothing, colweight = nothing; rep = 50, rowsamp = .7, colsamp = 1, replace = false, 
-#        fun, kwargs...)
-#Bagging of regression models.
-#* `X` : X-data  (n, p).
-#* `Y` : Y-data  (n, q).
-#* `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
-#* `colweight` : Weights (p) for the sampling of the variables.
-#* `rep` : Nb. of bagging repetitions.
-#* `rowsamp` : Proportion of rows sampled in `X` at each repetition.
-#* `colsamp` : Proportion of columns sampled (without replacement) in `X` at each repetition.
-#* `replace`: Boolean. If `false` (default), observations are sampled without replacement.
-#* `fun` : Name of the function computing the model to bagg.
-#* `kwargs` : Optional named arguments to pass in 'fun`.
-
-## References
-#Breiman, L., 1996. Bagging predictors. Mach Learn 24, 123–140. 
-#https://doi.org/10.1007/BF00058655
-
-#Breiman, L., 2001. Random Forests. Machine Learning 45, 5–32. 
-#https://doi.org/10.1023/A:1010933404324
-
-#Genuer, R., 2010. Forêts aléatoires : aspects théoriques, 
-#sélection de variables et applications. PhD Thesis. Université Paris Sud - Paris XI.
-
-#Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : 
-#trois thèmes statistiques autour de CART en régression (These de doctorat). 
-#Paris 11. http://www.theses.fr/2002PA112245
-
-### Examples
-#```julia
-#using JchemoData, JLD2, CairoMakie
-#path_jdat = dirname(dirname(pathof(JchemoData)))
-#db = joinpath(path_jdat, "data/cassav.jld2") 
-#@load db dat
-#pnames(dat)
-
-#X = dat.X 
-#y = dat.Y.tbc
-#year = dat.Y.year
-#tab(year)
-#s = year .<= 2012
-#Xtrain = X[s, :]
-#ytrain = y[s]
-#Xtest = rmrow(X, s)
-#ytest = rmrow(y, s)
-
-#fitm= baggr(Xtrain, ytrain; rep = 20, 
-#    rowsamp = .7, colsamp = .3, fun = mlr) ;
-#res = Jchemo.predict(fitm, Xtest) ;
-#res.pred
-#rmsep(ytest, res.pred)
-#f, ax = scatter(vec(res.pred), ytest)
-#ablines!(ax, 0, 1)
-#f
-
-#res = oob_baggr(fitm, Xtrain, ytrain; score = rmsep)
-#res.scor
-
-#res = vi_baggr(fitm, Xtrain, ytrain; score = rmsep)
-#res.imp
-#lines(vec(res.imp), 
-#    axis = (xlabel = "Variable", ylabel = "Importance"))
-#```
-#""" 
 struct Baggr
     fitm
     res_samp::NamedTuple
@@ -73,15 +8,60 @@ end
     baggr(X, Y; fun::Function, rep = 50, rowsamp = .7, replace = false, colsamp = 1, seed = nothing, kwargs...)
     baggr(X, Y, weights::ProbabilityWeights; fun::Function, rep = 50, rowsamp = .7, replace = false, 
         colsamp = 1, seed = nothing, kwargs...)
-Bagging regression models.
-* `` : .
+Bagging a regression model.
+* `X` : X-data (n, p).
+* `Y` : Y-data (n, p).
+* `colweight` : Weights (p) of the variables. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+Keyword arguments:
+* `fun` : Function defining the model.
+* `rep` : Nb. of bagging replication.
+* `rowsamp` : Proportion of rows sampled in `X` at each replication.
+* `colsamp` : Proportion of columns sampled (without replacement) in `X` at each replication.
+* `replace`: Boolean. If `false` (default), observations are sampled without replacement.
+* `kwargs` : Optional named arguments to pass in 'fun`.
+
+## References
+Breiman, L., 1996. Bagging predictors. Mach Learn 24, 123–140. https://doi.org/10.1007/BF00058655
+
+Breiman, L., 2001. Random Forests. Machine Learning 45, 5–32. https://doi.org/10.1023/A:1010933404324
+
+Genuer, R., 2010. Forêts aléatoires : aspects théoriques, sélection de variables et applications. PhD Thesis. 
+Université Paris Sud - Paris XI.
+
+Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : trois thèmes statistiques autour de CART 
+en régression (These de doctorat). Paris 11. http://www.theses.fr/2002PA112245
 
 ## Examples
 ```julia
-using Jchemo  
+using Jchemo, JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+@names dat
+X = dat.X 
+y = dat.Y.tbc
+year = dat.Y.year
+tab(year)
+s = year .<= 2012
+Xtrain = X[s, :]
+ytrain = y[s]
+Xtest = rmrow(X, s)
+ytest = rmrow(y, s)
+
+fitm = baggr(Xtrain, ytrain; fun = mlr, rep = 500, rowsamp = .5, colsamp = .05) ; 
+#fitm = baggr(Xtrain, ytrain; fun = plskern, nlv = 15, rep = 500, rowsamp = .7, colsamp = .7) ; 
+@names fitm
+fitm.res_samp.srow
+fitm.res_samp.srow_oob
+fitm.res_samp.scol
+fitm.fitm[1]
+res = predict(fitm, Xtest) ; 
+@show rmsep(res.pred, ytest)
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", ylabel = "Observed").f 
 ```
 """ 
-function baggr(X, Y; fun::Function, rep = 50, rowsamp = .7, replace = false, colsamp = 1, seed = nothing, kwargs...) 
+function baggr(X, Y; fun::Function, rep = 50, rowsamp = .7, replace = false, colsamp = 1, kwargs...) 
+    ## To do: seed
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
@@ -97,7 +77,7 @@ function baggr(X, Y; fun::Function, rep = 50, rowsamp = .7, replace = false, col
 end
 
 function baggr(X, Y, weights::ProbabilityWeights; fun::Function, rep = 50, rowsamp = .7, replace = false, 
-        colsamp = 1, seed = nothing, kwargs...) 
+        colsamp = 1, kwargs...) 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
@@ -113,6 +93,12 @@ function baggr(X, Y, weights::ProbabilityWeights; fun::Function, rep = 50, rowsa
     Baggr(fitm, res_samp, nco(Y))
 end
 
+"""
+    predict(object::Baggr, X)
+Compute Y-predictions from a fitted model.
+* `object` : The fitted model.
+* `X` : X-data for which predictions are computed.
+""" 
 function predict(object::Baggr, X)
     X = ensure_mat(X)
     m = nro(X)
@@ -120,7 +106,8 @@ function predict(object::Baggr, X)
     pred = similar(X, m, object.q)
     #@inbounds for k in eachindex(object.fitm)
     Threads.@threads for k in eachindex(object.fitm)
-        res[:, :, k] .= predict(object.fitm[k], vcol(X, object.res_samp.scol[k])).pred   # warning: @view is not accepted by XGBoost.predict
+        res[:, :, k] .= predict(object.fitm[k], 
+            vcol(X, object.res_samp.scol[k])).pred   # warning: @view is not accepted by XGBoost.predict
     end
     pred .= mean(res; dims = 3)
     (pred = pred,)
@@ -136,5 +123,4 @@ end
 #    pred ./= rep
 #    (pred = pred,)
 #end
-
 

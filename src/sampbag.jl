@@ -1,16 +1,14 @@
 """
     sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = 1)
     sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, replace = true, colsamp = 1)
-Sampling utility function for bagging.
-* `n` : .
-* `p` : .
-* `colweight` : .
+Sampling for bagging.
+* `n`, `p` : Nb. total of observations and variables, respectively, considered in the bagging.
+* `colweight` : Weights (p) of the variables. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
-* `rep` : Number of latent variables (LVs) to consider in the global PLS used for the dimension 
-    reduction before computing the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.
-* `rowsamp` : .
-* `replace`: .
-* `colsamp`: .
+* `rep` : Number of replications of the bagging.
+* `rowsamp` : Proportion of observations to sample within `n at each replication`.
+* `replace`: Boolean. If `true`, observations are sampled with replacement.
+* `colsamp`: Proportion of observations to sample within `p` (without replacement) at each replication.
 
 ## Examples
 ```julia
