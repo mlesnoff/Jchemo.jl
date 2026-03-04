@@ -69,11 +69,23 @@ struct Baggr
     q::Int
 end
 
+"""
+    baggr(X, Y; fun::Function, rep = 50, rowsamp = .7, replace = false, colsamp = 1, seed = nothing, kwargs...)
+    baggr(X, Y, weights::ProbabilityWeights; fun::Function, rep = 50, rowsamp = .7, replace = false, 
+        colsamp = 1, seed = nothing, kwargs...)
+Bagging regression models.
+* `` : .
+
+## Examples
+```julia
+using Jchemo  
+```
+""" 
 function baggr(X, Y; fun::Function, rep = 50, rowsamp = .7, replace = false, colsamp = 1, seed = nothing, kwargs...) 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
-    res_samp = Jchemo.sampbag(n, p; rep, rowsamp, replace, colsamp)
+    res_samp = sampbag(n, p; rep, rowsamp, replace, colsamp)
     srow = res_samp.srow
     scol = res_samp.scol
     fitm = list(rep)
@@ -84,12 +96,12 @@ function baggr(X, Y; fun::Function, rep = 50, rowsamp = .7, replace = false, col
     Baggr(fitm, res_samp, nco(Y))
 end
 
-function baggr(X, Y, weights::Jchemo.ProbabilityWeights; fun::Function, rep = 50, rowsamp = .7, replace = false, 
+function baggr(X, Y, weights::ProbabilityWeights; fun::Function, rep = 50, rowsamp = .7, replace = false, 
         colsamp = 1, seed = nothing, kwargs...) 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
-    res_samp = Jchemo.sampbag(n, p; rep, rowsamp, replace, colsamp)
+    res_samp = sampbag(n, p; rep, rowsamp, replace, colsamp)
     srow = res_samp.srow
     scol = res_samp.scol
     fitm = list(rep)
@@ -101,7 +113,6 @@ function baggr(X, Y, weights::Jchemo.ProbabilityWeights; fun::Function, rep = 50
     Baggr(fitm, res_samp, nco(Y))
 end
 
-## Little faster than the @inbounds version below
 function predict(object::Baggr, X)
     X = ensure_mat(X)
     m = nro(X)
@@ -115,6 +126,7 @@ function predict(object::Baggr, X)
     (pred = pred,)
 end
 
+## Little slower
 #function predict(object::Baggr, X)
 #    rep = length(object.fitm)
 #    pred = predict(object.fitm[1], X[:, object.scol[1]]).pred

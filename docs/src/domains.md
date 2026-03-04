@@ -157,7 +157,7 @@
 
 ### Bagging
 
-- **baggr** Generic function for bagging regression model
+- **baggr** Generic function for bagging a regression model
 - **sampbag** Sampling utility function for bagging
 
 ## DISCRIMINATION ANALYSIS (DA)

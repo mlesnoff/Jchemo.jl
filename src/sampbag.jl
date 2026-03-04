@@ -1,7 +1,32 @@
+"""
+    sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = 1)
+    sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, replace = true, colsamp = 1)
+Sampling utility function for bagging.
+* `n` : .
+* `p` : .
+* `colweight` : .
+Keyword arguments:
+* `rep` : Number of latent variables (LVs) to consider in the global PLS used for the dimension 
+    reduction before computing the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.
+* `rowsamp` : .
+* `replace`: .
+* `colsamp`: .
+
+## Examples
+```julia
+using Jchemo  
+
+n = 10 ; p = 4 ; q = 2
+res = sampbag(n, p; rep = 4, rowsamp = .7, colsamp = .7) ;
+@names res
+res.srow
+res.srow_oob
+res.scol
+```
+""" 
 function sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = 1)
     range_n = collect(1:n)
     range_p = collect(1:p) 
-    ##
     mrow = Int(round(rowsamp * n))
     mcol = max(1, Int(round(colsamp * p)))    
     ##
@@ -29,7 +54,6 @@ end
 function sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, replace = true, colsamp = 1)
     range_n = collect(1:n)
     range_p = collect(1:p) 
-    ##
     mrow = Int(round(rowsamp * n))
     mcol = max(1, Int(round(colsamp * p)))    
     ##
@@ -37,10 +61,9 @@ function sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, re
     srow_oob = list(Vector{Int}, rep)
     scol = list(Vector{Int}, rep)
     ##
-    ordered = true
     Threads.@threads for i = 1:rep 
         ## Rows
-        s = StatsBase.sample(range_n, mrow; replace, ordered)
+        s = StatsBase.sample(range_n, mrow; replace, ordered = true)
         srow[i] = s
         srow_oob[i] = range_n[setdiff(1:end, s)]
         ## Columns
@@ -49,7 +72,7 @@ function sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, re
         else
             colweight.values[colweight.values .== 0] .= eps(eltype(colweight.values))
             colweight = pweight(colweight.values)
-            s = StatsBase.sample(range_p, colweight, mcol; replace = false, ordered)
+            s = StatsBase.sample(range_p, colweight, mcol; replace = false, ordered = true)
             scol[i] = s
         end
     end
