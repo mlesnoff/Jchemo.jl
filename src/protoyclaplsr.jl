@@ -9,7 +9,7 @@ struct ProtoYclaPlsr
 end
 
 ## Not exported
-function proto_ycla_plsr(X, Y, ycla; metric = :eucl, nlv, kavg = 1, h = 1, criw = 3, squared = false, 
+function protoyclaplsr(X, Y, ycla; metric = :eucl, nlv, kavg = 1, h = 1, criw = 3, squared = false, 
         tolw = 1e-4, scal = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)

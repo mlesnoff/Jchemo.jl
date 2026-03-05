@@ -1,5 +1,6 @@
 module Jchemo  # Start-Module
 
+using Clustering 
 using DataInterpolations  # 1D interpolations (interpl) 
 using DecisionTree
 using Distributions
@@ -182,7 +183,8 @@ include("baggr.jl")
 ## Prototypes
 
 include("protoplsr.jl")
-include("proto_ycla_plsr.jl")
+include("protoyclaplsr.jl")
+include("protoclustplsr.jl")
 
 ######---- Discrimination 
 

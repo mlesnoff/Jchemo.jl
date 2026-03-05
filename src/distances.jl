@@ -151,7 +151,7 @@ struct CorDist_b <: Distances.Metric end
 struct sqrCorDist <: Distances.Metric end                                
 (::sqrCorDist)(x, y) = sqrt(max(0, Distances.CorrDist()(x, y)) / 2)  
 
-## Tentative
+## Tentative (will be modified)
 function wass1d(x::Vector, y::Vector)
     Q = eltype(x)
     sum_x = sum(x)

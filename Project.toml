@@ -1,9 +1,10 @@
 name = "Jchemo"
 uuid = "fbca9394-dd0a-4d1c-b066-ae75f6ef1ad5"
-authors = ["Matthieu Lesnoff <matthieu.lesnoff@gmail.com>"]
 version = "0.9.6"
+authors = ["Matthieu Lesnoff <matthieu.lesnoff@gmail.com>"]
 
 [deps]
+Clustering = "aaaa29a8-35af-508c-8bc3-b662a17a0fe5"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 DataInterpolations = "82cc6244-b520-54b8-b5a6-8a565e85f1d0"
 DecisionTree = "7806a523-6efd-50cb-b5f6-3fa6f1930dbb"
@@ -22,6 +23,7 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 UMAP = "c4f8c510-2410-5be4-91d7-4fbaeb39457e"
 
 [compat]
+Clustering = "0.15.8"
 DataFrames = "1.7"
 DataInterpolations = "8"
 DecisionTree = "0.12"
