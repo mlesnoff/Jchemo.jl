@@ -182,6 +182,7 @@ include("baggr.jl")
 ## Prototypes
 
 include("protoplsr.jl")
+include("proto_ycla_plsr.jl")
 
 ######---- Discrimination 
 

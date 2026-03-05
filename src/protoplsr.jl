@@ -100,7 +100,7 @@ struct ProtoPlsr
     Yproto::Matrix
     fitm_emb::Union{Nothing, Plsr}
     resnn::NamedTuple
-    fitm
+    fitm::Vector{Plsr}
     coefs::Vector
     par::ParProtoPlsr
 end
