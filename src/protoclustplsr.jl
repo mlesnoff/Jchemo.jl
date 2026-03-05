@@ -27,7 +27,7 @@ function protoclustplsr(X, y; metric = :eucl, nproto, nlv, kavg = 1, h = 1, criw
         ) 
     ycla = fitm_clust.assignments
     fitm = Jchemo.protoyclaplsr(X, y, ycla; metric, nlv, kavg, h, criw, squared, tolw, scal) 
-    ProtoClustPlsr(fitm, fitm_clust, ycla)
+    ProtoClustPlsr(fitm, fitm_clust, ycla) 
 end
 
 function predict(object::ProtoClustPlsr, X)

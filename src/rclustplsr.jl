@@ -99,5 +99,3 @@ function predict(object::RclustPlsr, X)
     predict(object.fitm, X)
 end
 
-
-
