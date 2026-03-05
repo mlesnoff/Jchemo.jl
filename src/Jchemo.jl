@@ -185,6 +185,7 @@ include("baggr.jl")
 include("protoplsr.jl")
 include("protoyclaplsr.jl")
 include("protoclustplsr.jl")
+include("rclustplsr.jl")
 
 ######---- Discrimination 
 
@@ -417,7 +418,7 @@ export
     ## Bagging
     baggr,
     ## Prototype
-    protoplsr,
+    protoplsr, rclustplsr,
     ## Variable selection/importance (direct methods) 
     vip, 
     viperm!,

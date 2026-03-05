@@ -39,8 +39,13 @@ Function `protoplsr` implements a kNN-averaging of prototype-PLSR models.
 * Each new observation to predict is assigned to its `kavg` nearest prototypes, based on its distances 
     to the prototype centers.
 * The final prediction is computed by a weighted average of the `kavg` predictions of the corresponding 
-  prototype models. The weighting is computed from the relative distances between the new observation and 
-  the `kavg` prototype centers (function `winvs`). 
+    prototype models. The weighting is computed from the relative distances between the new observation and 
+    the `kavg` prototype centers (function `winvs`). 
+
+Notes: 
+* This pipeline is still under construction, some details could change in the future.
+* The actual version of the function works for multivariate `Y` but the PLSR optimizations
+    are done only based on the first Y column (this will be fixed later). 
 
 ## Examples
 ```julia
@@ -79,7 +84,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 """ 
 protoplsr(; kwargs...) = JchemoModel(protoplsr, nothing, kwargs)
 
-Base.@kwdef mutable struct ParProtoPlsr
+Base.@kwdef mutable struct ParProtoPlsr 
     nlvdis::Int = 0                         
     metric::Symbol = :eucl  
     nproto::Int = 1
@@ -137,7 +142,7 @@ function protoplsr(X, Y; kwargs...)
         pars = mpar(scal = par.scal)
         model = plskern()
         rescv = gridcv(model, vX, vY; segm, score = rmsep, pars, nlv = 0:par.nlv).res
-        u = findall(rescv.y1 .== minimum(rescv.y1))[1]
+        u = findall(rescv.y1 .== minimum(rescv.y1))[1]  # To do: adapt for multivariate Y
         fitm[i] = plskern(vX, vY; nlv = rescv.nlv[u], scal = rescv.scal[u])
         coefs[i] = coef(fitm[i])
         if par.centroid          

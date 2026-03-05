@@ -4,6 +4,7 @@ struct ProtoClustPlsr
     ycla::AbstractVector
 end
 
+## Not exported
 function protoclustplsr(X, y; metric = :eucl, nproto, nlv, kavg = 1, h = 1, criw = 3, squared = false, 
         tolw = 1e-4, scal = false)
     if metric == :eucl
