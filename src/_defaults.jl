@@ -70,6 +70,10 @@ function defaults(algo::Function)
     in((lwplsr, lwplsravg)).(algo) ? dump(Jchemo.ParLwplsr()) : nothing
     in((loessr,)).(algo) ? dump(Jchemo.ParLoessr()) : nothing
 
+    ## When structures will be moved into 'struct_param.jl'
+    #in((protoplsr,)).(algo) ? dump(Jchemo.ParProtoPlsr()) : nothing
+    #in((rclustplsr,)).(algo) ? dump(Jchemo.ParRclustPlsr()) : nothing
+
     in((mbplsr, mbplswest)).(algo) ? dump(Jchemo.ParMbplsr()) : nothing
     in((rosaplsr, soplsr)).(algo) ? dump(Jchemo.ParSoplsr()) : nothing
 

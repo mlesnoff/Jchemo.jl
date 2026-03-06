@@ -1,5 +1,6 @@
-## This function still works but is not used anymore for >= 0.6.0
+## !!!! This function still works but is not used anymore for >= 0.6.0
 ## (previous syntax)
+
 """
     mod_(algo::Function; kwargs...)
 Build a model.

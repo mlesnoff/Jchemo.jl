@@ -140,7 +140,8 @@
 - **lwplsravg** kNN-LWPLSR-AVG 
 
 *Prototype models*
-- **protoplsr** Averaging of prototype PLSR models (neighborhood approach)
+- **protoplsr** Averaging PLSR models built on the neighborhood of prototype observations
+- **rclustplsr** Random clustered PLSR
 
 ### Support vector machines
 

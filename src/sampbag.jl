@@ -1,6 +1,6 @@
 """
-    sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = 1)
-    sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, replace = true, colsamp = 1)
+    sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = .7)
+    sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, replace = true, colsamp = .7)
 Sampling for bagging.
 * `n`, `p` : Nb. total of observations and variables, respectively, considered in the bagging.
 * `colweight` : Weights (p) of the variables. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -22,7 +22,9 @@ res.srow_oob
 res.scol
 ```
 """ 
-function sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = 1)
+function sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = .7)
+    ## To do: Add argument 'seed = nothing' 
+    ## * `seed` : Optional seed (integer number) for the sampling
     range_n = collect(1:n)
     range_p = collect(1:p) 
     mrow = Int(round(rowsamp * n))
@@ -49,7 +51,9 @@ function sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = 1)
     (srow = srow, srow_oob, scol)
 end
 
-function sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, replace = true, colsamp = 1)
+function sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, replace = true, colsamp = .7)
+    ## To do: Add argument 'seed = nothing' 
+    ## * `seed` : Optional seed (integer number) for the sampling
     range_n = collect(1:n)
     range_p = collect(1:p) 
     mrow = Int(round(rowsamp * n))

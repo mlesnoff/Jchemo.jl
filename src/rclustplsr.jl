@@ -1,14 +1,14 @@
 """
     rclustplsr(; kwargs...)
     rclustplsr(X, Y; kwargs...)
-Random clutered PLSR.
+Random clustered PLSR.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 Keyword arguments:
 * `rep` : Nb. of bagging replication.
 * `rowsamp` : Proportion of rows sampled in `X` at each replication.
-* `colsamp` : Proportion of columns sampled (without replacement) in `X` at each replication.
 * `replace`: Boolean. If `false` (default), observations are sampled without replacement.
+* `colsamp` : Proportion of columns sampled (without replacement) in `X` at each replication.
 * `nlvdis` : Number of latent variables (LVs) to consider in the global PLS used for the dimension 
     reduction before computing the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.
 * `metric` : Type of dissimilarity used to select the neighbors and to compute the weights 
@@ -39,11 +39,14 @@ Function `rclustplsr` implements a kNN-averaging of prototype-PLSR models.
 * Each new observation to predict is assigned to its `kavg` nearest prototypes, based on its distances 
     to the prototype centers.
 * The final prediction is computed by a weighted average of the `kavg` predictions of the corresponding 
-  prototype models. The weighting is computed from the relative distances between the new observation and 
-  the `kavg` prototype centers (function `winvs`). 
+    prototype models. The weighting is computed from the relative distances between the new observation and 
+    the `kavg` prototype centers (function `winvs`). If `kavg = 1`, only one PLSR model is used (the closest
+    prototype) and there is no averaging.
 
-Note: 
+Notes: 
 * This pipeline is still under construction, some details could change in the future.
+* The actual version of the function works for multivariate `Y` but the PLSR optimizations
+    are done only based on the first Y column (this will be fixed later). 
 
 ## Examples
 ```julia

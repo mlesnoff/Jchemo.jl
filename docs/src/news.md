@@ -3,8 +3,9 @@
 ## *Version 0.9.6*
 
 - News:
-    - Fonction **protoplsr**: Averaging of prototype PLSR models (neighborhood approach).
     - Fonctions **sampbag**, **baggr**: bagging regression.
+    - Fonction **protoplsr**: Averaging PLSR models built on the neighborhood of prototype observations.
+    - Function **rclustplsr**: Random clustered PLSR.
 
 - Modifications
     - Code cleaning.

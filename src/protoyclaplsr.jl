@@ -9,7 +9,7 @@ struct ProtoYclaPlsr
 end
 
 ## Not exported
-function protoyclaplsr(X, Y, ycla; metric = :eucl, nlv, kavg = 1, h = 1, criw = 3, squared = false, 
+function protoyclaplsr(X, Y, ycla; metric = :eucl, nlv, kavg = 1, h = 1, criw = 4, squared = false, 
         tolw = 1e-4, scal = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -38,7 +38,9 @@ function protoyclaplsr(X, Y, ycla; metric = :eucl, nlv, kavg = 1, h = 1, criw = 
         nlv = min(n, nlv)
         pars = mpar(scal = scal)
         model = plskern()
+        ## To do: adapt for multivariate Y
         rescv = gridcv(model, vX, vY; segm, score = rmsep, pars, nlv = 0:nlv).res
+        ## End
         u = findall(rescv.y1 .== minimum(rescv.y1))[1]
         fitm[i] = plskern(vX, vY; nlv = rescv.nlv[u], scal = rescv.scal[u])
         coefs[i] = coef(fitm[i])

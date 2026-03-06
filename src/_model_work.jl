@@ -1,4 +1,5 @@
-## Define the type JchemoModel 
+## Define type 'JchemoModel' 
+
 Base.@kwdef mutable struct JchemoModel{T <: Function, K <: Base.Pairs}
     algo::T   
     fitm
@@ -18,6 +19,7 @@ function fit!(model::JchemoModel, X, Y)
     model.fitm = model.algo(X, Y; kwargs...)
     return
 end  
+
 function fit!(model::JchemoModel, X, Y, weights::ProbabilityWeights)
     kwargs = values(model.kwargs)
     model.fitm = model.algo(X, Y, weights; kwargs...)

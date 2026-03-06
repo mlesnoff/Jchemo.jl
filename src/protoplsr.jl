@@ -1,7 +1,7 @@
 """
     protoplsr(; kwargs...)
     protoplsr(X, Y; kwargs...)
-Averaging of prototype PLSR models (neighborhood approach).
+Averaging PLSR models built on the neighborhood of prototype observations.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 Keyword arguments:
@@ -23,7 +23,7 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, ecah column of matrices X and Y of the prototype neighborhood is 
     scaled by its uncorrected standard deviation.
 
-Function `protoplsr` implements a kNN-averaging of prototype-PLSR models.
+Function `protoplsr` implements an averaging of prototype-PLSR models.
 
 *Model fitting*
 * A number of `nproto` observations (x, y), referred to as 'prototypes', are sampled in the training data. 
@@ -40,7 +40,8 @@ Function `protoplsr` implements a kNN-averaging of prototype-PLSR models.
     to the prototype centers.
 * The final prediction is computed by a weighted average of the `kavg` predictions of the corresponding 
     prototype models. The weighting is computed from the relative distances between the new observation and 
-    the `kavg` prototype centers (function `winvs`). 
+    the `kavg` prototype centers (function `winvs`). If `kavg = 1`, only one PLSR model is used (the closest
+    prototype) and there is no averaging.
 
 Notes: 
 * This pipeline is still under construction, some details could change in the future.
@@ -117,6 +118,8 @@ function protoplsr(X, Y; kwargs...)
     n = nro(X)
     ## Selection of the prototypes
     if par.samp == :rand
+        ## To do: Add argument 'seed = nothing' 
+        ## * `seed` : Optional seed (integer number) for the sampling        
         s_proto = samprand(n, par.nproto; seed = 1234).test
     elseif par.samp == :ks
         s_proto = sampks(X, par.nproto; metric).test
@@ -142,7 +145,9 @@ function protoplsr(X, Y; kwargs...)
         pars = mpar(scal = par.scal)
         model = plskern()
         rescv = gridcv(model, vX, vY; segm, score = rmsep, pars, nlv = 0:par.nlv).res
-        u = findall(rescv.y1 .== minimum(rescv.y1))[1]  # To do: adapt for multivariate Y
+        ## To do: adapt for multivariate Y
+        u = findall(rescv.y1 .== minimum(rescv.y1))[1]
+        ## End
         fitm[i] = plskern(vX, vY; nlv = rescv.nlv[u], scal = rescv.scal[u])
         coefs[i] = coef(fitm[i])
         if par.centroid          

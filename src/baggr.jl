@@ -5,9 +5,9 @@ struct Baggr
 end
 
 """
-    baggr(X, Y; fun::Function, rep = 50, rowsamp = .7, replace = false, colsamp = 1, seed = nothing, kwargs...)
+    baggr(X, Y; fun::Function, rep = 50, rowsamp = .7, replace = false, colsamp = 1, kwargs...)
     baggr(X, Y, weights::ProbabilityWeights; fun::Function, rep = 50, rowsamp = .7, replace = false, 
-        colsamp = 1, seed = nothing, kwargs...)
+        colsamp = 1, kwargs...)
 Bagging a regression model.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, p).
@@ -16,8 +16,8 @@ Keyword arguments:
 * `fun` : Function defining the model.
 * `rep` : Nb. of bagging replication.
 * `rowsamp` : Proportion of rows sampled in `X` at each replication.
-* `colsamp` : Proportion of columns sampled (without replacement) in `X` at each replication.
 * `replace`: Boolean. If `false` (default), observations are sampled without replacement.
+* `colsamp` : Proportion of columns sampled (without replacement) in `X` at each replication.
 * `kwargs` : Optional named arguments to pass in 'fun`.
 
 ## References
@@ -61,7 +61,8 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 ```
 """ 
 function baggr(X, Y; fun::Function, rep = 50, rowsamp = .7, replace = false, colsamp = 1, kwargs...) 
-    ## To do: seed
+    ## To do: Add argument 'seed = nothing' 
+    ## * `seed` : Optional seed (integer number) for the sampling
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
