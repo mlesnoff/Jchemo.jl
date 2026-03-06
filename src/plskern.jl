@@ -202,8 +202,7 @@ function coef(object::Union{Plsr, Splsr}; nlv = nothing)
     B = fweightr(vcol(object.R, 1:nlv), 1 ./ object.xscales) * theta * Dy
     ## In 'int': No correction is needed, since ymeans, xmeans and B are in the original scale 
     int = object.ymeans' .- object.xmeans' * B
-    ## End
-    (B = B, int = int)
+    (B = B, int)
 end
 
 """

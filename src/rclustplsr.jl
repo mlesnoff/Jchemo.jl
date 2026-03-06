@@ -50,6 +50,8 @@ generates a dataset {X(b), Y(b)} by sub-sampling rows in {`X`, `X`} and columns 
 At the end (merge of the replications), the final prediction is computed by the mean of the `rep` 
 predictions.  
 
+The kmeans step is done with package `Clustering.jl` (https://github.com/JuliaStats/Clustering.jl).
+
 Notes: 
 * This pipeline is still under construction, some details could change in the future.
 * The actual version of the function works for multivariate `Y` but the PLSR optimizations

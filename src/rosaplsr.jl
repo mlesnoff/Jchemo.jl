@@ -223,7 +223,7 @@ function coef(object::Rosaplsr; nlv = nothing)
     Dy = Diagonal(object.yscales)
     B = fweightr(vcol(object.R, 1:nlv), 1 ./ xscales) * theta * Dy
     int = object.ymeans' .- xmeans' * B
-    (B = B, int = int)
+    (B = B, int)
 end
 
 """

@@ -121,7 +121,7 @@ function coef(object::Rr; lb = nothing)
     B = fweightr(object.V, 1 ./ object.xscales) * beta
     int = object.ymeans' .- object.xmeans' * B
     tr = sum(eig .* z)
-    (B = B, int = int, df = 1 + tr)
+    (B = B, int, df = 1 + tr)
 end
 
 """

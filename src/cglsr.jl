@@ -166,7 +166,7 @@ function coef(object::Cglsr; nlv = nothing)
     W = Diagonal(object.yscales)    
     B = fweightr(vcol(object.B, nlv), 1 ./ object.xscales) *  W
     int = object.ymeans' .- object.xmeans' * B
-    (B = B, int = int)
+    (B = B, int)
 end
 
 """

@@ -120,7 +120,7 @@ function coef(object::Pcr; nlv = nothing)
     ## In 'int': No correction is needed, since ymeans, xmeans and B are in the original scale 
     int = object.ymeans' .- object.fitm.xmeans' * B
     ## End
-    (B = B, int = int)
+    (B = B, int)
 end
 
 """
