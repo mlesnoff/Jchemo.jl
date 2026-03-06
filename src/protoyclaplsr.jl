@@ -9,7 +9,7 @@ struct ProtoYclaPlsr
 end
 
 ## Not exported
-function protoyclaplsr(X, Y, ycla; metric = :eucl, nlv, kavg = 1, h = 1, criw = 4, squared = false, 
+function protoyclaplsr(X, Y, ycla; metric = :eucl, nlv, K = 5, kavg = 1, h = 1, criw = 4, squared = false, 
         tolw = 1e-4, scal = false)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -24,8 +24,8 @@ function protoyclaplsr(X, Y, ycla; metric = :eucl, nlv, kavg = 1, h = 1, criw = 
     Xproto = similar(X, nproto, nco(X))
     Yproto = similar(Y, nproto, nco(Y))
     ## End
-    #@inbounds for i in eachindex(lev)
-    Threads.@threads for i in eachindex(lev)
+    @inbounds for i in eachindex(lev)
+    #Threads.@threads for i in eachindex(lev)
         ind = ycla .== lev[i]
         vX = vrow(X, ind)
         vY = vrow(Y, ind)
@@ -33,9 +33,7 @@ function protoyclaplsr(X, Y, ycla; metric = :eucl, nlv, kavg = 1, h = 1, criw = 
         Xproto[i, :] .= colmean(vX)
         Yproto[i, :] .= colmean(vY)
         ## Store prototype model    
-        segm = segmkf(ni[i], 4; rep = 1, seed = 1234)
-        n = Int(round(ni[i] * 0.66))
-        nlv = min(n, nlv)
+        segm = segmkf(ni[i], K; rep = 1, seed = 1234)
         pars = mpar(scal = scal)
         model = plskern()
         ## To do: adapt for multivariate Y
@@ -45,7 +43,7 @@ function protoyclaplsr(X, Y, ycla; metric = :eucl, nlv, kavg = 1, h = 1, criw = 
         fitm[i] = plskern(vX, vY; nlv = rescv.nlv[u], scal = rescv.scal[u])
         coefs[i] = coef(fitm[i])
     end
-    par = (metric = metric, nlv, kavg, h, criw, squared, tolw, scal)
+    par = (metric = metric, nlv, K, kavg, h, criw, squared, tolw, scal)
     ProtoYclaPlsr(Xproto, Yproto, fitm, coefs, ni, lev, par) 
 end
 

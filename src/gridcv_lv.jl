@@ -8,10 +8,20 @@ not contain `nlv`.
 See function `gridcv` for examples.
 """
 function gridcv_lv(X, Y; segm, algo, score, pars = nothing, nlv, verbose = false)
+    n, p = size(X) 
     q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
     le_nlv = length(nlv)
+    ## Rebuild 'nlv' to ensure consistency with training dimensionality
+    n_mini = minimum(n .- length.(segm[1]))
+    if le_nlv == 1
+        nlv = minimum([maximum(nlv); n_mini - 1; p - 1])
+    else
+        nlv = minimum(nlv):minimum([maximum(nlv); n_mini - 1; p - 1])
+        le_nlv = length(nlv)
+    end
+    ## End
     @inbounds for i in 1:nrep
         verbose ? print("/ rep=", i, " ") : nothing
         listsegm = segm[i]       # segments in the repetition
@@ -20,9 +30,11 @@ function gridcv_lv(X, Y; segm, algo, score, pars = nothing, nlv, verbose = false
         @inbounds for j in eachindex(listsegm)
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
-            if isa(X[1, 1], Number) # monoblock
+            ## Monoblock
+            if isa(X[1, 1], Number) 
                 zres[j] = gridscore_lv(rmrow(X, s), rmrow(Y, s), X[s, :], Y[s, :]; algo, score, pars, nlv)
-            else                    # multiblock
+            ## Multiblock
+            else                    
                 Xcal = similar(X)
                 Xval = similar(X)
                 @inbounds for k in eachindex(X) 
@@ -30,18 +42,20 @@ function gridcv_lv(X, Y; segm, algo, score, pars = nothing, nlv, verbose = false
                     Xval[k] = X[k][s, :]
                 end
                 zres[j] = gridscore_lv(Xcal, rmrow(Y, s), Xval, Y[s, :]; algo, score, pars, nlv)
-            end                     # end
+            end
+            ## End                    
         end                
         zres = reduce(vcat, zres)
-        ## Case where pars is empty
+        ## Case where 'pars' is empty
         if isnothing(pars) 
             dat = DataFrame(rep = fill(i, nsegm * le_nlv), segm = repeat(1:nsegm, inner = le_nlv))
+        ## Case where 'pars' not empty
         else
             ncomb = length(pars[1]) # nb. combinations in pars
             dat = DataFrame(rep = fill(i, nsegm * le_nlv * ncomb), segm = repeat(1:nsegm, inner = le_nlv * ncomb))
         end
-        zres = hcat(dat, zres)
-        res_rep[i] = zres
+        ## End
+        res_rep[i] = hcat(dat, zres)
     end
     verbose ? println("/ End.") : nothing
     res_rep = reduce(vcat, res_rep)

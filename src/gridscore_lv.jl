@@ -9,9 +9,18 @@ See function `gridscore` for examples.
 """
 function gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, nlv, verbose = false)
     Q = eltype(Xtrain[1, 1])
+    n, p = size(Xtrain)
     q = nco(Ytrain)
     le_nlv = length(nlv)
-    if isnothing(pars)   # e.g.: case of PLSR
+    ## Rebuild 'nlv' to ensure consistency with training dimensionality
+    if le_nlv == 1
+        nlv = minimum([maximum(nlv); n - 1; p - 1])
+    else
+        nlv = minimum(nlv):minimum([maximum(nlv); n - 1; p - 1])
+        le_nlv = length(nlv)
+    end
+    ## End
+    if isnothing(pars)   # e.g.: case of PLSR with no scaling
         verbose ? println("-- Nb. combinations = 0.") : nothing
         fitm = algo(Xtrain, Ytrain; nlv = maximum(nlv))
         pred = predict(fitm, X; nlv).pred
@@ -21,7 +30,7 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, nlv, ve
             res[i, :] = score(pred[i], Y)
         end
         dat = DataFrame(nlv = nlv)
-    else       
+    else
         ncomb = length(pars[1])  # nb. combinations in pars
         verbose ? println("-- Nb. combinations = ", ncomb) : nothing
         res = map(values(pars)...) do v...    

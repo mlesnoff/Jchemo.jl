@@ -7,37 +7,39 @@ Averaging PLSR models built on the neighborhood of prototype observations.
 Keyword arguments:
 * `nlvdis` : Number of latent variables (LVs) to consider in the global PLS used for the dimension 
     reduction before computing the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.
-* `metric` : Type of dissimilarity used to select the neighbors and to compute the weights 
-    (see function `getknn`). Possible values are: `:eucl` (Euclidean), `:mah` (Mahalanobis), 
-    `:sam` (spectral angular distance), `:cos` (cosine distance), `:cor` (correlation distance).
-* `nproto`: Nb. prototypes selected.
+* `metric` : Type of dissimilarity used to select the neighbors and eventually to compute 
+    the weights when averaging the `kavg` prototype models. Possible values are (see function `getknn`): 
+    `:eucl` (Euclidean), `:mah` (Mahalanobis), `:sam` (spectral angular distance), `:cos` (cosine distance), `
+    :cor` (correlation distance).
+* `nproto`: Nb. prototypes to select.
 * `k`: Nb. observations considered for each prototype (= neighborhood prototype = local neighborhood).
 * `centroid`: Boolean. If `true`, the center of the prototype is defined by the mean of the neighborhood,
     else it is defined directely by the sampled observation. 
 * `samp`: Type of sampling used in `X` to select the prototypes. 
 * `nlv` : Maximum nb. latent variables (LVs) for each prototype model.
+* `K` : Nb. folds (segments) in the K-fold cross-validation. 
 * `kavg` : Nb. prototype models whose predictions are averaged to compute the final prediction.
 * `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
     sharper is the function. See function `winvs` for details (keyword arguments `criw` and `squared` of 
     `winvs` can also be specified here). Used when averaging the prototype predictions.
-* `scal` : Boolean. If `true`, ecah column of matrices X and Y of the prototype neighborhood is 
+* `scal` : Boolean. If `true`, each column of matrices X and Y of the prototype neighborhood is 
     scaled by its uncorrected standard deviation.
 
-Function `protoplsr` implements an averaging of prototype-PLSR models.
+Function `protoplsr` implements an averaging of prototype PLSR models.
 
 *Model fitting*
 * A number of `nproto` observations (x, y), referred to as 'prototypes', are sampled in the training data. 
     In the actual version of the function, the sampling is done on `X` or on global PLS scores computed 
     from (`X`, `Y`). 
 * A neighborhood is selected around each prototype. The prototype neighborhoods are assumed to represent 
-    the data variability, in particular, a representative diversity of application domains.
-    (Note: A same observation can eventually belong to several neighborhoods).
-* On each prototype neighborhood, a PLSR (= prototype model) is optimized using a K-fold cross-validation
-   (K = 3), and stored.
+    the data heterogeneity (diversity of application domains). Note: A same observation can eventually belong 
+    to several neighborhoods.
+* On each class, a PLSR is optimized using a K-fold cross-validation and stored. This defines the 
+    prototype model.
 
 *Prediction*
 * Each new observation to predict is assigned to its `kavg` nearest prototypes, based on its distances 
-    to the prototype centers.
+    to the prototype centers (prototypes or neighborhodd centroids).
 * The final prediction is computed by a weighted average of the `kavg` predictions of the corresponding 
     prototype models. The weighting is computed from the relative distances between the new observation and 
     the `kavg` prototype centers (function `winvs`). If `kavg = 1`, only one PLSR model is used (the closest
@@ -92,7 +94,8 @@ Base.@kwdef mutable struct ParProtoPlsr
     k::Int = 1 
     centroid::Bool = true
     samp::Symbol = :rand
-    nlv::Union{Int, Vector{Int}, UnitRange} = 1   
+    nlv::Union{Int, Vector{Int}, UnitRange} = 1  
+    K::Int = 5    
     kavg::Int = 1                              
     h::Float64 = Inf                        
     criw::Float64 = 4                       
@@ -135,7 +138,7 @@ function protoplsr(X, Y; kwargs...)
     ## Optimize/fit the prototype models 
     fitm = list(Plsr, par.nproto)
     coefs = list(NamedTuple, par.nproto)
-    segm = segmkf(par.k, 3; rep = 1, seed = 1234)
+    segm = segmkf(par.k, par.K; rep = 1, seed = 1234)
     Xproto = similar(X, par.nproto, nco(X))
     Yproto = similar(Y, par.nproto, nco(Y))
     #@inbounds for i in eachindex(s_proto) 

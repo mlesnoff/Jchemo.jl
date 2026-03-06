@@ -5,7 +5,7 @@ struct ProtoClustPlsr
 end
 
 ## Not exported
-function protoclustplsr(X, y; metric = :eucl, nproto, nlv, kavg = 1, h = 1, criw = 4, squared = false, 
+function protoclustplsr(X, y; metric = :eucl, nproto, nlv, K = 5, kavg = 1, h = 1, criw = 4, squared = false, 
         tolw = 1e-4, scal = false)
     if metric == :eucl
         distance = Distances.Euclidean()
@@ -26,7 +26,7 @@ function protoclustplsr(X, y; metric = :eucl, nproto, nlv, kavg = 1, h = 1, criw
         rng = Random.MersenneTwister(1234),  # set a constant seed
         ) 
     ycla = fitm_clust.assignments
-    fitm = Jchemo.protoyclaplsr(X, y, ycla; metric, nlv, kavg, h, criw, squared, tolw, scal) 
+    fitm = Jchemo.protoyclaplsr(X, y, ycla; metric, nlv, K, kavg, h, criw, squared, tolw, scal) 
     ProtoClustPlsr(fitm, fitm_clust, ycla) 
 end
 

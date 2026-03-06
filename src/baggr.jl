@@ -14,7 +14,7 @@ Bagging a regression model.
 * `colweight` : Weights (p) of the variables. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `fun` : Function defining the model.
-* `rep` : Nb. of bagging replication.
+* `rep` : Nb. of bagging replications.
 * `rowsamp` : Proportion of rows sampled in `X` at each replication.
 * `replace`: Boolean. If `false` (default), observations are sampled without replacement.
 * `colsamp` : Proportion of columns sampled (without replacement) in `X` at each replication.
