@@ -427,6 +427,7 @@
     - **convertdf** Convert the columns of a dataframe to given types
     - **dummy** Build dummy table for a categorical variable
     - **expand_tab2d** Expand a 2-D contingency table to a dataframe of two categorical variables
+    - **expand_grid** Build a dataframe with all the combinations of the entered parameter values
 
 *Operations on a vector*
 - **sumv**, **meanv**, **normv**, **norm2v**, **stdv**, **varv**, **madv**, **iqrv**

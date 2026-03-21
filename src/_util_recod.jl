@@ -386,3 +386,22 @@ function expand_tab2d(X; namr = nothing, namc = nothing, namv = nothing)
     DataFrame(string.(reduce(vcat, res)), namv)
 end
 
+"""
+    expand_grid(pars::NamedTuple)
+Build a dataframe with all the combinations of the entered parameter values.
+* `pars` : A named tuple containing the parameter values.
+Keyword arguments:
+* `` : . 
+
+## Examples 
+```julia
+using Jchemo
+
+```
+"""
+function expand_grid(pars::NamedTuple)
+    DataFrame(reduce(hcat, pars), collect(@names pars))
+end
+
+
+

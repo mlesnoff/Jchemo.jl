@@ -130,6 +130,8 @@ include("vip.jl")
 include("xfit.jl")
 include("xresid.jl")
 
+include("waldtest.jl")
+
 ## Sparse
 include("splsr.jl")
 include("spcr.jl")
@@ -320,7 +322,7 @@ export
     recod_contbyint,     
     recod_indbylev, 
     recod_miss, 
-    expand_tab2d,
+    expand_tab2d, expand_grid,
     rmcol, rmrow, 
     finduniq,
     rowsum, rowmean, rownorm, rownorm2, rowstd, rowvar,
@@ -425,6 +427,7 @@ export
     isel!,
     ## Utils
     xfit, xfit!, xresid, xresid!,
+    waldtest,
     ######---- Discrimination
     fda, fda!, fdasvd, fdasvd!,
     mlrda,
