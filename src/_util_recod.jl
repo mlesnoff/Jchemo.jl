@@ -399,7 +399,7 @@ end
     expand_grid(; kwargs...)
 Build a dataframe with all the combinations of the entered parameter values.
 Keyword arguments:
-* `kwargs` : Vector(s) of the parameter(s) values.
+* `kwargs` : Named vector(s) of the parameter(s) values.
 
 ## Examples 
 ```julia

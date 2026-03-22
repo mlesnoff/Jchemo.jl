@@ -2,7 +2,7 @@
     mpar(; kwargs...)
 Return a tuple with all the combinations of the parameter values defined in kwargs.
 Keyword arguments:
-* `kwargs` : Vector(s) of the parameter(s) values.
+* `kwargs` : Named vector(s) of the parameter(s) values.
 
 ## Examples
 ```julia
