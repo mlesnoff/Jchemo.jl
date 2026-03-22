@@ -1,5 +1,3 @@
-using Distributions
-
 function waldtest(b, L, varb, h0 = nothing; dfdenom = nothing)
     dfnum = nro(L)
     isnothing(h0) ? h = L * b : h = L * b - h0 
