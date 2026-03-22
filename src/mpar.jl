@@ -23,5 +23,6 @@ mpar = function(; kwargs...)
     u = reshape(u, p, :) # matrix (p, n)
     v = ntuple(i -> u[i, :], p)
     v = (; zip(nam, v)...)
+    v
 end
 

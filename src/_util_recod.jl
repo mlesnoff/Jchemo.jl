@@ -277,19 +277,28 @@ end
 ### Convertdf
 
 """ 
-    convertdf(df::DataFrame; typ, miss = nothing)
+    convertdf(df::DataFrame, typ; miss = nothing)
 Convert the columns of a dataframe to given types.
 * `df` : A dataframe.
-* `typ` : A vector of the targeted types for the columns of the new dataframe.  
+* `typ` : A vector of the targeted types for the columns of the new dataframe.
+  Keyword arguments:
 * `miss` : The code used in `df` to identify the data to be declared as `missing` (of type `Missing`).
     See function `recod_miss`.
 
 ## Examples
 ```julia
 using Jchemo, DataFrames
+
+dat = DataFrame(y1 = ["1", "2", "3"], y2 = Any["A"; "B"; "C"], y3 = [15.5, 0.2, 1.3])
+typ = [Int, String, Float32]
+convertdf(dat, typ)
+
+dat = DataFrame(y1 = ["1", "2", "00"], y2 = Any["00"; "00"; "C"], y3 = [15.5, 0.2, 1.3])
+typ = [Int, String, Float32]
+convertdf(dat, typ; miss = "00")
 ```
 """
-function convertdf(df::DataFrame; typ, miss = nothing)
+function convertdf(df::DataFrame, typ::Vector{DataType}; miss = nothing)
     df = string.(df)
     df = recod_miss(df; miss = string(miss)) 
     res = DataFrame()
@@ -397,10 +406,15 @@ Keyword arguments:
 ```julia
 using Jchemo
 
+pars = mpar(y1 = ["1", "2"], y2 = ["A"; "B"; "C"], y3 = 15.5)
+expand_grid(pars)
 ```
 """
 function expand_grid(pars::NamedTuple)
-    DataFrame(reduce(hcat, pars), collect(@names pars))
+    npar = length(pars)
+    typ = [typeof(pars[i][1]) for i in eachindex(pars)]
+    res = DataFrame(reduce(hcat, pars), collect(@names pars))
+    convertdf(res, typ)
 end
 
 
