@@ -131,6 +131,7 @@ include("xfit.jl")
 include("xresid.jl")
 
 include("waldtest.jl")
+include("emm.jl")
 
 ## Sparse
 include("splsr.jl")
@@ -428,6 +429,7 @@ export
     ## Utils
     xfit, xfit!, xresid, xresid!,
     waldtest,
+    emm,
     ######---- Discrimination
     fda, fda!, fdasvd, fdasvd!,
     mlrda,
