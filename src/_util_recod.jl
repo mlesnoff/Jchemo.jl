@@ -396,20 +396,22 @@ function expand_tab2d(X; namr = nothing, namc = nothing, namv = nothing)
 end
 
 """
-    expand_grid(; kwargs...)
+    expand_grid(tupl)
 Build a dataframe with all the combinations of the entered parameter values.
 Keyword arguments:
-* `kwargs` : Named vector(s) of the parameter(s) values.
+* `tupl` : Named tuple of vector(s) of the parameter(s) values.
 
 ## Examples 
 ```julia
 using Jchemo
 
-expand_grid(y1 = ["1", "2"], y2 = ["A"; "B"; "C"], y3 = 15.5)
+fact = (y1 = ["1", "2"], y2 = ["A"; "B"; "C"], y3 = 15.5)
+
+expand_grid(fact)
 ```
 """
-function expand_grid(; kwargs...)
-    pars = mpar(; kwargs...) 
+function expand_grid(tupl)
+    pars = Jchemo.mpar_tupl(tupl) 
     typ = [typeof(pars[i][1]) for i in eachindex(pars)]
     res = DataFrame(reduce(hcat, pars), collect(@names pars))
     convertdf(res, typ)

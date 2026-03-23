@@ -1,6 +1,6 @@
 """
     mpar(; kwargs...)
-Return a tuple with all the combinations of the parameter values defined in kwargs.
+Return a named tuple with all the combinations of the parameter values defined in kwargs.
 Keyword arguments:
 * `kwargs` : Named vector(s) of the parameter(s) values.
 
@@ -15,8 +15,21 @@ reduce(hcat, pars)
 ```
 """
 mpar = function(; kwargs...)
-    nam = [a.first for a in kwargs]
     iter = Base.product(values(kwargs)...)
+    nam = [a.first for a in kwargs]
+    Jchemo.mpar_work(iter, nam)
+end
+
+
+## Not exported 
+
+mpar_tupl = function(tupl::NamedTuple)
+    iter = Base.product(values(tupl)...)
+    nam = @names tupl  
+    Jchemo.mpar_work(iter, nam)
+end
+
+mpar_work = function(iter::Base.Iterators.ProductIterator, nam::Union{Vector, Tuple})
     z = collect(iter) # matrix (n, 1)
     p = length(z[1])
     u = collect(Iterators.flatten(z))
@@ -25,4 +38,5 @@ mpar = function(; kwargs...)
     v = (; zip(nam, v)...)
     v
 end
+
 
