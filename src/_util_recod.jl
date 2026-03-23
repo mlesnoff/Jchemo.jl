@@ -306,6 +306,8 @@ function convertdf(df::DataFrame, typ::Vector{DataType}; miss = nothing)
         z = df[:, i]
         if typ[i] == String
             sum(ismissing.(z)) == 0 ? z = string.(z) : nothing
+        elseif typ[i] == Symbol
+            sum(ismissing.(z)) == 0 ? z = Symbol.(z) : nothing
         elseif in(typ[i], [Integer, Int32, Int64]) 
             if sum(ismissing.(z)) == 0
                 z = convert.(typ[i], parse.(Float64, z))
@@ -401,11 +403,15 @@ Build a dataframe with all the combinations of the entered parameter values.
 Keyword arguments:
 * `kwargs` : Named vector(s) of the parameter(s) values.
 
+Note: Values having type `Symbol` are converted to type `String`.
+
 ## Examples 
 ```julia
 using Jchemo
 
-expand_grid(y1 = ["1", "2"], y2 = ["A"; "B"; "C"], y3 = 15.5)
+expand_grid(y1 = [1, 2], y2 = ["A"; "B"; "C"], y3 = 15.5)
+
+expand_grid(y1 = (1, 2), y2 = ["A", "B", "C"], y3 = (:ab,))
 ```
 """
 function expand_grid(; kwargs...)
@@ -420,6 +426,7 @@ end
 function expand_grid_tupl(tupl::NamedTuple)
     pars = Jchemo.mpar_tupl(tupl) 
     typ = [typeof(pars[i][1]) for i in eachindex(pars)]
+    ## Replace type 'Symbol' by 'String'
     res = DataFrame(reduce(hcat, pars), collect(@names pars))
     convertdf(res, typ)
 end

@@ -14,8 +14,8 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of blocks `X` and `Y` is scaled by its uncorrected standard 
     deviation (before the block scaling).
  
-See e.g., Bougeard et al. 2011a,b and Legendre & Legendre 2012. Let Y_hat be the fitted values of the regression 
-of `Y` on `X`. The scores `Ty` are the PCA scores of Y_hat. The scores `Tx` are the fitted values of the 
+See e.g., Bougeard et al. 2011a,b and Legendre & Legendre 2012. Let Y.hat be the fitted values of the regression 
+of `Y` on `X`. The scores `Ty` are the PCA scores of Y.hat. The scores `Tx` are the fitted values of the 
 regression of `Ty` on `X`.
 
 A continuum regularization is available.  After block centering and scaling, the covariances 
