@@ -1,19 +1,22 @@
 """
     waldtest(b, L, varb; h0 = nothing, dfdenom = nothing, digits = 5)
-Wald or Fischer test for model coefficients.
-* `b` : Vector (p) of model coefficients.
+Wald or F test for model coefficients.
+* `b` : Vector (p) of the coefficients of the model.
 * `L` : Matrix (m, p) such as `L` * `b` gives the linear combination(s) of the coefficients 
     to be tested.
 * `varb` : Variance-covariance matrix (p, p) of `b`.
 Keyword arguments:
-* `h0` : Scalar or vector (m) giging the value(s) of hypothesis H0 to be tested (see below). 
+* `h0` : Scalar or vector (m) giving the value(s) of hypothesis H0 to be tested (see below). 
     Default to 0.
-* `dfdenom` : Nb. degrees of freedom of the residuals of the model from which `b` and `varb` were estimated.
+* `dfdenom` : Nb. degrees of freedom of the residuals of the model.
 * `digits` : Nb. digits for the outputs.
 
-Test of hypothesis H0: `L` * `b` = `h0`, with either 
-* a Wald test (that neglects the unucertainty affecting the estimate of the dispersion parameter 'sigma2') 
+The function tests hypothesis H0: `L` * `b` = `h0`, with either 
+* a Chi-squared Wald test (with dfs = m)
 * or, if `dfdenom` is given, a F test (with dfs {m, `dfdenom`}).
+
+Both tests assume that `b` is Gaussian.  Compared to the F test, the Wald test neglects the uncertainty 
+affecting the estimate of the dispersion parameter 'sigma2'. 
 
 ## References
 - Diggle, P.J., Liang, K.-Y., Zeger, S.L., 1994. Analysis of longitudinal data. Oxford, Clarendon Press, 253 p.
