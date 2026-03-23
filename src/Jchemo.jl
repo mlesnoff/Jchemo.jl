@@ -16,6 +16,8 @@ using Random
 using SparseArrays 
 using Statistics
 using StatsBase           # countmap, ecdf, sample etc.
+using StatsAPI
+using StatsModels
 using UMAP
 
 ## The order below is required
