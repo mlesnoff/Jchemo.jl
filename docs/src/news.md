@@ -3,8 +3,9 @@
 ## *Version 0.9.6*
 
 - News:
+    - Fonctions **baggr**, **sampbag**: bagging regression.
+    - Function **emm**: Estimated marginal means (EMMs).
     - Function **expand_grid**: Build a dataframe with all the combinations of the entered parameter values.
-    - Fonctions **sampbag**, **baggr**: bagging regression.
     - Fonction **protoplsr**: Averaging PLSR models built on the neighborhood of prototype observations.
     - Function **rclustplsr**: Random clustered PLSR.
 

@@ -3,13 +3,13 @@
 Estimated marginal means (EMMs).
 * `fitm` : A model fitted with package GLM.
 * `f` : A formula that defines the model factor(s) on which is(are) computed the EMMs.
-    Must be additive (intercation terms not allowed). See the syntax in the example below.
+    Must be additive (interaction terms not allowed). See the syntax in the example below.
 * `dat` : DataFrame on which `fitm` has been estimated. 
 
-The function computes estimated marginal means (EMMs) from a model fitted with package GLM 
-(https://github.com/JuliaStats/GLM.jl). EMMs are unweighted marginal means of the predicted cell means.
-They correspond to the 'least-squares means' in the SAS GLM terminology. When the model contains 
-continuous variables, the cell means are predicted at the mean of the continuous variables.
+The function computes estimated marginal means (EMMs) (Searle et al 1980) from a model fitted with package GLM 
+(https://github.com/JuliaStats/GLM.jl). EMMs are unweighted marginal means of the cell means predicted by
+the given model, a.k.a 'least-squares means' in the SAS GLM terminology. When the model contains 
+continuous variables, the cell means are predicted at the mean of these continuous variables.
 
 ## References
 - Searle, S.R., Speed, F.M., Milliken, G.A., 1980. Population Marginal Means in the Linear Model: 
@@ -30,13 +30,11 @@ datf = dat.datf   # uncomplete design without replication
 n = nro(datf)
 datf.x = rand(n)
 
-## Initital model
+## Initial model
 f_fitm = @formula(y ~ 1 + flour + fat * surfact)
-#myf_fitm = @formula(y ~ 1 + flour + fat * surfact + x)
 fitm = lm(f_fitm, datf)
 
-## Define factor(s) on which are computed EMMs
-## f must be additive (interaction terms not allowed)
+## Define factor(s) on which is(are) computed EMMs
 f = @formula(0 ~ flour)
 #f = @formula(0 ~ fat)
 #f = @formula(0 ~ surfact)
@@ -46,7 +44,7 @@ res = emm(fitm, f, datf) ;
 @names res
 res.datemm
 
-## Results from Manual Splus6, p. 632-633
+## Results reported from Manual Splus6, p. 632-633
 ## EMMs fo model 'flour + fat * surfact'
 ##
 ## Tables of adjusted means

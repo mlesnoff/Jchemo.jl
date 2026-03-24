@@ -83,6 +83,7 @@
 
 *Anova*
 - **aov1** One-factor ANOVA
+- **emm**: Estimated marginal means (EMMs)
 
 ### Partial least squares (PLSR)
 
