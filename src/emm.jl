@@ -12,9 +12,9 @@ the given model, a.k.a 'least-squares means' in the SAS GLM terminology. When th
 continuous variables, the cell means are predicted at the mean of these continuous variables.
 
 ## References
-- Searle, S.R., Speed, F.M., Milliken, G.A., 1980. Population Marginal Means in the Linear Model: 
-    An Alternative to Least Squares Means. The American Statistician 34, 216–221. 
-    https://doi.org/10.2307/2684063
+Searle, S.R., Speed, F.M., Milliken, G.A., 1980. Population Marginal Means in the Linear Model: 
+An Alternative to Least Squares Means. The American Statistician 34, 216–221. 
+https://doi.org/10.2307/2684063
 
 ## Examples 
 ```julia

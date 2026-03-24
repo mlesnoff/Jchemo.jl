@@ -16,12 +16,12 @@ The function tests hypothesis H0: `L` * `b` = `h0`, with either
 * or, if `dfdenom` is given, a F test (with dfs {m, `dfdenom`}).
 
 Both tests assume that `b` is Gaussian.  Compared to the F test, the Wald test neglects the uncertainty 
-affecting the estimate of the dispersion parameter 'sigma2'. 
+affecting the estimate of the dispersion parameter of the model (e.g., 'sigma2' in MLRs). 
 
 ## References
-- Diggle, P.J., Liang, K.-Y., Zeger, S.L., 1994. Analysis of longitudinal data. Oxford, Clarendon Press, 253 p.
+Diggle, P.J., Liang, K.-Y., Zeger, S.L., 1994. Analysis of longitudinal data. Oxford, Clarendon Press, 253 p.
 
-- Draper, N.R., Smith, H., 1998. Applied Regression Analysis. New York, John Wiley & Sons, Inc., 706 p
+Draper, N.R., Smith, H., 1998. Applied Regression Analysis. New York, John Wiley & Sons, Inc., 706 p
 
 ## Examples 
 ```julia
