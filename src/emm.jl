@@ -28,7 +28,6 @@ db = joinpath(path_jdat, "data/flour_splus6.jld2")
 @names dat
 datf = dat.datf   # uncomplete design without replication
 n = nro(datf)
-datf.x = rand(n)
 
 ## Initial model
 f_fitm = @formula(y ~ 1 + flour + fat * surfact)
