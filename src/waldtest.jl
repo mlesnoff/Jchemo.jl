@@ -47,9 +47,9 @@ f = @formula(y1 ~ 1 + temp + catal + temp & catal)
 fitm = lm(f, datf; contrasts)
 
 D = modelmatrix(fitm)       # design matrix
-df_m = dof(fitm.model) - 1  # function dof includes the dispersion parameter
-df_r = dof_residual(fitm) 
-(n = n, df_m, df_r)
+dfm = dof(fitm.model) - 1  # function dof includes the dispersion parameter
+dfr = dof_residual(fitm) 
+(n = n, dfm, dfr)
 b = GLM.coef(fitm)   # model coefficients
 varb = vcov(fitm)    # variance-covariance matrix
 ## Same as:
@@ -66,25 +66,25 @@ anova(fitm)
 L = [0 1 0 0 0 0 ;
      0 0 1 0 0 0]
 waldtest(b, L, varb)                  # Wald test
-waldtest(b, L, varb; dfdenom = df_r)  # F test
+waldtest(b, L, varb; dfdenom = dfr)  # F test
 
 ## 2) factor 'catal'
 L = [0 0 0 1 0 0]
 waldtest(b, L, varb) 
-waldtest(b, L, varb; dfdenom = df_r)
+waldtest(b, L, varb; dfdenom = dfr)
 
 ## 3) interaction 'temp * catal'
 L = [0 0 0 0 1 0 ;
      0 0 0 0 0 1]
 waldtest(b, L, varb) 
-waldtest(b, L, varb; dfdenom = df_r)
+waldtest(b, L, varb; dfdenom = dfr)
 
 ## 4) Whole effect 'catal': 'catal + temp * catal'
 L = [0 0 0 1 0 0 ;
      0 0 0 0 1 0 ;
      0 0 0 0 0 1]
 waldtest(b, L, varb) 
-waldtest(b, L, varb; dfdenom = df_r)
+waldtest(b, L, varb; dfdenom = dfr)
 anova(lm(@formula(y1 ~ 1 + temp), datf; contrasts), fitm)
 ```
 """
