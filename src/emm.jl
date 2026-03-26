@@ -1,10 +1,10 @@
 """
     emm(fitm::StatsModels.TableRegressionModel, f::StatsModels.FormulaTerm, dat::DataFrame)
 Estimated marginal means (EMMs).
-* `fitm` : A model fitted with package GLM.
+* `fitm` : A model fitted with package GLM and predicting a univariate response.
 * `f` : A formula that defines the model factor(s) on which is(are) computed the EMMs.
-    Must be additive (interaction terms not allowed). See the syntax in the example below.
-* `dat` : DataFrame on which `fitm` has been estimated. 
+    Must be additive (interaction terms not allowed). See the syntax in the examples below.
+* `dat` : DataFrame from which `fitm` has been built (and containing the factor(s) specified in `f`).
 
 The function computes estimated marginal means (EMMs) (Searle et al 1980) from a model fitted with package GLM 
 (https://github.com/JuliaStats/GLM.jl). EMMs are unweighted marginal means of the cell means predicted by
