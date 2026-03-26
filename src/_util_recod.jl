@@ -229,15 +229,15 @@ end
 
 """
     recod_miss(X; miss = nothing)
-    recod_miss(df; miss = nothing)
+    recod_miss(datf; miss = nothing)
 Declare data as missing in a dataset.
 * `X` : An array-dataset.
-* `df` : A dataframe-dataset.
+* `datf` : A dataframe-dataset.
 * `miss` : The value used in the dataset to identify the missing data. 
 
-Each cell of `X` or `df` having the value `miss` is replaced by value `missing` of type `Missing`.
+Each cell of `X` or `datf` having the value `miss` is replaced by value `missing` of type `Missing`.
 
-The case `miss = nothing` has the only action to allow `missing` in `X` or `df`. 
+The case `miss = nothing` has the only action to allow `missing` in `X` or `datf`. 
 
 See examples.
 
@@ -248,11 +248,11 @@ using Jchemo, DataFrames
 X = hcat(1:5, [0, 0, 7., 10, 1.2])
 X_miss = recod_miss(X; miss = 0)
 
-df = DataFrame(i = 1:5, x = [0, 0, 7., 10, 1.2])
-df_miss = recod_miss(df; miss = 0)
+datf = DataFrame(i = 1:5, x = [0, 0, 7., 10, 1.2])
+datf_miss = recod_miss(datf; miss = 0)
 
-df = DataFrame(i = 1:5, x = ["0", "0", "c", "d", "e"])
-df_miss = recod_miss(df; miss = "0")
+datf = DataFrame(i = 1:5, x = ["0", "0", "c", "d", "e"])
+datf_miss = recod_miss(datf; miss = "0")
 ```
 """
 function recod_miss(X::AbstractArray; miss = nothing)
@@ -263,26 +263,26 @@ function recod_miss(X::AbstractArray; miss = nothing)
     X
 end
 
-function recod_miss(df::DataFrame; miss = nothing)
-    df = allowmissing(df)
+function recod_miss(datf::DataFrame; miss = nothing)
+    datf = allowmissing(datf)
     if !isnothing(miss)
-        for col in eachcol(df)
+        for col in eachcol(datf)
             replace!(col, miss => missing)
         end
     end
-    df
+    datf
 end
 
 
 ### Convertdf
 
 """ 
-    convertdf(df::DataFrame, typ; miss = nothing)
+    convertdf(datf::DataFrame, typ; miss = nothing)
 Convert the columns of a dataframe to given types.
-* `df` : A dataframe.
+* `datf` : A dataframe.
 * `typ` : A vector of the targeted types for the columns of the new dataframe.
   Keyword arguments:
-* `miss` : The code used in `df` to identify the data to be declared as `missing` (of type `Missing`).
+* `miss` : The code used in `datf` to identify the data to be declared as `missing` (of type `Missing`).
     See function `recod_miss`.
 
 ## Examples
@@ -298,12 +298,12 @@ typ = [Int, String, Float32]
 convertdf(dat, typ; miss = "00")
 ```
 """
-function convertdf(df::DataFrame, typ::Vector{DataType}; miss = nothing)
-    df = string.(df)
-    df = recod_miss(df; miss = string(miss)) 
+function convertdf(datf::DataFrame, typ::Vector{DataType}; miss = nothing)
+    datf = string.(datf)
+    datf = recod_miss(datf; miss = string(miss)) 
     res = DataFrame()
     for i in eachindex(typ)
-        z = df[:, i]
+        z = datf[:, i]
         if typ[i] == String
             sum(ismissing.(z)) == 0 ? z = string.(z) : nothing
         elseif typ[i] == Symbol
@@ -324,7 +324,7 @@ function convertdf(df::DataFrame, typ::Vector{DataType}; miss = nothing)
         end
         res = hcat(res, z; makeunique = true)
     end
-    rename!(res, names(df))
+    rename!(res, names(datf))
     res
 end
 

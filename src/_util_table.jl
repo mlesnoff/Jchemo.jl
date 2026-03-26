@@ -20,14 +20,14 @@ res.vals
 
 n = 20
 X = hcat(rand(["1"; "2"], n), rand(["a", "b", "c"], n))
-df = DataFrame(X, [:v1, :v2])
+datf = DataFrame(X, [:v1, :v2])
 
 tab(X[:, 2])
 tab(X)
 
-tab(df)
-tab(df; group = [:v1, :v2])
-tab(df; group = :v2)
+tab(datf)
+tab(datf; group = [:v1, :v2])
+tab(datf; group = :v2)
 ```
 """
 tab(X::AbstractArray) = sort(StatsBase.countmap(vec(X)))

@@ -59,7 +59,7 @@ function aicplsr(X, y; alpha = 2, kwargs...)
     res = gridscore_lv(X, y, X, y; algo = plskern, score = ssr, pars, nlv = 0:nlv)
     zssr = res.y1
     df = dfplsr_cg(X, y; kwargs...).df
-    df_ssr = n .- df
+    dfssr = n .- df
     ## For Cp, unbiased estimate of sigma2 
     ## ----- Cp1: From a low biased model
     ## Not stable with dfcov and nlv too large 
@@ -71,11 +71,11 @@ function aicplsr(X, y; alpha = 2, kwargs...)
     ## but can give poor results with dfcov
     ## when nlv is set too large to the best model
     k = maximum(findall(df .<= .5 * n))
-    s2_1 = zssr[k] / df_ssr[k]
+    s2_1 = zssr[k] / dfssr[k]
     ## ----- Cp2: FPE-like
     ## s2 is estimated from the model under evaluation
     ## Used in Kraemer & Sugiyama 2011 Eq.5-6
-    s2_2 = zssr ./ df_ssr
+    s2_2 = zssr ./ dfssr
     ct = ones(Q, nlv + 1)
     ct .= n ./ (n .- df .- 2)  # bias correction
     ct[(df .> n) .| (ct .<= 0)] .= NaN 

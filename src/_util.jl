@@ -17,7 +17,7 @@ using Jchemo, DataFrames, Statistics
 
 n, p = 20, 5
 X = rand(n, p)
-df = DataFrame(X, :auto)
+datf = DataFrame(X, :auto)
 y = rand(1:3, n)
 
 res = aggstat(X, y; algo = sum)
@@ -25,16 +25,16 @@ res = aggstat(X, y; algo = sum)
 res.lev 
 res.X
 
-aggstat(df, y; algo = sum).X
+aggstat(datf, y; algo = sum).X
 
 n, p = 20, 5
 X = rand(n, p)
-df = DataFrame(X, string.("v", 1:p))
-df.y1 = rand(1:2, n)
-df.y2 = rand(["a", "b", "c"], n)
-df
+datf = DataFrame(X, string.("v", 1:p))
+datf.y1 = rand(1:2, n)
+datf.y2 = rand(["a", "b", "c"], n)
+datf
 
-aggstat(df; sel = [:v1, :v2] , group = [:y1, :y2], algo = var)  # return a dataframe 
+aggstat(datf; sel = [:v1, :v2] , group = [:y1, :y2], algo = var)  # return a dataframe 
 ```
 """ 
 function aggstat(X, y; algo = mean)
@@ -72,14 +72,14 @@ using Jchemo
 
 n, p = 20, 5
 X = rand(n, p)
-df = DataFrame(X, :auto) 
+datf = DataFrame(X, :auto) 
 y = rand(1:3, n)
 
 res = aggmean(X, y)
 res.X
 res.lev 
 
-aggmean(df, y).X
+aggmean(datf, y).X
 ```
 """ 
 function aggmean(X, y) 
@@ -347,8 +347,8 @@ nlev = length(lev)
 X = reshape(x, 5, 4)
 mlev(X)
 
-df = DataFrame(g1 = rand(1:2, n), g2 = rand(["a"; "c"], n))
-mlev(df)
+datf = DataFrame(g1 = rand(1:2, n), g2 = rand(["a"; "c"], n))
+mlev(datf)
 ```
 """
 mlev(x) = sort(unique(x)) 
