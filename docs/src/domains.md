@@ -82,8 +82,9 @@
 - **mlrvec** Simple (Univariate x) linear regression
 
 *Anova*
+- **decompx** Decomposition of a matrix by orthogonal projection on factors.
 - **aov1** One-factor ANOVA
-- **emm**: Estimated marginal means (EMMs)
+- **emm** Estimated marginal means (EMMs)
 
 ### Partial least squares (PLSR)
 
