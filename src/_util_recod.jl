@@ -431,3 +431,15 @@ function expand_grid_tupl(tupl::NamedTuple)
     convertdf(res, typ)
 end
 
+## ind = [[[1, 2]]; [[1]]; [[1, 2, 3]]]
+## indcumul(ind)
+function indcumul(v::Vector{Vector{Int}})
+    ind = 1
+    res = Vector{Vector{Int}}()
+    for u in v
+        push!(res, collect(ind:ind+length(u) - 1))
+        ind += length(u)
+    end
+    res
+end
+

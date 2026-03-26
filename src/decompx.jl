@@ -1,10 +1,10 @@
-function decompx(Y, f::StatsModels.FormulaTerm, dat::DataFrame)
-    Y = ensure_mat(Y)
-    Q = eltype(Y)
-    n = nro(Y)
-    ymeans = colmean(Y)
-    Yc = fcenter(Y, ymeans)
-    Ym = ones(Q, n) * ymeans'
+function decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
+    X = ensure_mat(X)
+    Q = eltype(X)
+    n = nro(X)
+    ymeans = colmean(X)
+    Xc = fcenter(X, ymeans)
+    Xm = ones(Q, n) * ymeans'
     ## Contrasts
     contr = EffectsCoding()   # sum-to-zero
     term_princ = Symbol.(terms(f.rhs))     # [2:end]
@@ -21,7 +21,7 @@ function decompx(Y, f::StatsModels.FormulaTerm, dat::DataFrame)
     resp, D = modelcols(fs, dat) ;
     dfm = nco(D) + 1 # include intercept
     dfr = n - dfm
-    B = inv(D' * D) * D' * Yc
+    B = inv(D' * D) * D' * Xc
     ## Assign terms
     term_rhs = fs.rhs.terms
     nterm_rhs = length(term_rhs) 
@@ -30,7 +30,7 @@ function decompx(Y, f::StatsModels.FormulaTerm, dat::DataFrame)
     ## Fit (including Intercept term) and E
     namfit = vcat("Intercept", collect(string.(term_rhs)))
     fit = list(Matrix{Q}, nterm_rhs + 1)
-    fit[1] = copy(Ym)
+    fit[1] = copy(Xm)
     c = zeros(dfm - 1)
     for i in eachindex(term_rhs)
         c[assign .== i] .= 1
@@ -40,9 +40,9 @@ function decompx(Y, f::StatsModels.FormulaTerm, dat::DataFrame)
         c .= zeros(dfm - 1)
     end
     dffit = vcat(1, tab(assign).vals)
-    E = Yc - D * B
-    ss = (sst = frob2(Y), ssfit =  frob2.(fit), ssr = frob2(E))
-    df = (dffit = dffit, dfr)
+    E = Xc - D * B
+    ss = (sst = frob2(X), ssfit =  frob2.(fit), ssr = frob2(E))
+    df = (dffit = dffit, dfr, n)
     ## 'fit' and 'namfit' could be replaced by a named tuple 'fit'
     (fit = fit, namfit, E, ymeans, ss, df)
 end

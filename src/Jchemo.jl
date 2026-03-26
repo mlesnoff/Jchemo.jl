@@ -132,6 +132,7 @@ include("vip.jl")
 include("xfit.jl")
 include("xresid.jl")
 
+include("decompx.jl")
 include("waldtest.jl")
 include("emm.jl")
 
@@ -430,6 +431,7 @@ export
     isel!,
     ## Utils
     xfit, xfit!, xresid, xresid!,
+    decompx,
     waldtest,
     emm,
     ######---- Discrimination
