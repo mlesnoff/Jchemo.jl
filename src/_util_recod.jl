@@ -229,15 +229,15 @@ end
 
 """
     recod_miss(X; miss = nothing)
-    recod_miss(datf; miss = nothing)
+    recod_miss(dat; miss = nothing)
 Declare data as missing in a dataset.
 * `X` : An array-dataset.
-* `datf` : A dataframe-dataset.
+* `dat` : A dataframe-dataset.
 * `miss` : The value used in the dataset to identify the missing data. 
 
-Each cell of `X` or `datf` having the value `miss` is replaced by value `missing` of type `Missing`.
+Each cell of `X` or `dat` having the value `miss` is replaced by value `missing` of type `Missing`.
 
-The case `miss = nothing` has the only action to allow `missing` in `X` or `datf`. 
+The case `miss = nothing` has the only action to allow `missing` in `X` or `dat`. 
 
 See examples.
 
@@ -263,26 +263,26 @@ function recod_miss(X::AbstractArray; miss = nothing)
     X
 end
 
-function recod_miss(datf::DataFrame; miss = nothing)
-    datf = allowmissing(datf)
+function recod_miss(dat::DataFrame; miss = nothing)
+    dat = allowmissing(dat)
     if !isnothing(miss)
-        for col in eachcol(datf)
+        for col in eachcol(dat)
             replace!(col, miss => missing)
         end
     end
-    datf
+    dat
 end
 
 
 ### Convertdf
 
 """ 
-    convertdf(datf::DataFrame, typ; miss = nothing)
+    convertdf(dat::DataFrame, typ; miss = nothing)
 Convert the columns of a dataframe to given types.
-* `datf` : A dataframe.
+* `dat` : A dataframe.
 * `typ` : A vector of the targeted types for the columns of the new dataframe.
   Keyword arguments:
-* `miss` : The code used in `datf` to identify the data to be declared as `missing` (of type `Missing`).
+* `miss` : The code used in `dat` to identify the data to be declared as `missing` (of type `Missing`).
     See function `recod_miss`.
 
 ## Examples
@@ -298,12 +298,12 @@ typ = [Int, String, Float32]
 convertdf(dat, typ; miss = "00")
 ```
 """
-function convertdf(datf::DataFrame, typ::Vector{DataType}; miss = nothing)
-    datf = string.(datf)
-    datf = recod_miss(datf; miss = string(miss)) 
+function convertdf(dat::DataFrame, typ::Vector{DataType}; miss = nothing)
+    dat = string.(dat)
+    dat = recod_miss(dat; miss = string(miss)) 
     res = DataFrame()
     for i in eachindex(typ)
-        z = datf[:, i]
+        z = dat[:, i]
         if typ[i] == String
             sum(ismissing.(z)) == 0 ? z = string.(z) : nothing
         elseif typ[i] == Symbol
@@ -324,7 +324,7 @@ function convertdf(datf::DataFrame, typ::Vector{DataType}; miss = nothing)
         end
         res = hcat(res, z; makeunique = true)
     end
-    rename!(res, names(datf))
+    rename!(res, names(dat))
     res
 end
 

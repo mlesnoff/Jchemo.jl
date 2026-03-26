@@ -1,8 +1,9 @@
 """
     aggstat(X, y; algo = mean)
-    aggstat(X::DataFrame; sel, group, algo = mean)
+    aggstat(dat::DataFrame; sel, group, algo = mean)
 Compute column-wise statistics by group in a dataset.
 * `X` : Data (n, p).
+* `dat` : A dataframe (n, p).
 * `y` : A categorical variable (n) defining the groups.
 * `algo` : Function to compute (default = mean).
 Specific for `X::DataFrame`:
@@ -52,8 +53,8 @@ function aggstat(X, y; algo = mean)
     (X = zX, lev)
 end
 
-function aggstat(X::DataFrame; sel, group, algo = mean)
-    gdf = groupby(X, group) 
+function aggstat(dat::DataFrame; sel, group, algo = mean)
+    gdf = groupby(dat, group) 
     res = combine(gdf, sel .=> algo, renamecols = false)
     sort!(res, group)
 end
