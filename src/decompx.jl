@@ -74,10 +74,9 @@ function decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
     ## D, B
     mf = ModelFrame(f, dat; contrasts)
     fs = apply_schema(f, mf.schema)
-    resp, D = modelcols(fs, dat) ;
-    B = inv(D' * D) * D' * Xc
-    dfm = nco(D) + 1 # include intercept
-    dfr = n - dfm
+    resp, D = modelcols(fs, dat) ;   # no intercept
+    B = inv(D' * D) * D' * Xc        # no intercept
+    dfm = nco(D) + 1                 # include intercept
     ## Assign terms
     term_rhs = fs.rhs.terms
     nterm_rhs = length(term_rhs) 
@@ -100,6 +99,7 @@ function decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
     E = Xc - D * B
     ss = (sst = frob2(X), ssfit =  frob2.(fit), ssr = frob2(E))
     dffit = vcat(1, tab(assign).vals)
+    dfr = n - dfm
     df = (dffit = dffit, dfr, n)
     mat = (B = B, D, C, M)
     fit = (; zip(Symbol.(namfit), fit)...)
