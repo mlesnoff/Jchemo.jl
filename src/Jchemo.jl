@@ -106,7 +106,6 @@ include("comdim.jl")
 
 ######---- Regression 
 
-include("aov1.jl")
 include("mlr.jl")
 include("rr.jl")
 include("rrchol.jl")
@@ -132,10 +131,12 @@ include("vip.jl")
 include("xfit.jl")
 include("xresid.jl")
 
+include("aov1.jl")
+include("manova.jl")
+include("emm.jl")
 include("decompx.jl")
 include("wilks.jl")
 include("waldtest.jl")
-include("emm.jl")
 
 ## Sparse
 include("splsr.jl")
@@ -388,7 +389,6 @@ export
     mbpca, mbpca!,
     comdim, comdim!, 
     ######---- Regression
-    aov1,
     mlr, mlr!, mlrchol, mlrchol!, 
     mlrpinv, mlrpinv!, mlrpinvn, mlrpinvn!,
     mlrvec, mlrvec!,
@@ -408,6 +408,12 @@ export
     dfplsr_cg, aicplsr,
     svmr,
     treer, rfr, 
+    ## anova
+    aov1,
+    manova,
+    decompx,
+    waldtest, wilks,
+    emm,
     ## Sparse 
     spcr, spcr!,
     splsr, splsr!, 
@@ -432,9 +438,6 @@ export
     isel!,
     ## Utils
     xfit, xfit!, xresid, xresid!,
-    decompx,
-    waldtest, wilks,
-    emm,
     ######---- Discrimination
     fda, fda!, fdasvd, fdasvd!,
     mlrda,

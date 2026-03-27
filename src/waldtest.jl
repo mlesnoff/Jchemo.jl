@@ -1,5 +1,5 @@
 """
-    waldtest(b, L, varb; h0 = nothing, dfdenom = nothing, digits = 5)
+    waldtest(b, L, varb; h0 = nothing, defden = nothing, digits = 5)
 Wald or F test for model coefficients.
 * `b` : Vector (p) of the coefficients of the model.
 * `L` : Matrix (m, p) such as `L` * `b` gives the linear combination(s) of the coefficients 
@@ -8,12 +8,12 @@ Wald or F test for model coefficients.
 Keyword arguments:
 * `h0` : Scalar or vector (m) giving the value(s) of hypothesis H0 to be tested (see below). 
     Default to 0.
-* `dfdenom` : Nb. degrees of freedom of the residuals of the model.
+* `defden` : Nb. degrees of freedom of the residuals of the model.
 * `digits` : Nb. digits for the outputs.
 
 The function tests hypothesis H0: `L` * `b` = `h0`, with either 
 * a Chi-squared Wald test (with dfs = m)
-* or, if `dfdenom` is given, a F test (with dfs {m, `dfdenom`}).
+* or, if `defden` is given, a F test (with dfs {m, `defden`}).
 
 Both tests assume that `b` is Gaussian.  Compared to the F test, the Wald test neglects the uncertainty 
 affecting the estimate of the dispersion parameter of the model (e.g., 'sigma2' in MLRs). 
@@ -66,46 +66,46 @@ anova(fitm)
 L = [0 1 0 0 0 0 ;
      0 0 1 0 0 0]
 waldtest(b, L, varb)                  # Wald test
-waldtest(b, L, varb; dfdenom = dfr)  # F test
+waldtest(b, L, varb; defden = dfr)  # F test
 
 ## 2) factor 'catal'
 L = [0 0 0 1 0 0]
 waldtest(b, L, varb) 
-waldtest(b, L, varb; dfdenom = dfr)
+waldtest(b, L, varb; defden = dfr)
 
 ## 3) interaction 'temp * catal'
 L = [0 0 0 0 1 0 ;
      0 0 0 0 0 1]
 waldtest(b, L, varb) 
-waldtest(b, L, varb; dfdenom = dfr)
+waldtest(b, L, varb; defden = dfr)
 
 ## 4) Whole effect 'catal': 'catal + temp * catal'
 L = [0 0 0 1 0 0 ;
      0 0 0 0 1 0 ;
      0 0 0 0 0 1]
 waldtest(b, L, varb) 
-waldtest(b, L, varb; dfdenom = dfr)
+waldtest(b, L, varb; defden = dfr)
 anova(lm(@formula(y1 ~ 1 + temp), datf; contrasts), fitm)
 ```
 """
-function waldtest(b, L, varb; h0 = nothing, dfdenom = nothing, digits = 4)
+function waldtest(b, L, varb; h0 = nothing, defden = nothing, digits = 4)
     dfnum = nro(L)
     isnothing(h0) ? h = L * b : h = L * b - h0 
     varLb = L * varb * L' 
     val =  h' * inv(varLb) * h
-    if isnothing(dfdenom)
+    if isnothing(defden)
         d = Distributions.Chisq(dfnum)
     else
         val = val / dfnum
-        d = Distributions.FDist(dfnum, dfdenom)
+        d = Distributions.FDist(dfnum, defden)
     end 
     pval = Distributions.ccdf(d, val)
     val = round(val; digits)
     pval = round(pval; digits)
-    if isnothing(dfdenom)
+    if isnothing(defden)
         res = (val = val, pval, dfnum)
     else
-        res = (val = val, pval, dfnum, dfdenom)
+        res = (val = val, pval, dfnum, defden)
     end
     res
 end 
