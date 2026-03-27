@@ -133,6 +133,7 @@ include("xfit.jl")
 include("xresid.jl")
 
 include("decompx.jl")
+include("wilks.jl")
 include("waldtest.jl")
 include("emm.jl")
 
@@ -432,7 +433,7 @@ export
     ## Utils
     xfit, xfit!, xresid, xresid!,
     decompx,
-    waldtest,
+    waldtest, wilks,
     emm,
     ######---- Discrimination
     fda, fda!, fdasvd, fdasvd!,

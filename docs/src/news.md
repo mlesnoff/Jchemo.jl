@@ -4,8 +4,10 @@
 
 - News:
     - Fonctions **baggr**, **sampbag**: bagging regression.
-    - Function **decompx**: Decomposition of a matrix by orthogonal projection on factors..
     - Function **emm**: Estimated marginal means (EMMs).
+    - Function **decompx**: Decomposition of a matrix by orthogonal projection on factors.
+    - Function **waldtest**: Wald or F test for model coefficients.
+    - Function **wilks**: Compute statistics for multivariate tests.
     - Function **expand_grid**: Build a dataframe with all the combinations of the entered parameter values.
     - Fonction **protoplsr**: Averaging PLSR models built on the neighborhood of prototype observations.
     - Function **rclustplsr**: Random clustered PLSR.

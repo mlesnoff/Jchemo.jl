@@ -84,6 +84,7 @@ function decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
     #AnovaBase.dof_asgn(assign)
     ## Fit (including Intercept term) and E
     C = list(Matrix{Int}, nterm_rhs)
+    L = list(Matrix{Int}, nterm_rhs)    
     M = list(Matrix{Int}, nterm_rhs)
     namfit = vcat("Intercept", collect(string.(term_rhs)))
     fit = list(Matrix{Q}, nterm_rhs + 1)
@@ -92,16 +93,20 @@ function decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
     for i in eachindex(term_rhs)
         c[assign .== i] .= 1
         C[i] = diagm(c)
+        c .= zeros(dfm - 1)
+        L[i] = C[i][assign .== i, :]
         M[i] = D * C[i]
         fit[i + 1] = M[i] * B
-        c .= zeros(dfm - 1)
     end
     E = Xc - D * B
     ss = (sst = frob2(X), ssfit =  frob2.(fit), ssr = frob2(E))
     dffit = vcat(1, tab(assign).vals)
     dfr = n - dfm
-    df = (dffit = dffit, dfr, n)
-    mat = (B = B, D, C, M)
+    df = (dffit = dffit, dfr, dftot = n)
+    mat = (B = B, D, C, L, M)
     fit = (; zip(Symbol.(namfit), fit)...)
-    (fit = fit, E, mat, ss, df, xmeans)
+    (fit = fit, E, mat, ss, df, assign, xmeans)
 end
+
+
+

@@ -82,9 +82,11 @@
 - **mlrvec** Simple (Univariate x) linear regression
 
 *Anova*
-- **decompx** Decomposition of a matrix by orthogonal projection on factors.
 - **aov1** One-factor ANOVA
 - **emm** Estimated marginal means (EMMs)
+- **decompx** Decomposition of a matrix by orthogonal projection on factors.
+- **waldtest**: Wald or F test for model coefficients.
+- **wilks**: Compute statistics for multivariate tests.
 
 ### Partial least squares (PLSR)
 
