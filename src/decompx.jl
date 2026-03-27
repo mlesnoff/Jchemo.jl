@@ -58,9 +58,9 @@ function decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
     X = ensure_mat(X)
     Q = eltype(X)
     n = nro(X)
-    ymeans = colmean(X)
-    Xc = fcenter(X, ymeans)
-    Xm = ones(Q, n) * ymeans'
+    xmeans = colmean(X)
+    Xc = fcenter(X, xmeans)
+    Xm = ones(Q, n) * xmeans'
     ## Contrasts
     contr = EffectsCoding()   # sum-to-zero
     term_princ = Symbol.(terms(f.rhs))     # [2:end]
@@ -75,30 +75,33 @@ function decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
     mf = ModelFrame(f, dat; contrasts)
     fs = apply_schema(f, mf.schema)
     resp, D = modelcols(fs, dat) ;
+    B = inv(D' * D) * D' * Xc
     dfm = nco(D) + 1 # include intercept
     dfr = n - dfm
-    B = inv(D' * D) * D' * Xc
     ## Assign terms
     term_rhs = fs.rhs.terms
     nterm_rhs = length(term_rhs) 
     assign = StatsModels.asgn(term_rhs)
     #AnovaBase.dof_asgn(assign)
     ## Fit (including Intercept term) and E
+    C = list(Matrix{Int}, nterm_rhs)
+    M = list(Matrix{Int}, nterm_rhs)
     namfit = vcat("Intercept", collect(string.(term_rhs)))
     fit = list(Matrix{Q}, nterm_rhs + 1)
     fit[1] = copy(Xm)
     c = zeros(dfm - 1)
     for i in eachindex(term_rhs)
         c[assign .== i] .= 1
-        C = diagm(c)
-        M = D * C
-        fit[i + 1] = M * B
+        C[i] = diagm(c)
+        M[i] = D * C[i]
+        fit[i + 1] = M[i] * B
         c .= zeros(dfm - 1)
     end
-    dffit = vcat(1, tab(assign).vals)
     E = Xc - D * B
     ss = (sst = frob2(X), ssfit =  frob2.(fit), ssr = frob2(E))
+    dffit = vcat(1, tab(assign).vals)
     df = (dffit = dffit, dfr, n)
-    ## 'fit' and 'namfit' could be replaced by a named tuple 'fit'
-    (fit = fit, E, namfit, ymeans, ss, df)
+    mat = (B = B, D, C, M)
+    fit = (; zip(Symbol.(namfit), fit)...)
+    (fit = fit, E, mat, ss, df, xmeans)
 end
