@@ -83,6 +83,7 @@
 
 *Anova*
 - **aov1** One-factor ANOVA
+- **manova** MANOVA with approximated F tests
 - **emm** Estimated marginal means (EMMs)
 - **decompx** Decomposition of a matrix by orthogonal projection on factors.
 - **waldtest**: Wald or F test for model coefficients.

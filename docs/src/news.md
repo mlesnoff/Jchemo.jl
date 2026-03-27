@@ -4,6 +4,7 @@
 
 - News:
     - Fonctions **baggr**, **sampbag**: bagging regression.
+    - Fonction **manova** MANOVA with approximated F tests.
     - Function **emm**: Estimated marginal means (EMMs).
     - Function **decompx**: Decomposition of a matrix by orthogonal projection on factors.
     - Function **waldtest**: Wald or F test for model coefficients.
