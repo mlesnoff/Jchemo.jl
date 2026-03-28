@@ -20,6 +20,28 @@ https://documentation.sas.com/doc/en/statug/15.2/statug_introreg_sect038.htm#sta
 
 ## Examples 
 ```julia
+using Jchemo, JchemoData, JLD2
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/reaction_bert.jld2")
+@load db dat
+@names dat
+datf = dat.datf
+n = nro(datf)
+tab(datf; group = [:temp, :catal])  # balanced design
+##
+Y = datf[:, [:y1, :y2]]
+aggstat(datf; sel = [:y1, :y2], group = :temp)
+aggstat(datf; sel = [:y1, :y2], group = :catal)
+res = aggstat(datf; sel = [:y1, :y2], group = [:temp, :catal])
+
+f = @formula(0 ~ temp + catal + temp & catal)
+#f = @formula(0 ~ temp + catal)
+#f = @formula(0 ~ temp)
+#f = @formula(0 ~ catal)
+
+manova(Y, f, datf)
+
+manova(Y, f, datf; test = :wilks)
 ```
 """
 function manova(Y, f::StatsModels.FormulaTerm, dat::DataFrame; test = :pillai, digits = 4)
@@ -72,11 +94,12 @@ function manova(Y, f::StatsModels.FormulaTerm, dat::DataFrame; test = :pillai, d
             dfnum[i] = s * b
             dfden[i] = s * a
         elseif test == :hotelling
+            ## Approximation McKeon, 1974
             F[i] = 2 * (s * n + 1) * val[i] / (s^2 * (2 * m + s + 1))
             dfnum[i] = s * (2 * m + s + 1)
             dfden[i] = 2 * (s * n + 1)
-            ## This version of the function follows the R's choice to not use
-            ## the following variant when n > 0 (used in SAS, see ref):
+            ## The actual version of the function follows the R's choice,
+            ## not the SAS' one when n > 0 (see ref):
             ## b = (p + 2 * n) * (q + 2 * n) / (2 * (2 * n + 1) * (n - 1))
             ## c = (2 + (p * q + 2) / (b - 1)) / (2 * n)
             ## F[i] = (val[i] / c) * ((4 + (p * q + 2) / (b - 1)) / (p * q))
@@ -95,6 +118,7 @@ function manova(Y, f::StatsModels.FormulaTerm, dat::DataFrame; test = :pillai, d
     end        
     pval .= round.(pval; digits)
     nam = collect(@names res.fit)[2:end]
+    ss = round.(res.ss.ssfit[2:end]; digits)
     df = res.df.dffit[2:end]
-    DataFrame(:term => nam, :df => df, test => val, :approxF => F, :dfnum => dfnum, :dfden => dfden, :pval => pval)
+    DataFrame(:term => nam, :ss => ss, :df => df, test => val, :approxF => F, :dfnum => dfnum, :dfden => dfden, :pval => pval)
 end 
