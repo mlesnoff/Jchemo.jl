@@ -29,7 +29,7 @@ using GLM, AnovaGLM
 
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/reaction_bert.jld2")
+db = joinpath(path_jdat, "data/reaction_bertinetto.jld2")
 @load db dat
 @names dat
 datf = dat.datf

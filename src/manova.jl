@@ -22,7 +22,7 @@ https://documentation.sas.com/doc/en/statug/15.2/statug_introreg_sect038.htm#sta
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/reaction_bert.jld2")
+db = joinpath(path_jdat, "data/reaction_bertinetto.jld2")
 @load db dat
 @names dat
 datf = dat.datf

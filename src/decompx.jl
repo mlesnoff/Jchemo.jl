@@ -24,7 +24,7 @@ Bioinformatics 21, 3043–3048. https://doi.org/10.1093/bioinformatics/bti476
 ## Example of decomposition reported in Bertinetto et al. act chim. acta 2020 (section 2).
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/reaction_bert.jld2")
+db = joinpath(path_jdat, "data/reaction_bertinetto.jld2")
 @load db dat
 @names dat
 datf = dat.datf
