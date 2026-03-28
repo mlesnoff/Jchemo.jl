@@ -23,8 +23,8 @@ function wilks(A;  digits = 5)
     v = eigen(A; sortby = x -> -abs(x)).values
     wilks = cumprod(1 ./ (1 .+ v))[end]
     pillai = sum(v ./ (1 .+ v))
-    hotel = sum(v)
+    hotelling = sum(v)
     roy = v[1]
-    res = round.((wilks, pillai, hotel, roy); digits)
-    (; zip([:wilks, :pillai, :hotel, :roy], res)...)
+    res = round.((wilks, pillai, hotelling, roy); digits)
+    (; zip([:wilks, :pillai, :hotelling, :roy], res)...)
 end
