@@ -1,4 +1,4 @@
-struct Decompx2
+struct Decompx
     fit::NamedTuple
     R::Matrix
     mat::NamedTuple
@@ -118,17 +118,17 @@ function decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
     df = (dffit = dffit, dfr, dftot = n)
     mat = (B = B, D, C, L, M)
     fit = (; zip(Symbol.(namfit), fit)...)
-    Decompx2(fit, R, mat, ss, df, assign, xmeans)
+    Decompx(fit, R, mat, ss, df, assign, xmeans)
 end
 
 """
-    summary(object::Decompx2; corrected = true, digits = 4)
+    summary(object::Decompx; corrected = true, digits = 4)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `corrected` : Whether to correct for the intercept term.
 * `digits` : Nb. digits for the outputs.
 """ 
-function Base.summary(object::Decompx2; corrected = true, digits = 4)
+function Base.summary(object::Decompx; corrected = true, digits = 4)
     ssfit = object.ss.ssfit
     namfit = @names object.fit
     ssr = object.ss.ssr
