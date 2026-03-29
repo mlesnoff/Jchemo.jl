@@ -26,6 +26,15 @@ for high-dimensional data: applications in life, food and chemical sciences. Wil
 ```
 """
 function asca(X, f::StatsModels.FormulaTerm, dat::DataFrame)
-
+    res = decompx(X, f, dat)
+    explvarx = summary(res)
+    df = res.df.dffit[2:end]
+    ## PCAs on fitted values
+    nterm = length(res.fit) - 1
+    fitm_pca = list(Jchemo.Pca, nterm)
+    for i in 1:nterm
+        fitm_pca[i] = pcasvd(res.fit[i + 1]; nlv = df[i])
+    end
+    (fitm_pca = fitm_pca, explvarx)
 end
 
