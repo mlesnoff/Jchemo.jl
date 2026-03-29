@@ -75,13 +75,17 @@ function decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
     mf = ModelFrame(f, dat; contrasts)
     fs = apply_schema(f, mf.schema)
     resp, D = modelcols(fs, dat) ;   # no intercept
+    ## If argument 'perm' is added in the future
+    ## if perm
+    ##     D .= D[randperm(n), :]
+    ## end
+    ## End
     B = inv(D' * D) * D' * Xc        # no intercept
     dfm = nco(D) + 1                 # include intercept
     ## Assign terms
     term_rhs = fs.rhs.terms
     nterm_rhs = length(term_rhs) 
     assign = StatsModels.asgn(term_rhs)
-    #AnovaBase.dof_asgn(assign)
     ## Fit (including Intercept term) and R
     C = list(Matrix{Int}, nterm_rhs)
     L = list(Matrix{Int}, nterm_rhs)    
