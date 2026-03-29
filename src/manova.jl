@@ -7,6 +7,7 @@ MANOVA.
 Keyword arguments:
 * `test` : Type of statistic used for the test. Possible values are: `:wilks`, `:pillai` (default), 
     `:hotelling`, or `:roy`.
+* `lb` : Positive constant for regularization.
 * `digits` : Nb. digits for the outputs.
 
 The function returns approximated F tests for one of the the following statistics (argument `test`):
@@ -14,6 +15,9 @@ The function returns approximated F tests for one of the the following statistic
 * Pillai’s trace
 * Hotelling-Lawley trace
 * Roy’s maximum root
+
+If `lb` > 0, the function performs a ridge regularization by adding `lb` to the diagonal of R'R, where 
+R (n, p) is the residual matrix.
 
 ## References
 https://documentation.sas.com/doc/en/statug/15.2/statug_introreg_sect038.htm#statug_introreg001918
@@ -44,7 +48,7 @@ manova(Y, f, datf)
 manova(Y, f, datf; test = :wilks)
 ```
 """
-function manova(Y, f::StatsModels.FormulaTerm, dat::DataFrame; test = :pillai, digits = 4)
+function manova(Y, f::StatsModels.FormulaTerm, dat::DataFrame; test = :pillai, lb = 0, digits = 4)
     @assert in([:wilks; :pillai; :hotelling; :roy])(test) "Wrong value for argument 'test'." 
     Y = ensure_mat(Y)
     Q = eltype(Y)
@@ -54,8 +58,11 @@ function manova(Y, f::StatsModels.FormulaTerm, dat::DataFrame; test = :pillai, d
     DtD = D' * D      
     L = res.mat.L
     Yc = fcenter(Y, res.xmeans)
-    E = Yc' * Yc - B' * DtD * B 
-    invE = inv(E)
+    RtR = Yc' * Yc - B' * DtD * B 
+    if lb > 0
+        RtR .+= lb * I(nco(Y))
+    end
+    invRtR = inv(RtR)
     nu = res.df.dfr
     val = list(Q, length(L))
     F = copy(val)
@@ -66,9 +73,9 @@ function manova(Y, f::StatsModels.FormulaTerm, dat::DataFrame; test = :pillai, d
         LB = L[i] * B
         A = L[i] * inv(DtD) * L[i]'
         H = LB' * inv(A) * LB
-        val[i] = wilks(invE * H)[test]
+        val[i] = wilks(invRtR * H)[test]
         ##
-        p = Int(rank(E + H))
+        p = Int(rank(RtR + H))
         q = Int(rank(A))
         s = min(p, q)
         m = (abs(p - q) - 1) / 2

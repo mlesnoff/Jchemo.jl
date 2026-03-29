@@ -94,21 +94,18 @@ function emm(fitm::StatsModels.TableRegressionModel, f::StatsModels.FormulaTerm,
     ## Estimate the mean 'mu' for each cell of the full table 
     namterm = termnames(f_fitm.rhs)
     namterm[namterm .== "(Intercept)"] .= "1"
-    fst = string("0~", join(namterm, "+"))
+    fst = string("0 ~", join(namterm, "+"))
     ftmp = eval(Meta.parse("@formula($fst)"))
     mf = ModelFrame(ftmp, datmu)
     fs = apply_schema(ftmp, mf.schema)
     resp, D = modelcols(fs, datmu) ;
-    D
     mu = D * b
     varmu = D * varb * D'
     datmu.pred = mu
     datmu.se = sqrt.(diag(varmu))
-    datmu
     ## Compute EMMs
     nam = termnames(f)[2]
     isa(nam, Vector) ? nothing : nam = [nam]
-    nam
     datmu[:, nam]
     v = [Vector(datmu[i, nam]) for i in axes(datmu, 1)]    
     fact = join.(v, ["-"])
@@ -120,6 +117,5 @@ function emm(fitm::StatsModels.TableRegressionModel, f::StatsModels.FormulaTerm,
     varemm = L * varmu * L'
     se = sqrt.(diag(varemm))
     datemm = hcat(V, DataFrame(pred = emm, se = se))
-    datemm
     (datemm = datemm, datmu, varemm)
 end 
