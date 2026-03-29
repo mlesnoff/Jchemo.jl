@@ -1,3 +1,12 @@
+struct Decompx2
+    fit::NamedTuple
+    R::Matrix
+    mat::NamedTuple
+    ss::NamedTuple
+    df::NamedTuple
+    assign::Vector{Int}
+    xmeans::Vector 
+end
 
 """
     decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
@@ -109,8 +118,32 @@ function decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
     df = (dffit = dffit, dfr, dftot = n)
     mat = (B = B, D, C, L, M)
     fit = (; zip(Symbol.(namfit), fit)...)
-    (fit = fit, R, mat, ss, df, assign, xmeans)
+    Decompx2(fit, R, mat, ss, df, assign, xmeans)
 end
 
+"""
+    summary(object::Decompx2; corrected = true, digits = 4)
+Summarize the fitted model.
+* `object` : The fitted model.
+* `corrected` : Whether to correct for the intercept term.
+* `digits` : Nb. digits for the outputs.
+""" 
+function Base.summary(object::Decompx2; corrected = true, digits = 4)
+    ssfit = object.ss.ssfit
+    namfit = @names object.fit
+    ssr = object.ss.ssr
+    if corrected
+        ssfit = ssfit[2:end]
+        namfit = namfit[2:end]
+    end
+    sst = sum(ssfit) + ssr
+    pvar = vcat(ssfit, ssr) / sst
+    cumpvar = cumsum(pvar)
+    nam = [collect(namfit); :Residuals]
+    res = DataFrame(term = nam, ss = vcat(ssfit, ssr), pvar = pvar, cumpvar = cumpvar)
+    u = [:ss, :pvar, :cumpvar]
+    res[:, u] = round.(res[:, u]; digits)
+    res
+end
 
 
