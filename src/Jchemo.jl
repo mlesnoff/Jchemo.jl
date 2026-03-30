@@ -409,9 +409,9 @@ export
     dfplsr_cg, aicplsr,
     svmr,
     treer, rfr, 
-    ## anova
+    ## Anova
     aov1, manova, asca, 
-    decompx, emm, 
+    decompx, permut, emm, 
     waldtest, wilks,
     ## Sparse 
     spcr, spcr!,

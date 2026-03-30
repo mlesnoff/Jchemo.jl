@@ -85,8 +85,8 @@
 - **aov1** One-factor ANOVA
 - **manova** MANOVA
 - **asca** ANOVA Simultaneous Component Analysis (ASCA)
-- **emm** Estimated marginal means (EMMs)
 - **decompx** Decomposition of a matrix by orthogonal projection on experimental factors.
+- **emm** Estimated marginal means (EMMs)
 - **waldtest**: Wald or F test for model coefficients.
 - **wilks**: Compute statistics for multivariate tests.
 

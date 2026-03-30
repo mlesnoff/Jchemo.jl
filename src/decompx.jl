@@ -4,7 +4,9 @@ struct Decompx
     mat::NamedTuple
     ss::NamedTuple
     df::NamedTuple
+    f::StatsModels.FormulaTerm
     assign::Vector{Int}
+    dat::DataFrame
     xmeans::Vector 
 end
 
@@ -28,9 +30,13 @@ Smilde, A.K., Jansen, J.J., Hoefsloot, H.C.J., Lamers, R.-J.A.N., van der Greef,
 ANOVA-simultaneous component analysis (ASCA): a new tool for analyzing designed metabolomics data. 
 Bioinformatics 21, 3043–3048. https://doi.org/10.1093/bioinformatics/bti476
 
+Smilde, A.K., Marini, F., Westerhuis, J.A., Liland, K.H. (Eds.), 2025. Analysis of variance 
+for high-dimensional data: applications in life, food and chemical sciences. Wiley, Hoboken, NJ.
+
 ## Examples 
 ```julia
 ## Example of decomposition reported in Bertinetto et al. act chim. acta 2020 (section 2).
+
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/reaction_bertinetto.jld2")
@@ -39,28 +45,41 @@ db = joinpath(path_jdat, "data/reaction_bertinetto.jld2")
 datf = dat.datf
 n = nro(datf)
 tab(datf; group = [:temp, :catal])  # balanced design
-
+##
 Y = datf[:, [:y1, :y2]]
 aggstat(datf; sel = [:y1, :y2], group = :temp)
 aggstat(datf; sel = [:y1, :y2], group = :catal)
-aggstat(datf; sel = [:y1, :y2], group = [:temp, :catal])
+res = aggstat(datf; sel = [:y1, :y2], group = [:temp, :catal])
 
 f = @formula(0 ~ temp + catal + temp & catal)
 #f = @formula(0 ~ temp + catal)
 #f = @formula(0 ~ temp)
-#f = @formula(0 ~ catal)
 
-res = decompx(Y, f, datf) ;
-@names res
-res.namfit 
-res.fit
-res.fit[2]
-res.R
-res.ss
-res.df 
+d = decompx(Y, f, datf) ;
+@names d
 
+## Fitted values of the effects
+@names d.fit
+nam = :temp
+#nam = Symbol("temp & catal")
+d.fit[nam]
+
+## Residuals
+d.R
+
+## Rebuild Y
 @head Y
-@head reduce(+, res.fit) + R
+@head reduce(+, d.fit) + d.R
+
+## Explained variances
+summary(d)
+summary(d; corrected = false)
+
+## Permutation tests
+res = permut(d; rep = 1000) ;
+res.explvarx
+res.valref
+@head res.val
 ```
 """
 function decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
@@ -118,13 +137,14 @@ function decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
     df = (dffit = dffit, dfr, dftot = n)
     mat = (B = B, D, C, L, M)
     fit = (; zip(Symbol.(namfit), fit)...)
-    Decompx(fit, R, mat, ss, df, assign, xmeans)
+    Decompx(fit, R, mat, ss, df, f, assign, dat, xmeans)
 end
 
 """
     summary(object::Decompx; corrected = true, digits = 4)
 Summarize the fitted model.
-* `object` : The fitted model.
+* `object` : Object of class `Decompx` to summarize.
+Keyword arguments:
 * `corrected` : Whether to correct for the intercept term.
 * `digits` : Nb. digits for the outputs.
 """ 
@@ -148,5 +168,114 @@ function Base.summary(object::Decompx; corrected = true, digits = 4)
     res[:, u] = round.(res[:, u]; digits)
     res
 end
+
+"""
+    permut(object::Decompx; rep = 1000, digits = 4)
+Permutation test of effects after decomposition of a matrix by experimental factors.
+* `object` : Object of type `Decompx` (output of function `decompx`).
+* `dat` : Dataframe containing the factor(s) specified in `object.f`.
+Keyword arguments:
+* `rep` : Number of unrestricted permutations (of X rows) for testing the significance of the effects.
+* `digits` : Nb. digits for the outputs.
+
+The function performs unrestricted permutations of the X-data rows (X being rebuilt from `object`) and compares the 
+distribution of SS(effect) / SSR (computed from the set of `rep` permutations) to the reference value.
+
+See function `decompx` for examples. 
+
+## References
+Manly, B.F., 2007. Randomization, bootstrap and Monte Carlo methods in biology, 3rd ed. Chapman & Hall/CRC, Boca Raton.
+
+Smilde, A.K., Marini, F., Westerhuis, J.A., Liland, K.H. (Eds.), 2025. Analysis of variance 
+for high-dimensional data: applications in life, food and chemical sciences. Wiley, Hoboken, NJ.
+""" 
+function permut(object::Decompx; rep = 1000, digits = 4)
+    X = reduce(+, object.fit) + object.R
+    n = nro(X)
+    valref = object.ss.ssfit[2:end] / object.ss.ssr
+    nterm = length(valref)
+    val = similar(valref, rep, nterm)
+    s = list(Int, n)
+    for i in axes(val, 1)
+        s .= randperm(n)
+        res = decompx(vrow(X, s), object.f, object.dat)
+        val[i, :] .= res.ss.ssfit[2:end] / res.ss.ssr
+    end
+    pv = [Jchemo.pval(val[:, i], valref[i]) for i in axes(val, 2)]
+    explvarx = summary(object; digits)
+    explvarx.pval = round.(vcat(pv, NaN); digits)
+    (explvarx = explvarx, valref, val)
+end
+
+"""
+    asca(X, f::StatsModels.FormulaTerm, dat::DataFrame)
+ANOVA Simultaneous Component Analysis (ASCA).
+* `X` :  X-data (n, p) to decompose.
+* `f` : A formula that defines the factor(s) on which is(are) done the decomposition.
+    See the syntax in the examples below.
+* `dat` (n, q) : Dataframe containing the factor(s) specified in `f`. 
+
+## References
+Bertinetto, C., Engel, J., Jansen, J., 2020. ANOVA simultaneous component analysis: A tutorial review. 
+Analytica Chimica Acta: X 6, 100061. https://doi.org/10.1016/j.acax.2020.100061
+
+Doledec, S., Chessel, D., 1987. Rythmes saisonniers et composantes stationnelles en milieu aquatique. 
+I: Description d’un plan d’observation complet par projection de variables. 
+Acta oecol., Oecol. gen 8, 403–426.
+
+Smilde, A.K., Jansen, J.J., Hoefsloot, H.C.J., Lamers, R.-J.A.N., van der Greef, J., Timmerman, M.E., 2005. 
+ANOVA-simultaneous component analysis (ASCA): a new tool for analyzing designed metabolomics data. 
+Bioinformatics 21, 3043–3048. https://doi.org/10.1093/bioinformatics/bti476
+
+Smilde, A.K., Marini, F., Westerhuis, J.A., Liland, K.H. (Eds.), 2025. Analysis of variance 
+for high-dimensional data: applications in life, food and chemical sciences. Wiley, Hoboken, NJ.
+
+## Examples 
+```julia
+using Jchemo, JchemoData, JLD2
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/reaction_bertinetto.jld2")
+@load db dat
+@names dat
+datf = dat.datf
+n = nro(datf)
+tab(datf; group = [:temp, :catal])  # balanced design
+##
+Y = datf[:, [:y1, :y2]]
+aggstat(datf; sel = [:y1, :y2], group = :temp)
+aggstat(datf; sel = [:y1, :y2], group = :catal)
+res = aggstat(datf; sel = [:y1, :y2], group = [:temp, :catal])
+
+f = @formula(0 ~ temp + catal + temp & catal)
+#f = @formula(0 ~ temp + catal)
+#f = @formula(0 ~ temp)
+#f = @formula(0 ~ catal)
+
+d = decompx(Y, f, datf) ; # decompsition of Y according to the effects in f
+res = asca(d) ;
+@names res
+res.df
+
+fitm = res.fitm ; # Pca models on the effect matrices
+@names fitm
+nam = :temp
+#nam = Symbol("temp & catal")
+@head fitm[nam].T
+fitm[nam].V
+```
+"""
+function asca(object::Decompx)
+    nterm = length(object.fit) - 1
+    namterm = (@names object.fit)[2:end]
+    df = object.df.dffit[2:end]
+    fitm = list(Jchemo.Pca, nterm)
+    for i in 1:nterm
+        fitm[i] = pcasvd(object.fit[i + 1]; nlv = df[i])
+    end
+    fitm = (; zip(namterm, fitm)...)
+    (fitm = fitm, df)
+end
+
+
 
 
