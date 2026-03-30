@@ -133,7 +133,6 @@ include("xresid.jl")
 
 include("aov1.jl")
 include("manova.jl")
-include("asca.jl")
 include("emm.jl")
 include("decompx.jl")
 include("wilks.jl")
