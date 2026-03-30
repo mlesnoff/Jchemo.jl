@@ -438,7 +438,7 @@ e_cdf(x)                # empirical CDF computed at each point of x (ECDF)
 p_val = 1 .- e_cdf(x)   # complementary ECDF at each point of x
 q = .3
 #q = [.3; .5; 10]
-pval(e_cdf, q)          # 1 .- e_cdf(q)
+pval(e_cdf, q)          # = 1 .- e_cdf(q)
 pval(x, q)
 ```
 """
