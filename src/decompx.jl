@@ -10,7 +10,7 @@ end
 
 """
     decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
-Decomposition of a matrix by orthogonal projection on factors.
+Decomposition of a matrix by orthogonal projection on experimental factors.
 * `X` :  X-data (n, p) to decompose.
 * `f` : A formula that defines the factor(s) on which is(are) done the decomposition.
     See the syntax in the examples below.

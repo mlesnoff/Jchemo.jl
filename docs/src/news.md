@@ -4,9 +4,10 @@
 
 - News:
     - Fonctions **baggr**, **sampbag**: bagging regression.
-    - Fonction **manova**MANOVA.
+    - Fonction **manova**: MANOVA.
+    - Function **asca**: ANOVA Simultaneous Component Analysis (ASCA)
     - Function **emm**: Estimated marginal means (EMMs).
-    - Function **decompx**: Decomposition of a matrix by orthogonal projection on factors.
+    - Function **decompx**: Decomposition of a matrix by orthogonal projection on experimental factors.
     - Function **waldtest**: Wald or F test for model coefficients.
     - Function **wilks**: Compute statistics for multivariate tests.
     - Function **expand_grid**: Build a dataframe with all the combinations of the entered parameter values.
