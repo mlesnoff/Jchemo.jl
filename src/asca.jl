@@ -6,8 +6,8 @@ ANOVA Simultaneous Component Analysis (ASCA).
     See the syntax in the examples below.
 * `dat` (n, q) : Dataframe containing the factor(s) specified in `f`. 
 Keyword arguments:
-* `rep` : Number of permutations (X rows) for testing the significance of the effects.
-    If `rep` = 0 (default), no permutation is done.
+* `rep` : Number of unrestricted permutations (of X rows) for testing the significance of the effects.
+    If `rep` = 0 (default), no permutation is done (no test).
 
 ## References
 Bertinetto, C., Engel, J., Jansen, J., 2020. ANOVA simultaneous component analysis: A tutorial review. 
