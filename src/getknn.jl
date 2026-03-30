@@ -69,7 +69,7 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
         tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.SamDist())
     elseif metric == :cor
         tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.CorDist())
-    ## Tentative
+    ## Tentative (not still working)
     elseif metric == :was
         tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.WasDist())
     ## End
