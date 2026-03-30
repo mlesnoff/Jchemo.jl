@@ -17,6 +17,8 @@ Doledec, S., Chessel, D., 1987. Rythmes saisonniers et composantes stationnelles
 I: Description d’un plan d’observation complet par projection de variables. 
 Acta oecol., Oecol. gen 8, 403–426.
 
+Manly, B.F., 2007. Randomization, bootstrap and Monte Carlo methods in biology, 3rd ed. Chapman & Hall/CRC, Boca Raton.
+
 Smilde, A.K., Jansen, J.J., Hoefsloot, H.C.J., Lamers, R.-J.A.N., van der Greef, J., Timmerman, M.E., 2005. 
 ANOVA-simultaneous component analysis (ASCA): a new tool for analyzing designed metabolomics data. 
 Bioinformatics 21, 3043–3048. https://doi.org/10.1093/bioinformatics/bti476
@@ -39,7 +41,6 @@ Y = datf[:, [:y1, :y2]]
 aggstat(datf; sel = [:y1, :y2], group = :temp)
 aggstat(datf; sel = [:y1, :y2], group = :catal)
 res = aggstat(datf; sel = [:y1, :y2], group = [:temp, :catal])
-Y = Matrix(Y)
 
 f = @formula(0 ~ temp + catal + temp & catal)
 #f = @formula(0 ~ temp + catal)
@@ -49,11 +50,17 @@ f = @formula(0 ~ temp + catal + temp & catal)
 res = asca(Y, f, datf) ;
 @names res
 
+## Fitted values of the effects
+@names res.decomp.fit
+nam = :temp
+#nam = Symbol("temp & catal")
+res.decomp.fit[nam]
+
 ## Explained variance of X by the effects
 res.explvarx 
 
 ## PCAs on the fitted values res.decomp.fit[nam]
-fitm_pca = res.fitm_pca
+fitm_pca = res.fitm_pca ;
 @names fitm_pca
 nam = :temp
 #nam = Symbol("temp & catal")
@@ -79,6 +86,7 @@ function asca(X, f::StatsModels.FormulaTerm, dat::DataFrame; rep = 0)
     fitm_pca = (; zip(namterm, fitm_pca)...)
     ## Permutation tests
     ## Perm X rows and compute SS / SSR
+    val = nothing
     if rep > 0
         n = nro(dat)
         valc = res.ss.ssfit[2:end] / res.ss.ssr
@@ -95,6 +103,6 @@ function asca(X, f::StatsModels.FormulaTerm, dat::DataFrame; rep = 0)
         explvarx.pval = vcat(pv, NaN)
     end  
     ##
-    (fitm_pca = fitm_pca, explvarx, decomp = res)
+    (fitm_pca = fitm_pca, explvarx, val, decomp = res)
 end
 

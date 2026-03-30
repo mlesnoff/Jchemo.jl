@@ -129,18 +129,21 @@ Summarize the fitted model.
 * `digits` : Nb. digits for the outputs.
 """ 
 function Base.summary(object::Decompx; corrected = true, digits = 4)
-    ssfit = object.ss.ssfit
     namfit = @names object.fit
+    ssfit = object.ss.ssfit
     ssr = object.ss.ssr
+    dffit = object.df.dffit
+    dfr = object.df.dfr
     if corrected
-        ssfit = ssfit[2:end]
         namfit = namfit[2:end]
+        ssfit = ssfit[2:end]
+        dffit = dffit[2:end]
     end
     sst = sum(ssfit) + ssr
     pvar = vcat(ssfit, ssr) / sst
     cumpvar = cumsum(pvar)
     nam = [collect(namfit); :Residuals]
-    res = DataFrame(term = nam, ss = vcat(ssfit, ssr), pvar = pvar, cumpvar = cumpvar)
+    res = DataFrame(term = nam, df = vcat(dffit, dfr), ss = vcat(ssfit, ssr), pvar = pvar, cumpvar = cumpvar)
     u = [:ss, :pvar, :cumpvar]
     res[:, u] = round.(res[:, u]; digits)
     res
