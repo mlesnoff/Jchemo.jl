@@ -31,6 +31,9 @@ res.Wi
 matW(X, y, weights).W + matB(X, y, weights).B
 covm(X)
 
+matWc(X, y).W 
+matW(X, y, weights).W * n / (n - length(res.lev))
+
 weights = pweight(collect(1:n))
 matW(X, y, weights).priors 
 matB(X, y, weights).priors 
