@@ -135,8 +135,9 @@ function matWc(X, y)
             s = findall(y .== lev[i])
             Wi[i] = covm(vrow(X, s)) * ni[i] / (ni[i] - 1)
         end
-        W .+= Wi[i] * (ni[i] - 1) / (n - nlev)  
+        W .+= Wi[i] * (ni[i] - 1)
     end
+    W ./= (n - nlev)
     (W = W, Wi, ni, lev)
 end
 
