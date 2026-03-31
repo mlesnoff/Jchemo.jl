@@ -72,23 +72,23 @@
 
 ## REGRESSION
 
-### Ordinary least squares (OLS)
+### Multiple linear regression (MLR)
 
-*Multiple linear regression (MLR)*
 - **mlr** QR algorithm
 - **mlrchol** Normal equations and Choleski factorization
 - **mlrpinv** Pseudo-inverse
 - **mlrpinvn** Normal equations and pseudo-inverse
 - **mlrvec** Simple (Univariate x) linear regression
 
-*Anova*
+*Anova-related*
 - **aov1** One-factor ANOVA
 - **manova** MANOVA
+- **hotelling** Two-sample Hotelling's T-squared test
 - **asca** ANOVA Simultaneous Component Analysis (ASCA)
 - **decompx** Decomposition of a matrix by orthogonal projection on experimental factors.
 - **emm** Estimated marginal means (EMMs)
-- **waldtest**: Wald or F test for model coefficients.
-- **wilks**: Compute statistics for multivariate tests.
+- **waldtest**: Wald or F test for model coefficients
+- **wilks**: Compute statistics for multivariate tests
 
 ### Partial least squares (PLSR)
 

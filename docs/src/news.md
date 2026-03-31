@@ -3,7 +3,8 @@
 ## *Version 0.9.7*
 
 - News:
-    - Fonctions **matWc**: Within-class (corrected) covariance matrices.
+    - Function **matWc**: Within-class (corrected) covariance matrices.
+    - Function **hotelling**: Two-sample Hotelling's T-squared test.
 
 - Modifications
     - Code cleaning.
@@ -12,15 +13,15 @@
 ## *Version 0.9.6*
 
 - News:
-    - Fonctions **baggr**, **sampbag**: bagging regression.
-    - Fonction **manova**: MANOVA.
+    - Functions **baggr**, **sampbag**: bagging regression.
+    - Function **manova**: MANOVA.
     - Function **asca**: ANOVA Simultaneous Component Analysis (ASCA)
     - Function **decompx**: Decomposition of a matrix by orthogonal projection on experimental factors.
     - Function **emm**: Estimated marginal means (EMMs).
     - Function **waldtest**: Wald or F test for model coefficients.
     - Function **wilks**: Compute statistics for multivariate tests.
     - Function **expand_grid**: Build a dataframe with all the combinations of the entered parameter values.
-    - Fonction **protoplsr**: Averaging PLSR models built on the neighborhood of prototype observations.
+    - Function **protoplsr**: Averaging PLSR models built on the neighborhood of prototype observations.
     - Function **rclustplsr**: Random clustered PLSR.
 
 - Modifications
@@ -30,7 +31,7 @@
 ## *Version 0.9.5*
 
 - News:
-    - Fonctions **norm2v**, **colnorm2**, **rownorm2**. 
+    - Functions **norm2v**, **colnorm2**, **rownorm2**. 
 
 - Modifications
     - Function **plotsp**: Argument 'label' was added (see example).

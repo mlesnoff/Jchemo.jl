@@ -1,12 +1,11 @@
 """
     manova(Y, f::StatsModels.FormulaTerm, dat::DataFrame; test = :pillai, digits = 4)
 MANOVA.
-* `Y` : Y-data (n, p) representing the response variables.
+* `Y` : Response variables (n, p).
 * `f` : A formula that defines the tested factor(s). See the syntax in the examples below.
 * `dat` (n, q) : Dataframe containing the factor(s) specified in `f`. 
 Keyword arguments:
-* `test` : Type of statistic used for the test. Possible values are: `:wilks`, `:pillai` (default), 
-    `:hotelling`, or `:roy`.
+* `test` : Type of test statistic. Possible values are: `:wilks`, `:pillai` (default), `:hotelling`, or `:roy`.
 * `lb` : Positive constant for regularization.
 * `digits` : Nb. digits for the outputs.
 
