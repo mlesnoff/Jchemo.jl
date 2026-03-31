@@ -448,7 +448,7 @@
 - **covm** Covariances matrix
 - **corm** Correlations matrix
 - **frob**, **frob2** Frobenius norm
-- **matB**, **matW** Between- and within-class covariance matrices
+- **matB**, **matW**, **matWc** Between- and within-class covariance matrices
 
 - Column-wise
     - **nco** Nb. columns 

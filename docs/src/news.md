@@ -1,5 +1,14 @@
 # News
 
+## *Version 0.9.7*
+
+- News:
+    - Fonctions **matWc**: Within-class (corrected) covariance matrices.
+
+- Modifications
+    - Code cleaning.
+
+
 ## *Version 0.9.6*
 
 - News:

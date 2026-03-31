@@ -38,7 +38,7 @@ matW(X, y, weights).W + matB(X, y, weights).B
 covm(X, weights)
 ```
 """ 
-matB = function(X, y, weights::ProbabilityWeights)
+function matB(X, y, weights::ProbabilityWeights)
     X = ensure_mat(X)
     y = vec(y)  # required for findall 
     p = nco(X)
@@ -58,19 +58,19 @@ end
 
 """
     matW(X, y, weights::ProbabilityWeights)
-Within-class covariance matrices.
+Within-class (non-corrected) covariance matrices.
 * `X` : X-data (n, p).
 * `y` : A vector (n) defing the class membership.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
-Compute the (non-corrected) within-class and pooled covariance matrices  (outputs `Wi` and `W`, respectively) of `X`. 
+Compute the (non-corrected) within-class and pooled covariance matrices (outputs `Wi` and `W`, respectively) of `X`. 
 
 If class i contains only one observation, `Wi` is computed by:
 * `covm(`X`, `weights`)`.
 
 For examples, see function `matB`. 
 """ 
-matW = function(X, y, weights::ProbabilityWeights)
+function matW(X, y, weights::ProbabilityWeights)
     X = ensure_mat(X)
     y = vec(y)  # required for findall 
     p = nco(X) 
@@ -102,6 +102,43 @@ matW = function(X, y, weights::ProbabilityWeights)
     (W = W, Wi, ni, priors, lev, weights)
 end
 
+"""
+    matWc(X, y)
+Within-class (corrected) covariance matrices.
+* `X` : X-data (n, p).
+* `y` : A vector (n) defing the class membership.
+
+Compute the (corrected) within-class and pooled covariance matrices (outputs `Wi` and `W`, respectively) of `X`. 
+
+If class i contains only one observation, `Wi` is computed by:
+* `covm(`X`)`.
+
+For examples, see function `matB`. 
+""" 
+function matWc(X, y)
+    X = ensure_mat(X)
+    y = vec(y)  # required for findall 
+    n, p = size(X) 
+    taby = tab(y)
+    lev = taby.keys
+    ni = taby.vals
+    nlev = length(lev)                                 
+    if sum(ni .== 1) > 0
+        Wi_1obs = covm(X) * n / (n - lev)
+    end
+    Wi = list(Matrix, nlev)
+    W = zeros(eltype(X), p, p)
+    @inbounds for i in eachindex(lev) 
+        if ni[i] == 1
+            Wi[i] = Wi_1obs
+        else
+            s = findall(y .== lev[i])
+            Wi[i] = covm(vrow(X, s)) * ni[i] / (ni[i] - 1)
+        end
+        W .+= Wi[i] * (ni[i] - 1) / (n - nlev)  
+    end
+    (W = W, Wi, ni, lev)
+end
 
 
 
