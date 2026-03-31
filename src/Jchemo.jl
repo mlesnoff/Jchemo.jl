@@ -311,7 +311,7 @@ export
     fscale, fscale!,
     wdis, wtal, 
     list, 
-    matB, matW, 
+    matB, matW, matWc, 
     mblock,
     mlev,
     pweight, pweightcla,
