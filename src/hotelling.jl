@@ -8,6 +8,29 @@ Keyword arguments:
 
 ## Examples 
 ```julia
+using Jchemo, JchemoData, JLD2
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/reaction_bertinetto.jld2")
+@load db dat
+@names dat
+datf = dat.datf
+n = nro(datf)
+tab(datf; group = [:temp, :catal])  # balanced design
+##
+Y = datf[:, [:y1, :y2]]
+fact = datf.catal
+tab(fact)
+
+hotelling(Y, fact)
+
+test = :wilks 
+#test = :pillai
+#test = :hotelling
+#test = :roy
+B = matB(Y, fact, pweight(ones(n))).B
+W = matW(Y, fact, pweight(ones(n))).W
+@show wilks(B * inv(W))[test]
+manova(Y, @formula(0 ~ catal), datf; test)
 ```
 """
 function hotelling(X, y; digits = 5)

@@ -134,8 +134,8 @@ include("xresid.jl")
 include("aov1.jl")
 include("manova.jl")
 include("hotelling.jl")
-include("emm.jl")
 include("decompx.jl")
+include("emm.jl")
 include("wilks.jl")
 include("waldtest.jl")
 
@@ -410,9 +410,9 @@ export
     svmr,
     treer, rfr, 
     ## Anova
-    aov1, manova, hotelling, asca, 
-    decompx, permut, emm, 
-    waldtest, wilks,
+    aov1, manova, hotelling, 
+    decompx, asca, permut, 
+    emm, waldtest, wilks,
     ## Sparse 
     spcr, spcr!,
     splsr, splsr!, 

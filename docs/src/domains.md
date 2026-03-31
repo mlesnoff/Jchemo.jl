@@ -84,8 +84,8 @@
 - **aov1** One-factor ANOVA
 - **manova** MANOVA
 - **hotelling** Two-sample Hotelling's T-squared test
-- **asca** ANOVA Simultaneous Component Analysis (ASCA)
 - **decompx** Decomposition of a matrix by orthogonal projection on experimental factors.
+- **asca** ANOVA Simultaneous Component Analysis (ASCA)
 - **emm** Estimated marginal means (EMMs)
 - **waldtest**: Wald or F test for model coefficients
 - **wilks**: Compute statistics for multivariate tests
