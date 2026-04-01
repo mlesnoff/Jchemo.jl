@@ -124,20 +124,21 @@ include("krr.jl")
 include("kplsr.jl")
 include("dkplsr.jl")
 
+include("aov1.jl")
+include("manova.jl")
+include("decompx.jl")
+include("asca.jl")
+include("emm.jl")
+include("hotelling.jl")
+include("wilks.jl")
+include("waldtest.jl")
+
 include("dfplsr_cg.jl")
 include("aicplsr.jl")
 include("vip.jl") 
 
 include("xfit.jl")
 include("xresid.jl")
-
-include("aov1.jl")
-include("manova.jl")
-include("hotelling.jl")
-include("decompx.jl")
-include("emm.jl")
-include("wilks.jl")
-include("waldtest.jl")
 
 ## Sparse
 include("splsr.jl")
@@ -410,9 +411,10 @@ export
     svmr,
     treer, rfr, 
     ## Anova
-    aov1, manova, hotelling, 
-    decompx, asca, permut, 
-    emm, waldtest, wilks,
+    aov1, 
+    manova, decompx, asca, 
+    emm, 
+    permut, hotelling, waldtest, wilks,
     ## Sparse 
     spcr, spcr!,
     splsr, splsr!, 

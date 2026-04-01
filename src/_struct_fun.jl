@@ -309,6 +309,18 @@ struct MlrNoArg
     weights::ProbabilityWeights
 end
 
+struct Decompx
+    fit::NamedTuple
+    R::Matrix
+    mat::NamedTuple
+    ss::NamedTuple
+    df::NamedTuple
+    f::StatsModels.FormulaTerm
+    assign::Vector{Int}
+    dat::DataFrame
+    xmeans::Vector 
+end
+
 struct Rr
     V::Matrix
     TtY::Matrix
