@@ -26,7 +26,7 @@ function occsdod(fitm, X; kwargs...)
     fitmod = occod(fitm, X; kwargs...)
     sd = fitmsd.d
     od = fitmod.d
-    z = [sqrt(sd.dstand[i] * od.dstand[i]) for i in eachindex(sd.dstand)]
+    z = [sqrt(sd.dstand[i] * od.dstand[i]) for i in eachindex(sd.d)]
     nam = string.(names(sd), "_sd")
     rename!(sd, nam)
     nam = string.(names(od), "_od")
