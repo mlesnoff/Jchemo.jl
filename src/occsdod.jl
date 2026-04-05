@@ -52,7 +52,7 @@ function predict(object::Occsdod, X)
     rename!(od, nam)
     d = hcat(sd, od)
     d.dstand = [sqrt(sd.dstand_sd[i] * od.dstand_od[i]) for i in eachindex(sd.dstand_sd)]
-    pred = [if d.dstand[i] <= 1 "in" else "out" end for i = 1:m]
+    pred = [if d.dstand[i] <= 1 "in" else "out" end for i in eachindex(d.d)]
     pred = reshape(pred, m, 1)
     (pred = pred, d)
 end
