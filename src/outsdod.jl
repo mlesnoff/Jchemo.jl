@@ -38,8 +38,8 @@ function outsdod(fitm, X; cut = :mad, cri = 3, risk = .025)
     @assert 0 <= risk <= 1 "Argument 'risk' must ∈ [0, 1]."
     d_sd = outsd(fitm).d
     d_od = outod(fitm, X).d
-    ## A scaling is required to compute outlierness 'd' since SD and OD
-    ## have not the same scale.
+    ## Since SD and OD have not the same scale, a scaling is required 
+    ## to compute the SD-OD outlierness 'd' 
     if cut == :mad
         cutoff_sd = median(d_sd) + cri * madv(d_sd)
         cutoff_od = median(d_od) + cri * madv(d_od)
