@@ -9,7 +9,7 @@ Keyword arguments:
 * `cri` : When `cut` = `:mad`, a constant. See thereafter.
 * `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
 
-In this method, the outlierness `d` of an observation is defined by its score distance (SD), ie. the Mahalanobis 
+In this method, outlierness `d` of an observation is defined by its score distance (SD), ie. the Mahalanobis 
 distance between the projection of the observation on the score plan defined by the fitted (e.g., PCA) model and the 
 "center" (always defined by zero) of the score plan.
 
@@ -34,8 +34,8 @@ Specific for function `predict`:
     * `dstand` > 1  ==> `out`: extreme value, possibly not belonging to the same class as the training. 
 
 ## References
-M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components 
-analysis. Technometrics, 47, 64-79.
+M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components analysis. 
+Technometrics, 47, 64-79.
 
 Nomikos, V., MacGregor, J.F., 1995. Multivariate SPC Charts for Monitoring Batch Processes. null 37, 41-59. 
 https://doi.org/10.1080/00401706.1995.10485888

@@ -10,13 +10,13 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` is scaled before computing the outlierness.
 
 The idea is to compare the KNN-outlierness of the observation to the KNN-outlierness of its neighbors, giving a local 
-measure of outlierness. For each observation (row of `X`), the outlierness is defined as folloxs:
+measure of outlierness. For each observation (row of `X`), outlierness `d` is defined as folloxs:
 
 * A summary (e.g., by sum) of the distances between the observation and its `k` nearest neighbors
     is computed, say out1.
 * The same summary is computed for each of the `k` nearest neighbors of the observation, and the median of 
     the `k` returned values is computed, say out2.
-* The outlierness of the observation is finally defined as the ratio out1 / out2.
+* Outlierness `d` of the observation is finally defined as the ratio out1 / out2.
 
 The approach can be seen as a simplification of the local outlier factor (LOF) method (Breunig et al. 2000),
 such as the Simplified-LOF method (Schubert et al 2014 p.206, Campos et al. 2016 p.896) where local density 

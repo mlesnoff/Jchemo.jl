@@ -10,7 +10,7 @@ Keyword arguments:
 * `cri` : When `cut` = `:mad`, a constant. See thereafter.
 * `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
 
-In this method, the outlierness `d` of an observation is the orthogonal distance (=  'X-residuals') of this 
+In this method, outlierness `d` of an observation is the orthogonal distance (=  'X-residuals') of this 
 observation, ie. the Euclidean distance between the observation and its projection to the score plan defined by 
 the fitted (e.g., PCA) model (e.g., Hubert et al. 2005, Van Branden & Hubert 2005 p. 66, Varmuza & Filzmoser 
 2009 p. 79).
@@ -18,10 +18,10 @@ the fitted (e.g., PCA) model (e.g., Hubert et al. 2005, Van Branden & Hubert 200
 See function `occsd` for details on the cutoff computation and the outputs.
 
 ## References
-M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components 
-analysis. Technometrics, 47, 64-79.
+M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components analysis. 
+Technometrics, 47, 64-79.
 
-K. Vanden Branden, M. Hubert (2005). Robuts classification in high dimension based on the SIMCA method. 
+K. Vanden Branden, M. Hubert (2005). Robust classification in high dimension based on the SIMCA method. 
 Chem. Lab. Int. Syst, 79, 10-21.
 
 K. Varmuza, V. Filzmoser (2009). Introduction to multivariate statistical analysis in chemometrics. 

@@ -9,7 +9,7 @@ Keyword arguments:
 * `cri` : When `cut` = `:mad`, a constant. See thereafter.
 * `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
 
-In this method, the outlierness `d` of a given observation is a consensus between the standardized score and
+In this method, outlierness `d` of a given observation is a consensus between the standardized score and
 orthogonal distances. The returned consensus is computed by: 
 * `d` = sqrt(SD_stand * OD_stand)
 where:
@@ -24,10 +24,10 @@ The cutoff is computed with non-parametric heuristics. Noting [d] the SD- or OD-
 See function `outod` for examples.
 
 ## References
-M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components 
-analysis. Technometrics, 47, 64-79.
+M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components analysis. 
+Technometrics, 47, 64-79.
 
-K. Vanden Branden, M. Hubert (2005). Robuts classification in high dimension based on the SIMCA method. 
+K. Vanden Branden, M. Hubert (2005). Robust classification in high dimension based on the SIMCA method. 
 Chem. Lab. Int. Syst, 79, 10-21.
 
 K. Varmuza, V. Filzmoser (2009). Introduction to multivariate statistical analysis in chemometrics. 

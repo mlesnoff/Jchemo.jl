@@ -10,7 +10,7 @@ Keyword arguments:
 * `cri` : When `cut` = `:mad`, a constant. See thereafter.
 * `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
 
-In this method, the outlierness `d` of a given observation is a consensus between the score distance (SD) and the
+In this method, outlierness `d` of a given observation is a consensus between the score distance (SD) and the
 orthogonal distance (OD). The consensus is computed from the standardized distances by: 
 * `dstand` = sqrt(`dstand_sd` * `dstand_od`).
 

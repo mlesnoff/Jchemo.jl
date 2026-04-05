@@ -4,13 +4,13 @@ Compute outlierness from PCA/PLS score distance (SD).
 * `fitm` : The preliminary model (e.g., object `fitm` returned by function `pcasvd`) that was fitted on 
     the data.
 
-In this method, the outlierness `d` of an observation is defined by its score distance (SD), ie. the Mahalanobis 
+In this method, outlierness `d` of an observation is defined by its score distance (SD), ie. the Mahalanobis 
 distance between the projection of the observation on the score plan defined by the fitted (e.g., PCA) model and the 
-"center" (always defined by zero) of the score plan.
+'center' (in this function always defined by zero) of the score plan.
 
 ## References
-M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components 
-analysis. Technometrics, 47, 64-79.
+M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components analysis. 
+Technometrics, 47, 64-79.
 
 ## Examples
 ```julia
@@ -44,6 +44,5 @@ function outsd(fitm)
     tscales = colstd(fitm.T, fitm.weights)
     T = fscale(fitm.T, tscales)
     d2 = vec(eucl2(T, zeros(Q, nlv)'))   # the center is defined as 0
-    d = sqrt.(d2)
-    (d = d,)
+    (d = sqrt.(d2),)
 end

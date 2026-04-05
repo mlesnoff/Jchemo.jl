@@ -6,9 +6,9 @@ Compute outlierness from Euclidean distances to center.
 Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD before computing the outlierness.
 
-Outlyingness is calculated by the Euclidean distance between the observation (rows of `X`) and a robust estimate 
-of the center of the data (in the present function, the spatial median). Such outlyingness was for instance used in the robust 
-PLSR algorithm of Serneels et al. 2005 (PRM). 
+In this function, outlierness `d` is computed by the Euclidean distance between the observation (rows of `X`) and a 
+robust estimate of the center of the data (in the present function, the spatial median). Such outlierness was for instance 
+used in the robust PLSR algorithm of Serneels et al. 2005 (PRM). 
 
 ## References
 Serneels, S., Croux, C., Filzmoser, V., Van Espen, V.J., 2005. Partial robust M-regression. 
