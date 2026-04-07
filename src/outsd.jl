@@ -39,10 +39,12 @@ f
 ```
 """
 function outsd(fitm)
-    Q = eltype(fitm.T)
-    nlv = nco(fitm.T)
-    tscales = colstd(fitm.T, fitm.weights)
-    T = fscale(fitm.T, tscales)
-    d2 = vec(eucl2(T, zeros(Q, nlv)'))   # the center is defined as 0
+    T = copy(fitm.T)
+    Q = eltype(T)
+    nlv = nco(T)
+    tscales = colstd(T, fitm.weights)
+    fscale!(T, tscales)
+    centr = zeros(Q, nlv)     # the center is defined as 0
+    d2 = vec(eucl2(T, centr'))   
     (d = sqrt.(d2),)
 end

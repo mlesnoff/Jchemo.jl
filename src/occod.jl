@@ -8,7 +8,7 @@ One-class classification using PCA/PLS orthognal distance (OD).
 Keyword arguments:
 * `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `cut` = `:mad`, a constant. See thereafter.
-* `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
+* `alpha` : When `cut` = `:q`, a alpha-I level. See thereafter.
 
 In this method, outlierness `d` of an observation is the orthogonal distance (=  'X-residuals') of this 
 observation, ie. the Euclidean distance between the observation and its projection to the score plan defined by 
@@ -92,7 +92,7 @@ plotxy(T[:, i], T[:, i + 1], group; color = color, leg_title = "Type of obs.", x
 ## Training
 model = occod(; cri = 2.5)
 #model = occod(cut = :mad, cri = 4)
-#model = occod(cut = :q, risk = .01)
+#model = occod(cut = :q, alpha = .01)
 #model = occsdod(; cri = 2.5)
 fit!(model, model0.fitm, Xtrain_fin) 
 @names model 
@@ -127,7 +127,7 @@ occod(; kwargs...) = JchemoModel(occod, nothing, kwargs)
 function occod(fitm, X; kwargs...)
     par = recovkw(ParOcc, kwargs).par 
     @assert in(par.cut, [:mad, :q]) "Argument 'cut' must be :mad or :q."
-    @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
+    @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     ## Orthogonal distance
     E = xresid(fitm, X)
     d = rownorm(E)
@@ -135,7 +135,7 @@ function occod(fitm, X; kwargs...)
     if par.cut == :mad
         cutoff = median(d) + par.cri * madv(d)
     elseif par.cut == :q
-        cutoff = quantile(d, 1 - par.risk)
+        cutoff = quantile(d, 1 - par.alpha)
     end
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)

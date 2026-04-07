@@ -11,7 +11,7 @@ Keyword arguments:
 * `algo` : Function summarizing the `k` distances to the neighbors.
 * `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `cut` = `:mad`, a constant. See thereafter.
-* `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
+* `alpha` : When `cut` = `:q`, a alpha-I level. See thereafter.
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
 See functions:
@@ -60,7 +60,7 @@ function occlknn(X; kwargs...)
     end
     ## End 
     par.cut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
-    par.cut == :q ? cutoff = quantile(d, 1 - par.risk) : nothing
+    par.cut == :q ? cutoff = quantile(d, 1 - par.alpha) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)

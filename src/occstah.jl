@@ -7,7 +7,7 @@ Keyword arguments:
 * `nlv` : Nb. random directions on which `X` is projected. 
 * `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `cut` = `:mad`, a constant. See thereafter.
-* `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
+* `alpha` : When `cut` = `:q`, a alpha-I level. See thereafter.
 * `scal` : Boolean. If `true`, each column of `X` is scaled such as in function `outstah`.
 
 In this method, outlierness `d` of a given observation is the Stahel-Donoho outlierness (see function `outstah`).
@@ -108,7 +108,7 @@ occstah(; kwargs...) = JchemoModel(occstah, nothing, kwargs)
 function occstah(X; kwargs...) 
     par = recovkw(ParOccstah, kwargs).par 
     @assert in(par.cut, [:mad, :q]) "Argument 'cut' must be :mad or :q."
-    @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
+    @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     p = nco(X)
     V = rand(0:1, p, par.nlv)
     res = outstah(X, V; scal = par.scal)
@@ -121,11 +121,11 @@ function occstah(X; kwargs...)
     #g = mu / nu
     #dis = Distributions.Chisq(nu)
     #pval = Distributions.ccdf.(dis, d2 / g)
-    #cut == :par ? cutoff = sqrt(g * quantile(dis, 1 - risk)) : nothing
+    #cut == :par ? cutoff = sqrt(g * quantile(dis, 1 - alpha)) : nothing
     #cut == "npar" ? cutoff = median(d) + par.cri * madv(d) : nothing
     ## End 
     par.cut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
-    par.cut == :q ? cutoff = quantile(d, 1 - par.risk) : nothing
+    par.cut == :q ? cutoff = quantile(d, 1 - par.alpha) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)

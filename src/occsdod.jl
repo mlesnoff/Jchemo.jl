@@ -8,7 +8,7 @@ One-class classification using a consensus between PCA/PLS score and orthogonal 
 Keyword arguments:
 * `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `cut` = `:mad`, a constant. See thereafter.
-* `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
+* `alpha` : When `cut` = `:q`, a alpha-I level. See thereafter.
 
 In this method, outlierness `d` of a given observation is a consensus between the score distance (SD) and the
 orthogonal distance (OD). The consensus is computed from the standardized distances by: 

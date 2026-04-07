@@ -7,7 +7,7 @@ One-class classification using PCA/PLS score distance (SD).
 Keyword arguments:
 * `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `cut` = `:mad`, a constant. See thereafter.
-* `risk` : When `cut` = `:q`, a risk-I level. See thereafter.
+* `alpha` : When `cut` = `:q`, a alpha-I level. See thereafter.
 
 In this method, outlierness `d` of an observation is defined by its score distance (SD), ie. the Mahalanobis 
 distance between the projection of the observation on the score plan defined by the fitted (e.g., PCA) model and the 
@@ -18,7 +18,7 @@ If a new observation has `d` higher than a given `cutoff`, the observation is as
 computed on the training class:
 * If `cut` = `:mad`, then `cutoff` = MED([d]) + `cri` * MAD([d]). 
 * If `cut` = `:q`, then `cutoff` is estimated from the empirical cumulative density function 
-    computed on [d], for a given risk-I (`risk`).
+    computed on [d], for a given alpha-I (`alpha`).
 Alternative approximate cutoffs have been proposed in the literature (e.g.: Nomikos & MacGregor 1995, Hubert et al. 2005,
 Pomerantsev 2008). Typically, and whatever the approximation method used to compute the cutoff, it is recommended to tune 
 this cutoff depending on the detection objectives. 
@@ -108,7 +108,7 @@ plotxy(T[:, i], T[:, i + 1], group; color = color, leg_title = "Type of obs.", x
 ## Training
 model = occsd(; cri = 2.5)
 #model = occsd(cut = :mad, cri = 4)
-#model = occsd(cut = :q, risk = .01)
+#model = occsd(cut = :q, alpha = .01)
 fit!(model, model0.fitm) 
 @names model 
 fitm = model.fitm ;
@@ -142,20 +142,20 @@ occsd(; kwargs...) = JchemoModel(occsd, nothing, kwargs)
 function occsd(fitm; kwargs...)
     par = recovkw(ParOcc, kwargs).par
     @assert in(par.cut, [:mad, :q]) "Argument 'cut' must be :mad or :q."
-    @assert 0 <= par.risk <= 1 "Argument 'risk' must ∈ [0, 1]."
-    T = copy(fitm.T) # remove side effect of fscale!
+    @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
+    T = copy(fitm.T) 
     Q = eltype(T)
     nlv = nco(T)
-    ## Mahalanobis distance
     tscales = colstd(T, fitm.weights)
     fscale!(T, tscales)
-    d2 = vec(eucl2(T, zeros(Q, nlv)'))   # the center is defined as 0
+    centr = zeros(Q, nlv)     # the center is defined as 0
+    d2 = vec(eucl2(T, centr'))  
     d = sqrt.(d2)
     ## End
     if par.cut == :mad
         cutoff = median(d) + par.cri * madv(d)
     elseif par.cut == :q
-        cutoff = quantile(d, 1 - par.risk)
+        cutoff = quantile(d, 1 - par.alpha)
     end
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
