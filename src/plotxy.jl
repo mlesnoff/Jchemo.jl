@@ -1,11 +1,11 @@
 """
     plotxy(x, y; size = (500, 300), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", kwargs...)
+        xticks = nothing, yticks = nothing, xlabel = "", ylabel = "", title = "", kwargs...)
     plotxy(x, y, group; size = (600, 350), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", leg::Bool = true, leg_title = "Group", 
-        kwargs...)
+        xticks = nothing, yticks = nothing, xlabel = "", ylabel = "", title = "", 
+        leg::Bool = true, leg_title = "Group", kwargs...)
 2-D scatter plot of x-y data
 * `x` : A x-vector (n).
 * `y` : A y-vector (n). 
@@ -122,8 +122,8 @@ end
 
 function plotxy(x, y, group; size = (600, 350), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", leg::Bool = true, leg_title = "Group", 
-        kwargs...)
+        xticks = nothing, yticks = nothing, xlabel = "", ylabel = "", title = "", 
+        leg::Bool = true, leg_title = "Group", kwargs...)
     x = vec(x)
     y = vec(y)
     group = vec(group)

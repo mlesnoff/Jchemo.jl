@@ -1,14 +1,13 @@
 """
     outod(fitm, X)
 Compute outlierness from PCA/PLS orthogonal distance (OD).
-* `fitm` : The preliminary model (e.g., object `fitm` returned by function `pcasvd`) that was fitted on 
-    the data.
-* `X` : X-data (n, p) on which was fitted the model `fitm`.
+* `fitm` : The reduction dimension model that was fitted on the data (e.g., object `fitm` returned by functions 
+    `pcasvd` or `plskern`).
+* `X` : X-data (n, p) on which was fitted model `fitm`.
 
-In this method, outlierness `d` of an observation is the orthogonal distance (=  'X-residuals') of this 
-observation, ie. the Euclidean distance between the observation and its projection to the score plan defined by 
-the fitted (e.g., PCA) model (e.g., Hubert et al. 2005, Van Branden & Hubert 2005 p. 66, Varmuza & Filzmoser 
-2009 p. 79).
+In this method, outlierness `d` of an observation is defined by its orthogonal distance (=  'X-residuals'), 
+ie. the Euclidean distance between the observation and its projection to the score plan fitted by the model
+(e.g., PCA or PLS).
 
 ## References
 M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components analysis. 
@@ -39,9 +38,9 @@ typ[s] .= 1
 model = pcaout(; nlv = 3)
 fit!(model, X) 
 fitm = model.fitm ;
-res = outsd(fitm) ;
+res = outod(fitm, X) ;
 @names res
-f, ax = plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness")
+f, ax = plotxy(1:n, res.d, typ; xlabel = "Obs. index", ylabel = "Outlierness")
 text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
 ```

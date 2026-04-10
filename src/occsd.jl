@@ -3,7 +3,7 @@
     occsd(fitm; kwargs...)
 One-class classification using PCA/PLS score distance (SD).
 * `fitm` : The preliminary model (e.g., object `fitm` returned by function `pcasvd`) that was fitted on 
-    the training data assumed to represent the reference class.
+    the training data assumed to represent the reference (= target) class.
 Keyword arguments:
 * `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `cut` = `:mad`, a constant. See thereafter.

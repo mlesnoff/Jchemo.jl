@@ -2,7 +2,7 @@
     occlknn(; kwargs...)
     occlknn(X; kwargs...)
 One-class classification using local kNN distance-based outlierness.
-* `X` : Training X-data (n, p) assumed to represent the reference class.
+* `X` : Training X-data (n, p) assumed to represent the reference (= target) class.
 Keyword arguments:
 * `nsamp` : Nb. of observations (`X`-rows) sampled in the training data and for which are computed 
     the outliernesses (stimated outlierness distribution of the reference class).
