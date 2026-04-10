@@ -40,7 +40,6 @@ model = pcaout(; nlv = 3)
 fit!(model, X) 
 fitm = model.fitm ;
 res = outsd(fitm) ;
-#res = outsdod(fitm, X) ;
 @names res
 f, ax = plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness")
 text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)

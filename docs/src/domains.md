@@ -436,7 +436,8 @@
     - **expand_grid** Build a dataframe with all the combinations of the entered parameter values
 
 *Operations on a vector*
-- **sumv**, **meanv**, **normv**, **norm2v**, **stdv**, **varv**, **madv**, **iqrv**
+- **sumv**, **meanv**, **normv**, **norm2v**, **stdv**, **varv**, **medv**, 
+    **madv**, **iqrv**
 
 *Operations on two vectors*
 - **cosv** Cosinus 

@@ -293,7 +293,7 @@ export
     ##
     aggmean, aggstat, 
     aggsumv,  
-    sumv, meanv, stdv, varv, madv, iqrv, normv, norm2v,
+    sumv, meanv, stdv, varv, medv, madv, iqrv, normv, norm2v,
     colsum, colmean, colnorm, colnorm2, colstd, colvar, colmed, colmad, 
     colsumskip, colmeanskip, colstdskip, colvarskip,
     convertdf,

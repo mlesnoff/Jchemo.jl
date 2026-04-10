@@ -8,7 +8,7 @@ Keyword arguments:
     `:cos` (cosine distance), `:sam` (spectral angular distance), `:cor` (correlation distance).
 * `k` : Number of neighbors to return.
 
-In addition to neighbors, the function also returns the distances. 
+In addition to neighbors (`ind`), the function also returns the distances (`d`). 
 
 The angular distances used in this function are scaled to [0, 1]. Consider two vectors x and y, theta the (unknown) 
 angle between x and y in radiants, and costheta = cosinus(x, y). Then, costheta is computed as:

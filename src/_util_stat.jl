@@ -154,6 +154,23 @@ varv(x) = Statistics.var(x; corrected = false)
 
 varv(x, weights::Jchemo.ProbabilityWeights) = Statistics.var(x, weights; corrected = false)
 
+""" 
+    medv(x)
+Median of a vector. 
+* `x` : A vector (n).
+
+## Examples
+```julia
+using Jchemo
+
+n = 100
+x = rand(n)
+
+medv(x)
+```
+"""
+medv(x) = Statistics.median(x)
+
 """
     iqrv(x)
 Interquartile interval (IQR) of a vector.
