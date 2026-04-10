@@ -5,28 +5,26 @@ One-class classification using PCA/PLS score distance (SD).
 * `fitm` : The preliminary model (e.g., object `fitm` returned by function `pcasvd`) that was fitted on 
     the training data assumed to represent the reference (= target) class.
 Keyword arguments:
-* `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
-* `cri` : When `cut` = `:mad`, a constant. See thereafter.
-* `alpha` : When `cut` = `:q`, a alpha-I level. See thereafter.
+* `typcut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
+* `cri` : When `typcut` = `:mad`, a constant. See thereafter.
+* `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 
-In this method, outlierness `d` of an observation is defined by its score distance (SD), ie. the Mahalanobis 
-distance between the projection of the observation on the score plan defined by the fitted (e.g., PCA) model and the 
-"center" (always defined by zero) of the score plan.
+OCC using outlierness `d` as defined in function `outsd`.
 
-If a new observation has `d` higher than a given `cutoff`, the observation is assumed to not belong to the training 
-(= reference) class. The `cutoff` is computed with non-parametric heuristics. Noting [d] the vector of outliernesses 
-computed on the training class:
-* If `cut` = `:mad`, then `cutoff` = MED([d]) + `cri` * MAD([d]). 
-* If `cut` = `:q`, then `cutoff` is estimated from the empirical cumulative density function 
-    computed on [d], for a given alpha-I (`alpha`).
-Alternative approximate cutoffs have been proposed in the literature (e.g.: Nomikos & MacGregor 1995, Hubert et al. 2005,
-Pomerantsev 2008). Typically, and whatever the approximation method used to compute the cutoff, it is recommended to tune 
-this cutoff depending on the detection objectives. 
+If a new observation has d higher than a given `cutoff`, the observation is assumed to not belong to the training 
+(= reference = target) class. The `cutoff` is computed with non-parametric heuristics, as follows. Noting [d] the vector 
+of outliernesses computed on the training class:
+* If `typcut` = `:mad`, then `cutoff` = MED([d]) + `cri` * MAD([d]). 
+* If `typcut` = `:q`, then `cutoff` is estimated from the empirical cumulative density function computed on [d], for 
+    a given risk-I (`alpha`).
+Approximate parametric cutoffs have been proposed in the literature (e.g., Nomikos & MacGregor 1995, Hubert et al. 2005,
+Pomerantsev 2008). Whatever the approximation method used, it is recommended to tune the cutoff depending on the 
+detection objectives. 
 
 **Outputs**
-* `pval`: Estimate of p-value (see functions `pval`) computed from the training distribution [d]. 
+* `pval`: Estimate of P(d > cutoff) computed from the training empirical distribution d. 
 * `dstand`: standardized distance defined as `d` / `cutoff`. A value `dstand` > 1 may be considered as extreme 
-    compared to the distribution of the training data.  
+    compared to the training empirical distribution d.  
 * `gh` is the Winisi "GH" (usually, GH > 3 is considered as extreme).
 Specific for function `predict`:
 * `pred`: class prediction
@@ -107,8 +105,8 @@ plotxy(T[:, i], T[:, i + 1], group; color = color, leg_title = "Type of obs.", x
 #### Occ
 ## Training
 model = occsd(; cri = 2.5)
-#model = occsd(cut = :mad, cri = 4)
-#model = occsd(cut = :q, alpha = .01)
+#model = occsd(typcut = :mad, cri = 4)
+#model = occsd(typcut = :q, alpha = .01)
 fit!(model, model0.fitm) 
 @names model 
 fitm = model.fitm ;
@@ -141,20 +139,20 @@ occsd(; kwargs...) = JchemoModel(occsd, nothing, kwargs)
 
 function occsd(fitm; kwargs...)
     par = recovkw(ParOcc, kwargs).par
-    @assert in(par.cut, [:mad, :q]) "Argument 'cut' must be :mad or :q."
+    @assert in(par.typcut, [:mad, :q]) "Argument 'typcut' must be :mad or :q."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     T = copy(fitm.T) 
     Q = eltype(T)
     nlv = nco(T)
     tscales = colstd(T, fitm.weights)
     fscale!(T, tscales)
-    centr = zeros(Q, nlv)     # the center is defined as 0
+    centr = zeros(Q, nlv)     # center defined as 0
     d2 = vec(eucl2(T, centr'))  
     d = sqrt.(d2)
     ## End
-    if par.cut == :mad
+    if par.typcut == :mad
         cutoff = median(d) + par.cri * madv(d)
-    elseif par.cut == :q
+    elseif par.typcut == :q
         cutoff = quantile(d, 1 - par.alpha)
     end
     e_cdf = StatsBase.ecdf(d)
@@ -173,7 +171,7 @@ function predict(object::Occsd, X)
     T = transf(object.fitm, X)
     Q = eltype(T)
     m, nlv = size(T)
-    ## Mahalanobis distance
+    ## Mahalanobis distance to the center
     fscale!(T, object.tscales)
     d2 = vec(eucl2(T, zeros(Q, nlv)'))
     d = sqrt.(d2)

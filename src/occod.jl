@@ -6,9 +6,9 @@ One-class classification using PCA/PLS orthognal distance (OD).
     the training data assumed to represent the reference (= target) class.
 * `X` : Training X-data (n, p) on which was fitted the model `fitm`.
 Keyword arguments:
-* `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
-* `cri` : When `cut` = `:mad`, a constant. See thereafter.
-* `alpha` : When `cut` = `:q`, a alpha-I level. See thereafter.
+* `typcut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
+* `cri` : When `typcut` = `:mad`, a constant. See thereafter.
+* `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 
 In this method, outlierness `d` of an observation is the orthogonal distance (=  'X-residuals') of this 
 observation, ie. the Euclidean distance between the observation and its projection to the score plan defined by 
@@ -91,8 +91,8 @@ plotxy(T[:, i], T[:, i + 1], group; color = color, leg_title = "Type of obs.", x
 #### Occ
 ## Training
 model = occod(; cri = 2.5)
-#model = occod(cut = :mad, cri = 4)
-#model = occod(cut = :q, alpha = .01)
+#model = occod(typcut = :mad, cri = 4)
+#model = occod(typcut = :q, alpha = .01)
 #model = occsdod(; cri = 2.5)
 fit!(model, model0.fitm, Xtrain_fin) 
 @names model 
@@ -126,15 +126,15 @@ occod(; kwargs...) = JchemoModel(occod, nothing, kwargs)
 
 function occod(fitm, X; kwargs...)
     par = recovkw(ParOcc, kwargs).par 
-    @assert in(par.cut, [:mad, :q]) "Argument 'cut' must be :mad or :q."
+    @assert in(par.typcut, [:mad, :q]) "Argument 'typcut' must be :mad or :q."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     ## Orthogonal distance
     E = xresid(fitm, X)
     d = rownorm(E)
     ## End
-    if par.cut == :mad
+    if par.typcut == :mad
         cutoff = median(d) + par.cri * madv(d)
-    elseif par.cut == :q
+    elseif par.typcut == :q
         cutoff = quantile(d, 1 - par.alpha)
     end
     e_cdf = StatsBase.ecdf(d)

@@ -6,9 +6,9 @@ One-class classification using a consensus between PCA/PLS score and orthogonal 
     the training data assumed to represent the reference (= target) class.
 * `X` : Training X-data (n, p) on which was fitted the model `fitm`.
 Keyword arguments:
-* `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
-* `cri` : When `cut` = `:mad`, a constant. See thereafter.
-* `alpha` : When `cut` = `:q`, a alpha-I level. See thereafter.
+* `typcut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
+* `cri` : When `typcut` = `:mad`, a constant. See thereafter.
+* `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 
 In this method, outlierness `d` of a given observation is a consensus between the score distance (SD) and the
 orthogonal distance (OD). The consensus is computed from the standardized distances by: 

@@ -52,8 +52,8 @@ plotxy(T[:, 1], T[:, 2], year; ellipse = true, xlabel = "PC1", ylabel = "PC2").f
 
 i = 2
 colm = cgrad(:Dark2_5, nlev; categorical = true)
-plotxy(T[:, i], T[:, i + 1], year; color = colm, xlabel = string("PC", i), 
-    ylabel = string("PC", i + 1), zeros = true, ellipse = true).f
+plotxy(T[:, i], T[:, i + 1], year; color = colm, xlabel = string("PC", i), ylabel = string("PC", i + 1), zeros = true, 
+    ellipse = true).f
 
 plotxy(T[:, 1], T[:, 2], year).lev
 

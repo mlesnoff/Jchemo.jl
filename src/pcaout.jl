@@ -59,8 +59,7 @@ fit!(model, X)
 transf(model, X)
 
 i = 1
-plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i), 
-    ylabel = string("PC", i + 1)).f
+plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i), ylabel = string("PC", i + 1)).f
 ```
 """
 pcaout(; kwargs...) = JchemoModel(pcaout, nothing, kwargs)

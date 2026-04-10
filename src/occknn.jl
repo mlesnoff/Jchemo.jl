@@ -9,9 +9,9 @@ Keyword arguments:
 * `metric` : Metric used to compute the distances. See function `getknn`.
 * `k` : Nb. nearest neighbors to consider.
 * `algo` : Function summarizing the `k` distances to the neighbors.
-* `cut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
-* `cri` : When `cut` = `:mad`, a constant. See thereafter.
-* `alpha` : When `cut` = `:q`, a alpha-I level. See thereafter.
+* `typcut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
+* `cri` : When `typcut` = `:mad`, a constant. See thereafter.
+* `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
 See functions:
@@ -140,8 +140,8 @@ function occknn(X; kwargs...)
         d[i] = par.algo(res.d[i][2:end])
     end
     ## End 
-    par.cut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
-    par.cut == :q ? cutoff = quantile(d, 1 - par.alpha) : nothing
+    par.typcut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
+    par.typcut == :q ? cutoff = quantile(d, 1 - par.alpha) : nothing
     e_cdf = StatsBase.ecdf(d)
     p_val = pval(e_cdf, d)
     d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
