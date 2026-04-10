@@ -243,6 +243,7 @@ include("occstah.jl")
 include("occsd.jl")
 include("occod.jl") 
 include("occsdod.jl")
+include("occdds.jl")
 include("occknn.jl")
 include("occlknn.jl")
 
@@ -458,7 +459,8 @@ export
     outsd, outod, outsdod,
     outknn, outlknn,
     occstah,
-    occsd, occod, occsdod,
+    occsd, occod, occsdod, 
+    occdds,
     occknn, occlknn,
     ## Sparse 
     splsrda,

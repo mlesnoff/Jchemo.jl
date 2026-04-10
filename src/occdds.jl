@@ -18,22 +18,38 @@ See functions:
 * `occsd` for details on the cutoff computation and the outputs,
 * and `occod` for examples.
 """ 
-occdds(; kwargs...) = JchemoModel(occdds, nothing, kwargs)
+#occdds(; kwargs...) = JchemoModel(occdds, nothing, kwargs)
 
-function occdds(fitm, X; kwargs...) 
-    par = recovkw(ParOcc, kwargs).par 
-    fitmsd = occsd(fitm; kwargs...)
-    fitmod = occod(fitm, X; kwargs...)
-    sd = fitmsd.d
-    od = fitmod.d
-    z = [sqrt(sd.dstand[i] * od.dstand[i]) for i in eachindex(sd.d)]
-    nam = string.(names(sd), "_sd")
-    rename!(sd, nam)
-    nam = string.(names(od), "_od")
-    rename!(od, nam)
-    d = hcat(sd, od)
-    d.dstand = z
-    Occsdod(d, fitmsd, fitmod, par)
+function occdds(fitm, X; fcentr = meanv, fscal = stdv, alpha = .05) 
+    #par = recovkw(ParOcc, kwargs).par 
+    sd = outsd(fitm).d
+    od = outod(fitm, X).d
+    ##
+    ##
+    d = sd.^2 
+    mu = fcentr(d)
+    sigma = fscal(d)
+    g = sigma^2 / (2 * mu)
+    nu = 2 * (mu / sigma)^2
+    nu = max(1, round(Int, nu))
+    cutoff = mu / nu * quantile(Chisq(nu), 1 - alpha)
+    sd2 = (d = d, mu, sigma, g, nu, cutoff)
+    #quantile(Chisq(nlv), 1 - alpha)
+    ##
+    d = od.^2 
+    mu = fcentr(d)
+    sigma = fscal(d)
+    g = sigma^2 / (2 * mu)
+    nu = 2 * (mu / sigma)^2
+    nu = max(1, round(Int, nu))
+    cutoff = mu / nu * quantile(Chisq(nu), 1 - alpha)
+    od2 = (d = d, mu, sigma, g, nu, cutoff)
+    ##
+    d = sd2.nu / sd2.mu * sd2.d + od2.nu / od2.mu * od2.d 
+    nu = sd2.nu + od2.nu
+    cutoff = quantile(Chisq(nu), 1 - alpha)
+    ## 
+    (d = d, nu, cutoff, sd2, od2)
 end
 
 """
@@ -42,7 +58,7 @@ Compute predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Occsdod, X)
+function predict_occds(object, X)
     m = nro(X)
     sd = predict(object.fitmsd, X).d
     od = predict(object.fitmod, X).d
