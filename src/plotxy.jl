@@ -77,6 +77,7 @@ function plotxy(x, y; size = (500, 300), color = nothing, ellipse::Bool = false,
     x = vec(x)
     y = vec(y)
     f = Figure(; size)
+    ## Ticks (to improve)
     if isnothing(xticks) && isnothing(yticks)
         ax = Axis(f; xlabel, ylabel, title)
     elseif !isnothing(xticks) && isnothing(yticks)
@@ -86,6 +87,7 @@ function plotxy(x, y; size = (500, 300), color = nothing, ellipse::Bool = false,
     else 
         ax = Axis(f; xticks, yticks, xlabel, ylabel, title)
     end
+    ## End
     if isnothing(color)
         scatter!(ax, x, y; kwargs...)
     else
@@ -128,7 +130,17 @@ function plotxy(x, y, group; size = (600, 350), color = nothing, ellipse::Bool =
     lev = mlev(group)
     lab = string.(lev)
     f = Figure(; size)
-    ax = Axis(f; xlabel, ylabel, title)
+    ## Ticks (to improve)
+    if isnothing(xticks) && isnothing(yticks)
+        ax = Axis(f; xlabel, ylabel, title)
+    elseif !isnothing(xticks) && isnothing(yticks)
+        ax = Axis(f; xticks, xlabel, ylabel, title)
+    elseif isnothing(xticks) && !isnothing(yticks)
+        ax = Axis(f; yticks, xlabel, ylabel, title)        
+    else 
+        ax = Axis(f; xticks, yticks, xlabel, ylabel, title)
+    end
+    ## End
     lw = .8
     @inbounds for i in eachindex(lev)
         s = group .== lev[i]
