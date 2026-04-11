@@ -37,7 +37,7 @@ X = dat.X
 wlst = names(X)
 wl = parse.(Float64, wlst)
 n, p = size(X)
-## Six of the samples (25, 26, and 36-39) contain added alcohol.
+## Six of the samples (25, 26, and 36-39) contain added alcohol
 s = [25; 26; 36:39]
 typ = zeros(Int, n)
 typ[s] .= 1
@@ -47,7 +47,7 @@ metric = :eucl ; k = 15 ; algo = sum
 #algo = maximum
 res = outknn(X; metric, k, algo) ;
 @names res
-f, ax = plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness")
+f, ax = plotxy(1:n, res.d, typ, xlabel = "Observation index", ylabel = "Outlierness")
 text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
 
@@ -59,7 +59,7 @@ T = model.fitm.T
 metric = :eucl 
 k = 15
 res = outknn(T; metric, k, scal = true)
-plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness").f
+plotxy(1:n, res.d, typ, xlabel = "Observation index", ylabel = "Outlierness").f
 ```
 """ 
 function outknn(X; metric = :eucl, k, algo = sum, scal::Bool = false)

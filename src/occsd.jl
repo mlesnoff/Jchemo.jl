@@ -90,7 +90,7 @@ fitm = model.fitm ;
 @head dtrain_in = fitm.d
 fitm.cutoff
 d = dtrain_in.dstand
-f, ax = plotxy(1:length(d), d; color = (:red, .3), size = (500, 300), xlabel = "Obs. index", 
+f, ax = plotxy(1:length(d), d; color = (:red, .3), size = (500, 300), xlabel = "Observation index", 
     ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 s = d .> 1
@@ -118,7 +118,7 @@ conf(pred, ytest_out).cnt
 d = vcat(dtrain_in.dstand, dtest_in.dstand, dtest_out.dstand)
 color = [:purple, (:green, .7), (:red, .3)]
 f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
-    title = "SD", xlabel = "Obs. index", ylabel = "Standardized distance")
+    title = "SD", xlabel = "Observation index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 ```

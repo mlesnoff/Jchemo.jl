@@ -82,7 +82,7 @@ fitm = model.fitm ;
 @head fitm.V  # random projection directions 
 @head dtrain = fitm.d
 d = dtrain.dstand
-f, ax = plotxy(1:length(d), d; color = (:green, .5), size = (500, 300), xlabel = "Obs. index", 
+f, ax = plotxy(1:length(d), d; color = (:green, .5), size = (500, 300), xlabel = "Observation index", 
     ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
@@ -98,7 +98,7 @@ conf(res.pred, ytest_fin).cnt
 d = vcat(dtrain.dstand, dtest.dstand)
 color = [:red, :blue, (:green, .5)]
 f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
-    xlabel = "Obs. index", ylabel = "Standardized distance")
+    xlabel = "Observation index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 ```
