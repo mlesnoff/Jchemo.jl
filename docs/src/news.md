@@ -130,7 +130,7 @@
 
 - News 
     - Functions **outsd**, **outod** and **outsdod**: Compute a SD, OD and SD-OD outlierness.
-    - Functions **occknn**, **occlknn**: One-class classification using kNN and local kNN distance-based outlierness.
+    - Functions **occknn**, **occlknn**: One-class classification (OCC) using kNN and local kNN distance-based outlierness.
     - Functions **plotxyz**: 3-D x-y-z scatter plot.
     - Function **plotlv**: Matrix of 2-D plots of successive latent variables (PCA, PLS, etc.).
 
@@ -914,8 +914,8 @@ the Makie's backend (e.g., CairoMakie).
 ## *Version 0.0.23*
 
 - New 
-    - **occknndis**: One-class classification using "global" k-nearest neighbors distances.
-    - **occlknndis**: One-class classification using "local" k-nearest neighbors distances.
+    - **occknndis**: One-class classification (OCC) using "global" k-nearest neighbors distances.
+    - **occlknndis**: One-class classification (OCC) using "local" k-nearest neighbors distances.
 
 - Modifications
     - **occsd**, **occod**, **occsdod**, **occstah**: The methods to compute the cutoff have changed.
@@ -924,7 +924,7 @@ the Makie's backend (e.g., CairoMakie).
 
 - New 
     - **colmad**: Median absolute deviation (MAD) of each column of a matrix.
-    - **occsdod**: One-class classification using a consensus between PCA/PLS score (SD) and orthogonal (OD) distances.
+    - **occsdod**: One-class classification (OCC) using a consensus between PCA/PLS score (SD) and orthogonal (OD) distances.
     - **replacedict**: Replace the elements of a vector by levels defined in a dictionary.
     - **stah**: Stahel-Donoho outlierness measure.
 

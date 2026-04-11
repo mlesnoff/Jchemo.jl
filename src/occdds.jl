@@ -1,10 +1,10 @@
 """
     occdds(; kwargs...)
     occdds(object, X; kwargs...)
-One-class classification using DD-Simca.
+One-class classification (OCC) using DD-Simca.
 * `fitm` : The preliminary model (e.g., object `fitm` returned by function `pcasvd`) that was fitted on 
     the training data assumed to represent the reference (= target) class.
-* `X` : Training X-data (n, p) on which was fitted the model `fitm`.
+* `X` : Training X-data (n, p) on which was fitted model `fitm`.
 Keyword arguments:
 * `fcentr` : A function that computes the centers of the empirical distributions of the squared score and orthogonal 
     distances (SD2 and OD2). By default, `fcentr = meanv`.

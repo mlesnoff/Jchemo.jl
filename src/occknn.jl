@@ -1,7 +1,7 @@
 """
     occknn(; kwargs...)
     occknn(X; kwargs...)
-One-class classification using kNN distance-based outlierness.
+One-class classification (OCC) using kNN distance-based outlierness.
 * `X` : Training X-data (n, p) assumed to represent the reference (= target) class.
 Keyword arguments:
 * `nsamp` : Nb. of observations (`X`-rows) sampled in the training data and for which are computed 

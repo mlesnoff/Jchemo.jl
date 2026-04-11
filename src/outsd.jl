@@ -46,5 +46,5 @@ function outsd(fitm)
     fscale!(T, tscales)
     centr = zeros(Q, nlv)     # the center is defined as 0
     d2 = vec(eucl2(T, centr'))   
-    (d = sqrt.(d2),)
+    (d = sqrt.(d2), tscales)
 end

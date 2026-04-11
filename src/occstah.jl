@@ -1,7 +1,7 @@
 """
     occstah(; kwargs...)
     occstah(X; kwargs...)
-One-class classification using the Stahel-Donoho outlierness.
+One-class classification (OCC) using the Stahel-Donoho outlierness.
 * `X` : Training X-data (n, p) assumed to represent the reference (= target) class.
 Keyword arguments:
 * `nlv` : Nb. random directions on which `X` is projected. 

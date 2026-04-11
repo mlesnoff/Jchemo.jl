@@ -1,7 +1,7 @@
 """
     occsd(; kwargs...)
     occsd(fitm; kwargs...)
-One-class classification using PCA/PLS score distance (SD).
+One-class classification (OCC) using PCA/PLS score distance (SD).
 * `fitm` : The preliminary model (e.g., object `fitm` returned by function `pcasvd`) that was fitted on 
     the training data assumed to represent the reference (= target) class.
 Keyword arguments:
@@ -9,37 +9,13 @@ Keyword arguments:
 * `cri` : When `typcut` = `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 
-OCC using outlierness `d` as defined in function `outsd`.
-
-If a new observation has d higher than a given `cutoff`, the observation is assumed to not belong to the training 
-(= reference = target) class. The `cutoff` is computed with non-parametric heuristics, as follows. Noting `d` the vector 
-of outliernesses computed on the training class:
-* If `typcut` = `:mad`, then `cutoff` = MED(`d`) + `cri` * MAD(`d`). 
-* If `typcut` = `:q`, then `cutoff` is estimated from the empirical cumulative density function computed on `d`, for 
-    a given risk-I (`alpha`).
-Approximate parametric cutoffs have been proposed in the literature (e.g., Nomikos & MacGregor 1995, Hubert et al. 2005,
-Pomerantsev 2008). Whatever the approximation method used, it is recommended to tune the cutoff depending on the 
-detection objectives. 
-
-**Outputs**
-* `pval`: Empirical estimate of P(d > cutoff) computed from the training empirical distribution `d`. 
-* `dstand`: standardized distance defined as `d` / `cutoff`. A value `dstand` > 1 may be considered as extreme 
-    compared to the training empirical distribution `d`.  
-* `gh` is the indicator 'GH' provided in the software referred to as 'Winisi' (usually, GH > 3 is considered as extreme).
-Specific for function `predict`:
-* `pred`: classes predicted for the observations
-    * `dstand` <= 1 ==> `in`: the observation is expected to belong to the training class, 
-    * `dstand` > 1  ==> `out`: extreme value, possibly not belonging to the same class as the training. 
-
-## References
-M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components analysis. 
-Technometrics, 47, 64-79.
-
-Nomikos, V., MacGregor, J.F., 1995. Multivariate SPC Charts for Monitoring Batch Processes. null 37, 41-59. 
-https://doi.org/10.1080/00401706.1995.10485888
-
-Pomerantsev, A.L., 2008. Acceptance areas for multivariate classification derived by projection methods. 
-Journal of Chemometrics 22, 601-609. https://doi.org/10.1002/cem.1147
+OCC using outlierness `d` as defined in function `outsd`. 
+    
+For other details (keyword arguments, cutoff computation, outputs an references), see function `occod`. 
+Specific output `gh` (not present in `occod`) is indicator 'GH' provided in the software referred to as 'Winisi', 
+computed as:
+* GH = SD^2 / nlv, where nlv is the nb. scores of the dimension reduction model. 
+Usually, Winisi considers that GH > 3 is extreme.
 
 ## Examples
 ```julia
@@ -106,7 +82,7 @@ plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color = color, leg_title = "Ty
 #### Fit the Occ model based on the fitted score space 'in' 
 model = occsd(; cri = 2.5)
 #model = occsd(typcut = :mad, cri = 4)
-#model = occsd(typcut = :q, risk = .01)
+#model = occsd(typcut = :q, alpha = .01)
 fit!(model, fitm0) 
 @names model 
 fitm = model.fitm ;
@@ -153,23 +129,22 @@ function occsd(fitm; kwargs...)
     par = recovkw(ParOcc, kwargs).par
     @assert in(par.typcut, [:mad, :q]) "Argument 'typcut' must be :mad or :q."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
-    T = copy(fitm.T) 
-    Q = eltype(T)
-    nlv = nco(T)
-    tscales = colstd(T, fitm.weights)
-    fscale!(T, tscales)
-    centr = zeros(Q, nlv)     # center defined as 0
-    d2 = vec(eucl2(T, centr'))  
-    d = sqrt.(d2)
-    ## End
+    res = outsd(fitm)
+    d = res.d
+    tscales = res.tscales
+    nlv = nco(fitm.T)
     if par.typcut == :mad
         cutoff = median(d) + par.cri * madv(d)
     elseif par.typcut == :q
         cutoff = quantile(d, 1 - par.alpha)
     end
     e_cdf = StatsBase.ecdf(d)
-    p_val = pval(e_cdf, d)
-    d = DataFrame(d = d, dstand = d / cutoff, pval = p_val, gh = d2 / nlv)
+    d = DataFrame(
+        d = d, 
+        dstand = d / cutoff, 
+        pval = pval(e_cdf, d), 
+        gh = d.^2 / nlv
+        )
     Occsd(d, fitm, tscales, e_cdf, cutoff, par)
 end
 
@@ -183,7 +158,7 @@ function predict(object::Occsd, X)
     T = transf(object.fitm, X)
     Q = eltype(T)
     m, nlv = size(T)
-    ## Mahalanobis distance to the center (zero)
+    ## Mahalanobis distance to center (zero)
     fscale!(T, object.tscales)
     d2 = vec(eucl2(T, zeros(Q, nlv)'))
     d = sqrt.(d2)

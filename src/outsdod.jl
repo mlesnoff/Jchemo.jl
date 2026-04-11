@@ -1,25 +1,13 @@
 """
-    outsdod(fitm, X; typcut = :mad, cri = 3, alpha = .025)
+    outsdod(fitm, X; gamma = .5, fscal = madv)
 Compute outlierness from PCA/PLS score and orthogonal distances (SD and OD).
-* `fitm` : The preliminary model (e.g., object `fitm` returned by function `pcasvd`) that was fitted on 
-    the data.
-* `X` : X-data (n, p) on which was fitted the model `fitm`.
-Keyword arguments:
-* `typcut` : Type of cutoff to standardize SD and OD. Possible values are: `:mad`, `:q`. See Thereafter.
-* `cri` : When `typcut` = `:mad`, a constant. See thereafter.
-* `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
+* `fitm` : The reduction dimension model that was fitted on the data (e.g., object `fitm` returned by functions 
+    `pcasvd` or `plskern`).
+* `X` : X-data (n, p) on which was fitted model `fitm`.
 
-In this method, outlierness `d` of a given observation is a consensus between the standardized score and
-orthogonal distances. The returned consensus is computed by: 
-* `d` = sqrt(SD_stand * OD_stand)
-where:
-* SD_stand = SD / cutoff_SD
-* OD_stand = OD / cutoff_OD
-
-The cutoff is computed with non-parametric heuristics. Noting [d] the SD- or OD-vector:
-* If `typcut` = `:mad`, then cutoff = MED([d]) + `cri` * MAD([d]). 
-* If `typcut` = `:q`, then cutoff is estimated from the empirical cumulative density function computed on [d], 
-    for a given risk-I (`alpha`).
+In this method, outlierness `d` of a given observation is a consensus between scaled SD and OD. The returned consensus 
+is computed by: 
+* `d` = `gamma` * SD / `fscal`(SD) + (1 - `gamma`) * OD / `fscal`(OD) 
 
 See function `outod` for examples.
 
