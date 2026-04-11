@@ -254,7 +254,8 @@
 
 - **occsd** Score distance (SD)
 - **occod** Orthogonal distance (OD) 
-- **occsdod** Compromise between SD and OD (a.k.a Simca approach) 
+- **occsdod** Consensus between SD and OD
+- **occdds**  Consensus between SD2 and OD2 (approach DD-Simca)
 
 ### From kNN distance 
 
@@ -265,7 +266,7 @@
 
 - **outstah** Stahel-Donoho outlierness
 - **outeucl**: Outlierness from Euclidean distances to center
-- **outsd**, **outod**, **outsdod**: Outlierness from PCA/PLS SD, OD and SD-OD distances
+- **outsd**, **outod**, **outsdod**: Outlierness from PCA/PLS distances (SD, OD and consensus SD-OD)
 - **outknn**: kNN distance-based outlierness
 - **outlknn**: Local kNN distance-based outlierness
 
