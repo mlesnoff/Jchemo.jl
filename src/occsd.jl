@@ -12,22 +12,22 @@ Keyword arguments:
 OCC using outlierness `d` as defined in function `outsd`.
 
 If a new observation has d higher than a given `cutoff`, the observation is assumed to not belong to the training 
-(= reference = target) class. The `cutoff` is computed with non-parametric heuristics, as follows. Noting [d] the vector 
+(= reference = target) class. The `cutoff` is computed with non-parametric heuristics, as follows. Noting `d` the vector 
 of outliernesses computed on the training class:
-* If `typcut` = `:mad`, then `cutoff` = MED([d]) + `cri` * MAD([d]). 
-* If `typcut` = `:q`, then `cutoff` is estimated from the empirical cumulative density function computed on [d], for 
+* If `typcut` = `:mad`, then `cutoff` = MED(`d`) + `cri` * MAD(`d`). 
+* If `typcut` = `:q`, then `cutoff` is estimated from the empirical cumulative density function computed on `d`, for 
     a given risk-I (`alpha`).
 Approximate parametric cutoffs have been proposed in the literature (e.g., Nomikos & MacGregor 1995, Hubert et al. 2005,
 Pomerantsev 2008). Whatever the approximation method used, it is recommended to tune the cutoff depending on the 
 detection objectives. 
 
 **Outputs**
-* `pval`: Estimate of P(d > cutoff) computed from the training empirical distribution d. 
+* `pval`: Empirical estimate of P(d > cutoff) computed from the training empirical distribution `d`. 
 * `dstand`: standardized distance defined as `d` / `cutoff`. A value `dstand` > 1 may be considered as extreme 
-    compared to the training empirical distribution d.  
-* `gh` is the Winisi "GH" (usually, GH > 3 is considered as extreme).
+    compared to the training empirical distribution `d`.  
+* `gh` is the indicator 'GH' provided in the software referred to as 'Winisi' (usually, GH > 3 is considered as extreme).
 Specific for function `predict`:
-* `pred`: class prediction
+* `pred`: classes predicted for the observations
     * `dstand` <= 1 ==> `in`: the observation is expected to belong to the training class, 
     * `dstand` > 1  ==> `out`: extreme value, possibly not belonging to the same class as the training. 
 
@@ -56,81 +56,93 @@ Xp = transf(model, X)
 s = Bool.(Y.test)
 Xtrain = rmrow(Xp, s)
 Ytrain = rmrow(Y, s)
+yclatrain = yclatrain
 Xtest = Xp[s, :]
 Ytest = Y[s, :]
+yclatest = yclatest 
 
-## Build the example data
-## - cla_train is the reference class (= 'in'), "EHH" 
-cla_train = "EHH"
-s = Ytrain.typ .== cla_train
-Xtrain_fin = Xtrain[s, :]    
-ntrain = nro(Xtrain_fin)
-## cla_test contains the observations to be predicted (i.e. to be 'in' or 'out' of cla_train), 
-## a mix of "EEH" and "PEE" 
-cla_test1 = "EHH"   # should be predicted 'in'
-s = Ytest.typ .== cla_test1
-Xtest_fin1 = Xtest[s, :] 
-ntest1 = nro(Xtest_fin1)
-##
-cla_test2 = "PEE"   # should be predicted 'out'
-s = Ytest.typ .== cla_test2
-Xtest_fin2 = Xtest[s, :] 
-ntest2 = nro(Xtest_fin2)
-##
-Xtest_fin = vcat(Xtest_fin1, Xtest_fin2)
+#### Build the data used in the example
+## The training reference class (= target = 'in') is "EHH" 
+s = yclatrain .== "EHH"
+Xtrain_in = Xtrain[s, :]    
+ntrain_in = nro(Xtrain_in)
+## Observations 'in' to be predicted (should be predicted 'in')
+s = yclatest .== "EHH"
+Xtest_in = Xtest[s, :] 
+ntest_in = nro(Xtest_in)
+## Observations 'out' ("PEE") to be predicted (should be predicted 'out')
+s = yclatest .== "PEE"
+Xtest_out = Xtest[s, :] 
+ntest_out = nro(Xtest_out)
 ## Only used to compute error rates
-ytrain_fin = repeat(["in"], ntrain)
-ytest_fin = [repeat(["in"], ntest1); repeat(["out"], ntest2)]
-y_fin = vcat(ytrain_fin, ytest_fin)
-## 
-ntot = ntrain + ntest1 + ntest2
-(ntot = ntot, ntrain, ntest1, ntest2)
+ntot = ntrain_in + ntest_in + ntest_out
+(ntot = ntot, ntrain_in, ntest_in, ntest_out)
+ytrain_in = repeat(["in"], ntrain_in)
+ytest_in = repeat(["in"], ntest_in)
+ytest_out = repeat(["out"], ntest_out)
 
-#### Preliminary PCA fitted model
+#### Fit a preliminary Pca model on the training data 'in'
 nlv = 15
 model0 = pcasvd(; nlv) 
 #model0 = pcaout(; nlv) 
-fit!(model0, Xtrain_fin) 
-res = summary(model0, Xtrain_fin).explvarx 
+fit!(model0, Xtrain_in) 
+fitm0 = model0.fitm ;
+res = summary(model0, Xtrain_in).explvarx 
 plotgrid(res.nlv, res.pvar; step = 2, xlabel = "Nb. LVs", ylabel = "% Variance explained").f
-Ttrain = model0.fitm.T
-Ttest = transf(model0, Xtest_fin)
-T = vcat(Ttrain, Ttest)
-i = 1
-group = vcat(repeat(["Train-EHH"], ntrain), repeat(["Test-EHH"], ntest1), repeat(["Test-PEE"], ntest2))
-color = [:red, :blue, (:green, .5)]
-plotxy(T[:, i], T[:, i + 1], group; color = color, leg_title = "Type of obs.", xlabel = string("PC", i), 
-    ylabel = string("PC", i + 1)).f
+Ttrain_in = fitm0.T
 
-#### Occ
-## Training
+#### Project the test observations in the fitted score space 'in'
+Ttest_in = transf(model0, Xtest_in)
+Ttest_out = transf(model0, Xtest_out)
+
+#GLMakie.activate!()   # requires GLMakie
+T = vcat(Ttrain_in, Ttest_in, Ttest_out)
+group = vcat(repeat(["Train_in"], ntrain_in), repeat(["Test_in"], ntest_in), repeat(["Test_out"], ntest_out))
+color = [:purple, (:green, .7), (:red, .3)]
+i = 1
+plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color = color, leg_title = "Type of obs.", 
+    xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
+
+#### Fit the Occ model based on the fitted score space 'in' 
 model = occsd(; cri = 2.5)
 #model = occsd(typcut = :mad, cri = 4)
-#model = occsd(typcut = :q, alpha = .01)
-fit!(model, model0.fitm) 
+#model = occsd(typcut = :q, risk = .01)
+fit!(model, fitm0) 
 @names model 
 fitm = model.fitm ;
 @names fitm 
-@head dtrain = fitm.d
+@head dtrain_in = fitm.d
 fitm.cutoff
-d = dtrain.dstand
-f, ax = plotxy(1:length(d), d; color = (:green, .5), size = (500, 300), xlabel = "Obs. index", 
+d = dtrain_in.dstand
+f, ax = plotxy(1:length(d), d; color = (:red, .3), size = (500, 300), xlabel = "Obs. index", 
     ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
+s = d .> 1
+scatter!(ax, (1:length(d))[s], d[s]; color = :red)
 f
-## Prediction of Test
-res = predict(model, Xtest_fin) 
+
+#### Predict the test observations 'in'
+res = predict(model, Xtest_in) ;
 @names res
 @head pred = res.pred
-@head dtest = res.d
+@head dtest_in = res.d
 tab(pred)
-errp(pred, ytest_fin)
-conf(pred, ytest_fin).cnt
-##
-d = vcat(dtrain.dstand, dtest.dstand)
-color = [:red, :blue, (:green, .5)]
+errp(pred, ytest_in)
+conf(pred, ytest_in).cnt
+
+#### Predict the test observations 'out'
+res = predict(model, Xtest_out) ;
+@names res
+@head pred = res.pred
+@head dtest_out = res.d
+tab(pred)
+errp(pred, ytest_out)
+conf(pred, ytest_out).cnt
+
+d = vcat(dtrain_in.dstand, dtest_in.dstand, dtest_out.dstand)
+color = [:purple, (:green, .7), (:red, .3)]
 f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
-    xlabel = "Obs. index", ylabel = "Standardized distance")
+    title = "SD", xlabel = "Obs. index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 ```
@@ -171,13 +183,17 @@ function predict(object::Occsd, X)
     T = transf(object.fitm, X)
     Q = eltype(T)
     m, nlv = size(T)
-    ## Mahalanobis distance to the center
+    ## Mahalanobis distance to the center (zero)
     fscale!(T, object.tscales)
     d2 = vec(eucl2(T, zeros(Q, nlv)'))
     d = sqrt.(d2)
     ## End
-    p_val = pval(object.e_cdf, d)
-    d = DataFrame(d = d, dstand = d / object.cutoff, pval = p_val, gh = d2 / nlv)
+    d = DataFrame(
+        d = d, 
+        dstand = d / object.cutoff, 
+        pval = pval(object.e_cdf, d), 
+        gh = d2 / nlv
+        )
     pred = [if d.dstand[i] <= 1 "in" else "out" end for i in eachindex(d.d)]
     pred = reshape(pred, m, 1)
     (pred = pred, d)

@@ -2,15 +2,15 @@
     xfit(object)
     xfit(object, X; nlv = nothing)
     xfit!(object, X::Matrix; nlv = nothing)
-Matrix fitting from a bilinear model (e.g., PCA).
-* `object` : The fitted model.
+Fit a matrix from a bilinear model (e.g., PCA).
+* `object` : The fitted bilinear model.
 * `X` : New X-data to be approximated from the model. Must be in the same scale as the X-data used to fit
-    the model `object`, i.e. before centering and eventual scaling.
+    model `object`, i.e. before centering and eventual scaling.
 Keyword arguments:
 * `nlv` : Nb. components (PCs or LVs) to consider. If `nothing`, it is the maximum nb. of components.
 
-Compute an approximate of matrix `X` from a bilinear model (e.g., PCA or PLS) fitted on `X`. The fitted X is 
-returned in the original scale of the X-data used to fit the model `object`.
+Compute an approximate of matrix `X` from a bilinear model (e.g., PCA or PLS) fitted on `X`. The computed approximate X 
+is returned in the original location and scale of the X-data used to fit model `object`.
 
 ## Examples 
 ```julia 
