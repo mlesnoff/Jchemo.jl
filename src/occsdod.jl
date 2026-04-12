@@ -10,7 +10,7 @@ Keyword arguments:
 * `cri` : When `typcut` = `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 
-In this method, outlierness `d` of a given observation is a consensus between the score distance (SD) and the
+In this function, outlierness `d` of a given observation is a consensus between the score distance (SD) and the
 orthogonal distance (OD). The consensus is computed from the standardized distances by: 
 * `dstand` = sqrt(`dstand_sd` * `dstand_od`).
 
@@ -21,19 +21,37 @@ See functions:
 occsdod(; kwargs...) = JchemoModel(occsdod, nothing, kwargs)
 
 function occsdod(fitm, X; kwargs...) 
-    par = recovkw(ParOcc, kwargs).par 
-    fitmsd = occsd(fitm; kwargs...)
-    fitmod = occod(fitm, X; kwargs...)
-    sd = fitmsd.d
-    od = fitmod.d
-    z = [sqrt(sd.dstand[i] * od.dstand[i]) for i in eachindex(sd.d)]
-    nam = string.(names(sd), "_sd")
-    rename!(sd, nam)
-    nam = string.(names(od), "_od")
-    rename!(od, nam)
-    d = hcat(sd, od)
-    d.dstand = z
-    Occsdod(d, fitmsd, fitmod, par)
+    par = recovkw(ParOccsdod, kwargs).par 
+    @assert 0 <= par.gamma <= 1 "Argument 'gamma' must ∈ [0, 1]."    
+    #fitmsd = occsd(fitm; typcut = par.typcut, cri = par.cri, ampha = par.alpha)
+    #fitmod = occod(fitm, X; typcut = par.typcut, cri = par.cri, ampha = par.alpha)
+    #sd = fitmsd.d
+    #od = fitmod.d
+    #z = [sqrt(sd.dstand[i] * od.dstand[i]) for i in eachindex(sd.d)]
+    #nam = string.(names(sd), "_sd")
+    #rename!(sd, nam)
+    #nam = string.(names(od), "_od")
+    #rename!(od, nam)
+    #d = hcat(sd, od)
+    #d.dstand = z
+    #Occsdod(d, fitmsd, fitmod, par)
+    sd = outsd(fitm)
+    od = outod(fitm, X)
+    sdod = outsdod(fitm, X; gamma = par.gamma, fscal = par.fscal)
+    ##
+    d = sdod.d
+    if par.typcut == :mad
+        cutoff = median(d) + par.cri * madv(d)
+    elseif par.typcut == :q
+        cutoff = quantile(d, 1 - par.alpha)
+    end
+    e_cdf = StatsBase.ecdf(d)
+    d = DataFrame(
+        d = d, 
+        dstand = d / cutoff, 
+        pval = pval(e_cdf, d), 
+        )
+    Occsdod(d, fitm, e_cdf, cutoff, sd, od, sdod, par)
 end
 
 """
@@ -43,15 +61,29 @@ Compute predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Occsdod, X)
-    m = nro(X)
-    sd = predict(object.fitmsd, X).d
-    od = predict(object.fitmod, X).d
-    nam = string.(names(sd), "_sd")
-    rename!(sd, nam)
-    nam = string.(names(od), "_od")
-    rename!(od, nam)
-    d = hcat(sd, od)
-    d.dstand = [sqrt(sd.dstand_sd[i] * od.dstand_od[i]) for i in eachindex(sd.dstand_sd)]
+    tscales = object.sd.tscales    
+    gamma = object.par.gamma 
+    sigma_sd = object.sdod.sigma_sd
+    sigma_od = object.sdod.sigma_od
+    ## SD
+    T = transf(object.fitm, X)
+    Q = eltype(T)
+    m, nlv = size(T)
+    fscale!(T, tscales)
+    d2 = vec(eucl2(T, zeros(Q, nlv)'))
+    sd = sqrt.(d2)
+    ## OD
+    E = xresid(object.fitm, X)
+    od = rownorm(E)
+    ## Consensus
+    d = gamma * sd / sigma_sd + (1 - gamma) * od / sigma_od
+    ## End
+    d = DataFrame(
+        d = d, 
+        dstand = d / object.cutoff, 
+        pval = pval(object.e_cdf, d), 
+        gh = d2 / nlv
+        )
     pred = [if d.dstand[i] <= 1 "in" else "out" end for i in eachindex(d.d)]
     pred = reshape(pred, m, 1)
     (pred = pred, d)

@@ -787,9 +787,13 @@ end
 
 struct Occsdod
     d::DataFrame
-    fitmsd
-    fitmod
-    par::ParOcc
+    fitm
+    e_cdf::ECDF
+    cutoff::Real
+    sd::NamedTuple   
+    od::NamedTuple   
+    sdod::NamedTuple
+    par::ParOccsdod
 end
 
 struct Occknn

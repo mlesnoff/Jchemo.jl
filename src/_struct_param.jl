@@ -584,10 +584,18 @@ Base.@kwdef mutable struct ParOccstah
     scal::Bool = false                    
 end 
 
-Base.@kwdef mutable struct ParOcc    # occsd, occod, occsdod
+Base.@kwdef mutable struct ParOcc    # occsd, occod
     typcut::Symbol = :mad   
     cri::Float64 = 3.
     alpha::Float64 = .025 
+end 
+
+Base.@kwdef mutable struct ParOccsdod
+    typcut::Symbol = :mad   
+    cri::Float64 = 3.
+    alpha::Float64 = .025 
+    gamma::Float64 = .5
+    fscal::Function = madv
 end 
 
 Base.@kwdef mutable struct ParOccknn

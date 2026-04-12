@@ -53,10 +53,10 @@ Xp = transf(model, X)
 s = Bool.(Y.test)
 Xtrain = rmrow(Xp, s)
 Ytrain = rmrow(Y, s)
-yclatrain = yclatrain
+yclatrain = Ytrain.typ
 Xtest = Xp[s, :]
 Ytest = Y[s, :]
-yclatest = yclatest 
+yclatest = Ytest.typ 
 
 #### Build the data used in the example
 ## Training reference class (= target = 'in') is "EHH" 
@@ -100,10 +100,11 @@ plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color = color, leg_title = "Ty
     xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
 
 #### Fit the Occ model based on the fitted score space 'in' 
-model = occod(; cri = 2.5)
-#model = occod(typcut = :mad, cri = 4)
+model = occod(cri = 2.5)
+#model = occod(cri = 4)
 #model = occod(typcut = :q, alpha = .01)
-fit!(model, fitm0, Xtrain_in) 
+#model = occsdod(cri = 2.5)
+fit!(model, fitm0, Xtrain_in)
 @names model 
 fitm = model.fitm ;
 @names fitm 
@@ -138,7 +139,7 @@ conf(pred, ytest_out).cnt
 d = vcat(dtrain_in.dstand, dtest_in.dstand, dtest_out.dstand)
 color = [:purple, (:green, .7), (:red, .3)]
 f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
-    title = "OD", xlabel = "Observation index", ylabel = "Standardized distance")
+    xlabel = "Observation index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 ```

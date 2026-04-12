@@ -12,7 +12,7 @@ Keyword arguments:
     distances (SD2 and OD2). By default, `fcentr = stdv`.
 * `alpha` : Risk-I level to compute the quantile (re-scaled Chi-2) of the consensus variable.
 
-In this method, outlierness `d` of a given observation is a consensus between the squared score distance (SD2) and the
+In this function, outlierness `d` of a given observation is a consensus between the squared score distance (SD2) and the
 squared orthogonal distance (OD2), defined by: 
 * d = (nu1 / mu1) * SD2 + (nu2 / mu2) * SD2.
 The empirical training SD2 and OD2 distributions are assumed to approximately follow independent Chi-2s. Parameters 
@@ -74,7 +74,7 @@ function occdds(fitm, X; fcentr = meanv, fscal = stdv, alpha = .05)
 end
 
 """
-    predict(object::Occsdod, X)
+    predict(object::Occdds, X)
 Compute predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.

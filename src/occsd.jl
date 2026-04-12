@@ -32,10 +32,10 @@ Xp = transf(model, X)
 s = Bool.(Y.test)
 Xtrain = rmrow(Xp, s)
 Ytrain = rmrow(Y, s)
-yclatrain = yclatrain
+yclatrain = Ytrain.typ
 Xtest = Xp[s, :]
 Ytest = Y[s, :]
-yclatest = yclatest 
+yclatest = Ytest.typ 
 
 #### Build the data used in the example
 ## The training reference class (= target = 'in') is "EHH" 
@@ -80,7 +80,7 @@ plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color = color, leg_title = "Ty
     xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
 
 #### Fit the Occ model based on the fitted score space 'in' 
-model = occsd(; cri = 2.5)
+model = occsd(cri = 2.5)
 #model = occsd(typcut = :mad, cri = 4)
 #model = occsd(typcut = :q, alpha = .01)
 fit!(model, fitm0) 
