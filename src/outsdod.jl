@@ -6,7 +6,7 @@ Compute outlierness from PCA/PLS score and orthogonal distances (SD and OD).
 * `X` : X-data (n, p) on which was fitted model `fitm`.
 Keyword arguments:
 * `gamma` : Proportion of scaled SD in the consensus (see below).
-* `fscal` : Function used to scale SD and OD (by defalut, this is `madv`). 
+* `fscal` : Function used to scale SD and OD in the consensus (by default, this is `madv`). 
 
 In this function, outlierness `d` of a given observation is defined as a consensus between scaled SD and OD. 
 The returned consensus is computed by: 

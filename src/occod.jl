@@ -12,31 +12,7 @@ Keyword arguments:
 
 OCC using outlierness `d` as defined in function `outod`.
 
-If a new observation has d higher than a given `cutoff`, the observation is assumed to not belong to the training 
-(= reference = target) class. The `cutoff` is computed with non-parametric heuristics, as follows. Noting `d` the vector 
-of outliernesses computed on the training class:
-* If `typcut` = `:mad`, then `cutoff` = MED(`d`) + `cri` * MAD(`d`). 
-* If `typcut` = `:q`, then `cutoff` is estimated from the empirical cumulative density function computed on `d`, for 
-    a given risk-I (`alpha`).
-Approximate parametric cutoffs have been proposed in the literature (e.g., Nomikos & MacGregor 1995, Hubert et al. 2005,
-Pomerantsev 2008). Whatever the approximation method used, it is recommended to tune the cutoff depending on the 
-detection objectives. 
-
-## References
-M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components analysis. 
-Technometrics, 47, 64-79.
-
-Nomikos, V., MacGregor, J.F., 1995. Multivariate SPC Charts for Monitoring Batch Processes. null 37, 41-59. 
-https://doi.org/10.1080/00401706.1995.10485888
-
-Pomerantsev, A.L., 2008. Acceptance areas for multivariate classification derived by projection methods. 
-Journal of Chemometrics 22, 601-609. https://doi.org/10.1002/cem.1147
-
-K. Vanden Branden, M. Hubert (2005). Robust classification in high dimension based on the SIMCA method. 
-Chem. Lab. Int. Syst, 79, 10-21.
-
-K. Varmuza, V. Filzmoser (2009). Introduction to multivariate statistical analysis in chemometrics. 
-CRC Press, Boca Raton.
+See function `occsd`for details.  
 
 ## Examples
 ```julia
@@ -103,7 +79,6 @@ plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color = color, leg_title = "Ty
 model = occod(cri = 2.5)
 #model = occod(cri = 4)
 #model = occod(typcut = :q, alpha = .01)
-#model = occsdod(cri = 2.5)
 fit!(model, fitm0, Xtrain_in)
 @names model 
 fitm = model.fitm ;
@@ -139,7 +114,7 @@ conf(pred, ytest_out).cnt
 d = vcat(dtrain_in.dstand, dtest_in.dstand, dtest_out.dstand)
 color = [:purple, (:green, .7), (:red, .3)]
 f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
-    xlabel = "Observation index", ylabel = "Standardized distance")
+    title = "OD", xlabel = "Observation index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 ```

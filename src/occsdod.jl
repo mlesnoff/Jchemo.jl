@@ -9,35 +9,152 @@ Keyword arguments:
 * `typcut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
+* `gamma` : Proportion of scaled SD in the consensus (see function `outsdod`).
+* `fscal` : Function used to scale SD and OD in the consensus (by default, this is `madv`; see function `outsdod`). 
 
-In this function, outlierness `d` of a given observation is a consensus between the score distance (SD) and the
-orthogonal distance (OD). The consensus is computed from the standardized distances by: 
-* `dstand` = sqrt(`dstand_sd` * `dstand_od`).
+OCC using outlierness `d` as defined in function `outsdod`.
 
-See functions:
-* `occsd` for details on the cutoff computation and the outputs,
-* and `occod` for examples.
+See function `occsd`for details.  
+
+## Examples
+```julia
+using Jchemo, JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/challenge2018.jld2") 
+@load db dat
+@names dat
+X = dat.X    
+Y = dat.Y
+model = savgol(npoint = 21, deriv = 2, degree = 3)
+fit!(model, X) 
+Xp = transf(model, X) 
+s = Bool.(Y.test)
+Xtrain = rmrow(Xp, s)
+Ytrain = rmrow(Y, s)
+yclatrain = Ytrain.typ
+Xtest = Xp[s, :]
+Ytest = Y[s, :]
+yclatest = Ytest.typ 
+
+#### Build the data used in the example
+## Training reference class (= target = 'in') is "EHH" 
+s = yclatrain .== "EHH"
+Xtrain_in = Xtrain[s, :]    
+ntrain_in = nro(Xtrain_in)
+## Observations 'in' to be predicted (should be predicted 'in')
+s = yclatest .== "EHH"
+Xtest_in = Xtest[s, :] 
+ntest_in = nro(Xtest_in)
+## Observations 'out' ("PEE") to be predicted (should be predicted 'out')
+s = yclatest .== "PEE"
+Xtest_out = Xtest[s, :] 
+ntest_out = nro(Xtest_out)
+## Only used to compute error rates
+ntot = ntrain_in + ntest_in + ntest_out
+(ntot = ntot, ntrain_in, ntest_in, ntest_out)
+ytrain_in = repeat(["in"], ntrain_in)
+ytest_in = repeat(["in"], ntest_in)
+ytest_out = repeat(["out"], ntest_out)
+
+#### Fit a preliminary Pca model on the training data 'in'
+nlv = 15
+model0 = pcasvd(; nlv) 
+#model0 = pcaout(; nlv) 
+fit!(model0, Xtrain_in) 
+fitm0 = model0.fitm ;
+res = summary(model0, Xtrain_in).explvarx 
+plotgrid(res.nlv, res.pvar; step = 2, xlabel = "Nb. LVs", ylabel = "% Variance explained").f
+Ttrain_in = fitm0.T
+
+#### To describe the data, project the test observations in the fitted score space 'in'
+Ttest_in = transf(model0, Xtest_in)
+Ttest_out = transf(model0, Xtest_out)
+#GLMakie.activate!()   # requires GLMakie
+T = vcat(Ttrain_in, Ttest_in, Ttest_out)
+group = vcat(repeat(["Train_in"], ntrain_in), repeat(["Test_in"], ntest_in), repeat(["Test_out"], ntest_out))
+color = [:purple, (:green, .7), (:red, .3)]
+i = 1
+plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color = color, leg_title = "Type of obs.", 
+    xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
+
+#### Fit the Occ model based on the fitted score space 'in' 
+model = occsdod(cri = 2.5)
+#model = occsdod(cri = 2.5, fscal = stdv)
+fit!(model, fitm0, Xtrain_in)
+@names model 
+fitm = model.fitm ;
+@names fitm 
+@head dtrain_in = fitm.d
+cutoff = fitm.cutoff
+d = dtrain_in.dstand
+f, ax = plotxy(1:length(d), d; color = (:red, .3), size = (500, 300), xlabel = "Observation index", 
+    ylabel = "Standardized distance")
+hlines!(ax, 1; linestyle = :dot)
+s = d .> 1
+scatter!(ax, (1:length(d))[s], d[s]; color = :red)
+f
+
+d = dtrain_in.d
+sd = fitm.sd.d
+od = fitm.od.d
+a = fitm.coefs[1]
+b = fitm.coefs[2]
+s = d .> cutoff
+f, ax = plotxy(sd, od; xlabel = "SD", ylabel = "OD")
+scatter!(ax, sd[s], od[s]; color = :red, label = "Extreme")
+ablines!(ax, a, -b; color = :red)
+axislegend(ax; position = :rb)
+f
+
+#### Predict the test observations 'in'
+res = predict(model, Xtest_in) ;
+@names res
+@head pred = res.pred
+@head dtest_in = res.d
+tab(pred)
+errp(pred, ytest_in)
+conf(pred, ytest_in).cnt
+
+#### Predict the test observations 'out'
+res = predict(model, Xtest_out) ;
+@names res
+@head pred = res.pred
+@head dtest_out = res.d
+tab(pred)
+errp(pred, ytest_out)
+conf(pred, ytest_out).cnt
+
+d = vcat(dtrain_in.dstand, dtest_in.dstand, dtest_out.dstand)
+color = [:purple, (:green, .7), (:red, .3)]
+f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
+    title = "OD", xlabel = "Observation index", ylabel = "Standardized distance")
+hlines!(ax, 1; linestyle = :dot)
+f
+
+d = dtrain_in.d
+sd = fitm.sd.d
+od = fitm.od.d
+a = fitm.coefs[1]
+b = fitm.coefs[2]
+s = d .> cutoff
+f, ax = plotxy(sd, od; xlabel = "SD", ylabel = "OD")
+scatter!(ax, sd[s], od[s]; color = :red, label = "Train-In Extreme")
+scatter!(ax, dtest_in.sd, dtest_in.od; color = :purple, label = "Test-In")
+scatter!(ax, dtest_out.sd, dtest_out.od; color = :green, label = "Test-Out")
+ablines!(ax, a, -b; color = :red)
+axislegend(ax; position = :rb)
+f
+```
 """ 
 occsdod(; kwargs...) = JchemoModel(occsdod, nothing, kwargs)
 
 function occsdod(fitm, X; kwargs...) 
     par = recovkw(ParOccsdod, kwargs).par 
-    @assert 0 <= par.gamma <= 1 "Argument 'gamma' must ∈ [0, 1]."    
-    #fitmsd = occsd(fitm; typcut = par.typcut, cri = par.cri, ampha = par.alpha)
-    #fitmod = occod(fitm, X; typcut = par.typcut, cri = par.cri, ampha = par.alpha)
-    #sd = fitmsd.d
-    #od = fitmod.d
-    #z = [sqrt(sd.dstand[i] * od.dstand[i]) for i in eachindex(sd.d)]
-    #nam = string.(names(sd), "_sd")
-    #rename!(sd, nam)
-    #nam = string.(names(od), "_od")
-    #rename!(od, nam)
-    #d = hcat(sd, od)
-    #d.dstand = z
-    #Occsdod(d, fitmsd, fitmod, par)
+    gamma = par.gamma
+    @assert 0 <= gamma <= 1 "Argument 'gamma' must ∈ [0, 1]."    
     sd = outsd(fitm)
     od = outod(fitm, X)
-    sdod = outsdod(fitm, X; gamma = par.gamma, fscal = par.fscal)
+    sdod = outsdod(fitm, X; gamma, fscal = par.fscal)
     ##
     d = sdod.d
     if par.typcut == :mad
@@ -51,7 +168,14 @@ function occsdod(fitm, X; kwargs...)
         dstand = d / cutoff, 
         pval = pval(e_cdf, d), 
         )
-    Occsdod(d, fitm, e_cdf, cutoff, sd, od, sdod, par)
+    ## Coefs for graphic SD-OD
+    sigma_sd = sdod.sigma_sd 
+    sigma_od = sdod.sigma_od
+    a = cutoff * sigma_od / (1 - gamma)
+    b = gamma / (1 - gamma) * sigma_od / sigma_sd
+    coefs = [a; b]
+    ##
+    Occsdod(d, fitm, e_cdf, cutoff, sd, od, sdod, coefs, par)  
 end
 
 """
@@ -70,8 +194,8 @@ function predict(object::Occsdod, X)
     Q = eltype(T)
     m, nlv = size(T)
     fscale!(T, tscales)
-    d2 = vec(eucl2(T, zeros(Q, nlv)'))
-    sd = sqrt.(d2)
+    sd2 = vec(eucl2(T, zeros(Q, nlv)'))
+    sd = sqrt.(sd2)
     ## OD
     E = xresid(object.fitm, X)
     od = rownorm(E)
@@ -81,8 +205,10 @@ function predict(object::Occsdod, X)
     d = DataFrame(
         d = d, 
         dstand = d / object.cutoff, 
-        pval = pval(object.e_cdf, d), 
-        gh = d2 / nlv
+        pval = pval(object.e_cdf, d),
+        sd = sd,
+        od = od, 
+        gh = sd2 / nlv
         )
     pred = [if d.dstand[i] <= 1 "in" else "out" end for i in eachindex(d.d)]
     pred = reshape(pred, m, 1)

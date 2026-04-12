@@ -793,6 +793,7 @@ struct Occsdod
     sd::NamedTuple   
     od::NamedTuple   
     sdod::NamedTuple
+    coefs::Vector
     par::ParOccsdod
 end
 

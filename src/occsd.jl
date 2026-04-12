@@ -10,12 +10,38 @@ Keyword arguments:
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 
 OCC using outlierness `d` as defined in function `outsd`. 
-    
-For other details (keyword arguments, cutoff computation, outputs an references), see function `occod`. 
-Specific output `gh` (not present in `occod`) is indicator 'GH' provided in the software referred to as 'Winisi', 
-computed as:
-* GH = SD^2 / nlv, where nlv is the nb. scores of the dimension reduction model. 
-Usually, Winisi considers that GH > 3 is extreme.
+
+If a new observation has d higher than a given `cutoff`, the observation is assumed to not belong to the training 
+(= reference = target) class. The `cutoff` is computed with non-parametric heuristics, as follows. Noting `d` the vector 
+of outliernesses computed on the training class:
+* If `typcut` = `:mad`, then `cutoff` = MED(`d`) + `cri` * MAD(`d`). 
+* If `typcut` = `:q`, then `cutoff` is computed by the empirical quantile of `d` for risk-I = `alpha`.
+Approximate parametric cutoffs have been proposed in the literature (e.g., Nomikos & MacGregor 1995, Hubert et al. 2005,
+Pomerantsev 2008). Whatever the approximation method used, it is recommended to tune the cutoff depending on the 
+detection objectives. 
+
+Details on outputs:
+* `d` : Outlierness.
+* `dstand` : Standardized outlierness defined by `d` / `cutoff`.
+* `pval` : Empirical Prob(`d` > `cutoff`).
+* `gh` : Indicator 'GH' provided in the software referred to as 'Winisi', computed as GH = SD^2 / nlv, where nlv is 
+    the nb. scores used in the dimension reduction model. Winisi considers that GH > 3 is extreme.
+
+## References
+M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components analysis. 
+Technometrics, 47, 64-79.
+
+Nomikos, V., MacGregor, J.F., 1995. Multivariate SPC Charts for Monitoring Batch Processes. null 37, 41-59. 
+https://doi.org/10.1080/00401706.1995.10485888
+
+Pomerantsev, A.L., 2008. Acceptance areas for multivariate classification derived by projection methods. 
+Journal of Chemometrics 22, 601-609. https://doi.org/10.1002/cem.1147
+
+K. Vanden Branden, M. Hubert (2005). Robust classification in high dimension based on the SIMCA method. 
+Chem. Lab. Int. Syst, 79, 10-21.
+
+K. Varmuza, V. Filzmoser (2009). Introduction to multivariate statistical analysis in chemometrics. 
+CRC Press, Boca Raton.
 
 ## Examples
 ```julia
