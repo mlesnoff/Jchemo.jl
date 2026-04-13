@@ -86,6 +86,7 @@ fitm = model.fitm ;
 @names fitm 
 @head dtrain_in = fitm.d
 cutoff = fitm.cutoff
+
 d = dtrain_in.dstand
 f, ax = plotxy(1:length(d), d; color = (:red, .3), size = (500, 300), xlabel = "Observation index", 
     ylabel = "Standardized distance")
