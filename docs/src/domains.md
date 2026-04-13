@@ -254,8 +254,8 @@
 
 - **occsd** Score distance (SD)
 - **occod** Orthogonal distance (OD) 
-- **occsdod** Consensus between SD and OD
-- **occdds**  Consensus between SD2 and OD2 (approach DD-Simca)
+- **occsdod** SD-OD consensus
+- **occdds**  SD2-OD2 consensus (with the DD-Simca approach)
 
 ### From kNN distance 
 
