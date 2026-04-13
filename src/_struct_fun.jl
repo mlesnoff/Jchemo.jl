@@ -797,6 +797,18 @@ struct Occsdod
     par::ParOccsdod
 end
 
+struct Occdds
+    d::DataFrame
+    fitm
+    e_cdf::ECDF
+    nu::Int
+    cutoff::Real
+    sd2::NamedTuple   
+    od2::NamedTuple   
+    coefs::Vector
+    par::ParOccdds
+end
+
 struct Occknn
     d::DataFrame
     X::Matrix

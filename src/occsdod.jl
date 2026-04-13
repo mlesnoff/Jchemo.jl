@@ -95,14 +95,12 @@ scatter!(ax, (1:length(d))[s], d[s]; color = :red)
 f
 
 d = dtrain_in.d
-sd = fitm.sd.d
-od = fitm.od.d
 a = fitm.coefs[1]
 b = fitm.coefs[2]
 s = d .> cutoff
-f, ax = plotxy(sd, od; xlabel = "SD", ylabel = "OD")
-scatter!(ax, sd[s], od[s]; color = :red, label = "Extreme")
-ablines!(ax, a, -b; color = :red)
+f, ax = plotxy(sdsigma, odsigma; xlabel = "SD / sigma", ylabel = "OD / sigma")
+scatter!(ax, sdsigma[s], odsigma[s]; color = :red, label = "Extreme")
+ablines!(ax, a, b; color = :red, linewidth = .7, linestyle = :dash)
 axislegend(ax; position = :rb)
 f
 
@@ -132,16 +130,14 @@ hlines!(ax, 1; linestyle = :dot)
 f
 
 d = dtrain_in.d
-sd = fitm.sd.d
-od = fitm.od.d
 a = fitm.coefs[1]
 b = fitm.coefs[2]
 s = d .> cutoff
-f, ax = plotxy(sd, od; xlabel = "SD", ylabel = "OD")
-scatter!(ax, sd[s], od[s]; color = :red, label = "Train-In Extreme")
-scatter!(ax, dtest_in.sd, dtest_in.od; color = :purple, label = "Test-In")
-scatter!(ax, dtest_out.sd, dtest_out.od; color = :green, label = "Test-Out")
-ablines!(ax, a, -b; color = :red)
+f, ax = plotxy(sdsigma, odsigma; xlabel = "SD / sigma", ylabel = "OD / sigma")
+scatter!(ax, sdsigma[s], odsigma[s]; color = :red, label = "Train-In Extreme")
+scatter!(ax, dtest_in.sdsigma, dtest_in.odsigma; color = (:purple, .5), label = "Test-In")
+scatter!(ax, dtest_out.sdsigma, dtest_out.odsigma; color = :green, label = "Test-Out")
+ablines!(ax, a, b; color = :red, linewidth = .7, linestyle = :dash)
 axislegend(ax; position = :rb)
 f
 ```
@@ -151,10 +147,13 @@ occsdod(; kwargs...) = JchemoModel(occsdod, nothing, kwargs)
 function occsdod(fitm, X; kwargs...) 
     par = recovkw(ParOccsdod, kwargs).par 
     gamma = par.gamma
-    @assert 0 <= gamma <= 1 "Argument 'gamma' must ∈ [0, 1]."    
+    @assert 0 <= gamma <= 1 "Argument 'gamma' must ∈ [0, 1]."   
+    nlv = nco(fitm.T) 
     sd = outsd(fitm)
     od = outod(fitm, X)
     sdod = outsdod(fitm, X; gamma, fscal = par.fscal)
+    sigma_sd = sdod.sigma_sd 
+    sigma_od = sdod.sigma_od
     ##
     d = sdod.d
     if par.typcut == :mad
@@ -167,12 +166,17 @@ function occsdod(fitm, X; kwargs...)
         d = d, 
         dstand = d / cutoff, 
         pval = pval(e_cdf, d), 
+        sd = sd.d,
+        od = od.d,
+        sdsigma = sd.d /  sigma_sd,
+        odsigma = od.d / sigma_od,
+        gh = sd.d.^2 / nlv
         )
-    ## Coefs for graphic SD-OD
-    sigma_sd = sdod.sigma_sd 
-    sigma_od = sdod.sigma_od
-    a = cutoff * sigma_od / (1 - gamma)
-    b = gamma / (1 - gamma) * sigma_od / sigma_sd
+    ## Coefs for graphic SD/sigma - OD/sigma
+    #a = cutoff * sigma_od / (1 - gamma)
+    #b = -gamma / (1 - gamma) * sigma_od / sigma_sd
+    a = cutoff / (1 - gamma)
+    b = -gamma / (1 - gamma)
     coefs = [a; b]
     ##
     Occsdod(d, fitm, e_cdf, cutoff, sd, od, sdod, coefs, par)  
@@ -208,6 +212,8 @@ function predict(object::Occsdod, X)
         pval = pval(object.e_cdf, d),
         sd = sd,
         od = od, 
+        sdsigma = sd / object.sdod.sigma_sd,
+        odsigma = od / object.sdod.sigma_od,
         gh = sd2 / nlv
         )
     pred = [if d.dstand[i] <= 1 "in" else "out" end for i in eachindex(d.d)]

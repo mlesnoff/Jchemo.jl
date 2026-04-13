@@ -598,6 +598,12 @@ Base.@kwdef mutable struct ParOccsdod
     fscal::Function = madv
 end 
 
+Base.@kwdef mutable struct ParOccdds
+    fcentr::Function = meanv
+    fscal::Function = stdv
+    alpha::Float64 = .05 
+end 
+
 Base.@kwdef mutable struct ParOccknn
     nsamp::Int = 100
     metric::Symbol = :eucl                                       
