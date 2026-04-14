@@ -7,9 +7,9 @@ Compute the Stahel-Donoho outlierness.
 Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD before computing the outlierness.
 
-See Maronna and Yohai 1995 for details on the Stahel-Donoho outlierness measure. A projection-pursuit approach 
-is used: given a projection matrix `V` (p, nlv), in general built randomly, the observations (rows of `X`) are projected 
-on the `nlv` directions and the Stahel-Donoho outlierness (`d`) is computed for each observation from these projections.
+In this function, outlierness `d` of an observation is defined by its Stahel-Donoho outlierness. See Maronna and Yohai 1995 for details. 
+A projection-pursuit approach is used: given a projection matrix `V` (p, nlv), in general built randomly, the observations (rows of `X`) 
+are projected on the `nlv` directions and the Stahel-Donoho outlierness (`d`) is computed for each observation from these projections.
 
 ## References
 Maronna, R.A., Yohai, V.J., 1995. The Behavior of the Stahel-Donoho Robust Multivariate Estimator. 
@@ -47,8 +47,7 @@ function outstah!(X::Matrix, V::Matrix; scal = false)
         xscales .= colmad(X)
         fscale!(X, xscales)
     end
-    ## Scaling V by colnorm(V) has no effect on d and T
-    #T = X * fscale(V, colnorm(V))
+    ## Scaling V by colnorm(V) has no effect on d and T: T = X * fscale(V, colnorm(V))
     T = X * V  
     mu = colmed(T)
     s = colmad(T)  

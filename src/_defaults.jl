@@ -113,9 +113,10 @@ function defaults(algo::Function)
 
     ##
 
-    in((occstah,)).(algo) ? dump(Jchemo.ParOccstah()) : nothing
     in((occsd, occod)).(algo) ? dump(Jchemo.ParOcc()) : nothing
     in((occsdod,)).(algo) ? dump(Jchemo.ParOccsdod()) : nothing
+    in((occdds,)).(algo) ? dump(Jchemo.ParOccdds()) : nothing
+    in((occstah,)).(algo) ? dump(Jchemo.ParOccstah()) : nothing
     in((occknn, occlknn)).(algo) ? dump(Jchemo.ParOccknn()) : nothing
 
 end

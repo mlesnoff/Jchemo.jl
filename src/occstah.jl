@@ -2,17 +2,21 @@
     occstah(; kwargs...)
     occstah(X; kwargs...)
 One-class classification (OCC) using the Stahel-Donoho outlierness.
-* `X` : Training X-data (n, p) assumed to represent the reference (= target) class.
+* `fitm` : The preliminary model (e.g., object `fitm` returned by function `pcasvd`) that was fitted on 
+    the training data assumed to represent the reference (= target) class.
+* `X` : Training X-data (n, p) on which was fitted model `fitm`.
 Keyword arguments:
 * `nlv` : Nb. random directions on which `X` is projected. 
 * `typcut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 * `scal` : Boolean. If `true`, each column of `X` is scaled such as in function `outstah`.
+* `seed` : Eventual seed for the `Random.MersenneTwister` generator (used when simulating
+    random projcetion directions). 
 
 In this function, outlierness `d` of a given observation is the Stahel-Donoho outlierness (see function `outstah`).
 
-See function `occsd` for details on the outputs.
+See function `occsd` for details on the cutoffs and outputs.
 
 ## Examples
 ```julia
@@ -29,76 +33,71 @@ Xp = transf(model, X)
 s = Bool.(Y.test)
 Xtrain = rmrow(Xp, s)
 Ytrain = rmrow(Y, s)
+yclatrain = Ytrain.typ
 Xtest = Xp[s, :]
 Ytest = Y[s, :]
+yclatest = Ytest.typ 
 
-## Build the example data
-## - cla_train is the reference class (= 'in'), "EHH" 
-cla_train = "EHH"
-s = Ytrain.typ .== cla_train
-Xtrain_fin = Xtrain[s, :]    
-ntrain = nro(Xtrain_fin)
-## cla_test contains the observations to be predicted (i.e. to be 'in' or 'out' of cla_train), 
-## a mix of "EEH" and "PEE" 
-cla_test1 = "EHH"   # should be predicted 'in'
-s = Ytest.typ .== cla_test1
-Xtest_fin1 = Xtest[s, :] 
-ntest1 = nro(Xtest_fin1)
-##
-cla_test2 = "PEE"   # should be predicted 'out'
-s = Ytest.typ .== cla_test2
-Xtest_fin2 = Xtest[s, :] 
-ntest2 = nro(Xtest_fin2)
-##
-Xtest_fin = vcat(Xtest_fin1, Xtest_fin2)
+#### Build the data used in the example
+## Training reference class (= target = 'in') is "EHH" 
+s = yclatrain .== "EHH"
+Xtrain_in = Xtrain[s, :]    
+ntrain_in = nro(Xtrain_in)
+## Observations 'in' to be predicted (should be predicted 'in')
+s = yclatest .== "EHH"
+Xtest_in = Xtest[s, :] 
+ntest_in = nro(Xtest_in)
+## Observations 'out' ("PEE") to be predicted (should be predicted 'out')
+s = yclatest .== "PEE"
+Xtest_out = Xtest[s, :] 
+ntest_out = nro(Xtest_out)
 ## Only used to compute error rates
-ytrain_fin = repeat(["in"], ntrain)
-ytest_fin = [repeat(["in"], ntest1); repeat(["out"], ntest2)]
-y_fin = vcat(ytrain_fin, ytest_fin)
-## 
-ntot = ntrain + ntest1 + ntest2
-(ntot = ntot, ntrain, ntest1, ntest2)
+ntot = ntrain_in + ntest_in + ntest_out
+(ntot = ntot, ntrain_in, ntest_in, ntest_out)
+ytrain_in = repeat(["in"], ntrain_in)
+ytest_in = repeat(["in"], ntest_in)
+ytest_out = repeat(["out"], ntest_out)
 
-## Data description
-nlv = 10
-model = pcasvd(; nlv) 
-fit!(model, Xtrain_fin) 
-Ttrain = model.fitm.T
-Ttest = transf(model, Xtest_fin)
-T = vcat(Ttrain, Ttest)
-i = 1
-group = vcat(repeat(["Train-EHH"], ntrain), repeat(["Test-EHH"], ntest1), repeat(["Test-PEE"], ntest2))
-color = [:red, :blue, (:green, .5)]
-plotxy(T[:, i], T[:, i + 1], group; color = color, leg_title = "Type of obs.", xlabel = string("PC", i), 
-    ylabel = string("PC", i + 1)).f
-
-#### Occ
-## Training
+#### Fit the Occ model
 model = occstah(; nlv = 5000, cri = 2, scal = true)
-fit!(model, Xtrain_fin) 
+#model = occstah(; nlv = 5000, cri = 2, scal = true, seed = 1234)
+fit!(model, Xtrain_in)
 @names model 
 fitm = model.fitm ;
 @names fitm 
-@head fitm.V  # random projection directions 
-@head dtrain = fitm.d
-d = dtrain.dstand
-f, ax = plotxy(1:length(d), d; color = (:green, .5), size = (500, 300), xlabel = "Observation index", 
-    ylabel = "Standardized distance")
-hlines!(ax, 1; linestyle = :dot)
-f
-## Prediction of Test
-res = predict(model, Xtest_fin) ;
+@head dtrain_in = fitm.d
+
+#### Predict the test observations 'in'
+res = predict(model, Xtest_in) ;
 @names res
-@head dtest = res.d
-@head res.pred
-tab(res.pred)
-errp(res.pred, ytest_fin)
-conf(res.pred, ytest_fin).cnt
-##
-d = vcat(dtrain.dstand, dtest.dstand)
-color = [:red, :blue, (:green, .5)]
+@head pred = res.pred
+@head dtest_in = res.d
+tab(pred)
+errp(pred, ytest_in)
+conf(pred, ytest_in).cnt
+
+cutoff = fitm.cutoff
+d = dtrain_in.dstand
+f, ax = plotxy(1:length(d), d; color = (:red, .3), size = (500, 300), xlabel = "Observation index",
+    title = "Stahel-Donoho", ylabel = "Standardized distance")
+hlines!(ax, 1; linestyle = :dot)
+s = d .> 1
+scatter!(ax, (1:length(d))[s], d[s]; color = :red)
+f
+
+#### Predict the test observations 'out'
+res = predict(model, Xtest_out) ;
+@names res
+@head pred = res.pred
+@head dtest_out = res.d
+tab(pred)
+errp(pred, ytest_out)
+conf(pred, ytest_out).cnt
+
+d = vcat(dtrain_in.dstand, dtest_in.dstand, dtest_out.dstand)
+color = [:purple, (:green, .7), (:red, .3)]
 f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
-    xlabel = "Observation index", ylabel = "Standardized distance")
+    title = "Stahel-Donoho", xlabel = "Observation index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 ```
@@ -110,25 +109,20 @@ function occstah(X; kwargs...)
     @assert in(par.typcut, [:mad, :q]) "Argument 'typcut' must be :mad or :q."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     p = nco(X)
-    V = rand(0:1, p, par.nlv)
+    V = rand(MersenneTwister(par.seed), 0:1, p, par.nlv)
     res = outstah(X, V; scal = par.scal)
     d = res.d
-    ## Old parametric, not used anymore
-    #d2 = d.^2 
-    #mu = median(d2)
-    #s2 = madv(d2)^2
-    #nu = 2 * mu^2 / s2
-    #g = mu / nu
-    #dis = Distributions.Chisq(nu)
-    #pval = Distributions.ccdf.(dis, d2 / g)
-    #typcut == :par ? cutoff = sqrt(g * quantile(dis, 1 - alpha)) : nothing
-    #typcut == "npar" ? cutoff = median(d) + par.cri * madv(d) : nothing
-    ## End 
-    par.typcut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
-    par.typcut == :q ? cutoff = quantile(d, 1 - par.alpha) : nothing
+    if par.typcut == :mad
+        cutoff = median(d) + par.cri * madv(d)
+    elseif par.typcut == :q
+        cutoff = quantile(d, 1 - par.alpha)
+    end
     e_cdf = StatsBase.ecdf(d)
-    p_val = pval(e_cdf, d)
-    d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
+    d = DataFrame(
+        d = d, 
+        dstand = d / cutoff, 
+        pval = pval(e_cdf, d)
+        )
     Occstah(d, res, V, e_cdf, cutoff, par)
 end
 

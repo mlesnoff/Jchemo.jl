@@ -576,14 +576,6 @@ end
 
 ## Occ 
 
-Base.@kwdef mutable struct ParOccstah 
-    nlv::Int = 500
-    typcut::Symbol = :mad   
-    cri::Float64 = 3.
-    alpha::Float64 = .025 
-    scal::Bool = false                    
-end 
-
 Base.@kwdef mutable struct ParOcc    # occsd, occod
     typcut::Symbol = :mad   
     cri::Float64 = 3.
@@ -602,6 +594,15 @@ Base.@kwdef mutable struct ParOccdds
     fcentr::Function = meanv
     fscal::Function = stdv
     alpha::Float64 = .05 
+end 
+
+Base.@kwdef mutable struct ParOccstah 
+    nlv::Int = 500
+    typcut::Symbol = :mad   
+    cri::Float64 = 3.
+    alpha::Float64 = .025 
+    scal::Bool = false 
+    seed::Union{Nothing, Int} = nothing                   
 end 
 
 Base.@kwdef mutable struct ParOccknn

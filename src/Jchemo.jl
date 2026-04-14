@@ -232,18 +232,19 @@ include("mbplsqda.jl")
 include("mbplskdeda.jl") 
 
 ## One-class
-include("outstah.jl")
-include("outeucl.jl")
 include("outsd.jl")
 include("outod.jl")
 include("outsdod.jl")
+include("outstah.jl")
+include("outeucl.jl")
 include("outknn.jl")
 include("outlknn.jl")
-include("occstah.jl")
+
 include("occsd.jl")
 include("occod.jl") 
 include("occsdod.jl")
 include("occdds.jl")
+include("occstah.jl")
 include("occknn.jl")
 include("occlknn.jl")
 
@@ -458,9 +459,9 @@ export
     outstah, outeucl,
     outsd, outod, outsdod,
     outknn, outlknn,
-    occstah,
     occsd, occod, occsdod, 
     occdds,
+    occstah,
     occknn, occlknn,
     ## Sparse 
     splsrda,
