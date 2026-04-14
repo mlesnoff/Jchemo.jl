@@ -14,7 +14,8 @@ Keyword arguments:
 * `seed` : Eventual seed for the `Random.MersenneTwister` generator (used when simulating
     random projcetion directions). 
 
-In this function, outlierness `d` of a given observation is the Stahel-Donoho outlierness (see function `outstah`).
+OCC using outlierness `d` as defined in function `outstah`.
+
 The directions used for projections are simulated by random binary (0/1) values. 
 
 See function `occsd` for details on the cutoffs and outputs.
@@ -67,6 +68,15 @@ fit!(model, Xtrain_in)
 fitm = model.fitm ;
 @names fitm 
 @head dtrain_in = fitm.d
+cutoff = fitm.cutoff
+
+d = dtrain_in.dstand
+f, ax = plotxy(1:length(d), d; color = (:red, .3), size = (500, 300), xlabel = "Observation index",
+    title = "Stahel-Donoho", ylabel = "Standardized distance")
+hlines!(ax, 1; linestyle = :dot)
+s = d .> 1
+scatter!(ax, (1:length(d))[s], d[s]; color = :red)
+f
 
 #### Predict the test observations 'in'
 res = predict(model, Xtest_in) ;
@@ -76,15 +86,6 @@ res = predict(model, Xtest_in) ;
 tab(pred)
 errp(pred, ytest_in)
 conf(pred, ytest_in).cnt
-
-cutoff = fitm.cutoff
-d = dtrain_in.dstand
-f, ax = plotxy(1:length(d), d; color = (:red, .3), size = (500, 300), xlabel = "Observation index",
-    title = "Stahel-Donoho", ylabel = "Standardized distance")
-hlines!(ax, 1; linestyle = :dot)
-s = d .> 1
-scatter!(ax, (1:length(d))[s], d[s]; color = :red)
-f
 
 #### Predict the test observations 'out'
 res = predict(model, Xtest_out) ;
@@ -96,6 +97,7 @@ errp(pred, ytest_out)
 conf(pred, ytest_out).cnt
 
 d = vcat(dtrain_in.dstand, dtest_in.dstand, dtest_out.dstand)
+group = vcat(repeat(["Train_in"], ntrain_in), repeat(["Test_in"], ntest_in), repeat(["Test_out"], ntest_out))
 color = [:purple, (:green, .7), (:red, .3)]
 f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
     title = "Stahel-Donoho", xlabel = "Observation index", ylabel = "Standardized distance")
@@ -146,8 +148,11 @@ function predict(object::Occstah, X)
     @inbounds for i in eachindex(d)
         d[i] = maximum(vrow(T, i))
     end
-    p_val = pval(object.e_cdf, d)
-    d = DataFrame(d = d, dstand = d / object.cutoff, pval = p_val)
+    d = DataFrame(
+        d = d, 
+        dstand = d / object.cutoff, 
+        pval = pval(object.e_cdf, d)
+        )
     pred = [if d.dstand[i] <= 1 "in" else "out" end for i in eachindex(d.d)]
     pred = reshape(pred, m, 1)
     (pred = pred, d)

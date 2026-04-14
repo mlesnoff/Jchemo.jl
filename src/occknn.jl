@@ -5,7 +5,7 @@ One-class classification (OCC) using kNN distance-based outlierness.
 * `X` : Training X-data (n, p) assumed to represent the reference (= target) class.
 Keyword arguments:
 * `nsamp` : Nb. of observations (`X`-rows) sampled in the training data and for which are computed 
-    the outliernesses (stimated outlierness distribution of the reference class).
+    the outliernesses (Monte Carlo simulation of the outlierness distribution of the reference class).
 * `metric` : Metric used to compute the distances. See function `getknn`.
 * `k` : Nb. nearest neighbors to consider.
 * `algo` : Function summarizing the `k` distances to the neighbors.
@@ -14,12 +14,12 @@ Keyword arguments:
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
-See functions:
-* `outknn` for details on the outlierness computation method,
-* and `occsd` for details on the the cutoff computation and the outputs.
+OCC using outlierness `d` as defined in function `outknn`.
 
-For **predictions** (`predict`), the outlierness of each new observation is compared to the outlierness 
-distribution estimated from the `nsamp` sampled observations. 
+See function `occsd` for details on the cutoffs and outputs.
+
+For predictions (`predict`), the outlierness of each new observation is compared to the outlierness 
+distribution estimated from the `nsamp` observations sampled in the target class. 
 
 ## Examples
 ```julia
@@ -36,77 +36,73 @@ Xp = transf(model, X)
 s = Bool.(Y.test)
 Xtrain = rmrow(Xp, s)
 Ytrain = rmrow(Y, s)
+yclatrain = Ytrain.typ
 Xtest = Xp[s, :]
 Ytest = Y[s, :]
+yclatest = Ytest.typ 
 
-## Build the example data
-## - cla_train is the reference class (= 'in'), "EHH" 
-cla_train = "EHH"
-s = Ytrain.typ .== cla_train
-Xtrain_fin = Xtrain[s, :]    
-ntrain = nro(Xtrain_fin)
-## cla_test contains the observations to be predicted (i.e. to be 'in' or 'out' of cla_train), 
-## a mix of "EEH" and "PEE" 
-cla_test1 = "EHH"   # should be predicted 'in'
-s = Ytest.typ .== cla_test1
-Xtest_fin1 = Xtest[s, :] 
-ntest1 = nro(Xtest_fin1)
-##
-cla_test2 = "PEE"   # should be predicted 'out'
-s = Ytest.typ .== cla_test2
-Xtest_fin2 = Xtest[s, :] 
-ntest2 = nro(Xtest_fin2)
-##
-Xtest_fin = vcat(Xtest_fin1, Xtest_fin2)
+#### Build the data used in the example
+## Training reference class (= target = 'in') is "EHH" 
+s = yclatrain .== "EHH"
+Xtrain_in = Xtrain[s, :]    
+ntrain_in = nro(Xtrain_in)
+## Observations 'in' to be predicted (should be predicted 'in')
+s = yclatest .== "EHH"
+Xtest_in = Xtest[s, :] 
+ntest_in = nro(Xtest_in)
+## Observations 'out' ("PEE") to be predicted (should be predicted 'out')
+s = yclatest .== "PEE"
+Xtest_out = Xtest[s, :] 
+ntest_out = nro(Xtest_out)
 ## Only used to compute error rates
-ytrain_fin = repeat(["in"], ntrain)
-ytest_fin = [repeat(["in"], ntest1); repeat(["out"], ntest2)]
-y_fin = vcat(ytrain_fin, ytest_fin)
-## 
-ntot = ntrain + ntest1 + ntest2
-(ntot = ntot, ntrain, ntest1, ntest2)
+ntot = ntrain_in + ntest_in + ntest_out
+(ntot = ntot, ntrain_in, ntest_in, ntest_out)
+ytrain_in = repeat(["in"], ntrain_in)
+ytest_in = repeat(["in"], ntest_in)
+ytest_out = repeat(["out"], ntest_out)
 
-## Data description
-nlv = 10
-model = pcasvd(; nlv) 
-fit!(model, Xtrain_fin) 
-Ttrain = model.fitm.T
-Ttest = transf(model, Xtest_fin)
-T = vcat(Ttrain, Ttest)
-i = 1
-group = vcat(repeat(["Train-EHH"], ntrain), repeat(["Test-EHH"], ntest1), repeat(["Test-PEE"], ntest2))
-color = [:red, :blue, (:green, .5)]
-plotxy(T[:, i], T[:, i + 1], group; color = color, leg_title = "Type of obs.", xlabel = string("PC", i), 
-    ylabel = string("PC", i + 1)).f
-
-#### Occ
-## Training
+#### Fit the Occ model
 nsamp = 150 ; k = 5 ; cri = 2.5
+#nsamp = copy(ntrain_in) ; k = 5 ; cri = 2.5
 model = occknn(; nsamp, k, cri)
+#model = occknn(; nsamp, k, cri, seed = 1234)
 #model = occlknn(; nsamp, k = 10, cri)
-fit!(model, Xtrain_fin) 
+fit!(model, Xtrain_in)
 @names model 
 fitm = model.fitm ;
 @names fitm 
-@head dtrain = fitm.d
-fitm.cutoff
-d = dtrain.dstand
-f, ax = plotxy(1:length(d), d; color = (:green, .5), size = (500, 300), xlabel = "Observation index", 
+@head dtrain_in = fitm.d   #  results for the 'nsamp' sampled training observations
+cutoff = fitm.cutoff
+
+d = dtrain_in.dstand
+f, ax = plotxy(1:length(d), d; color = (:red, .3), size = (500, 300), xlabel = "Observation index",
     ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
+s = d .> 1
+scatter!(ax, (1:length(d))[s], d[s]; color = :red)
 f
-## Prediction of Test
-res = predict(model, Xtest_fin) 
+
+#### Predict the test observations 'in'
+res = predict(model, Xtest_in) ;
 @names res
 @head pred = res.pred
-@head dtest = res.d
+@head dtest_in = res.d
 tab(pred)
-errp(pred, ytest_fin)
-conf(pred, ytest_fin).cnt
-##
-d = vcat(dtrain.dstand, dtest.dstand)
-group = vcat(repeat(["Train"], nsamp), repeat(["Test-EHH"], ntest1), repeat(["Test-PEE"], ntest2))
-color = [:red, :blue, (:green, .5)]
+errp(pred, ytest_in)
+conf(pred, ytest_in).cnt
+
+#### Predict the test observations 'out'
+res = predict(model, Xtest_out) ;
+@names res
+@head pred = res.pred
+@head dtest_out = res.d
+tab(pred)
+errp(pred, ytest_out)
+conf(pred, ytest_out).cnt
+
+d = vcat(dtrain_in.dstand, dtest_in.dstand, dtest_out.dstand)
+group = vcat(repeat(["Train_in"], nsamp), repeat(["Test_in"], ntest_in), repeat(["Test_out"], ntest_out))
+color = [:purple, (:green, .7), (:red, .3)]
 f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
     xlabel = "Observation index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
@@ -129,22 +125,28 @@ function occknn(X; kwargs...)
     if nsamp == n
         s = 1:n
     else
-        s = sample(1:n, nsamp, replace = false)
+        s = sample(MersenneTwister(par.seed), 1:n, nsamp; replace = false)
     end
     vX = vrow(X, s)
-    par.k > n - 1 ? k = n - 1 : k = par.k
-    ## kNN distance
+    k = min(par.k, n - 1)
+    ## Distribution of outlierness of the 'nsamp' sampled training observations
     res = getknn(X, vX; k = k + 1, metric = par.metric)
     d = similar(X, nsamp)
     @inbounds for i in eachindex(d)
         d[i] = par.algo(res.d[i][2:end])
     end
     ## End 
-    par.typcut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
-    par.typcut == :q ? cutoff = quantile(d, 1 - par.alpha) : nothing
+    if par.typcut == :mad
+        cutoff = median(d) + par.cri * madv(d)
+    elseif par.typcut == :q
+        cutoff = quantile(d, 1 - par.alpha)
+    end
     e_cdf = StatsBase.ecdf(d)
-    p_val = pval(e_cdf, d)
-    d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
+    d = DataFrame(
+        d = d, 
+        dstand = d / cutoff, 
+        pval = pval(e_cdf, d)
+        )
     Occknn(d, X, e_cdf, cutoff, xscales, par)
 end
 
@@ -152,15 +154,17 @@ function predict(object::Occknn, X)
     X = ensure_mat(X)
     m = nro(X)
     ## kNN distance
-    res = getknn(object.X, fscale(X, object.xscales); k = object.par.k + 1, 
-        metric = object.par.metric) 
+    res = getknn(object.X, fscale(X, object.xscales); k = object.par.k + 1, metric = object.par.metric) 
     d = similar(X, m)
     @inbounds for i in eachindex(d)
         d[i] = object.par.algo(res.d[i][2:end])
     end
     ## End
-    p_val = pval(object.e_cdf, d)
-    d = DataFrame(d = d, dstand = d / object.cutoff, pval = p_val)
+    d = DataFrame(
+        d = d, 
+        dstand = d / object.cutoff, 
+        pval = pval(object.e_cdf, d)
+        )
     pred = [if d.dstand[i] <= 1 "in" else "out" end for i in eachindex(d.d)]
     pred = reshape(pred, m, 1)
     (pred = pred, d)

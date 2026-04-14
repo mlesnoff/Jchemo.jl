@@ -613,7 +613,8 @@ Base.@kwdef mutable struct ParOccknn
     typcut::Symbol = :mad   
     cri::Float64 = 3.
     alpha::Float64 = .025 
-    scal::Bool = false                
+    scal::Bool = false 
+    seed::Union{Nothing, Int} = nothing                  
 end 
 
 

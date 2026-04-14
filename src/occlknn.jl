@@ -5,7 +5,7 @@ One-class classification (OCC) using local kNN distance-based outlierness.
 * `X` : Training X-data (n, p) assumed to represent the reference (= target) class.
 Keyword arguments:
 * `nsamp` : Nb. of observations (`X`-rows) sampled in the training data and for which are computed 
-    the outliernesses (stimated outlierness distribution of the reference class).
+    the outliernesses (Monte Carlo simulation of the outlierness distribution of the reference class).
 * `metric` : Metric used to compute the distances. See function `getknn`.
 * `k` : Nb. nearest neighbors to consider.
 * `algo` : Function summarizing the `k` distances to the neighbors.
@@ -14,13 +14,12 @@ Keyword arguments:
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
 
-See functions:
-* `occknn` for examples,
-* `outlknn` for details on the outlierness computation method,
-* and `occsd` for details on the the cutoff computation and the outputs.
+OCC using outlierness `d` as defined in function `outlknn`.
 
-For **predictions** (`predict`), the outlierness of each new observation is compared to the outlierness 
-distribution estimated from the `nsamp` sampled observations. 
+See function `occsd` for details on the cutoffs and outputs, and examples.
+
+For predictions (`predict`), the outlierness of each new observation is compared to the outlierness 
+distribution estimated from the `nsamp` observations sampled in the target class. 
 """ 
 occlknn(; kwargs...) = JchemoModel(occlknn, nothing, kwargs)
 
@@ -41,29 +40,33 @@ function occlknn(X; kwargs...)
         s = sample(1:n, nsamp, replace = false)
     end
     vX = vrow(X, s)
-    par.k > n - 1 ? k = n - 1 : k = par.k
-    metric = par.metric
-    algo = par.algo
-    ## kNN distance
-    res = getknn(X, vX; k = k + 1, metric)
+    k = min(par.k, n - 1)
+    ## Distribution of outlierness of the 'nsamp' sampled training observations
+    res = getknn(X, vX; k = k + 1, par.metric)
     d = similar(X, nsamp)
     nn = zeros(Int, k)
     @inbounds for i in eachindex(d)
-        d[i] = algo(res.d[i][2:end])
+        d[i] = par.algo(res.d[i][2:end])
         nn .= res.ind[i][2:end]
-        res_nn = getknn(X, vrow(X, nn); k = k + 1, metric)
+        res_nn = getknn(X, vrow(X, nn); k = k + 1, par.metric)
         d_nn = similar(X, k) 
         for j in eachindex(nn)
-            d_nn[j] = algo(res_nn.d[j][2:end])
+            d_nn[j] = par.algo(res_nn.d[j][2:end])
         end
         d[i] /= median(d_nn)
     end
     ## End 
-    par.typcut == :mad ? cutoff = median(d) + par.cri * madv(d) : nothing
-    par.typcut == :q ? cutoff = quantile(d, 1 - par.alpha) : nothing
+    if par.typcut == :mad
+        cutoff = median(d) + par.cri * madv(d)
+    elseif par.typcut == :q
+        cutoff = quantile(d, 1 - par.alpha)
+    end
     e_cdf = StatsBase.ecdf(d)
-    p_val = pval(e_cdf, d)
-    d = DataFrame(d = d, dstand = d / cutoff, pval = p_val)
+    d = DataFrame(
+        d = d, 
+        dstand = d / cutoff, 
+        pval = pval(e_cdf, d)
+        )
     Occlknn(d, X, e_cdf, cutoff, xscales, par)
 end
 
@@ -88,8 +91,11 @@ function predict(object::Occlknn, X)
         d[i] /= median(d_nn)
     end
     ## End
-    p_val = pval(object.e_cdf, d)
-    d = DataFrame(d = d, dstand = d / object.cutoff, pval = p_val)
+    d = DataFrame(
+        d = d, 
+        dstand = d / object.cutoff, 
+        pval = pval(object.e_cdf, d)
+        )
     pred = [if d.dstand[i] <= 1 "in" else "out" end for i in eachindex(d.d)]
     pred = reshape(pred, m, 1)
     (pred = pred, d)
