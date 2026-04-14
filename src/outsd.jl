@@ -4,7 +4,7 @@ Compute outlierness from PCA/PLS score distance (SD).
 * `fitm` : The reduction dimension model that was fitted on the data (e.g., object `fitm` returned by functions 
     `pcasvd` or `plskern`).
 
-In this function, outlierness `d` of an observation is defined by its score distance (SD), ie. the Mahalanobis 
+In this function, outlierness `d` of an observation (row of `X`) is defined by its score distance (SD), ie. the Mahalanobis 
 distance between the projection of the observation on the score plan fitted by the model (e.g., PCA or PLS) and the 
 'center' of the score plan (in this function always defined by zero).
 

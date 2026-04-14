@@ -7,7 +7,7 @@ Compute the Stahel-Donoho outlierness.
 Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD before computing the outlierness.
 
-In this function, outlierness `d` of an observation is defined by its Stahel-Donoho outlierness. See Maronna and Yohai 1995 for details. 
+In this function, outlierness `d` of an observation (row of `X`) is defined by its Stahel-Donoho outlierness. See Maronna and Yohai 1995 for details. 
 A projection-pursuit approach is used: given a projection matrix `V` (p, nlv), in general built randomly, the observations (rows of `X`) 
 are projected on the `nlv` directions and the Stahel-Donoho outlierness (`d`) is computed for each observation from these projections.
 

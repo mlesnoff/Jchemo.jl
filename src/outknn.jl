@@ -9,7 +9,7 @@ Keyword arguments:
 * `algo` : Function summarizing the `k` distances to the neighbors.
 * `scal` : Boolean. If `true`, each column of `X` is scaled before computing the outlierness.
 
-For each observation (row of `X`), outlierness `d` is defined by a summary (e.g., by sum or maximum) of the distances 
+In this function, outlierness `d` of an observation (row of `X`) is defined by a summary (e.g., by sum or maximum) of the distances 
 between the observation and its `k` nearest neighbors. 
 
 ## References
@@ -47,7 +47,7 @@ metric = :eucl ; k = 15 ; algo = sum
 #algo = maximum
 res = outknn(X; metric, k, algo) ;
 @names res
-f, ax = plotxy(1:n, res.d, typ, xlabel = "Observation index", ylabel = "Outlierness")
+f, ax = plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness")
 text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
 
@@ -59,7 +59,7 @@ T = model.fitm.T
 metric = :eucl 
 k = 15
 res = outknn(T; metric, k, scal = true)
-plotxy(1:n, res.d, typ, xlabel = "Observation index", ylabel = "Outlierness").f
+plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness").f
 ```
 """ 
 function outknn(X; metric = :eucl, k, algo = sum, scal::Bool = false)
