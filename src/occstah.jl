@@ -15,6 +15,7 @@ Keyword arguments:
     random projcetion directions). 
 
 In this function, outlierness `d` of a given observation is the Stahel-Donoho outlierness (see function `outstah`).
+The directions used for projections are simulated by random binary (0/1) values. 
 
 See function `occsd` for details on the cutoffs and outputs.
 

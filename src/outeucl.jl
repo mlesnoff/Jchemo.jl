@@ -8,7 +8,7 @@ Keyword arguments:
 
 In this function, outlierness `d` is computed by the Euclidean distance between the observation (rows of `X`) and a 
 robust estimate of the center of the data (in the present function, the spatial median). Such outlierness was for instance 
-used in the robust PLSR algorithm of Serneels et al. 2005 (PRM). 
+used for instance in the robust PLSR algorithm 'PRM' of Serneels et al. 2005. 
 
 ## References
 Serneels, S., Croux, C., Filzmoser, V., Van Espen, V.J., 2005. Partial robust M-regression. 
