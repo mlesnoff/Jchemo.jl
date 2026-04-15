@@ -37,7 +37,7 @@ Function `protoplsr` implements an averaging of prototype PLSR models.
     can eventually belong to several neighborhoods.
 *  The center of each neighborhood is finally defined either as the initially sampled observation or by the centroid 
     the neighborhood. This is managed by argument `centroid`. 
-* On each neighborhodd, a PLSR is optimized using a K-fold cross-validation and stored. This defines the prototype model.
+* On each neighborhood, a PLSR is optimized using a K-fold cross-validation and stored. This defines the prototype model.
 
 *Prediction*
 * Each new observation to predict is assigned to its `kavg` nearest prototypes, based on its distances to the prototype
@@ -131,10 +131,10 @@ function protoplsr(X, Y; kwargs...)
     ## Compute the neighborhood of each prototype
     if par.nlvdis == 0
         fitm_emb = nothing
-        resnn = getknn(X, vrow(X, s_proto); k = par.k, par.metric)
+        resnn = getknn(X, vrow(X, s_proto); k = par.k, metric = par.metric)
     else
         fitm_emb = plskern(X, Y; nlv = par.nlvdis)
-        resnn = getknn(fitm_emb.T, transf(fitm_emb, vrow(X, s_proto)); k = par.k, par.metric)
+        resnn = getknn(fitm_emb.T, transf(fitm_emb, vrow(X, s_proto)); k = par.k, metric = par.metric)
     end
     ## Optimize/fit the prototype models 
     fitm = list(Plsr, par.nproto)
@@ -178,7 +178,7 @@ function predict(object::Protoplsr, X)
     criw = object.par.criw
     squared = object.par.squared
     tolw = object.par.tolw
-    # Compute the neighborhood (within prototypes) of each new observation
+    # Compute the neighborhood (within the set of prototypes) of each new observation
     if isnothing(object.fitm_emb)
         res = getknn(object.Xproto, X; k = kavg, metric)
     else

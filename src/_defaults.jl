@@ -71,7 +71,8 @@ function defaults(algo::Function)
     in((loessr,)).(algo) ? dump(Jchemo.ParLoessr()) : nothing
 
     in((protoplsr,)).(algo) ? dump(Jchemo.Parprotoplsr()) : nothing
-    in((rclustplsr,)).(algo) ? dump(Jchemo.ParRclust()) : nothing
+    in((protoclustplsr,)).(algo) ? dump(Jchemo.Parprotoclustplsr()) : nothing
+    in((rclustplsr,)).(algo) ? dump(Jchemo.Parrclustplsr()) : nothing
 
     ## When structures will be moved into 'struct_param.jl'
     #in((protoplsr,)).(algo) ? dump(Jchemo.Parprotoplsr()) : nothing

@@ -54,8 +54,8 @@ The kmeans step is done with package `Clustering.jl` (https://github.com/JuliaSt
 
 Notes: 
 * This pipeline is still under construction, some details could change in the future.
-* The actual version of the function works for multivariate `Y` but the PLSR optimizations
-    are done only based on the first Y column (this will be fixed later). 
+* The actual version of the function works for multivariate `Y` but the PLSR optimizations are done only based on the
+    first Y column (this will be fixed later). 
 
 ## Examples
 ```julia

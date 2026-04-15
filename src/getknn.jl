@@ -54,7 +54,7 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
             Uinv = inv(sqrt(S)) 
         else
             if isposdef(S) == false
-                Uinv = Diagonal(1 ./ diag(S))
+                Uinv = Diagonal(1 ./ sqrt.(diag(S)))
             else
                 Uinv = LinearAlgebra.inv!(cholesky!(Hermitian(S)).U)
             end
@@ -70,8 +70,8 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
     elseif metric == :cor
         tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.CorDist())
     ## Tentative (not still working)
-    elseif metric == :was
-        tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.WasDist())
+    #elseif metric == :was
+    #    tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.WasDist())
     ## End
     end
     ind, d = NearestNeighbors.knn(tree, X', k, true)     # 'ind' and 'd' are lists  

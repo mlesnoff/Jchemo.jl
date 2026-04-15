@@ -1,7 +1,7 @@
 """
     protoclustplsr(; kwargs...)
     protoclustplsr(X, Y; kwargs...)
-Random clustered PLSR.
+Clustered PLSR.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 Keyword arguments:
@@ -19,39 +19,27 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of matrices X and Y of the prototype classes is 
     scaled by its uncorrected standard deviation.
 
-Function `protoclustplsr` implements a 'random clustered PLSR'. Basically, the pipeline mixes the principles of
-random forests and regression trees, but with the following particularities:
-* The 'leafs' (classes) are built by kmeans instead of trees,
-* The regression model fitted on each class is a PLSR,
-* Several class models can be averaged to get the final prediction.   
+Function `protoclustplsr` implements an averaging of prototype PLSR models.
 
-A number of `rep` bagging replications is run in the same way as in random forests. Each replication 'b' 
-generates a dataset {X(b), Y(b)} by sub-sampling rows in {`X`, `X`} and columns in `X`. For each dataset 
-{X(b), Y(b)}, the process detailed below is run.
+*Model fitting*
+* A number of `nproto` classes (mutually exclusive) are built by kmeans on X. Each class centroid 
+    defines a 'prototype'. The set of `nproto` classes is assumed to represent the data heterogeneity (diversity 
+    of application domains presnent in the data).
+* On each class, a PLSR is optimized using a K-fold cross-validation and stored. This defines the prototype model.
 
-*Model fitting for replication 'b'*
-* A number of `nproto` classes ( mutually exclusive) are built by kmeans on X(b). Each class centroid 
-    defines a 'prototype'. The `nproto` classes are assumed to represent the data heterogeneity (diversity 
-    of application domains).
-* On each class, a PLSR is optimized using a K-fold cross-validation on {X(b), Y(b)} and stored. This defines 
-    the prototype model.
-
-*Prediction for replication 'b'*
+*Prediction*
 * Each new observation to predict is assigned to its `kavg` nearest prototypes.
 * The final prediction is computed by a weighted average of the `kavg` predictions of the corresponding 
-    prototype models. The weighting is computed from the relative distances between the new observation and 
-    the `kavg` prototype centers (function `winvs`). If `kavg = 1`, only one PLSR model is used (the closest
-    prototype) and there is no averaging.
-
-At the end (merge of the replications), the final prediction is computed by the mean of the `rep` 
-predictions.  
+    prototype models. The weighting is computed from the distances between the new observation and the `kavg` prototype centers 
+    (function `winvs`). TThe weights decrease with the distance (decreasing weighting function). If `kavg = 1`, only one PLSR model 
+    is used (the closest prototype) and there is no averaging.
 
 The kmeans step is done with package `Clustering.jl` (https://github.com/JuliaStats/Clustering.jl).
 
 Notes: 
 * This pipeline is still under construction, some details could change in the future.
-* The actual version of the function works for multivariate `Y` but the PLSR optimizations
-    are done only based on the first Y column (this will be fixed later). 
+* The actual version of the function works for multivariate `Y` but the PLSR optimizations are done only based on the
+    first Y column (this will be fixed later). 
 
 ## Examples
 ```julia
@@ -105,15 +93,16 @@ Base.@kwdef mutable struct Parprotoclustplsr
 end
 
 struct Protoclustplsr
-    fitm::ProtoYclaPlsr
+    fitm::Protoyclaplsr
+    fitm_emb::Union{Nothing, Plsr}
     fitm_clust::Clustering.KmeansResult
     ycla::AbstractVector
+    par::Parprotoclustplsr
 end
 
 protoclustplsr(; kwargs...) = JchemoModel(protoclustplsr, nothing, kwargs)
 
-function protoclustplsr(X, y; metric = :eucl, nproto, nlv, K = 5, kavg = 1, h = 1, criw = 4, squared = false, 
-        tolw = 1e-4, scal = false)
+function protoclustplsr(X, y; kwargs...)
     par = recovkw(Parprotoclustplsr, kwargs).par 
     if par.metric == :eucl
         distance = Distances.Euclidean()
@@ -126,21 +115,35 @@ function protoclustplsr(X, y; metric = :eucl, nproto, nlv, K = 5, kavg = 1, h = 
     #elseif par.metric == :was
     #    distance =  Jchemo.CorDist_b() # Jchemo.WasDist()
     end
-    fitm_clust = kmeans(X', nproto; 
+    if par.nlvdis == 0
+        fitm_emb = nothing
+        fitm_clust = kmeans(X', par.nproto; 
+            init = :kmpp,    # default
+            maxiter = 5000, 
+            display = :none,
+            distance = distance,
+            rng = Random.MersenneTwister(par.seed)
+            ) 
+        zXt = X'
+    else
+        fitm_emb = plskern(X, Y; nlv = par.nlvdis)
+        zXt = fitm_emb.T'
+    end
+    fitm_clust = kmeans(zXt, par.nproto; 
         init = :kmpp,    # default
         maxiter = 5000, 
         display = :none,
         distance = distance,
-        rng = Random.MersenneTwister(seed)
+        rng = Random.MersenneTwister(par.seed)
         ) 
     ycla = fitm_clust.assignments
     fitm = Jchemo.protoyclaplsr(X, y, ycla; metric = par.metric, nlv = par.nlv, K = par.K, kavg = par.kavg, h = par.h,
         criw = par.criw, squared = par.squared, tolw = par.tolw, scal = par.scal) 
-    Protoclustplsr(fitm, fitm_clust, ycla) 
+    Protoclustplsr(fitm, fitm_emb, fitm_clust, ycla, par)   
 end
 
 function predict(object::Protoclustplsr, X)
-    predict(object.fitm, X) 
+    Jchemo.predict(object.fitm, X) 
 end
 
 
