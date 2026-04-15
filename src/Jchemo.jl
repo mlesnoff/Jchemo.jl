@@ -434,7 +434,7 @@ export
     ## Bagging
     baggr,
     ## Prototype
-    protoplsr, rclustplsr,
+    protoplsr, protoclustplsr, rclustplsr,
     ## Variable selection/importance (direct methods) 
     vip, 
     viperm!,

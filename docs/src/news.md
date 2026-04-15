@@ -8,7 +8,7 @@
     - Function **occdds**: One-class classification (OCC) using DD-Simca.
 
 - Modifications
-    - Improvement of outlierness and occ functions.
+    - Improvement of outlierness and OCC functions.
     - Code cleaning.
 
 

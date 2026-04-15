@@ -95,7 +95,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 """ 
 rclustplsr(; kwargs...) = JchemoModel(rclustplsr, nothing, kwargs)
 
-Base.@kwdef mutable struct ParRclustPlsr 
+Base.@kwdef mutable struct Parrclustplsr 
     rep::Int = 50
     rowsamp::Float64 = .7
     replace::Bool = false
@@ -113,13 +113,13 @@ Base.@kwdef mutable struct ParRclustPlsr
     scal::Bool = false    
 end
 
-struct RclustPlsr
+struct Rclustplsr
     fitm::Baggr
-    par::ParRclustPlsr
+    par::Parrclustplsr
 end
 
 function rclustplsr(X, Y; kwargs...)
-    par = recovkw(ParRclustPlsr, kwargs).par 
+    par = recovkw(Parrclustplsr, kwargs).par 
     fitm = baggr(X, Y; fun = Jchemo.protoclustplsr, 
         rep = par.rep, 
         rowsamp = par.rowsamp,
@@ -139,10 +139,10 @@ function rclustplsr(X, Y; kwargs...)
         scal = par.scal
         ## End
         )
-    RclustPlsr(fitm, par)
+    Rclustplsr(fitm, par)
 end
 
-function predict(object::RclustPlsr, X)
+function predict(object::Rclustplsr, X)
     predict(object.fitm, X)
 end
 

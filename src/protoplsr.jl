@@ -14,8 +14,8 @@ Keyword arguments:
 * `nproto`: Nb. prototypes to select.
 * `k`: Nb. observations considered for each prototype (= neighborhood prototype = local neighborhood).
 * `centroid`: Boolean. If `true`, the center of the prototype is defined by the mean of the neighborhood,
-    else it is defined directely by the sampled observation. 
-* `samp`: Type of sampling used in `X` to select the prototypes. 
+    else (default) it is defined directely by the sampled observation.
+* `typsamp`: Type of sampling used in `X` to select the prototypes. Possible values are: `:rand`, `:ks`. 
 * `nlv` : Maximum nb. latent variables (LVs) for each prototype model.
 * `K` : Nb. folds (segments) in the K-fold cross-validation. 
 * `kavg` : Nb. prototype models whose predictions are averaged to compute the final prediction.
@@ -24,31 +24,33 @@ Keyword arguments:
     `winvs` can also be specified here). Used when averaging the prototype predictions.
 * `scal` : Boolean. If `true`, each column of matrices X and Y of the prototype neighborhood is 
     scaled by its uncorrected standard deviation.
+* `seed` : Eventual seed for the `Random.MersenneTwister` generator (used when `typsamp` = `:rand`). 
 
 Function `protoplsr` implements an averaging of prototype PLSR models.
 
 *Model fitting*
 * A number of `nproto` observations (x, y), referred to as 'prototypes', are sampled in the training data. 
     In the actual version of the function, the sampling is done on `X` or on global PLS scores computed 
-    from (`X`, `Y`). 
-* A neighborhood is selected around each prototype. The prototype neighborhoods are assumed to represent 
-    the data heterogeneity (diversity of application domains). Note: A same observation can eventually belong 
-    to several neighborhoods.
-* On each class, a PLSR is optimized using a K-fold cross-validation and stored. This defines the 
-    prototype model.
+    from (`X`, `Y`). This is managed with argument `nlvdis`. Argument `metric` defines the type of distance used.
+* A neighborhood (`k` neighbors) is selected around each prototype. The set of `nproto` neighborhoods is assumed 
+    to represent the data heterogeneity (diversity of application domains present in the data). Note: A same observation 
+    can eventually belong to several neighborhoods.
+*  The center of each neighborhood is finally defined either as the initially sampled observation or by the centroid 
+    the neighborhood. This is managed by argument `centroid`. 
+* On each neighborhodd, a PLSR is optimized using a K-fold cross-validation and stored. This defines the prototype model.
 
 *Prediction*
-* Each new observation to predict is assigned to its `kavg` nearest prototypes, based on its distances 
-    to the prototype centers (prototypes or neighborhodd centroids).
+* Each new observation to predict is assigned to its `kavg` nearest prototypes, based on its distances to the prototype
+    centers.
 * The final prediction is computed by a weighted average of the `kavg` predictions of the corresponding 
-    prototype models. The weighting is computed from the relative distances between the new observation and 
-    the `kavg` prototype centers (function `winvs`). If `kavg = 1`, only one PLSR model is used (the closest
-    prototype) and there is no averaging.
+    prototype models. The weighting is computed from the distances between the new observation and the `kavg` prototype centers 
+    (function `winvs`). TThe weights decrease with the distance (decreasing weighting function). If `kavg = 1`, only one PLSR model 
+    is used (the closest prototype) and there is no averaging.
 
 Notes: 
 * This pipeline is still under construction, some details could change in the future.
-* The actual version of the function works for multivariate `Y` but the PLSR optimizations
-    are done only based on the first Y column (this will be fixed later). 
+* The actual version of the function works for multivariate `Y` but the PLSR optimizations are done only based on the
+    first Y column (this will be fixed later). 
 
 ## Examples
 ```julia
@@ -87,13 +89,13 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 """ 
 protoplsr(; kwargs...) = JchemoModel(protoplsr, nothing, kwargs)
 
-Base.@kwdef mutable struct ParProtoPlsr 
+Base.@kwdef mutable struct Parprotoplsr 
     nlvdis::Int = 0                         
     metric::Symbol = :eucl  
     nproto::Int = 1
     k::Int = 1 
-    centroid::Bool = true
-    samp::Symbol = :rand
+    centroid::Bool = false
+    typsamp::Symbol = :rand
     nlv::Union{Int, Vector{Int}, UnitRange} = 1  
     K::Int = 5    
     kavg::Int = 1                              
@@ -101,30 +103,29 @@ Base.@kwdef mutable struct ParProtoPlsr
     criw::Float64 = 4                       
     squared::Bool = false                   
     tolw::Float64 = 1e-4                    
-    scal::Bool = false    
+    scal::Bool = false 
+    seed::Union{Nothing, Int} = nothing     
 end
 
-struct ProtoPlsr
+struct Protoplsr
     Xproto::Matrix
     Yproto::Matrix
     fitm_emb::Union{Nothing, Plsr}
     resnn::NamedTuple
     fitm::Vector{Plsr}
     coefs::Vector
-    par::ParProtoPlsr
+    par::Parprotoplsr
 end
 
 function protoplsr(X, Y; kwargs...)
-    par = recovkw(ParProtoPlsr, kwargs).par 
+    par = recovkw(Parprotoplsr, kwargs).par 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = nro(X)
     ## Selection of the prototypes
-    if par.samp == :rand
-        ## To do: Add argument 'seed = nothing' 
-        ## * `seed` : Optional seed (integer number) for the sampling        
-        s_proto = samprand(n, par.nproto; seed = 1234).test
-    elseif par.samp == :ks
+    if par.typsamp == :rand      
+        s_proto = samprand(n, par.nproto; seed = par.seed).test
+    elseif par.typsamp == :ks
         s_proto = sampks(X, par.nproto; metric).test
     end
     ## Compute the neighborhood of each prototype
@@ -162,10 +163,10 @@ function protoplsr(X, Y; kwargs...)
         end
     end
     ## Outputs
-    ProtoPlsr(Xproto, Yproto, fitm_emb, resnn, fitm, coefs, par) 
+    Protoplsr(Xproto, Yproto, fitm_emb, resnn, fitm, coefs, par) 
 end
 
-function predict(object::ProtoPlsr, X)
+function predict(object::Protoplsr, X)
     X = ensure_mat(X)
     Q = eltype(X)
     m = nro(X)
