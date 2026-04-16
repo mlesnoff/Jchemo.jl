@@ -5,6 +5,8 @@ Clustered PLSR.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 Keyword arguments:
+* `nlvdis` : Number of latent variables (LVs) to consider in the global PLS used for the dimension 
+    reduction before computing the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.
 * `metric` : Type of dissimilarity used to build the clases (kmeans) and eventually to compute 
     the weights when averaging the `kavg` prototype models. Possible values are (see function `getknn`): 
     `:eucl` (Euclidean), `:mah` (Mahalanobis), `:sam` (spectral angular distance), `:cos` (cosine distance), `
@@ -102,10 +104,19 @@ end
 
 protoclustplsr(; kwargs...) = JchemoModel(protoclustplsr, nothing, kwargs)
 
-function protoclustplsr(X, y; kwargs...)
+function protoclustplsr(X, Y; kwargs...)
     par = recovkw(Parprotoclustplsr, kwargs).par 
+    if par.nlvdis == 0
+        fitm_emb = nothing
+        zX = copy(X)
+    else
+        fitm_emb = plskern(X, Y; nlv = par.nlvdis)
+        zX = fitm_emb.T
+    end
     if par.metric == :eucl
         distance = Distances.Euclidean()
+    elseif par.metric == :mah
+        distance = Distances.Mahalanobis(cov(zX))
     elseif par.metric == :cos
         distance = Jchemo.CosDist()
     elseif par.metric == :sam
@@ -115,29 +126,15 @@ function protoclustplsr(X, y; kwargs...)
     #elseif par.metric == :was
     #    distance =  Jchemo.CorDist_b() # Jchemo.WasDist()
     end
-    if par.nlvdis == 0
-        fitm_emb = nothing
-        fitm_clust = kmeans(X', par.nproto; 
-            init = :kmpp,    # default
-            maxiter = 5000, 
-            display = :none,
-            distance = distance,
-            rng = Random.MersenneTwister(par.seed)
-            ) 
-        zXt = X'
-    else
-        fitm_emb = plskern(X, Y; nlv = par.nlvdis)
-        zXt = fitm_emb.T'
-    end
-    fitm_clust = kmeans(zXt, par.nproto; 
+    fitm_clust = kmeans(zX', par.nproto; 
         init = :kmpp,    # default
         maxiter = 5000, 
         display = :none,
-        distance = distance,
+        distance,
         rng = Random.MersenneTwister(par.seed)
         ) 
     ycla = fitm_clust.assignments
-    fitm = Jchemo.protoyclaplsr(X, y, ycla; metric = par.metric, nlv = par.nlv, K = par.K, kavg = par.kavg, h = par.h,
+    fitm = Jchemo.protoyclaplsr(X, Y, ycla; metric = par.metric, nlv = par.nlv, K = par.K, kavg = par.kavg, h = par.h,
         criw = par.criw, squared = par.squared, tolw = par.tolw, scal = par.scal) 
     Protoclustplsr(fitm, fitm_emb, fitm_clust, ycla, par)   
 end

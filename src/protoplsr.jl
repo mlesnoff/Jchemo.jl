@@ -7,36 +7,38 @@ Averaging PLSR models built on the neighborhood of prototype observations.
 Keyword arguments:
 * `nlvdis` : Number of latent variables (LVs) to consider in the global PLS used for the dimension 
     reduction before computing the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.
-* `metric` : Type of dissimilarity used to select the neighbors and eventually to compute 
-    the weights when averaging the `kavg` prototype models. Possible values are (see function `getknn`): 
-    `:eucl` (Euclidean), `:mah` (Mahalanobis), `:sam` (spectral angular distance), `:cos` (cosine distance), `
-    :cor` (correlation distance).
-* `nproto`: Nb. prototypes to select.
-* `k`: Nb. observations considered for each prototype (= neighborhood prototype = local neighborhood).
-* `centroid`: Boolean. If `true`, the center of the prototype is defined by the mean of the neighborhood,
-    else (default) it is defined directely by the sampled observation.
-* `typsamp`: Type of sampling used in `X` to select the prototypes. Possible values are: `:rand`, `:ks`. 
-* `nlv` : Maximum nb. latent variables (LVs) for each prototype model.
+* `metric` : Type of dissimilarity used to select the neighbors and to compute the weights when averaging 
+    the `kavg` prototype models. Possible values are (see function `getknn`): `:eucl` (Euclidean), `:mah` (Mahalanobis), 
+    `:sam` (spectral angular distance), `:cos` (cosine distance), `:cor` (correlation distance).
+* `nproto`: Nb. prototypes to define.
+* `k`: Nb. observations considered for the neighborhood of each prototype (= prototype neighborhood).
+* `centroid`: Boolean. If `true`, the prototype is defined by the mean of the neighborhood, else (default) it is defined 
+    directely by the sampled observation.
+* `typsamp`: Type of sampling used in `X` to sample the prototypes. Possible values are: `:rand`, `:ks`. 
+* `nlv` : Maximum nb. latent variables (LVs) for each PLSR prototype model.
 * `K` : Nb. folds (segments) in the K-fold cross-validation. 
 * `kavg` : Nb. prototype models whose predictions are averaged to compute the final prediction.
-* `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
-    sharper is the function. See function `winvs` for details (keyword arguments `criw` and `squared` of 
-    `winvs` can also be specified here). Used when averaging the prototype predictions.
-* `scal` : Boolean. If `true`, each column of matrices X and Y of the prototype neighborhood is 
-    scaled by its uncorrected standard deviation.
-* `seed` : Eventual seed for the `Random.MersenneTwister` generator (used when `typsamp` = `:rand`). 
+* `h` : A scalar defining the shape of the weight function used to average the prototype predictions. The weights are 
+    computed by function `winvs`)Lower is h, sharper is the function. See function `winvs` for details (keyword arguments
+    `criw` and `squared` of `winvs` can also be specified here).
+* `scal` : Boolean. If `true`, each column of matrices X and Y of the prototype neighborhood is scaled by its 
+    uncorrected standard deviation before implementing the PLSR.
+* `seed` : Eventual seed for the `Random.MersenneTwister` generator, used when `typsamp` = `:rand`. 
 
 Function `protoplsr` implements an averaging of prototype PLSR models.
 
+*Distance computations*
+* In the actual version of the function, the dissimilarities between observations are computed on the originla X-data or 
+or on global PLS scores computed from (`X`, `Y`). This is managed by argument `nlvdis`. 
+* Argument `metric` defines the type of dissimilarity used.
+
 *Model fitting*
 * A number of `nproto` observations (x, y), referred to as 'prototypes', are sampled in the training data. 
-    In the actual version of the function, the sampling is done on `X` or on global PLS scores computed 
-    from (`X`, `Y`). This is managed with argument `nlvdis`. Argument `metric` defines the type of distance used.
 * A neighborhood (`k` neighbors) is selected around each prototype. The set of `nproto` neighborhoods is assumed 
-    to represent the data heterogeneity (diversity of application domains present in the data). Note: A same observation 
-    can eventually belong to several neighborhoods.
-*  The center of each neighborhood is finally defined either as the initially sampled observation or by the centroid 
-    the neighborhood. This is managed by argument `centroid`. 
+    to represent the data heterogeneity (diversity of application domains present in the data). Note: In this method, a same 
+    observation can eventually belong to several neighborhoods.
+*  The center of each neighborhood (the 'prototype') is finally defined either as the initially sampled observation or
+    by the centroid the neighborhood. This is managed by argument `centroid`. 
 * On each neighborhood, a PLSR is optimized using a K-fold cross-validation and stored. This defines the prototype model.
 
 *Prediction*
