@@ -1,6 +1,6 @@
 """
-    segmkf(n::Int, K::Int; rep = 1, seed::Union{Nothing, Int, Vector{Int}} = nothing)
-    segmkf(group::Vector, K::Int; rep = 1, seed::Union{Nothing, Int, Vector{Int}} = nothing)
+    segmkf(n::Int, K::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
+    segmkf(group::Vector, K::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
 Build segments of observations for K-fold cross-validation.  
 * `n` : Total nb. of observations in the dataset. The sampling is implemented with 1:`n`.
 * `group` : A vector (`n`) defining blocks of observations.
@@ -45,17 +45,18 @@ group[segm[i][2]]
 group[segm[i][3]]
 ```
 """ 
-function segmkf(n::Int, K::Int; rep = 1, seed::Union{Nothing, Int, Vector{Int}} = nothing)
+function segmkf(n::Int, K::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
     Q = Vector{Int}
     m = K - n % K ;
     s = list(Vector{Q}, rep)
+    if isnothing(seed)
+        vseed = [nothing for i in eachindex(s)]
+    else 
+        vseed = [seed + i - 1 for i in eachindex(s)]
+    end
     @inbounds for i = 1:rep
         s[i] = list(Q, K)
-        if isnothing(seed)
-            v = [Random.randperm(n) ; repeat([0], outer = m)]
-        else 
-            v = [Random.randperm(MersenneTwister(seed[i]), n) ; repeat([0], outer = m)] 
-        end 
+        v = [Random.randperm(MersenneTwister(vseed[i]), n) ; repeat([0], outer = m)] 
         v = reshape(v, K, :)
         @inbounds for j = 1:K 
             s[i][j] = sort(filter(x -> x > 0, v[j, :]))
@@ -64,20 +65,21 @@ function segmkf(n::Int, K::Int; rep = 1, seed::Union{Nothing, Int, Vector{Int}} 
     s
 end
 
-function segmkf(group::Vector, K::Int; rep = 1, seed::Union{Nothing, Int, Vector{Int}} = nothing)
+function segmkf(group::Vector, K::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
     Q = Vector{Int}
+    s = list(Vector{Q}, rep)
+    if isnothing(seed)
+        vseed = [nothing for i in eachindex(s)]
+    else 
+        vseed = [seed + i - 1 for i in eachindex(s)]
+    end
     yagg = unique(group)
     nlev = length(yagg)
     K = min(K, nlev)
     m = K - nlev % K ;
-    s = list(Vector{Q}, rep)
     @inbounds for i = 1:rep
         s[i] = list(Q, K)
-        if isnothing(seed)
-            v = [Random.randperm(nlev) ; repeat([0], outer = m)]
-        else 
-            v = [Random.randperm(MersenneTwister(seed[i]), nlev) ; repeat([0], outer = m)] 
-        end 
+        v = [Random.randperm(MersenneTwister(vseed[i]), nlev) ; repeat([0], outer = m)] 
         v = reshape(v, K, :)
         @inbounds for j = 1:K 
             s[i][j] = sort(filter(x -> x > 0, v[j, :]))

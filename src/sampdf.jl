@@ -54,7 +54,7 @@ function sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); meth = 
     train = list(Vector, p)  
     test = list(Vector, p)
     length(k) == 1 ? k = repeat([k], p) : nothing
-    @inbounds for i = 1:p
+    @inbounds for i in axes(Y, 2)
         y = Y[:, nam[i]]
         s_all = findall(ismissing.(y) .== 0)
         if meth == :rand   

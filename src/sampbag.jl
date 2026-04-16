@@ -18,6 +18,7 @@ using Jchemo
 
 n = 10 ; p = 4 ; q = 2
 res = sampbag(n, p; rep = 4, rowsamp = .7, colsamp = .7) ;
+#res = sampbag(n, p; rep = 4, rowsamp = .7, colsamp = .7, seed = 1234) ;
 @names res
 res.srow
 res.srow_oob
@@ -34,7 +35,11 @@ function sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = .7, see
     srow_oob = list(Vector{Int}, rep)
     scol = list(Vector{Int}, rep)
     ##
-    isnothing(seed) ? vseed = [nothing for i in 1:rep] : vseed = [seed + i - 1 for i in 1:rep]
+    if isnothing(seed)
+        vseed = [nothing for i in eachindex(srow)]
+    else 
+        vseed = [seed + i - 1 for i in eachindex(srow)]
+    end    
     ordered = true
     Threads.@threads for i = 1:rep 
         ## Rows
@@ -63,9 +68,15 @@ function sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, re
     srow_oob = list(Vector{Int}, rep)
     scol = list(Vector{Int}, rep)
     ##
+    if isnothing(seed)
+        vseed = [nothing for i in eachindex(srow)]
+    else 
+        vseed = [seed + i - 1 for i in eachindex(srow)]
+    end
+    ordered = true
     Threads.@threads for i = 1:rep 
         ## Rows
-        s = StatsBase.sample(MersenneTwister(vseed[i]), range_n, mrow; replace, ordered = true)
+        s = StatsBase.sample(MersenneTwister(vseed[i]), range_n, mrow; replace, ordered)
         srow[i] = s
         srow_oob[i] = range_n[setdiff(1:end, s)]
         ## Columns
@@ -74,7 +85,7 @@ function sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, re
         else
             colweight.values[colweight.values .== 0] .= eps(eltype(colweight.values))
             colweight = pweight(colweight.values)
-            s = StatsBase.sample(MersenneTwister(vseed[i]), range_p, colweight, mcol; replace = false, ordered = true)
+            s = StatsBase.sample(MersenneTwister(vseed[i]), range_p, colweight, mcol; replace = false, ordered)
             scol[i] = s
         end
     end

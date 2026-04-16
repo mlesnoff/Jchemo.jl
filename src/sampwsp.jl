@@ -32,13 +32,13 @@ Chimiométrie 2010 113, 26–31. https://doi.org/10.1016/j.chemolab.2011.06.003
 
 ## Examples
 ```julia
-using Jchemo
+using Jchemo, CairoMakie
 
 n = 600 ; p = 2
 X = rand(n, p)
 dmin = .5
-s = sampwsp(X, dmin)
-@names res
+s = sampwsp(X, dmin) 
+@names s
 @show length(s.test)
 plotxy(X[s.test, 1], X[s.test, 2]).f
 ```
@@ -65,7 +65,6 @@ function sampwsp(X, dmin; recod = false, maxit = nro(X))
     iter = 1
     while (n > 1) && (iter < maxit) 
         res = getknn(zX, x; k = n)
-        println(res)
         s = res.d[1] .> dmin
         v = res.ind[1][s]  # new {reference point + candidates}
         if length(v) > 0
