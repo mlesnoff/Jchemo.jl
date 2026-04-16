@@ -147,7 +147,7 @@
 
 *Prototype models*
 - **protoplsr** Averaging PLSR models built on the neighborhood of prototype observations
-- **rclustplsr** Random clustered PLSR
+- **protoclustplsr**, **rclustplsr** Clustered PLSR
 
 ### Support vector machines
 

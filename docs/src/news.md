@@ -6,6 +6,7 @@
     - Function **matWc**: Within-class (corrected) covariance matrices.
     - Function **hotelling**: Two-sample Hotelling's T-squared test.
     - Function **occdds**: One-class classification (OCC) using DD-Simca.
+    - Function **protoclustplsr** Clustered PLSR.
 
 - Modifications
     - Improvement of outlierness and OCC functions.
