@@ -7,26 +7,31 @@ Clustered PLSR.
 Keyword arguments:
 * `nlvdis` : Number of latent variables (LVs) to consider in the global PLS used for the dimension 
     reduction before computing the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.
-* `metric` : Type of dissimilarity used to build the clases (kmeans) and eventually to compute 
-    the weights when averaging the `kavg` prototype models. Possible values are (see function `getknn`): 
-    `:eucl` (Euclidean), `:mah` (Mahalanobis), `:sam` (spectral angular distance), `:cos` (cosine distance), `
-    :cor` (correlation distance).
-* `nproto`: Nb. prototype classes (kmeans) to build.
-* `nlv` : Maximum nb. latent variables (LVs) for each prototype model.
+* `metric` : Type of dissimilarity used to build the classes (kmeans) and to compute the weights when averaging 
+    the `kavg` prototype models. Possible values are (see function `getknn`): `:eucl` (Euclidean), `:mah` (Mahalanobis), 
+    `:sam` (spectral angular distance), `:cos` (cosine distance), `:cor` (correlation distance).
+* `nproto`: Nb. prototypes to define.
+* `nlv` : Maximum nb. latent variables (LVs) for each PLSR prototype model.
 * `K` : Nb. folds (segments) in the K-fold cross-validation. 
 * `kavg` : Nb. prototype models whose predictions are averaged to compute the final prediction.
-* `h` : Used when `kavg` > 1. A scalar defining the shape of the weight function computed by function `winvs`. 
-    Lower is h, sharper is the function. See function `winvs` for details (keyword arguments `criw` and 
-    `squared` of `winvs` can also be specified here). Used when averaging the prototype predictions.
-* `scal` : Boolean. If `true`, each column of matrices X and Y of the prototype classes is 
-    scaled by its uncorrected standard deviation.
+* `h` : A scalar defining the shape of the weight function used to average the prototype predictions. The weights are 
+    computed by function `winvs`)Lower is h, sharper is the function. See function `winvs` for details (keyword arguments
+    `criw` and `squared` of `winvs` can also be specified here).
+* `scal` : Boolean. If `true`, each column of matrices X and Y of the prototype neighborhood is scaled by its 
+    uncorrected standard deviation before implementing the PLSR.
+* `seed` : Eventual seed for the `Random.MersenneTwister` generator, used to initialize the kmeans algorithm. 
 
 Function `protoclustplsr` implements an averaging of prototype PLSR models.
 
+*Distance computations*
+* In the actual version of the function, the dissimilarities between observations are computed on the original X-data or 
+or on global PLS scores computed from (`X`, `Y`). This is managed by argument `nlvdis`. 
+* Argument `metric` defines the type of dissimilarity used.
+
 *Model fitting*
-* A number of `nproto` classes (mutually exclusive) are built by kmeans on X. Each class centroid 
-    defines a 'prototype'. The set of `nproto` classes is assumed to represent the data heterogeneity (diversity 
-    of application domains presnent in the data).
+* A number of `nproto` classes (mutually exclusive) are built by kmeans. Each class centroid defines a 'prototype'. 
+    The set of `nproto` classes is assumed to represent the data heterogeneity (diversity of application domains 
+    present in the data).
 * On each class, a PLSR is optimized using a K-fold cross-validation and stored. This defines the prototype model.
 
 *Prediction*
@@ -60,23 +65,26 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
+nlvdis = 0 ; metric = :eucl 
+#nlvdis = 15 ; metric = :mah 
 nproto = 3
-metric = :cos
-nlv = 15
+nlv = 17
 kavg = 1
-fitm = protoclustplsr(Xtrain, ytrain; rep = 100, metric, nproto, nlv, kavg) ; 
-@names fitm
-fitm_bag = fitm.fitm ;
-fitm_bag.res_samp.srow
-fitm_bag.res_samp.srow_oob
-fitm_bag.res_samp.scol
-length(fitm_bag.fitm)
-typeof(fitm_bag.fitm[1])
-@names(fitm_bag.fitm[1])
-tab(fitm_bag.fitm[1].ycla)
-res = predict(fitm, Xtest)  
+model = protoclustplsr(; nlvdis, metric, nproto, nlv, kavg, seed = 1234) ; 
+fit!(model, Xtrain, ytrain)
+@names model
+@names model.fitm 
+@names fitm = model.fitm
+tab(fitm.ycla)
+@names fitm.fitm
+fitm.fitm.coefs
+
+res = predict(model, Xtest) ; 
+@names res 
+@head res.pred
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", ylabel = "Observed").f
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
+    ylabel = "Observed").f  
 ```
 """ 
 Base.@kwdef mutable struct Parprotoclustplsr 
@@ -106,6 +114,8 @@ protoclustplsr(; kwargs...) = JchemoModel(protoclustplsr, nothing, kwargs)
 
 function protoclustplsr(X, Y; kwargs...)
     par = recovkw(Parprotoclustplsr, kwargs).par 
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
     if par.nlvdis == 0
         fitm_emb = nothing
         zX = copy(X)
@@ -116,7 +126,7 @@ function protoclustplsr(X, Y; kwargs...)
     if par.metric == :eucl
         distance = Distances.Euclidean()
     elseif par.metric == :mah
-        distance = Distances.Mahalanobis(cov(zX))
+        distance = Distances.Mahalanobis(covm(zX))
     elseif par.metric == :cos
         distance = Jchemo.CosDist()
     elseif par.metric == :sam

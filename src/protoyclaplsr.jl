@@ -1,10 +1,10 @@
 ## Not exported
 
 struct Protoyclaplsr
-    Xproto::Matrix
-    Yproto::Matrix
     fitm::Vector{Plsr}    
     fitm_emb::Union{Nothing, Plsr}
+    Xproto::Matrix
+    Yproto::Matrix
     coefs::Vector
     ni::Vector{Int}
     lev::Vector
@@ -32,7 +32,7 @@ function protoyclaplsr(X, Y, ycla; nlvdis = 0, metric = :eucl, nlv, K = 5, kavg 
     ## To store the prototype models
     fitm = list(Plsr, nproto)
     coefs = list(NamedTuple, nproto)
-    ## Optimize/fit the prototype models 
+    ## Optimize/fit/store the nproto prototype models 
     #@inbounds for i in eachindex(lev)
     Threads.@threads for i in eachindex(lev)
         ind = ycla .== lev[i]
@@ -50,7 +50,7 @@ function protoyclaplsr(X, Y, ycla; nlvdis = 0, metric = :eucl, nlv, K = 5, kavg 
         fitm[i] = plskern(vX, vY; nlv = rescv.nlv[u], scal = rescv.scal[u])
         coefs[i] = coef(fitm[i])
     end
-    Protoyclaplsr(Xproto, Yproto, fitm, fitm_emb, coefs, ni, lev, par) 
+    Protoyclaplsr(fitm, fitm_emb, Xproto, Yproto, coefs, ni, lev, par) 
 end
 
 function predict(object::Protoyclaplsr, X)

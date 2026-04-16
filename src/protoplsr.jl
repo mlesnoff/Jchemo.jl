@@ -28,7 +28,7 @@ Keyword arguments:
 Function `protoplsr` implements an averaging of prototype PLSR models.
 
 *Distance computations*
-* In the actual version of the function, the dissimilarities between observations are computed on the originla X-data or 
+* In the actual version of the function, the dissimilarities between observations are computed on the original X-data or 
 or on global PLS scores computed from (`X`, `Y`). This is managed by argument `nlvdis`. 
 * Argument `metric` defines the type of dissimilarity used.
 
@@ -76,17 +76,19 @@ nproto = 100
 k = 80
 nlv = 15
 kavg = 5 ; h = 1 
-model = protoplsr(; nlvdis, metric, nproto, k, nlv, kavg, h) 
+model = protoplsr(; nlvdis, metric, nproto, k, nlv, kavg, h, seed = 1234) 
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
+@names fitm = model.fitm
+fitm.coefs
+@names fitm.fitm[1]
 
 res = predict(model, Xtest) ; 
 @names res 
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
-    ylabel = "Observed").f    
+    ylabel = "Observed").f          
 ```
 """ 
 protoplsr(; kwargs...) = JchemoModel(protoplsr, nothing, kwargs)
@@ -110,12 +112,12 @@ Base.@kwdef mutable struct Parprotoplsr
 end
 
 struct Protoplsr
+    fitm::Vector{Plsr}    
+    fitm_emb::Union{Nothing, Plsr}
     Xproto::Matrix
     Yproto::Matrix
-    fitm_emb::Union{Nothing, Plsr}
-    resnn::NamedTuple
-    fitm::Vector{Plsr}
     coefs::Vector
+    resnn::NamedTuple
     par::Parprotoplsr
 end
 
@@ -138,7 +140,7 @@ function protoplsr(X, Y; kwargs...)
         fitm_emb = plskern(X, Y; nlv = par.nlvdis)
         resnn = getknn(fitm_emb.T, transf(fitm_emb, vrow(X, s_proto)); k = par.k, metric = par.metric)
     end
-    ## Optimize/fit the prototype models 
+    ## Optimize/fit/store the nproto prototype models 
     fitm = list(Plsr, par.nproto)
     coefs = list(NamedTuple, par.nproto)
     segm = segmkf(par.k, par.K; rep = 1, seed = 1234)
@@ -165,7 +167,7 @@ function protoplsr(X, Y; kwargs...)
         end
     end
     ## Outputs
-    Protoplsr(Xproto, Yproto, fitm_emb, resnn, fitm, coefs, par) 
+    Protoplsr(fitm, fitm_emb, Xproto, Yproto, coefs, resnn, par) 
 end
 
 function predict(object::Protoplsr, X)
