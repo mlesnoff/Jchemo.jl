@@ -49,8 +49,10 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-fitm = baggr(Xtrain, ytrain; fun = mlr, rep = 500, rowsamp = .5, colsamp = .05) ; 
-#fitm = baggr(Xtrain, ytrain; fun = plskern, nlv = 15, rep = 500, rowsamp = .7, colsamp = .7) ; 
+rep = 500
+fitm = baggr(Xtrain, ytrain; rep, rowsamp = .5, colsamp = .05, fun = mlr) ; 
+#fitm = baggr(Xtrain, ytrain; rep, rowsamp = .5, colsamp = .05, seed = 1234, fun = mlr) ; 
+#fitm = baggr(Xtrain, ytrain; rep, rowsamp = .7, colsamp = .7, fun = plskern, nlv = 15) ; 
 @names fitm
 fitm.res_samp.srow
 fitm.res_samp.srow_oob
@@ -58,7 +60,7 @@ fitm.res_samp.scol
 fitm.fitm[1]
 res = predict(fitm, Xtest) ; 
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", ylabel = "Observed").f 
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", ylabel = "Observed").f
 ```
 """ 
 function baggr(X, Y; rep = 50, rowsamp = .7, replace = false, colsamp = 1, seed = nothing, 
