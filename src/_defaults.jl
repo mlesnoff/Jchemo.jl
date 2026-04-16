@@ -1,126 +1,164 @@
 function defaults(algo::Function)
 
-    in((detrend_pol,)).(algo) ? dump(Jchemo.ParDetrendPol()) : nothing
-    in((detrend_lo,)).(algo) ? dump(Jchemo.ParDetrendLo()) : nothing
-    in((detrend_asls,)).(algo) ? dump(Jchemo.ParDetrendAsls()) : nothing
-    in((detrend_airpls,)).(algo) ? dump(Jchemo.ParDetrendAirpls()) : nothing
-    in((detrend_arpls,)).(algo) ? dump(Jchemo.ParDetrendArpls()) : nothing
-    in((fdif,)).(algo) ? dump(Jchemo.ParFdif()) : nothing
-    in((interpl,)).(algo) ? dump(Jchemo.ParInterpl()) : nothing
-    in((mavg,)).(algo) ? dump(Jchemo.ParMavg()) : nothing
-    in((savgol,)).(algo) ? dump(Jchemo.ParSavgol()) : nothing
-    in((snv,)).(algo) ? dump(Jchemo.ParSnv()) : nothing
-    in((rmgap,)).(algo) ? dump(Jchemo.ParRmgap()) : nothing
+    defs = [
 
-    ##
+        detrend_pol Jchemo.ParDetrendPol ;
+        detrend_lo Jchemo.ParDetrendLo ;
+        detrend_asls Jchemo.ParDetrendAsls ;
+        detrend_airpls Jchemo.ParDetrendAirpls ;
+        detrend_arpls Jchemo.ParDetrendArpls ;
+        fdif Jchemo.ParFdif ;
+        interpl Jchemo.ParInterpl ;
+        mavg Jchemo.ParMavg ;
+        savgol Jchemo.ParSavgol ;
+        snv Jchemo.ParSnv ;
+        rmgap Jchemo.ParRmgap ;
 
-    in((nipals, nipalsmiss)).(algo) ? dump(Jchemo.ParNipals()) : nothing
-    in((snipals_shen,)).(algo) ? dump(Jchemo.ParSnipals()) : nothing
+        nipals Jchemo.ParNipals ;
+        nipalsmiss Jchemo.ParNipals ;
+        snipals_shen Jchemo.ParSnipals ;
 
-    in((pcasvd, pcaeigen, pcaeigenk, pcasph)).(algo) ? dump(Jchemo.ParPca()) : nothing
-    in((pcanipals, pcanipalsmiss)).(algo) ? dump(Jchemo.ParPcanipals()) : nothing
-    in((pcapp,)).(algo) ? dump(Jchemo.ParPcapp()) : nothing
-    in((pcaout,)).(algo) ? dump(Jchemo.ParPcaout()) : nothing
+        pcasvd Jchemo.ParPca ; 
+        pcaeigen Jchemo.ParPca ; 
+        pcaeigenk Jchemo.ParPca ; 
+        pcasph Jchemo.ParPca ;
+        pcanipals Jchemo.ParPcanipals ; 
+        pcanipalsmiss Jchemo.ParPcanipals ;
+        pcapp Jchemo.ParPcapp ;
+        pcaout Jchemo.ParPcaout ;
 
-    in((covsel,)).(algo) ? dump(Jchemo.ParCovsel()) : nothing
-    
-    in((rp,)).(algo) ? dump(Jchemo.ParRp()) : nothing
+        covsel Jchemo.ParCovsel ;
+        
+        rp Jchemo.ParRp ;
 
-    in((spca,)).(algo) ? dump(Jchemo.ParSpca()) : nothing
+        spca Jchemo.ParSpca ;
 
-    in((kpca,)).(algo) ? dump(Jchemo.ParKpca()) : nothing
-    in((umap,)).(algo) ? dump(Jchemo.ParUmap()) : nothing
+        kpca Jchemo.ParKpca ;
+        umap Jchemo.ParUmap ;
 
-    in((fda, fdasvd)).(algo) ? dump(Jchemo.ParFda()) : nothing
+        fda Jchemo.ParFda ; 
+        fdasvd Jchemo.ParFda ;
 
-    in((blockscal,)).(algo) ? dump(Jchemo.ParBlock()) : nothing
-    in((plscan, plstuck)).(algo) ? dump(Jchemo.ParPls2bl()) : nothing
-    in((rasvd,)).(algo) ? dump(Jchemo.ParRasvd()) : nothing
-    in((rrr,)).(algo) ? dump(Jchemo.ParRrr()) : nothing
+        blockscal Jchemo.ParBlock ;
+        plscan Jchemo.ParPls2bl ; 
+        plstuck Jchemo.ParPls2bl ;
+        rasvd Jchemo.ParRasvd ;
+        rrr Jchemo.ParRrr ;
 
-    in((mbpca, comdim, )).(algo) ? dump(Jchemo.ParMbpca()) : nothing
-    in((cca,)).(algo) ? dump(Jchemo.ParCca()) : nothing
-    in((ccawold,)).(algo) ? dump(Jchemo.ParCcawold()) : nothing
+        mbpca Jchemo.ParMbpca ; 
+        comdim Jchemo.ParMbpca ;
+        cca Jchemo.ParCca ;
+        ccawold Jchemo.ParCcawold ;
 
-    ##
+        ##
 
-    in((mlr, mlrpinv, mlrvec)).(algo) ? dump(Jchemo.ParMlr()) : nothing
+        mlr Jchemo.ParMlr ; 
+        mlrpinv Jchemo.ParMlr ; 
+        mlrvec Jchemo.ParMlr ;
 
-    in((rr, rrchol)).(algo) ? dump(Jchemo.ParRr()) : nothing
+        rr Jchemo.ParRr ; 
+        rrchol Jchemo.ParRr ;
 
-    in((pcr,)).(algo) ? dump(Jchemo.ParPcr()) : nothing
+        pcr Jchemo.ParPcr ;
 
-    in((plskern, plsnipals, plswold, plsrosa, plssimp, plsravg, plsravg_unif)).(algo) ? dump(Jchemo.ParPlsr()) : nothing
-    in((cglsr, aicplsr)).(algo) ? dump(Jchemo.ParCglsr()) : nothing
-    in((plsrout,)).(algo) ? dump(Jchemo.ParPlsrout()) : nothing
+        plskern Jchemo.ParPlsr ; 
+        plsnipals Jchemo.ParPlsr ; 
+        plswold Jchemo.ParPlsr ; 
+        plsrosa Jchemo.ParPlsr ; 
+        plssimp Jchemo.ParPlsr ; 
+        plsravg Jchemo.ParPlsr ; 
+        plsravg_unif Jchemo.ParPlsr ;
+        cglsr Jchemo.ParCglsr ; 
+        aicplsr Jchemo.ParCglsr ;
+        plsrout Jchemo.ParPlsrout ;
 
-    in((spcr,)).(algo) ? dump(Jchemo.ParSpca()) : nothing
-    in((splsr,)).(algo) ? dump(Jchemo.ParSplsr()) : nothing
+        spcr Jchemo.ParSpca ;
+        splsr Jchemo.ParSplsr ;
 
-    in((krr,)).(algo) ? dump(Jchemo.ParKrr()) : nothing
-    in((kplsr, dkplsr)).(algo) ? dump(Jchemo.ParKplsr()) : nothing
+        krr Jchemo.ParKrr ;
+        kplsr Jchemo.ParKplsr ; 
+        dkplsr Jchemo.ParKplsr ;
 
-    in((svmr, svmda)).(algo) ? dump(Jchemo.ParSvm()) : nothing
+        svmr Jchemo.ParSvm ; 
+        svmda Jchemo.ParSvm ;
 
-    in((treer, treeda)).(algo) ? dump(Jchemo.ParTree()) : nothing
-    in((rfr, rfda)).(algo) ? dump(Jchemo.ParRf()) : nothing
+        treer Jchemo.ParTree ; 
+        treeda Jchemo.ParTree ;
+        rfr Jchemo.ParRf ; 
+        rfda Jchemo.ParRf ;
 
-    in((knnr,)).(algo) ? dump(Jchemo.ParKnn()) : nothing
-    in((lwmlr,)).(algo) ? dump(Jchemo.ParLwmlr()) : nothing
-    in((lwplsr, lwplsravg)).(algo) ? dump(Jchemo.ParLwplsr()) : nothing
-    in((loessr,)).(algo) ? dump(Jchemo.ParLoessr()) : nothing
+        knnr Jchemo.ParKnn ;
+        lwmlr Jchemo.ParLwmlr ;
+        lwplsr Jchemo.ParLwplsr ; 
+        lwplsravg Jchemo.ParLwplsr ;
+        loessr Jchemo.ParLoessr ;
 
-    in((protoplsr,)).(algo) ? dump(Jchemo.Parprotoplsr()) : nothing
-    in((protoclustplsr,)).(algo) ? dump(Jchemo.Parprotoclustplsr()) : nothing
-    in((rclustplsr,)).(algo) ? dump(Jchemo.Parrclustplsr()) : nothing
+        protoplsr Jchemo.Parprotoplsr ;
+        protoclustplsr Jchemo.Parprotoclustplsr ;
+        rclustplsr Jchemo.Parrclustplsr ;
 
-    ## When structures will be moved into 'struct_param.jl'
-    #in((protoplsr,)).(algo) ? dump(Jchemo.Parprotoplsr()) : nothing
-    #in((rclustplsr,)).(algo) ? dump(Jchemo.Parrclustplsr()) : nothing
+        mbplsr Jchemo.ParMbplsr ; 
+        mbplswest Jchemo.ParMbplsr ;
+        rosaplsr Jchemo.ParSoplsr ; 
+        soplsr Jchemo.ParSoplsr ;
 
-    in((mbplsr, mbplswest)).(algo) ? dump(Jchemo.ParMbplsr()) : nothing
-    in((rosaplsr, soplsr)).(algo) ? dump(Jchemo.ParSoplsr()) : nothing
+        ##
 
-    ##
+        dmnorm Jchemo.ParDmnorm ; 
+        dmnormlog Jchemo.ParDmnorm ;
+        dmkern Jchemo.ParDmkern ;
 
-    in((dmnorm, dmnormlog)).(algo) ? dump(Jchemo.ParDmnorm()) : nothing
-    in((dmkern,)).(algo) ? dump(Jchemo.ParDmkern()) : nothing
+        lda Jchemo.ParLda ;
+        qda Jchemo.ParQda ;
+        rda Jchemo.ParRda ;
+        kdeda Jchemo.ParKdeda ;
+        
+        mlrda Jchemo.ParMlrda ;
+        rrda Jchemo.ParRrda ;
+        plsrda Jchemo.ParPlsda ; 
+        plslda Jchemo.ParPlsda ;
+        plsqda Jchemo.ParPlsqda ;
+        plskdeda Jchemo.ParPlskdeda ;
 
-    in((lda,)).(algo) ? dump(Jchemo.ParLda()) : nothing
-    in((qda,)).(algo) ? dump(Jchemo.ParQda()) : nothing
-    in((rda,)).(algo) ? dump(Jchemo.ParRda()) : nothing
-    in((kdeda,)).(algo) ? dump(Jchemo.ParKdeda()) : nothing
-    
-    in((mlrda,)).(algo) ? dump(Jchemo.ParMlrda()) : nothing
-    in((rrda,)).(algo) ? dump(Jchemo.ParRrda()) : nothing
-    in((plsrda, plslda)).(algo) ? dump(Jchemo.ParPlsda()) : nothing
-    in((plsqda,)).(algo) ? dump(Jchemo.ParPlsqda()) : nothing
-    in((plskdeda,)).(algo) ? dump(Jchemo.ParPlskdeda()) : nothing
+        splsrda Jchemo.ParSplsda ; 
+        splslda Jchemo.ParSplsda ;
+        splsqda Jchemo.ParSplsqda ;
+        splskdeda Jchemo.ParSplskdeda ;
 
-    in((splsrda, splslda)).(algo) ? dump(Jchemo.ParSplsda()) : nothing
-    in((splsqda,)).(algo) ? dump(Jchemo.ParSplsqda()) : nothing
-    in((splskdeda,)).(algo) ? dump(Jchemo.ParSplskdeda()) : nothing
+        krrda Jchemo.ParKrrda ;
+        kplsrda Jchemo.ParKplsda ; 
+        kplslda Jchemo.ParKplsda ; 
+        dkplsrda Jchemo.ParKplsda ; 
+        dkplslda Jchemo.ParKplsda ;
+        kplsqda Jchemo.ParKplsqda ;
+        dkplsqda Jchemo.ParKplsqda ;
+        kplskdeda Jchemo.ParKplskdeda ; 
+        dkplskdeda Jchemo.ParKplskdeda ;
 
-    in((krrda,)).(algo) ? dump(Jchemo.ParKrrda()) : nothing
-    in((kplsrda, kplslda, dkplsrda, dkplslda)).(algo) ? dump(Jchemo.ParKplsda()) : nothing
-    in((kplsqda, dkplsqda)).(algo) ? dump(Jchemo.ParKplsqda()) : nothing
-    in((kplskdeda, dkplskdeda)).(algo) ? dump(Jchemo.ParKplskdeda()) : nothing
+        knnda Jchemo.ParKnn ;
+        lwmlrda Jchemo.ParLwmlr ;
+        lwplsrda Jchemo.ParLwplsda ; 
+        lwplslda Jchemo.ParLwplsda ;
+        lwplsqda Jchemo.ParLwplsqda ;
 
-    in((knnda,)).(algo) ? dump(Jchemo.ParKnn()) : nothing
-    in((lwmlrda,)).(algo) ? dump(Jchemo.ParLwmlr()) : nothing
-    in((lwplsrda, lwplslda)).(algo) ? dump(Jchemo.ParLwplsda()) : nothing
-    in((lwplsqda,)).(algo) ? dump(Jchemo.ParLwplsqda()) : nothing
+        mbplsrda Jchemo.ParMbplsda ; 
+        mbplslda Jchemo.ParMbplsda ;
+        mbplsqda Jchemo.ParMbplsqda ;
+        mbplskdeda Jchemo.ParMbplskdeda ;
 
-    in((mbplsrda, mbplslda)).(algo) ? dump(Jchemo.ParMbplsda()) : nothing
-    in((mbplsqda,)).(algo) ? dump(Jchemo.ParMbplsqda()) : nothing
-    in((mbplskdeda,)).(algo) ? dump(Jchemo.ParMbplskdeda()) : nothing
+        ##
 
-    ##
+        occsd Jchemo.ParOcc ; 
+        occod Jchemo.ParOcc ;
+        occsdod Jchemo.ParOccsdod ;
+        occdds Jchemo.ParOccdds ;
+        occstah Jchemo.ParOccstah ;
+        occknn Jchemo.ParOccknn ; 
+        occlknn Jchemo.ParOccknn 
 
-    in((occsd, occod)).(algo) ? dump(Jchemo.ParOcc()) : nothing
-    in((occsdod,)).(algo) ? dump(Jchemo.ParOccsdod()) : nothing
-    in((occdds,)).(algo) ? dump(Jchemo.ParOccdds()) : nothing
-    in((occstah,)).(algo) ? dump(Jchemo.ParOccstah()) : nothing
-    in((occknn, occlknn)).(algo) ? dump(Jchemo.ParOccknn()) : nothing
+        ]
+
+    s = in((algo,)).(defs[:, 1]) 
+    first(defs[s, 2])
 
 end

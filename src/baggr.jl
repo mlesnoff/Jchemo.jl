@@ -72,9 +72,16 @@ function baggr(X, Y; rep = 50, rowsamp = .7, replace = false, colsamp = 1, seed 
     srow = res_samp.srow
     scol = res_samp.scol
     fitm = list(rep)
+    args = collect(kwargs)
+    println(args)    
+    args = sort(collect(keys(Dict(args))))
+    println(args)
+    #println(seed)
+    println(22)
     #@inbounds for i = 1:rep
     Threads.@threads for i = 1:rep
-        fitm[i] = fun(view(X, srow[i], scol[i]), vrow(Y, srow[i]); kwargs...)
+        #fitm[i] = fun(view(X, srow[i], scol[i]), vrow(Y, srow[i]); kwargs..., seed)
+        #println(fitm[i].par)
     end
     Baggr(fitm, res_samp, nco(Y))
 end

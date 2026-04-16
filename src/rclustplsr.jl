@@ -111,6 +111,7 @@ Base.@kwdef mutable struct Parrclustplsr
     squared::Bool = false                   
     tolw::Float64 = 1e-4                    
     scal::Bool = false    
+    seed::Union{Nothing, Int} = nothing
 end
 
 struct Rclustplsr
@@ -125,6 +126,7 @@ function rclustplsr(X, Y; kwargs...)
         rowsamp = par.rowsamp,
         replace = par.replace,
         colsamp = par.colsamp,
+        seed = par.seed,
         ## Start kwargs of 'fun' 
         nlvdis = par.nlvdis, 
         metric = par.metric,

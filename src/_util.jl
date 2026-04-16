@@ -770,7 +770,7 @@ using Jchemo
 ```
 """
 macro pars(fun)
-    esc( :( Jchemo.defaults($fun) ))
+    esc( :( dump(Jchemo.defaults($fun)()) ))
 end
 
 """ 
