@@ -9,6 +9,7 @@
 
 - Modifications
     - Improvement of outlierness and OCC functions.
+    - Add argument 'seed' in functions 'sampbag' and 'baggr'.
     - Code cleaning.
 
 

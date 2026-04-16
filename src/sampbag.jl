@@ -1,6 +1,7 @@
 """
-    sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = .7)
-    sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, replace = true, colsamp = .7)
+    sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = .7, seed = nothing)
+    sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, replace = true, colsamp = .7, 
+        seed = nothing)
 Sampling for bagging.
 * `n`, `p` : Nb. total of observations and variables, respectively, considered in the bagging.
 * `colweight` : Weights (p) of the variables. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -9,6 +10,7 @@ Keyword arguments:
 * `rowsamp` : Proportion of observations to sample within `n at each replication`.
 * `replace`: Boolean. If `true`, observations are sampled with replacement.
 * `colsamp`: Proportion of observations to sample within `p` (without replacement) at each replication.
+* `seed` : Eventual seed for the `Random.MersenneTwister` generator.
 
 ## Examples
 ```julia
@@ -22,9 +24,7 @@ res.srow_oob
 res.scol
 ```
 """ 
-function sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = .7)
-    ## To do: Add argument 'seed = nothing' 
-    ## * `seed` : Optional seed (integer number) for the sampling
+function sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = .7, seed = nothing)
     range_n = collect(1:n)
     range_p = collect(1:p) 
     mrow = Int(round(rowsamp * n))
@@ -34,26 +34,26 @@ function sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = .7)
     srow_oob = list(Vector{Int}, rep)
     scol = list(Vector{Int}, rep)
     ##
+    isnothing(seed) ? vseed = [nothing for i in 1:rep] : vseed = [seed + i - 1 for i in 1:rep]
     ordered = true
     Threads.@threads for i = 1:rep 
         ## Rows
-        s = StatsBase.sample(range_n, mrow; replace, ordered)
+        s = StatsBase.sample(MersenneTwister(vseed[i]), range_n, mrow; replace, ordered)
         srow[i] = s
         srow_oob[i] = range_n[setdiff(1:end, s)]
         ## Columns
         if colsamp == 1
             scol[i] = range_p
         else
-            s = StatsBase.sample(range_p, mcol; replace = false, ordered)
+            s = StatsBase.sample(MersenneTwister(vseed[i]), range_p, mcol; replace = false, ordered)
             scol[i] = s
         end
     end
     (srow = srow, srow_oob, scol)
 end
 
-function sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, replace = true, colsamp = .7)
-    ## To do: Add argument 'seed = nothing' 
-    ## * `seed` : Optional seed (integer number) for the sampling
+function sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, replace = true, colsamp = .7,
+        seed = nothing)
     range_n = collect(1:n)
     range_p = collect(1:p) 
     mrow = Int(round(rowsamp * n))
@@ -65,7 +65,7 @@ function sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, re
     ##
     Threads.@threads for i = 1:rep 
         ## Rows
-        s = StatsBase.sample(range_n, mrow; replace, ordered = true)
+        s = StatsBase.sample(MersenneTwister(vseed[i]), range_n, mrow; replace, ordered = true)
         srow[i] = s
         srow_oob[i] = range_n[setdiff(1:end, s)]
         ## Columns
@@ -74,7 +74,7 @@ function sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, re
         else
             colweight.values[colweight.values .== 0] .= eps(eltype(colweight.values))
             colweight = pweight(colweight.values)
-            s = StatsBase.sample(range_p, colweight, mcol; replace = false, ordered = true)
+            s = StatsBase.sample(MersenneTwister(vseed[i]), range_p, colweight, mcol; replace = false, ordered = true)
             scol[i] = s
         end
     end

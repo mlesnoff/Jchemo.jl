@@ -100,7 +100,7 @@ Base.@kwdef mutable struct Parrclustplsr
     rowsamp::Float64 = .7
     replace::Bool = false
     colsamp::Float64 = .7 
-    #nlvdis::Int = 0    # To do                         
+    nlvdis::Int = 0                          
     metric::Symbol = :eucl  
     nproto::Int = 1
     nlv::Union{Int, Vector{Int}, UnitRange} = 1
@@ -125,8 +125,8 @@ function rclustplsr(X, Y; kwargs...)
         rowsamp = par.rowsamp,
         replace = par.replace,
         colsamp = par.colsamp,
-        ## Start kwargs for 'fun' 
-        #nlvdis = par.colsamp,  # To do
+        ## Start kwargs of 'fun' 
+        nlvdis = par.nlvdis, 
         metric = par.metric,
         nproto = par.nproto,
         nlv = par.nlv,
@@ -137,7 +137,6 @@ function rclustplsr(X, Y; kwargs...)
         squared = par.squared,
         tolw = par.tolw,                    
         scal = par.scal
-        ## End
         )
     Rclustplsr(fitm, par)
 end

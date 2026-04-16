@@ -5,19 +5,20 @@ struct Baggr
 end
 
 """
-    baggr(X, Y; fun::Function, rep = 50, rowsamp = .7, replace = false, colsamp = 1, kwargs...)
-    baggr(X, Y, weights::ProbabilityWeights; fun::Function, rep = 50, rowsamp = .7, replace = false, 
-        colsamp = 1, kwargs...)
+    baggr(X, Y; rep = 50, rowsamp = .7, replace = false, colsamp = 1, seed = nothing, fun::Function, kwargs...)
+    baggr(X, Y, weights::ProbabilityWeights; rep = 50, rowsamp = .7, replace = false, 
+        colsamp = 1, seed = nothing, fun::Function, kwargs...)
 Bagging a regression model.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, p).
 * `colweight` : Weights (p) of the variables. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
-* `fun` : Function defining the model.
 * `rep` : Nb. of bagging replications.
 * `rowsamp` : Proportion of rows sampled in `X` at each replication.
 * `replace`: Boolean. If `false` (default), observations are sampled without replacement.
 * `colsamp` : Proportion of columns sampled (without replacement) in `X` at each replication.
+* `fun` : Function defining the regression model.
+* `seed` : Eventual seed for the `Random.MersenneTwister` generator.
 * `kwargs` : Optional named arguments to pass in 'fun`.
 
 ## References
@@ -60,13 +61,12 @@ res = predict(fitm, Xtest) ;
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", ylabel = "Observed").f 
 ```
 """ 
-function baggr(X, Y; fun::Function, rep = 50, rowsamp = .7, replace = false, colsamp = 1, kwargs...) 
-    ## To do: Add argument 'seed = nothing' 
-    ## * `seed` : Optional seed (integer number) for the sampling
+function baggr(X, Y; rep = 50, rowsamp = .7, replace = false, colsamp = 1, seed = nothing, 
+        fun::Function, kwargs...) 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
-    res_samp = sampbag(n, p; rep, rowsamp, replace, colsamp)
+    res_samp = sampbag(n, p; rep, rowsamp, replace, colsamp, seed)
     srow = res_samp.srow
     scol = res_samp.scol
     fitm = list(rep)
@@ -77,12 +77,12 @@ function baggr(X, Y; fun::Function, rep = 50, rowsamp = .7, replace = false, col
     Baggr(fitm, res_samp, nco(Y))
 end
 
-function baggr(X, Y, weights::ProbabilityWeights; fun::Function, rep = 50, rowsamp = .7, replace = false, 
-        colsamp = 1, kwargs...) 
+function baggr(X, Y, weights::ProbabilityWeights; rep = 50, rowsamp = .7, replace = false, colsamp = 1, 
+        seed = nothing, fun::Function, kwargs...) 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
-    res_samp = sampbag(n, p; rep, rowsamp, replace, colsamp)
+    res_samp = sampbag(n, p; rep, rowsamp, replace, colsamp, seed)
     srow = res_samp.srow
     scol = res_samp.scol
     fitm = list(rep)

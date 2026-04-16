@@ -167,7 +167,7 @@ function protoplsr(X, Y; kwargs...)
         end
     end
     ## Outputs
-    Protoplsr(fitm, fitm_emb, Xproto, Yproto, coefs, resnn, par) 
+    Protoplsr(fitm, fitm_emb, Xproto, Yproto, coefs, resnn, par)  
 end
 
 function predict(object::Protoplsr, X)
