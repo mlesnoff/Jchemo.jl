@@ -17,8 +17,8 @@ Keyword arguments:
 * `rowsamp` : Proportion of rows sampled in `X` at each replication.
 * `replace`: Boolean. If `false` (default), observations are sampled without replacement.
 * `colsamp` : Proportion of columns sampled (without replacement) in `X` at each replication.
-* `fun` : Function defining the regression model.
 * `seed` : Eventual seed for the `Random.MersenneTwister` generator.
+* `fun` : Function defining the regression model.
 * `kwargs` : Optional named arguments to pass in 'fun`.
 
 ## References

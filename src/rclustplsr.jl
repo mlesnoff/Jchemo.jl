@@ -9,6 +9,8 @@ Keyword arguments:
 * `rowsamp` : Proportion of rows sampled in `X` at each replication.
 * `replace`: Boolean. If `false` (default), observations are sampled without replacement.
 * `colsamp` : Proportion of columns sampled (without replacement) in `X` at each replication.
+* `nlvdis` : Number of latent variables (LVs) to consider in the global PLS used for the dimension 
+    reduction before computing the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.
 * `metric` : Type of dissimilarity used to build the clases (kmeans) and eventually to compute 
     the weights when averaging the `kavg` prototype models. Possible values are (see function `getknn`): 
     `:eucl` (Euclidean), `:mah` (Mahalanobis), `:sam` (spectral angular distance), `:cos` (cosine distance), `
@@ -23,39 +25,18 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of matrices X and Y of the prototype classes is 
     scaled by its uncorrected standard deviation.
 
-Function `rclustplsr` implements a 'random clustered PLSR'. Basically, the pipeline mixes the principles of
-random forests and regression trees, but with the following particularities:
+Function `rclustplsr` implements a bagging of clustered PLSR (function `rclustplsr`). 
+    
+Basically, the pipeline mixes the principles of random forests and regression trees, but with the
+following particularities:
 * The 'leafs' (classes) are built by kmeans instead of trees,
 * The regression model fitted on each class is a PLSR,
 * Several class models can be averaged to get the final prediction.   
 
-A number of `rep` bagging replications is run in the same way as in random forests. Each replication 'b' 
-generates a dataset {X(b), Y(b)} by sub-sampling rows in {`X`, `X`} and columns in `X`. For each dataset 
-{X(b), Y(b)}, the process detailed below is run.
-
-*Model fitting for replication 'b'*
-* A number of `nproto` classes ( mutually exclusive) are built by kmeans on X(b). Each class centroid 
-    defines a 'prototype'. The `nproto` classes are assumed to represent the data heterogeneity (diversity 
-    of application domains).
-* On each class, a PLSR is optimized using a K-fold cross-validation on {X(b), Y(b)} and stored. This defines 
-    the prototype model.
-
-*Prediction for replication 'b'*
-* Each new observation to predict is assigned to its `kavg` nearest prototypes.
-* The final prediction is computed by a weighted average of the `kavg` predictions of the corresponding 
-    prototype models. The weighting is computed from the relative distances between the new observation and 
-    the `kavg` prototype centers (function `winvs`). If `kavg = 1`, only one PLSR model is used (the closest
-    prototype) and there is no averaging.
-
-At the end (merge of the replications), the final prediction is computed by the mean of the `rep` 
-predictions.  
-
-The kmeans step is done with package `Clustering.jl` (https://github.com/JuliaStats/Clustering.jl).
-
-Notes: 
-* This pipeline is still under construction, some details could change in the future.
-* The actual version of the function works for multivariate `Y` but the PLSR optimizations are done only based on the
-    first Y column (this will be fixed later). 
+A number of `rep` bagging replications is run (see function `baggr`). Each replication 'b' generates a 
+dataset {X(b), Y(b)} by sub-sampling rows in {`X`, `Y`} and columns in `X`. For each dataset  {X(b), Y(b)}, 
+the process detailed in `protoclustplsr` is run. At the end (merge of the replications), the final prediction
+is computed by the mean of the `rep` predictions.  
 
 ## Examples
 ```julia
@@ -74,11 +55,13 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
+rep = 100
+nlvdis = 0 ; metric = :eucl 
+#nlvdis = 15 ; metric = :mah 
 nproto = 3
-metric = :cos
-nlv = 15
+nlv = 17
 kavg = 1
-fitm = rclustplsr(Xtrain, ytrain; rep = 100, metric, nproto, nlv, kavg) ; 
+fitm = rclustplsr(Xtrain, ytrain; rep, rowsamp, colsamp, nlvdis, metric, nproto, nlv, kavg, h, seed = 1234) ; 
 @names fitm
 fitm_bag = fitm.fitm ;
 fitm_bag.res_samp.srow
@@ -88,6 +71,7 @@ length(fitm_bag.fitm)
 typeof(fitm_bag.fitm[1])
 @names(fitm_bag.fitm[1])
 tab(fitm_bag.fitm[1].ycla)
+
 res = predict(fitm, Xtest)  
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", ylabel = "Observed").f
