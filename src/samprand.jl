@@ -29,21 +29,21 @@ group = ["A", "B", "C", "D", "E", "A", "B", "C", "D", "E"]    # groups of the ob
 tab(group)  
 k = 2 
 res = samprand(group, k)
+#res = samprand(group, k; seed = 123)
 group[res.test]
 ```
 """ 
 function samprand(n::Int, k::Int; seed::Union{Nothing, Int} = nothing)
     vn = collect(1:n)
     s = StatsBase.sample(MersenneTwister(seed), vn, k; replace = false, ordered = true)
-    train = vn[setdiff(1:end, s)]
+    train = rmrow(vn, s)     
     (train = train, test = s)
 end
 
 function samprand(group::Vector, k::Int; seed::Union{Nothing, Int} = nothing)
-    s = segmts(group, k; rep = 1, seed)[1][1]
     vn = collect(1:length(group))
-    train = rmrow(vn, s)  
-    test = vn[s]
-    (train = train, test)
-end
+    s = segmts(group, k; rep = 1, seed)[1][1]    
+    train = rmrow(vn, s) 
+    (train = train, test = s)
+ end
 

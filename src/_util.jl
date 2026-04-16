@@ -501,9 +501,9 @@ end
 
 """
     rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, UnitRange, Number})
-    rmrow(X::Union{Vector, BitVector}, s::Union{Vector, BitVector, UnitRange, Number})
+    rmrow(x::Union{Vector, BitVector}, s::Union{Vector, BitVector, UnitRange, Number})
 Remove the rows of a matrix or the components of a vector having indexes `s`.
-* `X` : Matrix or vector.
+* `X`, `x` : Matrix and vector, respectively.
 * `s` : Vector of the indexes.
 
 ## Examples
@@ -519,9 +519,9 @@ function rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, 
     X[setdiff(1:end, Int.(s)), :]
 end
 
-function rmrow(X::Union{Vector, BitVector}, s::Union{Vector, BitVector, UnitRange, Number})
+function rmrow(x::Union{Vector, BitVector}, s::Union{Vector, BitVector, UnitRange, Number})
     isa(s, BitVector) ? s = findall(s .== 1) : nothing
-    X[setdiff(1:end, Int.(s))]
+    x[setdiff(1:end, Int.(s))]
 end
 
 """
