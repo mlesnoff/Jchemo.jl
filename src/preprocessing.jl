@@ -413,6 +413,88 @@ function transf!(object::Mavg, X::Matrix)
     #end
 end
 
+"""
+    msc()
+    msc(X)
+    msc(X, xref)
+Multiplicative scatter correction (MSC).
+* `X` : X-data (n, p).
+* `xref` : Eventual referene vector (p).
+
+If `xref` is not given, the reference vector is computed as the column mean of `X`.
+ 
+## References
+Afseth, N.K., Kohler, A., 2012. Extended multiplicative signal correction in vibrational spectroscopy, a tutorial. 
+Chemometrics and Intelligent Laboratory Systems, Special Issue Section: Selected Papers from the 1st African-European 
+Conference on Chemometrics, Rabat, Morocco, September 2010 Special Issue Section: Preprocessing methods Special Issue 
+Section: Spectroscopic imaging 117, 92–99. https://doi.org/10.1016/j.chemolab.2012.03.004
+
+Martens, H., Næs, T. (1989) Multivariate calibration. Chichester: Wiley.
+
+## Examples
+```julia
+using Jchemo, JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+@names dat
+X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
+plotsp(Xtrain, wl).f
+plotsp(Xtest, wl).f
+
+model = msc() 
+fit!(model, Xtrain)
+fitm = model.fitm
+@names fitm
+@head Xptrain = transf(model, Xtrain)
+@head Xptest = transf(model, Xtest)
+plotsp(Xptrain, wl).f
+plotsp(Xptest, wl).f
+
+#### Direct
+
+fitm = msc(Xtrain) 
+#fitm = msc(Xtrain, colmean(Xtrain)) 
+#fitm = msc(Xtrain, colmed(Xtrain)) 
+@head transf(fitm, Xtrain)
+```
+""" 
+msc(; kwargs...) = JchemoModel(msc, nothing, kwargs)
+
+struct Msc
+    xref::Vector
+end
+
+function msc(X)
+    X = ensure_mat(X)
+    xref = colmean(X)
+    Msc(xref)
+end
+
+function msc(X, xref)
+    Msc(vec(xref))
+end
+
+function transf(object::Msc, X)
+    X = copy(ensure_mat(X))
+    transf!(object, X)
+    X
+end
+
+function transf!(object::Msc, X::Matrix)
+    Xt = X'
+    fitm = mlr(object.xref, Xt)
+    @. Xt = Xt - fitm.int
+    fscale!(Xt, vec(fitm.B))
+    X .= Xt'
+end
+
 """ 
     savgk(nhwindow::Int, degree::Int, deriv::Int)
 Compute the kernel of the Savitzky-Golay filter.

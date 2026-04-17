@@ -8,7 +8,7 @@ Compute a mutiple linear regression model (MLR) by using the QR algorithm.
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
-* `noint` : Boolean. Define if the model is computed with an intercept or not.
+* `noint` : Boolean. Define if the model is computed with an intercept or not (default to `false`).
 
 Safe but can be little slower than other methods.
 
@@ -148,7 +148,7 @@ Compute a mutiple linear regression model (MLR)  by using
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
 Keyword arguments:
-* `noint` : Boolean. Define if the model is computed with an intercept or not.
+* `noint` : Boolean. Define if the model is computed with an intercept or not (default to `false`).
 
 Safe but can be slower.  
 
@@ -245,7 +245,7 @@ Compute a simple (univariate x) linear regression model.
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
 Keyword arguments:
-* `noint` : Boolean. Define if the model is computed with an intercept or not.
+* `noint` : Boolean. Define if the model is computed with an intercept or not (default to `false`).
 
 See function `mlr` for examples.
 """ 
