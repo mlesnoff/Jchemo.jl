@@ -87,7 +87,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
     ylabel = "Observed").f  
 ```
 """ 
-Base.@kwdef mutable struct Parprotoclustplsr 
+Base.@kwdef mutable struct ParProtoclustplsr 
     nlvdis::Int = 0    # To do                         
     metric::Symbol = :eucl  
     nproto::Int = 1
@@ -107,13 +107,13 @@ struct Protoclustplsr
     fitm_emb::Union{Nothing, Plsr}
     fitm_clust::Clustering.KmeansResult
     ycla::AbstractVector
-    par::Parprotoclustplsr
+    par::ParProtoclustplsr
 end
 
 protoclustplsr(; kwargs...) = JchemoModel(protoclustplsr, nothing, kwargs)
 
 function protoclustplsr(X, Y; kwargs...)
-    par = recovkw(Parprotoclustplsr, kwargs).par 
+    par = recovkw(ParProtoclustplsr, kwargs).par 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     if par.nlvdis == 0

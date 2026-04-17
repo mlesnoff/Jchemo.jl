@@ -2,11 +2,11 @@ function defaults(algo::Function)
 
     defs = [
 
-        detrend_pol Jchemo.ParDetrendPol ;
-        detrend_lo Jchemo.ParDetrendLo ;
-        detrend_asls Jchemo.ParDetrendAsls ;
-        detrend_airpls Jchemo.ParDetrendAirpls ;
-        detrend_arpls Jchemo.ParDetrendArpls ;
+        detrend_pol Jchemo.ParDetrendpol ;
+        detrend_lo Jchemo.ParDetrendlo ;
+        detrend_asls Jchemo.ParDetrendasls ;
+        detrend_airpls Jchemo.ParDetrendairpls ;
+        detrend_arpls Jchemo.ParDetrendarpls ;
         fdif Jchemo.ParFdif ;
         interpl Jchemo.ParInterpl ;
         mavg Jchemo.ParMavg ;
@@ -93,9 +93,9 @@ function defaults(algo::Function)
         lwplsravg Jchemo.ParLwplsr ;
         loessr Jchemo.ParLoessr ;
 
-        protoplsr Jchemo.Parprotoplsr ;
-        protoclustplsr Jchemo.Parprotoclustplsr ;
-        rclustplsr Jchemo.Parrclustplsr ;
+        protoplsr Jchemo.ParProtoplsr ;
+        protoclustplsr Jchemo.ParProtoclustplsr ;
+        rclustplsr Jchemo.ParRclustplsr ;
 
         mbplsr Jchemo.ParMbplsr ; 
         mbplswest Jchemo.ParMbplsr ;

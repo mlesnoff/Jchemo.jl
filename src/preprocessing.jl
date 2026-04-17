@@ -50,24 +50,24 @@ f
 detrend_lo(; kwargs...) = JchemoModel(detrend_lo, nothing, kwargs)
 
 function detrend_lo(X; kwargs...)
-    par = recovkw(ParDetrendLo, kwargs).par
-    DetrendLo(par)
+    par = recovkw(ParDetrendlo, kwargs).par
+    Detrendlo(par)
 end
 
 """ 
-    transf(object::DetrendLo, X)
-    transf!(object::DetrendLo, X)
+    transf(object::Detrendlo, X)
+    transf!(object::Detrendlo, X)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 """ 
-function transf(object::DetrendLo, X)
+function transf(object::Detrendlo, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::DetrendLo, X::Matrix)
+function transf!(object::Detrendlo, X::Matrix)
     Q = eltype(X)
     n, p = size(X)
     span = object.par.span
@@ -131,24 +131,24 @@ f
 detrend_pol(; kwargs...) = JchemoModel(detrend_pol, nothing, kwargs)
 
 function detrend_pol(X; kwargs...)
-    par = recovkw(ParDetrendPol, kwargs).par
-    DetrendPol(par)
+    par = recovkw(ParDetrendpol, kwargs).par
+    Detrendpol(par)
 end
 
 """ 
-    transf(object::DetrendPol, X)
-    transf!(object::DetrendPol, X)
+    transf(object::Detrendpol, X)
+    transf!(object::Detrendpol, X)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 """ 
-function transf(object::DetrendPol, X)
+function transf(object::Detrendpol, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::DetrendPol, X::Matrix)
+function transf!(object::Detrendpol, X::Matrix)
     n, p = size(X)
     degree = object.par.degree
     vX = similar(X, p, degree + 1)
@@ -494,6 +494,68 @@ function transf!(object::Msc, X::Matrix)
     fscale!(Xt, vec(fitm.B))
     X .= Xt'
 end
+
+"""
+    emsc()
+    emsc(X)
+    emsc(X, xref)
+Basic extended multiplicative scatter correction (EMSC).
+* `X` : X-data (n, p).
+* `xref` : Eventual referene vector (p).
+
+If `xref` is not given, the reference vector is computed as the column mean of `X`.
+ 
+## References
+Afseth, N.K., Kohler, A., 2012. Extended multiplicative signal correction in vibrational spectroscopy, a tutorial. 
+Chemometrics and Intelligent Laboratory Systems, Special Issue Section: Selected Papers from the 1st African-European 
+Conference on Chemometrics, Rabat, Morocco, September 2010 Special Issue Section: Preprocessing methods Special Issue 
+Section: Spectroscopic imaging 117, 92–99. https://doi.org/10.1016/j.chemolab.2012.03.004
+
+
+## Examples
+```julia
+```
+""" 
+emsc(; kwargs...) = JchemoModel(msc, nothing, kwargs)
+
+struct ParEmsc1
+    degree::Int = 1 
+end 
+
+struct Emsc2
+    xref::Vector
+    par::ParEmsc1
+end
+
+function emsc(X; kwargs...)
+    par = recovkw(ParEmsc1, kwargs).par
+    X = ensure_mat(X)
+    xref = colmean(X)
+    Emsc2(xref, par)
+end
+
+function emsc(X, xref; kwargs...)
+    Emsc2(vec(xref), par)
+end
+
+function transf(object::Emsc2, X)
+    X = copy(ensure_mat(X))
+    transf!(object, X)
+    X
+end
+
+function transf!(object::Emsc2, X::Matrix)
+    Xt = X'
+    fitm = mlr(object.xref, Xt)
+    @. Xt = Xt - fitm.int
+    fscale!(Xt, vec(fitm.B))
+    X .= Xt'
+end
+
+
+
+
+
 
 """ 
     savgk(nhwindow::Int, degree::Int, deriv::Int)

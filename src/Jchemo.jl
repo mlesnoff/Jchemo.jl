@@ -360,7 +360,7 @@ export
     blockscal,
     #cubic_spline,
     mavg, 
-    msc,
+    msc, emsc,
     rmgap,
     savgk, savgol,
     snorm,

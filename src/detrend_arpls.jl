@@ -51,24 +51,24 @@ f
 detrend_arpls(; kwargs...) = JchemoModel(detrend_arpls, nothing, kwargs)
 
 function detrend_arpls(X; kwargs...)
-    par = recovkw(ParDetrendArpls, kwargs).par
-    DetrendArpls(par)
+    par = recovkw(ParDetrendarpls, kwargs).par
+    Detrendarpls(par)
 end
 
 """ 
-    transf(object::DetrendArpls, X)
-    transf!(object::DetrendArpls, X)
+    transf(object::Detrendarpls, X)
+    transf!(object::Detrendarpls, X)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 """ 
-function transf(object::DetrendArpls, X)
+function transf(object::Detrendarpls, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::DetrendArpls, X::Matrix)
+function transf!(object::Detrendarpls, X::Matrix)
     n, p = size(X)
     w = ones(p) 
     z = similar(X, p)

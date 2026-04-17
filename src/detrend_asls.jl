@@ -57,24 +57,24 @@ f
 detrend_asls(; kwargs...) = JchemoModel(detrend_asls, nothing, kwargs)
 
 function detrend_asls(X; kwargs...)
-    par = recovkw(ParDetrendAsls, kwargs).par
-    DetrendAsls(par)
+    par = recovkw(ParDetrendasls, kwargs).par
+    Detrendasls(par)
 end
 
 """ 
-    transf(object::DetrendAsls, X)
-    transf!(object::DetrendAsls, X)
+    transf(object::Detrendasls, X)
+    transf!(object::Detrendasls, X)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 """ 
-function transf(object::DetrendAsls, X)
+function transf(object::Detrendasls, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::DetrendAsls, X::Matrix)
+function transf!(object::Detrendasls, X::Matrix)
     n, zp = size(X)
     w = ones(zp) 
     z = similar(X, zp)

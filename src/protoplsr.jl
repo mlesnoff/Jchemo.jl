@@ -93,7 +93,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 """ 
 protoplsr(; kwargs...) = JchemoModel(protoplsr, nothing, kwargs)
 
-Base.@kwdef mutable struct Parprotoplsr 
+Base.@kwdef mutable struct ParProtoplsr 
     nlvdis::Int = 0                         
     metric::Symbol = :eucl  
     nproto::Int = 1
@@ -118,11 +118,11 @@ struct Protoplsr
     Yproto::Matrix
     coefs::Vector
     resnn::NamedTuple
-    par::Parprotoplsr
+    par::ParProtoplsr
 end
 
 function protoplsr(X, Y; kwargs...)
-    par = recovkw(Parprotoplsr, kwargs).par 
+    par = recovkw(ParProtoplsr, kwargs).par 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n = nro(X)

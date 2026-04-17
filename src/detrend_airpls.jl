@@ -55,24 +55,24 @@ f
 detrend_airpls(; kwargs...) = JchemoModel(detrend_airpls, nothing, kwargs)
 
 function detrend_airpls(X; kwargs...)
-    par = recovkw(ParDetrendAirpls, kwargs).par
-    DetrendAirpls(par)
+    par = recovkw(ParDetrendairpls, kwargs).par
+    Detrendairpls(par)
 end
 
 """ 
-    transf(object::DetrendAirpls, X)
-    transf!(object::DetrendAirpls, X)
+    transf(object::Detrendairpls, X)
+    transf!(object::Detrendairpls, X)
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 """ 
-function transf(object::DetrendAirpls, X)
+function transf(object::Detrendairpls, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::DetrendAirpls, X::Matrix)
+function transf!(object::Detrendairpls, X::Matrix)
     n, p = size(X)
     w = ones(p) 
     z = similar(X, p)

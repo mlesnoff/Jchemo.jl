@@ -2,24 +2,24 @@
 
 ## Preprocessing
 
-struct DetrendLo
-    par::ParDetrendLo
+struct Detrendlo
+    par::ParDetrendlo
 end
 
-struct DetrendPol
-    par::ParDetrendPol
+struct Detrendpol
+    par::ParDetrendpol
 end
 
-struct DetrendAsls
-    par::ParDetrendAsls
+struct Detrendasls
+    par::ParDetrendasls
 end
 
-struct DetrendAirpls
-    par::ParDetrendAirpls
+struct Detrendairpls
+    par::ParDetrendairpls
 end
 
-struct DetrendArpls
-    par::ParDetrendArpls
+struct Detrendarpls
+    par::ParDetrendarpls
 end
 
 struct Fdif
@@ -303,7 +303,7 @@ struct Mlr
     par::ParMlr
 end
 
-struct MlrNoArg
+struct Mlrnoarg
     B::Matrix   
     int::Matrix
     weights::ProbabilityWeights

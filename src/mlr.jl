@@ -134,7 +134,7 @@ function mlrchol!(X::Matrix, Y::Matrix, weights::ProbabilityWeights)
     fweightr!(Y, sqrtw)
     B = cholesky!(Hermitian(X' * X)) \ (X' * Y)
     int = ymeans' .- xmeans' * B
-    MlrNoArg(B, int, weights)
+    Mlrnoarg(B, int, weights)
 end
 
 """
@@ -232,7 +232,7 @@ function mlrpinvn!(X::Matrix, Y::Matrix, weights::ProbabilityWeights)
     tol = sqrt(eps(real(float(one(eltype(XtX))))))
     B = pinv(XtX, rtol = tol) * (X' * Y)
     int = ymeans' .- xmeans' * B
-    MlrNoArg(B, int, weights)
+    Mlrnoarg(B, int, weights)
 end
 
 """
@@ -285,21 +285,21 @@ function mlrvec!(x::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """
-    coef(object::Union{Mlr, MlrNoArg, Rrchol})
+    coef(object::Union{Mlr, Mlrnoarg, Rrchol})
 Compute the coefficients of the fitted model.
 * `object` : The fitted model.
 """ 
-function coef(object::Union{Mlr, MlrNoArg, Rrchol})
+function coef(object::Union{Mlr, Mlrnoarg, Rrchol})
     (B = object.B, int = object.int)
 end
 
 """
-    predict(object::Union{Mlr, MlrNoArg, Rrchol}, X)
+    predict(object::Union{Mlr, Mlrnoarg, Rrchol}, X)
 Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Union{Mlr, MlrNoArg, Rrchol}, X)
+function predict(object::Union{Mlr, Mlrnoarg, Rrchol}, X)
     X = ensure_mat(X)
     z = coef(object)
     pred = z.int .+ X * z.B
