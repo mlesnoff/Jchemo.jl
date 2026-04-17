@@ -69,11 +69,11 @@ end
 
 function transf!(object::Detrendlo, X::Matrix)
     Q = eltype(X)
-    n, p = size(X)
+    p = nco(X)
     span = object.par.span
     degree = object.par.degree
     x = convert.(Q, collect(1:p))
-    @inbounds for i = 1:n
+    @inbounds for i in axes(X, 1)
     ## Not faster: @Threads.threads
         y = vec(vrow(X, i))
         fitm = loessr(x, y; span, degree)
@@ -149,7 +149,7 @@ function transf(object::Detrendpol, X)
 end
 
 function transf!(object::Detrendpol, X::Matrix)
-    n, p = size(X)
+    p = nco(X)
     degree = object.par.degree
     vX = similar(X, p, degree + 1)
     for j = 0:degree
@@ -159,7 +159,7 @@ function transf!(object::Detrendpol, X::Matrix)
     vXtvX = vXt * vX
     tol = sqrt(eps(real(float(one(eltype(vXtvX))))))
     A = pinv(vXtvX, rtol = tol) * vXt
-    @inbounds for i = 1:n
+    @inbounds for i in axes(X, 1)
     ## Not faster: @Threads.threads
         y = vrow(X, i)
         X[i, :] .= y - vX * A * y
@@ -306,13 +306,12 @@ function transf(object::Interpl, X)
 end
 
 function transf!(object::Interpl, X::Matrix, M::Matrix)
-    n = nro(X)
     wl = object.par.wl 
     wlfin = object.par.wlfin 
     algo = DataInterpolations.CubicSpline
     #algo = DataInterpolations.LinearInterpolation
     ## Not faster: @Threads.threads
-    @inbounds for i = 1:n
+    @inbounds for i in axes(X, 1)
         ## argument 'extrapolate' has been removed for CubicSpline
         ## ==> removed from 'interpl' since Jchemo_0.8.4
         itp = algo(vrow(X, i), wl)
@@ -399,16 +398,16 @@ function transf(object::Mavg, X)
 end
 
 function transf!(object::Mavg, X::Matrix)
-    n, p = size(X)
+    p = nco(X)
     npoint = object.par.npoint
     kern = ImageFiltering.centered(ones(npoint) / npoint) 
     out = similar(X, p) 
-    @inbounds for i = 1:n
+    @inbounds for i in axes(X, 1)
         ImageFiltering.imfilter!(out, vrow(X, i), kern)
         X[i, :] .= out
     end
     # Not faster
-    #@Threads.threads for i = 1:n
+    #@Threads.threads for i in axes(X, 1)
     #    X[i, :] .= imfilter(vrow(X, i), kern)
     #end
 end
@@ -690,14 +689,14 @@ end
 function transf!(object::Savgol, X::Matrix)
     npoint = object.par.npoint 
     @assert isodd(npoint) && npoint >= 3 "Argument 'npoint' must be odd and >= 3."
-    n, p = size(X)
+    p = nco(X)
     degree = object.par.degree
     nhwindow = Int((npoint - 1) / 2)
     deriv = object.par.deriv
     kern = savgk(nhwindow, degree, deriv).kern
     kernc = ImageFiltering.centered(kern)
     x = similar(X, p)
-    @inbounds for i = 1:n
+    @inbounds for i in axes(X, 1)
         ## Convolution with "replicate" padding
         ImageFiltering.imfilter!(x, vrow(X, i), reflect(kernc))
         X[i, :] .= x
@@ -706,7 +705,7 @@ function transf!(object::Savgol, X::Matrix)
         #ImageFiltering.imfilter!(vrow(X, i), vrow(X, i), reflect(kernc))
     end
     ## Not faster
-    #@Threads.threads for i = 1:n
+    #@Threads.threads for i in axes(X, 1)
     #    X[i, :] .= imfilter(vrow(X, i), reflect(kernc))
     #end
 end
