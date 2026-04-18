@@ -341,6 +341,8 @@
     - **detrend_asls** Asymmetric least squares (ASLS)
     - **detrend_airpls** Adaptive iteratively reweighted penalized least squares (AIRPLS)
     - **detrend_arpls** Asymmetrically reweighted penalized least squares smoothing (ARPLS)
+- **msc** : Multiplicative scatter correction
+- **emsc** : Extended (polynomial) multiplicative scatter correction
 - **snv** Standard-normal-deviation transformation
 - **snorm** Row-wise norming
 - **fdif** Finite differences

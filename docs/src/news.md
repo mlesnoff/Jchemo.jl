@@ -3,6 +3,7 @@
 ## *Version 0.9.7*
 
 - News:
+    - Functions **msc** and **emsc**: Multiplicative scatter correction.
     - Function **matWc**: Within-class (corrected) covariance matrices.
     - Function **hotelling**: Two-sample Hotelling's T-squared test.
     - Function **occdds**: One-class classification (OCC) using DD-Simca.

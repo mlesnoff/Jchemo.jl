@@ -418,7 +418,7 @@ end
     msc(X, xref)
 Multiplicative scatter correction (MSC).
 * `X` : X-data (n, p).
-* `xref` : Eventual referene vector (p).
+* `xref` : Eventual reference vector (p).
 
 If `xref` is not given, the reference vector is computed as the column mean of `X`.
  
@@ -470,15 +470,11 @@ struct Msc
     xref::Vector
 end
 
-function msc(X)
-    X = ensure_mat(X)
-    xref = colmean(X)
-    Msc(xref)
-end
-
 function msc(X, xref)
     Msc(vec(xref))
 end
+
+msc(X) = msc(X, colmean(X)) 
 
 function transf(object::Msc, X)
     X = copy(ensure_mat(X))
@@ -495,12 +491,15 @@ function transf!(object::Msc, X::Matrix)
 end
 
 """
-    emsc()
-    emsc(X)
-    emsc(X, xref)
-Basic extended multiplicative scatter correction (EMSC).
+    emsc(; kwargs...)
+    emsc(X; kwargs...)
+    emsc(X, xref; kwargs...)
+Extended multiplicative scatter correction (EMSC).
 * `X` : X-data (n, p).
-* `xref` : Eventual referene vector (p).
+* `xref` : Eventual reference vector (p).
+* `degree` : Degree of the polynom.
+
+This function implements the polynomial version of EMSC. The case `degree = 0` corresponds to MSC. 
 
 If `xref` is not given, the reference vector is computed as the column mean of `X`.
  
@@ -510,51 +509,91 @@ Chemometrics and Intelligent Laboratory Systems, Special Issue Section: Selected
 Conference on Chemometrics, Rabat, Morocco, September 2010 Special Issue Section: Preprocessing methods Special Issue 
 Section: Spectroscopic imaging 117, 92–99. https://doi.org/10.1016/j.chemolab.2012.03.004
 
+Martens, H., Stark, E., 1991. Extended multiplicative signal correction and spectral interference subtraction: 
+New preprocessing methods for near infrared spectroscopy. Journal of Pharmaceutical and Biomedical Analysis, 
+Invited Papers from the International Symposium organized by the Swedish Academy of Pharmaceutical Sciences 9, 625–635. 
+https://doi.org/10.1016/0731-7085(91)80188-F
 
 ## Examples
 ```julia
+using Jchemo, JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+@names dat
+X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
+plotsp(Xtrain, wl).f
+plotsp(Xtest, wl).f
+
+degree = 0
+#degree = 1
+#degree = 2
+#degree = 3
+model = emsc(; degree)
+fit!(model, Xtrain)
+@names model.fitm
+@head Xptrain = transf(model, Xtrain)
+@head Xptest = transf(model, Xtest)
+plotsp(Xptrain, wl).f
+plotsp(Xptest, wl).f
+
+#### Direct
+
+degree = 3
+fitm = emsc(Xtrain; degree) 
+#fitm = emsc(Xtrain, colmean(Xtrain); degree) 
+#fitm = emsc(Xtrain, colmed(Xtrain); degree) 
+@head transf(fitm, Xtrain)
 ```
 """ 
-emsc(; kwargs...) = JchemoModel(msc, nothing, kwargs)
-
-struct ParEmsc1
-    degree::Int = 1 
-end 
-
-struct Emsc2
-    xref::Vector
-    par::ParEmsc1
-end
-
-function emsc(X; kwargs...)
-    par = recovkw(ParEmsc1, kwargs).par
-    X = ensure_mat(X)
-    xref = colmean(X)
-    Emsc2(xref, par)
-end
+emsc(; kwargs...) = JchemoModel(emsc, nothing, kwargs)
 
 function emsc(X, xref; kwargs...)
-    Emsc2(vec(xref), par)
+    par = recovkw(ParEmsc, kwargs).par
+    X = ensure_mat(X)
+    Q = eltype(xref)
+    p = length(xref) 
+    wls = convert.(Q, collect(1:p))
+    mu = meanv(wls) ; s = stdv(wls)
+    @. wls = (wls - mu) / s
+    P = similar(xref, p, par.degree + 1)
+    @inbounds for j = 0:par.degree
+        P[:, j + 1] .= wls.^j
+    end
+    P .= Matrix(qr(P).Q)
+    Xr = hcat(xref, P)
+    Emsc(xref, Xr, par)
 end
 
-function transf(object::Emsc2, X)
+emsc(X; kwargs...) = emsc(X, colmean(X); kwargs...)
+
+function transf(object::Emsc, X)
     X = copy(ensure_mat(X))
     transf!(object, X)
     X
 end
 
-function transf!(object::Emsc2, X::Matrix)
+function transf!(object::Emsc, X::Matrix)
+    X = ensure_mat(X)
+    m, p = size(X)
+    npar = nco(object.Xr)
     Xt = X'
-    fitm = mlr(object.xref, Xt)
-    @. Xt = Xt - fitm.int
-    fscale!(Xt, vec(fitm.B))
-    X .= Xt'
+    Xrt = object.Xr'
+    XrtXr = Xrt * object.Xr
+    B = inv(XrtXr) * Xrt * Xt 
+    u = 2:npar
+    @inbounds for i = 1:m
+        @inbounds for j = 1:p
+            X[i, j] = (X[i, j] - object.Xr[j, u]' * vrow(B[:, i], u)) / B[1, i]
+        end
+    end
 end
-
-
-
-
-
 
 """ 
     savgk(nhwindow::Int, degree::Int, deriv::Int)

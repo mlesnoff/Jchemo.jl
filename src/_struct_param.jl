@@ -30,6 +30,10 @@ Base.@kwdef mutable struct ParDetrendarpls
     verbose::Bool = false      
 end 
 
+Base.@kwdef mutable struct ParEmsc
+    degree::Int = 1 
+end 
+
 Base.@kwdef mutable struct ParFdif
     npoint::Int = 3  
 end 

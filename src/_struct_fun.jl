@@ -22,6 +22,12 @@ struct Detrendarpls
     par::ParDetrendarpls
 end
 
+struct Emsc
+    xref::Vector
+    Xr::Matrix
+    par::ParEmsc
+end
+
 struct Fdif
     par::ParFdif
 end
