@@ -563,7 +563,9 @@ function emsc(X, xref; kwargs...)
     @inbounds for j = 0:par.degree
         P[:, j + 1] .= wls.^j
     end
-    P .= Matrix(qr(P).Q)
+    if par.degree >= 2
+        P .= Matrix(qr(P).Q)
+    end
     Xr = hcat(xref, P)
     Emsc(xref, Xr, par)
 end
