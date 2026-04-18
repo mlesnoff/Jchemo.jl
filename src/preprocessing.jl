@@ -499,7 +499,7 @@ Extended multiplicative scatter correction (EMSC).
 * `xref` : Eventual reference vector (p).
 * `degree` : Degree of the polynom.
 
-This function implements the polynomial version of EMSC. The case `degree = 0` corresponds to MSC. 
+This function implements the polynomial version of EMSC. The case `degree = 0` corresponds to MSC (function `msc`). 
 
 If `xref` is not given, the reference vector is computed as the column mean of `X`.
  
@@ -531,10 +531,7 @@ wl = parse.(Float64, wlst)
 plotsp(Xtrain, wl).f
 plotsp(Xtest, wl).f
 
-degree = 0
-#degree = 1
-#degree = 2
-#degree = 3
+degree = 2
 model = emsc(; degree)
 fit!(model, Xtrain)
 @names model.fitm
