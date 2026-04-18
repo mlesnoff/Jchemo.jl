@@ -40,7 +40,7 @@ zX = Matrix(X)[i:i, :]
 model = detrend_lo(span = .75)
 fit!(model, zX)
 zXc = transf(model, zX)   # = corrected spectrum 
-B = zX - zXc            # = estimated baseline
+B = zX - zXc              # = estimated baseline
 f, ax = plotsp(zX, wl)
 lines!(wl, vec(B); color = :blue)
 lines!(wl, vec(zXc); color = :black)
@@ -87,7 +87,7 @@ end
 Baseline correction of each row of X-data by polynomial linear regression.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `degree` : Polynom degree.
+* `degree` : Degree of the polynom.
 
 De-trend transformation: the function fits a baseline by polynomial regression for each observation 
 and returns the residuals (= signals corrected from the baseline).
@@ -121,7 +121,7 @@ zX = Matrix(X)[i:i, :]
 model = detrend_pol(degree = 1)
 fit!(model, zX)
 zXc = transf(model, zX)   # = corrected spectrum 
-B = zX - zXc            # = estimated baseline
+B = zX - zXc              # = estimated baseline
 f, ax = plotsp(zX, wl)
 lines!(wl, vec(B); color = :blue)
 lines!(wl, vec(zXc); color = :black)
@@ -149,20 +149,27 @@ function transf(object::Detrendpol, X)
 end
 
 function transf!(object::Detrendpol, X::Matrix)
+    par = object.par
+    Q = eltype(X)
     p = nco(X)
-    degree = object.par.degree
-    vX = similar(X, p, degree + 1)
-    for j = 0:degree
-        vX[:, j + 1] .= collect(1:p).^j
+    degree = par.degree
+    wls = convert.(Q, collect(1:p))
+    mu = meanv(wls) ; s = stdv(wls)
+    @. wls = (wls - mu) / s
+    P = similar(X, p, degree + 1)
+    @inbounds for j = 0:degree
+        P[:, j + 1] .= wls.^j
     end
-    vXt = vX'
-    vXtvX = vXt * vX
-    tol = sqrt(eps(real(float(one(eltype(vXtvX))))))
-    A = pinv(vXtvX, rtol = tol) * vXt
+    if par.degree >= 2
+        P .= Matrix(qr(P).Q)
+    end
+    Pt = P'
+    PtP = Pt * P
+    A = inv(PtP) * Pt
     @inbounds for i in axes(X, 1)
     ## Not faster: @Threads.threads
         y = vrow(X, i)
-        X[i, :] .= y - vX * A * y
+        X[i, :] .= y - P * A * y
     end
 end
 
