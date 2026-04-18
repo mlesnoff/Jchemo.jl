@@ -7,6 +7,7 @@ function defaults(algo::Function)
         detrend_asls Jchemo.ParDetrendasls ;
         detrend_airpls Jchemo.ParDetrendairpls ;
         detrend_arpls Jchemo.ParDetrendarpls ;
+        emsc Jchemo.ParEmsc ;
         fdif Jchemo.ParFdif ;
         interpl Jchemo.ParInterpl ;
         mavg Jchemo.ParMavg ;
