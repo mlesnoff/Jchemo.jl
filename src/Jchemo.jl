@@ -417,7 +417,8 @@ export
     aov1, 
     manova, decompx, asca, 
     emm, 
-    permut, hotelling, waldtest, wilks,
+    permut, 
+    hotelling, waldtest, wilks,
     ## Sparse 
     spcr, spcr!,
     splsr, splsr!, 
