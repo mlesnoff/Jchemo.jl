@@ -99,8 +99,8 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
       ylabel = "Observed").f
 ```
 """
-function gridscore(model::Pipeline, Xtrain, Ytrain, X, Y; score, pars = nothing, 
-        nlv = nothing, lb = nothing, verbose = false)
+function gridscore(model::Pipeline, Xtrain, Ytrain, X, Y; score, pars = nothing, nlv = nothing, lb = nothing, 
+        verbose = false)
     fit!(model, Xtrain, Ytrain)
     K = length(model.model)
     for i = 1:(K - 1)
