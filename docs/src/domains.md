@@ -293,7 +293,7 @@
 ### Cross-validation (CV)
 
 - **gridcv** Compute an error rate over a grid of parameters
-- **predictcv**: Return the data and predictions from a cross-validated model
+- **predictcv** Return the data and predictions from a cross-validated model
 
 ### Utilities
 

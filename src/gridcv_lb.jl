@@ -21,10 +21,11 @@ function gridcv_lb(X, Y; segm, algo, score, pars = nothing, lb, verbose = false)
         @inbounds for j in eachindex(listsegm) # = 1:nsegm
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
-
-            if isa(X[1, 1], Number)  # monoblock
+            ## Monoblock
+            if isa(X[1, 1], Number)  
                 zres[j] = gridscore_lb(rmrow(X, s), rmrow(Y, s), X[s, :], Y[s, :]; algo, score, pars, lb)
-            else                     # multiblock
+            ## Multiblock
+            else                     
                 Xcal = similar(X)
                 Xval = similar(X)
                 @inbounds for k in eachindex(X) 

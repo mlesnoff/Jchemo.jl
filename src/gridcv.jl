@@ -26,7 +26,7 @@ The function returns two outputs:
 ```julia
 ####### Regression
 
-using JLD2, CairoMakie, JchemoData
+using Jchemo, JLD2, CairoMakie, JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
@@ -232,7 +232,7 @@ plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
 ####### Discrimination
 ## The principle is the same as for regression
 
-using JLD2, CairoMakie, JchemoData
+using Jchemo, JLD2, CairoMakie, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -291,15 +291,15 @@ respred = reduce(vcat, matpred)
 conf(respred[:, 1], respred[:, 2]).pct
 ```
 """
-function gridcv(model, X, Y; segm, score, pars = nothing, nlv = nothing, lb = nothing, 
+function gridcv2(model, X, Y; segm, score, pars = nothing, nlv = nothing, lb = nothing, 
         verbose = false)
     algo = model.algo 
     if isnothing(nlv) && isnothing(lb)
-        res = gridcv_br(X, Y; segm, algo, score, pars, verbose)
+        res = Jchemo.gridcv_br(X, Y; segm, algo, score, pars, verbose)
     elseif !isnothing(nlv)
-        res = gridcv_lv(X, Y; segm, algo, score, pars, nlv, verbose)
+        res = Jchemo.gridcv_lv(X, Y; segm, algo, score, pars, nlv, verbose)
     elseif !isnothing(lb)
-        res = gridcv_lb(X, Y; segm, algo, score, pars, lb, verbose)
+        res = Jchemo.gridcv_lb(X, Y; segm, algo, score, pars, lb, verbose)
     end
     res
 end

@@ -165,15 +165,20 @@ include("scores.jl")
 include("conf.jl")
 include("segmkf.jl")
 include("segmts.jl")
+
 include("gridscore.jl")
-include("gridscore_pip.jl")
 include("gridscore_br.jl")
 include("gridscore_lv.jl")
 include("gridscore_lb.jl")
+include("gridscorepip.jl")
+
 include("gridcv.jl")
 include("gridcv_br.jl")
 include("gridcv_lv.jl")
 include("gridcv_lb.jl")
+include("gridcv_pip.jl")
+include("predictcv.jl")
+
 include("selwold.jl")
 
 ## Variable importance (direct methods) 
@@ -485,11 +490,9 @@ export
     bias, sep, cor2, r2, rpd, rpdr, mse, 
     errp, merrp,
     mpar,
-    gridscore, 
-    gridscore_br, gridscore_lv, gridscore_lb,
     segmts, segmkf,
+    gridscore, 
     gridcv, 
-    gridcv_br, gridcv_lv, gridcv_lb, 
     predictcv,
     selwold,
     conf, 

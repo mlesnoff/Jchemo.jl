@@ -17,9 +17,11 @@ function gridcv_br(X, Y; segm, algo, score, pars, verbose = false)
         @inbounds for j = 1:nsegm
             verbose ? print("segm=", j, " ") : nothing
             s = listsegm[j]
-            if isa(X[1, 1], Number)  # monoblock
+            ## Monoblock
+            if isa(X[1, 1], Number)
                 zres[j] = gridscore_br(rmrow(X, s), rmrow(Y, s), X[s, :], Y[s, :]; algo, score, pars)
-            else                     # multiblock
+            ## Multibloc
+            else                     
                 Xcal = similar(X)
                 Xval = similar(X)
                 @inbounds for k in eachindex(X) 

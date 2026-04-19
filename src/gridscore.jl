@@ -26,7 +26,7 @@ these parameters in argument `pars. See the examples.
 ```julia
 ####### Regression 
 
-using JLD2, CairoMakie, JchemoData
+using Jchemo, JLD2, CairoMakie, JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
@@ -212,7 +212,7 @@ plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction
 ####### Discrimination
 ## The principle is the same as for regression
 
-using JLD2, CairoMakie, JchemoData
+using Jchemo, JLD2, CairoMakie, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -260,11 +260,11 @@ function gridscore(model, Xtrain, Ytrain, X, Y; score, pars = nothing, nlv = not
     ## Multiblock Xbl is allowed
     algo = model.algo
     if isnothing(nlv) && isnothing(lb)
-        res = gridscore_br(Xtrain, Ytrain, X, Y; algo, score, pars, verbose)
+        res = Jchemo.gridscore_br(Xtrain, Ytrain, X, Y; algo, score, pars, verbose)
     elseif !isnothing(nlv)
-        res = gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars, nlv, verbose)
+        res = Jchemo.gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars, nlv, verbose)
     elseif !isnothing(lb)
-        res = gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars, lb, verbose)
+        res = Jchemo.gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars, lb, verbose)
     end
     res
 end

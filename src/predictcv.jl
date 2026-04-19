@@ -10,7 +10,7 @@ Keyword arguments:
 
 ## Examples
 ```julia
-using JLD2, CairoMakie, JchemoData
+using Jchemo, JLD2, CairoMakie, JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat

@@ -1,26 +1,16 @@
 """
     gridscore(model::Pipeline, Xtrain, Ytrain, X, Y; score, pars = nothing, nlv = nothing, lb = nothing, 
         verbose = false) 
-Test-set validation of a model pipeline over a grid of parameters.
-* `model` : A pipeline of models to evaluate.
-* `Xtrain` : Training X-data (n, p).
-* `Ytrain` : Training Y-data (n, q).
-* `X` : Validation X-data (m, p).
-* `Y` : Validation Y-data (m, q).
-Keyword arguments: 
-* `score` : Function computing the prediction score (e.g., `rmsep`).
-* `pars` : tuple of named vectors of same length defining the parameter combinations (e.g., output of function `mpar`).
-* `verbose` : If `true`, predicting information are printed.
-* `nlv` : Value, or vector of values, of the nb. of latent variables (LVs).
-* `lb` : Value, or vector of values, of the ridge regularization parameter "lambda".
+Test-set validation of a pipeline model over a grid of parameters.
 
-In the present version of the function, only the last model of the pipeline (= the final predictor) is validated.
+In the present version of the function, only the last model of the pipeline (= the final predictor) 
+is tuned. Therefore, argument `pars` must only contain parameters for this last model.
 
-For other details, see function `gridscore` for simple models. 
+For other details, see function `gridscore`. 
 
 ## Examples
 ```julia
-using JLD2, CairoMakie, JchemoData
+using Jchemo, JLD2, CairoMakie, JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "cassav.jld2") 
 @load db dat
@@ -47,8 +37,7 @@ ycal = ytrain[s.train]
 Xval = Xtrain[s.test, :]
 yval = ytrain[s.test]
 
-####-- Pipeline Snv :> Savgol :> Plsr
-## Only the last model is validated
+####-- Pipeline Snv :> Savgol :> Plsr   (Only the last model is tuned)
 ## model1
 model1 = snv()
 ## model2 
@@ -57,9 +46,10 @@ model2 = savgol(; npoint, deriv, degree)
 ## model3
 nlv = 0:30
 model3 = plskern()
-##
+## Pipeline
 model = pip(model1, model2, model3)
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, nlv) ;
+@head res
 plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
@@ -72,8 +62,7 @@ rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
       ylabel = "Observed").f
 
-####-- Pipeline Pca :> Svmr
-## Only the last model is validated
+####-- Pipeline Pca :> Svmr   (Only the last model is tuned)
 ## model1
 nlv = 15 ; scal = true
 model1 = pcasvd(; nlv, scal)
@@ -84,7 +73,7 @@ cost = (10).^(1:3)
 epsilon = [.1, .2, .5]
 pars = mpar(kern = kern, gamma = gamma, cost = cost, epsilon = epsilon)
 model2 = svmr()
-##
+## Pipeline
 model = pip(model1, model2)
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, verbose = true)
 u = findall(res.y1 .== minimum(res.y1))[1] 
@@ -95,8 +84,7 @@ fit!(model, Xtrain, ytrain)
 res = predict(model, Xtest) ; 
 @head res.pred 
 rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
-      ylabel = "Observed").f
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", ylabel = "Observed").f
 ```
 """
 function gridscore(model::Pipeline, Xtrain, Ytrain, X, Y; score, pars = nothing, nlv = nothing, lb = nothing, 
