@@ -1,5 +1,7 @@
 """
     gridscore(model, Xtrain, Ytrain, X, Y; score, pars = nothing, nlv = nothing, lb = nothing, 
+        verbose = false)
+    gridscore(model::Pipeline, Xtrain, Ytrain, X, Y; score, pars = nothing, nlv = nothing, lb = nothing, 
         verbose = false) 
 Test-set validation of a model over a grid of parameters.
 * `model` : Model to evaluate.
@@ -20,6 +22,9 @@ for each parameter combination defined in `pars`. The score is computed over set
     
 For models based on LV or ridge regularization, using arguments `nlv` and `lb` allow faster computations than including 
 these parameters in argument `pars. See the examples.   
+
+**For pipeline models:** In the present version of the function, only the last model of the pipeline 
+(= the final predictor) is tuned. Therefore, argument `pars` must only contain parameters for this last model.
 
 ## Examples
 ```julia
@@ -207,7 +212,58 @@ pred = predict(model, Xbltest).pred
 @show rmsep(pred, ytest)
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
-    
+
+## Pipelines
+
+####-- Pipeline Snv :> Savgol :> Plsr   (Only the last model is tuned)
+## model1
+model1 = snv()
+## model2 
+npoint = 11 ; deriv = 2 ; degree = 3
+model2 = savgol(; npoint, deriv, degree)
+## model3
+nlv = 0:30
+model3 = plskern()
+## Pipeline
+model = pip(model1, model2, model3)
+res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, nlv) ;
+@head res
+plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+model3 = plskern(nlv = res.nlv[u])
+model = pip(model1, model2, model3)
+fit!(model, Xtrain, ytrain)
+res = predict(model, Xtest) ; 
+@head res.pred 
+rmsep(res.pred, ytest)
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
+      ylabel = "Observed").f
+
+####-- Pipeline Pca :> Svmr   (Only the last model is tuned)
+## model1
+nlv = 15 ; scal = true
+model1 = pcasvd(; nlv, scal)
+## model2
+kern = [:krbf]
+gamma = (10).^(-5:1.:5)
+cost = (10).^(1:3)
+epsilon = [.1, .2, .5]
+pars = mpar(kern = kern, gamma = gamma, cost = cost, epsilon = epsilon)
+model2 = svmr()
+## Pipeline
+model = pip(model1, model2)
+res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, verbose = true)
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+model2 = svmr(kern = res.kern[u], gamma = res.gamma[u], cost = res.cost[u], epsilon = res.epsilon[u])
+model = pip(model1, model2) 
+fit!(model, Xtrain, ytrain)
+res = predict(model, Xtest) ; 
+@head res.pred 
+rmsep(res.pred, ytest)
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", ylabel = "Observed").f
+
 ####### Discrimination
 ## The principle is the same as for regression
 
@@ -266,5 +322,16 @@ function gridscore(model, Xtrain, Ytrain, X, Y; score, pars = nothing, nlv = not
         res = Jchemo.gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars, lb, verbose)
     end
     res
+end
+
+function gridscore(model::Pipeline, Xtrain, Ytrain, X, Y; score, pars = nothing, nlv = nothing, lb = nothing, 
+        verbose = false)
+    fit!(model, Xtrain, Ytrain)
+    K = length(model.model)
+    for i = 1:(K - 1)
+        Xtrain = transf(model.model[i], Xtrain)
+        X = transf(model.model[i], X)
+    end
+    gridscore(model.model[K], Xtrain, Ytrain, X, Y; score, pars, nlv, lb, verbose)
 end
 

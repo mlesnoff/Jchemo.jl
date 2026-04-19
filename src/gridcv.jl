@@ -18,6 +18,9 @@ for each parameter combination defined in `pars`.
 For models based on LV or ridge regularization, using arguments `nlv` and `lb` allow faster computations than including 
 these parameters in argument `pars. See the examples.   
 
+**For pipeline models:** In the present version of the function, only the last model of the pipeline 
+(= the final predictor) is tuned. Therefore, argument `pars` must only contain parameters for this last model.
+
 The function returns two outputs: 
 * `res` : mean results
 * `res_p` : results per replication.
@@ -209,8 +212,6 @@ plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
 listbl = [1:525, 526:1050]
 Xbltrain = mblock(Xtrain, listbl)
 Xbltest = mblock(Xtest, listbl) 
-Xblcal = mblock(Xcal, listbl) 
-Xblval = mblock(Xval, listbl) 
 
 model = mbplsr()
 bscal = [:none, :frob]
@@ -228,9 +229,60 @@ pred = predict(model, Xbltest).pred
 @show rmsep(pred, ytest)
 plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
+    
+## Pipelines
+
+####-- Pipeline Snv :> Savgol :> Plsr   (Only the last model is tuned)
+## model1
+model1 = snv()
+## model2 
+npoint = 11 ; deriv = 2 ; degree = 3
+model2 = savgol(; npoint, deriv, degree)
+## model3
+nlv = 0:30
+model3 = plskern()
+## Pipeline
+model = pip(model1, model2, model3)
+segm = segmkf(ntrain, 3; rep = 2)
+res = gridcv(model, Xtrain, ytrain; segm, score = rmsep, nlv).res ;
+@head res
+plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+model3 = plskern(nlv = res.nlv[u])
+model = pip(model1, model2, model3)
+fit!(model, Xtrain, ytrain)
+res = predict(model, Xtest) ; 
+@head res.pred 
+rmsep(res.pred, ytest)
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
+      ylabel = "Observed").f
+
+####-- Pipeline Pca :> Svmr   (Only the last model is tuned)
+## model1
+nlv = 15 ; scal = true
+model1 = pcasvd(; nlv, scal)
+## model2
+kern = [:krbf]
+gamma = (10).^(-5:1.:5)
+cost = (10).^(1:3)
+epsilon = [.1, .2, .5]
+pars = mpar(kern = kern, gamma = gamma, cost = cost, epsilon = epsilon)
+model2 = svmr()
+## Pipeline
+model = pip(model1, model2)
+res = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, verbose = true).res ;
+u = findall(res.y1 .== minimum(res.y1))[1] 
+res[u, :]
+model2 = svmr(kern = res.kern[u], gamma = res.gamma[u], cost = res.cost[u], epsilon = res.epsilon[u])
+model = pip(model1, model2) 
+fit!(model, Xtrain, ytrain)
+res = predict(model, Xtest) ; 
+@head res.pred 
+rmsep(res.pred, ytest)
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", ylabel = "Observed").f
 
 ####### Discrimination
-## The principle is the same as for regression
 
 using Jchemo, JLD2, CairoMakie, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -289,18 +341,57 @@ for i = 1:rep
 end
 respred = reduce(vcat, matpred)
 conf(respred[:, 1], respred[:, 2]).pct
+
 ```
 """
-function gridcv2(model, X, Y; segm, score, pars = nothing, nlv = nothing, lb = nothing, 
-        verbose = false)
-    algo = model.algo 
-    if isnothing(nlv) && isnothing(lb)
-        res = Jchemo.gridcv_br(X, Y; segm, algo, score, pars, verbose)
-    elseif !isnothing(nlv)
-        res = Jchemo.gridcv_lv(X, Y; segm, algo, score, pars, nlv, verbose)
-    elseif !isnothing(lb)
-        res = Jchemo.gridcv_lb(X, Y; segm, algo, score, pars, lb, verbose)
+function  gridcv(model, X, Y; segm, score, pars = nothing, nlv = nothing, lb = nothing, 
+        verbose = false) 
+    q = nco(Y)
+    nrep = length(segm)
+    res_rep = list(nrep)
+    @inbounds for i in 1:nrep
+        verbose ? print("/ rep=", i, " ") : nothing
+        listsegm = segm[i]       # segments in the repetition
+        nsegm = length(listsegm) # segmts: = 1; segmkf: = K
+        zres = list(nsegm)       # results for the repetition
+        @inbounds for j = 1:nsegm
+            verbose ? print("segm=", j, " ") : nothing
+            s = listsegm[j]
+            ## Monoblock
+            if isa(X[1, 1], Number)
+                zres[j] = gridscore(model, rmrow(X, s), rmrow(Y, s), X[s, :], Y[s, :]; score, pars, nlv, lb)
+            ## Multiblock
+            else  
+                Xcal = similar(X)
+                Xval = similar(X)
+                @inbounds for k in eachindex(X) 
+                    Xcal[k] = rmrow(X[k], s)
+                    Xval[k] = X[k][s, :]
+                end
+                zres[j] = gridscore(model, Xcal, rmrow(Y, s), Xval, Y[s, :]; score, pars, nlv, lb)
+            end
+        end
+        ncomb = nro(zres[1])
+        zres = reduce(vcat, zres)
+        dat = DataFrame(rep = fill(i, nsegm * ncomb), segm = repeat(1:nsegm, inner = ncomb))
+        zres = hcat(dat, zres)
+        res_rep[i] = zres
     end
-    res
+    verbose ? println("/ End.") : nothing
+    res_rep = reduce(vcat, res_rep)
+    ## Average scores over reps and segms
+    if isnothing(nlv) && isnothing(lb)
+        gdf = groupby(res_rep, collect(keys(pars))) 
+    elseif !isnothing(nlv)
+        isnothing(pars) ? namgroup = [:nlv] : namgroup = [:nlv ; collect(keys(pars))]
+        gdf = groupby(res_rep, namgroup) 
+    elseif !isnothing(lb)
+        isnothing(pars) ? namgroup = [:lb] : namgroup = [:lb ; collect(keys(pars))]
+        gdf = groupby(res_rep, namgroup) 
+    end
+    namy = map(string, repeat(["y"], q), 1:q)
+    res = combine(gdf, namy .=> meanv, renamecols = false)
+    ## End
+    (res = res, res_rep)
 end
-    
+

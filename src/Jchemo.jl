@@ -170,13 +170,9 @@ include("gridscore.jl")
 include("gridscore_br.jl")
 include("gridscore_lv.jl")
 include("gridscore_lb.jl")
-include("gridscorepip.jl")
 
 include("gridcv.jl")
-include("gridcv_br.jl")
-include("gridcv_lv.jl")
-include("gridcv_lb.jl")
-include("gridcv_pip.jl")
+
 include("predictcv.jl")
 
 include("selwold.jl")
