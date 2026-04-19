@@ -8,8 +8,15 @@ Argument `pars` must not contain `nlv`.
 See function `gridscore` for examples.
 """
 function gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, nlv, verbose = false)
-    Q = eltype(Xtrain[1, 1])
-    n, p = size(Xtrain)
+    Q = eltype(Xtrain[1, 1])  # work also for mb
+    ## Not multiblock
+    if isa(Xtrain[1, 1], Number)
+        n, p = size(Xtrain)
+    ## Multiblock
+    else  
+        n, p = size(Xtrain[1])
+    end
+    ## End
     q = nco(Ytrain)
     le_nlv = length(nlv)
     ## Rebuild 'nlv' to ensure consistency with training dimensionality

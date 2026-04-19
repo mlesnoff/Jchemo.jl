@@ -1,12 +1,12 @@
 """
     gridscore(model::Pipeline, Xtrain, Ytrain, X, Y; score, pars = nothing, nlv = nothing, lb = nothing, 
         verbose = false) 
-Test-set validation of a pipeline model over a grid of parameters.
+`gridscore` for a pipeline model.
 
 In the present version of the function, only the last model of the pipeline (= the final predictor) 
 is tuned. Therefore, argument `pars` must only contain parameters for this last model.
 
-For other details, see function `gridscore`. 
+For other details, see usual function `gridscore`. 
 
 ## Examples
 ```julia

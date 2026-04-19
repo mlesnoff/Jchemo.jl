@@ -1,6 +1,6 @@
 """
-    gridscore(model, Xtrain, Ytrain, X, Y; score, pars = nothing, nlv = nothing, 
-        lb = nothing, verbose = false) 
+    gridscore(model, Xtrain, Ytrain, X, Y; score, pars = nothing, nlv = nothing, lb = nothing, 
+        verbose = false) 
 Test-set validation of a model over a grid of parameters.
 * `model` : Model to evaluate.
 * `Xtrain` : Training X-data (n, p).
@@ -9,12 +9,11 @@ Test-set validation of a model over a grid of parameters.
 * `Y` : Validation Y-data (m, q).
 Keyword arguments: 
 * `score` : Function computing the prediction score (e.g., `rmsep`).
-* `pars` : tuple of named vectors of same length defining 
-    the parameter combinations (e.g., output of function `mpar`).
+* `pars` : tuple of named vectors of same length defining the parameter combinations (e.g., output 
+    of function `mpar`).
 * `verbose` : If `true`, predicting information are printed.
 * `nlv` : Value, or vector of values, of the nb. of latent variables (LVs).
-* `lb` : Value, or vector of values, of the ridge regularization 
-    parameter "lambda".
+* `lb` : Value, or vector of values, of the ridge regularization parameter "lambda".
 
 The function is used for grid-search: it computes a prediction score (= error rate) for the specified `model` 
 for each parameter combination defined in `pars`. The score is computed over sets {`X, `Y`}. 

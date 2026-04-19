@@ -48,7 +48,7 @@ function  gridcv(model, X, Y; segm, score, pars = nothing, nlv = nothing, lb = n
                     Xcal[k] = rmrow(X[k], s)
                     Xval[k] = X[k][s, :]
                 end
-                zres[j] = gridscore(model, Xcal, Ycal, Xval, Yval; score, pars, nlv, lb)
+                zres[j] = gridscore(model, Xcal, rmrow(Y, s), Xval, Y[s, :]; score, pars, nlv, lb)
             end
         end
         ncomb = nro(zres[1])
