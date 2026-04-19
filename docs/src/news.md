@@ -11,6 +11,7 @@
 
 - Modifications
     - Improvement of outlierness and OCC functions.
+    - Tuning function **gridscore** and **gridcv**: accept pipeline models.  
     - Add argument 'seed' in functions 'sampbag' and 'baggr'.
     - Code cleaning.
 
