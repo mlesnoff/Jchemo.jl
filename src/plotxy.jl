@@ -91,7 +91,7 @@ function plotxy(x, y; size = (500, 300), color = nothing, ellipse::Bool = false,
     if isnothing(color)
         scatter!(ax, x, y; kwargs...)
     else
-        scatter!(ax, x, y; color = color, kwargs...)
+        scatter!(ax, x, y; color, kwargs...)
     end
     lw = .8
     if ellipse
@@ -102,7 +102,7 @@ function plotxy(x, y; size = (500, 300), color = nothing, ellipse::Bool = false,
         if isnothing(color)
             lines!(ax, res.X; color = :grey40, linewidth = lw)
         else
-            lines!(ax, res.X; color = color, linewidth = lw)
+            lines!(ax, res.X; color, linewidth = lw)
         end 
     end
     if circle

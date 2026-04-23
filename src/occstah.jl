@@ -99,7 +99,7 @@ conf(pred, ytest_out).cnt
 d = vcat(dtrain_in.dstand, dtest_in.dstand, dtest_out.dstand)
 group = vcat(repeat(["Train_in"], ntrain_in), repeat(["Test_in"], ntest_in), repeat(["Test_out"], ntest_out))
 color = [:purple, (:green, .7), (:red, .3)]
-f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
+f, ax = plotxy(1:length(d), d, group; color, size = (500, 300), leg_title = "Type of obs.", 
     title = "Stahel-Donoho", xlabel = "Observation index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f

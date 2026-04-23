@@ -46,7 +46,7 @@ plotxyz(x, y, z, group; size = (500, 300), markersize = 10, xlabel = "V1", alpha
 
 color = [(:red, .3); (:blue, .3); (:green, .3)]
 #color = cgrad(:Dark2_5; categorical = true, alpha = .3)[1:nlev]
-plotxyz(x, y, z, group; size = (500, 300), color = color, leg = true, markersize = 10, xlabel = "V1").f
+plotxyz(x, y, z, group; size = (500, 300), color, leg = true, markersize = 10, xlabel = "V1").f
 ```
 """ 
 function plotxyz(x, y, z; size = (500, 300), color = nothing, perspectiveness = .1,
@@ -58,7 +58,7 @@ function plotxyz(x, y, z; size = (500, 300), color = nothing, perspectiveness = 
     ax = Axis3(f[1, 1]; xlabel = xlabel, ylabel = ylabel, zlabel = zlabel, title = title, 
         perspectiveness = perspectiveness) 
     isnothing(color) ? color = (:blue, .3) : nothing
-    scatter!(ax, x, y, z; color = color, kwargs...)
+    scatter!(ax, x, y, z; color, kwargs...)
     f[1, 1] = ax
     (f = f, ax)
 end

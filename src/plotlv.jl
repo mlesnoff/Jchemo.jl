@@ -64,7 +64,7 @@ plotlv(T[:, 1:6], group; shape = (2, 3), color = nothing, zeros = true, xlabel =
 group = vcat(repeat(["Train"], ntrain), repeat(["Test"], ntest))
 color = [(:red, .3); (:blue, .3)]
 #color = cgrad(:Dark2_5, 2; categorical = true, alpha = .5)
-plotlv(1000 * T[:, 1:6], group; shape = (2, 3), color = color, zeros = true, xlabel = "PC", ylabel = "PC",
+plotlv(1000 * T[:, 1:6], group; shape = (2, 3), color, zeros = true, xlabel = "PC", ylabel = "PC",
     leg = true).f
 ```
 """ 
@@ -82,7 +82,7 @@ function plotlv(T; size = (700, 350), shape, start = 1, color = nothing, zeros::
         for j = 1:p
             if k < pmax
                 ax[k] = Axis(f; xlabel = string(xlabel, l), ylabel = string(ylabel, l + 1), title = title)
-                scatter!(ax[k], T[:, k], T[:, k + 1]; color = color, kwargs...) 
+                scatter!(ax[k], T[:, k], T[:, k + 1]; color, kwargs...) 
                 if zeros
                     hlines!(0; color = :grey60, linewidth = lw)
                     vlines!(0; color = :grey60, linewidth = lw)

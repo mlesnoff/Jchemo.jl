@@ -102,7 +102,7 @@ T = vcat(Ttrain_in, Ttest_in, Ttest_out)
 group = vcat(repeat(["Train_in"], ntrain_in), repeat(["Test_in"], ntest_in), repeat(["Test_out"], ntest_out))
 color = [:purple, (:green, .7), (:red, .3)]
 i = 1
-plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color = color, leg_title = "Type of obs.", 
+plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of obs.", 
     xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
 
 #### Fit the Occ model based on the fitted score space 'in' 
@@ -144,7 +144,7 @@ conf(pred, ytest_out).cnt
 
 d = vcat(dtrain_in.dstand, dtest_in.dstand, dtest_out.dstand)
 color = [:purple, (:green, .7), (:red, .3)]
-f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
+f, ax = plotxy(1:length(d), d, group; color, size = (500, 300), leg_title = "Type of obs.", 
     title = "SD", xlabel = "Observation index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
