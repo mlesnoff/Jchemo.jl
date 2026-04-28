@@ -1,4 +1,4 @@
-# Jchemo.jl
+# Jchemo
 
 ### Chemometrics and machine learning for high-dimensional data with Julia
 
@@ -14,7 +14,7 @@ methods** and their non-linear extensions, in particular locally weighted PLS mo
 
 Why the name **Jchemo**? Since it is oriented towards **chemometrics**, in brief the use of biometrics for chemistry data. But most of the provided methods are generic and can be applied to other types of data. 
 
-Related projects:  [JchemoData.jl](https://github.com/mlesnoff/JchemoData.jl) (a "container" package gathering selected data sets used in the examples) and [JchemoDemo](https://github.com/mlesnoff/JchemoDemo) (a pedagogical environment).
+Related projects:  [JchemoData](https://github.com/mlesnoff/JchemoData.jl) (a "container" package gathering selected data sets used in the examples) and [JchemoDemo](https://github.com/mlesnoff/JchemoDemo) (a pedagogical environment).
 
 *Warning*
 
@@ -112,7 +112,7 @@ Some functions (e.g., those using kNN selections) use **multi-threading** to spe
 
 *Datasets*
 
-The **datasets** used as examples in the function help pages are stored in package [JchemoData.jl](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets on chemometrics and other domains. **Examples of scripts** demonstrating **Jchemo** are also available in the pedagogical project [JchemoDemo](https://github.com/mlesnoff/JchemoDemo). 
+The **datasets** used as examples in the function help pages are stored in package [JchemoData](https://github.com/mlesnoff/JchemoData.jl), a repository of datasets on chemometrics and other domains. **Examples of scripts** demonstrating **Jchemo** are also available in the pedagogical project [JchemoDemo](https://github.com/mlesnoff/JchemoDemo). 
 
 # <span style="color:green"> **Tuning predictive models** </span> 
 
