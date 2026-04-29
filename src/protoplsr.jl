@@ -130,7 +130,7 @@ function protoplsr(X, Y; kwargs...)
     if par.typsamp == :rand      
         s_proto = samprand(n, par.nproto; seed = par.seed).test
     elseif par.typsamp == :ks
-        s_proto = sampks(X, par.nproto; metric).test
+        s_proto = sampks(X, par.nproto; metric = par.metric).test
     end
     ## Compute the neighborhood of each prototype
     if par.nlvdis == 0
