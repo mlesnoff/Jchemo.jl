@@ -7,22 +7,54 @@ One-class classification (OCC) using DD-Simca.
 * `X` : Training X-data (n, p) on which was fitted model `fitm`.
 Keyword arguments:
 * `fcentr` : A function that computes the centers of the empirical distributions of the squared score and orthogonal 
-    distances (SD2 and OD2). By default, `fcentr = meanv`.
-* `fscal` : A function that computes the scales of the empirical distributions of the squared score and orthogonal 
-    distances (SD2 and OD2). By default, `fcentr = stdv`.
-* `alpha` : Risk-I level to compute the quantile (re-scaled Chi-2) of the consensus variable.
+    distances (SD^2 and OD^2). By default, `fcentr = meanv`.
+* `fscal` : A function that computes the scales of the empirical distributions of SD^2 and OD^2. By default, `fcentr = stdv`.
+* `alpha` : Risk-I level to compute the parametric quantile (re-scaled Chi-2) of the consensus variable.
 
-In this function, outlierness `d` of a given observation is a consensus between the squared score distance (SD2) and the
-squared orthogonal distance (OD2), defined by: 
-* d = (nu1 / mu1) * SD2 + (nu2 / mu2) * SD2.
-The empirical training SD2 and OD2 distributions are assumed to approximately follow independent Chi-2s. Parameters 
-{mu1, mu2} represent the respective distribution centers, and {nu1, nu2} the respective dofs, estimated by the moments 
-method. Outlierness `d` for the training set is assumed to approximatively follow a Chi-2(nu) distribution 
-where nu = nu1 + nu2.
+The function implements OCC based on the outlierness `d` as defined in the DD-Simca method. The principle is described 
+below.
+
+In DD-Simca, SD^2 and OD^2 on the training set are assumed to have approximately independent re-scaled Chi-2 distributions, 
+as follows:
+* SD^2 ~ g1 * Chi-2(nu1)
+* OD^2 ~ g2 * Chi-2(nu2)
+where {nu1, nu2} and {g1, g2} are Chi-2 degrees of freedom (dofs) and scaling parameters, respectively. 
+This is equivalent to assume Chi-2 distributions for the scaled SD^2 and OD^2, as follows:
+* (1 / g1) * SD^2 ~ Chi-2(nu1)
+* (1 / g2) * OD^2 ~ Chi-2(nu2)
+or, by using the properties of the Chi-2 distribution (see in **Details** below),
+* (nu1 / mu1) * SD^2 ~ Chi-2(nu1)
+* (nu2 / mu2) * OD^2 ~ Chi-2(nu2)
+where parameters {mu1, mu2} represent centers of the SD^2 and OD^2 training distributions.
+
+Outlierness `d` of a given observation is finally defined by the following consensus: 
+* `d` = (1 / g1) * SD^2 + (1 / g2) * OD^2
+or, equivalently, by
+* `d` = (nu1 / mu1) * SD^2 + (nu2 / mu2) * OD^2
+where `d` is assumed, for the training set, to approximately follow a Chi-2 distribution with nu = nu1 + nu2 
+dofs. Parameters {mu1, mu2} and {nu1, nu2} are estimated by the moments method on the training set. 
+This assumed distribution is use to compute a parametric cutoff for `d` for a given risk-I level `alpha`.
+
+**Details:**
+
+Let us note Z to represent SD^2 or OD^2. The method assumes that Z ~ g * Chi-2(nu) or, equivalently, 
+(1 / g) * Z ~ Chi-2(nu). If mu and sigma^2 represent the expectation and variance of Z (i.e., mu = E[Z] and sigma^2 = Var[Z]), 
+it follows from the properties of the Chi-2 distribution that
+* g = mu / nu = sigma^2 / (2 * mu)
+* nu = 2 * (mu / sigma)^2 
+Nomikos & MacGregor (1995) proposed, for OD^2, to estimate parameters {mu, sigma^2} (and therefore {g, nu}) by 
+the moments method on the training set. This consists to estimate {mu, sigma^2} by the sample mean (or other center statistic) 
+and variance (or other scale statistic), respectively, of the observed (training) distribution of Z.
+In DD-Simca, the same method is applied to both SD^2 and OD^2. This allows to assume and compute the Chi-2 distribution
+of the consensus variable `d`.
 
 ## References
 Kucheryavskiy, S., Rodionova, O., Pomerantsev, A., 2024. A comprehensive tutorial on Data-Driven SIMCA: Theory 
 and implementation in web. Journal of Chemometrics 38, e3556. https://doi.org/10.1002/cem.3556
+
+Nomikos, P., MacGregor, J.F., 1995. Multivariate SPC Charts for Monitoring Batch Processes. null 37, 41–59. 
+https://doi.org/10.1080/00401706.1995.10485888
+
 
 Pomerantsev, A.L., 2008. Acceptance areas for multivariate classification derived by projection methods. 
 Journal of Chemometrics 22, 601–609. https://doi.org/10.1002/cem.1147

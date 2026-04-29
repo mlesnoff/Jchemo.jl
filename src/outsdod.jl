@@ -1,6 +1,6 @@
 """
     outsdod(fitm, X; gamma = .5, fscal = madv)
-Compute outlierness from PCA/PLS score and orthogonal distances (SD and OD).
+Compute outlierness from PCA/PLS score (SD) and orthogonal distances (OD).
 * `fitm` : The reduction dimension model that was fitted on the data (e.g., object `fitm` returned by functions 
     `pcasvd` or `plskern`).
 * `X` : X-data (n, p) on which was fitted model `fitm`.
