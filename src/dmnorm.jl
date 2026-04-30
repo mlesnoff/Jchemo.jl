@@ -17,7 +17,7 @@ Data `X` can be univariate (p = 1) or multivariate (p > 1). See examples.
 
 When `simple` = `true`, the determinant of the covariance matrix (object `detS`) and the constant 
 (2 * pi)^(-p / 2) (object `cst`) in the density formula are set to 1. The function returns a pseudo density 
-that resumes to exp(-d / 2), where d is the squared Mahalanobis distance to the center `mu`. This can for instance 
+that resumes to exp(-d / 2), where d is the Mahalanobis squared distance to the center `mu`. This can for instance 
 be useful when the number of columns (p) of `X` becomes too large, with the possible consequences that:
 * `detS` tends to 0 or, conversely, to infinity;
 * `cst` tends to 0,

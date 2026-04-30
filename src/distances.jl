@@ -29,7 +29,7 @@ end
 """
     mah2(X, Y)
     mah2(X, Y, Sinv)
-Squared Mahalanobis distances between the rows of `X` and `Y`.
+Mahalanobis Squared distances between the rows of `X` and `Y`.
 * `X` : Data (n, p).
 * `Y` : Data (m, p).
 * `Sinv` : Inverse of a covariance matrix S. If `Sinv` is not given, S is computed as the uncorrected 
@@ -74,7 +74,7 @@ end
 """
     mah2chol(X, Y)
     mah2chol(X, Y, Uinv)
-Squared Mahalanobis distances (with a Cholesky factorization) between the rows of `X` and `Y`.
+Mahalanobis Squared distances (with a Cholesky factorization) between the rows of `X` and `Y`.
 * `X` : Data (n, p).
 * `Y` : Data (m, p).
 * `Uinv` : Inverse of the upper matrix of a Cholesky factorization of a covariance matrix S. 
