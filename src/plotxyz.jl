@@ -29,14 +29,17 @@ n = 1000
 x = randn(n)
 y = randn(n)
 z = randn(n)
+v = 10 * x +randn(n)
 group = rand(["A", "B", "C"], n)
+lev = mlev(group)
+nlev = length(lev)
 s = group .== "B"
 x[s] .+= 10 ;
 s = group .== "C"
 x[s] .+= 20 ;
 
-CairoMakie.activate!()
-#GLMakie.activate!()
+GLMakie.activate!()
+#CairoMakie.activate!()
 
 plotxyz(x, y, z; size = (500, 300), markersize = 10, xlabel = "V1").f
 plotxyz(x, y, z; size = (500, 300), color = (:red, .3), markersize = 10, xlabel = "V1").f
@@ -47,6 +50,16 @@ plotxyz(x, y, z, group; size = (500, 300), markersize = 10, xlabel = "V1", alpha
 color = [(:red, .3); (:blue, .3); (:green, .3)]
 #color = cgrad(:Dark2_5; categorical = true, alpha = .3)[1:nlev]
 plotxyz(x, y, z, group; size = (500, 300), color, leg = true, markersize = 10, xlabel = "V1").f
+
+## With a color bar
+colm = cgrad(:default; alpha = 0.6)
+#colm = cgrad(:viridis; alpha = 0.6)
+#colm = cgrad([:blue, :red]; alpha = 0.6)
+f = Figure()
+f, ax = plotxyz(x, y, z; color = v, colormap = colm, xlabel = "v1", ylabel = "v2", zlabel = "v3")
+Colorbar(f[1, 2]; colormap = colm, label = "v", limits = (minimum(v), maximum(v)), 
+    height = Relative(0.7), flipaxis = true)
+f
 ```
 """ 
 function plotxyz(x, y, z; size = (500, 300), color = nothing, perspectiveness = .1,
