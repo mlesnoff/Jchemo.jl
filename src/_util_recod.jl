@@ -1,7 +1,7 @@
 """
     recod_catbydict(x, dict)
- Recode a categorical variable to dictionnary levels.
-* `x` : Categorical variable (n) to replace.
+Recode a categorical variable by levels defined in a dictionnary.
+* `x` : Categorical variable (n) to recode.
 * `dict` : Dictionary giving the correpondances between the old and new levels.
 
 See examples.
@@ -24,23 +24,22 @@ end
 
 """
     recod_catbyind(x, lev)
-Recode a categorical variable to indexes of sorted levels.
-* `x` : Categorical variable (n) to replace.
-* `lev` : Vector containing categorical levels. 
+Recode a categorical variable by indexes of sorted levels.
+* `x` : Categorical variable (n) to recode.
+* `lev` : Vector containing the new categorical levels. 
 
-Internally in the function, the elements of vector `lev` are made unique and are sorted.
+Replace element `x[i]` (i = 1, ..., n) by the index of the level in `lev` corresponding to `x[i]`, 
+see examples. Internally, the function makes unique and sorts the elements of vector `lev`.
 
-See examples.
-
-*Warning*: The levels in `x` must be contained in `lev`.
+*Warning*: All levels in `x` must be contained in `lev`.
 
 ## Examples
 ```julia
 using Jchemo
 
 lev = ["EHH" ; "FFS" ; "ANF" ; "CLZ" ; "CNG" ; "FRG" ; "MPW" ; "PEE" ; "SFG" ; "SFG" ; "TTS"]
-lev_sorted = mlev(lev)
-[lev_sorted 1:length(lev_sorted)] 
+levsorted = mlev(lev)
+[levsorted 1:length(levsorted)] 
 x = ["EHH" ; "TTS" ; "FRG" ; "EHH"]
 recod_catbyind(x, lev)
 ```
@@ -49,11 +48,13 @@ recod_catbyind(x, lev) = Int.(indexin(x, mlev(lev)))
 
 """
     recod_catbyint(x; start = 1)
- Recode a categorical variable to integers.
-* `x` : Categorical variable (n) to replace.
+Recode a categorical variable by integer indexes.
+* `x` : Categorical variable (n) to recode.
 * `start` : Integer labelling the first categorical level in `x`.
 
-The integers returned by the function correspond to the sorted levels of `x`, see examples.
+The levels contained in `x` are made unique and sorted, and stored in a vector v. If length(v) = k,
+an index vector vind is built such as vind = [`start`; `start` + 1; ...; `start` + k - 1]. 
+The function replaces element `x[i]` by the index in vind corresponding to `x[i]`, see examples.
 
 ## Examples
 ```julia
@@ -77,11 +78,11 @@ end
 
 """
     recod_catbylev(x, lev)
- Recode a categorical variable to levels.
-* `x` : Variable (n) to replace.
+Recode a categorical variable by levels.
+* `x` : Variable (n) to recode.
 * `lev` : Vector containing the categorical levels.
 
-The ith sorted level in `x` is replaced by the ith sorted level in `lev`, see examples.
+The ith sorted level in `x` (i = 1, ..., n) is replaced by the ith sorted level in `lev`, see examples.
 
 *Warning*: `x` and `lev` must contain the same number of levels.
 
@@ -117,12 +118,53 @@ function recod_catbylev(x, lev)
 end
 
 """
+    recod_indbylev(x::Union{Int, Array{Int}}, lev::Array)
+Recode an index variable to levels.
+* `x` : Index variable (n) to recode.
+* `lev` : Vector containing the categorical levels.
+
+Assuming levsorted = 'sort(unique(lev))', each element `x[i]` (i = 1, ..., n) is replaced by `levsorted[x[i]]`, 
+see examples.
+
+*Warning*: Vector `x` must contain integers between 1 and nlev, where nlev is the number of levels in `lev`. 
+
+## Examples
+```julia
+using Jchemo
+
+x = [2 ; 1 ; 2 ; 2]
+lev = ["B" ; "C" ; "AA" ; "AA"]
+mlev(x)
+mlev(lev)
+[x recod_indbylev(x, lev)]
+recod_indbylev([2], lev)
+recod_indbylev(2, lev)
+
+x = [2 ; 1 ; 2]
+lev = [3 ; 0 ; 0 ; -1]
+mlev(x)
+mlev(lev)
+recod_indbylev(x, lev)
+```
+"""
+function recod_indbylev(x::Union{Int, Array{Int}}, lev::Array)
+    n = length(x)
+    isa(x, Int) ? x = [x] : x = vec(x)
+    lev = mlev(lev)
+    v = similar(lev, n)
+    @inbounds for i in eachindex(x)
+        v[i] = lev[x[i]]
+    end
+    v
+end
+
+"""
     recod_contbyint(x, q)
- Recode a continuous variable to integers.
-* `x` : Continuous variable (n) to replace.
+Recode a continuous variable by integers.
+* `x` : Continuous variable (n) to recode.
 * `q` : Numerical values (K) separating the class levels from `x`.  
 
-The function potentially returns K + 1 levels. For a given value x of vector `x` and `q` a vector 
+The function potentially returns K + 1 levels. For a given value x of vector `x`, and for `q` a vector 
 of length K: 
 * x <= q[1]             : ==> 1
 * q[1] < x <= q[2]      : ==> 2
@@ -154,47 +196,6 @@ function recod_contbyint(x, q)
             x[i] > q[j] ? k = k + 1 : nothing
         end
         v[i] = k
-    end
-    v
-end
-
-"""
-    recod_indbylev(x::Union{Int, Array{Int}}, lev::Array)
- Recode an index variable to levels.
-* `x` : Index variable (n) to replace.
-* `lev` : Vector containing the categorical levels.
-
-Assuming lev_sorted = 'sort(unique(lev))', each element `x[i]` (i = 1, ..., n) is replaced by `lev_sorted[x[i]]`, 
-see examples.
-
-*Warning*: Vector `x` must contain integers between 1 and nlev, where nlev is the number of levels in `lev`. 
-
-## Examples
-```julia
-using Jchemo
-
-x = [2 ; 1 ; 2 ; 2]
-lev = ["B" ; "C" ; "AA" ; "AA"]
-mlev(x)
-mlev(lev)
-[x recod_indbylev(x, lev)]
-recod_indbylev([2], lev)
-recod_indbylev(2, lev)
-
-x = [2 ; 1 ; 2]
-lev = [3 ; 0 ; 0 ; -1]
-mlev(x)
-mlev(lev)
-recod_indbylev(x, lev)
-```
-"""
-function recod_indbylev(x::Union{Int, Array{Int}}, lev::Array)
-    n = length(x)
-    isa(x, Int) ? x = [x] : x = vec(x)
-    lev = mlev(lev)
-    v = similar(lev, n)
-    @inbounds for i in eachindex(x)
-        v[i] = lev[x[i]]
     end
     v
 end
