@@ -425,12 +425,12 @@
 
 *Recoding*
 - Vector
-    - **recod_catbydict**  Recode a categorical variable to dictionnary levels
-    - **recod_catbyind**  Recode a categorical variable to indexes of levels
-    - **recod_catbyint**  Recode a categorical variable to integers
-    - **recod_catbylev**  Recode a categorical variable to levels
-    - **recod_contbyint**  Recode a continuous variable to integers
-    - **recod_indbylev**  Recode an index variable to levels
+    - **recod_catbydict** Recode a categorical variable by levels defined in a dictionnary
+    - **recod_catbyind** Recode a categorical variable by indexes of levels
+    - **recod_catbyint** Recode a categorical variable by integer indexes
+    - **recod_catbylev** Recode a categorical variable by levels
+    - **recod_contbyint** Recode a continuous variable by integers
+    - **recod_indbylev** Recode an index variable to levels
     - **recod_miss** Declare data as missing in a dataset
 - Data
     - **convertdf** Convert the columns of a dataframe to given types
