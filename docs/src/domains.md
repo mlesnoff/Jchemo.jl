@@ -430,7 +430,7 @@
     - **recod_catbyint** Recode a categorical variable by integer indexes
     - **recod_catbylev** Recode a categorical variable by levels
     - **recod_contbyint** Recode a continuous variable by integers
-    - **recod_indbylev** Recode an index variable to levels
+    - **recod_indbylev** Recode an index variable by levels
     - **recod_miss** Declare data as missing in a dataset
 - Data
     - **convertdf** Convert the columns of a dataframe to given types

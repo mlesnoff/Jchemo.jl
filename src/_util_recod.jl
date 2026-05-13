@@ -119,7 +119,7 @@ end
 
 """
     recod_indbylev(x::Union{Int, Array{Int}}, lev::Array)
-Recode an index variable to levels.
+Recode an index variable by levels.
 * `x` : Index variable (n) to recode.
 * `lev` : Vector containing the categorical levels.
 
