@@ -49,6 +49,7 @@ include("nipalsmiss.jl")
 include("simpp.jl")
 include("snipals_post.jl")
 include("snipals_shen.jl")
+include("boxcox.jl")
 
 ######---- Preprocessing
 
@@ -297,6 +298,7 @@ export
     aggmean, aggstat, 
     aggsumv,  
     sumv, meanv, stdv, varv, medv, madv, iqrv, normv, norm2v,
+    boxcox, boxcox_transf, 
     colsum, colmean, colnorm, colnorm2, colstd, colvar, colmed, colmad, 
     colsumskip, colmeanskip, colstdskip, colvarskip,
     convertdf,

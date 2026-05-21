@@ -3,6 +3,7 @@
 ## *Version 0.9.8*
 
 - News:
+    - Function **boxcox**: Estimate Box-Cox parameter to normalize a variable.
 
 - Modifications
     - Code cleaning.
