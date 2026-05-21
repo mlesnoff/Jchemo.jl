@@ -439,8 +439,8 @@
     - **expand_grid** Build a dataframe with all the combinations of the entered parameter values
 
 *Operations on a vector*
-- Statistics: **sumv**, **meanv**, **normv**, **norm2v**, **stdv**, **varv**, **medv**,  **madv**, **iqrv**
-- Box-cox transformation: **boxcox** 
+- **sumv**, **meanv**, **normv**, **norm2v**, **stdv**, **varv**, **medv**,  **madv**, **iqrv**: Statistics
+- **boxcox**: Estimate the parameter of the Box-Cox power transformation 
 
 *Operations on two vectors*
 - **cosv** Cosinus 
