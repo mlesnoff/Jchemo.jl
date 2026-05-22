@@ -440,7 +440,7 @@
 
 *Operations on a vector*
 - **sumv**, **meanv**, **normv**, **norm2v**, **stdv**, **varv**, **medv**,  **madv**, **iqrv**: Statistics
-- **boxcox**: Estimate the parameter of the Box-Cox power transformation 
+- **boxcox**, **boxcox_transf**: Box-Cox power transformation to normalize a variable
 
 *Operations on two vectors*
 - **cosv** Cosinus 

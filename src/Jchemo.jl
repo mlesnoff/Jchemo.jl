@@ -298,7 +298,7 @@ export
     aggmean, aggstat, 
     aggsumv,  
     sumv, meanv, stdv, varv, medv, madv, iqrv, normv, norm2v,
-    boxcox, boxcox_transf, 
+    boxcox, boxcox_transf, boxcox_transf!,
     colsum, colmean, colnorm, colnorm2, colstd, colvar, colmed, colmad, 
     colsumskip, colmeanskip, colstdskip, colvarskip,
     convertdf,

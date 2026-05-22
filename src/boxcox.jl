@@ -76,10 +76,34 @@ function boxcox(x::Vector{T}; lims::Vector{T} = [-3.; 3], npoint::Int = 1000) wh
     (lb = lb, logl, lbopt = lb[ind], ind)
 end
 
-## Apply Box-Cox transformation to vector x for lambda = lb
-function boxcox_transf(x::Vector{T}, lb::T) where T <: Union{Float32, Float64}
-    lb == 0 ? log.(x) : (x.^lb .- 1) ./ lb
-end
 
+
+
+
+"""
+    boxcox_transf(x::Vector{T}, lb::T) where T <: Union{Float32, Float64}
+    boxcox_transf!(x::Vector{T}, lb::T) where T <: Union{Float32, Float64}
+Apply Box-Cox power transformation to a variable
+* `x` : Univariate data (n) to normalize.
+* `lb` : Box-Cox parameter (lambda).
+
+The Box-Cox power transformation is defined as:
+* lamda = 0 :  y = log.(x)
+* else : = y (x.^lambda .- 1) ./ lambda
+
+See function `boxcox` for examples.
+
+## References
+Box, G.E.P., and D.R. Cox. (1964). An Analysis of Transformations (with Discussion).
+Journal of the Royal Statistical Society, Series B 26(2), 211--252.
+""" 
+function boxcox_transf(x::Vector{T}, lb::T) where T <: Union{Float32, Float64}
+    vx = copy(x)
+    boxcox_transf!(vx, lb)
+    vx
+end
+function boxcox_transf!(x::Vector{T}, lb::T) where T <: Union{Float32, Float64}
+    lb == 0 ? x .= log.(x) : x .= (x.^lb .- 1) ./ lb
+end
 
 
