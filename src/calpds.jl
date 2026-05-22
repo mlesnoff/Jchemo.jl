@@ -46,6 +46,7 @@ X1cal = dat.X1cal
 X1val = dat.X1val
 n = nro(X1cal)
 m = nro(X1val)
+
 ## Target space
 X2cal = dat.X2cal
 X2val = dat.X2val

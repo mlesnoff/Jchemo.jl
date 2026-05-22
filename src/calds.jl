@@ -25,16 +25,16 @@ path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/caltransfer.jld2")
 @load db dat
 @names dat
-## Objects X1 and X2 are spectra collected 
-## on the same samples. 
-## X2 represents the target space. 
-## We want to transfer X1 in the same space
-## as X2.
+
+## Objects X1 and X2 are spectra collected on the same samples, and X2 represents 
+## the target space. The objective is to transfer X1 in the same space as X2.
+
 ## Data to transfer
 X1cal = dat.X1cal
 X1val = dat.X1val
 n = nro(X1cal)
 m = nro(X1val)
+
 ## Target space
 X2cal = dat.X2cal
 X2val = dat.X2val
@@ -44,8 +44,7 @@ fitm = calds(X1cal, X2cal; algo = plskern, nlv = 10)
 #fitm = calds(X1cal, X2cal; algo = mlrpinv)   # less robust 
 
 ## Transfer of new spectra X1val 
-## expected to be close to X2val
-pred = predict(fitm, X1val).pred
+pred = predict(fitm, X1val).pred  # transformed X1val expected to be close to X2val
 
 i = 1
 f = Figure(size = (500, 300))
