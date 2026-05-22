@@ -56,8 +56,8 @@ res = predict(model, Xtest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-####### Example of fitting the function sinc(x)
-####### described in Rosipal & Trejo 2001 p. 105-106 
+####### Example of fitting the function sinc(x) described in Rosipal & Trejo 2001 p. 105-106 
+ 
 x = collect(-10:.2:10) 
 x[x .== 0] .= 1e-5
 n = length(x)
