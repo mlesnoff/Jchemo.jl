@@ -7,9 +7,13 @@ Keyword arguments:
 * `gamma` : Scale parameter.
 
 Given matrices `X` and `Y` of sizes (n, p) and (m, p), respectively, the function returns the (n, m) Gram matrix:
-* K(X, Y) = Phi(X) * Phi(Y)'.
+* K(`X`, `Y`) = Phi(`X`) * Phi(`Y`)'
+where Phi is the mapping (not explicit) function from the original space to the kernel space.
 
-The RBF kernel between two vectors x and y is computed by exp(-`gamma` * ||x - y||^2).
+The RBF kernel between two vectors x and y (`X` and `Y` rows, respectively) is computed by:
+* exp(-`gamma` * ||x - y||^2)
+
+Closer are x and y, higher is the kernel value, i.e., K(`X`, `Y`) represents a similarity matrix.
 
 ## References 
 Scholkopf, B., Smola, A.J., 2002. Learning with kernels: support vector machines, regularization, optimization, 
@@ -43,9 +47,13 @@ Keyword arguments:
 * `degree` : Degree of the polynom.
 
 Given matrices `X` and `Y` of sizes (n, p) and (m, p), respectively, the function returns the (n, m) Gram matrix:
-*  K(X, Y) = Phi(X) * Phi(Y)'.
+*  K(`X`, `Y`) = Phi(`X`) * Phi(`Y`)'
+where Phi is the mapping (not explicit) function from the original space to the kernel space.
 
-The polynomial kernel between two vectors x and y is computed by (`gamma` * (x' * y) + `coef0`)^`degree`.
+The polynomial kernel between two vectors x and y (`X` and `Y` rows, respectively) is computed by:
+* (`gamma` * (x' * y) + `coef0`)^`degree`
+
+Closer are x and y, higher is the kernel value, i.e., K(`X`, `Y`) represents a similarity matrix. 
 
 ## References 
 Scholkopf, B., Smola, A.J., 2002. Learning with kernels: support vector machines, regularization, optimization, 
