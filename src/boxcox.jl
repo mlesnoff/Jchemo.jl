@@ -1,5 +1,5 @@
 """
-    boxcox(x::Vector{T}; lims::Vector{T} = [-3.; 3], npoint = 1000) where T <: Union{Float32, Float64}
+    boxcox(x::Vector{T}; lims::Vector{T} = [-3.; 3], npoint = 1000) where T <: AbstractFloat
 Estimate the parameter of the Box-Cox power transformation.
 * `x` : Univariate data (n) to normalize.
 Keyword arguments:
@@ -57,7 +57,7 @@ qqplot(f[1, 2], Normal(mu, sigma), vx; qqline = :identity, axis = (xlabel = "Nor
 f
 ```
 """ 
-function boxcox(x::Vector{T}; lims::Vector{T} = [-3.; 3], npoint::Int = 1000) where T <: Union{Float32, Float64}
+function boxcox(x::Vector{T}; lims::Vector{T} = [-3.; 3], npoint::Int = 1000) where T <: AbstractFloat
     if any(x .<= 0)
         error("Box-Cox transformation requires strictly positive data (x > 0).")
     end
@@ -76,13 +76,9 @@ function boxcox(x::Vector{T}; lims::Vector{T} = [-3.; 3], npoint::Int = 1000) wh
     (lb = lb, logl, lbopt = lb[ind], ind)
 end
 
-
-
-
-
 """
-    boxcox_transf(x::Vector{T}, lb::T) where T <: Union{Float32, Float64}
-    boxcox_transf!(x::Vector{T}, lb::T) where T <: Union{Float32, Float64}
+    boxcox_transf(x::Vector{T}, lb::T) where T <: AbstractFloat
+    boxcox_transf!(x::Vector{T}, lb::T) where T <: AbstractFloat
 Apply Box-Cox power transformation to a variable
 * `x` : Univariate data (n) to normalize.
 * `lb` : Box-Cox parameter (lambda).
@@ -97,12 +93,12 @@ See function `boxcox` for examples.
 Box, G.E.P., and D.R. Cox. (1964). An Analysis of Transformations (with Discussion).
 Journal of the Royal Statistical Society, Series B 26(2), 211--252.
 """ 
-function boxcox_transf(x::Vector{T}, lb::T) where T <: Union{Float32, Float64}
+function boxcox_transf(x::Vector{T}, lb::T) where T <: AbstractFloat 
     vx = copy(x)
     boxcox_transf!(vx, lb)
     vx
 end
-function boxcox_transf!(x::Vector{T}, lb::T) where T <: Union{Float32, Float64}
+function boxcox_transf!(x::Vector{T}, lb::T) where T <: AbstractFloat
     lb == 0 ? x .= log.(x) : x .= (x.^lb .- 1) ./ lb
 end
 

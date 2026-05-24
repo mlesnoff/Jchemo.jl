@@ -23,7 +23,7 @@ eucl2(1, 4)
 function eucl2(X, Y)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    Distances.pairwise(SqEuclidean(), X', Y'; dims = 2)   # pairwise also exportef by StatsBase
+    Distances.pairwise(SqEuclidean(), X', Y'; dims = 2)   # pairwise also exported by StatsBase
 end
 
 """
