@@ -4,6 +4,7 @@
 
 - News:
     - Function **boxcox**: Estimate the parameter of the Box-Cox power transformation.
+    - Function **pcout**: Pcout algorithm for outlier identification in high dimensions *Filzmoser et al. 2008*.
 
 - Modifications
     - Code cleaning.

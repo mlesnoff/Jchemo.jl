@@ -234,8 +234,8 @@ include("mbplsqda.jl")
 include("mbplskdeda.jl") 
 
 ## One-class
-include("outeucl.jl")
 include("outstah.jl")
+include("outeucl.jl")
 include("pcout.jl")
 include("outsd.jl")
 include("outod.jl")
@@ -462,7 +462,7 @@ export
     svmda, 
     treeda, rfda,
     ## One-class
-    outeucl, outstah, 
+    outstah, outeucl, 
     pcout,
     outsd, outod, outsdod,
     outknn, outlknn,

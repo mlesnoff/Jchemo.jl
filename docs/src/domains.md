@@ -266,6 +266,7 @@
 
 - **outstah** Stahel-Donoho outlierness
 - **outeucl**: Outlierness from Euclidean distances to center
+- **pcout**: Pcout algorithm for outlier identification in high dimensions *Filzmoser et al. 2008*
 - **outsd**, **outod**, **outsdod**: Outlierness from PCA/PLS distances (SD, OD and consensus SD-OD)
 - **outknn**: kNN distance-based outlierness
 - **outlknn**: Local kNN distance-based outlierness
