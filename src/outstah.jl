@@ -50,15 +50,15 @@ function outstah!(X::Matrix, V::Matrix; scal = false)
     ## Scaling V by colnorm(V) has no effect on d and T: T = X * fscale(V, colnorm(V))
     T = X * V  
     mu = colmed(T)
-    s = colmad(T)  
-    fcscale!(T, mu, s)
+    sigma = colmad(T)  
+    fcscale!(T, mu, sigma)
     T[isnan.(T)] .= convert(Q, 0)
     T .= abs.(T)
     d = similar(T, n)
     @inbounds for i in axes(X, 1)
         d[i] = maximum(vrow(T, i))
     end
-    (d = d, T, mu, s, xscales)
+    (d = d, T, mu, sigma, xscales)
 end
 
 

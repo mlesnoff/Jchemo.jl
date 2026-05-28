@@ -141,8 +141,7 @@ function predict(object::Occstah, X)
     res = object.res_stah
     fscale!(zX, res.xscales)
     T = zX * object.V
-    fcenter!(T, res.mu)
-    fscale!(T, res.s)
+    fcscale!(T, res.mu, res.sigma)
     T .= abs.(T)
     d = similar(T, m)
     @inbounds for i in eachindex(d)

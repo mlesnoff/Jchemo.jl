@@ -832,4 +832,3 @@ struct Occlknn
     xscales::Vector
     par::ParOccknn
 end
-

@@ -17,17 +17,15 @@ fcenter(X, xmeans)
 """ 
 function fcenter(X, v)
     X = ensure_mat(X)
-    n, p = size(X)
     zX = similar(X)
-    @inbounds for j = 1:p, i = 1:n
+    @inbounds for j in axes(X, 2), i in axes(X, 1)
         zX[i, j] = X[i, j] - v[j]
     end  
     zX
 end
 
 function fcenter!(X::AbstractMatrix, v)
-    n, p = size(X)
-    @inbounds for j = 1:p, i = 1:n
+    @inbounds for j in axes(X, 2), i in axes(X, 1)
         X[i, j] -= v[j]
     end  
 end
@@ -49,17 +47,15 @@ fscale(X, colstd(X))
 """ 
 function fscale(X, v)
     X = ensure_mat(X)
-    n, p = size(X)
     zX = similar(X)
-    @inbounds for j = 1:p, i = 1:n
+    @inbounds for j in axes(X, 2), i in axes(X, 1)
         zX[i, j] = X[i, j] / v[j]
     end  
     zX
 end
 
 function fscale!(X::AbstractMatrix, v)
-    n, p = size(X)
-    @inbounds for j = 1:p, i = 1:n
+    @inbounds for j in axes(X, 2), i in axes(X, 1)
         X[i, j] /= v[j]
     end 
 end
@@ -85,17 +81,15 @@ fcscale(X, xmeans, xscales)
 """ 
 function fcscale(X, u, v)
     X = ensure_mat(X)
-    n, p = size(X)
     zX = similar(X)
-    @inbounds for j = 1:p, i = 1:n
+    @inbounds for j in axes(X, 2), i in axes(X, 1)
         zX[i, j] = (X[i, j] - u[j]) / v[j]
     end  
     zX
 end
 
 function fcscale!(X::AbstractMatrix, u, v)
-    n, p = size(X)
-    @inbounds for j = 1:p, i = 1:n
+    @inbounds for j in axes(X, 2), i in axes(X, 1)
         X[i, j] = (X[i, j] - u[j]) / v[j]
     end  
 end
