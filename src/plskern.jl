@@ -180,7 +180,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 """ 
 function transf(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int} = nothing)
     X = ensure_mat(X)
-    a = object.par.nlv  # integer
+    a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     ## Could be fcscale! but would change X. If too heavy ==> Makes summary!
     fcscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
@@ -196,7 +196,7 @@ For a model fitted from X (n, p) and Y (n, q), the returned object `B` is a matr
 of zeros. The returned object `int` is the intercept.
 """ 
 function coef(object::Union{Plsr, Splsr}; nlv::Union{Nothing, Int} = nothing)
-    a = object.par.nlv  # integer
+    a = nco(object.T)
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     theta = vcol(object.C, 1:nlv)'  # regression coefs of Y on T
     Dy = Diagonal(object.yscales)
@@ -217,7 +217,7 @@ Compute Y-predictions from a fitted model.
 function predict(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int, Vector{Int}, UnitRange} = nothing)
     X = ensure_mat(X)
     Q = eltype(X)
-    a = object.par.nlv  # integer
+    a = nco(object.T)
     if isnothing(nlv)
         nlv = a
     elseif isa(nlv, Int)
