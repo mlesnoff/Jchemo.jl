@@ -19,7 +19,7 @@ sum(weights.values)
 weights.sum
 ```
 """
-pweight(x) = pweights(x / sum(x))
+pweight(x) = StatsBase.pweights(x / sum(x))
 #function pweight(x)
 #    tot = sum(x) 
 #    ProbabilityWeights(x / tot, one(eltype(x)))

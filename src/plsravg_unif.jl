@@ -13,7 +13,7 @@ function plsravg_unif!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs
     par = recovkw(ParPlsr, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
-    nlv = (min(minimum(par.nlv), n, p):min(maximum(par.nlv), n, p))
+    nlv = min(minimum(par.nlv), n, p):min(maximum(par.nlv), n, p)
     fitm = plskern!(X, Y, weights; kwargs...)
     PlsravgUnif(fitm, nlv)
 end

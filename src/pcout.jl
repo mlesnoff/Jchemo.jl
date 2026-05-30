@@ -76,6 +76,7 @@ hlines!(ax2, res.M2; linewidth = .7)
 hlines!(ax2, res.const2; linewidth = .7)
 ax3 = Axis(f[3, 1]; xlabel = "Observation", ylabel = "Final weight")
 scatter!(ax3, 1:n, res.wfinal)
+hlines!(ax3, .25; linewidth = .7) # outbound
 ax4 = Axis(f[1, 2]; xlabel = "Observation", ylabel = "Weight (location)")
 scatter!(ax4, 1:n, res.wloc)
 ax5 = Axis(f[2, 2]; xlabel = "Observation", ylabel = "Weight (scatter)")
