@@ -47,7 +47,7 @@ ntest = nro(Xtest)
 
 nlv = 0:30
 #nlv = 5:20
-#nlv = 25
+#nlv = 25:25
 model = plsravg(; nlv) ;
 fit!(model, Xtrain, ytrain)
 
@@ -73,11 +73,14 @@ function plsravg(X, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function plsravg!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParPlsr, kwargs).par
-    algo = plsravg_unif!
-    fitm = algo(X, Y, weights; kwargs...)
-    Plsravg(fitm, par) 
+    par = recovkw(ParPlsravg, kwargs).par
+    if par.algo == :unif
+        fitm = plsravg_unif!(X, Y, weights; kwargs...)
+    end
+    Plsravg(fitm, par)  
 end
+
+## Note: There is no 'transf' nor 'coef' functions for Plsravg.
 
 """
     predict(object::Plsravg, X)
@@ -90,5 +93,4 @@ function predict(object::Plsravg, X)
     (pred = res.pred, predlv = res.predlv)
 end
 
-## Note: There is no 'transf' nor 'coef' functions for Plsravg.
 

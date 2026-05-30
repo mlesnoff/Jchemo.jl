@@ -88,7 +88,7 @@ struct Pca
     xmeans::Vector
     xscales::Vector
     weights::ProbabilityWeights
-    niter::Union{Vector{Int}, Nothing}    # pcanipals, pcanipalsmiss
+    niter::Union{Nothing, Vector{Int}}    # pcanipals, pcanipalsmiss
     par::Union{ParPca, ParPcanipals, ParPcapp, ParPcaout}
 end
 
@@ -100,7 +100,7 @@ struct Spca
     xmeans::Vector
     xscales::Vector
     weights::ProbabilityWeights
-    niter::Union{Vector{Int}, Nothing}
+    niter::Union{Nothing, Vector{Int}}
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
     par::ParSpca
@@ -365,8 +365,19 @@ struct Plsr
     ymeans::Vector
     yscales::Vector
     weights::ProbabilityWeights
-    niter::Union{Vector{Int}, Nothing}   # plswold
+    niter::Union{Nothing, Vector{Int}}   # for plswold
     par::Union{ParPlsr, ParPlswold, ParRrr}
+end
+
+struct Plsravgunif
+    fitm::Plsr
+    nlv::UnitRange
+    par::ParPlsravgunif
+end
+
+struct Plsravg
+    fitm::Plsravgunif
+    par::ParPlsravg
 end
 
 struct Cglsr
@@ -376,7 +387,7 @@ struct Cglsr
     xscales::Vector
     ymeans::Vector
     yscales::Vector
-    F::Union{Matrix, Nothing}
+    F::Union{Nothing, Matrix}
     par::ParCglsr
 end
 
@@ -386,16 +397,6 @@ struct Spcr
     ymeans::Vector
     yscales::Vector
     par::ParSpca
-end
-
-struct PlsravgUnif
-    fitm::Plsr
-    nlv::UnitRange
-end
-
-struct Plsravg
-    fitm::PlsravgUnif
-    par::ParPlsr
 end
 
 struct Splsr
@@ -410,7 +411,7 @@ struct Splsr
     ymeans::Vector
     yscales::Vector
     weights::ProbabilityWeights
-    niter::Union{Vector{Int}, Nothing}   # snipals_shen when Y with q > 1
+    niter::Union{Nothing, Vector{Int}}   # snipals_shen when Y with q > 1
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
     par::ParSplsr
@@ -537,7 +538,7 @@ struct Mbplswest     # mbplswest, mbwcov
     ymeans::Vector
     yscales::Vector
     weights::ProbabilityWeights
-    lb::Union{Matrix, Nothing}
+    lb::Union{Nothing, Matrix}
     niter::Union{Vector, Nothing}
     par::ParMbplsr
 end

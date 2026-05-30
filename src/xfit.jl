@@ -1,7 +1,7 @@
 """
     xfit(object)
-    xfit(object, X; nlv = nothing)
-    xfit!(object, X::Matrix; nlv = nothing)
+    xfit(object, X; nlv::Union{Nothing, Int} = nothing)
+    xfit!(object, X::Matrix; nlv::Union{Nothing, Int} = nothing)
 Fit a matrix from a bilinear model (e.g., PCA).
 * `object` : The fitted bilinear model.
 * `X` : New X-data to be approximated from the model. Must be in the same scale as the X-data used to fit
@@ -88,11 +88,11 @@ function xfit(object)
     X
 end
 
-function xfit(object, X; nlv = nothing)
+function xfit(object, X; nlv::Union{Nothing, Int} = nothing)
     xfit!(object, copy(ensure_mat(X)); nlv)
 end
 
-function xfit!(object, X::Matrix; nlv = nothing)
+function xfit!(object, X::Matrix; nlv::Union{Nothing, Int} = nothing)
     a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     if nlv == 0

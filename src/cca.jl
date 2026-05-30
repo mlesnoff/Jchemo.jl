@@ -163,14 +163,14 @@ function cca!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
-    transfbl(object::Cca, X, Y; nlv = nothing)
+    transfbl(object::Cca, X, Y; nlv::Union{Nothing, Int} = nothing)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
 * `Y` : Y-data for which components (LVs) are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transfbl(object::Cca, X, Y; nlv = nothing)
+function transfbl(object::Cca, X, Y; nlv::Union{Nothing, Int} = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = object.par.nlv
@@ -206,7 +206,7 @@ function Base.summary(object::Cca, X, Y)
     #pvar =  tt / sstot
     #cumpvar = cumsum(pvar)
     #xvar = tt / n    
-    #explvarx = DataFrame(nlv = 1:nlv, var = xvar, 
+    #explvarx = DataFrame(nlv = collect(1:nlv), var = xvar, 
     #    pvar = pvar, cumpvar = cumpvar)
     explvarx = nothing 
     ## Y
@@ -217,7 +217,7 @@ function Base.summary(object::Cca, X, Y)
     #pvar =  tt / sstot
     #cumpvar = cumsum(pvar)
     #xvar = tt / n    
-    #explvary = DataFrame(nlv = 1:nlv, var = xvar, 
+    #explvary = DataFrame(nlv = collect(1:nlv), var = xvar, 
     #    pvar = pvar, cumpvar = cumpvar)
     explvary = nothing
     ## Correlation between X- and Y-block LVs

@@ -98,13 +98,13 @@ function pcasvd!(X::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
-    transf(object::Union{Pca, Fda}, X; nlv = nothing)
+    transf(object::Union{Pca, Fda}, X; nlv::Union{Nothing, Int} = nothing)
 Compute principal components (PCs = scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
 * `nlv` : Nb. PCs to compute.
 """ 
-function transf(object::Union{Pca, Fda}, X; nlv = nothing)
+function transf(object::Union{Pca, Fda}, X; nlv::Union{Nothing, Int} = nothing)
     X = ensure_mat(X)
     a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
@@ -131,7 +131,7 @@ function Base.summary(object::Pca, X)
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
     zrd = vec(rd(X, object.T, weights))
-    explvarx = DataFrame(nlv = 1:nlv, rd = zrd, var = tt, pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(nlv = collect(1:nlv), rd = zrd, var = tt, pvar = pvar, cumpvar = cumpvar)
     nam = string.("lv", 1:nlv)
     contr_ind = DataFrame(fscale(TT, tt), nam)
     contr_var = DataFrame(object.V.^2, nam)

@@ -162,14 +162,14 @@ function Base.summary(object::Plstuck, X, Y)
     pvar = tt / ss
     cumpvar = cumsum(pvar) 
     xvar = tt / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Block Y
     tt = object.TTy
     ss = frob2(Y, object.weights)
     pvar = tt / ss
     cumpvar = cumsum(pvar)
     xvar = tt / n    
-    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    explvary = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Correlation between X- and Y-block LVs
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cortx2ty = DataFrame(lv = 1:nlv, cor = z)

@@ -265,14 +265,14 @@ function Base.summary(object::Ccawold, X, Y)
     pvar = tt_adj / ss
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Block Y
     ss = frob2(Y, object.weights)
     tt_adj = (colnorm(object.Vy).^2) .* tty  
     pvar = tt_adj / ss
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    explvary = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Correlation between X- and Y-block LVs
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cortx2ty = DataFrame(lv = 1:nlv, cor = z)

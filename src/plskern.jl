@@ -98,13 +98,15 @@ end
 
 function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPlsr, kwargs).par
-    ## Specific for Plsda functions
     Q = eltype(X)
-    isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
+    ## Specific for Plsda functions
+    if isa(Y, BitMatrix)
+        Y = convert.(Q, Y)
+    end
     ## End
     n, p = size(X)
     q = nco(Y)
-    nlv = min(n, p, maximum(par.nlv)) # the use of 'maximum' is required for plsravg 
+    nlv = min(n, p, par.nlv) 
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
     xscales = ones(Q, p)
@@ -127,15 +129,15 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWe
     ## Pre-allocation
     T = similar(X, n, nlv)
     W = similar(X, p, nlv)
-    V = copy(W)
-    R = copy(V)
+    V = similar(W)
+    R = similar(W)
     C = similar(X, q, nlv)
     TT = similar(X, nlv)
     t   = similar(X, n)
-    dt  = similar(X, n)   
+    dt  = similar(t)   
     v  = similar(X, p)
-    w   = similar(X, p)
-    r   = similar(X, p)
+    w   = similar(v)
+    r   = similar(v)
     c   = similar(X, q)
     tmpXtY = similar(XtY) # = XtY_approx
     # End
@@ -170,22 +172,22 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWe
 end
 
 """ 
-    transf(object::Union{Plsr, Splsr}, X; nlv = nothing)
+    transf(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int} = nothing)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Union{Plsr, Splsr}, X; nlv = nothing)
+function transf(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int} = nothing)
     X = ensure_mat(X)
-    a = object.par.nlv
+    a = object.par.nlv  # integer
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     ## Could be fcscale! but would change X. If too heavy ==> Makes summary!
     fcscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
 end
 
 """
-    coef(object::Union{Plsr, Pcr, Splsr}; nlv = nothing)
+    coef(object::Union{Plsr, Pcr, Splsr}; nlv::Union{Nothing, Int} = nothing)
 Compute the b-coefficients of a LV model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
@@ -193,10 +195,10 @@ Compute the b-coefficients of a LV model.
 For a model fitted from X (n, p) and Y (n, q), the returned object `B` is a matrix (p, q). If `nlv` = 0, `B` is a matrix 
 of zeros. The returned object `int` is the intercept.
 """ 
-function coef(object::Union{Plsr, Splsr}; nlv = nothing)
-    a = maximum(object.par.nlv)  # 'maximum' is required for plsravg
+function coef(object::Union{Plsr, Splsr}; nlv::Union{Nothing, Int} = nothing)
+    a = object.par.nlv  # integer
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
-    theta = vcol(object.C, 1:nlv)'  # coeffs regression of Y on T
+    theta = vcol(object.C, 1:nlv)'  # regression coefs of Y on T
     Dy = Diagonal(object.yscales)
     ## To not use for Spcr (R not computed; while for Pcr, R = V)
     B = fweightr(vcol(object.R, 1:nlv), 1 ./ object.xscales) * theta * Dy
@@ -206,18 +208,25 @@ function coef(object::Union{Plsr, Splsr}; nlv = nothing)
 end
 
 """
-    predict(object::Union{Plsr, Pcr, Splsr}, X; nlv = nothing)
+    predict(object::Union{Plsr, Pcr, Splsr}, X; nlv::Union{Nothing, Int, Vector{Int}, UnitRange} = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{Plsr, Splsr}, X; nlv = nothing)
+function predict(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int, Vector{Int}, UnitRange} = nothing)
     X = ensure_mat(X)
-    a = maximum(object.par.nlv)  # 'maximum' is required for plsravg
-    isnothing(nlv) ? nlv = a : nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    Q = eltype(X)
+    a = object.par.nlv  # integer
+    if isnothing(nlv)
+        nlv = a
+    elseif isa(nlv, Int)
+        nlv = min(nlv, a)
+    else
+        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    end
     le_nlv = length(nlv)
-    pred = list(Matrix{eltype(X)}, le_nlv)
+    pred = list(Matrix{Q}, le_nlv)
     @inbounds for i in eachindex(nlv)
         coefs = coef(object; nlv = nlv[i])
         pred[i] = coefs.int .+ X * coefs.B  # try muladd(X, coefs.B, coefs.int)
@@ -243,6 +252,6 @@ function Base.summary(object::Union{Plsr, Splsr}, X)
     xvar = tt_adj / n    
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)     
+    explvarx = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)     
     (explvarx = explvarx,)
 end

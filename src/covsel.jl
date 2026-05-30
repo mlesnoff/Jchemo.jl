@@ -162,8 +162,8 @@ function Base.summary(object::Covsel)
     cumpvary = 1 .- object.yss / ysstot
     pvarx = cumpvarx - [0; cumpvarx[1:(nlv - 1)]]
     pvary = cumpvary - [0; cumpvary[1:(nlv - 1)]]
-    explvarx = DataFrame(nlv = 1:nlv, sel = object.sel, pvar = pvarx, cumpvar = cumpvarx)
-    explvary = DataFrame(nlv = 1:nlv, sel = object.sel, pvar = pvary, cumpvar = cumpvary)
+    explvarx = DataFrame(nlv = collect(1:nlv), sel = object.sel, pvar = pvarx, cumpvar = cumpvarx)
+    explvary = DataFrame(nlv = collect(1:nlv), sel = object.sel, pvar = pvary, cumpvar = cumpvary)
     (explvarx = explvarx, explvary)
 end
 

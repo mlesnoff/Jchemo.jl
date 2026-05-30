@@ -243,6 +243,6 @@ function Base.summary(object::Union{Plsr, Splsr}, X)
     xvar = tt_adj / n    
     pvar = tt_adj / sstot
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)     
+    explvarx = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)     
     (explvarx = explvarx,)
 end

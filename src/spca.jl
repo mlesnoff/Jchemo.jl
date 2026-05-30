@@ -166,13 +166,13 @@ function spca!(X::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
-    transf(object::Spca, X; nlv = nothing)
+    transf(object::Spca, X; nlv::Union{Nothing, Int} = nothing)
     Compute principal components (PCs = scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
 * `nlv` : Nb. PCs to compute.
 """ 
-function transf(object::Spca, X; nlv = nothing)
+function transf(object::Spca, X; nlv::Union{Nothing, Int} = nothing)
     X = ensure_mat(X)
     m = nro(X)
     a = object.par.nlv
@@ -222,7 +222,7 @@ function Base.summary(object::Spca, X)
         end
         cumpvar = ss / sstot
         pvar = [cumpvar[1]; diff(cumpvar)]
-        explvarx = DataFrame(nlv = 1:nlv, pvar = pvar, cumpvar = cumpvar)
+        explvarx = DataFrame(nlv = collect(1:nlv), pvar = pvar, cumpvar = cumpvar)
     elseif defl == :t
         ## Proportion of variance of X explained by each column of T 
         A = X' * fweightr(object.T, weights.values)
@@ -232,7 +232,7 @@ function Base.summary(object::Spca, X)
         pvar = ss / sstot 
         cumpvar = cumsum(pvar)
         zrd = vec(rd(X, object.T, weights))
-        explvarx = DataFrame(nlv = 1:nlv, rd = zrd, pvar = pvar, cumpvar = cumpvar)
+        explvarx = DataFrame(nlv = collect(1:nlv), rd = zrd, pvar = pvar, cumpvar = cumpvar)
     end
     nam = string.("lv", 1:nlv)
     contr_ind = DataFrame(fscale(TT, tt), nam)

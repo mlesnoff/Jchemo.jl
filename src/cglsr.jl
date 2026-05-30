@@ -160,7 +160,7 @@ end
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 """ 
-function coef(object::Cglsr; nlv = nothing)
+function coef(object::Cglsr; nlv::Union{Nothing, Int} = nothing)
     a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     W = Diagonal(object.yscales)    
@@ -170,13 +170,13 @@ function coef(object::Cglsr; nlv = nothing)
 end
 
 """
-    predict(object::Cglsr, X; nlv = nothing)
+    predict(object::Cglsr, X; nlv::Union{Nothing, Int} = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. iterations, or collection of nb. iterations, to consider. 
 """ 
-function predict(object::Cglsr, X; nlv = nothing)
+function predict(object::Cglsr, X; nlv::Union{Nothing, Int} = nothing)
     X = ensure_mat(X)
     a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(minimum(nlv), a):min(maximum(nlv), a)

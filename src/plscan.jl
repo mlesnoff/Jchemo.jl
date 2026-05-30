@@ -175,14 +175,14 @@ function plscan!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
-    transfbl(object::Plscan, X, Y; nlv = nothing)
+    transfbl(object::Plscan, X, Y; nlv::Union{Nothing, Int} = nothing)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
 * `Y` : Y-data for which components (LVs) are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transfbl(object::Plscan, X, Y; nlv = nothing)
+function transfbl(object::Plscan, X, Y; nlv::Union{Nothing, Int} = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = object.par.nlv
@@ -216,14 +216,14 @@ function Base.summary(object::Plscan, X, Y)
     pvar = tt_adj / ss
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Block Y
     ss = frob2(Y, object.weights)
     tt_adj = (colnorm(object.Vy).^2) .* tty  
     pvar = tt_adj / ss
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvary = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    explvary = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Correlation between X- and Y-block LVs
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cortx2ty = DataFrame(lv = 1:nlv, cor = z)

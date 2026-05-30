@@ -154,14 +154,14 @@ function rasvd!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
-    transfbl(object::Rasvd, X, Y; nlv = nothing)
+    transfbl(object::Rasvd, X, Y; nlv::Union{Nothing, Int} = nothing)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
 * `Y` : Y-data for which components (LVs) are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transfbl(object::Rasvd, X, Y; nlv = nothing)
+function transfbl(object::Rasvd, X, Y; nlv::Union{Nothing, Int} = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = object.par.nlv
@@ -199,7 +199,7 @@ function Base.summary(object::Rasvd, X, Y)
     pvar =  tt / ss
     cumpvar = cumsum(pvar)
     xvar = tt / n
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## To do: explvary 
     ## Block Y
     #T .= object.Ty
@@ -207,7 +207,7 @@ function Base.summary(object::Rasvd, X, Y)
     #tt = diag(DT' * Y * Y' * DT) ./ diag(T' * DT)
     #pvar =  tt / ss
     #cumpvar = cumsum(pvar)
-    #explvary = DataFrame(nlv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
+    #explvary = DataFrame(nlv = collect(1:nlv), var = tt, pvar = pvar, cumpvar = cumpvar)
     explvary = nothing 
     ## Correlation between X- and Y-block LVs
     z = diag(corm(object.Tx, object.Ty, object.weights))

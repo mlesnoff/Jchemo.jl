@@ -219,8 +219,8 @@ Base.@kwdef mutable struct ParPcr
     scal::Bool = false                   
 end
 
-Base.@kwdef mutable struct ParPlsr    # {plskern, ..., plsravg} except plswold
-    nlv::Union{Int, Vector{Int}, UnitRange} = 1                    
+Base.@kwdef mutable struct ParPlsr    # except plswold
+    nlv::Int = 1                    
     scal::Bool = false 
 end 
 
@@ -228,6 +228,23 @@ Base.@kwdef mutable struct ParPlswold
     nlv::Int = 1     
     tol::Float64 = sqrt(eps(1.)) 
     maxit::Int = 200  
+    scal::Bool = false 
+end 
+
+Base.@kwdef mutable struct ParPlsravgunif
+    nlv::Union{UnitRange, Vector{Int}} = 1:1                    
+    scal::Bool = false 
+end 
+
+Base.@kwdef mutable struct ParPlsravg
+    algo::Symbol = :unif                   
+    nlv::Union{UnitRange, Vector{Int}} = 1:1                    
+    scal::Bool = false 
+end 
+
+Base.@kwdef mutable struct ParPlsrout
+    nlv::Int = 1 
+    prm::Float64 = .3         
     scal::Bool = false 
 end 
 
@@ -244,12 +261,6 @@ Base.@kwdef mutable struct ParRrr
     tol::Float64 = sqrt(eps(1.))   
     maxit::Int = 200     
     scal::Bool = false                   
-end 
-
-Base.@kwdef mutable struct ParPlsrout
-    nlv::Int = 1 
-    prm::Float64 = .3         
-    scal::Bool = false 
 end 
 
 Base.@kwdef mutable struct ParSpcr  # same ParSpca

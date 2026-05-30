@@ -152,7 +152,7 @@ function Base.summary(object::Fda)
     eig = object.eig[1:nlv]
     pvar =  eig ./ sum(object.eig)
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(nlv = 1:nlv, var = eig, pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(nlv = collect(1:nlv), var = eig, pvar = pvar, cumpvar = cumpvar)
     (explvarx = explvarx,)    
 end
 

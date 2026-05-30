@@ -216,7 +216,7 @@ function Base.summary(object::Mbplsr, Xbl)
     pvar = tt_adj / sum(ssk)
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
-    explvarx = DataFrame(nlv = 1:nlv, var = xvar, pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## RV between each Xk and the global LVs
     nam = string.("lv", 1:nlv)
     z = zeros(Q, nbl, nlv)

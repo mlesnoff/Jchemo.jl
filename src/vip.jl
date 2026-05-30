@@ -1,6 +1,6 @@
 """
-    vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}; nlv = nothing)
-    vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y; nlv = nothing)
+    vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}; nlv::Union{Nothing, Int} = nothing)
+    vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y; nlv::Union{Nothing, Int} = nothing)
 Variable importance on Projections (VIP).
 * `object` : The fitted model.
 * `Y` : The Y-data that was used to fit the model.
@@ -67,7 +67,7 @@ vip(fitm).imp
 vip(fitm, Ydummy).imp
 ```
 """ 
-function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}; nlv = nothing)
+function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}; nlv::Union{Nothing, Int} = nothing)
     if isa(object, Plsr)  || isa(object, Splsr)
         W = object.W
         T = object.T
@@ -100,7 +100,7 @@ function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}; nlv = nothing)
     (imp = imp, W2, sst)
 end
 
-function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y; nlv = nothing)
+function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y; nlv::Union{Nothing, Int} = nothing)
     if isa(object, Plsr)
         W = object.W
         T = object.T

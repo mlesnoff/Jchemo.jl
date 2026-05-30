@@ -99,13 +99,13 @@ function kpca(X, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
-    transf(object::Kpca, X; nlv = nothing)
+    transf(object::Kpca, X; nlv::Union{Nothing, Int} = nothing)
 Compute PCs (scores T) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
 * `nlv` : Nb. PCs to compute.
 """ 
-function transf(object::Kpca, X; nlv = nothing)
+function transf(object::Kpca, X; nlv::Union{Nothing, Int} = nothing)
     a = object.par.nlv
     isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))

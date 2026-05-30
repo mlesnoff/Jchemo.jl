@@ -10,28 +10,28 @@ function plsravg_unif(X, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function plsravg_unif!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParPlsr, kwargs).par
+    par = recovkw(ParPlsravgunif, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
     nlv = min(minimum(par.nlv), n, p):min(maximum(par.nlv), n, p)
-    fitm = plskern!(X, Y, weights; kwargs...)
-    PlsravgUnif(fitm, nlv)
+    fitm = plskern!(X, Y, weights; nlv = maximum(nlv), scal = par.scal)
+    Plsravgunif(fitm, nlv, par)
 end
 
-function predict(object::PlsravgUnif, X)
+function predict(object::Plsravgunif, X)
     nlv = object.nlv
     le_nlv = length(nlv)
-    zpred = predict(object.fitm, X; nlv).pred
+    predlv = predict(object.fitm, X; nlv).pred
     if(le_nlv == 1)
-        pred = zpred
+        pred = predlv
     else
-        acc = copy(zpred[1])
+        acc = copy(predlv[1])
         @inbounds for i = 2:le_nlv
-            acc .+= zpred[i]
+            acc .+= predlv[i]
         end
         pred = acc / le_nlv
     end
-    (pred = pred, predlv = zpred)
+    (pred = pred, predlv)
 end
 
 

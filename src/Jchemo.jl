@@ -117,10 +117,10 @@ include("plsnipals.jl")
 include("plswold.jl") 
 include("plsrosa.jl")
 include("plssimp.jl")
-include("cglsr.jl")
 include("plsrout.jl")
 include("plsravg.jl")
 include("plsravg_unif.jl")
+include("cglsr.jl")
 include("krr.jl")
 include("kplsr.jl")
 include("dkplsr.jl")
@@ -408,12 +408,12 @@ export
     plsrosa, plsrosa!, 
     plssimp, plssimp!,
     plswold, plswold!,
+    plsravg, plsravg!,
     cglsr, cglsr!,
     plsrout, plsrout!,
     rrr, rrr!,   
     krr, krr!, kplsr, kplsr!, 
     dkplsr, dkplsr!,
-    plsravg, plsravg!,
     dfplsr_cg, aicplsr,
     svmr,
     treer, rfr, 
