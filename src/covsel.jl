@@ -135,13 +135,13 @@ function covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWei
 end
 
 """ 
-    transf(object::Covsel, X; nlv = nothing)
+    transf(object::Covsel, X; nlv::Union{Nothing, Int} = nothing)
 Compute selected variables from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which the selected variables are computed.
 * `nlv` : Nb. variables to compute.
 """ 
-function transf(object::Covsel, X; nlv = nothing)
+function transf(object::Covsel, X; nlv::Union{Nothing, Int} = nothing)
     a = length(object.sel)
     nlv = isnothing(nlv) ? a : min(nlv, a)
     X[:, object.sel[1:nlv]]

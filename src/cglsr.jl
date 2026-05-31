@@ -170,16 +170,22 @@ function coef(object::Cglsr; nlv::Union{Nothing, Int} = nothing)
 end
 
 """
-    predict(object::Cglsr, X; nlv::Union{Nothing, Int} = nothing)
+    predict(object::Cglsr, X; nlv::Union{Nothing, Int, UnitRange} = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. iterations, or collection of nb. iterations, to consider. 
 """ 
-function predict(object::Cglsr, X; nlv::Union{Nothing, Int} = nothing)
+function predict(object::Cglsr, X; nlv::Union{Nothing, Int, UnitRange} = nothing)
     X = ensure_mat(X)
     a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(minimum(nlv), a):min(maximum(nlv), a)
+    if isnothing(nlv)
+        nlv = a
+    elseif isa(nlv, Int)
+        nlv = min(nlv, a)
+    else
+        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    end
     le_nlv = length(nlv)
     pred = list(Matrix{eltype(X)}, le_nlv)
     @inbounds for i in eachindex(nlv)

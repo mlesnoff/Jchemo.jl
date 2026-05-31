@@ -122,39 +122,45 @@ function dkplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWei
 end
 
 """ 
-    transf(object::Dkplsr, X; nlv = nothing)
+    transf(object::Dkplsr, X; nlv::Union{Nothing, Int} = nothing)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Dkplsr, X; nlv = nothing)
+function transf(object::Dkplsr, X; nlv::Union{Nothing, Int} = nothing)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; values(object.kwargs)...)
     transf(object.fitm, K; nlv)
 end
 
 """
-    coef(object::Dkplsr; nlv = nothing)
+    coef(object::Dkplsr; nlv::Union{Nothing, Int})
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function coef(object::Dkplsr; nlv = nothing)
+function coef(object::Dkplsr; nlv::Union{Nothing, Int})
     coef(object.fitm; nlv)
 end
 
 """
-    predict(object::Dkplsr, X; nlv = nothing)
+    predict(object::Dkplsr, X; nlv::Union{Nothing, Int, UnitRange} = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
    
 """ 
-function predict(object::Dkplsr, X; nlv = nothing)
+function predict(object::Dkplsr, X; nlv::Union{Nothing, Int, UnitRange} = nothing)
     a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(a, minimum(nlv)):min(a, maximum(nlv))
+    if isnothing(nlv)
+        nlv = a
+    elseif isa(nlv, Int)
+        nlv = min(nlv, a)
+    else
+        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    end
     le_nlv = length(nlv)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)

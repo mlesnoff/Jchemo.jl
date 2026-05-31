@@ -110,13 +110,13 @@ function plsrda(X, y, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
-    transf(object::Plsrda, X; nlv = nothing)
+    transf(object::Plsrda, X; nlv::Union{Nothing, Int} = nothing)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Plsrda, X; nlv = nothing)
+function transf(object::Plsrda, X; nlv::Union{Nothing, Int} = nothing)
     transf(object.fitm, X; nlv)
 end
 

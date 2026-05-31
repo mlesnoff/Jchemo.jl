@@ -100,7 +100,7 @@ Base.@kwdef mutable struct ParProtoplsr
     k::Int = 1 
     centroid::Bool = false
     typsamp::Symbol = :rand
-    nlv::Union{Int, Vector{Int}, UnitRange} = 1  
+    nlv::Union{Int, UnitRange} = 1  
     K::Int = 5    
     kavg::Int = 1                              
     h::Float64 = Inf                        

@@ -91,18 +91,18 @@ function pcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
-    transf(object::Union{Pcr, Spcr}, X; nlv = nothing)
+    transf(object::Union{Pcr, Spcr}, X; nlv::Union{Nothing, Int} = nothing)
 Compute latent variables (LVs; = scores) from a fitted model and a matrix X.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Union{Pcr, Spcr}, X; nlv = nothing)
+function transf(object::Union{Pcr, Spcr}, X; nlv::Union{Nothing, Int} = nothing)
     transf(object.fitm, X; nlv)
 end
 
 """
-    coef(object::Pcr; nlv = nothing)
+    coef(object::Pcr; nlv::Union{Nothing, Int} = nothing)
 Compute the b-coefficients of a LV model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
@@ -110,7 +110,7 @@ Compute the b-coefficients of a LV model.
 For a model fitted from X (n, p) and Y (n, q), the returned object `B` is a matrix (p, q). If `nlv` = 0, `B` is a matrix 
 of zeros. The returned object `int` is the intercept.
 """ 
-function coef(object::Pcr; nlv = nothing)
+function coef(object::Pcr; nlv::Union{Nothing, Int} = nothing)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     theta = vcol(object.C, 1:nlv)'
@@ -124,16 +124,22 @@ function coef(object::Pcr; nlv = nothing)
 end
 
 """
-    predict(object::Pcr, X; nlv = nothing)
+    predict(object::Pcr, X; nlv::Union{Nothing, Int, UnitRange} = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Pcr, X; nlv = nothing)
+function predict(object::Pcr, X; nlv::Union{Nothing, Int, UnitRange} = nothing)
     X = ensure_mat(X)
     a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(a, minimum(nlv)):min(a, maximum(nlv))
+    if isnothing(nlv)
+        nlv = a
+    elseif isa(nlv, Int)
+        nlv = min(nlv, a)
+    else
+        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    end
     le_nlv = length(nlv)
     pred = list(Matrix{eltype(X)}, le_nlv)
     @inbounds for i in eachindex(nlv)

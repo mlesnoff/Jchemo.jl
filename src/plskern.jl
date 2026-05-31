@@ -123,18 +123,18 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWe
     ## D = Diagonal(weights.values)
     ## XtY = X' * (D * Y)    # Xd = D * X   Very costly!!
     ## Pre-allocation
-    T = similar(X, n, nlv)
-    W = similar(X, p, nlv)
-    V = similar(W)
-    R = similar(W)
-    C = similar(X, q, nlv)
+    T  = similar(X, n, nlv)
+    W  = similar(X, p, nlv)
+    V  = similar(W)
+    R  = similar(W)
+    C  = similar(X, q, nlv)
     TT = similar(X, nlv)
-    t   = similar(X, n)
-    dt  = similar(t)   
+    t  = similar(X, n)
+    dt = similar(t)   
     v  = similar(X, p)
-    w   = similar(v)
-    r   = similar(v)
-    c   = similar(X, q)
+    w  = similar(v)
+    r  = similar(v)
+    c  = similar(X, q)
     tmpXtY = similar(XtY) # = XtY_approx
     # End
     @inbounds for a = 1:nlv
@@ -204,13 +204,13 @@ function coef(object::Union{Plsr, Splsr}; nlv::Union{Nothing, Int} = nothing)
 end
 
 """
-    predict(object::Union{Plsr, Pcr, Splsr}, X; nlv::Union{Nothing, Int, Vector{Int}, UnitRange} = nothing)
+    predict(object::Union{Plsr, Pcr, Splsr}, X; nlv::Union{Nothing, Int, UnitRange} = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int, Vector{Int}, UnitRange} = nothing)
+function predict(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int, UnitRange} = nothing)
     X = ensure_mat(X)
     Q = eltype(X)
     a = nco(object.T)

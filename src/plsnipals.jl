@@ -59,16 +59,16 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...
     end
     ## Pre-allocation
     XtY = similar(X, p, q)
-    T = similar(X, n, nlv)
-    W = similar(X, p, nlv)
-    V = copy(W)
-    C = similar(X, q, nlv)
+    T  = similar(X, n, nlv)
+    W  = similar(X, p, nlv)
+    V  = similar(W)
+    C  = similar(X, q, nlv)
     TT = similar(X, nlv)
-    t   = similar(X, n)
-    dt  = similar(X, n)   
-    w = similar(X, p)
-    v  = copy(w)
-    c   = similar(X, q)
+    t  = similar(X, n)
+    dt = similar(t)   
+    w  = similar(X, p)
+    v  = similar(w)
+    c  = similar(X, q)
     ## End
     @inbounds for a = 1:nlv
         XtY .= X' * fweightr(Y, weights.values)

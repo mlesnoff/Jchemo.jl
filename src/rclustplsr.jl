@@ -87,7 +87,7 @@ Base.@kwdef mutable struct ParRclustplsr
     nlvdis::Int = 0                          
     metric::Symbol = :eucl  
     nproto::Int = 1
-    nlv::Union{Int, Vector{Int}, UnitRange} = 1
+    nlv::Union{Int, UnitRange} = 1
     K::Int = 5   
     kavg::Int = 1                              
     h::Float64 = Inf                        

@@ -114,18 +114,18 @@ function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeig
     vtot = sum(DKt, dims = 1)
     Kc = K .- vtot' .- vtot .+ sum(fweightr(DKt', weights.values)) 
     ## Pre-allocation
-    K = copy(Kc)
+    K = similar(Kc)
     T = similar(X, n, nlv)
-    U = copy(T)
+    U = similar(T)
     C = similar(X, q, nlv)
     I = Diagonal(ones(Q, n))
     iter = Int.(zeros(nlv))
     # temporary results
     t  = similar(X, n)
-    dt = similar(X, n)
+    dt = similar(t)
     c  = similar(X, q)
     u  = similar(X, n)
-    zu = similar(X, n)
+    zu = similar(u)
     # End
     for a in 1:nlv
         if q == 1      
@@ -165,13 +165,13 @@ function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeig
 end
 
 """ 
-    transf(object::Kplsr, X; nlv = nothing)
+    transf(object::Kplsr, X; nlv::Union{Nothing, Int} = nothing)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Kplsr, X; nlv = nothing)
+function transf(object::Kplsr, X; nlv::Union{Nothing, Int} = nothing)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
@@ -183,13 +183,13 @@ function transf(object::Kplsr, X; nlv = nothing)
 end
 
 """
-    coef(object::Kplsr; nlv = nothing)
+    coef(object::Kplsr; nlv::Union{Nothing, Int} = nothing)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
    
 """ 
-function coef(object::Kplsr; nlv = nothing)
+function coef(object::Kplsr; nlv::Union{Nothing, Int} = nothing)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     beta = object.C[:, 1:nlv]'
@@ -199,17 +199,23 @@ function coef(object::Kplsr; nlv = nothing)
 end
 
 """
-    predict(object::Kplsr, X; nlv = nothing)
+    predict(object::Kplsr, X; nlv::Union{Nothing, Int, UnitRange} = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 If nothing, it is the maximum nb. LVs.
 """ 
-function predict(object::Kplsr, X; nlv = nothing)
+function predict(object::Kplsr, X; nlv::Union{Nothing, Int, UnitRange} = nothing)
     X = ensure_mat(X)
     a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(minimum(nlv), a):min(maximum(nlv), a)
+    if isnothing(nlv)
+        nlv = a
+    elseif isa(nlv, Int)
+        nlv = min(nlv, a)
+    else
+        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    end
     le_nlv = length(nlv)
     T = transf(object, X)
     pred = list(Matrix{eltype(X)}, le_nlv)

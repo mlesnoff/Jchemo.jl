@@ -75,8 +75,7 @@ function plsrout!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     n, p = size(X)
     nlvout = 30
     V = rand(0:1, p, nlvout)
-    d = similar(X, n)
-    d .= outstah(X, V; scal = par.scal).d
+    d = outstah(X, V; scal = par.scal).d
     w = wtal(d; a = quantile(d, 1 - par.prm))
     d .= outeucl(X; scal = par.scal).d
     w .*= wtal(d; a = quantile(d, 1 - par.prm))
