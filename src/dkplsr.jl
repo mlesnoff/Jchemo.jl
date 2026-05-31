@@ -104,7 +104,7 @@ function dkplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWei
     par = recovkw(ParKplsr, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     Q = eltype(X)
-    isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
+    Y = handle_bitmatrix(Q, Y)  # for DA functions
     p = nco(X)
     q = nco(Y)
     xscales = ones(Q, p)
@@ -154,7 +154,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Dkplsr, X; nlv = nothing)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = (min(a, minimum(nlv)):min(a, maximum(nlv)))
+    nlv = isnothing(nlv) ? a : min(a, minimum(nlv)):min(a, maximum(nlv))
     le_nlv = length(nlv)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)

@@ -125,7 +125,7 @@ function spca!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     end
     ## End 
     nvar = par.nvar
-    length(nvar) == 1 ? nvar = repeat([nvar], nlv) : nothing
+    if length(nvar) == 1 ; nvar = repeat([nvar], nlv) ; end
     xmeans = colmean(X, weights) 
     xscales = ones(Q, p)
     if par.scal 
@@ -176,7 +176,7 @@ function transf(object::Spca, X; nlv::Union{Nothing, Int} = nothing)
     X = ensure_mat(X)
     m = nro(X)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     zX = fcscale(X, object.xmeans, object.xscales)
     T = similar(X, m, nlv)
     defl = object.par.defl

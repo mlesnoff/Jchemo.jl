@@ -84,9 +84,7 @@ end
 function covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParCovsel, kwargs).par
     Q = eltype(X)
-    ## Specific for Da functions
-    isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
-    ## End 
+    Y = handle_bitmatrix(Q, Y)  # for DA functions
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)  
@@ -145,7 +143,7 @@ Compute selected variables from a fitted model and X-data.
 """ 
 function transf(object::Covsel, X; nlv = nothing)
     a = length(object.sel)
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     X[:, object.sel[1:nlv]]
 end
 

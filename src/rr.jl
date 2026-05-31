@@ -85,7 +85,7 @@ end
 function rr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParRr, kwargs).par
     Q = eltype(X)
-    isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
+    Y = handle_bitmatrix(Q, Y)  # for DA functions
     p = nco(X)
     sqrtw = sqrt.(weights.values)
     xmeans = colmean(X, weights) 
@@ -113,8 +113,9 @@ Compute the b-coefficients of a fitted model.
 * `lb` : Ridge regularization parameter 'lambda'.
 """ 
 function coef(object::Rr; lb = nothing)
-    isnothing(lb) ? lb = object.par.lb : nothing
-    lb = convert(eltype(object.sv), lb)
+    Q = eltype(object.sv)
+    if isnothing(lb) ; lb = object.par.lb ; end
+    lb = convert(Q, lb)
     eig = object.sv.^2
     z = 1 ./ (eig .+ lb^2)
     beta = Diagonal(z) * object.TtY
@@ -134,13 +135,13 @@ Compute Y-predictions from a fitted model.
 function predict(object::Rr, X; lb = nothing)
     X = ensure_mat(X)
     Q = eltype(X)
-    isnothing(lb) ? lb = object.par.lb : nothing
+    if isnothing(lb) ; lb = object.par.lb ; end
     le_lb = length(lb)
     pred = list(Matrix{Q}, le_lb)
     @inbounds for i = 1:le_lb
         z = coef(object; lb = lb[i])
         pred[i] = z.int .+ X * z.B
     end 
-    le_lb == 1 ? pred = pred[1] : nothing
+    if le_lb == 1 ; pred = pred[1] ; end
     (pred = pred,)
 end

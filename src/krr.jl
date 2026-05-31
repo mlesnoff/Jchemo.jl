@@ -117,7 +117,7 @@ function krr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeight
     par = recovkw(ParKrr, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     Q = eltype(X)
-    isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
+    Y = handle_bitmatrix(Q, Y)  # for DA functions
     p = nco(X)
     xscales = ones(Q, p)
     if par.scal 
@@ -149,8 +149,9 @@ Compute the b-coefficients of a fitted model.
 * `lb` : Ridge regularization parameter 'lambda'.
 """ 
 function coef(object::Krr; lb = nothing)
-    isnothing(lb) ? lb = object.par.lb : nothing
-    lb = convert(eltype(object.X), lb)
+    Q = eltype(object.X)
+    if isnothing(lb) ; lb = object.par.lb ; end
+    lb = convert(Q, lb)
     eig = object.sv.^2
     z = 1 ./ (eig .+ lb^2)
     A = object.U * (Diagonal(z) * object.UtDY)
@@ -169,7 +170,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Krr, X; lb = nothing)
     X = ensure_mat(X)
-    isnothing(lb) ? lb = object.par.lb : nothing
+    if isnothing(lb) ; lb = object.par.lb ; end
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     DKt = fweightr(K', object.weights.values)
@@ -182,6 +183,6 @@ function predict(object::Krr, X; lb = nothing)
         z = coef(object; lb = lb[i])
         pred[i] = z.int .+ Kc * (fweightr(z.A, sqrt.(w)))
     end 
-    le_lb == 1 ? pred = pred[1] : nothing
+    if le_lb == 1 ; pred = pred[1] ; end
     (pred = pred,)
 end

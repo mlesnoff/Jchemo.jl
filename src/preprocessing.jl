@@ -875,11 +875,11 @@ function transf!(object::Snv, X::Matrix)
     n, p = size(X)
     centr = object.par.centr 
     scal = object.par.scal
-    centr ? mu = rowmean(X) : mu = zeros(Q, n)
-    scal ? s = rowstd(X) : s = ones(Q, n)
+    mu = centr ? rowmean(X) : zeros(Q, n)
+    sigma = scal ? rowstd(X) : ones(Q, n)
     # Not faster: @Threads.threads
     @inbounds for j = 1:p
-        X[:, j] .= (vcol(X, j) .- mu) ./ s
+        X[:, j] .= (vcol(X, j) .- mu) ./ sigma
     end
 end
 

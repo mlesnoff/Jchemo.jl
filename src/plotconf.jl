@@ -33,8 +33,8 @@ function plotconf(object; size = (500, 400), cnt = true, ptext = true,
     Colorbar(f[:, end + 1], hm; label = namval)
     if ptext
         for i = 1:nlev, j = 1:nlev
-            cnt ? val = A[i, j] : val = round(A[i, j]; digits = 1)
-            i == j ? col = coldiag : col = :white
+            val = cnt ? A[i, j] : round(A[i, j]; digits = 1)
+            col = i == j ? coldiag : :white
             text!(ax, string(val); position = (j, nlev - i + 1), align = (:center, :center), 
                 fontsize = fontsize, color = col)
         end

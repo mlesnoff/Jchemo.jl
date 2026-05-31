@@ -44,7 +44,7 @@ function getknn(Xtrain, X; metric = :eucl, k = 1)
     Xtrain = ensure_mat(Xtrain)
     X = ensure_mat(X)
     n, p = size(Xtrain)
-    k > n ? k = n : nothing
+    if k > n ; k = n ; end
     if metric == :eucl
         tree = NearestNeighbors.BruteTree(Xtrain', Distances.Euclidean())
     ## Below for mah:, since tree = BruteTree(Xtrain', Mahalanobis(Sinv)) is very slow

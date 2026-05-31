@@ -84,7 +84,7 @@ function transf!(object::Detrendairpls, X::Matrix)
     lb = object.par.lb
     maxit = object.par.maxit
     verbose = object.par.verbose 
-    verbose ? println("Nb. iterations:") : nothing
+    if verbose ; println("Nb. iterations:") ; end
     @inbounds for i = 1:n
         iter = 1
         cont = true
@@ -101,7 +101,7 @@ function transf!(object::Detrendairpls, X::Matrix)
                 cont = false
             end
         end
-        verbose ? print(iter - 1, " ") : nothing
+        if verbose ; print(iter - 1, " ") ; end
         X[i, :] .= x .- z
     end
 end

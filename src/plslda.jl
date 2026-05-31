@@ -140,7 +140,7 @@ function predict(object::Plsprobda, X; nlv = nothing)
     Qy = eltype(object.lev)
     m = nro(X)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = (max(minimum(nlv), 1):min(maximum(nlv), a))
+    nlv = isnothing(nlv) ? a : max(minimum(nlv), 1):min(maximum(nlv), a)
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)

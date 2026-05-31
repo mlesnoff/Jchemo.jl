@@ -137,14 +137,14 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs.
     Tx = similar(Xbl[1], n, nlv)
     Wx = similar(Xbl[1], sum(p), nlv)
     Wytild = similar(Xbl[1], q, nlv)
-    Vx = copy(Wx)
+    Vx = similar(Wx)
     tk  = similar(Xbl[1], n)
-    tx = copy(tk)
-    ty  = copy(tk)
+    tx = similar(tk)
+    ty  = similar(tk)
     wx = similar(Xbl[1], sum(p))
-    vx = copy(wx)
+    vx = similar(wx)
     wy  = similar(Xbl[1], q)
-    wytild = copy(wy)
+    wytild = similar(wy)
     TTx = similar(Xbl[1], nlv)
     niter = zeros(nlv)
     # End
@@ -213,7 +213,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 """ 
 function transf(object::Mbplswest, Xbl; nlv = nothing)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     zXbl = transf(object.fitm_bl, Xbl)    
     fconcat(zXbl) * vcol(object.R, 1:nlv) 
 end
@@ -228,7 +228,7 @@ Compute Y-predictions from a fitted model.
 function predict(object::Mbplswest, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = (min(a, minimum(nlv)):min(a, maximum(nlv)))
+    nlv = isnothing(nlv) ? a : min(a, minimum(nlv)):min(a, maximum(nlv))
     le_nlv = length(nlv)
     T = transf(object, Xbl)
     pred = list(Matrix{Q}, le_nlv)
@@ -239,7 +239,7 @@ function predict(object::Mbplswest, Xbl; nlv = nothing)
         int = object.ymeans'
         pred[i] = int .+ vcol(T, 1:znlv) * beta * W 
     end 
-    le_nlv == 1 ? pred = pred[1] : nothing
+    if le_nlv == 1 ; pred = pred[1] ; end
     (pred = pred,)
 end
 

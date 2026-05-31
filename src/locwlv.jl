@@ -25,9 +25,9 @@ function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv, store = f
     fitm = list(m)
     #@inbounds for i = 1:m
     Threads.@threads for i = 1:m
-        verbose ? print(i, " ") : nothing
+        if verbose ; print(i, " ") ; end
         s = listnn[i]
-        length(s) == 1 ? s = (s:s) : nothing
+        if length(s) == 1 ; s = s:s ; end
         zXtrain = vrow(Xtrain, s)
         zYtrain = Ytrain[s, :]   # vrow makes pb in aggsumv (e.g., lda) when Ytrain is a vector
         ## For discrimination,
@@ -48,12 +48,12 @@ function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv, store = f
             end
         end
     end 
-    verbose ? println() : nothing    
+    if verbose ; println() ; end    
     pred = list(Union{Matrix{Int}, Matrix, Matrix}, le_nlv)
     @inbounds for a = 1:le_nlv
         pred[a] = zpred[:, :, a]
     end
-    le_nlv == 1 ? pred = pred[1] : nothing
+    if le_nlv == 1 ; pred = pred[1] ; end
     if !store ; fitm = nothing ; end
     (pred = pred, fitm)
 end

@@ -137,7 +137,7 @@ end
 function mbplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParMbplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
-    isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
+    Y = handle_bitmatrix(Q, Y)  # for DA functions
     q = nco(Y)
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
@@ -163,7 +163,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 """ 
 function transf(object::Mbplsr, Xbl; nlv = nothing)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     zXbl = transf(object.fitm_bl, Xbl)    
     fconcat(zXbl) * vcol(object.fitm.R, 1:nlv) 
 end
@@ -178,7 +178,7 @@ Compute Y-predictions from a fitted model.
 function predict(object::Mbplsr, Xbl; nlv = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = (min(a, minimum(nlv)):min(a, maximum(nlv)))
+    nlv = isnothing(nlv) ? a : min(a, minimum(nlv)):min(a, maximum(nlv))
     le_nlv = length(nlv)
     T = transf(object, Xbl)
     pred = list(Matrix{Q}, le_nlv)
@@ -189,7 +189,7 @@ function predict(object::Mbplsr, Xbl; nlv = nothing)
         int = object.ymeans'
         pred[i] = int .+ vcol(T, 1:znlv) * beta * W 
     end 
-    le_nlv == 1 ? pred = pred[1] : nothing
+    if le_nlv == 1 ; pred = pred[1] ; end
     (pred = pred,)
 end
 

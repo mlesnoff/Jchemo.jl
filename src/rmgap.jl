@@ -56,7 +56,7 @@ Compute the preprocessed data from a model.
 """ 
 function transf(object::Rmgap, X)
     X = copy(ensure_mat(X))
-    nco(X) == 1 ? X = reshape(X, 1, :) : nothing
+    if nco(X) == 1 ; X = reshape(X, 1, :) ; end
     transf!(object, X)
     X
 end

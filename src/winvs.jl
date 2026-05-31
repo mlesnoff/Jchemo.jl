@@ -63,7 +63,7 @@ function winvs(d; h = 2, criw = 4, squared = false)
 end
 
 function winvs!(d; h = 2, criw = 4, squared = false)
-    squared ? d .= d.^2 : nothing
+    if squared ; d .= d.^2 ; end
     zmed =  Statistics.median(d)
     zmad = madv(d)
     cutoff = zmed + criw * zmad

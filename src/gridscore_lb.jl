@@ -13,10 +13,10 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, lb, ver
     lb = mlev(lb)
     le_lb = length(lb)
     if isnothing(pars)    # e.g.: case of RR
-        verbose ? println("-- Nb. combinations = 0.") : nothing
+        if verbose ; println("-- Nb. combinations = 0.") ; end
         fitm = algo(Xtrain, Ytrain, lb = maximum(lb))
         pred = predict(fitm, X; lb = lb).pred
-        le_lb == 1 ? pred = [pred] : nothing
+        if le_lb == 1 ; pred = [pred] ; end
         res = zeros(Q, le_lb, q)
         @inbounds for i in eachindex(lb) 
             res[i, :] = score(pred[i], Y)
@@ -24,19 +24,19 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, lb, ver
         dat = DataFrame(lb = lb)
     else
         ncomb = length(pars[1])  # nb. combinations in pars
-        verbose ? println("-- Nb. combinations = ", ncomb) : nothing
+        if verbose ; println("-- Nb. combinations = ", ncomb) ; end
         res = map(values(pars)...) do v...
-            verbose ? println(Pair.(keys(pars), v)...) : nothing
+            if verbose ; println(Pair.(keys(pars), v)...) ; end
             fitm = algo(Xtrain, Ytrain ; lb = maximum(lb), Pair.(keys(pars), v)...)
             pred = predict(fitm, X; lb = lb).pred
-            le_lb == 1 ? pred = [pred] : nothing
+            if le_lb == 1 ; pred = [pred] ; end
             zres = zeros(Q, le_lb, q)
             @inbounds for i in eachindex(lb)
                 zres[i, :] = score(pred[i], Y)
             end
             zres
         end 
-        ncomb == 1 ? res = res[1] : res = reduce(vcat, res) 
+        res = ncomb == 1 ? res[1] : reduce(vcat, res) 
         ## Make dat
         if le_lb == 1
             dat = DataFrame(pars)
@@ -52,7 +52,7 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, lb, ver
         dat = hcat(dat, DataFrame(lb = zlb))
         ## End
     end
-    verbose ? println("-- End.") : nothing
+    if verbose ; println("-- End.") ; end
     namy = map(string, repeat(["y"], q), 1:q)
     res = DataFrame(res, Symbol.(namy))
     hcat(dat, res)

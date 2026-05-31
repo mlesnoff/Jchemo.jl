@@ -74,7 +74,7 @@ function outknn!(X::Matrix; metric = :eucl, k, algo = sum, scal::Bool = false)
         xscales .= colstd(X)
         fscale!(X, xscales)
     end
-    k > n - 1 ? k = n - 1 : nothing
+    if k > n - 1 ; k = n - 1 ; end
     res = getknn(X, X; k = k + 1, metric)
     d = similar(X, n)
     @inbounds for i in eachindex(d)

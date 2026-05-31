@@ -94,7 +94,7 @@ end
 
 function xfit!(object, X::Matrix; nlv::Union{Nothing, Int} = nothing)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     if nlv == 0
         m = nro(X)
         @inbounds for i = 1:m

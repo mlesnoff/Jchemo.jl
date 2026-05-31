@@ -120,8 +120,9 @@ function ccawold!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
         fcenter!(X, xmeans)
         fcenter!(Y, ymeans)
     end
-    par.bscal == :none ? bscales = ones(Q, 2) : nothing
-    if par.bscal == :frob
+    if par.bscal == :none
+        bscales = ones(Q, 2)
+    elseif par.bscal == :frob
         normx = frob(X, weights)
         normy = frob(Y, weights)
         X ./= normx
@@ -235,7 +236,7 @@ function transfbl(object::Ccawold, X, Y; nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     Tx = X * vcol(object.Rx, 1:nlv)

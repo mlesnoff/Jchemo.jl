@@ -88,7 +88,7 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     q = nco(Y)   
     nbl = length(Xbl)
     nlv = par.nlv
-    length(nlv) == 1 ? nlv = repeat([nlv], nbl) : nothing  
+    if length(nlv) == 1 ; nlv = repeat([nlv], nbl) ; end 
     ## 'bscal = :none' since block-scaling has no effect on SOPLS  
     fitm_bl = blockscal(Xbl, weights; bscal = :none, centr = false, scal = par.scal)
     ## End

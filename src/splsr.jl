@@ -123,12 +123,12 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeig
     par = recovkw(ParSplsr, kwargs).par
     @assert in([:soft; :hard])(par.meth) "Wrong value for argument 'meth'."
     Q = eltype(X)
-    isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
+    Y = handle_bitmatrix(Q, Y)  # for DA functions
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     nvar = par.nvar
-    length(nvar) == 1 ? nvar = repeat([nvar], nlv) : nothing
+    if length(nvar) == 1 ; nvar = repeat([nvar], nlv) ; end
     if par.meth == :soft 
         fthresh = thresh_soft
     elseif par.meth == :hard 

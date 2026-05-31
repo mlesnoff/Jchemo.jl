@@ -19,7 +19,7 @@ end
 
 function xresid!(object, X::Matrix; nlv::Union{Nothing, Int} = nothing)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     X .-= xfit(object, X; nlv)
     X
 end

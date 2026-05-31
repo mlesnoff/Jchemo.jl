@@ -203,7 +203,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 """ 
 function transf(object::Rosaplsr, Xbl; nlv = nothing)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     zXbl = transf(object.fitm_bl, Xbl)
     fconcat(zXbl) * vcol(object.R, 1:nlv)
 end
@@ -216,7 +216,7 @@ Compute the X b-coefficients of a model fitted with `nlv` LVs.
 """ 
 function coef(object::Rosaplsr; nlv = nothing)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     xmeans = reduce(vcat, object.fitm_bl.xmeans)
     xscales = reduce(vcat, object.fitm_bl.xscales)
     theta = vcol(object.C, 1:nlv)'  # coefs regression of Y on T
@@ -235,7 +235,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Rosaplsr, Xbl; nlv = nothing)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    nlv = isnothing(nlv) ? a : min(minimum(nlv), a):min(maximum(nlv), a)
     le_nlv = length(nlv)
     Q = eltype(Xbl[1][1, 1])
     X = fconcat(Xbl)
@@ -244,7 +244,7 @@ function predict(object::Rosaplsr, Xbl; nlv = nothing)
         z = coef(object; nlv = nlv[i])
         pred[i] = z.int .+ X * z.B
     end 
-    le_nlv == 1 ? pred = pred[1] : nothing
+    if le_nlv == 1 ; pred = pred[1] ; end
     (pred = pred,)
 end
 

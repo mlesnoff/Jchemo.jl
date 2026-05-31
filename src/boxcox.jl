@@ -99,7 +99,11 @@ function boxcox_transf(x::Vector{T}, lb::T) where T <: AbstractFloat
     vx
 end
 function boxcox_transf!(x::Vector{T}, lb::T) where T <: AbstractFloat
-    lb == 0 ? x .= log.(x) : x .= (x.^lb .- 1) ./ lb
+    if lb == 0
+        @. x = log(x)
+    else
+        @. x = (x^lb - 1) / lb
+    end
 end
 
 

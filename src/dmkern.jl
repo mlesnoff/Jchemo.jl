@@ -133,11 +133,11 @@ function dmkern(X; kwargs...)
         h = a * n^(-1 / (p + 4)) * colstd(X)      # a = .9, 1.06
         H = diagm(h)
     else 
-        isa(h, Real) ? H = diagm(repeat([h], p)) : H = diagm(h)
+        H = isa(h, Real) ? diagm(repeat([h], p)) : diagm(h)
     end
     Hinv = inv(H)
     detH = det(H)
-    detH == 0 ? detH = 1e-20 : nothing
+    if detH == 0 ; detH = 1e-20 ; end
     Dmkern(X, H, Hinv, detH, par)
 end
 

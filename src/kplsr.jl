@@ -92,7 +92,7 @@ function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeig
     par = recovkw(ParKplsr, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     Q = eltype(X)
-    isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
+    Y = handle_bitmatrix(Q, Y)  # for DA functions
     n, p = size(X)
     q = nco(Y)
     nlv = par.nlv
@@ -173,7 +173,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 """ 
 function transf(object::Kplsr, X; nlv = nothing)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     DKt = fweightr(K', object.weights.values) 
@@ -191,7 +191,7 @@ Compute the b-coefficients of a fitted model.
 """ 
 function coef(object::Kplsr; nlv = nothing)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     beta = object.C[:, 1:nlv]'
     q = length(object.ymeans)
     int = reshape(object.ymeans, 1, q)
@@ -209,7 +209,7 @@ If nothing, it is the maximum nb. LVs.
 function predict(object::Kplsr, X; nlv = nothing)
     X = ensure_mat(X)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    nlv = isnothing(nlv) ? a : min(minimum(nlv), a):min(maximum(nlv), a)
     le_nlv = length(nlv)
     T = transf(object, X)
     pred = list(Matrix{eltype(X)}, le_nlv)
@@ -217,6 +217,6 @@ function predict(object::Kplsr, X; nlv = nothing)
         z = coef(object; nlv = nlv[i])
         pred[i] = z.int .+ @view(T[:, 1:nlv[i]]) * z.beta * Diagonal(object.yscales)
     end 
-    le_nlv == 1 ? pred = pred[1] : nothing
+    if le_nlv == 1 ; pred = pred[1] ; end
     (pred = pred,)
 end

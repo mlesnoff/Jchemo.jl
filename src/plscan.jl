@@ -107,8 +107,9 @@ function plscan!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
         fcenter!(X, xmeans)
         fcenter!(Y, ymeans)
     end
-    par.bscal == :none ? bscales = ones(Q, 2) : nothing
-    if par.bscal == :frob
+    if par.bscal == :none
+        bscales = ones(Q, 2)
+    elseif par.bscal == :frob
         normx = frob(X, weights)
         normy = frob(Y, weights)
         X ./= normx
@@ -126,14 +127,14 @@ function plscan!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     TTx = similar(X, nlv)
     TTy = copy(TTx)
     tx = similar(X, n)
-    ty = copy(tx)
-    dtx  = copy(tx)
-    dty = copy(tx)   
+    ty = similar(tx)
+    dtx  = similar(tx)
+    dty = similar(tx)   
     wx = similar(X, p)
     wy = similar(X, q)
-    vx = copy(wx)
-    vy = copy(wy)
-    delta = copy(TTx)
+    vx = similar(wx)
+    vy = similar(wy)
+    delta = similar(TTx)
     # End
     @inbounds for a = 1:nlv
         XtY .= X' * fweightr(Y, weights.values)
@@ -186,7 +187,7 @@ function transfbl(object::Plscan, X, Y; nlv::Union{Nothing, Int} = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     Tx = X * vcol(object.Rx, 1:nlv)

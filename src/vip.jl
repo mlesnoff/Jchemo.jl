@@ -80,7 +80,7 @@ function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}; nlv::Union{Nothing, 
         sqrtw = sqrt.(object.fitm.weights.values)
     end
     p = nro(W)
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     ## Type 'Plsr' contains algorithmns where W is normed
     ## ==> No need to do the following: 
     ## wnorms = colnorm(W)
@@ -112,9 +112,9 @@ function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y; nlv::Union{Nothin
         a = object.par.nlv
         weights = object.fitm.weights
     end
-    isa(Y, BitMatrix) ? Y = convert.(eltype(W), Y) : nothing
+    Y = handle_bitmatrix(eltype(W), Y)
     p = nro(W)
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     W2 = vcol(W, 1:nlv).^2
     rdd = rd(fscale(Y, object.yscales), vcol(T, 1:nlv), weights)
     A = rowsum(rdd .* W2)

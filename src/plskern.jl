@@ -99,11 +99,7 @@ end
 function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPlsr, kwargs).par
     Q = eltype(X)
-    ## Specific for Plsda functions
-    if isa(Y, BitMatrix)
-        Y = convert.(Q, Y)
-    end
-    ## End
+    Y = handle_bitmatrix(Q, Y)  # for DA functions
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv) 
@@ -181,7 +177,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 function transf(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int} = nothing)
     X = ensure_mat(X)
     a = nco(object.T)
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     ## Could be fcscale! but would change X. If too heavy ==> Makes summary!
     fcscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
 end
@@ -197,7 +193,7 @@ of zeros. The returned object `int` is the intercept.
 """ 
 function coef(object::Union{Plsr, Splsr}; nlv::Union{Nothing, Int} = nothing)
     a = nco(object.T)
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     theta = vcol(object.C, 1:nlv)'  # regression coefs of Y on T
     Dy = Diagonal(object.yscales)
     ## To not use for Spcr (R not computed; while for Pcr, R = V)
@@ -231,7 +227,7 @@ function predict(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int, Vector{
         coefs = coef(object; nlv = nlv[i])
         pred[i] = coefs.int .+ X * coefs.B  # try muladd(X, coefs.B, coefs.int)
     end 
-    le_nlv == 1 ? pred = pred[1] : nothing
+    if le_nlv == 1 ; pred = pred[1] ; end
     (pred = pred,)
 end
 

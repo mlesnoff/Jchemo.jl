@@ -34,9 +34,9 @@ tab(X::AbstractArray) = sort(StatsBase.countmap(vec(X)))
 
 function tab(X::DataFrame; group = nothing)
     zX = copy(X)
-    isa(zX, Vector) ? zX = DataFrame(x1 = zX) : nothing
-    isa(zX, DataFrame) ? nothing : zX = DataFrame(zX, :auto)
-    isnothing(group) ? group = names(zX) : nothing
+    if isa(zX, Vector) ; zX = DataFrame(x1 = zX) ; end
+    if !isa(zX, DataFrame) ; zX = DataFrame(zX, :auto) ; end
+    if isnothing(group) ; group = names(zX) ; end
     zX.n = ones(Int, nro(zX))
     res = aggstat(zX; sel = :n, group, algo = sum)
     res

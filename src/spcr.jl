@@ -113,7 +113,7 @@ Compute Y-predictions from a fitted model.
 function predict(object::Spcr, X; nlv = nothing)
     X = ensure_mat(X)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = (min(a, minimum(nlv)):min(a, maximum(nlv)))
+    nlv = isnothing(nlv) ? a : min(a, minimum(nlv)):min(a, maximum(nlv))
     le_nlv = length(nlv)
     T = transf(object, X)
     pred = list(Matrix{eltype(X)}, le_nlv)
@@ -121,7 +121,7 @@ function predict(object::Spcr, X; nlv = nothing)
         theta = vcol(object.C, 1:nlv[i])'
         pred[i] = vcol(T, 1:nlv[i]) * theta .+ object.ymeans'
     end 
-    le_nlv == 1 ? pred = pred[1] : nothing
+    if le_nlv == 1 ; pred = pred[1] ; end
     (pred = pred,)
 end
 

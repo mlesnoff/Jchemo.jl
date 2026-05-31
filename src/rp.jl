@@ -74,7 +74,7 @@ Compute scores T from a fitted model.
 function transf(object::Rp, X; nlv::Union{Nothing, Int} = nothing)
     X = ensure_mat(X)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     fcscale(X, object.xmeans, object.xscales) * vcol(object.V, 1:nlv)
 end
 

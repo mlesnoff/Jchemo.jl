@@ -149,7 +149,7 @@ recod_indbylev(x, lev)
 """
 function recod_indbylev(x::Union{Int, Array{Int}}, lev::Array)
     n = length(x)
-    isa(x, Int) ? x = [x] : x = vec(x)
+    x = isa(x, Int) ? [x] : vec(x)
     lev = mlev(lev)
     v = similar(lev, n)
     @inbounds for i in eachindex(x)
@@ -193,7 +193,9 @@ function recod_contbyint(x, q)
     @inbounds for i in eachindex(x)
         k = 1
         @inbounds for j in eachindex(q)
-            x[i] > q[j] ? k = k + 1 : nothing
+            if x[i] > q[j]  
+                k += 1
+            end
         end
         v[i] = k
     end
@@ -223,7 +225,9 @@ x_p = parsemiss(Float64, x)
 function parsemiss(Q, x::Vector{Union{String, Missing}})
     v = missings(Q, length(x))
     for i in eachindex(x)
-        ismissing(x[i]) ? nothing : v[i] = parse(Q, x[i])
+        if !ismissing(x[i])
+            v[i] = parse(Q, x[i])
+        end
     end
     v
 end
@@ -306,9 +310,9 @@ function convertdf(dat::DataFrame, typ::Vector{DataType}; miss = nothing)
     for i in eachindex(typ)
         z = dat[:, i]
         if typ[i] == String
-            sum(ismissing.(z)) == 0 ? z = string.(z) : nothing
+            if sum(ismissing.(z)) == 0 ; z = string.(z) ; end
         elseif typ[i] == Symbol
-            sum(ismissing.(z)) == 0 ? z = Symbol.(z) : nothing
+            if sum(ismissing.(z)) == 0 ; z = Symbol.(z) ; end
         elseif in(typ[i], [Integer, Int32, Int64]) 
             if sum(ismissing.(z)) == 0
                 z = convert.(typ[i], parse.(Float64, z))
@@ -385,9 +389,9 @@ tab(string.(res.v1, "-", res.v2))
 function expand_tab2d(X; namr = nothing, namc = nothing, namv = nothing)
     X = ensure_mat(X) 
     m, p = size(X)
-    isnothing(namr) ? namr = collect(1:m) : nothing
-    isnothing(namc) ? namc = collect(1:p) : nothing
-    isnothing(namv) ? namv = ["v1"; "v2"] : nothing
+    if isnothing(namr) ; namr = collect(1:m) ; end
+    if isnothing(namc) ; namr = collect(1:p) ; end
+    if isnothing(namv) ; namv = ["v1"; "v2"] ; end
     res = list(Matrix, m * p)
     k = 1
     for j = 1:p, i = 1:m 

@@ -70,7 +70,7 @@ function plotxyz(x, y, z; size = (500, 300), color = nothing, perspectiveness = 
     f = Figure(; size)
     ax = Axis3(f[1, 1]; xlabel = xlabel, ylabel = ylabel, zlabel = zlabel, title = title, 
         perspectiveness = perspectiveness) 
-    isnothing(color) ? color = (:blue, .3) : nothing
+    if isnothing(color) ; color = (:blue, .3) ; end
     scatter!(ax, x, y, z; color, kwargs...)
     f[1, 1] = ax
     (f = f, ax)

@@ -328,7 +328,7 @@ function cor2(pred, Y)
     Y = ensure_mat(Y)
     q = nco(Y)
     res = Statistics.cor(pred, Y).^2
-    q == 1 ? res = [res; ] : res = diag(res)
+    res = q == 1 ? [res; ] : diag(res)
     reshape(res, 1, :)
 end
 

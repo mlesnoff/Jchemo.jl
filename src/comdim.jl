@@ -214,7 +214,7 @@ end
 function transf_all(object::Comdim, Xbl; nlv::Union{Nothing, Int} = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     nbl = length(Xbl)
     m = size(Xbl[1], 1)
     zXbl = transf(object.fitm_bl, Xbl)    

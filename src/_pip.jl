@@ -54,9 +54,13 @@ function fit!(model::Pipeline, X, Y = nothing; verbose = :false)
         meth = methods(model.model[i].algo)
         res = Base.method_argnames.(meth)[2]  # assume here that the working methods of the function start from the 2nd
         z = uppercase.(String.(res))
-        (in("X", z) || in("XBL", z)) && in("Y", z) ? typ[i] = :XY : typ[i] = :X
+        if (in("X", z) || in("XBL", z)) && in("Y", z)
+            typ[i] = :XY
+        else
+            typ[i] = :X
+        end 
     end
-    verbose ? show(typ) : nothing
+    if verbose ; show(typ) ; end
     @inbounds for i = 1:(K - 1)
         if typ[i] == :X
             fit!(model.model[i], X)

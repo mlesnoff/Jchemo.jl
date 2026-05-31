@@ -350,12 +350,12 @@ function  gridcv(model, X, Y; segm, score, pars = nothing, nlv = nothing, lb = n
     nrep = length(segm)
     res_rep = list(nrep)
     @inbounds for i in 1:nrep
-        verbose ? print("/ rep=", i, " ") : nothing
+        if verbose ; print("/ rep=", i, " ") ; end
         listsegm = segm[i]       # segments in the repetition
         nsegm = length(listsegm) # segmts: = 1; segmkf: = K
         zres = list(nsegm)       # results for the repetition
         @inbounds for j = 1:nsegm
-            verbose ? print("segm=", j, " ") : nothing
+            if verbose ; print("segm=", j, " ") ; end
             s = listsegm[j]
             ## Monoblock
             if isa(X[1, 1], Number)
@@ -377,16 +377,16 @@ function  gridcv(model, X, Y; segm, score, pars = nothing, nlv = nothing, lb = n
         zres = hcat(dat, zres)
         res_rep[i] = zres
     end
-    verbose ? println("/ End.") : nothing
+    if verbose ; println("/ End.") ; end
     res_rep = reduce(vcat, res_rep)
     ## Average scores over reps and segms
     if isnothing(nlv) && isnothing(lb)
         gdf = groupby(res_rep, collect(keys(pars))) 
     elseif !isnothing(nlv)
-        isnothing(pars) ? namgroup = [:nlv] : namgroup = [:nlv ; collect(keys(pars))]
+        namgroup = isnothing(pars) ? [:nlv] : [:nlv ; collect(keys(pars))]
         gdf = groupby(res_rep, namgroup) 
     elseif !isnothing(lb)
-        isnothing(pars) ? namgroup = [:lb] : namgroup = [:lb ; collect(keys(pars))]
+        namgroup = isnothing(pars) ? [:lb] : [:lb ; collect(keys(pars))]
         gdf = groupby(res_rep, namgroup) 
     end
     namy = map(string, repeat(["y"], q), 1:q)

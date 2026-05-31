@@ -139,7 +139,7 @@ function predict(object::Mbplsrda, Xbl; nlv = nothing)
     Qy = eltype(object.lev)
     m = nro(Xbl[1])
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    nlv = isnothing(nlv) ? a : min(minimum(nlv), a):min(maximum(nlv), a)
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)

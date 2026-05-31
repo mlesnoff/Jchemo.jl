@@ -112,7 +112,7 @@ of zeros. The returned object `int` is the intercept.
 """ 
 function coef(object::Pcr; nlv = nothing)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     theta = vcol(object.C, 1:nlv)'
     Dy = Diagonal(object.yscales)
     ## Not used for Spcr (since R not computed; while for Pcr, R = V)
@@ -133,14 +133,14 @@ Compute Y-predictions from a fitted model.
 function predict(object::Pcr, X; nlv = nothing)
     X = ensure_mat(X)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = (min(a, minimum(nlv)):min(a, maximum(nlv)))
+    nlv = isnothing(nlv) ? a : min(a, minimum(nlv)):min(a, maximum(nlv))
     le_nlv = length(nlv)
     pred = list(Matrix{eltype(X)}, le_nlv)
     @inbounds for i in eachindex(nlv)
         coefs = coef(object; nlv = nlv[i])
         pred[i] = coefs.int .+ X * coefs.B  # try muladd(X, coefs.B, coefs.int)
     end 
-    le_nlv == 1 ? pred = pred[1] : nothing
+    if le_nlv == 1 ; pred = pred[1] ; end
     (pred = pred,)
 end
 

@@ -73,7 +73,7 @@ function plotlv(T; size = (700, 350), shape, start = 1, color = nothing, zeros::
     n, p = shape
     pmax = nco(T)
     f = Figure(; size)
-    isnothing(color) ? color = (:blue, .3) : nothing
+    if isnothing(color) ; color = (:blue, .3) ; end
     lw = 1.5
     k = 1
     l = copy(start)

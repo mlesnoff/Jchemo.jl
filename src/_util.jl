@@ -180,13 +180,24 @@ ensure_df(X::AbstractMatrix) = DataFrame(X, :auto)
 Reshape `X` to a matrix if necessary.
 """
 ensure_mat(X::AbstractMatrix) = X
+ensure_mat(X::LinearAlgebra.Adjoint) = Matrix(X)
 ## Tentative to allow the use of CUDA
 ## Old was: ensure_mat(X::AbstractVector) = Matrix(reshape(X, :, 1))
 ensure_mat(X::AbstractVector) = reshape(X, :, 1)
 ## End
 ensure_mat(X::Number) = reshape([X], 1, 1)
-ensure_mat(X::LinearAlgebra.Adjoint) = Matrix(X)
 ensure_mat(X::DataFrame) = Matrix(X)
+
+"""
+    handle_bitmatrix(Q, X::AbstractMatrix)
+If `X::BitMatrix`, convert to a matrix of type `Q`.
+"""
+function handle_bitmatrix(Q, X::AbstractMatrix)
+    if isa(X, BitMatrix)
+        X = convert.(Q, X)
+    end
+    X
+end
 
 """
     findmax_cla(x)
@@ -490,12 +501,12 @@ rmcol(X, [1, 3])
 ```
 """
 function rmcol(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, UnitRange, Number})
-    isa(s, BitVector) ? s = findall(s .== 1) : nothing
+    if isa(s, BitVector) ; s = findall(s .== 1) ; end
     X[:, setdiff(1:end, Int.(s))]
 end
 
 function rmcol(X::Vector, s::Union{Vector, BitVector, UnitRange, Number})
-    isa(s, BitVector) ? s = findall(s .== 1) : nothing
+    if isa(s, BitVector) ; s = findall(s .== 1) ; end
     X[setdiff(1:end, Int.(s))]
 end
 
@@ -515,12 +526,12 @@ rmrow(X, [1, 4])
 ```
 """
 function rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, UnitRange, Number})
-    isa(s, BitVector) ? s = findall(s .== 1) : nothing
+    if isa(s, BitVector) ; s = findall(s .== 1) ; end
     X[setdiff(1:end, Int.(s)), :]
 end
 
 function rmrow(x::Union{Vector, BitVector}, s::Union{Vector, BitVector, UnitRange, Number})
-    isa(s, BitVector) ? s = findall(s .== 1) : nothing
+    if isa(s, BitVector) ; s = findall(s .== 1) ; end
     x[setdiff(1:end, Int.(s))]
 end
 

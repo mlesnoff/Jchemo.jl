@@ -105,7 +105,7 @@ function emm(fitm::StatsModels.TableRegressionModel, f::StatsModels.FormulaTerm,
     datmu.se = sqrt.(diag(varmu))
     ## Compute EMMs
     nam = termnames(f)[2]
-    isa(nam, Vector) ? nothing : nam = [nam]
+    if !isa(nam, Vector) ; nam = [nam] ; end
     datmu[:, nam]
     v = [Vector(datmu[i, nam]) for i in axes(datmu, 1)]    
     fact = join.(v, ["-"])

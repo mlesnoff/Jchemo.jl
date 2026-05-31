@@ -73,7 +73,7 @@ end
 function mlr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParMlr, kwargs).par
     Q = eltype(X)
-    isa(Y, BitMatrix) ? Y = convert.(Q, Y) : nothing
+    Y = handle_bitmatrix(Q, Y)  # for DA functions
     sqrtw = sqrt.(weights.values)
     if par.noint
         q = nco(Y)

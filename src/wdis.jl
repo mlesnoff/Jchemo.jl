@@ -71,19 +71,19 @@ function wdis(d; typw = :bisquare, alpha = 0)
     zd = d[isnan.(d) .== 0]
     q = quantile(zd, 1 - alpha)  # = max when alpha = 0
     d ./= q                      # normalization (d = 1 for max when alpha = 0 ==> w = 0)
-    typw == :bisquare ? w = (1 .- d.^2).^2 : nothing 
-    typw == :cauchy ? w = 1 ./ (1 .+ d.^2) : nothing 
-    typw == :epan ? w = 1 .- d.^2 : nothing 
-    typw == :fair ? w =  1 ./ (1 .+ d).^2 : nothing 
+    if typw == :bisquare ; w = (1 .- d.^2).^2 ; end
+    if typw == :cauchy ; w = 1 ./ (1 .+ d.^2) ; end 
+    if typw == :epan ; w = 1 .- d.^2 ; end
+    if typw == :fair ; w =  1 ./ (1 .+ d).^2 ; end
     #if typw == :inv
     #    w = 1 ./ d
     #    w ./= maximum(w[isnan.(w) .== 0])
     #end 
-    typw == :invexp ? w = exp.(-d) : nothing
-    typw == :invexp2 ? w = exp.(-d / 2) : nothing  
-    typw == :gauss ? w = exp.(-d.^2) : nothing
-    typw == :trian ? w = 1 .- d : nothing  
-    typw == :tricube ? w = (1 .- d.^3).^3 : nothing  
+    if typw == :invexp ; w = exp.(-d) ; end
+    if typw == :invexp2 ; w = exp.(-d / 2) ; end 
+    if typw == :gauss ; w = exp.(-d.^2) ; end
+    if typw == :trian ; w = 1 .- d ; end 
+    if typw == :tricube ; w = (1 .- d.^3).^3 ; end  
     w[d .> 1] .= 0
     w[isnan.(w)] .= 0 
     w

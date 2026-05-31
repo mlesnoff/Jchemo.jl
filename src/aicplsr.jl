@@ -87,7 +87,7 @@ function aicplsr(X, y; alpha = 2, kwargs...)
     if length(u) > 0
         ct[minimum(u):(nlv + 1)] .= NaN
     end
-    #bic ? alpha = log(n) : alpha = 2
+    #alpha = bic ? log(n) : 2
     alpha = convert(Q, alpha)
     aic = n * log.(zssr) + alpha * (df .+ 1) .* ct
     cp1 = zssr .+ 2 * s2_1 * df .* ct

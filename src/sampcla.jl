@@ -47,7 +47,7 @@ function sampcla(x, k::Union{Int, Vector{Int}}, y = nothing; seed::Union{Nothing
     lev = tabx.keys
     ni = tabx.vals
     nlev = length(lev)
-    length(k) == 1 ? k = repeat([k], nlev) : nothing
+    if length(k) == 1 ; k = repeat([k], nlev) ; end
     s = list(Vector{Int}, nlev)
     @inbounds for i in eachindex(lev)
         k[i] = min(k[i], ni[i])

@@ -180,7 +180,7 @@ function mbpca!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
     Vbl = list(Matrix{Q}, nbl)
     for k in eachindex(Xbl) ; Vbl[k] = similar(Xbl[1], nco(Xbl[k]), nlv) ; end
     u = similar(Xbl[1], n)
-    tk = copy(u)
+    tk = similar(u)
     w = similar(Xbl[1], nbl)
     lb = similar(Xbl[1], nbl, nlv)
     mu = similar(Xbl[1], nlv)
@@ -245,7 +245,7 @@ end
 function transf_all(object::Mbpca, Xbl; nlv::Union{Nothing, Int} = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(nlv, a)
+    nlv = isnothing(nlv) ? a : min(nlv, a)
     nbl = length(Xbl)
     m = size(Xbl[1], 1)
     zXbl = transf(object.fitm_bl, Xbl)
@@ -254,7 +254,7 @@ function transf_all(object::Mbpca, Xbl; nlv::Union{Nothing, Int} = nothing)
     Tbl = list(Matrix{Q}, nbl)
     for k in eachindex(Xbl) ; Tbl[k] = similar(zXbl[1], m, nlv) ; end
     u = similar(zXbl[1], m)
-    tk = copy(u)
+    tk = similar(u)
     for a = 1:nlv
         for k in eachindex(Xbl)
             tk .= zXbl[k] * object.Vbl[k][:, a]

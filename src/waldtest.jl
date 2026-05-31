@@ -90,7 +90,7 @@ anova(lm(@formula(y1 ~ 1 + temp), datf; contrasts), fitm)
 """
 function waldtest(b, L, varb; h0 = nothing, defden = nothing, digits = 4)
     dfnum = nro(L)
-    isnothing(h0) ? h = L * b : h = L * b - h0 
+    h = isnothing(h0) ? L * b : L * b - h0 
     varLb = L * varb * L' 
     val =  h' * inv(varLb) * h
     if isnothing(defden)

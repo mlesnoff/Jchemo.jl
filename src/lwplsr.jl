@@ -135,7 +135,7 @@ function predict(object::Lwplsr, X; nlv = nothing)
     X = ensure_mat(X)
     m = nro(X)
     a = object.par.nlv
-    isnothing(nlv) ? nlv = a : nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    nlv = isnothing(nlv) ? a : min(minimum(nlv), a):min(maximum(nlv), a)
     ## Getknn
     metric = object.par.metric
     k = object.par.k
