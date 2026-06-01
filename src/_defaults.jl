@@ -67,8 +67,8 @@ function defaults(algo::Function)
         plswold Jchemo.ParPlsr ; 
         plsrosa Jchemo.ParPlsr ; 
         plssimp Jchemo.ParPlsr ; 
-        plsravg Jchemo.ParPlsr ; 
-        plsravg_unif Jchemo.ParPlsr ;
+        plsravg Jchemo.ParPlsravg ; 
+        plsravg_unif Jchemo.ParPlsravgunif ;
         cglsr Jchemo.ParCglsr ; 
         aicplsr Jchemo.ParCglsr ;
         plsrout Jchemo.ParPlsrout ;
@@ -91,7 +91,7 @@ function defaults(algo::Function)
         knnr Jchemo.ParKnn ;
         lwmlr Jchemo.ParLwmlr ;
         lwplsr Jchemo.ParLwplsr ; 
-        lwplsravg Jchemo.ParLwplsr ;
+        lwplsravg Jchemo.ParLwplsravg ;
         loessr Jchemo.ParLoessr ;
 
         protoplsr Jchemo.ParProtoplsr ;

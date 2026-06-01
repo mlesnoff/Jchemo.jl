@@ -489,7 +489,7 @@ struct Lwplsravg
     X::Matrix
     Y::Matrix
     xscales::Vector
-    par::ParLwplsr
+    par::ParLwplsravg
 end
 
 struct Loessr

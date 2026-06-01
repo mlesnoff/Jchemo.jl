@@ -112,14 +112,15 @@ Compute the Y-predictions from the fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Lwmlr, X)
+    Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
     ## Getknn
     metric = object.par.metric
-    h = object.par.h
+    h = Q(object.par.h)
     k = object.par.k
-    tolw = object.par.tolw
-    criw = object.par.criw
+    tolw = Q(object.par.tolw)
+    criw = Q(object.par.criw)
     squared = object.par.squared
     if object.par.scal
         zX1 = fscale(object.X, object.xscales)
@@ -128,10 +129,10 @@ function predict(object::Lwmlr, X)
     else
         res = getknn(object.X, X; metric, k)
     end
-    listw = copy(res.d)
+    listw = similar(res.d)
     Threads.@threads for i = 1:m
         w = winvs(res.d[i]; h, criw, squared)
-        w[w .< tolw] .= tolw
+        @. w[w < tolw] = tolw
         listw[i] = w
     end
     ## End

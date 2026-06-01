@@ -12,7 +12,7 @@ struct Protoyclaplsr
 end
 
 function protoyclaplsr(X, Y, ycla; nlvdis = 0, metric = :eucl, nlv, K = 5, kavg = 1, h = 1, criw = 4, 
-        squared = false, tolw = 1e-4, scal = false)
+        squared::Bool = false, tolw = 1e-4, scal::Bool = false)
     par = (nlvdis = nlvdis, metric, nlv, K, kavg, h, criw, squared, tolw, scal)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -54,6 +54,7 @@ function protoyclaplsr(X, Y, ycla; nlvdis = 0, metric = :eucl, nlv, K = 5, kavg 
 end
 
 function predict(object::Protoyclaplsr, X)
+    Q = eltype(object.Xproto)
     X = ensure_mat(X)
     Q = eltype(X)
     m = nro(X)
@@ -61,10 +62,10 @@ function predict(object::Protoyclaplsr, X)
     nproto = nro(object.Xproto)
     ## Params to average the prototype predictions
     kavg = min(object.par.kavg, nproto)  
-    h = object.par.h
-    criw = object.par.criw
+    h = Q(object.par.h)
+    criw = Q(object.par.criw)
     squared = object.par.squared
-    tolw = object.par.tolw
+    tolw = Q(object.par.tolw)
     ## Find the kavg closest prototypes for each new observation
     if isnothing(object.fitm_emb)
         res = getknn(object.Xproto, X; k = kavg, metric = object.par.metric)
@@ -88,7 +89,7 @@ function predict(object::Protoyclaplsr, X)
     Threads.@threads for i = 1:m   
         s = listnn[i]
         w = winvs(res.d[i]; h, criw, squared)
-        w[w .< tolw] .= tolw
+        @. w[w < tolw] = tolw
         w ./= sum(w)
         @inbounds for j in eachindex(s)
             coefs = object.coefs[s[j]]

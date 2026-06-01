@@ -110,14 +110,14 @@ lwplsr(; kwargs...) = JchemoModel(lwplsr, nothing, kwargs)
 function lwplsr(X, Y; kwargs...)
     par = recovkw(ParLwplsr, kwargs).par 
     X = ensure_mat(X)
+    Q = eltype(X)
+    p = nco(X)
     Y = ensure_mat(Y)
     if par.nlvdis == 0
         fitm = nothing
     else
         fitm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
     end
-    Q = eltype(X)
-    p = nco(X)
     xscales = ones(Q, p)
     if isnothing(fitm) && par.scal
         xscales .= colstd(X)
@@ -126,23 +126,30 @@ function lwplsr(X, Y; kwargs...)
 end
 
 """
-    predict(object::Lwplsr, X; nlv = nothing)
+    predict(object::Lwplsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
 Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Lwplsr, X; nlv = nothing)
+function predict(object::Lwplsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+    Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
     a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(minimum(nlv), a):min(maximum(nlv), a)
+    if isnothing(nlv)
+        nlv = a
+    elseif isa(nlv, Int)
+        nlv = min(nlv, a)
+    else
+        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    end
     ## Getknn
     metric = object.par.metric
     k = object.par.k
-    h = object.par.h
-    criw = object.par.criw
+    h = Q(object.par.h)
+    criw = Q(object.par.criw)
     squared = object.par.squared
-    tolw = object.par.tolw
+    tolw = Q(object.par.tolw)
     if isnothing(object.fitm)
         if object.par.scal
             zX1 = fscale(object.X, object.xscales)
@@ -154,11 +161,11 @@ function predict(object::Lwplsr, X; nlv = nothing)
     else
         res = getknn(object.fitm.T, transf(object.fitm, X); metric, k) 
     end
-    listw = copy(res.d)
+    listw = similar(res.d)
     #@inbounds for i = 1:m
     Threads.@threads for i = 1:m
         w = winvs(res.d[i]; h, criw, squared)
-        w[w .< tolw] .= tolw
+        @. w[w < tolw] = tolw
         listw[i] = w
     end
     ## End

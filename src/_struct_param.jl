@@ -238,15 +238,6 @@ Base.@kwdef mutable struct ParPlsrout
     scal::Bool = false 
 end 
 
-Base.@kwdef mutable struct ParSplsr
-    nlv::Int = 1 
-    meth::Symbol = :soft
-    nvar::Union{Int, Vector{Int}} = 1
-    tol::Float64 = sqrt(eps(1.))  # used when Y (n, q) (snipals)
-    maxit::Int = 200              # used when Y (n, q) (snipals)
-    scal::Bool = false                   
-end 
-
 Base.@kwdef mutable struct ParKplsr
     nlv::Int = 1 
     kern::Symbol = :krbf     
@@ -278,9 +269,6 @@ Base.@kwdef mutable struct ParPcr
     scal::Bool = false                   
 end
 
-Base.@kwdef mutable struct ParSpcr  # same ParSpca
-end 
-
 Base.@kwdef mutable struct ParRr   
     lb::Float64 = 1e-6                    
     scal::Bool = false 
@@ -293,6 +281,20 @@ Base.@kwdef mutable struct ParKrr
     coef0::Float64 = 0.
     degree::Int = 1                       
     scal::Bool = false 
+end 
+
+##
+
+Base.@kwdef mutable struct ParSplsr
+    nlv::Int = 1 
+    meth::Symbol = :soft
+    nvar::Union{Int, Vector{Int}} = 1
+    tol::Float64 = sqrt(eps(1.))  # used when Y (n, q) (snipals)
+    maxit::Int = 200              # used when Y (n, q) (snipals)
+    scal::Bool = false                   
+end 
+
+Base.@kwdef mutable struct ParSpcr  # same ParSpca
 end 
 
 ##
@@ -326,7 +328,7 @@ Base.@kwdef mutable struct ParLwmlr    # lwmlr, lwmlrda
     verbose::Bool = false                   
 end 
 
-Base.@kwdef mutable struct ParLwplsr    # lwplsr, lwplsravg
+Base.@kwdef mutable struct ParLwplsr  
     nlvdis::Int = 0                         
     metric::Symbol = :eucl                  
     k::Int = 1                              
@@ -334,11 +336,26 @@ Base.@kwdef mutable struct ParLwplsr    # lwplsr, lwplsravg
     criw::Float64 = 4                       
     squared::Bool = false                   
     tolw::Float64 = 1e-4                    
-    nlv::Union{Int, UnitRange} = 1     
+    nlv::Int =  1     
     scal::Bool = false
     store::Bool = false 
     verbose::Bool = false                   
 end 
+
+Base.@kwdef mutable struct ParLwplsravg
+    nlvdis::Int = 0                         
+    metric::Symbol = :eucl                  
+    k::Int = 1                              
+    h::Float64 = Inf                        
+    criw::Float64 = 4                       
+    squared::Bool = false                   
+    tolw::Float64 = 1e-4                    
+    nlv::AbstractVector{Int} = 1:1     
+    scal::Bool = false
+    store::Bool = false 
+    verbose::Bool = false                   
+end 
+
 
 ## Svm, Trees
 

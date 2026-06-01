@@ -171,6 +171,7 @@ function protoplsr(X, Y; kwargs...)
 end
 
 function predict(object::Protoplsr, X)
+    Q = eltype(object.Xproto)
     X = ensure_mat(X)
     Q = eltype(X)
     m = nro(X)
@@ -178,10 +179,10 @@ function predict(object::Protoplsr, X)
     nproto = object.par.nproto
     metric = object.par.metric
     kavg = min(object.par.kavg, nproto)  # nb prototype models averaged
-    h = object.par.h
-    criw = object.par.criw
+    h = Q(object.par.h)
+    criw = Q(object.par.criw)
     squared = object.par.squared
-    tolw = object.par.tolw
+    tolw = Q(object.par.tolw)
     # Compute the neighborhood (within the set of prototypes) of each new observation
     if isnothing(object.fitm_emb)
         res = getknn(object.Xproto, X; k = kavg, metric)
@@ -196,7 +197,7 @@ function predict(object::Protoplsr, X)
     Threads.@threads for i = 1:m   
         s = listnn[i]
         w = winvs(res.d[i]; h, criw, squared)
-        w[w .< tolw] .= tolw  # same as in lwplsr
+        @. w[w < tolw] = tolw  # same as in lwplsr
         w ./= sum(w)
         @inbounds for j in eachindex(s)
             coefs = object.coefs[s[j]]

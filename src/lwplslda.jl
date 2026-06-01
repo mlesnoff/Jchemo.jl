@@ -105,16 +105,17 @@ Compute the y-predictions from the fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Lwplslda, X; nlv = nothing)
+    Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(minimum(nlv), a):min(maximum(nlv), a)
     ## Getknn
     metric = object.par.metric
-    h = object.par.h
+    h = Q(object.par.h)
     k = object.par.k
-    tolw = object.par.tolw
-    criw = object.par.criw
+    tolw = Q(object.par.tolw)
+    criw = Q(object.par.criw)
     squared = object.par.squared
     if isnothing(object.fitm)
         if object.par.scal
@@ -127,10 +128,10 @@ function predict(object::Lwplslda, X; nlv = nothing)
     else
         res = getknn(object.fitm.T, transf(object.fitm, X); metric, k) 
     end
-    listw = copy(res.d)
+    listw = similar(res.d)
     Threads.@threads for i = 1:m
         w = winvs(res.d[i]; h, criw, squared)
-        w[w .< tolw] .= tolw
+        @. w[w < tolw] = tolw
         listw[i] = w
     end
     ## End

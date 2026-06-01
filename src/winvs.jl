@@ -1,6 +1,6 @@
 """
-    winvs(d; h::Float64 = 2., criw::Float64 = 4., squared = false)
-    winvs!(d; h::Float64 = 2., criw::Float64 = 4., squared = false)
+    winvs(d::Vector{T}; h::T = T(2.0), criw::T = T(4.0), squared::Bool = false) where T <: AbstractFloat
+    winvs!(d::Vector{T}; h::T = T(2.0), criw::T = T(4.0), squared::Bool = false) where T <: AbstractFloat
 Compute weights from distances using an inverse scaled exponential function.
 * `d` : A vector of distances.
 Keyword arguments:
@@ -56,13 +56,13 @@ f[1, 1] = ax
 f
 ```
 """  
-function winvs(d::Vector{T}; h::T = T(2.0), criw::T = T(4.0), squared = false) where T <: AbstractFloat
+function winvs(d::Vector{T}; h::T = T(2.0), criw::T = T(4.0), squared::Bool = false) where T <: AbstractFloat
     w = copy(d)
     winvs!(w; h, criw, squared = squared)
     w
 end
 
-function winvs!(d::Vector{T}; h::T = T(2.0), criw::T = T(4.0), squared = false) where T <: AbstractFloat
+function winvs!(d::Vector{T}; h::T = T(2.0), criw::T = T(4.0), squared::Bool = false) where T <: AbstractFloat
     if squared
         @. d = d^2 
     end

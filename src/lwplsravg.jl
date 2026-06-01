@@ -77,11 +77,11 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 lwplsravg(; kwargs...) = JchemoModel(lwplsravg, nothing, kwargs)
 
 function lwplsravg(X, Y; kwargs...)
-    par = recovkw(ParLwplsr, kwargs).par
+    par = recovkw(ParLwplsravg, kwargs).par
     X = ensure_mat(X)
-    Y = ensure_mat(Y)
     Q = eltype(X)
     p = nco(X)
+    Y = ensure_mat(Y)
     if par.nlvdis == 0
         fitm = nothing
     else
@@ -101,14 +101,15 @@ Compute the Y-predictions from the fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Lwplsravg, X) 
+    Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
     ## Getknn
     metric = object.par.metric
-    h = object.par.h
+    h = Q(object.par.h)
     k = object.par.k
-    tolw = object.par.tolw
-    criw = object.par.criw
+    criw = Q(object.par.criw)
+    tolw = Q(object.par.tolw)
     squared = object.par.squared
     if isnothing(object.fitm)
         if object.par.scal
@@ -121,10 +122,10 @@ function predict(object::Lwplsravg, X)
     else
         res = getknn(object.fitm.T, transf(object.fitm, X); metric, k) 
     end
-    listw = copy(res.d)
+    listw = similar(res.d)
     Threads.@threads for i = 1:m
         w = winvs(res.d[i]; h, criw, squared)
-        w[w .< tolw] .= tolw
+        @. w[w < tolw] = tolw
         listw[i] = w
     end
     ## End

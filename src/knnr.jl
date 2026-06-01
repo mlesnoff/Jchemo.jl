@@ -129,7 +129,7 @@ function predict(object::Knnr, X)
     listw = similar(res.d)
     Threads.@threads for i = 1:m
         w = winvs(res.d[i]; h, criw, squared)
-        w[w .< tolw] .= tolw
+        @. w[w < tolw] = tolw
         listw[i] = w
     end
     ## End
