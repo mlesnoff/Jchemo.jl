@@ -21,7 +21,7 @@ function locw(Xtrain, Ytrain, X; listnn, listw = nothing, algo, store = false, v
     pred = similar(Ytrain, m, q)
     fitm = list(m)
     #@inbounds for i = 1:m
-    Threads.@threads for i = 1:m
+    Threads.@threads for i in eachindex(fitm)
         if verbose ; print(i, " ") ; end
         s = listnn[i]
         if length(s) == 1 ; s = s:s ; end

@@ -143,17 +143,16 @@ function krr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeight
 end
 
 """
-    coef(object::Krr; lb = nothing)
+    coef(object::Krr; lb::Union{Nothing, Float64} = nothing)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `lb` : Ridge regularization parameter 'lambda'.
 """ 
-function coef(object::Krr; lb = nothing)
+function coef(object::Krr; lb::Union{Nothing, Float64} = nothing)
     Q = eltype(object.X)
     if isnothing(lb) ; lb = object.par.lb ; end
-    lb = convert(Q, lb)
     eig = object.sv.^2
-    z = 1 ./ (eig .+ lb^2)
+    z = 1 ./ (eig .+ convert(Q, lb)^2)
     A = object.U * (Diagonal(z) * object.UtDY)
     q = length(object.ymeans)
     int = reshape(object.ymeans, 1, q)
@@ -162,13 +161,13 @@ function coef(object::Krr; lb = nothing)
 end
 
 """
-    predict(object::Krr, X; lb = nothing)
+    predict(object::Krr, X; lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `lb` : Regularization parameter, or collection of regularization parameters, 'lambda' to consider. 
 """ 
-function predict(object::Krr, X; lb = nothing)
+function predict(object::Krr, X; lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing)
     X = ensure_mat(X)
     if isnothing(lb) ; lb = object.par.lb ; end
     fkern = eval(Meta.parse(String(object.par.kern)))

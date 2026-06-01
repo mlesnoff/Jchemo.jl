@@ -193,6 +193,10 @@ end
 
 ############---- Regression
 
+Base.@kwdef mutable struct ParMlr
+    noint::Bool = false                      
+end 
+
 Base.@kwdef mutable struct ParNipals
     tol::Float64 = sqrt(eps(1.))  
     maxit::Int = 200                    
@@ -204,20 +208,6 @@ Base.@kwdef mutable struct ParSnipals
     tol::Float64 = sqrt(eps(1.))  
     maxit::Int = 200                    
 end 
-
-Base.@kwdef mutable struct ParMlr
-    noint::Bool = false                      
-end 
-
-Base.@kwdef mutable struct ParRr   
-    lb::Float64 = 1e-6                    
-    scal::Bool = false 
-end 
-
-Base.@kwdef mutable struct ParPcr
-    nlv::Int = 1    
-    scal::Bool = false                   
-end
 
 Base.@kwdef mutable struct ParPlsr    # except plswold
     nlv::Int = 1                    
@@ -232,13 +222,13 @@ Base.@kwdef mutable struct ParPlswold
 end 
 
 Base.@kwdef mutable struct ParPlsravgunif
-    nlv::Union{UnitRange, Vector{Int}} = 1:1                    
+    nlv::AbstractVector{Int} = 1:1                    
     scal::Bool = false 
 end 
 
 Base.@kwdef mutable struct ParPlsravg
     algo::Symbol = :unif                   
-    nlv::Union{UnitRange, Vector{Int}} = 1:1                    
+    nlv::AbstractVector{Int} = 1:1                    
     scal::Bool = false 
 end 
 
@@ -246,6 +236,26 @@ Base.@kwdef mutable struct ParPlsrout
     nlv::Int = 1 
     prm::Float64 = .3         
     scal::Bool = false 
+end 
+
+Base.@kwdef mutable struct ParSplsr
+    nlv::Int = 1 
+    meth::Symbol = :soft
+    nvar::Union{Int, Vector{Int}} = 1
+    tol::Float64 = sqrt(eps(1.))  # used when Y (n, q) (snipals)
+    maxit::Int = 200              # used when Y (n, q) (snipals)
+    scal::Bool = false                   
+end 
+
+Base.@kwdef mutable struct ParKplsr
+    nlv::Int = 1 
+    kern::Symbol = :krbf     
+    gamma::Float64 = 1.  
+    coef0::Float64 = 0.
+    degree::Int = 1 
+    tol::Float64 = sqrt(eps(1.))   
+    maxit::Int = 200            
+    scal::Bool = false                   
 end 
 
 Base.@kwdef mutable struct ParCglsr
@@ -263,16 +273,17 @@ Base.@kwdef mutable struct ParRrr
     scal::Bool = false                   
 end 
 
+Base.@kwdef mutable struct ParPcr
+    nlv::Int = 1    
+    scal::Bool = false                   
+end
+
 Base.@kwdef mutable struct ParSpcr  # same ParSpca
 end 
 
-Base.@kwdef mutable struct ParSplsr
-    nlv::Int = 1 
-    meth::Symbol = :soft
-    nvar::Union{Int, Vector{Int}} = 1
-    tol::Float64 = sqrt(eps(1.))  # used when Y (n, q) (snipals)
-    maxit::Int = 200              # used when Y (n, q) (snipals)
-    scal::Bool = false                   
+Base.@kwdef mutable struct ParRr   
+    lb::Float64 = 1e-6                    
+    scal::Bool = false 
 end 
 
 Base.@kwdef mutable struct ParKrr 
@@ -284,18 +295,13 @@ Base.@kwdef mutable struct ParKrr
     scal::Bool = false 
 end 
 
-Base.@kwdef mutable struct ParKplsr
-    nlv::Int = 1 
-    kern::Symbol = :krbf     
-    gamma::Float64 = 1.  
-    coef0::Float64 = 0.
-    degree::Int = 1 
-    tol::Float64 = sqrt(eps(1.))   
-    maxit::Int = 200            
-    scal::Bool = false                   
-end 
-
 ##
+
+Base.@kwdef mutable struct ParLoessr      
+    span::Float64 = 0.75
+    degree::Int = 2               
+    scal::Bool = false 
+end 
 
 Base.@kwdef mutable struct ParKnn    # knnr, knnda                
     metric::Symbol = :eucl                  
@@ -332,12 +338,6 @@ Base.@kwdef mutable struct ParLwplsr    # lwplsr, lwplsravg
     scal::Bool = false
     store::Bool = false 
     verbose::Bool = false                   
-end 
-
-Base.@kwdef mutable struct ParLoessr      
-    span::Float64 = 0.75
-    degree::Int = 2               
-    scal::Bool = false 
 end 
 
 ## Svm, Trees

@@ -182,7 +182,10 @@ x = rand(100)
 iqrv(x)
 ```
 """
-iqrv(x) = quantile(x, .75) - quantile(x, .25)
+function iqrv(x)
+    Q = eltype(x)
+    quantile(x, Q(.75)) - quantile(x, Q(.25))
+end
 
 """ 
     madv(x)
@@ -200,7 +203,11 @@ x = rand(100)
 madv(x)
 ```
 """
-madv(x) = 1.4826 * median(abs.(x .- median(x)))
+function madv(x)
+    Q = eltype(x)
+    cst = Q(1.4826)
+    cst * median(abs.(x .- median(x)))
+end
 
 ###### Two vectors
 

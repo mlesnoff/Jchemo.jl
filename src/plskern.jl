@@ -204,13 +204,13 @@ function coef(object::Union{Plsr, Splsr}; nlv::Union{Nothing, Int} = nothing)
 end
 
 """
-    predict(object::Union{Plsr, Pcr, Splsr}, X; nlv::Union{Nothing, Int, UnitRange} = nothing)
+    predict(object::Union{Plsr, Pcr, Splsr}, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int, UnitRange} = nothing)
+function predict(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
     X = ensure_mat(X)
     Q = eltype(X)
     a = nco(object.T)

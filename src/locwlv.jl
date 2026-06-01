@@ -1,5 +1,5 @@
 """
-    locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv, verbose = true, kwargs...)
+    locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv::Union{Int, AbstractVector{Int}}, verbose = true, kwargs...)
 Compute predictions for a given kNN model.
 * `Xtrain` : Training X-data.
 * `Ytrain` : Training Y-data.
@@ -15,16 +15,21 @@ Keyword arguments:
 
 Same as [`locw`](@ref) but specific and much faster for LV-based models (e.g., PLSR).
 """
-function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv, store = false, verbose = true, kwargs...)
+function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv::Union{Int, AbstractVector{Int}}, store = false, verbose = true, kwargs...)
     p = nco(Xtrain)
     m = nro(X)
     q = nco(Ytrain)
-    nlv = min(p, minimum(nlv)):min(p, maximum(nlv))
+    #nlv = min(p, minimum(nlv)):min(p, maximum(nlv))
+    if isa(nlv, Int)
+        nlv = min(nlv, p)
+    else
+        nlv = min(minimum(nlv), p):min(maximum(nlv), p)
+    end
     le_nlv = length(nlv)
     zpred = similar(Ytrain, m, q, le_nlv)
     fitm = list(m)
     #@inbounds for i = 1:m
-    Threads.@threads for i = 1:m
+    Threads.@threads for i = eachindex(fitm)
         if verbose ; print(i, " ") ; end
         s = listnn[i]
         if length(s) == 1 ; s = s:s ; end

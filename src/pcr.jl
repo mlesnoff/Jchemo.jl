@@ -124,14 +124,15 @@ function coef(object::Pcr; nlv::Union{Nothing, Int} = nothing)
 end
 
 """
-    predict(object::Pcr, X; nlv::Union{Nothing, Int, UnitRange} = nothing)
+    predict(object::Pcr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Pcr, X; nlv::Union{Nothing, Int, UnitRange} = nothing)
+function predict(object::Pcr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
     X = ensure_mat(X)
+    Q = eltype(X)
     a = object.par.nlv
     if isnothing(nlv)
         nlv = a
@@ -141,7 +142,7 @@ function predict(object::Pcr, X; nlv::Union{Nothing, Int, UnitRange} = nothing)
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
     end
     le_nlv = length(nlv)
-    pred = list(Matrix{eltype(X)}, le_nlv)
+    pred = list(Matrix{Q}, le_nlv)
     @inbounds for i in eachindex(nlv)
         coefs = coef(object; nlv = nlv[i])
         pred[i] = coefs.int .+ X * coefs.B  # try muladd(X, coefs.B, coefs.int)

@@ -110,13 +110,20 @@ Compute Y-predictions from a fitted model.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
 ## Function 'coef' not yet implemented for Spcr, therefore 'predict' uses directely C (regression coefs on the scores) 
-function predict(object::Spcr, X; nlv = nothing)
+function predict(object::Spcr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
     X = ensure_mat(X)
+    Q = eltype(X)
     a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(a, minimum(nlv)):min(a, maximum(nlv))
+    if isnothing(nlv)
+        nlv = a
+    elseif isa(nlv, Int)
+        nlv = min(nlv, a)
+    else
+        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    end
     le_nlv = length(nlv)
     T = transf(object, X)
-    pred = list(Matrix{eltype(X)}, le_nlv)
+    pred = list(Matrix{Q}, le_nlv)
     @inbounds for i in eachindex(nlv)
         theta = vcol(object.C, 1:nlv[i])'
         pred[i] = vcol(T, 1:nlv[i]) * theta .+ object.ymeans'

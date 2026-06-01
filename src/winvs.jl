@@ -1,6 +1,6 @@
 """
-    winvs(d; h = 2, criw = 4, squared = false)
-    winvs!(d; h = 2, criw = 4, squared = false)
+    winvs(d; h::Float64 = 2., criw::Float64 = 4., squared = false)
+    winvs!(d; h::Float64 = 2., criw::Float64 = 4., squared = false)
 Compute weights from distances using an inverse scaled exponential function.
 * `d` : A vector of distances.
 Keyword arguments:
@@ -56,21 +56,27 @@ f[1, 1] = ax
 f
 ```
 """  
-function winvs(d; h = 2, criw = 4, squared = false)
+function winvs(d::Vector{T}; h::T = T(2.0), criw::T = T(4.0), squared = false) where T <: AbstractFloat
     w = copy(d)
     winvs!(w; h, criw, squared = squared)
     w
 end
 
-function winvs!(d; h = 2, criw = 4, squared = false)
-    if squared ; d .= d.^2 ; end
-    zmed =  Statistics.median(d)
-    zmad = madv(d)
-    cutoff = zmed + criw * zmad
-    d .= map(x -> ifelse(x <= cutoff, exp(-x / (h * zmad)), zero(eltype(d))), d)
+function winvs!(d::Vector{T}; h::T = T(2.0), criw::T = T(4.0), squared = false) where T <: AbstractFloat
+    if squared
+        @. d = d^2 
+    end
+    sigma = madv(d)
+    if sigma == 0 ; sigma = eps(T) ; end
+    cutoff = medv(d) + criw * sigma
+    @. d = ifelse(d <= cutoff, exp(-d / (h * sigma)), zero(T))
     ## Alternative, e.g.: 
     ## d .= wdis(d; typw = :bisquare)
-    d .= d / maximum(d)
-    d[isnan.(d)] .= 1
+    dmax = maximum(d)
+    if dmax > 0
+        @. d = d / dmax
+    else
+        d .= ones(T)
+    end
     return
 end

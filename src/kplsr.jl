@@ -199,15 +199,16 @@ function coef(object::Kplsr; nlv::Union{Nothing, Int} = nothing)
 end
 
 """
-    predict(object::Kplsr, X; nlv::Union{Nothing, Int, UnitRange} = nothing)
+    predict(object::Kplsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 If nothing, it is the maximum nb. LVs.
 """ 
-function predict(object::Kplsr, X; nlv::Union{Nothing, Int, UnitRange} = nothing)
+function predict(object::Kplsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
     X = ensure_mat(X)
+    Q = eltype(X)
     a = object.par.nlv
     if isnothing(nlv)
         nlv = a
@@ -218,7 +219,7 @@ function predict(object::Kplsr, X; nlv::Union{Nothing, Int, UnitRange} = nothing
     end
     le_nlv = length(nlv)
     T = transf(object, X)
-    pred = list(Matrix{eltype(X)}, le_nlv)
+    pred = list(Matrix{Q}, le_nlv)
     @inbounds for i in eachindex(nlv)
         z = coef(object; nlv = nlv[i])
         pred[i] = z.int .+ @view(T[:, 1:nlv[i]]) * z.beta * Diagonal(object.yscales)

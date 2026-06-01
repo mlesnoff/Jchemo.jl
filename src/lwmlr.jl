@@ -95,9 +95,9 @@ lwmlr(; kwargs...) = JchemoModel(lwmlr, nothing, kwargs)
 function lwmlr(X, Y; kwargs...) 
     par = recovkw(ParLwmlr, kwargs).par
     X = ensure_mat(X)  
-    Y = ensure_mat(Y)
     Q = eltype(X)
     p = nco(X)
+    Y = ensure_mat(Y)
     xscales = ones(Q, p)
     if par.scal
         xscales .= colstd(X)
