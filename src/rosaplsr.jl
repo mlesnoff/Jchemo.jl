@@ -80,7 +80,7 @@ function rosaplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParSoplsr, kwargs).par
+    par = recovkw(ParRosaplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])   
     n = nro(Xbl[1])
     pbl = [nco(Xbl[k]) for k in eachindex(Xbl)]
@@ -98,15 +98,15 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs..
         fcenter!(Y, ymeans)
     end
     ## Pre-allocation
-    W = similar(Xbl[1], sum(pbl), nlv)
-    V = copy(W)
-    T = similar(Xbl[1], n, nlv)
+    W  = similar(Xbl[1], sum(pbl), nlv)
+    V  = similar(W)
+    T  = similar(Xbl[1], n, nlv)
     TT = similar(Xbl[1], nlv)    
-    C = similar(Xbl[1], q, nlv)
+    C  = similar(Xbl[1], q, nlv)
     DY = similar(Xbl[1], n, q)
-    t   = similar(Xbl[1], n)
-    dt  = similar(Xbl[1], n)   
-    c   = similar(Xbl[1], q)
+    t  = similar(Xbl[1], n)
+    dt = similar(t)   
+    c  = similar(Xbl[1], q)
     vbl = list(Vector{Q}, nbl)
     v = similar(Xbl[1], sum(pbl))
     corr = similar(Xbl[1], nbl)
@@ -156,7 +156,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs..
         bl[a] = opt
         ## Outputs for winner block
         t .= zT[:, opt]
-        dt .= weights.values .* t
+        @. dt = weights.values * t
         tt = dot(t, dt)
         mul!(c, Y', dt)
         c ./= tt     
@@ -171,7 +171,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs..
             vbl[k] = Xbl[k]' * dt
         end
         v .= reduce(vcat, vbl)
-        V[:, a] .= v / tt
+        @. V[:, a] = v / tt
         ## Orthogonalization of the weights "w" by block
         zw = wbl[opt]
         if (a > 1) && isassigned(Wbl, opt)       
@@ -194,14 +194,14 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs..
 end
 
 """ 
-    transf(object::Rosaplsr, Xbl; nlv = nothing)
+    transf(object::Rosaplsr, Xbl; nlv::Union{Nothing, Int} = nothing)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 
     of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transf(object::Rosaplsr, Xbl; nlv = nothing)
+function transf(object::Rosaplsr, Xbl; nlv::Union{Nothing, Int} = nothing)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     zXbl = transf(object.fitm_bl, Xbl)
@@ -209,12 +209,12 @@ function transf(object::Rosaplsr, Xbl; nlv = nothing)
 end
 
 """
-    coef(object::Rosaplsr; nlv = nothing)
+    coef(object::Rosaplsr; nlv::Union{Nothing, Int} = nothing)
 Compute the X b-coefficients of a model fitted with `nlv` LVs.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
 """ 
-function coef(object::Rosaplsr; nlv = nothing)
+function coef(object::Rosaplsr; nlv::Union{Nothing, Int} = nothing)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     xmeans = reduce(vcat, object.fitm_bl.xmeans)
@@ -227,15 +227,21 @@ function coef(object::Rosaplsr; nlv = nothing)
 end
 
 """
-    predict(object::Rosaplsr, Xbl; nlv = nothing)
+    predict(object::Rosaplsr, Xbl; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Rosaplsr, Xbl; nlv = nothing)
+function predict(object::Rosaplsr, Xbl; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
     a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(minimum(nlv), a):min(maximum(nlv), a)
+    if isnothing(nlv)
+        nlv = a
+    elseif isa(nlv, Int)
+        nlv = min(nlv, a)
+    else
+        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    end
     le_nlv = length(nlv)
     Q = eltype(Xbl[1][1, 1])
     X = fconcat(Xbl)

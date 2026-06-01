@@ -356,7 +356,6 @@ Base.@kwdef mutable struct ParLwplsravg
     verbose::Bool = false                   
 end 
 
-
 ## Svm, Trees
 
 Base.@kwdef mutable struct ParSvm    # svmr, svmda
@@ -400,6 +399,11 @@ end
 
 Base.@kwdef mutable struct ParSoplsr
     nlv::Union{Int, Vector{Int}} = 1     
+    scal::Bool = false  
+end 
+
+Base.@kwdef mutable struct ParRosaplsr
+    nlv::Int = 1     
     scal::Bool = false  
 end 
 

@@ -8,7 +8,8 @@ Multiblock sequentially orthogonalized PLSR (SO-PLSR).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs; = scores) to compute.
+* `nlv` : Nb. latent variables (LVs; = scores) to compute. Can be a single integer (same nb. LVs for each block) 
+    or a vector of integers (nb. LVs for each block).
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` and `Y` is scaled by its uncorrected 
     standard deviation.
 
@@ -43,7 +44,7 @@ ntest = nro(ytest)
 ntot = ntrain + ntest 
 (ntot = ntot, ntrain , ntest)
 
-nlv = 2
+nlv = 1
 #nlv = [2, 1, 2]
 #nlv = [2, 0, 1]
 scal = false
@@ -83,12 +84,13 @@ end
 function soplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParSoplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
-    Y = ensure_mat(Y)
-    n = size(Xbl[1], 1)
-    q = nco(Y)   
+    Y = handle_bitmatrix(Q, Y)  # for DA functions
+    n, q = size(Y)   
     nbl = length(Xbl)
     nlv = par.nlv
-    if length(nlv) == 1 ; nlv = repeat([nlv], nbl) ; end 
+    if length(nlv) == 1
+        nlv = fill(nlv, nbl)
+    end 
     ## 'bscal = :none' since block-scaling has no effect on SOPLS  
     fitm_bl = blockscal(Xbl, weights; bscal = :none, centr = false, scal = par.scal)
     ## End

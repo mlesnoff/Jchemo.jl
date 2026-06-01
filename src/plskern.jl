@@ -151,13 +151,13 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWe
             end
         end                   
         mul!(t, X, r)                 # t = X * r
-        dt .= weights.values .* t          # dt = D * t
+        @. dt = weights.values * t    # dt = D * t
         tt = dot(t, dt)               # tt = t' * dt = t' * D * t 
         mul!(c, XtY', r)
         c ./= tt                      # c = XtY' * r / tt
         mul!(v, X', dt)               # v = (D * X)' * t = X' * (D * t)
         XtY .-= mul!(tmpXtY, v, c')   # XtY = XtY - v * c' ; deflation of the kernel matrix 
-        V[:, a] .= v ./ tt            # ==> the metric applied to covariance is applied outside the loop,
+        @. V[:, a] = v / tt           # ==> the metric applied to covariance is applied outside the loop,
         T[:, a] .= t                  # conversely to other algorithms such as nipals
         W[:, a] .= w
         R[:, a] .= r

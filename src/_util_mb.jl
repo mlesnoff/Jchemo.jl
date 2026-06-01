@@ -20,7 +20,7 @@ Xbl[2]
 Xbl[3]
 ```
 """
-function mblock(X, listbl)
+function mblock(X, listbl::Vector{T}) where T <: AbstractVector{Int}
     Q = eltype(X[1, 1])
     nbl = length(listbl)
     Xbl = list(Matrix{Q}, nbl)
@@ -84,7 +84,7 @@ function blockscal(Xbl; kwargs...)
     blockscal(Xbl, pweight(ones(Q, n)); kwargs...)
 end
 
-function blockscal(Xbl::Vector, weights::ProbabilityWeights; kwargs...)   # to do: specify the type of Xbl
+function blockscal(Xbl::Vector, weights::ProbabilityWeights; kwargs...)   
     par = recovkw(ParBlock, kwargs).par
     @assert in([:none, :frob, :mfa, :ncol, :sd])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])

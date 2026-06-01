@@ -78,13 +78,13 @@ model3 = plskern(; nlv) ;
 model = pip(model1, model2, model3)
 fit!(model, Xbltrain, ytrain)
 
-mod3 = model.model[3] ;
-typeof(mod3) 
-@names mod3 
-@names mod3.fitm
+mod_3 = model.model[3] ;
+typeof(mod_3) 
+@names mod_3 
+@names mod_3.fitm
 
 @head transf(model, Xbltrain)
-@head mod3.fitm.T 
+@head mod_3.fitm.T 
 
 transf(model, Xbltest)
 
@@ -99,16 +99,16 @@ model3 = splsr(; nlv, meth, nvar) ;
 model = pip(model1, model2, model3)
 fit!(model, Xbltrain, ytrain)
 
-mod3 = model.model[3] ;
-typeof(mod3) 
-@names mod3 
-@names mod3.fitm
+mod_3 = model.model[3] ;
+typeof(mod_3) 
+@names mod_3 
+@names mod_3.fitm
 
-mod3.fitm.sellv
-mod3.fitm.sel
+mod_3.fitm.sellv
+mod_3.fitm.sel
 
 @head transf(model, Xbltrain)
-@head mod3.fitm.T 
+@head mod_3.fitm.T 
 
 transf(model, Xbltest)
 
@@ -155,13 +155,13 @@ function mbplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::ProbabilityW
 end
 
 """ 
-    transf(object::Mbplsr, Xbl; nlv = nothing)
+    transf(object::Mbplsr, Xbl; nlv::Union{Nothing, Int} = nothing)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transf(object::Mbplsr, Xbl; nlv = nothing)
+function transf(object::Mbplsr, Xbl; nlv::Union{Nothing, Int} = nothing)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     zXbl = transf(object.fitm_bl, Xbl)    
@@ -169,16 +169,22 @@ function transf(object::Mbplsr, Xbl; nlv = nothing)
 end
 
 """
-    predict(object::Mbplsr, Xbl; nlv = nothing)
+    predict(object::Mbplsr, Xbl; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Mbplsr, Xbl; nlv = nothing)
+function predict(object::Mbplsr, Xbl; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(a, minimum(nlv)):min(a, maximum(nlv))
+    if isnothing(nlv)
+        nlv = a
+    elseif isa(nlv, Int)
+        nlv = min(nlv, a)
+    else
+        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    end
     le_nlv = length(nlv)
     T = transf(object, Xbl)
     pred = list(Matrix{Q}, le_nlv)

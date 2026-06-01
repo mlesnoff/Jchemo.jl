@@ -6,8 +6,7 @@ Nipals to compute the first score and loading vectors of a matrix.
 * `UUt` : Matrix (n, n) for Gram-Schmidt orthogonalization.
 * `VVt` : Matrix (p, p) for Gram-Schmidt orthogonalization.
 Keyword arguments:
-* `tol` : Tolerance value for stopping 
-    the iterations.
+* `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. of iterations.
 
 The function finds:
@@ -96,7 +95,7 @@ function nipals(X, UUt, VVt; kwargs...)
     sv = normv(t)
     u = t / sv 
     niter = iter - 1
-    (t = t, u, v, sv, niter)
+    (t = t, u, v, sv, niter) 
 end
 
 

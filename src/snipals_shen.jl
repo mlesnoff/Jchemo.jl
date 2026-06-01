@@ -23,12 +23,12 @@ function snipals_shen(X; kwargs...)
         mul!(vtild, X', u)
         ## Sparsity
         if nzeros > 0
-            absv .= abs.(vtild)
+            @. absv = abs(vtild)
             ind .= sortperm(absv; rev = true)
             sel .= ind[1:nvar]
             qt = minimum(absv[sel])
             lambda = maximum(absv[absv .< qt])
-            vtild .= fthresh.(vtild, lambda)
+            @. vtild = fthresh(vtild, lambda)
         end
         ## End
         mul!(u, X, vtild)

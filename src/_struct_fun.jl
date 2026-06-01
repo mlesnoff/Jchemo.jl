@@ -524,6 +524,31 @@ struct Mbplsr
     par::ParMbplsr
 end
 
+struct Soplsr
+    fitm_bl::Blockscal    
+    fitm::Vector
+    T::Matrix
+    fit::Matrix
+    b::Vector
+    yscales::Vector
+    par::ParSoplsr
+end
+
+struct Rosaplsr
+    fitm_bl::Blockscal
+    T::Matrix
+    V::Matrix
+    R::Matrix
+    W::Matrix
+    C::Matrix
+    TT::Vector
+    ymeans::Vector
+    yscales::Vector
+    weights::ProbabilityWeights
+    bl::Vector{Int}
+    par::ParRosaplsr
+end
+
 struct Mbplswest     # mbplswest, mbwcov 
     T::Matrix
     V::Matrix
@@ -543,30 +568,7 @@ struct Mbplswest     # mbplswest, mbwcov
     par::ParMbplsr
 end
 
-struct Rosaplsr
-    fitm_bl::Blockscal
-    T::Matrix
-    V::Matrix
-    R::Matrix
-    W::Matrix
-    C::Matrix
-    TT::Vector
-    ymeans::Vector
-    yscales::Vector
-    weights::ProbabilityWeights
-    bl::Vector{Int}
-    par::ParSoplsr
-end
 
-struct Soplsr
-    fitm_bl::Blockscal    
-    fitm::Vector
-    T::Matrix
-    fit::Matrix
-    b::Vector
-    yscales::Vector
-    par::ParSoplsr
-end
 
 ############---- Discrimination
 
