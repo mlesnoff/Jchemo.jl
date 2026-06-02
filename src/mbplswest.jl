@@ -102,8 +102,11 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs.
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     n = nro(Xbl[1])
+    pbl = nco.(Xbl)
+    pmin = minimum(pbl)
+    ptot = sum(pbl)
     q = nco(Y)
-    nlv = par.nlv
+    nlv = min(n, pmin, par.nlv)
     ## Block scaling
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
@@ -120,14 +123,12 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs.
     # Row metric
     sqrtw = sqrt.(weights.values)
     invsqrtw = 1 ./ sqrtw
-    p = zeros(Int, nbl)
     @inbounds for k in eachindex(Xbl) 
-        p[k] = nco(Xbl[k])
         fweightr!(Xbl[k], sqrtw)
     end
     fweightr!(Y, sqrtw)
     ## Pre-allocation
-    X = similar(Xbl[1], n, sum(p))
+    X = similar(Xbl[1], n, ptot)
     Tbl = list(Matrix{Q}, nbl)
     for k in eachindex(Xbl) ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
     Tb = list(Matrix{Q}, nlv)
@@ -135,13 +136,13 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs.
     Pbl = list(Matrix{Q}, nbl)
     for k in eachindex(Xbl) ; Pbl[k] = similar(Xbl[1], nco(Xbl[k]), nlv) ; end
     Tx = similar(Xbl[1], n, nlv)
-    Wx = similar(Xbl[1], sum(p), nlv)
+    Wx = similar(Xbl[1], ptot, nlv)
     Wytild = similar(Xbl[1], q, nlv)
     Vx = similar(Wx)
     tk  = similar(Xbl[1], n)
     tx = similar(tk)
     ty  = similar(tk)
-    wx = similar(Xbl[1], sum(p))
+    wx = similar(Xbl[1], ptot)
     vx = similar(wx)
     wy  = similar(Xbl[1], q)
     wytild = similar(wy)
@@ -200,35 +201,41 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs.
     fweightr!(Tx, invsqrtw)
     Rx = Wx * inv(Vx' * Wx)
     lb = nothing
-    Mbplswest(Tx, Vx, Rx, Wx, Wytild, Tb, Tbl, Pbl, TTx, fitm_bl, ymeans, yscales, 
-        weights, lb, niter, par)
+    Mbplswest(Tx, Vx, Rx, Wx, Wytild, Tb, Tbl, Pbl, TTx, fitm_bl, ymeans, yscales, weights, 
+        lb, niter, par)
 end
 
 """ 
-    transf(object::Mbplswest, Xbl; nlv = nothing)
+    transf(object::Mbplswest, Xbl; nlv::Union{Nothing, Int} = nothing)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transf(object::Mbplswest, Xbl; nlv = nothing)
-    a = object.par.nlv
+function transf(object::Mbplswest, Xbl; nlv::Union{Nothing, Int} = nothing)
+    a = nco(object.T)
     nlv = isnothing(nlv) ? a : min(nlv, a)
     zXbl = transf(object.fitm_bl, Xbl)    
     fconcat(zXbl) * vcol(object.R, 1:nlv) 
 end
 
 """
-    predict(object::Mbplswest, Xbl; nlv = nothing)
+    predict(object::Mbplswest, Xbl; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Mbplswest, Xbl; nlv = nothing)
+function predict(object::Mbplswest, Xbl; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
     Q = eltype(Xbl[1][1, 1])
-    a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(a, minimum(nlv)):min(a, maximum(nlv))
+    a = nco(object.T)
+    if isnothing(nlv)
+        nlv = a
+    elseif isa(nlv, Int)
+        nlv = min(nlv, a)
+    else
+        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    end
     le_nlv = length(nlv)
     T = transf(object, Xbl)
     pred = list(Matrix{Q}, le_nlv)

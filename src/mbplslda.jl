@@ -137,23 +137,29 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Mbplsprobda, Xbl; nlv = nothing)
+function transf(object::Mbplsprobda, Xbl; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
     transf(object.fitm_emb, Xbl; nlv)
 end
 
 """
-    predict(object::Mbplsprobda, Xbl; nlv = nothing)
+    predict(object::Mbplsprobda, Xbl; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Mbplsprobda, Xbl; nlv = nothing)
+function predict(object::Mbplsprobda, Xbl; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
     Q = eltype(Xbl[1][1, 1])
     Qy = eltype(object.lev)
     m = nro(Xbl[1])
     a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(minimum(nlv), a):min(maximum(nlv), a)
+        if isnothing(nlv)
+        nlv = a
+    elseif isa(nlv, Int)
+        nlv = min(nlv, a)
+    else
+        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    end
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)

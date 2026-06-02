@@ -82,11 +82,13 @@ end
 function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParRosaplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])   
-    n = nro(Xbl[1])
-    pbl = [nco(Xbl[k]) for k in eachindex(Xbl)]
-    q = nco(Y)
-    nlv = par.nlv
     nbl = length(Xbl)
+    n = nro(Xbl[1])
+    pbl = nco.(Xbl)
+    pmin = minimum(pbl)
+    ptot = sum(pbl)
+    q = nco(Y)
+    nlv = min(n, pmin, par.nlv)
     fitm_bl = blockscal(Xbl, weights; bscal = :none, centr = true, scal = par.scal)
     transf!(fitm_bl, Xbl)
     ymeans = colmean(Y, weights)
@@ -98,7 +100,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs..
         fcenter!(Y, ymeans)
     end
     ## Pre-allocation
-    W  = similar(Xbl[1], sum(pbl), nlv)
+    W  = similar(Xbl[1], ptot, nlv)
     V  = similar(W)
     T  = similar(Xbl[1], n, nlv)
     TT = similar(Xbl[1], nlv)    
@@ -108,7 +110,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs..
     dt = similar(t)   
     c  = similar(Xbl[1], q)
     vbl = list(Vector{Q}, nbl)
-    v = similar(Xbl[1], sum(pbl))
+    v  = similar(Xbl[1], ptot)
     corr = similar(Xbl[1], nbl)
     Wbl = list(Array{Q}, nbl)
     wbl = list(Vector{Q}, nbl)      # List of the weights "w" by block for a given "a"

@@ -162,7 +162,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transf(object::Mbplsr, Xbl; nlv::Union{Nothing, Int} = nothing)
-    a = object.par.nlv
+    a = nco(object.fitm.T)
     nlv = isnothing(nlv) ? a : min(nlv, a)
     zXbl = transf(object.fitm_bl, Xbl)    
     fconcat(zXbl) * vcol(object.fitm.R, 1:nlv) 
@@ -177,7 +177,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Mbplsr, Xbl; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
     Q = eltype(Xbl[1][1, 1])
-    a = object.par.nlv
+    a = nco(object.fitm.T)
     if isnothing(nlv)
         nlv = a
     elseif isa(nlv, Int)

@@ -72,7 +72,7 @@ function winvs!(d::Vector{T}; h::T = T(2.0), criw::T = T(4.0), squared::Bool = f
     @. d = ifelse(d <= cutoff, exp(-d / (h * sigma)), zero(T))
     ## Alternative, e.g.: 
     ## d .= wdis(d; typw = :bisquare)
-    dmax = maximum(d)
+    dmax = maximum(d) 
     if dmax > 0
         @. d = d / dmax
     else

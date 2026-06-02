@@ -84,12 +84,18 @@ end
 function soplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParSoplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
+    nbl = length(Xbl)
     Y = handle_bitmatrix(Q, Y)  # for DA functions
     n, q = size(Y)   
-    nbl = length(Xbl)
-    nlv = par.nlv
-    if length(nlv) == 1
-        nlv = fill(nlv, nbl)
+    pbl = nco.(Xbl)
+    if length(par.nlv) == 1
+        pmin = minimum(pbl)
+        nlv = fill(min(n, pmin, par.nlv), nbl)
+    else
+        nlv = par.nlv
+        @inbounds for k = 1:nbl
+            nlv[k] = min(n, pbl[k], nlv[k])
+        end
     end 
     ## 'bscal = :none' since block-scaling has no effect on SOPLS  
     fitm_bl = blockscal(Xbl, weights; bscal = :none, centr = false, scal = par.scal)

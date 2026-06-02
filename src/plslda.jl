@@ -128,18 +128,18 @@ function transf(object::Plsprobda, X; nlv::Union{Nothing, Int} = nothing)
 end
 
 """
-    predict(object::Plsprobda, X; nlv = nothing)
+    predict(object::Plsprobda, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Plsprobda, X; nlv = nothing)
+function predict(object::Plsprobda, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
     X = ensure_mat(X)
     Q = eltype(X)
     Qy = eltype(object.lev)
     m = nro(X)
-    a = object.par.nlv
+    a = nco(object.fitm_emb.T)
     nlv = isnothing(nlv) ? a : max(minimum(nlv), 1):min(maximum(nlv), a)
     le_nlv = length(nlv)
     pred = list(Matrix{Qy}, le_nlv)

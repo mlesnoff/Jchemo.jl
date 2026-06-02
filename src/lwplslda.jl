@@ -99,17 +99,23 @@ function lwplslda(X, y; kwargs...)
 end
 
 """
-    predict(object::Lwplslda, X; nlv = nothing)
+    predict(object::Lwplslda, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
 Compute the y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Lwplslda, X; nlv = nothing)
+function predict(object::Lwplslda, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
     Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
     a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(minimum(nlv), a):min(maximum(nlv), a)
+        if isnothing(nlv)
+        nlv = a
+    elseif isa(nlv, Int)
+        nlv = min(nlv, a)
+    else
+        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    end
     ## Getknn
     metric = object.par.metric
     h = Q(object.par.h)
