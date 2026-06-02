@@ -132,17 +132,25 @@ function predict(object::Plsrda, X; nlv::Union{Nothing, Int, AbstractVector{Int}
     Q = eltype(X)
     Qy = eltype(object.lev)
     m = nro(X)
-    a = nco(object.fitm.T)
-    if isnothing(nlv)
-        nlv = a
-    elseif isa(nlv, Int)
-        nlv = min(nlv, a)
-    else
-        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
-    end
-    le_nlv = length(nlv)
+    #a = nco(object.fitm.T)
+    #if isnothing(nlv)
+    #    nlv = a
+    #elseif isa(nlv, Int)
+    #    nlv = min(nlv, a)
+    #else
+    #    nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    #end
+    #le_nlv = length(nlv)
+    #pred = list(Matrix{Qy}, le_nlv)
+    #posterior = list(Matrix{Q}, le_nlv)
+
+    pred_fitm = predict(object.fitm, X; nlv).pred
+    le_nlv = length(pred_fitm)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
+
+
+
     @inbounds for i in eachindex(nlv)
         zpred = predict(object.fitm, X; nlv = nlv[i]).pred
         #if softmax

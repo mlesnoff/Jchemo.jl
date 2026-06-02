@@ -32,7 +32,8 @@ function pcaeigen!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPca, kwargs).par 
     Q = eltype(X)
     n, p = size(X)
-    nlv = min(par.nlv, n, p)
+    nlv = min(n, p, par.nlv)
+    par.nlv = nlv
     xmeans = colmean(X, weights) 
     xscales = ones(Q, p)
     if par.scal 

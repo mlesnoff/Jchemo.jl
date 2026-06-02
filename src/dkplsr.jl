@@ -172,5 +172,5 @@ function predict(object::Dkplsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}
             pred[i] .= pred[i] * Diagonal(object.yscales)
         end
     end
-    (pred = pred,)
+    (pred = pred, nlv)
 end

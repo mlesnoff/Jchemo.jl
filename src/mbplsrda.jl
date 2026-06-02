@@ -139,7 +139,7 @@ function predict(object::Mbplsrda, Xbl; nlv::Union{Nothing, Int, AbstractVector{
     Qy = eltype(object.lev)
     m = nro(Xbl[1])
     a = object.par.nlv
-        if isnothing(nlv)
+    if isnothing(nlv)
         nlv = a
     elseif isa(nlv, Int)
         nlv = min(nlv, a)

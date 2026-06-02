@@ -87,7 +87,8 @@ function covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWei
     Y = handle_bitmatrix(Q, Y)  # for DA functions
     n, p = size(X)
     q = nco(Y)
-    nlv = min(n, p, par.nlv)  
+    nlv = min(n, p, par.nlv)
+    par.nlv = nlv  
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
     xscales = ones(Q, p)
@@ -142,7 +143,7 @@ Compute selected variables from a fitted model and X-data.
 * `nlv` : Nb. variables to compute.
 """ 
 function transf(object::Covsel, X; nlv::Union{Nothing, Int} = nothing)
-    a = length(object.sel)
+    a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     X[:, object.sel[1:nlv]]
 end
@@ -160,8 +161,9 @@ function Base.summary(object::Covsel)
     cumpvary = 1 .- object.yss / ysstot
     pvarx = cumpvarx - [0; cumpvarx[1:(nlv - 1)]]
     pvary = cumpvary - [0; cumpvary[1:(nlv - 1)]]
-    explvarx = DataFrame(nlv = collect(1:nlv), sel = object.sel, pvar = pvarx, cumpvar = cumpvarx)
-    explvary = DataFrame(nlv = collect(1:nlv), sel = object.sel, pvar = pvary, cumpvar = cumpvary)
+    vnlv = collect(1:nlv)
+    explvarx = DataFrame(nlv = vnlv, sel = object.sel, pvar = pvarx, cumpvar = cumpvarx)
+    explvary = DataFrame(nlv = vnlv, sel = object.sel, pvar = pvary, cumpvar = cumpvary)
     (explvarx = explvarx, explvary)
 end
 

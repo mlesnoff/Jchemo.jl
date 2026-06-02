@@ -52,6 +52,7 @@ model = plsravg(; nlv) ;
 fit!(model, Xtrain, ytrain)
 
 res = predict(model, Xtest)
+@names res
 @head res.pred
 res.predlv   # predictions for each nb. of LVs 
 @show rmsep(res.pred, ytest)
@@ -89,8 +90,9 @@ Compute Y-predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Plsravg, X)
-    res = predict(object.fitm, X)
-    (pred = res.pred, predlv = res.predlv)
+    #res = predict(object.fitm, X)
+    #(pred = res.pred, predlv = res.predlv, nlv = res.nlv)
+    predict(object.fitm, X)
 end
 
 

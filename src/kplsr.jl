@@ -225,5 +225,5 @@ function predict(object::Kplsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}}
         pred[i] = z.int .+ @view(T[:, 1:nlv[i]]) * z.beta * Diagonal(object.yscales)
     end 
     if le_nlv == 1 ; pred = pred[1] ; end
-    (pred = pred,)
+    (pred = pred, nlv)
 end

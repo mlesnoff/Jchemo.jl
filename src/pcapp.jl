@@ -63,7 +63,8 @@ function pcapp!(X::Matrix; kwargs...)
     par = recovkw(ParPcapp, kwargs).par 
     Q = eltype(X)
     n, p = size(X)
-    nlv = min(par.nlv, n, p)
+    nlv = min(n, p, par.nlv)
+    par.nlv = nlv
     nsim = par.nsim
     xmeans = Jchemo.colmedspa(X) 
     xscales = ones(Q, p)

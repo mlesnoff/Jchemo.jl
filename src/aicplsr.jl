@@ -54,7 +54,8 @@ function aicplsr(X, y; alpha = 2, kwargs...)
     Q = eltype(X[1, 1])
     X = ensure_mat(X)
     n, p = size(X)
-    nlv = min(par.nlv, n, p)
+    nlv = min(n, p, par.nlv)
+    par.nlv = nlv
     pars = mpar(scal = par.scal)  
     res = gridscore_lv(X, y, X, y; algo = plskern, score = ssr, pars, nlv = 0:nlv)
     zssr = res.y1
@@ -100,8 +101,7 @@ function aicplsr(X, y; alpha = 2, kwargs...)
     ztab = DataFrame(nlv = znlv, n = fill(n, nlv + 1), df = df, ct = ct, ssr = zssr)
     crit = hcat(ztab, DataFrame(res))
     opt = map(x -> findmin(x[isnan.(x) .== 0])[2] - 1, res)
-    delta = map(
-        x -> x .- findmin(x[isnan.(x) .== 0])[1], res)  # differences "Delta"
+    delta = map(x -> x .- findmin(x[isnan.(x) .== 0])[1], res)  # differences "Delta"
     delta = reduce(hcat, delta)
     nam = [:aic, :cp1, :cp2]
     delta = DataFrame(delta, nam)

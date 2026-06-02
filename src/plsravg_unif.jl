@@ -13,13 +13,14 @@ function plsravg_unif!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs
     par = recovkw(ParPlsravgunif, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
-    nlv = min(minimum(par.nlv), n, p):min(maximum(par.nlv), n, p)
+    nlv = min(n, p, minimum(par.nlv)):min(n, p, maximum(par.nlv))
+    par.nlv = nlv
     fitm = plskern!(X, Y, weights; nlv = maximum(nlv), scal = par.scal)
-    Plsravgunif(fitm, nlv, par)
+    Plsravgunif(fitm, par) 
 end
 
 function predict(object::Plsravgunif, X)
-    nlv = object.nlv
+    nlv = object.par.nlv
     le_nlv = length(nlv)
     predlv = predict(object.fitm, X; nlv).pred
     if(le_nlv == 1)

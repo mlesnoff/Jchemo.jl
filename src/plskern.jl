@@ -102,7 +102,8 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWe
     Y = handle_bitmatrix(Q, Y)  # for DA functions
     n, p = size(X)
     q = nco(Y)
-    nlv = min(n, p, par.nlv) 
+    nlv = min(n, p, par.nlv)
+    par.nlv = nlv
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
     xscales = ones(Q, p)
@@ -176,7 +177,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 """ 
 function transf(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int} = nothing)
     X = ensure_mat(X)
-    a = nco(object.T)
+    a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     ## Could be fcscale! but would change X. If too heavy ==> Makes summary!
     fcscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
@@ -192,7 +193,7 @@ For a model fitted from X (n, p) and Y (n, q), the returned object `B` is a matr
 of zeros. The returned object `int` is the intercept.
 """ 
 function coef(object::Union{Plsr, Splsr}; nlv::Union{Nothing, Int} = nothing)
-    a = nco(object.T)
+    a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     theta = vcol(object.C, 1:nlv)'  # regression coefs of Y on T
     Dy = Diagonal(object.yscales)
@@ -213,7 +214,7 @@ Compute Y-predictions from a fitted model.
 function predict(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
     X = ensure_mat(X)
     Q = eltype(X)
-    a = nco(object.T)
+    a = object.par.nlv
     if isnothing(nlv)
         nlv = a
     elseif isa(nlv, Int)
@@ -228,7 +229,7 @@ function predict(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int, Abstrac
         pred[i] = coefs.int .+ X * coefs.B  # try muladd(X, coefs.B, coefs.int)
     end 
     if le_nlv == 1 ; pred = pred[1] ; end
-    (pred = pred,)
+    (pred = pred, nlv)
 end
 
 """

@@ -102,11 +102,10 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs.
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     n = nro(Xbl[1])
-    pbl = nco.(Xbl)
-    pmin = minimum(pbl)
-    ptot = sum(pbl)
+    pbl = nco.(Xbl) ; pmin = minimum(pbl) ; ptot = sum(pbl)
     q = nco(Y)
     nlv = min(n, pmin, par.nlv)
+    par.nlv = nlv
     ## Block scaling
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
@@ -213,7 +212,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transf(object::Mbplswest, Xbl; nlv::Union{Nothing, Int} = nothing)
-    a = nco(object.T)
+    a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     zXbl = transf(object.fitm_bl, Xbl)    
     fconcat(zXbl) * vcol(object.R, 1:nlv) 
@@ -228,7 +227,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Mbplswest, Xbl; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
     Q = eltype(Xbl[1][1, 1])
-    a = nco(object.T)
+    a = object.par.nlv
     if isnothing(nlv)
         nlv = a
     elseif isa(nlv, Int)
@@ -247,7 +246,7 @@ function predict(object::Mbplswest, Xbl; nlv::Union{Nothing, Int, AbstractVector
         pred[i] = int .+ vcol(T, 1:znlv) * beta * W 
     end 
     if le_nlv == 1 ; pred = pred[1] ; end
-    (pred = pred,)
+    (pred = pred, nlv)
 end
 
 """

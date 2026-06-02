@@ -371,7 +371,6 @@ end
 
 struct Plsravgunif
     fitm::Plsr
-    nlv::UnitRange
     par::ParPlsravgunif
 end
 
@@ -567,8 +566,6 @@ struct Mbplswest     # mbplswest, mbwcov
     niter::Union{Vector, Nothing}
     par::ParMbplsr
 end
-
-
 
 ############---- Discrimination
 

@@ -84,11 +84,10 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs..
     Q = eltype(Xbl[1][1, 1])   
     nbl = length(Xbl)
     n = nro(Xbl[1])
-    pbl = nco.(Xbl)
-    pmin = minimum(pbl)
-    ptot = sum(pbl)
     q = nco(Y)
+    pbl = nco.(Xbl) ; pmin = minimum(pbl) ; ptot = sum(pbl)
     nlv = min(n, pmin, par.nlv)
+    par.nlv = nlv
     fitm_bl = blockscal(Xbl, weights; bscal = :none, centr = true, scal = par.scal)
     transf!(fitm_bl, Xbl)
     ymeans = colmean(Y, weights)

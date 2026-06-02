@@ -113,6 +113,8 @@ function lwplsr(X, Y; kwargs...)
     Q = eltype(X)
     p = nco(X)
     Y = ensure_mat(Y)
+    nlv = min(par.k, p, par.nlv)
+    par.nlv = nlv
     if par.nlvdis == 0
         fitm = nothing
     else
@@ -171,6 +173,6 @@ function predict(object::Lwplsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}
     ## End
     reslocw = locwlv(object.X, object.Y, X; listnn = res.ind, listw, algo = plskern, nlv, scal = object.par.scal, 
         store = object.par.store, verbose = object.par.verbose)
-    (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw)
+    (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw, nlv)
 end
 

@@ -82,6 +82,8 @@ function lwplsravg(X, Y; kwargs...)
     Q = eltype(X)
     p = nco(X)
     Y = ensure_mat(Y)
+    nlv = min(par.k, p, minimum(par.nlv)):min(par.k, p, maximum(par.nlv))
+    par.nlv = nlv
     if par.nlvdis == 0
         fitm = nothing
     else
@@ -104,6 +106,7 @@ function predict(object::Lwplsravg, X)
     Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
+    nlv = object.par.nlv
     ## Getknn
     metric = object.par.metric
     h = Q(object.par.h)
@@ -130,7 +133,7 @@ function predict(object::Lwplsravg, X)
     end
     ## End
     pred = locw(object.X, object.Y, X; listnn = res.ind, listw, algo = plsravg, 
-        nlv = object.par.nlv, scal = object.par.scal, verbose = object.par.verbose).pred
+        nlv, scal = object.par.scal, verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end
 

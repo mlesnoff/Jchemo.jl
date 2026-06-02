@@ -81,11 +81,11 @@ function soplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
     soplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function soplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function soplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParSoplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
-    nbl = length(Xbl)
     Y = handle_bitmatrix(Q, Y)  # for DA functions
+    nbl = length(Xbl)
     n, q = size(Y)   
     pbl = nco.(Xbl)
     if length(par.nlv) == 1
@@ -97,6 +97,7 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
             nlv[k] = min(n, pbl[k], nlv[k])
         end
     end 
+    par.nlv = nlv
     ## 'bscal = :none' since block-scaling has no effect on SOPLS  
     fitm_bl = blockscal(Xbl, weights; bscal = :none, centr = false, scal = par.scal)
     ## End

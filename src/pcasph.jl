@@ -66,7 +66,8 @@ function pcasph!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPca, kwargs).par 
     Q = eltype(X)
     n, p = size(X)
-    nlv = min(par.nlv, n, p)
+    nlv = min(n, p, par.nlv)
+    par.nlv = nlv
     xmeans = Jchemo.colmedspa(X, delta = 0.001)
     xscales = ones(Q, p)
     if par.scal 

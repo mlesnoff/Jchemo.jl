@@ -77,6 +77,7 @@ function cglsr!(X::Matrix, y::Matrix; kwargs...)
     n, p = size(X)
     q = nco(y)
     nlv = min(n, p, par.nlv)
+    par.nlv = nlv
     xmeans = colmean(X)
     ymeans = colmean(y)
     xscales = ones(Q, p)
@@ -92,14 +93,14 @@ function cglsr!(X::Matrix, y::Matrix; kwargs...)
     B = similar(X, p, nlv)
     b = zeros(Q, p) 
     r = vec(y)       # r = y - X * b, with b = 0
-    s = X' * r
-    zp = copy(s)
+    vs = X' * r
+    vp = copy(vs)
     q = similar(X, n)
-    g = dot(s, s)
+    g = dot(vs, vs)
     gnew = similar(X, nlv)
     if par.gs 
         A = similar(X, p, nlv + 1)
-        A[:, 1] .= s ./ sqrt(g)
+        A[:, 1] .= vs ./ sqrt(g)
     end
     F = nothing
     if par.filt
@@ -113,24 +114,24 @@ function cglsr!(X::Matrix, y::Matrix; kwargs...)
     fudge = 1e-4
     # End
     @inbounds for j in 1:nlv
-        mul!(q, X, zp)
+        mul!(q, X, vp)
         alpha = g / dot(q, q)
-        b .+= alpha * zp 
+        b .+= alpha * vp 
         r .-= alpha * q 
-        mul!(s, X', r)
-        # Reorthogonalize s to previous s-vectors
+        mul!(vs, X', r)
+        # Reorthogonalize vs to previous vs-vectors
         if par.gs
             @inbounds for i in 1:j
                 v = vcol(A, i)
-                s .-= dot(v, s) * v
+                vs .-= dot(v, vs) * v
             end
-            A[:, j + 1] .= s ./ sqrt(dot(s, s))
+            A[:, j + 1] .= vs ./ sqrt(dot(vs, vs))
         end
         # End
-        gnew[j] = dot(s, s) 
+        gnew[j] = dot(vs, vs) 
         beta = gnew[j] / g
         g = copy(gnew[j])
-        zp .= s .+ beta * zp
+        vp .= vs .+ beta * vp
         B[:, j] .= b
         ## Filter factors
         ## fudge threshold is used to prevent filter factors from exploding
@@ -194,6 +195,6 @@ function predict(object::Cglsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}}
         pred[i] = z.int .+ X * z.B
     end 
     if le_nlv == 1 ; pred = pred[1] ; end
-    (pred = pred,)
+    (pred = pred, nlv)
 end
 

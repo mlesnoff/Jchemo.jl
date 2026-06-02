@@ -115,7 +115,8 @@ function spca!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     @assert in([:v; :t])(par.defl) "Wrong value for argument 'defl'."
     Q = eltype(X)
     n, p = size(X)
-    nlv = min(par.nlv, n, p)
+    nlv = min(n, p, par.nlv)
+    par.nlv = nlv
     ## Argument 'algo' is volontary masked (not recommended)
     @assert in([:shen; :post])(par.algo) "Wrong value for argument 'algo'." 
     if par.algo == :shen 

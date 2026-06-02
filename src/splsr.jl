@@ -127,6 +127,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeig
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)
+    par.nlv = nlv
     nvar = par.nvar
     if length(nvar) == 1 ; nvar = repeat([nvar], nlv) ; end
     if par.meth == :soft 
