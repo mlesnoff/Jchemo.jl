@@ -125,9 +125,11 @@ end
 function comdim!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParCpca, kwargs).par 
     Q = eltype(Xbl[1][1, 1])
-    nbl = length(Xbl)
     n = nro(Xbl[1])
-    nlv = par.nlv
+    nbl = length(Xbl)
+    pbl = nco.(Xbl) ; ptot = sum(pbl)
+    nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
+    par.nlv = nlv
     ## Block scaling
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
@@ -146,11 +148,11 @@ function comdim!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
     Tb = list(Matrix{Q}, nlv)
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
     Vbl = list(Matrix{Q}, nbl)
-    for k in eachindex(Xbl) ; Vbl[k] = similar(Xbl[1], nco(Xbl[k]), nlv) ; end
+    for k in eachindex(Xbl) ; Vbl[k] = similar(Xbl[1], pbl[k], nlv) ; end
     lb = similar(Xbl[1], nbl, nlv)
     mu = similar(Xbl[1], nlv)
     TB = similar(Xbl[1], n, nbl)
-    W = similar(Xbl[1], nbl, nlv)
+    W = similar(lb)
     niter = zeros(nlv)
     # End
     res = 0
@@ -167,7 +169,7 @@ function comdim!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
                 vk ./= alphak             # = vk (= normed)
                 mul!(tk, Xbl[k], vk) 
                 Tb[a][:, k] .= tk
-                Tbl[k][:, a] .= tk .* invsqrtw
+                @. Tbl[k][:, a] = tk * invsqrtw
                 TB[:, k] = alphak * tk    # = Qb (qk = alphak * tk)
                 Vbl[k][:, a] .= vk
                 lb[k, a] = alphak^2
@@ -181,7 +183,7 @@ function comdim!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
             end
         end
         niter[a] = iter - 1
-        U[:, a] .= u .* invsqrtw
+        @. U[:, a] = u * invsqrtw
         W[:, a] .= res.v
         mu[a] = res.sv^2   # = sum(lb.^2)   
         @inbounds for k in eachindex(Xbl)

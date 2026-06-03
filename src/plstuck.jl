@@ -85,9 +85,10 @@ function plstuck!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPls2bl, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(X)
-    p = nco(X)
+    n, p = size(X)
     q = nco(Y)
-    nlv = min(par.nlv, p, q)
+    nlv = min(par.nlv, n, p, q)
+    par.nlv = nlv
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     xscales = ones(Q, p)

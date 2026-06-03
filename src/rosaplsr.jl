@@ -82,11 +82,10 @@ end
 function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParRosaplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])   
+    n, q = size(Y)
     nbl = length(Xbl)
-    n = nro(Xbl[1])
-    q = nco(Y)
-    pbl = nco.(Xbl) ; pmin = minimum(pbl) ; ptot = sum(pbl)
-    nlv = min(n, pmin, par.nlv)
+    pbl = nco.(Xbl) ; ptot = sum(pbl)
+    nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
     fitm_bl = blockscal(Xbl, weights; bscal = :none, centr = true, scal = par.scal)
     transf!(fitm_bl, Xbl)

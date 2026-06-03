@@ -94,9 +94,10 @@ function rasvd!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
     Q = eltype(X)
-    p = nco(X)
+    n, p = size(X)
     q = nco(Y)
-    nlv = min(par.nlv, p, q)
+    nlv = min(par.nlv, n, p, q)
+    par.nlv = nlv
     tau = convert(Q, par.tau)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   

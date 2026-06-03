@@ -100,11 +100,10 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs.
     par = recovkw(ParMbplsr, kwargs).par
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
+    n, q = size(Y)
     nbl = length(Xbl)
-    n = nro(Xbl[1])
-    pbl = nco.(Xbl) ; pmin = minimum(pbl) ; ptot = sum(pbl)
-    q = nco(Y)
-    nlv = min(n, pmin, par.nlv)
+    pbl = nco.(Xbl) ; ptot = sum(pbl)
+    nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
     ## Block scaling
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
@@ -132,8 +131,8 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs.
     for k in eachindex(Xbl) ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
     Tb = list(Matrix{Q}, nlv)
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
-    Pbl = list(Matrix{Q}, nbl)
-    for k in eachindex(Xbl) ; Pbl[k] = similar(Xbl[1], nco(Xbl[k]), nlv) ; end
+    Vbl = list(Matrix{Q}, nbl)
+    for k in eachindex(Xbl) ; Vbl[k] = similar(Xbl[1], pbl[k], nlv) ; end
     Tx = similar(Xbl[1], n, nlv)
     Wx = similar(Xbl[1], ptot, nlv)
     Wytild = similar(Xbl[1], q, nlv)
@@ -159,9 +158,9 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs.
                 dk = normv(wktild)
                 wk = wktild / dk
                 tk = Xbl[k] * wk
-                pk =  Xbl[k]' * tk
-                pk ./= dot(tk, tk)
-                Pbl[k][:, a] .= pk
+                vk =  Xbl[k]' * tk
+                vk ./= dot(tk, tk)
+                Vbl[k][:, a] .= vk
                 Tb[a][:, k] .= tk
                 Tbl[k][:, a] .= invsqrtw .* tk  
             end
@@ -200,7 +199,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs.
     fweightr!(Tx, invsqrtw)
     Rx = Wx * inv(Vx' * Wx)
     lb = nothing
-    Mbplswest(Tx, Vx, Rx, Wx, Wytild, Tb, Tbl, Pbl, TTx, fitm_bl, ymeans, yscales, weights, 
+    Mbplswest(Tx, Vx, Rx, Wx, Wytild, Tb, Tbl, Vbl, TTx, fitm_bl, ymeans, yscales, weights, 
         lb, niter, par)
 end
 

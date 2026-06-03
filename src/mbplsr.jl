@@ -90,7 +90,7 @@ transf(model, Xbltest)
 
 predict(model, Xbltest).pred 
 
-## And a MB sparse PLSR as follows
+## And a sparse MB PLSR as follows
 
 meth = :soft ; nvar = 2
 model1 = blockscal(; bscal, centr = true) ;
@@ -138,8 +138,7 @@ function mbplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::ProbabilityW
     par = recovkw(ParMbplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     Y = handle_bitmatrix(Q, Y)  # for DA functions
-    n = nro(Xbl[1])
-    q = nco(Y)
+    n, q = size(Y)
     pbl = nco.(Xbl) ; ptot = sum(pbl)
     nlv = min(n, ptot, par.nlv)
     par.nlv = nlv

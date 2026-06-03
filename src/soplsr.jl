@@ -85,8 +85,8 @@ function soplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::ProbabilityW
     par = recovkw(ParSoplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     Y = handle_bitmatrix(Q, Y)  # for DA functions
-    nbl = length(Xbl)
     n, q = size(Y)   
+    nbl = length(Xbl)
     pbl = nco.(Xbl)
     if length(par.nlv) == 1
         pmin = minimum(pbl)

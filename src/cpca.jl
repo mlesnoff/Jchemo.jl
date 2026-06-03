@@ -96,7 +96,7 @@ res.rdxbl2t
 res.cortbl2t
 res.corx2t 
 
-#### This MBPCA can also be implemented with function 'pip'
+#### This CPCA can also be implemented with function 'pip'
 
 model1 = blockscal(; bscal, centr = true) ;
 model2 = mbconcat()
@@ -114,7 +114,7 @@ typeof(mod3)
 
 transf(model, Xblnew)
 
-#### And a MB sparse PCA as follows
+#### And a sparse CPCA as follows
 
 meth = :soft ; nvar = 2
 model1 = blockscal(; bscal, centr = true) ;
@@ -158,10 +158,10 @@ end
 function cpca!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParCpca, kwargs).par 
     Q = eltype(Xbl[1][1, 1])
-    nbl = length(Xbl)
     n = nro(Xbl[1])
+    nbl = length(Xbl)
     pbl = nco.(Xbl) ; ptot = sum(pbl)
-    nlv = min(n, ptot, par.nlv)
+    nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
     ## Block scaling
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
@@ -180,7 +180,7 @@ function cpca!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
     Tb = list(Matrix{Q}, nlv)
     for a = 1:nlv ; Tb[a] = similar(Xbl[1], n, nbl) ; end
     Vbl = list(Matrix{Q}, nbl)
-    for k in eachindex(Xbl) ; Vbl[k] = similar(Xbl[1], nco(Xbl[k]), nlv) ; end
+    for k in eachindex(Xbl) ; Vbl[k] = similar(Xbl[1], pbl[k], nlv) ; end
     u = similar(Xbl[1], n)
     tk = similar(u)
     w = similar(Xbl[1], nbl)
@@ -217,7 +217,7 @@ function cpca!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
             end
         end
         niter[a] = iter - 1
-        U[:, a] .= u .* invsqrtw
+        @. U[:, a] = u * invsqrtw
         W[:, a] .= w
         mu[a] = res.sv^2  # = sum(lb)
         for k in eachindex(Xbl)

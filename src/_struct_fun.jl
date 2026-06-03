@@ -556,7 +556,7 @@ struct Mbplswest     # mbplswest, mbwcov
     C::Matrix
     Tb::Vector{Matrix}
     Tbl::Vector{Matrix}
-    Pbl::Vector{Matrix}
+    Vbl::Vector{Matrix}
     TT::Vector
     fitm_bl::Blockscal
     ymeans::Vector
