@@ -102,7 +102,7 @@ include("ccawold.jl")
 include("plscan.jl")
 include("plstuck.jl")
 include("rasvd.jl")
-include("mbpca.jl")
+include("cpca.jl")
 include("comdim.jl")
 
 ######---- Regression 
@@ -395,7 +395,7 @@ export
     plscan, plscan!,
     plstuck, plstuck!,
     rasvd, rasvd!,
-    mbpca, mbpca!,
+    cpca, cpca!,
     comdim, comdim!, 
     ######---- Regression
     mlr, mlr!, mlrchol, mlrchol!, 

@@ -183,5 +183,5 @@ function predict(object::Krr, X; lb::Union{Nothing, Float64, AbstractVector{Floa
         pred[i] = z.int .+ Kc * (fweightr(z.A, sqrt.(w)))
     end 
     if le_lb == 1 ; pred = pred[1] ; end
-    (pred = pred,)
+    (pred = pred, lb)
 end

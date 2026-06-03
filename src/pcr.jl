@@ -82,6 +82,7 @@ function pcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)  # built only for consistency with coef::Plsr
     fitm = pcasvd!(X, weights; kwargs...)
+    par.nlv = fitm.par.nlv
     ## Below, first term of the product is equal to Diagonal(1 ./ fitm.sv[1:nlv].^2) 
     ## if T is D-orthogonal. This is the case for the actual version (pcasvd)
     ## theta: coefs regression of Y on T (= C')
@@ -148,7 +149,7 @@ function predict(object::Pcr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} =
         pred[i] = coefs.int .+ X * coefs.B  # try muladd(X, coefs.B, coefs.int)
     end 
     if le_nlv == 1 ; pred = pred[1] ; end
-    (pred = pred,)
+    (pred = pred, nlv)
 end
 
 """

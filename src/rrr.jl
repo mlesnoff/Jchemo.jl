@@ -95,6 +95,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     n, p = size(X)
     q = nco(Y)
     nlv = min(par.nlv, p, q)
+    par.nlv = nlv
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)    
     xscales = ones(Q, p)
@@ -171,7 +172,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
         # For Rx
         tty = dot(ty, ty)
         wx .= invCx * X' * ty / tty
-        wx .= wx / normv(wx)
+        wx ./= normv(wx)
         # Deflation
         X .-= tx * vx'
         Y .-= tx * wytild'

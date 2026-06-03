@@ -142,7 +142,7 @@ function spca!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     sv = similar(X, nlv)
     niter = list(Int, nlv)
     b = similar(X, 1, p)
-    beta = similar(X, p, nlv)
+    beta = similar(V)
     sellv = list(Vector{Int}, nlv)
     for a = 1:nlv
         res = fnipals(X; meth = par.meth, nvar = nvar[a], tol = par.tol, maxit = par.maxit)
@@ -156,7 +156,7 @@ function spca!(X::Matrix, weights::ProbabilityWeights; kwargs...)
         end
         ## End        
         sv[a] = normv(res.t)
-        T[:, a] .= res.t ./ sqrtw
+        @. T[:, a] = res.t / sqrtw
         V[:, a] .= res.v
         beta[:, a] .= vec(b)
         niter[a] = res.niter

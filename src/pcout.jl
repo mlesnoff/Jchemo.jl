@@ -1,8 +1,8 @@
 """
-    pcoutpcout(X; explvar = .99, critm1 = 1 / 3, critc1 = 2.5, critm2 = 1 / 4, critc2 = 0.99, 
-        cs = .25, outbound = 0.25)
-    pcout!pcout(X::Matrix; explvar = .99, critm1 = 1 / 3, critc1 = 2.5, critm2 = 1 / 4, critc2 = 0.99, 
-        cs = .25, outbound = 0.25)
+    pcoutpcout(X; explvar::Float64 = .99, critm1::Float64 = 1 / 3, critc1::Float64 = 2.5, critm2::Float64 = 1 / 4, 
+        critc2::Float64 = 0.99, cs::Float64 = .25, outbound::Float64 = 0.25)
+    pcout!pcout(X::Matrix; explvar::Float64 = .99, critm1::Float64 = 1 / 3, critc1::Float64 = 2.5, critm2::Float64 = 1 / 4, 
+        critc2::Float64 = 0.99, cs::Float64 = .25, outbound::Float64 = 0.25)
 Pcout algorithm for outlier identification in high dimensions.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -86,13 +86,13 @@ scatter!(ax6, 1:n, res.wfinal01)
 f
 ```
 """ 
-function pcout(X; explvar = .99, critm1 = 1 / 3, critc1 = 2.5, critm2 = 1 / 4, critc2 = 0.99, 
-    cs = .25, outbound = 0.25)
+function pcout(X; explvar::Float64 = .99, critm1::Float64 = 1 / 3, critc1::Float64 = 2.5, critm2::Float64 = 1 / 4, 
+    critc2::Float64 = 0.99, cs::Float64 = .25, outbound::Float64 = 0.25)
     pcout!(copy(ensure_mat(X)); explvar, critm1, critc1, critm2, critc2, cs, outbound) 
 end
 
-function pcout!(X::Matrix; explvar = .99, critm1 = 1 / 3, critc1 = 2.5, critm2 = 1 / 4, critc2 = 0.99, 
-    cs = .25, outbound = 0.25)
+function pcout!(X::Matrix; explvar::Float64 = .99, critm1::Float64 = 1 / 3, critc1::Float64 = 2.5, critm2::Float64 = 1 / 4, 
+    critc2::Float64 = 0.99, cs::Float64 = .25, outbound::Float64 = 0.25)
     Q = eltype(X)
     n = nro(X)
     d = similar(X, n)

@@ -1,10 +1,13 @@
 # News
 
-## *Version 0.9.8*
+## *Version 0.10.0*
 
 - News:
     - Function **boxcox**: Estimate the parameter of the Box-Cox power transformation.
     - Function **pcout**: Pcout algorithm for outlier identification in high dimensions *Filzmoser et al. 2008*.
+
+- Breakings:
+    - Function **mbpca** renamed to **cpca**.
 
 - Modifications
     - Code cleaning.

@@ -1,8 +1,8 @@
 """
-    mbpca(; kwargs...)
-    mbpca(Xbl; kwargs...)
-    mbpca(Xbl, weights::ProbabilityWeights; kwargs...)
-    mbpca!(Xbl::Matrix, weights::ProbabilityWeights; kwargs...)
+    cpca(; kwargs...)
+    cpca(Xbl; kwargs...)
+    cpca(Xbl, weights::ProbabilityWeights; kwargs...)
+    cpca!(Xbl::Matrix, weights::ProbabilityWeights; kwargs...)
 Consensus principal components analysis (CPCA, a.k.a MBPCA) by Nipals.
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock`.  
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -14,9 +14,9 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of blocks in `Xbl` is scaled by its uncorrected standard 
     deviation (before the block scaling).
 
-CPCA Nipals algorithm (Westerhuis et a; 1998). CPCA is also known as MBPCA, and was referred to as CPCA-W in Smilde 
-et al. 2003. Besides eventual block scaling, MBPCA is equivalent to a PCA on the horizontally concatenated matrix 
-X = [X1 X2 ... Xk] and is referred to as SUM-PCA in Smilde et al 2003.
+CPCA Nipals algorithm (Westerhuis et a; 1998), also known as MBPCA, and referred to as CPCA-W in Smilde et al. 2003. 
+Besides an eventual block scaling, CPCA is equivalent to a PCA on the horizontally concatenated matrix X = [X1 X2 ... Xk],
+referred to as SUM-PCA in Smilde et al 2003.
 
 The function returns several objects, in particular:
 * `T` : Global LVs (not-normed).
@@ -67,7 +67,7 @@ bscal = :frob
 #bscal = :none
 scal = false
 #scal = true
-model = mbpca(; nlv, bscal, scal, tol = 1e-15)
+model = cpca(; nlv, bscal, scal, tol = 1e-15)
 fit!(model, Xbl)
 @names model 
 fitm = model.fitm ;
@@ -137,30 +137,32 @@ mod3.fitm.sel
 transf(model, Xblnew)
 ```
 """
-mbpca(; kwargs...) = JchemoModel(mbpca, nothing, kwargs)
+cpca(; kwargs...) = JchemoModel(cpca, nothing, kwargs)
 
-function mbpca(Xbl; kwargs...)
+function cpca(Xbl; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
-    mbpca(Xbl, pweight(ones(Q, n)); kwargs...)
+    cpca(Xbl, pweight(ones(Q, n)); kwargs...)
 end
 
-function mbpca(Xbl, weights::ProbabilityWeights; kwargs...)
+function cpca(Xbl, weights::ProbabilityWeights; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
         zXbl[k] = copy(ensure_mat(Xbl[k]))
     end
-    mbpca!(zXbl, weights; kwargs...)
+    cpca!(zXbl, weights; kwargs...)
 end
 
-function mbpca!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
+function cpca!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParMbpca, kwargs).par 
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     n = nro(Xbl[1])
-    nlv = par.nlv
+    pbl = nco.(Xbl) ; ptot = sum(pbl)
+    nlv = min(n, ptot, par.nlv)
+    par.nlv = nlv
     ## Block scaling
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)

@@ -61,7 +61,7 @@
 - **rasvd** Redundancy analysis (RA), a.k.a PCA on instrumental variables (PCAIV)
 
 *2 or more blocks* 
-- **mbpca** Consensus principal components analysis (CPCA, a.k.a MBPCA) by Nipals
+- **cpca** Consensus principal components analysis (CPCA, a.k.a MBPCA) by Nipals
 - **comdim** Common components and specific weights analysis (CCSWA, a.k.a ComDim or HPCA)
 
 *Utilities*

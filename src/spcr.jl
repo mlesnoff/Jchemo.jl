@@ -98,6 +98,7 @@ function spcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q) 
     fitm = spca!(X, weights; kwargs...)
+    par.nlv = fitm.par.nlv
     theta = inv(fitm.T' * fweightr(fitm.T, fitm.weights.values)) * fitm.T' * fweightr(Y, fitm.weights.values)  # = C'
     Spcr(fitm, theta', ymeans, yscales, par) 
 end
@@ -129,7 +130,7 @@ function predict(object::Spcr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} 
         pred[i] = vcol(T, 1:nlv[i]) * theta .+ object.ymeans'
     end 
     if le_nlv == 1 ; pred = pred[1] ; end
-    (pred = pred,)
+    (pred = pred, nlv)
 end
 
 
