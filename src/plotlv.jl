@@ -57,11 +57,11 @@ CairoMakie.activate!()
 plotlv(Ttrain[:, 1:6]; shape = (2, 3), color = (:blue, .5), zeros = true, xlabel = "PC", ylabel = "PC").f
 plotlv(Ttrain[:, 3:8]; shape = (2, 3), start = 3, color = (:blue, .5), zeros = true, xlabel = "PC", ylabel = "PC").f
 
-group = vcat(repeat(["Train"], ntrain), repeat(["Test"], ntest))
+group = vcat(fill("Train", ntrain), fill("Test", ntest))
 plotlv(T[:, 1:6], group; shape = (2, 3), color = nothing, zeros = true, xlabel = "PC", ylabel = "PC",
     leg = true).f
 
-group = vcat(repeat(["Train"], ntrain), repeat(["Test"], ntest))
+group = vcat(fill("Train", ntrain), fill("Test", ntest))
 color = [(:red, .3); (:blue, .3)]
 #color = cgrad(:Dark2_5, 2; categorical = true, alpha = .5)
 plotlv(1000 * T[:, 1:6], group; shape = (2, 3), color, zeros = true, xlabel = "PC", ylabel = "PC",

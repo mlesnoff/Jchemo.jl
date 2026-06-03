@@ -1,6 +1,6 @@
 """
-    calpds(; npoint = 5, algo = plskern, kwargs...)
-    calpds(X1, X2; npoint = 5, algo = plskern, kwargs...)
+    calpds(; npoint::Int = 5, algo::Function = plskern, kwargs...)
+    calpds(X1, X2; npoint::Int = 5, algo::Function = plskern, kwargs...)
 Piecewise direct standardization (PDS) for calibration transfer of spectral data.
 * `X1` : Spectra (n, p) to transfer to the target.
 * `X2` : Target spectra (n, p).
@@ -67,12 +67,12 @@ axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-function calpds(X1, X2; npoint = 5, algo = plskern, kwargs...)
+function calpds(X1, X2; npoint::Int = 5, algo::Function = plskern, kwargs...)
     @assert npoint >= 1 "Argument 'npoint' must be >= 1."
     p = nco(X1)
     fitm = list(p)
     s = list(p)
-    npo = repeat([npoint], p)
+    npo = fill(npoint, p)
     npo[1:npoint] .= collect(1:npoint) .- 1
     npo[(p - npoint + 1):p] .= collect(npoint:-1:1) .- 1
     @inbounds for i = 1:p

@@ -17,7 +17,7 @@ function gridscore_br(Xtrain, Ytrain, X, Y; algo, score, pars, verbose = false)
     if verbose ; println("-- End.") ; end
     res = ncomb == 1 ? res[1] : reduce(vcat, res) 
     dat = DataFrame(pars)
-    namy = map(string, repeat(["y"], q), 1:q)
+    namy = map(string, fill("y", q), 1:q)
     res = DataFrame(res, Symbol.(namy))
     hcat(dat, res)
 end

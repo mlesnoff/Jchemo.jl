@@ -389,7 +389,7 @@ function  gridcv(model, X, Y; segm, score, pars = nothing, nlv = nothing, lb = n
         namgroup = isnothing(pars) ? [:lb] : [:lb ; collect(keys(pars))]
         gdf = groupby(res_rep, namgroup) 
     end
-    namy = map(string, repeat(["y"], q), 1:q)
+    namy = map(string, fill("y", q), 1:q)
     res = combine(gdf, namy .=> meanv, renamecols = false)
     ## End
     (res = res, res_rep)

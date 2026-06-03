@@ -68,7 +68,7 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, nlv, ve
         ## End
     end
     if verbose ; println("-- End.") ; end
-    namy = map(string, repeat(["y"], q), 1:q)
+    namy = map(string, fill("y", q), 1:q)
     res = DataFrame(res, Symbol.(namy))
     hcat(dat, res)
 end

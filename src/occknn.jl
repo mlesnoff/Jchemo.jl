@@ -57,9 +57,9 @@ ntest_out = nro(Xtest_out)
 ## Only used to compute error rates
 ntot = ntrain_in + ntest_in + ntest_out
 (ntot = ntot, ntrain_in, ntest_in, ntest_out)
-ytrain_in = repeat(["in"], ntrain_in)
-ytest_in = repeat(["in"], ntest_in)
-ytest_out = repeat(["out"], ntest_out)
+ytrain_in = fill("in", ntrain_in)
+ytest_in = fill("in", ntest_in)
+ytest_out = fill("out", ntest_out)
 
 #### Fit the Occ model
 nsamp = 150 ; k = 5 ; cri = 2.5
@@ -101,7 +101,7 @@ errp(pred, ytest_out)
 conf(pred, ytest_out).cnt
 
 d = vcat(dtrain_in.dstand, dtest_in.dstand, dtest_out.dstand)
-group = vcat(repeat(["Train_in"], nsamp), repeat(["Test_in"], ntest_in), repeat(["Test_out"], ntest_out))
+group = vcat(fill("Train_in", nsamp), fill("Test_in", ntest_in), fill("Test_out", ntest_out))
 color = [:purple, (:green, .7), (:red, .3)]
 f, ax = plotxy(1:length(d), d, group; color, size = (500, 300), leg_title = "Type of obs.", 
     xlabel = "Observation index", ylabel = "Standardized distance")

@@ -81,7 +81,7 @@ function decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
     contr = EffectsCoding()   # sum-to-zero
     term_princ = Symbol.(terms(f.rhs))     # [2:end]
     nterm_princ = length(term_princ)
-    tupl = (; zip(term_princ, repeat([contr], nterm_princ))...)
+    tupl = (; zip(term_princ, fill(contr, nterm_princ))...)
     nam = @names tupl
     contrasts = Dict{Symbol, EffectsCoding}()
     for i in term_princ

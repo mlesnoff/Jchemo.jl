@@ -396,7 +396,7 @@ function expand_tab2d(X; namr = nothing, namc = nothing, namv = nothing)
     k = 1
     for j = 1:p, i = 1:m 
         n = X[i, j]
-        res[k] = hcat(repeat([namr[i]], n), repeat([namc[j]], n))
+        res[k] = hcat(fill(namr[i], n), fill(namc[j], n))
         k += 1
     end
     DataFrame(string.(reduce(vcat, res)), namv)

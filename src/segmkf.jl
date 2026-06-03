@@ -55,7 +55,7 @@ function segmkf(n::Int, K::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
     end
     @inbounds for i = 1:rep
         s[i] = list(Q, K)
-        v = [Random.randperm(MersenneTwister(vseed[i]), n) ; repeat([0], outer = m)] 
+        v = [Random.randperm(MersenneTwister(vseed[i]), n) ; fill(0, m)] 
         v = reshape(v, K, :)
         @inbounds for j = 1:K 
             s[i][j] = sort(filter(x -> x > 0, v[j, :]))
@@ -78,7 +78,7 @@ function segmkf(group::Vector, K::Int; rep = 1, seed::Union{Nothing, Int} = noth
     m = K - nlev % K ;
     @inbounds for i = 1:rep
         s[i] = list(Q, K)
-        v = [Random.randperm(MersenneTwister(vseed[i]), nlev) ; repeat([0], outer = m)] 
+        v = [Random.randperm(MersenneTwister(vseed[i]), nlev) ; fill(0, m)] 
         v = reshape(v, K, :)
         @inbounds for j = 1:K 
             s[i][j] = sort(filter(x -> x > 0, v[j, :]))

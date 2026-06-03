@@ -52,9 +52,9 @@ ntest_out = nro(Xtest_out)
 ## Only used to compute error rates
 ntot = ntrain_in + ntest_in + ntest_out
 (ntot = ntot, ntrain_in, ntest_in, ntest_out)
-ytrain_in = repeat(["in"], ntrain_in)
-ytest_in = repeat(["in"], ntest_in)
-ytest_out = repeat(["out"], ntest_out)
+ytrain_in = fill("in", ntrain_in)
+ytest_in = fill("in", ntest_in)
+ytest_out = fill("out", ntest_out)
 
 #### Fit a preliminary Pca model on the training data 'in'
 nlv = 15
@@ -71,7 +71,7 @@ Ttest_in = transf(model0, Xtest_in)
 Ttest_out = transf(model0, Xtest_out)
 #GLMakie.activate!()   # requires GLMakie
 T = vcat(Ttrain_in, Ttest_in, Ttest_out)
-group = vcat(repeat(["Train_in"], ntrain_in), repeat(["Test_in"], ntest_in), repeat(["Test_out"], ntest_out))
+group = vcat(fill("Train_in", ntrain_in), fill("Test_in", ntest_in), fill("Test_out", ntest_out))
 color = [:purple, (:green, .7), (:red, .3)]
 i = 1
 plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of obs.", 

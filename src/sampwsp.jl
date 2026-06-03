@@ -15,7 +15,7 @@ Output `test` is built from the "Wootton, Sergent, Phan-Tan-Luu" (WSP) algorithm
 uniformely distributed in the `X` domain (Santiago et al. 2012).
 
 If `recod = true`, each column x of `X` is recoded within [0, 1] and the center of the domain is the vector 
-`repeat([.5], p)`. Column x is recoded such as: 
+`fill(.5, p)`. Column x is recoded such as: 
 * vmin = minimum(x)
 * vmax = maximum(x)
 * vdiff = vmax - vmin
@@ -51,11 +51,11 @@ function sampwsp(X, dmin; recod = false, maxit = nro(X))
     x = similar(X, 1, p)
     if recod
         zX = recodwsp(X) 
-        xmeans = repeat([.5], p)
+        xmeans = fill(.5, p)
     else
         zX = copy(X)
         xmeans = colmean(zX)
-        #xmeans = repeat([.5], p)
+        #xmeans = fill(.5, p)
     end
     ## First reference point is set as the closest from the domain center
     s = getknn(zX, xmeans'; k = 1).ind[1][1]

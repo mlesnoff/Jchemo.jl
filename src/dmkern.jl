@@ -126,14 +126,14 @@ function dmkern(X; kwargs...)
     ## Particular case where n = 1
     ## (ad'hoc code for discrimination functions only)
     if n == 1
-        H = diagm(repeat([a * n^(-1/(p + 4))], p))
+        H = diagm(fill(a * n^(-1/(p + 4)), p))
     end
     ## End
     if isnothing(h)
         h = a * n^(-1 / (p + 4)) * colstd(X)      # a = .9, 1.06
         H = diagm(h)
     else 
-        H = isa(h, Real) ? diagm(repeat([h], p)) : diagm(h)
+        H = isa(h, Real) ? diagm(fill(h, p)) : diagm(h)
     end
     Hinv = inv(H)
     detH = det(H)

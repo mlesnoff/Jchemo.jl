@@ -43,7 +43,7 @@ that sums to 1.
 ```julia
 using Jchemo
 
-y = vcat(rand(["a" ; "c"], 900), repeat(["b"], 100))
+y = vcat(rand(["a" ; "c"], 900), fill("b", 100))
 tab(y)
 weights = pweightcla(y)
 #weights = pweightcla(y; prior = :prop)

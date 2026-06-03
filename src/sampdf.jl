@@ -53,7 +53,7 @@ function sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); meth = 
     nam = names(Y)
     train = list(Vector, p)  
     test = list(Vector, p)
-    if length(k) == 1 ; k = repeat([k], p) ; end
+    if length(k) == 1 ; k = fill(k, p) ; end
     @inbounds for i in axes(Y, 2)
         y = Y[:, nam[i]]
         s_all = findall(ismissing.(y) .== 0)

@@ -1,6 +1,6 @@
 """
-    calds(; algo = plskern, kwargs...)
-    calds(X1, X2; algo = plskern, kwargs...)
+    calds(; algo::Function = plskern, kwargs...)
+    calds(X1, X2; algo::Function = plskern, kwargs...)
 Direct standardization (DS) for calibration transfer of spectral data.
 * `X1` : Spectra (n, p) to transfer to the target.
 * `X2` : Target spectra (n, p).
@@ -56,7 +56,7 @@ axislegend(position = :rb, framevisible = false)
 f
 ```
 """ 
-function calds(X1, X2; algo = plskern, kwargs...)
+function calds(X1, X2; algo::Function = plskern, kwargs...)
     fitm = algo(X1, X2; kwargs...)
     Calds(fitm)
 end

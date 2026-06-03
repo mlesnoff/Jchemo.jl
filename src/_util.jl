@@ -108,7 +108,7 @@ Compute the sum by group over a categorical variable.
 using Jchemo
 
 x = ones(1000)
-y = vcat(rand(["a" ; "c"], 900), repeat(["b"], 100))
+y = vcat(rand(["a" ; "c"], 900), fill("b", 100))
 
 aggsumv(x, y)
 ```
@@ -712,11 +712,11 @@ Jchemo.vcatdf(dat; cols = :union)
 function vcatdf(dat; cols = :intersect) 
     n = length(dat) 
     X = copy(dat[1])
-    group = repeat([1], nro(X))
+    group = fill(1, nro(X))
     if n > 1
         for i = 2:n
             X = DataFrames.vcat(X, dat[i]; cols = cols)
-            group = vcat(group, repeat([i], nro(dat[i])))
+            group = vcat(group, fill(i, nro(dat[i])))
         end
     end
     (X = X, group)

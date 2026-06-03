@@ -126,7 +126,7 @@ function spca!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     end
     ## End 
     nvar = par.nvar
-    if length(nvar) == 1 ; nvar = repeat([nvar], nlv) ; end
+    if length(nvar) == 1 ; nvar = fill(nvar, nlv) ; end
     xmeans = colmean(X, weights) 
     xscales = ones(Q, p)
     if par.scal 

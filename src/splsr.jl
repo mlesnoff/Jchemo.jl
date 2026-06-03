@@ -129,7 +129,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeig
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     nvar = par.nvar
-    if length(nvar) == 1 ; nvar = repeat([nvar], nlv) ; end
+    if length(nvar) == 1 ; nvar = fill(nvar, nlv) ; end
     if par.meth == :soft 
         fthresh = thresh_soft
     elseif par.meth == :hard 
