@@ -1,5 +1,9 @@
 """
-    gridcv(model, X, Y; segm, score, pars = nothing, nlv = nothing, lb = nothing, verbose = false)
+    gridcv(model, X, Y; segm::Vector{Vector{Vector{Int64}}}, 
+        score::Function, pars::Union{Nothing, NamedTuple} = nothing, 
+        nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing, 
+        lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing,  
+        verbose::Bool = false)
 Cross-validation (CV) of a model over a grid of parameters.
 * `model` : Model to evaluate.
 * `X` : Training X-data (n, p).
@@ -138,8 +142,8 @@ gamma = (10).^(-5:1.:5)
 pars = mpar(gamma = gamma)
 rescv = gridcv(model, Xtrain, ytrain; segm,  score = rmsep, pars, nlv) ;
 res = rescv.res 
-loggamma = round.(log.(10, res.gamma), digits = 1)
-plotgrid(res.nlv, res.y1, loggamma; step = 2, xlabel = "Nb. LVs",  ylabel = "RMSEP-CV", 
+lgamma = round.(log.(10, res.gamma), digits = 1)
+plotgrid(res.nlv, res.y1, lgamma; step = 2, xlabel = "Nb. LVs",  ylabel = "RMSEP-CV", 
     leg_title = "Log(gamma)").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
@@ -234,9 +238,9 @@ plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
 
 ####-- Pipeline Snv :> Savgol :> Plsr   (Only the last model is tuned)
 ## model1
-model1 = snv()
+model1 = snv(scal = false)
 ## model2 
-npoint = 11 ; deriv = 2 ; degree = 3
+npoint = 5 ; deriv = 0 ; degree = 2
 model2 = savgol(; npoint, deriv, degree)
 ## model3
 nlv = 0:30
@@ -344,15 +348,18 @@ conf(respred[:, 1], respred[:, 2]).pct
 
 ```
 """
-function  gridcv(model, X, Y; segm, score, pars = nothing, nlv = nothing, lb = nothing, 
-        verbose = false) 
+function  gridcv(model, X, Y; segm::Vector{Vector{Vector{Int64}}}, 
+        score::Function, pars::Union{Nothing, NamedTuple} = nothing, 
+        nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing, 
+        lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing,  
+        verbose::Bool = false) 
     q = nco(Y)
     nrep = length(segm)
     res_rep = list(nrep)
-    @inbounds for i in 1:nrep
+    @inbounds for i in eachindex(res_rep) 
         if verbose ; print("/ rep=", i, " ") ; end
         listsegm = segm[i]       # segments in the repetition
-        nsegm = length(listsegm) # segmts: = 1; segmkf: = K
+        nsegm = length(listsegm) # if segmts: = 1; if segmkf: = K
         zres = list(nsegm)       # results for the repetition
         @inbounds for j = 1:nsegm
             if verbose ; print("segm=", j, " ") ; end

@@ -1,5 +1,7 @@
 """
-    gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, lb, verbose = false)
+    gridscore_lb(Xtrain, Ytrain, X, Y; algo, score::Function, 
+        pars::Union{Nothing, NamedTuple} = nothing, 
+        lb::Union{Float64, AbstractVector{Float64}}, verbose::Bool = false)
 Working function for `gridscore`.
 
 Specific, and faster than `gridscore_br`, for models using ridge regularization (e.g., RR). 
@@ -7,7 +9,9 @@ Argument `pars` must not contain `lb`.
 
 See function `gridscore` for examples.
 """
-function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, lb, verbose = false)
+function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score::Function, 
+        pars::Union{Nothing, NamedTuple} = nothing, 
+        lb::Union{Float64, AbstractVector{Float64}}, verbose::Bool = false)
     Q = eltype(Xtrain[1, 1])
     q = nco(Ytrain)
     lb = mlev(lb)
@@ -15,7 +19,7 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, lb, ver
     if isnothing(pars)    # e.g.: case of RR
         if verbose ; println("-- Nb. combinations = 0.") ; end
         fitm = algo(Xtrain, Ytrain, lb = maximum(lb))
-        pred = predict(fitm, X; lb = lb).pred
+        pred = predict(fitm, X; lb).pred
         if le_lb == 1 ; pred = [pred] ; end
         res = zeros(Q, le_lb, q)
         @inbounds for i in eachindex(lb) 
@@ -28,7 +32,7 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, lb, ver
         res = map(values(pars)...) do v...
             if verbose ; println(Pair.(keys(pars), v)...) ; end
             fitm = algo(Xtrain, Ytrain ; lb = maximum(lb), Pair.(keys(pars), v)...)
-            pred = predict(fitm, X; lb = lb).pred
+            pred = predict(fitm, X; lb).pred
             if le_lb == 1 ; pred = [pred] ; end
             zres = zeros(Q, le_lb, q)
             @inbounds for i in eachindex(lb)

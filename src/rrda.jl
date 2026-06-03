@@ -100,14 +100,14 @@ function rrda(X, y, weights::ProbabilityWeights; kwargs...)
 end
 
 """
-    predict(object::Rrda, X; lb = nothing)
+    predict(object::Rrda, X; lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing)
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `lb` : Regularization parameter, or collection of regularization parameters, "lambda" to consider. 
     If nothing, it is the parameter stored in the fitted model.
 """ 
-function predict(object::Rrda, X; lb = nothing)
+function predict(object::Rrda, X; lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing)
     X = ensure_mat(X)
     Q = eltype(X)
     Qy = eltype(object.lev)

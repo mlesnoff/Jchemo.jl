@@ -111,38 +111,38 @@ function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeig
     K = fkern(X, X; kwargs...)     # In the future?: fkern!(K, X, X; values(kwargs)...)
     Kt = K'    
     DKt = fweightr(Kt, weights.values)
-    vtot = sum(DKt, dims = 1)
+    vtot = sum(DKt; dims = 1)  # keep matrix format
     Kc = K .- vtot' .- vtot .+ sum(fweightr(DKt', weights.values)) 
+    I = Diagonal(ones(Q, n))
     ## Pre-allocation
-    K = similar(Kc)
     T = similar(X, n, nlv)
     U = similar(T)
     C = similar(X, q, nlv)
-    I = Diagonal(ones(Q, n))
-    iter = Int.(zeros(nlv))
+    iter = zeros(Int, nlv)
     # temporary results
     t  = similar(X, n)
     dt = similar(t)
     c  = similar(X, q)
-    u  = similar(X, n)
-    zu = similar(u)
+    u  = similar(t)
+    zu = similar(t)
     # End
+    K .= copy(Kc)  # initialization
     for a in 1:nlv
         if q == 1      
-            mul!(t, K, vec(fweightr(Y, weights.values)))  # t = K * D * Y
+            mul!(t, K, vec(fweightr(Y, weights.values)))  # t = K * D * Y         
             t ./= sqrt(dot(t, weights.values .* t))
-            dt .= weights.values .* t
+            @. dt = weights.values * t
             mul!(c, Y', dt)
             u .= Y * c 
             u ./= normv(u) 
         else
             u .= Y[:, 1]
-            ztol = 1.
+            ztol = Q(1.)
             ziter = 1
             while ztol > par.tol && ziter <= par.maxit
                 mul!(t, K, weights.values .* u)
                 t ./= normv(t, weights) 
-                dt .= weights.values .* t                
+                @. dt = weights.values * t                
                 mul!(c, Y', dt)
                 zu .= Y * c 
                 zu ./= normv(zu) 
@@ -177,7 +177,7 @@ function transf(object::Kplsr, X; nlv::Union{Nothing, Int} = nothing)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     DKt = fweightr(K', object.weights.values) 
-    vtot = sum(DKt, dims = 1)
+    vtot = sum(DKt; dims = 1)  # keep matrix format
     Kc = K .- vtot' .- object.vtot .+ sum(fweightr(object.DKt', object.weights.values))  
     Kc * @view(object.R[:, 1:nlv])
 end

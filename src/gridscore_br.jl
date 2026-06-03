@@ -1,10 +1,12 @@
 """
-    gridscore_br(Xtrain, Ytrain, X, Y; algo, score, pars, verbose = false)
+    gridscore_br(Xtrain, Ytrain, X, Y; algo::Function, score::Function, pars::NamedTuple, 
+        verbose::Bool = false)
 Working function for `gridscore`.
 
 See function `gridscore` for examples.
 """
-function gridscore_br(Xtrain, Ytrain, X, Y; algo, score, pars, verbose = false)
+function gridscore_br(Xtrain, Ytrain, X, Y; algo::Function, score::Function, pars::NamedTuple, 
+        verbose::Bool = false)
     q = nco(Ytrain)
     ncomb = length(pars[1]) # nb. combinations in pars
     if verbose ; println("-- Nb. combinations = ", ncomb) ; end

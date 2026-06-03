@@ -83,7 +83,7 @@ function plsrosa!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
             w = w .- z * (z' * w)
             w ./= normv(w)
         end
-        dt .= weights.values .* t
+        @. dt = weights.values * t
         tt = dot(t, dt)
         mul!(c, Y', dt)
         c ./= tt                      

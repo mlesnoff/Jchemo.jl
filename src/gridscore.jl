@@ -1,8 +1,13 @@
 """
-    gridscore(model, Xtrain, Ytrain, X, Y; score, pars = nothing, nlv = nothing, lb = nothing, 
-        verbose = false)
-    gridscore(model::Pipeline, Xtrain, Ytrain, X, Y; score, pars = nothing, nlv = nothing, lb = nothing, 
-        verbose = false) 
+    gridscore(model, Xtrain, Ytrain, X, Y; score::Function, pars::Union{Nothing, NamedTuple} = nothing, 
+        nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing, 
+        lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing, 
+        verbose::Bool = false)
+    gridscore(model::Pipeline, Xtrain, Ytrain, X, Y; score::Function, 
+        pars::Union{Nothing, NamedTuple} = nothing, 
+        nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing, 
+        lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing, 
+        verbose::Bool = false) 
 Test-set validation of a model over a grid of parameters.
 * `model` : Model to evaluate.
 * `Xtrain` : Training X-data (n, p).
@@ -123,8 +128,8 @@ nlv = 0:30
 gamma = (10).^(-5:1.:5)
 pars = mpar(gamma = gamma)
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, nlv)
-loggamma = round.(log.(10, res.gamma), digits = 1)
-plotgrid(res.nlv, res.y1, loggamma; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP",
+lgamma = round.(log.(10, res.gamma), digits = 1)
+plotgrid(res.nlv, res.y1, lgamma; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP",
     leg_title = "Log(gamma)").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
@@ -217,9 +222,9 @@ plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction
 
 ####-- Pipeline Snv :> Savgol :> Plsr   (Only the last model is tuned)
 ## model1
-model1 = snv()
+model1 = snv(scal = false)
 ## model2 
-npoint = 11 ; deriv = 2 ; degree = 3
+npoint = 5 ; deriv = 0 ; degree = 2
 model2 = savgol(; npoint, deriv, degree)
 ## model3
 nlv = 0:30
@@ -310,8 +315,10 @@ pred = predict(model, Xtest).pred
 conf(pred, ytest).pct
 ```
 """
-function gridscore(model, Xtrain, Ytrain, X, Y; score, pars = nothing, nlv = nothing, 
-        lb = nothing, verbose = false)
+function gridscore(model, Xtrain, Ytrain, X, Y; score::Function, pars::Union{Nothing, NamedTuple} = nothing, 
+        nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing, 
+        lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing, 
+        verbose::Bool = false)
     ## Multiblock Xbl is allowed
     algo = model.algo
     if isnothing(nlv) && isnothing(lb)
@@ -324,8 +331,11 @@ function gridscore(model, Xtrain, Ytrain, X, Y; score, pars = nothing, nlv = not
     res
 end
 
-function gridscore(model::Pipeline, Xtrain, Ytrain, X, Y; score, pars = nothing, nlv = nothing, lb = nothing, 
-        verbose = false)
+function gridscore(model::Pipeline, Xtrain, Ytrain, X, Y; score::Function, 
+    pars::Union{Nothing, NamedTuple} = nothing, 
+    nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing, 
+    lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing, 
+    verbose::Bool = false)
     fit!(model, Xtrain, Ytrain)
     K = length(model.model)
     for i = 1:(K - 1)

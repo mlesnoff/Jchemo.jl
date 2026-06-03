@@ -129,7 +129,7 @@ function krr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeight
     K = fkern(X, X; kwargs...)
     sqrtw = sqrt.(weights.values)
     DKt = fweightr(K', weights.values)
-    vtot = sum(DKt, dims = 1)
+    vtot = sum(DKt; dims = 1)  # keep matrix format
     Kc = K .- vtot' .- vtot .+ sum(fweightr(DKt', weights.values))
     # Kd = D^(1/2) * Kc * D^(1/2) 
     #    = U * Delta^2 * U'    
@@ -173,7 +173,7 @@ function predict(object::Krr, X; lb::Union{Nothing, Float64, AbstractVector{Floa
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     DKt = fweightr(K', object.weights.values)
-    vtot = sum(DKt, dims = 1)
+    vtot = sum(DKt; dims = 1)  # keep matrix format
     w = object.weights.values
     Kc = K .- vtot' .- object.vtot .+ sum(fweightr(object.DKt', w))
     le_lb = length(lb)

@@ -80,7 +80,7 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...
             w .= svd!(XtY).U[:, 1]
         end
         mul!(t, X, w)
-        dt .= weights.values .* t
+        @. dt = weights.values * t
         tt = dot(t, dt)
         mul!(v, X', dt)
         v ./= tt

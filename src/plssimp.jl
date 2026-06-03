@@ -80,7 +80,7 @@ function plssimp!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
         end
         r .= svd!(zXtY).U[:, 1] 
         mul!(t, X, r)                 
-        dt .= weights.values .* t            
+        @. dt = weights.values * t            
         tt = dot(t, dt)
         mul!(c, XtY', r)
         c ./= tt                      

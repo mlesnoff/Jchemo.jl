@@ -1,5 +1,7 @@
 """
-    gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, nlv, verbose = false)
+    gridscore_lv(Xtrain, Ytrain, X, Y; algo, score::Function, 
+        pars::Union{Nothing, NamedTuple} = nothing, 
+        nlv::Union{Int, AbstractVector{Int}}, verbose::Bool = false)
 Working function for `gridscore`.
 
 Specific, and faster than `gridscore_br`, for models using latent variables (e.g., PLSR). 
@@ -7,14 +9,17 @@ Argument `pars` must not contain `nlv`.
 
 See function `gridscore` for examples.
 """
-function gridscore_lv(Xtrain, Ytrain, X, Y; algo, score, pars = nothing, nlv, verbose = false)
+function gridscore_lv(Xtrain, Ytrain, X, Y; algo, score::Function, 
+        pars::Union{Nothing, NamedTuple} = nothing, 
+        nlv::Union{Int, AbstractVector{Int}}, verbose::Bool = false)
     Q = eltype(Xtrain[1, 1])  # work also for mb
     ## Not multiblock
     if isa(Xtrain[1, 1], Number)
         n, p = size(Xtrain)
     ## Multiblock
     else  
-        n, p = size(Xtrain[1])
+        n = nco(Xtrain[1])
+        p = sum(nco.(Xtrain))
     end
     ## End
     q = nco(Ytrain)

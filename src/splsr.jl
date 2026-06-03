@@ -197,7 +197,7 @@ function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeig
             end
         end                   
         mul!(t, X, r)                 
-        dt .= weights.values .* t          
+        @. dt = weights.values * t          
         tt = dot(t, dt)               
         mul!(c, YtX, r)
         c ./= tt                      

@@ -85,7 +85,7 @@ function kpca(X, weights::ProbabilityWeights; kwargs...)
     sqrtw = sqrt.(weights.values)
     Kt = K'    
     DKt = fweightr(Kt, weights.values)
-    vtot = sum(DKt, dims = 1)
+    vtot = sum(DKt; dims = 1)  # keep matrix format
     Kc = K .- vtot' .- vtot .+ sum(fweightr(DKt', weights.values))    # = K .- vtot' .- vtot .+ sum(D * DKt')
     Kd = fweightr(Kc, sqrtw) * Diagonal(sqrtw)    # = sqrtD * Kc * sqrtD
     res = LinearAlgebra.svd(Kd)
@@ -112,7 +112,7 @@ function transf(object::Kpca, X; nlv::Union{Nothing, Int} = nothing)
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     w = object.weights.values
     DKt = fweightr(K', w)
-    vtot = sum(DKt, dims = 1)
+    vtot = sum(DKt; dims = 1)  # keep matrix format
     Kc = K .- vtot' .- object.vtot .+ sum(fweightr(object.DKt', w))
     T = Kc * @view(object.V[:, 1:nlv])
     T

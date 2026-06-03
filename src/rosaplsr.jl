@@ -113,7 +113,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs..
     Wbl = list(Array{Q}, nbl)
     wbl = list(Vector{Q}, nbl)      # List of the weights "w" by block for a given "a"
     zT = similar(Xbl[1], n, nbl)    # Matrix gathering the nbl scores for a given "a"
-    bl = fill(0, nlv)
+    bl = fill(zero(Q), nlv)
     ## Old
     #ssr = similar(Xbl[1], nbl)
     #Res = zeros(n, q, nbl)
@@ -146,7 +146,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs..
         ## Old
         #@inbounds for k in eachindex(Xbl)
         #    t = vcol(zT, k)
-        #    dt .= weights.values .* t
+        #    @. dt = weights.values * t
         #    tt = dot(t, dt)
         #    Res[:, :, k] .= Y .- (t * t') * DY / tt
         #end
