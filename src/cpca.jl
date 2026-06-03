@@ -156,7 +156,7 @@ function cpca(Xbl, weights::ProbabilityWeights; kwargs...)
 end
 
 function cpca!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParMbpca, kwargs).par 
+    par = recovkw(ParCpca, kwargs).par 
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     n = nro(Xbl[1])
@@ -225,26 +225,26 @@ function cpca!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
         end
     end
     T = sqrt.(mu)' .* U    
-    Mbpca(T, U, W, Tb, Tbl, Vbl, lb, mu, fitm_bl, weights, niter, par)
+    Cpca(T, U, W, Tb, Tbl, Vbl, lb, mu, fitm_bl, weights, niter, par)
 end
 
 """ 
-    transf(object::Mbpca, Xbl; nlv::Union{Nothing, Int} = nothing)
-    transfbl(object::Mbpca, Xbl; nlv::Union{Nothing, Int} = nothing)
+    transf(object::Cpca, Xbl; nlv::Union{Nothing, Int} = nothing)
+    transfbl(object::Cpca, Xbl; nlv::Union{Nothing, Int} = nothing)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transf(object::Mbpca, Xbl; nlv::Union{Nothing, Int} = nothing)
+function transf(object::Cpca, Xbl; nlv::Union{Nothing, Int} = nothing)
     transf_all(object, Xbl; nlv).T
 end
 
-function transfbl(object::Mbpca, Xbl; nlv::Union{Nothing, Int} = nothing)
+function transfbl(object::Cpca, Xbl; nlv::Union{Nothing, Int} = nothing)
     transf_all(object, Xbl; nlv).Tbl
 end
 
-function transf_all(object::Mbpca, Xbl; nlv::Union{Nothing, Int} = nothing)
+function transf_all(object::Cpca, Xbl; nlv::Union{Nothing, Int} = nothing)
     Q = eltype(Xbl[1][1, 1])
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
@@ -275,12 +275,12 @@ function transf_all(object::Mbpca, Xbl; nlv::Union{Nothing, Int} = nothing)
 end
 
 """
-    summary(object::Mbpca, Xbl)
+    summary(object::Cpca, Xbl)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `Xbl` : The X-data that was used to fit the model.
 """ 
-function Base.summary(object::Mbpca, Xbl)
+function Base.summary(object::Cpca, Xbl)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     nlv = nco(object.T)

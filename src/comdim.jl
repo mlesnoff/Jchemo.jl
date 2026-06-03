@@ -123,7 +123,7 @@ function comdim(Xbl, weights::ProbabilityWeights; kwargs...)
 end
 
 function comdim!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParMbpca, kwargs).par 
+    par = recovkw(ParCpca, kwargs).par 
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
     n = nro(Xbl[1])

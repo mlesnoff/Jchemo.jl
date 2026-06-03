@@ -270,7 +270,7 @@ struct Rasvd
     par::ParRasvd
 end
 
-struct Mbpca
+struct Cpca
     T::Matrix 
     U::Matrix
     W::Matrix
@@ -282,7 +282,7 @@ struct Mbpca
     fitm_bl::Blockscal
     weights::ProbabilityWeights
     niter::Vector{Int}
-    par::ParMbpca
+    par::ParCpca
 end
 
 struct Comdim
@@ -297,7 +297,7 @@ struct Comdim
     fitm_bl::Blockscal
     weights::ProbabilityWeights
     niter::Vector{Int}
-    par::ParMbpca
+    par::ParCpca
 end
 
 ############---- Regression

@@ -152,7 +152,7 @@ Base.@kwdef mutable struct ParBlock
     bscal::Symbol = :none   
 end 
 
-Base.@kwdef mutable struct ParMbpca
+Base.@kwdef mutable struct ParCpca
     nlv::Int = 1     
     bscal::Symbol = :none   
     tol::Float64 = sqrt(eps(1.))    

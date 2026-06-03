@@ -46,8 +46,8 @@ function defaults(algo::Function)
         rasvd Jchemo.ParRasvd ;
         rrr Jchemo.ParRrr ;
 
-        mbpca Jchemo.ParMbpca ; 
-        comdim Jchemo.ParMbpca ;
+        cpca Jchemo.ParCpca ; 
+        comdim Jchemo.ParCpca ;
         cca Jchemo.ParCca ;
         ccawold Jchemo.ParCcawold ;
 
