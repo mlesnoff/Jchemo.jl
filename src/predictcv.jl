@@ -1,5 +1,5 @@
 """
-    predictcv(model, X, Y; segm, score)
+    predictcv(model, X, Y; segm::Vector{Vector{Vector{Int64}}}, score::Function)
 Return the data and predictions per replication and segment from a cross-validated model.
 * `model` : Model to evaluate.
 * `X` : Training X-data (n, p).
