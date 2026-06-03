@@ -1,12 +1,17 @@
 """
     predictcv(model, X, Y; segm, score)
-Return the data and predictions from a cross-validated model.
+Return the data and predictions per replication and segment from a cross-validated model.
 * `model` : Model to evaluate.
 * `X` : Training X-data (n, p).
 * `Y` : Training Y-data (n, q).
 Keyword arguments: 
 * `segm` : Segments of observations used for the CV (output of functions [`segmts`](@ref), [`segmkf`](@ref), etc.).
 * `score` : Function computing the prediction score (e.g., `rmsep`).
+
+Outputs (data and predictions) are returned per CV replication and segment. 
+The score is computed as in `gridcv` for the same model and segments, 
+but using the predictions from `predictcv`. This allows to check that the same score 
+is obtained with both functions. 
 
 ## Examples
 ```julia
@@ -54,7 +59,7 @@ plotxy(matpred.y1, maty.y1; bisect = true,  color = (:red, .3), xlabel = "Predic
     ylabel = "Observed").f   
 ```
 """
-predictcv = function(model, X, Y; segm, score)
+predictcv = function(model, X, Y; segm::Vector{Vector{Vector{Int64}}}, score::Function)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     q = nco(Y)
