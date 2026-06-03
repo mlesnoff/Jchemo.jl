@@ -91,11 +91,11 @@ Base.@kwdef mutable struct ParProtoclustplsr
     nlvdis::Int = 0    # To do                         
     metric::Symbol = :eucl  
     nproto::Int = 1
-    nlv::Union{Int, UnitRange} = 1
+    nlv::Int = 1
     K::Int = 5   
     kavg::Int = 1                              
     h::Float64 = Inf                        
-    criw::Float64 = 4                       
+    criw::Float64 = 4.                       
     squared::Bool = false                   
     tolw::Float64 = 1e-4                    
     scal::Bool = false    
@@ -144,8 +144,8 @@ function protoclustplsr(X, Y; kwargs...)
         rng = Random.MersenneTwister(par.seed)
         ) 
     ycla = fitm_clust.assignments
-    fitm = Jchemo.protoyclaplsr(X, Y, ycla; metric = par.metric, nlv = par.nlv, K = par.K, kavg = par.kavg, h = par.h,
-        criw = par.criw, squared = par.squared, tolw = par.tolw, scal = par.scal) 
+    fitm = Jchemo.protoyclaplsr(X, Y, ycla; metric = par.metric, nlv = par.nlv, K = par.K, kavg = par.kavg, 
+        h = par.h, criw = par.criw, squared = par.squared, tolw = par.tolw, scal = par.scal) 
     Protoclustplsr(fitm, fitm_emb, fitm_clust, ycla, par)   
 end
 

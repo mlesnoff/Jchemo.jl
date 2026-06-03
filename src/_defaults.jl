@@ -96,7 +96,6 @@ function defaults(algo::Function)
 
         protoplsr Jchemo.ParProtoplsr ;
         protoclustplsr Jchemo.ParProtoclustplsr ;
-        rclustplsr Jchemo.ParRclustplsr ;
 
         mbplsr Jchemo.ParMbplsr ; 
         mbplswest Jchemo.ParMbplsr ;

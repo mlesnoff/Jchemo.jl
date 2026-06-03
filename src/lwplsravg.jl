@@ -57,7 +57,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlvdis = 5 ; metric = :mah 
-h = 1 ; k = 200 ; nlv = 4:20
+h = 1. ; k = 200 ; nlv = 4:20
 model = lwplsravg(; nlvdis, metric, h, k, nlv) ;
 fit!(model, Xtrain, ytrain)
 @names model

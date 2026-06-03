@@ -11,11 +11,12 @@ struct Protoyclaplsr
     par::NamedTuple
 end
 
-function protoyclaplsr(X, Y, ycla; nlvdis = 0, metric = :eucl, nlv, K = 5, kavg = 1, h = 1, criw = 4, 
-        squared::Bool = false, tolw = 1e-4, scal::Bool = false)
+function protoyclaplsr(X, Y, ycla; nlvdis = 0, metric::Symbol = :eucl, nlv::Int, K::Int = 5, 
+        kavg::Int = 1, h::Float64 = 1., criw::Float64 = 4., squared::Bool = false, 
+        tolw::Float64 = 1e-4, scal::Bool = false)
     par = (nlvdis = nlvdis, metric, nlv, K, kavg, h, criw, squared, tolw, scal)
     X = ensure_mat(X)
-    Y = ensure_mat(Y)
+    Y = ensure_mat(Y) 
     taby = tab(ycla)
     lev = taby.keys        # class levels (prototypes)
     ni = taby.vals         # number of observations in each prototype class

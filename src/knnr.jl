@@ -42,7 +42,7 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-h = 1 ; k = 3 
+h = 1. ; k = 3 
 model = knnr(; h, k) 
 fit!(model, Xtrain, ytrain)
 @names model
@@ -60,7 +60,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 
 ## With preliminary dimension reduction
 model1 = pcasvd(nlv = 15)
-metric = :eucl ; h = 1 ; k = 3 
+metric = :eucl ; h = 1. ; k = 3 
 model2 = knnr(; metric, h, k) 
 model = pip(model1, model2)
 fit!(model, Xtrain, ytrain)

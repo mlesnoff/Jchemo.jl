@@ -29,7 +29,7 @@ using Jchemo, CairoMakie, Distributions
 x1 = rand(Chisq(10), 100) ;
 x2 = rand(Chisq(40), 10) ;
 d = [sqrt.(x1) ; sqrt.(x2)]
-h = 2 ; criw = 3
+h = 2 ; criw = 3.
 w = winvs(d; h, criw) ;
 f = Figure(size = (600, 300))
 ax1 = Axis(f, xlabel = "Distance", ylabel = "Nb. observations")

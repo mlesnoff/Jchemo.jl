@@ -61,7 +61,7 @@ conf(res.pred, ytest).cnt
 
 ## With dimension reduction and function 'pip'
 nlv = 15
-metric = :cos ; h = 1 ; k = 3 
+metric = :cos ; h = 1. ; k = 3 
 model1 = pcasvd(; nlv)
 model2 = knnda(; metric, h, k) 
 model = pip(model1, model2)

@@ -8,6 +8,7 @@
 
 - Breakings:
     - Function **mbpca** renamed to **cpca**.
+    - Fuction **rclustplsr** temporary removed.
 
 - Modifications
     - Code cleaning.

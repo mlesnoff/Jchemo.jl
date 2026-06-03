@@ -72,9 +72,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlvdis = 15 ; metric = :mah 
-nproto = 100
-k = 80
-nlv = 15
+nproto = 100 ; k = 80 ;nlv = 15
 kavg = 5 ; h = 1 
 model = protoplsr(; nlvdis, metric, nproto, k, nlv, kavg, h, seed = 1234) 
 fit!(model, Xtrain, ytrain)
@@ -100,7 +98,7 @@ Base.@kwdef mutable struct ParProtoplsr
     k::Int = 1 
     centroid::Bool = false
     typsamp::Symbol = :rand
-    nlv::Union{Int, UnitRange} = 1  
+    nlv::Int = 1  
     K::Int = 5    
     kavg::Int = 1                              
     h::Float64 = Inf                        
@@ -125,7 +123,10 @@ function protoplsr(X, Y; kwargs...)
     par = recovkw(ParProtoplsr, kwargs).par 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    n = nro(X)
+    n, p = size(X) 
+    q = nco(Y)
+    nlv = min(par.k, p, par.nlv)
+    par.nlv = nlv
     ## Selection of the prototypes
     if par.typsamp == :rand      
         s_proto = samprand(n, par.nproto; seed = par.seed).test
@@ -144,8 +145,8 @@ function protoplsr(X, Y; kwargs...)
     fitm = list(Plsr, par.nproto)
     coefs = list(NamedTuple, par.nproto)
     segm = segmkf(par.k, par.K; rep = 1, seed = 1234)
-    Xproto = similar(X, par.nproto, nco(X))
-    Yproto = similar(Y, par.nproto, nco(Y))
+    Xproto = similar(X, par.nproto, p)
+    Yproto = similar(Y, par.nproto, q)
     #@inbounds for i in eachindex(s_proto) 
     Threads.@threads for i in eachindex(s_proto)
         vX = vrow(X, resnn.ind[i])
