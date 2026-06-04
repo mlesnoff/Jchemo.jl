@@ -159,6 +159,6 @@ function predict(object::Mbplsrda, Xbl; nlv::Union{Nothing, Int, AbstractVector{
         pred = pred[1]
         posterior = posterior[1]
     end
-    (pred = pred, posterior = posterior)
+    (pred = pred, posterior)
 end
 

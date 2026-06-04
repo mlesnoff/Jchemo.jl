@@ -652,7 +652,7 @@ struct Rrda
 end
 
 struct Plsrda
-    fitm::Union{Plsr, Splsr, Kplsr, Dkplsr} 
+    fitm_emb::Union{Plsr, Splsr, Kplsr, Dkplsr} 
     ni::Vector{Int}
     priors::Vector
     lev::Vector

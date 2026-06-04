@@ -105,8 +105,8 @@ function plsrda(X, y, weights::ProbabilityWeights; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
-    fitm = plskern(X, res.Y, weights; kwargs...)
-    Plsrda(fitm, ni, priors, res.lev, par)
+    fitm_emb = plskern(X, res.Y, weights; kwargs...)
+    Plsrda(fitm_emb, ni, priors, res.lev, par)
 end
 
 """ 
@@ -117,7 +117,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Plsrda, X; nlv::Union{Nothing, Int} = nothing)
-    transf(object.fitm, X; nlv)
+    transf(object.fitm_emb, X; nlv)
 end
 
 """
@@ -132,40 +132,23 @@ function predict(object::Plsrda, X; nlv::Union{Nothing, Int, AbstractVector{Int}
     Q = eltype(X)
     Qy = eltype(object.lev)
     m = nro(X)
-    #a = nco(object.fitm.T)
-    #if isnothing(nlv)
-    #    nlv = a
-    #elseif isa(nlv, Int)
-    #    nlv = min(nlv, a)
-    #else
-    #    nlv = min(minimum(nlv), a):min(maximum(nlv), a)
-    #end
-    #le_nlv = length(nlv)
-    #pred = list(Matrix{Qy}, le_nlv)
-    #posterior = list(Matrix{Q}, le_nlv)
-
-    pred_fitm = predict(object.fitm, X; nlv).pred
-    le_nlv = length(pred_fitm)
+    pred_fitm_emb = predict(object.fitm_emb, X; nlv)
+    nlv = pred_fitm_emb.nlv
+    le_nlv = length(nlv)
+    if le_nlv == 1
+        post = [pred_fitm_emb.pred]
+    else
+        post = pred_fitm_emb.pred
+    end
     pred = list(Matrix{Qy}, le_nlv)
-    posterior = list(Matrix{Q}, le_nlv)
-
-
-
     @inbounds for i in eachindex(nlv)
-        zpred = predict(object.fitm, X; nlv = nlv[i]).pred
-        #if softmax
-        #    @inbounds for j = 1:m
-        #        zpred[j, :] .= pweight(exp.(zpred[j, :]))
-        #   end
-        #end
-        z =  mapslices(argmax, zpred; dims = 2)  # if equal, argmax takes the first
-        pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)     
-        posterior[i] = zpred
+        v =  mapslices(argmax, post[i]; dims = 2)  # if equal, argmax takes the first
+        pred[i] = reshape(recod_indbylev(v, object.lev), m, 1)
     end 
     if le_nlv == 1
         pred = pred[1]
-        posterior = posterior[1]
+        post = post[1]
     end
-    (pred = pred, posterior = posterior)
+    (pred = pred, posterior = post)
 end
 

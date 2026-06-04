@@ -126,6 +126,6 @@ function predict(object::Rrda, X; lb::Union{Nothing, Float64, AbstractVector{Flo
         pred = pred[1]
         posterior = posterior[1]
     end
-    (pred = pred, posterior = posterior)
+    (pred = pred, posterior)
 end
 
