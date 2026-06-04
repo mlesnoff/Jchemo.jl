@@ -36,7 +36,7 @@ and to use a performance score such as `merrp`, instead of `errp`.
 
 ## Examples
 ```julia
-using Jchemo, JchemoData, JLD2
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -116,7 +116,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `X` : X-data (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Plsrda, X; nlv::Union{Nothing, Int} = nothing)
+function transf(object::Union{Plsrda, Plsprobda}, X; nlv::Union{Nothing, Int} = nothing)
     transf(object.fitm_emb, X; nlv)
 end
 

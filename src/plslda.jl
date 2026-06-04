@@ -109,22 +109,13 @@ function plslda(X, y, weights::ProbabilityWeights; kwargs...)
     ni = tab(y).vals
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm_emb = plskern(X, res.Y, weights; kwargs...)
-    fitm_da = list(Lda, par.nlv)
-    @inbounds for i = 1:par.nlv
+    nlv = fitm_emb.par.nlv
+    par.nlv = nlv
+    fitm_da = list(Lda, nlv)
+    @inbounds for i in eachindex(fitm_da)
         fitm_da[i] = lda(vcol(fitm_emb.T, 1:i), y, weights; kwargs...)
     end
     Plsprobda(fitm_emb, fitm_da, ni, priors, res.lev, par) 
-end
-
-""" 
-    transf(object::Plsprobda, X; nlv::Union{Nothing, Int} = nothing)
-Compute latent variables (LVs; = scores) from a fitted model.
-* `object` : The fitted model.
-* `X` : Matrix (m, p) for which LVs are computed.
-* `nlv` : Nb. LVs to consider.
-""" 
-function transf(object::Plsprobda, X; nlv::Union{Nothing, Int} = nothing)
-    transf(object.fitm_emb, X; nlv)
 end
 
 """
@@ -139,12 +130,18 @@ function predict(object::Plsprobda, X; nlv::Union{Nothing, Int, AbstractVector{I
     Q = eltype(X)
     Qy = eltype(object.lev)
     m = nro(X)
-    a = nco(object.fitm_emb.T)
-    nlv = isnothing(nlv) ? a : max(minimum(nlv), 1):min(maximum(nlv), a)
+    a = object.par.nlv
+    if isnothing(nlv)
+        nlv = a
+    elseif isa(nlv, Int)
+        nlv = min(nlv, a)
+    else
+        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    end
     le_nlv = length(nlv)
+    T = transf(object.fitm_emb, X)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
-    T = transf(object.fitm_emb, X)
     @inbounds for i in eachindex(nlv)
         znlv = nlv[i]
         zres = predict(object.fitm_da[znlv], vcol(T, 1:znlv))
