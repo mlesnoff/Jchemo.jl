@@ -63,21 +63,21 @@ fit!(model, Xtrain, ytrain)
 fitm = model.fitm ;
 typeof(fitm)
 @names fitm
-typeof(fitm.fitm) 
-@names fitm.fitm
+typeof(fitm.fitm_emb) 
+@names fitm.fitm_emb
 
 fitm.lev
 fitm.ni
 fitm.priors
-aggsumv(fitm.fitm.weights.values, ytrain)
+aggsumv(fitm.fitm_emb.weights.values, ytrain)
 
 @head transf(model, Xtrain)
-@head fitm.fitm.T
+@head fitm.fitm_emb.T
 
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
 
-coef(fitm.fitm)
+coef(fitm.fitm_emb)
 
 res = predict(model, Xtest) ;
 @names res
@@ -88,7 +88,7 @@ conf(res.pred, ytest).cnt
 
 predict(model, Xtest; nlv = 1:2).pred
 
-summary(fitm.fitm, Xtrain)
+summary(fitm.fitm_emb, Xtrain)
 ```
 """
 plsrda(; kwargs...) = JchemoModel(plsrda, nothing, kwargs)
