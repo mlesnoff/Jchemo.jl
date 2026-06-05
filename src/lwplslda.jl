@@ -109,7 +109,7 @@ function predict(object::Lwplslda, X; nlv::Union{Nothing, Int, AbstractVector{In
     X = ensure_mat(X)
     m = nro(X)
     a = object.par.nlv
-        if isnothing(nlv)
+    if isnothing(nlv)
         nlv = a
     elseif isa(nlv, Int)
         nlv = min(nlv, a)
