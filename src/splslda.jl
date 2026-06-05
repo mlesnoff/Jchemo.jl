@@ -95,8 +95,9 @@ function splslda(X, y, weights::ProbabilityWeights; kwargs...)
     ni = tab(y).vals
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm_emb = splsr(X, res.Y, weights; kwargs...)
+    par.nlv = fitm_emb.par.nlv
     fitm_da = list(Lda, par.nlv)
-    @inbounds for i = 1:par.nlv
+    @inbounds for i in eachindex(fitm_da)
         fitm_da[i] = lda(vcol(fitm_emb.T, 1:i), y, weights; kwargs...)
     end
     Plsprobda(fitm_emb, fitm_da, ni, priors, res.lev, par)  

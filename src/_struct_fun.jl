@@ -747,7 +747,7 @@ end
 ## Multiblock
 
 struct Mbplsrda
-    fitm::Mbplsr 
+    fitm_emb::Mbplsr 
     ni::Vector{Int}
     priors::Vector
     lev::Vector

@@ -48,17 +48,17 @@ fit!(model, Xtrain, ytrain)
 fitm = model.fitm ;
 typeof(fitm)
 @names fitm
-typeof(fitm.fitm) 
-@names fitm.fitm
-typeof(fitm.fitm.fitm) 
-@names fitm.fitm.fitm
+typeof(fitm.fitm_emb) 
+@names fitm.fitm_emb
+typeof(fitm.fitm_emb.fitm) 
+@names fitm.fitm_emb.fitm
 
 fitm.lev
 fitm.ni
 fitm.priors
 
 @head transf(model, Xtrain)
-@head fitm.fitm.fitm.T
+@head fitm.fitm_emb.fitm.T
 
 @head transf(model, Xtest)
 @head transf(model, Xtest; nlv = 3)
@@ -87,7 +87,8 @@ function dkplsrda(X, y, weights::ProbabilityWeights; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
-    fitm = dkplsr(X, res.Y, weights; kwargs...)
-    Plsrda(fitm, ni, priors, res.lev, par)
+    fitm_emb = dkplsr(X, res.Y, weights; kwargs...)
+    par.nlv = fitm_emb.par.nlv
+    Plsrda(fitm_emb, ni, priors, res.lev, par)
 end
 

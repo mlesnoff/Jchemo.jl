@@ -106,11 +106,12 @@ function plsrda(X, y, weights::ProbabilityWeights; kwargs...)
     ni = tab(y).vals
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm_emb = plskern(X, res.Y, weights; kwargs...)
+    par.nlv = fitm_emb.par.nlv
     Plsrda(fitm_emb, ni, priors, res.lev, par)
 end
 
 """ 
-    transf(object::Plsrda, X; nlv::Union{Nothing, Int} = nothing)
+    transf(object::Union{Plsrda, Plsprobda}, X; nlv::Union{Nothing, Int} = nothing)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data (m, p) for which LVs are computed.
@@ -129,9 +130,8 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Plsrda, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
     X = ensure_mat(X)
-    Q = eltype(X)
-    Qy = eltype(object.lev)
     m = nro(X)
+    Qy = eltype(object.lev)
     pred_fitm_emb = predict(object.fitm_emb, X; nlv)
     nlv = pred_fitm_emb.nlv
     le_nlv = length(nlv)

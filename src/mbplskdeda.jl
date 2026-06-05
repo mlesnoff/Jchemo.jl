@@ -38,7 +38,8 @@ function mbplskdeda(Xbl, y, weights::ProbabilityWeights; kwargs...)
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm_emb = mbplsr(Xbl, res.Y, weights; kwargs...)
     fitm_da = list(Kdeda, par.nlv)
-    @inbounds for i = 1:par.nlv
+    par.nlv = fitm_emb.par.nlv
+    @inbounds for i in eachindex(fitm_da)
         fitm_da[i] = kdeda(vcol(fitm_emb.fitm.T, 1:i), y, weights; kwargs...)
     end
     Mbplsprobda(fitm_emb, fitm_da, ni, priors, res.lev, par)

@@ -93,8 +93,9 @@ function splsrda(X, y, weights::ProbabilityWeights; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
-    fitm = splsr(X, res.Y, weights; kwargs...)
-    Plsrda(fitm, ni, priors, res.lev, par)
+    fitm_emb = splsr(X, res.Y, weights; kwargs...)
+    par.nlv = fitm_emb.par.nlv
+    Plsrda(fitm_emb, ni, priors, res.lev, par)
 end
 
 

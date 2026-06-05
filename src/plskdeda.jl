@@ -90,9 +90,8 @@ function plskdeda(X, y, weights::ProbabilityWeights; kwargs...)
     ni = tab(y).vals
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm_emb = plskern(X, res.Y, weights; kwargs...)
-    nlv = fitm_emb.par.nlv
-    par.nlv = nlv
-    fitm_da = list(Kdeda, nlv)
+    par.nlv = fitm_emb.par.nlv
+    fitm_da = list(Kdeda, par.nlv)
     @inbounds for i in eachindex(fitm_da)
         fitm_da[i] = kdeda(vcol(fitm_emb.T, 1:i), y, weights; kwargs...)
     end

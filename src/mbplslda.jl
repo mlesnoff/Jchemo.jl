@@ -123,22 +123,12 @@ function mbplslda(Xbl, y, weights::ProbabilityWeights; kwargs...)
     ni = tab(y).vals
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm_emb = mbplsr(Xbl, res.Y, weights; kwargs...)
+    par.nlv = fitm_emb.par.nlv
     fitm_da = list(Lda, par.nlv)
-    @inbounds for i = 1:par.nlv
+    @inbounds for i in eachindex(fitm_da)
         fitm_da[i] = lda(vcol(fitm_emb.fitm.T, 1:i), y, weights; kwargs...)
     end
     Mbplsprobda(fitm_emb, fitm_da, ni, priors, res.lev, par) 
-end
-
-""" 
-    transf(object::Mbplsprobda, Xbl; nlv = nothing)
-Compute latent variables (LVs; = scores) from a fitted model.
-* `object` : The fitted model.
-* `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
-* `nlv` : Nb. LVs to consider.
-""" 
-function transf(object::Mbplsprobda, Xbl; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
-    transf(object.fitm_emb, Xbl; nlv)
 end
 
 """
@@ -153,7 +143,7 @@ function predict(object::Mbplsprobda, Xbl; nlv::Union{Nothing, Int, AbstractVect
     Qy = eltype(object.lev)
     m = nro(Xbl[1])
     a = object.par.nlv
-        if isnothing(nlv)
+    if isnothing(nlv)
         nlv = a
     elseif isa(nlv, Int)
         nlv = min(nlv, a)
@@ -161,14 +151,11 @@ function predict(object::Mbplsprobda, Xbl; nlv::Union{Nothing, Int, AbstractVect
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
     end
     le_nlv = length(nlv)
+    T = transf(object.fitm_emb, Xbl)
     pred = list(Matrix{Qy}, le_nlv)
     posterior = list(Matrix{Q}, le_nlv)
-
-    T = transf(object.fitm_emb, Xbl)
     @inbounds for i in eachindex(nlv)
         znlv = nlv[i]
-        #T = transf(object.fitm_emb, Xbl; nlv = znlv)
-        #zres = predict(object.fitm_da[znlv], T)
         zres = predict(object.fitm_da[znlv], vcol(T, 1:znlv))
         z =  mapslices(argmax, zres.posterior; dims = 2) 
         pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)
@@ -176,12 +163,8 @@ function predict(object::Mbplsprobda, Xbl; nlv::Union{Nothing, Int, AbstractVect
     end 
     if le_nlv == 1
         pred = pred[1]
-        posterior = posterior[1]
+        posterior = posterior[1] 
     end
     (pred = pred, posterior)
 end
-
-
-
-
 
