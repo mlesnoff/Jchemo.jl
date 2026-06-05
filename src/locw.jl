@@ -1,5 +1,8 @@
 """
-    locw(Xtrain, Ytrain, X; listnn, listw = nothing, algo, verbose = false, kwargs...)
+    locw(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}}, 
+        listw::Union{Nothing, Vector{Vector{Q}}} = nothing, 
+        algo::Function, store::Bool = false, 
+        verbose::Bool = true, kwargs...) where Q <: AbstractFloat
 Compute predictions for a given kNN model.
 * `Xtrain` : Training X-data.
 * `Ytrain` : Training Y-data.
@@ -15,7 +18,10 @@ Keyword arguments:
 Each component i of `listnn` and `listw` contains the indexes and weights, respectively, of the nearest neighbors 
 of x_i in Xtrain. The sizes of the neighborhood for i = 1,...,m can be different.
 """
-function locw(Xtrain, Ytrain, X; listnn, listw = nothing, algo, store = false, verbose = false, kwargs...)
+function locw(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}}, 
+        listw::Union{Nothing, Vector{Vector{Q}}} = nothing, 
+        algo::Function, store::Bool = false, 
+        verbose::Bool = true, kwargs...) where Q <: AbstractFloat
     m = nro(X)
     q = nco(Ytrain)
     pred = similar(Ytrain, m, q)

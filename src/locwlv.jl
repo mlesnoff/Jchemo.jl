@@ -1,6 +1,8 @@
 """
-    locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv::Union{Int, AbstractVector{Int}}, verbose = true, kwargs...)
-Compute predictions for a given kNN model.
+    locwlv(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}}, 
+        listw::Union{Nothing, Vector{Vector{Q}}} = nothing, 
+        algo::Function, nlv::Union{Int, AbstractVector{Int}}, store::Bool = false, 
+        verbose::Bool = true, kwargs...) where Q <: AbstractFloat
 * `Xtrain` : Training X-data.
 * `Ytrain` : Training Y-data.
 * `X` : X-data (m observations) to predict.
@@ -15,7 +17,10 @@ Keyword arguments:
 
 Same as [`locw`](@ref) but specific and much faster for LV-based models (e.g., PLSR).
 """
-function locwlv(Xtrain, Ytrain, X; listnn, listw = nothing, algo, nlv::Union{Int, AbstractVector{Int}}, store = false, verbose = true, kwargs...)
+function locwlv(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}}, 
+        listw::Union{Nothing, Vector{Vector{Q}}} = nothing, 
+        algo::Function, nlv::Union{Int, AbstractVector{Int}}, store::Bool = false, 
+        verbose::Bool = true, kwargs...) where Q <: AbstractFloat
     p = nco(Xtrain)
     m = nro(X)
     q = nco(Ytrain)
