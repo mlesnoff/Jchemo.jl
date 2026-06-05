@@ -24,7 +24,6 @@ function locwlv(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}},
     p = nco(Xtrain)
     m = nro(X)
     q = nco(Ytrain)
-    #nlv = min(p, minimum(nlv)):min(p, maximum(nlv))
     if isa(nlv, Int)
         nlv = min(nlv, p)
     else
