@@ -78,6 +78,6 @@ function predict(object::Loessr, X)
     Q = eltype(X)
     m = nro(X)
     pred = Loess.predict(object.fitm, fscale(X, object.xscales))
-    (pred = reshape(convert.(Q, pred), m, 1),)
+    (pred = reshape(Q.(pred), m, 1),)
 end
 

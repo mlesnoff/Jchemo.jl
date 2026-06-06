@@ -73,7 +73,7 @@ function pweightcla(y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
 end
 
 function pweightcla(Q::DataType, y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
-    pweight(convert.(Q, pweightcla(y; prior).values))
+    pweight(Q.(pweightcla(y; prior).values))
 end
 
 ##### Weighting of entire rows or columns

@@ -134,7 +134,7 @@ function predict(object::Svmr, X)
     m = nro(X)
     Q = eltype(X)
     pred = svmpredict(object.fitm, fscale(X, object.xscales)')[1]
-    pred = reshape(convert.(Q, pred), m, 1)
+    pred = reshape(Q.(pred), m, 1)
     (pred = pred,)
 end
 

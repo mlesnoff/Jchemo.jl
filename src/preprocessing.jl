@@ -72,7 +72,7 @@ function transf!(object::Detrendlo, X::Matrix)
     p = nco(X)
     span = object.par.span
     degree = object.par.degree
-    x = convert.(Q, collect(1:p))
+    x = Q.(collect(1:p))
     @inbounds for i in axes(X, 1)
     ## Not faster: @Threads.threads
         y = vec(vrow(X, i))
@@ -153,7 +153,7 @@ function transf!(object::Detrendpol, X::Matrix)
     Q = eltype(X)
     p = nco(X)
     degree = par.degree
-    wls = convert.(Q, collect(1:p))
+    wls = Q.(collect(1:p))
     mu = meanv(wls) ; s = stdv(wls)
     @. wls = (wls - mu) / s
     P = similar(X, p, degree + 1)
@@ -563,7 +563,7 @@ function emsc(X, xref; kwargs...)
     X = ensure_mat(X)
     Q = eltype(xref)
     p = length(xref) 
-    wls = convert.(Q, collect(1:p))
+    wls = Q.(collect(1:p))
     mu = meanv(wls) ; s = stdv(wls)
     @. wls = (wls - mu) / s
     P = similar(xref, p, par.degree + 1)

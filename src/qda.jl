@@ -98,7 +98,7 @@ function qda(X, y, weights::ProbabilityWeights; kwargs...)
     y = vec(y)    # for findall
     Q = eltype(X)
     n, p = size(X)
-    alpha = convert(Q, par.alpha)
+    alpha = Q(par.alpha)
     res = matW(X, y, weights)
     ni = res.ni
     priors = aggsumv(weights.values, vec(y)).val

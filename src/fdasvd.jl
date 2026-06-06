@@ -35,7 +35,7 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     Q = eltype(X)
     n, p = size(X)
-    lb = convert(Q, par.lb)
+    lb = Q(par.lb)
     xmeans = colmean(X, weights)
     xscales = ones(Q, p)
     if par.scal 
@@ -62,11 +62,11 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(vrow(X, s), pweight(weights.values[s]))
     end
-    #ct = aggstat(X, y; algo = mean).X
+    #ct = aggstat(X, y; algo::Function = mean).X
     Ut = cholesky!(Hermitian(Winv)).U'
     Zct = ct * Ut
     nlv = min(par.nlv, n, p, nlev - 1)
-    zweights = pweight(convert.(Q, ni))
+    zweights = pweight(Q.(ni))
     fitm = pcasvd(Zct, zweights; nlv, scal = false)
     Pz = fitm.V
     Tcenters = Zct * Pz

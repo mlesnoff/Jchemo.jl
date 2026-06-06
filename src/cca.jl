@@ -106,7 +106,7 @@ function cca!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
-    tau = convert(Q, par.tau) 
+    tau = Q(par.tau) 
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     xscales = ones(Q, p)

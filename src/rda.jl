@@ -98,7 +98,7 @@ function rda(X, y, weights::ProbabilityWeights; kwargs...)
     y = vec(y)    # for findall
     Q = eltype(X)
     n, p = size(X)
-    alpha = convert(Q, par.alpha)
+    alpha = Q(par.alpha)
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)

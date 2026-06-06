@@ -1,6 +1,6 @@
 """
-    aggstat(X, y; algo = mean)
-    aggstat(dat::DataFrame; sel, group, algo = mean)
+    aggstat(X, y; algo::Function = mean)
+    aggstat(dat::DataFrame; sel, group, algo::Function = mean)
 Compute column-wise statistics by group in a dataset.
 * `X` : Data (n, p).
 * `dat` : A dataframe (n, p).
@@ -38,7 +38,7 @@ datf
 aggstat(datf; sel = [:v1, :v2] , group = [:y1, :y2], algo = var)  # return a dataframe 
 ```
 """ 
-function aggstat(X, y; algo = mean)
+function aggstat(X, y; algo::Function = mean)
     X = ensure_mat(X)
     y = vec(y)
     n, p = size(X)
@@ -53,7 +53,7 @@ function aggstat(X, y; algo = mean)
     (X = zX, lev)
 end
 
-function aggstat(dat::DataFrame; sel, group, algo = mean)
+function aggstat(dat::DataFrame; sel, group, algo::Function = mean)
     gdf = groupby(dat, group) 
     res = combine(gdf, sel .=> algo, renamecols = false)
     sort!(res, group)
@@ -194,7 +194,7 @@ If `X::BitMatrix`, convert to a matrix of type `Q`.
 """
 function handle_bitmatrix(Q, X::AbstractMatrix)
     if isa(X, BitMatrix)
-        X = convert.(Q, X)
+        X = Q.(X)
     end
     X
 end

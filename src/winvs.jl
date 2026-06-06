@@ -1,6 +1,6 @@
 """
-    winvs(d::Vector{Q}; h::Q = Q(2.0), criw::Q = Q(4.0), squared::Bool = false) where Q <: AbstractFloat
-    winvs!(d::Vector{Q}; h::Q = Q(2.0), criw::Q = Q(4.0), squared::Bool = false) where Q <: AbstractFloat
+    winvs(d::Vector{T}; h::T = T(2.0), criw::T = T(4.0), squared::Bool = false) where T <: AbstractFloat
+    winvs!(d::Vector{T}; h::T = T(2.0), criw::T = T(4.0), squared::Bool = false) where T <: AbstractFloat
 Compute weights from distances using an inverse scaled exponential function.
 * `d` : A vector of distances.
 Keyword arguments:
@@ -56,27 +56,27 @@ f[1, 1] = ax
 f
 ```
 """  
-function winvs(d::Vector{Q}; h::Q = Q(2.0), criw::Q = Q(4.0), squared::Bool = false) where Q <: AbstractFloat
+function winvs(d::Vector{T}; h::T = T(2.0), criw::T = T(4.0), squared::Bool = false) where T <: AbstractFloat
     w = copy(d)
     winvs!(w; h, criw, squared = squared)
     w
 end
 
-function winvs!(d::Vector{Q}; h::Q = Q(2.0), criw::Q = Q(4.0), squared::Bool = false) where Q <: AbstractFloat
+function winvs!(d::Vector{T}; h::T = T(2.0), criw::T = T(4.0), squared::Bool = false) where T <: AbstractFloat
     if squared
         @. d = d^2 
     end
     sigma = madv(d)
-    if sigma == 0 ; sigma = eps(Q) ; end
+    if sigma == 0 ; sigma = eps(T) ; end
     cutoff = medv(d) + criw * sigma
-    @. d = ifelse(d <= cutoff, exp(-d / (h * sigma)), zero(Q))
+    @. d = ifelse(d <= cutoff, exp(-d / (h * sigma)), zero(T))
     ## Alternative, e.g.: 
     ## d .= wdis(d; typw = :bisquare)
     dmax = maximum(d) 
     if dmax > 0
         @. d = d / dmax
     else
-        d .= ones(Q)
+        d .= ones(T)
     end
     return
 end

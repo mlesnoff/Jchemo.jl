@@ -103,7 +103,7 @@ function pcout!(X::Matrix; explvar::Float64 = .99, critm1::Float64 = 1 / 3, crit
     fcscale!(X, colmed(X), colmad(X))
     res = svd(fcenter(X, colmean(X))) ;
     sv = res.S.^2 / (n - 1)
-    nlv = findall(cumsum(sv) / sum(sv) .> convert(Q, explvar))[1]
+    nlv = findall(cumsum(sv) / sum(sv) .> Q(explvar))[1]
     distr = Chisq(nlv)    
     q = quantile(distr, .5)
     T = X * vcol(res.V, 1:nlv)             # PCs
@@ -114,8 +114,8 @@ function pcout!(X::Matrix; explvar::Float64 = .99, critm1::Float64 = 1 / 3, crit
     Tw = fweightc(T, w)                    # weighted PCs
     d .= sqrt.(rowsum(Tw.^2))              # weighted Mahalanobis distance in the PC space (RDi in Eq12)
     dist1 = d * sqrt(q) / median(d)        # di = transformed RDi
-    M1 = quantile(dist1, convert(Q, critm1))  
-    const1 = medv(dist1) + convert(Q, critc1) * madv(dist1)
+    M1 = quantile(dist1, Q(critm1))  
+    const1 = medv(dist1) + Q(critc1) * madv(dist1)
     @inbounds for i in eachindex(w1)
         if dist1[i] <= M1
             w1[i] = 1
@@ -128,8 +128,8 @@ function pcout!(X::Matrix; explvar::Float64 = .99, critm1::Float64 = 1 / 3, crit
     ## Phase 2
     d .= sqrt.(rowsum(T.^2))
     dist2 = d * sqrt(q) / median(d)
-    M2 = sqrt(quantile(distr, convert(Q, critm2)))
-    const2 = sqrt(quantile(distr, convert(Q, critc2)))   
+    M2 = sqrt(quantile(distr, Q(critm2)))
+    const2 = sqrt(quantile(distr, Q(critc2)))   
     @inbounds for i in eachindex(w2)
         if dist2[i] <= M2
             w2[i] = 1
@@ -140,9 +140,9 @@ function pcout!(X::Matrix; explvar::Float64 = .99, critm1::Float64 = 1 / 3, crit
         end
     end 
     ## End
-    c = convert(Q, cs)
+    c = Q(cs)
     @. wfinal = ((w1 + c) * (w2 + c)) / (1 + c)^2
-    @. wfinal01 = round(wfinal + 0.5 - convert(Q, outbound))   # weights < outbound are assigned 0
+    @. wfinal01 = round(wfinal + 0.5 - Q(outbound))   # weights < outbound are assigned 0
     (wfinal01 = wfinal01, wfinal, wloc = w1, wscat = w2, dist1, dist2, M1, const1, M2, const2)
 end
 

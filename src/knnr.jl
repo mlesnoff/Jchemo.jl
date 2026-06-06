@@ -114,10 +114,10 @@ function predict(object::Knnr, X)
     q = nco(object.Y)
     ## Getknn
     metric = object.par.metric
-    h = convert(Q, object.par.h)
+    h = Q(object.par.h)
     k = object.par.k
-    tolw = convert(Q, object.par.tolw)
-    criw = convert(Q, object.par.criw)
+    tolw = Q(object.par.tolw)
+    criw = Q(object.par.criw)
     squared = object.par.squared
     if object.par.scal
         zX1 = fscale(object.X, object.xscales)
