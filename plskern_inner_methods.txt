@@ -1,0 +1,3 @@
+# 1 method for generic function "#plskern!#374" from Jchemo:
+ [1] var"#plskern!#374"(kwargs::Base.Pairs{Symbol, V, Nothing, NT} where {V, NT<:NamedTuple}, ::typeof(plskern!), X::Matrix, Y::Union{BitMatrix, Matrix}, weights::StatsBase.ProbabilityWeights)
+     @ c:\Users\lesnoff\.julia\dev\Jchemo\src\plskern.jl:99

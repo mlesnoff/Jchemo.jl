@@ -169,49 +169,101 @@ function plskern!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWe
 end
 
 """ 
-    transf(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int} = nothing)
+    transf(object::Union{Plsr, Splsr}, X)
+    transf(object::Union{Plsr, Splsr}, X, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int} = nothing)
+function transf(object::Union{Plsr, Splsr}, X)
     X = ensure_mat(X)
-    a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(nlv, a)
+    ## Could be fcscale! but would change X. If too heavy ==> Makes summary!
+    fcscale(X, object.xmeans, object.xscales) * object.R
+end
+
+function transf(object::Union{Plsr, Splsr}, X, nlv::Int)
+    X = ensure_mat(X)
+    nlv = min(nlv, object.par.nlv)
     ## Could be fcscale! but would change X. If too heavy ==> Makes summary!
     fcscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
 end
 
 """
-    coef(object::Union{Plsr, Pcr, Splsr}; nlv::Union{Nothing, Int} = nothing)
+    coef(object::Union{Plsr, Splsr})
+    coef(object::Union{Plsr, Splsr}, nlv::Int)
 Compute the b-coefficients of a LV model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
 
-For a model fitted from X (n, p) and Y (n, q), the returned object `B` is a matrix (p, q). If `nlv` = 0, `B` is a matrix 
-of zeros. The returned object `int` is the intercept.
+For a model fitted from X (n, p) and Y (n, q), the returned object `B` is a matrix (p, q). 
+If `nlv` = 0, `B` is a matrix of zeros. The returned object `int` is the intercept.
 """ 
-function coef(object::Union{Plsr, Splsr}; nlv::Union{Nothing, Int} = nothing)
-    a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(nlv, a)
-    theta = vcol(object.C, 1:nlv)'  # regression coefs of Y on T
+function coef(object::Union{Plsr, Splsr})
+    theta = object.C'  # regression coefs of Y on T
     Dy = Diagonal(object.yscales)
     ## To not use for Spcr (R not computed; while for Pcr, R = V)
-    B = fweightr(vcol(object.R, 1:nlv), 1 ./ object.xscales) * theta * Dy
+    B = fweightr(object.R, 1 ./ object.xscales) * theta * Dy
     ## In 'int': No correction is needed, since ymeans, xmeans and B are in the original scale 
     int = object.ymeans' .- object.xmeans' * B
     (B = B, int)
 end
 
+function coef(object::Union{Plsr, Splsr}, nlv::Int)
+    nlv = min(nlv, object.par.nlv)
+    theta = vcol(object.C, 1:nlv)'  
+    Dy = Diagonal(object.yscales)
+    B = fweightr(vcol(object.R, 1:nlv), 1 ./ object.xscales) * theta * Dy
+    int = object.ymeans' .- object.xmeans' * B
+    (B = B, int)
+end
+
 """
-    predict(object::Union{Plsr, Pcr, Splsr}, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+    predict(object::Union{Plsr, Splsr}, X)
+    predict(object::Union{Plsr, Splsr}, X, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+function predict(object::Union{Plsr, Splsr}, X)
+    X = ensure_mat(X)
+    coefs = coef(object)
+    pred = coefs.int .+ X * coefs.B  # try muladd(X, coefs.B, coefs.int) 
+    (pred = pred, nlv = object.par.nlv)
+end
+
+function predict(object::Union{Plsr, Splsr}, X, nlv::Union{Int, AbstractVector{Int}})
+    X = ensure_mat(X)
+    Q = eltype(X)
+    a = object.par.nlv
+    if isa(nlv, Int)
+        nlv = min(nlv, a)
+    else
+        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+    end
+    le_nlv = length(nlv)
+    pred = list(Matrix{Q}, le_nlv)
+    @inbounds for i in eachindex(nlv)
+        coefs = coef(object, nlv[i])
+        pred[i] = coefs.int .+ X * coefs.B  
+    end 
+    (pred = pred, nlv)
+end
+
+#function predict(object::Union{Plsr, Splsr}, X)
+#    X = ensure_mat(X)
+#    Q = eltype(X)
+#    nlv = object.par.nlv
+#    res = predict(object, X, nlv)
+#    (pred = res.pred[1], nlv)
+#end
+
+
+
+
+
+function predict2(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
     X = ensure_mat(X)
     Q = eltype(X)
     a = object.par.nlv
@@ -231,6 +283,7 @@ function predict(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int, Abstrac
     if le_nlv == 1 ; pred = pred[1] ; end
     (pred = pred, nlv)
 end
+
 
 """
     summary(object::Union{Plsr, Splsr}, X)
