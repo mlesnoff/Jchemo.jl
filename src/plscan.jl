@@ -177,14 +177,14 @@ function plscan!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
-    transfbl(object::Plscan, X, Y; nlv::Union{Nothing, Int} = nothing)
+    transfbl(object::Plscan, X, Y, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
 * `Y` : Y-data for which components (LVs) are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transfbl(object::Plscan, X, Y; nlv::Union{Nothing, Int} = nothing)
+function transfbl(object::Plscan, X, Y, nlv::Int)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
     a = object.par.nlv

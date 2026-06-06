@@ -165,13 +165,13 @@ function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeig
 end
 
 """ 
-    transf(object::Kplsr, X; nlv::Union{Nothing, Int} = nothing)
+    transf(object::Kplsr, X, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Kplsr, X; nlv::Union{Nothing, Int} = nothing)
+function transf(object::Kplsr, X, nlv::Int)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     fkern = eval(Meta.parse(String(object.par.kern)))
@@ -183,13 +183,13 @@ function transf(object::Kplsr, X; nlv::Union{Nothing, Int} = nothing)
 end
 
 """
-    coef(object::Kplsr; nlv::Union{Nothing, Int} = nothing)
+    coef(object::Kplsr, nlv::Int)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
    
 """ 
-function coef(object::Kplsr; nlv::Union{Nothing, Int} = nothing)
+function coef(object::Kplsr, nlv::Int)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     beta = object.C[:, 1:nlv]'
@@ -199,14 +199,14 @@ function coef(object::Kplsr; nlv::Union{Nothing, Int} = nothing)
 end
 
 """
-    predict(object::Kplsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+    predict(object::Kplsr, X; nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 If nothing, it is the maximum nb. LVs.
 """ 
-function predict(object::Kplsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+function predict(object::Kplsr, X; nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     Q = eltype(X)
     a = object.par.nlv
@@ -221,7 +221,7 @@ function predict(object::Kplsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}}
     T = transf(object, X)
     pred = list(Matrix{Q}, le_nlv)
     @inbounds for i in eachindex(nlv)
-        z = coef(object; nlv = nlv[i])
+        z = coef(object, nlv[i])
         pred[i] = z.int .+ @view(T[:, 1:nlv[i]]) * z.beta * Diagonal(object.yscales)
     end 
     if le_nlv == 1 ; pred = pred[1] ; end

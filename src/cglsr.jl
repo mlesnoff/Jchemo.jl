@@ -158,12 +158,19 @@ end
 
 """
     coef(object::Cglsr)
+    coef(object::Cglsr, nlv::Int)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 """ 
-function coef(object::Cglsr; nlv::Union{Nothing, Int} = nothing)
-    a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(nlv, a)
+function coef(object::Cglsr)
+    W = Diagonal(object.yscales)    
+    B = fweightr(vcol(object.B, object.par.nlv), 1 ./ object.xscales) *  W
+    int = object.ymeans' .- object.xmeans' * B
+    (B = B, int)
+end
+
+function coef(object::Cglsr, nlv::Int)
+    nlv = min(nlv, object.par.nlv)
     W = Diagonal(object.yscales)    
     B = fweightr(vcol(object.B, nlv), 1 ./ object.xscales) *  W
     int = object.ymeans' .- object.xmeans' * B
@@ -171,19 +178,26 @@ function coef(object::Cglsr; nlv::Union{Nothing, Int} = nothing)
 end
 
 """
-    predict(object::Cglsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+    predict(object::Cglsr, X)
+    predict(object::Cglsr, X, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. iterations, or collection of nb. iterations, to consider. 
 """ 
-function predict(object::Cglsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+function predict(object::Cglsr, X)
+    X = ensure_mat(X)
+    nlv = object.par.nlv
+    z = coef(object, nlv)
+    pred = z.int .+ X * z.B
+    (pred = pred, nlv)
+end
+
+function predict(object::Cglsr, X; nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     Q = eltype(X)
     a = object.par.nlv
-    if isnothing(nlv)
-        nlv = a
-    elseif isa(nlv, Int)
+    if isa(nlv, Int)
         nlv = min(nlv, a)
     else
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
@@ -191,10 +205,10 @@ function predict(object::Cglsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}}
     le_nlv = length(nlv)
     pred = list(Matrix{Q}, le_nlv)
     @inbounds for i in eachindex(nlv)
-        z = coef(object; nlv = nlv[i])
+        z = coef(object, nlv[i])
         pred[i] = z.int .+ X * z.B
     end 
-    if le_nlv == 1 ; pred = pred[1] ; end
     (pred = pred, nlv)
 end
+
 

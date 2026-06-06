@@ -129,13 +129,13 @@ function transf(object::Union{Mbplsrda, Mbplsprobda}, Xbl; nlv = nothing)
 end
 
 """
-    predict(object::Mbplsrda, Xbl; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+    predict(object::Mbplsrda, Xbl; nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Mbplsrda, Xbl; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+function predict(object::Mbplsrda, Xbl; nlv::Union{Int, AbstractVector{Int}})
     m = nro(Xbl[1])
     Qy = eltype(object.lev)
     pred_fitm_emb = predict(object.fitm_emb, Xbl; nlv)

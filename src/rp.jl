@@ -65,13 +65,13 @@ function rp!(X::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
-    transf(object::Rp, X; nlv::Union{Nothing, Int} = nothing)
+    transf(object::Rp, X, nlv::Int)
 Compute scores T from a fitted model.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which scores T are computed.
 * `nlv` : Nb. scores to compute.
 """ 
-function transf(object::Rp, X; nlv::Union{Nothing, Int} = nothing)
+function transf(object::Rp, X, nlv::Int)
     X = ensure_mat(X)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)

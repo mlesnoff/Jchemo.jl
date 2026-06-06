@@ -229,22 +229,22 @@ function cpca!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
-    transf(object::Cpca, Xbl; nlv::Union{Nothing, Int} = nothing)
-    transfbl(object::Cpca, Xbl; nlv::Union{Nothing, Int} = nothing)
+    transf(object::Cpca, Xbl, nlv::Int)
+    transfbl(object::Cpca, Xbl, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transf(object::Cpca, Xbl; nlv::Union{Nothing, Int} = nothing)
+function transf(object::Cpca, Xbl, nlv::Int)
     transf_all(object, Xbl; nlv).T
 end
 
-function transfbl(object::Cpca, Xbl; nlv::Union{Nothing, Int} = nothing)
+function transfbl(object::Cpca, Xbl, nlv::Int)
     transf_all(object, Xbl; nlv).Tbl
 end
 
-function transf_all(object::Cpca, Xbl; nlv::Union{Nothing, Int} = nothing)
+function transf_all(object::Cpca, Xbl, nlv::Int)
     Q = eltype(Xbl[1][1, 1])
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)

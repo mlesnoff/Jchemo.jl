@@ -251,40 +251,6 @@ function predict(object::Union{Plsr, Splsr}, X, nlv::Union{Int, AbstractVector{I
     (pred = pred, nlv)
 end
 
-#function predict(object::Union{Plsr, Splsr}, X)
-#    X = ensure_mat(X)
-#    Q = eltype(X)
-#    nlv = object.par.nlv
-#    res = predict(object, X, nlv)
-#    (pred = res.pred[1], nlv)
-#end
-
-
-
-
-
-function predict2(object::Union{Plsr, Splsr}, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
-    X = ensure_mat(X)
-    Q = eltype(X)
-    a = object.par.nlv
-    if isnothing(nlv)
-        nlv = a
-    elseif isa(nlv, Int)
-        nlv = min(nlv, a)
-    else
-        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
-    end
-    le_nlv = length(nlv)
-    pred = list(Matrix{Q}, le_nlv)
-    @inbounds for i in eachindex(nlv)
-        coefs = coef(object; nlv = nlv[i])
-        pred[i] = coefs.int .+ X * coefs.B  # try muladd(X, coefs.B, coefs.int)
-    end 
-    if le_nlv == 1 ; pred = pred[1] ; end
-    (pred = pred, nlv)
-end
-
-
 """
     summary(object::Union{Plsr, Splsr}, X)
 Summarize the fitted model.

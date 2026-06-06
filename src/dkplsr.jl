@@ -122,13 +122,13 @@ function dkplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWei
 end
 
 """ 
-    transf(object::Dkplsr, X; nlv::Union{Nothing, Int} = nothing)
+    transf(object::Dkplsr, X, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Dkplsr, X; nlv::Union{Nothing, Int} = nothing)
+function transf(object::Dkplsr, X, nlv::Int)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; values(object.kwargs)...)
     transf(object.fitm, K; nlv)
@@ -145,14 +145,14 @@ function coef(object::Dkplsr; nlv::Union{Nothing, Int})
 end
 
 """
-    predict(object::Dkplsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+    predict(object::Dkplsr, X; nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
    
 """ 
-function predict(object::Dkplsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+function predict(object::Dkplsr, X; nlv::Union{Int, AbstractVector{Int}})
     a = object.par.nlv
     if isnothing(nlv)
         nlv = a

@@ -92,18 +92,18 @@ function pcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
-    transf(object::Union{Pcr, Spcr}, X; nlv::Union{Nothing, Int} = nothing)
+    transf(object::Union{Pcr, Spcr}, X, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model and a matrix X.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Union{Pcr, Spcr}, X; nlv::Union{Nothing, Int} = nothing)
+function transf(object::Union{Pcr, Spcr}, X, nlv::Int)
     transf(object.fitm, X; nlv)
 end
 
 """
-    coef(object::Pcr; nlv::Union{Nothing, Int} = nothing)
+    coef(object::Pcr, nlv::Int)
 Compute the b-coefficients of a LV model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
@@ -111,7 +111,7 @@ Compute the b-coefficients of a LV model.
 For a model fitted from X (n, p) and Y (n, q), the returned object `B` is a matrix (p, q). If `nlv` = 0, `B` is a matrix 
 of zeros. The returned object `int` is the intercept.
 """ 
-function coef(object::Pcr; nlv::Union{Nothing, Int} = nothing)
+function coef(object::Pcr, nlv::Int)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     theta = vcol(object.C, 1:nlv)'
@@ -125,13 +125,13 @@ function coef(object::Pcr; nlv::Union{Nothing, Int} = nothing)
 end
 
 """
-    predict(object::Pcr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+    predict(object::Pcr, X; nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Pcr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+function predict(object::Pcr, X; nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     Q = eltype(X)
     a = object.par.nlv
@@ -145,7 +145,7 @@ function predict(object::Pcr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} =
     le_nlv = length(nlv)
     pred = list(Matrix{Q}, le_nlv)
     @inbounds for i in eachindex(nlv)
-        coefs = coef(object; nlv = nlv[i])
+        coefs = coef(object, nlv[i])
         pred[i] = coefs.int .+ X * coefs.B  # try muladd(X, coefs.B, coefs.int)
     end 
     if le_nlv == 1 ; pred = pred[1] ; end

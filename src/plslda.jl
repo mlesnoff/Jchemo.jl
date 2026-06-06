@@ -118,13 +118,13 @@ function plslda(X, y, weights::ProbabilityWeights; kwargs...)
 end
 
 """
-    predict(object::Plsprobda, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+    predict(object::Plsprobda, X; nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Plsprobda, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+function predict(object::Plsprobda, X; nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     Q = eltype(X)
     Qy = eltype(object.lev)
