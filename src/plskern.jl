@@ -63,10 +63,10 @@ fitm = model.fitm ;
 @head fitm.T
 
 @head transf(model, Xtest)
-@head transf(model, Xtest; nlv = 3)
+@head transf(model, Xtest, 3)  # first 3 LVs
 
 coef(model)
-coef(model; nlv = 3)
+coef(model, 3)  # b-coefs for the 3-LV model
 
 res = predict(model, Xtest)
 @head res.pred
@@ -74,7 +74,7 @@ res = predict(model, Xtest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-res = predict(model, Xtest; nlv = 1:2)
+res = predict(model, Xtest, 1:2) # predictions with 1 and 2 LVs
 @head res.pred[1]
 @head res.pred[2]
 

@@ -90,10 +90,10 @@ fitm.sellv
 fitm.sel
 
 coef(model)
-coef(model; nlv = 3)
+coef(model, 3)
 
 @head transf(model, Xtest)
-@head transf(model, Xtest; nlv = 3)
+@head transf(model, Xtest, 3)
 
 res = predict(model, Xtest)
 @head res.pred

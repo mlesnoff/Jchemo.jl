@@ -77,7 +77,7 @@ typeof(fitm_emb)
 @head fitm_emb.T
 
 @head transf(model, Xtest)
-@head transf(model, Xtest; nlv = 3)
+@head transf(model, Xtest, 3)
 
 fitm_da = fitm.fitm_da ;
 typeof(fitm_da)

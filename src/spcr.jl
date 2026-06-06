@@ -64,7 +64,7 @@ fitm.fitm.sel
 @head fitm.fitm.V
 
 @head transf(model, Xtest)
-@head transf(model, Xtest; nlv = 3)
+@head transf(model, Xtest, 3)
 
 res = predict(model, Xtest)
 @head res.pred
