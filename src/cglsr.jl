@@ -161,6 +161,7 @@ end
     coef(object::Cglsr, nlv::Int)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
+* `nlv` : Nb. iterations to consider. 
 """ 
 function coef(object::Cglsr)
     W = Diagonal(object.yscales)    
@@ -187,13 +188,12 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Cglsr, X)
     X = ensure_mat(X)
-    nlv = object.par.nlv
-    z = coef(object, nlv)
-    pred = z.int .+ X * z.B
-    (pred = pred, nlv)
+    coefs = coef(object)
+    pred = coefs.int .+ X * coefs.B
+    (pred = pred, nlv = object.par.nlv)
 end
 
-function predict(object::Cglsr, X; nlv::Union{Int, AbstractVector{Int}})
+function predict(object::Cglsr, X, nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     Q = eltype(X)
     a = object.par.nlv
@@ -205,8 +205,8 @@ function predict(object::Cglsr, X; nlv::Union{Int, AbstractVector{Int}})
     le_nlv = length(nlv)
     pred = list(Matrix{Q}, le_nlv)
     @inbounds for i in eachindex(nlv)
-        z = coef(object, nlv[i])
-        pred[i] = z.int .+ X * z.B
+        coefs = coef(object, nlv[i])
+        pred[i] = coefs.int .+ X * coefs.B
     end 
     (pred = pred, nlv)
 end

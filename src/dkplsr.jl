@@ -122,12 +122,19 @@ function dkplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWei
 end
 
 """ 
+    transf(object::Dkplsr, X)
     transf(object::Dkplsr, X, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
+function transf(object::Dkplsr, X)
+    fkern = eval(Meta.parse(String(object.par.kern)))
+    K = fkern(fscale(X, object.xscales), object.X; values(object.kwargs)...)
+    transf(object.fitm, K)
+end
+
 function transf(object::Dkplsr, X, nlv::Int)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; values(object.kwargs)...)
@@ -135,42 +142,44 @@ function transf(object::Dkplsr, X, nlv::Int)
 end
 
 """
-    coef(object::Dkplsr; nlv::Union{Nothing, Int})
+    coef(object::Dkplsr) = coef(object.fitm)
+    coef(object::Dkplsr, nlv::Union{Nothing, Int})
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
-* `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
+* `nlv` : Nb. LVs to consider. 
 """ 
-function coef(object::Dkplsr; nlv::Union{Nothing, Int})
-    coef(object.fitm; nlv)
-end
+coef(object::Dkplsr) = coef(object.fitm)
+
+coef(object::Dkplsr, nlv::Union{Nothing, Int}) = coef(object.fitm, nlv)
 
 """
-    predict(object::Dkplsr, X; nlv::Union{Int, AbstractVector{Int}})
+    predict(object::Dkplsr, X)
+    predict(object::Dkplsr, X, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
-   
 """ 
-function predict(object::Dkplsr, X; nlv::Union{Int, AbstractVector{Int}})
+function predict(object::Dkplsr, X)
+    fkern = eval(Meta.parse(String(object.par.kern)))
+    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
+    pred = predict(object.fitm, K).pred * Diagonal(object.yscales)
+    (pred = pred, nlv = object.par.nlv) 
+end
+
+function predict(object::Dkplsr, X, nlv::Union{Int, AbstractVector{Int}})
     a = object.par.nlv
-    if isnothing(nlv)
-        nlv = a
-    elseif isa(nlv, Int)
+    if isa(nlv, Int)
         nlv = min(nlv, a)
     else
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
     end
-    le_nlv = length(nlv)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     pred = predict(object.fitm, K; nlv).pred
-    if le_nlv == 1
-        pred .= pred * Diagonal(object.yscales)
-    else
-        for i = 1:le_nlv
-            pred[i] .= pred[i] * Diagonal(object.yscales)
-        end
+    D = Diagonal(object.yscales)
+    @inbounds for i in eachindex(nlv)
+            pred[i] .= pred[i] * D
     end
     (pred = pred, nlv)
 end

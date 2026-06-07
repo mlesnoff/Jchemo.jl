@@ -88,7 +88,8 @@ function kplsr(X, Y, weights::ProbabilityWeights; kwargs...)
     kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
+function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; 
+        kwargs...)
     par = recovkw(ParKplsr, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     Q = eltype(X)
@@ -165,33 +166,37 @@ function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeig
 end
 
 """ 
+    transf(object::Kplsr, X)
     transf(object::Kplsr, X, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
+transf(object::Kplsr, X) = transf(object, X, object.par.nlv)
+
 function transf(object::Kplsr, X, nlv::Int)
-    a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(nlv, a)
+    nlv = min(nlv, object.par.nlv)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     DKt = fweightr(K', object.weights.values) 
     vtot = sum(DKt; dims = 1)  # keep matrix format
     Kc = K .- vtot' .- object.vtot .+ sum(fweightr(object.DKt', object.weights.values))  
-    Kc * @view(object.R[:, 1:nlv])
+    Kc * vcol(object.R, 1:nlv)
 end
 
 """
+    coef(object::Kplsr)
     coef(object::Kplsr, nlv::Int)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
-* `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
+* `nlv` : Nb. LVs to consider. 
    
 """ 
+coef(object::Kplsr) = coef(object::Kplsr, object.par.nlv)
+
 function coef(object::Kplsr, nlv::Int)
-    a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(nlv, a)
+    nlv = min(nlv, object.par.nlv)
     beta = object.C[:, 1:nlv]'
     q = length(object.ymeans)
     int = reshape(object.ymeans, 1, q)
@@ -199,20 +204,27 @@ function coef(object::Kplsr, nlv::Int)
 end
 
 """
-    predict(object::Kplsr, X; nlv::Union{Int, AbstractVector{Int}})
+    predictpredict(object::Kplsr, X)
+    predictpredict(object::Kplsr, X, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 If nothing, it is the maximum nb. LVs.
 """ 
-function predict(object::Kplsr, X; nlv::Union{Int, AbstractVector{Int}})
+function predict(object::Kplsr, X)
+    X = ensure_mat(X)
+    T = transf(object, X)
+    coefs = coef(object)
+    pred = coefs.int .+ T * coefs.beta * Diagonal(object.yscales)
+    (pred = pred, nlv = object.par.nlv)
+end
+
+function predict(object::Kplsr, X, nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     Q = eltype(X)
     a = object.par.nlv
-    if isnothing(nlv)
-        nlv = a
-    elseif isa(nlv, Int)
+    if isa(nlv, Int)
         nlv = min(nlv, a)
     else
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
@@ -221,9 +233,8 @@ function predict(object::Kplsr, X; nlv::Union{Int, AbstractVector{Int}})
     T = transf(object, X)
     pred = list(Matrix{Q}, le_nlv)
     @inbounds for i in eachindex(nlv)
-        z = coef(object, nlv[i])
-        pred[i] = z.int .+ @view(T[:, 1:nlv[i]]) * z.beta * Diagonal(object.yscales)
+        coefs = coef(object, nlv[i])
+        pred[i] = coefs.int .+ vcol(T, 1:nlv[i]) * coefs.beta * Diagonal(object.yscales)
     end 
-    if le_nlv == 1 ; pred = pred[1] ; end
     (pred = pred, nlv)
 end
