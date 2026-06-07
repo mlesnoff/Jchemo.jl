@@ -68,8 +68,8 @@ res = predict(model, Xtest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
     ylabel = "Observed").f  
 
-####### Example of fitting the function sinc(x) described in Rosipal & Trejo 2001 p. 105-106 
- 
+####### Example of fitting the function sinc(x)
+####### described in Rosipal & Trejo 2001 p. 105-106 
 x = collect(-10:.2:10) 
 x[x .== 0] .= 1e-5
 n = length(x)
@@ -138,7 +138,7 @@ end
 function transf(object::Dkplsr, X, nlv::Int)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; values(object.kwargs)...)
-    transf(object.fitm, K; nlv)
+    transf(object.fitm, K, nlv)
 end
 
 """
@@ -176,10 +176,11 @@ function predict(object::Dkplsr, X, nlv::Union{Int, AbstractVector{Int}})
     end
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
-    pred = predict(object.fitm, K; nlv).pred
+    pred = predict(object.fitm, K, nlv).pred
     D = Diagonal(object.yscales)
     @inbounds for i in eachindex(nlv)
             pred[i] .= pred[i] * D
     end
     (pred = pred, nlv)
 end
+
