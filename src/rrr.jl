@@ -59,14 +59,17 @@ tau = 1e-4
 model = rrr(; nlv, tau) 
 fit!(model, Xtrain, ytrain)
 @names model
-@names model.fitm
-@head model.fitm.T
+fitm = model.fitm ;
+@names fitm
 
-coef(model)
-coef(model, 3)
+@head transf(model, Xtrain)
+@head fitm.T
 
 @head transf(model, Xtest)
 @head transf(model, Xtest, 3)
+
+coef(model)
+coef(model, 3)
 
 res = predict(model, Xtest)
 @head res.pred
@@ -133,7 +136,8 @@ function rrr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     lambda = similar(TTx)
     covtot = similar(TTx)
     niter = ones(Int, nlv)
-    tau = par.tau
+    tau = Q(par.tau)
+    Ix = Diagonal(ones(Q, p)) 
     @inbounds for a = 1:nlv
         cont = true
         iter = 1
@@ -142,7 +146,6 @@ function rrr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
         if tau == 0       
             invCx = inv(X' * X)
         else
-            Ix = Diagonal(ones(Q, p)) 
             if tau == 1   
                 invCx = Ix
             else
