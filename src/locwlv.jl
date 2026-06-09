@@ -24,8 +24,8 @@ function locwlv(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}},
         store::Bool = false, 
         verbose::Bool = true, kwargs...) where Q <: AbstractFloat
     p = nco(Xtrain)
-    m = nro(X)
     q = nco(Ytrain)
+    m = nro(X)
     if isa(nlv, Int)
         nlv = min(nlv, p)
     else
@@ -53,8 +53,9 @@ function locwlv(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}},
             else
                 fitm[i] = algo(zXtrain, zYtrain, pweight(listw[i]); nlv = maximum(nlv), kwargs...)
             end
+            vpred = predict(fitm[i], vrow(X, i:i), nlv).pred
             @inbounds for a in eachindex(nlv)
-                zpred[i, :, a] = predict(fitm[i], vrow(X, i:i), nlv[a]).pred[1]
+                zpred[i, :, a] = vpred[a]
             end
         end
     end 
@@ -66,4 +67,3 @@ function locwlv(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}},
     if !store ; fitm = nothing ; end
     (pred = pred, fitm)
 end
-
