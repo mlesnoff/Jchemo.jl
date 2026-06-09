@@ -159,7 +159,7 @@ plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction
 
 ####---- Lwplsr 
 nlvdis = 15 ; metric = [:mah]
-h = [1, 2, 5] ; k = [200, 350, 500] 
+h = [1, 2, 5] ; k = [50, 75, 100] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
 length(pars[1]) 
 nlv = 0:20
@@ -179,7 +179,7 @@ plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction
 
 ####---- LwplsrAvg 
 nlvdis = 15 ; metric = [:mah]
-h = [1, 2, 5] ; k = [200, 350, 500] 
+h = [1, 2, 5] ; k = [50, 75, 100] 
 nlv = [0:20, 5:20] 
 pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k, nlv = nlv)
 length(pars[1]) 
