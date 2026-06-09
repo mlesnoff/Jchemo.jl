@@ -33,8 +33,7 @@ function locw(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}},
         if length(s) == 1 ; s = s:s ; end
         zXtrain = vrow(Xtrain, s)
         zYtrain = Ytrain[s, :]   # vrow makes pb in aggsumv (e.g., lda) when Ytrain is a vector
-        ## For discrimination, 
-        ## case where all the neighbors have the same class
+        ## For discrimination, case where all the neighbors have the same class
         if q == 1 && length(unique(zYtrain)) == 1
             fitm[i] = nothing
             pred[i, :] .= zYtrain[1]

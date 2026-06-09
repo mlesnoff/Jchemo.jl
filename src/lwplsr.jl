@@ -133,14 +133,19 @@ Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Lwplsr, X; nlv::Union{Int, AbstractVector{Int}})
+function predict(object::Lwplsr, X)
+    nlv = object.par.nlv
+    res = predict(object, X, nlv)
+    (pred = res.pred[1], fitm = res.fitm, listnn = res.listnn, listd = res.listd, 
+        listw = res.listw, nlv)
+end
+
+function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})
     Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
     a = object.par.nlv
-    if isnothing(nlv)
-        nlv = a
-    elseif isa(nlv, Int)
+    if isa(nlv, Int)
         nlv = min(nlv, a)
     else
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
