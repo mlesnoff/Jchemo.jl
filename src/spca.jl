@@ -167,12 +167,15 @@ function spca!(X::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
+    transf(object::Spca, X)
     transf(object::Spca, X, nlv::Int)
     Compute principal components (PCs = scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
 * `nlv` : Nb. PCs to compute.
 """ 
+transf(object::Spca, X) = transf(object, X, object.par.nlv)
+
 function transf(object::Spca, X, nlv::Int)
     X = ensure_mat(X)
     m = nro(X)
@@ -193,6 +196,9 @@ function transf(object::Spca, X, nlv::Int)
     end
     T 
 end
+
+
+
 
 """
     summary(object::Spca, X)

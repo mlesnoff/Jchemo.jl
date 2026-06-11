@@ -48,8 +48,8 @@ fit!(model, Xtrain)
 fitm = model.fitm ;
 @names fitm
 
-@head transf(model, Xtrain)
 @head fitm.T
+@head transf(model, Xtrain)
 
 @head transf(model, Xtest) 
 
@@ -89,7 +89,7 @@ function kpca(X, weights::ProbabilityWeights; kwargs...)
     Kc = K .- vtot' .- vtot .+ sum(fweightr(DKt', weights.values))    # = K .- vtot' .- vtot .+ sum(D * DKt')
     Kd = fweightr(Kc, sqrtw) * Diagonal(sqrtw)    # = sqrtD * Kc * sqrtD
     res = LinearAlgebra.svd(Kd)
-    U = res.V[:, 1:nlv]
+    U = vcol(res.V, 1:nlv)
     eig = res.S
     eig[eig .< 0] .= 0
     sv = sqrt.(eig)
@@ -99,12 +99,15 @@ function kpca(X, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
+    transf(object::Kpca, X)
     transf(object::Kpca, X, nlv::Int)
 Compute PCs (scores T) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
 * `nlv` : Nb. PCs to compute.
 """ 
+transf(object::Kpca, X) = transf(object, X, object.par.nlv)
+
 function transf(object::Kpca, X, nlv::Int)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
@@ -114,8 +117,7 @@ function transf(object::Kpca, X, nlv::Int)
     DKt = fweightr(K', w)
     vtot = sum(DKt; dims = 1)  # keep matrix format
     Kc = K .- vtot' .- object.vtot .+ sum(fweightr(object.DKt', w))
-    T = Kc * @view(object.V[:, 1:nlv])
-    T
+    Kc * vcol(object.V, 1:nlv)
 end
 
 """
