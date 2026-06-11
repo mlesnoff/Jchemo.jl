@@ -1,7 +1,0 @@
-Pair{Core.CodeInfo, DataType}
-2
-CodeInfo(
-1 ─ %1 = %new(Base.Pairs{Symbol, Int64, Nothing, @NamedTuple{nlv::Int64}}, @_2, Base.Iterators.nothing)::Base.Pairs{Symbol, Int64, Nothing, @NamedTuple{nlv::Int64}}
-│   %2 =    invoke Jchemo.:(var"#plskern!#374")(%1::Base.Pairs{Symbol, Int64, Nothing, @NamedTuple{nlv::Int64}}, @_3::typeof(plskern!), X::Matrix{Float64}, Y::Matrix{Float64}, weights::StatsBase.ProbabilityWeights{Float64, Float64, Vector{Float64}})::Jchemo.Plsr
-└──      return %2
-)

@@ -1,2 +1,0 @@
-Pair{Core.CodeInfo, DataType}
-2

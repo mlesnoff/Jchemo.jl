@@ -1,6 +1,0 @@
-Pair{Core.CodeInfo, DataType}
-2
-CodeInfo(
-1 ─ %1 =    invoke Jchemo.:(var"#plskern!#374")($(QuoteNode(Base.Pairs{Symbol, Union{}, Nothing, @NamedTuple{}}()))::Base.Pairs{Symbol, Union{}, Nothing, @NamedTuple{}}, #self#::typeof(plskern!), X::Matrix{Float64}, Y::Matrix{Float64}, weights::StatsBase.ProbabilityWeights{Float64, Float64, Vector{Float64}})::Jchemo.Plsr
-└──      return %1
-)

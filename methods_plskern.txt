@@ -1,3 +1,0 @@
-# 1 method for generic function "plskern!" from Jchemo:
- [1] plskern!(X::Matrix, Y::Union{BitMatrix, Matrix}, weights::StatsBase.ProbabilityWeights; kwargs...)
-     @ c:\Users\lesnoff\.julia\dev\Jchemo\src\plskern.jl:99
