@@ -1,7 +1,7 @@
 """
-    pcoutpcout(X; explvar::Float64 = .99, critm1::Float64 = 1 / 3, critc1::Float64 = 2.5, critm2::Float64 = 1 / 4, 
+    pcout(X; explvar::Float64 = .99, critm1::Float64 = 1 / 3, critc1::Float64 = 2.5, critm2::Float64 = 1 / 4, 
         critc2::Float64 = 0.99, cs::Float64 = .25, outbound::Float64 = 0.25)
-    pcout!pcout(X::Matrix; explvar::Float64 = .99, critm1::Float64 = 1 / 3, critc1::Float64 = 2.5, critm2::Float64 = 1 / 4, 
+    pcout!(X::Matrix; explvar::Float64 = .99, critm1::Float64 = 1 / 3, critc1::Float64 = 2.5, critm2::Float64 = 1 / 4, 
         critc2::Float64 = 0.99, cs::Float64 = .25, outbound::Float64 = 0.25)
 Pcout algorithm for outlier identification in high dimensions.
 * `X` : X-data (n, p).

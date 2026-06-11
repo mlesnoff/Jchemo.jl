@@ -98,8 +98,8 @@ function pcapp!(X::Matrix; kwargs...)
         X .-= t * zp'
     end
     s = sortperm(sv; rev = true)
-    T .= T[:, s]
-    V .= V[:, s]
+    T .= vcol(T, s) 
+    V .= vcol(V, s)
     sv .= sv[s]
     weights = pweight(ones(Q, n))
     Pca(T, V, sv, xmeans, xscales, weights, nothing, par)
