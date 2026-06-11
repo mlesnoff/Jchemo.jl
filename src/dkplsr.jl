@@ -57,10 +57,10 @@ typeof(fitm.fitm)
 @head fitm.fitm.T
 
 @head transf(model, Xtest)
-@head transf(model, Xtest; nlv = 3)
+@head transf(model, Xtest, 3)
 
 coef(model)
-coef(model; nlv = 3)
+coef(model, 3)
 
 res = predict(model, Xtest)
 @head res.pred
@@ -68,8 +68,8 @@ res = predict(model, Xtest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
     ylabel = "Observed").f  
 
-####### Example of fitting the function sinc(x) described in Rosipal & Trejo 2001 p. 105-106 
- 
+####### Example of fitting the function sinc(x)
+####### described in Rosipal & Trejo 2001 p. 105-106 
 x = collect(-10:.2:10) 
 x[x .== 0] .= 1e-5
 n = length(x)
@@ -122,55 +122,65 @@ function dkplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWei
 end
 
 """ 
-    transf(object::Dkplsr, X; nlv::Union{Nothing, Int} = nothing)
+    transf(object::Dkplsr, X)
+    transf(object::Dkplsr, X, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Dkplsr, X; nlv::Union{Nothing, Int} = nothing)
+function transf(object::Dkplsr, X)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; values(object.kwargs)...)
-    transf(object.fitm, K; nlv)
+    transf(object.fitm, K)
+end
+
+function transf(object::Dkplsr, X, nlv::Int)
+    fkern = eval(Meta.parse(String(object.par.kern)))
+    K = fkern(fscale(X, object.xscales), object.X; values(object.kwargs)...)
+    transf(object.fitm, K, nlv)
 end
 
 """
-    coef(object::Dkplsr; nlv::Union{Nothing, Int})
+    coef(object::Dkplsr) = coef(object.fitm)
+    coef(object::Dkplsr, nlv::Union{Nothing, Int})
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
-* `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
+* `nlv` : Nb. LVs to consider. 
 """ 
-function coef(object::Dkplsr; nlv::Union{Nothing, Int})
-    coef(object.fitm; nlv)
-end
+coef(object::Dkplsr) = coef(object.fitm)
+
+coef(object::Dkplsr, nlv::Union{Nothing, Int}) = coef(object.fitm, nlv)
 
 """
-    predict(object::Dkplsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+    predict(object::Dkplsr, X)
+    predict(object::Dkplsr, X, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
-   
 """ 
-function predict(object::Dkplsr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+function predict(object::Dkplsr, X)
+    fkern = eval(Meta.parse(String(object.par.kern)))
+    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
+    pred = predict(object.fitm, K).pred * Diagonal(object.yscales)
+    (pred = pred, nlv = object.par.nlv) 
+end
+
+function predict(object::Dkplsr, X, nlv::Union{Int, AbstractVector{Int}})
     a = object.par.nlv
-    if isnothing(nlv)
-        nlv = a
-    elseif isa(nlv, Int)
+    if isa(nlv, Int)
         nlv = min(nlv, a)
     else
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
     end
-    le_nlv = length(nlv)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
-    pred = predict(object.fitm, K; nlv).pred
-    if le_nlv == 1
-        pred .= pred * Diagonal(object.yscales)
-    else
-        for i = 1:le_nlv
-            pred[i] .= pred[i] * Diagonal(object.yscales)
-        end
+    pred = predict(object.fitm, K, nlv).pred
+    D = Diagonal(object.yscales)
+    @inbounds for i in eachindex(nlv)
+            pred[i] .= pred[i] * D
     end
     (pred = pred, nlv)
 end
+

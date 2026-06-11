@@ -286,7 +286,7 @@ end
 Convert the columns of a dataframe to given types.
 * `dat` : A dataframe.
 * `typ` : A vector of the targeted types for the columns of the new dataframe.
-  Keyword arguments:
+Keyword arguments:
 * `miss` : The code used in `dat` to identify the data to be declared as `missing` (of type `Missing`).
     See function `recod_miss`.
 

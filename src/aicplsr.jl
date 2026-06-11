@@ -1,5 +1,6 @@
 """
-    aicplsr(X, y; alpha = 2, kwargs...)
+    aicplsr(X::AbstractArray{T}, y::AbstractArray{T}; alpha::T = T(2.), 
+        kwargs...) where T <: AbstractFloat
 Compute Akaike's (AIC) and Mallows's (Cp) criteria for univariate PLSR models.
 * `X` : X-data (n, p).
 * `y` : Univariate Y-data.
@@ -38,7 +39,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 40
-res = aicplsr(X, y; nlv) ;
+res = aicplsr(Matrix(X), y; nlv) ;
 res.crit
 res.opt
 res.delta
@@ -49,16 +50,16 @@ scatter!(ax, 0:nlv, zaic)
 f
 ```
 """ 
-function aicplsr(X, y; alpha = 2, kwargs...)
+function aicplsr(X::AbstractArray{T}, y::AbstractArray{T}; alpha::T = T(2.), 
+        kwargs...) where T <: AbstractFloat
     par = recovkw(ParCglsr, kwargs).par
-    Q = eltype(X[1, 1])
+    Q = eltype(X)
     X = ensure_mat(X)
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     pars = mpar(scal = par.scal)  
-    res = gridscore_lv(X, y, X, y; algo = plskern, score = ssr, pars, nlv = 0:nlv)
-    zssr = res.y1
+    zssr = gridscore_lv(X, y, X, y; algo = plskern, score = ssr, pars, nlv = 0:nlv).y1
     df = dfplsr_cg(X, y; kwargs...).df
     dfssr = n .- df
     ## For Cp, unbiased estimate of sigma2 
@@ -89,7 +90,7 @@ function aicplsr(X, y; alpha = 2, kwargs...)
         ct[minimum(u):(nlv + 1)] .= NaN
     end
     #alpha = bic ? log(n) : 2
-    alpha = convert(Q, alpha)
+    #alpha = Q(alpha)
     aic = n * log.(zssr) + alpha * (df .+ 1) .* ct
     cp1 = zssr .+ 2 * s2_1 * df .* ct
     cp2 = zssr .+ 2 * s2_2 .* df .* ct

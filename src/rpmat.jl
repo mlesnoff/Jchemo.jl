@@ -23,7 +23,7 @@ rpmatgauss(p, nlv)
 ```
 """ 
 function rpmatgauss(p::Int, nlv::Int, Q = Float64)
-    randn(Q, p, nlv) / convert(Q, sqrt(nlv))
+    randn(Q, p, nlv) / Q(sqrt(nlv))
 end
 
 """
@@ -69,7 +69,7 @@ function rpmatli(p::Int, nlv::Int, Q = Float64; s = sqrt(p))
     le = p * nlv
     k = Int(round(le / s))
     z = zeros(Q, le)
-    u = convert.(Q, [-1 ; 1])
+    u = Q.([-1 ; 1])
     z[rand(1:le, k)] .= rand(u, k) 
     sparse(reshape(z, p, nlv))
 end

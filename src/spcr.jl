@@ -64,7 +64,7 @@ fitm.fitm.sel
 @head fitm.fitm.V
 
 @head transf(model, Xtest)
-@head transf(model, Xtest; nlv = 3)
+@head transf(model, Xtest, 3)
 
 res = predict(model, Xtest)
 @head res.pred
@@ -104,14 +104,14 @@ function spcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """
-    predict(object::Spcr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+    predict(object::Spcr, X; nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
 ## Function 'coef' not yet implemented for Spcr, therefore 'predict' uses directely C (regression coefs on the scores) 
-function predict(object::Spcr, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+function predict(object::Spcr, X; nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     Q = eltype(X)
     a = object.par.nlv

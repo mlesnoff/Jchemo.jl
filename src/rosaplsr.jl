@@ -194,14 +194,14 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs..
 end
 
 """ 
-    transf(object::Rosaplsr, Xbl; nlv::Union{Nothing, Int} = nothing)
+    transf(object::Rosaplsr, Xbl, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 
     of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transf(object::Rosaplsr, Xbl; nlv::Union{Nothing, Int} = nothing)
+function transf(object::Rosaplsr, Xbl, nlv::Int)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     zXbl = transf(object.fitm_bl, Xbl)
@@ -209,12 +209,12 @@ function transf(object::Rosaplsr, Xbl; nlv::Union{Nothing, Int} = nothing)
 end
 
 """
-    coef(object::Rosaplsr; nlv::Union{Nothing, Int} = nothing)
+    coef(object::Rosaplsr, nlv::Int)
 Compute the X b-coefficients of a model fitted with `nlv` LVs.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
 """ 
-function coef(object::Rosaplsr; nlv::Union{Nothing, Int} = nothing)
+function coef(object::Rosaplsr, nlv::Int)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     xmeans = reduce(vcat, object.fitm_bl.xmeans)
@@ -227,13 +227,13 @@ function coef(object::Rosaplsr; nlv::Union{Nothing, Int} = nothing)
 end
 
 """
-    predict(object::Rosaplsr, Xbl; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+    predict(object::Rosaplsr, Xbl; nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Rosaplsr, Xbl; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+function predict(object::Rosaplsr, Xbl; nlv::Union{Int, AbstractVector{Int}})
     a = object.par.nlv
     if isnothing(nlv)
         nlv = a
@@ -247,7 +247,7 @@ function predict(object::Rosaplsr, Xbl; nlv::Union{Nothing, Int, AbstractVector{
     X = fconcat(Xbl)
     pred = list(Matrix{Q}, le_nlv)
     @inbounds for i in eachindex(nlv)
-        z = coef(object; nlv = nlv[i])
+        z = coef(object, nlv[i])
         pred[i] = z.int .+ X * z.B
     end 
     if le_nlv == 1 ; pred = pred[1] ; end

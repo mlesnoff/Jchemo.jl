@@ -99,13 +99,16 @@ function pcasvd!(X::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
-    transf(object::Union{Pca, Fda}, X; nlv::Union{Nothing, Int} = nothing)
+    transf(object::Union{Pca, Fda}, X)
+    transf(object::Union{Pca, Fda}, X, nlv::Int)
 Compute principal components (PCs = scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
 * `nlv` : Nb. PCs to compute.
 """ 
-function transf(object::Union{Pca, Fda}, X; nlv::Union{Nothing, Int} = nothing)
+transf(object::Union{Pca, Fda}, X) = fcscale(X, object.xmeans, object.xscales) * object.V
+
+function transf(object::Union{Pca, Fda}, X, nlv::Int)
     X = ensure_mat(X)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)

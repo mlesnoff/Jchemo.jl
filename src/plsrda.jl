@@ -75,7 +75,7 @@ aggsumv(fitm.fitm_emb.weights.values, ytrain)
 @head fitm.fitm_emb.T
 
 @head transf(model, Xtest)
-@head transf(model, Xtest; nlv = 3)
+@head transf(model, Xtest, 3)
 
 coef(fitm.fitm_emb)
 
@@ -111,24 +111,24 @@ function plsrda(X, y, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
-    transf(object::Union{Plsrda, Plsprobda}, X; nlv::Union{Nothing, Int} = nothing)
+    transf(object::Union{Plsrda, Plsprobda}, X, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Union{Plsrda, Plsprobda}, X; nlv::Union{Nothing, Int} = nothing)
+function transf(object::Union{Plsrda, Plsprobda}, X, nlv::Int)
     transf(object.fitm_emb, X; nlv)
 end
 
 """
-    predict(object::Plsrda, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+    predict(object::Plsrda, X; nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Plsrda, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+function predict(object::Plsrda, X; nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     m = nro(X)
     Qy = eltype(object.lev)

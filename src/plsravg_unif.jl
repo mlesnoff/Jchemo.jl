@@ -22,7 +22,7 @@ end
 function predict(object::Plsravgunif, X)
     nlv = object.par.nlv
     le_nlv = length(nlv)
-    predlv = predict(object.fitm, X; nlv).pred
+    predlv = predict(object.fitm, X, nlv).pred
     if(le_nlv == 1)
         pred = predlv
     else

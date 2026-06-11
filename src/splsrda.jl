@@ -64,7 +64,7 @@ fitm.fitm_emb.sel
 @head fitm.fitm_emb.T
 @head transf(model, Xtrain)
 @head transf(model, Xtest)
-@head transf(model, Xtest; nlv = 3)
+@head transf(model, Xtest, 3)
 
 coef(fitm.fitm_emb)
 

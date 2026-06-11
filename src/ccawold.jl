@@ -107,7 +107,7 @@ function ccawold!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
-    tau = convert(Q, par.tau) 
+    tau = Q(par.tau) 
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     xscales = ones(Q, p)
@@ -161,7 +161,7 @@ function ccawold!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
         ty .= Y[:, 1]
         cont = true
         iter = 1
-        wx .= convert.(Q, rand(p))
+        wx .= Q.(rand(p))
         ## invCx, invCy
         if tau == 0       
             invCx = inv(X' * X)

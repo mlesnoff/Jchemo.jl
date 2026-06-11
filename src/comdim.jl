@@ -198,22 +198,22 @@ function comdim!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
-    transf(object::Comdim, Xbl; nlv::Union{Nothing, Int} = nothing)
-    transfbl(object::Comdim, Xbl; nlv::Union{Nothing, Int} = nothing)
+    transf(object::Comdim, Xbl, nlv::Int)
+    transfbl(object::Comdim, Xbl, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transf(object::Comdim, Xbl; nlv::Union{Nothing, Int} = nothing)
+function transf(object::Comdim, Xbl, nlv::Int)
     transf_all(object, Xbl; nlv).T
 end
 
-function transfbl(object::Comdim, Xbl; nlv::Union{Nothing, Int} = nothing)
+function transfbl(object::Comdim, Xbl, nlv::Int)
     transf_all(object, Xbl; nlv).Tbl
 end
 
-function transf_all(object::Comdim, Xbl; nlv::Union{Nothing, Int} = nothing)
+function transf_all(object::Comdim, Xbl, nlv::Int)
     Q = eltype(Xbl[1][1, 1])
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)

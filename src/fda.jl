@@ -106,7 +106,7 @@ function fda!(X::Matrix, y, weights; kwargs...)
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     Q = eltype(X)
     n, p = size(X)
-    lb = convert(Q, par.lb)
+    lb = Q(par.lb)
     xmeans = colmean(X, weights)
     xscales = ones(Q, p)
     if par.scal 

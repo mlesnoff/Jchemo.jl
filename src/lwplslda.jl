@@ -99,12 +99,12 @@ function lwplslda(X, y; kwargs...)
 end
 
 """
-    predict(object::Lwplslda, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+    predict(object::Lwplslda, X; nlv::Union{Int, AbstractVector{Int}})
 Compute the y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Lwplslda, X; nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing)
+function predict(object::Lwplslda, X; nlv::Union{Int, AbstractVector{Int}})
     Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)

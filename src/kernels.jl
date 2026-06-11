@@ -32,7 +32,7 @@ function krbf(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    gamma = convert(Q, par.gamma)
+    gamma = Q(par.gamma)
     exp.(-gamma * eucl2(X, Y))
 end
 
@@ -72,8 +72,8 @@ function kpol(X, Y; kwargs...)
     Q = eltype(X[1, 1])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    gamma = convert(Q, par.gamma)
-    coef0 = convert(Q, par.coef0)
+    gamma = Q(par.gamma)
+    coef0 = Q(par.coef0)
     K = gamma * X * Y' .+ coef0
     if par.degree > 1
         zK = copy(K)
