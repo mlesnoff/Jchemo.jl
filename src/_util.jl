@@ -525,12 +525,12 @@ X = rand(5, 2)
 rmrow(X, [1, 4])
 ```
 """
-function rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, UnitRange, Number})
+function rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Number, AbstractVector})
     if isa(s, BitVector) ; s = findall(s .== 1) ; end
     X[setdiff(1:end, Int.(s)), :]
 end
 
-function rmrow(x::Union{Vector, BitVector}, s::Union{Vector, BitVector, UnitRange, Number})
+function rmrow(x::AbstractVector, s::Union{Number, AbstractVector})
     if isa(s, BitVector) ; s = findall(s .== 1) ; end
     x[setdiff(1:end, Int.(s))]
 end

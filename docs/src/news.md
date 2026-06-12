@@ -2,17 +2,18 @@
 
 ## *Version 0.10.0*
 
-Major changes for 'nlv' and 'lb'. Work in progress to improve type stability.
+Major changes for arguments 'nlv' and 'lb'. 
+Work in progress to improve overall type stability.
+
+- Breakings:
+    - Functions having arguments 'nlv' or 'lb': the syntax concerning 'nlv' and 'lb' in 
+        functions *transf* and  *predict* has changed, see examples in functio helps.
+    - Function **mbpca** renamed to **cpca**.
+    - Fuction **rclustplsr** temporary removed.
 
 - News:
     - Function **boxcox**: Estimate the parameter of the Box-Cox power transformation.
     - Function **pcout**: Pcout algorithm for outlier identification in high dimensions *Filzmoser et al. 2008*.
-
-- Breakings:
-    - Functions having arguments 'nlv' or 'lb': the syntax concerning 'nlv' and 'lb' in 
-        functions *transf* and  *predict* has changed, see the examples in functio helps.
-    - Function **mbpca** renamed to **cpca**.
-    - Fuction **rclustplsr** temporary removed.
 
 - Modifications
     - Code cleaning.
