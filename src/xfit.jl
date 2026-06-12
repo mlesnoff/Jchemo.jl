@@ -35,13 +35,13 @@ fit!(model, X)
 fitm = model.fitm ;
 @head xfit(fitm)
 xfit(fitm, Xnew)
-xfit(fitm, Xnew; nlv = 0)
-xfit(fitm, Xnew; nlv = 1)
+xfit(fitm, Xnew, 0)
+xfit(fitm, Xnew, 1)
 fitm.xmeans
 
 @head X
 @head xfit(fitm) + xresid(fitm, X)
-@head xfit(fitm, X; nlv = 1) + xresid(fitm, X; nlv = 1)
+@head xfit(fitm, X, 1) + xresid(fitm, X, 1)
 
 @head Xnew
 @head xfit(fitm, Xnew) + xresid(fitm, Xnew)
@@ -61,12 +61,12 @@ fit!(model, X, Y, weights)
 fitm = model.fitm ;
 @head xfit(fitm)
 xfit(fitm, Xnew)
-xfit(fitm, Xnew, nlv = 0)
-xfit(fitm, Xnew, nlv = 1)
+xfit(fitm, Xnew, 0)
+xfit(fitm, Xnew, 1)
 
 @head X
 @head xfit(fitm) + xresid(fitm, X)
-@head xfit(fitm, X; nlv = 1) + xresid(fitm, X; nlv = 1)
+@head xfit(fitm, X, 1) + xresid(fitm, X, 1)
 
 @head Xnew
 @head xfit(fitm, Xnew) + xresid(fitm, Xnew)
@@ -88,21 +88,22 @@ function xfit(object)
     X
 end
 
+xfit(object, X) = xfit(object, X, object.par.nlv) 
+
 function xfit(object, X, nlv::Int)
-    xfit!(object, copy(ensure_mat(X)); nlv)
+    xfit!(object, copy(ensure_mat(X)), nlv)
 end
 
 function xfit!(object, X::Matrix, nlv::Int)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     if nlv == 0
-        m = nro(X)
-        @inbounds for i = 1:m
+        @inbounds for i in axes(X, 1)
             X[i, :] .= object.xmeans
         end
     else
         V = vcol(object.V, 1:nlv)
-        mul!(X, transf(object, X; nlv), V')
+        mul!(X, transf(object, X, nlv), V')
         ## Coming back to the original scale
         fscale!(X, 1 ./ object.xscales)    
         fcenter!(X, -object.xmeans)

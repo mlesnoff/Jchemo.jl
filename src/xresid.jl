@@ -3,7 +3,7 @@
     xresid!(object, X::Matrix, nlv::Int)
 Residual matrix from a bilinear model (e.g., PCA).
 * `object` : The fitted model.
-* `X` : New X-data to be approximated from the model.Must be in the same scale as the X-data used to fit
+* `X` : New X-data to be approximated from the model. Must be in the same scale as the X-data used to fit
     the model `object`, i.e. before centering and eventual scaling.
 Keyword arguments:
 * `nlv` : Nb. components (PCs or LVs) to consider. If `nothing`, it is the maximum nb. of components.
@@ -13,14 +13,16 @@ Compute the residual matrix:
 where X_fit is the fitted X returned by function `xfit`. See `xfit` for examples. 
 ```
 """ 
+xresid(object, X) = X - xfit(object, X)  
+
 function xresid(object, X, nlv::Int)
-    xresid!(object, copy(ensure_mat(X)); nlv)
+    xresid!(object, copy(ensure_mat(X)), nlv)
 end
 
 function xresid!(object, X::Matrix, nlv::Int)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
-    X .-= xfit(object, X; nlv)
+    X .-= xfit(object, X, nlv)
     X
 end
 
