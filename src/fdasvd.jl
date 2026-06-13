@@ -48,6 +48,8 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
+    nlv = min(n, p, nlev - 1, par.nlv)
+    par.nlv = nlv
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information 
     res.W .*= n / (n - nlev)
     ## Regularization

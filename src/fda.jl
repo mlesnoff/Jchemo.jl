@@ -120,6 +120,8 @@ function fda!(X::Matrix, y, weights; kwargs...)
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information    
     lev = res.lev
     nlev = length(lev)
+    nlv = min(n, p, nlev - 1, par.nlv)
+    par.nlv = nlv
     res.W .*= n / (n - nlev)    # unbiased estimate
     ## Regularization
     if lb > 0
@@ -131,7 +133,7 @@ function fda!(X::Matrix, y, weights; kwargs...)
     ## Winv * B (p, p) is not symmetric
     fitm = eigen!(Winv * zres.B; sortby = x -> -abs(x))
     nlv = min(par.nlv, n, p, nlev - 1)
-    V = real.(fitm.vectors[:, 1:nlv])
+    V = real.(vcol(fitm.vectors, 1:nlv))
     eig = real.(fitm.values)
     sstot = sum(eig)
     norm_P = sqrt.(diag(V' * res.W * V))
