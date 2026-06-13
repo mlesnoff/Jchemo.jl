@@ -11,7 +11,7 @@ See function `gridscore` for examples.
 """
 function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score::Function, 
         pars::Union{Nothing, NamedTuple} = nothing, 
-        lb::Union{Float64, AbstractVector{Float64}}, verbose::Bool = false)
+        lb::Union{T, AbstractVector{T}}, verbose::Bool = false) where T <: AbstractFloat
     Q = eltype(Xtrain[1, 1])
     q = nco(Ytrain)
     lb = mlev(lb)
@@ -19,8 +19,7 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score::Function,
     if isnothing(pars)    # e.g.: case of RR
         if verbose ; println("-- Nb. combinations = 0.") ; end
         fitm = algo(Xtrain, Ytrain, lb = maximum(lb))
-        pred = predict(fitm, X; lb).pred
-        if le_lb == 1 ; pred = [pred] ; end
+        pred = predict(fitm, X, lb).pred
         res = zeros(Q, le_lb, q)
         @inbounds for i in eachindex(lb) 
             res[i, :] = score(pred[i], Y)
@@ -31,9 +30,8 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score::Function,
         if verbose ; println("-- Nb. combinations = ", ncomb) ; end
         res = map(values(pars)...) do v...
             if verbose ; println(Pair.(keys(pars), v)...) ; end
-            fitm = algo(Xtrain, Ytrain ; lb = maximum(lb), Pair.(keys(pars), v)...)
-            pred = predict(fitm, X; lb).pred
-            if le_lb == 1 ; pred = [pred] ; end
+            fitm = algo(Xtrain, Ytrain; lb = maximum(lb), Pair.(keys(pars), v)...)
+            pred = predict(fitm, X, lb).pred
             zres = zeros(Q, le_lb, q)
             @inbounds for i in eachindex(lb)
                 zres[i, :] = score(pred[i], Y)
