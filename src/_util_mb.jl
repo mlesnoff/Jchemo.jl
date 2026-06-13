@@ -20,12 +20,12 @@ Xbl[2]
 Xbl[3]
 ```
 """
-function mblock(X, listbl::Vector{T}) where T <: AbstractVector{Int}
+function mblock(X, listbl) 
     Q = eltype(X[1, 1])
     nbl = length(listbl)
     Xbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
-        Xbl[k] = ensure_mat(X[:, listbl[k]])
+        Xbl[k] = ensure_mat(X[:, listbl[k]])  # 'ensure_mat' is required since the selection can be a vector
     end
     Xbl
 end 
