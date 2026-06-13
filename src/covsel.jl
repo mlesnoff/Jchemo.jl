@@ -59,7 +59,8 @@ fitm = model.fitm ;
 fitm.sel
 fitm.selc
 
-@head transf(model, X; nlv = 3)
+@head transf(model, X)
+@head transf(model, X, 3)
 
 res = summary(model)
 res.explvarx 
@@ -142,6 +143,8 @@ Compute selected variables from a fitted model and X-data.
 * `X` : X-data for which the selected variables are computed.
 * `nlv` : Nb. variables to compute.
 """ 
+transf(object::Covsel, X) = X[:, object.sel]
+
 function transf(object::Covsel, X, nlv::Int)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
