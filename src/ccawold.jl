@@ -226,6 +226,7 @@ function ccawold!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
+    transfbl(object::Ccawold, X, Y)
     transfbl(object::Ccawold, X, Y; nlv = nothing)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
@@ -233,6 +234,16 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `Y` : Y-data for which components (LVs) are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
+function transfbl(object::Ccawold, X, Y)
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)   
+    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    Tx = X * object.Rx
+    Ty = Y * object.Ry
+    (Tx = Tx, Ty)
+end
+
 function transfbl(object::Ccawold, X, Y; nlv = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y)   
