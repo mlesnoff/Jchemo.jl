@@ -65,12 +65,15 @@ function rp!(X::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
+    transf(object::Rp, X)
     transf(object::Rp, X, nlv::Int)
 Compute scores T from a fitted model.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which scores T are computed.
 * `nlv` : Nb. scores to compute.
 """ 
+transf(object::Rp, X) = fcscale(X, object.xmeans, object.xscales) * object.V
+
 function transf(object::Rp, X, nlv::Int)
     X = ensure_mat(X)
     a = object.par.nlv

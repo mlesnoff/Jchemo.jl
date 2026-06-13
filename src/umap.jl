@@ -102,6 +102,8 @@ function umap(X; kwargs...)
     X = ensure_mat(X)
     Q = eltype(X)
     n, p = size(X)
+    nlv = min(n, p, par.nlv)
+    par.nlv = nlv
     if par.psamp < 1
         ns = round(Int, par.psamp * n)
         res = nipals(fcenter(X, colmean(X)); maxit = 50)
@@ -116,7 +118,7 @@ function umap(X; kwargs...)
         X = fscale(X, xscales)
     end
     ## Note: UMAP.jl ==> the type of new_data must match the original data exactly ==> force to Matrix
-    fitm = UMAP.fit(Matrix(X'), par.nlv; metric = par.metric, n_neighbors = par.n_neighbors, min_dist = par.min_dist)
+    fitm = UMAP.fit(Matrix(X'), nlv; metric = par.metric, n_neighbors = par.n_neighbors, min_dist = par.min_dist)
     T = reduce(vcat, transpose.(fitm.embedding))
     Umap(fitm, T, xscales, s, par)
 end
