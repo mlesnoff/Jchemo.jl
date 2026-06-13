@@ -159,32 +159,38 @@ function mbplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::ProbabilityW
 end
 
 """ 
+    transf(object::Mbplsr, Xbl)
     transf(object::Mbplsr, Xbl, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
+function transf(object::Mbplsr, Xbl)
+    zXbl = transf(object.fitm_bl, Xbl)    
+    fconcat(zXbl) * object.fitm.R 
+end
+
 function transf(object::Mbplsr, Xbl, nlv::Int)
-    a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(nlv, a)
+    nlv = min(nlv, object.par.nlv)
     zXbl = transf(object.fitm_bl, Xbl)    
     fconcat(zXbl) * vcol(object.fitm.R, 1:nlv) 
 end
 
 """
+    predict(object::Mbplsr, Xbl)
     predict(object::Mbplsr, Xbl; nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Mbplsr, Xbl; nlv::Union{Int, AbstractVector{Int}})
+predict(object::Mbplsr, Xbl) = predict(object, Xbl, object.par.nlv)
+
+function predict(object::Mbplsr, Xbl, nlv::Union{Int, AbstractVector{Int}})
     Q = eltype(Xbl[1][1, 1])
     a = object.par.nlv
-    if isnothing(nlv)
-        nlv = a
-    elseif isa(nlv, Int)
+    if isa(nlv, Int)
         nlv = min(nlv, a)
     else
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
@@ -192,10 +198,10 @@ function predict(object::Mbplsr, Xbl; nlv::Union{Int, AbstractVector{Int}})
     le_nlv = length(nlv)
     T = transf(object, Xbl)
     pred = list(Matrix{Q}, le_nlv)
-    @inbounds  for i = 1:le_nlv
+    @inbounds for i in eachindex(nlv)
         znlv = nlv[i]
         W = Diagonal(object.yscales)
-        beta = object.fitm.C[:, 1:znlv]'
+        beta = vcol(object.fitm.C, 1:znlv)'
         int = object.ymeans'
         pred[i] = int .+ vcol(T, 1:znlv) * beta * W 
     end 

@@ -194,6 +194,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs..
 end
 
 """ 
+    transf(object::Rosaplsr, Xbl)
     transf(object::Rosaplsr, Xbl, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
@@ -201,22 +202,28 @@ Compute latent variables (LVs; = scores) from a fitted model.
     of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
+function transf(object::Rosaplsr, Xbl)
+    zXbl = transf(object.fitm_bl, Xbl)
+    fconcat(zXbl) * object.R
+end
+
 function transf(object::Rosaplsr, Xbl, nlv::Int)
-    a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(nlv, a)
+    nlv = min(nlv, object.par.nlv)
     zXbl = transf(object.fitm_bl, Xbl)
     fconcat(zXbl) * vcol(object.R, 1:nlv)
 end
 
 """
+    coef(object::Rosaplsr)
     coef(object::Rosaplsr, nlv::Int)
 Compute the X b-coefficients of a model fitted with `nlv` LVs.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
 """ 
+coef(object::Rosaplsr) = coef(object, object.par.nlv)
+
 function coef(object::Rosaplsr, nlv::Int)
-    a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(nlv, a)
+    nlv = min(nlv, object.par.nlv)
     xmeans = reduce(vcat, object.fitm_bl.xmeans)
     xscales = reduce(vcat, object.fitm_bl.xscales)
     theta = vcol(object.C, 1:nlv)'  # coefs regression of Y on T
@@ -227,17 +234,18 @@ function coef(object::Rosaplsr, nlv::Int)
 end
 
 """
+    predict(object::Rosaplsr, Xbl)
     predict(object::Rosaplsr, Xbl; nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Rosaplsr, Xbl; nlv::Union{Int, AbstractVector{Int}})
+predict(object::Rosaplsr, Xbl) = predict(object, Xbl, object.par.nlv)
+
+function predict(object::Rosaplsr,  Xbl, nlv::Union{Int, AbstractVector{Int}})
     a = object.par.nlv
-    if isnothing(nlv)
-        nlv = a
-    elseif isa(nlv, Int)
+    if isa(nlv, Int)
         nlv = min(nlv, a)
     else
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)

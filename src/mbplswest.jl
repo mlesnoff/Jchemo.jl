@@ -204,32 +204,38 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs.
 end
 
 """ 
+    transf(object::Mbplswest, Xbl)
     transf(object::Mbplswest, Xbl, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
+function transf(object::Mbplswest, Xbl)
+    zXbl = transf(object.fitm_bl, Xbl)    
+    fconcat(zXbl) * object.R 
+end
+
 function transf(object::Mbplswest, Xbl, nlv::Int)
-    a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(nlv, a)
+    nlv = min(nlv, object.par.nlv)
     zXbl = transf(object.fitm_bl, Xbl)    
     fconcat(zXbl) * vcol(object.R, 1:nlv) 
 end
 
 """
+    predict(object::Mbplswest, Xbl)
     predict(object::Mbplswest, Xbl; nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Mbplswest, Xbl; nlv::Union{Int, AbstractVector{Int}})
+predict(object::Mbplswest, Xbl) = predict(object, Xbl, object.par.nlv)
+
+function predict(object::Mbplswest, Xbl, nlv::Union{Int, AbstractVector{Int}})
     Q = eltype(Xbl[1][1, 1])
     a = object.par.nlv
-    if isnothing(nlv)
-        nlv = a
-    elseif isa(nlv, Int)
+    if isa(nlv, Int)
         nlv = min(nlv, a)
     else
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
@@ -240,7 +246,7 @@ function predict(object::Mbplswest, Xbl; nlv::Union{Int, AbstractVector{Int}})
     @inbounds  for i = 1:le_nlv
         znlv = nlv[i]
         W = Diagonal(object.yscales)
-        beta = object.C[:, 1:znlv]'
+        beta = vcol(object.C, 1:znlv)'
         int = object.ymeans'
         pred[i] = int .+ vcol(T, 1:znlv) * beta * W 
     end 
