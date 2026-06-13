@@ -63,8 +63,8 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
     ylabel = "Observed").f    
 
 ## !! Only for function 'rr' (not for 'rrchol')
-coef(model; lb = 1e-1)
-res = predict(model, Xtest; lb = [.1 ; .01])
+coef(model, 1e-1)
+res = predict(model, Xtest, [.1; .01])
 @head res.pred[1]
 @head res.pred[2]
 ```
@@ -87,6 +87,7 @@ function rr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights
     Q = eltype(X)
     Y = handle_bitmatrix(Q, Y)  # for DA functions
     p = nco(X)
+    par.lb = Q(par.lb)
     sqrtw = sqrt.(weights.values)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)
@@ -107,14 +108,16 @@ function rr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights
 end
 
 """
-    coef(object::Rr; lb::Union{Nothing, Float64} = nothing)
+    coef(object::Rr)
+    coef(object::Rr; lb)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `lb` : Ridge regularization parameter 'lambda'.
 """ 
-function coef(object::Rr; lb::Union{Nothing, Float64} = nothing)
+coef(object::Rr) = coef(object::Rr, object.par.lb)
+
+function coef(object::Rr, lb::T) where T <: AbstractFloat
     Q = eltype(object.sv)
-    if isnothing(lb) ; lb = object.par.lb ; end
     eig = object.sv.^2
     z = 1 ./ (eig .+ Q(lb)^2)
     beta = Diagonal(z) * object.TtY
@@ -131,16 +134,21 @@ Compute Y-predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 * `lb` : Regularization parameter, or collection of regularization parameters, 'lambda' to consider.
 """ 
-function predict(object::Rr, X; lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing)
+function predict(object::Rr, X)
     X = ensure_mat(X)
-    Q = eltype(X)
-    if isnothing(lb) ; lb = object.par.lb ; end
+    coefs = coef(object) 
+    pred = coefs.int .+ X * coefs.B
+    (pred = pred, lb = object.par.lb)
+end
+
+function predict(object::Rr, X, lb::Union{T, AbstractVector{T}})  where T <: AbstractFloat
+    X = ensure_mat(X)
+    Q = eltype(object.sv)
     le_lb = length(lb)
     pred = list(Matrix{Q}, le_lb)
-    @inbounds for i = 1:le_lb
-        z = coef(object; lb = lb[i])  # lb is Q-converted in coef
-        pred[i] = z.int .+ X * z.B
+    @inbounds for i in eachindex(lb) 
+        coefs = coef(object, lb[i])  # lb is Q-converted in coef
+        pred[i] = coefs.int .+ X * coefs.B
     end 
-    if le_lb == 1 ; pred = pred[1] ; end
     (pred = pred, lb)
 end

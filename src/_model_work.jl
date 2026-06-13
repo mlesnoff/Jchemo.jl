@@ -52,20 +52,24 @@ transfbl(model::JchemoModel, X, Y, nlv::Union{Int, AbstractVector{Int}}) = trans
 
 coef(model::JchemoModel) = coef(model.fitm)
 
-coef(model::JchemoModel, nlv::Union{Int, AbstractVector{Int}}) = coef(model.fitm, nlv)
+function coef(model::JchemoModel, nlv::Union{Q, AbstractVector{Q}}) where Q <: Integer
+    coef(model.fitm, nlv)
+end
 
 function coef(model::JchemoModel, lb::Union{Q, AbstractVector{Q}}) where Q <: AbstractFloat
-    coef(model.fitm, nlv)
+    coef(model.fitm, lb)
 end
 
 ######## Predict 
 
 predict(model::JchemoModel, X) = predict(model.fitm, X)
 
-predict(model::JchemoModel, X, nlv::Union{Int, AbstractVector{Int}}) = predict(model.fitm, X, nlv)
+function predict(model::JchemoModel, X, nlv::Union{Q, AbstractVector{Q}}) where Q <: Integer
+    predict(model.fitm, X, nlv)
+end
 
 function predict(model::JchemoModel, X, lb::Union{Q, AbstractVector{Q}}) where Q <: AbstractFloat
-    predict(model.fitm, X, nlv)
+    predict(model.fitm, X, lb)
 end
 
 ######## Summary 
