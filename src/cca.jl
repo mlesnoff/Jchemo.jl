@@ -174,8 +174,6 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transfbl(object::Cca, X, Y)
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)   
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     Tx = X * object.Wx
@@ -184,10 +182,7 @@ function transfbl(object::Cca, X, Y)
 end
 
 function transfbl(object::Cca, X, Y, nlv::Int)
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)   
-    a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(nlv, a)
+    nlv = min(nlv, object.par.nlv)
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     Tx = X * vcol(object.Wx, 1:nlv)
@@ -204,8 +199,6 @@ Summarize the fitted model.
 """ 
 function Base.summary(object::Cca, X, Y)
     Q = eltype(X[1, 1])
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
     n, nlv = size(object.Tx)
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]

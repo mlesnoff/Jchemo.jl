@@ -177,6 +177,7 @@ function plscan!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
+    transfbl(object::Plscan, X, Y)
     transfbl(object::Plscan, X, Y, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
@@ -184,11 +185,16 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `Y` : Y-data for which components (LVs) are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
+function transfbl(object::Plscan, X, Y)
+    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    Tx = X * object.Rx
+    Ty = Y * object.Ry
+    (Tx = Tx, Ty)
+end
+
 function transfbl(object::Plscan, X, Y, nlv::Int)
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)   
-    a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(nlv, a)
+    nlv = min(nlv, object.par.nlv)
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     Tx = X * vcol(object.Rx, 1:nlv)
@@ -205,8 +211,6 @@ Summarize the fitted model.
 """ 
 function Base.summary(object::Plscan, X, Y)
     Q = eltype(X[1, 1])
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
     n, nlv = size(object.Tx)
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]

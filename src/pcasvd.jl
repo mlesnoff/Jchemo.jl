@@ -110,8 +110,7 @@ transf(object::Union{Pca, Fda}, X) = fcscale(X, object.xmeans, object.xscales) *
 
 function transf(object::Union{Pca, Fda}, X, nlv::Int)
     X = ensure_mat(X)
-    a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(nlv, a)
+    nlv = min(nlv, object.par.nlv)
     fcscale(X, object.xmeans, object.xscales) * vcol(object.V, 1:nlv)
 end
 
