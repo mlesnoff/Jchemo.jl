@@ -69,8 +69,8 @@ res = predict(model, Xtest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
    ylabel = "Observed").f    
 
-coef(model; lb = 1e-1)
-res = predict(model, Xtest; lb = [.1 ; .01])
+coef(model, 1e-1)
+res = predict(model, Xtest, [.1; .01])
 @head res.pred[1]
 @head res.pred[2]
 
@@ -119,6 +119,7 @@ function krr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeight
     Q = eltype(X)
     Y = handle_bitmatrix(Q, Y)  # for DA functions
     p = nco(X)
+    par.lb = Q(par.lb)
     xscales = ones(Q, p)
     if par.scal 
         xscales .= colstd(X, weights)
@@ -143,33 +144,46 @@ function krr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeight
 end
 
 """
-    coef(object::Krr; lb::Union{Nothing, Float64} = nothing)
+    coef(object::Krr)
+    coef(object::Krr, lb::T) where T <: AbstractFloat
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `lb` : Ridge regularization parameter 'lambda'.
 """ 
-function coef(object::Krr; lb::Union{Nothing, Float64} = nothing)
-    Q = eltype(object.X)
-    if isnothing(lb) ; lb = object.par.lb ; end
+coef(object::Krr) = coef(object::Krr, object.par.lb)
+
+function coef(object::Krr, lb::T) where T <: AbstractFloat
+    Q = eltype(object.sv)
     eig = object.sv.^2
-    z = 1 ./ (eig .+ Q(lb)^2)
-    A = object.U * (Diagonal(z) * object.UtDY)
+    v = 1 ./ (eig .+ Q(lb)^2)
+    A = object.U * (Diagonal(v) * object.UtDY)
     q = length(object.ymeans)
     int = reshape(object.ymeans, 1, q)
-    tr = sum(eig .* z)
+    tr = sum(eig .* v)
     (A = A, int = int, df = 1 + tr)
 end
 
 """
-    predict(object::Krr, X; lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing)
+    predict(object::Krr, X)
+    predict(object::Krr, X, lb::Union{T, AbstractVector{T}})  where T <: AbstractFloat
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `lb` : Regularization parameter, or collection of regularization parameters, 'lambda' to consider. 
 """ 
-function predict(object::Krr, X; lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing)
-    X = ensure_mat(X)
-    if isnothing(lb) ; lb = object.par.lb ; end
+function predict(object::Krr, X)
+    fkern = eval(Meta.parse(String(object.par.kern)))
+    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
+    DKt = fweightr(K', object.weights.values)
+    vtot = sum(DKt; dims = 1)  # keep matrix format
+    w = object.weights.values
+    Kc = K .- vtot' .- object.vtot .+ sum(fweightr(object.DKt', w))
+    coefs = coef(object)
+    pred = coefs.int .+ Kc * fweightr(coefs.A, sqrt.(w))
+    (pred = pred, lb = object.par.lb)
+end
+
+function predict(object::Krr, X, lb::Union{T, AbstractVector{T}})  where T <: AbstractFloat
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     DKt = fweightr(K', object.weights.values)
@@ -178,10 +192,9 @@ function predict(object::Krr, X; lb::Union{Nothing, Float64, AbstractVector{Floa
     Kc = K .- vtot' .- object.vtot .+ sum(fweightr(object.DKt', w))
     le_lb = length(lb)
     pred = list(Matrix{eltype(X)}, le_lb)
-    @inbounds for i = 1:le_lb
-        z = coef(object; lb = lb[i])
-        pred[i] = z.int .+ Kc * (fweightr(z.A, sqrt.(w)))
+    @inbounds for i in eachindex(lb)
+        coefs = coef(object, lb[i])  # lb is Q-converted in coef
+        pred[i] = coefs.int .+ Kc * fweightr(coefs.A, sqrt.(w))
     end 
-    if le_lb == 1 ; pred = pred[1] ; end
     (pred = pred, lb)
 end

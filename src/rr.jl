@@ -109,7 +109,7 @@ end
 
 """
     coef(object::Rr)
-    coef(object::Rr; lb)
+    coef(object::Rr, lb::T) where T <: AbstractFloat
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `lb` : Ridge regularization parameter 'lambda'.
@@ -128,7 +128,8 @@ function coef(object::Rr, lb::T) where T <: AbstractFloat
 end
 
 """
-    predict(object::Rr, X; lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing)
+    predict(object::Rr, X)
+    predict(object::Rr, X, lb::Union{T, AbstractVector{T}})  where T <: AbstractFloat
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
