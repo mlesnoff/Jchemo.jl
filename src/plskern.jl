@@ -177,13 +177,11 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Union{Plsr, Splsr}, X)
-    X = ensure_mat(X)
     ## Could be fcscale! but would change X. If too heavy ==> Makes summary!
     fcscale(X, object.xmeans, object.xscales) * object.R
 end
 
 function transf(object::Union{Plsr, Splsr}, X, nlv::Int)
-    X = ensure_mat(X)
     nlv = min(nlv, object.par.nlv)
     ## Could be fcscale! but would change X. If too heavy ==> Makes summary!
     fcscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
@@ -219,21 +217,21 @@ function coef(object::Union{Plsr, Splsr}, nlv::Int)
 end
 
 """
-    predict(object::Union{Plsr, Splsr}, X)
-    predict(object::Union{Plsr, Splsr}, X, nlv::Union{Int, AbstractVector{Int}})
+    predict(object::Union{Plsr, Splsr, Pcr}, X)
+    predict(object::Union{Plsr, Splsr, Pcr}, X, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{Plsr, Splsr}, X)
+function predict(object::Union{Plsr, Splsr, Pcr}, X)
     X = ensure_mat(X)
     coefs = coef(object)
     pred = coefs.int .+ X * coefs.B  # try muladd(X, coefs.B, coefs.int) 
     (pred = pred, nlv = object.par.nlv)
 end
 
-function predict(object::Union{Plsr, Splsr}, X, nlv::Union{Int, AbstractVector{Int}})
+function predict(object::Union{Plsr, Splsr, Pcr}, X, nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     Q = eltype(X)
     a = object.par.nlv

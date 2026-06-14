@@ -109,7 +109,6 @@ Compute principal components (PCs = scores T) from a fitted model and X-data.
 transf(object::Union{Pca, Fda}, X) = fcscale(X, object.xmeans, object.xscales) * object.V
 
 function transf(object::Union{Pca, Fda}, X, nlv::Int)
-    X = ensure_mat(X)
     nlv = min(nlv, object.par.nlv)
     fcscale(X, object.xmeans, object.xscales) * vcol(object.V, 1:nlv)
 end

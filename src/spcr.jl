@@ -104,20 +104,26 @@ function spcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """
+    predict(object::Spcr, X)
     predict(object::Spcr, X, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-## Function 'coef' not yet implemented for Spcr, therefore 'predict' uses directely C (regression coefs on the scores) 
+## Function 'coef' not yet implemented for Spcr, therefore 'predict' uses directly C (regression coefs on the scores) 
+function predict(object::Spcr, X)
+    T = transf(object, X)
+    theta = object.C'
+    pred = T * theta .+ object.ymeans'
+    (pred = pred, nlv = object.par.nlv)
+end
+
 function predict(object::Spcr, X, nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     Q = eltype(X)
     a = object.par.nlv
-    if isnothing(nlv)
-        nlv = a
-    elseif isa(nlv, Int)
+    if isa(nlv, Int)
         nlv = min(nlv, a)
     else
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
@@ -129,7 +135,6 @@ function predict(object::Spcr, X, nlv::Union{Int, AbstractVector{Int}})
         theta = vcol(object.C, 1:nlv[i])'
         pred[i] = vcol(T, 1:nlv[i]) * theta .+ object.ymeans'
     end 
-    if le_nlv == 1 ; pred = pred[1] ; end
     (pred = pred, nlv)
 end
 

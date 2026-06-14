@@ -92,17 +92,21 @@ function pcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
+    transf(object::Union{Pcr, Spcr}, X)
     transf(object::Union{Pcr, Spcr}, X, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model and a matrix X.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Union{Pcr, Spcr}, X, nlv::Int)
-    transf(object.fitm, X, nlv)
-end
+transf(object::Union{Pcr, Spcr}, X) = transf(object.fitm, X)
+
+transf(object::Union{Pcr, Spcr}, X, nlv::Int) = transf(object.fitm, X, nlv)
+
+
 
 """
+    coef(object::Pcr)
     coef(object::Pcr, nlv::Int)
 Compute the b-coefficients of a LV model.
 * `object` : The fitted model.
@@ -111,6 +115,17 @@ Compute the b-coefficients of a LV model.
 For a model fitted from X (n, p) and Y (n, q), the returned object `B` is a matrix (p, q). If `nlv` = 0, `B` is a matrix 
 of zeros. The returned object `int` is the intercept.
 """ 
+function coef(object::Pcr)
+    theta = object.C'
+    Dy = Diagonal(object.yscales)
+    ## Not used for Spcr (since R not computed; while for Pcr, R = V)
+    B = fweightr(object.fitm.V, 1 ./ object.fitm.xscales) * theta * Dy
+    ## In 'int': No correction is needed, since ymeans, xmeans and B are in the original scale 
+    int = object.ymeans' .- object.fitm.xmeans' * B
+    ## End
+    (B = B, int, nlv = object.par.nlv)
+end
+
 function coef(object::Pcr, nlv::Int)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
@@ -122,34 +137,6 @@ function coef(object::Pcr, nlv::Int)
     int = object.ymeans' .- object.fitm.xmeans' * B
     ## End
     (B = B, int, nlv)
-end
-
-"""
-    predict(object::Pcr, X, nlv::Union{Int, AbstractVector{Int}})
-Compute Y-predictions from a fitted model.
-* `object` : The fitted model.
-* `X` : X-data for which predictions are computed.
-* `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
-""" 
-function predict(object::Pcr, X, nlv::Union{Int, AbstractVector{Int}})
-    X = ensure_mat(X)
-    Q = eltype(X)
-    a = object.par.nlv
-    if isnothing(nlv)
-        nlv = a
-    elseif isa(nlv, Int)
-        nlv = min(nlv, a)
-    else
-        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
-    end
-    le_nlv = length(nlv)
-    pred = list(Matrix{Q}, le_nlv)
-    @inbounds for i in eachindex(nlv)
-        coefs = coef(object, nlv[i])
-        pred[i] = coefs.int .+ X * coefs.B  # try muladd(X, coefs.B, coefs.int)
-    end 
-    if le_nlv == 1 ; pred = pred[1] ; end
-    (pred = pred, nlv)
 end
 
 """
