@@ -20,7 +20,7 @@ Same as function `plsrda` (PLSR-DA) except that a direct kernel PLSR (function `
 
 ## Examples
 ```julia
-using Jchemo, JchemoData, JLD2
+using Jchemo, JchemoData, JLD2, DataFrames
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
