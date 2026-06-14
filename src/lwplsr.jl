@@ -136,8 +136,8 @@ Compute the Y-predictions from the fitted model.
 function predict(object::Lwplsr, X)
     nlv = object.par.nlv
     res = predict(object, X, nlv)
-    (pred = res.pred[1], fitm = res.fitm, listnn = res.listnn, listd = res.listd, 
-        listw = res.listw, nlv)
+    (pred = res.pred[1], fitm = res.fitm, listnn = res.listnn, listd = res.listd, listw = res.listw, 
+        nlv)
 end
 
 function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})

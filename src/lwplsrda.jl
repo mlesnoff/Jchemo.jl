@@ -115,6 +115,13 @@ Compute the y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
+function predict(object::Lwplsrda, X)
+    nlv = object.par.nlv
+    res = predict(object, X, nlv)
+    (pred = res.pred[1], fitm = res.fitm, listnn = res.listnn, listd = res.listd, listw = res.listw, 
+        nlv)
+end
+
 function predict(object::Lwplsrda, X, nlv::Union{Int, AbstractVector{Int}})
     Q = eltype(object.X)
     X = ensure_mat(X)

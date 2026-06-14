@@ -125,7 +125,6 @@ Compute Y-predictions from a fitted model.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
 function predict(object::Plsprobda, X)
-    m = nro(X)
     T = transf(object.fitm_emb, X)
     res = predict(object.fitm_da[end], T)
     (pred = res.pred, posterior = res.posterior)
