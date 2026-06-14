@@ -2,7 +2,7 @@
     mbplsr(; kwargs...)
     mbplsr(Xbl, Y; kwargs...)
     mbplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
-    mbplsr!(Xbl::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
+    mbplsr!(Xbl::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
 Multiblock PLSR (MBPLSR).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 * `Y` : Y-data (n, q).
@@ -134,7 +134,7 @@ function mbplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
     mbplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function mbplsr!(Xbl::Vector, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
+function mbplsr!(Xbl::Vector, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParMbplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     Y = handle_bitmatrix(Q, Y)  # for DA functions

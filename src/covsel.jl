@@ -2,7 +2,7 @@
     covsel(; kwargs...)
     covsel(X, Y; kwargs...)
     covsel(X, Y, weights::ProbabilityWeights; kwargs...)
-    covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
+    covsel!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
 Variable (feature) selection from partial covariance (Covsel).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -82,7 +82,7 @@ function covsel(X, Y, weights::ProbabilityWeights; kwargs...)
     covsel!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function covsel!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
+function covsel!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParCovsel, kwargs).par
     Q = eltype(X)
     Y = handle_bitmatrix(Q, Y)  # for DA functions

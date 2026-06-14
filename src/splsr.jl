@@ -2,7 +2,7 @@
     splsr(; kwargs...)
     splsr(X, Y; kwargs...)
     splsr(X, Y, weights::ProbabilityWeights; kwargs...)
-    splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
+    splsr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
 Sparse partial least squares regression (Lê Cao et al. 2008)
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -119,7 +119,7 @@ function splsr(X, Y, weights::ProbabilityWeights; kwargs...)
     splsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function splsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
+function splsr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParSplsr, kwargs).par
     @assert in([:soft; :hard])(par.meth) "Wrong value for argument 'meth'."
     Q = eltype(X)

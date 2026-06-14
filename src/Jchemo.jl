@@ -397,9 +397,7 @@ export
     cpca, cpca!,
     comdim, comdim!, 
     ######---- Regression
-    mlr, mlr!, mlrchol, mlrchol!, 
-    mlrpinv, mlrpinv!, mlrpinvn, mlrpinvn!,
-    mlrvec, mlrvec!,
+    mlr, mlr!, 
     rr, rr!, rrchol, rrchol!,
     pcr,
     plskern, plskern!, 

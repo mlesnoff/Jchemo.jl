@@ -2,15 +2,15 @@
     mlr(; kwargs...)
     mlr(X, Y; kwargs...)
     mlr(X, Y, weights::ProbabilityWeights; kwargs...)
-    mlr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
-Compute a mutiple linear regression model (MLR) by using the QR algorithm.
+    mlr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+Mutiple linear regression model (MLR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `noint` : Boolean. Define if the model is computed with an intercept or not (default to `false`).
 
-Safe but can be little slower than other methods.
+Use the matrix division operator (polyalgorithm, see the related help).
 
 ## Examples
 ```julia
@@ -31,9 +31,6 @@ Xtest = X[s.test, :]
 ytest = y[s.test]
 
 model = mlr()
-#model = mlrchol()
-#model = mlrpinv()
-#model = mlrpinvn() 
 fit!(model, Xtrain, ytrain) 
 @names model
 fitm = model.fitm ;
@@ -51,10 +48,6 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 model = mlr(noint = true)
 fit!(model, Xtrain, ytrain) 
 coef(model) 
-
-model = mlrvec()
-fit!(model, Xtrain[:, 1], ytrain) 
-coef(model)
 ```
 """ 
 mlr(; kwargs...) = JchemoModel(mlr, nothing, kwargs)
@@ -70,7 +63,7 @@ function mlr(X, Y, weights::ProbabilityWeights; kwargs...)
     mlr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function mlr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
+function mlr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParMlr, kwargs).par
     Q = eltype(X)
     Y = handle_bitmatrix(Q, Y)  # for DA functions
@@ -95,211 +88,21 @@ function mlr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeight
 end
 
 """
-    mlrchol()
-    mlrchol(X, Y)
-    mlrchol(X, Y, weights::ProbabilityWeights)
-    mlrchol!mlrchol!(X::Matrix, Y::Matrix, weights::ProbabilityWeights)
-Compute a mutiple linear regression model (MLR) using the Normal equations and a Choleski factorization.
-* `X` : X-data, with nb. columns >= 2 (required by function cholesky).
-* `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
-
-Only compute a model with intercept.
-
-Faster but can be less accurate (based on squared element X'X).
-
-See function `mlr` for examples.
-""" 
-mlrchol(; kwargs...) = JchemoModel(mlrchol, nothing, kwargs)
-
-function mlrchol(X, Y)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
-    mlrchol(X, Y, weights)
-end
-
-function mlrchol(X, Y, weights::ProbabilityWeights)
-    mlrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights)
-end
-
-function mlrchol!(X::Matrix, Y::Matrix, weights::ProbabilityWeights)
-    @assert nco(X) > 1 "The Method only works for X with nb. columns > 1."
-    sqrtw = sqrt.(weights.values)
-    xmeans = colmean(X, weights) 
-    ymeans = colmean(Y, weights)   
-    fcenter!(X, xmeans)
-    fcenter!(Y, ymeans)
-    fweightr!(X, sqrtw)
-    fweightr!(Y, sqrtw)
-    B = cholesky!(Hermitian(X' * X)) \ (X' * Y)
-    int = ymeans' .- xmeans' * B
-    Mlrnoarg(B, int, weights)
-end
-
-"""
-    mlrpinv()
-    mlrpinv(X, Y; kwargs...)
-    mlrpinv(X, Y, weights::ProbabilityWeights; kwargs...)
-    mlrpinv!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
-Compute a mutiple linear regression model (MLR)  by using 
-    a pseudo-inverse. 
-* `X` : X-data (n, p).
-* `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
-Keyword arguments:
-* `noint` : Boolean. Define if the model is computed with an intercept or not (default to `false`).
-
-Safe but can be slower.  
-
-See function `mlr` for examples.
-""" 
-mlrpinv(; kwargs...) = JchemoModel(mlrpinv, nothing, kwargs)
-
-function mlrpinv(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
-    mlrpinv(X, Y, weights; kwargs...)
-end
-
-function mlrpinv(X, Y, weights::ProbabilityWeights; kwargs...)
-    mlrpinv!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
-end
-
-function mlrpinv!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParMlr, kwargs).par
-    sqrtw = sqrt.(weights.values)
-    if par.noint
-        q = nco(Y)
-        fweightr!(X, sqrtw)
-        fweightr!(Y, sqrtw)
-        tol = sqrt(eps(real(float(one(eltype(X))))))      # see ?pinv
-        B = pinv(X, rtol = tol) * Y
-        int = zeros(q)'
-    else
-        xmeans = colmean(X, weights) 
-        ymeans = colmean(Y, weights)   
-        fcenter!(X, xmeans)
-        fcenter!(Y, ymeans)
-        fweightr!(X, sqrtw)
-        fweightr!(Y, sqrtw)
-        tol = sqrt(eps(real(float(one(eltype(X))))))      # see ?pinv
-        B = pinv(X, rtol = tol) * Y
-        int = ymeans' .- xmeans' * B
-    end
-    Mlr(B, int, weights, par)
-end
-
-"""
-    mlrpinvn() 
-    mlrpinvn(X, Y)
-    mlrpinvn(X, Y, weights::ProbabilityWeights)
-    mlrpinvn!mlrchol!(X::Matrix, Y::Matrix, weights::ProbabilityWeights)
-Compute a mutiple linear regression model (MLR) by using the Normal equations and a pseudo-inverse.
-* `X` : X-data (n, p).
-* `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
-
-Safe and fast for p not too large.
-
-Only compute a model with intercept.
-
-See function `mlr` for examples.
-""" 
-mlrpinvn(; kwargs...) = JchemoModel(mlrpinvn, nothing, kwargs)
-
-function mlrpinvn(X, Y)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
-    mlrpinvn(X, Y, weights)
-end
-
-function mlrpinvn(X, Y, weights::ProbabilityWeights)
-    mlrpinvn!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights)
-end
-
-function mlrpinvn!(X::Matrix, Y::Matrix, weights::ProbabilityWeights)
-    sqrtw = sqrt.(weights.values)
-    xmeans = colmean(X, weights) 
-    ymeans = colmean(Y, weights)   
-    fcenter!(X, xmeans)
-    fcenter!(Y, ymeans)
-    fweightr!(X, sqrtw)
-    fweightr!(Y, sqrtw)
-    XtX = X' * X
-    tol = sqrt(eps(real(float(one(eltype(XtX))))))
-    B = pinv(XtX, rtol = tol) * (X' * Y)
-    int = ymeans' .- xmeans' * B
-    Mlrnoarg(B, int, weights)
-end
-
-"""
-    mlrvec(; kwargs...)
-    mlrvec(X, Y; kwargs...)
-    mlrvec(X, Y, weights::ProbabilityWeights; kwargs...)
-    mlrvec!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
-Compute a simple (univariate x) linear regression model.
-* `x` : Univariate X-data (n).
-* `Y` : Y-data (n, q).
-* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
-Keyword arguments:
-* `noint` : Boolean. Define if the model is computed with an intercept or not (default to `false`).
-
-See function `mlr` for examples.
-""" 
-mlrvec(; kwargs...) = JchemoModel(mlrvec, nothing, kwargs)
-
-function mlrvec(x, Y; kwargs...)
-    Q = eltype(x[1, 1])
-    weights = pweight(ones(Q, nro(x)))
-    mlrvec(x, Y, weights; kwargs...)
-end
-
-function mlrvec(x, Y, weights::ProbabilityWeights; kwargs...)
-    mlrvec!(copy(ensure_mat(x)), copy(ensure_mat(Y)), weights; kwargs...)
-end
-
-function mlrvec!(x::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParMlr, kwargs).par
-    @assert nco(x) == 1 "Method only working for univariate x."
-    sqrtw = sqrt.(weights.values)
-    if par.noint
-        q = nco(Y)
-        fweightr!(x, sqrtw)
-        fweightr!(Y, sqrtw)
-        B = x' * Y / dot(x, x)
-        int = zeros(q)'
-    else
-        xmeans = colmean(x, weights) 
-        ymeans = colmean(Y, weights)   
-        fcenter!(x, xmeans)
-        fcenter!(Y, ymeans)
-        fweightr!(x, sqrtw)
-        fweightr!(Y, sqrtw)
-        B = x' * Y / dot(x, x)
-        int = ymeans' .- xmeans' * B
-    end
-    Mlr(B, int, weights, par)
-end
-
-"""
-    coef(object::Union{Mlr, Mlrnoarg, Rrchol})
+    coef(object::Mlr)
 Compute the coefficients of the fitted model.
 * `object` : The fitted model.
 """ 
-function coef(object::Union{Mlr, Mlrnoarg, Rrchol})
+function coef(object::Mlr)
     (B = object.B, int = object.int)
 end
 
 """
-    predict(object::Union{Mlr, Mlrnoarg, Rrchol}, X)
+    predict(object::Mlr, X)
 Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Union{Mlr, Mlrnoarg, Rrchol}, X)
+function predict(object::Mlr, X)
     X = ensure_mat(X)
     z = coef(object)
     pred = z.int .+ X * z.B

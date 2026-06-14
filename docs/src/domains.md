@@ -74,11 +74,7 @@
 
 ### Multiple linear regression (MLR)
 
-- **mlr** QR algorithm
-- **mlrchol** Normal equations and Choleski factorization
-- **mlrpinv** Pseudo-inverse
-- **mlrpinvn** Normal equations and pseudo-inverse
-- **mlrvec** Simple (Univariate x) linear regression
+- **mlr** QR polyalgorithm (matrix division operator '\')
 
 *Anova-related*
 - **aov1** One-factor ANOVA

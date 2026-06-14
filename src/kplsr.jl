@@ -2,7 +2,7 @@
     kplsr(; kwargs...)
     kplsr(X, Y; kwargs...)
     kplsr(X, Y, weights::ProbabilityWeights; kwargs...)
-    kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
+    kplsr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
 Kernel partial least squares regression (KPLSR) implemented with a Nipals algorithm (Rosipal & Trejo, 2001).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -88,7 +88,7 @@ function kplsr(X, Y, weights::ProbabilityWeights; kwargs...)
     kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function kplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; 
+function kplsr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; 
         kwargs...)
     par = recovkw(ParKplsr, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 

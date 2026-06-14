@@ -2,12 +2,13 @@
 
 ## *Version 0.10.0*
 
-Major changes for arguments 'nlv' and 'lb'. 
-Work in progress to improve overall type stability.
+Warning: Major changes in functions having arguments 'nlv' (laent variables) and 'lb' (ridge). 
 
 - Breakings:
-    - Functions having arguments 'nlv' or 'lb': the syntax concerning 'nlv' and 'lb' in 
-        functions *transf* and  *predict* has changed, see examples in functio helps.
+    - Functions having arguments 'nlv' or 'lb': deep restructuration of functions *transf*, *coef* 
+        and *predict* to improve code consistency. The syntax concerning arguments 'nlv' and 'lb' in *transf* 
+        and *predict* has changed, see examples in function helps.
+    - MLR functions: Functions other than **mlr** were removed.
     - Function **mbpca** renamed to **cpca**.
     - Fuction **rclustplsr** temporary removed.
 

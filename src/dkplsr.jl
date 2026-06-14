@@ -2,7 +2,7 @@
     dkplsr(; kwargs...)
     dkplsr(X, Y; kwargs...)
     dkplsr(X, Y, weights::ProbabilityWeights; kwargs...)
-    dkplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
+    dkplsr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
 Direct kernel partial least squares regression (DKPLSR) (Bennett & Embrechts 2003).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -100,7 +100,7 @@ function dkplsr(X, Y, weights::ProbabilityWeights; kwargs...)
     dkplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function dkplsr!(X::Matrix, Y::Union{Matrix, BitMatrix}, weights::ProbabilityWeights; kwargs...)
+function dkplsr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParKplsr, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     Q = eltype(X)
