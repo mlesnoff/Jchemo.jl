@@ -36,7 +36,7 @@ and to use a performance score such as `merrp`, instead of `errp`.
 
 ## Examples
 ```julia
-using Jchemo, JchemoData, JLD2
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -67,7 +67,6 @@ typeof(fitm)
 
 fitm.lev
 fitm.ni
-fitm.priors
 
 fitm_emb = fitm.fitm_emb ;
 typeof(fitm_emb)
@@ -118,21 +117,27 @@ function plslda(X, y, weights::ProbabilityWeights; kwargs...)
 end
 
 """
+    predict(object::Plsprobda, X)
     predict(object::Plsprobda, X, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
+function predict(object::Plsprobda, X)
+    m = nro(X)
+    T = transf(object.fitm_emb, X)
+    res = predict(object.fitm_da[end], T)
+    (pred = res.pred, posterior = res.posterior)
+end
+
 function predict(object::Plsprobda, X, nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     Q = eltype(X)
     Qy = eltype(object.lev)
     m = nro(X)
     a = object.par.nlv
-    if isnothing(nlv)
-        nlv = a
-    elseif isa(nlv, Int)
+    if isa(nlv, Int)
         nlv = min(nlv, a)
     else
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
@@ -143,15 +148,10 @@ function predict(object::Plsprobda, X, nlv::Union{Int, AbstractVector{Int}})
     posterior = list(Matrix{Q}, le_nlv)
     @inbounds for i in eachindex(nlv)
         znlv = nlv[i]
-        zres = predict(object.fitm_da[znlv], vcol(T, 1:znlv))
-        z =  mapslices(argmax, zres.posterior; dims = 2) 
-        pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)
-        posterior[i] = zres.posterior
+        res = predict(object.fitm_da[znlv], vcol(T, 1:znlv))
+        pred[i] = res.pred 
+        posterior[i] = res.posterior
     end 
-    if le_nlv == 1
-        pred = pred[1]
-        posterior = posterior[1] 
-    end
     (pred = pred, posterior)
 end
 

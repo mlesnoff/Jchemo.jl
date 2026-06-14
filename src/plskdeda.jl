@@ -50,7 +50,6 @@ typeof(fitm)
 
 fitm.lev
 fitm.ni
-fitm.priors
 
 fitm_emb = fitm.fitm_emb ;
 typeof(fitm_emb)
