@@ -36,7 +36,7 @@ and to use a performance score such as `merrp`, instead of `errp`.
 
 ## Examples
 ```julia
-using Jchemo, JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -138,9 +138,9 @@ function predict(object::Plsprobda, X, nlv::Union{Int, AbstractVector{Int}})
     m = nro(X)
     a = object.par.nlv
     if isa(nlv, Int)
-        nlv = min(nlv, a)
+        nlv = min(1, nlv, a)
     else
-        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+        nlv = min(1, minimum(nlv), a):min(maximum(nlv), a)
     end
     le_nlv = length(nlv)
     T = transf(object.fitm_emb, X)
