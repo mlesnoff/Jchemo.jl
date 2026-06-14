@@ -206,7 +206,7 @@ function coef(object::Union{Plsr, Splsr})
     B = fweightr(object.R, 1 ./ object.xscales) * theta * Dy
     ## In 'int': No correction is needed, since ymeans, xmeans and B are in the original scale 
     int = object.ymeans' .- object.xmeans' * B
-    (B = B, int)
+    (B = B, int, nlv = object.par.nlv)
 end
 
 function coef(object::Union{Plsr, Splsr}, nlv::Int)
@@ -215,7 +215,7 @@ function coef(object::Union{Plsr, Splsr}, nlv::Int)
     Dy = Diagonal(object.yscales)
     B = fweightr(vcol(object.R, 1:nlv), 1 ./ object.xscales) * theta * Dy
     int = object.ymeans' .- object.xmeans' * B
-    (B = B, int)
+    (B = B, int, nlv)
 end
 
 """

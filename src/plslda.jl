@@ -127,7 +127,7 @@ Compute Y-predictions from a fitted model.
 function predict(object::Plsprobda, X)
     T = transf(object.fitm_emb, X)
     res = predict(object.fitm_da[end], T)
-    (pred = res.pred, posterior = res.posterior)
+    (pred = res.pred, posterior = res.posterior, nlv = nco(T))
 end
 
 function predict(object::Plsprobda, X, nlv::Union{Int, AbstractVector{Int}})
@@ -137,9 +137,9 @@ function predict(object::Plsprobda, X, nlv::Union{Int, AbstractVector{Int}})
     m = nro(X)
     a = object.par.nlv
     if isa(nlv, Int)
-        nlv = min(1, nlv, a)
+        nlv = max(1, min(nlv, a))
     else
-        nlv = min(1, minimum(nlv), a):min(maximum(nlv), a)
+        nlv = max(1, min(minimum(nlv), a)):min(maximum(nlv), a)
     end
     le_nlv = length(nlv)
     T = transf(object.fitm_emb, X)
@@ -151,7 +151,7 @@ function predict(object::Plsprobda, X, nlv::Union{Int, AbstractVector{Int}})
         pred[i] = res.pred 
         posterior[i] = res.posterior
     end 
-    (pred = pred, posterior)
+    (pred = pred, posterior, nlv)
 end
 
 

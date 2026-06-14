@@ -65,22 +65,27 @@ function lwplsqda(X, y; kwargs...)
 end
 
 """
+    predict(object::Lwplqlda, X)
     predict(object::Lwplsqda, X, nlv::Union{Int, AbstractVector{Int}})
 Compute the y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
+function predict(object::Lwplsqda, X)
+    res = predict(object, X, object.par.nlv)
+    (pred = res.pred[1], fitm = res.fitm, listnn = res.listnn, listd = res.listd, 
+        listw = res.listw, nlv = res.nlv)
+end
+
 function predict(object::Lwplsqda, X, nlv::Union{Int, AbstractVector{Int}})
     Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
     a = object.par.nlv
-    if isnothing(nlv)
-        nlv = a
-    elseif isa(nlv, Int)
-        nlv = min(nlv, a)
+    if isa(nlv, Int)
+        nlv = max(1, min(nlv, a))
     else
-        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+        nlv = max(1, min(minimum(nlv), a)):min(maximum(nlv), a)
     end
     ## Getknn
     metric = object.par.metric
@@ -108,9 +113,10 @@ function predict(object::Lwplsqda, X, nlv::Union{Int, AbstractVector{Int}})
     end
     ## End
     ## In each neighborhood, the observation weights used in 'algo' are given by listw, not by priors
-    reslocw = locwlv(object.X, object.y, X; listnn = res.ind, listw, algo = plsrda, nlv, scal = object.par.scal, 
+    reslocw = locwlv(object.X, object.y, X; listnn = res.ind, listw, algo = plsqda, nlv, scal = object.par.scal, 
         store = object.par.store, verbose = object.par.verbose, prior = object.par.prior, alpha = object.par.alpha)
-    (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw)
+    (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, 
+        listw, nlv)
 end
 
 

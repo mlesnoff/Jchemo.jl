@@ -167,7 +167,7 @@ function coef(object::Cglsr)
     W = Diagonal(object.yscales)    
     B = fweightr(vcol(object.B, object.par.nlv), 1 ./ object.xscales) *  W
     int = object.ymeans' .- object.xmeans' * B
-    (B = B, int)
+    (B = B, int, nlv = object.par.nlv)
 end
 
 function coef(object::Cglsr, nlv::Int)
@@ -175,7 +175,7 @@ function coef(object::Cglsr, nlv::Int)
     W = Diagonal(object.yscales)    
     B = fweightr(vcol(object.B, nlv), 1 ./ object.xscales) *  W
     int = object.ymeans' .- object.xmeans' * B
-    (B = B, int)
+    (B = B, int, nlv)
 end
 
 """

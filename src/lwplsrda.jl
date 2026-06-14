@@ -111,16 +111,16 @@ function lwplsrda(X, y; kwargs...)
 end
 
 """
+    predict(object::Lwplsrda, X)
     predict(object::Lwplsrda, X, nlv::Union{Int, AbstractVector{Int}})
 Compute the y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Lwplsrda, X)
-    nlv = object.par.nlv
-    res = predict(object, X, nlv)
-    (pred = res.pred[1], fitm = res.fitm, listnn = res.listnn, listd = res.listd, listw = res.listw, 
-        nlv)
+    res = predict(object, X, object.par.nlv)
+    (pred = res.pred[1], fitm = res.fitm, listnn = res.listnn, listd = res.listd, 
+        listw = res.listw, nlv = res.nlv)
 end
 
 function predict(object::Lwplsrda, X, nlv::Union{Int, AbstractVector{Int}})
@@ -128,9 +128,7 @@ function predict(object::Lwplsrda, X, nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     m = nro(X)
     a = object.par.nlv
-    if isnothing(nlv)
-        nlv = a
-    elseif isa(nlv, Int)
+    if isa(nlv, Int)
         nlv = min(nlv, a)
     else
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
@@ -164,6 +162,7 @@ function predict(object::Lwplsrda, X, nlv::Union{Int, AbstractVector{Int}})
     ## In each neighborhood, the observation weights used in 'algo' are given by listw, not by priors
     reslocw = locwlv(object.X, object.y, X; listnn = res.ind, listw, algo = plsrda, nlv, scal = object.par.scal, 
         store = object.par.store, verbose = object.par.verbose)
-    (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw)
+    (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, 
+        listw, nlv)
 end
 

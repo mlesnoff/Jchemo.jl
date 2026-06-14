@@ -135,10 +135,9 @@ Compute the Y-predictions from the fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Lwplsr, X)
-    nlv = object.par.nlv
-    res = predict(object, X, nlv)
+    res = predict(object, X, object.par.nlv)
     (pred = res.pred[1], fitm = res.fitm, listnn = res.listnn, listd = res.listd, 
-        listw = res.listw, nlv)
+        listw = res.listw, nlv = res.nlv)
 end
 
 function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})
@@ -179,6 +178,7 @@ function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})
     ## End
     reslocw = locwlv(object.X, object.Y, X; listnn = res.ind, listw, algo = plskern, nlv, scal = object.par.scal, 
         store = object.par.store, verbose = object.par.verbose)
-    (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw, nlv)
+    (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, 
+        listw, nlv)
 end
 

@@ -141,7 +141,7 @@ Compute Y-predictions from a fitted model.
 function predict(object::Mbplsprobda, Xbl)
     T = transf(object.fitm_emb, Xbl)
     res = predict(object.fitm_da[end], T)
-    (pred = res.pred, posterior = res.posterior)
+    (pred = res.pred, posterior = res.posterior, nlv = nco(T))
 end
 
 function predict(object::Mbplsprobda, Xbl, nlv::Union{Int, AbstractVector{Int}})
@@ -149,12 +149,10 @@ function predict(object::Mbplsprobda, Xbl, nlv::Union{Int, AbstractVector{Int}})
     Qy = eltype(object.lev)
     m = nro(Xbl[1])
     a = object.par.nlv
-    if isnothing(nlv)
-        nlv = a
-    elseif isa(nlv, Int)
-        nlv = min(nlv, a)
+    if isa(nlv, Int)
+        nlv = max(1, min(nlv, a))
     else
-        nlv = min(minimum(nlv), a):min(maximum(nlv), a)
+        nlv = max(1, min(minimum(nlv), a)):min(maximum(nlv), a)
     end
     le_nlv = length(nlv)
     T = transf(object.fitm_emb, Xbl)
@@ -166,6 +164,6 @@ function predict(object::Mbplsprobda, Xbl, nlv::Union{Int, AbstractVector{Int}})
         pred[i] = res.pred 
         posterior[i] = res.posterior
     end 
-    (pred = pred, posterior)
+    (pred = pred, posterior, nlv)
 end
 
