@@ -48,15 +48,14 @@ fit!(model, Xtrain, ytrain)
 fitm = model.fitm ;
 typeof(fitm)
 @names fitm
-typeof(fitm.fitm) 
-@names fitm.fitm
+typeof(fitm.fitm_emb) 
+@names fitm.fitm_emb
 
 fitm.lev
 fitm.ni
-fitm.priors
 
 @head transf(model, Xtrain)
-@head fitm.fitm.T
+@head fitm.fitm_emb.T
 
 @head transf(model, Xtest)
 @head transf(model, Xtest, 3)
