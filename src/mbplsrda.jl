@@ -38,7 +38,7 @@ and to use a performance score such as `merrp`, instead of `errp`.
 
 ## Examples
 ```julia
-using Jchemo, JLD2, CairoMakie, JchemoData
+using Jchemo, JLD2, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/forages2.jld2")
 @load db dat
@@ -68,34 +68,41 @@ scal = false
 #scal = true
 bscal = :none
 #bscal = :frob
-model = mbplsrda(; nlv, bscal, scal)
+model = mbplslda(; nlv, bscal, scal)
+#model = mbplsqda(; nlv, bscal, alpha = .5, scal)
+#model = mbplskdeda(; nlv, bscal, scal)
 fit!(model, Xbltrain, ytrain)
 @names model
 fitm = model.fitm ;
 typeof(fitm)
 @names fitm
-typeof(fitm.fitm) 
-@names fitm.fitm
 
 fitm.lev
 fitm.ni
-fitm.priors
-aggsumv(fitm.fitm.weights.values, ytrain)
+
+fitm_emb = fitm.fitm_emb ;
+typeof(fitm_emb)
+@names fitm_emb 
 
 @head transf(model, Xbltrain)
-@head fitm.fitm.fitm.T
+@head fitm_emb.fitm.T
 
 @head transf(model, Xbltest)
-@head transf(model, Xbltest; nlv = 3)
+@head transf(model, Xbltest, 3)
 
-res = predict(model, Xbltest) ; 
-@head res.pred 
-@show errp(res.pred, ytest)
+fitm_da = fitm.fitm_da ;
+typeof(fitm_da)
+
+res = predict(model, Xbltest) ;
+@names res
+@head res.posterior
+@head res.pred
+errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(model, Xbltest; nlv = 1:2).pred
+predict(model, Xbltest, 1:2).pred
 
-summary(fitm.fitm, Xbltrain)
+summary(fitm_emb, Xbltrain)
 ```
 """
 mbplsrda(; kwargs...) = JchemoModel(mbplsrda, nothing, kwargs)
@@ -118,44 +125,45 @@ function mbplsrda(Xbl, y, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
+    transf(object::Mbplsrda, Xbl)
     transf(object::Mbplsrda, Xbl, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transf(object::Union{Mbplsrda, Mbplsprobda}, Xbl, nlv::Int)
-    transf(object.fitm_emb, Xbl; nlv)
-end
+transf(object::Union{Mbplsrda, Mbplsprobda}, Xbl) = transf(object.fitm_emb, Xbl)
+
+transf(object::Union{Mbplsrda, Mbplsprobda}, Xbl, nlv::Int) = transf(object.fitm_emb, Xbl, nlv)
 
 """
+    predict(object::Mbplsrda, Xbl)
     predict(object::Mbplsrda, Xbl, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
+function predict(object::Mbplsrda, Xbl)
+    m = nro(Xbl[1])
+    res = predict(object.fitm_emb, Xbl)
+    v =  mapslices(argmax, res.pred; dims = 2)  # if equal, argmax takes the first
+    pred = reshape(recod_indbylev(v, object.lev), m, 1)
+    (pred = pred, posterior = res.pred, nlv = res.nlv)
+end
+
 function predict(object::Mbplsrda, Xbl, nlv::Union{Int, AbstractVector{Int}})
     m = nro(Xbl[1])
     Qy = eltype(object.lev)
-    pred_fitm_emb = predict(object.fitm_emb, Xbl; nlv)
-    nlv = pred_fitm_emb.nlv
+    res = predict(object.fitm_emb, Xbl, nlv)
+    nlv = res.nlv
     le_nlv = length(nlv)
-    if le_nlv == 1
-        post = [pred_fitm_emb.pred]
-    else
-        post = pred_fitm_emb.pred
-    end
     pred = list(Matrix{Qy}, le_nlv)
     @inbounds for i in eachindex(nlv)
-        v =  mapslices(argmax, post[i]; dims = 2)  # if equal, argmax takes the first
+        v =  mapslices(argmax, res.pred[i]; dims = 2)  # if equal, argmax takes the first
         pred[i] = reshape(recod_indbylev(v, object.lev), m, 1)
     end 
-    if le_nlv == 1
-        pred = pred[1]
-        post = post[1]
-    end
-    (pred = pred, posterior = post)
+    (pred = pred, posterior = res.pred, nlv)
 end
 
 

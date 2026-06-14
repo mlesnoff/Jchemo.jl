@@ -55,7 +55,7 @@ Journal of Multivariate Analysis 99, 1015–1034. https://doi.org/10.1016/j.jmva
 
 ## Examples
 ```julia
-using Jchemo, JchemoData, JLD2, DataFrames
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat

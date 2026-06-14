@@ -26,7 +26,7 @@ https://doi.org/10.1002/cem.3369
 ## Function "pls.model" used for df calculations in the R package "plsdof" v0.2-9 (Kramer & Braun 2019)
 ## automatically scales the X matrix before PLS. The example scales X for consistency with plsdof.
 
-using Jchemo, JchemoData, JLD2, DataFrames, CairoMakie 
+using Jchemo, JchemoData, JLD2, CairoMakie 
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "ozone.jld2") 
 @load db dat

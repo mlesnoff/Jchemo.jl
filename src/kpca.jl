@@ -28,7 +28,7 @@ http://papers.nips.cc/paper/1791-sparse-kernel-principal-component-analysis.pdf
 
 ## Examples
 ```julia
-using Jchemo, JchemoData, JLD2, DataFrames
+using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/iris.jld2") 
 @load db dat

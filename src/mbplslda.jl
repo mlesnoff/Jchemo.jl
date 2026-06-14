@@ -90,7 +90,7 @@ typeof(fitm_emb)
 @head fitm_emb.fitm.T
 
 @head transf(model, Xbltest)
-@head transf(model, Xbltest; nlv = 3)
+@head transf(model, Xbltest, 3)
 
 fitm_da = fitm.fitm_da ;
 typeof(fitm_da)
@@ -102,7 +102,7 @@ res = predict(model, Xbltest) ;
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(model, Xbltest; nlv = 1:2).pred
+predict(model, Xbltest, 1:2).pred
 
 summary(fitm_emb, Xbltrain)
 ```
