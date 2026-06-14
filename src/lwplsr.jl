@@ -128,7 +128,7 @@ function lwplsr(X, Y; kwargs...)
 end
 
 """
-    predict(object::Lwplsr, X; nlv::Union{Int, AbstractVector{Int}})
+    predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})
 Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.

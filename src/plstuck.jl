@@ -126,7 +126,7 @@ end
 
 """ 
     transfbl(object::Plstuck, X, Y)
-    transfbl(object::Plstuck, X, Y; nlv = nothing)
+    transfbl(object::Plstuck, X, Y, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.

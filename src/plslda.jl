@@ -89,7 +89,7 @@ res = predict(model, Xtest) ;
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(model, Xtest; nlv = 1:2).pred
+predict(model, Xtest, 1:2).pred
 summary(fitm_emb, Xtrain)
 ```
 """ 
@@ -118,13 +118,13 @@ function plslda(X, y, weights::ProbabilityWeights; kwargs...)
 end
 
 """
-    predict(object::Plsprobda, X; nlv::Union{Int, AbstractVector{Int}})
+    predict(object::Plsprobda, X, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Plsprobda, X; nlv::Union{Int, AbstractVector{Int}})
+function predict(object::Plsprobda, X, nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     Q = eltype(X)
     Qy = eltype(object.lev)

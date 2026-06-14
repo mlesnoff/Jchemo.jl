@@ -132,13 +132,13 @@ function mbplslda(Xbl, y, weights::ProbabilityWeights; kwargs...)
 end
 
 """
-    predict(object::Mbplsprobda, Xbl; nlv::Union{Int, AbstractVector{Int}})
+    predict(object::Mbplsprobda, Xbl, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Mbplsprobda, Xbl; nlv::Union{Int, AbstractVector{Int}})
+function predict(object::Mbplsprobda, Xbl, nlv::Union{Int, AbstractVector{Int}})
     Q = eltype(Xbl[1][1, 1])
     Qy = eltype(object.lev)
     m = nro(Xbl[1])

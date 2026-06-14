@@ -118,24 +118,24 @@ function mbplsrda(Xbl, y, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
-    transf(object::Mbplsrda, Xbl; nlv = nothing)
+    transf(object::Mbplsrda, Xbl, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-function transf(object::Union{Mbplsrda, Mbplsprobda}, Xbl; nlv = nothing)
+function transf(object::Union{Mbplsrda, Mbplsprobda}, Xbl, nlv::Int)
     transf(object.fitm_emb, Xbl; nlv)
 end
 
 """
-    predict(object::Mbplsrda, Xbl; nlv::Union{Int, AbstractVector{Int}})
+    predict(object::Mbplsrda, Xbl, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Mbplsrda, Xbl; nlv::Union{Int, AbstractVector{Int}})
+function predict(object::Mbplsrda, Xbl, nlv::Union{Int, AbstractVector{Int}})
     m = nro(Xbl[1])
     Qy = eltype(object.lev)
     pred_fitm_emb = predict(object.fitm_emb, Xbl; nlv)

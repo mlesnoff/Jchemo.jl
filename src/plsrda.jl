@@ -86,7 +86,7 @@ res = predict(model, Xtest) ;
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(model, Xtest; nlv = 1:2).pred
+predict(model, Xtest, 1:2).pred
 
 summary(fitm.fitm_emb, Xtrain)
 ```
@@ -111,44 +111,48 @@ function plsrda(X, y, weights::ProbabilityWeights; kwargs...)
 end
 
 """ 
+    transf(object::Union{Plsrda, Plsprobda}, X)
     transf(object::Union{Plsrda, Plsprobda}, X, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
+transf(object::Union{Plsrda, Plsprobda}, X) = transf(object.fitm_emb, X)
+
 function transf(object::Union{Plsrda, Plsprobda}, X, nlv::Int)
-    transf(object.fitm_emb, X; nlv)
+    transf(object.fitm_emb, X, nlv)
 end
 
 """
-    predict(object::Plsrda, X; nlv::Union{Int, AbstractVector{Int}})
+    predict(object::Plsrda, X)
+    predict(object::Plsrda, X, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Plsrda, X; nlv::Union{Int, AbstractVector{Int}})
+function predict(object::Plsrda, X)
+    X = ensure_mat(X)
+    m = nro(X)
+    res = predict(object.fitm_emb, X)
+    v =  mapslices(argmax, res.pred; dims = 2)  # if equal, argmax takes the first
+    pred = reshape(recod_indbylev(v, object.lev), m, 1)
+    (pred = pred, posterior = res.pred, nlv = res.nlv)
+end
+
+function predict(object::Plsrda, X, nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     m = nro(X)
     Qy = eltype(object.lev)
-    pred_fitm_emb = predict(object.fitm_emb, X; nlv)
-    nlv = pred_fitm_emb.nlv
-    le_nlv = length(nlv)
-    if le_nlv == 1
-        post = [pred_fitm_emb.pred]
-    else
-        post = pred_fitm_emb.pred
-    end
+    res = predict(object.fitm_emb, X, nlv)
+    nlv = res.nlv
+    le_nlv = length(nlv) 
     pred = list(Matrix{Qy}, le_nlv)
     @inbounds for i in eachindex(nlv)
-        v =  mapslices(argmax, post[i]; dims = 2)  # if equal, argmax takes the first
+        v =  mapslices(argmax, res.pred[i]; dims = 2)  # if equal, argmax takes the first
         pred[i] = reshape(recod_indbylev(v, object.lev), m, 1)
     end 
-    if le_nlv == 1
-        pred = pred[1]
-        post = post[1]
-    end
-    (pred = pred, posterior = post)
+    (pred = pred, posterior = res.pred, nlv)
 end
 

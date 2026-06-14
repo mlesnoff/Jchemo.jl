@@ -52,7 +52,7 @@ res = predict(model, Xtest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-res = predict(model, Xtest; nlv = 1:2)
+res = predict(model, Xtest, 1:2)
 @head res.pred[1]
 @head res.pred[2]
 
@@ -99,7 +99,7 @@ Compute latent variables (LVs; = scores) from a fitted model and a matrix X.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Union{Pcr, Spcr}, X, nlv::Int)
-    transf(object.fitm, X; nlv)
+    transf(object.fitm, X, nlv)
 end
 
 """
@@ -125,13 +125,13 @@ function coef(object::Pcr, nlv::Int)
 end
 
 """
-    predict(object::Pcr, X; nlv::Union{Int, AbstractVector{Int}})
+    predict(object::Pcr, X, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Pcr, X; nlv::Union{Int, AbstractVector{Int}})
+function predict(object::Pcr, X, nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     Q = eltype(X)
     a = object.par.nlv

@@ -52,7 +52,7 @@ res = predict(model, Xtest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
     ylabel = "Observed").f    
 
-res = predict(model, Xtest; nlv = 1:2)
+res = predict(model, Xtest, 1:2)
 @head res.pred[1]
 @head res.pred[2]
 ```

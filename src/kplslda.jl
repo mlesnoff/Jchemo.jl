@@ -75,7 +75,7 @@ res = predict(model, Xtest) ;
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(model, Xtest; nlv = 1:2).pred
+predict(model, Xtest, 1:2).pred
 ```
 """ 
 kplslda(; kwargs...) = JchemoModel(kplslda, nothing, kwargs)
