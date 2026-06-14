@@ -36,16 +36,16 @@ function locw(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}},
         zYtrain = Ytrain[s, :]   # vrow makes pb in aggsumv (e.g., lda) when Ytrain is a vector
         ## For discrimination, case where all the neighbors have the same class
         if q == 1 && length(unique(zYtrain)) == 1
-            fitm[i] = nothing
             pred[i, :] .= zYtrain[1]
         ## End
         else
             if isnothing(listw)
-                fitm[i] = algo(zXtrain,  zYtrain; kwargs...)
+                zfitm = algo(zXtrain,  zYtrain; kwargs...)
             else
-                fitm[i] = algo(zXtrain, zYtrain, pweight(listw[i]); kwargs...)
+                zfitm = algo(zXtrain, zYtrain, pweight(listw[i]); kwargs...)
             end
-            pred[i, :] = predict(fitm[i], vrow(X, i:i)).pred
+            pred[i, :] = predict(zfitm, vrow(X, i:i)).pred
+            if store ; fitm[i] = zfitm ; end 
         end
     end
     if verbose ; println() ; end 

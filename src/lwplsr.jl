@@ -78,7 +78,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlvdis = 15 ; metric = :mah 
-k = 500 ; h = 1. ; nlv = 10
+h = 1 ; k = 500 ; nlv = 10
 model = lwplsr(; nlvdis, metric, h, k, nlv) 
 fit!(model, Xtrain, ytrain)
 @names model
@@ -92,7 +92,7 @@ res.listw
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
-    ylabel = "Observed").f    
+    ylabel = "Observed").f 
 
 ## Storage of the local models fitted on the neighborhoods
 model = lwplsr(; nlvdis, metric, h, k, nlv, store = true) 
@@ -101,8 +101,9 @@ res = predict(model, Xtest) ;
 @show rmsep(res.pred, ytest)
 @names res
 length(res.fitm)
-typeof(res.fitm[1]) 
-@names res.fitm[1]
+i = 1
+typeof(res.fitm[i]) 
+@names res.fitm[i]
 ```
 """ 
 lwplsr(; kwargs...) = JchemoModel(lwplsr, nothing, kwargs)
@@ -136,8 +137,8 @@ Compute the Y-predictions from the fitted model.
 function predict(object::Lwplsr, X)
     nlv = object.par.nlv
     res = predict(object, X, nlv)
-    (pred = res.pred[1], fitm = res.fitm, listnn = res.listnn, listd = res.listd, listw = res.listw, 
-        nlv)
+    (pred = res.pred[1], fitm = res.fitm, listnn = res.listnn, listd = res.listd, 
+        listw = res.listw, nlv)
 end
 
 function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})

@@ -80,9 +80,10 @@ res = predict(model, Xtest) ;
 @show errp(res.pred, ytest)
 @names res
 length(res.fitm)
-typeof(res.fitm[1]) 
-@names res.fitm[1]
-@names res.fitm[1].fitm
+i = 1
+typeof(res.fitm[i]) 
+@names res.fitm[i]
+@names res.fitm[i].fitm_emb
 ```
 """ 
 lwplsrda(; kwargs...) = JchemoModel(lwplsrda, nothing, kwargs)

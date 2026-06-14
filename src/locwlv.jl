@@ -50,14 +50,15 @@ function locwlv(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}},
         ## End 
         else
             if isnothing(listw)
-                fitm[i] = algo(zXtrain,  zYtrain; nlv = maximum(nlv), kwargs...)
+                zfitm = algo(zXtrain,  zYtrain; nlv = maximum(nlv), kwargs...)
             else
-                fitm[i] = algo(zXtrain, zYtrain, pweight(listw[i]); nlv = maximum(nlv), kwargs...)
+                zfitm = algo(zXtrain, zYtrain, pweight(listw[i]); nlv = maximum(nlv), kwargs...)
             end
-            vpred = predict(fitm[i], vrow(X, i:i), nlv).pred
+            vpred = predict(zfitm, vrow(X, i:i), nlv).pred
             @inbounds for a in eachindex(nlv)
                 zpred[i, :, a] = vpred[a]
             end
+            if store ; fitm[i] = zfitm ; end 
         end
     end 
     if verbose ; println() ; end    
