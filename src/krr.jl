@@ -160,7 +160,7 @@ function coef(object::Krr, lb::T) where T <: AbstractFloat
     q = length(object.ymeans)
     int = reshape(object.ymeans, 1, q)
     tr = sum(eig .* v)
-    (A = A, int = int, df = 1 + tr)
+    (A = A, int = int, df = 1 + tr, lb)
 end
 
 """

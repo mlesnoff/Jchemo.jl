@@ -60,8 +60,8 @@ fit!(model, Xtrain, ytrain)
 fitm = model.fitm ;
 typeof(fitm)
 @names fitm
-typeof(fitm.fitm) 
-@names fitm.fitm
+typeof(fitm.fitm_emb) 
+@names fitm.fitm_emb
 
 fitm.lev
 fitm.ni
@@ -91,8 +91,8 @@ function mlrda(X, y, weights::ProbabilityWeights; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
-    fitm = mlr(X, res.Y, weights)
-    Mlrda(fitm, ni, priors, res.lev, par)
+    fitm_emb = mlr(X, res.Y, weights)
+    Mlrda(fitm_emb, ni, priors, res.lev, par)
 end
 
 """
@@ -104,7 +104,7 @@ Compute y-predictions from a fitted model.
 function predict(object::Mlrda, X)
     X = ensure_mat(X)
     m = nro(X)
-    zp = predict(object.fitm, X).pred
+    zp = predict(object.fitm_emb, X).pred
     z =  mapslices(argmax, zp; dims = 2) 
     pred = reshape(recod_indbylev(z, object.lev), m, 1)
     (pred = pred, posterior = zp)

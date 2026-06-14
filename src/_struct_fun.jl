@@ -636,7 +636,7 @@ struct Kdeda
 end
 
 struct Mlrda
-    fitm::Mlr 
+    fitm_emb::Mlr 
     ni::Vector{Int}
     priors::Vector
     lev::Vector
@@ -644,7 +644,7 @@ struct Mlrda
 end
 
 struct Rrda
-    fitm::Union{Rr, Krr}  
+    fitm_emb::Union{Rr, Krr}  
     ni::Vector{Int}
     priors::Vector
     lev::Vector

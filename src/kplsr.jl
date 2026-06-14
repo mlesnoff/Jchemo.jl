@@ -200,7 +200,7 @@ function coef(object::Kplsr, nlv::Int)
     beta = object.C[:, 1:nlv]'
     q = length(object.ymeans)
     int = reshape(object.ymeans, 1, q)
-    (beta = beta, int)
+    (beta = beta, int, nlv)
 end
 
 """

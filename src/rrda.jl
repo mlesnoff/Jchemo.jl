@@ -95,37 +95,38 @@ function rrda(X, y, weights::ProbabilityWeights; kwargs...)
     res = dummy(y)
     ni = tab(y).vals 
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
-    fitm = rr(X, res.Y, weights; kwargs...)
-    Rrda(fitm, ni, priors, res.lev, par)
+    fitm_emb = rr(X, res.Y, weights; kwargs...)
+    Rrda(fitm_emb, ni, priors, res.lev, par)
 end
 
 """
-    predict(object::Rrda, X; lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing)
+    predict(object::Rrda, X)
+    predict(object::Rrda, X, lb::Union{T, AbstractVector{T}})  where T <: AbstractFloat
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `lb` : Regularization parameter, or collection of regularization parameters, "lambda" to consider. 
-    If nothing, it is the parameter stored in the fitted model.
 """ 
-function predict(object::Rrda, X; lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing)
+function predict(object::Rrda, X)
     X = ensure_mat(X)
-    Q = eltype(X)
-    Qy = eltype(object.lev)
     m = nro(X)
-    if isnothing(lb) ; lb = object.par.lb ; end
-    le_lb = length(lb)
+    res = predict(object.fitm_emb, X)
+    v =  mapslices(argmax, res.pred; dims = 2)  # if equal, argmax takes the first
+    pred = reshape(recod_indbylev(v, object.lev), m, 1)
+    (pred = pred, posterior = res.pred, lb = res.lb)
+end
+
+function predict(object::Rrda, X, lb::Union{T, AbstractVector{T}})  where T <: AbstractFloat
+    X = ensure_mat(X)
+    m = nro(X)
+    Qy = eltype(object.lev)
+    res = predict(object.fitm_emb, X, lb)
+    le_lb = length(lb) 
     pred = list(Matrix{Qy}, le_lb)
-    posterior = list(Matrix{Q}, le_lb)
-    @inbounds for i = 1:le_lb
-        zp = predict(object.fitm, X; lb = lb[i]).pred
-        z =  mapslices(argmax, zp; dims = 2)  # if equal, argmax takes the first
-        pred[i] = reshape(recod_indbylev(z, object.lev), m, 1)
-        posterior[i] = zp
+    @inbounds for i in eachindex(lb)
+        v =  mapslices(argmax, res.pred[i]; dims = 2)  # if equal, argmax takes the first
+        pred[i] = reshape(recod_indbylev(v, object.lev), m, 1)
     end 
-    if le_lb == 1
-        pred = pred[1]
-        posterior = posterior[1]
-    end
-    (pred = pred, posterior)
+    (pred = pred, posterior = res.pred, lb)
 end
 
