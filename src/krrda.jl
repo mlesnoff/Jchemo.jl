@@ -48,14 +48,14 @@ fit!(model, Xtrain, ytrain)
 fitm = model.fitm ;
 typeof(fitm)
 @names fitm
-typeof(fitm.fitm) 
-@names fitm.fitm
+typeof(fitm.fitm_emb) 
+@names fitm.fitm_emb
 
 fitm.lev
 fitm.ni
 fitm.priors
 
-coef(fitm.fitm)
+coef(fitm.fitm_emb)
 
 res = predict(model, Xtest) ;
 @names res
@@ -64,7 +64,7 @@ res = predict(model, Xtest) ;
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-predict(model, Xtest; lb = [.1, .001]).pred
+predict(model, Xtest, [.1, .001]).pred
 ```
 """ 
 krrda(; kwargs...) = JchemoModel(krrda, nothing, kwargs)
@@ -81,8 +81,8 @@ function krrda(X, y, weights::ProbabilityWeights; kwargs...)
     res = dummy(y)
     ni = tab(y).vals
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
-    fitm = krr(X, res.Y, weights; kwargs...)
-    Rrda(fitm, ni, priors, res.lev, par)
+    fitm_emb = krr(X, res.Y, weights; kwargs...)
+    Rrda(fitm_emb, ni, priors, res.lev, par)
 end
 
 
