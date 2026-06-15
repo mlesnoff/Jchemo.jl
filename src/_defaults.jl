@@ -54,8 +54,6 @@ function defaults(algo::Function)
         ##
 
         mlr Jchemo.ParMlr ; 
-        mlrpinv Jchemo.ParMlr ; 
-        mlrvec Jchemo.ParMlr ;
 
         rr Jchemo.ParRr ; 
         rrchol Jchemo.ParRr ;
