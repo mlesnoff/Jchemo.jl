@@ -2,7 +2,7 @@
     plsravg(; kwargs...)
     plsravg(X, Y; kwargs...)
     plsravg(X, Y, weights::ProbabilityWeights; kwargs...)
-    plsravg!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    plsravg!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Averaging PLSR models with different numbers of  latent variables (PLSR-AVG).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -73,7 +73,7 @@ function plsravg(X, Y, weights::ProbabilityWeights; kwargs...)
     plsravg!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plsravg!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function plsravg!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParPlsravg, kwargs).par
     if par.algo == :unif
         fitm = plsravg_unif!(X, Y, weights; kwargs...)

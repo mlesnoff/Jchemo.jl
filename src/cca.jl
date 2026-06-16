@@ -2,7 +2,7 @@
     cca(; kwargs...)
     cca(X, Y; kwargs...)
     cca(X, Y, weights::ProbabilityWeights; kwargs...)
-    cca!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Canonical correlation Analysis (CCA, RCCA).
 * `X` : First block of data.
 * `Y` : Second block of data.
@@ -97,7 +97,7 @@ function cca(X, Y, weights::ProbabilityWeights; kwargs...)
     cca!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function cca!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParCca, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"

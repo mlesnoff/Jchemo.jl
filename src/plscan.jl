@@ -2,7 +2,7 @@
     plscan(; kwargs...)
     plscan(X, Y; kwargs...)
     plscan(X, Y, weights::ProbabilityWeights; kwargs...)
-    plscan!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    plscan!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Canonical partial least squares regression (Canonical PLS).
 * `X` : First block of data.
 * `Y` : Second block of data.
@@ -87,7 +87,7 @@ function plscan(X, Y, weights::ProbabilityWeights; kwargs...)
     plscan!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plscan!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function plscan!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParPls2bl, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(X)

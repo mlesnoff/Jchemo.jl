@@ -85,7 +85,7 @@ end
 function plskdeda(X, y, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParPlskdeda, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
-    res = dummy(y)
+    res = dummy(Q, y)
     ni = tab(y).vals
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm_emb = plskern(X, res.Y, weights; kwargs...)

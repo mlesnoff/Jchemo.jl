@@ -2,7 +2,7 @@
     rr(; kwargs...)
     rr(X, Y; kwargs...)
     rr(X, Y, weights::ProbabilityWeights; kwargs...)
-    rr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+    rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Ridge regression (RR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -82,10 +82,9 @@ function rr(X, Y, weights::ProbabilityWeights; kwargs...)
     rr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function rr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+function rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParRr, kwargs).par
     Q = eltype(X)
-    Y = handle_bitmatrix(Q, Y)  # for DA functions
     p = nco(X)
     par.lb = Q(par.lb)
     sqrtw = sqrt.(weights.values)

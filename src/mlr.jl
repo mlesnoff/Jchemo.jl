@@ -2,7 +2,7 @@
     mlr(; kwargs...)
     mlr(X, Y; kwargs...)
     mlr(X, Y, weights::ProbabilityWeights; kwargs...)
-    mlr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+    mlr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Mutiple linear regression model (MLR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -63,10 +63,9 @@ function mlr(X, Y, weights::ProbabilityWeights; kwargs...)
     mlr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function mlr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+function mlr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParMlr, kwargs).par
     Q = eltype(X)
-    Y = handle_bitmatrix(Q, Y)  # for DA functions
     sqrtw = sqrt.(weights.values)
     if par.noint
         q = nco(Y)

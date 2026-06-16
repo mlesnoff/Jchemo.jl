@@ -2,7 +2,7 @@
     pcaout(; kwargs...)
     pcaout(X; kwargs...)
     pcaout(X, weights::ProbabilityWeights; kwargs...)
-    pcaout!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+    pcaout!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Robust PCA using outlierness.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -75,7 +75,7 @@ function pcaout(X, weights::ProbabilityWeights; kwargs...)
     pcaout!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
-function pcaout!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+function pcaout!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParPcaout, kwargs).par 
     p = nco(X)
     nlvstah = 500

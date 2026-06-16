@@ -2,7 +2,7 @@
     rrchol(; kwargs...)
     rrchol(X, Y; kwargs...)
     rrchol(X, Y, weights::ProbabilityWeights; kwargs...)
-    rrchol!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    rrchol!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Ridge regression (RR) using the Normal equations and a Cholesky factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -26,7 +26,7 @@ function rrchol(X, Y, weights::ProbabilityWeights; kwargs...)
     rrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function rrchol!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function rrchol!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParRr, kwargs).par
     @assert nco(X) > 1 "The method only works for X with nb columns > 1."
     Q = eltype(X)

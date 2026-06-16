@@ -112,7 +112,6 @@ function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y, nlv::Int)
         a = object.par.nlv
         weights = object.fitm.weights
     end
-    Y = handle_bitmatrix(eltype(W), Y)
     p = nro(W)
     nlv = isnothing(nlv) ? a : min(nlv, a)
     W2 = vcol(W, 1:nlv).^2

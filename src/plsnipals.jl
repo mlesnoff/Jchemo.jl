@@ -2,7 +2,7 @@
     plsnipals(; kwargs...)
     plsnipals(X, Y; kwargs...)
     plsnipals(X, Y, weights::ProbabilityWeights; kwargs...)
-    plsnipals!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Partial Least Squares Regression (PLSR) with the Nipals algorithm.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -38,7 +38,7 @@ function plsnipals(X, Y, weights::ProbabilityWeights; kwargs...)
     plsnipals!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plsnipals!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParPlsr, kwargs).par
     Q = eltype(X)
     n, p = size(X)

@@ -2,7 +2,7 @@
     plsrout(; kwargs...)
     plsrout(X, Y; kwargs...)
     plsrout(X, Y, weights::ProbabilityWeights; kwargs...)
-    pcaout!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    pcaout!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Robust PLSR using outlierness.
 * `X` : X-data (n, p). 
 * `Y` : Y-data (n, q). 
@@ -70,7 +70,7 @@ function plsrout(X, Y, weights::ProbabilityWeights; kwargs...)
     plsrout!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plsrout!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function plsrout!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParPlsrout, kwargs).par 
     n, p = size(X)
     nlvout = 30

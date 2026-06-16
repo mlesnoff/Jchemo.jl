@@ -2,7 +2,7 @@
     pcanipalsmiss(; kwargs...)
     pcanipals(X; kwargs...)
     pcanipals(X, weights::ProbabilityWeights; kwargs...)
-    pcanipals!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+    pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 PCA by NIPALS algorithm allowing missing data.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -69,7 +69,7 @@ function pcanipalsmiss(X, weights::ProbabilityWeights; kwargs...)
     pcanipalsmiss!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
-function pcanipalsmiss!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+function pcanipalsmiss!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParPcanipals, kwargs).par 
     Q = eltype(X)
     n, p = size(X)

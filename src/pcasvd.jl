@@ -2,7 +2,7 @@
     pcasvd(; kwargs...)
     pcasvd(X; kwargs...)
     pcasvd(X, weights::ProbabilityWeights; kwargs...)
-    pcasvd!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+    pcasvd!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 PCA by SVD factorization.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -72,9 +72,8 @@ function pcasvd(X, weights::ProbabilityWeights; kwargs...)
     pcasvd!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
-function pcasvd!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+function pcasvd!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParPca, kwargs).par
-    Q = eltype(X)
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv

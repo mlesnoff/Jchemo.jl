@@ -2,7 +2,7 @@
     krr(; kwargs...)
     krr(X, Y; kwargs...)
     krr(X, Y, weights::ProbabilityWeights; kwargs...)
-    krr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+    krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Kernel ridge regression (KRR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -113,11 +113,10 @@ function krr(X, Y, weights::ProbabilityWeights; kwargs...)
     krr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function krr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParKrr, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     Q = eltype(X)
-    Y = handle_bitmatrix(Q, Y)  # for DA functions
     p = nco(X)
     par.lb = Q(par.lb)
     xscales = ones(Q, p)

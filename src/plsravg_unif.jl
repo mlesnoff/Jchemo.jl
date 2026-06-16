@@ -9,7 +9,7 @@ function plsravg_unif(X, Y, weights::ProbabilityWeights; kwargs...)
     plsravg_unif!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plsravg_unif!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function plsravg_unif!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParPlsravgunif, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)

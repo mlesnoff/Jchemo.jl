@@ -88,7 +88,7 @@ function mlrda(X, y, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParMlrda, kwargs).par
     X = ensure_mat(X)
     y = ensure_mat(y)
-    res = dummy(y)
+    res = dummy(Q, y)
     ni = tab(y).vals
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm_emb = mlr(X, res.Y, weights)

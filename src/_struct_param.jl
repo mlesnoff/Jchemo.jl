@@ -73,7 +73,7 @@ end
 Base.@kwdef mutable struct ParPcanipals
     nlv::Int = 1     
     gs::Bool = true   
-    tol::Float64 = sqrt(eps(1.))    
+    tol::Float64 = 1e-8   
     maxit::Int = 200     
     scal::Bool = false 
 end 
@@ -96,7 +96,7 @@ Base.@kwdef mutable struct ParSpca
     algo::Symbol = :shen  # masked in the API
     defl::Symbol = :v
     nvar::Union{Int, Vector{Int}} = 1  
-    tol::Float64 = sqrt(eps(1.))  
+    tol::Float64 = 1e-8 
     maxit::Int = 200   
     scal::Bool = false                   
 end 
@@ -155,7 +155,7 @@ end
 Base.@kwdef mutable struct ParCpca
     nlv::Int = 1     
     bscal::Symbol = :none   
-    tol::Float64 = sqrt(eps(1.))    
+    tol::Float64 = 1e-8   
     maxit::Int = 200    
     scal::Bool = false  
 end 
@@ -164,7 +164,7 @@ Base.@kwdef mutable struct ParCca
     nlv::Int = 1     
     bscal::Symbol = :none   
     tau::Float64 = 1e-8
-    tol::Float64 = sqrt(eps(1.))    
+    tol::Float64 = 1e-8   
     maxit::Int = 200    
     scal::Bool = false  
 end 
@@ -173,7 +173,7 @@ Base.@kwdef mutable struct ParCcawold
     nlv::Int = 1     
     bscal::Symbol = :none   
     tau::Float64 = 1e-8
-    tol::Float64 = sqrt(eps(1.))    
+    tol::Float64 = 1e-8   
     maxit::Int = 200    
     scal::Bool = false  
 end 
@@ -198,14 +198,14 @@ Base.@kwdef mutable struct ParMlr
 end 
 
 Base.@kwdef mutable struct ParNipals
-    tol::Float64 = sqrt(eps(1.))  
+    tol::Float64 = 1e-8 
     maxit::Int = 200                    
 end 
 
 Base.@kwdef mutable struct ParSnipals
     meth::Symbol = :soft
     nvar::Union{Int, Vector{Int}} = 1    
-    tol::Float64 = sqrt(eps(1.))  
+    tol::Float64 = 1e-8 
     maxit::Int = 200                    
 end 
 
@@ -216,7 +216,7 @@ end
 
 Base.@kwdef mutable struct ParPlswold    
     nlv::Int = 1     
-    tol::Float64 = sqrt(eps(1.)) 
+    tol::Float64 = 1e-8
     maxit::Int = 200  
     scal::Bool = false 
 end 
@@ -238,16 +238,28 @@ Base.@kwdef mutable struct ParPlsrout
     scal::Bool = false 
 end 
 
-Base.@kwdef mutable struct ParKplsr
+Base.@kwdef mutable struct ParKplsr3
     nlv::Int = 1 
     kern::Symbol = :krbf     
     gamma::Float64 = 1.  
     coef0::Float64 = 0.
     degree::Int = 1 
-    tol::Float64 = sqrt(eps(1.))   
+    tol::Float64 = 1e-8  
     maxit::Int = 200            
     scal::Bool = false                   
 end 
+
+Base.@kwdef mutable struct ParKplsr{Q <: AbstractFloat} 
+    nlv::Int = 1 
+    kern::Symbol = :krbf     
+    gamma::Q = 1.  
+    coef0::Q = 0.
+    degree::Int = 1 
+    tol::Q = 1e-8   
+    maxit::Int = 200            
+    scal::Bool = false                   
+end 
+
 
 Base.@kwdef mutable struct ParCglsr
     nlv::Int = 1 
@@ -259,7 +271,7 @@ end
 Base.@kwdef mutable struct ParRrr
     nlv::Int = 1 
     tau::Float64 = 1e-8       
-    tol::Float64 = sqrt(eps(1.))   
+    tol::Float64 = 1e-8  
     maxit::Int = 200     
     scal::Bool = false                   
 end 
@@ -289,7 +301,7 @@ Base.@kwdef mutable struct ParSplsr
     nlv::Int = 1 
     meth::Symbol = :soft
     nvar::Union{Int, Vector{Int}} = 1
-    tol::Float64 = sqrt(eps(1.))  # used when Y (n, q) (snipals)
+    tol::Float64 = 1e-8 # used when Y (n, q) (snipals)
     maxit::Int = 200              # used when Y (n, q) (snipals)
     scal::Bool = false                   
 end 
@@ -392,7 +404,7 @@ end
 Base.@kwdef mutable struct ParMbplsr
     nlv::Int = 1 
     bscal::Symbol = :none   
-    tol::Float64 = sqrt(eps(1.))   # mbplswest
+    tol::Float64 = 1e-8  # mbplswest
     maxit::Int = 200               # mbplswest     
     scal::Bool = false  
 end 
@@ -480,7 +492,7 @@ Base.@kwdef mutable struct ParSplsda    # splsrda, splslda
     meth::Symbol = :soft 
     nvar::Union{Int, Vector{Int}} = 1  
     prior::Union{Symbol, Vector{Float64}} = :prop   
-    tol::Float64 = sqrt(eps(1.))  
+    tol::Float64 = 1e-8 
     maxit::Int = 200   
     scal::Bool = false                    
 end 
@@ -491,7 +503,7 @@ Base.@kwdef mutable struct ParSplsqda
     nvar::Union{Int, Vector{Int}} = 1  
     prior::Union{Symbol, Vector{Float64}} = :prop
     alpha::Float64 = 0.   
-    tol::Float64 = sqrt(eps(1.))  
+    tol::Float64 = 1e-8 
     maxit::Int = 200    
     scal::Bool = false                    
 end 
@@ -503,7 +515,7 @@ Base.@kwdef mutable struct ParSplskdeda
     prior::Union{Symbol, Vector{Float64}} = :prop
     h::Union{Nothing, Float64, Vector{Float64}} = nothing  
     a::Float64 = 1. 
-    tol::Float64 = sqrt(eps(1.))  
+    tol::Float64 = 1e-8 
     maxit::Int = 200   
     scal::Bool = false 
 end 

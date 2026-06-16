@@ -78,7 +78,7 @@ end
 
 function krrda(X, y, weights::ProbabilityWeights; kwargs...)  
     par = recovkw(ParKrrda, kwargs).par
-    res = dummy(y)
+    res = dummy(Q, y)
     ni = tab(y).vals
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm_emb = krr(X, res.Y, weights; kwargs...)

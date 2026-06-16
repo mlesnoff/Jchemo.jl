@@ -81,10 +81,9 @@ function soplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
     soplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function soplsr!(Xbl::Vector, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+function soplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParSoplsr, kwargs).par
     Q = eltype(Xbl[1][1, 1])
-    Y = handle_bitmatrix(Q, Y)  # for DA functions
     n, q = size(Y)   
     nbl = length(Xbl)
     pbl = nco.(Xbl)

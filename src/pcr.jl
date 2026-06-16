@@ -2,7 +2,7 @@
     pcr(; kwargs...)
     pcr(X, Y; kwargs...)
     pcr(X, Y, weights::ProbabilityWeights; kwargs...)
-    pcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    pcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Principal component regression (PCR) with a SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -75,9 +75,8 @@ function pcr(X, Y, weights::ProbabilityWeights; kwargs...)
     pcr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function pcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function pcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParPca, kwargs).par
-    Q = eltype(X)
     q = nco(Y)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)  # built only for consistency with coef::Plsr

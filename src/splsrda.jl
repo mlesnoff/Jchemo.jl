@@ -90,7 +90,7 @@ end
 
 function splsrda(X, y, weights::ProbabilityWeights; kwargs...)
     par = recovkw(ParSplsda, kwargs).par
-    res = dummy(y)
+    res = dummy(Q, y)
     ni = tab(y).vals
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
     fitm_emb = splsr(X, res.Y, weights; kwargs...)

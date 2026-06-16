@@ -2,7 +2,7 @@
     pcaeigenk(; kwargs...)
     pcaeigenk(X; kwargs...)
     pcaeigenk(X, weights::ProbabilityWeights; kwargs...)
-    pcaeigenk!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+    pcaeigenk!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 PCA by Eigen factorization of the kernel matrix XX'.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -35,7 +35,7 @@ function pcaeigenk(X, weights::ProbabilityWeights; kwargs...)
     pcaeigenk!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
-function pcaeigenk!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+function pcaeigenk!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParPca, kwargs).par 
     Q = eltype(X)
     n, p = size(X)

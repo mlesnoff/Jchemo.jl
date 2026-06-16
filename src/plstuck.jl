@@ -2,7 +2,7 @@
     plstuck(; kwargs...)
     plstuck(X, Y; kwargs...)
     plstuck(X, Y, weights::ProbabilityWeights; kwargs...)
-    plstuck!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Tucker's inter-battery method of factor analysis
 * `X` : First block of data.
 * `Y` : Second block of data.
@@ -81,7 +81,7 @@ function plstuck(X, Y, weights::ProbabilityWeights; kwargs...)
     plstuck!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function plstuck!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParPls2bl, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(X)

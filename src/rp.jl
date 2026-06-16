@@ -2,7 +2,7 @@
     rp(; kwargs...)
     rp(X; kwargs...)
     rp(X, weights::ProbabilityWeights; kwargs...)
-    rp!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+    rp!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Make a random projection of X-data.
 * `X` : X-data (n, p).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -42,7 +42,7 @@ function rp(X, weights::ProbabilityWeights; kwargs...)
     rp!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
-function rp!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+function rp!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParRp, kwargs).par 
     @assert in([:gauss, :li])(par.meth) "Wrong value for argument 'meth'."
     Q = eltype(X)

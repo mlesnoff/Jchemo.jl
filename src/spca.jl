@@ -2,7 +2,7 @@
     spca(; kwargs...)
     spca(X; kwargs...)
     spca(X, weights::ProbabilityWeights; kwargs...)
-    spca!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+    spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Sparse PCA by regularized low rank matrix approximation (sPCA-rSVD, Shen & Huang 2008).
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -109,7 +109,7 @@ function spca(X, weights::ProbabilityWeights; kwargs...)
     spca!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
-function spca!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParSpca, kwargs).par
     @assert in([:soft; :hard])(par.meth) "Wrong value for argument 'meth'."
     @assert in([:v; :t])(par.defl) "Wrong value for argument 'defl'."

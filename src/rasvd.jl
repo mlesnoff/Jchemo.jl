@@ -2,7 +2,7 @@
     rasvd(; kwargs...)
     rasvd(X, Y; kwargs...)
     rasvd(X, Y, weights::ProbabilityWeights; kwargs...)
-    rasvd!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Redundancy analysis (RA), a.k.a PCA on instrumental variables (PCAIV)
 * `X` : First block of data.
 * `Y` : Second block of data.
@@ -89,7 +89,7 @@ function rasvd(X, Y, weights::ProbabilityWeights; kwargs...)
     rasvd!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function rasvd!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParRasvd, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
