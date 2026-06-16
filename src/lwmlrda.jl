@@ -65,7 +65,7 @@ conf(res.pred, ytest).cnt
 lwmlrda(; kwargs...) = JchemoModel(lwmlrda, nothing, kwargs)
 
 function lwmlrda(X, y; kwargs...) 
-    par = recovkw(ParLwmlr, kwargs).par
+    par = recovkw(ParLwmlr{Q}, kwargs).par
     X = ensure_mat(X)
     y = ensure_mat(y)
     taby = tab(y)

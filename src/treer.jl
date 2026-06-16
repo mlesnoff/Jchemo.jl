@@ -57,7 +57,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 treer(; kwargs...) = JchemoModel(treer, nothing, kwargs)
 
 function treer(X, y; kwargs...) 
-    par = recovkw(ParTree, kwargs).par
+    par = recovkw(ParTree{Q}, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)

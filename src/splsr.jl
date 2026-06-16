@@ -120,7 +120,7 @@ function splsr(X, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function splsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParSplsr, kwargs).par
+    par = recovkw(ParSplsr{Q}, kwargs).par
     @assert in([:soft; :hard])(par.meth) "Wrong value for argument 'meth'."
     Q = eltype(X)
     n, p = size(X)

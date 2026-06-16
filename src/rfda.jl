@@ -84,7 +84,7 @@ rfda(; kwargs...) = JchemoModel(rfda, nothing, kwargs)
 
 function rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
     ## For DA in DecisionTree.jl, y must be Int or String
-    par = recovkw(ParRf, kwargs).par
+    par = recovkw(ParRf{Q}, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)

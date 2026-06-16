@@ -135,7 +135,7 @@ function mbplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function mbplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParMbplsr, kwargs).par
+    par = recovkw(ParMbplsr{Q}, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     n, q = size(Y)
     pbl = nco.(Xbl) ; ptot = sum(pbl)

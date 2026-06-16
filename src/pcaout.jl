@@ -76,7 +76,7 @@ function pcaout(X, weights::ProbabilityWeights; kwargs...)
 end
 
 function pcaout!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParPcaout, kwargs).par 
+    par = recovkw(ParPcaout{Q}, kwargs).par 
     p = nco(X)
     nlvstah = 500
     V = rand(0:1, p, nlvstah)

@@ -113,7 +113,7 @@ end
 protoclustplsr(; kwargs...) = JchemoModel(protoclustplsr, nothing, kwargs)
 
 function protoclustplsr(X, Y; kwargs...)
-    par = recovkw(ParProtoclustplsr, kwargs).par 
+    par = recovkw(ParProtoclustplsr{Q}, kwargs).par 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     if par.nlvdis == 0

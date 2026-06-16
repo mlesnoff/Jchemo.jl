@@ -93,7 +93,7 @@ f
 lwmlr(; kwargs...) = JchemoModel(lwmlr, nothing, kwargs)
 
 function lwmlr(X, Y; kwargs...) 
-    par = recovkw(ParLwmlr, kwargs).par
+    par = recovkw(ParLwmlr{Q}, kwargs).par
     X = ensure_mat(X)  
     Q = eltype(X)
     p = nco(X)

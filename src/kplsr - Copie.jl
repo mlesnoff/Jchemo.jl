@@ -90,7 +90,7 @@ end
 
 function kplsr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; 
         kwargs...)
-    par = recovkw(ParKplsr, kwargs).par
+    par = recovkw(ParKplsr{Q}, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     Q = eltype(X)
     Y = handle_bitmatrix(Q, Y)  # for DA functions

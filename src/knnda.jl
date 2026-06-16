@@ -73,7 +73,7 @@ errp(pred, ytest)
 knnda(; kwargs...) = JchemoModel(knnda, nothing, kwargs)
 
 function knnda(X, y; kwargs...) 
-    par = recovkw(ParKnn, kwargs).par
+    par = recovkw(ParKnn{Q}, kwargs).par
     X = ensure_mat(X)
     y = ensure_mat(y)
     Q = eltype(X)

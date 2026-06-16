@@ -153,7 +153,7 @@ f
 occsd(; kwargs...) = JchemoModel(occsd, nothing, kwargs)
 
 function occsd(fitm; kwargs...)
-    par = recovkw(ParOcc, kwargs).par
+    par = recovkw(ParOcc{Q}, kwargs).par
     @assert in(par.typcut, [:mad, :q]) "Argument 'typcut' must be :mad or :q."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     res = outsd(fitm)

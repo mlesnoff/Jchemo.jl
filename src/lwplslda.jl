@@ -77,7 +77,7 @@ conf(res.pred, ytest).cnt
 lwplslda(; kwargs...) = JchemoModel(lwplslda, nothing, kwargs)
 
 function lwplslda(X, y; kwargs...) 
-    par = recovkw(ParLwplsda, kwargs).par 
+    par = recovkw(ParLwplsda{Q}, kwargs).par 
     X = ensure_mat(X)
     y = ensure_mat(y)
     Q = eltype(X)

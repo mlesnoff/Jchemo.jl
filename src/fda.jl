@@ -93,7 +93,7 @@ f
 fda(; kwargs...) = JchemoModel(fda, nothing, kwargs)
 
 function fda(X, y; kwargs...)
-    par = recovkw(ParFda, kwargs).par
+    par = recovkw(ParFda{Q}, kwargs).par
     Q = eltype(X[1, 1])
     weights = pweightcla(Q, y; prior = par.prior)
     fda(X, y, weights; kwargs...)
@@ -102,7 +102,7 @@ end
 fda(X, y, weights; kwargs...) = fda!(copy(ensure_mat(X)), y, weights; kwargs...)
 
 function fda!(X::Matrix, y, weights; kwargs...)
-    par = recovkw(ParFda, kwargs).par
+    par = recovkw(ParFda{Q}, kwargs).par
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     Q = eltype(X)
     n, p = size(X)

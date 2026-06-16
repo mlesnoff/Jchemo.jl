@@ -89,13 +89,8 @@ function kplsr(X, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    #par = recovkw(ParKplsr, kwargs).par
-    #par = Jchemo.recovkw(ParKplsr3{Q}, kwargs).par
-    par = Jchemo.recovkw(ParKplsr{Q}, kwargs).par
-    println(typeof(par.gamma))
-    println(par)
+    par = Jchemo.recovkw(ParKplsr{Q}{Q}, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
-    #Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
     nlv = par.nlv
@@ -199,7 +194,7 @@ coef(object::Kplsr) = coef(object::Kplsr, object.par.nlv)
 
 function coef(object::Kplsr, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    beta = object.C[:, 1:nlv]'
+    beta = vcol(object.C, 1:nlv)'
     q = length(object.ymeans)
     int = reshape(object.ymeans, 1, q)
     (beta = beta, int, nlv)
@@ -215,7 +210,6 @@ Compute Y-predictions from a fitted model.
 If nothing, it is the maximum nb. LVs.
 """ 
 function predict(object::Kplsr, X)
-    X = ensure_mat(X)
     T = transf(object, X)
     coefs = coef(object)
     pred = coefs.int .+ T * coefs.beta * Diagonal(object.yscales)

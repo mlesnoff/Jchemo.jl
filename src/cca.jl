@@ -98,7 +98,7 @@ function cca(X, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParCca, kwargs).par 
+    par = recovkw(ParCca{Q}, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
     Q = eltype(X)

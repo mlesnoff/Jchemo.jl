@@ -52,7 +52,7 @@ f
 """ 
 function aicplsr(X::AbstractArray{T}, y::AbstractArray{T}; alpha::T = T(2.), 
         kwargs...) where T <: AbstractFloat
-    par = recovkw(ParCglsr, kwargs).par
+    par = recovkw(ParCglsr{Q}, kwargs).par
     Q = eltype(X)
     X = ensure_mat(X)
     n, p = size(X)

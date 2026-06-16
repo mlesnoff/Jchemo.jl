@@ -51,7 +51,7 @@ f
 detrend_arpls(; kwargs...) = JchemoModel(detrend_arpls, nothing, kwargs)
 
 function detrend_arpls(X; kwargs...)
-    par = recovkw(ParDetrendarpls, kwargs).par
+    par = recovkw(ParDetrendarpls{Q}, kwargs).par
     Detrendarpls(par)
 end
 

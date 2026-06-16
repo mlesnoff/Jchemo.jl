@@ -88,7 +88,7 @@ f
 knnr(; kwargs...) = JchemoModel(knnr, nothing, kwargs)
 
 function knnr(X, Y; kwargs...) 
-    par = recovkw(ParKnn, kwargs).par
+    par = recovkw(ParKnn{Q}, kwargs).par
     @assert in([:eucl, :mah, :sam, :cos, :cor])(par.metric) "Wrong value for argument 'metric'."
     X = ensure_mat(X)
     Y = ensure_mat(Y)

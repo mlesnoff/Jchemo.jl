@@ -27,14 +27,14 @@ See function `splslda` for examples.
 splsqda(; kwargs...) = JchemoModel(splsqda, nothing, kwargs)
 
 function splsqda(X, y; kwargs...)
-    par = recovkw(ParSplsqda, kwargs).par
+    par = recovkw(ParSplsqda{Q}, kwargs).par
     Q = eltype(X[1, 1])
     weights = pweightcla(Q, y; prior = par.prior)
     splsqda(X, y, weights; kwargs...)
 end
 
 function splsqda(X, y, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParSplsqda, kwargs).par
+    par = recovkw(ParSplsqda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(Q, y)
     ni = tab(y).vals

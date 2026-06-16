@@ -72,7 +72,7 @@ plotsp(imp', wl; xlabel = "Wavelength (nm)", ylabel = "Importance").f
 rfr(; kwargs...) = JchemoModel(rfr, nothing, kwargs)
 
 function rfr(X, y; kwargs...)
-    par = recovkw(ParRf, kwargs).par
+    par = recovkw(ParRf{Q}, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)

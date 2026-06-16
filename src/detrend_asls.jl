@@ -57,7 +57,7 @@ f
 detrend_asls(; kwargs...) = JchemoModel(detrend_asls, nothing, kwargs)
 
 function detrend_asls(X; kwargs...)
-    par = recovkw(ParDetrendasls, kwargs).par
+    par = recovkw(ParDetrendasls{Q}, kwargs).par
     Detrendasls(par)
 end
 

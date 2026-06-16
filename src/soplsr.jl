@@ -82,7 +82,7 @@ function soplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function soplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParSoplsr, kwargs).par
+    par = recovkw(ParSoplsr{Q}, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     n, q = size(Y)   
     nbl = length(Xbl)

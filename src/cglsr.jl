@@ -72,7 +72,7 @@ cglsr(; kwargs...) = JchemoModel(cglsr, nothing, kwargs)
 cglsr(X, y; kwargs...) = cglsr!(copy(ensure_mat(X)), copy(ensure_mat(y)); kwargs...)
 
 function cglsr!(X::Matrix, y::Matrix; kwargs...)
-    par = recovkw(ParCglsr, kwargs).par
+    par = recovkw(ParCglsr{Q}, kwargs).par
     Q = eltype(X)   
     n, p = size(X)
     q = nco(y)

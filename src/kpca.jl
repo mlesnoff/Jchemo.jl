@@ -69,7 +69,7 @@ function kpca(X; kwargs...)
 end
 
 function kpca(X, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParKpca, kwargs).par
+    par = recovkw(ParKpca{Q}, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     X = ensure_mat(X)
     Q = eltype(X)

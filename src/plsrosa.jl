@@ -35,7 +35,7 @@ function plsrosa(X, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function plsrosa!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParPlsr, kwargs).par
+    par = recovkw(ParPlsr{Q}, kwargs).par
     Q = eltype(X)
     n, p = size(X)
     q = nco(Y)

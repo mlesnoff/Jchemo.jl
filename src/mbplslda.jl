@@ -110,14 +110,14 @@ summary(fitm_emb, Xbltrain)
 mbplslda(; kwargs...) = JchemoModel(mbplslda, nothing, kwargs)
 
 function mbplslda(Xbl, y; kwargs...)
-    par = recovkw(ParMbplsda, kwargs).par
+    par = recovkw(ParMbplsda{Q}, kwargs).par
     Q = eltype(Xbl[1][1, 1])
     weights = pweightcla(Q, y; prior = par.prior)
     mbplslda(Xbl, y, weights; kwargs...)
 end
 
 function mbplslda(Xbl, y, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParMbplsda, kwargs).par
+    par = recovkw(ParMbplsda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(Q, y)
     ni = tab(y).vals

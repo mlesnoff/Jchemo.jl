@@ -44,7 +44,7 @@ svd(X).U[:, 1]
 ```
 """ 
 function nipals(X; kwargs...)
-    par = recovkw(ParNipals, kwargs).par
+    par = recovkw(ParNipals{Q}, kwargs).par
     X = ensure_mat(X)
     p = nco(X)
     t = X[:, argmax(colnorm(X))]
@@ -71,7 +71,7 @@ end
 
 ## Used when GS in sequential extraction 
 function nipals(X, UUt, VVt; kwargs...)
-    par = recovkw(ParNipals, kwargs).par
+    par = recovkw(ParNipals{Q}, kwargs).par
     X = ensure_mat(X)
     p = nco(X)
     t = X[:, argmax(colnorm(X))]

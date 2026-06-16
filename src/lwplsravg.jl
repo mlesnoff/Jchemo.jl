@@ -77,7 +77,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 lwplsravg(; kwargs...) = JchemoModel(lwplsravg, nothing, kwargs)
 
 function lwplsravg(X, Y; kwargs...)
-    par = recovkw(ParLwplsravg, kwargs).par
+    par = recovkw(ParLwplsravg{Q}, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     p = nco(X)

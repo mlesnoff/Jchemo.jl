@@ -71,7 +71,7 @@ function plsrout(X, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function plsrout!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParPlsrout, kwargs).par 
+    par = recovkw(ParPlsrout{Q}, kwargs).par 
     n, p = size(X)
     nlvout = 30
     V = rand(0:1, p, nlvout)

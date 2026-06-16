@@ -55,7 +55,7 @@ f
 detrend_airpls(; kwargs...) = JchemoModel(detrend_airpls, nothing, kwargs)
 
 function detrend_airpls(X; kwargs...)
-    par = recovkw(ParDetrendairpls, kwargs).par
+    par = recovkw(ParDetrendairpls{Q}, kwargs).par
     Detrendairpls(par)
 end
 

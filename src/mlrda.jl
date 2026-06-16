@@ -78,14 +78,14 @@ conf(res.pred, ytest).cnt
 mlrda(; kwargs...) = JchemoModel(mlrda, nothing, kwargs)
 
 function mlrda(X, y; kwargs...)
-    par = recovkw(ParMlrda, kwargs).par
+    par = recovkw(ParMlrda{Q}, kwargs).par
     Q = eltype(X[1, 1])
     weights = pweightcla(Q, y; prior = par.prior)
     mlrda(X, y, weights; kwargs...)
 end
 
 function mlrda(X, y, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParMlrda, kwargs).par
+    par = recovkw(ParMlrda{Q}, kwargs).par
     X = ensure_mat(X)
     y = ensure_mat(y)
     res = dummy(Q, y)

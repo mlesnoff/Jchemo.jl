@@ -38,7 +38,7 @@ function plswold(X, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParPlswold, kwargs).par
+    par = recovkw(ParPlswold{Q}, kwargs).par
     Q = eltype(X)
     n, p = size(X)
     q = nco(Y)

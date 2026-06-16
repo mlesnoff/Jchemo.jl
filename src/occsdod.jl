@@ -146,7 +146,7 @@ f
 occsdod(; kwargs...) = JchemoModel(occsdod, nothing, kwargs)
 
 function occsdod(fitm, X; kwargs...) 
-    par = recovkw(ParOccsdod, kwargs).par 
+    par = recovkw(ParOccsdod{Q}, kwargs).par 
     gamma = par.gamma
     @assert 0 <= gamma <= 1 "Argument 'gamma' must ∈ [0, 1]."   
     nlv = nco(fitm.T) 

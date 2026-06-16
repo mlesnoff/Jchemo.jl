@@ -84,14 +84,14 @@ conf(res.pred, ytest).cnt
 rda(; kwargs...) = JchemoModel(rda, nothing, kwargs)
 
 function rda(X, y; kwargs...)
-    par = recovkw(ParRda, kwargs).par
+    par = recovkw(ParRda{Q}, kwargs).par
     Q = eltype(X[1, 1])
     weights = pweightcla(Q, y; prior = par.prior)
     rda(X, y, weights; kwargs...)
 end
 
 function rda(X, y, weights::ProbabilityWeights; kwargs...)  
-    par = recovkw(ParRda, kwargs).par
+    par = recovkw(ParRda{Q}, kwargs).par
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     @assert par.lb >= 0 "lb must be in >= 0"
     X = ensure_mat(X)

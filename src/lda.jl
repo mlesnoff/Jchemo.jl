@@ -67,7 +67,7 @@ conf(res.pred, ytest).cnt
 lda(; kwargs...) = JchemoModel(lda, nothing, kwargs)
 
 function lda(X, y; kwargs...)
-    par = recovkw(ParLda, kwargs).par
+    par = recovkw(ParLda{Q}, kwargs).par
     Q = eltype(X[1, 1])
     weights = pweightcla(Q, y; prior = par.prior)
     lda(X, y, weights; kwargs...)
@@ -75,7 +75,7 @@ end
 
 function lda(X, y, weights::ProbabilityWeights; kwargs...)  
     # Scaling X has no effect
-    par = recovkw(ParLda, kwargs).par
+    par = recovkw(ParLda{Q}, kwargs).par
     X = ensure_mat(X)
     y = vec(y)    # for findall
     n, p = size(X)

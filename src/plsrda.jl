@@ -94,14 +94,14 @@ summary(fitm.fitm_emb, Xtrain)
 plsrda(; kwargs...) = JchemoModel(plsrda, nothing, kwargs)
 
 function plsrda(X, y; kwargs...)
-    par = recovkw(ParPlsda, kwargs).par
+    par = recovkw(ParPlsda{Q}, kwargs).par
     Q = eltype(X[1, 1])
     weights = pweightcla(Q, y; prior = par.prior)
     plsrda(X, y, weights; kwargs...)
 end
 
 function plsrda(X, y, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParPlsda, kwargs).par
+    par = recovkw(ParPlsda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).vals
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information

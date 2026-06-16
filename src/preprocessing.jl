@@ -50,7 +50,7 @@ f
 detrend_lo(; kwargs...) = JchemoModel(detrend_lo, nothing, kwargs)
 
 function detrend_lo(X; kwargs...)
-    par = recovkw(ParDetrendlo, kwargs).par
+    par = recovkw(ParDetrendlo{Q}, kwargs).par
     Detrendlo(par)
 end
 
@@ -131,7 +131,7 @@ f
 detrend_pol(; kwargs...) = JchemoModel(detrend_pol, nothing, kwargs)
 
 function detrend_pol(X; kwargs...)
-    par = recovkw(ParDetrendpol, kwargs).par
+    par = recovkw(ParDetrendpol{Q}, kwargs).par
     Detrendpol(par)
 end
 
@@ -212,7 +212,7 @@ plotsp(Xptest).f
 fdif(; kwargs...) = JchemoModel(fdif, nothing, kwargs)
 
 function fdif(X; kwargs...)
-    par = recovkw(ParFdif, kwargs).par
+    par = recovkw(ParFdif{Q}, kwargs).par
     Fdif(par)
 end
 
@@ -290,7 +290,7 @@ plotsp(Xptest).f
 interpl(; kwargs...) = JchemoModel(interpl, nothing, kwargs)
 
 function interpl(X; kwargs...)
-    par = recovkw(ParInterpl, kwargs).par
+    par = recovkw(ParInterpl{Q}, kwargs).par
     Interpl(par)
 end
 
@@ -387,7 +387,7 @@ plotsp(Xptest).f
 mavg(; kwargs...) = JchemoModel(mavg, nothing, kwargs)
 
 function mavg(X; kwargs...)
-    par = recovkw(ParMavg, kwargs).par
+    par = recovkw(ParMavg{Q}, kwargs).par
     Mavg(par)
 end
 
@@ -559,7 +559,7 @@ fitm = emsc(Xtrain; degree)
 emsc(; kwargs...) = JchemoModel(emsc, nothing, kwargs)
 
 function emsc(X, xref; kwargs...)
-    par = recovkw(ParEmsc, kwargs).par
+    par = recovkw(ParEmsc{Q}, kwargs).par
     X = ensure_mat(X)
     Q = eltype(xref)
     p = length(xref) 
@@ -714,7 +714,7 @@ f
 savgol(; kwargs...) = JchemoModel(savgol, nothing, kwargs)
 
 function savgol(X; kwargs...)
-    par = recovkw(ParSavgol, kwargs).par
+    par = recovkw(ParSavgol{Q}, kwargs).par
     Savgol(par)
 end
 
@@ -853,7 +853,7 @@ plotsp(Xptest).f
 snv(; kwargs...) = JchemoModel(snv, nothing, kwargs)
 
 function snv(X; kwargs...)
-    par = recovkw(ParSnv, kwargs).par
+    par = recovkw(ParSnv{Q}, kwargs).par
     Snv(par)
 end
 

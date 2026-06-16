@@ -89,7 +89,7 @@ typeof(res.fitm[i])
 lwplsrda(; kwargs...) = JchemoModel(lwplsrda, nothing, kwargs)
 
 function lwplsrda(X, y; kwargs...) 
-    par = recovkw(ParLwplsda, kwargs).par 
+    par = recovkw(ParLwplsda{Q}, kwargs).par 
     X = ensure_mat(X)
     y = ensure_mat(y)
     Q = eltype(X)

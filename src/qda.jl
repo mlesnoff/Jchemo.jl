@@ -84,7 +84,7 @@ errp(res.pred, ytest)
 qda(; kwargs...) = JchemoModel(qda, nothing, kwargs)
 
 function qda(X, y; kwargs...)
-    par = recovkw(ParQda, kwargs).par
+    par = recovkw(ParQda{Q}, kwargs).par
     Q = eltype(X[1, 1])
     weights = pweightcla(Q, y; prior = par.prior)
     qda(X, y, weights; kwargs...)
@@ -92,7 +92,7 @@ end
 
 function qda(X, y, weights::ProbabilityWeights; kwargs...)  
     # Scaling X has no effect
-    par = recovkw(ParQda, kwargs).par
+    par = recovkw(ParQda{Q}, kwargs).par
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     X = ensure_mat(X)
     y = vec(y)    # for findall

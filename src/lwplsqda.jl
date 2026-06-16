@@ -43,7 +43,7 @@ See function `lwplslda` for examples.
 lwplsqda(; kwargs...) = JchemoModel(lwplsqda, nothing, kwargs)
 
 function lwplsqda(X, y; kwargs...) 
-    par = recovkw(ParLwplsqda, kwargs).par 
+    par = recovkw(ParLwplsqda{Q}, kwargs).par 
     X = ensure_mat(X)
     y = ensure_mat(y)
     Q = eltype(X)

@@ -80,7 +80,7 @@ function rosaplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParRosaplsr, kwargs).par
+    par = recovkw(ParRosaplsr{Q}, kwargs).par
     Q = eltype(Xbl[1][1, 1])   
     n, q = size(Y)
     nbl = length(Xbl)

@@ -70,7 +70,7 @@ function pcanipalsmiss(X, weights::ProbabilityWeights; kwargs...)
 end
 
 function pcanipalsmiss!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParPcanipals, kwargs).par 
+    par = recovkw(ParPcanipals{Q}, kwargs).par 
     Q = eltype(X)
     n, p = size(X)
     nlv = min(n, p, par.nlv)

@@ -76,14 +76,14 @@ predict(model, Xtest, 1:2).pred
 dkplsrda(; kwargs...) = JchemoModel(dkplsrda, nothing, kwargs)
 
 function dkplsrda(X, y; kwargs...)
-    par = recovkw(ParKplsda, kwargs).par
+    par = recovkw(ParKplsda{Q}, kwargs).par
     Q = eltype(X[1, 1])
     weights = pweightcla(Q, y; prior = par.prior)
     dkplsrda(X, y, weights; kwargs...)
 end
 
 function dkplsrda(X, y, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParKplsda, kwargs).par
+    par = recovkw(ParKplsda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).vals
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information

@@ -99,7 +99,7 @@ function ccawold(X, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParCcawold, kwargs).par 
+    par = recovkw(ParCcawold{Q}, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
     Q = eltype(X)

@@ -24,7 +24,7 @@ distribution estimated from the `nsamp` observations sampled in the target class
 occlknn(; kwargs...) = JchemoModel(occlknn, nothing, kwargs)
 
 function occlknn(X; kwargs...)
-    par = recovkw(ParOccknn, kwargs).par
+    par = recovkw(ParOccknn{Q}, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     n, p = size(X)

@@ -118,7 +118,7 @@ f
 dmkern(; kwargs...) = JchemoModel(dmkern, nothing, kwargs)
 
 function dmkern(X; kwargs...)
-    par = recovkw(ParDmkern, kwargs).par
+    par = recovkw(ParDmkern{Q}, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
     h = par.h

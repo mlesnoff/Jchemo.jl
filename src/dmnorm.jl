@@ -117,7 +117,7 @@ function dmnorm(X; kwargs...)
 end
 
 function dmnorm!(X::Matrix; kwargs...)
-    par = recovkw(ParDmnorm, kwargs).par
+    par = recovkw(ParDmnorm{Q}, kwargs).par
     mu = colmean(X) 
     S = cov(X; corrected = true)
     U = cholesky!(Hermitian(S)).U    # cholesky! modifies S
@@ -141,7 +141,7 @@ function dmnorm(mu, S; kwargs...)
 end
 
 function dmnorm!(mu::Vector, S::Matrix; kwargs...)
-    par = recovkw(ParDmnorm, kwargs).par
+    par = recovkw(ParDmnorm{Q}, kwargs).par
     U = cholesky!(Hermitian(copy(S))).U   # cholesky! modifies S
     if par.simpl 
         cst = 1

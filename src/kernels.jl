@@ -28,7 +28,7 @@ krbf(X, Y; gamma = .1)
 ```
 """ 
 function krbf(X, Y; kwargs...)
-    par = recovkw(ParKern, kwargs).par 
+    par = recovkw(ParKern{Q}, kwargs).par 
     Q = eltype(X[1, 1])
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -68,7 +68,7 @@ kpol(X, Y; gamma = .1, coef0 = 10, degree = 3)
 ```
 """ 
 function kpol(X, Y; kwargs...)
-    par = recovkw(ParKern, kwargs).par 
+    par = recovkw(ParKern{Q}, kwargs).par 
     Q = eltype(X[1, 1])
     X = ensure_mat(X)
     Y = ensure_mat(Y)

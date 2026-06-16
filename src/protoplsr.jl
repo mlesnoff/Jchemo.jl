@@ -120,7 +120,7 @@ struct Protoplsr
 end
 
 function protoplsr(X, Y; kwargs...)
-    par = recovkw(ParProtoplsr, kwargs).par 
+    par = recovkw(ParProtoplsr{Q}, kwargs).par 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X) 

@@ -69,7 +69,7 @@ treeda(; kwargs...) = JchemoModel(treeda, nothing, kwargs)
 
 ## For DA in DecisionTree.jl, y must be Int or String
 function treeda(X, y::Union{Array{Int}, Array{String}}; kwargs...) 
-    par = recovkw(ParTree, kwargs).par
+    par = recovkw(ParTree{Q}, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     y = vec(y)

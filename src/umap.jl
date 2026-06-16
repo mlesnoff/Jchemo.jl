@@ -98,7 +98,7 @@ f
 umap(; kwargs...) = JchemoModel(umap, nothing, kwargs)
 
 function umap(X; kwargs...)
-    par = recovkw(ParUmap, kwargs).par
+    par = recovkw(ParUmap{Q}, kwargs).par
     X = ensure_mat(X)
     Q = eltype(X)
     n, p = size(X)

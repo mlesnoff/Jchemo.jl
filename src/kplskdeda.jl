@@ -25,14 +25,14 @@ See function `kplslda` for examples.
 kplskdeda(; kwargs...) = JchemoModel(kplskdeda, nothing, kwargs)
 
 function kplskdeda(X, y; kwargs...)
-    par = recovkw(ParKplskdeda, kwargs).par
+    par = recovkw(ParKplskdeda{Q}, kwargs).par
     Q = eltype(X[1, 1])
     weights = pweightcla(Q, y; prior = par.prior)
     kplskdeda(X, y, weights; kwargs...)
 end
 
 function kplskdeda(X, y, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParKplskdeda, kwargs).par
+    par = recovkw(ParKplskdeda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(Q, y)
     ni = tab(y).vals

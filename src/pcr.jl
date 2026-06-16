@@ -76,7 +76,7 @@ function pcr(X, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function pcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParPca, kwargs).par
+    par = recovkw(ParPca{Q}, kwargs).par
     q = nco(Y)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)  # built only for consistency with coef::Plsr

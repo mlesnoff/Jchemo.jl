@@ -78,14 +78,14 @@ predict(model, Xtest, 1:2).pred
 dkplslda(; kwargs...) = JchemoModel(dkplslda, nothing, kwargs)
 
 function dkplslda(X, y; kwargs...)
-    par = recovkw(ParKplsda, kwargs).par
+    par = recovkw(ParKplsda{Q}, kwargs).par
     Q = eltype(X[1, 1])
     weights = pweightcla(Q, y; prior = par.prior)
     dkplslda(X, y, weights; kwargs...)
 end
 
 function dkplslda(X, y, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParKplsda, kwargs).par
+    par = recovkw(ParKplsda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(Q, y)
     ni = tab(y).vals

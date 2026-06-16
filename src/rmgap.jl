@@ -43,7 +43,7 @@ f
 rmgap(; kwargs...) = JchemoModel(rmgap, nothing, kwargs)
 
 function rmgap(X; kwargs...)
-    par = recovkw(ParRmgap, kwargs).par
+    par = recovkw(ParRmgap{Q}, kwargs).par
     Rmgap(par)
 end
 

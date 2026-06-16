@@ -97,7 +97,7 @@ function plskern(X, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function plskern!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParPlsr, kwargs).par
+    par = recovkw(ParPlsr{Q}, kwargs).par
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)

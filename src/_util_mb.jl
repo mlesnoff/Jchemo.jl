@@ -85,7 +85,7 @@ function blockscal(Xbl; kwargs...)
 end
 
 function blockscal(Xbl::Vector, weights::ProbabilityWeights; kwargs...)   
-    par = recovkw(ParBlock, kwargs).par
+    par = recovkw(ParBlock{Q}, kwargs).par
     @assert in([:none, :frob, :mfa, :ncol, :sd])(par.bscal) "Wrong value for argument 'bscal'."
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)

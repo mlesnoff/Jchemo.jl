@@ -43,7 +43,7 @@ function rp(X, weights::ProbabilityWeights; kwargs...)
 end
 
 function rp!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParRp, kwargs).par 
+    par = recovkw(ParRp{Q}, kwargs).par 
     @assert in([:gauss, :li])(par.meth) "Wrong value for argument 'meth'."
     Q = eltype(X)
     p = nco(X)

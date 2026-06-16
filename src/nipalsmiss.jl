@@ -34,7 +34,7 @@ res.u
 ```
 """ 
 function nipalsmiss(X; kwargs...)
-    par = recovkw(ParNipals, kwargs).par
+    par = recovkw(ParNipals{Q}, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
     s = ismissing.(X)
@@ -74,7 +74,7 @@ end
 
 ## Used when GS in sequential extraction 
 function nipalsmiss(X, UUt, VVt; kwargs...)
-    par = recovkw(ParNipals, kwargs).par
+    par = recovkw(ParNipals{Q}, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
     s = ismissing.(X)

@@ -108,7 +108,7 @@ f
 occstah(; kwargs...) = JchemoModel(occstah, nothing, kwargs)
 
 function occstah(X; kwargs...) 
-    par = recovkw(ParOccstah, kwargs).par 
+    par = recovkw(ParOccstah{Q}, kwargs).par 
     @assert in(par.typcut, [:mad, :q]) "Argument 'typcut' must be :mad or :q."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     p = nco(X)

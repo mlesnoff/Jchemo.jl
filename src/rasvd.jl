@@ -90,7 +90,7 @@ function rasvd(X, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParRasvd, kwargs).par 
+    par = recovkw(ParRasvd{Q}, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
     Q = eltype(X)

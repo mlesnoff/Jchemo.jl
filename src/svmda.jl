@@ -82,7 +82,7 @@ conf(res.pred, ytest).cnt
 svmda(; kwargs...) = JchemoModel(svmda, nothing, kwargs)
 
 function svmda(X, y; kwargs...)
-    par = recovkw(ParSvm, kwargs).par
+    par = recovkw(ParSvm{Q}, kwargs).par
     kern = par.kern 
     @assert in([:krbf, :kpol, :klin, :ktanh])(kern) "Wrong value for argument 'kern'." 
     X = ensure_mat(X)

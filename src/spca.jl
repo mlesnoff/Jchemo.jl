@@ -110,7 +110,7 @@ function spca(X, weights::ProbabilityWeights; kwargs...)
 end
 
 function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParSpca, kwargs).par
+    par = recovkw(ParSpca{Q}, kwargs).par
     @assert in([:soft; :hard])(par.meth) "Wrong value for argument 'meth'."
     @assert in([:v; :t])(par.defl) "Wrong value for argument 'defl'."
     Q = eltype(X)

@@ -73,7 +73,7 @@ function pcasvd(X, weights::ProbabilityWeights; kwargs...)
 end
 
 function pcasvd!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParPca, kwargs).par
+    par = recovkw(ParPca{Q}, kwargs).par
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv

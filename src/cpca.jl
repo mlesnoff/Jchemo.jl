@@ -156,7 +156,7 @@ function cpca(Xbl, weights::ProbabilityWeights; kwargs...)
 end
 
 function cpca!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParCpca, kwargs).par 
+    par = recovkw(ParCpca{Q}, kwargs).par 
     Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     nbl = length(Xbl)

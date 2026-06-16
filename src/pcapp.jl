@@ -60,7 +60,7 @@ function pcapp(X; kwargs...)
 end
 
 function pcapp!(X::Matrix; kwargs...)
-    par = recovkw(ParPcapp, kwargs).par 
+    par = recovkw(ParPcapp{Q}, kwargs).par 
     Q = eltype(X)
     n, p = size(X)
     nlv = min(n, p, par.nlv)

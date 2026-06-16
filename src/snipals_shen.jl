@@ -1,5 +1,5 @@
 function snipals_shen(X; kwargs...)
-    par = recovkw(Jchemo.ParSnipals, kwargs).par 
+    par = recovkw(Jchemo.ParSnipals{Q}, kwargs).par 
     X = ensure_mat(X)
     p = nco(X)
     if par.meth == :soft 
