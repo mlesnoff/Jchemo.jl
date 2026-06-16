@@ -1,8 +1,7 @@
 ###### Building weights
 
 """ 
-    pweight(x)
-    pweight(Q::Datatype, x)
+    pweight([Q::Datatype], x)
 Wrapper of function `StatsBase.pweights` returning an object of type `StatsBase.ProbabilityWeights`.
 
 The wrapper forces the probability weights to sum to 1:
