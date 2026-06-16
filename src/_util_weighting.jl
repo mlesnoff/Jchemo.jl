@@ -1,7 +1,8 @@
 ###### Building weights
 
 """ 
-    pweight(x::Vector)
+    pweight(x)
+    pweight(Q::Datatype, x)
 Wrapper of function `StatsBase.pweights` returning an object of type `StatsBase.ProbabilityWeights`.
 
 The wrapper forces the probability weights to sum to 1:
@@ -24,6 +25,9 @@ pweight(x) = StatsBase.pweights(x / sum(x))
 #    tot = sum(x) 
 #    ProbabilityWeights(x / tot, one(eltype(x)))
 #end
+
+pweight(Q::DataType, x) = pweight(Q.(x))
+
 
 """ 
     pweightcla(y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
@@ -125,3 +129,5 @@ X
 fweightc(X, v) = v' .* X
 
 fweightc!(X::AbstractMatrix, v) = X .= v' .* X
+
+

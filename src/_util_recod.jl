@@ -336,11 +336,9 @@ end
 ### Make dummy table
 
 """
-    dummy(y)
-    dummy(Q::DataType, y)
+    dummy([Q::DataType], y)
 Compute dummy table from a categorical variable.
 * `Q` : Data type for the returned output (dummy table) `Y`.
-    If not specified, `Y` is a BitMatrix.
 * `y` : A categorical variable.
 
 ## Examples
@@ -356,16 +354,12 @@ res.Y
 dummy(Float32, y).Y
 ```
 """
-function dummy(y)
-    lev = mlev(y)
-    ## Thanks to the idea given in this post (@Mattriks):
-    ## https://discourse.julialang.org/t/all-the-ways-to-do-one-hot-encoding/64807/4
-    Y = y .== permutedims(lev)
-    (Y = Y, lev)
-end
+dummy(y) = dummy(Float64, y)
 
 function dummy(Q::DataType, y)
     lev = mlev(y)
+    ## Thanks to the idea given in this post (@Mattriks):
+    ## https://discourse.julialang.org/t/all-the-ways-to-do-one-hot-encoding/64807/4
     Y = Q.(y .== permutedims(lev))
     (Y = Y, lev)
 end
