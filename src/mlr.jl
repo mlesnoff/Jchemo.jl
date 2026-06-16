@@ -65,7 +65,6 @@ end
 
 function mlr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParMlr{Q}, kwargs).par
-    Q = eltype(X)
     sqrtw = sqrt.(weights.values)
     if par.noint
         q = nco(Y)

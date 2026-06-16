@@ -26,7 +26,6 @@ occlknn(; kwargs...) = JchemoModel(occlknn, nothing, kwargs)
 function occlknn(X; kwargs...)
     par = recovkw(ParOccknn{Q}, kwargs).par
     X = ensure_mat(X)
-    Q = eltype(X)
     n, p = size(X)
     xscales = ones(Q, p)
     if par.scal

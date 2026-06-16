@@ -72,7 +72,6 @@ function outlknn(X; metric = :eucl, k, algo = sum, scal::Bool = false)
 end
 
 function outlknn!(X::Matrix; metric = :eucl, k, algo = sum, scal::Bool = false)
-    Q = eltype(X)
     n, p = size(X)
     xscales = ones(Q, p)
     if scal

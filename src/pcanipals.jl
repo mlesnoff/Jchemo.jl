@@ -52,7 +52,6 @@ end
 
 function pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParPcanipals{Q}, kwargs).par
-    Q = eltype(X)
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv

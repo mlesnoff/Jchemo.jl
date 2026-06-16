@@ -92,7 +92,6 @@ function knnr(X, Y; kwargs...)
     @assert in([:eucl, :mah, :sam, :cos, :cor])(par.metric) "Wrong value for argument 'metric'."
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    Q = eltype(X)
     p = nco(X)
     xscales = ones(Q, p)
     if par.scal

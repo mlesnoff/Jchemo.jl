@@ -1,6 +1,6 @@
 """
-    fcenter(X, v)
-    fcenter!(X::AbstractMatrix, v)
+    fcenter(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
+    fcenter!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
 Center each column of a matrix.
 * `X` : Data (n, p).
 * `v` : Centering vector (p).
@@ -15,24 +15,21 @@ xmeans = colmean(X)
 fcenter(X, xmeans)
 ```
 """ 
-function fcenter(X, v)
-    X = ensure_mat(X)
-    zX = similar(X)
-    @inbounds for j in axes(X, 2), i in axes(X, 1)
-        zX[i, j] = X[i, j] - v[j]
-    end  
+function fcenter(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
+    zX = copy(X)
+    fcenter!(zX, v)
     zX
 end
 
-function fcenter!(X::AbstractMatrix, v)
+function fcenter!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
     @inbounds for j in axes(X, 2), i in axes(X, 1)
         X[i, j] -= v[j]
     end  
 end
 
 """
-    fscale(X, v)
-    fscale!(X::AbstractMatrix, v)
+    fscale(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
+    fscale!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
 Scale each column of a matrix.
 * `X` : Data (n, p).
 * `v` : Scaling vector (p).
@@ -45,7 +42,7 @@ X = rand(5, 2)
 fscale(X, colstd(X))
 ```
 """ 
-function fscale(X, v)
+function fscale(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
     X = ensure_mat(X)
     zX = similar(X)
     @inbounds for j in axes(X, 2), i in axes(X, 1)
@@ -54,7 +51,7 @@ function fscale(X, v)
     zX
 end
 
-function fscale!(X::AbstractMatrix, v)
+function fscale!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
     @inbounds for j in axes(X, 2), i in axes(X, 1)
         X[i, j] /= v[j]
     end 

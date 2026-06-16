@@ -96,7 +96,6 @@ function qda(X, y, weights::ProbabilityWeights; kwargs...)
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     X = ensure_mat(X)
     y = vec(y)    # for findall
-    Q = eltype(X)
     n, p = size(X)
     alpha = Q(par.alpha)
     res = matW(X, y, weights)

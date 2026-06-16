@@ -103,7 +103,6 @@ end
 function dkplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParKplsr{Q}, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
-    Q = eltype(X)
     p = nco(X)
     q = nco(Y)
     xscales = ones(Q, p)

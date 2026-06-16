@@ -40,7 +40,6 @@ function outstah(X, V; scal::Bool = false)
 end
 
 function outstah!(X::Matrix, V::Matrix; scal::Bool = false) 
-    Q = eltype(X)
     n, p = size(X)
     xscales = ones(Q, p) 
     if scal

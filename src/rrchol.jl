@@ -29,7 +29,6 @@ end
 function rrchol!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParRr{Q}, kwargs).par
     @assert nco(X) > 1 "The method only works for X with nb columns > 1."
-    Q = eltype(X)
     p = nco(X)
     sqrtw = sqrt.(weights.values)
     lb = Q(par.lb)

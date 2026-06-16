@@ -76,7 +76,6 @@ function knnda(X, y; kwargs...)
     par = recovkw(ParKnn{Q}, kwargs).par
     X = ensure_mat(X)
     y = ensure_mat(y)
-    Q = eltype(X)
     p = nco(X)
     taby = tab(y)    
     xscales = ones(Q, p)

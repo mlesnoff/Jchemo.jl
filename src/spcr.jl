@@ -93,7 +93,6 @@ end
 
 function spcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParSpca{Q}, kwargs).par
-    Q = eltype(X)
     q = nco(Y)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q) 

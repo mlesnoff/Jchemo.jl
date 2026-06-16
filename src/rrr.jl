@@ -94,7 +94,6 @@ end
 function rrr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParRrr{Q}, kwargs).par
     @assert 0 <= par.tau <=1 "tau must be in [0, 1]"
-    Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
     nlv = min(par.nlv, p, q)

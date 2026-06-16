@@ -84,7 +84,6 @@ end
 
 function rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParRr{Q}, kwargs).par
-    Q = eltype(X)
     p = nco(X)
     par.lb = Q(par.lb)
     sqrtw = sqrt.(weights.values)

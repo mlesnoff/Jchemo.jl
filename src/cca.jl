@@ -101,7 +101,6 @@ function cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     par = recovkw(ParCca{Q}, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
-    Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)

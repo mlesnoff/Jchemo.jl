@@ -336,7 +336,7 @@ end
 ### Make dummy table
 
 """
-    dummy(Q, y)
+    dummy(y)
     dummy(Q::DataType, y)
 Compute dummy table from a categorical variable.
 * `Q` : Data type for the returned output (dummy table) `Y`.
@@ -349,14 +349,14 @@ using Jchemo
 
 y = ["d", "a", "b", "c", "b", "c"]
 #y =  rand(1:3, 7)
-res = dummy(Q, y)
+res = dummy(y)
 @names res
 res.Y
 
 dummy(Float32, y).Y
 ```
 """
-function dummy(Q, y)
+function dummy(y)
     lev = mlev(y)
     ## Thanks to the idea given in this post (@Mattriks):
     ## https://discourse.julialang.org/t/all-the-ways-to-do-one-hot-encoding/64807/4

@@ -36,7 +36,6 @@ function outeucl(X; scal::Bool = false)
 end
 
 function outeucl!(X::Matrix; scal::Bool = false) 
-    Q = eltype(X)
     p = nco(X)
     xscales = ones(Q, p)
     if scal

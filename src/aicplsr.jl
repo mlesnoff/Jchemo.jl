@@ -1,6 +1,6 @@
 """
-    aicplsr(X::AbstractArray{T}, y::AbstractArray{T}; alpha::T = T(2.), 
-        kwargs...) where T <: AbstractFloat
+    aicplsr(X::AbstractArray{Q}, y::AbstractArray{Q}; alpha::Q = Q(2.), 
+        kwargs...) where Q <: AbstractFloat
 Compute Akaike's (AIC) and Mallows's (Cp) criteria for univariate PLSR models.
 * `X` : X-data (n, p).
 * `y` : Univariate Y-data.
@@ -50,10 +50,9 @@ scatter!(ax, 0:nlv, zaic)
 f
 ```
 """ 
-function aicplsr(X::AbstractArray{T}, y::AbstractArray{T}; alpha::T = T(2.), 
-        kwargs...) where T <: AbstractFloat
+function aicplsr(X::AbstractArray{Q}, y::AbstractArray{Q}; alpha::Q = Q(2.), 
+        kwargs...) where Q <: AbstractFloat
     par = recovkw(ParCglsr{Q}, kwargs).par
-    Q = eltype(X)
     X = ensure_mat(X)
     n, p = size(X)
     nlv = min(n, p, par.nlv)

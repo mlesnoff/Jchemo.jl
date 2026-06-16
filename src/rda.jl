@@ -96,7 +96,6 @@ function rda(X, y, weights::ProbabilityWeights; kwargs...)
     @assert par.lb >= 0 "lb must be in >= 0"
     X = ensure_mat(X)
     y = vec(y)    # for findall
-    Q = eltype(X)
     n, p = size(X)
     alpha = Q(par.alpha)
     xscales = ones(Q, p)

@@ -68,7 +68,6 @@ function transf(object::Detrendlo, X)
 end
 
 function transf!(object::Detrendlo, X::Matrix)
-    Q = eltype(X)
     p = nco(X)
     span = object.par.span
     degree = object.par.degree
@@ -150,7 +149,6 @@ end
 
 function transf!(object::Detrendpol, X::Matrix)
     par = object.par
-    Q = eltype(X)
     p = nco(X)
     degree = par.degree
     wls = Q.(collect(1:p))
@@ -871,7 +869,6 @@ function transf(object::Snv, X)
 end
 
 function transf!(object::Snv, X::Matrix)
-    Q = eltype(X)
     n, p = size(X)
     centr = object.par.centr 
     scal = object.par.scal

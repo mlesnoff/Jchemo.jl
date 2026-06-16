@@ -79,7 +79,6 @@ lwplsravg(; kwargs...) = JchemoModel(lwplsravg, nothing, kwargs)
 function lwplsravg(X, Y; kwargs...)
     par = recovkw(ParLwplsravg{Q}, kwargs).par
     X = ensure_mat(X)
-    Q = eltype(X)
     p = nco(X)
     Y = ensure_mat(Y)
     nlv = min(par.k, p, minimum(par.nlv)):min(par.k, p, maximum(par.nlv))

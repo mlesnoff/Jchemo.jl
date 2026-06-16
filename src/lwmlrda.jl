@@ -69,7 +69,6 @@ function lwmlrda(X, y; kwargs...)
     X = ensure_mat(X)
     y = ensure_mat(y)
     taby = tab(y)
-    Q = eltype(X)
     p = nco(X)
     xscales = ones(Q, p)
     if par.scal

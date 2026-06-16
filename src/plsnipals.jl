@@ -40,7 +40,6 @@ end
 
 function plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParPlsr{Q}, kwargs).par
-    Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)
