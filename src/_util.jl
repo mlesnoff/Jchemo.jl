@@ -172,32 +172,19 @@ end
 Reshape `X` to a dataframe if necessary.
 """
 ensure_df(X::DataFrame) = X
-ensure_df(X::AbstractVector) = DataFrame([X], :auto)
+ensure_df(X::Matrix) = DataFrame(X, :auto)
 ensure_df(X::AbstractMatrix) = DataFrame(X, :auto)
+ensure_df(X::Vector) = DataFrame([X], :auto)
 
 """
     ensure_mat(X)
 Reshape `X` to a matrix if necessary.
 """
-ensure_mat(X::AbstractMatrix) = X
-ensure_mat(X::LinearAlgebra.Adjoint) = Matrix(X)
-## Tentative to allow the use of CUDA
-## Old was: ensure_mat(X::AbstractVector) = Matrix(reshape(X, :, 1))
-ensure_mat(X::AbstractVector) = reshape(X, :, 1)
-## End
+ensure_mat(X::Matrix) = X
+ensure_mat(X::AbstractMatrix) = Matrix(X)
+ensure_mat(X::Vector) = reshape(X, :, 1)
 ensure_mat(X::Number) = reshape([X], 1, 1)
 ensure_mat(X::DataFrame) = Matrix(X)
-
-"""
-    handle_bitmatrix(Q, X::AbstractMatrix)
-If `X::BitMatrix`, convert to a matrix of type `Q`.
-"""
-function handle_bitmatrix(Q, X::AbstractMatrix)
-    if isa(X, BitMatrix)
-        X = Q.(X)
-    end
-    X
-end
 
 """
     findmax_cla(x)

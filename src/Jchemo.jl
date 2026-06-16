@@ -307,7 +307,7 @@ export
     cosv, cosm, 
     dummy,
     dupl, findmiss,
-    ensure_df, ensure_mat, handle_bitmatrix,
+    ensure_df, ensure_mat,
     fblockscal, fblockscal!,
     fcenter, fcenter!, 
     fcscale, fcscale!, 
