@@ -29,8 +29,7 @@ pweight(Q::DataType, x) = pweight(Q.(x))
 
 
 """ 
-    pweightcla(y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
-    pweightcla(Q::DataType, y::Vector; prior::Union{Symbol, Vector} = :prop)
+    pweightcla([Q::DataType], y; prior::Union{Symbol, Vector} = :prop)
 Compute observation weights for a categorical variable, given specified sub-total weights for the classes.
 * `y` : A categorical variable (n) (class membership).
 * `Q` : A data type (e.g., `Float32`).
@@ -50,33 +49,33 @@ y = vcat(rand(["a" ; "c"], 900), fill("b", 100))
 tab(y)
 weights = pweightcla(y)
 #weights = pweightcla(y; prior = :prop)
+#weights = pweightcla(y; prior = :unif)
 #weights = pweightcla(y; prior = [.1, .7, .2])
 res = aggstat(weights.values, y; algo = sum)
 [res.lev res.X]
 ```
 """
-function pweightcla(y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
+pweightcla(y; prior::Union{Symbol, Vector} = :prop) = pweightcla(Float64, y; prior) 
+
+function pweightcla(Q::DataType, y; prior::Union{Symbol, Vector} = :prop)
     n = length(y)
     res = tab(y)
     lev = res.keys
     nlev = length(lev)
+    vals = Q.(res.vals)
     if isequal(prior, :unif)
-        priors = ones(nlev) / nlev
+        priors = ones(Q, nlev) / nlev
     elseif isequal(prior, :prop)
-        priors = res.vals / n
+        priors = vals / n
     else
-        priors = pweight(prior).values  # could be '= prior', but pweight not costly 
+        priors = pweight(Q, prior).values  # could be '= prior', but pweight not costly 
     end
-    w = zeros(n)
+    w = zeros(Q, n)
     @inbounds for i in eachindex(lev)
         s = y .== lev[i]
         w[s] .= priors[i] / res.vals[i]
     end
     pweight(w)
-end
-
-function pweightcla(Q::DataType, y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
-    pweight(Q.(pweightcla(y; prior).values))
 end
 
 ##### Weighting of entire rows or columns
