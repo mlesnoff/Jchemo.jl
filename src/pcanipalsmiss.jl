@@ -2,7 +2,7 @@
     pcanipalsmiss(; kwargs...)
     pcanipals(X; kwargs...)
     pcanipals(X, weights::ProbabilityWeights; kwargs...)
-    pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    pcanipals!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 PCA by NIPALS algorithm allowing missing data.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -12,7 +12,8 @@ Keyword arguments:
     before each X-deflation. 
 * `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. of iterations.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 ## References
 Wright, K., 2018. Package nipals: Principal Components Analysis using NIPALS with Gram-Schmidt Orthogonalization. 
@@ -57,9 +58,9 @@ X_imp
 pcanipalsmiss(; kwargs...) = JchemoModel(pcanipalsmiss, nothing, kwargs)
 
 function pcanipalsmiss(X; kwargs...)
-    z = vec(Matrix(X))
-    s = ismissing.(z) .== 0
-    Q = eltype(z[s][1, 1])
+    v = vec(Matrix(X))
+    s = ismissing.(v) .== 0
+    Q = eltype(v[s][1, 1])
     n = nro(X)
     weights = pweight(ones(Q, n))
     pcanipalsmiss(X, weights; kwargs...)
@@ -69,28 +70,29 @@ function pcanipalsmiss(X, weights::ProbabilityWeights; kwargs...)
     pcanipalsmiss!(copy(ensure_mat(X)), weights; kwargs...)
 end
 
-function pcanipalsmiss!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParPcanipals{Q}, kwargs).par
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     xmeans = colmeanskip(X, weights) 
     xscales = ones(Q, p)
-    if par.scal 
+    if par.scal != :none
         xscales .= colstdskip(X, weights)
-        fcscale!(X, xmeans, xscales)
+        X .-= xmeans'
+        X ./= xscales'
     else
-        fcenter!(X, xmeans)
+        X .-= xmeans' #fcenter!(X, xmeans)
     end
     sqrtw = sqrt.(weights.values)
-    fweightr!(X, sqrtw)
-    T = similar(X, n, nlv)
-    V = similar(X, p, nlv)
-    sv = similar(X, nlv)
+    @. X = sqrtw * X
+    T = similar(xmeans, n, nlv)
+    V = similar(xmeans, p, nlv)
+    sv = similar(xmeans, nlv)
     niter = list(Int, nlv)
     if par.gs
-        UUt = zeros(n, n)
-        VVt = zeros(p, p)
+        UUt = zeros(Q, n, n)
+        VVt = zeros(Q, p, p)
     end
     for a = 1:nlv
         if par.gs == false
@@ -108,7 +110,7 @@ function pcanipalsmiss!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...)
             VVt .+= res.v * res.v'
         end
     end
-    fweightr!(T, 1 ./ sqrtw)
+    @. T = (1 / sqrtw) * T
     Pca(T, V, sv, xmeans, xscales, weights, niter, par) 
 end
 

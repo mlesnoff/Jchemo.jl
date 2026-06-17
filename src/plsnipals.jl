@@ -9,7 +9,8 @@ Partial Least Squares Regression (PLSR) with the Nipals algorithm.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 In this function, for PLS2 (multivariate Y), the Nipals iterations are replaced by a direct computation of the 
 PLS weights (w) by SVD decomposition of matrix X'Y (Hoskuldsson 1988 p.213).

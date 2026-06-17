@@ -9,7 +9,8 @@ Keyword arguments:
 * `nlv` : Nb. principal components (PCs) to consider. 
 * `kern` : Type of kernel used to compute the Gram matrices.Possible values are: `:krbf`, `:kpol`. See respective functions `krbf` 
     and `kpol` for their keyword arguments.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 The method is implemented by SVD factorization of the weighted Gram matrix: 
 * D^(1/2) * Phi(X) * Phi(X)' * D^(1/2)

@@ -1,6 +1,6 @@
 """
-    outlknn(X; metric = :eucl, k, algo = sum, scal::Bool = false)
-    outlknn!(X::Matrix; metric = :eucl, k, algo = sum, scal::Bool = false)
+    outlknn(X; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none)
+    outlknn!(X::Matrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where Q <: AbstractFloat
 Compute a local kNN distance-based outlierness.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -67,15 +67,16 @@ res = outlknn(T; metric, k, scal = :std)
 plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness").f
 ```
 """ 
-function outlknn(X; metric = :eucl, k, algo = sum, scal::Bool = false)
+function outlknn(X; metric = :eucl, k, algo::Function = sum, scal::Symbol = :none)
     outlknn!(copy(ensure_mat(X)); k, metric, algo, scal)
 end
 
-function outlknn!(X::Matrix; metric = :eucl, k, algo = sum, scal::Bool = false)
+function outlknn!(X::Matrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where Q <: AbstractFloat
     n, p = size(X)
     xscales = ones(Q, p)
-    if scal
-        xscales .= colstd(X)
+    if scal != :none
+        colscal = def_colscal(scal) 
+        xscales .= colscal(X)
         fscale!(X, xscales)
     end
     if k > n - 1 ; k = n - 1 ; end

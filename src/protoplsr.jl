@@ -105,7 +105,7 @@ Base.@kwdef mutable struct ParProtoplsr
     criw::Float64 = 4                       
     squared::Bool = false                   
     tolw::Float64 = 1e-4                    
-    scal::Bool = false 
+    scal::Symbol = :none 
     seed::Union{Nothing, Int} = nothing     
 end
 

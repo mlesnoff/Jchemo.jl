@@ -8,7 +8,8 @@ Spherical PCA.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 Spherical PCA (Locantore et al. 1990, Maronna 2005, Daszykowski et al. 2007). Matrix `X` is centered by the spatial 
 median computed by function`Jchemo.colmedspa`.
@@ -37,6 +38,7 @@ n = nro(X)
 
 nlv = 3
 model = pcasph(; nlv)  
+#model = pcasph(; nlv, scal = :mad) 
 #model = pcasvd(; nlv) 
 fit!(model, X)
 @names model
@@ -69,8 +71,9 @@ function pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     par.nlv = nlv
     xmeans = Jchemo.colmedspa(X, delta = 0.001)
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colmad(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         fcscale!(X, xmeans, xscales)
     else
         fcenter!(X, xmeans)

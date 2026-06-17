@@ -1,6 +1,6 @@
 """
-    outeucl(X; scal::Bool = false)
-    outeucl!(X::Matrix; scal::Bool = false)
+    outeucl(X; scal::Symbol = :none)
+    outeucl!(X::Matrix{Q}; scal::Symbol = :none) where Q <: AbstractFloat
 Compute outlierness from Euclidean distances to center.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -23,7 +23,7 @@ X1 = randn(n, p)
 X2 = randn(m, p) .+ rand(1:3, p)'
 X = vcat(X1, X2)
 
-scal::Bool = false
+scal::Symbol = :none
 #scal = :std
 res = outeucl(X; scal) ;
 @names res
@@ -31,15 +31,16 @@ res.d    # outlierness
 plotxy(1:ntot, res.d).f
 ```
 """ 
-function outeucl(X; scal::Bool = false)
+function outeucl(X; scal::Symbol = :none)
     outeucl!(copy(ensure_mat(X)); scal)
 end
 
-function outeucl!(X::Matrix; scal::Bool = false) 
+function outeucl!(X::Matrix{Q}; scal::Symbol = :none) where Q <: AbstractFloat
     p = nco(X)
     xscales = ones(Q, p)
-    if scal
-        xscales .= colmad(X)
+    if scal != :none
+        colscal = def_colscal(scal) 
+        xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
     xmeans = Jchemo.colmedspa(X)

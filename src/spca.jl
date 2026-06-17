@@ -14,7 +14,8 @@ Keyword arguments:
     (i.e. same nb. of variables for each PC), or a vector of length `nlv`.   
 * `tol` : Tolerance value for stopping the Nipals iterations.
 * `maxit` : Maximum nb. of Nipals iterations.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 sPCA-rSVD algorithm (regularized low rank matrix approximation) of Shen & Huang 2008. 
 The method approximates matrix `X` by T * V', where T is a matrix of scores (PCs) and V is a matrix of 

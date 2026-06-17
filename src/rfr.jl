@@ -12,7 +12,8 @@ Keyword arguments:
 * `min_sample_leaf` : Minimum number of samples each leaf needs to have.
 * `min_sample_split` : Minimum number of observations in needed for a split.
 * `mth` : Boolean indicating if a multi-threading is done when new data are predicted with function `predict`.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 The function is a wrapper of package `DecisionTree.jl' to fit a random forest regression model.
 

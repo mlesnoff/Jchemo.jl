@@ -1,7 +1,7 @@
 """
     pcapp(; kwargs...)
     pcapp(X; kwargs...)
-    pcapp!(X::Matrix; kwargs...)
+    pcapp!(X::Matrix{Q}; kwargs...) where Q <: AbstractFloat
 Robust PCA by projection pursuit.
 * `X` : X-data (n, p). 
 Keyword arguments:
@@ -41,6 +41,7 @@ n = nro(X)
 
 nlv = 3
 model = pcapp(; nlv, nsim = 2000)  
+#model = pcapp(; nlv, nsim = 2000, scal = :mad)
 #model = pcasvd(; nlv) 
 fit!(model, X)
 @names model
@@ -59,16 +60,17 @@ function pcapp(X; kwargs...)
     pcapp!(copy(ensure_mat(X)); kwargs...)
 end
 
-function pcapp!(X::Matrix; kwargs...)
-    par = recovkw(ParPcapp{Q}, kwargs).par
+function pcapp!(X::Matrix{Q}; kwargs...) where Q <: AbstractFloat
+    par = recovkw(ParPcapp, kwargs).par
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     nsim = par.nsim
     xmeans = Jchemo.colmedspa(X) 
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colmad(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X)
         fcscale!(X, xmeans, xscales)
     else
         fcenter!(X, xmeans)

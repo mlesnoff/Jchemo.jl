@@ -1,6 +1,6 @@
 """
-    nipalsmiss(X::Matrix{Q}; kwargs...) where Q <: AbstractFloat
-    nipalsmiss(X::Matrix{Q}, UUt::Matrix{Q}, VVt::Matrix{Q}; kwargs...) where Q <: AbstractFloat
+    nipalsmiss(X::Matrix{Union{Missing, Q}}; kwargs...) where Q <: AbstractFloat
+    nipalsmiss(X::Matrix{Union{Missing, Q}}, UUt::Matrix{Q}, VVt::Matrix{Q}; kwargs...) where Q <: AbstractFloat
 Nipals to compute the first score and loading vectors of a matrix with missing data.
 * `X` : X-data (n, p).
 * `UUt` : Matrix (n, n) for Gram-Schmidt orthogonalization.
@@ -33,7 +33,7 @@ res.v
 res.u
 ```
 """ 
-function nipalsmiss(X::Matrix{Q}; kwargs...) where Q <: AbstractFloat
+function nipalsmiss(X::Matrix{Union{Missing, Q}}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParNipals{Q}, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
@@ -41,6 +41,7 @@ function nipalsmiss(X::Matrix{Q}; kwargs...) where Q <: AbstractFloat
     st = ismissing.(X')
     X0 = copy(X)
     X0[s] .= 0
+    X0 = convert(Matrix{Q}, X0)
     X0t = X0'
     zT = similar(X0, n, p)
     zV = similar(X0, p, n)
@@ -73,7 +74,7 @@ function nipalsmiss(X::Matrix{Q}; kwargs...) where Q <: AbstractFloat
 end
 
 ## Used when GS in sequential extraction 
-function nipalsmiss(X::Matrix{Q}, UUt::Matrix{Q}, VVt::Matrix{Q}; kwargs...) where Q <: AbstractFloat
+function nipalsmiss(X::Matrix{Union{Missing, Q}}, UUt::Matrix{Q}, VVt::Matrix{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParNipals{Q}, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
@@ -81,6 +82,7 @@ function nipalsmiss(X::Matrix{Q}, UUt::Matrix{Q}, VVt::Matrix{Q}; kwargs...) whe
     st = ismissing.(X')
     X0 = copy(X)
     X0[s] .= 0
+    X0 = convert(Matrix{Q}, X0)
     X0t = X0'
     zT = similar(X0, n, p)
     zV = similar(X0, p, n)

@@ -295,6 +295,8 @@ function colmad(X)
     s
 end
 
+colmad(X, weights::ProbabilityWeights) = colmad(X)
+
 ##### Functions skipping missing data
 colsumskip(X) = [Base.sum(skipmissing(x)) for x in eachcol(ensure_mat(X))]
 function colsumskip(X, weights::ProbabilityWeights)
@@ -328,11 +330,16 @@ end
 """
     def_colscal(scal::Symbol = :std)
 Define the function of column scaling.
-* `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
+* `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 ```
 """
 function def_colscal(scal::Symbol = :std)
-    dict = Dict(:std => colstd, :prt => colprt)
+    dict = Dict(
+        :std => colstd, 
+        :prt => colprt,
+        :mad => colmad
+        )
     dict[scal]
 end
 

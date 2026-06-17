@@ -1,6 +1,6 @@
 """
-    outstah(X, V; scal::Bool = false)
-    outstah!(X::Matrix, V::Matrix; scal::Bool = false)
+    outstah(X, V; scal::Symbol = :none)
+    outstah!(X::Matrix{Q}, V::Matrix{Q}; scal::Symbol = :none) where Q <: AbstractFloat
 Compute the Stahel-Donoho outlierness.
 * `X` : X-data (n, p).
 * `V` : A projection matrix (p, nlv) representing the directions of the projection pursuit.
@@ -35,15 +35,16 @@ res.d    # outlierness
 plotxy(1:ntot, res.d).f
 ```
 """ 
-function outstah(X, V; scal::Bool = false)
+function outstah(X, V; scal::Symbol = :none)
     outstah!(copy(ensure_mat(X)), ensure_mat(V); scal)
 end
 
-function outstah!(X::Matrix, V::Matrix; scal::Bool = false) 
+function outstah!(X::Matrix{Q}, V::Matrix{Q}; scal::Symbol = :none) where Q <: AbstractFloat
     n, p = size(X)
     xscales = ones(Q, p) 
-    if scal
-        xscales .= colmad(X)
+    if scal != :none
+        colscal = def_colscal(scal) 
+        xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
     ## Scaling V by colnorm(V) has no effect on d and T: T = X * fscale(V, colnorm(V))

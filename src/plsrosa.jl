@@ -9,7 +9,8 @@ Partial Least Squares Regression (PLSR) with the  ROSA algorithm (Liland et al. 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 **Note:** The function has the following differences with the original algorithm of Liland et al. (2016):
 * Scores T (LVs) are not normed.

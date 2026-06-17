@@ -8,7 +8,8 @@ PCA by Eigen factorization of the kernel matrix XX'.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 This is the "kernel cross-product" version of the PCA algorithm (e.g., Wu et al. 1997). For wide matrices (n << p, 
 where p is the nb. columns) and n not too large, this algorithm can be much faster than the others.

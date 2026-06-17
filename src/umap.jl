@@ -10,7 +10,8 @@ Keyword arguments:
     the `Distances.jl` package, including user-defined types. Default is `Distances.Euclidean()`.
 * `n_neighbors` : Nb. approximate neighbors used to construct the initial high-dimensional graph.
 * `min_dist` : Minimum distance between points in low-dimensional space.
-* `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
+* `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
     
 The function fits a UMAP dimension reduction using package `UMAP.jl'.
 

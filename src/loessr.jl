@@ -8,7 +8,8 @@ Keyword arguments:
 * `span` : Window for neighborhood selection (level of smoothing) for the local fitting, typically proportion 
     within [0, 1].
 * `degree` : Polynomial degree for the local fitting.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
     
 The function fits a LOESS model using package `Loess.jl'. 
 
