@@ -36,7 +36,7 @@ function pcaeigenk(X, weights::ProbabilityWeights; kwargs...)
 end
 
 function pcaeigenk!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParPca{Q}, kwargs).par 
+    par = recovkw(ParPca, kwargs).par 
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv

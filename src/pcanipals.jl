@@ -56,7 +56,7 @@ function pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) whe
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     xmeans = colmean(X, weights) 
-    xscales = ones(Q, p)
+    xscales = ones(Q, p)    
     if par.scal != :none
         colscal = def_colscal(par.scal) 
         xscales .= colscal(X, weights)

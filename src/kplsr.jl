@@ -89,7 +89,7 @@ function kplsr(X, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = Jchemo.recovkw(ParKplsr{Q}{Q}, kwargs).par
+    par = Jchemo.recovkw(ParKplsr{Q}, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     n, p = size(X)
     q = nco(Y)
