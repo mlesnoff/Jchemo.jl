@@ -9,7 +9,7 @@ Partial Least Squares Regression (PLSR) with the  ROSA algorithm (Liland et al. 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the scaling. Possible values are: `std`, `prt` (pareto) and `mad`..
 
 **Note:** The function has the following differences with the original algorithm of Liland et al. (2016):
 * Scores T (LVs) are not normed.
@@ -35,7 +35,7 @@ function plsrosa(X, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function plsrosa!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParPlsr{Q}, kwargs).par
+    par = recovkw(ParPlsr, kwargs).par
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)

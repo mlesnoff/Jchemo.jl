@@ -11,7 +11,7 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective functions 
     `krbf` and `kpol` for their keyword arguments.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the scaling. Possible values are: `std`, `prt` (pareto) and `mad`..
 
 This algorithm becomes slow for n > 1000. Use function `dkplsr` instead.
 

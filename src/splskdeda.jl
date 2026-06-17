@@ -17,7 +17,7 @@ Keyword arguments:
 * Eventual keyword arguments of function `dmkern` for bandwidth definition.
 * `tol` : Only when q > 1; tolerance used in function `snipals_shen`. 
 * `maxit` : Only when q > 1; maximum nb. of iterations used in function `snipals_shen`.    
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation. 
+* `scal` : Symbol defining the scaling. Possible values are: `std`, `prt` (pareto) and `mad`.. 
 
 Same as function `plskdeda` (PLS-KDEDA) except that a sparse PLSR (function `splsr`), instead of a PLSR, 
 is run on the Y-dummy table. 

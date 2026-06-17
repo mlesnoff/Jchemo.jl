@@ -12,8 +12,7 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected 
     standard deviation.
 
-**Note:** In this function, scores T (LVs) are not normed, conversely to the original algorithm of 
-de Jong (2013).
+**Note:** In this function, scores T (LVs) are not normed, conversely to the original algorithm of de Jong (2013).
 
 See function `plskern` for examples.
 
@@ -35,7 +34,7 @@ function plssimp(X, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function plssimp!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParPlsr{Q}, kwargs).par
+    par = recovkw(ParPlsr, kwargs).par
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)

@@ -14,7 +14,7 @@ Keyword arguments:
     of variables for each LV), or a vector of integers (of length `nlv`).   
 * `tol` : Only when q > 1; tolerance used in function `snipals_shen`. 
 * `maxit` : Only when q > 1; maximum nb. of iterations used in function `snipals_shen`.    
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.    
+* `scal` : Symbol defining the scaling. Possible values are: `std`, `prt` (pareto) and `mad`..    
 
 Sparse partial least squares regression algorihm of Lê Cao et al. 2008, but with the fast 
 "improved kernel algorithm #1" of Dayal & McGregor (1997) used instead Nipals (results are the same). 

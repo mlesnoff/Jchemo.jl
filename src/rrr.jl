@@ -12,7 +12,7 @@ Keyword arguments:
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `tol` : Tolerance for the Nipals algorithm.
 * `maxit` : Maximum number of iterations for the Nipals algorithm.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the scaling. Possible values are: `std`, `prt` (pareto) and `mad`..
  
 Reduced rank regression, also referred to as redundancy analysis (RA) regression. In this function, 
 the RA uses the Nipals algorithm presented in Mangamana et al 2021, section 2.1.1.
