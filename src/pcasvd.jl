@@ -79,8 +79,9 @@ function pcasvd!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     par.nlv = nlv
     xmeans = colmean(X, weights)
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X, weights)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         fcscale!(X, xmeans, xscales)
     else
         fcenter!(X, xmeans)

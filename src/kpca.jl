@@ -75,8 +75,9 @@ function kpca(X, weights::ProbabilityWeights; kwargs...)
     n, p = size(X)
     nlv = min(par.nlv, n)
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X, weights)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  

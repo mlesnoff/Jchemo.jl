@@ -90,8 +90,9 @@ function rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs.
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X, weights)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         fcscale!(X, xmeans, xscales)
     else
         fcenter!(X, xmeans)

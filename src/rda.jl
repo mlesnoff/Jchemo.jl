@@ -99,8 +99,9 @@ function rda(X, y, weights::ProbabilityWeights; kwargs...)
     n, p = size(X)
     alpha = Q(par.alpha)
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X, weights)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     res = matW(X, y, weights)
