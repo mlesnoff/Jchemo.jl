@@ -82,7 +82,7 @@ end
 
 """
     fweightr(X, v)
-    fweightr!(X::AbstractMatrix, v)
+    fweightr!(X::AbstractMatrix{Q}, v::Vector{Q})
 Weight each row of a matrix.
 * `X` : Data (n, p).
 * `v` : A weighting vector (n).
@@ -102,11 +102,11 @@ X
 """ 
 fweightr(X, v) = v .* X
 
-fweightr!(X::AbstractMatrix, v) = X .= v .* X
+fweightr!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat = X .= v .* X
 
 """
     fweightc(X, v)
-    fweightc!(X::AbstractMatrix, v)
+    fweightc!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
 Weight each column of a matrix.
 * `X` : Data (n, p).
 * `v` : A weighting vector (p).
@@ -126,6 +126,6 @@ X
 """ 
 fweightc(X, v) = v' .* X
 
-fweightc!(X::AbstractMatrix, v) = X .= v' .* X
+fweightc!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat = X .= v' .* X
 
 

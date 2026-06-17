@@ -1,5 +1,5 @@
 """
-    fcenter(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
+    fcenter(X, v) 
     fcenter!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
 Center each column of a matrix.
 * `X` : Data (n, p).
@@ -15,8 +15,8 @@ xmeans = colmean(X)
 fcenter(X, xmeans)
 ```
 """ 
-function fcenter(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
-    zX = copy(X)
+function fcenter(X, v) 
+    zX = copy(ensure_mat(X))
     fcenter!(zX, v)
     zX
 end
@@ -28,7 +28,7 @@ function fcenter!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
 end
 
 """
-    fscale(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
+    fscale(X, v)
     fscale!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
 Scale each column of a matrix.
 * `X` : Data (n, p).
@@ -42,8 +42,8 @@ X = rand(5, 2)
 fscale(X, colstd(X))
 ```
 """ 
-function fscale(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
-    zX = copy(X)
+function fscale(X, v) 
+    zX = copy(ensure_mat(X))
     fscale!(zX, v)
     zX
 end
@@ -55,8 +55,8 @@ function fscale!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
 end
 
 """
-    fcscale(X::AbstractMatrix, u::Vector{Q}, v::Vector{Q}) where Q <: AbstractFloat
-    fcscale!(X::AbstractMatrix, u::Vector{Q}, v::Vector{Q}) where Q <: AbstractFloat
+    fcscale(X, u, v)
+    fcscale!(X::AbstractMatrix{Q}, u::Vector{Q}, v::Vector{Q}) where Q <: AbstractFloat
 Center and scale each column of a matrix.
 * `X` : Data  (n, p).
 * `u` : Centering vector (p).
@@ -73,13 +73,13 @@ xscales = colstd(X)
 fcscale(X, xmeans, xscales)
 ```
 """ 
-function fcscale(X::AbstractMatrix, u::Vector{Q}, v::Vector{Q}) where Q <: AbstractFloat
-    zX = copy(X)
+function fcscale(X, u, v) 
+    zX = copy(ensure_mat(X))
     fcscale!(zX, u, v)
     zX
 end
 
-function fcscale!(X::AbstractMatrix, u::Vector{Q}, v::Vector{Q}) where Q <: AbstractFloat
+function fcscale!(X::AbstractMatrix{Q}, u::Vector{Q}, v::Vector{Q}) where Q <: AbstractFloat
     @inbounds for j in axes(X, 2), i in axes(X, 1)
         X[i, j] = (X[i, j] - u[j]) / v[j]
     end  
