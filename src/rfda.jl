@@ -12,7 +12,7 @@ Keyword arguments:
 * `min_sample_leaf` : Minimum number of samples each leaf needs to have.
 * `min_sample_split` : Minimum number of observations in needed for a split.
 * `mth` : Boolean indicating if a multi-threading is done when new data are predicted with function `predict`.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
 
 The function is a wrapper of package `DecisionTree.jl' to fit a random forest discrimnation model.
 In DecisionTree.jl, 'y' component must have type `Int` or `String`.
@@ -92,8 +92,9 @@ function rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
     taby = tab(y)
     priors = taby.vals / n  # output not used, only for information  
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     n_subfeatures = round(Int, par.n_subfeatures)

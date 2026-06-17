@@ -153,7 +153,7 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     else
         fcenter!(Y, ymeans)
     end
-    fitm = plskern(X, Y, weights; nlv, scal = false)
+    fitm = plskern(X, Y, weights; nlv, scal = :none)
     Mbplsr(fitm_bl, fitm, ymeans, yscales, weights, par)
 end
 

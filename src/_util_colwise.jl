@@ -151,31 +151,6 @@ function colnorm2(X, weights::ProbabilityWeights)
 end
 
 """
-    colstd(X)
-    colstd(X, weights::ProbabilityWeights)
-Column-wise (uncorrected) standard deviations of a matrix.
-* `X` : Data (n, p).
-* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
-
-Return a vector (p).
-
-## Examples
-```julia
-using Jchemo
-
-n, p = 5, 6
-X = rand(n, p)
-w = pweight(rand(n))
-
-colstd(X)
-colstd(X, w)
-```
-""" 
-colstd(X) = sqrt.(colvar(X))
-
-colstd(X, weights::ProbabilityWeights) = sqrt.(colvar(X, weights))
-
-"""
     colvar(X)
     colvar(X, weights::ProbabilityWeights)
 Column-wise (uncorrected) variances of a matrix.
@@ -215,6 +190,56 @@ function colvar(X, weights::ProbabilityWeights)
     end
     s
 end
+
+"""
+    colstd(X)
+    colstd(X, weights::ProbabilityWeights)
+Column-wise (uncorrected) standard deviations of a matrix.
+* `X` : Data (n, p).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+
+Return a vector (p).
+
+## Examples
+```julia
+using Jchemo
+
+n, p = 5, 6
+X = rand(n, p)
+w = pweight(rand(n))
+
+colstd(X)
+colstd(X, w)
+```
+""" 
+colstd(X) = sqrt.(colvar(X))
+
+colstd(X, weights::ProbabilityWeights) = sqrt.(colvar(X, weights))
+
+"""
+    colprt(X)
+    colprt(X, weights::ProbabilityWeights)
+Column-wise (uncorrected) standard deviations of a matrix.
+* `X` : Data (n, p).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+
+Return a vector (p).
+
+## Examples
+```julia
+using Jchemo
+
+n, p = 5, 6
+X = rand(n, p)
+w = pweight(rand(n))
+
+colprt(X)
+colprt(X, w)
+```
+""" 
+colprt(X) = sqrt.(colstd(X))
+
+colprt(X, weights::ProbabilityWeights) = sqrt.(colstd(X, weights))
 
 """
     colmed(X)
@@ -303,11 +328,11 @@ end
 """
     def_colscal(scal::Symbol = :std)
 Define the function of column scaling.
-* `scal` : Symbol defining the scaling. Possible values are: `std`, `prt` (pareto) and `mad`.
+* `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
 ```
 """
 function def_colscal(scal::Symbol = :std)
-    dict = Dict(:std => colstd, :prt => colstd, :mad => colmad)
+    dict = Dict(:std => colstd, :prt => colprt)
     dict[scal]
 end
 

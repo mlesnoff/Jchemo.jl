@@ -11,7 +11,7 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective functions 
     `krbf` and `kpol` for their keyword arguments.
-* `scal` : Symbol defining the scaling. Possible values are: `std`, `prt` (pareto) and `mad`..
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
 
 The method builds kernel Gram matrices and then runs a usual PLSR algorithm on them. This is faster (but not equivalent) to the 
 "true" KPLSR (Nipals) algorithm (function `kplsr`) described in Rosipal & Trejo (2001).
@@ -42,8 +42,8 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 20
-kern = :krbf ; gamma = 1e-1 ; scal = false
-#gamma = 1e-4 ; scal = true
+kern = :krbf ; gamma = 1e-1 ; scal = :none
+#gamma = 1e-4 ; scal = :std
 model = dkplsr(; nlv, kern, gamma, scal) ;
 fit!(model, Xtrain, ytrain)
 @names model
@@ -110,7 +110,7 @@ function dkplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     if par.scal != :none
         colscal = def_colscal(par.scal) 
         xscales .= colscal(X, weights)
-        yscales .= colstd(Y, weights)
+        yscales .= colscal(Y, weights)
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end

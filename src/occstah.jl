@@ -61,8 +61,8 @@ ytest_in = fill("in", ntest_in)
 ytest_out = fill("out", ntest_out)
 
 #### Fit the Occ model
-model = occstah(; nlv = 5000, cri = 2, scal = true)
-#model = occstah(; nlv = 5000, cri = 2, scal = true, seed = 1234)
+model = occstah(; nlv = 5000, cri = 2, scal = :std)
+#model = occstah(; nlv = 5000, cri = 2, scal = :std, seed = 1234)
 fit!(model, Xtrain_in)
 @names model 
 fitm = model.fitm ;

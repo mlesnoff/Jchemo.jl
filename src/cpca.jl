@@ -65,8 +65,8 @@ n = nro(Xbl[1])
 nlv = 3
 bscal = :frob
 #bscal = :none
-scal = false
-#scal = true
+scal = :none
+#scal = std
 model = cpca(; nlv, bscal, scal, tol = 1e-15)
 fit!(model, Xbl)
 @names model 

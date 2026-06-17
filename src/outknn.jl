@@ -58,7 +58,7 @@ fit!(model, X)
 T = model.fitm.T
 metric = :eucl 
 k = 15
-res = outknn(T; metric, k, scal = true)
+res = outknn(T; metric, k, scal = :std)
 plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness").f
 ```
 """ 

@@ -11,7 +11,7 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `tol` : Tolerance for the Nipals algorithm.
 * `maxit` : Maximum number of iterations for the Nipals algorithm.
-* `scal` : Symbol defining the scaling. Possible values are: `std`, `prt` (pareto) and `mad`..
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
 
 Wold Nipals PLSR algorithm: Tenenhaus 1998 p.204.
     
@@ -50,7 +50,7 @@ function plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     if par.scal != :none
         colscal = def_colscal(par.scal) 
         xscales .= colscal(X, weights)
-        yscales .= colstd(Y, weights)
+        yscales .= colscal(Y, weights)
         fcscale!(X, xmeans, xscales)
         fcscale!(Y, ymeans, yscales)
     else

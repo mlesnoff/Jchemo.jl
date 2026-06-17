@@ -10,7 +10,7 @@ Keyword arguments:
 * `nlv` : Nb. dimensions on which `X` is projected.
 * `meth` : Method of random projection. Possible values are: `:gauss`, `:li`. See the respective functions 
     `rpmatgauss` and `rpmatli` for their keyword arguments.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
 
 ## Examples
 ```julia

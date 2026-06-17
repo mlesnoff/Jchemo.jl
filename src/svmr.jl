@@ -12,7 +12,7 @@ Keyword arguments:
 * `degree` : `kern` parameter, see below.
 * `cost` : Cost of constraints violation C parameter.
 * `epsilon` : Epsilon parameter in the loss function.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
 
 Kernel types: 
 * :krbf -- radial basis function: exp(-gamma * ||x - y||^2)
@@ -96,8 +96,9 @@ function svmr(X, y; kwargs...)
     y = vec(y)
     p = nco(X)
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     if kern == :krbf

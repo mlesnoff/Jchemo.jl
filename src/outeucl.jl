@@ -24,7 +24,7 @@ X2 = randn(m, p) .+ rand(1:3, p)'
 X = vcat(X1, X2)
 
 scal::Bool = false
-#scal = true
+#scal = :std
 res = outeucl(X; scal) ;
 @names res
 res.d    # outlierness 

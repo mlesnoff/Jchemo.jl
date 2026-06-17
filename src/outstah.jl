@@ -27,8 +27,8 @@ X = vcat(X1, X2)
 
 nlv = 100
 V = rand(0:1, p, nlv)
-scal = false
-#scal = true
+scal = :none
+#scal = std
 res = outstah(X, V; scal) ;
 @names res
 res.d    # outlierness 

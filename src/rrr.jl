@@ -12,7 +12,7 @@ Keyword arguments:
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `tol` : Tolerance for the Nipals algorithm.
 * `maxit` : Maximum number of iterations for the Nipals algorithm.
-* `scal` : Symbol defining the scaling. Possible values are: `std`, `prt` (pareto) and `mad`..
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
  
 Reduced rank regression, also referred to as redundancy analysis (RA) regression. In this function, 
 the RA uses the Nipals algorithm presented in Mangamana et al 2021, section 2.1.1.
@@ -105,7 +105,7 @@ function rrr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     if par.scal != :none
         colscal = def_colscal(par.scal) 
         xscales .= colscal(X, weights)
-        yscales .= colstd(Y, weights)
+        yscales .= colscal(Y, weights)
         fcscale!(X, xmeans, xscales)
         fcscale!(Y, ymeans, yscales)
     else

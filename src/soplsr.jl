@@ -47,8 +47,8 @@ ntot = ntrain + ntest
 nlv = 1
 #nlv = [2, 1, 2]
 #nlv = [2, 0, 1]
-scal = false
-#scal = true
+scal = :none
+#scal = std
 model = soplsr(; nlv, scal)
 fit!(model, Xbltrain, ytrain)
 @names model 
@@ -110,7 +110,7 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     fit = similar(Xbl[1], n, q)
     ## Below, if 'scal' = true, object 'fit' is in scale 'scaled-Y' 
     ## First block
-    fitm[1] = plskern(Xbl[1], Y, weights; nlv = nlv[1], scal = false)  
+    fitm[1] = plskern(Xbl[1], Y, weights; nlv = nlv[1], scal = :none)  
     T = fitm[1].T
     fit .= predict(fitm[1], Xbl[1]).pred
     ## Other blocks
@@ -120,7 +120,7 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
             DT = fweightr(T, weights.values)
             b[i] = inv(T' * DT) * DT' * Xbl[i]
             X = Xbl[i] - T * b[i]
-            fitm[i] = plskern(X, Y - fit, weights; nlv = nlv[i], scal = false)  
+            fitm[i] = plskern(X, Y - fit, weights; nlv = nlv[i], scal = :none)  
             T = hcat(T, fitm[i].T)
             fit .+= predict(fitm[i], X).pred 
         end

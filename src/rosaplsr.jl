@@ -45,8 +45,8 @@ ntot = ntrain + ntest
 (ntot = ntot, ntrain , ntest)
 
 nlv = 3
-scal = false
-#scal = true
+scal = :none
+#scal = std
 model = rosaplsr(; nlv, scal)
 fit!(model, Xbltrain, ytrain)
 @names model 

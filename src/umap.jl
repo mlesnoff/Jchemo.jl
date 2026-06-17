@@ -10,7 +10,7 @@ Keyword arguments:
     the `Distances.jl` package, including user-defined types. Default is `Distances.Euclidean()`.
 * `n_neighbors` : Nb. approximate neighbors used to construct the initial high-dimensional graph.
 * `min_dist` : Minimum distance between points in low-dimensional space.
-* `scal` : Symbol defining the scaling. Possible values are: `std`, `prt` (pareto) and `mad`..
+* `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
     
 The function fits a UMAP dimension reduction using package `UMAP.jl'.
 
@@ -112,8 +112,9 @@ function umap(X; kwargs...)
         s = collect(1:n)
     end
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     ## Note: UMAP.jl ==> the type of new_data must match the original data exactly ==> force to Matrix

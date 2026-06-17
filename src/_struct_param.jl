@@ -249,7 +249,6 @@ Base.@kwdef mutable struct ParKplsr{Q <: AbstractFloat}
     scal::Symbol = :none                   
 end 
 
-
 Base.@kwdef mutable struct ParCglsr
     nlv::Int = 1 
     gs::Bool = true       

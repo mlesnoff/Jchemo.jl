@@ -12,7 +12,7 @@ Keyword arguments:
     before each X-deflation. 
 * `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. of iterations.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
 
 ## References
 Wright, K., 2018. Package nipals: Principal Components Analysis using NIPALS with Gram-Schmidt Orthogonalization. 
@@ -26,8 +26,8 @@ X = [1 2. missing 4 ; 4 missing 6 7 ;
 
 nlv = 3 
 tol = 1e-15
-scal = false
-#scal = true
+scal = :none
+#scal = std
 gs = false
 #gs = true
 model = pcanipalsmiss(; nlv, tol, gs, maxit = 500, scal)

@@ -9,7 +9,7 @@ Averaging PLSR models with different numbers of  latent variables (PLSR-AVG).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : A range of nb. of latent variables (LVs) to compute.
-* `scal` : Symbol defining the scaling. Possible values are: `std`, `prt` (pareto) and `mad`..
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
 
 Ensemblist method where the predictions are computed by averaging the predictions of a set of models built 
 with different numbers of LVs.

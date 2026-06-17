@@ -64,8 +64,8 @@ Xbltrain = mblock(Xtrain, listbl)
 Xbltest = mblock(Xtest, listbl) 
 
 nlv = 15
-scal = false
-#scal = true
+scal = :none
+#scal = std
 bscal = :none
 #bscal = :frob
 model = mbplslda(; nlv, bscal, scal)

@@ -28,8 +28,8 @@ ynew = Ynew[:, 1]
 weights = pweight(rand(n))
 
 nlv = 2 
-scal = false
-#scal = true
+scal = :none
+#scal = std
 model = pcasvd(; nlv, scal) ;
 fit!(model, X)
 fitm = model.fitm ;
@@ -54,8 +54,8 @@ fitm = model.fitm ;
 @head xresid(fitm, X)
 
 nlv = 3
-scal = false
-#scal = true
+scal = :none
+#scal = std
 model = plskern(; nlv, scal)
 fit!(model, X, Y, weights) 
 fitm = model.fitm ;

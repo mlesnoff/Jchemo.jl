@@ -10,7 +10,7 @@ Keyword arguments:
 * `gs` : Boolean. If `true` (default), a Gram-Schmidt orthogonalization of the normal equation residual 
     vectors is done.
 * `filt` : Boolean. If `true`, CG filter factors are computed (output `F`). Default = `false`.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
 
 CGLS algorithm "7.4.1" Bjorck 1996, p.289. In the present function, the part of the code computing the 
 re-orthogonalization (Hansen 1998) and filter factors (Vogel 1987, Hansen 1998) is a transcription (with few 
@@ -53,7 +53,7 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-nlv = 5 ; scal = true
+nlv = 5 ; scal = :std
 model = cglsr(; nlv, scal)
 fit!(model, Xtrain, ytrain)
 @names model.fitm 
@@ -71,8 +71,8 @@ cglsr(; kwargs...) = JchemoModel(cglsr, nothing, kwargs)
 
 cglsr(X, y; kwargs...) = cglsr!(copy(ensure_mat(X)), copy(ensure_mat(y)); kwargs...)
 
-function cglsr!(X::AbstractMatrix{Q}, y::Vector{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParCglsr{Q}, kwargs).par
+function cglsr!(X::AbstractMatrix{Q}, y::Matrix{Q}; kwargs...) where Q <: AbstractFloat
+    par = recovkw(ParCglsr, kwargs).par
     n, p = size(X)
     q = nco(y)
     nlv = min(n, p, par.nlv)
@@ -81,8 +81,9 @@ function cglsr!(X::AbstractMatrix{Q}, y::Vector{Q}; kwargs...) where Q <: Abstra
     ymeans = colmean(y)
     xscales = ones(Q, p)
     yscales = ones(Q, q)  # no need to fscale y; only for consistency with Plsr
-    if par.scal 
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X)
         fcscale!(X, xmeans, xscales)
     else
         fcenter!(X, xmeans)

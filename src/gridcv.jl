@@ -264,7 +264,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 
 ####-- Pipeline Pca :> Svmr   (Only the last model is tuned)
 ## model1
-nlv = 15 ; scal = true
+nlv = 15 ; scal = :std
 model1 = pcasvd(; nlv, scal)
 ## model2
 kern = [:krbf]

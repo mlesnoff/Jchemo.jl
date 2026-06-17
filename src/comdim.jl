@@ -74,8 +74,8 @@ n = nro(Xbl[1])
 
 nlv = 3
 bscal = :frob
-scal = false
-#scal = true
+scal = :none
+#scal = std
 model = comdim(; nlv, bscal, scal)
 fit!(model, Xbl)
 @names model 

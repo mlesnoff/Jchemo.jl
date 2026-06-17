@@ -13,7 +13,7 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
 
 Same as function `rrda` (RR-DA) except that a kernel RR (function `krr`), instead of a RR (function `rr`), 
 is run on the Y-dummy table. 
@@ -41,7 +41,7 @@ tab(ytest)
 
 lb = 1e-5
 kern = :krbf ; gamma = .001 
-scal = true
+scal = :std
 model = krrda(; lb, kern, gamma, scal) 
 fit!(model, Xtrain, ytrain)
 @names model

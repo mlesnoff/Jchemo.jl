@@ -9,7 +9,7 @@ Principal component regression (PCR) with a SVD factorization.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD) and `prt` (pareto).
 
 ## Examples
 ```julia
@@ -76,7 +76,7 @@ function pcr(X, Y, weights::ProbabilityWeights; kwargs...)
 end
 
 function pcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParPca{Q}, kwargs).par
+    par = recovkw(ParPca, kwargs).par
     q = nco(Y)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)  # built only for consistency with coef::Plsr
@@ -101,8 +101,6 @@ Compute latent variables (LVs; = scores) from a fitted model and a matrix X.
 transf(object::Union{Pcr, Spcr}, X) = transf(object.fitm, X)
 
 transf(object::Union{Pcr, Spcr}, X, nlv::Int) = transf(object.fitm, X, nlv)
-
-
 
 """
     coef(object::Pcr)
