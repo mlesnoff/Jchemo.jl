@@ -300,3 +300,16 @@ function colvarskip(X, weights::ProbabilityWeights)
     v 
 end
 
+"""
+    def_colscal(scal::Symbol = :std)
+Define the function of column scaling.
+* `scal` : Symbol defining the scaling. Possible values are: `std`, `prt` (pareto) and `mad`.
+```
+"""
+function def_colscal(scal::Symbol = :std)
+    dict = Dict(:std => colstd, :prt => colstd, :mad => colmad)
+    dict[scal]
+end
+
+
+

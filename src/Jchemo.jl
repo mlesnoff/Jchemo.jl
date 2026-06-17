@@ -301,6 +301,7 @@ export
     boxcox, boxcox_transf, boxcox_transf!,
     colsum, colmean, colnorm, colnorm2, colstd, colvar, colmed, colmad, 
     colsumskip, colmeanskip, colstdskip, colvarskip,
+    def_colscal,
     convertdf,
     covv, covm, 
     corv, corm,

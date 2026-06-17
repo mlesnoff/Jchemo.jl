@@ -85,3 +85,5 @@ function fcscale!(X::AbstractMatrix{Q}, u::Vector{Q}, v::Vector{Q}) where Q <: A
     end  
 end
 
+
+
