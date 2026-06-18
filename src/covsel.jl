@@ -1,7 +1,7 @@
 """
     covsel(; kwargs...)
     covsel(X, Y; kwargs...)
-    covsel(X, Y, weights::ProbabilityWeights; kwargs...)
+    covsel(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Variable (feature) selection from partial covariance (Covsel).
 * `X` : X-data (n, p).
@@ -73,16 +73,17 @@ covsel(; kwargs...) = JchemoModel(covsel, nothing, kwargs)
 
 function covsel(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     covsel(X, Y, weights; kwargs...)
 end
 
-function covsel(X, Y, weights::ProbabilityWeights; kwargs...)
+function covsel(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     covsel!(copy(X), copy(Y), weights; kwargs...)
 end
 
 function covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParCovsel{Q}, kwargs).par
+    par = recovkw(ParCovsel, kwargs).par
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)
