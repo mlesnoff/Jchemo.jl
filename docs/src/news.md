@@ -6,8 +6,10 @@ Warning: Major changes in functions having arguments 'nlv' (laent variables) and
 
 - Breakings:
     - Functions having arguments 'nlv' or 'lb': deep restructuration of functions *transf*, *coef* 
-        and *predict* to improve code consistency. The syntax concerning arguments 'nlv' and 'lb' in *transf* 
-        and *predict* has changed, see examples in function helps.
+        and *predict* to improve code consistency. The syntax concerning arguments 'nlv' and 'lb'
+        in *transf* and *predict* has changed. See examples of the new code in function helps.
+    - Argument 'scal' of colums scaling has changed. It is not a Boolean type anymore (replaced by a 
+        Symbol type). Choice between several types of scaling is now allowed.
     - MLR functions: Functions other than **mlr** were removed.
     - Function **mbpca** renamed to **cpca**.
     - Fuction **rclustplsr** temporary removed.
