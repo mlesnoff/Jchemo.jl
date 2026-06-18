@@ -63,6 +63,10 @@ Base.@kwdef mutable struct ParRmgap
     npoint::Int = 5  
 end 
 
+Base.@kwdef mutable struct ParScale
+    scal::Symbol = :none
+end 
+
 ############---- Dimension reduction
 
 Base.@kwdef mutable struct ParPca
@@ -116,11 +120,6 @@ Base.@kwdef mutable struct ParKpca{Q <: AbstractFloat}
     scal::Symbol = :none                   
 end 
 
-Base.@kwdef mutable struct ParCovsel
-    nlv::Int = 1    
-    scal::Symbol = :none
-end 
-
 Base.@kwdef mutable struct ParRp{Q <: AbstractFloat}
     nlv::Int = 1    
     meth::Symbol = :gauss  
@@ -142,6 +141,11 @@ Base.@kwdef mutable struct ParFda{Q <: AbstractFloat}
     lb::Q = 1e-6 
     prior::Union{Symbol, Vector{Q}} = :prop                  
     scal::Symbol = :none 
+end 
+
+Base.@kwdef mutable struct ParCovsel
+    nlv::Int = 1    
+    scal::Symbol = :none
 end 
 
 ## Multiblock

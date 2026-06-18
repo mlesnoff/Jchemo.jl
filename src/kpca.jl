@@ -67,7 +67,7 @@ function kpca(X; kwargs...)
     kpca(X, weights; kwargs...)
 end
 
-function kpca(X::Matrix{Q}, weights::ProbabilityWeights; kwargs...)  where Q <: AbstractFloat
+function kpca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...)  where Q <: AbstractFloat
     par = recovkw(ParKpca{Q}, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     n, p = size(X)
