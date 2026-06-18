@@ -31,9 +31,6 @@ https://pair-code.github.io/understanding-umap/
 
 ## Examples
 ```julia
-using Jchemo, JLD2, DataFrames, GLMakie
-using Distances
-
 using JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "challenge2018.jld2") 
@@ -131,7 +128,8 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 """
 function transf(object::Umap, X)
-    res = UMAP.transform(object.fitm, Matrix(fscale(X, object.xscales)'))
+    X = ensure_mat(X)
+    res = UMAP.transform(object.fitm, scale(X, object.xscales)')
     reduce(vcat, transpose.(res.embedding)) 
 end
 

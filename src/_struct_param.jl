@@ -38,9 +38,9 @@ Base.@kwdef mutable struct ParFdif
     npoint::Int = 3  
 end 
 
-Base.@kwdef mutable struct ParInterpl
-    wl::Union{Vector, UnitRange, StepRangeLen} = range(1, 10; length = 3)
-    wlfin::Union{Vector, UnitRange, StepRangeLen} = range(1, 10; length = 3)
+Base.@kwdef mutable struct ParInterpl{Q <: AbstractFloat}
+    wl::Union{Vector{Q}, UnitRange{Q}, StepRangeLen{Q}} = range(1, 10; length = 3)
+    wlfin::Union{Vector{Q}, UnitRange{Q}, StepRangeLen{Q}} = range(1, 10; length = 3)
 end 
 
 Base.@kwdef mutable struct ParMavg

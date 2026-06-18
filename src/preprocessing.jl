@@ -1,4 +1,95 @@
 """
+    detrend_pol(; kwargs...)
+    detrend_pol(X; kwargs...)
+Baseline correction of each row of X-data by polynomial linear regression.
+* `X` : X-data (n, p).
+Keyword arguments:
+* `degree` : Degree of the polynom.
+
+De-trend transformation: the function fits a baseline by polynomial regression for each observation 
+and returns the residuals (= signals corrected from the baseline).
+
+## Examples
+```julia
+using Jchemo, JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+@names dat
+X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
+plotsp(X, wl; nsamp = 20).f
+
+model = detrend_pol(degree = 2)
+fit!(model, Xtrain)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
+plotsp(Xptrain, wl).f
+plotsp(Xptest, wl).f
+
+## Example on 1 spectrum
+i = 2
+zX = Matrix(X)[i:i, :]
+model = detrend_pol(degree = 1)
+fit!(model, zX)
+zXc = transf(model, zX)   # = corrected spectrum 
+B = zX - zXc              # = estimated baseline
+f, ax = plotsp(zX, wl)
+lines!(wl, vec(B); color = :blue)
+lines!(wl, vec(zXc); color = :black)
+f
+```
+""" 
+detrend_pol(; kwargs...) = JchemoModel(detrend_pol, nothing, kwargs)
+
+function detrend_pol(X; kwargs...)
+    par = recovkw(ParDetrendpol, kwargs).par
+    Detrendpol(par)
+end
+
+""" 
+    transf(object::Detrendpol, X)
+    transf!(object::Detrendpol, X::Matrix{Q}) where Q <: AbstractFloat
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+""" 
+function transf(object::Detrendpol, X)
+    X = copy(ensure_mat(X))
+    transf!(object, X)
+    X
+end
+
+function transf!(object::Detrendpol, X::Matrix{Q}) where Q <: AbstractFloat
+    par = object.par
+    p = nco(X)
+    wls = Q.(collect(1:p))
+    mu = meanv(wls)
+    sigma = stdv(wls)
+    @. wls = (wls - mu) / sigma
+    P = similar(X, p, par.degree + 1)
+    @inbounds for j = 0:par.degree
+        P[:, j + 1] .= wls.^j
+    end
+    if par.degree >= 2
+        P .= Matrix(qr(P).Q)
+    end
+    Pt = P'
+    PtP = Pt * P
+    A = inv(PtP) * Pt
+    @inbounds for i in axes(X, 1)
+    ## Not faster: @Threads.threads
+        y = vrow(X, i)
+        X[i, :] .= y - P * A * y
+    end
+end
+
+"""
     detrend_lo(; kwargs...)
     detrend_lo(X; kwargs...)
 Baseline correction of each row of X-data by LOESS regression.
@@ -50,13 +141,14 @@ f
 detrend_lo(; kwargs...) = JchemoModel(detrend_lo, nothing, kwargs)
 
 function detrend_lo(X; kwargs...)
-    par = recovkw(ParDetrendlo{Q}, kwargs).par
+    X = ensure_mat(X)
+    par = recovkw(ParDetrendlo{eltype(X)}, kwargs).par
     Detrendlo(par)
 end
 
 """ 
     transf(object::Detrendlo, X)
-    transf!(object::Detrendlo, X)
+    transf!(object::Detrendlo, X::Matrix{Q}) where Q <: AbstractFloat
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -67,107 +159,14 @@ function transf(object::Detrendlo, X)
     X
 end
 
-function transf!(object::Detrendlo, X::Matrix)
+function transf!(object::Detrendlo, X::Matrix{Q}) where Q <: AbstractFloat
     p = nco(X)
-    span = object.par.span
-    degree = object.par.degree
     x = Q.(collect(1:p))
     @inbounds for i in axes(X, 1)
     ## Not faster: @Threads.threads
         y = vec(vrow(X, i))
-        fitm = loessr(x, y; span, degree)
+        fitm = loessr(x, y; object.par.span, object.par.degree)
         X[i, :] .= y - vec(predict(fitm, x).pred)
-    end
-end
-
-"""
-    detrend_pol(; kwargs...)
-    detrend_pol(X; kwargs...)
-Baseline correction of each row of X-data by polynomial linear regression.
-* `X` : X-data (n, p).
-Keyword arguments:
-* `degree` : Degree of the polynom.
-
-De-trend transformation: the function fits a baseline by polynomial regression for each observation 
-and returns the residuals (= signals corrected from the baseline).
-
-## Examples
-```julia
-using Jchemo, JchemoData, JLD2, CairoMakie
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/cassav.jld2") 
-@load db dat
-@names dat
-X = dat.X
-year = dat.Y.year
-s = year .<= 2012
-Xtrain = X[s, :]
-Xtest = rmrow(X, s)
-wlst = names(dat.X)
-wl = parse.(Float64, wlst)
-plotsp(X, wl; nsamp = 20).f
-
-model = detrend_pol(degree = 2)
-fit!(model, Xtrain)
-Xptrain = transf(model, Xtrain)
-Xptest = transf(model, Xtest)
-plotsp(Xptrain, wl).f
-plotsp(Xptest, wl).f
-
-## Example on 1 spectrum
-i = 2
-zX = Matrix(X)[i:i, :]
-model = detrend_pol(degree = 1)
-fit!(model, zX)
-zXc = transf(model, zX)   # = corrected spectrum 
-B = zX - zXc              # = estimated baseline
-f, ax = plotsp(zX, wl)
-lines!(wl, vec(B); color = :blue)
-lines!(wl, vec(zXc); color = :black)
-f
-```
-""" 
-detrend_pol(; kwargs...) = JchemoModel(detrend_pol, nothing, kwargs)
-
-function detrend_pol(X; kwargs...)
-    par = recovkw(ParDetrendpol{Q}, kwargs).par
-    Detrendpol(par)
-end
-
-""" 
-    transf(object::Detrendpol, X)
-    transf!(object::Detrendpol, X)
-Compute the preprocessed data from a model.
-* `object` : Model.
-* `X` : X-data to transform.
-""" 
-function transf(object::Detrendpol, X)
-    X = copy(ensure_mat(X))
-    transf!(object, X)
-    X
-end
-
-function transf!(object::Detrendpol, X::Matrix)
-    par = object.par
-    p = nco(X)
-    degree = par.degree
-    wls = Q.(collect(1:p))
-    mu = meanv(wls) ; s = stdv(wls)
-    @. wls = (wls - mu) / s
-    P = similar(X, p, degree + 1)
-    @inbounds for j = 0:degree
-        P[:, j + 1] .= wls.^j
-    end
-    if par.degree >= 2
-        P .= Matrix(qr(P).Q)
-    end
-    Pt = P'
-    PtP = Pt * P
-    A = inv(PtP) * Pt
-    @inbounds for i in axes(X, 1)
-    ## Not faster: @Threads.threads
-        y = vrow(X, i)
-        X[i, :] .= y - P * A * y
     end
 end
 
@@ -216,7 +215,7 @@ end
 
 """ 
     transf(object::Fdif, X)
-    transf!(object::Fdif, X::Matrix, M::Matrix)
+    transf!(object::Fdif, X::Matrix{Q}, M::Matrix{Q}) where Q <: AbstractFloat
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -232,7 +231,7 @@ function transf(object::Fdif, X)
     M
 end
 
-function transf!(object::Fdif, X::Matrix, M::Matrix)
+function transf!(object::Fdif, X::Matrix{Q}, M::Matrix{Q}) where Q <: AbstractFloat
     p = nco(X)
     npoint = object.par.npoint
     pc = p - npoint + 1

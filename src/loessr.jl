@@ -54,8 +54,9 @@ f
 loessr(; kwargs...) = JchemoModel(loessr, nothing, kwargs)
 
 function loessr(X, y; kwargs...)
-    par = recovkw(ParLoessr{Q}, kwargs).par
     X = ensure_mat(X)
+    Q = eltype(X)
+    par = recovkw(ParLoessr{Q}, kwargs).par
     Q = eltype(X)
     y = vec(y)
     p = nco(X)
