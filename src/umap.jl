@@ -96,8 +96,12 @@ f
 umap(; kwargs...) = JchemoModel(umap, nothing, kwargs)
 
 function umap(X; kwargs...)
-    par = recovkw(ParUmap{Q}, kwargs).par
     X = ensure_mat(X)
+    ## UMAP.jl 0.3.0 seems force object embedding to be Float32.
+    ## Therefore, the computations below are also forced to be Float32.
+    Q = Float32
+    X = Q.(X)
+    par = recovkw(ParUmap{Q}, kwargs).par
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
@@ -117,7 +121,7 @@ function umap(X; kwargs...)
     end
     ## Note: UMAP.jl ==> the type of new_data must match the original data exactly ==> force to Matrix
     fitm = UMAP.fit(Matrix(X'), nlv; metric = par.metric, n_neighbors = par.n_neighbors, min_dist = par.min_dist)
-    T = reduce(vcat, transpose.(fitm.embedding))
+    T = Matrix(fitm.embedding')
     Umap(fitm, T, xscales, s, par)
 end
 
@@ -128,8 +132,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 """
 function transf(object::Umap, X)
-    X = ensure_mat(X)
-    res = UMAP.transform(object.fitm, scale(X, object.xscales)')
-    reduce(vcat, transpose.(res.embedding)) 
+    X = Float32.(ensure_mat(X))  # see above
+    Matrix(UMAP.transform(object.fitm, Matrix(fscale(X, object.xscales)')).embedding')
 end
 
