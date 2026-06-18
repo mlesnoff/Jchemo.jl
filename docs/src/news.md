@@ -11,6 +11,7 @@ Warning: Major changes in functions having arguments 'nlv' (laent variables) and
     - MLR functions: Functions other than **mlr** were removed.
     - Function **mbpca** renamed to **cpca**.
     - Fuction **rclustplsr** temporary removed.
+    - Package UMAP updated to 0.3
 
 - News:
     - Function **boxcox**: Estimate the parameter of the Box-Cox power transformation.
