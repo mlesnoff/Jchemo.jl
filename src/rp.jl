@@ -1,7 +1,7 @@
 """
     rp(; kwargs...)
     rp(X; kwargs...)
-    rp(X, weights::ProbabilityWeights; kwargs...)
+    rp(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     rp!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Make a random projection of X-data.
 * `X` : X-data (n, p).
@@ -38,7 +38,7 @@ function rp(X; kwargs...)
     rp(X, weights; kwargs...)
 end
 
-function rp(X, weights::ProbabilityWeights; kwargs...)
+function rp(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     rp!(copy(X), weights; kwargs...)
 end
 
