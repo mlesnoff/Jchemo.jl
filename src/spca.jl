@@ -1,7 +1,7 @@
 """
     spca(; kwargs...)
     spca(X; kwargs...)
-    spca(X, weights::ProbabilityWeights; kwargs...)
+    spca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Sparse PCA by regularized low rank matrix approximation (sPCA-rSVD, Shen & Huang 2008).
 * `X` : X-data (n, p). 
@@ -105,7 +105,7 @@ function spca(X; kwargs...)
     spca(X, weights; kwargs...)
 end
 
-function spca(X, weights::ProbabilityWeights; kwargs...)
+function spca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     spca!(copy(X), weights; kwargs...)
 end
 
