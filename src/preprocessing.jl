@@ -635,7 +635,7 @@ function savgk(nhwindow::Int, degree::Int, deriv::Int)
     end
     G = S * inv(S' * S)
     kern = (-1)^deriv * factorial(deriv) * vcol(G, deriv + 1) # = h_d in Luo et al. 2005 Eq.5
-    (S = S, G = G, kern = kern)
+    (S = S, G, kern)
 end
 
 """
@@ -708,13 +708,13 @@ f
 savgol(; kwargs...) = JchemoModel(savgol, nothing, kwargs)
 
 function savgol(X; kwargs...)
-    par = recovkw(ParSavgol{Q}, kwargs).par
+    par = recovkw(ParSavgol, kwargs).par
     Savgol(par)
 end
 
 """ 
     transf(object::Savgol, X)
-    transf!(object::Savgol, X)
+    transf!(object::Savgol, X::Matrix{Q}) where Q <: AbstractFloat
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -725,7 +725,7 @@ function transf(object::Savgol, X)
     X
 end
 
-function transf!(object::Savgol, X::Matrix)
+function transf!(object::Savgol, X::Matrix{Q}) where Q <: AbstractFloat
     npoint = object.par.npoint 
     @assert isodd(npoint) && npoint >= 3 "Argument 'npoint' must be odd and >= 3."
     p = nco(X)

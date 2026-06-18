@@ -43,9 +43,8 @@ Base.@kwdef mutable struct ParMavg
     npoint::Int = 5  
 end 
 
-Base.@kwdef mutable struct ParRmgap
-    indexcol::Union{Int, Vector{Int}} = 10 
-    npoint::Int = 5  
+Base.@kwdef mutable struct ParEmsc
+    degree::Int = 1 
 end 
 
 Base.@kwdef mutable struct ParSavgol
@@ -54,13 +53,14 @@ Base.@kwdef mutable struct ParSavgol
     degree::Int = 2  
 end 
 
+Base.@kwdef mutable struct ParRmgap
+    indexcol::Union{Int, Vector{Int}} = 10 
+    npoint::Int = 5  
+end 
+
 Base.@kwdef mutable struct ParSnv
     centr::Bool = true
     scal::Bool = true  
-end 
-
-Base.@kwdef mutable struct ParEmsc
-    degree::Int = 1 
 end 
 
 ############---- Dimension reduction
