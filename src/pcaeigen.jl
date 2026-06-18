@@ -1,7 +1,7 @@
 """
     pcaeigen(; kwargs...)
     pcaeigen(X; kwargs...)
-    pcaeigen(X, weights::ProbabilityWeights; kwargs...)
+    pcaeigen(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     pcaeigen!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 PCA by Eigen factorization.
 * `X` : X-data (n, p). 
@@ -19,14 +19,13 @@ See function `pcasvd` for examples.
 pcaeigen(; kwargs...) = JchemoModel(pcaeigen, nothing, kwargs)
 
 function pcaeigen(X; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     pcaeigen(X, weights; kwargs...)
 end
 
-function pcaeigen(X, weights::ProbabilityWeights; kwargs...)
-    pcaeigen!(copy(ensure_mat(X)), weights; kwargs...)
+function pcaeigen(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    pcaeigen!(copy(X), weights; kwargs...)
 end
 
 function pcaeigen!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

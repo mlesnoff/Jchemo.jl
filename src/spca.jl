@@ -100,14 +100,13 @@ res.explvarx
 spca(; kwargs...) = JchemoModel(spca, nothing, kwargs)
 
 function spca(X; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     spca(X, weights; kwargs...)
 end
 
 function spca(X, weights::ProbabilityWeights; kwargs...)
-    spca!(copy(ensure_mat(X)), weights; kwargs...)
+    spca!(copy(X), weights; kwargs...)
 end
 
 function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

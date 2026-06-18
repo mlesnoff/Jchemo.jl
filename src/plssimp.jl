@@ -23,9 +23,8 @@ Laboratory Systems 18, 251–263. https://doi.org/10.1016/0169-7439(93)85002-X
 plssimp(; kwargs...) = JchemoModel(plssimp, nothing, kwargs)
 
 function plssimp(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     plssimp(X, Y, weights; kwargs...)
 end
 

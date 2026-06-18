@@ -28,7 +28,7 @@ X = vcat(X1, X2)
 nlv = 100
 V = rand(0:1, p, nlv)
 scal = :none
-#scal = std
+#scal = :mad
 res = outstah(X, V; scal) ;
 @names res
 res.d    # outlierness 
@@ -44,7 +44,7 @@ function outstah!(X::Matrix{Q}, V::Matrix{Q}; scal::Symbol = :none) where Q <: A
     xscales = ones(Q, p) 
     if scal != :none
         colscal = def_colscal(scal) 
-        xscales .= colscal(X, weights)
+        xscales .= colscal(X)
         fscale!(X, xscales)
     end
     ## Scaling V by colnorm(V) has no effect on d and T: T = X * fscale(V, colnorm(V))

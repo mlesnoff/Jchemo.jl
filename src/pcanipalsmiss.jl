@@ -1,7 +1,7 @@
 """
     pcanipalsmiss(; kwargs...)
     pcanipals(X; kwargs...)
-    pcanipals(X, weights::ProbabilityWeights; kwargs...)
+    pcanipals(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     pcanipals!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 PCA by NIPALS algorithm allowing missing data.
 * `X` : X-data (n, p). 
@@ -58,7 +58,8 @@ X_imp
 pcanipalsmiss(; kwargs...) = JchemoModel(pcanipalsmiss, nothing, kwargs)
 
 function pcanipalsmiss(X; kwargs...)
-    v = vec(Matrix(X))
+    X = ensure_mat(X)
+    v = vec(X)
     s = ismissing.(v) .== 0
     Q = eltype(v[s][1, 1])
     n = nro(X)
@@ -66,8 +67,8 @@ function pcanipalsmiss(X; kwargs...)
     pcanipalsmiss(X, weights; kwargs...)
 end
 
-function pcanipalsmiss(X, weights::ProbabilityWeights; kwargs...)
-    pcanipalsmiss!(copy(ensure_mat(X)), weights; kwargs...)
+function pcanipalsmiss(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    pcanipalsmiss!(copy(X), weights; kwargs...)
 end
 
 function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

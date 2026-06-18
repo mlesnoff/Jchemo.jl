@@ -28,9 +28,8 @@ rd(X, Y)
 ```
 """ 
 function rd(X, Y; typ = :cor)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     rd(X, Y, weights; typ)
 end
 
@@ -94,9 +93,8 @@ rv(Xbl)
 ```
 """ 
 function rv(X, Y; centr = true)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     rv(X, Y, weights; centr)
 end
 

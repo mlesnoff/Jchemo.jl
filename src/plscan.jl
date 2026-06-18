@@ -77,9 +77,8 @@ res.cory2ty
 plscan(; kwargs...) = JchemoModel(plscan, nothing, kwargs)
 
 function plscan(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     plscan(X, Y, weights; kwargs...)
 end
 

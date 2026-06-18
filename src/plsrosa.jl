@@ -25,9 +25,8 @@ multiblock data analysis. Journal of Chemometrics 30, 651–662. https://doi.org
 plsrosa(; kwargs...) = JchemoModel(plsrosa, nothing, kwargs)
 
 function plsrosa(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     plsrosa(X, Y, weights; kwargs...)
 end
 

@@ -64,9 +64,8 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 plsravg(; kwargs...) = JchemoModel(plsravg, nothing, kwargs)
 
 function plsravg(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     plsravg(X, Y, weights; kwargs...)
 end
 

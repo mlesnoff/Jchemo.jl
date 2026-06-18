@@ -1,7 +1,7 @@
 """
     pcanipals(; kwargs...)
     pcanipals(X; kwargs...)
-    pcanipals(X, weights::ProbabilityWeights; kwargs...)
+    pcanipals(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 PCA by NIPALS algorithm.
 * `X` : X-data (n, p). 
@@ -41,14 +41,13 @@ https://cran.r-project.org/
 pcanipals(; kwargs...) = JchemoModel(pcanipals, nothing, kwargs)
 
 function pcanipals(X; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     pcanipals(X, weights; kwargs...)
 end
 
-function pcanipals(X, weights::ProbabilityWeights; kwargs...)
-    pcanipals!(copy(ensure_mat(X)), weights; kwargs...)
+function pcanipals(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    pcanipals!(copy(X), weights; kwargs...)
 end
 
 function pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

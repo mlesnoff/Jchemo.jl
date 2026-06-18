@@ -295,9 +295,26 @@ function colmad(X)
     s
 end
 
-colmad(X, weights::ProbabilityWeights) = colmad(X)
+colmad(X, weights::ProbabilityWeights) = colmad(X)  # for consistency when weights
+
+"""
+    def_colscal(scal::Symbol = :std)
+Define the function of column scaling.
+* `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
+```
+"""
+function def_colscal(scal::Symbol = :std)
+    dict = Dict(
+        :std => colstd, 
+        :prt => colprt,
+        :mad => colmad
+        )
+    dict[scal]
+end
 
 ##### Functions skipping missing data
+
 colsumskip(X) = [Base.sum(skipmissing(x)) for x in eachcol(ensure_mat(X))]
 function colsumskip(X, weights::ProbabilityWeights)
     X = ensure_mat(X)
@@ -325,22 +342,6 @@ function colvarskip(X, weights::ProbabilityWeights)
         v[j] = dot(w.values, (rmrow(X[:, j], s) .- v[j]).^2)        
     end
     v 
-end
-
-"""
-    def_colscal(scal::Symbol = :std)
-Define the function of column scaling.
-* `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD), 
-    `prt` (pareto) and `:mad` (MAD).
-```
-"""
-function def_colscal(scal::Symbol = :std)
-    dict = Dict(
-        :std => colstd, 
-        :prt => colprt,
-        :mad => colmad
-        )
-    dict[scal]
 end
 
 

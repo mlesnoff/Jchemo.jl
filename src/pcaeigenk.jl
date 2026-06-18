@@ -1,7 +1,7 @@
 """
     pcaeigenk(; kwargs...)
     pcaeigenk(X; kwargs...)
-    pcaeigenk(X, weights::ProbabilityWeights; kwargs...)
+    pcaeigenk(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     pcaeigenk!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 PCA by Eigen factorization of the kernel matrix XX'.
 * `X` : X-data (n, p). 
@@ -26,14 +26,13 @@ Chemometrics and Intelligent Laboratory Systems 36, 165-172. https://doi.org/10.
 pcaeigenk(; kwargs...) = JchemoModel(pcaeigenk, nothing, kwargs)
 
 function pcaeigenk(X; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     pcaeigenk(X, weights; kwargs...)
 end
 
-function pcaeigenk(X, weights::ProbabilityWeights; kwargs...)
-    pcaeigenk!(copy(ensure_mat(X)), weights; kwargs...)
+function pcaeigenk(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    pcaeigenk!(copy(X), weights; kwargs...)
 end
 
 function pcaeigenk!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

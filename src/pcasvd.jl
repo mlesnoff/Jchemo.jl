@@ -1,7 +1,7 @@
 """
     pcasvd(; kwargs...)
     pcasvd(X; kwargs...)
-    pcasvd(X, weights::ProbabilityWeights; kwargs...)
+    pcasvd(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     pcasvd!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 PCA by SVD factorization.
 * `X` : X-data (n, p). 
@@ -63,14 +63,13 @@ res.cor_circle
 pcasvd(; kwargs...) = JchemoModel(pcasvd, nothing, kwargs)
 
 function pcasvd(X; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     pcasvd(X, weights; kwargs...)
 end
 
-function pcasvd(X, weights::ProbabilityWeights; kwargs...)
-    pcasvd!(copy(ensure_mat(X)), weights; kwargs...)
+function pcasvd(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    pcasvd!(copy(X), weights; kwargs...)
 end
 
 function pcasvd!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

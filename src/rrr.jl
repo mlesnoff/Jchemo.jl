@@ -82,9 +82,8 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 rrr(; kwargs...) = JchemoModel(rrr, nothing, kwargs)
 
 function rrr(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     rrr(X, Y, weights; kwargs...)
 end
 

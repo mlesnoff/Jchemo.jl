@@ -79,9 +79,8 @@ res.cory2ty
 rasvd(; kwargs...) = JchemoModel(rasvd, nothing, kwargs)
 
 function rasvd(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     rasvd(X, Y, weights; kwargs...)
 end
 

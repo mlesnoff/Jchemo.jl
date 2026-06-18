@@ -1,7 +1,7 @@
 """
     pcaout(; kwargs...)
     pcaout(X; kwargs...)
-    pcaout(X, weights::ProbabilityWeights; kwargs...)
+    pcaout(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     pcaout!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Robust PCA using outlierness.
 * `X` : X-data (n, p). 
@@ -50,6 +50,7 @@ n = nro(X)
 
 nlv = 3
 model = pcaout(; nlv)  
+#model = pcaout(; nlv, scal = :mad) 
 #model = pcasvd(; nlv) 
 fit!(model, X)
 @names model
@@ -65,14 +66,13 @@ plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i), ylabel = st
 pcaout(; kwargs...) = JchemoModel(pcaout, nothing, kwargs)
 
 function pcaout(X; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     pcaout(X, weights; kwargs...)
 end
 
-function pcaout(X, weights::ProbabilityWeights; kwargs...)
-    pcaout!(copy(ensure_mat(X)), weights; kwargs...)
+function pcaout(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    pcaout!(copy(X), weights; kwargs...)
 end
 
 function pcaout!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

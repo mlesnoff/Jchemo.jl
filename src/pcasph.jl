@@ -1,7 +1,7 @@
 """
     pcasph(; kwargs...)
     pcasph(X; kwargs...)
-    pcasph(X, weights::ProbabilityWeights; kwargs...)
+    pcasph(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Spherical PCA.
 * `X` : X-data (n, p). 
@@ -54,14 +54,13 @@ plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i), ylabel = st
 pcasph(; kwargs...) = JchemoModel(pcasph, nothing, kwargs)
 
 function pcasph(X; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     pcasph(X, weights; kwargs...)
 end
 
-function pcasph(X, weights::ProbabilityWeights; kwargs...)
-    pcasph!(copy(ensure_mat(X)), weights; kwargs...)
+function pcasph(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    pcasph!(copy(X), weights; kwargs...)
 end
 
 function pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

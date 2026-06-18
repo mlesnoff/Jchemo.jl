@@ -60,9 +60,8 @@ res = predict(model, Xtest, 1:2)
 plsrout(; kwargs...) = JchemoModel(plsrout, nothing, kwargs)
 
 function plsrout(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     plsrout(X, Y, weights; kwargs...)
 end
 

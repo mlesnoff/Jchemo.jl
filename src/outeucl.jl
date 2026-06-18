@@ -40,7 +40,7 @@ function outeucl!(X::Matrix{Q}; scal::Symbol = :none) where Q <: AbstractFloat
     xscales = ones(Q, p)
     if scal != :none
         colscal = def_colscal(scal) 
-        xscales .= colscal(X, weights)
+        xscales .= colscal(X)
         fscale!(X, xscales)
     end
     xmeans = Jchemo.colmedspa(X)

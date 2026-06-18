@@ -33,14 +33,13 @@ transf(model, X[1:2, :])
 rp(; kwargs...) = JchemoModel(rp, nothing, kwargs)
 
 function rp(X; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     rp(X, weights; kwargs...)
 end
 
 function rp(X, weights::ProbabilityWeights; kwargs...)
-    rp!(copy(ensure_mat(X)), weights; kwargs...)
+    rp!(copy(X), weights; kwargs...)
 end
 
 function rp!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

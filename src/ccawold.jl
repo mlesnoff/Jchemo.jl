@@ -88,9 +88,8 @@ res.cory2ty
 ccawold(; kwargs...) = JchemoModel(ccawold, nothing, kwargs)
 
 function ccawold(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     ccawold(X, Y, weights; kwargs...)
 end
 

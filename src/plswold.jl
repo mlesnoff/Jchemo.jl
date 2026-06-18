@@ -28,9 +28,8 @@ Computing 5, 735–743. https://doi.org/10.1137/0905052
 plswold(; kwargs...) = JchemoModel(plswold, nothing, kwargs)
 
 function plswold(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     plswold(X, Y, weights; kwargs...)
 end
 

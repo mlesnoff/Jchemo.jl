@@ -71,9 +71,8 @@ res.cory2ty
 plstuck(; kwargs...) = JchemoModel(plstuck, nothing, kwargs)
 
 function plstuck(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     plstuck(X, Y, weights; kwargs...)
 end
 

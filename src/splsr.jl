@@ -110,9 +110,8 @@ plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", ylabel = "Prop. Explain
 splsr(; kwargs...) = JchemoModel(splsr, nothing, kwargs)
 
 function splsr(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     splsr(X, Y, weights; kwargs...)
 end
 
