@@ -94,7 +94,7 @@ function plskern(X, Y; kwargs...)
 end
 
 function plskern(X, Y, weights::ProbabilityWeights; kwargs...)
-    plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+    plskern!(copy(X), copy(Y), weights; kwargs...)
 end
 
 function plskern!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

@@ -66,7 +66,7 @@ function plsrout(X, Y; kwargs...)
 end
 
 function plsrout(X, Y, weights::ProbabilityWeights; kwargs...)
-    plsrout!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+    plsrout!(copy(X), copy(Y), weights; kwargs...)
 end
 
 function plsrout!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

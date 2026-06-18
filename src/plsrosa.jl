@@ -31,7 +31,7 @@ function plsrosa(X, Y; kwargs...)
 end
 
 function plsrosa(X, Y, weights::ProbabilityWeights; kwargs...)
-    plsrosa!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+    plsrosa!(copy(X), copy(Y), weights; kwargs...)
 end
 
 function plsrosa!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

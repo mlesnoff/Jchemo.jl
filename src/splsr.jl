@@ -116,7 +116,7 @@ function splsr(X, Y; kwargs...)
 end
 
 function splsr(X, Y, weights::ProbabilityWeights; kwargs...)
-    splsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+    splsr!(copy(X), copy(Y), weights; kwargs...)
 end
 
 function splsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

@@ -23,7 +23,7 @@ function rrchol(X, Y; kwargs...)
 end
 
 function rrchol(X, Y, weights::ProbabilityWeights; kwargs...)
-    rrchol!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+    rrchol!(copy(X), copy(Y), weights; kwargs...)
 end
 
 function rrchol!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

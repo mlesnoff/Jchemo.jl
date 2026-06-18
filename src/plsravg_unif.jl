@@ -5,7 +5,7 @@ function plsravg_unif(X, Y; kwargs...)
 end
 
 function plsravg_unif(X, Y, weights::ProbabilityWeights; kwargs...)
-    plsravg_unif!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+    plsravg_unif!(copy(X), copy(Y), weights; kwargs...)
 end
 
 function plsravg_unif!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

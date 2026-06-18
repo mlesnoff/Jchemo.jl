@@ -88,7 +88,7 @@ function spcr(X, Y; kwargs...)
 end
 
 function spcr(X, Y, weights::ProbabilityWeights; kwargs...)
-    spcr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+    spcr!(copy(X), copy(Y), weights; kwargs...)
 end
 
 function spcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

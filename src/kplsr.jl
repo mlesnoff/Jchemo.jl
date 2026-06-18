@@ -85,7 +85,7 @@ function kplsr(X, Y; kwargs...)
 end
 
 function kplsr(X, Y, weights::ProbabilityWeights; kwargs...)
-    kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+    kplsr!(copy(X), copy(Y), weights; kwargs...)
 end
 
 function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

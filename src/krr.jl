@@ -109,7 +109,7 @@ function krr(X, Y; kwargs...)
 end
 
 function krr(X, Y, weights::ProbabilityWeights; kwargs...)
-    krr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+    krr!(copy(X), copy(Y), weights; kwargs...)
 end
 
 function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

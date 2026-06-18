@@ -97,7 +97,7 @@ function dkplsr(X, Y; kwargs...)
 end
 
 function dkplsr(X, Y, weights::ProbabilityWeights; kwargs...)
-    dkplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+    dkplsr!(copy(X), copy(Y), weights; kwargs...)
 end
 
 function dkplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

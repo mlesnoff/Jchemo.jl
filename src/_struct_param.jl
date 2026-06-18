@@ -30,10 +30,6 @@ Base.@kwdef mutable struct ParDetrendarpls{Q <: AbstractFloat}
     verbose::Bool = false      
 end 
 
-Base.@kwdef mutable struct ParEmsc
-    degree::Int = 1 
-end 
-
 Base.@kwdef mutable struct ParFdif
     npoint::Int = 3  
 end 
@@ -62,6 +58,12 @@ Base.@kwdef mutable struct ParSnv
     centr::Bool = true
     scal::Bool = true  
 end 
+
+Base.@kwdef mutable struct ParEmsc
+    degree::Int = 1 
+end 
+
+
 
 ############---- Dimension reduction
 

@@ -34,7 +34,7 @@ function plswold(X, Y; kwargs...)
 end
 
 function plswold(X, Y, weights::ProbabilityWeights; kwargs...)
-    plswold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+    plswold!(copy(X), copy(Y), weights; kwargs...)
 end
 
 function plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

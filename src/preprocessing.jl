@@ -209,7 +209,7 @@ plotsp(Xptest).f
 fdif(; kwargs...) = JchemoModel(fdif, nothing, kwargs)
 
 function fdif(X; kwargs...)
-    par = recovkw(ParFdif{Q}, kwargs).par
+    par = recovkw(ParFdif, kwargs).par
     Fdif(par)
 end
 
@@ -287,13 +287,14 @@ plotsp(Xptest).f
 interpl(; kwargs...) = JchemoModel(interpl, nothing, kwargs)
 
 function interpl(X; kwargs...)
-    par = recovkw(ParInterpl{Q}, kwargs).par
+    X = ensure_mat(X)
+    par = recovkw(ParInterpl{eltype(X)}, kwargs).par
     Interpl(par)
 end
 
 """ 
     transf(object::Interpl, X)
-    transf!(object::Interpl, X::Matrix, M::Matrix)
+    transf!(object::Interpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: AbstractFloat
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -309,17 +310,15 @@ function transf(object::Interpl, X)
     M
 end
 
-function transf!(object::Interpl, X::Matrix, M::Matrix)
-    wl = object.par.wl 
-    wlfin = object.par.wlfin 
+function transf!(object::Interpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: AbstractFloat
     algo = DataInterpolations.CubicSpline
     #algo = DataInterpolations.LinearInterpolation
     ## Not faster: @Threads.threads
     @inbounds for i in axes(X, 1)
         ## argument 'extrapolate' has been removed for CubicSpline
         ## ==> removed from 'interpl' since Jchemo_0.8.4
-        itp = algo(vrow(X, i), wl)
-        M[i, :] .= itp.(wlfin)
+        itp = algo(vrow(X, i), object.par.wl)
+        M[i, :] .= itp.(object.par.wlfin)
     end
 end
 #cubic_spline(y, x) = DataInterpolations.CubicSpline(y, x)
@@ -384,13 +383,13 @@ plotsp(Xptest).f
 mavg(; kwargs...) = JchemoModel(mavg, nothing, kwargs)
 
 function mavg(X; kwargs...)
-    par = recovkw(ParMavg{Q}, kwargs).par
+    par = recovkw(ParMavg, kwargs).par
     Mavg(par)
 end
 
 """ 
     transf(object::Mavg, X)
-    transf!(object::Mavg, X)
+    transf!(object::Mavg, X::Matrix{Q}) where Q <: AbstractFloat
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -401,7 +400,7 @@ function transf(object::Mavg, X)
     X
 end
 
-function transf!(object::Mavg, X::Matrix)
+function transf!(object::Mavg, X::Matrix{Q}) where Q <: AbstractFloat
     p = nco(X)
     npoint = object.par.npoint
     kern = ImageFiltering.centered(ones(npoint) / npoint) 
@@ -486,7 +485,7 @@ function transf(object::Msc, X)
     X
 end
 
-function transf!(object::Msc, X::Matrix)
+function transf!(object::Msc, X::Matrix{Q}) where Q <: AbstractFloat
     Xt = X'
     fitm = mlr(object.xref, Xt)
     @. Xt = Xt - fitm.int

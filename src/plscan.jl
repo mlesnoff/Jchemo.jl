@@ -83,7 +83,7 @@ function plscan(X, Y; kwargs...)
 end
 
 function plscan(X, Y, weights::ProbabilityWeights; kwargs...)
-    plscan!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+    plscan!(copy(X), copy(Y), weights; kwargs...)
 end
 
 function plscan!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

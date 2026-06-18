@@ -93,7 +93,7 @@ function cca(X, Y; kwargs...)
 end
 
 function cca(X, Y, weights::ProbabilityWeights; kwargs...)
-    cca!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+    cca!(copy(X), copy(Y), weights; kwargs...)
 end
 
 function cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat

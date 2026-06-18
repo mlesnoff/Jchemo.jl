@@ -1,7 +1,7 @@
 """
     mlr(; kwargs...)
     mlr(X, Y; kwargs...)
-    mlr(X, Y, weights::ProbabilityWeights; kwargs...)
+    mlr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     mlr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Mutiple linear regression model (MLR).
 * `X` : X-data (n, p).
@@ -54,16 +54,17 @@ mlr(; kwargs...) = JchemoModel(mlr, nothing, kwargs)
 
 function mlr(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     mlr(X, Y, weights; kwargs...)
 end
 
-function mlr(X, Y, weights::ProbabilityWeights; kwargs...)
-    mlr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function mlr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    mlr!(copy(X), copy(Y), weights; kwargs...)
 end
 
 function mlr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    par = recovkw(ParMlr{Q}, kwargs).par
+    par = recovkw(ParMlr, kwargs).par
     sqrtw = sqrt.(weights.values)
     if par.noint
         q = nco(Y)

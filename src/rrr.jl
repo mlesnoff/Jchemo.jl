@@ -88,7 +88,7 @@ function rrr(X, Y; kwargs...)
 end
 
 function rrr(X, Y, weights::ProbabilityWeights; kwargs...)
-    rrr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+    rrr!(copy(X), copy(Y), weights; kwargs...)
 end
 
 function rrr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
