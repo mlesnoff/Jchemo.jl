@@ -1,8 +1,8 @@
 """
-    krbf(X, Y; kwargs...)
+    krbf(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}; kwargs...) where Q <: AbstractFloat
 Compute a Radial-Basis-Function (RBF) kernel Gram matrix. 
-* `X` : X-data (n, p).
-* `Y` : Y-data (m, p).
+* `X` : X matrix (n, p).
+* `Y` : Y matrix (m, p).
 Keyword arguments:
 * `gamma` : Scale parameter.
 
@@ -27,20 +27,16 @@ Y = rand(2, 3)
 krbf(X, Y; gamma = .1)
 ```
 """ 
-function krbf(X, Y; kwargs...)
+function krbf(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParKern{Q}, kwargs).par 
-    Q = eltype(X[1, 1])
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
-    gamma = Q(par.gamma)
-    exp.(-gamma * eucl2(X, Y))
+    exp.(-par.gamma * eucl2(X, Y))
 end
 
 """
-    kpol(X, Y; kwargs...)
+    kpol(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}; kwargs...) where Q <: AbstractFloat
 Compute a polynomial kernel Gram matrix. 
-* `X` : X-data (n, p).
-* `Y` : Y-data (m, p).
+* `X` : X matrix (n, p).
+* `Y` : Y matrix (m, p).
 Keyword arguments:
 * `gamma` : Scale of the polynom.
 * `coef0` : Offset of the polynom.
@@ -67,14 +63,9 @@ Y = rand(2, 3)
 kpol(X, Y; gamma = .1, coef0 = 10, degree = 3)
 ```
 """ 
-function kpol(X, Y; kwargs...)
+function kpol(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParKern{Q}, kwargs).par 
-    Q = eltype(X[1, 1])
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
-    gamma = Q(par.gamma)
-    coef0 = Q(par.coef0)
-    K = gamma * X * Y' .+ coef0
+    K = par.gamma * X * Y' .+ par.coef0
     if par.degree > 1
         zK = copy(K)
         @inbounds for i = 1:(par.degree - 1)

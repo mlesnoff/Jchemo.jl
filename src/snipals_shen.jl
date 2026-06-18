@@ -1,4 +1,4 @@
-function snipals_shen(X; kwargs...)
+function snipals_shen(X::Matrix{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(Jchemo.ParSnipals{Q}, kwargs).par 
     X = ensure_mat(X)
     p = nco(X)
@@ -40,8 +40,7 @@ function snipals_shen(X; kwargs...)
         end
     end
     niter = iter - 1
-    v = vtild / normv(vtild)
-    t = X * v 
-    (t = t, v, vtild, niter)
+    v = vtild / normv(vtild) 
+    (t = X * v, v, vtild, niter)
 end
 

@@ -1,5 +1,5 @@
 ## Here, sparseness is applied after convergence of Nipals
-function snipals_post(X; kwargs...)
+function snipals_post(X::Matrix{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(Jchemo.ParSnipals{Q}, kwargs).par 
     X = ensure_mat(X)
     p = nco(X)
@@ -23,7 +23,6 @@ function snipals_post(X; kwargs...)
     end
     ## End
     v ./= normv(v)
-    t = X * v
-    (t = t, v, niter = res.niter)
+    (t = X * v, v, niter = res.niter)
 end
 

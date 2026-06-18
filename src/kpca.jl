@@ -62,17 +62,17 @@ res.explvarx
 kpca(; kwargs...) = JchemoModel(kpca, nothing, kwargs)
 
 function kpca(X; kwargs...)
-    X = ensure_mat(X)
-    Q = eltype(X)
+    Q = eltype(X[1, 1])
     n = nro(X)
     weights = pweight(ones(Q, n))
     kpca(X, weights; kwargs...)
 end
 
 function kpca(X, weights::ProbabilityWeights; kwargs...)
+    X = ensure_mat(X)
+    Q = eltype(X)
     par = recovkw(ParKpca{Q}, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
-    X = ensure_mat(X)
     n, p = size(X)
     nlv = min(par.nlv, n)
     xscales = ones(Q, p)
