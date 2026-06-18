@@ -55,13 +55,14 @@ f
 detrend_airpls(; kwargs...) = JchemoModel(detrend_airpls, nothing, kwargs)
 
 function detrend_airpls(X; kwargs...)
-    par = recovkw(ParDetrendairpls{Q}, kwargs).par
+    X = ensure_mat(X)
+    par = recovkw(ParDetrendairpls{eltype(X)}, kwargs).par
     Detrendairpls(par)
 end
 
 """ 
     transf(object::Detrendairpls, X)
-    transf!(object::Detrendairpls, X)
+    transf!(object::Detrendairpls, X::Matrix{Q}) where Q <: AbstractFloat
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -72,20 +73,17 @@ function transf(object::Detrendairpls, X)
     X
 end
 
-function transf!(object::Detrendairpls, X::Matrix)
-    n, p = size(X)
-    w = ones(p) 
+function transf!(object::Detrendairpls, X::Matrix{Q}) where Q <: AbstractFloat
+    p = nco(X)
+    w = ones(Q, p) 
     z = similar(X, p)
     z0 = copy(z)
     W = similar(X, p, p)
     D1 = sparse(diff(I(p); dims = 1))
     D2 = diff(D1; dims = 1)
     C = D2' * D2
-    lb = object.par.lb
-    maxit = object.par.maxit
-    verbose = object.par.verbose 
-    if verbose ; println("Nb. iterations:") ; end
-    @inbounds for i = 1:n
+    if object.par.verbose ; println("Nb. iterations:") ; end
+    @inbounds for i in axes(X, 1)
         iter = 1
         cont = true
         x = vrow(X, i)
@@ -93,15 +91,15 @@ function transf!(object::Detrendairpls, X::Matrix)
         while cont
             z0 .= copy(z)
             W .= spdiagm(0 => w)  
-            z .= cholesky!(Hermitian(W + lb * C)) \ (w .* x)
+            z .= cholesky!(Hermitian(W + object.par.lb * C)) \ (w .* x)
             rho = sum(-(x - z) .* (x .< z))  # alternative: normv((x - z) .* (x .< z))
             w .= (exp.(iter * (x - z) / rho)) .* (x .< z)  
             iter = iter + 1
-            if (rho < .001 * normx) || (iter > maxit)
+            if (rho < .001 * normx) || (iter > object.par.maxit)
                 cont = false
             end
         end
-        if verbose ; print(iter - 1, " ") ; end
+        if object.par.verbose ; print(iter - 1, " ") ; end
         X[i, :] .= x .- z
     end
 end

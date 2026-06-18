@@ -51,13 +51,14 @@ f
 detrend_arpls(; kwargs...) = JchemoModel(detrend_arpls, nothing, kwargs)
 
 function detrend_arpls(X; kwargs...)
-    par = recovkw(ParDetrendarpls{Q}, kwargs).par
+    X = ensure_mat(X)
+    par = recovkw(ParDetrendarpls{eltype(X)}, kwargs).par
     Detrendarpls(par)
 end
 
 """ 
     transf(object::Detrendarpls, X)
-    transf!(object::Detrendarpls, X)
+    transf!(object::Detrendarpls, X::Matrix{Q}) where Q <: AbstractFloat
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -68,9 +69,9 @@ function transf(object::Detrendarpls, X)
     X
 end
 
-function transf!(object::Detrendarpls, X::Matrix)
-    n, p = size(X)
-    w = ones(p) 
+function transf!(object::Detrendarpls, X::Matrix{Q}) where Q <: AbstractFloat
+    p = nco(X)
+    w = ones(Q, p) 
     z = similar(X, p)
     z0 = copy(z)
     d = copy(z)
@@ -78,19 +79,15 @@ function transf!(object::Detrendarpls, X::Matrix)
     D1 = sparse(diff(I(p); dims = 1))
     D2 = diff(D1; dims = 1)
     C = D2' * D2
-    lb = object.par.lb
-    tol = object.par.tol
-    maxit = object.par.maxit
-    verbose = object.par.verbose 
-    if verbose ; println("Nb. iterations:") ; end
-    @inbounds for i = 1:n
+    if object.par.verbose ; println("Nb. iterations:") ; end
+    @inbounds for i in axes(X, 1)
         iter = 1
         cont = true
         x = vrow(X, i)
         while cont
             z0 .= copy(z)
             W .= spdiagm(0 => w)    
-            z .= cholesky!(Hermitian(W + lb * C)) \ (w .* x)
+            z .= cholesky!(Hermitian(W + object.par.lb * C)) \ (w .* x)
             d .= (x - z)
             v = d[x .< z]
             mu = mean(v)
@@ -98,11 +95,11 @@ function transf!(object::Detrendarpls, X::Matrix)
             w .= 1 ./ (1 .+ exp.(2 * (d .- (-mu + 2 * sd)) / sd))
             dif = sum((z .- z0).^2)
             iter = iter + 1
-            if (dif < tol) || (iter > maxit)
+            if (dif < object.par.tol) || (iter > object.par.maxit)
                 cont = false
             end
         end
-        if verbose ; print(iter - 1, " ") ; end 
+        if object.par.verbose ; print(iter - 1, " ") ; end 
         X[i, :] .= x .- z
     end
 end
