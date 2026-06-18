@@ -63,8 +63,6 @@ Base.@kwdef mutable struct ParEmsc
     degree::Int = 1 
 end 
 
-
-
 ############---- Dimension reduction
 
 Base.@kwdef mutable struct ParPca

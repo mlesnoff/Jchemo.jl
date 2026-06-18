@@ -473,9 +473,7 @@ struct Msc
     xref::Vector
 end
 
-function msc(X, xref)
-    Msc(vec(xref))
-end
+msc(X, xref) = Msc(vec(xref))
 
 msc(X) = msc(X, colmean(X)) 
 
@@ -545,7 +543,7 @@ plotsp(Xptest, wl).f
 
 #### Direct
 
-degree = 3
+degree = 2
 fitm = emsc(Xtrain; degree) 
 #fitm = emsc(Xtrain, colmean(Xtrain); degree) 
 #fitm = emsc(Xtrain, colmed(Xtrain); degree) 
@@ -555,13 +553,14 @@ fitm = emsc(Xtrain; degree)
 emsc(; kwargs...) = JchemoModel(emsc, nothing, kwargs)
 
 function emsc(X, xref; kwargs...)
-    par = recovkw(ParEmsc{Q}, kwargs).par
     X = ensure_mat(X)
-    Q = eltype(xref)
+    Q = eltype(X)
+    par = recovkw(ParEmsc, kwargs).par
     p = length(xref) 
     wls = Q.(collect(1:p))
-    mu = meanv(wls) ; s = stdv(wls)
-    @. wls = (wls - mu) / s
+    mu = meanv(wls)
+    sigma = stdv(wls)
+    @. wls = (wls - mu) / sigma
     P = similar(xref, p, par.degree + 1)
     @inbounds for j = 0:par.degree
         P[:, j + 1] .= wls.^j
@@ -581,8 +580,7 @@ function transf(object::Emsc, X)
     X
 end
 
-function transf!(object::Emsc, X::Matrix)
-    X = ensure_mat(X)
+function transf!(object::Emsc, X::Matrix{Q}) where Q <: AbstractFloat
     m, p = size(X)
     npar = nco(object.Xr)
     Xt = X'
