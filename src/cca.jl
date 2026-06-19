@@ -1,7 +1,7 @@
 """
     cca(; kwargs...)
     cca(X, Y; kwargs...)
-    cca(X, Y, weights::ProbabilityWeights; kwargs...)
+    cca(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Canonical correlation Analysis (CCA, RCCA).
 * `X` : First block of data.
@@ -11,8 +11,8 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are:`:none`, `:frob`. See functions `blockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
-* `scal` : Boolean. If `true`, each column of blocks `X` and `Y` is scaled by its uncorrected standard 
-    deviation (before the block scaling).
+* `scal` : Symbol defining the column scaling of `X` and `Y` (before the block scaling). Possible values are: `:none`, 
+    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
 
 This function implements a CCA algorithm using SVD decompositions and presented in Weenink 2003 section 2. 
 
@@ -88,11 +88,12 @@ cca(; kwargs...) = JchemoModel(cca, nothing, kwargs)
 
 function cca(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     cca(X, Y, weights; kwargs...)
 end
 
-function cca(X, Y, weights::ProbabilityWeights; kwargs...)
+function cca(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     cca!(copy(X), copy(Y), weights; kwargs...)
 end
 
@@ -104,7 +105,6 @@ function cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
-    tau = Q(par.tau) 
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     xscales = ones(Q, p)
@@ -134,18 +134,18 @@ function cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     fweightr!(X, sqrtw)
     fweightr!(Y, sqrtw) 
     # End
-    if tau == 0
+    if par.tau == 0.
         Cx = Symmetric(X' * X)
         Cy = Symmetric(Y' * Y)
     else
         Ix = Diagonal(ones(Q, p)) 
         Iy = Diagonal(ones(Q, q)) 
-        if tau == 1
+        if par.tau == 1.
             Cx = Ix
             Cy = Iy
         else
-            Cx = Symmetric((1 - tau) * X' * X + tau * Ix)
-            Cy = Symmetric((1 - tau) * Y' * Y + tau * Iy)
+            Cx = Symmetric((1 - par.tau) * X' * X + par.tau * Ix)
+            Cy = Symmetric((1 - par.tau) * Y' * Y + par.tau * Iy)
         end
     end
     Cxy = X' * Y    

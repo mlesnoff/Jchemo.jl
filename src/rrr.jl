@@ -1,7 +1,7 @@
 """
     rrr(; kwargs...)
     rrr(X, Y; kwargs...)
-    rrr(X, Y, weights::ProbabilityWeights; kwargs...)
+    rrr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Reduced rank regression (RRR, a.k.a RA).
 * `X` : X-data (n, p).
@@ -87,7 +87,7 @@ function rrr(X, Y; kwargs...)
     rrr(X, Y, weights; kwargs...)
 end
 
-function rrr(X, Y, weights::ProbabilityWeights; kwargs...)
+function rrr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     rrr!(copy(X), copy(Y), weights; kwargs...)
 end
 

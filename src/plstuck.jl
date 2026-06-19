@@ -1,7 +1,7 @@
 """
     plstuck(; kwargs...)
     plstuck(X, Y; kwargs...)
-    plstuck(X, Y, weights::ProbabilityWeights; kwargs...)
+    plstuck(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Tucker's inter-battery method of factor analysis
 * `X` : First block of data.
@@ -72,11 +72,12 @@ plstuck(; kwargs...) = JchemoModel(plstuck, nothing, kwargs)
 
 function plstuck(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     plstuck(X, Y, weights; kwargs...)
 end
 
-function plstuck(X, Y, weights::ProbabilityWeights; kwargs...)
+function plstuck(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     plstuck!(copy(X), copy(Y), weights; kwargs...)
 end
 

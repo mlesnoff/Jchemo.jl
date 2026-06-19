@@ -1,7 +1,7 @@
 """
     plskern(; kwargs...)
     plskern(X, Y; kwargs...)
-    plskern(X, Y, weights::ProbabilityWeights; kwargs...)
+    plskern(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     plskern!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Partial least squares regression (PLSR) with the "improved kernel algorithm #1" (Dayal & McGegor, 1997).
 * `X` : X-data (n, p).
@@ -93,7 +93,7 @@ function plskern(X, Y; kwargs...)
     plskern(X, Y, weights; kwargs...)
 end
 
-function plskern(X, Y, weights::ProbabilityWeights; kwargs...)
+function plskern(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     plskern!(copy(X), copy(Y), weights; kwargs...)
 end
 

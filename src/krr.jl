@@ -1,7 +1,7 @@
 """
     krr(; kwargs...)
     krr(X, Y; kwargs...)
-    krr(X, Y, weights::ProbabilityWeights; kwargs...)
+    krr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Kernel ridge regression (KRR) implemented by SVD factorization.
 * `X` : X-data (n, p).
@@ -108,7 +108,7 @@ function krr(X, Y; kwargs...)
     krr(X, Y, weights; kwargs...)
 end
 
-function krr(X, Y, weights::ProbabilityWeights; kwargs...)
+function krr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     krr!(copy(X), copy(Y), weights; kwargs...)
 end
 

@@ -1,7 +1,7 @@
 """
     dkplsr(; kwargs...)
     dkplsr(X, Y; kwargs...)
-    dkplsr(X, Y, weights::ProbabilityWeights; kwargs...)
+    dkplsr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     dkplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Direct kernel partial least squares regression (DKPLSR) (Bennett & Embrechts 2003).
 * `X` : X-data (n, p).
@@ -96,7 +96,7 @@ function dkplsr(X, Y; kwargs...)
     dkplsr(X, Y, weights; kwargs...)
 end
 
-function dkplsr(X, Y, weights::ProbabilityWeights; kwargs...)
+function dkplsr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     dkplsr!(copy(X), copy(Y), weights; kwargs...)
 end
 

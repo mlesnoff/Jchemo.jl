@@ -1,6 +1,6 @@
 """
     rd(X, Y; typ = :cor)
-    rd(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; typ = :cor) where Q <: AbstractFloat
+    rd(X::Array{Q}, Y::Array{Q}, weights::ProbabilityWeights{Q}; typ = :cor) where Q <: AbstractFloat
 Compute redundancy coefficients (Rd).
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
@@ -33,7 +33,7 @@ function rd(X, Y; typ = :cor)
     rd(X, ensure_mat(Y), weights; typ)
 end
 
-function rd(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; typ = :cor) where Q <: AbstractFloat
+function rd(X::Array{Q}, Y::Array{Q}, weights::ProbabilityWeights{Q}; typ = :cor) where Q <: AbstractFloat
     @assert in([:cor, :cov])(typ) "Wrong value for argument 'typ'." 
     if typ == :cor
         A = corm(X, Y, weights).^2
@@ -45,7 +45,7 @@ end
 
 """
     rv(X, Y; centr = true)
-    rv(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; centr = true) where Q <: AbstractFloat
+    rv(X::Array{Q}, Y::Array{Q}, weights::ProbabilityWeights{Q}; centr = true) where Q <: AbstractFloat
     rv(Xbl::Vector; centr = true)
 Compute RV coefficients.
 * `X` : Matrix (n, p).
@@ -99,7 +99,7 @@ function rv(X, Y; centr = true)
     rv(X, ensure_mat(Y), weights; centr)
 end
 
-function rv(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; centr = true) where Q <: AbstractFloat
+function rv(X::Array{Q}, Y::Array{Q}, weights::ProbabilityWeights{Q}; centr = true) where Q <: AbstractFloat
     n, p = size(X)
     if centr
         fcenter!(X, colmean(X, weights))

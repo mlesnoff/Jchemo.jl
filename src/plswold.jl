@@ -1,7 +1,7 @@
 """
     plswold(; kwargs...)
     plswold(X, Y; kwargs...)
-    plswold(X, Y, weights::ProbabilityWeights; kwargs...)
+    plswold(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Partial Least Squares Regression (PLSR) with the Wold algorithm 
 * `X` : X-data (n, p).
@@ -33,7 +33,7 @@ function plswold(X, Y; kwargs...)
     plswold(X, Y, weights; kwargs...)
 end
 
-function plswold(X, Y, weights::ProbabilityWeights; kwargs...)
+function plswold(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     plswold!(copy(X), copy(Y), weights; kwargs...)
 end
 

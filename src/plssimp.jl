@@ -1,7 +1,7 @@
 """
     plssimp(; kwargs...)
     plssimp(X, Y; kwargs...)
-    plssimp(X, Y, weights::ProbabilityWeights; kwargs...)
+    plssimp(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     plssimp!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Partial Least Squares Regression (PLSR) with the SIMPLS algorithm (de Jong 1993).
 * `X` : X-data (n, p).
@@ -28,7 +28,7 @@ function plssimp(X, Y; kwargs...)
     plssimp(X, Y, weights; kwargs...)
 end
 
-function plssimp(X, Y, weights::ProbabilityWeights; kwargs...)
+function plssimp(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     plssimp!(copy(X), copy(Y), weights; kwargs...)
 end
 

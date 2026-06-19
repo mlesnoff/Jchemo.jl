@@ -1,7 +1,7 @@
 """ 
     plsravg(; kwargs...)
     plsravg(X, Y; kwargs...)
-    plsravg(X, Y, weights::ProbabilityWeights; kwargs...)
+    plsravg(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     plsravg!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Averaging PLSR models with different numbers of  latent variables (PLSR-AVG).
 * `X` : X-data (n, p).
@@ -69,7 +69,7 @@ function plsravg(X, Y; kwargs...)
     plsravg(X, Y, weights; kwargs...)
 end
 
-function plsravg(X, Y, weights::ProbabilityWeights; kwargs...)
+function plsravg(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     plsravg!(copy(X), copy(Y), weights; kwargs...)
 end
 

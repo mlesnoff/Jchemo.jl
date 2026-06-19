@@ -1,7 +1,7 @@
 """
     kplsr(; kwargs...)
     kplsr(X, Y; kwargs...)
-    kplsr(X, Y, weights::ProbabilityWeights; kwargs...)
+    kplsr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Kernel partial least squares regression (KPLSR) implemented with a Nipals algorithm (Rosipal & Trejo, 2001).
 * `X` : X-data (n, p).
@@ -84,7 +84,7 @@ function kplsr(X, Y; kwargs...)
     kplsr(X, Y, weights; kwargs...)
 end
 
-function kplsr(X, Y, weights::ProbabilityWeights; kwargs...)
+function kplsr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     kplsr!(copy(X), copy(Y), weights; kwargs...)
 end
 

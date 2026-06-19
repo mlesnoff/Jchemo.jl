@@ -1,7 +1,7 @@
 """
     rrchol(; kwargs...)
     rrchol(X, Y; kwargs...)
-    rrchol(X, Y, weights::ProbabilityWeights; kwargs...)
+    rrchol(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     rrchol!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Ridge regression (RR) using the Normal equations and a Cholesky factorization.
 * `X` : X-data (n, p).
@@ -22,7 +22,7 @@ function rrchol(X, Y; kwargs...)
     rrchol(X, Y, weights; kwargs...)
 end
 
-function rrchol(X, Y, weights::ProbabilityWeights; kwargs...)
+function rrchol(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     rrchol!(copy(X), copy(Y), weights; kwargs...)
 end
 

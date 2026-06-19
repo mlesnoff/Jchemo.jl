@@ -1,7 +1,7 @@
 """
     plscan(; kwargs...)
     plscan(X, Y; kwargs...)
-    plscan(X, Y, weights::ProbabilityWeights; kwargs...)
+    plscan(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     plscan!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Canonical partial least squares regression (Canonical PLS).
 * `X` : First block of data.
@@ -10,8 +10,8 @@ Canonical partial least squares regression (Canonical PLS).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`. See functions `blockscal`.
-* `scal` : Boolean. If `true`, each column of blocks `X` and `Y` is scaled by its uncorrected standard 
-    deviation (before the block scaling).
+* `scal` : Symbol defining the column scaling of `X` and `Y` (before the block scaling). Possible values are: `:none`, 
+    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
 
 Canonical PLS with the Nipals algorithm (Wold 1984, Tenenhaus 1998 chap.11), referred to as PLS-W2A 
 (i.e. Wold PLS mode A) in Wegelin 2000. The two blocks `X` and `Y` play a symmetric role.  After each 
@@ -78,11 +78,12 @@ plscan(; kwargs...) = JchemoModel(plscan, nothing, kwargs)
 
 function plscan(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     plscan(X, Y, weights; kwargs...)
 end
 
-function plscan(X, Y, weights::ProbabilityWeights; kwargs...)
+function plscan(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     plscan!(copy(X), copy(Y), weights; kwargs...)
 end
 

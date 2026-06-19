@@ -1,7 +1,7 @@
 """
     rr(; kwargs...)
     rr(X, Y; kwargs...)
-    rr(X, Y, weights::ProbabilityWeights; kwargs...)
+    rr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Ridge regression (RR) implemented by SVD factorization.
 * `X` : X-data (n, p).
@@ -78,7 +78,7 @@ function rr(X, Y; kwargs...)
     rr(X, Y, weights; kwargs...)
 end
 
-function rr(X, Y, weights::ProbabilityWeights; kwargs...)
+function rr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     rr!(copy(X), copy(Y), weights; kwargs...)
 end
 

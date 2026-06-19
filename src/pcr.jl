@@ -1,7 +1,7 @@
 """
     pcr(; kwargs...)
     pcr(X, Y; kwargs...)
-    pcr(X, Y, weights::ProbabilityWeights; kwargs...)
+    pcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     pcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Principal component regression (PCR) with a SVD factorization.
 * `X` : X-data (n, p).
@@ -71,7 +71,7 @@ function pcr(X, Y; kwargs...)
     pcr(X, Y, weights; kwargs...)
 end
 
-function pcr(X, Y, weights::ProbabilityWeights; kwargs...)
+function pcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     pcr!(copy(X), copy(Y), weights; kwargs...)
 end
 

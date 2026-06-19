@@ -1,7 +1,7 @@
 """
     plsrosa(; kwargs...)
     plsrosa(X, Y; kwargs...)
-    plsrosa(X, Y, weights::ProbabilityWeights; kwargs...)
+    plsrosa(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     plsrosa!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Partial Least Squares Regression (PLSR) with the  ROSA algorithm (Liland et al. 2016).
 * `X` : X-data (n, p).
@@ -30,7 +30,7 @@ function plsrosa(X, Y; kwargs...)
     plsrosa(X, Y, weights; kwargs...)
 end
 
-function plsrosa(X, Y, weights::ProbabilityWeights; kwargs...)
+function plsrosa(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     plsrosa!(copy(X), copy(Y), weights; kwargs...)
 end
 

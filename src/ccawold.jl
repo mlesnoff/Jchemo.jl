@@ -1,7 +1,7 @@
 """
     ccawold(; kwargs...)
     ccawold(X, Y; kwargs...)
-    ccawold(X, Y, weights::ProbabilityWeights; kwargs...)
+    ccawold(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Canonical correlation analysis (CCA, RCCA) - Wold Nipals algorithm.
 * `X` : First block of data.
@@ -13,8 +13,8 @@ Keyword arguments:
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
-* `scal` : Boolean. If `true`, each column of blocks `X` and `Y` is scaled by its uncorrected standard 
-    deviation (before the block scaling).
+* `scal` : Symbol defining the column scaling of `X` and `Y` (before the block scaling). Possible values are: `:none`, 
+    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
 
 This function implements the Nipals ccawold algorithm presented by Tenenhaus 1998 p.204 (related to Wold et al. 1984). 
 
@@ -89,11 +89,12 @@ ccawold(; kwargs...) = JchemoModel(ccawold, nothing, kwargs)
 
 function ccawold(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     ccawold(X, Y, weights; kwargs...)
 end
 
-function ccawold(X, Y, weights::ProbabilityWeights; kwargs...)
+function ccawold(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     ccawold!(copy(X), copy(Y), weights; kwargs...)
 end
 
@@ -105,7 +106,6 @@ function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
-    tau = Q(par.tau) 
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     xscales = ones(Q, p)
@@ -136,21 +136,21 @@ function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     fweightr!(Y, sqrtw)
     ## Pre-allocation
     Tx = similar(X, n, nlv)
-    Ty = copy(Tx)
+    Ty = similar(Tx)
     Wx = similar(X, p, nlv)
     Wy = similar(X, q, nlv)
-    Vx = copy(Wx)
-    Vy = copy(Wy)
+    Vx = similar(Wx)
+    Vy = similar(Wy)
     TTx = similar(X, nlv)
-    TTy = copy(TTx)
+    TTy = similar(TTx)
     tx   = similar(X, n)
-    ty = copy(tx) 
+    ty = similar(tx) 
     wx  = similar(X, p)
-    wxtild = copy(wx)    
+    wxtild = similar(wx)    
     wy  = similar(X, q)
-    wytild = copy(wy)
-    vx   = copy(wx)
-    vy   = copy(wy)
+    wytild = similar(wy)
+    vx   = similar(wx)
+    vy   = similar(wy)
     niter = zeros(nlv)
     Ix = Diagonal(ones(Q, p)) 
     Iy = Diagonal(ones(Q, q)) 
@@ -162,16 +162,16 @@ function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
         iter = 1
         wx .= Q.(rand(p))
         ## invCx, invCy
-        if tau == 0       
+        if par.tau == 0.       
             invCx = inv(X' * X)
             invCy = inv(Y' * Y)
         else
-            if tau == 1   
+            if par.tau == 1.   
                 invCx = copy(Ix)
                 invCy = copy(Iy)
             else
-                invCx = inv((1 - tau) * X' * X + tau * Ix)
-                invCy = inv((1 - tau) * Y' * Y + tau * Iy)
+                invCx = inv((1 - par.tau) * X' * X + par.tau * Ix)
+                invCy = inv((1 - par.tau) * Y' * Y + par.tau * Iy)
             end
         end 
         ## End

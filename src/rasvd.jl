@@ -1,7 +1,7 @@
 """
     rasvd(; kwargs...)
     rasvd(X, Y; kwargs...)
-    rasvd(X, Y, weights::ProbabilityWeights; kwargs...)
+    rasvd(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Redundancy analysis (RA), a.k.a PCA on instrumental variables (PCAIV)
 * `X` : First block of data.
@@ -11,8 +11,8 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`. See functions `blockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
-* `scal` : Boolean. If `true`, each column of blocks `X` and `Y` is scaled by its uncorrected standard 
-    deviation (before the block scaling).
+* `scal` : Symbol defining the column scaling of `X` and `Y` (before the block scaling). Possible values are: `:none`, 
+    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
  
 See e.g., Bougeard et al. 2011a,b and Legendre & Legendre 2012. Let Y.hat be the fitted values of the regression 
 of `Y` on `X`. The scores `Ty` are the PCA scores of Y.hat. The scores `Tx` are the fitted values of the 
@@ -80,11 +80,12 @@ rasvd(; kwargs...) = JchemoModel(rasvd, nothing, kwargs)
 
 function rasvd(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     rasvd(X, Y, weights; kwargs...)
 end
 
-function rasvd(X, Y, weights::ProbabilityWeights; kwargs...)
+function rasvd(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     rasvd!(copy(X), copy(Y), weights; kwargs...)
 end
 

@@ -1,7 +1,7 @@
 """
     spcr(; kwargs...)
     spcr(X, Y; kwargs...)
-    spcr(X, Y, weights::ProbabilityWeights; kwargs...)
+    spcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     spcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Sparse principal component regression (sPCR). 
 * `X` : X-data (n, p).
@@ -87,7 +87,7 @@ function spcr(X, Y; kwargs...)
     spcr(X, Y, weights; kwargs...)
 end
 
-function spcr(X, Y, weights::ProbabilityWeights; kwargs...)
+function spcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     spcr!(copy(X), copy(Y), weights; kwargs...)
 end
 

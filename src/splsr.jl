@@ -1,7 +1,7 @@
 """
     splsr(; kwargs...)
     splsr(X, Y; kwargs...)
-    splsr(X, Y, weights::ProbabilityWeights; kwargs...)
+    splsr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     splsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Sparse partial least squares regression (Lê Cao et al. 2008)
 * `X` : X-data (n, p).
@@ -115,7 +115,7 @@ function splsr(X, Y; kwargs...)
     splsr(X, Y, weights; kwargs...)
 end
 
-function splsr(X, Y, weights::ProbabilityWeights; kwargs...)
+function splsr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     splsr!(copy(X), copy(Y), weights; kwargs...)
 end
 

@@ -1,7 +1,7 @@
 """
     plsnipals(; kwargs...)
     plsnipals(X, Y; kwargs...)
-    plsnipals(X, Y, weights::ProbabilityWeights; kwargs...)
+    plsnipals(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Partial Least Squares Regression (PLSR) with the Nipals algorithm.
 * `X` : X-data (n, p).
@@ -34,7 +34,7 @@ function plsnipals(X, Y; kwargs...)
     plsnipals(X, Y, weights; kwargs...)
 end
 
-function plsnipals(X, Y, weights::ProbabilityWeights; kwargs...)
+function plsnipals(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     plsnipals!(copy(X), copy(Y), weights; kwargs...)
 end
 
