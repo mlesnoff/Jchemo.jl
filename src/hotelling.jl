@@ -1,8 +1,8 @@
 """
-    hotelling(X, y; digits = 5)
+    hotelling(X, y::Vector{String}; digits::Int = 5)
 Two-sample Hotelling's T-squared test.
 * `X` : X-data (n, p).
-* `y` : A vector (n) defining the 2-class membership.
+* `y` : Univariate categorical data (2-class membership) (n). Must be a `Vector{String}`.
 Keyword arguments:
 * `digits` : Nb. digits for the outputs.
 
@@ -33,7 +33,7 @@ W = matW(Y, fact, pweight(ones(n))).W
 manova(Y, @formula(0 ~ catal), datf; test)
 ```
 """
-function hotelling(X, y; digits = 5)
+function hotelling(X, y::Vector{String}; digits::Int = 5)
     n, p = size(X)
     res = matWc(X, y)
     ni = res.ni 

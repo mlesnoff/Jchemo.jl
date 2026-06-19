@@ -1,8 +1,8 @@
 """
-    matB(X, y, weights::ProbabilityWeights)
+    matB(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Between-class covariance matrix.
-* `X` : X-data (n, p).
-* `y` : A vector (n) defining the class membership.
+* `X` : X-matrix (n, p).
+* `y` : Univariate categorical data (class membership) (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 Compute the between-class covariance matrix (output `B`) of `X`. This is the (non-corrected) covariance matrix of 
@@ -14,7 +14,7 @@ using Jchemo
 
 n = 20 ; p = 3
 X = rand(n, p)
-y = rand(1:3, n)
+y = string.(rand(1:3, n))
 tab(y) 
 weights = pweight(ones(n)) 
 
@@ -41,9 +41,7 @@ matW(X, y, weights).W + matB(X, y, weights).B
 covm(X, weights)
 ```
 """ 
-function matB(X, y, weights::ProbabilityWeights)
-    X = ensure_mat(X)
-    y = vec(y)  # required for findall 
+function matB(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
     p = nco(X)
     taby = tab(y)
     lev = taby.keys
@@ -60,10 +58,10 @@ function matB(X, y, weights::ProbabilityWeights)
 end
 
 """
-    matW(X, y, weights::ProbabilityWeights)
+    matW(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Within-class (non-corrected) covariance matrices.
-* `X` : X-data (n, p).
-* `y` : A vector (n) defing the class membership.
+* `X` : X-matrix (n, p).
+* `y` : Univariate categorical data (class membership) (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 Compute the (non-corrected) within-class and pooled covariance matrices (outputs `Wi` and `W`, respectively) of `X`. 
@@ -73,9 +71,7 @@ If class i contains only one observation, `Wi` is computed by:
 
 For examples, see function `matB`. 
 """ 
-function matW(X, y, weights::ProbabilityWeights)
-    X = ensure_mat(X)
-    y = vec(y)  # required for findall 
+function matW(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
     p = nco(X) 
     taby = tab(y)
     lev = taby.keys
@@ -106,10 +102,10 @@ function matW(X, y, weights::ProbabilityWeights)
 end
 
 """
-    matWc(X, y)
+    matWc(X::Matrix{Q}, y::Vector{String}) where Q <: AbstractFloat
 Within-class (corrected) covariance matrices.
-* `X` : X-data (n, p).
-* `y` : A vector (n) defing the class membership.
+* `X` : X-matrix (n, p).
+* `y` : Univariate categorical data (class membership) (n). Must be a `Vector{String}`.
 
 Compute the (corrected) within-class and pooled covariance matrices (outputs `Wi` and `W`, respectively) of `X`. 
 
@@ -119,8 +115,6 @@ If class i contains only one observation, `Wi` is computed by:
 For examples, see function `matB`. 
 """ 
 function matWc(X, y)
-    X = ensure_mat(X)
-    y = vec(y)  # required for findall 
     n, p = size(X) 
     taby = tab(y)
     lev = taby.keys

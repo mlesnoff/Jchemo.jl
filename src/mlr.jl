@@ -101,9 +101,8 @@ Compute the Y-predictions from the fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Mlr, X)
-    X = ensure_mat(X)
     z = coef(object)
-    pred = z.int .+ X * z.B
+    pred = z.int .+ ensure_mat(X) * z.B
     (pred = pred,)
 end
 

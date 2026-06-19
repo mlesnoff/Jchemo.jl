@@ -1,7 +1,7 @@
 """
-    aov1(x, Y)
+    aov1(x::Vector{String}, Y)
     One-factor ANOVA test.
-* `x` : Univariate categorical (factor) data (n).
+* `x` : Univariate categorical data (class membership) (n). Must be a `Vector{String}`.
 * `Y` : Y-data (n, q).
 
 ## Examples
@@ -24,19 +24,20 @@ res.F
 res.pval
 ```
 """ 
-function aov1(x, Y)
+function aov1(x::Vector{String}, Y)
     Y = ensure_mat(Y)
+    Q = eltype(Y)
     n = length(x)
     tabx = tab(x)
     lev = tabx.keys
     ni = tabx.vals
     nlev = length(lev)
-    Xdummy = dummy(x).Y
+    Xdummy = dummy(Q, x).Y
     Yc = fcenter(Y, colmean(Y))
-    fitm = mlr(convert.(Float64, Xdummy), Yc)
+    fitm = mlr(Xdummy, Yc)
     pred = predict(fitm, Xdummy).pred
-    SSF = sum((pred.^2); dims = 1)   # matrix
-    SSR = ssr(pred, Yc)              # matrix
+    SSF = sum((pred.^2); dims = 1)   # return matrix
+    SSR = ssr(pred, Yc)              # return matrix
     df_fact = nlev - 1 
     df_res = n - nlev
     MSF = SSF / df_fact
