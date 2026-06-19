@@ -1,6 +1,6 @@
 """
     rd(X, Y; typ = :cor)
-    rd(X, Y, weights::ProbabilityWeights; typ = :cor)
+    rd(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; typ = :cor)  where Q <: AbstractFloat
 Compute redundancy coefficients (Rd).
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
@@ -30,21 +30,22 @@ rd(X, Y)
 function rd(X, Y; typ = :cor)
     X = ensure_mat(X)
     weights = pweight(ones(eltype(X), nro(X)))
-    rd(X, Y, weights; typ)
+    rd(X, ensure_mat(Y), weights; typ)
 end
 
-function rd(X, Y, weights::ProbabilityWeights; typ = :cor)
+function rd(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; typ = :cor)  where Q <: AbstractFloat
     @assert in([:cor, :cov])(typ) "Wrong value for argument 'typ'." 
     if typ == :cor
         A = corm(X, Y, weights).^2
     elseif typ == :cov
         A = covm(X, Y, weights).^2
     end    
-    mean(A; dims = 1)  # keep matrix format
+    mean(A; dims = 1)  # use 'mean' since keep matrix format
 end
 
 """
     rv(X, Y; centr = true)
+    rv(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; centr = true)  where Q <: AbstractFloat
     rv(Xbl::Vector; centr = true)
 Compute RV coefficients.
 * `X` : Matrix (n, p).
@@ -95,12 +96,10 @@ rv(Xbl)
 function rv(X, Y; centr = true)
     X = ensure_mat(X)
     weights = pweight(ones(eltype(X), nro(X)))
-    rv(X, Y, weights; centr)
+    rv(X, ensure_mat(Y), weights; centr)
 end
 
-function rv(X, Y, weights::ProbabilityWeights; centr = true)
-    X = copy(ensure_mat(X))
-    Y = copy(ensure_mat(Y))
+function rv(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; centr = true)  where Q <: AbstractFloat
     n, p = size(X)
     if centr
         fcenter!(X, colmean(X, weights))
@@ -130,8 +129,9 @@ function rv(X, Y, weights::ProbabilityWeights; centr = true)
 end
 
 function rv(Xbl::Vector; centr = true)
+    Q = eltype(ensure_mat(Xbl[1]))
     nbl = length(Xbl)
-    mat = zeros(eltype(Xbl[1]), nbl, nbl)
+    mat = Array{Q}(undef, nbl, nbl)
     for i = 1:nbl, j = 1:nbl
         mat[i, j] = rv(Xbl[i], Xbl[j]; centr) 
     end
