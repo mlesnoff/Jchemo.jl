@@ -203,9 +203,13 @@ tab(x)
 findmax_cla(x)
 ```
 """
+## faire une fct findmax_cla(x, y) où on somme y, puis findmax_cla(x) = findmax_cla(x, ones())
+## Virer ftcs  ci-dessous en rectifiant code dans fonctins impliquées paavec wesieghts: knnda etc.
+# utiliser aggsumv
+
 function findmax_cla(x::Vector{String})
     n = length(x)
-    res = aggstat(ones(n), x; algo = sum)
+    res = aggsumv(ones(Int, n), x)
     res.lev[argmax(res.X)]   # if equal, argmax takes the first
 end
 
