@@ -1,10 +1,12 @@
 """
-    tab(X::AbstractArray)
+    tab(x::AbstractArray)
     tab(X::DataFrame; group = nothing)
 Tabulation of categorical variables.
-* `x` : Categorical variable or dataset containing categorical variable(s).
+* `x` : Categorical variable to tabulate.
+* `X` : Dataframe containing categorical variable(s) to tabulate.
 Specific for a dataset:
-* `group` : Vector of the names of the group variables to consider in `X` (by default: all the columns of `X`).
+* `group` : Vector of the names (Sring or Symbol) of the group variables to consider in dataframe `X` 
+    (by default, all the columns of `X`).
 
 The function returns sorted levels. It does not support inputs of type `Any`.
 
@@ -27,10 +29,10 @@ tab(X)
 
 tab(datf)
 tab(datf; group = [:v1, :v2])
-tab(datf; group = :v2)
+tab(datf; group = [:v2])
 ```
 """
-tab(X::AbstractArray) = sort(StatsBase.countmap(vec(X)))
+tab(x) = sort(StatsBase.countmap(x))
 
 function tab(X::DataFrame; group = nothing)
     zX = copy(X)
@@ -38,7 +40,8 @@ function tab(X::DataFrame; group = nothing)
     if !isa(zX, DataFrame) ; zX = DataFrame(zX, :auto) ; end
     if isnothing(group) ; group = names(zX) ; end
     zX.n = ones(Int, nro(zX))
-    res = aggstat(zX; sel = :n, group, algo = sum)
+    Q = eltype(group)
+    res = aggstat(zX; sel = [Q(:n)], group, algo = sum)
     res
 end
 
@@ -90,7 +93,7 @@ res = tabcont(x, q)
 sum(res.n)
 ```
 """
-function tabcont(x, q)
+function tabcont(x::Vector{Q}, q::Vector{Q}) where Q <: AbstractFloat
     bin = mbin(q)
     nbin = length(bin)
     lev = collect(1:nbin)

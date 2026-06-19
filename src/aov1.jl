@@ -1,7 +1,7 @@
 """
     aov1(x::Vector{String}, Y)
     One-factor ANOVA test.
-* `x` : Univariate categorical data (class membership) (n). Must be a `Vector{String}`.
+* `x` : Univariate categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `Y` : Y-data (n, q).
 
 ## Examples
