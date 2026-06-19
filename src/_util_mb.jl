@@ -70,8 +70,8 @@ bscal = :frob
 model = blockscal(; centr, scal, bscal)
 fit!(model, Xbl)
 ## Data transformation
-zXbl = transf(model, Xbl) ; 
-@head zXbl[3]
+vXbl = transf(model, Xbl) ; 
+@head vXbl[3]
 
 zXblnew = transf(model, Xblnew) ; 
 zXblnew[3]
@@ -81,9 +81,8 @@ blockscal(; kwargs...) = JchemoModel(blockscal, nothing, kwargs)
 
 function blockscal(Xbl; kwargs...)
     Xbl = ensure_mat_mb(Xbl)
-    Q = eltype(Xbl[1])
     n = nro(Xbl[1])
-    blockscal(Xbl, pweight(ones(Q, n)); kwargs...)
+    blockscal(Xbl, pweight(ones(eltype(Xbl[1]), n)); kwargs...)
 end
 
 function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
@@ -162,8 +161,8 @@ listbl = [3:4, 1, [6; 8:10]]
 Xbl = mblock(X, listbl) 
 
 bscales = 10 * ones(3)
-zXbl = fblockscal(Xbl, bscales) ;
-@head zXbl[3]
+vXbl = fblockscal(Xbl, bscales) ;
+@head vXbl[3]
 @head Xbl[3]
 
 fblockscal!(Xbl, bscales) ;
@@ -172,13 +171,13 @@ fblockscal!(Xbl, bscales) ;
 """
 ## This function is not commonly used. See blockscal instead
 function fblockscal(Xbl, bscales)
-    Q = eltype(Xbl[1][1, 1])
+    Xbl = ensure_mat_mb(Xbl)
     nbl = length(Xbl)  
-    zXbl = list(Matrix{Q}, nbl)
+    vXbl = list(Matrix{eltype(Xbl[1])}, nbl)
     @inbounds for k in eachindex(Xbl)
-        zXbl[k] = copy(ensure_mat(Xbl[k]))
+        vXbl[k] = copy(Xbl[k])
     end
-    fblockscal!(zXbl, bscales)
+    fblockscal!(vXbl, bscales)
 end
 
 function fblockscal!(Xbl::Vector{Matrix{Q}}, bscales::Vector{Q}) where Q <: AbstractFloat

@@ -89,11 +89,11 @@ end
 function mbplswest(Xbl, Y, weights::ProbabilityWeights; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
-    zXbl = list(Matrix{Q}, nbl)
+    vXbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
-        zXbl[k] = copy(ensure_mat(Xbl[k]))
+        vXbl[k] = copy(Xbl[k])
     end
-    mbplswest!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
+    mbplswest!(vXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function mbplswest!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
@@ -212,14 +212,14 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transf(object::Mbplswest, Xbl)
-    zXbl = transf(object.fitm_bl, Xbl)    
-    fconcat(zXbl) * object.R 
+    vXbl = transf(object.fitm_bl, Xbl)    
+    fconcat(vXbl) * object.R 
 end
 
 function transf(object::Mbplswest, Xbl, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    zXbl = transf(object.fitm_bl, Xbl)    
-    fconcat(zXbl) * vcol(object.R, 1:nlv) 
+    vXbl = transf(object.fitm_bl, Xbl)    
+    fconcat(vXbl) * vcol(object.R, 1:nlv) 
 end
 
 """
@@ -266,12 +266,12 @@ function Base.summary(object::Mbplswest, Xbl)
     n, nlv = size(object.T)
     nbl = length(Xbl)
     ## Block scaling
-    zXbl = transf(object.fitm_bl, Xbl)
-    X = fconcat(zXbl)
+    vXbl = transf(object.fitm_bl, Xbl)
+    X = fconcat(vXbl)
     ## Proportion of the total X-inertia explained by each global LV
     ssk = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
-        ssk[k] = frob2(zXbl[k], object.weights)
+        ssk[k] = frob2(vXbl[k], object.weights)
     end
     tt = object.TT
     tt_adj = (colnorm(object.V).^2) .* tt  # tt_adj[a] = p[a]'p[a] * tt[a]
@@ -283,13 +283,13 @@ function Base.summary(object::Mbplswest, Xbl)
     nam = string.("lv", 1:nlv)
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv
-        z[k, a] = rv(zXbl[k], object.T[:, a], object.weights) 
+        z[k, a] = rv(vXbl[k], object.T[:, a], object.weights) 
     end
     rvxbl2t = DataFrame(z, nam)
     ## Rd between each Xk and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl) 
-        z[k, :] = rd(zXbl[k], object.T, object.weights) 
+        z[k, :] = rd(vXbl[k], object.T, object.weights) 
     end
     rdxbl2t = DataFrame(z, nam)
     ## Correlation between the block LVs and the global LVs

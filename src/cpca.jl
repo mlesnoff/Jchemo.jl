@@ -140,18 +140,18 @@ transf(model, Xblnew)
 cpca(; kwargs...) = JchemoModel(cpca, nothing, kwargs)
 
 function cpca(Xbl; kwargs...)
-    Q = eltype(Xbl[1][1, 1])
+    Xbl = ensure_mat_mb(Xbl)
     n = nro(Xbl[1])
-    cpca(Xbl, pweight(ones(Q, n)); kwargs...)
+    cpca(Xbl, pweight(ones(eltype(Xbl[1]), n)); kwargs...)
 end
 
 function cpca(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     nbl = length(Xbl)  
-    zXbl = list(Matrix{Q}, nbl)
+    vXbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
-        zXbl[k] = copy(ensure_mat(Xbl[k]))
+        vXbl[k] = copy(Xbl[k])
     end
-    cpca!(zXbl, weights; kwargs...)
+    cpca!(vXbl, weights; kwargs...)
 end
 
 function cpca!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
@@ -250,16 +250,16 @@ function transf_all(object::Cpca, Xbl, nlv::Int)
     nlv = isnothing(nlv) ? a : min(nlv, a)
     nbl = length(Xbl)
     m = nro(Xbl[1])
-    zXbl = transf(object.fitm_bl, Xbl)
-    U = similar(zXbl[1], m, nlv)
-    TB = similar(zXbl[1], m, nbl)
+    vXbl = transf(object.fitm_bl, Xbl)
+    U = similar(vXbl[1], m, nlv)
+    TB = similar(vXbl[1], m, nbl)
     Tbl = list(Matrix{Q}, nbl)
-    for k in eachindex(Xbl) ; Tbl[k] = similar(zXbl[1], m, nlv) ; end
-    u = similar(zXbl[1], m)
+    for k in eachindex(Xbl) ; Tbl[k] = similar(vXbl[1], m, nlv) ; end
+    u = similar(vXbl[1], m)
     tk = similar(u)
     for a = 1:nlv
         for k in eachindex(Xbl)
-            tk .= zXbl[k] * object.Vbl[k][:, a]
+            tk .= vXbl[k] * object.Vbl[k][:, a]
             TB[:, k] .= tk
             Tbl[k][:, a] .= tk
         end
@@ -267,7 +267,7 @@ function transf_all(object::Cpca, Xbl, nlv::Int)
         U[:, a] .= u
         @inbounds for k in eachindex(Xbl)
             Vx = sqrt(object.lb[k, a]) * object.Vbl[k][:, a]'
-            zXbl[k] -= u * Vx
+            vXbl[k] -= u * Vx
         end
     end
     T = sqrt.(object.mu[1:nlv])' .* U
@@ -286,12 +286,12 @@ function Base.summary(object::Cpca, Xbl)
     nbl = length(Xbl)
     nlv = nco(object.T)
     ## Block scaling
-    zXbl = transf(object.fitm_bl, Xbl)
-    X = fconcat(zXbl)
+    vXbl = transf(object.fitm_bl, Xbl)
+    X = fconcat(vXbl)
     ## Proportion of the total X-inertia explained by each global LV
     ssk = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
-        ssk[k] = frob2(zXbl[k], object.weights)
+        ssk[k] = frob2(vXbl[k], object.weights)
     end
     tt = colsum(object.lb)    
     pvar = tt / sum(ssk)
@@ -308,13 +308,13 @@ function Base.summary(object::Cpca, Xbl)
     ## RV between each Xk and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv
-        z[k, a] = rv(zXbl[k], object.T[:, a], object.weights) 
+        z[k, a] = rv(vXbl[k], object.T[:, a], object.weights) 
     end
     rvxbl2t = DataFrame(z, nam)
     ## Rd between each Xk and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl) 
-        z[k, :] = rd(zXbl[k], object.T, object.weights) 
+        z[k, :] = rd(vXbl[k], object.T, object.weights) 
     end
     rdxbl2t = DataFrame(z, nam)
     ## Correlation between the block LVs and the global LVs

@@ -72,11 +72,11 @@ end
 function rosaplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
-    zXbl = list(Matrix{Q}, nbl)
+    vXbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
-        zXbl[k] = copy(ensure_mat(Xbl[k]))
+        vXbl[k] = copy(Xbl[k])
     end
-    rosaplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
+    rosaplsr!(vXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
@@ -203,14 +203,14 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transf(object::Rosaplsr, Xbl)
-    zXbl = transf(object.fitm_bl, Xbl)
-    fconcat(zXbl) * object.R
+    vXbl = transf(object.fitm_bl, Xbl)
+    fconcat(vXbl) * object.R
 end
 
 function transf(object::Rosaplsr, Xbl, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    zXbl = transf(object.fitm_bl, Xbl)
-    fconcat(zXbl) * vcol(object.R, 1:nlv)
+    vXbl = transf(object.fitm_bl, Xbl)
+    fconcat(vXbl) * vcol(object.R, 1:nlv)
 end
 
 """

@@ -74,11 +74,11 @@ end
 function soplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
     Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)  
-    zXbl = list(Matrix{Q}, nbl)
+    vXbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
-        zXbl[k] = copy(ensure_mat(Xbl[k]))
+        vXbl[k] = copy(Xbl[k])
     end
-    soplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
+    soplsr!(vXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
 function soplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
@@ -136,11 +136,11 @@ Compute latent variables (LVs; = scores) from a fitted model.
 """ 
 function transf(object::Soplsr, Xbl)
     nbl = length(Xbl)
-    zXbl = transf(object.fitm_bl, Xbl)   
-    T = transf(object.fitm[1], zXbl[1])
+    vXbl = transf(object.fitm_bl, Xbl)   
+    T = transf(object.fitm[1], vXbl[1])
     if nbl > 1
         @inbounds for i = 2:nbl
-            X = zXbl[i] - T * object.b[i]
+            X = vXbl[i] - T * object.b[i]
             T = hcat(T, transf(object.fitm[i], X))
         end
     end
@@ -155,12 +155,12 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Soplsr, Xbl)
     nbl = length(Xbl)
-    zXbl = transf(object.fitm_bl, Xbl)   
-    T = transf(object.fitm[1], zXbl[1])
+    vXbl = transf(object.fitm_bl, Xbl)   
+    T = transf(object.fitm[1], vXbl[1])
     pred =  object.fitm[1].ymeans' .+ T * object.fitm[1].C'
     if nbl > 1
         @inbounds for i = 2:nbl
-            X = zXbl[i] - T * object.b[i]
+            X = vXbl[i] - T * object.b[i]
             zT = transf(object.fitm[i], X)
             pred .+= object.fitm[i].ymeans' .+ zT * object.fitm[i].C'
             T = hcat(T, transf(object.fitm[i], X))

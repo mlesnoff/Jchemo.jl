@@ -106,19 +106,18 @@ res.corx2t
 comdim(; kwargs...) = JchemoModel(comdim, nothing, kwargs)
 
 function comdim(Xbl; kwargs...)
-    Q = eltype(Xbl[1][1, 1])
+    Xbl = ensure_mat_mb(Xbl)
     n = nro(Xbl[1])
-    weights = pweight(ones(Q, n))
-    comdim(Xbl, weights; kwargs...)
+    comdim(Xbl, pweight(ones(eltype(Xbl[1]), n)); kwargs...)
 end
 
 function comdim(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     nbl = length(Xbl)  
-    zXbl = list(Matrix{Q}, nbl)
+    vXbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
-        zXbl[k] = copy(ensure_mat(Xbl[k]))
+        vXbl[k] = copy(Xbl[k])
     end
-    comdim!(zXbl, weights; kwargs...)
+    comdim!(vXbl, weights; kwargs...)
 end
 
 function comdim!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
@@ -140,7 +139,7 @@ function comdim!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs.
     ## Pre-allocation
     u = similar(Xbl[1], n)
     U = similar(Xbl[1], n, nlv)
-    tk = copy(u)
+    tk = similar(u)
     Tbl = list(Matrix{Q}, nbl)
     for k in eachindex(Xbl) ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
     Tb = list(Matrix{Q}, nlv)
@@ -212,21 +211,22 @@ transfbl(object::Comdim, Xbl) = transf_all(object, Xbl, object.par.nlv).Tbl
 transfbl(object::Comdim, Xbl, nlv::Int) = transf_all(object, Xbl, nlv).Tbl
 
 function transf_all(object::Comdim, Xbl, nlv::Int)
-    Q = eltype(Xbl[1][1, 1])
+    Xbl = ensure_mat_mb(Xbl)
+    Q = eltype(Xbl[1])
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     nbl = length(Xbl)
-    m = size(Xbl[1], 1)
-    zXbl = transf(object.fitm_bl, Xbl)    
-    U = similar(zXbl[1], m, nlv)
-    TB = similar(zXbl[1], m, nbl)
+    m = nro(Xbl[1])
+    vXbl = transf(object.fitm_bl, Xbl)    
+    U = similar(vXbl[1], m, nlv)
+    TB = similar(vXbl[1], m, nbl)
     Tbl = list(Matrix{Q}, nbl)
-    for k in eachindex(Xbl) ; Tbl[k] = similar(zXbl[1], m, nlv) ; end
-    u = similar(zXbl[1], m)
-    tk = copy(u)
+    for k in eachindex(Xbl) ; Tbl[k] = similar(vXbl[1], m, nlv) ; end
+    u = similar(vXbl[1], m)
+    tk = similar(u)
     for a = 1:nlv
         for k in eachindex(Xbl)
-            tk .= zXbl[k] * object.Vbl[k][:, a]
+            tk .= vXbl[k] * object.Vbl[k][:, a]
             TB[:, k] .= tk
             Tbl[k][:, a] .= tk
         end
@@ -235,7 +235,7 @@ function transf_all(object::Comdim, Xbl, nlv::Int)
         U[:, a] .= u
         @inbounds for k in eachindex(Xbl)
             Vx = sqrt(object.lb[k, a]) * object.Vbl[k][:, a]'
-            zXbl[k] .-= u * Vx
+            vXbl[k] .-= u * Vx
         end
     end
     T = sqrt.(object.mu[1:nlv])' .* U
@@ -249,16 +249,17 @@ Summarize the fitted model.
 * `Xbl` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Comdim, Xbl)
-    Q = eltype(Xbl[1][1, 1])
+    Xbl = ensure_mat_mb(Xbl)
+    Q = eltype(Xbl[1])
     nbl = length(Xbl)
     nlv = nco(object.T)
     ## Block scaling
-    zXbl = transf(object.fitm_bl, Xbl)
-    X = fconcat(zXbl)
+    vXbl = transf(object.fitm_bl, Xbl)
+    X = fconcat(vXbl)
     ## Proportion of the total X-inertia explained by each global LV
     ssk = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
-        ssk[k] = frob2(zXbl[k], object.weights)
+        ssk[k] = frob2(vXbl[k], object.weights)
     end
     tt = colsum(object.lb)    
     #tt = colnorm(object.T, object.weights).^2 
@@ -269,7 +270,7 @@ function Base.summary(object::Comdim, Xbl)
     sqrtw = sqrt.(object.weights.values)
     sstot_xx = 0 
     @inbounds for k in eachindex(Xbl)
-        zX = fweightr(zXbl[k], sqrtw)
+        zX = fweightr(vXbl[k], sqrtw)
         sstot_xx += frob2(zX * zX')
     end
     tt = object.mu
@@ -293,13 +294,13 @@ function Base.summary(object::Comdim, Xbl)
     ## RV between each Xk and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv
-        z[k, a] = rv(zXbl[k], object.T[:, a], object.weights) 
+        z[k, a] = rv(vXbl[k], object.T[:, a], object.weights) 
     end
     rvxbl2t = DataFrame(z, nam)
     ## Rd between each Xk and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl) 
-        z[k, :] = rd(zXbl[k], object.T, object.weights) 
+        z[k, :] = rd(vXbl[k], object.T, object.weights) 
     end
     rdxbl2t = DataFrame(z, nam)
     ## Correlation between the block LVs and the global LVs
