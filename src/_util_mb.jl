@@ -33,13 +33,14 @@ end
 """
     blockscal(; kwargs...)
     blockscal(Xbl; kwargs...)
-    blockscal(Xbl, weights::ProbabilityWeights; kwargs...)
+    blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat 
 Scale multiblock X-data.
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 * `weights` : Weights (n) of the observations (rows of the blocks). Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `centr` : Boolean. If `true`, each column of blocks in `Xbl` is centered (before the block scaling).
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` is scaled by its uncorrected standard deviation (before the block scaling).
+* `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling). Possible values are: `:none`, 
+    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
 * `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`, `:mfa`, `:ncol`, `:sd`. See thereafter.
 
 If implemented, the data transformations follow the order: column centering, column scaling and finally block scaling. 
@@ -64,7 +65,7 @@ Xbl = mblock(X, listbl)
 Xblnew = mblock(Xnew, listbl) 
 @head Xbl[3]
 
-centr = true ; scal = true
+centr = true ; scal = :std
 bscal = :frob
 model = blockscal(; centr, scal, bscal)
 fit!(model, Xbl)
@@ -79,17 +80,16 @@ zXblnew[3]
 blockscal(; kwargs...) = JchemoModel(blockscal, nothing, kwargs)
 
 function blockscal(Xbl; kwargs...)
-    Q = eltype(Xbl[1][1, 1])
+    Xbl = ensure_mat_mb(Xbl)
+    Q = eltype(Xbl[1])
     n = nro(Xbl[1])
     blockscal(Xbl, pweight(ones(Q, n)); kwargs...)
 end
 
-function blockscal(Xbl::Vector, weights::ProbabilityWeights; kwargs...)   
-    par = recovkw(ParBlock{Q}, kwargs).par
+function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    par = recovkw(ParBlock, kwargs).par
     @assert in([:none, :frob, :mfa, :ncol, :sd])(par.bscal) "Wrong value for argument 'bscal'."
-    Q = eltype(Xbl[1][1, 1])
     nbl = length(Xbl)
-    bscal = par.bscal
     xmeans = list(Vector{Q}, nbl)
     xscales = list(Vector{Q}, nbl)
     bscales = ones(Q, nbl)
@@ -98,26 +98,27 @@ function blockscal(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
         ## xmeans for column centering
         zX = copy(Xbl[k])
         pbl = nco(zX)
-        xmeans[k] = zeros(Q, pbl)
+        xmeans[k] = zeros(Q, pbl)  # if no centering, 'zeros' is required for 'transf'  
         xscales[k] = ones(Q, pbl)
         if par.centr
             xmeans[k] .= colmean(Xbl[k], weights)
             fcenter!(zX, xmeans[k])
         end
         ## xscales for column scaling
-        if par.scal 
-            xscales[k] = colstd(Xbl[k], weights)
+        if par.scal != :none
+            colscal = def_colscal(par.scal) 
+            xscales[k] .= colscal(Xbl[k], weights)
             fscale!(zX, xscales[k])
         end
         ## bscales for block scaling
-        if bscal == :frob
+        if par.bscal == :frob
             bscales[k] = frob(zX, weights)
-        elseif bscal == :mfa
+        elseif par.bscal == :mfa
             fweightr!(zX, sqrt.(weights.values))
             bscales[k] = nipals(zX).sv
-        elseif bscal == :ncol
+        elseif par.bscal == :ncol
             bscales[k] = nco(zX)
-        elseif bscal == :sd
+        elseif par.bscal == :sd
             bscales[k] = sqrt(sum(colvar(zX, weights)))
         end
     end
@@ -126,23 +127,19 @@ end
 
 """ 
     transf(object::Blockscal, Xbl)
-    transf!(object::Blockscal, Xbl)
+    transf!(object::Blockscal, Xbl::Vector{Matrix{Q}}) where Q <: AbstractFloat
 Compute the preprocessed data from a model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 """ 
 function transf(object::Blockscal, Xbl)
-    Q = eltype(Xbl[1][1, 1])
-    nbl = length(Xbl)  
-    zXbl = list(Matrix{Q}, nbl)
-    @inbounds for k in eachindex(Xbl)
-        zXbl[k] = copy(ensure_mat(Xbl[k]))
-    end
-    transf!(object, zXbl)
-    zXbl
+    Xbl = ensure_mat_mb(Xbl)
+    vXbl = [copy(Xbl[k]) for k in eachindex(Xbl)]
+    transf!(object, vXbl)
+    vXbl
 end
 
-function transf!(object::Blockscal, Xbl)
+function transf!(object::Blockscal, Xbl::Vector{Matrix{Q}}) where Q <: AbstractFloat 
     @inbounds for k in eachindex(Xbl)
         fcscale!(Xbl[k], object.xmeans[k], object.xscales[k])
         Xbl[k] ./= object.bscales[k]
@@ -151,7 +148,7 @@ end
 
 """
     fblockscal(Xbl, bscales)
-    fblockscal!(Xbl::Vector, bscales::Vector)
+    fblockscal!(Xbl::Vector{Matrix{Q}}, bscales::Vector{Q}) where Q <: AbstractFloat
 Scale multiblock X-data.
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 * `bscales` : A vector (of length equal to the nb. of blocks) of the scalars diving the blocks.
@@ -184,7 +181,7 @@ function fblockscal(Xbl, bscales)
     fblockscal!(zXbl, bscales)
 end
 
-function fblockscal!(Xbl::Vector, bscales::Vector)
+function fblockscal!(Xbl::Vector{Matrix{Q}}, bscales::Vector{Q}) where Q <: AbstractFloat
     #Threads not faster
     @inbounds for k in eachindex(Xbl)
         Xbl[k] ./= bscales[k]

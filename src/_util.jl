@@ -187,6 +187,12 @@ ensure_mat(X::Number) = reshape([X], 1, 1)
 ensure_mat(X::DataFrame) = Matrix(X)
 
 """
+    ensure_mat_mb(X)
+Reshape a vector of X data to a vector of matrices if necessary.
+"""
+ensure_mat_mb(Xbl) = [ensure_mat(Xbl[k]) for k in eachindex(Xbl)]
+
+"""
     findmax_cla(x)
     findmax_cla(x, weights::ProbabilityWeights)
 Find the most occurent level in `x`.
