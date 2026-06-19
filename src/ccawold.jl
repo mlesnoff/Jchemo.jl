@@ -162,11 +162,11 @@ function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
         iter = 1
         wx .= Q.(rand(p))
         ## invCx, invCy
-        if par.tau == 0.       
+        if par.tau == 0       
             invCx = inv(X' * X)
             invCy = inv(Y' * Y)
         else
-            if par.tau == 1.   
+            if par.tau == 1   
                 invCx = copy(Ix)
                 invCy = copy(Iy)
             else

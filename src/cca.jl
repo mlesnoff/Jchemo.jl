@@ -134,13 +134,13 @@ function cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     fweightr!(X, sqrtw)
     fweightr!(Y, sqrtw) 
     # End
-    if par.tau == 0.
+    if par.tau == 0
         Cx = Symmetric(X' * X)
         Cy = Symmetric(Y' * Y)
     else
         Ix = Diagonal(ones(Q, p)) 
         Iy = Diagonal(ones(Q, q)) 
-        if par.tau == 1.
+        if par.tau == 1
             Cx = Ix
             Cy = Iy
         else

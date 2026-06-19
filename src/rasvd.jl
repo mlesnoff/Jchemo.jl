@@ -97,7 +97,6 @@ function rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
-    tau = Q(par.tau)
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     xscales = ones(Q, p)
@@ -127,14 +126,14 @@ function rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     fweightr!(X, sqrtw)
     fweightr!(Y, sqrtw)
     # End
-    if tau == 0       
+    if par.tau == 0       
         invCx = inv(X' * X)
     else
         Ix = Diagonal(ones(Q, p)) 
-        if tau == 1   
+        if par.tau == 1   
             invCx = Ix
         else
-            invCx = inv((1 - tau) * X' * X + tau * Ix)
+            invCx = inv((1 - par.tau) * X' * X + par.tau * Ix)
         end
     end
     Bx = invCx * X' * Y 
