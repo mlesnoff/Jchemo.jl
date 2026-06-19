@@ -1,8 +1,8 @@
 """
     cpca(; kwargs...)
     cpca(Xbl; kwargs...)
-    cpca(Xbl, weights::ProbabilityWeights; kwargs...)
-    cpca!(Xbl::Matrix, weights::ProbabilityWeights; kwargs...)
+    cpca(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    cpca!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Consensus principal components analysis (CPCA, a.k.a MBPCA) by Nipals.
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock`.  
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -11,8 +11,8 @@ Keyword arguments:
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 * `tol` : Tolerance value for Nipals convergence.
 * `maxit` : Maximum number of iterations (Nipals).
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` is scaled by its uncorrected standard 
-    deviation (before the block scaling).
+* `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling). Possible values are: `:none`, 
+    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
 
 CPCA Nipals algorithm (Westerhuis et a; 1998), also known as MBPCA, and referred to as CPCA-W in Smilde et al. 2003. 
 Besides an eventual block scaling, CPCA is equivalent to a PCA on the horizontally concatenated matrix X = [X1 X2 ... Xk],
@@ -104,13 +104,13 @@ model3 = pcasvd(; nlv) ;
 model = pip(model1, model2, model3)
 fit!(model, Xbl)
 
-mod3 = model.model[3] ;
-typeof(mod3) 
-@names mod3 
-@names mod3.fitm
+mod_3 = model.model[3] ;
+typeof(mod_3) 
+@names mod_3 
+@names mod_3.fitm
 
 @head transf(model, Xbl)
-@head mod3.fitm.T 
+@head mod_3.fitm.T 
 
 transf(model, Xblnew)
 
@@ -123,16 +123,16 @@ model3 = spca(; nlv, meth, nvar) ;
 model = pip(model1, model2, model3)
 fit!(model, Xbl)
 
-mod3 = model.model[3] ;
-@names mod3 
-typeof(mod3) 
-@names mod3.fitm
+mod_3 = model.model[3] ;
+@names mod_3 
+typeof(mod_3) 
+@names mod_3.fitm
 
-mod3.fitm.sellv
-mod3.fitm.sel
+mod_3.fitm.sellv
+mod_3.fitm.sel
 
 @head transf(model, Xbl)
-@head mod3.fitm.T 
+@head mod_3.fitm.T 
 
 transf(model, Xblnew)
 ```
@@ -145,8 +145,7 @@ function cpca(Xbl; kwargs...)
     cpca(Xbl, pweight(ones(Q, n)); kwargs...)
 end
 
-function cpca(Xbl, weights::ProbabilityWeights; kwargs...)
-    Q = eltype(Xbl[1][1, 1])
+function cpca(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
@@ -155,9 +154,8 @@ function cpca(Xbl, weights::ProbabilityWeights; kwargs...)
     cpca!(zXbl, weights; kwargs...)
 end
 
-function cpca!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
+function cpca!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParCpca{Q}, kwargs).par 
-    Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     nbl = length(Xbl)
     pbl = nco.(Xbl) ; ptot = sum(pbl)
@@ -246,11 +244,12 @@ transfbl(object::Cpca, Xbl) = transf_all(object, Xbl, object.par.nlv).Tbl
 transfbl(object::Cpca, Xbl, nlv::Int) = transf_all(object, Xbl, nlv).Tbl
 
 function transf_all(object::Cpca, Xbl, nlv::Int)
-    Q = eltype(Xbl[1][1, 1])
+    Xbl = ensure_mat_mb(Xbl)
+    Q = eltype(Xbl[1])
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     nbl = length(Xbl)
-    m = size(Xbl[1], 1)
+    m = nro(Xbl[1])
     zXbl = transf(object.fitm_bl, Xbl)
     U = similar(zXbl[1], m, nlv)
     TB = similar(zXbl[1], m, nbl)
@@ -282,7 +281,8 @@ Summarize the fitted model.
 * `Xbl` : The X-data that was used to fit the model.
 """ 
 function Base.summary(object::Cpca, Xbl)
-    Q = eltype(Xbl[1][1, 1])
+    Xbl = ensure_mat_mb(Xbl)
+    Q = eltype(Xbl[1])
     nbl = length(Xbl)
     nlv = nco(object.T)
     ## Block scaling

@@ -187,7 +187,7 @@ ensure_mat(X::Number) = reshape([X], 1, 1)
 ensure_mat(X::DataFrame) = Matrix(X)
 
 """
-    ensure_mat_mb(X)
+    ensure_mat_mb(Xbl)
 Reshape a vector of X data to a vector of matrices if necessary.
 """
 ensure_mat_mb(Xbl) = [ensure_mat(Xbl[k]) for k in eachindex(Xbl)]

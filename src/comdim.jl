@@ -1,8 +1,8 @@
 """
     comdim(; kwargs...)
     comdim(Xbl; kwargs...)
-    comdim(Xbl, weights::ProbabilityWeights; kwargs...)
-    comdim!(Xbl::Matrix, weights::ProbabilityWeights; kwargs...)
+    comdim(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    comdim!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
 Common components and specific weights analysis (CCSWA, a.k.a ComDim and HPCA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock`.  
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -11,8 +11,8 @@ Keyword arguments:
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` is scaled by its uncorrected standard deviation 
-    (before the block scaling).
+* `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling). Possible values are: `:none`, 
+    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
 
 ComDim "SVD" algorithm of Hannafi & Qannari 2008 p.84.
 
@@ -112,8 +112,7 @@ function comdim(Xbl; kwargs...)
     comdim(Xbl, weights; kwargs...)
 end
 
-function comdim(Xbl, weights::ProbabilityWeights; kwargs...)
-    Q = eltype(Xbl[1][1, 1])
+function comdim(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     nbl = length(Xbl)  
     zXbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
@@ -122,9 +121,8 @@ function comdim(Xbl, weights::ProbabilityWeights; kwargs...)
     comdim!(zXbl, weights; kwargs...)
 end
 
-function comdim!(Xbl::Vector, weights::ProbabilityWeights; kwargs...)
+function comdim!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(ParCpca{Q}, kwargs).par 
-    Q = eltype(Xbl[1][1, 1])
     n = nro(Xbl[1])
     nbl = length(Xbl)
     pbl = nco.(Xbl) ; ptot = sum(pbl)
