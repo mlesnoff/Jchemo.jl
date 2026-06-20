@@ -529,11 +529,11 @@ end
 rmrow(x::Vector, s::Union{Int, BitVector, Vector{Int}, UnitRange}) = rmcol(x, s)
 
 """
-    softmax(x::AbstractVector)
-    softmax(X::Union{Matrix, DataFrame})
-Softmax function.
-* `x` : A vector to transform.
-* `X` : A matrix whose rows are transformed.
+    softmax(x::AbstractVector{Q}) where Q <: AbstractFloat
+    softmax(X::AbstractMatrix{Q})  where Q <: AbstractFloat
+Softmax transformation.
+* `x` : A quantitative variable to transform.
+* `X` : A quantitative matrix whose rows are transformed.
 
 Let v be a vector:
 * 'softmax'(v) = exp.(v) / sum(exp.(v))
@@ -542,33 +542,31 @@ Let v be a vector:
 ```julia
 using Jchemo
 
-x = 1:3
+x = rand(3)
 softmax(x)
 
 X = rand(5, 3)
 softmax(X)
 ```
 """
-function softmax(x::AbstractVector)
+function softmax(x::AbstractVector{Q}) where Q <: AbstractFloat
     expx = exp.(x) 
     expx / sum(expx)
 end
 
-function softmax(X::Union{Matrix, DataFrame})
-    X = ensure_mat(X)
-    n = nro(V)
+function softmax(X::AbstractMatrix{Q})  where Q <: AbstractFloat
     V = similar(X)
-    @inbounds for i = 1:n
+    @inbounds for i in axes(X, 1)
         V[i, :] .= softmax(vrow(X, i))
     end
     V
 end
 
 """
-    sourcedir(path)
+    sourcedir(path::String)
 Include all the files contained in a directory.
 """
-function sourcedir(path)
+function sourcedir(path::String)
     z = readdir(path)  ## List of files in path
     for i in eachindex(z)
         include(string(path, "/", z[i]))
@@ -577,10 +575,10 @@ end
 
 """
     summ(X; digits::Int = 3)
-    summ(X, y; digits::Int = 3)
-Summarize a dataset (or a variable).
-* `X` : A dataset (n, p).
-* `y` : A categorical variable (n) (class membership).
+    summ(X, y::Vector{String}; digits::Int = 3)
+Summarize a variable or a dataset.
+* `X` : A variable (n) or dataset (n, p).
+* `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `digits` : Nb. digits in the outputs.
 
 ## Examples
@@ -588,12 +586,16 @@ Summarize a dataset (or a variable).
 using Jchemo
 
 n = 50
-X = rand(n, 3) 
-y = rand(1:3, n)
-res = summ(X)
+x = rand(50)
+res = summ(x) ;
 @names res
-summ(X[:, 2]).res
+res.ntot
+res.res 
 
+X = rand(n, 3) 
+summ(X).res
+
+y = string.(rand(1:3, n))
 summ(X, y)
 ```
 """
@@ -604,13 +606,12 @@ function summ(X; digits::Int = 3)
     for i = 2:4
         z = vcol(res, i)
         s = findall(isa.(z, Real))
-        res[s, i] .= round.(res[s, i], digits)
+        res[s, i] .= round.(res[s, i]; digits)
     end
     (res = res, ntot = nro(X))
 end
 
-function summ(X, y; digits::Int = 3)
-    y = vec(y)
+function summ(X, y::Vector{String}; digits::Int = 3)
     lev = mlev(y)
     for i in eachindex(lev)
         s = y .== lev[i]
@@ -622,10 +623,10 @@ function summ(X, y; digits::Int = 3)
 end
 
 """
-    thresh_hard(x::Real, delta)
+    thresh_hard(x::Q, delta::Q) where Q <: AbstractFloat
 Hard thresholding function.
 * `x` : Value (scalar) to transform.
-* `delta` : Range for the thresholding.
+* `delta` : Limit for the thresholding.
 
 The returned value is:
 * abs(`x`) > `delta` ? `x` : 0
@@ -636,24 +637,28 @@ where delta >= 0.
 using Jchemo, CairoMakie 
 
 delta = .7
-thresh_hard(3, delta)
+thresh_hard(.1, delta)
+thresh_hard(3., delta)
 
 x = LinRange(-2, 2, 500)
 y = thresh_hard.(x, delta)
 lines(x, y; axis = (xlabel = "x", ylabel = "f(x)"))
 ```
 """
-function thresh_hard(x, delta)
+function thresh_hard(x::Q, delta::Q) where Q <: AbstractFloat
     @assert delta >= 0 "delta must be >= 0."
-    abs(x) > delta ? x : zero(eltype(x))
+    if abs(x) <= delta
+        x = zero(eltype(x)) 
+    end
+    x
 end
 
 
 """
-    thresh_soft(x::Real, delta)
+    thresh_soft(x::Q, delta::Q) where Q <: AbstractFloat
 Soft thresholding function.
 * `x` : Value (scalar) to transform.
-* `delta` : Range for the thresholding.
+* `delta` : Limit for the thresholding.
 
 The returned value is:
 * sign(`x`) * max(0, abs(`x`) - `delta`)
@@ -664,21 +669,23 @@ where delta >= 0.
 using Jchemo, CairoMakie 
 
 delta = .7
-thresh_soft(3, delta)
+thresh_soft(.1, delta)
+thresh_soft(3., delta)
 
-x = LinRange(-2, 2, 100)
+x = LinRange(-2, 2, 500)
 y = thresh_soft.(x, delta)
 lines(x, y; axis = (xlabel = "x", ylabel = "f(x)"))
 ```
 """
-function thresh_soft(x, delta)
+function thresh_soft(x::Q, delta::Q) where Q <: AbstractFloat
     @assert delta >= 0 "delta must be >= 0."
     ## same as: abs(x) > delta ? sign(x) * (abs(x) - delta) : zero(eltype(x))
-    sign(x) * max(0, abs(x) - delta)  # type consistent
+    sign(x) * max(zero(eltype(x)), abs(x) - delta)  # type consistent
 end
 
 """
-    vcatdf(dat; cols = :intersect) 
+    vcatdf(dat::Vector{DataFrame}; 
+        cols::Union{Q, Vector{String}, Vector{Q}} = :intersect) where Q <: Symbol
 Vertical concatenation of a list of dataframes.
 * `dat` : List (vector) of dataframes.
 * `cols` : Determines the columns of the returned dataframe. See ?DataFrames.vcat.
@@ -689,20 +696,24 @@ using Jchemo, DataFrames
 
 dat1 = DataFrame(rand(5, 2), [:v3, :v1]) 
 dat2 = DataFrame(100 * rand(2, 2), [:v3, :v1])
-dat = (dat1, dat2)
-Jchemo.vcatdf(dat)
+dat = [dat1, dat2]
+res = vcatdf(dat) ;
+@names res
+res.X
 
 dat2 = DataFrame(100 * rand(2, 2), [:v1, :v3])
-dat = (dat1, dat2)
-Jchemo.vcatdf(dat)
+dat = [dat1, dat2]
+vcatdf(dat)
 
 dat2 = DataFrame(100 * rand(2, 3), [:v3, :v1, :a])
-dat = (dat1, dat2)
-Jchemo.vcatdf(dat)
-Jchemo.vcatdf(dat; cols = :union)
+dat = [dat1, dat2]
+vcatdf(dat)
+vcatdf(dat; cols = :union)
+vcatdf(dat; cols = :intersect)
 ```
 """ 
-function vcatdf(dat; cols = :intersect) 
+function vcatdf(dat::Vector{DataFrame}; 
+        cols::Union{Q, Vector{String}, Vector{Q}} = :intersect) where Q <: Symbol
     n = length(dat) 
     X = copy(dat[1])
     group = fill(1, nro(X))
