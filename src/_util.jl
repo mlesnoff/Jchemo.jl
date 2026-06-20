@@ -236,11 +236,11 @@ function findmiss(X)
 end
 
 """
-    finduniq(id)
-Find the indexes making unique the IDs in a ID vector.
-* `id` : A vector of IDs.
+    finduniq(x)
+Find the first indexes of a vector making unique the levels in this vector.
+* `x` : A categorical variable (n) (e.g. IDs). Must be a `Vector{String}`.
 
-Can be used to remove duplicated rows in a dataset, identified by a single ID variable.
+Can be used to remove duplicated rows (for instance, identified by a single ID variable) in a dataset.
 
 ## Examples
 ```julia
@@ -248,17 +248,17 @@ using Jchemo
 
 v = ["a", "d", "c", "b", "a", "d", "a"]  # a vector of IDs
 
-s = finduniq(v)  # indexes of the IDs without duplicates
+s = finduniq(v)  # first indexes of v making v without duplicates
 v[s]  
 ```
 """
-function finduniq(id)
-    n = length(id)
-    res = tabdupl(id)
-    idd = res.keys
+function finduniq(x::Vector{String})
+    n = length(x)
+    res = tabdupl(x)
+    xd = res.keys
     s = list(Int, 0) 
-    for i in eachindex(idd)
-        zs = findall(id .== idd[i])
+    for i in eachindex(xd)
+        zs = findall(x .== xd[i])
         append!(s, zs[2:end])
     end
     rmrow(collect(1:n), s)
@@ -310,8 +310,8 @@ list(5)
 list(n::Integer) = Vector{Any}(nothing, n) 
 
 """
-    list(Q, n::Integer)
-Create a Vector `{Q}(undef, n)`.
+    list(Q::Union{DataType, UnionAll}, n::Integer)
+Create a Vector{Q}(undef, n).
 
 `isassigned(object, i)` can be used to check if cell i is empty.
 
@@ -324,11 +324,13 @@ list(Array{Float64}, 5)
 list(Matrix{Int}, 5)
 ```
 """  
-list(Q, n::Integer) = Vector{Q}(undef, n)
+list(Q::Union{DataType, UnionAll}, n::Integer) = Vector{Q}(undef, n)
 
 """ 
-    mlev(x)
-Return the sorted levels of a vector or a dataset. 
+    mlev(x::Array{String})
+Return the sorted levels of an array or dataset.
+* `X` : A categorical array (class membership). Must be of type `String`.
+* `datf` : A dataframe.
 
 ## Examples
 ```julia
@@ -345,7 +347,9 @@ datf = DataFrame(g1 = rand(1:2, n), g2 = rand(["a"; "c"], n))
 mlev(datf)
 ```
 """
-mlev(x) = sort(unique(x)) 
+mlev(x::Array{String}) = sort(unique(x)) 
+
+mlev(datf::DataFrame) = sort(unique(datf)) 
 
 """
     @namvar x
@@ -384,10 +388,11 @@ Return the nb. rows of `X`.
 nro(X) = size(X, 1)
 
 """ 
-    out(x)
+    out(x::Vector{Q}, y::Vector{Q}) where Q <: AbstractFloat
 Return if elements of a vector are strictly outside of a given range.
-* `x` : Univariate data.
-* `y` : Univariate data on which is computed the range (min, max).
+* `x` : A quantititative variable whose each element is evaluated to be out of or in the range 
+    (min, max) defined from `y`.
+* `y` : A quantititative variable on which is computed the range (min, max).
 
 Return a BitVector.
 
@@ -397,26 +402,26 @@ using Jchemo
 
 x = [-200.; -100; -1; 0; 1; 200]
 out(x, [-1; .2; 1])
-out(x, (-1, 1))
+out(x, [-1., 1])
 ```
 """
-out(x, y) = (x .< minimum(y)) .| (x .> maximum(y))
+out(x::Vector{Q}, y::Vector{Q}) where Q <: AbstractFloat = (x .< minimum(y)) .| (x .> maximum(y))
 
 """
-    pval(d::Distribution, q)
-    pval(x::Array, q)
-    pval(e_cdf::ECDF, q)
-Compute p-value(s) for a distribution, an ECDF or vector.
+    pval(d::Distribution, q::Union{Q, Vector{Q}}) where Q <:AbstractFloat
+    pval(x::AbstractVector{Q}, q::Union{Q, Vector{Q}}) where Q <:AbstractFloat
+    pval(e_cdf::ECDF, q::Union{Q, Vector{Q}}) where Q <:AbstractFloat
+Compute p-value(s) from a distribution, an ECDF or a vector.
 * `d` : A distribution computed from `Distribution.jl`.
-* `x` : Univariate data.
+* `x` : A quantitative variable.
 * `e_cdf` : An ECDF computed from `StatsBase.jl`.
-* `q` : Value(s) for which to compute the p-value(s).
+* `q` : Value(s) (quantile of the considered distribution) for which to compute the p-value(s).
 
 Compute or estimate the p-value of quantile `q`, ie. V(Q > `q`) where Q is the random variable.
 
 ## Examples
 ```julia
-using Jchemo, Distributions, StatsBase
+using Jchemo, Distributions
 
 d = Distributions.Normal(0, 1)
 q = 1.96
@@ -426,7 +431,7 @@ Distributions.ccdf(d, q)   # complementary CDF (CCDF)
 pval(d, q)                 # Distributions.ccdf
 
 x = rand(5)
-e_cdf = StatsBase.ecdf(x)
+e_cdf = Jchemo.ecdf(x)
 e_cdf(x)                # empirical CDF computed at each point of x (ECDF)
 p_val = 1 .- e_cdf(x)   # complementary ECDF at each point of x
 q = .3
@@ -435,11 +440,11 @@ pval(e_cdf, q)          # = 1 .- e_cdf(q)
 pval(x, q)
 ```
 """
-pval(d::Distribution, q) = Distributions.ccdf(d, q)
+pval(d::Distribution, q::Union{Q, Vector{Q}}) where Q <:AbstractFloat = Distributions.ccdf(d, q)
 
-pval(e_cdf::ECDF, q) = 1 .- e_cdf(q)
+pval(e_cdf::ECDF, q::Union{Q, Vector{Q}}) where Q <:AbstractFloat = 1 .- e_cdf(q)
 
-pval(x::AbstractVector, q) = pval(StatsBase.ecdf(x), q)
+pval(x::AbstractVector{Q}, q::Union{Q, Vector{Q}}) where Q <: AbstractFloat = pval(StatsBase.ecdf(x), q)
 
 """
     recovkw(ParStruct, kwargs)
@@ -467,11 +472,12 @@ end
 recovkw(ParStruct::DataType) = (kwargs = nothing, par = ParStruct())
 
 """
-    rmcol(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, UnitRange, Number})
-    rmcol(X::Vector, s::Union{Vector, BitVector, UnitRange, Number})
+    rmcol(X::Union{AbstractMatrix, DataFrame}, s::Union{Int, BitVector, Vector{Int}, UnitRange})
+    rmcol(x::Vector, s::Union{Int, BitVector, Vector{Int}, UnitRange})
 Remove the columns of a matrix or the components of a vector 
 having indexes `s`.
-* `X` : Matrix or vector.
+* `X` : A data set (n, p).
+* `x` : A variable (n).
 * `s` : Vector of the indexes.
 
 ## Examples
@@ -480,21 +486,25 @@ using Jchemo
 
 X = rand(5, 3) 
 rmcol(X, [1, 3])
+rmcol(X, 1:2)
+
+x = rand(5)
+rmcol(x, [1, 3])
 ```
 """
-function rmcol(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, UnitRange, Number})
+function rmcol(X::Union{AbstractMatrix, DataFrame}, s::Union{Int, BitVector, Vector{Int}, UnitRange})
     if isa(s, BitVector) ; s = findall(s .== 1) ; end
-    X[:, setdiff(1:end, Int.(s))]
+    X[:, setdiff(1:end, s)]
 end
 
-function rmcol(X::Vector, s::Union{Vector, BitVector, UnitRange, Number})
+function rmcol(x::Vector, s::Union{Int, BitVector, Vector{Int}, UnitRange})
     if isa(s, BitVector) ; s = findall(s .== 1) ; end
-    X[setdiff(1:end, Int.(s))]
+    x[setdiff(1:end, s)]
 end
 
 """
-    rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Vector, BitVector, UnitRange, Number})
-    rmrow(x::Union{Vector, BitVector}, s::Union{Vector, BitVector, UnitRange, Number})
+    rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Int, BitVector, Vector{Int}, UnitRange})
+    rmrow(x::Vector, s::Union{Int, BitVector, Vector{Int}, UnitRange})
 Remove the rows of a matrix or the components of a vector having indexes `s`.
 * `X`, `x` : Matrix and vector, respectively.
 * `s` : Vector of the indexes.
@@ -503,19 +513,20 @@ Remove the rows of a matrix or the components of a vector having indexes `s`.
 ```julia
 using Jchemo
 
-X = rand(5, 2) 
-rmrow(X, [1, 4])
+X = rand(5, 3) 
+rmrow(X, [1, 3])
+rmrow(X, 1:2)
+
+x = rand(5)
+rmrow(x, [1, 3])
 ```
 """
-function rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Number, AbstractVector})
+function rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Int, BitVector, Vector{Int}, UnitRange})
     if isa(s, BitVector) ; s = findall(s .== 1) ; end
-    X[setdiff(1:end, Int.(s)), :]
+    X[setdiff(1:end, s), :]
 end
 
-function rmrow(x::AbstractVector, s::Union{Number, AbstractVector})
-    if isa(s, BitVector) ; s = findall(s .== 1) ; end
-    x[setdiff(1:end, Int.(s))]
-end
+rmrow(x::Vector, s::Union{Int, BitVector, Vector{Int}, UnitRange}) = rmcol(x, s)
 
 """
     softmax(x::AbstractVector)

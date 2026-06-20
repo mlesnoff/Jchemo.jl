@@ -326,7 +326,7 @@
 
 ### Checking
 
-- **finduniq** Find the indexes making unique the IDs in a ID vector
+- **finduniq** Find the first indexes of a vector making unique the levels in this vector
 - **dupl** Find replicated rows in a dataset
 - **tabdupl** Tabulate duplicated values in a vector
 - **findmiss** Find rows with missing data in a dataset
@@ -490,9 +490,9 @@
 - **krbf, kpol** Build kernel Gram matrices
 - **locw** Working function for local (kNN) models
 - **mad** Median absolute deviation (not exported)
-- **mlev** Return the sorted levels of a vector or a dataset 
+- **mlev** Return the sorted levels of an array or dataset 
 - **parsemiss** Parsing a string vector allowing missing data
-- **pval** Compute p-value(s) for a distribution, an ECDF or vector
+- **pval** Compute p-value(s) from a distribution, an ECDF or a vector
 - **thresh_soft**, **thresh_hard** Thresholding functions
 - **softmax** Softmax function
 - **sourcedir** Include all the files contained in a directory
