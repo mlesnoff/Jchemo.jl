@@ -2,7 +2,7 @@
     matB(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Between-class covariance matrix.
 * `X` : X-matrix (n, p).
-* `y` : Univariate categorical variable (class membership) (n). Must be a `Vector{String}`.
+* `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 Compute the between-class covariance matrix (output `B`) of `X`. This is the (non-corrected) covariance matrix of 
@@ -61,7 +61,7 @@ end
     matW(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Within-class (non-corrected) covariance matrices.
 * `X` : X-matrix (n, p).
-* `y` : Univariate categorical variable (class membership) (n). Must be a `Vector{String}`.
+* `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 Compute the (non-corrected) within-class and pooled covariance matrices (outputs `Wi` and `W`, respectively) of `X`. 
@@ -105,7 +105,7 @@ end
     matWc(X::Matrix{Q}, y::Vector{String}) where Q <: AbstractFloat
 Within-class (corrected) covariance matrices.
 * `X` : X-matrix (n, p).
-* `y` : Univariate categorical variable (class membership) (n). Must be a `Vector{String}`.
+* `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 
 Compute the (corrected) within-class and pooled covariance matrices (outputs `Wi` and `W`, respectively) of `X`. 
 

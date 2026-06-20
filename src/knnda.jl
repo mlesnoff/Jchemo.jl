@@ -124,7 +124,7 @@ function predict(object::Knnda, X)
     pred = similar(object.y, m, 1)
     @inbounds for i = 1:m
         s = res.ind[i]
-        pred[i, :] .= findmax_cla(object.y[s], pweight(listw[i]))
+        pred[i, :] .= findmax_cla(object.y[s], pweight(listw[i]).values)
     end
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end

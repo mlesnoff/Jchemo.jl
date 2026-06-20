@@ -2,7 +2,7 @@
     hotelling(X, y::Vector{String}; digits::Int = 5)
 Two-sample Hotelling's T-squared test.
 * `X` : X-data (n, p).
-* `y` : Univariate categorical variable (2-class membership) (n). Must be a `Vector{String}`.
+* `y` : A categorical variable (2-class membership) (n). Must be a `Vector{String}`.
 Keyword arguments:
 * `digits` : Nb. digits for the outputs.
 
