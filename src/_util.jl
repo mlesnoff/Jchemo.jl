@@ -146,9 +146,9 @@ function dupl(X; digits::Int = 3)
     n = nro(X)
     rownum1 = []
     rownum2 = []
-    @inbounds for i = 1:n
+    @inbounds for i in axes(X, 1)
         @inbounds for j = (i + 1):n
-            res = isequal(vrow(X, i), vrow(X, j))
+            res = isequal(round.(vrow(X, i); digits), round.(vrow(X, j); digits))
             if res
                 push!(rownum1, i)
                 push!(rownum2, j)

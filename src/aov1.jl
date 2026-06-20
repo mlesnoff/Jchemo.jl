@@ -1,8 +1,8 @@
 """
-    aov1(x::Vector{String}, Y)
+    aov1(X::AbstractArray{Q}, y::Vector{String}) where Q <: AbstractFloat 
     One-factor ANOVA test.
-* `x` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
-* `Y` : Y-data (n, q).
+* `X` : X-data (n, p) whose columns are tested (independently).
+* `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 
 ## Examples
 ```julia
@@ -12,11 +12,11 @@ db = joinpath(path_jdat, "data/iris.jld2")
 @load db dat
 @names dat
 @head dat.X
-x = dat.X[:, 5]
-Y = dat.X[:, 1:4]
-tab(x) 
+X = Matrix(dat.X[:, 1:4])
+y = dat.X[:, 5]
+tab(y) 
 
-res = aov1(x, Y) ;
+res = aov1(X, y) ;
 @names res
 res.SSF
 res.SSR 
@@ -24,22 +24,20 @@ res.F
 res.pval
 ```
 """ 
-function aov1(x::Vector{String}, Y)
-    Y = ensure_mat(Y)
-    Q = eltype(Y)
-    n = length(x)
-    tabx = tab(x)
+function aov1(X::AbstractArray{Q}, y::Vector{String}) where Q <: AbstractFloat 
+    X = ensure_mat(X)
+    tabx = tab(y)
     lev = tabx.keys
     ni = tabx.vals
     nlev = length(lev)
-    Xdummy = dummy(Q, x).Y
-    Yc = fcenter(Y, colmean(Y))
-    fitm = mlr(Xdummy, Yc)
-    pred = predict(fitm, Xdummy).pred
-    SSF = sum((pred.^2); dims = 1)   # return matrix
-    SSR = ssr(pred, Yc)              # return matrix
+    Ydummy = dummy(Q, y).Y
+    Xc = fcenter(X, colmean(X))
+    fitm = mlr(Ydummy, Xc)
+    pred = predict(fitm, Ydummy).pred
+    SSF = sum((pred.^2); dims = 1)   # return a matrix
+    SSR = ssr(pred, Xc)              # return a matrix
     df_fact = nlev - 1 
-    df_res = n - nlev
+    df_res = nro(X) - nlev
     MSF = SSF / df_fact
     MSR = SSR / df_res
     F = MSF ./ MSR

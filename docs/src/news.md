@@ -12,6 +12,7 @@ Warning: Major changes in functions having arguments 'nlv' (laent variables) and
         Symbol type). Choice between several types of scaling is now allowed.
     - MLR functions: Functions other than **mlr** were removed.
     - Function **mbpca** renamed to **cpca**.
+    - Function **aov1**: syntax changed.
     - Fuction **rclustplsr** temporary removed.
     - Package UMAP updated to 0.3
 
