@@ -1,9 +1,9 @@
 """
-    aggstat(X::Matrix{Q}, y::Vector{String}; algo::Function = mean) where Q <: AbstractFloat
-    aggstat(dat::DataFrame; sel, group, algo::Function = mean)
+    aggstat(X::Array{Q}, y::Vector{String}; algo::Function = mean) where Q <: AbstractFloat
+    aggstataggstat(datf::DataFrame; sel::Q, group::Q, algo::Function = mean) where Q <: Union{Vector{String}, Vector{Symbol}}
 Compute column-wise statistics by group in a dataset.
-* `X` : Data matrix (n, p).
-* `dat` : A dataframe (n, p).
+* `X` : An array to summarize (n or (n, p)).
+* `datf` : A dataframe to summarize (n, p).
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `algo` : Function to compute (default = mean).
 Specific for `X::DataFrame`:
@@ -28,6 +28,8 @@ res.X
 
 aggstat(Matrix(datf), y; algo = sum).X
 
+## Dataframe
+
 n, p = 20, 5
 X = rand(n, p)
 datf = DataFrame(X, string.("v", 1:p))
@@ -38,7 +40,8 @@ datf
 aggstat(datf; sel = [:v1, :v2] , group = [:y1, :y2], algo = var)  # return a dataframe 
 ```
 """ 
-function aggstat(X::Matrix{Q}, y::Vector{String}; algo::Function = mean) where Q <: AbstractFloat
+function aggstat(X::Array{Q}, y::Vector{String}; algo::Function = mean) where Q <: AbstractFloat
+    X = ensure_mat(X)
     n, p = size(X)
     lev = mlev(y)
     nlev = length(lev)
@@ -51,16 +54,16 @@ function aggstat(X::Matrix{Q}, y::Vector{String}; algo::Function = mean) where Q
     (X = zX, lev)
 end
 
-function aggstat(dat::DataFrame; sel::Q, group::Q, algo::Function = mean) where Q <: Union{Vector{String}, Vector{Symbol}}
-    gdf = groupby(dat, group) 
+function aggstat(datf::DataFrame; sel::Q, group::Q, algo::Function = mean) where Q <: Union{Vector{String}, Vector{Symbol}}
+    gdf = groupby(datf, group) 
     res = combine(gdf, sel .=> algo, renamecols = false)
     sort!(res, group)
 end
 
 """
-    aggmean(X::Matrix{Q}, y::Vector{String}) where Q <: AbstractFloat
+    aggmean(X::Array{Q}, y::Vector{String}) where Q <: AbstractFloat
 Compute column-wise means by group in a dataset.
-* `X` : Data matrix (n, p).
+* `X` : An array to summarize (n or (n, p)).
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 
 This is a (faster) particular case of `aggstat`: computes means from a single group variable. 
@@ -81,7 +84,8 @@ res.lev
 aggmean(Matrix(datf), y).X
 ```
 """ 
-function aggmean(X::Matrix{Q}, y::Vector{String}) where Q <: AbstractFloat
+function aggmean(X::Array{Q}, y::Vector{String}) where Q <: AbstractFloat
+    X = ensure_mat(X)
     p = nco(X)
     lev = mlev(y)
     nlev = length(lev)

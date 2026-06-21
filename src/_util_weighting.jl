@@ -1,7 +1,8 @@
 ###### Building weights
 
 """ 
-    pweight([Q::Datatype], x)
+    pweight(x::Vector{Q}) where Q <: Real
+    pweight(T::DataType, x::Vector{Q}) where {Q <: Real}
 Wrapper of function `StatsBase.pweights` returning an object of type `StatsBase.ProbabilityWeights`.
 
 The wrapper forces the probability weights to sum to 1:
@@ -11,7 +12,7 @@ The wrapper forces the probability weights to sum to 1:
 ```julia
 using Jchemo
 
-x = rand(10)
+x = rand(5)
 weights = pweight(x)
 @names weights 
 weights.values 
@@ -19,19 +20,18 @@ sum(weights.values)
 weights.sum
 ```
 """
-pweight(x) = StatsBase.pweights(x / sum(x))
+pweight(x::Vector{Q}) where Q <: Real = StatsBase.pweights(x / sum(x))
 #function pweight(x)
 #    tot = sum(x) 
 #    ProbabilityWeights(x / tot, one(eltype(x)))
 #end
 
-pweight(Q::DataType, x) = pweight(Q.(x))
-
+pweight(T::DataType, x::Vector{Q}) where {Q <: Real} = pweight(T.(x))
 
 """ 
     pweightcla([Q::DataType], y; prior::Union{Symbol, Vector} = :prop)
 Compute observation weights for a categorical variable, given specified sub-total weights for the classes.
-* `y` : A categorical variable (n) (class membership).
+* `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `Q` : A data type (e.g., `Float32`).
 Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
@@ -55,22 +55,24 @@ res = aggstat(weights.values, y; algo = sum)
 [res.lev res.X]
 ```
 """
-pweightcla(y; prior::Union{Symbol, Vector} = :prop) = pweightcla(Float64, y; prior) 
+pweightcla(y::Vector{String}; 
+    prior::Union{Symbol, Vector{Q}} = :prop) where Q <: AbstractFloat = pweightcla(Float64, y; prior) 
 
-function pweightcla(Q::DataType, y; prior::Union{Symbol, Vector} = :prop)
+function pweightcla(T::DataType, y::Vector{String}; 
+        prior::Union{Symbol, Vector{Q}} = :prop) where Q <: AbstractFloat
     n = length(y)
     res = tab(y)
     lev = res.keys
     nlev = length(lev)
-    vals = Q.(res.vals)
+    vals = T.(res.vals)
     if isequal(prior, :unif)
-        priors = ones(Q, nlev) / nlev
+        priors = ones(T, nlev) / nlev
     elseif isequal(prior, :prop)
         priors = vals / n
     else
-        priors = pweight(Q, prior).values  # could be '= prior', but pweight not costly 
+        priors = pweight(T, prior).values  # could be '= prior', but pweight not costly 
     end
-    w = zeros(Q, n)
+    w = zeros(T, n)
     @inbounds for i in eachindex(lev)
         s = y .== lev[i]
         w[s] .= priors[i] / res.vals[i]
@@ -81,8 +83,8 @@ end
 ##### Weighting of entire rows or columns
 
 """
-    fweightr(X, v)
-    fweightr!(X::AbstractArray{Q}, v::Vector{Q})
+    fweightr(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
+    fweightr!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
 Weight each row of a matrix.
 * `X` : Data (n, p).
 * `v` : A weighting vector (n).
@@ -100,12 +102,12 @@ fweightr!(X, v)
 X
 ```
 """ 
-fweightr(X, v) = v .* X
+fweightr(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat = v .* X
 
-fweightr!(X::AbstractArray{Q}, v::Vector{Q}) where Q <: AbstractFloat = X .= v .* X
+fweightr!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat = X .= v .* X
 
 """
-    fweightc(X, v)
+    fweightc(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
     fweightc!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
 Weight each column of a matrix.
 * `X` : Data (n, p).
@@ -124,7 +126,7 @@ fweightc!(X, v)
 X
 ```
 """ 
-fweightc(X, v) = v' .* X
+fweightc(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat = v' .* X
 
 fweightc!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat = X .= v' .* X
 
