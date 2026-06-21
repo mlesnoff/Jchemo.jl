@@ -32,12 +32,16 @@ tab(datf; group = [:v1, :v2])
 tab(datf; group = [:v2])
 ```
 """
-tab(x) = sort(StatsBase.countmap(x))
+tab(x::AbstractArray) = sort(StatsBase.countmap(x))
 
 function tab(X::DataFrame; group = nothing)
     zX = copy(X)
-    if isa(zX, Vector) ; zX = DataFrame(x1 = zX) ; end
-    if !isa(zX, DataFrame) ; zX = DataFrame(zX, :auto) ; end
+    if isa(zX, Vector)
+        zX = DataFrame(x1 = zX)
+    end
+    if !isa(zX, DataFrame)
+        zX = DataFrame(zX, :auto)
+    end
     if isnothing(group) ; group = names(zX) ; end
     zX.n = ones(Int, nro(zX))
     Q = eltype(group)
@@ -69,7 +73,7 @@ function tabdupl(x)
 end
 
 """
-    tabcont(x, q)
+    tabcontt(x::Vector{Q}, q::Vector{Q}) where Q <: AbstractFloat
 Tabulate a continuous variable.
 * `x` : Continuous variable (n).
 * `q` : Numerical values (K) separating the class levels from `x`.  
@@ -111,7 +115,7 @@ function tabcont(x::Vector{Q}, q::Vector{Q}) where Q <: AbstractFloat
 end
 
 """
-    mbin(q)
+    mbin(q::Vector{Q}) where Q <: AbstractFloat
 Build histogram-bin intervals.
 * `q` : Numerical values (K) defining the limits of the intervals. 
 
@@ -130,9 +134,9 @@ q = [.01; .5; .500001; .9; 1.1]
 mbin(q)
 ```
 """
-mbin = function(q)
+function mbin(q::Vector{Q}) where Q <: AbstractFloat
     zq = vcat(-Inf, q, Inf)
-    bin = list(Vector, length(q) + 1)
+    bin = list(Vector{Q}, length(q) + 1)
     for i in eachindex(bin)
         bin[i] = [zq[i]; zq[i + 1]]
     end
