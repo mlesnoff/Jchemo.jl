@@ -1,8 +1,8 @@
 ###### One vector 
 
 """ 
-    sumv(x)
-    sumv(x, weights::ProbabilityWeights)
+    sumv(x::AbstractVector{Q}) where Q <: AbstractFloat
+    sumv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Sum of a vector. 
 * `x` : A vector (n).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -19,13 +19,13 @@ sumv(x)
 sumv(x, w)
 ```
 """
-sumv(x) = sum(x)
+sumv(x::AbstractVector{Q}) where Q <: AbstractFloat = sum(x)
 
-sumv(x, weights::ProbabilityWeights) = sum(x, weights::ProbabilityWeights)
+sumv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat = sum(x, weights::ProbabilityWeights)
 
 """ 
-    meanv(x)
-    meanv(x, weights::ProbabilityWeights)
+    meanv(x::AbstractVector{Q}) where Q <: AbstractFloat
+    meanv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Mean of a vector. 
 * `x` : A vector (n).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -42,13 +42,13 @@ meanv(x)
 meanv(x, w)
 ```
 """
-meanv(x) = Statistics.mean(x)
+meanv(x::AbstractVector{Q}) where Q <: AbstractFloat = Statistics.mean(x)
 
-meanv(x, weights::ProbabilityWeights) = sum(x, weights::ProbabilityWeights)
+meanv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat = sum(x, weights::ProbabilityWeights)
 
 """ 
-    normv(x)
-    normv(x, weights::ProbabilityWeights)
+    normv(x::AbstractVector{Q}) where Q <: AbstractFloat
+    normv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Norm of a vector.
 * `x` : A vector (n).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -79,13 +79,13 @@ normv(x)
 sqrt(n) * normv(x, w)
 ```
 """
-normv(x) = sqrt(norm2v(x)) 
+normv(x::AbstractVector{Q}) where Q <: AbstractFloat = sqrt(norm2v(x)) 
 
-normv(x, weights::ProbabilityWeights) = sqrt(norm2v(x, weights))
+normv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat = sqrt(norm2v(x, weights))
 
 """ 
-    norm2v(x)
-    norm2v(x, weights::ProbabilityWeights)
+    norm2v(x::AbstractVector{Q}) where Q <: AbstractFloat
+    norm2v(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Squared norm of a vector.
 * `x` : A vector (n).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -104,13 +104,13 @@ norm2v(x)
 n * norm2v(x, w)
 ```
 """
-norm2v(x) = dot(x, x) 
+norm2v(x::AbstractVector{Q}) where Q <: AbstractFloat = dot(x, x) 
 
-norm2v(x, weights::ProbabilityWeights) = sum(i -> x[i]^2 * weights.values[i], 1:length(x))
+norm2v(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat = sum(i -> x[i]^2 * weights.values[i], 1:length(x))
 
 """ 
-    stdv(x)
-    stdv(x, weights::ProbabilityWeights)
+    stdv(x::AbstractVector{Q}) where Q <: AbstractFloat
+    stdv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Uncorrected standard deviation of a vector.
 * `x` : A vector (n).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -127,13 +127,13 @@ stdv(x)
 stdv(x, w)
 ```
 """
-stdv(x) = Statistics.std(x; corrected = false) 
+stdv(x::AbstractVector{Q}) where Q <: AbstractFloat = Statistics.std(x; corrected = false) 
 
-stdv(x, weights::Jchemo.ProbabilityWeights) = Statistics.std(x, weights; corrected = false)
+stdv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat = Statistics.std(x, weights; corrected = false)
 
 """ 
-    varv(x)
-    varv(x, weights::ProbabilityWeights)
+    varv(x::AbstractVector{Q}) where Q <: AbstractFloat
+    varv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Uncorrected variance of a vector.
 * `x` : A vector (n).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -150,12 +150,12 @@ varv(x)
 varv(x, w)
 ```
 """
-varv(x) = Statistics.var(x; corrected = false) 
+varv(x::AbstractVector{Q}) where Q <: AbstractFloat = Statistics.var(x; corrected = false) 
 
-varv(x, weights::Jchemo.ProbabilityWeights) = Statistics.var(x, weights; corrected = false)
+varv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat = Statistics.var(x, weights; corrected = false)
 
 """ 
-    medv(x)
+    medv(x::AbstractVector{Q}) where Q <: AbstractFloat
 Median of a vector. 
 * `x` : A vector (n).
 
@@ -169,10 +169,10 @@ x = rand(n)
 medv(x)
 ```
 """
-medv(x) = Statistics.median(x)
+medv(x::AbstractVector{Q}) where Q <: AbstractFloat = Statistics.median(x)
 
 """
-    iqrv(x)
+    iqrv(x::AbstractVector{Q}) where Q <: AbstractFloat
 Interquartile interval (IQR) of a vector.
 * `x` : A vector (n).
 
@@ -182,13 +182,10 @@ x = rand(100)
 iqrv(x)
 ```
 """
-function iqrv(x)
-    Q = eltype(x)
-    quantile(x, Q(.75)) - quantile(x, Q(.25))
-end
+iqrv(x::AbstractVector{Q}) where Q <: AbstractFloat = quantile(x, Q(.75)) - quantile(x, Q(.25))
 
 """ 
-    madv(x)
+    madv(x::AbstractVector{Q}) where Q <: AbstractFloat
 
 Median absolute deviation (MAD) of a vector. 
 * `x` : A vector (n).
@@ -203,16 +200,13 @@ x = rand(100)
 madv(x)
 ```
 """
-function madv(x)
-    Q = eltype(x)
-    cst = Q(1.4826)
-    cst * median(abs.(x .- median(x)))
-end
+madv(x::AbstractVector{Q}) where Q <: AbstractFloat = Q(1.4826) * median(abs.(x .- median(x)))
 
 ###### Two vectors
 
 """
-    covv(x, y)
+    covv(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: AbstractFloat
+    covv(x::AbstractVector{Q}, y::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Uncorrected covariance between two vectors.
 * `x` : vector (n).
 * `y` : vector (n).
@@ -226,23 +220,27 @@ x = rand(n)
 y = rand(n)
 
 covv(x, y)
+
+weights = pweight(ones(n))
+covv(x, y, weights)
 ```
 """
-function covv(x, y)
+function covv(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: AbstractFloat
     mux = meanv(x) 
     muy = meanv(y)
     n = length(x)
     sum(i -> (x[i] - mux) * (y[i] - muy), 1:n) / n
 end 
 
-function covv(x, y, weights::ProbabilityWeights)
+function covv(x::AbstractVector{Q}, y::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
     mux = meanv(x, weights) 
     muy = meanv(y, weights)
     sum(i -> (x[i] - mux) * (y[i] - muy) * weights.values[i], 1:length(x))
 end 
 
 """
-    cosv(x, y)
+    cosv(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: AbstractFloat
+    cosv(x::AbstractVector{Q}, y::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Cosinus between two vectors.
 * `x` : vector (n).
 * `y` : vector (n).
@@ -260,9 +258,12 @@ x = rand(n)
 y = rand(n)
 
 cosv(x, y)
+
+weights = pweight(ones(n))
+cosv(x, y, weights)
 ```
 """
-function cosv(x, y)
+function cosv(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: AbstractFloat
     s = zero(x[begin]) * zero(y[begin])
     nx = ny = s
     @simd for i in eachindex(x, y)
@@ -273,7 +274,7 @@ function cosv(x, y)
     s / sqrt(nx * ny)
 end
 
-function cosv(x, y, weights::Jchemo.ProbabilityWeights)
+function cosv(x::AbstractVector{Q}, y::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
     s = zero(x[begin]) * zero(y[begin])
     nx = zero(x[begin]) * zero(y[begin])
     ny = zero(x[begin]) * zero(y[begin])
@@ -286,7 +287,8 @@ function cosv(x, y, weights::Jchemo.ProbabilityWeights)
 end
 
 """
-    corv(x, y)
+    corv(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: AbstractFloat
+    corv(x::AbstractVector{Q}, y::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Correlation between two vectors.
 * `x` : vector (n).
 * `y` : vector (n).
@@ -300,22 +302,26 @@ x = rand(n)
 y = rand(n)
 
 corv(x, y)
+
+weights = pweight(ones(n))
+corv(x, y, weights)
 ```
 """
-corv(x, y) = Statistics.cor(x, y)
+corv(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: AbstractFloat = Statistics.cor(x, y)
 
-corv(x, y, weights::Jchemo.ProbabilityWeights) = covv(x, y, weights) / (stdv(x, weights) * stdv(y, weights))
+corv(x::AbstractVector{Q}, y::AbstractVector{Q}, 
+    weights::ProbabilityWeights{Q}) where Q <: AbstractFloat = covv(x, y, weights) / (stdv(x, weights) * stdv(y, weights))
 
 ###### Matrices
 
 """
-    covm(X)
-    covm(X, weights::ProbabilityWeights)
-    covm(X, Y) 
-    covm(X, Y, weights::ProbabilityWeights)
+    covm(X::AbstractMatrix{Q}) where Q <: AbstractFloat
+    covm(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
+    covm(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}) where Q <: AbstractFloat 
+    covm(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Uncorrected covariance matrix.
-* `X` : Data (n, p).
-* `Y` : Data (n, q).
+* `X` : Matrix (n, p).
+* `Y` : Matrix (n, q).
 * `weights` : Weights (n) of the observations. Object of type `ProbabilityWeights` (e.g., generated by function `pweight`).
 
 The function computes the uncorrected covariance matrix: 
@@ -335,18 +341,18 @@ covm(X, w)
 covm(X, Y, w)
 ```
 """
-covm(X) = Statistics.cov(X; corrected = false)
+covm(X::AbstractMatrix{Q}) where Q <: AbstractFloat = Statistics.cov(X; corrected = false)
 
-function covm(X, weights::ProbabilityWeights)
+function covm(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
     zX = copy(ensure_mat(X))
     fcenter!(zX, colmean(zX, weights))
     fweightr!(zX, sqrt.(weights.values))
     zX' * zX
 end
 
-covm(X, Y) = Statistics.cov(X, Y; corrected = false)
+covm(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}) where Q <: AbstractFloat = Statistics.cov(X, Y; corrected = false)
 
-function covm(X, Y, weights::ProbabilityWeights)
+function covm(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
     zX = copy(ensure_mat(X))
     zY = copy(ensure_mat(Y))
     fcenter!(zX, colmean(zX, weights))
@@ -356,11 +362,11 @@ function covm(X, Y, weights::ProbabilityWeights)
 end
 
 """
-    cosm(X)
-    cosm(X, Y)
+    cosm(X::AbstractMatrix{Q}) where Q <: AbstractFloat
+    cosm(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}) where Q <: AbstractFloat
 Cosinus matrix.
-* `X` : Data (n, p).
-* `Y` : Data (n, q).
+* `X` : Matrix (n, p).
+* `Y` : Matrix (n, q).
 
 The function computes the cosinus matrix: 
 * of the columns of `X` ==> return a matrix (p, p),
@@ -378,28 +384,25 @@ cosm(X)
 cosm(X, Y)
 ```
 """
-function cosm(X)
-    X = ensure_mat(X)
+function cosm(X::AbstractMatrix{Q}) where Q <: AbstractFloat
     zX = fscale(X, colnorm(X))
     zX' * zX 
 end
 
-function cosm(X, Y)
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
+function cosm(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}) where Q <: AbstractFloat
     zX = fscale(X, colnorm(X))
     zY = fscale(Y, colnorm(Y))
     zX' * zY 
 end
 
 """
-    corm(X) 
-    corm(X, Y) 
-    corm(X, weights::ProbabilityWeights)
-    corm(X, Y, weights::ProbabilityWeights)
+    corm(X::AbstractMatrix{Q}) where Q <: AbstractFloat = Statistics.cor(X) 
+    corm(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
+    corm(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}) where Q <: AbstractFloat 
+    corm(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat 
 Correlation matrix.
-* `X` : Data (n, p).
-* `Y` : Data (n, q).
+* `X` : Matrix (n, p).
+* `Y` : Matrix (n, q).
 * `weights` : Weights (n) of the observations. Object of type `ProbabilityWeights` (e.g., generated by function `pweight`).
 
 Correlation matrix: 
@@ -419,18 +422,18 @@ corm(X, w)
 corm(X, Y, w)
 ```
 """
-corm(X) = Statistics.cor(X)
+corm(X::AbstractMatrix{Q}) where Q <: AbstractFloat = Statistics.cor(X)
 
-function corm(X, weights::ProbabilityWeights)
+function corm(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
     zX = copy(ensure_mat(X))
     fcscale!(zX, colmean(zX, weights), colstd(zX, weights))
     fweightr!(zX, sqrt.(weights.values))
     zX' * zX
 end
 
-corm(X, Y) = Statistics.cor(X, Y)
+corm(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}) where Q <: AbstractFloat = Statistics.cor(X, Y)
 
-function corm(X, Y, weights::ProbabilityWeights)
+function corm(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat 
     zX = copy(ensure_mat(X))
     zY = copy(ensure_mat(Y))
     fcscale!(zX, colmean(zX, weights), colstd(zX, weights))
@@ -440,10 +443,8 @@ function corm(X, Y, weights::ProbabilityWeights)
 end
 
 """ 
-    frob(X)
-    frob(X, weights::ProbabilityWeights)
-    frob2(X)
-    frob2(X, weights::ProbabilityWeights)
+    frob(X::AbstractMatrix{Q}) where Q <: AbstractFloat
+    frob(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Frobenius norm of a matrix.
 * `X` : A matrix (n, p).
 * `weights` : Weights (n) of the observations. Object of type `ProbabilityWeights` (e.g., generated by function `pweight`).
@@ -454,22 +455,22 @@ The Frobenius norm of `X` is:
 The weighted Frobenius norm is:
 * sqrt(tr(X' * D * X)), where D is the diagonal matrix of vector `weights.values`.
 """
-frob(X) = sqrt(frob2(X))
+frob(X::AbstractMatrix{Q}) where Q <: AbstractFloat = sqrt(frob2(X))
 
-frob(X, weights::ProbabilityWeights) = sqrt(frob2(X, weights)) 
+frob(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat = sqrt(frob2(X, weights)) 
 
 """ 
-    frob2(X)
-    frob2(X, weights::ProbabilityWeights)
+    frob2(X::AbstractMatrix{Q}) where Q <: AbstractFloat
+    frob2(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Squared Frobenius norm of a matrix.
 * `X` : A matrix (n, p).
 * `weights` : Weights (n) of the observations. Object of type `ProbabilityWeights` (e.g., generated by function `pweight`).
 
 See function `frob`. 
 """
-frob2(X) = sum(colnorm2(X))
+frob2(X::AbstractMatrix{Q}) where Q <: AbstractFloat = sum(colnorm2(X))
 
-frob2(X, weights::ProbabilityWeights) = sum(colnorm2(X, weights)) 
+frob2(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat = sum(colnorm2(X, weights)) 
 
 
 

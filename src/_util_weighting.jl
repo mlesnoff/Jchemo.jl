@@ -29,7 +29,10 @@ pweight(x::Vector{Q}) where Q <: Real = StatsBase.pweights(x / sum(x))
 pweight(T::DataType, x::Vector{Q}) where {Q <: Real} = pweight(T.(x))
 
 """ 
-    pweightcla([Q::DataType], y; prior::Union{Symbol, Vector} = :prop)
+    pweightcla(y::Vector{String}; 
+        prior::Union{Symbol, Vector{Q}} = :prop) where Q <: AbstractFloat
+    pweightcla(T::DataType, y::Vector{String}; 
+        prior::Union{Symbol, Vector{Q}} = :prop) where Q <: AbstractFloat
 Compute observation weights for a categorical variable, given specified sub-total weights for the classes.
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `Q` : A data type (e.g., `Float32`).
