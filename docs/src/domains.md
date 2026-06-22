@@ -423,18 +423,18 @@
 
 *Recoding*
 - Vector
+    - **dummy** Build dummy table from a categorical variable
     - **recod_catbydict** Recode a categorical variable by levels defined in a dictionnary
-    - **recod_catbyind** Recode a categorical variable by indexes of levels
-    - **recod_catbyint** Recode a categorical variable by integer indexes
+    - **recod_catbyind** Recode a categorical variable by indexes of sorted levels
+    - **recod_catbyind2** Recode a categorical variable by successive integer indexes
     - **recod_catbylev** Recode a categorical variable by levels
-    - **recod_contbyint** Recode a continuous variable by integers
     - **recod_indbylev** Recode an index variable by levels
+    - **recod_contbylev** Recode a quantitative variable by successive levels
     - **recod_miss** Declare data as missing in a dataset
 - Data
-    - **convertdf** Convert the columns of a dataframe to given types
-    - **dummy** Build dummy table for a categorical variable
     - **expand_tab2d** Expand a 2-D contingency table to a dataframe of two categorical variables
     - **expand_grid** Build a dataframe with all the combinations of the entered parameter values
+    - **convertdf** Convert the columns of a dataframe to given types
 
 *Operations on a vector*
 - **sumv**, **meanv**, **normv**, **norm2v**, **stdv**, **varv**, **medv**,  **madv**, **iqrv**: Statistics

@@ -101,7 +101,7 @@ function tabcont(x::Vector{Q}, q::Vector{Q}) where Q <: AbstractFloat
     bin = mbin(q)
     nbin = length(bin)
     lev = collect(1:nbin)
-    v = recod_contbyint(x, q)
+    v = recod_contbylev(x, q)
     resv = tab(v)
     val = zeros(Int, nbin)
     for i in eachindex(lev) 

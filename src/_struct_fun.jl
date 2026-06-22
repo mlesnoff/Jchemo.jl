@@ -22,9 +22,9 @@ struct Detrendarpls
     par::ParDetrendarpls
 end
 
-struct Emsc
-    xref::Vector
-    Xr::Matrix
+struct Emsc{Q <: AbstractFloat} 
+    xref::Vector{Q}
+    Xr::Matrix{Q}
     par::ParEmsc
 end
 
@@ -51,17 +51,17 @@ end
 struct Snorm
 end
 
-struct Center
-    xmeans::Vector
+struct Center{Q <: AbstractFloat} 
+    xmeans::Vector{Q}
 end
 
-struct Scale
-    xscales::Vector
+struct Scale{Q <: AbstractFloat} 
+    xscales::Vector{Q}
 end
 
-struct Cscale
-    xmeans::Vector
-    xscales::Vector
+struct Cscale{Q <: AbstractFloat} 
+    xmeans::Vector{Q}
+    xscales::Vector{Q}
 end
 
 struct Rmgap
@@ -76,7 +76,7 @@ end
 
 struct Calpds
     fitm
-    s
+    s::Vector{Vector{Int}}
 end
 
 ############---- Dimension reduction
@@ -87,7 +87,7 @@ struct Pca{Q <: AbstractFloat}
     sv::Vector{Q}
     xmeans::Vector{Q}
     xscales::Vector{Q}
-    weights::ProbabilityWeights
+    weights::ProbabilityWeights{Q}
     niter::Union{Nothing, Vector{Int}}    # pcanipals, pcanipalsmiss
     par::Union{ParPca, ParPcanipals, ParPcapp, ParPcaout}
 end
@@ -181,10 +181,10 @@ end
 
 ## Multiblock
 
-struct Blockscal
-    bscales::Vector
-    xmeans::Vector{Vector}
-    xscales::Vector{Vector}
+struct Blockscal{Q <: AbstractFloat}
+    bscales::Vector{Q}
+    xmeans::Vector{Vector{Q}}
+    xscales::Vector{Vector{Q}}
     par::ParBlock
 end
 

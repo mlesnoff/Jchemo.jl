@@ -331,14 +331,15 @@ list(Matrix{Int}, 5)
 list(Q::Union{DataType, UnionAll}, n::Integer) = Vector{Q}(undef, n)
 
 """ 
-    mlev(x::Array{String})
-Return the sorted levels of an array or dataset.
+    mlev(X::Array{String})
+    mlev(datf::DataFrame)
+Return the sorted levels of an array or dataframe.
 * `X` : A categorical array (class membership). Must be of type `String`.
 * `datf` : A dataframe.
 
 ## Examples
 ```julia
-using Jchemo
+using Jchemo, DataFrames
 
 x = rand(["a";"b";"c"], 20)
 lev = mlev(x)
@@ -347,11 +348,12 @@ nlev = length(lev)
 X = reshape(x, 5, 4)
 mlev(X)
 
+n = 10
 datf = DataFrame(g1 = rand(1:2, n), g2 = rand(["a"; "c"], n))
 mlev(datf)
 ```
 """
-mlev(x::Array{String}) = sort(unique(x)) 
+mlev(X::Array{String}) = sort(unique(X)) 
 
 mlev(datf::DataFrame) = sort(unique(datf)) 
 

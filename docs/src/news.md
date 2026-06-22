@@ -15,6 +15,7 @@ Warning: Major changes in functions having arguments 'nlv' (laent variables) and
     - Function **aov1**: syntax changed.
     - Fuction **rclustplsr** temporary removed.
     - Package UMAP updated to 0.3
+    - Recoding functions have changed.
 
 - News:
     - Function **boxcox**: Estimate the parameter of the Box-Cox power transformation.
