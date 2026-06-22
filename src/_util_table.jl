@@ -1,12 +1,12 @@
 """
-    tab(x::AbstractArray)
-    tab(X::DataFrame; group = nothing)
+    tab(X::AbstractArray)
+    tab(datf::DataFrame; group = nothing)
 Tabulation of categorical variables.
-* `x` : Categorical variable to tabulate.
-* `X` : Dataframe containing categorical variable(s) to tabulate.
+* `X` : A categorical array or variable to tabulate.
+* `datf` : A dataframe containing categorical variable(s) to tabulate.
 Specific for a dataset:
-* `group` : Vector of the names (Sring or Symbol) of the group variables to consider in dataframe `X` 
-    (by default, all the columns of `X`).
+* `group` : Vector of the names (String or Symbol) of the group variables to consider in dataframe `datf` 
+    (by default, all the columns of `datf`).
 
 The function returns sorted levels. It does not support inputs of type `Any`.
 
@@ -28,24 +28,18 @@ tab(X[:, 2])
 tab(X)
 
 tab(datf)
-tab(datf; group = [:v1, :v2])
 tab(datf; group = [:v2])
+tab(datf; group = [:v1, :v2])
 ```
 """
-tab(x::AbstractArray) = sort(StatsBase.countmap(x))
+tab(X::AbstractArray) = sort(StatsBase.countmap(X))
 
-function tab(X::DataFrame; group = nothing)
-    zX = copy(X)
-    if isa(zX, Vector)
-        zX = DataFrame(x1 = zX)
-    end
-    if !isa(zX, DataFrame)
-        zX = DataFrame(zX, :auto)
-    end
-    if isnothing(group) ; group = names(zX) ; end
-    zX.n = ones(Int, nro(zX))
+function tab(datf::DataFrame; group = nothing)
+    dat = copy(datf)
+    if isnothing(group) ; group = names(dat) ; end
+    dat.n = ones(Int, nro(dat))
     Q = eltype(group)
-    res = aggstat(zX; sel = [Q(:n)], group, algo = sum)
+    res = aggstat(dat; sel = [Q(:n)], group, algo = sum)
     res
 end
 
