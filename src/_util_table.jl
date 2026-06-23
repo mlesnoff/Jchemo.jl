@@ -20,6 +20,8 @@ res = tab(x)
 res.keys
 res.vals
 
+tab(string.(x))
+
 n = 20
 X = hcat(rand(["1"; "2"], n), rand(["a", "b", "c"], n))
 datf = DataFrame(X, [:v1, :v2])
@@ -67,7 +69,7 @@ function tabdupl(x)
 end
 
 """
-    tabcontt(x::Vector{Q}, q::Vector{Q}) where Q <: AbstractFloat
+    tabcont(x::Vector{Q}, q::Vector{Q}) where Q <: AbstractFloat
 Tabulate a continuous variable.
 * `x` : Continuous variable (n).
 * `q` : Numerical values (K) separating the class levels from `x`.  
