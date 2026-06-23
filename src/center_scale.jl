@@ -27,7 +27,7 @@ Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
 colmean(Xptrain)
 @head Xptest 
-@head Xtest .- colmean(Matrix(Xtrain))'
+@head Xtest .- colmean(Xtrain)'
 plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
@@ -105,8 +105,7 @@ end
 
 function scale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
     par = Jchemo.recovkw(ParScale, kwargs).par 
-    p = nco(X) 
-    xscales = ones(Q, p) 
+    xscales = ones(Q, nco(X)) 
     if par.scal != :none
         colscal = def_colscal(par.scal) 
         xscales .= colscal(X, weights)
