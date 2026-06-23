@@ -346,16 +346,20 @@
 - **fdif** Finite differences
 - **mavg** Smoothing by moving average
 - **savgk**, **savgol** Savitsky-Golay filtering
-- **rmgap** Remove vertical gaps in spectra, e.g., for ASD NIR data
-- **interpl** Sampling spectra by interpolation -- From DataInterpolations.jl
 
-*Scaling*
+*Centering-Scaling*
 - **center** Column centering
 - **scale** Column scaling
 - **cscale** Column centering and scaling
 
 - **blockscal** Scaling of multiblock data
 - **fblockscal_col, _frob, _mfa, _sd** Scale blocks
+
+*Remove gaps*
+- **rmgap** Remove vertical gaps in spectra, e.g., for ASD NIR data
+
+*Interpolation*
+- **interpl** Sampling spectra by interpolation -- From DataInterpolations.jl
 
 ### Calibration transfer
 
