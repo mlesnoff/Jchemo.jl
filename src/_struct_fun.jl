@@ -32,10 +32,6 @@ struct Fdif
     par::ParFdif
 end
 
-struct Interpl
-    par::ParInterpl
-end
-
 struct Mavg
     par::ParMavg
 end
@@ -66,6 +62,10 @@ end
 
 struct Rmgap
     par::ParRmgap
+end
+
+struct Interpl
+    par::ParInterpl
 end
 
 ## Calibration transfer

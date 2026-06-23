@@ -27,14 +27,14 @@ Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
 colmean(Xptrain)
 @head Xptest 
-@head Xtest .- colmean(Xtrain)'
+@head Xtest .- colmean(Matrix(Xtrain))'
 plotsp(Xptrain).f
 plotsp(Xptest).f
 ```
 """
 center(; kwargs...) = JchemoModel(center, nothing, kwargs)
 
-center(X) = Center(colmean(X))
+center(X) = Center(colmean(ensure_mat(X)))
 
 function center(X::Matrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
     xmeans = colmean(X, weights)

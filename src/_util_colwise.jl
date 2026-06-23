@@ -1,4 +1,5 @@
 """
+    colsum(X::DataFrame)
     colsum(X::AbstractMatrix{Q}) where Q <: AbstractFloat
     colsum(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Column-wise sums of a matrix.
@@ -19,6 +20,8 @@ colsum(X)
 colsum(X, w)
 ```
 """ 
+colsum(X::DataFrame) = colsum(ensure_mat(X))
+
 function colsum(X::AbstractMatrix{Q}) where Q <: AbstractFloat
     s = zeros(eltype(X), nco(X))
     Threads.@threads for j in axes(X, 2)
@@ -40,6 +43,7 @@ function colsum(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <:
 end
 
 """
+    colmean(X::DataFrame)
     colmean(X::AbstractMatrix{Q}) where Q <: AbstractFloat
     colmean(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Column-wise means of a matrix.
@@ -60,11 +64,14 @@ colmean(X)
 colmean(X, w)
 ```
 """ 
+colmean(X::DataFrame) = colmean(ensure_mat(X))
+
 colmean(X::AbstractMatrix{Q}) where Q <: AbstractFloat = colsum(X) / nro(X)
 
 colmean(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat = colsum(X, weights)
 
 """
+    colnorm(X::DataFrame)
     colnorm(X::AbstractMatrix{Q}) where Q <: AbstractFloat
     colnorm(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Column-wise norms of a matrix.
@@ -93,11 +100,14 @@ colnorm(X)
 colnorm(X, w)
 ```
 """ 
+colnorm(X::DataFrame) = colnorm(ensure_mat(X))
+
 colnorm(X::AbstractMatrix{Q}) where Q <: AbstractFloat = sqrt.(colnorm2(X))
 
 colnorm(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat = sqrt.(colnorm2(X, weights))
 
 """
+    colnorm2(X::DataFrame)
     colnorm2(X::AbstractMatrix{Q}) where Q <: AbstractFloat
     colnorm2(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Column-wise squared norms of a matrix.
@@ -118,6 +128,8 @@ colnorm2(X)
 colnorm2(X, w)
 ```
 """
+colnorm2(X::DataFrame) = colnorm2(ensure_mat(X))
+
 function colnorm2(X::AbstractMatrix{Q}) where Q <: AbstractFloat
     s = zeros(eltype(X), nco(X))
     Threads.@threads for j in axes(X, 2)
@@ -139,6 +151,7 @@ function colnorm2(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q 
 end
 
 """
+    colvar(X::DataFrame)
     colvar(X::AbstractMatrix{Q}) where Q <: AbstractFloat
     colvar(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Column-wise (uncorrected) variances of a matrix.
@@ -159,6 +172,8 @@ colvar(X)
 colvar(X, w)
 ```
 """ 
+colvar(X::DataFrame) = colvar(ensure_mat(X))
+
 function colvar(X::AbstractMatrix{Q}) where Q <: AbstractFloat
     s = similar(X, nco(X))
     Threads.@threads for j in axes(X, 2)
@@ -176,6 +191,7 @@ function colvar(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <:
 end
 
 """
+    colstd(X::DataFrame)
     colstd(X::AbstractMatrix{Q}) where Q <: AbstractFloat
     colstd(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Column-wise (uncorrected) standard deviations of a matrix.
@@ -196,11 +212,14 @@ colstd(X)
 colstd(X, w)
 ```
 """ 
+colstd(X::DataFrame) = colstd(ensure_mat(X))
+
 colstd(X::AbstractMatrix{Q}) where Q <: AbstractFloat = sqrt.(colvar(X))
 
 colstd(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat = sqrt.(colvar(X, weights))
 
 """
+    colprt(X::DataFrame)
     colprt(X::AbstractMatrix{Q}) where Q <: AbstractFloat
     colprt(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
 Column-wise (uncorrected) standard deviations of a matrix.
@@ -221,11 +240,14 @@ colprt(X)
 colprt(X, w)
 ```
 """ 
+colprt(X::DataFrame) = colprt(ensure_mat(X))
+
 colprt(X::AbstractMatrix{Q}) where Q <: AbstractFloat = sqrt.(colstd(X))
 
 colprt(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat = sqrt.(colstd(X, weights))
 
 """
+    colmed(X::DataFrame)
     colmed(X::AbstractMatrix{Q}) where Q <: AbstractFloat
 Column-wise medians of a matrix.
 * `X` : Matrix (n, p).
@@ -242,6 +264,8 @@ X = rand(n, p)
 colmed(X)
 ```
 """ 
+colmed(X::DataFrame) = colmed(ensure_mat(X))
+
 function colmed(X::AbstractMatrix{Q}) where Q <: AbstractFloat
     s = similar(X, nco(X))
     Threads.@threads for j in axes(X, 2)
@@ -251,6 +275,7 @@ function colmed(X::AbstractMatrix{Q}) where Q <: AbstractFloat
 end
 
 """
+    colmad(X::DataFrame)
     colmad(X::AbstractMatrix{Q}) where Q <: AbstractFloat
 Column-wise median absolute deviations (MAD) of a matrix.
 * `X` : Matrix (n, p).
@@ -267,6 +292,8 @@ X = rand(n, p)
 colmad(X)
 ```
 """
+colmad(X::DataFrame) = colmad(ensure_mat(X))
+
 function colmad(X::AbstractMatrix{Q}) where Q <: AbstractFloat
     s = similar(X, nco(X))
     Threads.@threads for j in axes(X, 2)

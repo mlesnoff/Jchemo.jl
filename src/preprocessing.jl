@@ -240,92 +240,6 @@ function transf!(object::Fdif, X::Matrix{Q}, M::Matrix{Q}) where Q <: AbstractFl
     end
 end
 
-""" 
-    interpl(; kwargs...)
-    interpl(X; kwargs...)
-Sampling spectra by interpolation.
-* `X` : Matrix (n, p) of spectra (rows).
-Keyword arguments:
-* `wl` : Values representing the column "names" of `X`. Must be a numeric vector of length p, or an AbstractRange, 
-    with increasing values.
-* `wlfin` : Final values (within the range of `wl`) where to interpolate each spectrum. Must be a numeric vector, 
-    or an AbstractRange, with increasing values.
-
-The function implements a cubic spline interpolation using package DataInterpolations.jl.
-
-## References
-http://github.com/SciML/DataInterpolations.jl
-
-Bhagavan et al. 2024, https://doi.org/10.21105/joss.06917
-
-## Examples
-```julia
-using Jchemo, JchemoData, JLD2, CairoMakie
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/cassav.jld2") 
-@load db dat
-@names dat
-X = dat.X
-year = dat.Y.year
-s = year .<= 2012
-Xtrain = X[s, :]
-Xtest = rmrow(X, s)
-wlst = names(dat.X)
-wl = parse.(Float64, wlst)
-plotsp(X, wl; nsamp = 20).f
-
-wlfin = range(500, 2400, length = 10)
-#wlfin = collect(range(500, 2400, length = 10))
-model = interpl(; wl, wlfin)
-fit!(model, Xtrain)
-Xptrain = transf(model, Xtrain)
-Xptest = transf(model, Xtest)
-plotsp(Xptrain).f
-plotsp(Xptest).f
-```
-"""
-interpl(; kwargs...) = JchemoModel(interpl, nothing, kwargs)
-
-function interpl(X; kwargs...)
-    X = ensure_mat(X)
-    par = recovkw(ParInterpl{eltype(X)}, kwargs).par
-    Interpl(par)
-end
-
-""" 
-    transf(object::Interpl, X)
-    transf!(object::Interpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: AbstractFloat
-Compute the preprocessed data from a model.
-* `object` : Model.
-* `X` : X-data to transform.
-* `M` : Pre-allocated output matrix (n, p).
-The in-place function stores the output in `M`.
-""" 
-function transf(object::Interpl, X)
-    X = ensure_mat(X)
-    n = nro(X)
-    p = length(object.par.wlfin)
-    M = similar(X, n, p)
-    transf!(object, X, M)
-    M
-end
-
-function transf!(object::Interpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: AbstractFloat
-    algo = DataInterpolations.CubicSpline
-    #algo = DataInterpolations.LinearInterpolation
-    ## Not faster: @Threads.threads
-    @inbounds for i in axes(X, 1)
-        ## argument 'extrapolate' has been removed for CubicSpline
-        ## ==> removed from 'interpl' since Jchemo_0.8.4
-        itp = algo(vrow(X, i), object.par.wl)
-        M[i, :] .= itp.(object.par.wlfin)
-    end
-end
-#cubic_spline(y, x) = DataInterpolations.CubicSpline(y, x)
-#linear_int(y, x) = DataInterpolations.LinearInterpolation(y, x)
-#quadratic_int(y, x) = DataInterpolations.QuadraticInterpolation(y, x)
-#quadratic_spline(y, x) = DataInterpolations.QuadraticSpline(y, x)
-
 """
     mavg(; kwargs...)
     mavg(X; kwargs...)
@@ -873,4 +787,91 @@ end
 function transf!(object::Snorm, X::Matrix{Q}) where Q <: AbstractFloat
     X ./= rownorm(X)
 end
+
+""" 
+    interpl(; kwargs...)
+    interpl(X; kwargs...)
+Sampling spectra by interpolation.
+* `X` : Matrix (n, p) of spectra (rows).
+Keyword arguments:
+* `wl` : Values representing the column "names" of `X`. Must be a numeric vector of length p, or an AbstractRange, 
+    with increasing values.
+* `wlfin` : Final values (within the range of `wl`) where to interpolate each spectrum. Must be a numeric vector, 
+    or an AbstractRange, with increasing values.
+
+The function implements a cubic spline interpolation using package DataInterpolations.jl.
+
+## References
+http://github.com/SciML/DataInterpolations.jl
+
+Bhagavan et al. 2024, https://doi.org/10.21105/joss.06917
+
+## Examples
+```julia
+using Jchemo, JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+@names dat
+X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
+plotsp(X, wl; nsamp = 20).f
+
+wlfin = range(500, 2400, length = 10)
+#wlfin = collect(range(500, 2400, length = 10))
+model = interpl(; wl, wlfin)
+fit!(model, Xtrain)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
+plotsp(Xptrain).f
+plotsp(Xptest).f
+```
+"""
+interpl(; kwargs...) = JchemoModel(interpl, nothing, kwargs)
+
+function interpl(X; kwargs...)
+    X = ensure_mat(X)
+    par = recovkw(ParInterpl{eltype(X)}, kwargs).par
+    Interpl(par)
+end
+
+""" 
+    transf(object::Interpl, X)
+    transf!(object::Interpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: AbstractFloat
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+* `M` : Pre-allocated output matrix (n, p).
+The in-place function stores the output in `M`.
+""" 
+function transf(object::Interpl, X)
+    X = ensure_mat(X)
+    n = nro(X)
+    p = length(object.par.wlfin)
+    M = similar(X, n, p)
+    transf!(object, X, M)
+    M
+end
+
+function transf!(object::Interpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: AbstractFloat
+    algo = DataInterpolations.CubicSpline
+    #algo = DataInterpolations.LinearInterpolation
+    ## Not faster: @Threads.threads
+    @inbounds for i in axes(X, 1)
+        ## argument 'extrapolate' has been removed for CubicSpline
+        ## ==> removed from 'interpl' since Jchemo_0.8.4
+        itp = algo(vrow(X, i), object.par.wl)
+        M[i, :] .= itp.(object.par.wlfin)
+    end
+end
+#cubic_spline(y, x) = DataInterpolations.CubicSpline(y, x)
+#linear_int(y, x) = DataInterpolations.LinearInterpolation(y, x)
+#quadratic_int(y, x) = DataInterpolations.QuadraticInterpolation(y, x)
+#quadratic_spline(y, x) = DataInterpolations.QuadraticSpline(y, x)
+
 
