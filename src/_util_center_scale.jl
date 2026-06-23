@@ -1,6 +1,6 @@
 """
     fcenter(X, v) 
-    fcenter!(X::Matrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
+    fcenter!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
 Center each column of a matrix.
 * `X` : Data (n, p).
 * `v` : Centering vector (p).
@@ -21,7 +21,7 @@ function fcenter(X, v)
     zX
 end
 
-function fcenter!(X::Matrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
+function fcenter!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
     @inbounds for j in axes(X, 2), i in axes(X, 1)
         X[i, j] -= v[j]
     end  
@@ -29,7 +29,7 @@ end
 
 """
     fscale(X, v)
-    fscale!(X::Matrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
+    fscale!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
 Scale each column of a matrix.
 * `X` : Data (n, p).
 * `v` : Scaling vector (p).
@@ -48,7 +48,7 @@ function fscale(X, v)
     zX
 end
 
-function fscale!(X::Matrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
+function fscale!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
     @inbounds for j in axes(X, 2), i in axes(X, 1)
         X[i, j] /= v[j]
     end 
@@ -56,7 +56,7 @@ end
 
 """
     fcscale(X, u, v)
-    fcscale!(X::Matrix{Q}, u::Vector{Q}, v::Vector{Q}) where Q <: AbstractFloat
+    fcscale!(X::AbstractMatrix{Q}, u::Vector{Q}, v::Vector{Q}) where Q <: AbstractFloat
 Center and scale each column of a matrix.
 * `X` : Data  (n, p).
 * `u` : Centering vector (p).
@@ -79,7 +79,7 @@ function fcscale(X, u, v)
     zX
 end
 
-function fcscale!(X::Matrix{Q}, u::Vector{Q}, v::Vector{Q}) where Q <: AbstractFloat
+function fcscale!(X::AbstractMatrix{Q}, u::Vector{Q}, v::Vector{Q}) where Q <: AbstractFloat
     @inbounds for j in axes(X, 2), i in axes(X, 1)
         X[i, j] = (X[i, j] - u[j]) / v[j]
     end  
