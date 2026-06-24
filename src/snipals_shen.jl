@@ -1,6 +1,5 @@
 function snipals_shen(X::Matrix{Q}; kwargs...) where Q <: AbstractFloat
     par = recovkw(Jchemo.ParSnipals{Q}, kwargs).par 
-    X = ensure_mat(X)
     p = nco(X)
     if par.meth == :soft 
         fthresh = thresh_soft

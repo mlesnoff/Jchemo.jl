@@ -1,6 +1,7 @@
 """
-    rd(X, Y; typ = :cor)
-    rd(X::Array{Q}, Y::Array{Q}, weights::ProbabilityWeights{Q}; typ = :cor) where Q <: AbstractFloat
+    rd(X, Y; typ::Symbol = :cor)
+    rd(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, 
+        weights::ProbabilityWeights{Q}; typ::Symbol = :cor) where Q <: AbstractFloat
 Compute redundancy coefficients (Rd).
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
@@ -27,13 +28,14 @@ Y = rand(5, 3)
 rd(X, Y)
 ```
 """ 
-function rd(X, Y; typ = :cor)
+function rd(X, Y; typ::Symbol = :cor)
     X = ensure_mat(X)
     weights = pweight(ones(eltype(X), nro(X)))
     rd(X, ensure_mat(Y), weights; typ)
 end
 
-function rd(X::Array{Q}, Y::Array{Q}, weights::ProbabilityWeights{Q}; typ = :cor) where Q <: AbstractFloat
+function rd(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, 
+        weights::ProbabilityWeights{Q}; typ::Symbol = :cor) where Q <: AbstractFloat
     @assert in([:cor, :cov])(typ) "Wrong value for argument 'typ'." 
     if typ == :cor
         A = corm(X, Y, weights).^2
@@ -44,9 +46,10 @@ function rd(X::Array{Q}, Y::Array{Q}, weights::ProbabilityWeights{Q}; typ = :cor
 end
 
 """
-    rv(X, Y; centr = true)
-    rv(X::Array{Q}, Y::Array{Q}, weights::ProbabilityWeights{Q}; centr = true) where Q <: AbstractFloat
-    rv(Xbl::Vector; centr = true)
+    rv(X, Y; centr::Bool = true)
+    rv(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, 
+        weights::ProbabilityWeights{Q}; centr::Bool = true) where Q <: AbstractFloat
+    rv(Xbl::Vector; centr::Bool = true)
 Compute RV coefficients.
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
@@ -93,13 +96,14 @@ Xbl = mblock(X, listbl)
 rv(Xbl)
 ```
 """ 
-function rv(X, Y; centr = true)
+function rv(X, Y; centr::Bool = true)
     X = ensure_mat(X)
     weights = pweight(ones(eltype(X), nro(X)))
     rv(X, ensure_mat(Y), weights; centr)
 end
 
-function rv(X::Array{Q}, Y::Array{Q}, weights::ProbabilityWeights{Q}; centr = true) where Q <: AbstractFloat
+function rv(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, 
+        weights::ProbabilityWeights{Q}; centr::Bool = true) where Q <: AbstractFloat
     n, p = size(X)
     if centr
         fcenter!(X, colmean(X, weights))
@@ -128,7 +132,7 @@ function rv(X::Array{Q}, Y::Array{Q}, weights::ProbabilityWeights{Q}; centr = tr
     rv
 end
 
-function rv(Xbl::Vector; centr = true)
+function rv(Xbl; centr::Bool = true)
     Q = eltype(ensure_mat(Xbl[1]))
     nbl = length(Xbl)
     mat = Array{Q}(undef, nbl, nbl)

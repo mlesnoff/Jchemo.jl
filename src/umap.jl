@@ -69,8 +69,8 @@ tab(string.(ycla, "-", Y.label))
 psamp = .2  # to decrease the computation time for the example
 #psamp = 1  # all samples
 nlv = 3
-metric = Distances.Euclidean()
-#metric = Distances.CosineDist()
+metric = Jchemo.Euclidean()
+#metric = Jchemo.CosineDist()
 #metric = Jchemo.SamDist()
 n_neighbors = 20 ; min_dist = .4 
 model = umap(; psamp, nlv, metric, n_neighbors, min_dist)  

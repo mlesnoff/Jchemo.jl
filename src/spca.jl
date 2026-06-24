@@ -197,9 +197,6 @@ function transf(object::Spca, X, nlv::Int)
     T 
 end
 
-
-
-
 """
     summary(object::Spca, X)
 Summarize the fitted model.
