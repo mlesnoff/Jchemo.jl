@@ -118,22 +118,25 @@ f
 dmkern(; kwargs...) = JchemoModel(dmkern, nothing, kwargs)
 
 function dmkern(X; kwargs...)
-    par = recovkw(ParDmkern{Q}, kwargs).par
     X = ensure_mat(X)
+    Q = eltype(X)
     n, p = size(X)
-    h = par.h
-    a = par.a
+    par = recovkw(ParDmkern{Q}, kwargs).par
     ## Particular case where n = 1
     ## (ad'hoc code for discrimination functions only)
     if n == 1
-        H = diagm(fill(a * n^(-1/(p + 4)), p))
+        H = diagm(fill(par.a * n^(-1 / (p + 4)), p))
     end
     ## End
-    if isnothing(h)
-        h = a * n^(-1 / (p + 4)) * colstd(X)      # a = .9, 1.06
+    if isnothing(par.h)
+        h = par.a * n^(-1 / (p + 4)) * colstd(X)      # a = .9, 1.06
         H = diagm(h)
     else 
-        H = isa(h, Real) ? diagm(fill(h, p)) : diagm(h)
+        if isa(par.h, Real)
+            H = diagm(fill(par.h, p))
+        else 
+            H = diagm(par.h)
+        end
     end
     Hinv = inv(H)
     detH = det(H)

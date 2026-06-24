@@ -573,15 +573,15 @@ struct Dmnorm
     mu::Vector{Q}
     Uinv::Matrix{Q} 
     detS::Q
-    cst
+    cst::Q
     par::ParDmnorm
 end
 
 struct Dmnormlog
-    mu
-    Uinv 
-    logdetS
-    logcst
+    mu::Vector{Q}
+    Uinv::Matrix{Q} 
+    logdetS::Q
+    logcst::Q
     par::ParDmnorm
 end
 
@@ -606,7 +606,7 @@ end
 
 struct Qda
     fitm::Vector{Dmnorm}
-    Wi::AbstractVector{Q}  
+    Wi::Vector{Q}  
     ct::Matrix{Q}
     ni::Vector{Int}
     priors::Vector{Q}
@@ -617,7 +617,7 @@ end
 
 struct Rda
     fitm::Vector{Dmnorm}
-    Wi::AbstractVector{Q}  
+    Wi::Vector{Q}  
     ct::Matrix{Q}
     ni::Vector{Int}
     priors::Vector{Q}
@@ -674,7 +674,7 @@ end
 
 struct Knnda
     X::Matrix{Q}
-    y::AbstractMatrix
+    y::Matrix{String}
     xscales::Vector{Q}
     ni::Vector{Int}
     lev::Vector{String}
@@ -683,7 +683,7 @@ end
 
 struct Lwmlrda
     X::Matrix{Q}
-    y::AbstractMatrix
+    y::Matrix{String}
     xscales::Vector{Q}
     ni::Vector{Int}
     lev::Vector{String}
@@ -693,7 +693,7 @@ end
 struct Lwplsrda
     fitm
     X::Matrix{Q}
-    y::AbstractMatrix
+    y::Matrix{String}
     xscales::Vector{Q}
     ni::Vector{Int}
     priors::Vector{Q}
@@ -704,7 +704,7 @@ end
 struct Lwplslda   
     fitm
     X::Matrix{Q}
-    y::AbstractMatrix
+    y::Matrix{String}
     xscales::Vector{Q}
     ni::Vector{Int}
     priors::Vector{Q}
@@ -715,7 +715,7 @@ end
 struct Lwplsqda
     fitm
     X::Matrix{Q}
-    y::AbstractMatrix
+    y::Matrix{String}
     xscales::Vector{Q}
     ni::Vector{Int}
     priors::Vector{Q}
@@ -770,7 +770,7 @@ struct Occsd
     fitm
     tscales::Vector{Q}
     e_cdf::ECDF
-    cutoff::Real   
+    cutoff::Q   
     par::ParOcc
 end
 
@@ -778,7 +778,7 @@ struct Occod
     d::DataFrame
     fitm
     e_cdf::ECDF
-    cutoff::Real   
+    cutoff::Q   
     par::ParOcc
 end
 
@@ -787,7 +787,7 @@ struct Occstah
     res_stah::NamedTuple
     V::Matrix{Q}
     e_cdf::ECDF
-    cutoff::Real
+    cutoff::Q
     par::ParOccstah
 end
 
@@ -795,7 +795,7 @@ struct Occsdod
     d::DataFrame
     fitm
     e_cdf::ECDF
-    cutoff::Real
+    cutoff::Q
     sd::NamedTuple   
     od::NamedTuple   
     sdod::NamedTuple
@@ -808,7 +808,7 @@ struct Occdds
     fitm
     e_cdf::ECDF
     nu::Int
-    cutoff::Real
+    cutoff::Q
     sd2::NamedTuple   
     od2::NamedTuple   
     coefs::Vector{Q}
@@ -819,7 +819,7 @@ struct Occknn
     d::DataFrame
     X::Matrix{Q}
     e_cdf::ECDF
-    cutoff::Real
+    cutoff::Q
     xscales::Vector{Q}
     par::ParOccknn
 end
@@ -828,7 +828,7 @@ struct Occlknn
     d::DataFrame
     X::Matrix{Q}
     e_cdf::ECDF
-    cutoff::Real
+    cutoff::Q
     xscales::Vector{Q}
     par::ParOccknn
 end
