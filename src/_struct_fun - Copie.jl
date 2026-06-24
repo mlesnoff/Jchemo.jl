@@ -81,7 +81,7 @@ end
 
 ############---- Dimension reduction
 
-struct Pca{Q <: AbstractFloat} 
+struct Pca{Q <: AbstractFloat} {Q::AbstractFloat}
     T::Matrix{Q} 
     V::Matrix{Q}
     sv::Vector{Q}
@@ -92,7 +92,7 @@ struct Pca{Q <: AbstractFloat}
     par::Union{ParPca, ParPcanipals, ParPcapp, ParPcaout}
 end
 
-struct Pca2 
+struct Pca2 {Q::AbstractFloat}
     T::Matrix 
     V::Matrix
     sv::Vector
@@ -103,7 +103,7 @@ struct Pca2
     par::Union{ParPca, ParPcanipals, ParPcapp, ParPcaout}
 end
 
-struct Spca
+struct Spca{Q::AbstractFloat}
     T::Matrix 
     V::Matrix
     sv::Vector
@@ -147,7 +147,7 @@ struct Covsel
     par::ParCovsel
 end
 
-struct Rp
+struct Rp{Q::AbstractFloat}
     T::Matrix
     V::Union{Matrix, SparseArrays.SparseMatrixCSC}
     xmeans::Vector
@@ -163,7 +163,7 @@ struct Umap
     par::ParUmap
 end 
     
-struct Fda
+struct Fda{Q::AbstractFloat}
     T::Matrix
     V::Matrix
     Tcenters::Matrix
@@ -281,7 +281,7 @@ struct Rasvd
     par::ParRasvd
 end
 
-struct Cpca
+struct Cpca{Q::AbstractFloat}
     T::Matrix 
     U::Matrix
     W::Matrix
@@ -296,7 +296,7 @@ struct Cpca
     par::ParCpca
 end
 
-struct Comdim
+struct Comdim{Q::AbstractFloat}
     T::Matrix 
     U::Matrix
     W::Matrix
@@ -364,7 +364,7 @@ struct Pcr
     par::ParPca
 end
 
-struct Plsr
+struct Plsr{Q::AbstractFloat}
     T::Matrix
     V::Matrix
     R::Matrix
@@ -409,7 +409,7 @@ struct Spcr
     par::ParSpca
 end
 
-struct Splsr
+struct Splsr{Q::AbstractFloat}
     T::Matrix
     V::Matrix
     R::Matrix
@@ -776,7 +776,7 @@ end
 
 ## Occ
 
-struct Occsd
+struct Occsd{Q::AbstractFloat}
     d::DataFrame 
     fitm
     tscales::Vector
@@ -785,7 +785,7 @@ struct Occsd
     par::ParOcc
 end
 
-struct Occod
+struct Occod{Q::AbstractFloat}
     d::DataFrame
     fitm
     e_cdf::ECDF
@@ -793,7 +793,7 @@ struct Occod
     par::ParOcc
 end
 
-struct Occstah
+struct Occstah{Q::AbstractFloat}
     d::DataFrame
     res_stah::NamedTuple
     V::Matrix
@@ -802,7 +802,7 @@ struct Occstah
     par::ParOccstah
 end
 
-struct Occsdod
+struct Occsdod{Q::AbstractFloat}
     d::DataFrame
     fitm
     e_cdf::ECDF
@@ -814,7 +814,7 @@ struct Occsdod
     par::ParOccsdod
 end
 
-struct Occdds
+struct Occdds{Q::AbstractFloat}
     d::DataFrame
     fitm
     e_cdf::ECDF
@@ -826,7 +826,7 @@ struct Occdds
     par::ParOccdds
 end
 
-struct Occknn
+struct Occknn{Q::AbstractFloat}
     d::DataFrame
     X::Matrix
     e_cdf::ECDF
@@ -835,7 +835,7 @@ struct Occknn
     par::ParOccknn
 end
 
-struct Occlknn
+struct Occlknn{Q::AbstractFloat}
     d::DataFrame
     X::Matrix
     e_cdf::ECDF

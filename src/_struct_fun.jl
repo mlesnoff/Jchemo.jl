@@ -81,7 +81,7 @@ end
 
 ############---- Dimension reduction
 
-struct Pca{Q <: AbstractFloat} 
+struct Pca{Q <: AbstractFloat}
     T::Matrix{Q} 
     V::Matrix{Q}
     sv::Vector{Q}
@@ -92,7 +92,7 @@ struct Pca{Q <: AbstractFloat}
     par::Union{ParPca, ParPcanipals, ParPcapp, ParPcaout}
 end
 
-struct Spca
+struct Spca{Q <: AbstractFloat}
     T::Matrix{Q}
     V::Matrix{Q}
     sv::Vector{Q}
@@ -106,7 +106,7 @@ struct Spca
     par::ParSpca
 end
 
-struct Kpca
+struct Kpca{Q <: AbstractFloat}
     X::Matrix{Q}
     Kt::Adjoint{Q}
     T::Matrix{Q}
@@ -121,7 +121,7 @@ struct Kpca
     par::ParKpca
 end
 
-struct Covsel
+struct Covsel{Q <: AbstractFloat}
     sel::Vector{Int}
     selc::Vector{Q}
     xss::Vector{Q}
@@ -136,7 +136,7 @@ struct Covsel
     par::ParCovsel
 end
 
-struct Rp
+struct Rp{Q <: AbstractFloat}
     T::Matrix{Q}
     V::Union{Matrix, SparseArrays.SparseMatrixCSC}
     xmeans::Vector{Q}
@@ -144,7 +144,7 @@ struct Rp
     par::ParRp
 end
 
-struct Umap 
+struct Umap{Q <: AbstractFloat} 
     fitm::UMAP.UMAPResult    
     T::Matrix{Q}
     xscales::Vector{Q}
@@ -152,7 +152,7 @@ struct Umap
     par::ParUmap
 end 
     
-struct Fda
+struct Fda{Q <: AbstractFloat}
     T::Matrix{Q}
     V::Matrix{Q}
     Tcenters::Matrix{Q}
@@ -177,11 +177,11 @@ struct Blockscal{Q <: AbstractFloat}
     par::ParBlock
 end
 
-struct MbconcatVector{Vector{Q}}
+struct Mbconcat
     res::Nothing
 end
 
-struct Cca
+struct Cca{Q <: AbstractFloat}
     Tx::Matrix{Q}
     Ty::Matrix{Q}
     Wx::Matrix{Q}
@@ -196,7 +196,7 @@ struct Cca
     par::ParCca
 end
 
-struct Ccawold
+struct Ccawold{Q <: AbstractFloat}
     Tx::Matrix{Q}
     Ty::Matrix{Q}
     Vx::Matrix{Q}
@@ -217,7 +217,7 @@ struct Ccawold
     par::ParCcawold
 end
 
-struct Plscan
+struct Plscan{Q <: AbstractFloat}
     Tx::Matrix{Q}
     Ty::Matrix{Q}
     Vx::Matrix{Q}
@@ -238,7 +238,7 @@ struct Plscan
     par::ParPls2bl
 end
 
-struct Plstuck
+struct Plstuck{Q <: AbstractFloat}
     Tx::Matrix{Q}
     Ty::Matrix{Q}
     Wx::Matrix{Q}
@@ -255,7 +255,7 @@ struct Plstuck
     par::ParPls2bl
 end
 
-struct Rasvd
+struct Rasvd{Q <: AbstractFloat}
     Tx::Matrix{Q}
     Ty::Matrix{Q}
     Bx::Matrix{Q}
@@ -270,7 +270,7 @@ struct Rasvd
     par::ParRasvd
 end
 
-struct Cpca
+struct Cpca{Q <: AbstractFloat}
     T::Matrix{Q}
     U::Matrix{Q}
     W::Matrix{Q}
@@ -285,7 +285,7 @@ struct Cpca
     par::ParCpca
 end
 
-struct Comdim
+struct Comdim{Q <: AbstractFloat}
     T::Matrix{Q}
     U::Matrix{Q}
     W::Matrix{Q}
@@ -302,20 +302,20 @@ end
 
 ############---- Regression
 
-struct Mlr
+struct Mlr{Q <: AbstractFloat}
     B::Matrix{Q}   
     int::Matrix{Q}
     weights::ProbabilityWeights{Q}
     par::ParMlr
 end
 
-struct Mlrnoarg
+struct Mlrnoarg{Q <: AbstractFloat}
     B::Matrix{Q}   
     int::Matrix{Q}
     weights::ProbabilityWeights{Q}
 end
 
-struct Decompx
+struct Decompx{Q <: AbstractFloat}
     fit::NamedTuple
     R::Matrix{Q}
     mat::NamedTuple
@@ -327,7 +327,7 @@ struct Decompx
     xmeans::Vector{Q} 
 end
 
-struct Rr
+struct Rr{Q <: AbstractFloat}
     V::Matrix{Q}
     TtY::Matrix{Q}
     sv::Vector{Q}
@@ -338,14 +338,14 @@ struct Rr
     par::ParRr
 end
 
-struct Rrchol
+struct Rrchol{Q <: AbstractFloat}
     B::Matrix{Q}   
     int::Matrix{Q}
     weights::ProbabilityWeights{Q}
     par::ParRr
 end
 
-struct Pcr
+struct Pcr{Q <: AbstractFloat}
     fitm::Pca
     C::Matrix{Q}
     ymeans::Vector{Q}
@@ -353,7 +353,7 @@ struct Pcr
     par::ParPca
 end
 
-struct Plsr
+struct Plsr{Q <: AbstractFloat}
     T::Matrix{Q}
     V::Matrix{Q}
     R::Matrix{Q}
@@ -379,7 +379,7 @@ struct Plsravg
     par::ParPlsravg
 end
 
-struct Cglsr
+struct Cglsr{Q <: AbstractFloat}
     B::Matrix{Q}
     g::Vector{Q}
     xmeans::Vector{Q}
@@ -390,7 +390,7 @@ struct Cglsr
     par::ParCglsr
 end
 
-struct Spcr
+struct Spcr{Q <: AbstractFloat}
     fitm::Spca
     C::Matrix{Q}
     ymeans::Vector{Q}
@@ -398,7 +398,7 @@ struct Spcr
     par::ParSpca
 end
 
-struct Splsr
+struct Splsr{Q <: AbstractFloat}
     T::Matrix{Q}
     V::Matrix{Q}
     R::Matrix{Q}
@@ -416,7 +416,7 @@ struct Splsr
     par::ParSplsr
 end
 
-struct Krr
+struct Krr{Q <: AbstractFloat}
     X::Matrix{Q}
     K::Matrix{Q}
     U::Matrix{Q}
@@ -431,7 +431,7 @@ struct Krr
     par::ParKrr
 end
 
-struct Kplsr
+struct Kplsr{Q <: AbstractFloat}
     X::Matrix{Q}
     Kt::Adjoint{Q}
     T::Matrix{Q}
@@ -449,7 +449,7 @@ struct Kplsr
     par::ParKplsr
 end
 
-struct Dkplsr
+struct Dkplsr{Q <: AbstractFloat}
     fitm::Plsr
     X::Matrix{Q}
     K::Matrix{Q}
@@ -461,21 +461,21 @@ end
 
 ## Local
 
-struct Knnr
+struct Knnr{Q <: AbstractFloat}
     X::Matrix{Q}
     Y::Matrix{Q}
     xscales::Vector{Q}
     par::ParKnn
 end
 
-struct Lwmlr
+struct Lwmlr{Q <: AbstractFloat}
     X::Matrix{Q}
     Y::Matrix{Q}
     xscales::Vector{Q}
     par::ParLwmlr
 end
 
-struct Lwplsr
+struct Lwplsr{Q <: AbstractFloat}
     fitm::Union{Nothing, Plsr}
     X::Matrix{Q}
     Y::Matrix{Q}
@@ -483,7 +483,7 @@ struct Lwplsr
     par::ParLwplsr
 end
 
-struct Lwplsravg
+struct Lwplsravg{Q <: AbstractFloat}
     fitm::Union{Nothing, Plsr}
     X::Matrix{Q}
     Y::Matrix{Q}
@@ -491,7 +491,7 @@ struct Lwplsravg
     par::ParLwplsravg
 end
 
-struct Loessr
+struct Loessr{Q <: AbstractFloat}
     fitm::Loess.LoessModel
     xscales::Vector{Q}
     par::ParLoessr
@@ -499,13 +499,13 @@ end
 
 ## Svm, Trees
 
-struct Svmr
+struct Svmr{Q <: AbstractFloat}
     fitm::LIBSVM.SVM
     xscales::Vector{Q}
     par::ParSvm
 end
 
-struct Treer
+struct Treer{Q <: AbstractFloat}
     fitm::Union{DecisionTree.Root, DecisionTree.Ensemble}
     xscales::Vector{Q}
     featur::Vector{Int}
@@ -514,7 +514,7 @@ end
 
 ## Multiblock
 
-struct Mbplsr
+struct Mbplsr{Q <: AbstractFloat}
     fitm_bl::Blockscal
     fitm::Plsr
     ymeans::Vector{Q}
@@ -523,7 +523,7 @@ struct Mbplsr
     par::ParMbplsr
 end
 
-struct Soplsr
+struct Soplsr{Q <: AbstractFloat}
     fitm_bl::Blockscal    
     fitm::Vector{Q}
     T::Matrix{Q}
@@ -533,7 +533,7 @@ struct Soplsr
     par::ParSoplsr
 end
 
-struct Rosaplsr
+struct Rosaplsr{Q <: AbstractFloat}
     fitm_bl::Blockscal
     T::Matrix{Q}
     V::Matrix{Q}
@@ -548,7 +548,7 @@ struct Rosaplsr
     par::ParRosaplsr
 end
 
-struct Mbplswest     # mbplswest, mbwcov 
+struct Mbplswest{Q <: AbstractFloat}     # mbplswest, mbwcov 
     T::Matrix{Q}
     V::Matrix{Q}
     R::Matrix{Q}
@@ -569,7 +569,7 @@ end
 
 ############---- Discrimination
 
-struct Dmnorm
+struct Dmnorm{Q <: AbstractFloat}
     mu::Vector{Q}
     Uinv::Matrix{Q} 
     detS::Q
@@ -577,7 +577,7 @@ struct Dmnorm
     par::ParDmnorm
 end
 
-struct Dmnormlog
+struct Dmnormlog{Q <: AbstractFloat}
     mu::Vector{Q}
     Uinv::Matrix{Q} 
     logdetS::Q
@@ -585,7 +585,7 @@ struct Dmnormlog
     par::ParDmnorm
 end
 
-struct Dmkern
+struct Dmkern{Q <: AbstractFloat}
     X::Matrix{Q}
     H::Matrix{Q}
     Hinv::Matrix{Q}
@@ -593,7 +593,7 @@ struct Dmkern
     par::ParDmkern
 end
 
-struct Lda
+struct Lda{Q <: AbstractFloat}
     fitm::Vector{Dmnorm}
     W::Matrix{Q}  
     ct::Matrix{Q}
@@ -604,7 +604,7 @@ struct Lda
     par::ParLda
 end
 
-struct Qda
+struct Qda{Q <: AbstractFloat}
     fitm::Vector{Dmnorm}
     Wi::Vector{Q}  
     ct::Matrix{Q}
@@ -615,7 +615,7 @@ struct Qda
     par::ParQda
 end
 
-struct Rda
+struct Rda{Q <: AbstractFloat}
     fitm::Vector{Dmnorm}
     Wi::Vector{Q}  
     ct::Matrix{Q}
@@ -627,7 +627,7 @@ struct Rda
     par::ParRda
 end
 
-struct Kdeda
+struct Kdeda{Q <: AbstractFloat}
     fitm::Vector{Dmkern}
     ni::Vector{Int}
     priors::Vector{Q}
@@ -635,7 +635,7 @@ struct Kdeda
     par::ParKdeda
 end
 
-struct Mlrda
+struct Mlrda{Q <: AbstractFloat}
     fitm_emb::Mlr 
     ni::Vector{Int}
     priors::Vector{Q}
@@ -643,7 +643,7 @@ struct Mlrda
     par::ParMlrda
 end
 
-struct Rrda
+struct Rrda{Q <: AbstractFloat}
     fitm_emb::Union{Rr, Krr}  
     ni::Vector{Int}
     priors::Vector{Q}
@@ -651,7 +651,7 @@ struct Rrda
     par::Union{ParRrda, ParKrrda}
 end
 
-struct Plsrda
+struct Plsrda{Q <: AbstractFloat}
     fitm_emb::Union{Plsr, Splsr, Kplsr, Dkplsr} 
     ni::Vector{Int}
     priors::Vector{Q}
@@ -659,7 +659,7 @@ struct Plsrda
     par::Union{ParPlsda, ParSplsda, ParKplsda}
 end
 
-struct Plsprobda    # plslda, plsqda, plskdeda  
+struct Plsprobda{Q <: AbstractFloat}    # plslda, plsqda, plskdeda  
     fitm_emb::Union{Plsr, Splsr, Kplsr, Dkplsr}
     fitm_da::Vector{Union{Lda, Qda, Kdeda}}  
     ni::Vector{Int}
@@ -672,7 +672,7 @@ end
 ## Local
 ## (from below, fitm not yet specified)
 
-struct Knnda
+struct Knnda{Q <: AbstractFloat}
     X::Matrix{Q}
     y::Matrix{String}
     xscales::Vector{Q}
@@ -681,7 +681,7 @@ struct Knnda
     par::ParKnn
 end
 
-struct Lwmlrda
+struct Lwmlrda{Q <: AbstractFloat}
     X::Matrix{Q}
     y::Matrix{String}
     xscales::Vector{Q}
@@ -690,7 +690,7 @@ struct Lwmlrda
     par::ParLwmlr
 end
 
-struct Lwplsrda
+struct Lwplsrda{Q <: AbstractFloat}
     fitm
     X::Matrix{Q}
     y::Matrix{String}
@@ -701,7 +701,7 @@ struct Lwplsrda
     par::ParLwplsda
 end
 
-struct Lwplslda   
+struct Lwplslda{Q <: AbstractFloat}   
     fitm
     X::Matrix{Q}
     y::Matrix{String}
@@ -712,7 +712,7 @@ struct Lwplslda
     par::ParLwplsda
 end
 
-struct Lwplsqda
+struct Lwplsqda{Q <: AbstractFloat}
     fitm
     X::Matrix{Q}
     y::Matrix{String}
@@ -725,7 +725,7 @@ end
 
 ## Svm, Trees
 
-struct Svmda
+struct Svmda{Q <: AbstractFloat}
     fitm
     xscales::Vector{Q}
     ni::Vector{Int}
@@ -734,7 +734,7 @@ struct Svmda
     par::ParSvm
 end
 
-struct Treeda 
+struct Treeda{Q <: AbstractFloat}
     fitm
     xscales::Vector{Q}
     featur::Vector{Int}
@@ -746,7 +746,7 @@ end
 
 ## Multiblock
 
-struct Mbplsrda
+struct Mbplsrda{Q <: AbstractFloat}
     fitm_emb::Mbplsr 
     ni::Vector{Int}
     priors::Vector{Q}
@@ -754,7 +754,7 @@ struct Mbplsrda
     par::ParMbplsda
 end
 
-struct Mbplsprobda    # mbplslda, mbplsqda, mbplskdeda  
+struct Mbplsprobda{Q <: AbstractFloat}    # mbplslda, mbplsqda, mbplskdeda  
     fitm_emb::Mbplsr
     fitm_da::Vector{Union{Lda, Qda, Kdeda}}   
     ni::Vector{Int}
@@ -765,7 +765,7 @@ end
 
 ## Occ
 
-struct Occsd
+struct Occsd{Q <: AbstractFloat}
     d::DataFrame 
     fitm
     tscales::Vector{Q}
@@ -774,7 +774,7 @@ struct Occsd
     par::ParOcc
 end
 
-struct Occod
+struct Occod{Q <: AbstractFloat}
     d::DataFrame
     fitm
     e_cdf::ECDF
@@ -782,7 +782,7 @@ struct Occod
     par::ParOcc
 end
 
-struct Occstah
+struct Occstah{Q <: AbstractFloat}
     d::DataFrame
     res_stah::NamedTuple
     V::Matrix{Q}
@@ -791,7 +791,7 @@ struct Occstah
     par::ParOccstah
 end
 
-struct Occsdod
+struct Occsdod{Q <: AbstractFloat}
     d::DataFrame
     fitm
     e_cdf::ECDF
@@ -803,7 +803,7 @@ struct Occsdod
     par::ParOccsdod
 end
 
-struct Occdds
+struct Occdds{Q <: AbstractFloat}
     d::DataFrame
     fitm
     e_cdf::ECDF
@@ -815,7 +815,7 @@ struct Occdds
     par::ParOccdds
 end
 
-struct Occknn
+struct Occknn{Q <: AbstractFloat}
     d::DataFrame
     X::Matrix{Q}
     e_cdf::ECDF
@@ -824,7 +824,7 @@ struct Occknn
     par::ParOccknn
 end
 
-struct Occlknn
+struct Occlknn{Q <: AbstractFloat}
     d::DataFrame
     X::Matrix{Q}
     e_cdf::ECDF
