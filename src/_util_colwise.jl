@@ -325,7 +325,7 @@ end
 colsumskip(X) = [Base.sum(skipmissing(x)) for x in eachcol(ensure_mat(X))]
 
 function colsumskip(X::AbstractMatrix{Union{Missing, Q}}, 
-        weights::ProbabilityWeights{Union{Missing, Q}}) where Q <: AbstractFloat
+        weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
     X = ensure_mat(X)
     v = zeros(Q, nco(X))
     @inbounds for j in axes(X, 2)
@@ -340,19 +340,19 @@ end
 colmeanskip(X) = [Statistics.mean(skipmissing(x)) for x in eachcol(ensure_mat(X))]
 
 colmeanskip(X::AbstractMatrix{Union{Missing, Q}}, 
-        weights::ProbabilityWeights{Union{Missing, Q}}) where Q <: AbstractFloat = colsumskip(X, weights)
+        weights::ProbabilityWeights{Q}) where Q <: AbstractFloat = colsumskip(X, weights)
 
 ##
 colstdskip(X) = [Statistics.std(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
 
 colstdskip(X::AbstractMatrix{Union{Missing, Q}}, 
-        weights::ProbabilityWeights{Union{Missing, Q}}) where Q <: AbstractFloat = sqrt.(colvarskip(X, weights))
+        weights::ProbabilityWeights{Q}) where Q <: AbstractFloat = sqrt.(colvarskip(X, weights))
 
 ##
 colvarskip(X) = [Statistics.var(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
 
 function colvarskip(X::AbstractMatrix{Union{Missing, Q}}, 
-        weights::ProbabilityWeights{Union{Missing, Q}}) where Q <: AbstractFloat
+        weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
     p = nco(X)
     v = colmeanskip(X, weights)
     @inbounds for j in axes(X, 2)
