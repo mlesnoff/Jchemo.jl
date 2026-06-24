@@ -87,5 +87,5 @@ function pcaout!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     w .*= weights.values
     w[isequal.(w, 0)] .= 1e-10
     fitm = pcasvd(X, pweight(w); kwargs...)
-    Pca(fitm.T, fitm.V, fitm.sv, fitm.xmeans, fitm.xscales, fitm.weights, nothing, par)
+    Pca(fitm.T, fitm.V, fitm.sv, fitm.xmeans, fitm.xscales, fitm.weights, par)
 end

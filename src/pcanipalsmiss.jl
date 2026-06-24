@@ -112,6 +112,6 @@ function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeight
         end
     end
     @. T = (1 / sqrtw) * T
-    Pca(T, V, sv, xmeans, xscales, weights, niter, par) 
+    Pcanipals(T, V, sv, xmeans, xscales, weights, niter, par) 
 end
 

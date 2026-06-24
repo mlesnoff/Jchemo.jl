@@ -89,6 +89,6 @@ function pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     T .= T[:, s]
     V .= V[:, s]
     sv .= sv[s]
-    Pca(T, V, sv, xmeans, xscales, weights, nothing, par) 
+    Pca(T, V, sv, xmeans, xscales, weights, par) 
 end
 

@@ -101,6 +101,6 @@ function pcapp!(X::Matrix{Q}; kwargs...) where Q <: AbstractFloat
     V .= vcol(V, s)
     sv .= sv[s]
     weights = pweight(ones(Q, n))
-    Pca(T, V, sv, xmeans, xscales, weights, nothing, par)
+    Pca(T, V, sv, xmeans, xscales, weights, par)
 end
 
