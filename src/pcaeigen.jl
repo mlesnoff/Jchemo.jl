@@ -51,6 +51,6 @@ function pcaeigen!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) wher
     sv = sqrt.(eig)
     T = X * V
     fweightr!(T, 1 ./ sqrtw)
-    Pca(T, V, sv, xmeans, xscales, weights, nothing, par) 
+    Pca(T, V, sv, xmeans, xscales, weights, par) 
 end
 

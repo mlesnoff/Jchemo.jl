@@ -76,10 +76,7 @@ function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeight
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    println(typeof(X))
-    println(typeof(weights))
     xmeans = colmeanskip(X, weights) 
-    println(22)
     xscales = ones(Q, p)
     if par.scal != :none
         xscales .= colstdskip(X, weights)

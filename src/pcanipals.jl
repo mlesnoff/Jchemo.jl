@@ -93,6 +93,6 @@ function pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) whe
     fweightr!(T, 1 ./ sqrtw)    
     ## Could recompute the scores by
     ## X0 = copy(X) ; ... ; T = (1 ./ sqrtw) .* X0 * V 
-    Pca(T, V, sv, xmeans, xscales, weights, niter, par) 
+    Pcanipals(T, V, sv, xmeans, xscales, weights, niter, par)  
 end
 

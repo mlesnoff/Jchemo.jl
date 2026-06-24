@@ -88,8 +88,18 @@ struct Pca{Q <: AbstractFloat}
     xmeans::Vector{Q}
     xscales::Vector{Q}
     weights::ProbabilityWeights{Q}
+    par::Union{ParPca, ParPcapp, ParPcaout}
+end
+
+struct Pcanipals{Q <: AbstractFloat}
+    T::Matrix{Q} 
+    V::Matrix{Q}
+    sv::Vector{Q}
+    xmeans::Vector{Q}
+    xscales::Vector{Q}
+    weights::ProbabilityWeights{Q}
     niter::Union{Nothing, Vector{Int}}    # pcanipals, pcanipalsmiss
-    par::Union{ParPca, ParPcanipals, ParPcapp, ParPcaout}
+    par::ParPcanipals
 end
 
 struct Spca{Q <: AbstractFloat}

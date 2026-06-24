@@ -109,7 +109,9 @@ transf(object::Kpca, X) = transf(object, X, object.par.nlv)
 function transf(object::Kpca, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     fkern = eval(Meta.parse(String(object.par.kern)))
+    println(22)
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
+    println(23)
     w = object.weights.values
     DKt = fweightr(K', w)
     vtot = sum(DKt; dims = 1)  # keep matrix format
