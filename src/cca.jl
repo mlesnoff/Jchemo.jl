@@ -197,8 +197,9 @@ Summarize the fitted model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
 function Base.summary(object::Cca, X, Y)
-    Q = eltype(X[1, 1])
-    n, nlv = size(object.Tx)
+    X = ensure_mat(X)
+    Q = eltype(X)
+    nlv = nco(object.Tx)
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     ## To do: explvarx, explvary 
