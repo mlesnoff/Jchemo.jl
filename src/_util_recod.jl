@@ -39,7 +39,7 @@ Expand a 2-D contingency table to a dataframe of two categorical variables.
 * `X` : 2-D contincency table (m, p).
 Keyword arguments:
 * `levr` : Vector (m) of names of the `X`-rows. 
-* `levc` : Vector (p) of names of the `X-columns.
+* `levc` : Vector (p) of names of the `X`-columns.
 * `namv` : Vector (2) of the names of the output categorical variables.
 
 The eventual names in `levr` (or`levc`) must have the same length and be in the same order as the rows 
@@ -63,18 +63,18 @@ tab(string.(res.fact1, "-", res.fact2))
 function expand_tab2d(X::Matrix{Q}; levr::T = nothing, levc::T = nothing, 
         namv::T = nothing) where {Q <: Signed, T <: Union{Nothing, Vector{String}}}
     m, p = size(X)
-    if isnothing(levr) ; levr = collect(1:m) ; end
-    if isnothing(levc) ; levc = collect(1:p) ; end
+    if isnothing(levr) ; levr = string.(collect(1:m)) ; end
+    if isnothing(levc) ; levc = string.(collect(1:p)) ; end
     if isnothing(namv) ; namv = ["v1"; "v2"] ; end
-    println((levr, levc, namv))
-    res = list(Matrix, m * p)
+    res = list(Matrix{String}, m * p)
     k = 1
     for j in axes(X, 2), i in axes(X, 1) 
         n = X[i, j]
         res[k] = hcat(fill(levr[i], n), fill(levc[j], n))
         k += 1
     end
-    DataFrame(string.(reduce(vcat, res)), namv)
+    DataFrame(reduce(vcat, res), namv)
+    #DataFrame(string.(reduce(vcat, res)), namv)
 end
 
 """
