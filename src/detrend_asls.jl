@@ -64,7 +64,7 @@ end
 
 """ 
     transf(object::Detrendasls, X)
-    transf!(object::Detrendasls, X::Matrix{Q}) where Q <: AbstractFloat
+    transf!(object::Detrendasls, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -75,7 +75,7 @@ function transf(object::Detrendasls, X)
     X
 end
 
-function transf!(object::Detrendasls, X::Matrix{Q}) where Q <: AbstractFloat
+function transf!(object::Detrendasls, X::Matrix{Q}) where Q <: Float
     p = nco(X)
     w = ones(Q, p) 
     z = similar(X, p)

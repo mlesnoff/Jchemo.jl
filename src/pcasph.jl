@@ -1,8 +1,8 @@
 """
     pcasph(; kwargs...)
     pcasph(X; kwargs...)
-    pcasph(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    pcasph(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Spherical PCA.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -59,11 +59,11 @@ function pcasph(X; kwargs...)
     pcasph(X, weights; kwargs...)
 end
 
-function pcasph(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function pcasph(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     pcasph!(copy(X), weights; kwargs...)
 end
 
-function pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPca, kwargs).par
     n, p = size(X)
     nlv = min(n, p, par.nlv)

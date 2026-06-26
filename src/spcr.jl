@@ -1,8 +1,8 @@
 """
     spcr(; kwargs...)
     spcr(X, Y; kwargs...)
-    spcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    spcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    spcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    spcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Sparse principal component regression (sPCR). 
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -87,11 +87,11 @@ function spcr(X, Y; kwargs...)
     spcr(X, Y, weights; kwargs...)
 end
 
-function spcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function spcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     spcr!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function spcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function spcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParSpca{Q}, kwargs).par
     q = nco(Y)
     ymeans = colmean(Y, weights)

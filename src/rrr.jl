@@ -1,8 +1,8 @@
 """
     rrr(; kwargs...)
     rrr(X, Y; kwargs...)
-    rrr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    rrr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Reduced rank regression (RRR, a.k.a RA).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -87,11 +87,11 @@ function rrr(X, Y; kwargs...)
     rrr(X, Y, weights; kwargs...)
 end
 
-function rrr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function rrr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     rrr!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function rrr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function rrr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParRrr{Q}, kwargs).par
     @assert 0 <= par.tau <=1 "tau must be in [0, 1]"
     n, p = size(X)

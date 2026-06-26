@@ -1,8 +1,8 @@
 """
     covsel(; kwargs...)
     covsel(X, Y; kwargs...)
-    covsel(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    covsel(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Variable (feature) selection from partial covariance (Covsel).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -78,11 +78,11 @@ function covsel(X, Y; kwargs...)
     covsel(X, Y, weights; kwargs...)
 end
 
-function covsel(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function covsel(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     covsel!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParCovsel, kwargs).par
     n, p = size(X)
     q = nco(Y)

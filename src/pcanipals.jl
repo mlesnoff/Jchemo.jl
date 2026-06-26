@@ -1,8 +1,8 @@
 """
     pcanipals(; kwargs...)
     pcanipals(X; kwargs...)
-    pcanipals(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    pcanipals(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 PCA by NIPALS algorithm.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -46,11 +46,11 @@ function pcanipals(X; kwargs...)
     pcanipals(X, weights; kwargs...)
 end
 
-function pcanipals(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function pcanipals(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     pcanipals!(copy(X), weights; kwargs...)
 end
 
-function pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPcanipals{Q}, kwargs).par
     n, p = size(X)
     nlv = min(n, p, par.nlv)

@@ -1,7 +1,7 @@
 """
     center()
     center(X)
-    center(X:: Matrix{Q}, weights::ProbabilityWeights) where Q <: AbstractFloat
+    center(X:: Matrix{Q}, weights::ProbabilityWeights) where Q <: Float
 Column-wise centering of X-data.
 * `X` : X-data (n, p).
 
@@ -36,14 +36,14 @@ center(; kwargs...) = JchemoModel(center, nothing, kwargs)
 
 center(X) = Center(colmean(ensure_mat(X)))
 
-function center(X::Matrix{Q}, weights::ProbabilityWeights{Q}) where Q <: AbstractFloat
+function center(X::Matrix{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
     xmeans = colmean(X, weights)
     Center(xmeans)
 end
 
 """ 
     transf(object::Center, X)
-    transf!(object::Center, X::Matrix{Q}) where Q <: AbstractFloat
+    transf!(object::Center, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -54,14 +54,14 @@ function transf(object::Center, X)
     X
 end
 
-function transf!(object::Center, X::Matrix{Q}) where Q <: AbstractFloat
+function transf!(object::Center, X::Matrix{Q}) where Q <: Float
     fcenter!(X, object.xmeans)
 end
 
 """
     scale()
     scale(X; kwargs...)
-    scale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    scale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Column-wise scaling of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -103,7 +103,7 @@ function scale(X; kwargs...)
     scale(X, weights; kwargs...)
 end
 
-function scale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function scale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = Jchemo.recovkw(ParScale, kwargs).par 
     xscales = ones(Q, nco(X)) 
     if par.scal != :none
@@ -115,7 +115,7 @@ end
 
 """ 
     transf(object::Scale, X)
-    transf!(object::Scale, X::Matrix{Q}) where Q <: AbstractFloat
+    transf!(object::Scale, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -126,14 +126,14 @@ function transf(object::Scale, X)
     X
 end
 
-function transf!(object::Scale, X::Matrix{Q}) where Q <: AbstractFloat
+function transf!(object::Scale, X::Matrix{Q}) where Q <: Float
     fscale!(X, object.xscales)
 end
 
 """
     cscale()
     cscale(X, weights; kwargs...)
-    cscale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    cscale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Column-wise centering and scaling of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -177,7 +177,7 @@ function cscale(X; kwargs...)
     cscale(X, weights; kwargs...)
 end
 
-function cscale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function cscale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = Jchemo.recovkw(ParScale, kwargs).par 
     p = nco(X) 
     xmeans = colmean(X, weights)
@@ -191,7 +191,7 @@ end
 
 """ 
     transf(object::Cscale, X)
-    transf!(object::Cscale, X::Matrix{Q}) where Q <: AbstractFloat
+    transf!(object::Cscale, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -202,7 +202,7 @@ function transf(object::Cscale, X)
     X
 end
 
-function transf!(object::Cscale, X::Matrix{Q}) where Q <: AbstractFloat
+function transf!(object::Cscale, X::Matrix{Q}) where Q <: Float
     fcscale!(X, object.xmeans, object.xscales)
 end
 

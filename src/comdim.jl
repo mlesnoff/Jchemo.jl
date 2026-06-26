@@ -1,8 +1,8 @@
 """
     comdim(; kwargs...)
     comdim(Xbl; kwargs...)
-    comdim(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    comdim!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    comdim(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    comdim!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Common components and specific weights analysis (CCSWA, a.k.a ComDim and HPCA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock`.  
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -111,7 +111,7 @@ function comdim(Xbl; kwargs...)
     comdim(Xbl, pweight(ones(eltype(Xbl[1]), n)); kwargs...)
 end
 
-function comdim(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function comdim(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     nbl = length(Xbl)  
     vXbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
@@ -120,7 +120,7 @@ function comdim(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs..
     comdim!(vXbl, weights; kwargs...)
 end
 
-function comdim!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function comdim!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParCpca{Q}, kwargs).par 
     n = nro(Xbl[1])
     nbl = length(Xbl)

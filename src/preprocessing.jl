@@ -54,7 +54,7 @@ end
 
 """ 
     transf(object::Detrendpol, X)
-    transf!(object::Detrendpol, X::Matrix{Q}) where Q <: AbstractFloat
+    transf!(object::Detrendpol, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -65,7 +65,7 @@ function transf(object::Detrendpol, X)
     X
 end
 
-function transf!(object::Detrendpol, X::Matrix{Q}) where Q <: AbstractFloat
+function transf!(object::Detrendpol, X::Matrix{Q}) where Q <: Float
     par = object.par
     p = nco(X)
     wls = Q.(collect(1:p))
@@ -148,7 +148,7 @@ end
 
 """ 
     transf(object::Detrendlo, X)
-    transf!(object::Detrendlo, X::Matrix{Q}) where Q <: AbstractFloat
+    transf!(object::Detrendlo, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -159,7 +159,7 @@ function transf(object::Detrendlo, X)
     X
 end
 
-function transf!(object::Detrendlo, X::Matrix{Q}) where Q <: AbstractFloat
+function transf!(object::Detrendlo, X::Matrix{Q}) where Q <: Float
     p = nco(X)
     x = Q.(collect(1:p))
     @inbounds for i in axes(X, 1)
@@ -215,7 +215,7 @@ end
 
 """ 
     transf(object::Fdif, X)
-    transf!(object::Fdif, X::Matrix{Q}, M::Matrix{Q}) where Q <: AbstractFloat
+    transf!(object::Fdif, X::Matrix{Q}, M::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -231,7 +231,7 @@ function transf(object::Fdif, X)
     M
 end
 
-function transf!(object::Fdif, X::Matrix{Q}, M::Matrix{Q}) where Q <: AbstractFloat
+function transf!(object::Fdif, X::Matrix{Q}, M::Matrix{Q}) where Q <: Float
     p = nco(X)
     npoint = object.par.npoint
     pc = p - npoint + 1
@@ -303,7 +303,7 @@ end
 
 """ 
     transf(object::Mavg, X)
-    transf!(object::Mavg, X::Matrix{Q}) where Q <: AbstractFloat
+    transf!(object::Mavg, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -314,7 +314,7 @@ function transf(object::Mavg, X)
     X
 end
 
-function transf!(object::Mavg, X::Matrix{Q}) where Q <: AbstractFloat
+function transf!(object::Mavg, X::Matrix{Q}) where Q <: Float
     p = nco(X)
     npoint = object.par.npoint
     kern = ImageFiltering.centered(ones(npoint) / npoint) 
@@ -397,7 +397,7 @@ function transf(object::Msc, X)
     X
 end
 
-function transf!(object::Msc, X::Matrix{Q}) where Q <: AbstractFloat
+function transf!(object::Msc, X::Matrix{Q}) where Q <: Float
     Xt = X'
     fitm = mlr(object.xref, Xt)
     @. Xt = Xt - fitm.int
@@ -494,7 +494,7 @@ function transf(object::Emsc, X)
     X
 end
 
-function transf!(object::Emsc, X::Matrix{Q}) where Q <: AbstractFloat
+function transf!(object::Emsc, X::Matrix{Q}) where Q <: Float
     m, p = size(X)
     npar = nco(object.Xr)
     Xt = X'
@@ -628,7 +628,7 @@ end
 
 """ 
     transf(object::Savgol, X)
-    transf!(object::Savgol, X::Matrix{Q}) where Q <: AbstractFloat
+    transf!(object::Savgol, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -639,7 +639,7 @@ function transf(object::Savgol, X)
     X
 end
 
-function transf!(object::Savgol, X::Matrix{Q}) where Q <: AbstractFloat
+function transf!(object::Savgol, X::Matrix{Q}) where Q <: Float
     npoint = object.par.npoint 
     @assert isodd(npoint) && npoint >= 3 "Argument 'npoint' must be odd and >= 3."
     p = nco(X)
@@ -710,7 +710,7 @@ end
 
 """ 
     transf(object::Snv, X)
-    transf!(object::Snv, X::Matrix{Q}) where Q <: AbstractFloat
+    transf!(object::Snv, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -721,7 +721,7 @@ function transf(object::Snv, X)
     X
 end
 
-function transf!(object::Snv, X::Matrix{Q}) where Q <: AbstractFloat
+function transf!(object::Snv, X::Matrix{Q}) where Q <: Float
     n, p = size(X)
     mu = object.par.centr ? rowmean(X) : zeros(Q, n)
     sigma = object.par.scal ? rowstd(X) : ones(Q, n)
@@ -773,7 +773,7 @@ end
 
 """ 
     transf(object::Snorm, X)
-    transf!(object::Snorm, X::Matrix{Q}) where Q <: AbstractFloat
+    transf!(object::Snorm, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -784,7 +784,7 @@ function transf(object::Snorm, X)
     X
 end
 
-function transf!(object::Snorm, X::Matrix{Q}) where Q <: AbstractFloat
+function transf!(object::Snorm, X::Matrix{Q}) where Q <: Float
     X ./= rownorm(X)
 end
 
@@ -842,7 +842,7 @@ end
 
 """ 
     transf(object::Interpl, X)
-    transf!(object::Interpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: AbstractFloat
+    transf!(object::Interpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -858,7 +858,7 @@ function transf(object::Interpl, X)
     M
 end
 
-function transf!(object::Interpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: AbstractFloat
+function transf!(object::Interpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: Float
     algo = DataInterpolations.CubicSpline
     #algo = DataInterpolations.LinearInterpolation
     ## Not faster: @Threads.threads

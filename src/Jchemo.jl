@@ -20,6 +20,8 @@ using StatsAPI
 using StatsModels
 using UMAP
 
+include("_const.jl")
+
 ## The order below is required
 include("_struct_param.jl")
 include("_struct_fun.jl")      

@@ -3,7 +3,7 @@
         listw::Union{Nothing, Vector{Vector{Q}}} = nothing, algo::Function, 
         nlv::Union{Int, AbstractVector{Int}}, 
         store::Bool = false, 
-        verbose::Bool = true, kwargs...) where Q <: AbstractFloat
+        verbose::Bool = true, kwargs...) where Q <: Float
 * `Xtrain` : Training X-data.
 * `Ytrain` : Training Y-data.
 * `X` : X-data (m observations) to predict.
@@ -23,7 +23,7 @@ function locwlv(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}},
         listw::Union{Nothing, Vector{Vector{Q}}} = nothing, algo::Function, 
         nlv::Union{Int, AbstractVector{Int}}, 
         store::Bool = false, 
-        verbose::Bool = true, kwargs...) where Q <: AbstractFloat
+        verbose::Bool = true, kwargs...) where Q <: Float
     p = nco(Xtrain)
     q = nco(Ytrain)
     m = nro(X)

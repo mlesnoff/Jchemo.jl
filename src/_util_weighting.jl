@@ -26,13 +26,13 @@ pweight(x::Vector{Q}) where Q <: Real = StatsBase.pweights(x / sum(x))
 #    ProbabilityWeights(x / tot, one(eltype(x)))
 #end
 
-pweight(T::DataType, x::Vector{Q}) where {Q <: Real} = pweight(T.(x))
+pweight(T::DataType, x::Vector{Q}) where Q <: Real = pweight(T.(x))
 
 """ 
     pweightcla(y::Vector{String}; 
-        prior::Union{Symbol, Vector{Q}} = :prop) where Q <: AbstractFloat
+        prior::Union{Symbol, Vector{Q}} = :prop) where Q <: Float
     pweightcla(T::DataType, y::Vector{String}; 
-        prior::Union{Symbol, Vector{Q}} = :prop) where Q <: AbstractFloat
+        prior::Union{Symbol, Vector{Q}} = :prop) where Q <: Float
 Compute observation weights for a categorical variable, given specified sub-total weights for the classes.
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `Q` : A data type (e.g., `Float32`).
@@ -59,10 +59,10 @@ res = aggstat(weights.values, y; algo = sum)
 ```
 """
 pweightcla(y::Vector{String}; 
-    prior::Union{Symbol, Vector{Q}} = :prop) where Q <: AbstractFloat = pweightcla(Float64, y; prior) 
+    prior::Union{Symbol, Vector{Q}} = :prop) where Q <: Float = pweightcla(Float64, y; prior) 
 
 function pweightcla(T::DataType, y::Vector{String}; 
-        prior::Union{Symbol, Vector{Q}} = :prop) where Q <: AbstractFloat
+        prior::Union{Symbol, Vector{Q}} = :prop) where Q <: Float
     n = length(y)
     res = tab(y)
     lev = res.keys
@@ -83,13 +83,13 @@ function pweightcla(T::DataType, y::Vector{String};
     pweight(w)
 end
 
-##### Weighting of entire rows or columns
+##### Weighting rows or columns
 
 """
-    fweightr(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
-    fweightr!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
+    fweightr(X::AbstMatVecF{Q}, v::Vector{Q}) where Q <: Float
+    fweightr!(X::AbstMatVecF{Q}, v::Vector{Q}) where Q <: Float
 Weight each row of a matrix.
-* `X` : Data (n, p).
+* `X` : Matrix (n, p) or vector (n).
 * `v` : A weighting vector (n).
 
 ## Examples
@@ -105,15 +105,15 @@ fweightr!(X, v)
 X
 ```
 """ 
-fweightr(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat = v .* X
+fweightr(X::AbstMatVecF{Q}, v::Vector{Q}) where Q <: Float = v .* X
 
-fweightr!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat = X .= v .* X
+fweightr!(X::AbstMatVecF{Q}, v::Vector{Q}) where Q <: Float = X .= v .* X
 
 """
-    fweightc(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
-    fweightc!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat
+    fweightc(X::AbstMatVecF{Q}, v::Vector{Q}) where Q <: Float
+    fweightc!(X::AbstMatVecF{Q}, v::Vector{Q}) where Q <: Float
 Weight each column of a matrix.
-* `X` : Data (n, p).
+* `X` : Matrix (n, p) or vector (n).
 * `v` : A weighting vector (p).
 
 ## Examples
@@ -129,8 +129,8 @@ fweightc!(X, v)
 X
 ```
 """ 
-fweightc(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat = v' .* X
+fweightc(X::AbstMatVecF{Q}, v::Vector{Q}) where Q <: Float = v' .* X
 
-fweightc!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: AbstractFloat = X .= v' .* X
+fweightc!(X::AbstMatVecF{Q}, v::Vector{Q}) where Q <: Float = X .= v' .* X
 
 

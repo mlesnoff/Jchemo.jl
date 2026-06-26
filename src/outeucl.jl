@@ -1,6 +1,6 @@
 """
     outeucl(X; scal::Symbol = :none)
-    outeucl!(X::Matrix{Q}; scal::Symbol = :none) where Q <: AbstractFloat
+    outeucl!(X::Matrix{Q}; scal::Symbol = :none) where Q <: Float
 Compute outlierness from Euclidean distances to center.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -35,7 +35,7 @@ function outeucl(X; scal::Symbol = :none)
     outeucl!(copy(ensure_mat(X)); scal)
 end
 
-function outeucl!(X::Matrix{Q}; scal::Symbol = :none) where Q <: AbstractFloat
+function outeucl!(X::Matrix{Q}; scal::Symbol = :none) where Q <: Float
     p = nco(X)
     xscales = ones(Q, p)
     if scal != :none

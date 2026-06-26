@@ -11,7 +11,7 @@ See function `gridscore` for examples.
 """
 function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score::Function, 
         pars::Union{Nothing, NamedTuple} = nothing, 
-        lb::Union{T, AbstractVector{T}}, verbose::Bool = false) where T <: AbstractFloat
+        lb::Union{T, AbstractVector{T}}, verbose::Bool = false) where T <: Float
     Q = eltype(Xtrain[1, 1])
     q = nco(Ytrain)
     lb = mlev(lb)

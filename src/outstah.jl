@@ -1,6 +1,6 @@
 """
     outstah(X, V; scal::Symbol = :none)
-    outstah!(X::Matrix{Q}, V::Matrix{Q}; scal::Symbol = :none) where Q <: AbstractFloat
+    outstah!(X::Matrix{Q}, V::Matrix{Q}; scal::Symbol = :none) where Q <: Float
 Compute the Stahel-Donoho outlierness.
 * `X` : X-data (n, p).
 * `V` : A projection matrix (p, nlv) representing the directions of the projection pursuit.
@@ -39,7 +39,7 @@ function outstah(X, V; scal::Symbol = :none)
     outstah!(copy(ensure_mat(X)), ensure_mat(V); scal)
 end
 
-function outstah!(X::Matrix{Q}, V::Matrix{Q}; scal::Symbol = :none) where Q <: AbstractFloat
+function outstah!(X::Matrix{Q}, V::Matrix{Q}; scal::Symbol = :none) where Q <: Float
     n, p = size(X)
     xscales = ones(Q, p) 
     if scal != :none

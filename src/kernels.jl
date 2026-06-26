@@ -1,5 +1,5 @@
 """
-    krbf(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}; kwargs...) where Q <: AbstractFloat
+    krbf(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}; kwargs...) where Q <: Float
 Compute a Radial-Basis-Function (RBF) kernel Gram matrix. 
 * `X` : X matrix (n, p).
 * `Y` : Y matrix (m, p).
@@ -27,13 +27,13 @@ Y = rand(2, 3)
 krbf(X, Y; gamma = .1)
 ```
 """ 
-function krbf(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}; kwargs...) where Q <: AbstractFloat
+function krbf(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}; kwargs...) where Q <: Float
     par = recovkw(ParKern{Q}, kwargs).par 
     exp.(-par.gamma * eucl2(X, Y))
 end
 
 """
-    kpol(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}; kwargs...) where Q <: AbstractFloat
+    kpol(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}; kwargs...) where Q <: Float
 Compute a polynomial kernel Gram matrix. 
 * `X` : X matrix (n, p).
 * `Y` : Y matrix (m, p).
@@ -63,7 +63,7 @@ Y = rand(2, 3)
 kpol(X, Y; gamma = .1, coef0 = 10, degree = 3)
 ```
 """ 
-function kpol(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}; kwargs...) where Q <: AbstractFloat
+function kpol(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}; kwargs...) where Q <: Float
     par = recovkw(ParKern{Q}, kwargs).par 
     K = par.gamma * X * Y' .+ par.coef0
     if par.degree > 1

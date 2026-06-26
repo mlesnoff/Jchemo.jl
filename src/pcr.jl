@@ -1,8 +1,8 @@
 """
     pcr(; kwargs...)
     pcr(X, Y; kwargs...)
-    pcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    pcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    pcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Principal component regression (PCR) with a SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -71,11 +71,11 @@ function pcr(X, Y; kwargs...)
     pcr(X, Y, weights; kwargs...)
 end
 
-function pcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function pcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     pcr!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function pcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function pcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPca, kwargs).par
     q = nco(Y)
     ymeans = colmean(Y, weights)

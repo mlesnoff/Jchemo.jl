@@ -1,8 +1,8 @@
 """
     rr(; kwargs...)
     rr(X, Y; kwargs...)
-    rr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    rr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Ridge regression (RR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -78,11 +78,11 @@ function rr(X, Y; kwargs...)
     rr(X, Y, weights; kwargs...)
 end
 
-function rr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function rr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     rr!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParRr{Q}, kwargs).par
     p = nco(X)
     par.lb = Q(par.lb)
@@ -108,14 +108,14 @@ end
 
 """
     coef(object::Rr)
-    coef(object::Rr, lb::T) where T <: AbstractFloat
+    coef(object::Rr, lb::T) where T <: Float
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `lb` : Ridge regularization parameter 'lambda'.
 """ 
 coef(object::Rr) = coef(object::Rr, object.par.lb)
 
-function coef(object::Rr, lb::T) where T <: AbstractFloat
+function coef(object::Rr, lb::T) where T <: Float
     Q = eltype(object.sv)
     eig = object.sv.^2
     z = 1 ./ (eig .+ Q(lb)^2)
@@ -128,7 +128,7 @@ end
 
 """
     predict(object::Rr, X)
-    predict(object::Rr, X, lb::Union{T, AbstractVector{T}})  where T <: AbstractFloat
+    predict(object::Rr, X, lb::Union{T, AbstractVector{T}})  where T <: Float
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
@@ -141,7 +141,7 @@ function predict(object::Rr, X)
     (pred = pred, lb = object.par.lb)
 end
 
-function predict(object::Rr, X, lb::Union{T, AbstractVector{T}})  where T <: AbstractFloat
+function predict(object::Rr, X, lb::Union{T, AbstractVector{T}})  where T <: Float
     X = ensure_mat(X)
     Q = eltype(object.sv)
     le_lb = length(lb)

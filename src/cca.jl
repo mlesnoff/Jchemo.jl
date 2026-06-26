@@ -1,8 +1,8 @@
 """
     cca(; kwargs...)
     cca(X, Y; kwargs...)
-    cca(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    cca(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Canonical correlation Analysis (CCA, RCCA).
 * `X` : First block of data.
 * `Y` : Second block of data.
@@ -93,11 +93,11 @@ function cca(X, Y; kwargs...)
     cca(X, Y, weights; kwargs...)
 end
 
-function cca(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function cca(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     cca!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParCca{Q}, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
@@ -233,7 +233,7 @@ function Base.summary(object::Cca, X, Y)
     nam = string.("lv", 1:nlv)
     z = zeros(Q, 1, nlv)
     for a = 1:nlv
-        z[1, a] = rv(X, object.Tx[:, a], object.weights) 
+        z[1, a] = rv(X, vcol(object.Tx, a), object.weights) 
     end
     rvx2tx = DataFrame(z, nam)
     for a = 1:nlv

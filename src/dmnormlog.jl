@@ -1,9 +1,9 @@
 """
     dmnormlog(; kwargs...)
     dmnormlog(X; kwargs...)
-    dmnormlog!(X::Matrix{Q}; kwargs...) where Q <: AbstractFloat
+    dmnormlog!(X::Matrix{Q}; kwargs...) where Q <: Float
     dmnormlog(mu, S; kwargs...)
-    dmnormlog!(mu::Vector{Q}, S::Matrix{Q}; kwargs...) where Q <: AbstractFloat
+    dmnormlog!(mu::Vector{Q}, S::Matrix{Q}; kwargs...) where Q <: Float
 Logarithm of the normal probability density estimation.
     * `X` : X-data (n, p) used to estimate the mean `mu` and the covariance matrix `S`. If `X` is not given, 
         `mu` and `S` must be provided in `kwargs`.
@@ -52,7 +52,7 @@ function dmnormlog(X; kwargs...)
     dmnormlog!(copy(ensure_mat(X)); kwargs...)
 end
 
-function dmnormlog!(X::Matrix{Q}; kwargs...) where Q <: AbstractFloat
+function dmnormlog!(X::Matrix{Q}; kwargs...) where Q <: Float
     par = recovkw(ParDmnorm{Q}, kwargs).par
     mu = colmean(X) 
     S = cov(X; corrected = true)
@@ -73,7 +73,7 @@ function dmnormlog(mu, S; kwargs...)
     dmnormlog!(copy(vec(mu)), copy(ensure_mat(S)); kwargs...) 
 end
 
-function dmnormlog!(mu::Vector{Q}, S::Matrix{Q}; kwargs...) where Q <: AbstractFloat
+function dmnormlog!(mu::Vector{Q}, S::Matrix{Q}; kwargs...) where Q <: Float
     par = recovkw(ParDmnorm{Q}, kwargs).par
     U = cholesky!(Hermitian(copy(S))).U   # cholesky! modifies S
     if par.simpl 

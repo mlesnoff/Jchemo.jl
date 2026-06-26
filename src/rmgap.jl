@@ -49,7 +49,7 @@ end
 
 """ 
     transf(object::Rmgap, X)
-    transf!(object::Rmgap, X::Matrix{Q}) where Q <: AbstractFloat
+    transf!(object::Rmgap, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -61,7 +61,7 @@ function transf(object::Rmgap, X)
     X
 end
 
-function transf!(object::Rmgap, X::Matrix{Q}) where Q <: AbstractFloat
+function transf!(object::Rmgap, X::Matrix{Q}) where Q <: Float
     p = nco(X)
     @assert object.par.npoint >= 2 "Argument 'npoint' must be >= 2."
     @inbounds for i in eachindex(object.par.indexcol)

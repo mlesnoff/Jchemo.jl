@@ -1,8 +1,8 @@
 """
     spca(; kwargs...)
     spca(X; kwargs...)
-    spca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    spca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Sparse PCA by regularized low rank matrix approximation (sPCA-rSVD, Shen & Huang 2008).
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -105,11 +105,11 @@ function spca(X; kwargs...)
     spca(X, weights; kwargs...)
 end
 
-function spca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function spca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     spca!(copy(X), weights; kwargs...)
 end
 
-function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParSpca{Q}, kwargs).par
     @assert in([:soft; :hard])(par.meth) "Wrong value for argument 'meth'."
     @assert in([:v; :t])(par.defl) "Wrong value for argument 'defl'."

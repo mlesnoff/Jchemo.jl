@@ -2,7 +2,7 @@
     locw(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}}, 
         listw::Union{Nothing, Vector{Vector{Q}}} = nothing, 
         algo::Function, store::Bool = false, 
-        verbose::Bool = true, kwargs...) where Q <: AbstractFloat
+        verbose::Bool = true, kwargs...) where Q <: Float
 Compute predictions for a given kNN model.
 * `Xtrain` : Training X-data.
 * `Ytrain` : Training Y-data.
@@ -22,7 +22,7 @@ of x_i in Xtrain. The sizes of the neighborhood for i = 1,...,m can be different
 function locw(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}}, 
         listw::Union{Nothing, Vector{Vector{Q}}} = nothing, 
         algo::Function, store::Bool = false, 
-        verbose::Bool = true, kwargs...) where Q <: AbstractFloat
+        verbose::Bool = true, kwargs...) where Q <: Float
     m = nro(X)
     q = nco(Ytrain)
     pred = similar(Ytrain, m, q)

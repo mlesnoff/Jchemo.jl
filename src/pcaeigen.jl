@@ -1,8 +1,8 @@
 """
     pcaeigen(; kwargs...)
     pcaeigen(X; kwargs...)
-    pcaeigen(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    pcaeigen!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    pcaeigen(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcaeigen!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 PCA by Eigen factorization.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -24,11 +24,11 @@ function pcaeigen(X; kwargs...)
     pcaeigen(X, weights; kwargs...)
 end
 
-function pcaeigen(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function pcaeigen(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     pcaeigen!(copy(X), weights; kwargs...)
 end
 
-function pcaeigen!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function pcaeigen!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPca, kwargs).par 
     n, p = size(X)
     nlv = min(n, p, par.nlv)

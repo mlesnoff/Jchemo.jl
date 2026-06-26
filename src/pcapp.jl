@@ -1,7 +1,7 @@
 """
     pcapp(; kwargs...)
     pcapp(X; kwargs...)
-    pcapp!(X::Matrix{Q}; kwargs...) where Q <: AbstractFloat
+    pcapp!(X::Matrix{Q}; kwargs...) where Q <: Float
 Robust PCA by projection pursuit.
 * `X` : X-data (n, p). 
 Keyword arguments:
@@ -58,7 +58,7 @@ pcapp(; kwargs...) = JchemoModel(pcapp, nothing, kwargs)
 
 pcapp(X; kwargs...) = pcapp!(copy(ensure_mat(X)); kwargs...)
 
-function pcapp!(X::Matrix{Q}; kwargs...) where Q <: AbstractFloat
+function pcapp!(X::Matrix{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPcapp, kwargs).par
     n, p = size(X)
     nlv = min(n, p, par.nlv)

@@ -1,8 +1,8 @@
 """
     plstuck(; kwargs...)
     plstuck(X, Y; kwargs...)
-    plstuck(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    plstuck(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Tucker's inter-battery method of factor analysis
 * `X` : First block of data.
 * `Y` : Second block of data.
@@ -77,11 +77,11 @@ function plstuck(X, Y; kwargs...)
     plstuck(X, Y, weights; kwargs...)
 end
 
-function plstuck(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function plstuck(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     plstuck!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPls2bl, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     n, p = size(X)
@@ -183,7 +183,7 @@ function Base.summary(object::Plstuck, X, Y)
     nam = string.("lv", 1:nlv)
     z = zeros(Q, 1, nlv)
     for a = 1:nlv
-        z[1, a] = rv(X, object.Tx[:, a], object.weights) 
+        z[1, a] = rv(X, vcol(object.Tx, a), object.weights) 
     end
     rvx2tx = DataFrame(z, nam)
     for a = 1:nlv

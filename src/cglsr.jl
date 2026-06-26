@@ -72,7 +72,7 @@ cglsr(; kwargs...) = JchemoModel(cglsr, nothing, kwargs)
 
 cglsr(X, y; kwargs...) = cglsr!(copy(ensure_mat(X)), copy(ensure_mat(y)); kwargs...)
 
-function cglsr!(X::AbstractMatrix{Q}, y::Matrix{Q}; kwargs...) where Q <: AbstractFloat
+function cglsr!(X::AbstractMatrix{Q}, y::Matrix{Q}; kwargs...) where Q <: Float
     par = recovkw(ParCglsr, kwargs).par
     n, p = size(X)
     q = nco(y)

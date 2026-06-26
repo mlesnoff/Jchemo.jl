@@ -1,8 +1,8 @@
 """
     plsnipals(; kwargs...)
     plsnipals(X, Y; kwargs...)
-    plsnipals(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    plsnipals(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Partial Least Squares Regression (PLSR) with the Nipals algorithm.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -34,11 +34,11 @@ function plsnipals(X, Y; kwargs...)
     plsnipals(X, Y, weights; kwargs...)
 end
 
-function plsnipals(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function plsnipals(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     plsnipals!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPlsr, kwargs).par
     n, p = size(X)
     q = nco(Y)

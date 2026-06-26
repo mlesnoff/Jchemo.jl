@@ -1,8 +1,8 @@
 """
     plswold(; kwargs...)
     plswold(X, Y; kwargs...)
-    plswold(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    plswold(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Partial Least Squares Regression (PLSR) with the Wold algorithm 
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -33,11 +33,11 @@ function plswold(X, Y; kwargs...)
     plswold(X, Y, weights; kwargs...)
 end
 
-function plswold(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function plswold(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     plswold!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPlswold{Q}, kwargs).par
     n, p = size(X)
     q = nco(Y)

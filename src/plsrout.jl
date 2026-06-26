@@ -1,8 +1,8 @@
 """
     plsrout(; kwargs...)
     plsrout(X, Y; kwargs...)
-    plsrout(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    pcaout!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    plsrout(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcaout!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Robust PLSR using outlierness.
 * `X` : X-data (n, p). 
 * `Y` : Y-data (n, q). 
@@ -65,11 +65,11 @@ function plsrout(X, Y; kwargs...)
     plsrout(X, Y, weights; kwargs...)
 end
 
-function plsrout(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function plsrout(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     plsrout!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function plsrout!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function plsrout!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPlsrout{Q}, kwargs).par 
     n, p = size(X)
     nlvout = 30

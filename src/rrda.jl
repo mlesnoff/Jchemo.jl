@@ -102,7 +102,7 @@ end
 
 """
     predict(object::Rrda, X)
-    predict(object::Rrda, X, lb::Union{T, AbstractVector{T}})  where T <: AbstractFloat
+    predict(object::Rrda, X, lb::Union{T, AbstractVector{T}})  where T <: Float
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
@@ -117,7 +117,7 @@ function predict(object::Rrda, X)
     (pred = pred, posterior = res.pred, lb = res.lb)
 end
 
-function predict(object::Rrda, X, lb::Union{T, AbstractVector{T}})  where T <: AbstractFloat
+function predict(object::Rrda, X, lb::Union{T, AbstractVector{T}})  where T <: Float
     X = ensure_mat(X)
     m = nro(X)
     Qy = eltype(object.lev)

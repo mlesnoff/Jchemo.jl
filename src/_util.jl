@@ -1,11 +1,11 @@
 """
-    aggstat(X::Array{Q}, y::Vector{String}; algo::Function = mean) where Q <: AbstractFloat
-    aggstataggstat(datf::DataFrame; sel::Q, group::Q, algo::Function = mean) where Q <: Union{Vector{String}, Vector{Symbol}}
+    aggstat(X::AbstMatVec{Q}, y::Vector{String}; algo::Function = meanv) where Q <: Float
+    aggstat(datf::DataFrame; sel::Q, group::Q, algo::Function = meanv) where Q <: Union{Vector{String}, Vector{Symbol}}
 Compute column-wise statistics by group in a dataset.
-* `X` : An array to summarize (n or (n, p)).
+* `X` : A matrix (n, p) or vector (n) to summarize.
 * `datf` : A dataframe to summarize (n, p).
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
-* `algo` : Function to compute (default = mean).
+* `algo` : Function to compute (default = `meanv`).
 Specific for `X::DataFrame`:
 * `sel` : Vector of the names (String or Symbol) of the variables to summarize.
 * `group` : Vector of the names (String or Symbol) of the categorical variables defining the groups.
@@ -14,19 +14,19 @@ Variables defined in `sel` and `group` must be columns of `X`.
 
 ## Examples
 ```julia
-using Jchemo, DataFrames, Statistics
+using Jchemo, DataFrames
 
 n, p = 20, 5
 X = rand(n, p)
 datf = DataFrame(X, :auto)
 y = string.(rand(1:3, n))
 
-res = aggstat(X, y; algo = sum)
+res = aggstat(X, y; algo = sumv)
 @names res
 res.lev 
 res.X
 
-aggstat(Matrix(datf), y; algo = sum).X
+aggstat(Matrix(datf), y; algo = sumv).X
 
 ## Dataframe
 
@@ -40,7 +40,7 @@ datf
 aggstat(datf; sel = [:v1, :v2] , group = [:y1, :y2], algo = var)  # return a dataframe 
 ```
 """ 
-function aggstat(X::Array{Q}, y::Vector{String}; algo::Function = mean) where Q <: AbstractFloat
+function aggstat(X::AbstMatVec{Q}, y::Vector{String}; algo::Function = meanv) where Q <: Float
     X = ensure_mat(X)
     n, p = size(X)
     lev = mlev(y)
@@ -54,19 +54,19 @@ function aggstat(X::Array{Q}, y::Vector{String}; algo::Function = mean) where Q 
     (X = zX, lev)
 end
 
-function aggstat(datf::DataFrame; sel::Q, group::Q, algo::Function = mean) where Q <: Union{Vector{String}, Vector{Symbol}}
+function aggstat(datf::DataFrame; sel::Q, group::Q, algo::Function = meanv) where Q <: Union{Vector{String}, Vector{Symbol}}
     gdf = groupby(datf, group) 
     res = combine(gdf, sel .=> algo, renamecols = false)
     sort!(res, group)
 end
 
 """
-    aggmean(X::Array{Q}, y::Vector{String}) where Q <: AbstractFloat
+    aggmean(X::AbstMatVec{Q}, y::Vector{String}) where Q <: Float
 Compute column-wise means by group in a dataset.
-* `X` : An array to summarize (n or (n, p)).
+* `X` : A matrix (n, p) or vector (n) to summarize.
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 
-This is a (faster) particular case of `aggstat`: computes means from a single group variable. 
+This is a faster particular case of `aggstat`: computes means from a single group variable. 
 
 ## Examples
 ```julia
@@ -84,7 +84,7 @@ res.lev
 aggmean(Matrix(datf), y).X
 ```
 """ 
-function aggmean(X::Array{Q}, y::Vector{String}) where Q <: AbstractFloat
+function aggmean(X::AbstMatVec{Q}, y::Vector{String}) where Q <: Float
     X = ensure_mat(X)
     p = nco(X)
     lev = mlev(y)
@@ -98,7 +98,7 @@ function aggmean(X::Array{Q}, y::Vector{String}) where Q <: AbstractFloat
 end
 
 """ 
-    aggsumv(x::Vector{Q}, y::Vector{String}) where Q <: Real
+    aggsumv(x::AbstractVector{Q}, y::Vector{String}) where Q <: Real
 Compute the sum by group over a categorical variable.
 * `x` : A vector representing the quantitative variable to sum (n) 
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
@@ -114,7 +114,7 @@ y = vcat(rand(["a" ; "c"], 900), fill("b", 100))
 aggsumv(x, y)
 ```
 """
-function aggsumv(x::Vector{Q}, y::Vector{String}) where Q <: Real  # 'Real' for 'Int'
+function aggsumv(x::AbstractVector{Q}, y::Vector{String}) where Q <: Real  # 'Real' for 'Int'
     lev = mlev(y)
     v = similar(x, length(lev)) 
     @inbounds for i in eachindex(lev) 
@@ -146,7 +146,7 @@ dupl(Z)
 ```
 """
 function dupl(X; digits::Int = 3)
-    X = round.(ensure_mat(X))
+    X = round.(ensure_mat(X); digits)
     n = nro(X)
     rownum1 = []
     rownum2 = []
@@ -182,6 +182,13 @@ ensure_mat(X::AbstractMatrix) = Matrix(X)
 ensure_mat(X::Vector) = reshape(X, :, 1)
 ensure_mat(X::Number) = reshape([X], 1, 1)
 ensure_mat(X::DataFrame) = Matrix(X)
+function ensure_mat(X::SubArray)  # for views
+    if isa(X, AbstractVector)
+        return Matrix(reshape(X, length(X), 1))
+    else
+        return Matrix(X)
+    end
+end
 
 """
     ensure_mat_mb(Xbl)
@@ -331,7 +338,7 @@ list(Matrix{Int}, 5)
 list(Q::Union{DataType, UnionAll}, n::Integer) = Vector{Q}(undef, n)
 
 """ 
-    mlev(X::Array{String})
+    mlev(X::AbstractArray{String})
     mlev(datf::DataFrame)
 Return the sorted levels of an array or dataframe.
 * `X` : A categorical array (class membership). Must be of type `String`.
@@ -353,7 +360,7 @@ datf = DataFrame(g1 = rand(1:2, n), g2 = rand(["a"; "c"], n))
 mlev(datf)
 ```
 """
-mlev(X::Array{String}) = sort(unique(X)) 
+mlev(X::AbstractArray{String}) = sort(unique(X)) 
 
 mlev(datf::DataFrame) = sort(unique(datf)) 
 
@@ -394,7 +401,7 @@ Return the nb. rows of `X`.
 nro(X) = size(X, 1)
 
 """ 
-    out(x::Vector{Q}, y::Vector{Q}) where Q <: AbstractFloat
+    out(x::AbstractVector{Q}, y::Vector{Q}) where Q <: Float
 Return if elements of a vector are strictly outside of a given range.
 * `x` : A quantititative variable whose each element is evaluated to be out of or in the range 
     (min, max) defined from `y`.
@@ -411,12 +418,12 @@ out(x, [-1; .2; 1])
 out(x, [-1., 1])
 ```
 """
-out(x::Vector{Q}, y::Vector{Q}) where Q <: AbstractFloat = (x .< minimum(y)) .| (x .> maximum(y))
+out(x::AbstractVector{Q}, y::Vector{Q}) where Q <: Float = (x .< minimum(y)) .| (x .> maximum(y))
 
 """
-    pval(d::Distribution, q::Union{Q, Vector{Q}}) where Q <:AbstractFloat
-    pval(x::AbstractVector{Q}, q::Union{Q, Vector{Q}}) where Q <:AbstractFloat
-    pval(e_cdf::ECDF, q::Union{Q, Vector{Q}}) where Q <:AbstractFloat
+    pval(d::Distribution, q::Union{Q, Vector{Q}}) where Q <:Float
+    pval(x::AbstractVector{Q}, q::Union{Q, Vector{Q}}) where Q <:Float
+    pval(e_cdf::ECDF, q::Union{Q, Vector{Q}}) where Q <:Float
 Compute p-value(s) from a distribution, an ECDF or a vector.
 * `d` : A distribution computed from `Distribution.jl`.
 * `x` : A quantitative variable.
@@ -446,11 +453,11 @@ pval(e_cdf, q)          # = 1 .- e_cdf(q)
 pval(x, q)
 ```
 """
-pval(d::Distribution, q::Union{Q, Vector{Q}}) where Q <:AbstractFloat = Distributions.ccdf(d, q)
+pval(d::Distribution, q::Union{Q, Vector{Q}}) where Q <:Float = Distributions.ccdf(d, q)
 
-pval(e_cdf::ECDF, q::Union{Q, Vector{Q}}) where Q <:AbstractFloat = 1 .- e_cdf(q)
+pval(e_cdf::ECDF, q::Union{Q, Vector{Q}}) where Q <:Float = 1 .- e_cdf(q)
 
-pval(x::AbstractVector{Q}, q::Union{Q, Vector{Q}}) where Q <: AbstractFloat = pval(StatsBase.ecdf(x), q)
+pval(x::AbstractVector{Q}, q::Union{Q, Vector{Q}}) where Q <: Float = pval(StatsBase.ecdf(x), q)
 
 """
     recovkw(ParStruct, kwargs)
@@ -478,42 +485,11 @@ end
 recovkw(ParStruct::DataType) = (kwargs = nothing, par = ParStruct())
 
 """
-    rmcol(X::Union{AbstractMatrix, DataFrame}, s::Union{Int, BitVector, Vector{Int}, UnitRange})
-    rmcol(x::Vector, s::Union{Int, BitVector, Vector{Int}, UnitRange})
-Remove the columns of a matrix or the components of a vector 
-having indexes `s`.
-* `X` : A data set (n, p).
-* `x` : A variable (n).
-* `s` : Vector of the indexes.
-
-## Examples
-```julia
-using Jchemo
-
-X = rand(5, 3) 
-rmcol(X, [1, 3])
-rmcol(X, 1:2)
-
-x = rand(5)
-rmcol(x, [1, 3])
-```
-"""
-function rmcol(X::Union{AbstractMatrix, DataFrame}, s::Union{Int, BitVector, Vector{Int}, UnitRange})
-    if isa(s, BitVector) ; s = findall(s .== 1) ; end
-    X[:, setdiff(1:end, s)]
-end
-
-function rmcol(x::Vector, s::Union{Int, BitVector, Vector{Int}, UnitRange})
-    if isa(s, BitVector) ; s = findall(s .== 1) ; end
-    x[setdiff(1:end, s)]
-end
-
-"""
     rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Int, BitVector, Vector{Int}, UnitRange})
     rmrow(x::Vector, s::Union{Int, BitVector, Vector{Int}, UnitRange})
 Remove the rows of a matrix or the components of a vector having indexes `s`.
 * `X`, `x` : Matrix and vector, respectively.
-* `s` : Vector of the indexes.
+* `s` : Vector of the row indexes.
 
 ## Examples
 ```julia
@@ -527,16 +503,40 @@ x = rand(5)
 rmrow(x, [1, 3])
 ```
 """
-function rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Int, BitVector, Vector{Int}, UnitRange})
+function rmrow(X::Union{AbstractMatrix, DataFrame}, s::Union{Int, BitVector, Vector{Int}, UnitRange})  # 
     if isa(s, BitVector) ; s = findall(s .== 1) ; end
     X[setdiff(1:end, s), :]
 end
 
-rmrow(x::Vector, s::Union{Int, BitVector, Vector{Int}, UnitRange}) = rmcol(x, s)
+function rmrow(x::AbstractVector, s::Union{Int, BitVector, Vector{Int}, UnitRange})
+    if isa(s, BitVector) ; s = findall(s .== 1) ; end
+    x[setdiff(1:end, s)]
+end
 
 """
-    softmax(x::AbstractVector{Q}) where Q <: AbstractFloat
-    softmax(X::AbstractMatrix{Q})  where Q <: AbstractFloat
+    rmcol(X::Union{AbstractMatrix, DataFrame}, s::Union{Int, BitVector, Vector{Int}, UnitRange})
+Remove the columns of a matrix or the components of a vector having indexes `s`.
+* `X` : A data set (n, p).
+* `s` : Vector of the column indexes.
+
+## Examples
+```julia
+using Jchemo
+
+X = rand(5, 3) 
+rmcol(X, [1, 3])
+rmcol(X, 1:2)
+```
+"""
+function rmcol(X::Union{AbstractMatrix, DataFrame}, s::Union{Int, BitVector, Vector{Int}, UnitRange})
+    if isa(s, BitVector) ; s = findall(s .== 1) ; end
+    X[:, setdiff(1:end, s)]
+end
+
+
+"""
+    softmax(x::AbstractVector{Q}) where Q <: Float
+    softmax(X::AbstractMatrix{Q})  where Q <: Float
 Softmax transformation.
 * `x` : A quantitative variable to transform.
 * `X` : A quantitative matrix whose rows are transformed.
@@ -549,18 +549,20 @@ Let v be a vector:
 using Jchemo
 
 x = rand(3)
-softmax(x)
+res = softmax(x)
+sumv(res)
 
 X = rand(5, 3)
-softmax(X)
+res = softmax(X)
+rowsum(res)
 ```
 """
-function softmax(x::AbstractVector{Q}) where Q <: AbstractFloat
+function softmax(x::AbstractVector{Q}) where Q <: Float
     expx = exp.(x) 
     expx / sum(expx)
 end
 
-function softmax(X::AbstractMatrix{Q})  where Q <: AbstractFloat
+function softmax(X::AbstractMatrix{Q})  where Q <: Float
     V = similar(X)
     @inbounds for i in axes(X, 1)
         V[i, :] .= softmax(vrow(X, i))
@@ -629,7 +631,7 @@ function summ(X, y::Vector{String}; digits::Int = 3)
 end
 
 """
-    thresh_hard(x::Q, delta::Q) where Q <: AbstractFloat
+    thresh_hard(x::Q, delta::Q) where Q <: Float
 Hard thresholding function.
 * `x` : Value (scalar) to transform.
 * `delta` : Limit for the thresholding.
@@ -651,7 +653,7 @@ y = thresh_hard.(x, delta)
 lines(x, y; axis = (xlabel = "x", ylabel = "f(x)"))
 ```
 """
-function thresh_hard(x::Q, delta::Q) where Q <: AbstractFloat
+function thresh_hard(x::Q, delta::Q) where Q <: Float
     @assert delta >= 0 "delta must be >= 0."
     if abs(x) <= delta
         x = zero(eltype(x)) 
@@ -659,9 +661,8 @@ function thresh_hard(x::Q, delta::Q) where Q <: AbstractFloat
     x
 end
 
-
 """
-    thresh_soft(x::Q, delta::Q) where Q <: AbstractFloat
+    thresh_soft(x::Q, delta::Q) where Q <: Float
 Soft thresholding function.
 * `x` : Value (scalar) to transform.
 * `delta` : Limit for the thresholding.
@@ -683,7 +684,7 @@ y = thresh_soft.(x, delta)
 lines(x, y; axis = (xlabel = "x", ylabel = "f(x)"))
 ```
 """
-function thresh_soft(x::Q, delta::Q) where Q <: AbstractFloat
+function thresh_soft(x::Q, delta::Q) where Q <: Float
     @assert delta >= 0 "delta must be >= 0."
     ## same as: abs(x) > delta ? sign(x) * (abs(x) - delta) : zero(eltype(x))
     sign(x) * max(zero(eltype(x)), abs(x) - delta)  # type consistent
@@ -733,16 +734,6 @@ function vcatdf(dat::Vector{DataFrame};
 end
 
 """
-    vcol(X::AbstractMatrix, j)
-    vcol(X::DataFrame, j)
-    vcol(x::Vector, j)
-View of the j-th column(s) of a matrix `X`, or of the j-th element(s) of vector `x`.
-""" 
-vcol(X, j) = view(X, :, j)
-vcol(x::Vector, i) = view(x, i)
-vcol(X::DataFrame, j) = view(Matrix(X), :, j)
-
-"""
     vrow(X::AbstractMatrix, i)
     vrow(X::DataFrame, i)
     vrow(x::Vector, i)
@@ -751,6 +742,16 @@ View of the i-th row(s) of a matrix `X`, or of the i-th element(s) of vector `x`
 vrow(X, i) = view(X, i, :) 
 vrow(X::DataFrame, i) = view(Matrix(X), i, :)
 vrow(x::Vector, i) = view(x, i)
+
+"""
+    vcol(X::AbstractMatrix, j)
+    vcol(X::DataFrame, j)
+    vcol(x::Vector, j)
+View of the j-th column(s) of a matrix `X`, or of the j-th element(s) of vector `x`.
+""" 
+vcol(X, j) = view(X, :, j)
+vcol(x::Vector, i) = view(x, i)
+vcol(X::DataFrame, j) = view(Matrix(X), :, j)
 
 ########### Macros 
 

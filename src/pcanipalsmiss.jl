@@ -1,8 +1,8 @@
 """
     pcanipalsmiss(; kwargs...)
     pcanipals(X; kwargs...)
-    pcanipals(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    pcanipals!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    pcanipals(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcanipals!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 PCA by NIPALS algorithm allowing missing data.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -67,11 +67,11 @@ function pcanipalsmiss(X; kwargs...)
     pcanipalsmiss(X, weights; kwargs...)
 end
 
-function pcanipalsmiss(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function pcanipalsmiss(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     pcanipalsmiss!(copy(X), weights; kwargs...)
 end
 
-function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPcanipals{Q}, kwargs).par
     n, p = size(X)
     nlv = min(n, p, par.nlv)

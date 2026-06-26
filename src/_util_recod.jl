@@ -283,7 +283,7 @@ function recod_indbylev(x::Vector{Q}, lev::Vector{String}) where Q <: Signed
 end
 
 """
-    recod_contbylev(x::Vector{Q}, q::Vector{Q}) where Q <: AbstractFloat
+    recod_contbylev(x::Vector{Q}, q::Vector{Q}) where Q <: Float
 Recode a quantitative variable by successive levels.
 * `x` : A quantitative variable (n) to recode.
 * `q` : A vector (K) of the values separating the class levels from `x`.  
@@ -312,7 +312,7 @@ zx = recod_contbylev(x, q)
 tab(zx)
 ```
 """
-function recod_contbylev(x::Vector{Q}, q::Vector{Q}) where Q <: AbstractFloat
+function recod_contbylev(x::Vector{Q}, q::Vector{Q}) where Q <: Float
     v = zeros(Int, length(x))
     q = sort(q)
     @inbounds for i in eachindex(x)

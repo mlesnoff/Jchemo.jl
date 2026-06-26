@@ -1,8 +1,8 @@
 """
     ccawold(; kwargs...)
     ccawold(X, Y; kwargs...)
-    ccawold(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    ccawold(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Canonical correlation analysis (CCA, RCCA) - Wold Nipals algorithm.
 * `X` : First block of data.
 * `Y` : Second block of data.
@@ -94,11 +94,11 @@ function ccawold(X, Y; kwargs...)
     ccawold(X, Y, weights; kwargs...)
 end
 
-function ccawold(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function ccawold(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     ccawold!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParCcawold{Q}, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
@@ -285,7 +285,7 @@ function Base.summary(object::Ccawold, X, Y)
     nam = string.("lv", 1:nlv)
     z = zeros(Q, 1, nlv)
     for a = 1:nlv
-        z[1, a] = rv(X, object.Tx[:, a], object.weights) 
+        z[1, a] = rv(X, vcol(object.Tx, a), object.weights) 
     end
     rvx2tx = DataFrame(z, nam)
     for a = 1:nlv

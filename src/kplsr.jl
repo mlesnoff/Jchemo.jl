@@ -1,8 +1,8 @@
 """
     kplsr(; kwargs...)
     kplsr(X, Y; kwargs...)
-    kplsr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
-    kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+    kplsr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Kernel partial least squares regression (KPLSR) implemented with a Nipals algorithm (Rosipal & Trejo, 2001).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -84,11 +84,11 @@ function kplsr(X, Y; kwargs...)
     kplsr(X, Y, weights; kwargs...)
 end
 
-function kplsr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function kplsr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     kplsr!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: AbstractFloat
+function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = Jchemo.recovkw(ParKplsr{Q}, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     n, p = size(X)
