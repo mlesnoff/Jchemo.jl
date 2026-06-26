@@ -46,68 +46,27 @@ function tab(datf::DataFrame; group = nothing)
 end
 
 """
-    tabdupl(x)
+    tabdupl(x::AbstractVector)
 Tabulate duplicated values in a vector.
-* `x` : Categorical variable.
+* `x` : A vector (n).
 
 ## Examples
 ```julia
 using Jchemo
 
 x = ["a", "b", "c", "a", "b", "b"]
+#x = rand(1:5, 10)
 tab(x)
 res = tabdupl(x)
 res.keys
 res.vals
 ```
 """
-function tabdupl(x)
+function tabdupl(x::AbstractVector)
     z = tab(x)
     s = z.vals .> 1
     u = z.keys[s]
     tab(x[in(u).(x)])
-end
-
-"""
-    tabcont(x::Vector{Q}, q::Vector{Q}) where Q <: Float
-Tabulate a continuous variable.
-* `x` : Continuous variable (n).
-* `q` : Numerical values (K) separating the class levels from `x`.  
-
-The function returns K + 1 levels. For a given value x of vector `x` and `q` a vector 
-of length K: 
-* x <= q[1]             : ==> 1 
-* q[1] < x <= q[2]      : ==> 2 
-* etc.
-* q[K - 1] < x <= q[K]  : ==> K 
-* q[K] < x              : ==> K + 1 
-
-## Examples
-```julia
-using Jchemo
-
-x = rand(100)
-q = [.01; .5; .500001; .9; 1.1]
-
-res = tabcont(x, q)
-sum(res.n)
-```
-"""
-function tabcont(x::Vector{Q}, q::Vector{Q}) where Q <: Float
-    bin = mbin(q)
-    nbin = length(bin)
-    lev = collect(1:nbin)
-    v = recod_contbylev(x, q)
-    resv = tab(v)
-    val = zeros(Int, nbin)
-    for i in eachindex(lev) 
-        k = findfirst(lev[i] .== resv.keys)
-        if !isnothing(k)
-            val[i] = resv.vals[k]
-        end
-    end
-    val
-    DataFrame(bin = bin, lev = lev, n = val)
 end
 
 """
@@ -138,4 +97,47 @@ function mbin(q::Vector{Q}) where Q <: Float
     end
     bin
 end
+
+"""
+    tabcont(x::Vector{Q}, q::Vector{Q}) where Q <: Float
+Tabulate a continuous variable.
+* `x` : A continuous variable (n).
+* `q` : Numerical values (K) separating the class levels from `x`.  
+
+The function returns K + 1 levels. For a given value x of vector `x` and `q` a vector 
+of length K: 
+* x <= q[1]             : ==> 1 
+* q[1] < x <= q[2]      : ==> 2 
+* etc.
+* q[K - 1] < x <= q[K]  : ==> K 
+* q[K] < x              : ==> K + 1 
+
+## Examples
+```julia
+using Jchemo
+
+x = rand(100)
+q = [.01; .5; .500001; .9; 1.1]
+
+res = tabcont(x, q)
+sum(res.n)
+```
+"""
+function tabcont(x::Vector{Q}, q::Vector{Q}) where Q <: Float
+    bin = mbin(q)
+    nbin = length(bin)
+    lev = string.(collect(1:nbin))
+    v = recod_contbylev(x, q)
+    resv = tab(v)
+    val = zeros(Int, nbin)
+    for i in eachindex(lev) 
+        k = findfirst(lev[i] .== resv.keys)
+        if !isnothing(k)
+            val[i] = resv.vals[k]
+        end
+    end
+    val
+    DataFrame(bin = bin, lev = lev, n = val)
+end
+
 
