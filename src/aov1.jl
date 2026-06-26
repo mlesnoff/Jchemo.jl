@@ -1,5 +1,5 @@
 """
-    aov1(X::AbstMatVecF{Q}, y::Vector{String}) where Q <: Float 
+    aov1(X::AbstMatVec{Q}, y::Vector{String}) where Q <: Float 
     One-factor ANOVA test.
 * `X` : X-data (n, p) whose columns are tested (independently).
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
@@ -24,7 +24,7 @@ res.F
 res.pval
 ```
 """ 
-function aov1(X::AbstMatVecF{Q}, y::Vector{String}) where Q <: Float 
+function aov1(X::AbstMatVec{Q}, y::Vector{String}) where Q <: Float 
     X = ensure_mat(X)
     tabx = tab(y)
     lev = tabx.keys

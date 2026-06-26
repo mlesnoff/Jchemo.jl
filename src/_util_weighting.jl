@@ -86,8 +86,8 @@ end
 ##### Weighting rows or columns
 
 """
-    fweightr(X::AbstMatVecF{Q}, v::Vector{Q}) where Q <: Float
-    fweightr!(X::AbstMatVecF{Q}, v::Vector{Q}) where Q <: Float
+    fweightr(X::AbstMatVec{Q}, v::Vector{Q}) where Q <: Float
+    fweightr!(X::AbstMatVec{Q}, v::Vector{Q}) where Q <: Float
 Weight each row of a matrix.
 * `X` : Matrix (n, p) or vector (n).
 * `v` : A weighting vector (n).
@@ -105,13 +105,13 @@ fweightr!(X, v)
 X
 ```
 """ 
-fweightr(X::AbstMatVecF{Q}, v::Vector{Q}) where Q <: Float = v .* X
+fweightr(X::AbstMatVec{Q}, v::Vector{Q}) where Q <: Float = v .* X
 
-fweightr!(X::AbstMatVecF{Q}, v::Vector{Q}) where Q <: Float = X .= v .* X
+fweightr!(X::AbstMatVec{Q}, v::Vector{Q}) where Q <: Float = X .= v .* X
 
 """
-    fweightc(X::AbstMatVecF{Q}, v::Vector{Q}) where Q <: Float
-    fweightc!(X::AbstMatVecF{Q}, v::Vector{Q}) where Q <: Float
+    fweightc(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: Float
+    fweightc!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: Float
 Weight each column of a matrix.
 * `X` : Matrix (n, p) or vector (n).
 * `v` : A weighting vector (p).
@@ -129,8 +129,8 @@ fweightc!(X, v)
 X
 ```
 """ 
-fweightc(X::AbstMatVecF{Q}, v::Vector{Q}) where Q <: Float = v' .* X
+fweightc(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: Float = v' .* X
 
-fweightc!(X::AbstMatVecF{Q}, v::Vector{Q}) where Q <: Float = X .= v' .* X
+fweightc!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: Float = X .= v' .* X
 
 
