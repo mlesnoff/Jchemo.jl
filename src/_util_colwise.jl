@@ -42,10 +42,6 @@ function colsum(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Flo
     s
 end
 
-## Alternative to 'AbstractArray': replace by 'AbstractMatrix' and make a dispactch for 'Vector'
-#colsum(x::Vector{Q}) where Q <: Float = [sumv(x)]
-#colsum(x::Vector{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = [sumv(x, weights.values)]
-
 """
     colmean(X::DataFrame)
     colmean(X::AbstMatVec{Q}) where Q <: Float
