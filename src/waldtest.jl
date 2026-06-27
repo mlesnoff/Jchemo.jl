@@ -25,9 +25,8 @@ Draper, N.R., Smith, H., 1998. Applied Regression Analysis. New York, John Wiley
 
 ## Examples 
 ```julia
+using Jchemo, JchemoData, JLD2
 using GLM, AnovaGLM
-
-using Jchemo, JchemoData, JLD2, GLM
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/reaction_bertinetto.jld2")
 @load db dat
@@ -73,7 +72,7 @@ L = [0. 0 0 1 0 0]
 waldtest(L, b, varb) 
 waldtest(L, b, varb; dfden = dfr)
 
-## (3) interaction 'temp * catal'
+## (3) Interaction 'temp * catal'
 L = [0. 0 0 0 1 0 ;
      0 0 0 0 0 1]
 waldtest(L, b, varb) 

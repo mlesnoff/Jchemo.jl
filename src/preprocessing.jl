@@ -841,15 +841,15 @@ function interpl(X; kwargs...)
 end
 
 """ 
-    transf(object::Signederpl, X)
-    transf!(object::Signederpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: Float
+    transf(object::Interpl, X)
+    transf!(object::Interpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 * `M` : Pre-allocated output matrix (n, p).
 The in-place function stores the output in `M`.
 """ 
-function transf(object::Signederpl, X)
+function transf(object::Interpl, X)
     X = ensure_mat(X)
     n = nro(X)
     p = length(object.par.wlfin)
@@ -858,7 +858,7 @@ function transf(object::Signederpl, X)
     M
 end
 
-function transf!(object::Signederpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: Float
+function transf!(object::Interpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: Float
     algo = DataInterpolations.CubicSpline
     #algo = DataInterpolations.LinearInterpolation
     ## Not faster: @Threads.threads
