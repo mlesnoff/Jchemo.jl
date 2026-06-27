@@ -184,7 +184,7 @@ function cpca!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...
     w = similar(Xbl[1], nbl)
     lb = similar(Xbl[1], nbl, nlv)
     mu = similar(Xbl[1], nlv)
-    niter = zeros(nlv)
+    niter = zeros(Int, nlv)
     # End
     res = 0
     @inbounds for a = 1:nlv

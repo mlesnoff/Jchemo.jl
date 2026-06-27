@@ -150,7 +150,7 @@ function comdim!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs.
     mu = similar(Xbl[1], nlv)
     TB = similar(Xbl[1], n, nbl)
     W = similar(lb)
-    niter = zeros(nlv)
+    niter = zeros(Int, nlv)
     # End
     res = 0
     @inbounds for a = 1:nlv

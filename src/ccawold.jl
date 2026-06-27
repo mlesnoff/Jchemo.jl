@@ -151,7 +151,7 @@ function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     wytild = similar(wy)
     vx   = similar(wx)
     vy   = similar(wy)
-    niter = zeros(nlv)
+    niter = zeros(Int, nlv)
     Ix = Diagonal(ones(Q, p)) 
     Iy = Diagonal(ones(Q, q)) 
     # End

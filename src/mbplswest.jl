@@ -145,7 +145,7 @@ function mbplswest!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs.
     wy  = similar(Xbl[1], q)
     wytild = similar(wy)
     TTx = similar(Xbl[1], nlv)
-    niter = zeros(nlv)
+    niter = zeros(Int, nlv)
     # End
     @inbounds for a = 1:nlv
         ty = Y[:, 1]

@@ -31,7 +31,7 @@ https://pair-code.github.io/understanding-umap/
 
 ## Examples
 ```julia
-using JchemoData
+using Jchemo, JchemoData, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "challenge2018.jld2") 
 @load db dat
@@ -64,7 +64,7 @@ ntrain = nro(Xtrain)
 ntest = nro(Xtest)
 (ntot = ntot, ntrain, ntest)
 tab(string.(ycla, "-", Y.label))
-##### End
+##### End data
 
 psamp = .2  # to decrease the computation time for the example
 #psamp = 1  # all samples
