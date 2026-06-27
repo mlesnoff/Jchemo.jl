@@ -1,12 +1,12 @@
 # News
 
-## *Version 0.10.0*
+## *Version 0.10.0 (breaking changes)
 
 **Warning:** Major breaking changes have been made in this version compared to versions 0.9, 
 in particular in functions having arguments 'nlv' (laent variables) and 'lb' (ridge).  
 
 - Breakings:
-    - Functions having arguments 'nlv' or 'lb': deep restructuration of functions *transf*, *coef* 
+    - Functions having arguments 'nlv' or 'lb': **deep** restructuration of functions *transf*, *coef* 
         and *predict* to improve code consistency. The syntax concerning arguments 'nlv' and 'lb'
         in *transf* and *predict* has changed. See examples of the new code in function helps.
     - Argument 'scal' of colums scaling has changed. It is not a Boolean type anymore (replaced by a 
