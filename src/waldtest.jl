@@ -63,24 +63,24 @@ varb = vcov(fitm)    # variance-covariance matrix
 anova(fitm)
 
 ## 1) factor 'temp'
-L = [0 1 0 0 0 0 ;
+L = [0. 1 0 0 0 0 ;
      0 0 1 0 0 0]
 waldtest(b, L, varb)                  # Wald test
 waldtest(b, L, varb; defden = dfr)  # F test
 
 ## 2) factor 'catal'
-L = [0 0 0 1 0 0]
+L = [0. 0 0 1 0 0]
 waldtest(b, L, varb) 
 waldtest(b, L, varb; defden = dfr)
 
 ## 3) interaction 'temp * catal'
-L = [0 0 0 0 1 0 ;
+L = [0. 0 0 0 1 0 ;
      0 0 0 0 0 1]
 waldtest(b, L, varb) 
 waldtest(b, L, varb; defden = dfr)
 
 ## 4) Whole effect 'catal': 'catal + temp * catal'
-L = [0 0 0 1 0 0 ;
+L = [0. 0 0 1 0 0 ;
      0 0 0 0 1 0 ;
      0 0 0 0 0 1]
 waldtest(b, L, varb) 
@@ -88,7 +88,8 @@ waldtest(b, L, varb; defden = dfr)
 anova(lm(@formula(y1 ~ 1 + temp), datf; contrasts), fitm)
 ```
 """
-function waldtest(b, L, varb; h0 = nothing, defden = nothing, digits = 4)
+function waldtest(b::Vector{Q}, L::AbstractMatrix{Q}, varb::AbstractMatrix{Q}; 
+        h0 = nothing, defden = nothing, digits::Int = 4) where Q <: Float
     dfnum = nro(L)
     h = isnothing(h0) ? L * b : L * b - h0 
     varLb = L * varb * L' 

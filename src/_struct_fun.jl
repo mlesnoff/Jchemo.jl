@@ -333,7 +333,7 @@ struct Decompx{Q <: Float}
     df::NamedTuple
     f::StatsModels.FormulaTerm
     assign::Vector{Int}
-    dat::DataFrame
+    datf::DataFrame
     xmeans::Vector{Q} 
 end
 

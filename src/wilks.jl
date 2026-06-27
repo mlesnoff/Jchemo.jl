@@ -1,5 +1,5 @@
 """
-    wilks(A; digits = 5)
+    wilks(A::AbstractMatrix{Q}; digits = 5) where Q <: Float
 Compute statistics for multivariate tests.
 * `A` : Matrix involved in the test.
 Keyword arguments:
@@ -26,7 +26,7 @@ datf = dat.datf
 n = nro(datf)
 tab(datf; group = [:temp, :catal])  # balanced design
 ##
-Y = datf[:, [:y1, :y2]]
+Y = Matrix(datf[:, [:y1, :y2]])
 fact = datf.temp
 tab(fact)
 
@@ -36,7 +36,7 @@ W = matW(Y, fact, pweight(ones(n))).W
 manova(Y, @formula(0 ~ temp), datf)
 ```
 """
-function wilks(A;  digits = 5)
+function wilks(A::AbstractMatrix{Q}; digits = 5) where Q <: Float
     v = eigen(A; sortby = x -> -abs(x)).values
     wilks = cumprod(1 ./ (1 .+ v))[end]
     pillai = sum(v ./ (1 .+ v))

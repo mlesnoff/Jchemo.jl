@@ -13,6 +13,7 @@ Warning: Major changes in functions having arguments 'nlv' (laent variables) and
     - MLR functions: Functions other than **mlr** were removed.
     - Function **mbpca** renamed to **cpca**.
     - Function **aov1**: syntax changed.
+    - Function **aggstat**: arguments 'sel' and 'group' changed.
     - Fuction **rclustplsr** temporary removed.
     - Package UMAP updated to 0.3
     - Recoding functions have changed.

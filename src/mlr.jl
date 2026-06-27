@@ -71,7 +71,7 @@ function mlr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
         fweightr!(X, sqrtw)
         fweightr!(Y, sqrtw)
         B = X \ Y
-        int = zeros(q)'
+        int = reshape(zeros(Q, q), 1, q)
     else
         xmeans = colmean(X, weights) 
         ymeans = colmean(Y, weights)   

@@ -1,10 +1,10 @@
 """
-    decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
+    decompx(X::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame) where Q <: Float
 Decomposition of a matrix by orthogonal projection on experimental factors.
-* `X` :  X-data (n, p) to decompose.
+* `X` : A matrix (n, p) or vector (n) to decompose.
 * `f` : A formula that defines the factor(s) on which is(are) done the decomposition.
     See the syntax in the examples below.
-* `dat` (n, q) : Dataframe containing the factor(s) specified in `f`. 
+* `datf` (n, q) : Dataframe containing the factor(s) specified in `f`. 
 
 ## References
 Bertinetto, C., Engel, J., Jansen, J., 2020. ANOVA simultaneous component analysis: A tutorial review. 
@@ -23,9 +23,9 @@ for high-dimensional data: applications in life, food and chemical sciences. Wil
 
 ## Examples 
 ```julia
-## Example of decomposition reported in Bertinetto et al. act chim. acta 2020 (section 2).
+#### Example of decomposition reported in Bertinetto et al. act chim. acta 2020 (section 2.1).
 
-using Jchemo, JchemoData, JLD2
+using Jchemo, JchemoData, JLD2, StatsModels
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/reaction_bertinetto.jld2")
 @load db dat
@@ -34,9 +34,9 @@ datf = dat.datf
 n = nro(datf)
 tab(datf; group = [:temp, :catal])  # balanced design
 ##
-Y = datf[:, [:y1, :y2]]
-aggstat(datf; sel = [:y1, :y2], group = :temp)
-aggstat(datf; sel = [:y1, :y2], group = :catal)
+Y = Matrix(datf[:, [:y1, :y2]])
+aggstat(datf; sel = [:y1, :y2], group = [:temp])
+aggstat(datf; sel = [:y1, :y2], group = [:catal])
 res = aggstat(datf; sel = [:y1, :y2], group = [:temp, :catal])
 
 f = @formula(0 ~ temp + catal + temp & catal)
@@ -70,9 +70,7 @@ res.valref
 @head res.val
 ```
 """
-function decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
-    X = ensure_mat(X)
-    Q = eltype(X)
+function decompx(X::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame) where Q <: Float
     n = nro(X)
     xmeans = colmean(X)
     Xc = fcenter(X, xmeans)
@@ -88,9 +86,9 @@ function decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
         contrasts[i] = contr
     end 
     ## D, B
-    mf = ModelFrame(f, dat; contrasts)
+    mf = ModelFrame(f, datf; contrasts)
     fs = apply_schema(f, mf.schema)
-    resp, D = modelcols(fs, dat) ;   # no intercept
+    resp, D = modelcols(fs, datf) ;   # no intercept
     ## If argument 'perm' is added in the future
     ## if perm
     ##     D .= D[randperm(n), :]
@@ -125,18 +123,18 @@ function decompx(X, f::StatsModels.FormulaTerm, dat::DataFrame)
     df = (dffit = dffit, dfr, dftot = n)
     mat = (B = B, D, C, L, M)
     fit = (; zip(Symbol.(namfit), fit)...)
-    Decompx(fit, R, mat, ss, df, f, assign, dat, xmeans)
+    Decompx(fit, R, mat, ss, df, f, assign, datf, xmeans)
 end
 
 """
-    summary(object::Decompx; corrected = true, digits = 4)
+    summary(object::Decompx; corrected::Bool = true, digits::Int = 4)
 Summarize the fitted model.
 * `object` : Object of class `Decompx` to summarize.
 Keyword arguments:
 * `corrected` : Whether to correct for the intercept term.
 * `digits` : Nb. digits for the outputs.
 """ 
-function Base.summary(object::Decompx; corrected = true, digits = 4)
+function Base.summary(object::Decompx; corrected::Bool = true, digits::Int = 4)
     namfit = @names object.fit
     ssfit = object.ss.ssfit
     ssr = object.ss.ssr
@@ -158,10 +156,10 @@ function Base.summary(object::Decompx; corrected = true, digits = 4)
 end
 
 """
-    permut(object::Decompx; rep = 1000, digits = 4)
+    permut(object::Decompx; rep::Int = 1000, digits::Int = 4)
 Permutation test of effects after decomposition of a matrix by experimental factors.
 * `object` : Object of type `Decompx` (output of function `decompx`).
-* `dat` : Dataframe containing the factor(s) specified in `object.f`.
+* `datf` : Dataframe containing the factor(s) specified in `object.f`.
 Keyword arguments:
 * `rep` : Number of unrestricted permutations (of X rows) for testing the significance of the effects.
 * `digits` : Nb. digits for the outputs.
@@ -177,7 +175,7 @@ Manly, B.F., 2007. Randomization, bootstrap and Monte Carlo methods in biology, 
 Smilde, A.K., Marini, F., Westerhuis, J.A., Liland, K.H. (Eds.), 2025. Analysis of variance 
 for high-dimensional data: applications in life, food and chemical sciences. Wiley, Hoboken, NJ.
 """ 
-function permut(object::Decompx; rep = 1000, digits = 4)
+function permut(object::Decompx; rep::Int = 1000, digits::Int = 4)
     X = reduce(+, object.fit) + object.R
     n = nro(X)
     valref = object.ss.ssfit[2:end] / object.ss.ssr
@@ -186,7 +184,7 @@ function permut(object::Decompx; rep = 1000, digits = 4)
     s = list(Int, n)
     for i in axes(val, 1)
         s .= randperm(n)
-        res = decompx(vrow(X, s), object.f, object.dat)
+        res = decompx(vrow(X, s), object.f, object.datf)
         val[i, :] .= res.ss.ssfit[2:end] / res.ss.ssr
     end
     pv = [Jchemo.pval(val[:, i], valref[i]) for i in axes(val, 2)]

@@ -38,6 +38,7 @@ datf.y2 = rand(["a", "b", "c"], n)
 datf
 
 aggstat(datf; sel = [:v1, :v2] , group = [:y1, :y2], algo = var)  # return a dataframe 
+aggstat(datf; sel = [:v1, :v2] , group = [:y2], algo = var)
 ```
 """ 
 function aggstat(X::AbstMatVec{Q}, y::Vector{String}; algo::Function = meanv) where Q <: Float
