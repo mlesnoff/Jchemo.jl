@@ -195,7 +195,7 @@ end
 
 """ 
     transf(object::Rosaplsr, Xbl)
-    transf(object::Rosaplsr, Xbl, nlv::Signed)
+    transf(object::Rosaplsr, Xbl, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) 
@@ -207,7 +207,7 @@ function transf(object::Rosaplsr, Xbl)
     fconcat(vXbl) * object.R
 end
 
-function transf(object::Rosaplsr, Xbl, nlv::Signed)
+function transf(object::Rosaplsr, Xbl, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     vXbl = transf(object.fitm_bl, Xbl)
     fconcat(vXbl) * vcol(object.R, 1:nlv)
@@ -215,14 +215,14 @@ end
 
 """
     coef(object::Rosaplsr)
-    coef(object::Rosaplsr, nlv::Signed)
+    coef(object::Rosaplsr, nlv::Int)
 Compute the X b-coefficients of a model fitted with `nlv` LVs.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
 """ 
 coef(object::Rosaplsr) = coef(object, object.par.nlv)
 
-function coef(object::Rosaplsr, nlv::Signed)
+function coef(object::Rosaplsr, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     xmeans = reduce(vcat, object.fitm_bl.xmeans)
     xscales = reduce(vcat, object.fitm_bl.xscales)

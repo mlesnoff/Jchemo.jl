@@ -92,15 +92,15 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 protoplsr(; kwargs...) = JchemoModel(protoplsr, nothing, kwargs)
 
 Base.@kwdef mutable struct ParProtoplsr 
-    nlvdis::Signed = 0                         
+    nlvdis::Int = 0                         
     metric::Symbol = :eucl  
-    nproto::Signed = 1
-    k::Signed = 1 
+    nproto::Int = 1
+    k::Int = 1 
     centroid::Bool = false
     typsamp::Symbol = :rand
-    nlv::Signed = 1  
-    K::Signed = 5    
-    kavg::Signed = 1                              
+    nlv::Int = 1  
+    K::Int = 5    
+    kavg::Int = 1                              
     h::Float64 = Inf                        
     criw::Float64 = 4                       
     squared::Bool = false                   

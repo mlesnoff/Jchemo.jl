@@ -92,7 +92,7 @@ end
 
 """ 
     transf(object::Union{Pcr, Spcr}, X)
-    transf(object::Union{Pcr, Spcr}, X, nlv::Signed)
+    transf(object::Union{Pcr, Spcr}, X, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model and a matrix X.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
@@ -100,11 +100,11 @@ Compute latent variables (LVs; = scores) from a fitted model and a matrix X.
 """ 
 transf(object::Union{Pcr, Spcr}, X) = transf(object.fitm, X)
 
-transf(object::Union{Pcr, Spcr}, X, nlv::Signed) = transf(object.fitm, X, nlv)
+transf(object::Union{Pcr, Spcr}, X, nlv::Int) = transf(object.fitm, X, nlv)
 
 """
     coef(object::Pcr)
-    coef(object::Pcr, nlv::Signed)
+    coef(object::Pcr, nlv::Int)
 Compute the b-coefficients of a LV model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
@@ -123,7 +123,7 @@ function coef(object::Pcr)
     (B = B, int, nlv = object.par.nlv)
 end
 
-function coef(object::Pcr, nlv::Signed)
+function coef(object::Pcr, nlv::Int)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     theta = vcol(object.C, 1:nlv)'

@@ -159,7 +159,7 @@ end
 
 """
     coef(object::Cglsr)
-    coef(object::Cglsr, nlv::Signed)
+    coef(object::Cglsr, nlv::Int)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `nlv` : Nb. iterations to consider. 
@@ -171,7 +171,7 @@ function coef(object::Cglsr)
     (B = B, int, nlv = object.par.nlv)
 end
 
-function coef(object::Cglsr, nlv::Signed)
+function coef(object::Cglsr, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     W = Diagonal(object.yscales)    
     B = fweightr(vcol(object.B, nlv), 1 ./ object.xscales) *  W

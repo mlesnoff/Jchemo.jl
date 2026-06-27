@@ -88,12 +88,12 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 ```
 """ 
 Base.@kwdef mutable struct ParProtoclustplsr 
-    nlvdis::Signed = 0    # To do                         
+    nlvdis::Int = 0    # To do                         
     metric::Symbol = :eucl  
-    nproto::Signed = 1
-    nlv::Signed = 1
-    K::Signed = 5   
-    kavg::Signed = 1                              
+    nproto::Int = 1
+    nlv::Int = 1
+    K::Int = 5   
+    kavg::Int = 1                              
     h::Float64 = Inf                        
     criw::Float64 = 4.                       
     squared::Bool = false                   

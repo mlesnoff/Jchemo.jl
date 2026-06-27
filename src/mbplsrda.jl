@@ -126,7 +126,7 @@ end
 
 """ 
     transf(object::Mbplsrda, Xbl)
-    transf(object::Mbplsrda, Xbl, nlv::Signed)
+    transf(object::Mbplsrda, Xbl, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
@@ -134,7 +134,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 """ 
 transf(object::Union{Mbplsrda, Mbplsprobda}, Xbl) = transf(object.fitm_emb, Xbl)
 
-transf(object::Union{Mbplsrda, Mbplsprobda}, Xbl, nlv::Signed) = transf(object.fitm_emb, Xbl, nlv)
+transf(object::Union{Mbplsrda, Mbplsprobda}, Xbl, nlv::Int) = transf(object.fitm_emb, Xbl, nlv)
 
 """
     predict(object::Mbplsrda, Xbl)

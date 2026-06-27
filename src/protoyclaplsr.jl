@@ -11,8 +11,8 @@ struct Protoyclaplsr
     par::NamedTuple
 end
 
-function protoyclaplsr(X, Y, ycla; nlvdis = 0, metric::Symbol = :eucl, nlv::Signed, K::Signed = 5, 
-        kavg::Signed = 1, h::Float64 = 1., criw::Float64 = 4., squared::Bool = false, 
+function protoyclaplsr(X, Y, ycla; nlvdis = 0, metric::Symbol = :eucl, nlv::Int, K::Int = 5, 
+        kavg::Int = 1, h::Float64 = 1., criw::Float64 = 4., squared::Bool = false, 
         tolw::Float64 = 1e-4, scal::Symbol = :none)
     par = (nlvdis = nlvdis, metric, nlv, K, kavg, h, criw, squared, tolw, scal)
     X = ensure_mat(X)

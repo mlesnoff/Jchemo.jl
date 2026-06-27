@@ -100,7 +100,7 @@ end
 
 """ 
     transf(object::Union{Pca, Pcanipals, Fda}, X)
-    transf(object::Union{Pca, Pcanipals, Fda}, X, nlv::Signed)
+    transf(object::Union{Pca, Pcanipals, Fda}, X, nlv::Int)
 Compute principal components (PCs = scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
@@ -108,7 +108,7 @@ Compute principal components (PCs = scores T) from a fitted model and X-data.
 """ 
 transf(object::Union{Pca, Pcanipals, Fda}, X) = fcscale(X, object.xmeans, object.xscales) * object.V
 
-function transf(object::Union{Pca, Pcanipals, Fda}, X, nlv::Signed)
+function transf(object::Union{Pca, Pcanipals, Fda}, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     fcscale(X, object.xmeans, object.xscales) * vcol(object.V, 1:nlv)
 end

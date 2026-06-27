@@ -1,6 +1,6 @@
 """
     manova(Y::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame; 
-        test::Symbol = :pillai, lb::Q = 0., digits::Signed = 4) where Q <: Float
+        test::Symbol = :pillai, lb::Q = 0., digits::Int = 4) where Q <: Float
 MANOVA.
 * `Y` : A matrix (n, p) or vector (n) representing the response variable(s).
 * `f` : A formula that defines the tested factor(s). See the syntax in the examples below.
@@ -49,11 +49,11 @@ manova(Y, f, datf; test = :wilks)
 ```
 """
 function manova2(Y, f, datf; 
-        test::Symbol = :pillai, lb::Q = 0, digits::Signed = 4) where Q <: Float
+        test::Symbol = :pillai, lb::Q = 0, digits::Int = 4) where Q <: Float
 end
 
 function manova(Y::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame; 
-        test::Symbol = :pillai, lb::Q = 0., digits::Signed = 4) where Q <: Float
+        test::Symbol = :pillai, lb::Q = 0., digits::Int = 4) where Q <: Float
     @assert in([:wilks; :pillai; :hotelling; :roy])(test) "Wrong value for argument 'test'." 
     res = decompx(Y, f, datf)
     B = res.mat.B

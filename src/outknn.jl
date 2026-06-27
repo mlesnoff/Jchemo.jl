@@ -1,6 +1,6 @@
 """
-    outknn(X; metric::Symbol = :eucl, k::Signed, algo::Function = sum, scal::Symbol = :none)
-    outknn!(X::Matrix{Q}; metric::Symbol = :eucl, k::Signed, algo::Function = sum, scal::Symbol = :none) where Q <: Float
+    outknn(X; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none)
+    outknn!(X::Matrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where Q <: Float
 Compute a kNN distance-based outlierness.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -62,11 +62,11 @@ res = outknn(T; metric, k, scal = :std)
 plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness").f
 ```
 """ 
-function outknn(X; metric::Symbol = :eucl, k::Signed, algo::Function = sum, scal::Symbol = :none)
+function outknn(X; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none)
     outknn!(copy(ensure_mat(X)); k, metric, algo, scal)
 end
 
-function outknn!(X::Matrix{Q}; metric::Symbol = :eucl, k::Signed, algo::Function = sum, scal::Symbol = :none) where Q <: Float
+function outknn!(X::Matrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where Q <: Float
     n, p = size(X)
     xscales = ones(Q, p)
     if scal != :none

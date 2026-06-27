@@ -165,31 +165,31 @@ function plskern!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
         C[:, a] .= c
         TT[a] = tt
     end
-    Plsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
+    Plsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, par)
 end
 
 """ 
-    transf(object::Union{Plsr, Splsr}, X)
-    transf(object::Union{Plsr, Splsr}, X, nlv::Signed)
+    transf(object::Union{Plsr, Plswold, Splsr}, X)
+    transf(object::Union{Plsr, Plswold, Splsr}, X, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Union{Plsr, Splsr}, X)
+function transf(object::Union{Plsr, Plswold, Splsr}, X)
     ## Could be fcscale! but would change X. If too heavy ==> Makes summary!
     fcscale(X, object.xmeans, object.xscales) * object.R
 end
 
-function transf(object::Union{Plsr, Splsr}, X, nlv::Signed)
+function transf(object::Union{Plsr, Plswold, Splsr}, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     ## Could be fcscale! but would change X. If too heavy ==> Makes summary!
     fcscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
 end
 
 """
-    coef(object::Union{Plsr, Splsr})
-    coef(object::Union{Plsr, Splsr}, nlv::Signed)
+    coef(object::Union{Plsr, Plswold, Splsr})
+    coef(object::Union{Plsr, Plswold, Splsr}, nlv::Int)
 Compute the b-coefficients of a LV model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
@@ -197,7 +197,7 @@ Compute the b-coefficients of a LV model.
 For a model fitted from X (n, p) and Y (n, q), the returned object `B` is a matrix (p, q). 
 If `nlv` = 0, `B` is a matrix of zeros. The returned object `int` is the intercept.
 """ 
-function coef(object::Union{Plsr, Splsr})
+function coef(object::Union{Plsr, Plswold, Splsr})
     theta = object.C'  # regression coefs of Y on T
     Dy = Diagonal(object.yscales)
     ## To not use for Spcr (R not computed; while for Pcr, R = V)
@@ -207,7 +207,7 @@ function coef(object::Union{Plsr, Splsr})
     (B = B, int, nlv = object.par.nlv)
 end
 
-function coef(object::Union{Plsr, Splsr}, nlv::Signed)
+function coef(object::Union{Plsr, Plswold, Splsr}, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     theta = vcol(object.C, 1:nlv)'  
     Dy = Diagonal(object.yscales)
@@ -250,12 +250,12 @@ function predict(object::Union{Plsr, Splsr, Pcr}, X, nlv::Union{Int, AbstractVec
 end
 
 """
-    summary(object::Union{Plsr, Splsr}, X)
+    summary(object::Union{Plsr, Plswold, Splsr}, X)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
-function Base.summary(object::Union{Plsr, Splsr}, X)
+function Base.summary(object::Union{Plsr, Plswold, Splsr}, X)
     X = ensure_mat(X)
     n, nlv = size(object.T)
     X = fcscale(X, object.xmeans, object.xscales)

@@ -165,7 +165,7 @@ end
 
 """ 
     transf(object::Kplsr, X)
-    transf(object::Kplsr, X, nlv::Signed)
+    transf(object::Kplsr, X, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which LVs are computed.
@@ -173,7 +173,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 """ 
 transf(object::Kplsr, X) = transf(object, X, object.par.nlv)
 
-function transf(object::Kplsr, X, nlv::Signed)
+function transf(object::Kplsr, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
@@ -185,7 +185,7 @@ end
 
 """
     coef(object::Kplsr)
-    coef(object::Kplsr, nlv::Signed)
+    coef(object::Kplsr, nlv::Int)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider. 
@@ -193,7 +193,7 @@ Compute the b-coefficients of a fitted model.
 """ 
 coef(object::Kplsr) = coef(object::Kplsr, object.par.nlv)
 
-function coef(object::Kplsr, nlv::Signed)
+function coef(object::Kplsr, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     beta = vcol(object.C, 1:nlv)'
     q = length(object.ymeans)

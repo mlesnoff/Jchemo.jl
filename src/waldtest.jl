@@ -88,7 +88,7 @@ anova(lm(@formula(y1 ~ 1 + temp), datf; contrasts), fitm)
 ```
 """
 function waldtest(L::AbstractMatrix{Q}, b::Vector{Q}, varb::AbstractMatrix{Q}; 
-        h0 = zeros(Q, nro(L)), dfden::Union{Nothing, Real} = nothing, digits::Signed = 4) where Q <: Float
+        h0 = zeros(Q, nro(L)), dfden::Union{Nothing, Real} = nothing, digits::Int = 4) where Q <: Float
     dfnum = nro(L)
     h = L * b - h0 
     varLb = L * varb * L' 

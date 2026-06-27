@@ -112,7 +112,7 @@ end
 
 """ 
     transf(object::Union{Plsrda, Plsprobda}, X)
-    transf(object::Union{Plsrda, Plsprobda}, X, nlv::Signed)
+    transf(object::Union{Plsrda, Plsprobda}, X, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data (m, p) for which LVs are computed.
@@ -120,7 +120,7 @@ Compute latent variables (LVs; = scores) from a fitted model.
 """ 
 transf(object::Union{Plsrda, Plsprobda}, X) = transf(object.fitm_emb, X)
 
-transf(object::Union{Plsrda, Plsprobda}, X, nlv::Signed) = transf(object.fitm_emb, X, nlv)
+transf(object::Union{Plsrda, Plsprobda}, X, nlv::Int) = transf(object.fitm_emb, X, nlv)
 
 """
     predict(object::Plsrda, X)

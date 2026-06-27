@@ -98,7 +98,7 @@ end
 
 """ 
     transf(object::Kpca, X)
-    transf(object::Kpca, X, nlv::Signed)
+    transf(object::Kpca, X, nlv::Int)
 Compute PCs (scores T) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
@@ -106,7 +106,7 @@ Compute PCs (scores T) from a fitted model.
 """ 
 transf(object::Kpca, X) = transf(object, X, object.par.nlv)
 
-function transf(object::Kpca, X, nlv::Signed)
+function transf(object::Kpca, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)

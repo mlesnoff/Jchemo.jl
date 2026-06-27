@@ -91,7 +91,7 @@ function plssimp!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     end
     ## B = R * inv(T' * D * T) * T' * D * Y
     ## W does not exist in SIMPLS ==> below it is filled by R (for 'vip')
-    Plsr(T, V, R, R, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
+    Plsr(T, V, R, R, C, TT, xmeans, xscales, ymeans, yscales, weights, par)
 end
 
 

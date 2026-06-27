@@ -1,7 +1,7 @@
 struct Baggr
     fitm
     res_samp::NamedTuple
-    q::Signed
+    q::Int
 end
 
 """

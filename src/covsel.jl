@@ -136,7 +136,7 @@ function covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
 end
 
 """ 
-    transf(object::Covsel, X, nlv::Signed)
+    transf(object::Covsel, X, nlv::Int)
 Compute selected variables from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which the selected variables are computed.
@@ -144,7 +144,7 @@ Compute selected variables from a fitted model and X-data.
 """ 
 transf(object::Covsel, X) = X[:, object.sel]
 
-function transf(object::Covsel, X, nlv::Signed)
+function transf(object::Covsel, X, nlv::Int)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     X[:, object.sel[1:nlv]]

@@ -510,7 +510,7 @@ function transf!(object::Emsc, X::Matrix{Q}) where Q <: Float
 end
 
 """ 
-    savgk(nhwindow::Signed, degree::Signed, deriv::Signed)
+    savgk(nhwindow::Int, degree::Int, deriv::Int)
 Compute the kernel of the Savitzky-Golay filter.
 * `nhwindow` : Nb. points (>= 1) of the half window.
 * `degree` : Degree of the smoothing polynom, where 1 <= `degree` <= 2 * nhwindow.
@@ -537,7 +537,7 @@ res.G
 res.kern
 ```
 """ 
-function savgk(nhwindow::Signed, degree::Signed, deriv::Signed)
+function savgk(nhwindow::Int, degree::Int, deriv::Int)
     @assert nhwindow >= 1 "Argument 'nhwindow' must be >= 1."
     @assert 1 <= degree <= 2 * nhwindow "Argument 'degree' must agree with: 1 <= 'degree' <= 2 * 'nhwindow'."
     @assert 0 <= deriv <= degree "Argument 'deriv' must agree with: 0 <= 'deriv' <= 'degree'."

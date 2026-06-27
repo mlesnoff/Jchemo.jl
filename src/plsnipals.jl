@@ -97,6 +97,6 @@ function plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
         TT[a] = tt
     end
     R = W * inv(V' * W)
-    Plsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
+    Plsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, par)
 end
 
