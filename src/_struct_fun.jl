@@ -319,12 +319,6 @@ struct Mlr{Q <: Float}
     par::ParMlr
 end
 
-struct Mlrnoarg{Q <: Float}
-    B::Matrix{Q}   
-    int::Matrix{Q}
-    weights::ProbabilityWeights{Q}
-end
-
 struct Decompx{Q <: Float}
     fit::NamedTuple
     R::Matrix{Q}
@@ -335,32 +329,6 @@ struct Decompx{Q <: Float}
     assign::Vector{Int}
     datf::DataFrame
     xmeans::Vector{Q} 
-end
-
-struct Rr{Q <: Float}
-    V::Matrix{Q}
-    TtY::Matrix{Q}
-    sv::Vector{Q}
-    xmeans::Vector{Q}
-    xscales::Vector{Q}
-    ymeans::Vector{Q}
-    weights::ProbabilityWeights{Q}
-    par::ParRr
-end
-
-struct Rrchol{Q <: Float}
-    B::Matrix{Q}   
-    int::Matrix{Q}
-    weights::ProbabilityWeights{Q}
-    par::ParRr
-end
-
-struct Pcr{Q <: Float}
-    fitm::Pca
-    C::Matrix{Q}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    par::ParPca
 end
 
 struct Plsr{Q <: Float}
@@ -375,8 +343,23 @@ struct Plsr{Q <: Float}
     ymeans::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
-    niter::Union{Nothing, Vector{Int}}   # for plswold
-    par::Union{ParPlsr, ParPlswold, ParRrr}
+    par::ParPlsr
+end
+
+struct Plswold{Q <: Float}
+    T::Matrix{Q}
+    V::Matrix{Q}
+    R::Matrix{Q}
+    W::Matrix{Q}
+    C::Matrix{Q}
+    TT::Vector{Q}
+    xmeans::Vector{Q}
+    xscales::Vector{Q}
+    ymeans::Vector{Q}
+    yscales::Vector{Q}
+    weights::ProbabilityWeights{Q}
+    niter::Union{Nothing, Vector{Int}}   
+    par::Union{ParPlswold, ParRrr}
 end
 
 struct Plsravgunif
@@ -424,6 +407,32 @@ struct Splsr{Q <: Float}
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
     par::ParSplsr
+end
+
+struct Rr{Q <: Float}
+    V::Matrix{Q}
+    TtY::Matrix{Q}
+    sv::Vector{Q}
+    xmeans::Vector{Q}
+    xscales::Vector{Q}
+    ymeans::Vector{Q}
+    weights::ProbabilityWeights{Q}
+    par::ParRr
+end
+
+struct Rrchol{Q <: Float}
+    B::Matrix{Q}   
+    int::Matrix{Q}
+    weights::ProbabilityWeights{Q}
+    par::ParRr
+end
+
+struct Pcr{Q <: Float}
+    fitm::Pca
+    C::Matrix{Q}
+    ymeans::Vector{Q}
+    yscales::Vector{Q}
+    par::ParPca
 end
 
 struct Krr{Q <: Float}

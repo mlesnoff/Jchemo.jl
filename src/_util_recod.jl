@@ -248,7 +248,7 @@ end
 """
     recod_indbylev(x::Vector{Q}, lev::Vector{String}) where Q <: Signed
 Recode an index variable by levels.
-* `x` : Index variable (n) to recode. Must be a `Vector{Signed}`.
+* `x` : Index variable (n) to recode. Must be a `Vector{<: Signed}`.
 * `lev` : Vector containing categorical levels. Must be a `Vector{String}`.
 
 Assuming levsorted = 'sort(unique(lev))', each element `x[i]` (i = 1, ..., n) is replaced by `levsorted[x[i]]`, 
