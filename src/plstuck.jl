@@ -158,7 +158,6 @@ Summarize the fitted model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
 function Base.summary(object::Plstuck, X, Y)
-    Q = eltype(X[1, 1])
     n, nlv = size(object.Tx)
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
@@ -178,10 +177,10 @@ function Base.summary(object::Plstuck, X, Y)
     explvary = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Correlation between X- and Y-block LVs
     z = diag(corm(object.Tx, object.Ty, object.weights))
-    cortx2ty = DataFrame(lv = 1:nlv, cor = z)
+    cortx2ty = DataFrame(lv = collect(1:nlv), cor = z)
     ## RV(X, tx) and RV(Y, ty)
     nam = string.("lv", 1:nlv)
-    z = zeros(Q, 1, nlv)
+    z = similar(X, 1, nlv)
     for a = 1:nlv
         z[1, a] = rv(X, vcol(object.Tx, a), object.weights) 
     end

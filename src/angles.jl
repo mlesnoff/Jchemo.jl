@@ -104,6 +104,8 @@ end
 
 function rv(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, 
         weights::ProbabilityWeights{Q}; centr::Bool = true) where Q <: Float
+    X = copy(ensure_mat(X))
+    Y = copy(ensure_mat(Y))
     n, p = size(X)
     if centr
         fcenter!(X, colmean(X, weights))

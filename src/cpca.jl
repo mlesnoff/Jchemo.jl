@@ -296,7 +296,7 @@ function Base.summary(object::Cpca, Xbl)
     tt = colsum(object.lb)    
     pvar = tt / sum(ssk)
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(lv = collect(1:nlv), var = tt, pvar = pvar, cumpvar = cumpvar)
     ## Within each block k, proportion of the Xk-inertia explained by the global LVs
     ## = object.lb if bscal = :frob 
     nam = string.("lv", 1:nlv)

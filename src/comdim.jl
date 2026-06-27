@@ -265,7 +265,7 @@ function Base.summary(object::Comdim, Xbl)
     #tt = colnorm(object.T, object.weights).^2 
     pvar = tt / sum(ssk)
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(lv = collect(1:nlv), var = tt, pvar = pvar, cumpvar = cumpvar)
     ## Explained XXt inertia by each global LV (indicator 'V')
     sqrtw = sqrt.(object.weights.values)
     sstot_xx = 0 
@@ -276,7 +276,7 @@ function Base.summary(object::Comdim, Xbl)
     tt = object.mu
     pvar = tt / sstot_xx
     cumpvar = cumsum(pvar)
-    explvarxx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
+    explvarxx = DataFrame(lv = collect(1:nlv), var = tt, pvar = pvar, cumpvar = cumpvar)
     ## Within each block k, proportion of the Xk-inertia explained by the global LVs
     ## = object.lb if bscal = :frob  
     nam = string.("lv", 1:nlv)
