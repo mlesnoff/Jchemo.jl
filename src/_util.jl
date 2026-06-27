@@ -126,7 +126,7 @@ function aggsumv(x::AbstractVector{Q}, y::Vector{String}) where Q <: Real  # 'Re
 end
 
 """
-    dupl(X; digits::Int = 3)
+    dupl(X; digits::Signed = 3)
 Find duplicated rows in a dataset.
 * `X` : A dataset.
 * `digits` : Nb. digits used to round `X` before checking.
@@ -146,7 +146,7 @@ dupl(M)
 dupl(Z)
 ```
 """
-function dupl(X; digits::Int = 3)
+function dupl(X; digits::Signed = 3)
     X = round.(ensure_mat(X); digits)
     n = nro(X)
     rownum1 = []
@@ -307,7 +307,7 @@ macro head(X)
 end
 
 """
-    list(n::Integer)
+    list(n::Signed)
 Create a Vector{Any}(nothing, n).
 
 `isnothing(object, i)` can be used to check if cell i is empty.
@@ -319,10 +319,10 @@ using Jchemo
 list(5)
 ```
 """  
-list(n::Integer) = Vector{Any}(nothing, n) 
+list(n::Signed) = Vector{Any}(nothing, n) 
 
 """
-    list(Q::Union{DataType, UnionAll}, n::Integer)
+    list(Q::Union{DataType, UnionAll}, n::Signed)
 Create a Vector{Q}(undef, n).
 
 `isassigned(object, i)` can be used to check if cell i is empty.
@@ -336,7 +336,7 @@ list(Array{Float64}, 5)
 list(Matrix{Int}, 5)
 ```
 """  
-list(Q::Union{DataType, UnionAll}, n::Integer) = Vector{Q}(undef, n)
+list(Q::Union{DataType, UnionAll}, n::Signed) = Vector{Q}(undef, n)
 
 """ 
     mlev(X::AbstractArray{String})
@@ -583,8 +583,8 @@ function sourcedir(path::String)
 end
 
 """
-    summ(X; digits::Int = 3)
-    summ(X, y::Vector{String}; digits::Int = 3)
+    summ(X; digits::Signed = 3)
+    summ(X, y::Vector{String}; digits::Signed = 3)
 Summarize a variable or a dataset.
 * `X` : A variable (n) or dataset (n, p).
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
@@ -608,7 +608,7 @@ y = string.(rand(1:3, n))
 summ(X, y)
 ```
 """
-function summ(X; digits::Int = 3)
+function summ(X; digits::Signed = 3)
     X = ensure_df(X)
     res = StatsBase.describe(X, :mean, :std, :min, :max, :nmissing) 
     insertcols!(res, 6, :n => nro(X) .- res.nmissing)
@@ -620,7 +620,7 @@ function summ(X; digits::Int = 3)
     (res = res, ntot = nro(X))
 end
 
-function summ(X, y::Vector{String}; digits::Int = 3)
+function summ(X, y::Vector{String}; digits::Signed = 3)
     lev = mlev(y)
     for i in eachindex(lev)
         s = y .== lev[i]

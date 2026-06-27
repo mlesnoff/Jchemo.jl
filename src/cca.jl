@@ -165,7 +165,7 @@ end
 
 """ 
     transfbl(object::Cca, X, Y)
-    transfbl(object::Cca, X, Y, nlv::Int)
+    transfbl(object::Cca, X, Y, nlv::Signed)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which components (LVs) are computed.
@@ -180,7 +180,7 @@ function transfbl(object::Cca, X, Y)
     (Tx = Tx, Ty)
 end
 
-function transfbl(object::Cca, X, Y, nlv::Int)
+function transfbl(object::Cca, X, Y, nlv::Signed)
     nlv = min(nlv, object.par.nlv)
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]

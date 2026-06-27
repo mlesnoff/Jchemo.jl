@@ -1,37 +1,37 @@
 ############---- Preprocessing
 
 Base.@kwdef mutable struct ParDetrendpol
-    degree::Int = 1  
+    degree::Signed = 1  
 end 
 
 Base.@kwdef mutable struct ParDetrendlo{Q <: Float}      
     span::Q = 0.75
-    degree::Int = 2               
+    degree::Signed = 2               
 end 
 
 Base.@kwdef mutable struct ParDetrendasls{Q <: Float}
     lb::Q = 10
     p::Q = 1e-3 
     tol::Q = 1e-6    # Baeck et al 2015 p.253 
-    maxit::Int = 50 
+    maxit::Signed = 50 
     verbose::Bool = false      
 end 
 
 Base.@kwdef mutable struct ParDetrendairpls{Q <: Float}
     lb::Q = 10
-    maxit::Int = 20 
+    maxit::Signed = 20 
     verbose::Bool = false      
 end 
 
 Base.@kwdef mutable struct ParDetrendarpls{Q <: Float}
     lb::Q = 10
     tol::Q = 1e-6    # Baeck et al 2015 p.253  
-    maxit::Int = 50 
+    maxit::Signed = 50 
     verbose::Bool = false      
 end 
 
 Base.@kwdef mutable struct ParFdif
-    npoint::Int = 3  
+    npoint::Signed = 3  
 end 
 
 Base.@kwdef mutable struct ParInterpl{Q <: Float}
@@ -40,17 +40,17 @@ Base.@kwdef mutable struct ParInterpl{Q <: Float}
 end 
 
 Base.@kwdef mutable struct ParMavg
-    npoint::Int = 5  
+    npoint::Signed = 5  
 end 
 
 Base.@kwdef mutable struct ParEmsc
-    degree::Int = 1 
+    degree::Signed = 1 
 end 
 
 Base.@kwdef mutable struct ParSavgol
-    npoint::Int = 11  
-    deriv::Int = 1     
-    degree::Int = 2  
+    npoint::Signed = 11  
+    deriv::Signed = 1     
+    degree::Signed = 2  
 end 
 
 Base.@kwdef mutable struct ParSnv
@@ -60,7 +60,7 @@ end
 
 Base.@kwdef mutable struct ParRmgap
     indexcol::Union{Int, Vector{Int}} = 10 
-    npoint::Int = 5  
+    npoint::Signed = 5  
 end 
 
 Base.@kwdef mutable struct ParScale
@@ -70,58 +70,58 @@ end
 ############---- Dimension reduction
 
 Base.@kwdef mutable struct ParPca
-    nlv::Int = 1   
+    nlv::Signed = 1   
     scal::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParPcanipals{Q <: Float}
-    nlv::Int = 1     
+    nlv::Signed = 1     
     gs::Bool = true   
     tol::Q = 1e-8   
-    maxit::Int = 200     
+    maxit::Signed = 200     
     scal::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParPcapp
-    nlv::Int = 1
-    nsim::Int = 2000  
+    nlv::Signed = 1
+    nsim::Signed = 2000  
     scal::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParPcaout{Q <: Float}
-    nlv::Int = 1
+    nlv::Signed = 1
     prm::Q = .3  
     scal::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParSpca{Q <: Float}
-    nlv::Int = 1 
+    nlv::Signed = 1 
     meth::Symbol = :soft 
     algo::Symbol = :shen  # masked in the API
     defl::Symbol = :v
     nvar::Union{Int, Vector{Int}} = 1  
     tol::Q = 1e-8 
-    maxit::Int = 200   
+    maxit::Signed = 200   
     scal::Symbol = :none                   
 end 
 
 Base.@kwdef mutable struct ParKern{Q <: Float}  
     gamma::Q = 1.  
     coef0::Q = 0.
-    degree::Int = 1                        
+    degree::Signed = 1                        
 end 
 
 Base.@kwdef mutable struct ParKpca{Q <: Float}
-    nlv::Int = 1 
+    nlv::Signed = 1 
     kern::Symbol = :krbf     
     gamma::Q = 1.  
     coef0::Q = 0.
-    degree::Int = 1        
+    degree::Signed = 1        
     scal::Symbol = :none                   
 end 
 
 Base.@kwdef mutable struct ParRp{Q <: Float}
-    nlv::Int = 1    
+    nlv::Signed = 1    
     meth::Symbol = :gauss  
     s::Q = 1. 
     scal::Symbol = :none 
@@ -129,22 +129,22 @@ end
 
 Base.@kwdef mutable struct ParUmap{Q <: Float}
     psamp::Q = 1.     
-    nlv::Int = 1
+    nlv::Signed = 1
     metric = Distances.Euclidean()
-    n_neighbors::Int = 15 
+    n_neighbors::Signed = 15 
     min_dist::Q = .1                 
     scal::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParFda{Q <: Float}
-    nlv::Int = 1     
+    nlv::Signed = 1     
     lb::Q = 1e-6 
     prior::Union{Symbol, Vector{Q}} = :prop                  
     scal::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParCovsel
-    nlv::Int = 1    
+    nlv::Signed = 1    
     scal::Symbol = :none
 end 
 
@@ -157,39 +157,39 @@ Base.@kwdef mutable struct ParBlock
 end 
 
 Base.@kwdef mutable struct ParCpca{Q <: Float}
-    nlv::Int = 1     
+    nlv::Signed = 1     
     bscal::Symbol = :none   
     tol::Q = 1e-8   
-    maxit::Int = 200    
+    maxit::Signed = 200    
     scal::Symbol = :none  
 end 
 
 Base.@kwdef mutable struct ParCca{Q <: Float}
-    nlv::Int = 1     
+    nlv::Signed = 1     
     bscal::Symbol = :none   
     tau::Q = 1e-8
     tol::Q = 1e-8   
-    maxit::Int = 200    
+    maxit::Signed = 200    
     scal::Symbol = :none  
 end 
 
 Base.@kwdef mutable struct ParCcawold{Q <: Float}
-    nlv::Int = 1     
+    nlv::Signed = 1     
     bscal::Symbol = :none   
     tau::Q = 1e-8
     tol::Q = 1e-8   
-    maxit::Int = 200    
+    maxit::Signed = 200    
     scal::Symbol = :none  
 end 
 
 Base.@kwdef mutable struct ParPls2bl    # plscan, plstuck
-    nlv::Int = 1     
+    nlv::Signed = 1     
     bscal::Symbol = :none   
     scal::Symbol = :none  
 end 
 
 Base.@kwdef mutable struct ParRasvd{Q <: Float}
-    nlv::Int = 1     
+    nlv::Signed = 1     
     bscal::Symbol = :none   
     tau::Q = 1e-8
     scal::Symbol = :none  
@@ -203,25 +203,25 @@ end
 
 Base.@kwdef mutable struct ParNipals{Q <: Float}
     tol::Q = 1e-8 
-    maxit::Int = 200                    
+    maxit::Signed = 200                    
 end 
 
 Base.@kwdef mutable struct ParSnipals{Q <: Float}
     meth::Symbol = :soft
     nvar::Union{Int, Vector{Int}} = 1    
     tol::Q = 1e-8 
-    maxit::Int = 200                    
+    maxit::Signed = 200                    
 end 
 
 Base.@kwdef mutable struct ParPlsr    # except plswold
-    nlv::Int = 1                    
+    nlv::Signed = 1                    
     scal::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParPlswold{Q <: Float}    
-    nlv::Int = 1     
+    nlv::Signed = 1     
     tol::Q = 1e-8
-    maxit::Int = 200  
+    maxit::Signed = 200  
     scal::Symbol = :none 
 end 
 
@@ -237,39 +237,39 @@ Base.@kwdef mutable struct ParPlsravg
 end 
 
 Base.@kwdef mutable struct ParPlsrout{Q <: Float}
-    nlv::Int = 1 
+    nlv::Signed = 1 
     prm::Q = .3         
     scal::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParKplsr{Q <: Float} 
-    nlv::Int = 1 
+    nlv::Signed = 1 
     kern::Symbol = :krbf     
     gamma::Q = 1.  
     coef0::Q = 0.
-    degree::Int = 1 
+    degree::Signed = 1 
     tol::Q = 1e-8   
-    maxit::Int = 200            
+    maxit::Signed = 200            
     scal::Symbol = :none                   
 end 
 
 Base.@kwdef mutable struct ParCglsr
-    nlv::Int = 1 
+    nlv::Signed = 1 
     gs::Bool = true       
     filt::Bool = true              
     scal::Symbol = :none 
 end  
 
 Base.@kwdef mutable struct ParRrr{Q <: Float}
-    nlv::Int = 1 
+    nlv::Signed = 1 
     tau::Q = 1e-8       
     tol::Q = 1e-8  
-    maxit::Int = 200     
+    maxit::Signed = 200     
     scal::Symbol = :none                   
 end 
 
 Base.@kwdef mutable struct ParPcr
-    nlv::Int = 1    
+    nlv::Signed = 1    
     scal::Symbol = :none                   
 end
 
@@ -283,18 +283,18 @@ Base.@kwdef mutable struct ParKrr{Q <: Float}
     kern::Symbol = :krbf     
     gamma::Q = 1.  
     coef0::Q = 0.
-    degree::Int = 1                       
+    degree::Signed = 1                       
     scal::Symbol = :none 
 end 
 
 ##
 
 Base.@kwdef mutable struct ParSplsr{Q <: Float}
-    nlv::Int = 1 
+    nlv::Signed = 1 
     meth::Symbol = :soft
     nvar::Union{Int, Vector{Int}} = 1
     tol::Q = 1e-8 # used when Y (n, q) (snipals)
-    maxit::Int = 200              # used when Y (n, q) (snipals)
+    maxit::Signed = 200              # used when Y (n, q) (snipals)
     scal::Symbol = :none                   
 end 
 
@@ -305,14 +305,14 @@ end
 
 Base.@kwdef mutable struct ParLoessr{Q <: Float}      
     span::Q = 0.75
-    degree::Int = 2               
+    degree::Signed = 2               
     scal::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParKnn{Q <: Float}    # knnr, knnda                
     metric::Symbol = :eucl                  
     h::Q = Inf                        
-    k::Int = 1                              
+    k::Signed = 1                              
     criw::Q = 4.                       
     squared::Bool = false                   
     tolw::Q = 1e-4                               
@@ -323,7 +323,7 @@ end
 Base.@kwdef mutable struct ParLwmlr{Q <: Float}    # lwmlr, lwmlrda                
     metric::Symbol = :eucl                  
     h::Q = Inf                        
-    k::Int = 1                              
+    k::Signed = 1                              
     criw::Q = 4.                       
     squared::Bool = false                   
     tolw::Q = 1e-4                               
@@ -333,23 +333,23 @@ Base.@kwdef mutable struct ParLwmlr{Q <: Float}    # lwmlr, lwmlrda
 end 
 
 Base.@kwdef mutable struct ParLwplsr{Q <: Float}  
-    nlvdis::Int = 0                         
+    nlvdis::Signed = 0                         
     metric::Symbol = :eucl                  
-    k::Int = 1                              
+    k::Signed = 1                              
     h::Q = Inf                        
     criw::Q = 4.                       
     squared::Bool = false                   
     tolw::Q = 1e-4                    
-    nlv::Int =  1     
+    nlv::Signed =  1     
     scal::Symbol = :none
     store::Bool = false 
     verbose::Bool = false                   
 end 
 
 Base.@kwdef mutable struct ParLwplsravg{Q <: Float}
-    nlvdis::Int = 0                         
+    nlvdis::Signed = 0                         
     metric::Symbol = :eucl                  
-    k::Int = 1                              
+    k::Signed = 1                              
     h::Q = Inf                        
     criw::Q = 4.                       
     squared::Bool = false                   
@@ -366,7 +366,7 @@ Base.@kwdef mutable struct ParSvm{Q <: Float}    # svmr, svmda
     kern::Symbol = :krbf    
     gamma::Q = 1.  
     coef0::Q = 0.   
-    degree::Int = 1    
+    degree::Signed = 1    
     cost::Q = 1.  
     epsilon::Q = .1 
     scal::Symbol = :none         
@@ -374,19 +374,19 @@ end
 
 Base.@kwdef mutable struct ParTree{Q <: Float}    # treer, treeda
     n_subfeatures::Q = 0.  
-    max_depth::Int = -1   
-    min_samples_leaf::Int = 5       
-    min_samples_split::Int = 5
+    max_depth::Signed = -1   
+    min_samples_leaf::Signed = 5       
+    min_samples_split::Signed = 5
     scal::Symbol = :none              
 end 
 
 Base.@kwdef mutable struct ParRf{Q <: Float}    # rfr, rfda
-    n_trees::Int = 10   
+    n_trees::Signed = 10   
     partial_sampling::Q = .7  
     n_subfeatures::Q = 0   
-    max_depth::Int = -1    
-    min_samples_leaf::Int = 5  
-    min_samples_split::Int = 5    
+    max_depth::Signed = -1    
+    min_samples_leaf::Signed = 5  
+    min_samples_split::Signed = 5    
     mth::Bool = true  
     scal::Symbol = :none         
 end 
@@ -394,10 +394,10 @@ end
 ## Multiblock
 
 Base.@kwdef mutable struct ParMbplsr{Q <: Float}
-    nlv::Int = 1 
+    nlv::Signed = 1 
     bscal::Symbol = :none   
     tol::Q = 1e-8  # mbplswest
-    maxit::Int = 200               # mbplswest     
+    maxit::Signed = 200               # mbplswest     
     scal::Symbol = :none  
 end 
 
@@ -407,7 +407,7 @@ Base.@kwdef mutable struct ParSoplsr
 end 
 
 Base.@kwdef mutable struct ParRosaplsr
-    nlv::Int = 1     
+    nlv::Signed = 1     
     scal::Symbol = :none  
 end 
 
@@ -459,20 +459,20 @@ Base.@kwdef mutable struct ParRrda{Q <: Float}
 end 
 
 Base.@kwdef mutable struct ParPlsda{Q <: Float}    # plsrda, plslda
-    nlv::Int = 1
+    nlv::Signed = 1
     prior::Union{Symbol, Vector{Q}} = :prop   
     scal::Symbol = :none                    
 end 
 
 Base.@kwdef mutable struct ParPlsqda{Q <: Float}
-    nlv::Int = 1
+    nlv::Signed = 1
     prior::Union{Symbol, Vector{Q}} = :prop
     alpha::Q = 0. 
     scal::Symbol = :none                 
 end 
 
 Base.@kwdef mutable struct ParPlskdeda{Q <: Float}
-    nlv::Int = 1
+    nlv::Signed = 1
     prior::Union{Symbol, Vector{Q}} = :prop
     h::Union{Nothing, Q, Vector{Q}} = nothing  
     a::Q = 1. 
@@ -480,35 +480,35 @@ Base.@kwdef mutable struct ParPlskdeda{Q <: Float}
 end 
 
 Base.@kwdef mutable struct ParSplsda{Q <: Float}    # splsrda, splslda
-    nlv::Int = 1
+    nlv::Signed = 1
     meth::Symbol = :soft 
     nvar::Union{Int, Vector{Int}} = 1  
     prior::Union{Symbol, Vector{Q}} = :prop   
     tol::Q = 1e-8 
-    maxit::Int = 200   
+    maxit::Signed = 200   
     scal::Symbol = :none                    
 end 
 
 Base.@kwdef mutable struct ParSplsqda{Q <: Float}
-    nlv::Int = 1
+    nlv::Signed = 1
     meth::Symbol = :soft 
     nvar::Union{Int, Vector{Int}} = 1  
     prior::Union{Symbol, Vector{Q}} = :prop
     alpha::Q = 0.   
     tol::Q = 1e-8 
-    maxit::Int = 200    
+    maxit::Signed = 200    
     scal::Symbol = :none                    
 end 
 
 Base.@kwdef mutable struct ParSplskdeda{Q <: Float}
-    nlv::Int = 1
+    nlv::Signed = 1
     meth::Symbol = :soft 
     nvar::Union{Int, Vector{Int}} = 1  
     prior::Union{Symbol, Vector{Q}} = :prop
     h::Union{Nothing, Q, Vector{Q}} = nothing  
     a::Q = 1. 
     tol::Q = 1e-8 
-    maxit::Int = 200   
+    maxit::Signed = 200   
     scal::Symbol = :none 
 end 
 
@@ -517,38 +517,38 @@ Base.@kwdef mutable struct ParKrrda{Q <: Float}
     kern::Symbol = :krbf     
     gamma::Q = 1.  
     coef0::Q = 0.
-    degree::Int = 1      
+    degree::Signed = 1      
     prior::Union{Symbol, Vector{Q}} = :prop   
     scal::Symbol = :none                    
 end 
 
 Base.@kwdef mutable struct ParKplsda{Q <: Float}    # kplsrda, kplslda
-    nlv::Int = 1
+    nlv::Signed = 1
     kern::Symbol = :krbf     
     gamma::Q = 1.  
     coef0::Q = 0.
-    degree::Int = 1      
+    degree::Signed = 1      
     prior::Union{Symbol, Vector{Q}} = :prop   
     scal::Symbol = :none                    
 end 
 
 Base.@kwdef mutable struct ParKplsqda{Q <: Float}
-    nlv::Int = 1
+    nlv::Signed = 1
     kern::Symbol = :krbf     
     gamma::Q = 1.  
     coef0::Q = 0.
-    degree::Int = 1 
+    degree::Signed = 1 
     prior::Union{Symbol, Vector{Q}} = :prop
     alpha::Q = 0.    
     scal::Symbol = :none                    
 end 
 
 Base.@kwdef mutable struct ParKplskdeda{Q <: Float}
-    nlv::Int = 1
+    nlv::Signed = 1
     kern::Symbol = :krbf     
     gamma::Q = 1.  
     coef0::Q = 0.
-    degree::Int = 1 
+    degree::Signed = 1 
     prior::Union{Symbol, Vector{Q}} = :prop
     h::Union{Nothing, Q, Vector{Q}} = nothing  
     a::Q = 1. 
@@ -558,30 +558,30 @@ end
 ## 
 
 Base.@kwdef mutable struct ParLwplsda{Q <: Float}    # lwplsrda, lwplslda 
-    nlvdis::Int = 0                         
+    nlvdis::Signed = 0                         
     metric::Symbol = :eucl                  
     h::Q = Inf                        
-    k::Int = 1                              
+    k::Signed = 1                              
     criw::Q = 4.                       
     squared::Bool = false                   
     tolw::Q = 1e-4                    
     prior::Union{Symbol, Vector{Q}} = :prop
-    nlv::Int = 1      
+    nlv::Signed = 1      
     scal::Symbol = :none 
     store::Bool = false 
     verbose::Bool = false                   
 end 
 
 Base.@kwdef mutable struct ParLwplsqda{Q <: Float}    
-    nlvdis::Int = 0                         
+    nlvdis::Signed = 0                         
     metric::Symbol = :eucl                  
     h::Q = Inf                        
-    k::Int = 1                              
+    k::Signed = 1                              
     criw::Q = 4.                       
     squared::Bool = false                   
     tolw::Q = 1e-4                    
     prior::Union{Symbol, Vector{Q}} = :prop
-    nlv::Int = 1 
+    nlv::Signed = 1 
     alpha::Q = 0.        
     scal::Symbol = :none 
     store::Bool = false 
@@ -591,14 +591,14 @@ end
 ## Multiblock
 
 Base.@kwdef mutable struct ParMbplsda{Q <: Float}  # mbplsrda, mbplslda
-    nlv::Int = 1
+    nlv::Signed = 1
     bscal::Symbol = :none   
     prior::Union{Symbol, Vector{Q}} = :prop   
     scal::Symbol = :none                    
 end 
 
 Base.@kwdef mutable struct ParMbplsqda{Q <: Float}  
-    nlv::Int = 1
+    nlv::Signed = 1
     bscal::Symbol = :none   
     prior::Union{Symbol, Vector{Q}} = :prop 
     alpha::Q = 0.   
@@ -606,7 +606,7 @@ Base.@kwdef mutable struct ParMbplsqda{Q <: Float}
 end 
 
 Base.@kwdef mutable struct ParMbplskdeda{Q <: Float}  
-    nlv::Int = 1
+    nlv::Signed = 1
     bscal::Symbol = :none   
     prior::Union{Symbol, Vector{Q}} = :prop 
     h::Union{Nothing, Q, Vector{Q}} = nothing  
@@ -637,7 +637,7 @@ Base.@kwdef mutable struct ParOccdds{Q <: Float}
 end 
 
 Base.@kwdef mutable struct ParOccstah{Q <: Float} 
-    nlv::Int = 500
+    nlv::Signed = 500
     typcut::Symbol = :mad   
     cri::Q = 3.
     alpha::Q = .025 
@@ -646,9 +646,9 @@ Base.@kwdef mutable struct ParOccstah{Q <: Float}
 end 
 
 Base.@kwdef mutable struct ParOccknn{Q <: Float}
-    nsamp::Int = 100
+    nsamp::Signed = 100
     metric::Symbol = :eucl                                       
-    k::Int = 1     
+    k::Signed = 1     
     algo::Function = sum
     typcut::Symbol = :mad   
     cri::Q = 3.

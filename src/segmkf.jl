@@ -1,6 +1,6 @@
 """
-    segmkf(n::Int, K::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
-    segmkf(group::Vector, K::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
+    segmkf(n::Signed, K::Signed; rep = 1, seed::Union{Nothing, Int} = nothing)
+    segmkf(group::Vector, K::Signed; rep = 1, seed::Union{Nothing, Int} = nothing)
 Build segments of observations for K-fold cross-validation.  
 * `n` : Total nb. of observations in the dataset. The sampling is implemented within 1:`n`.
 * `group` : A vector (`n`) defining blocks of observations.
@@ -44,7 +44,7 @@ group[segm[i][2]]
 group[segm[i][3]]
 ```
 """ 
-function segmkf(n::Int, K::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
+function segmkf(n::Signed, K::Signed; rep = 1, seed::Union{Nothing, Int} = nothing)
     Q = Vector{Int}
     m = K - n % K ;
     s = list(Vector{Q}, rep)
@@ -64,7 +64,7 @@ function segmkf(n::Int, K::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
     s
 end
 
-function segmkf(group::Vector, K::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
+function segmkf(group::Vector, K::Signed; rep = 1, seed::Union{Nothing, Int} = nothing)
     Q = Vector{Int}
     s = list(Vector{Q}, rep)
     if isnothing(seed)

@@ -2,7 +2,8 @@
 
 ## *Version 0.10.0*
 
-Warning: Major changes in functions having arguments 'nlv' (laent variables) and 'lb' (ridge). 
+**Warning:** Major breaking changes have been made in this version compared to versions 0.9, 
+in particular in functions having arguments 'nlv' (laent variables) and 'lb' (ridge). 
 
 - Breakings:
     - Functions having arguments 'nlv' or 'lb': deep restructuration of functions *transf*, *coef* 
@@ -14,6 +15,7 @@ Warning: Major changes in functions having arguments 'nlv' (laent variables) and
     - Function **mbpca** renamed to **cpca**.
     - Function **aov1**: syntax changed.
     - Function **aggstat**: arguments 'sel' and 'group' changed.
+    - Function **waldtest**: arguments' order changed.
     - Fuction **rclustplsr** temporary removed.
     - Package UMAP updated to 0.3
     - Recoding functions have changed.

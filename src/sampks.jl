@@ -1,5 +1,5 @@
 """
-    sampks(X, k::Int; metric = :eucl)
+    sampks(X, k::Signed; metric = :eucl)
 Build training vs. test sets by Kennard-Stone sampling.  
 * `X` : X-data (n, p).
 * `k` : Nb. test observations to sample.
@@ -56,7 +56,7 @@ scatter!(ax, X[s, 1], X[s, 2]; color = "red")
 f
 ```
 """ 
-function sampks(X, k::Int; metric = :eucl)
+function sampks(X, k::Signed; metric = :eucl)
     @assert in([:eucl, :mah, :sam, :cos, :cor])(metric) "Wrong value for argument 'metric'."
     if metric == :eucl
         D = eucl2(X, X)

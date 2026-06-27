@@ -1,5 +1,5 @@
 """
-    sampdp(X, k::Int; metric = :eucl)
+    sampdp(X, k::Signed; metric = :eucl)
 Build training vs. test sets by DUPLEX sampling.  
 * `X` : X-data (n, p).
 * `k` : Nb. pairs (training/test) of observations to sample. Must be <= n / 2. 
@@ -37,7 +37,7 @@ k = 3
 sampdp(X, k)
 ```
 """ 
-function sampdp(X, k::Int; metric = :eucl)
+function sampdp(X, k::Signed; metric = :eucl)
     @assert in([:eucl, :mah, :sam, :cos, :cor])(metric) "Wrong value for argument 'metric'."
     if metric == :eucl
         D = eucl2(X, X)

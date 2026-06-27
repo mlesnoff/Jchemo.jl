@@ -66,7 +66,7 @@ end
 
 """ 
     transf(object::Rp, X)
-    transf(object::Rp, X, nlv::Int)
+    transf(object::Rp, X, nlv::Signed)
 Compute scores T from a fitted model.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which scores T are computed.
@@ -74,7 +74,7 @@ Compute scores T from a fitted model.
 """ 
 transf(object::Rp, X) = fcscale(X, object.xmeans, object.xscales) * object.V
 
-function transf(object::Rp, X, nlv::Int)
+function transf(object::Rp, X, nlv::Signed)
     X = ensure_mat(X)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)

@@ -176,7 +176,7 @@ recod_catbyind(x, lev)
 recod_catbyind(x::Vector{Q}, lev::Vector{Q}) where Q <: String = Int.(indexin(x, mlev(lev)))
 
 """
-    recod_catbyind2(x::Vector{Q}; start::Int = 1) where Q <: String
+    recod_catbyind2(x::Vector{Q}; start::Signed = 1) where Q <: String
 Recode a categorical variable by successive integer indexes.
 * `x` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `start` : Integer labelling the first categorical level in `x`.
@@ -198,7 +198,7 @@ recod_catbyind2(x; start = 0)
 recod_catbyind2(string.([25, 1, 25]))
 ```
 """
-function recod_catbyind2(x::Vector{Q}; start::Int = 1) where Q <: String
+function recod_catbyind2(x::Vector{Q}; start::Signed = 1) where Q <: String
     res = dummy(x)
     nlev = length(res.lev)
     u = res.Y .* collect(start:(start + nlev - 1))'

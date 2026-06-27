@@ -57,7 +57,7 @@ qqplot(f[1, 2], Normal(mu, sigma), vx; qqline = :identity, axis = (xlabel = "Nor
 f
 ```
 """ 
-function boxcox(x::Vector{T}; lims::Vector{T} = [-3.; 3], npoint::Int = 1000) where T <: Float
+function boxcox(x::Vector{T}; lims::Vector{T} = [-3.; 3], npoint::Signed = 1000) where T <: Float
     if any(x .<= 0)
         error("Box-Cox transformation requires strictly positive data (x > 0).")
     end

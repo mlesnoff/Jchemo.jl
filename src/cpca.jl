@@ -228,9 +228,9 @@ end
 
 """ 
     transf(object::Cpca, Xbl)
-    transf(object::Cpca, Xbl, nlv::Int)
+    transf(object::Cpca, Xbl, nlv::Signed)
     transfbl(object::Cpca, Xbl)
-    transfbl(object::Cpca, Xbl, nlv::Int)
+    transfbl(object::Cpca, Xbl, nlv::Signed)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
@@ -238,12 +238,12 @@ Compute latent variables (LVs; = scores) from a fitted model.
 """ 
 
 transf(object::Cpca, Xbl) = transf_all(object, Xbl, object.par.nlv).T
-transf(object::Cpca, Xbl, nlv::Int) = transf_all(object, Xbl, nlv).T
+transf(object::Cpca, Xbl, nlv::Signed) = transf_all(object, Xbl, nlv).T
 
 transfbl(object::Cpca, Xbl) = transf_all(object, Xbl, object.par.nlv).Tbl
-transfbl(object::Cpca, Xbl, nlv::Int) = transf_all(object, Xbl, nlv).Tbl
+transfbl(object::Cpca, Xbl, nlv::Signed) = transf_all(object, Xbl, nlv).Tbl
 
-function transf_all(object::Cpca, Xbl, nlv::Int)
+function transf_all(object::Cpca, Xbl, nlv::Signed)
     Xbl = ensure_mat_mb(Xbl)
     Q = eltype(Xbl[1])
     a = object.par.nlv

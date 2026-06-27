@@ -510,7 +510,7 @@ function transf!(object::Emsc, X::Matrix{Q}) where Q <: Float
 end
 
 """ 
-    savgk(nhwindow::Int, degree::Int, deriv::Int)
+    savgk(nhwindow::Signed, degree::Signed, deriv::Signed)
 Compute the kernel of the Savitzky-Golay filter.
 * `nhwindow` : Nb. points (>= 1) of the half window.
 * `degree` : Degree of the smoothing polynom, where 1 <= `degree` <= 2 * nhwindow.
@@ -537,7 +537,7 @@ res.G
 res.kern
 ```
 """ 
-function savgk(nhwindow::Int, degree::Int, deriv::Int)
+function savgk(nhwindow::Signed, degree::Signed, deriv::Signed)
     @assert nhwindow >= 1 "Argument 'nhwindow' must be >= 1."
     @assert 1 <= degree <= 2 * nhwindow "Argument 'degree' must agree with: 1 <= 'degree' <= 2 * 'nhwindow'."
     @assert 0 <= deriv <= degree "Argument 'deriv' must agree with: 0 <= 'deriv' <= 'degree'."
@@ -841,15 +841,15 @@ function interpl(X; kwargs...)
 end
 
 """ 
-    transf(object::Interpl, X)
-    transf!(object::Interpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: Float
+    transf(object::Signederpl, X)
+    transf!(object::Signederpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
 * `M` : Pre-allocated output matrix (n, p).
 The in-place function stores the output in `M`.
 """ 
-function transf(object::Interpl, X)
+function transf(object::Signederpl, X)
     X = ensure_mat(X)
     n = nro(X)
     p = length(object.par.wlfin)
@@ -858,7 +858,7 @@ function transf(object::Interpl, X)
     M
 end
 
-function transf!(object::Interpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: Float
+function transf!(object::Signederpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: Float
     algo = DataInterpolations.CubicSpline
     #algo = DataInterpolations.LinearInterpolation
     ## Not faster: @Threads.threads

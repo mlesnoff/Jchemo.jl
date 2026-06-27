@@ -205,7 +205,7 @@ end
 
 """ 
     transf(object::Mbplswest, Xbl)
-    transf(object::Mbplswest, Xbl, nlv::Int)
+    transf(object::Mbplswest, Xbl, nlv::Signed)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
@@ -216,7 +216,7 @@ function transf(object::Mbplswest, Xbl)
     fconcat(vXbl) * object.R 
 end
 
-function transf(object::Mbplswest, Xbl, nlv::Int)
+function transf(object::Mbplswest, Xbl, nlv::Signed)
     nlv = min(nlv, object.par.nlv)
     vXbl = transf(object.fitm_bl, Xbl)    
     fconcat(vXbl) * vcol(object.R, 1:nlv) 

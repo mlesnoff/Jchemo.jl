@@ -1,6 +1,6 @@
 """
-    xresid(object, X, nlv::Int)
-    xresid!(object, X::Matrix{Q}, nlv::Int) where Q <: Float
+    xresid(object, X, nlv::Signed)
+    xresid!(object, X::Matrix{Q}, nlv::Signed) where Q <: Float
 Residual matrix from a bilinear model (e.g., PCA).
 * `object` : The fitted model.
 * `X` : New X-data to be approximated from the model. Must be in the same scale as the X-data used to fit
@@ -15,11 +15,11 @@ where X_fit is the fitted X returned by function `xfit`. See `xfit` for examples
 """ 
 xresid(object, X) = X - xfit(object, X)  
 
-function xresid(object, X, nlv::Int)
+function xresid(object, X, nlv::Signed)
     xresid!(object, copy(ensure_mat(X)), nlv)
 end
 
-function xresid!(object, X::Matrix{Q}, nlv::Int) where Q <: Float
+function xresid!(object, X::Matrix{Q}, nlv::Signed) where Q <: Float
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     X .-= xfit(object, X, nlv)

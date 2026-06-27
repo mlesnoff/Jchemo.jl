@@ -1,6 +1,6 @@
 """
-    segmts(n::Int, k::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
-    segmts(group::Vector, k::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
+    segmts(n::Signed, k::Signed; rep = 1, seed::Union{Nothing, Int} = nothing)
+    segmts(group::Vector, k::Signed; rep = 1, seed::Union{Nothing, Int} = nothing)
 Build segments of observations for "test-set" validation.
 * `n` : Total nb. of observations in the dataset. The sampling is implemented within 1:`n`.
 * `group` : A vector (`n`) defining groups of observations.
@@ -44,7 +44,7 @@ segm[i][1]
 group[segm[i][1]]
 ```
 """ 
-function segmts(n::Int, k::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
+function segmts(n::Signed, k::Signed; rep = 1, seed::Union{Nothing, Int} = nothing)
     Q = Vector{Int}
     s = list(Vector{Q}, rep)
     if isnothing(seed)
@@ -59,7 +59,7 @@ function segmts(n::Int, k::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
     s
 end
 
-function segmts(group::Vector, k::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
+function segmts(group::Vector, k::Signed; rep = 1, seed::Union{Nothing, Int} = nothing)
     group = vec(group)
     Q = Vector{Int}
     s = list(Vector{Q}, rep)

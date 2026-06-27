@@ -196,21 +196,21 @@ end
 
 """ 
     transf(object::Comdim, Xbl)
-    transf(object::Comdim, Xbl, nlv::Int)
+    transf(object::Comdim, Xbl, nlv::Signed)
     transfbl(object::Comdim, Xbl)
-    transfbl(object::Comdim, Xbl, nlv::Int)
+    transfbl(object::Comdim, Xbl, nlv::Signed)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
 transf(object::Comdim, Xbl) = transf_all(object, Xbl, object.par.nlv).T
-transf(object::Comdim, Xbl, nlv::Int) = transf_all(object, Xbl, nlv).T
+transf(object::Comdim, Xbl, nlv::Signed) = transf_all(object, Xbl, nlv).T
 
 transfbl(object::Comdim, Xbl) = transf_all(object, Xbl, object.par.nlv).Tbl
-transfbl(object::Comdim, Xbl, nlv::Int) = transf_all(object, Xbl, nlv).Tbl
+transfbl(object::Comdim, Xbl, nlv::Signed) = transf_all(object, Xbl, nlv).Tbl
 
-function transf_all(object::Comdim, Xbl, nlv::Int)
+function transf_all(object::Comdim, Xbl, nlv::Signed)
     Xbl = ensure_mat_mb(Xbl)
     Q = eltype(Xbl[1])
     a = object.par.nlv

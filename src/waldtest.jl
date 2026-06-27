@@ -1,19 +1,19 @@
 """
-    waldtest(b, L, varb; h0 = nothing, defden = nothing, digits = 5)
+    waldtest(L, b, varb; h0 = nothing, dfden = nothing, digits = 5)
 Wald or F test for model coefficients.
-* `b` : Vector (p) of the coefficients of the model.
 * `L` : Matrix (m, p) such as `L` * `b` gives the linear combination(s) of the coefficients 
     to be tested.
+* `b` : Vector (p) of the coefficients of the model.
 * `varb` : Variance-covariance matrix (p, p) of `b`.
 Keyword arguments:
 * `h0` : Scalar or vector (m) giving the value(s) of hypothesis H0 to be tested (see below). 
     Default to 0.
-* `defden` : Nb. degrees of freedom of the residuals of the model.
+* `dfden` : Nb. degrees of freedom of the residuals of the model.
 * `digits` : Nb. digits for the outputs.
 
 The function tests hypothesis H0: `L` * `b` = `h0`, with either 
 * a Chi-squared Wald test (with dfs = m)
-* or, if `defden` is given, a F test (with dfs {m, `defden`}).
+* or, if `dfden` is given, a F test (with dfs {m, `dfden`}).
 
 Both tests assume that `b` is Gaussian.  Compared to the F test, the Wald test neglects the uncertainty 
 affecting the estimate of the dispersion parameter of the model (e.g., 'sigma2' in MLRs). 
@@ -27,7 +27,7 @@ Draper, N.R., Smith, H., 1998. Applied Regression Analysis. New York, John Wiley
 ```julia
 using GLM, AnovaGLM
 
-using Jchemo, JchemoData, JLD2
+using Jchemo, JchemoData, JLD2, GLM
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/reaction_bertinetto.jld2")
 @load db dat
@@ -47,7 +47,7 @@ f = @formula(y1 ~ 1 + temp + catal + temp & catal)
 fitm = lm(f, datf; contrasts)
 
 D = modelmatrix(fitm)       # design matrix
-dfm = dof(fitm.model) - 1  # function dof includes the dispersion parameter
+dfm = dof(fitm.model) - 1   # function dof includes the dispersion parameter
 dfr = dof_residual(fitm) 
 (n = n, dfm, dfr)
 b = GLM.coef(fitm)   # model coefficients
@@ -58,55 +58,50 @@ varb = vcov(fitm)    # variance-covariance matrix
 
 #### Tests
 ## Hyp. matrices 'L' for contrast 'EffectsCoding' or 'HelmertCoding'
-## Not valid for contrasts 'DummyCoding', except the test '4)'
+## (Not valid for contrasts 'DummyCoding', except 'test (4)')
 
 anova(fitm)
 
-## 1) factor 'temp'
+## (1) Factor 'temp'
 L = [0. 1 0 0 0 0 ;
      0 0 1 0 0 0]
-waldtest(b, L, varb)                  # Wald test
-waldtest(b, L, varb; defden = dfr)  # F test
+waldtest(L, b, varb)                  # Wald test
+waldtest(L, b, varb; dfden = dfr)     # F test
 
-## 2) factor 'catal'
+## (2) Factor 'catal'
 L = [0. 0 0 1 0 0]
-waldtest(b, L, varb) 
-waldtest(b, L, varb; defden = dfr)
+waldtest(L, b, varb) 
+waldtest(L, b, varb; dfden = dfr)
 
-## 3) interaction 'temp * catal'
+## (3) interaction 'temp * catal'
 L = [0. 0 0 0 1 0 ;
      0 0 0 0 0 1]
-waldtest(b, L, varb) 
-waldtest(b, L, varb; defden = dfr)
+waldtest(L, b, varb) 
+waldtest(L, b, varb; dfden = dfr)
 
-## 4) Whole effect 'catal': 'catal + temp * catal'
+## (4) Whole effect 'catal': 'catal + temp * catal'
 L = [0. 0 0 1 0 0 ;
      0 0 0 0 1 0 ;
      0 0 0 0 0 1]
-waldtest(b, L, varb) 
-waldtest(b, L, varb; defden = dfr)
+waldtest(L, b, varb) 
+waldtest(L, b, varb; dfden = dfr)
 anova(lm(@formula(y1 ~ 1 + temp), datf; contrasts), fitm)
 ```
 """
-function waldtest(b::Vector{Q}, L::AbstractMatrix{Q}, varb::AbstractMatrix{Q}; 
-        h0 = nothing, defden = nothing, digits::Int = 4) where Q <: Float
+function waldtest(L::AbstractMatrix{Q}, b::Vector{Q}, varb::AbstractMatrix{Q}; 
+        h0 = zeros(Q, nro(L)), dfden::Union{Nothing, Real} = nothing, digits::Signed = 4) where Q <: Float
     dfnum = nro(L)
-    h = isnothing(h0) ? L * b : L * b - h0 
+    h = L * b - h0 
     varLb = L * varb * L' 
     val =  h' * inv(varLb) * h
-    if isnothing(defden)
+    if isnothing(dfden)
         d = Distributions.Chisq(dfnum)
     else
+        d = Distributions.FDist(dfnum, dfden)
         val = val / dfnum
-        d = Distributions.FDist(dfnum, defden)
     end 
     pval = Distributions.ccdf(d, val)
     val = round(val; digits)
     pval = round(pval; digits)
-    if isnothing(defden)
-        res = (val = val, pval, dfnum)
-    else
-        res = (val = val, pval, dfnum, defden)
-    end
-    res
+    (val = val, pval, dfnum, dfden)
 end 

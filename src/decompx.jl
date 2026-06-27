@@ -127,14 +127,14 @@ function decompx(X::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame) 
 end
 
 """
-    summary(object::Decompx; corrected::Bool = true, digits::Int = 4)
+    summary(object::Decompx; corrected::Bool = true, digits::Signed = 4)
 Summarize the fitted model.
 * `object` : Object of class `Decompx` to summarize.
 Keyword arguments:
 * `corrected` : Whether to correct for the intercept term.
 * `digits` : Nb. digits for the outputs.
 """ 
-function Base.summary(object::Decompx; corrected::Bool = true, digits::Int = 4)
+function Base.summary(object::Decompx; corrected::Bool = true, digits::Signed = 4)
     namfit = @names object.fit
     ssfit = object.ss.ssfit
     ssr = object.ss.ssr
@@ -156,7 +156,7 @@ function Base.summary(object::Decompx; corrected::Bool = true, digits::Int = 4)
 end
 
 """
-    permut(object::Decompx; rep::Int = 1000, digits::Int = 4)
+    permut(object::Decompx; rep::Signed = 1000, digits::Signed = 4)
 Permutation test of effects after decomposition of a matrix by experimental factors.
 * `object` : Object of type `Decompx` (output of function `decompx`).
 * `datf` : Dataframe containing the factor(s) specified in `object.f`.
@@ -175,7 +175,7 @@ Manly, B.F., 2007. Randomization, bootstrap and Monte Carlo methods in biology, 
 Smilde, A.K., Marini, F., Westerhuis, J.A., Liland, K.H. (Eds.), 2025. Analysis of variance 
 for high-dimensional data: applications in life, food and chemical sciences. Wiley, Hoboken, NJ.
 """ 
-function permut(object::Decompx; rep::Int = 1000, digits::Int = 4)
+function permut(object::Decompx; rep::Signed = 1000, digits::Signed = 4)
     X = reduce(+, object.fit) + object.R
     n = nro(X)
     valref = object.ss.ssfit[2:end] / object.ss.ssr

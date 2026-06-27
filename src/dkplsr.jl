@@ -122,7 +122,7 @@ end
 
 """ 
     transf(object::Dkplsr, X)
-    transf(object::Dkplsr, X, nlv::Int)
+    transf(object::Dkplsr, X, nlv::Signed)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which LVs are computed.
@@ -134,7 +134,7 @@ function transf(object::Dkplsr, X)
     transf(object.fitm, K)
 end
 
-function transf(object::Dkplsr, X, nlv::Int)
+function transf(object::Dkplsr, X, nlv::Signed)
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; values(object.kwargs)...)
     transf(object.fitm, K, nlv)

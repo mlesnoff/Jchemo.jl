@@ -1,5 +1,5 @@
 """
-    sampsys(y, k::Int)
+    sampsys(y, k::Signed)
 Build training vs. test sets by systematic sampling over a quantitative variable.  
 * `y` : Quantitative variable (n) to sample.
 * `k` : Nb. test observations to sample. Must be >= 2.
@@ -23,7 +23,7 @@ res = sampsys(y, 3)
 sort(y[res.test])
 ```
 """ 
-function sampsys(y, k::Int)
+function sampsys(y, k::Signed)
     y = vec(y)
     n = length(y)
     nint = k - 1            # nb. intervals

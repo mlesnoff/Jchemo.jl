@@ -168,7 +168,7 @@ end
 
 """ 
     transf(object::Spca, X)
-    transf(object::Spca, X, nlv::Int)
+    transf(object::Spca, X, nlv::Signed)
     Compute principal components (PCs = scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
@@ -176,7 +176,7 @@ end
 """ 
 transf(object::Spca, X) = transf(object, X, object.par.nlv)
 
-function transf(object::Spca, X, nlv::Int)
+function transf(object::Spca, X, nlv::Signed)
     X = ensure_mat(X)
     m = nro(X)
     a = object.par.nlv

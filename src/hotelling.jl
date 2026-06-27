@@ -1,5 +1,5 @@
 """
-    hotelling(X::AbstMatVec{Q}, y::Vector{String}; digits::Int = 5) where Q <: Float
+    hotelling(X::AbstMatVec{Q}, y::Vector{String}; digits::Signed = 5) where Q <: Float
 Two-sample Hotelling's T-squared test.
 * `X` : A matrix (n, p) or vector (n).
 * `y` : A categorical variable (2-class membership) (n). Must be a `Vector{String}`.
@@ -33,7 +33,7 @@ W = matW(Y, fact, pweight(ones(n))).W
 manova(Y, @formula(0 ~ catal), datf; test)
 ```
 """
-function hotelling(X::AbstMatVec{Q}, y::Vector{String}; digits::Int = 5) where Q <: Float
+function hotelling(X::AbstMatVec{Q}, y::Vector{String}; digits::Signed = 5) where Q <: Float
     n, p = size(X)
     res = matWc(X, y)
     ni = res.ni 

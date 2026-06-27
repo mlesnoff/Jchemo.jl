@@ -170,7 +170,7 @@ end
 
 """ 
     transf(object::Union{Plsr, Splsr}, X)
-    transf(object::Union{Plsr, Splsr}, X, nlv::Int)
+    transf(object::Union{Plsr, Splsr}, X, nlv::Signed)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
@@ -181,7 +181,7 @@ function transf(object::Union{Plsr, Splsr}, X)
     fcscale(X, object.xmeans, object.xscales) * object.R
 end
 
-function transf(object::Union{Plsr, Splsr}, X, nlv::Int)
+function transf(object::Union{Plsr, Splsr}, X, nlv::Signed)
     nlv = min(nlv, object.par.nlv)
     ## Could be fcscale! but would change X. If too heavy ==> Makes summary!
     fcscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
@@ -189,7 +189,7 @@ end
 
 """
     coef(object::Union{Plsr, Splsr})
-    coef(object::Union{Plsr, Splsr}, nlv::Int)
+    coef(object::Union{Plsr, Splsr}, nlv::Signed)
 Compute the b-coefficients of a LV model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
@@ -207,7 +207,7 @@ function coef(object::Union{Plsr, Splsr})
     (B = B, int, nlv = object.par.nlv)
 end
 
-function coef(object::Union{Plsr, Splsr}, nlv::Int)
+function coef(object::Union{Plsr, Splsr}, nlv::Signed)
     nlv = min(nlv, object.par.nlv)
     theta = vcol(object.C, 1:nlv)'  
     Dy = Diagonal(object.yscales)

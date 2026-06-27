@@ -1,7 +1,7 @@
 """
     xfit(object)
-    xfit(object, X, nlv::Int)
-    xfit!(object, X::Matrix{Q}, nlv::Int) where Q <: Float
+    xfit(object, X, nlv::Signed)
+    xfit!(object, X::Matrix{Q}, nlv::Signed) where Q <: Float
 Fit a matrix from a bilinear model (e.g., PCA).
 * `object` : The fitted bilinear model.
 * `X` : New X-data to be approximated from the model. Must be in the same scale as the X-data used to fit
@@ -90,12 +90,12 @@ end
 
 xfit(object, X) = xfit(object, X, object.par.nlv)
 
-function xfit(object, X, nlv::Int) 
+function xfit(object, X, nlv::Signed) 
     X = ensure_mat(X) 
     xfit!(object, copy(X), nlv)
 end
 
-function xfit!(object, X::Matrix{Q}, nlv::Int) where Q <: Float
+function xfit!(object, X::Matrix{Q}, nlv::Signed) where Q <: Float
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     if nlv == 0

@@ -817,7 +817,7 @@ struct Occdds{Q <: Float}
     d::DataFrame
     fitm
     e_cdf::ECDF
-    nu::Int
+    nu::Signed
     cutoff::Q
     sd2::NamedTuple   
     od2::NamedTuple   
