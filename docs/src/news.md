@@ -3,7 +3,7 @@
 ## *Version 0.10.0*
 
 **Warning:** Major breaking changes have been made in this version compared to versions 0.9, 
-in particular in functions having arguments 'nlv' (laent variables) and 'lb' (ridge). 
+in particular in functions having arguments 'nlv' (laent variables) and 'lb' (ridge).  
 
 - Breakings:
     - Functions having arguments 'nlv' or 'lb': deep restructuration of functions *transf*, *coef* 
