@@ -65,6 +65,7 @@ plsravg(; kwargs...) = JchemoModel(plsravg, nothing, kwargs)
 
 function plsravg(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     plsravg(X, Y, weights; kwargs...)
 end

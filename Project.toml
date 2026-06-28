@@ -27,7 +27,7 @@ UMAP = "c4f8c510-2410-5be4-91d7-4fbaeb39457e"
 [compat]
 Clustering = "0.15.8"
 DataFrames = "1.7"
-DataInterpolations = "8"
+DataInterpolations = "9"
 DecisionTree = "0.12"
 Distances = "0.10"
 Distributions = "0.25"

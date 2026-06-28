@@ -83,6 +83,7 @@ spcr(; kwargs...) = JchemoModel(spcr, nothing, kwargs)
 
 function spcr(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     spcr(X, Y, weights; kwargs...)
 end

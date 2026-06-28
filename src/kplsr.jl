@@ -80,6 +80,7 @@ kplsr(; kwargs...) = JchemoModel(kplsr, nothing, kwargs)
 
 function kplsr(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     kplsr(X, Y, weights; kwargs...)
 end

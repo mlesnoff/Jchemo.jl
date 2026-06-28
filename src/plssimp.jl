@@ -24,6 +24,7 @@ plssimp(; kwargs...) = JchemoModel(plssimp, nothing, kwargs)
 
 function plssimp(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     plssimp(X, Y, weights; kwargs...)
 end

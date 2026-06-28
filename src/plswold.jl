@@ -29,6 +29,7 @@ plswold(; kwargs...) = JchemoModel(plswold, nothing, kwargs)
 
 function plswold(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     plswold(X, Y, weights; kwargs...)
 end

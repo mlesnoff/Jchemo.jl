@@ -88,8 +88,9 @@ plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", ylabel = "Prop. Explain
 plskern(; kwargs...) = JchemoModel(plskern, nothing, kwargs)
 
 function plskern(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    weights = pweight(ones(Q, nro(X)))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     plskern(X, Y, weights; kwargs...)
 end
 

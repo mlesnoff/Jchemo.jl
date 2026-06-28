@@ -92,6 +92,7 @@ dkplsr(; kwargs...) = JchemoModel(dkplsr, nothing, kwargs)
 
 function dkplsr(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     dkplsr(X, Y, weights; kwargs...)
 end

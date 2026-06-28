@@ -18,6 +18,7 @@ rrchol(; kwargs...) = JchemoModel(rrchol, nothing, kwargs)
 
 function rrchol(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     rrchol(X, Y, weights; kwargs...)
 end

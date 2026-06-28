@@ -111,6 +111,7 @@ splsr(; kwargs...) = JchemoModel(splsr, nothing, kwargs)
 
 function splsr(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     splsr(X, Y, weights; kwargs...)
 end

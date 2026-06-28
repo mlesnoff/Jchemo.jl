@@ -61,6 +61,7 @@ plsrout(; kwargs...) = JchemoModel(plsrout, nothing, kwargs)
 
 function plsrout(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     plsrout(X, Y, weights; kwargs...)
 end

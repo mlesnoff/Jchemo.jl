@@ -1,5 +1,6 @@
 function plsravg_unif(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     plsravg_unif(X, Y, weights; kwargs...)
 end

@@ -30,6 +30,7 @@ plsnipals(; kwargs...) = JchemoModel(plsnipals, nothing, kwargs)
 
 function plsnipals(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     plsnipals(X, Y, weights; kwargs...)
 end

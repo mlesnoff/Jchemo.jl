@@ -74,6 +74,7 @@ rr(; kwargs...) = JchemoModel(rr, nothing, kwargs)
 
 function rr(X, Y; kwargs...)
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
     rr(X, Y, weights; kwargs...)
 end
