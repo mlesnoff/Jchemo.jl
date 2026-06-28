@@ -80,7 +80,7 @@ function plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
         ty .= vcol(Y, 1)
         cont = true
         iter = 1
-        wx .= rand(p)
+        wx .= rand(Q, p)
         while cont
             w0 = copy(wx)
             wx .= X' * ty   # .../ dot(ty, ty) [not needed here since normalization]   

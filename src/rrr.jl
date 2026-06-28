@@ -143,7 +143,7 @@ function rrr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
         cont = true
         iter = 1
         wy .= ones(Q, q)
-        wy ./= normv(q)
+        wy ./= normv(wy)
         if tau == 0       
             invCx = inv(X' * X)
         else

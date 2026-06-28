@@ -88,7 +88,7 @@ function pcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     ## theta: coefs regression of Y on T (= C')
     ## not needed (same theta): fcenter!(Y, ymeans)
     theta = inv(fitm.T' * fweightr(fitm.T, fitm.weights.values)) * fitm.T' * fweightr(Y, fitm.weights.values)  # = C'
-    Pcr(fitm, theta', ymeans, yscales, par) 
+    Pcr(fitm, Matrix(theta'), ymeans, yscales, par) 
 end
 
 """ 

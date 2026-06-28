@@ -81,8 +81,8 @@ res = predict(model, Xtest, 1:2) # predictions with 1 and 2 LVs
 
 res = summary(model, Xtrain) ;
 @names res
-z = res.explvarx
-plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance").f
+explv = res.explvarx
+plotgrid(explv.nlv, explv.cumpvar; step = 2, xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
 plskern(; kwargs...) = JchemoModel(plskern, nothing, kwargs)
@@ -218,21 +218,21 @@ function coef(object::Union{Plsr, Plswold, Splsr}, nlv::Int)
 end
 
 """
-    predict(object::Union{Plsr, Splsr, Pcr}, X)
-    predict(object::Union{Plsr, Splsr, Pcr}, X, nlv::Union{Int, AbstractVector{Int}})
+    predict(object::Union{Plsr, Plswold, Splsr, Pcr}, X)
+    predict(object::Union{Plsr, Plswold, Splsr, Pcr}, X, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{Plsr, Splsr, Pcr}, X)
+function predict(object::Union{Plsr, Plswold, Splsr, Pcr}, X)
     X = ensure_mat(X)
     coefs = coef(object)
     pred = coefs.int .+ X * coefs.B  # try muladd(X, coefs.B, coefs.int) 
     (pred = pred, nlv = object.par.nlv)
 end
 
-function predict(object::Union{Plsr, Splsr, Pcr}, X, nlv::Union{Int, AbstractVector{Int}})
+function predict(object::Union{Plsr, Plswold, Splsr, Pcr}, X, nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     Q = eltype(X)
     a = object.par.nlv

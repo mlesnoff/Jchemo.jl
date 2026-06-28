@@ -225,6 +225,30 @@ Base.@kwdef mutable struct ParPlswold{Q <: Float}
     scal::Symbol = :none 
 end 
 
+Base.@kwdef mutable struct ParCglsr
+    nlv::Int = 1 
+    gs::Bool = true       
+    filt::Bool = true              
+    scal::Symbol = :none 
+end  
+
+Base.@kwdef mutable struct ParPcr
+    nlv::Int = 1    
+    scal::Symbol = :none                   
+end
+
+Base.@kwdef mutable struct ParRrr{Q <: Float}
+    nlv::Int = 1 
+    tau::Q = 1e-8       
+    tol::Q = 1e-8  
+    maxit::Int = 200     
+    scal::Symbol = :none                   
+end 
+
+
+
+
+
 Base.@kwdef mutable struct ParPlsravgunif
     nlv::AbstractVector{Int} = 1:1                    
     scal::Symbol = :none 
@@ -253,25 +277,7 @@ Base.@kwdef mutable struct ParKplsr{Q <: Float}
     scal::Symbol = :none                   
 end 
 
-Base.@kwdef mutable struct ParCglsr
-    nlv::Int = 1 
-    gs::Bool = true       
-    filt::Bool = true              
-    scal::Symbol = :none 
-end  
 
-Base.@kwdef mutable struct ParRrr{Q <: Float}
-    nlv::Int = 1 
-    tau::Q = 1e-8       
-    tol::Q = 1e-8  
-    maxit::Int = 200     
-    scal::Symbol = :none                   
-end 
-
-Base.@kwdef mutable struct ParPcr
-    nlv::Int = 1    
-    scal::Symbol = :none                   
-end
 
 Base.@kwdef mutable struct ParRr{Q <: Float}   
     lb::Q = 1e-6                    

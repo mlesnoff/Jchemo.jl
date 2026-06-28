@@ -362,16 +362,6 @@ struct Plswold{Q <: Float}
     par::Union{ParPlswold, ParRrr}
 end
 
-struct Plsravgunif
-    fitm::Plsr
-    par::ParPlsravgunif
-end
-
-struct Plsravg
-    fitm::Plsravgunif
-    par::ParPlsravg
-end
-
 struct Cglsr{Q <: Float}
     B::Matrix{Q}
     g::Vector{Q}
@@ -381,6 +371,24 @@ struct Cglsr{Q <: Float}
     yscales::Vector{Q}
     F::Union{Nothing, Matrix{Q}}
     par::ParCglsr
+end
+
+struct Pcr{Q <: Float}
+    fitm::Pca
+    C::Matrix{Q}
+    ymeans::Vector{Q}
+    yscales::Vector{Q}
+    par::ParPca
+end
+
+struct Plsravgunif
+    fitm::Plsr
+    par::ParPlsravgunif
+end
+
+struct Plsravg
+    fitm::Plsravgunif
+    par::ParPlsravg
 end
 
 struct Spcr{Q <: Float}
@@ -425,14 +433,6 @@ struct Rrchol{Q <: Float}
     int::Matrix{Q}
     weights::ProbabilityWeights{Q}
     par::ParRr
-end
-
-struct Pcr{Q <: Float}
-    fitm::Pca
-    C::Matrix{Q}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    par::ParPca
 end
 
 struct Krr{Q <: Float}
