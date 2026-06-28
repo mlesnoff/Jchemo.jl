@@ -1,8 +1,10 @@
 """
     mbplsr(; kwargs...)
     mbplsr(Xbl, Y; kwargs...)
-    mbplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
-    mbplsr!(Xbl::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    mbplsr(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
+    mbplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
 Multiblock PLSR (MBPLSR).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 * `Y` : Y-data (n, q).
@@ -118,14 +120,14 @@ predict(model, Xbltest).pred
 mbplsr(; kwargs...) = JchemoModel(mbplsr, nothing, kwargs)
 
 function mbplsr(Xbl, Y; kwargs...)
-    Q = eltype(Xbl[1][1, 1])
+    Xbl = ensure_mat_mb(Xbl)
+    Y = ensure_mat(Y)
     n = nro(Xbl[1])
-    weights = pweight(ones(Q, n))
-    mbplsr(Xbl, Y, weights; kwargs...)
+    mbplsr(Xbl, Y, pweight(ones(eltype(Xbl[1]), n)); kwargs...)
 end
 
-function mbplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
-    Q = eltype(Xbl[1][1, 1])
+function mbplsr(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
     nbl = length(Xbl)  
     vXbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
@@ -134,9 +136,9 @@ function mbplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
     mbplsr!(vXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function mbplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function mbplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
     par = recovkw(ParMbplsr{Q}, kwargs).par
-    Q = eltype(Xbl[1][1, 1])
     n, q = size(Y)
     pbl = nco.(Xbl) ; ptot = sum(pbl)
     nlv = min(n, ptot, par.nlv)
@@ -145,14 +147,16 @@ function mbplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X = fconcat(Xbl)
+    ## Centering/scaling of Y
     ymeans = colmean(Y, weights)
+    fcenter!(Y, ymeans)
     yscales = ones(Q, q)
-    if par.scal 
-        yscales .= colstd(Y, weights)
-        fcscale!(Y, ymeans, yscales)
-    else
-        fcenter!(Y, ymeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        yscales .= colscal(Y, weights)
+        fscale!(Y, yscales)
     end
+    ## End
     fitm = plskern(X, Y, weights; nlv, scal = :none)
     Mbplsr(fitm_bl, fitm, ymeans, yscales, weights, par)
 end

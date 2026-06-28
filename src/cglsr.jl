@@ -77,19 +77,20 @@ function cglsr!(X::Matrix{Q}, y::Matrix{Q}; kwargs...) where Q <: Float
     n, p = size(X)
     q = nco(y)
     nlv = min(n, p, par.nlv)
-    par.nlv = nlv
-    xmeans = colmean(X)
-    ymeans = colmean(y)
+    par.nlv = nlv 
+    ## Centering/scaling of X, Y
+    ## No need to fscale y; only for consistency with Plsr
+    xmeans = colmean(X) 
+    ymeans = colmean(y)   
+    fcenter!(X, xmeans)
+    fcenter!(y, ymeans)    
     xscales = ones(Q, p)
-    yscales = ones(Q, q)  # no need to fscale y; only for consistency with Plsr
+    yscales = ones(Q, q)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
         xscales .= colscal(X)
-        fcscale!(X, xmeans, xscales)
-    else
-        fcenter!(X, xmeans)
+        fscale!(X, xscales)
     end
-    fcenter!(y, ymeans)
     ## Pre-allocation and initialization
     B = similar(X, p, nlv)
     b = zeros(Q, p) 

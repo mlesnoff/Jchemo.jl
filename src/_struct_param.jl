@@ -285,6 +285,28 @@ Base.@kwdef mutable struct ParKplsr{Q <: Float}
     scal::Symbol = :none                   
 end 
 
+## Multiblock
+
+Base.@kwdef mutable struct ParMbplsr{Q <: Float}
+    nlv::Int = 1 
+    bscal::Symbol = :none   
+    tol::Q = 1e-8  # mbplswest
+    maxit::Int = 200               # mbplswest     
+    scal::Symbol = :none  
+end 
+
+Base.@kwdef mutable struct ParRosaplsr
+    nlv::Int = 1     
+    scal::Symbol = :none  
+end 
+
+Base.@kwdef mutable struct ParSoplsr
+    nlv::Union{Int, Vector{Int}} = 1     
+    scal::Symbol = :none  
+end 
+
+## End
+
 Base.@kwdef mutable struct ParRr{Q <: Float}   
     lb::Q = 1e-6                    
     scal::Symbol = :none 
@@ -385,26 +407,6 @@ Base.@kwdef mutable struct ParRf{Q <: Float}    # rfr, rfda
     min_samples_split::Int = 5    
     mth::Bool = true  
     scal::Symbol = :none         
-end 
-
-## Multiblock
-
-Base.@kwdef mutable struct ParMbplsr{Q <: Float}
-    nlv::Int = 1 
-    bscal::Symbol = :none   
-    tol::Q = 1e-8  # mbplswest
-    maxit::Int = 200               # mbplswest     
-    scal::Symbol = :none  
-end 
-
-Base.@kwdef mutable struct ParSoplsr
-    nlv::Union{Int, Vector{Int}} = 1     
-    scal::Symbol = :none  
-end 
-
-Base.@kwdef mutable struct ParRosaplsr
-    nlv::Int = 1     
-    scal::Symbol = :none  
 end 
 
 ############---- Discrimination

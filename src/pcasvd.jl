@@ -77,14 +77,14 @@ function pcasvd!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
+    ## Centering/scaling of X
     xmeans = colmean(X, weights)
+    fcenter!(X, xmeans)
     xscales = ones(Q, p)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
         xscales .= colscal(X, weights)
-        fcscale!(X, xmeans, xscales)
-    else
-        fcenter!(X, xmeans)
+        fscale!(X, xscales)
     end
     ## by default in LinearAlgebra.svd, "full = false" ==> [1:min(n, p)]
     sqrtw = sqrt.(weights.values)

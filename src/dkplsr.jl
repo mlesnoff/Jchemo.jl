@@ -106,6 +106,7 @@ function dkplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     p = nco(X)
     q = nco(Y)
+    ## Scaling of X, Y
     xscales = ones(Q, p)
     yscales = ones(Q, q)
     if par.scal != :none
@@ -115,6 +116,7 @@ function dkplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
+    ## End
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
     K = fkern(X, X; kwargs...)     
     fitm = plskern!(K, Y, weights; kwargs...)

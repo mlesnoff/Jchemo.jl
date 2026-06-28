@@ -38,13 +38,13 @@ end
 
 function outeucl!(X::Matrix{Q}; scal::Symbol = :none) where Q <: Float
     p = nco(X)
+    xmeans = Jchemo.colmedspa(X)
     xscales = ones(Q, p)
     if scal != :none
         colscal = def_colscal(scal) 
         xscales .= colscal(X)
         fscale!(X, xscales)
     end
-    xmeans = Jchemo.colmedspa(X)
     d = vec(sqrt.(eucl2(X, xmeans')))
     (d = d, xmeans, xscales)
 end

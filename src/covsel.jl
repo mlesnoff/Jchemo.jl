@@ -88,20 +88,21 @@ function covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv  
+    ## Centering/scaling of Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
+    fcenter!(X, xmeans)
+    fcenter!(Y, ymeans)
     xscales = ones(Q, p)
     yscales = ones(Q, q)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
         xscales .= colscal(X, weights)
         yscales .= colscal(Y, weights)
-        fcscale!(X, xmeans, xscales)
-        fcscale!(Y, ymeans, yscales)
-    else
-        fcenter!(X, xmeans)
-        fcenter!(Y, ymeans)
+        fscale!(X, xscales)
+        fscale!(Y, yscales)
     end
+    ## End
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
     fweightr!(Y, sqrtw)

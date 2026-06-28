@@ -76,15 +76,15 @@ function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeight
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    xmeans = colmeanskip(X, weights) 
+    ## Centering/scaling of X
+    xmeans = colmeanskip(X, weights)
+    X .-= xmeans' 
     xscales = ones(Q, p)
     if par.scal != :none
         xscales .= colstdskip(X, weights)
-        X .-= xmeans'
         X ./= xscales'
-    else
-        X .-= xmeans' #fcenter!(X, xmeans)
     end
+    ## End
     sqrtw = sqrt.(weights.values)
     @. X = sqrtw * X
     T = similar(xmeans, n, nlv)

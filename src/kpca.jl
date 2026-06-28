@@ -72,12 +72,14 @@ function kpca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     n, p = size(X)
     nlv = min(par.nlv, n)
+    ## Scaling of X
     xscales = ones(Q, p)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
         xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
+    ## End
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
     K = fkern(X, X; kwargs...)  # in the future?: fkern!(K, X, X; kwargs...)
     sqrtw = sqrt.(weights.values)

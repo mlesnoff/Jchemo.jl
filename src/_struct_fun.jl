@@ -446,6 +446,63 @@ struct Dkplsr{Q <: Float}
     par::ParKplsr
 end
 
+## Multiblock
+
+struct Mbplsr{Q <: Float}
+    fitm_bl::Blockscal
+    fitm::Plsr
+    ymeans::Vector{Q}
+    yscales::Vector{Q}
+    weights::ProbabilityWeights{Q}
+    par::ParMbplsr
+end
+
+struct Mbplswest{Q <: Float}     
+    T::Matrix{Q}
+    V::Matrix{Q}
+    R::Matrix{Q}
+    W::Matrix{Q}
+    C::Matrix{Q}
+    Tb::Vector{Matrix{Q}}
+    Tbl::Vector{Matrix{Q}}
+    Vbl::Vector{Matrix{Q}}
+    TT::Vector{Q}
+    fitm_bl::Blockscal
+    ymeans::Vector{Q}
+    yscales::Vector{Q}
+    weights::ProbabilityWeights{Q}
+    lb::Union{Nothing, Matrix{Q}}
+    niter::Union{Vector{Int}, Nothing}
+    par::ParMbplsr
+end
+
+struct Rosaplsr{Q <: Float}
+    fitm_bl::Blockscal
+    T::Matrix{Q}
+    V::Matrix{Q}
+    R::Matrix{Q}
+    W::Matrix{Q}
+    C::Matrix{Q}
+    TT::Vector{Q}
+    ymeans::Vector{Q}
+    yscales::Vector{Q}
+    weights::ProbabilityWeights{Q}
+    bl::Vector{Int}
+    par::ParRosaplsr
+end
+
+struct Soplsr{Q <: Float}
+    fitm_bl::Blockscal    
+    fitm::Vector{Plsr}
+    T::Matrix{Q}
+    fit::Matrix{Q}
+    b::Vector{Matrix{Q}}
+    yscales::Vector{Q}
+    par::ParSoplsr
+end
+
+## End
+
 struct Rr{Q <: Float}
     V::Matrix{Q}
     TtY::Matrix{Q}
@@ -530,61 +587,6 @@ struct Treer{Q <: Float}
     xscales::Vector{Q}
     featur::Vector{Int}
     par::Union{ParTree, ParRf}
-end
-
-## Multiblock
-
-struct Mbplsr{Q <: Float}
-    fitm_bl::Blockscal
-    fitm::Plsr
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    weights::ProbabilityWeights{Q}
-    par::ParMbplsr
-end
-
-struct Soplsr{Q <: Float}
-    fitm_bl::Blockscal    
-    fitm::Vector{Q}
-    T::Matrix{Q}
-    fit::Matrix{Q}
-    b::Vector{Q}
-    yscales::Vector{Q}
-    par::ParSoplsr
-end
-
-struct Rosaplsr{Q <: Float}
-    fitm_bl::Blockscal
-    T::Matrix{Q}
-    V::Matrix{Q}
-    R::Matrix{Q}
-    W::Matrix{Q}
-    C::Matrix{Q}
-    TT::Vector{Q}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    weights::ProbabilityWeights{Q}
-    bl::Vector{Int}
-    par::ParRosaplsr
-end
-
-struct Mbplswest{Q <: Float}     # mbplswest, mbwcov 
-    T::Matrix{Q}
-    V::Matrix{Q}
-    R::Matrix{Q}
-    W::Matrix{Q}
-    C::Matrix{Q}
-    Tb::Vector{Matrix{Q}}
-    Tbl::Vector{Matrix{Q}}
-    Vbl::Vector{Matrix{Q}}
-    TT::Vector{Q}
-    fitm_bl::Blockscal
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    weights::ProbabilityWeights{Q}
-    lb::Union{Nothing, Matrix{Q}}
-    niter::Union{Vector{Int}, Nothing}
-    par::ParMbplsr
 end
 
 ############---- Discrimination

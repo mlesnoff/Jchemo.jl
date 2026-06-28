@@ -95,7 +95,10 @@ function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     n, p = size(X)
     q = nco(Y)
     nlv = par.nlv
-    ymeans = colmean(Y, weights)   
+    ## Centering/scaling of X, Y
+    ## No need to center X (what is centered is the kernel)
+    ymeans = colmean(Y, weights)  
+    fcenter!(Y, ymeans)
     xscales = ones(Q, p)
     yscales = ones(Q, q)
     if par.scal != :none
@@ -103,10 +106,9 @@ function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
         xscales .= colscal(X, weights)
         yscales .= colscal(Y, weights)
         fscale!(X, xscales)
-        fcscale!(Y, ymeans, yscales)
-    else
-        fcenter!(Y, ymeans)
+        fscale!(Y, yscales)
     end
+    ## End
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
     K = fkern(X, X; kwargs...)     # In the future?: fkern!(K, X, X; values(kwargs)...)
     Kt = K'    

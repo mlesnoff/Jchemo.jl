@@ -64,15 +64,16 @@ function pcapp!(X::Matrix{Q}; kwargs...) where Q <: Float
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     nsim = par.nsim
-    xmeans = Jchemo.colmedspa(X) 
+    ## Centering/scaling of X
+    xmeans = Jchemo.colmedspa(X, delta = 0.001)
+    fcenter!(X, xmeans)
     xscales = ones(Q, p)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
-        xscales .= colscal(X)
-        fcscale!(X, xmeans, xscales)
-    else
-        fcenter!(X, xmeans)
+        xscales .= colscal(X, weights)
+        fscale!(X, xscales)
     end
+    ## End
     T = similar(X, n, nlv)
     V = similar(X, p, nlv)
     t = similar(X, n)

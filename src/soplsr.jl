@@ -1,7 +1,8 @@
 """
     soplsr(; kwargs...)
     soplsr(Xbl, Y; kwargs...)
-    soplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
+    soplsr(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
     soplsr!(Xbl::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
 Multiblock sequentially orthogonalized PLSR (SO-PLSR).
 * `Xbl` : List of blocks (vector of matrices) of X-data Typically, output of function `mblock` from data (n, p).  
@@ -65,14 +66,14 @@ rmsep(res.pred, ytest)
 soplsr(; kwargs...) = JchemoModel(soplsr, nothing, kwargs)
 
 function soplsr(Xbl, Y; kwargs...)
-    Q = eltype(Xbl[1][1, 1])
+    Xbl = ensure_mat_mb(Xbl)
+    Y = ensure_mat(Y)
     n = nro(Xbl[1])
-    weights = pweight(ones(Q, n))
-    soplsr(Xbl, Y, weights; kwargs...)
+    soplsr(Xbl, Y, pweight(ones(eltype(Xbl[1]), n)); kwargs...)
 end
 
-function soplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
-    Q = eltype(Xbl[1][1, 1])
+function soplsr(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
     nbl = length(Xbl)  
     vXbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
@@ -81,9 +82,9 @@ function soplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
     soplsr!(vXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function soplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParSoplsr{Q}, kwargs).par
-    Q = eltype(Xbl[1][1, 1])
+function soplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
+    par = recovkw(ParSoplsr, kwargs).par
     n, q = size(Y)   
     nbl = length(Xbl)
     pbl = nco.(Xbl)
@@ -101,11 +102,14 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     fitm_bl = blockscal(Xbl, weights; bscal = :none, centr = false, scal = par.scal)
     ## End
     transf!(fitm_bl, Xbl)
+    ## Scaling of Y
     yscales = ones(Q, q)
-    if par.scal 
-        yscales .= colstd(Y, weights)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        yscales .= colscal(Y, weights)
         fscale!(Y, yscales)
     end
+    ## End
     fitm = list(Jchemo.Plsr, nbl)
     fit = similar(Xbl[1], n, q)
     ## Below, if 'scal' = true, object 'fit' is in scale 'scaled-Y' 
@@ -114,7 +118,7 @@ function soplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     T = fitm[1].T
     fit .= predict(fitm[1], Xbl[1]).pred
     ## Other blocks
-    b = list(Array{Q}, nbl) 
+    b = list(Matrix{Q}, nbl) 
     if nbl > 1
         for i = 2:nbl
             DT = fweightr(T, weights.values)
