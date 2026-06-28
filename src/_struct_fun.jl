@@ -407,16 +407,15 @@ struct Spcr{Q <: Float}
     par::ParSpca
 end
 
-struct Plsravg
-    fitm::Plsravgunif
-    par::ParPlsravg
-end
-
 struct Plsravgunif
     fitm::Plsr
     par::ParPlsravgunif
 end
 
+struct Plsravg
+    fitm::Plsravgunif
+    par::ParPlsravg
+end
 
 struct Kplsr{Q <: Float}
     X::Matrix{Q}
@@ -504,7 +503,7 @@ end
 ## End
 
 struct Rr{Q <: Float}
-    V::Matrix{Q}
+    V::Adjoint{Q}
     TtY::Matrix{Q}
     sv::Vector{Q}
     xmeans::Vector{Q}
@@ -538,6 +537,12 @@ end
 
 ## Local
 
+struct Loessr{Q <: Float}
+    fitm::Loess.LoessModel
+    xscales::Vector{Q}
+    par::ParLoessr
+end
+
 struct Knnr{Q <: Float}
     X::Matrix{Q}
     Y::Matrix{Q}
@@ -566,12 +571,6 @@ struct Lwplsravg{Q <: Float}
     Y::Matrix{Q}
     xscales::Vector{Q}
     par::ParLwplsravg
-end
-
-struct Loessr{Q <: Float}
-    fitm::Loess.LoessModel
-    xscales::Vector{Q}
-    par::ParLoessr
 end
 
 ## Svm, Trees

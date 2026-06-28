@@ -3,7 +3,8 @@
     soplsr(Xbl, Y; kwargs...)
     soplsr(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
         kwargs...) where Q <: Float
-    soplsr!(Xbl::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    soplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
 Multiblock sequentially orthogonalized PLSR (SO-PLSR).
 * `Xbl` : List of blocks (vector of matrices) of X-data Typically, output of function `mblock` from data (n, p).  
 * `Y` : Y-data (n, q).
@@ -11,8 +12,8 @@ Multiblock sequentially orthogonalized PLSR (SO-PLSR).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute. Can be a single integer (same nb. LVs for each block) 
     or a vector of integers (nb. LVs for each block).
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and `Y` is scaled by its uncorrected 
-    standard deviation.
+* `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling) and `Y`. Possible values are: `:none`, 
+    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
 
 ## References
 Biancolillo et al. , 2015. Combining SO-PLS and linear discriminant analysis for multi-block classification. 

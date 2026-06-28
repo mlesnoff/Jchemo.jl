@@ -76,7 +76,7 @@ function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeight
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    ## Centering/scaling of X
+    ## Centering/scaling X
     xmeans = colmeanskip(X, weights)
     X .-= xmeans' 
     xscales = ones(Q, p)

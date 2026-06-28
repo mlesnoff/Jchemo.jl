@@ -78,7 +78,7 @@ function cglsr!(X::Matrix{Q}, y::Matrix{Q}; kwargs...) where Q <: Float
     q = nco(y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv 
-    ## Centering/scaling of X, Y
+    ## Centering/scaling X, Y
     ## No need to fscale y; only for consistency with Plsr
     xmeans = colmean(X) 
     ymeans = colmean(y)   

@@ -86,8 +86,7 @@ end
 function rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParRr{Q}, kwargs).par
     p = nco(X)
-    par.lb = Q(par.lb)
-    ## Centering/scaling of X, Y
+    ## Centering/scaling X, Y
     ## No need to scale Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)
@@ -97,7 +96,7 @@ function rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs.
     if par.scal != :none
         colscal = def_colscal(par.scal) 
         xscales .= colscal(X, weights)
-        fcscale!(X, xmeans, xscales)
+        fscale!(X, xscales)
     end
     ## End
     sqrtw = sqrt.(weights.values)

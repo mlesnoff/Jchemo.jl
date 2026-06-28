@@ -106,7 +106,7 @@ function dkplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     p = nco(X)
     q = nco(Y)
-    ## Scaling of X, Y
+    ## ScalingX, Y
     xscales = ones(Q, p)
     yscales = ones(Q, q)
     if par.scal != :none

@@ -14,8 +14,8 @@ Keyword arguments:
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and `Y` is scaled by its uncorrected standard deviation 
-    (before the block scaling).
+* `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling) and `Y`. Possible values are: `:none`, 
+    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
 
 This functions implements the MBPLSR Nipals algorithm such as in Westerhuis et al. 1998. The function gives the same 
 global scores and predictions as function `mbplsr`.

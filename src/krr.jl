@@ -11,7 +11,8 @@ Keyword arguments:
 * `lb` : Ridge regularization parameter "lambda".
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective functions 
     `krbf` and `kpol` for their keyword arguments.
-* `scal` : Boolean. If `true`, each column of `X is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 KRR is also referred to as least squared SVM regression (LS-SVMR). The method is close to the particular case of 
 SVM regression where there is no marge excluding the observations (epsilon coefficient set to zero). The difference 
@@ -117,14 +118,28 @@ function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     par = recovkw(ParKrr{Q}, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     p = nco(X)
-    par.lb = Q(par.lb)
+    
+    #xscales = ones(Q, p)
+    #if par.scal != :none
+    #    colscal = def_colscal(par.scal) 
+    #    xscales .= colscal(X, weights)
+    #    X = fscale(X, xscales)
+    #end
+    #ymeans = colmean(Y, weights)
+
+    ## Centering/scaling X, Y
+    ## No need to center X (what is centered is the kernel)
+    ## No need to scale Y
+    ymeans = colmean(Y, weights)
+    #fcenter!(Y, ymeans)
     xscales = ones(Q, p)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
         xscales .= colscal(X, weights)
-        X = fscale(X, xscales)
+        fscale!(X, xscales)
     end
-    ymeans = colmean(Y, weights)
+    ## End
+
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
     K = fkern(X, X; kwargs...)
     sqrtw = sqrt.(weights.values)

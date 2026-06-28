@@ -36,7 +36,7 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     n, p = size(X)
     lb = Q(par.lb)
-    ## Centering/scaling of X
+    ## Centering/scaling X
     xmeans = colmean(X, weights)
     fcenter!(X, xmeans)
     xscales = ones(Q, p)

@@ -88,7 +88,7 @@ function plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
-    ## Centering/scaling of X, Y
+    ## Centering/scaling X, Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)

@@ -33,7 +33,7 @@ function pcaeigen!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) wher
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    ## Centering/scaling of X
+    ## Centering/scaling X
     xmeans = colmean(X, weights)
     fcenter!(X, xmeans)
     xscales = ones(Q, p)

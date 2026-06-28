@@ -126,7 +126,7 @@ function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q 
     ## End 
     nvar = par.nvar
     if length(nvar) == 1 ; nvar = fill(nvar, nlv) ; end
-    ## Centering/scaling of X
+    ## Centering/scaling X
     xmeans = colmean(X, weights)
     fcenter!(X, xmeans)
     xscales = ones(Q, p)

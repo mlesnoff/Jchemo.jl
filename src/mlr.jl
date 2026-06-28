@@ -86,23 +86,23 @@ function mlr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
 end
 
 """
-    coef(object::Mlr)
+    coef(object::Union{Mlr, Rrchol})
 Compute the coefficients of the fitted model.
 * `object` : The fitted model.
 """ 
-function coef(object::Mlr)
+function coef(object::Union{Mlr, Rrchol})
     (B = object.B, int = object.int)
 end
 
 """
-    predict(object::Mlr, X)
+    predict(object::Union{Mlr, Rrchol}, X)
 Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Mlr, X)
-    z = coef(object)
-    pred = z.int .+ ensure_mat(X) * z.B
+function predict(object::Union{Mlr, Rrchol}, X)
+    coefs = coef(object)
+    pred = coefs.int .+ ensure_mat(X) * coefs.B
     (pred = pred,)
 end
 
