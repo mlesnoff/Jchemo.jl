@@ -50,14 +50,12 @@ scatter!(ax, 0:nlv, zaic)
 f
 ```
 """ 
-function aicplsr(X::AbstMatVec{Q}, y::AbstMatVec{Q}; alpha::Q = Q(2.), 
-        kwargs...) where Q <: Float
-    par = recovkw(ParCglsr{Q}, kwargs).par
-    X = ensure_mat(X)
+function aicplsr(X::AbstMatVec{Q}, y::AbstMatVec{Q}; alpha::Q = 2., kwargs...) where Q <: Float
+    par = recovkw(ParCglsr, kwargs).par  
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    pars = mpar(scal = par.scal)  
+    pars = mpar(scal = [par.scal])  
     zssr = gridscore_lv(X, y, X, y; algo = plskern, score = ssr, pars, nlv = 0:nlv).y1
     df = dfplsr_cg(X, y; kwargs...).df
     dfssr = n .- df
