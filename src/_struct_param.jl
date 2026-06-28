@@ -245,9 +245,11 @@ Base.@kwdef mutable struct ParRrr{Q <: Float}
     scal::Symbol = :none                   
 end 
 
-
-
-
+Base.@kwdef mutable struct ParPlsrout{Q <: Float}
+    nlv::Int = 1 
+    prm::Q = .3         
+    scal::Symbol = :none 
+end 
 
 Base.@kwdef mutable struct ParPlsravgunif
     nlv::AbstractVector{Int} = 1:1                    
@@ -257,12 +259,6 @@ end
 Base.@kwdef mutable struct ParPlsravg
     algo::Symbol = :unif                   
     nlv::AbstractVector{Int} = 1:1                    
-    scal::Symbol = :none 
-end 
-
-Base.@kwdef mutable struct ParPlsrout{Q <: Float}
-    nlv::Int = 1 
-    prm::Q = .3         
     scal::Symbol = :none 
 end 
 

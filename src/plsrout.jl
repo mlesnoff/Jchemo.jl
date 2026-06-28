@@ -74,7 +74,7 @@ function plsrout!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     par = recovkw(ParPlsrout{Q}, kwargs).par 
     n, p = size(X)
     nlvout = 30
-    V = rand(0:1, p, nlvout)
+    V = rand(Q.(0:1), p, nlvout)
     d = outstah(X, V; scal = par.scal).d
     w = wtal(d; a = quantile(d, 1 - par.prm))
     d .= outeucl(X; scal = par.scal).d
