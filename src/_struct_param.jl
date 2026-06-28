@@ -251,13 +251,25 @@ Base.@kwdef mutable struct ParPlsrout{Q <: Float}
     scal::Symbol = :none 
 end 
 
-Base.@kwdef mutable struct ParPlsravgunif
-    nlv::AbstractVector{Int} = 1:1                    
-    scal::Symbol = :none 
+Base.@kwdef mutable struct ParSplsr{Q <: Float}
+    nlv::Int = 1 
+    meth::Symbol = :soft
+    nvar::Union{Int, Vector{Int}} = 1
+    tol::Q = 1e-8 # used when Y (n, q) (snipals)
+    maxit::Int = 200              # used when Y (n, q) (snipals)
+    scal::Symbol = :none                   
+end 
+
+Base.@kwdef mutable struct ParSpcr  # same ParSpca
 end 
 
 Base.@kwdef mutable struct ParPlsravg
     algo::Symbol = :unif                   
+    nlv::AbstractVector{Int} = 1:1                    
+    scal::Symbol = :none 
+end 
+
+Base.@kwdef mutable struct ParPlsravgunif
     nlv::AbstractVector{Int} = 1:1                    
     scal::Symbol = :none 
 end 
@@ -273,8 +285,6 @@ Base.@kwdef mutable struct ParKplsr{Q <: Float}
     scal::Symbol = :none                   
 end 
 
-
-
 Base.@kwdef mutable struct ParRr{Q <: Float}   
     lb::Q = 1e-6                    
     scal::Symbol = :none 
@@ -288,22 +298,6 @@ Base.@kwdef mutable struct ParKrr{Q <: Float}
     degree::Int = 1                       
     scal::Symbol = :none 
 end 
-
-##
-
-Base.@kwdef mutable struct ParSplsr{Q <: Float}
-    nlv::Int = 1 
-    meth::Symbol = :soft
-    nvar::Union{Int, Vector{Int}} = 1
-    tol::Q = 1e-8 # used when Y (n, q) (snipals)
-    maxit::Int = 200              # used when Y (n, q) (snipals)
-    scal::Symbol = :none                   
-end 
-
-Base.@kwdef mutable struct ParSpcr  # same ParSpca
-end 
-
-##
 
 Base.@kwdef mutable struct ParLoessr{Q <: Float}      
     span::Q = 0.75

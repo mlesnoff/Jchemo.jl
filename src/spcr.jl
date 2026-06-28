@@ -100,7 +100,7 @@ function spcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwarg
     fitm = spca!(X, weights; kwargs...)
     par.nlv = fitm.par.nlv
     theta = inv(fitm.T' * fweightr(fitm.T, fitm.weights.values)) * fitm.T' * fweightr(Y, fitm.weights.values)  # = C'
-    Spcr(fitm, theta', ymeans, yscales, par) 
+    Spcr(fitm, Matrix(theta'), ymeans, yscales, par) 
 end
 
 """

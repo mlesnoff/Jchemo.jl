@@ -381,24 +381,6 @@ struct Pcr{Q <: Float}
     par::ParPca
 end
 
-struct Plsravgunif
-    fitm::Plsr
-    par::ParPlsravgunif
-end
-
-struct Plsravg
-    fitm::Plsravgunif
-    par::ParPlsravg
-end
-
-struct Spcr{Q <: Float}
-    fitm::Spca
-    C::Matrix{Q}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    par::ParSpca
-end
-
 struct Splsr{Q <: Float}
     T::Matrix{Q}
     V::Matrix{Q}
@@ -415,6 +397,53 @@ struct Splsr{Q <: Float}
     sellv::Vector{Vector{Int}}
     sel::Vector{Int}
     par::ParSplsr
+end
+
+struct Spcr{Q <: Float}
+    fitm::Spca
+    C::Matrix{Q}
+    ymeans::Vector{Q}
+    yscales::Vector{Q}
+    par::ParSpca
+end
+
+struct Plsravg
+    fitm::Plsravgunif
+    par::ParPlsravg
+end
+
+struct Plsravgunif
+    fitm::Plsr
+    par::ParPlsravgunif
+end
+
+
+struct Kplsr{Q <: Float}
+    X::Matrix{Q}
+    Kt::Adjoint{Q}
+    T::Matrix{Q}
+    C::Matrix{Q}
+    U::Matrix{Q}
+    R::Matrix{Q}
+    DKt::Matrix{Q}
+    vtot::Matrix{Q}   
+    xscales::Vector{Q}
+    ymeans::Vector{Q}
+    yscales::Vector{Q}
+    weights::ProbabilityWeights{Q}
+    iter::Vector{Int}
+    kwargs::Base.Pairs
+    par::ParKplsr
+end
+
+struct Dkplsr{Q <: Float}
+    fitm::Plsr
+    X::Matrix{Q}
+    K::Matrix{Q}
+    xscales::Vector{Q}
+    yscales::Vector{Q}
+    kwargs::Base.Pairs
+    par::ParKplsr
 end
 
 struct Rr{Q <: Float}
@@ -448,34 +477,6 @@ struct Krr{Q <: Float}
     weights::ProbabilityWeights{Q}
     kwargs::Base.Pairs
     par::ParKrr
-end
-
-struct Kplsr{Q <: Float}
-    X::Matrix{Q}
-    Kt::Adjoint{Q}
-    T::Matrix{Q}
-    C::Matrix{Q}
-    U::Matrix{Q}
-    R::Matrix{Q}
-    DKt::Matrix{Q}
-    vtot::Matrix{Q}   
-    xscales::Vector{Q}
-    ymeans::Vector{Q}
-    yscales::Vector{Q}
-    weights::ProbabilityWeights{Q}
-    iter::Vector{Int}
-    kwargs::Base.Pairs
-    par::ParKplsr
-end
-
-struct Dkplsr{Q <: Float}
-    fitm::Plsr
-    X::Matrix{Q}
-    K::Matrix{Q}
-    xscales::Vector{Q}
-    yscales::Vector{Q}
-    kwargs::Base.Pairs
-    par::ParKplsr
 end
 
 ## Local

@@ -75,7 +75,7 @@ function plsravg(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
 end
 
 function plsravg!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
-    par = recovkw(ParPlsravg{Q}, kwargs).par
+    par = recovkw(ParPlsravg, kwargs).par
     if par.algo == :unif
         fitm = plsravg_unif!(X, Y, weights; kwargs...)
     end
