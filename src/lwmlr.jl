@@ -45,7 +45,7 @@ fit!(model0, Xtrain)
 @head Ttest = transf(model0, Xtest)
 
 metric = :eucl 
-h = 2 ; k = 100 
+h = 2. ; k = 100 
 model = lwmlr(; metric, h, k) 
 fit!(model, Ttrain, ytrain)
 @names model
@@ -64,7 +64,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 ## Same but with function 'pip'
 nlv = 20
 metric = :eucl 
-h = 2 ; k = 100 
+h = 2. ; k = 100 
 model1 = pcasvd(; nlv) ;
 model2 = lwmlr(; metric, h, k) 
 model = pip(model1, model2)
@@ -93,10 +93,11 @@ f
 lwmlr(; kwargs...) = JchemoModel(lwmlr, nothing, kwargs)
 
 function lwmlr(X, Y; kwargs...) 
-    par = recovkw(ParLwmlr{Q}, kwargs).par
-    X = ensure_mat(X)  
-    p = nco(X)
+    X = ensure_mat(X)
     Y = ensure_mat(Y)
+    p = nco(X)
+    Q = eltype(X) 
+    par = recovkw(ParLwmlr{Q}, kwargs).par
     xscales = ones(Q, p)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
@@ -113,17 +114,17 @@ Compute the Y-predictions from the fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Lwmlr, X)
-    Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
+    Q = eltype(object.X)
     ## Getknn
     metric = object.par.metric
-    h = Q(object.par.h)
     k = object.par.k
-    tolw = Q(object.par.tolw)
-    criw = Q(object.par.criw)
+    h = object.par.h
+    criw = object.par.criw
     squared = object.par.squared
-    if object.par.scal
+    tolw = object.par.tolw
+    if object.par.scal != :none
         zX1 = fscale(object.X, object.xscales)
         zX2 = fscale(X, object.xscales)
         res = getknn(zX1, zX2; metric, k)
@@ -131,7 +132,7 @@ function predict(object::Lwmlr, X)
         res = getknn(object.X, X; metric, k)
     end
     listw = similar(res.d)
-    Threads.@threads for i = 1:m
+    Threads.@threads for i in eachindex(res.d)
         w = winvs(res.d[i]; h, criw, squared)
         @. w[w < tolw] = tolw
         listw[i] = w

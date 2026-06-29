@@ -1,6 +1,6 @@
 """
-    winvs(d::Vector{T}; h::T = T(2.0), criw::T = T(4.0), squared::Bool = false) where T <: Float
-    winvs!(d::Vector{T}; h::T = T(2.0), criw::T = T(4.0), squared::Bool = false) where T <: Float
+    winvs(d::Vector{T}; h::T = 2., criw::T = 4., squared::Bool = false) where T <: Float
+    winvs!(d::Vector{T}; h::T = 2., criw::T = 4., squared::Bool = false) where T <: Float
 Compute weights from distances using an inverse scaled exponential function.
 * `d` : A vector of distances.
 Keyword arguments:
@@ -29,7 +29,7 @@ using Jchemo, CairoMakie, Distributions
 x1 = rand(Chisq(10), 100) ;
 x2 = rand(Chisq(40), 10) ;
 d = [sqrt.(x1) ; sqrt.(x2)]
-h = 2 ; criw = 3.
+h = 2. ; criw = 3.
 w = winvs(d; h, criw) ;
 f = Figure(size = (600, 300))
 ax1 = Axis(f, xlabel = "Distance", ylabel = "Nb. observations")
@@ -56,13 +56,13 @@ f[1, 1] = ax
 f
 ```
 """  
-function winvs(d::Vector{T}; h::T = 2.0, criw::T = 4.0, squared::Bool = false) where T <: Float
+function winvs(d::Vector{T}; h::T = 2., criw::T = 4., squared::Bool = false) where T <: Float
     w = copy(d)
-    winvs!(w; h, criw, squared = squared)
+    winvs!(w; h, criw, squared)
     w
 end
 
-function winvs!(d::Vector{T}; h::T = 2.0, criw::T = 4.0, squared::Bool = false) where T <: Float
+function winvs!(d::Vector{T}; h::T = 2., criw::T = 4., squared::Bool = false) where T <: Float
     if squared
         @. d = d^2 
     end

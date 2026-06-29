@@ -43,7 +43,7 @@ tab(ytrain)
 tab(ytest)
 
 metric = :mah
-h = 2 ; k = 10
+h = 2. ; k = 10
 model = lwmlrda(; metric, h, k) 
 fit!(model, Xtrain, ytrain)
 @names model

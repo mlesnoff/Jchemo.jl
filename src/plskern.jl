@@ -1,8 +1,8 @@
 """
     plskern(; kwargs...)
     plskern(X, Y; kwargs...)
-    plskern(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
-    plskern!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plskern(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plskern!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Partial least squares regression (PLSR) with the "improved kernel algorithm #1" (Dayal & McGegor, 1997).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -94,11 +94,11 @@ function plskern(X, Y; kwargs...)
     plskern(X, Y, weights; kwargs...)
 end
 
-function plskern(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function plskern(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     plskern!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function plskern!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function plskern!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPlsr, kwargs).par
     n, p = size(X)
     q = nco(Y)

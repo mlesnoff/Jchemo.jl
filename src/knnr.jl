@@ -89,11 +89,11 @@ knnr(; kwargs...) = JchemoModel(knnr, nothing, kwargs)
 
 function knnr(X, Y; kwargs...) 
     X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    p = nco(X)
     Q = eltype(X) 
     par = recovkw(ParKnn{Q}, kwargs).par
     @assert in([:eucl, :mah, :sam, :cos, :cor])(par.metric) "Wrong value for argument 'metric'."
-    Y = ensure_mat(Y)
-    p = nco(X)
     xscales = ones(Q, p)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
@@ -110,10 +110,10 @@ Compute the Y-predictions from the fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Knnr, X)
-    Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
     q = nco(object.Y)
+    Q = eltype(object.X)
     ## Getknn
     metric = object.par.metric
     h = object.par.h

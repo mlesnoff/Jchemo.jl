@@ -1,8 +1,8 @@
 """
     mlr(; kwargs...)
     mlr(X, Y; kwargs...)
-    mlr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
-    mlr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    mlr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    mlr!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Mutiple linear regression model (MLR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -59,11 +59,11 @@ function mlr(X, Y; kwargs...)
     mlr(X, Y, weights; kwargs...)
 end
 
-function mlr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function mlr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     mlr!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function mlr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function mlr!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParMlr, kwargs).par
     sqrtw = sqrt.(weights.values)
     if par.noint

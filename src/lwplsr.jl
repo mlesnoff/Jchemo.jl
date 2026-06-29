@@ -109,10 +109,11 @@ typeof(res.fitm[i])
 lwplsr(; kwargs...) = JchemoModel(lwplsr, nothing, kwargs)
 
 function lwplsr(X, Y; kwargs...)
-    par = recovkw(ParLwplsr{Q}, kwargs).par 
     X = ensure_mat(X)
-    p = nco(X)
     Y = ensure_mat(Y)
+    p = nco(X)
+    Q = eltype(X) 
+    par = recovkw(ParLwplsr{Q}, kwargs).par
     nlv = min(par.k, p, par.nlv)
     par.nlv = nlv
     if par.nlvdis == 0
@@ -121,8 +122,9 @@ function lwplsr(X, Y; kwargs...)
         fitm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
     end
     xscales = ones(Q, p)
-    if isnothing(fitm) && par.scal
-        xscales .= colstd(X)
+    if isnothing(fitm) && (par.scal != :none)
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X)
     end
     Lwplsr(fitm, X, Y, xscales, par)
 end
@@ -140,24 +142,24 @@ function predict(object::Lwplsr, X)
 end
 
 function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})
-    Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
+    Q = eltype(object.X)
     a = object.par.nlv
     if isa(nlv, Int)
         nlv = min(nlv, a)
     else
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
-    end
+    end    
     ## Getknn
     metric = object.par.metric
     k = object.par.k
-    h = Q(object.par.h)
-    criw = Q(object.par.criw)
+    h = object.par.h
+    criw = object.par.criw
     squared = object.par.squared
-    tolw = Q(object.par.tolw)
+    tolw = object.par.tolw
     if isnothing(object.fitm)
-        if object.par.scal
+        if object.par.scal != :none
             zX1 = fscale(object.X, object.xscales)
             zX2 = fscale(X, object.xscales)
             res = getknn(zX1, zX2; metric, k)
@@ -169,7 +171,7 @@ function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})
     end
     listw = similar(res.d)
     #@inbounds for i = 1:m
-    Threads.@threads for i = 1:m
+    Threads.@threads for i in eachindex(res.d)
         w = winvs(res.d[i]; h, criw, squared)
         @. w[w < tolw] = tolw
         listw[i] = w

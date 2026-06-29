@@ -349,7 +349,7 @@ The LWR algorithm of Naes et al (1990) consists in implementing a preliminary gl
 
 ```julia
 nlv = 25
-metric = :eucl ; h = 2 ; k = 200
+metric = :eucl ; h = 2.;  k = 200
 model1 = pcasvd(; nlv)
 model2 = lwmlr(; metric, h, k)
 model = pip(model1, model2)

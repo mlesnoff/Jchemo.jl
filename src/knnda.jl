@@ -39,7 +39,7 @@ ntest = nro(Xtest)
 tab(ytrain)
 tab(ytest)
 
-metric = :eucl ; h = 2 ; k = 10
+metric = :eucl ; h = 2. ; k = 10
 model = knnda(; metric, h, k) 
 fit!(model, Xtrain, ytrain)
 @names model

@@ -55,10 +55,10 @@ loessr(; kwargs...) = JchemoModel(loessr, nothing, kwargs)
 
 function loessr(X, y; kwargs...)
     X = ensure_mat(X)
-    Q = eltype(X) 
-    par = recovkw(ParLoessr{Q}, kwargs).par
     y = vec(y)    
     p = nco(X)
+    Q = eltype(X) 
+    par = recovkw(ParLoessr{Q}, kwargs).par
     xscales = ones(Q, p)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
