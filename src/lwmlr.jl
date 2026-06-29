@@ -98,8 +98,10 @@ function lwmlr(X, Y; kwargs...)
     p = nco(X)
     Y = ensure_mat(Y)
     xscales = ones(Q, p)
-    if par.scal
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        X = fscale(X, xscales)
     end
     Lwmlr(X, Y, xscales, par)
 end

@@ -56,13 +56,13 @@ f[1, 1] = ax
 f
 ```
 """  
-function winvs(d::Vector{T}; h::T = T(2.0), criw::T = T(4.0), squared::Bool = false) where T <: Float
+function winvs(d::Vector{T}; h::T = 2.0, criw::T = 4.0, squared::Bool = false) where T <: Float
     w = copy(d)
     winvs!(w; h, criw, squared = squared)
     w
 end
 
-function winvs!(d::Vector{T}; h::T = T(2.0), criw::T = T(4.0), squared::Bool = false) where T <: Float
+function winvs!(d::Vector{T}; h::T = 2.0, criw::T = 4.0, squared::Bool = false) where T <: Float
     if squared
         @. d = d^2 
     end

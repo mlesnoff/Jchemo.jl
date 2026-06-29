@@ -36,7 +36,7 @@ function locwlv(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}},
     zpred = similar(Ytrain, m, q, le_nlv)
     fitm = list(m)
     #@inbounds for i = 1:m
-    Threads.@threads for i = eachindex(fitm)
+    Threads.@threads for i in eachindex(fitm)
         if verbose ; print(i, " ") ; end
         s = listnn[i]
         if length(s) == 1 ; s = s:s ; end

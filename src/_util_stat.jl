@@ -341,16 +341,16 @@ covm(X, w)
 covm(X, Y, w)
 ```
 """
-covm(X::AbstMatVec{Q}) where Q <: Float = Statistics.cov(X; corrected = false)
+covm(X::AbstMatVec{Q}) where Q <: Float = ensure_mat(Statistics.cov(X; corrected = false))
 
 function covm(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
     zX = copy(ensure_mat(X))
     fcenter!(zX, colmean(zX, weights))
     fweightr!(zX, sqrt.(weights.values))
-    zX' * zX
+     ensure_mat(zX' * zX)
 end
 
-covm(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where Q <: Float = Statistics.cov(X, Y; corrected = false)
+covm(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where Q <: Float =  ensure_mat(Statistics.cov(X, Y; corrected = false))
 
 function covm(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
     zX = copy(ensure_mat(X))
@@ -358,7 +358,7 @@ function covm(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, weights::ProbabilityWeights{Q}
     fcenter!(zX, colmean(zX, weights))
     fcenter!(zY, colmean(zY, weights))
     fweightr!(zY, weights.values)
-    zX' * zY
+    ensure_mat(zX' * zY)
 end
 
 """
@@ -386,13 +386,13 @@ cosm(X, Y)
 """
 function cosm(X::AbstMatVec{Q}) where Q <: Float
     zX = fscale(X, colnorm(X))
-    zX' * zX 
+    ensure_mat(zX' * zX) 
 end
 
 function cosm(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where Q <: Float
     zX = fscale(X, colnorm(X))
     zY = fscale(Y, colnorm(Y))
-    zX' * zY 
+    ensure_mat(zX' * zY) 
 end
 
 """
@@ -431,10 +431,10 @@ function corm(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
     zX = copy(ensure_mat(X))
     fcscale!(zX, colmean(zX, weights), colstd(zX, weights))
     fweightr!(zX, sqrt.(weights.values))
-    zX' * zX
+    ensure_mat(zX' * zX)
 end
 
-corm(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where Q <: Float = Statistics.cor(X, Y)
+corm(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where Q <: Float = ensure_mat(Statistics.cor(X, Y))
 
 function corm(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float 
     zX = copy(ensure_mat(X))
@@ -442,7 +442,7 @@ function corm(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, weights::ProbabilityWeights{Q}
     fcscale!(zX, colmean(zX, weights), colstd(zX, weights))
     fcscale!(zY, colmean(zY, weights), colstd(zY, weights))
     fweightr!(zY, weights.values)
-    zX' * zY
+    ensure_mat(zX' * zY)
 end
 
 """ 

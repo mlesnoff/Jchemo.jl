@@ -88,14 +88,17 @@ f
 knnr(; kwargs...) = JchemoModel(knnr, nothing, kwargs)
 
 function knnr(X, Y; kwargs...) 
+    X = ensure_mat(X)
+    Q = eltype(X) 
     par = recovkw(ParKnn{Q}, kwargs).par
     @assert in([:eucl, :mah, :sam, :cos, :cor])(par.metric) "Wrong value for argument 'metric'."
-    X = ensure_mat(X)
     Y = ensure_mat(Y)
     p = nco(X)
     xscales = ones(Q, p)
-    if par.scal
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        X = fscale(X, xscales)
     end
     Knnr(X, Y, xscales, par) 
 end
@@ -113,12 +116,12 @@ function predict(object::Knnr, X)
     q = nco(object.Y)
     ## Getknn
     metric = object.par.metric
-    h = Q(object.par.h)
+    h = object.par.h
     k = object.par.k
-    tolw = Q(object.par.tolw)
-    criw = Q(object.par.criw)
+    tolw = object.par.tolw
+    criw = object.par.criw
     squared = object.par.squared
-    if object.par.scal
+    if object.par.scal != :none
         zX1 = fscale(object.X, object.xscales)
         zX2 = fscale(X, object.xscales)
         res = getknn(zX1, zX2; metric, k)
