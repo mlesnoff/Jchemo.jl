@@ -279,7 +279,7 @@ include("sampwsp.jl")
 include("samprand.jl")
 include("sampsys.jl")
 include("sampcla.jl")
-include("sampdf.jl")
+include("sampdatf.jl")
 
 include("distances.jl")
 include("getknn.jl")
@@ -499,7 +499,7 @@ export
     conf, 
     ######---- Sampling
     sampks, sampdp, sampwsp, samprand, sampsys, sampcla, 
-    sampdf,
+    sampdatf,
     sampbag, 
     ######---- Distances
     getknn, wdis, wtal, winvs, winvs!,

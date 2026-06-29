@@ -1,7 +1,7 @@
 """
     protoplsr(; kwargs...)
     protoplsr(X, Y; kwargs...)
-Averaging PLSR models built on the neighborhood of prototype observations.
+Averaging prototype PLSR models (built on the neighborhood of prototype observations).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 Keyword arguments:
@@ -91,7 +91,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 """ 
 protoplsr(; kwargs...) = JchemoModel(protoplsr, nothing, kwargs)
 
-Base.@kwdef mutable struct ParProtoplsr 
+Base.@kwdef mutable struct ParProtoplsr{Q <: Float}
     nlvdis::Int = 0                         
     metric::Symbol = :eucl  
     nproto::Int = 1
@@ -101,30 +101,31 @@ Base.@kwdef mutable struct ParProtoplsr
     nlv::Int = 1  
     K::Int = 5    
     kavg::Int = 1                              
-    h::Float64 = Inf                        
-    criw::Float64 = 4                       
+    h::Q = Inf                        
+    criw::Q = 4                       
     squared::Bool = false                   
-    tolw::Float64 = 1e-4                    
+    tolw::Q = 1e-4                    
     scal::Symbol = :none 
     seed::Union{Nothing, Int} = nothing     
 end
 
-struct Protoplsr
+struct Protoplsr{Q <: Float}
     fitm::Vector{Plsr}    
     fitm_emb::Union{Nothing, Plsr}
-    Xproto::Matrix
-    Yproto::Matrix
-    coefs::Vector
+    Xproto::Matrix{Q}
+    Yproto::Matrix{Q}
+    coefs::Vector{Q}
     resnn::NamedTuple
     par::ParProtoplsr
 end
 
 function protoplsr(X, Y; kwargs...)
-    par = recovkw(ParProtoplsr{Q}, kwargs).par 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    n, p = size(X) 
+    n, p = size(X)
     q = nco(Y)
+    Q = eltype(X) 
+    par = recovkw(ParProtoplsr{Q}, kwargs).par
     nlv = min(par.k, p, par.nlv)
     par.nlv = nlv
     ## Selection of the prototypes

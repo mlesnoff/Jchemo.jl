@@ -1,9 +1,9 @@
 """
     samprand(n::Int, k::Int; seed::Union{Nothing, Int} = nothing)
-    samprand(group::Vector, k::Int; seed::Union{Nothing, Int} = nothing)
+    samprand(group::Vector{String}, k::Int; seed::Union{Nothing, Int} = nothing)
 Build training vs. test sets by random sampling.  
 * `n` : Total nb. of observations.
-* `group` : A vector (`n`) defining groups of observations.
+* `group` : A vector (`n`) defining groups of observations. Must be a `Vector{String}`.
 * `k` : Nb. test observations, or nb. test groups if `group` is used, returned in each validation segment.
 Keyword arguments:
 * `seed` : Eventual seed for the `Random.MersenneTwister` generator. 
@@ -35,15 +35,13 @@ group[res.test]
 """ 
 function samprand(n::Int, k::Int; seed::Union{Nothing, Int} = nothing)
     vn = collect(1:n)
-    s = StatsBase.sample(MersenneTwister(seed), vn, k; replace = false, ordered = true)
-    train = rmrow(vn, s)     
-    (train = train, test = s)
+    s = StatsBase.sample(MersenneTwister(seed), vn, k; replace = false, ordered = true)    
+    (train = rmrow(vn, s) , test = s)
 end
 
-function samprand(group::Vector, k::Int; seed::Union{Nothing, Int} = nothing)
+function samprand(group::Vector{String}, k::Int; seed::Union{Nothing, Int} = nothing)
     vn = collect(1:length(group))
-    s = segmts(group, k; rep = 1, seed)[1][1]    
-    train = rmrow(vn, s) 
-    (train = train, test = s)
+    s = segmts(group, k; rep = 1, seed)[1][1]     
+    (train = rmrow(vn, s), test = s)
  end
 

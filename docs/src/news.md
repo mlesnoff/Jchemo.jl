@@ -15,6 +15,7 @@ in particular in functions having arguments 'nlv' (laent variables) and 'lb' (ri
     - Function **mbpca** renamed to **cpca**.
     - Function **aov1**: syntax changed.
     - Function **aggstat**: arguments 'sel' and 'group' changed.
+    - Fonction **sampdf**: remabed tp **sampdatf**.
     - Function **waldtest**: arguments' order changed.
     - Fuction **rclustplsr** temporary removed.
     - Package UMAP updated to 0.3
@@ -55,7 +56,7 @@ in particular in functions having arguments 'nlv' (laent variables) and 'lb' (ri
     - Function **waldtest**: Wald or F test for model coefficients.
     - Function **wilks**: Compute statistics for multivariate tests.
     - Function **expand_grid**: Build a dataframe with all the combinations of the entered parameter values.
-    - Function **protoplsr**: Averaging PLSR models built on the neighborhood of prototype observations.
+    - Function **protoplsr**: Averaging prototype PLSR models (built on the neighborhood of prototype observations).
     - Function **rclustplsr**: Random clustered PLSR.
 
 - Modifications

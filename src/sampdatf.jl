@@ -1,6 +1,6 @@
 """ 
-    sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); meth = :rand,
-        seed::Union{Nothing, Int} = nothing)
+    sampdatf(Y::DataFrame, k::Union{Int, Vector{Int}}, id::Vector = collect(1:nro(Y)); 
+        meth::Symbol = :rand, seed::Union{Nothing, Int} = nothing)
 Build training vs. test sets from each column of a dataframe. 
 * `Y` : DataFrame (n, p). Typivally, contains a set of response variables to predict. Can contain missing values.
 * `k` : Nb. of test observations selected for each `Y`-column. The selection is done within the non-missing observations 
@@ -21,20 +21,20 @@ Y = DataFrame(Y, :auto)
 n = nro(Y)
 
 k = 3
-res = sampdf(Y, k) 
-#res = sampdf(Y, k, string.(1:n))
+res = sampdatf(Y, k) 
+#res = sampdatf(Y, k, string.(1:n))
 @names res
 res.nam
 length(res.test)
 res.train
 res.test
 
-sampdf(Y, k; seed = 123) 
+sampdatf(Y, k; seed = 123) 
 
 ## Replicated splitting Train/Test
 rep = 10
 k = 3
-ids = [sampdf(Y, k) for i = 1:rep]
+ids = [sampdatf(Y, k) for i = 1:rep]
 length(ids)
 i = 1    # replication
 ids[i]
@@ -46,14 +46,17 @@ ids[i].test[j]
 ids[i].nam[j]
 ```
 """
-function sampdf(Y::DataFrame, k::Union{Int, Vector{Int}}, id = 1:nro(Y); meth = :rand,
-        seed::Union{Nothing, Int} = nothing)
+function sampdatf(Y::DataFrame, k::Union{Int, Vector{Int}}, id::Vector = collect(1:nro(Y)); 
+        meth::Symbol = :rand, seed::Union{Nothing, Int} = nothing)
     @assert in([:rand; :sys])(meth) "Wrong value for argument 'meth'."
     p = nco(Y)
     nam = names(Y)
-    train = list(Vector, p)  
-    test = list(Vector, p)
-    if length(k) == 1 ; k = fill(k, p) ; end
+    Q = eltype(id)
+    train = list(Vector{Q}, p)  
+    test = list(Vector{Q}, p)
+    if length(k) == 1
+        k = fill(k, p)
+    end
     @inbounds for i in axes(Y, 2)
         y = Y[:, nam[i]]
         s_all = findall(ismissing.(y) .== 0)

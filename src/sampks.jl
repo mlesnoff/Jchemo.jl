@@ -1,5 +1,5 @@
 """
-    sampks(X, k::Int; metric = :eucl)
+    sampks(X, k::Int; metric::Symbol = :eucl)
 Build training vs. test sets by Kennard-Stone sampling.  
 * `X` : X-data (n, p).
 * `k` : Nb. test observations to sample.
@@ -43,7 +43,7 @@ fit!(model, X)
 @head T = model.fitm.T
 res = sampks(T, k; metric = :mah)
 
-#####################
+###############
 
 n = 10
 k = 25 
@@ -56,26 +56,27 @@ scatter!(ax, X[s, 1], X[s, 2]; color = "red")
 f
 ```
 """ 
-function sampks(X, k::Int; metric = :eucl)
+function sampks(X, k::Int; metric::Symbol = :eucl)
     @assert in([:eucl, :mah, :sam, :cos, :cor])(metric) "Wrong value for argument 'metric'."
+    X = ensure_mat(X)
     if metric == :eucl
         D = eucl2(X, X)
     else
         D = mah2chol(X, X)
     end
-    zn = 1:nro(D)
+    vn = 1:nro(D)
     ## Initial selection of 2 obs. (train)
     s = findall(D .== maximum(D))
     s = [s[1][1] ; s[1][2]]
     ## Candidates
-    cand = zn[setdiff(1:end, s)]
+    candidat = vn[setdiff(1:end, s)]
     @inbounds for i = 1:(k - 2)
-        u = vec(minimum(D[s, cand], dims = 1))
-        zs = cand[findall(u .== maximum(u))[1]]
+        u = vec(minimum(D[s, candidat], dims = 1))
+        zs = candidat[findall(u .== maximum(u))[1]]
         s = [s ; zs]
-        cand = zn[setdiff(1:end, s)]
+        candidat = vn[setdiff(1:end, s)]
     end
     sort!(s)
-    (train = cand, test = s)
+    (train = candidat, test = s)
 end
 

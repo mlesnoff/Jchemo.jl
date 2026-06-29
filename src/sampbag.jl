@@ -1,7 +1,8 @@
 """
-    sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = .7, seed = nothing)
-    sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, replace = true, colsamp = .7, 
-        seed = nothing)
+    sampbag(n::Int, p::Int; rep::Int = 50, rowsamp::Q = .7, 
+        replace::Bool = true, colsamp::Q = .7, seed::Union{Nothing, Int} = nothing) where Q <: Float 
+    sampbag(n::Int, p::Int, colweight::ProbabilityWeights{Q}; rep::Int = 50, rowsamp::Q = .7, 
+        replace::Bool = true, colsamp::Q = .7, seed::Union{Nothing, Int} = nothing) where Q <: Float 
 Sampling for bagging.
 * `n`, `p` : Nb. total of observations and variables, respectively, considered in the bagging.
 * `colweight` : Weights (p) of the variables. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -17,15 +18,16 @@ Keyword arguments:
 using Jchemo  
 
 n = 10 ; p = 4 ; q = 2
-res = sampbag(n, p; rep = 4, rowsamp = .7, colsamp = .7) ;
-#res = sampbag(n, p; rep = 4, rowsamp = .7, colsamp = .7, seed = 1234) ;
+res = sampbag(n::Int, p::Int; rep = 4, rowsamp = .7, colsamp = .7) ;
+#res = sampbag(n::Int, p::Int; rep = 4, rowsamp = .7, colsamp = .7, seed = 1234) ;
 @names res
 res.srow
 res.srow_oob
 res.scol
 ```
 """ 
-function sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = .7, seed = nothing)
+function sampbag(n::Int, p::Int; rep::Int = 50, rowsamp::Q = .7, 
+        replace::Bool = true, colsamp::Q = .7, seed::Union{Nothing, Int} = nothing) where Q <: Float 
     range_n = collect(1:n)
     range_p = collect(1:p) 
     mrow = Int(round(rowsamp * n))
@@ -41,7 +43,7 @@ function sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = .7, see
         vseed = [seed + i - 1 for i in eachindex(srow)]
     end    
     ordered = true
-    Threads.@threads for i = 1:rep 
+    Threads.@threads for i in eachindex(srow)
         ## Rows
         s = StatsBase.sample(MersenneTwister(vseed[i]), range_n, mrow; replace, ordered)
         srow[i] = s
@@ -57,8 +59,8 @@ function sampbag(n, p; rep = 50, rowsamp = .7, replace = true, colsamp = .7, see
     (srow = srow, srow_oob, scol)
 end
 
-function sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, replace = true, colsamp = .7,
-        seed = nothing)
+function sampbag(n::Int, p::Int, colweight::ProbabilityWeights{Q}; rep::Int = 50, rowsamp::Q = .7, 
+        replace::Bool = true, colsamp::Q = .7, seed::Union{Nothing, Int} = nothing) where Q <: Float 
     range_n = collect(1:n)
     range_p = collect(1:p) 
     mrow = Int(round(rowsamp * n))
@@ -74,7 +76,7 @@ function sampbag(n, p, colweight::ProbabilityWeights; rep = 50, rowsamp = .7, re
         vseed = [seed + i - 1 for i in eachindex(srow)]
     end
     ordered = true
-    Threads.@threads for i = 1:rep 
+    Threads.@threads for i in eachindex(srow)
         ## Rows
         s = StatsBase.sample(MersenneTwister(vseed[i]), range_n, mrow; replace, ordered)
         srow[i] = s

@@ -1,9 +1,9 @@
 """
     segmkf(n::Int, K::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
-    segmkf(group::Vector, K::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
+    segmkf(group::Vector{String}, K::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
 Build segments of observations for K-fold cross-validation.  
 * `n` : Total nb. of observations in the dataset. The sampling is implemented within 1:`n`.
-* `group` : A vector (`n`) defining blocks of observations.
+* `group` : A vector (`n`) defining blocks of observations. Must be a `Vector{String}`.
 * `K` : Nb. folds (segments) splitting the `n` observations. 
 Keyword arguments:
 * `rep` : Nb. replications of the K-fold sampling.
@@ -64,7 +64,7 @@ function segmkf(n::Int, K::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
     s
 end
 
-function segmkf(group::Vector, K::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
+function segmkf(group::Vector{String}, K::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
     Q = Vector{Int}
     s = list(Vector{Q}, rep)
     if isnothing(seed)
@@ -84,14 +84,14 @@ function segmkf(group::Vector, K::Int; rep = 1, seed::Union{Nothing, Int} = noth
             s[i][j] = sort(filter(x -> x > 0, v[j, :]))
         end
     end
-    zs = copy(s)
-    @inbounds for i = 1:rep
+    vs = copy(s)
+    @inbounds for i in eachindex(s)
         @inbounds for j = 1:K
             u = s[i][j]
             v = findall(in(yagg[u]).(group))       
-            zs[i][j] = v
+            vs[i][j] = v
         end
     end
-    zs    
+    vs    
 end
 

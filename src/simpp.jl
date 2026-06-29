@@ -5,7 +5,7 @@
 ## A New Approach to Robust Principal Component Analysis. 
 ## Technometrics 47, 64-79. https://doi.org/10.1198/004017004000000563.
 ## The directions go through the two points of pairs of observations.
-simpphub = function(X; nsim = 0, cst = 50)
+simpphub = function(X::AbstMatVec{Q}; nsim::Int = 0, cst::Int = 50) where Q <: Float
     X = ensure_mat(X)
     n, p = size(X)
     V = similar(X, p, n + nsim)
@@ -29,7 +29,7 @@ simpphub = function(X; nsim = 0, cst = 50)
 end
 
 ## Sphere
-simppsph = function(X; nsim = 0)
+simppsph = function(X::AbstMatVec{Q}; nsim::Int = 0) where Q <: Float
     X = ensure_mat(X)
     n, p = size(X)
     V = similar(X, p, n + nsim)

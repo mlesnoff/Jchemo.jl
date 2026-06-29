@@ -142,7 +142,7 @@
 - **lwplsravg** kNN-LWPLSR-AVG 
 
 *Prototype models*
-- **protoplsr** Averaging PLSR models built on the neighborhood of prototype observations
+- **protoplsr** Averaging prototype PLSR models (built on the neighborhood of prototype observations)
 - **protoclustplsr** Clustered PLSR
 
 ### Support vector machines
@@ -373,7 +373,7 @@
 - **samprand** Random (without replacement)
 - **sampsys** Systematic over a quantitative variable
 - **sampcla** Stratified by class
-- **sampdf** From each column of a dataframe (where missing values are allowed)
+- **sampdatf** From each column of a dataframe (where missing values are allowed)
 
 - **sampks** Kennard-Stone 
 - **sampdp** Duplex  
