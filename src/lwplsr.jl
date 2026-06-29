@@ -16,10 +16,10 @@ Keyword arguments:
     `winvs` can also be specified here).
 * `tolw` : For stabilization when very close neighbors.
 * `nlv` : Nb. latent variables (LVs) for the local (i.e. inside each neighborhood) models.
-* `scal` : Boolean. If `true`, (a) each column of the global `X` (and of the global `Y` if there 
-    is a preliminary PLS reduction dimension) is scaled by its uncorrected standard deviation before to compute 
-    the distances and the weights, and (b) the X and Y scaling is also done within each neighborhood (local level) 
-    for the weighted PLSR.
+* `scal` : Symbol defining the column scaling. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` (and of the global `Y` if there 
+    is a preliminary PLS reduction dimension) is scaled (before the computation of the distances and local weights), 
+    and (b) the X and Y scaling is also done within each neighborhood (local level) for the weighted PLSR.
 * `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned by function `predict`.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
@@ -86,9 +86,9 @@ fit!(model, Xtrain, ytrain)
 
 res = predict(model, Xtest) ; 
 @names res 
-res.listnn
-res.listd
-res.listw
+@head res.listnn
+@head res.listd
+@head res.listw
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  

@@ -5,11 +5,11 @@ function plsravg_unif(X, Y; kwargs...)
     plsravg_unif(X, Y, weights; kwargs...)
 end
 
-function plsravg_unif(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function plsravg_unif(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     plsravg_unif!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function plsravg_unif!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function plsravg_unif!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPlsravgunif, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)

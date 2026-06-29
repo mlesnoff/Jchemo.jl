@@ -17,8 +17,9 @@ Keyword arguments:
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
 * `nlv` : A range of nb. of latent variables (LVs) to compute for the local (i.e. inside each neighborhood) models.
-* `scal` : Boolean. If `true`, (a) each column of the global `X` (and of the global `Y` if there is a preliminary PLS 
-    reduction dimension) is scaled by its uncorrected standard deviation before to compute the distances and the weights, 
+* `scal` : Symbol defining the column scaling. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` (and of the global `Y` if there 
+    is a preliminary PLS reduction dimension) is scaled (before the computation of the distances and local weights), 
     and (b) the X and Y scaling is also done within each neighborhood (local level) for the weighted PLSR.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
@@ -65,9 +66,9 @@ fit!(model, Xtrain, ytrain)
 
 res = predict(model, Xtest) ; 
 @names res 
-res.listnn
-res.listd
-res.listw
+@head res.listnn
+@head res.listd
+@head res.listw
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
@@ -77,10 +78,11 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 lwplsravg(; kwargs...) = JchemoModel(lwplsravg, nothing, kwargs)
 
 function lwplsravg(X, Y; kwargs...)
-    par = recovkw(ParLwplsravg{Q}, kwargs).par
     X = ensure_mat(X)
-    p = nco(X)
     Y = ensure_mat(Y)
+    p = nco(X)
+    Q = eltype(X) 
+    par = recovkw(ParLwplsravg{Q}, kwargs).par
     nlv = min(par.k, p, minimum(par.nlv)):min(par.k, p, maximum(par.nlv))
     par.nlv = nlv
     if par.nlvdis == 0
@@ -89,8 +91,9 @@ function lwplsravg(X, Y; kwargs...)
         fitm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
     end
     xscales = ones(Q, p)
-    if isnothing(fitm) && par.scal
-        xscales .= colstd(X)
+    if isnothing(fitm) && (par.scal != :none)
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X)
     end
     Lwplsravg(fitm, X, Y, xscales, par)
 end
@@ -102,19 +105,19 @@ Compute the Y-predictions from the fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Lwplsravg, X) 
-    Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
+    Q = eltype(object.X)
     nlv = object.par.nlv
     ## Getknn
     metric = object.par.metric
-    h = Q(object.par.h)
     k = object.par.k
-    criw = Q(object.par.criw)
-    tolw = Q(object.par.tolw)
+    h = object.par.h
+    criw = object.par.criw
     squared = object.par.squared
+    tolw = object.par.tolw
     if isnothing(object.fitm)
-        if object.par.scal
+        if object.par.scal != :none
             zX1 = fscale(object.X, object.xscales)
             zX2 = fscale(X, object.xscales)
             res = getknn(zX1, zX2; metric, k)
@@ -125,7 +128,7 @@ function predict(object::Lwplsravg, X)
         res = getknn(object.fitm.T, transf(object.fitm, X); metric, k) 
     end
     listw = similar(res.d)
-    Threads.@threads for i = 1:m
+    Threads.@threads for i in eachindex(res.d)
         w = winvs(res.d[i]; h, criw, squared)
         @. w[w < tolw] = tolw
         listw[i] = w
