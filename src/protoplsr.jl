@@ -27,6 +27,8 @@ Keyword arguments:
 
 Function `protoplsr` implements an averaging of prototype PLSR models.
 
+This is in the same spirit as in Schaal & Atkeson 1998 and Ramirez-Lopez et al. 2026, but with a different pipeline. 
+
 *Distance computations*
 * In the actual version of the function, the dissimilarities between observations are computed on the original X-data or 
 or on global PLS scores computed from (`X`, `Y`). This is managed by argument `nlvdis`. 
@@ -55,9 +57,13 @@ Notes:
     first Y column (this will be fixed later). 
 
 ## References
-Ramirez-Lopez, L., Metz, M., Lesnoff, M., Orellano, C., Perez-Fernandez, E., Plans, M., Breure, T., Behrens, T., Viscarra Rossel, 
-R., Peng, Y., 2026. Rethinking local spectral modelling: From per-query refitting to model libraries. 
+Ramirez-Lopez, L., Metz, M., Lesnoff, M., Orellano, C., Perez-Fernandez, E., Plans, M., Breure, T., Behrens, 
+T., Viscarra Rossel, R., Peng, Y., 2026. Rethinking local spectral modelling: From per-query refitting to model libraries. 
 Analytica Chimica Acta 345682. https://doi.org/10.1016/j.aca.2026.345682
+
+Schaal, S., Atkeson, C.G., 1998. Constructive Incremental Learning from Only Local Information. 
+Neural Computation 10, 2047–2084. https://doi.org/10.1162/089976698300016963
+
 
 
 ## Examples
@@ -154,8 +160,8 @@ function protoplsr(X, Y; kwargs...)
     segm = segmkf(par.k, par.K; rep = 1, seed = 1234)
     Xproto = similar(X, par.nproto, p)
     Yproto = similar(Y, par.nproto, q)
-    @inbounds for i in eachindex(s_proto) 
-    #Threads.@threads for i in eachindex(s_proto)
+    #@inbounds for i in eachindex(s_proto) 
+    Threads.@threads for i in eachindex(s_proto)
         vX = vrow(X, resnn.ind[i])
         vY = vrow(Y, resnn.ind[i])
         pars = mpar(scal = [par.scal])
@@ -199,7 +205,7 @@ function predict(object::Protoplsr, X)
     end
     listnn = res.ind
     listw = list(Vector{Q}, m)
-    pred = zeros(m, q)
+    pred = zeros(Q, m, q)
     #@inbounds for i = 1:m
     Threads.@threads for i in eachindex(listnn)  
         s = listnn[i]

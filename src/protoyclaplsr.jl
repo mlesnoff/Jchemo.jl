@@ -1,19 +1,19 @@
 ## Not exported
 
-struct Protoyclaplsr
+struct Protoyclaplsr{Q <: Float}
     fitm::Vector{Plsr}    
     fitm_emb::Union{Nothing, Plsr}
-    Xproto::Matrix
-    Yproto::Matrix
-    coefs::Vector
+    Xproto::Matrix{Q}
+    Yproto::Matrix{Q}
+    coefs::Vector{NamedTuple}
     ni::Vector{Int}
-    lev::Vector
+    lev::Vector{String}
     par::NamedTuple
 end
 
-function protoyclaplsr(X, Y, ycla; nlvdis = 0, metric::Symbol = :eucl, nlv::Int, K::Int = 5, 
-        kavg::Int = 1, h::Float64 = 1., criw::Float64 = 4., squared::Bool = false, 
-        tolw::Float64 = 1e-4, scal::Symbol = :none)
+function protoyclaplsr(X, Y, ycla::Vector{String}; nlvdis::Int = 0, metric::Symbol = :eucl, nlv::Int, K::Int = 5, 
+        kavg::Int = 1, h::Q = 1., criw::Q = 4., squared::Bool = false, 
+        tolw::Q = 1e-4, scal::Symbol = :none) where Q <: Float
     par = (nlvdis = nlvdis, metric, nlv, K, kavg, h, criw, squared, tolw, scal)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
@@ -42,7 +42,7 @@ function protoyclaplsr(X, Y, ycla; nlvdis = 0, metric::Symbol = :eucl, nlv::Int,
         Xproto[i, :] .= colmean(vX)
         Yproto[i, :] .= colmean(vY)
         segm = segmkf(ni[i], K; rep = 1, seed = 1234)
-        pars = mpar(scal = scal)
+        pars = mpar(scal = [scal])
         model = plskern()
         ## To do: adapt for multivariate Y
         rescv = gridcv(model, vX, vY; segm, score = rmsep, pars, nlv = 0:nlv).res
@@ -55,18 +55,17 @@ function protoyclaplsr(X, Y, ycla; nlvdis = 0, metric::Symbol = :eucl, nlv::Int,
 end
 
 function predict(object::Protoyclaplsr, X)
-    Q = eltype(object.Xproto)
     X = ensure_mat(X)
-    Q = eltype(X)
     m = nro(X)
+    Q = eltype(object.Xproto)
     q = nco(object.Yproto)
     nproto = nro(object.Xproto)
     ## Params to average the prototype predictions
     kavg = min(object.par.kavg, nproto)  
-    h = Q(object.par.h)
-    criw = Q(object.par.criw)
+    h = object.par.h
+    criw = object.par.criw
     squared = object.par.squared
-    tolw = Q(object.par.tolw)
+    tolw = object.par.tolw
     ## Find the kavg closest prototypes for each new observation
     if isnothing(object.fitm_emb)
         res = getknn(object.Xproto, X; k = kavg, metric = object.par.metric)
@@ -84,7 +83,7 @@ function predict(object::Protoyclaplsr, X)
     end
     listnn = res.ind
     listw = list(Vector{Q}, m)
-    pred = zeros(m, q)
+    pred = zeros(Q, m, q)
     ## Compute the kavg protype predictions and average them (weighted average)
     #@inbounds for i = 1:m
     Threads.@threads for i = 1:m   

@@ -87,17 +87,17 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
     ylabel = "Observed").f  
 ```
 """ 
-Base.@kwdef mutable struct ParProtoclustplsr 
+Base.@kwdef mutable struct ParProtoclustplsr{Q <: Float} 
     nlvdis::Int = 0    # To do                         
     metric::Symbol = :eucl  
     nproto::Int = 1
     nlv::Int = 1
     K::Int = 5   
     kavg::Int = 1                              
-    h::Float64 = Inf                        
-    criw::Float64 = 4.                       
+    h::Q = Inf                        
+    criw::Q = 4.                       
     squared::Bool = false                   
-    tolw::Float64 = 1e-4                    
+    tolw::Q = 1e-4                    
     scal::Symbol = :none    
     seed::Union{Nothing, Int} = nothing
 end
@@ -106,13 +106,16 @@ struct Protoclustplsr
     fitm::Protoyclaplsr
     fitm_emb::Union{Nothing, Plsr}
     fitm_clust::Clustering.KmeansResult
-    ycla::AbstractVector
+    ycla::Vector{String}
     par::ParProtoclustplsr
 end
 
 protoclustplsr(; kwargs...) = JchemoModel(protoclustplsr, nothing, kwargs)
 
 function protoclustplsr(X, Y; kwargs...)
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    Q = eltype(X)
     par = recovkw(ParProtoclustplsr{Q}, kwargs).par 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
@@ -143,7 +146,7 @@ function protoclustplsr(X, Y; kwargs...)
         distance,
         rng = Random.MersenneTwister(par.seed)
         ) 
-    ycla = fitm_clust.assignments
+    ycla = string.(fitm_clust.assignments)
     fitm = Jchemo.protoyclaplsr(X, Y, ycla; metric = par.metric, nlv = par.nlv, K = par.K, kavg = par.kavg, 
         h = par.h, criw = par.criw, squared = par.squared, tolw = par.tolw, scal = par.scal) 
     Protoclustplsr(fitm, fitm_emb, fitm_clust, ycla, par)   
