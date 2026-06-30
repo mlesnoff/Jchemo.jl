@@ -24,6 +24,8 @@ Kernel types:
 The function is a wrapper to package LIBSVM.jl (that is an interface to library LIBSVM of Chang & Li 2001)
 to fit a SVM regression model.
 
+LIBSVM requires Float64 for input data and parameters.
+
 ## References 
 Chang, C.-C. & Lin, C.-J. (2001). LIBSVM: a library for support vector machines. Software available
 at http://www.csie.ntu.edu.tw/~cjlin/libsvm. Detailed documentation (algorithms, formulae, ...) can be found 
@@ -89,13 +91,13 @@ f
 svmr(; kwargs...) = JchemoModel(svmr, nothing, kwargs)
 
 function svmr(X, y; kwargs...)
+    X = ensure_mat(X)
+    y = vec(y)
+    p = nco(X)    
+    Q = eltype(X)
     par = recovkw(ParSvm{Q}, kwargs).par
     kern = par.kern 
     @assert in([:krbf, :kpol, :klin, :ktanh])(kern) "Wrong value for argument 'kern'." 
-    X = ensure_mat(X)
-    Q = eltype(X)
-    y = vec(y)
-    p = nco(X)
     xscales = ones(Q, p)
     if par.scal != :none
         colscal = def_colscal(par.scal) 

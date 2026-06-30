@@ -575,7 +575,7 @@ end
 
 ## Svm, Trees
 
-struct Svmr{Q <: Float}
+struct Svmr{Q <: Float64}
     fitm::LIBSVM.SVM
     xscales::Vector{Q}
     par::ParSvm

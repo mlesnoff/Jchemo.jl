@@ -58,11 +58,11 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 treer(; kwargs...) = JchemoModel(treer, nothing, kwargs)
 
 function treer(X, y; kwargs...) 
-    par = recovkw(ParTree{Q}, kwargs).par
     X = ensure_mat(X)
-    Q = eltype(X)
     y = vec(y)
-    p = nco(X)
+    p = nco(X)    
+    Q = eltype(X)
+    par = recovkw(ParTree{Q}, kwargs).par
     xscales = ones(Q, p)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
@@ -92,7 +92,6 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Treer, X)
     X = ensure_mat(X)
-    m = nro(X)
     ## Tree
     if (@names object.fitm)[1] == :node
         pred = apply_tree(object.fitm, fscale(X, object.xscales))
@@ -100,7 +99,7 @@ function predict(object::Treer, X)
     else
         pred = apply_forest(object.fitm, fscale(X, object.xscales); use_multithreading = object.par.mth)
     end
-    pred = reshape(pred, m, 1)
+    pred = reshape(pred, nro(X), 1)
     (pred = pred,)
 end
 

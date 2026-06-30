@@ -73,11 +73,11 @@ plotsp(imp', wl; xlabel = "Wavelength (nm)", ylabel = "Importance").f
 rfr(; kwargs...) = JchemoModel(rfr, nothing, kwargs)
 
 function rfr(X, y; kwargs...)
-    par = recovkw(ParRf{Q}, kwargs).par
     X = ensure_mat(X)
-    Q = eltype(X)
     y = vec(y)
-    p = nco(X)
+    p = nco(X)    
+    Q = eltype(X)
+    par = recovkw(ParRf{Q}, kwargs).par
     xscales = ones(Q, p)
     if par.scal != :none
         colscal = def_colscal(par.scal) 

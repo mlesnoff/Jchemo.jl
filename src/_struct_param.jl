@@ -380,7 +380,7 @@ end
 
 ## Svm, Trees
 
-Base.@kwdef mutable struct ParSvm{Q <: Float}    # svmr, svmda
+Base.@kwdef mutable struct ParSvm{Q <: Float64}    # svmr, svmda    LIBSVM requires Float64
     kern::Symbol = :krbf    
     gamma::Q = 1.  
     coef0::Q = 0.   
