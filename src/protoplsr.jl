@@ -54,6 +54,12 @@ Notes:
 * The actual version of the function works for multivariate `Y` but the PLSR optimizations are done only based on the
     first Y column (this will be fixed later). 
 
+## References
+Ramirez-Lopez, L., Metz, M., Lesnoff, M., Orellano, C., Perez-Fernandez, E., Plans, M., Breure, T., Behrens, T., Viscarra Rossel, 
+R., Peng, Y., 2026. Rethinking local spectral modelling: From per-query refitting to model libraries. 
+Analytica Chimica Acta 345682. https://doi.org/10.1016/j.aca.2026.345682
+
+
 ## Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
@@ -72,8 +78,8 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlvdis = 15 ; metric = :mah 
-nproto = 100 ; k = 80 ;nlv = 15
-kavg = 5 ; h = 1 
+nproto = 100 ; k = 80 ; nlv = 15
+kavg = 5 ; h = 1.
 model = protoplsr(; nlvdis, metric, nproto, k, nlv, kavg, h, seed = 1234) 
 fit!(model, Xtrain, ytrain)
 @names model
@@ -114,7 +120,7 @@ struct Protoplsr{Q <: Float}
     fitm_emb::Union{Nothing, Plsr}
     Xproto::Matrix{Q}
     Yproto::Matrix{Q}
-    coefs::Vector{Q}
+    coefs::Vector{NamedTuple}
     resnn::NamedTuple
     par::ParProtoplsr
 end
@@ -142,17 +148,17 @@ function protoplsr(X, Y; kwargs...)
         fitm_emb = plskern(X, Y; nlv = par.nlvdis)
         resnn = getknn(fitm_emb.T, transf(fitm_emb, vrow(X, s_proto)); k = par.k, metric = par.metric)
     end
-    ## Optimize/fit/store the nproto prototype models 
+    ## Optimize(K-fold-CV)/fit/store the nproto prototype models 
     fitm = list(Plsr, par.nproto)
     coefs = list(NamedTuple, par.nproto)
     segm = segmkf(par.k, par.K; rep = 1, seed = 1234)
     Xproto = similar(X, par.nproto, p)
     Yproto = similar(Y, par.nproto, q)
-    #@inbounds for i in eachindex(s_proto) 
-    Threads.@threads for i in eachindex(s_proto)
+    @inbounds for i in eachindex(s_proto) 
+    #Threads.@threads for i in eachindex(s_proto)
         vX = vrow(X, resnn.ind[i])
         vY = vrow(Y, resnn.ind[i])
-        pars = mpar(scal = par.scal)
+        pars = mpar(scal = [par.scal])
         model = plskern()
         rescv = gridcv(model, vX, vY; segm, score = rmsep, pars, nlv = 0:par.nlv).res
         ## To do: adapt for multivariate Y
@@ -173,18 +179,17 @@ function protoplsr(X, Y; kwargs...)
 end
 
 function predict(object::Protoplsr, X)
-    Q = eltype(object.Xproto)
     X = ensure_mat(X)
-    Q = eltype(X)
     m = nro(X)
+    Q = eltype(object.Xproto)
     q = nco(object.Yproto)
     nproto = object.par.nproto
     metric = object.par.metric
     kavg = min(object.par.kavg, nproto)  # nb prototype models averaged
-    h = Q(object.par.h)
-    criw = Q(object.par.criw)
+    h = object.par.h
+    criw = object.par.criw
     squared = object.par.squared
-    tolw = Q(object.par.tolw)
+    tolw = object.par.tolw
     # Compute the neighborhood (within the set of prototypes) of each new observation
     if isnothing(object.fitm_emb)
         res = getknn(object.Xproto, X; k = kavg, metric)
@@ -196,7 +201,7 @@ function predict(object::Protoplsr, X)
     listw = list(Vector{Q}, m)
     pred = zeros(m, q)
     #@inbounds for i = 1:m
-    Threads.@threads for i = 1:m   
+    Threads.@threads for i in eachindex(listnn)  
         s = listnn[i]
         w = winvs(res.d[i]; h, criw, squared)
         @. w[w < tolw] = tolw  # same as in lwplsr

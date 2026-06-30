@@ -20,14 +20,7 @@ mpar = function(; kwargs...)
     Jchemo.mpar_work(iter, nam)
 end
 
-
 ## Not exported 
-
-mpar_tupl = function(tupl::NamedTuple)
-    iter = Base.product(values(tupl)...)
-    nam = @names tupl  
-    Jchemo.mpar_work(iter, nam)
-end
 
 mpar_work = function(iter::Base.Iterators.ProductIterator, nam::Union{Vector, Tuple})
     z = collect(iter) # matrix (n, 1)
@@ -37,6 +30,12 @@ mpar_work = function(iter::Base.Iterators.ProductIterator, nam::Union{Vector, Tu
     v = ntuple(i -> u[i, :], p)
     v = (; zip(nam, v)...)
     v
+end
+
+mpar_tupl = function(tupl::NamedTuple)
+    iter = Base.product(values(tupl)...)
+    nam = @names tupl  
+    Jchemo.mpar_work(iter, nam)
 end
 
 
