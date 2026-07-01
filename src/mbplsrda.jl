@@ -148,7 +148,7 @@ function predict(object::Mbplsrda, Xbl)
     m = nro(Xbl[1])
     res = predict(object.fitm_emb, Xbl)
     v =  mapslices(argmax, res.pred; dims = 2)  # if equal, argmax takes the first
-    pred = reshape(recod_indbylev(v, object.lev), m, 1)
+    pred = reshape(recod_indbylev(vec(v), object.lev), m, 1)
     (pred = pred, posterior = res.pred, nlv = res.nlv)
 end
 
@@ -161,7 +161,7 @@ function predict(object::Mbplsrda, Xbl, nlv::Union{Int, AbstractVector{Int}})
     pred = list(Matrix{Qy}, le_nlv)
     @inbounds for i in eachindex(nlv)
         v =  mapslices(argmax, res.pred[i]; dims = 2)  # if equal, argmax takes the first
-        pred[i] = reshape(recod_indbylev(v, object.lev), m, 1)
+        pred[i] = reshape(recod_indbylev(vec(v), object.lev), m, 1)
     end 
     (pred = pred, posterior = res.pred, nlv)
 end

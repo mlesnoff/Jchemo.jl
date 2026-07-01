@@ -1,6 +1,6 @@
 """
-    nipals(X::Matrix{Q}; kwargs...) where Q <: Float
-    nipals(X::Matrix{Q}, UUt::Matrix{Q}, VVt::Matrix{Q}; kwargs...) where Q <: Float
+    nipals(X::AbstractMatrix{Q}; kwargs...) where Q <: Float
+    nipals(X::AbstractMatrix{Q}, UUt::AbstractMatrix{Q}, VVt::AbstractMatrix{Q}; kwargs...) where Q <: Float
 Nipals to compute the first score and loading vectors of a matrix.
 * `X` : X-data (n, p).
 * `UUt` : Matrix (n, n) for Gram-Schmidt orthogonalization.
@@ -43,7 +43,7 @@ res.u
 svd(X).U[:, 1] 
 ```
 """ 
-function nipals(X::Matrix{Q}; kwargs...) where Q <: Float
+function nipals(X::AbstractMatrix{Q}; kwargs...) where Q <: Float
     par = recovkw(ParNipals{Q}, kwargs).par
     X = ensure_mat(X)
     p = nco(X)
@@ -70,7 +70,7 @@ function nipals(X::Matrix{Q}; kwargs...) where Q <: Float
 end
 
 ## Used when GS in sequential extraction 
-function nipals(X::Matrix{Q}, UUt::Matrix{Q}, VVt::Matrix{Q}; kwargs...) where Q <: Float
+function nipals(X::AbstractMatrix{Q}, UUt::AbstractMatrix{Q}, VVt::AbstractMatrix{Q}; kwargs...) where Q <: Float
     par = recovkw(ParNipals{Q}, kwargs).par
     X = ensure_mat(X)
     p = nco(X)

@@ -1,6 +1,6 @@
 """
-    nipalsmiss(X::Matrix{Union{Missing, Q}}; kwargs...) where Q <: Float
-    nipalsmiss(X::Matrix{Union{Missing, Q}}, UUt::Matrix{Q}, VVt::Matrix{Q}; kwargs...) where Q <: Float
+    nipalsmiss(X::AbstractMatrix{Union{Missing, Q}}; kwargs...) where Q <: Float
+    nipalsmiss(X::AbstractMatrix{Union{Missing, Q}}, UUt::Matrix{Q}, VVt::Matrix{Q}; kwargs...) where Q <: Float
 Nipals to compute the first score and loading vectors of a matrix with missing data.
 * `X` : X-data (n, p).
 * `UUt` : Matrix (n, n) for Gram-Schmidt orthogonalization.

@@ -1,5 +1,5 @@
 ## Here, sparseness is applied after convergence of Nipals
-function snipals_post(X::Matrix{Q}; kwargs...) where Q <: Float
+function snipals_post(X::AbstractMatrix{Q}; kwargs...) where Q <: Float
     par = recovkw(Jchemo.ParSnipals{Q}, kwargs).par 
     p = nco(X)
     if par.meth == :soft 

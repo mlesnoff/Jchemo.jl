@@ -83,9 +83,11 @@ summary(fitm.fitm_emb, Xtrain)
 splsrda(; kwargs...) = JchemoModel(splsrda, nothing, kwargs)
 
 function splsrda(X, y; kwargs...)
-    par = recovkw(ParSplsda{Q}, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParMlrda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     splsrda(X, y, weights; kwargs...)
 end
 

@@ -85,9 +85,11 @@ predict(model, Xtest, [.1; .01]).pred
 rrda(; kwargs...) = JchemoModel(rrda, nothing, kwargs)
 
 function rrda(X, y; kwargs...)
-    par = recovkw(ParRrda{Q}, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParMlrda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     rrda(X, y, weights; kwargs...)
 end
 
@@ -113,7 +115,7 @@ function predict(object::Rrda, X)
     m = nro(X)
     res = predict(object.fitm_emb, X)
     v =  mapslices(argmax, res.pred; dims = 2)  # if equal, argmax takes the first
-    pred = reshape(recod_indbylev(v, object.lev), m, 1)
+    pred = reshape(recod_indbylev(vec(v), object.lev), m, 1)
     (pred = pred, posterior = res.pred, lb = res.lb)
 end
 
@@ -126,7 +128,7 @@ function predict(object::Rrda, X, lb::Union{T, AbstractVector{T}})  where T <: F
     pred = list(Matrix{Qy}, le_lb)
     @inbounds for i in eachindex(lb)
         v =  mapslices(argmax, res.pred[i]; dims = 2)  # if equal, argmax takes the first
-        pred[i] = reshape(recod_indbylev(v, object.lev), m, 1)
+        pred[i] = reshape(recod_indbylev(vec(v), object.lev), m, 1)
     end 
     (pred = pred, posterior = res.pred, lb)
 end
