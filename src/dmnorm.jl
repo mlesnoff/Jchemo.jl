@@ -32,7 +32,6 @@ db = joinpath(mypath, "data", "iris.jld2")
 @names dat
 X = dat.X[:, 1:4] 
 y = dat.X[:, 5]
-n = nro(X)
 tab(y) 
 
 nlv = 2
@@ -41,8 +40,7 @@ fit!(model0, X, y)
 @head T = transf(model0, X)
 n, p = size(T)
 
-#### Probability density in the FDA score space (2-D)
-#### Example of class Setosa 
+#### Probability density in the FDA score space (2-D): example of class Setosa 
 s = y .== "setosa"
 zT = T[s, :]
 m = nro(zT)
@@ -117,7 +115,7 @@ function dmnorm(X; kwargs...)
 end
 
 function dmnorm!(X::Matrix{Q}; kwargs...) where Q <: Float
-    par = recovkw(ParDmnorm{Q}, kwargs).par
+    par = recovkw(ParDmnorm, kwargs).par
     mu = colmean(X) 
     S = cov(X; corrected = true)
     U = cholesky!(Hermitian(S)).U    # cholesky! modifies S
@@ -133,6 +131,7 @@ function dmnorm!(X::Matrix{Q}; kwargs...) where Q <: Float
     #cholesky!(S)
     #U = sqrt(diag(diag(S), nrow = p))
     #Uinv = solve(diag(diag(S), nrow = p))
+    @show 22
     Dmnorm(mu, U, detS, cst, par)
 end
 
@@ -141,7 +140,7 @@ function dmnorm(mu, S; kwargs...)
 end
 
 function dmnorm!(mu::Vector{Q}, S::Matrix{Q}; kwargs...) where Q <: Float
-    par = recovkw(ParDmnorm{Q}, kwargs).par
+    par = recovkw(ParDmnorm, kwargs).par
     U = cholesky!(Hermitian(copy(S))).U   # cholesky! modifies S
     if par.simpl 
         cst = 1.

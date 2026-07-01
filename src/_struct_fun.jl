@@ -622,11 +622,9 @@ struct Mbplsrda{Q <: Float}
     par::ParMbplsda
 end
 
-
-
 struct Dmnorm{Q <: Float}
     mu::Vector{Q}
-    Uinv::Matrix{Q} 
+    Uinv::LinearAlgebra.AbstractTriangular{Q} 
     detS::Q
     cst::Q
     par::ParDmnorm
@@ -634,7 +632,7 @@ end
 
 struct Dmnormlog{Q <: Float}
     mu::Vector{Q}
-    Uinv::Matrix{Q} 
+    Uinv::LinearAlgebra.AbstractTriangular{Q} 
     logdetS::Q
     logcst::Q
     par::ParDmnorm
