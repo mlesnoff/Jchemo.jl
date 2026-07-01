@@ -100,7 +100,7 @@ lims = [minimum(x), maximum(x)]
 grid = LinRange(lims[1], lims[2], npoints)
 model = dmnorm()
 fit!(model, x)
-pred_grid = predict(model, grid).pred 
+pred_grid = predict(model, collect(grid)).pred 
 f = Figure()
 ax = Axis(f[1, 1]; xlabel = string("FDA-score ", j))
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
@@ -131,7 +131,6 @@ function dmnorm!(X::Matrix{Q}; kwargs...) where Q <: Float
     #cholesky!(S)
     #U = sqrt(diag(diag(S), nrow = p))
     #Uinv = solve(diag(diag(S), nrow = p))
-    @show 22
     Dmnorm(mu, U, detS, cst, par)
 end
 

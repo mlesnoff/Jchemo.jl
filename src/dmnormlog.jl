@@ -53,7 +53,7 @@ function dmnormlog(X; kwargs...)
 end
 
 function dmnormlog!(X::Matrix{Q}; kwargs...) where Q <: Float
-    par = recovkw(ParDmnorm{Q}, kwargs).par
+    par = recovkw(ParDmnorm, kwargs).par
     mu = colmean(X) 
     S = cov(X; corrected = true)
     if par.simpl 
@@ -74,7 +74,7 @@ function dmnormlog(mu, S; kwargs...)
 end
 
 function dmnormlog!(mu::Vector{Q}, S::Matrix{Q}; kwargs...) where Q <: Float
-    par = recovkw(ParDmnorm{Q}, kwargs).par
+    par = recovkw(ParDmnorm, kwargs).par
     U = cholesky!(Hermitian(copy(S))).U   # cholesky! modifies S
     if par.simpl 
         logcst = 0

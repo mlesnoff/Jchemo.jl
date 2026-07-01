@@ -107,7 +107,7 @@ model = dmkern()
 #model = dmkern(a = .5) 
 #model = dmkern(h = .3) 
 fit!(model, x) 
-pred_grid = predict(model, grid).pred 
+pred_grid = predict(model, collect(grid)).pred 
 f = Figure()
 ax = Axis(f[1, 1])
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
@@ -119,8 +119,8 @@ dmkern(; kwargs...) = JchemoModel(dmkern, nothing, kwargs)
 
 function dmkern(X; kwargs...)
     X = ensure_mat(X)
-    Q = eltype(X)
     n, p = size(X)
+    Q = eltype(X)
     par = recovkw(ParDmkern{Q}, kwargs).par
     ## Particular case where n = 1
     ## (ad'hoc code for discrimination functions only)
