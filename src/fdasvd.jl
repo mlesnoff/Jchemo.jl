@@ -23,19 +23,21 @@ See function `fda` for details and examples.
 fdasvd(; kwargs...) = JchemoModel(fdasvd, nothing, kwargs)
 
 function fdasvd(X, y; kwargs...)
-    par = recovkw(ParFda{Q}, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParFda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     fdasvd(X, y, weights; kwargs...)
 end
 
-fdasvd(X, y, weights; kwargs...) = fdasvd!(copy(ensure_mat(X)), y, weights; kwargs...)
+fdasvd(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
+    kwargs...) where Q <: Float = fdasvd!(copy(ensure_mat(X)), y, weights; kwargs...)
 
-function fdasvd!(X::Matrix, y, weights; kwargs...)
+function fdasvd!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParFda{Q}, kwargs).par
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     n, p = size(X)
-    lb = Q(par.lb)
     ## Centering/scaling X
     xmeans = colmean(X, weights)
     fcenter!(X, xmeans)
@@ -54,8 +56,8 @@ function fdasvd!(X::Matrix, y, weights; kwargs...)
     priors = aggsumv(weights.values, y).val  # output not used, only for information 
     res.W .*= n / (n - nlev)
     ## Regularization
-    if lb > 0
-        res.W .+= lb .* I(p)    # @. does not work with I
+    if par.lb > 0
+        res.W .+= par.lb .* I(p)    # @. does not work with I
     end
     ## End
     #Winv = inv(res.W)

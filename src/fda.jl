@@ -1,8 +1,8 @@
 """
     fda(; kwargs...)
     fda(X, y; kwargs...)
-    fda(X, y, weights; kwargs...)
-    fda!(X::Matrix, y, weights; kwargs...)
+    fda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    fda!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Factorial discriminant analysis (FDA).
 * `X` : X-data (n, p).
 * `y` : y-data (n) (class membership).
@@ -94,19 +94,21 @@ f
 fda(; kwargs...) = JchemoModel(fda, nothing, kwargs)
 
 function fda(X, y; kwargs...)
-    par = recovkw(ParFda{Q}, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParFda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     fda(X, y, weights; kwargs...)
 end
 
-fda(X, y, weights; kwargs...) = fda!(copy(ensure_mat(X)), y, weights; kwargs...)
+fda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
+    kwargs...) where Q <: Float = fda!(copy(ensure_mat(X)), y, weights; kwargs...)
 
-function fda!(X::Matrix, y, weights; kwargs...)
+function fda!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParFda{Q}, kwargs).par
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     n, p = size(X)
-    lb = Q(par.lb)
     ## Centering/scaling X
     xmeans = colmean(X, weights)
     fcenter!(X, xmeans)
@@ -125,8 +127,8 @@ function fda!(X::Matrix, y, weights; kwargs...)
     par.nlv = nlv
     res.W .*= n / (n - nlev)    # unbiased estimate
     ## Regularization
-    if lb > 0
-        res.W .+= lb .* I(p)    # @. does not work with I
+    if par.lb > 0
+        res.W .+= par.lb .* I(p)    # @. does not work with I
     end
     ## End
     zres = matB(X, y, weights)

@@ -105,8 +105,8 @@ function predict(object::Mlrda, X)
     X = ensure_mat(X)
     m = nro(X)
     vpred = predict(object.fitm_emb, X).pred
-    z =  mapslices(argmax, vpred; dims = 2) 
-    pred = reshape(recod_indbylev(vec(z), object.lev), m, 1)
+    v =  mapslices(argmax, vpred; dims = 2) 
+    pred = reshape(recod_indbylev(vec(v), object.lev), m, 1)
     (pred = pred, posterior = vpred)
 end
     
