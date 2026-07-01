@@ -1,7 +1,8 @@
 """
     mbplslda(; kwargs...)
     mbplslda(Xbl, y; kwargs...)
-    mbplslda(Xbl, y, weights::ProbabilityWeights; kwargs...)
+    mbplslda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
 Multiblock PLS-LDA.
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -116,7 +117,8 @@ function mbplslda(Xbl, y; kwargs...)
     mbplslda(Xbl, y, weights; kwargs...)
 end
 
-function mbplslda(Xbl, y, weights::ProbabilityWeights; kwargs...)
+function mbplslda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
     par = recovkw(ParMbplsda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(Q, y)

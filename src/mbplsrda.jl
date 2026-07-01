@@ -1,7 +1,8 @@
 """
     mbplsrda(; kwargs...)
     mbplsrda(Xbl, y; kwargs...)
-    mbplsrda(Xbl, y, weights::ProbabilityWeights; kwargs...)
+    mbplsrda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
 Discrimination based on multiblock partial least squares regression (MBPLSR-DA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -68,9 +69,7 @@ scal = :none
 #scal = std
 bscal = :none
 #bscal = :frob
-model = mbplslda(; nlv, bscal, scal)
-#model = mbplsqda(; nlv, bscal, alpha = .5, scal)
-#model = mbplskdeda(; nlv, bscal, scal)
+model = mbplsrda(; nlv, bscal, scal)
 fit!(model, Xbltrain, ytrain)
 @names model
 fitm = model.fitm ;
@@ -90,9 +89,6 @@ typeof(fitm_emb)
 @head transf(model, Xbltest)
 @head transf(model, Xbltest, 3)
 
-fitm_da = fitm.fitm_da ;
-typeof(fitm_da)
-
 res = predict(model, Xbltest) ;
 @names res
 @head res.posterior
@@ -108,13 +104,16 @@ summary(fitm_emb, Xbltrain)
 mbplsrda(; kwargs...) = JchemoModel(mbplsrda, nothing, kwargs)
 
 function mbplsrda(Xbl, y; kwargs...)
-    par = recovkw(ParMbplsda{Q}, kwargs).par
-    Q = eltype(Xbl[1][1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    Xbl = ensure_mat_mb(Xbl)
+    y = vec(y)
+    Q = eltype(Xbl[1])
+    prior = recovkw(ParMbplsda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     mbplsrda(Xbl, y, weights; kwargs...)
 end
 
-function mbplsrda(Xbl, y, weights::ProbabilityWeights; kwargs...)
+function mbplsrda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
     par = recovkw(ParMbplsda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).vals

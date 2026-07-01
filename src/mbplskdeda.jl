@@ -1,7 +1,8 @@
 """
     mbplskdeda(; kwargs...)
     mbplskdeda(Xbl, y; kwargs...)
-    mbplskdeda(Xbl, y, weights::ProbabilityWeights; kwargs...)
+    mbplskdeda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
 Multiblock PLS-KDEDA.
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -30,7 +31,8 @@ function mbplskdeda(Xbl, y; kwargs...)
     mbplskdeda(Xbl, y, weights; kwargs...)
 end
 
-function mbplskdeda(Xbl, y, weights::ProbabilityWeights; kwargs...)
+function mbplskdeda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
     par = recovkw(ParMbplskdeda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(Q, y)
