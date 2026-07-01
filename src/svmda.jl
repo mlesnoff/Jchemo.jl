@@ -3,7 +3,7 @@
     svmda(X, y; kwargs...)
 Support vector machine for discrimination "C-SVC" (SVM-DA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 Keyword arguments:
 * `kern` : Type of kernel used to compute the Gram matrices.Possible values are: `:krbf`, `:kpol`, 
     `:klin`, `:ktanh`. See below.  

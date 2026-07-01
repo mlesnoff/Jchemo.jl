@@ -3,7 +3,7 @@
     lwmlrda(X, y; kwargs...) 
 k-Nearest-Neighbours locally weighted MLR-based discrimination (kNN-LWMLR-DA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 Keyword arguments:
 * `metric` : Type of dissimilarity used to select the neighbors and to compute the weights 
     (see function `getknn`). Possible values are: `:eucl` (Euclidean), `:mah` (Mahalanobis), 

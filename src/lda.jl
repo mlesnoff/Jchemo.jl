@@ -2,10 +2,10 @@
     lda(; kwargs...)
     lda(; kwargs...)
     lda(X, y; kwargs...)
-    lda(X, y, weights::ProbabilityWeights; kwargs...)
+    lda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Linear discriminant analysis (LDA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
@@ -73,7 +73,7 @@ function lda(X, y; kwargs...)
     lda(X, y, weights; kwargs...)
 end
 
-function lda(X, y, weights::ProbabilityWeights; kwargs...)  
+function lda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float  
     # Scaling X has no effect
     par = recovkw(ParLda{Q}, kwargs).par
     X = ensure_mat(X)

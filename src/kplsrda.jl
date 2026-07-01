@@ -1,10 +1,10 @@
 """
     kplsrda(; kwargs...)
     kplsrda(X, y; kwargs...)
-    kplsrda(X, y, weights::ProbabilityWeights; kwargs...)
+    kplsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Discrimination based on kernel partial least squares regression (KPLSR-DA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
@@ -79,7 +79,7 @@ function kplsrda(X, y; kwargs...)
     kplsrda(X, y, weights; kwargs...)
 end
 
-function kplsrda(X, y, weights::ProbabilityWeights; kwargs...)
+function kplsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParKplsda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).vals

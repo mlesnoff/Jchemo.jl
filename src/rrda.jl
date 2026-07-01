@@ -1,10 +1,10 @@
 """
     rrda(; kwargs...)
     rrda(X, y; kwargs...)
-    rrda(X, y, weights::ProbabilityWeights; kwargs...)
+    rrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Discrimination based on ridge regression (RR-DA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
 Keyword arguments: 
 * `lb` : Ridge regularization parameter "lambda".
@@ -91,7 +91,7 @@ function rrda(X, y; kwargs...)
     rrda(X, y, weights; kwargs...)
 end
 
-function rrda(X, y, weights::ProbabilityWeights; kwargs...)    
+function rrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float    
     par = recovkw(ParRrda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).vals 

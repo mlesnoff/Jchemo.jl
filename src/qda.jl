@@ -1,10 +1,10 @@
 """
     qda(; kwargs...)
     qda(X, y; kwargs...)
-    qda(X, y, weights::ProbabilityWeights; kwargs...)
+    qda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Quadratic discriminant analysis (QDA, with continuum towards LDA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
@@ -90,7 +90,7 @@ function qda(X, y; kwargs...)
     qda(X, y, weights; kwargs...)
 end
 
-function qda(X, y, weights::ProbabilityWeights; kwargs...)  
+function qda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float  
     # Scaling X has no effect
     par = recovkw(ParQda{Q}, kwargs).par
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."

@@ -1,10 +1,10 @@
 """
     rda(; kwargs...)
     rda(X, y; kwargs...)
-    rda(X, y, weights::ProbabilityWeights; kwargs...)
+    rda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Regularized discriminant analysis (RDA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
@@ -91,7 +91,7 @@ function rda(X, y; kwargs...)
     rda(X, y, weights; kwargs...)
 end
 
-function rda(X, y, weights::ProbabilityWeights; kwargs...)  
+function rda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float  
     par = recovkw(ParRda{Q}, kwargs).par
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     @assert par.lb >= 0 "lb must be in >= 0"

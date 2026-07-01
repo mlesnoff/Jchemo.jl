@@ -1,10 +1,10 @@
 """
     dkplslda(; kwargs...)
     dkplslda(X, y; kwargs...)
-    dkplslda(X, y, weights::ProbabilityWeights; kwargs...)
+    dkplslda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 DKPLS-LDA.
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute. Must be >= 1.
@@ -85,7 +85,7 @@ function dkplslda(X, y; kwargs...)
     dkplslda(X, y, weights; kwargs...)
 end
 
-function dkplslda(X, y, weights::ProbabilityWeights; kwargs...)
+function dkplslda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParKplsda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(Q, y)

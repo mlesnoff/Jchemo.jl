@@ -3,7 +3,7 @@
     treeda(X, y; kwargs...)
 Discrimination tree (CART) with DecisionTree.jl.
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 Keyword arguments:
 * `n_subfeatures` : Nb. variables to select at random at each split (default: 0 ==> keep all).
 * `max_depth` : Maximum depth of the decision tree (default: -1 ==> no maximum).

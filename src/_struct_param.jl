@@ -411,6 +411,62 @@ end
 
 ############---- Discrimination
 
+Base.@kwdef mutable struct ParMlrda{Q <: Float}
+    prior::Union{Symbol, Vector{Q}} = :prop                     
+end 
+
+Base.@kwdef mutable struct ParPlsda{Q <: Float}    # plsrda, plslda
+    nlv::Int = 1
+    prior::Union{Symbol, Vector{Q}} = :prop   
+    scal::Symbol = :none                    
+end 
+
+Base.@kwdef mutable struct ParRrda{Q <: Float}
+    lb::Q = 1e-6
+    prior::Union{Symbol, Vector{Q}} = :prop   
+    scal::Symbol = :none                    
+end 
+
+Base.@kwdef mutable struct ParSplsda{Q <: Float}    # splsrda, splslda
+    nlv::Int = 1
+    meth::Symbol = :soft 
+    nvar::Union{Int, Vector{Int}} = 1  
+    prior::Union{Symbol, Vector{Q}} = :prop   
+    tol::Q = 1e-8 
+    maxit::Int = 200   
+    scal::Symbol = :none                    
+end 
+
+Base.@kwdef mutable struct ParKplsda{Q <: Float}    # kplsrda, kplslda
+    nlv::Int = 1
+    kern::Symbol = :krbf     
+    gamma::Q = 1.  
+    coef0::Q = 0.
+    degree::Int = 1      
+    prior::Union{Symbol, Vector{Q}} = :prop   
+    scal::Symbol = :none                    
+end 
+
+Base.@kwdef mutable struct ParKrrda{Q <: Float}
+    lb::Q = 1e-6
+    kern::Symbol = :krbf     
+    gamma::Q = 1.  
+    coef0::Q = 0.
+    degree::Int = 1      
+    prior::Union{Symbol, Vector{Q}} = :prop   
+    scal::Symbol = :none                    
+end 
+
+##
+
+
+
+
+
+
+
+
+
 Base.@kwdef mutable struct ParRda{Q <: Float}
     prior::Union{Symbol, Vector{Q}} = :prop
     alpha::Q = 0.
@@ -437,29 +493,10 @@ Base.@kwdef mutable struct ParQda{Q <: Float}
     alpha::Q = 0.                      
 end 
 
-
 Base.@kwdef mutable struct ParKdeda{Q <: Float}
     prior::Union{Symbol, Vector{Q}} = :prop
     h::Union{Nothing, Q, Vector{Q}} = nothing  
     a::Q = 1. 
-end 
-
-##
-
-Base.@kwdef mutable struct ParMlrda{Q <: Float}
-    prior::Union{Symbol, Vector{Q}} = :prop                     
-end 
-
-Base.@kwdef mutable struct ParRrda{Q <: Float}
-    lb::Q = 1e-6
-    prior::Union{Symbol, Vector{Q}} = :prop   
-    scal::Symbol = :none                    
-end 
-
-Base.@kwdef mutable struct ParPlsda{Q <: Float}    # plsrda, plslda
-    nlv::Int = 1
-    prior::Union{Symbol, Vector{Q}} = :prop   
-    scal::Symbol = :none                    
 end 
 
 Base.@kwdef mutable struct ParPlsqda{Q <: Float}
@@ -475,16 +512,6 @@ Base.@kwdef mutable struct ParPlskdeda{Q <: Float}
     h::Union{Nothing, Q, Vector{Q}} = nothing  
     a::Q = 1. 
     scal::Symbol = :none 
-end 
-
-Base.@kwdef mutable struct ParSplsda{Q <: Float}    # splsrda, splslda
-    nlv::Int = 1
-    meth::Symbol = :soft 
-    nvar::Union{Int, Vector{Int}} = 1  
-    prior::Union{Symbol, Vector{Q}} = :prop   
-    tol::Q = 1e-8 
-    maxit::Int = 200   
-    scal::Symbol = :none                    
 end 
 
 Base.@kwdef mutable struct ParSplsqda{Q <: Float}
@@ -508,26 +535,6 @@ Base.@kwdef mutable struct ParSplskdeda{Q <: Float}
     tol::Q = 1e-8 
     maxit::Int = 200   
     scal::Symbol = :none 
-end 
-
-Base.@kwdef mutable struct ParKrrda{Q <: Float}
-    lb::Q = 1e-6
-    kern::Symbol = :krbf     
-    gamma::Q = 1.  
-    coef0::Q = 0.
-    degree::Int = 1      
-    prior::Union{Symbol, Vector{Q}} = :prop   
-    scal::Symbol = :none                    
-end 
-
-Base.@kwdef mutable struct ParKplsda{Q <: Float}    # kplsrda, kplslda
-    nlv::Int = 1
-    kern::Symbol = :krbf     
-    gamma::Q = 1.  
-    coef0::Q = 0.
-    degree::Int = 1      
-    prior::Union{Symbol, Vector{Q}} = :prop   
-    scal::Symbol = :none                    
 end 
 
 Base.@kwdef mutable struct ParKplsqda{Q <: Float}

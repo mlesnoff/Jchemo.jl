@@ -1,10 +1,10 @@
 """
     splsrda(; kwargs...)
     splsrda(X, y; kwargs...)
-    splsrda(X, y, weights::ProbabilityWeights; kwargs...)
+    splsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Sparse PLSR-DA.
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
@@ -89,7 +89,7 @@ function splsrda(X, y; kwargs...)
     splsrda(X, y, weights; kwargs...)
 end
 
-function splsrda(X, y, weights::ProbabilityWeights; kwargs...)
+function splsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParSplsda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).vals

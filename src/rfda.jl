@@ -3,7 +3,7 @@
     rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
 Random forest discrimination with DecisionTree.jl.
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 Keyword arguments:
 * `n_trees` : Nb. trees built for the forest. 
 * `partial_sampling` : Proportion of sampled observations for each tree.

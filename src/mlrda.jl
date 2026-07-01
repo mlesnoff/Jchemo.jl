@@ -4,7 +4,7 @@
     mlrda(X, y, weights::ProbabilityWeights)
 Discrimination based on multple linear regression (MLR-DA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
 Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
@@ -78,16 +78,16 @@ conf(res.pred, ytest).cnt
 mlrda(; kwargs...) = JchemoModel(mlrda, nothing, kwargs)
 
 function mlrda(X, y; kwargs...)
-    par = recovkw(ParMlrda{Q}, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParMlrda{Q}, kwargs).par.prior
+    weights = pweightcla(eltype(X), y; prior)
     mlrda(X, y, weights; kwargs...)
 end
 
-function mlrda(X, y, weights::ProbabilityWeights; kwargs...)
+function mlrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParMlrda{Q}, kwargs).par
-    X = ensure_mat(X)
-    y = ensure_mat(y)
     res = dummy(Q, y)
     ni = tab(y).vals
     priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
@@ -104,9 +104,9 @@ Compute y-predictions from a fitted model.
 function predict(object::Mlrda, X)
     X = ensure_mat(X)
     m = nro(X)
-    zp = predict(object.fitm_emb, X).pred
-    z =  mapslices(argmax, zp; dims = 2) 
-    pred = reshape(recod_indbylev(z, object.lev), m, 1)
-    (pred = pred, posterior = zp)
+    vpred = predict(object.fitm_emb, X).pred
+    z =  mapslices(argmax, vpred; dims = 2) 
+    pred = reshape(recod_indbylev(vec(z), object.lev), m, 1)
+    (pred = pred, posterior = vpred)
 end
     

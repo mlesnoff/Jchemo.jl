@@ -1,10 +1,10 @@
 """
     kdeda(; kwargs...)
     kdeda(X, y; kwargs...)
-    kdeda(X, y, weights::ProbabilityWeights; kwargs...)
+    kdeda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Discriminant analysis using non-parametric kernel Gaussian density estimation (KDE-DA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
@@ -71,7 +71,7 @@ function kdeda(X, y; kwargs...)
     kdeda(X, y, weights; kwargs...) 
 end
 
-function kdeda(X, y, weights::ProbabilityWeights; kwargs...) 
+function kdeda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float 
     ## To do: add scaling X?
     par = recovkw(ParKdeda{Q}, kwargs).par
     X = ensure_mat(X)

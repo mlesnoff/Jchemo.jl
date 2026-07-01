@@ -3,7 +3,7 @@
     lwplsrda(X, y; kwargs...)
 kNN-LWPLSR-DA.
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 Keyword arguments:
 * `nlvdis` : Number of latent variables (LVs) to consider in the global PLS used for the dimension 
     reduction before computing the dissimilarities. If `nlvdis = 0`, there is no dimension reduction.

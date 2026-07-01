@@ -590,6 +590,40 @@ end
 
 ############---- Discrimination
 
+struct Mlrda{Q <: Float}
+    fitm_emb::Mlr 
+    ni::Vector{Int}
+    priors::Vector{Q}
+    lev::Vector{String}
+    par::ParMlrda
+end
+
+struct Plsrda{Q <: Float}
+    fitm_emb::Union{Plsr, Splsr, Kplsr, Dkplsr} 
+    ni::Vector{Int}
+    priors::Vector{Q}
+    lev::Vector{String}
+    par::Union{ParPlsda, ParSplsda, ParKplsda}
+end
+
+struct Rrda{Q <: Float}
+    fitm_emb::Union{Rr, Krr}  
+    ni::Vector{Int}
+    priors::Vector{Q}
+    lev::Vector{String}
+    par::Union{ParRrda, ParKrrda}
+end
+
+struct Mbplsrda{Q <: Float}
+    fitm_emb::Mbplsr 
+    ni::Vector{Int}
+    priors::Vector{Q}
+    lev::Vector{String}
+    par::ParMbplsda
+end
+
+
+
 struct Dmnorm{Q <: Float}
     mu::Vector{Q}
     Uinv::Matrix{Q} 
@@ -654,30 +688,6 @@ struct Kdeda{Q <: Float}
     priors::Vector{Q}
     lev::Vector{String}
     par::ParKdeda
-end
-
-struct Mlrda{Q <: Float}
-    fitm_emb::Mlr 
-    ni::Vector{Int}
-    priors::Vector{Q}
-    lev::Vector{String}
-    par::ParMlrda
-end
-
-struct Rrda{Q <: Float}
-    fitm_emb::Union{Rr, Krr}  
-    ni::Vector{Int}
-    priors::Vector{Q}
-    lev::Vector{String}
-    par::Union{ParRrda, ParKrrda}
-end
-
-struct Plsrda{Q <: Float}
-    fitm_emb::Union{Plsr, Splsr, Kplsr, Dkplsr} 
-    ni::Vector{Int}
-    priors::Vector{Q}
-    lev::Vector{String}
-    par::Union{ParPlsda, ParSplsda, ParKplsda}
 end
 
 struct Plsprobda{Q <: Float}    # plslda, plsqda, plskdeda  
@@ -763,16 +773,6 @@ struct Treeda{Q <: Float}
     priors::Vector{Q}
     lev::Vector{String}
     par::Union{ParTree, ParRf}
-end
-
-## Multiblock
-
-struct Mbplsrda{Q <: Float}
-    fitm_emb::Mbplsr 
-    ni::Vector{Int}
-    priors::Vector{Q}
-    lev::Vector{String}
-    par::ParMbplsda
 end
 
 struct Mbplsprobda{Q <: Float}    # mbplslda, mbplsqda, mbplskdeda  

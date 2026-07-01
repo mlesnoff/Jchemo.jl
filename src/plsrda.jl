@@ -1,10 +1,10 @@
 """
     plsrda(; kwargs...)
     plsrda(X, y; kwargs...)
-    plsrda(X, y, weights::ProbabilityWeights; kwargs...)
+    plsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Discrimination based on partial least squares regression (PLSR-DA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
@@ -100,7 +100,7 @@ function plsrda(X, y; kwargs...)
     plsrda(X, y, weights; kwargs...)
 end
 
-function plsrda(X, y, weights::ProbabilityWeights; kwargs...)
+function plsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPlsda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).vals

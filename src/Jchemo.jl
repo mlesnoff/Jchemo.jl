@@ -164,7 +164,8 @@ include("loessr.jl")
 
 ## Validation
 include("mpar.jl")
-include("scores.jl")
+include("scores_reg.jl")
+include("scores_da.jl")
 include("conf.jl")
 include("segmkf.jl")
 include("segmts.jl")

@@ -1,7 +1,7 @@
 """
     colsum(X::DataFrame)
-    colsum(X::AbstMatVec{Q}) where Q <: Float
-    colsum(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
+    colsum(X::AbstMatVec{Q}) where Q <: Union{Signed, Float}
+    colsum(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Union{Signed, Float}
 Column-wise sums of a matrix.
 * `X` : Matrix (n, p) or vector (n).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -22,7 +22,7 @@ colsum(X, w)
 """ 
 colsum(X::DataFrame) = colsum(ensure_mat(X))
 
-function colsum(X::AbstMatVec{Q}) where Q <: Float
+function colsum(X::AbstMatVec{Q}) where Q <: Union{Signed, Float}
     s = zeros(eltype(X), nco(X))
     Threads.@threads for j in axes(X, 2)
         @inbounds for i in axes(X, 1)
@@ -32,7 +32,7 @@ function colsum(X::AbstMatVec{Q}) where Q <: Float
     s
 end
 
-function colsum(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
+function colsum(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Union{Signed, Float}
     s = zeros(eltype(X), nco(X))
     Threads.@threads for j in axes(X, 2)
         @inbounds for i in axes(X, 1)

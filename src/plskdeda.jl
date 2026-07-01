@@ -1,10 +1,10 @@
 """
     plskdeda(; kwargs...)
     plskdeda(X, y; kwargs...)
-    plskdeda(X, y, weights::ProbabilityWeights; kwargs...)
+    plskdeda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 KDE-DA on PLS latent variables (PLS-KDEDA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute. Must be >= 1.
@@ -82,7 +82,7 @@ function plskdeda(X, y; kwargs...)
     plskdeda(X, y, weights; kwargs...)
 end
 
-function plskdeda(X, y, weights::ProbabilityWeights; kwargs...)
+function plskdeda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPlskdeda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(Q, y)
