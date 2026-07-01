@@ -85,9 +85,11 @@ conf(res.pred, ytest).cnt
 rda(; kwargs...) = JchemoModel(rda, nothing, kwargs)
 
 function rda(X, y; kwargs...)
-    par = recovkw(ParRda{Q}, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParRda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     rda(X, y, weights; kwargs...)
 end
 
@@ -95,10 +97,7 @@ function rda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kw
     par = recovkw(ParRda{Q}, kwargs).par
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     @assert par.lb >= 0 "lb must be in >= 0"
-    X = ensure_mat(X)
-    y = vec(y)    # for findall
     n, p = size(X)
-    alpha = Q(par.alpha)
     xscales = ones(Q, p)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
@@ -113,13 +112,13 @@ function rda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kw
     fitm = list(nlev)
     ct = similar(X, nlev, p)
     Id = I(p)
-    fitm = list(nlev)
+    fitm = list(Dmnorm, nlev)
     res.W .*= n / (n - nlev)    # unbiased estimate
     A = par.lb * Id
-    @inbounds for i in eachindex(lev)
-        s = findall(y .== lev[i]) 
+    @inbounds for i in eachindex(lev) 
+        s = findall(y .== lev[i])
         ct[i, :] = colmean(vrow(X, s), pweight(weights.values[s]))   
-        @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
+        @. res.Wi[i] = (1 - par.alpha) * res.Wi[i] + par.alpha * res.W
         @. res.Wi[i] = res.Wi[i] + A
         fitm[i] = dmnorm(ct[i, :], res.Wi[i]; simpl = par.simpl) 
     end
@@ -127,7 +126,7 @@ function rda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kw
 end
 
 """
-    predict(object::Qda, X)
+    predict(object::Rda, X)
 Compute y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
@@ -141,11 +140,10 @@ function predict(object::Rda, X)
     @inbounds for i in eachindex(lev)
         dens[:, i] .= vec(predict(object.fitm[i], fscale(X, object.xscales)).pred)
     end
-    A = object.priors' .* dens
-    v = sum(A, dims = 2)
-    posterior = fscale(A', v)'  # Could be replaced by similar as in fscale! 
-    z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
-    pred = reshape(recod_indbylev(z, lev), m, 1)
+    A = object.priors' .* dens 
+    posterior = fscale(A', rowsum(A))'    # Could be replaced by similar as in fscale! 
+    v =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
+    pred = reshape(recod_indbylev(vec(v), lev), m, 1)
     (pred = pred, dens, posterior)
 end
 

@@ -86,7 +86,7 @@ function matW(X::AbstMatVec{Q}, y::Vector{String}, weights::ProbabilityWeights{Q
         Wi_1obs = covm(X, weights)
     end
     ## End
-    Wi = list(Matrix, nlev)
+    Wi = list(Matrix{Q}, nlev)
     W = zeros(eltype(X), p, p)
     @inbounds for i in eachindex(lev) 
         if ni[i] == 1

@@ -659,25 +659,13 @@ end
 
 struct Qda{Q <: Float}
     fitm::Vector{Dmnorm}
-    Wi::Vector{Q}  
+    Wi::Vector{Matrix{Q}}  
     ct::Matrix{Q}
     ni::Vector{Int}
     priors::Vector{Q}
     lev::Vector{String}
     weights::ProbabilityWeights{Q}
     par::ParQda
-end
-
-struct Rda{Q <: Float}
-    fitm::Vector{Dmnorm}
-    Wi::Vector{Q}  
-    ct::Matrix{Q}
-    ni::Vector{Int}
-    priors::Vector{Q}
-    lev::Vector{String}
-    xscales::Vector{Q}
-    weights::ProbabilityWeights{Q}
-    par::ParRda
 end
 
 struct Kdeda{Q <: Float}
@@ -687,6 +675,20 @@ struct Kdeda{Q <: Float}
     lev::Vector{String}
     par::ParKdeda
 end
+
+struct Rda{Q <: Float}
+    fitm::Vector{Dmnorm}
+    Wi::Vector{Matrix{Q}}  
+    ct::Matrix{Q}
+    ni::Vector{Int}
+    priors::Vector{Q}
+    lev::Vector{String}
+    xscales::Vector{Q}
+    weights::ProbabilityWeights{Q}
+    par::ParRda
+end
+
+
 
 struct Plsprobda{Q <: Float}    # plslda, plsqda, plskdeda  
     fitm_emb::Union{Plsr, Splsr, Kplsr, Dkplsr}

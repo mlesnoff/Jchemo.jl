@@ -477,6 +477,13 @@ Base.@kwdef mutable struct ParQda{Q <: Float}
     alpha::Q = 0.                      
 end 
 
+Base.@kwdef mutable struct ParKdeda{Q <: Float}
+    prior::Union{Symbol, Vector{Q}} = :prop
+    h::Union{Nothing, Q, Vector{Q}} = nothing  
+    a::Q = 1. 
+end 
+
+
 Base.@kwdef mutable struct ParRda{Q <: Float}
     prior::Union{Symbol, Vector{Q}} = :prop
     alpha::Q = 0.
@@ -486,12 +493,6 @@ Base.@kwdef mutable struct ParRda{Q <: Float}
 end 
 
 
-
-Base.@kwdef mutable struct ParKdeda{Q <: Float}
-    prior::Union{Symbol, Vector{Q}} = :prop
-    h::Union{Nothing, Q, Vector{Q}} = nothing  
-    a::Q = 1. 
-end 
 
 Base.@kwdef mutable struct ParPlsqda{Q <: Float}
     nlv::Int = 1

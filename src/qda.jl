@@ -84,9 +84,11 @@ errp(res.pred, ytest)
 qda(; kwargs...) = JchemoModel(qda, nothing, kwargs)
 
 function qda(X, y; kwargs...)
-    par = recovkw(ParQda{Q}, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParQda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     qda(X, y, weights; kwargs...)
 end
 
@@ -94,10 +96,7 @@ function qda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kw
     # Scaling X has no effect
     par = recovkw(ParQda{Q}, kwargs).par
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
-    X = ensure_mat(X)
-    y = vec(y)    # for findall
     n, p = size(X)
-    alpha = Q(par.alpha)
     res = matW(X, y, weights)
     ni = res.ni
     priors = aggsumv(weights.values, y).val
@@ -106,12 +105,12 @@ function qda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kw
     res.W .*= n / (n - nlev)    # unbiased estimate
     ## End
     ct = similar(X, nlev, p)
-    fitm = list(nlev)
+    fitm = list(Dmnorm, nlev)
     @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(vrow(X, s), pweight(weights.values[s]))
-        if alpha > 0
-            @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
+        if par.alpha > 0
+            @. res.Wi[i] = (1 - par.alpha) * res.Wi[i] + par.alpha * res.W
         end
         fitm[i] = dmnorm(ct[i, :], res.Wi[i]) 
     end

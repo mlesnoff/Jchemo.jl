@@ -67,17 +67,17 @@ conf(res.pred, ytest).cnt
 lda(; kwargs...) = JchemoModel(lda, nothing, kwargs)
 
 function lda(X, y; kwargs...)
-    par = recovkw(ParLda{Q}, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParLda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     lda(X, y, weights; kwargs...)
 end
 
 function lda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float  
     # Scaling X has no effect
     par = recovkw(ParLda{Q}, kwargs).par
-    X = ensure_mat(X)
-    y = vec(y)    # for findall
     n, p = size(X)
     res = matW(X, y, weights)
     ni = res.ni
@@ -87,7 +87,7 @@ function lda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kw
     res.W .*= n / (n - nlev)    # unbiased estimate
     ## End
     ct = similar(X, nlev, p)
-    fitm = list(nlev)
+    fitm = list(Dmnorm, nlev)
     @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(vrow(X, s), pweight(weights.values[s]))
@@ -103,7 +103,7 @@ Compute y-predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Union{Lda, Qda}, X)
-    X = ensure_mat(X)
+    X = ensure_mat(X) 
     m = nro(X)
     lev = object.lev
     nlev = length(lev) 
@@ -112,10 +112,9 @@ function predict(object::Union{Lda, Qda}, X)
         dens[:, i] .= vec(predict(object.fitm[i], X).pred)
     end
     A = object.priors' .* dens
-    v = sum(A, dims = 2)
-    posterior = fscale(A', v)'                    # could be replaced by similar as in fscale! 
-    z =  mapslices(argmax, posterior; dims = 2)   # if equal, argmax takes the first
-    pred = reshape(recod_indbylev(z, lev), m, 1)
+    posterior = fscale(A', rowsum(A))'            # could be replaced by similar as in fscale! 
+    v =  mapslices(argmax, posterior; dims = 2)   # if equal, argmax takes the first
+    pred = reshape(recod_indbylev(vec(v), lev), m, 1)
     (pred = pred, dens, posterior)
 end
     
