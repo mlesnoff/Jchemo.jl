@@ -88,7 +88,7 @@ function lwplslda(X, y; kwargs...)
         fitm = nothing
     else
         weights = pweightcla(vec(y); prior = par.prior)
-        priors = aggsumv(weights.values, vec(y)).val
+        priors = aggsumv(weights.values, y).val
         fitm = plskern(X, dummy(Q, y).Y, weights; nlv = par.nlvdis, scal = par.scal)
     end
     xscales = ones(Q, p)

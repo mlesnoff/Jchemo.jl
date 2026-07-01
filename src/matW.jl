@@ -47,7 +47,7 @@ function matB(X::AbstMatVec{Q}, y::Vector{String}, weights::ProbabilityWeights{Q
     lev = taby.keys
     ni = taby.vals
     nlev = length(lev)
-    priors = aggsumv(weights.values, vec(y)).val   # sub-total weights by class                                
+    priors = aggsumv(weights.values, y).val   # sub-total weights by class                                
     ct = similar(X, nlev, p)                       # to store class centers
     @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
@@ -77,7 +77,7 @@ function matW(X::AbstMatVec{Q}, y::Vector{String}, weights::ProbabilityWeights{Q
     lev = taby.keys
     ni = taby.vals
     nlev = length(lev)                                 
-    priors = aggsumv(weights.values, vec(y)).val     # sub-total weights by class   
+    priors = aggsumv(weights.values, y).val     # sub-total weights by class   
     ## When there is at least one class containing only 1 obs, a variable 'Wi_1obs' equal 
     ## to the overal covariance matrix that is then used in the next boucle 'for'.
     ## Another convention could be chosen (e.g., giving weight = 0 to the class(es) with 1 obs), 

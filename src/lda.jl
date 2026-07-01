@@ -81,7 +81,7 @@ function lda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kw
     n, p = size(X)
     res = matW(X, y, weights)
     ni = res.ni
-    priors = aggsumv(weights.values, vec(y)).val
+    priors = aggsumv(weights.values, y).val
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate

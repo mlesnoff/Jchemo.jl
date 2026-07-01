@@ -76,7 +76,7 @@ function kdeda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
     par = recovkw(ParKdeda{Q}, kwargs).par
     X = ensure_mat(X)
     ni = tab(y).vals
-    priors = aggsumv(weights.values, vec(y)).val
+    priors = aggsumv(weights.values, y).val
     lev = mlev(y)
     nlev = length(lev)
     ## End

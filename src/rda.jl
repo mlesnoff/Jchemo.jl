@@ -109,7 +109,7 @@ function rda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kw
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
-    priors = aggsumv(weights.values, vec(y)).val 
+    priors = aggsumv(weights.values, y).val 
     fitm = list(nlev)
     ct = similar(X, nlev, p)
     Id = I(p)

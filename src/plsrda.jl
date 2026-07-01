@@ -97,7 +97,7 @@ function plsrda(X, y; kwargs...)
     X = ensure_mat(X)
     y = vec(y)
     Q = eltype(X)
-    prior = recovkw(ParMlrda{Q}, kwargs).par.prior
+    prior = recovkw(ParPlsda{Q}, kwargs).par.prior
     weights = pweightcla(Q, y; prior)
     plsrda(X, y, weights; kwargs...)
 end
@@ -106,7 +106,7 @@ function plsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q};
     par = recovkw(ParPlsda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).vals
-    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, y).val  # output not used, only for information
     fitm_emb = plskern(X, res.Y, weights; kwargs...)
     par.nlv = fitm_emb.par.nlv
     Plsrda(fitm_emb, ni, priors, res.lev, par)

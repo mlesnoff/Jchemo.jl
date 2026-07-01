@@ -118,7 +118,7 @@ function fda!(X::Matrix, y, weights; kwargs...)
     end
     res = matW(X, y, weights)
     ni = res.ni
-    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information    
+    priors = aggsumv(weights.values, y).val  # output not used, only for information    
     lev = res.lev
     nlev = length(lev)
     nlv = min(n, p, nlev - 1, par.nlv)

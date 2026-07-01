@@ -88,7 +88,7 @@ function rrda(X, y; kwargs...)
     X = ensure_mat(X)
     y = vec(y)
     Q = eltype(X)
-    prior = recovkw(ParMlrda{Q}, kwargs).par.prior
+    prior = recovkw(ParRrda{Q}, kwargs).par.prior
     weights = pweightcla(Q, y; prior)
     rrda(X, y, weights; kwargs...)
 end
@@ -97,7 +97,7 @@ function rrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; k
     par = recovkw(ParRrda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).vals 
-    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, y).val  # output not used, only for information
     fitm_emb = rr(X, res.Y, weights; kwargs...)
     Rrda(fitm_emb, ni, priors, res.lev, par)
 end

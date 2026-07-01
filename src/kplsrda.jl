@@ -73,9 +73,11 @@ predict(model, Xtest, 1:2).pred
 kplsrda(; kwargs...) = JchemoModel(kplsrda, nothing, kwargs)
 
 function kplsrda(X, y; kwargs...)
-    par = recovkw(ParKplsda{Q}, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParMlrda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     kplsrda(X, y, weights; kwargs...)
 end
 
@@ -83,7 +85,7 @@ function kplsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}
     par = recovkw(ParKplsda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).vals
-    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, y).val  # output not used, only for information
     fitm_emb = kplsr(X, res.Y, weights; kwargs...)
     par.nlv = fitm_emb.par.nlv
     Plsrda(fitm_emb, ni, priors, res.lev, par)
