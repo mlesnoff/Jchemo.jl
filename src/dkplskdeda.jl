@@ -15,8 +15,8 @@ Keyword arguments:
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * Keyword arguments of function `dmkern` (bandwidth 
     definition) can also be specified here.
-* `scal` : Boolean. If `true`, each column of `X` and Ydummy is scaled by its uncorrected standard deviation
-    in the PLS computation.
+* `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 Same as function `plskdeda` (PLS-KDEDA) except that a direct kernel PLSR (function `dkplsr`), instead of a PLSR 
 (function `plskern`), is run on the Y-dummy table. 

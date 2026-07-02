@@ -483,7 +483,6 @@ Base.@kwdef mutable struct ParKdeda{Q <: Float}
     a::Q = 1. 
 end 
 
-
 Base.@kwdef mutable struct ParRda{Q <: Float}
     prior::Union{Symbol, Vector{Q}} = :prop
     alpha::Q = 0.
@@ -553,6 +552,32 @@ Base.@kwdef mutable struct ParKplskdeda{Q <: Float}
     scal::Symbol = :none 
 end 
 
+##
+
+Base.@kwdef mutable struct ParMbplsda{Q <: Float}  # mbplsrda, mbplslda
+    nlv::Int = 1
+    bscal::Symbol = :none   
+    prior::Union{Symbol, Vector{Q}} = :prop   
+    scal::Symbol = :none                    
+end 
+
+Base.@kwdef mutable struct ParMbplsqda{Q <: Float}  
+    nlv::Int = 1
+    bscal::Symbol = :none   
+    prior::Union{Symbol, Vector{Q}} = :prop 
+    alpha::Q = 0.   
+    scal::Symbol = :none                    
+end 
+
+Base.@kwdef mutable struct ParMbplskdeda{Q <: Float}  
+    nlv::Int = 1
+    bscal::Symbol = :none   
+    prior::Union{Symbol, Vector{Q}} = :prop 
+    h::Union{Nothing, Q, Vector{Q}} = nothing  
+    a::Q = 1.  
+    scal::Symbol = :none                    
+end 
+
 ## 
 
 Base.@kwdef mutable struct ParLwplsda{Q <: Float}    # lwplsrda, lwplslda 
@@ -584,32 +609,6 @@ Base.@kwdef mutable struct ParLwplsqda{Q <: Float}
     scal::Symbol = :none 
     store::Bool = false 
     verbose::Bool = false                   
-end 
-
-## Multiblock
-
-Base.@kwdef mutable struct ParMbplsda{Q <: Float}  # mbplsrda, mbplslda
-    nlv::Int = 1
-    bscal::Symbol = :none   
-    prior::Union{Symbol, Vector{Q}} = :prop   
-    scal::Symbol = :none                    
-end 
-
-Base.@kwdef mutable struct ParMbplsqda{Q <: Float}  
-    nlv::Int = 1
-    bscal::Symbol = :none   
-    prior::Union{Symbol, Vector{Q}} = :prop 
-    alpha::Q = 0.   
-    scal::Symbol = :none                    
-end 
-
-Base.@kwdef mutable struct ParMbplskdeda{Q <: Float}  
-    nlv::Int = 1
-    bscal::Symbol = :none   
-    prior::Union{Symbol, Vector{Q}} = :prop 
-    h::Union{Nothing, Q, Vector{Q}} = nothing  
-    a::Q = 1.  
-    scal::Symbol = :none                    
 end 
 
 ## Occ 

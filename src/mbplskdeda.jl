@@ -14,8 +14,8 @@ Keyword arguments:
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * Keyword arguments of function `dmkern` (bandwidth definition) can also be specified here.
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and Ydummy is scaled by its uncorrected standard deviation 
-    (before the block scaling) in the MBPLS computation.
+* `scal` : Symbol defining the column scaling of blocks in `Xbl` and Ydummy. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 Same as function `mbplsqda` except that the class densities are estimated from `dmkern` instead of `dmnorm`.
 
@@ -25,9 +25,11 @@ See function `mbplslda` for examples.
 mbplskdeda(; kwargs...) = JchemoModel(mbplskdeda, nothing, kwargs)
 
 function mbplskdeda(Xbl, y; kwargs...)
-    par = recovkw(ParMbplskdeda{Q}, kwargs).par
-    Q = eltype(Xbl[1][1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    Xbl = ensure_mat_mb(Xbl)
+    y = vec(y)
+    Q = eltype(Xbl[1])
+    prior = recovkw(ParMbplskdeda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     mbplskdeda(Xbl, y, weights; kwargs...)
 end
 

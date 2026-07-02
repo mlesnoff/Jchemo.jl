@@ -14,8 +14,8 @@ Keyword arguments:
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum between QDA (`alpha = 0`) and LDA (`alpha = 1`).
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and Ydummy is scaled by its uncorrected standard deviation 
-    (before the block scaling) in the MBPLS computation.
+* `scal` : Symbol defining the column scaling of blocks in `Xbl` and Ydummy. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 The approach is as follows:
 
@@ -44,9 +44,11 @@ See function `mbplslda` for examples.
 mbplsqda(; kwargs...) = JchemoModel(mbplsqda, nothing, kwargs)
 
 function mbplsqda(Xbl, y; kwargs...)
-    par = recovkw(ParMbplsqda{Q}, kwargs).par
-    Q = eltype(Xbl[1][1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    Xbl = ensure_mat_mb(Xbl)
+    y = vec(y)
+    Q = eltype(Xbl[1])
+    prior = recovkw(ParMbplsqda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     mbplsqda(Xbl, y, weights; kwargs...)
 end
 

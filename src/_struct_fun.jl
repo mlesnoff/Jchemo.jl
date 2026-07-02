@@ -698,8 +698,16 @@ struct Plsprobda{Q <: Float}    # plslda, plsqda, plskdeda
         ParKplsda, ParKplsqda, ParKplskdeda}
 end
 
-## Local
-## (from below, fitm not yet specified)
+struct Mbplsprobda{Q <: Float}    # mbplslda, mbplsqda, mbplskdeda  
+    fitm_emb::Mbplsr
+    fitm_da::Union{Vector{Lda}, Vector{Qda}, Vector{Kdeda}}   
+    ni::Vector{Int}
+    priors::Vector{Q}
+    lev::Vector{String}
+    par::Union{ParMbplsda, ParMbplsqda, ParMbplskdeda}
+end
+
+## Local (from below, fitm not yet specified)
 
 struct Knnda{Q <: Float}
     X::Matrix{Q}
@@ -771,15 +779,6 @@ struct Treeda{Q <: Float}
     priors::Vector{Q}
     lev::Vector{String}
     par::Union{ParTree, ParRf}
-end
-
-struct Mbplsprobda{Q <: Float}    # mbplslda, mbplsqda, mbplskdeda  
-    fitm_emb::Mbplsr
-    fitm_da::Vector{Union{Lda, Qda, Kdeda}}   
-    ni::Vector{Int}
-    priors::Vector{Q}
-    lev::Vector{String}
-    par::Union{ParMbplsda, ParMbplsqda, ParMbplskdeda}
 end
 
 ## Occ

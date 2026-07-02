@@ -13,7 +13,7 @@ Keyword arguments:
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `lb` : Ridge regularization parameter "lambda" (>= 0).
 * `simpl` : Boolean. See function `dmnorm`. 
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+* `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none`, `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
 Let us note W the (corrected) pooled within-class covariance matrix and Wi the (corrected) within-class 
