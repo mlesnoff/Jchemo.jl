@@ -2,7 +2,7 @@
     lda(; kwargs...)
     lda(; kwargs...)
     lda(X, y; kwargs...)
-    lda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    lda(X::AbstractMatrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Linear discriminant analysis (LDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -75,7 +75,7 @@ function lda(X, y; kwargs...)
     lda(X, y, weights; kwargs...)
 end
 
-function lda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float  
+function lda(X::AbstractMatrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float  
     # Scaling X has no effect
     par = recovkw(ParLda{Q}, kwargs).par
     n, p = size(X)

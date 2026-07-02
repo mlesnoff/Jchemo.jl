@@ -76,9 +76,11 @@ summary(fitm_emb, Xtrain)
 plskdeda(; kwargs...) = JchemoModel(plskdeda, nothing, kwargs)
 
 function plskdeda(X, y; kwargs...)
-    par = recovkw(ParPlskdeda{Q}, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParPlskdeda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     plskdeda(X, y, weights; kwargs...)
 end
 

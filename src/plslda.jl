@@ -95,9 +95,11 @@ summary(fitm_emb, Xtrain)
 plslda(; kwargs...) = JchemoModel(plslda, nothing, kwargs)
 
 function plslda(X, y; kwargs...)
-    par = recovkw(ParPlsda{Q}, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParPlsda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     plslda(X, y, weights; kwargs...)
 end
 

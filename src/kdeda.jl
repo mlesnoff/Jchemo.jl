@@ -1,7 +1,7 @@
 """
     kdeda(; kwargs...)
     kdeda(X, y; kwargs...)
-    kdeda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    kdeda(X::AbstractMatrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Discriminant analysis using non-parametric kernel Gaussian density estimation (KDE-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -73,7 +73,7 @@ function kdeda(X, y; kwargs...)
     kdeda(X, y, weights; kwargs...) 
 end
 
-function kdeda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float 
+function kdeda(X::AbstractMatrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float 
     ## To do: add scaling X?
     par = recovkw(ParKdeda{Q}, kwargs).par
     ni = tab(y).vals

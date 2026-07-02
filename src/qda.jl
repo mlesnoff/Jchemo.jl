@@ -1,7 +1,7 @@
 """
     qda(; kwargs...)
     qda(X, y; kwargs...)
-    qda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    qda(X::AbstractMatrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Quadratic discriminant analysis (QDA, with continuum towards LDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -92,7 +92,7 @@ function qda(X, y; kwargs...)
     qda(X, y, weights; kwargs...)
 end
 
-function qda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float  
+function qda(X::AbstractMatrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float  
     # Scaling X has no effect
     par = recovkw(ParQda{Q}, kwargs).par
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."

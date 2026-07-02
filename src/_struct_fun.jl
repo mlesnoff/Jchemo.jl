@@ -688,11 +688,9 @@ struct Rda{Q <: Float}
     par::ParRda
 end
 
-
-
 struct Plsprobda{Q <: Float}    # plslda, plsqda, plskdeda  
     fitm_emb::Union{Plsr, Splsr, Kplsr, Dkplsr}
-    fitm_da::Vector{Union{Lda, Qda, Kdeda}}  
+    fitm_da::Union{Vector{Lda}, Vector{Qda}, Vector{Kdeda}}  
     ni::Vector{Int}
     priors::Vector{Q}
     lev::Vector{String}
