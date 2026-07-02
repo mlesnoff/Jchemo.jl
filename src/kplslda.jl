@@ -80,9 +80,11 @@ predict(model, Xtest, 1:2).pred
 kplslda(; kwargs...) = JchemoModel(kplslda, nothing, kwargs)
 
 function kplslda(X, y; kwargs...)
-    par = recovkw(ParKplsda{Q}, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParKplsda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     kplslda(X, y, weights; kwargs...)
 end
 

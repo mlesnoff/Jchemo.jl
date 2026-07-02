@@ -28,9 +28,11 @@ See function `splslda` for examples.
 splsqda(; kwargs...) = JchemoModel(splsqda, nothing, kwargs)
 
 function splsqda(X, y; kwargs...)
-    par = recovkw(ParSplsqda{Q}, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParSplsqda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     splsqda(X, y, weights; kwargs...)
 end
 

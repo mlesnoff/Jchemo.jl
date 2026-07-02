@@ -25,9 +25,11 @@ See function `dkplslda` for examples.
 dkplsqda(; kwargs...) = JchemoModel(dkplsqda, nothing, kwargs)
 
 function dkplsqda(X, y; kwargs...)
-    par = recovkw(ParKplsqda{Q}, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParKplsqda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     dkplsqda(X, y, weights; kwargs...)
 end
 
