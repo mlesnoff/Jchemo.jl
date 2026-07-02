@@ -711,7 +711,7 @@ end
 
 struct Knnda{Q <: Float}
     X::Matrix{Q}
-    y::Matrix{String}
+    y::Vector{String}
     xscales::Vector{Q}
     ni::Vector{Int}
     lev::Vector{String}
@@ -720,7 +720,7 @@ end
 
 struct Lwmlrda{Q <: Float}
     X::Matrix{Q}
-    y::Matrix{String}
+    y::Vector{String}
     xscales::Vector{Q}
     ni::Vector{Int}
     lev::Vector{String}
@@ -730,7 +730,7 @@ end
 struct Lwplsrda{Q <: Float}
     fitm
     X::Matrix{Q}
-    y::Matrix{String}
+    y::Vector{String}
     xscales::Vector{Q}
     ni::Vector{Int}
     priors::Vector{Q}
@@ -741,7 +741,7 @@ end
 struct Lwplslda{Q <: Float}   
     fitm
     X::Matrix{Q}
-    y::Matrix{String}
+    y::Vector{String}
     xscales::Vector{Q}
     ni::Vector{Int}
     priors::Vector{Q}
@@ -752,7 +752,7 @@ end
 struct Lwplsqda{Q <: Float}
     fitm
     X::Matrix{Q}
-    y::Matrix{String}
+    y::Vector{String}
     xscales::Vector{Q}
     ni::Vector{Int}
     priors::Vector{Q}
