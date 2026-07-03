@@ -140,7 +140,7 @@ function dmkern(X; kwargs...)
     end
     Hinv = inv(H)
     detH = det(H)
-    if detH == 0 ; detH = 1e-20 ; end
+    if detH == 0 ; detH = Q(1e-20) ; end
     Dmkern(X, H, Hinv, detH, par)
 end
 

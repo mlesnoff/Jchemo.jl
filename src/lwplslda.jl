@@ -58,11 +58,6 @@ nlv = 10
 model = lwplslda(; nlvdis, metric, h, k, prior = :unif, nlv) 
 #model = lwplsqda(; nlvdis, metric, h, k, nlv, alpha = .5) 
 fit!(model, Xtrain, ytrain)
-@names model
-@names fitm = model.fitm
-fitm.lev
-fitm.ni
-fitm.priors
 
 res = predict(model, Xtest) ; 
 @names res 
@@ -86,7 +81,7 @@ function lwplslda(X, y::Vector{String}; kwargs...)
         priors = nothing
         fitm = nothing
     else
-        weights = pweightcla(vec(y); prior = par.prior)
+        weights = pweightcla(Q, vec(y); prior = par.prior)
         priors = aggsumv(weights.values, y).val
         fitm = plskern(X, dummy(Q, y).Y, weights; nlv = par.nlvdis, scal = par.scal)
     end

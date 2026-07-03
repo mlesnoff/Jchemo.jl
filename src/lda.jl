@@ -90,8 +90,8 @@ function lda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::Probabili
     fitm = list(Dmnorm, nlev)
     @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
-        ct[i, :] = colmean(vrow(X, s), pweight(weights.values[s]))
-        fitm[i] = dmnorm(ct[i, :], res.W)
+        ct[i, :] .= colmean(vrow(X, s), pweight(Q, weights.values[s]))
+        fitm[i] = dmnorm(vrow(ct, i), res.W)
     end
     Lda(fitm, res.W, ct, ni, priors, lev, weights, par)
 end

@@ -112,7 +112,7 @@ function qda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::Probabili
         if par.alpha > 0
             @. res.Wi[i] = (1 - par.alpha) * res.Wi[i] + par.alpha * res.W
         end
-        fitm[i] = dmnorm(ct[i, :], res.Wi[i]) 
+        fitm[i] = dmnorm(vrow(ct, i), res.Wi[i]) 
     end
     Qda(fitm, res.Wi, ct, ni, priors, lev, weights, par)
 end

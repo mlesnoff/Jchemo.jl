@@ -120,12 +120,12 @@ function dmnorm!(X::Matrix{Q}; kwargs...) where Q <: Float
     S = cov(X; corrected = true)
     U = cholesky!(Hermitian(S)).U    # cholesky! modifies S
     if par.simpl 
-        cst = 1.
-        detS = 1.
+        cst = Q(1)
+        detS = Q(1)
     else
         p = nro(S)
-        cst = (2 * pi)^(-p / 2)
-        detS = det(U)^2  
+        cst = Q((2 * pi)^(-p / 2))
+        detS = Q(det(U)^2)  
     end
     LinearAlgebra.inv!(U)
     #cholesky!(S)
@@ -142,12 +142,12 @@ function dmnorm!(mu::Vector{Q}, S::Matrix{Q}; kwargs...) where Q <: Float
     par = recovkw(ParDmnorm, kwargs).par
     U = cholesky!(Hermitian(copy(S))).U   # cholesky! modifies S
     if par.simpl 
-        cst = 1.
-        detS = 1.
+        cst = Q(1)
+        detS = Q(1)
     else
         p = nro(S)
-        cst = (2 * pi)^(-p / 2)
-        detS = det(U)^2  
+        cst = Q((2 * pi)^(-p / 2))
+        detS = Q(det(U)^2)  
     end
     LinearAlgebra.inv!(U)
     Dmnorm(mu, U, detS, cst, par)

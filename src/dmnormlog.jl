@@ -57,12 +57,12 @@ function dmnormlog!(X::Matrix{Q}; kwargs...) where Q <: Float
     mu = colmean(X) 
     S = cov(X; corrected = true)
     if par.simpl 
-        logcst = 0
-        logdetS = 0
+        logcst = Q(0)
+        logdetS = Q(0)
     else
         p = nro(S)
-        logcst = -p / 2 * log(2 * pi)
-        logdetS = logdet(S)
+        logcst = Q(-p / 2 * log(2 * pi))
+        logdetS = Q(logdet(S))
     end
     U = cholesky!(Hermitian(S)).U    # cholesky! modifies S
     LinearAlgebra.inv!(U)
@@ -77,12 +77,12 @@ function dmnormlog!(mu::Vector{Q}, S::Matrix{Q}; kwargs...) where Q <: Float
     par = recovkw(ParDmnorm, kwargs).par
     U = cholesky!(Hermitian(copy(S))).U   # cholesky! modifies S
     if par.simpl 
-        logcst = 0
-        logdetS = 0
+        logcst = Q(0)
+        logdetS = Q(0)
     else
         p = nro(S)
-        logcst = -p / 2 * log(2 * pi)
-        logdetS = logdet(S)
+        logcst = Q(-p / 2 * log(2 * pi))
+        logdetS = Q(logdet(S))
     end
     LinearAlgebra.inv!(U)
     Dmnormlog(mu, U, logdetS, logcst, par)

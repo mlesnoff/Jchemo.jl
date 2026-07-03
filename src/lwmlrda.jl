@@ -60,6 +60,8 @@ res.listw
 @head res.pred
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
+errp(res.pred, ytest)
+conf(res.pred, ytest).cnt
 ```
 """ 
 lwmlrda(; kwargs...) = JchemoModel(lwmlrda, nothing, kwargs)

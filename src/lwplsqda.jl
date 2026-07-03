@@ -53,7 +53,7 @@ function lwplsqda(X, y::Vector{String}; kwargs...)
         priors = nothing
         fitm = nothing
     else
-        weights = pweightcla(vec(y); prior = par.prior)
+        weights = pweightcla(Q, vec(y); prior = par.prior)
         priors = aggsumv(weights.values, y).val
         fitm = plskern(X, dummy(Q, y).Y, weights; nlv = par.nlvdis, scal = par.scal)
     end
