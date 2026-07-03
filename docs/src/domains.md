@@ -258,12 +258,15 @@
 - **occknn**: kNN distance-based outlierness
 - **occlknn**: Local kNN distance-based outlierness
 
-### Utilities (unsupervised)
+### Utilities (unsupervised computations)
 
+*Global*
 - **outstah** Stahel-Donoho outlierness
 - **outeucl**: Outlierness from Euclidean distances to center
-- **pcout**: Pcout algorithm for outlier identification in high dimensions *Filzmoser et al. 2008*
 - **outsd**, **outod**, **outsdod**: Outlierness from PCA/PLS distances (SD, OD and consensus SD-OD)
+- **pcout**: Pcout algorithm for outlier identification in high dimensions *Filzmoser et al. 2008*
+
+*Local*
 - **outknn**: kNN distance-based outlierness
 - **outlknn**: Local kNN distance-based outlierness
 
