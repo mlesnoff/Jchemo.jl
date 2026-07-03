@@ -1,6 +1,6 @@
 """
     lwmlrda(; kwargs...)
-    lwmlrda(X, y; kwargs...) 
+    lwmlrda(X, y::Vector{String}; kwargs...) 
 k-Nearest-Neighbours locally weighted MLR-based discrimination (kNN-LWMLR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -13,8 +13,8 @@ Keyword arguments:
     `winvs` can also be specified here).
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Boolean. If `true`, each column of the global `X` is scaled by its uncorrected standard deviation before 
-    the distance and weight computations.
+* `scal` : Symbol defining the column scaling of the global `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
 This is the same principle as function `lwmlr` except that MLR-DA models, instead of MLR models, are fitted on the 
@@ -64,12 +64,12 @@ conf(res.pred, ytest).cnt
 """ 
 lwmlrda(; kwargs...) = JchemoModel(lwmlrda, nothing, kwargs)
 
-function lwmlrda(X, y; kwargs...) 
-    par = recovkw(ParLwmlr{Q}, kwargs).par
+function lwmlrda(X, y::Vector{String}; kwargs...) 
     X = ensure_mat(X)
-    y = ensure_mat(y)
-    taby = tab(y)
     p = nco(X)
+    Q = eltype(X) 
+    par = recovkw(ParLwmlr{Q}, kwargs).par
+    taby = tab(y)
     xscales = ones(Q, p)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
@@ -86,17 +86,17 @@ Compute y-predictions from the fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Lwmlrda, X)
-    Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
+    Q = eltype(object.X)
     ## Getknn
     metric = object.par.metric
-    h = Q(object.par.h)
     k = object.par.k
-    tolw = Q(object.par.tolw)
-    criw = Q(object.par.criw)
+    h = object.par.h
+    criw = object.par.criw
     squared = object.par.squared
-    if object.par.scal
+    tolw = object.par.tolw
+    if object.par.scal != :none
         zX1 = fscale(object.X, object.xscales)
         zX2 = fscale(X, object.xscales)
         res = getknn(zX1, zX2; metric, k)
@@ -104,7 +104,7 @@ function predict(object::Lwmlrda, X)
         res = getknn(object.X, X; metric, k)
     end
     listw = similar(res.d)
-    Threads.@threads for i = 1:m
+    Threads.@threads for i in eachindex(res.d)
         w = winvs(res.d[i]; h, criw, squared)
         @. w[w < tolw] = tolw
         listw[i] = w

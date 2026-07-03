@@ -1,6 +1,6 @@
 """
     knnda(; kwargs...)
-    knnda(X, y; kwargs...) 
+    knnda(X, y::Vector{String}; kwargs...) 
 k-Nearest-Neighbours weighted discrimination (kNN-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -12,8 +12,8 @@ Keyword arguments:
     See function `winvs` for details (keyword arguments `criw` and `squared` of `winvs` can also be specified here).
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Boolean. If `true`, each column of the global `X` is scaled by its uncorrected standard deviation before the distance 
-     and weight computations.
+* `scal` : Symbol defining the column scaling of the global `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 This function has the same principle as function `knnr` except that a discrimination replaces the regression. A weighted vote 
 is done over the neighborhood, and the prediction corresponds to the most frequent class.

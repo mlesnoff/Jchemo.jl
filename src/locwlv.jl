@@ -1,12 +1,14 @@
 """
-    locwlv(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}}, 
-        listw::Union{Nothing, Vector{Vector{Q}}} = nothing, algo::Function, 
-        nlv::Union{Int, AbstractVector{Int}}, 
-        store::Bool = false, 
-        verbose::Bool = true, kwargs...) where Q <: Float
-* `Xtrain` : Training X-data.
-* `Ytrain` : Training Y-data.
-* `X` : X-data (m observations) to predict.
+    locwlv(Xtrain::Matrix{Q}, Ytrain::Matrix{Q}, X::Matrix{Q}; listnn::Vector{Vector{Int}}, 
+        listw::Union{Nothing, Vector{Vector{Q}}} = nothing, algo::Function, nlv::Union{Int, AbstractVector{Int}}, 
+        store::Bool = false, verbose::Bool = true, kwargs...) where Q <: Float
+    locwlv(Xtrain::Matrix{Q}, ytrain::Vector{String}, X::Matrix{Q}; listnn::Vector{Vector{Int}}, 
+        listw::Union{Nothing, Vector{Vector{Q}}} = nothing, algo::Function, nlv::Union{Int, AbstractVector{Int}}, 
+        store::Bool = false, verbose::Bool = true, kwargs...) where Q <: Float
+* `Xtrain` : Training X-data (n, p).
+* `Ytrain` : Training Y-data (n, q).
+* `ytrain` : Training Y-data (n) (class membership). Must be a `Vector{String}`.
+* `X` : X-data (m, p) to predict.
 Keyword arguments:
 * `listnn` : List (vector) of m vectors of indexes.
 * `listw` : List (vector) of m vectors of weights.
@@ -19,11 +21,9 @@ Keyword arguments:
 
 Same as [`locw`](@ref) but specific and much faster for LV-based models (e.g., PLSR).
 """
-function locwlv(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}}, 
-        listw::Union{Nothing, Vector{Vector{Q}}} = nothing, algo::Function, 
-        nlv::Union{Int, AbstractVector{Int}}, 
-        store::Bool = false, 
-        verbose::Bool = true, kwargs...) where Q <: Float
+function locwlv(Xtrain::Matrix{Q}, Ytrain::Matrix{Q}, X::Matrix{Q}; listnn::Vector{Vector{Int}}, 
+        listw::Union{Nothing, Vector{Vector{Q}}} = nothing, algo::Function, nlv::Union{Int, AbstractVector{Int}}, 
+        store::Bool = false, verbose::Bool = true, kwargs...) where Q <: Float
     p = nco(Xtrain)
     q = nco(Ytrain)
     m = nro(X)
@@ -39,9 +39,50 @@ function locwlv(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}},
     Threads.@threads for i in eachindex(fitm)
         if verbose ; print(i, " ") ; end
         s = listnn[i]
+        if length(s) == 1
+            s = s:s
+        end
+        zXtrain = vrow(Xtrain, s)
+        zYtrain = vrow(Ytrain, s)
+        if isnothing(listw)
+            zfitm = algo(zXtrain,  zYtrain; nlv = maximum(nlv), kwargs...)
+        else
+            zfitm = algo(zXtrain, zYtrain, pweight(listw[i]); nlv = maximum(nlv), kwargs...)
+        end
+        vpred = predict(zfitm, vrow(X, i:i), nlv).pred
+        @inbounds for a in eachindex(nlv)
+            zpred[i, :, a] = vpred[a]
+        end
+        if store ; fitm[i] = zfitm ; end 
+    end 
+    if verbose ; println() ; end    
+    pred = list(Matrix, le_nlv)
+    @inbounds for a in eachindex(nlv)
+        pred[a] = zpred[:, :, a]
+    end
+    (pred = pred, fitm)
+end
+
+function locwlv(Xtrain::Matrix{Q}, ytrain::Vector{String}, X::Matrix{Q}; listnn::Vector{Vector{Int}}, 
+        listw::Union{Nothing, Vector{Vector{Q}}} = nothing, algo::Function, nlv::Union{Int, AbstractVector{Int}}, 
+        store::Bool = false, verbose::Bool = true, kwargs...) where Q <: Float
+    p = nco(Xtrain)
+    m = nro(X)
+    if isa(nlv, Int)
+        nlv = min(nlv, p)
+    else
+        nlv = min(minimum(nlv), p):min(maximum(nlv), p)
+    end
+    le_nlv = length(nlv)
+    zpred = similar(ytrain, m, 1, le_nlv)
+    fitm = list(m)
+    #@inbounds for i = 1:m
+    Threads.@threads for i in eachindex(fitm)
+        if verbose ; print(i, " ") ; end
+        s = listnn[i]
         if length(s) == 1 ; s = s:s ; end
         zXtrain = vrow(Xtrain, s)
-        zYtrain = Ytrain[s, :]   # vrow makes pb in aggsumv (e.g., lda) when Ytrain is a vector
+        zYtrain = vrow(ytrain, s)
         ## For discrimination, case where all the neighbors have the same class
         if q == 1 && length(unique(zYtrain)) == 1
             @inbounds for a in eachindex(nlv)
@@ -68,3 +109,4 @@ function locwlv(Xtrain, Ytrain, X; listnn::Vector{Vector{Int}},
     end
     (pred = pred, fitm)
 end
+

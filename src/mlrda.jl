@@ -1,7 +1,7 @@
 """
     mlrda(; kwargs...)
     mlrda(X, y; kwargs...)
-    mlrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    mlrda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Discrimination based on multple linear regression (MLR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -86,7 +86,7 @@ function mlrda(X, y; kwargs...)
     mlrda(X, y, weights; kwargs...)
 end
 
-function mlrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function mlrda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParMlrda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).vals

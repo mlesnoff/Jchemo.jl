@@ -1,7 +1,7 @@
 """
     plslda(; kwargs...)
     plslda(X, y; kwargs...)
-    plslda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plslda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 LDA on PLS latent variables (PLS-LDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -103,7 +103,7 @@ function plslda(X, y; kwargs...)
     plslda(X, y, weights; kwargs...)
 end
 
-function plslda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function plslda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPlsda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(Q, y)

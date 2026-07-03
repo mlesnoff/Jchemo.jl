@@ -1,7 +1,7 @@
 """
     plsrda(; kwargs...)
     plsrda(X, y; kwargs...)
-    plsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plsrda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Discrimination based on partial least squares regression (PLSR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -103,7 +103,7 @@ function plsrda(X, y; kwargs...)
     plsrda(X, y, weights; kwargs...)
 end
 
-function plsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function plsrda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPlsda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).vals
