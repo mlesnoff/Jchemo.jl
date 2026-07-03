@@ -1,6 +1,6 @@
 """ 
     rfda(; kwargs...)
-    rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
+    rfda(X, y::Vector{String}; kwargs...)
 Random forest discrimination with DecisionTree.jl.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -83,13 +83,12 @@ plotsp(imp', wl; xlabel = "Wavelength (nm)", ylabel = "Importance").f
 """ 
 rfda(; kwargs...) = JchemoModel(rfda, nothing, kwargs)
 
-function rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
+function rfda(X, y::Vector{String}; kwargs...)
     ## For DA in DecisionTree.jl, y must be Int or String
-    par = recovkw(ParRf{Q}, kwargs).par
     X = ensure_mat(X)
-    Q = eltype(X)
-    y = vec(y)
     n, p = size(X)
+    Q = eltype(X)
+    par = recovkw(ParRf{Q}, kwargs).par
     taby = tab(y)
     priors = taby.vals / n  # output not used, only for information  
     xscales = ones(Q, p)

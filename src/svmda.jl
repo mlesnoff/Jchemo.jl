@@ -1,6 +1,6 @@
 """
     svmda(; kwargs...)
-    svmda(X, y; kwargs...)
+    svmda(X, y::Vector{String}; kwargs...)
 Support vector machine for discrimination "C-SVC" (SVM-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -23,6 +23,8 @@ Kernel types:
 
 The function is a wrapper to package LIBSVM.jl (that is an interface to library LIBSVM of Chang & Li 2001)
 to fit a C-SVC discriminiation model.
+
+**Note:** LIBSVM requires `Float64` for input data and parameters.
 
 ## References 
 Chang, C.-C. & Lin, C.-J. (2001). LIBSVM: a library for support vector machines. Software available
@@ -82,14 +84,14 @@ conf(res.pred, ytest).cnt
 """ 
 svmda(; kwargs...) = JchemoModel(svmda, nothing, kwargs)
 
-function svmda(X, y; kwargs...)
+function svmda(X, y::Vector{String}; kwargs...)
+    X = ensure_mat(X)
+    p = nco(X)
+    n, p = size(X)
+    Q = eltype(X) 
     par = recovkw(ParSvm{Q}, kwargs).par
     kern = par.kern 
     @assert in([:krbf, :kpol, :klin, :ktanh])(kern) "Wrong value for argument 'kern'." 
-    X = ensure_mat(X)
-    Q = eltype(X)
-    y = vec(y)
-    n, p = size(X)
     taby = tab(y)
     priors = taby.vals / n  # output not used, only for information  
     xscales = ones(Q, p)
@@ -129,8 +131,8 @@ Compute y-predictions from a fitted model.
 """ 
 function predict(object::Svmda, X)
     X = ensure_mat(X)
+    m = nro(X)
     pred = svmpredict(object.fitm, fscale(X, object.xscales)')[1]
-    m = length(pred)
     pred = reshape(pred, m, 1)
     (pred = pred,)
 end

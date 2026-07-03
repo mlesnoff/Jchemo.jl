@@ -762,8 +762,8 @@ end
 
 ## Svm, Trees
 
-struct Svmda{Q <: Float}
-    fitm
+struct Svmda{Q <: Float64}
+    fitm::LIBSVM.SVM
     xscales::Vector{Q}
     ni::Vector{Int}
     priors::Vector{Q}
@@ -772,7 +772,7 @@ struct Svmda{Q <: Float}
 end
 
 struct Treeda{Q <: Float}
-    fitm
+    fitm::Union{DecisionTree.Root, DecisionTree.Ensemble}
     xscales::Vector{Q}
     featur::Vector{Int}
     ni::Vector{Int}

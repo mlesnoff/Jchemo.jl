@@ -18,13 +18,13 @@ Keyword arguments:
 Kernel types: 
 * :krbf -- radial basis function: exp(-gamma * ||x - y||^2)
 * :kpol -- polynomial: (gamma * x' * y + coef0)^degree
-* "klin -- linear: x' * y
+* :klin -- linear: x' * y
 * :ktan -- sigmoid: tanh(gamma * x' * y + coef0)
 
 The function is a wrapper to package LIBSVM.jl (that is an interface to library LIBSVM of Chang & Li 2001)
 to fit a SVM regression model.
 
-LIBSVM requires Float64 for input data and parameters.
+**Note:** LIBSVM requires `Float64` for input data and parameters.
 
 ## References 
 Chang, C.-C. & Lin, C.-J. (2001). LIBSVM: a library for support vector machines. Software available
@@ -136,9 +136,8 @@ Compute y-predictions from a fitted model.
 function predict(object::Svmr, X)
     X = ensure_mat(X)
     m = nro(X)
-    Q = eltype(X)
     pred = svmpredict(object.fitm, fscale(X, object.xscales)')[1]
-    pred = reshape(Q.(pred), m, 1)
+    pred = reshape(pred, m, 1)
     (pred = pred,)
 end
 

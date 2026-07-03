@@ -1,6 +1,6 @@
 """ 
     treeda(; kwargs...)
-    treeda(X, y; kwargs...)
+    treeda(X, y::Vector{String}; kwargs...)
 Discrimination tree (CART) with DecisionTree.jl.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -69,12 +69,17 @@ conf(res.pred, ytest).cnt
 treeda(; kwargs...) = JchemoModel(treeda, nothing, kwargs)
 
 ## For DA in DecisionTree.jl, y must be Int or String
-function treeda(X, y::Union{Array{Int}, Array{String}}; kwargs...) 
-    par = recovkw(ParTree{Q}, kwargs).par
+function treeda(X, y::Vector{String}; kwargs...) 
     X = ensure_mat(X)
-    Q = eltype(X)
-    y = vec(y)
     n, p = size(X)
+    Q = eltype(X)
+    par = recovkw(ParTree{Q}, kwargs).par
+    xscales = ones(Q, p)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        X = fscale(X, xscales)
+    end
     taby = tab(y)
     priors = taby.vals / n  # output not used, only for information  
     xscales = ones(Q, p)
