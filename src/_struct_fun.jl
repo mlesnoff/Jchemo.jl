@@ -783,6 +783,15 @@ end
 
 ## Occ
 
+struct Occstah{Q <: Float}
+    d::DataFrame
+    res_stah::NamedTuple
+    V::Matrix{Q}
+    e_cdf::ECDF
+    cutoff::Q
+    par::ParOccstah
+end
+
 struct Occsd{Q <: Float}
     d::DataFrame 
     fitm
@@ -798,15 +807,6 @@ struct Occod{Q <: Float}
     e_cdf::ECDF
     cutoff::Q   
     par::ParOcc
-end
-
-struct Occstah{Q <: Float}
-    d::DataFrame
-    res_stah::NamedTuple
-    V::Matrix{Q}
-    e_cdf::ECDF
-    cutoff::Q
-    par::ParOccstah
 end
 
 struct Occsdod{Q <: Float}
