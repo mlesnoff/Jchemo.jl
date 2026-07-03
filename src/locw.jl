@@ -27,7 +27,7 @@ function locw(Xtrain::Matrix{Q}, Ytrain::Matrix{Q}, X::Matrix{Q}; listnn::Vector
         verbose::Bool = true, kwargs...) where Q <: Float
     m = nro(X)
     q = nco(Ytrain)
-    pred = similar(Ytrain, m, q)
+    pred = similar(Xtrain, m, q)
     fitm = list(m)
     #@inbounds for i = 1:m
     Threads.@threads for i in eachindex(fitm)
@@ -54,7 +54,7 @@ function locw(Xtrain::Matrix{Q}, ytrain::Vector{String}, X::Matrix{Q}; listnn::V
         listw::Union{Nothing, Vector{Vector{Q}}} = nothing, algo::Function, store::Bool = false, 
         verbose::Bool = true, kwargs...) where Q <: Float
     m = nro(X)
-    pred = similar(Ytrain, m, 1)
+    pred = similar(ytrain, m, 1)
     fitm = list(m)
     #@inbounds for i = 1:m
     Threads.@threads for i in eachindex(fitm)
@@ -66,7 +66,7 @@ function locw(Xtrain::Matrix{Q}, ytrain::Vector{String}, X::Matrix{Q}; listnn::V
         zXtrain = vrow(Xtrain, s)
         zytrain = vrow(ytrain, s)
         ## Case where all the neighbors have the same class
-        if q == 1 && length(unique(zYtrain)) == 1
+        if length(unique(zytrain)) == 1
             pred[i, :] .= zytrain[1]
         ## End
         else

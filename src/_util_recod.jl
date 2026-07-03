@@ -20,9 +20,9 @@ res.Y
 dummy(Float32, y).Y
 ```
 """
-dummy(y::Vector{String}) = dummy(Float64, y)
+dummy(y::AbstractVector{String}) = dummy(Float64, y)
 
-function dummy(Q::DataType, y::Vector{String})
+function dummy(Q::DataType, y::AbstractVector{String})
     lev = mlev(y)
     ## Thanks to the idea given in the following post of @Mattriks:
     ## https://discourse.julialang.org/t/all-the-ways-to-do-one-hot-encoding/64807/4

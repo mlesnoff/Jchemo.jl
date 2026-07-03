@@ -1,5 +1,5 @@
 """
-    matB(X::AbstMatVec{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}) where Q <: Float
+    matB(X::AbstMatVec{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}) where Q <: Float
 Between-class covariance matrix.
 * `X` : A matrix (n, p) or vector (n).
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
@@ -41,7 +41,7 @@ matW(X, y, weights).W + matB(X, y, weights).B
 covm(X, weights)
 ```
 """ 
-function matB(X::AbstMatVec{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}) where Q <: Float
+function matB(X::AbstMatVec{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}) where Q <: Float
     p = nco(X)
     taby = tab(y)
     lev = taby.keys
@@ -58,7 +58,7 @@ function matB(X::AbstMatVec{Q}, y::Vector{String}, weights::ProbabilityWeights{Q
 end
 
 """
-    matW(X::AbstMatVec{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}) where Q <: Float
+    matW(X::AbstMatVec{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}) where Q <: Float
 Within-class (non-corrected) covariance matrices.
 * `X` : A matrix (n, p) or vector (n).
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
@@ -71,7 +71,7 @@ If class i contains only one observation, `Wi` is computed by:
 
 For examples, see function `matB`. 
 """ 
-function matW(X::AbstMatVec{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}) where Q <: Float
+function matW(X::AbstMatVec{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}) where Q <: Float
     p = nco(X) 
     taby = tab(y)
     lev = taby.keys
@@ -102,7 +102,7 @@ function matW(X::AbstMatVec{Q}, y::Vector{String}, weights::ProbabilityWeights{Q
 end
 
 """
-    matWc(X::AbstMatVec{Q}, y::Vector{String}) where Q <: Float
+    matWc(X::AbstMatVec{Q}, y::AbstractVector{String}) where Q <: Float
 Within-class (corrected) covariance matrices.
 * `X` : A matrix (n, p) or vector (n).
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.

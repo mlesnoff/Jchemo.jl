@@ -99,7 +99,7 @@ function aggmean(X::AbstMatVec{Q}, y::Vector{String}) where Q <: Float
 end
 
 """ 
-    aggsumv(x::AbstractVector{Q}, y::Vector{String}) where Q <: Real
+    aggsumv(x::AbstractVector{Q}, y::AbstractVector{String}) where Q <: Real
 Compute the sum by group over a categorical variable.
 * `x` : A vector representing the quantitative variable to sum (n) 
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
@@ -115,7 +115,7 @@ y = vcat(rand(["a" ; "c"], 900), fill("b", 100))
 aggsumv(x, y)
 ```
 """
-function aggsumv(x::AbstractVector{Q}, y::Vector{String}) where Q <: Real  # 'Real' for 'Int'
+function aggsumv(x::AbstractVector{Q}, y::AbstractVector{String}) where Q <: Real  # 'Real' for 'Int'
     lev = mlev(y)
     v = similar(x, length(lev)) 
     @inbounds for i in eachindex(lev) 

@@ -80,20 +80,22 @@ function locwlv(Xtrain::Matrix{Q}, ytrain::Vector{String}, X::Matrix{Q}; listnn:
     Threads.@threads for i in eachindex(fitm)
         if verbose ; print(i, " ") ; end
         s = listnn[i]
-        if length(s) == 1 ; s = s:s ; end
+        if length(s) == 1
+            s = s:s
+        end
         zXtrain = vrow(Xtrain, s)
-        zYtrain = vrow(ytrain, s)
-        ## For discrimination, case where all the neighbors have the same class
-        if q == 1 && length(unique(zYtrain)) == 1
+        zytrain = vrow(ytrain, s)
+        ## Case where all the neighbors have the same class
+        if length(unique(zytrain)) == 1
             @inbounds for a in eachindex(nlv)
-                zpred[i, :, a] .= zYtrain[1]
+                zpred[i, :, a] .= zytrain[1]
             end
         ## End 
         else
             if isnothing(listw)
-                zfitm = algo(zXtrain,  zYtrain; nlv = maximum(nlv), kwargs...)
+                zfitm = algo(zXtrain, zytrain; nlv = maximum(nlv), kwargs...)
             else
-                zfitm = algo(zXtrain, zYtrain, pweight(listw[i]); nlv = maximum(nlv), kwargs...)
+                zfitm = algo(zXtrain, zytrain, pweight(listw[i]); nlv = maximum(nlv), kwargs...)
             end
             vpred = predict(zfitm, vrow(X, i:i), nlv).pred
             @inbounds for a in eachindex(nlv)

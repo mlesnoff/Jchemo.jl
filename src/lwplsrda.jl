@@ -88,13 +88,12 @@ typeof(res.fitm[i])
 """ 
 lwplsrda(; kwargs...) = JchemoModel(lwplsrda, nothing, kwargs)
 
-function lwplsrda(X, y; kwargs...) 
-    par = recovkw(ParLwplsda{Q}, kwargs).par 
+function lwplsrda(X, y::Vector{String}; kwargs...) 
     X = ensure_mat(X)
-    y = ensure_mat(y)
-    Q = eltype(X)
-    taby = tab(y)    
     p = nco(X)
+    Q = eltype(X) 
+    par = recovkw(ParLwplsda{Q}, kwargs).par 
+    taby = tab(y)    
     if par.nlvdis == 0
         priors = nothing
         fitm = nothing
@@ -104,8 +103,10 @@ function lwplsrda(X, y; kwargs...)
         fitm = plskern(X, dummy(Q, y).Y, weights; nlv = par.nlvdis, scal = par.scal)
     end
     xscales = ones(Q, p)
-    if isnothing(fitm) && par.scal
-        xscales .= colstd(X)
+    if isnothing(fitm) && (par.scal != :none)
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        X = fscale(X, xscales)
     end
     Lwplsrda(fitm, X, y, xscales, taby.vals, priors, taby.keys, par)
 end
@@ -135,11 +136,11 @@ function predict(object::Lwplsrda, X, nlv::Union{Int, AbstractVector{Int}})
     end
     ## Getknn
     metric = object.par.metric
-    h = Q(object.par.h)
     k = object.par.k
-    tolw = Q(object.par.tolw)
-    criw = Q(object.par.criw)
+    h = object.par.h
+    criw = object.par.criw
     squared = object.par.squared
+    tolw = object.par.tolw
     if isnothing(object.fitm)
         if object.par.scal
             zX1 = fscale(object.X, object.xscales)
