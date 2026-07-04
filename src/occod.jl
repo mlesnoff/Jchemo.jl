@@ -77,7 +77,7 @@ plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of ob
 
 #### Fit the Occ model based on the fitted score space 'in' 
 model = occod(cri = 2.5)
-#model = occod(cri = 4)
+#model = occod(cri = 4.)
 #model = occod(typcut = :q, alpha = .01)
 fit!(model, fitm0, Xtrain_in)
 @names model 

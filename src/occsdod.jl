@@ -96,6 +96,8 @@ scatter!(ax, (1:length(d))[s], d[s]; color = :red)
 f
 
 d = dtrain_in.d
+sdsigma = dtrain_in.sdsigma
+odsigma = dtrain_in.odsigma
 a = fitm.coefs[1]
 b = fitm.coefs[2]
 s = d .> cutoff
@@ -131,6 +133,8 @@ hlines!(ax, 1; linestyle = :dot)
 f
 
 d = dtrain_in.d
+sdsigma = dtrain_in.sdsigma
+odsigma = dtrain_in.odsigma
 a = fitm.coefs[1]
 b = fitm.coefs[2]
 s = d .> cutoff
