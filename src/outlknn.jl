@@ -1,13 +1,14 @@
 """
     outlknn(X; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none)
-    outlknn!(X::Matrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where Q <: Float
+    outlknn!(X::AbstractMatrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where Q <: Float
 Compute a local kNN distance-based outlierness.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `metric` : Metric used to compute the distances. See function `getknn`.
 * `k` : Nb. nearest neighbors to consider.
 * `algo` : Function summarizing the distances to the neighbors.
-* `scal` : Boolean. If `true`, each column of `X` is scaled before computing the outlierness.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 The idea is to compare the KNN-outlierness of the observation to the KNN-outlierness of its neighbors, giving 
 a 'local' measure of outlierness. For each observation (row of `X`), outlierness `d` is defined as follows:
@@ -52,7 +53,7 @@ metric = :eucl ; k = 15 ; algo = sum
 #algo = maximum
 res = outlknn(X; metric, k, algo) ;
 @names res
-f, ax = plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness")
+f, ax = plotxy(1:n, res.d, string.(typ), xlabel = "Obs. index", ylabel = "Outlierness")
 text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
 
@@ -64,14 +65,14 @@ T = model.fitm.T
 metric = :eucl 
 k = 15
 res = outlknn(T; metric, k, scal = :std)
-plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness").f
+plotxy(1:n, res.d, string.(typ), xlabel = "Obs. index", ylabel = "Outlierness").f
 ```
 """ 
 function outlknn(X; metric = :eucl, k, algo::Function = sum, scal::Symbol = :none)
     outlknn!(copy(ensure_mat(X)); k, metric, algo, scal)
 end
 
-function outlknn!(X::Matrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where Q <: Float
+function outlknn!(X::AbstractMatrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where Q <: Float
     n, p = size(X)
     xscales = ones(Q, p)
     if scal != :none
