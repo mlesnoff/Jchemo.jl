@@ -1,12 +1,9 @@
 ## Not exported
 ## Transcription of function 'spatial.median' available in the script "PcaLocantore.R" of package rrcov v.1.4-3 
 ## on R CRAN (Thanks to V. Todorov, 2016)
-function colmedspa(X; delta = 1e-6) 
-    X = ensure_mat(X)
+function colmedspa(X::AbstractMatrix{Q}; delta::Q = Q(1e-6)) where Q <: Float
     n, p = size(X)
-    Q = eltype(X)
-    delta = Q(delta)
-    delta1 = delta * Q(sqrt(p))
+    delta1 = delta * sqrt(p)
     mu0 = colmed(X)
     X1 = similar(X)
     TT = similar(X)

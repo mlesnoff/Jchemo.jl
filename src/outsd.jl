@@ -33,7 +33,7 @@ fit!(model, X)
 fitm = model.fitm ;
 res = outsd(fitm) ;
 @names res
-f, ax = plotxy(1:n, res.d, typ, xlabel = "Observation index", ylabel = "Outlierness")
+f, ax = plotxy(1:n, res.d, string.(typ); xlabel = "Observation index", ylabel = "Outlierness")
 text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
 ```

@@ -27,6 +27,7 @@ eucl2(vcol(X, 1), [4.])
 ```
 """
 function eucl2(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where Q <: Float
+    Y = ensure_mat(Y)
     Distances.pairwise(SqEuclidean(), X', Y'; dims = 2)   # pairwise also exported by StatsBase
 end
 
@@ -67,13 +68,13 @@ mah2(vcol(X, 1), [4.])
 ```
 """
 function mah2(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where Q <: Float
+    Y = ensure_mat(Y)
     S = covm(X)
     LinearAlgebra.inv!(cholesky!(Hermitian(S)))
     Distances.pairwise(SqMahalanobis(S; skipchecks = true), X', Y'; dims = 2)
 end
 
 function mah2(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, Sinv::AbstractMatrix{Q}) where Q <: Float
-    X = ensure_mat(X)
     Y = ensure_mat(Y)
     Sinv = Hermitian(ensure_mat(Sinv))
     Distances.pairwise(SqMahalanobis(Sinv; skipchecks = true), X', Y'; dims = 2)
