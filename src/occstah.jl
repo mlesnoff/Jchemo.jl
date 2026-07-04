@@ -61,8 +61,8 @@ ytest_in = fill("in", ntest_in)
 ytest_out = fill("out", ntest_out)
 
 #### Fit the Occ model
-model = occstah(; nlv = 5000, cri = 2, scal = :std)
-#model = occstah(; nlv = 5000, cri = 2, scal = :std, seed = 1234)
+model = occstah(; nlv = 5000, cri = 2., scal = :std)
+#model = occstah(; nlv = 5000, cri = 2., scal = :std, seed = 1234)
 fit!(model, Xtrain_in)
 @names model 
 fitm = model.fitm ;
@@ -107,12 +107,14 @@ f
 """ 
 occstah(; kwargs...) = JchemoModel(occstah, nothing, kwargs)
 
-function occstah(X; kwargs...) 
+function occstah(X; kwargs...)
+    X = ensure_mat(X)
+    p = nco(X)    
+    Q = eltype(X)
     par = recovkw(ParOccstah{Q}, kwargs).par 
     @assert in(par.typcut, [:mad, :q]) "Argument 'typcut' must be :mad or :q."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
-    p = nco(X)
-    V = rand(MersenneTwister(par.seed), 0:1, p, par.nlv)
+    V = rand(MersenneTwister(par.seed), Q.(0:1), p, par.nlv)
     res = outstah(X, V; scal = par.scal)
     d = res.d
     if par.typcut == :mad
@@ -136,11 +138,11 @@ Compute predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Occstah, X)
-    zX = copy(ensure_mat(X))  # for fscale!
-    m = nro(zX)
+    vX = copy(ensure_mat(X))  # for fscale!
+    m = nro(vX)
     res = object.res_stah
-    fscale!(zX, res.xscales)
-    T = zX * object.V
+    fscale!(vX, res.xscales)
+    T = vX * object.V
     fcscale!(T, res.mu, res.sigma)
     T .= abs.(T)
     d = similar(T, m)

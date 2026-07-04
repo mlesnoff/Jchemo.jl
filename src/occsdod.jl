@@ -146,6 +146,8 @@ f
 occsdod(; kwargs...) = JchemoModel(occsdod, nothing, kwargs)
 
 function occsdod(fitm, X; kwargs...) 
+    X = ensure_mat(X) 
+    Q = eltype(X)
     par = recovkw(ParOccsdod{Q}, kwargs).par 
     gamma = par.gamma
     @assert 0 <= gamma <= 1 "Argument 'gamma' must ∈ [0, 1]."   
