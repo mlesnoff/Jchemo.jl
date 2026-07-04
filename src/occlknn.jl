@@ -25,12 +25,14 @@ distribution estimated from the `nsamp` observations sampled in the target class
 occlknn(; kwargs...) = JchemoModel(occlknn, nothing, kwargs)
 
 function occlknn(X; kwargs...)
-    par = recovkw(ParOccknn{Q}, kwargs).par
     X = ensure_mat(X)
-    n, p = size(X)
+    n, p = size(X)    
+    Q = eltype(X)
+    par = recovkw(ParOccknn{Q}, kwargs).par
     xscales = ones(Q, p)
-    if par.scal
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     nsamp = min(par.nsamp, n)

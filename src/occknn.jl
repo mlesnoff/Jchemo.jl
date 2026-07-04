@@ -113,12 +113,14 @@ f
 occknn(; kwargs...) = JchemoModel(occknn, nothing, kwargs)
 
 function occknn(X; kwargs...)
-    par = recovkw(ParOccknn{Q}, kwargs).par
     X = ensure_mat(X)
-    n, p = size(X)
+    n, p = size(X)    
+    Q = eltype(X)
+    par = recovkw(ParOccknn{Q}, kwargs).par
     xscales = ones(Q, p)
-    if par.scal
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     nsamp = min(par.nsamp, n)
