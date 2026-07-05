@@ -1,16 +1,19 @@
 # News
 
-## *Version 0.10.0 (breaking changes)
+## *Version 0.10.0
 
-**Warning:** Major breaking changes have been made in this version compared to versions 0.9, 
+**Warning:** Major *breaking changes* have been made in this version compared to versions 0.9, 
 in particular in functions having arguments 'nlv' (laent variables) and 'lb' (ridge).  
 
 - Breakings:
-    - Functions having arguments 'nlv' or 'lb': **deep** restructuration of functions *transf*, *coef* 
+    - All functions using a class membership variable (e.g., functions for discrimination):
+        this variable must be a 'Vector{String}'. 
+    - All functions having arguments 'nlv' or 'lb': **deep** restructuration of functions *transf*, *coef* 
         and *predict* to improve code consistency. The syntax concerning arguments 'nlv' and 'lb'
         in *transf* and *predict* has changed. See examples of the new code in function helps.
-    - Argument 'scal' of colums scaling has changed. It is not a Boolean type anymore (replaced by a 
-        Symbol type). Choice between several types of scaling is now allowed.
+    - In all functions, argument 'scal' of colums scaling (when present) has changed. It is not a 
+        Boolean-type anymore. It was replaced by a Symbol type: choice between several types of scaling 
+        is now allowed.
     - MLR functions: Functions other than **mlr** were removed.
     - Function **mbpca** renamed to **cpca**.
     - Function **aov1**: syntax changed.

@@ -1,6 +1,6 @@
 """
-    vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, nlv::Int)
-    vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y, nlv::Int)
+    vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, nlv::Union{Nothing, Int} = nothing)
+    vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y, nlv::Union{Nothing, Int} = nothing)
 Variable importance on Projections (VIP).
 * `object` : The fitted model.
 * `Y` : The Y-data that was used to fit the model.
@@ -36,7 +36,7 @@ using Jchemo
 X = [1. 2 3 4; 4 1 6 7; 12 5 6 13; 27 18 7 6 ; 12 11 28 7] 
 Y = [10. 11 13; 120 131 27; 8 12 4; 1 200 8; 100 10 89] 
 y = Y[:, 1] 
-ycla = [1; 1; 1; 2; 2]
+ycla = string.([1; 1; 1; 2; 2])
 
 nlv = 3
 model = plskern(; nlv)
@@ -54,20 +54,20 @@ vip(model.fitm, Y).imp
 model = plsrda(; nlv) 
 fit!(model, X, ycla)
 @names model.fitm
-fitm = model.fitm.fitm ;  # fitted PLS model
+fitm = model.fitm.fitm_emb ;  # fitted PLS model
 vip(fitm).imp
 Ydummy = dummy(ycla).Y
 vip(fitm, Ydummy).imp
 
 model = plslda(; nlv) 
 fit!(model, X, ycla)
-@names model.fitm.fitm
+@names model.fitm
 fitm = model.fitm.fitm_emb ;  # fitted PLS model
 vip(fitm).imp
 vip(fitm, Ydummy).imp
 ```
 """ 
-function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, nlv::Int)
+function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, nlv::Union{Nothing, Int} = nothing)
     if isa(object, Plsr)  || isa(object, Splsr)
         W = object.W
         T = object.T
@@ -81,13 +81,14 @@ function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, nlv::Int)
     end
     p = nro(W)
     nlv = isnothing(nlv) ? a : min(nlv, a)
+    Q = eltype(T)
     ## Type 'Plsr' contains algorithmns where W is normed
     ## ==> No need to do the following: 
     ## wnorms = colnorm(W)
     ## W2 = fscale(W, wnorms).^2
     ## End
     W2 = vcol(W, 1:nlv).^2
-    sst = zeros(nlv)
+    sst = zeros(Q, nlv)
     @inbounds for a = 1:nlv
         t = sqrtw .* vcol(T, a)
         tt = dot(t, t)
@@ -100,7 +101,8 @@ function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, nlv::Int)
     (imp = imp, W2, sst)
 end
 
-function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y, nlv::Int)
+function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y, nlv::Union{Nothing, Int} = nothing)
+    Y = ensure_mat(Y)
     if isa(object, Plsr)
         W = object.W
         T = object.T
