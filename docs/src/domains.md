@@ -366,7 +366,7 @@
 
 ### Calibration transfer
 
-- **difmean** Compute a detrimental matrix (for calibration transfer) by difference of two matrix-column means
+- **difmean** Compute a 1-row detrimental matrix by difference of the column-means of two X-datasets
 - **eposvd** Compute an orthogonalization matrix for calibration transfer
 - **calds** Direct standardization (DS)
 - **calpds** Piecewise direct standardization (PDS)
