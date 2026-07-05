@@ -1,7 +1,7 @@
 """
-    plotxy(x, y, z; size = (500, 300), color = nothing, perspectiveness = .1,
+    plotxy(x, y, z; size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness = .1,
         xlabel = "", ylabel = "", zlabel = "", title = "", kwargs...)
-    plotxy(x, y, z, group; size = (500, 300), color = nothing, perspectiveness = .1, 
+    plotxy(x, y, z, group; size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness = .1, 
         xlabel = "", ylabel = "", zlabel = "", title = "", leg::Bool = true, leg_title = "Group", 
         kwargs...)
 3-D scatter plot of x-y-z data.
@@ -62,7 +62,7 @@ Colorbar(f[1, 2]; colormap = colm, label = "v", limits = (minimum(v), maximum(v)
 f
 ```
 """ 
-function plotxyz(x, y, z; size = (500, 300), color = nothing, perspectiveness = .1,
+function plotxyz(x, y, z; size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness = .1,
         xlabel = "", ylabel = "", zlabel = "", title = "", kwargs...)
     x = vec(x)
     y = vec(y)
@@ -76,7 +76,7 @@ function plotxyz(x, y, z; size = (500, 300), color = nothing, perspectiveness = 
     (f = f, ax)
 end
 
-function plotxyz(x, y, z, group; size = (500, 300), color = nothing, perspectiveness = .1, 
+function plotxyz(x, y, z, group; size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness = .1, 
         xlabel = "", ylabel = "", zlabel = "", title = "", leg::Bool = true, leg_title = "Group", 
         kwargs...)
     x = vec(x)

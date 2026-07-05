@@ -4,7 +4,7 @@
 ## Keyword arguments
 ## - mu : center (vector of length q)
 ## - radius : r
-function ellipse(S::AbstractMatrix{Q}; mu = zeros(Q, nco(S)), radius::Q = 1.) where Q <: Float
+function ellipse(S::AbstractMatrix{Q}; mu::Vector{Q} = zeros(Q, nco(S)), radius::Q = 1.) where Q <: Float
     theta = Q.(collect(range(0, 2 * pi, length = 51)))
     circ = radius * hcat(cos.(theta), sin.(theta))
     res = eigen(S; sortby = x -> -abs(x))

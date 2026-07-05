@@ -1,5 +1,5 @@
 """
-    plotsp(X, wl = 1:nco(X); size = (500, 300), nsamp = nro(X), color = nothing, kwargs...)
+    plotsp(X, wl = 1:nco(X); size::Tuple{Int, Int} = (500, 300), nsamp = nro(X), color = nothing, kwargs...)
 Plotting spectra.
 * `X` : X-data (n, p).
 * `wl` : Column names of `X`. Must be numeric.
@@ -52,9 +52,10 @@ axislegend(ax; position = :rc)
 f
 ```
 """ 
-function plotsp(X, wl = 1:nco(X); size = (500, 300), nsamp = nro(X), color = nothing, label = nothing, kwargs...) 
+function plotsp(X, wl::AbstractVector{Q} = collect(1:nco(X)); size::Tuple{Int, Int} = (500, 300), 
+        nsamp::Int = nro(X), color = nothing, label = nothing, kwargs...) where Q <: Real
     X = ensure_mat(X)
-    n, p = Base.size(X)    # conflict with Makie.size
+    n, p = Base.size(X)   # specification required (i not, Makie.size is used)
     s = StatsBase.sample(1:n, nsamp; replace = false)
     vX = vrow(X, s)
     m = nro(vX)

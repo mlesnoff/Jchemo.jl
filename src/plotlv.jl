@@ -1,9 +1,12 @@
 """
-    plotlv(T; size = (700, 350), shape, start = 1, color = nothing, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", kwargs...)
-    plotlv(T, group; size = (700, 350), shape, start = 1, color = nothing, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", leg::Bool = true, leg_title = "Group", 
-        kwargs...)
+    plotlv(T::AbstractMatrix{Q}; 
+        size::Tuple{Int, Int} = (700, 350), shape::Tuple{Int, Int}, 
+        start::Int = 1, color = nothing, zeros::Bool = false, xlabel::String = "", ylabel::String = "", 
+        title::String = "", kwargs...) where Q <: Float
+    plotlv(T::AbstractMatrix{Q}, group::Vector{String}; 
+        size::Tuple{Int, Int} = (700, 350), shape::Tuple{Int, Int}, 
+        start::Int = 1, color = nothing, zeros::Bool = false, xlabel::String = "", ylabel::String = "", 
+        title::String = "", leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Float
 Matrix of 2-D plots of successive latent variables (PCA, PLS, etc.).
 * `T` : A matrix of (PCA, PLS, ec.) latent variables (LVs) to plot (n, A).
 * `group` : Categorical variable defining groups (n). 
@@ -55,7 +58,8 @@ CairoMakie.activate!()
 #GLMakie.activate!()
 
 plotlv(Ttrain[:, 1:6]; shape = (2, 3), color = (:blue, .5), zeros = true, xlabel = "PC", ylabel = "PC").f
-plotlv(Ttrain[:, 3:8]; shape = (2, 3), start = 3, color = (:blue, .5), zeros = true, xlabel = "PC", ylabel = "PC").f
+plotlv(Ttrain[:, 3:8]; shape = (2, 3), start = 3, color = (:blue, .5), zeros = true, 
+    xlabel = "PC", ylabel = "PC").f
 
 group = vcat(fill("Train", ntrain), fill("Test", ntest))
 plotlv(T[:, 1:6], group; shape = (2, 3), color = nothing, zeros = true, xlabel = "PC", ylabel = "PC",
@@ -68,8 +72,10 @@ plotlv(1000 * T[:, 1:6], group; shape = (2, 3), color, zeros = true, xlabel = "P
     leg = true).f
 ```
 """ 
-function plotlv(T; size = (700, 350), shape, start = 1, color = nothing, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", kwargs...)
+function plotlv(T::AbstractMatrix{Q}; 
+        size::Tuple{Int, Int} = (700, 350), shape::Tuple{Int, Int}, 
+        start::Int = 1, color = nothing, zeros::Bool = false, xlabel::String = "", ylabel::String = "", 
+        title::String = "", kwargs...) where Q <: Float
     n, p = shape
     pmax = nco(T)
     f = Figure(; size)
@@ -100,10 +106,10 @@ function plotlv(T; size = (700, 350), shape, start = 1, color = nothing, zeros::
     (f = f, ax)
 end
 
-function plotlv(T, group; size = (700, 350), shape, start = 1, color = nothing, zeros::Bool = false,
-        xlabel = "", ylabel = "", title = "", leg::Bool = true, leg_title = "Group", 
-        kwargs...)
-    group = string.(vec(group))
+function plotlv(T::AbstractMatrix{Q}, group::Vector{String}; 
+        size::Tuple{Int, Int} = (700, 350), shape::Tuple{Int, Int}, 
+        start::Int = 1, color = nothing, zeros::Bool = false, xlabel::String = "", ylabel::String = "", 
+        title::String = "", leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Float
     lev = mlev(group)
     nlev = length(lev)
     lab = string.(lev)

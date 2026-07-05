@@ -1,7 +1,10 @@
 """
-    plotgrid(indx::AbstractVector, r; size = (500, 300), step = 5, color = nothing, kwargs...)
-    plotgrid(indx::AbstractVector, r, group; size = (700, 350), step = 5, color = nothing, leg = true, 
-        leg_title = "Group", kwargs...)
+    plotgrid(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}; 
+        size::Tuple{Int, Int} = (700, 350), step::Int = 5, color = nothing, leg::Bool = true, 
+        leg_title::String = "Group", kwargs...) where Q <: Float
+    plotgrid(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}, group::Vector{String}; 
+        size::Tuple{Int, Int} = (700, 350), step::Int = 5, color = nothing, leg::Bool = true, 
+        leg_title::String = "Group", kwargs...) where Q <: Float
 Plot error/performance rates of a model.
 * `indx` : A numeric variable representing the grid of model parameters, e.g., the nb. LVs if PLSR models.
 * `r` : The error/performance rate.
@@ -48,9 +51,10 @@ group = string.("h=", res.h, " k=", res.k)
 plotgrid(res.nlv, res.y1, group; xlabel = "Nb. LVs", ylabel = "RMSECV").f
 ```
 """ 
-function plotgrid(indx::AbstractVector, r; size = (500, 300), step = 5, color = nothing, kwargs...)
-    if isa(indx, Vector{Any}) ; indx = Float64.(indx) ; end
-    r = Float64.(vec(r))
+function plotgrid(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}; size::Tuple{Int, Int} = (500, 300), 
+        step::Int = 5, color = nothing, kwargs...) where Q <: Float
+    r = vec(r) 
+    #if isa(indx, Vector{Any}) ; indx = Float64.(indx) ; end
     xticks = collect(minimum(indx):step:maximum(indx))
     f = Figure(; size)
     ax = Axis(f; xticks = (xticks, string.(xticks)), kwargs...)
@@ -63,10 +67,11 @@ function plotgrid(indx::AbstractVector, r; size = (500, 300), step = 5, color = 
     (f = f, ax)
 end
 
-function plotgrid(indx::AbstractVector, r, group; size = (700, 350), step = 5, color = nothing, leg = true, 
-        leg_title = "Group", kwargs...)
-    if isa(indx, Vector{Any}) ; indx = Float64.(indx) ; end
-    r = Float64.(vec(r))
+function plotgrid(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}, group::Vector{String}; 
+        size::Tuple{Int, Int} = (700, 350), step::Int = 5, color = nothing, leg::Bool = true, 
+        leg_title::String = "Group", kwargs...) where Q <: Float
+    r = vec(r)
+    #if isa(indx, Vector{Any}) ; indx = Float64.(indx) ; end
     group = vec(group)
     xticks = collect(minimum(indx):step:maximum(indx))
     lev = mlev(group)

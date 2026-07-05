@@ -1,5 +1,5 @@
 """
-    boxcox(x::Vector{Q}; lims::Vector{Q} = [-3.; 3], npoint = 1000) where Q <: Float
+    boxcox(x::Vector{Q}; lims::Vector{Q} = [-3.; 3], npoint::Int = 1000) where Q <: Float
 Estimate the parameter of the Box-Cox power transformation.
 * `x` : Univariate data (n) to normalize.
 Keyword arguments:

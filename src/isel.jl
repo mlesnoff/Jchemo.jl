@@ -1,5 +1,5 @@
 """
-    isel!(model, X::AbstractMatrix{Q}, Y::AbstMatVec{Q}, wl = Q.(collect(1:nco(X))); 
+    isel!(model, X::AbstractMatrix{Q}, Y::AbstMatVec{Q}, wl::AbstractVector{Q} = Q.(collect(1:nco(X))); 
         score::Function = rmsep, psamp::Q = .3, nint::Int = 5, rep::Int = 1) where Q <: Float
 Interval variable selection.
 * `model` : Model to evaluate.
@@ -80,7 +80,7 @@ hlines!(ax, [0]; color = :grey)
 f
 ```
 """
-function isel!(model, X::AbstractMatrix{Q}, Y::AbstMatVec{Q}, wl = Q.(collect(1:nco(X))); 
+function isel!(model, X::AbstractMatrix{Q}, Y::AbstMatVec{Q}, wl::AbstractVector{Q} = Q.(collect(1:nco(X))); 
         score::Function = rmsep, psamp::Q = .3, nint::Int = 5, rep::Int = 1) where Q <: Float
     X = ensure_mat(X)
     n, p = size(X)

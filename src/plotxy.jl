@@ -1,8 +1,8 @@
 """
-    plotxy(x, y; size = (500, 300), color = nothing, ellipse::Bool = false, 
+    plotxy(x, y; size::Tuple{Int, Int} = (500, 300), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xticks = nothing, yticks = nothing, xlabel = "", ylabel = "", title = "", kwargs...)
-    plotxy(x, y, group; size = (600, 350), color = nothing, ellipse::Bool = false, 
+    plotxy(x, y, group; size::Tuple{Int, Int} = (600, 350), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xticks = nothing, yticks = nothing, xlabel = "", ylabel = "", title = "", 
         leg::Bool = true, leg_title = "Group", kwargs...)
@@ -71,7 +71,7 @@ hlines!(ax, 0.5; color = :red, linestyle = :dot)
 f
 ```
 """ 
-function plotxy(x, y; size = (500, 300), color = nothing, ellipse::Bool = false, 
+function plotxy(x, y; size::Tuple{Int, Int} = (500, 300), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xticks = nothing, yticks = nothing, xlabel = "", ylabel = "", title = "", kwargs...)
     x = vec(x)
@@ -120,7 +120,7 @@ function plotxy(x, y; size = (500, 300), color = nothing, ellipse::Bool = false,
     (f = f, ax)
 end
 
-function plotxy(x, y, group; size = (600, 350), color = nothing, ellipse::Bool = false, 
+function plotxy(x, y, group; size::Tuple{Int, Int} = (600, 350), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xticks = nothing, yticks = nothing, xlabel = "", ylabel = "", title = "", 
         leg::Bool = true, leg_title = "Group", kwargs...)
