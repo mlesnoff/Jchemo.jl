@@ -41,9 +41,9 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 @names dat
 X = dat.X 
 y = dat.Y.tbc
-year = string.(dat.Y.year)
+year = dat.Y.year
 tab(year)
-lev = mlev(year)
+lev = mlev(string.(year))
 nlev = length(lev)
 
 model = pcasvd(nlv = 5)  
