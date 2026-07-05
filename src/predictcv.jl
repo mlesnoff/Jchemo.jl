@@ -40,7 +40,7 @@ ntot = ntrain + ntest
 K = 3 ; rep = 10
 segm = segmkf(ntrain, K; rep)
 model = plskern()
-pars = mpar(scal = [true])
+pars = mpar(scal = [:std])
 rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, nlv = 0:10)
 res = rescv.res
 plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
