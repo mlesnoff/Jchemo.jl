@@ -31,7 +31,7 @@ y = randn(n)
 z = randn(n)
 v = 10 * x +randn(n)
 group = rand(["A", "B", "C"], n)
-lev = mlev(group)
+lev = sort(unique(group))
 nlev = length(lev)
 s = group .== "B"
 x[s] .+= 10 ;
@@ -78,14 +78,14 @@ function plotxyz(x, y, z;
     (f = f, ax)
 end
 
-function plotxyz(x, y, z, group::Vector{String}; 
+function plotxyz(x, y, z, group::Union{Vector{<: Real}, Vector{String}, Vector{Symbol}}; 
         size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness::Q = .1, 
         xlabel::String = "", ylabel::String = "", zlabel::String = "", title::String = "", 
         leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Float
     x = vec(x)
     y = vec(y)
     z = vec(z)
-    lev = mlev(group)
+    lev = sort(unique(group))
     nlev = length(lev)
     lab = string.(lev)    
     f = Figure(; size)

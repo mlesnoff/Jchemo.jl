@@ -1,5 +1,5 @@
 """
-    gridscore_lv(Xtrain, Ytrain, X, Y; algo, score::Function, 
+    gridscore_lv(Xtrain, Ytrain, X, Y; algo::Function, score::Function, 
         pars::Union{Nothing, NamedTuple} = nothing, 
         nlv::Union{Int, AbstractVector{Int}}, verbose::Bool = false)
 Working function for `gridscore`.
@@ -9,23 +9,29 @@ Argument `pars` must not contain `nlv`.
 
 See function `gridscore` for examples.
 """
-function gridscore_lv(Xtrain, Ytrain, X, Y; algo, score::Function, 
+function gridscore_lv(Xtrain, Ytrain, X, Y; algo::Function, score::Function, 
         pars::Union{Nothing, NamedTuple} = nothing, 
         nlv::Union{Int, AbstractVector{Int}}, verbose::Bool = false)
     ## The function works for mono- and multiblock X
-    Q = eltype(Xtrain[1, 1])
     ## Monoblock
     if isa(Xtrain[1, 1], Number)
+        Xtrain = ensure_mat(Xtrain)
+        X = ensure_mat(X)
         n, p = size(Xtrain)
+        Q = eltype(Xtrain)
     ## Multiblock
     else  
+        Xtrain = ensure_mat_mb(Xtrain)
+        X = ensure_mat_mb(X)
         n = nco(Xtrain[1])
         p = sum(nco.(Xtrain))
+        Q = eltype(Xtrain[1, 1])
     end
-    ## End
+    Ytrain = ensure_mat(Ytrain)
+    Y = ensure_mat(Y)
     q = nco(Ytrain)
-    le_nlv = length(nlv)
     ## Rebuild 'nlv' to ensure consistency with training dimensionality
+    le_nlv = length(nlv)
     if le_nlv == 1
         nlv = minimum([maximum(nlv); n - 1; p - 1])
     else

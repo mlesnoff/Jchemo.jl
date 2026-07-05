@@ -7,6 +7,10 @@ See function `gridscore` for examples.
 """
 function gridscore_br(Xtrain, Ytrain, X, Y; algo::Function, score::Function, pars::NamedTuple, 
         verbose::Bool = false)
+    Xtrain = ensure_mat(Xtrain)
+    Ytrain = ensure_mat(Ytrain)
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
     q = nco(Ytrain)
     ncomb = length(pars[1]) # nb. combinations in pars
     if verbose ; println("-- Nb. combinations = ", ncomb) ; end

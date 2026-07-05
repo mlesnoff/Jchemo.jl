@@ -89,10 +89,10 @@ lines!(ax, res.nlv, res.y1; color = :red, linewidth = 1)
 f
 
 ## Adding pars 
-pars = mpar(scal = [false; true])
+pars = mpar(scal = [:none; :std])
 rescv = gridcv(model, Xtrain, ytrain; segm,  score = rmsep, pars, nlv) ;
 res = rescv.res 
-typ = res.scal
+typ = string.(res.scal)
 plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP-CV").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
@@ -120,7 +120,7 @@ plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
     ylabel = "Observed").f     
     
 ## Adding pars 
-pars = mpar(scal = [false; true])
+pars = mpar(scal = [:none; :std])
 rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, lb) ;
 res = rescv.res 
 loglb = log.(10, res.lb)
@@ -316,10 +316,10 @@ segm = segmkf(ntrain, K; rep)
 ####---- Plslda
 model = plslda()
 nlv = 1:30
-pars = mpar(scal = [false; true])
+pars = mpar(scal = [:none; :std])
 rescv = gridcv(model, Xtrain, ytrain; segm, score = errp, pars, nlv)
 res = rescv.res
-typ = res.scal
+typ = string.(res.scal)
 plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "ERR").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]

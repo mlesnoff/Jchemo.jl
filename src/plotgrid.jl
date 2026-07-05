@@ -2,7 +2,8 @@
     plotgrid(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}; 
         size::Tuple{Int, Int} = (700, 350), step::Int = 5, color = nothing, leg::Bool = true, 
         leg_title::String = "Group", kwargs...) where Q <: Float
-    plotgrid(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}, group::Vector{String}; 
+    plotgrid(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}, 
+        group::Union{Vector{<: Real}, Vector{String}, Vector{Symbol}}; 
         size::Tuple{Int, Int} = (700, 350), step::Int = 5, color = nothing, leg::Bool = true, 
         leg_title::String = "Group", kwargs...) where Q <: Float
 Plot error/performance rates of a model.
@@ -67,14 +68,15 @@ function plotgrid(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}; size::Tuple{I
     (f = f, ax)
 end
 
-function plotgrid(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}, group::Vector{String}; 
+function plotgrid(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}, 
+        group::Union{Vector{<: Real}, Vector{String}, Vector{Symbol}}; 
         size::Tuple{Int, Int} = (700, 350), step::Int = 5, color = nothing, leg::Bool = true, 
         leg_title::String = "Group", kwargs...) where Q <: Float
     r = vec(r)
     #if isa(indx, Vector{Any}) ; indx = Float64.(indx) ; end
     group = vec(group)
     xticks = collect(minimum(indx):step:maximum(indx))
-    lev = mlev(group)
+    lev = sort(unique(group))
     f = Figure(; size)
     ax = Axis(f; xticks = (xticks, string.(xticks)), kwargs...)
     @inbounds for i in eachindex(lev)

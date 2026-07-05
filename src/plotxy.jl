@@ -4,7 +4,7 @@
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xticks::Union{Nothing, AbstMatVec{Q}} = nothing, yticks::Union{Nothing, AbstMatVec{Q}} = nothing, 
         xlabel::String = "", ylabel::String = "", title::String = "", kwargs...) where Q <: Real
-    plotxy(x, y, group::Vector{String}; 
+    plotxy(x, y, group::Union{Vector{<: Real}, Vector{String}, Vector{Symbol}}; 
         size::Tuple{Int, Int} = (600, 350), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xticks::Union{Nothing, AbstMatVec{Q}} = nothing, yticks::Union{Nothing, AbstMatVec{Q}} = nothing, 
@@ -126,7 +126,7 @@ function plotxy(x, y;
     (f = f, ax)
 end
 2
-function plotxy(x, y, group::Vector{String}; 
+function plotxy(x, y, group::Union{Vector{<: Real}, Vector{String}, Vector{Symbol}}; 
         size::Tuple{Int, Int} = (600, 350), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xticks::Union{Nothing, AbstMatVec{Q}} = nothing, yticks::Union{Nothing, AbstMatVec{Q}} = nothing, 
@@ -135,7 +135,7 @@ function plotxy(x, y, group::Vector{String};
     x = vec(x)
     y = vec(y)
     group = vec(group)
-    lev = mlev(group)
+    lev = sort(unique(group))
     lab = string.(lev)
     f = Figure(; size)
     ## Ticks (to improve)
