@@ -1,8 +1,8 @@
 # News
 
-## *Version 0.10.0
+## *Version 0.10.0*
 
-**Warning:** Major *breaking changes* have been made in this version compared to versions 0.9, 
+**Warning:** Major **breaking changes** have been made in this version compared to versions 0.9s, 
 in particular in functions having arguments 'nlv' (laent variables) and 'lb' (ridge).  
 
 - Breakings:
